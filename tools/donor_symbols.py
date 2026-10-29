@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import bisect
 import json
 import re
 import sys
@@ -27,6 +28,7 @@ from donor_match import FSA_OBJ_DIR  # noqa: E402
 
 SYMBOLS = Path("config/G4SE01/symbols.txt")
 LINE_RE = re.compile(r"^(\S+) = (\.\w+):0x([0-9A-Fa-f]+);(.*)$")
+DTK_AUTO_RE = re.compile(r"^(?:fn|lbl|jumptable)_[0-9A-Fa-f]{8}$")
 AUTO_RE = re.compile(r"^(?:fn|lbl|jumptable|\w+?)_([0-9A-Fa-f]{8})$")
 
 
@@ -179,10 +181,26 @@ def main():
             continue
         accepted[addr] = max(props, key=lambda p: p[3])
 
+    # A sized symbol must not overlap other symbols: drop dtk's auto labels
+    # inside it, and drop the proposal if a real named symbol is in the way.
+    starts = sorted(e["addr"] for e in entries if "addr" in e)
+    by_addr = defaultdict(list)
+    for e in entries:
+        if "addr" in e:
+            by_addr[e["addr"]].append(e)
+    inner = set()
+    for addr, (name, sec, kind, size, scope) in list(accepted.items()):
+        lo, hi = bisect.bisect_right(starts, addr), bisect.bisect_left(starts, addr + size)
+        inside = [e for a in starts[lo:hi] for e in by_addr[a] if a not in accepted]
+        if any(not DTK_AUTO_RE.match(e["name"]) for e in inside):
+            del accepted[addr]
+            continue
+        inner.update(id(e) for e in inside)
+
     names = {p[0] for p in accepted.values()}
     kept, removed = [], 0
     for e in entries:
-        if "addr" in e and (e["addr"] in accepted or e["name"] in names):
+        if "addr" in e and (e["addr"] in accepted or e["name"] in names or id(e) in inner):
             removed += 1
             continue
         kept.append(e["line"])

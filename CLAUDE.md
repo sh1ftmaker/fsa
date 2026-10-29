@@ -65,8 +65,8 @@ Get byte patterns by compiling the TWW source with FSA's flags, then disassembli
 
 ## Current Match Status
 
-**Verified (objdiff report, 2026-10-29, after SDK import): 483 of 11,557
-functions (4.2%), 98,456 bytes of code (2.22%); 85 complete units.**
+**Verified (objdiff report, 2026-10-29, after SDK + GX import): 612 of 11,557
+functions (5.3%), 124,744 bytes of code (2.81%).**
 Measure progress with `ninja && build/tools/objdiff-cli report generate`,
 not with byte-pattern hits.
 
@@ -77,6 +77,12 @@ Sep 16, everything else Apr 17 2003). doldecomp/mkdd links the same builds, so
 its SDK is vendored under `libs/sdk/` (CC0; see `libs/sdk/README.md`) and
 compiled with `cflags_sdk` / `SdkLib()` using its own include roots. 58 files
 are split; 39 are 100%, the rest are `NonMatching` with real code differences.
+mkdd's GX isn't matched, so GX comes from zeldaret/oot-gc's CE build (same
+Jul 23 2003 GX) under `libs/sdk_gx/` (`SdkGxLib()`); 7 of 13 files are 100%.
+
+If a donor file's big functions don't byte-match, extend its `.text` range over
+them anyway (e.g. GXInit): otherwise dtk globalizes the file's statics with
+`_<addr>` suffixes and objdiff can't pair them.
 
 Donor workflow (reusable for any donor):
 1. Compile the donor's matched sources with the donor's flags into a scratch dir.

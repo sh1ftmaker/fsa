@@ -195,17 +195,44 @@ dolphin/card/CARDStat.c:
 dolphin/card/CARDNet.c:
 	.text       start:0x80058748 end:0x8005880C
 
+dolphin/gx/GXInit.c:
+	.text       start:0x8005880C end:0x80059B8C
+
 dolphin/gx/GXFifo.c:
-	.text       start:0x80059D9C end:0x80059DA8
+	.text       start:0x80059B8C end:0x8005A400
 
 dolphin/gx/GXAttr.c:
-	.text       start:0x8005B6AC end:0x8005B6BC
+	.text       start:0x8005A464 end:0x8005B978
+
+dolphin/gx/GXMisc.c:
+	.text       start:0x8005BA0C end:0x8005C158
+
+dolphin/gx/GXGeometry.c:
+	.text       start:0x8005C1CC end:0x8005C508
+
+dolphin/gx/GXFrameBuf.c:
+	.text       start:0x8005C508 end:0x8005D134
 
 dolphin/gx/GXLight.c:
-	.text       start:0x8005D134 end:0x8005D16C
+	.text       start:0x8005D1E8 end:0x8005D4BC
+
+dolphin/gx/GXTexture.c:
+	.text       start:0x8005D618 end:0x8005E150
+
+dolphin/gx/GXBump.c:
+	.text       start:0x8005E4A4 end:0x8005E924
+
+dolphin/gx/GXTev.c:
+	.text       start:0x8005E9E0 end:0x8005F144
+
+dolphin/gx/GXPixel.c:
+	.text       start:0x8005F144 end:0x8005F78C
 
 dolphin/gx/GXTransform.c:
-	.text       start:0x8005FDF4 end:0x8005FE94
+	.text       start:0x8005FCC4 end:0x8006026C
+
+dolphin/gx/GXPerf.c:
+	.text       start:0x8006026C end:0x80060B88
 
 PowerPC_EABI_Support/Runtime/Src/__va_arg.c:
 	.text       start:0x80066DE0 end:0x80066EA8

@@ -299,6 +299,27 @@ cflags_sdk = [
     "-O4,p",
 ]
 
+# GX from zeldaret/oot-gc (libs/sdk_gx), CE build of the Jul 23 2003 SDK.
+cflags_sdk_gx = [
+    "-Cpp_exceptions off",
+    "-proc gekko",
+    "-fp hardware",
+    "-fp_contract on",
+    "-enum int",
+    "-align powerpc",
+    "-nosyspath",
+    "-RTTI off",
+    "-str reuse",
+    "-multibyte",
+    "-O4,p",
+    "-inline auto",
+    "-nodefaults",
+    "-sym on",
+    "-i libs/sdk_gx/include",
+    "-i libs/sdk_gx/libc",
+    "-DVERSION=5",
+]
+
 # Framework flags
 cflags_framework = [
     *cflags_base,
@@ -362,6 +383,19 @@ def SdkLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "src_dir": "libs/sdk",
         "mw_version": "GC/1.2.5n",
         "cflags": cflags_sdk,
+        "progress_category": "sdk",
+        "host": False,
+        "objects": objects,
+    }
+
+
+# Helper function for GX from oot-gc (libs/sdk_gx)
+def SdkGxLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "src_dir": "libs/sdk_gx",
+        "mw_version": "GC/1.2.5n",
+        "cflags": cflags_sdk_gx,
         "progress_category": "sdk",
         "host": False,
         "objects": objects,
@@ -536,11 +570,20 @@ config.libs = [
     SdkLib("vi", [
         Object(NonMatching, "dolphin/vi/vi.c"),
     ]),
-    DolphinLib("gx", [
-        Object(Matching, "dolphin/gx/GXAttr.c"),
-        Object(Matching, "dolphin/gx/GXFifo.c"),
+    SdkGxLib("gx", [
+        Object(NonMatching, "dolphin/gx/GXAttr.c"),
+        Object(NonMatching, "dolphin/gx/GXBump.c"),
+        Object(NonMatching, "dolphin/gx/GXFifo.c"),
+        Object(Matching, "dolphin/gx/GXFrameBuf.c"),
+        Object(Matching, "dolphin/gx/GXGeometry.c"),
+        Object(NonMatching, "dolphin/gx/GXInit.c"),
         Object(Matching, "dolphin/gx/GXLight.c"),
-        Object(Matching, "dolphin/gx/GXTransform.c"),
+        Object(NonMatching, "dolphin/gx/GXMisc.c"),
+        Object(Matching, "dolphin/gx/GXPerf.c"),
+        Object(Matching, "dolphin/gx/GXPixel.c", extra_cflags=["-fp_contract off"]),
+        Object(NonMatching, "dolphin/gx/GXTev.c"),
+        Object(NonMatching, "dolphin/gx/GXTexture.c"),
+        Object(NonMatching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
     ]),
     JSystemLib("J2DGraph", [
         Object(Matching, "JSystem/J2DGraph/J2DGrafContext.cpp"),
