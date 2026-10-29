@@ -1019,21 +1019,21 @@
       }
     },
     {
-      "name": "fsa_game_code/dolphin/os/OSAlloc",
-      "target_path": "build/G4SE01/obj/dolphin/os/OSAlloc.o",
-      "base_path": "build/G4SE01/src/dolphin/os/OSAlloc.o",
+      "name": "fsa_game_code/dolphin/base/PPCArch",
+      "target_path": "build/G4SE01/obj/dolphin/base/PPCArch.o",
+      "base_path": "build/G4SE01/src/dolphin/base/PPCArch.o",
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/dolphin/os/OSAlloc.ctx",
+        "ctx_path": "build/G4SE01/src/dolphin/base/PPCArch.ctx",
         "build_ctx": true
       },
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSAlloc.c",
+        "source_path": "libs/sdk/dolphin/base/PPCArch.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1041,8 +1041,38 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80040B04_text",
-      "target_path": "build/G4SE01/obj/auto_03_80040B04_text.o",
+      "name": "fsa_game_code/auto_03_8003F650_text",
+      "target_path": "build/G4SE01/obj/auto_03_8003F650_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/db/db",
+      "target_path": "build/G4SE01/obj/dolphin/db/db.o",
+      "base_path": "build/G4SE01/src/dolphin/db/db.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/db/db.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/db/db.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8003F794_text",
+      "target_path": "build/G4SE01/obj/auto_03_8003F794_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1055,7 +1085,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OS.ctx",
         "build_ctx": true
@@ -1063,7 +1093,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OS.c",
+        "source_path": "libs/sdk/dolphin/os/OS.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1079,8 +1109,60 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80040C8C_text",
-      "target_path": "build/G4SE01/obj/auto_03_80040C8C_text.o",
+      "name": "fsa_game_code/auto_03_800402D0_text",
+      "target_path": "build/G4SE01/obj/auto_03_800402D0_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSAlarm",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSAlarm.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSAlarm.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSAlarm.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSAlarm.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSAlloc",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSAlloc.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSAlloc.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSAlloc.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSAlloc.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80040C6C_text",
+      "target_path": "build/G4SE01/obj/auto_03_80040C6C_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1093,15 +1175,15 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSCache.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSCache.c",
+        "source_path": "libs/sdk/dolphin/os/OSCache.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1123,7 +1205,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSContext.ctx",
         "build_ctx": true
@@ -1131,7 +1213,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSContext.c",
+        "source_path": "libs/sdk/dolphin/os/OSContext.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1139,11 +1221,63 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_800418D4_text",
-      "target_path": "build/G4SE01/obj/auto_03_800418D4_text.o",
+      "name": "fsa_game_code/auto_03_80041F34_text",
+      "target_path": "build/G4SE01/obj/auto_03_80041F34_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSError",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSError.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSError.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSError.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSError.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_800420E0_text",
+      "target_path": "build/G4SE01/obj/auto_03_800420E0_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSFont",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSFont.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSFont.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSFont.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSFont.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
       }
     },
     {
@@ -1153,7 +1287,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSInterrupt.ctx",
         "build_ctx": true
@@ -1161,7 +1295,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSInterrupt.c",
+        "source_path": "libs/sdk/dolphin/os/OSInterrupt.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1185,13 +1319,21 @@
       }
     },
     {
+      "name": "fsa_game_code/auto_03_80042E54_text",
+      "target_path": "build/G4SE01/obj/auto_03_80042E54_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
       "name": "fsa_game_code/dolphin/os/OSLink",
       "target_path": "build/G4SE01/obj/dolphin/os/OSLink.o",
       "base_path": "build/G4SE01/src/dolphin/os/OSLink.o",
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSLink.ctx",
         "build_ctx": true
@@ -1199,7 +1341,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSLink.c",
+        "source_path": "libs/sdk/dolphin/os/OSLink.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1207,11 +1349,25 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80042EBC_text",
-      "target_path": "build/G4SE01/obj/auto_03_80042EBC_text.o",
+      "name": "fsa_game_code/dolphin/os/OSMessage",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSMessage.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSMessage.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSMessage.ctx",
+        "build_ctx": true
+      },
       "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSMessage.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
       }
     },
     {
@@ -1221,15 +1377,15 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSMemory.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSMemory.c",
+        "source_path": "libs/sdk/dolphin/os/OSMemory.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1245,21 +1401,21 @@
       }
     },
     {
-      "name": "fsa_game_code/dolphin/os/OSReboot",
-      "target_path": "build/G4SE01/obj/dolphin/os/OSReboot.o",
-      "base_path": "build/G4SE01/src/dolphin/os/OSReboot.o",
+      "name": "fsa_game_code/dolphin/os/OSMutex",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSMutex.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSMutex.o",
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/dolphin/os/OSReboot.ctx",
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSMutex.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSReboot.c",
+        "source_path": "libs/sdk/dolphin/os/OSMutex.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1267,8 +1423,38 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_8004395C_text",
-      "target_path": "build/G4SE01/obj/auto_03_8004395C_text.o",
+      "name": "fsa_game_code/auto_03_8004392C_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004392C_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSReboot",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSReboot.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSReboot.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSReboot.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSReboot.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80043968_text",
+      "target_path": "build/G4SE01/obj/auto_03_80043968_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1281,7 +1467,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSReset.ctx",
         "build_ctx": true
@@ -1289,7 +1475,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSReset.c",
+        "source_path": "libs/sdk/dolphin/os/OSReset.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1297,8 +1483,68 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80043DA8_text",
-      "target_path": "build/G4SE01/obj/auto_03_80043DA8_text.o",
+      "name": "fsa_game_code/auto_03_80043DF0_text",
+      "target_path": "build/G4SE01/obj/auto_03_80043DF0_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSResetSW",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSResetSW.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSResetSW.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSResetSW.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSResetSW.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80044474_text",
+      "target_path": "build/G4SE01/obj/auto_03_80044474_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/os/OSRtc",
+      "target_path": "build/G4SE01/obj/dolphin/os/OSRtc.o",
+      "base_path": "build/G4SE01/src/dolphin/os/OSRtc.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/os/OSRtc.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/os/OSRtc.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80044EFC_text",
+      "target_path": "build/G4SE01/obj/auto_03_80044EFC_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1311,7 +1557,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSSync.ctx",
         "build_ctx": true
@@ -1319,7 +1565,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSSync.c",
+        "source_path": "libs/sdk/dolphin/os/OSSync.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1341,7 +1587,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSThread.ctx",
         "build_ctx": true
@@ -1349,7 +1595,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSThread.c",
+        "source_path": "libs/sdk/dolphin/os/OSThread.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1357,8 +1603,8 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80045220_text",
-      "target_path": "build/G4SE01/obj/auto_03_80045220_text.o",
+      "name": "fsa_game_code/auto_03_80046334_text",
+      "target_path": "build/G4SE01/obj/auto_03_80046334_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1371,7 +1617,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/os/OSTime.ctx",
         "build_ctx": true
@@ -1379,7 +1625,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/os/OSTime.c",
+        "source_path": "libs/sdk/dolphin/os/OSTime.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1409,27 +1655,19 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/mtx/mtx.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/mtx/mtx.c",
+        "source_path": "libs/sdk/dolphin/mtx/mtx.c",
         "progress_categories": [
           "sdk"
         ],
         "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_800468F8_text",
-      "target_path": "build/G4SE01/obj/auto_03_800468F8_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
       }
     },
     {
@@ -1439,7 +1677,7 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/mtx/mtxvec.ctx",
         "build_ctx": true
@@ -1447,7 +1685,7 @@
       "metadata": {
         "complete": true,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/mtx/mtxvec.c",
+        "source_path": "libs/sdk/dolphin/mtx/mtxvec.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1455,11 +1693,25 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80046FB4_text",
-      "target_path": "build/G4SE01/obj/auto_03_80046FB4_text.o",
+      "name": "fsa_game_code/dolphin/mtx/mtx44",
+      "target_path": "build/G4SE01/obj/dolphin/mtx/mtx44.o",
+      "base_path": "build/G4SE01/src/dolphin/mtx/mtx44.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/mtx/mtx44.ctx",
+        "build_ctx": true
+      },
       "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/mtx/mtx44.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
       }
     },
     {
@@ -1469,15 +1721,15 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/mtx/vec.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/mtx/vec.c",
+        "source_path": "libs/sdk/dolphin/mtx/vec.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1485,8 +1737,38 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_80047130_text",
-      "target_path": "build/G4SE01/obj/auto_03_80047130_text.o",
+      "name": "fsa_game_code/auto_03_80047258_text",
+      "target_path": "build/G4SE01/obj/auto_03_80047258_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/dvd/dvdlow",
+      "target_path": "build/G4SE01/obj/dolphin/dvd/dvdlow.o",
+      "base_path": "build/G4SE01/src/dolphin/dvd/dvdlow.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/dvd/dvdlow.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/dvd/dvdlow.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_800480D4_text",
+      "target_path": "build/G4SE01/obj/auto_03_800480D4_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1499,15 +1781,15 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/dvd/dvdfs.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/dvd/dvdfs.c",
+        "source_path": "libs/sdk/dolphin/dvd/dvdfs.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1529,15 +1811,15 @@
       "scratch": {
         "platform": "gc_wii",
         "compiler": "mwcc_233_163n",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -fp_contract off -lang=c",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
         "preset_id": 228,
         "ctx_path": "build/G4SE01/src/dolphin/dvd/dvd.ctx",
         "build_ctx": true
       },
       "metadata": {
-        "complete": true,
+        "complete": false,
         "reverse_fn_order": false,
-        "source_path": "src/dolphin/dvd/dvd.c",
+        "source_path": "libs/sdk/dolphin/dvd/dvd.c",
         "progress_categories": [
           "sdk"
         ],
@@ -1545,8 +1827,624 @@
       }
     },
     {
-      "name": "fsa_game_code/auto_03_8004AE98_text",
-      "target_path": "build/G4SE01/obj/auto_03_8004AE98_text.o",
+      "name": "fsa_game_code/auto_03_8004B0E4_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004B0E4_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/dvd/dvdqueue",
+      "target_path": "build/G4SE01/obj/dolphin/dvd/dvdqueue.o",
+      "base_path": "build/G4SE01/src/dolphin/dvd/dvdqueue.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/dvd/dvdqueue.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/dvd/dvdqueue.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8004B2DC_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004B2DC_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/dvd/dvdidutils",
+      "target_path": "build/G4SE01/obj/dolphin/dvd/dvdidutils.o",
+      "base_path": "build/G4SE01/src/dolphin/dvd/dvdidutils.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/dvd/dvdidutils.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/dvd/dvdidutils.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8004B56C_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004B56C_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/vi/vi",
+      "target_path": "build/G4SE01/obj/dolphin/vi/vi.o",
+      "base_path": "build/G4SE01/src/dolphin/vi/vi.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/vi/vi.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/vi/vi.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/pad/Padclamp",
+      "target_path": "build/G4SE01/obj/dolphin/pad/Padclamp.o",
+      "base_path": "build/G4SE01/src/dolphin/pad/Padclamp.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/pad/Padclamp.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/pad/Padclamp.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/pad/Pad",
+      "target_path": "build/G4SE01/obj/dolphin/pad/Pad.o",
+      "base_path": "build/G4SE01/src/dolphin/pad/Pad.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/pad/Pad.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/pad/Pad.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8004F478_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004F478_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/ai/ai",
+      "target_path": "build/G4SE01/obj/dolphin/ai/ai.o",
+      "base_path": "build/G4SE01/src/dolphin/ai/ai.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/ai/ai.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/ai/ai.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8004FDD8_text",
+      "target_path": "build/G4SE01/obj/auto_03_8004FDD8_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/ar/ar",
+      "target_path": "build/G4SE01/obj/dolphin/ar/ar.o",
+      "base_path": "build/G4SE01/src/dolphin/ar/ar.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/ar/ar.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/ar/ar.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/ar/arq",
+      "target_path": "build/G4SE01/obj/dolphin/ar/arq.o",
+      "base_path": "build/G4SE01/src/dolphin/ar/arq.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/ar/arq.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/ar/arq.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/dsp/dsp",
+      "target_path": "build/G4SE01/obj/dolphin/dsp/dsp.o",
+      "base_path": "build/G4SE01/src/dolphin/dsp/dsp.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/dsp/dsp.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/dsp/dsp.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80051E04_text",
+      "target_path": "build/G4SE01/obj/auto_03_80051E04_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/dsp/dsp_task",
+      "target_path": "build/G4SE01/obj/dolphin/dsp/dsp_task.o",
+      "base_path": "build/G4SE01/src/dolphin/dsp/dsp_task.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/dsp/dsp_task.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/dsp/dsp_task.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_800522B4_text",
+      "target_path": "build/G4SE01/obj/auto_03_800522B4_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDBios",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDBios.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDBios.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDBios.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDBios.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDUnlock",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDUnlock.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDUnlock.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDUnlock.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDUnlock.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDRdwr",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDRdwr.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDRdwr.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDRdwr.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDRdwr.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDBlock",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDBlock.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDBlock.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDBlock.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDBlock.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDDir",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDDir.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDDir.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDDir.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDDir.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDCheck",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDCheck.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDCheck.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDCheck.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDCheck.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDMount",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDMount.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDMount.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDMount.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDMount.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDFormat",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDFormat.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDFormat.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDFormat.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDFormat.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDOpen",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDOpen.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDOpen.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDOpen.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDOpen.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDCreate",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDCreate.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDCreate.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDCreate.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDCreate.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80057A48_text",
+      "target_path": "build/G4SE01/obj/auto_03_80057A48_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDRead",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDRead.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDRead.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDRead.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDRead.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80057EBC_text",
+      "target_path": "build/G4SE01/obj/auto_03_80057EBC_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDWrite",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDWrite.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDWrite.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDWrite.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDWrite.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80058238_text",
+      "target_path": "build/G4SE01/obj/auto_03_80058238_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDStat",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDStat.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDStat.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDStat.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDStat.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80058700_text",
+      "target_path": "build/G4SE01/obj/auto_03_80058700_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/card/CARDNet",
+      "target_path": "build/G4SE01/obj/dolphin/card/CARDNet.o",
+      "base_path": "build/G4SE01/src/dolphin/card/CARDNet.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/card/CARDNet.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/card/CARDNet.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8005880C_text",
+      "target_path": "build/G4SE01/obj/auto_03_8005880C_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -1931,6 +2829,118 @@
     {
       "name": "fsa_game_code/auto_03_8007023C_text",
       "target_path": "build/G4SE01/obj/auto_03_8007023C_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/exi/EXIBios",
+      "target_path": "build/G4SE01/obj/dolphin/exi/EXIBios.o",
+      "base_path": "build/G4SE01/src/dolphin/exi/EXIBios.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/exi/EXIBios.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/exi/EXIBios.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80073218_text",
+      "target_path": "build/G4SE01/obj/auto_03_80073218_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/exi/EXIUart",
+      "target_path": "build/G4SE01/obj/dolphin/exi/EXIUart.o",
+      "base_path": "build/G4SE01/src/dolphin/exi/EXIUart.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/exi/EXIUart.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/exi/EXIUart.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/si/SIBios",
+      "target_path": "build/G4SE01/obj/dolphin/si/SIBios.o",
+      "base_path": "build/G4SE01/src/dolphin/si/SIBios.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/si/SIBios.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": false,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/si/SIBios.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_80075424_text",
+      "target_path": "build/G4SE01/obj/auto_03_80075424_text.o",
+      "metadata": {
+        "progress_categories": [],
+        "auto_generated": true
+      }
+    },
+    {
+      "name": "fsa_game_code/dolphin/si/SISamplingRate",
+      "target_path": "build/G4SE01/obj/dolphin/si/SISamplingRate.o",
+      "base_path": "build/G4SE01/src/dolphin/si/SISamplingRate.o",
+      "scratch": {
+        "platform": "gc_wii",
+        "compiler": "mwcc_233_163n",
+        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -use_lmw_stmw on -maxerrors 1 -nosyspath -RTTI off -multibyte -DNDEBUG=1 -lang=c -fp fmadd -fp_contract off -char signed -str reuse -common off -O4,p",
+        "preset_id": 228,
+        "ctx_path": "build/G4SE01/src/dolphin/si/SISamplingRate.ctx",
+        "build_ctx": true
+      },
+      "metadata": {
+        "complete": true,
+        "reverse_fn_order": false,
+        "source_path": "libs/sdk/dolphin/si/SISamplingRate.c",
+        "progress_categories": [
+          "sdk"
+        ],
+        "auto_generated": false
+      }
+    },
+    {
+      "name": "fsa_game_code/auto_03_8007552C_text",
+      "target_path": "build/G4SE01/obj/auto_03_8007552C_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true

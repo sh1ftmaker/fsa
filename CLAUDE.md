@@ -65,10 +65,37 @@ Get byte patterns by compiling the TWW source with FSA's flags, then disassembli
 
 ## Current Match Status
 
-**Verified (objdiff report, 2026-10-29): 67 units / 138 of 11,557 functions
-(1.19%), 10,104 bytes of code (0.23%).** All 67 compiled units are 100%.
+**Verified (objdiff report, 2026-10-29, after SDK import): 483 of 11,557
+functions (4.2%), 98,456 bytes of code (2.22%); 85 complete units.**
 Measure progress with `ninja && build/tools/objdiff-cli report generate`,
 not with byte-pattern hits.
+
+### Dolphin SDK import (2026-10-29)
+
+FSA's SDK is the 2003 0x2301 release (OS/GX Jul 23 2003, PAD Aug 6, DVD
+Sep 16, everything else Apr 17 2003). doldecomp/mkdd links the same builds, so
+its SDK is vendored under `libs/sdk/` (CC0; see `libs/sdk/README.md`) and
+compiled with `cflags_sdk` / `SdkLib()` using its own include roots. 58 files
+are split; 39 are 100%, the rest are `NonMatching` with real code differences.
+
+Donor workflow (reusable for any donor):
+1. Compile the donor's matched sources with the donor's flags into a scratch dir.
+2. `python3 tools/donor_match.py <donor_obj_root> --json m.json` — matches only
+   at dtk function starts (masked relocations), so no false positives inside
+   larger functions.
+3. `python3 tools/donor_plan.py m.json --splits s.txt` — per-file `.text` ranges
+   with coverage; merge into `splits.txt`.
+4. `python3 tools/donor_symbols.py m.json <donor_obj_root> --write` — names FSA
+   functions and the data they reference (relocation pairing). Then
+   `rm build/G4SE01/config.json && ninja` (the split step doesn't depend on
+   symbols.txt) and repeat 2–4 once more.
+
+`config/G4SE01/symbols.txt` is now real FSA symbols (dtk rewrites it on every
+split). The old TWW-address seed is kept as `symbols_tww_seed.txt`; it was never
+referenced by `config.yml`, so it never affected the build.
+
+Donor catalog for everything else: `../donors/DONORS.md`. Notably FSA uses
+**JAudio2** (loads `JaiInit.baa`), not TWW's JAudio1 — use mkdd/TP for audio.
 
 Build fixes on 2026-10-29 (clean Linux checkout now compiles every object):
 - Headers synced from zeldaret/tww `include/` (CC0) plus the MSL/Runtime

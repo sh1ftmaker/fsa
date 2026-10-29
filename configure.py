@@ -270,6 +270,35 @@ cflags_dolphin = [
     "-fp_contract off",
 ]
 
+# Dolphin SDK imported from doldecomp/mkdd (libs/sdk). Uses its own include
+# roots so its headers don't mix with the TWW-derived ones in include/.
+cflags_sdk = [
+    "-nodefaults",
+    "-proc gekko",
+    "-align powerpc",
+    "-enum int",
+    "-fp hardware",
+    "-Cpp_exceptions off",
+    "-inline auto",
+    '-pragma "cats off"',
+    '-pragma "warn_notinlined off"',
+    "-use_lmw_stmw on",
+    "-maxerrors 1",
+    "-nosyspath",
+    "-RTTI off",
+    "-multibyte",
+    "-i libs/sdk/include",
+    "-i libs/sdk/msl_include",
+    "-DNDEBUG=1",
+    "-lang=c",
+    "-fp fmadd",
+    "-fp_contract off",
+    "-char signed",
+    "-str reuse",
+    "-common off",
+    "-O4,p",
+]
+
 # Framework flags
 cflags_framework = [
     *cflags_base,
@@ -320,6 +349,19 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "lib": lib_name,
         "mw_version": "GC/1.2.5n",
         "cflags": cflags_dolphin,
+        "progress_category": "sdk",
+        "host": False,
+        "objects": objects,
+    }
+
+
+# Helper function for the imported Dolphin SDK (libs/sdk)
+def SdkLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "src_dir": "libs/sdk",
+        "mw_version": "GC/1.2.5n",
+        "cflags": cflags_sdk,
         "progress_category": "sdk",
         "host": False,
         "objects": objects,
@@ -412,34 +454,93 @@ config.libs = [
             Object(Matching, "m_Do/m_Do_dvd_thread.cpp"),
         ],
     },
-    DolphinLib("dvd", [
-        Object(Matching, "dolphin/dvd/dvd.c"),
-        Object(Matching, "dolphin/dvd/dvdfs.c"),
+    SdkLib("ai", [
+        Object(Matching, "dolphin/ai/ai.c"),
+    ]),
+    SdkLib("ar", [
+        Object(NonMatching, "dolphin/ar/ar.c"),
+        Object(Matching, "dolphin/ar/arq.c"),
+    ]),
+    SdkLib("base", [
+        Object(Matching, "dolphin/base/PPCArch.c"),
+    ]),
+    SdkLib("card", [
+        Object(NonMatching, "dolphin/card/CARDBios.c"),
+        Object(NonMatching, "dolphin/card/CARDBlock.c"),
+        Object(Matching, "dolphin/card/CARDCheck.c"),
+        Object(Matching, "dolphin/card/CARDCreate.c"),
+        Object(NonMatching, "dolphin/card/CARDDir.c"),
+        Object(Matching, "dolphin/card/CARDFormat.c"),
+        Object(NonMatching, "dolphin/card/CARDMount.c"),
+        Object(Matching, "dolphin/card/CARDNet.c"),
+        Object(Matching, "dolphin/card/CARDOpen.c"),
+        Object(Matching, "dolphin/card/CARDRdwr.c"),
+        Object(Matching, "dolphin/card/CARDRead.c"),
+        Object(Matching, "dolphin/card/CARDStat.c"),
+        Object(Matching, "dolphin/card/CARDUnlock.c"),
+        Object(NonMatching, "dolphin/card/CARDWrite.c"),
+    ]),
+    SdkLib("db", [
+        Object(Matching, "dolphin/db/db.c"),
+    ]),
+    SdkLib("dsp", [
+        Object(Matching, "dolphin/dsp/dsp.c"),
+        Object(Matching, "dolphin/dsp/dsp_task.c"),
+    ]),
+    SdkLib("dvd", [
+        Object(NonMatching, "dolphin/dvd/dvd.c"),
+        Object(NonMatching, "dolphin/dvd/dvdfs.c"),
+        Object(Matching, "dolphin/dvd/dvdidutils.c"),
+        Object(NonMatching, "dolphin/dvd/dvdlow.c"),
+        Object(Matching, "dolphin/dvd/dvdqueue.c"),
+    ]),
+    SdkLib("exi", [
+        Object(Matching, "dolphin/exi/EXIBios.c"),
+        Object(Matching, "dolphin/exi/EXIUart.c"),
+    ]),
+    SdkLib("mtx", [
+        Object(NonMatching, "dolphin/mtx/mtx.c"),
+        Object(Matching, "dolphin/mtx/mtx44.c"),
+        Object(Matching, "dolphin/mtx/mtxvec.c"),
+        Object(NonMatching, "dolphin/mtx/vec.c"),
+    ]),
+    SdkLib("os", [
+        Object(Matching, "dolphin/os/OS.c"),
+        Object(NonMatching, "dolphin/os/OSAlarm.c"),
+        Object(NonMatching, "dolphin/os/OSAlloc.c"),
+        Object(NonMatching, "dolphin/os/OSCache.c"),
+        Object(Matching, "dolphin/os/OSContext.c"),
+        Object(Matching, "dolphin/os/OSError.c"),
+        Object(Matching, "dolphin/os/OSFont.c"),
+        Object(Matching, "dolphin/os/OSInterrupt.c"),
+        Object(Matching, "dolphin/os/OSLink.c"),
+        Object(NonMatching, "dolphin/os/OSMemory.c"),
+        Object(Matching, "dolphin/os/OSMessage.c"),
+        Object(NonMatching, "dolphin/os/OSMutex.c"),
+        Object(NonMatching, "dolphin/os/OSReboot.c"),
+        Object(Matching, "dolphin/os/OSReset.c"),
+        Object(Matching, "dolphin/os/OSResetSW.c"),
+        Object(NonMatching, "dolphin/os/OSRtc.c"),
+        Object(Matching, "dolphin/os/OSSync.c"),
+        Object(Matching, "dolphin/os/OSThread.c"),
+        Object(Matching, "dolphin/os/OSTime.c"),
+    ]),
+    SdkLib("pad", [
+        Object(NonMatching, "dolphin/pad/Pad.c"),
+        Object(Matching, "dolphin/pad/Padclamp.c"),
+    ]),
+    SdkLib("si", [
+        Object(NonMatching, "dolphin/si/SIBios.c"),
+        Object(Matching, "dolphin/si/SISamplingRate.c"),
+    ]),
+    SdkLib("vi", [
+        Object(NonMatching, "dolphin/vi/vi.c"),
     ]),
     DolphinLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(Matching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXLight.c"),
         Object(Matching, "dolphin/gx/GXTransform.c"),
-    ]),
-    DolphinLib("mtx", [
-        Object(Matching, "dolphin/mtx/mtx.c"),
-        Object(Matching, "dolphin/mtx/mtxvec.c"),
-        Object(Matching, "dolphin/mtx/vec.c"),
-    ]),
-    DolphinLib("os", [
-        Object(Matching, "dolphin/os/OS.c"),
-        Object(Matching, "dolphin/os/OSCache.c"),
-        Object(Matching, "dolphin/os/OSTime.c"),
-        Object(Matching, "dolphin/os/OSInterrupt.c"),
-        Object(Matching, "dolphin/os/OSSync.c"),
-        Object(Matching, "dolphin/os/OSAlloc.c"),
-        Object(Matching, "dolphin/os/OSContext.c"),
-        Object(Matching, "dolphin/os/OSLink.c"),
-        Object(Matching, "dolphin/os/OSMemory.c"),
-        Object(Matching, "dolphin/os/OSReboot.c"),
-        Object(Matching, "dolphin/os/OSReset.c"),
-        Object(Matching, "dolphin/os/OSThread.c"),
     ]),
     JSystemLib("J2DGraph", [
         Object(Matching, "JSystem/J2DGraph/J2DGrafContext.cpp"),
