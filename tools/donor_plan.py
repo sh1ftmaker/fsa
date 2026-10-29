@@ -104,8 +104,8 @@ def main():
         in_range = [a for a in table if start <= a < end]
         covered = sum(1 for a in in_range if a in claimed)
         cov = covered / len(in_range) if in_range else 0
-        src = obj[:-2]
-        if not src.endswith((".c", ".cpp")):
+        src = obj[:-2]  # donor objects are named <source>.o, e.g. foo.cpp.o
+        if not src.endswith((".c", ".cpp", ".cp", ".s")):
             src += ".c"
         overlaps = []
         for name, secs in stanzas.items():

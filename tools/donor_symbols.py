@@ -140,7 +140,7 @@ def main():
         hit = row["hits"][0]
         fsa_addr = hit["addr"]
         # Only trust a function match inside the donor file's own split range.
-        rng = text_ranges.get(row["donor_obj"].rsplit(".", 1)[0])
+        rng = text_ranges.get(re.sub(r"(\.(c|cpp|cp|s))?\.o$", "", row["donor_obj"]))
         if rng is None or not rng[0] <= fsa_addr < rng[1]:
             continue
         d_funcs, d_rel, d_syms = info(args.donor_root / row["donor_obj"])
@@ -166,7 +166,10 @@ def main():
             if not sec or d[0].startswith("@"):
                 continue
             scope = "local" if ds.get("bind") == "STB_LOCAL" else "global"
-            proposals[target].add((d[0], sec, kind, ds.get("size", 0), scope))
+            # A referenced function may differ in size from the donor's (only
+            # direct matches have verified sizes), so let dtk size it.
+            size = 0 if kind == "function" else ds.get("size", 0)
+            proposals[target].add((d[0], sec, kind, size, scope))
 
     for addr, props in proposals.items():
         for p in props:

@@ -13,26 +13,182 @@ Sections:
 	.sdata2     type:rodata align:4
 	.sbss2      type:bss align:4
 
+JSystem/JAudio/Interface/JAISe.cpp:
+	.text       start:0x80021F24 end:0x800227A8
+
+JSystem/JAudio/Interface/JAISeq.cpp:
+	.text       start:0x80023B74 end:0x80024A0C
+
+JSystem/JAudio/Interface/JAISeqMgr.cpp:
+	.text       start:0x80024BE0 end:0x80025368
+
+JSystem/JAudio/Interface/JAISound.cpp:
+	.text       start:0x80025474 end:0x80025C94
+
+JSystem/JAudio/Interface/JAISoundChild.cpp:
+	.text       start:0x80025D68 end:0x80025F54
+
+JSystem/JAudio/Interface/JAISoundHandles.cpp:
+	.text       start:0x80026060 end:0x80026158
+
+JSystem/JAudio/Interface/JAISoundParams.cpp:
+	.text       start:0x800262AC end:0x8002640C
+
+JSystem/JAudio/Interface/JAIStream.cpp:
+	.text       start:0x80026560 end:0x80026E78
+
+JSystem/JAudio/Interface/JAIStreamMgr.cpp:
+	.text       start:0x80027020 end:0x80027548
+
+JSystem/JAudio/System/JASCalc.cpp:
+	.text       start:0x80027770 end:0x80027EC4
+
+JSystem/JAudio/System/JASCallback.cpp:
+	.text       start:0x80027EC4 end:0x800280E8
+
+JSystem/JAudio/System/JASCmdStack.cpp:
+	.text       start:0x800280E8 end:0x80028268
+	.ctors      start:0x8045BD38 end:0x8045BD3C
+
+JSystem/JAudio/System/JASDvdThread.cpp:
+	.text       start:0x800282C8 end:0x80028374
+
 JSystem/JAudio/JASCmdStack.cpp:
 	.text       start:0x80028974 end:0x8002898C
 
-JSystem/JAudio/JASDSPChannel.cpp:
-	.text       start:0x8002C19C end:0x8002C1AC
+JSystem/JAudio/System/JASProbe.cpp:
+	.text       start:0x80028DA8 end:0x80028F54
 
-JSystem/JAudio/JASDSPInterface.cpp:
-	.text       start:0x8002D330 end:0x8002D374
+JSystem/JAudio/System/JASReport.cpp:
+	.text       start:0x80028F54 end:0x80029050
 
-JSystem/JAudio/JASBasicInst.cpp:
-	.text       start:0x8002E890 end:0x8002E8A8
+JSystem/JAudio/System/JASResArcLoader.cpp:
+	.text       start:0x80029050 end:0x8002917C
 
-JSystem/JAudio/JASBasicWaveBank.cpp:
-	.text       start:0x8002EBAC end:0x8002EBDC
+JSystem/JAudio/System/JASTaskThread.cpp:
+	.text       start:0x8002917C end:0x800298C8
+
+JSystem/JAudio/System/JASAiCtrl.cpp:
+	.text       start:0x800298C8 end:0x8002A504
+
+JSystem/JAudio/System/JASAudioReseter.cpp:
+	.text       start:0x8002A55C end:0x8002A740
+
+JSystem/JAudio/System/JASChannel.cpp:
+	.text       start:0x8002AAF8 end:0x8002C2B0
+
+JSystem/JAudio/System/JASDriverIF.cpp:
+	.text       start:0x8002C360 end:0x8002C3EC
+
+JSystem/JAudio/System/JASDSPChannel.cpp:
+	.text       start:0x8002C55C end:0x8002CD80
+
+JSystem/JAudio/System/JASDSPInterface.cpp:
+	.text       start:0x8002CD80 end:0x8002D604
+
+JSystem/JAudio/System/JASLfo.cpp:
+	.text       start:0x8002D604 end:0x8002D78C
+	.ctors      start:0x8045BD50 end:0x8045BD54
+
+JSystem/JAudio/System/JASOscillator.cpp:
+	.text       start:0x8002D78C end:0x8002DC74
+
+JSystem/JAudio/System/JASSoundParams.cpp:
+	.text       start:0x8002DC74 end:0x8002DCD0
+
+JSystem/JAudio/System/JASWSParser.cpp:
+	.text       start:0x8002DCD0 end:0x8002E170
+
+JSystem/JAudio/System/JASBasicBank.cpp:
+	.text       start:0x8002E2E0 end:0x8002E2F0
+
+JSystem/JAudio/System/JASBasicInst.cpp:
+	.text       start:0x8002E718 end:0x8002E8A8
+
+JSystem/JAudio/System/JASBasicWaveBank.cpp:
+	.text       start:0x8002E90C end:0x8002F274
 
 JSystem/JAudio/JASBNKParser.cpp:
 	.text       start:0x80030380 end:0x80030394
 
 JSystem/JAudio/JASDrumSet.cpp:
 	.text       start:0x800307C4 end:0x800307D0
+
+JSystem/JAudio/System/JASInstRand.cpp:
+	.text       start:0x80030828 end:0x80030960
+
+JSystem/JAudio/System/JASInstSense.cpp:
+	.text       start:0x800309B8 end:0x80030B78
+
+JSystem/JAudio/System/JASSimpleWaveBank.cpp:
+	.text       start:0x80030BD0 end:0x80030ED8
+
+JSystem/JAudio/System/JASWaveArcLoader.cpp:
+	.text       start:0x80030EF8 end:0x8003143C
+
+JSystem/JAudio/System/JASBank.cpp:
+	.text       start:0x80031750 end:0x80031844
+
+JSystem/JAudio/System/JASRegisterParam.cpp:
+	.text       start:0x80033098 end:0x800332D0
+
+JSystem/JAudio/System/JASSeqCtrl.cpp:
+	.text       start:0x800332D0 end:0x8003363C
+
+JSystem/JAudio/System/JASSeqParser.cpp:
+	.text       start:0x80033BAC end:0x800355BC
+
+JSystem/JAudio/System/JASSeqReader.cpp:
+	.text       start:0x80035F4C end:0x80036188
+
+JSystem/JAudio/System/JASTrack.cpp:
+	.text       start:0x80036188 end:0x800397D0
+	.ctors      start:0x8045BD7C end:0x8045BD80
+
+JSystem/JAudio/System/JASTrackPort.cpp:
+	.text       start:0x80039964 end:0x80039A84
+
+JSystem/JAudio/Task/dspproc.c:
+	.text       start:0x80039B80 end:0x80039D08
+
+JSystem/JAudio/Task/dsptask.c:
+	.text       start:0x80039D20 end:0x8003A028
+
+JSystem/JAudio/Task/osdsp.c:
+	.text       start:0x8003A040 end:0x8003A11C
+
+JSystem/JAudio/Task/osdsp_task.c:
+	.text       start:0x8003A120 end:0x8003A50C
+
+JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp:
+	.text       start:0x8003A50C end:0x8003A5DC
+
+JSystem/JAudio/Utility/JAUAudioArcLoader.cpp:
+	.text       start:0x8003AA08 end:0x8003AB38
+
+JSystem/JAudio/Utility/JAUAudioMgr.cpp:
+	.text       start:0x8003AF6C end:0x8003B0D4
+
+JSystem/JAudio/Utility/JAUInitializer.cpp:
+	.text       start:0x8003B400 end:0x8003B6A8
+
+JSystem/JAudio/Utility/JAUSeqCollection.cpp:
+	.text       start:0x8003B85C end:0x8003B9C0
+
+JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp:
+	.text       start:0x8003BA20 end:0x8003BF64
+
+JSystem/JAudio/Utility/JAUSoundMgr.cpp:
+	.text       start:0x8003BF64 end:0x8003C0D0
+
+JSystem/JAudio/Utility/JAUSoundTable.cpp:
+	.text       start:0x8003C30C end:0x8003C618
+
+JSystem/JAudio/Utility/JAUStreamFileTable.cpp:
+	.text       start:0x8003C7A0 end:0x8003C878
+
+JSystem/JAudio/Utility/JAUSectionHeap.cpp:
+	.text       start:0x8003D5D8 end:0x8003ED08
 
 dolphin/base/PPCArch.c:
 	.text       start:0x8003F628 end:0x8003F650
@@ -288,59 +444,99 @@ dolphin/si/SIBios.c:
 dolphin/si/SISamplingRate.c:
 	.text       start:0x80075508 end:0x8007552C
 
-JSystem/JUtility/JUTResFont.cpp:
-	.text       start:0x800772F4 end:0x80077324
+JSystem/JKernel/JKRAramArchive.cpp:
+	.text       start:0x8007A7F0 end:0x8007AAF8
 
-JSystem/JSupport/JSUMemoryStream.cpp:
-	.text       start:0x8007BA18 end:0x8007BA74
+JSystem/JKernel/JKRAramBlock.cpp:
+	.text       start:0x8007AC2C end:0x8007AEB0
 
-d/d_save.cpp:
-	.text       start:0x8007C138 end:0x8007C140
+JSystem/JKernel/JKRAramHeap.cpp:
+	.text       start:0x8007B0B0 end:0x8007B1B0
+
+JSystem/JKernel/JKRAramPiece.cpp:
+	.text       start:0x8007B268 end:0x8007B5A8
+
+JSystem/JKernel/JKRAramStream.cpp:
+	.text       start:0x8007B694 end:0x8007BC30
 
 JSystem/JKernel/JKRArchivePri.cpp:
-	.text       start:0x8007C640 end:0x8007C6F4
+	.text       start:0x8007BD84 end:0x8007C6F4
+
+JSystem/JKernel/JKRArchivePub.cpp:
+	.text       start:0x8007CD50 end:0x8007CE4C
 
 d/actor/d_a_lod_bg.cpp:
 	.text       start:0x8007D28C end:0x8007D2B8
 
+JSystem/JKernel/JKRCompArchive.cpp:
+	.text       start:0x8007D4B8 end:0x8007DD58
+
+JSystem/JKernel/JKRDecomp.cpp:
+	.text       start:0x8007E034 end:0x8007E6B8
+
 JSystem/JKernel/JKRDisposer.cpp:
-	.text       start:0x8007E6F4 end:0x8007E7E0
+	.text       start:0x8007E6F4 end:0x8007E75C
+
+JSystem/JKernel/JKRDvdFile.cpp:
+	.text       start:0x8007E9A0 end:0x8007ECCC
+
+JSystem/JKernel/JKRDvdArchive.cpp:
+	.text       start:0x80080118 end:0x80080630
 
 JSystem/JKernel/JKRExpHeap.cpp:
-	.text       start:0x80082CD4 end:0x80082D90
+	.text       start:0x800823C8 end:0x80082F44
+
+JSystem/JKernel/JKRFileFinder.cpp:
+	.text       start:0x80082F44 end:0x80083120
 
 JSystem/JKernel/JKRFileLoader.cpp:
-	.text       start:0x80083204 end:0x80083254
+	.text       start:0x80083120 end:0x800833C4
 
-d/d_door.cpp:
-	.text       start:0x8008383C end:0x80083868
+JSystem/JKernel/JKRHeap.cpp:
+	.text       start:0x8008353C end:0x80083A68
 
-JSystem/JMessage/processor.cpp:
-	.text       start:0x800839E4 end:0x80083A68
+JSystem/JKernel/JKRMemArchive.cpp:
+	.text       start:0x800848BC end:0x80084B1C
 
 JSystem/JKernel/JKRSolidHeap.cpp:
-	.text       start:0x80085438 end:0x80085444
+	.text       start:0x800850CC end:0x800851B8
+
+JSystem/JKernel/JKRThread.cpp:
+	.text       start:0x8008552C end:0x80085968
+	.ctors      start:0x8045BDC4 end:0x8045BDC8
 
 JSystem/JSupport/JSUInputStream.cpp:
-	.text       start:0x80086BD8 end:0x80086CC0
+	.text       start:0x80086AF8 end:0x80086DC0
 
 JSystem/JSupport/JSUList.cpp:
-	.text       start:0x80086E2C end:0x80086E44
+	.text       start:0x80086E2C end:0x80087348
+
+JSystem/JSupport/JSUMemoryStream.cpp:
+	.text       start:0x80087348 end:0x80087450
+
+JSystem/JSupport/JSUFileStream.cpp:
+	.text       start:0x800874D0 end:0x8008770C
 
 JSystem/JGadget/linklist.cpp:
-	.text       start:0x80087950 end:0x800879A0
+	.text       start:0x800878F0 end:0x80087AB4
 
 JSystem/JGadget/std-vector.cpp:
 	.text       start:0x80087AB4 end:0x80087ABC
 
+JSystem/JUtility/JUTAssert.cpp:
+	.text       start:0x80087AC0 end:0x80087BAC
+
 JSystem/JUtility/JUTConsole.cpp:
-	.text       start:0x80088A58 end:0x80088B7C
+	.text       start:0x80087DC0 end:0x80088BE4
 
 JSystem/JUtility/JUTDbPrint.cpp:
-	.text       start:0x80089264 end:0x8008927C
+	.text       start:0x80089264 end:0x80089510
 
 JSystem/JUtility/JUTDirectFile.cpp:
-	.text       start:0x80089510 end:0x80089534
+	.text       start:0x80089510 end:0x800898B0
+
+JSystem/JUtility/JUTDirectPrint.cpp:
+	.text       start:0x800898B0 end:0x80089FF0
 
 JSystem/JUtility/JUTException.cpp:
 	.text       start:0x8008CA24 end:0x8008CA44
@@ -348,32 +544,84 @@ JSystem/JUtility/JUTException.cpp:
 JSystem/JUtility/JUTFader.cpp:
 	.text       start:0x8008CB40 end:0x8008CC40
 
+JSystem/JUtility/JUTFont.cpp:
+	.text       start:0x8008CC40 end:0x8008CE88
+
 JSystem/JUtility/JUTGamePad.cpp:
-	.text       start:0x8008E488 end:0x8008E4A4
+	.text       start:0x8008D864 end:0x8008DED8
+
+JSystem/JUtility/JUTGraphFifo.cpp:
+	.text       start:0x8008E7A4 end:0x8008E93C
 
 JSystem/JUtility/JUTNameTab.cpp:
-	.text       start:0x8008E9B8 end:0x8008E9F4
+	.text       start:0x8008E93C end:0x8008EAEC
+
+JSystem/JUtility/JUTPalette.cpp:
+	.text       start:0x8008EBCC end:0x8008EC0C
 
 JSystem/JUtility/JUTProcBar.cpp:
-	.text       start:0x8008EC50 end:0x8008EC64
+	.text       start:0x8008EC50 end:0x8008EEA4
 
-d/d_s_menu.cpp:
-	.text       start:0x80091A7C end:0x80091A88
+JSystem/JUtility/JUTResFont.cpp:
+	.text       start:0x80090EF0 end:0x8009209C
+
+JSystem/JUtility/JUTResource.cpp:
+	.text       start:0x800921F8 end:0x80092270
+
+JSystem/JUtility/JUTTexture.cpp:
+	.text       start:0x80092270 end:0x80092798
+
+JSystem/JUtility/JUTVideo.cpp:
+	.text       start:0x80092A98 end:0x80093048
 
 JSystem/JUtility/JUTXfb.cpp:
-	.text       start:0x8009304C end:0x80093060
+	.text       start:0x8009304C end:0x80093108
+
+JSystem/JMath/JMath.cpp:
+	.text       start:0x800932AC end:0x80093338
+
+JSystem/JMath/JMATrigonometric.cpp:
+	.text       start:0x80093340 end:0x80093768
+	.ctors      start:0x8045BDD0 end:0x8045BDD4
+
+JSystem/J2DGraph/J2DOrthoGraph.cpp:
+	.text       start:0x800937B0 end:0x80093E64
 
 JSystem/J2DGraph/J2DGrafContext.cpp:
-	.text       start:0x80093E1C end:0x80093E64
+	.text       start:0x80093E64 end:0x800945C4
+
+JSystem/J2DGraph/J2DPane.cpp:
+	.text       start:0x80095E14 end:0x80096B64
 
 d/d_s_name.cpp:
 	.text       start:0x8009711C end:0x80097128
 
-f_op/f_op_msg_mng.cpp:
-	.text       start:0x8009A6D0 end:0x8009A6D8
+JSystem/J2DGraph/J2DPicture.cpp:
+	.text       start:0x80098AB4 end:0x8009A708
 
 JSystem/J2DGraph/J2DPrint.cpp:
 	.text       start:0x8009C230 end:0x8009C2A4
+
+JSystem/J2DGraph/J2DScreen.cpp:
+	.text       start:0x8009C4EC end:0x8009DB58
+
+JSystem/J2DGraph/J2DWindowEx.cpp:
+	.text       start:0x800A4114 end:0x800A4340
+
+JSystem/J2DGraph/J2DAnmLoader.cpp:
+	.text       start:0x800A5364 end:0x800A55BC
+
+JSystem/J2DGraph/J2DManage.cpp:
+	.text       start:0x800A6A00 end:0x800A6A34
+
+JSystem/J2DGraph/J2DMaterial.cpp:
+	.text       start:0x800AEF1C end:0x800AF584
+
+JSystem/J2DGraph/J2DTevs.cpp:
+	.text       start:0x800B5CCC end:0x800B60F8
+
+JSystem/J2DGraph/J2DTextBoxEx.cpp:
+	.text       start:0x800B6818 end:0x800B7738
 
 JSystem/J3DGraphBase/J3DVertex.cpp:
 	.text       start:0x800BB6E0 end:0x800BB738
@@ -416,6 +664,51 @@ d/d_stage.cpp:
 
 JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp:
 	.text       start:0x800E2B40 end:0x800E2B80
+
+JSystem/JFramework/JFWSystem.cpp:
+	.text       start:0x800E49E0 end:0x800E4D30
+
+JSystem/JFramework/JFWDisplay.cpp:
+	.text       start:0x800E4D30 end:0x800E64F8
+
+JSystem/JParticle/JPAChildShape.cpp:
+	.text       start:0x800EA400 end:0x800EA584
+
+JSystem/JParticle/JPADynamicsBlock.cpp:
+	.text       start:0x800EA58C end:0x800EB208
+
+JSystem/JParticle/JPAEmitter.cpp:
+	.text       start:0x800EB5A0 end:0x800EBA98
+
+JSystem/JParticle/JPAExTexShape.cpp:
+	.text       start:0x800EC4A8 end:0x800EC5A4
+
+JSystem/JParticle/JPAExtraShape.cpp:
+	.text       start:0x800EC5AC end:0x800ECB1C
+
+JSystem/JParticle/JPAFieldBlock.cpp:
+	.text       start:0x800ECB1C end:0x800EEA34
+
+JSystem/JParticle/JPAKeyBlock.cpp:
+	.text       start:0x800EEDBC end:0x800EEE60
+
+JSystem/JParticle/JPAMath.cpp:
+	.text       start:0x800EEE60 end:0x800EF320
+
+JSystem/JParticle/JPAParticle.cpp:
+	.text       start:0x800EF368 end:0x800F087C
+
+JSystem/JParticle/JPAResource.cpp:
+	.text       start:0x800F087C end:0x800F3358
+
+JSystem/JParticle/JPAResourceLoader.cpp:
+	.text       start:0x800F3358 end:0x800F3750
+
+JSystem/JParticle/JPAResourceManager.cpp:
+	.text       start:0x800F3750 end:0x800F38C4
+
+JSystem/JParticle/JPATexture.cpp:
+	.text       start:0x800F3920 end:0x800F39EC
 
 d/actor/d_a_ship.cpp:
 	.text       start:0x80178ED4 end:0x80178EE4

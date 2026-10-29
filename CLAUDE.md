@@ -65,8 +65,9 @@ Get byte patterns by compiling the TWW source with FSA's flags, then disassembli
 
 ## Current Match Status
 
-**Verified (objdiff report, 2026-10-29, after SDK + GX import): 612 of 11,557
-functions (5.3%), 124,744 bytes of code (2.81%).**
+**Verified (objdiff report, 2026-10-29, after SDK + GX + JSystem import):
+1,358 of 11,560 functions (11.7%), 269,496 bytes of code (6.08%).**
+By category: SDK 90.5% of its code, imported JSystem 76.9%.
 Measure progress with `ninja && build/tools/objdiff-cli report generate`,
 not with byte-pattern hits.
 
@@ -83,6 +84,17 @@ Jul 23 2003 GX) under `libs/sdk_gx/` (`SdkGxLib()`); 7 of 13 files are 100%.
 If a donor file's big functions don't byte-match, extend its `.text` range over
 them anyway (e.g. GXInit): otherwise dtk globalizes the file's statics with
 `_<addr>` suffixes and objdiff can't pair them.
+
+### JSystem import (2026-10-29)
+
+FSA's JSystem is MKDD's build, compiled with **GC/2.6** (not TWW's 1.3.2):
+984 of mkdd's matched JSystem functions byte-match FSA. Vendored under
+`libs/jsystem/` (CC0), headers merged into `libs/sdk/include` (mkdd's include
+root), built via `MkddJSystemLib()` / `cflags_jsystem_mkdd`. 123 files split.
+This replaced the TWW-imported JAudio/JKernel/JUtility/JSupport units and
+removed d_save, d_door, d_s_menu, f_op_msg_mng, JSUMemoryStream and
+processor "matches" that were 8–12 byte false positives inside JSystem code.
+TWW JSystem files that mkdd doesn't cover (J3D etc.) remain on TWW's flags.
 
 Donor workflow (reusable for any donor):
 1. Compile the donor's matched sources with the donor's flags into a scratch dir.

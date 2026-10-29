@@ -320,6 +320,33 @@ cflags_sdk_gx = [
     "-DVERSION=5",
 ]
 
+# JSystem from doldecomp/mkdd (libs/jsystem), built with GC/2.6 like FSA's.
+cflags_jsystem_mkdd = [
+    "-nodefaults",
+    "-proc gekko",
+    "-align powerpc",
+    "-enum int",
+    "-fp hardware",
+    "-Cpp_exceptions off",
+    "-inline auto",
+    '-pragma "cats off"',
+    '-pragma "warn_notinlined off"',
+    "-use_lmw_stmw on",
+    "-common on",
+    "-maxerrors 1",
+    "-nosyspath",
+    "-RTTI off",
+    "-fp_contract on",
+    "-multibyte",
+    "-i libs/sdk/include",
+    "-i libs/sdk/msl_include",
+    "-DNDEBUG=1",
+    "-lang=c++",
+    "-fp fmadd",
+    "-char signed",
+    "-rostr",
+]
+
 # Framework flags
 cflags_framework = [
     *cflags_base,
@@ -402,6 +429,19 @@ def SdkGxLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     }
 
 
+# Helper function for JSystem from mkdd (libs/jsystem)
+def MkddJSystemLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    return {
+        "lib": lib_name,
+        "src_dir": "libs/jsystem",
+        "mw_version": "GC/2.6",
+        "cflags": cflags_jsystem_mkdd,
+        "progress_category": "jsystem",
+        "host": False,
+        "objects": objects,
+    }
+
+
 # Helper function for REL script objects
 def Rel(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     return {
@@ -479,12 +519,8 @@ config.libs = [
             # port-agent/configure_additions.txt for the full list).
             Object(Matching, "d/d_camera.cpp"),
             Object(Matching, "d/d_cc_mass_s.cpp"),
-            # Object(Matching, "d/d_door.cpp"),  # disabled: needs generated res/Object/Key.h
-            Object(Matching, "d/d_s_menu.cpp"),
             Object(Matching, "d/d_s_name.cpp"),
-            Object(Matching, "d/d_save.cpp"),
             # Object(Matching, "d/d_stage.cpp"),  # disabled: needs generated res/Object/Link.h
-            Object(Matching, "f_op/f_op_msg_mng.cpp"),
             Object(Matching, "m_Do/m_Do_dvd_thread.cpp"),
         ],
     },
@@ -570,6 +606,147 @@ config.libs = [
     SdkLib("vi", [
         Object(NonMatching, "dolphin/vi/vi.c"),
     ]),
+    MkddJSystemLib("mkdd_J2DGraph", [
+        Object(Matching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DOrthoGraph.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPane.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPicture.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DScreen.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DTevs.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DTextBoxEx.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,s"]),
+    ]),
+    MkddJSystemLib("mkdd_JAudio", [
+        Object(NonMatching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Interface/JAISeq.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAISeqMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Interface/JAISound.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAISoundChild.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAISoundHandles.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAISoundParams.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Interface/JAIStream.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Interface/JAIStreamMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASAiCtrl.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASAudioReseter.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASBank.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASBasicBank.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASBasicInst.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASBasicWaveBank.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASCalc.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASCallback.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASChannel.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASCmdStack.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASDSPChannel.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASDSPInterface.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASDriverIF.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASDvdThread.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASInstRand.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASInstSense.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASLfo.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASOscillator.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASProbe.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASRegisterParam.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASReport.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASResArcLoader.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASSeqCtrl.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASSeqParser.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASSeqReader.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASSimpleWaveBank.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASSoundParams.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASTaskThread.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASTrack.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASTrackPort.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASWSParser.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASWaveArcLoader.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Task/dspproc.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+        Object(Matching, "JSystem/JAudio/Task/dsptask.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+        Object(Matching, "JSystem/JAudio/Task/osdsp.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+        Object(Matching, "JSystem/JAudio/Task/osdsp_task.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUAudioArcLoader.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUAudioMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUInitializer.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUSectionHeap.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSeqCollection.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSoundMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JFramework", [
+        Object(NonMatching, "JSystem/JFramework/JFWDisplay.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JGadget", [
+        Object(Matching, "JSystem/JGadget/linklist.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JKernel", [
+        Object(Matching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRAramPiece.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRAramStream.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRArchivePri.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRArchivePub.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRCompArchive.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRDecomp.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRDisposer.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRDvdArchive.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRDvdFile.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRExpHeap.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRFileFinder.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRFileLoader.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRHeap.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRMemArchive.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JKernel/JKRSolidHeap.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRThread.cpp", extra_cflags=["-O4,s"]),
+    ]),
+    MkddJSystemLib("mkdd_JMath", [
+        Object(Matching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JParticle", [
+        Object(Matching, "JSystem/JParticle/JPAChildShape.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPADynamicsBlock.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAEmitter.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAExTexShape.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPAExtraShape.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAFieldBlock.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAKeyBlock.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAMath.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPAParticle.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAResource.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPAResourceLoader.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPAResourceManager.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPATexture.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JSupport", [
+        Object(Matching, "JSystem/JSupport/JSUFileStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JSupport/JSUInputStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JSupport/JSUList.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JSupport/JSUMemoryStream.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JUtility", [
+        Object(Matching, "JSystem/JUtility/JUTAssert.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTConsole.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTDbPrint.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTDirectFile.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTDirectPrint.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTFont.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTGamePad.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTGraphFifo.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTNameTab.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTPalette.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTProcBar.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTResFont.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTResource.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTTexture.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTVideo.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,s"]),
+    ]),
     SdkGxLib("gx", [
         Object(NonMatching, "dolphin/gx/GXAttr.c"),
         Object(NonMatching, "dolphin/gx/GXBump.c"),
@@ -586,7 +763,6 @@ config.libs = [
         Object(NonMatching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
     ]),
     JSystemLib("J2DGraph", [
-        Object(Matching, "JSystem/J2DGraph/J2DGrafContext.cpp"),
         Object(Matching, "JSystem/J2DGraph/J2DPrint.cpp"),
     ]),
     JSystemLib("J3DGraphAnimator", [
@@ -608,46 +784,18 @@ config.libs = [
     ]),
     JSystemLib("JAudio", [
         Object(Matching, "JSystem/JAudio/JASBNKParser.cpp"),
-        Object(Matching, "JSystem/JAudio/JASBasicInst.cpp"),
-        Object(Matching, "JSystem/JAudio/JASBasicWaveBank.cpp"),
         Object(Matching, "JSystem/JAudio/JASCmdStack.cpp"),
-        Object(Matching, "JSystem/JAudio/JASDSPChannel.cpp"),
-        Object(Matching, "JSystem/JAudio/JASDSPInterface.cpp"),
         Object(Matching, "JSystem/JAudio/JASDrumSet.cpp"),
     ]),
     JSystemLib("JGadget", [
-        Object(Matching, "JSystem/JGadget/linklist.cpp"),
         Object(Matching, "JSystem/JGadget/std-vector.cpp"),
-    ]),
-    JSystemLib("JKernel", [
-        Object(Matching, "JSystem/JKernel/JKRDisposer.cpp"),
-        Object(Matching, "JSystem/JKernel/JKRArchivePri.cpp"),
-        Object(Matching, "JSystem/JKernel/JKRExpHeap.cpp"),
-        Object(Matching, "JSystem/JKernel/JKRFileLoader.cpp"),
-        Object(Matching, "JSystem/JKernel/JKRSolidHeap.cpp"),
-    ]),
-    JSystemLib("JMessage", [
-        Object(Matching, "JSystem/JMessage/processor.cpp"),
     ]),
     JSystemLib("JParticle", [
         Object(Matching, "JSystem/JParticle/JPABaseShape.cpp"),
     ]),
-    JSystemLib("JSupport", [
-        Object(Matching, "JSystem/JSupport/JSUInputStream.cpp"),
-        Object(Matching, "JSystem/JSupport/JSUList.cpp"),
-        Object(Matching, "JSystem/JSupport/JSUMemoryStream.cpp"),
-    ]),
     JSystemLib("JUtility", [
-        Object(Matching, "JSystem/JUtility/JUTConsole.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTDbPrint.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTDirectFile.cpp"),
         Object(Matching, "JSystem/JUtility/JUTException.cpp"),
         Object(Matching, "JSystem/JUtility/JUTFader.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTGamePad.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTNameTab.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTProcBar.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTResFont.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTXfb.cpp"),
     ]),
     # TODO: 14 PowerPC_EABI_Support units (MSL_C + Runtime) need new helper
     #       functions mirroring DolphinLib — see port-agent/configure_additions.txt.
@@ -709,6 +857,7 @@ def link_order_callback(module_id: int, objects: List[str]) -> List[str]:
 config.progress_categories = [
     ProgressCategory("game", "FSA Game Code"),
     ProgressCategory("sdk", "SDK"),
+    ProgressCategory("jsystem", "JSystem"),
     ProgressCategory("third_party", "Third Party"),
 ]
 config.progress_each_module = args.verbose

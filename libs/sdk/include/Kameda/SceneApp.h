@@ -1,0 +1,28 @@
+#ifndef SCENEAPP_H
+#define SCENEAPP_H
+
+#include "Kameda/Scene.h"
+#include "Osako/GameApp.h"
+
+class SceneApp : public GameApp
+{
+public:
+    static SceneApp *create(); // 0x8013c2b8
+    static void call();        // 0x8013c308
+    SceneApp();                // 0x8013c32c
+    virtual ~SceneApp();       // 0x8013c384, overide
+    virtual void draw();       // 0x8013c3e4, overide
+    virtual void calc();       // 0x8013c4b4, overide
+
+    static SceneApp *ptr() { return mspSceneApp; }
+
+private:
+    static SceneApp *mspSceneApp; // 0x804162d8
+
+
+    u8 padding[0x5C - sizeof(GameApp)];
+    Scene::SceneType _5C;
+    s32 _60;
+};
+
+#endif // SCENEAPP_H
