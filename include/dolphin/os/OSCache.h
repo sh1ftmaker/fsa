@@ -2,6 +2,7 @@
 #define OSCACHE_H
 
 #include "dolphin/types.h"
+#include "dolphin/exi/EXIBios.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,14 +21,15 @@ static void ICEnable(void);
 void __LCEnable(void);
 void LCEnable(void);
 void LCDisable(void);
+static void LCStoreBlocks(void* destAddr, void* srcAddr, u32 blockNum);
 u32 LCStoreData(void* destAddr, void* srcAddr, u32 nBytes);
 void LCQueueWait(u32 len);
-void L2GlobalInvalidate(void);
-void L2Enable(void);
+static void L2GlobalInvalidate(void);
+static void DMAErrorHandler(u16 error, OSContext* context, ...);
 void __OSCacheInit(void);
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif  // OSCACHE_H
+#endif /* OSCACHE_H */

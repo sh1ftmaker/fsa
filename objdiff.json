@@ -2277,22 +2277,8 @@
     {
       "name": "fsa_game_code/d/d_door",
       "target_path": "build/G4SE01/obj/d/d_door.o",
-      "base_path": "build/G4SE01/src/d/d_door.o",
-      "scratch": {
-        "platform": "gc_wii",
-        "compiler": "mwcc_242_81",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -use_lmw_stmw off -str reuse,pool,readonly -inline noauto -O3,s -schedule off -sym on -fp_contract off -lang=c++",
-        "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/d/d_door.ctx",
-        "build_ctx": true
-      },
       "metadata": {
-        "complete": true,
-        "reverse_fn_order": false,
-        "source_path": "src/d/d_door.cpp",
-        "progress_categories": [
-          "game"
-        ],
+        "progress_categories": [],
         "auto_generated": false
       }
     },
@@ -3381,22 +3367,8 @@
     {
       "name": "fsa_game_code/d/d_stage",
       "target_path": "build/G4SE01/obj/d/d_stage.o",
-      "base_path": "build/G4SE01/src/d/d_stage.o",
-      "scratch": {
-        "platform": "gc_wii",
-        "compiler": "mwcc_242_81",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -use_lmw_stmw off -str reuse,pool,readonly -inline noauto -O3,s -schedule off -sym on -fp_contract off -lang=c++",
-        "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/d/d_stage.ctx",
-        "build_ctx": true
-      },
       "metadata": {
-        "complete": true,
-        "reverse_fn_order": false,
-        "source_path": "src/d/d_stage.cpp",
-        "progress_categories": [
-          "game"
-        ],
+        "progress_categories": [],
         "auto_generated": false
       }
     },

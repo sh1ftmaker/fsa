@@ -121,7 +121,7 @@ void __OSInterruptInit(void);
 static OSInterruptMask SetInterruptMask(OSInterruptMask param_0, OSInterruptMask param_1);
 OSInterruptMask __OSMaskInterrupts(OSInterruptMask mask);
 OSInterruptMask __OSUnmaskInterrupts(OSInterruptMask mask);
-void __OSDispatchInterrupt(u32 interrupt, OSContext* context);
+void __OSDispatchInterrupt(u8 interrupt, OSContext* context);
 static void ExternalInterruptHandler(__OSInterrupt interrupt, OSContext* context);
 
 void __RAS_OSDisableInterrupts_begin(void);

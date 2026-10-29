@@ -14,6 +14,7 @@
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -307,6 +308,10 @@ _nonmatch_segs = sorted(
     Path("src/nonmatch").glob("seg_*.c"),
     key=lambda p: int(p.stem.split("_")[1], 16)
 )
+# The m2c-generated stubs mostly fail to compile, and every object depends on
+# them via pre-compile, so they are opt-in.
+if not os.environ.get("FSA_BUILD_NONMATCH"):
+    _nonmatch_segs = []
 
 
 # Helper function for Dolphin libraries
@@ -367,7 +372,24 @@ def EquivalentFor(*versions):
 
 config.warn_missing_config = True
 config.warn_missing_source = False
-config.precompiled_headers = []
+# Precompiled headers, as in TWW. JSystem uses cflags_jsystem (no -schedule off).
+config.precompiled_headers = [
+    {
+        "source": "d/dolzel.pch",
+        "mw_version": "GC/1.3.2",
+        "cflags": ["-lang=c++", *cflags_dolzel],
+    },
+    {
+        "source": "m_Do/machine.pch",
+        "mw_version": "GC/1.3.2",
+        "cflags": ["-lang=c++", *cflags_dolzel],
+    },
+    {
+        "source": "JSystem/JSystem.pch",
+        "mw_version": "GC/1.3.2",
+        "cflags": ["-lang=c++", *cflags_jsystem],
+    },
+]
 config.libs = [
     {
         "lib": "main",
@@ -381,11 +403,11 @@ config.libs = [
             # port-agent/configure_additions.txt for the full list).
             Object(Matching, "d/d_camera.cpp"),
             Object(Matching, "d/d_cc_mass_s.cpp"),
-            Object(Matching, "d/d_door.cpp"),
+            # Object(Matching, "d/d_door.cpp"),  # disabled: needs generated res/Object/Key.h
             Object(Matching, "d/d_s_menu.cpp"),
             Object(Matching, "d/d_s_name.cpp"),
             Object(Matching, "d/d_save.cpp"),
-            Object(Matching, "d/d_stage.cpp"),
+            # Object(Matching, "d/d_stage.cpp"),  # disabled: needs generated res/Object/Link.h
             Object(Matching, "f_op/f_op_msg_mng.cpp"),
             Object(Matching, "m_Do/m_Do_dvd_thread.cpp"),
         ],

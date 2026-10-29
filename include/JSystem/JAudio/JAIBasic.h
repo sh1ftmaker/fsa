@@ -1,0 +1,128 @@
+#ifndef JAIBASIC_H
+#define JAIBASIC_H
+
+#include "JSystem/JUtility/JUTAssert.h"
+#include "JSystem/JAudio/JAIBankWave.h"
+#include "JSystem/JAudio/JAISound.h"
+#include "JSystem/JAudio/JAIConst.h"
+#include "dolphin/mtx/mtx.h"
+#include "dolphin/mtx/vec.h"
+
+class JKRSolidHeap;
+
+namespace JAInter {
+    class Actor;
+    class Camera;
+}
+
+namespace JASystem {
+    class TTrack;
+}
+
+class JAIBasic {
+public:
+    JAIBasic();
+    virtual JAISound* makeSound(u32);
+    virtual BOOL getMapInfoFxline(u32);
+    virtual BOOL getMapInfoGround(u32);
+    virtual f32 getMapInfoFxParameter(u32);
+    virtual void setSeExtParameter(JAISound*);
+    virtual void setRegisterTrackCallback();
+    virtual void initStream();
+    void initDriver(JKRSolidHeap*, u32, u8);
+    void initInterface(u8);
+    void initInterfaceMain();
+    void initHeap();
+    void initArchive();
+    void initResourcePath();
+    void setCameraInfo(Vec*, Vec*, MtxP, u32);
+    void initAudioThread(JKRSolidHeap*, u32, u8);
+    void initCamera();
+    BOOL initReadFile();
+    void processFrameWork();
+    void startSoundVec(u32 soundID, JAISound**, Vec*, u32, u32, u8);
+    void startSoundActor(u32, JAISound**, JAInter::Actor*, u32, u8);
+    void startSoundDirectID(u32, JAISound**, JAInter::Actor*, u32, u8);
+    void startSoundBasic(u32, JAISound**, JAInter::Actor*, u32, u8, void*);
+    void stopSoundHandle(JAISound*, u32);
+    void stopPlayingCategorySe(u8);
+    void stopPlayingCategoryObjectSe(u8, void*);
+    void stopAllSe(u8);
+    void stopAllSe(u8, void*);
+    void stopActorSoundOneBuffer(void*, JAISound*);
+    void stopIDSoundOneBuffer(u32, JAISound*);
+    void stopIDActorSoundOneBuffer(u32, void*, JAISound*);
+    void stopAllSound(void*);
+    void stopAllSound(u32);
+    void stopAllSound(u32, void*);
+    void deleteObject(void*);
+    u16 getSoundOffsetNumberFromID(u32);
+    void setSeCancelSwitch(u8, u8);
+    void setSeCategoryVolume(u8, u8);
+    static u16 setParameterSeqSync(JASystem::TTrack*, u16);
+    bool allocStreamBuffer(void*, s32);
+    bool deallocStreamBuffer();
+
+    static JAIBasic* getInterface() { return msBasic; }
+    static JKRSolidHeap* getCurrentJAIHeap() {
+        JUT_ASSERT_MSG(148, msCurrentHeap, "JAIBasicのカレントヒープがありません（mCurrentHeap==NULL）\n");
+        return msCurrentHeap;
+    }
+
+    bool checkAllWaveLoadStatus() {
+        return JAInter::BankWave::checkAllWaveLoadStatus();
+    }
+    s32 getSceneSetFlag() {
+        return JAInter::BankWave::SceneSetFlag;
+    }
+
+    // this might be wrong, it matches but the size doesn't seem to match the debug map
+    u32 checkEnablePrepare(u32 soundID) { return (soundID & JAISoundID_TypeMask); }
+
+    void prepareSoundVec(u32 soundID, JAISound** pSound, Vec* pos, u32 r7, u32 r8, u8 r9) {
+        startSoundVec(soundID, pSound, pos, r7, r8, r9);
+        if (*pSound) {
+            (*pSound)->setPrepareFlag(1);
+        }
+    }
+
+    JAInter::Camera* getAudioCamera() { return mAudioCamera; }
+
+    u8** getInitOnCodeSeScene() { return (u8**)mInitOnCodeSeScene; }
+    void setInitOnCodeSeScene(u32* param_0) { mInitOnCodeSeScene = param_0; }
+    void addInitOnCodeSeScene(u32 i, u32 param_1) { mInitOnCodeSeScene[i] += param_1; }
+
+    void setInitDataInfo(char* i_initData) { mInitDataInfo = i_initData; }
+
+    // TODO
+    void getInitDataInfo() {}
+    void getSeSoundHandle() {}
+    void getWaveLoadStatus(s32) {}
+    void initAudio(JKRSolidHeap*, u32, u8) {}
+    void loadSceneWave(s32, s32) {}
+
+    static JAIBasic* msBasic;
+    static JKRSolidHeap* msCurrentHeap;
+
+// protected:
+    /* 0x04 */ JAInter::Camera* mAudioCamera;
+    /* 0x08 */ JKRSolidHeap* field_0x8;
+    /* 0x0C */ u8 initLoadFileSw;
+    /* 0x0D */ u8 field_0xd;
+    /* 0x0E */ struct {
+        u8 flag1 : 1;
+        u8 flag2 : 1;
+        u8 flag3 : 1;
+        u8 flag4 : 1;
+        u8 flag5 : 1;
+        u8 flag6 : 1;
+        u8 flag7 : 1;
+        u8 flag8 : 1;
+    } field_0xe;
+    /* 0x10 */ int field_0x10;
+    /* 0x14 */ int field_0x14;
+    /* 0x18 */ char* mInitDataInfo;
+    /* 0x1C */ u32* mInitOnCodeSeScene;
+};
+
+#endif /* JAIBASIC_H */

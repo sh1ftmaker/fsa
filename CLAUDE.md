@@ -65,7 +65,28 @@ Get byte patterns by compiling the TWW source with FSA's flags, then disassembli
 
 ## Current Match Status
 
-Headline: **430 / 5,981 DOL functions byte-matched via TWW import (7.2%)** after
+**Verified (objdiff report, 2026-10-29): 67 units / 138 of 11,557 functions
+(1.19%), 10,104 bytes of code (0.23%).** All 67 compiled units are 100%.
+Measure progress with `ninja && build/tools/objdiff-cli report generate`,
+not with byte-pattern hits.
+
+Build fixes on 2026-10-29 (clean Linux checkout now compiles every object):
+- Headers synced from zeldaret/tww `include/` (CC0) plus the MSL/Runtime
+  include dirs under `src/PowerPC_EABI_Support/`. The old hand-rolled
+  `include/string.h` / `include/stddef.h` stubs were removed (they shadowed MSL).
+- `config.precompiled_headers` now builds `JSystem.pch`, `d/dolzel.pch`,
+  `m_Do/machine.pch` as TWW does (JSystem uses `cflags_jsystem`).
+- 26 imported sources re-synced to current TWW to match the new headers.
+- `include/res/Object/Always.h` is an empty placeholder; TWW generates its res
+  headers from its own archives. `d_door.cpp` / `d_stage.cpp` are disabled until
+  FSA's `Key.h` / `Link.h` equivalents exist.
+- `src/nonmatch/` m2c stubs are opt-in: `FSA_BUILD_NONMATCH=1 python3 configure.py`.
+  120/123 currently fail to compile, and they are pre-compile deps of everything.
+
+The older figure below (430 / 5,981 via TWW import, 7.2%) counts byte-pattern
+hits, most of which the audit below shows are false positives.
+
+Headline (historical): **430 / 5,981 DOL functions byte-matched via TWW import (7.2%)** after
 the 2026-04-18 Gate 4 sweep. Earlier hand-matched work still present.
 
 **Phase 3 (non-matching cleanup) — 2026-04-19.** The port-agent has taken a
