@@ -511,7 +511,8 @@ dolphin/gx/GXLight.c:
 	.text       start:0x8005D1E8 end:0x8005D4BC
 
 dolphin/gx/GXTexture.c:
-	.text       start:0x8005D618 end:0x8005E150
+	.text       start:0x8005D4BC end:0x8005E4A4
+	.data       start:0x80497288 end:0x804974AC
 	.sdata      start:0x80539CE8 end:0x80539D28
 	.sdata2     start:0x8053B380 end:0x8053B3A8
 
