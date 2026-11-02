@@ -111,7 +111,7 @@ static const char* parse_format(const char* format_string, va_list* arg, print_f
 
 		c = *++s;
 	} else {
-		while (isdigit(c)) {
+		while (_isdigit(c)) {
 			f.field_width = (f.field_width * 10) + (c - '0');
 			c             = *++s;
 		}
@@ -133,7 +133,7 @@ static const char* parse_format(const char* format_string, va_list* arg, print_f
 
 			c = *++s;
 		} else {
-			while (isdigit(c)) {
+			while (_isdigit(c)) {
 				f.precision = (f.precision * 10) + (c - '0');
 				c           = *++s;
 			}
@@ -701,14 +701,14 @@ static char* float2str(long double num, char* buff, print_format format)
 		if (num < 0) {
 			p = buff - 5;
 
-			if (isupper(format.conversion_char)) {
+			if (_isupper(format.conversion_char)) {
 				strcpy(p, "-INF");
 			} else {
 				strcpy(p, "-inf");
 			}
 		} else {
 			p = buff - 4;
-			if (isupper(format.conversion_char)) {
+			if (_isupper(format.conversion_char)) {
 				strcpy(p, "INF");
 			} else {
 				strcpy(p, "inf");
@@ -721,14 +721,14 @@ static char* float2str(long double num, char* buff, print_format format)
 		if (dec.sign) {
 			p = buff - 5;
 
-			if (isupper(format.conversion_char)) {
+			if (_isupper(format.conversion_char)) {
 				strcpy(p, "-NAN");
 			} else {
 				strcpy(p, "-nan");
 			}
 		} else {
 			p = buff - 4;
-			if (isupper(format.conversion_char)) {
+			if (_isupper(format.conversion_char)) {
 				strcpy(p, "NAN");
 			} else {
 				strcpy(p, "nan");
