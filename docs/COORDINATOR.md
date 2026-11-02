@@ -166,6 +166,26 @@ which header or .cpp is still open. `JASFakeMatch2`–`12` also define
 single-threaded `JASPoolAllocObject<JAI*>` pools; a generic definition
 reproduces JAISeq, JAISoundChild, JAIStream and JAUInitializer, not the rest.
 
+JASHeapCtrl import (import/jaudio): JASHeapCtrl.cpp does not define the
+pools. Its `__sinit` (0x80028CA4) only constructs `JASKernel::audioAramHeap`,
+and `JASGenericMemPool`'s own functions (0x80028974-0x80028C0C) sit in it
+with no pool statics. The pools are instantiated per TU, guarded by their
+`__init__memPool_` bytes, in every TU whose `__sinit` FSA shows them in:
+the JAI* units with the three JASTrack/JASChannel pools (plus their own
+single-threaded `JASPoolAllocObject<JAI*>` pools), JASAiCtrl,
+JASAudioReseter, JASChannel, JASBasicBank, JASBNKParser, JASDrumSet,
+JASInstRand, JASInstSense, JASBank and JASVoiceBank with the JASChannel pool
+alone. MWCC 2.6 emits a pool for every `JASPoolAllocObject_MultiThreaded<X>`
+whose class definition the TU sees, used or not, as long as the generic
+`template <typename T> ... ::memPool_;` definition is visible: JASInstSense.cpp
+plus `#include "JASChannel.h"` and the generic definition gives the 0x58-byte
+`__sinit` at 0x80030B78 byte for byte (relocations aside); without the
+JASChannel class it emits nothing. So a generic definition in JASHeapCtrl.h
+fits FSA. Which pools a TU gets follows its include set: JASTrackPort.cpp
+must not see JASTrack.h (tp gives it its own JASTrackPort.h), and
+JASInstSense.cpp must see JASChannel.h. The fix is per-file includes, not
+per-file specializations.
+
 Other donor quirks to clean up when touching those files (readability
 debt, not fakematches by themselves): CARDBlock.c's `goto error`, an unused
 `u32 temp[2]` padding local, `card = card =`, and raw `workArea + 0x6000`
