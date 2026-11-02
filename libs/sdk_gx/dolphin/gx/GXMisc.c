@@ -215,6 +215,15 @@ void GXPokeZMode(GXBool compare_enable, GXCompare func, GXBool update_enable) {
     GX_SET_PE_REG(0, reg);
 }
 
+void GXPeekARGB(u16 x, u16 y, u32* color) {
+    u32 addr = (u32)OSPhysicalToUncached(0x08000000);
+
+    SET_REG_FIELD(addr, 10, 2, x);
+    SET_REG_FIELD(addr, 10, 12, y);
+    SET_REG_FIELD(addr, 2, 22, 0);
+    *color = *(u32*)addr;
+}
+
 void GXPeekZ(u16 x, u16 y, u32* z) {
     u32 addr = (u32)OSPhysicalToUncached(0x08000000);
 
