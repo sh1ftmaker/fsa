@@ -119,14 +119,15 @@ matches in FSA:
   0x800BA544–0x800BB618. The unit looks misnamed.
 - `J3DGraphBase/J3DShapeMtx.cpp` (0x800CC088–0x800CC094) sits where
   pikmin2 has **J3DBinaryFormat.cpp**. J3DShapeMtx is 0x800E1318–0x800E2B40.
-- The units `JSystem/JAudio/JASCmdStack.cpp`, `JASBNKParser.cpp` and
-  `JASDrumSet.cpp`, outside `System/`, are tiny pieces next to their
-  `System/` namesakes. Are they duplicates?
+- Answered (import/jaudio): the units `JSystem/JAudio/JASCmdStack.cpp`,
+  `JASBNKParser.cpp` and `JASDrumSet.cpp` were TWW-era pieces sitting on single
+  functions of JASHeapCtrl, JASBNKParser and JASDrumSet under `System/`;
+  they are deleted and their rows point at the `System/` units.
 - 0x80021840–0x80021F24 is game code (extabindex entries, so exceptions are
   on), linked before JSystem the way mkdd links `kartLocale.cpp`. Add it to
   the game map.
-- 0x8002F274–0x80030380 (5 functions, 4.3 KiB, after JASBasicWaveBank) has
-  no donor match. It may be FSA-only audio code.
+- Answered (import/jaudio): 0x8002F274–0x80030380 is JASBNKParser.cpp
+  (`createBank` plus a second `createBasicBank`, like tp's Ver0/Ver1 parsers).
 - JStudio, JStage and J3DU have no unique matches, so they are probably not
   linked.
 - THP: pikmin2's THP matches 2 of 22 functions, so FSA has another THP

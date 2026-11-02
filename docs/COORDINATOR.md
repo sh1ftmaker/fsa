@@ -181,10 +181,13 @@ whose class definition the TU sees, used or not, as long as the generic
 plus `#include "JASChannel.h"` and the generic definition gives the 0x58-byte
 `__sinit` at 0x80030B78 byte for byte (relocations aside); without the
 JASChannel class it emits nothing. So a generic definition in JASHeapCtrl.h
-fits FSA. Which pools a TU gets follows its include set: JASTrackPort.cpp
-must not see JASTrack.h (tp gives it its own JASTrackPort.h), and
-JASInstSense.cpp must see JASChannel.h. The fix is per-file includes, not
-per-file specializations.
+can fit FSA, but only once every TU's include set is right. As the headers
+stand, two Matching units would gain the 0xD4-byte `__sinit`: JASTrackPort.cpp
+(it must not see JASTrack.h; tp gives it its own JASTrackPort.h, which the
+review confirmed) and JAUStreamFileTable.cpp (through JAIStreamDataMgr.h ->
+JAISound.h -> JASTrack.h, so the include fix reaches JAISound.h). The fix is
+per-file includes, not per-file specializations; apply the definition only
+together with those include fixes, gated by the link.
 
 Other donor quirks to clean up when touching those files (readability
 debt, not fakematches by themselves): CARDBlock.c's `goto error`, an unused
