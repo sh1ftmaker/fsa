@@ -1041,7 +1041,6 @@ dolphin/gba/GBAKey.c:
 JSystem/JMessage/resource.cpp:
 	.text       start:0x80077134 end:0x80077844
 	.data       start:0x80498998 end:0x80498A10
-	.sdata2     start:0x8053B6B8 end:0x8053B6C0
 
 JSystem/JMessage/processor.cpp:
 	.text       start:0x80077844 end:0x80078B20
@@ -1208,10 +1207,10 @@ JSystem/JSupport/JSUFileStream.cpp:
 	.data       start:0x80499090 end:0x804990B8
 
 JSystem/JGadget/binary.cpp:
-	.text       start:0x8008775C end:0x800878F0
+	.text       start:0x8008775C end:0x80087868
 
 JSystem/JGadget/linklist.cpp:
-	.text       start:0x800878F0 end:0x80087AB4
+	.text       start:0x80087868 end:0x80087AB4
 
 JSystem/JGadget/std-vector.cpp:
 	.text       start:0x80087AB4 end:0x80087AC0

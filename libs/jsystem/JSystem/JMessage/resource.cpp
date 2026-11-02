@@ -83,10 +83,7 @@ u16 JMessage::TResource::toMessageIndex_messageID(u32 lowerHalf, u32 upperHalf, 
 	return (lower - first);
 }
 
-// This isn't meant to exist but it fixes vtable order :)
-JMessage::TResourceContainer::TCResource::TCResource()
-{
-}
+JMessage::TResourceContainer::TCResource::TCResource() {}
 
 /**
  * @note Address: 0x800065A8

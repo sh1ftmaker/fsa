@@ -731,7 +731,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JMessage", [
-        Object(NonMatching, "JSystem/JMessage/resource.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JMessage/resource.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JMessage/processor.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JMessage/control.cpp", extra_cflags=["-O4,p"]),
     ]),

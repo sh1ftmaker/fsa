@@ -15,6 +15,17 @@ namespace JGadget
         // this->oNode_.clear_();
     }
 
+    TNodeLinkList::iterator TNodeLinkList::erase(TNodeLinkList::iterator it)
+    {
+#line 102
+        JGADGET_ASSERT(it.p_ != &oNode_);
+
+        iterator itNext = it;
+        ++itNext;
+
+        return this->erase(it, itNext);
+    }
+
     TNodeLinkList::iterator TNodeLinkList::erase(iterator it, iterator itEnd)
     {
         TLinkListNode *cur = it.p_;
@@ -28,17 +39,6 @@ namespace JGadget
         }
 
         return itEnd;
-    }
-
-    TNodeLinkList::iterator TNodeLinkList::erase(TNodeLinkList::iterator it)
-    {
-#line 102
-        JGADGET_ASSERT(it.p_ != &oNode_);
-
-        iterator itNext = it;
-        ++itNext;
-
-        return this->erase(it, itNext);
     }
 
     void TNodeLinkList::clear()
