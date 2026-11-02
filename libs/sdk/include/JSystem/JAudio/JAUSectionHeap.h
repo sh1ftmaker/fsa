@@ -114,6 +114,7 @@ public:
     bool popSection();
     JAUSection *getSection(int);
     int getNumSections() const;
+    JAUSoundTable *getSoundTable();
     bool setSeqDataUser(JAISeqDataUser *);
     bool newDynamicSeqBlock(u32);
     JAISeqDataResult getSeqData(JAISoundID, JAISeqData *);
