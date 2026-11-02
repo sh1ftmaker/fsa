@@ -179,7 +179,7 @@ def check_symbols(base, changed, problems):
             problems.append(f"symbols.txt: real name {name} renamed to {new_name}")
 
 
-FAKEMATCH = re.compile(r"FakeMatch|force_order|FAKEMATCH|fakematch|NO_INLINE\(\)", re.I)
+FAKEMATCH = re.compile(r"FakeMatch|force_order|FAKEMATCH|fakematch|NO_INLINE\(\)|CW_FORCE_(STRINGS|BSS)|fake_function", re.I)
 
 
 def check_fakematch(problems):

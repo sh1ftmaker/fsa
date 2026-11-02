@@ -81,16 +81,20 @@ def merge_symbols(base, ours, theirs):
     return "\n".join(out) + "\n"
 
 
-def merge_configure(base, ours, theirs):
-    """Apply the branch's Matching/NonMatching flips to ours; anything else must be identical."""
+def merge_configure(base, ours, theirs, unit):
+    """Apply the branch's Matching/NonMatching flips to ours; anything else must be identical,
+    except the unit's own Object line (its extra_cflags), which the review has judged."""
     flips = {}
     base_flags = {m.group(2): m.group(1) for m in OBJECT.finditer(base)}
     for m in OBJECT.finditer(theirs):
         if base_flags.get(m.group(2)) != m.group(1):
             flips[m.group(2)] = m.group(1)
-    if OBJECT.sub(r"Object(X\2", base) != OBJECT.sub(r"Object(X\2", theirs):
-        sys.exit("configure.py: the branch changed more than unit flags; merge by hand")
-    return OBJECT.sub(lambda m: f"Object({flips.get(m.group(2), m.group(1))}{m.group(2)}", ours)
+    own = re.compile(r'^.*Object\(\w+, "' + re.escape(unit) + r'".*$', re.M)
+    if own.sub("", OBJECT.sub(r"Object(X\2", base)) != own.sub("", OBJECT.sub(r"Object(X\2", theirs)):
+        sys.exit("configure.py: the branch changed more than its unit's line and flags; merge by hand")
+    merged = OBJECT.sub(lambda m: f"Object({flips.get(m.group(2), m.group(1))}{m.group(2)}", ours)
+    line = own.search(theirs)
+    return own.sub(lambda _: line.group(0), merged) if line else merged
 
 
 def progress_total():
@@ -121,7 +125,7 @@ def main():
     subprocess.run(["git", "merge", "--squash", branch], capture_output=True, text=True)
     Path(SYMBOLS).write_text(merge_symbols(sym_base, sym_ours, sym_theirs))
     run("git", "add", SYMBOLS)
-    Path("configure.py").write_text(merge_configure(*cfg))
+    Path("configure.py").write_text(merge_configure(*cfg, unit))
     run("git", "add", "configure.py")
     for generated in ("objdiff.json",):
         run("git", "checkout", "HEAD", "--", generated, check=False)

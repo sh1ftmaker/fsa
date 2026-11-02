@@ -196,7 +196,7 @@ def cmd_status(_):
 def cmd_promote(args):
     claims = with_claims()
     report = {u["name"]: u for u in honest_units()}
-    fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)", re.I)
+    fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)|CW_FORCE_(STRINGS|BSS)|fake_function", re.I)
     ready = []
     # Units demoted because they break the link stay NonMatching until fixed.
     held = set(re.findall(r'Object\(NonMatching, "([^"]+)".*FIXME\(link\)', (REPO / "configure.py").read_text()))

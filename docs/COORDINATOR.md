@@ -28,6 +28,11 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
   reviewer, separate verdicts and review files). Tiny units (under ~300
   bytes unmatched) go 3-5 to one worker (`coord.py start a b c`), each still
   on its own branch and merged on its own.
+- Compiler flags: a worker may find its unit's donor-copied `extra_cflags`
+  wrong (JKernel/JUtility units carry mkdd's `-O4,s`; the original's
+  separate `stw`/`lwz` register saves show `-O4,p`). The reviewer judges it
+  against the asm; `merge_unit.py` applies a branch's change to its own
+  unit's line and refuses any other configure.py change.
 - Concurrency: about 6 workers plus their reviewers. Each full build in a
   fresh worktree is the heavy part; reviewers mostly read.
 - Notes for `start`: tell the worker what's already known about the unit
@@ -140,7 +145,12 @@ comments admitting a fakematch (`JAISoundHandles.cpp`,
 `J3DMaterialFactory.cpp`). None of these units may be `Matching`
 (`tools/gate.py` enforces it). Five that were are now NonMatching:
 JAISoundChild, JAISoundHandles, JAUSoundTable, JASSeqCtrl,
-J3DMaterialFactory. Their functions still count in the function total,
+J3DMaterialFactory. mkdd's `CW_FORCE_STRINGS` / `CW_FORCE_BSS` macros
+(`libs/sdk/include/macros.h`) are fakematches too: a fake function that
+drags a dead-stripped function's strings or statics into the object. The
+natural fix is the dead-stripped function itself (tp keeps them). Seven
+JKernel/JAudio/JUtility units use them (JKRDvdArchive, JKRThread,
+JKRExpHeap, JKRAramArchive, JAIStreamMgr, JAUSectionHeap, JUTConsole). Their functions still count in the function total,
 because objdiff can't tell how a function matched; replacing each construct
 with natural source is a dedicated task per unit (find the real reason for
 the weak-function order: usually where inline/template definitions live).
