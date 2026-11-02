@@ -12,13 +12,7 @@ struct J3DAnmVtxColorIndexData {
 };
 
 struct J3DAnmVtxColor : public J3DAnmBase {
-	inline J3DAnmVtxColor()
-	{
-		mAnmTableNum[0]          = 0;
-		mAnmTableNum[1]          = 0;
-		mAnmVtxColorIndexData[0] = nullptr;
-		mAnmVtxColorIndexData[1] = nullptr;
-	}
+	J3DAnmVtxColor();
 
 	virtual ~J3DAnmVtxColor() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_VtxColor; } // _0C (weak)
@@ -38,11 +32,7 @@ struct J3DAnmVtxColor : public J3DAnmBase {
  */
 struct J3DAnmVtxColorFull : public J3DAnmVtxColor {
 	// Note: This does not initialize all members, unlike most of the other J3DAnm*Key and J3DAnm*Full classes.
-	inline J3DAnmVtxColorFull()
-	{
-		mTable[0] = nullptr;
-		mTable[1] = nullptr;
-	}
+	J3DAnmVtxColorFull();
 
 	virtual ~J3DAnmVtxColorFull() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_VtxColorFull; } // _0C (weak)
@@ -75,11 +65,7 @@ struct J3DAnmVtxColorFullData : J3DAnmFullData {
  */
 struct J3DAnmVtxColorKey : public J3DAnmVtxColor {
 	// Note: This does not initialize all members, unlike most of the other J3DAnm*Key and J3DAnm*Full classes.
-	inline J3DAnmVtxColorKey()
-	{
-		mTable[0] = nullptr;
-		mTable[1] = nullptr;
-	}
+	J3DAnmVtxColorKey();
 
 	virtual ~J3DAnmVtxColorKey() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_VtxColorKey; } // _0C (weak)

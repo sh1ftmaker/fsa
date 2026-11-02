@@ -11,16 +11,7 @@ struct J3DAnmColorFullTable;
 struct J3DModelData;
 
 struct J3DAnmColor : public J3DAnmBase {
-	inline J3DAnmColor()
-	    : _0C(0)
-	    , _0E(0)
-	    , _10(0)
-	    , _12(0)
-	    , mUpdateMaterialNum(0)
-	    , mUpdateMaterialID(nullptr)
-	    , mNameTab()
-	{
-	}
+	J3DAnmColor();
 
 	virtual ~J3DAnmColor() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_Color; } // _0C (weak)
@@ -72,14 +63,7 @@ struct J3DAnmColorFullTable {
  * @size{0x40}
  */
 struct J3DAnmColorFull : public J3DAnmColor {
-	inline J3DAnmColorFull()
-	    : mRedVals(nullptr)
-	    , mGreenVals(nullptr)
-	    , mBlueVals(nullptr)
-	    , mAlphaVals(nullptr)
-	    , mTable(nullptr)
-	{
-	}
+	J3DAnmColorFull();
 
 	virtual ~J3DAnmColorFull() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_ColorFull; } // _0C (weak)
@@ -113,14 +97,7 @@ struct J3DAnmColorFullData : J3DFileBlockBase {
  * @size{0x40}
  */
 struct J3DAnmColorKey : public J3DAnmColor {
-	inline J3DAnmColorKey()
-	    : mRedValue(nullptr)
-	    , mGreenValue(nullptr)
-	    , mBlueValue(nullptr)
-	    , mAlphaValue(nullptr)
-	    , mTable(nullptr)
-	{
-	}
+	J3DAnmColorKey();
 
 	virtual ~J3DAnmColorKey() { }                                      // _08 (weak)
 	virtual J3DAnmKind getKind() const { return J3DAnmKind_ColorKey; } // _0C (weak)

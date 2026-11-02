@@ -9,6 +9,7 @@ struct J3DFrameCtrl {
 	virtual ~J3DFrameCtrl() { } // _08 (weak)
 
 	void init(s16);
+	BOOL checkPass(f32);
 	void update();
 
 	// _00 VTBL

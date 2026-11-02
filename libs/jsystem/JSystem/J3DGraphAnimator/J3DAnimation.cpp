@@ -29,6 +29,123 @@ void J3DFrameCtrl::init(s16 i_end)
 	mFrame     = 0.0f;
 }
 
+BOOL J3DFrameCtrl::checkPass(f32 passFrame)
+{
+	f32 nextFrame = mFrame + mRate;
+
+	switch (mAttribute) {
+	case 0:
+	case 1:
+		if (nextFrame < mStart) {
+			nextFrame = mStart;
+		}
+
+		if (nextFrame >= mEnd) {
+			nextFrame = mEnd - 0.001f;
+		}
+
+		if (mFrame <= nextFrame) {
+			if (mFrame <= passFrame && passFrame < nextFrame) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
+
+		if (nextFrame <= passFrame && passFrame < mFrame) {
+			return TRUE;
+		}
+		return FALSE;
+	case 2:
+		if (mFrame < mStart) {
+			while (nextFrame < mStart) {
+				if (mLoop - mStart <= 0.0f) {
+					break;
+				}
+				nextFrame += mLoop - mStart;
+			}
+
+			if (nextFrame <= passFrame && passFrame < mLoop) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else if (mEnd <= mFrame) {
+			while (nextFrame >= mEnd) {
+				if (mEnd - mLoop <= 0.0f) {
+					break;
+				}
+				nextFrame -= mEnd - mLoop;
+			}
+
+			if (mLoop <= passFrame && passFrame < nextFrame) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else if (nextFrame < mStart) {
+			while (nextFrame < mStart) {
+				if (mLoop - mStart <= 0.0f) {
+					break;
+				}
+				nextFrame += mLoop - mStart;
+			}
+
+			if ((mStart <= passFrame && passFrame < mFrame) || (nextFrame <= passFrame && passFrame < mLoop)) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else if (mEnd <= nextFrame) {
+			while (nextFrame >= mEnd) {
+				if (mEnd - mLoop <= 0.0f) {
+					break;
+				}
+				nextFrame -= mEnd - mLoop;
+			}
+
+			if ((mFrame <= passFrame && passFrame < mEnd) || (mLoop <= passFrame && passFrame < nextFrame)) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else if (mFrame <= nextFrame) {
+			if (mFrame <= passFrame && passFrame < nextFrame) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else if (nextFrame <= passFrame && passFrame < mFrame) {
+			return TRUE;
+		}
+		return FALSE;
+	case 3:
+	case 4:
+		if (nextFrame >= mEnd) {
+			nextFrame = mEnd - 0.001f;
+		}
+
+		if (nextFrame < mStart) {
+			nextFrame = mStart;
+		}
+
+		if (mFrame <= nextFrame) {
+			if (mFrame <= passFrame && passFrame < nextFrame) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		}
+
+		if (nextFrame <= passFrame && passFrame < mFrame) {
+			return TRUE;
+		}
+		return FALSE;
+	default:
+		return FALSE;
+	}
+}
+
 /**
  * @note Address: 0x800676A8
  * @note Size: 0x474
@@ -101,6 +218,20 @@ void J3DFrameCtrl::update()
 		}
 		break;
 	}
+}
+
+// FIXME: FSA emits the weak ~J3DAnmBase (0x800C404C) before this constructor; we emit it right
+// after it, which shifts the link. ~J3DAnmBase must stay inline: FSA's J3DAnmLoader inlines it.
+J3DAnmTransform::J3DAnmTransform(s16 frameMax, f32* scaleVals, s16* rotationVals, f32* translationVals)
+    : J3DAnmBase(frameMax)
+{
+	mScaleVals         = scaleVals;
+	mRotationVals      = rotationVals;
+	mTranslationVals   = translationVals;
+	_18                = 0;
+	_1A                = 0;
+	_1C                = 0;
+	mUpdateMaterialNum = 0;
 }
 
 /**
@@ -185,6 +316,195 @@ void J3DAnmTransformFull::getTransform(u16 idx, J3DTransformInfo* info) const
 			info->mTranslation.z = mTranslationVals[zTable->mTranslationMaxFrame - 1 + zTable->mTranslationOffset];
 		} else {
 			info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset + maxFrame];
+		}
+	}
+}
+
+void J3DAnmTransformFullWithLerp::getTransform(u16 idx, J3DTransformInfo* info) const
+{
+	u16 tableIdx                     = idx * 3;
+	J3DAnmTransformFullTable* xTable = &mTable[tableIdx];
+	J3DAnmTransformFullTable* yTable = &mTable[tableIdx + 1];
+	J3DAnmTransformFullTable* zTable = &mTable[tableIdx + 2];
+
+	if (getFrame() < 0.0f) {
+		info->mScale.x = mScaleVals[xTable->mScaleOffset];
+		info->mScale.y = mScaleVals[yTable->mScaleOffset];
+		info->mScale.z = mScaleVals[zTable->mScaleOffset];
+
+		info->mRotation.x = mRotationVals[xTable->mRotationOffset];
+		info->mRotation.y = mRotationVals[yTable->mRotationOffset];
+		info->mRotation.z = mRotationVals[zTable->mRotationOffset];
+
+		info->mTranslation.x = mTranslationVals[xTable->mTranslationOffset];
+		info->mTranslation.y = mTranslationVals[yTable->mTranslationOffset];
+		info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset];
+	} else {
+		u32 maxFrame;
+		int frame = (int)getFrame();
+
+		if (frame == getFrame()) {
+			maxFrame = xTable->mScaleMaxFrame;
+			if (frame >= maxFrame) {
+				info->mScale.x = mScaleVals[xTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.x = mScaleVals[xTable->mScaleOffset + frame];
+			}
+
+			maxFrame = xTable->mRotationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mRotation.x = mRotationVals[xTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				info->mRotation.x = mRotationVals[xTable->mRotationOffset + frame];
+			}
+
+			maxFrame = xTable->mTranslationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mTranslation.x = mTranslationVals[xTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.x = mTranslationVals[xTable->mTranslationOffset + frame];
+			}
+
+			maxFrame = yTable->mScaleMaxFrame;
+			if (frame >= maxFrame) {
+				info->mScale.y = mScaleVals[yTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.y = mScaleVals[yTable->mScaleOffset + frame];
+			}
+
+			maxFrame = yTable->mRotationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mRotation.y = mRotationVals[yTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				info->mRotation.y = mRotationVals[yTable->mRotationOffset + frame];
+			}
+
+			maxFrame = yTable->mTranslationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mTranslation.y = mTranslationVals[yTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.y = mTranslationVals[yTable->mTranslationOffset + frame];
+			}
+
+			maxFrame = zTable->mScaleMaxFrame;
+			if (frame >= maxFrame) {
+				info->mScale.z = mScaleVals[zTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.z = mScaleVals[zTable->mScaleOffset + frame];
+			}
+
+			maxFrame = zTable->mRotationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mRotation.z = mRotationVals[zTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				info->mRotation.z = mRotationVals[zTable->mRotationOffset + frame];
+			}
+
+			maxFrame = zTable->mTranslationMaxFrame;
+			if (frame >= maxFrame) {
+				info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset + frame];
+			}
+		} else {
+			f32 rate      = getFrame() - frame;
+			u32 nextFrame = frame + 1;
+
+			maxFrame = xTable->mScaleMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mScale.x = mScaleVals[xTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.x = mScaleVals[xTable->mScaleOffset + frame]
+				                   + rate * (mScaleVals[xTable->mScaleOffset + nextFrame] - mScaleVals[xTable->mScaleOffset + frame]);
+			}
+
+			maxFrame = xTable->mRotationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mRotation.x = mRotationVals[xTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				u32 rot1  = (u16)mRotationVals[xTable->mRotationOffset + frame];
+				u32 rot2  = (u16)mRotationVals[xTable->mRotationOffset + nextFrame];
+				int delta = rot2 - rot1;
+				if (delta > 0x8000) {
+					rot1 += 0x10000;
+					delta -= 0x10000;
+				} else if (-delta > 0x8000) {
+					delta += 0x10000;
+				}
+				info->mRotation.x = (u32)((f32)rot1 + rate * (f32)delta);
+			}
+
+			maxFrame = xTable->mTranslationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mTranslation.x = mTranslationVals[xTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.x = mTranslationVals[xTable->mTranslationOffset + frame]
+				                   + rate * (mTranslationVals[xTable->mTranslationOffset + nextFrame] - mTranslationVals[xTable->mTranslationOffset + frame]);
+			}
+
+			maxFrame = yTable->mScaleMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mScale.y = mScaleVals[yTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.y = mScaleVals[yTable->mScaleOffset + frame]
+				                   + rate * (mScaleVals[yTable->mScaleOffset + nextFrame] - mScaleVals[yTable->mScaleOffset + frame]);
+			}
+
+			maxFrame = yTable->mRotationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mRotation.y = mRotationVals[yTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				u32 rot1  = (u16)mRotationVals[yTable->mRotationOffset + frame];
+				u32 rot2  = (u16)mRotationVals[yTable->mRotationOffset + nextFrame];
+				int delta = rot2 - rot1;
+				if (delta > 0x8000) {
+					rot1 += 0x10000;
+					delta -= 0x10000;
+				} else if (-delta > 0x8000) {
+					delta += 0x10000;
+				}
+				info->mRotation.y = (u32)((f32)rot1 + rate * (f32)delta);
+			}
+
+			maxFrame = yTable->mTranslationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mTranslation.y = mTranslationVals[yTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.y = mTranslationVals[yTable->mTranslationOffset + frame]
+				                   + rate * (mTranslationVals[yTable->mTranslationOffset + nextFrame] - mTranslationVals[yTable->mTranslationOffset + frame]);
+			}
+
+			maxFrame = zTable->mScaleMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mScale.z = mScaleVals[zTable->mScaleOffset + (maxFrame - 1)];
+			} else {
+				info->mScale.z = mScaleVals[zTable->mScaleOffset + frame]
+				                   + rate * (mScaleVals[zTable->mScaleOffset + nextFrame] - mScaleVals[zTable->mScaleOffset + frame]);
+			}
+
+			maxFrame = zTable->mRotationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mRotation.z = mRotationVals[zTable->mRotationOffset + (maxFrame - 1)];
+			} else {
+				u32 rot1  = (u16)mRotationVals[zTable->mRotationOffset + frame];
+				u32 rot2  = (u16)mRotationVals[zTable->mRotationOffset + nextFrame];
+				int delta = rot2 - rot1;
+				if (delta > 0x8000) {
+					rot1 += 0x10000;
+					delta -= 0x10000;
+				} else if (-delta > 0x8000) {
+					delta += 0x10000;
+				}
+				info->mRotation.z = (u32)((f32)rot1 + rate * (f32)delta);
+			}
+
+			maxFrame = zTable->mTranslationMaxFrame;
+			if (nextFrame >= maxFrame) {
+				info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset + (maxFrame - 1)];
+			} else {
+				info->mTranslation.z = mTranslationVals[zTable->mTranslationOffset + frame]
+				                   + rate * (mTranslationVals[zTable->mTranslationOffset + nextFrame] - mTranslationVals[zTable->mTranslationOffset + frame]);
+			}
 		}
 	}
 }
@@ -310,6 +630,28 @@ void J3DAnmTransformKey::calcTransform(f32 p1, u16 p2, J3DTransformInfo* info) c
 	}
 }
 
+J3DAnmTextureSRTKey::J3DAnmTextureSRTKey()
+{
+	mRotationScale     = 0;
+	mTransNum          = 0;
+	mRotNum            = 0;
+	mScaleNum          = 0;
+	mTrackNum          = 0;
+	mTable1            = nullptr;
+	mTranslation1Vals  = nullptr;
+	mScale1Vals        = nullptr;
+	mRotation1Vals     = nullptr;
+	_48                = 0;
+	_46                = 0;
+	_44                = 0;
+	mPostTrackNum      = 0;
+	mTransformKeyTable = nullptr;
+	_54                = nullptr;
+	_4C                = nullptr;
+	_50                = nullptr;
+	mTexMtxCalcType    = 0;
+}
+
 /**
  * @note Address: 0x8006829C
  * @note Size: 0x268
@@ -417,6 +759,20 @@ f32 J3DAnmClusterKey::getWeight(u16 idx) const
 	return J3DGetKeyFrameInterpolation<f32>(mCurrentFrame, &mTables[idx], &mWeights[mTables[idx].mOffset]);
 }
 
+J3DAnmVtxColor::J3DAnmVtxColor()
+{
+	mAnmTableNum[0]          = 0;
+	mAnmTableNum[1]          = 0;
+	mAnmVtxColorIndexData[0] = nullptr;
+	mAnmVtxColorIndexData[1] = nullptr;
+}
+
+J3DAnmVtxColorFull::J3DAnmVtxColorFull()
+{
+	mTable[0] = nullptr;
+	mTable[1] = nullptr;
+}
+
 /**
  * @note Address: 0x8006861C
  * @note Size: 0x178
@@ -461,6 +817,12 @@ void J3DAnmVtxColorFull::getColor(u8 col, u16 idx, GXColor* outColor) const
 	} else {
 		outColor->a = mAlphaVals[table->mData[J3DAnmColorFullTable::ALPHA][J3DAnmColorFullTable::Offset] + maxFrame];
 	}
+}
+
+J3DAnmVtxColorKey::J3DAnmVtxColorKey()
+{
+	mTable[0] = nullptr;
+	mTable[1] = nullptr;
 }
 
 /**
@@ -549,6 +911,17 @@ void J3DAnmVtxColorKey::getColor(u8 col, u16 idx, GXColor* outColor) const
 	}
 }
 
+J3DAnmColor::J3DAnmColor()
+    : _0C(0)
+    , _0E(0)
+    , _10(0)
+    , _12(0)
+    , mUpdateMaterialNum(0)
+    , mUpdateMaterialID(nullptr)
+    , mNameTab()
+{
+}
+
 /**
  * @note Address: 0x80068A88
  * @note Size: 0xA8
@@ -564,6 +937,15 @@ void J3DAnmColor::searchUpdateMaterialID(J3DModelData* data)
 			mUpdateMaterialID[i] = 0xFFFF;
 		}
 	}
+}
+
+J3DAnmColorFull::J3DAnmColorFull()
+    : mRedVals(nullptr)
+    , mGreenVals(nullptr)
+    , mBlueVals(nullptr)
+    , mAlphaVals(nullptr)
+    , mTable(nullptr)
+{
 }
 
 /**
@@ -609,6 +991,15 @@ void J3DAnmColorFull::getColor(u16 tableIndex, GXColor* color) const
 	} else {
 		color->a = mAlphaVals[table->mData[J3DAnmColorFullTable::ALPHA][J3DAnmColorFullTable::Offset] + frame];
 	}
+}
+
+J3DAnmColorKey::J3DAnmColorKey()
+    : mRedValue(nullptr)
+    , mGreenValue(nullptr)
+    , mBlueValue(nullptr)
+    , mAlphaValue(nullptr)
+    , mTable(nullptr)
+{
 }
 
 /**
@@ -694,6 +1085,42 @@ void J3DAnmColorKey::getColor(u16 tableIndex, GXColor* outColor) const
 			OSf32tou8(&frame, &outColor->a);
 		}
 	}
+}
+
+J3DAnmTevRegKey::J3DAnmTevRegKey()
+    : mCRegNameTable()
+    , mKRegNameTable()
+{
+	mKRegUpdateMaterialNum = 0;
+	mCRegUpdateMaterialNum = 0;
+	_16                    = 0;
+	_14                    = 0;
+	_12                    = 0;
+	_10                    = 0;
+	_1E                    = 0;
+	_1C                    = 0;
+	_1A                    = 0;
+	_18                    = 0;
+	mKRegUpdateMaterialID  = nullptr;
+	mCRegUpdateMaterialID  = nullptr;
+	mCAlphaVals            = nullptr;
+	mCBlueVals             = nullptr;
+	mCGreenVals            = nullptr;
+	mCRedVals              = nullptr;
+	mKAlphaVals            = nullptr;
+	mKBlueVals             = nullptr;
+	mKGreenVals            = nullptr;
+	mKRedVals              = nullptr;
+}
+
+J3DAnmTexPattern::J3DAnmTexPattern()
+    : _0C(nullptr)
+    , mAnmTable(nullptr)
+    , _14(0)
+    , mUpdateMaterialNum(0)
+    , mUpdateMaterialID(nullptr)
+    , mNameTab()
+{
 }
 
 /**

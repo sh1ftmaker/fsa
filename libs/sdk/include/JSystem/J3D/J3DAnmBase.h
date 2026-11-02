@@ -22,7 +22,8 @@ enum J3DAnmKind {
 	J3DAnmKind_VisibilityFull = 6,
 	J3DAnmKind_VtxColor       = 7,
 	J3DAnmKind_VtxColorFull   = 14,
-	J3DAnmKind_VtxColorKey    = 15
+	J3DAnmKind_VtxColorKey    = 15,
+	J3DAnmKind_TransformFullWithLerp = 16
 };
 
 #pragma enumalwaysint off
@@ -41,6 +42,14 @@ struct J3DAnmBase {
 	    : mAttribute(0)
 	    , mUnused(0)
 	    , mTotalFrameCount(0)
+	    , mCurrentFrame(0.0f)
+	{
+	}
+
+	inline J3DAnmBase(s16 frameMax)
+	    : mAttribute(0)
+	    , mUnused(0)
+	    , mTotalFrameCount(frameMax)
 	    , mCurrentFrame(0.0f)
 	{
 	}

@@ -11,29 +11,7 @@
  * @size{0x7C}
  */
 struct J3DAnmTextureSRTKey : public J3DAnmBase {
-	inline J3DAnmTextureSRTKey()
-	    : mUpdateMaterialName()
-	    , mPostUpdateMaterialName()
-	{
-		mRotationScale     = 0;
-		mTransNum          = 0;
-		mRotNum            = 0;
-		mScaleNum          = 0;
-		mTrackNum          = 0;
-		mTable1            = nullptr;
-		mTranslation1Vals  = nullptr;
-		mScale1Vals        = nullptr;
-		mRotation1Vals     = nullptr;
-		_48                = 0;
-		_46                = 0;
-		_44                = 0;
-		mPostTrackNum      = 0;
-		mTransformKeyTable = nullptr;
-		_54                = nullptr;
-		_4C                = nullptr;
-		_50                = nullptr;
-		mTexMtxCalcType    = 0;
-	}
+	J3DAnmTextureSRTKey();
 
 	virtual ~J3DAnmTextureSRTKey() { } // _08 (weak)
 	virtual J3DAnmKind getKind() const // _0C (weak)
