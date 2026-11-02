@@ -17,6 +17,9 @@ u32 ARAlloc(u32 length);
 u32 ARGetBaseAddress();
 u32 ARGetSize(void);
 
+void __ARClearInterrupt(void);
+u16 __ARGetInterruptStatus(void);
+
 #ifdef __cplusplus
 };
 #endif
