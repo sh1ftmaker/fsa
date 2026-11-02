@@ -56,10 +56,11 @@ DONORS = Path(__file__).resolve().parent.parent.parent / "donors"  # fsadecomp/d
 BANNED = [
     (re.compile(r"\bregister\b[^;]*\basm\b"), "register bound to a machine register"),
     (re.compile(r"\bM2C_|\bsaved_reg_|\bunksp|\bvar_[rf]\d+\b|\bsp[0-9A-F]{2,}\b|\bMULT_HI\b|\?\s*/\*\s*unknown"), "m2c leftover"),
-    (re.compile(r"\*\s*\(\s*[\w\s]+\*+\s*\)\s*\(\s*\(\s*(u8|s8|char|unsigned char|u32|uintptr_t)\s*\*?\s*\)"), "field access through a cast and an offset"),
     (re.compile(r"\.incbin|INCBIN"), "embedded binary"),
 ]
 RESTRICTED = [
+    # Donor library code (MSL alloc.c) does this in its matched source; new code may not.
+    (re.compile(r"\*\s*\(\s*[\w\s]+\*+\s*\)\s*\(\s*\(\s*(u8|s8|char|unsigned char|u32|uintptr_t)\s*\*?\s*\)"), "field access through a cast and an offset"),
     # Original asm functions from a donor's matched source are source; new asm is not.
     (re.compile(r"\basm\b\s*[({]|__asm\b|\basm\s+\w+[^;]*\("), "inline asm"),
     (re.compile(r"^\s*#\s*pragma\b.*"), "#pragma"),
