@@ -98,8 +98,15 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   object's TV/XFB mode fields and its only caller showed it). The review
   caught it.
 - Dead-stripped functions stay in the source, like the donors. If they
-  leave extra data in our object (a jump table), the unit stays NonMatching
-  until the linked DOL's SHA-1 can confirm it (GXPerf.c).
+  leave extra data in our object (a jump table), objdiff shows data < 100 %;
+  `python3 tools/link_check.py` (with the unit flipped to Matching locally)
+  shows whether the linked DOL is still identical: GXPerf.c and mtx.c are
+  (mtx.c still has a force-order fakematch), GXPixel.c's .sdata2 is 0x38
+  bytes too long.
+- objdiff's report counts a `complete` (Matching) unit as 100 % without
+  diffing it, so a report built after flipping a flag can't disprove the
+  flag; the linked DOL's SHA-1 can. 14 units were marked Matching with 0 %
+  of their code (fixed on infra/link).
 - `OSErrorLine` and similar SDK macros depend on `MATCHING`; this project
   doesn't define it globally (it would switch on JAudio fake-match code).
   Use the form tp/dolsdk2004 use in that function.
