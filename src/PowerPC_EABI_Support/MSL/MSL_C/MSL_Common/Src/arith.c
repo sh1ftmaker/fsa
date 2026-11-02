@@ -1,35 +1,119 @@
-#include "arith.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/arith.h"
 
-int abs(int n) {
-    if (n < 0)
-        return (-n);
-    else
-        return (n);
-}
-
-long labs(long x) {
+int abs(int x)
+{
 	if (x < 0)
 		return -x;
 	else
 		return x;
 }
 
-div_t div(int numerator, int denominator) {
-    div_t ret;
-    int i = 1;
-    int j = 1;
+long labs(long x)
+{
+	// UNUSED FUNCTION
+	if (x < 0)
+		return -x;
+	else
+		return x;
+}
 
-    if (numerator < 0 ) {
-        numerator = -numerator;
-        i = -1;
-    }
+void llabs(void)
+{
+	// UNUSED FUNCTION
+}
 
-    if (denominator < 0) {
-        denominator = -denominator;
-        j = -1;
-    }
+div_t div(s32 __numer, s32 __denom)
+{
+	// UNUSED FUNCTION
+	int iVar1;
+	int iVar2;
+	int iVar3;
+	div_t ret;
 
-    ret.quot = (numerator / denominator) * (i * j);
-    ret.rem = numerator * i - j * (ret.quot * denominator);
-    return ret;
+	iVar2 = 1;
+	iVar3 = 1;
+	if (__numer < 0) {
+		__numer = -__numer;
+		iVar2   = -1;
+	}
+	if (__denom < 0) {
+		__denom = -__denom;
+		iVar3   = -1;
+	}
+	iVar1 = (__numer / __denom) * (iVar2 * iVar3);
+
+	ret.quot = iVar1;
+	ret.rem  = __numer * iVar2 - iVar3 * (iVar1 * __denom);
+	return ret;
+}
+
+
+void ldiv(void)
+{
+	// UNUSED FUNCTION
+}
+
+void lldiv(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_add(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_ladd(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __lladd(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_mul(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_lmul(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __llmul(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_div(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_ldiv(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __lldiv(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_mod(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __msl_lmod(void)
+{
+	// UNUSED FUNCTION
+}
+
+void __llmod(void)
+{
+	// UNUSED FUNCTION
 }

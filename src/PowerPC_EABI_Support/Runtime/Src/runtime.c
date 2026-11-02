@@ -1,5 +1,4 @@
-#include "PowerPC_EABI_Support/Runtime/Inc/runtime.h"
-#include "global.h"
+#include "PowerPC_EABI_Support/Runtime/runtime.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,6 +24,10 @@ ASM void __mod2i(void);
 ASM void __shl2i(void);
 ASM void __shr2u(void);
 ASM void __shr2i(void);
+ASM void __cvt_sll_dbl(void);
+ASM void __cvt_ull_dbl(void);
+ASM void __cvt_sll_flt(void);
+ASM void __cvt_ull_flt(void);
 ASM void __cvt_dbl_usll(void);
 
 void SAVE_FPR(14)(void);
@@ -107,6 +110,10 @@ static const u32 __constants[] = {
 	0x00000000, 0x00000000, 0x41F00000, 0x00000000, 0x41E00000, 0x00000000,
 };
 
+/**
+ * @note Address: 0x800C1B4C
+ * @note Size: 0x5C
+ */
 ASM u32 __cvt_fp2unsigned(register f64 d)
 {
 #ifdef __MWERKS__ // clang-format off
@@ -138,12 +145,20 @@ ASM u32 __cvt_fp2unsigned(register f64 d)
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1BA8
+ * @note Size: 0x4C
+ */
 ASM static void __save_fpr(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
+	ENTRY_SAVE_FPR(14)
 		stfd    fp14,-144(save_restore_reg)
+	ENTRY_SAVE_FPR(15)
 		stfd    fp15,-136(save_restore_reg)
+	ENTRY_SAVE_FPR(16)
 		stfd    fp16,-128(save_restore_reg)
+	ENTRY_SAVE_FPR(17)
 		stfd    fp17,-120(save_restore_reg)
 	ENTRY_SAVE_FPR(18)
 		stfd    fp18,-112(save_restore_reg)
@@ -171,17 +186,26 @@ ASM static void __save_fpr(void) {
 		stfd    fp29,-24(save_restore_reg)
 	ENTRY_SAVE_FPR(30)
 		stfd    fp30,-16(save_restore_reg)
+	ENTRY_SAVE_FPR(31)
 		stfd    fp31,-8(save_restore_reg)
 		blr
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1BF4
+ * @note Size: 0x4C
+ */
 ASM static void __restore_fpr(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
+	ENTRY_RESTORE_FPR(14)
 		lfd     fp14,-144(save_restore_reg)
+	ENTRY_RESTORE_FPR(15)
 		lfd     fp15,-136(save_restore_reg)
+	ENTRY_RESTORE_FPR(16)
 		lfd     fp16,-128(save_restore_reg)
+	ENTRY_RESTORE_FPR(17)
 		lfd     fp17,-120(save_restore_reg)
 	ENTRY_RESTORE_FPR(18)
 		lfd     fp18,-112(save_restore_reg)
@@ -209,11 +233,16 @@ ASM static void __restore_fpr(void) {
 		lfd     fp29,-24(save_restore_reg)
 	ENTRY_RESTORE_FPR(30)
 		lfd     fp30,-16(save_restore_reg)
+	ENTRY_RESTORE_FPR(31)
 		lfd     fp31,-8(save_restore_reg)
 		blr
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1C40
+ * @note Size: 0x4C
+ */
 ASM static void __save_gpr(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -249,12 +278,18 @@ ASM static void __save_gpr(void) {
 		stw     r28,-16(save_restore_reg)
 	ENTRY_SAVE_GPR(29)
 		stw     r29,-12(save_restore_reg)
+	ENTRY_SAVE_GPR(30)
 		stw     r30,-8(save_restore_reg)
+	ENTRY_SAVE_GPR(31)
 		stw     r31,-4(save_restore_reg)
 		blr
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1C8C
+ * @note Size: 0x4C
+ */
 ASM static void __restore_gpr(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -290,12 +325,18 @@ ASM static void __restore_gpr(void) {
 		lwz     r28,-16(save_restore_reg)
 	ENTRY_RESTORE_GPR(29)
 		lwz     r29,-12(save_restore_reg)
+	ENTRY_RESTORE_GPR(30)
 		lwz     r30,-8(save_restore_reg)
+	ENTRY_RESTORE_GPR(31)
 		lwz     r31,-4(save_restore_reg)
 		blr
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1CD8
+ * @note Size: 0xEC
+ */
 ASM void __div2u(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -370,6 +411,10 @@ lab9:
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1DC4
+ * @note Size: 0x138
+ */
 ASM void __div2i(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -469,6 +514,10 @@ func_end:
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1EFC
+ * @note Size: 0xE4
+ */
 ASM void __mod2u(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -541,6 +590,10 @@ lab9:
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C1FE0
+ * @note Size: 0x10C
+ */
 ASM void __mod2i(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -627,6 +680,10 @@ no_adjust:
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C20EC
+ * @note Size: 0x24
+ */
 ASM void __shl2i(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -642,6 +699,10 @@ ASM void __shl2i(void) {
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C2110
+ * @note Size: 0x24
+ */
 ASM void __shr2u(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -657,6 +718,10 @@ ASM void __shr2u(void) {
 #endif // clang-format on
 }
 
+/**
+ * @note Address: 0x800C2134
+ * @note Size: 0x28
+ */
 ASM void __shr2i(void) {
 #ifdef __MWERKS__ // clang-format off
 	nofralloc
@@ -674,6 +739,232 @@ around:
 #endif // clang-format on
 }
 
+/**
+ * @note Address: N/A
+ * @note Size: 0xB0
+ */
+ASM void __cvt_sll_dbl(void) {
+#ifdef __MWERKS__ // clang-format off
+	nofralloc
+	stwu    r1,-16(r1)
+	rlwinm. r5,r3,0,0,0
+	beq     positive
+	subfic  r4,r4,0
+	subfze  r3,r3
+positive:
+	or.     r7,r3,r4
+	li      r6,0
+	beq     zero
+	cntlzw  r7,r3
+	cntlzw  r8,r4
+	rlwinm  r9,r7,26,0,4
+	srawi   r9,r9,31
+	and     r9,r9,r8
+	add     r7,r7,r9
+	subfic  r8,r7,32
+	subic   r9,r7,32
+	slw     r3,r3,r7
+	srw     r10,r4,r8
+	or      r3,r3,r10
+	slw     r10,r4,r9
+	or      r3,r3,r10
+	slw     r4,r4,r7
+	sub     r6,r6,r7
+	rlwinm  r7,r4,0,21,31
+	cmpi    cr0,r7,0x400
+	addi    r6,r6,1086
+	blt     noround
+	bgt     round
+	rlwinm. r7,r4,0,20,20
+	beq     noround
+round:
+	addic   r4,r4,0x0800
+	addze   r3,r3
+	addze   r6,r6
+noround:
+	rlwinm  r4,r4,21,0,31
+	rlwimi  r4,r3,21,0,10
+	rlwinm  r3,r3,21,12,31
+	rlwinm  r6,r6,20,0,11
+	or      r3,r6,r3
+	or      r3,r5,r3
+zero:
+	stw     r3,8(r1)
+	stw     r4,12(r1)
+	lfd     f1,8(r1)
+	addi    r1,r1,16
+	blr
+#endif // clang-format on
+}
+
+/**
+ * @note Address: 0x800C215C
+ * @note Size: 0x9C
+ */
+ASM void __cvt_ull_dbl(void) {
+#ifdef __MWERKS__ // clang-format off
+	nofralloc
+	stwu    r1,-0x10(r1)
+	or.     r7,r3,r4
+	li      r6,0x0
+	beq     zero
+	cntlzw  r7,r3
+	cntlzw  r8,r4
+	rlwinm  r9,r7,0x1a,0x0,0x4
+	srawi   r9,r9,0x1f
+	and     r9,r9,r8
+	add     r7,r7,r9
+	subfic  r8,r7,0x20
+	subic   r9,r7,0x20
+	slw     r3,r3,r7
+	srw     r10,r4,r8
+	or      r3,r3,r10
+	slw     r10,r4,r9
+	or      r3,r3,r10
+	slw     r4,r4,r7
+	subf    r6,r7,r6
+	rlwinm  r7,r4,0x0,0x15,0x1f
+	cmpwi   r7,0x400
+	addi    r6,r6,0x43e
+	blt     noround
+	bgt     round
+	rlwinm. r7,r4,0x0,0x14,0x14
+	beq     noround
+round:
+	addic   r4,r4,0x800
+	addze   r3,r3
+	addze   r6,r6
+noround:
+	rlwinm  r4,r4,0x15,0x0,0x1f
+	rlwimi  r4,r3,0x15,0x0,0xa
+	rlwinm  r3,r3,0x15,0xc,0x1f
+	rlwinm  r6,r6,0x14,0x0,0xb
+	or      r3,r6,r3
+zero:
+	stw     r3,0x8(r1)
+	stw     r4,0xc(r1)
+	lfd     f1,0x8(r1)
+	addi    r1,r1,0x10
+	blr
+#endif // clang-format on
+}
+
+/**
+ * @note Address: N/A
+ * @note Size: 0xB4
+ */
+ASM void __cvt_sll_flt(void) {
+#ifdef __MWERKS__ // clang-format off
+	nofralloc
+	stwu    r1, -0x10(r1)
+	clrrwi. r5, r3, 31
+	beq     positive
+	subfic  r4, r4, 0x0
+	subfze  r3, r3
+positive:
+	or.     r7, r3, r4
+	li      r6, 0x0
+	beq     zero
+	cntlzw  r7, r3
+	cntlzw  r8, r4
+	extlwi  r9, r7, 5, 26
+	srawi   r9, r9, 31
+	and     r9, r9, r8
+	add     r7, r7, r9
+	subfic  r8, r7, 0x20
+	addic   r9, r7, -0x20
+	slw     r3, r3, r7
+	srw     r10, r4, r8
+	or      r3, r3, r10
+	slw     r10, r4, r9
+	or      r3, r3, r10
+	slw     r4, r4, r7
+	subf    r6, r7, r6
+	clrlwi  r7, r4, 21
+	cmpwi   r7, 0x400
+	addi    r6, r6, 0x43e
+	blt     noround
+	bgt     round
+	rlwinm. r7, r4, 0, 20, 20
+	beq     noround
+round:
+	addic   r4, r4, 0x800
+	addze   r3, r3
+	addze   r6, r6
+noround:
+	rotrwi  r4, r4, 11
+	rlwimi  r4, r3, 21, 0, 10
+	extrwi  r3, r3, 20, 1
+	slwi    r6, r6, 20
+	or      r3, r6, r3
+	or      r3, r5, r3
+zero:
+	stw     r3, 0x8(r1)
+	stw     r4, 0xc(r1)
+	lfd     f1, 0x8(r1)
+	frsp    f1, f1
+	addi    r1, r1, 0x10
+	blr
+#endif // clang-format on
+}
+
+/**
+ * @note Address: N/A
+ * @note Size: 0xA0
+ */
+ASM void __cvt_ull_flt(void) {
+#ifdef __MWERKS__ // clang-format off
+	nofralloc
+	stwu    r1,-0x10(r1)
+	or.     r7,r3,r4
+	li      r6,0x0
+	beq     zero
+	cntlzw  r7,r3
+	cntlzw  r8,r4
+	rlwinm  r9,r7,0x1a,0x0,0x4
+	srawi   r9,r9,0x1f
+	and     r9,r9,r8
+	add     r7,r7,r9
+	subfic  r8,r7,0x20
+	subic   r9,r7,0x20
+	slw     r3,r3,r7
+	srw     r10,r4,r8
+	or      r3,r3,r10
+	slw     r10,r4,r9
+	or      r3,r3,r10
+	slw     r4,r4,r7
+	subf    r6,r7,r6
+	rlwinm  r7,r4,0x0,0x15,0x1f
+	cmpwi   r7,0x400
+	addi    r6,r6,0x43e
+	blt     noround
+	bgt     round
+	rlwinm. r7,r4,0x0,0x14,0x14
+	beq     noround
+round:
+	addic   r4,r4,0x800
+	addze   r3,r3
+	addze   r6,r6
+noround:
+	rlwinm  r4,r4,0x15,0x0,0x1f
+	rlwimi  r4,r3,0x15,0x0,0xa
+	rlwinm  r3,r3,0x15,0xc,0x1f
+	rlwinm  r6,r6,0x14,0x0,0xb
+	or      r3,r6,r3
+zero:
+	stw     r3,0x8(r1)
+	stw     r4,0xc(r1)
+	lfd     f1,0x8(r1)
+	frsp    f1,f1
+	addi    r1,r1,0x10
+	blr
+#endif // clang-format on
+}
+
+/**
+ * @note Address: 0x800C21F8
+ * @note Size: 0xCC
+ */
 ASM void __cvt_dbl_usll(void)
 {
 #ifdef __MWERKS__ // clang-format off
