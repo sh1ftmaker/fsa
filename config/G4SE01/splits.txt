@@ -743,9 +743,6 @@ PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/printf.c:
 PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/float.c:
 	.sdata      start:0x80539D38 end:0x80539D48
 
-PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/qsort.c:
-	.text       start:0x8006D4FC end:0x8006D668
-
 PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/scanf.c:
 	.text       start:0x8006D668 end:0x8006D6F8
 
