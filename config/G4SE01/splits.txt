@@ -568,30 +568,45 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mainloop.c:
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubevent.c:
 	.text       start:0x80060C80 end:0x80060EA8
+	.bss        start:0x804B6698 end:0x804B66C0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubinit.c:
 	.text       start:0x80060EA8 end:0x80061040
+	.rodata     start:0x8045D450 end:0x8045D480
+	.bss        start:0x804B66C0 end:0x804B66C8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msg.c:
 	.text       start:0x80061040 end:0x80061084
+	.rodata     start:0x8045D480 end:0x8045D4A8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msgbuf.c:
 	.text       start:0x80061084 end:0x800618C0
+	.rodata     start:0x8045D4A8 end:0x8045D4C8
+	.bss        start:0x804B66C8 end:0x804B8078
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/serpoll.c:
 	.text       start:0x800618C0 end:0x80061B78
+	.rodata     start:0x8045D4C8 end:0x8045D658
+	.bss        start:0x804B8078 end:0x804B8090
+	.sbss       start:0x8053A700 end:0x8053A708
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/usr_put.c:
 	.text       start:0x80061B78 end:0x80061C04
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/dispatch.c:
 	.text       start:0x80061C04 end:0x80061D7C
+	.rodata     start:0x8045D658 end:0x8045D698
+	.data       start:0x80497948 end:0x804979B8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msghndlr.c:
 	.text       start:0x80061D7C end:0x80062DEC
+	.rodata     start:0x8045D698 end:0x8045D880
+	.data       start:0x804979B8 end:0x804979F0
+	.bss        start:0x804B8090 end:0x804B8098
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/support.c:
 	.text       start:0x80062DEC end:0x80063500
+	.rodata     start:0x8045D880 end:0x8045D928
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mutex_TRK.c:
 	.text       start:0x80063500 end:0x80063518
@@ -603,28 +618,47 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/flush_cache.c:
 	.text       start:0x800635B0 end:0x800635E8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mem_TRK.c:
+	.init       start:0x80003458 end:0x800034AC
 	.text       start:0x800635E8 end:0x800636A0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/targimpl.c:
 	.text       start:0x800636A0 end:0x80065230
+	.rodata     start:0x8045D928 end:0x8045D9C0
+	.data       start:0x804979F0 end:0x80497A20
+	.bss        start:0x804B8098 end:0x804B8618
+
+TRK_MINNOW_DOLPHIN/MetroTRK/Export/targsupp.s:
+	.text       start:0x80065230 end:0x80065250
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/mpc_7xx_603e.c:
 	.text       start:0x80065250 end:0x800655C0
 
+TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/__exception.s:
+	.init       start:0x800034AC end:0x800053E0
+
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk.c:
+	.init       start:0x800053E0 end:0x8000540C
 	.text       start:0x800655C0 end:0x80065BFC
+	.data       start:0x80497A20 end:0x80497A60
+	.bss        start:0x804B8618 end:0x804B8620
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/main_TRK.c:
 	.text       start:0x80065BFC end:0x80065C54
+	.rodata     start:0x8045D9C0 end:0x8045D9D0
+	.bss        start:0x804B8620 end:0x804B8628
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk_glue.c:
 	.text       start:0x80065C54 end:0x800661AC
+	.rodata     start:0x8045D9D0 end:0x8045DAD8
+	.data       start:0x80497A60 end:0x80497A88
+	.bss        start:0x804B8628 end:0x804B8630
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/targcont.c:
 	.text       start:0x800661AC end:0x800661E0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/target_options.c:
 	.text       start:0x800661E0 end:0x800661FC
+	.bss        start:0x804B8630 end:0x804B8638
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Export/mslsupp.c:
 	.text       start:0x800661FC end:0x800663F8
@@ -632,8 +666,23 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Export/mslsupp.c:
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/UDP_Stubs.c:
 	.text       start:0x800663F8 end:0x80066440
 
+TRK_MINNOW_DOLPHIN/gamedev/cust_connection/cc/exi2/GCN/EXI2_DDH_GCN/main.c:
+	.text       start:0x80066440 end:0x80066784
+	.rodata     start:0x8045DAD8 end:0x8045DBB8
+	.bss        start:0x804B8638 end:0x804B8E58
+	.sbss       start:0x8053A708 end:0x8053A710
+
 TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/common/CircleBuffer.c:
 	.text       start:0x80066784 end:0x800669EC
+
+TRK_MINNOW_DOLPHIN/gamedev/cust_connection/cc/exi2/GCN/EXI2_GDEV_GCN/main.c:
+	.text       start:0x800669EC end:0x80066D38
+	.rodata     start:0x8045DBB8 end:0x8045DC98
+	.bss        start:0x804B8E58 end:0x804B9378
+	.sbss       start:0x8053A710 end:0x8053A718
+
+TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/common/MWTrace.c:
+	.text       start:0x80066D38 end:0x80066D88
 
 TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/gc/MWCriticalSection_gc.c:
 	.text       start:0x80066D88 end:0x80066DE0

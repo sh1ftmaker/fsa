@@ -363,6 +363,19 @@ cflags_framework = [
 # FSA's JSystem libs were compiled without instruction scheduling
 cflags_jsystem = [f for f in cflags_framework if f != "-schedule off"]
 
+# MetroTRK v2.6 (TRK_MINNOW_DOLPHIN) from projectPiki/pikmin2, GC/2.6 with
+# pikmin2's TRK flags (cflags_runtime plus -inline deferred, -sdata 0, -sdata2 0).
+cflags_trk = [
+    *cflags_base,
+    "-use_lmw_stmw on",
+    "-str reuse,readonly",
+    "-common off",
+    "-inline auto",
+    "-inline deferred",
+    "-sdata 0",
+    "-sdata2 0",
+]
+
 # TWW game code flags
 config.linker_version = "GC/1.3.2"
 
@@ -691,6 +704,45 @@ config.libs = [
         Object(Matching, "dolphin/gx/GXTexture.c"),
         Object(Matching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
     ]),
+    {
+        "lib": "TRK_MINNOW_DOLPHIN",
+        "mw_version": "GC/2.6",
+        "cflags": cflags_trk,
+        "progress_category": "sdk",
+        "host": False,
+        "objects": [
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mainloop.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubevent.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubinit.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msg.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msgbuf.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/serpoll.c", extra_cflags=["-sdata 8"]),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/usr_put.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/dispatch.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msghndlr.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/support.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mutex_TRK.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/notify.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/flush_cache.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mem_TRK.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/targimpl.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Export/targsupp.s"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/mpc_7xx_603e.c"),
+        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/__exception.s"),  # FIXME: gTRKInterruptVectorTable is a label in symbols.txt, so dtk splits the table as pad_00_800034AC_init and objdiff cannot pair it
+        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk.c"),  # FIXME: InitMetroTRK is 0x98 with its trailing blr; symbols.txt says 0x94 (gap_03_80065654_text)
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/main_TRK.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk_glue.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/targcont.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/target_options.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Export/mslsupp.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/UDP_Stubs.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/gamedev/cust_connection/cc/exi2/GCN/EXI2_DDH_GCN/main.c", extra_cflags=["-sdata 8"]),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/common/CircleBuffer.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/gamedev/cust_connection/cc/exi2/GCN/EXI2_GDEV_GCN/main.c", extra_cflags=["-sdata 8"]),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/common/MWTrace.c"),
+        Object(Matching, "TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/gc/MWCriticalSection_gc.c"),
+        ],
+    },
     JSystemLib("J2DGraph", [
         Object(Matching, "JSystem/J2DGraph/J2DPrint.cpp"),
     ]),
