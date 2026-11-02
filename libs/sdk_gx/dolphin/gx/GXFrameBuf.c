@@ -9,8 +9,8 @@ GXRenderModeObj GXNtsc480IntDf = {
     8, 8, 10, 12, 10, 8, 8,
 };
 
-GXRenderModeObj GXNtsc480Prog = {
-    VI_TVMODE_NTSC_PROG, 640, 480, 480, 40, 0, 640, 480, VI_XFBMODE_SF, GX_FALSE, GX_FALSE,
+GXRenderModeObj GXNtsc480Int = {
+    VI_TVMODE_NTSC_INT, 640, 480, 480, 40, 0, 640, 480, VI_XFBMODE_DF, GX_FALSE, GX_FALSE,
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     0, 0, 21, 22, 21, 0, 0,
 };
