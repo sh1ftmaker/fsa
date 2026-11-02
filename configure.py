@@ -508,7 +508,7 @@ config.libs = [
         Object(NonMatching, "dolphin/os/OSAlarm.c"),
         Object(NonMatching, "dolphin/os/OSAlloc.c"),
         Object(NonMatching, "dolphin/os/OSCache.c"),
-        Object(NonMatching, "dolphin/os/OSContext.c"),
+        Object(Matching, "dolphin/os/OSContext.c"),
         Object(Matching, "dolphin/os/OSError.c"),
         Object(Matching, "dolphin/os/OSFont.c"),
         Object(NonMatching, "dolphin/os/OSInterrupt.c"),

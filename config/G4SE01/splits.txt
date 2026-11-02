@@ -284,7 +284,7 @@ dolphin/os/OSCache.c:
 	.data       start:0x80495880 end:0x80495AB0
 
 dolphin/os/OSContext.c:
-	.text       start:0x800417EC end:0x80041F34
+	.text       start:0x80041598 end:0x80041F34
 	.data       start:0x80495AB0 end:0x80495C88
 
 dolphin/os/OSError.c:
