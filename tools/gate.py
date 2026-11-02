@@ -51,7 +51,7 @@ PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\
 LINK_CONFIGURE = re.compile(r"check_sha|sha1|ldflags|linker_version|link_order|ldscript|custom_build"
                             r"|non_matching|^[+-]\s*(Matching|NonMatching|Equivalent)\s*=")
 SOURCE = re.compile(r"\.(c|cpp|h|hpp|inc)$")
-DONORS = Path("../donors")
+DONORS = Path(__file__).resolve().parent.parent.parent / "donors"  # fsadecomp/donors, from any worktree
 
 BANNED = [
     (re.compile(r"\bregister\b[^;]*\basm\b"), "register bound to a machine register"),
