@@ -1,6 +1,6 @@
 # Project plan: how FSA gets decompiled
 
-Status: proposal (2026-11-02). Based on three research passes: how TP, TWW,
+Status: agreed direction (2026-11-02). Based on three research passes: how TP, TWW,
 Melee, Petari, pikmin2 and others are run today; how to find FSA's source
 files without a map; and what published AI-agent decomp efforts learned.
 
@@ -78,8 +78,7 @@ names, resource tables). Each produces an evidence-backed `names.tsv`.
 ### Claiming
 
 - `progress/claims.json`, edited only under `flock`: unit → owner, branch,
-  start time. Mirrored to one GitHub issue per unit (TP-style `/assign`) so
-  humans and agents share the same claims.
+  start time.
 - The queue comes from the report: donor-backed units first (SDK, JSystem,
   MSL: cheapest), then small game files, then large ones.
 
@@ -160,9 +159,11 @@ shared edits, re-runs configure and the full report, runs the gate and
    game files by size, minigames (clean, self-contained) early.
 4. Crack passes and a naming/review pass between waves.
 
-## Open questions
+## Decisions
 
-- Whether units with a labelled fakematch (TP's `// fakematch`, Petari's
-  `// FAKEMATCH`) may ever count as Matching. Proposed: no; they stay
-  NonMatching until a natural match is found.
-- Whether to publish per-unit GitHub issues now or after the file map lands.
+- **No fakematches.** A function that only matches through a trick (TP's
+  `// fakematch`, Petari's `// FAKEMATCH`, register pins, ordering hacks a
+  person wouldn't write) does not count. It stays `NonMatching` with a
+  `// FIXME:` saying what differs, until a natural match is found.
+- **Claims stay local.** `progress/claims.json` (under `flock`) is the only
+  claim list; no per-unit GitHub issues.
