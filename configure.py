@@ -469,7 +469,7 @@ config.libs = [
         Object(NonMatching, "dolphin/card/CARDCheck.c"),
         Object(NonMatching, "dolphin/card/CARDCreate.c"),
         Object(NonMatching, "dolphin/card/CARDDir.c"),
-        Object(NonMatching, "dolphin/card/CARDFormat.c"),
+        Object(Matching, "dolphin/card/CARDFormat.c"),
         Object(NonMatching, "dolphin/card/CARDMount.c"),
         Object(NonMatching, "dolphin/card/CARDNet.c"),
         Object(NonMatching, "dolphin/card/CARDOpen.c"),
