@@ -102,7 +102,7 @@ def main():
     run("git", "add", SYMBOLS)
     Path("configure.py").write_text(merge_configure(*cfg))
     run("git", "add", "configure.py")
-    for generated in ("objdiff.json", "progress/claims.json"):
+    for generated in ("objdiff.json",):
         run("git", "checkout", "HEAD", "--", generated, check=False)
     conflicts = run("git", "diff", "--name-only", "--diff-filter=U").split()
     if conflicts:

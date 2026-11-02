@@ -19,6 +19,8 @@ PATH = Path(__file__).resolve().parent.parent / "progress" / "claims.json"
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
+    if not PATH.exists():
+        PATH.write_text("{}\n")
     with open(PATH, "r+") as f:
         fcntl.flock(f, fcntl.LOCK_EX)
         claims = json.load(f)
