@@ -107,7 +107,7 @@ phases:
   - id: libs
     hue: red
     title: JSystem waves and the pikmin2 imports
-    status: active
+    status: done
     summary: The engine and the remaining libraries, donor-first, with pikmin2's GC/2.6 -O4,p builds.
     milestones:
       - id: jsystem-waves
@@ -155,20 +155,20 @@ phases:
       - id: j3d
         title: J3D
         desc: The 3D library from pikmin2, the biggest library left; the import is in review.
-        status: active
+        status: done
         covers: ["jsystem:J3D"]
         measure: {kind: code}
 
   - id: leftovers
     hue: red
     title: Library leftovers and per-file grinding
-    status: next
+    status: active
     summary: Take every library unit that is still NonMatching to Matching, one owner per file.
     milestones:
       - id: jsystem-grind
         title: JSystem file by file
         desc: Per-file agents on the JSystem units still NonMatching, JAudio and J3D first.
-        status: next
+        status: active
         covers: [jsystem]
         measure: {kind: units}
       - id: lib-fixes
