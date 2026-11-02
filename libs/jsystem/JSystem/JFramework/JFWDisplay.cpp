@@ -253,9 +253,11 @@ static void MyFree(void *p)
 #endif
 
 void JFWDisplay::beginRender() { 
-    JUTProcBar::getManager()->wholeLoopEnd();    
-    JUTProcBar::getManager()->wholeLoopStart();
     if (mIsWaiting) {
+        JUTProcBar::getManager()->wholeLoopEnd();
+    }
+    if (mIsWaiting) {
+        JUTProcBar::getManager()->wholeLoopStart();
         JUTProcBar::getManager()->idleStart();
     }
 
@@ -265,11 +267,7 @@ void JFWDisplay::beginRender() {
     u32 tick = OSGetTick();
     _30 = tick - _2C; // duration of frame in ticks?
     _2C = tick;
-#ifdef DEBUG // TODO: cleaner method
     _34 = _2C - JUTVideo::getVideoLastTick();
-#else
-    _34 = _2C;
-#endif
 
     if (mIsWaiting) {
         JUTProcBar::getManager()->idleEnd();
@@ -363,11 +361,12 @@ void JFWDisplay::endFrame() {
         JUTProcBar::getManager()->gpEnd();
     }
 
-    static u32 prevFrame = VIGetRetraceCount();
-    u32 retrace_cnt = VIGetRetraceCount();
-    JUTProcBar::getManager()->setCostFrame(retrace_cnt - prevFrame);
-    prevFrame = retrace_cnt;
-    
+    if (mIsWaiting) {
+        static u32 prevFrame = VIGetRetraceCount();
+        u32 retrace_cnt = VIGetRetraceCount();
+        JUTProcBar::getManager()->setCostFrame(retrace_cnt - prevFrame);
+        prevFrame = retrace_cnt;
+    }
 }
 
 void JFWDisplay::waitBlanking(int param_0) {
@@ -506,7 +505,19 @@ void JFWDisplay::clearEfb(int param_0, int param_1, int param_2, int param_3,
     GXSetZTexture(GX_ZT_DISABLE, GX_TF_Z24X8, 0);
     GXSetZCompLoc(GX_ENABLE);
     if (mEnableAlpha) {
-        GXSetDstAlpha(GX_DISABLE, 0);
+        GXSetDstAlpha(GX_DISABLE, color.a);
+    }
+}
+
+void JFWDisplay::clearAllXfb() {
+    prepareCopyDisp();
+    clearEfb();
+    preGX();
+
+    int num = JUTXfb::getManager()->getBufferNum();
+    for (int i = 0; i < num; i++) {
+        GXCopyDisp(JUTXfb::getManager()->getBufferPtr(i), GX_TRUE);
+        JFWDrawDoneAlarm();
     }
 }
 
@@ -527,12 +538,6 @@ void JFWDisplay::calcCombinationRatio() {
     if (mCombinationRatio > 1.0f) {
         mCombinationRatio = 1.0f;
     }
-}
-
-s32 JFWDisplay::frameToTick(float mTemporarySingle) { // fabricated
-#line 999
-    JUT_CONFIRM_MESSAGE(mTemporarySingle);
-    return OSMillisecondsToTicks(mFrameRate);
 }
 
 // https://decomp.me/scratch/qbztR

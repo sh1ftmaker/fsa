@@ -896,10 +896,12 @@ JSystem/JFramework/JFWSystem.cpp:
 	.sdata2     start:0x8053BCF0 end:0x8053BD00
 
 JSystem/JFramework/JFWDisplay.cpp:
-	.text       start:0x800E4D30 end:0x800E64F8
+	.text       start:0x800E4D30 end:0x800E6594
+	.ctors      start:0x8045BDEC end:0x8045BDF0
 	.rodata     start:0x80463588 end:0x80463660
-	.data       start:0x8049BE20 end:0x8049BEC0
+	.data       start:0x8049BE20 end:0x8049BEB8
 	.bss        start:0x804BA5C8 end:0x804BA5F8
+	.bss        start:0x80539BA0 end:0x80539BAC align:4 common
 	.sbss       start:0x8053AA48 end:0x8053AA70
 	.sdata2     start:0x8053BD00 end:0x8053BD28
 

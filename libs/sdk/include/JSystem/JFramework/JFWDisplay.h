@@ -75,7 +75,7 @@ public:
     // void deleteToSingleXfb(void *);
     // void addToDoubleXfb(void *, bool);
     // void addToDoubleXfb(JKRHeap *);
-    // void clearAllXfb();
+    void clearAllXfb();
     s32 frameToTick(float);
     static void setForOSResetSystem();
 

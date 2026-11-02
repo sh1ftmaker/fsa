@@ -606,7 +606,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JFramework", [
-        Object(NonMatching, "JSystem/JFramework/JFWDisplay.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JFramework/JFWDisplay.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JGadget", [

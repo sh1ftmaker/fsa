@@ -27,6 +27,7 @@ public:
     u32 accumeXfbSize();
 
     int getBufferNum() const { return mBufferNum; }
+    void *getBufferPtr(int i) const { return mBuffer[i]; }
     int getDrawnXfbIndex() const { return mDrawnXfbIndex; }
     int getDrawingXfbIndex() const { return mDrawingXfbIndex; }
     int getDisplayingXfbIndex() const { return mDisplayingXfbIndex; }
