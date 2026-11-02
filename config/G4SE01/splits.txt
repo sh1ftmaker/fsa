@@ -658,8 +658,10 @@ JSystem/JKernel/JKRDvdArchive.cpp:
 	.rodata     start:0x8045E228 end:0x8045E2A0
 
 JSystem/JKernel/JKRExpHeap.cpp:
-	.text       start:0x800823C8 end:0x80082F44
+	.text       start:0x80081454 end:0x80082F44
 	.rodata     start:0x8045E300 end:0x8045E678
+	.data       start:0x80498DD8 end:0x80498E38
+	.sbss       start:0x8053A888 end:0x8053A8A0
 	.sdata2     start:0x8053B708 end:0x8053B738
 
 JSystem/JKernel/JKRFileFinder.cpp:

@@ -962,18 +962,30 @@ bool JKRExpHeap::dump_sort()
     return result;
 }
 
-// these didn't get deadstripped, workaround to generate it(original function: JKRExpHeap::DBshow())
-CW_FORCE_STRINGS(JKRExpHeap_cpp, 
-    "+---------------JKRExpHeap\n",
-    "|         Align Group  size    ( prev , next )\n",
-    "| ---- FreeFirst\n",
-    "| %08x  ",
-    "%2x  %3d  %6x  (%08x %08x)\n",
-    "| ---- FreeLast\n",
-    "| ---- UsedFirst\n",
-    "| ---- UsedLast\n",
-    "+---------------End\n"
-)
+// Dead-stripped in the original; its strings remain in .rodata.
+void JKRExpHeap::DBshow()
+{
+    CMemBlock *block;
+    JUTReportConsole("+---------------JKRExpHeap\n");
+    JUTReportConsole("|         Align Group  size    ( prev , next )\n");
+    JUTReportConsole("| ---- FreeFirst\n");
+    for (block = mHead; block; block = block->mNext)
+    {
+        JUTReportConsole_f("| %08x  ", block);
+        JUTReportConsole_f("%2x  %3d  %6x  (%08x %08x)\n", block->getAlignment(), block->mGroupID,
+                           block->mAllocatedSpace, block->mPrev, block->mNext);
+    }
+    JUTReportConsole("| ---- FreeLast\n");
+    JUTReportConsole("| ---- UsedFirst\n");
+    for (block = mHeadUsedList; block; block = block->mNext)
+    {
+        JUTReportConsole_f("| %08x  ", block);
+        JUTReportConsole_f("%2x  %3d  %6x  (%08x %08x)\n", block->getAlignment(), block->mGroupID,
+                           block->mAllocatedSpace, block->mPrev, block->mNext);
+    }
+    JUTReportConsole("| ---- UsedLast\n");
+    JUTReportConsole("+---------------End\n");
+}
 
 void JKRExpHeap::CMemBlock::initiate(JKRExpHeap::CMemBlock *prev, JKRExpHeap::CMemBlock *next, u32 size, u8 groupID, u8 alignment)
 {

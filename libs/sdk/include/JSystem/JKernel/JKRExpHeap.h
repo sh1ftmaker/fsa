@@ -76,6 +76,7 @@ public:
     void removeUsedBlock(CMemBlock *);
     bool isEmpty();
     s32 getUsedSize(u8 groupId) const;
+    void DBshow();
 
     CMemBlock *getHeadUsedList() const { return mHeadUsedList; }
     void setAllocationMode(EAllocMode mode) { mCurrentAllocMode = mode; }
