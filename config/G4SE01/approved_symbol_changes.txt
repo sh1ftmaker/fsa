@@ -3,5 +3,6 @@
 # name  old_size  new_size  review
 # (size and type together: name  old_size/old_type  new_size/new_type  review)
 GXEurgb60Hz480IntDf  0x40  0x3C  fsa-wt/_reviews/dolphin__gx__GXFrameBuf.review.md (dtk's guess included padding; sizeof(GXRenderModeObj) = 0x3C)
+FatalFunc  0x8  0x4  fsa-wt/_reviews/import__sdkleft.review.md (static fn pointer, 4 bytes + .sbss padding; only ref in dvdFatal)
 # Renames: name  old_name  new_name  review
 cmdTypeAndStatus$371  cmdTypeAndStatus$371  cmdTypeAndStatus$372  fsa-wt/_reviews/dolphin__si__SIBios.review.md (our compile, mkdd and tp emit $372)
