@@ -192,10 +192,11 @@ JSystem/JAudio/System/JASSeqReader.cpp:
 	.text       start:0x80035F4C end:0x80036188
 
 JSystem/JAudio/System/JASTrack.cpp:
-	.text       start:0x80036188 end:0x800397D0
+	.text       start:0x80036188 end:0x80039964
 	.ctors      start:0x8045BD7C end:0x8045BD80
 	.rodata     start:0x8045D350 end:0x8045D398
 	.data       start:0x80493648 end:0x80493670
+	.bss        start:0x804B2940 end:0x804B2980
 	.sdata2     start:0x8053B258 end:0x8053B290
 
 JSystem/JAudio/System/JASTrackPort.cpp:
