@@ -794,18 +794,17 @@ dolphin/si/SISamplingRate.c:
 	.sbss       start:0x8053A790 end:0x8053A798
 
 JSystem/JMessage/resource.cpp:
-	.text       start:0x80077134 end:0x80077944
+	.text       start:0x80077134 end:0x80077844
 	.data       start:0x80498998 end:0x80498A10
 	.sdata2     start:0x8053B6B8 end:0x8053B6C0
 
 JSystem/JMessage/processor.cpp:
-	.text       start:0x80077944 end:0x80078B20
+	.text       start:0x80077844 end:0x80078B20
 	.data       start:0x80498A10 end:0x80498B10
 
 JSystem/JMessage/control.cpp:
-	.text       start:0x80078B20 end:0x800790A8
+	.text       start:0x80078B20 end:0x80079034
 	.data       start:0x80498B10 end:0x80498B20
-	.sdata2     start:0x8053B6C0 end:0x8053B6C8
 
 JSystem/JKernel/JKRAram.cpp:
 	.text       start:0x800790A8 end:0x80079F38
@@ -886,13 +885,13 @@ JSystem/JKernel/JKRDvdAramRipper.cpp:
 	.sbss       start:0x8053A800 end:0x8053A848
 
 JSystem/JKernel/JKRDvdArchive.cpp:
-	.text       start:0x8007FB68 end:0x80080DA8
+	.text       start:0x8007FB68 end:0x80080774
 	.rodata     start:0x8045E228 end:0x8045E2A0
 	.data       start:0x80498D88 end:0x80498DD8
 	.sdata2     start:0x8053B6F8 end:0x8053B700
 
 JSystem/JKernel/JKRDvdRipper.cpp:
-	.text       start:0x80080DA8 end:0x80081454
+	.text       start:0x80080774 end:0x80081454
 	.ctors      start:0x8045BDBC end:0x8045BDC0
 	.rodata     start:0x8045E2A0 end:0x8045E300
 	.bss        start:0x804BA020 end:0x804BA048
@@ -1187,6 +1186,7 @@ JSystem/JParticle/JPAChildShape.cpp:
 
 JSystem/JParticle/JPADynamicsBlock.cpp:
 	.text       start:0x800EA58C end:0x800EB5A0
+	.data       start:0x8049C068 end:0x8049C088
 	.sdata2     start:0x8053BD68 end:0x8053BD90
 
 JSystem/JParticle/JPAEmitter.cpp:
