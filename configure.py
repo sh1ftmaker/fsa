@@ -678,7 +678,7 @@ config.libs = [
     ]),
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
-        Object(NonMatching, "dolphin/gx/GXBump.c"),
+        Object(Matching, "dolphin/gx/GXBump.c"),
         Object(NonMatching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
         Object(NonMatching, "dolphin/gx/GXGeometry.c"),
