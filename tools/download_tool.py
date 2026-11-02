@@ -109,10 +109,14 @@ def download(url, response, output) -> None:
                 os.chmod(os.path.join(root, name), 0o755)
         output.touch(mode=0o755)  # Update dir modtime
     else:
-        with open(output, "wb") as f:
+        # Write beside the target and rename over it, so a copy that is
+        # still running elsewhere doesn't make the write fail (ETXTBSY).
+        partial = output.with_name(output.name + ".part")
+        with open(partial, "wb") as f:
             shutil.copyfileobj(response, f)
-        st = os.stat(output)
-        os.chmod(output, st.st_mode | stat.S_IEXEC)
+        st = os.stat(partial)
+        os.chmod(partial, st.st_mode | stat.S_IEXEC)
+        os.replace(partial, output)
 
 
 def main() -> None:

@@ -16,7 +16,7 @@ git -C "$repo" worktree add -q "$wt" -b "$branch" matching
 ln -s "$repo/orig" "$wt/orig"
 mkdir -p "$wt/build"
 ln -s "$repo/build/compilers" "$wt/build/compilers"
-ln -s "$repo/build/tools" "$wt/build/tools"
+cp -a "$repo/build/tools" "$wt/build/tools"  # private copy: ninja may re-download tools
 # Claims are kept in the main checkout only.
 rm -f "$wt/progress/claims.json"
 ln -s "$repo/progress/claims.json" "$wt/progress/claims.json"
