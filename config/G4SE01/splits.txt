@@ -575,7 +575,7 @@ PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.
 	.text       start:0x80070140 end:0x8007023C
 
 dolphin/exi/EXIBios.c:
-	.text       start:0x80071F64 end:0x80073218
+	.text       start:0x80071C14 end:0x800735F0
 	.data       start:0x804982D0 end:0x804983E0
 	.bss        start:0x804B97D8 end:0x804B9898
 	.sdata      start:0x80539D50 end:0x80539D58

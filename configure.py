@@ -494,7 +494,7 @@ config.libs = [
         Object(Matching, "dolphin/dvd/dvdqueue.c"),
     ]),
     SdkLib("exi", [
-        Object(NonMatching, "dolphin/exi/EXIBios.c"),
+        Object(Matching, "dolphin/exi/EXIBios.c"),
         Object(Matching, "dolphin/exi/EXIUart.c"),
     ]),
     SdkLib("mtx", [
