@@ -728,8 +728,8 @@ config.libs = [
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/targimpl.c"),
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Export/targsupp.s"),
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/mpc_7xx_603e.c"),
-        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/__exception.s"),  # FIXME: gTRKInterruptVectorTable is a label in symbols.txt, so dtk splits the table as pad_00_800034AC_init and objdiff cannot pair it
-        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk.c"),  # FIXME: InitMetroTRK is 0x98 with its trailing blr; symbols.txt says 0x94 (gap_03_80065654_text)
+        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/__exception.s"),  # FIXME: 100 % once symbols.txt gives gTRKInterruptVectorTable type:function size:0x1F34 (now a label, so dtk names the table pad_00_800034AC_init)
+        Object(NonMatching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk.c"),  # FIXME: 100 % once symbols.txt gives InitMetroTRK size:0x98 (its trailing blr is now gap_03_80065654_text)
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/main_TRK.c"),
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk_glue.c"),
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/targcont.c"),

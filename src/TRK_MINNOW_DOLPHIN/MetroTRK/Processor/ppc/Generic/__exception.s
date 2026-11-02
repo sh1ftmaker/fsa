@@ -2,8 +2,7 @@
 
 .section .init, "ax"  # 0x80003100 - 0x80005600
 
-.global gTRKInterruptVectorTable
-gTRKInterruptVectorTable:
+.fn gTRKInterruptVectorTable, global
 .asciz "Metrowerks Target Resident Kernel for PowerPC"
 .balign 4
 .fill 0xD0
@@ -472,5 +471,7 @@ gTRKInterruptVectorTable:
 	mtspr 0x1a, r3
 	li r3, 0x1f00
 	rfi 
+.endfn gTRKInterruptVectorTable
+
 .global gTRKInterruptVectorTableEnd
 gTRKInterruptVectorTableEnd:
