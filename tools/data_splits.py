@@ -21,6 +21,7 @@ Usage:
 """
 
 import argparse
+import bisect
 import json
 import re
 import struct
@@ -172,8 +173,14 @@ def main():
         for section, start, end, _ in sections:
             if section != ".text":
                 claims.append((start, end, unit, section))
+    text_start = {unit: start for unit, sections in units for section, start, _, _ in sections if section == ".text"}
 
     proposals = {}
+    sorted_addrs = defaultdict(list)
+    for sec, a in by_addr:
+        sorted_addrs[sec].append(a)
+    for addrs in sorted_addrs.values():
+        addrs.sort()
     report = Counter()
     for unit, sections in units:
         if args.only and not unit.startswith(tuple(args.only)):
@@ -196,58 +203,68 @@ def main():
                     if section == name:
                         votes[addr - value] += 1
             relocated = elf.relocated.get(index, set())
+            by_content = False
             candidates = [base for base, _ in votes.most_common()]
             if not candidates and name not in BSS_SECTIONS:
-                # Search the bytes, relocated words as wildcards.
+                # Search the bytes, relocated words as wildcards; link order and
+                # overlaps below must leave exactly one hit.
                 body = s["data"]
                 pattern = b"".join(
                     b"(?s:....)" if i in relocated else re.escape(body[i:i + 4])
                     for i in range(0, len(body), 4)
                 )
-                hits = []
                 for seg_addr, seg_size, seg_off in segments:
                     for m in re.finditer(pattern, dol[seg_off:seg_off + seg_size]):
-                        hits.append(seg_addr + m.start())
-                        if len(hits) > 1:
-                            break
-                if len(hits) == 1:
-                    candidates = hits
-                else:
-                    report[f"{name}: {'ambiguous' if hits else 'not found'}"] += 1
+                        if m.start() % 4 == 0:
+                            candidates.append(seg_addr + m.start())
+                if len(candidates) > 256:
+                    report[f"{name}: ambiguous"] += 1
                     continue
+                if not candidates:
+                    report[f"{name}: not found"] += 1
+                    continue
+                by_content = True
+            if not candidates:
+                report[f"{name}: no named symbols"] += 1
+                continue
             named = [(sym, value) for sym, value, _, _, _, shndx in elf.symbols
                      if shndx == index and sym and not sym.startswith(("@", "..."))]
+            mine = text_start.get(unit)
 
-            def names_agree(base):
+            def check(base):
+                """Return (end, None) if base is acceptable, else (None, reason)."""
                 # Every named symbol must land on the same name, or on an unnamed address.
                 for sym, value in named:
                     there = by_addr.get((name, base + value))
                     if there is not None and there != sym and not there.startswith("lbl_"):
-                        return False
-                return True
-
-            chosen = None
-            for base in candidates:
-                if not names_agree(base):
-                    report[f"{name}: names disagree"] += 1
-                    continue
+                        return None, "names disagree"
                 if name not in BSS_SECTIONS and not matches(s["data"], dol_bytes(dol, segments, base, s["size"]), relocated):
-                    report[f"{name}: bytes differ"] += 1
-                    continue
-                chosen = base
-                break
-            if chosen is None:
-                if not candidates:
-                    report[f"{name}: no named symbols"] += 1
+                    return None, "bytes differ"
+                # The linker pads each section; the split must reach the next symbol.
+                end = base + s["size"]
+                addrs = sorted_addrs[name]
+                i = bisect.bisect_left(addrs, end)
+                following = [a for a in addrs[i:i + 8] if a < end + 32 and a % 4 == 0]
+                end = following[0] if following else (end + 3) & ~3
+                if any(c[2] != unit and c[0] < end and base < c[1] for c in claims):
+                    return None, "overlaps"
+                # Link order: the unit's data must follow the data of every unit whose
+                # code comes first, and precede the data of every unit whose code comes later.
+                if mine is not None and any(
+                        c[3] == name and c[2] in text_start and c[2] != unit
+                        and (text_start[c[2]] < mine) != (c[0] < base) for c in claims):
+                    return None, "out of link order"
+                return end, None
+
+            results = [(base, *check(base)) for base in candidates]
+            valid = [(base, end) for base, end, _ in results if end is not None]
+            if by_content and len(valid) > 1:
+                report[f"{name}: ambiguous"] += 1
                 continue
-            # The linker pads each section; the split must reach the next symbol.
-            end = chosen + s["size"]
-            following = [a for (sec, a) in by_addr if sec == name and end <= a < end + 32]
-            end = min(following) if following else (end + 3) & ~3
-            clash = [c for c in claims if c[2] != unit and c[0] < end and chosen < c[1]]
-            if clash:
-                report[f"{name}: overlaps {clash[0][2]}"] += 1
+            if not valid:
+                report[f"{name}: {results[0][2]}"] += 1
                 continue
+            chosen, end = valid[0]
             found.append((name, chosen, end))
             claims.append((chosen, end, unit, name))
         if found:
