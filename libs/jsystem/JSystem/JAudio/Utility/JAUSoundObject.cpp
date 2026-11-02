@@ -3,15 +3,13 @@
 #include "JSystem/JAudio/Interface/JAISeMgr.h"
 #include "JSystem/JAudio/Interface/JAISound.h"
 #include "JSystem/JAudio/Interface/JAISoundHandles.h"
-#include "JSystem/JAudio/JASFakeMatch2.h"
 #include "JSystem/JUtility/JUTAssert.h"
 
-JAUSoundObject::JAUSoundObject(JGeometry::TVec3f *pos, u8 numHandles, JKRHeap *heap) : JAISoundHandles(new (heap, 0) JAISoundHandle[numHandles], numHandles) {
+JAUSoundObject::JAUSoundObject(JGeometry::TVec3f *pos, u8 numHandles, JKRHeap *heap)
+    : JAISoundHandles(new (heap, 0) JAISoundHandle[numHandles], numHandles), _10(0), mSoundPos(pos) {
 #line 22
     JUT_ASSERT(handles_);
-    _C = 0;
-    _10 = numHandles;
-    mSoundPos = pos;
+    mIsAllocated = true;
 }
 
 JAUSoundObject::~JAUSoundObject() {
@@ -30,6 +28,7 @@ void JAUSoundObject::dispose() {
             }
         }
     }
+    mIsAllocated = false;
 }
 
 bool JAUSoundObject::stopOK(JAISoundHandle &) {
@@ -37,10 +36,17 @@ bool JAUSoundObject::stopOK(JAISoundHandle &) {
 }
 
 void JAUSoundObject::process() {
+    if (!mIsAllocated) {
+        return;
+    }
     setPos(*mSoundPos);
 }
 
 JAISoundHandle *JAUSoundObject::startSound(JAISoundID soundID) {
+    if (!mIsAllocated) {
+        return NULL;
+    }
+
     JAISoundStarter *starter = JAISoundStarter::getInstance();
     JAISoundHandle *handle = getHandleSoundID(soundID);
     if (handle == NULL) {
@@ -51,18 +57,30 @@ JAISoundHandle *JAUSoundObject::startSound(JAISoundID soundID) {
     }
 
     if (handle) {
-        starter->startSound(soundID, handle,mSoundPos);
+        starter->startSound(soundID, handle, mSoundPos);
     }
-    return handle;    
+    return handle;
+}
+
+JAISoundHandle *JAUSoundObject::startSoundIndex(JAISoundID soundID, u8 index) {
+    if (!mIsAllocated) {
+        return NULL;
+    }
+
+    JAISoundHandle *handle = &handles_[index];
+    JAISoundStarter::getInstance()->startSound(soundID, handle, mSoundPos);
+    return handle;
 }
 
 JAISoundHandle *JAUSoundObject::startLevelSound(JAISoundID soundID) {
+    if (!mIsAllocated) {
+        return NULL;
+    }
+
     JAISeMgr *seMgr = JAISeMgr::getInstance();
     JAISoundHandle *handle = getHandleSoundID(soundID);
 
     if (handle) {
-#line 91
-        JUT_ASSERT_F((*handle), "%s", "handle exist, but (*handle) is not exist!!\n");
         (*handle)->updateLifeTime(1);
     }
     else {
@@ -80,16 +98,43 @@ JAISoundHandle *JAUSoundObject::startLevelSound(JAISoundID soundID) {
     return handle;
 }
 
+JAISoundHandle *JAUSoundObject::startLevelSoundIndex(JAISoundID soundID, u8 index) {
+    if (!mIsAllocated) {
+        return NULL;
+    }
+
+    JAISeMgr *seMgr = JAISeMgr::getInstance();
+    JAISoundHandle *handle = getHandleSoundID(soundID);
+    if (handle) {
+        (*handle)->updateLifeTime(1);
+        return handle;
+    }
+
+    handle = &handles_[index];
+    seMgr->startSound(soundID, handle, mSoundPos);
+    if (*handle) {
+        (*handle)->setLifeTime(1, false);
+    }
+    return handle;
+}
+
+void JAUSoundObject::stopSound(JAISoundID soundID, u32 fadeTime) {
+    JAISoundHandle *handle = getHandleSoundID(soundID);
+    if (handle) {
+        (*handle)->stop(fadeTime);
+    }
+}
+
 JAISoundHandle *JAUSoundObject::getLowPrioSound(JAISoundID soundID) {
     JAISoundInfo *soundInfo = JAISoundInfo::getInstance();
     u32 curHighestPrio = 0xffff;
     JAISoundHandle *ret = NULL;
     for (s32 i = 0; i < numHandles_; i++) {
-        if (_C & (1 << i))
+        if (_10 & (1 << i))
             continue;
 
-        JAISoundHandle &handle = (*this)[i]; // what the fuck
-        u32 prio = soundInfo->getPriority(handle->soundID_); // getter?
+        JAISoundHandle &handle = (*this)[i];
+        u32 prio = soundInfo->getPriority(handle->soundID_);
         if (prio < curHighestPrio) {
             curHighestPrio = prio;
             ret = &handle;
@@ -104,10 +149,10 @@ JAISoundHandle *JAUSoundObject::getLowPrioSound(JAISoundID soundID) {
 
 JAISoundHandle *JAUSoundObject::getFreeHandleNotReserved() {
     for (s32 i = 0; i < numHandles_; i++) {
-        if (_C & (1 << i))
+        if (_10 & (1 << i))
             continue;
 
-        JAISoundHandle &handle = (*this)[i]; // what the fuck
+        JAISoundHandle &handle = (*this)[i];
         if (!handle) {
             return &handle;
         }
@@ -171,3 +216,8 @@ JAISoundHandle *JAUDopplerSoundObject::startLevelSound(JAISoundID soundID) {
     }
     return handle;
 }
+
+// FIXME: __sinit_JAUSoundObject_cpp (0x8003F504) is not emitted yet. FSA constructs the
+// JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools and
+// JASPoolAllocObject<JAISe>::memPool_ here; it needs the generic memPool_
+// definition (JASHeapCtrl.h, pending) visible in this TU.

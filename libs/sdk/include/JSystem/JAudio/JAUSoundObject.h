@@ -17,16 +17,16 @@ public:
     virtual void dispose();
     virtual bool stopOK(JAISoundHandle &);
     virtual JAISoundHandle *startSound(JAISoundID);
+    virtual JAISoundHandle *startSoundIndex(JAISoundID, u8);
     virtual JAISoundHandle *startLevelSound(JAISoundID);
-    
-    JAISoundHandle *getFreeHandleNotReserved();
-    JAISoundHandle *getLowPrioSound(JAISoundID);
-    //void startLevelSoundIndex(int, unsigned char);
-    //void startSoundIndex(int, unsigned char);
-    //void stopSound(int soundID, u32); // unused, not sure
+    virtual JAISoundHandle *startLevelSoundIndex(JAISoundID, u8);
 
-    u32 _C; // size of object?
-    u8 _10;
+    void stopSound(JAISoundID, u32);
+    JAISoundHandle *getLowPrioSound(JAISoundID);
+    JAISoundHandle *getFreeHandleNotReserved();
+
+    bool mIsAllocated;                // 0C
+    u32 _10;                          // 10, bit i set: handle i is reserved
     JGeometry::TVec3<f32> *mSoundPos; // 14
 };
 
