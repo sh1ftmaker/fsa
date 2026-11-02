@@ -61,6 +61,11 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
 - Stale reports: after any experiment in the main checkout (switching
   configure.py, flipping flags), rebuild the report before quoting numbers
   or using it as a baseline. Reviewers twice found the main report stale.
+- MWCC under wibo occasionally segfaults (exit 139) on unrelated units when
+  many worktrees build at once: rerun the build (at `-j8`) before suspecting
+  a source change.
+- The same placeholder can be named on two branches (e.g. `__div2i`): if the
+  lines differ (scope tags), `merge_unit.py` stops; keep the fuller line.
 - Hung processes: wrap every build/run in `timeout`; start long-lived
   processes with `sbg`. One forgotten test run spun for two hours.
 
