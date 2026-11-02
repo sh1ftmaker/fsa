@@ -38,7 +38,17 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
 6. After each function, rewrite your checkpoint (matched / resistant with
    diff hunks / SHARED-EDITS / next targets).
 
-Most misses in donor-imported files are not code at all: a reference to a
+**Use the donor projects.** For any shared library (SDK, MSL, Runtime, TRK,
+JSystem), read every donor's version of the file before writing anything:
+mkdd, oot-gc, pikmin2, tp, tww, sms, melee, Petari, ttyd/lm's dolsdk2004,
+dolsdk2001, the Mario Party and Animal Crossing decomps (`../donors/`).
+A donor function is a good starting point even if it doesn't match FSA's
+build: start from the closest one and adapt it. Functions missing from one
+donor's file are often present in another's (tp and dolsdk2004 have more of
+the SDK than mkdd).
+
+Lessons from the first wave:
+- Most misses in donor-imported files are not code at all: a reference to a
 symbol that is named differently or sits in another unit, a string that is
 in the wrong section, a static that isn't split into this unit. Fix those in
 data and symbols, not by bending code.
