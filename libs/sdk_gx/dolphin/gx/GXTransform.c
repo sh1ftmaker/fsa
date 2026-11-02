@@ -3,6 +3,34 @@
 
 #include "dolphin/private/__gx.h"
 
+void GXProject(f32 x, f32 y, f32 z, const Mtx mtx, const f32* pm, const f32* vp, f32* sx, f32* sy, f32* sz) {
+    Vec peye;
+    f32 xc;
+    f32 yc;
+    f32 zc;
+    f32 wc;
+
+    ASSERTMSGLINE(168, pm && vp && sx && sy && sz, "GXGet*: invalid null pointer");
+
+    peye.x = mtx[0][3] + ((mtx[0][2] * z) + ((mtx[0][0] * x) + (mtx[0][1] * y)));
+    peye.y = mtx[1][3] + ((mtx[1][2] * z) + ((mtx[1][0] * x) + (mtx[1][1] * y)));
+    peye.z = mtx[2][3] + ((mtx[2][2] * z) + ((mtx[2][0] * x) + (mtx[2][1] * y)));
+    if (pm[0] == 0.0f) {
+        xc = (peye.x * pm[1]) + (peye.z * pm[2]);
+        yc = (peye.y * pm[3]) + (peye.z * pm[4]);
+        zc = pm[6] + (peye.z * pm[5]);
+        wc = 1.0f / -peye.z;
+    } else {
+        xc = pm[2] + (peye.x * pm[1]);
+        yc = pm[4] + (peye.y * pm[3]);
+        zc = pm[6] + (peye.z * pm[5]);
+        wc = 1.0f;
+    }
+    *sx = (vp[2] / 2.0f) + (vp[0] + (wc * (xc * vp[2] / 2.0f)));
+    *sy = (vp[3] / 2.0f) + (vp[1] + (wc * (-yc * vp[3] / 2.0f)));
+    *sz = vp[5] + (wc * (zc * (vp[5] - vp[4])));
+}
+
 inline void WriteProjPS(const register f32 src[6], register volatile void* dst) {
     register f32 ps_0, ps_1, ps_2;
 
@@ -320,6 +348,40 @@ void GXSetViewport(f32 left, f32 top, f32 width, f32 height, f32 nearZ, f32 farZ
     __GXData->bpSentNot = GX_TRUE;
 #endif
 }
+
+#if IS_CE
+#define GX_WRITE_XF_REG_F_(addr, value)    \
+    do {                                   \
+        GX_WRITE_U8(0x10);                 \
+        GX_WRITE_U32(0x1000 + (addr));     \
+        GX_WRITE_XF_REG_F(addr, value);    \
+    } while (0)
+
+void GXSetZScaleOffset(f32 scale, f32 offset) {
+    f32 sz;
+    f32 oz;
+    f32 zmin;
+    f32 zmax;
+
+    CHECK_GXBEGIN(996, "GXSetZScaleOffset");
+
+    oz = offset * 1.6777215e7f;
+    __GXData->zOffset = oz;
+
+    sz = (scale * 1.6777215e7f) + 1.0f;
+    __GXData->zScale = sz;
+
+    zmin = __GXData->vpNearz * sz;
+    zmax = __GXData->vpFarz * sz;
+    sz = zmax - zmin;
+    oz = oz + zmax;
+
+    GX_WRITE_XF_REG_F_(0x1C, sz);
+    GX_WRITE_XF_REG_F_(0x1F, oz);
+
+    __GXData->bpSentNot = GX_TRUE;
+}
+#endif
 
 void GXSetScissor(u32 left, u32 top, u32 wd, u32 ht) {
     u32 tp;

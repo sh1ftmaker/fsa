@@ -689,7 +689,7 @@ config.libs = [
         Object(NonMatching, "dolphin/gx/GXPixel.c", extra_cflags=["-fp_contract off"]),
         Object(Matching, "dolphin/gx/GXTev.c"),
         Object(Matching, "dolphin/gx/GXTexture.c"),
-        Object(NonMatching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
+        Object(Matching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
     ]),
     JSystemLib("J2DGraph", [
         Object(Matching, "JSystem/J2DGraph/J2DPrint.cpp"),
