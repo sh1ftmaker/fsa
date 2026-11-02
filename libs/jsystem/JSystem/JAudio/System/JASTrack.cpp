@@ -14,7 +14,10 @@ static const u32 FILTER_MODE_IIR = 0x00000020;
 JASDefaultBankTable JASTrack::sDefaultBankTable;
 JASTrack::TList JASTrack::sTrackList;
 
-#include "JSystem/JAudio/JASFakeMatch.h"
+// FIXME: the original also defines the three JASPoolAllocObject_MultiThreaded<T>::memPool_
+// pools here (its __sinit constructs and registers them). A generic definition in
+// JASHeapCtrl.h does that, but then units that must not emit them do too; see
+// docs/COORDINATOR.md (JASFakeMatch findings).
 
 const JASOscillator::Point JASTrack::sAdsTable[4] = {
     {0, 0, 0x7fff},
@@ -49,26 +52,22 @@ JASTrack::~JASTrack() {
 }
 
 void JASTrack::setChannelMgrCount(u32 count) {
-#line 78
+#line 79
     JUT_ASSERT(mStatus != STATUS_RUN);
     JUT_ASSERT(count >= 1 && count <= CHANNEL_MGR_MAX);
     mChannelMgrCount = 1;
-    mChannelMgrs[0]->init();
-
-    for (u32 i = 1; i < count; i++, mChannelMgrCount++) {
+    for (int i = 1; i < count; i++) {
         if (mChannelMgrs[i] == NULL) {
             mChannelMgrs[i] = new TChannelMgr(this);
             if (mChannelMgrs[i] == NULL) {
                 JUT_WARNING_F2("%s", "Not enough JASTrackChannelMgr\n");
                 return;
-            }            
+            }
         }
-        else {
-            mChannelMgrs[i]->init();
-        }
+        mChannelMgrCount++;
     }
-    for (int i = mChannelMgrCount; i < CHANNEL_MGR_MAX; i++) {
-        if (mChannelMgrs[i] != NULL) {            
+    for (u32 i = mChannelMgrCount; i < CHANNEL_MGR_MAX; i++) {
+        if (mChannelMgrs[i] != NULL) {
             delete mChannelMgrs[i];
             mChannelMgrs[i] = NULL;
         }
@@ -92,12 +91,14 @@ void JASTrack::init() {
         mChildren[i] = NULL;
     }
     
-    for(int i = 0; i < mChannelMgrCount; i++) {
-        if (mChannelMgrs[i]) {
-            mChannelMgrs[i]->init();
+    mChannelMgrs[0]->init();
+    mChannelMgrCount = 1;
+    for (int i = 1; i < 4; i++) {
+        if (mChannelMgrs[i] != NULL) {
+            delete mChannelMgrs[i];
+            mChannelMgrs[i] = NULL;
         }
     }
-    
     mBankTable = &sDefaultBankTable;
     _1d8 = 1.0f;
     _1dc = 1.0f;
@@ -144,8 +145,7 @@ void JASTrack::init() {
     mFlags.autoDelete = false;
     mFlags.flag4 = false;
     mFlags.flag6 = false;
-    mStatus = 0;
-    setChannelMgrCount(1);
+    mStatus = STATUS_FREE;
 }
 
 void JASTrack::initTimed() {
@@ -607,28 +607,29 @@ u16 JASTrack::readPort(u32 p1) {
     return mTrackPort.readExport(p1);
 }
 
+// FIXME: FSA's copy inlines this recursion seven levels deep (stmw r16, 0x50 frame);
+// GC/1.3.2-3.0 all stop at six here (stmw r18, 0x40 frame). Same code otherwise.
 void JASTrack::setChannelPauseFlag(bool pause) {
     for (u32 i = 0; i < mChannelMgrCount; i++) {
         TChannelMgr *mgr = mChannelMgrs[i];
-        if (mgr) {
+        if (mgr != NULL) {
             mgr->setPauseFlag(pause);
+        }
+    }
+    for (int i = 0; i < MAX_CHILDREN; i++) {
+        JASTrack *child = mChildren[i];
+        if (child != NULL) {
+            child->setChannelPauseFlag(pause);
         }
     }
 }
 
 void JASTrack::pause(bool pause) {
-    if (mFlags.pause == pause)
-        return;
-    mFlags.pause = pause;
-    
-    setChannelPauseFlag(pause);
-    for (int i = 0; i < MAX_CHILDREN; i++) {
-        JASTrack *child = mChildren[i];
-        if (child) {
-            child->setChannelPauseFlag(pause);
-        }
+    if (mFlags.pause != pause) {
+        mFlags.pause = pause;
+        setChannelPauseFlag(pause);
+        mSeqCtrl.interrupt(pause ? JASSeqCtrl::INTRTYPE_VALUE_0 : JASSeqCtrl::INTRTYPE_VALUE_1);
     }
-    mSeqCtrl.interrupt(pause ? JASSeqCtrl::INTRTYPE_VALUE_0 : JASSeqCtrl::INTRTYPE_VALUE_1);
 }
 
 int JASTrack::getTransposeTotal() const {

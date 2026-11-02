@@ -7,10 +7,9 @@
 #include "JSystem/JAudio/System/JASBNKParser.h"
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 #include "JSystem/JAudio/System/JASResArcLoader.h"
+#include "JSystem/JAudio/System/JASVoiceBank.h"
 #include "JSystem/JAudio/System/JASWaveBank.h"
 #include "JSystem/JAudio/System/JASWSParser.h"
-
-#include "JSystem/JAudio/JASFakeMatch2.h"
 
 // The scopes are real
 
@@ -534,6 +533,35 @@ JASBank *JAUSection::newBank(const void *pBnk, u32 index) {
     return 0;
 }
 
+JASVoiceBank *JAUSection::newVoiceBank(u32 bank_no, u32 index)
+{
+    JUT_ASSERT(isOpen());
+    JUT_ASSERT(isBuilding());
+    JASWaveBank *waveBank = sectionHeap_->getWaveBankTable().getWaveBank(index);
+    JUT_ASSERT(waveBank != 0);
+    {
+        TPushCurrentHeap push(getHeap_());
+        JASBank *voiceBank = new JASVoiceBank();
+        if (voiceBank)
+        {
+            if (buildingBankTable_)
+            {
+                JUT_ASSERT(buildingBankTable_->getBank( bank_no ) == 0);
+                buildingBankTable_->registBank(bank_no, voiceBank);
+            }
+            else
+            {
+                JUT_ASSERT(JASDefaultBankTable::getInstance() ->getBank( bank_no ) == 0);
+                JASDefaultBankTable::getInstance()->registBank(bank_no, voiceBank);
+                data_.registeredBankTables.set(bank_no, true);
+            }
+            voiceBank->assignWaveBank(waveBank);
+            return (JASVoiceBank *)voiceBank;
+        }
+    }
+    return NULL;
+}
+
 bool JAUSection::beginNewBankTable(u32 p1, u32 bankCount)
 {
 #line 641
@@ -574,9 +602,14 @@ JAUBankTable *JAUSection::endNewBankTable() {
     return ret;
 }
 
-#ifdef DEBUG
-CW_FORCE_STRINGS(JAUSection_cpp_1, "JAUSectionHeap.h");
-#endif
+void JAUSectionHeap::setSeqDataArchive(JKRArchive *archive)
+{
+    sectionHeapData_.dynamicSeqBlocks_.setSeqDataArchive(archive);
+    for (JSULink<JAUSection> *link = sectionList_.getFirst(); link; link = link->getNext())
+    {
+        link->getObject()->data_.seqDataBlocks_.setSeqDataArchive(archive);
+    }
+}
 
 JAUSectionHeap *JAUNewSectionHeap(JKRSolidHeap *heap, bool p2)
 {
@@ -675,6 +708,8 @@ JAUSection *JAUSectionHeap::getSection(int no)
 }
 
 int JAUSectionHeap::getNumSections() const { return sectionList_.getNumLinks(); }
+
+JAUSoundTable *JAUSectionHeap::getSoundTable() { return sectionHeapData_.soundTable; }
 
 bool JAUSectionHeap::setSeqDataUser(JAISeqDataUser *seqDataUser) {
     sectionHeapData_.seqDataUser = seqDataUser;

@@ -125,10 +125,15 @@ def main():
     sym_theirs = run("git", "show", f"{branch}:{SYMBOLS}")
     cfg = [run("git", "show", f"{rev}:configure.py") for rev in (base, "HEAD", branch)]
 
+    try:  # before touching the tree, so a refusal leaves it clean
+        merged_symbols = merge_symbols(sym_base, sym_ours, sym_theirs)
+        merged_configure = merge_configure(*cfg, unit)
+    except SystemExit as stop:
+        sys.exit(f"{stop}\nnothing changed; fix the branch (keep the fuller or matching's line) and rerun")
     subprocess.run(["git", "merge", "--squash", branch], capture_output=True, text=True)
-    Path(SYMBOLS).write_text(merge_symbols(sym_base, sym_ours, sym_theirs))
+    Path(SYMBOLS).write_text(merged_symbols)
     run("git", "add", SYMBOLS)
-    Path("configure.py").write_text(merge_configure(*cfg, unit))
+    Path("configure.py").write_text(merged_configure)
     run("git", "add", "configure.py")
     for generated in ("objdiff.json",):
         run("git", "checkout", "HEAD", "--", generated, check=False)
