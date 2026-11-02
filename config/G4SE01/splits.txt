@@ -324,7 +324,7 @@ dolphin/os/OSReset.c:
 	.sbss       start:0x8053A458 end:0x8053A468
 
 dolphin/os/OSResetSW.c:
-	.text       start:0x800441DC end:0x80044474
+	.text       start:0x800440E8 end:0x80044494
 	.sbss       start:0x8053A468 end:0x8053A488
 
 dolphin/os/OSRtc.c:
