@@ -993,7 +993,7 @@ JSystem/JMath/JMATrigonometric.cpp:
 	.sdata2     start:0x8053B948 end:0x8053B990
 
 JSystem/J2DGraph/J2DOrthoGraph.cpp:
-	.text       start:0x800937B0 end:0x80093E64
+	.text       start:0x80093768 end:0x80093E64
 	.data       start:0x80499520 end:0x80499548
 	.sdata2     start:0x8053B990 end:0x8053B998
 
