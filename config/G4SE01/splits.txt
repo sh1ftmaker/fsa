@@ -824,7 +824,8 @@ JSystem/J2DGraph/J2DPrint.cpp:
 	.text       start:0x8009C230 end:0x8009C2A4
 
 JSystem/J2DGraph/J2DScreen.cpp:
-	.text       start:0x8009C4EC end:0x8009DB58
+	.text       start:0x8009C4EC end:0x8009DFA0
+	.data       start:0x804997E8 end:0x80499884
 	.sbss       start:0x8053A9B0 end:0x8053A9B8
 	.sdata2     start:0x8053BA28 end:0x8053BA48
 
