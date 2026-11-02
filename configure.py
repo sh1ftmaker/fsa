@@ -493,7 +493,7 @@ config.libs = [
         Object(Matching, "dolphin/dvd/dvd.c"),
         Object(Matching, "dolphin/dvd/dvderror.c"),
         # FIXME: .text matches; symbols.txt has FatalFunc as 8 bytes (dtk guess), the static is 4 (coordinator: size 0x4, scope:local).
-        Object(NonMatching, "dolphin/dvd/dvdFatal.c"),
+        Object(Matching, "dolphin/dvd/dvdFatal.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(Matching, "dolphin/dvd/dvdidutils.c"),
         Object(Matching, "dolphin/dvd/dvdlow.c"),
