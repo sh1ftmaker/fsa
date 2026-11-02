@@ -194,40 +194,12 @@ struct J3DMaterialAnm {
 	void initialize();
 
 	// unused/TP debug inlines to do:
+	void setMatColorAnm(int, J3DMatColorAnm*);
+	void setTexMtxAnm(int, J3DTexMtxAnm*);
 	void setTexNoAnm(int, J3DTexNoAnm*);
+	void setTevColorAnm(int, J3DTevColorAnm*);
+	void setTevKColorAnm(int, J3DTevKColorAnm*);
 
-	void setMatColorAnm(int index, J3DMatColorAnm* anm)
-	{
-		if (anm == nullptr) {
-			mMatColAnmList[index].setAnmFlag(false);
-		} else {
-			mMatColAnmList[index] = *anm;
-		}
-	}
-	void setTexMtxAnm(int index, J3DTexMtxAnm* anm)
-	{
-		if (anm == nullptr) {
-			mTexMtxAnmList[index].setAnmFlag(false);
-		} else {
-			mTexMtxAnmList[index] = *anm;
-		}
-	}
-	void setTevColorAnm(int index, J3DTevColorAnm* anm)
-	{
-		if (anm == nullptr) {
-			mTevColAnmList[index].setAnmFlag(false);
-		} else {
-			mTevColAnmList[index] = *anm;
-		}
-	}
-	void setTevKColorAnm(int index, J3DTevKColorAnm* anm)
-	{
-		if (anm == nullptr) {
-			mTevKColAnmList[index].setAnmFlag(false);
-		} else {
-			mTevKColAnmList[index] = *anm;
-		}
-	}
 
 	const J3DTexMtxAnm& getTexMtxAnm(int i) const { return mTexMtxAnmList[i]; }
 

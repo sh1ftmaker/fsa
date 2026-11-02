@@ -869,7 +869,7 @@ config.libs = [
     MkddJSystemLib("J3DGraphAnimator", [
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModel.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DAnimation.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMaterialAnm.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphAnimator/J3DMaterialAnm.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphAnimator/J3DCluster.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DJoint.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModelData.cpp", extra_cflags=["-O4,p"]),

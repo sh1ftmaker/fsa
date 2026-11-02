@@ -73,3 +73,48 @@ void J3DMaterialAnm::calc(J3DMaterial* material) const
 		}
 	}
 }
+
+void J3DMaterialAnm::setMatColorAnm(int index, J3DMatColorAnm* anm)
+{
+	if (anm == nullptr) {
+		mMatColAnmList[index].setAnmFlag(false);
+	} else {
+		mMatColAnmList[index] = *anm;
+	}
+}
+
+void J3DMaterialAnm::setTexMtxAnm(int index, J3DTexMtxAnm* anm)
+{
+	if (anm == nullptr) {
+		mTexMtxAnmList[index].setAnmFlag(false);
+	} else {
+		mTexMtxAnmList[index] = *anm;
+	}
+}
+
+void J3DMaterialAnm::setTexNoAnm(int index, J3DTexNoAnm* anm)
+{
+	if (anm == nullptr) {
+		mTexNoAnmList[index].setAnmFlag(false);
+	} else {
+		mTexNoAnmList[index] = *anm;
+	}
+}
+
+void J3DMaterialAnm::setTevColorAnm(int index, J3DTevColorAnm* anm)
+{
+	if (anm == nullptr) {
+		mTevColAnmList[index].setAnmFlag(false);
+	} else {
+		mTevColAnmList[index] = *anm;
+	}
+}
+
+void J3DMaterialAnm::setTevKColorAnm(int index, J3DTevKColorAnm* anm)
+{
+	if (anm == nullptr) {
+		mTevKColAnmList[index].setAnmFlag(false);
+	} else {
+		mTevKColAnmList[index] = *anm;
+	}
+}
