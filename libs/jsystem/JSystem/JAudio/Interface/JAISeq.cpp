@@ -343,4 +343,8 @@ JAITempoMgr *JAISeq::getTempoMgr()
     return &inner_.mTempoMgr;
 }
 
-#include "JSystem/JAudio/JASFakeMatch6.h"
+// FIXME: __sinit_JAISeq_cpp (0x80024A0C) is not emitted yet. FSA constructs five
+// pools here: the JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded
+// pools, then JASPoolAllocObject<JAISoundChild>::memPool_ and
+// JASPoolAllocObject<JAISeq>::memPool_. It needs the generic memPool_ definition
+// (JASHeapCtrl.h, pending) visible in this TU.
