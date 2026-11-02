@@ -282,6 +282,14 @@ void JAISeMgr::stop()
     }
 }
 
+void JAISeMgr::stop(u32 fadeCount)
+{
+    for (int i = 0; i < 16; i++)
+    {
+        mCategoryMgrs[i].stop(fadeCount);
+    }
+}
+
 void JAISeMgr::stopAudibleSoundsSync()
 {
     stopAudibleSounds();
@@ -465,4 +473,7 @@ int JAISeMgr::getNumAudibleSe() const
     return sum;
 }
 template <> DECL_WEAK JAISoundInfo *JASGlobalInstance<JAISoundInfo>::sInstance;
-#include "JSystem/JAudio/JASFakeMatch2.h"
+// FIXME: __sinit_JAISeMgr_cpp (0x80023A68) is not emitted yet. FSA constructs the
+// JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools and
+// JASPoolAllocObject<JAISe>::memPool_ here; it needs the generic memPool_
+// definition (JASHeapCtrl.h, pending) visible in this TU.

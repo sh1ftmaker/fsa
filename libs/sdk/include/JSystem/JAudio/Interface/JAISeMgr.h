@@ -82,6 +82,7 @@ public:
     void setCategoryArrangement(const JAISeCategoryArrangement &catArrangement);
     void getCategoryArrangement(JAISeCategoryArrangement *catArrangement);
     void stop();
+    void stop(u32 fadeCount);
     void stopAudibleSoundsSync();
     void stopAudibleSounds();
     void stopSoundID(JAISoundID soundID);

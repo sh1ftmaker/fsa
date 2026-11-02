@@ -23,6 +23,8 @@ JSystem/JAudio/Interface/JAISeMgr.cpp:
 	.text       start:0x800228F4 end:0x80023B74
 	.ctors      start:0x8045BD10 end:0x8045BD14
 	.rodata     start:0x8045C660 end:0x8045C678
+	.data       start:0x80491718 end:0x80491740
+	.bss        start:0x804B22B8 end:0x804B22E8
 	.sdata2     start:0x8053AFB0 end:0x8053AFC0
 
 JSystem/JAudio/Interface/JAISeq.cpp:
