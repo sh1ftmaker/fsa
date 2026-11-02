@@ -1,4 +1,3 @@
-#include "JSystem/JAudio/System/JASChannel.h"
 #include "JSystem/JAudio/System/JASDsp.h"
 #include "JSystem/JAudio/System/JASHeap.h"
 #include "JSystem/JUtility/JUTAssert.h"

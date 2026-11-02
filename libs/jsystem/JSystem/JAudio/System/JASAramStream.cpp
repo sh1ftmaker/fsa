@@ -10,8 +10,6 @@
 #include "dolphin/dvd/dvdfs.h"
 
 #ifdef MATCHING
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
 #endif
 
 JASTaskThread *JASAramStream::sLoadThread;

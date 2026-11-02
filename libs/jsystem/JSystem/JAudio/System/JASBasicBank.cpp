@@ -4,9 +4,6 @@
 #include "JSystem/JUtility/JUTAssert.h"
 #include "types.h"
 
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-
 JASBasicBank::JASBasicBank() {
     JASCalc::bzero(mInstTable, sizeof(mInstTable));
 }

@@ -252,6 +252,8 @@ private:
     static JASMemPool<T> memPool_;
 };
 
+template <typename T> JASMemPool<T> JASPoolAllocObject<T>::memPool_;
+
 template <typename T>
 struct JASMemPool_MultiThreaded : public JASGenericMemPool
 {
@@ -298,5 +300,7 @@ struct JASPoolAllocObject_MultiThreaded
 private:
     static JASMemPool_MultiThreaded<T> memPool_;
 };
+
+template <typename T> JASMemPool_MultiThreaded<T> JASPoolAllocObject_MultiThreaded<T>::memPool_;
 
 #endif

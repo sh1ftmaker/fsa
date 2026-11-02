@@ -329,7 +329,4 @@ u32 getSubFrameCounter() {
 
 #ifdef MATCHING
 
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-
 #endif

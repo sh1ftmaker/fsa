@@ -2,6 +2,7 @@
 #include "JSystem/JAudio/Interface/JAIStream.h"
 #include "JSystem/JAudio/Interface/JAISeMgr.h"
 #include "JSystem/JAudio/Interface/JAISeq.h"
+#include "JSystem/JAudio/Interface/JAISoundChild.h"
 #include "JSystem/JAudio/System/JASAudioThread.h"
 #include "JSystem/JAudio/System/JASDvd.h"
 #include "JSystem/JAudio/System/JASDriver.h"

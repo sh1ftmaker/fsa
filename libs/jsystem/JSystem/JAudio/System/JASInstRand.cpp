@@ -1,4 +1,5 @@
 #include <JSystem/JAudio/System/JASInst.h>
+#include <JSystem/JAudio/System/JASChannel.h>
 #include <JSystem/JUtility/JUTDbg.h>
 
 // probably fakematch

@@ -4,6 +4,7 @@
 #include "JSystem/JAudio/Interface/JAIStream.h"
 #include "JSystem/JAudio/Interface/JAIStreamDataMgr.h"
 #include "JSystem/JAudio/Interface/JAISound.h"
+#include "JSystem/JAudio/Interface/JAISoundChild.h"
 #include "JSystem/JAudio/System/JASAramStream.h"
 #include "JSystem/JAudio/System/JASHeapCtrl.h"
 #include "JSystem/JAudio/System/JASAudioThread.h"

@@ -14,9 +14,6 @@ OSMessage JASChannel::sBankDisposeMsg[BANK_NUM];
 OSMessage JASChannel::sBankDisposeList[BANK_NUM];
 int JASChannel::sBankDisposeListSize;
 
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-
 JASChannel::JASChannel(JASChannel::Callback cb, void *cbData) :
 mStatus(0),
 mDspCh(NULL),

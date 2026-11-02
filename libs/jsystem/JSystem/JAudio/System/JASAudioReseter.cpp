@@ -1,4 +1,5 @@
 #include "JSystem/JAudio/System/JASAudioThread.h"
+#include "JSystem/JAudio/System/JASChannel.h"
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 #include "JSystem/JAudio/System/JASDriver.h"
 #include "JSystem/JAudio/System/JASDsp.h"

@@ -1,6 +1,7 @@
 #include "JSystem/JAudio/Interface/JAIAudience.h"
 #include "JSystem/JAudio/Interface/JAISeq.h"
 #include "JSystem/JAudio/Interface/JAISeqMgr.h"
+#include "JSystem/JAudio/Interface/JAISoundChild.h"
 #include "JSystem/JAudio/System/JASTrack.h"
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 

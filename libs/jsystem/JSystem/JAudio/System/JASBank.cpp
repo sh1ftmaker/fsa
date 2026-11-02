@@ -5,8 +5,6 @@
 #include "JSystem/JAudio/System/JASDriver.h"
 
 #ifdef MATCHING
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
 #endif
 
 JASChannel *JASBank::noteOn(const JASBank *pBnk, u32 instId, u8 param_2, u8 vel, u16 prio,

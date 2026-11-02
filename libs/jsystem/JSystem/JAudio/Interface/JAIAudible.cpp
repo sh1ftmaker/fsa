@@ -1,4 +1,5 @@
 #include "JSystem/JAudio/Interface/JAIAudible.h"
+#include "JSystem/JAudio/System/JASTrack.h"
 
 #ifdef DEBUG
 #pragma sym on

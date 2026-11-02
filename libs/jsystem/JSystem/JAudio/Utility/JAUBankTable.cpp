@@ -1,4 +1,5 @@
 #include "JSystem/JAudio/JAUBankTable.h"
+#include "JSystem/JAudio/System/JASTrack.h"
 
 void JAUBankTable::copyToDefault()
 {
