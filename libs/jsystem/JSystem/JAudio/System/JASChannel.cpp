@@ -214,10 +214,10 @@ void JASChannel::updateEffectorParam(JASDsp::TChannel *channel, u16 *mixerVolume
     fxmix = JASCalc::clamp01(fxmix);
     dolby = JASCalc::clamp01(dolby);
 
-    if (!isDolbyMode()) {
-        updateMixer(volume, pan, fxmix, dolby, mixerVolume);
-    } else {
+    if (isDolbyMode()) {
         updateAutoMixer(channel, volume, pan, fxmix, dolby);
+    } else {
+        updateMixer(volume, pan, fxmix, dolby, mixerVolume);
     }
 }
 
@@ -319,6 +319,7 @@ s32 JASChannel::initialUpdateDSPChannel(JASDsp::TChannel *dspChannel) {
     dspChannel->setPitch(pitch);
 
     dspChannel->setPauseFlag(mPauseFlag);
+    dspChannel->_66 = 0;
     return 0;
 }
 
@@ -349,7 +350,7 @@ s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
 
     dspChannel->setPauseFlag(mPauseFlag);
-    
+    JASOscillator::EffectParams effect_params;
     if (mPauseFlag) {
         if (mOscillators[0].isRelease()) {
             mDspCh->free();
@@ -357,29 +358,27 @@ s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
             delete this;
             return -1;
         }
-        return 0;
-    }
-    
-    f32 inc = 32028.5f / JASDriver::getDacRate();
-    mVibrate.incCounter(inc);
-    mTremolo.incCounter(inc);
-    if (mUpdateTimer != 0) {
-        mUpdateTimer--;
-        if (mUpdateTimer == 0 && mCb != NULL) {
-            mCb(CB_TIMER, this, dspChannel, mCbData);
+    } else {
+        f32 inc = 32028.5f / JASDriver::getDacRate();
+        mVibrate.incCounter(inc);
+        mTremolo.incCounter(inc);
+        if (mUpdateTimer != 0) {
+            mUpdateTimer--;
+            if (mUpdateTimer == 0 && mCb != NULL) {
+                mCb(CB_TIMER, this, dspChannel, mCbData);
+            }
         }
-    }
-    inc = 48000.0f / JASDriver::getDacRate();
-    JASOscillator::EffectParams effect_params;
-    for (u32 i = 0; i < 2; i++) {
-        if (mOscillators[i].isValid()) {
-            mOscillators[i].incCounter(inc);
-            effectOsc(i, &effect_params);
-            if (i == 0 && mOscillators[i].isStop()) {
-                mDspCh->free();
-                mDspCh = NULL;
-                delete this;
-                return -1;
+        inc = 48000.0f / JASDriver::getDacRate();
+        for (u32 i = 0; i < 2; i++) {
+            if (mOscillators[i].isValid()) {
+                mOscillators[i].incCounter(inc);
+                effectOsc(i, &effect_params);
+                if (i == 0 && mOscillators[i].isStop()) {
+                    mDspCh->free();
+                    mDspCh = NULL;
+                    delete this;
+                    return -1;
+                }
             }
         }
     }
@@ -398,16 +397,24 @@ s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
     dspChannel->setPitch(pitch);
 
-    if (mKeySweepCount != 0) {
+    if (!mPauseFlag && mKeySweepCount != 0) {
         mKeySweep += (mKeySweepTarget - mKeySweep) / mKeySweepCount;
         mKeySweepCount--;
     }
     return 0;
 }
 
-void JASChannel::updateAutoMixer(JASDsp::TChannel *dspChannel, f32 volume, f32 p3, f32 p4 , f32 p5) {
-    f32 clamped = JASCalc::clamp01(volume);
-    dspChannel->setAutoMixer(clamped * JASDriver::getChannelLevel_dsp(), p3 * 127.5f, p5 * 127.5f, p4 * 127.5f, 0);
+void JASChannel::updateAutoMixer(JASDsp::TChannel *dspChannel, f32 volume, f32 pan, f32 fxmix, f32 dolby) {
+    if (JASDriver::getOutputMode() == OS_SOUND_MODE_MONO) {
+        volume *= 0.707f;
+    }
+    volume = JASCalc::clamp01(volume);
+
+    u16 dspVolume = volume * JASDriver::getChannelLevel_dsp();
+    u8 dspPan = pan * 127.5f;
+    u8 dspDolby = dolby * 127.5f;
+    u8 dspFxMix = fxmix * 127.5f;
+    dspChannel->setAutoMixer(dspVolume, dspPan, dspDolby, dspFxMix, 0);
 }
 
 void JASChannel::updateMixer(f32 volume, f32 pan, f32 fxmix, f32 dolby, u16* volumeOut) {
@@ -447,7 +454,11 @@ void JASChannel::updateMixer(f32 volume, f32 pan, f32 fxmix, f32 dolby, u16* vol
                     mixerVolume *= scale;
                     break;
                 default:
-                    mixerVolume *= JMASinRadian(scale * JGeometry::TUtilf::PI() * 0.5f);
+                    if (JASDriver::getOutputMode() == OS_SOUND_MODE_MONO) {
+                        mixerVolume *= scale;
+                    } else {
+                        mixerVolume *= JMASinRadian(scale * JGeometry::TUtilf::PI() * 0.5f);
+                    }
                     break;
                 }
             }
@@ -484,12 +495,17 @@ void JASChannel::updateMixer(f32 volume, f32 pan, f32 fxmix, f32 dolby, u16* vol
                     mixerVolume *= scale;
                     break;
                 default:
-                    mixerVolume *= JMASinRadian(scale * JGeometry::TUtilf::PI() * 0.5f);
+                    if (JASDriver::getOutputMode() == OS_SOUND_MODE_MONO) {
+                        mixerVolume *= scale;
+                    } else {
+                        mixerVolume *= JMASinRadian(scale * JGeometry::TUtilf::PI() * 0.5f);
+                    }
                     break;
                 }
             }
 
-            volumeOut[i] = JASCalc::clamp01(mixerVolume) * JASDriver::getChannelLevel_dsp();
+            mixerVolume = JASCalc::clamp01(mixerVolume);
+            volumeOut[i] = mixerVolume * JASDriver::getChannelLevel_dsp();
         }
     }
 }

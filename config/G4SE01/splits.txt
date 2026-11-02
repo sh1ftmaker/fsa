@@ -131,12 +131,15 @@ JSystem/JAudio/System/JASAudioReseter.cpp:
 	.ctors      start:0x8045BD44 end:0x8045BD48
 
 JSystem/JAudio/System/JASChannel.cpp:
-	.text       start:0x8002AAF8 end:0x8002C360
+	.text       start:0x8002AAF8 end:0x8002C308
 	.ctors      start:0x8045BD48 end:0x8045BD4C
+	.data       start:0x804918E0 end:0x80491958
+	.bss        start:0x804B2540 end:0x804B2550
 	.sbss       start:0x8053A320 end:0x8053A328
+	.sdata2     start:0x8053B0C0 end:0x8053B120
 
 JSystem/JAudio/System/JASDriverIF.cpp:
-	.text       start:0x8002C360 end:0x8002C55C
+	.text       start:0x8002C308 end:0x8002C55C
 	.ctors      start:0x8045BD4C end:0x8045BD50
 	.sdata      start:0x80539BD0 end:0x80539BD8
 
