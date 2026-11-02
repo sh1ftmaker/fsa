@@ -1043,12 +1043,12 @@ JSystem/J2DGraph/J2DWindowEx.cpp:
 	.sdata2     start:0x8053BA88 end:0x8053BAA8
 
 JSystem/J2DGraph/J2DAnmLoader.cpp:
-	.text       start:0x800A4994 end:0x800A65E0
+	.text       start:0x800A4994 end:0x800A655C
 	.data       start:0x80499AE8 end:0x80499B70
 	.sdata2     start:0x8053BAA8 end:0x8053BAB0
 
 JSystem/J2DGraph/J2DBloSaver.cpp:
-	.text       start:0x800A65E0 end:0x800A68D4
+	.text       start:0x800A655C end:0x800A68D4
 	.ctors      start:0x8045BDD8 end:0x8045BDDC
 	.bss        start:0x804BA4B0 end:0x804BA4C0
 	.sbss       start:0x8053A9B8 end:0x8053A9C0
