@@ -511,7 +511,7 @@ config.libs = [
         Object(Matching, "dolphin/os/OSContext.c"),
         Object(NonMatching, "dolphin/os/OSError.c"),  # FIXME(link): duplicate OSSetErrorHandler
         Object(Matching, "dolphin/os/OSFont.c"),
-        Object(NonMatching, "dolphin/os/OSInterrupt.c"),
+        Object(Matching, "dolphin/os/OSInterrupt.c"),
         Object(Matching, "dolphin/os/OSLink.c"),
         Object(Matching, "dolphin/os/OSMemory.c"),
         Object(Matching, "dolphin/os/OSMessage.c"),

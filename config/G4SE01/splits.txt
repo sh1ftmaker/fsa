@@ -298,7 +298,7 @@ dolphin/os/OSFont.c:
 	.sdata      start:0x80539C18 end:0x80539C20
 
 dolphin/os/OSInterrupt.c:
-	.text       start:0x80042638 end:0x80042E54
+	.text       start:0x80042638 end:0x80042EA4
 	.data       start:0x80495FA8 end:0x80495FD8
 	.sbss       start:0x8053A430 end:0x8053A448
 
