@@ -20,10 +20,20 @@ ninja build/G4SE01/report.json      # compile every unit and write the objdiff r
 `orig/sys/main.dol` is the extracted original (never commit it). Tools (dtk,
 objdiff-cli, wibo, compilers) are downloaded into `build/` on the first run.
 
-A plain `ninja` also tries to link `main.dol`; the link currently fails under
-wibo (`Can't read library file 'auto_..._sbss2.o'`) because the response file
-for ~6,000 auto-split objects is too large. Fixing that, so `ninja` ends in a
-SHA-1 check like `make compare` in KATAM, is an open task.
+A plain `ninja` also links every `Matching` unit's compiled object (all other
+code comes from dtk's split of the original) into `main.dol` and ends in
+`dtk shasum -c config/G4SE01/build.sha1`. That SHA-1 is the final authority:
+objdiff can't see code a unit is missing outside its splits, `.bss` sizes, or
+symbols the rest of the DOL needs under their `symbols.txt` names. When it
+fails, find the unit:
+
+```sh
+python3 tools/link_check.py          # which Matching units link byte-identical
+```
+
+It relinks by hand under `build/link_check/`, swapping units that break the
+link, shift the layout or differ in bytes for dtk's split, until the SHA-1
+matches, and lists them with the reason.
 
 ## Measuring progress
 
