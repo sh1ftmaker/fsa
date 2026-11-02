@@ -1523,10 +1523,10 @@ JSystem/J3DGraphLoader/J3DJointFactory.cpp:
 	.text       start:0x800CE264 end:0x800CE43C
 
 JSystem/J3DGraphLoader/J3DShapeFactory.cpp:
-	.text       start:0x800CE43C end:0x800CF3E8
+	.text       start:0x800CE43C end:0x800CECCC
 
 JSystem/J3DGraphLoader/J3DAnmLoader.cpp:
-	.text       start:0x800CF3E8 end:0x800D06E8
+	.text       start:0x800CECCC end:0x800D06E8
 	.data       start:0x8049AE10 end:0x8049AE70
 	.sdata2     start:0x8053BC80 end:0x8053BC88
 

@@ -19,7 +19,7 @@
  * @note Address: 0x800725A0
  * @note Size: 0x8C4
  */
-J3DAnmBase* J3DAnmLoaderDataBase::load(const void* stream)
+J3DAnmBase* J3DAnmLoaderDataBase::load(const void* stream, J3DAnmLoaderDataBaseFlag flag)
 {
 	if (stream == nullptr) {
 		return nullptr;
@@ -59,7 +59,11 @@ J3DAnmBase* J3DAnmLoaderDataBase::load(const void* stream)
 		} break;
 		case 'bca1': {
 			J3DAnmFullLoader_v15 loader;
-			loader.mAnimation = new J3DAnmTransformFull();
+			if (flag & J3DLOADER_UNK_FLAG1) {
+				loader.mAnimation = new J3DAnmTransformFullWithLerp();
+			} else {
+				loader.mAnimation = new J3DAnmTransformFull();
+			}
 			return loader.load(stream);
 		} break;
 		case 'bpa1': {
@@ -593,7 +597,7 @@ void J3DAnmKeyLoader_v15::setAnmCluster(J3DAnmClusterKey* animation, const J3DAn
 	animation->mTotalFrameCount = data->mTotalFrameCount;
 	animation->mAttribute       = data->mAttribute;
 	animation->mCurrentFrame    = 0.0f;
-	animation->mTables          = JSUConvertOffsetToPtr<J3DAnmClusterKeyTable>(data, (void*)data->mTableOffset);
+	animation->mTables          = JSUConvertOffsetToPtr<J3DAnmClusterKeyTable>(data, data->mTableOffset);
 	animation->mWeights         = JSUConvertOffsetToPtr<f32>(data, (void*)data->mWeightsOffset);
 }
 

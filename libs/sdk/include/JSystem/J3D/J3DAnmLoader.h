@@ -13,8 +13,13 @@
 #include "JSystem/J3D/J3DMtxCalc.h"
 #include "types.h"
 
+enum J3DAnmLoaderDataBaseFlag {
+	J3DLOADER_UNK_FLAG0,
+	J3DLOADER_UNK_FLAG1,
+};
+
 struct J3DAnmLoaderDataBase {
-	static J3DAnmBase* load(const void*);
+	static J3DAnmBase* load(const void*, J3DAnmLoaderDataBaseFlag);
 
 	// unused/inlined
 	void setResource(J3DAnmBase*, const void*);
