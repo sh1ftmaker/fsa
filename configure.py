@@ -490,7 +490,7 @@ config.libs = [
         Object(Matching, "dolphin/dvd/dvd.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
-        Object(NonMatching, "dolphin/dvd/dvdlow.c"),
+        Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(Matching, "dolphin/dvd/dvdqueue.c"),
     ]),
     SdkLib("exi", [

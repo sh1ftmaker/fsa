@@ -359,7 +359,7 @@ dolphin/mtx/vec.c:
 	.text       start:0x8004704C end:0x80047258
 
 dolphin/dvd/dvdlow.c:
-	.text       start:0x80047578 end:0x800480D4
+	.text       start:0x80047258 end:0x800480D4
 	.bss        start:0x804B5810 end:0x804B58E0
 	.sdata      start:0x80539C30 end:0x80539C38
 	.sbss       start:0x8053A4A0 end:0x8053A4E8
