@@ -3,16 +3,22 @@
 
   python3 tools/coord.py queue [--lib PREFIX] [-n N]
       Unclaimed units that aren't fully matched, most unmatched code first.
-  python3 tools/coord.py start <unit> [--owner NAME] [--notes TEXT]
-      Claim the unit, create its worktree and branch, print the worker prompt.
-  python3 tools/coord.py review <unit>
-      Mark the unit "in review" and print the adversarial reviewer prompt.
+  python3 tools/coord.py start <unit>... [--owner NAME] [--notes TEXT]
+      Claim the units, create their worktrees and branches, print the worker
+      prompt (one combined prompt for several tiny units).
+  python3 tools/coord.py review <unit>...
+      Mark the units "in review" and print the adversarial reviewer prompt
+      (one batched prompt for several small units; separate verdicts).
   python3 tools/coord.py verdict <unit> ACCEPT|CHANGES|REJECT
       Record the reviewer's verdict.
   python3 tools/coord.py merge <unit> "<message>"
       Merge an ACCEPTed unit (tools/merge_unit.py), push, remove the worktree.
   python3 tools/coord.py status
       Every claimed unit with its state.
+  python3 tools/coord.py promote [--apply]
+      Unclaimed NonMatching units now 100 % in code and data with no
+      fakematch construct (often completed by names found elsewhere); with
+      --apply, flag them Matching, rebuild, gate, commit and push.
 
 Prompts come from docs/prompts/{unit,review}.md. Agents themselves are
 launched by the coordinator (a person or a Claude session) with those prompts.
@@ -57,6 +63,12 @@ def with_claims(update=None):
         return claims
 
 
+def honest_units():
+    """Units of the honest report (every unit diffed; see tools/honest_report.py), rebuilt first."""
+    run("timeout", "1800", "ninja", "build/G4SE01/report_honest.json")
+    return json.loads((REPO / "build/G4SE01/report_honest.json").read_text())["units"]
+
+
 def unit_rows():
     """(unit, source, unmatched code bytes, status text) for every unit in the report."""
     sources = {}
@@ -66,7 +78,7 @@ def unit_rows():
             if src.startswith(root):
                 sources[u["name"]] = (src[len(root):], src)
     rows = []
-    for u in json.loads((REPO / "build/G4SE01/report_honest.json").read_text())["units"]:
+    for u in honest_units():
         if u["name"] not in sources:
             continue
         m = u["measures"]
@@ -93,36 +105,66 @@ def cmd_queue(args):
             break
 
 
-def cmd_start(args):
+BATCH_WORK = """You own {n} small units of the Four Swords Adventures byte-matching
+decompilation. Do them one after another, each completely (including its
+commit and checkpoint) before the next; each has its own worktree and branch,
+and each gets its own final report section. The unit instructions follow.
+
+"""
+BATCH_REVIEW = """You review {n} small unit branches of the Four Swords Adventures
+byte-matching decompilation. Review each one independently, as if it were the
+only one: its own measurements, its own review file, its own verdict line
+(`<unit>: ACCEPT|CHANGES|REJECT`). One unit's verdict must not influence
+another's. The per-unit instructions follow.
+
+"""
+
+
+def start_one(unit, owner, notes):
     rows = {r[0]: r for r in unit_rows()}
-    if args.unit not in rows:
-        sys.exit(f"{args.unit}: not in the queue (fully matched or unknown)")
-    _, src, _, status = rows[args.unit]
-    wt = run("sh", "tools/unit_worktree.sh", args.unit, args.owner).strip().splitlines()[-1]
+    if unit not in rows:
+        sys.exit(f"{unit}: not in the queue (fully matched or unknown)")
+    _, src, _, status = rows[unit]
+    wt = run("sh", "tools/unit_worktree.sh", unit, owner).strip().splitlines()[-1]
     wt = str(Path(wt).resolve())
-    with_claims(lambda c: c[args.unit].update(state="working"))
+    with_claims(lambda c: c[unit].update(state="working"))
     template = (REPO / "docs/prompts/unit.md").read_text()
-    print(template.format(unit=args.unit, source=src, worktree=wt, branch=f"unit/{slug_of(args.unit)}",
-                          status=status, notes=args.notes or ""))
+    return template.format(unit=unit, source=src, worktree=wt, branch=f"unit/{slug_of(unit)}",
+                           status=status, notes=notes or "")
 
 
-def cmd_review(args):
+def cmd_start(args):
+    prompts = [start_one(u, args.owner, args.notes) for u in args.units]
+    if len(prompts) == 1:
+        print(prompts[0])
+    else:
+        print(BATCH_WORK.format(n=len(prompts)) + "\n\n---\n\n".join(prompts))
+
+
+def review_one(unit):
     claims = with_claims()
-    if args.unit not in claims:
-        sys.exit(f"{args.unit} is not claimed")
-    wt = claims[args.unit]["worktree"]
-    wt = str(Path(wt).resolve())
+    if unit not in claims:
+        sys.exit(f"{unit} is not claimed")
+    wt = str(Path(claims[unit]["worktree"]).resolve())
     base = run("git", "-C", wt, "merge-base", "matching", "HEAD").strip()
     log = run("git", "-C", wt, "log", "--format=%h %s", f"{base}..HEAD")
     if not log.strip():
-        sys.exit(f"{args.unit}: no commits on the branch")
+        sys.exit(f"{unit}: no commits on the branch")
     baseline = run("python3", "tools/progress.py").splitlines()[0]
     REVIEWS.mkdir(parents=True, exist_ok=True)
-    with_claims(lambda c: c[args.unit].update(state="review"))
+    with_claims(lambda c: c[unit].update(state="review"))
     template = (REPO / "docs/prompts/review.md").read_text()
-    print(template.format(unit=args.unit, branch=f"unit/{slug_of(args.unit)}", worktree=wt, repo=REPO,
-                          slug=slug_of(args.unit), baseline=baseline, donors=DONORS, log=log.strip(),
-                          reviews=REVIEWS))
+    return template.format(unit=unit, branch=f"unit/{slug_of(unit)}", worktree=wt, repo=REPO,
+                           slug=slug_of(unit), baseline=baseline, donors=DONORS, log=log.strip(),
+                           reviews=REVIEWS)
+
+
+def cmd_review(args):
+    prompts = [review_one(u) for u in args.units]
+    if len(prompts) == 1:
+        print(prompts[0])
+    else:
+        print(BATCH_REVIEW.format(n=len(prompts)) + "\n\n---\n\n".join(prompts))
 
 
 def cmd_verdict(args):
@@ -151,6 +193,48 @@ def cmd_status(_):
         print(f"{c.get('state', 'working'):9} {unit:48} {c['owner']:16} {c['started']}")
 
 
+def cmd_promote(args):
+    claims = with_claims()
+    report = {u["name"]: u for u in honest_units()}
+    fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)", re.I)
+    ready = []
+    for u in json.loads((REPO / "objdiff.json").read_text())["units"]:
+        meta = u.get("metadata") or {}
+        src = meta.get("source_path") or ""
+        if meta.get("complete") or not src.startswith(LIB_ROOTS):
+            continue
+        rel = next(src[len(r):] for r in LIB_ROOTS if src.startswith(r))
+        m = report.get(u["name"], {}).get("measures", {})
+        if (rel in claims or not int(m.get("total_code", 0)) or m.get("matched_code") != m.get("total_code")
+                or int(m.get("matched_data", 0)) != int(m.get("total_data", 0))):
+            continue
+        if fake.search((REPO / src).read_text(errors="replace")):
+            print(f"skip (fakematch): {rel}")
+            continue
+        ready.append(rel)
+    for rel in ready:
+        print(f"ready: {rel}")
+    if not args.apply or not ready:
+        return
+    cfg = (REPO / "configure.py").read_text()
+    for rel in ready:
+        cfg = cfg.replace(f'Object(NonMatching, "{rel}"', f'Object(Matching, "{rel}"')
+    (REPO / "configure.py").write_text(cfg)
+    run("python3", "configure.py")
+    run("timeout", "1800", "ninja", "build/G4SE01/report_honest.json")
+    gate = subprocess.run(["python3", "tools/gate.py", "--all-units"], cwd=REPO, capture_output=True, text=True)
+    if gate.returncode != 0:
+        run("git", "checkout", "--", "configure.py")
+        sys.exit("gate failed, flags reverted:\n" + gate.stdout)
+    run("git", "add", "configure.py")
+    run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com", "commit", "-q", "-m",
+        "Flag units Matching that are now 100 % in code and data\n\n" + "\n".join(ready)
+        + "\n\nCompleted by names found in other units; no fakematch constructs; gate ok."
+        + "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
+    run("git", "push", "-q")
+    print(f"promoted {len(ready)} units")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -158,11 +242,11 @@ def main():
     q.add_argument("--lib", default="")
     q.add_argument("-n", type=int, default=20)
     s = sub.add_parser("start")
-    s.add_argument("unit")
+    s.add_argument("units", nargs="+")
     s.add_argument("--owner", default="agent")
     s.add_argument("--notes", default="")
     r = sub.add_parser("review")
-    r.add_argument("unit")
+    r.add_argument("units", nargs="+")
     v = sub.add_parser("verdict")
     v.add_argument("unit")
     v.add_argument("verdict")
@@ -170,9 +254,11 @@ def main():
     m.add_argument("unit")
     m.add_argument("message")
     sub.add_parser("status")
+    pr = sub.add_parser("promote")
+    pr.add_argument("--apply", action="store_true")
     args = ap.parse_args()
     {"queue": cmd_queue, "start": cmd_start, "review": cmd_review, "verdict": cmd_verdict,
-     "merge": cmd_merge, "status": cmd_status}[args.cmd](args)
+     "merge": cmd_merge, "status": cmd_status, "promote": cmd_promote}[args.cmd](args)
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
   (`sh1ftmaker <shiftmaker@gmail.com>`, trailer
   `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`). Never commit to
   `matching`, never push, never rebase or merge.
-- Build: `ninja build/G4SE01/report.json` (compiles changed units and writes
+- Build: `ninja build/G4SE01/report_honest.json` (compiles changed units and writes
   the report). Prefix long runs with `timeout`.
 - Check: `python3 tools/fdiff.py <unit>` lists every function with its match;
   `python3 tools/fdiff.py <unit> <function>` shows the differing
@@ -85,8 +85,9 @@ evidence (donor code, SDK symbols, strings).
 
 ## Before you finish
 
-1. `ninja build/G4SE01/report.json && python3 tools/gate.py` must print
-   `gate: ok`.
+1. `python3 tools/gate.py` must print `gate: ok`. It builds the honest
+   report and links main.dol itself (SHA-1 against build.sha1, never edit
+   it); `tools/link_check.py` says which Matching unit breaks the link.
 2. `python3 tools/progress.py` total must not be lower than when you started
    (no other unit may regress).
 3. Commit. Final report (≤ 300 words): functions matched before → after,

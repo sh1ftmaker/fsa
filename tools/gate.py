@@ -41,9 +41,15 @@ PROTECTED = [
     "config/G4SE01/approved_symbol_changes.txt",
     "tools/gate.py", "tools/fdiff.py", "tools/progress.py", "tools/project.py",
     "tools/honest_report.py", "tools/link_check.py",
+    # The SHA-1 the link is checked against, and config.yml's hash: of the original DOL.
+    "config/G4SE01/build.sha1", "config/G4SE01/config.yml",
     "tools/data_splits.py", "orig/",
 ]
 PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\s*=|report|objdiff")
+# Link and SHA-1 settings in configure.py (unit Object(...) lines, which carry
+# FIXME(link) comments, are exempt).
+LINK_CONFIGURE = re.compile(r"check_sha|sha1|ldflags|linker_version|link_order|ldscript|custom_build"
+                            r"|non_matching|^[+-]\s*(Matching|NonMatching|Equivalent)\s*=")
 SOURCE = re.compile(r"\.(c|cpp|h|hpp|inc)$")
 DONORS = Path("../donors")
 
@@ -123,8 +129,12 @@ def check_protected(base, changed, problems):
     if "configure.py" in changed:
         diff = git("diff", "-U0", f"{base}...HEAD", "--", "configure.py") + git("diff", "-U0", "HEAD", "--", "configure.py")
         for line in diff.splitlines():
-            if line[:1] in "+-" and not line.startswith(("+++", "---")) and PROTECTED_CONFIGURE.search(line):
+            if line[:1] not in "+-" or line.startswith(("+++", "---")):
+                continue
+            if PROTECTED_CONFIGURE.search(line):
                 problems.append(f"configure.py: report or tool setting changed: {line}")
+            elif "Object(" not in line and LINK_CONFIGURE.search(line):
+                problems.append(f"configure.py: link or SHA-1 setting changed: {line}")
 
 
 def parse_symbols(text):
@@ -200,10 +210,16 @@ def check_report(problems):
         meta = unit.get("metadata") or {}
         if not meta.get("complete"):
             continue
-        m = (units.get(unit["name"]) or {}).get("measures", {})
+        name = meta.get("source_path", unit["name"])
+        if unit["name"] not in units:
+            problems.append(f"{name}: marked Matching but missing from the honest report")
+            continue
+        m = units[unit["name"]].get("measures", {})
         code = (int(m.get("matched_code", 0)), int(m.get("total_code", 0)))
         data = (int(m.get("matched_data", 0)), int(m.get("total_data", 0)))
-        if code[0] != code[1] or data[0] != data[1]:
+        if not code[1] and not data[1]:
+            problems.append(f"{name}: marked Matching but has no code or data in the honest report")
+        elif code[0] != code[1] or data[0] != data[1]:
             problems.append(
                 f"{meta.get('source_path', unit['name'])}: marked Matching but code {code[0]}/{code[1]}, data {data[0]}/{data[1]}")
 

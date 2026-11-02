@@ -54,9 +54,9 @@ python3 tools/gate.py --all-units    # Matching units: 100 % honest, and main.do
 Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
-Status (2026-11-02, honest report): 1,129 of 11,560 functions, 205,888 of
-4,434,096 bytes of code (4.64 %). SDK 582 / 625 functions, JSystem 547 / 1,014.
-42 units are Matching and link byte-identical (`ninja` SHA-1 OK).
+Status (2026-11-02, honest report): 1,165 of 11,560 functions, 214,536 of
+4,434,096 bytes of code (4.84 %). SDK 615 / 636 functions, JSystem 550 / 1,014.
+58 units are Matching and link byte-identical (`ninja` SHA-1 OK).
 
 ## Layout
 

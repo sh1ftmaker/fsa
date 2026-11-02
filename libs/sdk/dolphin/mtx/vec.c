@@ -210,9 +210,24 @@ void C_VECHalfAngle(void)
     // UNUSED FUNCTION
 }
 
-void C_VECReflect(void)
+void C_VECReflect(const Vec* src, const Vec* normal, Vec* dst)
 {
-    // UNUSED FUNCTION
+    f32 cosA;
+    Vec uI;
+    Vec uN;
+
+    uI.x = -src->x;
+    uI.y = -src->y;
+    uI.z = -src->z;
+
+    PSVECNormalize(&uI, &uI);
+    PSVECNormalize(normal, &uN);
+
+    cosA = PSVECDotProduct(&uI, &uN);
+    dst->x = (2.0f * uN.x * cosA) - uI.x;
+    dst->y = (2.0f * uN.y * cosA) - uI.y;
+    dst->z = (2.0f * uN.z * cosA) - uI.z;
+    PSVECNormalize(dst, dst);
 }
 
 void C_VECSquareDistance(void)

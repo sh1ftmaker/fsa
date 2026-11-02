@@ -26,12 +26,12 @@ files without a map; and what published AI-agent decomp efforts learned.
 - Bump tools to current: objdiff ≥ 3.8.3 (one-shot per-function JSON diff via
   `objdiff-cli diff -o -`, wrong-order detection, exact percentages), dtk
   1.8.4, wibo 1.0.3, binutils (for the permuter).
-- Fix the full link under wibo (the response file for ~6,000 auto-split
-  objects is too long), then make the default `ninja` end in
+- Done: the full link under wibo 1.0.3 (1.0.0 failed past ~1,000 objects;
+  sections need align:32), and the default `ninja` ends in
   `dtk shasum -c build.sha1`, as TWW does.
 - `tools/gate.py` (see "Submission gate").
 - CI (GitHub Actions, pinned container like TP/TWW): `configure.py`,
-  `ninja all_source build/G4SE01/report.json`, the SHA-1 check once linkable,
+  `ninja` (all units, report_honest.json, the link and the SHA-1 check),
   the gate, a check that every 100 % unit is `Matching` (Melee's
   `check_complete.py`), and `ninja changes` against the base branch.
 - `.clang-format` from TP (C++03), applied through pre-commit.
@@ -171,3 +171,25 @@ shared edits, re-runs configure and the full `ninja` (link + SHA-1), runs the ga
   `// FIXME:` saying what differs, until a natural match is found.
 - **Claims stay local.** `progress/claims.json` (under `flock`) is the only
   claim list; no per-unit GitHub issues.
+
+## Roadmap after SDK, GX and JSystem (approved 2026-11-02)
+
+1. Finish the libraries: MSL/Runtime, MetroTRK (pikmin2/tp v2.6), THP, the
+   rest of JSystem including J3D (pikmin2, same GC/2.6), donor-first.
+2. Load the file map (`config/G4SE01/tu_map.tsv`) into `splits.txt`: 530
+   game units with their data ranges, actor files named from
+   `docs/names/actors.tsv`, the rest `tu_<addr>`; verify with the SHA-1 link.
+3. Game compiler setup (GC/2.6 `-O4,p`, C++ exceptions), proven on the 26
+   game functions from the recomp era, rewritten cleanly. Then the shared
+   headers, each with one owner, before the broad waves: the actor base class
+   (vtable slots known), the enemy/NPC/demo bases, the scene manager, the
+   global game-state struct, heap and message systems. Workers propose header
+   changes as reviewed SHARED-EDITS.
+4. Waves of per-file agents: small self-contained files and minigames, then
+   actor families sharing a base class, then the big systems (player, map/UI,
+   messages).
+5. Naming as its own track (evidence only, a name-only review).
+6. Between waves: fakematch debt (the release-build-assert method that fixed
+   Pad.c), crack passes on resistant functions, readability cleanup.
+7. Done: every unit Matching and `ninja` links main.dol with the original
+   SHA-1; a KATAM-style PORTABLE build becomes possible after that.

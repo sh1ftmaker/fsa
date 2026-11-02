@@ -14,14 +14,18 @@ Metrowerks compilers build into a `main.dol` identical to the retail one.
 
 ## Progress
 
-Measured by the objdiff report with relocations checked
-(`ninja build/G4SE01/report.json && python3 tools/progress.py`):
+Measured by the honest objdiff report (every unit diffed, relocations
+checked: `ninja build/G4SE01/report_honest.json && python3 tools/progress.py`),
+2026-11-02:
 
 | | Functions | Code |
 |---|---|---|
-| Total | 716 / 11,560 | 1.76 % |
-| Dolphin SDK | 267 / 601 | |
-| JSystem | 418 / 983 | |
+| Total | 1,165 / 11,560 | 4.84 % |
+| Dolphin SDK | 615 / 636 | |
+| JSystem | 550 / 1,014 | |
+
+58 units are Matching; `ninja` links them into a `main.dol` whose SHA-1
+matches the original.
 
 ## Building
 
@@ -37,11 +41,12 @@ into `build/` on the first run.
 
 ```sh
 python3 configure.py
-ninja build/G4SE01/report.json
+ninja build/G4SE01/report_honest.json
 ```
 
-Linking the full `main.dol` under wibo on Linux is not working yet (see
-`CLAUDE.md`). On Windows the compilers run natively.
+A plain `ninja` also links `main.dol` and checks its SHA-1 against
+`config/G4SE01/build.sha1` (see `CLAUDE.md`). On Windows the compilers run
+natively.
 
 ### objdiff
 

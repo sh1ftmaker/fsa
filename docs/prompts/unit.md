@@ -1,6 +1,6 @@
 You own the unit **{unit}** (source {source}) in the Four Swords Adventures byte-matching decompilation. Your worktree: {worktree} (branch {branch}). Work only there.
 
-Read docs/AGENT_BRIEF.md in your worktree first and follow it exactly (loop, donors, lessons, what you may change, no tricks, finishing checklist); also CLAUDE.md and docs/PLAN.md. Start with `timeout 1800 ninja build/G4SE01/report.json`, then record `python3 tools/progress.py`'s first line in your checkpoint as your baseline (you'll need it to show nothing regressed), then `python3 tools/fdiff.py {unit}`.
+Read docs/AGENT_BRIEF.md in your worktree first and follow it exactly (loop, donors, lessons, what you may change, no tricks, finishing checklist); also CLAUDE.md and docs/PLAN.md. Start with `timeout 1800 ninja build/G4SE01/report_honest.json`, then record `python3 tools/progress.py`'s first line in your checkpoint as your baseline (you'll need it to show nothing regressed), then `python3 tools/fdiff.py {unit}`.
 
 Current state: {status}
 

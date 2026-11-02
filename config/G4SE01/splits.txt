@@ -357,15 +357,17 @@ dolphin/mtx/mtx44.c:
 
 dolphin/mtx/vec.c:
 	.text       start:0x8004704C end:0x80047258
+	.sdata2     start:0x8053B318 end:0x8053B328
 
 dolphin/dvd/dvdlow.c:
-	.text       start:0x80047578 end:0x800480D4
+	.text       start:0x80047258 end:0x800480D4
 	.bss        start:0x804B5810 end:0x804B58E0
 	.sdata      start:0x80539C30 end:0x80539C38
 	.sbss       start:0x8053A4A0 end:0x8053A4E8
 
 dolphin/dvd/dvdfs.c:
-	.text       start:0x80048400 end:0x80048874
+	.text       start:0x800480D4 end:0x800489B0
+	.data       start:0x80496048 end:0x804961B0
 	.sdata      start:0x80539C38 end:0x80539C40
 	.sbss       start:0x8053A4E8 end:0x8053A508
 
@@ -393,6 +395,7 @@ dolphin/vi/vi.c:
 dolphin/pad/Padclamp.c:
 	.text       start:0x8004D640 end:0x8004DB38
 	.rodata     start:0x8045D440 end:0x8045D450
+	.sdata2     start:0x8053B328 end:0x8053B348
 
 dolphin/pad/Pad.c:
 	.text       start:0x8004DB38 end:0x8004F4F4
@@ -471,7 +474,7 @@ dolphin/card/CARDRead.c:
 	.text       start:0x80057A90 end:0x80057EBC
 
 dolphin/card/CARDWrite.c:
-	.text       start:0x80057F04 end:0x80058238
+	.text       start:0x80057F04 end:0x80058280
 
 dolphin/card/CARDStat.c:
 	.text       start:0x80058280 end:0x80058700
@@ -519,7 +522,8 @@ dolphin/gx/GXTexture.c:
 	.sdata2     start:0x8053B380 end:0x8053B3A8
 
 dolphin/gx/GXBump.c:
-	.text       start:0x8005E4A4 end:0x8005E924
+	.text       start:0x8005E4A4 end:0x8005E9E0
+	.sdata2     start:0x8053B3A8 end:0x8053B3B0
 
 dolphin/gx/GXTev.c:
 	.text       start:0x8005E9E0 end:0x8005F144
@@ -528,6 +532,7 @@ dolphin/gx/GXTev.c:
 dolphin/gx/GXPixel.c:
 	.text       start:0x8005F144 end:0x8005F78C
 	.data       start:0x80497528 end:0x80497548
+	.sdata2     start:0x8053B3B0 end:0x8053B3E8
 
 dolphin/gx/GXTransform.c:
 	.text       start:0x8005FCC4 end:0x8006026C

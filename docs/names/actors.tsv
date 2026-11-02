@@ -1,0 +1,403 @@
+id	japanese_name	english_name	kind	evidence	confidence	suggested_file	notes
+AGBW	AGBウィンドウ制御	GBA window control	system	JP AGBウィンドウ制御; zw:https://zeldawiki.wiki/wiki/GBA_Window; stages: 1-3 Hyrule Castle, 2-2 Village of the Blue Maiden, 2-3 Eastern Temple (+7)	med	act_gba_window	
+ALCE	敵全滅	All enemies defeated	system	mt (enemyparam.csv JP label); stages: boss008	med	act_all_enemies_defeated	
+AMOS	アモス	Armos	enemy	zw:https://zeldawiki.wiki/wiki/Armos (JP アモス); stages: boss000, boss002, boss007 (+7)	high	act_armos	
+ANHO	穴掘り屋	Digging Game Keeper	npc	zw:https://zeldawiki.wiki/wiki/Digging_Game_Keeper (JP 穴掘り屋); stages: boss007, boss008, boss062 (+1)	med	act_digging_game	
+ARIJ	アリジゴク	Antlion	enemy	JP アリジゴク; mt	low	act_antlion	
+ARRW	プレイヤー用矢	Arrow (player)	effect	msg#203 (弓矢/bow); JP プレイヤー用矢	high	act_arrow	
+ARSH		unknown (ARSH)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_arsh	
+BALL	鉄球（玉）	Iron ball	object	JP 鉄球（玉）; mt; FSA list has Ball/Gargantuan Ball zw:https://zeldawiki.wiki/wiki/Gargantuan_Ball	low	act_iron_ball	
+BARI	ハイラル城結界	Hyrule Castle barrier	object	JP ハイラル城結界; msg#1342 (結界/barrier); stages: 1-3 Hyrule Castle, 7-2 The Ice Temple, 8-2 Cloud Citadel (+2)	med	act_hyrule_castle_barrier	
+BBMB	巨大爆弾	Giant Bomb	enemy	JP 巨大爆弾; zw:https://zeldawiki.wiki/wiki/Giant_Bomb (FSA list); msg#1074 (巨大バクダン -> "Big Bomb" item); stages: 2-1 The Coast, 7-1 Frozen Hyrule	med	act_giant_bomb	
+BBSL	巨大爆弾シャドウリンク	Shadow Link (giant bomb)	enemy	msg#317; JP 巨大爆弾シャドウリンク; stages: 1-1 Lake Hylia, 2-1 The Coast, 3-2 The Mountain Path (+5)	high	act_shadow_link_giant_bomb	
+BCK2	カラーブロック１人用	Colour block (1-player)	object	mt (enemyparam.csv JP label); stages: 1-2 Cave of No Return, 4-2 The Swamp, 6-1 Desert of Doubt (+2)	med	act_colour_block	
+BEEE	蜂	Bee	enemy	JP 蜂; zw:https://zeldawiki.wiki/wiki/Bee (FSA list); stages: boss007, boss008, 5-1 Lost Woods (+1)	med	act_bee	
+BEMN	蜂マネージャー	Bee manager	system	JP 蜂マネージャー; mt; stages: boss102, boss991	med	act_bee_manager	
+BERY		unknown (BERY)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_bery	
+BFIN	バトルロイヤル終了チェック	Battle royale end check	system	mt (enemyparam.csv JP label); stages: boss007, boss500	med	act_battle_royale_end_check	
+BFRY	大妖精	Great Fairy	npc	msg#1193 (大妖精/Great Fairy); zw:https://zeldawiki.wiki/wiki/Great_Fairy (FSA JP 大妖精); stages: boss000, boss001, boss006 (+18)	high	act_great_fairy	not in spawner
+BGBL		unknown (BGBL)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_bgbl	
+BGMN	ＢＧＭチェンジＮＰＣ	BGM change NPC	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-2 Cave of No Return, 1-3 Hyrule Castle (+19)	med	act_bgm_change_npc	
+BGWC	ＢＧ書換チェックスィッチ	BG-rewrite check switch	system	mt (enemyparam.csv JP label)	med	act_bg_rewrite_check_switch	
+BHRT	ハートの器	Heart Container	object	msg#138 (ハートの器/Heart Container); zw:https://zeldawiki.wiki/wiki/Heart_Container	high	act_heart_container	
+BLCK	ブロック	Block	object	msg#610 (ブロック/blocks); zw:https://zeldawiki.wiki/wiki/Block; stages: boss000, boss005, boss008 (+9)	high	act_block	
+BLDF	目隠し	Blindfold	object	mt (enemyparam.csv JP label); stages: boss002, boss005, 3-3 Tower of Flames (+7)	med	act_blindfold	
+BLZ2	消えない炎	Inextinguishable flame	effect	mt (enemyparam.csv JP label); stages: boss002, 3-2 The Mountain Path, 5-2 Four Who Descend into Darkness (+1)	med	act_inextinguishable_flame	
+BLZD	吹雪	Blizzard	system	msg#717 (吹雪/blizzard); stages: boss072	high	act_blizzard	
+BLZE	燃え移る火	Spreading fire	effect	mt (enemyparam.csv JP label)	med	act_spreading_fire	
+BMST	ビーム石像	Beamos	enemy	JP ビーム石像 (beam statue); zw:https://zeldawiki.wiki/wiki/Beamos (Beamos in FSA list); stages: boss000, boss004, 6-2 Desert Temple (+2)	med	act_beamos	
+BMTY	ボムチュウ	Bombchu	enemy	msg#1048 (ボムチュウ/Bombchu); zw:https://zeldawiki.wiki/wiki/Real_Bombchu; stages: boss000	high	act_bombchu	
+BOGF	ボス用グフー	Vaati (boss)	boss	msg#317 (グフー -> Vaati); zw:https://zeldawiki.wiki/wiki/Vaati (FSA JP グフー); stage boss083	high	act_vaati_boss	JP Gufuu is Vaati in US text
+BOIB		unknown (BOIB)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_boib	
+BOIC	氷のボス	Frostare	boss	zw:https://zeldawiki.wiki/wiki/Frostare (FSA JP エグラース; actor label 氷のボス = ice boss); stage boss073 (7-3 Tower of Winds) textures boss_koori_*	med	act_frostare	not in spawner fn_801F9484
+BOIT	氷のボスのしっぽ	Frostare tail	boss	JP 氷のボスのしっぽ; stage boss073 (7-3)	med	act_frostare_tail	
+BOME		unknown (BOME)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_bome	
+BORD	看板	Sign	object	msg#1918 (カンバン/Sign); JP 看板; stages: boss007	high	act_sign	
+BOTS	BOSS表示テストNPC	Boss display test NPC	debug	mt (enemyparam.csv JP label); stages: boss008, boss090, boss091 (+7)	med	act_boss_display_test_npc	
+BOYO	ぼよよんブロック	Bumper	object	zw:https://zeldawiki.wiki/wiki/Bumper (ALttP JP ボヨヨンブロック; actor ぼよよんブロック); stages: boss000, boss001, boss004 (+4)	med	act_bumper	
+BPH2	ビックポウ２	Big Poe 2	boss	zw:https://zeldawiki.wiki/wiki/Big_Poe_(Boss); stage boss043 (4-3 Hyrule Castle Infiltration) textures big_poo*/boss_p_*	high	act_big_poe_2	second Big Poe fight
+BPMN		unknown (BPMN)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_bpmn	
+BPOH	ビックポウ	Big Poe	boss	zw:https://zeldawiki.wiki/wiki/Big_Poe_(Boss) (JP ビッグポウ; actor spells ビックポウ); stage boss041 (4-2 The Swamp) + boss093	high	act_big_poe	
+BPRY		unknown (BPRY)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_bpry	
+BRBL	燃えるブロック（木箱）	Burning block (wooden crate)	object	mt (enemyparam.csv JP label); stages: boss002	med	act_burning_block	
+BRMN	鳥マネージャー	Bird manager	system	JP 鳥マネージャー; mt; stages: 7-1 Frozen Hyrule, 8-1 Realm of the Heavens	med	act_bird_manager	not in spawner
+BRRY	埋まりルピー	Buried Force Gem	object	JP 埋まりルピー; msg#215; stages: boss007, boss008, 2-2 Village of the Blue Maiden (+4)	med	act_force_gem_buried	not in spawner
+BTBZ	バトル用吹雪	Blizzard (battle)	system	msg#717; JP バトル用吹雪; stages: 7-1 Frozen Hyrule	high	act_blizzard_battle	
+BTIN	ＢＴＩNPC	BTI NPC	object	mt (enemyparam.csv JP label); stages: boss008, boss009, 1-1 Lake Hylia (+41)	med	act_bti_npc	
+BWRT	ボス：ワート	Stone Arrghus	boss	zw:https://zeldawiki.wiki/wiki/Arrghus (JP ワート = Arrghus, ALttP); https://zeldawiki.wiki/wiki/Bosses_in_Four_Swords_Adventures; stage boss023 (2-3 Eastern Temple) textures wart_eye*/wart_child*	high	act_stone_arrghus	
+BZBR	バズブロブ	Buzz Blob	enemy	zw:https://zeldawiki.wiki/wiki/Buzz_Blob (JP バズブロブ); stages: boss006, boss007, boss022 (+8)	high	act_buzz_blob	
+CHSW	連鎖スィッチ	Chain switch	system	mt (enemyparam.csv JP label); stages: boss007, boss200, boss202 (+3)	med	act_chain_switch	
+CIRC	魔法陣	Magic circle	object	JP 魔法陣; mt; stages: boss000, boss002, boss004 (+30)	med	act_magic_circle	
+CKSW	チェックスィッチ	Check switch	system	mt (enemyparam.csv JP label); stages: boss000, boss007, 2-2 Village of the Blue Maiden (+26)	med	act_check_switch	
+CLOD	雲	Cloud	object	JP 雲; mt; stages: 8-1 Realm of the Heavens, 8-2 Cloud Citadel	med	act_cloud	
+CNON	大砲	Cannon	object	msg#556 (大砲/cannon); stages: boss000, boss001, boss002 (+23)	high	act_cannon	
+CRGN	水晶球ジェネレータ	Crystal ball generator	system	msg#212; JP 水晶球ジェネレータ; stages: boss007, boss008, boss500	high	act_crystal_ball_generator	
+CRNV	クリスタルデモ後にたたずむナビィ	Navi (after crystal cutscene)	npc	zw:https://zeldawiki.wiki/wiki/Navi; JP クリスタルデモ後にたたずむナビィ	high	act_navi_crystal	
+CRTH		unknown (CRTH)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_crth	
+CRTL	水晶玉	Crystal ball	object	msg#212 (水晶玉/crystal ball); stages: boss006, boss007, 6-2 Desert Temple (+1)	high	act_crystal_ball	
+DBMS	メッセージ確認用NPC	Message-check NPC	debug	mt (enemyparam.csv JP label)	med	act_message_check_npc	
+DBRK		unknown (DBRK)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_dbrk	
+DCR2	デモ用クリスタル５-４、６-４用	Crystal (cutscene, 5-4/6-4)	object	JP デモ用クリスタル５-４、６-４用; mt; stages: 5-3 Temple of Darkness, 6-3 Pyramid, boss072	med	act_crystal_demo_2	
+DDGO	ドドンゴ	Dodongo	boss	msg#1335 (ドドンゴ/Dodongos); zw:https://zeldawiki.wiki/wiki/Dodongo; stage boss033 (3-3 Tower of Flames)	high	act_dodongo	
+DDRK	デッドロック	Deadrock	enemy	zw:https://zeldawiki.wiki/wiki/Deadrock (JP デッドロック); stage 3-1/3-2	high	act_deadrock	not in spawner
+DEAL	商人	Merchant	npc	zw:https://zeldawiki.wiki/wiki/Merchant (JP 商人); stages: 5-2 Four Who Descend into Darkness	med	act_merchant	
+DETH	死神	Reaper (Shinigami)	enemy	JP 死神; mt	low	act_reaper	not in spawner
+DGT2	テール	Big Moldorm tail	boss	JP テール (tail) of デグテール; stage 6-2/6-3	med	act_big_moldorm_tail	
+DGTL	デグテール	Big Moldorm	boss	zw:https://zeldawiki.wiki/wiki/Big_Moldorm (JP デグテール = Moldorm boss); stage boss063 (6-3 Pyramid) textures boss_deg_*/degtail	high	act_big_moldorm	
+DMCR	デモ用クリスタル	Crystal (cutscene)	object	JP デモ用クリスタル; mt; stages: boss002, 1-3 Hyrule Castle, 2-3 Eastern Temple (+5)	med	act_crystal_demo	
+DMCT	ストーリーデモ制御NPC	Story demo control NPC	system	mt (enemyparam.csv JP label); stages: 1-3 Hyrule Castle, 2-3 Eastern Temple, 3-3 Tower of Flames (+9)	med	act_story_demo_control_npc	not in spawner fn_801F9484 (no class found)
+DMGA	オープニング用ゴール後	After goal (opening)	system	JP オープニング用ゴール後; mt; stages: boss990	med	act_opening_after_goal	
+DMGE	ダメージNPC	Damage NPC	system	mt (enemyparam.csv JP label)	med	act_damage_npc	
+DMGF	デモ用グフー	Vaati (cutscene)	npc	msg#317 (グフー -> Vaati); zw:https://zeldawiki.wiki/wiki/Vaati; stages: boss990	high	act_vaati_demo	
+DMGL	オープニング用ゴール	Goal (opening)	system	JP オープニング用ゴール; mt; stages: boss990	med	act_opening_goal	
+DMLK	デモ用シャドウリンク	Shadow Link (cutscene)	npc	msg#317; JP デモ用シャドウリンク; stages: boss990	high	act_shadow_link_demo	
+DMMD	デモ用巫女	Maiden (cutscene)	npc	msg#317 (巫女 -> shrine maidens); zw:https://zeldawiki.wiki/wiki/Maiden (FSA JP 巫女); stages: boss990	high	act_maiden_demo	
+DMNR	オープニング語り	Opening narration	system	mt (enemyparam.csv JP label); stages: boss990	med	act_opening_narration	
+DMSW	デモ用4つの剣	Four Sword (cutscene)	npc	msg#737 (フォーソード/Four Sword); JP デモ用4つの剣; stages: boss990	high	act_four_sword_demo	
+DMTK	ダミーTalk	Dummy talk	debug	mt (enemyparam.csv JP label)	med	act_dummy_talk	not in spawner fn_801F9484 (no class found)
+DMTW	塔出現デモ	Tower appearance demo	system	mt (enemyparam.csv JP label); stages: 7-2 The Ice Temple	med	act_tower_appearance_demo	
+DMYK		unknown (DMYK)	system	no JP name (not in enemyparam.csv); spawner case only	low	act_dmyk	
+DMZL	デモ用ゼルダ姫	Princess Zelda (cutscene)	npc	msg#317; zw:https://zeldawiki.wiki/wiki/Princess_Zelda; stages: boss072, 8-2 Cloud Citadel, boss082 (+1)	high	act_princess_zelda_demo	
+DNAV	５-４巫女クリスタルデモ用ナビィ	Navi (5-4 Maiden crystal cutscene)	npc	zw:https://zeldawiki.wiki/wiki/Navi; JP ５-４巫女クリスタルデモ用ナビィ	high	act_navi_maiden_crystal	
+DOOR	ドア	Door	object	msg#384 (ドア/door); stages: boss000, boss001, boss002 (+41)	high	act_door	
+DOSN	ドッスンスィッチ	Thwomp switch	object	JP ドッスンスィッチ (ドッスン = Thwomp, see DSIN); mt; stages: boss007, boss008, 2-2 Village of the Blue Maiden (+4)	med	act_thwomp_switch	
+DSIN	ドッスン(ドシン?)	Thwomp	enemy	JP ドッスン (Mario name of Thwomp); zw:https://zeldawiki.wiki/wiki/Thwomp (Thwomp in FSA list); stages: boss000, 3-2 The Mountain Path, 7-3 Tower of Winds	med	act_thwomp	
+DTLK	ダミー会話	Dummy conversation	debug	mt (enemyparam.csv JP label)	med	act_dummy_conversation	
+DWAP	デバッグ用ワープ設定	Debug warp settings	debug	mt (enemyparam.csv JP label); stages: 7-2 The Ice Temple, 8-2 Cloud Citadel, 8-3 The Seal	med	act_debug_warp_settings	
+EETC	エンディング用その他キャラ	Other characters (ending)	npc	JP エンディング用その他キャラ; mt; stages: boss100, boss101, boss102 (+12)	med	act_ending_characters	
+EGOL	アイゴール	Eyegore	enemy	zw:https://zeldawiki.wiki/wiki/Eyegore (JP アイゴール); stage 6-2 Desert Temple	high	act_eyegore	
+ELK2	エンディング用リンク２	Link 2 (ending)	npc	zw:https://zeldawiki.wiki/wiki/Link	high	act_link_ending_2	
+ELNK	エンディング用リンク	Link (ending)	npc	zw:https://zeldawiki.wiki/wiki/Link (JP リンク)	high	act_link_ending	
+ELSK		unknown (ELSK)	system	no JP name (not in enemyparam.csv); spawner case only	low	act_elsk	
+EMIK	エンディング用巫女	Maiden (ending)	npc	msg#317; zw:https://zeldawiki.wiki/wiki/Maiden	high	act_maiden_ending	
+EMSK	エンディングMapSkipper	Ending map skipper	system	mt (enemyparam.csv JP label)	med	act_ending_map_skipper	not in spawner fn_801F9484 (no class found)
+ENBZ	敵発生エリア	Enemy spawn area	system	mt (enemyparam.csv JP label); stages: 3-2 The Mountain Path, boss032, boss092	med	act_enemy_spawn_area	
+ENDM		unknown (ENDM)	system	no JP name (not in enemyparam.csv); spawner case only	low	act_endm	
+ENDR	馬レース終了範囲	Horse-race end area	system	mt (enemyparam.csv JP label); stages: 4-1 The Field	med	act_horse_race_end_area	
+ENPC	エンディング制御用の敵	Enemy for ending control	system	mt (enemyparam.csv JP label); stages: boss991	med	act_enemy_for_ending_control	
+EOWL	エンディング用ケポラ・ゲボラ	Kaepora Gaebora (ending)	npc	msg#317; zw:https://zeldawiki.wiki/wiki/Kaepora_Gaebora; stages: boss100, boss101, boss102 (+15)	high	act_kaepora_gaebora_ending	
+ESRY	逃げるルピー	Fleeing Force Gem	object	JP 逃げるルピー; msg#215; stages: boss000, boss005, boss007 (+13)	med	act_force_gem_fleeing	
+EXPL	爆発	Explosion	effect	mt (enemyparam.csv JP label)	med	act_explosion	
+EZGE		unknown (EZGE)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_ezge	
+EZLD	エンディング用ゼルダ	Princess Zelda (ending)	npc	msg#317; JP エンディング用ゼルダ	high	act_princess_zelda_ending	
+EZMR		unknown (EZMR)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_ezmr	
+EZOB		unknown (EZOB)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_ezob	
+EZRY		unknown (EZRY)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_ezry	
+EZZR		unknown (EZZR)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_ezzr	
+FAGN	ファンギン	Pengator	enemy	zw:https://zeldawiki.wiki/wiki/Pengator (JP ファンギン); stages: 7-1 Frozen Hyrule, 7-2 The Ice Temple	high	act_pengator	
+FALL	フォールマスター	Wallmaster	enemy	zw:https://zeldawiki.wiki/wiki/Wallmaster (JP フォールマスター); stages: boss007, boss008, 4-1 The Field (+2)	high	act_wallmaster	
+FARY	妖精	Fairy	object	msg#239 (妖精/Fairy); zw:https://zeldawiki.wiki/wiki/Fairy; stages: 4-1 The Field, 5-2 Four Who Descend into Darkness, 5-3 Temple of Darkness (+4)	high	act_fairy	not in spawner
+FAZR	護衛ゾーラ	Zora (escort)	npc	JP 護衛ゾーラ; zw:https://zeldawiki.wiki/wiki/Zora; stages: 1-3 Hyrule Castle, 7-2 The Ice Temple	med	act_zora_escort	not in spawner
+FBAL		unknown (FBAL)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_fbal	
+FBGE	火の玉ジェネレーター	Fireball generator	system	mt (enemyparam.csv JP label); stages: boss002, 1-2 Cave of No Return, 6-2 Desert Temple	med	act_fireball_generator	not in spawner fn_801F9484 (no class found)
+FBMR	ファイアーバー（マネージャー）	Fire bar (manager)	system	mt (enemyparam.csv JP label); stages: 3-3 Tower of Flames, boss500	med	act_fire_bar	not in spawner fn_801F9484 (no class found)
+FDWP	L7-2用部屋ワープ	Room warp for L7-2	system	mt (enemyparam.csv JP label)	med	act_room_warp_for_l7_2	
+FGAL	４人女の子制御	Four-girls control	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia	med	act_four_girls_control	
+FGAN	ファントムガノン	Phantom Ganon	boss	zw:https://zeldawiki.wiki/wiki/Phantom_Ganon (JP ファントムガノン); stage boss013 (1-3 Hyrule Castle) texture phantom_ganon	high	act_phantom_ganon	in enemyparam.csv but not in spawner fn_801F9484
+FGAS		unknown (FGAS)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_fgas	
+FGN2	ファントムガノン２	Phantom Ganon 2	boss	zw:https://zeldawiki.wiki/wiki/Phantom_Ganon; stage boss053 (5-3 Temple of Darkness) texture phantom_ganon2	high	act_phantom_ganon_2	
+FGVE		unknown (FGVE)	enemy	no JP name	low	act_fgve	
+FIRE	プレイヤーロッドの火	Fire Rod fire	effect	msg#205 (ファイアロッド/Fire Rod); JP プレイヤーロッドの火	high	act_fire_rod_fire	
+FISH	魚	Fish	object	zw:https://zeldawiki.wiki/wiki/Fish (JP 魚); stages: 5-2 Four Who Descend into Darkness, boss062	med	act_fish	
+FLME	炎	Flame	effect	mt (enemyparam.csv JP label); stages: boss004, boss005, boss009 (+7)	med	act_flame	
+FLOR	フロアマスター	Floormaster	enemy	zw:https://zeldawiki.wiki/wiki/Floormaster (JP フロアマスター); stages: 5-1 Lost Woods	high	act_floormaster	
+FLYK	落ちる床	Falling floor	object	mt (enemyparam.csv JP label); stages: boss000, boss001, 4-2 The Swamp (+6)	med	act_falling_floor	
+FLYO	床ビュン	Flying Tile	enemy	zw:https://zeldawiki.wiki/wiki/Flying_Tile (JP 床ビュン); stages: boss001, boss008, boss012 (+7)	high	act_flying_tile	
+FOBE	フォーメーション蜂	Bee (formation)	enemy	JP フォーメーション蜂; mt	low	act_bee_formation	
+FOBR	フォーメーション鳥	Bird (formation)	enemy	JP フォーメーション鳥; mt	low	act_bird_formation	
+FOCS	フォーカスＮＰＣ	Focus NPC	system	mt (enemyparam.csv JP label); stages: boss000, boss002, boss005 (+37)	med	act_focus_npc	
+FOEV		unknown (FOEV)	system	no JP name (not in enemyparam.csv); spawner case only	low	act_foev	
+FORM		unknown (FORM)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_form	
+FOSL	フォーメーションスライム	Slime (formation)	enemy	JP フォーメーションスライム; mt	low	act_slime_formation	
+FSOB		unknown (FSOB)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_fsob	
+FSPO	導火ポイント	Fuse point	system	mt (enemyparam.csv JP label); stages: boss002, boss007, boss008 (+2)	med	act_fuse_point	
+FTGL	初登場チンクル	Tingle (first appearance)	npc	msg#3; zw:https://zeldawiki.wiki/wiki/Tingle; stages: 1-1 Lake Hylia	high	act_tingle_first	
+FZRA	護衛ゾーラ(到着地点用)	Zora (escort, arrival point)	npc	JP 護衛ゾーラ(到着地点用); zw:https://zeldawiki.wiki/wiki/Zora; stages: 1-3 Hyrule Castle, 7-2 The Ice Temple	med	act_zora_escort_goal	
+GBAO	GBAから出現	Appears from GBA	system	JP GBAから出現; mt	med	act_gba_appear	
+GDMN	砂男	Geldman	enemy	JP 砂男 (sand man); zw:https://zeldawiki.wiki/wiki/Geldman (FSA list); stage 6-1 Desert of Doubt, 6-2	med	act_geldman	
+GEN2	敵ジェネレータ２	Enemy generator 2	system	mt (enemyparam.csv JP label); stages: boss008, boss022, 4-1 The Field	med	act_enemy_generator_2	
+GEN3	敵ジェネレータ３	Enemy generator 3	system	mt (enemyparam.csv JP label); stages: boss000, boss007, boss008 (+19)	med	act_enemy_generator_3	
+GENE	湧き出し	Spawner (generator)	system	mt (enemyparam.csv JP label); stages: boss002, boss007, boss008 (+7)	med	act_spawner	
+GEWP		unknown (GEWP)	system	no JP name (not in enemyparam.csv); spawner case only	low	act_gewp	
+GFBS	グフーバスター	Vaati Buster	system	JP グフーバスター; msg#317 (グフー -> Vaati); stages: boss008, boss009, 1-1 Lake Hylia (+15)	med	act_vaati_buster	internal; Gufuu = Vaati
+GLBS	Globalスィッチ	Global switch	system	mt (enemyparam.csv JP label); stages: 2-2 Village of the Blue Maiden, 3-3 Tower of Flames, 4-1 The Field (+3)	med	act_global_switch	
+GLWP	ゴールワープ	Goal warp	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-2 Cave of No Return, 1-3 Hyrule Castle (+21)	med	act_goal_warp	not in spawner fn_801F9484 (no class found)
+GMBL	ギャンブル屋	Gambling shop	npc	JP ギャンブル屋; msg#1412 (ギャンブル/gamble); stages: 2-2 Village of the Blue Maiden, 5-2 Four Who Descend into Darkness, 6-1 Desert of Doubt	med	act_gambling_shop	
+GMTB	ギャンブル屋の宝箱	Gambling shop chest	object	JP ギャンブル屋の宝箱; msg#1412; stages: 2-2 Village of the Blue Maiden, 5-2 Four Who Descend into Darkness, 6-1 Desert of Doubt	med	act_gambling_chest	
+GNEF	巨大ジェネレーターエフェクト	Giant generator effect	effect	mt (enemyparam.csv JP label); stages: boss022, 4-1 The Field, 5-2 Four Who Descend into Darkness (+3)	med	act_giant_generator_effect	
+GNL2		unknown (GNL2)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_gnl2	
+GNLD		unknown (GNLD)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_gnld	
+GNMA		unknown (GNMA)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_gnma	
+GNON	ガノン	Ganon	boss	msg#651 (ガノン/Ganon); zw:https://zeldawiki.wiki/wiki/Ganon; stage boss083 textures boss_butag_*	high	act_ganon	
+GOAL	ゴール	Goal	object	mt (enemyparam.csv JP label); stages: boss000, boss002, boss005 (+18)	med	act_goal	
+GOL2	ゴール２	Goal 2	object	mt (enemyparam.csv JP label); stages: boss002, boss007, boss008 (+33)	med	act_goal_2	not in spawner fn_801F9484 (no class found)
+GOLD	湧き出し（ルピー）	Force Gem spawner	system	JP 湧き出し（ルピー）; msg#215; stages: boss007, 3-1 Death Mountain Foothills, 4-1 The Field (+9)	med	act_force_gem_spawner	not in spawner
+GOMA	ゴーマ	Gohma	boss	zw:https://zeldawiki.wiki/wiki/Gohma (JP ゴーマ); https://zeldawiki.wiki/wiki/Bosses_in_Four_Swords_Adventures (The Field); stages: 4-1 The Field, 5-1 Lost Woods, 6-2 Desert Temple (+1)	high	act_gohma	not in spawner fn_801F9484
+GRAS	草	Grass	object	zw:https://zeldawiki.wiki/wiki/Grass (JP 草)	high	act_grass	not in spawner
+GROK	ジークロック	Helmaroc King	boss	zw:https://zeldawiki.wiki/wiki/Helmaroc_King (JP ジークロック; FSA boss of The Mountain Path); stage boss031/032 (3-2 The Mountain Path) textures jeek*	high	act_helmaroc_king	same JP name as ALttP Helmasaur King; FSA bird boss (msg#521 "colossal bird wearing a mask")
+GRVE	墓石	Gravestone	object	mt (enemyparam.csv JP label); stages: 4-2 The Swamp, boss042	med	act_gravestone	not in spawner fn_801F9484 (no class found)
+GSCK		unknown (GSCK)	system	no JP name (not in enemyparam.csv); spawner case only; stages: 4-1 The Field	low	act_gsck	
+GSYA		unknown (GSYA)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_gsya	
+HART	小さいハート	Recovery Heart	object	JP 小さいハート (small heart); zw:https://zeldawiki.wiki/wiki/Recovery_Heart; stages: 7-1 Frozen Hyrule, 8-3 The Seal	med	act_recovery_heart	
+HAYA	ハンマー屋(ミニゲーム)	Hammer shop (minigame)	npc	JP ハンマー屋(ミニゲーム); mt; stages: boss008, boss032, boss062 (+2)	low	act_hammer_shop	not in spawner
+HBB2	フォーメーションキース	Keese Swarm	enemy	JP フォーメーションキース; zw:https://zeldawiki.wiki/wiki/Enemies_in_Four_Swords_Adventures (Keese, Keese Swarm in FSA); stages: 4-2 The Swamp, 5-1 Lost Woods	med	act_keese_swarm	
+HBMB	爆弾	Bomb	object	msg#386 (爆弾/bombs); zw:https://zeldawiki.wiki/wiki/Bomb; stages: boss000, boss001, boss002 (+28)	high	act_bomb	
+HINO	ヒノックス	Hinox	enemy	msg#392 (ヒノックス/Hinox); zw:https://zeldawiki.wiki/wiki/Hinox; stages: boss001, boss007, 3-1 Death Mountain Foothills (+4)	high	act_hinox	
+HNRY	羽根ルピー	Winged Force Gem	object	JP 羽根ルピー; msg#215; stages: boss000, boss005, boss006 (+28)	med	act_force_gem_winged	
+HOUS	動く家	Moving house	object	JP 動く家; zw:https://zeldawiki.wiki/wiki/Old-Timer_in_Moving_House; stages: boss008, boss022, 3-1 Death Mountain Foothills (+4)	med	act_moving_house	
+HRMN	馬レース男	Horse-race man	npc	JP 馬レース男; msg#862 (horse race); stages: boss008, 5-2 Four Who Descend into Darkness, boss062 (+3)	med	act_horse_race_man	
+HTMK		unknown (HTMK)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_htmk	
+IBBM		unknown (IBBM)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_ibbm	
+ICCL	つらら	Icicle	object	mt (enemyparam.csv JP label); stages: 7-3 Tower of Winds	med	act_icicle	
+ICEB	４人で溶かす氷	Ice melted by four players	object	mt (enemyparam.csv JP label); stages: 7-1 Frozen Hyrule	med	act_ice_melted_by_four_players	
+ICHL	氷のボスの子供	Frostare child (Frosteye?)	boss	JP 氷のボスの子供 (ice boss child); stage 7-3; zw:https://zeldawiki.wiki/wiki/Frosteye (Frosteye, FSA JP エグラ)	low	act_frostare_child	could be Frosteye; unverified
+ICOB	氷床チェックNPC監視	Ice-floor check NPC monitor	system	mt (enemyparam.csv JP label); stages: 7-2 The Ice Temple	med	act_ice_floor_check_npc_monitor	
+ICWL	氷の壁	Ice wall	object	mt (enemyparam.csv JP label); stages: 7-2 The Ice Temple	med	act_ice_wall	
+IFCK	氷床チェックNPC	Ice-floor check NPC	system	mt (enemyparam.csv JP label); stages: 7-2 The Ice Temple	med	act_ice_floor_check_npc	
+IMUP	持ち上げアイテム	Liftable item	object	mt (enemyparam.csv JP label)	med	act_liftable_item	
+INFR	無敵の妖精	Invincibility fairy	object	JP 無敵の妖精; msg#401 (無敵/invincible)	med	act_fairy_invincible	
+IPOT	鉄壺	Iron pot	object	JP 鉄壺; mt; stages: boss002, boss007, boss008 (+2)	low	act_iron_pot	
+ITMS	アイテム台座	Item pedestal	object	JP アイテム台座; msg#737 (台座/pedestal); stages: boss008, boss201, boss203 (+1)	med	act_item_pedestal	
+IWAG	岩石わきだし	Boulder spawner	enemy	JP 岩石わきだし; zw:https://zeldawiki.wiki/wiki/Boulder; stages: boss006, 3-2 The Mountain Path, boss032 (+2)	med	act_boulder_spawner	
+JIJI	爺	Old Man	npc	JP 爺; zw:https://zeldawiki.wiki/wiki/Old_Man (FSA JP おじいさん); stages: boss000, boss002, boss004 (+35)	med	act_old_man	
+JPE2	ドッスンで飛ぶNPC2	NPC launched by Thwomp 2	system	JP ドッスンで飛ぶNPC2; mt; stages: 2-2 Village of the Blue Maiden	med	act_thwomp_launch_npc_2	
+JPEN	ドッスンで飛ぶNPC	NPC launched by Thwomp	system	JP ドッスンで飛ぶNPC; mt; stages: 2-2 Village of the Blue Maiden	med	act_thwomp_launch_npc	
+JWLK	宝玉の騎士	Knight of Hyrule	npc	JP 宝玉の騎士 (jewel knight); msg#527/#539 (ハイラル騎士団/Knights of Hyrule, 宝玉/royal jewel); zw:https://zeldawiki.wiki/wiki/Knights_of_Hyrule; stages: 4-1 The Field, 5-2 Four Who Descend into Darkness, 6-1 Desert of Doubt (+2)	med	act_knight_of_hyrule	
+KEPO	ケポラ・ゲボラ	Kaepora Gaebora	npc	msg#317 (ケポラ・ゲボラ/Kaepora Gaebora); zw:https://zeldawiki.wiki/wiki/Kaepora_Gaebora; stages: 1-1 Lake Hylia, boss012, 1-3 Hyrule Castle (+6)	high	act_kaepora_gaebora	
+KETH	キース	Keese	enemy	zw:https://zeldawiki.wiki/wiki/Keese (JP キース); stages: boss005, boss007, boss008 (+26)	high	act_keese	
+KEY0	カギ	Small Key	object	msg#210 (小さなカギ/small key); zw:https://zeldawiki.wiki/wiki/Small_Key; stages: boss001, boss002, boss007 (+23)	high	act_small_key	JP label is just カギ (key)
+KMRI	壷割れ時の煙	Pot-break smoke	effect	JP 壷割れ時の煙; mt	med	act_pot_smoke	
+KNBN	しゃべる看板	Talking sign	object	JP しゃべる看板; msg#1918; stages: boss000, boss007, boss008 (+29)	med	act_talking_sign	
+LCLS	Localスィッチ	Local switch	system	mt (enemyparam.csv JP label); stages: boss008, 3-3 Tower of Flames, 4-1 The Field (+5)	med	act_local_switch	
+LEAF	葉っぱエフェクト生成用ＮＰＣ	Leaf-effect NPC	effect	mt (enemyparam.csv JP label)	med	act_leaf_effect_npc	
+LFGN	葉っぱエフェクト生成用ＮＰＣジェネレータ	Leaf-effect NPC generator	system	mt (enemyparam.csv JP label)	med	act_leaf_effect_npc_generator	
+LIF2	伸縮リフト	Extending lift	object	mt (enemyparam.csv JP label); stages: 6-3 Pyramid, 7-2 The Ice Temple, boss200	med	act_extending_lift	
+LIFT	リフト	Lift	object	msg#610 (リフト); stages: boss004, 3-3 Tower of Flames, 5-3 Temple of Darkness (+1)	high	act_lift	
+LIMT	ライフメーター	Life meter	system	mt (enemyparam.csv JP label)	med	act_life_meter	
+LITS		unknown (LITS)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_lits	
+LNBM		unknown (LNBM)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_lnbm	
+LOSW	論理スイッチ制御	Logic switch control	system	mt (enemyparam.csv JP label); stages: 2-2 Village of the Blue Maiden, 7-2 The Ice Temple, 8-1 Realm of the Heavens (+1)	med	act_logic_switch_control	
+LOTS	蓮	Lotus	object	mt (enemyparam.csv JP label); stages: 4-2 The Swamp	med	act_lotus	not in spawner fn_801F9484 (no class found)
+LPLK	ルピーライク	Force Like	enemy	JP ルピーライク = zw:https://zeldawiki.wiki/wiki/Rupee_Like; FSA enemy list has zw:https://zeldawiki.wiki/wiki/Force_Like (FSA JP フォースライク); stage 7-2/8-1	med	act_force_like	internal JP name is Rupee Like; FSA replaces rupees with Force Gems
+LSTI	落としたアイテム	Dropped item	object	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia	med	act_dropped_item	
+LTEV	ライト環境制御	Light environment control	system	mt (enemyparam.csv JP label); stages: 1-2 Cave of No Return, 1-3 Hyrule Castle, 2-3 Eastern Temple (+12)	med	act_light_environment_control	not in spawner fn_801F9484 (no class found)
+LTZR	蓮ゾーラ	Zora (lotus)	npc	JP 蓮ゾーラ; stage 4-2 The Swamp	med	act_zora_lotus	
+LWSW	燭台スィッチ	Candlestick switch	object	mt (enemyparam.csv JP label); stages: boss000, boss002, boss007 (+12)	med	act_candlestick_switch	
+MEDM	目玉スイッチ	Eyeball switch	object	mt (enemyparam.csv JP label); stages: boss000, boss001, 2-3 Eastern Temple (+7)	med	act_eyeball_switch	
+MGMA	マグマサウンド	Magma sound	system	mt (enemyparam.csv JP label)	med	act_magma_sound	not in spawner fn_801F9484 (no class found)
+MGYA	もぐら叩き屋	Whack-a-mole shop	npc	JP もぐら叩き屋; mt; stages: boss008, boss062, boss090 (+1)	low	act_whack_a_mole	
+MIRA	ミイラ	Gibdo	enemy	JP ミイラ (mummy); zw:https://zeldawiki.wiki/wiki/Gibdo (Gibdos in FSA list); stage 6-1/6-3 desert	med	act_gibdo	
+MJGR	魔方陣ジェネレータ	Magic-circle generator	system	mt (enemyparam.csv JP label); stages: boss000, boss007, boss012 (+15)	med	act_magic_circle_generator	
+MOZO	もじゃもじゃ	Mojamoja (unidentified enemy)	enemy	JP もじゃもじゃ (shaggy thing); mt; stage 1-2, 5-3	low	act_mojamoja	English name not found
+MRMT	マロンとタロンを操る	Malon and Talon controller	npc	msg#1212 (マロン/Malon); zw:https://zeldawiki.wiki/wiki/Malon, https://zeldawiki.wiki/wiki/Talon; stages: 4-1 The Field	high	act_malon_talon	
+MRTA	丸太	Log	object	mt (enemyparam.csv JP label); stages: 4-1 The Field, 5-1 Lost Woods, 6-2 Desert Temple	med	act_log	
+MRTC	丸太監視NPC	Log monitor NPC	system	mt (enemyparam.csv JP label); stages: 4-1 The Field, 5-1 Lost Woods	med	act_log_monitor_npc	
+MTBO	魔法のツボ	Magic jar	object	zw:https://zeldawiki.wiki/wiki/Magic_Jar (JP 魔法のツボ)	med	act_magic_jar	
+NAVI	ナビィ	Navi	npc	zw:https://zeldawiki.wiki/wiki/Navi (JP ナビィ); stages: 2-1 The Coast, boss022, 3-1 Death Mountain Foothills (+9)	high	act_navi	
+NIWA	鶏	Cucco	npc	msg#439 (コッコ/Cuccos); zw:https://zeldawiki.wiki/wiki/Cucco (FSA JP コッコ; actor label 鶏); stages: boss002, boss006, boss007 (+6)	high	act_cucco	
+NNJN	人参	Carrot	object	msg#1224 (ニンジン/carrot); stages: boss007, boss008, boss022 (+4)	high	act_carrot	
+NULL	無	None	system	mt (enemyparam.csv JP label)	med	act_none	not in spawner fn_801F9484 (no class found)
+NWOK	ニワトリ探し追い込みNPC	Cucco-herding NPC	system	JP ニワトリ探し追い込みNPC; zw:https://zeldawiki.wiki/wiki/Cucco_Wranglers; stages: boss002, boss201	med	act_cucco_herder	
+NZMI	ネズミ	Rat	enemy	JP ネズミ; zw:https://zeldawiki.wiki/wiki/Rat (FSA list); stages: 1-2 Cave of No Return, 2-3 Eastern Temple, 5-3 Temple of Darkness (+1)	med	act_rat	
+OBLF	OBJリフト	OBJ lift	object	mt (enemyparam.csv JP label); stages: boss008, 1-1 Lake Hylia, 7-2 The Ice Temple (+3)	med	act_obj_lift	
+OCFR	ファイア(マネージャー)	Fire (manager)	system	JP ファイア(マネージャー); mt; stages: boss000, boss022, 4-1 The Field	med	act_fire_manager	
+OFFS	ＯＦＦスィッチ	OFF switch	system	mt (enemyparam.csv JP label); stages: boss001, boss007, 1-1 Lake Hylia (+24)	med	act_off_switch	
+OGST	護衛女の子を行かせない	Keeps escorted girl from going	system	mt (enemyparam.csv JP label); stages: 4-1 The Field	med	act_keeps_escorted_girl_from_going	
+OIWA		Boulder	enemy	no JP name; shares TU tu_800F46C0 with IWAG; ID O-IWA (大岩, big rock?)	low	act_boulder	
+OKAM	おカメさん	Okame-san	npc	JP おカメさん; mt	low	act_okame	
+OKTA	オクタロック	Octorok	enemy	zw:https://zeldawiki.wiki/wiki/Octorok (JP オクタロック); msg#1137 (Octoroks); stages: boss007, boss008, 1-1 Lake Hylia (+3)	high	act_octorok	
+OKTM	オクタロックの玉	Octorok rock	effect	JP オクタロックの玉 (Octorok projectile); mt	med	act_octorok_rock	
+ONOF	Ｏｎ／Ｏｆｆスィッチ	On/Off switch	object	mt (enemyparam.csv JP label); stages: boss000, boss005, boss006 (+28)	med	act_on_off_switch	
+OPGA	護衛される女(到着地点用)	Escorted woman (arrival point)	npc	JP 護衛される女(到着地点用); mt; stages: boss008, boss022, 4-1 The Field (+1)	med	act_escort_woman_goal	
+OPGL	護衛される女	Escorted woman	npc	JP 護衛される女; mt; stages: boss022, 4-1 The Field	med	act_escort_woman	
+OSIN	オシン	Oshin (unidentified)	enemy	JP オシン; mt; stage 3-2, 8-2	low	act_oshin	English name not found
+PAME	パメット	Terrorpin	enemy	msg#708 (パメット/Terrorpin); zw:https://zeldawiki.wiki/wiki/Terrorpin (JP パメット); stages: boss005, boss022, 3-2 The Mountain Path (+6)	high	act_terrorpin	
+PCDM	パチンコ玉	Slingshot seed	effect	JP パチンコ玉; msg#209 (パチンコ)	med	act_slingshot_seed	
+PEAC	ピース	Sand Crab	enemy	zw:https://zeldawiki.wiki/wiki/Sand_Crab (JP ピース); stage 2-1 The Coast	high	act_sand_crab	
+PEFF	プレイヤーエフェクト	Player effect	effect	mt (enemyparam.csv JP label)	med	act_player_effect	
+PESW		unknown (PESW)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_pesw	
+PLAS	プレイヤーのスタート座標設定	Player start position	system	mt (enemyparam.csv JP label); stages: boss000, boss002, boss004 (+58)	med	act_player_start_position	
+PLAY	プレイヤー	Player (Link)	system	JP プレイヤー; zw:https://zeldawiki.wiki/wiki/Link	high	act_player	not in spawner
+PLSW	引っ張りスイッチ	Pull switch	object	mt (enemyparam.csv JP label); stages: boss002, boss008, 1-3 Hyrule Castle (+6)	med	act_pull_switch	not in spawner fn_801F9484 (no class found)
+PNP2	パネル書換NPC2	Panel-rewrite NPC 2	system	mt (enemyparam.csv JP label); stages: 6-2 Desert Temple, 7-1 Frozen Hyrule	med	act_panel_rewrite_npc_2	
+PNPC	パネル書換NPC	Panel-rewrite NPC	system	mt (enemyparam.csv JP label); stages: boss000, boss001, boss002 (+52)	med	act_panel_rewrite_npc	
+PONT	ポイントチェックＮＰＣ	Point-check NPC	system	mt (enemyparam.csv JP label); stages: boss000, boss001, boss002 (+37)	med	act_point_check_npc	
+POOH	ポー	Poe	enemy	JP ポー; zw:https://zeldawiki.wiki/wiki/Poe (ALttP Poe JP ポウ); stage 4-2/4-3	med	act_poe	
+Poon	ポーン	Hardhat Beetle	enemy	zw:https://zeldawiki.wiki/wiki/Hardhat_Beetle (JP ポーン); stages: boss004, boss009, 3-3 Tower of Flames (+1)	high	act_hardhat_beetle	mixed-case ID "Poon"
+POPO	ポポ	Popo	enemy	zw:https://zeldawiki.wiki/wiki/Popo (JP ポポ); stages: boss000, boss004, 5-3 Temple of Darkness	high	act_popo	
+PRTC	ParticleNPC	Particle NPC	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-3 Hyrule Castle, 2-3 Eastern Temple (+14)	med	act_particle_npc	
+PSS2	ピラミッドで押すスイッチ	Push switch in pyramid	object	mt (enemyparam.csv JP label); stages: 6-3 Pyramid	med	act_push_switch_in_pyramid	
+PSSW	押しスイッチ	Push switch	object	mt (enemyparam.csv JP label); stages: boss001, boss042, 5-3 Temple of Darkness	med	act_push_switch	
+PSW2	4人引っ張りスイッチ	Four-person pull switch	object	mt (enemyparam.csv JP label); stages: 7-1 Frozen Hyrule, 7-3 Tower of Winds	med	act_four_person_pull_switch	
+PSWB	4人引っ張りスイッチBti版	Four-person pull switch (BTI version)	object	mt (enemyparam.csv JP label); stages: 1-3 Hyrule Castle, 4-3 Hyrule Castle Infiltration, 7-2 The Ice Temple	med	act_four_person_pull_switch_pswb	
+PSWK	4人引っ張りスイッチ鎖版	Four-person pull switch (chain version)	object	mt (enemyparam.csv JP label); stages: 1-2 Cave of No Return, 4-3 Hyrule Castle Infiltration, 6-2 Desert Temple (+2)	med	act_four_person_pull_switch_pswk	
+PTMI	リンク用透明NPC壁	Invisible NPC wall (for Link)	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 2-2 Village of the Blue Maiden, 4-1 The Field (+5)	med	act_invisible_npc_wall	
+PUKU	プクプク	Cheep-Cheep	enemy	JP プクプク (Mario name of Cheep Cheep); zw:https://zeldawiki.wiki/wiki/Cheep-Cheep (FSA list); stage 1-1 Lake Hylia, 2-1 The Coast	med	act_cheep_cheep	
+RAIL	レールデータ	Rail data	system	mt (enemyparam.csv JP label); stages: boss000, boss002, boss004 (+21)	med	act_rail_data	
+RANK	ランク表示	Rank display	system	mt (enemyparam.csv JP label)	med	act_rank_display	
+RASN	螺旋階段	Spiral staircase	object	mt (enemyparam.csv JP label); stages: boss002, 1-2 Cave of No Return, 1-3 Hyrule Castle (+9)	med	act_spiral_staircase	
+RBPN	色付き床切り替え	Coloured floor toggle	system	mt (enemyparam.csv JP label); stages: 8-1 Realm of the Heavens, boss500	med	act_coloured_floor_toggle	
+RCK2	2人持ち上げ用岩	Two-person liftable rock	object	mt (enemyparam.csv JP label); stages: boss000, boss007, boss008 (+14)	med	act_two_person_liftable_rock	
+RCK3	1-1川に落とす岩	Rock dropped into the river (1-1)	object	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia	med	act_rock_dropped_into_the_river	not in spawner fn_801F9484 (no class found)
+RDBL	赤・青スィッチ（赤・青床パネル書換）	Red/Blue switch (rewrites red/blue floor panels)	object	mt (enemyparam.csv JP label); stages: 5-3 Temple of Darkness	med	act_red_blue_switch	
+RDVR		unknown (RDVR, Leever variant?)	enemy	no JP name; ID resembles RIVR (Leever)	low	act_rdvr	
+RINS	Npc乗りスイッチ	NPC ride switch	system	mt (enemyparam.csv JP label); stages: 6-2 Desert Temple	med	act_npc_ride_switch	
+RIVR	リーバ	Leever	enemy	zw:https://zeldawiki.wiki/wiki/Leever (JP リーバ); stages: 6-1 Desert of Doubt, boss116, boss6 (+1)	high	act_leever	not in spawner
+RNBW	虹橋	Rainbow bridge	object	mt (enemyparam.csv JP label); stages: 8-2 Cloud Citadel, boss082	med	act_rainbow_bridge	
+RNSW	ランダム切り替えスイッチ	Random toggle switch	system	mt (enemyparam.csv JP label); stages: boss007, 8-1 Realm of the Heavens, boss500	med	act_random_toggle_switch	
+ROCK	岩	Rock	object	JP 岩; zw:https://zeldawiki.wiki/wiki/Boulder (JP 岩); stages: boss007	med	act_rock	
+ROPE	ロープ（蛇）	Rope	enemy	zw:https://zeldawiki.wiki/wiki/Rope (JP ロープ); stages: 2-3 Eastern Temple, 6-3 Pyramid, boss082	high	act_rope	
+RSNP	ルピー影NPC	Force Gem shadow NPC	system	JP ルピー影NPC; msg#215	med	act_force_gem_shadow	
+RUPY	ルピー	Force Gem	object	msg#215 (フォース/Force Gems); JP label ルピー (rupee); stages: boss000, boss002, boss004 (+49)	high	act_force_gem	internal JP name is Rupee
+RUSA	流砂	Quicksand	object	mt (enemyparam.csv JP label); stages: 6-1 Desert of Doubt, 6-2 Desert Temple, boss116 (+2)	med	act_quicksand	
+RVFR	復活の妖精	Revival fairy	object	JP 復活の妖精; mt	med	act_fairy_revival	
+RY02	ルピー２	Force Gem 2	object	JP ルピー２; msg#215	med	act_force_gem_2	internal JP name is Rupee
+RYRN	ルピー降らし	Force Gem rain	system	JP ルピー降らし; msg#215; stages: boss000, boss002, boss004 (+37)	med	act_force_gem_rain	
+RYYA		unknown (RYYA)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_ryya	
+SAFU	チンクルのサイフ	Tingle's wallet	object	JP チンクルのサイフ; mt	med	act_tingle_wallet	
+SAYA	魚追い込みゾーラ	Zora (fish-herding)	npc	JP 魚追い込みゾーラ; mt; stages: 5-2 Four Who Descend into Darkness, boss062	med	act_zora_fish_herder	not in spawner
+SBAL	サーチ鉄球	Iron ball (homing)	object	JP サーチ鉄球; mt; stages: boss005, 2-3 Eastern Temple, 6-3 Pyramid (+2)	low	act_iron_ball_homing	
+SBTN	サボテン	Cactus	enemy	zw:https://zeldawiki.wiki/wiki/Cactus (JP サボテン); stages: 6-1 Desert of Doubt, boss116, boss991	med	act_cactus	
+SCRE	得点	Score	system	mt (enemyparam.csv JP label)	med	act_score	
+SDSM	砂嵐	Sandstorm	system	msg#784 (砂嵐/sandstorms); stages: 6-1 Desert of Doubt, boss116, boss6 (+1)	high	act_sandstorm	
+SEGE	影の敵のジェネレーター	Shadow enemy generator	system	JP 影の敵のジェネレーター; mt; stages: boss000	med	act_shadow_enemy_generator	not in spawner
+SEN2	指定ＳＥを鳴らす	Play specified SE	system	mt (enemyparam.csv JP label)	med	act_play_specified_se	
+SENP	予告ＳＥ	Advance-notice SE	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 2-3 Eastern Temple, 6-3 Pyramid	med	act_advance_notice_se	
+SEV2	環境制御2	Environment control 2	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-3 Hyrule Castle, 2-3 Eastern Temple (+26)	med	act_environment_control_2	
+SHBL		unknown (SHBL)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_shbl	
+SHLT	サーチライト	Searchlight	object	JP サーチライト; mt; stage 4-2/4-3	med	act_searchlight	
+SHTM		unknown (SHTM)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_shtm	
+SHTR	シャッター	Shutter	object	mt (enemyparam.csv JP label); stages: boss000, boss004, boss008 (+10)	med	act_shutter	
+SIBT	神殿Bti表示	Temple BTI display	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-2 Cave of No Return, 2-2 Village of the Blue Maiden (+13)	med	act_temple_bti_display	
+SITM	商品	Shop item	object	JP 商品; mt; stages: 5-2 Four Who Descend into Darkness	med	act_shop_item	not in spawner
+SKIL	敵の数指定全滅チェック	Enemy-count wipe-out check	system	mt (enemyparam.csv JP label); stages: boss008, boss009, 1-1 Lake Hylia (+24)	med	act_enemy_count_wipe_out_check	
+SKUL	回転ドクロ	Rotating skull	enemy	JP 回転ドクロ; mt; stages: boss000, 1-2 Cave of No Return, 2-3 Eastern Temple (+9)	low	act_rotating_skull	
+SLEF		unknown (SLEF)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_slef	
+SLGE	シャドウリンクのジェネレーター	Shadow Link generator	system	msg#317; JP シャドウリンクのジェネレーター; stages: boss004, 8-2 Cloud Citadel, boss082	high	act_shadow_link_generator	
+SLK2	シャドウリンク２	Shadow Link 2	enemy	msg#317/#412 (シャドウリンク/Shadow Link); zw:https://zeldawiki.wiki/wiki/Shadow_Link; stages: boss000, boss002, boss004 (+12)	high	act_shadow_link_2	no SLK1 exists
+SLMN	スライムマネージャー	Slime manager	system	JP スライムマネージャー; mt; stages: 4-1 The Field, boss991	med	act_slime_manager	
+SLR1	剣兵士	Sword Soldier	enemy	zw:https://zeldawiki.wiki/wiki/Sword_Soldier (ALttP JP 剣兵士); stages: boss002, boss004, boss005 (+25)	high	act_sword_soldier	
+SLR2	弓兵士	Bow Soldier	enemy	zw:https://zeldawiki.wiki/wiki/Bow_Soldier (JP 弓兵士); stages: boss004, boss007, boss008 (+16)	high	act_bow_soldier	not in spawner
+SLR3	鉄球兵	Ball and Chain Soldier	enemy	zw:https://zeldawiki.wiki/wiki/Ball_and_Chain_Soldier (ALttP JP 鉄球兵士; actor 鉄球兵); stages: boss004, boss008, 1-3 Hyrule Castle (+12)	high	act_ball_and_chain_soldier	
+SLR4	隊長兵	Chief Soldier	enemy	JP 隊長兵 (captain soldier); zw:https://zeldawiki.wiki/wiki/Chief_Soldier (FSA sub-boss, 1-1 Lake Hylia); stages: boss001, boss002, boss005 (+22)	med	act_chief_soldier	
+SLSD	スポットライトＳＥ	Spotlight SE	system	mt (enemyparam.csv JP label); stages: boss006, boss093	med	act_spotlight_se	
+SMRI	ソマリアの杖ブロック	Cane of Somaria block	object	JP ソマリアの杖ブロック; zw:https://zeldawiki.wiki/wiki/Cane_of_Somaria	med	act_somaria_block	
+SMWL		unknown (SMWL)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_smwl	
+SNBL	雪球	Snowball	enemy	JP 雪球; zw:https://zeldawiki.wiki/wiki/Snowball (FSA list); stage 7-1 Frozen Hyrule	med	act_snowball	not in spawner
+SNPC	特殊会話ＮＰＣ	Special conversation NPC	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 2-2 Village of the Blue Maiden, 5-2 Four Who Descend into Darkness	med	act_special_conversation_npc	
+SNWL	雪の壁	Snow wall	object	mt (enemyparam.csv JP label); stages: 7-3 Tower of Winds	med	act_snow_wall	not in spawner fn_801F9484 (no class found)
+SPBG	特殊BG描画Obj	Special BG draw object	system	mt (enemyparam.csv JP label); stages: boss008, 1-3 Hyrule Castle, boss106 (+2)	med	act_special_bg_draw_object	
+SPFR	超妖精	Great Fairy	npc	msg#694 (超妖精 -> "Great Fairy"); zw:https://zeldawiki.wiki/wiki/Fairy_Queen (wiki calls her Fairy Queen)	high	act_great_fairy	Resolved (user, 2026-11-02): the in-game name Great Fairy wins over the wiki's Fairy Queen. BFRY is also named Great Fairy in-game.
+SPOT	スポットライト	Spotlight	object	mt (enemyparam.csv JP label); stages: boss002, 4-2 The Swamp, boss042 (+2)	med	act_spotlight	
+SPTG		unknown (SPTG)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_sptg	
+SSLF	シーソーリフト	Seesaw lift	object	mt (enemyparam.csv JP label); stages: boss000, boss002, boss008 (+2)	med	act_seesaw_lift	
+SSMI		unknown (SSMI)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_ssmi	
+SSTN	石に化けているＮＰＣ	NPC disguised as a stone	npc	JP 石に化けているＮＰＣ; mt; stage 4-2	med	act_stone_disguised_npc	
+STAL	スタルフォス	Stalfos	enemy	zw:https://zeldawiki.wiki/wiki/Stalfos (JP スタルフォス); stages: boss007, boss008, boss022 (+12)	high	act_stalfos	
+STBL	変なブロック	Strange block	object	mt (enemyparam.csv JP label); stages: boss007, 1-3 Hyrule Castle, 2-2 Village of the Blue Maiden (+5)	med	act_strange_block	
+STGN	Stage情報NPC	Stage info NPC	debug	mt (enemyparam.csv JP label); stages: 1-2 Cave of No Return, 2-3 Eastern Temple, 3-3 Tower of Flames (+7)	med	act_stage_info_npc	
+STON	石	Stone	object	msg#1918 (いわ/Stone); JP 石; stages: boss007	high	act_stone	
+STPN	StopNPC	Stop NPC	system	mt (enemyparam.csv JP label)	med	act_stop_npc	
+SVGT	サイドビューゲート表示NPC	Side-view gate display NPC	system	mt (enemyparam.csv JP label); stages: boss500	med	act_side_view_gate_display_npc	
+SVTG	スコップ宝探し爺さん	Shovel Old-Timer	npc	JP スコップ宝探し爺さん; zw:https://zeldawiki.wiki/wiki/Shovel_Old-Timer (FSA JP シャベルじいさん); stages: 5-2 Four Who Descend into Darkness	med	act_shovel_old_timer	not in spawner
+SWBM		unknown (SWBM)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_swbm	
+SWDL	プレイヤー剣レベルチェックNPC	Player sword-level check NPC	system	mt (enemyparam.csv JP label)	med	act_player_sword_level_check_npc	
+SWEL	ハンマーふくらみ	Hammer bulge	object	mt (enemyparam.csv JP label); stages: boss000, boss006, boss009 (+6)	med	act_hammer_bulge	
+SWEV	環境スィッチ制御	Environment switch control	system	mt (enemyparam.csv JP label); stages: boss000, boss002, boss004 (+68)	med	act_environment_switch_control	
+SWNP	スィッチ関係ＮＰＣ	Switch-related NPC	system	mt (enemyparam.csv JP label); stages: boss002, boss005, boss007 (+30)	med	act_switch_related_npc	
+SWOR	スィッチＯＲ	Switch OR	system	mt (enemyparam.csv JP label); stages: 4-1 The Field, 4-2 The Swamp, 4-3 Hyrule Castle Infiltration (+4)	med	act_switch_or	
+SWT4	４つのスィッチ監視	Four-switch monitor	system	mt (enemyparam.csv JP label); stages: boss000, boss001, boss002 (+46)	med	act_four_switch_monitor	
+SWTH	スイッチ	Switch	object	mt (enemyparam.csv JP label); stages: boss000, boss002, boss004 (+47)	med	act_switch	
+SYKY	射的屋	Shooting gallery	npc	JP 射的屋; mt; stages: 2-2 Village of the Blue Maiden, boss062	med	act_shooting_gallery	
+SZSC	ゼルダスクロール禁止NPC	Zelda scroll-lock NPC	system	JP ゼルダスクロール禁止NPC; mt; stages: 1-3 Hyrule Castle, 3-1 Death Mountain Foothills	med	act_zelda_scroll_lock	
+TALK	しゃべるＮＰＣ	Talking NPC	system	mt (enemyparam.csv JP label)	med	act_talking_npc	
+TBGN	壷２ＮＰＣ生成用ジェネレーター	Pot 2 generator	system	JP 壷２ＮＰＣ生成用ジェネレーター; mt	med	act_pot_2_generator	
+TBO2	壷２	Pot 2	object	JP 壷２; msg#522	med	act_pot_2	
+TENN	テニス屋	Tennis shop	npc	JP テニス屋; mt; stages: boss008, boss062, boss090 (+1)	low	act_tennis_shop	
+TFL2	仕掛け床２	Trick floor 2	object	mt (enemyparam.csv JP label)	med	act_trick_floor_2	
+TFLR	仕掛け床	Trick floor	object	mt (enemyparam.csv JP label); stages: boss002, boss005, boss009 (+6)	med	act_trick_floor	
+THCL	プレイヤー投げられ時の攻撃判定	Attack hitbox when player is thrown	system	mt (enemyparam.csv JP label)	med	act_attack_hitbox_when_player_is_thrown	
+THNK		unknown (THNK)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_thnk	
+THRN	トゲ床チェック	Spike floor check	system	mt (enemyparam.csv JP label); stages: boss000, boss004, boss005 (+24)	med	act_spike_floor_check	
+TINB	チンクルバスター	Tingle Buster	system	JP チンクルバスター; mt; stages: boss005, boss007, boss008 (+28)	med	act_tingle_buster	
+TJIJ	チュートリアル爺	Tutorial old man	npc	JP チュートリアル爺; mt	med	act_tutorial_old_man	
+TKRA	宝箱	Treasure Chest	object	msg#1793 (宝箱/chest); zw:https://zeldawiki.wiki/wiki/Treasure_Chest; stages: boss001, boss002, boss007 (+36)	high	act_treasure_chest	
+TKRM	宝マーク	Treasure mark	object	mt (enemyparam.csv JP label); stages: 2-2 Village of the Blue Maiden	med	act_treasure_mark	
+TKTA	テクタイト	Tektite	enemy	zw:https://zeldawiki.wiki/wiki/Tektite (JP テクタイト); stages: 3-2 The Mountain Path, boss032, 5-2 Four Who Descend into Darkness (+4)	high	act_tektite	
+TKYU	鉄球（マネージャー）	Iron ball manager	system	JP 鉄球（マネージャー）; mt; stages: boss000, boss009, 2-3 Eastern Temple	med	act_iron_ball_manager	
+TLK2	しゃべるＮＰＣ	Talking NPC 2	system	mt (enemyparam.csv JP label)	med	act_talking_npc_2	
+TLWP	チンクル砦（ワープ）	Tingle's Tower warp	object	msg#3; JP チンクル砦（ワープ）; stages: boss009	high	act_tingle_tower_warp	
+TMI2	２・３人用ブロック	Block for 2-3 players	object	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 2-2 Village of the Blue Maiden, 2-3 Eastern Temple (+8)	med	act_block_for_2_3_players	
+TNDR	トンドル	Vulture	enemy	JP トンドル ~ ALttP Vulture JP テンドル zw:https://zeldawiki.wiki/wiki/Vulture; stage 3-2, 6-1 Desert of Doubt	med	act_vulture	one-kana difference from the ALttP name
+TNGL	チンクル	Tingle	npc	msg#3 (チンクルやぐら/Tingle's Tower); zw:https://zeldawiki.wiki/wiki/Tingle	high	act_tingle	
+TOMI	透明NPC壁	Invisible NPC wall	system	mt (enemyparam.csv JP label); stages: 1-3 Hyrule Castle, 2-2 Village of the Blue Maiden, 2-3 Eastern Temple (+9)	med	act_invisible_npc_wall_tomi	not in spawner fn_801F9484 (no class found)
+TOOI	盗賊追い込みNPC	Bandit herding NPC	system	mt (enemyparam.csv JP label); stages: 5-2 Four Who Descend into Darkness	med	act_bandit_herding_npc	
+TRAP	トラップ	Blade Trap	enemy	zw:https://zeldawiki.wiki/wiki/Blade_Trap (ALttP JP トラップ); stages: boss001, boss007, boss008 (+11)	high	act_blade_trap	
+TRCH	たいまつ	Torch	object	zw:https://zeldawiki.wiki/wiki/Torch (JP たいまつ); stages: boss000, boss002, boss007 (+25)	high	act_torch	
+TSNO	2ソードモーション	Two-sword motion	system	mt (enemyparam.csv JP label)	med	act_two_sword_motion	
+TTAT	テスチタート	Manhandla	boss	zw:https://zeldawiki.wiki/wiki/Manhandla (JP テスチタート); stage boss020 (2-1 The Coast)	high	act_manhandla	
+TUBO	壷	Pot	object	msg#522 (ツボ/pot); JP 壷; stages: boss007	high	act_pot	
+TUGF	TimeUpグフー	Vaati (time-up)	npc	msg#317; JP TimeUpグフー	high	act_vaati_time_up	
+TUTL	TimeUpチンクル	Tingle (time-up)	npc	msg#3; JP TimeUpチンクル	high	act_tingle_time_up	
+TUTM	TimeUpチンクルマネージャ	Tingle (time-up) manager	system	msg#3; JP TimeUpチンクルマネージャ	high	act_tingle_time_up_manager	
+TWEV	塔崩れ効果	Tower collapse effect	effect	mt (enemyparam.csv JP label); stages: 8-3 The Seal	med	act_tower_collapse_effect	
+TWTG	やぐらチンクル＆看板	Tingle's Tower Tingle and sign	npc	msg#3 (チンクルやぐら/Tingle's Tower); JP やぐらチンクル＆看板; stages: boss009, boss200, boss201 (+6)	high	act_tingle_tower	
+TZOK	盗賊	Thief	enemy	JP 盗賊; msg#634 (盗賊 -> thieves); zw:https://zeldawiki.wiki/wiki/Thief (FSA list); stages: boss000, 5-2 Four Who Descend into Darkness	med	act_thief	
+URAC	裏カラー	Ura (dark-world) colour	system	mt (enemyparam.csv JP label); stages: 2-2 Village of the Blue Maiden, boss072	med	act_ura_colour	
+VWMD	ＶｉｅｗＭｏｄｅ	View mode	system	mt (enemyparam.csv JP label); stages: boss000, boss002, boss004 (+25)	med	act_view_mode	
+WARP	ワープ	Warp	system	zw:https://zeldawiki.wiki/wiki/Warping (JP ワープ); stages: boss000, boss001, boss002 (+61)	med	act_warp	
+WAVE	波ＳＥ	Wave SE	system	mt (enemyparam.csv JP label)	med	act_wave_se	
+WDRY	木製ルピー	Wooden Force Gem	object	JP 木製ルピー; msg#215; stages: boss007, boss008, boss012 (+4)	med	act_force_gem_wooden	
+WIND	風環境	Wind environment	system	mt (enemyparam.csv JP label); stages: 8-1 Realm of the Heavens, 8-2 Cloud Citadel	med	act_wind_environment	
+WIZR	ウィズローブ	Wizzrobe	enemy	zw:https://zeldawiki.wiki/wiki/Wizzrobe (JP ウィズローブ); stages: boss002, boss005, 2-3 Eastern Temple (+8)	high	act_wizzrobe	
+WLFT	部屋移動リフト	Room-transfer lift	object	mt (enemyparam.csv JP label)	med	act_room_transfer_lift	
+WNWN	ワンワン	Chain Chomp	enemy	zw:https://zeldawiki.wiki/wiki/Chain_Chomp (JP ワンワン, ALttP); msg#2130 (ワンワン -> "vicious dog"); stages: boss032, 5-2 Four Who Descend into Darkness	high	act_chain_chomp	US dialogue calls it a "vicious dog"
+WOOD	持ち上げ木	Liftable wood	object	mt (enemyparam.csv JP label); stages: boss000, boss006, 4-2 The Swamp (+4)	med	act_liftable_wood	
+WPCN	ワープ大砲	Warp cannon	object	JP ワープ大砲; msg#556	med	act_warp_cannon	
+WPPA	ワープ柱でワープ後の処理	Post-warp-pillar handling	system	mt (enemyparam.csv JP label); stages: 7-3 Tower of Winds, 8-2 Cloud Citadel	med	act_post_warp_pillar_handling	
+WPPR	ワープ柱	Warp pillar	object	mt (enemyparam.csv JP label); stages: 7-3 Tower of Winds, 8-2 Cloud Citadel	med	act_warp_pillar	
+WPWL	ワープ入り口壁	Warp entrance wall	object	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 3-2 The Mountain Path	med	act_warp_entrance_wall	
+WRTC		Stone Arrghus child (puff)	boss	shares TU tu_800F7FCC with BWRT; stage boss023 textures wart_child*	low	act_stone_arrghus_child	no JP name; inferred from shared TU + textures
+WTSW	Ｗａｉｔスィッチ	Wait switch	object	mt (enemyparam.csv JP label); stages: boss000, boss004, boss005 (+33)	med	act_wait_switch	
+YAJI	矢印	Arrow marker	object	msg#410 (矢印/arrows); stages: boss000, boss004, boss005 (+20)	high	act_arrow_marker	
+YASI	椰子の実	Coconut	object	mt (enemyparam.csv JP label)	med	act_coconut	
+YNSW	4人乗りスイッチ	Four-person switch	object	mt (enemyparam.csv JP label); stages: boss008, 1-1 Lake Hylia, 2-1 The Coast (+11)	med	act_four_person_switch	
+ZASL	ザコスライム	Zol (small slime)	enemy	JP ザコスライム (small-fry slime); FSA list has Zol zw:https://zeldawiki.wiki/wiki/Zol; stages: 1-1 Lake Hylia, 7-3 Tower of Winds	low	act_small_slime	Zol JP is ゾル; unverified
+ZDCO	ゼルダ動作ＯＢＪ生成	Princess Zelda motion object spawner	system	JP ゼルダ動作ＯＢＪ生成; mt; stages: 8-3 The Seal	med	act_princess_zelda_motion_spawner	
+ZLD2	ガノン戦ゼルダ	Princess Zelda (Ganon battle)	npc	msg#317; JP ガノン戦ゼルダ; stages: 8-3 The Seal, boss097	high	act_princess_zelda_ganon_battle	
+ZLD3	グフー戦後ゼルダ生成	Princess Zelda spawner (after Vaati battle)	system	msg#317 (グフー -> Vaati); JP グフー戦後ゼルダ生成; stages: 8-3 The Seal	high	act_princess_zelda_after_vaati	
+ZLD4	脱出ゼルダ生成	Princess Zelda spawner (escape)	system	msg#317; JP 脱出ゼルダ生成; stages: 8-3 The Seal	high	act_princess_zelda_escape	not in spawner
+ZLDA	ゼルダ姫	Princess Zelda	npc	msg#317 (ゼルダ姫/Princess Zelda); zw:https://zeldawiki.wiki/wiki/Princess_Zelda	high	act_princess_zelda	
+ZNLD		Shadow Link variant (ZNLD; Thwomp?)	enemy	no JP name; parent ShadowLinkEnemyBase; ID pairs with ZSLD	low	act_shadow_link_znld	likely the spawnable class for ZSLD
+ZNLJ		Shadow Link variant (ZNLJ; jump?)	enemy	no JP name; parent ShadowLinkEnemyBase; ID pairs with ZSLJ	low	act_shadow_link_znlj	likely the spawnable class for ZSLJ
+ZNRA		Zora (enemy, implementation?)	enemy	no JP name; ID resembles ZORA; enemy_gc_sob TU	low	act_zora_2	guess: spawnable class behind ZORA
+ZNSH		unknown (ZNSH)	object	no JP name (not in enemyparam.csv); spawner case only	low	act_znsh	
+ZNSW	敵全滅チェックスィッチ	All-enemies-defeated check switch	system	mt (enemyparam.csv JP label); stages: boss000, boss001, boss004 (+43)	med	act_all_enemies_defeated_check_switch	
+ZOMO	ズームアウトＮＰＣ	Zoom-out NPC	system	mt (enemyparam.csv JP label); stages: boss008, 1-2 Cave of No Return, 3-2 The Mountain Path (+8)	med	act_zoom_out_npc	
+ZOOM	ＺＯＯＭ	Zoom	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 1-3 Hyrule Castle, 2-3 Eastern Temple (+1)	med	act_zoom	
+ZORA	ゾーラ	Zora (enemy)	enemy	zw:https://zeldawiki.wiki/wiki/Zora_(Enemy) (JP ゾーラ); stage 1-1/2-1	high	act_zora	not in spawner; see ZNRA
+ZSLA	雑魚シャドウリンク（弓矢）	Shadow Link (bow, minor)	enemy	msg#317; JP 雑魚シャドウリンク（弓矢）; stages: 8-1 Realm of the Heavens	high	act_shadow_link_bow	
+ZSLD	雑魚シャドウリンク（ドッスン）	Shadow Link (Thwomp, minor)	enemy	msg#317; JP 雑魚シャドウリンク（ドッスン）; stages: 2-2 Village of the Blue Maiden, 2-3 Eastern Temple, 3-3 Tower of Flames (+6)	high	act_shadow_link_thwomp	not in spawner; cf. ZNLD
+ZSLF	雑魚シャドウリンク（ファイア）	Shadow Link (fire, minor)	enemy	msg#317; JP 雑魚シャドウリンク（ファイア）; stages: 3-1 Death Mountain Foothills, 3-2 The Mountain Path, 5-2 Four Who Descend into Darkness (+3)	high	act_shadow_link_fire	not in spawner
+ZSLH	雑魚シャドウリンク（ハンマー）	Shadow Link (hammer, minor)	enemy	msg#317; JP 雑魚シャドウリンク（ハンマー）; stages: 1-1 Lake Hylia, 1-3 Hyrule Castle, 2-3 Eastern Temple (+3)	high	act_shadow_link_hammer	not in spawner
+ZSLJ	雑魚シャドウリンク（ジャンプ）	Shadow Link (jump, minor)	enemy	msg#317; JP 雑魚シャドウリンク（ジャンプ）; stages: 1-1 Lake Hylia, 1-2 Cave of No Return, 1-3 Hyrule Castle (+10)	high	act_shadow_link_jump	not in spawner; cf. ZNLJ

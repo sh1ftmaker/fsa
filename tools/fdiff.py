@@ -9,7 +9,7 @@ Usage:
   python3 tools/fdiff.py <unit> <function>   # differing instructions, target | ours
 
 <unit> is a source path such as dolphin/os/OS.c (or the objdiff unit name).
-Build the unit first (ninja builds it as part of build/G4SE01/report.json).
+Build the unit first (ninja builds it as part of build/G4SE01/report_honest.json).
 """
 
 import json

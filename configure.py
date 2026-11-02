@@ -465,19 +465,19 @@ config.libs = [
     ]),
     SdkLib("card", [
         Object(Matching, "dolphin/card/CARDBios.c"),
-        Object(NonMatching, "dolphin/card/CARDBlock.c"),
-        Object(NonMatching, "dolphin/card/CARDCheck.c"),
+        Object(Matching, "dolphin/card/CARDBlock.c"),
+        Object(Matching, "dolphin/card/CARDCheck.c"),
         Object(Matching, "dolphin/card/CARDCreate.c"),
         Object(NonMatching, "dolphin/card/CARDDir.c"),
         Object(Matching, "dolphin/card/CARDFormat.c"),
         Object(Matching, "dolphin/card/CARDMount.c"),
-        Object(NonMatching, "dolphin/card/CARDNet.c"),
-        Object(NonMatching, "dolphin/card/CARDOpen.c"),
-        Object(NonMatching, "dolphin/card/CARDRdwr.c"),
-        Object(NonMatching, "dolphin/card/CARDRead.c"),
-        Object(NonMatching, "dolphin/card/CARDStat.c"),
+        Object(Matching, "dolphin/card/CARDNet.c"),
+        Object(Matching, "dolphin/card/CARDOpen.c"),
+        Object(Matching, "dolphin/card/CARDRdwr.c"),
+        Object(Matching, "dolphin/card/CARDRead.c"),
+        Object(Matching, "dolphin/card/CARDStat.c"),
         Object(Matching, "dolphin/card/CARDUnlock.c"),
-        Object(NonMatching, "dolphin/card/CARDWrite.c"),
+        Object(Matching, "dolphin/card/CARDWrite.c"),
     ]),
     SdkLib("db", [
         Object(NonMatching, "dolphin/db/db.c"),  # FIXME(link): duplicate DBInit
@@ -490,7 +490,7 @@ config.libs = [
         Object(Matching, "dolphin/dvd/dvd.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
-        Object(NonMatching, "dolphin/dvd/dvdlow.c"),
+        Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(NonMatching, "dolphin/dvd/dvdqueue.c"),  # FIXME(link): duplicate __DVDClearWaitingQueue
     ]),
     SdkLib("exi", [
@@ -501,7 +501,7 @@ config.libs = [
         Object(NonMatching, "dolphin/mtx/mtx.c"),
         Object(NonMatching, "dolphin/mtx/mtx44.c"),
         Object(Matching, "dolphin/mtx/mtxvec.c"),
-        Object(NonMatching, "dolphin/mtx/vec.c"),
+        Object(Matching, "dolphin/mtx/vec.c"),
     ]),
     SdkLib("os", [
         Object(NonMatching, "dolphin/os/OS.c"),  # FIXME(link): duplicate OSRegisterVersion
@@ -522,11 +522,11 @@ config.libs = [
         Object(Matching, "dolphin/os/OSRtc.c"),
         Object(Matching, "dolphin/os/OSSync.c"),
         Object(Matching, "dolphin/os/OSThread.c"),
-        Object(NonMatching, "dolphin/os/OSTime.c"),
+        Object(Matching, "dolphin/os/OSTime.c"),
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
-        Object(NonMatching, "dolphin/pad/Padclamp.c"),
+        Object(Matching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [
         Object(NonMatching, "dolphin/si/SIBios.c"),  # FIXME(link): .bss size 0x200
@@ -575,7 +575,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/System/JASInstRand.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASInstSense.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASLfo.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JAudio/System/JASOscillator.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASOscillator.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASProbe.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASRegisterParam.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASReport.cpp", extra_cflags=["-O4,p"]),
@@ -678,16 +678,16 @@ config.libs = [
     ]),
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
-        Object(NonMatching, "dolphin/gx/GXBump.c"),
+        Object(Matching, "dolphin/gx/GXBump.c"),
         Object(NonMatching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
-        Object(NonMatching, "dolphin/gx/GXGeometry.c"),
+        Object(Matching, "dolphin/gx/GXGeometry.c"),
         Object(Matching, "dolphin/gx/GXInit.c"),
         Object(Matching, "dolphin/gx/GXLight.c"),
         Object(NonMatching, "dolphin/gx/GXMisc.c"),
         Object(NonMatching, "dolphin/gx/GXPerf.c"),
         Object(NonMatching, "dolphin/gx/GXPixel.c", extra_cflags=["-fp_contract off"]),
-        Object(NonMatching, "dolphin/gx/GXTev.c"),
+        Object(Matching, "dolphin/gx/GXTev.c"),
         Object(Matching, "dolphin/gx/GXTexture.c"),
         Object(NonMatching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
     ]),

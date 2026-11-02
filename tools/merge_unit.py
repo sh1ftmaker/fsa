@@ -20,6 +20,7 @@ from pathlib import Path
 SYMBOLS = "config/G4SE01/symbols.txt"
 OBJECT = re.compile(r'Object\((Matching|NonMatching|Equivalent)(, "[^"]+")')
 LINE = re.compile(r"^(\S+) = (\S+):(0x[0-9A-Fa-f]+);")
+PINNED = ("config/G4SE01/build.sha1", "config/G4SE01/config.yml")
 TRAILER = "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 
@@ -109,6 +110,9 @@ def main():
     run("timeout", "1800", "ninja", "build/G4SE01/report_honest.json")
     before = progress_total()
     base = run("git", "merge-base", "HEAD", branch).strip()
+    pinned = [f for f in PINNED if run("git", "diff", "--name-only", f"{base}...{branch}", "--", f).strip()]
+    if pinned:
+        sys.exit(f"{branch} changes {', '.join(pinned)} (the SHA-1 and DOL hash the link is checked against); refused")
     sym_base = run("git", "show", f"{base}:{SYMBOLS}")
     sym_ours = Path(SYMBOLS).read_text()
     sym_theirs = run("git", "show", f"{branch}:{SYMBOLS}")

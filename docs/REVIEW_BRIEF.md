@@ -11,7 +11,7 @@ You don't fix anything and you don't commit. You produce a verdict.
 ## What to check
 
 1. **Measurements are real.** In the branch's worktree:
-   `ninja build/G4SE01/report.json`, `python3 tools/gate.py`,
+   `ninja build/G4SE01/report_honest.json`, `python3 tools/gate.py`,
    `python3 tools/fdiff.py <unit>`. Confirm the claimed functions are 100 %,
    the unit's `Matching` flag (if set) holds for code and data, and
    `tools/progress.py` total is not below `matching`'s (build `matching` in a
