@@ -209,3 +209,11 @@ u32 OSGetResetCode(void) {
   }
   return ((DAT_cc003000.resetCode & ~7) >> 3);
 }
+
+u32 OSSetBootDol(u32 dolOffset) {
+  u32 oldDol;
+
+  oldDol = bootThisDol;
+  bootThisDol = dolOffset;
+  return oldDol;
+}
