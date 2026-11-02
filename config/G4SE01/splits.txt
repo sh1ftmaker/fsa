@@ -395,7 +395,8 @@ dolphin/pad/Padclamp.c:
 	.rodata     start:0x8045D440 end:0x8045D450
 
 dolphin/pad/Pad.c:
-	.text       start:0x8004DB38 end:0x8004F478
+	.text       start:0x8004DB38 end:0x8004F4F4
+	.data       start:0x804967B8 end:0x80496810
 	.bss        start:0x804B5B50 end:0x804B5BA0
 	.sdata      start:0x80539C78 end:0x80539C98
 	.sbss       start:0x8053A5C8 end:0x8053A5F8

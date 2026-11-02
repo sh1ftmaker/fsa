@@ -525,7 +525,7 @@ config.libs = [
         Object(NonMatching, "dolphin/os/OSTime.c"),
     ]),
     SdkLib("pad", [
-        Object(NonMatching, "dolphin/pad/Pad.c"),
+        Object(Matching, "dolphin/pad/Pad.c"),
         Object(NonMatching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [

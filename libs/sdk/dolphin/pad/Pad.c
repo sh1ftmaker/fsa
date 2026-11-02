@@ -295,13 +295,12 @@ static void PADReceiveCheckCallback(s32 chan, u32 type)
     }
 }
 
-#pragma push
-#pragma auto_inline off // fakematch most likely
-
 BOOL PADReset(u32 mask)
 {
     BOOL enabled;
     u32 diableBits;
+
+    ASSERTMSG(!(mask & 0x0FFFFFFF), "PADReset(): invalid mask");
 
     enabled = OSDisableInterrupts();
 
@@ -332,6 +331,8 @@ BOOL PADRecalibrate(u32 mask)
 {
     BOOL enabled;
     u32 disableBits;
+
+    ASSERTMSG(!(mask & 0x0FFFFFFF), "PADReset(): invalid mask");
 
     enabled = OSDisableInterrupts();
 
@@ -512,8 +513,6 @@ u32 PADRead(PADStatus *status)
     OSRestoreInterrupts(enabled);
     return motor;
 }
-
-#pragma pop
 
 void PADControlAllMotors(const u32 *commandArray)
 {
