@@ -504,7 +504,7 @@ config.libs = [
         Object(NonMatching, "dolphin/mtx/vec.c"),
     ]),
     SdkLib("os", [
-        Object(NonMatching, "dolphin/os/OS.c"),
+        Object(Matching, "dolphin/os/OS.c"),
         Object(NonMatching, "dolphin/os/OSAlarm.c"),
         Object(NonMatching, "dolphin/os/OSAlloc.c"),
         Object(NonMatching, "dolphin/os/OSCache.c"),
