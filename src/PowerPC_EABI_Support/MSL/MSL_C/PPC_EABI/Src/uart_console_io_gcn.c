@@ -21,11 +21,6 @@ BOOL __write_console(s32 arg0, s32 arg1, s32* arg2, s32 arg3)
 	return FALSE;
 }
 
-int __close_console()
-{
-	return 0;
-}
-
 int __init_uart_console(void)
 {
 	static BOOL initialized;
