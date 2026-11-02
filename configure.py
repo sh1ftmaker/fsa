@@ -461,7 +461,7 @@ config.libs = [
         Object(Matching, "dolphin/ar/arq.c"),
     ]),
     SdkLib("base", [
-        Object(NonMatching, "dolphin/base/PPCArch.c"),  # FIXME(link): duplicate PPCMfmsr
+        Object(Matching, "dolphin/base/PPCArch.c"),
     ]),
     SdkLib("card", [
         Object(Matching, "dolphin/card/CARDBios.c"),

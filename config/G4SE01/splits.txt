@@ -255,7 +255,7 @@ JSystem/JAudio/Utility/JAUSectionHeap.cpp:
 	.rodata     start:0x8045D3D0 end:0x8045D440
 
 dolphin/base/PPCArch.c:
-	.text       start:0x8003F628 end:0x8003F650
+	.text       start:0x8003F610 end:0x8003F724
 
 dolphin/db/db.c:
 	.text       start:0x8003F74C end:0x8003F794
