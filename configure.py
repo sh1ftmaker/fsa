@@ -454,7 +454,7 @@ config.precompiled_headers = [
 ]
 config.libs = [
     SdkLib("amcstubs", [
-        Object(NonMatching, "dolphin/amcstubs/AmcExi2Stubs.c"),
+        Object(Matching, "dolphin/amcstubs/AmcExi2Stubs.c"),
     ]),
     SdkLib("ai", [
         Object(Matching, "dolphin/ai/ai.c"),
@@ -491,21 +491,22 @@ config.libs = [
     ]),
     SdkLib("dvd", [
         Object(Matching, "dolphin/dvd/dvd.c"),
-        Object(NonMatching, "dolphin/dvd/dvderror.c"),
+        Object(Matching, "dolphin/dvd/dvderror.c"),
+        # FIXME: .text matches; symbols.txt has FatalFunc as 8 bytes (dtk guess), the static is 4 (coordinator: size 0x4, scope:local).
         Object(NonMatching, "dolphin/dvd/dvdFatal.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(Matching, "dolphin/dvd/dvdidutils.c"),
         Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(Matching, "dolphin/dvd/dvdqueue.c"),
-        Object(NonMatching, "dolphin/dvd/fstload.c"),
+        Object(Matching, "dolphin/dvd/fstload.c"),
     ]),
     SdkLib("exi", [
         Object(Matching, "dolphin/exi/EXIBios.c"),
         Object(Matching, "dolphin/exi/EXIUart.c"),
     ]),
     SdkLib("gd", [
-        Object(NonMatching, "dolphin/gd/GDBase.c"),
-        Object(NonMatching, "dolphin/gd/GDGeometry.c"),
+        Object(Matching, "dolphin/gd/GDBase.c"),
+        Object(Matching, "dolphin/gd/GDGeometry.c"),
     ]),
     SdkLib("mtx", [
         Object(NonMatching, "dolphin/mtx/mtx.c"),
@@ -517,8 +518,8 @@ config.libs = [
         Object(Matching, "dolphin/os/OS.c"),
         Object(Matching, "dolphin/os/OSAlarm.c"),
         Object(Matching, "dolphin/os/OSAlloc.c"),
-        Object(NonMatching, "dolphin/os/OSArena.c"),
-        Object(NonMatching, "dolphin/os/OSAudioSystem.c"),
+        Object(Matching, "dolphin/os/OSArena.c"),
+        Object(Matching, "dolphin/os/OSAudioSystem.c"),
         Object(Matching, "dolphin/os/OSCache.c"),
         Object(Matching, "dolphin/os/OSContext.c"),
         Object(Matching, "dolphin/os/OSError.c"),
@@ -535,14 +536,14 @@ config.libs = [
         Object(Matching, "dolphin/os/OSSync.c"),
         Object(Matching, "dolphin/os/OSThread.c"),
         Object(Matching, "dolphin/os/OSTime.c"),
-        Object(NonMatching, "dolphin/os/init/__start.c"),
-        Object(NonMatching, "dolphin/os/init/__ppc_eabi_init.cpp"),
+        Object(Matching, "dolphin/os/init/__start.c"),
+        Object(Matching, "dolphin/os/init/__ppc_eabi_init.cpp"),
     ]),
     SdkLib("odenotstub", [
-        Object(NonMatching, "dolphin/odenotstub/odenotstub.c"),
+        Object(Matching, "dolphin/odenotstub/odenotstub.c"),
     ]),
     SdkLib("OdemuExi2", [
-        Object(NonMatching, "dolphin/OdemuExi2/DebuggerDriver.c", extra_cflags=["-inline deferred"]),
+        Object(Matching, "dolphin/OdemuExi2/DebuggerDriver.c", extra_cflags=["-inline deferred"]),
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
@@ -713,13 +714,13 @@ config.libs = [
         "progress_category": "sdk",
         "host": False,
         "objects": [
-            Object(NonMatching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
+            Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
         ],
     },
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(Matching, "dolphin/gx/GXBump.c"),
-        Object(NonMatching, "dolphin/gx/GXDisplayList.c"),
+        Object(Matching, "dolphin/gx/GXDisplayList.c"),
         Object(Matching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
         Object(Matching, "dolphin/gx/GXGeometry.c"),
