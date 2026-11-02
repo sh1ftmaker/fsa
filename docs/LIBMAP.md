@@ -45,7 +45,7 @@ byte-matched or already carry real names; **medium** means 30–80 %, or a short
 | MSL_C | 32.2 | 31.3 / 0.9 / 0 | pikmin2 (mkdd cross-check) |
 | Runtime | 2.1 | 2.1 / 0 / 0 | pikmin2 / mkdd |
 | MetroTRK v2.6 | 32.5 | 32.4 / 0.2 / 0 | pikmin2 `TRK_MINNOW_DOLPHIN` (+ `.init` vector table) |
-| THP | 0 | — | not in this region: THP is in the game region, `tu_map.tsv` row 0x804280C0–0x8042E780 |
+| THP | 0 | — | not in this region: inside a game TU, `tu_map.tsv` row 0x804280C0–0x8042E780 (sms THP, see open questions) |
 | SDK leftovers | 17.0 | 8.5 / 3.6 / 4.9 | pikmin2: gba, gd, OdemuExi2, amcstubs, odenotstub, OSAudioSystem, dvderror, fstload, GXDisplayList, `__start`, `__ppc_eabi_init` |
 | Game TU at .text start | 1.7 | 0 / 1.7 / 0 | none (0x80021840; see open questions) |
 | Unknown | 0 | | |
@@ -144,8 +144,36 @@ matches in FSA:
   JASBNKParser, not to a JASBasicWaveBank tail. The TSV row says so.
 - JStudio, JStage and J3DU have no unique matches, so they are probably not
   linked.
-- THP: pikmin2's THP matches 2 of 22 functions, so FSA has another THP
-  version. Try other donors.
+- Answered (import/thp): FSA's THP is doldecomp/sms's `THPDec.c` /
+  `THPAudio.c` (CC0; the version whose `THPInit` has no
+  `OSRegisterVersion`, and FSA's DOL has no THP version string), now in
+  `libs/sdk/dolphin/thp/` with sms's `thp.h`. pikmin2 matched 2 of 22
+  because of the build, not the version: FSA compiles THP with its game
+  code, GC/2.6 C++ with `-Cpp_exceptions on -inline off,deferred` (on top
+  of `cflags_sdk`). Every licensed SDK-THP donor then matches 26 of 28
+  functions (mkdd/oot-gc/bfbb lose `THPInit` to `OSRegisterVersion`,
+  MP4/partyboard also lose both IDCTs); with three source changes sms
+  matches 28 of 28 at FSA's function starts (`donor_match.py`), and its
+  `.rodata` (0x8048F270-0x8048F300) is byte-identical: `__THPInitFlag` is a
+  `bool` (FSA loads it with `lbz`), `__THPDecompressiMCURowNxN` is defined
+  after `__THPHuffDecodeDCTCompV` (the deferred, reversed `.text` order puts
+  it right after `THPInit`'s `OSInitFastCast`), and three `(u8*)` casts C++
+  needs. Layout: `THPDec.c` text 0x8042B148-0x8042DC88 (extab
+  0x80010ADC-0x80010B44, extabindex 0x800208F0-0x8002098C, rodata
+  0x8048F270-0x8048F300, its 0x130-byte `.bss` is 0x8052A9A0-0x8052AAD0),
+  `THPAudio.c` text 0x8042DC88-0x8042E1E4 (extab 0x80010B44-0x80010B4C,
+  extabindex 0x8002098C-0x80020998, no data).
+  They can't be split as units of their own: THP sits inside a game
+  translation unit. The game's THP player before it (0x804280C0-0x8042B148,
+  C++: sms's `AudioDecoder__FPv` and `THPGXRestore` match, little else) and
+  the 0x28-byte wrappers after it (0x8042E1E4-0x8042E780, which call the
+  player through a global) have extab entries interleaved with each other
+  (no entry is shared), so player and wrappers are one object, and the THP
+  code between them is in that object too: the game file includes the THP
+  sources. dtk's extab grouping says the same ("Conflicting splits within
+  reversed extab group" for any split at 0x8042B148 or 0x8042E1E4). The
+  sources are not in `configure.py` yet; they get built when that game TU
+  is decompiled, `#include`-ing them.
 - The scan used the splits at 63edbae and earlier. `extend:` rows for
   units extended on matching since then (JASTrack, JAUSectionHeap,
   JUTConsole, JUTDirectPrint, JKRCompArchive, JKRArchivePri,

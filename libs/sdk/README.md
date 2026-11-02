@@ -14,3 +14,8 @@ is a later build (Sep 16 2003). Files were mapped onto FSA's DOL with
 
 These are compiled with their own include paths (see `cflags_sdk` in
 configure.py) so they don't mix with the TWW-derived headers in `include/`.
+
+`libs/sdk/dolphin/thp/` and `include/dolphin/thp.h` come from
+https://github.com/doldecomp/sms (CC0) instead: FSA has that older THP
+(no `OSRegisterVersion`). FSA builds it inside a game translation unit as
+C++; see the THP entry in `docs/LIBMAP.md` for the flags and the changes.
