@@ -125,6 +125,11 @@ because objdiff can't tell how a function matched; replacing each construct
 with natural source is a dedicated task per unit (find the real reason for
 the weak-function order: usually where inline/template definitions live).
 
+Other donor quirks to clean up when touching those files (readability
+debt, not fakematches by themselves): CARDBlock.c's `goto error`, an unused
+`u32 temp[2]` padding local, `card = card =`, and raw `workArea + 0x6000`
+casts.
+
 Fix found for one class: inlining fakematches in SDK code (pragmas, dummy
 statements) often stand in for release-build asserts, which expand to
 nothing but still count toward the inline size limit. Pad.c matched by
