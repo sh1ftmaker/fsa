@@ -113,7 +113,7 @@ def read_splits():
             units.append(current)
         elif line.strip().startswith(".") or line.strip().startswith("extab"):
             parts = line.split()
-            fields = dict(p.split(":", 1) for p in parts[1:])
+            fields = dict(p.split(":", 1) for p in parts[1:] if ":" in p)  # bare flags such as `common`
             extra = " ".join(p for p in parts[1:] if not p.startswith(("start:", "end:")))
             current[1].append((parts[0], int(fields["start"], 16), int(fields["end"], 16), extra))
         elif current is None:
