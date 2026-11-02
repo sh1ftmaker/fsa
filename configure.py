@@ -529,7 +529,7 @@ config.libs = [
         Object(NonMatching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [
-        Object(NonMatching, "dolphin/si/SIBios.c"),
+        Object(Matching, "dolphin/si/SIBios.c"),
         Object(NonMatching, "dolphin/si/SISamplingRate.c"),
     ]),
     SdkLib("vi", [

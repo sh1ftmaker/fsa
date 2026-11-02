@@ -594,6 +594,7 @@ dolphin/si/SIBios.c:
 	.data       start:0x804983E0 end:0x804984F8
 	.bss        start:0x804B9898 end:0x804B9AA0
 	.sdata      start:0x80539D58 end:0x80539D60
+	.sbss       start:0x8053A780 end:0x8053A790
 
 dolphin/si/SISamplingRate.c:
 	.text       start:0x80075508 end:0x8007552C
