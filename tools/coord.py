@@ -198,12 +198,16 @@ def cmd_promote(args):
     report = {u["name"]: u for u in honest_units()}
     fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)", re.I)
     ready = []
+    # Units demoted because they break the link stay NonMatching until fixed.
+    held = set(re.findall(r'Object\(NonMatching, "([^"]+)".*FIXME\(link\)', (REPO / "configure.py").read_text()))
     for u in json.loads((REPO / "objdiff.json").read_text())["units"]:
         meta = u.get("metadata") or {}
         src = meta.get("source_path") or ""
         if meta.get("complete") or not src.startswith(LIB_ROOTS):
             continue
         rel = next(src[len(r):] for r in LIB_ROOTS if src.startswith(r))
+        if rel in held:
+            continue
         m = report.get(u["name"], {}).get("measures", {})
         if (rel in claims or not int(m.get("total_code", 0)) or m.get("matched_code") != m.get("total_code")
                 or int(m.get("matched_data", 0)) != int(m.get("total_data", 0))):
