@@ -10,6 +10,9 @@ extern "C"
 
     typedef float Mtx[3][4];
     typedef float (*MtxPtr)[4];
+    typedef float (*MtxP)[4];
+    typedef float (*Mtx3P)[3];
+    typedef const float (*CMtxP)[4];
     typedef float Mtx23[2][3];
     typedef float Mtx33[3][3];
     typedef float Mtx44[4][4];

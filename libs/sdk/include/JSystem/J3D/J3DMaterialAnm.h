@@ -12,140 +12,231 @@ struct J3DMaterial;
 struct J3DTextureSRTInfo;
 
 struct J3DMatColorAnm {
-    J3DMatColorAnm();
+	J3DMatColorAnm(J3DAnmColor* anm, u16 index, u16 flag)
+	{
+		mIndex   = index;
+		mAnmFlag = flag;
+		mAnm     = anm;
+	}
 
-    ~J3DMatColorAnm();
+	J3DMatColorAnm()
+	    : mIndex(0)
+	    , mAnmFlag(1)
+	    , mAnm(nullptr)
+	{
+	}
 
-    void operator=(J3DMatColorAnm const& other)
-    {
-        mAnm     = other.mAnm;
-        mIndex   = other.mIndex;
-        mAnmFlag = other.mAnmFlag;
-    }
+	~J3DMatColorAnm() { }
 
-    void setAnmFlag(bool flag) { mAnmFlag = flag; }
-    bool getAnmFlag() const { return mAnmFlag; }
-    void calc(_GXColor* pColor) const { mAnm->getColor(mIndex, pColor); }
+	void operator=(J3DMatColorAnm const& other)
+	{
+		mAnm     = other.mAnm;
+		mIndex   = other.mIndex;
+		mAnmFlag = other.mAnmFlag;
+	}
 
-    u16 mIndex;        // _00
-    u16 mAnmFlag;      // _02
-    J3DAnmColor* mAnm; // _04
+	void setAnmFlag(bool flag) { mAnmFlag = flag; }
+	bool getAnmFlag() const { return mAnmFlag; }
+	void calc(GXColor* pColor) const { mAnm->getColor(*(u16*)&mIndex, pColor); }
+
+	u16 getIndex() const { return mIndex; }
+
+	u16 mIndex;        // _00
+	u16 mAnmFlag;      // _02
+	J3DAnmColor* mAnm; // _04
 };
 
 struct J3DTexNoAnm {
-    J3DTexNoAnm();
+	J3DTexNoAnm()
+	    : mIndex(0)
+	    , mAnmFlag(1)
+	    , mAnm(nullptr)
+	{
+	}
 
-    virtual void calc(u16*) const; // _08 (weak)
+	// incredible useless u16 cast needed for match
+	virtual void calc(u16* data) const { getAnmTexPattern()->getTexNo(*(u16*)&mIndex, data); } // _08 (weak)
 
-    void operator=(J3DTexNoAnm const& other)
-    {
-        mAnm     = other.mAnm;
-        _04      = other._04;
-        mAnmFlag = other.mAnmFlag;
-    }
+	void operator=(J3DTexNoAnm const& other)
+	{
+		mAnm     = other.mAnm;
+		mIndex   = other.mIndex;
+		mAnmFlag = other.mAnmFlag;
+	}
 
-    ~J3DTexNoAnm();
+	~J3DTexNoAnm() { }
 
-    void setAnmFlag(bool flag) { mAnmFlag = flag; }
-    bool getAnmFlag() const { return mAnmFlag; }
-    J3DAnmTexPattern* getAnmTexPattern() const { return mAnm; }
+	void setAnmFlag(bool flag) { mAnmFlag = flag; }
+	bool getAnmFlag() const { return mAnmFlag; }
+	J3DAnmTexPattern* getAnmTexPattern() const { return mAnm; }
+	u16 getIndex() const { return mIndex; }
 
-    // _00 = VTBL
-    u16 _04;                // _04
-    u16 mAnmFlag;           // _06
-    J3DAnmTexPattern* mAnm; // _08
+	// _00 = VTBL
+	u16 mIndex;             // _04
+	u16 mAnmFlag;           // _06
+	J3DAnmTexPattern* mAnm; // _08
 };
 
 struct J3DTexMtxAnm {
-    J3DTexMtxAnm();
+	J3DTexMtxAnm(J3DAnmTextureSRTKey* anm, u16 index, u16 flag)
+	{
+		mIndex   = index;
+		mAnmFlag = flag;
+		mAnm     = anm;
+	}
 
-    ~J3DTexMtxAnm();
+	J3DTexMtxAnm()
+	    : mIndex(0)
+	    , mAnmFlag(1)
+	    , mAnm(nullptr)
+	{
+	}
 
-    void operator=(J3DTexMtxAnm const& other)
-    {
-        mAnm     = other.mAnm;
-        mIndex   = other.mIndex;
-        mAnmFlag = other.mAnmFlag;
-    }
+	~J3DTexMtxAnm() { }
 
-    void setAnmFlag(bool flag) { mAnmFlag = flag; }
-    void calc(J3DTextureSRTInfo* pSRTInfo) const { mAnm->getTransform(mIndex, pSRTInfo); }
-    bool getAnmFlag() const { return mAnmFlag; }
-    J3DAnmTextureSRTKey *getAnmTransform() const { return mAnm; } 
+	void setIndex(u16 index) { mIndex = index; }
+	void setAnm(J3DAnmTextureSRTKey* anm) { mAnm = anm; }
 
-    u16 mIndex;                // _00
-    u16 mAnmFlag;              // _02
-    J3DAnmTextureSRTKey* mAnm; // _04
+	void operator=(J3DTexMtxAnm const& other)
+	{
+		mAnm     = other.mAnm;
+		mIndex   = other.mIndex;
+		mAnmFlag = other.mAnmFlag;
+	}
+
+	void setAnmFlag(bool flag) { mAnmFlag = flag; }
+	void calc(J3DTextureSRTInfo* pSRTInfo) const { mAnm->getTransform(mIndex, pSRTInfo); }
+	bool getAnmFlag() const { return mAnmFlag; }
+
+	u16 mIndex;                // _00
+	u16 mAnmFlag;              // _02
+	J3DAnmTextureSRTKey* mAnm; // _04
 };
 
 struct J3DTevColorAnm {
-    J3DTevColorAnm();
+	J3DTevColorAnm(J3DAnmTevRegKey* anm, u16 index, u16 flag)
+	{
+		mIndex   = index;
+		mAnmFlag = flag;
+		mAnm     = anm;
+	}
 
-    ~J3DTevColorAnm();
+	J3DTevColorAnm()
+	    : mIndex(0)
+	    , mAnmFlag(1)
+	    , mAnm(nullptr)
+	{
+	}
 
-    void operator=(J3DTevColorAnm const& other)
-    {
-        mAnm     = other.mAnm;
-        mIndex   = other.mIndex;
-        mAnmFlag = other.mAnmFlag;
-    }
+	~J3DTevColorAnm() { }
 
-    void setAnmFlag(bool flag) { mAnmFlag = flag; }
-    bool getAnmFlag() const { return mAnmFlag; }
-    void calc(GXColorS10* pColor) const { mAnm->getTevColorReg(mIndex, pColor); }
+	void setIndex(u16 index) { mIndex = index; }
+	void setAnm(J3DAnmTevRegKey* anm) { mAnm = anm; }
 
-    u16 mIndex;            // _00
-    u16 mAnmFlag;          // _02
-    J3DAnmTevRegKey* mAnm; // _04
+	void operator=(J3DTevColorAnm const& other)
+	{
+		mAnm     = other.mAnm;
+		mIndex   = other.mIndex;
+		mAnmFlag = other.mAnmFlag;
+	}
+
+	void setAnmFlag(bool flag) { mAnmFlag = flag; }
+	bool getAnmFlag() const { return mAnmFlag; }
+	void calc(GXColorS10* color) const { mAnm->getTevColorReg(*(u16*)&mIndex, color); }
+
+	u16 mIndex;            // _00
+	u16 mAnmFlag;          // _02
+	J3DAnmTevRegKey* mAnm; // _04
 };
 
 struct J3DTevKColorAnm {
-    J3DTevKColorAnm();
+	J3DTevKColorAnm(J3DAnmTevRegKey* anm, u16 index, u16 flag)
+	{
+		mIndex   = index;
+		mAnmFlag = flag;
+		mAnm     = anm;
+	}
 
-    ~J3DTevKColorAnm();
+	J3DTevKColorAnm()
+	    : mIndex(0)
+	    , mAnmFlag(1)
+	    , mAnm(nullptr)
+	{
+	}
 
-    void operator=(J3DTevKColorAnm const& other)
-    {
-        mAnm     = other.mAnm;
-        mIndex   = other.mIndex;
-        mAnmFlag = other.mAnmFlag;
-    }
+	~J3DTevKColorAnm() { }
 
-    void setAnmFlag(bool flag) { mAnmFlag = flag; }
-    bool getAnmFlag() const { return mAnmFlag; }
-    J3DAnmTevRegKey *getAnmTevReg() const { return mAnm; }
-    void calc(GXColor* pColor) const { mAnm->getTevKonstReg(mIndex, pColor); }
+	void setIndex(u16 index) { mIndex = index; }
+	void setAnm(J3DAnmTevRegKey* anm) { mAnm = anm; }
 
-    u16 mIndex;            // _00
-    u16 mAnmFlag;          // _02
-    J3DAnmTevRegKey* mAnm; // _04
+	void operator=(J3DTevKColorAnm const& other)
+	{
+		mAnm     = other.mAnm;
+		mIndex   = other.mIndex;
+		mAnmFlag = other.mAnmFlag;
+	}
+
+	void setAnmFlag(bool flag) { mAnmFlag = flag; }
+	bool getAnmFlag() const { return mAnmFlag; }
+	void calc(GXColor* pColor) const { mAnm->getTevKonstReg(*(u16*)&mIndex, pColor); }
+
+	u16 mIndex;            // _00
+	u16 mAnmFlag;          // _02
+	J3DAnmTevRegKey* mAnm; // _04
 };
 
 struct J3DMaterialAnm {
-    J3DMaterialAnm() { initialize(); }
+	J3DMaterialAnm() { initialize(); }
 
-    virtual ~J3DMaterialAnm() { }          // _08 (weak)
-    virtual void calc(J3DMaterial*) const; // _0C
+	virtual ~J3DMaterialAnm() { }          // _08 (weak)
+	virtual void calc(J3DMaterial*) const; // _0C
 
-    void initialize();
+	void initialize();
 
-    // unused/TP debug inlines to do:
-    void setMatColorAnm(int, J3DMatColorAnm*);
-    void setTexMtxAnm(int, J3DTexMtxAnm*);
-    void setTexNoAnm(int, J3DTexNoAnm*);
-    void setTevColorAnm(int, J3DTevColorAnm*);
-    void setTevKColorAnm(int, J3DTevKColorAnm*);
+	// unused/TP debug inlines to do:
+	void setTexNoAnm(int, J3DTexNoAnm*);
 
-    const J3DTexNoAnm &getTexNoAnm(int i) const { return mTexNoAnmList[i]; }
-    const J3DTexMtxAnm& getTexMtxAnm(int i) const { return mTexMtxAnmList[i]; }
-    const J3DTevKColorAnm &getTevKColorAnm(int i) const { return mTevKColAnmList[i]; }
+	void setMatColorAnm(int index, J3DMatColorAnm* anm)
+	{
+		if (anm == nullptr) {
+			mMatColAnmList[index].setAnmFlag(false);
+		} else {
+			mMatColAnmList[index] = *anm;
+		}
+	}
+	void setTexMtxAnm(int index, J3DTexMtxAnm* anm)
+	{
+		if (anm == nullptr) {
+			mTexMtxAnmList[index].setAnmFlag(false);
+		} else {
+			mTexMtxAnmList[index] = *anm;
+		}
+	}
+	void setTevColorAnm(int index, J3DTevColorAnm* anm)
+	{
+		if (anm == nullptr) {
+			mTevColAnmList[index].setAnmFlag(false);
+		} else {
+			mTevColAnmList[index] = *anm;
+		}
+	}
+	void setTevKColorAnm(int index, J3DTevKColorAnm* anm)
+	{
+		if (anm == nullptr) {
+			mTevKColAnmList[index].setAnmFlag(false);
+		} else {
+			mTevKColAnmList[index] = *anm;
+		}
+	}
 
-    // _00 = VTBL
-    J3DMatColorAnm mMatColAnmList[2];   // _04
-    J3DTexMtxAnm mTexMtxAnmList[8];     // _14
-    J3DTexNoAnm mTexNoAnmList[8];       // _54
-    J3DTevColorAnm mTevColAnmList[4];   // _B4
-    J3DTevKColorAnm mTevKColAnmList[4]; // _D4
+	const J3DTexMtxAnm& getTexMtxAnm(int i) const { return mTexMtxAnmList[i]; }
+
+	// _00 = VTBL
+	J3DMatColorAnm mMatColAnmList[2];   // _04
+	J3DTexMtxAnm mTexMtxAnmList[8];     // _14
+	J3DTexNoAnm mTexNoAnmList[8];       // _54
+	J3DTevColorAnm mTevColAnmList[4];   // _B4
+	J3DTevKColorAnm mTevKColAnmList[4]; // _D4
 };
 
 #endif
