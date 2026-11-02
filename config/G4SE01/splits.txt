@@ -288,7 +288,7 @@ dolphin/os/OSContext.c:
 	.data       start:0x80495AB0 end:0x80495C88
 
 dolphin/os/OSError.c:
-	.text       start:0x80041FB4 end:0x800420E0
+	.text       start:0x80041F34 end:0x800425E0
 	.data       start:0x80495C88 end:0x80495FA8
 	.bss        start:0x804B4D50 end:0x804B4DA0
 	.sdata      start:0x80539C10 end:0x80539C18
