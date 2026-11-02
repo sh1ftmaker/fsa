@@ -1,4 +1,0 @@
-#ifndef STUB_l_DL__drawAlphaBuffer__FP10view_class8_GXColor
-#define STUB_l_DL__drawAlphaBuffer__FP10view_class8_GXColor
-static unsigned char l_DL__drawAlphaBuffer__FP10view_class8_GXColor[] = {0};
-#endif

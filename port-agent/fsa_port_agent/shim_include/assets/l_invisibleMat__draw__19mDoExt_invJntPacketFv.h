@@ -1,4 +1,0 @@
-#ifndef STUB_l_invisibleMat__draw__19mDoExt_invJntPacketFv
-#define STUB_l_invisibleMat__draw__19mDoExt_invJntPacketFv
-static unsigned char l_invisibleMat__draw__19mDoExt_invJntPacketFv[] = {0};
-#endif

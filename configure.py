@@ -364,31 +364,8 @@ cflags_framework = [
 cflags_jsystem = [f for f in cflags_framework if f != "-schedule off"]
 
 # TWW game code flags
-cflags_dolzel = [
-    *cflags_framework,
-]
-
-if config.version == "D44J01":
-    cflags_dolzel.extend(['-pragma "opt_propagation off"'])
-
-# REL flags
-cflags_rel = [
-    *cflags_dolzel,
-    "-sdata 0",
-    "-sdata2 0",
-]
-
 config.linker_version = "GC/1.3.2"
 
-# Glob nonmatch seg files sorted by address for the nonmatch lib
-_nonmatch_segs = sorted(
-    Path("src/nonmatch").glob("seg_*.c"),
-    key=lambda p: int(p.stem.split("_")[1], 16)
-)
-# The m2c-generated stubs mostly fail to compile, and every object depends on
-# them via pre-compile, so they are opt-in.
-if not os.environ.get("FSA_BUILD_NONMATCH"):
-    _nonmatch_segs = []
 
 
 # Helper function for Dolphin libraries
@@ -442,27 +419,6 @@ def MkddJSystemLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
     }
 
 
-# Helper function for REL script objects
-def Rel(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
-    return {
-        "lib": lib_name,
-        "mw_version": "GC/1.3.2",
-        "cflags": cflags_rel,
-        "progress_category": "game",
-        "host": True,
-        "objects": objects,
-    }
-
-
-# Helper function for actor RELs
-def ActorRel(status, rel_name, extra_cflags=[]):
-    return Rel(rel_name, [Object(
-        status, f"d/actor/{rel_name}.cpp",
-        extra_cflags=extra_cflags,
-        scratch_preset_id=228, # The Legend of Zelda: Four Swords Adventures (DOL)
-    )])
-
-
 # Helper function for JSystem libraries
 def JSystemLib(lib_name, objects, progress_category="third_party"):
     return {
@@ -491,39 +447,12 @@ config.warn_missing_source = False
 # Precompiled headers, as in TWW. JSystem uses cflags_jsystem (no -schedule off).
 config.precompiled_headers = [
     {
-        "source": "d/dolzel.pch",
-        "mw_version": "GC/1.3.2",
-        "cflags": ["-lang=c++", *cflags_dolzel],
-    },
-    {
-        "source": "m_Do/machine.pch",
-        "mw_version": "GC/1.3.2",
-        "cflags": ["-lang=c++", *cflags_dolzel],
-    },
-    {
         "source": "JSystem/JSystem.pch",
         "mw_version": "GC/1.3.2",
         "cflags": ["-lang=c++", *cflags_jsystem],
     },
 ]
 config.libs = [
-    {
-        "lib": "main",
-        "mw_version": "GC/1.3.2",
-        "cflags": cflags_dolzel,
-        "progress_category": "game",
-        "host": True,
-        "objects": [
-            Object(NonMatching, "main/main.cpp"),
-            # Main-game matches from 2026-04-19 Gate 4 sweep (see
-            # port-agent/configure_additions.txt for the full list).
-            Object(Matching, "d/d_camera.cpp"),
-            Object(Matching, "d/d_cc_mass_s.cpp"),
-            Object(Matching, "d/d_s_name.cpp"),
-            # Object(Matching, "d/d_stage.cpp"),  # disabled: needs generated res/Object/Link.h
-            Object(Matching, "m_Do/m_Do_dvd_thread.cpp"),
-        ],
-    },
     SdkLib("ai", [
         Object(Matching, "dolphin/ai/ai.c"),
     ]),
@@ -797,39 +726,11 @@ config.libs = [
         Object(Matching, "JSystem/JUtility/JUTException.cpp"),
         Object(Matching, "JSystem/JUtility/JUTFader.cpp"),
     ]),
-    # TODO: 14 PowerPC_EABI_Support units (MSL_C + Runtime) need new helper
-    #       functions mirroring DolphinLib — see port-agent/configure_additions.txt.
 ]
 
 
-# Build nonmatch seg files via custom ninja steps (they have no DOL range, so
-# they can't go through the normal splits.txt / config.json pipeline).
-# Strip missing MSL include dirs, add src/nonmatch for nonmatch.h
-_nm_cflags = " ".join(
-    f for f in cflags_dolzel
-    if "PowerPC_EABI_Support" not in f
-) + " -i src/nonmatch"
-_nm_mw = "GC/1.3.2"
-_nonmatch_build_steps = []
-for _seg in _nonmatch_segs:
-    _src  = Path("src") / "nonmatch" / _seg.name
-    _out  = config.build_dir / config.version / "src" / "nonmatch" / _seg.with_suffix(".o").name
-    _nonmatch_build_steps.append({
-        "outputs": str(_out),
-        "rule": "mwcc",
-        "inputs": str(_src),
-        "variables": {
-            "mw_version": _nm_mw,
-            "cflags": _nm_cflags,
-            "basedir": str(_out.parent),
-            "basefile": str(_out.with_suffix("")),
-        },
-    })
-
 config.custom_build_rules = []
-config.custom_build_steps = {
-    "pre-compile": _nonmatch_build_steps,
-}
+config.custom_build_steps = {}
 
 # Grab the specific GameID so we can format our strings properly
 version = VERSIONS[version_num]

@@ -465,9 +465,6 @@ JSystem/JKernel/JKRArchivePri.cpp:
 JSystem/JKernel/JKRArchivePub.cpp:
 	.text       start:0x8007CD50 end:0x8007CE4C
 
-d/actor/d_a_lod_bg.cpp:
-	.text       start:0x8007D28C end:0x8007D2B8
-
 JSystem/JKernel/JKRCompArchive.cpp:
 	.text       start:0x8007D4B8 end:0x8007DD58
 
@@ -593,9 +590,6 @@ JSystem/J2DGraph/J2DGrafContext.cpp:
 JSystem/J2DGraph/J2DPane.cpp:
 	.text       start:0x80095E14 end:0x80096B64
 
-d/d_s_name.cpp:
-	.text       start:0x8009711C end:0x80097128
-
 JSystem/J2DGraph/J2DPicture.cpp:
 	.text       start:0x80098AB4 end:0x8009A708
 
@@ -638,9 +632,6 @@ JSystem/J3DGraphBase/J3DTevs.cpp:
 JSystem/J3DGraphAnimator/J3DModel.cpp:
 	.text       start:0x800C2E30 end:0x800C2E7C
 
-d/actor/d_a_obj_barrel.cpp:
-	.text       start:0x800C6B68 end:0x800C6B70
-
 JSystem/J3DGraphLoader/J3DMaterialFactory.cpp:
 	.text       start:0x800C9224 end:0x800C926C
 
@@ -653,14 +644,8 @@ JSystem/J3DGraphLoader/J3DShapeFactory.cpp:
 JSystem/J3DGraphBase/J3DSys.cpp:
 	.text       start:0x800D3168 end:0x800D32C0
 
-d/d_camera.cpp:
-	.text       start:0x800D3DB4 end:0x800D3DC0
-
 JSystem/J3DGraphBase/J3DMatBlock.cpp:
 	.text       start:0x800D3E20 end:0x800D3E70
-
-d/d_stage.cpp:
-	.text       start:0x800DF19C end:0x800DF1AC
 
 JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp:
 	.text       start:0x800E2B40 end:0x800E2B80
@@ -709,12 +694,3 @@ JSystem/JParticle/JPAResourceManager.cpp:
 
 JSystem/JParticle/JPATexture.cpp:
 	.text       start:0x800F3920 end:0x800F39EC
-
-d/actor/d_a_ship.cpp:
-	.text       start:0x80178ED4 end:0x80178EE4
-
-d/actor/d_a_himo2.cpp:
-	.text       start:0x8019CEAC end:0x8019CEB4
-
-d/actor/d_a_movie_player.cpp:
-	.text       start:0x8019CEB4 end:0x8019CEBC

@@ -4501,22 +4501,6 @@
       }
     },
     {
-      "name": "fsa_game_code/d/actor/d_a_lod_bg",
-      "target_path": "build/G4SE01/obj/d/actor/d_a_lod_bg.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_8007D2B8_text",
-      "target_path": "build/G4SE01/obj/auto_03_8007D2B8_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
       "name": "fsa_game_code/JSystem/JKernel/JKRCompArchive",
       "target_path": "build/G4SE01/obj/JSystem/JKernel/JKRCompArchive.o",
       "base_path": "build/G4SE01/src/JSystem/JKernel/JKRCompArchive.o",
@@ -5779,36 +5763,6 @@
       }
     },
     {
-      "name": "fsa_game_code/d/d_s_name",
-      "target_path": "build/G4SE01/obj/d/d_s_name.o",
-      "base_path": "build/G4SE01/src/d/d_s_name.o",
-      "scratch": {
-        "platform": "gc_wii",
-        "compiler": "mwcc_242_81",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -use_lmw_stmw off -str reuse,pool,readonly -inline noauto -O3,s -schedule off -sym on -fp_contract off -lang=c++",
-        "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/d/d_s_name.ctx",
-        "build_ctx": true
-      },
-      "metadata": {
-        "complete": true,
-        "reverse_fn_order": false,
-        "source_path": "src/d/d_s_name.cpp",
-        "progress_categories": [
-          "game"
-        ],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_80097128_text",
-      "target_path": "build/G4SE01/obj/auto_03_80097128_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
       "name": "fsa_game_code/JSystem/J2DGraph/J2DPicture",
       "target_path": "build/G4SE01/obj/JSystem/J2DGraph/J2DPicture.o",
       "base_path": "build/G4SE01/src/JSystem/J2DGraph/J2DPicture.o",
@@ -6277,22 +6231,6 @@
       }
     },
     {
-      "name": "fsa_game_code/d/actor/d_a_obj_barrel",
-      "target_path": "build/G4SE01/obj/d/actor/d_a_obj_barrel.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_800C6B70_text",
-      "target_path": "build/G4SE01/obj/auto_03_800C6B70_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
       "name": "fsa_game_code/JSystem/J3DGraphLoader/J3DMaterialFactory",
       "target_path": "build/G4SE01/obj/JSystem/J3DGraphLoader/J3DMaterialFactory.o",
       "base_path": "build/G4SE01/src/JSystem/J3DGraphLoader/J3DMaterialFactory.o",
@@ -6413,36 +6351,6 @@
       }
     },
     {
-      "name": "fsa_game_code/d/d_camera",
-      "target_path": "build/G4SE01/obj/d/d_camera.o",
-      "base_path": "build/G4SE01/src/d/d_camera.o",
-      "scratch": {
-        "platform": "gc_wii",
-        "compiler": "mwcc_242_81",
-        "c_flags": "-nodefaults -proc gekko -align powerpc -enum int -fp hardware -Cpp_exceptions off -O4,p -inline auto -pragma \"cats off\" -pragma \"warn_notinlined off\" -maxerrors 1 -nosyspath -RTTI off -fp_contract on -str reuse -multibyte -DVERSION=0 -DNDEBUG=1 -use_lmw_stmw off -str reuse,pool,readonly -inline noauto -O3,s -schedule off -sym on -fp_contract off -lang=c++",
-        "preset_id": 228,
-        "ctx_path": "build/G4SE01/src/d/d_camera.ctx",
-        "build_ctx": true
-      },
-      "metadata": {
-        "complete": true,
-        "reverse_fn_order": false,
-        "source_path": "src/d/d_camera.cpp",
-        "progress_categories": [
-          "game"
-        ],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_800D3DC0_text",
-      "target_path": "build/G4SE01/obj/auto_03_800D3DC0_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
       "name": "fsa_game_code/JSystem/J3DGraphBase/J3DMatBlock",
       "target_path": "build/G4SE01/obj/JSystem/J3DGraphBase/J3DMatBlock.o",
       "base_path": "build/G4SE01/src/JSystem/J3DGraphBase/J3DMatBlock.o",
@@ -6467,22 +6375,6 @@
     {
       "name": "fsa_game_code/auto_03_800D3E70_text",
       "target_path": "build/G4SE01/obj/auto_03_800D3E70_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
-      "name": "fsa_game_code/d/d_stage",
-      "target_path": "build/G4SE01/obj/d/d_stage.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_800DF1AC_text",
-      "target_path": "build/G4SE01/obj/auto_03_800DF1AC_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
@@ -14049,22 +13941,6 @@
       }
     },
     {
-      "name": "fsa_game_code/d/actor/d_a_ship",
-      "target_path": "build/G4SE01/obj/d/actor/d_a_ship.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_80178EE4_text",
-      "target_path": "build/G4SE01/obj/auto_03_80178EE4_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
       "name": "fsa_game_code/auto_fn_80178F2C_text",
       "target_path": "build/G4SE01/obj/auto_fn_80178F2C_text.o",
       "metadata": {
@@ -14851,30 +14727,6 @@
     {
       "name": "fsa_game_code/auto_03_8019CDC4_text",
       "target_path": "build/G4SE01/obj/auto_03_8019CDC4_text.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": true
-      }
-    },
-    {
-      "name": "fsa_game_code/d/actor/d_a_himo2",
-      "target_path": "build/G4SE01/obj/d/actor/d_a_himo2.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/d/actor/d_a_movie_player",
-      "target_path": "build/G4SE01/obj/d/actor/d_a_movie_player.o",
-      "metadata": {
-        "progress_categories": [],
-        "auto_generated": false
-      }
-    },
-    {
-      "name": "fsa_game_code/auto_03_8019CEBC_text",
-      "target_path": "build/G4SE01/obj/auto_03_8019CEBC_text.o",
       "metadata": {
         "progress_categories": [],
         "auto_generated": true
