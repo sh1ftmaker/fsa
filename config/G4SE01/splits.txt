@@ -528,6 +528,7 @@ dolphin/gx/GXTev.c:
 dolphin/gx/GXPixel.c:
 	.text       start:0x8005F144 end:0x8005F78C
 	.data       start:0x80497528 end:0x80497548
+	.sdata2     start:0x8053B3B0 end:0x8053B3E8
 
 dolphin/gx/GXTransform.c:
 	.text       start:0x8005FCC4 end:0x8006026C
