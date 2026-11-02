@@ -19,6 +19,7 @@ from the same response file and linker script:
      linked from its compiled object is proven byte-identical in place.
 
 Run `ninja build/G4SE01/config.json all_source` first (`ninja` does both).
+Needs GNU nm on PATH.
 
 Usage:
   python3 tools/link_check.py            # table of units and the final SHA-1
@@ -53,6 +54,15 @@ def linker_cmd():
     if "mwldeppc" not in cmd:
         sys.exit(f"unexpected link command: {cmd}")
     return cmd
+
+
+def link_inputs():
+    """The link's object list, in order, from build.ninja (ninja deletes the .rsp)."""
+    text = Path("build.ninja").read_text().replace("$\n", "")
+    m = re.search(rf"^build {re.escape(str(BUILD / 'fsa_game_code.elf'))}: link (.*?)(?:\||$)", text, re.M)
+    if not m:
+        sys.exit("no link step in build.ninja; run configure.py")
+    return m.group(1).split()
 
 
 def read_dol(path):
@@ -162,8 +172,7 @@ def main():
     args = ap.parse_args()
 
     cmd = linker_cmd()
-    rsp_path = BUILD / "fsa_game_code.elf.rsp"
-    objects = rsp_path.read_text().split()
+    objects = link_inputs()
     cfg = json.loads(Path("objdiff.json").read_text())
     matching = {}  # compiled object path -> unit info
     for u in cfg["units"]:
