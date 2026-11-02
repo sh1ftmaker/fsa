@@ -631,7 +631,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JKernel/JKRDvdRipper.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRExpHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRFileFinder.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): weak __dt__13JKRFileFinderFv comes first in FSA (0x80082F44); ours emits it after the class methods
-        Object(NonMatching, "JSystem/JKernel/JKRFileLoader.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JKernel/JKRFileLoader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRMemArchive.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRSolidHeap.cpp", extra_cflags=["-O4,p"]),
@@ -685,7 +685,7 @@ config.libs = [
         Object(Matching, "JSystem/JUtility/JUTResource.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTTexture.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTVideo.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,p"]),
     ]),
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
