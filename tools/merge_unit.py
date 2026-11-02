@@ -74,6 +74,9 @@ def merge_symbols(base, ours, theirs):
             line = oo
         elif oo == bo or oo == to:
             line = to
+        elif oo and to and oo.split(" = ")[0] == to.split(" = ")[0] and \
+                oo.split(";")[0] == to.split(";")[0] and (set(oo.split()) <= set(to.split()) or set(to.split()) <= set(oo.split())):
+            line = max(oo, to, key=len)  # same symbol named on both sides; keep the fuller attributes
         else:
             sys.exit(f"symbols.txt: both sides changed {key}: {oo!r} vs {to!r}")
         if line is not None:
