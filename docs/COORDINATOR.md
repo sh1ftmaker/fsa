@@ -70,6 +70,9 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   reuse one they find (one review copied a build over another's).
 - Real symbols' sizes that dtk guessed wrong are changed only through
   `config/G4SE01/approved_symbol_changes.txt` (coordinator, citing a review).
+- Two ninja runs in one worktree at once corrupt `.ninja_log` ("manifest
+  still dirty" forever); move `.ninja_log`/`.ninja_deps` aside to recover.
+  One build at a time per worktree.
 - Hung processes: wrap every build/run in `timeout`; start long-lived
   processes with `sbg`. One forgotten test run spun for two hours.
 
