@@ -88,6 +88,8 @@ JUTAssertion::setWarningMessage_f(1, __FILE__, __LINE__, __VA_ARGS__);
 #define JUT_WARNING(...)
 #define JUT_WARNING_F(...)
 #define JUT_WARNING_F2(...) // remove condintional?
+#define JUT_WARNING_F1(...)
+#define JUT_WARNING_F3(...)
 #define JUT_CRITICAL_WARNING_F(...)
 #define JUT_ASSERT(...) (void)0;
 #define JUT_ASSERT_F(...) (void)0;
