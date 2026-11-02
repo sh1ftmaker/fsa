@@ -169,3 +169,25 @@ shared edits, re-runs configure and the full report, runs the gate and
   `// FIXME:` saying what differs, until a natural match is found.
 - **Claims stay local.** `progress/claims.json` (under `flock`) is the only
   claim list; no per-unit GitHub issues.
+
+## Roadmap after SDK, GX and JSystem (approved 2026-11-02)
+
+1. Finish the libraries: MSL/Runtime, MetroTRK (pikmin2/tp v2.6), THP, the
+   rest of JSystem including J3D (pikmin2, same GC/2.6), donor-first.
+2. Load the file map (`config/G4SE01/tu_map.tsv`) into `splits.txt`: 530
+   game units with their data ranges, actor files named from
+   `docs/names/actors.tsv`, the rest `tu_<addr>`; verify with the SHA-1 link.
+3. Game compiler setup (GC/2.6 `-O4,p`, C++ exceptions), proven on the 26
+   game functions from the recomp era, rewritten cleanly. Then the shared
+   headers, each with one owner, before the broad waves: the actor base class
+   (vtable slots known), the enemy/NPC/demo bases, the scene manager, the
+   global game-state struct, heap and message systems. Workers propose header
+   changes as reviewed SHARED-EDITS.
+4. Waves of per-file agents: small self-contained files and minigames, then
+   actor families sharing a base class, then the big systems (player, map/UI,
+   messages).
+5. Naming as its own track (evidence only, a name-only review).
+6. Between waves: fakematch debt (the release-build-assert method that fixed
+   Pad.c), crack passes on resistant functions, readability cleanup.
+7. Done: every unit Matching and `ninja` links main.dol with the original
+   SHA-1; a KATAM-style PORTABLE build becomes possible after that.
