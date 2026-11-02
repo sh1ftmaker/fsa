@@ -504,6 +504,16 @@ config.libs = [
         Object(Matching, "dolphin/exi/EXIBios.c"),
         Object(Matching, "dolphin/exi/EXIUart.c"),
     ]),
+    SdkLib("gba", [
+        Object(Matching, "dolphin/gba/GBA.c"),
+        Object(Matching, "dolphin/gba/GBAGetProcessStatus.c"),
+        Object(Matching, "dolphin/gba/GBAJoyBoot.c"),
+        Object(Matching, "dolphin/gba/GBARead.c"),
+        Object(Matching, "dolphin/gba/GBAWrite.c"),
+        Object(Matching, "dolphin/gba/GBAXfer.c"),
+        # FIXME: the DSP microcode in .data has no licensed source; see GBAKey.c.
+        Object(NonMatching, "dolphin/gba/GBAKey.c"),
+    ]),
     SdkLib("gd", [
         Object(Matching, "dolphin/gd/GDBase.c"),
         Object(Matching, "dolphin/gd/GDGeometry.c"),

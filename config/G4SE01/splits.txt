@@ -832,6 +832,32 @@ dolphin/si/SISamplingRate.c:
 	.data       start:0x804984F8 end:0x80498590
 	.sbss       start:0x8053A790 end:0x8053A798
 
+dolphin/gba/GBA.c:
+	.text       start:0x8007552C end:0x8007581C
+	.data       start:0x80498590 end:0x804985A0
+	.bss        start:0x804B9AA0 end:0x804B9FA0
+	.sbss       start:0x8053A798 end:0x8053A7A0
+
+dolphin/gba/GBAGetProcessStatus.c:
+	.text       start:0x8007581C end:0x80075990
+
+dolphin/gba/GBAJoyBoot.c:
+	.text       start:0x80075990 end:0x8007689C
+	.data       start:0x804985A0 end:0x804985D0
+
+dolphin/gba/GBARead.c:
+	.text       start:0x8007689C end:0x800769FC
+
+dolphin/gba/GBAWrite.c:
+	.text       start:0x800769FC end:0x80076B84
+
+dolphin/gba/GBAXfer.c:
+	.text       start:0x80076B84 end:0x80076EBC
+
+dolphin/gba/GBAKey.c:
+	.text       start:0x80076EBC end:0x80077124
+	.data       start:0x804985D0 end:0x80498978
+
 JSystem/JKernel/JKRAramArchive.cpp:
 	.text       start:0x8007A7F0 end:0x8007AAF8
 	.rodata     start:0x8045E0F8 end:0x8045E120
