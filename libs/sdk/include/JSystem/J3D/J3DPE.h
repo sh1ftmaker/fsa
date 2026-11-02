@@ -6,20 +6,7 @@
 #include "types.h"
 
 struct J3DFogInfo {
-	void operator=(const J3DFogInfo& other)
-	{
-		mType      = other.mType;
-		mAdjEnable = other.mAdjEnable;
-		mCenter    = other.mCenter;
-		mStartZ    = other.mStartZ;
-		mEndZ      = other.mEndZ;
-		mNearZ     = other.mNearZ;
-		mFarZ      = other.mFarZ;
-		mColor     = other.mColor;
-		for (int i = 0; i < 10; i++) {
-			mFogAdjTable[i] = other.mFogAdjTable[i];
-		}
-	}
+	J3DFogInfo& operator=(const J3DFogInfo& other); // defined out of line in J3DStruct.cpp
 
 	u8 mType;             // _00
 	u8 mAdjEnable;        // _01

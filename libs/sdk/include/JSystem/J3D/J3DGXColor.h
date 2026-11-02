@@ -42,7 +42,7 @@ struct J3DGXColor : public GXColor {
 	}
 
 
-	J3DGXColor& operator=(const GXColor& color)
+	J3DGXColor& operator=(const GXColor color)
 	{
 		*(GXColor*)this = color;
 		return *this;
@@ -91,7 +91,7 @@ struct J3DGXColorS10 : public GXColorS10 {
 
 	J3DGXColorS10& operator=(const GXColorS10& color)
 	{
-		*(GXColorS10*)this = color;
+		__memcpy(this, &color, sizeof(GXColorS10));
 		return *this;
 	}
 };

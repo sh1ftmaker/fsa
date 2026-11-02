@@ -6,11 +6,7 @@
 #include "types.h"
 
 struct J3DIndTexCoordScaleInfo {
-	void operator=(const J3DIndTexCoordScaleInfo& other)
-	{
-		mScaleS = other.mScaleS;
-		mScaleT = other.mScaleT;
-	}
+	void operator=(const J3DIndTexCoordScaleInfo& other) { __memcpy(this, &other, sizeof(J3DIndTexCoordScaleInfo)); }
 
 	u8 mScaleS; // _00
 	u8 mScaleT; // _01
@@ -33,15 +29,7 @@ struct J3DIndTexCoordScale : public J3DIndTexCoordScaleInfo {
 };
 
 struct J3DIndTexMtxInfo {
-	void operator=(const J3DIndTexMtxInfo& other)
-	{
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 3; j++) {
-				mOffsetMtx[i][j] = other.mOffsetMtx[i][j];
-			}
-		}
-		mScaleExp = *(s8*)&other.mScaleExp; // don't even ask.
-	}
+	J3DIndTexMtxInfo& operator=(const J3DIndTexMtxInfo& other); // defined out of line in J3DStruct.cpp
 
 	Mtx23 mOffsetMtx; // _00
 	s8 mScaleExp;     // _18
@@ -70,11 +58,7 @@ struct J3DIndTexMtx : public J3DIndTexMtxInfo {
 };
 
 struct J3DIndTexOrderInfo {
-	void operator=(const J3DIndTexOrderInfo& other)
-	{
-		mTexCoordID = other.mTexCoordID;
-		mTexMapID   = other.mTexMapID;
-	}
+	void operator=(const J3DIndTexOrderInfo& other) { __memcpy(this, &other, sizeof(J3DIndTexOrderInfo)); }
 
 	u8 mTexCoordID; // _00
 	u8 mTexMapID;   // _01
