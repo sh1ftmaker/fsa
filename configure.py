@@ -538,7 +538,7 @@ config.libs = [
     MkddJSystemLib("mkdd_J2DGraph", [
         Object(NonMatching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),  # FIXME(link): duplicate J2DAnmKeyLoader_v15::readAnmTransform
         Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,s"]),
-        Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,s"]),
+        Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DOrthoGraph.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DPane.cpp", extra_cflags=["-O4,s"]),

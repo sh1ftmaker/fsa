@@ -837,7 +837,8 @@ JSystem/J2DGraph/J2DAnmLoader.cpp:
 	.text       start:0x800A5364 end:0x800A55BC
 
 JSystem/J2DGraph/J2DManage.cpp:
-	.text       start:0x800A6A00 end:0x800A6A34
+	.text       start:0x800A68D4 end:0x800A6B98
+	.bss        start:0x804BA4C0 end:0x804BA5C8
 
 JSystem/J2DGraph/J2DMaterial.cpp:
 	.text       start:0x800AEF1C end:0x800AF584
