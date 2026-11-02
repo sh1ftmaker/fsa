@@ -529,7 +529,7 @@ config.libs = [
         Object(Matching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [
-        Object(NonMatching, "dolphin/si/SIBios.c"),  # FIXME(link): .bss size 0x200
+        Object(Matching, "dolphin/si/SIBios.c"),
         Object(Matching, "dolphin/si/SISamplingRate.c"),
     ]),
     SdkLib("vi", [
