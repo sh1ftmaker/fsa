@@ -71,6 +71,8 @@ JSystem/JAudio/Interface/JAIStream.cpp:
 JSystem/JAudio/Interface/JAIStreamMgr.cpp:
 	.text       start:0x80027020 end:0x80027654
 	.ctors      start:0x8045BD30 end:0x8045BD34
+	.bss        start:0x804B2440 end:0x804B2470
+	.sdata2     start:0x8053B028 end:0x8053B038
 
 JSystem/JAudio/Interface/JAIAudible.cpp:
 	.text       start:0x80027654 end:0x80027770
