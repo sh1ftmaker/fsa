@@ -51,7 +51,7 @@ const void* parseVariableUInt_16_32_following(void const* inputBuffer, u32* outp
 	if ((bufferValue & 0x8000) == 0) {
 		bitPointer->mValue = 0x10;                          // Set bit value to 16
 		*output1           = bufferValue;                   // Assign the 16-bit value to output1
-		*output2           = *(u16*)((u8*)inputBuffer + 2); // Assign the next 16 bits to output2
+		*output2           = ((const u16*)inputBuffer)[1];  // Assign the next 16 bits to output2
 		return (u8*)inputBuffer + 4;                        // Return the buffer pointer moved by 4 bytes
 	}
 
@@ -59,9 +59,9 @@ const void* parseVariableUInt_16_32_following(void const* inputBuffer, u32* outp
 	bitPointer->mValue = 0x20;                    // Set bit value to 32
 	bufferValue <<= 16;                           // Shift the 16-bit value to the left by 16 bits
 	bufferValue &= 0x7fff0000;                    // Mask the value to keep only the 15 bits following the most significant bit
-	bufferValue |= *(u16*)((u8*)inputBuffer + 2); // OR the value with the next 16 bits from the buffer
+	bufferValue |= ((const u16*)inputBuffer)[1];  // OR the value with the next 16 bits from the buffer
 	*output1 = bufferValue;                       // Assign the 32-bit value to output1
-	*output2 = *(u32*)((u8*)inputBuffer + 4);     // Assign the next 32 bits to output2
+	*output2 = ((const u32*)inputBuffer)[1];      // Assign the next 32 bits to output2
 	return (u8*)inputBuffer + 8;                  // Return the buffer pointer moved by 8 bytes
 }
 
