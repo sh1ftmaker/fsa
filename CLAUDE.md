@@ -138,7 +138,7 @@ Then do the data splits (rule 2) by hand or with the donor's own
 
 ## Repo hygiene
 
-- Commit as `sh1ftmaker <shiftmaker@gmail.com>`. Don't push without being asked.
+- Don't push without being asked.
 - Never commit game data: `orig/`, `build/`, disc images, extracted assets.
 - Archived history: branch `archive/pre-matching-main` has the old m2c /
   port-agent pipeline and TWW game files; `archive/recomp-game-decomp` has the

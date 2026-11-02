@@ -51,10 +51,14 @@ GitHub Pages publishes `site/` on every push to `matching`
 made locally: `tools/site_data.py` turns the honest report, `objdiff.json`,
 `splits.txt`, `lib_map.tsv` and `tu_map.tsv` into `site/data/` (a summary,
 one function file per library, and `history.json` with one entry per
-commit). `merge_unit.py` and `coord.py promote` run it and stage
-`site/data/` in their commit. **After any manual merge or commit to
-`matching`, run `python3 tools/site_data.py --subject "<commit subject>"`
-after the full `ninja` and stage `site/data/` in the same commit.**
+commit). The same run (`tools/readme_assets.py`) writes the README's
+visuals into `site/badges/`, the shields.io endpoint badges into
+`site/data/badge-*.json`, and the numbers between the README's
+`<!-- progress|regions|now:start/end -->` markers. `merge_unit.py` and
+`coord.py promote` run it with `--stage`, which stages all of that in their
+commit. **After any manual merge or commit to `matching`, run
+`python3 tools/site_data.py --subject "<commit subject>" --stage` after the
+full `ninja`, in the same commit.**
 It writes only names, addresses, sizes and match flags, never DOL bytes.
 Preview: `sbg start fsasite -- python3 -m http.server 8765 -d site`.
 

@@ -9,8 +9,7 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
 
 - Your worktree and branch (`unit/<name>`) were created for you with
   `tools/unit_worktree.sh`. Work only there. Commit to your branch as you go
-  (`sh1ftmaker <shiftmaker@gmail.com>`, trailer
-  `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`). Never commit to
+  (with the trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`). Never commit to
   `matching`, never push, never rebase or merge.
 - Build: `ninja build/G4SE01/report_honest.json` (compiles changed units and writes
   the report). Prefix long runs with `timeout`.
