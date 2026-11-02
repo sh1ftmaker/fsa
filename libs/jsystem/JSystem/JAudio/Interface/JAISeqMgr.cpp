@@ -180,11 +180,6 @@ bool JAISeqMgr::endStartSeq_(JAISeq *seq, JAISoundHandle *handle)
     return false;
 }
 
-// FIXME: __sinit_JAISeqMgr_cpp (0x80025368) is not emitted yet. FSA constructs the
-// JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools and
-// JASPoolAllocObject<JAISeq>::memPool_ here; it needs the generic memPool_
-// definition (JASHeapCtrl.h, pending) visible in this TU.
-
 #ifdef DEBUG
 #pragma sym off
 #endif

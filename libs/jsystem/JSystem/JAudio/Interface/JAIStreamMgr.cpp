@@ -141,11 +141,6 @@ JAIStream *JAIStreamMgr::newStream_()
 CW_FORCE_STRINGS(JAIStreamMgr_cpp, "category >= 0"); // string from JAIStreamMgr::stopCategory(int)
 #endif
 
-// FIXME: __sinit_JAIStreamMgr_cpp (0x80027548) is not emitted yet. FSA constructs the
-// JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools and
-// JASPoolAllocObject<JAIStream>::memPool_ here; it needs the generic memPool_
-// definition (JASHeapCtrl.h, pending) visible in this TU.
-
 #ifdef DEBUG
 #pragma sym off
 #endif
