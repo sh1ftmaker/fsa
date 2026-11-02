@@ -681,7 +681,7 @@ config.libs = [
         Object(Matching, "dolphin/gx/GXBump.c"),
         Object(NonMatching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
-        Object(NonMatching, "dolphin/gx/GXGeometry.c"),
+        Object(Matching, "dolphin/gx/GXGeometry.c"),
         Object(Matching, "dolphin/gx/GXInit.c"),
         Object(Matching, "dolphin/gx/GXLight.c"),
         Object(NonMatching, "dolphin/gx/GXMisc.c"),
