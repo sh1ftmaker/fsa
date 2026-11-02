@@ -309,7 +309,7 @@ dolphin/os/OSMessage.c:
 	.text       start:0x80042EBC end:0x80043194
 
 dolphin/os/OSMemory.c:
-	.text       start:0x80043194 end:0x80043418
+	.text       start:0x80043194 end:0x80043530
 	.data       start:0x80495FD8 end:0x80495FE8
 
 dolphin/os/OSMutex.c:
