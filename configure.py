@@ -536,16 +536,24 @@ config.libs = [
         Object(Matching, "dolphin/vi/vi.c"),
     ]),
     MkddJSystemLib("mkdd_J2DGraph", [
+        Object(NonMatching, "JSystem/J2DGraph/J2DAnimation.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): duplicate J2DAnmKeyLoader_v15::readAnmTransform
+        Object(NonMatching, "JSystem/J2DGraph/J2DBloSaver.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DMatBlock.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DMaterialFactory.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DOrthoGraph.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DPane.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DPicture.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPictureEx.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPrint.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DScreen.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DTevs.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DTextBox.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DTextBoxEx.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DWindow.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
@@ -690,9 +698,6 @@ config.libs = [
         Object(Matching, "dolphin/gx/GXTev.c"),
         Object(Matching, "dolphin/gx/GXTexture.c"),
         Object(Matching, "dolphin/gx/GXTransform.c", extra_cflags=["-fp_contract off"]),
-    ]),
-    JSystemLib("J2DGraph", [
-        Object(Matching, "JSystem/J2DGraph/J2DPrint.cpp"),
     ]),
     JSystemLib("J3DGraphAnimator", [
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModel.cpp"),  # FIXME(link): undefined fn_800C2E30
