@@ -347,6 +347,7 @@ dolphin/os/OSTime.c:
 dolphin/mtx/mtx.c:
 	.text       start:0x80046898 end:0x80046E84
 	.sdata      start:0x80539C28 end:0x80539C30
+	.sdata2     start:0x8053B2F0 end:0x8053B308
 
 dolphin/mtx/mtxvec.c:
 	.text       start:0x80046E84 end:0x80046FB4
