@@ -244,6 +244,8 @@ def cmd_promote(args):
         run("python3", "configure.py")
         sys.exit("nothing promoted:\n" + gate.stdout)
     run("git", "add", "configure.py")
+    run("python3", "tools/site_data.py", "--subject", "Flag units Matching that are now 100 % in code and data")
+    run("git", "add", "site/data")
     run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com", "commit", "-q", "-m",
         "Flag units Matching that are now 100 % in code and data\n\n" + "\n".join(ready)
         + "\n\nCompleted by names found in other units; no fakematch constructs; gate ok."
