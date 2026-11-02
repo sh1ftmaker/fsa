@@ -697,7 +697,7 @@ config.libs = [
     # J3D from projectPiki/pikmin2 (CC0), in its link order; TP path layout.
     MkddJSystemLib("J3DGraphBase", [
         Object(NonMatching, "JSystem/J3DGraphBase/J3DSys.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphBase/J3DVertex.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphBase/J3DVertex.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphBase/J3DTransform.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphBase/J3DPacket.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphBase/J3DShape.cpp", extra_cflags=["-O4,p"]),
@@ -713,25 +713,25 @@ config.libs = [
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModel.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DAnimation.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMaterialAnm.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphAnimator/J3DCluster.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphAnimator/J3DCluster.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DJoint.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModelData.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMaterialAttach.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DJointTree.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphAnimator/J3DSkinDeform.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphAnimator/J3DSkinDeform.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DShapeTable.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("J3DGraphLoader", [
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DMaterialFactory.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphLoader/J3DBinaryFormat.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J3DGraphLoader/J3DBinaryFormat.cpp", extra_cflags=["-O4,p"]),  # FIXME: pikmin2 emits the weak J3DShapeMtx::getType through a fabricated function
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelLoader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DJointFactory.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DShapeFactory.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DAnmLoader.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelSaver.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelSaver.cpp", extra_cflags=["-O4,p"]),  # FIXME: pikmin2 emits the weak getUseMtxIndex through a fabricated function
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DMaterialFactory_v21.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp", extra_cflags=["-O4,p"]),
     ]),
     JSystemLib("JAudio", [
         Object(NonMatching, "JSystem/JAudio/JASBNKParser.cpp"),  # FIXME(link): undefined fn_80030380
