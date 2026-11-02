@@ -1,32 +1,70 @@
 # Publish the progress site (site/) to GitHub Pages on every push to `matching`.
-# The data in site/data/ is generated locally by tools/site_data.py from the
-# honest objdiff report and committed with each merge; CI can't build the
-# game (no ISO), so this only uploads the static files.
+# The measurements in site/data/ are generated locally by tools/site_data.py
+# from the honest objdiff report and committed with each merge; CI can't build
+# the game (no ISO). CI does redraw the README visuals, badges and README
+# numbers from that committed data (tools/readme_refresh.py), so a commit that
+# didn't go through the merge tools (a hand edit of docs/roadmap.yml or the
+# README) still gets current visuals, and commits them back.
 name: Pages
 
 on:
   push:
     branches: [matching]
-    paths: ["site/**", ".github/workflows/pages.yml"]
+    paths:
+      - "site/**"
+      - "README.md"
+      - "docs/roadmap.yml"
+      - "tools/readme_assets.py"
+      - "tools/readme_refresh.py"
+      - "tools/site_data.py"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  refresh:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml==6.0.2
+      - run: python3 tools/readme_refresh.py
+      - id: commit
+        # Pushes made with GITHUB_TOKEN don't start new workflow runs, so this can't loop.
+        run: |
+          git add site/badges site/data README.md
+          if git diff --cached --quiet; then
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          else
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "README: redraw generated visuals from committed data"
+            git push origin HEAD:matching
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.refresh.outputs.sha }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

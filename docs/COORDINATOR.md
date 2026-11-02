@@ -59,6 +59,11 @@ visuals into `site/badges/`, the shields.io endpoint badges into
 commit. **After any manual merge or commit to `matching`, run
 `python3 tools/site_data.py --subject "<commit subject>" --stage` after the
 full `ninja`, in the same commit.**
+As a safety net, the Pages workflow runs `tools/readme_refresh.py` on every
+push: it redraws the README visuals, badges and README numbers from the
+committed `site/data/summary.json` and `docs/roadmap.yml` (no build needed)
+and commits them back if they changed. It can't refresh the measurements
+themselves; those only change through a local build and `site_data.py`.
 It writes only names, addresses, sizes and match flags, never DOL bytes.
 Preview: `sbg start fsasite -- python3 -m http.server 8765 -d site`.
 
