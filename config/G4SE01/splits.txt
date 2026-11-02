@@ -14,41 +14,59 @@ Sections:
 	.sbss2      type:bss align:32
 
 JSystem/JAudio/Interface/JAISe.cpp:
-	.text       start:0x80021F24 end:0x800227A8
+	.text       start:0x80021F24 end:0x800228F4
+	.ctors      start:0x8045BD0C end:0x8045BD10
 	.data       start:0x804916C0 end:0x80491718
 	.sdata2     start:0x8053AFA0 end:0x8053AFB0
 
+JSystem/JAudio/Interface/JAISeMgr.cpp:
+	.text       start:0x800228F4 end:0x80023B74
+	.ctors      start:0x8045BD10 end:0x8045BD14
+	.rodata     start:0x8045C660 end:0x8045C678
+	.sdata2     start:0x8053AFB0 end:0x8053AFC0
+
 JSystem/JAudio/Interface/JAISeq.cpp:
-	.text       start:0x80023B74 end:0x80024A0C
+	.text       start:0x80023B74 end:0x80024BE0
+	.ctors      start:0x8045BD14 end:0x8045BD18
 	.data       start:0x80491740 end:0x80491790
 
 JSystem/JAudio/Interface/JAISeqMgr.cpp:
-	.text       start:0x80024BE0 end:0x80025368
+	.text       start:0x80024BE0 end:0x80025474
+	.ctors      start:0x8045BD18 end:0x8045BD1C
 	.data       start:0x804917C0 end:0x804917D8
 
 JSystem/JAudio/Interface/JAISound.cpp:
-	.text       start:0x80025474 end:0x80025C94
+	.text       start:0x80025474 end:0x80025D68
+	.ctors      start:0x8045BD1C end:0x8045BD20
 	.rodata     start:0x8045C678 end:0x8045C6B8
 	.data       start:0x804917D8 end:0x80491808
 	.sdata2     start:0x8053AFE0 end:0x8053B000
 
 JSystem/JAudio/Interface/JAISoundChild.cpp:
-	.text       start:0x80025D68 end:0x80025F54
+	.text       start:0x80025D68 end:0x80026060
+	.ctors      start:0x8045BD20 end:0x8045BD24
 	.sdata2     start:0x8053B000 end:0x8053B010
 
 JSystem/JAudio/Interface/JAISoundHandles.cpp:
-	.text       start:0x80026060 end:0x80026158
+	.text       start:0x80026060 end:0x800262AC
+	.ctors      start:0x8045BD24 end:0x8045BD28
 
 JSystem/JAudio/Interface/JAISoundParams.cpp:
 	.text       start:0x800262AC end:0x8002640C
 	.sdata2     start:0x8053B010 end:0x8053B018
 
 JSystem/JAudio/Interface/JAIStream.cpp:
-	.text       start:0x80026560 end:0x80026E78
+	.text       start:0x80026560 end:0x80027020
+	.ctors      start:0x8045BD2C end:0x8045BD30
 	.data       start:0x80491840 end:0x80491870
 
 JSystem/JAudio/Interface/JAIStreamMgr.cpp:
-	.text       start:0x80027020 end:0x80027548
+	.text       start:0x80027020 end:0x80027654
+	.ctors      start:0x8045BD30 end:0x8045BD34
+
+JSystem/JAudio/Interface/JAIAudible.cpp:
+	.text       start:0x80027654 end:0x80027770
+	.ctors      start:0x8045BD34 end:0x8045BD38
 
 JSystem/JAudio/System/JASCalc.cpp:
 	.text       start:0x80027770 end:0x80027EC4
@@ -59,15 +77,18 @@ JSystem/JAudio/System/JASCallback.cpp:
 	.text       start:0x80027EC4 end:0x800280E8
 
 JSystem/JAudio/System/JASCmdStack.cpp:
-	.text       start:0x800280E8 end:0x80028268
+	.text       start:0x800280E8 end:0x800282C8
 	.ctors      start:0x8045BD38 end:0x8045BD3C
 
 JSystem/JAudio/System/JASDvdThread.cpp:
 	.text       start:0x800282C8 end:0x80028374
 	.sbss       start:0x8053A2B8 end:0x8053A2C0
 
-JSystem/JAudio/JASCmdStack.cpp:
-	.text       start:0x80028974 end:0x8002898C
+JSystem/JAudio/System/JASHeapCtrl.cpp:
+	.text       start:0x80028374 end:0x80028DA8
+	.ctors      start:0x8045BD3C end:0x8045BD40
+	.bss        start:0x804B24B0 end:0x804B2500
+	.sbss       start:0x8053A2C0 end:0x8053A2D0
 
 JSystem/JAudio/System/JASProbe.cpp:
 	.text       start:0x80028DA8 end:0x80028F54
@@ -86,7 +107,8 @@ JSystem/JAudio/System/JASTaskThread.cpp:
 	.data       start:0x80491898 end:0x804918A8
 
 JSystem/JAudio/System/JASAiCtrl.cpp:
-	.text       start:0x800298C8 end:0x8002A504
+	.text       start:0x800298C8 end:0x8002A55C
+	.ctors      start:0x8045BD40 end:0x8045BD44
 	.rodata     start:0x8045CAD0 end:0x8045CB28
 	.data       start:0x804918A8 end:0x804918D0
 	.bss        start:0x804B2518 end:0x804B2524
@@ -95,14 +117,17 @@ JSystem/JAudio/System/JASAiCtrl.cpp:
 	.sdata2     start:0x8053B080 end:0x8053B0B0
 
 JSystem/JAudio/System/JASAudioReseter.cpp:
-	.text       start:0x8002A55C end:0x8002A740
+	.text       start:0x8002A55C end:0x8002AAF8
+	.ctors      start:0x8045BD44 end:0x8045BD48
 
 JSystem/JAudio/System/JASChannel.cpp:
-	.text       start:0x8002AAF8 end:0x8002C2B0
+	.text       start:0x8002AAF8 end:0x8002C360
+	.ctors      start:0x8045BD48 end:0x8045BD4C
 	.sbss       start:0x8053A320 end:0x8053A328
 
 JSystem/JAudio/System/JASDriverIF.cpp:
-	.text       start:0x8002C360 end:0x8002C3EC
+	.text       start:0x8002C360 end:0x8002C55C
+	.ctors      start:0x8045BD4C end:0x8045BD50
 	.sdata      start:0x80539BD0 end:0x80539BD8
 
 JSystem/JAudio/System/JASDSPChannel.cpp:
@@ -131,27 +156,34 @@ JSystem/JAudio/System/JASSoundParams.cpp:
 	.text       start:0x8002DC74 end:0x8002DCD0
 
 JSystem/JAudio/System/JASWSParser.cpp:
-	.text       start:0x8002DCD0 end:0x8002E170
+	.text       start:0x8002DCD0 end:0x8002E2E0
 	.sbss       start:0x8053A340 end:0x8053A348
 
 JSystem/JAudio/System/JASBasicBank.cpp:
-	.text       start:0x8002E2E0 end:0x8002E2F0
+	.text       start:0x8002E2E0 end:0x8002E718
+	.ctors      start:0x8045BD54 end:0x8045BD58
+	.data       start:0x80491980 end:0x804919A8
 
 JSystem/JAudio/System/JASBasicInst.cpp:
-	.text       start:0x8002E718 end:0x8002E8A8
+	.text       start:0x8002E718 end:0x8002E90C
+	.ctors      start:0x8045BD58 end:0x8045BD5C
 
 JSystem/JAudio/System/JASBasicWaveBank.cpp:
 	.text       start:0x8002E90C end:0x8002F274
 	.data       start:0x804919D0 end:0x80491A40
 
-JSystem/JAudio/JASBNKParser.cpp:
-	.text       start:0x80030380 end:0x80030394
+JSystem/JAudio/System/JASBNKParser.cpp:
+	.text       start:0x8002F274 end:0x800304C4
+	.ctors      start:0x8045BD5C end:0x8045BD60
 
-JSystem/JAudio/JASDrumSet.cpp:
-	.text       start:0x800307C4 end:0x800307D0
+JSystem/JAudio/System/JASDrumSet.cpp:
+	.text       start:0x800304C4 end:0x80030828
+	.ctors      start:0x8045BD60 end:0x8045BD64
+	.sdata2     start:0x8053B1B0 end:0x8053B1C0
 
 JSystem/JAudio/System/JASInstRand.cpp:
-	.text       start:0x80030828 end:0x80030960
+	.text       start:0x80030828 end:0x800309B8
+	.ctors      start:0x8045BD64 end:0x8045BD68
 	.sbss       start:0x8053A358 end:0x8053A360
 	.sdata2     start:0x8053B1C0 end:0x8053B1D0
 
@@ -160,23 +192,31 @@ JSystem/JAudio/System/JASInstSense.cpp:
 	.sdata2     start:0x8053B1D0 end:0x8053B1F0
 
 JSystem/JAudio/System/JASSimpleWaveBank.cpp:
-	.text       start:0x80030BD0 end:0x80030ED8
+	.text       start:0x80030BD0 end:0x80030EF8
 
 JSystem/JAudio/System/JASWaveArcLoader.cpp:
-	.text       start:0x80030EF8 end:0x8003143C
+	.text       start:0x80030EF8 end:0x80031750
 	.data       start:0x80491AD0 end:0x80491B38
 	.sbss       start:0x8053A360 end:0x8053A368
 
 JSystem/JAudio/System/JASBank.cpp:
-	.text       start:0x80031750 end:0x80031844
+	.text       start:0x80031750 end:0x8003189C
+	.ctors      start:0x8045BD6C end:0x8045BD70
 	.rodata     start:0x8045D1A8 end:0x8045D1D0
 	.sdata2     start:0x8053B1F0 end:0x8053B200
+
+JSystem/JAudio/System/JASAramStream.cpp:
+	.text       start:0x8003189C end:0x80033098
+	.ctors      start:0x8045BD70 end:0x8045BD74
+	.rodata     start:0x8045D1D0 end:0x8045D1F8
+	.sdata2     start:0x8053B200 end:0x8053B220
 
 JSystem/JAudio/System/JASRegisterParam.cpp:
 	.text       start:0x80033098 end:0x800332D0
 
 JSystem/JAudio/System/JASSeqCtrl.cpp:
-	.text       start:0x800332D0 end:0x8003363C
+	.text       start:0x800332D0 end:0x80033778
+	.ctors      start:0x8045BD74 end:0x8045BD78
 	.sbss       start:0x8053A380 end:0x8053A388
 
 JSystem/JAudio/System/JASSeqParser.cpp:
@@ -224,34 +264,47 @@ JSystem/JAudio/Task/osdsp_task.c:
 	.sbss       start:0x8053A3B0 end:0x8053A3C0
 
 JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp:
-	.text       start:0x8003A50C end:0x8003A5DC
+	.text       start:0x8003A50C end:0x8003AA08
 	.data       start:0x804953C0 end:0x80495400
 
 JSystem/JAudio/Utility/JAUAudioArcLoader.cpp:
-	.text       start:0x8003AA08 end:0x8003AB38
+	.text       start:0x8003AA08 end:0x8003AF6C
+	.ctors      start:0x8045BD84 end:0x8045BD88
 
 JSystem/JAudio/Utility/JAUAudioMgr.cpp:
-	.text       start:0x8003AF6C end:0x8003B0D4
+	.text       start:0x8003AF6C end:0x8003B288
+	.ctors      start:0x8045BD88 end:0x8045BD8C
+
+JSystem/JAudio/Utility/JAUBankTable.cpp:
+	.text       start:0x8003B288 end:0x8003B400
+	.ctors      start:0x8045BD8C end:0x8045BD90
 
 JSystem/JAudio/Utility/JAUInitializer.cpp:
-	.text       start:0x8003B400 end:0x8003B6A8
+	.text       start:0x8003B400 end:0x8003B85C
+	.ctors      start:0x8045BD90 end:0x8045BD94
 
 JSystem/JAudio/Utility/JAUSeqCollection.cpp:
-	.text       start:0x8003B85C end:0x8003B9C0
+	.text       start:0x8003B85C end:0x8003BA20
 	.data       start:0x804954A0 end:0x804954B8
 
 JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp:
 	.text       start:0x8003BA20 end:0x8003BF64
 
 JSystem/JAudio/Utility/JAUSoundMgr.cpp:
-	.text       start:0x8003BF64 end:0x8003C0D0
+	.text       start:0x8003BF64 end:0x8003C30C
+	.ctors      start:0x8045BD94 end:0x8045BD98
 	.data       start:0x804954B8 end:0x804954C8
 
 JSystem/JAudio/Utility/JAUSoundTable.cpp:
-	.text       start:0x8003C30C end:0x8003C618
+	.text       start:0x8003C30C end:0x8003C7A0
+	.ctors      start:0x8045BD98 end:0x8045BD9C
 
 JSystem/JAudio/Utility/JAUStreamFileTable.cpp:
 	.text       start:0x8003C7A0 end:0x8003C878
+
+JSystem/JAudio/Utility/JAUAudience.cpp:
+	.text       start:0x8003C8D8 end:0x8003D5D8
+	.ctors      start:0x8045BD9C end:0x8045BDA0
 
 JSystem/JAudio/Utility/JAUSectionHeap.cpp:
 	.text       start:0x8003D5D8 end:0x8003EE34
@@ -260,6 +313,10 @@ JSystem/JAudio/Utility/JAUSectionHeap.cpp:
 	.data       start:0x80495540 end:0x804955B8
 	.bss        start:0x804B4C98 end:0x804B4CC8
 	.sdata      start:0x80539BE8 end:0x80539BF0
+
+JSystem/JAudio/Utility/JAUSoundObject.cpp:
+	.text       start:0x8003EE34 end:0x8003F610
+	.ctors      start:0x8045BDA4 end:0x8045BDA8
 
 dolphin/base/PPCArch.c:
 	.text       start:0x8003F610 end:0x8003F724
