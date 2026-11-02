@@ -27,7 +27,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+APPROVALS = Path("config/G4SE01/approved_symbol_changes.txt")
 PROTECTED = [
+    "config/G4SE01/approved_symbol_changes.txt",
     "tools/gate.py", "tools/fdiff.py", "tools/progress.py", "tools/project.py",
     "tools/data_splits.py", "orig/",
 ]
@@ -133,6 +135,12 @@ def check_symbols(base, changed, problems):
     path = "config/G4SE01/symbols.txt"
     if path not in changed:
         return
+    approved = set()
+    if APPROVALS.exists():
+        for line in APPROVALS.read_text().splitlines():
+            parts = line.split()
+            if len(parts) >= 3 and not line.startswith("#"):
+                approved.add((parts[0], parts[1], parts[2]))
     old = parse_symbols(file_at(base, path))
     new = parse_symbols(Path(path).read_text())
     for key, (name, size, kind) in old.items():
@@ -143,6 +151,8 @@ def check_symbols(base, changed, problems):
             problems.append(f"symbols.txt: symbol at {key[0]}:0x{key[1]:08X} ({name}) removed")
             continue
         new_name, new_size, new_kind = new[key]
+        if (name, size, new_size) in approved and kind == new_kind:
+            continue
         if (size, kind) != (new_size, new_kind):
             problems.append(f"symbols.txt: {name} size/type changed ({size},{kind} -> {new_size},{new_kind})")
         if new_name != name and not PLACEHOLDER.search(name):
