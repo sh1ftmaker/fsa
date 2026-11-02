@@ -1091,7 +1091,7 @@ JSystem/J2DGraph/J2DTextBoxEx.cpp:
 
 JSystem/J2DGraph/J2DAnimation.cpp:
 	.text       start:0x800B79A4 end:0x800BA544
-	.data       start:0x8049A2B8 end:0x8049A380
+	.data       start:0x8049A2B8 end:0x8049A378
 	.sdata2     start:0x8053BB48 end:0x8053BB70
 
 JSystem/J3DGraphBase/J3DVertex.cpp:
