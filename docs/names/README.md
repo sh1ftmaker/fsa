@@ -66,3 +66,5 @@ Each row cites its evidence. No game text is copied here beyond the names.
 - GROK ジークロック: the same Japanese name is ALttP's Helmasaur King and
   TWW's Helmaroc King. FSA uses the Helmaroc King, confirmed by the stage
   (3-2) and the `jeek*` textures.
+
+**Rule:** when the game's own text and a wiki disagree, the in-game name wins (e.g. SPFR is the Great Fairy, not the wiki's "Fairy Queen").
