@@ -10,8 +10,12 @@
 
 #include "types.h"
 
+inline f32 JMAFastReciprocal(f32 value) { return __fres(value); }
+
 namespace JMath
 {
+    inline f32 fastReciprocal(f32 value) { return JMAFastReciprocal(value); }
+
     inline void gekko_ps_copy12(register void *pDest, register const void *pSrc)
     {
         register f32 rxxyx;
@@ -191,8 +195,25 @@ namespace JMath
             mTable[0] = 0.0f;
             mTable2[0] = TAngleConstant_<f32>::RADIAN_DEG180() / 4;
         }
+        f32 acosDegree(f32 v) const { return acos_(v) * TAngleConstant_<f32>::RADIAN_TO_DEGREE_FACTOR(); }
         f32 acos2_(f32, f32) const;
-        f32 acos_(f32) const;
+        f32 acos_(f32 value) const
+        {
+            if (value >= 1.0f)
+            {
+                return 0.0f;
+            }
+            if (value <= -1.0f)
+            {
+                return TAngleConstant_<f32>::RADIAN_DEG180();
+            }
+            if (value < 0.0f)
+            {
+                value = -value;
+                return mTable[(u32)(value * (1024 - 0.5f))] + TAngleConstant_<f32>::RADIAN_DEG090();
+            }
+            return TAngleConstant_<f32>::RADIAN_DEG090() - mTable[(u32)(value * (1024 - 0.5f))];
+        }
         f32 mTable[1024];
         f32 mTable2[8];
     };
@@ -200,6 +221,8 @@ namespace JMath
     extern const TAsinAcosTable<1024, f32> asinAcosTable_ __attribute__((aligned(32)));
     extern const TSinCosTable<11, f32> sincosTable_ __attribute__((aligned(32)));
     extern const TAtanTable<1024, f32> atanTable_ __attribute__((aligned(32)));
+
+    inline f32 acosDegree(f32 value) { return asinAcosTable_.acosDegree(value); }
 
     class TRandom_fast_
     {
