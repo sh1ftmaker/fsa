@@ -116,3 +116,8 @@ J3DMaterialFactory. Their functions still count in the function total,
 because objdiff can't tell how a function matched; replacing each construct
 with natural source is a dedicated task per unit (find the real reason for
 the weak-function order: usually where inline/template definitions live).
+
+Fix found for one class: inlining fakematches in SDK code (pragmas, dummy
+statements) often stand in for release-build asserts, which expand to
+nothing but still count toward the inline size limit. Pad.c matched by
+restoring dolsdk2004's `ASSERTMSG` lines and dropping its pragma.
