@@ -465,7 +465,7 @@ config.libs = [
     ]),
     SdkLib("card", [
         Object(Matching, "dolphin/card/CARDBios.c"),
-        Object(NonMatching, "dolphin/card/CARDBlock.c"),
+        Object(Matching, "dolphin/card/CARDBlock.c"),
         Object(Matching, "dolphin/card/CARDCheck.c"),
         Object(Matching, "dolphin/card/CARDCreate.c"),
         Object(NonMatching, "dolphin/card/CARDDir.c"),
