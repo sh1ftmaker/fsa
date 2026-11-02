@@ -480,7 +480,7 @@ config.libs = [
         Object(Matching, "dolphin/card/CARDWrite.c"),
     ]),
     SdkLib("db", [
-        Object(NonMatching, "dolphin/db/db.c"),  # FIXME(link): duplicate DBInit
+        Object(Matching, "dolphin/db/db.c"),
     ]),
     SdkLib("dsp", [
         Object(Matching, "dolphin/dsp/dsp.c"),
