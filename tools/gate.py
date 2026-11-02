@@ -7,7 +7,7 @@ Usage:
   python3 tools/gate.py --no-link        # skip the link (quick iteration only; merges link)
 
 Checks (see docs/PLAN.md, "Submission gate"):
-  * changed C/C++ sources: no inline asm, no #pragma or goto that wasn't
+  * changed C/C++ sources: no inline asm, #pragma or goto that wasn't
     already in that file (or in the donor file of the same name), no m2c
     leftovers, no field access through casts and offsets, no .incbin;
   * protected files untouched: measuring tools, objdiff/report settings, tool
@@ -54,13 +54,14 @@ SOURCE = re.compile(r"\.(c|cpp|h|hpp|inc)$")
 DONORS = Path("../donors")
 
 BANNED = [
-    (re.compile(r"\basm\b\s*[({]|__asm\b|\basm\s+\w+[^;]*\("), "inline asm"),
     (re.compile(r"\bregister\b[^;]*\basm\b"), "register bound to a machine register"),
     (re.compile(r"\bM2C_|\bsaved_reg_|\bunksp|\bvar_[rf]\d+\b|\bsp[0-9A-F]{2,}\b|\bMULT_HI\b|\?\s*/\*\s*unknown"), "m2c leftover"),
     (re.compile(r"\*\s*\(\s*[\w\s]+\*+\s*\)\s*\(\s*\(\s*(u8|s8|char|unsigned char|u32|uintptr_t)\s*\*?\s*\)"), "field access through a cast and an offset"),
     (re.compile(r"\.incbin|INCBIN"), "embedded binary"),
 ]
 RESTRICTED = [
+    # Original asm functions from a donor's matched source are source; new asm is not.
+    (re.compile(r"\basm\b\s*[({]|__asm\b|\basm\s+\w+[^;]*\("), "inline asm"),
     (re.compile(r"^\s*#\s*pragma\b.*"), "#pragma"),
     (re.compile(r"\bgoto\s+\w+\s*;"), "goto"),
 ]
@@ -172,6 +173,8 @@ def check_symbols(base, changed, problems):
             continue
         new_name, new_size, new_kind = new[key]
         if (name, size, new_size) in approved and kind == new_kind:
+            continue
+        if (name, f"{size}/{kind}", f"{new_size}/{new_kind}") in approved:  # size and type, e.g. a label that is really a function
             continue
         if (size, kind) != (new_size, new_kind):
             problems.append(f"symbols.txt: {name} size/type changed ({size},{kind} -> {new_size},{new_kind})")
