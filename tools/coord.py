@@ -13,6 +13,10 @@
       Merge an ACCEPTed unit (tools/merge_unit.py), push, remove the worktree.
   python3 tools/coord.py status
       Every claimed unit with its state.
+  python3 tools/coord.py promote [--apply]
+      Unclaimed NonMatching units now 100 % in code and data with no
+      fakematch construct (often completed by names found elsewhere); with
+      --apply, flag them Matching, rebuild, gate, commit and push.
 
 Prompts come from docs/prompts/{unit,review}.md. Agents themselves are
 launched by the coordinator (a person or a Claude session) with those prompts.
@@ -151,6 +155,48 @@ def cmd_status(_):
         print(f"{c.get('state', 'working'):9} {unit:48} {c['owner']:16} {c['started']}")
 
 
+def cmd_promote(args):
+    claims = with_claims()
+    report = {u["name"]: u for u in json.loads((REPO / "build/G4SE01/report.json").read_text())["units"]}
+    fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)", re.I)
+    ready = []
+    for u in json.loads((REPO / "objdiff.json").read_text())["units"]:
+        meta = u.get("metadata") or {}
+        src = meta.get("source_path") or ""
+        if meta.get("complete") or not src.startswith(LIB_ROOTS):
+            continue
+        rel = next(src[len(r):] for r in LIB_ROOTS if src.startswith(r))
+        m = report.get(u["name"], {}).get("measures", {})
+        if (rel in claims or not int(m.get("total_code", 0)) or m.get("matched_code") != m.get("total_code")
+                or int(m.get("matched_data", 0)) != int(m.get("total_data", 0))):
+            continue
+        if fake.search((REPO / src).read_text(errors="replace")):
+            print(f"skip (fakematch): {rel}")
+            continue
+        ready.append(rel)
+    for rel in ready:
+        print(f"ready: {rel}")
+    if not args.apply or not ready:
+        return
+    cfg = (REPO / "configure.py").read_text()
+    for rel in ready:
+        cfg = cfg.replace(f'Object(NonMatching, "{rel}"', f'Object(Matching, "{rel}"')
+    (REPO / "configure.py").write_text(cfg)
+    run("python3", "configure.py")
+    run("timeout", "1800", "ninja", "build/G4SE01/report.json")
+    gate = subprocess.run(["python3", "tools/gate.py", "--all-units"], cwd=REPO, capture_output=True, text=True)
+    if gate.returncode != 0:
+        run("git", "checkout", "--", "configure.py")
+        sys.exit("gate failed, flags reverted:\n" + gate.stdout)
+    run("git", "add", "configure.py")
+    run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com", "commit", "-q", "-m",
+        "Flag units Matching that are now 100 % in code and data\n\n" + "\n".join(ready)
+        + "\n\nCompleted by names found in other units; no fakematch constructs; gate ok."
+        + "\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>")
+    run("git", "push", "-q")
+    print(f"promoted {len(ready)} units")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -170,9 +216,11 @@ def main():
     m.add_argument("unit")
     m.add_argument("message")
     sub.add_parser("status")
+    pr = sub.add_parser("promote")
+    pr.add_argument("--apply", action="store_true")
     args = ap.parse_args()
     {"queue": cmd_queue, "start": cmd_start, "review": cmd_review, "verdict": cmd_verdict,
-     "merge": cmd_merge, "status": cmd_status}[args.cmd](args)
+     "merge": cmd_merge, "status": cmd_status, "promote": cmd_promote}[args.cmd](args)
 
 
 if __name__ == "__main__":
