@@ -44,6 +44,20 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
 the review verdict, what made it match, any decision (dead-stripped code,
 stays NonMatching because …). `merge_unit.py` adds the trailer.
 
+## Progress website (`site/`)
+
+GitHub Pages publishes `site/` on every push to `matching`
+(`.github/workflows/pages.yml`). CI can't build the game, so the data is
+made locally: `tools/site_data.py` turns the honest report, `objdiff.json`,
+`splits.txt`, `lib_map.tsv` and `tu_map.tsv` into `site/data/` (a summary,
+one function file per library, and `history.json` with one entry per
+commit). `merge_unit.py` and `coord.py promote` run it and stage
+`site/data/` in their commit. **After any manual merge or commit to
+`matching`, run `python3 tools/site_data.py --subject "<commit subject>"`
+after the full `ninja` and stage `site/data/` in the same commit.**
+It writes only names, addresses, sizes and match flags, never DOL bytes.
+Preview: `sbg start fsasite -- python3 -m http.server 8765 -d site`.
+
 ## Rakes (each cost time once)
 
 **Tooling and worktrees**

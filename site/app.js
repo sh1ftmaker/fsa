@@ -1,0 +1,656 @@
+/* FSA decomp progress site. Data: data/summary.json, data/lib/<id>.json, data/history.json
+   (written by tools/site_data.py from the honest objdiff report). */
+"use strict";
+
+const REGION = {
+  game:    { color: "#3aae5c", glyph: "diamond", short: "Game" },
+  jsystem: { color: "#ef5b52", glyph: "triangle", short: "JSystem" },
+  sdk:     { color: "#3d9cf0", glyph: "circle", short: "SDK" },
+  gx:      { color: "#c35ee6", glyph: "square", short: "GX" },
+  runtime: { color: "#d29a2e", glyph: "star", short: "MSL/RT/TRK" },
+};
+const REPO = "https://github.com/sh1ftmaker/fsa";
+const COARSE = window.matchMedia("(pointer: coarse)").matches;
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nf = new Intl.NumberFormat("en-US");
+const num = (n) => nf.format(n);
+function bytes(b) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1048576) return `${(b / 1024).toFixed(b < 10240 ? 2 : 1)} KiB`;
+  return `${(b / 1048576).toFixed(2)} MiB`;
+}
+function pct(x) {
+  if (!isFinite(x)) return "–";
+  if (x === 0) return "0 %";
+  if (x >= 100) return "100 %";
+  return `${x < 10 ? x.toFixed(2) : x.toFixed(1)} %`;
+}
+const ratio = (a, b) => (b ? (100 * a) / b : 0);
+const hex = (a) => "0x" + a.toString(16).toUpperCase().padStart(8, "0");
+
+function glyph(region, size = 10) {
+  const c = REGION[region].color, s = size, h = s / 2;
+  const shapes = {
+    diamond: `<path d="M${h} 0L${s} ${h}L${h} ${s}L0 ${h}Z"/>`,
+    triangle: `<path d="M${h} 0L${s} ${s}L0 ${s}Z"/>`,
+    circle: `<circle cx="${h}" cy="${h}" r="${h}"/>`,
+    square: `<rect width="${s}" height="${s}" rx="1.5"/>`,
+    star: `<path d="M${h} 0L${s * 0.62} ${s * 0.38}L${s} ${h}L${s * 0.62} ${s * 0.62}L${h} ${s}L${s * 0.38} ${s * 0.62}L0 ${h}L${s * 0.38} ${s * 0.38}Z"/>`,
+  };
+  return `<svg class="glyph" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" fill="${c}" aria-hidden="true">${shapes[REGION[region].glyph]}</svg>`;
+}
+
+/* ---------- data model ---------- */
+
+let S, TOTAL, ROOT;
+const byId = new Map();
+
+function buildTree(summary) {
+  const t = summary.totals;
+  ROOT = { id: "", kind: "root", name: "main.dol", c: t.code, cm: t.code_matched, f: t.fns, fm: t.fns_matched, children: [] };
+  byId.set("", ROOT);
+  for (const r of summary.regions) {
+    const rn = { id: r.id, kind: "region", region: r.id, name: r.n, desc: r.desc, c: r.c, cm: r.cm, f: r.f, fm: r.fm, parent: ROOT, children: [] };
+    ROOT.children.push(rn);
+    byId.set(rn.id, rn);
+    for (const l of r.libs) {
+      const ln = { id: `${r.id}/${l.id}`, lib: l.id, kind: "lib", region: r.id, name: l.n, c: l.c, cm: l.cm, f: l.f, fm: l.fm, parent: rn, children: [], loaded: false };
+      rn.children.push(ln);
+      byId.set(ln.id, ln);
+      l.files.forEach((f, i) => {
+        const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, name: f.n, path: f.p, addr: f.a, s: f.s,
+          c: f.c, cm: f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, parent: ln, children: null };
+        ln.children.push(fnode);
+        byId.set(fnode.id, fnode);
+      });
+    }
+  }
+}
+
+const libCache = new Map();
+async function ensureLoaded(lib) {
+  if (lib.loaded) return;
+  if (!libCache.has(lib.lib)) libCache.set(lib.lib, fetch(`data/lib/${lib.lib}.json`).then((r) => r.json()));
+  const data = await libCache.get(lib.lib);
+  for (const file of lib.children) {
+    const fns = data.files[String(file.idx)] || [];
+    file.children = fns.map(([name, addr, size, m], j) => ({
+      id: `${file.id}/${j}`, kind: "fn", region: file.region, name, addr, c: size, cm: m === 100 ? size : 0,
+      m, f: 1, fm: m === 100 ? 1 : 0, parent: file,
+    }));
+  }
+  lib.loaded = true;
+}
+
+const libOf = (n) => { while (n && n.kind !== "lib") n = n.parent; return n; };
+
+/* ---------- emblem ---------- */
+
+function rhombusPath(cx, cy, w, h) {
+  return `M${cx} ${cy - h}L${cx + w} ${cy}L${cx} ${cy + h}L${cx - w} ${cy}Z`;
+}
+// Height of a bottom-up fill inside a rhombus so that the filled AREA is the fraction a.
+function rhombusFill(a, h) {
+  a = Math.max(0, Math.min(1, a));
+  return a <= 0.5 ? h * Math.sqrt(2 * a) : 2 * h - h * Math.sqrt(2 * (1 - a));
+}
+
+function drawEmblem() {
+  const svg = d3.select("#emblem");
+  const gems = [
+    { id: "game", cx: 0, cy: -58, w: 30, h: 42, lx: 0, ly: -108, anchor: "middle" },
+    { id: "jsystem", cx: 58, cy: 0, w: 42, h: 30, lx: 106, ly: 4, anchor: "start" },
+    { id: "sdk", cx: 0, cy: 58, w: 30, h: 42, lx: 0, ly: 116, anchor: "middle" },
+    { id: "gx", cx: -58, cy: 0, w: 42, h: 30, lx: -106, ly: 4, anchor: "end" },
+    { id: "runtime", cx: 0, cy: 0, w: 13, h: 13, lx: 0, ly: 0, anchor: "middle" },
+  ];
+  const defs = svg.append("defs");
+  svg.append("circle").attr("class", "ring spin").attr("r", 104);
+  svg.append("circle").attr("class", "ring").attr("r", 92).attr("stroke-dasharray", "1 10");
+  for (const g of gems) {
+    const r = byId.get(g.id);
+    const col = REGION[g.id].color;
+    const frac = r.c ? r.cm / r.c : 0;
+    const grad = defs.append("linearGradient").attr("id", `eg-${g.id}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
+    grad.append("stop").attr("offset", 0).attr("stop-color", col);
+    grad.append("stop").attr("offset", 1).attr("stop-color", d3.color(col).brighter(0.9));
+    defs.append("clipPath").attr("id", `ec-${g.id}`).append("path").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h));
+    const grp = svg.append("g").attr("class", "gem").attr("tabindex", 0).attr("role", "button")
+      .attr("aria-label", `${r.name}: ${pct(100 * frac)} of code matched`);
+    grp.append("path").attr("class", "gem-bg").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h))
+      .attr("fill", d3.color(col).copy({ opacity: 0.12 })).attr("stroke", d3.color(col).copy({ opacity: 0.7 }));
+    const fillH = rhombusFill(frac, g.h);
+    grp.append("rect").attr("clip-path", `url(#ec-${g.id})`).attr("x", g.cx - g.w).attr("width", 2 * g.w)
+      .attr("y", g.cy + g.h).attr("height", 0).attr("fill", `url(#eg-${g.id})`)
+      .transition().delay(300).duration(REDUCED ? 0 : 1600).ease(d3.easeCubicOut)
+      .attr("y", g.cy + g.h - fillH).attr("height", fillH);
+    // facet highlight
+    grp.append("path").attr("d", `M${g.cx} ${g.cy - g.h}L${g.cx + g.w} ${g.cy}L${g.cx} ${g.cy}Z`).attr("fill", "rgba(255,255,255,0.06)").attr("pointer-events", "none");
+    if (g.id !== "runtime") {
+      const tx = g.cx, ty = g.cy + 4;
+      grp.append("text").attr("class", "gem-label").attr("x", tx).attr("y", ty).attr("text-anchor", "middle").text(pct(100 * frac));
+      grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly).attr("text-anchor", g.anchor).text(REGION[g.id].short);
+    }
+    grp.on("click keydown", (ev) => {
+      if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+      go(g.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+    });
+    grp.on("pointermove", (ev) => !COARSE && showTip(r, ev)).on("pointerleave", hideTip);
+  }
+}
+
+/* ---------- headline ---------- */
+
+function countUp(el, to, fmt) {
+  if (REDUCED) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(), dur = 1300;
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(to * e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function drawStats() {
+  const t = S.totals;
+  const tiles = [
+    { k: "Code matched", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes`, c: "var(--green)" },
+    { k: "Functions", v: t.fns_matched, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.fns)}`, d: `${pct(ratio(t.fns_matched, t.fns))} of all functions`, m: ratio(t.fns_matched, t.fns), c: "var(--red)" },
+    { k: "Data matched", v: ratio(t.data_matched, t.data), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.data_matched)} of ${num(t.data)} bytes`, c: "var(--blue)" },
+    { k: "Units Matching", v: t.matching, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.units)}`,
+      d: t.sha1_ok ? `all ${num(t.matching)} link byte-identical &middot; ${num(t.files_unsplit)} files not split yet` : `link NOT verified: main.dol SHA-1 mismatch`,
+      m: ratio(t.matching, t.units), c: "var(--purple)" },
+  ];
+  const host = $("#stats");
+  host.innerHTML = tiles.map((x, i) => `<div class="stat" style="--c:${x.c}"><div class="k">${x.k}</div>
+    <div class="v"><span data-i="${i}">0</span> <small>${x.unit}</small></div><div class="d">${x.d}</div>
+    <div class="meter"><i data-w="${x.m ?? x.v}"></i></div></div>`).join("");
+  tiles.forEach((x, i) => countUp(host.querySelector(`[data-i="${i}"]`), x.v, x.fmt));
+  requestAnimationFrame(() => host.querySelectorAll(".meter i").forEach((el) => (el.style.width = `${Math.max(0.6, +el.dataset.w)}%`)));
+
+  const seal = $("#seal");
+  seal.innerHTML = t.sha1_ok
+    ? `<span class="ok">&#10003; main.dol SHA-1 OK</span> <span>${esc(S.sha1.slice(0, 12))}&hellip;</span> <span>&middot; honest objdiff report</span>`
+    : `<span class="bad">&#10007; main.dol SHA-1 mismatch</span> <span>&middot; numbers from the honest objdiff report</span>`;
+}
+
+/* ---------- treemap ---------- */
+
+const map = { focus: null, layer: null, W: 0, H: 0, sel: null, layoutRects: new Map() };
+
+function viewDepth(focus) {
+  if (focus.kind === "file") return 1;
+  return 2;
+}
+
+function layoutFor(focus) {
+  const depth = viewDepth(focus);
+  const kids = (n, d) => (d < depth && n.children ? n.children.filter((k) => k.c > 0) : null);
+  const wrap = (n, d) => {
+    const ch = kids(n, d);
+    return { node: n, children: ch && ch.length ? ch.map((k) => wrap(k, d + 1)) : undefined };
+  };
+  const h = d3.hierarchy(wrap(focus, 0)).sum((d) => (d.children ? 0 : d.node.c)).sort((a, b) => b.value - a.value);
+  const small = map.W < 560;
+  d3.treemap().size([map.W, map.H]).tile(d3.treemapSquarify.ratio(1.25)).round(true)
+    .paddingInner((d) => (d.depth === 0 ? 3 : 1))
+    .paddingOuter((d) => (d.depth === 1 ? 2 : 0))
+    .paddingTop((d) => (d.depth === 1 && d.children && (d.x1 - d.x0) > 40 ? (small ? 16 : 19) : d.depth === 1 && d.children ? 2 : 0))(h);
+  return h;
+}
+
+function tileFill(n) { return d3.color(REGION[n.region].color); }
+
+function drawLayer(focus) {
+  const svg = d3.select("#map-svg");
+  const h = layoutFor(focus);
+  const layer = svg.append("g").attr("class", "layer");
+  map.layoutRects = new Map();
+  const nodes = h.descendants().slice(1);
+  for (const d of nodes) map.layoutRects.set(d.data.node.id, [d.x0, d.y0, d.x1, d.y1]);
+
+  // groups (depth 1 with children)
+  const groups = nodes.filter((d) => d.depth === 1 && d.children);
+  const gg = layer.selectAll("g.grp").data(groups).join("g").attr("class", "grp");
+  gg.append("rect").attr("x", (d) => d.x0).attr("y", (d) => d.y0).attr("width", (d) => d.x1 - d.x0).attr("height", (d) => d.y1 - d.y0)
+    .attr("rx", 4).attr("fill", (d) => tileFill(d.data.node).copy({ opacity: 0.07 }))
+    .attr("stroke", (d) => tileFill(d.data.node).copy({ opacity: 0.55 })).attr("stroke-width", 1)
+    .attr("stroke-dasharray", (d) => (d.data.node.s === "U" ? "4 3" : null));
+  const head = gg.filter((d) => d.x1 - d.x0 > 40 && d.y1 - d.y0 > 24).append("g").attr("class", "grp-head")
+    .on("click", (ev, d) => drill(d.data.node, d))
+    .on("pointermove", (ev, d) => !COARSE && showTip(d.data.node, ev)).on("pointerleave", hideTip);
+  head.append("rect").attr("x", (d) => d.x0).attr("y", (d) => d.y0).attr("width", (d) => d.x1 - d.x0).attr("height", 18).attr("fill", "transparent");
+  head.append("text").attr("class", "grp-label").attr("x", (d) => d.x0 + 6).attr("y", (d) => d.y0 + 13)
+    .each(function (d) {
+      const n = d.data.node, w = d.x1 - d.x0 - 12;
+      const p = ` ${pct(ratio(n.cm, n.c))}`;
+      const label = fit(n.name, w - p.length * 6.6, 6.8);
+      const t = d3.select(this);
+      t.append("tspan").text(label);
+      if (label.length && w > (label.length + p.length) * 6.5) t.append("tspan").attr("class", "p").text(p);
+    });
+
+  // leaves
+  const leaves = nodes.filter((d) => !d.children && d.x1 - d.x0 >= 1 && d.y1 - d.y0 >= 1);
+  const lg = layer.selectAll("g.tile").data(leaves).join("g")
+    .attr("class", (d) => `tile${canDrill(d) ? "" : " nodrill"}`)
+    .on("click", (ev, d) => onTileClick(ev, d))
+    .on("pointermove", (ev, d) => !COARSE && showTip(d.data.node, ev))
+    .on("pointerleave", hideTip);
+  lg.append("rect").attr("class", "base").attr("x", (d) => d.x0).attr("y", (d) => d.y0)
+    .attr("width", (d) => d.x1 - d.x0).attr("height", (d) => d.y1 - d.y0).attr("rx", (d) => (d.x1 - d.x0 > 8 ? 2 : 0))
+    .attr("fill", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.07 : 0.16 }))
+    .attr("stroke", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.45 : 0.4 }))
+    .attr("stroke-dasharray", (d) => (unsplit(d.data.node) && d.x1 - d.x0 > 10 ? "3 2" : null));
+  // the liquid: matched share fills the tile from the bottom (area-exact)
+  lg.filter((d) => d.data.node.cm > 0).append("rect").attr("class", "fill")
+    .attr("x", (d) => d.x0).attr("width", (d) => d.x1 - d.x0)
+    .attr("y", (d) => d.y1).attr("height", 0)
+    .attr("fill", (d) => `url(#tg-${d.data.node.region})`)
+    .attr("pointer-events", "none")
+    .transition().delay((d, i) => (REDUCED ? 0 : 200 + Math.min(i, 200) * 2)).duration(REDUCED ? 0 : 800).ease(d3.easeCubicOut)
+    .attr("y", (d) => d.y1 - (d.y1 - d.y0) * (d.data.node.cm / d.data.node.c))
+    .attr("height", (d) => (d.y1 - d.y0) * (d.data.node.cm / d.data.node.c));
+  // fuzzy hint for functions that are close but not matched
+  lg.filter((d) => d.data.node.kind === "fn" && d.data.node.m > 0 && d.data.node.m < 100 && d.x1 - d.x0 > 6)
+    .append("rect").attr("pointer-events", "none")
+    .attr("x", (d) => d.x0).attr("y", (d) => d.y1 - 2).attr("height", 2)
+    .attr("width", (d) => (d.x1 - d.x0) * d.data.node.m / 100).attr("fill", (d) => tileFill(d.data.node).copy({ opacity: 0.8 }));
+  // labels
+  lg.filter((d) => d.x1 - d.x0 > 46 && d.y1 - d.y0 > 20).each(function (d) {
+    const n = d.data.node, w = d.x1 - d.x0 - 10, g = d3.select(this);
+    const name = fit(displayName(n), w, 6.2);
+    if (!name) return;
+    g.append("text").attr("class", "tl").attr("x", d.x0 + 5).attr("y", d.y0 + 14).text(name);
+    if (d.y1 - d.y0 > 34) g.append("text").attr("class", "tl p").attr("x", d.x0 + 5).attr("y", d.y0 + 28)
+      .text(n.kind === "fn" ? fit(bytes(n.c), w, 6) : fit(`${pct(ratio(n.cm, n.c))} · ${bytes(n.c)}`, w, 6));
+  });
+  return layer;
+}
+
+function unsplit(n) { return (n.kind === "file" && n.s === "U") || (n.kind === "fn" && n.m === -1); }
+function displayName(n) {
+  if (n.kind !== "fn") return n.name;
+  return n.name.replace(/\(.*$/, "");
+}
+function fit(s, w, cw) {
+  const max = Math.floor(w / cw);
+  if (max < 3) return "";
+  return s.length <= max ? s : s.slice(0, max - 1) + "…";
+}
+function canDrill(d) {
+  const n = d.data.node;
+  return n.kind !== "fn";
+}
+
+function onTileClick(ev, d) {
+  const n = d.data.node;
+  if (COARSE) { showSheet(n, d); return; }
+  if (n.kind === "fn") { pinTip(n, ev); return; }
+  drill(n, d);
+}
+
+function drill(n) {
+  hideTip();
+  go(n.id);
+}
+
+function go(id) {
+  const h = "#/" + id;
+  if (location.hash !== h) location.hash = h; else navigate();
+}
+
+function setLoading(on) { $("#map-loading").hidden = !on; }
+
+async function navigate() {
+  const id = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  let target = byId.get(id);
+  if (!target) {
+    // functions and deep links into libs not loaded yet
+    const parts = id.split("/");
+    if (parts.length >= 3) {
+      const lib = byId.get(parts.slice(0, 2).join("/"));
+      if (lib) { setLoading(true); await ensureLoaded(lib); setLoading(false); target = byId.get(parts.slice(0, 3).join("/")); }
+    }
+  }
+  target = target || ROOT;
+  if (target.kind === "fn") target = target.parent;
+  if (target.kind === "lib" || target.kind === "file") {
+    const lib = libOf(target);
+    if (!lib.loaded) { setLoading(true); try { await ensureLoaded(lib); } finally { setLoading(false); } }
+  }
+  show(target);
+}
+
+function isAncestor(a, b) { for (let n = b.parent; n; n = n.parent) if (n === a) return true; return false; }
+
+function show(focus) {
+  const prev = map.focus, prevRects = map.layoutRects, old = map.layer;
+  map.focus = focus;
+  const layer = drawLayer(focus);
+  const W = map.W, H = map.H, dur = REDUCED || !prev ? 0 : 650;
+  const tf = (r) => `translate(${r[0]},${r[1]}) scale(${(r[2] - r[0]) / W},${(r[3] - r[1]) / H})`;
+  const inv = (r) => { const sx = W / (r[2] - r[0]), sy = H / (r[3] - r[1]); return `translate(${-r[0] * sx},${-r[1] * sy}) scale(${sx},${sy})`; };
+  if (prev && old && dur) {
+    // zooming in: the new view grows out of the clicked tile
+    let fromNode = focus; while (fromNode && fromNode.parent !== prev) fromNode = fromNode.parent;
+    const fromRect = fromNode && prevRects.get(fromNode.id);
+    let toNode = prev; while (toNode && toNode.parent !== focus) toNode = toNode.parent;
+    const toRect = toNode && map.layoutRects.get(toNode.id);
+    if (isAncestor(prev, focus) && fromRect) {
+      layer.attr("transform", tf(fromRect)).attr("opacity", 0.2)
+        .transition().duration(dur).ease(d3.easeCubicInOut).attr("transform", "translate(0,0) scale(1,1)").attr("opacity", 1);
+      old.transition().duration(dur).ease(d3.easeCubicInOut).attr("transform", inv(fromRect)).attr("opacity", 0).remove();
+    } else if (isAncestor(focus, prev) && toRect) {
+      layer.attr("transform", inv(toRect)).attr("opacity", 0)
+        .transition().duration(dur).ease(d3.easeCubicInOut).attr("transform", "translate(0,0) scale(1,1)").attr("opacity", 1);
+      old.transition().duration(dur).ease(d3.easeCubicInOut).attr("transform", tf(toRect)).attr("opacity", 0).remove();
+    } else {
+      layer.attr("opacity", 0).transition().duration(dur).attr("opacity", 1);
+      old.transition().duration(dur / 2).attr("opacity", 0).remove();
+    }
+  } else if (old) old.remove();
+  map.layer = layer;
+  drawCrumbs();
+}
+
+function drawCrumbs() {
+  const chain = [];
+  for (let n = map.focus; n; n = n.parent) chain.unshift(n);
+  const el = $("#crumbs");
+  const back = `<button class="back" type="button" aria-label="Zoom out" ${map.focus === ROOT ? "disabled" : ""}>&#8592;</button>`;
+  el.innerHTML = back + chain.map((n, i) => {
+    const label = n.kind === "root" ? "main.dol" : esc(n.name);
+    const g = n.region ? glyph(n.region, 9) + " " : "";
+    return i === chain.length - 1 ? `<span class="cur">${g}${label} <span class="pill ${n.s || ""}" style="${n.s ? "" : "display:none"}">${statusText(n.s)}</span></span>`
+      : `<button type="button" data-id="${esc(n.id)}">${g}${label}</button><span class="sep">/</span>`;
+  }).join("");
+  el.querySelector(".back").onclick = zoomOut;
+  el.querySelectorAll("button[data-id]").forEach((b) => (b.onclick = () => go(b.dataset.id)));
+}
+
+function zoomOut() { if (map.focus && map.focus.parent) go(map.focus.parent.id); }
+
+function statusText(s) { return s === "M" ? "Matching" : s === "N" ? "NonMatching" : s === "U" ? "not split yet" : ""; }
+
+/* ---------- tooltip ---------- */
+
+const tip = $("#tip");
+function tipHTML(n) {
+  const col = n.region ? REGION[n.region].color : "#d29a2e";
+  const share = ratio(n.c, TOTAL);
+  if (n.kind === "fn") {
+    const st = n.m === 100 ? "matched" : n.m === -1 ? "not split yet" : n.m > 0 ? `${n.m} % similar, not matched` : "not matched";
+    return `<div class="t-name">${esc(n.name)}</div><div class="t-path">${esc(n.parent.path)} &middot; ${hex(n.addr)}</div>
+      <dl><dt>Size</dt><dd>${num(n.c)} bytes</dd><dt>Of the DOL</dt><dd>${pct(share)}</dd><dt>Status</dt><dd>${st}</dd></dl>`;
+  }
+  const rows = [
+    ["Size", `${bytes(n.c)}`], ["Of the DOL", pct(share)],
+    ["Matched", `${pct(ratio(n.cm, n.c))} (${bytes(n.cm)})`],
+    ["Functions", `${num(n.fm)} / ${num(n.f)}`],
+  ];
+  if (n.kind === "file") {
+    rows.push(["Status", statusText(n.s)]);
+    if (n.d) rows.push(["Data", `${pct(ratio(n.dm, n.d))} of ${bytes(n.d)}`]);
+    if (n.t) rows.push(["Not split yet", bytes(n.t)]);
+    rows.push(["Address", hex(n.addr)]);
+  } else if (n.kind === "lib" || n.kind === "region") {
+    const files = n.kind === "lib" ? n.children : n.children.flatMap((l) => l.children);
+    const m = files.filter((f) => f.s === "M").length, u = files.filter((f) => f.s === "U").length;
+    rows.push(["Files", `${num(files.length)} (${m} Matching, ${u} not split)`]);
+  }
+  const sub = n.kind === "file" ? n.path : n.kind === "region" ? n.desc : n.kind === "lib" ? n.parent.name : "";
+  return `<div class="t-name">${n.region ? glyph(n.region) + " " : ""}${esc(n.name)}</div>${sub ? `<div class="t-path">${esc(sub)}</div>` : ""}
+    <div class="bar"><i style="width:${ratio(n.cm, n.c)}%;background:${col}"></i></div>
+    <dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
+}
+function place(ev) {
+  const pad = 14, r = tip.getBoundingClientRect();
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - pad;
+  tip.style.left = `${Math.max(8, x)}px`; tip.style.top = `${Math.max(8, y)}px`;
+}
+function showTip(n, ev) {
+  tip.classList.remove("sheet");
+  tip.innerHTML = tipHTML(n);
+  tip.hidden = false;
+  place(ev);
+}
+function pinTip(n, ev) { showTip(n, ev); }
+function hideTip() { if (!tip.classList.contains("sheet")) tip.hidden = true; }
+function closeSheet() { tip.hidden = true; tip.classList.remove("sheet"); d3.selectAll(".tile.sel").classed("sel", false); }
+function showSheet(n, d) {
+  d3.selectAll(".tile.sel").classed("sel", false);
+  d3.selectAll(".tile").filter((x) => x === d).classed("sel", true);
+  tip.classList.add("sheet");
+  tip.innerHTML = tipHTML(n) + `<div class="go">${n.kind !== "fn" ? `<button class="primary" type="button" data-go>Open</button>` : ""}<button type="button" data-close>Close</button></div>`;
+  tip.hidden = false;
+  const o = tip.querySelector("[data-go]");
+  if (o) o.onclick = () => { closeSheet(); go(n.id); };
+  tip.querySelector("[data-close]").onclick = closeSheet;
+}
+
+function initMap() {
+  const svg = d3.select("#map-svg");
+  const defs = svg.append("defs");
+  for (const [id, r] of Object.entries(REGION)) {
+    const g = defs.append("linearGradient").attr("id", `tg-${id}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
+    g.append("stop").attr("offset", 0).attr("stop-color", d3.color(r.color).darker(0.3));
+    g.append("stop").attr("offset", 1).attr("stop-color", d3.color(r.color).brighter(0.5));
+  }
+  const measure = () => { const b = $("#map").getBoundingClientRect(); map.W = Math.round(b.width); map.H = Math.round(b.height); };
+  measure();
+  let last = map.W;
+  new ResizeObserver(() => {
+    measure();
+    if (map.focus && Math.abs(map.W - last) > 2) { last = map.W; if (map.layer) map.layer.remove(); map.layer = null; map.layer = drawLayer(map.focus); }
+  }).observe($("#map"));
+  window.addEventListener("hashchange", navigate);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { if (!tip.hidden && tip.classList.contains("sheet")) closeSheet(); else zoomOut(); }
+  });
+  svg.on("contextmenu", (e) => { e.preventDefault(); zoomOut(); });
+  document.addEventListener("pointerdown", (e) => {
+    if (tip.classList.contains("sheet") && !tip.contains(e.target) && !e.target.closest(".tile")) closeSheet();
+  });
+  const legend = $("#legend");
+  legend.innerHTML = Object.keys(REGION).map((id) => `<span>${glyph(id)} ${esc(byId.get(id).name)}</span>`).join("")
+    + `<span><i class="fillkey"></i> matched share</span><span><i class="dashkey"></i> not split yet</span>`;
+}
+
+/* ---------- systems ---------- */
+
+function drawSystems() {
+  const host = $("#systems");
+  host.innerHTML = ROOT.children.map((r) => {
+    const col = REGION[r.id].color;
+    const libs = r.children.map((l) => `<div class="lib" data-id="${esc(l.id)}" role="button" tabindex="0">
+        <span class="ln">${esc(l.name)}</span>
+        <span class="track"><i data-w="${ratio(l.cm, l.c)}" style="background:${col}"></i></span>
+        <span class="lv">${pct(ratio(l.cm, l.c))} &middot; ${num(l.fm)}/${num(l.f)} fn &middot; ${bytes(l.c)}</span></div>`).join("");
+    return `<details class="sys"${r.id === "jsystem" ? " open" : ""}><summary>
+        <span class="name"><span class="chev">&#9654;</span>${glyph(r.id, 12)} ${esc(r.name)}</span>
+        <span class="nums"><b>${pct(ratio(r.cm, r.c))}</b> &middot; ${num(r.fm)} / ${num(r.f)} functions &middot; ${bytes(r.c)} (${pct(ratio(r.c, TOTAL))} of the DOL)</span>
+        <span class="track"><i data-w="${ratio(r.cm, r.c)}" style="background:${col}"></i></span>
+        <span class="desc">${esc(r.desc)}</span>
+      </summary><div class="libs">${libs}</div></details>`;
+  }).join("");
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.querySelectorAll(".track i").forEach((i) => (i.style.width = `${Math.max(+i.dataset.w, +i.dataset.w > 0 ? 0.8 : 0)}%`)); io.unobserve(e.target); }
+  }), { threshold: 0.1 });
+  io.observe(host);
+  host.querySelectorAll(".lib").forEach((el) => {
+    const open = () => { go(el.dataset.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
+    el.onclick = open;
+    el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
+  });
+}
+
+/* ---------- history ---------- */
+
+function drawHistory(hist) {
+  const host = $("#history");
+  if (!hist.length) { host.innerHTML = `<p class="note">No history yet.</p>`; return; }
+  const ids = Object.keys(REGION);
+  const pts = hist.map((e) => {
+    const p = { date: new Date(e.date), e };
+    for (const id of ids) p[id] = e.regions[id] ? (100 * e.regions[id][0]) / e.code_total : 0;
+    p.total = (100 * e.code) / e.code_total;
+    return p;
+  });
+  const W = host.clientWidth || 600, H = 240, m = { t: 12, r: 14, b: 26, l: 44 };
+  const svg = d3.select(host).append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("height", H);
+  if (pts.length < 2) {
+    // a single commit so far: show its composition as one stacked bar
+    const p = pts[pts.length - 1];
+    const max = Math.max(10, Math.ceil(p.total / 5) * 5);
+    const x = d3.scaleLinear().domain([0, max]).range([m.l, W - m.r]);
+    svg.attr("viewBox", `0 0 ${W} 110`).attr("height", 110);
+    let acc = 0;
+    for (const id of ids) {
+      const w = x(acc + p[id]) - x(acc);
+      if (w > 0) svg.append("rect").attr("x", x(acc)).attr("y", 20).attr("height", 34).attr("rx", 3)
+        .attr("fill", REGION[id].color).attr("width", Math.max(w - 2, 1));
+      acc += p[id];
+    }
+    svg.append("g").attr("class", "axis").attr("transform", "translate(0,62)").call(d3.axisBottom(x).ticks(5).tickFormat((d) => `${d} %`));
+    host.insertAdjacentHTML("beforeend", `<p class="note">History starts at this commit (${pct(p.total)} of the DOL's code matched): `
+      + ids.filter((id) => p[id] > 0).map((id) => `${glyph(id)} ${esc(byId.get(id).name)} ${pct(p[id])}`).join(" &nbsp; ")
+      + `. Each merge to <code>matching</code> adds a point.</p>`);
+    return;
+  }
+  const x = d3.scaleTime().domain(d3.extent(pts, (p) => p.date)).range([m.l, W - m.r]);
+  const y = d3.scaleLinear().domain([0, Math.max(5, d3.max(pts, (p) => p.total) * 1.15)]).nice().range([H - m.b, m.t]);
+  const stack = d3.stack().keys(ids)(pts);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat("")).select(".domain").remove();
+  const area = d3.area().curve(d3.curveMonotoneX).x((d) => x(d.data.date)).y0((d) => y(d[0])).y1((d) => y(d[1]));
+  svg.append("g").selectAll("path").data(stack).join("path").attr("fill", (s) => REGION[s.key].color).attr("fill-opacity", 0.85)
+    .attr("stroke", "#0b0d1a").attr("stroke-width", 1).attr("d", area);
+  svg.append("path").datum(pts).attr("fill", "none").attr("stroke", "#fff").attr("stroke-width", 2)
+    .attr("d", d3.line().curve(d3.curveMonotoneX).x((p) => x(p.date)).y((p) => y(p.total)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(W / 110))));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat((d) => `${d}%`));
+  const cross = svg.append("line").attr("stroke", "rgba(255,255,255,.5)").attr("y1", m.t).attr("y2", H - m.b).style("display", "none");
+  const dot = svg.append("circle").attr("r", 5).attr("fill", "#fff").attr("stroke", "#0b0d1a").attr("stroke-width", 2).style("display", "none");
+  const bis = d3.bisector((p) => p.date).center;
+  svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+    .on("pointermove", (ev) => {
+      const [mx] = d3.pointer(ev);
+      const p = pts[bis(pts, x.invert(mx))];
+      cross.style("display", null).attr("x1", x(p.date)).attr("x2", x(p.date));
+      dot.style("display", null).attr("cx", x(p.date)).attr("cy", y(p.total));
+      const c = p.e.commit ? `<a href="${REPO}/commit/${p.e.commit}">${p.e.commit.slice(0, 8)}</a>` : "this commit";
+      tip.classList.remove("sheet");
+      tip.innerHTML = `<div class="t-name">${pct(p.total)} of code matched</div>
+        <div class="t-path">${esc(p.date.toISOString().slice(0, 16).replace("T", " "))} UTC &middot; ${c}</div>
+        ${p.e.subject ? `<div style="margin-bottom:6px">${esc(p.e.subject)}</div>` : ""}
+        <dl>${ids.slice().reverse().map((id) => `<dt>${glyph(id)} ${esc(REGION[id].short)}</dt><dd>${pct(p[id])}</dd>`).join("")}
+        <dt>Functions</dt><dd>${num(p.e.fns)} / ${num(p.e.fns_total)}</dd></dl>`;
+      tip.hidden = false; place(ev);
+    })
+    .on("pointerleave", () => { cross.style("display", "none"); dot.style("display", "none"); hideTip(); });
+}
+
+/* ---------- files table ---------- */
+
+const table = { rows: [], sort: "c", dir: -1, q: "", regions: new Set(), status: "", limit: 120 };
+
+function initTable() {
+  for (const r of ROOT.children) for (const l of r.children) for (const f of l.children) {
+    table.rows.push({ node: f, n: f.name, p: f.path, lib: l.name, region: r.id, c: f.c, cm: f.cm, f: f.f, fm: f.fm, s: f.s,
+      share: ratio(f.c, TOTAL), pct: f.c ? ratio(f.cm, f.c) : -1, hay: `${f.name} ${f.path} ${l.name} ${r.name}`.toLowerCase() });
+  }
+  $("#chips").innerHTML = ROOT.children.map((r) => `<button class="chip" type="button" aria-pressed="false" data-r="${r.id}" style="--c:${REGION[r.id].color}">${glyph(r.id)} ${esc(REGION[r.id].short)}</button>`).join("");
+  $("#chips").querySelectorAll(".chip").forEach((b) => (b.onclick = () => {
+    const on = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", on);
+    on ? table.regions.add(b.dataset.r) : table.regions.delete(b.dataset.r);
+    table.limit = 120; renderTable();
+  }));
+  let timer;
+  $("#q").oninput = (e) => { clearTimeout(timer); timer = setTimeout(() => { table.q = e.target.value.trim().toLowerCase(); table.limit = 120; renderTable(); }, 120); };
+  $("#status-filter").onchange = (e) => { table.status = e.target.value; table.limit = 120; renderTable(); };
+  document.querySelectorAll("#files th").forEach((th) => (th.onclick = () => {
+    const k = th.dataset.k;
+    if (table.sort === k) table.dir = -table.dir; else { table.sort = k; table.dir = k === "n" || k === "lib" || k === "s" ? 1 : -1; }
+    renderTable();
+  }));
+  $("#more").onclick = () => { table.limit += 400; renderTable(); };
+  renderTable();
+}
+
+function renderTable() {
+  const terms = table.q.split(/\s+/).filter(Boolean);
+  let rows = table.rows.filter((r) => (!table.regions.size || table.regions.has(r.region))
+    && (!table.status || r.s === table.status) && terms.every((t) => r.hay.includes(t)));
+  const k = table.sort, dir = table.dir;
+  rows.sort((a, b) => (typeof a[k] === "string" ? a[k].localeCompare(b[k]) : a[k] - b[k]) * dir || b.c - a.c);
+  document.querySelectorAll("#files th").forEach((th) => {
+    if (th.dataset.k === k) th.setAttribute("aria-sort", dir > 0 ? "ascending" : "descending"); else th.removeAttribute("aria-sort");
+  });
+  const shown = rows.slice(0, table.limit);
+  $("#files tbody").innerHTML = shown.map((r) => {
+    const col = REGION[r.region].color;
+    return `<tr data-id="${esc(r.node.id)}"><td><div class="fn">${esc(r.n)}</div><div class="fp">${esc(r.p)}</div></td>
+      <td class="hide-s"><span class="lb">${glyph(r.region)} ${esc(r.lib)}</span></td>
+      <td class="num">${bytes(r.c)}</td>
+      <td class="num hide-s">${pct(r.share)}</td>
+      <td class="num"><span class="mbar"><i style="width:${Math.max(0, r.pct)}%;background:${col}"></i></span>${r.c ? pct(r.pct) : "–"}</td>
+      <td class="num hide-s">${num(r.fm)} / ${num(r.f)}</td>
+      <td><span class="pill ${r.s}">${statusText(r.s)}</span></td></tr>`;
+  }).join("");
+  $("#count").textContent = `${num(shown.length)} of ${num(rows.length)} files`;
+  $("#more").hidden = shown.length >= rows.length;
+  $("#files tbody").querySelectorAll("tr").forEach((tr) => (tr.onclick = () => {
+    go(tr.dataset.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+  }));
+}
+
+/* ---------- honesty note ---------- */
+
+function drawHonest() {
+  const t = S.totals;
+  const when = new Date(S.generated);
+  $("#honest-body").innerHTML = `
+    <p>Every number here comes from the project's <b>honest objdiff report</b> (<code>build/G4SE01/report_honest.json</code>,
+      objdiff-cli with <code>functionRelocDiffs=data_value</code>). Every unit is diffed, even those flagged Matching, so a function
+      counts only when its instructions <i>and</i> relocations match the original. Byte-pattern hits and objdiff's lenient default
+      are never counted.</p>
+    <p>The link is the final authority: a plain <code>ninja</code> links every Matching unit's own object into <code>main.dol</code>
+      and checks its SHA-1 (<code>${esc(S.sha1)}</code>). ${t.sha1_ok ? `It matched for this snapshot, so all ${num(t.matching)} Matching units link byte-identical.` : `<b>It did not match for this snapshot.</b>`}</p>
+    <p>The total is the whole DOL: ${num(t.code)} bytes of code in ${num(t.fns)} functions. Code dtk has not split into a source file yet
+      (${num(t.files_unsplit)} files) is placed by the library map (<code>lib_map.tsv</code>) and the game-code file map (<code>tu_map.tsv</code>), so
+      unstarted work shows at its true size. Game files have no real names yet: they are grouped by the resource names they reference,
+      or by address.</p>
+    <p>Snapshot ${esc(when.toISOString().slice(0, 16).replace("T", " "))} UTC, built on
+      <a href="${REPO}/commit/${esc(S.base)}">${esc(S.base.slice(0, 8))}</a>. The data is regenerated locally with
+      <code>tools/site_data.py</code> and committed with each merge; CI only publishes it.</p>`;
+}
+
+/* ---------- boot ---------- */
+
+async function main() {
+  const [summary, hist] = await Promise.all([
+    fetch("data/summary.json").then((r) => r.json()),
+    fetch("data/history.json").then((r) => r.json()).catch(() => []),
+  ]);
+  S = summary; TOTAL = summary.totals.code;
+  buildTree(summary);
+  drawStats();
+  drawEmblem();
+  initMap();
+  await navigate();
+  drawSystems();
+  drawHistory(hist.length ? hist : []);
+  initTable();
+  drawHonest();
+}
+main().catch((e) => {
+  console.error(e);
+  document.querySelector("main").insertAdjacentHTML("afterbegin", `<p class="panel">Could not load the progress data: ${esc(e.message)}</p>`);
+});

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FSA Decomp Progress</title>
+<meta name="description" content="Live progress of the Four Swords Adventures byte-matching decompilation, measured with the honest objdiff report and confirmed by main.dol's SHA-1.">
+<meta name="theme-color" content="#0b0d1a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 1 22 9 16 15 10 9Z' fill='%233aae5c'/%3E%3Cpath d='M31 16 23 22 17 16 23 10Z' fill='%23ef5b52'/%3E%3Cpath d='M16 31 10 23 16 17 22 23Z' fill='%233d9cf0'/%3E%3Cpath d='M1 16 9 10 15 16 9 22Z' fill='%23c35ee6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+
+<header class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">GameCube &middot; G4SE01 &middot; main.dol</p>
+    <h1><span class="h-four">Four Swords</span> <span class="h-adv">Adventures</span></h1>
+    <p class="lede">A byte-matching decompilation: C and C++ that the original Metrowerks compilers
+      turn back into the exact bytes of the game. This page tracks every function of the DOL.</p>
+    <div class="seal" id="seal"></div>
+  </div>
+  <figure class="emblem-wrap">
+    <svg id="emblem" class="emblem" viewBox="-110 -110 220 220" role="img" aria-label="Progress emblem: one gem per region, filled to its matched share of code"></svg>
+    <figcaption id="emblem-cap">Each gem fills with its region's matched code</figcaption>
+  </figure>
+</header>
+
+<main>
+  <section class="stats" id="stats" aria-label="Headline numbers"></section>
+
+  <section class="panel" id="map-panel">
+    <div class="panel-head">
+      <div>
+        <h2>The whole DOL</h2>
+        <p class="sub">Area is bytes of code. The bright fill rising in each tile is the share already matched.
+          Tap or click to dive in: region, library, file, function.</p>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <nav class="crumbs" id="crumbs" aria-label="Treemap location"></nav>
+    <div class="map" id="map">
+      <svg id="map-svg" role="img" aria-label="Treemap of the decompilation by bytes of code"></svg>
+      <div class="loading" id="map-loading" hidden>loading functions&hellip;</div>
+    </div>
+    <p class="hint" id="map-hint">Esc or the back arrow zooms out. Dashed tiles are code dtk has not split into a source file yet.</p>
+  </section>
+
+  <section class="panel" id="systems-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Systems</h2>
+        <p class="sub">Matched bytes of code per region and library. Open a region for its libraries.</p>
+      </div>
+    </div>
+    <div id="systems" class="systems"></div>
+  </section>
+
+  <section class="panel" id="history-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Over time</h2>
+        <p class="sub">Matched code as a share of the whole DOL, one point per commit to <code>matching</code>, stacked by region.</p>
+      </div>
+    </div>
+    <div id="history" class="history"></div>
+  </section>
+
+  <section class="panel" id="files-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Files</h2>
+        <p class="sub">Every source file, split or still waiting to be split. Click a row to find it in the map.</p>
+      </div>
+    </div>
+    <div class="filters">
+      <input type="search" id="q" placeholder="Search files, paths, libraries&hellip;" aria-label="Search files">
+      <div class="chips" id="chips"></div>
+      <select id="status-filter" aria-label="Status">
+        <option value="">any status</option>
+        <option value="M">Matching</option>
+        <option value="N">NonMatching</option>
+        <option value="U">not split yet</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="files" id="files">
+        <thead><tr>
+          <th data-k="n">File</th>
+          <th data-k="lib" class="hide-s">Library</th>
+          <th data-k="c" class="num">Size</th>
+          <th data-k="share" class="num hide-s">% of DOL</th>
+          <th data-k="pct" class="num">Matched</th>
+          <th data-k="f" class="num hide-s">Functions</th>
+          <th data-k="s">Status</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="more"><span id="count"></span> <button id="more" type="button">Show more</button></div>
+  </section>
+
+  <section class="panel honest" id="honest">
+    <h2>How this is measured</h2>
+    <div id="honest-body"></div>
+  </section>
+</main>
+
+<footer>
+  <p>Fan research project; not affiliated with or endorsed by Nintendo. No game code, data or assets are
+    published here: only function names, addresses, sizes and match results.
+    <a href="https://github.com/sh1ftmaker/fsa">Source on GitHub</a>.</p>
+</footer>
+
+<div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
