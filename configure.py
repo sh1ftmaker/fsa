@@ -454,7 +454,7 @@ config.precompiled_headers = [
 ]
 config.libs = [
     SdkLib("ai", [
-        Object(NonMatching, "dolphin/ai/ai.c"),  # FIXME(link): undefined __AID_Callback_8053A5FC
+        Object(Matching, "dolphin/ai/ai.c"),
     ]),
     SdkLib("ar", [
         Object(Matching, "dolphin/ar/ar.c"),
