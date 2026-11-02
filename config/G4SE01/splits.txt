@@ -562,22 +562,22 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mainloop.c:
 	.text       start:0x80060B88 end:0x80060C80
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubevent.c:
-	.text       start:0x80060C80 end:0x80060EF4
+	.text       start:0x80060C80 end:0x80060EA8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/nubinit.c:
-	.text       start:0x80060EF4 end:0x80061040
+	.text       start:0x80060EA8 end:0x80061040
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msg.c:
 	.text       start:0x80061040 end:0x80061084
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msgbuf.c:
-	.text       start:0x80061084 end:0x800618C8
+	.text       start:0x80061084 end:0x800618C0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/serpoll.c:
-	.text       start:0x800618C8 end:0x80061B7C
+	.text       start:0x800618C0 end:0x80061B78
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/usr_put.c:
-	.text       start:0x80061B7C end:0x80061C04
+	.text       start:0x80061B78 end:0x80061C04
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/dispatch.c:
 	.text       start:0x80061C04 end:0x80061D7C
@@ -586,7 +586,10 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Portable/msghndlr.c:
 	.text       start:0x80061D7C end:0x80062DEC
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/support.c:
-	.text       start:0x80062DEC end:0x80063518
+	.text       start:0x80062DEC end:0x80063500
+
+TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mutex_TRK.c:
+	.text       start:0x80063500 end:0x80063518
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/notify.c:
 	.text       start:0x80063518 end:0x800635B0
@@ -595,16 +598,16 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/flush_cache.c:
 	.text       start:0x800635B0 end:0x800635E8
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mem_TRK.c:
-	.text       start:0x800635E8 end:0x800636B0
+	.text       start:0x800635E8 end:0x800636A0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/targimpl.c:
-	.text       start:0x800636B0 end:0x8006522C
+	.text       start:0x800636A0 end:0x80065230
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Processor/ppc/Generic/mpc_7xx_603e.c:
-	.text       start:0x80065250 end:0x80065654
+	.text       start:0x80065250 end:0x800655C0
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/dolphin_trk.c:
-	.text       start:0x80065658 end:0x80065BFC
+	.text       start:0x800655C0 end:0x80065BFC
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Portable/main_TRK.c:
 	.text       start:0x80065BFC end:0x80065C54
@@ -619,10 +622,13 @@ TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/target_options.c:
 	.text       start:0x800661E0 end:0x800661FC
 
 TRK_MINNOW_DOLPHIN/MetroTRK/Export/mslsupp.c:
-	.text       start:0x800661FC end:0x80066464
+	.text       start:0x800661FC end:0x800663F8
+
+TRK_MINNOW_DOLPHIN/MetroTRK/Os/dolphin/UDP_Stubs.c:
+	.text       start:0x800663F8 end:0x80066440
 
 TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/common/CircleBuffer.c:
-	.text       start:0x80066784 end:0x80066A10
+	.text       start:0x80066784 end:0x800669EC
 
 TRK_MINNOW_DOLPHIN/gamedev/cust_connection/utils/gc/MWCriticalSection_gc.c:
 	.text       start:0x80066D88 end:0x80066DE0
@@ -757,7 +763,7 @@ PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_sqrt.
 	.text       start:0x80070354 end:0x80070578
 
 dolphin/OdemuExi2/DebuggerDriver.c:
-	.text       start:0x80070620 end:0x80071098
+	.text       start:0x80070618 end:0x80071098
 
 dolphin/gd/GDBase.c:
 	.text       start:0x80071098 end:0x80071204

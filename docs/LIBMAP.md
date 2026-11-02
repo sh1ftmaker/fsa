@@ -22,13 +22,18 @@ this branch).
    Functions without a unique match take their position: between two
    functions of one file, they belong to that file; otherwise they extend
    the preceding file (`__sinit_*`, weak templates, thunks). Runs become
-   rows.
+   rows. That last rule was wrong at file starts: review corrected the TRK
+   splits and eight position-only rows (OSArena, `__init_user`, dvdFatal,
+   dsp_debug, MWTrace, critical_regions, random.cpp, JPABaseShape) from the
+   real names they contain and the donors' split layout. Treat the remaining
+   `extend:` tails the same way: an unmatched leading function may open the
+   next file.
 3. Overrides from other evidence: `.init` layout and sizes (compared with
    mkdd), extabindex entries, real names already in `symbols.txt`
    (`sinf`, `AMC_IsStub`, `Hu_IsStub`, `JKRTask`).
 
 Confidence: **high** means at least 80 % of the row's bytes are uniquely
-byte-matched; **medium** means 30–80 %, or a short tail placed by position;
+byte-matched or already carry real names; **medium** means 30–80 %, or a short tail placed by position;
 **low** means less than 30 %, or a long tail placed by position only.
 
 ## KiB per library (503.8 KiB: 494.7 .text + 9.1 .init)
@@ -36,16 +41,16 @@ byte-matched; **medium** means 30–80 %, or a short tail placed by position;
 | Library | KiB | high / medium / low | Main donor |
 |---|---:|---|---|
 | J3D | 168.2 | 57.7 / 104.4 / 6.1 | pikmin2 `JSystem/J3D` (paths: TP layout) |
-| Other JSystem | 250.0 | 179.8 / 42.0 / 28.2 | J2DGraph 127.1, JAudio 36.8, JKernel 31.1, JUtility 27.2, JParticle 18.9, JMessage 7.9, JGadget/JSupport/JFramework/JMath 1.0 |
-| MSL_C | 32.2 | 27.5 / 0.9 / 3.8 | pikmin2 (mkdd cross-check) |
+| Other JSystem | 250.0 | 182.6 / 39.2 / 28.2 | J2DGraph 127.1, JAudio 36.8, JKernel 31.1, JUtility 27.2, JParticle 18.9, JMessage 7.9, JGadget/JSupport/JFramework/JMath 1.0 |
+| MSL_C | 32.2 | 31.3 / 0.9 / 0 | pikmin2 (mkdd cross-check) |
 | Runtime | 2.1 | 2.1 / 0 / 0 | pikmin2 / mkdd |
-| MetroTRK v2.6 | 32.5 | 30.7 / 1.8 / 0 | pikmin2 `TRK_MINNOW_DOLPHIN` (+ `.init` vector table) |
+| MetroTRK v2.6 | 32.5 | 32.4 / 0.2 / 0 | pikmin2 `TRK_MINNOW_DOLPHIN` (+ `.init` vector table) |
 | THP | 0 | — | not in this region: THP is in the game region, `tu_map.tsv` row 0x804280C0–0x8042E780 |
-| SDK leftovers | 17.0 | 8.2 / 3.9 / 4.9 | pikmin2: gba, gd, OdemuExi2, amcstubs, odenotstub, OSAudioSystem, dvderror, fstload, GXDisplayList, `__start`, `__ppc_eabi_init` |
+| SDK leftovers | 17.0 | 8.5 / 3.6 / 4.9 | pikmin2: gba, gd, OdemuExi2, amcstubs, odenotstub, OSAudioSystem, dvderror, fstload, GXDisplayList, `__start`, `__ppc_eabi_init` |
 | Game TU at .text start | 1.7 | 0 / 1.7 / 0 | none (0x80021840; see open questions) |
 | Unknown | 0 | | |
 
-All confidences together: high 306.1, medium 154.8, low 43.0 KiB. New
+All confidences together: high 314.6, medium 150.0, low 39.2 KiB. New
 files: 292.0 KiB; tails of existing units: 211.8 KiB.
 
 ## Compiler and flag evidence
@@ -109,8 +114,16 @@ matches in FSA:
 - 662 `fn_` placeholders renamed after unique donor matches in high rows.
   Names defined by any compiled unit object, names already in
   `symbols.txt` and conflicting proposals were skipped.
-- 58 new `.text` splits (TRK 23, MSL 24, Runtime 4, SDK 7), code only:
-  data splits and `configure.py` objects come with the import.
+- 60 new `.text` splits (TRK 25, MSL 24, Runtime 4, SDK 7), code only.
+  Data splits and `configure.py` objects come with the import. dtk also
+  wrote three non-`.text` ranges for them: `NMWException.cp`
+  extab 0x80005650–0x80005698 and extabindex 0x800118D8–0x80011914, and
+  `global_destructor_chain.c` `.dtors` 0x8045C648–0x8045C64C (checked in
+  review). The TRK boundaries follow pikmin2's file sizes: nubinit,
+  serpoll, usr_put, targimpl and dolphin_trk start at their first function,
+  `mutex_TRK.c` and `UDP_Stubs.c` are split, and targimpl absorbs its
+  padding word, so the build has no `pad_` units (4,434,096 bytes, 11,560
+  functions).
 
 ## Open questions
 
@@ -125,13 +138,15 @@ matches in FSA:
 - 0x80021840–0x80021F24 is game code (extabindex entries, so exceptions are
   on), linked before JSystem the way mkdd links `kartLocale.cpp`. Add it to
   the game map.
-- 0x8002F274–0x80030380 (5 functions, 4.3 KiB, after JASBasicWaveBank) has
-  no donor match. It may be FSA-only audio code.
+- 0x8002F274–0x80030380 (5 functions, 4.3 KiB): matching now names
+  0x8002F274 `JASBNKParser::createBank`, so this range belongs to
+  JASBNKParser, not to a JASBasicWaveBank tail. The TSV row says so.
 - JStudio, JStage and J3DU have no unique matches, so they are probably not
   linked.
 - THP: pikmin2's THP matches 2 of 22 functions, so FSA has another THP
   version. Try other donors.
 - The scan used the splits at 63edbae and earlier. `extend:` rows for
-  units merged since then (JUTConsole, JUTDirectPrint, JKRCompArchive,
-  JKRArchivePri, JPAFieldBlock) may already be covered. Rows marked
-  "claimed by another agent" were listed, not edited.
+  units extended on matching since then (JASTrack, JAUSectionHeap,
+  JUTConsole, JUTDirectPrint, JKRCompArchive, JKRArchivePri,
+  JPAFieldBlock) carry a `stale` note in the TSV and may already be
+  covered. They were listed, not edited.
