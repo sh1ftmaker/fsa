@@ -66,6 +66,10 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   a source change.
 - The same placeholder can be named on two branches (e.g. `__div2i`): if the
   lines differ (scope tags), `merge_unit.py` stops; keep the fuller line.
+- Reviewers testing a merge must create their own scratch worktree, never
+  reuse one they find (one review copied a build over another's).
+- Real symbols' sizes that dtk guessed wrong are changed only through
+  `config/G4SE01/approved_symbol_changes.txt` (coordinator, citing a review).
 - Hung processes: wrap every build/run in `timeout`; start long-lived
   processes with `sbg`. One forgotten test run spun for two hours.
 
