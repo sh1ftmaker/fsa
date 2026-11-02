@@ -15,6 +15,7 @@ python3 tools/coord.py review <unit>             # reviewer prompt
 python3 tools/coord.py verdict <unit> ACCEPT     # or CHANGES / REJECT
 python3 tools/coord.py merge <unit> "<message>"  # gate, no-regression check, commit, push, cleanup
 python3 tools/coord.py status
+python3 tools/coord.py promote --apply        # after merges: flag units that names elsewhere completed
 ```
 
 - CHANGES: send the findings back to the same worker (it keeps its
