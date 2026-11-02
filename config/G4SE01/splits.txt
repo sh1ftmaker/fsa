@@ -480,6 +480,7 @@ dolphin/gx/GXInit.c:
 	.data       start:0x80496CA0 end:0x80496EE0
 	.bss        start:0x804B5DE0 end:0x804B6410
 	.sdata      start:0x80539CD0 end:0x80539CD8
+	.sbss       start:0x8053A6A0 end:0x8053A6C8
 	.sdata2     start:0x8053B348 end:0x8053B370
 
 dolphin/gx/GXFifo.c:
