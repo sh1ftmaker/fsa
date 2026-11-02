@@ -22,6 +22,7 @@
     <p class="lede">A byte-matching decompilation: C and C++ that the original Metrowerks compilers
       turn back into the exact bytes of the game. This page tracks every function of the DOL.</p>
     <div class="seal" id="seal"></div>
+    <div class="nownext" id="nownext" aria-label="What's happening now and next"></div>
   </div>
   <figure class="emblem-wrap">
     <svg id="emblem" class="emblem" viewBox="-110 -110 220 220" role="img" aria-label="Progress emblem: one gem per region, filled to its matched share of code"></svg>
@@ -31,6 +32,20 @@
 
 <main>
   <section class="stats" id="stats" aria-label="Headline numbers"></section>
+
+  <section class="panel quest" id="quest-panel">
+    <div class="panel-head">
+      <div>
+        <h2>The quest</h2>
+        <p class="sub">The roadmap, phase by phase. Filled gems are done, the glowing one is under way, dim ones are ahead.
+          Bars are live, from the same report as the map. Pick a milestone to see its part of the DOL.</p>
+      </div>
+      <div class="legend" id="quest-legend"></div>
+    </div>
+    <ol class="path" id="path"></ol>
+    <div class="stage" id="stage" aria-live="polite"></div>
+    <ul class="vows" id="vows" aria-label="Rules every submission follows"></ul>
+  </section>
 
   <section class="panel" id="map-panel">
     <div class="panel-head">
@@ -42,6 +57,7 @@
       <div class="legend" id="legend"></div>
     </div>
     <nav class="crumbs" id="crumbs" aria-label="Treemap location"></nav>
+    <div class="questline" id="questline"></div>
     <div class="map" id="map">
       <svg id="map-svg" role="img" aria-label="Treemap of the decompilation by bytes of code"></svg>
       <div class="loading" id="map-loading" hidden>loading functions&hellip;</div>

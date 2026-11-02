@@ -1,0 +1,268 @@
+# Roadmap: the single source of truth for the progress website's quest path.
+#
+# Hand-maintained alongside docs/PLAN.md (which explains the why). Edit only
+# the statuses (and add milestones) when a phase changes; tools/site_data.py
+# computes each milestone's live progress from the honest report on every
+# merge and writes site/data/roadmap.json.
+#
+# status: done | active | next | later
+# hue: the phase gem's colour on the site: green, red, blue, purple or gold.
+# covers: what a milestone works on, as treemap selectors:
+#   <region>                  a whole region (game, jsystem, sdk, gx, runtime)
+#   <region>:<library>        one library as the site names it (jsystem:J3D,
+#                             runtime:MSL_C, game:THP, game:mg_* minigames)
+# measure: how its progress is counted (optional; omit when it can't be
+# measured from the report). `of` defaults to `covers`.
+#   kind: code    matched bytes of code / all bytes of code
+#   kind: fns     matched functions / all functions
+#   kind: units   files flagged Matching / files split into units
+#   kind: split   bytes of code in split units / all bytes of code
+#   kind: linked  Matching units, all linking byte-identical (SHA-1), vs. all units
+# landed: commit(s) on `matching` that finished it (optional).
+
+policies:
+  - id: no-fakematch
+    title: No fakematches
+    text: >-
+      A function counts only when natural source compiles to the original
+      bytes. Register pins, ordering tricks and asm stand-ins stay NonMatching
+      with a FIXME saying what differs.
+  - id: review
+    title: Adversarial review of every submission
+    text: >-
+      A separate reviewer that never saw the author's reasoning judges names,
+      types and readability (ACCEPT / CHANGES / REJECT); the gate checks the
+      rest mechanically. Only ACCEPT merges.
+  - id: honest
+    title: Honest report plus SHA-1
+    text: >-
+      Every unit is diffed with relocations checked, and every merge links
+      main.dol and checks its SHA-1. Byte-pattern hits and lenient diffs never
+      count.
+
+phases:
+  - id: infra
+    hue: gold
+    title: Infrastructure and honest measurement
+    status: done
+    summary: Tools that measure the work without trusting it.
+    milestones:
+      - id: honest-report
+        title: The honest objdiff report
+        desc: Every unit diffed with relocations checked; report.json is never quoted.
+        status: done
+        covers: []
+      - id: full-link
+        title: main.dol links byte-identically
+        desc: A plain ninja links every Matching unit and ends in the SHA-1 check.
+        status: done
+        covers: []
+        measure: {kind: linked}
+        landed: [0f24e19]
+      - id: gate
+        title: Submission gate and merge queue
+        desc: tools/gate.py, adversarial review and coord.py's serial merges.
+        status: done
+        covers: []
+        landed: [dc29090]
+      - id: maps
+        title: Library map and game file map
+        desc: lib_map.tsv proposes every library file; tu_map.tsv finds 530 game files from .ctors, extab and float pools.
+        status: done
+        covers: []
+        landed: [c3f69cc]
+      - id: site
+        title: This progress website
+        desc: Regenerated from the honest report in every merge commit.
+        status: done
+        covers: []
+        landed: [330f6aa]
+
+  - id: sdk
+    hue: blue
+    title: Dolphin SDK and GX
+    status: done
+    summary: Every compiled SDK function matches; the last link and data fixes move to the leftovers phase.
+    milestones:
+      - id: sdk-units
+        title: SDK from mkdd
+        desc: OS, DVD, CARD, PAD, EXI, SI, VI and the rest, every function matched.
+        status: done
+        covers: [sdk]
+        measure: {kind: code}
+      - id: gx
+        title: GX from oot-gc
+        desc: The graphics library, file by file.
+        status: done
+        covers: [gx]
+        measure: {kind: code}
+      - id: sdk-leftovers
+        title: SDK leftovers and GBA
+        desc: gd, OdemuExi2, amcstubs, fstload, GXDisplayList, __start and GBA, imported from pikmin2.
+        status: done
+        covers: ["sdk:gba", "sdk:gd", "sdk:OdemuExi2", "sdk:amcstubs", "sdk:odenotstub"]
+        measure: {kind: code}
+        landed: [ade74ea]
+
+  - id: libs
+    hue: red
+    title: JSystem waves and the pikmin2 imports
+    status: active
+    summary: The engine and the remaining libraries, donor-first, with pikmin2's GC/2.6 -O4,p builds.
+    milestones:
+      - id: jsystem-waves
+        title: JSystem waves from mkdd
+        desc: Per-unit agents on JKernel, JUtility, JAudio and JParticle, flags corrected to -O4,p.
+        status: done
+        covers: ["jsystem:JKernel", "jsystem:JUtility", "jsystem:JAudio", "jsystem:JParticle"]
+        measure: {kind: code}
+        landed: [9a69641]
+      - id: trk
+        title: MetroTRK v2.6
+        desc: The debugger stub from pikmin2, all 30 units Matching.
+        status: done
+        covers: ["runtime:MetroTRK"]
+        measure: {kind: code}
+        landed: [34a9760]
+      - id: jaudio-import
+        title: JAudio new files and tails
+        desc: JAISeMgr, JASHeapCtrl, JASAramStream and the other JAudio files mkdd lacks.
+        status: done
+        covers: ["jsystem:JAudio"]
+        measure: {kind: code}
+        landed: [17387e1]
+      - id: j2d
+        title: J2DGraph
+        desc: The whole 2D library at -O4,p.
+        status: done
+        covers: ["jsystem:J2DGraph"]
+        measure: {kind: code}
+        landed: [78adb18]
+      - id: msl
+        title: MSL_C and Runtime
+        desc: The Metrowerks C library and C++ runtime, 50 units Matching.
+        status: done
+        covers: ["runtime:MSL_C", "runtime:Runtime"]
+        measure: {kind: code}
+        landed: [39fc530]
+      - id: jkernel-family
+        title: JKernel family
+        desc: New files and tails for JKernel, JUtility, JMessage, JParticle and JGadget.
+        status: done
+        covers: ["jsystem:JKernel", "jsystem:JUtility", "jsystem:JMessage", "jsystem:JParticle", "jsystem:JGadget"]
+        measure: {kind: code}
+        landed: [f8a4735]
+      - id: j3d
+        title: J3D
+        desc: The 3D library from pikmin2, the biggest library left; the import is in review.
+        status: active
+        covers: ["jsystem:J3D"]
+        measure: {kind: code}
+
+  - id: leftovers
+    hue: red
+    title: Library leftovers and per-file grinding
+    status: next
+    summary: Take every library unit that is still NonMatching to Matching, one owner per file.
+    milestones:
+      - id: jsystem-grind
+        title: JSystem file by file
+        desc: Per-file agents on the JSystem units still NonMatching, JAudio and J3D first.
+        status: next
+        covers: [jsystem]
+        measure: {kind: units}
+      - id: lib-fixes
+        title: SDK, GX and MSL link fixes
+        desc: The FIXME(link) units, the last GX and MSL functions, and data splits.
+        status: next
+        covers: [sdk, gx, runtime]
+        measure: {kind: units}
+      - id: thp
+        title: THP video
+        desc: The THP player in the game region, from oot-gc's THP sources.
+        status: next
+        covers: ["game:THP"]
+        measure: {kind: code}
+
+  - id: game
+    hue: green
+    title: Game code
+    status: next
+    summary: FSA's own 3.4 MiB of C++, after the file map, the compiler setup and shared headers.
+    milestones:
+      - id: tu-splits
+        title: The file map in splits.txt
+        desc: Load tu_map.tsv's 530 game files with their data ranges; actor files named from actors.tsv.
+        status: next
+        covers: [game]
+        measure: {kind: split}
+      - id: game-compiler
+        title: Game compiler setup
+        desc: GC/2.6 -O4,p with C++ exceptions, proven on the 26 recomp-era game functions.
+        status: next
+        covers: [game]
+      - id: shared-headers
+        title: Shared headers, one owner each
+        desc: The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
+        status: later
+        covers: [game]
+      - id: wave-small
+        title: "Wave 1: small files and minigames"
+        desc: Small self-contained files and the mg_* minigames first.
+        status: later
+        covers: ["game:mg_* minigames"]
+        measure: {kind: code}
+      - id: wave-actors
+        title: "Wave 2: actor families"
+        desc: Enemies, NPCs and objects that share a base class.
+        status: later
+        covers: ["game:enemy_*_sob refs"]
+        measure: {kind: code}
+      - id: wave-systems
+        title: "Wave 3: the big systems"
+        desc: Player, map and HUD, messages and everything else in the game region.
+        status: later
+        covers: [game]
+        measure: {kind: code}
+
+  - id: names
+    hue: purple
+    title: The naming track
+    status: active
+    summary: Names with evidence only, reviewed on their own.
+    milestones:
+      - id: actor-table
+        title: Actor table
+        desc: English names for all 402 actor IDs, each citing in-game text, the wiki or stages.
+        status: done
+        covers: []
+        landed: [f8f6612]
+      - id: debug-strings
+        title: Debug and assert strings
+        desc: OSReport output, assert and crash-debugger strings tied to the functions that print them.
+        status: next
+        covers: [game]
+      - id: dolphin
+        title: Dolphin campaign
+        desc: Debug output logged in Dolphin and the dormant debug menus, mapped to code.
+        status: later
+        covers: [game]
+
+  - id: debt
+    hue: gold
+    title: Fakematch debt and crack passes
+    status: later
+    summary: Between waves, and the finish line.
+    milestones:
+      - id: crack
+        title: Crack passes
+        desc: Resistant functions with a stronger model and the permuter; the release-build-assert method for fakematch debt.
+        status: later
+        covers: []
+        measure: {kind: fns, of: [game, jsystem, sdk, gx, runtime]}
+      - id: finish
+        title: Every unit Matching
+        desc: All of main.dol built from source with the original SHA-1; a portable build becomes possible.
+        status: later
+        covers: []
+        measure: {kind: code, of: [game, jsystem, sdk, gx, runtime]}

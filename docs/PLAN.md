@@ -174,6 +174,10 @@ shared edits, re-runs configure and the full `ninja` (link + SHA-1), runs the ga
 
 ## Roadmap after SDK, GX and JSystem (approved 2026-11-02)
 
+The current state of this roadmap (which phase and milestone is done,
+under way or next, and what each covers) is kept in `docs/roadmap.yml`,
+which drives the quest path on the progress website. Change statuses there.
+
 1. Finish the libraries: MSL/Runtime, MetroTRK (pikmin2/tp v2.6), THP, the
    rest of JSystem including J3D (pikmin2, same GC/2.6), donor-first.
 2. Load the file map (`config/G4SE01/tu_map.tsv`) into `splits.txt`: 530

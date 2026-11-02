@@ -8,6 +8,7 @@ Inputs (all local; CI can't build the game, so this runs before each commit):
   config/G4SE01/lib_map.tsv        library ranges not split yet (docs/LIBMAP.md)
   config/G4SE01/tu_map.tsv         the game-code file map (docs/PLAN.md)
   build/G4SE01/fsa_game_code.dol   hashed against config/G4SE01/build.sha1
+  docs/roadmap.yml                 phases and milestones (hand-maintained statuses)
 
 Every function in the DOL is placed in region -> library/system -> file:
 split units by their path, dtk's auto splits (`auto_*`, not started yet) by
@@ -17,6 +18,7 @@ Outputs:
   site/data/summary.json       totals, regions, libraries, files
   site/data/lib/<id>.json      functions per file of one library (loaded on demand)
   site/data/history.json       one entry per commit (appended or replaced)
+  site/data/roadmap.json       docs/roadmap.yml with each milestone's live progress
 
 Only names, addresses, sizes and match flags are written: never bytes,
 asm or data contents of main.dol.
@@ -40,6 +42,7 @@ REPORT = ROOT / "build/G4SE01/report_honest.json"
 DOL = ROOT / "build/G4SE01/fsa_game_code.dol"
 SHA1 = ROOT / "config/G4SE01/build.sha1"
 OUT = ROOT / "site/data"
+ROADMAP = ROOT / "docs/roadmap.yml"
 PREFIX = "fsa_game_code/"
 
 REGIONS = [  # id, name, short description
@@ -296,6 +299,7 @@ def write(report, files, data_unsplit, subject):
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
                "totals": totals, "regions": regions}
     (OUT / "summary.json").write_text(json.dumps(summary, separators=(",", ":")))
+    (OUT / "roadmap.json").write_text(json.dumps(roadmap(regions, totals, now), separators=(",", ":")))
 
     # history: one entry per commit. The commit being made has no hash yet, so
     # each entry records its parent ("base"); later runs fill in "commit".
@@ -321,6 +325,87 @@ def write(report, files, data_unsplit, subject):
     })
     hist_path.write_text(json.dumps(hist, separators=(",", ":"), indent=None).replace("},{", "},\n{"))
     return summary
+
+
+STATUSES = ("done", "active", "next", "later")
+MEASURES = {
+    "code": "of the code matched",
+    "fns": "of the functions matched",
+    "units": "of the split files Matching",
+    "split": "of the code split into units",
+    "linked": "of all units Matching and linked byte-identically",
+}
+
+
+def roadmap(regions, totals, now):
+    """docs/roadmap.yml plus live progress. Selectors (`covers`, `measure.of`)
+    are `<region>` or `<region>:<library name>` and resolve to treemap ids:
+    `<region>` and `<region>/<library id>`. Unknown selectors and statuses
+    stop the run, so a typo can't silently show 0 %."""
+    import yaml  # PyYAML; only needed here, where the site data is made
+    rm = yaml.safe_load(ROADMAP.read_text())
+    libs = {}
+    for r in regions:
+        for l in r["libs"]:
+            libs[f"{r['id']}:{l['n']}"] = (r["id"], l)
+    reg = {r["id"]: r for r in regions}
+
+    def resolve(sel):
+        """selector -> (treemap id, [library records])"""
+        if sel in reg:
+            return sel, [(sel, l) for l in reg[sel]["libs"]]
+        if sel in libs:
+            rid, l = libs[sel]
+            return f"{rid}/{l['id']}", [(rid, l)]
+        raise SystemExit(f"docs/roadmap.yml: unknown selector {sel!r} "
+                         f"(regions: {', '.join(reg)}; libraries as region:name, e.g. jsystem:J3D)")
+
+    def measure(kind, sels):
+        if kind == "linked":
+            return {"done": totals["linked"] or 0, "total": totals["units"]}
+        recs, seen = [], set()
+        for sel in sels:
+            for rid, l in resolve(sel)[1]:
+                if l["id"] not in seen:
+                    seen.add(l["id"])
+                    recs.append(l)
+        files = [f for l in recs for f in l["files"]]
+        if kind == "code":
+            return {"done": sum(l["cm"] for l in recs), "total": sum(l["c"] for l in recs)}
+        if kind == "fns":
+            return {"done": sum(l["fm"] for l in recs), "total": sum(l["f"] for l in recs)}
+        if kind == "units":
+            split = [f for f in files if f["s"] != "U"]
+            return {"done": sum(1 for f in split if f["s"] == "M"), "total": len(split)}
+        if kind == "split":
+            return {"done": sum(f["c"] - f.get("t", 0) for f in files if f["s"] != "U"),
+                    "total": sum(f["c"] for f in files)}
+        raise SystemExit(f"docs/roadmap.yml: unknown measure kind {kind!r} ({', '.join(MEASURES)})")
+
+    owners = defaultdict(list)  # treemap id -> milestone ids covering it
+    phases = []
+    for ph in rm["phases"]:
+        if ph["status"] not in STATUSES:
+            raise SystemExit(f"docs/roadmap.yml: phase {ph['id']}: status {ph['status']!r}")
+        ms_out = []
+        for ms in ph["milestones"]:
+            if ms["status"] not in STATUSES:
+                raise SystemExit(f"docs/roadmap.yml: {ms['id']}: status {ms['status']!r}")
+            covers = [resolve(c)[0] for c in ms.get("covers") or []]
+            for c in covers:
+                owners[c].append(ms["id"])
+            out = {"id": ms["id"], "title": ms["title"], "desc": ms["desc"], "status": ms["status"],
+                   "covers": covers}
+            if ms.get("measure"):
+                kind = ms["measure"]["kind"]
+                out["measure"] = {"kind": kind, "label": MEASURES.get(kind, kind),
+                                  **measure(kind, ms["measure"].get("of") or ms.get("covers") or [])}
+            if ms.get("landed"):
+                out["landed"] = ms["landed"]
+            ms_out.append(out)
+        phases.append({"id": ph["id"], "title": ph["title"], "summary": ph.get("summary", ""), "hue": ph.get("hue", "gold"),
+                       "status": ph["status"], "milestones": ms_out})
+    return {"generated": now, "policies": rm.get("policies", []), "phases": phases, "owners": owners}
 
 
 def main():
