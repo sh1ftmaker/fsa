@@ -14,6 +14,24 @@ void JAUAudience_withSetting::updateSetting() {
     setting_._4c = (setting_._28 - setting_._24) / (setting_._04 - setting_._08);
 }
 
+JAUAudience_withSetting::JAUAudience_withSetting() {
+    setting_._04 = 7000.0f;
+    setting_._08 = 800.0f;
+    setting_.minVolume = 0.005f;
+    setting_._14 = 8000.0f;
+    setting_._10 = -4000.0f;
+    setting_._28 = 0.1f;
+    setting_._24 = 0.0f;
+    setting_._18 = 1.0f;
+    setting_._1c = 0.8f;
+    setting_._20 = 0.0f;
+    setting_._2c = 0.5f;
+    setting_._38 = 0xff;
+    setting_._30 = 3000.0f;
+    setting_._34 = 1.5f;
+    updateSetting();
+}
+
 namespace {
 
     void testInstanciate() {
@@ -24,3 +42,10 @@ namespace {
 
     }
 }
+
+// FIXME: __sinit_JAUAudience_cpp (0x8003D264) is not emitted yet. FSA constructs nine
+// pools: the JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools, then
+// six per-TU single-threaded pools (0x8052E78C/9C/AC, 0x804B21EC, 0x8052E7BC, and
+// JASPoolAllocObject<JAUDopplerAudible<4>>::memPool_ at 0x804B21DC). It needs the generic
+// memPool_ definition (JASHeapCtrl.h, pending); the first five pools' classes are not
+// identified yet.

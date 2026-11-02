@@ -315,6 +315,9 @@ JSystem/JAudio/Utility/JAUStreamFileTable.cpp:
 JSystem/JAudio/Utility/JAUAudience.cpp:
 	.text       start:0x8003C8D8 end:0x8003D5D8
 	.ctors      start:0x8045BD9C end:0x8045BDA0
+	.data       start:0x804954D8 end:0x80495540
+	.bss        start:0x804B4C28 end:0x804B4C98
+	.sdata2     start:0x8053B2B0 end:0x8053B2F0
 
 JSystem/JAudio/Utility/JAUSectionHeap.cpp:
 	.text       start:0x8003D5D8 end:0x8003EE34

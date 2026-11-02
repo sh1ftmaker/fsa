@@ -135,23 +135,7 @@ public:
 
 class JAUAudience_withSetting : public JAIAudience {
 public:
-    JAUAudience_withSetting() {
-        setting_._04 = 7000.0f;
-        setting_._08 = 800.0f;
-        setting_.minVolume = 0.005f;
-        setting_._14 = 8000.0f;
-        setting_._10 = -4000.0f;
-        setting_._28 = 0.1f;
-        setting_._24 = 0.0f;
-        setting_._18 = 1.0f;
-        setting_._1c = 0.8f;
-        setting_._20 = 0.0f;
-        setting_._2c = 0.5f;
-        setting_._38 = 0xff;
-        setting_._30 = 3000.0f;
-        setting_._34 = 1.5f;
-        updateSetting();
-    }
+    JAUAudience_withSetting();
     ~JAUAudience_withSetting() {}
 
     //virtual JAIAudible *newAudible(const JGeometry::TVec3f &, JAISoundID soundID, const JGeometry::TVec3f *, u32 channels) = 0;
@@ -202,6 +186,8 @@ public:
     JAUDopplerAudibleChannel() {}
 }; // Size: 0x34
 
+// FIXME: FSA's layout differs: JAUDopplerAudible<4> is 0x40 bytes (its dtor frees 0x40;
+// ours is 0x10C) and getOuterParams reads the channel pointer at +0x18 (ours +0x2C).
 template <int N, class Channel, class AbsPos>
 class JAUGenericAudible_ : public JAIAudible {
 public:
@@ -340,6 +326,7 @@ public:
         return 1.0f;
     }
 
+    // FIXME: FSA's copy is 0x23C bytes (ours 0x330); needs FSA's JAUGenericAudible_ layout.
     void mixChannelOut(const JASSoundParams &params, JAIAudible *pAudible, int index) {
         Audible *audible = (Audible *)pAudible;
         JAUAudibleChannel *channel = audible->getChannel(index);
@@ -421,6 +408,7 @@ public:
         return this->setting_._48 * (p1 - this->setting_._08);
     }
     
+    // FIXME: FSA's copy is 0x164 bytes (ours 0x2EC); needs FSA's JAUGenericAudible_ layout.
     u32 calcPriority(JAIAudible *i_audible) {
         u32 deltaPriority[N];
         
@@ -454,6 +442,8 @@ public:
     void deleteAudible(JAIAudible *audible) {
         delete audible;
     }
+    // FIXME: FSA's copy is 0x1C4 bytes (ours 0x394) and allocates a 0x40-byte
+    // JAUDopplerAudible<4>; needs FSA's JAUGenericAudible_ layout.
     JAIAudible *newAudible(const JGeometry::TVec3f &pos, JAISoundID soundID, const JGeometry::TVec3f *p3, u32 channels) {
         u32 channelNum = channels | ~((1 << numPlayers_) - 1);
         if (channelNum == 0xffffffff) {
