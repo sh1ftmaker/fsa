@@ -705,7 +705,8 @@ JSystem/JSupport/JSUList.cpp:
 	.text       start:0x80086E2C end:0x80087348
 
 JSystem/JSupport/JSUMemoryStream.cpp:
-	.text       start:0x80087348 end:0x80087450
+	.text       start:0x80087348 end:0x800874D0
+	.data       start:0x80499068 end:0x80499090
 
 JSystem/JSupport/JSUFileStream.cpp:
 	.text       start:0x800874D0 end:0x8008770C
