@@ -28,12 +28,15 @@ def run(*cmd, check=True):
 
 
 def keyed(text):
-    lines, order = {}, []
+    """Key each line by (section, address, n): several symbols can share an address."""
+    lines, order, seen = {}, [], {}
     for line in text.splitlines():
         m = LINE.match(line)
-        key = (m.group(2), int(m.group(3), 16)) if m else ("#", line)
-        if key not in lines:
-            order.append(key)
+        place = (m.group(2), int(m.group(3), 16)) if m else ("#", line)
+        n = seen.get(place, 0)
+        seen[place] = n + 1
+        key = (*place, n)
+        order.append(key)
         lines[key] = line
     return lines, order
 
@@ -43,11 +46,12 @@ def merge_symbols(base, ours, theirs):
     b, _ = keyed(base)
     o, order = keyed(ours)
     t, t_order = keyed(theirs)
-    for key in t_order:
-        if key not in o and key not in b:
-            order.append(key)
     out = []
-    for key in sorted(set(order) | set(t), key=lambda k: (k[0] == "#", k[0], k[1] if isinstance(k[1], int) else 0)):
+    seen = set()
+    for key in order + [k for k in t_order if k not in o]:
+        if key in seen:
+            continue
+        seen.add(key)
         bo, oo, to = b.get(key), o.get(key), t.get(key)
         if to == bo:
             line = oo
