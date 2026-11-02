@@ -526,7 +526,7 @@ config.libs = [
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
-        Object(NonMatching, "dolphin/pad/Padclamp.c"),
+        Object(Matching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [
         Object(Matching, "dolphin/si/SIBios.c"),

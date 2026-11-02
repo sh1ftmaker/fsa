@@ -394,6 +394,7 @@ dolphin/vi/vi.c:
 dolphin/pad/Padclamp.c:
 	.text       start:0x8004D640 end:0x8004DB38
 	.rodata     start:0x8045D440 end:0x8045D450
+	.sdata2     start:0x8053B328 end:0x8053B348
 
 dolphin/pad/Pad.c:
 	.text       start:0x8004DB38 end:0x8004F4F4
