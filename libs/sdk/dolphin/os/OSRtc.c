@@ -199,12 +199,9 @@ static BOOL UnlockSram(BOOL commit, u32 offset) {
     if (offset < Scb.offset) {
       Scb.offset = offset;
     }
-    // this isn't in prime?
-    if (Scb.offset <= 20)
+    if (Scb.offset <= sizeof(OSSram))
     {
-      // this seems to work? esp. since we have GbsMode functions when prime doesn't
-      // wacky tho
-      OSSramEx *sramEx = (OSSramEx *)(&Scb.sram[20]);
+      OSSramEx *sramEx = (OSSramEx *)(Scb.sram + sizeof(OSSram));
       if ((u32)(sramEx->gbs & 0x7C00) == 0x5000 || (u32)(sramEx->gbs & 0xC0) == 0xC0)
       {
         sramEx->gbs = 0;
@@ -381,7 +378,6 @@ void OSSetGbsMode(u16 mode)
 {
   OSSramEx *sram;
 
-  // same odd code as in UnlockSram?
   if ((u32)(mode & 0x7C00) == 0x5000 || (u32)(mode & 0xC0) == 0xC0)
   {
     mode = 0;
