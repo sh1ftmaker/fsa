@@ -521,7 +521,7 @@ config.libs = [
         Object(NonMatching, "dolphin/os/OSResetSW.c"),
         Object(NonMatching, "dolphin/os/OSRtc.c"),
         Object(Matching, "dolphin/os/OSSync.c"),
-        Object(NonMatching, "dolphin/os/OSThread.c"),
+        Object(Matching, "dolphin/os/OSThread.c"),
         Object(NonMatching, "dolphin/os/OSTime.c"),
     ]),
     SdkLib("pad", [

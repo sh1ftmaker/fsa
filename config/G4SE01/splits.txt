@@ -335,7 +335,7 @@ dolphin/os/OSSync.c:
 	.text       start:0x80045024 end:0x800450A8
 
 dolphin/os/OSThread.c:
-	.text       start:0x80045204 end:0x80046334
+	.text       start:0x800450A8 end:0x800463E0
 	.bss        start:0x804B4E18 end:0x804B5810
 	.sdata      start:0x80539C20 end:0x80539C28
 	.sbss       start:0x8053A488 end:0x8053A498
