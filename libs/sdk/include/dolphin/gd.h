@@ -16,7 +16,7 @@ typedef void (*GDOverflowCallback)(void);
 typedef struct GDCurrentDL {
 	u8* begin;  // _00
 	s32 length; // _04
-	u8* data;   // _08
+	u8* pDisplayListData;   // _08
 	u8* end;    // _0C
 } GDCurrentDL;
 
@@ -47,12 +47,12 @@ extern GDOverflowCallback overflowcb;
 
 static inline void __GDWrite(u8 data)
 {
-	*__GDCurrentDL->data++ = data;
+	*__GDCurrentDL->pDisplayListData++ = data;
 }
 
 static inline void __GDCheckOverflowed(size_t size)
 {
-	if (__GDCurrentDL->data + size > __GDCurrentDL->end) {
+	if (__GDCurrentDL->pDisplayListData + size > __GDCurrentDL->end) {
 		GDOverflowed();
 	}
 }
@@ -92,7 +92,7 @@ static inline void __GDWriteF32(f32 data)
 // check if data we're about to add will take us outside data region
 static inline void GDOverflowCheck(u32 len)
 {
-	if (__GDCurrentDL->data + len > __GDCurrentDL->end) {
+	if (__GDCurrentDL->pDisplayListData + len > __GDCurrentDL->end) {
 		GDOverflowed();
 	}
 }
@@ -100,25 +100,25 @@ static inline void GDOverflowCheck(u32 len)
 // get current data pointer
 static inline u8* GDGetCurrPointer()
 {
-	return __GDCurrentDL->data;
+	return __GDCurrentDL->pDisplayListData;
 }
 
 // how far from the start is the current data pointer?
 static inline s32 GDGetCurrOffset()
 {
-	return __GDCurrentDL->data - __GDCurrentDL->begin;
+	return __GDCurrentDL->pDisplayListData - __GDCurrentDL->begin;
 }
 
 // track to set offset
 static inline void GDSetCurrOffset(s32 offs)
 {
-	__GDCurrentDL->data = __GDCurrentDL->begin + offs;
+	__GDCurrentDL->pDisplayListData = __GDCurrentDL->begin + offs;
 }
 
 // forward a set distance
 static inline void GDAdvCurrOffset(s32 distance)
 {
-	__GDCurrentDL->data += distance;
+	__GDCurrentDL->pDisplayListData += distance;
 }
 
 ////////////////////////////////////////////

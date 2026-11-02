@@ -113,7 +113,7 @@ u32 J3DDisplayListObj::endDL()
 {
 	GDPadCurr32();
 	OSRestoreInterrupts(sInterruptFlag);
-	mSize = sGDLObj.data - sGDLObj.begin;
+	mSize = sGDLObj.pDisplayListData - sGDLObj.begin;
 	GDFlushCurrToMem();
 	__GDCurrentDL = nullptr;
 	return mSize;
