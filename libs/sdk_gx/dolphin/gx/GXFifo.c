@@ -176,6 +176,44 @@ void GXSetGPFifo(GXFifoObj* fifo) {
     OSRestoreInterrupts(interrupts);
 }
 
+#define SOME_MACRO1(fifo)                       \
+    do {                                        \
+        u32 temp = GX_GET_CP_REG(29) << 16;     \
+        temp |= GX_GET_CP_REG(28);              \
+        fifo->rdPtr = OSPhysicalToCached(temp); \
+    } while (0)
+
+#define SOME_MACRO2(fifo)                   \
+    do {                                    \
+        u32 temp = GX_GET_CP_REG(25) << 16; \
+        temp |= GX_GET_CP_REG(24);          \
+        fifo->count = temp;                 \
+    } while (0)
+
+void GXSaveCPUFifo(GXFifoObj* fifo) {
+    __GXFifoObj* realFifo = (__GXFifoObj*)fifo;
+    ASSERTMSGLINE(835, fifo == CPUFifo, "GXSaveCPUFifo: fifo is not attached to CPU");
+    __GXSaveCPUFifoAux(realFifo);
+}
+
+void __GXSaveCPUFifoAux(__GXFifoObj* realFifo) {
+    int enabled = OSDisableInterrupts();
+
+    GXFlush();
+    realFifo->base = OSPhysicalToCached(GX_GET_PI_REG(3));
+    realFifo->top = OSPhysicalToCached(GX_GET_PI_REG(4));
+    realFifo->wrPtr = OSPhysicalToCached(GX_GET_PI_REG(5) & 0xFBFFFFFF);
+    if (CPGPLinked) {
+        SOME_MACRO1(realFifo);
+        SOME_MACRO2(realFifo);
+    } else {
+        realFifo->count = (u8*)realFifo->wrPtr - (u8*)realFifo->rdPtr;
+        if (realFifo->count < 0)
+            realFifo->count += realFifo->size;
+    }
+    OSRestoreInterrupts(enabled);
+}
+
 void GXGetGPStatus(GXBool* overhi, GXBool* underlow, GXBool* readIdle, GXBool* cmdIdle, GXBool* brkpt) {
     __GXData->cpStatus = GX_GET_CP_REG(0);
     *overhi = GET_REG_FIELD(__GXData->cpStatus, 1, 0);
@@ -263,6 +301,22 @@ void __GXCleanGPFifo(void) {
     if (cpuFifo == gpFifo) {
         GXSetCPUFifo(cpuFifo);
     }
+}
+
+OSThread* GXSetCurrentGXThread(void) {
+    int enabled;
+    OSThread* prev;
+
+    enabled = OSDisableInterrupts();
+    prev = __GXCurrentThread;
+    ASSERTMSGLINE(1377, !GXOverflowSuspendInProgress, "GXSetCurrentGXThread: Two threads cannot generate GX commands at the same time!");
+    __GXCurrentThread = OSGetCurrentThread();
+    OSRestoreInterrupts(enabled);
+    return prev;
+}
+
+OSThread* GXGetCurrentGXThread(void) {
+    return __GXCurrentThread;
 }
 
 GXFifoObj* GXGetCPUFifo(void) { return CPUFifo; }

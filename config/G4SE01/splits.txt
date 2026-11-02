@@ -492,7 +492,7 @@ dolphin/gx/GXInit.c:
 	.sdata2     start:0x8053B348 end:0x8053B370
 
 dolphin/gx/GXFifo.c:
-	.text       start:0x80059B8C end:0x8005A400
+	.text       start:0x80059B8C end:0x8005A464
 	.sbss       start:0x8053A6C8 end:0x8053A6E8
 
 dolphin/gx/GXAttr.c:
