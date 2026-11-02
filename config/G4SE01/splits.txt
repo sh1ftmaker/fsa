@@ -53,7 +53,6 @@ JSystem/JAudio/Interface/JAISoundHandles.cpp:
 
 JSystem/JAudio/Interface/JAISoundParams.cpp:
 	.text       start:0x800262AC end:0x8002640C
-	.ctors      start:0x8045BD28 end:0x8045BD2C
 	.sdata2     start:0x8053B010 end:0x8053B018
 
 JSystem/JAudio/Interface/JAIStream.cpp:
@@ -88,6 +87,7 @@ JSystem/JAudio/System/JASDvdThread.cpp:
 JSystem/JAudio/System/JASHeapCtrl.cpp:
 	.text       start:0x80028374 end:0x80028DA8
 	.ctors      start:0x8045BD3C end:0x8045BD40
+	.bss        start:0x804B24B0 end:0x804B2500
 	.sbss       start:0x8053A2C0 end:0x8053A2D0
 
 JSystem/JAudio/System/JASProbe.cpp:
@@ -189,7 +189,6 @@ JSystem/JAudio/System/JASInstRand.cpp:
 
 JSystem/JAudio/System/JASInstSense.cpp:
 	.text       start:0x800309B8 end:0x80030B78
-	.ctors      start:0x8045BD68 end:0x8045BD6C
 	.sdata2     start:0x8053B1D0 end:0x8053B1F0
 
 JSystem/JAudio/System/JASSimpleWaveBank.cpp:
@@ -242,7 +241,6 @@ JSystem/JAudio/System/JASTrack.cpp:
 
 JSystem/JAudio/System/JASTrackPort.cpp:
 	.text       start:0x80039964 end:0x80039A84
-	.ctors      start:0x8045BD80 end:0x8045BD84
 
 JSystem/JAudio/Task/dspproc.c:
 	.text       start:0x80039B80 end:0x80039D08
