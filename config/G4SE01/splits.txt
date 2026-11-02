@@ -1041,42 +1041,162 @@ JSystem/J2DGraph/J2DTextBoxEx.cpp:
 	.rodata     start:0x80463270 end:0x804632A8
 	.sdata2     start:0x8053BB28 end:0x8053BB48
 
+JSystem/J3DGraphBase/J3DSys.cpp:
+	.text       start:0x800BA544 end:0x800BB618
+	.ctors      start:0x8045BDDC end:0x8045BDE0
+	.rodata     start:0x804632A8 end:0x804633E8
+	.data       start:0x8049A380 end:0x8049A3D8
+	.bss        start:0x80536C50 end:0x80536E7C align:4 common
+	.sdata      start:0x80539DB8 end:0x80539DC0
+	.sbss       start:0x8053A9B8 end:0x8053A9C8
+	.sdata2     start:0x8053BB70 end:0x8053BB80
+
 JSystem/J3DGraphBase/J3DVertex.cpp:
-	.text       start:0x800BB6E0 end:0x800BB738
+	.text       start:0x800BB618 end:0x800BB7E8
+
+JSystem/J3DGraphBase/J3DTransform.cpp:
+	.text       start:0x800BB7E8 end:0x800BC19C
+	.rodata     start:0x804633E8 end:0x80463450
+	.sdata      start:0x80539DC0 end:0x80539DC8
+	.sdata2     start:0x8053BB80 end:0x8053BB90
 
 JSystem/J3DGraphBase/J3DPacket.cpp:
-	.text       start:0x800BC2BC end:0x800BC2DC
+	.text       start:0x800BC19C end:0x800BCD7C
+	.data       start:0x8049A3D8 end:0x8049A428
+	.bss        start:0x80536E7C end:0x80536E8C align:4 common
+	.sbss       start:0x8053A9C8 end:0x8053A9D8
+
+JSystem/J3DGraphBase/J3DShape.cpp:
+	.text       start:0x800BCD7C end:0x800BDA0C
+	.data       start:0x8049A428 end:0x8049A440
+	.sbss       start:0x8053A9D8 end:0x8053A9E8
+	.sdata2     start:0x8053BB90 end:0x8053BB98
 
 JSystem/J3DGraphBase/J3DMaterial.cpp:
-	.text       start:0x800BEAE8 end:0x800BEB44
-	.sdata2     start:0x8053BCC8 end:0x8053BCCC
+	.text       start:0x800BDA0C end:0x800BFF38
+	.data       start:0x8049A440 end:0x8049A6D8
 
 JSystem/J3DGraphBase/J3DTevs.cpp:
-	.text       start:0x800C176C end:0x800C179C
+	.text       start:0x800BFF38 end:0x800C1DB8
+	.rodata     start:0x80463450 end:0x80463558
+	.data       start:0x8049A6D8 end:0x8049A7F8
+	.bss        start:0x80536E8C end:0x80539B14 align:4 common
+	.sdata2     start:0x8053BB98 end:0x8053BBE8
+
+JSystem/J3DGraphBase/J3DDrawBuffer.cpp:
+	.text       start:0x800C1DB8 end:0x800C2710
+	.ctors      start:0x8045BDE0 end:0x8045BDE4
+	.data       start:0x8049A7F8 end:0x8049A8B8
+	.sdata2     start:0x8053BBE8 end:0x8053BBF8
 
 JSystem/J3DGraphAnimator/J3DModel.cpp:
-	.text       start:0x800C2E30 end:0x800C2E7C
+	.text       start:0x800C2710 end:0x800C3608
+	.data       start:0x8049A8B8 end:0x8049A8E8
+	.sdata2     start:0x8053BBF8 end:0x8053BC00
+
+JSystem/J3DGraphAnimator/J3DAnimation.cpp:
+	.text       start:0x800C3608 end:0x800C73EC
+	.data       start:0x8049A8E8 end:0x8049AA18
+	.sdata2     start:0x8053BC00 end:0x8053BC38
+
+JSystem/J3DGraphAnimator/J3DMaterialAnm.cpp:
+	.text       start:0x800C73EC end:0x800C7954
+	.data       start:0x8049AA18 end:0x8049AA38
+
+JSystem/J3DGraphAnimator/J3DCluster.cpp:
+	.text       start:0x800C7954 end:0x800C85B8
+	.sdata2     start:0x8053BC38 end:0x8053BC68
+
+JSystem/J3DGraphAnimator/J3DJoint.cpp:
+	.text       start:0x800C85B8 end:0x800C8F54
+	.rodata     start:0x80463558 end:0x80463588
+	.sbss       start:0x8053A9E8 end:0x8053A9F8
+	.sdata2     start:0x8053BC68 end:0x8053BC70
 
 JSystem/J3DGraphLoader/J3DMaterialFactory.cpp:
-	.text       start:0x800C9224 end:0x800C926C
+	.text       start:0x800C8F54 end:0x800CC088
+	.data       start:0x8049AA38 end:0x8049AC88
+	.sdata2     start:0x8053BC70 end:0x8053BC80
 
-JSystem/J3DGraphBase/J3DShapeMtx.cpp:
+JSystem/J3DGraphLoader/J3DBinaryFormat.cpp:
 	.text       start:0x800CC088 end:0x800CC094
 
-JSystem/J3DGraphLoader/J3DShapeFactory.cpp:
-	.text       start:0x800CEBB4 end:0x800CEBC4
+JSystem/J3DGraphLoader/J3DModelLoader.cpp:
+	.text       start:0x800CC094 end:0x800CE264
+	.data       start:0x8049AC88 end:0x8049AE10
 
-JSystem/J3DGraphBase/J3DSys.cpp:
-	.text       start:0x800D3168 end:0x800D32C0
-	.rodata     start:0x804632A8 end:0x804632E0
-	.data       start:0x8049A380 end:0x8049A3D8
+JSystem/J3DGraphLoader/J3DJointFactory.cpp:
+	.text       start:0x800CE264 end:0x800CE43C
+
+JSystem/J3DGraphLoader/J3DShapeFactory.cpp:
+	.text       start:0x800CE43C end:0x800CF3E8
+
+JSystem/J3DGraphLoader/J3DAnmLoader.cpp:
+	.text       start:0x800CF3E8 end:0x800D06E8
+	.data       start:0x8049AE10 end:0x8049AE70
+	.sdata2     start:0x8053BC80 end:0x8053BC88
+
+JSystem/J3DGraphLoader/J3DModelSaver.cpp:
+	.text       start:0x800D06E8 end:0x800D06F0
+
+JSystem/J3DGraphBase/J3DGD.cpp:
+	.text       start:0x800D06F0 end:0x800D3690
+	.data       start:0x8049AE70 end:0x8049AF18
+	.sdata      start:0x80539DC8 end:0x80539E10
+	.sdata2     start:0x8053BC88 end:0x8053BCC8
 
 JSystem/J3DGraphBase/J3DMatBlock.cpp:
-	.text       start:0x800D3E20 end:0x800D3E70
+	.text       start:0x800D3690 end:0x800DF700
+	.ctors      start:0x8045BDE4 end:0x8045BDE8
+	.data       start:0x8049AF18 end:0x8049BA98
 	.sdata      start:0x80539E10 end:0x80539E20
+	.sbss       start:0x8053A9F8 end:0x8053AA00
+	.sdata2     start:0x8053BCC8 end:0x8053BCD0
+
+JSystem/J3DGraphAnimator/J3DModelData.cpp:
+	.text       start:0x800DF700 end:0x800DF9DC
+	.data       start:0x8049BA98 end:0x8049BAB0
+	.sbss       start:0x8053AA00 end:0x8053AA08
+
+JSystem/J3DGraphAnimator/J3DMaterialAttach.cpp:
+	.text       start:0x800DF9DC end:0x800DFEFC
+	.data       start:0x8049BAB0 end:0x8049BAC0
+
+JSystem/J3DGraphLoader/J3DMaterialFactory_v21.cpp:
+	.text       start:0x800DFEFC end:0x800E1318
+	.sdata2     start:0x8053BCD0 end:0x8053BCD8
+
+JSystem/J3DGraphBase/J3DShapeMtx.cpp:
+	.text       start:0x800E1318 end:0x800E2B40
+	.ctors      start:0x8045BDE8 end:0x8045BDEC
+	.data       start:0x8049BAC0 end:0x8049BD98
+	.bss        start:0x80539B14 end:0x80539B28 align:4 common
+	.sbss       start:0x8053AA08 end:0x8053AA28
+	.sdata2     start:0x8053BCD8 end:0x8053BCE0
 
 JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp:
-	.text       start:0x800E2B40 end:0x800E2B80
+	.text       start:0x800E2B40 end:0x800E34CC
+
+JSystem/J3DGraphAnimator/J3DJointTree.cpp:
+	.text       start:0x800E34CC end:0x800E3898
+	.data       start:0x8049BD98 end:0x8049BDF8
+	.sdata2     start:0x8053BCE0 end:0x8053BCE8
+
+JSystem/J3DGraphAnimator/J3DSkinDeform.cpp:
+	.text       start:0x800E3898 end:0x800E3950
+
+JSystem/J3DGraphBase/J3DShapeDraw.cpp:
+	.text       start:0x800E3950 end:0x800E3A20
+	.data       start:0x8049BDF8 end:0x8049BE20
+
+JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp:
+	.text       start:0x800E3A20 end:0x800E4778
+	.bss        start:0x80539B28 end:0x80539BA0 align:4 common
+	.sdata      start:0x80539E20 end:0x80539E30
+	.sdata2     start:0x8053BCE8 end:0x8053BCF0
+
+JSystem/J3DGraphAnimator/J3DShapeTable.cpp:
+	.text       start:0x800E4778 end:0x800E49E0
 
 JSystem/JFramework/JFWSystem.cpp:
 	.text       start:0x800E49E0 end:0x800E4D30

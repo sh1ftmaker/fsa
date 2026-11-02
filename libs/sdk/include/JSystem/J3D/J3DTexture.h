@@ -4,51 +4,39 @@
 #include "types.h"
 #include "JSystem/ResTIMG.h"
 
-#pragma push
-#pragma optimize_for_size off
-
 struct ResTIMG;
 struct ResTIMGPair;
-
-struct _UnknownJ3DTextureParent {
-    u16 mNum;      // _00
-    u16 _02;       // _02
-    ResTIMG* mRes; // _04
-};
 
 /**
  * @size{0xC}
  */
-struct J3DTexture : _UnknownJ3DTextureParent {
-    /** @fabricated */
-    inline J3DTexture(u16 count, ResTIMG* res)
-    {
-        mNum = count;
-        _02  = 0;
-        mRes = res;
-    }
-    void loadGX(u16, GXTexMapID) const;
+struct J3DTexture {
+	u16 mNum; // _00
+	u16 _02;
+	ResTIMG* mRes; // _04
 
-    virtual ~J3DTexture(); // _08 (weak)
+	inline J3DTexture(u16 count, ResTIMG* res)
+	{
+		mNum = count;
+		_02  = 0;
+		mRes = res;
+	}
 
-    u16 getNum() const { return mNum; }
-    ResTIMG* getResTIMG(u16 entry) const { return &mRes[entry]; }
+	virtual ~J3DTexture() { } // _08 (weak)
 
-    void setResTIMG(u16 entry, const ResTIMG &rImg) { 
-        mRes[entry] = rImg;
-        mRes[entry].mImageDataOffset = (u32)&rImg + mRes[entry].mImageDataOffset - (u32)&mRes[entry];
-        mRes[entry].mPaletteOffset =  (u32)&rImg  + mRes[entry].mPaletteOffset - (u32)&mRes[entry];
-    }
+	u16 getNum() const { return mNum; }
+	ResTIMG* getResTIMG(u32 entry) const { return &mRes[entry]; }
 
-    // fabricated:
-    inline void setImageOffset(u32 format) { mRes[0].mImageDataOffset = (int)((format + mRes[0].mImageDataOffset) - (u32)&mRes[0]); }
-    inline void setImageOffset2(u32 format) { mRes[1].mImageDataOffset = (int)((format + mRes[1].mImageDataOffset) - (u32)&mRes[1]); }
-    inline void setPaletteOffset(u32 format) { mRes[0].mPaletteOffset = (int)((format + mRes[0].mPaletteOffset) - (u32)&mRes[0]); }
-    inline void setPaletteOffset2(u32 format) { mRes[1].mPaletteOffset = (int)((format + mRes[1].mPaletteOffset) - (u32)&mRes[1]); }
+	// Use this to replace a texture with a new one
+	inline void changeImage(const ResTIMG* image, u16 index)
+	{
+		mRes[index] = *image;
 
-    // _08 VTBL
+		mRes[index].mImageDataOffset = (int)(((u32)image + mRes[index].mImageDataOffset) - (u32)&mRes[index]);
+		mRes[index].mPaletteOffset   = (int)(((u32)image + mRes[index].mPaletteOffset) - (u32)&mRes[index]);
+	}
+
+	// _08 VTBL
 };
-
-#pragma pop
 
 #endif
