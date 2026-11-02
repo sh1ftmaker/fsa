@@ -54,6 +54,7 @@ functions, 1.76 % of code. SDK 267 / 601 functions, JSystem 418 / 983.
 | `src/PowerPC_EABI_Support/` | MSL / Runtime sources, not yet wired into `configure.py` |
 | `include/` | Headers for `src/` |
 | `docs/PLAN.md` | How the project proceeds: file map, per-file agents, submission gate |
+| `docs/COORDINATOR.md` | Running the agent workflow (`tools/coord.py`) and the rakes hit so far |
 | `tools/` | dtk-template's `project.py` plus donor tools (`donor_match.py`, `donor_plan.py`, `donor_symbols.py`) |
 | `../donors/` | Read-only checkouts of other decomps; `../donors/DONORS.md` lists them |
 
