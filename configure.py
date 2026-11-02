@@ -660,7 +660,7 @@ config.libs = [
     ]),
     MkddJSystemLib("mkdd_JUtility", [
         Object(NonMatching, "JSystem/JUtility/JUTAssert.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JUtility/JUTConsole.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JUtility/JUTConsole.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JUtility/JUTDbPrint.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JUtility/JUTDirectFile.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTDirectPrint.cpp", extra_cflags=["-O4,p"]),

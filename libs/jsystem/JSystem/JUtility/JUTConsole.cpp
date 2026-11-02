@@ -86,10 +86,6 @@ JUTConsole::~JUTConsole() {
     JUTConsoleManager::getManager()->removeConsole(this);
 }
 
-#ifdef DEBUG
-CW_FORCE_STRINGS(JUtility_JUTConsole1, "S----------E");
-#endif
-
 size_t JUTConsole::getObjectSizeFromBufferSize(unsigned int param_0, unsigned int maxLines)
 {
     int objSize = (param_0 + 2) * maxLines + sizeof(JUTConsole);
@@ -327,15 +323,9 @@ void JUTConsole_print_f_va_(JUTConsole *console, const char *text, va_list args)
     console->print(buf);
 }
 
-#ifdef DEBUG
-CW_FORCE_STRINGS(JUtility_JUTConsole2,
-                 "\n:::dump of console[%x]--------------------------------\n",
-                 "[%03d] %s\n",
-                 ":::dump of console[%x] END----------------------------\n",
-                 "console != this && console != 0",
-                 "\n:::dump of console[%x]----------------\n",
-                 ":::dump of console[%x] END------------\n");
-#endif
+// tww/tp have dumpToTerminal here. FSA's DOL keeps none of its strings, so
+// whether this version had it can't be told; written out, it adds a "%s\n"
+// literal to .sdata2 that FSA's object doesn't have.
 
 void JUTConsole::scroll(int scrollAmnt)
 {
@@ -407,10 +397,6 @@ JUTConsoleManager *JUTConsoleManager::createManager(JKRHeap *pHeap)
     sManager = new (pHeap, 0) JUTConsoleManager();
     return sManager;
 }
-
-#ifdef DEBUG
-CW_FORCE_STRINGS(JUtility_JUTConsole3, "consoleManager != 0 && sManager == consoleManager");
-#endif
 
 void JUTConsoleManager::appendConsole(JUTConsole *const console)
 {
