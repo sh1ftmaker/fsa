@@ -4,7 +4,7 @@
 #include <dolphin/os.h>
 #include <dolphin/os/OSBootInfo.h>
 
-const char *__DVDVersion = "<< Dolphin SDK - DVD\trelease build: Jul 23 2003 11:27:57 (0x2301) >>";
+const char *__DVDVersion = "<< Dolphin SDK - DVD\trelease build: Sep 16 2003 09:50:54 (0x2301) >>";
 
 typedef void (*stateFunc)(DVDCommandBlock *block);
 stateFunc LastState;

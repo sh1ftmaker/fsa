@@ -487,7 +487,7 @@ config.libs = [
         Object(NonMatching, "dolphin/dsp/dsp_task.c"),
     ]),
     SdkLib("dvd", [
-        Object(NonMatching, "dolphin/dvd/dvd.c"),
+        Object(Matching, "dolphin/dvd/dvd.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
         Object(NonMatching, "dolphin/dvd/dvdlow.c"),
