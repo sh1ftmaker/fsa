@@ -515,7 +515,7 @@ config.libs = [
         Object(Matching, "dolphin/os/OSLink.c"),
         Object(Matching, "dolphin/os/OSMemory.c"),
         Object(Matching, "dolphin/os/OSMessage.c"),
-        Object(NonMatching, "dolphin/os/OSMutex.c"),
+        Object(Matching, "dolphin/os/OSMutex.c"),
         Object(NonMatching, "dolphin/os/OSReboot.c"),
         Object(NonMatching, "dolphin/os/OSReset.c"),  # FIXME(link): duplicate OSRegisterResetFunction
         Object(Matching, "dolphin/os/OSResetSW.c"),
