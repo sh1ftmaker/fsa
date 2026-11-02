@@ -483,7 +483,7 @@ config.libs = [
         Object(NonMatching, "dolphin/db/db.c"),  # FIXME(link): duplicate DBInit
     ]),
     SdkLib("dsp", [
-        Object(NonMatching, "dolphin/dsp/dsp.c"),
+        Object(Matching, "dolphin/dsp/dsp.c"),
         Object(Matching, "dolphin/dsp/dsp_task.c"),
     ]),
     SdkLib("dvd", [
