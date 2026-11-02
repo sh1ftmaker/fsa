@@ -426,7 +426,9 @@ dolphin/dsp/dsp_task.c:
 	.data       start:0x80496968 end:0x80496AA8
 
 dolphin/card/CARDBios.c:
-	.text       start:0x800522B8 end:0x80053568
+	.text       start:0x800522B4 end:0x80053568
+	.data       start:0x80496AA8 end:0x80496B00
+	.bss        start:0x804B5BA0 end:0x804B5DE0
 	.sdata      start:0x80539CB8 end:0x80539CC0
 	.sbss       start:0x8053A698 end:0x8053A6A0
 
