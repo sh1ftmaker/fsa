@@ -116,12 +116,16 @@ def check_protected(base, changed, problems):
 
 
 def parse_symbols(text):
-    out = {}
+    """Key by (section, address, n): several symbols (labels, functions) can share an address."""
+    out, seen = {}, {}
     for line in text.splitlines():
         m = SYMBOL_LINE.match(line)
         if m:
             attrs = dict(a.split(":", 1) for a in m.group(4).split() if ":" in a)
-            out[(m.group(2), int(m.group(3), 16))] = (m.group(1), attrs.get("size"), attrs.get("type"))
+            place = (m.group(2), int(m.group(3), 16))
+            n = seen.get(place, 0)
+            seen[place] = n + 1
+            out[(*place, n)] = (m.group(1), attrs.get("size"), attrs.get("type"))
     return out
 
 
