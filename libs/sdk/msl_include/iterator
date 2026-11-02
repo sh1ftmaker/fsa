@@ -27,6 +27,24 @@ struct iterator_traits {
 	typedef typename Iterator::iterator_category iterator_category;
 };
 
+template <typename T>
+struct iterator_traits<T*> {
+	typedef ptrdiff_t difference_type;
+	typedef T value_type;
+	typedef T* pointer;
+	typedef T& reference;
+	typedef random_access_iterator_tag iterator_category;
+};
+
+template <typename T>
+struct iterator_traits<const T*> {
+	typedef ptrdiff_t difference_type;
+	typedef T value_type;
+	typedef const T* pointer;
+	typedef const T& reference;
+	typedef random_access_iterator_tag iterator_category;
+};
+
 template <typename IteratorTag, typename ValueType, typename DifferenceType = ptrdiff_t, typename Pointer = ValueType*,
           typename Reference = ValueType&>
 struct iterator {
@@ -36,6 +54,25 @@ struct iterator {
 	typedef Pointer pointer;
 	typedef Reference reference;
 };
+
+template <class InputIterator, class Distance>
+inline void __advance(InputIterator& i, Distance n, input_iterator_tag)
+{
+	for (; n > 0; --n)
+		++i;
+}
+
+template <class RandomAccessIterator, class Distance>
+inline void __advance(RandomAccessIterator& i, Distance n, random_access_iterator_tag)
+{
+	i += n;
+}
+
+template <class InputIterator, class Distance>
+inline void advance(InputIterator& i, Distance n)
+{
+	__advance(i, n, typename iterator_traits<InputIterator>::iterator_category());
+}
 } // namespace std
 
 #endif

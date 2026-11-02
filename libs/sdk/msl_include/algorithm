@@ -25,6 +25,35 @@ namespace std
 		return __distance(first, last, tag);
 	}
 
+	template <class RandomAccessIterator>
+	inline s32
+	__distance(RandomAccessIterator first, RandomAccessIterator last, random_access_iterator_tag)
+	{
+		return last - first;
+	}
+
+	template <class ForwardIterator, class T>
+	ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val)
+	{
+		typename iterator_traits<ForwardIterator>::difference_type count
+		    = __distance(first, last, typename iterator_traits<ForwardIterator>::iterator_category());
+
+		while (count > 0) {
+			ForwardIterator it = first;
+			typename iterator_traits<ForwardIterator>::difference_type step = count / 2;
+			std::advance(it, step);
+
+			if (*it < val) {
+				first = ++it;
+				count -= step + 1;
+			} else {
+				count = step;
+			}
+		}
+
+		return first;
+	}
+
 	template <typename InputIterator, typename Predicate>
 	inline InputIterator find_if(InputIterator first, InputIterator last, Predicate p)
 	{

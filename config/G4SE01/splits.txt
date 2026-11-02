@@ -1038,33 +1038,66 @@ dolphin/gba/GBAKey.c:
 	.text       start:0x80076EBC end:0x80077124
 	.data       start:0x804985D0 end:0x80498978
 
+JSystem/JMessage/resource.cpp:
+	.text       start:0x80077134 end:0x80077844
+	.data       start:0x80498998 end:0x80498A10
+	.sdata2     start:0x8053B6B8 end:0x8053B6C0
+
+JSystem/JMessage/processor.cpp:
+	.text       start:0x80077844 end:0x80078B20
+	.data       start:0x80498A10 end:0x80498B10
+
+JSystem/JMessage/control.cpp:
+	.text       start:0x80078B20 end:0x80079034
+	.data       start:0x80498B10 end:0x80498B20
+
+JSystem/JKernel/JKRAram.cpp:
+	.text       start:0x800790A8 end:0x80079F38
+	.ctors      start:0x8045BDA8 end:0x8045BDAC
+	.rodata     start:0x8045E0C8 end:0x8045E0F8
+	.data       start:0x80498B50 end:0x80498B90
+	.bss        start:0x804B9FA0 end:0x804B9FC8
+	.sdata      start:0x80539D60 end:0x80539D68
+	.sbss       start:0x8053A7A0 end:0x8053A7E0
+	.sdata2     start:0x8053B6C8 end:0x8053B6D0
+
 JSystem/JKernel/JKRAramArchive.cpp:
-	.text       start:0x8007A7F0 end:0x8007AAF8
+	.text       start:0x80079F38 end:0x8007AC2C
 	.rodata     start:0x8045E0F8 end:0x8045E120
+	.data       start:0x80498B90 end:0x80498C00
+	.sdata2     start:0x8053B6D0 end:0x8053B6D8
 
 JSystem/JKernel/JKRAramBlock.cpp:
 	.text       start:0x8007AC2C end:0x8007AEB0
 	.data       start:0x80498C00 end:0x80498C10
 
 JSystem/JKernel/JKRAramHeap.cpp:
-	.text       start:0x8007B0B0 end:0x8007B1B0
+	.text       start:0x8007AEB0 end:0x8007B268
+	.ctors      start:0x8045BDAC end:0x8045BDB0
+	.data       start:0x80498C10 end:0x80498C20
+	.bss        start:0x804B9FC8 end:0x804B9FD8
 
 JSystem/JKernel/JKRAramPiece.cpp:
-	.text       start:0x8007B268 end:0x8007B5A8
+	.text       start:0x8007B268 end:0x8007B694
+	.ctors      start:0x8045BDB0 end:0x8045BDB4
 	.rodata     start:0x8045E120 end:0x8045E190
+	.bss        start:0x804B9FD8 end:0x804B9FE8
+	.sdata2     start:0x8053B6D8 end:0x8053B6E0
 
 JSystem/JKernel/JKRAramStream.cpp:
 	.text       start:0x8007B694 end:0x8007BC30
 	.rodata     start:0x8045E190 end:0x8045E1C0
 	.data       start:0x80498C20 end:0x80498C60
 	.sbss       start:0x8053A7E0 end:0x8053A7F0
+	.sdata2     start:0x8053B6E0 end:0x8053B6E8
 
 JSystem/JKernel/JKRArchivePri.cpp:
 	.text       start:0x8007BC30 end:0x8007C8F0
 	.sbss       start:0x8053A7F0 end:0x8053A7F8
 
 JSystem/JKernel/JKRArchivePub.cpp:
-	.text       start:0x8007CD50 end:0x8007CE4C
+	.text       start:0x8007C8F0 end:0x8007D2B8
+	.data       start:0x80498C60 end:0x80498CB0
 
 JSystem/JKernel/JKRCompArchive.cpp:
 	.text       start:0x8007D2B8 end:0x8007E034
@@ -1073,21 +1106,43 @@ JSystem/JKernel/JKRCompArchive.cpp:
 	.sdata2     start:0x8053B6E8 end:0x8053B6F0
 
 JSystem/JKernel/JKRDecomp.cpp:
-	.text       start:0x8007E034 end:0x8007E6B8
+	.text       start:0x8007E034 end:0x8007E6F4
 	.data       start:0x80498D00 end:0x80498D50
 	.sbss       start:0x8053A7F8 end:0x8053A800
 
 JSystem/JKernel/JKRDisposer.cpp:
-	.text       start:0x8007E6F4 end:0x8007E75C
+	.text       start:0x8007E6F4 end:0x8007E7E0
 	.data       start:0x80498D50 end:0x80498D60
 
 JSystem/JKernel/JKRDvdFile.cpp:
-	.text       start:0x8007E9A0 end:0x8007ECCC
+	.text       start:0x8007E7E0 end:0x8007ED6C
+	.ctors      start:0x8045BDB4 end:0x8045BDB8
 	.rodata     start:0x8045E200 end:0x8045E228
+	.data       start:0x80498D60 end:0x80498D88
+	.bss        start:0x804B9FE8 end:0x804B9FF8
+	.sdata2     start:0x8053B6F0 end:0x8053B6F8
+
+JSystem/JKernel/JKRDvdAramRipper.cpp:
+	.text       start:0x8007ED6C end:0x8007FB68
+	.ctors      start:0x8045BDB8 end:0x8045BDBC
+	.bss        start:0x804B9FF8 end:0x804BA020
+	.sdata      start:0x80539D68 end:0x80539D70
+	.sbss       start:0x8053A800 end:0x8053A848
 
 JSystem/JKernel/JKRDvdArchive.cpp:
-	.text       start:0x80080118 end:0x80080630
+	.text       start:0x8007FB68 end:0x80080774
 	.rodata     start:0x8045E228 end:0x8045E2A0
+	.data       start:0x80498D88 end:0x80498DD8
+	.sdata2     start:0x8053B6F8 end:0x8053B700
+
+JSystem/JKernel/JKRDvdRipper.cpp:
+	.text       start:0x80080774 end:0x80081454
+	.ctors      start:0x8045BDBC end:0x8045BDC0
+	.rodata     start:0x8045E2A0 end:0x8045E300
+	.bss        start:0x804BA020 end:0x804BA048
+	.sdata      start:0x80539D70 end:0x80539D78
+	.sbss       start:0x8053A848 end:0x8053A888
+	.sdata2     start:0x8053B700 end:0x8053B708
 
 JSystem/JKernel/JKRExpHeap.cpp:
 	.text       start:0x80081454 end:0x80082F44
@@ -1098,16 +1153,19 @@ JSystem/JKernel/JKRExpHeap.cpp:
 
 JSystem/JKernel/JKRFileFinder.cpp:
 	.text       start:0x80082F44 end:0x80083120
+	.data       start:0x80498E38 end:0x80498E58
 
 JSystem/JKernel/JKRFileLoader.cpp:
-	.text       start:0x80083120 end:0x800833C4
+	.text       start:0x80083120 end:0x8008353C
+	.ctors      start:0x8045BDC0 end:0x8045BDC4
 	.data       start:0x80498E58 end:0x80498E98
+	.bss        start:0x804BA048 end:0x804BA058
 	.sdata      start:0x80539D78 end:0x80539D80
 	.sbss       start:0x8053A8A0 end:0x8053A8A8
 	.sdata2     start:0x8053B738 end:0x8053B740
 
 JSystem/JKernel/JKRHeap.cpp:
-	.text       start:0x8008353C end:0x80083A68
+	.text       start:0x8008353C end:0x800845F0
 	.rodata     start:0x8045E678 end:0x8045E688
 	.data       start:0x80498E98 end:0x80498EF8
 	.sdata      start:0x80539D80 end:0x80539D88
@@ -1115,17 +1173,24 @@ JSystem/JKernel/JKRHeap.cpp:
 	.sdata2     start:0x8053B740 end:0x8053B750
 
 JSystem/JKernel/JKRMemArchive.cpp:
-	.text       start:0x800848BC end:0x80084B1C
+	.text       start:0x800845F0 end:0x80084BAC
 	.rodata     start:0x8045E688 end:0x8045E6B0
+	.data       start:0x80498EF8 end:0x80498F48
 	.sdata2     start:0x8053B750 end:0x8053B758
 
 JSystem/JKernel/JKRSolidHeap.cpp:
-	.text       start:0x800850CC end:0x800851B8
+	.text       start:0x80084BAC end:0x80085474
+	.rodata     start:0x8045E6B0 end:0x8045E7A0
+	.data       start:0x80498F48 end:0x80498FA8
 	.sdata2     start:0x8053B758 end:0x8053B770
 
 JSystem/JKernel/JKRThread.cpp:
-	.text       start:0x8008552C end:0x80085968
+	.text       start:0x80085474 end:0x80085968
 	.ctors      start:0x8045BDC4 end:0x8045BDC8
+	.rodata     start:0x8045E7A0 end:0x8045E878
+	.data       start:0x80498FA8 end:0x80498FB8
+	.bss        start:0x804BA058 end:0x804BA070
+	.sdata2     start:0x8053B770 end:0x8053B788
 
 JSystem/JSupport/JSUInputStream.cpp:
 	.text       start:0x80086A9C end:0x80086E2C
@@ -1139,18 +1204,23 @@ JSystem/JSupport/JSUMemoryStream.cpp:
 	.data       start:0x80499068 end:0x80499090
 
 JSystem/JSupport/JSUFileStream.cpp:
-	.text       start:0x800874D0 end:0x8008770C
+	.text       start:0x800874D0 end:0x8008775C
 	.data       start:0x80499090 end:0x804990B8
+
+JSystem/JGadget/binary.cpp:
+	.text       start:0x8008775C end:0x800878F0
 
 JSystem/JGadget/linklist.cpp:
 	.text       start:0x800878F0 end:0x80087AB4
 
 JSystem/JGadget/std-vector.cpp:
-	.text       start:0x80087AB4 end:0x80087ABC
+	.text       start:0x80087AB4 end:0x80087AC0
 
 JSystem/JUtility/JUTAssert.cpp:
-	.text       start:0x80087AC0 end:0x80087BAC
+	.text       start:0x80087AC0 end:0x80087DC0
 	.bss        start:0x804BA070 end:0x804BA1B0
+	.sdata      start:0x80539D88 end:0x80539D90
+	.sbss       start:0x8053A8D8 end:0x8053A8E0
 	.sdata2     start:0x8053B788 end:0x8053B7A0
 
 JSystem/JUtility/JUTConsole.cpp:
@@ -1160,7 +1230,8 @@ JSystem/JUtility/JUTConsole.cpp:
 	.sdata2     start:0x8053B7A0 end:0x8053B7D8
 
 JSystem/JUtility/JUTDbPrint.cpp:
-	.text       start:0x80089264 end:0x80089510
+	.text       start:0x800891B8 end:0x80089510
+	.sbss       start:0x8053A8F0 end:0x8053A8F8
 	.sdata2     start:0x8053B7D8 end:0x8053B7E8
 
 JSystem/JUtility/JUTDirectFile.cpp:
@@ -1173,19 +1244,26 @@ JSystem/JUtility/JUTDirectPrint.cpp:
 	.sdata2     start:0x8053B7E8 end:0x8053B848
 
 JSystem/JUtility/JUTException.cpp:
-	.text       start:0x8008CA24 end:0x8008CA44
+	.text       start:0x80089FF0 end:0x8008CB40
+	.ctors      start:0x8045BDC8 end:0x8045BDCC
+	.rodata     start:0x8045E878 end:0x8045EDB0
 	.data       start:0x80499390 end:0x80499428
+	.bss        start:0x804BA1B0 end:0x804BA1D0
+	.sdata      start:0x80539D90 end:0x80539D98
+	.sbss       start:0x8053A900 end:0x8053A918
 
 JSystem/JUtility/JUTFader.cpp:
 	.text       start:0x8008CB40 end:0x8008CC40
 
 JSystem/JUtility/JUTFont.cpp:
-	.text       start:0x8008CC40 end:0x8008CE88
+	.text       start:0x8008CC40 end:0x8008CF54
 	.data       start:0x80499428 end:0x80499470
 
 JSystem/JUtility/JUTGamePad.cpp:
-	.text       start:0x8008D864 end:0x8008DED8
+	.text       start:0x8008CF54 end:0x8008E7A4
+	.ctors      start:0x8045BDCC end:0x8045BDD0
 	.data       start:0x80499470 end:0x804994A0
+	.bss        start:0x804BA498 end:0x804BA4B0
 	.sdata      start:0x80539D98 end:0x80539DB0
 	.sbss       start:0x8053A918 end:0x8053A958
 
@@ -1195,15 +1273,15 @@ JSystem/JUtility/JUTGraphFifo.cpp:
 	.sbss       start:0x8053A958 end:0x8053A968
 
 JSystem/JUtility/JUTNameTab.cpp:
-	.text       start:0x8008E93C end:0x8008EAEC
+	.text       start:0x8008E93C end:0x8008EB34
 	.data       start:0x804994B0 end:0x804994C0
 
 JSystem/JUtility/JUTPalette.cpp:
-	.text       start:0x8008EBCC end:0x8008EC0C
+	.text       start:0x8008EB34 end:0x8008EC50
 	.rodata     start:0x8045EDB0 end:0x8045EDE0
 
 JSystem/JUtility/JUTProcBar.cpp:
-	.text       start:0x8008EC50 end:0x8008EEA4
+	.text       start:0x8008EC50 end:0x80090DF0
 	.sdata      start:0x80539DB0 end:0x80539DB8
 	.sbss       start:0x8053A968 end:0x8053A980
 	.sdata2     start:0x8053B8C8 end:0x8053B910
@@ -1215,22 +1293,24 @@ JSystem/JUtility/JUTResFont.cpp:
 	.sdata2     start:0x8053B910 end:0x8053B928
 
 JSystem/JUtility/JUTResource.cpp:
-	.text       start:0x800921F8 end:0x80092270
+	.text       start:0x8009209C end:0x80092270
 
 JSystem/JUtility/JUTTexture.cpp:
-	.text       start:0x80092270 end:0x80092798
+	.text       start:0x80092270 end:0x80092A98
 	.sdata2     start:0x8053B928 end:0x8053B940
 
 JSystem/JUtility/JUTVideo.cpp:
-	.text       start:0x80092A98 end:0x80093048
+	.text       start:0x80092A98 end:0x8009304C
+	.data       start:0x80499510 end:0x80499520
 	.sbss       start:0x8053A980 end:0x8053A998
 
 JSystem/JUtility/JUTXfb.cpp:
-	.text       start:0x8009304C end:0x80093108
+	.text       start:0x8009304C end:0x80093280
 	.sbss       start:0x8053A998 end:0x8053A9A0
 
 JSystem/JMath/JMath.cpp:
-	.text       start:0x800932AC end:0x80093338
+	.text       start:0x80093280 end:0x80093340
+	.sdata2     start:0x8053B940 end:0x8053B948
 
 JSystem/JMath/JMATrigonometric.cpp:
 	.text       start:0x80093340 end:0x80093768
@@ -1392,20 +1472,31 @@ JSystem/JFramework/JFWDisplay.cpp:
 	.sbss       start:0x8053AA48 end:0x8053AA70
 	.sdata2     start:0x8053BD00 end:0x8053BD28
 
+JSystem/JParticle/JPABaseShape.cpp:
+	.text       start:0x800E6594 end:0x800EA400
+	.data       start:0x8049BEC0 end:0x8049C068
+	.sdata      start:0x80539E60 end:0x80539E68
+	.sdata2     start:0x8053BD28 end:0x8053BD60
+
 JSystem/JParticle/JPAChildShape.cpp:
-	.text       start:0x800EA400 end:0x800EA584
+	.text       start:0x800EA400 end:0x800EA58C
 	.sdata2     start:0x8053BD60 end:0x8053BD68
 
 JSystem/JParticle/JPADynamicsBlock.cpp:
-	.text       start:0x800EA58C end:0x800EB208
+	.text       start:0x800EA58C end:0x800EB5A0
+	.data       start:0x8049C068 end:0x8049C088
 	.sdata2     start:0x8053BD68 end:0x8053BD90
 
 JSystem/JParticle/JPAEmitter.cpp:
 	.text       start:0x800EB5A0 end:0x800EBA98
 	.sdata2     start:0x8053BD90 end:0x8053BDA8
 
+JSystem/JParticle/JPAEmitterManager.cpp:
+	.text       start:0x800EBA98 end:0x800EC4A8
+	.sdata2     start:0x8053BDA8 end:0x8053BDC0
+
 JSystem/JParticle/JPAExTexShape.cpp:
-	.text       start:0x800EC4A8 end:0x800EC5A4
+	.text       start:0x800EC4A8 end:0x800EC5AC
 
 JSystem/JParticle/JPAExtraShape.cpp:
 	.text       start:0x800EC5AC end:0x800ECB1C
@@ -1421,7 +1512,7 @@ JSystem/JParticle/JPAKeyBlock.cpp:
 	.sdata2     start:0x8053BE00 end:0x8053BE08
 
 JSystem/JParticle/JPAMath.cpp:
-	.text       start:0x800EEE60 end:0x800EF320
+	.text       start:0x800EEE60 end:0x800EF368
 	.sdata2     start:0x8053BE08 end:0x8053BE18
 
 JSystem/JParticle/JPAParticle.cpp:
@@ -1437,7 +1528,7 @@ JSystem/JParticle/JPAResourceLoader.cpp:
 	.text       start:0x800F3358 end:0x800F3750
 
 JSystem/JParticle/JPAResourceManager.cpp:
-	.text       start:0x800F3750 end:0x800F38C4
+	.text       start:0x800F3750 end:0x800F3920
 
 JSystem/JParticle/JPATexture.cpp:
 	.text       start:0x800F3920 end:0x800F39EC
