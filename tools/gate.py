@@ -170,6 +170,8 @@ def main():
     args = ap.parse_args()
     problems = []
     if not args.all_units:
+        # Compare against where the branch started, not the base's current tip.
+        args.base = git("merge-base", args.base, "HEAD").strip()
         changed = set(git("diff", "--name-only", f"{args.base}...HEAD").split()) | set(git("diff", "--name-only", "HEAD").split())
         check_sources(args.base, sorted(changed), problems)
         check_protected(args.base, sorted(changed), problems)
