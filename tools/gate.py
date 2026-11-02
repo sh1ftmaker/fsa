@@ -112,6 +112,46 @@ def donor_texts(path):
     return texts
 
 
+IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]{3,}")
+
+
+def unlicensed_texts(path):
+    """Same-named files in donors whose code may not be copied."""
+    name = Path(path).name
+    if not DONORS.is_dir():
+        return []
+    ok = {r.name for r in licensed_donors()}
+    texts = []
+    for repo in sorted(DONORS.iterdir()):
+        if repo.is_dir() and repo.name not in ok:
+            for hit in repo.glob(f"**/{name}"):
+                try:
+                    texts.append((repo.name, hit.read_text(errors="replace")))
+                except OSError:
+                    pass
+    return texts
+
+
+def check_provenance(base, changed, problems):
+    """A changed source whose distinctive identifiers (those no licensed donor's
+    same-named file has) mostly come from an unlicensed donor's file was copied."""
+    for path in changed:
+        if not SOURCE.search(path) or not Path(path).exists():
+            continue
+        ours = set(IDENT.findall(Path(path).read_text(errors="replace")))
+        licensed = set()
+        for t in donor_texts(path):
+            licensed |= set(IDENT.findall(t))
+        distinctive = ours - licensed
+        if len(distinctive) < 8:
+            continue
+        for repo, text in unlicensed_texts(path):
+            shared = distinctive & set(IDENT.findall(text))
+            if len(shared) >= 8 and len(shared) >= 0.5 * len(distinctive):
+                problems.append(f"{path}: {len(shared)}/{len(distinctive)} distinctive identifiers match "
+                                f"unlicensed {repo}'s {Path(path).name}; write it from the asm and licensed donors")
+
+
 def check_sources(base, changed, problems):
     for path in changed:
         if not SOURCE.search(path) or not Path(path).exists():
@@ -271,6 +311,7 @@ def main():
         args.base = git("merge-base", args.base, "HEAD").strip()
         changed = set(git("diff", "--name-only", f"{args.base}...HEAD").split()) | set(git("diff", "--name-only", "HEAD").split())
         check_sources(args.base, sorted(changed), problems)
+        check_provenance(args.base, sorted(changed), problems)
         check_protected(args.base, sorted(changed), problems)
         check_symbols(args.base, changed, problems)
     check_report(problems)
