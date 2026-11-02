@@ -454,14 +454,14 @@ config.precompiled_headers = [
 ]
 config.libs = [
     SdkLib("ai", [
-        Object(Matching, "dolphin/ai/ai.c"),
+        Object(NonMatching, "dolphin/ai/ai.c"),  # FIXME(link): undefined __AID_Callback_8053A5FC
     ]),
     SdkLib("ar", [
         Object(NonMatching, "dolphin/ar/ar.c"),
         Object(NonMatching, "dolphin/ar/arq.c"),
     ]),
     SdkLib("base", [
-        Object(Matching, "dolphin/base/PPCArch.c"),
+        Object(NonMatching, "dolphin/base/PPCArch.c"),  # FIXME(link): duplicate PPCMfmsr
     ]),
     SdkLib("card", [
         Object(Matching, "dolphin/card/CARDBios.c"),
@@ -480,7 +480,7 @@ config.libs = [
         Object(NonMatching, "dolphin/card/CARDWrite.c"),
     ]),
     SdkLib("db", [
-        Object(Matching, "dolphin/db/db.c"),
+        Object(NonMatching, "dolphin/db/db.c"),  # FIXME(link): duplicate DBInit
     ]),
     SdkLib("dsp", [
         Object(NonMatching, "dolphin/dsp/dsp.c"),
@@ -491,7 +491,7 @@ config.libs = [
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
         Object(NonMatching, "dolphin/dvd/dvdlow.c"),
-        Object(Matching, "dolphin/dvd/dvdqueue.c"),
+        Object(NonMatching, "dolphin/dvd/dvdqueue.c"),  # FIXME(link): duplicate __DVDClearWaitingQueue
     ]),
     SdkLib("exi", [
         Object(Matching, "dolphin/exi/EXIBios.c"),
@@ -504,12 +504,12 @@ config.libs = [
         Object(NonMatching, "dolphin/mtx/vec.c"),
     ]),
     SdkLib("os", [
-        Object(Matching, "dolphin/os/OS.c"),
+        Object(NonMatching, "dolphin/os/OS.c"),  # FIXME(link): duplicate OSRegisterVersion
         Object(Matching, "dolphin/os/OSAlarm.c"),
         Object(NonMatching, "dolphin/os/OSAlloc.c"),
         Object(Matching, "dolphin/os/OSCache.c"),
         Object(Matching, "dolphin/os/OSContext.c"),
-        Object(Matching, "dolphin/os/OSError.c"),
+        Object(NonMatching, "dolphin/os/OSError.c"),  # FIXME(link): duplicate OSSetErrorHandler
         Object(Matching, "dolphin/os/OSFont.c"),
         Object(NonMatching, "dolphin/os/OSInterrupt.c"),
         Object(Matching, "dolphin/os/OSLink.c"),
@@ -517,7 +517,7 @@ config.libs = [
         Object(Matching, "dolphin/os/OSMessage.c"),
         Object(NonMatching, "dolphin/os/OSMutex.c"),
         Object(NonMatching, "dolphin/os/OSReboot.c"),
-        Object(Matching, "dolphin/os/OSReset.c"),
+        Object(NonMatching, "dolphin/os/OSReset.c"),  # FIXME(link): duplicate OSRegisterResetFunction
         Object(NonMatching, "dolphin/os/OSResetSW.c"),
         Object(Matching, "dolphin/os/OSRtc.c"),
         Object(Matching, "dolphin/os/OSSync.c"),
@@ -529,14 +529,14 @@ config.libs = [
         Object(NonMatching, "dolphin/pad/Padclamp.c"),
     ]),
     SdkLib("si", [
-        Object(Matching, "dolphin/si/SIBios.c"),
+        Object(NonMatching, "dolphin/si/SIBios.c"),  # FIXME(link): .bss size 0x200
         Object(NonMatching, "dolphin/si/SISamplingRate.c"),
     ]),
     SdkLib("vi", [
         Object(Matching, "dolphin/vi/vi.c"),
     ]),
     MkddJSystemLib("mkdd_J2DGraph", [
-        Object(Matching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),  # FIXME(link): duplicate J2DAnmKeyLoader_v15::readAnmTransform
         Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,s"]),
         Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,s"]),
@@ -561,7 +561,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/System/JASAiCtrl.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASAudioReseter.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASBank.cpp", extra_cflags=["-O4,p"]),
-        Object(Matching, "JSystem/JAudio/System/JASBasicBank.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASBasicBank.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): undefined JASGenericMemPool::JASGenericMemPool
         Object(NonMatching, "JSystem/JAudio/System/JASBasicInst.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASBasicWaveBank.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASCalc.cpp", extra_cflags=["-O4,p"]),
@@ -615,7 +615,7 @@ config.libs = [
     MkddJSystemLib("mkdd_JKernel", [
         Object(NonMatching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,s"]),
-        Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,s"]),  # FIXME(link): undefined operator delete
         Object(NonMatching, "JSystem/JKernel/JKRAramPiece.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramStream.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JKernel/JKRArchivePri.cpp", extra_cflags=["-O4,s"]),
@@ -668,7 +668,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JUtility/JUTGamePad.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JUtility/JUTGraphFifo.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JUtility/JUTNameTab.cpp", extra_cflags=["-O4,s"]),
-        Object(Matching, "JSystem/JUtility/JUTPalette.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/JUtility/JUTPalette.cpp", extra_cflags=["-O4,s"]),  # FIXME(link): undefined lbl_8045EDB0
         Object(NonMatching, "JSystem/JUtility/JUTProcBar.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JUtility/JUTResFont.cpp", extra_cflags=["-O4,s"]),
         Object(NonMatching, "JSystem/JUtility/JUTResource.cpp", extra_cflags=["-O4,s"]),
@@ -695,36 +695,36 @@ config.libs = [
         Object(Matching, "JSystem/J2DGraph/J2DPrint.cpp"),
     ]),
     JSystemLib("J3DGraphAnimator", [
-        Object(Matching, "JSystem/J3DGraphAnimator/J3DModel.cpp"),
+        Object(NonMatching, "JSystem/J3DGraphAnimator/J3DModel.cpp"),  # FIXME(link): undefined fn_800C2E30
     ]),
     JSystemLib("J3DGraphBase", [
         Object(NonMatching, "JSystem/J3DGraphBase/J3DMatBlock.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DMaterial.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DPacket.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DShapeMtx.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DSys.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DTevs.cpp"),
-        Object(Matching, "JSystem/J3DGraphBase/J3DVertex.cpp"),
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DMaterial.cpp"),  # FIXME(link): undefined lbl_8053BCC8
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DPacket.cpp"),  # FIXME(link): undefined fn_800BC2BC
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DShapeMtx.cpp"),  # FIXME(link): undefined fn_800CC088
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DSys.cpp"),  # FIXME(link): undefined lbl_804632A8
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DTevs.cpp"),  # FIXME(link): undefined fn_800C176C
+        Object(NonMatching, "JSystem/J3DGraphBase/J3DVertex.cpp"),  # FIXME(link): undefined fn_800BB6E0
     ]),
     JSystemLib("J3DGraphLoader", [
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DMaterialFactory.cpp"),
-        Object(Matching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp"),
-        Object(Matching, "JSystem/J3DGraphLoader/J3DShapeFactory.cpp"),
+        Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp"),  # FIXME(link): undefined fn_800E2B40
+        Object(NonMatching, "JSystem/J3DGraphLoader/J3DShapeFactory.cpp"),  # FIXME(link): undefined fn_800CEBB4
     ]),
     JSystemLib("JAudio", [
-        Object(Matching, "JSystem/JAudio/JASBNKParser.cpp"),
-        Object(Matching, "JSystem/JAudio/JASCmdStack.cpp"),
-        Object(Matching, "JSystem/JAudio/JASDrumSet.cpp"),
+        Object(NonMatching, "JSystem/JAudio/JASBNKParser.cpp"),  # FIXME(link): undefined fn_80030380
+        Object(NonMatching, "JSystem/JAudio/JASCmdStack.cpp"),  # FIXME(link): undefined fn_80028974
+        Object(NonMatching, "JSystem/JAudio/JASDrumSet.cpp"),  # FIXME(link): undefined fn_800307C4
     ]),
     JSystemLib("JGadget", [
-        Object(Matching, "JSystem/JGadget/std-vector.cpp"),
+        Object(NonMatching, "JSystem/JGadget/std-vector.cpp"),  # FIXME(link): undefined fn_80087AB4
     ]),
     JSystemLib("JParticle", [
         Object(Matching, "JSystem/JParticle/JPABaseShape.cpp"),
     ]),
     JSystemLib("JUtility", [
         Object(NonMatching, "JSystem/JUtility/JUTException.cpp"),
-        Object(Matching, "JSystem/JUtility/JUTFader.cpp"),
+        Object(NonMatching, "JSystem/JUtility/JUTFader.cpp"),  # FIXME(link): undefined fn_8008CB40
     ]),
 ]
 
