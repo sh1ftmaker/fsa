@@ -220,16 +220,29 @@ def cmd_promote(args):
         print(f"ready: {rel}")
     if not args.apply or not ready:
         return
-    cfg = (REPO / "configure.py").read_text()
-    for rel in ready:
-        cfg = cfg.replace(f'Object(NonMatching, "{rel}"', f'Object(Matching, "{rel}"')
-    (REPO / "configure.py").write_text(cfg)
-    run("python3", "configure.py")
-    run("timeout", "1800", "ninja", "build/G4SE01/report_honest.json")
-    gate = subprocess.run(["python3", "tools/gate.py", "--all-units"], cwd=REPO, capture_output=True, text=True)
-    if gate.returncode != 0:
-        run("git", "checkout", "--", "configure.py")
-        sys.exit("gate failed, flags reverted:\n" + gate.stdout)
+    original = (REPO / "configure.py").read_text()
+    for _ in range(4):
+        cfg = original
+        for rel in ready:
+            cfg = cfg.replace(f'Object(NonMatching, "{rel}"', f'Object(Matching, "{rel}"')
+        (REPO / "configure.py").write_text(cfg)
+        run("python3", "configure.py")
+        gate = subprocess.run(["python3", "tools/gate.py", "--all-units"], cwd=REPO, capture_output=True, text=True)
+        if gate.returncode == 0:
+            break
+        # Units that are 100 % but break the link (usually a short split): leave them out and retry.
+        broken = {rel for rel in ready if re.search(r"FAIL \S*" + re.escape(rel) + r": marked Matching but doesn't link", gate.stdout)}
+        if not broken:
+            break
+        for rel in sorted(broken):
+            print(f"skip (breaks the link): {rel}")
+        ready = [rel for rel in ready if rel not in broken]
+        if not ready:
+            break
+    if gate.returncode != 0 or not ready:
+        (REPO / "configure.py").write_text(original)
+        run("python3", "configure.py")
+        sys.exit("nothing promoted:\n" + gate.stdout)
     run("git", "add", "configure.py")
     run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com", "commit", "-q", "-m",
         "Flag units Matching that are now 100 % in code and data\n\n" + "\n".join(ready)
