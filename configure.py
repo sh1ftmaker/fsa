@@ -762,7 +762,6 @@ config.libs = [
         "progress_category": "sdk",
         "host": False,
         "objects": [
-        Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
         Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__va_arg.c"),
         Object(Matching, "PowerPC_EABI_Support/Runtime/Src/global_destructor_chain.c"),
         Object(Matching, "PowerPC_EABI_Support/Runtime/Src/NMWException.cp", extra_cflags=["-Cpp_exceptions on"]),
