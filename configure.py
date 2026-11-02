@@ -736,6 +736,22 @@ config.custom_build_steps = {}
 version = VERSIONS[version_num]
 out_dir = config.build_dir / version
 
+# report.json counts every Matching (complete) unit as 100 % without diffing
+# it. Our tools (progress.py, gate.py, coord.py) read report_honest.json,
+# where every unit is diffed; see tools/honest_report.py.
+honest_objdiff = (config.objdiff_path if config.objdiff_path and config.objdiff_path.is_file()
+                  else config.build_dir / "tools" / "objdiff-cli")
+config.custom_build_rules.append({
+    "name": "honest_report",
+    "command": f"$python tools/honest_report.py {honest_objdiff} $out $objdiff_report_args",
+    "description": "REPORT $out",
+})
+config.custom_build_steps["post-build"] = [{
+    "rule": "honest_report",
+    "outputs": out_dir / "report_honest.json",
+    "implicit": ["objdiff.json", "all_source", "tools/honest_report.py", honest_objdiff],
+}]
+
 
 # Optional callback to adjust link order. This can be used to add, remove, or reorder objects.
 # This is called once per module, with the module ID and the current link order.

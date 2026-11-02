@@ -66,7 +66,7 @@ def unit_rows():
             if src.startswith(root):
                 sources[u["name"]] = (src[len(root):], src)
     rows = []
-    for u in json.loads((REPO / "build/G4SE01/report.json").read_text())["units"]:
+    for u in json.loads((REPO / "build/G4SE01/report_honest.json").read_text())["units"]:
         if u["name"] not in sources:
             continue
         m = u["measures"]

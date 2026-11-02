@@ -3,7 +3,8 @@
 
 Usage:
   python3 tools/gate.py [--base REF]     # check the branch's changes against REF (default: matching)
-  python3 tools/gate.py --all-units      # only the report check, over every unit
+  python3 tools/gate.py --all-units      # only the report and link checks, over every unit
+  python3 tools/gate.py --no-link        # skip the link (quick iteration only; merges link)
 
 Checks (see docs/PLAN.md, "Submission gate"):
   * changed C/C++ sources: no inline asm, no #pragma or goto that wasn't
@@ -16,8 +17,14 @@ Checks (see docs/PLAN.md, "Submission gate"):
     renamed, resized or split into the real symbols they cover;
   * no unit marked Matching contains a fakematch (FakeMatch headers,
     force_order dummies, "fakematch" comments), donor-imported or not;
-  * every unit marked Matching is 100 % in code and data in the report
-    (build/G4SE01/report.json must be current).
+  * every unit marked Matching is 100 % in code and data in the honest
+    report (build/G4SE01/report_honest.json, every unit diffed; report.json
+    counts Matching units as 100 % unseen);
+  * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
+    if not, tools/link_check.py names the Matching units at fault.
+
+The gate runs ninja itself (report_honest.json, then the link), so never run
+it while another ninja runs in the same worktree.
 
 Exit status 0 when everything passes.
 """
@@ -33,6 +40,7 @@ APPROVALS = Path("config/G4SE01/approved_symbol_changes.txt")
 PROTECTED = [
     "config/G4SE01/approved_symbol_changes.txt",
     "tools/gate.py", "tools/fdiff.py", "tools/progress.py", "tools/project.py",
+    "tools/honest_report.py", "tools/link_check.py",
     "tools/data_splits.py", "orig/",
 ]
 PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\s*=|report|objdiff")
@@ -177,10 +185,15 @@ def check_fakematch(problems):
                     break
 
 
+def ninja(*targets):
+    return subprocess.run(["timeout", "1800", "ninja", *targets], capture_output=True, text=True)
+
+
 def check_report(problems):
-    report = Path("build/G4SE01/report.json")
-    if not report.exists():
-        problems.append("build/G4SE01/report.json missing: run ninja build/G4SE01/report.json")
+    report = Path("build/G4SE01/report_honest.json")
+    out = ninja(str(report))
+    if out.returncode != 0:
+        problems.append("ninja build/G4SE01/report_honest.json failed:\n" + (out.stdout + out.stderr)[-3000:])
         return
     units = {u["name"]: u for u in json.loads(report.read_text())["units"]}
     for unit in json.loads(Path("objdiff.json").read_text())["units"]:
@@ -195,10 +208,29 @@ def check_report(problems):
                 f"{meta.get('source_path', unit['name'])}: marked Matching but code {code[0]}/{code[1]}, data {data[0]}/{data[1]}")
 
 
+def check_link(problems):
+    """Every Matching unit must link: main.dol's SHA-1 must equal build.sha1."""
+    out = ninja("build/G4SE01/ok")
+    if out.returncode == 0:
+        return
+    tail = (out.stdout + out.stderr)[-1500:]
+    result = Path("build/link_check/result.json")
+    result.unlink(missing_ok=True)
+    subprocess.run(["timeout", "3600", sys.executable, "tools/link_check.py", "--json", str(result)],
+                   capture_output=True, text=True)
+    failing = [u for u in json.loads(result.read_text())["units"] if not u["identical"]] if result.exists() else []
+    for u in failing:
+        problems.append(f"{u['unit']}: marked Matching but doesn't link byte-identical ({u['reason']})")
+    if not failing:
+        problems.append("main.dol doesn't link or its SHA-1 differs, and tools/link_check.py "
+                        "couldn't attribute it to a Matching unit:\n" + tail)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="matching")
     ap.add_argument("--all-units", action="store_true")
+    ap.add_argument("--no-link", action="store_true", help="skip the link check (not for merges)")
     args = ap.parse_args()
     problems = []
     if not args.all_units:
@@ -209,6 +241,8 @@ def main():
         check_protected(args.base, sorted(changed), problems)
         check_symbols(args.base, changed, problems)
     check_report(problems)
+    if not args.no_link:
+        check_link(problems)
     check_fakematch(problems)
     for p in problems:
         print("FAIL", p)

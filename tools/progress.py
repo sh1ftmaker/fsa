@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Print match progress from the objdiff report written by ninja.
+"""Print match progress from the honest objdiff report (every unit diffed; see tools/honest_report.py).
 
-Usage: python3 tools/progress.py [build/G4SE01/report.json]
+Usage: python3 tools/progress.py [build/G4SE01/report_honest.json]
 """
 
 import json
@@ -10,7 +10,7 @@ from collections import defaultdict
 
 
 def main() -> None:
-    path = sys.argv[1] if len(sys.argv) > 1 else "build/G4SE01/report.json"
+    path = sys.argv[1] if len(sys.argv) > 1 else "build/G4SE01/report_honest.json"
     with open(path) as f:
         report = json.load(f)
     with open("objdiff.json") as f:

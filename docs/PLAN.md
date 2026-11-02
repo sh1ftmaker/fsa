@@ -114,10 +114,12 @@ runs under `sbg`.
 A unit is accepted only if all of these hold. Everything above the line is
 checked by `tools/gate.py` and CI:
 
-- Every function, its data and its relocations are 100 % in the report;
+- Every function, its data and its relocations are 100 % in the honest
+  report (`report_honest.json`, every unit diffed);
   the unit is `Matching`; all of its sections are split (no `_<addr>`
   statics).
-- `ninja changes`: no other unit regressed. SHA-1 OK once linkable.
+- `ninja changes`: no other unit regressed. `ninja` links main.dol and
+  its SHA-1 matches build.sha1 (`tools/link_check.py` names a culprit).
 - No `asm` in C/C++ source (functions, blocks or register-asm bindings).
 - No `#pragma` that the corresponding donor file doesn't use.
 - No `goto` unless the donor has it.
@@ -149,7 +151,7 @@ The reviewer checks:
   differs.
 
 Merging: the coordinator rebases the branch onto `matching`, applies its
-shared edits, re-runs configure and the full report, runs the gate and
+shared edits, re-runs configure and the full `ninja` (link + SHA-1), runs the gate and
 `ninja changes`, and squash-merges one unit per commit.
 
 ## Order of work

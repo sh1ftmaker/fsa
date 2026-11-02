@@ -5,8 +5,10 @@ Usage: python3 tools/merge_unit.py <unit source path> "<commit message>"
 
 Steps: squash-merge unit/<slug>; merge symbols.txt per address (three-way
 against the branch point, so independent renames on both sides combine);
-drop generated files; reconfigure, re-split and rebuild the report; run the
-gate; refuse if the progress total went down; commit; release the claim.
+drop generated files; reconfigure, re-split and rebuild; run the full
+`ninja` (link + SHA-1 check against build.sha1) and refuse if it fails; run
+the gate; refuse if the honest progress total went down; commit; release the
+claim.
 Only run it after the unit's adversarial review says ACCEPT.
 """
 
@@ -103,6 +105,8 @@ def main():
     branch = f"unit/{slug}"
     if run("git", "status", "--porcelain", "--untracked-files=no").strip():
         sys.exit("working tree not clean; commit or restore first")
+    run("python3", "configure.py")
+    run("timeout", "1800", "ninja", "build/G4SE01/report_honest.json")
     before = progress_total()
     base = run("git", "merge-base", "HEAD", branch).strip()
     sym_base = run("git", "show", f"{base}:{SYMBOLS}")
@@ -123,7 +127,11 @@ def main():
 
     run("python3", "configure.py")
     Path("build/G4SE01/config.json").unlink(missing_ok=True)
-    run("timeout", "1800", "ninja", "build/G4SE01/report.json")
+    link = subprocess.run(["timeout", "1800", "ninja"], capture_output=True, text=True)
+    if link.returncode != 0:
+        print((link.stdout + link.stderr)[-3000:])
+        sys.exit("ninja (link + SHA-1 check) failed; run python3 tools/link_check.py to find the unit; "
+                 "merge left staged for inspection")
     gate = subprocess.run(["python3", "tools/gate.py", "--base", "HEAD"], capture_output=True, text=True)
     print(gate.stdout.strip())
     if gate.returncode != 0:

@@ -77,7 +77,9 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   processes with `sbg`. One forgotten test run spun for two hours.
 
 **Measuring honestly**
-- Only the ninja report with `functionRelocDiffs=data_value` counts.
+- Only `build/G4SE01/report_honest.json` (every unit diffed,
+  `functionRelocDiffs=data_value`) counts; progress.py, gate.py and
+  coord.py read it.
   objdiff's lenient default and byte-pattern hits overstated progress
   several times over.
 - `Matching` must mean 100 % code and data. 77 units were once marked
@@ -103,10 +105,21 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   shows whether the linked DOL is still identical: GXPerf.c and mtx.c are
   (mtx.c still has a force-order fakematch), GXPixel.c's .sdata2 is 0x38
   bytes too long.
-- objdiff's report counts a `complete` (Matching) unit as 100 % without
-  diffing it, so a report built after flipping a flag can't disprove the
-  flag; the linked DOL's SHA-1 can. 14 units were marked Matching with 0 %
-  of their code (fixed on infra/link).
+- objdiff's `report generate` counts a `complete` (Matching) unit as 100 %
+  without diffing it, so `report.json` built after flipping a flag can't
+  disprove the flag, and the gate read exactly that report. 14 units were
+  Matching with 0 % of their code and 12 more broke the link; all 26 are
+  NonMatching now. Hence `report_honest.json`, written with no unit
+  complete.
+- The link is part of every merge: `gate.py` runs `ninja build/G4SE01/ok`
+  (link + SHA-1 against build.sha1) and, if it fails, `tools/link_check.py`
+  to name the Matching units at fault; `merge_unit.py` runs the full `ninja`
+  first and refuses the merge if the SHA-1 check fails. A Matching unit can
+  be 100 % in objdiff and still break the link: functions its source defines
+  outside its splits (duplicates), statics the DOL references by their
+  globalized names, a short `.bss`. `gate.py --no-link` is for quick local
+  iteration only. The gate runs ninja itself: never alongside another ninja
+  in the same worktree.
 - `OSErrorLine` and similar SDK macros depend on `MATCHING`; this project
   doesn't define it globally (it would switch on JAudio fake-match code).
   Use the form tp/dolsdk2004 use in that function.
