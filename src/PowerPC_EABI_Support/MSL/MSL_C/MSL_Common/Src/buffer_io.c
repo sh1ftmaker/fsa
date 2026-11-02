@@ -1,41 +1,53 @@
-#include "buffer_io.h"
+#ifndef _MSL_WIDE_CHAR
+#define _MSL_WIDE_CHAR
+#endif
 
-inline void __convert_from_newlines(unsigned char* buf, size_t* n) {}
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/ansi_files.h"
+#include "types.h"
 
-inline void __convert_to_newlines(unsigned char* buf, size_t* n) {}
-
-void __prep_buffer(FILE* file) {
-    file->buffer_ptr = file->buffer;
-    file->buffer_length = file->buffer_size;
-    file->buffer_length -= file->position & file->buffer_alignment;
-    file->buffer_position = file->position;
+void __convert_from_newlines(char *buffer, size_t *length)
+{
+	return;
 }
 
-int __flush_buffer(FILE* file, size_t* bytes_flushed) {
-    size_t buffer_len;
-    int ioresult;
+void __convert_to_newlines()
+{
+	// UNUSED
+}
 
-    buffer_len = file->buffer_ptr - file->buffer;
+void __prep_buffer(FILE *file)
+{
+	file->mBufferPtr = file->mBuffer;
+	file->mBufferLength = file->mBufferSize;
+	file->mBufferLength = file->mBufferLength - (file->mPosition & file->mBufferAlignment);
+	file->mBufferPosition = file->mPosition;
+	return;
+}
 
-    if (buffer_len) {
-        file->buffer_length = buffer_len;
+int __flush_buffer(FILE *file, size_t *length)
+{
+	size_t bufferLen;
+	int writeCode;
+	char binmode;
 
-        if (!file->file_mode.binary_io)
-            __convert_from_newlines(file->buffer, (size_t*)&file->buffer_length);
+	bufferLen = file->mBufferPtr - file->mBuffer;
+	if (bufferLen) {
+		file->mBufferLength = bufferLen;
 
-        ioresult = (*file->write_fn)(file->handle, file->buffer, (size_t*)&file->buffer_length,
-                                     file->idle_fn);
+		if (file->mMode.binary_io == 0)	{
+			__convert_from_newlines(file->mBuffer, &file->mBufferLength);
+		}
 
-        if (bytes_flushed)
-            *bytes_flushed = file->buffer_length;
+		writeCode = file->writeFunc(file->mHandle, file->mBuffer, &file->mBufferLength, file->ref_con);
+		if (length) {
+			*length = file->mBufferLength;
+		}
+		if (writeCode) {
+			return writeCode;
+		}
+		file->mPosition += file->mBufferLength;
+	}
 
-        if (ioresult)
-            return (ioresult);
-
-        file->position += file->buffer_length;
-    }
-
-    __prep_buffer(file);
-
-    return 0;
+	__prep_buffer(file);
+	return 0;
 }
