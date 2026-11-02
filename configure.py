@@ -549,7 +549,9 @@ config.libs = [
         Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,s"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
+        Object(NonMatching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Interface/JAISeMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISeq.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISeqMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISound.cpp", extra_cflags=["-O4,p"]),
@@ -559,7 +561,9 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/Interface/JAIStream.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAIStreamMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASAiCtrl.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASAramStream.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASAudioReseter.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASBNKParser.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASBank.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASBasicBank.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): undefined JASGenericMemPool::JASGenericMemPool
         Object(NonMatching, "JSystem/JAudio/System/JASBasicInst.cpp", extra_cflags=["-O4,p"]),
@@ -571,7 +575,9 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/System/JASDSPChannel.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASDSPInterface.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASDriverIF.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASDrumSet.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASDvdThread.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/System/JASHeapCtrl.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASInstRand.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASInstSense.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASLfo.cpp", extra_cflags=["-O4,p"]),
@@ -594,14 +600,17 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Task/dsptask.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
         Object(Matching, "JSystem/JAudio/Task/osdsp.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
         Object(Matching, "JSystem/JAudio/Task/osdsp_task.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUAudience.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUAudioArcLoader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUAudioMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUBankTable.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUInitializer.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSectionHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSeqCollection.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
     ]),
@@ -710,11 +719,6 @@ config.libs = [
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DMaterialFactory.cpp"),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp"),  # FIXME(link): undefined fn_800E2B40
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DShapeFactory.cpp"),  # FIXME(link): undefined fn_800CEBB4
-    ]),
-    JSystemLib("JAudio", [
-        Object(NonMatching, "JSystem/JAudio/JASBNKParser.cpp"),  # FIXME(link): undefined fn_80030380
-        Object(NonMatching, "JSystem/JAudio/JASCmdStack.cpp"),  # FIXME(link): undefined fn_80028974
-        Object(NonMatching, "JSystem/JAudio/JASDrumSet.cpp"),  # FIXME(link): undefined fn_800307C4
     ]),
     JSystemLib("JGadget", [
         Object(NonMatching, "JSystem/JGadget/std-vector.cpp"),  # FIXME(link): undefined fn_80087AB4
