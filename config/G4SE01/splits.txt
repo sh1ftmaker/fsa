@@ -180,9 +180,11 @@ JSystem/JAudio/System/JASSeqCtrl.cpp:
 	.sbss       start:0x8053A380 end:0x8053A388
 
 JSystem/JAudio/System/JASSeqParser.cpp:
-	.text       start:0x80033BAC end:0x800355BC
+	.text       start:0x80033778 end:0x80035F4C
+	.ctors      start:0x8045BD78 end:0x8045BD7C
 	.rodata     start:0x8045D1F8 end:0x8045D350
 	.data       start:0x80491BC0 end:0x80493648
+	.bss        start:0x804B2918 end:0x804B2940
 	.sbss       start:0x8053A388 end:0x8053A398
 	.sdata2     start:0x8053B220 end:0x8053B258
 

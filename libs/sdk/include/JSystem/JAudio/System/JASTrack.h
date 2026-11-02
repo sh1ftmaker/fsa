@@ -260,12 +260,12 @@ public:
     u16 mTimebase;                     // 228
     s8 mTranspose;                     // 22a
     u8 _22b;                           // 22b
-    u8 mBankNumber;                    // 22c
-    u8 mProgNumber;                    // 22d
-    u8 mBendSense;                     // 23e
-    u8 mNoteOnPrio;                    // 22f
-    u8 mReleasePrio;                   // 230
-    u8 mGateRate;                      // 231
+    u16 mBankNumber;                   // 22c
+    u16 mProgNumber;                   // 22e
+    u8 mBendSense;                     // 230
+    u8 mNoteOnPrio;                    // 231
+    u8 mReleasePrio;                   // 232
+    u8 mGateRate;                      // 233
     u16 mMixConfig[6];                 // 234
     // TODO
 
