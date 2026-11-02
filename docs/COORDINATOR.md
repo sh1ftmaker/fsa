@@ -155,6 +155,17 @@ because objdiff can't tell how a function matched; replacing each construct
 with natural source is a dedicated task per unit (find the real reason for
 the weak-function order: usually where inline/template definitions live).
 
+JASFakeMatch findings (JASSeqParser worker): 23 built files include the
+headers. A generic `template <typename T> ... JASPoolAllocObject_MultiThreaded<T>::memPool_;`
+definition reproduces plain `JASFakeMatch.h` (JAISound, JAISoundHandles,
+JASSeqCtrl, JASTrack), but it can't live in JASHeapCtrl.h: every unit that
+sees it emits the pool static initializers, and Matching JASTrackPort and
+JAUStreamFileTable then gain a 0xD4-byte `__sinit` the original lacks (link
+SHA-1 fails). So the original defined it only in some translation units;
+which header or .cpp is still open. `JASFakeMatch2`–`12` also define
+single-threaded `JASPoolAllocObject<JAI*>` pools; a generic definition
+reproduces JAISeq, JAISoundChild, JAIStream and JAUInitializer, not the rest.
+
 Other donor quirks to clean up when touching those files (readability
 debt, not fakematches by themselves): CARDBlock.c's `goto error`, an unused
 `u32 temp[2]` padding local, `card = card =`, and raw `workArea + 0x6000`
