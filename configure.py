@@ -610,9 +610,11 @@ config.libs = [
         Object(NonMatching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JGadget", [
+        Object(NonMatching, "JSystem/JGadget/binary.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JGadget/linklist.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JKernel", [
+        Object(NonMatching, "JSystem/JKernel/JKRAram.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): undefined operator delete
@@ -623,8 +625,10 @@ config.libs = [
         Object(Matching, "JSystem/JKernel/JKRCompArchive.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRDecomp.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRDisposer.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JKernel/JKRDvdAramRipper.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRDvdArchive.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRDvdFile.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JKernel/JKRDvdRipper.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRExpHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRFileFinder.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRFileLoader.cpp", extra_cflags=["-O4,p"]),
@@ -637,10 +641,17 @@ config.libs = [
         Object(NonMatching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
     ]),
+    MkddJSystemLib("mkdd_JMessage", [
+        Object(NonMatching, "JSystem/JMessage/resource.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JMessage/processor.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JMessage/control.cpp", extra_cflags=["-O4,p"]),
+    ]),
     MkddJSystemLib("mkdd_JParticle", [
+        Object(NonMatching, "JSystem/JParticle/JPABaseShape.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAChildShape.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JParticle/JPADynamicsBlock.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JParticle/JPAEmitter.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/JParticle/JPAEmitterManager.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAExTexShape.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JParticle/JPAExtraShape.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAFieldBlock.cpp", extra_cflags=["-O4,p"]),
@@ -718,9 +729,6 @@ config.libs = [
     ]),
     JSystemLib("JGadget", [
         Object(NonMatching, "JSystem/JGadget/std-vector.cpp"),  # FIXME(link): undefined fn_80087AB4
-    ]),
-    JSystemLib("JParticle", [
-        Object(Matching, "JSystem/JParticle/JPABaseShape.cpp"),
     ]),
     JSystemLib("JUtility", [
         Object(NonMatching, "JSystem/JUtility/JUTException.cpp"),
