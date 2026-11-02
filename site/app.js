@@ -1,5 +1,6 @@
-/* FSA decomp progress site. Data: data/summary.json, data/lib/<id>.json, data/history.json
-   (written by tools/site_data.py from the honest objdiff report). */
+/* FSA decomp progress site. Data: data/summary.json, data/lib/<id>.json, data/history.json,
+   data/roadmap.json (written by tools/site_data.py from the honest objdiff report and
+   docs/roadmap.yml). */
 "use strict";
 
 const REGION = {
@@ -213,9 +214,13 @@ function drawLayer(focus) {
   const nodes = h.descendants().slice(1);
   for (const d of nodes) map.layoutRects.set(d.data.node.id, [d.x0, d.y0, d.x1, d.y1]);
 
+  // a milestone picked on the quest path lights its part of the map and dims the rest
+  if (map.hl) for (const d of nodes) d.hl = inQuest(d.data.node) || (d.children || []).some((k) => inQuest(k.data.node));
+  map.hlMix = !!map.hl && nodes.some((d) => !d.hl);  // only mark tiles when some are left out
+
   // groups (depth 1 with children)
   const groups = nodes.filter((d) => d.depth === 1 && d.children);
-  const gg = layer.selectAll("g.grp").data(groups).join("g").attr("class", "grp");
+  const gg = layer.selectAll("g.grp").data(groups).join("g").attr("class", (d) => `grp${hlClass(d)}`);
   gg.append("rect").attr("x", (d) => d.x0).attr("y", (d) => d.y0).attr("width", (d) => d.x1 - d.x0).attr("height", (d) => d.y1 - d.y0)
     .attr("rx", 4).attr("fill", (d) => tileFill(d.data.node).copy({ opacity: 0.07 }))
     .attr("stroke", (d) => tileFill(d.data.node).copy({ opacity: 0.55 })).attr("stroke-width", 1)
@@ -237,7 +242,7 @@ function drawLayer(focus) {
   // leaves
   const leaves = nodes.filter((d) => !d.children && d.x1 - d.x0 >= 1 && d.y1 - d.y0 >= 1);
   const lg = layer.selectAll("g.tile").data(leaves).join("g")
-    .attr("class", (d) => `tile${canDrill(d) ? "" : " nodrill"}`)
+    .attr("class", (d) => `tile${canDrill(d) ? "" : " nodrill"}${hlClass(d)}`)
     .on("click", (ev, d) => onTileClick(ev, d))
     .on("pointermove", (ev, d) => !COARSE && showTip(d.data.node, ev))
     .on("pointerleave", hideTip);
@@ -300,14 +305,16 @@ function drill(n) {
 }
 
 function go(id) {
-  const h = "#/" + id;
+  const h = "#/" + id + (map.ms ? `?m=${map.ms}` : "");
   if (location.hash !== h) location.hash = h; else navigate();
 }
 
 function setLoading(on) { $("#map-loading").hidden = !on; }
 
 async function navigate() {
-  const id = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  const [path, query] = location.hash.replace(/^#\/?/, "").split("?");
+  const id = decodeURIComponent(path);
+  setQuest(new URLSearchParams(query || "").get("m"));
   let target = byId.get(id);
   if (!target) {
     // functions and deep links into libs not loaded yet
@@ -371,6 +378,7 @@ function drawCrumbs() {
   }).join("");
   el.querySelector(".back").onclick = zoomOut;
   el.querySelectorAll("button[data-id]").forEach((b) => (b.onclick = () => go(b.dataset.id)));
+  drawQuestline();
 }
 
 function zoomOut() { if (map.focus && map.focus.parent) go(map.focus.parent.id); }
@@ -402,6 +410,9 @@ function tipHTML(n) {
     const files = n.kind === "lib" ? n.children : n.children.flatMap((l) => l.children);
     const m = files.filter((f) => f.s === "M").length, u = files.filter((f) => f.s === "U").length;
     rows.push(["Files", `${num(files.length)} (${m} Matching, ${u} not split)`]);
+    const q = questFor(n);
+    if (q.cur) rows.push(["Milestone", `${q.cur.title} (${STATUS[q.cur.status].word})`]);
+    if (q.next) rows.push(["Next", q.next.title]);
   }
   const sub = n.kind === "file" ? n.path : n.kind === "region" ? n.desc : n.kind === "lib" ? n.parent.name : "";
   return `<div class="t-name">${n.region ? glyph(n.region) + " " : ""}${esc(n.name)}</div>${sub ? `<div class="t-path">${esc(sub)}</div>` : ""}
@@ -632,17 +643,217 @@ function drawHonest() {
       <code>tools/site_data.py</code> and committed with each merge; CI only publishes it.</p>`;
 }
 
+/* ---------- the quest (roadmap) ----------
+   data/roadmap.json is docs/roadmap.yml with each milestone's live measure. A milestone's
+   `covers` are treemap ids (`<region>` or `<region>/<library id>`): picking it lights those
+   tiles (map.hl) and zooms there; the map in turn names the milestone of whatever it shows. */
+
+const HUE = { green: "#3aae5c", red: "#ef5b52", blue: "#3d9cf0", purple: "#c35ee6", gold: "#d29a2e" };
+const STATUS = {
+  done: { word: "done" }, active: { word: "under way" }, next: { word: "next" }, later: { word: "later" },
+};
+let RM = null;
+const MS = new Map(); // milestone id -> milestone (+ phase, pi, ord)
+const quest = { phase: null };
+
+const msFrac = (m) => (m.measure && m.measure.total ? m.measure.done / m.measure.total : null);
+const hueOf = (ph) => HUE[ph.hue] || HUE.gold;
+
+function measureText(m) {
+  const x = m.measure;
+  if (!x) return "";
+  const f = x.kind === "code" || x.kind === "split" ? bytes : num;
+  return `${pct(ratio(x.done, x.total))} ${x.label} · ${f(x.done)} / ${f(x.total)}`;
+}
+
+function phaseFrac(ph) {
+  if (ph.status === "done") return 1;
+  const ms = ph.milestones;
+  return ms.reduce((a, m) => a + (m.status === "done" ? 1 : m.status === "active" ? msFrac(m) || 0 : 0), 0) / (ms.length || 1);
+}
+
+// A gem in the emblem's shape: filled when done, filled to its share while under way,
+// an outline when ahead (dashed for "later").
+let gemN = 0;
+function gemSVG(status, col, w, h, frac = null) {
+  const f = status === "done" ? 1 : status === "active" ? Math.max(0.15, frac ?? 0.5) : 0;
+  const off = rhombusFill(f, h / 2) / h, k = `qg${gemN++}`, p = 1.5, cx = w / 2 + p, cy = h / 2 + p;
+  return `<svg class="qgem ${status}" width="${w + 2 * p}" height="${h + 2 * p}" viewBox="0 0 ${w + 2 * p} ${h + 2 * p}" aria-hidden="true">
+    <defs><linearGradient id="${k}" x1="0" y1="1" x2="0" y2="0"><stop offset="${off}" stop-color="${col}"/><stop offset="${off}" stop-color="${col}" stop-opacity="0.1"/></linearGradient></defs>
+    <path d="M${cx} ${p}L${w + p} ${cy}L${cx} ${h + p}L${p} ${cy}Z" fill="url(#${k})" stroke="${col}" stroke-width="1.3"${status === "later" ? ' stroke-dasharray="2 2"' : ""}/>
+    ${f > 0 ? `<path d="M${cx} ${p}L${w + p} ${cy}L${cx} ${cy}Z" fill="rgba(255,255,255,.14)"/>` : ""}</svg>`;
+}
+
+function initQuest(rm) {
+  if (!rm || !rm.phases) { $("#quest-panel").hidden = true; $("#nownext").hidden = true; return; }
+  RM = rm;
+  rm.phases.forEach((ph, pi) => ph.milestones.forEach((m) => { m.phase = ph; m.pi = pi; m.ord = MS.size; MS.set(m.id, m); }));
+  quest.phase = (rm.phases.find((p) => p.status === "active") || rm.phases.find((p) => p.status === "next") || rm.phases[0]).id;
+  $("#quest-legend").innerHTML = Object.keys(STATUS).map((s) => `<span>${gemSVG(s, "#d29a2e", 9, 12, 0.5)} ${STATUS[s].word}</span>`).join("");
+  drawNowNext();
+  drawPath();
+  drawStage();
+  $("#vows").innerHTML = (rm.policies || []).map((p) => `<li><b>${esc(p.title)}.</b> ${esc(p.text)}</li>`).join("");
+}
+
+const firstWith = (status) => [...MS.values()].find((m) => m.status === status);
+
+function drawNowNext() {
+  const cards = [["Now", firstWith("active")], ["Next", firstWith("next")]].filter(([, m]) => m);
+  const host = $("#nownext");
+  host.innerHTML = cards.map(([k, m]) => {
+    const col = hueOf(m.phase), f = msFrac(m);
+    return `<button type="button" class="nn ${m.status}" data-ms="${esc(m.id)}" style="--c:${col}">
+      <span class="nn-k">${gemSVG(m.status, col, 10, 13, f)} ${k} &middot; phase ${m.pi + 1}</span>
+      <span class="nn-t">${esc(m.title)}</span>
+      <span class="nn-d">${esc(m.desc)}</span>
+      ${m.measure ? `<span class="nn-bar"><i style="width:${Math.max(1, 100 * f)}%"></i></span><span class="nn-v">${esc(measureText(m))}</span>` : ""}
+    </button>`;
+  }).join("");
+  host.querySelectorAll(".nn").forEach((b) => (b.onclick = () => {
+    pickMilestone(b.dataset.ms, true);
+    $("#quest-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+  }));
+}
+
+function drawPath() {
+  const host = $("#path");
+  host.style.setProperty("--n", RM.phases.length);
+  host.innerHTML = RM.phases.map((ph, i) => {
+    const col = hueOf(ph), done = ph.milestones.filter((m) => m.status === "done").length;
+    return `<li class="station ${ph.status}${ph.id === quest.phase ? " cur" : ""}" style="--c:${col}">
+      <button type="button" data-ph="${esc(ph.id)}" aria-pressed="${ph.id === quest.phase}">
+        <span class="st-gem">${gemSVG(ph.status, col, 26, 36, phaseFrac(ph))}</span>
+        <span class="st-txt"><span class="st-n">Phase ${i + 1} &middot; ${STATUS[ph.status].word}</span>
+        <span class="st-t">${esc(ph.title)}</span>
+        <span class="st-dots" title="${done} of ${ph.milestones.length} milestones done">${ph.milestones.map((m) => gemSVG(m.status, col, 6, 8, msFrac(m))).join("")}</span></span>
+      </button></li>`;
+  }).join("");
+  host.querySelectorAll("button[data-ph]").forEach((b) => (b.onclick = () => {
+    quest.phase = b.dataset.ph; drawPath(); drawStage();
+    if (innerWidth <= 860) $("#stage").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "nearest" });
+  }));
+}
+
+function coverChip(id) {
+  const n = byId.get(id);
+  if (!n) return "";
+  return `<span class="m-cov">${glyph(n.region, 9)} ${esc(n.name)}</span>`;
+}
+
+function drawStage() {
+  if (!RM) return;
+  const pi = RM.phases.findIndex((p) => p.id === quest.phase), ph = RM.phases[pi], col = hueOf(ph);
+  const host = $("#stage");
+  host.style.setProperty("--c", col);
+  host.innerHTML = `<div class="stage-head"><h3>Phase ${pi + 1}: ${esc(ph.title)} <span class="m-st ${ph.status}">${STATUS[ph.status].word}</span></h3>
+      <p>${esc(ph.summary)}</p></div>
+    <ol class="ms">${ph.milestones.map((m) => {
+      const f = msFrac(m), sel = map.ms === m.id, canMap = m.covers.length > 0;
+      return `<li class="m ${m.status}${sel ? " sel" : ""}${canMap ? "" : " nomap"}" data-ms="${esc(m.id)}"${canMap ? ` tabindex="0" role="button" aria-pressed="${sel}"` : ""}>
+        ${gemSVG(m.status, col, 13, 17, f)}
+        <div class="m-body">
+          <div class="m-t">${esc(m.title)} <span class="m-st ${m.status}">${STATUS[m.status].word}</span></div>
+          <div class="m-d">${esc(m.desc)}</div>
+          ${m.measure ? `<div class="m-bar"><i style="width:${f ? Math.max(0.8, 100 * f) : 0}%"></i></div><div class="m-v">${esc(measureText(m))}</div>` : ""}
+          <div class="m-foot">${m.covers.map(coverChip).join("")}
+            ${(m.landed || []).map((c) => `<a class="m-commit" href="${REPO}/commit/${esc(c)}">${esc(c)}</a>`).join("")}
+            ${sel ? `<button type="button" class="m-go">See it in the map &darr;</button>` : ""}</div>
+        </div></li>`;
+    }).join("")}</ol>`;
+  host.querySelectorAll(".m[data-ms]:not(.nomap)").forEach((el) => {
+    el.onclick = (e) => {
+      if (e.target.closest("a")) return;
+      if (e.target.closest(".m-go")) { $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); return; }
+      pickMilestone(el.dataset.ms);
+    };
+    el.onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target === el) { e.preventDefault(); pickMilestone(el.dataset.ms); } };
+  });
+}
+
+// Common treemap ancestor of a milestone's covers: the library, its region, or the whole DOL.
+function questTarget(m) {
+  if (!m.covers.length) return null;
+  if (m.covers.length === 1) return m.covers[0];
+  const regions = new Set(m.covers.map((c) => c.split("/")[0]));
+  return regions.size === 1 ? [...regions][0] : "";
+}
+
+// Pick (or, picked again, drop) a milestone: light its tiles and zoom the map to them.
+function pickMilestone(id, keep = false) {
+  const m = MS.get(id);
+  if (!m) return;
+  if (map.ms === id && !keep) { map.ms = null; go(map.focus ? map.focus.id : ""); return; }
+  map.ms = id;
+  const t = questTarget(m);
+  go(t === null ? (map.focus ? map.focus.id : "") : t);
+}
+
+// Called from navigate() with the hash's ?m=: the single place the highlight is set.
+function setQuest(id) {
+  const m = id && MS.get(id);
+  map.ms = m ? id : null;
+  map.hl = m && m.covers.length ? new Set(m.covers) : null;
+  if (m && quest.phase !== m.phase.id) { quest.phase = m.phase.id; drawPath(); }
+  drawStage();
+}
+
+function inQuest(n) {
+  for (; n; n = n.parent) if (map.hl.has(n.id)) return true;
+  return false;
+}
+const hlClass = (d) => (map.hl && map.hlMix ? (d.hl ? " hl" : " dim") : "");
+
+// The milestone a treemap node belongs to now, and the next one that will work on it.
+function questFor(n) {
+  if (!RM || !n) return {};
+  if (n.kind === "root") return { cur: firstWith("active"), next: firstWith("next") };
+  const ids = [];
+  for (let a = n; a && a.kind !== "root"; a = a.parent) ids.push(a.id);
+  const rank = (m) => (m.covers.includes(n.id) ? 0 : m.covers.some((c) => ids.includes(c)) ? 1 : 2);
+  const list = [...MS.values()].filter((m) => m.covers.some((c) => ids.includes(c) || (n.kind === "region" && c.startsWith(n.id + "/"))));
+  const act = list.filter((m) => m.status === "active").sort((a, b) => rank(a) - rank(b) || a.ord - b.ord)[0];
+  const done = list.filter((m) => m.status === "done").sort((a, b) => rank(a) - rank(b) || b.ord - a.ord)[0];
+  const next = list.filter((m) => m.status === "next" || m.status === "later").sort((a, b) => rank(a) - rank(b) || a.ord - b.ord)[0];
+  return { cur: act || done, next };
+}
+
+function drawQuestline() {
+  const el = $("#questline");
+  if (!RM) { el.hidden = true; return; }
+  const link = (m) => `<button type="button" class="ql-m" data-ms="${esc(m.id)}" style="--c:${hueOf(m.phase)}">${gemSVG(m.status, hueOf(m.phase), 8, 11, msFrac(m))} ${esc(m.title)}</button>`;
+  if (map.ms) {
+    const m = MS.get(map.ms);
+    el.innerHTML = `<span class="ql-k">Milestone</span> ${link(m)} <span class="ql-s">${STATUS[m.status].word}${m.measure ? ` &middot; ${esc(measureText(m))}` : ""}</span>
+      <button type="button" class="ql-x" aria-label="Clear the milestone highlight">&times; clear</button>`;
+    el.querySelector(".ql-x").onclick = () => { map.ms = null; go(map.focus.id); };
+  } else {
+    const q = questFor(map.focus);
+    el.innerHTML = q.cur || q.next
+      ? `${q.cur ? `<span class="ql-k">${q.cur.status === "active" ? "Now" : "Done"}</span> ${link(q.cur)}` : ""}
+         ${q.next ? `<span class="ql-k">Next</span> ${link(q.next)}` : ""}`
+      : `<span class="ql-s">No milestone covers this part yet.</span>`;
+  }
+  el.querySelectorAll(".ql-m").forEach((b) => (b.onclick = () => {
+    const m = MS.get(b.dataset.ms);
+    if (map.ms === m.id) { quest.phase = m.phase.id; drawPath(); drawStage(); $("#quest-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); }
+    else pickMilestone(m.id);
+  }));
+}
+
 /* ---------- boot ---------- */
 
 async function main() {
-  const [summary, hist] = await Promise.all([
+  const [summary, hist, roadmap] = await Promise.all([
     fetch("data/summary.json").then((r) => r.json()),
     fetch("data/history.json").then((r) => r.json()).catch(() => []),
+    fetch("data/roadmap.json").then((r) => r.json()).catch(() => null),
   ]);
   S = summary; TOTAL = summary.totals.code;
   buildTree(summary);
   drawStats();
   drawEmblem();
+  initQuest(roadmap);
   initMap();
   await navigate();
   drawSystems();

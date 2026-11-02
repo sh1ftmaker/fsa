@@ -58,6 +58,13 @@ after the full `ninja` and stage `site/data/` in the same commit.**
 It writes only names, addresses, sizes and match flags, never DOL bytes.
 Preview: `sbg start fsasite -- python3 -m http.server 8765 -d site`.
 
+The site's quest path comes from `docs/roadmap.yml` (phases, milestones,
+what each covers and how its progress is measured); `site_data.py` adds the
+live numbers. **When a phase or milestone changes (an import lands, a wave
+starts), update its `status` in `docs/roadmap.yml` in the same merge
+commit**, and add a `landed:` commit for milestones that finished. Unknown
+library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
+
 ## Rakes (each cost time once)
 
 **Tooling and worktrees**
