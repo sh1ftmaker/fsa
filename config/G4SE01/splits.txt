@@ -270,7 +270,7 @@ dolphin/os/OS.c:
 	.sbss       start:0x8053A3D0 end:0x8053A410
 
 dolphin/os/OSAlarm.c:
-	.text       start:0x8004061C end:0x80040A58
+	.text       start:0x800402FC end:0x80040A58
 	.data       start:0x804957F0 end:0x80495800
 	.sbss       start:0x8053A410 end:0x8053A418
 
