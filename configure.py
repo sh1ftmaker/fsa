@@ -453,6 +453,9 @@ config.precompiled_headers = [
     },
 ]
 config.libs = [
+    SdkLib("amcstubs", [
+        Object(Matching, "dolphin/amcstubs/AmcExi2Stubs.c"),
+    ]),
     SdkLib("ai", [
         Object(Matching, "dolphin/ai/ai.c"),
     ]),
@@ -488,14 +491,32 @@ config.libs = [
     ]),
     SdkLib("dvd", [
         Object(Matching, "dolphin/dvd/dvd.c"),
+        Object(Matching, "dolphin/dvd/dvderror.c"),
+        # FIXME: .text matches; symbols.txt has FatalFunc as 8 bytes (dtk guess), the static is 4 (coordinator: size 0x4, scope:local).
+        Object(Matching, "dolphin/dvd/dvdFatal.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(Matching, "dolphin/dvd/dvdidutils.c"),
         Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(Matching, "dolphin/dvd/dvdqueue.c"),
+        Object(Matching, "dolphin/dvd/fstload.c"),
     ]),
     SdkLib("exi", [
         Object(Matching, "dolphin/exi/EXIBios.c"),
         Object(Matching, "dolphin/exi/EXIUart.c"),
+    ]),
+    SdkLib("gba", [
+        Object(Matching, "dolphin/gba/GBA.c"),
+        Object(Matching, "dolphin/gba/GBAGetProcessStatus.c"),
+        Object(Matching, "dolphin/gba/GBAJoyBoot.c"),
+        Object(Matching, "dolphin/gba/GBARead.c"),
+        Object(Matching, "dolphin/gba/GBAWrite.c"),
+        Object(Matching, "dolphin/gba/GBAXfer.c"),
+        # FIXME: the DSP microcode in .data has no licensed source; see GBAKey.c.
+        Object(NonMatching, "dolphin/gba/GBAKey.c"),
+    ]),
+    SdkLib("gd", [
+        Object(Matching, "dolphin/gd/GDBase.c"),
+        Object(Matching, "dolphin/gd/GDGeometry.c"),
     ]),
     SdkLib("mtx", [
         Object(NonMatching, "dolphin/mtx/mtx.c"),
@@ -507,6 +528,8 @@ config.libs = [
         Object(Matching, "dolphin/os/OS.c"),
         Object(Matching, "dolphin/os/OSAlarm.c"),
         Object(Matching, "dolphin/os/OSAlloc.c"),
+        Object(Matching, "dolphin/os/OSArena.c"),
+        Object(Matching, "dolphin/os/OSAudioSystem.c"),
         Object(Matching, "dolphin/os/OSCache.c"),
         Object(Matching, "dolphin/os/OSContext.c"),
         Object(Matching, "dolphin/os/OSError.c"),
@@ -523,6 +546,14 @@ config.libs = [
         Object(Matching, "dolphin/os/OSSync.c"),
         Object(Matching, "dolphin/os/OSThread.c"),
         Object(Matching, "dolphin/os/OSTime.c"),
+        Object(Matching, "dolphin/os/init/__start.c"),
+        Object(Matching, "dolphin/os/init/__ppc_eabi_init.cpp"),
+    ]),
+    SdkLib("odenotstub", [
+        Object(Matching, "dolphin/odenotstub/odenotstub.c"),
+    ]),
+    SdkLib("OdemuExi2", [
+        Object(Matching, "dolphin/OdemuExi2/DebuggerDriver.c", extra_cflags=["-inline deferred"]),
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
@@ -685,9 +716,30 @@ config.libs = [
         Object(NonMatching, "JSystem/JUtility/JUTVideo.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,p"]),
     ]),
+    # Runtime's __mem.c (.init memset/__fill_mem/memcpy) from pikmin2, with
+    # pikmin2's Runtime flags (cflags_runtime + -inline deferred).
+    {
+        "lib": "Runtime.PPCEABI.H (__mem)",
+        "mw_version": "GC/2.6",
+        "cflags": [
+            "-nodefaults", "-proc gekko", "-align powerpc", "-enum int",
+            "-fp hardware", "-Cpp_exceptions off", "-O4,p",
+            '-pragma "cats off"', '-pragma "warn_notinlined off"',
+            "-maxerrors 1", "-nosyspath", "-RTTI off", "-fp_contract on",
+            "-multibyte", "-i libs/sdk/include", "-i libs/sdk/msl_include",
+            "-use_lmw_stmw on", "-str reuse,readonly", "-common off",
+            "-inline auto", "-inline deferred",
+        ],
+        "progress_category": "sdk",
+        "host": False,
+        "objects": [
+            Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
+        ],
+    },
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(Matching, "dolphin/gx/GXBump.c"),
+        Object(Matching, "dolphin/gx/GXDisplayList.c"),
         Object(Matching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
         Object(Matching, "dolphin/gx/GXGeometry.c"),
