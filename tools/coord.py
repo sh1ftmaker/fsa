@@ -3,10 +3,12 @@
 
   python3 tools/coord.py queue [--lib PREFIX] [-n N]
       Unclaimed units that aren't fully matched, most unmatched code first.
-  python3 tools/coord.py start <unit> [--owner NAME] [--notes TEXT]
-      Claim the unit, create its worktree and branch, print the worker prompt.
-  python3 tools/coord.py review <unit>
-      Mark the unit "in review" and print the adversarial reviewer prompt.
+  python3 tools/coord.py start <unit>... [--owner NAME] [--notes TEXT]
+      Claim the units, create their worktrees and branches, print the worker
+      prompt (one combined prompt for several tiny units).
+  python3 tools/coord.py review <unit>...
+      Mark the units "in review" and print the adversarial reviewer prompt
+      (one batched prompt for several small units; separate verdicts).
   python3 tools/coord.py verdict <unit> ACCEPT|CHANGES|REJECT
       Record the reviewer's verdict.
   python3 tools/coord.py merge <unit> "<message>"
@@ -97,36 +99,66 @@ def cmd_queue(args):
             break
 
 
-def cmd_start(args):
+BATCH_WORK = """You own {n} small units of the Four Swords Adventures byte-matching
+decompilation. Do them one after another, each completely (including its
+commit and checkpoint) before the next; each has its own worktree and branch,
+and each gets its own final report section. The unit instructions follow.
+
+"""
+BATCH_REVIEW = """You review {n} small unit branches of the Four Swords Adventures
+byte-matching decompilation. Review each one independently, as if it were the
+only one: its own measurements, its own review file, its own verdict line
+(`<unit>: ACCEPT|CHANGES|REJECT`). One unit's verdict must not influence
+another's. The per-unit instructions follow.
+
+"""
+
+
+def start_one(unit, owner, notes):
     rows = {r[0]: r for r in unit_rows()}
-    if args.unit not in rows:
-        sys.exit(f"{args.unit}: not in the queue (fully matched or unknown)")
-    _, src, _, status = rows[args.unit]
-    wt = run("sh", "tools/unit_worktree.sh", args.unit, args.owner).strip().splitlines()[-1]
+    if unit not in rows:
+        sys.exit(f"{unit}: not in the queue (fully matched or unknown)")
+    _, src, _, status = rows[unit]
+    wt = run("sh", "tools/unit_worktree.sh", unit, owner).strip().splitlines()[-1]
     wt = str(Path(wt).resolve())
-    with_claims(lambda c: c[args.unit].update(state="working"))
+    with_claims(lambda c: c[unit].update(state="working"))
     template = (REPO / "docs/prompts/unit.md").read_text()
-    print(template.format(unit=args.unit, source=src, worktree=wt, branch=f"unit/{slug_of(args.unit)}",
-                          status=status, notes=args.notes or ""))
+    return template.format(unit=unit, source=src, worktree=wt, branch=f"unit/{slug_of(unit)}",
+                           status=status, notes=notes or "")
 
 
-def cmd_review(args):
+def cmd_start(args):
+    prompts = [start_one(u, args.owner, args.notes) for u in args.units]
+    if len(prompts) == 1:
+        print(prompts[0])
+    else:
+        print(BATCH_WORK.format(n=len(prompts)) + "\n\n---\n\n".join(prompts))
+
+
+def review_one(unit):
     claims = with_claims()
-    if args.unit not in claims:
-        sys.exit(f"{args.unit} is not claimed")
-    wt = claims[args.unit]["worktree"]
-    wt = str(Path(wt).resolve())
+    if unit not in claims:
+        sys.exit(f"{unit} is not claimed")
+    wt = str(Path(claims[unit]["worktree"]).resolve())
     base = run("git", "-C", wt, "merge-base", "matching", "HEAD").strip()
     log = run("git", "-C", wt, "log", "--format=%h %s", f"{base}..HEAD")
     if not log.strip():
-        sys.exit(f"{args.unit}: no commits on the branch")
+        sys.exit(f"{unit}: no commits on the branch")
     baseline = run("python3", "tools/progress.py").splitlines()[0]
     REVIEWS.mkdir(parents=True, exist_ok=True)
-    with_claims(lambda c: c[args.unit].update(state="review"))
+    with_claims(lambda c: c[unit].update(state="review"))
     template = (REPO / "docs/prompts/review.md").read_text()
-    print(template.format(unit=args.unit, branch=f"unit/{slug_of(args.unit)}", worktree=wt, repo=REPO,
-                          slug=slug_of(args.unit), baseline=baseline, donors=DONORS, log=log.strip(),
-                          reviews=REVIEWS))
+    return template.format(unit=unit, branch=f"unit/{slug_of(unit)}", worktree=wt, repo=REPO,
+                           slug=slug_of(unit), baseline=baseline, donors=DONORS, log=log.strip(),
+                           reviews=REVIEWS)
+
+
+def cmd_review(args):
+    prompts = [review_one(u) for u in args.units]
+    if len(prompts) == 1:
+        print(prompts[0])
+    else:
+        print(BATCH_REVIEW.format(n=len(prompts)) + "\n\n---\n\n".join(prompts))
 
 
 def cmd_verdict(args):
@@ -204,11 +236,11 @@ def main():
     q.add_argument("--lib", default="")
     q.add_argument("-n", type=int, default=20)
     s = sub.add_parser("start")
-    s.add_argument("unit")
+    s.add_argument("units", nargs="+")
     s.add_argument("--owner", default="agent")
     s.add_argument("--notes", default="")
     r = sub.add_parser("review")
-    r.add_argument("unit")
+    r.add_argument("units", nargs="+")
     v = sub.add_parser("verdict")
     v.add_argument("unit")
     v.add_argument("verdict")

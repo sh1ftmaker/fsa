@@ -24,6 +24,10 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
   branch, and restart the unit with a note about what went wrong.
 - Shared edits a reviewer approved: apply them as a commit on the unit's
   branch, rebuild there, then merge (that keeps `merge_unit.py`'s checks).
+- Batching: units with under ~1 KiB unmatched get batched reviews (3-5 per
+  reviewer, separate verdicts and review files). Tiny units (under ~300
+  bytes unmatched) go 3-5 to one worker (`coord.py start a b c`), each still
+  on its own branch and merged on its own.
 - Concurrency: about 6 workers plus their reviewers. Each full build in a
   fresh worktree is the heavy part; reviewers mostly read.
 - Notes for `start`: tell the worker what's already known about the unit
