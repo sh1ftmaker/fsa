@@ -489,7 +489,7 @@ config.libs = [
     SdkLib("dvd", [
         Object(Matching, "dolphin/dvd/dvd.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
-        Object(NonMatching, "dolphin/dvd/dvdidutils.c"),
+        Object(Matching, "dolphin/dvd/dvdidutils.c"),
         Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(NonMatching, "dolphin/dvd/dvdqueue.c"),  # FIXME(link): duplicate __DVDClearWaitingQueue
     ]),
