@@ -58,8 +58,10 @@ data and symbols, not by bending code.
 - Your unit's source file and any header used only by it.
 - Your unit's stanza in `config/G4SE01/splits.txt` (its section ranges).
 - `config/G4SE01/symbols.txt`: give placeholder symbols (`fn_`, `lbl_`,
-  `*_8xxxxxxx`) their real names when you have evidence. Never change an
-  address, size or type; never rename an already-real name.
+  `*_8xxxxxxx`) their real names when you have evidence. Placeholders may also be resized or split into
+  the real symbols they cover. Never change a real symbol's address, size or
+  type, and never rename an already-real name (the coordinator handles
+  reviewed exceptions in `approved_symbol_changes.txt`).
 - `configure.py`: only your unit's `Matching`/`NonMatching` flag, and only
   set `Matching` when `fdiff.py` shows every function and every data section
   at 100 %.
