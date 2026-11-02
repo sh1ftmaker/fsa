@@ -506,7 +506,7 @@ config.libs = [
     SdkLib("os", [
         Object(NonMatching, "dolphin/os/OS.c"),  # FIXME(link): duplicate OSRegisterVersion
         Object(Matching, "dolphin/os/OSAlarm.c"),
-        Object(NonMatching, "dolphin/os/OSAlloc.c"),
+        Object(Matching, "dolphin/os/OSAlloc.c"),
         Object(Matching, "dolphin/os/OSCache.c"),
         Object(Matching, "dolphin/os/OSContext.c"),
         Object(NonMatching, "dolphin/os/OSError.c"),  # FIXME(link): duplicate OSSetErrorHandler
