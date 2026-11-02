@@ -14,6 +14,8 @@ Checks (see docs/PLAN.md, "Submission gate"):
   * symbols.txt: real (non-placeholder) symbols keep their address, size,
     type and name; placeholder symbols (fn_, lbl_, *_80xxxxxx) may be
     renamed, resized or split into the real symbols they cover;
+  * no unit marked Matching contains a fakematch (FakeMatch headers,
+    force_order dummies, "fakematch" comments), donor-imported or not;
   * every unit marked Matching is 100 % in code and data in the report
     (build/G4SE01/report.json must be current).
 
@@ -159,6 +161,22 @@ def check_symbols(base, changed, problems):
             problems.append(f"symbols.txt: real name {name} renamed to {new_name}")
 
 
+FAKEMATCH = re.compile(r"FakeMatch|force_order|FAKEMATCH|fakematch", re.I)
+
+
+def check_fakematch(problems):
+    """A Matching unit may not rely on (or admit to) a fakematch, even one imported from a donor."""
+    roots = ("libs/sdk/", "libs/sdk_gx/", "libs/jsystem/", "src/")
+    for unit in json.loads(Path("objdiff.json").read_text())["units"]:
+        meta = unit.get("metadata") or {}
+        src = meta.get("source_path") or ""
+        if meta.get("complete") and src.startswith(roots) and Path(src).exists():
+            for n, line in enumerate(Path(src).read_text(errors="replace").splitlines(), 1):
+                if FAKEMATCH.search(line):
+                    problems.append(f"{src}:{n}: Matching unit with a fakematch: {line.strip()}")
+                    break
+
+
 def check_report(problems):
     report = Path("build/G4SE01/report.json")
     if not report.exists():
@@ -191,6 +209,7 @@ def main():
         check_protected(args.base, sorted(changed), problems)
         check_symbols(args.base, changed, problems)
     check_report(problems)
+    check_fakematch(problems)
     for p in problems:
         print("FAIL", p)
     print("gate: ok" if not problems else f"gate: {len(problems)} problem(s)")

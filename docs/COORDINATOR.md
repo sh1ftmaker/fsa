@@ -102,3 +102,17 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
   Use the form tp/dolsdk2004 use in that function.
 - Original SDK `asm` functions (nofralloc) are source, not tricks; workers
   keep them and never add new ones.
+
+## Fakematch debt imported from donors
+
+Donor code came with fakematches: mkdd's `JASFakeMatch*.h` headers (template
+instantiations to force weak-function order, included by 37 JAudio files),
+mkdd's `unused_force_order_in_data_section*` dummies in `mtx.c`, and TP/TWW
+comments admitting a fakematch (`JAISoundHandles.cpp`,
+`J3DMaterialFactory.cpp`). None of these units may be `Matching`
+(`tools/gate.py` enforces it). Five that were are now NonMatching:
+JAISoundChild, JAISoundHandles, JAUSoundTable, JASSeqCtrl,
+J3DMaterialFactory. Their functions still count in the function total,
+because objdiff can't tell how a function matched; replacing each construct
+with natural source is a dedicated task per unit (find the real reason for
+the weak-function order: usually where inline/template definitions live).
