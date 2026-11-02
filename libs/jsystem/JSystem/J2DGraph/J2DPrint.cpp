@@ -10,6 +10,11 @@ bool J2DPrint::mHeapFlag;
 size_t J2DPrint::mStrBuffSize;
 bool J2DPrint::mBufferNotEnough;
 
+J2DPrint::J2DPrint(JUTFont* font, f32 width, f32 height)
+{
+    private_initiate(font, width, height, TCOLOR_WHITE_U32, TCOLOR_WHITE_U32, TCOLOR_BLACK_U32, TCOLOR_WHITE_U32, false);
+}
+
 J2DPrint::J2DPrint(JUTFont* font, f32 width)
 {
     private_initiate(font, width, 0.0f, TCOLOR_WHITE_U32, TCOLOR_WHITE_U32, TCOLOR_BLACK_U32, TCOLOR_WHITE_U32, true);

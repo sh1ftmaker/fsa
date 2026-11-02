@@ -81,8 +81,8 @@ JSystem and the game's own code are **GC/2.6**; the game code is `-O4,p`
 C++ with exception tables (found on branch `archive/recomp-game-decomp`).
 FSA's JSystem is `-O4,p`: the original saves 2-4 registers with separate
 `stw`, where `-O4,s` emits `stmw`. mkdd's `-O4,s` for JKernel and JUtility
-was wrong for FSA and is gone; J2DGraph and JAudio/Task still carry it until
-someone checks them the same way.
+and J2DGraph was wrong for FSA and is gone; JAudio/Task still carries it
+until someone checks it the same way.
 
 ## Rules for matching work
 

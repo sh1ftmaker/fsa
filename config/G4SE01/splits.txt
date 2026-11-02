@@ -1164,23 +1164,31 @@ JSystem/JMath/JMATrigonometric.cpp:
 	.sdata2     start:0x8053B948 end:0x8053B990
 
 JSystem/J2DGraph/J2DOrthoGraph.cpp:
-	.text       start:0x800937B0 end:0x80093E64
+	.text       start:0x80093768 end:0x80093E64
 	.data       start:0x80499520 end:0x80499548
+	.sdata2     start:0x8053B990 end:0x8053B998
 
 JSystem/J2DGraph/J2DGrafContext.cpp:
-	.text       start:0x80093E64 end:0x800945C4
+	.text       start:0x80093E64 end:0x800948E0
 	.data       start:0x80499548 end:0x80499570
 	.sdata2     start:0x8053B998 end:0x8053B9B0
 
 JSystem/J2DGraph/J2DPane.cpp:
-	.text       start:0x80095E14 end:0x80096B64
+	.text       start:0x800948E0 end:0x80097064
+	.ctors      start:0x8045BDD4 end:0x8045BDD8
+	.data       start:0x80499570 end:0x80499628
+	.sdata2     start:0x8053B9B0 end:0x8053B9D8
 
 JSystem/J2DGraph/J2DPicture.cpp:
-	.text       start:0x80098AB4 end:0x8009A708
+	.text       start:0x80097064 end:0x8009AAFC
+	.data       start:0x80499628 end:0x80499778
 	.sdata2     start:0x8053B9D8 end:0x8053BA00
 
 JSystem/J2DGraph/J2DPrint.cpp:
-	.text       start:0x8009C230 end:0x8009C2A4
+	.text       start:0x8009AAFC end:0x8009C4EC
+	.data       start:0x80499778 end:0x804997E8
+	.sbss       start:0x8053A9A0 end:0x8053A9B0
+	.sdata2     start:0x8053BA00 end:0x8053BA28
 
 JSystem/J2DGraph/J2DScreen.cpp:
 	.text       start:0x8009C4EC end:0x8009DFA0
@@ -1188,29 +1196,74 @@ JSystem/J2DGraph/J2DScreen.cpp:
 	.sbss       start:0x8053A9B0 end:0x8053A9B8
 	.sdata2     start:0x8053BA28 end:0x8053BA48
 
+JSystem/J2DGraph/J2DTextBox.cpp:
+	.text       start:0x8009DFA0 end:0x8009F5BC
+	.data       start:0x80499888 end:0x80499948
+	.sdata2     start:0x8053BA48 end:0x8053BA68
+
+JSystem/J2DGraph/J2DWindow.cpp:
+	.text       start:0x8009F5BC end:0x800A1EAC
+	.rodata     start:0x80463040 end:0x80463088
+	.data       start:0x80499948 end:0x80499A18
+	.sdata2     start:0x8053BA68 end:0x8053BA88
+
 JSystem/J2DGraph/J2DWindowEx.cpp:
-	.text       start:0x800A4114 end:0x800A4340
+	.text       start:0x800A1EAC end:0x800A4994
 	.rodata     start:0x80463088 end:0x80463178
+	.data       start:0x80499A18 end:0x80499AE8
+	.sdata2     start:0x8053BA88 end:0x8053BAA8
 
 JSystem/J2DGraph/J2DAnmLoader.cpp:
-	.text       start:0x800A5364 end:0x800A55BC
+	.text       start:0x800A4994 end:0x800A655C
+	.data       start:0x80499AE8 end:0x80499B70
+	.sdata2     start:0x8053BAA8 end:0x8053BAB0
+
+JSystem/J2DGraph/J2DBloSaver.cpp:
+	.text       start:0x800A655C end:0x800A68D4
+	.ctors      start:0x8045BDD8 end:0x8045BDDC
+	.bss        start:0x804BA4B0 end:0x804BA4C0
+	.sbss       start:0x8053A9B8 end:0x8053A9C0
 
 JSystem/J2DGraph/J2DManage.cpp:
 	.text       start:0x800A68D4 end:0x800A6B98
 	.bss        start:0x804BA4C0 end:0x804BA5C8
 
+JSystem/J2DGraph/J2DMatBlock.cpp:
+	.text       start:0x800A6B98 end:0x800AEF1C
+	.rodata     start:0x80463178 end:0x80463188
+	.data       start:0x80499B70 end:0x8049A058
+
 JSystem/J2DGraph/J2DMaterial.cpp:
-	.text       start:0x800AEF1C end:0x800AF584
+	.text       start:0x800AEF1C end:0x800B014C
+	.data       start:0x8049A058 end:0x8049A0A8
 	.sdata2     start:0x8053BAB0 end:0x8053BAC0
 
+JSystem/J2DGraph/J2DMaterialFactory.cpp:
+	.text       start:0x800B014C end:0x800B1954
+	.sdata2     start:0x8053BAC0 end:0x8053BAC8
+	.sbss2      start:0x80543F00 end:0x80543F08
+
+JSystem/J2DGraph/J2DPictureEx.cpp:
+	.text       start:0x800B1954 end:0x800B5CCC
+	.rodata     start:0x80463188 end:0x804631F0
+	.data       start:0x8049A0A8 end:0x8049A1F8
+	.sdata2     start:0x8053BAC8 end:0x8053BAE0
+
 JSystem/J2DGraph/J2DTevs.cpp:
-	.text       start:0x800B5CCC end:0x800B60F8
+	.text       start:0x800B5CCC end:0x800B6158
 	.rodata     start:0x804631F0 end:0x80463270
+	.sdata2     start:0x8053BAE0 end:0x8053BB28
 
 JSystem/J2DGraph/J2DTextBoxEx.cpp:
-	.text       start:0x800B6818 end:0x800B7738
+	.text       start:0x800B6158 end:0x800B79A4
 	.rodata     start:0x80463270 end:0x804632A8
+	.data       start:0x8049A1F8 end:0x8049A2B8
 	.sdata2     start:0x8053BB28 end:0x8053BB48
+
+JSystem/J2DGraph/J2DAnimation.cpp:
+	.text       start:0x800B79A4 end:0x800BA544
+	.data       start:0x8049A2B8 end:0x8049A378
+	.sdata2     start:0x8053BB48 end:0x8053BB70
 
 JSystem/J3DGraphBase/J3DVertex.cpp:
 	.text       start:0x800BB6E0 end:0x800BB738
