@@ -522,7 +522,7 @@ config.libs = [
         Object(Matching, "dolphin/os/OSRtc.c"),
         Object(Matching, "dolphin/os/OSSync.c"),
         Object(Matching, "dolphin/os/OSThread.c"),
-        Object(NonMatching, "dolphin/os/OSTime.c"),
+        Object(Matching, "dolphin/os/OSTime.c"),
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
