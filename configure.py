@@ -536,17 +536,17 @@ config.libs = [
         Object(Matching, "dolphin/vi/vi.c"),
     ]),
     MkddJSystemLib("mkdd_J2DGraph", [
-        Object(NonMatching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),  # FIXME(link): duplicate J2DAnmKeyLoader_v15::readAnmTransform
-        Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): duplicate J2DAnmKeyLoader_v15::readAnmTransform
+        Object(NonMatching, "JSystem/J2DGraph/J2DGrafContext.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DManage.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,s"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DOrthoGraph.cpp", extra_cflags=["-O4,s"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DPane.cpp", extra_cflags=["-O4,s"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DPicture.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DMaterial.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DOrthoGraph.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPane.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DPicture.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DScreen.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DTevs.cpp", extra_cflags=["-O4,s"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DTextBoxEx.cpp", extra_cflags=["-O4,s"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,s"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DTevs.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DTextBoxEx.cpp", extra_cflags=["-O4,p"]),
+        Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
         Object(NonMatching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
