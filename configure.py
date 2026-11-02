@@ -457,7 +457,7 @@ config.libs = [
         Object(NonMatching, "dolphin/ai/ai.c"),  # FIXME(link): undefined __AID_Callback_8053A5FC
     ]),
     SdkLib("ar", [
-        Object(NonMatching, "dolphin/ar/ar.c"),
+        Object(Matching, "dolphin/ar/ar.c"),
         Object(Matching, "dolphin/ar/arq.c"),
     ]),
     SdkLib("base", [

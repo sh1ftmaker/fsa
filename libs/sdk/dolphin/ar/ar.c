@@ -173,7 +173,7 @@ void __ARClearInterrupt(void)
     tmp = (u16)((tmp & ~(0x00000080 | 0x00000008)) | 0x00000020);
     __DSPRegs[5] = tmp;
 }
-u16 __ARGetInterruptStatus(void) { return ((u16)(__DSPRegs[5] & 0x0200)); }
+u16 __ARGetInterruptStatus(void) { return __DSPRegs[5] & 0x20; }
 
 static void __ARWaitForDMA(void)
 {
