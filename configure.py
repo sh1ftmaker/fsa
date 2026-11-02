@@ -533,7 +533,7 @@ config.libs = [
         Object(NonMatching, "dolphin/si/SISamplingRate.c"),
     ]),
     SdkLib("vi", [
-        Object(NonMatching, "dolphin/vi/vi.c"),
+        Object(Matching, "dolphin/vi/vi.c"),
     ]),
     MkddJSystemLib("mkdd_J2DGraph", [
         Object(Matching, "JSystem/J2DGraph/J2DAnmLoader.cpp", extra_cflags=["-O4,s"]),
