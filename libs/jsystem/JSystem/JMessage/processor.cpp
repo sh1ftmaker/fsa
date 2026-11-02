@@ -32,6 +32,12 @@ TProcessor::~TProcessor()
 {
 }
 
+void TProcessor::reset()
+{
+	reset_(nullptr);
+	do_reset();
+}
+
 /**
  * @note Address: 0x80006DA4
  * @note Size: 0xBC
@@ -147,37 +153,31 @@ u32 TProcessor::toMessageCode_messageID(u32 lowerHalfMsg, u32 upperHalfMsg, bool
  * @note Size: 0xB4
  * on_select_begin__Q28JMessage10TProcessorFPFPQ28JMessage10TProcessor_PCcPCvPCcUl
  */
-unknown TProcessor::on_select_begin(ProcessOnSelectCallBack selectCallback, const char* offset, const void* base, const char* p4, u32 code)
+void TProcessor::on_select_begin(ProcessOnSelectCallBack selectCallback, const char* offset, const void* base, const char* p4, u32 code)
 {
-	if (mStack.mSize < 4) {
+	if (mStack.isPushable()) {
 		mProcess.reset_select();
 		mProcess.mData.mSelectCallback = selectCallback;
 		mProcess.mData.mBase           = (char*)base;
 		mProcess.mData.mOffset         = offset;
 		mProcess.mData.mRest           = code;
-		pushCurrent(selectCallback(this));
+		pushCurrent_(selectCallback(this));
 		do_select_begin(code);
 	}
 }
 
-/**
- * @note Address: N/A
- * @note Size: 0x58
- * on_select_end__Q28JMessage10TProcessorFv
- */
-unknown TProcessor::on_select_end()
+void TProcessor::on_select_end()
 {
-	// UNUSED FUNCTION
+	mProcess.reset_normal();
+	popCurrent_();
+	do_select_end();
 }
 
-/**
- * @note Address: N/A
- * @note Size: 0x9C
- * on_select_separate__Q28JMessage10TProcessorFv
- */
-unknown TProcessor::on_select_separate()
+void TProcessor::on_select_separate()
 {
-	// UNUSED FUNCTION
+	popCurrent_();
+	pushCurrent_(mProcess.mData.mSelectCallback(this));
+	do_select_separate();
 }
 
 /**
@@ -185,6 +185,14 @@ unknown TProcessor::on_select_separate()
  * @note Size: 0x4
  */
 void TProcessor::do_reset()
+{
+}
+
+void TProcessor::do_begin(const void*, const char*)
+{
+}
+
+void TProcessor::do_end()
 {
 }
 
@@ -239,20 +247,6 @@ void TProcessor::do_select_separate()
 }
 
 /**
- * @note Address: 0x80007158
- * @note Size: 0x64
- * reset___Q28JMessage10TProcessorFPCc
- */
-void TProcessor::reset_(const char* p1)
-{
-	mCurrent              = p1;
-	mStack.mSize          = 0;
-	mProcess.mEndCallback = process_onCharacterEnd_normal_;
-	do_reset_(p1);
-	do_reset();
-}
-
-/**
  * @note Address: N/A
  * @note Size: 0xB0
  * on_tag___Q28JMessage10TProcessorFv
@@ -277,6 +271,10 @@ void TProcessor::on_tag_()
  * @note Address: 0x800071BC
  * @note Size: 0x8
  */
+void TProcessor::do_reset_(const char*)
+{
+}
+
 bool TProcessor::do_setBegin_isReady_() const
 {
 	return true;
@@ -409,7 +407,7 @@ bool TProcessor::process_onCharacterEnd_normal_(TProcessor* processor)
 		processor->mStack.mSize--;
 		return true;
 	} else {
-		processor->do_end_();
+		processor->on_end();
 		return false;
 	}
 }
@@ -422,23 +420,12 @@ bool TProcessor::process_onCharacterEnd_select_(TProcessor* processor)
 {
 	processor->mProcess.mData.mRest--;
 	if (processor->mProcess.mData.mRest != 0) {
-		processor->mCurrent = processor->mStack.getTop();
-		processor->mStack.mSize--;
-		const char* processedResult = processor->mProcess.mData.mSelectCallback(processor);
-		if (processedResult != nullptr && processor->mStack.mSize < 4) {
-			processor->mStack.mStack[processor->mStack.mSize] = processor->mCurrent;
-			processor->mStack.mSize++;
-			processor->mCurrent = processedResult;
-		}
-		processor->do_select_separate();
-		return true;
-	} else {
-		processor->mProcess.mEndCallback = &process_onCharacterEnd_normal_;
-		processor->mCurrent              = processor->mStack.getTop();
-		processor->mStack.mSize--;
-		processor->do_select_end();
+		processor->on_select_separate();
 		return true;
 	}
+
+	processor->on_select_end();
+	return true;
 }
 
 /**
@@ -534,7 +521,7 @@ const char* TSequenceProcessor::process(const char* p1)
 			break;
 		case STATUS_Branch:
 			u32 tmp = on_branch_queryResult();
-			if (tmp > 0xFFFF) {
+			if (tmp > 0x7FFFFFFF) {
 				switch (tmp) {
 				case -1:
 					return mCurrent;
@@ -603,11 +590,7 @@ bool TSequenceProcessor::on_jump_isReady()
  */
 void TSequenceProcessor::on_jump(const void* p1, const char* p2)
 {
-	mCurrent              = p2;
-	mStack.mSize          = 0;
-	mProcess.mEndCallback = &process_onCharacterEnd_normal_;
-	do_reset_(p2);
-	do_reset();
+	reset_(p2);
 	do_jump(p1, p2);
 }
 
@@ -647,28 +630,8 @@ int TSequenceProcessor::on_branch_queryResult()
  */
 void TSequenceProcessor::on_branch(const void* p1, const char* p2)
 {
-	mCurrent              = p2;
-	mStack.mSize          = 0;
-	mProcess.mEndCallback = &process_onCharacterEnd_normal_;
-	do_reset_(p2);
-	do_reset();
+	reset_(p2);
 	do_branch(p1, p2);
-}
-
-/**
- * @note Address: 0x80007CB8
- * @note Size: 0x4
- */
-void TSequenceProcessor::do_begin(const void*, const char*)
-{
-}
-
-/**
- * @note Address: 0x80007CBC
- * @note Size: 0x4
- */
-void TSequenceProcessor::do_end()
-{
 }
 
 /**
@@ -749,9 +712,8 @@ bool TSequenceProcessor::do_setBegin_isReady_() const
  * @note Size: 0x2C
  * do_begin___Q28JMessage18TSequenceProcessorFPCvPCc
  */
-void TSequenceProcessor::do_begin_(const void* p1, const char* p2)
+void TSequenceProcessor::do_begin_(const void*, const char*)
 {
-	do_begin(p1, p2);
 }
 
 /**
@@ -762,7 +724,6 @@ void TSequenceProcessor::do_begin_(const void* p1, const char* p2)
 void TSequenceProcessor::do_end_()
 {
 	mStatus = STATUS_End;
-	do_end();
 }
 
 /**
@@ -961,37 +922,12 @@ int TRenderingProcessor::process(const char* p1)
 }
 
 /**
- * @note Address: 0x800082CC
- * @note Size: 0x4
- */
-void TRenderingProcessor::do_begin(const void*, const char*)
-{
-}
-
-/**
- * @note Address: 0x800082D0
- * @note Size: 0x4
- */
-void TRenderingProcessor::do_end()
-{
-}
-
-/**
- * @note Address: 0x800082D4
- * @note Size: 0x4
- */
-void TRenderingProcessor::do_reset_(const char*)
-{
-}
-
-/**
  * @note Address: 0x800082D8
  * @note Size: 0x2C
  * do_begin___Q28JMessage19TRenderingProcessorFPCvPCc
  */
-void TRenderingProcessor::do_begin_(const void* p1, const char* p2)
+void TRenderingProcessor::do_begin_(const void*, const char*)
 {
-	do_begin(p1, p2);
 }
 
 /**
@@ -1001,7 +937,6 @@ void TRenderingProcessor::do_begin_(const void* p1, const char* p2)
  */
 void TRenderingProcessor::do_end_()
 {
-	do_end();
 }
 
 /**
