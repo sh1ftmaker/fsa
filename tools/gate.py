@@ -11,8 +11,9 @@ Checks (see docs/PLAN.md, "Submission gate"):
     leftovers, no field access through casts and offsets, no .incbin;
   * protected files untouched: measuring tools, objdiff/report settings, tool
     versions, orig/;
-  * symbols.txt: no address/size/type changes; renames only away from
-    placeholder names (fn_, lbl_, *_80xxxxxx);
+  * symbols.txt: real (non-placeholder) symbols keep their address, size,
+    type and name; placeholder symbols (fn_, lbl_, *_80xxxxxx) may be
+    renamed, resized or split into the real symbols they cover;
   * every unit marked Matching is 100 % in code and data in the report
     (build/G4SE01/report.json must be current).
 
@@ -131,6 +132,9 @@ def check_symbols(base, changed, problems):
     old = parse_symbols(file_at(base, path))
     new = parse_symbols(Path(path).read_text())
     for key, (name, size, kind) in old.items():
+        if PLACEHOLDER.search(name):
+            # dtk's guessed symbols may be split into the real ones or resized.
+            continue
         if key not in new:
             problems.append(f"symbols.txt: symbol at {key[0]}:0x{key[1]:08X} ({name}) removed")
             continue
