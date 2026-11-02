@@ -117,3 +117,7 @@ void __OSReboot(u32 resetCode, u32 bootDol) {
     ICFlashInvalidate();
     Run((void*)OS_BOOTROM_ADDR);
 }
+void OSSetSaveRegion(void* start, void* end) {
+    SaveStart = start;
+    SaveEnd = end;
+}
