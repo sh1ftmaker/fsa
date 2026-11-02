@@ -772,8 +772,9 @@ JSystem/JUtility/JUTProcBar.cpp:
 	.sdata2     start:0x8053B8C8 end:0x8053B910
 
 JSystem/JUtility/JUTResFont.cpp:
-	.text       start:0x80090EF0 end:0x8009209C
+	.text       start:0x80090DF0 end:0x8009209C
 	.rodata     start:0x8045EDE0 end:0x8045EEE0
+	.data       start:0x804994C0 end:0x80499510
 	.sdata2     start:0x8053B910 end:0x8053B928
 
 JSystem/JUtility/JUTResource.cpp:

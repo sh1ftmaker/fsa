@@ -158,7 +158,6 @@ void JUTResFont::setBlock()
         case 'INF1':
             mInfoBlock = (ResFONT::InfoBlock *)data;
             u32 u = mInfoBlock->mFontType;
-#line 244
             JUT_ASSERT(u < suAboutEncoding_);
             mIsLeadByte = (IsLeadByte *)&saoAboutEncoding_[u];
             break;
@@ -256,11 +255,10 @@ f32 JUTResFont::drawChar_scale(f32 pos_x, f32 pos_y, f32 scale_x, f32 scale_y, i
 {
     JUTFont::TWidth width;
     f32 posMinX;
-    // declaration order matters!
+    // declaration order affects register allocation
     f32 posMinY, scaled_height;
     f32 posMaxX;
 
-#line 378
     JUT_ASSERT(mValid);
 
     loadFont(chr, GX_TEXMAP0, &width);
@@ -309,25 +307,23 @@ f32 JUTResFont::drawChar_scale(f32 pos_x, f32 pos_y, f32 scale_x, f32 scale_y, i
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
 
-    f32 zero_f = 0.0f; // likely a fakematch
-
     // Bottom left
-    GXPosition3f32(posMinX, posMinY, zero_f);
+    GXPosition3f32(posMinX, posMinY, 0.0f);
     GXColor1u32(mColor1);
     GXPosition2u16(texMinX, texMinY);
 
     // Bottom right
-    GXPosition3f32(posMaxX, posMinY, zero_f);
+    GXPosition3f32(posMaxX, posMinY, 0.0f);
     GXColor1u32(mColor2);
     GXPosition2u16(texMaxX, texMinY);
 
     // Top right
-    GXPosition3f32(posMaxX, posMaxY, zero_f);
+    GXPosition3f32(posMaxX, posMaxY, 0.0f);
     GXColor1u32(mColor4);
     GXPosition2u16(texMaxX, texMaxY);
 
     // Top left
-    GXPosition3f32(posMinX, posMaxY, zero_f);
+    GXPosition3f32(posMinX, posMaxY, 0.0f);
     GXColor1u32(mColor3);
     GXPosition2u16(texMinX, texMaxY);
     GXEnd();
@@ -400,7 +396,6 @@ int JUTResFont::getCellHeight() const
 
 bool JUTResFont::isLeadByte(int chr) const { return (*mIsLeadByte)(chr); }
 
-// regswaps
 int JUTResFont::getFontCode(int chr) const
 {
     static const u16 halftofull[95] = {
@@ -431,44 +426,44 @@ int JUTResFont::getFontCode(int chr) const
             }
             else if (mMapBlocks[i]->mMappingMethod == 2)
             {
-                ret = *(&mMapBlocks[i]->mLeading + ((chr - mMapBlocks[i]->mStartCode))); // type punning sin
+                ret = *(&mMapBlocks[i]->mLeading + ((chr - mMapBlocks[i]->mStartCode)));
                 break;
             }
             else if (mMapBlocks[i]->mMappingMethod == 3)
             {
                 
-                u16 *leading_temp = &mMapBlocks[i]->mLeading;
-                int phi_r5 = 0;
-                int phi_r6_2 = mMapBlocks[i]->mNumEntries - 1;
+                u16 *table = &mMapBlocks[i]->mLeading;
+                int low = 0;
+                int high = mMapBlocks[i]->mNumEntries - 1;
 
-                while (phi_r6_2 >= phi_r5)
+                while (high >= low)
                 {
-                    int temp_r7 = (phi_r6_2 + phi_r5) / 2;
+                    int mid = (high + low) / 2;
 
-                    if (chr < leading_temp[temp_r7 * 2])
+                    if (chr < table[mid * 2])
                     {
-                        phi_r6_2 = temp_r7 - 1;
+                        high = mid - 1;
                         continue;
                     }
 
-                    if (chr > leading_temp[temp_r7 * 2])
+                    if (chr > table[mid * 2])
                     {
-                        phi_r5 = temp_r7 + 1;
+                        low = mid + 1;
                         continue;
                     }
 
-                    ret = leading_temp[temp_r7 * 2 + 1]; // jank? possibly type punning fuckery
+                    ret = table[mid * 2 + 1];
                     break;
-                } // loop closes here
+                }
             }
             else if (mMapBlocks[i]->mMappingMethod == 1)
             {
-                u16 *phi_r5_2 = nullptr;
+                u16 *leading = nullptr;
                 if (mMapBlocks[i]->mNumEntries == 1)
                 {
-                    phi_r5_2 = &mMapBlocks[i]->mLeading;
+                    leading = &mMapBlocks[i]->mLeading;
                 }
-                ret = JUTResFont::convertSjis(chr, phi_r5_2);
+                ret = JUTResFont::convertSjis(chr, leading);
                 break;
             }
             break;
@@ -514,7 +509,6 @@ void JUTResFont::loadImage(int code, GXTexMapID id)
     GXLoadTexObj(&_24, id);
 }
 
-// probably needs some work to match TP(debug)
 int JUTResFont::convertSjis(int inChr, u16 *inLead) const
 {
     u8 hi = JSUHiByte(inChr);
