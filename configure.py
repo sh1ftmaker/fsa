@@ -671,7 +671,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/System/JASSeqReader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASSimpleWaveBank.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASSoundParams.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JAudio/System/JASTaskThread.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASTaskThread.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASTrack.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASTrackPort.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASWSParser.cpp", extra_cflags=["-O4,p"]),
@@ -688,7 +688,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/Utility/JAUInitializer.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSectionHeap.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUSeqCollection.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
@@ -727,7 +727,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JKernel/JKRThread.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JMath", [
-        Object(NonMatching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JMessage", [
