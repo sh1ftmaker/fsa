@@ -198,8 +198,8 @@ def cmd_promote(args):
     report = {u["name"]: u for u in honest_units()}
     fake = re.compile(r"FakeMatch|force_order|fakematch|NO_INLINE\(\)|CW_FORCE_(STRINGS|BSS)|fake_function", re.I)
     ready = []
-    # Units demoted because they break the link stay NonMatching until fixed.
-    held = set(re.findall(r'Object\(NonMatching, "([^"]+)".*FIXME\(link\)', (REPO / "configure.py").read_text()))
+    # Units held back with a FIXME (link breaks, donor fakematches) stay NonMatching until fixed.
+    held = set(re.findall(r'Object\(NonMatching, "([^"]+)".*# FIXME', (REPO / "configure.py").read_text()))
     for u in json.loads((REPO / "objdiff.json").read_text())["units"]:
         meta = u.get("metadata") or {}
         src = meta.get("source_path") or ""
