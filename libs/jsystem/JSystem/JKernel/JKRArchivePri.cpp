@@ -7,6 +7,12 @@
 
 u32 JKRArchive::sCurrentDirID;
 
+JKRArchive::JKRArchive()
+{
+    mIsMounted = false;
+    mMountDirection = MOUNT_DIRECTION_HEAD;
+}
+
 JKRArchive::JKRArchive(long entryNum, JKRArchive::EMountMode mountMode)
     : JKRFileLoader()
 {

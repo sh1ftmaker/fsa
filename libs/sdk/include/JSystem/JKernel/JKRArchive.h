@@ -204,6 +204,8 @@ protected:
     u32 *mExpandSizes;           // _50
     const char *mStrTable;       // _54
     int _58;                     // _58
+    int mCompression;                // _5C
+    EMountDirection mMountDirection; // _60
 };
 
 enum JKRMemBreakFlag
@@ -230,9 +232,7 @@ public:
     static u32 fetchResource_subroutine(u32, u32, JKRHeap *, int, u8 **);
 
     // _00     = VTBL
-    // _00-_5C = JKRArchive
-    int mCompression;                // _5C
-    EMountDirection mMountDirection; // _60
+    // _00-_64 = JKRArchive
     JKRAramBlock *mBlock;            // _64
     JKRFile *mDvdFile;               // _68
 };
@@ -257,9 +257,7 @@ struct JKRCompArchive : public JKRArchive
     void unmountFixed();
 
     // _00     = VTBL
-    // _00-_5C = JKRArchive
-    int mCompression;                // _5C
-    EMountDirection mMountDirection; // _60
+    // _00-_64 = JKRArchive
     u32 _64;                         // _64
     JKRAramBlock *mAramPart;         // _68
     u32 _6C;                         // _6C
@@ -290,9 +288,7 @@ struct JKRDvdArchive : public JKRArchive
     unknown unmountFixed();
 
     // _00     = VTBL
-    // _00-_5C = JKRArchive
-    int mCompression;                // _5C
-    EMountDirection mMountDirection; // _60
+    // _00-_64 = JKRArchive
     int _64;                         // _64
     JKRFile *mDvdFile;               // _68
 };
@@ -324,9 +320,7 @@ struct JKRMemArchive : public JKRArchive
     void open(const char *, EMountDirection);
 
     // _00     = VTBL
-    // _00-_5C = JKRArchive
-    int mCompression;                // _5C
-    EMountDirection mMountDirection; // _60
+    // _00-_64 = JKRArchive
     SArcHeader *mArcHeader;          // _64
     u8 *mArchiveData;                // _68
     bool mIsOpen;                    // _6C
