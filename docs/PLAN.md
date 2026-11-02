@@ -134,8 +134,10 @@ checked by `tools/gate.py` and CI:
 
 ---
 
-Reviewed by a separate reviewer agent that has not seen the author's work,
-then merged by the coordinator:
+Reviewed adversarially by a separate agent that has not seen the author's
+reasoning (`docs/REVIEW_BRIEF.md`; verdict ACCEPT / CHANGES / REJECT), then
+merged by the coordinator. CHANGES go back to a unit agent; only ACCEPT merges.
+The reviewer checks:
 
 - Names and types: evidence for each new name; placeholders otherwise.
   Structs carry `/* 0xNN */` offsets and a size comment.
