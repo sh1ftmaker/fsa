@@ -206,6 +206,16 @@ public:
       --mIt;
       return *this;
     }
+    iterator operator++(int) {
+      const iterator old(*this);
+      ++*this;
+      return old;
+    }
+    iterator operator--(int) {
+      const iterator old(*this);
+      --*this;
+      return old;
+    }
 
     T* operator->() const { return TLinkList::Element_toValue(mIt.operator->()); }
     T& operator*() const {
@@ -233,6 +243,16 @@ public:
     const_iterator& operator--() {
       --mIt;
       return *this;
+    }
+    const_iterator operator++(int) {
+      const const_iterator old(*this);
+      ++*this;
+      return old;
+    }
+    const_iterator operator--(int) {
+      const const_iterator old(*this);
+      --*this;
+      return old;
     }
 
     const T* operator->() const { return TLinkList::Element_toValue(mIt.operator->()); }
@@ -294,6 +314,30 @@ public:
     return (const T*)((const char*)p + O);
   }
 };
+
+template <typename T, int O>
+class TLinkList_factory : public TLinkList<T, O> {
+public:
+  inline virtual ~TLinkList_factory() = 0;
+  virtual T* Do_create() = 0;
+  virtual void Do_destroy(T*) = 0;
+
+  void Clear_destroy() {
+    while (!this->empty()) {
+      T* p = &this->front();
+      this->Do_destroy(p);
+    }
+  }
+
+  typename TLinkList<T, O>::iterator Erase_destroy(T* p) {
+    typename TLinkList<T, O>::iterator it(this->Erase(p));
+    this->Do_destroy(p);
+    return it;
+  }
+};
+
+template <typename T, int O>
+TLinkList_factory<T, O>::~TLinkList_factory() {}
 }
 
 #endif
