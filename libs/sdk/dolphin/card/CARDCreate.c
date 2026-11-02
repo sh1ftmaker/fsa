@@ -114,12 +114,10 @@ s32 CARDCreateAsync(s32 chan, const char* fileName, u32 size, CARDFileInfo* file
   return result;
 }
 
-s32 CARDCreate(s32 channel, const char *fileName, u32 size, CARDFileInfo *fileInfo)
-{
-  s32 result = CARDCreateAsync(channel, fileName, size, fileInfo, __CARDSyncCallback);
-  if (result < 0)
-  {
+s32 CARDCreate(s32 chan, const char* fileName, u32 size, CARDFileInfo* fileInfo) {
+  s32 result = CARDCreateAsync(chan, fileName, size, fileInfo, __CARDSyncCallback);
+  if (result < 0) {
     return result;
   }
-  return __CARDSync(channel);
+  return __CARDSync(chan);
 }
