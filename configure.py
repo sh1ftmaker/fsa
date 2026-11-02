@@ -477,7 +477,7 @@ config.libs = [
         Object(Matching, "dolphin/card/CARDRead.c"),
         Object(Matching, "dolphin/card/CARDStat.c"),
         Object(Matching, "dolphin/card/CARDUnlock.c"),
-        Object(NonMatching, "dolphin/card/CARDWrite.c"),
+        Object(Matching, "dolphin/card/CARDWrite.c"),
     ]),
     SdkLib("db", [
         Object(Matching, "dolphin/db/db.c"),
