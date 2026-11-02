@@ -89,7 +89,7 @@ struct JPABaseShape
     BOOL isPrjTex() const { return (pBsd->mFlags & 0x00100000); }
     BOOL isTexCrdAnm() const { return (pBsd->mFlags & 0x01000000); }
     BOOL isGlblClrAnm() const { return (pBsd->mFlags & 0x00001000); }
-    u32 isGlblTexAnm() const { return (pBsd->mFlags & 0x00004000) ; } // fakematch most likely
+    u32 isGlblTexAnm() const { return (pBsd->mFlags & 0x00004000); }
     BOOL isDrawFwdAhead() const { return (pBsd->mFlags & 0x00200000); }
     BOOL isDrawPrntAhead() const { return (pBsd->mFlags & 0x00400000); }
     BOOL isClipOn() const { return (pBsd->mFlags & 0x00800000); }

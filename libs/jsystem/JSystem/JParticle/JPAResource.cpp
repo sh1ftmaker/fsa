@@ -57,8 +57,8 @@ JPAResource::JPAResource()
     mUsrIdx                       = 0;
 }
 
- // pBsp->isGlblTexAnm(); is typed u32, which i guess is a fakematch
- // it's more likely some member or another temp is u32 instead of int
+// JPABaseShape::isGlblTexAnm() returns u32, unlike its BOOL neighbours (as in
+// mkdd; pikmin2 casts it to u32 here); with BOOL the flag temps get other registers.
 void JPAResource::init(JKRHeap *heap)
 {
     BOOL is_glbl_clr_anm = pBsp->isGlblClrAnm();
