@@ -19,11 +19,17 @@ Outputs:
   site/data/lib/<id>.json      functions per file of one library (loaded on demand)
   site/data/history.json       one entry per commit (appended or replaced)
   site/data/roadmap.json       docs/roadmap.yml with each milestone's live progress
+  site/data/badge-*.json       shields.io endpoint badges for the README
+  site/badges/*.svg            README visuals (tools/readme_assets.py)
+  README.md                    the text between its <!-- progress|regions|now:start/end --> markers
 
 Only names, addresses, sizes and match flags are written: never bytes,
 asm or data contents of main.dol.
 
-Usage: python3 tools/site_data.py [--subject "<commit subject>"]
+Usage: python3 tools/site_data.py [--subject "<commit subject>"] [--stage]
+
+--stage runs `git add` on everything above, so a merge commit carries the
+site data, the README visuals and the README together.
 """
 
 import argparse
@@ -36,6 +42,8 @@ import re
 import subprocess
 from collections import defaultdict
 from pathlib import Path
+
+import readme_assets  # tools/ is on sys.path when this file runs as a script
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "build/G4SE01/report_honest.json"
@@ -299,7 +307,9 @@ def write(report, files, data_unsplit, subject):
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
                "totals": totals, "regions": regions}
     (OUT / "summary.json").write_text(json.dumps(summary, separators=(",", ":")))
-    (OUT / "roadmap.json").write_text(json.dumps(roadmap(regions, totals, now), separators=(",", ":")))
+    rm = roadmap(regions, totals, now)
+    (OUT / "roadmap.json").write_text(json.dumps(rm, separators=(",", ":")))
+    readme_assets.write_all(summary, rm)
 
     # history: one entry per commit. The commit being made has no hash yet, so
     # each entry records its parent ("base"); later runs fill in "commit".
@@ -411,6 +421,7 @@ def roadmap(regions, totals, now):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--subject", default="", help="subject line of the commit these files go into")
+    ap.add_argument("--stage", action="store_true", help="git add every file this writes")
     args = ap.parse_args()
     if not REPORT.exists():
         raise SystemExit(f"{REPORT} missing: run ninja first")
@@ -421,6 +432,10 @@ def main():
     print(f"site/data: {t['fns_matched']}/{t['fns']} functions, {t['code_matched']}/{t['code']} bytes, "
           f"{t['files']} files ({t['files_unsplit']} not split), SHA-1 {'OK' if t['sha1_ok'] else 'NOT OK'}, "
           f"{sizes // 1024} KiB")
+    if args.stage:
+        r = subprocess.run(["git", "add", "--", *readme_assets.OUTPUTS], cwd=ROOT, capture_output=True, text=True)
+        if r.returncode != 0:
+            raise SystemExit(f"git add failed:\n{r.stderr}")
 
 
 if __name__ == "__main__":

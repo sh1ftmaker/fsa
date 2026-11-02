@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="436" viewBox="0 0 960 436" role="img" aria-label="Matched code and functions per region: Game code 0 % of code, 0 of 6791 functions; JSystem 76.3 % of code, 2657 of 3700 functions; Dolphin SDK 99.6 % of code, 606 of 614 functions; GX 95.8 % of code, 166 of 172 functions; MSL, Runtime, TRK 91.2 % of code, 282 of 284 functions">
+<title>Matched code and functions per region: Game code 0 % of code, 0 of 6791 functions; JSystem 76.3 % of code, 2657 of 3700 functions; Dolphin SDK 99.6 % of code, 606 of 614 functions; GX 95.8 % of code, 166 of 172 functions; MSL, Runtime, TRK 91.2 % of code, 282 of 284 functions</title>
+<style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .grow { transform-box: fill-box; transform-origin: 0 50%; animation: grow 1.4s cubic-bezier(.2,.8,.2,1) both; } @keyframes grow { from { transform: scaleX(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
+<rect x="0.5" y="0.5" width="959" height="435" rx="14" fill="#161a34" stroke="#262b4e"/>
+<text x="28" y="40" font-size="16" font-weight="700" fill="#eceefb">Whole DOL</text>
+<text x="28" y="60" font-size="12" fill="#7c82a8">segment width = share of the code</text>
+<rect x="330" y="28" width="440" height="16" rx="4" fill="#1d2142"/>
+<clipPath id="wb"><rect x="330" y="28" width="440" height="16" rx="4"/></clipPath><g clip-path="url(#wb)">
+<rect x="330.00" y="28" width="354.04" height="16" fill="#3aae5c" fill-opacity="0.18"/>
+<rect x="683.29" y="28" width="1.5" height="16" fill="#161a34"/>
+<rect x="684.04" y="28" width="62.45" height="16" fill="#ef5b52" fill-opacity="0.18"/>
+<rect class="grow" x="684.04" y="28" width="47.67" height="16" fill="#ef5b52"/>
+<rect x="745.73" y="28" width="1.5" height="16" fill="#161a34"/>
+<rect x="746.48" y="28" width="13.00" height="16" fill="#3d9cf0" fill-opacity="0.18"/>
+<rect class="grow" x="746.48" y="28" width="12.95" height="16" fill="#3d9cf0"/>
+<rect x="758.73" y="28" width="1.5" height="16" fill="#161a34"/>
+<rect x="759.48" y="28" width="3.33" height="16" fill="#c35ee6" fill-opacity="0.18"/>
+<rect class="grow" x="759.48" y="28" width="3.20" height="16" fill="#c35ee6"/>
+<rect x="762.07" y="28" width="1.5" height="16" fill="#161a34"/>
+<rect x="762.82" y="28" width="7.18" height="16" fill="#d29a2e" fill-opacity="0.18"/>
+<rect class="grow" x="762.82" y="28" width="6.55" height="16" fill="#d29a2e"/>
+<rect x="769.25" y="28" width="1.5" height="16" fill="#161a34"/>
+</g>
+<text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#eceefb">15.99 %</text>
+<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">3,711 / 11,561 fns</text>
+<text x="330" y="62" class="mono" font-size="11.5" fill="#7c82a8">710,408 / 4,442,088 bytes of code</text>
+<line x1="20" x2="940" y1="80" y2="80" stroke="#262b4e"/>
+<g fill="#3aae5c"><path d="M34.5 99L41 105.5L34.5 112L28 105.5Z"/></g>
+<text x="50" y="111" font-size="16" font-weight="700" fill="#eceefb">Game code</text>
+<text x="50" y="131" font-size="12" fill="#7c82a8">3,574,236 bytes · 14 libraries (file groups)</text>
+<rect x="330" y="98" width="440" height="14" rx="4" fill="#1d2142"/>
+<rect x="330" y="118" width="440" height="5" rx="2.5" fill="#1d2142"/>
+<text x="330" y="139" class="mono" font-size="11.5" fill="#7c82a8">code 0 % · functions 0 %</text>
+<text x="932" y="112" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#3aae5c">0 %</text>
+<text x="932" y="132" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">0 / 6,791 fns</text>
+<line x1="20" x2="940" y1="150" y2="150" stroke="#262b4e" stroke-dasharray="2 4"/>
+<g fill="#ef5b52"><path d="M34.5 165L41 178L28 178Z"/></g>
+<text x="50" y="177" font-size="16" font-weight="700" fill="#eceefb">JSystem</text>
+<text x="50" y="197" font-size="12" fill="#7c82a8">630,440 bytes · 11 libraries</text>
+<rect x="330" y="164" width="440" height="14" rx="4" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.1s" x="330" y="164" width="335.88" height="14" rx="4" fill="#ef5b52"/>
+<rect x="330" y="184" width="440" height="5" rx="2.5" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.3s" x="330" y="184" width="315.97" height="5" rx="2.5" fill="#ef5b52" fill-opacity="0.55"/>
+<text x="330" y="205" class="mono" font-size="11.5" fill="#7c82a8">code 76.3 % · functions 71.8 %</text>
+<text x="932" y="178" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#ef5b52">76.3 %</text>
+<text x="932" y="198" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">2,657 / 3,700 fns</text>
+<line x1="20" x2="940" y1="216" y2="216" stroke="#262b4e" stroke-dasharray="2 4"/>
+<g fill="#3d9cf0"><circle cx="34.5" cy="237.5" r="6.5"/></g>
+<text x="50" y="243" font-size="16" font-weight="700" fill="#eceefb">Dolphin SDK</text>
+<text x="50" y="263" font-size="12" fill="#7c82a8">131,240 bytes · 18 libraries</text>
+<rect x="330" y="230" width="440" height="14" rx="4" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.2s" x="330" y="230" width="438.43" height="14" rx="4" fill="#3d9cf0"/>
+<rect x="330" y="250" width="440" height="5" rx="2.5" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.4s" x="330" y="250" width="434.27" height="5" rx="2.5" fill="#3d9cf0" fill-opacity="0.55"/>
+<text x="330" y="271" class="mono" font-size="11.5" fill="#7c82a8">code 99.6 % · functions 98.7 %</text>
+<text x="932" y="244" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#3d9cf0">99.6 %</text>
+<text x="932" y="264" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">606 / 614 fns</text>
+<line x1="20" x2="940" y1="282" y2="282" stroke="#262b4e" stroke-dasharray="2 4"/>
+<g fill="#c35ee6"><rect x="28" y="297" width="13" height="13" rx="1.5"/></g>
+<text x="50" y="309" font-size="16" font-weight="700" fill="#eceefb">GX</text>
+<text x="50" y="329" font-size="12" fill="#7c82a8">33,660 bytes · 1 library</text>
+<rect x="330" y="296" width="440" height="14" rx="4" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.3s" x="330" y="296" width="421.65" height="14" rx="4" fill="#c35ee6"/>
+<rect x="330" y="316" width="440" height="5" rx="2.5" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.5s" x="330" y="316" width="424.65" height="5" rx="2.5" fill="#c35ee6" fill-opacity="0.55"/>
+<text x="330" y="337" class="mono" font-size="11.5" fill="#7c82a8">code 95.8 % · functions 96.5 %</text>
+<text x="932" y="310" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#c35ee6">95.8 %</text>
+<text x="932" y="330" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">166 / 172 fns</text>
+<line x1="20" x2="940" y1="348" y2="348" stroke="#262b4e" stroke-dasharray="2 4"/>
+<g fill="#d29a2e"><path d="M34.5 363L36.06 367.94L41 369.5L36.06 371.06L34.5 376L32.94 371.06L28 369.5L32.94 367.94Z"/></g>
+<text x="50" y="375" font-size="16" font-weight="700" fill="#eceefb">MSL, Runtime, TRK</text>
+<text x="50" y="395" font-size="12" fill="#7c82a8">72,512 bytes · 3 libraries</text>
+<rect x="330" y="362" width="440" height="14" rx="4" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.4s" x="330" y="362" width="401.26" height="14" rx="4" fill="#d29a2e"/>
+<rect x="330" y="382" width="440" height="5" rx="2.5" fill="#1d2142"/>
+<rect class="grow" style="animation-delay:0.6s" x="330" y="382" width="436.90" height="5" rx="2.5" fill="#d29a2e" fill-opacity="0.55"/>
+<text x="330" y="403" class="mono" font-size="11.5" fill="#7c82a8">code 91.2 % · functions 99.3 %</text>
+<text x="932" y="376" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#d29a2e">91.2 %</text>
+<text x="932" y="396" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">282 / 284 fns</text>
+</svg>

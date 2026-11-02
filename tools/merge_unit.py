@@ -157,10 +157,8 @@ def main():
     if after < before:
         sys.exit("progress went down; merge left staged for inspection")
     run("git", "add", SYMBOLS)  # dtk rewrites symbols.txt on every split; keep its form
-    run("python3", "tools/site_data.py", "--subject", message.splitlines()[0])  # progress website data
-    run("git", "add", "site/data")
-    run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com",
-        "commit", "-q", "-m", message + TRAILER)
+    run("python3", "tools/site_data.py", "--subject", message.splitlines()[0], "--stage")  # site data, README visuals, README
+    run("git", "commit", "-q", "-m", message + TRAILER)
     run("python3", "tools/claim.py", "release", unit)
     print(run("git", "log", "--oneline", "-1").strip())
 
