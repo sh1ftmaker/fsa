@@ -1009,12 +1009,12 @@ JSystem/J2DGraph/J2DPane.cpp:
 	.sdata2     start:0x8053B9B0 end:0x8053B9D8
 
 JSystem/J2DGraph/J2DPicture.cpp:
-	.text       start:0x80097064 end:0x8009AB8C
+	.text       start:0x80097064 end:0x8009AAFC
 	.data       start:0x80499628 end:0x80499778
 	.sdata2     start:0x8053B9D8 end:0x8053BA00
 
 JSystem/J2DGraph/J2DPrint.cpp:
-	.text       start:0x8009AB8C end:0x8009C4EC
+	.text       start:0x8009AAFC end:0x8009C4EC
 	.data       start:0x80499778 end:0x804997E8
 	.sbss       start:0x8053A9A0 end:0x8053A9B0
 	.sdata2     start:0x8053BA00 end:0x8053BA28
