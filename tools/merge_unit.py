@@ -132,6 +132,7 @@ def main():
     print(f"progress: {before} -> {after} functions")
     if after < before:
         sys.exit("progress went down; merge left staged for inspection")
+    run("git", "add", SYMBOLS)  # dtk rewrites symbols.txt on every split; keep its form
     run("git", "-c", "user.name=sh1ftmaker", "-c", "user.email=shiftmaker@gmail.com",
         "commit", "-q", "-m", message + TRAILER)
     run("python3", "tools/claim.py", "release", unit)

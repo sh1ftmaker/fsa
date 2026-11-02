@@ -52,6 +52,9 @@ stays NonMatching because …). `merge_unit.py` adds the trailer.
 - `symbols.txt` holds several symbols at one address (labels with
   functions): anything parsing it must key by (section, address,
   occurrence), not address alone. Both the gate and `merge_unit.py` do.
+- dtk rewrites (re-sorts) `symbols.txt` on every split. A merge must keep
+  dtk's form: `merge_unit.py` inserts new symbols in place and stages dtk's
+  rewrite with the merge, so the tree stays clean afterwards.
 - `configure.py` conflicts are usually two neighbouring unit flags;
   `merge_unit.py` applies a branch's flag flips onto the current file and
   refuses any other configure.py change.
