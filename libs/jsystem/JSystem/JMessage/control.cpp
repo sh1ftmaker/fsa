@@ -44,11 +44,11 @@ void TControl::reset()
 	mRenderStack.clear();
 
 	if (mBaseProcSeq) {
-		mBaseProcSeq->reset_(nullptr);
+		mBaseProcSeq->reset();
 	}
 
 	if (mBaseProcRender) {
-		mBaseProcRender->reset_(nullptr);
+		mBaseProcRender->reset();
 	}
 }
 
