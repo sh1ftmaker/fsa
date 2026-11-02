@@ -453,6 +453,9 @@ config.precompiled_headers = [
     },
 ]
 config.libs = [
+    SdkLib("amcstubs", [
+        Object(NonMatching, "dolphin/amcstubs/AmcExi2Stubs.c"),
+    ]),
     SdkLib("ai", [
         Object(Matching, "dolphin/ai/ai.c"),
     ]),
@@ -488,14 +491,21 @@ config.libs = [
     ]),
     SdkLib("dvd", [
         Object(Matching, "dolphin/dvd/dvd.c"),
+        Object(NonMatching, "dolphin/dvd/dvderror.c"),
+        Object(NonMatching, "dolphin/dvd/dvdFatal.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(Matching, "dolphin/dvd/dvdidutils.c"),
         Object(Matching, "dolphin/dvd/dvdlow.c"),
         Object(Matching, "dolphin/dvd/dvdqueue.c"),
+        Object(NonMatching, "dolphin/dvd/fstload.c"),
     ]),
     SdkLib("exi", [
         Object(Matching, "dolphin/exi/EXIBios.c"),
         Object(Matching, "dolphin/exi/EXIUart.c"),
+    ]),
+    SdkLib("gd", [
+        Object(NonMatching, "dolphin/gd/GDBase.c"),
+        Object(NonMatching, "dolphin/gd/GDGeometry.c"),
     ]),
     SdkLib("mtx", [
         Object(NonMatching, "dolphin/mtx/mtx.c"),
@@ -507,6 +517,8 @@ config.libs = [
         Object(Matching, "dolphin/os/OS.c"),
         Object(Matching, "dolphin/os/OSAlarm.c"),
         Object(Matching, "dolphin/os/OSAlloc.c"),
+        Object(NonMatching, "dolphin/os/OSArena.c"),
+        Object(NonMatching, "dolphin/os/OSAudioSystem.c"),
         Object(Matching, "dolphin/os/OSCache.c"),
         Object(Matching, "dolphin/os/OSContext.c"),
         Object(Matching, "dolphin/os/OSError.c"),
@@ -523,6 +535,14 @@ config.libs = [
         Object(Matching, "dolphin/os/OSSync.c"),
         Object(Matching, "dolphin/os/OSThread.c"),
         Object(Matching, "dolphin/os/OSTime.c"),
+        Object(NonMatching, "dolphin/os/init/__start.c"),
+        Object(NonMatching, "dolphin/os/init/__ppc_eabi_init.cpp"),
+    ]),
+    SdkLib("odenotstub", [
+        Object(NonMatching, "dolphin/odenotstub/odenotstub.c"),
+    ]),
+    SdkLib("OdemuExi2", [
+        Object(NonMatching, "dolphin/OdemuExi2/DebuggerDriver.c", extra_cflags=["-inline deferred"]),
     ]),
     SdkLib("pad", [
         Object(Matching, "dolphin/pad/Pad.c"),
@@ -676,9 +696,30 @@ config.libs = [
         Object(NonMatching, "JSystem/JUtility/JUTVideo.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,p"]),
     ]),
+    # Runtime's __mem.c (.init memset/__fill_mem/memcpy) from pikmin2, with
+    # pikmin2's Runtime flags (cflags_runtime + -inline deferred).
+    {
+        "lib": "Runtime.PPCEABI.H (__mem)",
+        "mw_version": "GC/2.6",
+        "cflags": [
+            "-nodefaults", "-proc gekko", "-align powerpc", "-enum int",
+            "-fp hardware", "-Cpp_exceptions off", "-O4,p",
+            '-pragma "cats off"', '-pragma "warn_notinlined off"',
+            "-maxerrors 1", "-nosyspath", "-RTTI off", "-fp_contract on",
+            "-multibyte", "-i libs/sdk/include", "-i libs/sdk/msl_include",
+            "-use_lmw_stmw on", "-str reuse,readonly", "-common off",
+            "-inline auto", "-inline deferred",
+        ],
+        "progress_category": "sdk",
+        "host": False,
+        "objects": [
+            Object(NonMatching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
+        ],
+    },
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(Matching, "dolphin/gx/GXBump.c"),
+        Object(NonMatching, "dolphin/gx/GXDisplayList.c"),
         Object(Matching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
         Object(Matching, "dolphin/gx/GXGeometry.c"),

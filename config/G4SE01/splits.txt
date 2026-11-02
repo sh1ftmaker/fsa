@@ -286,8 +286,14 @@ dolphin/os/OSAlloc.c:
 	.sdata      start:0x80539C00 end:0x80539C08
 	.sbss       start:0x8053A418 end:0x8053A428
 
+dolphin/os/OSArena.c:
+	.text       start:0x80040C6C end:0x80040C8C
+	.sdata      start:0x80539C08 end:0x80539C10
+	.sbss       start:0x8053A428 end:0x8053A430
+
 dolphin/os/OSAudioSystem.c:
 	.text       start:0x80040C8C end:0x80040F20
+	.data       start:0x80495800 end:0x80495880
 
 dolphin/os/OSCache.c:
 	.text       start:0x80040F20 end:0x80041598
@@ -355,6 +361,14 @@ dolphin/os/OSTime.c:
 	.text       start:0x800463E0 end:0x80046804
 	.data       start:0x80495FE8 end:0x80496048
 
+dolphin/os/init/__start.c:
+	.init       start:0x80003100 end:0x80003400
+	.sbss       start:0x8053A498 end:0x8053A4A0
+
+dolphin/os/init/__ppc_eabi_init.cpp:
+	.init       start:0x80003400 end:0x80003458
+	.text       start:0x80046804 end:0x80046898
+
 dolphin/mtx/mtx.c:
 	.text       start:0x80046898 end:0x80046E84
 	.sdata      start:0x80539C28 end:0x80539C30
@@ -396,12 +410,21 @@ dolphin/dvd/dvdqueue.c:
 
 dolphin/dvd/dvderror.c:
 	.text       start:0x8004B2DC end:0x8004B474
+	.data       start:0x80496330 end:0x80496378
 
 dolphin/dvd/dvdidutils.c:
 	.text       start:0x8004B474 end:0x8004B56C
 
+dolphin/dvd/dvdFatal.c:
+	.text       start:0x8004B56C end:0x8004B59C
+	.sbss       start:0x8053A550 end:0x8053A558
+
 dolphin/dvd/fstload.c:
 	.text       start:0x8004B59C end:0x8004B7DC
+	.data       start:0x80496378 end:0x804963E8
+	.bss        start:0x804B5998 end:0x804B5A08
+	.sdata      start:0x80539C58 end:0x80539C68
+	.sbss       start:0x8053A558 end:0x8053A568
 
 dolphin/vi/vi.c:
 	.text       start:0x8004B7DC end:0x8004D640
@@ -767,14 +790,24 @@ PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.
 PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_sqrt.c:
 	.text       start:0x80070354 end:0x80070578
 
+dolphin/amcstubs/AmcExi2Stubs.c:
+	.text       start:0x800705E0 end:0x80070610
+
+dolphin/odenotstub/odenotstub.c:
+	.text       start:0x80070610 end:0x80070618
+
 dolphin/OdemuExi2/DebuggerDriver.c:
 	.text       start:0x80070618 end:0x80071098
+	.sdata      start:0x80539D48 end:0x80539D50
+	.sbss       start:0x8053A748 end:0x8053A760
 
 dolphin/gd/GDBase.c:
 	.text       start:0x80071098 end:0x80071204
+	.sbss       start:0x8053A760 end:0x8053A768
 
 dolphin/gd/GDGeometry.c:
 	.text       start:0x80071204 end:0x80071C14
+	.data       start:0x80498268 end:0x804982D0
 
 dolphin/exi/EXIBios.c:
 	.text       start:0x80071C14 end:0x800735F0
@@ -1150,3 +1183,6 @@ JSystem/JParticle/JPAResourceManager.cpp:
 JSystem/JParticle/JPATexture.cpp:
 	.text       start:0x800F3920 end:0x800F39EC
 	.data       start:0x8049C3A8 end:0x8049C3B8
+
+PowerPC_EABI_Support/Runtime/Src/__mem.c:
+	.init       start:0x8000540C end:0x80005544
