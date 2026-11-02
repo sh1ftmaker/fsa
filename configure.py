@@ -677,7 +677,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,s"]),
     ]),
     SdkGxLib("gx", [
-        Object(NonMatching, "dolphin/gx/GXAttr.c"),
+        Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(NonMatching, "dolphin/gx/GXBump.c"),
         Object(NonMatching, "dolphin/gx/GXFifo.c"),
         Object(NonMatching, "dolphin/gx/GXFrameBuf.c"),
