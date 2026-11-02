@@ -86,12 +86,25 @@ def file_at(base, path):
         return ""
 
 
+# Only donors whose code may be copied count as a precedent: a LICENSE file at
+# the top, and not MetroidPrimePort (its NOTICE excludes extern/sdk and the game).
+UNUSABLE_DONORS = {"Odrannnn__MetroidPrimePort"}
+
+
+def licensed_donors():
+    for repo in sorted(DONORS.iterdir()):
+        if repo.name in UNUSABLE_DONORS or not repo.is_dir():
+            continue
+        if any(p.name.upper().startswith(("LICENSE", "COPYING", "UNLICENSE")) for p in repo.iterdir()):
+            yield repo
+
+
 def donor_texts(path):
     name = Path(path).name
     if not DONORS.is_dir():
         return []
     texts = []
-    for hit in DONORS.glob(f"*/**/{name}"):
+    for hit in (h for repo in licensed_donors() for h in repo.glob(f"**/{name}")):
         try:
             texts.append(hit.read_text(errors="replace"))
         except OSError:
