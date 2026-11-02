@@ -2,7 +2,11 @@
 #include "JSystem/JKernel/JKRFileFinder.h"
 #include "JSystem/JKernel/JKRFileCache.h"
 
-// this file misses all functions except for a weak destructor, so i only added the function that is needed and the function calls inside it are stubs, i've not tested if the function matches
+// FSA never mounts a JKRFileCache, so the linker strips the whole file except
+// the weak JKRFileFinder destructor and vtable that getFirstFile instantiates.
+// Those come first in the link, so the copies in JKRFileFinder.cpp are dropped.
+// Only getFirstFile is imported; the rest of the file (mount, getResource, ...,
+// getDvdPathName) is not.
 
 JKRDvdFinder * JKRFileCache::getFirstFile(const char *path) const
 {
@@ -13,11 +17,5 @@ JKRDvdFinder * JKRFileCache::getFirstFile(const char *path) const
         return fileFinder;
     }
     delete fileFinder;
-    return nullptr;
-}
-
-// stub
-char *JKRFileCache::getDvdPathName(const char *) const
-{
     return nullptr;
 }

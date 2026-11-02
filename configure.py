@@ -533,7 +533,6 @@ config.libs = [
     SdkLib("dvd", [
         Object(Matching, "dolphin/dvd/dvd.c"),
         Object(Matching, "dolphin/dvd/dvderror.c"),
-        # FIXME: .text matches; symbols.txt has FatalFunc as 8 bytes (dtk guess), the static is 4 (coordinator: size 0x4, scope:local).
         Object(Matching, "dolphin/dvd/dvdFatal.c"),
         Object(NonMatching, "dolphin/dvd/dvdfs.c"),
         Object(Matching, "dolphin/dvd/dvdidutils.c"),
@@ -656,7 +655,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/System/JASDSPInterface.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASDriverIF.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASDrumSet.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JAudio/System/JASDvdThread.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASDvdThread.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASHeapCtrl.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASInstRand.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASInstSense.cpp", extra_cflags=["-O4,p"]),
@@ -706,7 +705,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JKernel/JKRAram.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): undefined operator delete
+        Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramPiece.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRArchivePri.cpp", extra_cflags=["-O4,p"]),
@@ -719,7 +718,8 @@ config.libs = [
         Object(NonMatching, "JSystem/JKernel/JKRDvdFile.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRDvdRipper.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRExpHeap.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JKernel/JKRFileFinder.cpp", extra_cflags=["-O4,p"]),  # FIXME(link): weak __dt__13JKRFileFinderFv comes first in FSA (0x80082F44); ours emits it after the class methods
+        Object(Matching, "JSystem/JKernel/JKRFileCache.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JKernel/JKRFileFinder.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRFileLoader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRHeap.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRMemArchive.cpp", extra_cflags=["-O4,p"]),
@@ -891,11 +891,11 @@ config.libs = [
         Object(Matching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp", extra_cflags=["-O4,p"]),
     ]),
     JSystemLib("JGadget", [
-        Object(NonMatching, "JSystem/JGadget/std-vector.cpp"),  # FIXME(link): undefined fn_80087AB4
+        Object(Matching, "JSystem/JGadget/std-vector.cpp"),
     ]),
     JSystemLib("JUtility", [
         Object(NonMatching, "JSystem/JUtility/JUTException.cpp"),
-        Object(NonMatching, "JSystem/JUtility/JUTFader.cpp"),  # FIXME(link): undefined fn_8008CB40
+        Object(Matching, "JSystem/JUtility/JUTFader.cpp"),
     ]),
     # Runtime and MSL_C (pikmin2, GC/2.6; see cflags_msl).
     {

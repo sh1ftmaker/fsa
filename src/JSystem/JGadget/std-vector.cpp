@@ -24,11 +24,6 @@ TVector_pointer_void::TVector_pointer_void(const TAllocator<void*>& allocator) {
     mExtend = vector::extend_default;
 }
 
-// Unused function, fixes weak function ordering. Doesn't appear in the debug maps?
-TVector_pointer_void::TVector_pointer_void(u32 count, void* const& defaultValue, const TAllocator<void*>& allocator) {
-    TVector::insert(NULL, count, defaultValue);
-}
-
 /* 802BFF48-802BFFF0       .text __dt__Q27JGadget20TVector_pointer_voidFv */
 TVector_pointer_void::~TVector_pointer_void() {}
 

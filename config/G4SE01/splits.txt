@@ -77,11 +77,11 @@ JSystem/JAudio/System/JASCallback.cpp:
 	.text       start:0x80027EC4 end:0x800280E8
 
 JSystem/JAudio/System/JASCmdStack.cpp:
-	.text       start:0x800280E8 end:0x800282C8
+	.text       start:0x800280E8 end:0x800282C0
 	.ctors      start:0x8045BD38 end:0x8045BD3C
 
 JSystem/JAudio/System/JASDvdThread.cpp:
-	.text       start:0x800282C8 end:0x80028374
+	.text       start:0x800282C0 end:0x80028374
 	.sbss       start:0x8053A2B8 end:0x8053A2C0
 
 JSystem/JAudio/System/JASHeapCtrl.cpp:
@@ -1072,13 +1072,13 @@ JSystem/JKernel/JKRAramBlock.cpp:
 	.data       start:0x80498C00 end:0x80498C10
 
 JSystem/JKernel/JKRAramHeap.cpp:
-	.text       start:0x8007AEB0 end:0x8007B268
+	.text       start:0x8007AEB0 end:0x8007B248
 	.ctors      start:0x8045BDAC end:0x8045BDB0
 	.data       start:0x80498C10 end:0x80498C20
 	.bss        start:0x804B9FC8 end:0x804B9FD8
 
 JSystem/JKernel/JKRAramPiece.cpp:
-	.text       start:0x8007B268 end:0x8007B694
+	.text       start:0x8007B248 end:0x8007B694
 	.ctors      start:0x8045BDB0 end:0x8045BDB4
 	.rodata     start:0x8045E120 end:0x8045E190
 	.bss        start:0x804B9FD8 end:0x804B9FE8
@@ -1151,9 +1151,13 @@ JSystem/JKernel/JKRExpHeap.cpp:
 	.sbss       start:0x8053A888 end:0x8053A8A0
 	.sdata2     start:0x8053B708 end:0x8053B738
 
+JSystem/JKernel/JKRFileCache.cpp:
+	.text       start:0x80082F44 end:0x80082F8C
+	.data       start:0x80498E38 end:0x80498E48
+
 JSystem/JKernel/JKRFileFinder.cpp:
-	.text       start:0x80082F44 end:0x80083120
-	.data       start:0x80498E38 end:0x80498E58
+	.text       start:0x80082F8C end:0x80083120
+	.data       start:0x80498E48 end:0x80498E58
 
 JSystem/JKernel/JKRFileLoader.cpp:
 	.text       start:0x80083120 end:0x8008353C
@@ -1214,10 +1218,10 @@ JSystem/JGadget/linklist.cpp:
 	.text       start:0x800878F0 end:0x80087AB4
 
 JSystem/JGadget/std-vector.cpp:
-	.text       start:0x80087AB4 end:0x80087AC0
+	.text       start:0x80087AB4 end:0x80087ABC
 
 JSystem/JUtility/JUTAssert.cpp:
-	.text       start:0x80087AC0 end:0x80087DC0
+	.text       start:0x80087ABC end:0x80087DC0
 	.bss        start:0x804BA070 end:0x804BA1B0
 	.sdata      start:0x80539D88 end:0x80539D90
 	.sbss       start:0x8053A8D8 end:0x8053A8E0
