@@ -33,9 +33,10 @@ initialUpdateDSPChannel, inverted isDolbyMode branch in updateEffectorParam.
 - .text end 0x8002C360 -> 0x8002C308: 0x8002C308-0x8002C360 is
   JASDriverIF.cpp's first five functions (setDSPLevel, getChannelLevel_dsp,
   getDSPLevel, setOutputMode, getOutputMode; byte match), named.
-- .data 0x804918E0-0x80491958, .bss 0x804B2540-0x804B2550,
+- .data 0x804918E0-0x80491958, .bss 0x804B2540-0x804B254C (ending at
+  0x804B2550 makes dtk size the gap symbol up to 0x804B2650 and breaks the link),
   .sdata2 0x8053B0C0-0x8053B120 added. lbl_804B2540 0x10 -> 0xC,
-  lbl_8053B118 0x8 -> 0x4 (padding), lbl_80539BD8 -> one__11JASWaveInfo
+  lbl_8053B118 0x8 -> 0x4 (padding), lbl_80539BD8 -> one__11JASWaveInfo (size left at 0x8)
   (value 1, JASDSPInterface.cpp defines it; JASChannel's ctor references it).
 
 ## SHARED-EDITS
