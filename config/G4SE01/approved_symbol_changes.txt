@@ -2,3 +2,5 @@
 # otherwise reject. Coordinator-only; each line cites the review.
 # name  old_size  new_size  review
 GXEurgb60Hz480IntDf  0x40  0x3C  fsa-wt/_reviews/dolphin__gx__GXFrameBuf.review.md (dtk's guess included padding; sizeof(GXRenderModeObj) = 0x3C)
+# Renames: name  old_name  new_name  review
+cmdTypeAndStatus$371  cmdTypeAndStatus$371  cmdTypeAndStatus$372  fsa-wt/_reviews/dolphin__si__SIBios.review.md (our compile, mkdd and tp emit $372)

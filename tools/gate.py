@@ -157,7 +157,7 @@ def check_symbols(base, changed, problems):
             continue
         if (size, kind) != (new_size, new_kind):
             problems.append(f"symbols.txt: {name} size/type changed ({size},{kind} -> {new_size},{new_kind})")
-        if new_name != name and not PLACEHOLDER.search(name):
+        if new_name != name and not PLACEHOLDER.search(name) and (name, name, new_name) not in approved:
             problems.append(f"symbols.txt: real name {name} renamed to {new_name}")
 
 
