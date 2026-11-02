@@ -640,8 +640,10 @@ JSystem/JKernel/JKRArchivePub.cpp:
 	.text       start:0x8007CD50 end:0x8007CE4C
 
 JSystem/JKernel/JKRCompArchive.cpp:
-	.text       start:0x8007D4B8 end:0x8007DD58
+	.text       start:0x8007D2B8 end:0x8007E034
 	.rodata     start:0x8045E1C0 end:0x8045E200
+	.data       start:0x80498CB0 end:0x80498D00
+	.sdata2     start:0x8053B6E8 end:0x8053B6F0
 
 JSystem/JKernel/JKRDecomp.cpp:
 	.text       start:0x8007E034 end:0x8007E6B8
