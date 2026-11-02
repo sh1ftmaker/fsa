@@ -698,7 +698,8 @@ JSystem/JKernel/JKRThread.cpp:
 	.ctors      start:0x8045BDC4 end:0x8045BDC8
 
 JSystem/JSupport/JSUInputStream.cpp:
-	.text       start:0x80086AF8 end:0x80086DC0
+	.text       start:0x80086A9C end:0x80086E2C
+	.data       start:0x80499028 end:0x80499068
 
 JSystem/JSupport/JSUList.cpp:
 	.text       start:0x80086E2C end:0x80087348
