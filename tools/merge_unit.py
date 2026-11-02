@@ -47,9 +47,22 @@ def merge_symbols(base, ours, theirs):
     b, _ = keyed(base)
     o, order = keyed(ours)
     t, t_order = keyed(theirs)
+    # Ours' order, with each line only the branch added placed after the
+    # line that precedes it on the branch (dtk keeps the file sorted).
+    after = {}
+    previous = None
+    for key in t_order:
+        if key not in o and key not in b:
+            after.setdefault(previous, []).append(key)
+        else:
+            previous = key
+    sequence = after.get(None, [])
+    for key in order:
+        sequence.append(key)
+        sequence.extend(after.get(key, []))
     out = []
     seen = set()
-    for key in order + [k for k in t_order if k not in o]:
+    for key in sequence:
         if key in seen:
             continue
         seen.add(key)
