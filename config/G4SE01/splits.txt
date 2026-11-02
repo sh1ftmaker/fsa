@@ -1047,7 +1047,7 @@ JSystem/J3DGraphBase/J3DSys.cpp:
 	.rodata     start:0x804632A8 end:0x804633E8
 	.data       start:0x8049A380 end:0x8049A3D8
 	.sdata      start:0x80539DB8 end:0x80539DC0
-	.sbss       start:0x8053A9B8 end:0x8053A9C8
+	.sbss       start:0x8053A9C0 end:0x8053A9C8
 	.sdata2     start:0x8053BB70 end:0x8053BB80
 
 JSystem/J3DGraphBase/J3DVertex.cpp:
@@ -1062,12 +1062,12 @@ JSystem/J3DGraphBase/J3DTransform.cpp:
 JSystem/J3DGraphBase/J3DPacket.cpp:
 	.text       start:0x800BC19C end:0x800BCD7C
 	.data       start:0x8049A3D8 end:0x8049A428
-	.sbss       start:0x8053A9C8 end:0x8053A9D8
+	.sbss       start:0x8053A9C8 end:0x8053A9D0
 
 JSystem/J3DGraphBase/J3DShape.cpp:
 	.text       start:0x800BCD7C end:0x800BDA0C
 	.data       start:0x8049A428 end:0x8049A440
-	.sbss       start:0x8053A9D8 end:0x8053A9E8
+	.sbss       start:0x8053A9D0 end:0x8053A9E0
 	.sdata2     start:0x8053BB90 end:0x8053BB98
 
 JSystem/J3DGraphBase/J3DMaterial.cpp:
@@ -1084,6 +1084,7 @@ JSystem/J3DGraphBase/J3DDrawBuffer.cpp:
 	.text       start:0x800C1DB8 end:0x800C2710
 	.ctors      start:0x8045BDE0 end:0x8045BDE4
 	.data       start:0x8049A7F8 end:0x8049A8B8
+	.sbss       start:0x8053A9E0 end:0x8053A9E8
 	.sdata2     start:0x8053BBE8 end:0x8053BBF8
 
 JSystem/J3DGraphAnimator/J3DModel.cpp:
