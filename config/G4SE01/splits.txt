@@ -925,7 +925,7 @@ JSystem/JParticle/JPAExtraShape.cpp:
 	.sdata2     start:0x8053BDC0 end:0x8053BDE8
 
 JSystem/JParticle/JPAFieldBlock.cpp:
-	.text       start:0x800ECB1C end:0x800EEA34
+	.text       start:0x800ECB1C end:0x800EEDBC
 	.data       start:0x8049C088 end:0x8049C178
 	.sdata2     start:0x8053BDE8 end:0x8053BE00
 
