@@ -307,7 +307,7 @@ SNBL	雪球	Snowball	enemy	JP 雪球; zw:https://zeldawiki.wiki/wiki/Snowball (F
 SNPC	特殊会話ＮＰＣ	Special conversation NPC	system	mt (enemyparam.csv JP label); stages: 1-1 Lake Hylia, 2-2 Village of the Blue Maiden, 5-2 Four Who Descend into Darkness	med	act_special_conversation_npc	
 SNWL	雪の壁	Snow wall	object	mt (enemyparam.csv JP label); stages: 7-3 Tower of Winds	med	act_snow_wall	not in spawner fn_801F9484 (no class found)
 SPBG	特殊BG描画Obj	Special BG draw object	system	mt (enemyparam.csv JP label); stages: boss008, 1-3 Hyrule Castle, boss106 (+2)	med	act_special_bg_draw_object	
-SPFR	超妖精	Fairy Queen	npc	zw:https://zeldawiki.wiki/wiki/Fairy_Queen (FSA JP 超妖精); msg#694 (超妖精 -> "Great Fairy")	high	act_fairy_queen	CONFLICT: US text msg#694 says "Great Fairy"; wiki name Fairy Queen
+SPFR	超妖精	Great Fairy	npc	msg#694 (超妖精 -> "Great Fairy"); zw:https://zeldawiki.wiki/wiki/Fairy_Queen (wiki calls her Fairy Queen)	high	act_great_fairy	Resolved (user, 2026-11-02): the in-game name Great Fairy wins over the wiki's Fairy Queen. BFRY is also named Great Fairy in-game.
 SPOT	スポットライト	Spotlight	object	mt (enemyparam.csv JP label); stages: boss002, 4-2 The Swamp, boss042 (+2)	med	act_spotlight	
 SPTG		unknown (SPTG)	enemy	no JP name (not in enemyparam.csv); spawner case only	low	act_sptg	
 SSLF	シーソーリフト	Seesaw lift	object	mt (enemyparam.csv JP label); stages: boss000, boss002, boss008 (+2)	med	act_seesaw_lift	
