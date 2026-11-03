@@ -121,6 +121,7 @@ public:
     bool fn_8024C4C4(s32 arg); // via fn_8022FBB8
     bool fn_8024C828(s32 arg); // via fn_8022FCF0
     void fn_8024CD20(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b); // via fn_8022FEB8
+    JGeometry::TVec3f* fn_8024E018(); // &field_0x2b8; via fn_8023D7B0's callers (tu_8022AD64)
     void fn_8024E020(const JGeometry::TVec3f* arg); // via fn_8022FFC4
     void fn_8024F54C(s32 arg); // via fn_80230F44
     bool fn_802570BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AB94
@@ -246,7 +247,10 @@ public:
     // counts the players 0..field_0x4.
     /* 0x0004 */ s32 field_0x4;
     /* 0x0008 */ JGeometry::TVec3f mPos; // fn_8023E724 (193 units)
-    /* 0x0014 */ u8 field_0x14[0x3B4 - 0x14];
+    /* 0x0014 */ u8 field_0x14[0x2B8 - 0x14];
+    // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
+    /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
+    /* 0x02C4 */ u8 field_0x2c4[0x3B4 - 0x2C4];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
