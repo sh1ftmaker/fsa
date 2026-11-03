@@ -1465,7 +1465,7 @@ config.libs = [
         Object(NonMatching, "game/tu_80334318.cpp"),
         Object(NonMatching, "game/act_iron_ball_manager.cpp"),
         Object(NonMatching, "game/act_two_sword_motion.cpp"),
-        Object(NonMatching, "game/act_treasure_mark.cpp"),
+        Object(Matching, "game/act_treasure_mark.cpp"),
         Object(NonMatching, "game/act_thwomp_launch_npc.cpp"),
         Object(NonMatching, "game/act_warp_pillar.cpp"),
         Object(NonMatching, "game/act_flying_tile.cpp"),
