@@ -83,9 +83,20 @@ struct GameRoot_8049EF20 {
     // ~28 units. In tu_80134C04 with GameRoot's constructor; uses this->0xA0.
     // r3 only.
     void fn_80138B7C();
+    // Stores r4 at this+0x96 (stb). Defined in game/tu_80134C04.cpp; called
+    // by act_stop_npc (0x802ED1B4, 0).
+    void fn_80134FBC(u8 value);
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
+
+class ItemPedestal_804A82A8;
+extern "C" {
+// Owner: game/act_item_pedestal.cpp (not written yet; its generated header
+// may not be edited, so not a member yet). Sets the word at 0x238 of an ITMS
+// actor to 0; called by act_stop_npc (0x802ED198).
+void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
+}
 
 // The 0x90-byte object (named after its constructor) fn_8045A080 (game/tu_80457DFC.cpp) initialises and
 // stores in lbl_8053AF80; owner unit not written yet, members unknown but
@@ -95,6 +106,10 @@ struct Unk_8045A080 {
     /* 0x00 */ u8 field_0x0[0x58];
     /* 0x58 */ u32 field_0x58;
     /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
+    // game/tu_80457DFC.cpp: stores `pause` at 0x8a and passes it to
+    // JAISeCategoryMgr::pause(bool) of three categories of the object at
+    // 0x34 (0x8045868C-0x804586A8); called by act_stop_npc.
+    void fn_80458658(bool pause);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
