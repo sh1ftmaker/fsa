@@ -479,6 +479,12 @@ extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos,
 extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d,
                             s32 e, s32 f);
 
+// game/tu_80301CD0.cpp. Same leading arguments as fn_803075AC (serial, layer,
+// position, sprite id, then d as a bool, e, f and g as a byte masked with 3);
+// returns 0 below layer 8. game/tu_801D3CBC.cpp calls it with (0, 1, 0, player).
+extern "C" bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d,
+                            s32 e, s32 f, u8 g);
+
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its destructor fn_801192AC. Only the fields
 // fn_801186B0 writes are known.
@@ -576,6 +582,13 @@ extern const f32 lbl_8053EDF0;
 // The next one (64.0f, 8053EDF4), same owner; act_shadow_link_2's
 // game/tu_801C6A4C.cpp loads it and squares it at run time.
 extern const f32 lbl_8053EDF4;
+// The next three (s32 constants at 8053EDF8, 8053EDFC, 8053EE00; owners:
+// act_shadow_link_generator's .sdata2 for the first two, the following unit
+// for the last): act_shadow_link_2's game/tu_801D3CBC.cpp converts each to
+// float at run time as the divisor of a fade (255 * mStateTimer / value).
+extern const s32 lbl_8053EDF8;
+extern const s32 lbl_8053EDFC;
+extern const s32 lbl_8053EE00;
 
 // Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
 // 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
