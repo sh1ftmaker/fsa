@@ -16,7 +16,12 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x74]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x24]; // not yet known
+    // Counted down by fn_8035BE00 while above lbl_805428E8, by lbl_805428EC
+    // each call.
+    /* 0x254 */ f32 field_0x254;
+    /* 0x258 */ u8 field_0x258[0x4C]; // not yet known
+    void fn_8035BE00();
 }; // Size: 0x2A4
 
 #endif
