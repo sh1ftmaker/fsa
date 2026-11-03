@@ -168,8 +168,6 @@ act_message_check_npc	sinit	__sinit_act_message_check_npc_cpp	-	-	new	-
 act_navi	sinit	__sinit_act_navi_cpp	-	-	new	-
 act_navi_maiden_crystal	dtor	__dt__12cls_804ADFE8Fv	cls_804ADFE8	0x804ADFE8	new	new
 act_navi_maiden_crystal	sinit	__sinit_act_navi_maiden_crystal_cpp	-	-	new	new
-act_npc_ride_switch	dtor	__dt__22NPCRideSwitch_804AD220Fv	NPCRideSwitch_804AD220	0x804AD220	new	new
-act_npc_ride_switch	sinit	__sinit_act_npc_ride_switch_cpp	-	-	new	new
 act_obj_lift	dtor	__dt__16OBJLift_804ACA00Fv	OBJLift_804ACA00	0x804ACA00	new	new
 act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
