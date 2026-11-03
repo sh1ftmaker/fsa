@@ -399,4 +399,8 @@ extern const f32 lbl_8053EDF0;
 extern const f32 lbl_8053F0B8;
 extern const f32 lbl_8053F0BC;
 
+// Owner: game/tu_802F5040.cpp (defined there). f1 in, f1 out: 1.0f / (1.0f -
+// max(x, a constant)) (0x802F5FF4); game/tu_801EDBA4.cpp scales by it.
+extern "C" f32 fn_802F5FF4(f32 x);
+
 #endif

@@ -3,8 +3,6 @@
 #include "game/GameState.h"
 #include "game/act/act_vaati_boss.h"
 
-extern "C" f32 fn_802F5FF4(f32 x);
-
 static const char* lbl_804A5760[] = {"e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.bti",
                                      "e_gufu_4.bti"};
 
@@ -34,7 +32,7 @@ void VaatiBoss_804A4958::fn_801EDC0C(s32 frame) {
     }
 }
 
-// FIXME: 32.8%. The target picks max(1.0f + field_0x554, 0.001f) with one fsel
+// FIXME: 32.8%. The target picks max(1.0f + field_0x52c.field_0x28, 0.001f) with one fsel
 // (0.001f - x >= 0); ours compiles the ?: as fcmpo / cror / branch (the same
 // gap as EnemyBase_804A4808::fn_801CE010; tried a - b >= 0 ? a : b, a > b ? a : b,
 // a local and an inline). The rest of the body (stack layout, the stores, the
@@ -54,7 +52,7 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
         flags = 0x407;
         params.field_0x10.mColor.a = 0;
     }
-    f32 scale = 1.0f + field_0x554;
+    f32 scale = 1.0f + field_0x52c.field_0x28;
     scale = 0.001f - scale >= 0.0f ? 0.001f : scale;
     mtx[0][0] = 1.0f;
     mtx[0][1] = 0.0f;

@@ -22,7 +22,7 @@ draw (0x801EDBA4), fn_801EDC0C (100%, incl. data/rodata), generated __sinit. .da
   (the target loads them as symbols and multiplies -12.0f * 1.7f at run time).
 - config/G4SE01/gen_game.tsv: tu_801EDBA4 row removed.
 - config/G4SE01/symbols.txt: draw/fn_801EDC0C/fn_801EDD0C renamed to member names;
-  fn_801D6CEC -> fn_801D6CEC__15Sub52c_801D6CECFPQ29JGeometry8TVec3<f> (tu_801D6CEC, unwritten).
+  fn_801D6CEC -> fn_801D6CEC__12cls_801D6CECFPQ29JGeometry8TVec3<f> (tu_801D6CEC, unwritten).
 
 ## Next
 Find the source form that yields fsel; then re-check fn_801EDD0C's matrix scale loop.
