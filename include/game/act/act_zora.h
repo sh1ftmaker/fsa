@@ -18,6 +18,9 @@ public:
     // once mState is set, the camera collects mPos (fn_8030C210) so that it
     // stays in view.
     /* 0xA0 */ virtual void vfunc_0xA0();
+    // Vtable slot 0x4C (fn_801BA88C): tile code 0xD (fn_8022461C) blocks
+    // the position outright; anything else falls to ActorBase's test.
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
 
     // Read and written by other Zora functions too (0x801BAF6C, 0x801BB338,
     // 0x801BB348); the type is not yet known.

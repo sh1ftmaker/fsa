@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Camera.h"
+#include "game/Map.h"
 #include "game/act/act_zora.h"
 
 ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
@@ -17,4 +18,11 @@ void ZoraEnemy_804A3D7C::vfunc_0xA0() {
     if (mState != 0) {
         lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
     }
+}
+
+bool ZoraEnemy_804A3D7C::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    if (fn_8022461C(pos, layer) == 0xD) {
+        return false;
+    }
+    return ActorBase_804A5770::vfunc_0x4C(layer, pos);
 }
