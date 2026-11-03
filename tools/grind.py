@@ -299,6 +299,9 @@ def worker(args):
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
     n, owner = args.n, f"grind-w{args.n}"
     wt, branch = WT / f"grind-w{n}", f"grind-w{n}"
+    # gen_game --check needs the template units' objects; one full build provides them.
+    sh(["git", "reset", "-q", "--hard", "grind"], wt, check=True)
+    sh("timeout 3600 ninja build/G4SE01/report_honest.json", wt)
     while not (LOGS / "STOP").exists():
         unit = next((u for u in candidates(args.max_size) if claim(u, owner, wt)), None)
         if unit is None:
