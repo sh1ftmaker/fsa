@@ -444,6 +444,10 @@ public:
 };
 extern cls_804B1920* lbl_8053AED0;
 
+// game/tu_8043A0E8.cpp (owner, not written yet). act_gba_appear's update
+// calls it with *lbl_8053AED0 and a position passed by value.
+extern "C" void fn_8043E7CC(cls_804B1920* obj, JGeometry::TVec3f pos);
+
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
 // game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
 // *pos.
