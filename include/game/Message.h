@@ -163,6 +163,9 @@ extern "C" {
 // 4 units. Returns field_0x114[window]->field_0x24, the window's state byte
 // (lbz with no bool conversion; tu_80301CD0 compares it with 3, 1 and 5).
 u8 fn_8037F1E4(s32 player);
+// 1 unit (tu_80316E34). Maps the player to a window and returns
+// fn_80390850(field_0x114[window]): -1 or field_0x174 of the window's object.
+s32 fn_8037E9F4(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).
 s32 fn_8037EFB4(s32 player);
 // 16 units / 196 calls (the menu units). Copies the text of message msg
