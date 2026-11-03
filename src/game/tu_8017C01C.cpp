@@ -1,4 +1,9 @@
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
+
+void ActorBase_804A5770::fn_8017EAF8(const JGeometry::TVec3f& v) {
+    field_0x3c = v;
+}
 
 // Stores x, y, z into v and returns it (the caller uses the result as the
 // source of a copy). Not a JGeometry member: its object is passed by pointer
