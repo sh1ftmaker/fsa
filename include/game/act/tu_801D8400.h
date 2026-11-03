@@ -30,6 +30,9 @@ public:
     /* 0x20 */ virtual void draw();
     // 0x801D84E0: empty, no arguments read (vtable slot 0x24 of 0x804A4C58).
     /* 0x24 */ virtual void vfunc_0x24();
+    // 0x801D8980: a mPos.y above field_0x2d0 is clamped to it (and
+    // field_0x3c.y zeroed), then EnemyBase's floor check runs.
+    /* 0x80 */ virtual void vfunc_0x80();
 
     // 0x801D8400 (first function of tu_801D8400, called by tu_801DAC6C): below
     // state 8 (mState) calls fn_801D9C58 with 8.
@@ -56,7 +59,8 @@ public:
     /* 0x2C4 */ JPABaseEmitter* mEmitter2c4;
     /* 0x2C8 */ JPABaseEmitter* mEmitter2c8;
     /* 0x2CC */ JPABaseEmitter* mEmitter2cc;
-    /* 0x2D0 */ u8 field_0x2d0[0x340 - 0x2D0]; // not yet known
+    /* 0x2D0 */ f32 field_0x2d0; // vfunc_0x80's ceiling for mPos.y
+    /* 0x2D4 */ u8 field_0x2d4[0x340 - 0x2D4]; // not yet known
 };
 
 #endif
