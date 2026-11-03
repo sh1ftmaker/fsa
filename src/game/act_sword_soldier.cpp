@@ -39,6 +39,10 @@ void SwordSoldier_8049FCA0::fn_80154614(s32 value) {
     field_0xb8 = value;
 }
 
+s32 ActorBase_804A5770::fn_8015461C() const {
+    return field_0x4;
+}
+
 f32 fn_80154378(f32 x) {
     return std::sqrtf(x);
 }

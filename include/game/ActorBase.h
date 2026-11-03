@@ -489,6 +489,9 @@ public:
     void setSlot(s32 slot) { mSlot = slot; }
     void setLife(s32 life) { mLife = life; }
     s32 getField_0x4() const { return field_0x4; }
+    // The same field (the layer), out of line in game/act_sword_soldier.cpp
+    // (0x8015461C): other units call it on their own actors with a bl.
+    s32 fn_8015461C() const;
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
     void setField_0x90(u32 v) { field_0x90 = v; }
