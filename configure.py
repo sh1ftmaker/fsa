@@ -934,6 +934,7 @@ config.libs = [
         Object(NonMatching, "JSystem/J3DGraphBase/J3DMatBlock.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphBase/J3DShapeMtx.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphBase/J3DShapeDraw.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphBase/J3DStruct.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("J3DGraphAnimator", [
         Object(Matching, "JSystem/J3DGraphAnimator/J3DModel.cpp", extra_cflags=["-O4,p"]),
