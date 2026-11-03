@@ -51,7 +51,15 @@ PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\
 LINK_CONFIGURE = re.compile(r"check_sha|sha1|ldflags|linker_version|link_order|ldscript|custom_build"
                             r"|non_matching|^[+-]\s*(Matching|NonMatching|Equivalent)\s*=")
 SOURCE = re.compile(r"\.(c|cpp|h|hpp|inc)$")
-DONORS = Path(__file__).resolve().parent.parent.parent / "donors"  # fsadecomp/donors, from any worktree
+def _donors_dir():
+    """fsadecomp/donors, found through the main checkout (git's common dir), so
+    the gate finds it from the main checkout and from every worktree's copy."""
+    common = subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                            capture_output=True, text=True).stdout.strip()
+    return Path(common).parent.parent / "donors" if common else Path(__file__).resolve().parent.parent.parent / "donors"
+
+
+DONORS = _donors_dir()
 
 BANNED = [
     (re.compile(r"\bregister\b[^;]*\basm\b"), "register bound to a machine register"),
@@ -146,7 +154,7 @@ def unlicensed_texts(path):
     """Same-named files in donors whose code may not be copied."""
     name = Path(path).name
     if not DONORS.is_dir():
-        return []
+        sys.exit(f"gate: donors directory {DONORS} not found; the provenance check can't run")
     ok = {r.name for r in licensed_donors()}
     texts = []
     for repo in sorted(DONORS.iterdir()):
