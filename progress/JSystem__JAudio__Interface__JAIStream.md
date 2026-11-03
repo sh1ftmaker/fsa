@@ -1,32 +1,25 @@
 # JSystem/JAudio/Interface/JAIStream.cpp
 
-Baseline (progress.py): 3711 / 11561 functions, 710408 bytes (15.99 %).
-After: 3727 / 11561, 713804 bytes (16.07 %). gate: ok.
+Baseline: total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+After:    total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+Unit: 15/15 functions, code 2680/2680, data 52/132 -> 132/132.
 
-Unit: 6/16 -> 14/15 functions (JAIStreamDataMgr's dtor left the range). .data 100 %,
-.sdata2 85.71 % (4 bytes alignment pad in the target), .bss/.ctors 0 % (no __sinit).
+## Status: Matching (all sections 100 %, link_check --unit SHA-1 OK, gate ok)
 
-## Matched (names and splits only)
-- Vtable slots of `__vt__9JAIStream` (matched code order agrees): fn_80026D88 =
-  getNumChild (returns 6), fn_80026E78/E80/E8C = getTrack / getChildTrack / getTempoMgr,
-  slots 5/6 = JAISound::asSe / asSeq (fn_800257BC/C4), asStream = fn_800257CC.
-- `lbl_804B220C` = `JASPoolAllocObject<JAISoundChild>::memPool_` (tryDie_, getChild,
-  releaseChild), `fn_800254FC` = `JAISoundParams::mixOutAll` (mixOut_ call),
-  .sdata2 0x8053B018-0x8053B028.
-
-## Other names
-- `__sinit_JAIStream_cpp` (0x80026E94, .ctors), pool `lbl_804B21FC` =
-  `JASPoolAllocObject<JAIStream>::memPool_` (JAIStreamMgr allocates JAIStream from it),
-  guard `lbl_8053A2B1`, dtor `fn_80021B68` = `JASMemPool<JAIStream>::~JASMemPool`;
-  JAISoundChild guard/dtor as in JAISeq. .bss 0x804B2400-0x804B2440 (dtor chain).
-
-## Resistant
-- `__sinit_JAIStream_cpp`: FIXME, waits for the memPool_ definition (w3-jas).
-  JASFakeMatch8.h include removed (empty without MATCHING).
+## Data gaps and fixes
+1. .bss (0 %): placeholder `lbl_804B2400` (0x40) is the five 0xC
+   destructor-chain objects __sinit registers (@734..@738) plus 4 bytes of
+   padding. Split into lbl_804B2400/240C/2418/2424/2430 (0xC each). Trial map:
+       000002c0 00003c 804b2400  1 .bss   JAIStream.o
+       000002c0 00000c 804b2400  4 @734 ... 000002f0 00000c 804b2430  4 @738
+   This also matched __sinit's relocations.
+2. .sdata2: `lbl_8053B020` 0x8 -> 0x4 (0.5f plus padding before JAIStreamMgr.o's .sdata2):
+       00000078 00000c 8053b018  1 .sdata2   JAIStream.o
+       00000080 000004 8053b020  4 @583      JAIStream.o
+       00000088 000010 8053b028  1 .sdata2   JAIStreamMgr.o
 
 ## SHARED-EDITS
-- `__dt__16JAIStreamDataMgrFv` (0x80026FD8-0x80027020) and `__vt__16JAIStreamDataMgr`
-  (0x80491870) are JAIStreamDataMgr.cpp's, a separate TU in mkdd too. JAIStream's .text
-  now ends at 0x80026FD8; a JAIStreamDataMgr.cpp unit should be added by the coordinator.
-- symbols.txt renames shared with the JAISeq branch (identical lines): JAISound asSe/asSeq/
-  asStream, mixOutAll, JAISoundChild pool/guard/dtor.
+- config/G4SE01/symbols.txt: placeholders lbl_804B2400 split (5 x 0xC) and lbl_8053B020 0x8 -> 0x4 (this unit's own data).
+
+## Resistant
+None.
