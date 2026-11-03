@@ -306,12 +306,17 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   its section layout, next to its functions' `UNUSED` lines in `.text`.
   `honest_report.py` leaves such data out under the same link rules as the
   weak extab entries, only when every allocated reference to it comes from
-  a symbol the map lists `UNUSED` for this object, and only if the map's
-  layout of the kept symbols equals the stripped copy's; the gate redoes
-  every step. All six link SHA-1 OK as Matching, but mtx.c keeps mkdd's
-  `unused_force_order_in_data_section` fakematch dummies, so the gate
-  still refuses it. mtx.c also needed `lbl_8053B300` resized from 8 to 4
-  in symbols.txt (dtk had swallowed the padding before mtx44's data).
+  a symbol the map lists `UNUSED` for this object, a size-0 anchor it is
+  reached through (MWCC's `...data.0`, used with offsets computed in code:
+  dvdfs's strings via the dead DVDPrepareStream*) is itself `UNUSED` with
+  only `UNUSED` referencers, the map's layout of the kept symbols equals
+  the stripped copy's, and the next object in the map's section layout
+  starts within 0-7 bytes of the stripped end; the gate redoes every step.
+  All six are Matching and linked. mtx.c needed two more things:
+  `lbl_8053B300` resized from 8 to 4 in symbols.txt (dtk had swallowed the
+  padding before mtx44's data), and mkdd's force-order dummies replaced by
+  the SDK's own dead-stripped `C_MTXIdentity` (TP's body; the trial map
+  lists it UNUSED, 0x3C), whose 1.0f/0.0f set the constant order.
   Matching units with dead data that objdiff already counted (Padclamp,
   float, JUTAssert) are stripped too; their numbers don't change.
 - Dead-stripped units (tu_802BA334, tu_800F39EC, tu_80457C08): the unit's
@@ -381,11 +386,9 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   object's TV/XFB mode fields and its only caller showed it). The review
   caught it.
 - Dead-stripped functions stay in the source, like the donors. If they
-  leave extra data in our object (a jump table), objdiff shows data < 100 %;
-  `python3 tools/link_check.py` (with the unit flipped to Matching locally)
-  shows whether the linked DOL is still identical: GXPerf.c and mtx.c are
-  (mtx.c still has a force-order fakematch), GXPixel.c's .sdata2 is 0x38
-  bytes too long.
+  leave extra data in our object (a jump table), the honest report leaves
+  it out on map evidence (see "Dead-stripped data" above); run
+  `python3 tools/link_check.py --unit <unit>` before the flip.
 - objdiff's `report generate` used to count a `complete` (Matching) unit as
   100 % without diffing it, so `report.json` built after flipping a flag
   couldn't disprove the flag, and the gate read exactly that report. 14
@@ -417,7 +420,8 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 
 Donor code came with fakematches: mkdd's `JASFakeMatch*.h` headers (template
 instantiations to force weak-function order, included by 37 JAudio files),
-mkdd's `unused_force_order_in_data_section*` dummies in `mtx.c`, and TP/TWW
+mkdd's `unused_force_order_in_data_section*` dummies in `mtx.c` (gone: the
+order came from the dead-stripped `C_MTXIdentity`, now restored), and TP/TWW
 comments admitting a fakematch (`JAISoundHandles.cpp`,
 `J3DMaterialFactory.cpp`). None of these units may be `Matching`
 (`tools/gate.py` enforces it). Five that were are now NonMatching:

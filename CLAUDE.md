@@ -103,13 +103,15 @@ object out only when the map of the same kind of verified link lists it
 `UNUSED`, with its size, for this object in its section's layout; every
 allocated location that references it (code or data; debug sections don't
 count) lies in a function or object the map also lists `UNUSED` for this
-object; only zero padding up to the next symbol goes with it; and the map
-places every kept symbol of the section at the offset the stripped copy
-gives it. Data a live function references is never removed (e.g.
+object; a size-0 anchor (`...data.0`) through which the section is reached
+is itself `UNUSED`, with only `UNUSED` referencers; only zero padding up to
+the next symbol goes with it; the map places every kept symbol of the
+section at the offset the stripped copy gives it; and the next object in
+the map's layout of that section starts 0-7 bytes after the stripped end. Data a live function references is never removed (e.g.
 `__vt__12JKRDvdFinder` stays: listed UNUSED, but referenced by a destructor
 the map does not list UNUSED for that object).
-The manifest lists these as `dead_data` with the map lines of the object
-and of each referencer, and the gate recomputes all of it from the object
+The manifest lists these as `dead_data` with the map lines of the object,
+of each referencer and of each anchor, and the gate recomputes all of it from the object
 and the map. Nothing else is stripped: dead functions' code (objdiff
 doesn't count functions the target lacks), `.bss` (split weak `memPool_`
 copies yourself, see docs/COORDINATOR.md) and kept weak copies are diffed
