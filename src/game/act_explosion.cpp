@@ -5,8 +5,6 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 
-class JPABaseEmitter;
-
 // Named after its vtable (0x804A7FB8).
 class Explosion_804A7FB8 : public ActorBase_804A5770 {
 public:

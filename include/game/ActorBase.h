@@ -269,12 +269,13 @@ public:
     // 23 units / 49 calls. fn_801F06F0 with a resource already loaded
     // (fn_801EF830's res, used when no name is given) instead of a name;
     // skipped while mSpriteParams.mMtx is set. f1-f3 are kept in f30, f31,
-    // f28.
+    // f28. `res` is only passed on; void* is still a guess.
     void fn_801EFD34(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 scaleX, f32 scaleY,
                      f32 arg_f3);
     // 42 units / 59 calls. fn_801F06F0 with a scale mode (cmpwi 0 / 2 picks
     // the PSMTXScale variant, 0x801F031C-0x801F0344). `arg` is only stored
-    // to the stack with stb (0x801F02E8); bool is a guess.
+    // to the stack with stb (0x801F02E8), a byte; callers pass li 0 / li 1
+    // or a clrlwi 24 value, as for a bool.
     void fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
                      s32 mode, bool arg, f32 scaleX, f32 scaleY);
     // 116 units / 193 calls. Draws frame `frame` of the "SOB " sprite bank
@@ -292,11 +293,14 @@ public:
     // (0x801F1150), gated by the layer (field_0x4 against 8) and player
     // checks. fn_801F4694 calls it with the EnemyParam "voic" sound
     // (lbl_80469F38[voic - 1]) and 0x40002. The id is compared unsigned
-    // (0x801F0EAC: subis/cmplwi against 0x30009). Every caller passes 0 for
-    // `arg`, which fn_80456334 NULL-checks and stores, so it is a pointer.
-    // Returns 0 on the early outs, else fn_80456334's result (no caller
-    // reads it; the pointee is unknown).
-    void* fn_801F0E34(u32 soundId, void* arg);
+    // (0x801F0EAC: subis/cmplwi against 0x30009). fadeTime goes to
+    // fn_80456334, which tests it for 0, stores it at sound+0x30 and
+    // converts it with the unsigned 2^52 constant to compute (1 - v) / n
+    // into +0x28: JAISound::fadeIn(u32) -> JAISoundFader::fadeInFromOut(u32)
+    // (tp JAISound.h). Every caller passes 0. Returns 0 on the early outs,
+    // else fn_80456334's result (no caller reads it; the pointee is
+    // unknown).
+    void* fn_801F0E34(u32 soundId, u32 fadeTime);
     // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
     // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
     ActorSoundObj_804578F4* fn_801F1184();
@@ -314,11 +318,12 @@ public:
     // 7 units / 9 calls. Collision sweep (via fn_801F172C, which calls
     // vfunc_0x50 on this) of `box` from `from` to `to` on `layer`; the
     // result position goes to *outPos (stfs 0/4/8), out2 is handed to
-    // fn_801F172C (which stores 3 floats there, 0x801F2344; type unproven).
+    // fn_801F172C, which writes a stack TVec3f copy to it (stfs 0/4/8,
+    // 0x801F2344-0x801F2350).
     // `flag` reaches fn_801F172C's clrlwi. 24. Returns 0 or 1.
     bool fn_801F23BC(s32 layer, const JGeometry::TVec3f* from, const JGeometry::TVec3f* to,
-                     const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos, void* out2,
-                     bool flag);
+                     const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos,
+                     JGeometry::TVec3f* out2, bool flag);
     // 82 units / 201 calls. Unless field_0x174 > 0, sweeps the box at 0x80
     // from mPrevPos to mPos (fn_801F23BC(this, field_0x4, &mPos, &mPrevPos,
     // box, ...)), moves mPos to the result and stores a vector in *out
@@ -341,8 +346,8 @@ public:
     // 46 units / 65 calls. Index of a player (any when player < 0) whose box
     // overlaps mBox around mPos, or -1 (0x801F29F8). *outXY gets two floats
     // (stfs 0/4, 0x801F29EC-0x801F29F4) and *outFlag 0 or 1; `arg` is
-    // forwarded to fn_8023B9CC (callers pass 1 in 54 of 65; bool is a
-    // guess).
+    // forwarded to fn_8023B9CC and on to fn_802738F0, which tests it with
+    // clrlwi. 24 (0x80273AF8); callers pass 1 in 54 of 65.
     s32 fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg, s32 player);
     // 6 units / 6 calls. The mBox overlap test of fn_801F2740 against
     // fn_8022E438(player, skipPlayer) and fn_80239B64(.., arg2, arg3, arg4),
