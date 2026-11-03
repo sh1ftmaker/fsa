@@ -52,6 +52,7 @@ void JPABaseEmitter::init(JPAEmitterManager *manager, JPAResource *resource)
     mCurrentFrame  = 0;
     mWaitTime      = 0;
     mRateStepTimer = 0;
+    mTexAnmIdx     = 0;
 }
 
 JPABaseParticle *JPABaseEmitter::createParticle()
