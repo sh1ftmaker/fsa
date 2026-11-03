@@ -144,13 +144,17 @@ def symbol_renames(wt):
 
 
 def check_diff(wt, unit):
-    allowed = {f"src/{unit}", "config/G4SE01/symbols.txt"}
+    allowed = {f"src/{unit}", "config/G4SE01/symbols.txt", "config/G4SE01/gen_game.tsv"}
     st = sh(["git", "status", "--porcelain", "-uall"], wt).stdout.splitlines()
     paths = {l[3:] for l in st if l[3:] not in ("progress/claims.json", "objdiff.json")}
     ren = symbol_renames(wt)
     if ren is None:
         return "symbols.txt change is not a pure rename", None
     names = set(ren) | set(ren.values())
+    d = sh(["git", "diff", "-U0", "--", "config/G4SE01/gen_game.tsv"], wt).stdout.splitlines()
+    if any(l.startswith("+") and not l.startswith("+++") for l in d) or any(
+            l.startswith("-") and not l.startswith("---") and l[1:].split("\t")[0] != Path(unit).stem for l in d):
+        return "gen_game.tsv may only lose this unit's rows", None
     # Game headers are shared: allowed, and the merge step rejects any loss elsewhere.
     # Other source files may change only at the uses of a renamed symbol.
     for p in sorted(paths - allowed):
@@ -321,8 +325,21 @@ def _merge(wt, branch, unit):
     return "merged"
 
 
+def release_generated(wt, unit):
+    """A hand-edited generated unit leaves the generator (the project's convention): drop its
+    gen_game.tsv rows so gen_game --check stops requiring the generator's exact output."""
+    if not sh(["git", "status", "--porcelain", "--", f"src/{unit}"], wt).stdout.strip():
+        return
+    tsv = wt / "config/G4SE01/gen_game.tsv"
+    lines = tsv.read_text().splitlines(keepends=True)
+    keep = [l for l in lines if l.split("\t")[0] != Path(unit).stem]
+    if len(keep) != len(lines):
+        tsv.write_text("".join(keep))
+
+
 def judge(wt, unit, fns, secs, focus=None):
     """Script verdict on the worktree's changes: (why-rejected or None, fns, secs, gained, renames)."""
+    release_generated(wt, unit)
     why, ren = check_diff(wt, unit)
     # Generated functions must stay byte-equal to their templates.
     if not why and "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], wt).stdout:
@@ -436,7 +453,7 @@ def worker(args):
                     revert(wt)
                     log([owner, unit, "FILE", left, "-", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
                 else:
-                    sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt"], wt)
+                    sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt", "config/G4SE01/gen_game.tsv"], wt)
                     sh(["git", "commit", "-qm", f"grind: {unit} +{gained} functions (whole file)\n\n{TRAILER}"], wt)
                     accepted = gained
                     log([owner, unit, "FILE", left, "-", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
@@ -451,7 +468,7 @@ def worker(args):
                     revert(wt)
                     log([owner, unit, fn, size, f"{pct:.2f}", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
                     continue
-                sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt"], wt)
+                sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt", "config/G4SE01/gen_game.tsv"], wt)
                 sh(["git", "commit", "-qm", f"grind: {unit} {ren.get(fn, fn)} matches\n\n{TRAILER}"], wt)
                 fns, secs, accepted = new_fns, new_secs, accepted + 1
                 log([owner, unit, fn, size, f"{pct:.2f}", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
