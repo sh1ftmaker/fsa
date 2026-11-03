@@ -1,5 +1,8 @@
 #include "game/GameAudio.h"
+#include "game/cls_802150B8.h"
 #include "game/cls_804A64A8.h"
+
+cls_802150B8::cls_802150B8() : field_0x0(0), field_0x18(0), field_0x30(-1), field_0x34(0) {}
 
 void cls_804A64A8::execute(JPABaseEmitter*, JPABaseParticle* particle) {
     if (field_0x10 != 0) {
