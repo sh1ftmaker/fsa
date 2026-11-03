@@ -1,1 +1,149 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
+#include "game/EnemyBase.h"
+#include "game/Message.h"
+#include "game/Player.h"
+#include "game/GameView.h"
+#include "game/act/tu_801286C0.h"
+#include "game/act/tu_8044C028.h"
+
+const char* lbl_80539F38 = "kk_black.bti";
+
+// Thresholds that the value at fn_8011921C()->field_0x8 is matched against.
+const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
+
+void fn_80128C58(s32 value);
+
+void cls_8049E500::init() {
+    cls_8049D140::init();
+    // 0x3F3F3F3F is the four-character type '????'.
+    field_0x23c = lbl_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, lbl_80539F38);
+    fn_802D6A9C()->fn_802D7440(false);
+    fn_80128728(0);
+}
+
+// FIXME: 84.86%. try.py class: scheduling+regalloc with reloc-name. The
+// original loads the 96.0f constant before the camera's byte at 0x179 is
+// stored (ours after), and the float pool (lbl_8053CAF8..CB18) and the state
+// jump table are @NNN in ours. Not yet pinned down; the .sdata2 order
+// probably depends on the unwritten fn_80128728, which uses the 0.5f, 0.0f,
+// 1.0f and 40.0f constants at lower addresses.
+void cls_8049E500::update() {
+    cls_8049D140::update();
+    lbl_8053AB10->field_0x24->field_0x179 = 1;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        camera->field_0x844.set(mPos.x, mPos.y - 96.0f, mPos.x, 96.0f + mPos.y);
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
+    }
+    if (field_0x230 <= 9) {
+        cls_804A03A8* sub = lbl_8053AB10->field_0x30;
+        if (sub->field_0x284 == 0) {
+            sub->field_0x284 = 1;
+            sub->field_0x28c = 0.05f;
+        }
+    }
+    if (field_0x230 >= 1 && field_0x230 <= 3) {
+        lbl_8053AF38->fn_8044C028(field_0x238);
+    }
+    switch (field_0x230) {
+    case 0:
+        if (fn_8011921C()->field_0x0 == 0) {
+            lbl_8053AF80->fn_80458F9C(60);
+            fn_801186B0(fn_8011921C(), 12);
+        }
+        break;
+    case 1:
+        fn_801CD950(&field_0x238, 300.0f, 0.4f);
+        if (fn_80119DD0()->field_0x0 == 0) {
+            fn_80128728(2);
+        }
+        break;
+    case 2:
+        if (fn_801CD950(&field_0x238, 1340.0f, 0.4f) == 0) {
+            fn_80128728(3);
+        }
+        break;
+    case 3:
+        fn_801CD950(&field_0x238, 1640.0f, 0.4f);
+        if (fn_80119DD0()->field_0x4 >= 0xB3) {
+            fn_801183BC(fn_8011921C());
+            fn_80119DD0()->field_0x1 = 1;
+        }
+        break;
+    case 4:
+    case 8:
+    case 9:
+    case 10:
+        break;
+    case 5:
+        fn_8022FE80(0, field_0x4, mSerial, 1, 0);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_801183BC(fn_8011921C());
+        }
+        break;
+    case 6:
+        fn_801CD950(&field_0x234, 255.0f, -2.125f);
+        break;
+    case 7:
+        fn_8022FE80(0, field_0x4, mSerial, 1, 0);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_801183BC(fn_8011921C());
+        }
+        break;
+    }
+}
+
+void cls_8049E500::vfunc_0x54() {
+    if (fn_8011921C()->field_0x4 != 0xC) {
+        return;
+    }
+    s32 value = fn_8011921C()->field_0x8;
+    if (value == lbl_80464FC0[1]) {
+        fn_80128728(1);
+    } else if (value == lbl_80464FC0[4]) {
+        fn_80128728(4);
+    } else if (value == lbl_80464FC0[5]) {
+        fn_80128728(5);
+    } else if (value == lbl_80464FC0[6]) {
+        fn_80128728(6);
+    } else if (value == lbl_80464FC0[7]) {
+        fn_80128728(7);
+    } else if (value == lbl_80464FC0[8]) {
+        fn_80128728(8);
+    } else if (value == lbl_80464FC0[9]) {
+        fn_80128728(9);
+    } else if (value == lbl_80464FC0[10]) {
+        fn_80128728(10);
+    }
+}
+
+cls_8049E500::~cls_8049E500() {
+    field_0x23c = 0;
+}
+
+void cls_8049E500::draw() {
+    fn_80128C58((s32)field_0x234);
+    if (field_0x230 >= 1 && field_0x230 <= 3) {
+        lbl_8053AF38->fn_8044C028(field_0x238);
+    }
+    cls_8049D140::draw();
+}
+
+s32 cls_8049E500::vfunc_0x58() {
+    return field_0x230;
+}
+
+s32 cls_8049E500::vfunc_0x5C() {
+    return field_0x230 == 10;
+}
+
+// Stores the value in the byte at 0xC of lbl_8053AB10->0x2C (cls_804A0160).
+void fn_80128C58(s32 value) {
+    lbl_8053AB10->field_0x2c->field_0xc = value;
+}
