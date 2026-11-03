@@ -16,7 +16,13 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x44]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x238 */ s32 field_0x238;     // index into the state table (lbl_804AAED4)
+    /* 0x23C */ u8 field_0x23C[0x4]; // not yet known
+    /* 0x240 */ u32 field_0x240;    // 0, 1 or 2: compared against vfunc_0x34()
+    /* 0x244 */ u8 field_0x244[0x2C]; // not yet known
+    /* 0x270 */ u8 field_0x270;      // 1: run the state table entry this frame
+    /* 0x271 */ u8 field_0x271[0x3]; // not yet known
 }; // Size: 0x274
 
 #endif
