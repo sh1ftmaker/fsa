@@ -19,7 +19,16 @@ public:
     // with fn_801EE434, then the members and the base destructor run.
     /* 0x08 */ virtual ~cls_8049D940();
 
+    // Slot 0x54, overriding cls_8049D140::vfunc_0x54 (0x801162E0, game/act_vaati_demo.cpp).
+    // Reads field_0x4 and field_0x8 of fn_8011921C()'s object and, when the
+    // first is 2, calls fn_80115F9C with the index of the matching
+    // lbl_804649A4 entry.
+    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
+
+    // Mangled fn_80115F9C__12cls_8049D940Fl (0x80115F9C, same unit, not written
+    // yet). Takes the table index 1..11 found by vfunc_0x54.
+    void fn_80115F9C(s32 index);
 
     // Named after its vtable, 0x8049D940, slot 0x0C. __ct__12cls_8049D940Fv
     // (game/act_vaati_demo.cpp) runs the base constructor, sets the vtable and
