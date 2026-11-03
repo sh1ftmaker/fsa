@@ -8,11 +8,16 @@
 // Named after its vtable, 0x8049E950.
 class cls_8049E950 : public ActorBase_804A5770 {
 public:
-    cls_8049E950() {}
+    cls_8049E950();
     /* 0x08 */ virtual ~cls_8049E950();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    // Non-virtual, called by game/tu_8012F3E4.cpp: true once mState is 1.
+    bool fn_8012F008();
+
+    /* 0x230 */ s32 mState;   // 0 until update() sees the floor tile change, then 1
+    /* 0x234 */ u16 mTile;    // fn_80226850 result at init()
+    /* 0x236 */ u8 field_0x236[2]; // padding
 }; // Size: 0x238
 
 #endif
