@@ -63,7 +63,8 @@ Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
 **Weak duplicates and dead-stripped data the link discarded** are the only
-things the honest report leaves out of a compiled object. Every TU that instantiates a weak function
+things the honest report leaves out of a compiled object (three kinds:
+weak extab entries, dead data, weak data). Every TU that instantiates a weak function
 (e.g. the 9 `JASMemPool<T>` destructors of the JAudio pools ~523 game units
 construct in `__sinit`) gets its own copy with an extab/extabindex entry; the
 linker keeps one copy and drops the others' entries, so the original
@@ -112,10 +113,36 @@ the map's layout of that section starts 0-7 bytes after the stripped end. Data a
 the map does not list UNUSED for that object).
 The manifest lists these as `dead_data` with the map lines of the object,
 of each referencer and of each anchor, and the gate recomputes all of it from the object
-and the map. Nothing else is stripped: dead functions' code (objdiff
-doesn't count functions the target lacks), `.bss` (split weak `memPool_`
-copies yourself, see docs/COORDINATOR.md) and kept weak copies are diffed
-as compiled.
+and the map.
+
+Weak data is the third case: every TU that uses an inline class emits its
+weak vtable (e.g. J3DMatBlock.o's `__vt__10J3DPEBlock`, `__vt__11J3DIndBlock`,
+`__vt__14J3DTexGenBlock`, `__vt__13J3DColorBlock`), the linker keeps one
+copy, and dtk's split of the other objects references it as an external
+symbol. The report leaves such a data object out only when it is WEAK
+OBJECT in our object with a unique name; the same kind of verified link's
+map has, in its link tree, `<name> (object,...) found in <kept>`, then
+`>>> UNREFERENCED DUPLICATE <name>` and `>>> (object,weak) found in <this
+object>`, every tree node listing it names the same kept object, and that
+is another, uniquely named input of the link (not newer than ninja's map);
+the map places the kept copy, with this size, in the kept object's layout
+of the same section; the kept object's symbol has the same section name,
+size, bytes and relocations (offset, type, target name, addend; a local or
+section target fails); every allocated relocation that reaches into it or
+its padding targets the symbol itself by name (the link resolves those to
+the kept copy, so they stay); nothing reaches the section through its
+section symbol or a size-0 label at or past the first removed byte (dead
+code included); only zero padding goes with it; and the map places the
+section's kept symbols and next object as for dead data, with dead and weak
+removals of a section checked together. In the stripped copy the symbol
+becomes undefined, as in dtk's split. A kept copy in a dtk split names its
+targets `fn_...` (JUTFont, JKRFile, JUTNameTab vtables), so those stay: we
+can't show the names match. The manifest lists these as `weak_data` with
+the three tree lines, the kept copy's placement and the layout lines; the
+gate recomputes all of it from both objects and the map. Nothing else is
+stripped: dead functions' code (objdiff doesn't count functions the target
+lacks), `.bss` (split weak `memPool_` copies yourself, see
+docs/COORDINATOR.md) and kept weak copies are diffed as compiled.
 
 <!-- status:start -->
 Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,873 of 11,561 functions, 873,764 of 4,442,088 bytes of code (19.67 %). Game code 243 / 6,789 functions (1.04 %); JSystem 3,576 / 3,702 functions (96.4 %); Dolphin SDK 607 / 614 functions (99.8 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 337 of 891 split units are Matching; `ninja` ends in SHA-1 OK.
