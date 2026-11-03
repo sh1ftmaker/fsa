@@ -1182,6 +1182,9 @@ JSystem/JMessage/control.cpp:
 	.text       start:0x80078B20 end:0x80079034
 	.data       start:0x80498B10 end:0x80498B20
 
+JSystem/J3DU/J3DUDL.cpp:
+	.text       start:0x80079034 end:0x8007903C
+
 JSystem/JKernel/JKRAram.cpp:
 	.text       start:0x800790A8 end:0x80079EFC
 	.ctors      start:0x8045BDA8 end:0x8045BDAC
