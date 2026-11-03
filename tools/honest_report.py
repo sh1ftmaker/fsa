@@ -455,7 +455,8 @@ def dead_data(elf, name, unused, placed, starts, notes, unit, extra=None):
         symbol value plus addend, lies in it) lies in a symbol the map also
         lists `UNUSED` for this object in that section's layout (a dead
         function, or other dead data), so no live code or data uses it;
-      * the bytes up to the next symbol (or the section end) are zero padding,
+      * the bytes up to the next symbol (or the section end) are zero padding
+        with no relocation in them,
         removed with it, and the map places every kept symbol of the section
         at the offset (from the object's section start) and size it has in
         the stripped copy, so the copy has the layout the link gave it;
@@ -537,8 +538,8 @@ def dead_data(elf, name, unused, placed, starts, notes, unit, extra=None):
         nxt = min([x["value"] for x in elf.syms if x["shndx"] == sec and x["size"] and x["value"] >= val + s["size"]]
                   + [elf.sh[sec][5]])
         o = elf.sh[sec][4]
-        if any(elf.d[o + val + s["size"]:o + nxt]):
-            notes.append(f"{unit}: {s['name']} kept: non-zero bytes between it and the next symbol")
+        if any(elf.d[o + val + s["size"]:o + nxt]) or any(val + s["size"] <= off < nxt for off, *_ in elf.relocs(sec)):
+            notes.append(f"{unit}: {s['name']} kept: non-zero bytes or a relocation between it and the next symbol")
             continue
         removals[sec].append((val, nxt - val))
         entries.append({"section": elf.names[sec], "symbol": s["name"], "offset": val, "size": s["size"],
@@ -647,7 +648,8 @@ def weak_data(elf, name, link, notes, unit):
       * every allocated relocation whose target (symbol value plus addend)
         lies in it or its padding targets the symbol itself, by name: the
         link resolves those to the kept copy, so they stay;
-      * the bytes up to the next symbol (or the section end) are zero padding,
+      * the bytes up to the next symbol (or the section end) are zero padding
+        with no relocation in them,
         removed with it.
     In the stripped copy its symbol becomes undefined, as in dtk's split of
     the original, which references the kept copy as an external symbol."""
@@ -710,8 +712,9 @@ def weak_data(elf, name, link, notes, unit):
                   + [elf.sh[sec][5]])
         if why is None:
             o = elf.sh[sec][4]
-            if any(elf.d[o + s["value"] + s["size"]:o + nxt]):
-                why = "non-zero bytes between it and the next symbol"
+            if any(elf.d[o + s["value"] + s["size"]:o + nxt]) or \
+                    any(s["value"] + s["size"] <= off < nxt for off, *_ in elf.relocs(sec)):
+                why = "non-zero bytes or a relocation between it and the next symbol"
         refs = 0
         if why is None:
             for r in range(elf.shnum):
