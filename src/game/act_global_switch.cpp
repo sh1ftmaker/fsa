@@ -4,9 +4,7 @@
 
 GlobalSwitch_804AA060::~GlobalSwitch_804AA060() {}
 
-void GlobalSwitch_804AA060::init() {
-    update();
-}
+void GlobalSwitch_804AA060::draw() {}
 
 void GlobalSwitch_804AA060::update() {
     if (fn_802D6A9C()->fn_802D800C((field_0x90 >> 22) & 0x1F)) {
@@ -14,4 +12,6 @@ void GlobalSwitch_804AA060::update() {
     }
 }
 
-void GlobalSwitch_804AA060::draw() {}
+void GlobalSwitch_804AA060::init() {
+    update();
+}
