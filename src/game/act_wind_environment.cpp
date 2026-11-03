@@ -38,7 +38,7 @@ void WindEnvironment_8049CC98::fn_80106ADC(s32 state) {
             break;
         }
         break;
-    case 0: // nothing calls it with 0; the empty case gives the original's dispatch
+    case 0: // update's state 1 can reset mState to 0 before this call; the empty case gives the original's dispatch
         break;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -52,7 +52,7 @@ void WindEnvironment_8049CC98::fn_80106ADC(s32 state) {
     }
 }
 
-inline bool WindEnvironment_8049CC98::isCalm() {
+inline bool WindEnvironment_8049CC98::shouldBlow() {
     switch (mCondition) {
     case 1:
         if (fn_802D6A9C()->field_0x171 != 0) {
@@ -77,7 +77,7 @@ void WindEnvironment_8049CC98::update() {
     ActorBase_804A5770::update();
     switch (mState) {
     case 0:
-        if (isCalm()) {
+        if (shouldBlow()) {
             if (mEmitter != NULL) {
                 mEmitter->playCreateParticle();
             }
@@ -85,7 +85,7 @@ void WindEnvironment_8049CC98::update() {
         }
         break;
     case 1:
-        if (!isCalm()) {
+        if (!shouldBlow()) {
             if (mEmitter != NULL) {
                 mEmitter->stopCreateParticle();
             }

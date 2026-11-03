@@ -24,8 +24,9 @@ public:
     // 0x3EF) forbids it; `state` 1 is the base speed, 2 doubles it, others
     // push nothing.
     void fn_80106ADC(s32 state);
-    // The test update's states 0 and 1 share (inlined twice).
-    bool isCalm();
+    // True when the wind should be blowing: update starts the effect (state 0 to 1) when it
+    // holds and stops it (1 to 0) when it does not (inlined twice).
+    bool shouldBlow();
 
     /* 0x230 */ s32 mState; // 0 or 1: whether the effect emits (update toggles it)
     /* 0x234 */ s32 mKind; // field_0x90 & 0xF: wind direction, 0 right, 1 left, 2 up, 3 down
