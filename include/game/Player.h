@@ -231,6 +231,7 @@ public:
     void fn_802954B8(); // 0x124D = 1 (stb), 0x458 = 0 (stb); TVec3f 0x344 zeroed
     void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
+    void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
@@ -284,7 +285,9 @@ public:
     /* 0x03F9 */ u8 field_0x3f9;
     /* 0x03FA */ u8 field_0x3fa;
     /* 0x03FB */ u8 field_0x3fb;
-    /* 0x03FC */ u8 field_0x3fc[0x42C - 0x3FC];
+    /* 0x03FC */ u8 field_0x3fc;
+    /* 0x03FD */ u8 field_0x3fd; // set to 1 by fn_80295584 (stb)
+    /* 0x03FE */ u8 field_0x3fe[0x42C - 0x3FE];
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
