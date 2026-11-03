@@ -19,7 +19,9 @@ public:
     /* 0x230 */ u8 field_0x230[0x4]; // not yet known
     // 0 until fn_8035B650's first call runs the setup, then 1.
     /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ u8 field_0x238[0xC]; // not yet known
+    // draw() shows the sprite only while this is nonzero.
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ u8 field_0x23C[0x8]; // not yet known
     // Step sequencer read by fn_8035C15C: a timer, the value of the current
     // step, and the index of the next step of the table it is given.
     /* 0x244 */ s32 field_0x244;

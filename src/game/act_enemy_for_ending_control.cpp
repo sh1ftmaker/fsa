@@ -73,6 +73,21 @@ bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
     return false;
 }
 
+// .rodata string, the "SOB " bank draw() shows.
+static const char lbl_80472700[] = "enemy_gc_sob.bin";
+
+// Draws the sprite with mPos raised by lbl_805428EC for this call only.
+void EnemyForEndingControl_804AD48C::draw() {
+    if (field_0x238 != 0) {
+        JGeometry::TVec3f saved(mPos);
+        mPos.y += lbl_805428EC;
+        SpriteParams_801F5AE0 params;
+        params.field_0x1d = -1;
+        fn_801F06F0(lbl_80472700, 0x179, &params, -1, lbl_805428EC, lbl_805428EC);
+        mPos = saved;
+    }
+}
+
 EnemyForEndingControl_804AD48C::~EnemyForEndingControl_804AD48C() {}
 
 void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
