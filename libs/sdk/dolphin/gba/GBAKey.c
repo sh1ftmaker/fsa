@@ -2,10 +2,13 @@
 #include "string.h"
 
 // The two DSP task callbacks have no known names (fn_ placeholders).
-// FIXME: GBA key-exchange DSP microcode (0x380 bytes at 0x804985D0). No
-// licensed source has it, and it can't be copied out of main.dol, so this
-// unit's .data (and __GBAX02's reference to it) can't match.
-static u8 ucode[0x380] ATTRIBUTE_ALIGN(32) = { 0 };
+
+// GBA key-exchange DSP microcode (0x380 bytes at 0x804985D0). It is DSP code
+// with no source form, so it isn't written here: the build extracts it from
+// orig/sys/main.dol (config.yml extract:) into build/G4SE01/include/assets/.
+static u8 ucode[0x380] ATTRIBUTE_ALIGN(32) = {
+#include "assets/dolphin/gba/GBAKey_ucode.inc"
+};
 
 static inline s32 F152(DSPTaskInfo* task) {
     s32 chan;
