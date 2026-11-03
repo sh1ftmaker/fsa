@@ -1,5 +1,5 @@
 #include "game/GameAudio.h"
-#include "game/tu_800FE8C0.h"
+#include "game/cls_800FE8C0.h"
 
 static const s32 lbl_80463AA0[4] = {0x3C, 0x3D, 0x3E, 0x3F};
 static const u8 lbl_8053C0E0[4] = {10, 0xFF};
@@ -30,7 +30,7 @@ static const u8 lbl_8053C10C[4] = {0x19, 0xFE};
 // FIXME: 99.2%, regalloc-only. The state (mState) is loaded into r5 and the
 // .rodata base into r4 here; the original has them the other way round
 // (lwz r4; lis r5), which also changes r4/r5 in the state-reset block.
-void cls_800FEB78::fn_800FE8C0() {
+void cls_800FE8C0::fn_800FE8C0() {
     if (mState != mPrevState) {
         mPrevState = mState;
         mTimer = 0;
@@ -116,7 +116,7 @@ void cls_800FEB78::fn_800FE8C0() {
     mTimer++;
 }
 
-void cls_800FEB78::fn_800FEB78(int state) {
+void cls_800FE8C0::fn_800FEB78(int state) {
     mState = state;
     mPrevState = 10;
     mDir = 0;

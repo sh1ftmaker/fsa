@@ -1,16 +1,16 @@
-#ifndef GAME_TU_800FE8C0_H
-#define GAME_TU_800FE8C0_H
+#ifndef GAME_CLS_800FE8C0_H
+#define GAME_CLS_800FE8C0_H
 
 // Exports of game/tu_800FE8C0.cpp. An animation-frame sequencer embedded in
 // an actor (act_shadow_link_demo and act_shadow_link_2 keep it at +0x278 and
-// call fn_800FEB78 and fn_800FE8C0 on it). Named after its first function,
-// fn_800FEB78 (no vtable, no constructor proper, no destructor).
+// call fn_800FEB78 and fn_800FE8C0 on it). Named after its lowest-address function,
+// fn_800FE8C0 (no vtable, no constructor proper, no destructor).
 //
 // Owner: game/tu_800FE8C0.cpp.
 
 #include "types.h"
 
-class cls_800FEB78 {
+class cls_800FE8C0 {
 public:
     // Sets the state (r4), previous state 10 and direction 0, then updates.
     void fn_800FEB78(int state);
