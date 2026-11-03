@@ -226,6 +226,15 @@ public:
     void fn_802636C4(); // byte at 0x458 = 0 (stb r0)
     void fn_80263848(); // byte at 0x458 = 0 (stb r0)
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
+    void fn_80293760(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
+    void fn_80293B1C(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
+    void fn_802954B8(); // 0x124D = 1 (stb), 0x458 = 0 (stb); TVec3f 0x344 zeroed
+    void fn_80295240(); // 0x124D = 1, 0x458 = 0 (stb); TVec3f 0x344 set (0x348 from lbl_80540644)
+    void fn_80292E90(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C)
+    void fn_802938B8(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C) unless 0xCF4 == 0x1D
+    void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
+    void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
+    void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
@@ -258,7 +267,10 @@ public:
     /* 0x0014 */ u8 field_0x14[0x2B8 - 0x14];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
-    /* 0x02C4 */ u8 field_0x2c4[0x3B4 - 0x2C4];
+    /* 0x02C4 */ u8 field_0x2c4[0x344 - 0x2C4];
+    // Zeroed by fn_802954B8 (three stfs of 0.0f).
+    /* 0x0344 */ JGeometry::TVec3f field_0x344;
+    /* 0x0350 */ u8 field_0x350[0x3B4 - 0x350];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
@@ -271,7 +283,14 @@ public:
     /* 0x03DC */ s32 field_0x3dc; // fn_80230CFC (2 without a player)
     /* 0x03E0 */ u8 field_0x3e0[0x3E8 - 0x3E0];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
-    /* 0x03EC */ u8 field_0x3ec[0x42C - 0x3EC];
+    /* 0x03EC */ u8 field_0x3ec[0x3F9 - 0x3EC];
+    // Cleared by fn_802922D0 (stb r0); 0x3FB set by it (stb r4).
+    /* 0x03F9 */ u8 field_0x3f9;
+    /* 0x03FA */ u8 field_0x3fa;
+    /* 0x03FB */ u8 field_0x3fb;
+    /* 0x03FC */ u8 field_0x3fc;
+    /* 0x03FD */ u8 field_0x3fd; // set to 1 by fn_80295584 (stb)
+    /* 0x03FE */ u8 field_0x3fe[0x42C - 0x3FE];
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
@@ -318,7 +337,10 @@ public:
     /* 0x0CE9 */ u8 field_0xce9;
     /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];
     /* 0x0CEE */ u8 field_0xcee;
-    /* 0x0CEF */ u8 field_0xcef[0xCFE - 0xCEF];
+    /* 0x0CEF */ u8 field_0xcef[0xCF4 - 0xCEF];
+    // Compared with 0x1D (lwz; cmpwi) by fn_802938B8 before it calls fn_8024F0E8.
+    /* 0x0CF4 */ s32 field_0xcf4;
+    /* 0x0CF8 */ u8 field_0xcf8[0xCFE - 0xCF8];
     // Returned by fn_80240870 (via fn_80234134).
     /* 0x0CFE */ bool field_0xcfe;
     /* 0x0CFF */ u8 field_0xcff[0xD08 - 0xCFF];
@@ -356,7 +378,10 @@ public:
     /* 0x121F */ bool field_0x121f;
     /* 0x1220 */ u8 field_0x1220[0x1224 - 0x1220];
     /* 0x1224 */ s32 field_0x1224;
-    /* 0x1228 */ u8 field_0x1228[0x13BC - 0x1228];
+    /* 0x1228 */ u8 field_0x1228[0x124D - 0x1228];
+    // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
+    /* 0x124D */ u8 field_0x124d;
+    /* 0x124E */ u8 field_0x124e[0x13BC - 0x124E];
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
