@@ -14,9 +14,6 @@
 #include "dolphin/os/OSThread.h"
 #include "types.h"
 
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-
 volatile int JASAudioThread::snIntCount;
 
 inline JASAudioThread::JASAudioThread(int prio, int msgCount, u32 stackSize) : JKRThread(JASDram, stackSize, msgCount, prio), JASGlobalInstance<JASAudioThread>(true)  {
