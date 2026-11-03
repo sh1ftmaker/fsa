@@ -95,8 +95,22 @@ def setup(args):
 
 # ---------------------------------------------------------------- scoring
 
+def report_fns(unit):
+    """Target functions of a unit from the integration report (for units with no source yet)."""
+    name = "/" + unit[:-4]
+    for u in json.loads((INTEG / "build/G4SE01/report_honest.json").read_text())["units"]:
+        if u["name"].endswith(name):
+            return {f["name"]: (int(f.get("size", 0)), float(f.get("fuzzy_match_percent", 0)))
+                    for f in u.get("functions", [])}
+    return {}
+
+
 def fdiff(wt, unit):
     """Build the unit's object (try.py re-splits if needed) and return (functions, sections)."""
+    if not (wt / "src" / unit).exists():
+        return report_fns(unit), {}
+    if sh(["git", "ls-files", "--error-unmatch", f"src/{unit}"], wt).returncode:
+        sh(["python3", "configure.py"], wt)  # new source: objdiff.json needs the unit
     sh(["timeout", "1200", "python3", "tools/try.py", unit], wt)
     out = sh(["python3", "tools/fdiff.py", unit], wt).stdout
     fns, secs = {}, {}
@@ -191,18 +205,22 @@ End with one line: the final match % of {fn}.
 def run_haiku(wt, unit, fn, size, pct):
     prompt = PROMPT.format(fn=fn, size=size, pct=f"{pct:.2f} %" if pct else "missing",
                            unit=unit, base=Path(unit).stem)
+    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", 1200)
+
+
+def _claude(wt, prompt, tag, timeout):
     tools = ",".join(["Read", "Edit", "Write", "Grep", "Glob",
                       "Bash(python3 tools/try.py:*)", "Bash(python3 tools/fdiff.py:*)",
                       "Bash(grep:*)", "Bash(sed -n:*)", "Bash(head:*)", "Bash(tail:*)"])
     try:
         r = sh(["claude", "-p", prompt, "--model", MODEL, "--output-format", "json",
                 "--permission-mode", "acceptEdits", "--allowedTools", tools,
-                "--disallowedTools", "Agent,WebFetch,WebSearch"], wt, timeout=1200)
+                "--disallowedTools", "Agent,WebFetch,WebSearch"], wt, timeout=timeout)
         out = r.stdout
     except subprocess.TimeoutExpired:
         out = '{"result": "timeout"}'
     (LOGS / "haiku").mkdir(parents=True, exist_ok=True)
-    (LOGS / "haiku" / f"{Path(unit).stem}__{fn[:80]}.json").write_text(out)
+    (LOGS / "haiku" / f"{tag}.json").write_text(out)
     try:
         return json.loads(out).get("total_cost_usd", 0)
     except ValueError:
@@ -277,7 +295,7 @@ def _merge(wt, branch, unit):
     if sh(["git", "merge", "-q", "--no-edit", branch], INTEG).returncode:
         sh(["git", "merge", "--abort"], INTEG)
         return "merge conflict"
-    ok = sh("timeout 3600 ninja >/dev/null 2>&1 && sha1sum -c config/G4SE01/build.sha1", INTEG).returncode == 0
+    ok = sh("python3 configure.py >/dev/null && timeout 3600 ninja >/dev/null 2>&1 && sha1sum -c config/G4SE01/build.sha1", INTEG).returncode == 0
     why = "" if ok else "SHA-1"
     after = progress_count() if ok else None
     if ok and (after is None or before is None or after < before):
@@ -294,6 +312,88 @@ def _merge(wt, branch, unit):
     return "merged"
 
 
+def judge(wt, unit, fns, secs, focus=None):
+    """Script verdict on the worktree's changes: (why-rejected or None, fns, secs, gained, renames)."""
+    why, ren = check_diff(wt, unit)
+    # Generated functions must stay byte-equal to their templates.
+    if not why and "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], wt).stdout:
+        why = "breaks gen_game --check (edited a generated function or header)"
+    if why:
+        return why, fns, secs, 0, {}
+    ren = ren or {}
+    new_fns, new_secs = fdiff(wt, unit)
+    renamed = {ren.get(k, k): v for k, v in fns.items()}
+    worse = [k for k, (_, p) in renamed.items() if new_fns.get(k, (0, 0))[1] < p - 0.001]
+    worse += [k for k, p in secs.items() if new_secs.get(k, 0) < p - 0.001]
+    gained = sum(p == 100 for _, p in new_fns.values()) - sum(p == 100 for _, p in fns.values())
+    if worse:
+        why = f"worse: {worse[:3]}"
+    elif gained <= 0:
+        best = new_fns.get(ren.get(focus, focus), (0, 0))[1] if focus else 0
+        why = f"no new 100 % (best {best:.2f})"
+    return why, new_fns, new_secs, gained, ren
+
+
+def file_candidates(max_bytes):
+    """Whole NonMatching game units (with or without source) whose unmatched code is small."""
+    for _ in range(30):
+        try:
+            report = json.loads((INTEG / "build/G4SE01/report_honest.json").read_text())["units"]
+            break
+        except (ValueError, OSError):
+            time.sleep(20)
+    else:
+        return []
+    cfg = (INTEG / "configure.py").read_text()
+    out = []
+    for u in report:
+        if "/game/" not in u["name"]:
+            continue
+        unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
+        if f'Object(NonMatching, "{unit}"' not in cfg:
+            continue
+        left = sum(int(f.get("size", 0)) for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) < 100)
+        if 0 < left <= max_bytes:
+            out.append((left, unit))
+    return [u for _, u in sorted(out)]
+
+
+FILE_PROMPT = """You are decompiling a small file of The Legend of Zelda: Four Swords Adventures (GameCube)
+into C++ that compiles to the exact original bytes (Metrowerks GC/2.6, -O4,p, C++ with exceptions).
+Your working directory is the repository; stay in it.
+
+Unit `{unit}`, source `src/{unit}` ({state}). Original assembly of the whole file:
+`build/G4SE01/asm/game/{base}.s`. Functions not yet matching (name, bytes, current %):
+{todo}
+Read docs/RULES_CARD.md once, especially "Known game-code shapes"; look at matched src/game/*.cpp
+files and include/game/ headers for the style and the classes this file uses.
+
+Work smallest function first. Loop: edit, run `python3 tools/try.py {unit}` (overview) or
+`python3 tools/try.py {unit} <function>` (one function's differing rows), change one thing, repeat.
+When a function hits STOP or 8 attempts without progress, move on. Get as many functions to
+100 % as you can; data sections (.data/.rodata/.sdata2) count too. About 30 attempts in total.
+
+Rules (a script checks them and throws away ALL your work if one is broken):
+- Edit only `src/{unit}`, headers under include/game/ (add members or split fields only with
+  evidence from the asm; other files use them too), and, for a placeholder name only, rename
+  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). Never
+  rename a symbol that other source files still use (`grep -rw <name> src include libs`).
+- A placeholder function that takes a class pointer as its first argument is a member function
+  of that class: declare it in the class and write it as a member, not as extern "C".
+- No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
+  types, as the original programmers would. Functions already at 100 % must stay at 100 %.
+- Do not run git, ninja or any build other than tools/try.py.
+End with one line: how many functions are at 100 %.
+"""
+
+
+def run_haiku_file(wt, unit, fns):
+    todo = "\n".join(f"  {f}  {sz}  {p:.2f} %" for f, (sz, p) in sorted(fns.items(), key=lambda x: x[1][0]) if p < 100)
+    state = "exists" if (wt / "src" / unit).exists() else "does not exist yet: create it, following other src/game/*.cpp files"
+    prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state)
+    return _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700)
+
+
 def worker(args):
     # sbg stop sends SIGTERM: unwind so the claim is released and the worktree reverted.
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
@@ -303,7 +403,8 @@ def worker(args):
     sh(["git", "reset", "-q", "--hard", "grind"], wt, check=True)
     sh("timeout 3600 ninja build/G4SE01/report_honest.json", wt)
     while not (LOGS / "STOP").exists():
-        unit = next((u for u in candidates(args.max_size) if claim(u, owner, wt)), None)
+        pool = file_candidates(args.file_max) if args.mode == "file" else candidates(args.max_size)
+        unit = next((u for u in pool if claim(u, owner, wt)), None)
         if unit is None:
             notify("FSA grind", f"{owner}: no units left")
             return
@@ -311,34 +412,33 @@ def worker(args):
         revert(wt)
         try:
             fns, secs = fdiff(wt, unit)
-            todo = sorted((s, f, p) for f, (s, p) in fns.items() if p < 100 and s <= args.max_size)
             accepted = 0
+            if args.mode == "file":
+                t0 = time.time()
+                left = sum(sz for sz, p in fns.values() if p < 100)
+                cost = run_haiku_file(wt, unit, fns)
+                why, new_fns, new_secs, gained, ren = judge(wt, unit, fns, secs)
+                if why:
+                    revert(wt)
+                    log([owner, unit, "FILE", left, "-", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
+                else:
+                    sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt"], wt)
+                    sh(["git", "commit", "-qm", f"grind: {unit} +{gained} functions (whole file)\n\n{TRAILER}"], wt)
+                    accepted = gained
+                    log([owner, unit, "FILE", left, "-", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
+            todo = [] if args.mode == "file" else sorted((sz, f, p) for f, (sz, p) in fns.items() if p < 100 and sz <= args.max_size)
             for size, fn, pct in todo[:args.per_unit]:
                 if (LOGS / "STOP").exists():
                     break
                 t0 = time.time()
                 cost = run_haiku(wt, unit, fn, size, pct)
-                why, ren = check_diff(wt, unit)
-                # Generated functions must stay byte-equal to their templates.
-                if not why and "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], wt).stdout:
-                    why = "breaks gen_game --check (edited a generated function or header)"
-                new_fns, new_secs = (fns, secs) if why else fdiff(wt, unit)
-                if not why:
-                    ren = ren or {}
-                    renamed = {ren.get(k, k): v for k, v in fns.items()}
-                    worse = [k for k, (s, p) in renamed.items() if new_fns.get(k, (0, 0))[1] < p - 0.001]
-                    worse += [k for k, p in secs.items() if new_secs.get(k, 0) < p - 0.001]
-                    gained = sum(p == 100 for _, p in new_fns.values()) - sum(p == 100 for _, p in fns.values())
-                    if worse:
-                        why = f"worse: {worse[:3]}"
-                    elif gained <= 0:
-                        why = f"no new 100 % (best {new_fns.get(ren.get(fn, fn), (0, 0))[1]:.2f})"
+                why, new_fns, new_secs, gained, ren = judge(wt, unit, fns, secs, fn)
                 if why:
                     revert(wt)
                     log([owner, unit, fn, size, f"{pct:.2f}", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
                     continue
                 sh(["git", "add", "-A", "src", "include", "config/G4SE01/symbols.txt"], wt)
-                sh(["git", "commit", "-qm", f"grind: {unit} {ren.get(fn, fn) if ren else fn} matches\n\n{TRAILER}"], wt)
+                sh(["git", "commit", "-qm", f"grind: {unit} {ren.get(fn, fn)} matches\n\n{TRAILER}"], wt)
                 fns, secs, accepted = new_fns, new_secs, accepted + 1
                 log([owner, unit, fn, size, f"{pct:.2f}", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
             result = merge_into_grind(wt, branch, unit) if accepted else "nothing accepted"
@@ -369,6 +469,8 @@ def main():
     s = sp.add_parser("setup"); s.add_argument("--workers", type=int, default=4); s.set_defaults(f=setup)
     w = sp.add_parser("worker"); w.add_argument("n", type=int)
     w.add_argument("--max-size", type=int, default=256); w.add_argument("--per-unit", type=int, default=6)
+    w.add_argument("--mode", choices=["function", "file"], default="function")
+    w.add_argument("--file-max", type=int, default=1536, help="file mode: max unmatched bytes per unit")
     w.set_defaults(f=worker)
     sp.add_parser("status").set_defaults(f=status)
     a = ap.parse_args()
