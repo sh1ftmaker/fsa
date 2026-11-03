@@ -15,6 +15,12 @@ extern "C" void fn_8019C4F4(JGeometry::TVec2f* v, f32 x, f32 y) {
     v->y = y;
 }
 
+extern "C" void fn_8019CECC(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
+}
+
 extern "C" void fn_8019CEE8(u8 v) {
     lbl_80529DEC.field_0x24d = v;
 }
