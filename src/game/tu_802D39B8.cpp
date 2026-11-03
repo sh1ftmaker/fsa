@@ -5,6 +5,8 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 
+void GameView_804A9950::vfunc_0x14() {}
+
 // FIXME: everything before 0x802DE814 is not written yet.
 
 bool fn_802DE814(void) {
