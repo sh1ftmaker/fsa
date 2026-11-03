@@ -6,6 +6,15 @@
 #include "game/GameGlobals.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
+// Five floats indexed by field_0xc0 (EnemyParam "efsz").
+static const f32 lbl_8046A00C[5] = {
+    0.0f, 1.0f, 1.3f, 1.6f, 2.0f,
+};
+
+f32 ActorBase_804A5770::fn_801EE4F0() {
+    return lbl_8046A00C[field_0xc0];
+}
+
 // Lets an emitter that is still on screen finish its particles; deletes one
 // that is off screen at once.
 static inline void releaseEmitter(JPABaseEmitter* emitter) {
@@ -128,6 +137,12 @@ void ActorBase_804A5770::vfunc_0x18() {
     }
 }
 
+void ActorBase_804A5770::vfunc_0x40() {}
+
+void ActorBase_804A5770::vfunc_0x44() {}
+
+void ActorBase_804A5770::vfunc_0x48() {}
+
 // The actor's bit in the screen and stage tables of the view (game/GameView.h):
 // the top five bits of field_0x90, 0 for none.
 s32 ActorBase_804A5770::vfunc_0x3C() {
@@ -156,6 +171,80 @@ void ActorBase_804A5770::update() {}
 void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::init() {}
+
+// Queues a warp to *pos on layer, unless one is pending (field_0x17c) or
+// running (field_0x174 > 0).
+void ActorBase_804A5770::fn_801F349C(s32 layer, const JGeometry::TVec3f* pos) {
+    if (field_0x17c != 0) {
+        return;
+    }
+    if (field_0x174 > 0) {
+        return;
+    }
+    field_0x30 = *pos;
+    field_0x178 = layer;
+    field_0x17c = 1;
+    field_0x174 = 0;
+}
+
+// Reports the actor's field_0x16c to the view, unless it is -1 (none).
+void ActorBase_804A5770::fn_801F34DC() {
+    s32 bit = field_0x16c;
+    if (bit != -1) {
+        fn_802D6A9C()->fn_802D7618(bit);
+    }
+}
+
+// If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
+// loop with field_0xd0 = v and returns 1 (0 otherwise).
+u8 ActorBase_804A5770::fn_801F36D4(s32 v) {
+    s32 result = false;
+    if (field_0xcc == 0 && field_0xc4 == 0) {
+        field_0xcc = 1;
+        field_0xd0 = v;
+        result = true;
+    }
+    return result;
+}
+
+// If field_0xc4 is set: clears it, field_0x3c = *v, returns 1; else 0.
+u8 ActorBase_804A5770::fn_801F3708(const JGeometry::TVec3f* v) {
+    s32 result = false;
+    if (field_0xc4 != 0) {
+        field_0xc4 = 0;
+        field_0x3c.set(*v);
+        result = true;
+    }
+    return result;
+}
+
+// If field_0xc4 is clear: sets it, field_0xc8 = field_0x110 = v, clears
+// field_0xcc, field_0xd0 = -1, returns 1; else 0.
+u8 ActorBase_804A5770::fn_801F3744(s32 v) {
+    s32 result = false;
+    if (field_0xc4 == 0) {
+        field_0xc4 = 1;
+        field_0xc8 = v;
+        field_0xcc = 0;
+        field_0xd0 = -1;
+        field_0x110 = v;
+        result = true;
+    }
+    return result;
+}
+
+// Sets field_0xa4 and clears the per-hit and timer state; field_0xe0 is only
+// cleared while the actor has life left.
+void ActorBase_804A5770::fn_801F3780(s32 v) {
+    field_0xa4 = v;
+    field_0xd8 = 0;
+    field_0xd5 = 0;
+    field_0xe4 = 0;
+    field_0xe8 = 0;
+    if (mLife > 0) {
+        field_0xe0 = 0;
+    }
+}
 
 ActorBase_804A5770::~ActorBase_804A5770() {
     if (mEmitter100 != NULL) {
