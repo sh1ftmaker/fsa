@@ -1727,11 +1727,11 @@ JSystem/JParticle/JPAKeyBlock.cpp:
 	.sdata2     start:0x8053BE00 end:0x8053BE08
 
 JSystem/JParticle/JPAMath.cpp:
-	.text       start:0x800EEE60 end:0x800EF368
+	.text       start:0x800EEE60 end:0x800EF320
 	.sdata2     start:0x8053BE08 end:0x8053BE18
 
 JSystem/JParticle/JPAParticle.cpp:
-	.text       start:0x800EF368 end:0x800F087C
+	.text       start:0x800EF320 end:0x800F087C
 	.data       start:0x8049C178 end:0x8049C18C
 	.sdata2     start:0x8053BE18 end:0x8053BE40
 
