@@ -24,7 +24,9 @@ Checks (see docs/PLAN.md, "Submission gate"):
   * objdiff.json has no symbol_mappings (objdiff's report honors them);
   * build/G4SE01/weakdedup_manifest.json: every extab entry the honest report
     left out belongs to a WEAK FUNC, and its map evidence (UNREFERENCED
-    DUPLICATE in this object, extab and extabindex labels UNUSED) is in the
+    DUPLICATE in this object, or, when no copy is kept anywhere, the
+    function itself UNUSED with its size and not placed for this object;
+    extab and extabindex labels UNUSED) is in the
     map of a current link that includes this exact object and whose DOL
     matches build.sha1; every stripped object differs from the compiled one
     only by those entries, and no other unit is diffed against a copy;
@@ -1307,11 +1309,12 @@ def check_weakdedup(problems):
         kind = e.get("kind", "weak_extab")
         if kind in ("dead_data", "weak_data"):
             tag = f"{kind.replace('_', ' ')} {e.get('unit')}: {e.get('symbol')}"
-        elif kind != "weak_extab":
+        elif kind not in ("weak_extab", "unused_weak_extab"):
             problems.append(f"{tag}: unknown kind of removal {kind!r}")
             continue
         # A data object is removed once, as dead or as weak data, never both.
-        ident = (e.get("object"), e.get("symbol") if kind != "weak_extab" else e.get("extabindex"), kind == "weak_extab")
+        extab_kind = kind in ("weak_extab", "unused_weak_extab")
+        ident = (e.get("object"), e.get("extabindex") if extab_kind else e.get("symbol"), extab_kind)
         if ident in seen:
             problems.append(f"{tag}: listed twice in the manifest")
             continue
@@ -1390,8 +1393,22 @@ def check_weakdedup(problems):
         lines = _map_lines(rec["map"])
         ev = e.get("evidence", [])
         texts = [lines[x["line"] - 1] if 0 < x["line"] <= len(lines) else None for x in ev]
-        ok = len(ev) == 4 and all(t == x["text"] for t, x in zip(texts, ev))
-        if ok:
+        ok = len(ev) == (3 if kind == "unused_weak_extab" else 4) and all(t == x["text"] for t, x in zip(texts, ev))
+        if ok and kind == "unused_weak_extab":
+            # No copy kept anywhere: the map lists the weak function itself
+            # UNUSED, with its size, for this object in its own section's
+            # layout and doesn't place it there.
+            u_fn, u_eti, u_etb = ev
+            m_eti = re.match(r"^\s+UNUSED\s+([0-9a-f]+) \.+ (\S+) (\S+)\s*$", u_eti["text"])
+            m_etb = re.match(r"^\s+UNUSED\s+([0-9a-f]+) \.+ (\S+) (\S+)\s*$", u_etb["text"])
+            ok = bool(0 < fn[5] < len(elf.names) and fn[2]
+                      and _dead_in_map(elf, rec["map"], name, fn[5], fn, u_fn)
+                      and m_eti and m_etb
+                      and (int(m_eti[1], 16), m_eti[2], m_eti[3]) == (12, e["extabindex"], name)
+                      and _map_section(lines, u_eti["line"]) == "extabindex"
+                      and (int(m_etb[1], 16), m_etb[2], m_etb[3]) == (e["extab_size"], e["extab"], name)
+                      and _map_section(lines, u_etb["line"]) == "extab")
+        elif ok:
             dup, found, u_eti, u_etb = ev
             m_dup = re.search(r">>> UNREFERENCED DUPLICATE (.+?)\s*$", dup["text"])
             m_found = re.search(r">>> \(func,weak\) found in (\S+)\s*$", found["text"])

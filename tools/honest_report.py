@@ -24,7 +24,10 @@ them. Before diffing, a unit's compiled object is copied without such an
 entry only when ALL of these hold:
   * the extabindex entry's function relocation targets a WEAK FUNC symbol;
   * a link map lists that function as `UNREFERENCED DUPLICATE` found in
-    this object as (func,weak);
+    this object as (func,weak), or (manifest kind unused_weak_extab: no
+    copy of it is kept at all, e.g. an inline destructor nothing calls)
+    lists it UNUSED, with its size, for this object in its own section's
+    layout and doesn't place it there (see unused_weak_function());
   * the same map lists the entry's extab and extabindex labels as UNUSED
     for this object, in the extab and extabindex section layouts;
   * that map comes from a link whose inputs include this exact compiled
@@ -799,6 +802,24 @@ def strip(elf, removals, undef=()):
     return bytes(d)
 
 
+def unused_weak_function(elf, fn, name, unused, placed):
+    """[(line, text)] of the map's UNUSED line for weak function fn in this
+    object, or None: fn must be WEAK FUNC with a name unique among the
+    object's symbols, listed UNUSED with its size for this object in its own
+    section's layout, and not also placed there for this object (the link
+    dead-stripped every copy of it, so the DOL has neither it nor its extab)."""
+    if not (fn["bind"] == STB_WEAK and fn["type"] == STT_FUNC and fn["size"] and 0 < fn["shndx"] < elf.shnum):
+        return None
+    if sum(s["name"] == fn["name"] for s in elf.syms) != 1:
+        return None
+    secname = elf.names[fn["shndx"]]
+    u = unused.get((secname, name, fn["name"]))
+    if not u or any(b[2] == fn["name"] for b in placed.get((secname, name), [])):
+        return None
+    m = UNUSED_LINE.match(u[1])
+    return [u] if m and int(m[1], 16) == fn["size"] and (m[2], m[3]) == (fn["name"], name) else None
+
+
 def dedup_unit(unit, base, link, notes):
     """Write the stripped copy of base and return (path, manifest entries), or (None, [])."""
     try:
@@ -821,12 +842,19 @@ def dedup_unit(unit, base, link, notes):
         dup = dups.get((name, fn["name"]))
         u_eti = unused.get(("extabindex", name, eti["name"]))
         u_etb = unused.get(("extab", name, etb["name"]))
+        kind = "weak_extab"
+        if not dup:
+            # No copy of it is kept anywhere: the link dead-stripped the weak
+            # function itself. The map must list it UNUSED, with its size, for
+            # this object in its own section's layout, and not place it.
+            dup = unused_weak_function(elf, fn, name, unused, placed)
+            kind = "unused_weak_extab"
         if not (dup and u_eti and u_etb):
             continue
         removals[eti["shndx"]].append((eti["value"], 12))
         removals[etb["shndx"]].append((etb["value"], etb["size"]))
         found.append({
-            "kind": "weak_extab",
+            "kind": kind,
             "unit": unit, "object": base, "object_sha1": sha1(base), "function": fn["name"],
             "extabindex": eti["name"], "extab": etb["name"], "extab_size": etb["size"],
             "link": getattr(link, "evidence_file", None) or link.kind,
@@ -834,7 +862,7 @@ def dedup_unit(unit, base, link, notes):
         })
     if len(found) < len(entries):
         notes.append(f"{unit}: {len(entries) - len(found)} weak extab entries kept: "
-                     f"{link.map} has no discarded-duplicate evidence for them")
+                     f"{link.map} has no discarded-duplicate or dead-stripped evidence for them")
     # Weak data first: dead data in the same section is checked against the
     # layout without both, and a section whose weak removals the map doesn't
     # confirm keeps its weak data (dead data is then checked again without it).
@@ -912,7 +940,9 @@ def weak_dedup(cfg):
     units = len({e["unit"] for e in entries})
     data = [e for e in entries if e["kind"] == "dead_data"]
     weak = [e for e in entries if e["kind"] == "weak_data"]
-    print(f"weakdedup: {len(entries) - len(data) - len(weak)} extab entries of discarded weak duplicates, "
+    unused_fn = [e for e in entries if e["kind"] == "unused_weak_extab"]
+    print(f"weakdedup: {len(entries) - len(data) - len(weak) - len(unused_fn)} extab entries of discarded weak duplicates, "
+          f"{len(unused_fn)} of dead-stripped weak functions, "
           f"{len(weak)} discarded weak data objects and "
           f"{len(data)} dead-stripped data objects removed from {units} units ({MANIFEST})", file=sys.stderr)
 

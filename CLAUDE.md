@@ -63,8 +63,9 @@ Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
 **Weak duplicates and dead-stripped data the link discarded** are the only
-things the honest report leaves out of a compiled object (three kinds:
-weak extab entries, dead data, weak data). Every TU that instantiates a weak function
+things the honest report leaves out of a compiled object (four kinds:
+weak extab entries, extab entries of dead-stripped weak functions, dead
+data, weak data). Every TU that instantiates a weak function
 (e.g. the 9 `JASMemPool<T>` destructors of the JAudio pools ~523 game units
 construct in `__sinit`) gets its own copy with an extab/extabindex entry; the
 linker keeps one copy and drops the others' entries, so the original
@@ -95,6 +96,21 @@ SHA-1 OK DOL, re-reads the map lines and the object's symbols, rebuilds the
 expected stripped object from the compiled one (symbols, relocations,
 extab/extabindex bytes) and fails anything else, and fails any file under
 `build/` that git tracks.
+
+A variant of the first: a weak function nobody references (e.g. the inline
+`__dt__19SpriteAnim_801D267CFv` every unit with a SpriteAnim member emits)
+has no kept copy, so the map lists it `UNUSED`, not as an `UNREFERENCED
+DUPLICATE`, and its extab/extabindex entries are dead-stripped with it. The
+report leaves such an entry out (manifest kind `unused_weak_extab`) only
+when the function is WEAK FUNC with a name unique in the object; the same
+kind of verified link's map lists it `UNUSED`, with its size, for this
+object in its own section's layout and doesn't place it there; and both its
+extab and extabindex labels are `UNUSED` for this object, as above. The
+manifest carries those three map lines and the gate re-reads them from the
+map and rebuilds the stripped object as for the first kind. The function's
+code stays (objdiff doesn't count functions the target lacks), a non-weak
+function's entries are never removed (the TU's own dead code still counts),
+and data such a function uses goes only by the dead-data or weak-data rules.
 
 Dead-stripped data is the second case: an object keeps the constants, jump
 tables and strings of functions the original linker dead-stripped (e.g.
