@@ -41,18 +41,15 @@ static inline bool overlapsHouseOrLog(s32 i, const JGeometry::TBox2f& box) {
     if (other->mActorId == ACTOR_HOUS || other->mActorId == ACTOR_MRTA) {
         JGeometry::TBox2f otherBox(other->mBox);
         otherBox.addPos(other->mPos.x, other->mPos.y);
-        bool result = false;
         if (otherBox.intersect(box)) {
-            result = true;
+            return true;
         }
-        return result;
     }
     return false;
 }
 
-// FIXME: 98.1 %. The target keeps the actor from the slot in r3 and the
-// helper's bool in r0 (ours: r4 and r3), the loop counters swap r30/r31 and
-// ours has one extra li.
+// FIXME: 99.7 %. Only a register swap: the target keeps the loop offset in
+// r30 and the end in r31 (ours the other way round).
 bool WarpEntranceWall_804AE948::fn_803798D0() {
     JGeometry::TBox2f box(mBox);
     box.addPos(mPos.x, mPos.y);
@@ -65,11 +62,9 @@ bool WarpEntranceWall_804AE948::fn_803798D0() {
     return false;
 }
 
-// FIXME: 99.8 %. Only the stack slots differ: the target keeps the saved
-// position at 0x8(r1) and the box at 0x14(r1); ours has the box at 0x8 and
-// the saved position at 0x18.
 void WarpEntranceWall_804AE948::update() {
     if (field_0x234 == 0 || vfunc_0x34()) {
+        JGeometry::TBox2f box;
         switch (field_0x230) {
         case 0:
             if (!fn_803798D0()) {
@@ -90,8 +85,8 @@ void WarpEntranceWall_804AE948::update() {
         }
         }
         u8 index = (field_0x90 & 3) + field_0x230 * 4;
-        JGeometry::TBox2f box(lbl_80475340[index][0], lbl_80475340[index][1],
-                              lbl_80475340[index][2], lbl_80475340[index][3]);
+        box.set(lbl_80475340[index][0], lbl_80475340[index][1], lbl_80475340[index][2],
+                lbl_80475340[index][3]);
         box.i.x += mPos.x;
         box.i.y += mPos.y;
         box.f.x += mPos.x;
