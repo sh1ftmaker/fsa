@@ -405,9 +405,9 @@ void J2DWindowEx::drawFrameTexture(f32 x, f32 y, f32 width, f32 height, u16 p5, 
                 aTStack_84 = JUTColor((u32)uVar11 | 0xffffff00);
             }
         } else if (parentPane != nullptr && mIsInfluencedAlpha != 0 && p10) {
-            int matColorAlpha = material->getColorBlock()->getMatColor(0)->a;
-            int colorAlpha    = parentPane->mColorAlpha;
-            GXSetChanMatColor(GX_ALPHA0, JUTColor((matColorAlpha * colorAlpha / 0xff) & 0xff));
+            u8 matColorAlpha = material->getColorBlock()->getMatColor(0)->a;
+            matColorAlpha    = matColorAlpha * parentPane->mColorAlpha / 0xff;
+            GXSetChanMatColor(GX_ALPHA0, JUTColor(matColorAlpha));
         }
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_CLR_RGBA, GX_F32, 0);
         GXBegin(GX_QUADS, GX_VTXFMT0, 4);

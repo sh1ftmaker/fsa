@@ -682,7 +682,7 @@ config.libs = [
         Object(NonMatching, "JSystem/J2DGraph/J2DTextBox.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DTextBoxEx.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J2DGraph/J2DWindow.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
         Object(NonMatching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
