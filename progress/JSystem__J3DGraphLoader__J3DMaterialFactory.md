@@ -25,3 +25,13 @@ Unit: 51/120 -> 119/120 functions; .text 99.99 %, .data/.sdata2/.sbss2 100 %. St
 - J3DPE.h: J3DFog as tp (no explicit copy ctor, ~J3DFog() {}).
 - symbols.txt outside range: getTevStageNum__11J3DTevBlockCFv (J3DPacket), getTexNo__11J3DTevBlockCFUl
   (J3DDrawBuffer), getTevColor/getTevKColor/setTexNo__11J3DTevBlock (J3DMaterialAnm).
+
+## Wave 10 (J3D batch agent)
+Baseline: `total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)`; unchanged
+(no commit to source). Still 119/120, NonMatching; blocked by codegen, no other unit.
+Tried on modifyPatchedCurrentMtx (all keep the same r0/r3 swap or get worse):
+- J3DTexCoord::operator= through setTexCoordInfo (struct assign instead of __memcpy): identical
+  99.66 %.
+- J3DTexCoordInfo with the implicit copy assignment (no __memcpy operator=): newTexCoord and
+  modifyPatchedCurrentMtx drop to ~32-36 %, J3DMatBlock/J3DMaterial weak copies regress. Reverted.
+Left as is: tp's own `*(u32*)this = *(u32*)&other` is a self-declared fakematch.
