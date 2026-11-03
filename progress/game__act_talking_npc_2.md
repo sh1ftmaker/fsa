@@ -36,6 +36,33 @@ Now:      total: 4449 / 11561 functions, 800016 / 4442088 bytes of code (18.01 %
 - The former FIXME'd update (vfunc_0x30(u8, bool) / bool vfunc_0x34()) now
   matches; the vtable matches with the renamed slot functions.
 
+## Trial link (wave 6): why the DOL differs, and the fix (a SHARED-EDIT)
+Baseline (wave 6): total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
+
+`link_check.py --unit game/act_talking_npc_2.cpp` gave SHA-1 c690295651...
+Diffing the trial ELF (dtk elf2dol) against orig main.dol and the trial map
+against splits.txt: every .text/.data byte of this unit is right; the only
+layout change is in .bss. Our compiled .bss is 0xFC (9 x 0xC chain objects +
+9 x 0x10 weak memPool_ copies), exactly 0x8050EB58-0x8050EC54 as in the
+original. The original's next unit, tu_803B8C74, starts its .bss at
+0x8050EC60, but dtk's split object of tu_803B8C74 has .bss align 8, so in the
+trial link it lands at 0x8050EC58 (-8); every later .bss symbol moves -8 and
+.sdata/.sdata2 (32-aligned) move -0x20, which changes all their references.
+So the 12 bytes 0x8050EC54-0x8050EC60 are tu_803B8C74's alignment (>= 16),
+not data of this unit; in the good link dtk's 0x108-byte split of this unit
+hid it.
+
+Proof: with `align:16` added to tu_803B8C74's `.bss` line in splits.txt
+(`.bss start:0x8050EC60 end:0x80510E60 align:16`), rm config.json, rebuild,
+the trial link is byte-identical (SHA-1 d86b3d9f..., evidence recorded) and
+the honest report shows every section of this unit at 100 % (extab and
+extabindex included). align:32 would also fit (0x8050EC60 is 32-aligned);
+16 is the minimum the layout proves. Reverted here because that stanza is
+another unit's; the unit stays NonMatching until the coordinator applies it.
+
 ## SHARED-EDITS
+- splits.txt, game/tu_803B8C74.cpp stanza: `.bss start:0x8050EC60
+  end:0x80510E60 align:16` (see above). Then this unit can flip to Matching
+  (run link_check --unit, ninja report, gate).
 - tu_801F9484 (spawner): its weak ctor for this class can be named
   `__ct__…` (see the first section for the address).
