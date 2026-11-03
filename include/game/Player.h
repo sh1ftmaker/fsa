@@ -174,7 +174,7 @@ bool fn_802308E0(s32 player);
 // conversation test starts or is cancelled (result unused).
 void fn_8022FE80(s32 player, s32 layer, s32 serial, s32 a, s32 b);
 s32 fn_8022FD8C(s32 serial);
-void fn_8023061C(s32 player, s32 flag);
+bool fn_8023061C(s32 player, bool flag);
 bool fn_80230224(s32 player, bool flag);
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in
