@@ -2,6 +2,8 @@
 // at its start and the random helpers fn_801CD580/fn_801CD664 (the latter is
 // called from 52 units).
 
+#include "game/GameAudio.h"
+
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
 #include "game/GameGlobals.h"
