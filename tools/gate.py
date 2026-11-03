@@ -38,7 +38,7 @@ from pathlib import Path
 
 APPROVALS = Path("config/G4SE01/approved_symbol_changes.txt")
 PROTECTED = [
-    "config/G4SE01/approved_symbol_changes.txt",
+    "config/G4SE01/approved_symbol_changes.txt", "config/G4SE01/provenance_reviewed.txt",
     "tools/gate.py", "tools/fdiff.py", "tools/progress.py", "tools/project.py",
     "tools/honest_report.py", "tools/link_check.py",
     # The SHA-1 the link is checked against, and config.yml's hash: of the original DOL.
@@ -99,12 +99,14 @@ def licensed_donors():
             yield repo
 
 
-def donor_texts(path):
+def donor_texts(path, suffix=False):
+    """Same-named files in licensed donors (with suffix=True also e.g. dsp_GBAKey.c for GBAKey.c)."""
     name = Path(path).name
     if not DONORS.is_dir():
         return []
     texts = []
-    for hit in (h for repo in licensed_donors() for h in repo.glob(f"**/{name}")):
+    pattern = f"**/*{name}" if suffix else f"**/{name}"
+    for hit in (h for repo in licensed_donors() for h in repo.glob(pattern)):
         try:
             texts.append(hit.read_text(errors="replace"))
         except OSError:
@@ -113,6 +115,31 @@ def donor_texts(path):
 
 
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]{3,}")
+
+
+COMMENT = re.compile(r"//[^\n]*|/\*.*?\*/", re.S)
+
+
+def strip_comments(text):
+    return COMMENT.sub(" ", text)
+
+
+INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.M)
+INCLUDE_ROOTS = ("include", "libs/sdk/include", "libs/sdk/msl_include")
+
+
+def included_identifiers(path, text, skip=()):
+    """Identifiers declared in the headers this file includes directly (the API it
+    uses, which any independent writer shares). A header the same change added
+    doesn't count: it could carry copied names."""
+    ids = set()
+    for inc in INCLUDE.findall(text):
+        for root in (Path(path).parent, *map(Path, INCLUDE_ROOTS)):
+            h = root / inc
+            if h.is_file() and str(h) not in skip:
+                ids |= set(IDENT.findall(strip_comments(h.read_text(errors="replace"))))
+                break
+    return ids
 
 
 def unlicensed_texts(path):
@@ -135,18 +162,22 @@ def unlicensed_texts(path):
 def check_provenance(base, changed, problems):
     """A changed source whose distinctive identifiers (those no licensed donor's
     same-named file has) mostly come from an unlicensed donor's file was copied."""
+    new_headers = {p for p in changed if p.endswith((".h", ".hpp")) and base and not file_at(base, p)}
+    reviewed = Path("config/G4SE01/provenance_reviewed.txt")
+    cleared = {l.split()[0] for l in reviewed.read_text().splitlines() if l.strip() and not l.startswith("#")} if reviewed.exists() else set()
     for path in changed:
-        if not SOURCE.search(path) or not Path(path).exists():
+        if not SOURCE.search(path) or not Path(path).exists() or path in cleared:
             continue
-        ours = set(IDENT.findall(Path(path).read_text(errors="replace")))
-        licensed = set()
-        for t in donor_texts(path):
+        text = Path(path).read_text(errors="replace")
+        ours = set(IDENT.findall(strip_comments(text)))
+        licensed = included_identifiers(path, text, skip=new_headers)
+        for t in donor_texts(path, suffix=True):
             licensed |= set(IDENT.findall(t))
         distinctive = ours - licensed
         if len(distinctive) < 8:
             continue
         for repo, text in unlicensed_texts(path):
-            shared = distinctive & set(IDENT.findall(text))
+            shared = distinctive & set(IDENT.findall(strip_comments(text)))
             if len(shared) >= 8 and len(shared) >= 0.5 * len(distinctive):
                 problems.append(f"{path}: {len(shared)}/{len(distinctive)} distinctive identifiers match "
                                 f"unlicensed {repo}'s {Path(path).name}; write it from the asm and licensed donors")

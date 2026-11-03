@@ -1,0 +1,6 @@
+# Sources a provenance review found independently written although
+# tools/gate.py's check_provenance flags them (identifier overlap with an
+# unlicensed donor's same-named file that comes from the SDK API, not copying).
+# Coordinator-only; each line cites the review.
+# path  review
+libs/sdk/dolphin/gba/GBAKey.c  fsa-wt/_reviews/GBAKey.provenance.review.md (CLEAN: shared names are API names in our headers or ac-decomp's dsp_GBAKey.c; style and MPP-only names differ)
