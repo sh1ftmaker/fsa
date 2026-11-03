@@ -25,3 +25,7 @@ Source-organisation re-check (2026-11-03, research/abs-jumptable): under `-inlin
 always emitted after the strong ones, so the leading inline dtor needs deferred codegen, like the jump-table units'
 vtable order; see progress/game__tu_80222CC4.md for why deferred itself is ruled out (it inlines later callees the
 original keeps out of line). The resizes in item 2/3 above still need coordinator approval (not added by me).
+
+Compiler sweep (2026-11-03, lead/lead-jumptable): no GC 1.0-3.0a5.2 version/flag gives deferred layout with auto
+inlining (docs/GAME_PLAN.md). The crack-pass `#pragma defer_codegen on` trick (docs/CRACK_PASS.md) is a candidate for
+the leading inline dtor here too; not tried.

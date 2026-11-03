@@ -16,3 +16,6 @@ project-wide `-inline` decision. fn_80222730 (98.67 %) also keeps the unit NonMa
 Source-organisation re-check (2026-11-03, research/abs-jumptable): no layout under `-inline auto` puts the vtable
 first (vtables always end the TU there; jump tables go with their function). Full measurements and the
 deferred-vs-inlining contradiction in progress/game__tu_80222CC4.md. Still NonMatching.
+
+Crack-pass trick tried (2026-11-03, lead/lead-jumptable): `#pragma defer_codegen on` + reversed functions inlines the
+later fn_80222668 into vfunc_0x90 (original calls it), losing both; reverted. Would need an extra dont_inline trick.

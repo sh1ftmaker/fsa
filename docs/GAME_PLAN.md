@@ -239,3 +239,14 @@ Building every game unit with `-inline auto,deferred` instead of `-inline auto`:
 
 ### Measured: reversed sources with `-inline deferred` (no auto) (2026-11-03)
 All game sources reversed and built with `-inline deferred` alone: the deferred over-inlining (tu_801CDC8C, tu_801EDBA4) goes away and tu_80222CC4 / act_shadow_link_bow vfunc_0x90 reach 100 %, but callees the original auto-inlines are lost (act_stop_npc, tu_80131D98, tu_8021F4B0 dtors and 5 more): game functions 1745 -> 1738. Under plain `auto` vtables always end the TU (no ctor/dtor/key-function placement or flag changes that); under deferred a vtable comes with its first referencing function, which reproduces tu_800F7FCC's `vt1, jt, vt2`. FSA's originals combine deferred-style data order with auto-style inlining (only callees earlier in .text); no tested flag or pragma (`defer_codegen`, `inline_bottom_up`, `inline_depth`) gives both. Details: progress/game__tu_80222CC4.md.
+
+### Measured: compiler versions and inline modes (2026-11-03, lead/lead-jumptable)
+Every GC compiler in build/compilers/GC (1.0, 1.1, 1.1p1, 1.2.5, 1.2.5n, 1.3, 1.3.2, 1.3.2r, 2.0, 2.0p1, 2.5, 2.6, 2.7, 3.0a3, 3.0a3.2-3.0a3.4, 3.0a3p1, 3.0a5, 3.0a5.2) against three probes: (1) a caller must NOT inline a later-in-.text callee (tu_801CDC8C fn_801CF6B8), (2) a caller must inline an earlier one (act_stop_npc dtor / fn_802ED140), (3) two-class `vt1, jt, vt2` .data (tu_800F7FCC). Real units where the version parses the headers (1.3-2.7), a scratch C++ equivalent for all (1.0-1.2.5n fail on JKRThread.h, 3.0a* on an `operator delete` exception-spec mismatch).
+| Versions | Mode (sources reversed for deferred) | (1) | (2) | (3) |
+|---|---|---|---|---|
+| 1.0-2.7 | `-inline auto` | ok | ok | FAIL (jt, vt2, vt1) |
+| 1.0-2.7 | `-inline auto,deferred` / `#pragma defer_codegen on` | FAIL (inlines both) | ok | ok |
+| 1.0-2.7 | `-inline deferred` (noauto) / `smart,deferred` | ok | FAIL (inlines none) | ok |
+| 1.0-2.7 | `auto,deferred,level=1`; `-inline deferred` + `#pragma auto_inline on` | FAIL | ok | ok |
+| 3.0a3-3.0a5.2 | `auto,deferred`, `-ipa file`, `-ipa file` + `bottomup`/`nobottomup`, `-ipa function` | FAIL or ok (ipa function = auto) | ok | FAIL in every mode (vtables always last) |
+No version or flag satisfies all three, so no whole-game build was run. Behaviour is identical across 1.0-2.7; 3.0 never gives the deferred .data order. The original's data order is still only reproducible with deferred codegen, whose inliner sees every body in the file. Crack-pass workaround (`#pragma defer_codegen on` + reversed functions, FAKEMATCH, verified SHA-1 OK on tu_80222CC4): docs/CRACK_PASS.md; it suits the 90 of 165 jump-table units with no call to a later function of their own unit.

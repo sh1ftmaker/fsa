@@ -15,22 +15,32 @@ static inline void releaseShot(cls_804A6C38* self) {
     }
 }
 
-void cls_804A6C38::vfunc_0x6C() {
-    cls_804A6A00::vfunc_0x6C();
+// FAKEMATCH(crack-pass): deferred codegen for this file only, so the vtable is
+// written with its first user and precedes vfunc_0x90's jump table (original
+// .data: vtable 0, jump table 0xA4); the game's -inline auto puts every vtable
+// last. Functions are listed in reverse address order because deferred codegen
+// emits them in reverse. See docs/CRACK_PASS.md.
+#pragma defer_codegen on
+
+cls_804A6C38::cls_804A6C38() {
+    mDDGOSerial = -1;
+}
+
+cls_804A6C38::~cls_804A6C38() {
     releaseShot(this);
 }
 
-void cls_804A6C38::vfunc_0x88() {
-    if (mState == 2) {
-        fn_80221250();
-    } else {
-        EnemyBase_804A4808::vfunc_0x88();
-    }
+void cls_804A6C38::init() {
+    cls_804A6A00::init();
+    field_0x98 = field_0x90 & 3;
+    mState = 4;
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D22DC(2, 0, false);
 }
 
-// FIXME: 99.9%. Only .data order differs: ours has the jump table first, the
-// weak __vt__12J3DFrameCtrl at 0x20 and the vtable at 0x2C; the original has
-// the vtable at 0 and the jump table at 0xA4.
 void cls_804A6C38::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -108,21 +118,15 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
     }
 }
 
-void cls_804A6C38::init() {
-    cls_804A6A00::init();
-    field_0x98 = field_0x90 & 3;
-    mState = 4;
-    mStateTimer = 0;
-    field_0x250 = -1;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
+void cls_804A6C38::vfunc_0x88() {
+    if (mState == 2) {
+        fn_80221250();
+    } else {
+        EnemyBase_804A4808::vfunc_0x88();
+    }
 }
 
-cls_804A6C38::~cls_804A6C38() {
+void cls_804A6C38::vfunc_0x6C() {
+    cls_804A6A00::vfunc_0x6C();
     releaseShot(this);
-}
-
-cls_804A6C38::cls_804A6C38() {
-    mDDGOSerial = -1;
 }
