@@ -664,7 +664,7 @@ dolphin/card/CARDCreate.c:
 	.text       start:0x800576F8 end:0x80057A90
 
 dolphin/card/CARDRead.c:
-	.text       start:0x80057A90 end:0x80057EBC
+	.text       start:0x80057A90 end:0x80057F04
 
 dolphin/card/CARDWrite.c:
 	.text       start:0x80057F04 end:0x80058280
