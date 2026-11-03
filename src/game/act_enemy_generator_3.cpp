@@ -1,16 +1,17 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
 #include "game/ActorManager.h"
 #include "game/act/act_enemy_generator_3.h"
 
-// Actor ids indexed by field_0x90 & 0x7F.
+// Actor ids indexed by field_0x90 & 0x7F. SLR2 and SLR3 are not in ActorId.h.
 static const u32 lbl_8046F398[46] = {
-    'STAL', 'KETH', 'SLR1', 'SLR1', 'DDGO', 'GOMA', 'DDRK', 'BZBR', 'SLR2', 'PAME',
-    'LPLK', 'MIRA', 'SLR4', 'RIVR', 'GDMN', 'MOZO', 'PEAC', 'ROPE', 'NZMI', 'OKTA',
-    'FAGN', 'SLR3', 'HBMB', 'BMTY', 'BMTY', 'HINO', 'SLR1', 'SLR1', 'SLR2', 'SLR4',
-    'Poon', 'WIZR', 'ZASL', 'SLR3', 'SLR1', 'ZORA', 'SLR1', 'WIZR', 'PAME', 'PAME',
-    'PAME', 'PAME', 'PAME', 'HART', 'DDGO', 'KETH',
+    ACTOR_STAL, ACTOR_KETH, ACTOR_SLR1, ACTOR_SLR1, ACTOR_DDGO, ACTOR_GOMA, ACTOR_DDRK, ACTOR_BZBR, 'SLR2', ACTOR_PAME,
+    ACTOR_LPLK, ACTOR_MIRA, ACTOR_SLR4, ACTOR_RIVR, ACTOR_GDMN, ACTOR_MOZO, ACTOR_PEAC, ACTOR_ROPE, ACTOR_NZMI, ACTOR_OKTA,
+    ACTOR_FAGN, 'SLR3', ACTOR_HBMB, ACTOR_BMTY, ACTOR_BMTY, ACTOR_HINO, ACTOR_SLR1, ACTOR_SLR1, 'SLR2', ACTOR_SLR4,
+    ACTOR_Poon, ACTOR_WIZR, ACTOR_ZASL, 'SLR3', ACTOR_SLR1, ACTOR_ZORA, ACTOR_SLR1, ACTOR_WIZR, ACTOR_PAME, ACTOR_PAME,
+    ACTOR_PAME, ACTOR_PAME, ACTOR_PAME, ACTOR_HART, ACTOR_DDGO, ACTOR_KETH,
 };
 
 // Spawn parameter (the spawned actor's field_0x90) by the same index.
@@ -59,7 +60,7 @@ void EnemyGenerator3_804AA1D0::update() {
             }
             s32 layer = field_0x4;
             if (layer >= 8) {
-                fn_801F856C()->fn_801F9484('KMRI', layer, &mPos, 3, -1, -1);
+                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 3, -1, -1);
             } else {
                 fn_8013CC50(layer, &mPos, 0x35c, 1, 1, NULL, NULL, true, 1.0f);
             }
