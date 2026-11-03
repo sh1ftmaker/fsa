@@ -1,4 +1,5 @@
 #include "JSystem/JAudio/Interface/JAISound.h"
+#include "JSystem/JAudio/System/JASTrack.h"  // FSA's __sinit constructs the JASTrack/JASChannel pools
 
 // .text ordering is incorrect here(debug only), luckily it doesn't matter
 
