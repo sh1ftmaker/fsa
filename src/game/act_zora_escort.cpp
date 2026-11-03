@@ -13,6 +13,10 @@ void ZoraEscort_8049DF78::update() {
     }
 }
 
+s32 ZoraEscort_8049DF78::vfunc_0x88() {
+    return vfunc_0x6C(9);
+}
+
 s32 ZoraEscort_8049DF78::vfunc_0x8C() {
     return vfunc_0x6C(0xC);
 }
