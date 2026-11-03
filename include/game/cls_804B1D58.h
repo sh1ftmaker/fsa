@@ -34,7 +34,10 @@ public:
     void fn_80452308(); // 0x80452308
     void fn_80452350(); // 0x80452350
 
-    /* 0x004 */ u8 field_0x4[0x13F - 0x4];
+    /* 0x004 */ u8 field_0x4[0xFA - 0x4];
+    // fn_804522C8 tests it against 7, 8 and 9 (lha).
+    /* 0x0FA */ s16 field_0xfa;
+    /* 0x0FC */ u8 field_0xfc[0x13F - 0xFC];
     /* 0x13F */ u8 field_0x13f; // fn_8037ADD8 / fn_8037AE00 / fn_8037AE30
     /* 0x140 */ u8 field_0x140; // fn_8044CB00 returns it
     /* 0x141 */ u8 field_0x141[0x164 - 0x141];

@@ -840,4 +840,14 @@ u8 fn_8035C15C(ActorBase_804A5770* actor, s32 id);
 void fn_8035C1C4(ActorBase_804A5770* actor, s32 id, s32 arg);
 }
 
+// A word in .sbss that many units load and pass on in r3 (lwz
+// lbl_8053AEC0@sda21). Its owner unit is not written yet; the type is a
+// pointer (void*) since nothing reads through it in the units that pass it.
+extern void* lbl_8053AEC0;
+// game/tu_8042E964.cpp (0x804316EC, not written yet). Called by
+// cls_804B1D58::fn_804522C8 with lbl_8053AEC0 in r3; its body is unknown.
+extern "C" {
+void fn_804316EC(void* obj);
+}
+
 #endif

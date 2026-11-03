@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/cls_804B1D58.h"
+#include "game/GameGlobals.h"
 
 Unk_80453830::Unk_80453830() {
     field_0x0 = -1;
@@ -24,6 +25,12 @@ extern "C" JGeometry::TVec3f* fn_80453874(JGeometry::TVec3f* v, f32 x, f32 y, f3
     v->y = y;
     v->z = z;
     return v;
+}
+
+void cls_804B1D58::fn_804522C8() {
+    if (field_0xfa == 7 || field_0xfa == 8 || field_0xfa == 9) {
+        fn_804316EC(lbl_8053AEC0);
+    }
 }
 
 s32 fn_8044F664() {
