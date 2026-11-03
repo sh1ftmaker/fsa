@@ -82,8 +82,9 @@ void cls_8049E5B8::fn_8012952C(s32 state) {
     mState = state;
 }
 
-// Whether the actor is one of the item actors this one spawns.
-static inline bool isSpawnedKind(u32 id) {
+// Whether the actor is NOT one of the item actors this one spawns (false for
+// CRTL, LSTI and NNJN).
+static inline bool isNotSpawnedItem(u32 id) {
     switch (id) {
     case ACTOR_LSTI:
     case ACTOR_CRTL:
@@ -112,7 +113,7 @@ void cls_8049E5B8::update() {
             if (actor == NULL) {
                 gone = true;
             } else {
-                gone = isSpawnedKind(actor->mActorId);
+                gone = isNotSpawnedItem(actor->mActorId);
             }
         }
         if (gone) {
