@@ -1,9 +1,11 @@
 // The actor manager (include/game/ActorManager.h) and its helpers.
 
 #include "game/GameAudio.h"
+#include <float.h>
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/cls_804AE9B0.h"
 
@@ -93,6 +95,26 @@ void fn_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
         }
         *value += delta;
     }
+}
+
+// The live `id` actor on `layer` nearest to pos (x, y), other than
+// excludeSerial; its serial, or -1.
+s32 ActorManager_804A5800::fn_801F76F0(u32 id, s32 layer, const JGeometry::TVec3f* pos,
+                                       s32 excludeSerial) {
+    s32 serial = -1;
+    f32 best = FLT_MAX;
+    for (s32 i = 0; i < mActorEnd; i++) {
+        if (mActors[i] != NULL && mActors[i]->mAlive && id == mActors[i]->mActorId &&
+            layer == mActors[i]->field_0x4 && excludeSerial != mActors[i]->mSerial)
+        {
+            f32 dist = square(mActors[i]->mPos.x - pos->x) + square(mActors[i]->mPos.y - pos->y);
+            if (dist < best) {
+                best = dist;
+                serial = mActors[i]->mSerial;
+            }
+        }
+    }
+    return serial;
 }
 
 // The bound is read once (as fn_801F7274 and fn_801F732C keep it in a register
