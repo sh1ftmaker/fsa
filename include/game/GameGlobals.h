@@ -92,6 +92,10 @@ struct GameRoot_8049EF20 {
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
     void fn_80134DE4(s32 a, s32 b);
+    // Owner: game/tu_80134C04.cpp (0x80138A30; not written yet). 107 units.
+    // The number of players that take part: the set bits of field_0x82 (bits
+    // 0-3). Its body reads lbl_8053AAF8 itself; callers load it into r3.
+    s32 fn_80138A30();
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
@@ -145,6 +149,14 @@ struct Unk_8045A080 {
     // compares r4 against 0x1000000+n, tests r5 with clrlwi. 24 (0x8045908C) and
     // stores r6 (a byte) at 0x8d.
     void fn_80458FF0(s32 id, bool arg1, bool flag);
+    // game/tu_80457DFC.cpp (0x80458F04). 1 unit (act_bgm_change_npc passes a
+    // table entry): if the sound at 0x84 is not already id, creates it through
+    // the category object at 0x30 (vtable slot 0xC) and starts a volume move.
+    void fn_80458F04(u32 id);
+    // game/tu_80457DFC.cpp (0x80458F9C). 30+ units pass 0x3C (the argument is
+    // not read): stops the sound at 0x80 and clears the fields at
+    // 0x58-0x68.
+    void fn_80458F9C(s32 frames);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
