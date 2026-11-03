@@ -802,4 +802,11 @@ extern "C" {
 void fn_8037A708(void* obj);
 }
 
+// SHARED-EDIT (act_blizzard_battle): owner game/tu_802B3674.cpp (0x802B39E8,
+// defined there; not written yet). Takes the actor in r3 (fn_801F666C's result)
+// and reads its 0x23C emitter (forceDeleteEmitter) and 0x290 word.
+extern "C" {
+void fn_802B39E8(ActorBase_804A5770* actor);
+}
+
 #endif
