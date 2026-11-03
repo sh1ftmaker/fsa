@@ -231,6 +231,7 @@ public:
     void fn_802954B8(); // 0x124D = 1 (stb), 0x458 = 0 (stb); TVec3f 0x344 zeroed
     void fn_80295240(); // 0x124D = 1, 0x458 = 0 (stb); TVec3f 0x344 set (0x348 from lbl_80540644)
     void fn_80292E90(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C)
+    void fn_802938B8(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C) unless 0xCF4 == 0x1D
     void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
@@ -336,7 +337,10 @@ public:
     /* 0x0CE9 */ u8 field_0xce9;
     /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];
     /* 0x0CEE */ u8 field_0xcee;
-    /* 0x0CEF */ u8 field_0xcef[0xCFE - 0xCEF];
+    /* 0x0CEF */ u8 field_0xcef[0xCF4 - 0xCEF];
+    // Compared with 0x1D (lwz; cmpwi) by fn_802938B8 before it calls fn_8024F0E8.
+    /* 0x0CF4 */ s32 field_0xcf4;
+    /* 0x0CF8 */ u8 field_0xcf8[0xCFE - 0xCF8];
     // Returned by fn_80240870 (via fn_80234134).
     /* 0x0CFE */ bool field_0xcfe;
     /* 0x0CFF */ u8 field_0xcff[0xD08 - 0xCFF];

@@ -54,6 +54,15 @@ void Player_804A6F38::fn_80292E90() {
     fn_8024F0E8(0x2000C);
 }
 
+void Player_804A6F38::fn_802938B8() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    field_0x3fd = 1;
+    if (field_0xcf4 != 0x1D) {
+        fn_8024F0E8(0x2000C);
+    }
+}
+
 void Player_804A6F38::fn_802922D0() {
     field_0x124d = 1;
     field_0x458 = 0;
