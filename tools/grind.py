@@ -13,7 +13,7 @@ first) runs `claude -p --model claude-haiku-5-5` with a short prompt. The script
 model, decides: the diff may only touch the unit's .cpp, its own header and pure
 renames in symbols.txt; added lines may not contain banned constructs; and after a
 rebuild the unit must have more 100 % functions with none worse. Accepted attempts are
-committed on grind/wN; at the end of the unit the branch is merged into `grind` in the
+committed on branch grind-wN; at the end of the unit the branch is merged into `grind` in the
 integration worktree, which must then build byte-identical, pass gen_game --check and
 the gate, or the merge is undone. `matching` is never touched.
 
@@ -85,7 +85,7 @@ def setup(args):
     print("building integration worktree (first build is slow)...")
     sh("timeout 3600 ninja", INTEG)
     for n in range(1, args.workers + 1):
-        make_worktree(WT / f"grind-w{n}", f"grind/w{n}", "grind")
+        make_worktree(WT / f"grind-w{n}", f"grind-w{n}", "grind")
     LOGS.mkdir(parents=True, exist_ok=True)
     print("ok")
 
@@ -237,7 +237,7 @@ def claim(unit, owner, wt):
     claims = json.loads((MAIN / "progress/claims.json").read_text() or "{}")
     if unit in claims or unit in done_units():
         return False
-    sh(["python3", "tools/claim.py", "take", unit, owner, f"grind/{owner[-2:]}", str(wt)], MAIN, check=True)
+    sh(["python3", "tools/claim.py", "take", unit, owner, owner, str(wt)], MAIN, check=True)
     with open(LOGS / "units_done.txt", "a") as f:  # never picked twice, whatever happens
         f.write(unit + "\n")
     return True
@@ -266,7 +266,7 @@ def merge_into_grind(wt, branch, unit):
 
 def worker(args):
     n, owner = args.n, f"grind-w{args.n}"
-    wt, branch = WT / f"grind-w{n}", f"grind/w{n}"
+    wt, branch = WT / f"grind-w{n}", f"grind-w{n}"
     while not (LOGS / "STOP").exists():
         unit = next((u for u in candidates(args.max_size) if claim(u, owner, wt)), None)
         if unit is None:
