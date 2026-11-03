@@ -228,6 +228,7 @@ public:
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
     void fn_80293760(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
     void fn_80293B1C(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
+    void fn_802954B8(); // 0x124D = 1 (stb), 0x458 = 0 (stb); TVec3f 0x344 zeroed
     void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
@@ -262,7 +263,10 @@ public:
     /* 0x0014 */ u8 field_0x14[0x2B8 - 0x14];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
-    /* 0x02C4 */ u8 field_0x2c4[0x3B4 - 0x2C4];
+    /* 0x02C4 */ u8 field_0x2c4[0x344 - 0x2C4];
+    // Zeroed by fn_802954B8 (three stfs of 0.0f).
+    /* 0x0344 */ JGeometry::TVec3f field_0x344;
+    /* 0x0350 */ u8 field_0x350[0x3B4 - 0x350];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
