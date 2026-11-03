@@ -103,6 +103,9 @@ f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
 s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
 s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 
+// Owner unit: game/tu_801CB270.cpp (not yet written).
+extern "C" s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
+
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
 // (and tlutObj, if given, for a palette texture); returns height / width.
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
