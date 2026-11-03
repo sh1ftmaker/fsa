@@ -215,8 +215,6 @@ act_post_warp_pillar_handling	sinit	__sinit_act_post_warp_pillar_handling_cpp	-	
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_pot_2	dtor	__dt__13Pot2_804AA750Fv	Pot2_804AA750	0x804AA750	new	new
 act_pot_2	sinit	__sinit_act_pot_2_cpp	-	-	new	new
-act_pot_2_generator	dtor	__dt__22Pot2Generator_804AA6F8Fv	Pot2Generator_804AA6F8	0x804AA6F8	new	new
-act_pot_2_generator	sinit	__sinit_act_pot_2_generator_cpp	-	-	new	new
 act_pot_smoke	dtor	__dt__12cls_804A8418Fv	cls_804A8418	0x804A8418	new	new
 act_pot_smoke	sinit	__sinit_act_pot_smoke_cpp	-	-	new	new
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
