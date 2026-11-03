@@ -389,6 +389,18 @@ bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
 void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
 }
 
+// game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor
+// (a result of ActorManager_804A5800::fn_801F666C) in r3; field 0x248 is its
+// state. fn_8021D734 / fn_8021D764 switch it to state 8 / 6 unless already
+// there; fn_8021D794 returns whether it is in state 5. Called by
+// game/tu_8021F064.cpp.
+class ActorBase_804A5770;
+extern "C" {
+void fn_8021D734(ActorBase_804A5770* navi);
+void fn_8021D764(ActorBase_804A5770* navi);
+bool fn_8021D794(ActorBase_804A5770* navi);
+}
+
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
