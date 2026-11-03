@@ -245,7 +245,8 @@ extern "C" cls_801C0D70* fn_801C0D70();
 // update sets it to 1 (and the actor manager's reset functions call the getter).
 struct cls_80204638 {
     /* 0x00 */ u8 field_0x0;
-    /* 0x01 */ u8 field_0x1[0xD0 - 0x1]; // not yet known (size not proven)
+    // The inlined constructor writes up to 0xD0 (a TVec3f[10] at 0x58), but the
+    // .bss symbol is 0x1D0 bytes: the real size is not known, so none is claimed.
 };
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
