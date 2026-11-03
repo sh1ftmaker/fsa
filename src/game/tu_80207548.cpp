@@ -67,12 +67,11 @@ void cls_804A5B28::fn_802075D8(u16 slot) {
 // Registers a request in `slot` (once). The first request sets mTimer from the
 // player count; the request that completes the set (every other slot used)
 // picks 1-3 random players into mMask and calls vfunc_0xA8.
-// FIXME: 93.46%. The original guards the removal loop and the `if (found)`
-// with `remaining > 0` (cmpwi once, two ble) and stores mActive from the same
-// register as count (li r29, 1; stb r29); with those and registers r28 = this,
-// r29 = count, r30 = remaining, r31 = i, r27 = &order (ours: r27 this,
-// r28 i, r29 remaining, r30 count, r31 &order) the loop schedules the pointer
-// copy (mr r6, r27) earlier.
+// FIXME: 94.43%. The original stores mActive from the register holding count
+// (li r29, 1; stb r29), ours loads a second constant; and the registers differ
+// (original r28 this, r29 count, r30 remaining, r31 i, r27 &order; ours r27
+// this, r28 i, r29 remaining, r30 count, r31 &order), so the pointer copy for
+// the removal loop is scheduled later.
 void cls_804A5B28::fn_80207830(u16 slot, s32 player, s32 arg3, const JGeometry::TVec3f* target, s32 arg5) {
     if (mSlots[slot].mUsed) {
         return;
@@ -115,17 +114,19 @@ void cls_804A5B28::fn_80207830(u16 slot, s32 player, s32 arg3, const JGeometry::
             s32 pick = order[fn_801CD664(remaining)];
             mMask |= 1 << pick;
             bool found = false;
-            for (s32 j = 0; j < remaining; j++) {
-                if (!found) {
-                    if (pick == order[j]) {
-                        found = true;
+            if (remaining > 0) {
+                for (s32 j = 0; j < remaining; j++) {
+                    if (!found) {
+                        if (pick == order[j]) {
+                            found = true;
+                        }
+                    } else {
+                        order[j - 1] = order[j];
                     }
-                } else {
-                    order[j - 1] = order[j];
                 }
-            }
-            if (found) {
-                remaining--;
+                if (found) {
+                    remaining--;
+                }
             }
         }
         vfunc_0xA8();
