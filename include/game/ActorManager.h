@@ -45,6 +45,10 @@ public:
     // 0x804560D0 (game/tu_80455CA4.cpp): vtable slot 0x10, where
     // JAUSoundObject has stopOK.
     virtual bool stopOK(JAISoundHandle& handle);
+    // 0x80106EB0 (game/act_wind_environment.cpp, where the weak copy
+    // landed): vtable slot 0x14, where JAUSoundObject has startSound;
+    // fn_80456334(id, 0).
+    virtual JAISoundHandle* startSound(JAISoundID id);
 
     // 0x804561D8 (game/tu_80455CA4.cpp, next to the ctor): r3 is this. `id`
     // is passed by value (the callee re-copies it for fn_80456334), `fade`
