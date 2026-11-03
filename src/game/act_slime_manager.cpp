@@ -16,3 +16,11 @@ void cls_804A5BD8::fn_80207E24() {
         break;
     }
 }
+
+void cls_804A5BD8::fn_80207ECC() {
+    switch (mState) {
+    case 1:
+        fn_80208244(3);
+        break;
+    }
+}

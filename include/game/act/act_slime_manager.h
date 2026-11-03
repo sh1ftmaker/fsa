@@ -13,6 +13,8 @@ public:
 
     // 0x80207E24: fn_80208244(2) while mState is 4.
     void fn_80207E24();
+    // 0x80207ECC: fn_80208244(3) while mState is 1.
+    void fn_80207ECC();
     // 0x80208244, the state step (r4 = state); fn_80207ECC calls it with 3.
     void fn_80208244(int state);
 };
