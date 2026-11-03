@@ -32,9 +32,7 @@ void RevivalFairy_804AC250::update() {
         if (mTimer % 5 == 0) {
             f32 dx = mPos.x - fn_8023E724(mPlayer)->x;
             f32 dy = mPos.y - fn_8023E724(mPlayer)->y;
-            // FIXME: 99.9 %. Regalloc only: the target multiplies the atan2 result (f1)
-            // by 10430.378f (f0) as fmuls f0, f1, f0; ours emits fmuls f0, f0, f1.
-            mAngle = JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f;
+            mAngle = JMath::atanTable_.atan2_(-dx, -dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         }
         mTargetVel.x = 5.0f * JMASinShort(mAngle);
         mTargetVel.y = 5.0f * JMACosShort(mAngle);
