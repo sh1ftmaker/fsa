@@ -1,21 +1,17 @@
 #include "game/GameAudio.h"
 #include "game/Effect.h"
+#include "game/EmitterDelete.h"
 #include "game/GameGlobals.h"
 #include "game/tu_8021F4B0.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // Effect ids of the three emitters (fn_8013CC50).
-static const u16 sEffectIds[3] = {0x3CC, 0x3CD, 0x3CE};
+static const u16 lbl_8053FDD0[3] = {0x3CC, 0x3CD, 0x3CE};
 
-// Deletes the three emitters (the loop of fn_8021F924, inlined into the
-// state 5 end of fn_8021F4B0).
+// The loop of fn_8021F924, inlined into the end of state 5.
 static inline void deleteEmitters(cls_8021FB44* self) {
     for (s32 i = 0; i < 3; i++) {
-        if (self->mEmitters[i]) {
-            JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
-            manager->forceDeleteEmitter(self->mEmitters[i]);
-            self->mEmitters[i] = NULL;
-        }
+        deleteEmitter(&self->mEmitters[i]);
     }
 }
 
@@ -108,11 +104,7 @@ void cls_8021FB44::fn_8021F914(s32 state) {
 
 void cls_8021FB44::fn_8021F924() {
     for (s32 i = 0; i < 3; i++) {
-        if (mEmitters[i]) {
-            JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
-            manager->forceDeleteEmitter(mEmitters[i]);
-            mEmitters[i] = NULL;
-        }
+        deleteEmitter(&mEmitters[i]);
     }
     mTimer = 0;
     mState = 0;
@@ -128,7 +120,7 @@ void cls_8021FB44::fn_8021F9AC(const JGeometry::TVec3f* pos) {
     mTimer = 0;
     mState = 1;
     for (s32 i = 0; i < 3; i++) {
-        mEmitters[i] = fn_8013CC50(0, &mPos, sEffectIds[i], 0, 0, NULL, NULL, true, mScale);
+        mEmitters[i] = fn_8013CC50(0, &mPos, lbl_8053FDD0[i], 0, 0, NULL, NULL, true, mScale);
     }
 }
 
