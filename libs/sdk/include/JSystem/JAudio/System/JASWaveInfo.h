@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+class JASWaveArc;
+
 struct JASWaveInfo
 {
     JASWaveInfo()
@@ -25,6 +27,26 @@ struct JASWaveInfo
     const u32 *_24; // 24
 
     static u32 one;
+};
+
+class JASWaveHandle
+{
+public:
+    virtual ~JASWaveHandle() {}
+    virtual const JASWaveInfo *getWaveInfo() const = 0;
+    virtual int getWavePtr() const = 0;
+};
+
+class JASWaveBank
+{
+public:
+    JASWaveBank() {}
+    virtual ~JASWaveBank() {}
+    virtual JASWaveHandle *getWaveHandle(u32) const = 0;
+    virtual JASWaveArc *getWaveArc(u32) = 0;
+    virtual u32 getArcCount() const = 0;
+
+    bool isLoading(); // 0x8009a704
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "JSystem/JAudio/System/JASCalc.h"
 #include "JSystem/JAudio/System/JASMutex.h"
-#include "JSystem/JAudio/System/JASWaveBank.h"
+#include "JSystem/JAudio/System/JASBasicWaveBank.h"
 #include "JSystem/JUtility/JUTAssert.h"
 #include "dolphin/os/OSMutex.h"
 
