@@ -323,6 +323,14 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
                             bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
 
+// game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
+// fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the
+// id only when e == 2; ids below 0x45 then go to fn_80307830, the others get
+// 0x400 added and go to fn_803075AC. d and e are converted to 0/1 flags for
+// the callee. The result is unused.
+extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d,
+                            s32 e, s32 f);
+
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its destructor fn_801192AC. Only the fields
 // fn_801186B0 writes are known.
