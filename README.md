@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **17.46 %** of the code and **4,328 / 11,561** functions match. 238 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **17.46 %** of the code and **4,328 / 11,561** functions match. 239 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 40.0 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 40.5 % of the split files Matching.
 - **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
 - **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. Currently 0 % of the code matched.
 - **Next** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.

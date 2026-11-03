@@ -1666,7 +1666,7 @@ JSystem/JParticle/JPAChildShape.cpp:
 	.sdata2     start:0x8053BD60 end:0x8053BD68
 
 JSystem/JParticle/JPADynamicsBlock.cpp:
-	.text       start:0x800EA58C end:0x800EB5A0
+	.text       start:0x800EA58C end:0x800EB208
 	.data       start:0x8049C068 end:0x8049C088
 	.sdata2     start:0x8053BD68 end:0x8053BD90
 

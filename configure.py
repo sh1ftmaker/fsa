@@ -792,7 +792,7 @@ config.libs = [
     MkddJSystemLib("mkdd_JParticle", [
         Object(NonMatching, "JSystem/JParticle/JPABaseShape.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAChildShape.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JParticle/JPADynamicsBlock.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPADynamicsBlock.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JParticle/JPAEmitter.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JParticle/JPAEmitterManager.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAExTexShape.cpp", extra_cflags=["-O4,p"]),
