@@ -639,6 +639,12 @@ struct cls_80204638 {
 };
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
+// game/tu_80204638.cpp (fn_802049E0, owner unit, not written yet). Removes the actor
+// from the slot the byte at its 0x34a selects in the object's table (0x4 + 8 * slot):
+// clears the first slot holding it, else the second. Called by act_thief's destructor
+// with fn_80204638()'s result.
+class ActorBase_804A5770;
+extern "C" void fn_802049E0(cls_80204638* table, ActorBase_804A5770* actor);
 
 // game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
 // cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read

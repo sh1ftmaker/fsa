@@ -32,6 +32,11 @@ bool Thief_804A5A30::fn_802064E0() {
     return result;
 }
 
+Thief_804A5A30::~Thief_804A5A30() {
+    fn_801EE434(mEmitter358);
+    fn_802049E0(fn_80204638(), this);
+}
+
 Thief_804A5A30::Thief_804A5A30() {
     field_0x340 = -1;
     field_0x344 = 0;
