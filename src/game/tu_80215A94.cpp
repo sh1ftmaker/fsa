@@ -49,6 +49,16 @@ bool cls_80215E48::fn_80215D38() {
     return result;
 }
 
+extern "C" void fn_80215E18(s32* p);
+
+void cls_80215E48::fn_80215DB8() {
+    cls_80215E48* entry = this;
+    for (s32 i = 0; i < mCount; i++) {
+        fn_80215E18(&entry->mId);
+        entry++;
+    }
+}
+
 void cls_80215E48::fn_80215FB8(s32 index, s32 key, f32 fraction) {
     reinterpret_cast<cls_801ED3DC*>((this + index)->pad_0x1C)->fn_801ED5C8(fraction);
     (this + index)->mKey = key;

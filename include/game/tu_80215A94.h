@@ -25,6 +25,8 @@ struct cls_80215E48 {
     // True when every entry has mFlagC set and mFlagE clear (true for an
     // empty table).
     bool fn_80215D38();
+    // Calls fn_80215E18 on every entry's mId, in order.
+    void fn_80215DB8();
     // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its
     // mKey to `key`.
     void fn_80215FB8(s32 index, s32 key, f32 fraction);
