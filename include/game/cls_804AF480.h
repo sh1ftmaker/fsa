@@ -16,8 +16,6 @@ class cls_804AF480 {
 public:
     cls_804AF480(); // fn_8039027C
     /* 0x08 */ virtual ~cls_804AF480(); // fn_8039017C
-    // The vtable has a second, null slot (0x804AF48C): a pure virtual.
-    /* 0x0C */ virtual void vfunc_0xC() = 0;
 
     // 0x80390088 / 0x803900C8 / 0x80390108 / 0x8039013C: called by
     // tu_80134C04 with lbl_8053AD80 in r3.
@@ -28,9 +26,10 @@ public:
 
     /* 0x4 */ cls_804B1288* field_0x4; // when 0x7f is set
     /* 0x8 */ cls_804B1378* field_0x8; // when 0x7f is clear
-}; // Size: 0xC (allocated as 0x10)
+    /* 0xC */ u32 field_0xc; // not used here
+}; // Size: 0x10 (tu_80134C04 allocates 0x10)
 
-// Data of game/tu_8036FB60.cpp.
+// Defined in game/tu_8039003C.cpp (.sbss 0x8053AD80).
 extern cls_804AF480* lbl_8053AD80;
 
 // 0x8039003C (tu_8039003C.cpp): 6 without lbl_8053AD80, else the 0x668 word

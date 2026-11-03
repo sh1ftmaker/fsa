@@ -7,6 +7,8 @@
 #include "game/Map.h"
 #include "JSystem/JKernel/JKRArchive.h"
 
+cls_804AF480* lbl_8053AD80;
+
 s32 fn_8039003C() {
     if (lbl_8053AD80 != NULL) {
         if (lbl_8053AAF8->field_0x7f) {
@@ -65,9 +67,6 @@ cls_804AF480::~cls_804AF480() {
     lbl_8053AD80 = NULL;
 }
 
-// FIXME: 98.5%. Only the register allocation differs: the original keeps
-// `this` in r31 and the .rodata string base in r30 (and the `new` result in
-// r30, extab 0x8A80001E); we swap them (this r30, string base r31).
 cls_804AF480::cls_804AF480() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053AD80 = this;
@@ -77,20 +76,20 @@ cls_804AF480::cls_804AF480() {
     if (!lbl_80529DEC.field_0x242) {
         lbl_80529DEC.field_0x242 = 1;
         lbl_8053AB10->field_0x20->fn_802FF798();
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+        void* res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0, 0);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
+        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
         lbl_8053AB10->field_0x20->field_0x2364 = 1;
     }
     if (lbl_8053AAF8->field_0x7f) {
