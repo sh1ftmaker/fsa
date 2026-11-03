@@ -88,6 +88,21 @@ any symbols.txt change (the gate accepts placeholder renames).
   SHARED-EDIT.
 - 38 medium units may hold several files: a boundary found inside one is a
   SHARED-EDIT for the coordinator (split stanza, new configure.py line).
+- Weak `memPool_` copies in `.bss` (tell game workers in `--notes`): a unit
+  whose `__sinit` constructs the 9 JAudio pools has, after its 9 0xC
+  destructor-chain objects (`@NNN`, the names its object emits), a 0x94
+  placeholder (e.g. `lbl_804CD1A4`) that is really 9 weak 0x10 `memPool_`
+  copies: the linker resolves the names to the first copy (tu_80021840's)
+  but keeps each object's space. The worker splits that placeholder in
+  symbols.txt into 9 unnamed `lbl_<addr>` symbols of size 0x10, one per
+  copy at +0x00..+0x80, in the object's own order (the `_MultiThreaded`
+  pools first), and leaves the 4 alignment bytes after them unsplit. That
+  is the real object layout and claims no names: naming them `memPool___...`
+  would make a second global definition and redirect relocations. Per unit,
+  never as a global symbols.txt pass (the copies differ per unit: tu_80457C08
+  has 8). With the split and the proven extab removal (CLAUDE.md, "Measuring
+  progress") such a unit reaches 100 % data; without the split it stays at
+  ~1 %.
 
 ## Shared game headers (`include/game/`)
 
@@ -241,6 +256,76 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   (`IsTRKConnected` / `g_CurrentSequence`) in a Matching, SHA-1-linked unit.
   objdiff's lenient default and byte-pattern hits overstated progress
   several times over.
+- Weak-duplicate extab entries (2026-11): ~523 game units construct 9
+  JAudio pools in `__sinit`, so each compiled object carries 9 weak
+  `JASMemPool<T>` destructors with extab/extabindex entries the original
+  link dropped (and a 0x94 run of weak `memPool_` copies in `.bss`).
+  objdiff can't see the dedup (objdiff#14, PR #349 open; FFCC and bfbb
+  settle for ~99.7 %). `honest_report.py` diffs a copy without an entry
+  only on map evidence: WEAK FUNC; `UNREFERENCED DUPLICATE` found in this
+  object; both labels `UNUSED` for this object; a link that includes this
+  exact object (ninja's, or `link_check.py --unit`'s trial link, which
+  records the object's SHA-1) with a DOL matching build.sha1; unique object
+  file name among the link inputs. It's honest because it reproduces what
+  the original linker provably did with this object, from the linker's own
+  log, and nothing else (no code, no data bytes, no kept copy). `gate.py`
+  re-verifies every manifest entry (`build/G4SE01/weakdedup_manifest.json`)
+  against the map lines, the object's symbol table and the DOL hash,
+  re-runs each trial link (`link_check.py --verify-unit`: same map SHA-1,
+  DOL SHA-1 OK, same object and inputs), and rebuilds each stripped copy
+  independently (symbols, every relocation section, extab/extabindex bytes).
+  A map from a link without the object strips nothing (tested on
+  game/tu_80214244 with ninja's map, whose `tu_80214244.o` is dtk's split).
+  The infra/weakdedup review broke the first version three ways: a hand-made
+  evidence file (map of a failed trial link plus ninja's DOL) was accepted;
+  evidence could be committed under build/; and the stripped-copy check
+  looked only at sizes. Trial evidence is now accepted only as the unit's
+  own `<slug>.json`/`.MAP` for the current inputs and re-linked by the gate,
+  `build/` is protected, and the copy is compared field by field.
+  Before flipping such a unit, the worker runs
+  `python3 tools/link_check.py --unit game/<unit>.cpp`, then
+  `ninja build/G4SE01/report_honest.json`; after the flip ninja's own map
+  is the evidence and the trial is no longer needed. The report re-links
+  each trial record before using it, but caches that in
+  `build/G4SE01/weakdedup_verified.json`, a local speed-up anyone who can
+  write `build/` could forge: only `gate.py` (which re-links without the
+  cache) proves a trial removal, so quote trial-based numbers after a gate
+  run. Every flip changes the main link inputs, so all recorded trial
+  evidence goes stale (the unit's data % drops back, with a note in the
+  manifest) until its `--unit` is re-run. Each trial keeps its map, about
+  5.4 MB (~2.8 GB if all ~523 pool units had one); delete
+  `build/G4SE01/weakdedup_evidence/` entries no longer needed.
+- Dead-stripped units (tu_802BA334 type): the unit's own functions were
+  all dead-stripped in the original, so only its `__sinit` (the 9 pools),
+  its `.ctors` entry and its `.bss` remain. dtk's split survives the link
+  only because the ldscript's FORCEACTIVE names its symbols (`fn_802BA334`,
+  `lbl_804D27D4`; dtk lists every global of the original). Our compiled
+  object defines nothing global anyone references (`__sinit_*` is local,
+  the pools are weak duplicates), so MWLD drops the whole object, `.ctors`
+  entry included: the DOL shrinks and the SHA-1 fails, and the map lists
+  none of its sections, so neither the flip nor the extab proof can happen.
+  Tested 2026-11 (infra/weakdedup): naming the local `__sinit` in
+  FORCEACTIVE changes nothing; `FORCEFILES { tu_802BA334.o }` keeps the
+  object (its `__sinit` and `.ctors` are in the closure) but the link then
+  fails with multiply-defined `memPool_`/`__init__memPool_`: dtk's
+  `auto_*` split objects define those as globals where the original had
+  weak copies. Proposal, in order:
+  1. Keep such units NonMatching; they still count their code (100 % of the
+     `__sinit`) in the honest report. Don't mark them Matching or
+     Equivalent to get them linked.
+  2. Coordinator experiment: mark the pool symbols (`memPool___*`,
+     `__init__memPool___*`, the `JASMemPool` destructors) `scope:weak` in
+     symbols.txt so dtk's split defines them weak like the original, then
+     retry FORCEFILES for one dead-stripped unit with `link_check.py
+     --unit` (a link setting: configure.py/ldscript change, gate-reviewed).
+     If the SHA-1 matches, FORCEFILES for exactly the units whose split has
+     no referenced global is a faithful model of the original (the
+     original object was kept by some root we can't see), and the map then
+     proves the extab removal as for any other unit.
+  3. If that fails, list them as "verified unlinkable" (a reviewed file,
+     like provenance_reviewed.txt): 100 % code, objdiff data short only by
+     the weak-duplicate entries and copies, and a trial link with dtk's
+     split still SHA-1 OK. They stay out of the Matching count.
 - `Matching` must mean 100 % code and data. 77 units were once marked
   Matching while partly matched; `gate.py` now fails any such unit.
 - A unit marked complete can make tiny functions count as matched (10

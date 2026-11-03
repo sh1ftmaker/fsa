@@ -153,7 +153,11 @@ config.dtk_path = args.dtk
 config.objdiff_path = args.objdiff
 config.binutils_path = args.binutils
 config.compilers_path = args.compilers
-config.generate_map = args.map
+# Always write the link map (build/G4SE01/fsa_game_code.elf.MAP, with -mapunused
+# below): tools/honest_report.py reads it to prove which weak functions' extab
+# entries the link discarded (see CLAUDE.md, "Measuring progress"). --map is
+# kept for compatibility and changes nothing.
+config.generate_map = True
 config.non_matching = args.non_matching
 config.sjiswrap_path = args.sjiswrap
 config.ninja_path = args.ninja
@@ -187,9 +191,8 @@ config.ldflags = [
 ]
 if args.debug:
     config.ldflags.append("-g")  # Or -gdwarf-2 for Wii linkers
-if args.map:
-    config.ldflags.append("-mapunused")
-    # config.ldflags.append("-listclosure") # For Wii linkers
+config.ldflags.append("-mapunused")  # list discarded (UNUSED) symbols in the map
+# config.ldflags.append("-listclosure") # For Wii linkers
 
 # Use for any additional files that should cause a re-configure when modified
 config.reconfig_deps = []
@@ -1576,10 +1579,25 @@ config.custom_build_rules.append({
     "command": f"$python tools/honest_report.py {honest_objdiff} $out $objdiff_report_args",
     "description": "REPORT $out",
 })
+# tools/link_check.py --unit records trial-link evidence here; adding or
+# replacing a record (by rename) changes the directory's mtime, so the report
+# reruns with it.
+config.custom_build_rules.append({
+    "name": "mkdir",
+    "command": "mkdir -p $out",
+    "description": "MKDIR $out",
+})
 config.custom_build_steps["post-build"] = [{
+    "rule": "mkdir",
+    "outputs": out_dir / "weakdedup_evidence",
+}, {
     "rule": "honest_report",
     "outputs": out_dir / "report_honest.json",
-    "implicit": ["objdiff.json", "all_source", "tools/honest_report.py", honest_objdiff],
+    # The link map and DOL: weak-duplicate stripping is proven only from the
+    # current link, and only while its DOL matches build.sha1.
+    "implicit": ["objdiff.json", "all_source", "tools/honest_report.py", honest_objdiff,
+                 out_dir / "fsa_game_code.elf.MAP", out_dir / "fsa_game_code.dol",
+                 out_dir / "weakdedup_evidence"],
 }]
 
 

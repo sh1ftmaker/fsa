@@ -24,6 +24,18 @@ Needs GNU nm on PATH.
 Usage:
   python3 tools/link_check.py            # table of units and the final SHA-1
   python3 tools/link_check.py --json out.json
+  python3 tools/link_check.py --unit game/tu_80214244.cpp
+
+--unit links the current Matching set with one more unit's compiled object
+in place of dtk's split of the original (a NonMatching unit before its
+flip). Every link here writes a map with -mapunused. If the trial DOL's
+SHA-1 matches build.sha1, the map, the link inputs and the object's and
+DOL's SHA-1 are recorded in build/G4SE01/weakdedup_evidence/ as the proof
+tools/honest_report.py needs to leave out the extab entries of weak
+duplicates the link discarded (CLAUDE.md, "Measuring progress"); otherwise
+any earlier evidence for the unit is removed. --verify-unit re-runs that
+link without recording anything and prints its hashes; tools/gate.py uses
+it to re-check every trial link the honest report relied on.
 
 Measuring is untouched: this reads objdiff.json for the Matching flags and
 writes only under build/link_check/.
@@ -37,6 +49,8 @@ import struct
 import subprocess
 import sys
 from pathlib import Path
+
+from honest_report import trial_inputs, unit_slug  # the trial link's inputs, shared with the report
 
 VERSION = "G4SE01"
 BUILD = Path("build") / VERSION
@@ -59,7 +73,8 @@ def linker_cmd():
 def link_inputs():
     """The link's object list, in order, from build.ninja (ninja deletes the .rsp)."""
     text = Path("build.ninja").read_text().replace("$\n", "")
-    m = re.search(rf"^build {re.escape(str(BUILD / 'fsa_game_code.elf'))}: link (.*?)(?:\||$)", text, re.M)
+    # (the map is an implicit output: `build <elf> | <elf>.MAP: link ...`)
+    m = re.search(rf"^build {re.escape(str(BUILD / 'fsa_game_code.elf'))}(?: \|[^:]*)?:\s+link\s+(.*?)(?:\||$)", text, re.M)
     if not m:
         sys.exit("no link step in build.ninja; run configure.py")
     return m.group(1).split()
@@ -104,7 +119,10 @@ def link(cmd, objects, tag):
     rsp.write_text("\n".join(objects) + "\n")
     elf = OUT / f"{tag}.elf"
     elf.unlink(missing_ok=True)
-    c = re.sub(r"-o \S+", f"-o {elf} -map {OUT / (tag + '.map')}", cmd)
+    c = re.sub(r" -map \S+", "", cmd)  # ninja's own map, when configure.py asks for one
+    c = re.sub(r"-o \S+", f"-o {elf} -map {OUT / (tag + '.map')}", c)
+    if "-mapunused" not in c.split():
+        c = c.replace(" -o ", " -mapunused -o ", 1)
     c = re.sub(r"@\S+", f"@{rsp}", c)
     p = subprocess.run(c, shell=True, capture_output=True, text=True)
     return elf if p.returncode == 0 and elf.exists() else None, p.stdout + p.stderr
@@ -166,14 +184,98 @@ def parse_errors(log):
     return errs
 
 
+EVIDENCE = BUILD / "weakdedup_evidence"
+
+
+def sha1_file(path):
+    return hashlib.sha1(Path(path).read_bytes()).hexdigest()
+
+
+def find_unit(unit_arg, cfg):
+    stem = re.sub(r"\.[^./]+$", "", unit_arg)
+    unit = next((u for u in cfg["units"] if unit_arg in (u.get("metadata", {}).get("source_path"), u["name"])
+                 or u["name"].split("/", 1)[-1] == stem), None)
+    if not unit or not unit.get("base_path"):
+        sys.exit(f"{unit_arg}: no such unit with source in objdiff.json")
+    return unit
+
+
+def run_trial(unit, cmd, objects):
+    """The trial link of one unit: (inputs, object SHA-1, DOL SHA-1 or None, map path, log)."""
+    base = unit["base_path"]
+    if not Path(base).is_file():
+        sys.exit(f"{base} missing: run ninja build/G4SE01/report_honest.json first")
+    inputs = trial_inputs(unit["name"], base, objects)
+    if inputs is None:
+        sys.exit(f"{unit['name']}: already linked from {base} (ninja's own map is the evidence), "
+                 f"or dtk's split of it is not a link input")
+    obj_sha = sha1_file(base)
+    tag = f"trial_{unit_slug(unit['name'])}"
+    elf, log = link(cmd, inputs, tag)
+    sha = None
+    if elf:
+        dol = OUT / f"{tag}.dol"
+        subprocess.run([str(Path("build/tools/dtk")), "elf2dol", str(elf), str(dol)], check=True)
+        sha = hashlib.sha1(dol.read_bytes()).hexdigest()
+        dol.unlink()
+    if sha1_file(base) != obj_sha:
+        sha = None
+        log = f"{base} changed during the link"
+    return inputs, obj_sha, sha, OUT / f"{tag}.map", log
+
+
+def trial_link(unit_arg, cmd, objects, cfg):
+    """Link with one unit's compiled object in; record the map as evidence if the SHA-1 matches."""
+    unit = find_unit(unit_arg, cfg)
+    base = unit["base_path"]
+    slug = unit_slug(unit["name"])
+    inputs, obj_sha, sha, map_path, log = run_trial(unit, cmd, objects)
+    expected = SHA1.read_text().split()[0]
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
+    rec_path = EVIDENCE / f"{slug}.json"
+    for old in (rec_path, EVIDENCE / f"{slug}.MAP"):
+        old.unlink(missing_ok=True)  # the evidence directory is an input of report_honest.json
+    if sha != expected:
+        why = f"DOL SHA-1 {sha} != build.sha1 {expected}" if sha else "link failed:\n" + log[-2000:]
+        print(f"{unit['name']}: trial link with {base} is not byte-identical: {why}\nno evidence recorded")
+        return 1
+    m = EVIDENCE / f"{slug}.MAP"
+    map_path.replace(m)
+    rec = {"unit": unit["name"], "objects": {base: obj_sha}, "inputs": inputs,
+           "map": str(m), "map_sha1": sha1_file(m), "dol_sha1": sha}
+    tmp = rec_path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(rec, indent=1))
+    tmp.replace(rec_path)
+    print(f"{unit['name']}: links byte-identical with {base} (SHA-1 {sha}); "
+          f"evidence in {rec_path}\nnow run: ninja build/G4SE01/report_honest.json")
+    return 0
+
+
+def verify_unit(unit_arg, cmd, objects, cfg):
+    """Re-run a unit's trial link without recording anything (tools/gate.py): print
+    JSON with the inputs, the object's, the DOL's and the map's SHA-1."""
+    unit = find_unit(unit_arg, cfg)
+    inputs, obj_sha, sha, map_path, _ = run_trial(unit, cmd, objects)
+    print(json.dumps({"unit": unit["name"], "object_sha1": obj_sha, "dol_sha1": sha,
+                      "map_sha1": sha1_file(map_path) if sha and map_path.is_file() else None,
+                      "inputs_sha1": hashlib.sha1("\n".join(inputs).encode()).hexdigest()}))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--json", help="write per-unit results here")
+    ap.add_argument("--unit", help="trial-link this unit's compiled object and record weak-dedup evidence")
+    ap.add_argument("--verify-unit", help="re-run a unit's trial link and print its hashes (for gate.py)")
     args = ap.parse_args()
 
     cmd = linker_cmd()
     objects = link_inputs()
     cfg = json.loads(Path("objdiff.json").read_text())
+    if args.unit:
+        return trial_link(args.unit, cmd, objects, cfg)
+    if args.verify_unit:
+        return verify_unit(args.verify_unit, cmd, objects, cfg)
     matching = {}  # compiled object path -> unit info
     for u in cfg["units"]:
         if u.get("metadata", {}).get("complete") and u.get("base_path"):
