@@ -47,6 +47,13 @@ void Player_804A6F38::fn_80295240() {
     field_0x344.z = lbl_805405B4[0];
 }
 
+void Player_804A6F38::fn_80292E90() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    field_0x3fd = 1;
+    fn_8024F0E8(0x2000C);
+}
+
 void Player_804A6F38::fn_802922D0() {
     field_0x124d = 1;
     field_0x458 = 0;
