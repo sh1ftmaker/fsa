@@ -143,7 +143,7 @@ extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos,
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its address. Only the fields
 // fn_801186B0 writes are known.
-struct cls_804BC540 {
+struct cls_801192AC {
     /* 0x00 */ u8 field_0x0;
     /* 0x01 */ u8 field_0x1;
     /* 0x02 */ u8 field_0x2;
@@ -152,12 +152,12 @@ struct cls_804BC540 {
     /* 0x0C */ u8 field_0xc[0x14]; // not yet known
 }; // Size: 0x20
 
-// game/tu_80118384.cpp (not written yet). Returns the static cls_804BC540.
-extern "C" cls_804BC540* fn_8011921C();
+// game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
+extern "C" cls_801192AC* fn_8011921C();
 // game/tu_80118384.cpp. Sets field_0x0 = 1, field_0x1 = field_0x2 = 0,
 // field_0x4 = value, field_0x8 = 0 unless fn_801F68E0 (after fn_801F856C)
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
 // act_four_sword_demo.
-extern "C" bool fn_801186B0(cls_804BC540* obj, u32 value);
+extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 
 #endif
