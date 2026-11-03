@@ -21,7 +21,8 @@ static const char* lbl_804B16D0[] = {
 // The effect ids, one per player.
 static const u16 lbl_80543C00[] = {0x15, 0x17, 0x14, 0x16};
 
-// FIXME: 96.7%. regalloc-only: the original keeps the scale in f29, cos x / cos y / cos z in
+// FIXME: 96.7%. The original also computes `addi r4, r27, 0x1c4` (the position argument) later,
+// after the params stores, not before the camera/params setup as here. regalloc-only: the original keeps the scale in f29, cos x / cos y / cos z in
 // f31 / f30 / f3 and sin x / y / z in f28 / f27 / f26; ours has the scale in f31 and the sines
 // and cosines in other registers (the same shape as act_hardhat_beetle's setRotScaleMtx draw).
 void GBAAppear_804B16E0::draw() {
@@ -60,29 +61,9 @@ void GBAAppear_804B16E0::draw() {
     }
 }
 
-// The original copies the position by value twice before fn_8043E7CC and twice before the store
-// into lbl_80529DEC.field_0x1c4 (two stack copies each, member-wise store): two nested by-value
-// helpers each.
-static inline void callE7CC2(JGeometry::TVec3f pos) {
-    fn_8043E7CC(lbl_8053AED0, pos);
-}
-
-static inline void callE7CC(JGeometry::TVec3f pos) {
-    callE7CC2(pos);
-}
-
-static inline void storePos2(JGeometry::TVec3f* dst, JGeometry::TVec3f pos) {
-    dst->x = pos.x;
-    dst->y = pos.y;
-    dst->z = pos.z;
-}
-
-static inline void storePos(JGeometry::TVec3f* dst, JGeometry::TVec3f pos) {
-    storePos2(dst, pos);
-}
-
-// FIXME: 92.2%. The original's frame is 0x80 (ours 0x70): its four by-value position copies get
-// four distinct slots (0x8, 0x14, 0x20, 0x2C) where ours share two; and the pos copy
+// FIXME: ~86%. The original's frame is 0x80: it makes two extra by-value TVec3f stack copies
+// (slots 0x14 and 0x2C, psq_st of pos; its member-wise store into field_0x1c4[i] reads x/y from
+// the first) and two more for the fn_8043E7CC argument (0x20 and 0x8); and the pos copy
 // (psq_l / psq_st into the local before the call) is scheduled before the camera load
 // (lwz lbl_8053AB10 -> 0x24) there, after the z load (lfs 0x1CC) here.
 void GBAAppear_804B16E0::update() {
@@ -113,7 +94,9 @@ void GBAAppear_804B16E0::update() {
                     pos.y -= lbl_8050DB0C.field_0x30[1];
                 }
             }
-            storePos(&lbl_80529DEC.field_0x1c4[i], pos);
+            lbl_80529DEC.field_0x1c4[i].x = pos.x;
+            lbl_80529DEC.field_0x1c4[i].y = pos.y;
+            lbl_80529DEC.field_0x1c4[i].z = pos.z;
             if (field_0x4 < 8) {
                 lbl_8053AB10->field_0x24->fn_8030C210(&lbl_80529DEC.field_0x1c4[i]);
             }
@@ -125,7 +108,7 @@ void GBAAppear_804B16E0::update() {
             } else {
                 fn_8013CB44(mEmitters[i], &lbl_80529DEC.field_0x1c4[i], 1, 1, true);
             }
-            fn_8043E7CC(lbl_8053AED0, lbl_80529DEC.field_0x1c4[i]);
+            lbl_8053AED0->fn_8043E7CC(lbl_80529DEC.field_0x1c4[i]);
         } else {
             deleteEmitter(&mEmitters[i]);
         }
