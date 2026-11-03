@@ -17,8 +17,12 @@
   JAUGenericAudible_<4,...>) comes from the mkdd import, not FSA. Proposal (needs a
   name review and approved_symbol_changes.txt lines): make the channel parameter
   JAUAudibleChannel and rename those four to `...<4,17JAUAudibleChannel,23JAUDopplerAudibleAbsPos>...`.
-  Not applied: renames of real names are coordinator-reviewed.
-- calcPriority 98.9 %: register allocation only (see Resistant); not retried.
+  Applied on branch unit/JSystem__JAudio__Utility__JAUAudience-channel: newAudible
+  AND calcPriority both reach 100 % (11 -> 13/18, code 49.2 -> 73.4 %), no other unit
+  changes. gate fails only on the four real-name renames until the coordinator adds,
+  after a name review, these approved_symbol_changes.txt lines (old old new review):
+  `getOuterParams__74JAUGenericAudible_<4,24JAUDopplerAudibleChannel,23JAUDopplerAudibleAbsPos>Fi` -> `getOuterParams__67JAUGenericAudible_<4,17JAUAudibleChannel,23JAUDopplerAudibleAbsPos>Fi`;
+  same for `__dt__...Fv`, `calc__...Fv` and `__vt__...`.
 
 Baseline (this round): `total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)`
 After: `total: 4506 / 11561 functions, 809288 / 4442088 bytes of code (18.22 %)`. Gate ok.

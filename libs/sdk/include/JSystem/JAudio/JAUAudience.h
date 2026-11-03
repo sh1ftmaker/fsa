@@ -146,11 +146,10 @@ public:
 
 
 
-// FIXME: FSA's newAudible passes __ct__17JAUAudibleChannelFv (0x8003B0B0) to
-// __construct_array; ours emits and passes __ct__24JAUDopplerAudibleChannelFv
-// (same bytes). See the checkpoint.
-class JAUDopplerAudibleChannel : public JAUAudibleChannel {
-}; // Size: 0x24
+// FSA's JAUDopplerAudible uses JAUAudibleChannel itself: newAudible passes
+// __ct__17JAUAudibleChannelFv (0x8003B0B0) to __construct_array, and FSA has
+// no copy of a derived Doppler channel's ctor (mkdd's names said
+// JAUDopplerAudibleChannel). mixChannelOut has no doppler term either.
 
 // FSA layout: JAUDopplerAudible<4> is 0x40 bytes (pool alloc/free 0x40):
 // JAIAudible (0x10), audible param 0x10, empty AbsPos 0x14, one channel
@@ -318,8 +317,6 @@ public:
         return this->_48 * (dist - this->setting_._08);
     }
 
-    // FIXME: 98.9 %: in the second loop FSA keeps channel in r29 and the
-    // deltaPriority cursor in r26 (ours: r24 / r29); same instructions.
     u32 calcPriority(JAIAudible *i_audible) {
         u32 deltaPriority[Audible::MAX_CHANNELS];
 
@@ -406,9 +403,9 @@ public:
 };
 
 template <int N>
-class JAUDopplerAudible : public JAUGenericAudible_<N, JAUDopplerAudibleChannel, JAUDopplerAudibleAbsPos>, public JASPoolAllocObject< JAUDopplerAudible<N> > {
+class JAUDopplerAudible : public JAUGenericAudible_<N, JAUAudibleChannel, JAUDopplerAudibleAbsPos>, public JASPoolAllocObject< JAUDopplerAudible<N> > {
 public:
-    typedef JAUGenericAudible_<N, JAUDopplerAudibleChannel, JAUDopplerAudibleAbsPos> BaseAudible;
+    typedef JAUGenericAudible_<N, JAUAudibleChannel, JAUDopplerAudibleAbsPos> BaseAudible;
 
     JAUDopplerAudible(const JGeometry::TVec3f &pos, const JGeometry::TVec3f *p3, u32 channel) : BaseAudible(pos, p3, channel) {
         
