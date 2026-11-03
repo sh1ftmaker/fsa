@@ -34,6 +34,11 @@ public:
     // (the step without the hit-bit test) with mapHit passed on, then
     // fn_8021835C.
     void vfunc_0x9C(u8 mapHit);
+    // tu_801DE714 (0x801E2004): removes the other live actors of mActorId
+    // (ActorManager fn_801F7AB8, this one excepted by serial), then sets mPos.x
+    // from the visible box's left edge (the second box from layer 8 up) and
+    // copies mPos.x and mPos.y to field_0x2c4 and field_0x2c8.
+    void fn_801E2004();
     // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
     bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.

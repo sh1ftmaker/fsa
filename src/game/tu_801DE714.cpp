@@ -1,9 +1,12 @@
 #include "game/GameAudio.h"
+#include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_801DE714.h"
 
 // .sdata2 float of this unit (no name evidence; read by the constructor).
 static const f32 lbl_8053F480[1] = {0.0f};
+// .sdata2 float of this unit, read by fn_801E2004 (no name evidence).
+static const f32 lbl_8053F4A4[1] = {30.0f};
 
 // tu_801DE714 (0x801E22A4): the constructor, after EnemyBase's (a plain bl).
 cls_804A51E4::cls_804A51E4() {
@@ -59,4 +62,17 @@ bool cls_804A51E4::fn_801E1D7C() {
         result = true;
     }
     return result;
+}
+
+// tu_801DE714 (0x801E2004): see the declaration in act/tu_801DE714.h.
+void cls_804A51E4::fn_801E2004() {
+    fn_801F856C()->fn_801F7AB8(mActorId, mSerial);
+    s32 layer = field_0x4;
+    GameView_804A9950* view = fn_802D6A9C();
+    JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    mPos.x = box->i.x - lbl_8053F4A4[0];
+    // y is loaded before the stores, as the original does (matching only).
+    f32 y = mPos.y;
+    field_0x2c4 = mPos.x;
+    field_0x2c8 = y;
 }
