@@ -87,10 +87,8 @@ below, ~0.5–0.65B.
    instructions, relocation name), counts attempts, and says STOP when the
    function's try budget (item 8: 3 small, 6 medium, a set budget for large)
    is used up without progress. Regalloc-only goes to the permuter queue.
-3. **Per-file packets, fresh small contexts.** Agents are allocated by file
-   (user decision, 2026-11-02): one agent owns one game unit and works through
-   its functions, rather than agents being handed scattered single functions.
-   Goals and metrics stay in matched functions. A script
+3. **Per-file packets, fresh small contexts.** As so far: one subagent per
+   file. Progress is counted in matched functions. A script
    builds the agent's input for that file: its asm, a cleaned m2c draft of
    every function (m2c is GPL-3, used as a tool, output is from our own
    binary), the file's data and `.sdata2` literals in order, callee
