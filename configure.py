@@ -1344,7 +1344,7 @@ config.libs = [
         Object(NonMatching, "game/act_force_gem_rain.cpp"),
         Object(NonMatching, "game/act_four_switch_monitor.cpp"),
         Object(NonMatching, "game/act_shutter.cpp"),
-        Object(NonMatching, "game/act_spike_floor_check.cpp"),
+        Object(Matching, "game/act_spike_floor_check.cpp"),
         Object(NonMatching, "game/act_point_check_npc.cpp"),
         Object(NonMatching, "game/act_enemy_count_wipe_out_check.cpp"),
         Object(NonMatching, "game/act_item_pedestal.cpp"),
