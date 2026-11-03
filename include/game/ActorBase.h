@@ -317,7 +317,9 @@ public:
     // (tp JAISound.h). Every caller passes 0. Returns 0 on the early outs,
     // else fn_80456334's result (no caller reads it; the pointee is
     // unknown).
-    void* fn_801F0E34(u32 soundId, u32 fadeTime);
+    // const: its lwz of field_0x4 is scheduled above the prologue's stw r28,
+    // which MWCC does only for loads through a const `this`.
+    void* fn_801F0E34(u32 soundId, u32 fadeTime) const;
     // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
     // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
     ActorSoundObj_804578F4* fn_801F1184();
