@@ -947,6 +947,12 @@ bool fn_802319B4(s32 player, s32 arg) {
     return false;
 }
 
+// Out-of-line copy of TBox2<f32>::set(const TBox2&) (JGeometry.h). Its two
+// callers in fn_80232A0C copy a box into a stack TBox2f before passing it on.
+void fn_80233BA0(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
+    dst->set(*src);
+}
+
 bool fn_80233DA4(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
