@@ -1406,7 +1406,7 @@ config.libs = [
         Object(NonMatching, "game/act_bgm_change_npc.cpp"),
         Object(NonMatching, "game/act_zoom.cpp"),
         Object(NonMatching, "game/tu_802E6EC4.cpp"),
-        Object(NonMatching, "game/act_wave_se.cpp"),
+        Object(Matching, "game/act_wave_se.cpp"),
         Object(Matching, "game/act_play_specified_se.cpp"),
         Object(NonMatching, "game/act_panel_rewrite_npc_2.cpp"),
         Object(NonMatching, "game/act_magic_circle_generator.cpp"),
