@@ -15,9 +15,8 @@
 //   into tu_803944C8, so those classes are not declared here.
 // * lbl_8050DB0C: the layout constants object (cls_804AF32C), 20 units.
 //
-// The variable lbl_8053AD78 (and lbl_8053AD70, the object of
-// game/tu_8037ACC4.cpp) sits in the .sbss dtk gives game/tu_8036FB60.cpp,
-// but only tu_8037DF68 stores lbl_8053AD78.
+// The variable lbl_8053AD78 is owned by game/tu_8037DF68.cpp (its only
+// store); lbl_8053AD70, the object of game/tu_8037ACC4.cpp, is owned there.
 //
 // fn_8037F2FC (sets up a message box at a position) is declared in
 // game/GameGlobals.h, where it was first needed.
