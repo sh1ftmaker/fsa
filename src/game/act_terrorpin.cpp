@@ -2,6 +2,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/Player.h"
 #include "game/act/act_terrorpin.h"
 
 Terrorpin_804A3B10::Terrorpin_804A3B10() {
@@ -66,6 +67,38 @@ void Terrorpin_804A3B10::vfunc_0x24() {
         }
     }
     ActorBase_804A5770::vfunc_0x24();
+}
+
+u8 Terrorpin_804A3B10::vfunc_0x68() {
+    u8 hit = 0;
+    if (mBox.f.x - mBox.i.x > lbl_8053EB20 && mBox.f.y - mBox.i.y > lbl_8053EB20) {
+        bool inState = false;
+        // Case 1 has its own body: the original keeps it apart from 2 and 3.
+        switch (mState) {
+        case 1:
+            inState = true;
+            break;
+        case 2:
+        case 3:
+            inState = true;
+            break;
+        }
+        if (inState) {
+            JGeometry::TBox2f box;
+            fn_801F31C4(&box);
+            fn_802397B4(&box, field_0x4, mSerial);
+        } else {
+            hit = fn_801F2B7C(field_0x114, -1, 1);
+            if (hit != 0 && mState == 5) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (hit & (1 << i)) {
+                        fn_80236074(i, 0x64, 0);
+                    }
+                }
+            }
+        }
+    }
+    return hit;
 }
 
 // While mState is 5, spawns two 'RUPY' actors at mPos and sets each one's
