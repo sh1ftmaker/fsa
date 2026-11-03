@@ -7,9 +7,6 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_candlestick_switch.h"
 
-// FIXME: 90.09 %. Same instructions; the target loads the shadow scale
-// (0x254) before the 0.0f for pos.z and keeps (8, y, x, scale) in f3, f2,
-// f0, f1; ours loads 0.0f first, so every float register is shifted.
 void CandlestickSwitch_804A8B78::draw() {
     if (mLit == 0) {
         if (mShadowScale > 0.0f) {
@@ -25,8 +22,9 @@ void CandlestickSwitch_804A8B78::draw() {
     } else {
         mShadowScale = 70.0f;
     }
+    f32 scale = mShadowScale;
     JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
-    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), mShadowScale);
+    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
 }
 
 void CandlestickSwitch_804A8B78::update() {

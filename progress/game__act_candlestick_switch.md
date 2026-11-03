@@ -4,7 +4,7 @@ Baseline: 5949 / 11557 functions, 1193564 bytes. After: 5952 / 11557, 1194644 by
 
 Matched: update, __dt__, init, __sinit (4/5).
 
-Resistant: draw (90.09 %, scheduling+regalloc). The target loads the shadow
+Resistant: none (draw fixed by reading the scale into a local first).
 scale (0x254) before the 0.0f for pos.z and holds (8, y, x, scale) in f3, f2,
 f0, f1; ours loads 0.0f first, so the float registers shift. Tried
 TVec3f(x, y, z), set(), field-by-field assignment, a local TColor.
