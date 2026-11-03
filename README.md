@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **28.49 %** of the code and **6,322 / 11,557** functions match. 442 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **28.51 %** of the code and **6,323 / 11,557** functions match. 442 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -59,7 +59,7 @@ progress site, which goes down to single functions.
 <!-- treemap:start -->
 <p align="center">
 <a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 11.7 % of 3,573,784 bytes matched, 1,610 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 11.7 % matched"></a><br>
-<a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.8 % of 630,852 bytes matched, 3,649 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.8 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
 <!-- treemap:end -->
@@ -77,11 +77,11 @@ progress site, which goes down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 11.7 % of 3,573,784 bytes | 1,610 / 6,789 |
-| [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.8 % of 630,852 bytes | 3,649 / 3,702 |
+| [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 |
 | [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
 | [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
 | [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **28.49 %** of 4,442,032 bytes | **6,322 / 11,557** |
+| **Whole DOL** | **28.51 %** of 4,442,032 bytes | **6,323 / 11,557** |
 
 <details><summary>Game code: 14 file groups</summary>
 
@@ -110,7 +110,7 @@ progress site, which goes down to single functions.
 |---|--:|--:|
 | [J3D](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j3d) | 98.2 % of 173,328 bytes | 1,166 / 1,191 |
 | [J2DGraph](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j2dgraph) | 97.1 % of 159,196 bytes | 878 / 887 |
-| [JAudio](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jaudio) | 96.1 % of 120,700 bytes | 746 / 755 |
+| [JAudio](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jaudio) | 96.7 % of 120,700 bytes | 747 / 755 |
 | [JKernel](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jkernel) | 98.8 % of 55,724 bytes | 324 / 327 |
 | [JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jparticle) | 98.7 % of 54,360 bytes | 200 / 202 |
 | [JUtility](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jutility) | 100 % of 47,044 bytes | 190 / 190 |
