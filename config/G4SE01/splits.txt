@@ -82,6 +82,12 @@ JSystem/JAudio/Interface/JAISoundParams.cpp:
 	.text       start:0x800262AC end:0x8002640C
 	.sdata2     start:0x8053B010 end:0x8053B018
 
+JSystem/JAudio/Interface/JAISoundStarter.cpp:
+	.text       start:0x8002640C end:0x80026560
+	.ctors      start:0x8045BD28 end:0x8045BD2C
+	.data       start:0x80491830 end:0x80491840
+	.bss        start:0x804B23D8 end:0x804B2400
+
 JSystem/JAudio/Interface/JAIStream.cpp:
 	.text       start:0x80026560 end:0x80026FD8
 	.ctors      start:0x8045BD2C end:0x8045BD30
