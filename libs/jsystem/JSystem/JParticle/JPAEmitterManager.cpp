@@ -80,15 +80,15 @@ JPABaseEmitter *JPAEmitterManager::createSimpleEmitter(const JGeometry::TVec3f &
 void JPAEmitterManager::calc(u8 group_id) {
 #line 154
     JUT_ASSERT(group_id < gidMax);
-    JSULink<JPABaseEmitter> *link = pEmtrUseList[group_id].getFirst();
-    while (link != pEmtrUseList[group_id].getEnd()) {
-        JSULink<JPABaseEmitter> *nextLink = link->getNext();
-        JPABaseEmitter *emit      = link->getObject();
-        link      = nextLink;
-        bool stat = emit->mResource->calc(pWd, emit);
-        if (stat && !emit->checkStatus(JPAEMIT_Unk10)) {
-            forceDeleteEmitter(emit);
-        }
+    JSULink<JPABaseEmitter> *pNext = nullptr;
+    for (JSULink<JPABaseEmitter> *pLink = pEmtrUseList[group_id].getFirst(); pLink != pEmtrUseList[group_id].getEnd();
+         pLink = pNext) {
+        pNext = pLink->getNext();
+
+        JPABaseEmitter *emtr = pLink->getObject();
+
+        if (emtr->mResource->calc(pWd, emtr) && !emtr->checkStatus(JPAEMIT_Unk10))
+            forceDeleteEmitter(emtr);
     }
 }
 
@@ -181,12 +181,13 @@ void JPAEmitterManager::clearResourceManager(u8 res_mgr_id) {
     JUT_ASSERT(res_mgr_id < ridMax);
 
     for (u8 i = 0; i < gidMax; i++) {
-        for (JSULink<JPABaseEmitter> *link = pEmtrUseList[i].getFirst(); link != pEmtrUseList[i].getEnd(); ) {
-            JSULink<JPABaseEmitter> *next = link = link->getNext();
-            if (res_mgr_id == link->getObject()->getResourceManagerID()) {
-                forceDeleteEmitter(link->getObject());
-            }
-            link = next;
+        JSULink<JPABaseEmitter> *pNext = nullptr;
+        for (JSULink<JPABaseEmitter> *pLink = pEmtrUseList[i].getFirst(); pLink != pEmtrUseList[i].getEnd();
+             pLink = pNext) {
+            pNext = pLink->getNext();
+
+            if (res_mgr_id == pLink->getObject()->getResourceManagerID())
+                forceDeleteEmitter(pLink->getObject());
         }
     }
     pResMgrAry[res_mgr_id] = nullptr;
