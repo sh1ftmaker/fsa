@@ -198,7 +198,7 @@ void JUTException::showFloatSub(int index, f32 value)
     }
     else if (isinf(value))
     {
-        if ((*(u8*)(&value)) & 0x80) // signed
+        if ((*(u8*)(&value)) & 0x80) // MSL __signbitf
         {
             sConsole->print_f("F%02d:+Inf     ", index);
         }
@@ -277,24 +277,25 @@ bool JUTException::searchPartialModule(u32 address, u32 *module_id, u32 *section
 
 void search_name_part(u8 *src, u8 *dst, int dst_length)
 {
+    u8 *p2 = src;
     for (u8 *p = src; *p; p++)
     {
         if (*p == '\\')
         {
-            src = p;
+            p2 = p;
         }
     }
 
-    if (*src == '\\')
+    if (*p2 == '\\')
     {
-        src++;
+        p2++;
     }
 
-    for (int i = 0; (*src != 0) && (i < dst_length);)
+    for (int i = 0; (*p2 != 0) && (i < dst_length);)
     {
-        if (*src == '.')
+        if (*p2 == '.')
             break;
-        *dst++ = *src++;
+        *dst++ = *p2++;
         i++;
     }
 
@@ -814,31 +815,32 @@ void JUTException::printContext(OSError error, OSContext *context, u32 dsisr, u3
         int line_offset;
         int used_line;
         u32 height;
-    next:
-        for (u32 i = sConsole->getHeight(); i > 0; i--)
+        while (true)
         {
-            sConsole->scroll(1);
-            JUTConsoleManager::sManager->drawDirect(true);
+            for (u32 i = sConsole->getHeight(); i > 0; i--)
+            {
+                sConsole->scroll(1);
+                JUTConsoleManager::sManager->drawDirect(true);
 
+                height = sConsole->getHeight();
+                JUTConsole *console = sConsole;
+                line_offset = console->getLineOffset();
+                used_line = console->getUsedLine();
+                if ((used_line - height) + 1U <= line_offset)
+                    break;
+                waitTime(20);
+            }
+
+            waitTime(3000);
             height = sConsole->getHeight();
             JUTConsole *console = sConsole;
             line_offset = console->getLineOffset();
             used_line = console->getUsedLine();
             if ((used_line - height) + 1U <= line_offset)
+            {
                 break;
-            waitTime(20);
+            }
         }
-
-        waitTime(3000);
-        height = sConsole->getHeight();
-        JUTConsole *console = sConsole;
-        line_offset = console->getLineOffset();
-        used_line = console->getUsedLine();
-        if ((used_line - height) + 1U <= line_offset)
-        {
-            continue;
-        }
-        goto next;
     }
 }
 
@@ -950,7 +952,6 @@ bool JUTException::queryMapAddress(char *mapPath, u32 address, s32 section_id, u
 
 bool JUTException::queryMapAddress_single(char *mapPath, u32 address, s32 section_id, u32 *out_addr, u32 *out_size, char *out_line, u32 line_length, bool print, bool begin_with_newline)
 {
-    /* fake match on TP debug? */
     if (!mapPath)
     {
         return false;
@@ -1077,22 +1078,17 @@ bool JUTException::queryMapAddress_single(char *mapPath, u32 address, s32 sectio
                     break;
                 }
             }
-            (void)0; // memes
         }
 
-        //if (!result)
-        //{
         if ((section_id < 0 || section_id != section_idx))
         {
-            goto cont;
+            continue;
         }
-        //}
         if (print && begin_with_newline)
         {
             sConsole->print("\n");
         }
         break;
-    cont:;
     }
 
     file.fclose();

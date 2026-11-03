@@ -1305,10 +1305,11 @@ JSystem/JUtility/JUTException.cpp:
 	.ctors      start:0x8045BDC8 end:0x8045BDCC
 	.rodata     start:0x8045E878 end:0x8045EDB0
 	.data       start:0x80499390 end:0x80499428
-	.bss        start:0x804BA1B0 end:0x804BA1D0
+	.bss        start:0x804BA1B0 end:0x804BA498
 	.bss        start:0x8052E894 end:0x8052E8A0 align:4 common
 	.sdata      start:0x80539D90 end:0x80539D98
-	.sbss       start:0x8053A900 end:0x8053A918
+	.sbss       start:0x8053A900 end:0x8053A920
+	.sdata2     start:0x8053B848 end:0x8053B890
 
 JSystem/JUtility/JUTFader.cpp:
 	.text       start:0x8008CB40 end:0x8008CC40

@@ -35,7 +35,7 @@
 <rect x="890.4" y="169.5" width="51.1" height="83.1" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
 <rect class="rise" x="890.4" y="172.9" width="51.1" height="79.6" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="836.9" y="253.6" width="72.5" height="50.6" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
-<rect class="rise" x="836.9" y="265.5" width="72.5" height="38.6" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
+<rect class="rise" x="836.9" y="253.9" width="72.5" height="50.3" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="910.4" y="253.6" width="31.1" height="19.2" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
 <rect class="rise" x="910.4" y="253.9" width="31.1" height="18.9" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="910.4" y="273.8" width="17.2" height="30.3" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
@@ -121,11 +121,11 @@
 <text x="771.1" y="185.5" font-size="11.5" font-weight="600" fill="#eceefb">JAudio</text>
 <text x="771.1" y="198.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">76.3 %</text>
 <text x="842.9" y="269.6" font-size="11.5" font-weight="600" fill="#eceefb">JUtility</text>
-<text x="842.9" y="282.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">76.4 %</text>
+<text x="842.9" y="282.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">99.4 %</text>
 <g fill="#3aae5c"><path d="M25.5 440L31 445.5L25.5 451L20 445.5Z"/></g>
 <text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 0.42 %</text>
 <g fill="#ef5b52"><path d="M143.7 440L149.2 451L138.2 451Z"/></g>
-<text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 89.5 %</text>
+<text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 91.2 %</text>
 <g fill="#3d9cf0"><circle cx="283.5" cy="445.5" r="5.5"/></g>
 <text x="295.0" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.6 %</text>
 <g fill="#c35ee6"><rect x="389" y="440" width="11" height="11" rx="1.5"/></g>
