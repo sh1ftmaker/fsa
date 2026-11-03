@@ -162,6 +162,12 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // until that unit defines them.
 extern "C" {
 // Per-player queries, by address (legend as above).
+// act_heart_container's update: results tested with clrlwi 24 (bool); fn_80230224's
+// second argument is clrlwi 24 (a bool) and its result is unused.
+bool fn_8023ED8C(s32 player);
+bool fn_8023EBB8(s32 player);
+bool fn_802308E0(s32 player);
+bool fn_80230224(s32 player, bool flag);
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in
 // field_0x14[player], a in field_0x44, b in field_0x54, c (stb) in field_0x64.
@@ -212,6 +218,10 @@ s32 fn_802373EC(s32 player);
 s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
 s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
+// Owner: tu_8022AD64 (0x8022DB04, defined there). 2 units (act_push_switch,
+// act_somaria_block). Same family as fn_80230050: tests the player slot's byte 0xCAC;
+// else false. Result tested with clrlwi 24.
+bool fn_8022DB04(s32 player);
 void fn_80231368();                      // 4 units.
 bool fn_80233D20(s32 player);            // 1 unit. -> byte 0x43F; else false
 // 1 unit. -> fn_80240868 (word 0x4); 0 without a manager. An inactive

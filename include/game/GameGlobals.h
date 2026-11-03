@@ -114,8 +114,50 @@ struct Unk_8045A080 {
     // JAISeCategoryMgr::pause(bool) of three categories of the object at
     // 0x34 (0x8045868C-0x804586A8); called by act_stop_npc.
     void fn_80458658(bool pause);
+    // game/tu_80457DFC.cpp. Sets up JAudio from the two loaded audio files
+    // (the buffers at 0x14 of the loaders in tu_80442810): `heap` is the
+    // heap lbl_80529DEC.field_0x4, 0x800000 the audio memory size stored in
+    // the JAU_JASInitializer (fn_80459AE4 stores r5 at its 0x4).
+    void fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* initData, void* seqData);
+    // game/tu_80457DFC.cpp: JASDriver::setOutputMode(mode).
+    void fn_804594E4(u32 mode);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
+
+// game/tu_80401848.cpp (not written yet): the objects fn_804019A8 and
+// fn_80401E10 allocate (0x20 and 0x1C bytes) for a file found by path, and
+// queue on the DVD thread. Both store the vtable 0x804B0FD0 and then their
+// own over it: 0x804B0FA0 and 0x804B0FC0. They are named after those
+// vtables. The word at 0x10 is the entrynum; the byte at 0x4 becomes 1 when
+// loading has finished; the buffer is the word at 0x14.
+// Base class (vtable 0x804B0FD0, stored first by both allocators).
+class cls_804B0FD0 {
+public:
+    /* 0x00 */ u32 field_0x0;
+    /* 0x04 */ u8 field_0x4;
+    /* 0x08 */ virtual ~cls_804B0FD0();
+    /* 0x0C */ u8 field_0xc;
+    /* 0x10 */ s32 field_0x10;
+    /* 0x14 */ void* field_0x14; // the loaded data
+}; // Size: 0x18
+
+class cls_804B0FA0 : public cls_804B0FD0 {
+public:
+    /* 0x08 */ virtual ~cls_804B0FA0();
+    /* 0x18 */ u8 field_0x18[0x20 - 0x18];
+}; // Size: 0x20
+
+class cls_804B0FC0 : public cls_804B0FD0 {
+public:
+    /* 0x08 */ virtual ~cls_804B0FC0();
+    /* 0x18 */ u32 field_0x18;
+}; // Size: 0x1C
+
+extern "C" {
+// Owner: game/tu_80401848.cpp. (path, mode byte, heap)
+cls_804B0FA0* fn_804019A8(const char* path, u8 mode, JKRHeap* heap);
+cls_804B0FC0* fn_80401E10(const char* path, u8 mode, JKRHeap* heap);
+}
 
 // Random helpers on lbl_8053AAF8->mRandom, defined in game units.
 f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp

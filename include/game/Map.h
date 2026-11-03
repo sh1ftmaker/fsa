@@ -55,6 +55,13 @@ public:
     // float twice (fmr f2, f1).
     void fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 frame,
                      SpriteParams_801F5AE0* params, f32 scaleX, f32 scaleY);
+    // 5 units (act_shutter, act_red_blue_switch, act_spike_floor_check,
+    // tu_802D39B8, tu_8029D898) plus BgRewrite's tile animation. Decodes
+    // the 'SCH ' resource `res` (JKRDecomp::checkCompressed / decode, size
+    // from getResSize when `size` is 0) and rewrites the 4-bit tile data
+    // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
+    // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
+    void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
     // 17 units. The tile code of cell `index` on `layer` (lhzx from the
     // layer's u16 grid, a pointer at 0x28 + layer * 4; the body has three
     // identical branches for layers 0-3, 4-7 and the rest).

@@ -23,9 +23,9 @@ static inline T clamp(T value, T min, T max) {
 inline void SpriteAnim_801D267C::calcCel() {
     s32 time = 0;
     s32 key = 0;
-    s16* table = mTables[mAnim];
+    const s16* table = mTables[mAnim];
     f32 frame = mFrameCtrl.getFrame();
-    for (s16* p = table; p[0] >= 0; p += 2, key++) {
+    for (const s16* p = table; p[0] >= 0; p += 2, key++) {
         s32 start = time;
         time += p[1];
         if (start <= frame && frame < time) {
@@ -136,7 +136,7 @@ bool SpriteAnim_801D267C::fn_801D22A0(s32 anim, s32 mode) {
 
 void SpriteAnim_801D267C::fn_801D22DC(s32 anim, s32 mode, bool keepFrame) {
     mAnim = anim;
-    s16* p = mTables[mAnim];
+    const s16* p = mTables[mAnim];
     mLength = 0;
     while (p[0] >= 0) {
         mLength += p[1];
@@ -160,11 +160,11 @@ void SpriteAnim_801D267C::fn_801D22DC(s32 anim, s32 mode, bool keepFrame) {
 // FIXME: 91.7 %. The target keeps the running min/max in the register it
 // stores (blt over `mr r0, r4`), and loads the key's cel before mMaxCel;
 // ours branches the other way. min/max templates gave the same code.
-void SpriteAnim_801D267C::fn_801D2608(s16** tables, s32 count) {
+void SpriteAnim_801D267C::fn_801D2608(const s16** tables, s32 count) {
     mTables = tables;
     mTableCount = count;
     for (s32 i = 0; i < mTableCount; i++) {
-        for (s16* p = mTables[i]; p[0] >= 0; p += 2) {
+        for (const s16* p = mTables[i]; p[0] >= 0; p += 2) {
             mMinCel = mMinCel < p[0] ? mMinCel : p[0];
             mMaxCel = mMaxCel < p[0] ? p[0] : mMaxCel;
         }
