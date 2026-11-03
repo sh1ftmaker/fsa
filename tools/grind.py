@@ -165,6 +165,71 @@ def symbol_renames(wt):
     return ren
 
 
+# Review 2026-11-03 (F1, F5, F7): byte-identical but not the original source.
+NAMED_LITERAL = re.compile(  # F1: a unit's own .sdata2 float or string behind an lbl_ name
+    r"\b(f32|f64|float|double)\b[^;=(]*\blbl_[0-9A-Fa-f]{8}\s*\[\s*1?\s*\]\s*[;=]"
+    r"|\bchar\s+lbl_[0-9A-Fa-f]{8}\s*\[\s*\d*\s*\]\s*=\s*\"")
+OWN_EXTERN = re.compile(r"\bextern\s+(\"C\"\s+)?const\s+(f32|f64|float|double)\s+lbl_")  # F1, in a .cpp
+ONE = re.compile(r"\b(?:f32|f64|float|double)\b[^;=(]*\b(lbl_[0-9A-Fa-f]{8})\s*\[\s*1?\s*\]")
+PROTO = re.compile(r"^\s*(extern\s+(\"C\"\s+)?)?(const\s+)?(?!return\b|else\b|delete\b|new\b)\w[\w:<>]*[\s\*&]+"
+                   r"(\w+::)?fn_8[0-9A-Fa-f]{7}\w*\s*\([^)]*\)\s*;")  # F5
+HEX = re.compile(r"\b0x([0-9A-Fa-f]{16}|[0-9A-Fa-f]{8})\b")  # F7
+
+
+def fourcc(h):
+    b = bytes.fromhex(h)
+    return all(0x41 <= c <= 0x5A or 0x30 <= c <= 0x39 or c in (0x20, 0x5F) for c in b) and any(0x41 <= c <= 0x5A for c in b)
+
+
+def added_lines(wt):
+    """{path: set of added line numbers (1-based) in the new file}; new files: every line."""
+    out, path = {}, None
+    for l in sh(["git", "diff", "-U0", "--", "src", "include"], wt).stdout.splitlines():
+        if l.startswith("+++ "):
+            path = l[6:] if l.startswith("+++ b/") else None
+        elif l.startswith("@@") and path:
+            m = re.search(r"\+(\d+)(?:,(\d+))?", l)
+            start, n = int(m.group(1)), int(m.group(2) or 1)
+            out.setdefault(path, set()).update(range(start, start + n))
+    for f in sh(["git", "ls-files", "--others", "--exclude-standard", "src", "include"], wt).stdout.split():
+        out[f] = None
+    return out
+
+
+def style_violation(path, text, lines=None):
+    """First F1/F5/F7 violation among `lines` (None: all) of a C/C++ file, or None."""
+    depth, extern_c, cpp = 0, [], path.endswith(".cpp")
+    ones = set(ONE.findall(text))  # one-element literal arrays, read as name[0]
+    for i, raw in enumerate(text.splitlines(), 1):
+        code = code_part(raw)
+        if (lines is None or i in lines) and code.strip():
+            where = f"{path}:{i}: {raw.strip()[:70]}"
+            if NAMED_LITERAL.search(code) or (cpp and OWN_EXTERN.search(code)) or any(
+                    re.search(rf"\b{n}\s*\[\s*0\s*\]", code) for n in ones):
+                return f"named literal (write 1.0f / \"text\", not lbl_): {where}"
+            if HEX.search(code) and any(fourcc(h) for h in HEX.findall(code)):
+                return f"tag as hex (write 'NULL'): {where}"
+            if cpp and depth == len(extern_c) and PROTO.search(code):
+                return f"prototype in a .cpp (declare it in the owner's shared header): {where}"
+            if path.startswith("include/game/act/") and 'extern "C"' in code:
+                return f"extern C in an act header (use the owner's shared header): {where}"
+        if re.search(r'extern\s+"C"\s*\{', code):
+            extern_c.append(depth)
+        depth += code.count("{") - code.count("}")
+        while extern_c and depth <= extern_c[-1]:
+            extern_c.pop()
+    return None
+
+
+def style_check(wt):
+    for path, lines in added_lines(wt).items():
+        if path.endswith((".cpp", ".h", ".c")) and (wt / path).exists():
+            v = style_violation(path, (wt / path).read_text(errors="replace"), lines)
+            if v:
+                return v
+    return None
+
+
 def check_diff(wt, unit):
     allowed = {f"src/{unit}", "config/G4SE01/symbols.txt", "config/G4SE01/gen_game.tsv"}
     st = sh(["git", "status", "--porcelain", "-uall"], wt).stdout.splitlines()
@@ -196,6 +261,9 @@ def check_diff(wt, unit):
             return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
         if BANNED.search(code_part(l)):
             return f"banned: {l.strip()[:80]}", None
+    v = style_check(wt)
+    if v:
+        return v, None
     # A leftover use of a renamed symbol can't be told from text (members keep the short C++
     # name); it breaks the link or another unit's relocations, which the merge checks reject.
     return None, ren
@@ -233,6 +301,10 @@ Rules (a script checks them and throws away your work if broken):
   in other src files change nothing but those uses.
 - A placeholder function that takes a class pointer as its first argument is a member function
   of that class: declare it in the class and write it as a member, not as extern "C".
+- Literals stay literals: write `1.0f` and `"text"`, never an lbl_ name or one-element array
+  for a float or string; four-character tags as `'NULL'`, not hex. `@NNN vs lbl_` on literals is a
+  data split for the main project, not code: leave it. Declare another unit's function in the
+  shared header of its owning area (GameGlobals.h if none fits), never in a .cpp or an act header.
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
   types, as the original programmers would. Other functions in the file must not get worse.
 - Do not run git, ninja or any build other than tools/try.py.
@@ -286,8 +358,10 @@ def context(wt, unit, fn):
 DATA_PROMPT = """The function `{fn}` in unit `{unit}` (source `src/{unit}`) is at {pct:.2f} %. Its instructions
 are probably right; what usually remains is data or symbol naming: float/double literals in the
 .sdata2/.rodata order the original uses, a load of a symbol whose name differs ("reloc-name": target
-vs ours), a field's type, a const qualifier on a called method, a static that belongs in this file's
-data, or a missing extern. try.py's analysis:
+vs ours), a field's type, a const qualifier on a called method, or a missing declaration in a
+shared header. Literals stay literals (`1.0f`, `"enemy_gc_sob.bin"`, `'NULL'`): never declare or
+extern an lbl_ name for a float or string of this unit. If what remains is `@NNN vs lbl_` on
+literals, that is a data split for the main project, not code: stop and say so. try.py's analysis:
 
 ```
 {tryout}
@@ -549,6 +623,10 @@ Rules (a script checks them and throws away ALL your work if one is broken):
   in other src files change nothing but those uses.
 - A placeholder function that takes a class pointer as its first argument is a member function
   of that class: declare it in the class and write it as a member, not as extern "C".
+- Literals stay literals: write `1.0f` and `"text"`, never an lbl_ name or one-element array
+  for a float or string; four-character tags as `'NULL'`, not hex. `@NNN vs lbl_` on literals is a
+  data split for the main project, not code: leave it. Declare another unit's function in the
+  shared header of its owning area (GameGlobals.h if none fits), never in a .cpp or an act header.
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
   types, as the original programmers would. Functions already at 100 % must stay at 100 %.
 - Do not run git, ninja or any build other than tools/try.py.
