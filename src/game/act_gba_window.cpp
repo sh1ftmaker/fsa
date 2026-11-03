@@ -3,14 +3,7 @@
 
 GBAWindowControl_804AA440::~GBAWindowControl_804AA440() {}
 
-void GBAWindowControl_804AA440::init() {
-    field_0x234 = (field_0x90 >> 22) & 0x1F;
-    field_0x238 = field_0x90 & 0xFFF;
-    fn_802D6A9C()->fn_802D7870(field_0x234);
-    field_0x230 = 0;
-    field_0x23c = 0;
-    update();
-}
+void GBAWindowControl_804AA440::draw() {}
 
 void GBAWindowControl_804AA440::update() {
     switch (field_0x230) {
@@ -31,4 +24,11 @@ void GBAWindowControl_804AA440::update() {
     }
 }
 
-void GBAWindowControl_804AA440::draw() {}
+void GBAWindowControl_804AA440::init() {
+    field_0x234 = (field_0x90 >> 22) & 0x1F;
+    field_0x238 = field_0x90 & 0xFFF;
+    fn_802D6A9C()->fn_802D7870(field_0x234);
+    field_0x230 = 0;
+    field_0x23c = 0;
+    update();
+}

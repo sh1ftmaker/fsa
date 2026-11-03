@@ -1420,7 +1420,7 @@ config.libs = [
         Object(NonMatching, "game/act_stop_npc.cpp"),
         Object(NonMatching, "game/tu_802ED538.cpp"),
         Object(NonMatching, "game/act_chain_switch.cpp"),
-        Object(NonMatching, "game/act_gba_window.cpp"),
+        Object(Matching, "game/act_gba_window.cpp"),
         Object(NonMatching, "game/act_ending_map_skipper.cpp"),
         Object(NonMatching, "game/tu_802EF76C.cpp"),
         Object(NonMatching, "game/act_player_sword_level_check_npc.cpp"),
