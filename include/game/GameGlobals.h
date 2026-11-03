@@ -251,7 +251,7 @@ extern "C" {
 s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
 // Steps *angle towards target by at most step (a tail-call wrapper of
 // fn_801CD970; the 0/1 it passes on is unused by all 9 callers).
-void fn_801CD930(s16* angle, s16 target, s16 step);
+void fn_801CD930(s16* angle, s32 target, s32 step);
 }
 
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
@@ -450,6 +450,9 @@ void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeome
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
+// The next one (64.0f, 8053EDF4), same owner; act_shadow_link_2's
+// game/tu_801C6A4C.cpp loads it and squares it at run time.
+extern const f32 lbl_8053EDF4;
 
 // Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
 // 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
