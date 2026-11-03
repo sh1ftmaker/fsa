@@ -96,9 +96,11 @@ regenerated with every merge; see [How it works](#how-it-works).
 
 <!-- now:start -->
 - **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 46.8 % of the split files Matching.
+- **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Most link fixes are merged; left are J3DAnimation's weak-dtor order, JGadget binary.cpp, MSL ansi_fp/strtoul and a clean-room qsort.c. Currently 95.3 % of the split files Matching.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
-- **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
-- **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. Currently 0 % of the code matched.
+- **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 0 % of the code matched.
+- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. The first 12 actors are merged on the shared headers (every function matches). Currently 0.10 % of the code matched.
+- **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. The library is identified (sms's version, 28/28 functions with the game flags); it matches when the game unit that includes it (0x80427D2C) is decompiled. Currently 0 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
