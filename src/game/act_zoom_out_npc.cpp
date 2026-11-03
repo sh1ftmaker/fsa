@@ -3,11 +3,7 @@
 
 cls_804AA228::~cls_804AA228() {}
 
-void cls_804AA228::init() {
-    mDuration = field_0x90 & 0xFFF;
-    mTimer = 0;
-    mState = 0;
-}
+void cls_804AA228::draw() {}
 
 // Takes the scripted-camera slot (Camera_804AA9E4::field_0x7f4/0x7f5) when it is free.
 static inline bool takeCamera(Camera_804AA9E4* cam) {
@@ -41,4 +37,8 @@ void cls_804AA228::update() {
     }
 }
 
-void cls_804AA228::draw() {}
+void cls_804AA228::init() {
+    mDuration = field_0x90 & 0xFFF;
+    mTimer = 0;
+    mState = 0;
+}
