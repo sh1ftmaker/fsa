@@ -150,7 +150,6 @@ act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
 act_princess_zelda_motion_spawner	dtor	__dt__41PrincessZeldaMotionObjectSpawner_804A375CFv	PrincessZeldaMotionObjectSpawner_804A375C	0x804A375C	new	new
 act_princess_zelda_motion_spawner	sinit	__sinit_act_princess_zelda_motion_spawner_cpp	-	-	new	new
-act_quicksand	sinit	__sinit_act_quicksand_cpp	-	-	new	-
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
 act_rank_display	sinit	__sinit_act_rank_display_cpp	-	-	new	-
 act_recovery_heart	dtor	__dt__22RecoveryHeart_8049F4F0Fv	RecoveryHeart_8049F4F0	0x8049F4F0	new	new
@@ -226,9 +225,6 @@ act_zora_lotus	sinit	__sinit_act_zora_lotus_cpp	-	-	new	-
 tu_800F46C0	dtor	__dt__12cls_8049C4C0Fv	cls_8049C4C0	0x8049C4C0	new	new
 tu_800F46C0	dtor	__dt__23BoulderSpawner_8049C46CFv	BoulderSpawner_8049C46C	0x8049C46C	new	new
 tu_800F46C0	sinit	__sinit_tu_800F46C0_cpp	-	-	new	new
-tu_800F7FCC	dtor	__dt__12cls_8049C678Fv	cls_8049C678	0x8049C678	new	new
-tu_800F7FCC	dtor	__dt__12cls_8049C718Fv	cls_8049C718	0x8049C718	new	new
-tu_800F7FCC	sinit	__sinit_tu_800F7FCC_cpp	-	-	new	new
 tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
 tu_8010089C	dtor	__dt__12cls_8049C8ECFv	cls_8049C8EC	0x8049C8EC	new	new
