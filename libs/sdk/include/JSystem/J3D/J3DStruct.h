@@ -18,8 +18,10 @@ struct J3DTextureSRTInfo {
 			// clang-format on
 		};
 
-		// Unclear why there's a 4 byte copy here (tp's comment; FSA has the same lwz/stw).
-		*(u32*)&mRotation = *(u32*)&other.mRotation;
+		// FIXME: FSA copies mRotation and the 2 padding bytes after it as one word
+		// (lwz/stw at 0x18), as tp's *(u32*)&mRotation does; that pointer-cast word
+		// copy is banned here (docs/COORDINATOR.md), and the s16 copy gives lha/sth.
+		mRotation = other.mRotation;
 		src               = &other.mTranslationX;
 		dst               = &mTranslationX;
 
