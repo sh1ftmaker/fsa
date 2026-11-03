@@ -1425,7 +1425,7 @@ config.libs = [
         Object(NonMatching, "game/tu_802EF76C.cpp"),
         Object(NonMatching, "game/act_player_sword_level_check_npc.cpp"),
         Object(NonMatching, "game/act_trick_floor_2.cpp"),
-        Object(NonMatching, "game/tu_802F3B74.cpp"),
+        Object(Matching, "game/tu_802F3B74.cpp"),
         Object(NonMatching, "game/act_pot_2_generator.cpp"),
         Object(NonMatching, "game/act_pot_2.cpp"),
         Object(Matching, "game/act_stage_info_npc.cpp"),
