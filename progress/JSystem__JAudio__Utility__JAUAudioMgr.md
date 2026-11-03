@@ -1,5 +1,19 @@
 # JSystem/JAudio/Utility/JAUAudioMgr.cpp
 
+## Wave 13 (2026-11-03)
+Before 4/5; after 5/5, code 100 %, .sdata2 93.75 %. Still NonMatching.
+- cls_804B21EC -> JAUAudible<4> (symbols.txt memPool_/guard/JASMemPool dtor) together
+  with include/game/GameAudioBase.h (JAUAudience.h + FIXME_instantiateAudiblePool stand-in).
+  Full honest report vs matching: only this unit changes (+1 function); every game unit
+  identical; ninja SHA-1 OK; gate ok.
+- Blocker for the flip: `link_check --unit` fails (with -sym off and on). The .data
+  vtable order differs: FSA has __vt__23JAUAudience_withSetting (0x80495450),
+  __vt__12JAUSoundInfo (0x80495470), __vt__31JAUAudience_withSetting_doppler (0x80495480);
+  ours emits the doppler vtable before JAUSoundInfo's, so after dead-stripping they swap
+  (the honest report matches .data by name, so it shows 100 %). The order comes from
+  the fabricated JAUAudioMgr class (mkdd: bases JAUSoundMgr, JAUSoundInfo; member
+  JAUAudience_<..., doppler>); FSA's real class is dead-stripped. Not guessed at.
+
 ## Wave 10 (2026-11-02)
 Baseline (progress.py): total 4784 / 11561 functions, 863464 / 4442088 bytes (19.44 %).
 After: unchanged (no commit-worthy change found). Since the `-sym on` merge the unit

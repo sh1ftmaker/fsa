@@ -17,7 +17,7 @@
 
 // FIXME: stand-in. Do not call it, and do not copy it into a .cpp.
 // Something in FSA's real game sound header makes JAUDopplerAudible<4> a
-// complete type after cls_804B21EC, so every one of these units
+// complete type after JAUAudible<4>, so every one of these units
 // instantiates its pool (memPool_ at 0x804B21DC). Only that instantiation
 // matters: the function is never called and emits nothing.
 // The likely source is the game's audience class, built in
