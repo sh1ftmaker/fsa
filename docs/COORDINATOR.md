@@ -295,37 +295,55 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   manifest) until its `--unit` is re-run. Each trial keeps its map, about
   5.4 MB (~2.8 GB if all ~523 pool units had one); delete
   `build/G4SE01/weakdedup_evidence/` entries no longer needed.
-- Dead-stripped units (tu_802BA334 type): the unit's own functions were
-  all dead-stripped in the original, so only its `__sinit` (the 9 pools),
-  its `.ctors` entry and its `.bss` remain. dtk's split survives the link
-  only because the ldscript's FORCEACTIVE names its symbols (`fn_802BA334`,
-  `lbl_804D27D4`; dtk lists every global of the original). Our compiled
-  object defines nothing global anyone references (`__sinit_*` is local,
-  the pools are weak duplicates), so MWLD drops the whole object, `.ctors`
-  entry included: the DOL shrinks and the SHA-1 fails, and the map lists
-  none of its sections, so neither the flip nor the extab proof can happen.
-  Tested 2026-11 (infra/weakdedup): naming the local `__sinit` in
-  FORCEACTIVE changes nothing; `FORCEFILES { tu_802BA334.o }` keeps the
-  object (its `__sinit` and `.ctors` are in the closure) but the link then
-  fails with multiply-defined `memPool_`/`__init__memPool_`: dtk's
-  `auto_*` split objects define those as globals where the original had
-  weak copies. Proposal, in order:
-  1. Keep such units NonMatching; they still count their code (100 % of the
-     `__sinit`) in the honest report. Don't mark them Matching or
-     Equivalent to get them linked.
-  2. Coordinator experiment: mark the pool symbols (`memPool___*`,
-     `__init__memPool___*`, the `JASMemPool` destructors) `scope:weak` in
-     symbols.txt so dtk's split defines them weak like the original, then
-     retry FORCEFILES for one dead-stripped unit with `link_check.py
-     --unit` (a link setting: configure.py/ldscript change, gate-reviewed).
-     If the SHA-1 matches, FORCEFILES for exactly the units whose split has
-     no referenced global is a faithful model of the original (the
-     original object was kept by some root we can't see), and the map then
-     proves the extab removal as for any other unit.
-  3. If that fails, list them as "verified unlinkable" (a reviewed file,
-     like provenance_reviewed.txt): 100 % code, objdiff data short only by
-     the weak-duplicate entries and copies, and a trial link with dtk's
-     split still SHA-1 OK. They stay out of the Matching count.
+- Dead-stripped units (tu_802BA334, tu_800F39EC, tu_80457C08): the unit's
+  own functions were all dead-stripped in the original, so only its
+  `__sinit` (9 pools, 8 for tu_80457C08), its `.ctors` entry and its `.bss`
+  remain. Verified unlinkable from source (wave 6, 2026-11), details below.
+  - Why the trial link differs: MWLD drops the compiled object entirely. In
+    `link_check.py --unit` the map names the object only in `UNREFERENCED
+    DUPLICATE` lines for its weak pools and dtors, never in a section
+    layout, and the memory map shrinks by exactly the unit's splits
+    (tu_802BA334: extab -0x8, extabindex -0xC, .text -0x224, .ctors -0x4,
+    .bss -0x100; tu_800F39EC identical; tu_80457C08 .text -0x1EC, .bss
+    -0xE0), shifting everything after it. The compiled object defines only
+    locals (`__sinit_*`, `@NNN`) and weak duplicates, so no symbol of it is
+    reachable and MWLD ignores the object, `.ctors` included.
+  - Why dtk's split survives: not the ldscript's FORCEACTIVE (it does not
+    name `lbl_804D27D4` or the split's other symbols), but dtk's `.comment`
+    section, which marks every symbol of a split object force-active
+    (active flags 0x08 in each symbol's 8-byte entry; MWCC writes 0). The
+    map lists those symbols as level-1 roots.
+  - Reachability is a pure graph walk: a scratch object with an extra
+    unreferenced global function, or global initialized data, is still
+    dropped whole; a reference from code that is itself dead-stripped
+    (a FORCEACTIVE'd test object whose second function calls ours: that
+    function is `UNUSED`) does not pull the object in either. All GC
+    linkers 1.0 to 2.6 give the same base SHA-1 and the same trial SHA-1;
+    2.7 already breaks the base link. No MWCC version 2.0 to 2.7 marks
+    `__sinit` active in `.comment`.
+  - FORCEFILES can't model it: `FORCEFILES { tu_802BA334.o }` fails with
+    multiply-defined `memPool_` (previously defined in tu_80021840.o,
+    JASTrack.o, JASChannel.o). It still fails after weakening the
+    competing definitions in scratch copies of the split objects (objcopy
+    `--weaken-symbol` on all memPool_/__init__memPool_/JASMemPool dtors in
+    tu_80021840.o and auto_10_8053A280_sbss.o, plus clearing their
+    `.comment` force-active flag): weak against weak is an error under
+    FORCEFILES. FORCEFILES on the already-Matching, SHA-1-linked
+    tu_80214244.o fails the same way, so it is FORCEFILES semantics in MWLD
+    1.3.2, not dtk's globals; marking the pools `scope:weak` in symbols.txt
+    would not help. FORCEACTIVE needs a global; the object's only globals
+    are weak duplicates whose name resolves to tu_80021840's copy.
+  - So the original object was kept by something the DOL no longer shows
+    (most likely its own dead-stripped code reached some way our link
+    can't reproduce, or a different link setup). No honest config.yml,
+    ldscript or dtk option reproduces it.
+  Decision: keep these units NonMatching. They count their code (100 % of
+  the `__sinit`) and `.bss` in the honest report; extab/extabindex stay
+  short by the weak-duplicate entries, which can't be proven removed
+  without a link that includes the object. Don't mark them Matching or
+  Equivalent, and don't add FORCEFILES/FORCEACTIVE for them. If more units
+  of this type turn up, list them here (check: trial link fails and the
+  trial map has no section-layout line for the object).
 - `Matching` must mean 100 % code and data. 77 units were once marked
   Matching while partly matched; `gate.py` now fails any such unit.
 - A unit marked complete can make tiny functions count as matched (10
