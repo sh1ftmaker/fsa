@@ -50,7 +50,6 @@ act_enemy_for_ending_control	dtor	__dt__30EnemyForEndingControl_804AD48CFv	Enemy
 act_escort_woman	sinit	__sinit_act_escort_woman_cpp	-	-	new	-
 act_extending_lift	dtor	__dt__22ExtendingLift_804A78B0Fv	ExtendingLift_804A78B0	0x804A78B0	new	new
 act_extending_lift	sinit	__sinit_act_extending_lift_cpp	-	-	new	new
-act_eyeball_switch	sinit	__sinit_act_eyeball_switch_cpp	-	-	new	-
 act_eyegore	dtor	__dt__16Eyegore_804A3548Fv	Eyegore_804A3548	0x804A3548	new	new
 act_eyegore	sinit	__sinit_act_eyegore_cpp	-	-	new	new
 act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
