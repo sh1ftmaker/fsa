@@ -318,23 +318,23 @@ JSystem/JAudio/System/JASTrackPort.cpp:
 	.text       start:0x80039964 end:0x80039A84
 
 JSystem/JAudio/Task/dspproc.c:
-	.text       start:0x80039B80 end:0x80039D08
+	.text       start:0x80039B80 end:0x80039D08 align:32
 	.sdata      start:0x80539BE0 end:0x80539BE8
 	.sbss       start:0x8053A3A0 end:0x8053A3A8
 	.sdata2     start:0x8053B290 end:0x8053B298
 
 JSystem/JAudio/Task/dsptask.c:
-	.text       start:0x80039D20 end:0x8003A028
+	.text       start:0x80039D20 end:0x8003A028 align:32
 	.data       start:0x804936A0 end:0x804953C0
 	.bss        start:0x804B29A0 end:0x804B4A80
 	.sbss       start:0x8053A3A8 end:0x8053A3B0
 
 JSystem/JAudio/Task/osdsp.c:
-	.text       start:0x8003A040 end:0x8003A11C
+	.text       start:0x8003A040 end:0x8003A11C align:32
 	.rodata     start:0x8045D3B0 end:0x8045D3D0
 
 JSystem/JAudio/Task/osdsp_task.c:
-	.text       start:0x8003A120 end:0x8003A50C
+	.text       start:0x8003A120 end:0x8003A50C align:32
 	.bss        start:0x804B4A80 end:0x804B4A90
 	.sbss       start:0x8053A3B0 end:0x8053A3C0
 

@@ -27,3 +27,17 @@ originals, so they don't reach the DOL (trial link SHA-1 OK).
 
 ## Resistant
 None.
+
+## .text alignment of the four Task C units (w15-jsgap)
+Status: all four units stay Matching; only their splits changed.
+
+- dtk's four `pad_03_*_text` pieces (0x80039B7C 4 B, 0x80039D08 24 B,
+  0x8003A028 24 B, 0x8003A11C 4 B) were zero fill, not functions: the four
+  Task C files are built with `-func_align 32`, so their `.text` is
+  32-aligned and the linker pads before each one. `align:32` on each unit's
+  `.text` in splits.txt tells dtk so; the pieces disappear from the split
+  (and from the report's function total, 11,561 -> 11,557). `ninja` SHA-1 OK.
+- tools/site_data.py skips any `pad_` piece left in an auto split, so the
+  site and progress.py never count padding as a function.
+
+SHARED-EDITS: tools/site_data.py (sanctioned for this task).
