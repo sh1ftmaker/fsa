@@ -447,6 +447,12 @@ def worker(args):
     sh(["git", "reset", "-q", "--hard", "grind"], wt, check=True)
     sh("timeout 3600 ninja build/G4SE01/report_honest.json", wt)
     while not (LOGS / "STOP").exists():
+        # Workers the watchdog restarts aren't tied to the session: guard the weekly quota here too.
+        u = usage()
+        if u is not None and u >= args.soft_usage:
+            (LOGS / "STOP").touch()
+            notify("FSA grind stopping", f"{owner}: weekly usage {u:.0%}")
+            return
         pool = file_candidates(args.file_max) if args.mode == "file" else candidates(args.max_size)
         unit = next((u for u in pool if claim(u, owner, wt)), None)
         if unit is None:
@@ -531,6 +537,9 @@ def escalate(running):
             continue
         limits[n] = [mode, nxt[0]]
         path.write_text(json.dumps(limits, indent=1))
+        # Units done at a smaller limit may now have eligible functions; rejected ones stay skipped.
+        claims = json.loads((MAIN / "progress/claims.json").read_text() or "{}")
+        (LOGS / "units_done.txt").write_text("".join(u + "\n" for u in claims))
         flag = ["--max-size", str(nxt[0]), "--per-unit", "10"] if mode == "function" else ["--mode", "file", "--file-max", str(nxt[0])]
         subprocess.run(["sbg", "start", f"grind-w{n}", "--", "python3", "tools/grind.py", "worker", n] + flag,
                        cwd=INTEG, capture_output=True)
@@ -579,6 +588,7 @@ def main():
     w = sp.add_parser("worker"); w.add_argument("n", type=int)
     w.add_argument("--max-size", type=int, default=256); w.add_argument("--per-unit", type=int, default=6)
     w.add_argument("--mode", choices=["function", "file"], default="function")
+    w.add_argument("--soft-usage", type=float, default=0.94)
     w.add_argument("--file-max", type=int, default=1536, help="file mode: max unwritten bytes per unit")
     w.set_defaults(f=worker)
     sp.add_parser("status").set_defaults(f=status)
