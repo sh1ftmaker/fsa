@@ -111,7 +111,7 @@ struct SpriteParams_801F5AE0 {
     // draw points it at a stack Mtx when its spawn parameter is nonzero.
     /* 0x18 */ MtxP mMtx;
     /* 0x1C */ s8 field_0x1c; // fn_8023CA88 (s8) in act_sign; -1 in act_blindfold (stb of a shared -1)
-    /* 0x1D */ u8 field_0x1d;
+    /* 0x1D */ s8 field_0x1d; // -1 in tu_80333958 draw (stb of a shared -1, as 0x1C)
     /* 0x1E */ u8 field_0x1e;
     /* 0x1F */ u8 field_0x1f;
     /* 0x20 */ u8 field_0x20;
