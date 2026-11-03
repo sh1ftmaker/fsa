@@ -54,8 +54,6 @@ act_door	sinit	__sinit_act_door_cpp	-	-	new	new
 act_dropped_item	dtor	__dt__20DroppedItem_804A8C80Fv	DroppedItem_804A8C80	0x804A8C80	new	new
 act_dropped_item	sinit	__sinit_act_dropped_item_cpp	-	-	new	new
 act_enemy_for_ending_control	dtor	__dt__30EnemyForEndingControl_804AD48CFv	EnemyForEndingControl_804AD48C	0x804AD48C	new	new
-act_enemy_spawn_area	dtor	__dt__23EnemySpawnArea_804A2CB0Fv	EnemySpawnArea_804A2CB0	0x804A2CB0	new	new
-act_enemy_spawn_area	sinit	__sinit_act_enemy_spawn_area_cpp	-	-	new	new
 act_environment_control_2	sinit	__sinit_act_environment_control_2_cpp	-	-	new	-
 act_escort_woman	sinit	__sinit_act_escort_woman_cpp	-	-	new	-
 act_extending_lift	dtor	__dt__22ExtendingLift_804A78B0Fv	ExtendingLift_804A78B0	0x804A78B0	new	new
