@@ -754,6 +754,9 @@ extern "C" void fn_80236554(s32 player, s32 arg, s32 flag);
 // Owner not written yet. Called by act_recovery_heart's update() when fn_8023B8E4 finds no
 // player on the box; the result is unused.
 extern "C" void fn_8023B768(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos);
+// Not written yet (0x8022E088, its own unit): the point of player `player`'s
+// sample `index` (x, y, z) that act_cloud's fn_801053E8 tests against a box.
+extern "C" void fn_8022E088(s32 player, s32 index, JGeometry::TVec3f* out);
 void fn_80237524(s32 player, s32 arg);
 
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
