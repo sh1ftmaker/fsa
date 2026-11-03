@@ -1361,7 +1361,7 @@ config.libs = [
         Object(NonMatching, "game/tu_802B3674.cpp"),
         Object(NonMatching, "game/act_stone_disguised_npc.cpp"),
         Object(NonMatching, "game/act_liftable_wood.cpp"),
-        Object(NonMatching, "game/act_switch_or.cpp"),
+        Object(Matching, "game/act_switch_or.cpp"),
         Object(NonMatching, "game/tu_802B7C78.cpp"),
         Object(NonMatching, "game/act_hammer_bulge.cpp"),
         Object(NonMatching, "game/act_thwomp_switch.cpp"),
