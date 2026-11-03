@@ -70,8 +70,13 @@ It prints one line per unit and `check: ok` or the problems; exit 1 on any.
 
 Lifecycle: when a later worker hand-edits a generated member (fills in the
 class's fields, rewrites the destructor, or edits anything else in a file
-the generator owns), that worker's commit removes the unit's rows from
-config/G4SE01/gen_game.tsv, and the member then gets normal review.
+the generator wrote), that worker's commit deletes all of the unit's rows
+from config/G4SE01/gen_game.tsv, and the member then gets normal review.
+The file is protected: tools/gate.py accepts a change to it only when it
+deletes whole rows and adds, edits or reorders nothing (deleting only some
+of a unit's rows fails --check, since the files are checked against the
+remaining rows). New rows come only from a generator batch merged by the
+coordinator.
 """
 
 import json
@@ -1201,7 +1206,19 @@ def plan_from_rows(u, rs):
 
 
 def check(units):
-    rows = [r.split("\t") for r in MANIFEST.read_text().splitlines()[1:] if r.strip()]
+    if not MANIFEST.exists():
+        print("check: ok (no config/G4SE01/gen_game.tsv)")
+        return True
+    lines = MANIFEST.read_text().splitlines()
+    if not lines or lines[0] != MANIFEST_HEAD:
+        print(f"malformed manifest header: {lines[:1]}")
+        return False
+    known = set(game_units())
+    rows = [r.split("\t") for r in lines[1:] if r.strip()]
+    for r in rows:
+        if r[0] not in known:
+            print(f"malformed manifest row (not a game unit): {r}")
+            return False
     if units:
         rows = [r for r in rows if r[0] in units]
     by_unit = {}

@@ -66,9 +66,13 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
   and skipped variants; `--check` is the scripted per-member check for
   review and the gate, over config/G4SE01/gen_game.tsv. Lifecycle: when a
   later worker hand-edits a generated member, or anything else in a file
-  the generator wrote, that worker's commit removes the unit's rows from
-  gen_game.tsv, and the member then gets normal review. Generate in batches
-  and commit each batch separately; never as one mass symbols.txt edit.
+  the generator wrote, that worker's commit deletes all of the unit's rows
+  from gen_game.tsv, and the member then gets normal review. Both files are
+  protected; the gate accepts a gen_game.tsv change only when it deletes
+  whole rows (nothing added, edited or reordered), so new rows come only
+  from generator batches, which the coordinator runs and merges. Tell G4
+  workers on a generated unit this in `--notes`. Generate in batches and
+  commit each batch separately; never as one mass symbols.txt edit.
 
 ## Harvesting names from the link (`tools/harvest_names.py`)
 
