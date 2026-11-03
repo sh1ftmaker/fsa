@@ -22,6 +22,12 @@ Checks (see docs/PLAN.md, "Submission gate"):
     100 % in code and data in the honest report
     (build/G4SE01/report_honest.json, every unit diffed, no symbol_mappings);
   * objdiff.json has no symbol_mappings (objdiff's report honors them);
+  * build/G4SE01/weakdedup_manifest.json: every extab entry the honest report
+    left out belongs to a WEAK FUNC, and its map evidence (UNREFERENCED
+    DUPLICATE in this object, extab and extabindex labels UNUSED) is in the
+    map of a current link that includes this exact object and whose DOL
+    matches build.sha1; every stripped object differs from the compiled one
+    only by those entries, and no other unit is diffed against a copy;
   * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
     if not, tools/link_check.py names the Matching units at fault.
 
@@ -32,7 +38,9 @@ Exit status 0 when everything passes.
 """
 
 import argparse
+import hashlib
 import json
+import struct
 import re
 import subprocess
 import sys
@@ -340,6 +348,190 @@ def check_report(problems):
         elif code[0] != code[1] or data[0] != data[1]:
             problems.append(
                 f"{meta.get('source_path', unit['name'])}: marked Matching but code {code[0]}/{code[1]}, data {data[0]}/{data[1]}")
+    check_weakdedup(problems)
+
+
+class Elf:
+    """Sections, symbols and relocations of a big-endian ELF32 object."""
+
+    def __init__(self, path):
+        d = self.d = Path(path).read_bytes()
+        if d[:4] != b"\x7fELF" or d[4] != 1 or d[5] != 2:
+            raise ValueError(f"{path}: not a big-endian ELF32 object")
+        shoff, = struct.unpack_from(">I", d, 0x20)
+        shentsize, shnum, shstrndx = struct.unpack_from(">HHH", d, 0x2E)
+        self.sh = [struct.unpack_from(">IIIIIIIIII", d, shoff + i * shentsize) for i in range(shnum)]
+        self.names = [self.cstr(self.sh[shstrndx][4] + h[0]) for h in self.sh]
+        symtab = next(i for i, h in enumerate(self.sh) if h[1] == 2)
+        strtab = self.sh[self.sh[symtab][6]][4]
+        self.syms = []
+        for k in range(self.sh[symtab][5] // 16):
+            nm, val, size, info, _, shndx = struct.unpack_from(">IIIBBH", d, self.sh[symtab][4] + k * 16)
+            self.syms.append((self.cstr(strtab + nm), val, size, info >> 4, info & 15, shndx))
+
+    def cstr(self, o):
+        return self.d[o:self.d.index(0, o)].decode("latin-1")
+
+    def data(self, i):
+        h = self.sh[i]
+        return self.d[h[4]:h[4] + h[5]] if h[1] != 8 else h[5]  # NOBITS: its size
+
+    def relocs(self, sec):
+        out = []
+        for h in self.sh:
+            if h[1] == 4 and h[7] == sec:
+                for k in range(h[5] // 12):
+                    off, info, add = struct.unpack_from(">IIi", self.d, h[4] + k * 12)
+                    out.append((off, info >> 8, add))
+        return out
+
+
+def _sha1(path):
+    return hashlib.sha1(Path(path).read_bytes()).hexdigest()
+
+
+def _map_lines(path, cache={}):
+    if path not in cache:
+        cache[path] = Path(path).read_text(encoding="latin-1").splitlines()
+    return cache[path]
+
+
+def _map_section(lines, n):
+    """The `<section> section layout` a (1-based) map line belongs to."""
+    for i in range(n - 1, -1, -1):
+        m = re.match(r"^(\S+) section layout\s*$", lines[i])
+        if m:
+            return m[1]
+    return None
+
+
+def _main_link_inputs():
+    text = Path("build.ninja").read_text().replace("$\n", "")
+    m = re.search(r"^build build/G4SE01/fsa_game_code\.elf(?: \|[^:]*)?:\s+link\s+(.*?)(?:\||$)", text, re.M)
+    return m.group(1).split() if m else []
+
+
+def check_weakdedup(problems):
+    """Re-verify every extab entry the honest report left out (tools/honest_report.py)."""
+    path = Path("build/G4SE01/weakdedup_manifest.json")
+    if not path.is_file():
+        problems.append(f"{path} missing: the honest report didn't run tools/honest_report.py's weak-duplicate check")
+        return
+    man = json.loads(path.read_text())
+    expected = Path("config/G4SE01/build.sha1").read_text().split()[0]
+    entries = man.get("entries", [])
+    links, bad_links = {}, {}
+    for key, rec in man.get("links", {}).items():
+        why = None
+        if not Path(rec["map"]).is_file() or _sha1(rec["map"]) != rec["map_sha1"]:
+            why = f"map {rec['map']} missing or changed since the report"
+        elif not Path(rec["dol"]).is_file() or not (_sha1(rec["dol"]) == rec["dol_sha1"] == expected):
+            why = f"DOL {rec['dol']} missing, changed, or not matching build.sha1"
+        if key == "main":
+            inputs, objects = _main_link_inputs(), None
+            if not why and (rec["map"] != "build/G4SE01/fsa_game_code.elf.MAP"
+                            or Path("build/G4SE01/fsa_game_code.elf").stat().st_mtime > Path(rec["map"]).stat().st_mtime + 1):
+                why = "main link map is not the current link's"
+        else:
+            ev = json.loads(Path(key).read_text()) if Path(key).is_file() else {}
+            inputs, objects = ev.get("inputs", []), ev.get("objects", {})
+            if not why and (ev.get("map") != rec["map"] or ev.get("dol") != rec["dol"]):
+                why = f"trial evidence {key} missing or doesn't name this map"
+        if not why and hashlib.sha1("\n".join(inputs).encode()).hexdigest() != rec.get("inputs_sha1"):
+            why = "link inputs changed since the report"
+        if why:
+            bad_links[key] = why
+        links[key] = (rec, inputs, objects)
+    by_stripped = {}
+    for e in entries:
+        tag = f"weakdedup {e.get('unit')}: {e.get('function')}"
+        key = e.get("link")
+        if key not in links:
+            problems.append(f"{tag}: no link record {key}")
+            continue
+        if key in bad_links:
+            problems.append(f"{tag}: stale or unproven link: {bad_links[key]}")
+            continue
+        rec, inputs, objects = links[key]
+        obj = e["object"]
+        name = Path(obj).name
+        if not Path(obj).is_file() or _sha1(obj) != e["object_sha1"]:
+            problems.append(f"{tag}: {obj} changed since the report")
+            continue
+        if obj not in inputs or sum(Path(i).name == name for i in inputs) != 1:
+            problems.append(f"{tag}: {obj} is not a uniquely named input of the link")
+            continue
+        if objects is None and Path(obj).stat().st_mtime > Path(rec["map"]).stat().st_mtime + 1:
+            problems.append(f"{tag}: {obj} is newer than the link map")
+            continue
+        if objects is not None and objects.get(obj) != e["object_sha1"]:
+            problems.append(f"{tag}: {obj} isn't the object the trial link included")
+            continue
+        # The object: the extabindex entry points at a WEAK FUNC and at the extab label.
+        elf = Elf(obj)
+        syms = {s[0]: s for s in elf.syms}
+        fn = syms.get(e["function"])
+        if not fn or fn[3] != 2 or fn[4] != 2:
+            problems.append(f"{tag}: not a WEAK FUNC in {obj}")
+            continue
+        eti, etb = syms.get(e["extabindex"]), syms.get(e["extab"])
+        if (not eti or not etb or elf.names[eti[5]] != "extabindex" or elf.names[etb[5]] != "extab"
+                or eti[2] != 12 or etb[2] != e["extab_size"]):
+            problems.append(f"{tag}: {e['extabindex']}/{e['extab']} aren't its extabindex/extab entries")
+            continue
+        rel = {off: elf.syms[s][0] for off, s, _ in elf.relocs(eti[5])}
+        if rel.get(eti[1]) != e["function"] or rel.get(eti[1] + 8) != e["extab"]:
+            problems.append(f"{tag}: {e['extabindex']} doesn't describe {e['function']} with {e['extab']}")
+            continue
+        # The map lines, read back from the map itself.
+        lines = _map_lines(rec["map"])
+        ev = e.get("evidence", [])
+        texts = [lines[x["line"] - 1] if 0 < x["line"] <= len(lines) else None for x in ev]
+        ok = len(ev) == 4 and all(t == x["text"] for t, x in zip(texts, ev))
+        if ok:
+            dup, found, u_eti, u_etb = ev
+            ok = (re.search(r">>> UNREFERENCED DUPLICATE (.+?)\s*$", dup["text"] or "") is not None
+                  and re.search(r">>> UNREFERENCED DUPLICATE (.+?)\s*$", dup["text"])[1] == e["function"]
+                  and re.search(r">>> \(func,weak\) found in (\S+)\s*$", found["text"]) is not None
+                  and re.search(r">>> \(func,weak\) found in (\S+)\s*$", found["text"])[1] == name
+                  and found["line"] > dup["line"]
+                  and all(">>> (" in lines[i] for i in range(dup["line"], found["line"] - 1))
+                  and re.match(rf"^\s+UNUSED\s+0+c \.+ {re.escape(e['extabindex'])} {re.escape(name)}\s*$", u_eti["text"])
+                  and _map_section(lines, u_eti["line"]) == "extabindex"
+                  and re.match(rf"^\s+UNUSED\s+[0-9a-f]+ \.+ {re.escape(e['extab'])} {re.escape(name)}\s*$", u_etb["text"])
+                  and _map_section(lines, u_etb["line"]) == "extab")
+        if not ok:
+            problems.append(f"{tag}: map evidence missing or doesn't match {rec['map']}")
+            continue
+        by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append(e)
+    # Every unit diffed against another object than its compiled one is in the
+    # manifest, and that copy lacks exactly the listed entries.
+    honest = Path("build/G4SE01/honest/objdiff.json")
+    if not honest.is_file():
+        problems.append(f"{honest} missing")
+        return
+    orig = {u["name"]: u.get("base_path") for u in json.loads(Path("objdiff.json").read_text())["units"]}
+    proven = {u: (o, s) for u, o, s in by_stripped}
+    root = Path.cwd()
+    for u in json.loads(honest.read_text())["units"]:
+        base, want = u.get("base_path"), orig.get(u["name"])
+        if not base or not want or Path(base) == root / want:
+            continue
+        if u["name"] not in proven or Path(base) != root / proven[u["name"]][1]:
+            problems.append(f"{u['name']}: the honest report diffs {base}, not its compiled object, without proven entries")
+            continue
+        obj, stripped = proven[u["name"]]
+        es = by_stripped[(u["name"], obj, stripped)]
+        a, b = Elf(obj), Elf(stripped)
+        less = {"extab": sum(e["extab_size"] for e in es), "extabindex": 12 * len(es)}
+        for i, n in enumerate(a.names):
+            if a.sh[i][1] in (2, 3, 4):  # symtab, strtab, rela: rewritten with the entries
+                continue
+            if n in less:
+                if b.sh[i][5] != a.sh[i][5] - less[n]:
+                    problems.append(f"{u['name']}: {stripped} {n} is not the compiled one less the listed entries")
+            elif a.data(i) != b.data(i):
+                problems.append(f"{u['name']}: {stripped} section {n} differs from the compiled object")
 
 
 def check_link(problems):

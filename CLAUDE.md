@@ -62,6 +62,32 @@ python3 tools/gate.py --all-units    # Matching units: 100 % honest, and main.do
 Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
+**Weak duplicates the link discarded** are the one thing the honest report
+leaves out of a compiled object. Every TU that instantiates a weak function
+(e.g. the 9 `JASMemPool<T>` destructors of the JAudio pools ~523 game units
+construct in `__sinit`) gets its own copy with an extab/extabindex entry; the
+linker keeps one copy and drops the others' entries, so the original
+object's split lacks them and objdiff could never reach 100 % data although
+the link is byte-identical (objdiff#14 / PR #349 are open upstream).
+`tools/honest_report.py` diffs a copy without such an entry only when the
+entry's function is a WEAK FUNC, and the map (`-map -mapunused`) of a link
+that includes this exact compiled object and whose DOL matches `build.sha1`
+lists the function as `UNREFERENCED DUPLICATE ... found in <this object>`
+and both its extab and extabindex labels as `UNUSED` for this object, whose
+file name must be unique among the link inputs. That link is ninja's own
+(`build/G4SE01/fsa_game_code.elf.MAP`, Matching units) or, for a NonMatching
+unit before its flip, a trial link: `python3 tools/link_check.py --unit
+<unit>` links the current Matching set with this unit's compiled object in
+place of dtk's split and records the map as evidence only if the DOL's
+SHA-1 matches. Each removal and its map lines go to
+`build/G4SE01/weakdedup_manifest.json` (with notes on what wasn't stripped
+and why); `gate.py` re-reads the map lines, the object's symbols and the
+link's DOL and fails any entry that isn't a proven, current weak duplicate,
+and any unit diffed against an object that differs from its compiled one in
+more than those entries. Nothing else is stripped: code, `.bss` (split weak
+`memPool_` copies yourself, see docs/COORDINATOR.md) and kept weak copies
+are diffed as compiled.
+
 <!-- status:start -->
 Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,501 of 11,561 functions, 808,092 of 4,442,088 bytes of code (18.19 %). Game code 80 / 6,789 functions (0.42 %); JSystem 3,368 / 3,702 functions (89.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 251 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->

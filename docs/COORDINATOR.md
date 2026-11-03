@@ -241,6 +241,28 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   (`IsTRKConnected` / `g_CurrentSequence`) in a Matching, SHA-1-linked unit.
   objdiff's lenient default and byte-pattern hits overstated progress
   several times over.
+- Weak-duplicate extab entries (2026-11): ~523 game units construct 9
+  JAudio pools in `__sinit`, so each compiled object carries 9 weak
+  `JASMemPool<T>` destructors with extab/extabindex entries the original
+  link dropped (and a 0x94 run of weak `memPool_` copies in `.bss`).
+  objdiff can't see the dedup (objdiff#14, PR #349 open; FFCC and bfbb
+  settle for ~99.7 %). `honest_report.py` diffs a copy without an entry
+  only on map evidence: WEAK FUNC; `UNREFERENCED DUPLICATE` found in this
+  object; both labels `UNUSED` for this object; a link that includes this
+  exact object (ninja's, or `link_check.py --unit`'s trial link, which
+  records the object's SHA-1) with a DOL matching build.sha1; unique object
+  file name among the link inputs. It's honest because it reproduces what
+  the original linker provably did with this object, from the linker's own
+  log, and nothing else (no code, no data bytes, no kept copy). `gate.py`
+  re-verifies every manifest entry (`build/G4SE01/weakdedup_manifest.json`)
+  against the map lines, the object's symbol table and the DOL hash, and
+  that each stripped copy differs from the compiled object only by those
+  entries. A map from a link without the object strips nothing (tested on
+  game/tu_80214244 with ninja's map, whose `tu_80214244.o` is dtk's split).
+  Before flipping such a unit, the worker runs
+  `python3 tools/link_check.py --unit game/<unit>.cpp`, then
+  `ninja build/G4SE01/report_honest.json`; after the flip ninja's own map
+  is the evidence and the trial is no longer needed.
 - `Matching` must mean 100 % code and data. 77 units were once marked
   Matching while partly matched; `gate.py` now fails any such unit.
 - A unit marked complete can make tiny functions count as matched (10
