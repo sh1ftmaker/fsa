@@ -589,6 +589,7 @@ config.libs = [
     ]),
     SdkLib("dsp", [
         Object(Matching, "dolphin/dsp/dsp.c"),
+        Object(Matching, "dolphin/dsp/dsp_debug.c"),
         Object(Matching, "dolphin/dsp/dsp_task.c"),
     ]),
     SdkLib("dvd", [

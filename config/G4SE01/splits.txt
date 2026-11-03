@@ -621,6 +621,9 @@ dolphin/dsp/dsp.c:
 	.sdata      start:0x80539CB0 end:0x80539CB8
 	.sbss       start:0x8053A680 end:0x8053A688
 
+dolphin/dsp/dsp_debug.c:
+	.text       start:0x80051E04 end:0x80051E54
+
 dolphin/dsp/dsp_task.c:
 	.text       start:0x80051E54 end:0x800522B4
 	.data       start:0x80496968 end:0x80496AA8
