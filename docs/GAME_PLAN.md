@@ -121,8 +121,20 @@ below, ~0.5–0.65B.
 ## Phases
 
 **G0 — groundwork (small).**
-- Rules card; trim prompts in docs/prompts.
-- `tools/try.py`.
+- Rules card; trim prompts in docs/prompts. **Done** (branch
+  `infra/g0-tooling`): `docs/RULES_CARD.md` (~2k tokens); `prompts/unit.md`
+  and `prompts/review.md` point at it instead of CLAUDE.md, PLAN.md and the
+  briefs; AGENT_BRIEF.md and REVIEW_BRIEF.md name it as the entry point.
+- `tools/try.py`. **Done** (same branch): compiles one unit's object (no
+  link, ~1.5 s; 0.1 s when unchanged), diffs it with objdiff-cli, prints
+  ≤20 lines with a class per function (regalloc-only, scheduling(+regalloc),
+  reloc-name, reloc-data, missing/extra, different, missing) and the first
+  differing rows; attempt log in `build/try/<unit>.json` (an attempt is a
+  change to that function's own code, `@NNN` labels ignored); STOP when the
+  function's item 8 budget is used without progress (3 tries ≤32
+  instructions, 6 up to 128, `--budget N` above, default 10), with "leave a
+  FIXME and carry on with the rest of the file". Permuter queueing of
+  regalloc-only functions is left to G2.
 - Rename `lbl_8049CC34` → `__vt__12J3DFrameCtrl`, `fn_80105DD4` →
   `__dt__12J3DFrameCtrlFv` (every store of that vtable is followed by
   `J3DFrameCtrl::init`, pikmin2's inline ctor; fixes relocations in 70 units).

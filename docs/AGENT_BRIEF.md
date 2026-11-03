@@ -3,7 +3,11 @@
 You own one translation unit (source file) of the Four Swords Adventures
 decompilation. Your job: make every function, its data and its relocations
 byte-identical to the original, with source a Nintendo programmer could have
-written. Read `CLAUDE.md` and `docs/PLAN.md` first.
+written.
+
+**Entry point: `docs/RULES_CARD.md`.** The card distils this brief, PLAN.md,
+CLAUDE.md and COORDINATOR.md into what a worker needs; agents read the card,
+not this file. This brief is the longer reference behind it.
 
 ## Your setup
 
@@ -13,6 +17,9 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
   `matching`, never push, never rebase or merge.
 - Build: `ninja build/G4SE01/report_honest.json` (compiles changed units and writes
   the report). Prefix long runs with `timeout`.
+- Each attempt: `python3 tools/try.py <unit> [<function>]` compiles only the
+  unit, diffs it and classifies what differs (regalloc-only, scheduling,
+  reloc-name, missing/extra) in ≤20 lines, and counts attempts.
 - Check: `python3 tools/fdiff.py <unit>` lists every function with its match;
   `python3 tools/fdiff.py <unit> <function>` shows the differing
   instructions (target | ours). 100 % there means matched in the report.
@@ -26,25 +33,31 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
    saved registers, calls, constants.
 3. Write natural C/C++ with real types. Look for the same function in other
    decomps first (read-only, in `../donors/`: doldecomp/mkdd, zeldaret/oot-gc,
-   projectPiki/pikmin2, zeldaret/tp, zeldaret/tww, doldecomp/dolsdk2001 and
-   dolsdk2004, ...). FSA's SDK is the 2003 build: OS/GX Jul 23 2003,
+   projectPiki/pikmin2, zeldaret/tp, zeldaret/tww, ...; only licensed donors,
+   see "Use the donor projects"). FSA's SDK is the 2003 build: OS/GX Jul 23 2003,
    PAD Aug 6 2003, DVD Sep 16 2003, the rest Apr 17 2003. Different SDK
    versions differ in real code; pick the one closest in date and adapt.
-4. Build, run `fdiff.py`, change one thing at a time. Keep what helps.
-5. Stop rule: two attempts in a row without progress, or about 10 minutes on
-   one function: write the differing instructions into your checkpoint and
-   move on. Come back at the end if time remains.
+4. Run `try.py`, change one thing at a time. Keep what helps.
+5. Stop rule: each function has a try budget (docs/GAME_PLAN.md item 8: 3
+   tries up to 32 instructions, 6 up to 128, the coordinator's `--budget`
+   above that). When `try.py` prints STOP, or after about 10 minutes on the
+   function without progress, leave a `// FIXME:` saying exactly what
+   differs, write the diff into your checkpoint and carry on with the rest
+   of the file.
 6. After each function, rewrite your checkpoint (matched / resistant with
    diff hunks / SHARED-EDITS / next targets).
 
 **Use the donor projects.** For any shared library (SDK, MSL, Runtime, TRK,
-JSystem), read every donor's version of the file before writing anything:
-mkdd, oot-gc, pikmin2, tp, tww, sms, melee, Petari, ttyd/lm's dolsdk2004,
-dolsdk2001, the Mario Party and Animal Crossing decomps (`../donors/`).
+JSystem), read every licensed donor's version of the file before writing anything:
+mkdd, oot-gc, pikmin2, pikmin, tp, tww, sms, bfbb, lm-decomp, ttyd (MIT:
+keep its notice), Petari (Wii, reference only), the Mario Party and Animal
+Crossing decomps (`../donors/`). Never copy from dolsdk2004, dolsdk2001,
+melee or kar (no license) or MetroidPrimePort (excluded by its NOTICE);
+`gate.py` only counts donors with a LICENSE file (gate.licensed_donors()).
 A donor function is a good starting point even if it doesn't match FSA's
 build: start from the closest one and adapt it. Functions missing from one
-donor's file are often present in another's (tp and dolsdk2004 have more of
-the SDK than mkdd).
+donor's file are often present in another's (tp has more of the SDK than
+mkdd).
 
 Lessons from the first wave:
 - Most misses in donor-imported files are not code at all: a reference to a

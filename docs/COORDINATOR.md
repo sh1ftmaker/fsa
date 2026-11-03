@@ -38,6 +38,28 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
 - Notes for `start`: tell the worker what's already known about the unit
   (which names other units found, which donor has the right SDK version).
 
+## Tools (G0)
+
+- `docs/RULES_CARD.md` is the only doc workers read (reviewers add
+  REVIEW_BRIEF.md; `docs/prompts/*.md` point at both). Keep it ~2k tokens: a new rule goes
+  in the card only in distilled form, with the long version here or in the
+  briefs. Don't add "read COORDINATOR.md/PLAN.md" to `--notes`; put the
+  unit-specific facts in the notes themselves.
+- `python3 tools/try.py <unit> [<function>]`: one attempt = compile only
+  that unit + objdiff + classification (regalloc-only, scheduling,
+  reloc-name, missing/extra, ...), ≤20 lines. Attempt log in
+  `build/try/<unit slug>.json` (best %, attempts, attempts since the last
+  gain); an attempt is a change to that function's own code (`@NNN`
+  labels ignored). STOP when the GAME_PLAN item 8 budget is used without
+  progress: 3 tries ≤32 instructions, 6 up to 128; for larger functions give
+  `--budget N` in the worker's notes (default 10). To reset a budget, delete
+  the log yourself (workers have no reset). Reviewers run the main
+  checkout's try.py inside the worktree. A worker's report should give each
+  resistant function's class; regalloc-only and scheduling ones are permuter
+  candidates (G2). Its % is objdiff's on the compiled object; the honest
+  report and the gate stay the measure of record (extab of pool units
+  differs until the weak-duplicate strip).
+
 ## Harvesting names from the link (`tools/harvest_names.py`)
 
 After merges, once a full `ninja` ends in SHA-1 OK:
