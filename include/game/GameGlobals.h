@@ -105,6 +105,11 @@ public:
     void fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 };
 extern "C" cls_80119E5C* fn_80119DD0();
+extern "C" {
+// Owner: game/tu_80134C04.cpp (defined there; not written yet). No arguments; reads
+// lbl_8053AAF8->field_0x7e and tests all four players. Returns 0 or 1 (clrlwi 24).
+bool fn_80138AB0();
+}
 
 class ItemPedestal_804A82A8;
 extern "C" {
