@@ -84,8 +84,9 @@ below, ~0.5–0.65B.
 2. **`tools/try.py`.** One call compiles the file and diffs it (or one
    function in it), prints ≤20
    lines with a classification (regalloc only, scheduling, missing
-   instructions, relocation name), counts attempts, and says STOP after 4
-   tries without progress. Regalloc-only goes to the permuter queue.
+   instructions, relocation name), counts attempts, and says STOP when the
+   function's try budget (item 8: 3 small, 6 medium, a set budget for large)
+   is used up without progress. Regalloc-only goes to the permuter queue.
 3. **Per-file packets, fresh small contexts.** Agents are allocated by file
    (user decision, 2026-11-02): one agent owns one game unit and works through
    its functions, rather than agents being handed scattered single functions.
