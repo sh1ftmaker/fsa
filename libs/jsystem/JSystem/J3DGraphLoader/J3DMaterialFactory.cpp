@@ -354,6 +354,8 @@ void J3DMaterialFactory::modifyPatchedCurrentMtx(J3DMaterial* material, int matI
 	J3DTexCoord coords[8];
 	u32 texGenNum = countTexGens(matID);
 	for (u8 i = 0; i < texGenNum; i++) {
+		// FIXME: FSA computes the store offset into r0 and the copied word into r3; we swap
+		// them. tp gets that order only with a *(u32*) cast it labels a fakematch.
 		coords[i] = newTexCoord(matID, i);
 	}
 	material->mCurrentMtx.setCurrentTexMtx(coords[0].getTexGenMtx(), coords[1].getTexGenMtx(), coords[2].getTexGenMtx(),
@@ -496,18 +498,13 @@ size_t J3DMaterialFactory::calcSizeLockedMaterial(J3DMaterial* material, int mat
  */
 J3DGXColor J3DMaterialFactory::newMatColor(int matID, int colID) const
 {
-	GXColor gxColor = { 0xFF, 0xFF, 0xFF, 0xFF };
-	J3DGXColor j3dColor;
-	j3dColor.r                = gxColor.r;
-	j3dColor.g                = gxColor.g;
-	j3dColor.b                = gxColor.b;
-	j3dColor.a                = gxColor.a;
-	J3DMaterialInitData& data = mInitData[mMatRemapTable[matID]];
-	u16 id                    = data.mMatColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mMaterialColors[id];
+	GXColor defaultColor = { 0xFF, 0xFF, 0xFF, 0xFF };
+	J3DGXColor color(defaultColor);
+	J3DMaterialInitData* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mMatColorIndex[colID] != 0xFFFF) {
+		return mMaterialColors[initData->mMatColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**
@@ -543,18 +540,13 @@ J3DColorChan J3DMaterialFactory::newColorChan(int matID, int colID) const
  */
 J3DGXColor J3DMaterialFactory::newAmbColor(int matID, int colID) const
 {
-	GXColor gxColor = { 50, 50, 50, 50 };
-	J3DGXColor j3dColor;
-	j3dColor.r                = gxColor.r;
-	j3dColor.g                = gxColor.g;
-	j3dColor.b                = gxColor.b;
-	j3dColor.a                = gxColor.a;
-	J3DMaterialInitData& data = mInitData[mMatRemapTable[matID]];
-	u16 id                    = data.mAmbColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mAmbientColors[id];
+	GXColor defaultColor = { 50, 50, 50, 50 };
+	J3DGXColor color(defaultColor);
+	J3DMaterialInitData* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mAmbColorIndex[colID] != 0xFFFF) {
+		return mAmbientColors[initData->mAmbColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**
@@ -645,18 +637,13 @@ J3DTevOrder J3DMaterialFactory::newTevOrder(int matID, int tevID) const
  */
 J3DGXColorS10 J3DMaterialFactory::newTevColor(int matID, int colID) const
 {
-	GXColorS10 defaultTevColor = { 0, 0, 0, 0 };
-	J3DGXColorS10 j3dColor;
-	j3dColor.r                = defaultTevColor.r;
-	j3dColor.g                = defaultTevColor.g;
-	j3dColor.b                = defaultTevColor.b;
-	j3dColor.a                = defaultTevColor.a;
-	J3DMaterialInitData& data = mInitData[mMatRemapTable[matID]];
-	u16 id                    = data.mTevColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mTevColors[id];
+	GXColorS10 defaultColor = { 0, 0, 0, 0 };
+	J3DGXColorS10 color(defaultColor);
+	J3DMaterialInitData* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mTevColorIndex[colID] != 0xFFFF) {
+		return mTevColors[initData->mTevColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**
@@ -665,18 +652,13 @@ J3DGXColorS10 J3DMaterialFactory::newTevColor(int matID, int colID) const
  */
 J3DGXColor J3DMaterialFactory::newTevKColor(int matID, int colID) const
 {
-	GXColor defaultTevColor = { 255, 255, 255, 255 };
-	J3DGXColor j3dColor;
-	j3dColor.r                = defaultTevColor.r;
-	j3dColor.g                = defaultTevColor.g;
-	j3dColor.b                = defaultTevColor.b;
-	j3dColor.a                = defaultTevColor.a;
-	J3DMaterialInitData& data = mInitData[mMatRemapTable[matID]];
-	u16 id                    = data.mTevKColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mTevKColors[id];
+	GXColor defaultColor = { 255, 255, 255, 255 };
+	J3DGXColor color(defaultColor);
+	J3DMaterialInitData* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mTevKColorIndex[colID] != 0xFFFF) {
+		return mTevKColors[initData->mTevKColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**

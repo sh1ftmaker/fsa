@@ -23,10 +23,7 @@ extern const J3DFogInfo j3dDefaultFogInfo;
 
 struct J3DFog : public J3DFogInfo {
 	J3DFog() { *(J3DFogInfo*)this = j3dDefaultFogInfo; }
-	J3DFog(const J3DFog& other)
-	    : J3DFogInfo(other)
-	{
-	}
+	~J3DFog() { }
 
 	void setFogInfo(J3DFogInfo info) { *(J3DFogInfo*)this = info; }
 	void setFogInfo(const J3DFogInfo* info) { *(J3DFogInfo*)this = *info; }

@@ -1511,6 +1511,7 @@ JSystem/J3DGraphLoader/J3DMaterialFactory.cpp:
 	.text       start:0x800C8F54 end:0x800CC088
 	.data       start:0x8049AA38 end:0x8049AC88
 	.sdata2     start:0x8053BC70 end:0x8053BC80
+	.sbss2      start:0x80543F08 end:0x80543F10
 
 JSystem/J3DGraphLoader/J3DBinaryFormat.cpp:
 	.text       start:0x800CC088 end:0x800CC094

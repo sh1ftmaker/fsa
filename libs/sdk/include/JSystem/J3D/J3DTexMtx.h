@@ -26,19 +26,7 @@ enum J3DTEXMTX {
 
 struct J3DTexMtxInfo {
 
-	void operator=(J3DTexMtxInfo const& other)
-	{
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				mEffectMtx[i][j] = other.mEffectMtx[i][j];
-			}
-		}
-
-		mCenter     = other.mCenter;
-		mProjection = other.mProjection;
-		mInfo       = other.mInfo;
-		mSRT        = other.mSRT;
-	}
+	J3DTexMtxInfo& operator=(const J3DTexMtxInfo& other); // defined out of line in J3DStruct.cpp
 
 	void setMtx(Mtx44 copyMatrix)
 	{

@@ -16,20 +16,11 @@ struct J3DGXColor : public GXColor {
 		a = _a;
 	}
 
-	J3DGXColor(const J3DGXColor& other)
-	{
-		r = other.r;
-		g = other.g;
-		b = other.b;
-		a = other.a;
-	}
+	J3DGXColor(const J3DGXColor& other) { __memcpy(this, &other, sizeof(J3DGXColor)); }
 
-	J3DGXColor(const GXColor& other)
+	J3DGXColor(const GXColor color)
+	    : GXColor(color)
 	{
-		r = other.r;
-		g = other.g;
-		b = other.b;
-		a = other.a;
 	}
 
 	J3DGXColor(const u32& other)
@@ -70,14 +61,11 @@ struct J3DGXColorS10 : public GXColorS10 {
 		a = _a;
 	}
 
-	J3DGXColorS10(const J3DGXColorS10& other) { *this = other; }
+	J3DGXColorS10(const J3DGXColorS10& other) { __memcpy(this, &other, sizeof(J3DGXColorS10)); }
 
-	J3DGXColorS10(const GXColorS10& other)
+	J3DGXColorS10(const GXColorS10& color)
+	    : GXColorS10(color)
 	{
-		r = other.r;
-		g = other.g;
-		b = other.b;
-		a = other.a;
 	}
 
 	J3DGXColorS10(const u64& other)
