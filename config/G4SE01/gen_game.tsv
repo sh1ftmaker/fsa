@@ -285,7 +285,6 @@ tu_8028DD78	sinit	__sinit_tu_8028DD78_cpp	-	-	new	new
 tu_8029C584	sinit	__sinit_tu_8029C584_cpp	-	-	new	-
 tu_8029D898	sinit	__sinit_tu_8029D898_cpp	-	-	new	-
 tu_802A4654	sinit	__sinit_tu_802A4654_cpp	-	-	new	-
-tu_802B1558	sinit	__sinit_tu_802B1558_cpp	-	-	new	-
 tu_802B214C	sinit	__sinit_tu_802B214C_cpp	-	-	new	-
 tu_802B3674	sinit	__sinit_tu_802B3674_cpp	-	-	new	-
 tu_802B7C78	dtor	__dt__12cls_804A886CFv	cls_804A886C	0x804A886C	new	new

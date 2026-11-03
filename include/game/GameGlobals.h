@@ -743,7 +743,11 @@ public:
     void fn_803BA980();
     void fn_803B9E2C();
 
-    /* 0x0 */ u8 field_0x0[0x2120]; // fields unknown (mutex at 0x1FD4, cond at 0x1FEC)
+    /* 0x0 */ u8 field_0x0[0x1FCC];
+    // fn_802B1558 (the reset path) waits, one VIWaitForRetrace per pass, while
+    // this word is nonzero.
+    /* 0x1FCC */ s32 field_0x1fcc;
+    /* 0x1FD0 */ u8 field_0x1fd0[0x2120 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
 }; // Size: 0x2120
 extern cls_803B9940 lbl_8051C1A0;
 
@@ -753,10 +757,25 @@ extern cls_803B9940 lbl_8051C1A0;
 // clears one and stores 0 at this+6.
 class cls_804A8578 {
 public:
+    // fn_802B1EFC: stores this in lbl_8053ACA8 and clears the bytes below.
+    // FIXME: the vtable (__vt__12cls_804A8578, .data 0x804A8578) is 88.57 % in
+    // try.py. The original's 4th word is 0; the cause is not diagnosed yet.
+    cls_804A8578();
+    // fn_802B1EB4: the delete flag > 0 frees the object (__dl__FPv).
+    virtual ~cls_804A8578();
+
     bool fn_802B1DCC();
     bool fn_802B1D7C();
     s32 fn_802B1D60();
     void fn_802B1D98();
+    // fn_802B1DE8: clears this+4/+5 and the save-region bytes 0x9/0xA, then
+    // copies the 0x20-byte save region in lbl_80529DEC to 0x80700000.
+    void fn_802B1DE8();
+
+    /* 0x4 */ u8 field_0x4;
+    /* 0x5 */ u8 field_0x5;
+    /* 0x6 */ u8 field_0x6; // fn_802B1D98 clears it
+    /* 0x7 */ u8 field_0x7; // 0xFF preset by the constructor
 };
 extern cls_804A8578* lbl_8053ACA8;
 
