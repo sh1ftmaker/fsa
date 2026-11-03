@@ -395,8 +395,20 @@ class cls_804B1920 {
 public:
     /* 0x000 */ u8 pad_0x0[0x1F0]; // vtable pointer and unknown fields
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
+
+    // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
+    // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
+    // more arguments (0 in most calls).
+    void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
 };
 extern cls_804B1920* lbl_8053AED0;
+
+// game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
+// game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
+// *pos.
+extern "C" {
+void fn_80341CB0(s32 layer, const JGeometry::TVec3f* pos);
+}
 
 // game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
 // the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
