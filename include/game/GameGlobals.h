@@ -75,7 +75,12 @@ struct GameRoot_8049EF20 {
     /* 0x84 */ u8 field_0x84[0x88 - 0x84];
     // Stored by fn_80134D14 (game/tu_80134C04.cpp, 0x80134D14, stb of r4).
     /* 0x88 */ u8 field_0x88;
-    /* 0x89 */ u8 field_0x89[0x96 - 0x89];
+    /* 0x89 */ u8 field_0x89[0x94 - 0x89];
+    // Stored by fn_80134FC4 (game/tu_80134C04.cpp, 0x80134FC4, stb of r4), which
+    // sets field_0x95 to 1 unless the value is 1.
+    /* 0x94 */ u8 field_0x94;
+    // Set to 1 by fn_80134FC4 (game/tu_80134C04.cpp) when field_0x94 is not 1.
+    /* 0x95 */ u8 field_0x95;
     // Stored by fn_80134FBC (game/tu_80134C04.cpp, 0x80134FBC, stb of r4).
     /* 0x96 */ u8 field_0x96;
     /* 0x97 */ u8 field_0x97[0xA4 - 0x97];
@@ -115,6 +120,9 @@ struct GameRoot_8049EF20 {
     // Stores r4 at this+0x96 (stb). Defined in game/tu_80134C04.cpp; called
     // by act_stop_npc (0x802ED1B4, 0).
     void fn_80134FBC(u8 value);
+    // Stores r4 at this+0x94 (stb), then sets this+0x95 to 1 unless the value
+    // is 1. Defined in game/tu_80134C04.cpp (0x80134FC4); no callers found yet.
+    void fn_80134FC4(u8 value);
     // Owner: game/tu_80134C04.cpp (next to fn_80134FBC; not written yet).
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
