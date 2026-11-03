@@ -125,8 +125,6 @@ act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A
 act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
 act_hardhat_beetle	dtor	__dt__12cls_804A06C0Fv	cls_804A06C0	0x804A06C0	new	new
 act_hardhat_beetle	sinit	__sinit_act_hardhat_beetle_cpp	-	-	new	new
-act_heart_container	dtor	__dt__23HeartContainer_804A7E58Fv	HeartContainer_804A7E58	0x804A7E58	new	new
-act_heart_container	sinit	__sinit_act_heart_container_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_horse_race_man	sinit	__sinit_act_horse_race_man_cpp	-	-	new	-
 act_hyrule_castle_barrier	sinit	__sinit_act_hyrule_castle_barrier_cpp	-	-	new	-
