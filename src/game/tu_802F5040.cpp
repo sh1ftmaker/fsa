@@ -33,3 +33,17 @@ void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
         mLayerGrid[layer][index] = value;
     }
 }
+
+// Layers 0-3 and 4-7 are separate branches in the original, with the rest
+// after them; all three load the same way into one result.
+u16 cls_804AA858::fn_802F9908(s32 layer, s32 index) {
+    s32 tile;
+    if (layer >= 0 && layer < 4) {
+        tile = mLayerGrid[layer][index];
+    } else if (layer >= 4 && layer < 8) {
+        tile = mLayerGrid[layer][index];
+    } else {
+        tile = mLayerGrid[layer][index];
+    }
+    return tile;
+}
