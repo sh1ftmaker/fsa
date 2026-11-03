@@ -173,8 +173,6 @@ act_seesaw_lift	dtor	__dt__19SeesawLift_804AD348Fv	SeesawLift_804AD348	0x804AD34
 act_shadow_link_demo	sinit	__sinit_act_shadow_link_demo_cpp	-	-	new	-
 act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
 act_shadow_link_giant_bomb	sinit	__sinit_act_shadow_link_giant_bomb_cpp	-	-	new	-
-act_shop_item	dtor_sprite	__dt__17ShopItem_8049CDC0Fv	ShopItem_8049CDC0	0x8049CDC0	new	new
-act_shop_item	sinit	__sinit_act_shop_item_cpp	-	-	new	-
 act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
 act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
