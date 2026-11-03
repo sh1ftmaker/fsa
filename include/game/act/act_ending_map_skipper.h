@@ -15,7 +15,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ s32 mIndex;  // low 7 bits of the spawn argument; picks a table row
+    /* 0x234 */ s32 mTimer;  // frames left (500 after init)
 }; // Size: 0x238
 
 #endif
