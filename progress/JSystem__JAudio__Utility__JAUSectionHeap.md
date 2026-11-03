@@ -1,42 +1,47 @@
 # JSystem/JAudio/Utility/JAUSectionHeap.cpp
 
-Baseline (progress.py): 1307 / 11560 functions, 241984 bytes. Unit 8/33.
-Now: 1359 / 11560, 252036 bytes. Unit 37/39 (target now 39 functions after
-extending .text over the vtable thunks and __sinit).
+Baseline (progress.py): total 4784 / 11561 functions, 863464 / 4442088 bytes (19.44 %).
+After: total 4785 / 11561 functions, 863732 bytes (19.44 %). gate: ok.
+
+Unit: 36/38 -> 37/38 functions; .text 99.99 %, .ctors/.rodata/.data/.bss/.sdata 100 %.
+Still NonMatching: newStreamFileTable is blocked by JAUStreamFileTable.cpp's split.
 
 ## Matched
-All JAUSection / JAUSectionHeap functions, bitset helpers, TStreamDataMgr
-getStreamFileEntry/dtor, @212@ thunks. New in source: newVoiceBank,
-JAUSectionHeap::setSeqDataArchive, JAUSectionHeap::getSoundTable (name and
-position from Petari's JAUSectionHeap.cpp: between getNumSections and
-setSeqDataUser; FSA game code calls it, sectionHeapData_.soundTable at 0x524).
-Removed JASFakeMatch2.h include (was a no-op: MATCHING undefined) and the
-DEBUG-only CW_FORCE_STRINGS block.
+- fn_8003ED08 = `__sinit_JAUSectionHeap_cpp` (.ctors entry; TChannelMgr/JASTrack/
+  JASChannel/JAISe pools). Placeholder lbl_804B4C98 (0x30, the unit's register
+  chain, already in the .bss split) split into four 0xC placeholders.
 
 ## Resistant
-- newStreamFileTable: only `bl fn_8003C794` vs `__ct__18JAUStreamFileTableFv`.
-  fn_8003C794 (li r0,0; stw r0,0(r3)) is JAUStreamFileTable's ctor, but naming
-  it makes the Matching JAUStreamFileTable unit fail the link (dup), because
-  its .text split starts at 0x8003C7A0 instead of 0x8003C794. Same for
-  lbl_804954C8 = __vt__32JAUStreamDataMgr_StreamFileTable (its .data is not
-  split). Fix belongs to the JAUStreamFileTable owner (SHARED-EDITS).
-- __sinit (fn_8003ED08, .ctors 0x8045BDA0, .bss 0x804B4C98): registers
-  memPool_ for JASPoolAllocObject_MultiThreaded<TChannelMgr/JASTrack/JASChannel>
-  and JASPoolAllocObject<JAISe>. Needs the generic memPool_ template definition
-  (open project-wide JASFakeMatch question), not reproducible naturally here.
+- newStreamFileTable__10JAUSectionFPCvb (99.81 %), blocked by JAUStreamFileTable.cpp
+  (Matching unit, not mine). Code identical; only relocation names differ:
+    68/144  bl fn_8003C794             | bl __ct__18JAUStreamFileTableFv
+    148/14C lis/addi lbl_804954C8      | __vt__32JAUStreamDataMgr_StreamFileTable
 
-## SHARED-EDITS
-- libs/sdk/include/JSystem/JAudio/JAUSectionHeap.h: + getSoundTable() decl.
-- new libs/sdk/include/JSystem/JAudio/System/JASVoiceBank.h. FSA's JASBank
-  slot 2 is getInstParam(int,int,int,JASInstParam*) const (JASBasicBank and
-  JASVoiceBank vtables); JASBank.h still has mkdd's getInst(u32). The header
-  overrides getInst to stay consistent with JASBank.h; fix both together.
-- symbols.txt names outside this unit (evidence = identical call sites +
-  callee bodies): __nw__FUl/__nw__FUli/__nw__FUlP7JKRHeapi/__nwa__FUl/
-  __nwa__FUli, fprintf, abort, __dt__11JKRDisposerFv, create__12JKRSolidHeap,
-  loadToMainRAM__12JKRDvdRipper(const char*...), createBank__12JASBNKParser,
-  appendBankTable__22JAUBankTableDictionary, getBank__12JAUBankTableCFUl,
-  __dt__13JAISeqDataMgr, __dt__16JAIStreamDataMgr, vtables of JAISeqDataMgr,
-  JAIStreamDataMgr, JASBank, JASVoiceBank, JASDram, sInstance of
-  JAUSoundInfo / JASDefaultBankTable.
-- JAUStreamFileTable.cpp split should start at 0x8003C794 (see above).
+## SHARED-EDITS (JAUStreamFileTable.cpp stanza; evidence: mkdd MarioClub_us map)
+mkdd's JAUStreamFileTable.cpp is: __ct__18JAUStreamFileTableFv (0xC, first), init,
+getNumFiles, getFilePath, getStreamFileEntry, weak __dt__32JAUStreamDataMgr_
+StreamFileTableFv (0x60); .data = __vt__32JAUStreamDataMgr_StreamFileTable (0x10).
+FSA has the same objects:
+- fn_8003C794 (0xC, `li r0,0; stw r0,0(r3)`, called on a stack object right before
+  init__18JAUStreamFileTableFPCv) = `__ct__18JAUStreamFileTableFv`.
+- lbl_804954C8 (0x10, in no unit; slots getStreamFileEntry__32JAUStreamDataMgr_
+  StreamFileTable and fn_8003C878) = `__vt__32JAUStreamDataMgr_StreamFileTable`.
+- fn_8003C878 (0x60, gap before JAUAudience at 0x8003C8D8) =
+  `__dt__32JAUStreamDataMgr_StreamFileTableFv`.
+Proposed stanza: `.text 0x8003C794-0x8003C8D8`, `.data 0x804954C8-0x804954D8`
+(JAUSoundTable's .text then ends at 0x8003C794; done on unit/JSystem__JAudio__
+Utility__JAUSoundTable), plus the three renames.
+Tested here (reverted): the .text start + ctor rename alone changes only JAUSoundTable
+and JAUStreamFileTable in the report (both up). Adding the .data split + vtable rename
+without the dtor in range breaks the Matching link (JAUStreamFileTable.o .text 0xF8 vs
+range 0xE4, and the main link's SHA-1 fails, so weak-dedup evidence drops for 27 units).
+Whoever owns JAUStreamFileTable should apply all of it at once and re-run link_check.
+
+## Earlier wave (kept from the previous checkpoint)
+- Matched then: all JAUSection / JAUSectionHeap functions, bitset helpers,
+  TStreamDataMgr getStreamFileEntry/dtor, @212@ thunks; newVoiceBank,
+  setSeqDataArchive, getSoundTable added (Petari order).
+- Still-open SHARED-EDITS from then: JAUSectionHeap.h getSoundTable() decl; new
+  JASVoiceBank.h (FSA's JASBank slot 2 is getInstParam(int,int,int,JASInstParam*)
+  const; JASBank.h still has mkdd's getInst(u32), fix both together); symbols.txt
+  names outside the unit listed in that checkpoint (git show 19834a8~1:<this file>).
