@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **29.03 %** of the code and **6,447 / 11,557** functions match. 446 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **29.04 %** of the code and **6,448 / 11,557** functions match. 446 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -58,7 +58,7 @@ progress site, which goes down to single functions.
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 12.4 % of 3,573,784 bytes matched, 1,734 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 12.4 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 12.4 % of 3,573,784 bytes matched, 1,735 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 12.4 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -76,12 +76,12 @@ progress site, which goes down to single functions.
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 12.4 % of 3,573,784 bytes | 1,734 / 6,789 |
+| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 12.4 % of 3,573,784 bytes | 1,735 / 6,789 |
 | [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 |
 | [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
 | [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
 | [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **29.03 %** of 4,442,032 bytes | **6,447 / 11,557** |
+| **Whole DOL** | **29.04 %** of 4,442,032 bytes | **6,448 / 11,557** |
 
 <details><summary>Game code: 14 file groups</summary>
 
@@ -99,7 +99,7 @@ progress site, which goes down to single functions.
 | [unnamed 80400000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80400000) | 15.6 % of 91,948 bytes | 45 / 201 |
 | [THP](https://sh1ftmaker.github.io/fsa/#/game/game-thp) | 79.9 % of 27,704 bytes | 162 / 168 |
 | [mg\_\* minigames](https://sh1ftmaker.github.io/fsa/#/game/game-mg-minigames) | 15.3 % of 25,132 bytes | 7 / 42 |
-| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 13.5 % of 16,208 bytes | 4 / 36 |
+| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 15.0 % of 16,208 bytes | 5 / 36 |
 | [linked before JSystem](https://sh1ftmaker.github.io/fsa/#/game/game-linked-before-jsystem) | 100 % of 1,312 bytes | 11 / 11 |
 
 </details>
