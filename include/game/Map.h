@@ -55,6 +55,10 @@ public:
     // float twice (fmr f2, f1).
     void fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 frame,
                      SpriteParams_801F5AE0* params, f32 scaleX, f32 scaleY);
+    // Draws the sprite `res` (a "TIMG" resource, act_life_meter's heart image
+    // from fn_804030C4) at pos with the stack SpriteParams_801F5AE0 `params`
+    // (fn_801EF830 calls it the same way, 0x801EFC74).
+    void fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
     // 5 units (act_shutter, act_red_blue_switch, act_spike_floor_check,
     // tu_802D39B8, tu_8029D898) plus BgRewrite's tile animation. Decodes
     // the 'SCH ' resource `res` (JKRDecomp::checkCompressed / decode, size
@@ -119,7 +123,7 @@ u16 fn_80226998(const JGeometry::TVec3f* pos, s32 layer);
 // 7 units each. The packed cell index of pos (no lookup; clamped like the
 // queries, no outside test in fn_80226AE0).
 s32 fn_80226AE0(const JGeometry::TVec3f* pos, s32 layer);
-s32 fn_80226BC4(const JGeometry::TVec3f* pos, s32 layer);
+s32 fn_80226BC4(const JGeometry::TVec2f* pos, s32 layer); // reads only x, y
 // 5 units. The inverse: out = the corner of cell `index` (box corner + the
 // unpacked x, y) with a constant z (psq_st/stfs to out 0/8, 0x80226D88).
 void fn_80226CA8(s32 index, s32 layer, JGeometry::TVec3f* out);
