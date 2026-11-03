@@ -22,6 +22,11 @@ u32 SwordSoldier_8049FCA0::fn_801544C8() const {
     return field_0x90;
 }
 
+// The EnemyParam "atcp" damage (ActorBase's 0x114), passed to fn_801F2B7C.
+s32 SwordSoldier_8049FCA0::fn_80154510() const {
+    return field_0x114;
+}
+
 f32 fn_80154378(f32 x) {
     return std::sqrtf(x);
 }
