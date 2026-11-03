@@ -1540,7 +1540,7 @@ config.libs = [
         Object(NonMatching, "game/tu_803944C8.cpp"),
         Object(NonMatching, "game/tu_803A3484.cpp"),
         Object(NonMatching, "game/tu_803A60E4.cpp"),
-        Object(NonMatching, "game/tu_803A85E4.cpp"),
+        Object(Matching, "game/tu_803A85E4.cpp"),
         Object(NonMatching, "game/tu_803A8DFC.cpp"),
         Object(NonMatching, "game/tu_803B7DCC.cpp"),
         Object(Matching, "game/act_talking_npc_2.cpp"),
