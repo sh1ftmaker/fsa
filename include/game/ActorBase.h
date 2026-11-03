@@ -589,6 +589,13 @@ public:
 // as link names until that unit names them.
 extern "C" {
 
+// fn_803075AC (tu_803075AC, not yet decompiled), called as (mSerial, field_0x4,
+// &mPos, id, 0, 2, -1, 0, 0, 0) by act_force_gem_shadow and act_treasure_mark;
+// r3..r10 plus two stack words, all integers or pointers in the asm. Meaning
+// unknown.
+void fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d, s32 e, s32 f,
+                 s32 g, s32 h, s32 i);
+
 // 4 units / 8 calls. A map tile code (callers pass the lhz/clrlwi 16 result
 // of fn_80226850, e.g. act_spreading_fire 0x802BC9F8) in one of the ranges
 // 0x68-0x6B, 0x70-0x71, 0x74-0x75, 0xAA-0xAB or 0x4E, 0xFA, 0x146, 0x159.
