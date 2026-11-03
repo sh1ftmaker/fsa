@@ -15,7 +15,14 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x1C]; // not yet known
+    /* 0x230 */ s32 mState;
+    /* 0x234 */ s32 mKind; // field_0x90 & 0xF
+    /* 0x238 */ s32 mBit1; // GameView bit (field_0x90 bits 22-26)
+    /* 0x23C */ s32 mBit2; // GameView bit (field_0x90 bits 17-21)
+    /* 0x240 */ s32 mTimer;
+    /* 0x244 */ s32 mSoundState;
+    /* 0x248 */ u8 mTriggered;
+    /* 0x249 */ u8 field_0x249[3]; // padding
 }; // Size: 0x24C
 
 #endif

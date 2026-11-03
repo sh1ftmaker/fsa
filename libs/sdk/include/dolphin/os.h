@@ -124,6 +124,10 @@ void OSSetEuRgb60Mode(u32 on);
 
 void OSRegisterVersion(const char *id);
 
+// OSReset.c / OSReboot.c; used by game/tu_801344C0.cpp (main).
+u32 OSGetResetCode(void);
+void OSSetSaveRegion(void *start, void *end);
+
 BOOL OSDisableInterrupts(void);
 BOOL OSEnableInterrupts(void);
 BOOL OSRestoreInterrupts(BOOL level);
