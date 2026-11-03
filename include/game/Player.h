@@ -118,13 +118,13 @@ inline bool isPlayerActive(s32 player) {
     return lbl_8053AC90->mPlayers[player]->fn_8023F984();
 }
 
-// Functions of game/tu_8022AD64.cpp other units call (extern "C" keeps the
-// dtk names until the unit is finished). Each query returns its fallback
-// (after "else") when there is no manager or the player is not active.
-// Types come from the getter each one forwards to and from the callers
-// (only 0/1 tests -> bool; lfs at 0/4/8 of the result -> TVec3f*). Not
-// declared yet: the ~300 others, whose getters take arguments or do more.
-extern "C" {
+// Functions of game/tu_8022AD64.cpp other units call. Each query returns
+// its fallback (after "else") when there is no manager or the player is not
+// active. Types come from the getter each one forwards to and from the
+// callers (only 0/1 tests -> bool; lfs at 0/4/8 of the result -> TVec3f*).
+// Not declared yet: the ~300 others, whose getters take arguments or do more.
+//
+// Defined in game/tu_8022AD64.cpp (C++ linkage, renamed in symbols.txt).
 // The manager's flags (no player index).
 bool fn_8022ADB0(void); // 0x73
 void fn_8022ADCC(void); // 0x73 = false
@@ -155,6 +155,13 @@ bool fn_8023F264(s32 player);
 // "->": the player's getter (tu_8023FBF0 unless said) or field it returns.
 bool fn_8022B7C4(s32 player);            // 7 units. -> fn_8023FC08 (byte 0x42C); else false
 void fn_8022B860(s32 player, s32 value); // 1 unit. -> fn_8023FC10(value)
+s32 fn_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
+JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
+
+// Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
+// until that unit defines them.
+extern "C" {
+// Per-player queries, by address (legend as above).
 s32 fn_8022BCD4(s32 player);             // 1 unit. -> fn_8023FC24 (word 0xBEC); else 0
 bool fn_8022CCAC(s32 player);            // 2 units. -> fn_80249068 (byte 0x121F); else false
 bool fn_8022D75C(s32 player);            // 29 units. -> fn_8024BBB0 (byte 0xCE8); else false
@@ -200,7 +207,6 @@ bool fn_8023BE0C(s32 player);            // 3 units. -> fn_8023FF88 (byte 0x1200
 s8 fn_8023CA88(s32 player);              // 20 units. -> fn_8024EE14 (byte 0x3D8); else 0
 s8 fn_8023CB24(s32 player);              // 19 units. -> fn_8024EE0C (byte 0x3D9); else 0
 u16 fn_8023CBC0(s32 player);             // 10 units. -> fn_8024EE1C (halfword 0x3C4); else 0x121
-s32 fn_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
 s32 fn_8023E10C(s32 player);             // 5 units. -> word 0xCE4; else 0
 s32 fn_8023E190(s32 player);             // 1 unit. -> word 0xCE0; else 0
 JGeometry::TVec3f* fn_8023E214(s32 player); // 3 units. -> 0xCD4; else &lbl_804CF460
@@ -208,7 +214,6 @@ JGeometry::TVec3f* fn_8023E2A0(s32 player); // 1 unit. -> 0xCC8; else &lbl_804CF
 JGeometry::TVec3f* fn_8023E32C(s32 player); // 5 units. -> 0xCB0; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E578(s32 player); // 3 units. -> 0x14; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804CF460
-JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
 
 // Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
 // field_0x4 and mSerial when the box overlaps a player's.

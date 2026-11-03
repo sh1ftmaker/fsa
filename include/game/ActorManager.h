@@ -243,18 +243,11 @@ enum ActorParamColumn {
 };
 
 // Exports of game/tu_801F6058.cpp that are not manager members (their
-// callers do not pass the manager in r3). extern "C" keeps their dtk
-// placeholder names as the link names until that unit names them.
-extern "C" {
-
+// callers do not pass the manager in r3).
+//
+// Defined in game/tu_801F6058.cpp (C++ linkage, renamed in symbols.txt).
 // 241 units / 1662 calls. lbl_8053AAF8->0x4->0x8: the actor manager.
 ActorManager_804A5800* fn_801F856C(void);
-
-// 21 units / 38 calls. True when pos (x, y) is outside the view's box
-// (fn_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
-// each side (<= / >= compares). Callers pass &mPos, field_0x4 and a
-// literal, and test r3 with clrlwi. 24.
-bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
 
 // 29 units / 49 calls. The direction (0-3) of a 16-bit angle: 2 below
 // 0x2000 or from 0xE000, 0 below 0x6000, 3 up to 0xA000, else 1. Callers
@@ -273,6 +266,16 @@ void fn_801F714C(u16* value, u16 target, u16 step, u16 maxStep);
 // 79 units / 361 calls. Unless *value == target, adds rate * (target -
 // *value), clamped to +-maxStep, to *value.
 void fn_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
+
+// Not written yet in game/tu_801F6058.cpp: extern "C" keeps their dtk
+// placeholder names as the link names until that unit defines them.
+extern "C" {
+
+// 21 units / 38 calls. True when pos (x, y) is outside the view's box
+// (fn_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
+// each side (<= / >= compares). Callers pass &mPos, field_0x4 and a
+// literal, and test r3 with clrlwi. 24.
+bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
 
 // 6 units / 12 calls. Gets the manager itself (lbl_8053AAF8->0x4->0x8)
 // and does fn_801F7F58's search for the single id `id` (a stack

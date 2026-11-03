@@ -363,24 +363,29 @@ extern "C" GameView_804A9950* fn_802D6A9C(void);
 // unset). Each returns 0 or 1 from the stage numbers of fn_802D6A9C() (the
 // view's field_0x4 / field_0x8), and returns 0 at once when
 // lbl_8053AAF8->0x7F is 0, except where said.
+//
+// Defined in game/tu_802D39B8.cpp (C++ linkage, renamed in symbols.txt).
+// 8 units. Reads lbl_80529DEC's words 0x118 and 0x11C only.
+bool fn_802DE814(void);
+// 19 units. Stage (2, 3) or (7, 1); with 0x7F clear, lbl_80529DEC's 0x12C +
+// 0x128 * 4 is 1 or 6.
+bool fn_802DE9A0(void);
+// 3 units. Stage (7, 0) or (7, 2); with 0x7F clear, lbl_80529DEC's 0x12C +
+// 0x128 * 4 is 4 or 9.
+bool fn_802DEABC(void);
+
+// Not written yet in game/tu_802D39B8.cpp: extern "C" keeps their dtk names
+// until that unit defines them.
 extern "C" {
 // 2 units. (field_0x4, field_0x8) == (stage, level) and
 // field_0x60[row][col] == value.
 bool fn_802DE764(s32 stage, s32 level, s32 value);
 // 4 units. Stage (0, 0).
 bool fn_802DE7CC(void);
-// 8 units. Reads lbl_80529DEC's words 0x118 and 0x11C only.
-bool fn_802DE814(void);
 // 1 unit. Stage (4, 0) or (7, 2).
 bool fn_802DE93C(void);
-// 19 units. Stage (2, 3) or (7, 1); with 0x7F clear, lbl_80529DEC's 0x12C +
-// 0x128 * 4 is 1 or 6.
-bool fn_802DE9A0(void);
 // 1 unit. Stage (6, 0), (6, 1) or (6, 3).
 bool fn_802DEA34(void);
-// 3 units. Stage (7, 0) or (7, 2); with 0x7F clear, lbl_80529DEC's 0x12C +
-// 0x128 * 4 is 4 or 9.
-bool fn_802DEABC(void);
 // 21 units. Stage (3, 1).
 bool fn_802DEB58(void);
 // 10 units. Stage (9, 3), or stage 13 and up.
