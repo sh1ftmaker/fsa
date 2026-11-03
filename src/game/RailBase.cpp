@@ -8,3 +8,10 @@ void cls_8049C770::init() {
 
 void cls_8049C770::update() {}
 void cls_8049C770::draw() {}
+
+s32 cls_800FE3EC::fn_800FE25C(u8 index) {
+    if (index == 0xFF) {
+        return field_0x4[field_0x3]->layer;
+    }
+    return field_0x4[index]->layer;
+}
