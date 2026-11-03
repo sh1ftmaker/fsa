@@ -1387,7 +1387,7 @@ config.libs = [
         Object(NonMatching, "game/act_bti_npc.cpp"),
         Object(NonMatching, "game/act_grass.cpp"),
         Object(NonMatching, "game/act_spawner.cpp"),
-        Object(NonMatching, "game/act_stone.cpp"),
+        Object(Matching, "game/act_stone.cpp"),
         Object(NonMatching, "game/act_pot.cpp"),
         Object(Matching, "game/act_rock.cpp"),
         Object(Matching, "game/act_sign.cpp"),
