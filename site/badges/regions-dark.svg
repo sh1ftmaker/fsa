@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="436" viewBox="0 0 960 436" role="img" aria-label="Matched code and functions per region: Game code 9.01 % of code, 1127 of 6789 functions; JSystem 97.8 % of code, 3649 of 3702 functions; Dolphin SDK 100 % of code, 610 of 610 functions; GX 100 % of code, 172 of 172 functions; MSL, Runtime, TRK 90.0 % of code, 281 of 284 functions">
-<title>Matched code and functions per region: Game code 9.01 % of code, 1127 of 6789 functions; JSystem 97.8 % of code, 3649 of 3702 functions; Dolphin SDK 100 % of code, 610 of 610 functions; GX 100 % of code, 172 of 172 functions; MSL, Runtime, TRK 90.0 % of code, 281 of 284 functions</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="436" viewBox="0 0 960 436" role="img" aria-label="Matched code and functions per region: Game code 9.02 % of code, 1128 of 6789 functions; JSystem 97.8 % of code, 3649 of 3702 functions; Dolphin SDK 100 % of code, 610 of 610 functions; GX 100 % of code, 172 of 172 functions; MSL, Runtime, TRK 90.0 % of code, 281 of 284 functions">
+<title>Matched code and functions per region: Game code 9.02 % of code, 1128 of 6789 functions; JSystem 97.8 % of code, 3649 of 3702 functions; Dolphin SDK 100 % of code, 610 of 610 functions; GX 100 % of code, 172 of 172 functions; MSL, Runtime, TRK 90.0 % of code, 281 of 284 functions</title>
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .grow { transform-box: fill-box; transform-origin: 0 50%; animation: grow 1.4s cubic-bezier(.2,.8,.2,1) both; } @keyframes grow { from { transform: scaleX(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="0.5" y="0.5" width="959" height="435" rx="14" fill="#161a34" stroke="#262b4e"/>
 <text x="28" y="40" font-size="16" font-weight="700" fill="#eceefb">Whole DOL</text>
@@ -7,7 +7,7 @@
 <rect x="330" y="28" width="440" height="16" rx="4" fill="#1d2142"/>
 <clipPath id="wb"><rect x="330" y="28" width="440" height="16" rx="4"/></clipPath><g clip-path="url(#wb)">
 <rect x="330.00" y="28" width="354.00" height="16" fill="#3aae5c" fill-opacity="0.18"/>
-<rect class="grow" x="330.00" y="28" width="31.90" height="16" fill="#3aae5c"/>
+<rect class="grow" x="330.00" y="28" width="31.92" height="16" fill="#3aae5c"/>
 <rect x="683.25" y="28" width="1.5" height="16" fill="#161a34"/>
 <rect x="684.00" y="28" width="62.49" height="16" fill="#ef5b52" fill-opacity="0.18"/>
 <rect class="grow" x="684.00" y="28" width="61.11" height="16" fill="#ef5b52"/>
@@ -23,19 +23,19 @@
 <rect x="769.25" y="28" width="1.5" height="16" fill="#161a34"/>
 </g>
 <text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#eceefb">26.32 %</text>
-<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">5,839 / 11,557 fns</text>
-<text x="330" y="62" class="mono" font-size="11.5" fill="#7c82a8">1,169,096 / 4,442,032 bytes of code</text>
+<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">5,840 / 11,557 fns</text>
+<text x="330" y="62" class="mono" font-size="11.5" fill="#7c82a8">1,169,304 / 4,442,032 bytes of code</text>
 <line x1="20" x2="940" y1="80" y2="80" stroke="#262b4e"/>
 <g fill="#3aae5c"><path d="M34.5 99L41 105.5L34.5 112L28 105.5Z"/></g>
 <text x="50" y="111" font-size="16" font-weight="700" fill="#eceefb">Game code</text>
 <text x="50" y="131" font-size="12" fill="#7c82a8">3,573,784 bytes · 14 libraries (file groups)</text>
 <rect x="330" y="98" width="440" height="14" rx="4" fill="#1d2142"/>
-<rect class="grow" style="animation-delay:0.0s" x="330" y="98" width="39.65" height="14" rx="4" fill="#3aae5c"/>
+<rect class="grow" style="animation-delay:0.0s" x="330" y="98" width="39.67" height="14" rx="4" fill="#3aae5c"/>
 <rect x="330" y="118" width="440" height="5" rx="2.5" fill="#1d2142"/>
-<rect class="grow" style="animation-delay:0.2s" x="330" y="118" width="73.04" height="5" rx="2.5" fill="#3aae5c" fill-opacity="0.55"/>
-<text x="330" y="139" class="mono" font-size="11.5" fill="#7c82a8">code 9.01 % · functions 16.6 %</text>
-<text x="932" y="112" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#3aae5c">9.01 %</text>
-<text x="932" y="132" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">1,127 / 6,789 fns</text>
+<rect class="grow" style="animation-delay:0.2s" x="330" y="118" width="73.11" height="5" rx="2.5" fill="#3aae5c" fill-opacity="0.55"/>
+<text x="330" y="139" class="mono" font-size="11.5" fill="#7c82a8">code 9.02 % · functions 16.6 %</text>
+<text x="932" y="112" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#3aae5c">9.02 %</text>
+<text x="932" y="132" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">1,128 / 6,789 fns</text>
 <line x1="20" x2="940" y1="150" y2="150" stroke="#262b4e" stroke-dasharray="2 4"/>
 <g fill="#ef5b52"><path d="M34.5 165L41 178L28 178Z"/></g>
 <text x="50" y="177" font-size="16" font-weight="700" fill="#eceefb">JSystem</text>
