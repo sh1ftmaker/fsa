@@ -18,7 +18,7 @@ public:
     /* 0x20 */ virtual void draw();
 
     /* 0x230 */ ActorSoundObj_804578F4* mSound; // own sound object, made in init
-    /* 0x234 */ s32 field_0x234; // frames until the next wave sound
+    /* 0x234 */ s32 field_0x234; // guess: frames until the next 0x3003D (set to 60, never counted down here)
 }; // Size: unknown (>= 0x238)
 
 #endif

@@ -19,29 +19,27 @@
 #include "types.h"
 #include "JSystem/JGeometry.h"
 #include "JSystem/JAudio/JAUSoundObject.h"
+#include "JSystem/JKernel/JKRDisposer.h"
 
 class ActorBase_804A5770;
 class JKRHeap;
 class JAISoundID; // JSystem/JAudio/Interface/JAISound.h; complete wherever fn_804561D8 is called
 
-// The per-actor sound object (ActorManager_804A5800::mSounds): built by fn_804578F4
-// on top of JAUSoundObject (game/tu_80455CA4.cpp; vtable 0x804B1E28, whose
-// slots 0x8-0x20 are JAUSoundObject's, 0x24 and 0x28 are null, 0x2C is
-// fn_80457C08 and 0x30 is the deleting destructor fn_8045787C); fn_80457840
-// points it at the actor's position. Layout opaque here until that unit is
-// done; only the members callers need are declared.
-class ActorSoundObj_804578F4 : public JAUSoundObject {
+// The per-actor sound object (ActorManager_804A5800::mSounds): built by
+// fn_804578F4 (game/tu_80455CA4.cpp) from two bases. JAUSoundObject is at 0
+// (vtable 0x804B1E28: slots 0x8-0x20 are its own). The constructor builds a
+// JKRDisposer at 0x18 and stores vtable + 0x24 there, so slots 0x24/0x28 are
+// that base's vtable header, 0x2C (fn_80457C08) is its destructor thunk
+// (this - 0x18, then the destructor) and 0x30 is the deleting destructor
+// fn_8045787C. fn_80457840 points the object at the actor's position. Layout
+// beyond the bases is opaque until that unit is done.
+class ActorSoundObj_804578F4 : public JAUSoundObject, public JKRDisposer {
 public:
     // 0x804578F4: r4 = position (stored at 0x34, copied to 0x38), r5 = heap,
     // r6 = handle count; r5 and r6 swap places into JAUSoundObject's
     // constructor (pos, count, heap). Callers: `new ... (NULL, NULL, 8)`
     // (act_wave_se fn_802E73B4, BgRewrite's constructor).
     ActorSoundObj_804578F4(JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles);
-    // Slots 0x24-0x2C, never called by name: only the deleting destructor in
-    // slot 0x30 is (act_wave_se's, BgRewrite's destructor).
-    virtual void vfunc_0x24();
-    virtual void vfunc_0x28();
-    virtual void vfunc_0x2C();
     virtual ~ActorSoundObj_804578F4();
 
     // 0x804561D8 (game/tu_80455CA4.cpp, next to the ctor): r3 is this. `id`
@@ -49,9 +47,7 @@ public:
     // goes unextended into fn_80456334's u32 fade time.
     void fn_804561D8(JAISoundID id, u8 a, u32 fade, u8 c);
 
-    // 0x18: a JKRDisposer (fn_804578F4 constructs it there); the position
-    // is copied to 0x38 and the rest is not read by any caller yet.
-    /* 0x18 */ u8 field_0x18[0x44];
+    /* 0x30 */ u8 field_0x30[0x2C]; // not read by any caller yet
 }; // Size: 0x5C (every __nw__ of it)
 
 #define ACTOR_MANAGER_MAX_ACTORS 0x400
