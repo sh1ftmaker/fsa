@@ -3,6 +3,7 @@
 // query of each shape (a getter call, a setter call with an argument, a
 // field, a field's address), the templates for the rest.
 
+#include "game/BgRewrite.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
@@ -15,6 +16,10 @@ JGeometry::TVec3f lbl_804CF460(0.0f, 0.0f, 0.0f);
 
 extern "C" void fn_8022AD64() {
     lbl_8053AAF8->fn_80138B7C();
+}
+
+extern "C" void fn_8022AD88() {
+    lbl_8053AC98->fn_8029D898(0x19);
 }
 
 // fn_8022ADFC inlines the flag getters below, which come after it.
