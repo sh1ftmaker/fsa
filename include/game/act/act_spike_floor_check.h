@@ -15,7 +15,9 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0xC]; // not yet known
+    /* 0x230 */ s32 mState;  // 0..3: wait, open, wait, close
+    /* 0x234 */ s32 mType;    // field_0x90 & 0xFF; 0 opens on vfunc_0x34(), else on field_0x305c
+    /* 0x238 */ s32 mTimer;   // frames to the next state
 }; // Size: 0x23C
 
 #endif
