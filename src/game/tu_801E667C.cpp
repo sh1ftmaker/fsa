@@ -15,7 +15,7 @@ static const s16* lbl_8053A158[2] = {lbl_80469C00, NULL};
 s32 lbl_8053A160 = -1;
 
 bool cls_801E6AB8::fn_801E667C() {
-    s32 i;
+    s32 i; // i, cel declared in this order to match (97 % otherwise)
     s32 cel;
     bool done = false;
     mTimer++;
@@ -62,7 +62,7 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
         mActive[2] = 0;
         mActive[3] = 0;
         s32 count = lbl_8053AAF8->fn_80138A30();
-        s32 j;
+        s32 j; // j before i to match (99.49 % otherwise)
         s32 i;
         for (i = 0; i < count; i++) {
             if (fn_8023F264(i) && !fn_8022F514(i)) {
