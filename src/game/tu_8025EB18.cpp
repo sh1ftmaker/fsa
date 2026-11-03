@@ -23,4 +23,8 @@ void Player_804A6F38::fn_80264410() {
     field_0x458 = 0;
 }
 
+void Player_804A6F38::fn_80264768() {
+    field_0x458 = 0;
+}
+
 extern "C" void fn_802636D0() {}
