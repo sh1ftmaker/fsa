@@ -19,11 +19,13 @@
 #include "game/ActorBase.h"
 
 // The RAIL actor's class, named after its vtable 0x8049C770 (no name evidence
-// yet). Only the update override (slot 0x14, fn_800FD49C, an empty `blr`) and
+// yet). Only the init override (slot 0x0C, init__12cls_8049C770Fv, moves mPos by
+// 8 in x and y), the update override (slot 0x14, fn_800FD49C, an empty `blr`) and
 // the draw override (slot 0x20, fn_800FD498, an empty `blr`) are declared; the
 // destructor fn_800FD438 and the other slots are not yet.
 class cls_8049C770 : public ActorBase_804A5770 {
 public:
+    /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
 };
