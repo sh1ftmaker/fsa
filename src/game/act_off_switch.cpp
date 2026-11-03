@@ -7,9 +7,6 @@ OFFSwitch_804A9B70::~OFFSwitch_804A9B70() {}
 
 void OFFSwitch_804A9B70::draw() {}
 
-// FIXME: 99.28%. The original has a second, unreachable `b` (to the function
-// end) right after the one for field_0x230 < 0 at the top of the outer
-// switch; tried an explicit default before and after the cases, no change.
 void OFFSwitch_804A9B70::update() {
     switch (field_0x230) {
     case 0:
@@ -64,6 +61,8 @@ void OFFSwitch_804A9B70::update() {
         case 4:
             break;
         }
+        break;
+    case 2: // nothing in this unit sets state 2
         break;
     }
 }
