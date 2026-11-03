@@ -132,8 +132,6 @@ act_hardhat_beetle	sinit	__sinit_act_hardhat_beetle_cpp	-	-	new	new
 act_heart_container	dtor	__dt__23HeartContainer_804A7E58Fv	HeartContainer_804A7E58	0x804A7E58	new	new
 act_heart_container	sinit	__sinit_act_heart_container_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
-act_horse_race_end_area	dtor	__dt__12cls_804AE830Fv	cls_804AE830	0x804AE830	new	new
-act_horse_race_end_area	sinit	__sinit_act_horse_race_end_area_cpp	-	-	new	new
 act_horse_race_man	sinit	__sinit_act_horse_race_man_cpp	-	-	new	-
 act_hyrule_castle_barrier	sinit	__sinit_act_hyrule_castle_barrier_cpp	-	-	new	-
 act_ice_melted_by_four_players	sinit	__sinit_act_ice_melted_by_four_players_cpp	-	-	new	-
