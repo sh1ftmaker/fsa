@@ -131,6 +131,12 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   scalar (x, y) arguments, not `result = true` inside it.
 - A u8 converted to float with the signed form (xoris 0x8000): an explicit
   `(s32)` on the u8 operand; plain `u8 * f32` gives the unsigned form.
+- Several tables addressed off one base register (lis/addi once, then
+  base+offset with lwzx): separate `static const` arrays laid out in
+  address order, not a struct of arrays.
+- A function-local singleton class: name it after the destructor its getter
+  passes to `__register_global_object`; a class with no vtable, ctor or dtor:
+  after its lowest-address function.
 - A value kept in one register across a call: a local read once
   (`s32 layer = field_0x4;`) — the original read it once too.
 
