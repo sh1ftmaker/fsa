@@ -59,6 +59,10 @@ public:
     void fn_801C6A4C();
     void fn_801C6BA8();
     void fn_801C6C7C();
+    // game/tu_801C71BC.cpp: for a nonzero flag, sets the byte at 0x55D from
+    // a rail query (fn_800FD894 on field_0x358) and fn_801CD664; otherwise
+    // from fn_801CD664(0xC) alone.
+    void fn_801C8BC4(u8 flag);
     // game/tu_801C9AF8.cpp (not written yet): 0 if field_0x560 is 4 or
     // `player`, else 1.
     bool fn_801CAED4(int player);
