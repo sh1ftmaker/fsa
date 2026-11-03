@@ -235,6 +235,12 @@ struct GameRoot2_8049F108 {
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
+
+    // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
+    // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
+    // `this` is lbl_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
+    // J2DScreen::draw.
+    void fn_8013B490();
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;
