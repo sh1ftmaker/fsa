@@ -221,6 +221,7 @@ public:
     s32 fn_8025F668(); // via fn_8023EF50
     bool fn_8025F684(); // via fn_8023EFEC
     void fn_802635D4(); // empty; the dispatch in fn_802870C8 calls it
+    void fn_80264410(); // byte at 0x458 = 0 (stb r0)
     void fn_802636C4(); // byte at 0x458 = 0 (stb r0)
     void fn_80263848(); // byte at 0x458 = 0 (stb r0)
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
