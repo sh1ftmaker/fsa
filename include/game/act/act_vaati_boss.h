@@ -7,6 +7,37 @@
 #include "types.h"
 #include "game/EnemyBase.h"
 #include "game/SpriteAnim.h"
+#include "game/cls_8021BCBC.h"
+
+// An element of the 4-entry array at 0x2A8 of Vaati, built by
+// __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
+// No vtable: named after that constructor. fn_801D789C (not written yet)
+// is called on the element after its cls_8021BCBC has been set up.
+struct cls_801D6A88 {
+    cls_801D6A88();
+    void fn_801D789C();
+
+    /* 0x00 */ u8 field_0x0[0xC]; // not yet known
+    /* 0x0C */ cls_8021BCBC field_0xc;
+}; // Size: 0x18
+
+// An element of the 16-entry array at 0x308 of Vaati, built by
+// __construct_array in the actor's constructor (0x801D686C) with the
+// constructor 0x801D6A58 (game/act_vaati_boss.cpp). No vtable: named after
+// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp, not written yet) sets
+// the fields below.
+struct cls_801D6A58 {
+    cls_801D6A58();
+    // 0x801D7874: sets field_0x0 to -1, the two bytes and the three floats to 0.
+    void fn_801D7874();
+
+    /* 0x00 */ s32 field_0x0;
+    /* 0x04 */ u8 field_0x4;
+    /* 0x05 */ u8 field_0x5;
+    /* 0x08 */ f32 field_0x8;
+    /* 0x0C */ f32 field_0xc;
+    /* 0x10 */ f32 field_0x10;
+}; // Size: 0x14
 
 // The shake offset at 0x52c of Vaati: three DampedSine_801E4A18
 // (game/tu_801E4A18.cpp, 0x14 bytes each, `value` first) for x, y and z.
@@ -33,6 +64,9 @@ struct cls_801D6CEC {
 class cls_801E6AB8 {
 public:
     cls_801E6AB8();
+    // 0x801D69FC: destroys mAnim (its J3DFrameCtrl's vtable is stored at
+    // 0x34); the member with the delete flag is the implicit destructor.
+    ~cls_801E6AB8();
     // 0x801E667C: steps the timer and the state; true once state 4 is reached.
     bool fn_801E667C();
     // 0x801E67C4: enters state `state`.
@@ -47,13 +81,48 @@ public:
     /* 0x10 */ SpriteAnim_801D267C mAnim;
 }; // Size: 0x48
 
+// The member at 0x448 of Vaati: its destructor (dtor_80217F80, tu_8021775C,
+// not written yet) frees the words at 0x0..0x14 with fn_801EE434. No vtable;
+// named after that destructor.
+class cls_80217F80 {
+public:
+    ~cls_80217F80();
+    /* 0x00 */ u8 field_0x0[0x1C]; // not yet known
+}; // Size: 0x1C
+
+// The member at 0x464 of Vaati: its destructor (dtor_801EB8CC, tu_801EB00C,
+// not written yet) frees the words at 0x34..0x50 with fn_801EE434. No
+// vtable; named after that destructor.
+class cls_801EB8CC {
+public:
+    ~cls_801EB8CC();
+    /* 0x00 */ u8 field_0x0[0x60]; // not yet known
+}; // Size: 0x60
+
+// The member at 0x4C4 of Vaati: its destructor (dtor_801D7730, tu_801D6CEC,
+// not written yet) clears the 16 actor serials in field_0x0 and the
+// flags of the actors they name. No vtable; named after that destructor.
+class cls_801D7730 {
+public:
+    ~cls_801D7730();
+    /* 0x00 */ s32 field_0x0[0x10];
+    /* 0x40 */ u8 field_0x40[0x68 - 0x40]; // not yet known
+}; // Size: 0x68
+
 // The boss Vaati (actor 'BOGF', EnemyBase_804A4808 child), named after its
 // vtable at 0x804A4958 (its draw is slot 0x20, fn_801EDBA4). Only the members
 // the written code uses are known.
 class VaatiBoss_804A4958 : public EnemyBase_804A4808 {
 public:
     VaatiBoss_804A4958() {}
+    // 0x801D46FC: the deleting destructor (slot 0x08). Destroys the members
+    // from 0x568 down, then the base; deletes unless the flag is <= 0.
+    virtual ~VaatiBoss_804A4958();
     /* 0x20 */ virtual void draw();
+    /* 0x24 */ virtual void vfunc_0x24(); // empty override
+    // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
+    // mState is 6, 7, 0xB or 0x17..0x1A (no call in those states).
+    /* 0x94 */ virtual void vfunc_0x94();
 
     // 0x801EDC0C (draw's body): adds the offset of field_0x52c to mPos,
     // shakes mPos.x by 1.0f every other frame in state 0xB once the timer is
@@ -66,7 +135,11 @@ public:
     // height-dependent factor (fn_802F5FF4 of mPos.z).
     void fn_801EDD0C();
 
-    /* 0x2A8 */ u8 field_0x2a8[0x52C - 0x2A8]; // not yet known
+    /* 0x2A8 */ cls_801D6A88 field_0x2a8[0x4];
+    /* 0x308 */ cls_801D6A58 field_0x308[0x10];
+    /* 0x448 */ cls_80217F80 field_0x448;
+    /* 0x464 */ cls_801EB8CC field_0x464;
+    /* 0x4C4 */ cls_801D7730 field_0x4c4;
     /* 0x52C */ cls_801D6CEC field_0x52c;
     /* 0x568 */ cls_801E6AB8 field_0x568;
     /* 0x5B0 */ u8 field_0x5b0[0x5D1 - 0x5B0]; // not yet known
