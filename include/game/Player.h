@@ -227,6 +227,7 @@ public:
     void fn_80263848(); // byte at 0x458 = 0 (stb r0)
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
     void fn_80293760(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
+    void fn_80293B1C(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
