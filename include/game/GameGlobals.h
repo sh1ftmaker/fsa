@@ -117,6 +117,8 @@ struct GameRoot_8049EF20 {
     // The number of players that take part: the set bits of field_0x82 (bits
     // 0-3). Its body reads lbl_8053AAF8 itself; callers load it into r3.
     s32 fn_80138A30();
+    // game/tu_8022AD64.cpp (0x8023F98C): whether bit `player` of field_0x82 is set.
+    bool fn_8023F98C(s32 player);
 }; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
