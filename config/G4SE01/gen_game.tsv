@@ -15,7 +15,6 @@ act_bgm_change_npc	sinit	__sinit_act_bgm_change_npc_cpp	-	-	new	new
 act_bird_manager	sinit	__sinit_act_bird_manager_cpp	-	-	new	-
 act_blade_trap	dtor	__dt__18BladeTrap_804A04D8Fv	BladeTrap_804A04D8	0x804A04D8	new	new
 act_blade_trap	sinit	__sinit_act_blade_trap_cpp	-	-	new	new
-act_blizzard_battle	sinit	__sinit_act_blizzard_battle_cpp	-	-	new	-
 act_block	dtor	__dt__14Block_804A7A10Fv	Block_804A7A10	0x804A7A10	new	new
 act_block	sinit	__sinit_act_block_cpp	-	-	new	new
 act_bomb	sinit	__sinit_act_bomb_cpp	-	-	new	-
