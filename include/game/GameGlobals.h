@@ -11,7 +11,8 @@
 // "Placeholder names"): the vtable when known, else the constructor, else
 // the first function seen reaching the object (said at each). Vectors:
 // JGeometry::TVec3f for game data, Vec only where a mangled name or a
-// PSMTX/PSVEC call proves it (fn_8030C5F0's mangled name says Vec).
+// PSMTX/PSVEC call proves it (Camera_804AA9E4::fn_8030C5F0's mangled name
+// says Vec).
 //
 // Owner: the shared-header owner (docs/COORDINATOR.md). Propose new fields
 // as SHARED-EDITS, with the offset, access width and the function that shows
@@ -29,6 +30,9 @@
 // their own headers; included here so existing users keep compiling.
 #include "game/Effect.h"
 #include "game/GameView.h"
+// The map, its collision queries (fn_80226850, ...) and the camera.
+#include "game/Camera.h"
+#include "game/Map.h"
 
 class ActorManager_804A5800;
 class JPAEmitterManager;
@@ -86,22 +90,9 @@ s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
 f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
-// lbl_8053AB10->0x24. No vtable; its methods are in game/tu_8030C058.cpp.
-// Also called from tu_8011CEC8, tu_8015F454, tu_802F5040, tu_8045BA84.
-class cls_8030C058 {
-public:
-    // Multiplies pos by the Mtx at +0x74 (PSMTXMultVec) and writes x, y and a
-    // constant z to out: a world-to-screen projection. With the 2nd argument
-    // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).
-    void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
-};
-
-// The objects at lbl_8053AB10->0x20, 0x2C and 0x30, named after their
-// vtables (stored at 0 by their constructors); no members declared yet.
-// 0x804AA858: game/tu_802F5040.cpp, constructor fn_802FFDEC, 0xE464 bytes (lis 0x1; subi 0x1b9c at 0x8013C230).
-// Called with r3 = it by fn_802F9974 (197 sites), fn_802F86CC (143),
-// fn_802F9908, fn_802F745C, fn_802F6CF4, ... in 138 units.
-class cls_804AA858;
+// The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
+// (stored at 0 by their constructors); no members declared yet. 0x20
+// (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
 // 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
 // Read by fn_80158B3C / fn_80158B5C and directly (+0x4, +0xC) in 28 units.
 class cls_804A0160;
@@ -121,19 +112,13 @@ struct GameRoot2_8049F108 {
     /* 0x10 */ J2DOrthoGraph* field_0x10;
     /* 0x14 */ u8 field_0x14[0x20 - 0x14];
     /* 0x20 */ cls_804AA858* field_0x20;
-    /* 0x24 */ cls_8030C058* field_0x24;
+    /* 0x24 */ Camera_804AA9E4* field_0x24;
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;
-
-// game/tu_8022461C.cpp. Returns a 16-bit value for a position (clrlwi 22 of
-// a lookup on a 0x200 x 0x200 grid relative to the view's box: 0xCC, or 0xDC
-// for layer 8 and up), 0xF when the position is outside the box; callers
-// clrlwi 16 the result.
-extern "C" u16 fn_80226850(const JGeometry::TVec3f* pos, s32 layer);
 
 // game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
 // the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,

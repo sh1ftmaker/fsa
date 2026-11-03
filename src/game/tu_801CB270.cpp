@@ -37,6 +37,26 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj) {
     return timg->mSizeY * (1.0f / timg->mSizeX);
 }
 
+// Whether the tile at pos is one of the codes 0x40-0x49.
+bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer) {
+    bool result = false;
+    switch (fn_80226998(pos, layer)) {
+    case 0x40:
+    case 0x41:
+    case 0x42:
+    case 0x43:
+    case 0x44:
+    case 0x45:
+    case 0x46:
+    case 0x47:
+    case 0x48:
+    case 0x49:
+        result = true;
+        break;
+    }
+    return result;
+}
+
 // fn_80236228 for the player that `player` stands for: the one
 // fn_8022F3DC names while fn_8022F514 says it has one, else itself.
 s32 fn_801CCF34(s32 player) {

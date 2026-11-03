@@ -32,6 +32,23 @@ ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() {
     return lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
 }
 
+// Whether pos is blocked on layer: by a tile, or by another actor's
+// collision box from the last frame.
+// FIXME: 89.5 %. Same instructions; the target keeps layer in r29 and pos
+// in r28, this code the other way round (so the two argument moves before
+// fn_802265DC are scheduled differently).
+bool ActorBase_804A5770::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    bool blocked = true;
+    if (!fn_802265DC(pos, layer, false)) {
+        s32 serial = mSerial;
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+        if (!boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+            blocked = false;
+        }
+    }
+    return blocked;
+}
+
 // 32.0f is lbl_8053F748; fn_801F26CC (reloc-name) and fn_801F2718 pair with
 // it only once the unit's .sdata2 order is fixed (see the constructor's FIXME).
 s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
