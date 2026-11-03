@@ -83,13 +83,50 @@ public:
     /* 0x10 */ SpriteAnim_801D267C mAnim;
 }; // Size: 0x48
 
-// The member at 0x448 of Vaati: its destructor (dtor_80217F80, tu_8021775C,
-// not written yet) frees the words at 0x0..0x14 with fn_801EE434. No vtable;
-// named after that destructor.
+// The member at 0x448 of Vaati, defined in game/tu_8021775C.cpp. Six particle
+// emitters from fn_8013CC50, freed with fn_801EE434, and the owner (Vaati) at
+// 0x18. The constructor (0x80218020) clears all seven words; named after the
+// destructor 0x80217F80, as there is no vtable.
+class VaatiBoss_804A4958;
+class JPABaseEmitter;
+
 class cls_80217F80 {
 public:
+    // 0x80218020: clears the emitters and the owner.
+    cls_80217F80();
+    // 0x80217F80: frees the six emitters (fn_801EE434 on 0x0..0x14).
     ~cls_80217F80();
-    /* 0x00 */ u8 field_0x0[0x1C]; // not yet known
+    // 0x802179EC: frees and clears the emitters at 0x10 and 0x14.
+    void fn_802179EC();
+    // 0x80217A30: frees and clears the emitters at 0x8 and 0xC.
+    void fn_80217A30();
+    // 0x80217A74: frees and clears the emitters at 0x0 and 0x4.
+    void fn_80217A74();
+    // 0x8021798C: moves the emitters at 0x0 and 0x4 to the owner's position.
+    void fn_8021798C();
+    // 0x8021775C: moves the emitters at 0x10 and 0x14 to a position between
+    // the owner's 0x600 and 0x60C vectors, by the factor t.
+    void fn_8021775C(f32 t);
+    // 0x80217874: moves the emitters at 0x8 and 0xC to a position between the
+    // owner's 0x60C vector and its mPos, by the factor t.
+    void fn_80217874(f32 t);
+    // 0x80217AB8: spawns effects 0x224 and 0x225 at the owner's 0x60C vector in
+    // the empty slots 0x10 and 0x14.
+    void fn_80217AB8();
+    // 0x80217BC8: spawns effects 0x22F and 0x230 at the owner's mPos in the
+    // empty slots 0x8 and 0xC.
+    void fn_80217BC8();
+    // 0x80217CD8: spawns effects 0x228 and 0x229 at the owner's mPos in the
+    // empty slots 0x0 and 0x4.
+    void fn_80217CD8();
+    // 0x80217DE8: spawns effects 0x231 and 0x232 at the owner's mPos; not kept.
+    void fn_80217DE8();
+    // 0x80217ED4: spawns the six effects of lbl_8046A5A0 at the owner's mPos;
+    // not kept.
+    void fn_80217ED4();
+
+    /* 0x00 */ JPABaseEmitter* mEmitters[6];
+    /* 0x18 */ VaatiBoss_804A4958* mOwner;
 }; // Size: 0x1C
 
 // The member at 0x464 of Vaati: its destructor (dtor_801EB8CC, tu_801EB00C,
@@ -158,7 +195,10 @@ public:
     /* 0x568 */ cls_801E6AB8 field_0x568;
     /* 0x5B0 */ u8 field_0x5b0[0x5D1 - 0x5B0]; // not yet known
     /* 0x5D1 */ u8 field_0x5d1;
-    /* 0x5D2 */ u8 field_0x5d2[0x618 - 0x5D2]; // not yet known
+    /* 0x5D2 */ u8 field_0x5d2[0x5FC - 0x5D2]; // not yet known
+    /* 0x5FC */ s32 field_0x5fc; // effect layer (fn_8013CC50's first argument)
+    /* 0x600 */ JGeometry::TVec3f field_0x600; // not yet known
+    /* 0x60C */ JGeometry::TVec3f field_0x60c; // not yet known, an effect position
 }; // Size: 0x618 (the spawner's __nw__, li r3 0x618 before the 0x801FC280 ctor call)
 
 #endif
