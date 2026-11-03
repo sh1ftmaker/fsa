@@ -1404,7 +1404,7 @@ config.libs = [
         Object(NonMatching, "game/act_environment_control_2.cpp"),
         Object(NonMatching, "game/act_inextinguishable_flame.cpp"),
         Object(NonMatching, "game/act_bgm_change_npc.cpp"),
-        Object(NonMatching, "game/act_zoom.cpp"),
+        Object(Matching, "game/act_zoom.cpp"),
         Object(NonMatching, "game/tu_802E6EC4.cpp"),
         Object(Matching, "game/act_wave_se.cpp"),
         Object(Matching, "game/act_play_specified_se.cpp"),
