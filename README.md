@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **28.46 %** of the code and **6,312 / 11,557** functions match. 440 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **28.47 %** of the code and **6,318 / 11,557** functions match. 440 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -58,7 +58,7 @@ progress site, which goes down to single functions.
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 11.7 % of 3,573,784 bytes matched, 1,600 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 11.7 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 11.7 % of 3,573,784 bytes matched, 1,606 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 11.7 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.8 % of 630,852 bytes matched, 3,649 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.8 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -76,19 +76,19 @@ progress site, which goes down to single functions.
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 11.7 % of 3,573,784 bytes | 1,600 / 6,789 |
+| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 11.7 % of 3,573,784 bytes | 1,606 / 6,789 |
 | [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.8 % of 630,852 bytes | 3,649 / 3,702 |
 | [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
 | [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
 | [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **28.46 %** of 4,442,032 bytes | **6,312 / 11,557** |
+| **Whole DOL** | **28.47 %** of 4,442,032 bytes | **6,318 / 11,557** |
 
 <details><summary>Game code: 14 file groups</summary>
 
 | File group | Code matched | Functions |
 |---|--:|--:|
 | [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 11.4 % of 995,968 bytes | 327 / 1,540 |
-| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 13.1 % of 474,992 bytes | 307 / 1,332 |
+| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 13.1 % of 474,992 bytes | 313 / 1,332 |
 | [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 5.70 % of 437,936 bytes | 74 / 684 |
 | [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 2.58 % of 373,388 bytes | 36 / 398 |
 | [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 11.9 % of 305,692 bytes | 146 / 898 |
