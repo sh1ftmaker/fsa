@@ -30,8 +30,10 @@ bool fn_802DE814(void) {
 // FIXME: fn_802DE93C is not written yet.
 
 // FIXME: 93.9 %. The target keeps lbl_8053AAF8->0x4 in r4 and reloads its
-// mView (lwz 0xc) for the second stage pair; ours loads the view once. Maybe
-// an inline view getter in GameGlobals.h; not tried there.
+// mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
+// loads both once. No-ops: a local for lbl_8053AAF8->0x4, an inline view
+// getter defined in this file (with or without a local), a free inline on
+// GameRootSub04_801F856C; an inline isStage(stage, level) helper drops to 78 %.
 bool fn_802DE9A0(void) {
     if (lbl_8053AAF8->field_0x7f != 0) {
         if ((lbl_8053AAF8->field_0x4->mView->field_0x4 == 2 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) ||
@@ -51,8 +53,10 @@ bool fn_802DE9A0(void) {
 // FIXME: fn_802DEA34 is not written yet.
 
 // FIXME: 94.2 %. The target keeps lbl_8053AAF8->0x4 in r4 and reloads its
-// mView (lwz 0xc) for the second stage pair; ours loads the view once. Maybe
-// an inline view getter in GameGlobals.h; not tried there.
+// mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
+// loads both once. An inline view getter in this file is a no-op. Re-reading
+// the view into a local before each pair gives 96.9 % (field_0x4 reloaded,
+// mView still not) but has no precedent, so it is not used.
 bool fn_802DEABC(void) {
     if (lbl_8053AAF8->field_0x7f != 0) {
         if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 7 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) {
