@@ -87,7 +87,15 @@ struct GameRoot_8049EF20 {
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
-    /* 0xB8 */ u8 field_0xb8[0x11C - 0xB8]; // main allocates 0x11C bytes
+    /* 0xB8 */ u8 field_0xb8[0x108 - 0xB8];
+    // Stored by fn_80134CC0 (game/tu_80134C04.cpp, 0x80134CC0), which
+    // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
+    // is not known yet.
+    /* 0x108 */ s32 field_0x108;
+    /* 0x10C */ u8 field_0x10c[0x11C - 0x10C]; // main allocates 0x11C bytes
+    // Owner: game/tu_80134C04.cpp (0x80134CC0; defined there). Stores r4 at
+    // this+0x108 (stw).
+    void fn_80134CC0(s32 value);
 
     // 15 units / 17 calls. Stores at this+0x50, 0x58 and 0x84 (per review);
     // act_ending_map_skipper calls it with (15, 0).
