@@ -58,8 +58,8 @@ public:
     /* 0x18 */ s32 mIndex;
     /* 0x1C */ s32 field_0x1c;
     /* 0x20 */ u8 field_0x20[0x24 - 0x20];
-    // Nonzero while the window shows a message: fn_8037F1E4 returns it,
-    // fn_80388EEC tests it first.
+    // Window state byte (fn_80384C58 compares it with 5 and 8; callers of
+    // fn_8037F1E4, which returns it, compare with 1, 3 and 5).
     /* 0x24 */ u8 field_0x24;
     /* 0x25 */ u8 field_0x25[0x2C - 0x25];
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
@@ -160,9 +160,9 @@ extern cls_804AF32C lbl_8050DB0C;
 // Functions of game/tu_8037DF68.cpp other units call. Return types: callers
 // clrlwi 24 / clrlwi. the bool ones.
 extern "C" {
-// 4 units. field_0x114[window]->field_0x24: whether the player's window is
-// showing a message.
-bool fn_8037F1E4(s32 player);
+// 4 units. Returns field_0x114[window]->field_0x24, the window's state byte
+// (lbz with no bool conversion; tu_80301CD0 compares it with 3, 1 and 5).
+u8 fn_8037F1E4(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).
 s32 fn_8037EFB4(s32 player);
 // 16 units / 196 calls (the menu units). Copies the text of message msg

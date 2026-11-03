@@ -61,6 +61,8 @@ public:
     // cell, tile)); nothing else. this unused. pos: callers pass
     // &mPos; the body copies x and y to a stack TVec3f for fn_80226BC4.
     // tile: u16, as for fn_802A3884.
+    // `const TVec3f*` (here and below) is a guess: the asm can't tell it from
+    // a reference or a non-const pointer.
     void fn_802A381C(const JGeometry::TVec3f* pos, s32 layer, u16 tile);
     // 8 units / 31 calls. The same write, remembering the cell in
     // field_0x20, then fn_802D782C(1) on the view, and when the tile code
