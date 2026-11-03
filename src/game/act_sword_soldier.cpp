@@ -37,3 +37,9 @@ void fn_80154718(const JGeometry::TVec3f* pos) {
 f32 fn_80154744() {
     return lbl_8053AAF8->mRandom.get_ufloat_1();
 }
+
+// An actor's position (its mPos). Out of line in the original, called from
+// 4 other units on actors they got from fn_801F666C / fn_8015445C.
+JGeometry::TVec3f* fn_801544DC(ActorBase_804A5770* actor) {
+    return actor->getPos();
+}
