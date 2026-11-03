@@ -11,13 +11,16 @@
 
 // An element of the 4-entry array at 0x2A8 of Vaati, built by
 // __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
-// No vtable: named after that constructor. fn_801D789C (not written yet)
+// No vtable: named after that constructor. fn_801D789C (game/tu_801D6CEC.cpp)
 // is called on the element after its cls_8021BCBC has been set up.
 struct cls_801D6A88 {
     cls_801D6A88();
     void fn_801D789C();
 
-    /* 0x00 */ u8 field_0x0[0xC]; // not yet known
+    /* 0x00 */ u8 field_0x0; // cleared by fn_801D789C
+    /* 0x01 */ u8 field_0x1[0x4 - 0x1]; // not yet known
+    /* 0x04 */ s32 field_0x4; // cleared by fn_801D789C
+    /* 0x08 */ s32 field_0x8; // cleared by fn_801D789C
     /* 0x0C */ cls_8021BCBC field_0xc;
 }; // Size: 0x18
 
