@@ -549,6 +549,8 @@ def _map_objects(path, cache={}):
             if m:
                 out.setdefault((section, m[6]), {"placed": [], "unused": {}})["placed"].append(
                     (int(m[1], 16), int(m[2], 16), m[5]))
+                if m[5] == section and m[4] == "1":
+                    out.setdefault(("starts", section), []).append((int(m[1], 16), m[6]))
         cache[path] = out
     return cache[path]
 
@@ -621,12 +623,32 @@ def check_dead_data(e, elf, name, mp):
     return (sec, lo, nxt - lo)
 
 
-def check_dead_layout(elf, sec, rem, mp, name):
+def _unused_line(elf, mp, name, sec, sym):
+    """The map's single UNUSED line for sym in this object and section, as
+    evidence _dead_in_map accepts (so its size is checked too), or None."""
+    block = _map_objects(mp).get((elf.names[sec], name), {"placed": [], "unused": {}})
+    ns = block["unused"].get(sym[0], [])
+    if len(ns) != 1:
+        return None
+    ev = {"line": ns[0], "text": _map_lines(mp)[ns[0] - 1]}
+    return ev if _dead_in_map(elf, mp, name, sec, sym, ev) else None
+
+
+def _container(elf, r, off):
+    src = [x for x in elf.syms if x[5] == r and x[2] and x[1] <= off < x[1] + x[2] and x[4] in (STT_OBJECT, STT_FUNC)]
+    return src[0] if len(src) == 1 else None
+
+
+def check_dead_layout(elf, sec, rem, mp, name, entries):
     """The stripped section must have the layout the link gave this object's
     section: every kept sized symbol at the offset (from the object's section
-    start) and with the size the map places it at; and no live relocation may
-    reach the section through its section symbol at or past the first removed
-    byte (its addend isn't moved). Returns why not, or None."""
+    start) and with the size the map places it at, and the next object's
+    section in the layout 0 to 7 bytes (alignment) after the stripped end.
+    No live relocation may reach the section through its section symbol, or a
+    size-0 label of it, at or past the first removed byte (its addend isn't
+    moved); a size-0 label any allocated relocation targets must be listed
+    UNUSED for this object, and so must each of its referencers, as the
+    manifest's `anchors` say. Returns why not, or None."""
     secname = elf.names[sec]
     objs = _map_objects(mp)
     block = objs.get((secname, name), {"placed": [], "unused": {}})["placed"]
@@ -641,20 +663,35 @@ def check_dead_layout(elf, sec, rem, mp, name):
         got = [p for p in block[1:] if p[2] == x[0]]
         if len(got) != 1 or (got[0][0] - start, got[0][1]) != (new, x[2]):
             return f"the map doesn't place {x[0]} at 0x{new:x}, size 0x{x[2]:x}, of the stripped section"
+    order = objs.get(("starts", secname), [])
+    idx = [i for i, o in enumerate(order) if o[1] == name]
+    if len(idx) != 1 or idx[0] + 1 >= len(order):
+        return f"the map has no object after this one's {secname} to bound its end"
+    gap = order[idx[0] + 1][0] - (start + elf.sh[sec][5] - sum(n for _, n in rem))
+    if not 0 <= gap < 8:
+        return f"the next object in the map starts {gap} bytes after the stripped end, not within alignment"
     first = min(o for o, _ in rem)
+    anchors = {}
     for r, h in enumerate(elf.sh):
         if not h[2] & SHF_ALLOC:
             continue
         for off, si, add in elf.relocs(r):
             t = elf.syms[si]
-            if t[4] != STT_SECTION or t[5] != sec or t[1] + add < first:
+            if t[5] != sec or t[2] and t[4] != STT_SECTION:
                 continue
-            src = [x for x in elf.syms if x[5] == r and x[2] and x[1] <= off < x[1] + x[2] and x[4] in (STT_OBJECT, STT_FUNC)]
-            blk = objs.get((elf.names[r], name), {"placed": [], "unused": {}})
-            if not (len(src) == 1 and sum(y[0] == src[0][0] for y in elf.syms) == 1
-                    and len(blk["unused"].get(src[0][0], [])) == 1
-                    and not any(p[2] == src[0][0] for p in blk["placed"])):
+            src = _container(elf, r, off)
+            dead = src is not None and _unused_line(elf, mp, name, r, src) is not None
+            if t[4] != STT_SECTION:
+                if _unused_line(elf, mp, name, sec, t) is None or not dead:
+                    return f"its size-0 label {t[0] or '?'} is referenced, and it or {elf.names[r]}+0x{off:x} isn't listed UNUSED"
+                anchors.setdefault(t[0], set()).add((elf.names[r], src[0]))
+            if t[1] + add >= first and not dead:
                 return f"live {elf.names[r]}+0x{off:x} reaches {secname} through its section symbol past a removed object"
+    for e in entries:
+        got = {a.get("symbol"): {(x.get("section"), x.get("symbol")) for x in a.get("referencers", [])}
+               for a in e.get("anchors", []) if isinstance(a, dict)}
+        if got != anchors:
+            return f"{e.get('symbol')}: the manifest's anchors aren't the object's"
     return None
 
 
@@ -670,7 +707,7 @@ def check_weakdedup(problems):
     links = {}
     for key, rec in man.get("links", {}).items():
         links[key] = check_link_record(key, rec, expected) + (rec,)
-    by_stripped, seen, dd_sections, rec_maps = {}, set(), set(), {}
+    by_stripped, seen, dd_sections, rec_maps, dd_entries = {}, set(), set(), {}, {}
     for e in entries:
         tag = f"weakdedup {e.get('unit')}: {e.get('function')}"
         kind = e.get("kind", "weak_extab")
@@ -720,6 +757,7 @@ def check_weakdedup(problems):
                 problems.append(f"{tag}: {why}")
             else:
                 dd_sections.add((e["unit"], why[0]))
+                dd_entries.setdefault((e["unit"], e["section"]), []).append(e)
                 by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append(why)
             continue
         # The object: the extabindex entry points at a WEAK FUNC and at the extab label.
@@ -785,7 +823,8 @@ def check_weakdedup(problems):
         try:
             a = Elf(obj)
             diffs = [f"{a.names[sec]}: {why}" for (unit, sec) in sorted(dd_sections) if unit == u["name"]
-                     for why in [check_dead_layout(a, sec, removed[sec], rec_maps[u["name"]], Path(obj).name)] if why]
+                     for why in [check_dead_layout(a, sec, removed[sec], rec_maps[u["name"]], Path(obj).name,
+                                                       dd_entries[(u["name"], a.names[sec])])] if why]
             diffs += expected_stripped(a, removed)(Elf(stripped))
         except (OSError, ValueError, StopIteration, IndexError, struct.error) as err:
             diffs = [str(err)]
