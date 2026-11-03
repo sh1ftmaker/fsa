@@ -264,4 +264,14 @@ public:
 // 42 units. The collision boxes (see above).
 extern "C" CollisionBoxes_8020D58C* fn_8020D58C(void);
 
+// --- sprite draw (owner: game/tu_802F5040.cpp, not written yet) ---
+extern "C" {
+// Called by act_warp_cannon's fn_80130FAC with the object lbl_8053AB10->
+// field_0x20 in r3, a position in r4, 1 and 0 in r5 and r6, and 1.0f, -2.0f in
+// f1 and f2 (0x80131138). Its body is not read yet, so the argument meanings
+// are the caller's constants.
+void fn_802F601C(cls_804AA858* sprites, const JGeometry::TVec3f* pos, s32 a, s32 b, f32 scaleX,
+                 f32 scaleY);
+}
+
 #endif
