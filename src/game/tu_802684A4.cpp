@@ -18,6 +18,23 @@ void Player_804A6F38::fn_80268B3C() {
     }
 }
 
+// Stores pos's x and y in field_0x324 when fn_80251AEC accepts it for this
+// player: the arg is 0x38 on field_0xd64 == 0, else 0x13.
+bool Player_804A6F38::fn_8026E5F8(const JGeometry::TVec2f* pos) {
+    if (field_0xd64 == 0) {
+        if (fn_80251AEC(0x38)) {
+            field_0x324.x = pos->x;
+            field_0x324.y = pos->y;
+            return true;
+        }
+    } else if (fn_80251AEC(0x13)) {
+        field_0x324.x = pos->x;
+        field_0x324.y = pos->y;
+        return true;
+    }
+    return false;
+}
+
 cls_804A71A8::~cls_804A71A8() {
     field_0x4 = nullptr;
 }
