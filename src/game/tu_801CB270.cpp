@@ -55,6 +55,18 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
     return kind;
 }
 
+// Whether this is a live Bombchu ('BMTY'): its mFlags (0x230, past ActorBase)
+// is not 3.
+bool ActorBase_804A5770::fn_801CC8E4() {
+    bool result = false;
+    if (mActorId == ACTOR_BMTY) {
+        if ((s32)static_cast<EnemyBase_804A4808*>(this)->mFlags != 3) {
+            result = true;
+        }
+    }
+    return result;
+}
+
 // Whether `actor` is a Force Gem of kind 8-11.
 bool fn_801CC910(ActorBase_804A5770* actor) {
     bool result = false;
