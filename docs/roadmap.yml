@@ -219,7 +219,7 @@ phases:
         measure: {kind: code}
       - id: wave-actors
         title: "Wave 2: actor families"
-        desc: Enemies, NPCs and objects that share a base class. Twenty-one waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 99 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card.
+        desc: Enemies, NPCs and objects that share a base class. Twenty-two waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 102 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card.
         status: active
         covers: ["game:enemy_*_sob refs"]
         measure: {kind: code}

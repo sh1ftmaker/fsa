@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **28.92 %** of the code and **6,426 / 11,557** functions match. 445 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **28.92 %** of the code and **6,426 / 11,557** functions match. 446 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -187,7 +187,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.9 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 15.3 % of the code matched.
-- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Twenty-one waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 99 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. Currently 12.1 % of the code matched.
+- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Twenty-two waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 102 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. Currently 12.1 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
