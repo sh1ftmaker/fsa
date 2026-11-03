@@ -18,6 +18,10 @@ s32 Player_804A6F38::fn_8023FC24() {
     return field_0xbec;
 }
 
+s32 Player_804A6F38::fn_80240644() {
+    return field_0xd60;
+}
+
 bool Player_804A6F38::fn_8023FF88() {
     return field_0x1200;
 }
