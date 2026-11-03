@@ -139,8 +139,6 @@ act_lotus	dtor	__dt__14Lotus_804AC330Fv	Lotus_804AC330	0x804AC330	new	new
 act_lotus	sinit	__sinit_act_lotus_cpp	-	-	new	new
 act_magic_circle	sinit	__sinit_act_magic_circle_cpp	-	-	new	-
 act_magic_circle_generator	sinit	__sinit_act_magic_circle_generator_cpp	-	-	new	-
-act_magic_jar	dtor	__dt__17MagicJar_804AF018Fv	MagicJar_804AF018	0x804AF018	new	new
-act_magic_jar	sinit	__sinit_act_magic_jar_cpp	-	-	new	new
 act_maiden_demo	sinit	__sinit_act_maiden_demo_cpp	-	-	new	-
 act_navi	sinit	__sinit_act_navi_cpp	-	-	new	-
 act_navi_maiden_crystal	dtor	__dt__12cls_804ADFE8Fv	cls_804ADFE8	0x804ADFE8	new	new
