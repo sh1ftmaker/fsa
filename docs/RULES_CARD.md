@@ -137,6 +137,11 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - A function-local singleton class: name it after the destructor its getter
   passes to `__register_global_object`; a class with no vtable, ctor or dtor:
   after its lowest-address function.
+- `fn_80158B5C` (cls_804A0160, the shadow sprite) calls: use `drawShadow()`
+  from game/DrawShadow.h (it loads the receiver last, as the original does).
+- New inline FUNCTIONS go in a small header included only where used, never
+  in a widely included one (GameGlobals.h, ActorBase.h): every inline adds
+  compiler @NNN labels to each includer and renumbers their split symbols.
 - A value kept in one register across a call: a local read once
   (`s32 layer = field_0x4;`) — the original read it once too.
 
