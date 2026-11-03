@@ -1371,7 +1371,7 @@ config.libs = [
         Object(NonMatching, "game/act_spreading_fire.cpp"),
         Object(NonMatching, "game/act_all_enemies_defeated_check_switch.cpp"),
         Object(Matching, "game/act_wait_switch.cpp"),
-        Object(NonMatching, "game/act_candlestick_switch.cpp"),
+        Object(Matching, "game/act_candlestick_switch.cpp"),
         Object(NonMatching, "game/act_check_switch.cpp"),
         Object(NonMatching, "game/act_switch_related_npc.cpp"),
         Object(NonMatching, "game/act_dropped_item.cpp"),
