@@ -262,6 +262,15 @@ def progress_count():
 def merge_into_grind(wt, branch, unit):
     lock = open(LOGS / "merge.lock", "w")
     fcntl.flock(lock, fcntl.LOCK_EX)
+    # Finish or undo a merge before honouring a stop; never leave grind half-checked.
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    try:
+        return _merge(wt, branch, unit)
+    finally:
+        signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
+
+
+def _merge(wt, branch, unit):
     pre = sh(["git", "rev-parse", "HEAD"], INTEG, check=True).stdout.strip()
     before = progress_count()
     if sh(["git", "merge", "-q", "--no-edit", branch], INTEG).returncode:
