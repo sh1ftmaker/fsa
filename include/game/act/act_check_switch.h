@@ -16,7 +16,7 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x230 */ s32 mState; // 0: waiting for the switch, 1: switch seen
-    /* 0x234 */ s32 mMode;  // field_0x90 & 0x1F, set in init(): 0 despawn, 1 latch, 2 hide
+    /* 0x234 */ s32 mMode;  // field_0x90 & 0x1F, set in init(): 0 despawn, 1 latch, 2 remove the actor (clears mAlive)
 }; // Size: 0x238
 
 #endif
