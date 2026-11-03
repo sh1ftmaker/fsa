@@ -88,6 +88,30 @@ any symbols.txt change (the gate accepts placeholder renames).
 - 38 medium units may hold several files: a boundary found inside one is a
   SHARED-EDIT for the coordinator (split stanza, new configure.py line).
 
+## Shared game headers (`include/game/`)
+
+Every game unit includes these instead of declaring its own copies. Each has
+one owner (wave 1: the `hdr/actor` agent); game-file agents never edit them
+and list what they need under SHARED-EDITS (offset, width, type, the
+function that shows it, and the evidence for any name). The owner applies
+reviewed edits on its branch; the coordinator merges them before the units
+that need them.
+
+| Header | Holds |
+|---|---|
+| `game/ActorBase.h` | `ActorBase` (placeholder name), the base class of every spawned actor: 0x230 bytes, vtable 0x804A5770 (19 slots: dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorBox`, `ActorSub120`, `ActorSub1DC` |
+| `game/ActorId.h` | `enum ActorId`: the 354 IDs the spawner fn_801F9484 accepts (`ACTOR_RAIL = 'RAIL'`), English names from docs/names/actors.tsv in comments |
+| `game/ActorManager.h` | `ActorManager` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` placeholders (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
+| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot`) and `lbl_8053AB10` (`GameRoot2`), the fields known so far, and their getters `fn_802D6A9C` / `fn_8013C824` |
+
+Conventions for game code: vectors are `JGeometry::TVec3f` (mkdd's
+`JSystem/JGeometry.h`: its `psq_l`/`psq_st` copy is the game's), matrices
+dolphin's `Mtx`. Unnamed functions are declared `extern "C"` under their dtk
+names so relocations match; a unit that defines one renames it in the
+header and symbols.txt together (a SHARED-EDIT). Derived actor classes:
+`class ActorFoo : public ActorBase`, constructor `ActorFoo() {}` plus their
+own members; the spawner's unit holds inline copies of many of them.
+
 ## Merge commit messages
 
 `<unit> matches (N/N)` or `<unit>: <what> (n/N functions)`, then a short body:
