@@ -3,6 +3,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/act/tu_801D8400.h"
+#include "game/act/tu_801DAC6C.h"
 
 // FIXME: 98.39%. Only register allocation of the three colour adds differs: the
 // target loads byte 0x4c into r7 and adds in place (add r7, r7, r3); this
@@ -27,7 +28,7 @@ void cls_804A4C58::draw() {
             mtx[2][2] = 1.0f;
             params.mMtx = mtx;
         }
-        s32 d = fn_801DAD2C(fn_801DAC6C());
+        s32 d = fn_801DAC6C()->fn_801DAD2C();
         params.field_0x14.mColor.r += d;
         params.field_0x14.mColor.g += d;
         params.field_0x14.mColor.b += d;

@@ -502,13 +502,13 @@ struct Sequencer_801DAA24;
 extern "C" const char* fn_801DA938(Sequencer_801DAA24* seq);
 extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
 
-// game/tu_801DAC6C.cpp (owner unit, not written yet). The guarded static in .bss at 0x804C92D0 (constructed on first
-// use by fn_801DAC6C, flag lbl_8053AC28); named after that function. Words 0x0
-// and 0x4 start at -1 (0x4 is an actor serial: fn_801DAD2C looks that actor up
-// and returns fn_801DC264 of it, or 0).
-struct Singleton_801DAC6C;
-extern "C" Singleton_801DAC6C* fn_801DAC6C();
-extern "C" s32 fn_801DAD2C(Singleton_801DAC6C* obj);
+// game/act_frostare_tail.cpp (owner unit, not written yet): takes an actor
+// (a result of ActorManager_804A5800::fn_801F666C; reads fields 0xD8, 0xDC and
+// 0x278) and returns a value 0-255 (clrlwi 24 in the body); callers use it
+// as an int without extending it (declared s32: a u8 adds a clrlwi at the call).
+// Called by game/tu_801DAC6C.cpp.
+class ActorBase_804A5770;
+extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 
 // game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
 // (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:
