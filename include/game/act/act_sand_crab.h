@@ -16,9 +16,9 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x230 */ s32 field_0x230; // state: 0 and 2 wait, 1 walks (in update)
-    /* 0x234 */ s32 field_0x234; // counts down; reloads to 8 (2 in state 2)
-    /* 0x238 */ s32 field_0x238; // counts down; state timer
-    /* 0x23C */ s32 field_0x23c; // counts down; update does nothing until 0
+    // 0: walk-step timer (reloads to 8, 2 in state 2); 1: state timer; 2: update
+    // does nothing until it is 0. All count down.
+    /* 0x234 */ s32 mTimers[3];
     /* 0x240 */ s32 field_0x240; // 0 or 1, flips each time field_0x234 reloads; draw frame
     /* 0x244 */ s32 field_0x244; // only init writes it (0)
     /* 0x248 */ s32 field_0x248; // only init writes it (0)
