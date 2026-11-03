@@ -1085,7 +1085,7 @@ config.libs = [
         Object(Matching, "game/act_debug_warp_settings.cpp"),
         Object(NonMatching, "game/act_tower_collapse_effect.cpp"),
         Object(NonMatching, "game/act_temple_bti_display.cpp"),
-        Object(NonMatching, "game/tu_80104C3C.cpp"),
+        Object(Matching, "game/tu_80104C3C.cpp"),
         Object(NonMatching, "game/act_cloud.cpp"),
         Object(NonMatching, "game/act_room_transfer_lift.cpp"),
         Object(NonMatching, "game/act_wind_environment.cpp"),
