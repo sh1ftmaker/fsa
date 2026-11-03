@@ -204,9 +204,10 @@ public:
     // whose box overlaps actor's, skipping 'ARIJ' (Antlion) actors unless
     // `includeArij` (clrlwi. 24; callers pass their byte at 0x195); or -1.
     s32 fn_801F82CC(ActorBase_804A5770* actor, u8 includeArij, f32 maxDz);
-    // Unlink an actor from the manager's list (true if it was linked).
+    // Unlink an actor from the manager's list (1 if it was linked). Returns
+    // the u8 flag widened (clrlwi r3, r6, 24), not a bool test.
     // 1 unit / 1 call (ActorBase's destructor).
-    bool fn_801F8448(ActorBase_804A5770* actor);
+    s32 fn_801F8448(ActorBase_804A5770* actor);
     // Link an actor into the manager's list (true if newly linked).
     // 1 unit / 1 call (ActorBase_804A5770::fn_801F2B20).
     bool fn_801F84C4(ActorBase_804A5770* actor);

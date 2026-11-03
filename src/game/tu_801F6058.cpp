@@ -158,6 +158,28 @@ s32 ActorManager_804A5800::fn_801F7AB8(u32 id, s32 excludeSerial) {
     return count;
 }
 
+s32 ActorManager_804A5800::fn_801F8448(ActorBase_804A5770* actor) {
+    u8 unlinked = false;
+    if (actor->mListPrev != NULL) {
+        actor->mListPrev->mListNext = actor->mListNext;
+        if (actor->mListNext != NULL) {
+            actor->mListNext->mListPrev = actor->mListPrev;
+        }
+        unlinked = true;
+    } else if (actor == mListHead) {
+        mListHead = actor->mListNext;
+        if (mListHead != NULL) {
+            mListHead->mListPrev = NULL;
+        }
+        unlinked = true;
+    }
+    if (unlinked) {
+        actor->mListPrev = NULL;
+        actor->mListNext = NULL;
+    }
+    return unlinked;
+}
+
 s32 ActorManager_804A5800::fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90) {
     return fn_801F9484(id, arg_0x4, pos, arg_0x90, -1, -1);
 }
