@@ -118,7 +118,7 @@ copies yourself, see docs/COORDINATOR.md) and kept weak copies are diffed
 as compiled.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,611 of 11,561 functions, 840,140 of 4,442,088 bytes of code (18.91 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,477 / 3,702 functions (94.6 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 285 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,612 of 11,561 functions, 840,368 of 4,442,088 bytes of code (18.92 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,477 / 3,702 functions (94.6 %); Dolphin SDK 607 / 614 functions (99.8 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 286 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
@@ -166,6 +166,46 @@ until someone checks it the same way.
    no `asm` blocks standing in for functions that were written in C, no
    matching-only hacks where a natural construct exists.
 
+6. **Binary blobs are extracted, never written or committed.** Only two
+   kinds qualify: non-PowerPC code (DSP or other co-processor microcode) and
+   byte-exact copies of an asset file. Each one is listed in
+   `config/G4SE01/blobs.txt` (coordinator-only, citing a review) and in
+   `config/G4SE01/config.yml`'s `extract:` list (dtk-template's mechanism:
+   `symbol`, `header: assets/<path>.inc`, `header_type: raw`). `dtk dol
+   split` writes it from the user's own `orig/sys/main.dol` to
+   `build/G4SE01/include/assets/`, and the listed unit includes it inside the
+   array's initializer:
+
+   ```c
+   static u8 lbl_804985D0[0x380] = {
+   #include "assets/dolphin/gba/GBAKey_ucode.inc"
+   };
+   ```
+
+   Never for anything else: PowerPC code, strings, constants, jump tables,
+   vtables, structs and tables the code uses are written as C. `.incbin`
+   stays banned. Hand-typed bytes are also banned, and **review is the real
+   enforcement**: `check_byte_arrays` in `gate.py` is only a tripwire. It
+   fails a changed file that gains large integer-literal initializers, bare
+   literal lists or escaped string bytes, unless blobs.txt has an `array`
+   line for the file. A determined writer can get around it, and a reviewer
+   who sees that is looking at a REJECT.
+
+   `check_blobs` checks each blob against symbols.txt and splits.txt (a data
+   section, exact address and size, at most 0x2000 bytes, inside its unit),
+   and against dtk's split of the original (no relocations, no vtable or RTTI
+   names). Before checking include paths it normalizes them the way MWCC
+   resolves them: continuations spliced, `\` read as `/`, any case. It fails
+   on:
+   - an `assets/` include that isn't allowlisted, comes from another file or
+     sits under `#if`;
+   - any non-blob include inside an initializer;
+   - an include path naming `build/`, and a computed `#include`;
+   - a configure.py include root under `build/` other than
+     `build/{version}/include`;
+   - a tracked symlink, a tracked file under any directory named `assets`
+     (any case), or a tracked file named like an extracted header.
+
 ## Code quality (KATAM / TP style)
 
 - Real names and real types. Use the SDK's and JSystem's own names (from
@@ -201,7 +241,9 @@ Then do the data splits (rule 2) by hand or with the donor's own
 ## Repo hygiene
 
 - Don't push without being asked.
-- Never commit game data: `orig/`, `build/`, disc images, extracted assets.
+- Never commit game data: `orig/`, `build/`, disc images, extracted assets
+  (blobs come from `orig/` at build time, rule 6; `gate.py` checks it, and
+  bans tracked `assets/` directories anywhere in the repo).
 - Archived history: branch `archive/pre-matching-main` has the old m2c /
   port-agent pipeline and TWW game files; `archive/recomp-game-decomp` has the
   recomp-era game-code work.

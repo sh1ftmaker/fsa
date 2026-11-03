@@ -177,6 +177,71 @@ starts), update its `status` in `docs/roadmap.yml` in the same merge
 commit**, and add a `landed:` commit for milestones that finished. Unknown
 library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 
+## Binary blobs (`config.yml` `extract:`, `blobs.txt`)
+
+A unit whose data holds a blob with no C source form gets it the way
+tp/melee/oot-gc do. GBAKey's 0x380 bytes of GBA key-exchange DSP microcode is
+the first. The unit needs two entries:
+- a line in `config/G4SE01/blobs.txt`: symbol, section, address, size, unit,
+  header, review, justification;
+- an `extract:` entry in `config/G4SE01/config.yml`: `symbol`, `header:
+  assets/<lib path>/<name>.inc`, `header_type: raw`.
+
+`dtk dol split` writes the raw bytes from `orig/sys/main.dol` into
+`build/G4SE01/include/assets/`. The unit includes that header inside the
+array initializer. `build/G4SE01/include` is an include root of every cflags
+set: dtk-template's `cflags_base` has it second (also for the PCH), and
+`cflags_sdk` has it last. A fresh clone builds with `configure.py` + `ninja`,
+because the split runs before build.ninja is regenerated and before anything
+compiles.
+
+Allowed: non-PowerPC code (DSP or other co-processor microcode), or a
+byte-exact copy of an asset file. Each needs its own review and a blobs.txt
+line. Anything with a C source form is not allowed: PowerPC code, strings,
+constants, jump tables, vtables, structs, tables the code uses. Those are
+written as C, even when a C initializer could spell out the same bytes.
+blobs.txt and config.yml are protected and coordinator-only, so a worker
+asks for an entry in its report.
+
+The gate has two checks. `check_blobs`:
+- reads config.yml with `yaml.safe_load` and fails on any other shape or key;
+- requires the extract list and blobs.txt to match 1:1;
+- checks each blob in symbols.txt (`.data`/`.rodata`/`.sdata`/`.sdata2`
+  object, exact address and size, at most 0x2000) and splits.txt (inside the
+  unit's range);
+- rejects `__vt__`/`__RTTI__`/compiler symbols, and any blob whose range holds
+  relocations in dtk's split of the original;
+- normalizes include paths as MWCC under wibo resolves them (continuations
+  spliced, `\` as `/`, `./` dropped, casefolded);
+- lets only the listed unit include the header, exactly once and
+  unconditionally;
+- fails other `assets/` includes, any non-blob include inside an
+  initializer, include paths naming `build/`, computed includes and
+  configure.py include roots under `build/` other than
+  `build/{version}/include`;
+- fails tracked symlinks, tracked files under any directory named `assets`
+  (any case, anywhere), and tracked files named like a blob header.
+
+`check_byte_arrays` is a tripwire; review is the real enforcement. On any
+changed source-like file (headers and `.inc` too) it fails:
+- an edited initializer of more than 64 integer literals or 128 bytes' worth;
+- a gain of 256 literals or 512 bytes' worth across the file's initializers;
+- a bare literal list over 64 that grew;
+- a gain of more than 128 escaped bytes in string literals.
+
+Every number counts, including casts and `+0`; hex words count by their
+digits. An `array` line in blobs.txt exempts a file.
+
+Donor files already on `matching` hold large literal arrays, and only an
+edit inside one of them, or growth, trips the check. There are about 17 such
+files, for example:
+- DSP microcode: JAudio `dsptask.c`, `CARDUnlock.c`, `OSAudioSystem.c`;
+- lookup tables: `JASCalc.cpp`, `JASDSPInterface.cpp`, `JPAResource.cpp`,
+  `JUTDirectPrint.cpp`, `JUTResFont.cpp`, `J2DWindowEx.cpp`, `vi.c`,
+  `thp.h`, `rom_tables.h`, MSL `ctype.c`, `e_rem_pio2.c`, `k_rem_pio2.c`.
+
+To list them, run `check_byte_arrays` over every tracked file.
+
 ## Rakes (each cost time once)
 
 **Tooling and worktrees**

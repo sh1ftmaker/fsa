@@ -11,3 +11,12 @@ symbols_known: false
 fill_gaps: true
 
 modules: []
+
+# Binary blobs with no source form, extracted from orig/ at build time into
+# build/G4SE01/include/assets/ (never committed). Sources include them as
+# "assets/..."; tools/gate.py allows only the headers listed here.
+extract:
+# GBAKey.c: the GBA key-exchange DSP microcode (0x380 bytes of DSP code).
+- symbol: lbl_804985D0
+  header: assets/dolphin/gba/GBAKey_ucode.inc
+  header_type: raw

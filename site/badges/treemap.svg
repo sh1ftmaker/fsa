@@ -62,7 +62,7 @@
 <rect x="798.1" y="394.4" width="29.0" height="19.1" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
 <rect class="rise" x="798.1" y="394.4" width="29.0" height="19.1" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
 <rect x="828.0" y="353.8" width="16.5" height="30.7" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
-<rect class="rise" x="828.0" y="354.8" width="16.5" height="29.7" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect class="rise" x="828.0" y="353.8" width="16.5" height="30.7" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
 <rect x="845.5" y="353.8" width="14.8" height="30.7" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
 <rect class="rise" x="845.5" y="353.8" width="14.8" height="30.7" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
 <rect x="828.0" y="385.5" width="14.0" height="14.1" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
@@ -127,7 +127,7 @@
 <g fill="#ef5b52"><path d="M143.7 440L149.2 451L138.2 451Z"/></g>
 <text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 94.6 %</text>
 <g fill="#3d9cf0"><circle cx="283.5" cy="445.5" r="5.5"/></g>
-<text x="295.0" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.6 %</text>
+<text x="295.0" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.8 %</text>
 <g fill="#c35ee6"><rect x="389" y="440" width="11" height="11" rx="1.5"/></g>
 <text x="406.0" y="450" font-size="12.5" fill="#b4b9d8">GX 95.8 %</text>
 <g fill="#d29a2e"><path d="M498.3 440L499.62 444.18L503.8 445.5L499.62 446.82L498.3 451L496.98 446.82L492.8 445.5L496.98 444.18Z"/></g>

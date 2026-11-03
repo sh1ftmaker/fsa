@@ -1,11 +1,16 @@
 #include "dolphin/GBAPriv.h"
 #include "string.h"
 
-// The two DSP task callbacks have no known names (fn_ placeholders).
-// FIXME: GBA key-exchange DSP microcode (0x380 bytes at 0x804985D0). No
-// licensed source has it, and it can't be copied out of main.dol, so this
-// unit's .data (and __GBAX02's reference to it) can't match.
-static u8 ucode[0x380] ATTRIBUTE_ALIGN(32) = { 0 };
+// The two DSP task callbacks and the microcode have no known names, so they
+// keep their symbols.txt placeholders (fn_, lbl_).
+
+// GBA key-exchange DSP microcode (0x380 bytes at 0x804985D0). It is DSP code
+// with no source form, so it isn't written here: the build extracts it from
+// orig/sys/main.dol (config.yml extract:) into build/G4SE01/include/assets/.
+// No ATTRIBUTE_ALIGN(32): the original is only 16-byte aligned (0x...D0).
+static u8 lbl_804985D0[0x380] = {
+#include "assets/dolphin/gba/GBAKey_ucode.inc"
+};
 
 static inline s32 F152(DSPTaskInfo* task) {
     s32 chan;
@@ -57,14 +62,21 @@ void __GBAX02(s32 chan, u8* readbuf) {
     DCInvalidateRange(&param->keyA, 32);
     DCFlushRange(param, 32);
 
-    gba->task.priority = 255;
-    gba->task.iram_mmem_addr = (u16*)OSCachedToPhysical(ucode);
-    gba->task.iram_length = sizeof(ucode);
-    gba->task.iram_addr = 0;
-    gba->task.dsp_init_vector = 0x10;
-    gba->task.init_cb = fn_80076EBC;
-    gba->task.res_cb = NULL;
-    gba->task.done_cb = fn_80076F98;
-    gba->task.req_cb = NULL;
-    DSPAddTask(&gba->task);
+    // The task pointer is taken only now, in its own block: the original
+    // computes it after the cache calls (a function-scope local set at the
+    // top, or no local at all, allocates registers differently).
+    {
+        DSPTaskInfo* task = &gba->task;
+
+        task->priority = 255;
+        task->iram_mmem_addr = (u16*)OSCachedToPhysical(lbl_804985D0);
+        task->iram_length = sizeof(lbl_804985D0);
+        task->iram_addr = 0;
+        task->dsp_init_vector = 0x10;
+        task->init_cb = fn_80076EBC;
+        task->res_cb = NULL;
+        task->done_cb = fn_80076F98;
+        task->req_cb = NULL;
+        DSPAddTask(task);
+    }
 }
