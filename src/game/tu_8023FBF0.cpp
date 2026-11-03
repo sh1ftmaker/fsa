@@ -164,3 +164,7 @@ bool Player_804A6F38::fn_8024C458() {
 JGeometry::TVec3f* Player_804A6F38::fn_8024E018() {
     return &field_0x2b8;
 }
+
+s8 Player_804A6F38::fn_8024EE0C() {
+    return field_0x3d9;
+}

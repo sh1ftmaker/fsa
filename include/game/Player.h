@@ -254,7 +254,10 @@ public:
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
-    /* 0x03B8 */ u8 field_0x3b8[0x3DC - 0x3B8];
+    /* 0x03B8 */ u8 field_0x3b8[0x3D9 - 0x3B8];
+    // Signed count read by fn_8024EE0C (tu_8023FBF0) and fn_8023CB24.
+    /* 0x03D9 */ s8 field_0x3d9;
+    /* 0x03DA */ u8 field_0x3da[0x3DC - 0x3DA];
     /* 0x03DC */ s32 field_0x3dc; // fn_80230CFC (2 without a player)
     /* 0x03E0 */ u8 field_0x3e0[0x3E8 - 0x3E0];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
