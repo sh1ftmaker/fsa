@@ -23,14 +23,14 @@ u8 j3dZModeTable[96];
 
 const J3DTexCoordInfo j3dDefaultTexCoordInfo[8] = {
 	// mTexGenType, mTexGenSrc, mTexGenMtx
-	{ GX_TG_MTX3x4, GX_TG_TEX0, GX_IDENTITY }, // Tex0
-	{ GX_TG_MTX3x4, GX_TG_TEX1, GX_IDENTITY }, // Tex1
-	{ GX_TG_MTX3x4, GX_TG_TEX2, GX_IDENTITY }, // Tex2
-	{ GX_TG_MTX3x4, GX_TG_TEX3, GX_IDENTITY }, // Tex3
-	{ GX_TG_MTX3x4, GX_TG_TEX4, GX_IDENTITY }, // Tex4
-	{ GX_TG_MTX3x4, GX_TG_TEX5, GX_IDENTITY }, // Tex5
-	{ GX_TG_MTX3x4, GX_TG_TEX6, GX_IDENTITY }, // Tex6
-	{ GX_TG_MTX3x4, GX_TG_TEX7, GX_IDENTITY }, // Tex7
+	{ GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY }, // Tex0
+	{ GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY }, // Tex1
+	{ GX_TG_MTX2x4, GX_TG_TEX2, GX_IDENTITY }, // Tex2
+	{ GX_TG_MTX2x4, GX_TG_TEX3, GX_IDENTITY }, // Tex3
+	{ GX_TG_MTX2x4, GX_TG_TEX4, GX_IDENTITY }, // Tex4
+	{ GX_TG_MTX2x4, GX_TG_TEX5, GX_IDENTITY }, // Tex5
+	{ GX_TG_MTX2x4, GX_TG_TEX6, GX_IDENTITY }, // Tex6
+	{ GX_TG_MTX2x4, GX_TG_TEX7, GX_IDENTITY }, // Tex7
 };
 
 const J3DTexMtxInfo j3dDefaultTexMtxInfo = {
