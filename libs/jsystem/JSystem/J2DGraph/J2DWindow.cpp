@@ -495,7 +495,10 @@ void J2DWindow::drawFrameTexture(JUTTexture* texture, f32 x0, f32 y0, f32 width,
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
 }
 
-// Incorrect Scheduling
+// FIXME: register allocation. The original keeps texture in r31, doInvertU in r30
+// and doInvertV in r29 and reuses r31 for the GX FIFO base after the inlined
+// drawFrameTexture's load; ours has texture in r29, doInvertU r31, doInvertV r30 and
+// the FIFO base in r8, which shifts every mask register after GXBegin.
 void J2DWindow::drawFrameTexture(JUTTexture* texture, f32 x0, f32 y0, bool doInvertU, bool doInvertV, bool doLoad)
 {
     drawFrameTexture(texture, x0, y0, texture->getWidth(), texture->getHeight(), doInvertU ? 0 : 0x8000, doInvertV ? 0 : 0x8000,
