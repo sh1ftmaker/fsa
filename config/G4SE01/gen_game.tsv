@@ -148,7 +148,6 @@ act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
-act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
 act_princess_zelda_motion_spawner	dtor	__dt__41PrincessZeldaMotionObjectSpawner_804A375CFv	PrincessZeldaMotionObjectSpawner_804A375C	0x804A375C	new	new
 act_princess_zelda_motion_spawner	sinit	__sinit_act_princess_zelda_motion_spawner_cpp	-	-	new	new
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
