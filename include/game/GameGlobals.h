@@ -28,7 +28,7 @@
 class ActorManager_804A5800;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
-struct J2DOrthoGraph;
+class J2DOrthoGraph;
 
 // lbl_8053AAF8->0x4->0xC, returned by fn_802D6A9C (type unknown; named after
 // that getter, no vtable or constructor known). The
@@ -117,7 +117,7 @@ public:
 
 // The objects at lbl_8053AB10->0x20, 0x2C and 0x30, named after their
 // vtables (stored at 0 by their constructors); no members declared yet.
-// 0x804AA858: game/tu_802F5040.cpp, constructor fn_802FFDEC, 0x11B9C bytes.
+// 0x804AA858: game/tu_802F5040.cpp, constructor fn_802FFDEC, 0xE464 bytes (lis 0x1; subi 0x1b9c at 0x8013C230).
 // Called with r3 = it by fn_802F9974 (197 sites), fn_802F86CC (143),
 // fn_802F9908, fn_802F745C, fn_802F6CF4, ... in 138 units.
 class cls_804AA858;
