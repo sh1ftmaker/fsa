@@ -114,3 +114,5 @@ f32 Player_804A6F38::fn_80246F28() {
     }
     return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
 }
+
+extern "C" void fn_80252FBC() {}
