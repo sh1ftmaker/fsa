@@ -516,6 +516,17 @@ To list them, run `check_byte_arrays` over every tracked file.
   Use the form tp/dolsdk2004 use in that function.
 - Original SDK `asm` functions (nofralloc) are source, not tricks; workers
   keep them and never add new ones.
+- `-sym on` is per JAudio directory (2026-11-03, PROVISIONAL: drop if any
+  Interface/Utility unit is later found to need -sym on). configure.py
+  builds JAudio/System and Task (`mkdd_JAudio`) with it, Interface
+  (`mkdd_JAudio_Interface`) and Utility (`mkdd_JAudio_Utility`) without.
+  Evidence: the honest report is identical per unit and per function both
+  ways, and the Matching set links SHA-1 OK both ways; `link_check.py
+  --unit` gives SHA-1 OK for JAISeq, JAISeMgr and JAUSectionHeap only with
+  it off (on, `-sym` moves `__dt__18JASCriticalSectionFv` /
+  `__ct__16JAISeCategoryMgrFv` / weak copies to the file end, where FSA
+  does not have them). System units need it on. Never per-unit flags: a
+  directory split mirrors how the original build would have set it.
 
 ## Evaluated and rejected: J3D word-copy `operator=` (2026-11-02)
 
