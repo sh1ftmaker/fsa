@@ -19,3 +19,16 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
     }
     field_0x238 = 0x31;
 }
+
+void PrincessZeldaDemo_8049D208::fn_80110198() {
+    cls_8049D140::draw();
+    if (field_0x230 == 0) {
+        if (field_0x2fc >= 0x13) {
+            fn_8010F7EC(0x21b);
+        } else if (field_0x2fc >= 0xf) {
+            fn_8010F7EC(0x274);
+        } else {
+            fn_8010F7EC(0x9b);
+        }
+    }
+}
