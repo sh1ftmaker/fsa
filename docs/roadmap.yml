@@ -204,7 +204,7 @@ phases:
       - id: shared-headers
         title: Shared headers, one owner each
         desc: The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
-        status: next
+        status: active
         covers: [game]
       - id: wave-small
         title: "Wave 1: small files and minigames"

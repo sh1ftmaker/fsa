@@ -96,9 +96,9 @@ regenerated with every merge; see [How it works](#how-it-works).
 
 <!-- now:start -->
 - **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 46.8 % of the split files Matching.
+- **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
 - **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. Currently 0 % of the code matched.
-- **Next** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
