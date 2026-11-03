@@ -6098,7 +6098,7 @@ game/tu_8036FB60.cpp:
 	.rodata     start:0x80474ED0 end:0x80474F98
 	.data       start:0x804AE390 end:0x804AE508
 	.bss        start:0x8050C840 end:0x8050CA00
-	.sbss       start:0x8053AD60 end:0x8053AD80
+	.sbss       start:0x8053AD60 end:0x8053AD70
 	.sdata2     start:0x80542DC0 end:0x80542E50
 
 game/act_tutorial_old_man.cpp:
@@ -6239,6 +6239,7 @@ game/tu_8037ACC4.cpp:
 	.ctors      start:0x8045C510 end:0x8045C514
 	.data       start:0x804AE9B0 end:0x804AE9C0
 	.bss        start:0x8050D800 end:0x8050D900
+	.sbss       start:0x8053AD70 end:0x8053AD78
 
 game/act_old_man.cpp:
 	extab       start:0x8000EBEC end:0x8000EC48
@@ -6269,6 +6270,7 @@ game/tu_8037DF68.cpp:
 	.rodata     start:0x804755A0 end:0x804755E0
 	.data       start:0x804AF070 end:0x804AF338
 	.bss        start:0x8050DB00 end:0x8050DF18
+	.sbss       start:0x8053AD78 end:0x8053AD80
 	.sdata2     start:0x805430B8 end:0x80543100
 
 game/act_great_fairy_bfry.cpp:
