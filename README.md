@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **19.73 %** of the code and **4,895 / 11,561** functions match. 348 of 891 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **19.73 %** of the code and **4,895 / 11,561** functions match. 349 of 891 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JSystem is at 97.7 % of functions; 51 are left in 21 files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed. Currently 84.3 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JSystem is at 97.7 % of functions; 51 are left in 21 files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed. Currently 84.8 % of the split files Matching.
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.8 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.

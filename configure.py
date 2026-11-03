@@ -922,7 +922,7 @@ config.libs = [
     },
     # J3D from projectPiki/pikmin2 (CC0), in its link order; TP path layout.
     MkddJSystemLib("J3DGraphBase", [
-        Object(NonMatching, "JSystem/J3DGraphBase/J3DSys.cpp", extra_cflags=["-O4,p"]),  # FIXME: pikmin2's fakeFunc (a fakematch) must go before this can be Matching
+        Object(Matching, "JSystem/J3DGraphBase/J3DSys.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphBase/J3DVertex.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphBase/J3DTransform.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphBase/J3DPacket.cpp", extra_cflags=["-O4,p"]),

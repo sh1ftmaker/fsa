@@ -33,3 +33,12 @@ Only blocker: the real symbol `j3dDefaultViewNo` is size 0x8 in symbols.txt (SHA
 - `fakeFunc` (pre-existing, from pikmin2's file) is the only thing that emits the J3DErrType
   message strings, which are in FSA's .rodata; it is local and dead-stripped. No donor
   has the real construct; left as it was.
+
+## w12-follow: fakeFunc removed, Matching
+
+pikmin2's `fakeFunc` (a dead local `char* msgs[]` whose only job was to emit the
+J3DErrType strings and their pointer table) is gone. The table is a function-local
+`static const char* const sErrMsg[]` in `J3DSys::ErrorReport(J3DErrType)`, the
+function those messages belong to (its release body is empty). .rodata stays 100 %
+(strings 0x804632E0..0x804633CC, then the 7-pointer table), every function 100 %,
+`link_check.py --unit` byte-identical; flipped to Matching.

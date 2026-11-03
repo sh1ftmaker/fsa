@@ -380,22 +380,21 @@ void J3DSys::reinitPixelProc()
 	GXSetZCompLoc(GX_TRUE);
 }
 
-// unused error messages from ErrorReport? the func is needed to get them to generate properly including the array of them
-static void fakeFunc()
-{
-	char* msgs[] = { "Success\n",
-	                 "J3DErrType : Material has No Material Animation\n",
-	                 "J3DErrType : Model Data is Locked\n",
-	                 "J3DErrType : Binary Resource is Null\n",
-	                 "J3DErrType : Out Of Memory\n",
-	                 "J3DErrType : Argument is Invalid\n",
-	                 "J3DErrType : Data is Invalid\n" };
-}
-
 /**
  * @note Address: 0x8005EB54
  * @note Size: 0x4
  */
-void J3DSys::ErrorReport(J3DErrType) const
+void J3DSys::ErrorReport(J3DErrType type) const
 {
+	// The release build prints nothing, but the message table indexed by
+	// J3DErrType is still emitted into .rodata (0x804632E0..0x804633E8).
+	static const char* const sErrMsg[] = {
+		"Success\n",
+		"J3DErrType : Material has No Material Animation\n",
+		"J3DErrType : Model Data is Locked\n",
+		"J3DErrType : Binary Resource is Null\n",
+		"J3DErrType : Out Of Memory\n",
+		"J3DErrType : Argument is Invalid\n",
+		"J3DErrType : Data is Invalid\n",
+	};
 }
