@@ -174,6 +174,12 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   copied into a NAMED local (e.g. `TVec3f playerPos;` declared at the top
   of the block, `playerPos = *fn_8023E724(player);`), and helpers take it by
   `const TVec3f&` (act_pull_switch).
+- Countdown stores through a base register (`addi rX, r31, 8` then
+  `stw r0, 0x234(rX)`): the countdowns are an array (`s32 mTimers[3]`)
+  stepped in a loop; MWCC unrolls it with that base (act_popo).
+- `fabs; frsp; fcmpo` against a float: the SDK's `FABS(x)` macro
+  (msl_include/math.h); plain `fabs` compares in double, `__fabsf` has no
+  frsp.
 - A range check compiled as `cmpwi hi; bgt; cmpwi lo; bge body`: an early
   return `if (x > hi || x < lo) return;` (a switch gives `cmpwi hi+1; bge`).
 - Positions built on the stack as 8-byte objects (y stored with x, frame

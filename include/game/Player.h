@@ -407,6 +407,21 @@ bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial
 // then fn_802729F0(player object, serial) (the per-player form of
 // fn_80239638); the caller stores the result in a byte.
 bool fn_80239718(s32 player, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Counts
+// (compared with 1 by the caller) the active players for which fn_80250030(player
+// object, serial) passes.
+s32 fn_80239108(s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Index
+// (0-3, read from the player object's 0x3DC) of the first active player for which
+// fn_80250030(player object, serial) passes, or -1 (fn_80239108 not positive).
+s32 fn_80238BC4(s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Calls
+// fn_8024FFB4(player object, serial) on every active player for which
+// fn_80250030 passes.
+void fn_80238E08(s32 serial);
 }
 
 #endif
