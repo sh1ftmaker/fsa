@@ -8,7 +8,7 @@ void cls_8049E9A8::update() {
     ActorBase_804A5770::update();
     switch (mState) {
     case 0:
-        if (fn_8012F3E4(fn_8012F554())) {
+        if (fn_8012F554()->fn_8012F3E4()) {
             vfunc_0x30(0xFF, true);
             mState = 1;
         }

@@ -38,7 +38,7 @@ void cls_8049E950::update() {
 void cls_8049E950::init() {
     ActorBase_804A5770::init();
     mTile = fn_80226850(&mPos, field_0x4);
-    fn_8012F530(fn_8012F554(), this);
+    fn_8012F554()->fn_8012F530(this);
 }
 
 cls_8049E950::~cls_8049E950() {}
