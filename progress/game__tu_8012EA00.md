@@ -12,8 +12,8 @@ Resistant: update__12cls_8049E8F8Fv (missing/extra, 98.51 %).
 
 SHARED-EDITS
 - include/game/Player.h: fn_8023EA28(s32)->bool, fn_8023561C(s32)->bool (extern "C", owner tu_8022AD64).
-- include/game/GameGlobals.h: class Unk_80119998 (member fn_80119998), extern "C" fn_80119DD0() (owner tu_80118384).
-- config/G4SE01/symbols.txt: fn_80119998 -> fn_80119998__12Unk_80119998Flllllll.
+- include/game/GameGlobals.h: class cls_80119E5C (member fn_80119998), extern "C" fn_80119DD0() (owner tu_80118384).
+- config/G4SE01/symbols.txt: fn_80119998 -> fn_80119998__12cls_80119E5CFlllllll.
 - config/G4SE01/gen_game.tsv: removed this unit's 2 rows.
 
 Next: setState switch shape and x/y register order.

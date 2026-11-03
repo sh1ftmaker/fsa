@@ -13,6 +13,7 @@ inline bool cls_8049E8F8::playersInside() {
     box.i.y += mPos.y;
     box.f.y += mPos.y;
     for (s32 i = 0; i < 4; i++) {
+        // (u8) gives the clrlwi on the mask that the original has.
         if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
             if (!fn_8023F264(i)) {
                 return false;
@@ -74,7 +75,7 @@ void cls_8049E8F8::update() {
             setState(2);
         }
         break;
-    case 2: // nothing in this unit sets state 2 from here
+    case 2: // done: nothing left to do once state 2 is entered
         break;
     }
 }
