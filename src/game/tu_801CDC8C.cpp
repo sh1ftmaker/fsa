@@ -2,7 +2,7 @@
 // per-frame driver and the helpers its descendants call.
 //
 // Not written yet: vfunc_0x80 (0x801CE694), fn_801CE800, fn_801CEA60,
-// fn_801CEBD0, fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
+// fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
 // fn_801CFA70, fn_801CFD68, fn_801D00B4,
 // fn_801D0338, fn_801D05F8, fn_801D08B4, fn_801D0B44.
 
@@ -16,6 +16,7 @@
 #include "game/ViewLayer.h"
 
 const bool lbl_8053EFC0 = false;
+const f32 lbl_8053EFC4 = 0.0f;
 
 // Stops sound `soundId` on this actor's sound object.
 void EnemyBase_804A4808::fn_801CDC8C(u32 soundId) {
@@ -290,6 +291,33 @@ s32 EnemyBase_804A4808::fn_801CF6B8() {
         dir = fn_801CF720(dir);
     }
     return dir;
+}
+
+// For each player whose box overlaps mBox (fn_801F285C) and that fn_801EAC20
+// accepts, a hit at the player's point goes to fn_801CB538 on this layer; one
+// hit plays sound 0x400D1. Returns whether any player was hit.
+bool EnemyBase_804A4808::fn_801CEBD0() {
+    bool hit = false;
+    JGeometry::TVec3f hitPos;
+    if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec2f xy;
+            s32 flag;
+            if (fn_801F285C(&xy, &flag, false, i) == i) {
+                fn_8023B6CC(i);
+                fn_802379E4(i, &mPos);
+                if (flag == 1 && field_0x1dc.fn_801EAC20(i)) {
+                    hitPos.set(xy.x, xy.y, lbl_8053EFC4);
+                    fn_801CB538(field_0x4, &hitPos, 0, 0);
+                    hit = true;
+                }
+            }
+        }
+        if (hit) {
+            fn_801F0E34(0x400D1, 0);
+        }
+    }
+    return hit;
 }
 
 // A random direction other than `dir`, or another free one when blocked.
