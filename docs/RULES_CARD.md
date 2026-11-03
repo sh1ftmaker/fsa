@@ -126,6 +126,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 
 ## Known game-code shapes (reviewed; natural source)
 - Unfused `fmuls, fmuls, fadds` squared sums: `square(a) + square(b)` (game/GameMath.h).
+- A position difference that the original routes through an extra stack TVec3f (xy psq_st, z reloaded, then a copy) is `a - b` with JGeometry's `TVec3::operator-` (pikmin2 form), e.g. `from.set(mPos - vel48)` (tu_80206B30 vfunc_0x58). Don't add a redundant named copy instead.
 - An extra unreachable `b` after a switch dispatch: an empty `case N: break;`
   for a state value nothing sets (one-line comment).
 - A bool the original materialises (li 1 / li 0, then `cmplwi 1`):
