@@ -37,7 +37,9 @@ public:
     /* 0x26C */ s32 field_0x26c; // layer, set by fn_802C1D30
     /* 0x270 */ u8 field_0x270[0x2AA - 0x270]; // not yet known
     /* 0x2AA */ u16 field_0x2aa; // screen column in the high byte, row in the low
-    /* 0x2AC */ u8 field_0x2ac[0x2B8 - 0x2AC]; // not yet known
+    /* 0x2AC */ u8 field_0x2ac[0x2B0 - 0x2AC]; // not yet known
+    /* 0x2B0 */ bool field_0x2b0; // set to true by fn_802C2BD0
+    /* 0x2B1 */ u8 field_0x2b1[0x2B8 - 0x2B1]; // not yet known
 }; // Size: 0x2B8
 
 #endif
