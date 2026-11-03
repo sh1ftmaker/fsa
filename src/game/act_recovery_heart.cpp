@@ -153,11 +153,11 @@ void RecoveryHeart_8049F4F0::update() {
             }
             fn_80236554(hitPlayer, 4, 0);
             mAlive = false;
-        } else if (fn_801F2718(0x5A4C4432) >= 0) {
+        } else if (fn_801F2718('ZLD2') >= 0) {
             fn_801F0E34(0x400C9, 0);
             lbl_8053AB9C = 4;
             mAlive = false;
-        } else if (fn_801F2718(0x5A4C4434) >= 0) {
+        } else if (fn_801F2718('ZLD4') >= 0) {
             fn_801F0E34(0x400C9, 0);
             lbl_8053ABEC = 4;
             mAlive = false;
