@@ -52,3 +52,10 @@ extern "C" void fn_801365A8() {
 extern "C" void fn_80139958() {
     fn_8037A708(lbl_8053AD68);
 }
+
+extern "C" void fn_802B1610(void* obj, s32 port, void* arg);
+
+// JUTGamePad C3ButtonReset callback (JUTResetBtnCb).
+extern "C" void fn_80139994(s32 port, void* arg) {
+    fn_802B1610(lbl_8053ACA8, port, arg);
+}
