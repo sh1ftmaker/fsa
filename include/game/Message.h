@@ -51,7 +51,11 @@ public:
     /* 0x148 */ s32 field_0x148;
     /* 0x14C */ u8 field_0x14c[0x19E - 0x14C];
     /* 0x19E */ u8 field_0x19e;
-}; // Size: 0x3C4 (only the first 0x19F bytes are declared)
+    /* 0x19F */ u8 field_0x19f[0x3B2 - 0x19F];
+    // fn_80390894 indexes it with the window's argument; the array runs to
+    // the end of the object, its real length is not known.
+    /* 0x3B2 */ u8 field_0x3b2[0x3C4 - 0x3B2];
+}; // Size: 0x3C4 (only the first 0x19F bytes and 0x3B2 on are declared)
 
 // One per player, field_0x114 of the manager (created there with
 // __nw__(0x5C)). Code in game/tu_80390818.cpp. Named after its vtable
@@ -87,6 +91,10 @@ public:
     // fn_80390C38: the field at 0x148 of the processor of the window's
     // state (5: field_0x4c, 8: field_0x48), -1 in any other state.
     s32 fn_80390C38();
+
+    // fn_80390894: the byte at index + 0x3B2 of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48), 0 in any other state.
+    u8 fn_80390894(s32 index);
 }; // Size: 0x5C
 
 // *lbl_8053AD78. Vtable 0x804AF070 (one slot, the destructor fn_8038D90C).
