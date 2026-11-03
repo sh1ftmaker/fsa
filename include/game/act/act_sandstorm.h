@@ -18,7 +18,7 @@ public:
     /* 0x08 */ virtual ~Sandstorm_804AA280();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw() {}
+    /* 0x20 */ virtual void draw();
 
     /* 0x230 */ ActorSoundObj_804578F4* mSound; // own sound object, made in init
     /* 0x234 */ JPABaseEmitter* mEmitter;       // the sandstorm effect

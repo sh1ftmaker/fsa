@@ -10,6 +10,8 @@
 #include "game/act/act_sandstorm.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
+void Sandstorm_804AA280::draw() {}
+
 void Sandstorm_804AA280::update() {
     Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     mPos244.x = -camera->field_0x4[0][3];
