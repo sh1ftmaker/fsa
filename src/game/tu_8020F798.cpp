@@ -12,7 +12,7 @@
 // FIXME: 99.31 %. Only the registers differ: the target keeps the table base in
 // r5 and the entry offset (mulli) in r4, this code the other way round.
 void Thief_804A5A30::draw() {
-    const ThiefTypeParams_804A5A30& type = lbl_8046A238[mType];
+    const Thief_804A5A30::TypeParams& type = lbl_8046A238[mType];
     JGeometry::TVec3f pos = mPos;
     fn_8020F80C(type.mSpriteFrame + mAnim.mCel);
     mPos.set(pos.x, pos.y, pos.z);
@@ -23,7 +23,7 @@ void Thief_804A5A30::fn_8020F80C(s32 frame) {
     Mtx mtx;
     if (field_0xc4 != 0) {
         u8 color = fn_8023BCD4(field_0xc8);
-        params.field_0x10.bytes[3] = color;
+        params.field_0x10.mColor.a = color;
         if (color == 0) {
             return;
         }

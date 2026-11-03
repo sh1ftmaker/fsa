@@ -15,7 +15,10 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x18]; // not yet known
+    /* 0x230 */ s32 field_0x230; // state: 0 waiting, 1 falling, 2 landed, 3 rising
+    /* 0x234 */ s32 field_0x234; // frames left in state 2
+    /* 0x238 */ u8 field_0x238[4]; // per player: fn_80239718 result
+    /* 0x23C */ JGeometry::TVec3f field_0x23c; // spawn position (init copies mPos)
 }; // Size: 0x248
 
 #endif

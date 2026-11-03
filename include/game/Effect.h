@@ -120,6 +120,18 @@ bool fn_8013CAA4(JPABaseEmitter* emitter, f32 angle);
 bool fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
                  bool adjust);
 
+// game/tu_801CB270.cpp (owner unit, not written yet; 4 caller units: tu_801EE24C,
+// tu_8021AF28, tu_801E5FC8, tu_8020F798). Moves the emitter in *emitter to pos with
+// fn_8013CB44 (adjust true); or, when it is flagged (bit 0x8 of its word
+// 0xF4) and has no particles left (0xD0 + 0xDC == 0), deletes it with
+// JPAEmitterManager::forceDeleteEmitter and sets *emitter to NULL. Does
+// nothing for a NULL emitter.
+void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth);
+// game/tu_801CB270.cpp (owner unit, not written yet; 3 caller units: tu_801EE24C,
+// tu_8021AF28, tu_8020F798). NULL-checks the emitter, then sets its status bits
+// 0x40 and 0x1 (word 0xF4) and word 0x24 to 1 (0x801CB7A0).
+void fn_801CB7A0(JPABaseEmitter* emitter);
+
 // 224 units / 1866 calls. Spawns effect `id` at pos and returns its emitter
 // (NULL when scale <= 0 or nothing was made). On layer 0 it places pos as
 // fn_8013CB44 does, picks the draw group from the id (a switch; 0xFF skips

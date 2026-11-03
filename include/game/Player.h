@@ -161,6 +161,10 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
+// rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
+// through fn_8024145C; takes a player index (act_rock passes field_0xc8).
+JGeometry::TVec3f* fn_8023E7B0(s32 player);
 // Per-player queries, by address (legend as above).
 // act_heart_container's update: results tested with clrlwi 24 (bool); fn_80230224's
 // second argument is clrlwi 24 (a bool) and its result is unused.
@@ -269,7 +273,7 @@ bool fn_80236BEC(s32 player);
 s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08); else -1
 JGeometry::TVec3f* fn_80238430(s32 player); // 1 unit. -> 0x324; else &lbl_804CF460
 // Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
-bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg); // reads pos+0/+4 only
 // 5+ units (act_thwomp_switch, act_warp, ...). Same shape as fn_8023A51C below.
 JGeometry::TVec3f* fn_8023A478(s32 player);
 bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
@@ -345,6 +349,21 @@ bool fn_80239638(s32 serial);
 // first active player for which fn_80273D44(player object, box, layer, out,
 // flag) passes, or -1 (also without a manager); *out is two floats.
 s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). If `player`
+// is active (slot present, byte 0xCAC set), fn_802732C4(player object, box,
+// layer): a box test, bool-tested (clrlwi 24) by the caller; else false.
+bool fn_8023B190(s32 player, const JGeometry::TBox2f* box, s32 layer);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
+// then fn_80272DCC(player object, box, layer, serial) (the per-player form of
+// fn_80239914); the caller ignores the result (0/1 from fn_80272DCC, 0 on the guard path).
+bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
+// then fn_802729F0(player object, serial) (the per-player form of
+// fn_80239638); the caller stores the result in a byte.
+bool fn_80239718(s32 player, s32 serial);
 }
 
 #endif

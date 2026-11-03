@@ -308,22 +308,12 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
                             bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
 
-// game/tu_801CB270.cpp (not written yet). 4 units. Given the address of an
-// emitter pointer: with *emitter set, moves it to pos by fn_8013CB44(*emitter,
-// pos, height, depth, true) or, when its view is not drawn, deletes it and
-// clears the pointer (0x801CB71C-0x801CB798).
-class JPABaseEmitter;
-extern "C" void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height,
-                            s32 depth);
-// game/tu_801CB270.cpp. NULL-checks the emitter, then sets the status bits 0x40 and 0x1 and a
-// word at 0x24 to 1 (0x801CB7A0).
-extern "C" void fn_801CB7A0(JPABaseEmitter* emitter);
-
 // game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
-// fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the id
-// (tail-calls fn_803075AC, or fn_80307830 for small ids); the bool and the
-// int are converted to 0/1 flags for the callee. The result is unused.
-extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d,
+// fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the
+// id only when e == 2; ids below 0x45 then go to fn_80307830, the others get
+// 0x400 added and go to fn_803075AC. d and e are converted to 0/1 flags for
+// the callee. The result is unused.
+extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d,
                             s32 e, s32 f);
 
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
@@ -371,6 +361,33 @@ struct cls_80204638 {
 };
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
+
+// game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
+// cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read
+// its current value (word 0x4), clamped to 0-47: fn_801DA938 returns that
+// entry of the string table lbl_804A4DA8; fn_801DA904 whether it is 28 or more.
+struct Sequencer_801DAA24;
+extern "C" const char* fn_801DA938(Sequencer_801DAA24* seq);
+extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
+
+// game/tu_801DAC6C.cpp (owner unit, not written yet). The guarded static in .bss at 0x804C92D0 (constructed on first
+// use by fn_801DAC6C, flag lbl_8053AC28); named after that function. Words 0x0
+// and 0x4 start at -1 (0x4 is an actor serial: fn_801DAD2C looks that actor up
+// and returns fn_801DC264 of it, or 0).
+struct Singleton_801DAC6C;
+extern "C" Singleton_801DAC6C* fn_801DAC6C();
+extern "C" s32 fn_801DAD2C(Singleton_801DAC6C* obj);
+
+// game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
+// (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:
+// fn_80211000 returns 0/1 (clrlwi 24) for "is the position inside the actor's
+// area" and fn_80210E90 writes the push-out vector to *out (r5; zeroed first).
+// Called by game/tu_80212AC0.cpp's fn_80212AF0.
+class ActorBase_804A5770;
+extern "C" {
+bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
+void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
+}
 
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
