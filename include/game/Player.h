@@ -882,6 +882,8 @@ JGeometry::TVec3f* fn_8023A478(s32 player);
 // of the first whose fn_802730D8 test (box, layer, flag, margin) hits, or -1 (also without a
 // manager). act_zoom passes (&box, field_0x4, false, 0.0f); tested against 0 with cmpwi.
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
+// Called by act_fairy_invincible.cpp's update() on the tracked player in state 1; the owning unit is not written yet, result unused.
+void fn_8023C830(s32 player);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
 s32 fn_8023E10C(s32 player);             // 5 units. -> word 0xCE4; else 0
