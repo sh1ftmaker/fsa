@@ -270,6 +270,7 @@ JSystem/JAudio/System/JASBank.cpp:
 	.text       start:0x80031484 end:0x8003189C
 	.ctors      start:0x8045BD6C end:0x8045BD70
 	.rodata     start:0x8045D1A8 end:0x8045D1D0
+	.bss        start:0x804B28C8 end:0x804B28D4
 	.sdata2     start:0x8053B1F0 end:0x8053B200
 
 JSystem/JAudio/System/JASAramStream.cpp:

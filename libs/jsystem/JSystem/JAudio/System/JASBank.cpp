@@ -4,10 +4,10 @@
 #include "JSystem/JAudio/System/JASWaveBank.h"
 #include "JSystem/JAudio/System/JASDriver.h"
 
-JASChannel *JASBank::noteOn(const JASBank *pBnk, u32 instId, u8 param_2, u8 vel, u16 prio,
+JASChannel *JASBank::noteOn(const JASBank *pBnk, int instId, u8 param_2, u8 vel, u16 prio,
                          JASChannel::Callback cb,
                          void *param_6) {
-    if (instId > 0xef) {
+    if (instId >= 0xf0) {
         return noteOnOsc(instId - 0xf0, param_2, vel, prio, cb, param_6);
     }
     if (!pBnk) {
@@ -66,7 +66,7 @@ JASChannel *JASBank::noteOn(const JASBank *pBnk, u32 instId, u8 param_2, u8 vel,
     }
     return channel;
 }
-JASChannel *JASBank::noteOnOsc(u32 wavePtr, u8 p2, u8 p3, u16 p4, JASChannel::Callback cb, void *ptr) {
+JASChannel *JASBank::noteOnOsc(int wavePtr, u8 p2, u8 p3, u16 p4, JASChannel::Callback cb, void *ptr) {
     static JASOscillator::Point const OSC_RELEASE_TABLE[2] = {
         {0x0001, 0x000A, 0x0000},
         {0x000F, 0x0000, 0x0000},
