@@ -19,9 +19,14 @@ public:
     // 0x3CF at mOwner's position raised by 6.
     void fn_802144F0();
 
+    // game/tu_802144F0.cpp: takes the actor serial at 0x30 (if >= 0) and
+    // marks that actor not alive, sets the serial to -1, deletes the emitter
+    // at 0x18 and calls mOwner's fn_801CDC8C(0x4000E).
+    void fn_80214900();
+
     /* 0x00 */ u32 field_0x0;
     /* 0x04 */ cls_804A64A8 field_0x4;
-    /* 0x18 */ u32 field_0x18;
+    /* 0x18 */ JPABaseEmitter* field_0x18;
     /* 0x1C */ cls_804A64A8 field_0x1c;
     /* 0x30 */ s32 field_0x30;
     /* 0x34 */ ActorBase_804A5770* mOwner; // the actor it is embedded in
