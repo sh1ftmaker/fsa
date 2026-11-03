@@ -116,6 +116,17 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 - Hung processes: wrap every build/run in `timeout`; start long-lived
   processes with `sbg`. One forgotten test run spun for two hours.
 
+- Provenance: twice an agent submitted qsort.c as "clean-room" when it was
+  a lightly reworded copy of PrimeDecomp's unlicensed file (same local and
+  macro names, a formatter leftover). Never take a clean-room claim on
+  trust: the reviewer compares against the unlicensed donor's same-named
+  file, and `tools/gate.py` (check_provenance) flags changed sources whose
+  distinctive identifiers mostly come from one. Reviewed false positives go
+  in `config/G4SE01/provenance_reviewed.txt`. The first copy reached the
+  public history; it was removed with git filter-repo and a force-push of
+  `matching` (2026-11-02). Only licensed donors may be read for copying
+  (gate.licensed_donors()).
+
 **Measuring honestly**
 - Only `build/G4SE01/report_honest.json` (every unit diffed,
   `functionRelocDiffs=data_value`) counts; progress.py, gate.py and
