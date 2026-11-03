@@ -206,11 +206,16 @@ public:
     // 2 units. Calls pane's vtable slot 0x24 (setAlpha) with
     // alpha * mPane's 0xB2 byte / field_0x28.
     void fn_804023D0(J2DPane* pane, u8 alpha);
-    // Not declared yet (their argument types are not proven): fn_80402940
-    // (16 units) and fn_80402B10 (5) step field_0x22 / field_0x20 up to
-    // r4 (s16) frames with a mode byte in r5; fn_80402628 (7) and
-    // fn_8040271C (3) step field_0x26 / field_0x24; fn_80402CE0 (5)
-    // resizes by (f1, f2); fn_8040245C (2).
+    // fn_80402940 (16 units) and fn_80402B10 (5) step field_0x22 / field_0x20
+    // up to frames (r4) with a mode byte in r5; the two floats are the
+    // targets' coordinates (the f1 one is 0.0 in game/tu_804432DC.cpp).
+    void fn_80402940(s16 frames, u8 mode, f32 x, f32 y);
+    void fn_80402B10(s16 frames, u8 mode, f32 x, f32 y);
+    // 3 units. Steps field_0x26 / field_0x24 up to frames, toward (x, y).
+    void fn_8040271C(s16 frames, f32 x, f32 y);
+    // 5 units. Resizes by (x, y).
+    void fn_80402CE0(f32 x, f32 y);
+    // Not declared yet: fn_80402628 (7 units); fn_8040245C (2).
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DPane* mPane;
