@@ -233,3 +233,6 @@ More evidence (waves 24–25):
   the null test is written (declaration in the condition gives 7 bodies,
   `!= NULL` gives 6). Inline decisions are sensitive to source form, so
   "callee X stays out of line" is not by itself proof of a flag.
+
+### Measured: whole-project `-inline auto,deferred` (2026-11-03)
+Building every game unit with `-inline auto,deferred` instead of `-inline auto`: fully matching game units 103 -> 1, game functions at 100 % 1745 -> 1578 (168 lost, 1 gained: tu_80222CC4's vfunc_0x90). tu_801D2C60, act_shadow_link_bow and tu_8021A570 got worse. FSA's game code is `-inline auto`; the jump-table .data order in tu_80222CC4 / tu_80221B44 / act_shadow_link_bow and tu_801D2C60's leading dtor need another explanation (e.g. those functions living in a different file or header than assumed), not a flag change.

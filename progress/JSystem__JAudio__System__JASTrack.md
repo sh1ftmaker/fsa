@@ -94,3 +94,8 @@ DWARF1 .line block to get its file. Nothing in the repo changed; still NonMatchi
   the guard flags `__init__memPool_...` that FSA's __sinit uses, so a generic (template)
   definition, not an explicit specialisation. Then decide on the header move with the coordinator.
   game/tu_80021840 stays blocked on this.
+
+## Donor check (2026-11-03)
+- mkdd (licensed) has no generic memPool_ definition in JASHeapCtrl.h; it puts explicit `template <>` specialisations in JASFakeMatch*.h headers included by JASTrack.cpp and others. Tried in FSA's JASTrack.cpp: __sinit_JASTrack_cpp drops to 32 % (no `__init__memPool_` guard tests), main.dol SHA-1 fails. FSA used the generic, guarded definition.
+- TP (JAudio2) uses a function-local static in `getMemPool_()`: a later design, no template static member, not FSA's.
+- TWW and Pikmin 2 use the older JAudio (JASystem / JAS), with no JASPoolAllocObject memPool_ to compare.
