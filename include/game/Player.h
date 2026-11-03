@@ -270,7 +270,10 @@ public:
     /* 0x0CE9 */ u8 field_0xce9;
     /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];
     /* 0x0CEE */ u8 field_0xcee;
-    /* 0x0CEF */ u8 field_0xcef[0xD60 - 0xCEF];
+    /* 0x0CEF */ u8 field_0xcef[0xCFE - 0xCEF];
+    // Returned by fn_80240870 (via fn_80234134).
+    /* 0x0CFE */ bool field_0xcfe;
+    /* 0x0CFF */ u8 field_0xcff[0xD60 - 0xCFF];
     // Another player's index, or negative for none: fn_80246F28 asks the
     // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
     // own field_0x120c / field_0x1224 instead when it is negative.
