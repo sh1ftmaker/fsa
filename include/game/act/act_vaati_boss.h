@@ -24,8 +24,7 @@ struct cls_801D6A88 {
 // An element of the 16-entry array at 0x308 of Vaati, built by
 // __construct_array in the actor's constructor (0x801D686C) with the
 // constructor 0x801D6A58 (game/act_vaati_boss.cpp). No vtable: named after
-// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp, not written yet) sets
-// the fields below.
+// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp) sets the fields below.
 struct cls_801D6A58 {
     cls_801D6A58();
     // 0x801D7874: sets field_0x0 to -1, the two bytes and the three floats to 0.
