@@ -1,6 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/act/act_slime_manager.h"
 #include "game/Map.h"
+#include "game/ActorManager.h"
+#include "game/act/tu_80209C14.h"
 
 const f32 lbl_8053F8E0 = 0.0f;
 
@@ -32,6 +34,18 @@ void cls_804A5BD8::fn_80207ECC() {
     case 1:
         fn_80208244(3);
         break;
+    }
+}
+
+void cls_804A5BD8::fn_802088B4() {
+    if (mState != 5) {
+        fn_80208244(5);
+    }
+    for (s32 i = 0; i < 4; i++) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSlots[i].mSerial);
+        if (actor != NULL) {
+            static_cast<cls_804A5D60*>(actor)->fn_80209D44();
+        }
     }
 }
 

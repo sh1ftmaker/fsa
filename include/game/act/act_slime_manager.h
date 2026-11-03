@@ -22,6 +22,10 @@ public:
     // 0x80208244, the state step (r4 = state); fn_80207ECC calls it with 3.
     void fn_80208244(int state);
 
+    // 0x802088B4: fn_80208244(5) unless already in state 5, then
+    // fn_80209D44 on each slot's actor (fn_801F666C of the slot's serial).
+    void fn_802088B4();
+
     // 0x80208924: the tile codes under mPos on this layer, from
     // fn_8022461C and fn_80226850.
     void fn_80208924();
