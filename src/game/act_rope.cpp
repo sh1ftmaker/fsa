@@ -34,6 +34,24 @@ void Rope_804A3A68::vfunc_0x94() {
     EnemyBase_804A4808::vfunc_0x94();
 }
 
+// Inlined state starts (the original inlines them at each call).
+inline void Rope_804A3A68::walk() {
+    field_0x250 = fn_801CD664(0x29) + 0x3c;
+    mTargetSpeed = 0.4f;
+    if (mState != 2) {
+        field_0x98 = fn_801CF6B8();
+    }
+    mStateTimer = 0;
+    mState = 1;
+}
+
+inline void Rope_804A3A68::idle() {
+    field_0x250 = fn_801CD664(0x3d) + 0x28;
+    mTargetSpeed = 0.0f;
+    mStateTimer = 0;
+    mState = 0;
+}
+
 // FIXME: 97.8 %. Only the integer registers of the target search differ: the
 // original keeps found in r27, dir in r28 and i in r29 (the zeros copied with
 // mr from r27, and found = dir = 1 as li/mr in the last branch); ours puts
@@ -101,13 +119,7 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
         if (mStateTimer >= field_0x250) {
-            field_0x250 = fn_801CD664(0x29) + 0x3c;
-            mTargetSpeed = 0.4f;
-            if (mState != 2) {
-                field_0x98 = fn_801CF6B8();
-            }
-            mStateTimer = 0;
-            mState = 1;
+            walk();
         }
         break;
     case 1:
@@ -118,37 +130,19 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
         } else if (mStateTimer >= field_0x250) {
             if (mState == 1) {
                 if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.35f) {
-                    field_0x250 = fn_801CD664(0x3d) + 0x28;
-                    mTargetSpeed = 0.0f;
-                    mStateTimer = 0;
-                    mState = 0;
+                    idle();
                 } else {
-                    field_0x250 = fn_801CD664(0x29) + 0x3c;
-                    mTargetSpeed = 0.4f;
-                    if (mState != 2) {
-                        field_0x98 = fn_801CF6B8();
-                    }
-                    mStateTimer = 0;
-                    mState = 1;
+                    walk();
                 }
             } else {
-                field_0x250 = fn_801CD664(0x29) + 0x3c;
-                mTargetSpeed = 0.4f;
-                if (mState != 2) {
-                    field_0x98 = fn_801CF6B8();
-                }
-                mStateTimer = 0;
-                mState = 1;
+                walk();
             }
         }
         break;
     case 3:
         if (mStateTimer > 1) {
             if (mPos.z <= 0.0f) {
-                field_0x250 = fn_801CD664(0x3d) + 0x28;
-                mTargetSpeed = 0.0f;
-                mStateTimer = 0;
-                mState = 0;
+                idle();
             }
         }
         break;

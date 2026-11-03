@@ -16,6 +16,9 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
+
+    void walk(); // start walking: new length, speed 0.4, a random direction
+    void idle(); // start standing: new length, speed 0
 }; // Size: 0x2A8
 
 #endif
