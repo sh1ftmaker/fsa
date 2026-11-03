@@ -58,8 +58,8 @@ public:
     void fn_801D22DC(s32 anim, s32 mode, bool keepFrame);
     // 48 units / 52 calls. Sets the key tables and computes mMinCel/mMaxCel
     // over all their keys. Callers pass a .data table of pointers (addi
-    // @l) and its count (li). The constness of the tables is a guess.
-    void fn_801D2608(s16** tables, s32 count);
+    // @l) and its count (li). The tables are read-only (.rodata).
+    void fn_801D2608(const s16** tables, s32 count);
 
     // Inline helpers: their code is repeated in fn_801D1C18, fn_801D1D60,
     // fn_801D1F14 and fn_801D22DC (fn_801D208C repeats fn_801D217C and
@@ -69,7 +69,7 @@ public:
     bool isLoopEnd();
     bool isStopped();
 
-    /* 0x00 */ s16** mTables; // per animation: (cel, duration) s16 pairs, ended by a cel < 0
+    /* 0x00 */ const s16** mTables; // per animation: (cel, duration) s16 pairs, ended by a cel < 0
     /* 0x04 */ s32 mTableCount;
     /* 0x08 */ s32 mAnim;    // -1 until fn_801D22DC
     /* 0x0C */ s32 mLength;  // in frames

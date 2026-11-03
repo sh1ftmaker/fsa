@@ -35,8 +35,7 @@ void cls_804A6400::init() {
     field_0x250 = -1;
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
-    // SpriteAnim_801D267C::fn_801D2608 takes s16** (constness a guess in SpriteAnim.h).
-    mAnim.fn_801D2608(const_cast<s16**>(lbl_8053A180), 1);
+    mAnim.fn_801D2608(lbl_8053A180, 1);
     mAnim.fn_801D22DC(0, 2, false);
 }
 
