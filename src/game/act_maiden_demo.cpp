@@ -32,6 +32,15 @@ void cls_8049D740::fn_801133C0() {
     mAnim.fn_801D1F14(0.0f);
 }
 
+cls_8049D740::~cls_8049D740() {
+    fn_801EE434(mEmitter298);
+    mEmitter298 = NULL;
+    fn_801EE434(mEmitter29c);
+    mEmitter29c = NULL;
+    fn_801EE434(mEmitter2a0);
+    mEmitter2a0 = NULL;
+}
+
 void cls_8049D740::vfunc_0x10() {
     s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_DMGL);
     ActorBase_804A5770* goal = fn_801F856C()->fn_801F666C(serial);
