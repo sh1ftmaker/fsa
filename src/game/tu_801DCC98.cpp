@@ -4,8 +4,10 @@
 #include "game/GameView.h"
 #include "game/act/tu_801DCC98.h"
 
-// FIXME: 99.58 %. Only the registers of the position compare differ: the
-// target keeps mPos.x in f2 and mPos.y in f1, ours the reverse.
+static inline bool inBox(const JGeometry::TBox2f* b, const JGeometry::TVec3f& p) {
+    return p.x >= b->i.x && p.y >= b->i.y && p.x < b->f.x && p.y < b->f.y;
+}
+
 void cls_804A5038::update() {
     mPos += field_0x3c;
     fn_8013CB44(mEmitter2a8, &mPos, 0, 0, true);
@@ -13,10 +15,7 @@ void cls_804A5038::update() {
     s32 layer = field_0x4;
     GameView_804A9950* view = fn_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    bool inside = false;
-    if (mPos.x >= box->i.x && mPos.y >= box->i.y && mPos.x < box->f.x && mPos.y < box->f.y) {
-        inside = true;
-    }
+    bool inside = inBox(box, mPos);
     if (!inside) {
         mAlive = false;
     } else if (fn_801F2B7C(field_0x114, -1, 24)) {
