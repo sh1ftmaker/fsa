@@ -690,9 +690,11 @@ config.libs = [
     ]),
     # JAudio/Interface and JAudio/Utility without -sym on. PROVISIONAL: drop
     # if any Interface/Utility unit is later found to need -sym on.
-    # JAISeq, JAISeMgr, JAUAudioMgr and JAUSectionHeap match only with it
-    # off (their weak copies stay in place, as in FSA); every other unit of
-    # the two directories compiles identically either way.
+    # JAISeq, JAISeMgr and JAUSectionHeap link only with it off (their weak
+    # copies stay in place, as in FSA); JAUAudioMgr links neither way (its
+    # .data vtable order differs). Every other unit of the two directories
+    # compiles identically either way. JAudio/System and Task need it on;
+    # which unit needs it is still to be found.
     MkddJSystemLib("mkdd_JAudio_Interface", [
         Object(Matching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIAudience.cpp", extra_cflags=["-O4,p"]),

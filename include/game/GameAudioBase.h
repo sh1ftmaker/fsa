@@ -35,8 +35,8 @@
 // instantiation matters: the function is never called and emits nothing.
 // The pool is JAUAudible<4>'s: JSystem's JAUAudioMgr.cpp, compiled from
 // mkdd's source (JAUAudience<4> member, so JAUAudible<4>), builds exactly
-// FSA's seven pools with this one fourth, all at FSA's addresses, and links
-// byte-identical under that name. Replace this with the real construct
+// FSA's seven pools with this one fourth, all at FSA's addresses, and the
+// pool's symbols match FSA's under that name. Replace this with the real construct
 // (likely the game's audience class, see GameAudio.h) once it is known.
 inline void FIXME_instantiateAudiblePool(JAUAudible<4>* audible) {
     delete audible;
