@@ -11,6 +11,8 @@
 
 cls_804AA6A0::~cls_804AA6A0() {}
 
+void cls_804AA6A0::draw() {}
+
 void cls_804AA6A0::update() {
     if (fn_80388EEC(mPlayer)) {
         vfunc_0x24();
@@ -29,9 +31,6 @@ void cls_804AA6A0::vfunc_0x24() {
     mAlive = false;
 }
 
-// FIXME: 96.08 %. Only the position of `lwz r5, 0x4(r30)` (field_0x4 for
-// fn_8038BD08): the original loads it before the copy of mPos, ours after
-// the other arguments (see act_talking_npc.cpp's update).
 void cls_804AA6A0::init() {
     mMsg = field_0x90 & 0xFFF;
     field_0x234 = (field_0x90 >> 12) & 0xF;
@@ -40,7 +39,7 @@ void cls_804AA6A0::init() {
     if (field_0x234 == mPlayer) {
         mEffectSerial = fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x4, &mPos,
                                                    (field_0x234 & 3) | 0x24, -1, -1);
-        fn_8038BD08(mPlayer, mMsg, field_0x4, mPos, 0x21);
+        open(field_0x4, mPos, 0x21);
     } else {
         mAlive = false;
     }
