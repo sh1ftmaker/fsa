@@ -38,6 +38,27 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
 - Notes for `start`: tell the worker what's already known about the unit
   (which names other units found, which donor has the right SDK version).
 
+## Harvesting names from the link (`tools/harvest_names.py`)
+
+After merges, once a full `ninja` ends in SHA-1 OK:
+
+```sh
+python3 tools/harvest_names.py -v        # list what it would change
+python3 tools/harvest_names.py --write   # apply, then rm build/G4SE01/config.json && ninja
+```
+
+It runs `dtk dol apply` (the linked ELF's names back into symbols.txt) on a
+scratch copy of the config and keeps only placeholders (`fn_`, `lbl_`,
+`*_80xxxxxx`) that a Matching unit's compiled object names at exactly that
+address (split range start + offset in the object) with the same size. A
+placeholder dtk guessed too large is split into the object's symbols when
+they tile it exactly (`lbl_8045E030` -> `atanhi`, `atanlo`, `aT`). Real
+symbols are never touched; everything else `dol apply` would do (scope
+changes, `@etb_`/`...data.0` names, names from dtk's own split objects) is
+dropped. The first run named 15 placeholders (gxData, ErrorTable,
+two_over_pi, the JASOscillator curve tables, ...). Commit the result like
+any symbols.txt change (the gate accepts placeholder renames).
+
 ## Merge commit messages
 
 `<unit> matches (N/N)` or `<unit>: <what> (n/N functions)`, then a short body:
@@ -126,6 +147,23 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   public history; it was removed with git filter-repo and a force-push of
   `matching` (2026-11-02). Only licensed donors may be read for copying
   (gate.licensed_donors()).
+
+- Common BSS (`.bss` 0x8052E184-0x80539BAC, the JSystem statics): JSystem
+  is built with `-common on`, so these sit after all other `.bss`, in link
+  order, and each unit owns its range as `.bss ... align:4 common`. The
+  common ranges must form one unbroken tail: an unsplit gap stays ordinary
+  `.bss` and moves in front of all commons. The GC 2.6 linker inflates the
+  first common of each object by the size of all its other commons, even
+  ones that resolve elsewhere or are dead-stripped, so symbols.txt holds
+  the real (uninflated) size of that first symbol, and the commons that take
+  no space here are `stripped` symbols (sEndMesgQueue__7JKRTask, the
+  JASTrack/JASChannel memPool_ commons, JAUAudience's unk_common_8052E78C).
+  dtk's guess of the inflated size (j3dSys 0x1A4 instead of 0x11C) shifted
+  .sdata by 0x88 and broke the SHA-1 in the first J3D import.
+  An object's inflation disappears entirely when its first common is unused
+  or resolves elsewhere (a weak copy in `.bss`); that is why JAUAudience
+  needs the stripped `unk_common_8052E78C` first (tested with standalone
+  GC/2.6 links in the infra/bss-names review).
 
 **Measuring honestly**
 - Only `build/G4SE01/report_honest.json` (every unit diffed,
