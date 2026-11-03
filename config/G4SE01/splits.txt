@@ -205,6 +205,7 @@ JSystem/JAudio/System/JASOscillator.cpp:
 
 JSystem/JAudio/System/JASSoundParams.cpp:
 	.text       start:0x8002DC74 end:0x8002DCD0
+	.sdata2     start:0x8053B178 end:0x8053B180
 
 JSystem/JAudio/System/JASWSParser.cpp:
 	.text       start:0x8002DCD0 end:0x8002E218
