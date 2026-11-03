@@ -2,6 +2,7 @@
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_802201D8.h"
+#include "game/DrawShadow.h"
 
 void cls_804A6828::draw() {
     drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 24.0f);
