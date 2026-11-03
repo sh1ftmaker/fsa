@@ -1302,7 +1302,7 @@ config.libs = [
         Object(Matching, "game/act_fireball_generator.cpp"),
         Object(NonMatching, "game/act_navi.cpp"),
         Object(NonMatching, "game/tu_8021F064.cpp"),
-        Object(NonMatching, "game/tu_8021F4B0.cpp"),
+        Object(Matching, "game/tu_8021F4B0.cpp"),
         Object(NonMatching, "game/tu_8021FDB8.cpp"),
         Object(NonMatching, "game/tu_802201D8.cpp"),
         Object(NonMatching, "game/act_shadow_link_jump.cpp"),
