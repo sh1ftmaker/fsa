@@ -16,8 +16,8 @@ public:
 
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.
     bool fn_801E1D9C();
-    // tu_801DE714 (0x801E1DE8): tail-calls fn_801CCF7C(this); callers test r3
-    // with clrlwi. (a bool).
+    // tu_801DE714 (0x801E1DE8): calls fn_801CCF7C (r3 is not forwarded; it
+    // ignores it) in a framed `bl`; callers test r3 with clrlwi. (a bool).
     bool fn_801E1DE8();
     // tu_8021827C (0x8021827C), the last slot of the vtable (EnemyBase's
     // vfunc_0xA0).

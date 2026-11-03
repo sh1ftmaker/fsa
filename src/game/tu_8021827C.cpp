@@ -2,15 +2,14 @@
 #include "game/act/tu_801DE714.h"
 #include "game/Camera.h"
 #include "game/GameGlobals.h"
+#include "game/Player.h"
 #include "game/GameView.h"
 
-// Bits of cls_804A51E4::mFlags above EnemyBase's (see fn_8021835C).
+// Bits of cls_804A51E4::mFlags above EnemyBase's (see fn_8021835C): the
+// sounds for coming into and leaving the view play once each.
 enum {
-    TINK_FLAG_0x4000 = 0x4000,
-    TINK_FLAG_0x20000 = 0x20000,
-    TINK_FLAG_0x80000 = 0x80000,
-    TINK_FLAG_0x200000 = 0x200000,
-    TINK_FLAG_0x400000 = 0x400000,
+    TINK_FLAG_ENTER_SOUND_PLAYED = 0x200000,
+    TINK_FLAG_LEAVE_SOUND_PLAYED = 0x400000,
 };
 
 // vfunc_0xA0 (the last slot of the vtable at 0x804A51E4): while mState is
@@ -68,23 +67,23 @@ void cls_804A51E4::fn_8021835C() {
         }
     }
     if (visible) {
-        if (!(mFlags & TINK_FLAG_0x200000) && !(mFlags & TINK_FLAG_0x4000)) {
+        if (!(mFlags & TINK_FLAG_ENTER_SOUND_PLAYED) && !(mFlags & 0x4000)) {
             if (!fn_801E1DE8()) {
-                if (mFlags & TINK_FLAG_0x20000) {
+                if (mFlags & 0x20000) {
                     fn_801F0E34(0x5001C, 0);
                 } else {
                     fn_801F0E34(0x50018, 0);
                 }
             }
-            mFlags |= TINK_FLAG_0x200000;
+            mFlags |= TINK_FLAG_ENTER_SOUND_PLAYED;
         }
-    } else if ((mFlags & TINK_FLAG_0x200000) && !(mFlags & TINK_FLAG_0x400000) &&
-               (mFlags & TINK_FLAG_0x4000) && !(mFlags & TINK_FLAG_0x80000) &&
+    } else if ((mFlags & TINK_FLAG_ENTER_SOUND_PLAYED) && !(mFlags & TINK_FLAG_LEAVE_SOUND_PLAYED) &&
+               (mFlags & 0x4000) && !(mFlags & 0x80000) &&
                mTargetSerial >= 0) {
         if (!fn_801E1DE8()) {
             fn_801F0E34(0x5001B, 0);
         }
-        mFlags |= TINK_FLAG_0x400000;
+        mFlags |= TINK_FLAG_LEAVE_SOUND_PLAYED;
     }
 }
 
@@ -103,7 +102,9 @@ static inline void growBox(JGeometry::TBox2f& box, const JGeometry::TBox2f& rel)
 // FIXME: 87%. Scheduling and register numbers only: the original loads mBox's
 // x extent and the 0.0f first (before mPos) and keeps `result` in r29 (li
 // after the first stores) with `this` in r30; ours puts li result first and
-// this in r29, so every later register is shifted.
+// this in r29, so every later register is shifted; the stack slots of
+// the two TVec3f also differ (the first is at 0x8 in the original, 0x14 in
+// ours).
 // Whether the actor's box around mPos is in view (the camera's screen, or
 // fn_8022B978 on the upper layers).
 bool cls_804A51E4::fn_80218538() {
