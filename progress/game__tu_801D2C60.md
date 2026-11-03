@@ -20,3 +20,8 @@ All 102 Matching game units are 100 % in every section, so each of these must go
 3. .sdata2 90.9 %: `lbl_8053F078` is -1.0f (4 bytes) + 4 bytes alignment pad before tu_801D3320's .sdata2
    (8-aligned); dtk sized it 0x8. Same kind of approval: `lbl_8053F078  0x8  0x4`.
 Verdict: not flippable under `-inline auto`; 2 and 3 are coordinator resizes with the evidence above.
+
+Source-organisation re-check (2026-11-03, research/abs-jumptable): under `-inline auto` weak (inline) functions are
+always emitted after the strong ones, so the leading inline dtor needs deferred codegen, like the jump-table units'
+vtable order; see progress/game__tu_80222CC4.md for why deferred itself is ruled out (it inlines later callees the
+original keeps out of line). The resizes in item 2/3 above still need coordinator approval (not added by me).

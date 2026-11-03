@@ -12,3 +12,7 @@ SHARED-EDITS: include/game/act/act_octorok_rock.h (field_0x23c s32 at 0x23C, spl
 
 Jump-table order re-check (2026-11-03): same cause as tu_80222CC4 (see its progress file); blocked on the
 project-wide `-inline` decision. fn_80222730 (98.67 %) also keeps the unit NonMatching.
+
+Source-organisation re-check (2026-11-03, research/abs-jumptable): no layout under `-inline auto` puts the vtable
+first (vtables always end the TU there; jump tables go with their function). Full measurements and the
+deferred-vs-inlining contradiction in progress/game__tu_80222CC4.md. Still NonMatching.
