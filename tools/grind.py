@@ -523,6 +523,8 @@ Unit `{unit}`, source `src/{unit}` ({state}). Original assembly of the whole fil
 `build/G4SE01/asm/game/{base}.s`. Functions not written yet (name, bytes, current %); leave the
 partly matched ones alone:
 {todo}
+What those functions call and load, and where it already lives in our source:
+{context}
 Read docs/RULES_CARD.md once, especially "Known game-code shapes"; look at matched src/game/*.cpp
 files and include/game/ headers for the style and the classes this file uses.
 
@@ -551,8 +553,23 @@ def run_haiku_file(wt, unit, fns):
     state = "exists" if (wt / "src" / unit).exists() else "does not exist yet: create it, following other src/game/*.cpp files"
     left = sum(sz for sz, p in fns.values() if p == 0)
     attempts = 30 if left <= 3072 else 50
-    prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state, attempts=attempts)
-    return _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700 if left <= 3072 else 5400)
+    # The function-mode add-ons (A/B 2026-11-03): a context bundle, then a data-fix pass on near-misses.
+    ctx = []
+    for f, (sz, p) in sorted(fns.items(), key=lambda x: x[1][0]):
+        if p == 0:
+            ctx += [l for l in context(wt, unit, f).splitlines() if l not in ctx]
+    prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state, attempts=attempts,
+                                context="\n".join(ctx[:40]) or "- (nothing found)")
+    cost = _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700 if left <= 3072 else 5400)
+    if not (wt / "src" / unit).exists():
+        return cost
+    now = fdiff(wt, unit)[0]
+    near = sorted((now[f][0], f, now[f][1]) for f in fns if f in now and fns[f][1] < 100 and 90 <= now[f][1] < 100)
+    for _, f, pct in near[:3]:
+        tryout = sh(["python3", "tools/try.py", unit, f], wt).stdout[-2500:]
+        dp = DATA_PROMPT.format(fn=f, unit=unit, pct=pct, tryout=tryout, attempts=6)
+        cost += _claude(wt, dp, f"{Path(unit).stem}__{f[:70]}__data", 900)
+    return cost
 
 
 def worker(args):
