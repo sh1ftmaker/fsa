@@ -4,12 +4,7 @@
 // Code: game/act_force_gem_shadow.cpp.
 
 #include "game/ActorBase.h"
-
-// fn_803075AC (tu_803075AC, not yet decompiled), called here as
-// (mSerial, field_0x4, &mPos, 0x3CD, 0, 2, -1, 0, 0, 0); r3..r10 plus two
-// stack words, all integers or pointers in the asm. Meaning unknown.
-extern "C" void fn_803075AC(s32 a, s32 b, const JGeometry::TVec3f* pos, s32 c, s32 d, s32 e, s32 f,
-                            s32 g, s32 h, s32 i);
+#include "game/GameGlobals.h"
 
 // The RSNP actor ("Force Gem shadow NPC", docs/names/actors.tsv, med
 // confidence): the spawner constructs it with fn_801FFF24, which stores this

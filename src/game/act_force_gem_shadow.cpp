@@ -4,7 +4,7 @@
 ForceGemShadowNPC_804ACD18::~ForceGemShadowNPC_804ACD18() {}
 
 void ForceGemShadowNPC_804ACD18::draw() {
-    fn_803075AC(mSerial, field_0x4, &mPos, 0x3CD, 0, 2, -1, 0, 0, 0);
+    fn_803075AC(mSerial, field_0x4, &mPos, 0x3CD, false, 2, -1, 0, 0, 0);
 }
 
 void ForceGemShadowNPC_804ACD18::update() {
