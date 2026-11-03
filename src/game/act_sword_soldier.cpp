@@ -14,6 +14,10 @@ s32 SwordSoldier_8049FCA0::fn_801544AC() const {
 // only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
 // .sdata2 is laid out in the original order. std::sqrtf out of line; 13
 // calls from 7 units.
+s32 SwordSoldier_8049FCA0::fn_801544C0() {
+    return field_0x288;
+}
+
 f32 fn_80154378(f32 x) {
     return std::sqrtf(x);
 }

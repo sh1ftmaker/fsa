@@ -9,9 +9,11 @@
 // Named after its vtable, lbl_8049FCA0 (.data 0x270, size 0x58).
 class SwordSoldier_8049FCA0 : public ActorBase_804A5770 {
 public:
-    /* 0x230 */ u8 field_0x230[0x5C]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x58]; // not yet known
+    /* 0x288 */ s32 field_0x288;
     /* 0x28C */ s32 field_0x28c;
     s32 fn_801544AC() const;
+    s32 fn_801544C0();
 };
 
 #endif
