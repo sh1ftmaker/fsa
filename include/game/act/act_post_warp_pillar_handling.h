@@ -13,7 +13,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    /* 0x230 */ s32 field_0x230; // counter: init 0, update counts up to 40 (scales the shadow alpha)
 }; // Size: 0x234
 
 #endif

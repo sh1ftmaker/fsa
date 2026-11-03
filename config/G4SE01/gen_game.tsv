@@ -190,8 +190,6 @@ act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_popo	dtor	__dt__13Popo_804A0868Fv	Popo_804A0868	0x804A0868	new	new
 act_popo	sinit	__sinit_act_popo_cpp	-	-	new	new
-act_post_warp_pillar_handling	dtor	__dt__12cls_804AC1F8Fv	cls_804AC1F8	0x804AC1F8	new	new
-act_post_warp_pillar_handling	sinit	__sinit_act_post_warp_pillar_handling_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_pot_2	dtor	__dt__13Pot2_804AA750Fv	Pot2_804AA750	0x804AA750	new	new
 act_pot_2	sinit	__sinit_act_pot_2_cpp	-	-	new	new
