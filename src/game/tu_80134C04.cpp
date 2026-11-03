@@ -25,3 +25,9 @@ void GameRoot_8049EF20::fn_80134D14(u8 value) {
 extern "C" s32 fn_8013997C(s32 index) {
     return (lbl_8053AAF8->field_0x83 >> (index * 2)) & 3;
 }
+
+s32 fn_80021840();
+
+extern "C" void fn_801365A8() {
+    fn_80021840();
+}
