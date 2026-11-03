@@ -324,7 +324,6 @@ act_warp_cannon	sinit	__sinit_act_warp_cannon_cpp	-	-	new	-
 act_warp_entrance_wall	dtor	__dt__25WarpEntranceWall_804AE948Fv	WarpEntranceWall_804AE948	0x804AE948	new	new
 act_warp_entrance_wall	sinit	__sinit_act_warp_entrance_wall_cpp	-	-	new	new
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
-act_wave_se	sinit	__sinit_act_wave_se_cpp	-	-	new	-
 act_wind_environment	sinit	__sinit_act_wind_environment_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zoom	dtor	__dt__13Zoom_804A9DF8Fv	Zoom_804A9DF8	0x804A9DF8	new	new
