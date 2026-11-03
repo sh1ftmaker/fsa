@@ -27,6 +27,7 @@
 #include "types.h"
 #include "JSystem/JGeometry.h"
 
+class ActorSoundObj_804578F4;
 class JPABaseEmitter;
 
 // The two boxes at 0x60 and 0x70 are JGeometry::TBox2f (min i, max f) in the
@@ -70,65 +71,328 @@ class ActorBase_804A5770 {
 public:
     ActorBase_804A5770();
 
-    // Virtual table at 0x804A5770. Slot offsets are into the vtable (MWCC:
-    // two header words, the first slot at +0x8). Names only where the
-    // caller makes the role unambiguous.
+    // Virtual table at 0x804A5770: 19 slots, settled (G1). 377 game vtables
+    // use this layout: this one and its 376 descendants (288 direct children
+    // with exactly 19 slots; the rest append slots after 0x50). Adding,
+    // removing or reordering a slot here shifts every one of them, so the
+    // signatures below were checked against every override and every virtual
+    // call whose receiver is an actor (the caller's own `this`, or an actor
+    // from the manager's lists). Offsets are into the vtable (MWCC: two
+    // header words, the first slot at +0x8). "Overrides" counts descendant
+    // classes whose slot differs from the base's; "args read" is what the
+    // overrides read before writing (r4-r10, f1-f8). MWCC allocates GPR and
+    // FPR arguments separately, so the order of ints against floats is not
+    // visible; ints first is a guess wherever both occur. Names only where
+    // the callers make the role unambiguous.
+    //
+    // 0x08: all 376 descendants have their own (deleting) destructor; each
+    // reads r4 (extsh. of the delete flag) and returns this. The manager
+    // deletes with r4 = 1 (0x801F85D0, 0x801F8984, 0x801F8C50, 0x801F8EA8).
     /* 0x08 */ virtual ~ActorBase_804A5770();
-    // init: called once by the spawner after the spawn fields are set; 69
-    // overrides call J3DFrameCtrl::init. Empty here.
+    // init: 375 overrides (370 functions), none reads an argument; the
+    // spawner calls it once after the spawn fields are set (0x801FF590) and
+    // ignores r3. 69 overrides call J3DFrameCtrl::init. Empty here.
     /* 0x0C */ virtual void init();
-    /* 0x10 */ virtual void vfunc_0x10(); // empty here
-    // update: called by the manager's update loop every frame the actor is
-    // active, right after savePrevPos(); 83 overrides drive
-    // J3DFrameCtrl::update/checkPass. Empty here.
+    // 24 overrides, no arguments read; one call (act_magic_circle,
+    // 0x8028BDA4) ignores r3. Empty here.
+    /* 0x10 */ virtual void vfunc_0x10();
+    // update: 373 overrides (332 functions), no arguments read; called by
+    // the manager's update loop (0x801F8910, 0x801F8B70) right after
+    // savePrevPos() and by 18 actor units on themselves; r3 never read.
+    // 83 overrides drive J3DFrameCtrl::update/checkPass. Empty here.
     /* 0x14 */ virtual void update();
-    /* 0x18 */ virtual void vfunc_0x18(); // fn_801F5790: box vs. player screens
-    /* 0x1C */ virtual void savePrevPos(); // mPrevPos = mPos; the update loop
-                                           // calls it right before update()
-    // draw: the manager's separate draw pass (fn_801F8658) while
-    // mDrawEnabled; 199 of the 297 overrides reach GX/J3D (GXBegin,
-    // GXLoadTexObj, ...) within 3 calls. Empty here.
+    // fn_801F5790: box vs. player screens. 3 overrides (tu_80182914,
+    // tu_80183544, act_pengator), no arguments read; the update loop calls
+    // it when field_0xa4 != 0 (0x801F8B94) and ignores r3.
+    /* 0x18 */ virtual void vfunc_0x18();
+    // mPrevPos = mPos; never overridden; the update loop calls it right
+    // before update() (0x801F88F4, 0x801F8B54).
+    /* 0x1C */ virtual void savePrevPos();
+    // draw: 337 overrides, no arguments read; the manager's separate draw
+    // pass (fn_801F8658, 0x801F86DC) calls it while mDrawEnabled; 199 of
+    // the 297 overrides seen reach GX/J3D (GXBegin, GXLoadTexObj, ...)
+    // within 3 calls. Empty here.
     /* 0x20 */ virtual void draw();
-    // Slots 0x24-0x50: signatures from the base implementations in
-    // game/tu_801EE24C.cpp and the callers' argument setup.
-    /* 0x24 */ virtual void vfunc_0x24(); // 0x801F4F28: no arguments
+    // 0x801F4F28. 43 overrides, no arguments read; 81 calls in 37 units, r3
+    // never read.
+    /* 0x24 */ virtual void vfunc_0x24();
     // 0x801F4E0C: the int goes to fn_8013CC50's 4th argument (all four
-    // calls), the floats are added to mPos.x and mPos.y. Callers pass a
-    // sign-extended s8 (extsb) for the int, so it is a full int. The order
-    // of the int and the floats is not visible in the asm (GPRs and FPRs are
-    // allocated separately); int first is a guess.
+    // calls), the floats are added to mPos.x and mPos.y. Never overridden;
+    // 8 calls in 8 units (e.g. 0x8017EF80, 0x801D95BC) set r4 (li, or extsb
+    // of an s8, so the parameter is a full int), f1 and f2, and ignore r3.
     /* 0x28 */ virtual void vfunc_0x28(s32, f32, f32);
-    /* 0x2C */ virtual bool vfunc_0x2C(f32 x, f32 y, f32 scale); // 0x801F4850: reads f1-f3 (mPos + (x, y) plus a random offset scaled by f3); returns 0 or 1. Callers: fn_801D8430, 0x8017C4A4, 0x8017FBA8
+    // 0x801F4850: reads f1-f3 (mPos + (x, y) plus a random offset scaled by
+    // f3); returns 0 or 1. Never overridden; all 8 calls (fn_801D8430,
+    // 0x8017C4B0, 0x8017FBB4, ...) set f1-f3 and test r3 with clrlwi. 24.
+    /* 0x2C */ virtual bool vfunc_0x2C(f32 x, f32 y, f32 scale);
     // 0x801F47CC: if vfunc_0x3C(), passes (view, vfunc_0x3C(), arg2, arg1)
     // to fn_802D8050, which tests arg2 with clrlwi. and stores arg1 with stb
-    // (0xFF when cleared). Callers narrow the first argument (act_switch:
-    // clrlwi r4, r31, 24 on an int) and pass 0/1 for the second; with
-    // (s32, s32) neither the callers' clrlwi nor the missing bool
-    // conversion in 0x801F47CC would come out.
+    // (0xFF when cleared). Never overridden; 121 calls in 53 units pass
+    // r4 = li 0xFF (114) or a clrlwi 24 value (6, e.g. act_switch narrowing
+    // an int), r5 = li 0 or 1, and ignore r3. With (s32, s32) neither the
+    // callers' clrlwi nor the missing bool conversion in 0x801F47CC would
+    // come out.
     /* 0x30 */ virtual void vfunc_0x30(u8, bool);
     // 0x801F4760: vfunc_0x3C() ? fn_802D800C(view, vfunc_0x3C()) (a bit
-    // test, 0 or 1) : 0
+    // test, 0 or 1) : 0. Never overridden; 196 calls in 118 units, 190 of
+    // them test r3 with clrlwi 24 (the rest store it with stb).
     /* 0x34 */ virtual bool vfunc_0x34();
-    /* 0x38 */ virtual u8 vfunc_0x38(); // 0x801F471C: fn_802D7E04(view, vfunc_0x3C()), an lbz
-    /* 0x3C */ virtual s32 vfunc_0x3C(); // 0x801F4710: the top 5 bits of field_0x90 (srwi 27)
-    /* 0x40 */ virtual void vfunc_0x40(); // 0x801F470C: empty
-    /* 0x44 */ virtual void vfunc_0x44(); // 0x801F4708: empty
-    /* 0x48 */ virtual void vfunc_0x48(); // 0x801F4704: empty
+    // 0x801F471C: returns fn_802D7E04(view, vfunc_0x3C()) (an lbz) without
+    // narrowing it. Never overridden; its 3 calls (fn_802B28E4: 0x802B2A5C,
+    // 0x802B2A84, 0x802B2AA8) compare r3 with cmpwi 6 / cmpwi 3 and no
+    // clrlwi, which a u8 return would need, so the result is a full int
+    // (it was declared u8 before G1; the return type is not in the
+    // mangled name, so the symbol is unchanged).
+    /* 0x38 */ virtual s32 vfunc_0x38();
+    // 0x801F4710: the top 5 bits of field_0x90 (srwi 27). Never overridden;
+    // 38 calls in 22 units, 32 of them cmpwi r3, 0.
+    /* 0x3C */ virtual s32 vfunc_0x3C();
+    // 0x801F470C, empty. 6 overrides, all pickups (act_force_gem,
+    // act_magic_jar, act_recovery_heart, act_dropped_item,
+    // act_crystal_ball, tu_800F7FCC), no arguments read; tu_801A3C50 calls
+    // it on itself (0x801A4BF0, 0x801A4C34, 0x801A4CC8) and ignores r3.
+    /* 0x40 */ virtual void vfunc_0x40();
+    // 0x801F4708, empty. 21 overrides, no arguments read; tu_801A3C50
+    // calls it on itself (0x801A3CE0, 0x801A42D0, ...) and ignores r3.
+    /* 0x44 */ virtual void vfunc_0x44();
+    // 0x801F4704, empty. 7 overrides, all objects a player can lift or
+    // throw (act_pot, act_grass, act_stone, act_sign, act_coconut,
+    // act_bomb, act_bombchu), no arguments read; called on actors found by
+    // serial (tu_8025EB18 0x80263A04) and by act_warp (0x8022713C) and
+    // act_seesaw_lift (0x803587F0); r3 never read.
+    /* 0x48 */ virtual void vfunc_0x48();
     // 0x801F15BC: the layer (cmpwi 8 in 0x801F165C) and a position go to
-    // fn_802265DC(pos, layer, 0) and fn_8020D6AC; returns 0 or 1.
+    // fn_802265DC(pos, layer, 0) and fn_8020D6AC; returns 0 or 1. 51
+    // overrides (48 functions; 30 read r4 and r5, 9 only r5, 9 neither, all
+    // return 0/1); 17 calls in 12 units pass r4 = an lwz (the layer), r5 = a
+    // stack or member TVec3f, and test r3 with clrlwi 24.
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     // 0x801F165C: vfunc_0x4C(layer, pos), or pos (x, y) outside the
-    // view's box (0xCC, or 0xDC for layer 8 and up); returns 0 or 1.
+    // view's box (0xCC, or 0xDC for layer 8 and up); returns 0 or 1. Never
+    // overridden; its 8 calls (fn_801F172C) pass a layer and a stack
+    // TVec3f and test r3 with clrlwi 24.
     /* 0x50 */ virtual bool vfunc_0x50(s32 layer, const JGeometry::TVec3f* pos);
 
-    // Non-virtual methods other units call (names are dtk's until their
-    // roles are proven).
-    // Clears mAlive, then reports the actor to the view: fn_802D7704(view,
-    // field_0x16c, field_0x1a8, field_0x4) when field_0x16c != -1, else
-    // fn_802D766C(view, field_0x1a8, field_0x4).
-    void fn_801F3668();
-    // id compared unsigned with 3 and 0x42; uses field_0x4 and mPos.
+    // Non-virtual members other units call: every export of game/tu_801EE24C.cpp
+    // whose callers pass an actor in r3 (their own `this` in 2,409 of 2,571
+    // calls; in the rest r3 holds another actor, e.g. one of the manager's slots
+    // or one found by serial). Signatures come from the register use in each
+    // body and at the call sites; "N units / M calls" counts the other game
+    // units that call it and all its calls (tu_801EE24C's own included). The
+    // names stay dtk's placeholders, and symbols.txt carries the mangled name
+    // each declaration produces (fn_XXXXXXXX__18ActorBase_804A5770F...), so a
+    // parameter type changed here is a symbols.txt rename too; the return type
+    // is not part of the mangled name. Where a function takes ints and floats,
+    // their order is not visible in the asm; ints first is a guess. Out-pointers
+    // are NULL-checked by the body unless said otherwise. Exports that are not
+    // members (fn_801EE3C0, fn_801EE434, fn_801EF574, fn_801EF830) are extern
+    // "C" below the class.
+
+    // 1 unit / 4 calls. Looks for a 'WARP' actor (fn_801F78F4) on this
+    // layer whose (field_0x90 & 0xFF) == 8, moves mPos by the view boxes'
+    // offset to the destination layer and sets field_0x4; returns 0 or 1
+    // (0x801EE374, 0x801EE3A0; act_small_key tests it with clrlwi).
+    bool fn_801EE24C();
+    // 3 units / 13 calls. Returns lbl_8046A00C[field_0xc0] (lfsx; 0xc0 is
+    // EnemyParam "efsz") in f1.
+    f32 fn_801EE4F0();
+    // 1 unit / 2 calls (the manager's update loop, 0x801F8B9C, with
+    // mActors[i]). fn_801CB71C(&mEmitter100, &mPos, 0, -1), then the same
+    // for mEmitter104 with 1.
+    void fn_801EE508();
+    // 10 units / 37 calls. The nearest player (player == 0: all four, else
+    // only player - 1; callers pass li 0 or index + 1): its position in
+    // field_0x1ac[] relative to mPos goes normalised to *outDir (stfs
+    // 0/4/8), the distance to *outDist.
+    void fn_801EE558(JGeometry::TVec3f* outDir, f32* outDist, s32 player);
+    // 6 units / 12 calls. fn_801EE558 with extra player filters
+    // (fn_80230188, fn_8022DCD8 at 0x801EE9E0, 0x801EE9F0).
+    void fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s32 player);
+    // 58 units / 104 calls. Never reads r3, but every caller passes an actor
+    // there (`this` 102 times) and its own mSerial in r4, so a member is the
+    // likelier source. Looks up the actor `serial` (fn_801F666C, 0x801EECE4)
+    // and reports a player relative to it, picked by `mode` (cmpwi 0-5;
+    // player is used in mode 2): *outAngle (sth; callers read it back with
+    // lhz), *outDir (stw), *outDist (stfs), *outPlayer (stw; -1 in both
+    // when the actor is gone, 0x801EED14, 0x801EED24).
+    void fn_801EEC98(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer,
+                     s32 player, s32 mode);
+    // 7 units / 10 calls. fn_801F2DB4(this, 'NULL', 'NULL', list) with a
+    // stack copy of the 0x44-byte list lbl_80469FC8 (0x801EF518-0x801EF560).
+    void fn_801EF510();
+    // 23 units / 49 calls. fn_801F06F0 with a resource already loaded
+    // (fn_801EF830's res, used when no name is given) instead of a name;
+    // skipped while field_0x138 != 0. f1-f3 are kept in f30, f31, f28.
+    void fn_801EFD34(void* res, void* params, s32 flags, f32 scaleX, f32 scaleY, f32 arg_f3);
+    // 42 units / 59 calls. fn_801F06F0 with a scale mode (cmpwi 0 / 2 picks
+    // the PSMTXScale variant, 0x801F031C-0x801F0344). `arg` is only stored
+    // to the stack with stb (0x801F02E8); bool is a guess.
+    void fn_801F02BC(const char* name, s32 frame, void* params, s32 flags, s32 mode, bool arg,
+                     f32 scaleX, f32 scaleY);
+    // 116 units / 193 calls. Draws frame `frame` of the "SOB " sprite bank
+    // `name` at mPos on this actor's layer: fn_801EF830(field_0x4, &mPos,
+    // params, flags, name, frame, NULL) (0x801F0740-0x801F0758). params is a
+    // 0x3C-byte struct or NULL (callers: a stack struct 131 times, 0 61
+    // times); flags is -1, 0 or 7 at most calls.
+    void fn_801F06F0(const char* name, s32 frame, void* params, s32 flags, f32 scaleX, f32 scaleY);
+    // 53 units / 107 calls. id compared unsigned with 3 and 0x42; uses
+    // field_0x4 and mPos.
     void fn_801F0D20(u32 id);
+    // 222 units / 964 calls. Starts sound `soundId` on this actor's sound
+    // object: fn_80456334(fn_801F6644(mgr, mSlot), &soundId, arg)
+    // (0x801F1150), gated by the layer (field_0x4 against 8) and player
+    // checks. fn_801F4694 calls it with the EnemyParam "voic" sound
+    // (lbl_80469F38[voic - 1]) and 0x40002. The id is compared unsigned
+    // (0x801F0EAC: subis/cmplwi against 0x30009). Every caller passes 0 for
+    // `arg`, which fn_80456334 NULL-checks and stores, so it is a pointer.
+    // Returns 0 on the early outs, else fn_80456334's result (no caller
+    // reads it; the pointee is unknown).
+    void* fn_801F0E34(u32 soundId, void* arg);
+    // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
+    // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
+    ActorSoundObj_804578F4* fn_801F1184();
+    // 2 units / 2 calls. If the box at 0x80 is not empty and vfunc_0x4C(
+    // field_0x4, &mPos) (0x801F11FC-0x801F1210): pushes mPos back from
+    // mPrevPos along field_0x98's angle, or respawns at mSpawnPos when out
+    // of view; returns 0 or 1.
+    bool fn_801F11B4();
+    // 8 units / 8 calls, all from vfunc_0x4C overrides (act_sign 0x802D3210,
+    // act_coconut 0x802DF4E4) passing their own (layer, pos) and a member
+    // (this + 0x230). Gated on *state == 0 (0x801F1354); layer and pos go to
+    // fn_8020D6AC and fn_8022461C/fn_80226850 as in the base vfunc_0x4C;
+    // returns 0 or 1.
+    bool fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s32* state);
+    // 7 units / 9 calls. Collision sweep (via fn_801F172C, which calls
+    // vfunc_0x50 on this) of `box` from `from` to `to` on `layer`; the
+    // result position goes to *outPos (stfs 0/4/8), out2 is handed to
+    // fn_801F172C (which stores 3 floats there, 0x801F2344; type unproven).
+    // `flag` reaches fn_801F172C's clrlwi. 24. Returns 0 or 1.
+    bool fn_801F23BC(s32 layer, const JGeometry::TVec3f* from, const JGeometry::TVec3f* to,
+                     const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos, void* out2,
+                     bool flag);
+    // 82 units / 201 calls. Unless field_0x174 > 0, sweeps the box at 0x80
+    // from mPrevPos to mPos (fn_801F23BC(this, field_0x4, &mPos, &mPrevPos,
+    // box, ...)), moves mPos to the result and stores a vector in *out
+    // (0x801F2670-0x801F2688); returns 0 or 1. Callers pass 0 or a stack
+    // TVec3f for out and 0 for `flag` (197 of 201).
+    bool fn_801F2618(JGeometry::TVec3f* out, bool flag);
+    // 6 units / 7 calls. fn_801F7F58(mgr, this, ids, mSerial, ...): an
+    // actor overlapping this one whose mActorId is in `ids` (a 'NULL'-ended
+    // list, walked by 4 and compared with cmplw; callers pass .rodata
+    // arrays), or NULL.
+    ActorBase_804A5770* fn_801F26CC(const u32* ids);
+    // 30 units / 38 calls. fn_801F8108(mgr, this, actorId, mSerial, ...): the
+    // serial of an actor with mActorId == actorId (4CC; cmplw) overlapping
+    // this one on its layer, or -1.
+    s32 fn_801F2718(u32 actorId);
+    // 16 units / 17 calls. Bit i set for each player i (other than
+    // skipPlayer; callers pass -1 in 16 of 17) whose box overlaps mBox
+    // around mPos in screen space (0x801F2828-0x801F2844).
+    u8 fn_801F2740(s32 skipPlayer);
+    // 46 units / 65 calls. Index of a player (any when player < 0) whose box
+    // overlaps mBox around mPos, or -1 (0x801F29F8). *outXY gets two floats
+    // (stfs 0/4, 0x801F29EC-0x801F29F4) and *outFlag 0 or 1; `arg` is
+    // forwarded to fn_8023B9CC (callers pass 1 in 54 of 65; bool is a
+    // guess).
+    s32 fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg, s32 player);
+    // 6 units / 6 calls. The mBox overlap test of fn_801F2740 against
+    // fn_8022E438(player, skipPlayer) and fn_80239B64(.., arg2, arg3, arg4),
+    // whose last two are clrlwi 24 bytes; returns 0 or 1.
+    bool fn_801F2A10(s32 skipPlayer, s32 arg2, bool arg3, bool arg4);
+    // 27 units / 42 calls. field_0x168 = arg and links the actor into the
+    // manager's list (fn_801F84C4); returns the previous field_0x164
+    // (0x801F2B64). Callers pass 0, 5, 6 or 2.
+    u8 fn_801F2B20(s32 arg);
+    // 88 units / 153 calls. Hits every player (except skipPlayer; -1 in 138
+    // calls) whose box (fn_8023B190) overlaps mBox on this layer, with
+    // fn_80238548(player, damage, &pos, arg); damage -100 means field_0x114
+    // (EnemyParam "atcp", 0x801F2D60). Returns the bitmask of players hit.
+    u8 fn_801F2B7C(s32 damage, s32 skipPlayer, s32 arg);
+    // 27 units / 41 calls. Takes a hit from an overlapping actor
+    // (fn_801F82CC) whose mActorId is includeId (or any, 'NULL'), is not
+    // excludeId and is not in the 'NULL'-ended list excludeIds (or NULL):
+    // fn_801F37AC(this, attacker->field_0x118, ...) (0x801F2ECC). Returns
+    // 0 or 1.
+    bool fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds);
+    // 20 units / 22 calls. For each player overlapping this actor
+    // (fn_801F285C), fn_801F37AC(this, fn_8023B6CC(i), fn_8023E724(i), 0,
+    // flag, i); returns whether any hit landed.
+    bool fn_801F2FAC();
+    // 22 units / 25 calls. fn_801F2FAC(), else fn_801F2DB4(this, 'NULL',
+    // 'NULL', NULL) (0x801F30F0-0x801F3104).
+    bool fn_801F305C();
+    // 9 units / 9 calls. The centre of mBox around mPos in screen space
+    // (x, y - z): two floats only (0x801F3128-0x801F3174).
+    void fn_801F3128(JGeometry::TVec2f* out);
+    // 9 units / 12 calls. mBox2 around mPos in screen space (x, y - z);
+    // callers pass a stack box; not NULL-checked.
+    void fn_801F317C(JGeometry::TBox2f* out);
+    // 11 units / 21 calls. The same for mBox; the manager's actor-vs-actor
+    // test (0x801F801C) uses it too.
+    void fn_801F31C4(JGeometry::TBox2f* out);
+    // 2 units / 7 calls. fn_8023DE58(player) == field_0x4, or
+    // fn_801F329C(player); returns 0 or 1.
+    bool fn_801F320C(s32 player);
+    // 4 units / 5 calls. fn_8023DE58(player) < 8 && field_0x4 == 8.
+    bool fn_801F329C(s32 player);
+    // 1 unit / 2 calls (the manager's update loop, with mActors[i]). Fills
+    // field_0x1ac[0..3] with each player's position (fn_8023E724), adjusted
+    // by fn_801CD150 for players on layer 8 and up while this is on 8.
+    void fn_801F32F4();
+    // 1 unit / 2 calls (the manager's update loop, between savePrevPos and
+    // update). Applies a warp fn_801F349C queued: mPos.xy = field_0x30.xy,
+    // field_0x4 = field_0x178, field_0x17d = 1, field_0x174 = field_0x180;
+    // while field_0x174 counts down, ends it once mPos is field_0x184 away
+    // from field_0x30 (PSVECMag).
+    void fn_801F33C4();
+    // 4 units / 6 calls. Queues a warp to `pos` on `layer` unless one is
+    // pending (field_0x17c) or running (field_0x174 > 0): field_0x30 =
+    // *pos, field_0x178 = layer, field_0x17c = 1 (0x801F349C-0x801F34D8).
+    void fn_801F349C(s32 layer, const JGeometry::TVec3f* pos);
+    // 3 units / 4 calls. If field_0x16c != -1: fn_802D7618(view,
+    // field_0x16c).
+    void fn_801F34DC();
+    // 1 unit / 1 call. mAlive = false, then fn_801F34DC's report.
+    void fn_801F3518();
+    // 1 unit / 2 calls. If field_0x16c != -1: fn_802D7704(view, field_0x16c,
+    // 0, field_0x4).
+    void fn_801F355C();
+    // 9 units / 16 calls. mAlive = false, then fn_801F355C's report.
+    void fn_801F35AC();
+    // 13 units / 16 calls. fn_801F3668's report without clearing mAlive.
+    void fn_801F3604();
+    // 78 units / 153 calls. Clears mAlive, then reports the actor to the
+    // view: fn_802D7704(view, field_0x16c, field_0x1a8, field_0x4) when
+    // field_0x16c != -1, else fn_802D766C(view, field_0x1a8, field_0x4).
+    void fn_801F3668();
+    // 1 unit / 2 calls (tu_8025EB18, on an actor found by serial). If
+    // neither field_0xcc nor field_0xc4: field_0xcc = 1, field_0xd0 = v,
+    // returns 1; else 0.
+    bool fn_801F36D4(s32 v);
+    // 1 unit / 2 calls (tu_8025EB18). If field_0xc4: clears it, field_0x3c =
+    // *v, returns 1; else 0.
+    bool fn_801F3708(const JGeometry::TVec3f* v);
+    // 1 unit / 9 calls (tu_8025EB18; callers pass a field_0x4). If not
+    // field_0xc4: field_0xc4 = 1, field_0xc8 = field_0x110 = v, field_0xcc
+    // = 0, field_0xd0 = -1, returns 1; else 0.
+    bool fn_801F3744(s32 v);
+    // 1 unit / 3 calls (tu_801A3C50, always 300). field_0xa4 = v and clears
+    // field_0xd5, 0xd8, 0xe4, 0xe8 (and 0xe0 while mLife > 0).
+    void fn_801F3780(s32 v);
+    // 19 units / 35 calls. Applies one hit: attack (cmpwi 4), the attacker's
+    // position (lfs 0/4/8), strength (clamped to 2), type (cmpwi 5 / 2
+    // against field_0xb0) and the attacking player (-1 for none; 1 << player
+    // tested against field_0xd5). Returns 0 or 1.
+    bool fn_801F37AC(s32 attack, const JGeometry::TVec3f* from, s32 strength, s32 type,
+                     s32 player);
+    // 48 units / 63 calls. Works on field_0xd8-0x10c, field_0x3c and mPos
+    // (role unproven); flag is tested with clrlwi. (0x801F3E04; callers
+    // pass 1, 0 or a clrlwi 24 value). Returns 1, 0 or -1 (0x801F4630).
+    s32 fn_801F3D94(bool flag);
+    // 2 units / 6 calls. Plays the actor's EnemyParam "voic" sound
+    // (fn_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
+    // sound 0x40002.
+    void fn_801F4694();
 
     // Inline accessors. The spawner calls them out of line (it is too large
     // for the inliner), so they exist as weak functions in its unit at
@@ -273,5 +537,39 @@ public:
     /* 0x1AC */ JGeometry::TVec3f field_0x1ac[4];
     /* 0x1DC */ ActorSub1DC_801EAD68 field_0x1dc;
 }; // Size: 0x230
+
+// Exports of game/tu_801EE24C.cpp that are not ActorBase_804A5770 members
+// (their callers never pass an actor in r3). extern "C" keeps the dtk names
+// as link names until that unit names them.
+extern "C" {
+
+// 4 units / 8 calls. A map tile code (callers pass the lhz/clrlwi 16 result
+// of fn_80226850, e.g. act_spreading_fire 0x802BC9F8) in one of the ranges
+// 0x68-0x6B, 0x70-0x71, 0x74-0x75, 0xAA-0xAB or 0x4E, 0xFA, 0x146, 0x159.
+bool fn_801EE3C0(u16 tile);
+
+// 104 units / 258 calls. Releases an emitter: lets one inside the view's
+// visible box (0xCC-0xD8) run out (clearStatus(Immortal),
+// becomeInvalidEmitter()), deletes one outside it (forceDeleteEmitter,
+// 0x801EE4D8). The destructor inlines the same code for mEmitter100/104;
+// derived actors call it for their own emitters (lwz 0x230-0x23C).
+void fn_801EE434(JPABaseEmitter* emitter);
+
+// 7 units / 8 calls. Loads the "SOB " resource `sobName` (a .rodata string)
+// through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
+// 0x801EF7B4-0x801EF7F4) and hands it with pos, arg1 and params (a
+// 0x3C-byte struct or NULL, then defaults are used) to fn_802F86CC
+// (lbl_8053AB10->0x20).
+void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos, void* params);
+
+// 20 units / 34 calls. Draws frame `frame` of a "SOB " sprite at pos on
+// layer `layer` (cmpwi 8; GameView 0x131DF): `name` is loaded like
+// fn_801EF574 does, or when NULL `res` is used (fn_802F745C, 0x801EFC74).
+// flags: -1 skips, the low 10 bits are an index, 0x400 a mode bit. Callers
+// pass an actor's field_0x4 and &mPos.
+void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, void* params, s32 flags,
+                 const char* name, s32 frame, void* res);
+
+} // extern "C"
 
 #endif
