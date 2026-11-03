@@ -15,7 +15,16 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x28]; // not yet known
+    /* 0x230 */ s32 mState;        // 0: waiting for the switch, 1: switch seen, 2: done
+    /* 0x234 */ s32 mCount;        // field_0x90 & 0x3FFFF, passed to fn_80134DE4; period of mode 6
+    /* 0x238 */ s32 mTimer;        // starts at mCount
+    /* 0x23C */ s32 mMode;         // (field_0x90 >> 19) & 7: 1-5 move the view bounds, 6 toggles the switch
+    /* 0x240 */ s32 mBit;          // (field_0x90 >> 22) & 0x1F: the switch bit to wait for
+    /* 0x244 */ s32 mToggle;       // mode 6: the switch value being set
+    /* 0x248 */ f32 mValue;        // first argument of the view update, from a table by mMode
+    /* 0x24C */ s32 mStepTimer;    // frames until mValue steps (modes 4 and 5)
+    /* 0x250 */ s32 mStepPeriod;
+    /* 0x254 */ s32 field_0x254;   // (field_0x90 >> 18) & 1, never read
 }; // Size: 0x258
 
 #endif
