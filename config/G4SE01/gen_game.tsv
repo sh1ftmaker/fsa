@@ -248,8 +248,6 @@ act_sign	dtor	__dt__13Sign_804A94D8Fv	Sign_804A94D8	0x804A94D8	new	new
 act_sign	sinit	__sinit_act_sign_cpp	-	-	new	new
 act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
-act_small_key	dtor	__dt__17SmallKey_804A8CD8Fv	SmallKey_804A8CD8	0x804A8CD8	new	new
-act_small_key	sinit	__sinit_act_small_key_cpp	-	-	new	new
 act_snow_wall	sinit	__sinit_act_snow_wall_cpp	-	-	new	-
 act_snowball	sinit	__sinit_act_snowball_cpp	-	-	new	-
 act_somaria_block	dtor	__dt__27CaneOfSomariaBlock_804AA9F0Fv	CaneOfSomariaBlock_804AA9F0	0x804AA9F0	new	new
