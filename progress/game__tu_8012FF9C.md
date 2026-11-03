@@ -8,7 +8,7 @@ extab/extabindex 47 % (weak-duplicate entries, same as siblings); Matching flag 
 Not generator-owned (no gen_game.tsv rows).
 
 ## Notes
-- cls_8012FFF4 is 8 bytes (.sbss; symbol's 0xC was section padding). fn_801300B4 indexes from &mSerial by mCount (as the asm does).
+- cls_8012FFF4 is 8 bytes (.sbss; symbol's 0xC was section padding). fn_801300B4 indexes mSerials[mCount] (as the asm does).
 - Actor id compared in fn_80130030 is 'OGST' (0x4F475354), not OPGL.
 
 ## SHARED-EDITS

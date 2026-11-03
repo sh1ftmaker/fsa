@@ -13,7 +13,7 @@ bool cls_8012FFF4::fn_80130030(const s32* v) {
     if (mCount <= 0) {
         return true;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerial);
+    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[0]);
     if (actor == NULL) {
         return true;
     }
@@ -25,12 +25,12 @@ bool cls_8012FFF4::fn_80130030(const s32* v) {
 
 void cls_8012FFF4::fn_801300B4(s32 value) {
     if (value > 0) {
-        (&mSerial)[mCount] = value;
+        mSerials[mCount] = value;
         mCount++;
     }
 }
 
 void cls_8012FFF4::fn_801300D8() {
     mCount = 0;
-    mSerial = -1;
+    mSerials[0] = -1;
 }

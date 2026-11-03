@@ -16,14 +16,14 @@ struct cls_8012FFF4 {
     // True when the tracked actor is gone or is not an 'OGST' actor, or
     // else whatever cls_8049EA00::fn_8012FC2C returns for v.
     bool fn_80130030(const s32* v);
-    // When value is positive: stores it at index mCount counted from
-    // &mSerial (so the first call overwrites mSerial, later ones mCount
-    // itself) and bumps mCount.
+    // When value is positive: stores it at mSerials[mCount] (the array is
+    // 1 long as far as the asm shows; index 1 is mCount itself) and bumps
+    // mCount.
     void fn_801300B4(s32 value);
     // Forgets the tracked actor.
     void fn_801300D8();
 
-    /* 0x0 */ s32 mSerial; // serial of the actor to look up
+    /* 0x0 */ s32 mSerials[1]; // serial of the actor to look up (slot 0)
     /* 0x4 */ s32 mCount;
 }; // Size: 0x8
 
