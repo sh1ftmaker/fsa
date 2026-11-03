@@ -827,6 +827,11 @@ config.libs = [
         Object(Matching, "JSystem/JMessage/processor.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JMessage/control.cpp", extra_cflags=["-O4,p"]),
     ]),
+    # J3DU from projectPiki/pikmin2 (CC0); linked between JMessage and JKernel.
+    # Only weak copies the link kept survive from it.
+    MkddJSystemLib("J3DU", [
+        Object(Matching, "JSystem/J3DU/J3DUMotion.cpp", extra_cflags=["-O4,p"]),
+    ]),
     MkddJSystemLib("mkdd_JParticle", [
         Object(NonMatching, "JSystem/JParticle/JPABaseShape.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAChildShape.cpp", extra_cflags=["-O4,p"]),
