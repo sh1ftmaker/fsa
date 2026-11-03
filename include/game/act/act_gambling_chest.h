@@ -35,9 +35,9 @@ public:
     /* 0x238 */ s32 field_0x238; // fn_80310F50's b
     /* 0x23C */ s32 field_0x23c; // fn_80310F50's serial
     /* 0x240 */ s32 field_0x240; // timer (0x5A, fn_80310E98)
-    /* 0x244 */ u8 field_0x244[0x248 - 0x244];
+    /* 0x244 */ s32 field_0x244; // counts up while the player is lifted (draw offset 0xED + n)
     /* 0x248 */ JGeometry::TVec3f field_0x248; // mPos saved by fn_80310E98
-    /* 0x254 */ u8 field_0x254;
+    /* 0x254 */ bool field_0x254; // update state 2: true while the player is held
 }; // Size: 0x258
 
 #endif
