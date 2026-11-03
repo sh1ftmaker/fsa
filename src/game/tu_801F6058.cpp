@@ -4,6 +4,8 @@
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/Player.h"
+#include "game/cls_804AE9B0.h"
 
 // The angle of each direction (fn_801F6874; fn_801F681C is the inverse).
 static const u16 lbl_8053F800[4] = {0x4000, 0xC000, 0x0000, 0x8000};
@@ -57,6 +59,14 @@ s32 fn_801F681C(u16 angle) {
 
 u16 fn_801F6874(s32 dir) {
     return lbl_8053F800[dir & 3];
+}
+
+void ActorManager_804A5800::fn_801F6884() {
+    for (s32 i = 0; i < 4; i++) {
+        fn_80230224(i, false);
+    }
+    field_0x3041 = 0;
+    lbl_8053AD70->fn_8037AE30();
 }
 
 // FIXME: 95.2 %. In the last branch the target zero-extends delta (clrlwi 16)
