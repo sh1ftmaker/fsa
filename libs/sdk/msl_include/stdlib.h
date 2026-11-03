@@ -13,6 +13,8 @@ extern "C" {
 #include "PowerPC_EABI_Support/MSL_C/MSL_Common/strtold.h"
 #include "PowerPC_EABI_Support/MSL_C/MSL_Common/strtoul.h"
 
+void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void*, const void*));
+
 #ifdef __cplusplus
 };
 #endif // ifdef __cplusplus
