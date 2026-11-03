@@ -21,7 +21,7 @@ public:
 
 // A particle callback, defined in game/tu_802144F0.cpp. Named after its vtable
 // (__vt__12cls_804A64A8: dtor, execute, draw), the vtable of a
-// JPAParticleCallBack subclass. Its destructor (dtor_802150FC) calls
+// JPAParticleCallBack subclass. Its destructor (__dt__12cls_804A64A8Fv) calls
 // __dt__19JPAParticleCallBackFv.
 class cls_804A64A8 : public JPAParticleCallBack {
 public:
