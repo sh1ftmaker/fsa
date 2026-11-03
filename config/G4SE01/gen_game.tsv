@@ -164,8 +164,6 @@ act_poe	dtor	__dt__12Poe_8049F330Fv	Poe_8049F330	0x8049F330	new	new
 act_poe	sinit	__sinit_act_poe_cpp	-	-	new	new
 act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
-act_popo	dtor	__dt__13Popo_804A0868Fv	Popo_804A0868	0x804A0868	new	new
-act_popo	sinit	__sinit_act_popo_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
