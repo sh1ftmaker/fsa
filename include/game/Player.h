@@ -810,6 +810,12 @@ bool fn_80239718(s32 player, s32 serial);
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8022E2D8, defined there). 1 unit (act_four_switch_monitor's
+// update, always with 0xF); the return is unused.
+void fn_8022E2D8(s32 index);
+// Owner: tu_8022AD64 (0x80230E1C, defined there). 1 unit (act_four_switch_monitor's
+// update: fn_80230E1C(player, 0) for each player whose bit is set in field_0x82).
+void fn_80230E1C(s32 player, s32 flag);
 // Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards
 // (player object, out) to the player's fn_8024B2BC when the player is present;
 // *out (3 floats, read as a position) is written by it.
