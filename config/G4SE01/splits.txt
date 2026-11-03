@@ -1666,7 +1666,10 @@ JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp:
 	.sdata2     start:0x8053BCE8 end:0x8053BCF0
 
 JSystem/J3DGraphAnimator/J3DShapeTable.cpp:
-	.text       start:0x800E4778 end:0x800E49E0
+	.text       start:0x800E4778 end:0x800E4870
+
+JSystem/J3DGraphBase/J3DStruct.cpp:
+	.text       start:0x800E4870 end:0x800E49E0
 
 JSystem/JFramework/JFWSystem.cpp:
 	.text       start:0x800E49E0 end:0x800E4D30
