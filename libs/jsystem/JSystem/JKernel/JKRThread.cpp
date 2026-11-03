@@ -117,10 +117,6 @@ JKRThread *JKRThread::searchThread(OSThread *thread)
     return nullptr;
 }
 
-#ifdef DEBUG
-CW_FORCE_STRINGS(JKRThread_1, "JKRThread:%x  OSThread:%x  Load:ID:%d  (%s)\n", "sThread == 0")
-#endif
-
 JKRThreadSwitch::JKRThreadSwitch(JKRHeap *heap)
 {
     mHeap = heap;
@@ -317,10 +313,6 @@ void JKRThreadSwitch::draw(JKRThreadName_ *thread_name_list, JUTConsole *console
         }
     }
 }
-
-#ifdef DEBUG
-CW_FORCE_STRINGS(JKRThread_2, "JUTConsole.h", "console != 0", "bufSize > 0", "sEndMesgBuffer")
-#endif
 
 JKRTask::JKRTask(int msgCount, int threadPriority, u32 stackSize)
     : JKRThread(stackSize, msgCount, threadPriority), mTaskLink(this), mTaskMsgQueue(nullptr)

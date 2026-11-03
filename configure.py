@@ -789,7 +789,7 @@ config.libs = [
         Object(Matching, "JSystem/JKernel/JKRHeap.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRMemArchive.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRSolidHeap.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JKernel/JKRThread.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JKernel/JKRThread.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JMath", [
         Object(Matching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
