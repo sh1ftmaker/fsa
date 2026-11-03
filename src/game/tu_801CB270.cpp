@@ -185,6 +185,23 @@ s32 fn_801CD354(s32 value) {
     return result;
 }
 
+// Maps 0 to 3, 1 to 2, 3 to 1; 2 and anything else to 0.
+extern "C" s32 fn_801CD30C(s32 value) {
+    s32 result = 0;
+    switch (value) {
+    case 0:
+        result = 3;
+        break;
+    case 1:
+        result = 2;
+        break;
+    case 3:
+        result = 1;
+        break;
+    }
+    return result;
+}
+
 s32 fn_801CD580(s32 except) {
     s32 choices[3];
     s32* out = choices;
