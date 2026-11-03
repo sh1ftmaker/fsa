@@ -12,6 +12,11 @@ void GameView_804A9950::fn_802D9FE8(s32 a, s32 b) {
     field_0x20 = b;
 }
 
+void GameView_804A9950::fn_802D9FF4(s32 a, s32 b) {
+    field_0x24 = a;
+    field_0x28 = b;
+}
+
 // FIXME: everything before 0x802DE814 is not written yet.
 
 bool fn_802DE814(void) {
