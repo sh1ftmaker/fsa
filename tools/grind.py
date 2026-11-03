@@ -572,6 +572,25 @@ def run_haiku_file(wt, unit, fns):
     return cost
 
 
+def save_nearmiss(wt, unit, before, why):
+    """Keep a rejected run's source when it left a function at 90-99.99 % (from below 90): the
+    starting point for the permuter / crack pass, which a revert would otherwise throw away."""
+    if not why.startswith("no new 100 %"):
+        return
+    now = fdiff(wt, unit)[0] if (wt / "src" / unit).exists() else {}
+    near = [(f, p) for f, (_, p) in now.items() if 90 <= p < 100 and before.get(f, (0, 0))[1] < 90]
+    if not near:
+        return
+    d = LOGS / "nearmiss"
+    d.mkdir(exist_ok=True)
+    diff = sh(["git", "diff", "--", "src", "include", "config/G4SE01/symbols.txt"], wt).stdout
+    new = sh(["git", "ls-files", "--others", "--exclude-standard", "src", "include"], wt).stdout.split()
+    for f in new:  # a file the run created
+        diff += sh(["git", "diff", "--no-index", "/dev/null", f], wt).stdout
+    head = "".join(f"# {unit} {f} {p:.2f} %\n" for f, p in near)
+    (d / f"{Path(unit).stem}__{near[0][0][:80]}.patch").write_text(head + diff)
+
+
 def worker(args):
     # sbg stop sends SIGTERM: unwind so the claim is released and the worktree reverted.
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
@@ -606,6 +625,7 @@ def worker(args):
                 cost = run_haiku_file(wt, unit, fns)
                 why, new_fns, new_secs, gained, ren = judge(wt, unit, fns, secs)
                 if why:
+                    save_nearmiss(wt, unit, fns, why)
                     revert(wt)
                     log([owner, unit, "FILE", left, "-", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
                 else:
@@ -623,6 +643,7 @@ def worker(args):
                 cost = run_haiku(wt, unit, fn, size, pct)
                 why, new_fns, new_secs, gained, ren = judge(wt, unit, fns, secs, fn)
                 if why:
+                    save_nearmiss(wt, unit, fns, why)
                     revert(wt)
                     log([owner, unit, fn, size, f"{pct:.2f}", "REJECT", why, f"{cost:.3f}", int(time.time() - t0)])
                     continue
