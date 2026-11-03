@@ -1326,7 +1326,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8027E5BC.cpp"),
         Object(NonMatching, "game/tu_80285E58.cpp"),
         Object(NonMatching, "game/act_extending_lift.cpp"),
-        Object(NonMatching, "game/act_pull_switch.cpp"),
+        Object(Matching, "game/act_pull_switch.cpp"),
         Object(NonMatching, "game/act_magic_circle.cpp"),
         Object(NonMatching, "game/act_block.cpp"),
         Object(NonMatching, "game/tu_8028DD78.cpp"),
