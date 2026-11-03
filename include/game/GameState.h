@@ -124,7 +124,8 @@ public:
     /* 0x236 */ u8 field_0x236; // bit per player; fn_80402FBC
     /* 0x237 */ u8 field_0x237; // 24 units
     /* 0x238 */ u8 field_0x238; // 0xFF after fn_8040384C; fn_803FFAA8
-    /* 0x239 */ u8 field_0x239[0x242 - 0x239];
+    /* 0x239 */ u8 field_0x239; // bit per player; cls_804AC388::update ORs it
+    /* 0x23A */ u8 field_0x23a[0x242 - 0x23A];
     /* 0x242 */ u8 field_0x242; // 19 units
     /* 0x243 */ u8 field_0x243[0x24F - 0x243];
     /* 0x24F */ u8 field_0x24f; // 20 units
