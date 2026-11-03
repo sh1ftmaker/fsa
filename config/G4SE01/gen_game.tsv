@@ -1,5 +1,4 @@
 unit	family	function	class	vtable	src_before	hdr_before
-RailBase	sinit	__sinit_RailBase_cpp	-	-	new	-
 act_all_enemies_defeated_check_switch	dtor	__dt__12cls_804A8AC8Fv	cls_804A8AC8	0x804A8AC8	new	new
 act_all_enemies_defeated_check_switch	sinit	__sinit_act_all_enemies_defeated_check_switch_cpp	-	-	new	new
 act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new

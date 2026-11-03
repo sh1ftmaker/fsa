@@ -16,6 +16,15 @@
 
 #include "types.h"
 #include "JSystem/JGeometry.h"
+#include "game/ActorBase.h"
+
+// The RAIL actor's class, named after its vtable 0x8049C770 (no name evidence
+// yet). Only the draw override (slot 0x20, fn_800FD498, an empty `blr`) is
+// declared; the destructor fn_800FD438 and the other slots are not yet.
+class cls_8049C770 : public ActorBase_804A5770 {
+public:
+    /* 0x20 */ virtual void draw();
+};
 
 // The element class of a 0xC8-byte buffer (0x31 pointer entries). Its method
 // fn_800FE3EC (RailBase.cpp) starts by clearing bytes 2, 3 and 1, as the
