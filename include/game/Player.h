@@ -305,7 +305,10 @@ public:
     /* 0x0CFF */ u8 field_0xcff[0xD08 - 0xCFF];
     // Returned by fn_8024322C (via fn_8023697C, which returns -1 without a player).
     /* 0x0D08 */ s32 field_0xd08;
-    /* 0x0D0C */ u8 field_0xd0c[0xD60 - 0xD0C];
+    /* 0x0D0C */ u8 field_0xd0c[0xD4C - 0xD0C];
+    // A bool: fn_8024C458 returns it as loaded (lbz; blr).
+    /* 0x0D4C */ bool field_0xd4c;
+    /* 0x0D4D */ u8 field_0xd4d[0xD60 - 0xD4D];
     // Another player's index, or negative for none: fn_80246F28 asks the
     // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
     // own field_0x120c / field_0x1224 instead when it is negative.

@@ -156,3 +156,7 @@ bool Player_804A6F38::fn_80249068() {
 bool Player_804A6F38::fn_8024BBB0() {
     return field_0xce8;
 }
+
+bool Player_804A6F38::fn_8024C458() {
+    return field_0xd4c;
+}
