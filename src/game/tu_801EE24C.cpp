@@ -118,6 +118,29 @@ void ActorBase_804A5770::vfunc_0x18() {
     }
 }
 
+// The actor's bit in the screen and stage tables of the view (game/GameView.h):
+// the top five bits of field_0x90, 0 for none.
+s32 ActorBase_804A5770::vfunc_0x3C() {
+    return field_0x90 >> 27;
+}
+
+s32 ActorBase_804A5770::vfunc_0x38() {
+    return fn_802D6A9C()->fn_802D7E04(vfunc_0x3C());
+}
+
+bool ActorBase_804A5770::vfunc_0x34() {
+    if (vfunc_0x3C()) {
+        return fn_802D6A9C()->fn_802D800C(vfunc_0x3C());
+    }
+    return false;
+}
+
+void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
+    if (vfunc_0x3C()) {
+        fn_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
+    }
+}
+
 void ActorBase_804A5770::update() {}
 
 void ActorBase_804A5770::vfunc_0x10() {}

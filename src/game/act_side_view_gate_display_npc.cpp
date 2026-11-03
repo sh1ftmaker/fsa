@@ -7,10 +7,18 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/act/act_side_view_gate_display_npc.h"
+#include "game/Effect.h"
 
-// FIXME: init (0x803524D0) is not written yet: it calls fn_8013CC50, the
-// effect spawner of game/tu_8013C5C8.cpp, which no shared header declares
-// yet (docs/GAME_PLAN.md G1 item 4, Effect.h).
+void SideViewGateDisplayNpc_804ACB98::init() {
+    mEmitter234 = NULL;
+    mEmitter238 = NULL;
+    if (mEmitter234 == NULL) {
+        mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x447, -1, 0, NULL, NULL, true, 1.0f);
+    }
+    if (mEmitter238 == NULL) {
+        mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0x448, -1, 0, NULL, NULL, true, 1.0f);
+    }
+}
 
 void SideViewGateDisplayNpc_804ACB98::draw() {}
 

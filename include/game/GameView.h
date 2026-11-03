@@ -200,11 +200,12 @@ public:
     // field_0x328[bit]; else clears the bit and stores 0xFF there.
     // ActorBase_804A5770::vfunc_0x30 passes (vfunc_0x3C(), set, value).
     void fn_802D8050(s32 bit, bool set, u8 value);
-    // 1 unit (this unused). field_0x308[index] (lbz; ActorBase's vfunc_0x38
-    // returns it unnarrowed).
-    u8 fn_802D7E04(s32 index);
-    // 2 units (this unused). field_0x328[index].
-    u8 fn_802D7E1C(s32 index);
+    // 1 unit (this unused). field_0x308[index] (lbz). An int: ActorBase's
+    // vfunc_0x38 returns it without the clrlwi a u8 return would need.
+    s32 fn_802D7E04(s32 index);
+    // 2 units (this unused). field_0x328[index] (lbz). An int: its callers
+    // store it with stw and compare it with cmpw, no clrlwi.
+    s32 fn_802D7E1C(s32 index);
     // 1 unit (this unused). Increments field_0x308[index] below 0xFF.
     void fn_802D7E34(s32 index);
 
