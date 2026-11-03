@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **17.39 %** of the code and **4,319 / 11,561** functions match. 236 of 357 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **17.39 %** of the code and **4,319 / 11,561** functions match. 236 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -97,9 +97,8 @@ regenerated with every merge; see [How it works](#how-it-works).
 <!-- now:start -->
 - **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 38.9 % of the split files Matching.
 - **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
-- **Next** (phase 4): **THP video.** The THP player in the game region, from oot-gc's THP sources. Currently 0 % of the code matched.
-- **Next** (phase 5): **The file map in splits.txt.** Load tu_map.tsv's 530 game files with their data ranges; actor files named from actors.tsv. Currently 0 % of the code split into units.
-- **Next** (phase 5): **Game compiler setup.** GC/2.6 -O4,p with C++ exceptions, proven on the 26 recomp-era game functions.
+- **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. Currently 0 % of the code matched.
+- **Next** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 

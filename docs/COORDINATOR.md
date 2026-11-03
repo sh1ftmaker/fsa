@@ -59,6 +59,35 @@ dropped. The first run named 15 placeholders (gxData, ErrorTable,
 two_over_pi, the JASOscillator curve tables, ...). Commit the result like
 any symbols.txt change (the gate accepts placeholder renames).
 
+## Game units
+
+- All 529 game units are in `splits.txt` and configure.py's
+  `GameLib("game", ...)` block (`NonMatching`, category `game`) before
+  anyone starts them; `config/G4SE01/game_units.tsv` lists each unit's
+  range, confidence, sections and name evidence (actor IDs included).
+- Names: `game/tu_<text start>.cpp` (258 units), or an evidenced name
+  (270 `game/act_<actor>.cpp` from the actor table, `game/RailBase.cpp`).
+  Renames need evidence and touch the `splits.txt` stanza, the configure.py
+  line and `game_units.tsv` together: a coordinator edit, not a worker's.
+- Queue: `python3 tools/coord.py queue --lib src/game --small` (smallest
+  first; game units show up before their source exists). `coord.py start
+  game/tu_8014FD5C.cpp` claims one as usual; the worker creates
+  `src/game/<name>.cpp` (headers under `include/game/`), and configure.py
+  picks the file up on the next `python3 configure.py`.
+- Build: `cflags_game` (docs/PLAN.md, "Game code"); the THP unit
+  `game/tu_80427D2C.cpp` adds `-inline off,deferred` and includes sms's
+  THP sources. The worker renames `fn_` placeholders to the mangled names
+  its source emits (PLAN.md, "Symbols").
+- Tell game workers in `--notes`: the unit's `game_units.tsv` row, the
+  actor IDs it constructs, and which `references ... inside another unit`
+  note of `to_splits.py` concerns it (extern data owned elsewhere). Those
+  notes cover only references the tool anchors to one unit; constants
+  several units read (shared `.sdata2`) aren't listed, so a worker who
+  finds its relocations pointing into a neighbour's data reports it as a
+  SHARED-EDIT.
+- 38 medium units may hold several files: a boundary found inside one is a
+  SHARED-EDIT for the coordinator (split stanza, new configure.py line).
+
 ## Merge commit messages
 
 `<unit> matches (N/N)` or `<unit>: <what> (n/N functions)`, then a short body:

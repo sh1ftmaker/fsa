@@ -214,8 +214,14 @@ def build():
         text = [s for s in splits.get(path, []) if s[0] in (".text", ".init")]
         start = min((s[1] for s in text), default=0)
         if region == "game":
-            row = tumap.find(start) if start else None
-            lib = game_group(row["suggested_name"] if row else path.rsplit("/", 1)[-1], start)
+            # a split game unit can span several tu_map.tsv rows (merged by
+            # tools/tu_map/to_splits.py): the first row with a hint names the group
+            end = max((s[2] for s in text), default=start)
+            rows = [r[2] for r in tumap.rows if start <= r[0] < end] if start else []
+            groups = [game_group(r["suggested_name"], start) for r in rows]
+            named = [g for g in groups if not g.startswith(("unnamed", "linked before"))]
+            stem = re.sub(r"\.[^.]*$", "", path.rsplit("/", 1)[-1])
+            lib = named[0] if named else (groups[0] if groups else game_group(stem, start))
         rec = file_rec(region, lib, path, path.rsplit("/", 1)[-1])
         rec["status"] = "M" if meta.get("complete") else "N"
         rec["src"] = meta.get("source_path", "")

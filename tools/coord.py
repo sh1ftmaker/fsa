@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Coordinator workflow: everything around the decompiling itself.
 
-  python3 tools/coord.py queue [--lib PREFIX] [-n N]
-      Unclaimed units that aren't fully matched, most unmatched code first.
+  python3 tools/coord.py queue [--lib PREFIX] [-n N] [--small]
+      Unclaimed units that aren't fully matched, most unmatched code first
+      (--small: least first). Game units (--lib src/game) are queued before
+      their source exists; the worker creates src/game/<name>.cpp.
   python3 tools/coord.py start <unit>... [--owner NAME] [--notes TEXT]
       Claim the units, create their worktrees and branches, print the worker
       prompt (one combined prompt for several tiny units).
@@ -74,6 +76,10 @@ def unit_rows():
     sources = {}
     for u in json.loads((REPO / "objdiff.json").read_text())["units"]:
         src = (u.get("metadata") or {}).get("source_path") or ""
+        name = u["name"].split("/", 1)[-1]
+        if not src and name.startswith("game/") and "game" in ((u.get("metadata") or {}).get("progress_categories") or []):
+            # a game unit nobody has started: configure.py lists it, its source comes with its agent
+            src = f"src/{name}.cpp"
         for root in LIB_ROOTS:
             if src.startswith(root):
                 sources[u["name"]] = (src[len(root):], src)
@@ -96,7 +102,10 @@ def unit_rows():
 def cmd_queue(args):
     claims = with_claims()
     shown = 0
-    for unit, src, missing, status in unit_rows():
+    rows = unit_rows()
+    if args.small:
+        rows = rows[::-1]
+    for unit, src, missing, status in rows:
         if unit in claims or (args.lib and not src.startswith(args.lib)):
             continue
         print(f"{missing:7}  {unit:48} {status}")
@@ -259,6 +268,7 @@ def main():
     q = sub.add_parser("queue")
     q.add_argument("--lib", default="")
     q.add_argument("-n", type=int, default=20)
+    q.add_argument("--small", action="store_true", help="least unmatched first (small files)")
     s = sub.add_parser("start")
     s.add_argument("units", nargs="+")
     s.add_argument("--owner", default="agent")

@@ -55,14 +55,66 @@ Result: the game code (0x800F39EC–0x8045BD00) splits into **530 files**,
 94 % of its bytes at high confidence. The method reproduces 118 of 120 known
 library boundaries.
 
-Steps:
-1. Add the high-confidence files to `splits.txt` in batches (`.text` plus each
-   file's data ranges, found with `tools/data_splits.py`-style checks), as
-   placeholder units `game/tu_<addr>.cpp`, and verify with dtk's split.
-2. Resolve the medium/low regions as their files are worked on (e.g. the THP
-   block at 0x80427D2C with oot-gc's THP sources).
-3. Rename files as evidence arrives (actor table, resource names, debug
-   strings, minigame `mg_*` archives), never by guess.
+Done (branch infra/gamemap): all of it is in `splits.txt` as **529 game
+units** (`tools/tu_map/to_splits.py`, list in `config/G4SE01/game_units.tsv`),
+and dtk splits them cleanly (no errors, no alignment warnings; the link SHA-1
+stays OK):
+
+- Every unit has `.text`, and every section its evidence covers: extab and
+  extabindex 528 (from the DOL's extabindex entries), `.ctors` 529 (its
+  `__sinit` slot), `.bss` 526, `.sdata2` 459, `.data` 457, `.rodata` 355,
+  `.sdata` 63, `.sbss` 61. 100 % of the game's code (3,574,236 bytes, 6,791
+  functions) is in game units.
+- Data ownership, computed over all data sections at once: a symbol only one
+  unit's code references belongs to that unit; then, transitively and across
+  sections, a symbol only referenced from data one unit owns (a `.data`
+  table's strings in `.rodata`, its floats in `.sdata2`). The actor
+  spawner's file holds inline copies of other files' constructors, so its
+  references don't count when another unit references the same symbol
+  (otherwise 230 small actor files lost their vtable, often their only
+  data). Units are tiled from the owned data; gaps nobody owns go to the
+  earlier unit. Check: only one unit's data still points into another unit's
+  `.rodata`/`.sdata2` (act_ganon's table into tu_801902C0, 77 pointers; the
+  table itself is never referenced by name), and the tool prints it.
+- The tool's "references ... inside another unit" notes cover only
+  references it anchors to a single unit (10 of them). Code also reads
+  `.sdata2`/`.rodata` constants several units share (about 40 unit pairs,
+  e.g. tu_801CB270's constants from 8 units); those aren't listed.
+- Corrections the evidence forced on `tu_map.tsv`:
+  - 0x80021840–0x80021F24 (linked before JSystem) is **two** units, split at
+    0x80021D60: two `__sinit`s in `.ctors` (0x80021848, 0x80021DA8), and
+    dtk's own extab grouping cuts there.
+  - 0x80457DFC and 0x8045A338 are one unit: dtk, "Conflicting splits within
+    reversed extab group".
+  - The THP block 0x80427D2C–0x8042E964 is one unit (tu_map's 0x804280C0 and
+    0x8042E780 cuts were placeholders): `.sbss`/`.data` of 0x80427D2C.. sit
+    inside the player's, 0x8053AEBD is used on both sides, data order is
+    reversed like the rest of this `-inline deferred` file, and it ends at
+    its `__sinit` 0x8042E788. It includes sms's THPDec.c/THPAudio.c: all 28
+    of their functions match with the game flags plus `-inline off,deferred`.
+  - `.text` ends at 0x8045BCE4 (tu_map.tsv's last row says 0x8045BD00).
+- Names (271): `game/RailBase.cpp` from its own `"RailBase.cpp"` string;
+  270 actor files `game/act_<name>.cpp` from `docs/names/actors.tsv` (high
+  and medium names only), placed through the actor spawner `fn_801F9484`,
+  whose compare tree is decoded along its branches (an ID counts only from
+  `lis`/`addi r0`/`cmpw r29, r0`/`beq`): the case's constructor lies in the
+  unit, or, when the constructor is an inline copy in the spawner's file,
+  the vtable it stores lies in the unit's `.data` and the unit's own code
+  references it (true for all 232 vtable placements). Where actors.tsv
+  suggests one stem for several IDs, each gets its ID
+  (`act_great_fairy_spfr`, `act_great_fairy_bfry`). 33 more units construct
+  several or low-confidence actors; their IDs are in `game_units.tsv` and
+  they stay `game/tu_<start>.cpp`, like the remaining 225.
+
+Next, as each file is worked on:
+1. Splitting further: 38 medium units (`unverified_single_TU`, one
+   `__sinit` but no `.sdata2` proof) may hold several files; a worker who
+   finds a file boundary inside its unit proposes the split as a SHARED-EDIT.
+2. Rename files as evidence arrives (actor table, resource names, debug
+   strings, minigame `mg_*` archives), never by guess. Rename the
+   `splits.txt` stanza, the configure.py line and `game_units.tsv` together.
+   Don't rerun `to_splits.py --apply` once units have been renamed or
+   hand-edited: it would restore its own names and cuts.
 
 ## Phase 2: names
 
@@ -180,11 +232,9 @@ which drives the quest path on the progress website. Change statuses there.
 
 1. Finish the libraries: MSL/Runtime, MetroTRK (pikmin2/tp v2.6), THP, the
    rest of JSystem including J3D (pikmin2, same GC/2.6), donor-first.
-2. Load the file map (`config/G4SE01/tu_map.tsv`) into `splits.txt`: 530
-   game units with their data ranges, actor files named from
-   `docs/names/actors.tsv`, the rest `tu_<addr>`; verify with the SHA-1 link.
-3. Game compiler setup (GC/2.6 `-O4,p`, C++ exceptions), proven on the 26
-   game functions from the recomp era, rewritten cleanly. Then the shared
+2. Load the file map (`config/G4SE01/tu_map.tsv`) into `splits.txt`: done,
+   529 game units with their data ranges (Phase 1 above).
+3. Game compiler setup: done, see "Game code" below. Then the shared
    headers, each with one owner, before the broad waves: the actor base class
    (vtable slots known), the enemy/NPC/demo bases, the scene manager, the
    global game-state struct, heap and message systems. Workers propose header
@@ -197,3 +247,53 @@ which drives the quest path on the progress website. Change statuses there.
    Pad.c), crack passes on resistant functions, readability cleanup.
 7. Done: every unit Matching and `ninja` links main.dol with the original
    SHA-1; a KATAM-style PORTABLE build becomes possible after that.
+
+## Game code
+
+### Compiler (`cflags_game`, `GameLib` in configure.py)
+
+GC/2.6, C++: `-Cpp_exceptions on -O4,p -inline auto -use_lmw_stmw on
+-fp_contract on -str reuse,readonly -RTTI off`, default `-sdata 8 -sdata2 8`,
+no Shift-JIS literals in the game (plain `mwcc`). Proof: natural C++ for five
+game functions matches byte for byte (relocation targets aside) with exactly
+these flags, and each of the alternatives breaks one:
+
+| Function | What | Shows |
+|---|---|---|
+| fn_801F856C | `return gGame->mStage->mActorMgr;` | baseline |
+| fn_80154248 | `getActorMgr()->spawn(a, b, c, d);` | `-O4,p`: 4 saved registers as separate `stw` (`-O4,s` emits `stmw r28`) |
+| fn_80154310 | `getActorMgr()->create(id, a, b, c, d, e);` | `-use_lmw_stmw on`: `stmw r26` (off: six `stw`) |
+| fn_80154528 | midpoint, `0.5f * (a - b) + b` | `-fp_contract on`: `fmadds` (off: `fmuls` + `fadds`) |
+| fn_80105DD4 | an empty virtual destructor | `-Cpp_exceptions on`: extab entries, as the DOL has for all three non-leaf functions |
+
+String literals sit unpooled and 4-aligned in `.rodata` (RailBase.cpp's two
+strings at +0x0 and +0x10, exactly what `-str reuse,readonly` emits;
+`pool` packs them). `.sdata`/`.sbss` hold 8-byte objects and `.data`/`.bss`
+nothing smaller than 12. Most units are forward-ordered (`-inline auto`);
+the THP unit is `-inline off,deferred` (its `extra_cflags`). `-O3,p` gives
+the same code for these five functions; `-O4,p` follows the JSystem build.
+`-char signed` and the include order (`libs/sdk/include` first, then
+`include`, `src`) follow the JSystem build, whose headers the game uses.
+Not settled: whether game files use `-common on` (the common `.bss` at
+0x8052E184–0x80539BAC is being sorted out on infra/bss-names).
+
+### Units
+
+- Every game unit is listed in configure.py's `GameLib("game", ...)` block as
+  `Object(NonMatching, "game/<name>.cpp")` from the start, source or not
+  (progress category `game`). Without `src/game/<name>.cpp` it is reported
+  as its target only (0 %), exactly like an unsplit region, so the `game`
+  category measures the whole game code. The worker creates the source;
+  configure.py only changes when the unit's flag flips (merge_unit.py
+  refuses any other configure.py change).
+- Names: `game/tu_<text start>.cpp` until there is evidence, then the
+  evidenced name (see Phase 1).
+- Symbols: game functions are `fn_8xxxxxxx` in `symbols.txt`, but C++
+  mangles, so a function only lines up in objdiff once `symbols.txt` has the
+  name the source emits. The worker renames the placeholder to that mangled
+  name (a placeholder rename, which the gate allows): `spawn__8ActorMgrFiiii`
+  when the class and method names have evidence, otherwise a placeholder
+  that keeps the address, e.g. a free function `fn_80154248(int, int, int,
+  int)` → `fn_80154248__Fiiii`; methods of an unnamed class get a
+  placeholder class named after its vtable (`cls_8049CC34`). Say which in
+  the unit's report. Never `extern "C"` just to keep a name.
