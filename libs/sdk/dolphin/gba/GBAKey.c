@@ -53,7 +53,6 @@ void __GBAX02(s32 chan, u8* readbuf) {
     GBAControl* gba = &__GBA[chan];
     GBABootInfo* bootInfo = &__GBA[chan].bootInfo;
     GBASecParam* param = gba->param;
-    DSPTaskInfo* task;
 
     memcpy(param, readbuf, 4);
     param->paletteColor = bootInfo->paletteColor;
@@ -63,16 +62,21 @@ void __GBAX02(s32 chan, u8* readbuf) {
     DCInvalidateRange(&param->keyA, 32);
     DCFlushRange(param, 32);
 
-    // Taken here rather than at the top: the original computes it only now.
-    task = &gba->task;
-    task->priority = 255;
-    task->iram_mmem_addr = (u16*)OSCachedToPhysical(lbl_804985D0);
-    task->iram_length = sizeof(lbl_804985D0);
-    task->iram_addr = 0;
-    task->dsp_init_vector = 0x10;
-    task->init_cb = fn_80076EBC;
-    task->res_cb = NULL;
-    task->done_cb = fn_80076F98;
-    task->req_cb = NULL;
-    DSPAddTask(task);
+    // The task pointer is taken only now, in its own block: the original
+    // computes it after the cache calls (a function-scope local set at the
+    // top, or no local at all, allocates registers differently).
+    {
+        DSPTaskInfo* task = &gba->task;
+
+        task->priority = 255;
+        task->iram_mmem_addr = (u16*)OSCachedToPhysical(lbl_804985D0);
+        task->iram_length = sizeof(lbl_804985D0);
+        task->iram_addr = 0;
+        task->dsp_init_vector = 0x10;
+        task->init_cb = fn_80076EBC;
+        task->res_cb = NULL;
+        task->done_cb = fn_80076F98;
+        task->req_cb = NULL;
+        DSPAddTask(task);
+    }
 }
