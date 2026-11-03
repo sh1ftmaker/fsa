@@ -17,6 +17,14 @@ public:
     void fn_80207ECC();
     // 0x80208244, the state step (r4 = state); fn_80207ECC calls it with 3.
     void fn_80208244(int state);
+
+    // 0x80208924: the tile codes under mPos on this layer, from
+    // fn_8022461C and fn_80226850.
+    void fn_80208924();
+
+    /* 0x2A8 */ u8 field_0x2a8[0x9E]; // not yet known
+    /* 0x346 */ u16 field_0x346; // fn_8022461C(&mPos, field_0x4)
+    /* 0x348 */ u16 field_0x348; // fn_80226850(&mPos, field_0x4)
 };
 
 #endif

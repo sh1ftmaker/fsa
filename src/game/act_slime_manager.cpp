@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_slime_manager.h"
+#include "game/Map.h"
 
 const f32 lbl_8053F8E0 = 0.0f;
 
@@ -23,4 +24,9 @@ void cls_804A5BD8::fn_80207ECC() {
         fn_80208244(3);
         break;
     }
+}
+
+void cls_804A5BD8::fn_80208924() {
+    field_0x346 = fn_8022461C(&mPos, field_0x4);
+    field_0x348 = fn_80226850(&mPos, field_0x4);
 }
