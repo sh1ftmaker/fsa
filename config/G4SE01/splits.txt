@@ -268,8 +268,10 @@ JSystem/JAudio/System/JASInstRand.cpp:
 	.sdata2     start:0x8053B1C0 end:0x8053B1D0
 
 JSystem/JAudio/System/JASInstSense.cpp:
-	.text       start:0x800309B8 end:0x80030B78
+	.text       start:0x800309B8 end:0x80030BD0
+	.ctors      start:0x8045BD68 end:0x8045BD6C
 	.data       start:0x80491A78 end:0x80491A88
+	.bss        start:0x804B28B8 end:0x804B28C8
 	.sdata2     start:0x8053B1D0 end:0x8053B1F0
 
 JSystem/JAudio/System/JASSimpleWaveBank.cpp:

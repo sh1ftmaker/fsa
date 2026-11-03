@@ -1,5 +1,6 @@
 #include "JSystem/JAudio/System/JASInst.h"
 #include "JSystem/JUtility/JUTAssert.h"
+#include "JSystem/JAudio/System/JASChannel.h"  // FSA's __sinit constructs the JASChannel pool
 
 void JASInstSense::effect(int trigger1, int trigger2, JASSoundParams *params) const {
     int trigger = 0;
