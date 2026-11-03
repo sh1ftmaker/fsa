@@ -269,7 +269,10 @@ public:
     /* 0x0B9C */ u8 field_0xb9c[0xBEC - 0xB9C];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
-    /* 0x0BF0 */ u8 field_0xbf0[0xC70 - 0xBF0];
+    /* 0x0BF0 */ u8 field_0xbf0[0xC64 - 0xBF0];
+    // Word returned by fn_80270350 (tu_8026FC20).
+    /* 0x0C64 */ s32 field_0xc64;
+    /* 0x0C68 */ u8 field_0xc68[0xC70 - 0xC68];
     // Words returned by fn_80270310 and fn_802702E4 (tu_8026FC20).
     /* 0x0C70 */ s32 field_0xc70;
     /* 0x0C74 */ s32 field_0xc74;
