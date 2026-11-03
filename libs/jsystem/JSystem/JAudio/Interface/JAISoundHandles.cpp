@@ -1,4 +1,5 @@
 #include "JSystem/JAudio/Interface/JAISoundHandles.h"
+#include "JSystem/JAudio/System/JASTrack.h"  // FSA's __sinit constructs the JASTrack/JASChannel pools
 
 #ifdef DEBUG
 #pragma sym on
@@ -74,8 +75,6 @@ void JAISoundHandles::setPos(const JGeometry::TVec3f &pos)
         }
     }
 }
-
-#include "JSystem/JAudio/JASFakeMatch.h"
 
 #ifdef DEBUG
 #pragma sym off

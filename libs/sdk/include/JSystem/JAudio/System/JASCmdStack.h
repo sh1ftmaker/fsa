@@ -1,8 +1,9 @@
 #ifndef JAUDIO_JASCMDSTACK_H
 #define JAUDIO_JASCMDSTACK_H
 
-#include "JSystem/JAudio/System/JASTrack.h"
 #include "JSystem/JSupport/JSUList.h"
+
+class JASTrack;
 
 struct JASPortArgs {
     JASTrack* track;

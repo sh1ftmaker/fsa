@@ -14,11 +14,6 @@ static const u32 FILTER_MODE_IIR = 0x00000020;
 JASDefaultBankTable JASTrack::sDefaultBankTable;
 JASTrack::TList JASTrack::sTrackList;
 
-// FIXME: the original also defines the three JASPoolAllocObject_MultiThreaded<T>::memPool_
-// pools here (its __sinit constructs and registers them). A generic definition in
-// JASHeapCtrl.h does that, but then units that must not emit them do too; see
-// docs/COORDINATOR.md (JASFakeMatch findings).
-
 const JASOscillator::Point JASTrack::sAdsTable[4] = {
     {0, 0, 0x7fff},
     {0, 0, 0x7fff},

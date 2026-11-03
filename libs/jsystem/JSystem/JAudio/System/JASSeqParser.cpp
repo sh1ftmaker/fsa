@@ -7,11 +7,6 @@
 #include "JSystem/JUtility/JUTAssert.h"
 #include "dolphin/types.h"
 
-// FIXME: the original also defines the three JASPoolAllocObject_MultiThreaded<T>::memPool_
-// pools here (its __sinit constructs and registers them). A generic definition in
-// JASHeapCtrl.h does that, but then units that must not emit them do too; see
-// docs/COORDINATOR.md (JASFakeMatch findings).
-
 u16 (*JASSeqParser::sCallBackFunc)(JASTrack*, u16);
 
 JASSeqParser::CmdInfo JASSeqParser::sCmdInfo[96] = {

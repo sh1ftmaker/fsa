@@ -6,7 +6,6 @@
 #include "JSystem/JAudio/Interface/JAIAudible.h"
 #include "JSystem/JAudio/Interface/JAISoundParams.h"
 #include "JSystem/JAudio/System/JASGadget.h"
-#include "JSystem/JAudio/System/JASTrack.h"
 
 #include "types.h"
 
@@ -286,18 +285,8 @@ public:
     void calc() { mTempo = mTransition.apply(mTempo); }
 };
 
-class JAISoundChild : JASPoolAllocObject<JAISoundChild>
-{
-public:
-    void init();
-    void mixOut(JASTrack *track);
-    void calc();
-
-    JAISoundChild() { init(); }
-
-    JAISoundParamsMove mMove; // 00
-    JASSoundParams mParams;   // 50
-}; // Size: 0x64
+class JAISoundChild;
+class JASTrack;
 
 class JAIAudible;
 class JAIAudience;

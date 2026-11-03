@@ -1,4 +1,5 @@
 #include <JSystem/JAudio/System/JASInst.h>
+#include <JSystem/JAudio/System/JASChannel.h>  // FSA's __sinit constructs the JASChannel pool
 #include <JSystem/JUtility/JUTDbg.h>
 
 // probably fakematch

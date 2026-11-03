@@ -2,9 +2,6 @@
 #include "JSystem/JAudio/System/JASDrumSet.h"
 #include "JSystem/JAudio/System/JASCalc.h"
 
-template<>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-
 namespace JASBNKParser
 {
     u32 sUsedHeapSize;

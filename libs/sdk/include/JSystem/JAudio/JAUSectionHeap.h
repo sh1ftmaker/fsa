@@ -135,7 +135,7 @@ inline bool JAUSection::isOpen() const { return sectionHeap_->getOpenSection() =
 JAUSectionHeap *JAUNewSectionHeap(JKRSolidHeap *heap, bool p2);
 JAUSectionHeap *JAUNewSectionHeap(bool);
 
-// TODO: probably move this to a different file(JASFakeMatch?)
+// TODO: probably move this to a different file
 #define createJASInstance(TYPE) \
     template <> \
     DECL_WEAK TYPE *JASGlobalInstance<TYPE>::sInstance

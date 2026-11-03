@@ -3,11 +3,6 @@
 #include "JSystem/JAudio/System/JASInst.h"
 #include "JSystem/JUtility/JUTAssert.h"
 
-#ifdef MATCHING
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-#endif
-
 JASBasicInst::JASBasicInst() {
     mVolume = 1.0f;
     mPitch = 1.0f;

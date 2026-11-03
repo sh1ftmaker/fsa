@@ -124,7 +124,3 @@ void JASDrumSet::TPerc::setRelease(u32 release) {
     mRelease = release;
 }
 
-#ifdef MATCHING
-template <>
-JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel>::memPool_;
-#endif

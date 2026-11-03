@@ -3,6 +3,8 @@
 
 #include "JSystem/JAudio/System/JASAramStream.h"
 #include "JSystem/JAudio/Interface/JAISound.h"
+#include "JSystem/JAudio/System/JASHeapCtrl.h"
+#include "JSystem/JAudio/System/JASTrack.h"  // not in tp; every FSA TU that sees JAIStream constructs the JASTrack pools
 #include "JSystem/JSupport/JSUList.h"
 
 class JAIStreamMgr;

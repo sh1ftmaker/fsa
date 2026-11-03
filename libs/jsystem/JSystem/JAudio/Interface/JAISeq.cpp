@@ -1,6 +1,7 @@
 #include "JSystem/JAudio/Interface/JAIAudience.h"
 #include "JSystem/JAudio/Interface/JAISeq.h"
 #include "JSystem/JAudio/Interface/JAISeqMgr.h"
+#include "JSystem/JAudio/Interface/JAISoundChild.h"
 #include "JSystem/JAudio/System/JASTrack.h"
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 
@@ -342,9 +343,3 @@ JAITempoMgr *JAISeq::getTempoMgr()
 {
     return &inner_.mTempoMgr;
 }
-
-// FIXME: __sinit_JAISeq_cpp (0x80024A0C) is not emitted yet. FSA constructs five
-// pools here: the JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded
-// pools, then JASPoolAllocObject<JAISoundChild>::memPool_ and
-// JASPoolAllocObject<JAISeq>::memPool_. It needs the generic memPool_ definition
-// (JASHeapCtrl.h, pending) visible in this TU.
