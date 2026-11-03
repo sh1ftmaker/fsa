@@ -407,7 +407,7 @@ public:
     // stored as a byte at 0x244 + slot, r6 (at most 5) at 0x23A + slot, and r8
     // (`flag`) switches the leading-zero handling. act_digging_game and
     // tu_8010089C call it too; tu_801ED3DC passes (n, 255, 0, 1, false).
-    bool fn_8043CB24(s32 value, u8 alpha, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale);
+    bool fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale);
 };
 extern cls_804B1920* lbl_8053AED0;
 

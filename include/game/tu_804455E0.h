@@ -5,7 +5,7 @@
 
 #include "types.h"
 
-// The 0x118-byte object whose constructor (game/tu_804455E0.cpp, 0x804461D0)
+// The 0x48-byte object (tu_8043A0E8 allocates 0x48 at 0x8043F678) whose constructor (game/tu_804455E0.cpp, 0x804461D0)
 // stores the vtable 0x804B1BB0 and the object itself in lbl_8053AEF8. Named
 // after that vtable. Only the best-time records fn_801ED3DC (game/tu_801ED3DC.cpp)
 // writes are known.
@@ -16,8 +16,8 @@ public:
     /* 0x03C */ u8 field_0x3c[4]; // per slot: seconds
     /* 0x040 */ u8 field_0x40[4]; // per slot: rank + 1
     /* 0x044 */ u8 field_0x44;    // bit n: slot n has a time; bit n + 4: slot n has a rank
-    /* 0x045 */ u8 pad_0x45[0x118 - 0x45];
-}; // Size: 0x118
+    /* 0x045 */ u8 pad_0x45[0x48 - 0x45];
+}; // Size: 0x48
 extern cls_804B1BB0* lbl_8053AEF8;
 
 #endif

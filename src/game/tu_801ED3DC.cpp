@@ -4,17 +4,13 @@
 #include "game/tu_804455E0.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
-static inline void recordTime(s32 slot, u8 centis, u8 seconds) {
-    lbl_8053AEF8->field_0x44 |= (u8)(1 << slot);
-    lbl_8053AEF8->field_0x3c[slot] = seconds;
-    lbl_8053AEF8->field_0x38[slot] = centis;
-}
-
-// FIXME: 98.1 %. Same instructions; the target keeps lbl_8053AEF8 in r10, the
-// constant 1 in r8, the seconds in r7 and the flag byte in r9 (ours r8, r7,
-// r10, r6).
+// FIXME: 84.0 %. Same instructions; the target loads mSeconds and mCentis
+// before the first store through lbl_8053AEF8 (r7, r6) and keeps the pointer
+// in r10, the constant 1 in r8; ours loads them between the stores.
 void cls_801ED3DC::fn_801ED3DC(s32 slot, s32 rank) {
-    recordTime(slot, mCentis, mSeconds);
+    lbl_8053AEF8->field_0x44 |= (u8)(1 << slot);
+    lbl_8053AEF8->field_0x3c[slot] = mSeconds;
+    lbl_8053AEF8->field_0x38[slot] = mCentis;
     if (rank >= 0 && rank < 4) {
         lbl_8053AEF8->field_0x44 |= (u8)(1 << (slot + 4));
         lbl_8053AEF8->field_0x40[slot] = rank + 1;
