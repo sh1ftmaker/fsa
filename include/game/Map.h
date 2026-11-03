@@ -131,7 +131,7 @@ void fn_80226CA8(s32 index, s32 layer, JGeometry::TVec3f* out);
 // fn_8022461C (computed inline), 0 / 2 / 0x50 never, 0x22 only while
 // GameView field_0x170 is set; `flag` (clrlwi 24, 0x80226344) selects
 // further cases. Returns 0 or 1.
-bool fn_802260DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
+bool fn_802260DC(const JGeometry::TVec2f* pos, s32 layer, bool flag); // reads pos+0/+4 only
 // 19 units / 37 calls. A plain call of fn_802260DC with the same
 // arguments (ActorBase_804A5770::vfunc_0x4C passes flag 0).
 bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
