@@ -152,7 +152,12 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   read inside the helper (e.g. `bool talk(u32 player, u32 msg, s32 layer,
   const TVec3f& pos, u32 flags) { return fn_8038AD24(player, msg,
   field_0x234, layer, pos, flags); }`). Read the split off the asm; don't
-  search parameter orders (scratchpad research_byval.md).
+  search parameter orders (scratchpad research_byval.md). Layer before
+  serial (fn_8022FE80's order) is a reviewed exception: act_dummy_conversation,
+  act_merchant.
+- `cmpw` operands swapped against a call result (`cmpw r3, rN` in the
+  original): name the result first, `s32 owner = fn_X(...); if (owner ==
+  player)`. That is a local read once, not a trick.
 
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all
