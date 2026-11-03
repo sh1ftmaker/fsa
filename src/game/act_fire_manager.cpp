@@ -6,9 +6,6 @@
 
 cls_804AB2B0::~cls_804AB2B0() {}
 
-// FIXME: 97.7%. Only the u8 field_0x245 -> float conversion differs: the
-// original uses the signed form (xoris 0x8000, constant 2^52 + 2^31, loaded
-// 2 instructions later in the schedule), this compiles the unsigned one.
 void cls_804AB2B0::update() {
     JGeometry::TVec3f pos = mBasePos;
     if (!vfunc_0x34()) {
@@ -46,7 +43,7 @@ void cls_804AB2B0::update() {
                                        -1);
         }
         if (field_0x240 <= 0) {
-            field_0x240 = field_0x244 + (s32)(field_0x245 * lbl_8053AAF8->mRandom.get_ufloat_1());
+            field_0x240 = field_0x244 + (s32)((s32)field_0x245 * lbl_8053AAF8->mRandom.get_ufloat_1());
         } else {
             field_0x240--;
         }
