@@ -5,6 +5,8 @@
 #include "game/GameView.h"
 #include "game/act/act_thief.h"
 
+static const f32 lbl_8053F860[1] = {0.0f};
+
 void Thief_804A5A30::vfunc_0xA0() {
     if (mState != 9 && mState != 8) {
         lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
@@ -28,4 +30,22 @@ bool Thief_804A5A30::fn_802064E0() {
         }
     }
     return result;
+}
+
+Thief_804A5A30::Thief_804A5A30() {
+    field_0x340 = -1;
+    field_0x344 = 0;
+    field_0x348 = 0;
+    field_0x349 = 0;
+    field_0x34a = 0;
+    field_0x34b = 0;
+    field_0x34c = 0;
+    mType = 0;
+    field_0x354 = 0;
+    mEmitter358 = NULL;
+    field_0x35c.frames = 0;
+    field_0x35c.vel.x = lbl_8053F860[0];
+    field_0x35c.vel.y = lbl_8053F860[0];
+    field_0x368.fn_80217484();
+    field_0x374.fn_8021BA30(0);
 }

@@ -8,6 +8,8 @@
 // padding until act_thief is written.
 
 #include "game/cls_804A46F4.h"
+#include "game/cls_80217374.h"
+#include "game/cls_8021B904.h"
 #include "game/tu_801D2918.h"
 
 class JPABaseEmitter;
@@ -27,6 +29,9 @@ public:
         /* 0x10 */ f32 mHeight;      // subtracted from mPos.z for the lit sprite
     };
 
+    // 0x80206810 (act_thief): stores this vtable and the initial state of
+    // every field below, and resets the two timers at 0x368 and 0x374.
+    Thief_804A5A30();
     virtual ~Thief_804A5A30();
     /* 0x20 */ virtual void draw();
     // Overrides in game/tu_80206B30.cpp (0x80206B30-0x80207004; slot order).
@@ -55,12 +60,19 @@ public:
     // 0x8020FADC: called from act_thief's update.
     void fn_8020FADC();
 
-    /* 0x340 */ u8 field_0x340[0x350 - 0x340];
+    /* 0x340 */ s32 field_0x340; // -1 at construction
+    /* 0x344 */ s32 field_0x344;
+    /* 0x348 */ u8 field_0x348;
+    /* 0x349 */ u8 field_0x349;
+    /* 0x34A */ u8 field_0x34a;
+    /* 0x34B */ u8 field_0x34b;
+    /* 0x34C */ u8 field_0x34c;
     /* 0x350 */ s32 mType;            // index into lbl_8046A238
     /* 0x354 */ s32 field_0x354;
     /* 0x358 */ JPABaseEmitter* mEmitter358;
     /* 0x35C */ Damped2D_801D2918 field_0x35c; // a hit player pushes it (vfunc_0x68)
-    /* 0x368 */ u8 field_0x368[0x388 - 0x368];
+    /* 0x368 */ cls_80217374 field_0x368;      // wandering direction timer
+    /* 0x374 */ cls_8021B904 field_0x374;      // steering timer
 }; // Size: 0x388
 
 extern const Thief_804A5A30::TypeParams lbl_8046A238[];
