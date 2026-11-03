@@ -1520,7 +1520,7 @@ config.libs = [
         Object(NonMatching, "game/act_eyeball_switch.cpp"),
         Object(NonMatching, "game/act_invisible_npc_wall_tomi.cpp"),
         Object(Matching, "game/act_block_for_2_3_players.cpp"),
-        Object(NonMatching, "game/act_invisible_npc_wall.cpp"),
+        Object(Matching, "game/act_invisible_npc_wall.cpp"),
         Object(NonMatching, "game/tu_80376FA0.cpp"),
         Object(NonMatching, "game/act_horse_race_end_area.cpp"),
         Object(NonMatching, "game/act_ice_melted_by_four_players.cpp"),
