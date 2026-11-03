@@ -195,6 +195,10 @@ s32 fn_8022F3DC(s32 player);
 bool fn_8022F514(s32 player);
 bool fn_8022FA80(s32 player);            // 2 units. -> fn_8024C458 (byte 0xD4C); else false
 bool fn_80230188(s32 player);            // 56 units. -> fn_802413E8 (byte 0x454); else false
+// Per-player queries tested with clrlwi 24 (bool) by game/tu_8012EA00.cpp
+// (cls_8049E8F8::playersInside); owner tu_8022AD64, not written yet.
+bool fn_8023EA28(s32 player);
+bool fn_8023561C(s32 player);
 // 1 unit (act_horse_race_end_area). Owner: tu_8022AD64 (0x80230050). -> fn_8024E03C(player
 // slot) when the slot is present and its byte 0xCAC is set; else false.
 bool fn_80230050(s32 player);
