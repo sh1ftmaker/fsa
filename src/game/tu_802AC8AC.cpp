@@ -5,6 +5,7 @@
 // only the destructor.
 
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "JSystem/J2D/J2DPicture.h"
 
@@ -14,7 +15,10 @@ public:
     virtual ~cls_804A8390();
 
     void fn_802AC8AC(s32 value);
+    bool fn_802AC8B4();
     void fn_802AC980();
+    void fn_802AC98C();
+    void fn_802ACA64();
     void fn_802ACB58();
 
     /* 0x00 */ // vtable
@@ -34,12 +38,64 @@ void cls_804A8390::fn_802AC8AC(s32 value) {
     field_0x18 = value;
 }
 
-// FIXME: fn_802AC8B4 (the fade step, on lbl_8053AAF8->0x58), fn_802AC98C and
-// fn_802ACA64 (draw through the picture's vtable slots 0x130, 0x24 and 0xEC)
-// are not written yet.
+bool cls_804A8390::fn_802AC8B4() {
+    s32 state = lbl_8053AAF8->field_0x58;
+    if (state == 1 || state == 5) {
+        mAlpha += 10;
+        if (mAlpha >= 0xFE) {
+            mAlpha = 0xFF;
+            if (lbl_8053AAF8->field_0x58 == 5) {
+                field_0x14 = 10;
+            }
+            return true;
+        }
+        return false;
+    }
+    if (state == 4) {
+        mAlpha -= 10;
+        if (mAlpha < 0) {
+            mAlpha = 0;
+            return true;
+        }
+        return false;
+    }
+    if (state == 6) {
+        if (field_0x14 == 0) {
+            return true;
+        }
+        field_0x14--;
+        return false;
+    }
+    return true;
+}
 
 void cls_804A8390::fn_802AC980() {
     field_0x10 = 2;
+}
+
+void cls_804A8390::fn_802AC98C() {
+    if (field_0x10 > 0) {
+        if (field_0x10 < 0xFD) {
+            field_0x10 += 2;
+        } else {
+            field_0x10 = 0xFF;
+        }
+        lbl_8053AB10->fn_8013B490();
+        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+        mPicture->setAlpha(field_0x10);
+        mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
+    }
+}
+
+void cls_804A8390::fn_802ACA64() {
+    lbl_8053AB10->fn_8013B490();
+    if (field_0x18 == 0) {
+        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+    } else {
+        mPicture->setBlackWhite(JUtility::TColor(0xFFFFFFFF), JUtility::TColor(0xFFFFFF00));
+    }
+    mPicture->setAlpha(mAlpha);
+    mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
 }
 
 void cls_804A8390::fn_802ACB58() {
