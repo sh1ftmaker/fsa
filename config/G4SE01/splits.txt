@@ -176,6 +176,7 @@ JSystem/JAudio/System/JASChannel.cpp:
 JSystem/JAudio/System/JASDriverIF.cpp:
 	.text       start:0x8002C308 end:0x8002C55C
 	.ctors      start:0x8045BD4C end:0x8045BD50
+	.bss        start:0x804B2550 end:0x804B2850
 	.sdata      start:0x80539BD0 end:0x80539BD8
 
 JSystem/JAudio/System/JASDSPChannel.cpp:
