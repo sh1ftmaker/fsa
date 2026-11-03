@@ -4,6 +4,15 @@
 
 const f32 lbl_8053F8E0 = 0.0f;
 
+cls_804A5BD8::cls_804A5BD8() {
+    field_0x340 = 0;
+    field_0x344 = 0;
+    field_0x345 = 0;
+    field_0x346 = 0;
+    field_0x348 = 0;
+    field_0x34a = 0;
+}
+
 void cls_804A5BD8::vfunc_0x88() {
     field_0x3c.x = lbl_8053F8E0;
     field_0x3c.y = lbl_8053F8E0;
