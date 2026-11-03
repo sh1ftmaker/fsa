@@ -103,6 +103,10 @@ f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
 s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
 s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 
+// Steps *angle towards target by at most step (a tail-call wrapper of
+// fn_801CD970); game/tu_801CB270.cpp, not written yet.
+extern "C" void fn_801CD930(s16* angle, s16 target, s16 step);
+
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
 // (and tlutObj, if given, for a palette texture); returns height / width.
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
