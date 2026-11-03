@@ -340,6 +340,11 @@ extern "C" {
 // mTargetSpeed and mAccel or mDecel. No caller reads r3, so the void
 // return is undecided until fn_801CD9F0 is read (not mangled either way).
 void fn_801CD950(f32* value, f32 target, f32 step);
+// Convert a position between the two view-box spaces: out = (in.x, in.y)
+// minus the view's 0xCC/0xD0 box corner plus its 0xDC/0xE0 one (fn_801CD150),
+// or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.
+void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
+void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
 }
 
 #endif
