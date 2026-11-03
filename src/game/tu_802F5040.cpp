@@ -1,8 +1,15 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/Map.h"
 
 void cls_804AA858::fn_802FF548() {
     fn_802FF798();
+}
+
+void cls_804AA858::fn_802FF3B0() {
+    if (field_0xe451 != 0 && lbl_8053AAF8->field_0x4 != NULL) {
+        fn_802FA3FC();
+    }
 }
 
 // Element constructor of cls_804AA858's constructor (fn_802FFDEC): the

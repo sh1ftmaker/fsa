@@ -94,6 +94,13 @@ public:
     // in r21, fields 0x148+, 0x214, 0x230 read). Called by
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
+    // 0x802FF3B0 (game/tu_802F5040.cpp): no arguments. Calls fn_802FA3FC
+    // when byte 0xE451 is set and lbl_8053AAF8->field_0x4 is not NULL.
+    void fn_802FF3B0();
+    // 0x802FA3FC (game/tu_802F5040.cpp, not written yet): no arguments; reads
+    // this's 0x2368 / 0x2374 / 0x235C / 0x2380 fields (r15 = r3 on entry).
+    // Called by fn_802FF3B0 (the only caller seen).
+    void fn_802FA3FC();
 
     /* 0x0000 vtable */
     /* 0x0004 */ u8 field_0x4[0x214 - 0x4];
@@ -132,7 +139,10 @@ public:
     // (0x8016AE44).
     /* 0x2380 */ s32 field_0x2380;
     /* 0x2384 */ s32 field_0x2384;
-    /* 0x2388 */ u8 field_0x2388[0xE464 - 0x2388];
+    /* 0x2388 */ u8 field_0x2388[0xE451 - 0x2388];
+    // fn_802FF3B0 tests it before calling fn_802FA3FC (the only reader seen).
+    /* 0xE451 */ u8 field_0xe451;
+    /* 0xE452 */ u8 field_0xe452[0xE464 - 0xE452];
 }; // Size: 0xE464
 
 // --- tile queries (game/tu_8022461C.cpp) ---
