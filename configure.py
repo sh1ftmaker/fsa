@@ -1122,7 +1122,7 @@ config.libs = [
         Object(NonMatching, "game/act_rainbow_bridge.cpp"),
         Object(NonMatching, "game/tu_8012A5EC.cpp"),
         Object(NonMatching, "game/act_blizzard_battle.cpp"),
-        Object(NonMatching, "game/tu_8012DAC0.cpp"),
+        Object(Matching, "game/tu_8012DAC0.cpp"),
         Object(NonMatching, "game/act_snow_wall.cpp"),
         Object(NonMatching, "game/tu_8012EA00.cpp"),
         Object(Matching, "game/act_ice_floor_check_npc.cpp"),
