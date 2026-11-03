@@ -189,6 +189,14 @@ void fn_80230498(s32 player, const JGeometry::TVec3f* pos, s32 id, u8 a, s8 b, s
 // 34+ units. Takes a flag (clrlwi 24), not a player: loops all four players;
 // every caller passes 0. Result tested against 1.
 bool fn_80230534(bool flag);
+// Owner: tu_8022AD64 (0x8023077C, defined there). 1 unit (tu_802F4AEC).
+// No arguments; returns a bool (clrlwi 24 by the caller); false without a
+// manager.
+bool fn_8023077C();
+// Owner: tu_8022AD64 (0x80230FD0, defined there). 1 unit (tu_802F4AEC).
+// (player, value): the body passes the player's slot to fn_8024F0E8 when
+// its byte 0xCAC is set; r4 is untouched.
+void fn_80230FD0(s32 player, s32 value);
 // 3+ units (act_warp, act_view_mode). Owner: tu_8022AD64 (0x802373EC, defined
 // there; per-player query, 0 without a manager). Compared against 1 and 2.
 s32 fn_802373EC(s32 player);
