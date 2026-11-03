@@ -81,15 +81,21 @@ below, ~0.5–0.65B.
 1. **Rules card instead of docs.** Agents re-read CLAUDE.md, briefs, PLAN.md
    and COORDINATOR.md (+9k units, +24k reviewers, paid on every turn). A
    ~1.5k-token card replaces them.
-2. **`tools/try.py`.** One call compiles and diffs one function, prints ≤20
+2. **`tools/try.py`.** One call compiles the file and diffs it (or one
+   function in it), prints ≤20
    lines with a classification (regalloc only, scheduling, missing
    instructions, relocation name), counts attempts, and says STOP after 4
    tries without progress. Regalloc-only goes to the permuter queue.
-3. **Per-function packets, fresh small contexts.** A script builds each
-   worker's input: the asm, a cleaned m2c draft (m2c is GPL-3, used as a tool,
-   output is from our own binary), callee declarations, referenced data,
-   header fields at the offsets used, and the closest matched function with its
-   C. One unit per agent; no long multi-unit agents (context grew 30k → 290k).
+3. **Per-file packets, fresh small contexts.** The unit of work is a whole
+   file (user decision, 2026-11-02): one agent owns one game unit and works
+   toward the whole file matching, not toward individual functions. A script
+   builds the agent's input for that file: its asm, a cleaned m2c draft of
+   every function (m2c is GPL-3, used as a tool, output is from our own
+   binary), the file's data and `.sdata2` literals in order, callee
+   declarations, header fields at the offsets used, and the closest matched
+   file with its C. One file per agent; no long multi-file agents (context
+   grew 30k → 290k). Writing the whole file at once is also what fixes
+   `.sdata2` literal order, which per-function work can't.
 4. **Template generator** for the clone families: compile, diff and gate with
    no model.
 5. **Review packets.** A script gives the reviewer the gate result, report
@@ -100,10 +106,14 @@ below, ~0.5–0.65B.
    exceptions only and starts fresh each wave.
 7. **Permuter** (decomp-permuter, MIT) for regalloc-only diffs, under `sbg`,
    niced, with a time budget, instead of 150–200-turn agents.
-8. **Model tiers (approved).** Clones: no model. ≤32 instructions: a cheaper
-   model, 3 tries. 32–128: strong model, 6 tries. >128 (334 functions over
-   0x800, 36 % of bytes): last, strong model + permuter, hard budget, FIXME
-   allowed.
+8. **Model tiers (approved), applied per file.** A file is tiered by its
+   hardest function. Generated-only files: no model. Files whose functions
+   are all ≤32 instructions: a cheaper model. Files with functions up to 128
+   instructions: strong model. Files with functions >128 instructions (334
+   functions over 0x800, 36 % of bytes): last, strong model + permuter, hard
+   budget. Within a file, a function stops after its try budget (3 tries
+   small, 6 medium) with a FIXME and the agent moves on to the rest of the
+   file.
 9. **Headers before waves.** Header work and per-unit rebases cost ~70 % as
    much as game matching itself; stabilise headers, then run waves against a
    frozen header set.
@@ -136,15 +146,18 @@ Then freeze: later header edits go through the coordinator in batches.
 simple dtor, vtable-slot empties, the per-player query block once one is
 matched by hand), review packet, `run-wave`, permuter wiring.
 
-**G3 — generated families.** ~700 functions / ~280 KB. Review policy for
+**G3 — generated families.** ~700 functions / ~280 KB. The generator
+writes its members into each file's source as a starting point; the file's
+agent then does the rest of the file in G4. Review policy for
 generated members (approved): the template gets a full adversarial review;
 each member gets a scripted check that it differs from the template only by
 identifiers, plus the normal gate. Members that need any hand edit leave the
 generator and get a normal review.
 
-**G4 — waves.** The 288 direct 19-slot actor units, smallest first; then the
+**G4 — waves of whole files.** The 288 direct 19-slot actor units, smallest first; then the
 EnemyBase family; then managers and systems; large functions last with a
-budget. Measure tokens per matched function every wave and adjust tiers.
+budget. Measure tokens per matched file (and per byte) every wave and adjust
+tiers.
 
 **G5 — the spawner** (`tu_801F9484`, 0x61AC bytes, 367 new + constructor
 pairs), once most actor headers exist.
