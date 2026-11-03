@@ -305,7 +305,6 @@ tu_801D11FC	sinit	__sinit_tu_801D11FC_cpp	-	-	new	-
 tu_801D3320	sinit	__sinit_tu_801D3320_cpp	-	-	new	-
 tu_801D3CBC	sinit	__sinit_tu_801D3CBC_cpp	-	-	new	-
 tu_801D6CEC	sinit	__sinit_tu_801D6CEC_cpp	-	-	new	-
-tu_801D7AFC	dtor_emit	__dt__12cls_804A4BB0Fv	cls_804A4BB0	0x804A4BB0	new	new
 tu_801D7AFC	sinit	__sinit_tu_801D7AFC_cpp	-	-	new	-
 tu_801D8400	sinit	__sinit_tu_801D8400_cpp	-	-	new	-
 tu_801DA7C0	sinit	__sinit_tu_801DA7C0_cpp	-	-	new	-
