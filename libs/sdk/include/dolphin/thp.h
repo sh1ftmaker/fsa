@@ -66,7 +66,7 @@ typedef struct {
 	s16 yn2;
 } THPAudioDecodeInfo;
 
-BOOL THPInit();
+bool THPInit();
 s32 THPVideoDecode(void* file, void* tileY, void* tileU, void* tileV,
                    void* work);
 u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag);

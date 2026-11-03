@@ -2241,7 +2241,8 @@ void __THPDecompressiMCURowNxN(void)
 	__THPInfo->dLC[2] += ((sizeof(u8) * 64) * (x / 16));
 }
 
-BOOL THPInit(void)
+// FSA's callers test the result as a byte: bool, as oot-gc's thp.h declares it.
+bool THPInit(void)
 {
 	u8* base;
 	base = (u8*)(0xE000 << 16); // lc base
@@ -2264,5 +2265,5 @@ BOOL THPInit(void)
 	OSInitFastCast();
 
 	__THPInitFlag = true;
-	return TRUE;
+	return true;
 }

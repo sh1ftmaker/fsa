@@ -116,6 +116,12 @@ public:
         return true;
     }
 
+    u16 getFrameRate() const { return mFrameRate; }
+    void setFrameRate(u16 framerate) {
+        mFrameRate = framerate;
+        mTickRate = 0;
+    }
+
     void setTickRate(u32 rate) {
         mTickRate = rate;
         mFrameRate = 0;
