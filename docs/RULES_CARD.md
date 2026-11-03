@@ -155,6 +155,13 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   search parameter orders (scratchpad research_byval.md). Layer before
   serial (fn_8022FE80's order) is a reviewed exception: act_dummy_conversation,
   act_merchant.
+- A range check compiled as `cmpwi hi; bgt; cmpwi lo; bge body`: an early
+  return `if (x > hi || x < lo) return;` (a switch gives `cmpwi hi+1; bge`).
+- Positions built on the stack as 8-byte objects (y stored with x, frame
+  slots of 8): the callee takes `const JGeometry::TVec2f*`
+  (fn_80238548, fn_80226BC4 tile probes); build `TVec2f p(x, y)`, and TVec3f
+  callers pass `(const JGeometry::TVec2f*)&mPos` with a one-line comment.
+  Check the callee's body reads only +0/+4 first.
 - `cmpw` operands swapped against a call result (`cmpw r3, rN` in the
   original): name the result first, `s32 owner = fn_X(...); if (owner ==
   player)`. That is a local read once, not a trick.
