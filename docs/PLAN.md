@@ -101,9 +101,12 @@ stays OK):
     code (extab for its `__sinit` and JASMemPool dtors, so exceptions on;
     its `.bss` runs to 0x804B2240, the memPools every game `__sinit` builds
     first). 0x80021D60–0x80021F24 is JSystem's
-    `JAudio/Interface/JAIAudience.cpp` (mkdd_JAudio): byte-identical from
-    the mkdd/tp source with `cflags_jsystem_mkdd -O4,p`, no extab in the
-    DOL, `.data` 0x804916A0 `__vt__11JAIAudience`.
+    `JAudio/Interface/JAIAudience.cpp` (mkdd_JAudio), Matching: tp's
+    include set (mkdd's file plus `JAISeq.h`, without its `DECL_WEAK`
+    block) with `cflags_jsystem_mkdd -O4,p` gives the dtor and the 0x17C
+    `__sinit` (6 memPools, `.bss` 0x48) byte for byte; mkdd's file as it
+    was gave a 0x144 `__sinit` with 5 pools. No extab in the DOL, `.data`
+    0x804916A0 `__vt__11JAIAudience`.
   - 0x80457DFC and 0x8045A338 are one unit: dtk, "Conflicting splits within
     reversed extab group".
   - The THP block 0x80427D2C–0x8042E964 is one unit (tu_map's 0x804280C0 and

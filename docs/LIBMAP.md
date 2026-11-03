@@ -139,7 +139,8 @@ matches in FSA:
 - 0x80021840–0x80021D60 is game code (extabindex entries, so exceptions are
   on), linked before JSystem the way mkdd links `kartLocale.cpp`; it is
   `game/tu_80021840.cpp`. 0x80021D60–0x80021F24 is JSystem's
-  `JAIAudience.cpp` (no extab; matches the mkdd source with `-O4,p`).
+  `JAIAudience.cpp` (no extab), Matching with tp's include set (mkdd's
+  file plus `JAISeq.h`, no `DECL_WEAK` block) and `-O4,p`.
 - 0x8002F274–0x80030380 (5 functions, 4.3 KiB): matching now names
   0x8002F274 `JASBNKParser::createBank`, so this range belongs to
   JASBNKParser, not to a JASBasicWaveBank tail. The TSV row says so.
