@@ -13,6 +13,8 @@ cls_801D6A88::cls_801D6A88() {
     fn_801D789C();
 }
 
+VaatiBoss_804A4958::~VaatiBoss_804A4958() {}
+
 void VaatiBoss_804A4958::vfunc_0x24() {}
 
 void VaatiBoss_804A4958::vfunc_0x94() {

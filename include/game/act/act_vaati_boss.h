@@ -81,12 +81,43 @@ public:
     /* 0x10 */ SpriteAnim_801D267C mAnim;
 }; // Size: 0x48
 
+// The member at 0x448 of Vaati: its destructor (dtor_80217F80, tu_8021775C,
+// not written yet) frees the words at 0x0..0x14 with fn_801EE434. No vtable;
+// named after that destructor.
+class cls_80217F80 {
+public:
+    ~cls_80217F80();
+    /* 0x00 */ u8 field_0x0[0x1C]; // not yet known
+}; // Size: 0x1C
+
+// The member at 0x464 of Vaati: its destructor (dtor_801EB8CC, tu_801EB00C,
+// not written yet) frees the words at 0x34..0x50 with fn_801EE434. No
+// vtable; named after that destructor.
+class cls_801EB8CC {
+public:
+    ~cls_801EB8CC();
+    /* 0x00 */ u8 field_0x0[0x60]; // not yet known
+}; // Size: 0x60
+
+// The member at 0x4C4 of Vaati: its destructor (dtor_801D7730, tu_801D6CEC,
+// not written yet) clears the 16 actor serials in field_0x0 and the
+// flags of the actors they name. No vtable; named after that destructor.
+class cls_801D7730 {
+public:
+    ~cls_801D7730();
+    /* 0x00 */ s32 field_0x0[0x10];
+    /* 0x40 */ u8 field_0x40[0x68 - 0x40]; // not yet known
+}; // Size: 0x68
+
 // The boss Vaati (actor 'BOGF', EnemyBase_804A4808 child), named after its
 // vtable at 0x804A4958 (its draw is slot 0x20, fn_801EDBA4). Only the members
 // the written code uses are known.
 class VaatiBoss_804A4958 : public EnemyBase_804A4808 {
 public:
     VaatiBoss_804A4958() {}
+    // 0x801D46FC: the deleting destructor (slot 0x08). Destroys the members
+    // from 0x568 down, then the base; deletes unless the flag is <= 0.
+    virtual ~VaatiBoss_804A4958();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // empty override
     // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
@@ -106,7 +137,9 @@ public:
 
     /* 0x2A8 */ cls_801D6A88 field_0x2a8[0x4];
     /* 0x308 */ cls_801D6A58 field_0x308[0x10];
-    /* 0x448 */ u8 field_0x448[0x52C - 0x448]; // not yet known
+    /* 0x448 */ cls_80217F80 field_0x448;
+    /* 0x464 */ cls_801EB8CC field_0x464;
+    /* 0x4C4 */ cls_801D7730 field_0x4c4;
     /* 0x52C */ cls_801D6CEC field_0x52c;
     /* 0x568 */ cls_801E6AB8 field_0x568;
     /* 0x5B0 */ u8 field_0x5b0[0x5D1 - 0x5B0]; // not yet known
