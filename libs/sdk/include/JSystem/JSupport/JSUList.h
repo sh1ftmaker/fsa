@@ -159,7 +159,7 @@ public:
     JSULink<T> *getNext() const { return (JSULink<T> *)mNext; }
     JSULink<T> *getPrev() const { return (JSULink<T> *)mPrev; }
 
-    ~JSULink() {}
+
 };
 
 template <typename T>
@@ -167,7 +167,7 @@ class JSUTree : public JSUList<T>, public JSULink<T>
 {
 public:
     JSUTree(T *owner) : JSUList<T>(), JSULink<T>(owner) {}
-    ~JSUTree() {}
+
 
     bool appendChild(JSUTree<T> *child) { return append(child); }
     bool prependChild(JSUTree<T> *child) { return prepend(child); }

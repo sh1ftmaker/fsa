@@ -12,7 +12,7 @@ class JASHeap
 {
 public:
     JASHeap(JASDisposer *disposer = NULL);
-    ~JASHeap() {}
+
     void initRootHeap(void *, u32);
     bool alloc(JASHeap *, u32);
     bool allocTail(JASHeap *, u32);
