@@ -6,6 +6,7 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
+#include "game/ActorManager.h"
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
@@ -261,4 +262,10 @@ extern "C" bool fn_801CCF7C() {
         }
     }
     return true;
+}
+
+// Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
+// `layer`; the flag picks 5 or 4 in the low bits of its last argument.
+extern "C" s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
+    return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
 }
