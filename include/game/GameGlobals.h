@@ -441,6 +441,10 @@ public:
     // (`flag`) switches the leading-zero handling. act_digging_game and
     // tu_8010089C call it too; tu_801ED3DC passes (n, 255, 0, 1, false).
     bool fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale);
+
+    // 0x8043E7CC (game/tu_8043A0E8.cpp): act_gba_appear's update calls it with a
+    // position passed by value.
+    void fn_8043E7CC(JGeometry::TVec3f pos);
 };
 extern cls_804B1920* lbl_8053AED0;
 
