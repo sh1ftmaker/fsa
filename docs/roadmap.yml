@@ -179,7 +179,7 @@ phases:
         measure: {kind: units}
       - id: thp
         title: THP video
-        desc: The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit. 159 of 168 functions match; names and the last register differences are in progress.
+        desc: The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order.
         status: active
         covers: ["game:THP"]
         measure: {kind: code}
