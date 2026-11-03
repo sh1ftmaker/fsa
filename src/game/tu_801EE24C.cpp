@@ -54,6 +54,37 @@ u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     return prev;
 }
 
+// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
+// function defined before the caller, so it is an inline of its own.
+static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
+    bool result = false;
+    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+        result = true;
+    }
+    return result;
+}
+
+// Whether `player` is on this actor's layer (fn_8023DE58), or counts as on
+// it through fn_801F329C.
+// FIXME: 94.2 %. Only the load of field_0x4 into r31 is scheduled later: the
+// target issues it right after the prologue's stw r31, before li r30, 0; ours
+// after mr r28, r3, and compares cmpw r31, r3 where the target has
+// cmpw r3, r31 (a local declared before or after `result`, getField_0x4()
+// and a `||` return all give the same).
+bool ActorBase_804A5770::fn_801F320C(s32 player) {
+    s32 layer = field_0x4;
+    bool result = false;
+    if (fn_8023DE58(player) == layer || isPlayerBelowLayer8(this, player)) {
+        result = true;
+    }
+    return result;
+}
+
+// Whether `player` is on a layer below 8 while this actor is on layer 8.
+bool ActorBase_804A5770::fn_801F329C(s32 player) {
+    return isPlayerBelowLayer8(this, player);
+}
+
 void ActorBase_804A5770::draw() {}
 
 void ActorBase_804A5770::savePrevPos() {

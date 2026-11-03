@@ -3,6 +3,7 @@
 // called from 52 units).
 
 #include "game/GameGlobals.h"
+#include "game/Player.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
 
@@ -34,6 +35,40 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj) {
                     timg->mMinLOD * 0.125f, timg->mMaxLOD * 0.125f, timg->mLODBias * 0.01f,
                     timg->mIsBiasClamp, timg->mDoEdgeLOD, (GXAnisotropy)timg->mIsMaxAnisotropy);
     return timg->mSizeY * (1.0f / timg->mSizeX);
+}
+
+// fn_80236228 for the player that `player` stands for: the one
+// fn_8022F3DC names while fn_8022F514 says it has one, else itself.
+s32 fn_801CCF34(s32 player) {
+    s32 target = player;
+    if (fn_8022F514(player)) {
+        target = fn_8022F3DC(player);
+    }
+    return fn_80236228(target);
+}
+
+// Whether every player's layer (fn_8023DE58) is `layer`.
+bool fn_801CD228(s32 layer) {
+    bool result = true;
+    for (s32 i = 0; i < 4; i++) {
+        if (layer != fn_8023DE58(i)) {
+            result = false;
+            break;
+        }
+    }
+    return result;
+}
+
+// Whether any player's layer (fn_8023DE58) is `layer`.
+bool fn_801CD290(s32 layer) {
+    bool result = false;
+    for (s32 i = 0; i < 4; i++) {
+        if (layer == fn_8023DE58(i)) {
+            result = true;
+            break;
+        }
+    }
+    return result;
 }
 
 // A random integer in [0, 4) other than `except` (0-3, so at most three

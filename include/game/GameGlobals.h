@@ -24,6 +24,7 @@
 #include "JSystem/JKernel/JKRArchive.h"
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JUtility/TColor.h"
+#include "game/Player.h"
 
 class ActorManager_804A5800;
 class JPAEmitterManager;
@@ -155,17 +156,6 @@ GameView_802D6A9C* fn_802D6A9C(void);     // lbl_8053AAF8->0x4->0xC
 EffectSystem_8013C824* fn_8013C824(void); // lbl_8053AB10->0x28
 }
 
-// Per-player queries in game/tu_8022AD64.cpp (player index 0-3; each
-// checks lbl_8053AC90 and the index first). Names are dtk's.
-extern "C" {
-bool fn_8023F264(s32 player);  // the player takes part
-s32 fn_8023DE58(s32 player);   // compared with ActorBase_804A5770::field_0x4
-JGeometry::TVec3f* fn_8023E724(s32 player); // the player's position
-// Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box, field_0x4
-// and mSerial when the box overlaps a player's.
-void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
-}
-
 // Functions of game/tu_802D39B8.cpp that take the view (fn_802D6A9C()) as
 // their first argument. Several ignore it and re-fetch the view through
 // lbl_8053AAF8 (said at each); names are dtk's.
@@ -189,13 +179,6 @@ bool fn_802DCD0C(GameView_802D6A9C* view);
 // for layer 8 and up), 0xF when the position is outside the box; callers
 // clrlwi 16 the result.
 extern "C" u16 fn_80226850(const JGeometry::TVec3f* pos, s32 layer);
-
-// game/tu_8022AD64.cpp: set (fn_8022ADE4) and clear (fn_8022ADCC) the byte at
-// 0x73 of *lbl_8053AC90 when it exists.
-extern "C" {
-void fn_8022ADE4(void);
-void fn_8022ADCC(void);
-}
 
 // game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
 // the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
