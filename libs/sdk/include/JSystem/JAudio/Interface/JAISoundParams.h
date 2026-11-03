@@ -11,7 +11,7 @@ struct JAISoundParamsProperty
     {
         _0 = 1.0f;
         _4 = 0.0f;
-        _8 = 0.0f; // 1.0f in TP
+        _8 = 1.0f;
     }
 
     f32 _0;

@@ -72,7 +72,7 @@ void JAISoundParams::mixOutAll(const JASSoundParams &params, JASSoundParams *out
 {
     outParams->mVolume = params.mVolume * mProperty._0 * mMove.mVolume * intensity;
     outParams->mFxMix = params.mFxMix + mProperty._4 + mMove.mFxMix;
-    outParams->mPitch = params.mPitch * mMove.mPitch;
+    outParams->mPitch = params.mPitch * mProperty._8 * mMove.mPitch;
     outParams->mPan = (params.mPan + mMove.mPan) - 0.5f;
     outParams->mDolby = params.mDolby + mMove.mDolby;
 }
