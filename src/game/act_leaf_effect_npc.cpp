@@ -21,7 +21,7 @@ inline void cls_804AE2E0::spawnLeaves() {
 }
 
 // The tile code under pos on the actor's layer.
-static inline u16 tileCodeAt(cls_804AE2E0* self, const JGeometry::TVec3f* pos) {
+static inline u16 tileCodeAt(cls_804AE2E0* self, const JGeometry::TVec2f* pos) {
     return lbl_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(pos, self->field_0x4)) &
            0x3FF;
 }
@@ -31,7 +31,8 @@ static inline u16 tileCodeAt(cls_804AE2E0* self, const JGeometry::TVec3f* pos) {
 // 1), so only three copies of the spawn exist; ours inlines a fourth copy
 // there.
 void cls_804AE2E0::update() {
-    u16 code = tileCodeAt(this, &field_0x244);
+    // x and y lead the TVec3f; the function reads only those.
+    u16 code = tileCodeAt(this, (const JGeometry::TVec2f*)&field_0x244);
     if (code != field_0x240) {
         field_0x250 = 1;
         return;
@@ -62,9 +63,6 @@ void cls_804AE2E0::update() {
     }
 }
 
-// FIXME: 94%. try.py class: different. The original keeps the four probe
-// points in 8-byte stack slots (sp+0x20/0x18/0x10/0x8, frame 0x30) and stores y
-// before x; ours uses 12-byte TVec3f locals (frame 0x40, x before y).
 void cls_804AE2E0::init() {
     u32 type = field_0x90 & 0x3FF;
     if (type == 0x1E1) {
@@ -73,9 +71,7 @@ void cls_804AE2E0::init() {
         mPos.y += 25.0f;
         field_0x240 = type;
     } else if (type == 0x1E2) {
-        JGeometry::TVec3f p;
-        p.x = mPos.x - 16.0f;
-        p.y = mPos.y;
+        JGeometry::TVec2f p(mPos.x - 16.0f, mPos.y);
         u16 code = tileCodeAt(this, &p);
         if (code == 0x1E1) {
             mAlive = false;
@@ -85,9 +81,7 @@ void cls_804AE2E0::init() {
         mPos.y += 25.0f;
         field_0x240 = code;
     } else if (type == 0x1F1) {
-        JGeometry::TVec3f p;
-        p.x = mPos.x;
-        p.y = mPos.y - 16.0f;
+        JGeometry::TVec2f p(mPos.x, mPos.y - 16.0f);
         u16 code = tileCodeAt(this, &p);
         if (code == 0x1E1) {
             mAlive = false;
@@ -98,17 +92,13 @@ void cls_804AE2E0::init() {
         mPos.y += 9.0f;
         field_0x240 = code;
     } else {
-        JGeometry::TVec3f p;
-        p.x = mPos.x - 16.0f;
-        p.y = mPos.y;
+        JGeometry::TVec2f p(mPos.x - 16.0f, mPos.y);
         u16 code = tileCodeAt(this, &p);
         if (code == 0x1F1) {
             mAlive = false;
             return;
         }
-        JGeometry::TVec3f q;
-        q.x = mPos.x - 16.0f;
-        q.y = mPos.y - 16.0f;
+        JGeometry::TVec2f q(mPos.x - 16.0f, mPos.y - 16.0f);
         code = tileCodeAt(this, &q);
         if (code == 0x1E2) {
             mAlive = false;

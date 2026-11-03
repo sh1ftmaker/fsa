@@ -119,7 +119,7 @@ u16 fn_80226998(const JGeometry::TVec3f* pos, s32 layer);
 // 7 units each. The packed cell index of pos (no lookup; clamped like the
 // queries, no outside test in fn_80226AE0).
 s32 fn_80226AE0(const JGeometry::TVec3f* pos, s32 layer);
-s32 fn_80226BC4(const JGeometry::TVec3f* pos, s32 layer);
+s32 fn_80226BC4(const JGeometry::TVec2f* pos, s32 layer); // reads only x, y
 // 5 units. The inverse: out = the corner of cell `index` (box corner + the
 // unpacked x, y) with a constant z (psq_st/stfs to out 0/8, 0x80226D88).
 void fn_80226CA8(s32 index, s32 layer, JGeometry::TVec3f* out);
