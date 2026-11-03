@@ -260,7 +260,10 @@ public:
     /* 0x042E */ u8 field_0x42e[0x436 - 0x42E];
     // Returned by fn_80240860 (lbz; blr).
     /* 0x0436 */ bool field_0x436;
-    /* 0x0437 */ u8 field_0x437[0x458 - 0x437];
+    /* 0x0437 */ u8 field_0x437[0x454 - 0x437];
+    // Returned by fn_802413E8 (lbz; blr), read through fn_80230188.
+    /* 0x0454 */ bool field_0x454;
+    /* 0x0455 */ u8 field_0x455[0x458 - 0x455];
     // Returned by fn_802412C4 (a byte, read by its caller in tu_80256C74).
     /* 0x0458 */ u8 field_0x458;
     /* 0x0459 */ u8 field_0x459[0x460 - 0x459];

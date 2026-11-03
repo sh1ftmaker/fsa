@@ -34,6 +34,10 @@ bool Player_804A6F38::fn_8023FC08() {
     return field_0x42c;
 }
 
+bool Player_804A6F38::fn_802413E8() {
+    return field_0x454;
+}
+
 bool Player_804A6F38::fn_802412CC() {
     return field_0x460;
 }
