@@ -24,6 +24,9 @@ public:
     /* 0x88 */ virtual void vfunc_0x88();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
+    // 0x801B91A8 (in this unit): vfunc_0x44 calls it with 1 (state 0) or 4
+    // (states 2, 3, 5). Its meaning is not known yet.
+    void fn_801B91A8(s32 arg);
     /* 0x2A8 */ s32 field_0x2a8; // not yet known
 }; // Size: 0x2AC
 

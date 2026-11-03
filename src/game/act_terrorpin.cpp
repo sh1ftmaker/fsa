@@ -53,6 +53,38 @@ void Terrorpin_804A3B10::vfunc_0x7C() {
     }
 }
 
+// The s32 of .sdata (lbl_8053A100) that vfunc_0x44 compares with field_0x2a8
+// (not written yet).
+extern const s32 lbl_8053A100;
+// The .sdata2 float vfunc_0x44 tests mPos.z against (not written yet).
+extern const f32 lbl_8053EB20;
+
+void Terrorpin_804A3B10::vfunc_0x44() {
+    if (field_0xd4 == 1) {
+        bool active = false;
+        if (mFlags & 0x4000) {
+            if (field_0x2a8 == lbl_8053A100) {
+                active = true;
+            }
+        } else {
+            active = true;
+        }
+        if (active && mPos.z <= lbl_8053EB20) {
+            switch (mState) {
+            case 0:
+                fn_801B91A8(1);
+                break;
+            case 2:
+            case 3:
+            case 5:
+                fn_801B91A8(4);
+                break;
+            }
+        }
+        field_0xd4 = 0;
+    }
+}
+
 // The two rates of the .sdata2 floats used by vfunc_0x94 (not written yet).
 extern const f32 lbl_8053EB24;
 extern const f32 lbl_8053EB50;
