@@ -281,6 +281,7 @@ JSystem/JAudio/System/JASAramStream.cpp:
 
 JSystem/JAudio/System/JASRegisterParam.cpp:
 	.text       start:0x80033018 end:0x800332D0
+	.data       start:0x80491B70 end:0x80491BC0
 
 JSystem/JAudio/System/JASSeqCtrl.cpp:
 	.text       start:0x800332D0 end:0x80033778
