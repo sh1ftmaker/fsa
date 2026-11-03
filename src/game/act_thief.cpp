@@ -32,6 +32,28 @@ bool Thief_804A5A30::fn_802064E0() {
     return result;
 }
 
+static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f& p) {
+    return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
+}
+
+// True in state 1 when no fn_801CD2F8 hit is set for the layer and mPos lies
+// outside the view box of that layer.
+bool Thief_804A5A30::fn_8020609C() const {
+    s32 layer;
+    bool result = false;
+    if (field_0x94 == 1) {
+        if (!fn_801CD2F8(field_0x4)) {
+            layer = field_0x4;
+            GameView_804A9950* view = fn_802D6A9C();
+            const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
+            if (!contains(box, mPos)) {
+                result = true;
+            }
+        }
+    }
+    return result;
+}
+
 Thief_804A5A30::~Thief_804A5A30() {
     fn_801EE434(mEmitter358);
     fn_802049E0(fn_80204638(), this);

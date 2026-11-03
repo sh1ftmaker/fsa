@@ -51,7 +51,7 @@ public:
     void fn_80205E0C(s32 state);
     // 0x8020609C and 0x802064E0 (act_thief, not written yet): state tests
     // the hit overrides make; roles unknown.
-    bool fn_8020609C();
+    bool fn_8020609C() const;
     bool fn_802064E0();
 
     // 0x8020F80C: draws the shadow and the sprite at mPos on the layer for
