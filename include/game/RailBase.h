@@ -56,6 +56,7 @@ public:
     void fn_800FE3EC(u8, JGeometry::TVec3f, int);
     u8 fn_800FD894(s32 layer, u8* out, s32 max);
     bool fn_800FD5E8(u8 index);
+    void fn_800FDE38();
     bool fn_800FD548(u8 index);
     bool fn_800FD594(u8 index);
     bool fn_800FD4C0(u8 a, u8 b);
