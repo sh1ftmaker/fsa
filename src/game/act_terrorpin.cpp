@@ -7,6 +7,38 @@ Terrorpin_804A3B10::Terrorpin_804A3B10() {
 
 Terrorpin_804A3B10::~Terrorpin_804A3B10() {}
 
+bool Terrorpin_804A3B10::vfunc_0x60() {
+    bool hit = false;
+    bool againstActor = true;
+    bool active = false;
+    s32 state = mState;
+    switch (state) {
+    case 1:
+    case 2:
+    case 3:
+    case 5:
+        active = true;
+        break;
+    }
+    if (active) {
+        againstActor = false;
+        if (mStateTimer < 10) {
+            switch (state) {
+            case 5:
+            case 1:
+                againstActor = true;
+                break;
+            }
+        }
+    }
+    if (againstActor) {
+        fn_801F2DB4(mActorId, 'NULL', NULL);
+    } else {
+        hit = fn_801F2DB4('NULL', 'NULL', NULL);
+    }
+    return hit;
+}
+
 // The 0.1f is lbl_8053EB34, the sixth float of the unit's .sdata2 (after the
 // literals of draw, vfunc_0x24, vfunc_0x68 and vfunc_0x5C, not written yet).
 extern const f32 lbl_8053EB34;
