@@ -83,9 +83,20 @@ struct GameRoot_8049EF20 {
     // ~28 units. In tu_80134C04 with GameRoot's constructor; uses this->0xA0.
     // r3 only.
     void fn_80138B7C();
+    // Stores r4 at this+0x96 (stb). Defined in game/tu_80134C04.cpp; called
+    // by act_stop_npc (0x802ED1B4, 0).
+    void fn_80134FBC(u8 value);
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
+
+class ItemPedestal_804A82A8;
+extern "C" {
+// Owner: game/act_item_pedestal.cpp (not written yet; its generated header
+// may not be edited, so not a member yet). Sets the word at 0x238 of an ITMS
+// actor to 0; called by act_stop_npc (0x802ED198).
+void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
+}
 
 // The 0x90-byte object (named after its constructor) fn_8045A080 (game/tu_80457DFC.cpp) initialises and
 // stores in lbl_8053AF80; owner unit not written yet, members unknown but
@@ -95,6 +106,10 @@ struct Unk_8045A080 {
     /* 0x00 */ u8 field_0x0[0x58];
     /* 0x58 */ u32 field_0x58;
     /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
+    // game/tu_80457DFC.cpp: stores `pause` at 0x8a and passes it to
+    // JAISeCategoryMgr::pause(bool) of three categories of the object at
+    // 0x34 (0x8045868C-0x804586A8); called by act_stop_npc.
+    void fn_80458658(bool pause);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
@@ -121,7 +136,15 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 // (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
 // 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
 // Read by fn_80158B3C / fn_80158B5C and directly (+0x4, +0xC) in 28 units.
-class cls_804A0160;
+class JUTTexture;
+class cls_804A0160 {
+public:
+    /* 0x0 */ void* vtable;      // from fn_801594E8
+    /* 0x4 */ s32 field_0x4;
+    /* 0x8 */ JUTTexture* field_0x8;
+    /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
+    /* 0xD */ u8 field_0xd[3];   // not yet known
+}; // Size: 0x10
 // 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 class cls_804A03A8;
@@ -193,5 +216,20 @@ extern "C" cls_801192AC* fn_8011921C();
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
 // act_four_sword_demo.
 extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
+
+// game/tu_801C0D70.cpp (owner unit, not written yet). The 0x160-byte object
+// in .bss at 0x804C7E70, built on first use by fn_801C0D70 (guard byte
+// lbl_8053AC10); named after that function. Only the u16 at 0x0 is known:
+// act_shadow_link_2's helper tests its bit 0x400.
+struct cls_801C0D70 {
+    /* 0x000 */ u16 field_0x0;
+    /* 0x002 */ u8 field_0x2[0x160 - 0x2]; // not yet known
+}; // Size: 0x160
+// Getter of that object (returns its address).
+extern "C" cls_801C0D70* fn_801C0D70();
+
+// A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
+// .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
+extern const f32 lbl_8053EDF0;
 
 #endif

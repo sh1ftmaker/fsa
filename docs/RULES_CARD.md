@@ -108,6 +108,10 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   Types come from the callee's body and other callers, not from what makes
   your function match. Squared sums the target leaves unfused (fmuls,
   fmuls, fadds) use `square()` from game/GameMath.h.
+- Generator-owned files (units listed in config/G4SE01/gen_game.tsv): to
+  change one — yours or another unit's act header — delete ALL of that
+  unit's rows from gen_game.tsv in the same commit (whole rows only), keep
+  its generated lines unchanged, and list it under SHARED-EDITS.
 - `symbols.txt`: rename or split placeholders only; never change a real
   symbol's address, size or type, never rename a real name.
 

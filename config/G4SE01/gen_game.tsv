@@ -7,8 +7,6 @@ act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_arrow	sinit	__sinit_act_arrow_cpp	-	-	new	-
 act_arrow_marker	dtor	__dt__20ArrowMarker_804A8470Fv	ArrowMarker_804A8470	0x804A8470	new	new
 act_arrow_marker	sinit	__sinit_act_arrow_marker_cpp	-	-	new	new
-act_attack_hitbox_when_player_is_thrown	dtor	__dt__39AttackHitboxWhenPlayerIsThrown_804A7C40Fv	AttackHitboxWhenPlayerIsThrown_804A7C40	0x804A7C40	new	new
-act_attack_hitbox_when_player_is_thrown	sinit	__sinit_act_attack_hitbox_when_player_is_thrown_cpp	-	-	new	new
 act_bandit_herding_npc	dtor	__dt__25BanditHerdingNPC_804ACB40Fv	BanditHerdingNPC_804ACB40	0x804ACB40	new	new
 act_bandit_herding_npc	sinit	__sinit_act_bandit_herding_npc_cpp	-	-	new	new
 act_battle_royale_end_check	dtor	__dt__29BattleRoyaleEndCheck_804B0380Fv	BattleRoyaleEndCheck_804B0380	0x804B0380	new	new
@@ -132,16 +130,12 @@ act_hardhat_beetle	sinit	__sinit_act_hardhat_beetle_cpp	-	-	new	new
 act_heart_container	dtor	__dt__23HeartContainer_804A7E58Fv	HeartContainer_804A7E58	0x804A7E58	new	new
 act_heart_container	sinit	__sinit_act_heart_container_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
-act_horse_race_end_area	dtor	__dt__12cls_804AE830Fv	cls_804AE830	0x804AE830	new	new
-act_horse_race_end_area	sinit	__sinit_act_horse_race_end_area_cpp	-	-	new	new
 act_horse_race_man	sinit	__sinit_act_horse_race_man_cpp	-	-	new	-
 act_hyrule_castle_barrier	sinit	__sinit_act_hyrule_castle_barrier_cpp	-	-	new	-
 act_ice_melted_by_four_players	sinit	__sinit_act_ice_melted_by_four_players_cpp	-	-	new	-
 act_ice_wall	sinit	__sinit_act_ice_wall_cpp	-	-	new	-
 act_icicle	sinit	__sinit_act_icicle_cpp	-	-	new	-
 act_inextinguishable_flame	sinit	__sinit_act_inextinguishable_flame_cpp	-	-	new	-
-act_invisible_npc_wall_tomi	dtor	__dt__25InvisibleNPCWall_804AE6D0Fv	InvisibleNPCWall_804AE6D0	0x804AE6D0	new	new
-act_invisible_npc_wall_tomi	sinit	__sinit_act_invisible_npc_wall_tomi_cpp	-	-	new	new
 act_iron_ball_manager	dtor	__dt__24IronBallManager_804ABA38Fv	IronBallManager_804ABA38	0x804ABA38	new	new
 act_iron_ball_manager	sinit	__sinit_act_iron_ball_manager_cpp	-	-	new	new
 act_item_pedestal	dtor	__dt__21ItemPedestal_804A82A8Fv	ItemPedestal_804A82A8	0x804A82A8	new	new
@@ -181,13 +175,9 @@ act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
 act_octorok_rock	dtor	__dt__20OctorokRock_8049F5D8Fv	OctorokRock_8049F5D8	0x8049F5D8	new	new
 act_octorok_rock	sinit	__sinit_act_octorok_rock_cpp	-	-	new	new
-act_off_switch	dtor	__dt__18OFFSwitch_804A9B70Fv	OFFSwitch_804A9B70	0x804A9B70	new	new
-act_off_switch	sinit	__sinit_act_off_switch_cpp	-	-	new	new
 act_on_off_switch	sinit	__sinit_act_on_off_switch_cpp	-	-	new	-
 act_opening_goal	sinit	__sinit_act_opening_goal_cpp	-	-	new	-
 act_panel_rewrite_npc	sinit	__sinit_act_panel_rewrite_npc_cpp	-	-	new	-
-act_panel_rewrite_npc_2	dtor	__dt__12cls_804A9F58Fv	cls_804A9F58	0x804A9F58	new	new
-act_panel_rewrite_npc_2	sinit	__sinit_act_panel_rewrite_npc_2_cpp	-	-	new	new
 act_particle_npc	sinit	__sinit_act_particle_npc_cpp	-	-	new	-
 act_pengator	dtor	__dt__17Pengator_804A1888Fv	Pengator_804A1888	0x804A1888	new	new
 act_pengator	sinit	__sinit_act_pengator_cpp	-	-	new	new
@@ -200,8 +190,6 @@ act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_popo	dtor	__dt__13Popo_804A0868Fv	Popo_804A0868	0x804A0868	new	new
 act_popo	sinit	__sinit_act_popo_cpp	-	-	new	new
-act_post_warp_pillar_handling	dtor	__dt__12cls_804AC1F8Fv	cls_804AC1F8	0x804AC1F8	new	new
-act_post_warp_pillar_handling	sinit	__sinit_act_post_warp_pillar_handling_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_pot_2	dtor	__dt__13Pot2_804AA750Fv	Pot2_804AA750	0x804AA750	new	new
 act_pot_2	sinit	__sinit_act_pot_2_cpp	-	-	new	new
@@ -250,8 +238,6 @@ act_sign	dtor	__dt__13Sign_804A94D8Fv	Sign_804A94D8	0x804A94D8	new	new
 act_sign	sinit	__sinit_act_sign_cpp	-	-	new	new
 act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
-act_small_key	dtor	__dt__17SmallKey_804A8CD8Fv	SmallKey_804A8CD8	0x804A8CD8	new	new
-act_small_key	sinit	__sinit_act_small_key_cpp	-	-	new	new
 act_snow_wall	sinit	__sinit_act_snow_wall_cpp	-	-	new	-
 act_snowball	sinit	__sinit_act_snowball_cpp	-	-	new	-
 act_somaria_block	dtor	__dt__27CaneOfSomariaBlock_804AA9F0Fv	CaneOfSomariaBlock_804AA9F0	0x804AA9F0	new	new
@@ -271,7 +257,6 @@ act_stone	dtor	__dt__14Stone_804A93D0Fv	Stone_804A93D0	0x804A93D0	new	new
 act_stone	sinit	__sinit_act_stone_cpp	-	-	new	new
 act_stone_disguised_npc	dtor	__dt__29NPCDisguisedAsAStone_804A8750Fv	NPCDisguisedAsAStone_804A8750	0x804A8750	new	new
 act_stone_disguised_npc	sinit	__sinit_act_stone_disguised_npc_cpp	-	-	new	new
-act_stop_npc	sinit	__sinit_act_stop_npc_cpp	-	-	new	-
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
@@ -316,7 +301,6 @@ act_warp_cannon	sinit	__sinit_act_warp_cannon_cpp	-	-	new	-
 act_warp_entrance_wall	dtor	__dt__25WarpEntranceWall_804AE948Fv	WarpEntranceWall_804AE948	0x804AE948	new	new
 act_warp_entrance_wall	sinit	__sinit_act_warp_entrance_wall_cpp	-	-	new	new
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
-act_wave_se	sinit	__sinit_act_wave_se_cpp	-	-	new	-
 act_wind_environment	sinit	__sinit_act_wind_environment_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zoom	dtor	__dt__13Zoom_804A9DF8Fv	Zoom_804A9DF8	0x804A9DF8	new	new
@@ -349,8 +333,6 @@ tu_80125B58	sinit	__sinit_tu_80125B58_cpp	-	-	new	-
 tu_801286C0	sinit	__sinit_tu_801286C0_cpp	-	-	new	-
 tu_801291A0	dtor	__dt__12cls_8049E5B8Fv	cls_8049E5B8	0x8049E5B8	new	new
 tu_801291A0	sinit	__sinit_tu_801291A0_cpp	-	-	new	new
-tu_8012DAC0	dtor	__dt__12cls_8049E848Fv	cls_8049E848	0x8049E848	new	new
-tu_8012DAC0	sinit	__sinit_tu_8012DAC0_cpp	-	-	new	new
 tu_8012EA00	dtor	__dt__12cls_8049E8F8Fv	cls_8049E8F8	0x8049E8F8	new	new
 tu_8012EA00	sinit	__sinit_tu_8012EA00_cpp	-	-	new	new
 tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
@@ -434,13 +416,11 @@ tu_802144F0	sinit	__sinit_tu_802144F0_cpp	-	-	new	-
 tu_80215A94	sinit	__sinit_tu_80215A94_cpp	-	-	new	-
 tu_8021693C	sinit	__sinit_tu_8021693C_cpp	-	-	new	-
 tu_8021827C	sinit	__sinit_tu_8021827C_cpp	-	-	new	-
-tu_802188B0	sinit	__sinit_tu_802188B0_cpp	-	-	new	-
 tu_8021A570	sinit	__sinit_tu_8021A570_cpp	-	-	new	-
 tu_8021AF28	sinit	__sinit_tu_8021AF28_cpp	-	-	new	-
 tu_8021C2B4	sinit	__sinit_tu_8021C2B4_cpp	-	-	new	-
 tu_8021C848	sinit	__sinit_tu_8021C848_cpp	-	-	new	-
 tu_8021F4B0	sinit	__sinit_tu_8021F4B0_cpp	-	-	new	-
-tu_8021FDB8	sinit	__sinit_tu_8021FDB8_cpp	-	-	new	-
 tu_802201D8	sinit	__sinit_tu_802201D8_cpp	-	-	new	-
 tu_80220F54	sinit	__sinit_tu_80220F54_cpp	-	-	new	-
 tu_80221B44	sinit	__sinit_tu_80221B44_cpp	-	-	new	-
