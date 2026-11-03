@@ -14,3 +14,13 @@ extern "C" JGeometry::TVec3f* fn_8017EB0C(JGeometry::TVec3f* v, f32 x, f32 y, f3
     v->z = z;
     return v;
 }
+
+// Stores x, y, z, w into v and returns it, like fn_8017EB0C does for a TVec3f.
+// The caller passes a stack TVec4f and uses the returned pointer as the copy source.
+extern "C" JGeometry::TVec4f* fn_8017EC5C(JGeometry::TVec4f* v, f32 x, f32 y, f32 z, f32 w) {
+    v->x = x;
+    v->y = y;
+    v->z = z;
+    v->w = w;
+    return v;
+}
