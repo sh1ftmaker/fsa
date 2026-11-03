@@ -8,11 +8,14 @@
 // Named after its vtable, 0x8049DAD8.
 class cls_8049DAD8 : public ActorBase_804A5770 {
 public:
-    cls_8049DAD8() {}
+    cls_8049DAD8();
     /* 0x08 */ virtual ~cls_8049DAD8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
-    /* 0x230 */ u8 field_0x230[0xC]; // not yet known
+    /* 0x230 */ u32 field_0x230; // init(): the top-5-bit-stripped low 5 bits of field_0x90
+    /* 0x234 */ s32 field_0x234; // frames counted while field_0x238 is set
+    /* 0x238 */ bool field_0x238;
+    /* 0x239 */ bool field_0x239;
 }; // Size: 0x23C
 
 #endif

@@ -359,8 +359,6 @@ tu_80104C3C	dtor	__dt__12cls_8049CB58Fv	cls_8049CB58	0x8049CB58	new	new
 tu_80104C3C	sinit	__sinit_tu_80104C3C_cpp	-	-	new	new
 tu_8010DF44	sinit	__sinit_tu_8010DF44_cpp	-	-	new	-
 tu_80113788	sinit	__sinit_tu_80113788_cpp	-	-	new	-
-tu_8011A0F8	dtor	__dt__12cls_8049DAD8Fv	cls_8049DAD8	0x8049DAD8	new	new
-tu_8011A0F8	sinit	__sinit_tu_8011A0F8_cpp	-	-	new	new
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
 tu_8011E96C	dtor	__dt__12cls_8049DE90Fv	cls_8049DE90	0x8049DE90	new	new
 tu_8011E96C	sinit	__sinit_tu_8011E96C_cpp	-	-	new	new
