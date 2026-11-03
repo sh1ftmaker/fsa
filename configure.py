@@ -822,6 +822,7 @@ config.libs = [
         Object(NonMatching, "JSystem/JUtility/JUTDbPrint.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTDirectFile.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTDirectPrint.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JUtility/JUTException.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JUtility/JUTFont.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTGamePad.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTGraphFifo.cpp", extra_cflags=["-O4,p"]),
@@ -952,7 +953,6 @@ config.libs = [
         Object(Matching, "JSystem/JGadget/std-vector.cpp"),
     ]),
     JSystemLib("JUtility", [
-        Object(NonMatching, "JSystem/JUtility/JUTException.cpp"),
         Object(Matching, "JSystem/JUtility/JUTFader.cpp"),
     ]),
     # Runtime and MSL_C (pikmin2, GC/2.6; see cflags_msl).
