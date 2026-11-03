@@ -172,6 +172,19 @@ void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::init() {}
 
+// Sets field_0xa4 and clears the per-hit and timer state; field_0xe0 is only
+// cleared while the actor has life left.
+void ActorBase_804A5770::fn_801F3780(s32 v) {
+    field_0xa4 = v;
+    field_0xd8 = 0;
+    field_0xd5 = 0;
+    field_0xe4 = 0;
+    field_0xe8 = 0;
+    if (mLife > 0) {
+        field_0xe0 = 0;
+    }
+}
+
 ActorBase_804A5770::~ActorBase_804A5770() {
     if (mEmitter100 != NULL) {
         releaseEmitter(mEmitter100);
