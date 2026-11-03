@@ -1,9 +1,47 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
+#include "game/GameGlobals.h"
+#include "game/Player.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_enemy_for_ending_control.h"
 
 // .sdata2 floats, read only by fn_8035BE00.
 extern const f32 lbl_805428E8;
 extern const f32 lbl_805428EC;
+
+// .sdata2 floats: the pillar position's x and y, and its z.
+extern const f32 lbl_805428D0;
+extern const f32 lbl_805428D4;
+
+// Phase handler in lbl_804AD3A0 (read by fn_8035C650).
+void EnemyForEndingControl_804AD48C::fn_8035B650() {
+    if (field_0x234 == 0) {
+        fn_80119DD0()->fn_80119998(0x96, 0, 1, 0, 0, 0xFA, 0);
+        field_0x234++;
+        field_0x260 = 0x11C;
+    } else if (field_0x260 == 0) {
+        if (mEmitter298 != NULL) {
+            mEmitter298->setStatus(JPAEMIT_ForceDelete);
+            mEmitter298 = NULL;
+        }
+        if (mEmitter29C != NULL) {
+            mEmitter29C->setStatus(JPAEMIT_ForceDelete);
+            mEmitter29C = NULL;
+        }
+        if (mEmitter2A0 != NULL) {
+            mEmitter2A0->setStatus(JPAEMIT_ForceDelete);
+            mEmitter2A0 = NULL;
+        }
+        mAlive = false;
+    } else if (field_0x260 == 1) {
+        fn_801F856C()->fn_801F9484(ACTOR_ENDM, field_0x4, &mPos, 0, -1, -1);
+        JGeometry::TVec3f pos(lbl_805428D0, lbl_805428D0, lbl_805428D4);
+        for (s32 i = 0; i < 4; i++) {
+            fn_80230498(i, &pos, 0, 0xFF, -0x80, -0x80, true);
+        }
+    }
+}
 
 void EnemyForEndingControl_804AD48C::fn_8035BE00() {
     if (field_0x254 > lbl_805428E8) {
