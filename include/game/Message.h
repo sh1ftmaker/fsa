@@ -41,6 +41,15 @@
 class J2DTextBox;
 class JUTResFont;
 
+// The 0x3C4-byte processor objects of game/tu_803944C8.cpp (fn_803973E8).
+// No vtable is chosen as the class's, so the name is a placeholder. Only the
+// byte at 0x19E is declared (fn_80390B64 and fn_80390BA8 use it).
+class MessageProcessor_803944C8 {
+public:
+    /* 0x000 */ u8 field_0x0[0x19E];
+    /* 0x19E */ u8 field_0x19e;
+}; // Size: 0x3C4 (only the first 0x19F bytes are declared)
+
 // One per player, field_0x114 of the manager (created there with
 // __nw__(0x5C)). Code in game/tu_80390818.cpp. Named after its vtable
 // (0x804AF490, stored first by the constructor).
@@ -64,9 +73,13 @@ public:
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
     /* 0x30 */ u8 field_0x30[0x44 - 0x30];
     /* 0x44 */ u8 field_0x44;
-    /* 0x48 */ void* field_0x48; // 0x3C4-byte object, game/tu_803944C8.cpp
-    /* 0x4C */ void* field_0x4c; // the same
+    /* 0x48 */ MessageProcessor_803944C8* field_0x48;
+    /* 0x4C */ MessageProcessor_803944C8* field_0x4c;
     /* 0x50 */ u8 field_0x50[0x5C - 0x50];
+
+    // fn_80390BA8: the byte at 0x19E of the processor of the window's state
+    // (5: field_0x4c, 8: field_0x48), 0xFF in any other state.
+    u8 fn_80390BA8();
 }; // Size: 0x5C
 
 // *lbl_8053AD78. Vtable 0x804AF070 (one slot, the destructor fn_8038D90C).
