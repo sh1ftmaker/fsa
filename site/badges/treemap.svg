@@ -9,7 +9,7 @@
 <rect x="225.5" y="224.5" width="188.7" height="189.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="225.5" y="403.8" width="188.7" height="9.7" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="18.5" width="189.2" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="415.2" y="176.2" width="189.2" height="2.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="415.2" y="175.5" width="189.2" height="3.5" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="605.4" y="18.5" width="154.7" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="605.4" y="161.1" width="154.7" height="17.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="180.0" width="178.2" height="128.9" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
@@ -108,7 +108,7 @@
 <text x="231.5" y="240.5" font-size="11.5" font-weight="600" fill="#eceefb">other hints</text>
 <text x="231.5" y="253.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">5.14 %</text>
 <text x="421.2" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80380000+</text>
-<text x="421.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">1.78 %</text>
+<text x="421.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">2.17 %</text>
 <text x="611.4" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80180000+</text>
 <text x="611.4" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">11.2 %</text>
 <text x="421.2" y="196.0" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80280000+</text>
