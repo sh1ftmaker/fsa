@@ -749,6 +749,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/System/JASTaskThread.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASTrack.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASTrackPort.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/System/JASVoiceBank.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASWSParser.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASWaveArcLoader.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Task/dspproc.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),

@@ -333,6 +333,14 @@ JSystem/JAudio/System/JASTrack.cpp:
 JSystem/JAudio/System/JASTrackPort.cpp:
 	.text       start:0x80039964 end:0x80039A84
 
+JSystem/JAudio/System/JASVoiceBank.cpp:
+	.text       start:0x80039A84 end:0x80039B7C
+	.ctors      start:0x8045BD80 end:0x8045BD84
+	.rodata     start:0x8045D398 end:0x8045D3B0
+	.data       start:0x80493670 end:0x804936A0
+	.bss        start:0x804B2980 end:0x804B29A0
+	.sbss       start:0x8053A398 end:0x8053A3A0
+
 JSystem/JAudio/Task/dspproc.c:
 	.text       start:0x80039B80 end:0x80039D08 align:32
 	.sdata      start:0x80539BE0 end:0x80539BE8
