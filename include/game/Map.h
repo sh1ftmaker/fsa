@@ -103,7 +103,11 @@ public:
     void fn_802FA3FC();
 
     /* 0x0000 vtable */
-    /* 0x0004 */ u8 field_0x4[0x214 - 0x4];
+    /* 0x0004 */ u8 field_0x4[0x28 - 0x4];
+    // The u16 tile grid of each layer (fn_802F9908 / fn_802F9974 index it
+    // by layer * 4; 32 x 32 cells).
+    /* 0x0028 */ u16* mLayerGrid[8];
+    /* 0x0048 */ u8 field_0x48[0x214 - 0x48];
     /* 0x0214 */ u8 field_0x214; // 2 units compare it with 1 (act_player_sword_level_check_npc 0x802F1350)
     /* 0x0215 */ u8 field_0x215;
     /* 0x0216 */ u8 field_0x216; // 9 units set it to 1 (act_four_switch_monitor 0x802A9E78)

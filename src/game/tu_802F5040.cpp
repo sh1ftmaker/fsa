@@ -21,3 +21,15 @@ extern "C" void fn_803003A8() {}
 // cls_804AA858's constructor (fn_802FFDEC). The element type is not identified
 // yet and its constructor has no body.
 extern "C" void fn_803004C0() {}
+
+// Layers 0-3 and 4-7 are separate branches in the original, with the rest
+// after them; all three store the same way.
+void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
+    if (layer >= 0 && layer < 4) {
+        mLayerGrid[layer][index] = value;
+    } else if (layer >= 4 && layer < 8) {
+        mLayerGrid[layer][index] = value;
+    } else {
+        mLayerGrid[layer][index] = value;
+    }
+}
