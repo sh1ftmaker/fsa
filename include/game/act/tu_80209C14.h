@@ -20,6 +20,8 @@ public:
     /* 0x74 */ virtual void vfunc_0x74();
     /* 0x88 */ virtual void vfunc_0x88();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+
+    void fn_80209D44(); // sets mFlags bit 0x2000
     /* 0x2A8 */ u8 field_0x2a8[0x28]; // not yet known
 }; // Size: 0x2D0
 
