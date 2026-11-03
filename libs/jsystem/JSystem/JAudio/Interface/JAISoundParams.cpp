@@ -2,7 +2,6 @@
 
 void JAISoundParamsMove::moveVolume(f32 newValue, u32 fadeCount) 
 {
-#line 12
     JUT_ASSERT((newValue>=0.f))
     if (fadeCount == 0)
     {
@@ -17,7 +16,6 @@ void JAISoundParamsMove::moveVolume(f32 newValue, u32 fadeCount)
 
 void JAISoundParamsMove::movePitch(f32 newValue, u32 fadeCount)
 {
-#line 27
     JUT_ASSERT((newValue>=0.f))
     if (fadeCount == 0)
     {

@@ -44,7 +44,6 @@ JAUSeqDataMgr_SeqCollection::JAUSeqDataMgr_SeqCollection() {
 }
 
 bool JAUSeqDataMgr_SeqCollection::setSeqDataUser(JAISeqDataUser *user) {
-#line 60
     JUT_ASSERT(user_ == 0);
     user_ = user;
     return true;

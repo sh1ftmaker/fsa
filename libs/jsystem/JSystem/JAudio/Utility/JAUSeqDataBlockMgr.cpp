@@ -54,7 +54,6 @@ JAUDynamicSeqDataBlocks::JAUDynamicSeqDataBlocks() {
 }
 
 void JAUDynamicSeqDataBlocks::setSeqDataArchive(JKRArchive* archive) {
-#line 93
     JUT_ASSERT(seqDataArchive_ == 0);
     seqDataArchive_ = archive;
 }
@@ -84,13 +83,11 @@ JAISeqDataResult JAUDynamicSeqDataBlocks::getSeqData(JAISoundID soundID, JAISeqD
 }
 
 bool JAUDynamicSeqDataBlocks::appendDynamicSeqDataBlock(JAUSeqDataBlock* seqDataBlock) {
-#line 124
     JUT_ASSERT(( reinterpret_cast < u32 > ( seqDataBlock->region.addr ) & 0x1f ) == 0);
     rearrangeLoadingSeqs_();
     bool result = seqDataBlock->soundID_.isAnonymous() ? 
         freeBlocks_.append(&seqDataBlock->link_) : loadedBlocks_.append(&seqDataBlock->link_);
 
-#line 133
     JUT_ASSERT(result);
     return true;
 }
@@ -99,7 +96,6 @@ bool JAUDynamicSeqDataBlocks::removeDynamicSeqDataBlock(JAUSeqDataBlock *seqData
     if (seqDataUser && seqDataBlock->soundID_ != 0xffffffff) {
         switch (seqDataUser->releaseSeqData(seqDataBlock->region)) {
         case 0:
-#line 146
             JUT_WARNING_F2("%s", "cannot release sequence data block.\n");
         case 1:
             return false;
@@ -125,7 +121,6 @@ static void JAUDynamicSeqDataBlocks_receiveLoaded_(u32 p1, u32 link) {
 bool JAUDynamicSeqDataBlocks::loadDynamicSeq(JAISoundID soundID, bool param_1,
                                              JAISeqDataUser* user) {
     if (seqDataArchive_ == NULL) {
-#line 181
         JUT_WARNING_F2("%s", "cannot get sequence data archive.");
         return false;
     }

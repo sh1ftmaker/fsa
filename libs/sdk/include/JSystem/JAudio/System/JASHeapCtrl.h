@@ -59,7 +59,6 @@ struct JASMemPool : public JASGenericMemPool
     }
 
     void free(void *p, u32 n) {
-#line 187
         JUT_ASSERT(n == sizeof(T));
         JASThreadingModel::SingleThreaded<JASMemPoolT>::Lock(*this);
         JASGenericMemPool::free(p, n);
@@ -81,7 +80,6 @@ public:
         OSInitMutex(&mMutex);
         mChunk = NULL;
         bool ret = createNewChunk();
-#line 315
         JUT_ASSERT(ret);
     }
     
@@ -170,7 +168,6 @@ public:
             prevChunk = chunk;
             chunk = chunk->getNextChunk();
         }
-#line 357
         JUT_ASSERT_MSG(false, "Cannnot free for JASMemChunkPool");
     }
 
@@ -188,7 +185,6 @@ public:
         {
             return true;                
         }
-    #line 390
         JUT_WARNING_F2("%s", "Not enough JASSystemHeap");
         mChunk = new (JKRHeap::getSystemHeap(), 0) MemoryChunk(chunk);
         if (mChunk != NULL)

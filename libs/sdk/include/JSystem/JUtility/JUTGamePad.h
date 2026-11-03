@@ -152,7 +152,6 @@ public:
 
     static const PADStatus &getPadStatus(u8 port)
     {
-#line 363
         JUT_ASSERT(port < 4);
         return mPadStatus[port];
     }

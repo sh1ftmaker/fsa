@@ -28,7 +28,6 @@ void JASInstRand::effect(int, int, JASSoundParams *params) const
         params->mDolby += val;
         break;
     default:
-#line 42
         JUT_ASSERT(0);
         break;
     }

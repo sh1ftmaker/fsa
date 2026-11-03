@@ -29,7 +29,6 @@ bool JASSeqReader::call(u32 offset)
 {
     if (mCommandNo >= 8)
     {
-#line 42
         JUT_WARNING_F2("%s", "Cannot exec call command");
         return false;
     }
@@ -43,7 +42,6 @@ bool JASSeqReader::loopStart(u32 loopCount)
 {
     if (mCommandNo >= 8)
     {
-#line 53
         JUT_WARNING_F2("%s", "Cannot exec loopStart command");
         return false;
     }
@@ -57,7 +55,6 @@ bool JASSeqReader::loopEnd()
 {
     if (mCommandNo == 0)
     {
-#line 65
         JUT_WARNING_F2("%s", "cannot loopE for call-stack is NULL");
         return false;
     }
@@ -100,7 +97,6 @@ u32 JASSeqReader::readMidiValue()
     {
         if (i > 2)
         {
-#line 100
             JUT_WARNING_F2("%s", "readMidiValue: Too large value");
             return 0;
         }

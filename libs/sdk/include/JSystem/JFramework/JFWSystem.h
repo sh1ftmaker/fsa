@@ -62,7 +62,6 @@ struct JFWSystem
         CSetUpParam::aramGraphBufSize = bufSize; }
     // probably some more inlines for other variables, not used by MKDD
     static void setRenderMode(const _GXRenderModeObj * rmode) {
-#line 80
         JUT_ASSERT(sInitCalled == 0);
         CSetUpParam::renderMode = rmode; }
 };

@@ -74,7 +74,6 @@ void JASOscillator::incCounter(f32 x) {
 }
 
 f32 JASOscillator::getValue() const {
-#line 120
     JUT_ASSERT(mData);
     return mData->_14 + _08 * mData->mScale;
 }
@@ -96,7 +95,6 @@ void JASOscillator::release() {
 	}
 	
     if (mData->mTable != mData->rel_table) {
-#line 154
         JUT_ASSERT(mData->rel_table != 0);
         _04 = 0.0f;
         _0C = _08;

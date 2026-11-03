@@ -34,7 +34,6 @@ void JASBasicWaveBank::setGroupCount(u32 count, JKRHeap *pHeap) {
     delete[] mWaveGroupArray;
     mGroupCount         = count;
     mWaveGroupArray     = new (pHeap, 0) TWaveGroup*[count];
-#line 52
     JUT_ASSERT(mWaveGroupArray != 0);
     for (int i = 0; i < mGroupCount; i++) {
         mWaveGroupArray[i] = new (pHeap, 0) TWaveGroup(this);
@@ -44,7 +43,6 @@ void JASBasicWaveBank::setGroupCount(u32 count, JKRHeap *pHeap) {
 void JASBasicWaveBank::setWaveTableSize(u32 count, JKRHeap *pHeap) {
     delete[] mWaveTable;
     mWaveTable = new(pHeap, 0) TWaveInfo*[count];
-#line 64
     JUT_ASSERT(mWaveTable != 0);
     JASCalc::bzero(mWaveTable, count * sizeof(TWaveHandle*));
     mHandleCount = count;
@@ -114,7 +112,6 @@ void JASBasicWaveBank::TWaveGroup::setWaveCount(u32 count, JKRHeap *pHeap) {
     delete[] mCtrlWaveArray;
     mWaveCount = count;
     mCtrlWaveArray = new(pHeap, 0) TWaveInfo[count];
-#line 172
     JUT_ASSERT(mCtrlWaveArray != 0);
 
     for (int i = 0; i < count; i++) {
@@ -125,7 +122,6 @@ void JASBasicWaveBank::TWaveGroup::setWaveCount(u32 count, JKRHeap *pHeap) {
 
 
 void JASBasicWaveBank::TWaveGroup::setWaveInfo(int index, u32 waveID, const JASWaveInfo &info) {
-#line 182
     JUT_ASSERT(index < mWaveCount);
     JUT_ASSERT(index >= 0);
     mCtrlWaveArray[index].mHandle.mWaveID   = waveID;
@@ -134,26 +130,22 @@ void JASBasicWaveBank::TWaveGroup::setWaveInfo(int index, u32 waveID, const JASW
 }
 
 void JASBasicWaveBank::TWaveGroup::onLoadDone() {
-#line 193
     JUT_ASSERT(mBank);
     mBank->incWaveTable(this);
 }
 
 void JASBasicWaveBank::TWaveGroup::onEraseDone() {
-#line 199
     JUT_ASSERT(mBank);
     mBank->decWaveTable(this);
 }
 
 u32 JASBasicWaveBank::TWaveGroup::getWaveID(int index) const {
-#line 205
     JUT_ASSERT(index < mWaveCount);
     JUT_ASSERT(index >= 0);
     return mCtrlWaveArray[index].mHandle.mWaveID;
 }
 
 int JASBasicWaveBank::TWaveHandle::getWavePtr() const {
-#line 221
     JUT_ASSERT(mHeap);
     void *base = mHeap->getBase();
     if (base == 0) {

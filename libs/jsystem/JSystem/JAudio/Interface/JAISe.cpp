@@ -51,7 +51,6 @@ void JAISe::stopTrack_()
 
 void JAISe::startTrack_(const JASSoundParams &params)
 {
-#line 72
     JUT_ASSERT(inner_.track.getStatus() != JASTrack::STATUS_RUN)
     if (inner_.track.getStatus() == JASTrack::STATUS_STOPPED)
     {
@@ -171,7 +170,6 @@ bool JAISe::JAISound_tryDie_()
 
 void JAISe::JAISeMgr_startID_(JAISoundID soundID, const JGeometry::TVec3<f32> *pos, JAIAudience *audience)
 {
-#line 221
     JUT_ASSERT(inner_.track.getStatus() == JASTrack::STATUS_FREE)
     start_JAISound_(soundID, pos, audience);
     inner_._26c = 0;
@@ -202,7 +200,6 @@ void JAISe::releaseChild(int)
 
 bool JAISe::prepare_getSeqData_()
 {
-#line 271
     JUT_ASSERT(inner_.track.getStatus() != JASTrack::STATUS_RUN);
     JUT_ASSERT(inner_.seMgr);
     JUT_ASSERT( inner_.seMgr ->getSeqDataMgr());
@@ -218,7 +215,6 @@ bool JAISe::prepare_getSeqData_()
     case 2:
         return true;
     default:
-#line 296
         JUT_ASSERT(false);
         return false;
     }

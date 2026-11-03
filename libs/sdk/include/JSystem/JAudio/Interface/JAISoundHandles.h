@@ -27,7 +27,6 @@ public:
 
     JAISoundHandle &operator[](int index)
     {
-#line 33
         JUT_ASSERT(index >= 0)
         JUT_ASSERT(index < numHandles_)
         return handles_[index];
@@ -35,7 +34,6 @@ public:
 
     JAISoundHandle &getHandle(int index)
     {
-#line 42
         JUT_ASSERT(index >= 0)
         JUT_ASSERT(index < numHandles_)
         return handles_[index];

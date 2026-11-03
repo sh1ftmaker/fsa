@@ -51,7 +51,6 @@ bool JASBasicInst::getParam(int key, int velocity, JASInstParam *instParam) cons
 void JASBasicInst::setKeyRegionCount(u32 count, JKRHeap *pHeap) {
     delete[] mKeymap;
     mKeymap = new (pHeap, 0) TKeymap[count];
-#line 110
     JUT_ASSERT(mKeymap != 0);
     mKeyRegionCount = count;
 }
@@ -70,14 +69,12 @@ void JASBasicInst::appendEffect(JASPtrListAdaptor<JASInstEffect> *effect) {
 }
 
 void JASBasicInst::setOsc(int index, JASOscillator::Data *osc) {
-#line 134
     JUT_ASSERT(index < OSC_MAX);
     JUT_ASSERT(index >= 0);
     mOsc[index] = osc;
 }
 
 JASBasicInst::TKeymap *JASBasicInst::getKeyRegion(int index) {
-#line 152
     JUT_ASSERT(index >= 0);
     if (index >= mKeyRegionCount) {
         return NULL;
@@ -98,7 +95,6 @@ JASBasicInst::TKeymap::~TKeymap() {
 }
 
 void JASBasicInst::TKeymap::setVeloRegionCount(u32 count, JKRHeap *pHeap) {
-#line 177
     delete[] mVelomap;
     mVelomap = new (pHeap, 0) JASVelo[count];
     JUT_ASSERT(mVelomap != 0);
@@ -106,7 +102,6 @@ void JASBasicInst::TKeymap::setVeloRegionCount(u32 count, JKRHeap *pHeap) {
 }
 
 JASVelo *JASBasicInst::TKeymap::getVeloRegion(int index) {
-#line 187
     JUT_ASSERT(index >= 0);
     if (index >= mVeloRegionCount) {
         return NULL;
@@ -115,7 +110,6 @@ JASVelo *JASBasicInst::TKeymap::getVeloRegion(int index) {
 }
 
 JASVelo *JASBasicInst::TKeymap::getVeloRegion(int index) const {
-#line 196
     JUT_ASSERT(index >= 0);
     if (index >= mVeloRegionCount) {
         return NULL;

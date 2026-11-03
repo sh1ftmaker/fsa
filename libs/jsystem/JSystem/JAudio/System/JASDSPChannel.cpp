@@ -38,7 +38,6 @@ void JASDSPChannel::drop() {
 }
 
 void JASDSPChannel::initAll() {
-#line 101
     sDspChannels = new (JASDram, 0x20) JASDSPChannel[0x40];
     JUT_ASSERT(sDspChannels);
 

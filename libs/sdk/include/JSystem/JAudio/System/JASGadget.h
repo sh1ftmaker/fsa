@@ -24,7 +24,6 @@ public:
     {
         if (param_1)
         {
-#line 172
             NULL_CHECK();
             sInstance = (T *)this;
         }
@@ -68,7 +67,6 @@ public:
     }
     void set(u32 index, T *value)
     {
-#line 215
         JUT_ASSERT(index < mSize);
         mTable[index] = value;
     }

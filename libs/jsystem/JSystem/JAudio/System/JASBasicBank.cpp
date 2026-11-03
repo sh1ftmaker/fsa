@@ -8,21 +8,20 @@ JASBasicBank::JASBasicBank() {
     JASCalc::bzero(mInstTable, sizeof(mInstTable));
 }
 
-void JASBasicBank::setInst(int prg_no, JASInst *inst) {
-#line 22
-    JUT_ASSERT(prg_no < INST_MAX);
-    JUT_ASSERT(prg_no >= 0);
-
-    JUT_ASSERT(mInstTable[prg_no] == 0);
-    mInstTable[prg_no] = inst;
-}
-
 bool JASBasicBank::getInstParam(int prg_no, int key, int vel, JASInstParam *param) const {
     JASInst *inst = getInst(prg_no);
     if (inst == NULL) {
         return false;
     }
     return inst->getParam(key, vel, param);
+}
+
+void JASBasicBank::setInst(int prg_no, JASInst *inst) {
+    JUT_ASSERT(prg_no < INST_MAX);
+    JUT_ASSERT(prg_no >= 0);
+
+    JUT_ASSERT(mInstTable[prg_no] == 0);
+    mInstTable[prg_no] = inst;
 }
 
 JASInst *JASBasicBank::getInst(int prg_no) const {

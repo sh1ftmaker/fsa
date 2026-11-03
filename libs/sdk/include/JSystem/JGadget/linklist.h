@@ -36,7 +36,6 @@ public:
 
   /*~TLinkListNode() {
     // Seemingly not present in earlier versions of JSystem
-    #line 77
     JGADGET_ASSERT(pNext_==NULL);
     JGADGET_ASSERT(pPrev_==NULL);
   }*/
@@ -220,7 +219,6 @@ public:
     T* operator->() const { return TLinkList::Element_toValue(mIt.operator->()); }
     T& operator*() const {
       T* p = this->operator->();
-      #line 541
       JGADGET_ASSERT(p!=0);
       return *p;
     }
@@ -258,7 +256,6 @@ public:
     const T* operator->() const { return TLinkList::Element_toValue(mIt.operator->()); }
     const T& operator*() const {
       const T* p = this->operator->();
-      #line 586
       JGADGET_ASSERT(p!=0);
       return *p;
     }
@@ -279,37 +276,31 @@ public:
   void Push_back(T* p) { Insert(end(), p); }
 
   T& front() {
-    #line 642
     JGADGET_ASSERT(!empty());
     return *begin();
   }
 
   T& back() {
-    #line 652
     JGADGET_ASSERT(!empty());
     return *--end();
   }
 
   static TLinkListNode* Element_toNode(T* p) {
-    #line 753
     JGADGET_ASSERT(p!=0);
     return (TLinkListNode*)((char*)p - O);
   }
 
   static const TLinkListNode* Element_toNode(const T* p) {
-    #line 758
     JGADGET_ASSERT(p!=0);
     return (const TLinkListNode*)((const char*)p - O);
   }
 
   static T* Element_toValue(TLinkListNode* p) {
-    #line 763
     JGADGET_ASSERT(p!=0);
     return (T*)((char*)p + O);
   }
 
   static const T* Element_toValue(const TLinkListNode* p) {
-    #line 768
     JGADGET_ASSERT(p!=0);
     return (const T*)((const char*)p + O);
   }

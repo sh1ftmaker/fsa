@@ -26,7 +26,6 @@ static const JASOscillator::Data OSC_ENV = {
 };
 
 void JASAramStream::initSystem(u32 block_size, u32 channel_max) {
-#line 66
     JUT_ASSERT(block_size % 32 == 0);
     JUT_ASSERT(block_size % 9 == 0);
     JUT_ASSERT(channel_max > 0 && channel_max <= CHANNEL_MAX);
@@ -98,7 +97,6 @@ JASAramStream::JASAramStream() {
 }
 
 void JASAramStream::init(u32 aramAddr, u32 aramSize, StreamCallback cb, void *cbData) {
-#line 153
     JUT_ASSERT(sReadBuffer != 0);
     _148 = aramAddr;
     mAramBufSize = aramSize;
@@ -140,7 +138,6 @@ bool JASAramStream::prepare(const char *fileName, int p2) {
 
 bool JASAramStream::prepare(s32 entryNum, int p2) {
     if (!DVDFastOpen(entryNum, &mDvdFileInfo)) {
-#line 240
         JUT_WARNING_F2("%s", "DVDFastOpen Failed");
         return false;
     }
@@ -164,7 +161,6 @@ bool JASAramStream::prepare(s32 entryNum, int p2) {
 
 bool JASAramStream::start() {
     if (!OSSendMessage(&_000, (OSMessage)0, OS_MESSAGE_NOBLOCK)) {
-#line 273
         JUT_WARNING_F2("%s", "OSSendMessage Failed");
         return false;
     }
@@ -173,7 +169,6 @@ bool JASAramStream::start() {
 
 bool JASAramStream::stop(u16 p1) {
     if (!OSSendMessage(&_000, (OSMessage)(p1 << 0x10 | 1), OS_MESSAGE_NOBLOCK)) {
-#line 290
         JUT_WARNING_F2("%s", "OSSendMessage Failed");
         return false;
     }
@@ -188,7 +183,6 @@ bool JASAramStream::pause(bool p1) {
         msg = (OSMessage)3;
     }
     if (!OSSendMessage(&_000, msg, OS_MESSAGE_NOBLOCK)) {
-#line 308
         JUT_WARNING_F2("%s", "OSSendMessage Failed");
         return false;
     }
@@ -198,7 +192,6 @@ bool JASAramStream::pause(bool p1) {
 bool JASAramStream::cancel() {
     mCancelled = 1;
     if (!sLoadThread->sendCmdMsg(finishTask, this)) {
-#line 326
         JUT_WARNING_F2("%s", "sendCmdMsg finishTask Failed");
         return false;
     }
@@ -226,7 +219,6 @@ void JASAramStream::firstLoadTask(void *arg) {
     if (data->_8 > 0) {
         data->_8--;
         if (data->_8 == 0 && !sLoadThread->sendCmdMsg(prepareFinishTask, stream)) {
-#line 364
             JUT_WARNING_F2("%s", "sendCmdMsg prepareFinishTask Failed");
             sFatalErrorFlag = true;
         }
@@ -252,7 +244,6 @@ void JASAramStream::loadToAramTask(void *arg) {
 void JASAramStream::finishTask(void *arg) {
     JASAramStream *stream = (JASAramStream*)arg;
     if (!JASDriver::rejectCallback(channelProcCallback, stream)) {
-#line 392
         JUT_WARNING_F2("%s", "rejectSubFrameCallback Failed");
     }
     if (stream->mCb) {
@@ -277,7 +268,6 @@ bool JASAramStream::headerLoad(u32 p1, int p2) {
         return false;
     }
     if (DVDReadPrio(&mDvdFileInfo, sReadBuffer, sizeof(Header), 0, 1) < 0) {
-#line 420
         JUT_WARNING_F2("%s", "DVDReadPrio Failed");
         sFatalErrorFlag = true;
         return false;
@@ -304,13 +294,11 @@ bool JASAramStream::headerLoad(u32 p1, int p2) {
     //JUT_ASSERT(mBufCount > 0);
     mBufCount--;
     if (mBufCount < 3) {
-#line 448
         JUT_WARNING_F2("%s", "Too few Buffer-Size");
     }
     mAramBlockCount = mBufCount;
     u32 samples = (mLoopEnd - 1U) / getBlockSamples();
     if (samples <= mBufCount && mLoop) {
-#line 457
         JUT_WARNING_F2("%s", "Too few samples for Loop-buffer");
     }
     if (p2 < 0 || p2 > mAramBlockCount) {
@@ -324,7 +312,6 @@ bool JASAramStream::headerLoad(u32 p1, int p2) {
     data._4 = mAramBlockCount - 1;
     data._8 = p2;
     if (!sLoadThread->sendCmdMsg(firstLoadTask, &data, 0xc)) {
-#line 472
         JUT_WARNING_F2("%s", "sendCmdMsg firstLoadTask Failed");
         sFatalErrorFlag = true;
         return false;
@@ -359,7 +346,6 @@ bool JASAramStream::load() {
         size2 = mDvdFileInfo.length - offset;
     }
     if (DVDReadPrio(&mDvdFileInfo, sReadBuffer, size2, offset, 1) < 0) {
-#line 506
         JUT_WARNING_F2("%s", "DVDReadPrio Failed");
         sFatalErrorFlag = true;
         return false;
@@ -385,7 +371,6 @@ bool JASAramStream::load() {
         u32 block = mBlock;
         block += mAramBlockCount - 1;
         if (mLoop) {
-#line 536
             JUT_ASSERT(loop_start_block < loop_end_block);
             while (block > loop_end_block) {
                 block -= loop_end_block;
@@ -485,7 +470,6 @@ void JASAramStream::updateChannel(u32 callbackType, JASChannel *channel, JASDsp:
                     }
                 }
                 if (mReadSample > mLoopEnd) {
-#line 685
                     JUT_WARNING_F2("%s", "mReadSample > mLoopEnd")
                     sFatalErrorFlag = true;
                 }
@@ -528,7 +512,6 @@ void JASAramStream::updateChannel(u32 callbackType, JASChannel *channel, JASDsp:
                     bool cmp = waveCnt < _0b0;
                     while (waveCnt != _0b0) {
                         if (!sLoadThread->sendCmdMsg(loadToAramTask, this)) {
-#line 740
                             JUT_WARNING_F2("sendCmdMsg Failed %d %d (%d %d)", dspChannel->_70, channel->mWaveData.mPtr, waveCnt, _0b0);
                             sFatalErrorFlag = true;
                             break;
@@ -577,7 +560,6 @@ void JASAramStream::updateChannel(u32 callbackType, JASChannel *channel, JASDsp:
                 }
                 _0b4 = dspChannel->_74 + dspChannel->_64;
                 if (mFreeBlockCount >= mBlockCount - 2) {
-#line 809
                     JUT_WARNING_F1("%s", "buffer under error")
                     _0ae |= 4;
                 }
@@ -601,7 +583,6 @@ void JASAramStream::updateChannel(u32 callbackType, JASChannel *channel, JASDsp:
                     break;
                 }
             }
-#line 833
             JUT_ASSERT(ch < CHANNEL_MAX);
             dspChannel->_104 = _130[ch];
             dspChannel->_106 = _13c[ch];
@@ -619,7 +600,6 @@ void JASAramStream::updateChannel(u32 callbackType, JASChannel *channel, JASDsp:
         if (!open_channel) {
             mCancelled = 1;
             if (!sLoadThread->sendCmdMsg(finishTask, this)) {
-#line 853
                 JUT_WARNING_F2("%s", "sendCmdMsg finishTask Failed");
                 sFatalErrorFlag = true;
                 return;
@@ -712,7 +692,6 @@ void JASAramStream::channelStart() {
         wave_info._24 = &one;
         
         JASChannel *jc = new JASChannel(channelCallback, this);
-#line 958
         JUT_ASSERT(jc);
         jc->setPriority(0x7f7f);
         for (u32 j = 0; j < 6; j++) {
@@ -724,9 +703,7 @@ void JASAramStream::channelStart() {
         jc->mWaveData.mPtr = _148 + sBlockSize * mBlockCount * i;
         jc->mWaveData._0 = 0;
         int ret = jc->playForce();
-#line 972
         JUT_ASSERT(ret);
-#line 974
         JUT_ASSERT_MSG(!mChannels[i], "channelStart for already playing channel");
         mChannels[i] = jc;
     }

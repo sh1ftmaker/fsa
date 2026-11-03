@@ -29,13 +29,11 @@ public:
     JAIStreamAramMgr *getStreamAramMgr() { return streamAramMgr_; }
     void setStreamDataMgr(JAIStreamDataMgr *dataMgr)
     {
-#line 138
         JUT_ASSERT(!isActive());
         streamDataMgr_ = dataMgr;
     }
     void setStreamAramMgr(JAIStreamAramMgr *aramMgr)
     {
-#line 157
         JUT_ASSERT(!isActive());
         streamAramMgr_ = aramMgr;
     }

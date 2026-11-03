@@ -63,7 +63,6 @@ void JAISeCategoryMgr::JAISeMgr_freeDeadSe_()
         next = i->getNext();
         if (i->getObject()->status_.isDead())
         {
-#line 71
             JUT_ASSERT(! i->getObject() ->isHandleAttached())
             mSeList.remove(i);
             delete i->getObject();
@@ -112,7 +111,6 @@ void JAISeCategoryMgr::sortByPriority_()
             }
             current = current->getNext();
         }
-#line 130
         bool result = mSeList.remove(link);
         JUT_ASSERT(result);
         result = mSeList.append(link);
@@ -329,14 +327,12 @@ void JAISeMgr::initParams()
 
 void JAISeMgr::setAudience(JAIAudience *audience)
 {
-#line 347
     JUT_ASSERT(! isActive());
     mAudience = audience;
 }
 
 void JAISeMgr::setSeqDataMgr(JAISeqDataMgr *dataMgr)
 {
-#line 361
     JUT_ASSERT(! isActive());
     resetSeqDataMgr();
     mSeqDataMgr = dataMgr;
@@ -354,7 +350,6 @@ void JAISeMgr::resetSeqDataMgr()
 
 JAISe *JAISeMgr::newSe_(int category, u32 prio)
 {
-#line 380
     JUT_ASSERT(category < NUM_CATEGORIES)
     if (category < 0)
         category = 0;

@@ -1,5 +1,7 @@
 # JSystem/JAudio/System/JASBasicInst.cpp
 
+**Update (infra/jaudio-sym): Matching.** With the mkdd_JAudio block's `-sym on` (and mkdd's `#line`s gone) the weak copies land at the file end like FSA; `link_check.py --unit` SHA-1 OK. The notes below describe the earlier state.
+
 Baseline (progress.py): total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
 After: total: 4510 / 11561 functions, 809040 / 4442088 bytes of code (18.21 %); gate: ok.
 

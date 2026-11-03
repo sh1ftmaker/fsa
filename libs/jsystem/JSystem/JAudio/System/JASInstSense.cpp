@@ -37,14 +37,12 @@ void JASInstSense::effect(int trigger1, int trigger2, JASSoundParams *params) co
         params->mDolby += y;
         break;
     default:
-#line 56
         JUT_ASSERT(0);
         break;
     }
 }
 
 void JASInstSense::setParams(int trigger, int centerkey, f32 p3, f32 p4) {
-#line 65
     JUT_ASSERT(trigger >= 0);
     JUT_ASSERT(trigger < 256);
     mTrigger = trigger;

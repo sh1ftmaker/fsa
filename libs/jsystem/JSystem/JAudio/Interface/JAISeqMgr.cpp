@@ -79,7 +79,6 @@ bool JAISeqMgr::startSound(JAISoundID soundID, JAISoundHandle *handle,
     JAISoundInfo *soundInfo = JASGlobalInstance<JAISoundInfo>::getInstance();
     int category = (soundInfo != NULL) ? soundInfo->getCategory(soundID) : -1;
     JAISeqData aJStack_38(NULL, 0);
-#line 81
     JUT_ASSERT(seqDataMgr_);
     if (seqDataMgr_->getSeqData(soundID, &aJStack_38) == JAI_ASYNC_RESULT_0)
     {
@@ -155,7 +154,6 @@ JAISeq *JAISeqMgr::beginStartSeq_()
     JAISeq *seq = new JAISeq(this, strategyMgr_);
     if (seq == NULL)
     {
-#line 254
         JUT_WARNING_F2("%s", "JASPoolAllocObject::<JAISeq>::operator new failed .\n");
     }
     return seq;

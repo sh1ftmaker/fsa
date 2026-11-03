@@ -127,13 +127,11 @@ public:
     JAISoundHandle &getHandle(int index) { return handles_->getHandle(index); }
 
     void setLoopStartFrame(f32 val) {
-#line 178
         JUT_ASSERT(animation_);
         loopStartFrame_ = val;
     }
 
     void setLoopEndFrame(f32 val) {
-#line 184
         JUT_ASSERT(animation_);
         loopEndFrame_ = val;
     }

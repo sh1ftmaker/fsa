@@ -19,7 +19,6 @@ bool JAUSoundMgr::startSound(JAISoundID soundID, JAISoundHandle *handlePtr, cons
     case 2:
         return mStreamMgr.startSound(soundID, handlePtr, pos);
     default:
-#line 39
         JUT_WARNING_F2("%s", "Unknown Sound-Type\n");
         return false;
     }    

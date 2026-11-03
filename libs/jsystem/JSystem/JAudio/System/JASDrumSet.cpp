@@ -16,7 +16,6 @@ JASDrumSet::~JASDrumSet() {
 }
 
 bool JASDrumSet::getParam(int key, int veloKey, JASInstParam *param) const {
-#line 29
     JUT_ASSERT(key >= 0);
 
     if (key >= sPercCount) {
@@ -68,7 +67,6 @@ bool JASDrumSet::getParam(int key, int veloKey, JASInstParam *param) const {
 }
 
 void JASDrumSet::setPerc(int index, JASDrumSet::TPerc *pperc) {
-#line 87
     JUT_ASSERT(index < sPercCount);
     JUT_ASSERT(index >= 0);
 
@@ -92,13 +90,11 @@ JASDrumSet::TPerc::~TPerc() {
 void JASDrumSet::TPerc::setVeloRegionCount(u32 count, JKRHeap *pHeap) {
     delete[] mVelomap;
     mVelomap = new (pHeap, 0) JASVelo[count];
-#line 138
     JUT_ASSERT(mVelomap != 0);
     mVelomapCount = count;
 }
 
 JASVelo *JASDrumSet::TPerc::getVeloRegion(int index) {
-#line 144
     JUT_ASSERT(index < mVelomapCount);
     JUT_ASSERT(index >= 0);
     return &mVelomap[index];
@@ -118,7 +114,6 @@ void JASDrumSet::TPerc::appendEffect(JASPtrListAdaptor<JASInstEffect> *effect) {
 }
 
 void JASDrumSet::TPerc::setRelease(u32 release) {
-#line 178
     JUT_ASSERT(release < 0x10000);
     mRelease = release;
 }

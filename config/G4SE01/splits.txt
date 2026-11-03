@@ -145,6 +145,15 @@ JSystem/JAudio/System/JASAudioReseter.cpp:
 	.text       start:0x8002A55C end:0x8002A740
 	.sdata2     start:0x8053B0B0 end:0x8053B0B8
 
+JSystem/JAudio/System/JASAudioThread.cpp:
+	.text       start:0x8002A740 end:0x8002AAF8
+	.ctors      start:0x8045BD44 end:0x8045BD48
+	.rodata     start:0x8045CB28 end:0x8045CB40
+	.data       start:0x804918D0 end:0x804918E0
+	.bss        start:0x804B2530 end:0x804B2540
+	.sbss       start:0x8053A318 end:0x8053A320
+	.sdata2     start:0x8053B0B8 end:0x8053B0C0
+
 JSystem/JAudio/System/JASChannel.cpp:
 	.text       start:0x8002AAF8 end:0x8002C308
 	.ctors      start:0x8045BD48 end:0x8045BD4C
@@ -239,12 +248,12 @@ JSystem/JAudio/System/JASSimpleWaveBank.cpp:
 	.text       start:0x80030BD0 end:0x80030EF8
 
 JSystem/JAudio/System/JASWaveArcLoader.cpp:
-	.text       start:0x80030EF8 end:0x80031750
+	.text       start:0x80030EF8 end:0x80031484
 	.data       start:0x80491AD0 end:0x80491B38
 	.sbss       start:0x8053A360 end:0x8053A368
 
 JSystem/JAudio/System/JASBank.cpp:
-	.text       start:0x80031750 end:0x8003189C
+	.text       start:0x80031484 end:0x8003189C
 	.ctors      start:0x8045BD6C end:0x8045BD70
 	.rodata     start:0x8045D1A8 end:0x8045D1D0
 	.sdata2     start:0x8053B1F0 end:0x8053B200

@@ -68,7 +68,6 @@ public:
 
     JASTrack *getChild(u32 index) const
     {
-#line 115
         JUT_ASSERT(index < MAX_CHILDREN)
         return mChildren[index];
     }

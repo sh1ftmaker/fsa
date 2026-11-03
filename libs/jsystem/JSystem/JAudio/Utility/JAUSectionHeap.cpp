@@ -107,7 +107,6 @@ JAUSection::JAUSection(JAUSectionHeap *sectionHeap, u32 p2, s32 p3) : JKRDispose
 }
 
 void JAUSection::finishBuild() {
-#line 141
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
 
@@ -127,7 +126,6 @@ bool JAUSection::isDisposable_() const
         if (data_.registeredWaveBankTables.test(i))
         {
             JASWaveBank *waveBank = sectionHeap_->getWaveBankTable().getWaveBank(i);
-#line 158
             JUT_ASSERT(waveBank);
             if (waveBank->isLoading()) 
                 return false;
@@ -160,7 +158,6 @@ void JAUSection::releaseAllBank_()
         if (data_.registeredBankTables.test(i)) {
             JAS_CS_START
             JASBank *bank = JASGlobalInstance<JASDefaultBankTable>::getInstance()->getBank(i);
-#line 195
             JUT_ASSERT(bank);
             JASChannel::sendBankDisposeMsg(bank);
             JASGlobalInstance<JASDefaultBankTable>::getInstance()->registBank(i, NULL);
@@ -170,7 +167,6 @@ void JAUSection::releaseAllBank_()
 
     for (u32 i = 0; i < 255; i++) {
         if (data_.registeredWaveBankTables.test(i)) {
-#line 205
             JASWaveBank *waveBank = sectionHeap_->getWaveBankTable().getWaveBank(i);
             JUT_ASSERT(waveBank);
             JUT_ASSERT(! waveBank->isLoading());
@@ -207,9 +203,7 @@ bool JAUSection::releaseSeqData_()
     if (data_.sectionalSeqDataMgr)
     {
         data_.sectionalSeqDataMgr->releaseSeqData();
-#line 250
         JUT_ASSERT(sectionHeap_->sectionHeapData_.seSeqDataMgr_ == data_.sectionalSeqDataMgr);
-#line 256
         JUT_ASSERT(false);
         data_.sectionalSeqDataMgr = NULL;
         sectionHeap_->sectionHeapData_.seSeqDataMgr_ = NULL;
@@ -220,7 +214,6 @@ bool JAUSection::releaseSeqData_()
 
 void JAUSection::dispose()
 {
-#line 265
     JUT_ASSERT(! data_.registeredBankTables.any());
     JUT_ASSERT(! data_.registeredWaveBankTables.any());
 
@@ -238,7 +231,6 @@ void JAUSection::dispose()
 
 JAUSoundTable *JAUSection::newSoundTable(const void *bst, u32 n, bool p3)
 {
-#line 283
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JUT_ASSERT(bst);
@@ -263,7 +255,6 @@ JAUSoundTable *JAUSection::newSoundTable(const void *bst, u32 n, bool p3)
 
 JAUSoundNameTable *JAUSection::newSoundNameTable(const void *bstn, u32 n, bool p3)
 {
-#line 313
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JUT_ASSERT(bstn);
@@ -288,7 +279,6 @@ JAUSoundNameTable *JAUSection::newSoundNameTable(const void *bstn, u32 n, bool p
 
 JAIStreamDataMgr *JAUSection::newStreamFileTable(const void *bsft, bool p2)
 {
-#line 343
     JUT_ASSERT(asSectionHeap() == this);
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
@@ -320,7 +310,6 @@ JAIStreamDataMgr *JAUSection::newStreamFileTable(const void *bsft, bool p2)
 
 JAISeqDataMgr *JAUSection::newSeSeqCollection(const void *bsc, u32 n)
 { 
-#line 396
     JUT_ASSERT(asSectionHeap() == this);
     JUT_ASSERT(sectionHeap_->sectionHeapData_.seSeqDataMgr_ == 0);
     if (n)
@@ -342,7 +331,6 @@ JAISeqDataMgr *JAUSection::newSeSeqCollection(const void *bsc, u32 n)
 
 u8* JAUSection::newStaticSeqDataBlock_(JAISoundID soundID, u32 size)
 {
-#line 417
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JUT_ASSERT(size);
@@ -355,7 +343,6 @@ u8* JAUSection::newStaticSeqDataBlock_(JAISoundID soundID, u32 size)
 
     JSULink<JAUSeqDataBlock> *link = new JSULink<JAUSeqDataBlock>(seqDataBlock);
     if (!link) {
-#line 430
         JUT_WARNING_F2("%s", "created UNUSED object in Heap\n");
         return NULL;
     }
@@ -396,7 +383,6 @@ bool JAUSection::newStaticSeqData(JAISoundID soundID, const void *src, u32 size)
 
 bool JAUSection::newStaticSeqData(JAISoundID soundID) {
     JKRArchive *seqArchive = data_.seqDataBlocks_.getSeqDataArchive();
-#line 479
     JUT_ASSERT(seqArchive);
     JAUSoundInfo *soundInfo = JAUSoundInfo::getInstance();
     if (!soundInfo)
@@ -422,7 +408,6 @@ bool JAUSection::newStaticSeqData(JAISoundID soundID) {
 // Cast is needed, sadly
 const void *JAUSection::loadDVDFile(const char *path, bool defaultAlignment, JKRExpandSwitch expSwitch)
 {
-#line 500
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
 
@@ -506,7 +491,6 @@ bool JAUSection::loadWaveArc(u32 bank_no)
 }
 
 JASBank *JAUSection::newBank(const void *pBnk, u32 index) {
-#line 605
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JASWaveBank *waveBank = sectionHeap_->getWaveBankTable().getWaveBank(index);
@@ -566,7 +550,6 @@ JASVoiceBank *JAUSection::newVoiceBank(u32 bank_no, u32 index)
 
 bool JAUSection::beginNewBankTable(u32 p1, u32 bankCount)
 {
-#line 641
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JUT_ASSERT(buildingBankTable_ == 0);
@@ -615,7 +598,6 @@ void JAUSectionHeap::setSeqDataArchive(JKRArchive *archive)
 
 JAUSectionHeap *JAUNewSectionHeap(JKRSolidHeap *heap, bool p2)
 {
-#line 736
     JUT_ASSERT(JKRSolidHeap_isEmpty( heap ));
     TPushCurrentHeap pushHeap(heap);
     u32 size = heap->getFreeSize();
@@ -689,7 +671,6 @@ bool JAUSectionHeap::popSection()
     {
         section->releaseAllBank_();
         u32 tag = getNumSections();
-#line 810
         JUT_ASSERT(tag >= 1);
         heap_->restoreState(tag);
         return true;
@@ -719,7 +700,6 @@ bool JAUSectionHeap::setSeqDataUser(JAISeqDataUser *seqDataUser) {
 }
 
 bool JAUSectionHeap::newDynamicSeqBlock(u32 size) {
-#line 864
     JUT_ASSERT(isOpen());
     JUT_ASSERT(isBuilding());
     JUT_ASSERT(sectionHeap_ == this);
@@ -763,7 +743,6 @@ JAISeqDataResult JAUSectionHeap::getSeqData(JAISoundID soundID, JAISeqData *seqD
     for (JSULink<JAUSection> *link = sectionList_.getFirst(); link; link = link->getNext())
     {
         JAISeqDataResult result = link->getObject()->data_.seqDataBlocks_.getSeqData(soundID, sectionHeapData_.seqDataUser, seqData, false);
-#line 921
         JUT_ASSERT(result != JAI_ASYNC_RESULT_RETRY);
         if (result == JAI_ASYNC_RESULT_OK)
         {

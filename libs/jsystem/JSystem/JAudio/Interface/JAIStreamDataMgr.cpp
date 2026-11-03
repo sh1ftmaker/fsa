@@ -3,7 +3,6 @@
 
 JAIStreamDataMgr::~JAIStreamDataMgr()
 {
-#line 11
     JUT_ASSERT(false);
 }
 
