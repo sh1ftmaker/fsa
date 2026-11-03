@@ -21,19 +21,25 @@ public:
 
     /* 0x58 */ virtual s32 vfunc_0x58();
 
+    // Named after its vtable, 0x8049D940, slot 0x0C. __ct__12cls_8049D940Fv
+    // (game/act_vaati_demo.cpp) runs the base constructor, sets the vtable and
+    // initialises the members in declaration order. init() (0x801169E8,
+    // was fn_801169E8) runs cls_8049D140::init(), loads four 'TIMG'
+    // resources named by lbl_8049D930 into field_0x31c[0..3], the kk_black.bti
+    // resource into field_0x32c, sets up both SpriteAnims and copies mPos to
+    // field_0x308.
+    /* 0x0C */ virtual void init();
+
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ u8 field_0x234;
     /* 0x238 */ SpriteAnim_801D267C field_0x238;
     /* 0x270 */ SpriteAnim_801D267C field_0x270;
     /* 0x2A8 */ cls_801EB8CC field_0x2a8;
-    /* 0x308 */ u8 field_0x308[0xC]; // not yet known
+    /* 0x308 */ JGeometry::TVec3f field_0x308; // mPos, copied by init()
     /* 0x314 */ JPABaseEmitter* field_0x314;
     /* 0x318 */ JPABaseEmitter* field_0x318;
-    /* 0x31C */ s32 field_0x31c;
-    /* 0x320 */ s32 field_0x320;
-    /* 0x324 */ s32 field_0x324;
-    /* 0x328 */ s32 field_0x328;
-    /* 0x32C */ s32 field_0x32c;
+    /* 0x31C */ void* field_0x31c[4]; // fn_804032E8('TIMG', lbl_8049D930[i])
+    /* 0x32C */ void* field_0x32c;    // getResource('????', "kk_black.bti")
 }; // Size: 0x330
 
 #endif
