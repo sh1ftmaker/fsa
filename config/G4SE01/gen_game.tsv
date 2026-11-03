@@ -292,8 +292,6 @@ act_special_conversation_npc	dtor	__dt__31SpecialConversationNPC_804AAFB8Fv	Spec
 act_spike_floor_check	dtor	__dt__24SpikeFloorCheck_804A8170Fv	SpikeFloorCheck_804A8170	0x804A8170	new	new
 act_spike_floor_check	sinit	__sinit_act_spike_floor_check_cpp	-	-	new	new
 act_spotlight	sinit	__sinit_act_spotlight_cpp	-	-	new	-
-act_spotlight_se	dtor	__dt__20SpotlightSE_804A85E0Fv	SpotlightSE_804A85E0	0x804A85E0	new	new
-act_spotlight_se	sinit	__sinit_act_spotlight_se_cpp	-	-	new	new
 act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
