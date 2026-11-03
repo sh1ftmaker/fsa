@@ -226,6 +226,7 @@ public:
     void fn_802636C4(); // byte at 0x458 = 0 (stb r0)
     void fn_80263848(); // byte at 0x458 = 0 (stb r0)
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
+    void fn_80293760(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
@@ -356,7 +357,10 @@ public:
     /* 0x121F */ bool field_0x121f;
     /* 0x1220 */ u8 field_0x1220[0x1224 - 0x1220];
     /* 0x1224 */ s32 field_0x1224;
-    /* 0x1228 */ u8 field_0x1228[0x13BC - 0x1228];
+    /* 0x1228 */ u8 field_0x1228[0x124D - 0x1228];
+    // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
+    /* 0x124D */ u8 field_0x124d;
+    /* 0x124E */ u8 field_0x124e[0x13BC - 0x124E];
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
