@@ -275,8 +275,6 @@ tu_8034AA40	dtor	__dt__12cls_804AC8C0Fv	cls_804AC8C0	0x804AC8C0	new	new
 tu_8034AA40	sinit	__sinit_tu_8034AA40_cpp	-	-	new	new
 tu_8034C950	dtor	__dt__12cls_804AC950Fv	cls_804AC950	0x804AC950	new	new
 tu_8034C950	sinit	__sinit_tu_8034C950_cpp	-	-	new	new
-tu_8034DFF0	dtor	__dt__12cls_804AC9A8Fv	cls_804AC9A8	0x804AC9A8	new	new
-tu_8034DFF0	sinit	__sinit_tu_8034DFF0_cpp	-	-	new	new
 tu_80354D64	sinit	__sinit_tu_80354D64_cpp	-	-	new	-
 tu_8036FB60	dtor	__dt__12cls_804AE4B0Fv	cls_804AE4B0	0x804AE4B0	new	new
 tu_80376FA0	dtor	__dt__12cls_804AE7D8Fv	cls_804AE7D8	0x804AE7D8	new	new
