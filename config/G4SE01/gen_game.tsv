@@ -216,8 +216,6 @@ act_stone_disguised_npc	sinit	__sinit_act_stone_disguised_npc_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
-act_switch_related_npc	dtor	__dt__12cls_804A8C28Fv	cls_804A8C28	0x804A8C28	new	new
-act_switch_related_npc	sinit	__sinit_act_switch_related_npc_cpp	-	-	new	new
 act_tektite	dtor	__dt__16Tektite_8049FD50Fv	Tektite_8049FD50	0x8049FD50	new	new
 act_tektite	sinit	__sinit_act_tektite_cpp	-	-	new	new
 act_temple_bti_display	sinit	__sinit_act_temple_bti_display_cpp	-	-	new	-
