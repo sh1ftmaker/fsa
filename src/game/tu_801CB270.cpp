@@ -171,3 +171,9 @@ s32 fn_801CD580(s32 except) {
 s32 fn_801CD664(s32 n) {
     return n * lbl_8053AAF8->mRandom.get_ufloat_1();
 }
+
+// Steps *angle towards target by at most step; the result of fn_801CD970 is
+// not used.
+void fn_801CD930(s16* angle, s32 target, s32 step) {
+    fn_801CD970(angle, target, step);
+}
