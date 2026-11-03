@@ -17,6 +17,77 @@ typedef struct {
 #define GX_BITFIELD_TRUNC(field, pos, size, value) (__rlwimi((field), (value), 0, (pos), (pos) + (size) - 1))
 #define GX_SET_TRUNC(reg, x, st, end) GX_BITFIELD_TRUNC((reg), (st), ((end) - (st) + 1), (x))
 
+void GXInitLightAttn(GXLightObj* lt_obj, f32 a0, f32 a1, f32 a2, f32 k0, f32 k1, f32 k2) {
+    __GXLightObjInt_struct* obj = (__GXLightObjInt_struct*)lt_obj;
+
+    obj->a[0] = a0;
+    obj->a[1] = a1;
+    obj->a[2] = a2;
+    obj->k[0] = k0;
+    obj->k[1] = k1;
+    obj->k[2] = k2;
+}
+
+void GXInitLightPos(GXLightObj* lt_obj, f32 x, f32 y, f32 z) {
+    __GXLightObjInt_struct* obj = (__GXLightObjInt_struct*)lt_obj;
+
+    obj->lpos[0] = x;
+    obj->lpos[1] = y;
+    obj->lpos[2] = z;
+}
+
+void GXInitLightColor(GXLightObj* lt_obj, GXColor color) {
+    __GXLightObjInt_struct* obj = (__GXLightObjInt_struct*)lt_obj;
+
+    obj->Color = GXCOLOR_AS_U32(color);
+}
+
+static inline void PushLight(const register __GXLightObjInt_struct* lt_obj, register void* dest) {
+    register u32 zero, color;
+    register f32 a0_a1, a2_k0, k1_k2;
+    register f32 px_py, pz_dx, dy_dz;
+
+#ifdef __MWERKS__ // clang-format off
+    asm {
+        lwz     color, 12(lt_obj)
+        xor     zero, zero, zero
+        psq_l   a0_a1, 16(lt_obj), 0, 0
+        psq_l   a2_k0, 24(lt_obj), 0, 0
+        psq_l   k1_k2, 32(lt_obj), 0, 0
+        psq_l   px_py, 40(lt_obj), 0, 0
+        psq_l   pz_dx, 48(lt_obj), 0, 0
+        psq_l   dy_dz, 56(lt_obj), 0, 0
+
+        stw     zero,  0(dest)
+        stw     zero,  0(dest)
+        stw     zero,  0(dest)
+        stw     color, 0(dest)
+        psq_st  a0_a1, 0(dest), 0, 0
+        psq_st  a2_k0, 0(dest), 0, 0
+        psq_st  k1_k2, 0(dest), 0, 0
+        psq_st  px_py, 0(dest), 0, 0
+        psq_st  pz_dx, 0(dest), 0, 0
+        psq_st  dy_dz, 0(dest), 0, 0
+    }
+#endif // clang-format on
+}
+
+void GXLoadLightObjImm(const GXLightObj* lt_obj, GXLightID light) {
+    const __GXLightObjInt_struct* obj = (const __GXLightObjInt_struct*)lt_obj;
+    u32 addr;
+    u32 idx;
+
+    idx = 31 - __cntlzw(light);
+    idx &= 7;
+    addr = 0x600 + idx * 0x10;
+
+    GX_WRITE_U8(0x10);
+    GX_WRITE_U32(addr | (0x10 - 1) << 16);
+
+    PushLight(obj, (void*)GXFIFO_ADDR);
+    __GXData->bpSentNot = 1;
+}
+
 void GXSetChanAmbColor(GXChannelID chan, GXColor amb_color) {
     u32 reg;
     u32 rgb;

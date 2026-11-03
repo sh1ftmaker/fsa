@@ -706,7 +706,7 @@ dolphin/gx/GXFrameBuf.c:
 	.sdata2     start:0x8053B370 end:0x8053B380
 
 dolphin/gx/GXLight.c:
-	.text       start:0x8005D1E8 end:0x8005D4BC
+	.text       start:0x8005D134 end:0x8005D4BC
 
 dolphin/gx/GXTexture.c:
 	.text       start:0x8005D4BC end:0x8005E4A4
