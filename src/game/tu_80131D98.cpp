@@ -16,8 +16,7 @@ bool fn_80131D98() {
     if (actor->mActorId != ACTOR_OPGL) {
         return false;
     }
-    // The original normalises the callee's bool again (neg/or/srwi), as with `== true` elsewhere.
-    return static_cast<EscortWoman_8049E1D0*>(actor)->vfunc_0x60() != false;
+    return static_cast<EscortWoman_8049E1D0*>(actor)->vfunc_0x60();
 }
 
 ActorBase_804A5770* cls_80131F6C::fn_80131E30(s32 idx) {
