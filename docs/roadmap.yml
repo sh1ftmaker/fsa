@@ -173,7 +173,7 @@ phases:
         measure: {kind: units}
       - id: lib-fixes
         title: SDK, GX and MSL link fixes
-        desc: The FIXME(link) units, the last GX and MSL functions, and data splits. GX is 100 % and linked; dead-stripped data is now proven from the link map (dvdfs, GXPerf, GXPixel, mtx, mtx44). Left are GBAKey's microcode (build-time extraction, in review) and MSL ansi_fp/strtoul.
+        desc: The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul.
         status: active
         covers: [sdk, gx, runtime]
         measure: {kind: units}

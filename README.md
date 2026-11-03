@@ -96,7 +96,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 
 <!-- now:start -->
 - **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JUTException, the JAU utilities and most JAS stragglers are merged; JAudio's -sym on build and the J2D/J3D holdouts are in progress. Currently 53.2 % of the split files Matching.
-- **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. GX is 100 % and linked; dead-stripped data is now proven from the link map (dvdfs, GXPerf, GXPixel, mtx, mtx44). Left are GBAKey's microcode (build-time extraction, in review) and MSL ansi_fp/strtoul. Currently 98.8 % of the split files Matching.
+- **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.8 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit. 159 of 168 functions match; names and the last register differences are in progress. Currently 0 % of the code matched.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 0 % of the code matched.
