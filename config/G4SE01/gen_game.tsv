@@ -228,7 +228,6 @@ tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
 tu_8010089C	dtor	__dt__12cls_8049C8ECFv	cls_8049C8EC	0x8049C8EC	new	new
 tu_8010089C	sinit	__sinit_tu_8010089C_cpp	-	-	new	new
-tu_8010DF44	sinit	__sinit_tu_8010DF44_cpp	-	-	new	-
 tu_80113788	sinit	__sinit_tu_80113788_cpp	-	-	new	-
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
 tu_801213EC	sinit	__sinit_tu_801213EC_cpp	-	-	new	-
@@ -290,7 +289,6 @@ tu_801E4D54	sinit	__sinit_tu_801E4D54_cpp	-	-	new	-
 tu_801E6D48	sinit	__sinit_tu_801E6D48_cpp	-	-	new	-
 tu_801E801C	sinit	__sinit_tu_801E801C_cpp	-	-	new	-
 tu_801EB00C	sinit	__sinit_tu_801EB00C_cpp	-	-	new	-
-tu_801ED3DC	sinit	__sinit_tu_801ED3DC_cpp	-	-	new	-
 tu_80206B30	sinit	__sinit_tu_80206B30_cpp	-	-	new	-
 tu_80207548	sinit	__sinit_tu_80207548_cpp	-	-	new	-
 tu_80209C14	sinit	__sinit_tu_80209C14_cpp	-	-	new	-
@@ -508,7 +506,6 @@ tu_8036FB60	dtor	__dt__12cls_804AE4B0Fv	cls_804AE4B0	0x804AE4B0	new	new
 tu_80376FA0	dtor	__dt__12cls_804AE7D8Fv	cls_804AE7D8	0x804AE7D8	new	new
 tu_80376FA0	sinit	__sinit_tu_80376FA0_cpp	-	-	new	new
 tu_80379F84	sinit	__sinit_tu_80379F84_cpp	-	-	new	-
-tu_8037ACC4	sinit	__sinit_tu_8037ACC4_cpp	-	-	new	-
 tu_80390818	sinit	__sinit_tu_80390818_cpp	-	-	new	-
 tu_803A3484	sinit	__sinit_tu_803A3484_cpp	-	-	new	-
 tu_803A60E4	sinit	__sinit_tu_803A60E4_cpp	-	-	new	-
@@ -522,7 +519,6 @@ tu_8042165C	sinit	__sinit_tu_8042165C_cpp	-	-	new	-
 tu_8042E964	sinit	__sinit_tu_8042E964_cpp	-	-	new	-
 tu_80432638	sinit	__sinit_tu_80432638_cpp	-	-	new	-
 tu_80438C68	sinit	__sinit_tu_80438C68_cpp	-	-	new	-
-tu_80440BF4	sinit	__sinit_tu_80440BF4_cpp	-	-	new	-
 tu_80441A1C	sinit	__sinit_tu_80441A1C_cpp	-	-	new	-
 tu_804455E0	sinit	__sinit_tu_804455E0_cpp	-	-	new	-
 tu_804465B8	sinit	__sinit_tu_804465B8_cpp	-	-	new	-

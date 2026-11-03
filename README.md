@@ -48,8 +48,21 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **28.21 %** of the code and **6,229 / 11,557** functions match. 437 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **28.34 %** of the code and **6,287 / 11,557** functions match. 440 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
+
+The whole DOL by library: tile area is bytes of code, the fill is the share
+matched. Click a region to open it in the
+[interactive treemap](https://sh1ftmaker.github.io/fsa/#treemap) on the
+progress site, which goes down to single functions.
+
+<!-- treemap:start -->
+<p align="center">
+<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 11.5 % of 3,573,784 bytes matched, 1,575 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 11.5 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.8 % of 630,852 bytes matched, 3,649 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.8 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
+</p>
+<!-- treemap:end -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site/badges/regions-dark.svg">
@@ -57,26 +70,101 @@ As of 2026-11-03: **28.21 %** of the code and **6,229 / 11,557** functions match
   <img src="site/badges/regions-light.svg" width="100%" alt="Matched code and functions per region: game code, JSystem, Dolphin SDK, GX, and MSL, Runtime and TRK">
 </picture>
 
-The whole DOL by library. Tile area is bytes of code; the fill is the share
-matched. The [progress site](https://sh1ftmaker.github.io/fsa/) has the
-interactive version, down to single functions.
-
-<a href="https://sh1ftmaker.github.io/fsa/">
-  <img src="site/badges/treemap.svg" width="100%" alt="Treemap of main.dol by library, filled to the matched share of each">
-</a>
-
 <details>
-<summary>Numbers per region</summary>
+<summary>Numbers per region and library</summary>
 
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| Game code | 11.4 % of 3,573,784 bytes | 1,517 / 6,789 |
-| JSystem | 97.8 % of 630,852 bytes | 3,649 / 3,702 |
-| Dolphin SDK | 100 % of 131,224 bytes | 610 / 610 |
-| GX | 100 % of 33,660 bytes | 172 / 172 |
-| MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **28.21 %** of 4,442,032 bytes | **6,229 / 11,557** |
+| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 11.5 % of 3,573,784 bytes | 1,575 / 6,789 |
+| [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.8 % of 630,852 bytes | 3,649 / 3,702 |
+| [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
+| [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
+| [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
+| **Whole DOL** | **28.34 %** of 4,442,032 bytes | **6,287 / 11,557** |
+
+<details><summary>Game code: 14 file groups</summary>
+
+| File group | Code matched | Functions |
+|---|--:|--:|
+| [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 11.4 % of 995,968 bytes | 326 / 1,540 |
+| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 12.5 % of 474,992 bytes | 292 / 1,332 |
+| [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 5.70 % of 437,936 bytes | 74 / 684 |
+| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 2.58 % of 373,388 bytes | 36 / 398 |
+| [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 11.8 % of 305,692 bytes | 144 / 898 |
+| [unnamed 80280000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80280000) | 20.9 % of 282,868 bytes | 233 / 505 |
+| [kk\_\* HUD refs](https://sh1ftmaker.github.io/fsa/#/game/game-kk-hud-refs) | 2.30 % of 227,908 bytes | 14 / 232 |
+| [unnamed 80300000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80300000) | 17.1 % of 210,468 bytes | 139 / 430 |
+| [unnamed 80100000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80100000) | 24.3 % of 102,260 bytes | 97 / 312 |
+| [unnamed 80400000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80400000) | 14.4 % of 91,948 bytes | 36 / 201 |
+| [THP](https://sh1ftmaker.github.io/fsa/#/game/game-thp) | 79.9 % of 27,704 bytes | 162 / 168 |
+| [mg\_\* minigames](https://sh1ftmaker.github.io/fsa/#/game/game-mg-minigames) | 15.3 % of 25,132 bytes | 7 / 42 |
+| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 13.5 % of 16,208 bytes | 4 / 36 |
+| [linked before JSystem](https://sh1ftmaker.github.io/fsa/#/game/game-linked-before-jsystem) | 100 % of 1,312 bytes | 11 / 11 |
+
+</details>
+
+<details><summary>JSystem: 12 libraries</summary>
+
+| Library | Code matched | Functions |
+|---|--:|--:|
+| [J3D](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j3d) | 98.2 % of 173,328 bytes | 1,166 / 1,191 |
+| [J2DGraph](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j2dgraph) | 97.1 % of 159,196 bytes | 878 / 887 |
+| [JAudio](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jaudio) | 96.1 % of 120,700 bytes | 746 / 755 |
+| [JKernel](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jkernel) | 98.8 % of 55,724 bytes | 324 / 327 |
+| [JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jparticle) | 98.7 % of 54,360 bytes | 200 / 202 |
+| [JUtility](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jutility) | 100 % of 47,044 bytes | 190 / 190 |
+| [JMessage](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmessage) | 100 % of 7,936 bytes | 79 / 79 |
+| [JFramework](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jframework) | 100 % of 7,092 bytes | 21 / 21 |
+| [JSupport](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jsupport) | 100 % of 3,264 bytes | 29 / 29 |
+| [JMath](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmath) | 96.5 % of 1,256 bytes | 6 / 7 |
+| [JGadget](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jgadget) | 100 % of 936 bytes | 10 / 10 |
+| [JStudio\_JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jstudio-jparticle) | 0 % of 16 bytes | 0 / 4 |
+
+</details>
+
+<details><summary>Dolphin SDK: 18 libraries</summary>
+
+| Library | Code matched | Functions |
+|---|--:|--:|
+| [os](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-os) | 100 % of 29,664 bytes | 175 / 175 |
+| [card](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-card) | 100 % of 25,944 bytes | 84 / 84 |
+| [dvd](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-dvd) | 100 % of 17,796 bytes | 90 / 90 |
+| [exi](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-exi) | 100 % of 8,112 bytes | 27 / 27 |
+| [ar](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-ar) | 100 % of 7,900 bytes | 15 / 15 |
+| [pad](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-pad) | 100 % of 7,860 bytes | 24 / 24 |
+| [vi](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-vi) | 100 % of 7,780 bytes | 24 / 24 |
+| [gba](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-gba) | 100 % of 7,160 bytes | 35 / 35 |
+| [si](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-si) | 100 % of 6,504 bytes | 26 / 26 |
+| [gd](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-gd) | 100 % of 2,940 bytes | 7 / 7 |
+| [OdemuExi2](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-odemuexi2) | 100 % of 2,688 bytes | 14 / 14 |
+| [mtx](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-mtx) | 100 % of 2,496 bytes | 23 / 23 |
+| [ai](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-ai) | 100 % of 2,276 bytes | 19 / 19 |
+| [dsp](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-dsp) | 100 % of 1,536 bytes | 11 / 11 |
+| [base](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-base) | 100 % of 276 bytes | 22 / 22 |
+| [db](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-db) | 100 % of 236 bytes | 5 / 5 |
+| [amcstubs](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-amcstubs) | 100 % of 48 bytes | 8 / 8 |
+| [odenotstub](https://sh1ftmaker.github.io/fsa/#/sdk/sdk-odenotstub) | 100 % of 8 bytes | 1 / 1 |
+
+</details>
+
+<details><summary>GX: 1 library</summary>
+
+| Library | Code matched | Functions |
+|---|--:|--:|
+| [gx](https://sh1ftmaker.github.io/fsa/#/gx/gx-gx) | 100 % of 33,660 bytes | 172 / 172 |
+
+</details>
+
+<details><summary>MSL, Runtime, TRK: 3 libraries</summary>
+
+| Library | Code matched | Functions |
+|---|--:|--:|
+| [MSL\_C](https://sh1ftmaker.github.io/fsa/#/runtime/runtime-msl-c) | 79.4 % of 35,380 bytes | 83 / 86 |
+| [MetroTRK](https://sh1ftmaker.github.io/fsa/#/runtime/runtime-metrotrk) | 100 % of 33,288 bytes | 165 / 165 |
+| [Runtime](https://sh1ftmaker.github.io/fsa/#/runtime/runtime-runtime) | 100 % of 3,844 bytes | 33 / 33 |
+
+</details>
 <!-- regions:end -->
 
 </details>
@@ -99,7 +187,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.9 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 15.3 % of the code matched.
-- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Seventeen waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 76 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. Currently 11.4 % of the code matched.
+- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Nineteen waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 96 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. Currently 11.4 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 

@@ -418,6 +418,14 @@ public:
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
     // more arguments (0 in most calls).
     void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
+
+    // 0x8043CB24 (game/tu_8043A0E8.cpp): queues the decimal number `value`
+    // for drawing with `digits` digits (r7), centred around (x, y) at `scale`.
+    // Returns false when all ten slots (the byte at 0x252) are taken. r5 is
+    // stored as a byte at 0x244 + slot, r6 (at most 5) at 0x23A + slot, and r8
+    // (`flag`) switches the leading-zero handling. act_digging_game and
+    // tu_8010089C call it too; tu_801ED3DC passes (n, 255, 0, 1, false).
+    bool fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale);
 };
 extern cls_804B1920* lbl_8053AED0;
 
@@ -471,6 +479,12 @@ extern "C" cls_801192AC* fn_8011921C();
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
 // act_four_sword_demo.
 extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
+class ActorBase_804A5770;
+// game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
+// serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
+// by cls_8049D140's init and destructor (tu_8010DF44) and act_opening_goal.
+extern "C" void fn_8011888C(cls_801192AC* obj, ActorBase_804A5770* actor);
+extern "C" void fn_80118798(cls_801192AC* obj, ActorBase_804A5770* actor);
 
 // game/tu_801C0D70.cpp (owner unit, not written yet). The 0x160-byte object
 // in .bss at 0x804C7E70, built on first use by fn_801C0D70 (guard byte
@@ -506,13 +520,13 @@ struct Sequencer_801DAA24;
 extern "C" const char* fn_801DA938(Sequencer_801DAA24* seq);
 extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
 
-// game/tu_801DAC6C.cpp (owner unit, not written yet). The guarded static in .bss at 0x804C92D0 (constructed on first
-// use by fn_801DAC6C, flag lbl_8053AC28); named after that function. Words 0x0
-// and 0x4 start at -1 (0x4 is an actor serial: fn_801DAD2C looks that actor up
-// and returns fn_801DC264 of it, or 0).
-struct Singleton_801DAC6C;
-extern "C" Singleton_801DAC6C* fn_801DAC6C();
-extern "C" s32 fn_801DAD2C(Singleton_801DAC6C* obj);
+// game/act_frostare_tail.cpp (owner unit, not written yet): takes an actor
+// (a result of ActorManager_804A5800::fn_801F666C; reads fields 0xD8, 0xDC and
+// 0x278) and returns a value 0-255 (clrlwi 24 in the body); callers use it
+// as an int without extending it (declared s32: a u8 adds a clrlwi at the call).
+// Called by game/tu_801DAC6C.cpp.
+class ActorBase_804A5770;
+extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 
 // game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
 // (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:

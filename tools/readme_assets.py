@@ -5,7 +5,8 @@ Called by tools/site_data.py after it has written site/data/. Writes:
   site/badges/hero.svg                 banner: the four-gem emblem, each gem filled
                                        to its region's matched code, and the headline
   site/badges/regions-{dark,light}.svg matched code and functions per region
-  site/badges/treemap.svg              the whole DOL by library, coloured by matched code
+  site/badges/treemap/*.svg            the whole DOL by library: one linked image per
+                                       region (the README treemap), plus its legend
   site/badges/roadmap-{dark,light}.svg docs/roadmap.yml's phases as gems
   site/data/badge-*.json               shields.io endpoint badges (served by Pages)
   README.md                            the text between <!-- <name>:start --> and
@@ -315,49 +316,138 @@ def squarify(items, x, y, w, h):
     return out
 
 
-def treemap(summary):
-    t = THEMES["dark"]
-    W, H, PAD, MAPH = 960, 500, 16, 400
+# The README can't run script, and GitHub strips <map>/<area>, inline <svg>
+# and style attributes, so an image can carry one link at most. The README
+# treemap is therefore cut into one image per region, each inside its own
+# <a> to that region on the site (with a title= tooltip), laid out as a
+# slice-and-dice treemap: the largest region fills the top row, the others
+# share the bottom row, every area still proportional to bytes of code.
+# Within a row the images sit with no whitespace between them and their
+# width= percentages add up to just under 100 %, so they never wrap.
+# The tiles are drawn once, on their own dark card like the hero: GitHub's
+# README renderer lifts the <img> out of a <picture> nested in an <a> (it
+# links the image to its raw file instead), so light/dark <picture> variants
+# would cost the region links.
+
+TM_W, TM_H = 960, 440
+
+
+def treemap_rows(summary):
+    """[(row height, [(region, width percent)])] for the README treemap."""
     regs = sorted(summary["regions"], key=lambda r: -r["c"])
-    out = [f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="14" fill="{t["panel"]}" stroke="{t["line"]}"/>']
+    total = sum(r["c"] for r in regs)
+    top, rest = regs[:1], regs[1:]
+    rows = []
+    for row in (top, rest):
+        s = sum(r["c"] for r in row)
+        if not s:
+            continue
+        h = round(TM_H * s / total)
+        if len(row) == 1:
+            rows.append((h, [(row[0], 100.0)]))
+            continue
+        ws = [math.floor(10000 * r["c"] / s) / 100 for r in row]
+        over = sum(ws) - 99.8  # a hair of slack so subpixel rounding can't wrap the row
+        if over > 0:
+            ws[0] = round(ws[0] - over, 2)
+        rows.append((h, list(zip(row, ws))))
+    return rows
+
+
+def treemap_tile(reg, w, h, theme="dark"):
+    """One region's tile: its libraries squarified, each filled to its matched share."""
+    t = THEMES[theme]
+    col = REGION[reg["id"]][0]
+    M = 3  # margin: neighbouring tiles read as separate cards
+    out = [f'<rect x="{M}" y="{M}" width="{w - 2 * M:.1f}" height="{h - 2 * M}" rx="8" fill="{t["panel"]}"/>']
     labels = []
-    for reg, rx, ry, rw, rh in squarify([(r["c"], r) for r in regs], PAD, PAD, W - 2 * PAD, MAPH):
-        col = REGION[reg["id"]][0]
-        libs = sorted(reg["libs"], key=lambda l: -l["c"])
-        for lib, x, y, w, h in squarify([(l["c"], l) for l in libs], rx + 2, ry + 2, rw - 4, rh - 4):
-            g = 1.0  # gap
-            x, y, w, h = x + g / 2, y + g / 2, max(w - g, 0.5), max(h - g, 0.5)
-            frac = lib["cm"] / lib["c"] if lib["c"] else 0
-            out.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="2" fill="{col}" fill-opacity="0.13"/>')
-            if frac > 0:
-                fh = h * frac
-                out.append(f'<rect class="rise" x="{x:.1f}" y="{y + h - fh:.1f}" width="{w:.1f}" height="{fh:.1f}" '
-                           f'rx="2" fill="{col}" fill-opacity="0.85"/>')
-            if w > 64 and h > 30:
-                name = lib["n"]
-                maxc = int((w - 12) / 7)
-                if len(name) > maxc:
-                    name = name[:max(maxc - 1, 1)] + "…"
-                labels.append(f'<text x="{x + 6:.1f}" y="{y + 16:.1f}" font-size="11.5" font-weight="600" fill="{t["ink"]}">{esc(name)}</text>')
-                labels.append(f'<text x="{x + 6:.1f}" y="{y + 29:.1f}" class="mono" font-size="10" fill="{t["ink"]}" fill-opacity="0.75">'
-                              f'{esc(pct(lib["cm"], lib["c"]))}</text>')
-        out.append(f'<rect x="{rx + 0.5:.1f}" y="{ry + 0.5:.1f}" width="{rw - 1:.1f}" height="{rh - 1:.1f}" rx="4" '
-                   f'fill="none" stroke="{col}" stroke-opacity="0.75" stroke-width="1.5"/>')
+    libs = sorted(reg["libs"], key=lambda l: -l["c"])
+    for lib, x, y, lw, lh in squarify([(l["c"], l) for l in libs], M + 3, M + 3, w - 2 * M - 6, h - 2 * M - 6):
+        g = 1.0
+        x, y, lw, lh = x + g / 2, y + g / 2, max(lw - g, 0.5), max(lh - g, 0.5)
+        frac = lib["cm"] / lib["c"] if lib["c"] else 0
+        out.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{lw:.1f}" height="{lh:.1f}" rx="2" fill="{col}" '
+                   f'fill-opacity="0.13"/>')
+        if frac > 0:
+            fh = lh * frac
+            out.append(f'<rect class="rise" x="{x:.1f}" y="{y + lh - fh:.1f}" width="{lw:.1f}" height="{fh:.1f}" '
+                       f'rx="2" fill="{col}" fill-opacity="0.85"/>')
+        if lw > 64 and lh > 30:
+            name = lib["n"]
+            maxc = int((lw - 12) / 7)
+            if len(name) > maxc:
+                name = name[:max(maxc - 1, 1)] + "…"
+            labels.append(f'<text x="{x + 6:.1f}" y="{y + 16:.1f}" font-size="11.5" font-weight="600" fill="{t["ink"]}">{esc(name)}</text>')
+            labels.append(f'<text x="{x + 6:.1f}" y="{y + 29:.1f}" class="mono" font-size="10" fill="{t["ink"]}">'
+                          f'{esc(pct(lib["cm"], lib["c"]))}</text>')
+    out.append(f'<rect x="{M + 0.75}" y="{M + 0.75}" width="{w - 2 * M - 1.5:.1f}" height="{h - 2 * M - 1.5}" rx="7.5" '
+               f'fill="none" stroke="{col}" stroke-opacity="0.8" stroke-width="1.5"/>')
     out += labels
-    # legend strip
-    ly = PAD + MAPH + 34
-    x = PAD + 4
-    for r in summary["regions"]:
-        out.append(glyph(r["id"], x, ly - 10, 11))
-        label = f'{REGION[r["id"]][2]} {pct(r["cm"], r["c"])}'
-        out.append(f'<text x="{x + 17}" y="{ly}" font-size="12.5" fill="{t["ink2"]}">{esc(label)}</text>')
-        x += 17 + 7.2 * len(label) + 22
-    out.append(f'<text x="{PAD + 4}" y="{ly + 26}" font-size="12.5" fill="{t["ink3"]}">'
-               f'area = bytes of code · fill = matched · explore it on the site ↗</text>')
-    style = (".rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } "
+    # the region's badge in the bottom-right corner, as much of it as fits
+    full = f'{reg["n"]} {pct(reg["cm"], reg["c"])}'
+    for text in (full, pct(reg["cm"], reg["c"]), ""):
+        bw = 30 + 7.4 * len(text) if text else 22
+        if bw <= w - 2 * M - 8 or not text:
+            break
+    if bw <= w - 2 * M - 4 and h >= 40:
+        bx, by = w - M - 5 - bw, h - M - 5 - 22
+        out.append(f'<rect x="{bx:.1f}" y="{by}" width="{bw:.1f}" height="22" rx="11" fill="{t["bg"]}" '
+                   f'fill-opacity="0.88" stroke="{col}" stroke-opacity="0.7"/>')
+        out.append(glyph(reg["id"], bx + 6, by + 5, 12))
+        if text:
+            out.append(f'<text x="{bx + 24:.1f}" y="{by + 15.5}" font-size="12" font-weight="700" fill="{t["ink"]}">{esc(text)}</text>')
+    style = (f"text {{ paint-order: stroke; stroke: {t['panel']}; stroke-opacity: 0.55; stroke-width: 2.5px; stroke-linejoin: round; }} "
+             ".rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } "
              "@keyframes rise { from { transform: scaleY(0); } }")
-    title = "Treemap of main.dol by library, area by bytes of code, filled to the matched share"
-    return svg(W, H, "\n".join(out), title, style)
+    title = (f"{reg['n']}: {pct(reg['cm'], reg['c'])} of {num(reg['c'])} bytes of code matched, "
+             f"{num(reg['fm'])} of {num(reg['f'])} functions")
+    return svg(f"{w:g}", h, "\n".join(out), title, style)
+
+
+def treemap_legend(summary, theme="dark"):
+    t = THEMES[theme]
+    W, H = TM_W, 48
+    out = [f'<rect x="3.5" y="3.5" width="{W - 7}" height="{H - 7}" rx="8" fill="{t["panel"]}" stroke="{t["line"]}"/>']
+    x = 16
+    for r in summary["regions"]:
+        out.append(glyph(r["id"], x, 11, 11))
+        label = f'{REGION[r["id"]][2]} {pct(r["cm"], r["c"])}'
+        out.append(f'<text x="{x + 17}" y="21" font-size="12.5" fill="{t["ink2"]}">{esc(label)}</text>')
+        x += 17 + 7.2 * len(label) + 22
+    out.append(f'<text x="16" y="37" font-size="11.5" fill="{t["ink3"]}">'
+               f'area = bytes of code · fill = matched · click a region to explore it on the site ↗</text>')
+    return svg(W, H, "\n".join(out), "Treemap legend: regions and their matched share of code")
+
+
+def treemap_files(summary):
+    """{path under site/badges: svg text} for every README treemap image."""
+    files = {}
+    for h, row in treemap_rows(summary):
+        for reg, wp in row:
+            files[f"treemap/{reg['id']}.svg"] = treemap_tile(reg, round(TM_W * wp / 100, 1), h)
+    files["treemap/legend.svg"] = treemap_legend(summary)
+    return files
+
+
+def tile_img(name, width, alt):
+    return f'<img src="site/badges/treemap/{name}.svg" width="{width:g}%" alt="{esc(alt)}">'
+
+
+def treemap_block(summary):
+    """The README treemap: one linked image per region (one line per row, no
+    whitespace between images), then the legend linking to the site's map."""
+    lines = []
+    for _, row in treemap_rows(summary):
+        cells = []
+        for reg, wp in row:
+            tip = (f"{reg['n']}: {pct(reg['cm'], reg['c'])} of {num(reg['c'])} bytes matched, "
+                   f"{num(reg['fm'])} / {num(reg['f'])} functions. Open it on the progress site.")
+            alt = f"{reg['n']}: {pct(reg['cm'], reg['c'])} matched"
+            cells.append(f'<a href="{SITE}#/{reg["id"]}" title="{esc(tip)}">{tile_img(reg["id"], wp, alt)}</a>')
+        lines.append("".join(cells))
+    lines.append(f'<a href="{SITE}#treemap" title="Open the interactive treemap">'
+                 f'{tile_img("legend", 100, "area = bytes of code, fill = matched")}</a>')
+    return '<p align="center">\n' + "<br>\n".join(lines) + "\n</p>"
 
 
 # ---------- roadmap ----------
@@ -462,9 +552,21 @@ def readme_blocks(summary, rm):
            None: "was not linked for this run"}[tot["sha1_ok"]]
     rows = ["| Region | Code matched | Functions |", "|---|--:|--:|"]
     for r in summary["regions"]:
-        rows.append(f"| {r['n']} | {pct(r['cm'], r['c'])} of {num(r['c'])} bytes | {num(r['fm'])} / {num(r['f'])} |")
+        rows.append(f"| [{r['n']}]({SITE}#/{r['id']}) | {pct(r['cm'], r['c'])} of {num(r['c'])} bytes "
+                    f"| {num(r['fm'])} / {num(r['f'])} |")
     rows.append(f"| **Whole DOL** | **{pct(tot['code_matched'], tot['code'], 2)}** of {num(tot['code'])} bytes "
                 f"| **{num(tot['fns_matched'])} / {num(tot['fns'])}** |")
+    # drill-down: a <details> per region, each library linking to its place in the site's treemap
+    for r in summary["regions"]:
+        kind, kinds = ("file group", "file groups") if r["id"] == "game" else ("library", "libraries")
+        n = len(r["libs"])
+        rows += ["", f"<details><summary>{esc(r['n'])}: {n} {kind if n == 1 else kinds}</summary>",
+                 "", f"| {kind.capitalize()} | Code matched | Functions |", "|---|--:|--:|"]
+        for l in sorted(r["libs"], key=lambda l: -l["c"]):
+            name = re.sub(r"([\\*_\[\]|])", r"\\\1", l["n"])  # names like enemy_*_sob are not emphasis
+            rows.append(f"| [{name}]({SITE}#/{r['id']}/{l['id']}) | {pct(l['cm'], l['c'])} of {num(l['c'])} bytes "
+                        f"| {num(l['fm'])} / {num(l['f'])} |")
+        rows += ["", "</details>"]
     progress = (f"As of {day}: **{pct(tot['code_matched'], tot['code'], 2)}** of the code and "
                 f"**{num(tot['fns_matched'])} / {num(tot['fns'])}** functions match. "
                 f"{num(tot['matching'])} of {num(tot['units'])} split units are Matching, and `main.dol` built from "
@@ -479,7 +581,8 @@ def readme_blocks(summary, rm):
                     if m.get("measure") and m["measure"]["total"]:
                         desc += f" Currently {pct(m['measure']['done'], m['measure']['total'])} {m['measure']['label']}."
                     now.append(f"- **{word}** (phase {i + 1}): **{m['title']}.** {desc}")
-    return {"progress": progress, "regions": "\n".join(rows), "now": "\n".join(now)}
+    return {"progress": progress, "treemap": treemap_block(summary), "regions": "\n".join(rows),
+            "now": "\n".join(now)}
 
 
 def status_block(summary):
@@ -519,7 +622,8 @@ OUTPUTS = ["site/badges", "site/data", "README.md", "CLAUDE.md"]
 
 def write_all(summary, rm):
     write_if_changed(BADGES / "hero.svg", hero(summary))
-    write_if_changed(BADGES / "treemap.svg", treemap(summary))
+    for name, text in treemap_files(summary).items():
+        write_if_changed(BADGES / name, text)
     for theme in THEMES:
         write_if_changed(BADGES / f"regions-{theme}.svg", regions_svg(summary, theme))
         write_if_changed(BADGES / f"roadmap-{theme}.svg", roadmap_svg(rm, theme))

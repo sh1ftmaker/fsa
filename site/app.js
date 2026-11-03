@@ -137,7 +137,7 @@ function drawEmblem() {
     }
     grp.on("click keydown", (ev) => {
       if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
-      go(g.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+      go(g.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
     });
     grp.on("pointermove", (ev) => !COARSE && showTip(r, ev)).on("pointerleave", hideTip);
   }
@@ -496,7 +496,7 @@ function drawSystems() {
   }), { threshold: 0.1 });
   io.observe(host);
   host.querySelectorAll(".lib").forEach((el) => {
-    const open = () => { go(el.dataset.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
+    const open = () => { go(el.dataset.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
     el.onclick = open;
     el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
   });
@@ -618,7 +618,7 @@ function renderTable() {
   $("#count").textContent = `${num(shown.length)} of ${num(rows.length)} files`;
   $("#more").hidden = shown.length >= rows.length;
   $("#files tbody").querySelectorAll("tr").forEach((tr) => (tr.onclick = () => {
-    go(tr.dataset.id); $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+    go(tr.dataset.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
   }));
 }
 
@@ -764,7 +764,7 @@ function drawStage() {
   host.querySelectorAll(".m[data-ms]:not(.nomap)").forEach((el) => {
     el.onclick = (e) => {
       if (e.target.closest("a")) return;
-      if (e.target.closest(".m-go")) { $("#map-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); return; }
+      if (e.target.closest(".m-go")) { $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); return; }
       pickMilestone(el.dataset.ms);
     };
     el.onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target === el) { e.preventDefault(); pickMilestone(el.dataset.ms); } };
@@ -856,6 +856,8 @@ async function main() {
   initQuest(roadmap);
   initMap();
   await navigate();
+  // README tiles link to #treemap or a deep #/<region>/<lib>: land on the map once it is drawn
+  if (location.hash === "#treemap" || location.hash.startsWith("#/")) $("#treemap").scrollIntoView();
   drawSystems();
   drawHistory(hist.length ? hist : []);
   initTable();

@@ -29,6 +29,9 @@ public:
     cls_804A4C58() {}
     /* 0x20 */ virtual void draw();
 
+    // 0x801D8400 (first function of tu_801D8400, called by tu_801DAC6C): below
+    // state 8 (mState) calls fn_801D9C58 with 8.
+    void fn_801D8400();
     // 0x801E61C4 (tu_801D8400's code calls it): moves the pair at 0x2C8 to
     // 40 units below mPos (in y).
     void fn_801E61C4();
