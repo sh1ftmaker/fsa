@@ -26,6 +26,7 @@ import fcntl
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -216,6 +217,8 @@ def candidates(max_size):
         if "/game/" not in u["name"]:
             continue
         unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
+        if not (INTEG / "src" / unit).exists():  # no source yet: try.py/fdiff cannot score it
+            continue
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
         fns = [f for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) < 100
@@ -265,6 +268,8 @@ def merge_into_grind(wt, branch, unit):
 
 
 def worker(args):
+    # sbg stop sends SIGTERM: unwind so the claim is released and the worktree reverted.
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
     n, owner = args.n, f"grind-w{args.n}"
     wt, branch = WT / f"grind-w{n}", f"grind-w{n}"
     while not (LOGS / "STOP").exists():
@@ -309,6 +314,7 @@ def worker(args):
             log([owner, unit, "-", "-", "-", "ERROR", str(e)[:200].replace("\n", " "), "", ""])
             revert(wt)
         finally:
+            revert(wt) if sys.exc_info()[0] is SystemExit else None
             sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
