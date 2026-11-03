@@ -287,7 +287,9 @@ public:
     /* 0x1200 */ bool field_0x1200;
     /* 0x1201 */ u8 field_0x1201[0x120C - 0x1201];
     /* 0x120C */ s32 field_0x120c;
-    /* 0x1210 */ u8 field_0x1210[0x1215 - 0x1210];
+    /* 0x1210 */ u8 field_0x1210[0x1214 - 0x1210];
+    // A bool: fn_80240AF8 returns it as loaded (lbz; blr).
+    /* 0x1214 */ bool field_0x1214;
     // A bool: fn_80240AF0 returns it as loaded (lbz; blr).
     /* 0x1215 */ bool field_0x1215;
     /* 0x1216 */ u8 field_0x1216[0x1224 - 0x1216];
