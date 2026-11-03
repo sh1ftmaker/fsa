@@ -1390,7 +1390,7 @@ config.libs = [
         Object(NonMatching, "game/act_stone.cpp"),
         Object(NonMatching, "game/act_pot.cpp"),
         Object(Matching, "game/act_rock.cpp"),
-        Object(NonMatching, "game/act_sign.cpp"),
+        Object(Matching, "game/act_sign.cpp"),
         Object(NonMatching, "game/tu_802D39B8.cpp"),
         Object(Matching, "game/act_coconut.cpp"),
         Object(Matching, "game/act_gravestone.cpp"),
