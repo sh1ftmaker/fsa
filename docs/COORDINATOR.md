@@ -295,6 +295,25 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   manifest) until its `--unit` is re-run. Each trial keeps its map, about
   5.4 MB (~2.8 GB if all ~523 pool units had one); delete
   `build/G4SE01/weakdedup_evidence/` entries no longer needed.
+- Dead-stripped data (2026-11, infra/stripdata): units whose every
+  function matched stayed short in data because the compiled object keeps
+  data only dead-stripped functions used: dvdfs.c (8 OSPanic strings of
+  DVDSeekAsyncPrio, DVDOpenDir and others), GXPerf.c (GXReadGPMetric's
+  jump table), GXPixel.c (5 GXInitFogAdjTable constants), mtx.c and
+  mtx44.c (2 constants each), JASChannel.cpp (effectOsc's 0x1C jump
+  table; with it gone the other tables line up and its code is 100 % too).
+  The `-mapunused` map lists each of them `UNUSED ... <label> <object>` in
+  its section layout, next to its functions' `UNUSED` lines in `.text`.
+  `honest_report.py` leaves such data out under the same link rules as the
+  weak extab entries, only when every allocated reference to it comes from
+  a symbol the map lists `UNUSED` for this object, and only if the map's
+  layout of the kept symbols equals the stripped copy's; the gate redoes
+  every step. All six link SHA-1 OK as Matching, but mtx.c keeps mkdd's
+  `unused_force_order_in_data_section` fakematch dummies, so the gate
+  still refuses it. mtx.c also needed `lbl_8053B300` resized from 8 to 4
+  in symbols.txt (dtk had swallowed the padding before mtx44's data).
+  Matching units with dead data that objdiff already counted (Padclamp,
+  float, JUTAssert) are stripped too; their numbers don't change.
 - Dead-stripped units (tu_802BA334, tu_800F39EC, tu_80457C08): the unit's
   own functions were all dead-stripped in the original, so only its
   `__sinit` (9 pools, 8 for tu_80457C08), its `.ctors` entry and its `.bss`
