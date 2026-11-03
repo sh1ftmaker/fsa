@@ -153,7 +153,7 @@ struct Unk_8045A080 {
     // (fn_80458880 also gets -1); the id is not a JAISoundID (passed in a
     // register).
     void fn_80458880(s32 id, s32 arg);
-    void fn_80458F04(s32 id);
+    void fn_80458F04(u32 id);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 

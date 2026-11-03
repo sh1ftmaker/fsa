@@ -86,13 +86,13 @@ JAISoundHandle* cls_804B20F8::startSound(JAISoundID id) {
         return NULL;
     }
     if (handle->sound_ != NULL && (u32)id - 0x20000 != 0x33 && (u32)id - 0x20000 != 0x49) {
-        static JMath::TRandom_fast_ random(0);
+        static JMath::TRandom_fast_ lbl_8053AF8C(0);
         s32 kind = field_0x5c;
         if (kind >= 0 && kind < 4) {
             if (type == 1) {
                 handle->sound_->getAuxiliary().movePitch(lbl_80491680[kind], 0);
             } else if (type == 2) {
-                f32 pitch = 1.0f + (0.03f * random.get_ufloat_1() - 0.015f * (1.0f - FLT_EPSILON));
+                f32 pitch = 1.0f + (0.03f * lbl_8053AF8C.get_ufloat_1() - 0.015f * (1.0f - FLT_EPSILON));
                 handle->sound_->getAuxiliary().movePitch(pitch, 0);
             }
         }
