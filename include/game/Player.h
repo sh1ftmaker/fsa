@@ -161,6 +161,17 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Not written yet (callers: act_post_warp_pillar_handling and others). The
+// per-player functions fn_80230BF4/fn_80230498/fn_80230534/fn_80231368/
+// fn_8022CA6C sit in the same address range as the queries below.
+// 18 units. (player, mode): act_post_warp_pillar_handling passes 2.
+void fn_80230BF4(s32 player, s32 mode);
+// 61 units. (player, pos, id, a, b, c, flag): r6 an unsigned byte (clrlwi 24),
+// r7/r8 li -0x80, r9 li 1 in act_post_warp_pillar_handling.
+void fn_80230498(s32 player, const JGeometry::TVec3f* pos, s32 id, u8 a, s8 b, s8 c, bool flag);
+bool fn_80230534(s32 player);            // 34 units. Result tested against 1 (clrlwi 24)
+void fn_80231368();                      // 4 units.
+void fn_8022CA6C(s32 player, s32 a, bool b); // 11 units. act_post_warp_pillar_handling passes (i, 0, 1)
 // Per-player queries, by address (legend as above).
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in
