@@ -21,6 +21,8 @@ import site_data  # noqa: E402
 def main() -> None:
     if len(sys.argv) > 1:
         site_data.REPORT = Path(sys.argv[1]).resolve()
+    elif (Path.cwd() / "build/G4SE01/report_honest.json").exists():
+        site_data.REPORT = (Path.cwd() / "build/G4SE01/report_honest.json").resolve()  # worktrees
     report, files, _ = site_data.build()
 
     m = report["measures"]
