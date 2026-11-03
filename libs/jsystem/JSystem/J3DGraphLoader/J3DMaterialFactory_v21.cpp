@@ -195,17 +195,13 @@ J3DMaterial* J3DMaterialFactory_v21::create(J3DMaterial* mat, int index, u32 fla
  */
 J3DGXColor J3DMaterialFactory_v21::newMatColor(int matID, int colID) const
 {
-	GXColor defaultMatColor = { 255, 255, 255, 255 };
-	J3DGXColor j3dColor;
-	j3dColor.r = defaultMatColor.r;
-	j3dColor.g = defaultMatColor.g;
-	j3dColor.b = defaultMatColor.b;
-	j3dColor.a = defaultMatColor.a;
-	u16 id     = getMaterialInitData(matID).mMatColorIndex[colID];
-	if (id != 0xffff) {
-		return mColorData[id];
+	GXColor defaultColor = { 0xFF, 0xFF, 0xFF, 0xFF };
+	J3DGXColor color(defaultColor);
+	J3DMaterialInitData_v21* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mMatColorIndex[colID] != 0xFFFF) {
+		return mColorData[initData->mMatColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**
@@ -321,17 +317,13 @@ J3DTevOrder J3DMaterialFactory_v21::newTevOrder(int matID, int tevID) const
  */
 J3DGXColorS10 J3DMaterialFactory_v21::newTevColor(int matID, int colID) const
 {
-	GXColorS10 defaultTevColor = { 0, 0, 0, 0 };
-	J3DGXColorS10 j3dColor;
-	j3dColor.r = defaultTevColor.r;
-	j3dColor.g = defaultTevColor.g;
-	j3dColor.b = defaultTevColor.b;
-	j3dColor.a = defaultTevColor.a;
-	u16 id     = getMaterialInitData(matID).mTevColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mTevColors[id];
+	GXColorS10 defaultColor = { 0, 0, 0, 0 };
+	J3DGXColorS10 color(defaultColor);
+	J3DMaterialInitData_v21* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mTevColorIndex[colID] != 0xFFFF) {
+		return mTevColors[initData->mTevColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**
@@ -340,17 +332,13 @@ J3DGXColorS10 J3DMaterialFactory_v21::newTevColor(int matID, int colID) const
  */
 J3DGXColor J3DMaterialFactory_v21::newTevKColor(int matID, int colID) const
 {
-	GXColor defaultTevColor = { 255, 255, 255, 255 };
-	J3DGXColor j3dColor;
-	j3dColor.r = defaultTevColor.r;
-	j3dColor.g = defaultTevColor.g;
-	j3dColor.b = defaultTevColor.b;
-	j3dColor.a = defaultTevColor.a;
-	u16 id     = getMaterialInitData(matID).mTevKColorIndex[colID];
-	if (id != 0xFFFF) {
-		return mTevKColors[id];
+	GXColor defaultColor = { 0xFF, 0xFF, 0xFF, 0xFF };
+	J3DGXColor color(defaultColor);
+	J3DMaterialInitData_v21* initData = &mInitData[mMatRemapTable[matID]];
+	if (initData->mTevKColorIndex[colID] != 0xFFFF) {
+		return mTevKColors[initData->mTevKColorIndex[colID]];
 	}
-	return j3dColor;
+	return color;
 }
 
 /**

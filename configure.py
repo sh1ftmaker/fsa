@@ -887,7 +887,7 @@ config.libs = [
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DShapeFactory.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DAnmLoader.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphLoader/J3DModelSaver.cpp", extra_cflags=["-O4,p"]),  # FIXME: pikmin2 emits the weak getUseMtxIndex through a fabricated function
-        Object(NonMatching, "JSystem/J3DGraphLoader/J3DMaterialFactory_v21.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphLoader/J3DMaterialFactory_v21.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphLoader/J3DModelLoaderCalcSize.cpp", extra_cflags=["-O4,p"]),
     ]),
     JSystemLib("JGadget", [

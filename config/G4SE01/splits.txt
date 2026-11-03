@@ -1560,6 +1560,7 @@ JSystem/J3DGraphAnimator/J3DMaterialAttach.cpp:
 JSystem/J3DGraphLoader/J3DMaterialFactory_v21.cpp:
 	.text       start:0x800DFEFC end:0x800E1318
 	.sdata2     start:0x8053BCD0 end:0x8053BCD8
+	.sbss2      start:0x80543F10 end:0x80543F18
 
 JSystem/J3DGraphBase/J3DShapeMtx.cpp:
 	.text       start:0x800E1318 end:0x800E2B40
