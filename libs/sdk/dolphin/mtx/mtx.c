@@ -5,10 +5,20 @@
 // .sbss
 static float Unit01[2] = {0.0f, 1.0f};
 
-static void unused_force_order_in_data_section()
+void C_MTXIdentity(Mtx m)
 {
-    (void)1.0f;
-    (void)0.0f;
+    m[0][0] = 1;
+    m[0][1] = 0;
+    m[0][2] = 0;
+    m[0][3] = 0;
+    m[1][0] = 0;
+    m[1][1] = 1;
+    m[1][2] = 0;
+    m[1][3] = 0;
+    m[2][0] = 0;
+    m[2][1] = 0;
+    m[2][2] = 1;
+    m[2][3] = 0;
 }
 
 void PSMTXIdentity(register Mtx m)
@@ -544,13 +554,6 @@ void C_MTXLookAt(Mtx m, const Vec *camPos, const Vec *camUp, const Vec *target)
     m[2][1] = vLook.y;
     m[2][2] = vLook.z;
     m[2][3] = -((camPos->z * vLook.z) + ((camPos->x * vLook.x) + (camPos->y * vLook.y)));
-}
-
-static void unused_force_order_in_data_section2()
-{
-    (void)2.0f;
-    (void)-1.0f;
-    (void)0.01745329252f;
 }
 
 void C_MTXLightPerspective(Mtx m,

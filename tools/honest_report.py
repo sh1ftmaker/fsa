@@ -40,6 +40,18 @@ entry only when ALL of these hold:
     tools/gate.py, which re-links without reading it, proves a trial removal;
   * the object's file name is unique among that link's inputs (the map
     names objects by file name only).
+Data the link dead-stripped (the second and last kind of removal): an object
+keeps every data object its compiled functions use, also those of functions
+the original linker dead-stripped (C_MTXPerspective's two constants, the
+jump table of GXReadGPMetric, dvdfs's dead OSPanic strings), while dtk's
+split of the original has only what survived. Such a data object is left
+out of the copy only when the same link map (same link requirements as
+above) lists it `UNUSED` for this object with its size, every allocated
+location that references it lies in a function or object the map also
+lists `UNUSED` for this object, it goes with zero padding only, and the map
+places every kept symbol of its section at the offset the stripped copy
+gives it (see dead_data()). Debug sections don't count as references.
+
 Evidence comes from ninja's own link (Matching units) or from a trial link
 recorded by `tools/link_check.py --unit <unit>` (a NonMatching unit linked
 in place of dtk's split, in build/G4SE01/weakdedup_evidence/). The report
@@ -83,15 +95,22 @@ def main_link_inputs():
 
 # ---------------------------------------------------------------- link maps
 
+PLACED_LINE = re.compile(r"^\s+([0-9a-f]{8}) ([0-9a-f]{6}) ([0-9a-f]{8})\s+(\d+) (\S+)\s+(\S+)\s*$")
+
 def parse_map(path):
     """Evidence from an MWLD map written with -map -mapunused.
 
-    Returns (dups, unused): dups[(object, function)] = [(line, text), (line, text)]
+    Returns (dups, unused, placed): dups[(object, function)] = [(line, text), (line, text)]
     for `>>> UNREFERENCED DUPLICATE <function>` followed by
     `>>> (func,weak) found in <object>`; unused[(section, object, label)] =
-    (line, text) for `UNUSED ... <label> <object>` in `<section> section layout`.
+    (line, text) for `UNUSED ... <label> <object>` in `<section> section layout`;
+    placed[(section, object)] = [(offset, size, label, line, text)] for every
+    label the link kept, in the order of the layout (the first is the
+    object's section itself, alignment 1, label = the section name);
+    starts[section] = [(offset, object, line, text)] for every object's
+    section start line, in the order of the layout.
     Line numbers are 1-based."""
-    dups, unused = {}, {}
+    dups, unused, placed, starts = {}, {}, defaultdict(list), defaultdict(list)
     cur, section = None, None
     with open(path, encoding="latin-1") as f:
         for n, line in enumerate(f, 1):
@@ -113,7 +132,13 @@ def parse_map(path):
             m = re.match(r"^\s+UNUSED\s+[0-9a-f]+ \.+ (\S+) (\S+)\s*$", line)
             if m and section:
                 unused.setdefault((section, m[2], m[1]), (n, line))
-    return dups, unused
+                continue
+            m = PLACED_LINE.match(line)
+            if m and section:
+                placed[(section, m[6])].append((int(m[1], 16), int(m[2], 16), m[5], n, line))
+                if m[5] == section and m[4] == "1":
+                    starts[section].append((int(m[1], 16), m[6], n, line))
+    return dups, unused, placed, starts
 
 
 def unit_slug(unit_name):
@@ -353,6 +378,175 @@ def weak_entries(elf):
     return out, None
 
 
+SHT_PROGBITS, SHF_ALLOC, SHF_EXECINSTR = 1, 2, 4
+UNUSED_LINE = re.compile(r"^\s+UNUSED\s+([0-9a-f]+) \.+ (\S+) (\S+)\s*$")
+
+
+def dead_data(elf, name, unused, placed, starts, notes, unit):
+    """Data the link dead-stripped from this object: (removals, entries), where
+    removals = {section index: [(offset, size)]}. A data object (a sized,
+    non-function symbol in an allocated PROGBITS section other than .text,
+    extab and extabindex) is removed only when
+      * its name is unique among the object's symbols, and the map lists it
+        `UNUSED` with its size, for this object, in its section's layout;
+      * every allocated location that references it (a relocation whose target,
+        symbol value plus addend, lies in it) lies in a symbol the map also
+        lists `UNUSED` for this object in that section's layout (a dead
+        function, or other dead data), so no live code or data uses it;
+      * the bytes up to the next symbol (or the section end) are zero padding,
+        removed with it, and the map places every kept symbol of the section
+        at the offset (from the object's section start) and size it has in
+        the stripped copy, so the copy has the layout the link gave it;
+      * no relocation from live code or data reaches the section through its
+        section symbol at or past the first removed byte (its addend would
+        have to move); a size-0 label in the section (an anchor such as
+        `...data.0`, which MWCC uses with offsets computed in code) that any
+        allocated relocation targets must itself be listed UNUSED (size 0)
+        for this object, and so must every symbol that references it;
+      * in the map's layout of this section, the next object's section
+        starts 0 to 7 bytes (alignment) after this object's start plus the
+        stripped size, so the removed tail is really absent from the link.
+    References from debug sections (not allocated) don't keep data alive."""
+    count = defaultdict(int)
+    for s in elf.syms:
+        count[s["name"]] += 1
+
+    def listed(sec, sym):
+        """The map's UNUSED line for this symbol, if it proves the symbol was stripped."""
+        if count[sym["name"]] != 1:
+            return None
+        u = unused.get((elf.names[sec], name, sym["name"]))
+        if not u or any(b[2] == sym["name"] for b in placed.get((elf.names[sec], name), [])):
+            return None
+        m = UNUSED_LINE.match(u[1])
+        return u if m and int(m[1], 16) == sym["size"] else None
+
+    def container(sec, off):
+        for s in elf.syms:
+            if s["shndx"] == sec and s["size"] and s["value"] <= off < s["value"] + s["size"] \
+                    and s["type"] in (1, STT_FUNC):
+                return s
+        return None
+
+    def data_section(i):
+        h = elf.sh[i]
+        return (h[1] == SHT_PROGBITS and h[2] & SHF_ALLOC and not h[2] & SHF_EXECINSTR
+                and elf.names[i] not in ("extab", "extabindex"))
+
+    def ev(line):
+        return {"line": line[0], "text": line[1]}
+
+    cands = {}  # (section, offset) -> symbol
+    for s in elf.syms:
+        if s["shndx"] < elf.shnum and data_section(s["shndx"]) and s["size"] \
+                and s["type"] != STT_FUNC and s["type"] != STT_SECTION and listed(s["shndx"], s):
+            cands[(s["shndx"], s["value"])] = s
+    if not cands:
+        return {}, []
+    refs = defaultdict(list)  # candidate key -> [(section, referencing symbol or None)]
+    live_section_refs = defaultdict(list)  # section -> offsets live code reaches via the section symbol
+    anchors = defaultdict(dict)  # section -> {size-0 label's index: [(section, referencing symbol, dead)]}
+    for r in range(elf.shnum):
+        if not elf.sh[r][2] & SHF_ALLOC:
+            continue
+        for off, si, _, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t["shndx"] >= elf.shnum or not data_section(t["shndx"]):
+                continue
+            at = t["value"] + add
+            hits = [k for k, c in cands.items() if k[0] == t["shndx"] and
+                    (c is t or c["value"] <= at < c["value"] + c["size"])]
+            src = container(r, off)
+            dead = src is not None and listed(r, src)
+            if (t["type"] == STT_SECTION or not t["size"]) and not dead:
+                live_section_refs[t["shndx"]].append(at)
+            if t["type"] != STT_SECTION and not t["size"]:
+                anchors[t["shndx"]].setdefault(si, []).append((r, src, dead))
+            for k in hits:
+                refs[k].append((r, src, dead))
+    removals, entries = defaultdict(list), []
+    for (sec, val), s in sorted(cands.items(), key=lambda x: x[0]):
+        if any(not dead for _, _, dead in refs[(sec, val)]):
+            who = sorted({src["name"] if src else f"{elf.names[r]}+?" for r, src, dead in refs[(sec, val)] if not dead})
+            notes.append(f"{unit}: {s['name']} kept: the map lists it UNUSED but live {', '.join(who)} references it")
+            continue
+        nxt = min([x["value"] for x in elf.syms if x["shndx"] == sec and x["size"] and x["value"] >= val + s["size"]]
+                  + [elf.sh[sec][5]])
+        o = elf.sh[sec][4]
+        if any(elf.d[o + val + s["size"]:o + nxt]):
+            notes.append(f"{unit}: {s['name']} kept: non-zero bytes between it and the next symbol")
+            continue
+        removals[sec].append((val, nxt - val))
+        entries.append({"section": elf.names[sec], "symbol": s["name"], "offset": val, "size": s["size"],
+                        "removed": nxt - val, "evidence": [ev(listed(sec, s))],
+                        "referencers": [{"section": elf.names[r], "symbol": src["name"], "evidence": ev(dead)}
+                                        for r, src, dead in refs[(sec, val)]]})
+    for sec, rem in list(removals.items()):
+        why, anchor_ev = None, []
+        for si, rs in sorted(anchors[sec].items()):
+            a = elf.syms[si]
+            if not listed(sec, a) or not all(dead for _, _, dead in rs):
+                why = f"its size-0 label {a['name'] or '?'} is referenced, and it or a referencer isn't listed UNUSED"
+                break
+            anchor_ev.append({"symbol": a["name"], "evidence": ev(listed(sec, a)),
+                              "referencers": [{"section": elf.names[r], "symbol": src["name"], "evidence": ev(dead)}
+                                              for r, src, dead in rs]})
+        why = why or layout_problem(elf, sec, rem, placed.get((elf.names[sec], name), []), live_section_refs[sec],
+                                    starts.get(elf.names[sec], []), name)
+        if isinstance(why, str):
+            notes.append(f"{unit}: dead data in {elf.names[sec]} kept: {why}")
+            del removals[sec]
+            entries = [e for e in entries if e["section"] != elf.names[sec]]
+            continue
+        for e in entries:
+            if e["section"] == elf.names[sec]:
+                e["layout"] = why
+                e["anchors"] = anchor_ev
+    return dict(removals), entries
+
+
+def layout_problem(elf, sec, rem, block, live_refs, order, name):
+    """Why removing `rem` from section `sec` wouldn't give the layout the link
+    gave this object's section, or the map lines that prove it does: every kept
+    sized symbol must sit, in the stripped copy, at the offset from the
+    object's section start the map places it at, with the map's size."""
+    first = min(a for a, _ in rem)
+    if any(at >= first for at in live_refs):
+        return "live code reaches the section through its section symbol past a removed object"
+    secname = elf.names[sec]
+    starts = [b for b in block if b[2] == secname]
+    if len(starts) != 1 or block[0] is not starts[0]:
+        return f"the map doesn't place this object's {secname} exactly once"
+    start = starts[0][0]
+    names = defaultdict(list)
+    for b in block[1:]:
+        names[b[2]].append(b)
+    lines = [{"line": starts[0][3], "text": starts[0][4]}]
+    for x in elf.syms:
+        if x["shndx"] != sec or not x["size"] or x["type"] == STT_SECTION:
+            continue
+        removed = any(a <= x["value"] < a + n for a, n in rem)
+        if removed:
+            if names.get(x["name"]):
+                return f"the map places {x['name']}, which would be removed"
+            continue
+        new = x["value"] - sum(n for a, n in rem if a + n <= x["value"])
+        got = names.get(x["name"], [])
+        if len(got) != 1 or got[0][0] - start != new or got[0][1] != x["size"]:
+            return f"the map doesn't place {x['name']} at 0x{new:x} (size 0x{x['size']:x}) of the stripped section"
+        lines.append({"line": got[0][3], "text": got[0][4]})
+    # The end: the next object's section in this layout follows the stripped size.
+    idx = [i for i, o in enumerate(order) if o[1] == name]
+    if len(idx) != 1 or idx[0] + 1 >= len(order):
+        return f"the map has no object after this one's {secname} to bound its end"
+    nxt = order[idx[0] + 1]
+    gap = nxt[0] - (start + elf.sh[sec][5] - sum(n for _, n in rem))
+    if not 0 <= gap < 8:
+        return f"the next object ({nxt[1]}) starts {gap} bytes after the stripped end, not within alignment"
+    lines.append({"line": nxt[2], "text": nxt[3]})
+    return lines
+
+
 def strip(elf, removals):
     """Remove byte ranges {section: [(offset, size)]}, with their relocations;
     later symbols and relocations move down, removed symbols become absolute 0."""
@@ -400,13 +594,12 @@ def dedup_unit(unit, base, link, notes):
     if why:
         notes.append(f"{unit}: {why}; nothing stripped")
         return None, []
-    if not entries:
-        return None, []
     why = link.proves(base) if link else "no link includes this object"
     if why:
-        notes.append(f"{unit}: {len(entries)} weak extab entries kept: {why}")
+        if entries:
+            notes.append(f"{unit}: {len(entries)} weak extab entries kept: {why}")
         return None, []
-    dups, unused = link.parsed()
+    dups, unused, placed, starts = link.parsed()
     name = Path(base).name
     removals, found = defaultdict(list), []
     for eti, etb, fn in entries:
@@ -418,6 +611,7 @@ def dedup_unit(unit, base, link, notes):
         removals[eti["shndx"]].append((eti["value"], 12))
         removals[etb["shndx"]].append((etb["value"], etb["size"]))
         found.append({
+            "kind": "weak_extab",
             "unit": unit, "object": base, "object_sha1": sha1(base), "function": fn["name"],
             "extabindex": eti["name"], "extab": etb["name"], "extab_size": etb["size"],
             "link": getattr(link, "evidence_file", None) or link.kind,
@@ -426,6 +620,12 @@ def dedup_unit(unit, base, link, notes):
     if len(found) < len(entries):
         notes.append(f"{unit}: {len(entries) - len(found)} weak extab entries kept: "
                      f"{link.map} has no discarded-duplicate evidence for them")
+    data_removals, data_found = dead_data(elf, name, unused, placed, starts, notes, unit)
+    for sec, rem in data_removals.items():
+        removals[sec] += rem
+    for e in data_found:
+        found.append({"kind": "dead_data", "unit": unit, "object": base, "object_sha1": sha1(base),
+                      "function": None, **e, "link": getattr(link, "evidence_file", None) or link.kind})
     if not found:
         return None, []
     out = STRIPPED / Path(base).relative_to(BUILD)
@@ -467,8 +667,9 @@ def weak_dedup(cfg):
     tmp.write_text(json.dumps(manifest, indent=1))
     tmp.replace(MANIFEST)
     units = len({e["unit"] for e in entries})
-    print(f"weakdedup: {len(entries)} extab entries of discarded weak duplicates removed "
-          f"from {units} units ({MANIFEST})", file=sys.stderr)
+    data = [e for e in entries if e["kind"] == "dead_data"]
+    print(f"weakdedup: {len(entries) - len(data)} extab entries of discarded weak duplicates and "
+          f"{len(data)} dead-stripped data objects removed from {units} units ({MANIFEST})", file=sys.stderr)
 
 
 def main():

@@ -62,8 +62,8 @@ python3 tools/gate.py --all-units    # Matching units: 100 % honest, and main.do
 Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
-**Weak duplicates the link discarded** are the one thing the honest report
-leaves out of a compiled object. Every TU that instantiates a weak function
+**Weak duplicates and dead-stripped data the link discarded** are the only
+things the honest report leaves out of a compiled object. Every TU that instantiates a weak function
 (e.g. the 9 `JASMemPool<T>` destructors of the JAudio pools ~523 game units
 construct in `__sinit`) gets its own copy with an extab/extabindex entry; the
 linker keeps one copy and drops the others' entries, so the original
@@ -93,12 +93,32 @@ and why). `gate.py` re-runs every trial link the manifest relies on
 SHA-1 OK DOL, re-reads the map lines and the object's symbols, rebuilds the
 expected stripped object from the compiled one (symbols, relocations,
 extab/extabindex bytes) and fails anything else, and fails any file under
-`build/` that git tracks. Nothing else is stripped: code, `.bss` (split weak
-`memPool_` copies yourself, see docs/COORDINATOR.md) and kept weak copies
-are diffed as compiled.
+`build/` that git tracks.
+
+Dead-stripped data is the second case: an object keeps the constants, jump
+tables and strings of functions the original linker dead-stripped (e.g.
+`C_MTXPerspective`'s two `.sdata2` floats, `GXReadGPMetric`'s jump table),
+while dtk's split has only what survived. The report leaves such a data
+object out only when the map of the same kind of verified link lists it
+`UNUSED`, with its size, for this object in its section's layout; every
+allocated location that references it (code or data; debug sections don't
+count) lies in a function or object the map also lists `UNUSED` for this
+object; a size-0 anchor (`...data.0`) through which the section is reached
+is itself `UNUSED`, with only `UNUSED` referencers; only zero padding up to
+the next symbol goes with it; the map places every kept symbol of the
+section at the offset the stripped copy gives it; and the next object in
+the map's layout of that section starts 0-7 bytes after the stripped end. Data a live function references is never removed (e.g.
+`__vt__12JKRDvdFinder` stays: listed UNUSED, but referenced by a destructor
+the map does not list UNUSED for that object).
+The manifest lists these as `dead_data` with the map lines of the object,
+of each referencer and of each anchor, and the gate recomputes all of it from the object
+and the map. Nothing else is stripped: dead functions' code (objdiff
+doesn't count functions the target lacks), `.bss` (split weak `memPool_`
+copies yourself, see docs/COORDINATOR.md) and kept weak copies are diffed
+as compiled.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,552 of 11,561 functions, 823,320 of 4,442,088 bytes of code (18.53 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,418 / 3,702 functions (91.9 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 273 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,555 of 11,561 functions, 826,896 of 4,442,088 bytes of code (18.62 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,421 / 3,702 functions (92.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 279 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
