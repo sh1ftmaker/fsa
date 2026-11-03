@@ -17,9 +17,11 @@ Checks (see docs/PLAN.md, "Submission gate"):
     renamed, resized or split into the real symbols they cover;
   * no unit marked Matching contains a fakematch (FakeMatch headers,
     force_order dummies, "fakematch" comments), donor-imported or not;
-  * every unit marked Matching is 100 % in code and data in the honest
-    report (build/G4SE01/report_honest.json, every unit diffed; report.json
-    counts Matching units as 100 % unseen);
+  * every unit marked Matching has source and a compiled object (configure.py
+    would otherwise link dtk's split of the original in its place) and is
+    100 % in code and data in the honest report
+    (build/G4SE01/report_honest.json, every unit diffed, no symbol_mappings);
+  * objdiff.json has no symbol_mappings (objdiff's report honors them);
   * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
     if not, tools/link_check.py names the Matching units at fault.
 
@@ -287,6 +289,17 @@ def ninja(*targets):
     return subprocess.run(["timeout", "1800", "ninja", *targets], capture_output=True, text=True)
 
 
+def check_configure(problems):
+    """tools/project.py names Matching objects it can't compile (no source) or
+    that no split covers; configure.py then links the original in their place."""
+    out = subprocess.run([sys.executable, "configure.py"], capture_output=True, text=True)
+    if out.returncode != 0:
+        problems.append("configure.py failed:\n" + (out.stdout + out.stderr)[-1500:])
+    for line in out.stdout.splitlines():
+        if line.startswith(("Matching object without source", "Matching object not in the split")):
+            problems.append(f"{line.split(': ', 1)[-1]}: {line.split(':', 1)[0]}")
+
+
 def check_report(problems):
     report = Path("build/G4SE01/report_honest.json")
     out = ninja(str(report))
@@ -296,9 +309,16 @@ def check_report(problems):
     units = {u["name"]: u for u in json.loads(report.read_text())["units"]}
     for unit in json.loads(Path("objdiff.json").read_text())["units"]:
         meta = unit.get("metadata") or {}
+        if unit.get("symbol_mappings"):
+            problems.append(f"{meta.get('source_path', unit['name'])}: objdiff.json has symbol_mappings "
+                            f"(the report honors them); remove them")
         if not meta.get("complete"):
             continue
         name = meta.get("source_path", unit["name"])
+        base = unit.get("base_path")
+        if not base or not Path(base).is_file():
+            problems.append(f"{name}: marked Matching but has no compiled object ({base or 'no base_path'})")
+            continue
         if unit["name"] not in units:
             problems.append(f"{name}: marked Matching but missing from the honest report")
             continue
@@ -345,6 +365,7 @@ def main():
         check_provenance(args.base, sorted(changed), problems)
         check_protected(args.base, sorted(changed), problems)
         check_symbols(args.base, changed, problems)
+    check_configure(problems)
     check_report(problems)
     if not args.no_link:
         check_link(problems)

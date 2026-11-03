@@ -159,12 +159,18 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   shows whether the linked DOL is still identical: GXPerf.c and mtx.c are
   (mtx.c still has a force-order fakematch), GXPixel.c's .sdata2 is 0x38
   bytes too long.
-- objdiff's `report generate` counts a `complete` (Matching) unit as 100 %
-  without diffing it, so `report.json` built after flipping a flag can't
-  disprove the flag, and the gate read exactly that report. 14 units were
-  Matching with 0 % of their code and 12 more broke the link; all 26 are
-  NonMatching now. Hence `report_honest.json`, written with no unit
-  complete.
+- objdiff's `report generate` used to count a `complete` (Matching) unit as
+  100 % without diffing it, so `report.json` built after flipping a flag
+  couldn't disprove the flag, and the gate read exactly that report. 14
+  units were Matching with 0 % of their code and 12 more broke the link; all
+  26 are NonMatching now. Hence `report_honest.json`, written with no unit
+  complete. objdiff 3.8.3 does diff a complete unit whose compiled object
+  exists (checked 2026-11-02: JUTException at 97.7 % stays 97.7 % when
+  marked complete; only `complete_code` changes); it still assumes 100 % for
+  a complete unit with no object, and honors `symbol_mappings` from the
+  objdiff GUI. The honest report clears both, and the gate fails a Matching
+  unit with no source, no split or no compiled object (configure.py would
+  link the original object in its place), and any symbol mapping.
 - The link is part of every merge: `gate.py` runs `ninja build/G4SE01/ok`
   (link + SHA-1 against build.sha1) and, if it fails, `tools/link_check.py`
   to name the Matching units at fault; `merge_unit.py` runs the full `ninja`

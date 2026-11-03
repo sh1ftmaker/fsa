@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Write the objdiff report with every unit actually diffed.
+"""Write the objdiff report with every unit diffed and nothing taken on trust.
 
-objdiff's `report generate` counts a unit whose objdiff.json metadata says
-`complete: true` (our `Matching` flag) as 100 % matched without diffing it.
-So build/G4SE01/report.json can't disprove a wrong Matching flag. This
-writes build/G4SE01/report_honest.json from a copy of objdiff.json where no
-unit is complete, with the same report arguments. tools/progress.py,
-tools/gate.py and tools/coord.py read this one; report.json stays for
-decomp.dev-style tooling.
+objdiff 3.8.3's `report generate` diffs a `complete` (our `Matching`) unit
+like any other when its base object (our compiled .o) exists; it assumes
+100 % only for a complete unit without a base_path, and fails if base_path
+names a missing file. Older objdiff versions assumed 100 % for every
+complete unit, which is why this report exists. It still guards against
+both remaining ways to count unseen or mis-paired code, by writing
+build/G4SE01/report_honest.json from a copy of objdiff.json where
+  * no unit is complete, so a unit with no compiled object counts 0 %, and
+  * symbol_mappings are dropped (objdiff honors them: a mapping made in the
+    GUI pairs differently named symbols and counts them as matched),
+with the same report arguments. tools/progress.py, tools/gate.py and
+tools/coord.py read this one; report.json stays for decomp.dev-style tooling
+(its matched measures are the same while every Matching unit has a base).
 
 Usage (ninja runs it): tools/honest_report.py <objdiff-cli> <output> [report args...]
 """
@@ -29,6 +35,7 @@ def main():
             if unit.get(key):
                 unit[key] = str(root / unit[key])
         unit.setdefault("metadata", {})["complete"] = False
+        unit.pop("symbol_mappings", None)
     project = out.parent / "honest"
     project.mkdir(parents=True, exist_ok=True)
     (project / "objdiff.json").write_text(json.dumps(cfg, indent=1))

@@ -978,9 +978,10 @@ config.custom_build_steps = {}
 version = VERSIONS[version_num]
 out_dir = config.build_dir / version
 
-# report.json counts every Matching (complete) unit as 100 % without diffing
-# it. Our tools (progress.py, gate.py, coord.py) read report_honest.json,
-# where every unit is diffed; see tools/honest_report.py.
+# report.json counts a Matching (complete) unit with no compiled object as
+# 100 % unseen and honors objdiff.json symbol_mappings. Our tools
+# (progress.py, gate.py, coord.py) read report_honest.json, where no unit is
+# complete and no mapping applies; see tools/honest_report.py.
 honest_objdiff = (config.objdiff_path if config.objdiff_path and config.objdiff_path.is_file()
                   else config.build_dir / "tools" / "objdiff-cli")
 config.custom_build_rules.append({
