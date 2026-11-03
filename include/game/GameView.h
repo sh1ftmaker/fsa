@@ -106,16 +106,17 @@ public:
     // 2 units / 5 calls. Unless fn_802DCD0C(), steps field_0x14 by the sign
     // of dir[0] or field_0x18 by that of dir[1], reloads the screen
     // (fn_802D8D50, fn_802D8328, fn_8030C928 with &mVisibleBox); returns 0
-    // or 1. Callers pass a stack pair.
+    // or 1. Callers pass the address of a stack pair (lwz 0/4); const s32*
+    // is a guess, a two-int struct passed by value would look the same.
     bool fn_802DCD1C(const s32* dir);
     // 1 unit. Clears the actors (fn_801F7CAC, fn_801F6204), field_0x131de and
     // the effects (fn_8013C8CC), and field_0xc9.
     void fn_802DCDF4();
     // 1 unit. The screen change of fn_802DCD1C with dir read the same way
-    // (lwz 0/4); returns 0 or 1.
+    // (lwz 0/4; the same guess); returns 0 or 1.
     bool fn_802DCE5C(const s32* dir);
     // 1 unit. The same, after looking for a 'SMSM' actor; sets field_0xc8,
-    // clears field_0xc9; returns 0 or 1.
+    // clears field_0xc9; returns 0 or 1. dir as in fn_802DCD1C (a guess).
     bool fn_802DD3D4(const s32* dir);
 
     // --- per-layer actor-id slots (field_0x2948) and their per-screen
@@ -125,7 +126,9 @@ public:
     bool fn_802D46D8(s32 index, u32 bit, bool set);
     // 1 unit. Puts id in the last free slot of the layer's list (searching
     // down from slot 0x3C in steps of 4); *outSlot = 15 - slot / 4 (stw
-    // srawi 31 and the value: a 64-bit store), *outMask = the screen's mask.
+    // srawi 31 and the value: a sign-extended 64-bit store, hence s64),
+    // *outMask = the screen's mask (u64 like fn_802D4874's; its signedness
+    // is not visible).
     void fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMask);
     // 2 units. Puts id in the first free slot; *outBit = 1 << slot, *outMask =
     // the screen's mask (two words each).
@@ -150,16 +153,19 @@ public:
     void fn_802D7D00(s32 layer, s32 bit, bool set);
 
     // --- the per-screen TVec2f slots at 0x13068-0x131A8 ---
+    // The vectors are passed by value: every caller builds one, word-copies
+    // it to a second stack slot and passes that slot's address, which is
+    // GC/2.6's by-value copy of a TVec2f.
     // 1 unit / 13 calls. Frees the slot whose id (field_0x13188) is id and
     // whose field_0x13148 equals pos (within epsilon).
-    void fn_802D6C10(const JGeometry::TVec2f* pos, u32 id);
+    void fn_802D6C10(JGeometry::TVec2f pos, u32 id);
     // 1 unit / 9 calls. Fills the first slot whose field_0x13188 is -1 with
     // a, b, value and id; returns 0 or 1.
-    bool fn_802D6D70(const JGeometry::TVec2f* a, const JGeometry::TVec2f* b, s32 value, u32 id);
-    // 1 unit / 3 calls. With add, puts (key, *pos, value) into the first free
+    bool fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id);
+    // 1 unit / 3 calls. With add, puts (key, pos, value) into the first free
     // slot of field_0x13068 / field_0x13088 / field_0x130c8 (shifting the
     // list when full); else removes the entry matching key and pos.
-    void fn_802D6F38(u32 key, const JGeometry::TVec2f* pos, s32 value, bool add);
+    void fn_802D6F38(u32 key, JGeometry::TVec2f pos, s32 value, bool add);
 
     // --- bit tables (bit = index into an array of u32, 32 per word) ---
     // 2 units. Tests / sets or clears a bit of field_0xfd68[row][col].
@@ -214,8 +220,10 @@ public:
     // (0 out of range) / set.
     u8 fn_802D7544(s32 index);
     void fn_802D7584(s32 index, u8 value);
-    // 1 unit (this unused). field_0x131b8[index] &= bits ^ 0xFF.
-    void fn_802D7790(s32 index, u8 bits);
+    // 1 unit (this unused). field_0x131b8[index] &= bits ^ 0xFF. bits is a
+    // u16 like its siblings': act_view_mode passes li 0x3000 (0x802E0538)
+    // and the body xori's it without the clrlwi a u8 would need.
+    void fn_802D7790(s32 index, u16 bits);
     // 2 units / 4 calls (this unused). field_0x131b8[index] |= bits.
     void fn_802D77BC(s32 index, u16 bits);
     // 1 unit (this unused). field_0x131b8[index] = value.
