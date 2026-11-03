@@ -1,6 +1,5 @@
 #include "dolphin/gx.h"
 #include "math.h"
-#include "std/math.h"
 #include "JSystem/J2D/J2DMatBlock.h"
 #include "JSystem/J2D/J2DTexMtx.h"
 #include "JSystem/J2D/J2DTevStage.h"
