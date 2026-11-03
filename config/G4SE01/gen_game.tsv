@@ -249,8 +249,6 @@ act_vulture	sinit	__sinit_act_vulture_cpp	-	-	new	-
 act_wallmaster	sinit	__sinit_act_wallmaster_cpp	-	-	new	-
 act_warp	sinit	__sinit_act_warp_cpp	-	-	new	-
 act_warp_cannon	sinit	__sinit_act_warp_cannon_cpp	-	-	new	-
-act_warp_entrance_wall	dtor	__dt__25WarpEntranceWall_804AE948Fv	WarpEntranceWall_804AE948	0x804AE948	new	new
-act_warp_entrance_wall	sinit	__sinit_act_warp_entrance_wall_cpp	-	-	new	new
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
 act_wind_environment	sinit	__sinit_act_wind_environment_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
