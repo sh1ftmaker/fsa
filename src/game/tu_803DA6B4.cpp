@@ -2,8 +2,8 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/act/tu_803DA6B4.h"
-#include "JSystem/J2DGraph/J2DScreen.h"
-#include "JSystem/J2DGraph/J2DOrthoGraph.h"
+#include "JSystem/J2D/J2DScreen.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 
 void cls_804B04F8::fn_803DA6B4() {
     static const f32 lbl_804774A0[5] = {0.0f, 60.0f, 47.0f, -42.0f, 40.0f};
@@ -44,8 +44,8 @@ cls_804B04F8::cls_804B04F8() {
     mScreen->setPriority("pressstart.blo", 0x1100000, lbl_80529DEC.field_0x20);
     mPane1 = mScreen->search(0x7072737374727431ull /* "prsstrt1" */);
     mPane2 = mScreen->search(0x7072737374727432ull /* "prsstrt2" */);
-    field_0x10 = mPane2->getBounds().i.x;
-    field_0x14 = mPane2->getBounds().i.y;
+    field_0x10 = mPane2->getBounds()->i.x;
+    field_0x14 = mPane2->getBounds()->i.y;
     field_0x1e = mPane1->getAlpha();
     field_0x1f = mPane2->getAlpha();
     field_0x1c = 0;

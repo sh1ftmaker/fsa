@@ -3,11 +3,7 @@
 
 #include "JSystem/JGeometry.h"
 #include "JSystem/JUtility/TColor.h"
-// Game units already have the SDK's dolphin/mtx.h (GameGlobals.h), which
-// redefines Vec if this family's header comes in as well.
-#ifndef _DOLPHIN_MTX_H
 #include "dolphin/mtx/mtx.h"
-#endif
 #include "dolphin/types.h"
 
 class J2DGrafContext {
