@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **17.13 %** of the code and **4,268 / 11,561** functions match. 234 of 357 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **17.15 %** of the code and **4,274 / 11,561** functions match. 235 of 357 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -72,11 +72,11 @@ interactive version, down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | Game code | 0 % of 3,574,236 bytes | 0 / 6,791 |
-| JSystem | 84.3 % of 630,440 bytes | 3,214 / 3,700 |
+| JSystem | 84.5 % of 630,440 bytes | 3,220 / 3,700 |
 | Dolphin SDK | 99.6 % of 131,240 bytes | 606 / 614 |
 | GX | 95.8 % of 33,660 bytes | 166 / 172 |
 | MSL, Runtime, TRK | 91.2 % of 72,512 bytes | 282 / 284 |
-| **Whole DOL** | **17.13 %** of 4,442,088 bytes | **4,268 / 11,561** |
+| **Whole DOL** | **17.15 %** of 4,442,088 bytes | **4,274 / 11,561** |
 <!-- regions:end -->
 
 </details>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 37.8 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 38.4 % of the split files Matching.
 - **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
 - **Next** (phase 4): **THP video.** The THP player in the game region, from oot-gc's THP sources. Currently 0 % of the code matched.
 - **Next** (phase 5): **The file map in splits.txt.** Load tu_map.tsv's 530 game files with their data ranges; actor files named from actors.tsv. Currently 0 % of the code split into units.

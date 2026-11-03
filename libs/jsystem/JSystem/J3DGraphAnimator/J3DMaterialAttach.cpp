@@ -269,7 +269,7 @@ J3DErrType J3DMaterialTable::entryTexMtxAnimator(J3DAnmTextureSRTKey* anm)
 	for (u16 i = 0; i < count; i++) {
 		u16 matID = anm->getUpdateMaterialID(i);
 		if (matID != 0xffff) {
-			J3DMaterial* mat       = mMaterials[matID];
+			J3DMaterial* mat       = getMaterialNodePointer(matID);
 			J3DMaterialAnm* matanm = mat->getMaterialAnm();
 			u8 texmtxid            = anm->getUpdateTexMtxID(i);
 
