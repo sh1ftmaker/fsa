@@ -831,6 +831,7 @@ config.libs = [
     # Only weak copies the link kept survive from it.
     MkddJSystemLib("J3DU", [
         Object(NonMatching, "JSystem/J3DU/J3DUDL.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DU/J3DUMotion.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JParticle", [
         Object(NonMatching, "JSystem/JParticle/JPABaseShape.cpp", extra_cflags=["-O4,p"]),
