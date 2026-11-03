@@ -11,21 +11,23 @@
 
 // An element of the 4-entry array at 0x2A8 of Vaati, built by
 // __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
-// No vtable: named after that constructor. fn_801D789C (not written yet)
+// No vtable: named after that constructor. fn_801D789C (game/tu_801D6CEC.cpp)
 // is called on the element after its cls_8021BCBC has been set up.
 struct cls_801D6A88 {
     cls_801D6A88();
     void fn_801D789C();
 
-    /* 0x00 */ u8 field_0x0[0xC]; // not yet known
+    /* 0x00 */ u8 field_0x0; // cleared by fn_801D789C
+    /* 0x01 */ u8 field_0x1[0x4 - 0x1]; // not yet known
+    /* 0x04 */ s32 field_0x4; // cleared by fn_801D789C
+    /* 0x08 */ s32 field_0x8; // cleared by fn_801D789C
     /* 0x0C */ cls_8021BCBC field_0xc;
 }; // Size: 0x18
 
 // An element of the 16-entry array at 0x308 of Vaati, built by
 // __construct_array in the actor's constructor (0x801D686C) with the
 // constructor 0x801D6A58 (game/act_vaati_boss.cpp). No vtable: named after
-// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp, not written yet) sets
-// the fields below.
+// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp) sets the fields below.
 struct cls_801D6A58 {
     cls_801D6A58();
     // 0x801D7874: sets field_0x0 to -1, the two bytes and the three floats to 0.
@@ -104,9 +106,21 @@ public:
 // flags of the actors they name. No vtable; named after that destructor.
 class cls_801D7730 {
 public:
+    // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
+    cls_801D7730();
     ~cls_801D7730();
     /* 0x00 */ s32 field_0x0[0x10];
-    /* 0x40 */ u8 field_0x40[0x68 - 0x40]; // not yet known
+    /* 0x40 */ s32 field_0x40; // cleared by the constructor
+    /* 0x44 */ s32 field_0x44; // cleared by the constructor
+    /* 0x48 */ f32 field_0x48; // cleared by the constructor
+    /* 0x4C */ f32 field_0x4c; // cleared by the constructor
+    /* 0x50 */ f32 field_0x50; // cleared by the constructor
+    /* 0x54 */ s16 field_0x54; // cleared by the constructor
+    /* 0x56 */ s16 field_0x56; // cleared by the constructor
+    /* 0x58 */ u8 field_0x58; // cleared by the constructor
+    /* 0x5C */ f32 field_0x5c; // cleared by the constructor
+    /* 0x60 */ f32 field_0x60; // cleared by the constructor
+    /* 0x64 */ s32 field_0x64; // cleared by the constructor
 }; // Size: 0x68
 
 // The boss Vaati (actor 'BOGF', EnemyBase_804A4808 child), named after its
