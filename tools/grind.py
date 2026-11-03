@@ -40,6 +40,20 @@ WT = MAIN.parent / "fsa-wt"
 INTEG = WT / "grind"
 LOGS = WT / "grind-logs"
 MODEL = "claude-haiku-5-5"
+# API mode: with a key from the Console org linked to the Claude plan, `claude -p` bills the plan's
+# monthly API credits instead of its usage limits. "Usage" then means spend / budget.
+API_KEY_FILE = Path(os.environ.get("GRIND_API_KEY_FILE", Path.home() / ".config/fsa-grind/anthropic_api_key"))
+API_BUDGET = float(os.environ.get("GRIND_API_BUDGET", "190"))
+SPEND = LOGS / "api_spend.tsv"
+
+
+def api_key():
+    return API_KEY_FILE.read_text().strip() if API_KEY_FILE.exists() else None
+
+
+def claude_env():
+    key = api_key()
+    return dict(os.environ, ANTHROPIC_API_KEY=key) if key else None
 TRAILER = "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>"
 BANNED = re.compile(r"\basm\b|__asm|#\s*pragma|fakematch|force_order|\bgoto\b|NO_INLINE|dummy", re.I)
 # A placeholder free function whose first parameter is a class pointer is a member function.
@@ -316,7 +330,7 @@ def _claude(wt, prompt, tag, timeout, model=MODEL, meta=None):
            "--disallowedTools", "Agent,WebFetch,WebSearch"]
     timed_out = False
     try:
-        out = sh(cmd, wt, timeout=timeout).stdout
+        out = sh(cmd, wt, timeout=timeout, env=claude_env()).stdout
     except subprocess.TimeoutExpired as e:  # keep what streamed before the kill
         out = e.stdout.decode(errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
         timed_out = True
@@ -335,6 +349,10 @@ def _claude(wt, prompt, tag, timeout, model=MODEL, meta=None):
     d = LOGS / ("haiku" if model == MODEL else model)
     d.mkdir(parents=True, exist_ok=True)
     (d / f"{tag}.json").write_text(json.dumps(result or {"result": "timeout" if timed_out else "no result"}))
+    if api_key():
+        with open(SPEND, "a") as f:
+            f.write(f"{datetime.datetime.now().isoformat(timespec='seconds')}\t{model}\t"
+                    f"{result.get('total_cost_usd', 0) or 0}\t{wtok:.0f}\t{int(timed_out)}\n")
     if meta is not None:
         meta["turns"] = result.get("num_turns", turns)
         meta["wtok"] = meta.get("wtok", 0) + wtok
@@ -605,8 +623,22 @@ def worker(args):
             sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
+def api_spent():
+    """Dollars billed in API mode; runs killed at their time cap report no cost, so estimate
+    theirs from their weighted tokens at the $/weighted-token of that model's completed runs."""
+    rows = [l.split("\t") for l in SPEND.read_text().splitlines()] if SPEND.exists() else []
+    rate = {}
+    for m in {r[1] for r in rows}:
+        done = [r for r in rows if r[1] == m and r[4] == "0" and float(r[3]) > 0]
+        rate[m] = sum(float(r[2]) for r in done) / max(1.0, sum(float(r[3]) for r in done))
+    return sum(float(r[2]) if r[4] == "0" else float(r[3]) * rate[r[1]] for r in rows)
+
+
 def usage():
-    """7-day plan utilization (0..1) from a minimal headless call's rate_limit_event, or None."""
+    """0..1: API spend / GRIND_API_BUDGET in API mode, else the 7-day plan utilization from a
+    minimal headless call's rate_limit_event; None if unknown."""
+    if api_key():
+        return api_spent() / API_BUDGET
     try:
         out = subprocess.run(["claude", "-p", "Reply: ok", "--model", MODEL, "--output-format", "stream-json",
                               "--verbose"], cwd="/tmp", capture_output=True, text=True, timeout=180).stdout
