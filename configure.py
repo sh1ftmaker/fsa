@@ -1245,7 +1245,7 @@ config.libs = [
         Object(NonMatching, "game/tu_801E2540.cpp"),
         Object(Matching, "game/act_tingle_buster.cpp"),
         Object(NonMatching, "game/tu_801E3618.cpp"),
-        Object(NonMatching, "game/tu_801E4A18.cpp"),
+        Object(Matching, "game/tu_801E4A18.cpp"),
         Object(NonMatching, "game/tu_801E4D54.cpp"),
         Object(NonMatching, "game/tu_801E5FC8.cpp"),
         Object(NonMatching, "game/tu_801E667C.cpp"),
