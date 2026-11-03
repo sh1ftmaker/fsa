@@ -273,7 +273,6 @@ act_thwomp_launch_npc	dtor	__dt__28NPCLaunchedByThwomp_804AC010Fv	NPCLaunchedByT
 act_thwomp_launch_npc	sinit	__sinit_act_thwomp_launch_npc_cpp	-	-	new	new
 act_thwomp_launch_npc_2	dtor	__dt__29NPCLaunchedByThwomp2_804AD1C8Fv	NPCLaunchedByThwomp2_804AD1C8	0x804AD1C8	new	new
 act_thwomp_launch_npc_2	sinit	__sinit_act_thwomp_launch_npc_2_cpp	-	-	new	new
-act_tingle_buster	sinit	__sinit_act_tingle_buster_cpp	-	-	new	-
 act_tingle_first	sinit	__sinit_act_tingle_first_cpp	-	-	new	-
 act_tingle_time_up_manager	dtor	__dt__12cls_804ACBF0Fv	cls_804ACBF0	0x804ACBF0	new	new
 act_tingle_time_up_manager	sinit	__sinit_act_tingle_time_up_manager_cpp	-	-	new	new
