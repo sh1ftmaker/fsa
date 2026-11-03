@@ -545,6 +545,13 @@ s32 fn_8023B8E4(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos,
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
+// Owner unit tu_8022AD64 (0x80236074, 0x8C bytes). act_terrorpin's vfunc_0x68
+// calls it once per bit of a hit mask with (player, 0x64, 0). Not known yet
+// what the arguments mean.
+extern "C" {
+void fn_80236074(s32 player, s32 value, s32 arg);
+}
+
 // Owner unit tu_8022AD64. 5 units (act_armos, act_colour_block,
 // act_somaria_block, act_gravestone, ...). Index (0-3) of the first present
 // player whose box test (fn_80272768(player, box, layer, serial)) passes, or
