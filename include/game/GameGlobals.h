@@ -121,9 +121,12 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 // (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
 // 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
 // Read by fn_80158B3C / fn_80158B5C and directly (+0x4, +0xC) in 28 units.
+class JUTTexture;
 class cls_804A0160 {
 public:
-    /* 0x0 */ u8 field_0x0[0xC]; // not yet known
+    /* 0x0 */ void* vtable;      // from fn_801594E8
+    /* 0x4 */ s32 field_0x4;
+    /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
     /* 0xD */ u8 field_0xd[3];   // not yet known
 }; // Size: 0x10

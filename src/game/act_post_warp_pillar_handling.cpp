@@ -30,7 +30,7 @@ void cls_804AC1F8::update() {
         field_0x230 = 40;
     }
     if (done == true) {
-        if (fn_80230534(0) == true) {
+        if (fn_80230534(false) == true) {
             fn_80231368();
             for (s32 i = 0; i < 4; i++) {
                 fn_8022CA6C(i, 0, true);
