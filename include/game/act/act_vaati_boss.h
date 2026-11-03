@@ -26,8 +26,8 @@ struct cls_801D6CEC {
 }; // Size: 0x3C
 
 // The member at 0x568 of the Vaati boss actor (code in game/tu_801E667C.cpp,
-// called from the actor's functions at 0x801D5B58, 0x801D6398 and its
-// constructor, 0x801D6904); named after its constructor, 0x801E6AB8 (no
+// called from the actor's functions at 0x801D5B58 and 0x801D6398 and from the
+// call site 0x801D6904 in its constructor (0x801D686C); named after its constructor, 0x801E6AB8 (no
 // vtable). A short timed sequence that plays an animation on the players in
 // mActive and ends after state 4. mState steps 0 -> 1 -> 2 -> 3 -> 4.
 class cls_801E6AB8 {
