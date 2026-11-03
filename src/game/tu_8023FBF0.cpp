@@ -148,3 +148,7 @@ f32 Player_804A6F38::fn_80246F28() {
 }
 
 extern "C" void fn_80252FBC() {}
+
+bool Player_804A6F38::fn_80249068() {
+    return field_0x121f;
+}

@@ -325,7 +325,10 @@ public:
     /* 0x1216 */ u8 field_0x1216;
     // A bool: fn_802408C0 returns it as loaded (lbz; blr).
     /* 0x1217 */ bool field_0x1217;
-    /* 0x1218 */ u8 field_0x1218[0x1224 - 0x1218];
+    /* 0x1218 */ u8 field_0x1218[0x121F - 0x1218];
+    // A bool: fn_80249068 returns it as loaded (lbz; blr).
+    /* 0x121F */ bool field_0x121f;
+    /* 0x1220 */ u8 field_0x1220[0x1224 - 0x1220];
     /* 0x1224 */ s32 field_0x1224;
     /* 0x1228 */ u8 field_0x1228[0x13BC - 0x1228];
 }; // Size: 0x13BC
