@@ -240,6 +240,17 @@ s32 fn_8022BCD4(s32 player) {
     return 0;
 }
 
+void fn_8022BD70() {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i)) {
+            lbl_8053AC90->mPlayers[i]->fn_80241E64();
+        }
+    }
+}
+
 s32 fn_8022BECC(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 0;
@@ -774,6 +785,17 @@ bool fn_8022FCF0(s32 player, s32 arg) {
     return false;
 }
 
+void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i)) {
+            lbl_8053AC90->mPlayers[i]->fn_8024CD20(box, layer, serial, a, b);
+        }
+    }
+}
+
 void fn_8022FFC4(s32 player, const JGeometry::TVec3f* arg) {
     if (lbl_8053AC90 == NULL) {
         return;
@@ -868,6 +890,17 @@ bool fn_80231230(s32 player, s32 arg) {
         return lbl_8053AC90->mPlayers[player]->fn_80260048(arg);
     }
     return false;
+}
+
+void fn_80231424() {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i)) {
+            lbl_8053AC90->mPlayers[i]->fn_80242560();
+        }
+    }
 }
 
 bool fn_8023162C(s32 player, s32 arg) {
@@ -966,6 +999,17 @@ bool fn_80234134(s32 player) {
         return lbl_8053AC90->mPlayers[player]->fn_80240870();
     }
     return false;
+}
+
+void fn_80234810() {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i)) {
+            lbl_8053AC90->mPlayers[i]->fn_80248DAC();
+        }
+    }
 }
 
 void fn_802348C4(s32 player, s32 a, const JGeometry::TVec3f* b) {
@@ -1584,6 +1628,18 @@ s32 fn_80238EDC(s32 player) {
     return -1;
 }
 
+s32 fn_80239558(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
+    if (lbl_8053AC90 == NULL) {
+        return 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && lbl_8053AC90->mPlayers[i]->fn_80272768(box, layer, serial)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 bool fn_80239718(s32 player, s32 serial) {
     if (lbl_8053AC90 == NULL) {
         return false;
@@ -1592,6 +1648,17 @@ bool fn_80239718(s32 player, s32 serial) {
         return lbl_8053AC90->mPlayers[player]->fn_802729F0(serial);
     }
     return false;
+}
+
+void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i)) {
+            lbl_8053AC90->mPlayers[i]->fn_80272C20(box, arg_0x4, serial);
+        }
+    }
 }
 
 bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -1644,6 +1711,30 @@ bool fn_8023A5B8(s32 player) {
     return false;
 }
 
+s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (lbl_8053AC90 == NULL) {
+        return -1;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && lbl_8053AC90->mPlayers[i]->fn_80273FB8(box, layer, out)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+s32 fn_8023AB94(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (lbl_8053AC90 == NULL) {
+        return -1;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && lbl_8053AC90->mPlayers[i]->fn_802570BC(box, layer, out)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) {
     if (lbl_8053AC90 == NULL) {
         return false;
@@ -1692,6 +1783,30 @@ s32 fn_8023B6CC(s32 player) {
         return lbl_8053AC90->mPlayers[player]->fn_802721A8();
     }
     return 0;
+}
+
+s32 fn_8023B8E4(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag) {
+    if (lbl_8053AC90 == NULL) {
+        return -1;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && lbl_8053AC90->mPlayers[i]->fn_80274238(box, layer, pos, flag)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
+    if (lbl_8053AC90 == NULL) {
+        return -1;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && lbl_8053AC90->mPlayers[i]->fn_80273D44(box, layer, out, flag)) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 s32 fn_8023BC38(s32 player) {

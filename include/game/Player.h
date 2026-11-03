@@ -103,22 +103,32 @@ public:
     bool fn_802413E8(); // via fn_80230188
     bool fn_802413F0(); // via fn_8023188C
     bool fn_80241E28(s32 a, const JGeometry::TVec3f* b); // via fn_8022BC38
+    void fn_80241E64(); // via fn_8022BD70
+    void fn_80242560(); // via fn_80231424
     bool fn_80242704(s32 arg); // via fn_8023162C
     bool fn_802466B4(); // via fn_8022C3AC
     s32 fn_80246B10(u32 arg); // via fn_8022C52C
     s32 fn_80246D1C(u32 arg); // via fn_8022C5EC
     bool fn_80247534(); // via fn_8022C8EC
     bool fn_80247564(); // via fn_8022C9AC
+    void fn_80248DAC(); // via fn_80234810
     bool fn_8024B108(s32 arg); // via fn_8022DE10
     bool fn_8024C4C4(s32 arg); // via fn_8022FBB8
     bool fn_8024C828(s32 arg); // via fn_8022FCF0
+    void fn_8024CD20(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b); // via fn_8022FEB8
     void fn_8024E020(const JGeometry::TVec3f* arg); // via fn_8022FFC4
     void fn_8024F54C(s32 arg); // via fn_80230F44
+    bool fn_802570BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AB94
     bool fn_8025AA8C(s32 arg); // via fn_8022E23C
     void fn_8025EE0C(s32 a, const JGeometry::TVec3f* b); // via fn_8022F820
     bool fn_8025EE48(s32 arg); // via fn_8022F948
     bool fn_8025EFFC(s32 a, bool b, bool c); // via fn_8022F9E4
     bool fn_80260048(s32 arg); // via fn_80231230
+    bool fn_80272768(const JGeometry::TBox2f* box, s32 layer, s32 serial); // via fn_80239558
+    void fn_80272C20(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial); // via fn_802397B4
+    bool fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BB50
+    bool fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A7BC
+    bool fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag); // via fn_8023B8E4
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
     f32 fn_80246F28();
@@ -370,6 +380,7 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // const JGeometry::TVec3f*, stores -> JGeometry::TVec3f*).
 bool fn_8022BC38(s32 player, s32 a, const JGeometry::TVec3f* b); // -> fn_80241E28; else false
 s32 fn_8022BCD4(s32 player);             // 1 unit. -> fn_8023FC24 (word 0xBEC); else 0
+void fn_8022BD70(); // -> fn_80241E64 on every active player
 s32 fn_8022BECC(s32 player); // -> fn_8023FFAC; else 0
 bool fn_8022BF68(s32 player); // -> fn_802454C0; else false
 bool fn_8022C004(s32 player); // -> fn_802456FC; else false
@@ -405,8 +416,49 @@ bool fn_8022FCF0(s32 player, s32 arg); // -> fn_8024C828; else false
 void fn_8022FFC4(s32 player, const JGeometry::TVec3f* arg); // -> fn_8024E020
 void fn_80230F44(s32 player, s32 arg); // -> fn_8024F54C
 bool fn_80231230(s32 player, s32 arg); // -> fn_80260048; else false
+void fn_80231424(); // -> fn_80242560 on every active player
 bool fn_8023162C(s32 player, s32 arg); // -> fn_80242704; else false
+void fn_80234810(); // -> fn_80248DAC on every active player
 void fn_802348C4(s32 player, s32 a, const JGeometry::TVec3f* b); // -> fn_802408C8
+
+// Owner: tu_8022AD64 (0x8022FEB8, defined there). 34 units (act_old_man, act_talking_sign, ...).
+// (box, layer, serial, a, b): called with the actor's box moved to its position, its field_0x4
+// and mSerial; a, b are li 0/1.
+void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
+
+// act_magic_jar's pickup test (tu_8022AD64 forwards to fn_80274238 for each present player):
+// the first player whose box overlaps `box` on `layer`, or -1. `pos` is forwarded to fn_80274238, which adds the view offset into it in place
+// (0x80274344-0x80274360) when a player hits; `flag` is only passed on.
+s32 fn_8023B8E4(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag);
+
+// Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
+// field_0x4 and mSerial when the box overlaps a player's.
+void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
+
+// Owner unit tu_8022AD64. 5 units (act_armos, act_colour_block,
+// act_somaria_block, act_gravestone, ...). Index (0-3) of the first present
+// player whose box test (fn_80272768(player, box, layer, serial)) passes, or
+// -1; 0 without a player manager.
+s32 fn_80239558(const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64. 5+ units (act_candlestick_switch,
+// act_icicle, act_snowball, act_ice_wall, act_force_gem_wooden). Index (0-3) of
+// the first present player whose box test (fn_802570BC(player, box, layer,
+// out)) passes, or -1 (also without a player manager). fn_802570BC stores two
+// floats (+0, +4) through `out`, which the callers read as a position.
+s32 fn_8023AB94(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+
+// Owner unit tu_8022AD64. 1 unit (tu_802242F4). Index of
+// the first player on `layer` whose box test (fn_80273FB8(player, box,
+// layer, out)) passes, or -1; *out (two floats, 0 and 4) is written by the
+// test.
+s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+
+// Owner unit tu_8022AD64. 1 unit (act_cactus). Index of the
+// first active player for which fn_80273D44(player object, box, layer, out,
+// flag) passes, or -1 (also without a manager); *out is two floats.
+s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
+
 // 1 unit (act_sand_crab's update: clrlwi 24 on the result, like fn_80230188 beside it).
 bool fn_8022DCD8(s32 player); // -> fn_80240818; else false
 bool fn_8022DD74(s32 player); // -> fn_8024AFF8; else false
@@ -677,10 +729,6 @@ bool fn_8023077C();
 s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
 s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
-// Owner: tu_8022AD64 (0x8022FEB8, defined there). 34 units (act_old_man, act_talking_sign, ...).
-// (box, layer, serial, a, b): called with the actor's box moved to its position, its field_0x4
-// and mSerial; a, b are li 0/1.
-void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
 // Owner: tu_8022AD64 (0x8022FD8C, defined there). The player index for actor `serial` (act_talking_sign
 // stores it and passes it to fn_8023E724); negative when none.
 s32 fn_8022FD8C(s32 serial);
@@ -699,10 +747,6 @@ JGeometry::TVec3f* fn_8023A478(s32 player);
 // of the first whose fn_802730D8 test (box, layer, flag, margin) hits, or -1 (also without a
 // manager). act_zoom passes (&box, field_0x4, false, 0.0f); tested against 0 with cmpwi.
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
-// act_magic_jar's pickup test (tu_8022AD64 forwards to fn_80274238 for each present player):
-// the first player whose box overlaps `box` on `layer`, or -1. `pos` is forwarded to fn_80274238, which adds the view offset into it in place
-// (0x80274344-0x80274360) when a player hits; `flag` is only passed on.
-s32 fn_8023B8E4(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
 s32 fn_8023E10C(s32 player);             // 5 units. -> word 0xCE4; else 0
@@ -713,22 +757,8 @@ JGeometry::TVec3f* fn_8023E32C(s32 player); // 5 units. -> 0xCB0; else &lbl_804C
 JGeometry::TVec3f* fn_8023E578(s32 player); // 3 units. -> 0x14; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804CF460
 
-// Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
-// field_0x4 and mSerial when the box overlaps a player's.
-void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
-// Owner unit tu_8022AD64 (not written yet). 5 units (act_armos, act_colour_block,
-// act_somaria_block, act_gravestone, ...). Index (0-3) of the first present
-// player whose box test (fn_80272768(player, box, layer, serial)) passes, or
-// -1; 0 without a player manager.
-s32 fn_80239558(const JGeometry::TBox2f* box, s32 layer, s32 serial);
 
-// Owner unit tu_8022AD64 (not written yet). 5+ units (act_candlestick_switch,
-// act_icicle, act_snowball, act_ice_wall, act_force_gem_wooden). Index (0-3) of
-// the first present player whose box test (fn_802570BC(player, box, layer,
-// out)) passes, or -1 (also without a player manager). fn_802570BC stores two
-// floats (+0, +4) through `out`, which the callers read as a position.
-s32 fn_8023AB94(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
@@ -742,21 +772,12 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 s32 fn_80239470(const JGeometry::TBox2f* box, s32 layer, s32 serial);
 
 
-// Owner unit tu_8022AD64 (not written yet). 1 unit (tu_802242F4). Index of
-// the first player on `layer` whose box test (fn_80273FB8(player, box,
-// layer, out)) passes, or -1; *out (two floats, 0 and 4) is written by the
-// test.
-s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Whether
 // fn_802729F0(player object, serial) passes for any active player.
 bool fn_80239638(s32 serial);
 
-// Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Index of the
-// first active player for which fn_80273D44(player object, box, layer, out,
-// flag) passes, or -1 (also without a manager); *out is two floats.
-s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Counts
 // (compared with 1 by the caller) the active players for which fn_80250030(player

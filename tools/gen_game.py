@@ -49,6 +49,12 @@ game/tu_8022AD64.cpp, hand-matched and reviewed):
          class = getter, vtable `-`, hdr_before `-` (Player.h is shared: the
          check requires each declaration once, not the whole file).
 
+  loop   tu_8022AD64's all-players loops (`for (s32 i = 0; i < 4; i++)`
+         over isPlayerActive(i)): "each" calls a getter on every active
+         player, "find" returns the first player whose getter is true, else
+         -1. Generated with the fwd run (`gen_game.py tu_8022AD64`); rows and
+         checks as fwd's; see "family loop" below.
+
 A unit qualifies for a family only if the target function is the template
 up to identifiers: the same bytes outside relocation fields and the same
 relocations (offset, type, addend, target), where only targets defined in
@@ -1559,14 +1565,15 @@ def check(units):
         diffs = dict(zip(by_unit, ex.map(objdiff, by_unit)))
     problems = 0
     for u, rs in sorted(by_unit.items()):
-        fwd = [r for r in rs if r[1] == "fwd"]
+        fwd = [r for r in rs if r[1] in ("fwd", "loop")]
         if fwd:
             bad = fwd_check(fwd, diffs[u] or {})
-            print(f"{u}: {len(fwd)} forwarders (fwd): " + ("ok" if not bad else "FAIL"))
+            n = sum(r[1] == "fwd" for r in fwd)
+            print(f"{u}: {n} forwarders (fwd), {len(fwd) - n} loops (loop): " + ("ok" if not bad else "FAIL"))
             for b in bad:
                 print(f"  {b}")
             problems += len(bad)
-            rs = [r for r in rs if r[1] != "fwd"]
+            rs = [r for r in rs if r[1] not in ("fwd", "loop")]
             if not rs:
                 continue
         sbs, hbs = {r[5] for r in rs}, {r[6] for r in rs if r[1].startswith("dtor")}
@@ -2132,6 +2139,8 @@ def fwd_plan(header_text=None):
 
 
 def fwd_render_def(m):
+    if m.get("kind") in LOOP_KINDS:
+        return loop_render_def(m)
     sp = split_params(m["params"])
     args = ", ".join(n for t, n in sp[1:])
     if not m["void"] and len(m["fb"]) == 4:
@@ -2157,6 +2166,8 @@ def fwd_edit_source(plan, text):
 
 
 def fwd_decl_line(m):
+    if m.get("kind") in LOOP_KINDS:
+        return loop_decl_line(m)
     fb = "" if m["void"] else f"; else {fallback_literal(m['ret'], m['fb'][-1])}"
     if not m["void"] and len(m["fb"]) == 4:
         fb += " (also for a player outside 0-3)"
@@ -2166,21 +2177,21 @@ def fwd_decl_line(m):
 
 
 def fwd_member_line(m):
+    if m.get("kind") in LOOP_KINDS:
+        return loop_member_line(m)
     sp = split_params(m["params"])
     return f"    {m['ret']} {m['callee']}({', '.join(f'{t} {n}' for t, n in sp[1:])}); // via {m['name']}"
 
 
-def fwd_edit_header(plan, text):
-    """Player.h: declared forwarders move out of the extern "C" block (with
-    their comment when it describes only generated ones), new ones are
-    declared after fn_8023E724, and each getter is declared in the class."""
-    lines = text.split("\n")
+def extract_declared(lines, plan):
+    """(line indices to drop, moved comment groups, moved declaration lines)
+    of the plan's declared members in the extern "C" block, or a reason."""
     names = {m["name"] for m in plan}
     # groups of the extern "C" block: comment lines, then declaration lines
     try:
         c0 = lines.index('extern "C" {')
     except ValueError:
-        return None, 'no extern "C" block'
+        return 'no extern "C" block'
     c1 = next(k for k in range(c0 + 1, len(lines)) if lines[k].startswith("}"))
     groups, cur = [], None
     for k in range(c0 + 1, c1):
@@ -2210,7 +2221,19 @@ def fwd_edit_header(plan, text):
     in_c = {DECL_RE.match(lines[k])[2] for k in drop if DECL_RE.match(lines[k])}
     outside = declared - in_c
     if outside:
-        return None, f"declared outside the extern \"C\" block: {sorted(outside)[:3]}"
+        return f"declared outside the extern \"C\" block: {sorted(outside)[:3]}"
+    return drop, moved_groups, moved_lines
+
+
+def fwd_edit_header(plan, text):
+    """Player.h: declared forwarders move out of the extern "C" block (with
+    their comment when it describes only generated ones), new ones are
+    declared after fn_8023E724, and each getter is declared in the class."""
+    lines = text.split("\n")
+    got = extract_declared(lines, plan)
+    if isinstance(got, str):
+        return None, got
+    drop, moved_groups, moved_lines = got
     new = [fwd_decl_line(m) for m in sorted(plan, key=lambda m: m["addr"]) if not m["declared"]]
     block = [FWD_DECL_HEAD.rstrip("\n")]
     block += sorted(new + moved_lines, key=lambda l: DECL_RE.match(l)[2])
@@ -2247,11 +2270,232 @@ def fwd_header_problems(rows_plan, text):
             bad.append(f"Player.h: {m['name']} is not declared exactly once outside extern \"C\"")
             continue
         sp = split_params(m["params"])
+        if m.get("kind") in LOOP_KINDS:
+            # a "find" loop tests the getter's byte (bool); an "each" loop
+            # ignores what it returns
+            ret = re.escape(m["gret"]) if m["kind"] == "find" else r"(?:const )?[\w:<>]+\*?"
+            if len(re.findall(r"^    " + ret + r"\s+" + m["callee"] + r"\(", text, re.M)) != 1:
+                bad.append(f"Player.h: {PLAYER_CLS}::{m['callee']} not declared once"
+                           + (f" returning {m['gret']}" if m["kind"] == "find" else ""))
+            continue
         want = re.escape(m["ret"]) + r"\s+" + m["callee"] + r"\(" + re.escape(
             ", ".join(f"{t} {n}" for t, n in sp[1:])) + r"\);"
         if len(re.findall(r"^    " + want, text, re.M)) != 1:
             bad.append(f"Player.h: {PLAYER_CLS}::{m['callee']} not declared once as {m['ret']}({m['params']} minus player)")
     return bad
+
+
+# ---------------------------------------------------------------- family loop: all-players loops
+#
+# tu_8022AD64's loops over the four players (`for (s32 i = 0; i < 4; i++)`
+# with isPlayerActive(i), which re-reads the manager each time): "each"
+# calls a getter on every active player; "find" returns the first player
+# whose getter returns true, else -1 (and its fallback without a manager).
+# No loop is matched by hand: each group of members with the same shape
+# (shape_of: registers, `li` immediates and the getter masked) is checked
+# against its lowest-address member, and every member's compiled code must
+# equal dtk's split up to identifiers. Argument types as for fwd (the
+# getter's first use of each), or the getter's mangled parameters when it is
+# named already; "find" getters return bool (the loop tests the byte with
+# clrlwi.), "each" getters are declared void like the void forwarders'.
+
+LOOP_DEF_FIND = """\
+s32 {name}({params}) {{
+    if ({mgr} == NULL) {{
+        return {fb};
+    }}
+    for (s32 i = 0; i < 4; i++) {{
+        if (isPlayerActive(i) && {mgr}->mPlayers[i]->{callee}({args})) {{
+            return i;
+        }}
+    }}
+    return -1;
+}}
+"""
+LOOP_DEF_EACH = """\
+void {name}({params}) {{
+    if ({mgr} == NULL) {{
+        return;
+    }}
+    for (s32 i = 0; i < 4; i++) {{
+        if (isPlayerActive(i)) {{
+            {mgr}->mPlayers[i]->{callee}({args});
+        }}
+    }}
+}}
+"""
+LOOP_KINDS = ("find", "each")
+
+
+def loop_shape(o, s):
+    """(kind, extra arguments, fallback, getter symbol) of an all-players
+    loop in dtk's split or our object, else None."""
+    bodies, _ = asm_bodies()
+    rels = o.relocs_in(s[5], s[1], s[2])
+    calls = [r for r in rels if r[1] == 10]
+    mgr = [r for r in rels if r[1] == 109 and o.syms[r[2]][0] == FWD_MGR]
+    if len(calls) != 1 or len(mgr) != 2:
+        return None
+    code = o.bytes_of(s)
+    words = [struct.unpack_from(">I", code, k)[0] for k in range(0, len(code), 4)]
+    def dform(w):
+        return w >> 26, (w >> 21) & 31, (w >> 16) & 31, struct.unpack(">h", struct.pack(">H", w & 0xFFFF))[0]
+    # the loop's footer: addi i, i, 1; addi j, j, 4; cmpwi i, 4; blt (back)
+    foot = [k for k in range(len(words) - 3)
+            if dform(words[k])[0] == 14 and dform(words[k])[3] == 1 and dform(words[k])[1] == dform(words[k])[2]
+            and dform(words[k + 1])[0] == 14 and dform(words[k + 1])[3] == 4
+            and words[k + 2] >> 16 == (0x2C00 | dform(words[k])[1]) and words[k + 2] & 0xFFFF == 4
+            and words[k + 3] >> 16 == 0x4180 and words[k + 3] & 0x8000]
+    if len(foot) != 1:
+        return None
+    # nothing is stored but the frame (stw/stb/sth/stmw/stwu off r1)
+    if any(dform(w)[0] in (36, 37, 38, 44, 47) and dform(w)[2] != 1 for w in words):
+        return None
+    li_r3 = [dform(w)[3] for w in words if dform(w)[0] == 14 and dform(w)[2] == 0 and dform(w)[1] == 3]
+    bl = (calls[0][0] - s[1]) // 4
+    # the arguments: `mr r4.., rN` right before the call (lwzx r3 between)
+    nargs = 0
+    k = bl - 1
+    regs = set()
+    while k > 0 and (words[k] >> 26 == 31 and (words[k] >> 1) & 0x3FF in (444, 23)):
+        if (words[k] >> 1) & 0x3FF == 444:  # mr = or rA, rS, rS
+            regs.add((words[k] >> 16) & 31)
+        k -= 1
+    nargs = len(regs)
+    if regs != set(range(4, 4 + nargs)):
+        return None
+    if li_r3 == []:
+        kind, fb = "each", None
+    elif len(li_r3) == 2 and li_r3[1] == -1 and words[bl + 1] == 0x5460063F:  # clrlwi. r0, r3, 24
+        kind, fb = "find", li_r3[0]
+    else:
+        return None
+    return kind, nargs, fb, o.syms[calls[0][2]]
+
+
+def player_members(text):
+    """{name: (ret, params)} of Player_804A6F38's declared members."""
+    out = {}
+    for m in re.finditer(r"^    ((?:const )?[\w:<>]+\*?) (fn_8[0-9A-F]{7})\(([^)]*)\);", text, re.M):
+        out.setdefault(m[2], []).append((m[1], m[3]))
+    return out
+
+
+def loop_plan(header_text=None):
+    """The loops to generate (fwd-style member dicts with "kind") and the
+    skipped ones."""
+    o = obj(FWD_UNIT)
+    text = header_text if header_text is not None else PLAYER_H.read_text()
+    decls = player_decls(text)
+    members = player_members(text)
+    bodies, _ = asm_bodies()
+    addr_of = {}
+    for l in symbols_lines():
+        m = SYMLINE.match(l.rstrip("\n"))
+        if m and m[2] == ".text":
+            addr_of[m[1]] = int(m[3], 16)
+    plan, skipped, seen = [], [], set()
+    for s in o.funcs():
+        if not re.fullmatch(r"fn_8[0-9A-F]{7}", s[0]):
+            continue
+        sh = loop_shape(o, s)
+        if not sh:
+            continue
+        kind, nargs, fb, cs = sh
+        callee = cs[0]
+        base = callee.split("__")[0]
+        ca = addr_of.get(callee)
+        why = None
+        if not re.fullmatch(r"fn_8[0-9A-F]{7}", base):
+            why = f"getter {callee} is not a placeholder"
+        elif ca is None or not PLAYER_TEXT[0] <= ca < PLAYER_TEXT[1]:
+            why = f"getter {callee} is outside the player's units"
+        elif base in seen:
+            why = f"getter {base} has two generated callers"
+        elif len(decls.get(s[0], [])) > 1:
+            why = "declared more than once in Player.h"
+        if why:
+            skipped.append(f"{s[0]}: {why}")
+            continue
+        ret = "s32" if kind == "find" else "void"
+        # a reviewed declaration (extern "C", Player.h) gives the types
+        dtypes = None
+        if decls.get(s[0]):
+            dret, dparams, _, in_c = decls[s[0]][0]
+            sp = split_params(dparams)
+            if dret != ret:
+                why = f"declared {dret}, but its code is the {kind} loop"
+            elif sp is None or len(sp) != nargs or any(t in ("f32", "f64") for t, _ in sp):
+                why = f"declared ({dparams}), its code passes {nargs} integer arguments"
+            elif not in_c:
+                why = 'declared outside the extern "C" block'
+            else:
+                dtypes = sp
+            if why:
+                skipped.append(f"{s[0]}: {why}")
+                continue
+        gret = "bool" if kind == "find" else "void"
+        names = ["arg"] if nargs == 1 else ["a", "b", "c", "d", "e", "f"]
+        types = []
+        if callee != base:  # a named Player member: its mangled parameters and declaration
+            mp = mangled_params(callee)
+            dm = members.get(base, [])
+            if mp is None or len(mp) != nargs or any(r[0] != "r" for _, r in mp):
+                why = f"getter {callee}'s parameters do not fit {nargs} integer arguments"
+            elif len(dm) != 1 or (kind == "find" and dm[0][0] != gret):
+                why = f"getter {base} is not declared once" + (f" returning {gret}" if kind == "find" else "")
+            else:
+                gret = dm[0][0]  # an "each" loop ignores what it returns
+                types = [t for t, _ in mp]
+                if dtypes and [t for t, _ in dtypes] != types:
+                    why = f"declared ({', '.join(t for t, _ in dtypes)}), the getter's name says ({', '.join(types)})"
+        elif dtypes:
+            if members.get(base):
+                why = f"getter {base} declared already but unnamed"
+            types = [t for t, _ in dtypes]
+        else:
+            if members.get(base):
+                why = f"getter {base} declared already but unnamed"
+            for k in range(nargs if not why else 0):
+                t, u = arg_type(bodies.get(callee, []), f"r{4 + k}")
+                if t is None:
+                    why = f"argument {k + 1}: the getter's first use of r{4 + k} is {u!r}"
+                    break
+                types.append(t)
+            f1, _ = arg_type(bodies.get(callee, []), "f1")
+            if not why and f1 is not None:
+                why = "the getter reads f1: a float argument?"
+        if why:
+            skipped.append(f"{s[0]}: {why}")
+            continue
+        seen.add(base)
+        params = decls[s[0]][0][1] if dtypes else ", ".join(f"{t} {names[k]}" for k, t in enumerate(types))
+        plan.append({"name": s[0], "addr": text_base(FWD_UNIT) + s[1], "callee": base, "callee_addr": ca,
+                     "kind": kind, "void": kind == "each", "nargs": nargs, "fb": fb, "ret": ret,
+                     "gret": gret, "params": params, "declared": bool(dtypes),
+                     "getter_declared": callee != base})
+    return plan, skipped
+
+
+def loop_render_def(m):
+    args = ", ".join(n for t, n in (split_params(m["params"]) or []))
+    tmpl = LOOP_DEF_FIND if m["kind"] == "find" else LOOP_DEF_EACH
+    return tmpl.format(name=m["name"], params=m["params"], mgr=FWD_MGR, callee=m["callee"], args=args,
+                       fb=fallback_literal("s32", m["fb"]) if m["fb"] is not None else "")
+
+
+def loop_decl_line(m):
+    if m["kind"] == "find":
+        what = f"the first active player whose {m['callee']} is true; else -1"
+        if m["fb"] != -1:
+            what += f" ({fallback_literal('s32', m['fb'])} without a manager)"
+    else:
+        what = f"{m['callee']} on every active player"
+    return f"{m['ret']} {m['name']}({m['params']}); // -> {what}"
+
+
+def loop_member_line(m):
+    return f"    {m['gret']} {m['callee']}({m['params']}); // via {m['name']}"
 
 
 def fwd_names(o):
@@ -2269,10 +2513,11 @@ def fwd_member_problems(plan, diff):
         return ["no compiled object"]
     groups = {}
     for m in sorted(plan, key=lambda m: m["addr"]):
-        groups.setdefault((m["void"], m["nargs"], m["fb"]), []).append(m)
-    for key, ms in groups.items():
-        void, nargs, fb = key
-        if (not void and nargs == 0 and fb == (0, 0)) or (void and nargs == 1):
+        groups.setdefault((m.get("kind"), m["void"], m["nargs"], m["fb"]), []).append(m)
+    for gkey, ms in groups.items():
+        kind, void, nargs, fb = gkey
+        key = gkey[1:] if kind not in LOOP_KINDS else gkey
+        if kind not in LOOP_KINDS and ((not void and nargs == 0 and fb == (0, 0)) or (void and nargs == 1)):
             ref_t = fwd_template(void)[1]
             ref_t = (t, t.func(ref_t[0])[1])
             ref_o = o.func(FWD_TEMPLATES[void])
@@ -2289,9 +2534,13 @@ def fwd_member_problems(plan, diff):
             if not tf or not of:
                 bad.append(f"{m['mname']}: missing in the {'target' if not tf else 'compiled'} object")
                 continue
-            sh = fwd_shape(t, tf[1])
-            if not sh or sh[:3] != key or sh[3][0] != m["cname"]:
-                bad.append(f"{m['mname']}: target is not the forwarder shape {key} calling {m['cname']}")
+            sh = loop_shape(t, tf[1]) if kind in LOOP_KINDS else fwd_shape(t, tf[1])
+            if kind in LOOP_KINDS:
+                sh = sh and ((sh[0], sh[0] == "each", sh[1], sh[2]), sh[3])
+            else:
+                sh = sh and (sh[:3], sh[3])
+            if not sh or sh[0] != key or sh[1][0] != m["cname"]:
+                bad.append(f"{m['mname']}: target is not the shape {key} calling {m['cname']}")
             if fwd_identity(t, tf[1]) != fwd_identity(*ref_t):
                 bad.append(f"{m['mname']}: target differs from its group template beyond the getter")
             if fwd_identity(o, of[1]) != fwd_identity(*ref_o):
@@ -2304,19 +2553,19 @@ def fwd_member_problems(plan, diff):
     return bad
 
 
-def generate_fwd():
+def generate_fwd(family="fwd"):
     global _objs
     ninja(str(our_obj(FWD_UNIT)))
     if FWD_UNIT in claimed():
         return f"{FWD_UNIT}: skipped: claimed in progress/claims.json", []
-    plan, skipped = fwd_plan()
+    plan, skipped = fwd_plan() if family == "fwd" else loop_plan()
     if not plan:
         return f"{FWD_UNIT}: nothing to generate", skipped
     src0, hdr0 = src_path(FWD_UNIT).read_text(), PLAYER_H.read_text()
     src_before = blob(src_path(FWD_UNIT))
     # A later batch re-renders the source from the first batch's recorded
     # version with every member, and extends Player.h's generated blocks.
-    prior = [r for r in manifest_rows() if r[1] == "fwd"]
+    prior = [r for r in manifest_rows() if r[1] in ("fwd", "loop")]
     old_plan, why = fwd_rows_plan(prior, hdr0) if prior else ([], [])
     if why:
         return f"{FWD_UNIT}: refused: " + "; ".join(why[:3]), skipped
@@ -2391,12 +2640,12 @@ def generate_fwd():
         return f"{FWD_UNIT}: nothing generated", skipped
     rows = MANIFEST.read_text().splitlines()[1:]
     for m in plan:
-        rows.append(f"{FWD_UNIT}\tfwd\t{m['mname']}\t{m['cname']}\t-\t{src_before}\t-")
+        rows.append(f"{FWD_UNIT}\t{family}\t{m['mname']}\t{m['cname']}\t-\t{src_before}\t-")
     MANIFEST.write_text("\n".join([MANIFEST_HEAD] + sorted(set(rows))) + "\n")
-    allbad = fwd_check([r for r in manifest_rows() if r[1] == "fwd"], diff)
+    allbad = fwd_check([r for r in manifest_rows() if r[1] in ("fwd", "loop")], diff)
     if allbad:
         skipped += [f"CHECK: {b}" for b in allbad]
-    return f"{FWD_UNIT}: ok: {len(before)} -> {len(matched(diff))} matched symbols, {len(plan)} forwarders", skipped
+    return f"{FWD_UNIT}: ok: {len(before)} -> {len(matched(diff))} matched symbols, {len(plan)} {family} members", skipped
 
 
 def fwd_check(rs, diff):
@@ -2434,16 +2683,26 @@ def fwd_rows_plan(rs, text):
         if not f:
             bad.append(f"{mname}: not in the target object (symbols.txt)")
             continue
-        sh = fwd_shape(t, f[1])
-        if not sh:
-            bad.append(f"{mname}: target is not a forwarder")
-            continue
         base = mname.split("__")[0]
         d = decls.get(base, [])
         if len(d) != 1:
             bad.append(f"Player.h: {base} declared {len(d)} times")
             continue
         callee = cname.split("__")[0]
+        if r[1] == "loop":
+            sh = loop_shape(t, f[1])
+            if not sh:
+                bad.append(f"{mname}: target is not an all-players loop")
+                continue
+            plan.append({"name": base, "mname": mname, "cname": cname, "callee": callee,
+                         "addr": text_base(FWD_UNIT) + f[1][1], "kind": sh[0], "void": sh[0] == "each",
+                         "nargs": sh[1], "fb": sh[2], "ret": d[0][0], "params": d[0][1],
+                         "gret": "bool" if sh[0] == "find" else "void", "declared": True})
+            continue
+        sh = fwd_shape(t, f[1])
+        if not sh:
+            bad.append(f"{mname}: target is not a forwarder")
+            continue
         plan.append({"name": base, "mname": mname, "cname": cname, "callee": callee,
                      "addr": text_base(FWD_UNIT) + f[1][1], "void": sh[0], "nargs": sh[1], "fb": sh[2],
                      "ret": d[0][0], "params": d[0][1], "declared": True})
@@ -2455,6 +2714,11 @@ def fwd_extend_header(plan, text):
     (kept sorted by name, its head comment brought up to date) and their
     getters the generated member block (by address)."""
     lines = text.split("\n")
+    got = extract_declared(lines, plan)
+    if isinstance(got, str):
+        return None, got
+    drop, moved_groups, moved_lines = got
+    lines = [l for k, l in enumerate(lines) if k not in drop]
     h = next((k for k, l in enumerate(lines) if l.startswith(FWD_DECL_HEAD.split("\n")[0][:45])), None)
     b = next((k for k, l in enumerate(lines) if l == FWD_MEMBER_HEAD.rstrip("\n")), None)
     if h is None or b is None or b > h:
@@ -2463,14 +2727,20 @@ def fwd_extend_header(plan, text):
     while e < len(lines) and re.match(r"^    .*\); // via fn_8[0-9A-F]{7}$", lines[e]):
         e += 1
     callee_of = lambda l: re.search(r"\b(fn_8[0-9A-F]{7})\(", l)[1]
-    members = sorted(lines[b + 1:e] + [fwd_member_line(m) for m in plan], key=callee_of)
+    members = sorted(lines[b + 1:e] + [fwd_member_line(m) for m in plan if not m.get("getter_declared")],
+                     key=callee_of)
     k = h
     while lines[k].startswith("//"):
         k += 1
     j = k
     while j < len(lines) and DECL_RE.match(lines[j]):
         j += 1
-    decls = sorted(lines[k:j] + [fwd_decl_line(m) for m in plan], key=lambda l: DECL_RE.match(l)[2])
+    decls = sorted(lines[k:j] + moved_lines + [fwd_decl_line(m) for m in plan if not m["declared"]],
+                   key=lambda l: DECL_RE.match(l)[2])
+    for g in moved_groups:
+        decls += [""] + g
+    if moved_groups and j < len(lines) and lines[j].strip():
+        decls += [""]  # keep the moved groups apart from what follows
     out = lines[:b + 1] + members + lines[e:h] + FWD_DECL_HEAD.rstrip("\n").split("\n") + decls + lines[j:]
     return "\n".join(out), None
 
@@ -2491,10 +2761,11 @@ def main():
         if u not in known:
             die(f"{u}: not a game unit")
     if FWD_UNIT in units:
-        status, skipped = generate_fwd()
-        print(status)
-        for sk in skipped:
-            print(f"  skipped variant: {sk}")
+        for family in ("fwd", "loop"):
+            status, skipped = generate_fwd(family)
+            print(status)
+            for sk in skipped:
+                print(f"  skipped variant: {sk}")
         units = [u for u in units if u != FWD_UNIT]
         if not units:
             return
