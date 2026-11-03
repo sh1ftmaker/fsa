@@ -1125,7 +1125,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8012DAC0.cpp"),
         Object(NonMatching, "game/act_snow_wall.cpp"),
         Object(NonMatching, "game/tu_8012EA00.cpp"),
-        Object(NonMatching, "game/act_ice_floor_check_npc.cpp"),
+        Object(Matching, "game/act_ice_floor_check_npc.cpp"),
         Object(NonMatching, "game/tu_8012F3E4.cpp"),
         Object(NonMatching, "game/tu_8012F8AC.cpp"),
         Object(NonMatching, "game/tu_8012FBCC.cpp"),
