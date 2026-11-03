@@ -9,10 +9,9 @@ JAISoundHandle *JAISoundHandles::getHandleSoundID(JAISoundID soundID)
 {
     for (int i = 0; i < numHandles_; i++)
     {
-        JAISoundHandle *handle = &handles_[i]; //  there's no temp in TP debug, fakematch
-        if (handle->isSoundAttached())
+        if (handles_[i].isSoundAttached())
         {
-            if ((u32)(*handle)->getID() == (u32)soundID)
+            if (handles_[i]->getID() == soundID)
             {
                 return &handles_[i];
             }
@@ -26,10 +25,9 @@ JAISoundHandle *JAISoundHandles::getHandleUserData(u32 id)
 {
     for (int i = 0; i < numHandles_; i++)
     {
-        JAISoundHandle *handle = &handles_[i]; //  there's no temp in TP debug, fakematch
-        if (handle->isSoundAttached())
+        if (handles_[i].isSoundAttached())
         {
-            if ((*handle)->getUserData() == id)
+            if (handles_[i]->getUserData() == id)
             {
                 return &handles_[i];
             }

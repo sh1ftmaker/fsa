@@ -69,8 +69,9 @@ JSystem/JAudio/Interface/JAISoundChild.cpp:
 	.sdata2     start:0x8053B000 end:0x8053B010
 
 JSystem/JAudio/Interface/JAISoundHandles.cpp:
-	.text       start:0x80026060 end:0x800262AC
+	.text       start:0x80026060 end:0x8002622C
 	.ctors      start:0x8045BD24 end:0x8045BD28
+	.bss        start:0x804B23B0 end:0x804B23D8
 
 JSystem/JAudio/Interface/JAISoundParams.cpp:
 	.text       start:0x800262AC end:0x8002640C
