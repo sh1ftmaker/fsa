@@ -2,8 +2,8 @@
 // per-frame driver and the helpers its descendants call.
 //
 // Not written yet: vfunc_0x80 (0x801CE694), fn_801CE800, fn_801CEA60,
-// fn_801CEBD0, fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
-// fn_801CFA70, fn_801CFD68, fn_801D0020, fn_801D00B4, fn_801D01A0,
+// fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
+// fn_801CFA70, fn_801CFD68, fn_801D00B4,
 // fn_801D0338, fn_801D05F8, fn_801D08B4, fn_801D0B44.
 
 #include "game/GameAudio.h"
@@ -16,6 +16,7 @@
 #include "game/ViewLayer.h"
 
 const bool lbl_8053EFC0 = false;
+const f32 lbl_8053EFC4 = 0.0f;
 
 // Stops sound `soundId` on this actor's sound object.
 void EnemyBase_804A4808::fn_801CDC8C(u32 soundId) {
@@ -292,6 +293,33 @@ s32 EnemyBase_804A4808::fn_801CF6B8() {
     return dir;
 }
 
+// For each player whose box overlaps mBox (fn_801F285C) and that fn_801EAC20
+// accepts, a hit at the player's point goes to fn_801CB538 on this layer; one
+// hit plays sound 0x400D1. Returns whether any player was hit.
+bool EnemyBase_804A4808::fn_801CEBD0() {
+    bool hit = false;
+    JGeometry::TVec3f hitPos;
+    if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec2f xy;
+            s32 flag;
+            if (fn_801F285C(&xy, &flag, false, i) == i) {
+                fn_8023B6CC(i);
+                fn_802379E4(i, &mPos);
+                if (flag == 1 && field_0x1dc.fn_801EAC20(i)) {
+                    hitPos.set(xy.x, xy.y, lbl_8053EFC4);
+                    fn_801CB538(field_0x4, &hitPos, 0, 0);
+                    hit = true;
+                }
+            }
+        }
+        if (hit) {
+            fn_801F0E34(0x400D1, 0);
+        }
+    }
+    return hit;
+}
+
 // A random direction other than `dir`, or another free one when blocked.
 s32 EnemyBase_804A4808::fn_801CF720(s32 dir) {
     s32 newDir = fn_801CD580(dir);
@@ -320,6 +348,59 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
         break;
     }
     return fn_801CFD68(dir, dist);
+}
+
+// The direction from *pos to player `player` on the dominant axis: 0 +x,
+// 1 -x, 2 +y, 3 -y. The |dx| <= |dy| test for `axis` is what the target
+// branches on; the ||/&& shape keeps both clauses as the target has them.
+s32 EnemyBase_804A4808::fn_801D0020(const JGeometry::TVec3f* pos, s32 player, bool axis) {
+    JGeometry::TVec3f* playerPos = &field_0x1ac[player];
+    f32 dx = playerPos->x - pos->x;
+    f32 dy = playerPos->y - pos->y;
+    f32 absY = __fabsf(dy);
+    f32 absX = __fabsf(dx);
+    if ((absX > absY && !axis) || (absX <= absY && axis == true)) {
+        if (pos->x < playerPos->x) {
+            return 0;
+        }
+        return 1;
+    }
+    if (pos->y < playerPos->y) {
+        return 2;
+    }
+    return 3;
+}
+
+// FIXME: 78.3 %. The target takes the reciprocal root into the square's own
+// register (f7) and multiplies the short-offset case straight from f7; ours
+// copies the square into f0 for that case (regalloc). The first test is also
+// compiled as fcmpo; ble where the target has fcmpo; cror; beq.
+// The velocity from mPos toward *target (x, y), at most `speed` long: the
+// offset is normalised (a short one is scaled by its square), then scaled by
+// the shorter of `speed` and the length of the offset.
+void EnemyBase_804A4808::fn_801D01A0(const JGeometry::TVec3f* target, JGeometry::TVec2f* out, f32 speed) {
+    f32 dx = target->x - mPos.x;
+    f32 dy = target->y - mPos.y;
+    f32 sq = dx * dx + dy * dy;
+    bool isZero = sq <= 32.0f * FLT_EPSILON;
+    if (!isZero) {
+        if (sq > 1.0f) {
+            sq = JGeometry::TUtil<f32>::inv_sqrt(sq);
+        }
+        dx *= sq;
+        dy *= sq;
+    }
+    out->x = dx;
+    out->y = dy;
+    f32 len = square(target->x - mPos.x) + square(target->y - mPos.y);
+    if (len > 1.0f) {
+        len = __frsqrte(len) * len;
+    }
+    if (len < speed) {
+        speed = len;
+    }
+    out->x *= speed;
+    out->y *= speed;
 }
 
 // FIXME: 99.8 %. Only the literal order (the angle constant, see init).
