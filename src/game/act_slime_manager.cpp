@@ -29,6 +29,24 @@ void cls_804A5BD8::fn_80207E24() {
     }
 }
 
+bool cls_804A5BD8::fn_80207E58() {
+    bool result = false;
+    switch (mState) {
+    case 3:
+        if (field_0x34a >= 10) {
+            fn_80208244(6);
+            result = true;
+        } else {
+            fn_80208244(2);
+        }
+        break;
+    case 6:
+        result = true;
+        break;
+    }
+    return result;
+}
+
 void cls_804A5BD8::fn_80207ECC() {
     switch (mState) {
     case 1:
