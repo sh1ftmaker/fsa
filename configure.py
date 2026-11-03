@@ -1274,7 +1274,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8020D58C.cpp"),
         Object(NonMatching, "game/act_floormaster.cpp"),
         Object(NonMatching, "game/tu_8020F798.cpp"),
-        Object(NonMatching, "game/tu_8020FE50.cpp"),
+        Object(Matching, "game/tu_8020FE50.cpp"),
         Object(NonMatching, "game/tu_80210630.cpp"),
         Object(NonMatching, "game/act_quicksand.cpp"),
         Object(NonMatching, "game/tu_80212AC0.cpp"),
