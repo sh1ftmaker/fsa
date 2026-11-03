@@ -13,7 +13,7 @@
 // table as its first argument.
 struct cls_80215E48 {
     /* 0x0 */ s32 mCount; // entry 0 only: the number of entries in the table
-    /* 0x4 */ u8 pad_0x4[0x4];
+    /* 0x4 */ s32 mId;    // the id fn_80215B6C passes to fn_8043D874
     /* 0x8 */ s32 mKey;   // the value fn_80215E58 searches for
     /* 0xC */ u8 mFlagC;  // read by fn_80215D38; must be set
     /* 0xD */ u8 pad_0xD[0x1];
@@ -28,6 +28,9 @@ struct cls_80215E48 {
     // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its
     // mKey to `key`.
     void fn_80215FB8(s32 index, s32 key, f32 fraction);
+    // Entry `index`'s mKey (0-3) picks a value from a table; when that value
+    // is positive, lbl_8053AED0 gets fn_8043D874(mId, value, 0).
+    void fn_80215B6C(s32 index);
 }; // Size: 0x24
 
 #endif

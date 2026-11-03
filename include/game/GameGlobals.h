@@ -508,6 +508,10 @@ public:
     // more arguments (0 in most calls).
     void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
 
+    // 0x8043D874 (game/tu_8043A0E8.cpp, not written yet): called with the id in
+    // r4, a value in r5 (a table entry or 300 in act_shooting_gallery) and 0 in r6.
+    void fn_8043D874(s32 id, s32 arg1, u32 arg2);
+
     // 0x8043CB24 (game/tu_8043A0E8.cpp): queues the decimal number `value`
     // for drawing with `digits` digits (r7), centred around (x, y) at `scale`.
     // Returns false when all ten slots (the byte at 0x252) are taken. r5 is
