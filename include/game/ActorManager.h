@@ -320,7 +320,7 @@ bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
 // layer, other than excludeSerial, or -1. Callers pass the actor in r3
 // (ActorBase_804A5770::fn_801F2718 passes this, its mSerial and
 // lbl_8053F748; others pass -1 for excludeSerial).
-s32 fn_801F8108(ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz);
+s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz);
 
 } // extern "C"
 

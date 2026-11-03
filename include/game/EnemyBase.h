@@ -269,9 +269,9 @@ public:
     // 8 units / 11 calls. The 16-bit angle (atan2 * 10430.378f, fctiwz) from
     // mPos to `player` (field_0x1ac[player]); callers store it with sth or
     // extsh it, the body returns it unnarrowed.
-    s32 fn_801D0280(s32 player);
+    s32 fn_801D0280(s32 player) const;
     // 4 units / 8 calls. The same angle from mPos to *pos.
-    s32 fn_801D02E0(const JGeometry::TVec3f* pos);
+    s32 fn_801D02E0(const JGeometry::TVec3f* pos) const;
     // 1 unit / 3 calls. The player whose angle from *from is nearest to
     // `angle` (extsh at 0x801D035C), skipping players that are absent or
     // excluded, or -1.
@@ -294,7 +294,7 @@ public:
     f32 fn_801D0DA0(s32 player, const JGeometry::TVec3f* pos);
     // 6 units / 13 calls (clrlwi.). On a floor layer: ENEMY_FLAG_LANDED or
     // 0x10 set; elsewhere mPos.z <= 0.
-    bool fn_801D0DD4();
+    bool fn_801D0DD4() const;
     // 3 units / 3 calls. Snaps mPos (x, y) with fn_801CCD34 and copies it
     // to mPrevPos and mSpawnPos.
     void fn_801D0E58();

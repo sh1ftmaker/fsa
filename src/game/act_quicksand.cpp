@@ -3,15 +3,15 @@
 #include "game/GameMath.h"
 #include "game/act/act_quicksand.h"
 
-// FIXME: 86.6 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
-// scale match. The original loads mPos.z before pos->z for the sub (ours
-// loads both of pos first), and picks the length with one fsel
-// (push - field_0x3a4 >= 0) where ours compares and branches.
+// FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
+// scale match. The original picks the length with one fsel
+// (push - field_0x3a4 >= 0) where ours compares and branches (an explicit
+// `push - field_0x3a4 >= 0.0f` gave 88.9 %).
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
-void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
-    cls_804A6270* sand = static_cast<cls_804A6270*>(actor);
+void fn_80210E90(const ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
+    const cls_804A6270* sand = static_cast<const cls_804A6270*>(actor);
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= 0.0f && sand->mState != 0) {
         f32 radius = 0.9f * (16.0f * sand->field_0x54.x);

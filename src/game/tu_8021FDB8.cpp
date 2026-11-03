@@ -2,9 +2,7 @@
 #include "game/act/tu_801DE714.h"
 #include "game/ActorManager.h"
 
-// FIXME: 98.4%. Only the lwz of mTargetSerial into r31 is scheduled after the
-// mr r30, r3 (stw r30) in the prologue; the original loads it before stw r30.
-void cls_804A51E4::fn_8021FDB8() {
+void cls_804A51E4::fn_8021FDB8() const {
     s32 serial = mTargetSerial;
     if (serial < 0) {
         return;

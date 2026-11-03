@@ -568,7 +568,7 @@ extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 class ActorBase_804A5770;
 extern "C" {
 bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
-void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
+void fn_80210E90(const ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
 }
 
 // game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor

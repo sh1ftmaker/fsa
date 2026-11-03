@@ -17,7 +17,7 @@ struct cls_8012F64C {
     // Forgets every serial: count 0, all slots -1.
     void fn_8012F494();
     // True once every recorded actor is an 'IFCK' actor whose floor tile changed.
-    bool fn_8012F3E4();
+    bool fn_8012F3E4() const;
     // Appends the actor's serial (mSerial).
     void fn_8012F530(const ActorBase_804A5770* actor);
 

@@ -323,7 +323,7 @@ public:
     void* fn_801F0E34(u32 soundId, u32 fadeTime) const;
     // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
     // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
-    ActorSoundObj_804578F4* fn_801F1184();
+    ActorSoundObj_804578F4* fn_801F1184() const;
     // 2 units / 2 calls. If the box at 0x80 is not empty and vfunc_0x4C(
     // field_0x4, &mPos) (0x801F11FC-0x801F1210): pushes mPos back from
     // mPrevPos along field_0x98's angle, or respawns at mSpawnPos when out
@@ -358,7 +358,7 @@ public:
     // 30 units / 38 calls. fn_801F8108(this, actorId, mSerial, ...): the
     // serial of an actor with mActorId == actorId (4CC; cmplw) overlapping
     // this one on its layer, or -1.
-    s32 fn_801F2718(u32 actorId);
+    s32 fn_801F2718(u32 actorId) const;
     // 16 units / 17 calls. Bit i set for each player i (other than
     // skipPlayer; callers pass -1 in 16 of 17) whose box overlaps mBox
     // around mPos in screen space (0x801F2828-0x801F2844).
@@ -403,10 +403,10 @@ public:
     void fn_801F317C(JGeometry::TBox2f* out);
     // 11 units / 21 calls. The same for mBox; the manager's actor-vs-actor
     // test (0x801F801C) uses it too.
-    void fn_801F31C4(JGeometry::TBox2f* out);
+    void fn_801F31C4(JGeometry::TBox2f* out) const;
     // 2 units / 7 calls. fn_8023DE58(player) == field_0x4, or
     // fn_801F329C(player); returns 0 or 1.
-    bool fn_801F320C(s32 player);
+    bool fn_801F320C(s32 player) const;
     // 4 units / 5 calls. fn_8023DE58(player) < 8 && field_0x4 == 8.
     bool fn_801F329C(s32 player);
     // 1 unit / 2 calls (the manager's update loop, with mActors[i]). Fills

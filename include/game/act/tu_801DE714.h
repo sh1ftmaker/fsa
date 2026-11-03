@@ -29,7 +29,7 @@ public:
     // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
     bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.
-    bool fn_801E1D9C();
+    bool fn_801E1D9C() const;
     // tu_801DE714 (0x801E1DE8): calls fn_801CCF7C (r3 is not forwarded; it
     // ignores it) in a framed `bl`; callers test r3 with clrlwi. (a bool).
     bool fn_801E1DE8();
@@ -39,11 +39,11 @@ public:
     // tu_8021827C (0x8021835C): called from vfunc_0x9C's override (0x801DE9C0).
     void fn_8021835C();
     // tu_8021827C (0x80218538): whether the actor's box is in view.
-    bool fn_80218538();
+    bool fn_80218538() const;
     // tu_8021FDB8 (0x8021FDB8): moves the actor found by mTargetSerial next
     // to this one, offset by mAnim.mCel (z) and the target's field_0x90 and
     // our direction field_0x98 (x).
-    void fn_8021FDB8();
+    void fn_8021FDB8() const;
 
     /* 0x2A8 */ s32 field_0x2a8;
     /* 0x2AC */ s32 field_0x2ac;

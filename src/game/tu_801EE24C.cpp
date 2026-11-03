@@ -26,9 +26,7 @@ static inline void releaseEmitter(JPABaseEmitter* emitter) {
     }
 }
 
-// FIXME: 81.9 %. Same instructions; the target loads mSlot (lwz 0x19c) before
-// lbl_8053AAF8 and its 0x4 / 0x8, this code after.
-ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() {
+ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() const {
     return lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
 }
 
@@ -55,9 +53,8 @@ s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
     return fn_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
 }
 
-// FIXME: 88.0 %. Besides the literal, the target loads mSerial (lwz 0x198)
-// before 32.0f (lfs), this code after.
-s32 ActorBase_804A5770::fn_801F2718(u32 actorId) {
+// FIXME: 99.5 %. Only the literal differs (lbl_8053F748, see above).
+s32 ActorBase_804A5770::fn_801F2718(u32 actorId) const {
     return fn_801F8108(this, actorId, mSerial, 32.0f);
 }
 
@@ -83,15 +80,11 @@ static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 play
 
 // Whether `player` is on this actor's layer (fn_8023DE58), or counts as on
 // it through fn_801F329C.
-// FIXME: 94.2 %. Only the load of field_0x4 into r31 is scheduled later: the
-// target issues it right after the prologue's stw r31, before li r30, 0; ours
-// after mr r28, r3, and compares cmpw r31, r3 where the target has
-// cmpw r3, r31 (a local declared before or after `result`, getField_0x4()
-// and a `||` return all give the same).
-bool ActorBase_804A5770::fn_801F320C(s32 player) {
+bool ActorBase_804A5770::fn_801F320C(s32 player) const {
     s32 layer = field_0x4;
     bool result = false;
-    if (fn_8023DE58(player) == layer || isPlayerBelowLayer8(this, player)) {
+    s32 playerLayer = fn_8023DE58(player);
+    if (playerLayer == layer || isPlayerBelowLayer8(this, player)) {
         result = true;
     }
     return result;

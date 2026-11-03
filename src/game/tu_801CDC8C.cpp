@@ -322,19 +322,16 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
     return fn_801CFD68(dir, dist);
 }
 
-// FIXME: 73.7 %. The target loads mPos.x/y before the player position and
-// the atanTable_ address after them; ours loads in the other order. Literal
-// order also off (the angle constant, see init).
+// FIXME: 99.8 %. Only the literal order (the angle constant, see init).
 // The 16-bit angle from mPos to player `player`.
-s32 EnemyBase_804A4808::fn_801D0280(s32 player) {
-    JGeometry::TVec3f* playerPos = &field_0x1ac[player];
+s32 EnemyBase_804A4808::fn_801D0280(s32 player) const {
+    const JGeometry::TVec3f* playerPos = &field_0x1ac[player];
     return JMath::atanTable_.atan2_(playerPos->x - mPos.x, playerPos->y - mPos.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
 }
 
-// FIXME: 44.8 %. Same instructions: the target loads pos and mPos before
-// materialising atanTable_; ours after. Literal order also off.
+// FIXME: 99.8 %. Only the literal order (the angle constant, see init).
 // The 16-bit angle from mPos to *pos.
-s32 EnemyBase_804A4808::fn_801D02E0(const JGeometry::TVec3f* pos) {
+s32 EnemyBase_804A4808::fn_801D02E0(const JGeometry::TVec3f* pos) const {
     return JMath::atanTable_.atan2_(pos->x - mPos.x, pos->y - mPos.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
 }
 
@@ -358,18 +355,18 @@ f32 EnemyBase_804A4808::fn_801D0DA0(s32 player, const JGeometry::TVec3f* pos) {
     return square(dx) + square(dy);
 }
 
-// FIXME: 83.9 %. The target loads field_0x4 before saving r30 and returns
-// mPos.z <= 0 through branches (li 1 / li 0); ours uses mfcr / extrwi.
 // Whether the actor is on the ground.
-bool EnemyBase_804A4808::fn_801D0DD4() {
+bool EnemyBase_804A4808::fn_801D0DD4() const {
     if (viewLayerFlag(field_0x4)) {
         return (mFlags & (ENEMY_FLAG_LANDED | 0x10)) != 0;
     }
+    bool onGround;
     if (mPos.z <= 0.0f) {
-        return true;
+        onGround = true;
     } else {
-        return false;
+        onGround = false;
     }
+    return onGround;
 }
 
 void EnemyBase_804A4808::vfunc_0x54() {}
