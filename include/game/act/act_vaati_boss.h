@@ -54,6 +54,7 @@ class VaatiBoss_804A4958 : public EnemyBase_804A4808 {
 public:
     VaatiBoss_804A4958() {}
     /* 0x20 */ virtual void draw();
+    /* 0x24 */ virtual void vfunc_0x24(); // empty override
 
     // 0x801EDC0C (draw's body): adds the offset of field_0x52c to mPos,
     // shakes mPos.x by 1.0f every other frame in state 0xB once the timer is

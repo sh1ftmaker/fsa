@@ -207,7 +207,6 @@ act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
 act_trick_floor_2	sinit	__sinit_act_trick_floor_2_cpp	-	-	new	new
 act_two_sword_motion	sinit	__sinit_act_two_sword_motion_cpp	-	-	new	-
-act_vaati_boss	sinit	__sinit_act_vaati_boss_cpp	-	-	new	-
 act_vaati_demo	sinit	__sinit_act_vaati_demo_cpp	-	-	new	-
 act_vaati_time_up	sinit	__sinit_act_vaati_time_up_cpp	-	-	new	-
 act_vulture	dtor_enemy	__dt__16Vulture_804A4230Fv	Vulture_804A4230	0x804A4230	new	new
