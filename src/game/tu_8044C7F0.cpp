@@ -25,3 +25,10 @@ extern "C" JGeometry::TVec3f* fn_80453874(JGeometry::TVec3f* v, f32 x, f32 y, f3
     v->z = z;
     return v;
 }
+
+s32 fn_8044F664() {
+    if (lbl_8053AF40 != nullptr) {
+        return lbl_8053AF40->field_0x184;
+    }
+    return 9;
+}
