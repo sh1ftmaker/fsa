@@ -65,8 +65,8 @@ any symbols.txt change (the gate accepts placeholder renames).
   `GameLib("game", ...)` block (`NonMatching`, category `game`) before
   anyone starts them; `config/G4SE01/game_units.tsv` lists each unit's
   range, confidence, sections and name evidence (actor IDs included).
-- Names: `game/tu_<text start>.cpp`, or an evidenced name
-  (`game/act_<actor>.cpp` from the actor table, `game/RailBase.cpp`).
+- Names: `game/tu_<text start>.cpp` (258 units), or an evidenced name
+  (270 `game/act_<actor>.cpp` from the actor table, `game/RailBase.cpp`).
   Renames need evidence and touch the `splits.txt` stanza, the configure.py
   line and `game_units.tsv` together: a coordinator edit, not a worker's.
 - Queue: `python3 tools/coord.py queue --lib src/game --small` (smallest
@@ -80,7 +80,11 @@ any symbols.txt change (the gate accepts placeholder renames).
   its source emits (PLAN.md, "Symbols").
 - Tell game workers in `--notes`: the unit's `game_units.tsv` row, the
   actor IDs it constructs, and which `references ... inside another unit`
-  note of `to_splits.py` concerns it (extern data owned elsewhere).
+  note of `to_splits.py` concerns it (extern data owned elsewhere). Those
+  notes cover only references the tool anchors to one unit; constants
+  several units read (shared `.sdata2`) aren't listed, so a worker who
+  finds its relocations pointing into a neighbour's data reports it as a
+  SHARED-EDIT.
 - 38 medium units may hold several files: a boundary found inside one is a
   SHARED-EDIT for the coordinator (split stanza, new configure.py line).
 

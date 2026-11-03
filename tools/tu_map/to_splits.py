@@ -13,12 +13,13 @@ Each unit gets the sections its evidence covers:
   the next unit's first entry.
 - .ctors: the slot holding a pointer to the unit's __sinit.
 - .rodata / .data / .bss / .sdata / .sbss / .sdata2: tiled from the data the
-  unit's code alone references ("anchors"). Between two units the cut goes
+  unit owns ("anchors"): data its code alone references, then, transitively
+  across sections, data only its owned data points to. Between two units the cut goes
   where the fewest unassigned symbols land on the wrong side (by the code
   and data that reference them); ties go to the later unit's first anchor.
   A section whose anchors interleave with another unit's is left out for
   both (reported), as is anything that would overlap an existing split.
-Names come from name_evidence(): a __FILE__-style source name in the
+Names come from name_units(): a __FILE__-style source name in the
 unit's strings, or the actor table (docs/names/actors.tsv) through the actor
 spawner's vtables; otherwise game/tu_<addr>.cpp.
 """
@@ -105,6 +106,14 @@ def main(apply):
                 outside[a] += 1
             else:
                 code_refs[a].add(u)
+    # The actor spawner's file holds inline copies of other files' actor
+    # constructors, so its references to their vtables are copies: when
+    # another unit references the same symbol, the spawner's file doesn't
+    # count towards ownership.
+    spawner = unit_of(byname[SPAWNER]['addr'])
+    for a, us in code_refs.items():
+        if spawner in us and len(us) > 1:
+            us.discard(spawner)
     data_refs = defaultdict(set)  # target addr -> set of data symbol addrs referencing it
     for dn, lst in R['data'].items():
         if dn in byname:
@@ -176,21 +185,32 @@ def main(apply):
         sec = secof(s['addr'])
         if sec and s['sec'] == sec:
             symlist[sec].append(s)
+    # Owners over all data sections at once: a symbol only one unit's code
+    # references (and no code outside the game) belongs to that unit; then,
+    # transitively and across sections, a symbol only referenced from data
+    # owned by one unit (a .data table's strings in .rodata, its floats in
+    # .sdata2) belongs to that unit too. File-local data can't be pointed at
+    # from another file's initialised data.
+    alldata = [s for sec in DATASECS for s in symlist[sec]]
+    gowner = {}
+    for s in alldata:
+        us = code_refs.get(s['addr'], set())
+        if len(us) == 1 and not outside[s['addr']]:
+            gowner[s['addr']] = next(iter(us))
+    changed = True
+    while changed:
+        changed = False
+        for s in alldata:
+            a = s['addr']
+            if a in gowner or code_refs.get(a) or outside[a] or not data_refs.get(a):
+                continue
+            us = {gowner.get(d) for d in data_refs[a]}
+            if len(us) == 1 and None not in us:
+                gowner[a] = next(iter(us))
+                changed = True
     for sec in DATASECS:
         L = sorted(symlist[sec], key=lambda s: s['addr'])
-        # owner by code: exactly one unit references it, nothing outside does
-        owner = {}
-        for s in L:
-            us = code_refs.get(s['addr'], set())
-            if len(us) == 1 and not outside[s['addr']]:
-                owner[s['addr']] = next(iter(us))
-        # one level of data->data: a symbol only referenced from data owned by one unit
-        for s in L:
-            if s['addr'] in owner or code_refs.get(s['addr']) or outside[s['addr']]:
-                continue
-            us = {owner.get(d) for d in data_refs.get(s['addr'], ())}
-            if len(us) == 1 and None not in us:
-                owner[s['addr']] = next(iter(us))
+        owner = dict(gowner)  # per section copy: foreign runs are dropped below
         anchors = [(s['addr'], owner[s['addr']], s) for s in L if s['addr'] in owner]
         # A unit's code may reference data defined in another unit (an extern
         # const). Split each unit's anchors into runs not interrupted by other
@@ -291,6 +311,30 @@ def main(apply):
                 continue
             out[u][sec] = (s, e)
 
+    # ---- check: a unit's data pointing into another unit's .rodata/.sdata2
+    # (file-local strings and constants) means a cut is still wrong there
+    flat = sorted((r[0], r[1], u, sec) for u in out for sec, r in out[u].items() if sec in DATASECS)
+    fstarts = [f[0] for f in flat]
+
+    def place(a):
+        i = bisect.bisect_right(fstarts, a) - 1
+        return (flat[i][2], flat[i][3]) if i >= 0 and a < flat[i][1] else (None, None)
+
+    cross = Counter()
+    for dn, lst in R['data'].items():
+        if dn not in byname:
+            continue
+        u, _ = place(byname[dn]['addr'])
+        if u is None:
+            continue
+        for a in lst:
+            v, sec = place(a)
+            if v is not None and v != u and sec in ('.rodata', '.sdata2'):
+                cross[(u, v, sec)] += 1
+    for (u, v, sec), n in sorted(cross.items()):
+        report.append(f'data of {units[u]["start"]:08X} points {n}x into {sec} of {units[v]["start"]:08X} '
+                      f'(no owner reaches that table by name, so nothing moves the cut)')
+
     # ---- names
     names, evid = name_units(units, syms, byname, unit_of, out)
 
@@ -317,7 +361,7 @@ def main(apply):
 
 
 def name_units(units, syms, byname, unit_of, out):
-    names, evid = {}, {}
+    names, evid, act_id = {}, {}, {}
     # 1. source file names in the unit's own strings (__FILE__)
     for i, u in enumerate(units):
         m = [h for h in u['hints'].split('|') if re.fullmatch(r'[A-Za-z_]\w*\.(cpp|c)', h)]
@@ -359,6 +403,7 @@ def name_units(units, syms, byname, unit_of, out):
         idtxt = '; '.join(f'{a} ({h})' for a, h in sorted(ids))
         if len(files) == 1 and not lows:
             names[i] = f'game/{files.pop()}.cpp'
+            act_id[i] = '_'.join(sorted(a for a, _ in ids)).lower()
             evid[i] = f'actor spawner {SPAWNER}: {idtxt}; actors.tsv'
         else:
             evid[i] = f'actor spawner {SPAWNER}: {idtxt}; not named (several or low-confidence actors)'
@@ -368,11 +413,14 @@ def name_units(units, syms, byname, unit_of, out):
             names[i] = f'game/tu_{u["start"]:08X}.cpp'
             evid.setdefault(i, '')
         seen[names[i]] += 1
-    # duplicate names: keep the address on all of them
+    # duplicate names: actors.tsv suggests one file stem for several IDs
+    # (SPFR and BFRY are both act_great_fairy); add the actor ID to each,
+    # anything else gets its address
     for i, u in enumerate(units):
         if seen[names[i]] > 1:
             stem = names[i][:-4]
-            names[i] = f'{stem}_{u["start"]:08X}.cpp'
+            tag = act_id.get(i) or f'{u["start"]:08X}'
+            names[i] = f'{stem}_{tag}.cpp'
     return names, evid
 
 
@@ -394,42 +442,73 @@ def spawner_cases():
     """Actor ID -> constructor address, from the spawner's compare tree."""
     body = asm_fn(SPAWNER)
     lines = body.splitlines()
-    regs = {}
-    case_label = {}
+    # Walk the compare tree along its branches (a register set by `lis` on one
+    # path is not live on another), from the entry. An ID is accepted only from
+    # `addi r0, rX, lo` / `cmpw r29, r0` / `beq L` with rX known from a `lis`
+    # on the same path; case bodies (those beq targets) are not walked.
     label_at = {}
-    cur = None
-    for n, l in enumerate(lines):
+    ins = []
+    for l in lines:
         m = re.match(r'^(\.L_\w+):', l)
         if m:
-            label_at[m[1]] = n
-    for l in lines:
-        ins = l.split('*/')[-1].strip()
-        m = re.match(r'lis (r\d+), (0x[0-9a-f]+)$', ins)
-        if m:
-            regs[m[1]] = int(m[2], 16) << 16
+            label_at[m[1]] = len(ins)
             continue
-        m = re.match(r'addi r0, (r\d+), (0x[0-9a-f]+)$', ins)
-        if m and m[1] in regs:
-            v = regs[m[1]] + int(m[2], 16)
-            cur = struct.pack('>I', v & 0xFFFFFFFF)
-            continue
-        m = re.match(r'beq (\.L_\w+)$', ins)
-        if m and cur:
-            try:
-                aid = cur.decode('ascii')
-            except UnicodeDecodeError:
-                aid = None
-            if aid and re.fullmatch(r'[A-Za-z0-9]{4}', aid):
-                case_label[aid] = m[1]
-            cur = None
+        if '*/' in l:
+            ins.append(l.split('*/')[-1].strip())
+    case_label = {}
+    WRITES = re.compile(r'^(?!st|cmp|b|mt)\w+\.? (r\d+),')
+    todo = [(0, ())]
+    seen = set()
+    while todo:
+        pc, regs0 = todo.pop()
+        regs = dict(regs0)
+        while pc < len(ins):
+            key = (pc, tuple(sorted(regs.items())))
+            if key in seen:
+                break
+            seen.add(key)
+            i = ins[pc]
+            m = re.match(r'lis (r\d+), (0x[0-9a-f]+)$', i)
+            if m:
+                regs[m[1]] = int(m[2], 16) << 16
+                pc += 1
+                continue
+            m = re.match(r'addi r0, (r\d+), (-?0x[0-9a-f]+)$', i)
+            if (m and m[1] in regs and pc + 2 < len(ins) and ins[pc + 1] == 'cmpw r29, r0'
+                    and ins[pc + 2].startswith('beq .L_')):
+                v = (regs[m[1]] + int(m[2], 16)) & 0xFFFFFFFF
+                try:
+                    aid = struct.pack('>I', v).decode('ascii')
+                except UnicodeDecodeError:
+                    aid = None
+                if aid and re.fullmatch(r'[A-Za-z0-9]{4}', aid):
+                    if aid in case_label and case_label[aid] != ins[pc + 2][4:]:
+                        raise SystemExit(f'spawner: {aid} decoded twice')
+                    case_label[aid] = ins[pc + 2][4:]
+                pc += 3  # fall through: the case body is not part of the tree
+                continue
+            m = re.match(r'(b|beq|bne|blt|bge|bgt|ble) (\.L_\w+)$', i)
+            if m:
+                tgt = label_at[m[2]]
+                if m[1] == 'b':
+                    pc = tgt
+                    continue
+                todo.append((tgt, tuple(sorted(regs.items()))))
+                pc += 1
+                continue
+            if i == 'blr' or i.startswith('bctr'):
+                break
+            w = WRITES.match(i)
+            if w:
+                regs.pop(w[1], None)
+            pc += 1
     out = {}
     for aid, lab in case_label.items():
         n = label_at[lab]
         seen_new = False
         ctor = None
-        for l in lines[n + 1:n + 40]:
-            ins = l.split('*/')[-1].strip()
-            m = re.match(r'bl (\S+)$', ins)
+        for i in ins[n:n + 40]:
+            m = re.match(r'bl (\S+)$', i)
             if m:
                 if m[1].startswith('__nw__'):
                     seen_new = True
@@ -437,7 +516,7 @@ def spawner_cases():
                 if seen_new:
                     ctor = m[1]
                     break
-            if ins.startswith('b .L') and seen_new:
+            if i.startswith('b .L') and seen_new:
                 break
         if ctor:
             out[aid] = ctor
@@ -453,7 +532,7 @@ def ctor_vtable(addr):
     if not name:
         return None
     body = asm_fn(name) or ''
-    m = re.findall(r'addi r0, r\d+, (lbl_8049[0-9A-F]{4}|lbl_804[AB][0-9A-F]{5})@l\n.*stw r0, 0x0\(r', body)
+    m = re.findall(r'addi r0, r\d+, (lbl_804[9AB][0-9A-F]{4})@l\n.*stw r0, 0x0\(r', body)
     if not m:
         return None
     return int(m[-1][4:], 16)

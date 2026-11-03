@@ -62,12 +62,24 @@ stays OK):
 
 - Every unit has `.text`, and every section its evidence covers: extab and
   extabindex 528 (from the DOL's extabindex entries), `.ctors` 529 (its
-  `__sinit` slot), `.bss` 526, `.sdata2` 458, `.rodata` 335, `.data` 299,
-  `.sdata` 63, `.sbss` 61. Data ranges are tiled from the data only the
-  unit's code references; a unit's references into another unit's data
-  (extern consts, shared buffers) are listed by the tool and left to the
-  owner. 100 % of the game's code (3,574,236 bytes, 6,791 functions) is in
-  game units.
+  `__sinit` slot), `.bss` 526, `.sdata2` 459, `.data` 457, `.rodata` 355,
+  `.sdata` 63, `.sbss` 61. 100 % of the game's code (3,574,236 bytes, 6,791
+  functions) is in game units.
+- Data ownership, computed over all data sections at once: a symbol only one
+  unit's code references belongs to that unit; then, transitively and across
+  sections, a symbol only referenced from data one unit owns (a `.data`
+  table's strings in `.rodata`, its floats in `.sdata2`). The actor
+  spawner's file holds inline copies of other files' constructors, so its
+  references don't count when another unit references the same symbol
+  (otherwise 230 small actor files lost their vtable, often their only
+  data). Units are tiled from the owned data; gaps nobody owns go to the
+  earlier unit. Check: only one unit's data still points into another unit's
+  `.rodata`/`.sdata2` (act_ganon's table into tu_801902C0, 77 pointers; the
+  table itself is never referenced by name), and the tool prints it.
+- The tool's "references ... inside another unit" notes cover only
+  references it anchors to a single unit (10 of them). Code also reads
+  `.sdata2`/`.rodata` constants several units share (about 40 unit pairs,
+  e.g. tu_801CB270's constants from 8 units); those aren't listed.
 - Corrections the evidence forced on `tu_map.tsv`:
   - 0x80021840–0x80021F24 (linked before JSystem) is **two** units, split at
     0x80021D60: two `__sinit`s in `.ctors` (0x80021848, 0x80021DA8), and
@@ -78,17 +90,21 @@ stays OK):
     0x8042E780 cuts were placeholders): `.sbss`/`.data` of 0x80427D2C.. sit
     inside the player's, 0x8053AEBD is used on both sides, data order is
     reversed like the rest of this `-inline deferred` file, and it ends at
-    its `__sinit` 0x8042E788. It includes sms's THPDec.c/THPAudio.c: all 25
+    its `__sinit` 0x8042E788. It includes sms's THPDec.c/THPAudio.c: all 28
     of their functions match with the game flags plus `-inline off,deferred`.
   - `.text` ends at 0x8045BCE4 (tu_map.tsv's last row says 0x8045BD00).
-- Names (57): `game/RailBase.cpp` from its own `"RailBase.cpp"` string; 56
-  actor files `game/act_<name>.cpp` from `docs/names/actors.tsv` (high and
-  medium names only), placed through the actor spawner `fn_801F9484`: the
-  case's constructor lies in the unit, or (when the constructor is an inline
-  copy in the spawner's file) the vtable it stores lies in the unit's
-  `.data`. 33 more units construct several or low-confidence actors; their
-  IDs are in `game_units.tsv` and they stay `game/tu_<start>.cpp`, like the
-  remaining 439.
+- Names (271): `game/RailBase.cpp` from its own `"RailBase.cpp"` string;
+  270 actor files `game/act_<name>.cpp` from `docs/names/actors.tsv` (high
+  and medium names only), placed through the actor spawner `fn_801F9484`,
+  whose compare tree is decoded along its branches (an ID counts only from
+  `lis`/`addi r0`/`cmpw r29, r0`/`beq`): the case's constructor lies in the
+  unit, or, when the constructor is an inline copy in the spawner's file,
+  the vtable it stores lies in the unit's `.data` and the unit's own code
+  references it (true for all 232 vtable placements). Where actors.tsv
+  suggests one stem for several IDs, each gets its ID
+  (`act_great_fairy_spfr`, `act_great_fairy_bfry`). 33 more units construct
+  several or low-confidence actors; their IDs are in `game_units.tsv` and
+  they stay `game/tu_<start>.cpp`, like the remaining 225.
 
 Next, as each file is worked on:
 1. Splitting further: 38 medium units (`unverified_single_TU`, one

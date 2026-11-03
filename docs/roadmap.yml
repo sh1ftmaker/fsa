@@ -179,7 +179,7 @@ phases:
         measure: {kind: units}
       - id: thp
         title: THP video
-        desc: The THP player in the game region, from oot-gc's THP sources.
+        desc: The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit.
         status: next
         covers: ["game:THP"]
         measure: {kind: code}
@@ -192,7 +192,7 @@ phases:
     milestones:
       - id: tu-splits
         title: The file map in splits.txt
-        desc: 529 game units with their extab, .ctors and data ranges; 57 named from actors.tsv and a source-name string.
+        desc: 529 game units with their extab, .ctors and data ranges; 271 named from actors.tsv and a source-name string.
         status: done
         covers: [game]
         measure: {kind: split}
