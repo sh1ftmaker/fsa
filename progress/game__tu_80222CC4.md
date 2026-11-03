@@ -63,3 +63,11 @@ the measurements below rule out every layout tried and point at a compiler-mode 
   tu_801D7AFC init, tu_8012F3E4 fn_8012F554, 4 in tu_80427D2C): game functions 1745 -> 1738. Not adopted.
 - So FSA shows auto-style inlining (callee generated earlier) with deferred-style data order. No GC/2.0-3.0a5.2
   flag or pragma tested gives both. Unit stays NonMatching; nothing changed in source or flags.
+
+## Compiler-version sweep and crack-pass trick (2026-11-03, lead/lead-jumptable)
+- All GC compilers 1.0-3.0a5.2 x {auto, auto,deferred, deferred, smart,deferred, -ipa file/function, bottomup, level=1,
+  defer_codegen / auto_inline pragmas}: none gives deferred .data order together with auto-style (earlier-callee-only)
+  inlining. Table in docs/GAME_PLAN.md "Measured: compiler versions and inline modes".
+- Trick (FAKEMATCH(crack-pass)): `#pragma defer_codegen on` + functions reversed. With the unit Matching: honest 7/7,
+  all sections 100 %, `ninja` SHA-1 OK, game functions 1745 -> 1746. Left NonMatching (gate rejects fakematch);
+  gate ok. docs/CRACK_PASS.md.

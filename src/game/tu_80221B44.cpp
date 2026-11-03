@@ -5,19 +5,27 @@
 #include "game/Map.h"
 #include "game/act/tu_80221B44.h"
 
-cls_804A6AA8::~cls_804A6AA8() {}
+// FAKEMATCH(crack-pass): deferred codegen for this file only, so the vtable is
+// written with its first user and precedes vfunc_0x90's jump table, as in the
+// original .data; the game's -inline auto puts every vtable last. Functions are
+// listed in reverse address order because deferred codegen emits them in
+// reverse. See docs/CRACK_PASS.md.
+#pragma defer_codegen on
 
-void cls_804A6AA8::vfunc_0x88() {
-    if (mState == 2) {
-        fn_80221250();
-    } else {
-        EnemyBase_804A4808::vfunc_0x88();
-    }
+cls_804A6AA8::cls_804A6AA8() {
+    mLandings = 0;
+    mRing.mActive = 0;
 }
 
-void cls_804A6AA8::vfunc_0x9C(u8 mapHit) {
-    cls_804A6A00::vfunc_0x9C(mapHit);
-    mRing.fn_800F802C();
+void cls_804A6AA8::init() {
+    cls_804A6A00::init();
+    field_0x98 = 2;
+    mState = 4;
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D22DC(2, 0, false);
 }
 
 // FIXME: 99.93%. Only the stack slots of the position locals differ: the
@@ -127,18 +135,17 @@ void cls_804A6AA8::vfunc_0x90(u8 mapHit) {
     }
 }
 
-void cls_804A6AA8::init() {
-    cls_804A6A00::init();
-    field_0x98 = 2;
-    mState = 4;
-    mStateTimer = 0;
-    field_0x250 = -1;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
+void cls_804A6AA8::vfunc_0x9C(u8 mapHit) {
+    cls_804A6A00::vfunc_0x9C(mapHit);
+    mRing.fn_800F802C();
 }
 
-cls_804A6AA8::cls_804A6AA8() {
-    mLandings = 0;
-    mRing.mActive = 0;
+void cls_804A6AA8::vfunc_0x88() {
+    if (mState == 2) {
+        fn_80221250();
+    } else {
+        EnemyBase_804A4808::vfunc_0x88();
+    }
 }
+
+cls_804A6AA8::~cls_804A6AA8() {}
