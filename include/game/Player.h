@@ -228,6 +228,7 @@ public:
     void fn_80263854(); // byte at 0x459 = 0 (stb r0)
     void fn_80293760(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
     void fn_80293B1C(); // byte at 0x124D = 1 (stb r4), byte at 0x458 = 0 (stb r0)
+    void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
@@ -273,7 +274,12 @@ public:
     /* 0x03DC */ s32 field_0x3dc; // fn_80230CFC (2 without a player)
     /* 0x03E0 */ u8 field_0x3e0[0x3E8 - 0x3E0];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
-    /* 0x03EC */ u8 field_0x3ec[0x42C - 0x3EC];
+    /* 0x03EC */ u8 field_0x3ec[0x3F9 - 0x3EC];
+    // Cleared by fn_802922D0 (stb r0); 0x3FB set by it (stb r4).
+    /* 0x03F9 */ u8 field_0x3f9;
+    /* 0x03FA */ u8 field_0x3fa;
+    /* 0x03FB */ u8 field_0x3fb;
+    /* 0x03FC */ u8 field_0x3fc[0x42C - 0x3FC];
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
