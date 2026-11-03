@@ -51,6 +51,7 @@ public:
     /* 0x2BC */ u8 field_0x2bc[8]; // not yet known
     /* 0x2C4 */ JPABaseEmitter* mEmitter;
     /* 0x2C8 */ cls_8021ACE0 mHead; // swinging head; mHead.mAngle is the head's yaw
-}; // Size: at least 0x2D6 (the constructor is in act_kaepora_gaebora)
+    /* 0x2D8 */ f32 field_0x2d8;
+}; // Size: 0x2DC
 
 #endif
