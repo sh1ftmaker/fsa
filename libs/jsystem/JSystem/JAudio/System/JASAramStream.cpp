@@ -322,6 +322,8 @@ bool JASAramStream::headerLoad(u32 p1, int p2) {
     return true;
 }
 
+// FIXME: 98.79 %, register allocation only: FSA has this in r27, the channel loop index in r28 and
+// the ARAM base in r26; ours r28, r26 and r27.
 bool JASAramStream::load() {
     JAS_CS_START
     mFreeBlockCount--;

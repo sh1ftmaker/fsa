@@ -26,6 +26,12 @@ every data section 100 %. Stays NonMatching: load() differs.
   aram base=r26; ours this=r28, i=r26, base=r27. tp's statement order
   (offset before size, no `block` local) and a hoisted `int i` give identical code.
 
+## w10-jas (2026-11-02)
+Unit unchanged at 22/23 (load 98.79 %), NonMatching. Codegen, not blocked by another unit.
+More load() variants, none better: base address inlined into the JKRMainRamToAram argument 93.3 %;
+`int i` hoisted to the top 98.79 % (identical). tp's own version needs a pointer-cast fakematch on
+bhead->mSize (its comment), which is banned here.
+
 ## SHARED-EDITS
 - JASRegisterParam.cpp stanza: .text start 0x80033098 -> 0x80033018.
 - memPool_ commits cherry-picked from the JASChannel branch (ed6be13, e37f581).
