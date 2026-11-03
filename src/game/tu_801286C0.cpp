@@ -12,8 +12,6 @@ const char* lbl_80539F38 = "kk_black.bti";
 // Thresholds that the value at fn_8011921C()->field_0x8 is matched against.
 const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
 
-void fn_80128C58(s32 value);
-
 void cls_8049E500::init() {
     cls_8049D140::init();
     // 0x3F3F3F3F is the four-character type '????'.
