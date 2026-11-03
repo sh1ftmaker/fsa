@@ -423,6 +423,8 @@ void J2DPictureEx::draw(f32 p1, f32 p2, u8 index, bool p4, bool p5, bool p6)
     }
 }
 
+// FIXME: register allocation in the vertex writes differs (the GX FIFO base
+// lands in r3 here, r6 in the original; colors and tex coords shift with it).
 void J2DPictureEx::draw(f32 x, f32 y, f32 width, f32 height, bool p5, bool p6, bool p7)
 {
     if (!isVisible()) {
@@ -456,14 +458,15 @@ void J2DPictureEx::draw(f32 x, f32 y, f32 width, f32 height, bool p5, bool p6, b
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
 
     mColorAlpha = mAlpha;
+    int alphaCalc = mMaterial->getMaterialAlphaCalc();
     JUTColor colors[4];
     for (int i = 0; i < 4; i++) {
         colors[i] = mCornerColors[i];
     }
 
-    if ((int)mMaterial->mMaterialAlphaCalc == 1) {
+    if (alphaCalc == 1) {
         for (int i = 0; i < 4; i++) {
-            colors[i].a = (colors[i].a * mColorAlpha) / 255;
+            colors[i].a = (mColorAlpha * colors[i].a) / 255;
         }
     }
 
@@ -568,15 +571,15 @@ void J2DPictureEx::drawOut(const JGeometry::TBox2<f32>& boundBox, const JGeometr
         return;
     }
     mColorAlpha = mAlpha;
-    JUTColor colors[4];
-    for (int i = 0; i < 4; i++) {
-        colors[i] = mCornerColors[i];
-    }
+    int alphaCalc = mMaterial->getMaterialAlphaCalc();
+    J2DPicture::TCornerColor colors;
+    getCornerColor(colors);
 
-    if ((int)mMaterial->mMaterialAlphaCalc == 1) {
-        for (int i = 0; i < 4; i++) {
-            colors[i].a = (colors[i].a * mColorAlpha) / 255;
-        }
+    if (alphaCalc == 1) {
+        colors.mColor0.a = (mColorAlpha * colors.mColor0.a) / 255;
+        colors.mColor1.a = (mColorAlpha * colors.mColor1.a) / 255;
+        colors.mColor2.a = (mColorAlpha * colors.mColor2.a) / 255;
+        colors.mColor3.a = (mColorAlpha * colors.mColor3.a) / 255;
     }
 
     f32 texX0 = (boundBox.i.x - texBox.i.x) / texBox.getWidth();
@@ -589,19 +592,19 @@ void J2DPictureEx::drawOut(const JGeometry::TBox2<f32>& boundBox, const JGeometr
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
     f32 z = 0.0f;
     GXPosition3f32(boundBox.i.x, boundBox.i.y, z);
-    GXColor1u32(colors[0]);
+    GXColor1u32(colors.mColor0);
     GXPosition2f32(texX0, texY0);
 
     GXPosition3f32(boundBox.f.x, boundBox.i.y, z);
-    GXColor1u32(colors[1]);
+    GXColor1u32(colors.mColor1);
     GXPosition2f32(texX1, texY0);
 
     GXPosition3f32(boundBox.f.x, boundBox.f.y, z);
-    GXColor1u32(colors[3]);
+    GXColor1u32(colors.mColor3);
     GXPosition2f32(texX1, texY1);
 
     GXPosition3f32(boundBox.i.x, boundBox.f.y, z);
-    GXColor1u32(colors[2]);
+    GXColor1u32(colors.mColor2);
     GXPosition2f32(texX0, texY1);
 
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
