@@ -22,6 +22,8 @@ public:
     // fn_8012562C: copies the low byte of field_0x90 to field_0x35c and bits
     // 5-9 (from the top) of field_0x90 to field_0x3cc.
     /* 0x64 */ virtual void vfunc_0x64();
+    // fn_80124C2C: returns the result of the base's fn_80121DB0.
+    /* 0x74 */ virtual s32 vfunc_0x74();
 
     /* 0x340 */ u8 field_0x340[0x35C - 0x340]; // not declared yet
     /* 0x35C */ s32 field_0x35c; // the low byte of field_0x90, set by vfunc_0x64

@@ -27,6 +27,9 @@ public:
     // fn_80123E80: stores the argument at 0x33c and the old value at 0x340,
     // returns 1. The zora's and the escort woman's code call it with 0xC.
     /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
+    // fn_80121DB0 (tu_801213EC): clears three bytes at 0x269-0x26B, returns 1.
+    // The zora's fn_801200F8 and the escort woman's vfunc 0x74 call it.
+    s32 fn_80121DB0();
     /* 0x230 */ u8 field_0x230[0x33C - 0x230]; // not declared yet
     /* 0x33C */ s32 field_0x33c; // a state word, 0 after construction; the zora's update skips update() while it is 0xF
     // Size: unknown (only the fields above are declared)
