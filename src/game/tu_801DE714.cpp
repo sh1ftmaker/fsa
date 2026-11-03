@@ -10,6 +10,13 @@ void cls_804A51E4::vfunc_0x80() {
     }
 }
 
+// tu_801DE714 (0x801DE9C0): vtable slot 0x9C. The step is EnemyBase's
+// fn_801CE2BC (a plain bl), then the view check.
+void cls_804A51E4::vfunc_0x9C(u8 mapHit) {
+    EnemyBase_804A4808::fn_801CE2BC(mapHit);
+    fn_8021835C();
+}
+
 // tu_801DE714 (0x801E1D9C)
 bool cls_804A51E4::fn_801E1D9C() const {
     bool result = false;
