@@ -21,6 +21,10 @@ u8 GameView_804A9950::fn_802DA000() {
     return lbl_8053AB10->field_0x24->field_0x1e8;
 }
 
+u8 GameView_804A9950::fn_802DCD0C() {
+    return lbl_8053AB10->field_0x24->field_0x1e8;
+}
+
 GameView_804A9950* fn_802D6A9C(void) {
     return lbl_8053AAF8->field_0x4->mView;
 }

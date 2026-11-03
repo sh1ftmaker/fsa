@@ -102,7 +102,7 @@ public:
     // 3 units / 6 calls. 0xFAC bytes; no arguments.
     void fn_802DBD60();
     // 31 units / 42 calls (this unused). lbl_8053AB10->0x24's byte at 0x1E8.
-    bool fn_802DCD0C();
+    u8 fn_802DCD0C();
     // 2 units / 5 calls. Unless fn_802DCD0C(), steps field_0x14 by the sign
     // of dir[0] or field_0x18 by that of dir[1], reloads the screen
     // (fn_802D8D50, fn_802D8328, fn_8030C928 with &mVisibleBox); returns 0
