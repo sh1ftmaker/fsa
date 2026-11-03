@@ -18,12 +18,16 @@ struct cls_80215E48 {
     /* 0xC */ u8 mFlagC;  // read by fn_80215D38; must be set
     /* 0xD */ u8 pad_0xD[0x1];
     /* 0xE */ u8 mFlagE;  // read by fn_80215D38; must be clear
-    /* 0xF */ u8 pad_0xF[0x24 - 0xF];
+    /* 0xF */ u8 pad_0xF[0x1C - 0xF];
+    /* 0x1C */ u8 pad_0x1C[0x24 - 0x1C]; // the stopwatch (cls_801ED3DC) starts here
     // Index of the first entry whose mKey is `key`, or -1 when none has it.
     s32 fn_80215E58(s32 key);
     // True when every entry has mFlagC set and mFlagE clear (true for an
     // empty table).
     bool fn_80215D38();
+    // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its
+    // mKey to `key`.
+    void fn_80215FB8(s32 index, s32 key, f32 fraction);
 }; // Size: 0x24
 
 #endif

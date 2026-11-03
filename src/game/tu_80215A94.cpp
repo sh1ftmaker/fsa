@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/tu_80215A94.h"
+#include "game/tu_801ED3DC.h"
 
 s32 cls_80215E48::fn_80215E58(s32 key) {
     s32 result = -1;
@@ -32,4 +33,9 @@ bool cls_80215E48::fn_80215D38() {
         entry++;
     }
     return result;
+}
+
+void cls_80215E48::fn_80215FB8(s32 index, s32 key, f32 fraction) {
+    reinterpret_cast<cls_801ED3DC*>((this + index)->pad_0x1C)->fn_801ED5C8(fraction);
+    (this + index)->mKey = key;
 }
