@@ -199,6 +199,10 @@ Loop: edit the source, run `python3 tools/try.py {unit} {fn}`, read its classifi
 differing rows, change one thing, repeat. Stop when it prints 100 %, when it prints STOP,
 or after 8 attempts. Matched functions in the same file and include/game/ headers show the style.
 
+What this function touches (from the original assembly; read these definitions, they decide
+inlining, const-ness, types and literal order):
+{context}
+
 Rules (a script checks them and throws away your work if broken):
 - Edit only `src/{unit}`, headers under include/game/ (add a member or split a field only with
   evidence from the asm; other files use them too), and, for a placeholder name only, rename
@@ -214,15 +218,86 @@ End with one line: the final match % of {fn}.
 """
 
 
+def asm_block(wt, unit, fn):
+    asm = (wt / "build/G4SE01/asm/game" / (Path(unit).stem + ".s"))
+    if not asm.exists():
+        return []
+    out, on = [], False
+    for line in asm.read_text(errors="replace").splitlines():
+        if line.startswith(f".fn {fn},"):
+            on = True
+        if on:
+            out.append(line)
+            if line.startswith(f".endfn {fn}"):
+                break
+    return out
+
+
+def class_of(name):
+    """Class name from a CodeWarrior-mangled member (fn_X__15Player_804A6F38Fv -> Player_804A6F38)."""
+    m = re.match(r".+?__(\d+)([A-Za-z_]\w*)", name)
+    return m.group(2)[:int(m.group(1))] if m else None
+
+
+def context(wt, unit, fn):
+    """What the function touches and where those things live in our source (cheap, scripted)."""
+    lines = asm_block(wt, unit, fn)
+    calls = sorted({m.group(1) for l in lines for m in [re.search(r"\bbl\s+([^\s,]+)", l)] if m})
+    data = sorted({m.group(1) for l in lines for m in re.finditer(r"([\w$<>.]+)@(?:ha|l|h|sda21|sda2)\b", l)
+                   if not m.group(1).startswith(".L")})
+    out = []
+    cls = class_of(fn)
+    if cls:
+        hdr = sh(["git", "grep", "-l", "-E", rf"(class|struct) {re.escape(cls)}\b", "--", "include"], wt).stdout.split()
+        out.append(f"- `{fn}` is a member of `{cls}`; class declared in: {', '.join(hdr[:2]) or 'not found yet'}")
+    for sym in calls + data:
+        short = sym.split("__")[0] if not sym.startswith("__") else sym
+        where = sh(["git", "grep", "-l", "-w", short, "--", "src", "include"], wt).stdout.split()
+        where = [w for w in where if w != f"src/{unit}"][:3]
+        st = sh(["grep", "-m1", "-F", f"{sym} = ", "config/G4SE01/symbols.txt"], wt).stdout.strip()
+        kind = "called" if sym in calls else "data"
+        out.append(f"- {kind} `{sym}`: {('in ' + ', '.join(where)) if where else 'not in our source yet'}"
+                   + (f"; symbols.txt: `{st.split(' = ', 1)[1][:90]}`" if st else ""))
+    return "\n".join(out[:25])
+
+
+DATA_PROMPT = """The function `{fn}` in unit `{unit}` (source `src/{unit}`) is at {pct:.2f} %. Its instructions
+are probably right; what usually remains is data or symbol naming: float/double literals in the
+.sdata2/.rodata order the original uses, a load of a symbol whose name differs ("reloc-name": target
+vs ours), a field's type, a const qualifier on a called method, a static that belongs in this file's
+data, or a missing extern. try.py's analysis:
+
+```
+{tryout}
+```
+Fix that side, run `python3 tools/try.py {unit} {fn}` after each change, at most {attempts} attempts.
+Same rules as before: edit only src/{unit}, include/game/ headers, and pure renames in
+config/G4SE01/symbols.txt; no asm, #pragma, goto, dummies or tricks; other functions must not get
+worse; don't run git or ninja. End with one line: the final match % of {fn}.
+"""
+
+
 def run_haiku(wt, unit, fn, size, pct, model=MODEL, meta=None):
     # Bigger functions get more attempts and time (try.py's own budget also scales with size).
     attempts = 8 if size <= 128 else 12 if size <= 512 else 16 if size <= 2048 else 24
     prompt = PROMPT.format(fn=fn, size=size, pct=f"{pct:.2f} %" if pct else "missing",
-                           unit=unit, base=Path(unit).stem, attempts=attempts)
+                           unit=unit, base=Path(unit).stem, attempts=attempts,
+                           context=context(wt, unit, fn) or "- (nothing found)")
     timeout = 1200 if size <= 512 else 2400 if size <= 2048 else 4800
     if os.environ.get("GRIND_TIMEOUT"):  # A/B cap
         timeout = int(os.environ["GRIND_TIMEOUT"])
-    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", timeout, model, meta)
+    cost = _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", timeout, model, meta)
+    # Data-fix pass: a near-miss usually differs in data or naming, not instructions.
+    near = fdiff(wt, unit)[0].get(fn, (0, 0))[1] if (wt / "src" / unit).exists() else 0
+    if 90 <= near < 100:
+        tryout = sh(["python3", "tools/try.py", unit, fn], wt).stdout[-2500:]
+        dp = DATA_PROMPT.format(fn=fn, unit=unit, pct=near, tryout=tryout, attempts=6)
+        m2 = {}
+        cost += _claude(wt, dp, f"{Path(unit).stem}__{fn[:70]}__data", min(timeout, 900), model, m2)
+        if meta is not None:
+            meta["turns"] = (meta.get("turns") or 0) + (m2.get("turns") or 0)
+            meta["datafix"] = 1
+    return cost
 
 
 def _claude(wt, prompt, tag, timeout, model=MODEL, meta=None):
@@ -367,7 +442,8 @@ def judge(wt, unit, fns, secs, focus=None):
     new_fns, new_secs = fdiff(wt, unit)
     renamed = {ren.get(k, k): v for k, v in fns.items()}
     worse = [k for k, (_, p) in renamed.items() if new_fns.get(k, (0, 0))[1] < p - 0.001]
-    worse += [k for k, p in secs.items() if new_secs.get(k, 0) < p - 0.001]
+    # extab/extabindex shift whenever a function is added; they can't score until the file is whole.
+    worse += [k for k, p in secs.items() if new_secs.get(k, 0) < p - 0.001 and not k.startswith("extab")]
     gained = sum(p == 100 for _, p in new_fns.values()) - sum(p == 100 for _, p in fns.values())
     if worse:
         why = f"worse: {worse[:3]}"
@@ -618,10 +694,14 @@ def ab_sample(per_bucket, seed):
 
 def ab(args):
     """Every sampled function, once per model, in fresh copies of grind; nothing is merged.
-    Successful diffs are kept as patches under grind-logs/ab/<model>/."""
+    Successful diffs are kept as patches under grind-logs/ab[-tag]/<model>/."""
     import threading, queue
+    global AB
+    AB = LOGS / (f"ab-{args.tag}" if args.tag else "ab")
     AB.mkdir(parents=True, exist_ok=True)
     sp = AB / "sample.json"
+    if not sp.exists() and (LOGS / "ab/sample.json").exists():
+        sp.write_text((LOGS / "ab/sample.json").read_text())  # same functions as the first test
     if not sp.exists():
         sp.write_text(json.dumps(ab_sample(args.per_bucket, args.seed), indent=1))
     sample = json.loads(sp.read_text())
@@ -686,7 +766,9 @@ def ab(args):
     ab_report(args)
 
 
-def ab_report(_):
+def ab_report(args):
+    global AB
+    AB = LOGS / (f"ab-{args.tag}" if getattr(args, "tag", "") else "ab")
     rows = [l.split("\t") for l in (AB / "results.tsv").read_text().splitlines()]
     print(f"{'bucket':8} {'model':18} {'runs':>4} {'solved':>6} {'cost':>8} {'$/solve':>8} {'turns':>6} {'min':>5}")
     for b, *_ in BUCKETS:
@@ -728,8 +810,9 @@ def main():
     a = sp.add_parser("ab"); a.add_argument("--models", default="claude-haiku-5-5,claude-opus-5-5")
     a.add_argument("--per-bucket", type=int, default=4); a.add_argument("--seed", type=int, default=1)
     a.add_argument("--workers", default="1,2,3,4", help="worktree numbers to use")
-    a.add_argument("--stop-usage", type=float, default=0.97); a.set_defaults(f=ab)
-    sp.add_parser("ab-report").set_defaults(f=ab_report)
+    a.add_argument("--stop-usage", type=float, default=0.97); a.add_argument("--tag", default="")
+    a.set_defaults(f=ab)
+    r = sp.add_parser("ab-report"); r.add_argument("--tag", default=""); r.set_defaults(f=ab_report)
     wa = sp.add_parser("watch"); wa.add_argument("--soft", type=float, default=0.94)
     wa.add_argument("--hard", type=float, default=0.95); wa.add_argument("--every", type=int, default=600)
     wa.set_defaults(f=watch)
