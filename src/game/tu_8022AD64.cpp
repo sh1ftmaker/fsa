@@ -220,6 +220,16 @@ void fn_8022B860(s32 player, s32 value) {
     }
 }
 
+bool fn_8022BC38(s32 player, s32 a, const JGeometry::TVec3f* b) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80241E28(a, b);
+    }
+    return false;
+}
+
 s32 fn_8022BCD4(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 0;
@@ -306,6 +316,86 @@ bool fn_8022C310(s32 player) {
     }
     if (isPlayerActive(player)) {
         return lbl_8053AC90->mPlayers[player]->fn_80246228();
+    }
+    return false;
+}
+
+bool fn_8022C3AC(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (player < 0) {
+        return false;
+    }
+    if (player >= 4) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_802466B4();
+    }
+    return false;
+}
+
+s32 fn_8022C52C(s32 player, u32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return 0;
+    }
+    if (player < 0) {
+        return 0;
+    }
+    if (player >= 4) {
+        return 0;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80246B10(arg);
+    }
+    return 0;
+}
+
+s32 fn_8022C5EC(s32 player, u32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return 0;
+    }
+    if (player < 0) {
+        return 0;
+    }
+    if (player >= 4) {
+        return 0;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80246D1C(arg);
+    }
+    return 0;
+}
+
+bool fn_8022C8EC(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (player < 0) {
+        return false;
+    }
+    if (player >= 4) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80247534();
+    }
+    return false;
+}
+
+bool fn_8022C9AC(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (player < 0) {
+        return false;
+    }
+    if (player >= 4) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80247564();
     }
     return false;
 }
@@ -476,6 +566,16 @@ bool fn_8022DD74(s32 player) {
     return false;
 }
 
+bool fn_8022DE10(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8024B108(arg);
+    }
+    return false;
+}
+
 bool fn_8022DEAC(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
@@ -493,6 +593,16 @@ void fn_8022DF48(s32 player) {
     if (isPlayerActive(player)) {
         lbl_8053AC90->mPlayers[player]->fn_8024B274();
     }
+}
+
+bool fn_8022E23C(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8025AA8C(arg);
+    }
+    return false;
 }
 
 bool fn_8022E39C(s32 player, s32 arg) {
@@ -585,12 +695,41 @@ bool fn_8022F6E8(s32 player, s32 arg) {
     return false;
 }
 
+void fn_8022F820(s32 player, s32 a, const JGeometry::TVec3f* b) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->fn_8025EE0C(a, b);
+    }
+}
+
 bool fn_8022F8AC(s32 player, s32 arg) {
     if (lbl_8053AC90 == NULL) {
         return false;
     }
     if (isPlayerActive(player)) {
         return lbl_8053AC90->mPlayers[player]->fn_8025EE34(arg);
+    }
+    return false;
+}
+
+bool fn_8022F948(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8025EE48(arg);
+    }
+    return false;
+}
+
+bool fn_8022F9E4(s32 player, s32 a, bool b, bool c) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8025EFFC(a, b, c);
     }
     return false;
 }
@@ -613,6 +752,35 @@ bool fn_8022FB1C(s32 player, s32 arg) {
         return lbl_8053AC90->mPlayers[player]->fn_8024C460(arg);
     }
     return false;
+}
+
+bool fn_8022FBB8(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8024C4C4(arg);
+    }
+    return false;
+}
+
+bool fn_8022FCF0(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_8024C828(arg);
+    }
+    return false;
+}
+
+void fn_8022FFC4(s32 player, const JGeometry::TVec3f* arg) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->fn_8024E020(arg);
+    }
 }
 
 bool fn_80230050(s32 player) {
@@ -674,6 +842,15 @@ void fn_80230EB8(s32 player, s32 arg) {
     }
 }
 
+void fn_80230F44(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->fn_8024F54C(arg);
+    }
+}
+
 void fn_80230FD0(s32 player, s32 value) {
     if (lbl_8053AC90 == NULL) {
         return;
@@ -681,6 +858,26 @@ void fn_80230FD0(s32 player, s32 value) {
     if (isPlayerActive(player)) {
         lbl_8053AC90->mPlayers[player]->fn_8024F0E8(value);
     }
+}
+
+bool fn_80231230(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80260048(arg);
+    }
+    return false;
+}
+
+bool fn_8023162C(s32 player, s32 arg) {
+    if (lbl_8053AC90 == NULL) {
+        return false;
+    }
+    if (isPlayerActive(player)) {
+        return lbl_8053AC90->mPlayers[player]->fn_80242704(arg);
+    }
+    return false;
 }
 
 bool fn_8023188C(s32 player) {
@@ -769,6 +966,15 @@ bool fn_80234134(s32 player) {
         return lbl_8053AC90->mPlayers[player]->fn_80240870();
     }
     return false;
+}
+
+void fn_802348C4(s32 player, s32 a, const JGeometry::TVec3f* b) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->fn_802408C8(a, b);
+    }
 }
 
 bool fn_80234950(s32 player) {
