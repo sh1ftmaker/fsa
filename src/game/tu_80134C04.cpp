@@ -30,6 +30,14 @@ void GameRoot_8049EF20::fn_80134D14(u8 value) {
     lbl_8053AAF8->field_0x88 = value;
 }
 
+void GameRoot_8049EF20::fn_80134DC0() {
+    if (field_0x86 == 0) {
+        field_0x86 = 1;
+    } else {
+        field_0x86 = 0;
+    }
+}
+
 // The 2-bit field of field_0x83 for `index` (0-3), as the caller reads it.
 extern "C" s32 fn_8013997C(s32 index) {
     return (lbl_8053AAF8->field_0x83 >> (index * 2)) & 3;

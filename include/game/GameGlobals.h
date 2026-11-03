@@ -72,7 +72,11 @@ struct GameRoot_8049EF20 {
     /* 0x80 */ u8 field_0x80[0x2];
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
-    /* 0x84 */ u8 field_0x84[0x88 - 0x84];
+    /* 0x84 */ u8 field_0x84[0x86 - 0x84];
+    // Toggled between 0 and 1 by fn_80134DC0 (game/tu_80134C04.cpp, 0x80134DC0,
+    // stb of r3 at 0x86 only).
+    /* 0x86 */ u8 field_0x86;
+    /* 0x87 */ u8 field_0x87;
     // Stored by fn_80134D14 (game/tu_80134C04.cpp, 0x80134D14, stb of r4).
     /* 0x88 */ u8 field_0x88;
     /* 0x89 */ u8 field_0x89[0x94 - 0x89];
@@ -122,6 +126,9 @@ struct GameRoot_8049EF20 {
     // ~28 units. In tu_80134C04 with GameRoot's constructor; uses this->0xA0.
     // r3 only.
     void fn_80138B7C();
+    // Flips this+0x86 between 0 and 1 (lbz, then stb of 1 or 0). Defined in
+    // game/tu_80134C04.cpp (0x80134DC0); no callers found yet.
+    void fn_80134DC0();
     // Stores r4 at lbl_8053AAF8+0x88 (stb). Defined in game/tu_80134C04.cpp;
     // the body reads the global itself, r3 (this) is lbl_8053AAF8 at every call.
     void fn_80134D14(u8 value);
