@@ -76,6 +76,9 @@ public:
     // fn_802F9714 with a trailing byte flag (clrlwi. 24 at 0x802F9568); the
     // constructor of tu_8039003C and tu_803A85E4's pass false.
     void fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag);
+    // 0x802FF548 (game/tu_802F5040.cpp): r3 only, passed on unchanged to
+    // fn_802FF798. Called by tu_8013AAD4's fn_8013B4C0 with field_0x20.
+    void fn_802FF548();
     // 0x802FF798 (game/tu_802F5040.cpp, not written yet): no arguments;
     // called once by tu_8039003C's and tu_803A85E4's constructors before it loads the tile
     // resources.
@@ -91,9 +94,20 @@ public:
     // in r21, fields 0x148+, 0x214, 0x230 read). Called by
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
+    // 0x802FF3B0 (game/tu_802F5040.cpp): no arguments. Calls fn_802FA3FC
+    // when byte 0xE451 is set and lbl_8053AAF8->field_0x4 is not NULL.
+    void fn_802FF3B0();
+    // 0x802FA3FC (game/tu_802F5040.cpp, not written yet): no arguments; reads
+    // this's 0x2368 / 0x2374 / 0x235C / 0x2380 fields (r15 = r3 on entry).
+    // Called by fn_802FF3B0 (the only caller seen).
+    void fn_802FA3FC();
 
     /* 0x0000 vtable */
-    /* 0x0004 */ u8 field_0x4[0x214 - 0x4];
+    /* 0x0004 */ u8 field_0x4[0x28 - 0x4];
+    // The u16 tile grid of each layer (fn_802F9908 / fn_802F9974 index it
+    // by layer * 4; 32 x 32 cells).
+    /* 0x0028 */ u16* mLayerGrid[8];
+    /* 0x0048 */ u8 field_0x48[0x214 - 0x48];
     /* 0x0214 */ u8 field_0x214; // 2 units compare it with 1 (act_player_sword_level_check_npc 0x802F1350)
     /* 0x0215 */ u8 field_0x215;
     /* 0x0216 */ u8 field_0x216; // 9 units set it to 1 (act_four_switch_monitor 0x802A9E78)
@@ -129,7 +143,10 @@ public:
     // (0x8016AE44).
     /* 0x2380 */ s32 field_0x2380;
     /* 0x2384 */ s32 field_0x2384;
-    /* 0x2388 */ u8 field_0x2388[0xE464 - 0x2388];
+    /* 0x2388 */ u8 field_0x2388[0xE451 - 0x2388];
+    // fn_802FF3B0 tests it before calling fn_802FA3FC (the only reader seen).
+    /* 0xE451 */ u8 field_0xe451;
+    /* 0xE452 */ u8 field_0xe452[0xE464 - 0xE452];
 }; // Size: 0xE464
 
 // --- tile queries (game/tu_8022461C.cpp) ---
