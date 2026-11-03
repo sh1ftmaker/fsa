@@ -1,8 +1,13 @@
 // The SLR1 actor (sword soldier, docs/names/actors.tsv; vtable 0x8049FCA0,
-// constructor 0x80203CA4 in the spawner). Only the random helper below is
+// constructor 0x80203CA4 in the spawner). Only the two helpers below are
 // written so far.
 
 #include "game/GameGlobals.h"
+
+// Keeps pos in the camera's view (3 units call it; they ignore r3).
+void fn_80154718(const JGeometry::TVec3f* pos) {
+    lbl_8053AB10->field_0x24->fn_8030C210(pos);
+}
 
 // A random float in [0, 1) from the game's RNG. Called from 10 units.
 // The instructions match; its 1.0f only pairs with lbl_8053D25C once the
