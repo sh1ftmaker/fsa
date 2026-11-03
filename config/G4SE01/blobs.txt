@@ -8,3 +8,4 @@
 # blob   symbol section address size unit header review justification
 # array  path review justification   (a large integer-literal initializer, check_byte_arrays)
 blob lbl_804985D0 .data 0x804985D0 0x380 libs/sdk/dolphin/gba/GBAKey.c assets/dolphin/gba/GBAKey_ucode.inc fsa-wt/_reviews/infra__blobs.review.md GBA key-exchange DSP microcode (DSP instruction words, no source form)
+array src/game/tu_80427D2C.cpp fsa-wt/_reviews/game__tu_80427D2C.review.md THP player VolumeTable[128], the SDK sample's volume curve (oot-gc THPPlayer.c VolumeTable, tww daMP_VolumeTable); source data, not a blob
