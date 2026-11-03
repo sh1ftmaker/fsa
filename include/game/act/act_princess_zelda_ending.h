@@ -13,6 +13,9 @@ class EndingPartnerView : public ActorBase_804A5770 {
 public:
     /* 0x230 */ s32 mState;
     /* 0x234 */ s32 field_0x234;
+    // Set to 1 by LinkEnding_804AD858::fn_8035EAA4 (game/act_link_ending.cpp);
+    // read by this actor's state 0 (field_0x238 of EZLD itself).
+    /* 0x238 */ s32 field_0x238;
 };
 
 // The class between EZLD and ActorBase, with the vtable at 0x804A5958 (0x58

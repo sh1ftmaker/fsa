@@ -139,7 +139,10 @@ public:
     /* 0x124 */ s32 field_0x124;
     /* 0x128 */ s32 field_0x128;
     /* 0x12C */ s32 field_0x12c;
-    /* 0x130 */ u8 field_0x130[0x1A8 - 0x130]; // per-player tables, 0x130-0x1A4
+    /* 0x130 */ u8 field_0x130[0x1A4 - 0x130]; // per-player tables, 0x130-0x1A3
+    // A word read by fn_8035EE34 (game/act_link_ending.cpp) as the player index
+    // to draw for (0 when negative, fn_8022F514/fn_8022F3DC on it).
+    /* 0x1A4 */ s32 field_0x1a4;
     // -1 after the reset; tu_80441318's update picks the window from it
     // (0-3 a player, 4 all players).
     /* 0x1A8 */ s32 field_0x1a8;
