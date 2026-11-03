@@ -273,7 +273,7 @@ bool fn_80236BEC(s32 player);
 s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08); else -1
 JGeometry::TVec3f* fn_80238430(s32 player); // 1 unit. -> 0x324; else &lbl_804CF460
 // Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
-bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg); // reads pos+0/+4 only
 // 5+ units (act_thwomp_switch, act_warp, ...). Same shape as fn_8023A51C below.
 JGeometry::TVec3f* fn_8023A478(s32 player);
 bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
@@ -355,8 +355,8 @@ bool fn_8023B190(s32 player, const JGeometry::TBox2f* box, s32 layer);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
 // then fn_80272DCC(player object, box, layer, serial) (the per-player form of
-// fn_80239914); the caller ignores the result.
-void fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial);
+// fn_80239914); the caller ignores the result (0/1 from fn_80272DCC, 0 on the guard path).
+bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
 // then fn_802729F0(player object, serial) (the per-player form of

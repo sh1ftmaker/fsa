@@ -28,7 +28,8 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
             continue;
         }
         if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
-            fn_80238548(i, damage, &mPos, 4);
+            // fn_80238548 reads only x and y of the position.
+            fn_80238548(i, damage, (const JGeometry::TVec2f*)&mPos, 4);
             vfunc_0x24();
             return;
         }

@@ -38,7 +38,8 @@ void cls_804AC388::update() {
                     JGeometry::TVec3f pos;
                     pos.x = player->x + 0.1f;
                     pos.y = player->y - 0.1f;
-                    fn_80238548(i, 1, &pos, 1);
+                    // fn_80238548 reads only x and y of the position.
+                    fn_80238548(i, 1, (const JGeometry::TVec2f*)&pos, 1);
                     lbl_80529DEC.field_0x239 |= (u8)(1 << i);
                     spawned = true;
                 }

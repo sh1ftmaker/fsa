@@ -16,14 +16,11 @@ void Thwomp_804AB5D8::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, 0x17A, false, 2, -1, 0, 0, 0);
 }
 
-// FIXME: 98.4 %. (1) The original builds the fn_80238548 position as an
-// 8-byte stack object at 0x8 (frame 0x30); fn_80238548 takes a TVec3f* (it
-// only reads x and y), so p is a TVec3f here and the frame is 0x40 with the
-// box at 0x14. A const TVec2f* prototype would fit but act_attack_hitbox
-// passes &mPos (same as tu_8033F448's FIXME). (2) The li of `hit` is
-// scheduled two instructions earlier than in the original. hitMap is an s32
-// because the original keeps fn_801F2618's result zero-extended at the call
-// (clrlwi r30, r3, 24) and tests it with cmpwi; a bool gives mr + clrlwi.
+// FIXME: 98.55 %. Scheduling and register allocation only: the li of `hit`
+// is placed two instructions earlier than in the original, which shifts the
+// r28-r30 assignment. hitMap is an s32 because the original keeps
+// fn_801F2618's result zero-extended at the call (clrlwi r30, r3, 24) and
+// tests it with cmpwi; a bool gives mr + clrlwi.
 void Thwomp_804AB5D8::update() {
     bool hit = false;
     JGeometry::TVec2f pos(mPos.x, mPos.y);
@@ -39,9 +36,8 @@ void Thwomp_804AB5D8::update() {
             if (fn_8023E724(i)->y > mPos.y && mPos.x - 15.0f < fn_8023E724(i)->x &&
                 15.0f + mPos.x > fn_8023E724(i)->x && field_0x230 == 1 && !hitMap) {
                 if (fn_8023B190(i, &box, field_0x4)) {
-                    JGeometry::TVec3f p;
-                    p.x = box.f.x + 0.5f * (box.i.x - box.f.x);
-                    p.y = box.f.y + 0.5f * (box.i.y - box.f.y);
+                    JGeometry::TVec2f p(box.f.x + 0.5f * (box.i.x - box.f.x),
+                                        box.f.y + 0.5f * (box.i.y - box.f.y));
                     fn_80238548(i, field_0x114, &p, 20);
                     if (!hit) {
                         hit = true;
