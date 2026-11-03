@@ -225,6 +225,20 @@ JGeometry::TVec3f* fn_8023E32C(s32 player); // 5 units. -> 0xCB0; else &lbl_804C
 JGeometry::TVec3f* fn_8023E578(s32 player); // 3 units. -> 0x14; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804CF460
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_attack_hitbox_when_player_is_thrown,
+// used as the first test of its per-player loop; others call fn_8022E438 /
+// fn_8023B0F4 / fn_80238548 too). Per-player queries forwarding to the
+// player (fn_80270C88, fn_802730D8, fn_80238548's body); the asm of the
+// callers fixes the argument and return types below.
+extern "C" {
+bool fn_80236BEC(s32 player);
+bool fn_8022E438(s32 player, s32 other);
+// Box test: `box` on `layer`; r6 is passed as li 0 and f1 as 0.0f by the caller.
+bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 arg, f32 margin);
+// Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
+}
+
 // Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);

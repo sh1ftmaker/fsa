@@ -18,7 +18,7 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    /* 0x230 */ s32 field_0x230; // init(): field_0x90 & 3; a player index passed to fn_8022E438
 }; // Size: 0x234
 
 #endif

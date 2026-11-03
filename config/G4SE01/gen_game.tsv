@@ -7,8 +7,6 @@ act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_arrow	sinit	__sinit_act_arrow_cpp	-	-	new	-
 act_arrow_marker	dtor	__dt__20ArrowMarker_804A8470Fv	ArrowMarker_804A8470	0x804A8470	new	new
 act_arrow_marker	sinit	__sinit_act_arrow_marker_cpp	-	-	new	new
-act_attack_hitbox_when_player_is_thrown	dtor	__dt__39AttackHitboxWhenPlayerIsThrown_804A7C40Fv	AttackHitboxWhenPlayerIsThrown_804A7C40	0x804A7C40	new	new
-act_attack_hitbox_when_player_is_thrown	sinit	__sinit_act_attack_hitbox_when_player_is_thrown_cpp	-	-	new	new
 act_bandit_herding_npc	dtor	__dt__25BanditHerdingNPC_804ACB40Fv	BanditHerdingNPC_804ACB40	0x804ACB40	new	new
 act_bandit_herding_npc	sinit	__sinit_act_bandit_herding_npc_cpp	-	-	new	new
 act_battle_royale_end_check	dtor	__dt__29BattleRoyaleEndCheck_804B0380Fv	BattleRoyaleEndCheck_804B0380	0x804B0380	new	new
