@@ -134,10 +134,12 @@ the kept copy, so they stay); nothing reaches the section through its
 section symbol or a size-0 label at or past the first removed byte (dead
 code included); only zero padding goes with it; and the map places the
 section's kept symbols and next object as for dead data, with dead and weak
-removals of a section checked together. In the stripped copy the symbol
-becomes undefined, as in dtk's split. A kept copy in a dtk split names its
-targets `fn_...` (JUTFont, JKRFile, JUTNameTab vtables), so those stay: we
-can't show the names match. The manifest lists these as `weak_data` with
+removals of a section checked together. (For dead and weak data alike,
+"zero padding" means zero bytes with no relocation in them.) In the stripped copy the symbol
+becomes undefined, as in dtk's split. A kept copy may be in a dtk split
+(J2DMatBlock.o, an `auto_` data object); it passes only when its relocation
+target names equal ours, so a split that still says `fn_...` keeps ours
+(the `__vt__10JSUIosBase` copies, kept in `auto_07_80498FB8_data.o`). The manifest lists these as `weak_data` with
 the three tree lines, the kept copy's placement and the layout lines; the
 gate recomputes all of it from both objects and the map. Nothing else is
 stripped: dead functions' code (objdiff doesn't count functions the target

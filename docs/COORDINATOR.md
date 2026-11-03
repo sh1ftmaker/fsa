@@ -387,28 +387,39 @@ To list them, run `check_byte_arrays` over every tracked file.
 - Weak data (2026-11, infra/weakdata): inline classes' weak vtables are
   emitted by every TU that uses them and kept once by the linker, so a
   unit that emits a copy another object keeps has more `.data` than dtk's
-  split (J3DMatBlock.o: `__vt__10J3DPEBlock`, `__vt__11J3DIndBlock`,
-  `__vt__14J3DTexGenBlock`, `__vt__13J3DColorBlock`, 0x1BC, kept in
-  J3DMaterial.o; .data 93.44 %). `honest_report.py` removes such a copy
-  (`weak_data` in the manifest) only on the verified map's link-tree lines
+  split. `honest_report.py` removes such a copy (`weak_data` in the
+  manifest) only on the verified map's link-tree lines
   (`UNREFERENCED DUPLICATE`, `(object,weak) found in` this object, kept in
   one other link input), when the kept copy has the same bytes and
-  relocations by name, every reference into ours names the symbol, and
-  the map's layout of the section is the stripped one; the gate redoes it
-  from both objects. With J3DMatBlock's SHA-1-OK trial (the unit branch)
-  .data goes from 93.44 % to 99.93 %; the rest is dtk's split putting the
+  relocations by target name, every reference into ours names the symbol,
+  only zero padding without relocations goes with it, and the map's layout
+  of the section is the stripped one; the gate redoes it from both objects.
+  A kept copy in a dtk split passes when its relocation names equal ours
+  (J2DMatBlock.o, `auto_07_80498B20_data.o`); one whose targets are still
+  `fn_...` doesn't (`__vt__10JSUIosBase`, kept in `auto_07_80498FB8_data.o`).
+  On matching (705995b) 12 copies are stripped from 9 Matching units
+  already at 100 %, whose numbers don't change: JKRCompArchive and
+  JKRDvdFile (`__vt__7JKRFile`), JUTResFont and J2DTextBox
+  (`__vt__7JUTFont`), J2DAnmLoader and J2DAnimation (`__vt__10JUTNameTab`;
+  J2DAnimation also 3 J2DAnm vtables kept in J2DAnmLoader.o), J2DMaterial,
+  J3DModelLoader, J3DMaterialAttach. A trial of the NonMatching
+  J3DAnmLoader also strips 3 vtables (kept in the J3DAnimation.o split).
+  Not handled: a section left empty (JGadget/binary.o and J3DJoint.o,
+  whose .data is only weak vtables: the map has no section line to bound
+  it), and JKRFileFinder (the live-referenced `__vt__12JKRDvdFinder` keeps
+  the layout from matching the map).
+  J3DMatBlock: its four block vtables (`__vt__10J3DPEBlock`,
+  `__vt__11J3DIndBlock`, `__vt__14J3DTexGenBlock`, `__vt__13J3DColorBlock`,
+  0x1BC, kept in J3DMaterial.o) are proven duplicates, but matching's
+  J3DMatBlock trial link fails (code 95.99 %), so nothing is stripped. The
+  only SHA-1-OK object we have used tp's word-copy `operator=`, which
+  6660f8c rejected as a fakematch; it is a demonstration, not progress. With
+  it, .data went from 93.44 % to 99.93 %; the rest was dtk's split putting
   4 bytes of alignment before J3DModelData.o into J3DMatBlock (.data end
-  0x8049BA98, `__vt__21J3DColorBlockLightOff` size 0x8C). With the split
-  ending at 0x8049BA94 and the vtable at 0x88 (the lbl_8053B300 fix of
-  mtx44 again; SHA-1 still OK), J3DMatBlock is 100 % code and data. Kept
-  copies in a dtk split name their targets `fn_...`, so JUTResFont's
-  `__vt__7JUTFont`, JKRCompArchive's/JKRDvdArchive's `__vt__7JKRFile` and
-  the `__vt__10JUTNameTab` copies stay until those splits are named or
-  matched. A section left with nothing (JGadget/binary.o's .data is only
-  its weak vtable) isn't handled: the map then has no section line to
-  bound it. Units already at 100 % with proven copies (J2DMaterial,
-  J3DModelLoader, J3DMaterialAttach, J3DAnmLoader) are stripped too;
-  their numbers don't change.
+  0x8049BA98, `__vt__21J3DColorBlockLightOff` size 0x8C). Ending the split
+  at 0x8049BA94 with the vtable at 0x88 gave 100 % (SHA-1 still OK), but
+  that symbol-size change needs an `approved_symbol_changes.txt` entry and
+  its own review once J3DMatBlock really matches.
 - Dead-stripped units (tu_802BA334, tu_800F39EC, tu_80457C08): the unit's
   own functions were all dead-stripped in the original, so only its
   `__sinit` (9 pools, 8 for tu_80457C08), its `.ctors` entry and its `.bss`
