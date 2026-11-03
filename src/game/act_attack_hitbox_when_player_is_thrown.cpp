@@ -29,7 +29,7 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
         if (fn_80236BEC(i) || fn_8022E438(field_0x110, i) || fn_8022E438(field_0x230, i)) {
             continue;
         }
-        if (fn_8023B0F4(i, &box, field_0x4, 0, 0.0f)) {
+        if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
             fn_80238548(i, damage, &mPos, 4);
             vfunc_0x24();
             return;

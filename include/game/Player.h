@@ -169,6 +169,8 @@ void fn_8023F1D4(s32 player, const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c);
 s32 fn_8022BCD4(s32 player);             // 1 unit. -> fn_8023FC24 (word 0xBEC); else 0
 bool fn_8022CCAC(s32 player);            // 2 units. -> fn_80249068 (byte 0x121F); else false
 bool fn_8022D75C(s32 player);            // 29 units. -> fn_8024BBB0 (byte 0xCE8); else false
+// 1 unit (act_attack_hitbox_when_player_is_thrown; others call it too). Player pair test.
+bool fn_8022E438(s32 player, s32 other);
 // 48 units. -> fn_80240644 (word 0xD60: another player's index, or -1);
 // else -1.
 s32 fn_8022F3DC(s32 player);
@@ -198,12 +200,19 @@ s32 fn_80235ACC(s32 player);             // 2 units. -> fn_80270358 (word 0xC50,
 // 21 units. -> fn_80241920: fn_80236228(word 0xD60) when that names a
 // player, else max(word 0xC04, 0); else 0.
 s32 fn_80236228(s32 player);
+// 1 unit (act_attack_hitbox_when_player_is_thrown). Per-player query.
+bool fn_80236BEC(s32 player);
 s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08); else -1
 JGeometry::TVec3f* fn_80238430(s32 player); // 1 unit. -> 0x324; else &lbl_804CF460
+// Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
 // 5+ units (act_thwomp_switch, act_warp, ...). Same shape as fn_8023A51C below.
 JGeometry::TVec3f* fn_8023A478(s32 player);
 bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
 bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, tu_8026FC20); else false
+// Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
+// are passed by act_attack_hitbox_when_player_is_thrown.
+bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
 bool fn_8023BE0C(s32 player);            // 3 units. -> fn_8023FF88 (byte 0x1200); else false
@@ -224,20 +233,6 @@ JGeometry::TVec3f* fn_8023E2A0(s32 player); // 1 unit. -> 0xCC8; else &lbl_804CF
 JGeometry::TVec3f* fn_8023E32C(s32 player); // 5 units. -> 0xCB0; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E578(s32 player); // 3 units. -> 0x14; else &lbl_804CF460
 JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804CF460
-
-// Owner unit tu_8022AD64 (not written yet). 1 unit (act_attack_hitbox_when_player_is_thrown,
-// used as the first test of its per-player loop; others call fn_8022E438 /
-// fn_8023B0F4 / fn_80238548 too). Per-player queries forwarding to the
-// player (fn_80270C88, fn_802730D8, fn_80238548's body); the asm of the
-// callers fixes the argument and return types below.
-extern "C" {
-bool fn_80236BEC(s32 player);
-bool fn_8022E438(s32 player, s32 other);
-// Box test: `box` on `layer`; r6 is passed as li 0 and f1 as 0.0f by the caller.
-bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 arg, f32 margin);
-// Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
-bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
-}
 
 // Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
 // field_0x4 and mSerial when the box overlaps a player's.
