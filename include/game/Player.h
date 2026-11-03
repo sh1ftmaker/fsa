@@ -102,6 +102,7 @@ public:
     bool fn_802412A4(); // via fn_80233E40
     bool fn_802412CC(); // via fn_80235448
     u8 fn_802412C4();   // byte at 0x458
+    void fn_802635C8(); // byte at 0x458 = 0 (stb r0)
     void fn_802412D4(); // via fn_802356B8
     bool fn_80241380(); // via fn_8023561C
     bool fn_802413C8(); // via fn_80235744
