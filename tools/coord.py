@@ -241,6 +241,18 @@ def cmd_promote(args):
             break
         # Units that are 100 % but break the link (usually a short split): leave them out and retry.
         broken = {rel for rel in ready if re.search(r"FAIL \S*" + re.escape(rel) + r": marked Matching but doesn't link", gate.stdout)}
+        if not broken and len(ready) > 1:
+            # The link check blamed units that were already Matching (a candidate shifted the
+            # layout): try the candidates one at a time and keep those that pass on their own.
+            alone = []
+            for rel in ready:
+                (REPO / "configure.py").write_text(original.replace(f'Object(NonMatching, "{rel}"', f'Object(Matching, "{rel}"'))
+                run("python3", "configure.py")
+                if subprocess.run(["python3", "tools/gate.py", "--all-units"], cwd=REPO, capture_output=True).returncode == 0:
+                    alone.append(rel)
+                else:
+                    print(f"skip (breaks the link): {rel}")
+            broken = set(ready) - set(alone)
         if not broken:
             break
         for rel in sorted(broken):
