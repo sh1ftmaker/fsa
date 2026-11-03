@@ -7,6 +7,19 @@
 #include "types.h"
 #include "game/EnemyBase.h"
 #include "game/SpriteAnim.h"
+#include "game/cls_8021BCBC.h"
+
+// An element of the 4-entry array at 0x2A8 of Vaati, built by
+// __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
+// No vtable: named after that constructor. fn_801D789C (not written yet)
+// is called on the element after its cls_8021BCBC has been set up.
+struct cls_801D6A88 {
+    cls_801D6A88();
+    void fn_801D789C();
+
+    /* 0x00 */ u8 field_0x0[0xC]; // not yet known
+    /* 0x0C */ cls_8021BCBC field_0xc;
+}; // Size: 0x18
 
 // An element of the 16-entry array at 0x308 of Vaati, built by
 // __construct_array in the actor's constructor (0x801D686C) with the
@@ -85,7 +98,7 @@ public:
     // height-dependent factor (fn_802F5FF4 of mPos.z).
     void fn_801EDD0C();
 
-    /* 0x2A8 */ u8 field_0x2a8[0x308 - 0x2A8]; // not yet known
+    /* 0x2A8 */ cls_801D6A88 field_0x2a8[0x4];
     /* 0x308 */ cls_801D6A58 field_0x308[0x10];
     /* 0x448 */ u8 field_0x448[0x52C - 0x448]; // not yet known
     /* 0x52C */ cls_801D6CEC field_0x52c;
