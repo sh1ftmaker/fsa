@@ -11,7 +11,7 @@
 //   (MessageWindow_804AF490), which own the JMessage processors of
 //   game/tu_803944C8.cpp (its four vtables derive from JMessage's
 //   TProcessor / TRenderingProcessor / TSequenceProcessor / TReference; the
-//   0x3C4-byte objects are built by fn_803973E8). Only tu_80390818 calls
+//   0x3C4-byte objects are built by the constructor below). Only tu_80390818 calls
 //   into tu_803944C8, so those classes are not declared here.
 // * lbl_8050DB0C: the layout constants object (cls_804AF32C), 20 units.
 //
@@ -41,11 +41,19 @@
 class J2DTextBox;
 class JUTResFont;
 
-// The 0x3C4-byte processor objects of game/tu_803944C8.cpp (fn_803973E8).
+// The 0x3C4-byte processor objects of game/tu_803944C8.cpp (their constructor).
 // No vtable is chosen as the class's, so the name is a placeholder. Only the
 // byte at 0x19E is declared (fn_80390B64 and fn_80390BA8 use it).
+class MessageWindow_804AF490;
+
 class MessageProcessor_803944C8 {
 public:
+    // Constructor, defined in game/tu_803944C8.cpp (not yet written; the
+    // symbol was fn_803973E8). Called right after the operator new of the
+    // 0x3C4 bytes, with the window, its index and the BMG name; the
+    // constructor reading is a guess from that shape.
+    MessageProcessor_803944C8(MessageWindow_804AF490* window, s32 index, const char* bmgName);
+
     /* 0x000 */ u8 field_0x0[0x148];
     // fn_80390C38 returns it (-1 when the window is in neither state).
     /* 0x148 */ s32 field_0x148;
@@ -76,7 +84,7 @@ public:
 class MessageWindow_804AF490 {
 public:
     // fn_80391A1C: stores the vtable and index, builds field_0x48 and
-    // field_0x4c (two 0x3C4-byte objects, fn_803973E8), field_0x44 = 0,
+    // field_0x4c (two 0x3C4-byte objects, MessageProcessor_803944C8), field_0x44 = 0,
     // field_0x1c = 1.
     MessageWindow_804AF490(s32 index);
     /* 0x08 */ virtual ~MessageWindow_804AF490(); // fn_80391974

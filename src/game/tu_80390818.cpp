@@ -96,3 +96,14 @@ s32 MessageWindow_804AF490::fn_80390C38() {
     }
     return -1;
 }
+
+static const char lbl_804756D8[] = "gc_four_swords_text_e.bmg";
+static const char lbl_804756F4[] = "gc_four_swords_text_ek.bmg";
+
+MessageWindow_804AF490::MessageWindow_804AF490(s32 index) {
+    mIndex = index;
+    field_0x48 = new MessageProcessor_803944C8(this, mIndex, lbl_804756D8);
+    field_0x4c = new MessageProcessor_803944C8(this, mIndex, lbl_804756F4);
+    field_0x44 = 0;
+    field_0x1c = 1;
+}
