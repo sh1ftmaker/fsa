@@ -4042,7 +4042,7 @@ game/tu_8021C848.cpp:
 	extabindex  start:0x8001816C end:0x80018178
 	.text       start:0x8021C848 end:0x8021CDE4
 	.ctors      start:0x8045C178 end:0x8045C17C
-	.rodata     start:0x8046A688 end:0x8046A770
+	.rodata     start:0x8046A688 end:0x8046A748
 	.bss        start:0x804CE240 end:0x804CE340
 	.sdata2     start:0x8053FD20 end:0x8053FD30
 
@@ -4051,6 +4051,7 @@ game/tu_8021CDE4.cpp:
 	extabindex  start:0x80018178 end:0x80018190
 	.text       start:0x8021CDE4 end:0x8021D26C
 	.ctors      start:0x8045C17C end:0x8045C180
+	.rodata     start:0x8046A748 end:0x8046A770
 	.bss        start:0x804CE340 end:0x804CE440
 	.sdata2     start:0x8053FD30 end:0x8053FD38
 

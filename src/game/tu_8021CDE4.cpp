@@ -1,6 +1,15 @@
 #include "game/GameAudio.h"
 #include "game/act/act_shadow_link_2.h"
 
+// Only [0] of each state is read (by fn_8021CDE4). The table starts this
+// unit's .rodata (8-aligned at 0x8046A748, after tu_8021C848's padding).
+extern const u16 lbl_8046A748[][5] = {
+    {0x0C, 0x0A, 0x1E, 0x3C, 0x78},
+    {0x0C, 0x0A, 0x1E, 0x3C, 0x78},
+    {0x08, 0x0A, 0x1E, 0x3C, 0x78},
+    {0x01, 0x0A, 0x1E, 0x3C, 0x78},
+};
+
 void ShadowLink2_804A43E8::fn_8021CDE4(int state) {
     mLife = mLifeBackup;
     field_0x568 = lbl_8046A748[state][0];
