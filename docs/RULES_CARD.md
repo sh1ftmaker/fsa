@@ -10,7 +10,7 @@ and mention them in your report.
 - Your worktree `../fsa-wt/<slug>` on branch `unit/<slug>` was made for you
   (`tools/unit_worktree.sh`). Work only there. Commit to your branch as you
   go with the repo's identity (don't pass `--author` or change git config),
-  every message ending `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+  every message ending with the `Co-Authored-By: Claude <Model> <noreply@anthropic.com>` line for the model you are (e.g. `Claude Opus 5.5`, `Claude Sonnet 5.5`).
   Never commit to `matching`, push, rebase or merge.
 - Never commit game data: `orig/`, `build/`, disc images, DOL/RAM dumps,
   extracted assets (blobs come only through config.yml `extract:`, a
