@@ -41,7 +41,7 @@ struct SpriteParams_801F5AE0; // game/ActorBase.h
 class cls_804AA858 {
 public:
     // fn_802FFDEC; tu_8013AAD4 passes the heap it allocated the object from
-    // (r30, also __nw__'s heap). JKRHeap* is a guess from that.
+    // (r30, also __nw__'s heap). Proven: fn_802FFDEC calls getTotalFreeSize__7JKRHeapFv on it.
     cls_804AA858(JKRHeap* heap);
     /* 0x08 */ virtual ~cls_804AA858(); // fn_802FFBF8
 

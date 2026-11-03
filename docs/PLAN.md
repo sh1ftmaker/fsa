@@ -344,7 +344,7 @@ Not settled: whether game files use `-common on` (the common `.bss` at
   as real C++ (a member of its class, or `fn_<addr>` with C++ linkage), and
   its symbols.txt rename and the header's declaration change land in the
   same commit. Methods of a placeholder class that callers already need
-  (`cls_8030C058::fn_8030C5F0`) are declared as members only when the
+  (`Camera_804AA9E4::fn_8030C5F0`) are declared as members only when the
   symbols.txt rename ships with the header. Reviewers check every
   `extern "C"` prototype's argument and return types against the asm, since
   C linkage hides signature errors from the linker and objdiff.
