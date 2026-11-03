@@ -1,4 +1,6 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
+#include "game/GameView.h"
 #include "game/act/act_enemy_count_wipe_out_check.h"
 
 cls_804A8250::~cls_804A8250() {}
@@ -22,7 +24,7 @@ void cls_804A8250::update() {
     if (count >= field_0x238) {
         vfunc_0x30(0xFF, true);
         if (field_0x244 != lbl_8053AF80->field_0x58 && field_0x240 == 0) {
-            fn_80138B7C(lbl_8053AAF8);
+            lbl_8053AAF8->fn_80138B7C();
         }
         mAlive = false;
     }

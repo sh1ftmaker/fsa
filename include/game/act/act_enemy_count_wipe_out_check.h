@@ -4,8 +4,6 @@
 // Code: game/act_enemy_count_wipe_out_check.cpp.
 
 #include "game/ActorBase.h"
-#include "game/GameGlobals.h"
-#include "game/GameView.h"
 
 // Named after its vtable, 0x804A8250.
 class cls_804A8250 : public ActorBase_804A5770 {

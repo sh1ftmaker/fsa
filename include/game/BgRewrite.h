@@ -54,7 +54,7 @@ public:
 
     // 2 units (tu_8022AD64, act_knight_of_hyrule). Saves the view's
     // field_0x34, sets it to value (GameView_804A9950::fn_802D7970), calls
-    // fn_80138B7C on lbl_8053AAF8 and restores it. this unused.
+    // GameRoot::fn_80138B7C on lbl_8053AAF8 and restores it. this unused.
     void fn_8029D898(s32 value);
     // 15 units / 78 calls. Writes tile code `tile` into the cell at pos on
     // `layer` (fn_80226BC4(pos', layer & 0xFE), then fn_802F9974(layer,

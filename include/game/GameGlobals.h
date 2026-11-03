@@ -80,24 +80,23 @@ struct GameRoot_8049EF20 {
     // 15 units / 17 calls. Stores at this+0x50, 0x58 and 0x84 (per review);
     // act_ending_map_skipper calls it with (15, 0).
     void fn_80136798(s32 a, s32 b);
+    // ~28 units. In tu_80134C04 with GameRoot's constructor; uses this->0xA0.
+    // r3 only.
+    void fn_80138B7C();
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
-// fn_80138B7C(lbl_8053AAF8) is called by act_enemy_count_wipe_out_check and
-// BgRewrite::fn_8029D898 (r3 only); defined in an unwritten unit.
-extern "C" void fn_80138B7C(GameRoot_8049EF20* root);
-
-// The 0x90-byte object fn_8045A080 (game/tu_80457DFC.cpp) initialises and
+// The 0x90-byte object (named after its constructor) fn_8045A080 (game/tu_80457DFC.cpp) initialises and
 // stores in lbl_8053AF80; owner unit not written yet, members unknown but
 // the u32 at 0x58 (act_enemy_count_wipe_out_check copies it in init and
 // compares it later).
-struct Unk_8053AF80 {
+struct Unk_8045A080 {
     /* 0x00 */ u8 field_0x0[0x58];
     /* 0x58 */ u32 field_0x58;
     /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
 }; // Size: 0x90
-extern Unk_8053AF80* lbl_8053AF80;
+extern Unk_8045A080* lbl_8053AF80;
 
 // Random helpers on lbl_8053AAF8->mRandom, defined in game units.
 f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
