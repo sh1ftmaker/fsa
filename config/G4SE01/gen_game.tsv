@@ -177,8 +177,6 @@ act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
 act_octorok_rock	dtor	__dt__20OctorokRock_8049F5D8Fv	OctorokRock_8049F5D8	0x8049F5D8	new	new
 act_octorok_rock	sinit	__sinit_act_octorok_rock_cpp	-	-	new	new
-act_off_switch	dtor	__dt__18OFFSwitch_804A9B70Fv	OFFSwitch_804A9B70	0x804A9B70	new	new
-act_off_switch	sinit	__sinit_act_off_switch_cpp	-	-	new	new
 act_on_off_switch	sinit	__sinit_act_on_off_switch_cpp	-	-	new	-
 act_opening_goal	sinit	__sinit_act_opening_goal_cpp	-	-	new	-
 act_panel_rewrite_npc	sinit	__sinit_act_panel_rewrite_npc_cpp	-	-	new	-
