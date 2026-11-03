@@ -66,6 +66,19 @@ public:
     // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
     // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
     void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F9714 (game/tu_802F5040.cpp, not written yet): the same arguments
+    // and tile-data rewrite as fn_802FA160 (checkCompressed / getResSize for
+    // size 0, then the slot rows at this + 0x98 + slot * 4); tu_8039003C's
+    // constructor passes the 'SCH ' resources (slots 0, 0, 2, 3).
+    void fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F93F4 (game/tu_802F5040.cpp, not written yet): the 'SCL ' form of
+    // fn_802F9714 with a trailing byte flag (clrlwi. 24 at 0x802F9568); the
+    // constructor of tu_8039003C passes false.
+    void fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag);
+    // 0x802FF798 (game/tu_802F5040.cpp, not written yet): no arguments;
+    // called once by tu_8039003C's constructor before it loads the tile
+    // resources.
+    void fn_802FF798();
     // 17 units. The tile code of cell `index` on `layer` (lhzx from the
     // layer's u16 grid, a pointer at 0x28 + layer * 4; the body has three
     // identical branches for layers 0-3, 4-7 and the rest).
