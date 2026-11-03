@@ -127,8 +127,6 @@ act_four_switch_monitor	dtor	__dt__12cls_804A80A0Fv	cls_804A80A0	0x804A80A0	new	
 act_four_switch_monitor	sinit	__sinit_act_four_switch_monitor_cpp	-	-	new	new
 act_four_sword_demo	sinit	__sinit_act_four_sword_demo_cpp	-	-	new	-
 act_frostare_tail	sinit	__sinit_act_frostare_tail_cpp	-	-	new	-
-act_gambling_chest	dtor	__dt__26GamblingShopChest_804AAAE8Fv	GamblingShopChest_804AAAE8	0x804AAAE8	new	new
-act_gambling_chest	sinit	__sinit_act_gambling_chest_cpp	-	-	new	new
 act_gambling_shop	dtor	__dt__21GamblingShop_804AAA70Fv	GamblingShop_804AAA70	0x804AAA70	new	new
 act_gambling_shop	sinit	__sinit_act_gambling_shop_cpp	-	-	new	new
 act_gba_appear	sinit	__sinit_act_gba_appear_cpp	-	-	new	-
@@ -309,8 +307,6 @@ act_switch_or	dtor	__dt__17SwitchOR_804A8800Fv	SwitchOR_804A8800	0x804A8800	new	
 act_switch_or	sinit	__sinit_act_switch_or_cpp	-	-	new	new
 act_switch_related_npc	dtor	__dt__12cls_804A8C28Fv	cls_804A8C28	0x804A8C28	new	new
 act_switch_related_npc	sinit	__sinit_act_switch_related_npc_cpp	-	-	new	new
-act_talking_npc	dtor	__dt__19TalkingNPC_804AF548Fv	TalkingNPC_804AF548	0x804AF548	new	new
-act_talking_npc	sinit	__sinit_act_talking_npc_cpp	-	-	new	new
 act_talking_sign	dtor	__dt__20TalkingSign_804AF428Fv	TalkingSign_804AF428	0x804AF428	new	new
 act_talking_sign	sinit	__sinit_act_talking_sign_cpp	-	-	new	new
 act_tektite	dtor	__dt__16Tektite_8049FD50Fv	Tektite_8049FD50	0x8049FD50	new	new
@@ -529,8 +525,6 @@ tu_802E6EC4	sinit	__sinit_tu_802E6EC4_cpp	-	-	new	new
 tu_802E9428	dtor	__dt__12cls_804AA0FCFv	cls_804AA0FC	0x804AA0FC	new	new
 tu_802ED538	sinit	__sinit_tu_802ED538_cpp	-	-	new	-
 tu_802EF76C	sinit	__sinit_tu_802EF76C_cpp	-	-	new	-
-tu_802F3B74	dtor	__dt__12cls_804AA6A0Fv	cls_804AA6A0	0x804AA6A0	new	new
-tu_802F3B74	sinit	__sinit_tu_802F3B74_cpp	-	-	new	new
 tu_802F4AEC	dtor	__dt__12cls_804AA800Fv	cls_804AA800	0x804AA800	new	new
 tu_802F4AEC	sinit	__sinit_tu_802F4AEC_cpp	-	-	new	new
 tu_802F5040	sinit	__sinit_tu_802F5040_cpp	-	-	new	-
