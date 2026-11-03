@@ -7,6 +7,7 @@ FatalFunc  0x8  0x4  fsa-wt/_reviews/import__sdkleft.review.md (static fn pointe
 gTRKInterruptVectorTable  None/label  0x1F34/function  fsa-wt/_reviews/import__trk.review.md (one 0x1F34 object from gTRKInterruptVectorTable to gTRKInterruptVectorTableEnd; pikmin2 __exception.s byte-identical)
 InitMetroTRK  0x94  0x98  fsa-wt/_reviews/import__trk.review.md (trailing compiler blr at 0x80065654, as InitMetroTRK_BBA; pikmin2/ttyd 0x98)
 j3dSys  0x1A4  0x11C  fsa-wt/_reviews/infra__bss-names.review.md (dtk recorded the GC 2.6 common-inflated size; the object's COM is 0x11C, TWW/pikmin2 0x11C; 0x1A4 shifts .sdata +0x88 and fails the SHA-1)
+__vt__11J3DShapeMtx  0x24  0x20  fsa-wt/_reviews/JSystem__J3DGraphBase__J3DShapeMtx.review.md (2 header words + 6 slots; dtk included 4 bytes of padding before 0x8049BD98)
 # Renames: name  old_name  new_name  review
 cmdTypeAndStatus$371  cmdTypeAndStatus$371  cmdTypeAndStatus$372  fsa-wt/_reviews/dolphin__si__SIBios.review.md (our compile, mkdd and tp emit $372)
 g_CurrentSequence  g_CurrentSequence  IsTRKConnected  fsa-wt/_reviews/infra__measure.review.md (0x804B8090 is the flag Get/SetTRKConnected and TRKDoConnect/Disconnect access; gTRKFramingState+0x18 as in mkdd/pikmin2/ttyd/mp4)
