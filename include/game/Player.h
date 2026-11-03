@@ -42,8 +42,10 @@ public:
     Player_804A6F38(s32 index);
     virtual ~Player_804A6F38();
 
-    // Weak copy at 0x8023F984 (after the unit's functions, before its
-    // __sinit), called out of line where MWCC did not inline it (fn_8022EA0C).
+    // Out-of-line copy at 0x8023F984, called where MWCC did not inline it
+    // (fn_8022EA0C). That it is the weak copy of this class inline is
+    // inferred from where it sits (after the unit's functions, before its
+    // __sinit); dtk marks it global, as it does every game function.
     bool fn_8023F984() { return mActive; }
 
     // tu_8023FBF0 getters and setters the queries forward to.
@@ -167,7 +169,10 @@ bool fn_80230188(s32 player);            // 56 units. -> fn_802413E8 (byte 0x454
 s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
 bool fn_80233D20(s32 player);            // 1 unit. -> byte 0x43F; else false
-s32 fn_802340A0(s32 player);             // 1 unit. -> fn_80240868 (word 0x4); else 0
+// 1 unit. -> fn_80240868 (word 0x4); 0 without a manager. An inactive
+// player falls off the end with r3 still the index (the source has no final
+// return); the caller uses the result (mr r26, r3 at 0x80306B44).
+s32 fn_802340A0(s32 player);
 bool fn_80234134(s32 player);            // 2 units. -> fn_80240870 (byte 0xCFE); else false
 bool fn_802349EC(s32 player);            // 4 units. -> fn_80240AF0 (byte 0x1215); else false
 bool fn_80234A88(s32 player);            // 1 unit. -> fn_80240AF8 (byte 0x1214); else false
@@ -185,9 +190,15 @@ bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, 
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
 bool fn_8023BE0C(s32 player);            // 3 units. -> fn_8023FF88 (byte 0x1200); else false
-// Counts, not flags: callers store them with stb, sign-extend them or add 1.
-u8 fn_8023CA88(s32 player);              // 20 units. -> fn_8024EE14 (byte 0x3D8); else 0
-u8 fn_8023CB24(s32 player);              // 19 units. -> fn_8024EE0C (byte 0x3D9); else 0
+// Signed counts, not flags. Callers sign-extend the result before using it
+// as an int and never clrlwi it: fn_8023CA88 extsb. + ble at 0x80306D7C and
+// extsb r28 three times in act_bomb; fn_8023CB24 extsb + addi 1 at
+// 0x8014B7C0, 0x8014BB74 and 0x8014BE84. The getters fn_8024EE14 and
+// fn_8024EE0C are a bare lbz, which is what MWCC emits for an s8 field
+// (checked with a scratch compile; a u8 return makes callers clrlwi). The
+// other sites stb the result or add 1 and stb it, which fits either type.
+s8 fn_8023CA88(s32 player);              // 20 units. -> fn_8024EE14 (byte 0x3D8); else 0
+s8 fn_8023CB24(s32 player);              // 19 units. -> fn_8024EE0C (byte 0x3D9); else 0
 u16 fn_8023CBC0(s32 player);             // 10 units. -> fn_8024EE1C (halfword 0x3C4); else 0x121
 s32 fn_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
 s32 fn_8023E10C(s32 player);             // 5 units. -> word 0xCE4; else 0
