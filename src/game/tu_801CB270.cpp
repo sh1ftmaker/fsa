@@ -168,6 +168,23 @@ bool fn_801CD2F8(s32 layer) {
 
 // A random integer in [0, 4) other than `except` (0-3, so at most three
 // candidates remain).
+// Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
+s32 fn_801CD354(s32 value) {
+    s32 result = 0;
+    switch (value) {
+    case 0:
+        result = 1;
+        break;
+    case 2:
+        result = 3;
+        break;
+    case 3:
+        result = 2;
+        break;
+    }
+    return result;
+}
+
 s32 fn_801CD580(s32 except) {
     s32 choices[3];
     s32* out = choices;
