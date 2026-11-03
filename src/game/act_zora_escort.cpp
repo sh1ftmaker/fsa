@@ -12,3 +12,7 @@ void ZoraEscort_8049DF78::update() {
         EscortBase_8049E0C8::update();
     }
 }
+
+s32 ZoraEscort_8049DF78::vfunc_0x8C() {
+    return vfunc_0x6C(0xC);
+}
