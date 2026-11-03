@@ -1220,7 +1220,7 @@ config.libs = [
         Object(NonMatching, "game/act_shadow_link_generator.cpp"),
         Object(NonMatching, "game/act_shadow_link_2.cpp"),
         Object(NonMatching, "game/tu_801C5B08.cpp"),
-        Object(NonMatching, "game/tu_801C6A4C.cpp"),
+        Object(Matching, "game/tu_801C6A4C.cpp"),
         Object(NonMatching, "game/tu_801C71BC.cpp"),
         Object(NonMatching, "game/tu_801C9AF8.cpp"),
         Object(NonMatching, "game/tu_801CB270.cpp"),
