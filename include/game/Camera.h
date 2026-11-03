@@ -45,7 +45,7 @@ public:
     // (x, y) lies in field_0x154, appends pos to field_0x1f0 (count
     // field_0x7f0); returns 0 or 1. Actors pass &mPos, mostly for layers
     // below 8 (act_arrow 0x80165FD8).
-    bool fn_8030C210(const JGeometry::TVec3f* pos);
+    u8 fn_8030C210(const JGeometry::TVec3f* pos);
     // 3 units. The same for both corners of box (reads 0x0-0xC); it queues
     // them only when both lie in field_0x154. TBox2f is a guess: two
     // TVec2f would read the same.
