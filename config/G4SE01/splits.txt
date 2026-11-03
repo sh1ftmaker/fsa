@@ -1628,11 +1628,11 @@ JSystem/J3DGraphAnimator/J3DSkinDeform.cpp:
 	.text       start:0x800E3898 end:0x800E3950
 
 JSystem/J3DGraphBase/J3DShapeDraw.cpp:
-	.text       start:0x800E3950 end:0x800E3A20
+	.text       start:0x800E3950 end:0x800E39DC
 	.data       start:0x8049BDF8 end:0x8049BE20
 
 JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp:
-	.text       start:0x800E3A20 end:0x800E4778
+	.text       start:0x800E39DC end:0x800E4778
 	.bss        start:0x80539B28 end:0x80539BA0 align:4 common
 	.sdata      start:0x80539E20 end:0x80539E30
 	.sdata2     start:0x8053BCE8 end:0x8053BCF0

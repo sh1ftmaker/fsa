@@ -63,7 +63,7 @@ Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,370 of 11,561 functions, 784,880 of 4,442,088 bytes of code (17.67 %). Game code 0 / 6,791 functions (0 %); JSystem 3,317 / 3,700 functions (88.3 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 244 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,376 of 11,561 functions, 786,272 of 4,442,088 bytes of code (17.70 %). Game code 0 / 6,791 functions (0 %); JSystem 3,323 / 3,700 functions (88.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 245 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout

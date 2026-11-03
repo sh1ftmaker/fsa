@@ -36,6 +36,7 @@ void J3DMtxBuffer::initialize()
 	mBumpMatrices[1]        = nullptr;
 	mViewCount              = 1;
 	mCurrentViewNumber      = 0;
+	mUserAnmMatrices        = nullptr;
 }
 
 /**
@@ -91,6 +92,7 @@ int J3DMtxBuffer::createAnmMtx(J3DModelData* data)
 	if (data->mJointTree.getJointNum()) {
 		mScaleFlags    = new u8[data->mJointTree.getJointNum()];
 		mWorldMatrices = new Mtx[data->mJointTree.getJointNum()];
+		mUserAnmMatrices = mWorldMatrices;
 	}
 	return JET_Success;
 }
@@ -420,32 +422,50 @@ void J3DMtxBuffer::calcBBoardMtx()
 {
 	u32 mtxNum = mJointTree->getDrawMtxNum();
 	for (u16 i = 0; i < mtxNum; i++) {
-		if (mJointTree->getDrawMtxFlag(i)) {
-			continue;
-		}
+		if (mJointTree->getDrawMtxFlag(i) == 0) {
+			u32 index = mJointTree->getDrawMtxIndex(i);
+			if (mJointTree->getJointNodePointer(index)->getMtxType() == 1) {
+				MtxP drawMtx = *getDrawMtx(i);
+				J3DCalcBBoardMtx(drawMtx);
 
-		if (mJointTree->getJointNodePointer((u32)(mJointTree->getDrawMtxIndex(i)))->getMtxType() == 1) {
-			Mtx& drawMtx = *getDrawMtx(i);
-			J3DCalcBBoardMtx(drawMtx);
-			Mtx33& nrmMtx = *getNrmMtx(i);
-			nrmMtx[0][0]  = (drawMtx[0][0] != 0.0f) ? 1.0f / drawMtx[0][0] : 0.0f;
-			nrmMtx[0][1]  = 0.0f;
-			nrmMtx[0][2]  = 0.0f;
-
-			nrmMtx[1][0] = 0.0f;
-			nrmMtx[1][1] = (drawMtx[1][1] != 0.0f) ? 1.0f / drawMtx[1][1] : 0.0f;
-			nrmMtx[1][2] = 0.0f;
-
-			nrmMtx[2][0] = 0.0f;
-			nrmMtx[2][1] = 0.0f;
-			nrmMtx[2][2] = (drawMtx[2][2] != 0.0f) ? 1.0f / drawMtx[2][2] : 0.0f;
-			continue;
-		}
-
-		if (mJointTree->getJointNodePointer((int)mJointTree->getDrawMtxIndex(i))->getMtxType() == 2) {
-			Mtx& drawMtx = *getDrawMtx(i);
-			J3DCalcYBBoardMtx(drawMtx);
-			J3DPSCalcInverseTranspose(drawMtx, *getNrmMtx(i));
+				Mtx33* nrmMtx   = getNrmMtx(i);
+				(*nrmMtx)[0][0] = 1.0f / drawMtx[0][0];
+				(*nrmMtx)[0][1] = 0.0f;
+				(*nrmMtx)[0][2] = 0.0f;
+				(*nrmMtx)[1][0] = 0.0f;
+				(*nrmMtx)[1][1] = 1.0f / drawMtx[1][1];
+				(*nrmMtx)[1][2] = 0.0f;
+				(*nrmMtx)[2][0] = 0.0f;
+				(*nrmMtx)[2][1] = 0.0f;
+				(*nrmMtx)[2][2] = 1.0f / drawMtx[2][2];
+			} else if (mJointTree->getJointNodePointer(index)->getMtxType() == 2) {
+				MtxP drawMtx = *getDrawMtx(i);
+				J3DCalcYBBoardMtx(drawMtx);
+				Mtx33* nrmMtx = getNrmMtx(i);
+				J3DPSCalcInverseTranspose(drawMtx, *nrmMtx);
+			}
 		}
 	}
+}
+
+void J3DCalcViewBaseMtx(Mtx view, Vec const& scale, const Mtx& base, Mtx dst)
+{
+	Mtx m;
+
+	m[0][0] = base[0][0] * scale.x;
+	m[0][1] = base[0][1] * scale.y;
+	m[0][2] = base[0][2] * scale.z;
+	m[0][3] = base[0][3];
+
+	m[1][0] = base[1][0] * scale.x;
+	m[1][1] = base[1][1] * scale.y;
+	m[1][2] = base[1][2] * scale.z;
+	m[1][3] = base[1][3];
+
+	m[2][0] = base[2][0] * scale.x;
+	m[2][1] = base[2][1] * scale.y;
+	m[2][2] = base[2][2] * scale.z;
+	m[2][3] = base[2][3];
+
+	PSMTXConcat(view, m, dst);
 }

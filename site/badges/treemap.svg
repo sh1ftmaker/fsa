@@ -18,7 +18,7 @@
 <rect x="756.8" y="381.3" width="3.4" height="32.2" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect x="16.5" y="16.5" width="745.7" height="399.0" rx="4" fill="none" stroke="#3aae5c" stroke-opacity="0.75" stroke-width="1.5"/>
 <rect x="765.2" y="18.5" width="91.4" height="150.1" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
-<rect class="rise" x="765.2" y="30.0" width="91.4" height="138.6" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
+<rect class="rise" x="765.2" y="28.8" width="91.4" height="139.8" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="857.6" y="18.5" width="83.9" height="150.1" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
 <rect class="rise" x="857.6" y="29.1" width="83.9" height="139.5" rx="2" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="765.2" y="169.6" width="70.6" height="134.5" rx="2" fill="#ef5b52" fill-opacity="0.13"/>
@@ -108,7 +108,7 @@
 <text x="600.4" y="368.6" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 804000…</text>
 <text x="600.4" y="381.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">0 %</text>
 <text x="771.2" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">J3D</text>
-<text x="771.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">92.3 %</text>
+<text x="771.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">93.1 %</text>
 <text x="863.6" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">J2DGraph</text>
 <text x="863.6" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">92.9 %</text>
 <text x="771.2" y="185.6" font-size="11.5" font-weight="600" fill="#eceefb">JAudio</text>
@@ -118,7 +118,7 @@
 <g fill="#3aae5c"><path d="M25.5 440L31 445.5L25.5 451L20 445.5Z"/></g>
 <text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 0 %</text>
 <g fill="#ef5b52"><path d="M122.1 440L127.6 451L116.6 451Z"/></g>
-<text x="133.6" y="450" font-size="12.5" fill="#b4b9d8">JSystem 88.3 %</text>
+<text x="133.6" y="450" font-size="12.5" fill="#b4b9d8">JSystem 88.5 %</text>
 <g fill="#3d9cf0"><circle cx="261.9" cy="445.5" r="5.5"/></g>
 <text x="273.4" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.6 %</text>
 <g fill="#c35ee6"><rect x="367.4" y="440" width="11" height="11" rx="1.5"/></g>

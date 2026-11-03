@@ -930,7 +930,7 @@ config.libs = [
         Object(Matching, "JSystem/J3DGraphAnimator/J3DMaterialAttach.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DJointTree.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J3DGraphAnimator/J3DSkinDeform.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/J3DGraphAnimator/J3DShapeTable.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("J3DGraphLoader", [

@@ -27,6 +27,7 @@ struct J3DMtxBuffer {
 	void setAnmMtx(int i, Mtx m) { PSMTXCopy(m, (MtxP)mWorldMatrices[i]); }
 	MtxP getWeightAnmMtx(int idx) const { return mWeightEnvelopeMatrices[idx]; }
 	MtxP getWorldMtx(int idx) { return mWorldMatrices[idx]; }
+	MtxP getUserAnmMtx(int idx) { return mUserAnmMatrices[idx]; }
 
 	void setScaleFlag(int idx, u8 flag) { mScaleFlags[idx] = flag; }
 	u32* getCurrentViewNoPtr() { return &mCurrentViewNumber; }
@@ -73,9 +74,12 @@ struct J3DMtxBuffer {
 	Mtx33*** mBumpMatrices[2];    // _24
 	u32 mViewCount;               // _2C
 	u32 mCurrentViewNumber;       // _30
+	Mtx* mUserAnmMatrices;        // _34
 
-	// _34     = VTBL
+	// _38     = VTBL
 	virtual ~J3DMtxBuffer() { } // _08 (weak)
 };
+
+void J3DCalcViewBaseMtx(Mtx view, Vec const& scale, const Mtx& base, Mtx dst);
 
 #endif
