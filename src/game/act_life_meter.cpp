@@ -13,42 +13,37 @@ static const char* lbl_804B1738[] = {
 
 LifeMeter_804B174C::~LifeMeter_804B174C() {}
 
-// FIXME: 98%. Range check compiles as cmpwi 5 / bge here; the original has cmpwi 4 / bgt
-// (an if with <= 4 && >= 0 gives blt for the lower bound instead of bge + b).
 void LifeMeter_804B174C::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
-    switch (field_0x24c) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        mtx[0][3] = 0.0f;
-        mtx[1][3] = 0.0f;
-        mtx[2][3] = 0.0f;
-        params.field_0x1c = 1;
-        params.field_0x1d = 7;
-        mtx[0][0] = field_0x25c;
-        mtx[0][1] = 0.0f;
-        mtx[0][2] = 0.0f;
-        mtx[1][0] = 0.0f;
-        mtx[1][1] = field_0x260;
-        mtx[1][2] = 0.0f;
-        mtx[2][0] = 0.0f;
-        mtx[2][1] = 0.0f;
-        mtx[2][2] = field_0x260;
-        params.mMtx = mtx;
-        void* res = fn_804030C4('TIMG', lbl_804B1738[field_0x24c]);
-        if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
-        }
-        break;
+    if (field_0x24c > 4 || field_0x24c < 0) {
+        return;
+    }
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    params.field_0x1c = 1;
+    params.field_0x1d = 7;
+    f32 sy = field_0x260;
+    mtx[0][0] = field_0x25c;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = sy;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = sy;
+    params.mMtx = mtx;
+    void* res = fn_804030C4('TIMG', lbl_804B1738[field_0x24c]);
+    if (field_0x4 < 8) {
+        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
 // FIXME: 99%. The null check of the fn_801F666C result is `mr. r30, r3` here; the original has
-// `cmplwi r3, 0; mr r30, r3` (same registers otherwise).
+// `cmplwi r3, 0; mr r30, r3` (same registers otherwise). A `found = lookup; actor = found;`
+// alias form matches but was rejected as steering.
 void LifeMeter_804B174C::update() {
     for (s32 i = 0; i < 3; i++) {
         if (mTimers[i] > 0) {
