@@ -279,7 +279,10 @@ public:
     /* 0x11EA */ u8 field_0x11ea;
     /* 0x11EB */ u8 field_0x11eb;
     /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
-    /* 0x11F0 */ u8 field_0x11f0[0x120C - 0x11F0];
+    /* 0x11F0 */ u8 field_0x11f0[0x1200 - 0x11F0];
+    // A bool: fn_8023FF88 returns it as loaded (lbz; blr).
+    /* 0x1200 */ bool field_0x1200;
+    /* 0x1201 */ u8 field_0x1201[0x120C - 0x1201];
     /* 0x120C */ s32 field_0x120c;
     /* 0x1210 */ u8 field_0x1210[0x1215 - 0x1210];
     // A bool: fn_80240AF0 returns it as loaded (lbz; blr).

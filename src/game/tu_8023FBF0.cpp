@@ -18,6 +18,10 @@ s32 Player_804A6F38::fn_8023FC24() {
     return field_0xbec;
 }
 
+bool Player_804A6F38::fn_8023FF88() {
+    return field_0x1200;
+}
+
 // The team checks fn_80246F28 makes before it reads the input: the player
 // flags, then, when more than one player is on this team and the team mode
 // (fn_8022CAF8 / field_0x120c) is 4, the team count must match, and
