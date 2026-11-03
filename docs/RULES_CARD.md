@@ -161,6 +161,11 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   has higher first, e.g. `JGeometry::TBox2f box;` at the top of the block,
   then `box.set(...)` where it is filled (tu_801EE24C, act_log_monitor_npc
   do this; scratchpad research_stackslots.md).
+- `clrlwi` then `neg/or/srwi` on a call result returned as bool: the callee
+  returns a byte (`u8`), converted to bool by the caller; declare it `u8`,
+  don't write `!= false`.
+- `fnmsubs` with the operands as `x - size*0.5`: write `x - size / 2`
+  (MWCC turns the divide into the multiply-subtract in the original order).
 - A range check compiled as `cmpwi hi; bgt; cmpwi lo; bge body`: an early
   return `if (x > hi || x < lo) return;` (a switch gives `cmpwi hi+1; bge`).
 - Positions built on the stack as 8-byte objects (y stored with x, frame
