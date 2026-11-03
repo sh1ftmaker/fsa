@@ -118,7 +118,7 @@ copies yourself, see docs/COORDINATOR.md) and kept weak copies are diffed
 as compiled.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,606 of 11,561 functions, 839,264 of 4,442,088 bytes of code (18.89 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,472 / 3,702 functions (94.4 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 283 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,609 of 11,561 functions, 839,716 of 4,442,088 bytes of code (18.90 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,475 / 3,702 functions (94.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 283 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout

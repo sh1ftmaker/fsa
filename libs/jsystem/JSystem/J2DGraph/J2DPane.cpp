@@ -445,6 +445,9 @@ void J2DPane::rotate(f32 f1)
     calcMtx();
 }
 
+// FIXME: FSA has a 0x30-byte J2DPane function here (0x8009611C, called from game
+// code) that stores its f32 argument to mAngleX/Y/Z by mRotationAxis, like
+// rotate(f32) without calcMtx(). No donor has it, so its name is unknown.
 f32 J2DPane::getRotate() const
 {
     // UNUSED FUNCTION
