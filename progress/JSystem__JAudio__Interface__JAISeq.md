@@ -1,39 +1,40 @@
 # JSystem/JAudio/Interface/JAISeq.cpp
 
-Baseline (progress.py): total 3711 / 11561 functions, 710408 / 4442088 bytes (15.99 %).
-After: total 3728 / 11561 functions, 714888 bytes (16.09 %). gate: ok.
+Baseline: total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+After:    total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+Unit: 18/18 functions, code 4060/4060, data 84/164 -> 164/164 (honest report).
 
-Unit: 9/20 -> 17/18 functions (the two JAISeqDataMgr functions left the range, see below).
-.data 100 %, .sdata2 85.71 % (target has 4 bytes of alignment pad), .bss / .ctors 0 % (no __sinit).
+## Status: NonMatching: report 100 %, but the trial link is NOT byte-identical (weak-function placement)
 
-## Matched (all by data/symbols, no code change)
-- 6 functions differed only in relocations: `lbl_804B220C` is
-  `JASPoolAllocObject<JAISoundChild>::memPool_` (die_, tryDie_, getChild, releaseChild
-  allocate/free JAISoundChild through it), the floats `lbl_8053AFC0..C8` are this
-  unit's `.sdata2` (split 0x8053AFC0-0x8053AFD0), `fn_800254FC` is
-  `JAISoundParams::mixOutAll` (call site in mixOut_; same slot in JAISound.o, between
-  attachHandle and the JAISound ctor).
-- `dtor_8002449C` = `JASCriticalSection::~JASCriticalSection()`: byte-identical to
-  our weak copy, emitted right after JAISound_tryDie_ (its first user, JAS_CS_START).
-- .data: vtable slots 5/7 are `JAISound::asSe` / `asStream` (`fn_800257BC/CC`);
-  `fn_800257C4` between them is `asSeq` (donor order, same 8-byte body).
+## Data gaps and fixes (committed)
+1. .bss (0 %): placeholder `lbl_804B22E8` (0x40) is the five 0xC
+   destructor-chain objects __sinit registers (@900..@904) plus 4 bytes of
+   padding. Split into lbl_804B22E8/22F4/2300/230C/2318 (0xC each); also
+   matches __sinit's relocations.
+2. .sdata2: `lbl_8053AFC8` 0x8 -> 0x4 (0.5f plus padding before JAISeqMgr's
+   8-aligned .sdata2 at 0x8053AFD0).
 
-## Other names (evidence from __sinit_JAISeq_cpp, the .ctors entry)
-- `__sinit_JAISeq_cpp` (0x80024A0C), pool 5 `lbl_804B221C` =
-  `JASPoolAllocObject<JAISeq>::memPool_` (JAISeqMgr allocates JAISeq through it),
-  guards `lbl_8053A2B2/3`, pool dtors `fn_80021B14` = `JASMemPool<JAISoundChild>::~`,
-  `fn_80021AC0` = `JASMemPool<JAISeq>::~` (mkdd's __sinit_JAISeq_cpp, same order).
-- `.bss` 0x804B22E8-0x804B2328 split: the __register_global_object chain, used only here.
-
-## Resistant
-- `__sinit_JAISeq_cpp`: FIXME in source; needs the generic memPool_ definition
-  (w3-jas, JASHeapCtrl.h). JASFakeMatch6.h include removed (it was empty without MATCHING).
+## Blocker: link (codegen / weak-function order, not another unit)
+`link_check.py --unit` gives DOL SHA-1 e720eb02... != build.sha1. FSA keeps
+JAISeq's copy of `__dt__18JASCriticalSectionFv` at 0x8002449C, *in the middle*
+of the unit: right after JAISound_tryDie_ (its first user) and before mixOut_.
+Our compile (-sym on, as all JAudio) emits that weak dtor (and the JSULink /
+InterruptsDisable::Lock dtors) in their own .text sections, which the linker
+places after getTempoMgr, so everything from 0x8002449C on shifts by
+0x54 (first diffs: 0x80023ff4 `bl` to the dtor, 0x8002449C prologue, and
+game code at 0x80011694/AC/F4/0x80011744 calling 0x8002449C).
+Every other JAudio object we build also puts the CS dtor in its own section.
+Experiment (reverted, not committed): appending "-sym off" for this object
+only emits ~JASCriticalSection right after JAISound_tryDie_ (and the other
+weak copies after their first users), and `link_check --unit` reports
+byte-identical (SHA-1 d86b3d9f...). Per-unit flags are not allowed, so this
+needs a coordinator decision on which JAudio TUs FSA built with -sym on
+(JAISeMgr.cpp shows the same thing).
 
 ## SHARED-EDITS
-- JAISeqDataMgr.cpp is its own TU in FSA as in mkdd: `.text 0x80024B50-0x80024BE0`
-  (`__dt__14JAISeqDataUserFv` = fn_80024B50, `__dt__13JAISeqDataMgrFv`), `.data
-  0x80491790-0x804917C0` (`__vt__13JAISeqDataMgr`, `__vt__14JAISeqDataUser` = lbl_804917A8).
-  I trimmed JAISeq's .text to end at 0x80024B50; the coordinator should add a
-  JAISeqDataMgr.cpp unit (source exists in libs/jsystem) with that stanza.
-- symbols.txt renames outside this unit's range: JAISound's mixOutAll / asSe / asSeq /
-  asStream, the two JASMemPool dtors at 0x80021AC0/0x80021B14.
+- PROPOSED (coordinator, configure.py): JAISeq.cpp (and JAISeMgr.cpp) were not built
+  with -sym on in FSA; with "-sym off" the unit links SHA-1 OK and can flip to Matching.
+- config/G4SE01/symbols.txt: placeholders lbl_804B22E8 split (5 x 0xC) and lbl_8053AFC8 0x8 -> 0x4 (this unit's own data).
+
+## Resistant
+- Link only (see above). All 18 functions and all data are 100 % in the honest report.
