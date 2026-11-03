@@ -20,7 +20,4 @@ public:
     /* 0x23D */ u8 field_0x23d[3]; // padding
 }; // Size: 0x240
 
-// Unknown sound call (0x804561D8), called from update().
-void fn_804561D8(ActorSoundObj_804578F4* sound, const u32* id, u8 a, u8 b, u8 c);
-
 #endif

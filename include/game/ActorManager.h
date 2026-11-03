@@ -21,11 +21,19 @@
 
 class ActorBase_804A5770;
 class JKRHeap;
+class JAISoundID; // JSystem/JAudio/Interface/JAISound.h; complete wherever fn_804561D8 is called
 
 // The per-actor sound object (ActorManager_804A5800::mSounds): built by fn_804578F4
 // on top of JAUSoundObject (game/tu_80455CA4.cpp); fn_80457840 points it at
-// the actor's position. Opaque here until that unit is done.
-class ActorSoundObj_804578F4;
+// the actor's position. Layout opaque here until that unit is done; only
+// the members callers need are declared.
+class ActorSoundObj_804578F4 {
+public:
+    // 0x804561D8 (game/tu_80455CA4.cpp, next to the ctor): r3 is this. `id`
+    // is passed by value (the callee re-copies it for fn_80456334), `fade`
+    // goes unextended into fn_80456334's u32 fade time.
+    void fn_804561D8(JAISoundID id, u8 a, u32 fade, u8 c);
+};
 
 #define ACTOR_MANAGER_MAX_ACTORS 0x400
 
