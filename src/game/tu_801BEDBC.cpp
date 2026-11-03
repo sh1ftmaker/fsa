@@ -54,7 +54,7 @@ inline void cls_804A4188::burnTiles() {
         p.y = mPos.y + field_0x80.i.y;
         for (s32 j = 0; j < 2; j++) {
             if (fn_801CCC78(&p, field_0x4)) {
-                lbl_8053AC98->fn_802A20F0(&p, -1, field_0x4, false, false);
+                lbl_8053AC98->fn_802A20F0(&p, -1, field_0x4, 0, 0);
             }
             p.y += field_0x80.f.y - field_0x80.i.y;
         }

@@ -91,10 +91,10 @@ public:
     // 0xc/0x14/0x1c = 0.
     void fn_802A3D80();
     // 10 units. Spreads fire over burnable tiles (see above). Callers pass
-    // &mPos, a player (-1, or a word field), the layer and two flags
-    // (li 0/1: 0, 0 in tu_801BEDBC and tu_802233A4, 1, 1 in
-    // act_spreading_fire); the types are guesses from those arguments.
-    void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, bool a, bool b);
+    // &mPos, a player (-1, or a word field), the layer, a u32 (fn_801F9484 argument) and an s32
+    // (0, 0 in tu_801BEDBC and tu_802233A4, 1, 1 in
+    // act_spreading_fire); types from the body.
+    void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, u32 a, s32 b);
 
     /* 0x00 */ // vtable
     /* 0x04 */ ActorSoundObj_804578F4* field_0x4;
