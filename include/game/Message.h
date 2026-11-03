@@ -54,7 +54,9 @@ public:
     /* 0x174 */ s32 field_0x174;
     /* 0x178 */ u8 field_0x178[0x19E - 0x178];
     /* 0x19E */ u8 field_0x19e;
-    /* 0x19F */ u8 field_0x19f[0x3B2 - 0x19F];
+    // fn_80390B64 writes 1 here (the byte after 0x19E, which it sets to 0xFF).
+    /* 0x19F */ u8 field_0x19f;
+    /* 0x1A0 */ u8 field_0x1a0[0x3B2 - 0x1A0];
     // fn_80390894 indexes it with the window's argument; the array runs to
     // the end of the object, its real length is not known.
     /* 0x3B2 */ u8 field_0x3b2[0x3C4 - 0x3B2];
@@ -90,6 +92,10 @@ public:
     // fn_80390850: the field at 0x174 of the processor of the window's state
     // (1-5: field_0x4c, 6-8: field_0x48), -1 in any other state.
     s32 fn_80390850();
+
+    // fn_80390B64: sets the byte at 0x19E of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48) to 0xFF and the one at 0x19F to 1.
+    void fn_80390B64();
 
     // fn_80390BA8: the byte at 0x19E of the processor of the window's state
     // (5: field_0x4c, 8: field_0x48), 0xFF in any other state.

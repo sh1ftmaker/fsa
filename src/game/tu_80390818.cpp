@@ -22,6 +22,18 @@ s32 MessageWindow_804AF490::fn_80390850() {
     return value;
 }
 
+void MessageWindow_804AF490::fn_80390B64() {
+    if (field_0x24 == 5) {
+        MessageProcessor_803944C8* proc = field_0x4c;
+        proc->field_0x19e = 0xFF;
+        proc->field_0x19f = 1;
+    } else if (field_0x24 == 8) {
+        MessageProcessor_803944C8* proc = field_0x48;
+        proc->field_0x19e = 0xFF;
+        proc->field_0x19f = 1;
+    }
+}
+
 u8 MessageWindow_804AF490::fn_80390BA8() {
     if (field_0x24 == 5) {
         return field_0x4c->field_0x19e;
