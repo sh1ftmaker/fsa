@@ -326,6 +326,13 @@ void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // -1; 0 without a player manager.
 s32 fn_80239558(const JGeometry::TBox2f* box, s32 layer, s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 5+ units (act_candlestick_switch,
+// act_icicle, act_snowball, act_ice_wall, act_force_gem_wooden). Index (0-3) of
+// the first present player whose box test (fn_802570BC(player, box, layer,
+// out)) passes, or -1 (also without a player manager). fn_802570BC stores two
+// floats (+0, +4) through `out`, which the callers read as a position.
+s32 fn_8023AB94(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+
 // Owner unit tu_8022AD64 (not written yet). 5 units (act_quicksand, act_switch,
 // act_warp, act_gravestone, tu_8023FBF0). Bool-tested (clrlwi 24) result of
 // fn_80240F28 on the player; false without a player.
