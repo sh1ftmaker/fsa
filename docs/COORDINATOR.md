@@ -270,10 +270,18 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   the original linker provably did with this object, from the linker's own
   log, and nothing else (no code, no data bytes, no kept copy). `gate.py`
   re-verifies every manifest entry (`build/G4SE01/weakdedup_manifest.json`)
-  against the map lines, the object's symbol table and the DOL hash, and
-  that each stripped copy differs from the compiled object only by those
-  entries. A map from a link without the object strips nothing (tested on
+  against the map lines, the object's symbol table and the DOL hash,
+  re-runs each trial link (`link_check.py --verify-unit`: same map SHA-1,
+  DOL SHA-1 OK, same object and inputs), and rebuilds each stripped copy
+  independently (symbols, every relocation section, extab/extabindex bytes).
+  A map from a link without the object strips nothing (tested on
   game/tu_80214244 with ninja's map, whose `tu_80214244.o` is dtk's split).
+  The infra/weakdedup review broke the first version three ways: a hand-made
+  evidence file (map of a failed trial link plus ninja's DOL) was accepted;
+  evidence could be committed under build/; and the stripped-copy check
+  looked only at sizes. Trial evidence is now accepted only as the unit's
+  own `<slug>.json`/`.MAP` for the current inputs and re-linked by the gate,
+  `build/` is protected, and the copy is compared field by field.
   Before flipping such a unit, the worker runs
   `python3 tools/link_check.py --unit game/<unit>.cpp`, then
   `ninja build/G4SE01/report_honest.json`; after the flip ninja's own map

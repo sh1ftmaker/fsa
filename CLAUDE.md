@@ -78,13 +78,17 @@ file name must be unique among the link inputs. That link is ninja's own
 (`build/G4SE01/fsa_game_code.elf.MAP`, Matching units) or, for a NonMatching
 unit before its flip, a trial link: `python3 tools/link_check.py --unit
 <unit>` links the current Matching set with this unit's compiled object in
-place of dtk's split and records the map as evidence only if the DOL's
-SHA-1 matches. Each removal and its map lines go to
+place of dtk's split and records the map (and the DOL's SHA-1) in
+`build/G4SE01/weakdedup_evidence/` only if the SHA-1 matches; the report
+uses that record only for its own unit, against the current main link
+inputs, and never if git tracks it. Each removal and its map lines go to
 `build/G4SE01/weakdedup_manifest.json` (with notes on what wasn't stripped
-and why); `gate.py` re-reads the map lines, the object's symbols and the
-link's DOL and fails any entry that isn't a proven, current weak duplicate,
-and any unit diffed against an object that differs from its compiled one in
-more than those entries. Nothing else is stripped: code, `.bss` (split weak
+and why). `gate.py` re-runs every trial link the manifest relies on
+(`link_check.py --verify-unit`, ~1 s) and requires the same map and a
+SHA-1 OK DOL, re-reads the map lines and the object's symbols, rebuilds the
+expected stripped object from the compiled one (symbols, relocations,
+extab/extabindex bytes) and fails anything else, and fails any file under
+`build/` that git tracks. Nothing else is stripped: code, `.bss` (split weak
 `memPool_` copies yourself, see docs/COORDINATOR.md) and kept weak copies
 are diffed as compiled.
 
