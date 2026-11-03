@@ -1,7 +1,7 @@
 #include "JSystem/JAudio/JAUInitializer.h"
-#include "JSystem/JAudio/Interface/JAIStream.h"
 #include "JSystem/JAudio/Interface/JAISeMgr.h"
 #include "JSystem/JAudio/Interface/JAISeq.h"
+#include "JSystem/JAudio/Interface/JAIStream.h"
 #include "JSystem/JAudio/Interface/JAISoundChild.h"
 #include "JSystem/JAudio/System/JASAudioThread.h"
 #include "JSystem/JAudio/System/JASDvd.h"
@@ -78,7 +78,16 @@ void JAU_JASInitializer::initJASystem(JKRSolidHeap *heap)
     if(mDir) {
         JASWaveArcLoader::setCurrentDir(mDir);
     }
-    //JASDriver::setOutputMode(1);
+
+    switch (OSGetSoundMode())
+    {
+    case OS_SOUND_MODE_MONO:
+        JASDriver::setOutputMode(OS_SOUND_MODE_MONO);
+        break;
+    case OS_SOUND_MODE_STEREO:
+        JASDriver::setOutputMode(OS_SOUND_MODE_STEREO);
+        break;
+    }
 }
 
 JAU_JAIInitializer::JAU_JAIInitializer()
