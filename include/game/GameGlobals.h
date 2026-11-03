@@ -94,6 +94,17 @@ struct GameRoot_8049EF20 {
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
+// The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
+// registered with __register_global_object) built on first use. Named after
+// its first method seen, fn_80119998. Owner: game/tu_80118384.cpp (not
+// written yet). 20+ units call fn_80119998 on it, e.g. game/tu_8012EA00.cpp
+// passes (0x3C, 0, 1, 0, 1, 0x5A, 0).
+class Unk_80119998 {
+public:
+    void fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+};
+extern "C" Unk_80119998* fn_80119DD0();
+
 class ItemPedestal_804A82A8;
 extern "C" {
 // Owner: game/act_item_pedestal.cpp (not written yet; its generated header
