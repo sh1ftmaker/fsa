@@ -49,7 +49,10 @@ public:
     /* 0x000 */ u8 field_0x0[0x148];
     // fn_80390C38 returns it (-1 when the window is in neither state).
     /* 0x148 */ s32 field_0x148;
-    /* 0x14C */ u8 field_0x14c[0x174 - 0x14C];
+    /* 0x14C */ u8 field_0x14c[0x150 - 0x14C];
+    // fn_80390BDC counts it down to 0 and returns it.
+    /* 0x150 */ u32 field_0x150;
+    /* 0x154 */ u8 field_0x154[0x174 - 0x154];
     // fn_80390850 returns it (-1 when the window is in neither state).
     /* 0x174 */ s32 field_0x174;
     /* 0x178 */ u8 field_0x178[0x19E - 0x178];
@@ -114,6 +117,11 @@ public:
     // fn_80390BA8: the byte at 0x19E of the processor of the window's state
     // (5: field_0x4c, 8: field_0x48), 0xFF in any other state.
     u8 fn_80390BA8();
+
+    // fn_80390BDC: decrements the field at 0x150 of the processor of the
+    // window's state (5: field_0x4c, 8: field_0x48) unless it is 0, and
+    // returns it; 0 in any other state.
+    u32 fn_80390BDC();
 
     // fn_80390C38: the field at 0x148 of the processor of the window's
     // state (5: field_0x4c, 8: field_0x48), -1 in any other state.

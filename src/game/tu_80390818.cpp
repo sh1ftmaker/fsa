@@ -69,6 +69,24 @@ u8 MessageWindow_804AF490::fn_80390894(s32 index) {
     return 0;
 }
 
+u32 MessageWindow_804AF490::fn_80390BDC() {
+    if (field_0x24 == 5) {
+        MessageProcessor_803944C8* proc = field_0x4c;
+        if (proc->field_0x150 != 0) {
+            proc->field_0x150--;
+        }
+        return proc->field_0x150;
+    }
+    if (field_0x24 == 8) {
+        MessageProcessor_803944C8* proc = field_0x48;
+        if (proc->field_0x150 != 0) {
+            proc->field_0x150--;
+        }
+        return proc->field_0x150;
+    }
+    return 0;
+}
+
 s32 MessageWindow_804AF490::fn_80390C38() {
     if (field_0x24 == 5) {
         return field_0x4c->field_0x148;
