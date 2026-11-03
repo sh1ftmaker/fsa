@@ -7,6 +7,10 @@
 
 void GameView_804A9950::vfunc_0x14() {}
 
+void GameView_804A9950::fn_802D39B8(s32 index, s32 value) {
+    field_0x131a8[index] = value;
+}
+
 void GameView_804A9950::fn_802D9FE8(s32 a, s32 b) {
     field_0x1c = a;
     field_0x20 = b;
