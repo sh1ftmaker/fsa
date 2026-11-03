@@ -30,6 +30,10 @@ bool Player_804A6F38::fn_802413F0() {
     return playerFlags_802413F0(this);
 }
 
+void Player_804A6F38::fn_80241454(u8 value) {
+    field_0xc80 = value;
+}
+
 bool Player_804A6F38::fn_8023FC08() {
     return field_0x42c;
 }

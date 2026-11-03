@@ -106,6 +106,7 @@ public:
     bool fn_802413C8(); // via fn_80235744
     bool fn_802413E8(); // via fn_80230188
     bool fn_802413F0(); // via fn_8023188C
+    void fn_80241454(u8 value); // 0xC80 = value (stb r4)
     bool fn_80241E28(s32 a, const JGeometry::TVec3f* b); // via fn_8022BC38
     void fn_80241E64(); // via fn_8022BD70
     void fn_80242560(); // via fn_80231424
