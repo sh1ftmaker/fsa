@@ -35,6 +35,7 @@
 #include "game/Map.h"
 
 class ActorManager_804A5800;
+class JAISeMgr;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
 class J2DOrthoGraph;
@@ -126,7 +127,9 @@ void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
 // the u32 at 0x58 (act_enemy_count_wipe_out_check copies it in init and
 // compares it later).
 struct Unk_8045A080 {
-    /* 0x00 */ u8 field_0x0[0x58];
+    /* 0x00 */ u8 field_0x0[0x34];
+    /* 0x34 */ JAISeMgr* field_0x34; // fn_8045B154 (game/tu_8045B010.cpp) calls stopSoundID on it
+    /* 0x38 */ u8 field_0x38[0x58 - 0x38];
     /* 0x58 */ u32 field_0x58;
     /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
     // game/tu_80457DFC.cpp: stores `pause` at 0x8a and passes it to
@@ -145,6 +148,12 @@ struct Unk_8045A080 {
     // compares r4 against 0x1000000+n, tests r5 with clrlwi. 24 (0x8045908C) and
     // stores r6 (a byte) at 0x8d.
     void fn_80458FF0(s32 id, bool arg1, bool flag);
+    // game/tu_80457DFC.cpp (0x80458880 and 0x80458F04). fn_8045B030
+    // (game/tu_8045B010.cpp) calls them with an id from lbl_8052DEE0 in r4
+    // (fn_80458880 also gets -1); the id is not a JAISoundID (passed in a
+    // register).
+    void fn_80458880(s32 id, s32 arg);
+    void fn_80458F04(s32 id);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
