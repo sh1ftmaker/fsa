@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **18.44 %** of the code and **4,523 / 11,561** functions match. 269 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **18.46 %** of the code and **4,540 / 11,561** functions match. 270 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -72,11 +72,11 @@ interactive version, down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | Game code | 0.42 % of 3,573,784 bytes | 81 / 6,789 |
-| JSystem | 91.2 % of 630,892 bytes | 3,389 / 3,702 |
+| JSystem | 91.4 % of 630,892 bytes | 3,406 / 3,702 |
 | Dolphin SDK | 99.6 % of 131,240 bytes | 606 / 614 |
 | GX | 95.8 % of 33,660 bytes | 166 / 172 |
 | MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **18.44 %** of 4,442,088 bytes | **4,523 / 11,561** |
+| **Whole DOL** | **18.46 %** of 4,442,088 bytes | **4,540 / 11,561** |
 <!-- regions:end -->
 
 </details>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 47.3 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 47.8 % of the split files Matching.
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Most link fixes are merged; left are J3DAnimation's weak-dtor order, JGadget binary.cpp, MSL ansi_fp/strtoul and a clean-room qsort.c. Currently 95.3 % of the split files Matching.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 0 % of the code matched.
