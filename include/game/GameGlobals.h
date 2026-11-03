@@ -12,6 +12,7 @@
 // it.
 
 #include "types.h"
+#include "dolphin/mtx.h"
 
 class ActorManager;
 struct JPAEmitterManager;
@@ -61,10 +62,23 @@ struct EffectSystem {
     /* 0xC */ JPAEmitterManager* mEmitterManager;
 };
 
+// lbl_8053AB10->0x24. No vtable; its methods are in game/tu_8030C058.cpp.
+// Also called from tu_8011CEC8, tu_8015F454, tu_802F5040, tu_8045BA84.
+class cls_8030C058 {
+public:
+    // Multiplies pos by the Mtx at +0x74 (PSMTXMultVec) and writes x, y and a
+    // constant z to out: a world-to-screen projection. With the 2nd argument
+    // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).
+    void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
+};
+
 // *lbl_8053AB10: the second most-used singleton (267 units). Set in
 // game/tu_8013AAD4.cpp (0x8013C024) and game/tu_80134C04.cpp (0x801393C4).
+// Its most-read fields are 0x24 (181 loads right after the global), 0x20
+// (106) and 0x30 (54); 0x20 and 0x30 are untyped until a unit shows them.
 struct GameRoot2 {
-    /* 0x00 */ u8 field_0x0[0x28];
+    /* 0x00 */ u8 field_0x0[0x24];
+    /* 0x24 */ cls_8030C058* field_0x24;
     /* 0x28 */ EffectSystem* field_0x28;
 };
 

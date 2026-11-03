@@ -102,7 +102,8 @@ that need them.
 | `game/ActorBase.h` | `ActorBase` (placeholder name), the base class of every spawned actor: 0x230 bytes, vtable 0x804A5770 (19 slots: dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorBox`, `ActorSub120`, `ActorSub1DC` |
 | `game/ActorId.h` | `enum ActorId`: the 354 IDs the spawner fn_801F9484 accepts (`ACTOR_RAIL = 'RAIL'`), English names from docs/names/actors.tsv in comments |
 | `game/ActorManager.h` | `ActorManager` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` placeholders (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
-| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot`) and `lbl_8053AB10` (`GameRoot2`), the fields known so far, and their getters `fn_802D6A9C` / `fn_8013C824` |
+| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot`) and `lbl_8053AB10` (`GameRoot2`), the fields known so far, and their getters `fn_802D6A9C` / `fn_8013C824`; `cls_8030C058` (`lbl_8053AB10->0x24`, the world-to-screen projection `fn_8030C5F0`) |
+| `game/GameAudio.h` | `cls_804B21EC`, the pool-allocated audio class whose `memPool_` is at 0x804B21EC (include it where a unit declared the class, to keep the pool order) |
 
 Conventions for game code: vectors are `JGeometry::TVec3f` (mkdd's
 `JSystem/JGeometry.h`: its `psq_l`/`psq_st` copy is the game's), matrices
