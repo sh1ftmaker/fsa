@@ -1518,7 +1518,7 @@ config.libs = [
         Object(NonMatching, "game/act_four_person_pull_switch_pswk.cpp"),
         Object(NonMatching, "game/act_colour_block.cpp"),
         Object(NonMatching, "game/act_eyeball_switch.cpp"),
-        Object(NonMatching, "game/act_invisible_npc_wall_tomi.cpp"),
+        Object(Matching, "game/act_invisible_npc_wall_tomi.cpp"),
         Object(Matching, "game/act_block_for_2_3_players.cpp"),
         Object(Matching, "game/act_invisible_npc_wall.cpp"),
         Object(NonMatching, "game/tu_80376FA0.cpp"),
