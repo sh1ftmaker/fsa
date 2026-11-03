@@ -19,7 +19,7 @@ public:
     // the 'LFGN' actor in r3 (unused here) and a position. Flags the first
     // live 'LEAF' actor within 57 units of pos (and 42 in x) by setting its
     // byte at 0x230.
-    void fn_8036D858(const JGeometry::TVec3f* pos);
+    void fn_8036D858(JGeometry::TVec3f pos);
 }; // Size: 0x230
 
 #endif
