@@ -136,7 +136,7 @@ JSystem/JAudio/System/JASAiCtrl.cpp:
 	.ctors      start:0x8045BD40 end:0x8045BD44
 	.rodata     start:0x8045CAD0 end:0x8045CB28
 	.data       start:0x804918A8 end:0x804918D0
-	.bss        start:0x804B2518 end:0x804B2524
+	.bss        start:0x804B2518 end:0x804B2530
 	.sdata      start:0x80539BC0 end:0x80539BD0
 	.sbss       start:0x8053A2E0 end:0x8053A318
 	.sdata2     start:0x8053B080 end:0x8053B0B0
