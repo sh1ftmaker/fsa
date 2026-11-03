@@ -172,6 +172,14 @@ void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::init() {}
 
+// Reports the actor's field_0x16c to the view, unless it is -1 (none).
+void ActorBase_804A5770::fn_801F34DC() {
+    s32 bit = field_0x16c;
+    if (bit != -1) {
+        fn_802D6A9C()->fn_802D7618(bit);
+    }
+}
+
 // If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
 // loop with field_0xd0 = v and returns 1 (0 otherwise).
 u8 ActorBase_804A5770::fn_801F36D4(s32 v) {
