@@ -1,4 +1,4 @@
-#include "JSystem/JAudio/System/JASWaveBank.h"
+#include "JSystem/JAudio/System/JASSimpleWaveBank.h"
 #include "JSystem/JUtility/JUTAssert.h"
 
 JASSimpleWaveBank::JASSimpleWaveBank() {
