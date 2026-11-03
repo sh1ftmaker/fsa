@@ -1095,7 +1095,7 @@ config.libs = [
         Object(NonMatching, "game/act_princess_zelda.cpp"),
         Object(NonMatching, "game/act_icicle.cpp"),
         Object(NonMatching, "game/act_snowball.cpp"),
-        Object(NonMatching, "game/act_message_check_npc.cpp"),
+        Object(Matching, "game/act_message_check_npc.cpp"),
         Object(NonMatching, "game/tu_8010DF44.cpp"),
         Object(NonMatching, "game/act_princess_zelda_demo.cpp"),
         Object(NonMatching, "game/act_maiden_demo.cpp"),
