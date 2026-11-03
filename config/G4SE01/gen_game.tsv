@@ -151,7 +151,6 @@ act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
 act_shadow_link_giant_bomb	sinit	__sinit_act_shadow_link_giant_bomb_cpp	-	-	new	-
 act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
-act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
 act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
 act_snow_wall	sinit	__sinit_act_snow_wall_cpp	-	-	new	-
