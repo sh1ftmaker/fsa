@@ -1,5 +1,7 @@
 # JSystem/JAudio/System/JASBasicBank.cpp
 
+**Update (infra/jaudio-sym): Matching.** 8/8 after JASBNKParser's merge; with the block's `-sym on` and setInst defined after getInstParam (FSA's function order: ctor, getInstParam, setInst, getInst) `link_check.py --unit` is SHA-1 OK. The notes below describe the earlier state.
+
 Baseline: `total: 3711 / 11561 functions, 710408 / 4442088 bytes of code (15.99 %)`
 After (incl. cherry-picked memPool_ commits): 3714 / 11561, 713340 bytes. Gate ok.
 
