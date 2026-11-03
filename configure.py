@@ -1533,7 +1533,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8037DF68.cpp"),
         Object(NonMatching, "game/act_great_fairy_bfry.cpp"),
         Object(NonMatching, "game/act_talking_sign.cpp"),
-        Object(NonMatching, "game/tu_8039003C.cpp"),
+        Object(Matching, "game/tu_8039003C.cpp"),
         Object(NonMatching, "game/tu_80390818.cpp"),
         Object(NonMatching, "game/act_score.cpp"),
         Object(Matching, "game/act_talking_npc.cpp"),
