@@ -26,6 +26,18 @@ game/tu_8022AD64.cpp, hand-matched and reviewed):
          our compiled object emits; units whose names any other source or
          header spells out are skipped.
 
+  dtor_enemy, dtor_sprite, dtor_emit
+         destructor variants (see "dtor variants" below): a direct child of
+         ActorBase_804A5770 or EnemyBase_804A4808 (39 slots, 0xA4 vtable)
+         whose destructor is a hand-matched one (DTORX_TEMPLATES) up to
+         identifiers, the offset of a SpriteAnim_801D267C member (mAnim) and
+         the number of `fn_801EE434(mEmitterNNN)` releases (with or without
+         the NULL test, each kind only where a template shows it). The class
+         header declares those fields (JPABaseEmitter*, fn_801EE434's
+         parameter) with padding between them; otherwise as dtor. A unit
+         with a generated sinit is re-rendered from its recorded files, and
+         its 9 chain objects take the @NNN names the longer source gives them.
+
   fwd    the per-player forwarders of tu_8022AD64 (templates fn_8022B7C4 and
          fn_8022B860 there): `if (lbl_8053AC90 == NULL) return <fallback>;
          if (isPlayerActive(player)) return mPlayers[player]-><getter>(...);
@@ -153,7 +165,7 @@ HEADER = """\
 
 // Code: game/{unit}.cpp.
 
-#include "game/ActorBase.h"
+{includes}
 
 {classblock}
 #endif
@@ -161,7 +173,7 @@ HEADER = """\
 
 CLASS_BLOCK = """\
 {naming}
-class {cls} : public ActorBase_804A5770 {{
+class {cls} : public {base} {{
 public:
     {cls}() {{}}
     /* 0x08 */ virtual ~{cls}();
@@ -171,6 +183,10 @@ public:
 SLOT_LINE = "    /* 0x{off:02X} */ {decl}\n"
 PAD_LINE = "    /* 0x{off:03X} */ u8 field_0x{off:x}[0x{n:X}]; // not yet known\n"
 DTOR_DEF = "{cls}::~{cls}() {{}}\n"
+DTOR_DEF_BODY = "{cls}::~{cls}() {{\n{body}}}\n"
+RELEASE = "    fn_801EE434({field});\n"
+RELEASE_CHECKED = "    if ({field} != NULL) {{\n        fn_801EE434({field});\n    }}\n"
+FIELD_LINE = "    /* 0x{off:03X} */ {decl}\n"
 
 # ---------------------------------------------------------------- helpers
 
@@ -302,6 +318,146 @@ def template(kind, ours=False):
 
 def same_as_template(o, s, kind, ours=False):
     return s[2] == len(template(kind, ours)[0]) and fingerprint(o, s, role_of) == template(kind, ours)
+
+
+# ---------------------------------------------------------------- dtor variants
+#
+# Families dtor_enemy, dtor_sprite and dtor_emit: destructors of direct
+# children of ActorBase_804A5770 or EnemyBase_804A4808 that differ from a
+# hand-matched destructor (DTORX_TEMPLATES) only in
+#   - the class's own fields at r30 displacements of the skeleton (a
+#     SpriteAnim_801D267C member: `addic. r0, r30, X` and the store of its
+#     J3DFrameCtrl's vtable at X + 0x24, as MessageCheckNPC's mAnim), and
+#   - the number of emitter releases, each `fn_801EE434(mEmitterNNN);`
+#     (`lwz r3, NNN(r30); bl fn_801EE434`) or, with the NULL test,
+#     `lwz r3, NNN(r30); cmplwi r3, 0; beq +8; bl fn_801EE434`. A release
+#     kind is accepted only where a template with the same skeleton has it.
+# The skeleton is the identifier-only fingerprint with the release blocks
+# taken out and the displacement of every relocation-free branch masked
+# (taking blocks out moves them). fn_801EE434 takes a JPABaseEmitter*
+# (ActorBase.h), which types the released fields.
+
+BASES = {
+    "ActorBase_804A5770": {"vt_name": "__vt__18ActorBase_804A5770", "slots": 19, "size": 0x230,
+                           "include": "game/ActorBase.h"},
+    "EnemyBase_804A4808": {"vt_name": "__vt__18EnemyBase_804A4808", "slots": 39, "size": 0x2A8,
+                           "include": "game/EnemyBase.h"},
+}
+ACTOR_BASE = "ActorBase_804A5770"
+DTORX_TEMPLATES = [  # (unit, destructor, base), all hand-matched and reviewed
+    ("act_fire_bar", "__dt__23FireBarManager_804A3F90Fv", "EnemyBase_804A4808"),
+    ("tu_801DCC98", "__dt__12cls_804A5038Fv", "EnemyBase_804A4808"),
+    ("act_message_check_npc", "__dt__24MessageCheckNPC_8049D0E8Fv", ACTOR_BASE),
+    ("act_explosion", "__dt__18Explosion_804A7FB8Fv", ACTOR_BASE),
+    ("act_fairy_revival", "__dt__21RevivalFairy_804AC250Fv", ACTOR_BASE),
+    ("act_torch", "__dt__14Torch_804A8520Fv", ACTOR_BASE),
+    ("act_spotlight", "__dt__18Spotlight_804A84C8Fv", ACTOR_BASE),
+]
+EMIT_RELEASE = "fn_801EE434"
+SPRITE_CLS = "SpriteAnim_801D267C"
+SPRITE_SIZE = 0x38            # include/game/SpriteAnim.h
+SPRITE_FRAMECTRL = 0x24       # its J3DFrameCtrl, whose vtable the inline dtor stores
+ENEMYBASE_H = Path("include/game/EnemyBase.h")
+LWZ_R3_R30 = 0x807E           # lwz r3, d(r30)
+CMPLWI_R3_0 = 0x28030000
+BEQ_8 = 0x41820008
+DFORM_OPS = (13, 14, 32, 34, 36, 38, 40, 44)  # addic., addi, lwz, lbz, stw, stb, lhz, sth
+
+
+def dtor_decompose(o, s):
+    """(skeleton, releases [(offset, checked)], r30 displacements of the skeleton)."""
+    code, rel = fingerprint(o, s, role_of)
+    r = {a: (t, n, d) for a, t, n, d in rel}
+    tk = [(struct.unpack_from(">I", code, k)[0], r.get(k)) for k in range(0, len(code), 4)]
+    out, rels, disps, k = [], [], [], 0
+    while k < len(tk):
+        w, rr = tk[k]
+        if w >> 16 == LWZ_R3_R30:
+            if k + 3 < len(tk) and tk[k + 1][0] == CMPLWI_R3_0 and tk[k + 2][0] == BEQ_8 \
+                    and tk[k + 3][1] and tk[k + 3][1][1] == EMIT_RELEASE:
+                rels.append((w & 0xFFFF, True))
+                k += 4
+                continue
+            if k + 1 < len(tk) and tk[k + 1][1] and tk[k + 1][1][1] == EMIT_RELEASE:
+                rels.append((w & 0xFFFF, False))
+                k += 2
+                continue
+        op = w >> 26
+        if rr is None and op == 16:
+            w &= ~0xFFFC
+        elif rr is None and op == 18:
+            w &= ~0x03FFFFFC
+        elif rr is None and op in DFORM_OPS and (w >> 16) & 31 == 30:
+            disps.append(w & 0xFFFF)
+            w &= ~0xFFFF
+        out.append((w, rr))
+        k += 1
+    return tuple(out), rels, disps
+
+
+_dtorx = {}
+
+
+def dtorx_templates(ours=False):
+    """[(unit, name, base, skeleton, releases, disps)] of the hand-matched templates."""
+    if ours not in _dtorx:
+        out = []
+        for u, n, base in DTORX_TEMPLATES:
+            o = Obj(our_obj(u) if ours else target_obj(u))
+            f = o.func(n)
+            if not f:
+                die(f"template {n} not in {u}'s {'compiled' if ours else 'target'} object")
+            out.append((u, n, base, *dtor_decompose(o, f[1])))
+        _dtorx[ours] = out
+    return _dtorx[ours]
+
+
+def dtorx_kind(o, s, ours=False):
+    """The dtor variant of function s: {fam, base, sprite, releases, template}
+    or None when no template's skeleton fits."""
+    sk, rels, disps = dtor_decompose(o, s)
+    ts = dtorx_templates(ours)
+    for u, n, base, tsk, trels, tdisps in ts:
+        if sk != tsk or len(disps) != len(tdisps):
+            continue
+        bsize = BASES[base]["size"]
+        shift = {d - t for d, t in zip(disps, tdisps) if t >= bsize}
+        if any(d != t for d, t in zip(disps, tdisps) if t < bsize) or len(shift) > 1:
+            continue
+        own = [t for t in tdisps if t >= bsize]
+        sprite = None
+        if own:  # the template's SpriteAnim member, moved by the shift
+            if sorted(set(own)) != [own[0], own[0] + SPRITE_FRAMECTRL]:
+                continue
+            sprite = own[0] + shift.pop()
+            if sprite < bsize or sprite % 4:
+                continue
+        kinds = {c for _, _, _, tsk2, trels2, _ in ts if tsk2 == sk for _, c in trels2}
+        if any(c not in kinds for _, c in rels):
+            continue
+        offs = [d for d, _ in rels]
+        if len(set(offs)) != len(offs) or any(d < bsize or d % 4 for d in offs):
+            continue
+        if sprite is not None and any(sprite <= d < sprite + SPRITE_SIZE for d in offs):
+            continue
+        fam = "dtor_emit" if rels else "dtor_sprite" if sprite is not None else "dtor_enemy"
+        if fam == "dtor_enemy" and base == ACTOR_BASE:
+            continue  # that is the plain dtor family
+        return {"fam": fam, "base": base, "sprite": sprite, "releases": rels, "template": n}
+    return None
+
+
+def enemy_slot_decls():
+    """EnemyBase_804A4808's slot declarations: ActorBase's, then the
+    `/* 0xNN */ virtual ...;` lines of include/game/EnemyBase.h."""
+    out = dict(SLOT_DECLS)
+    for m in re.finditer(r"^    /\* 0x([0-9A-F]{2}) \*/ (virtual [^;]*;)", ENEMYBASE_H.read_text(), re.M):
+        out[int(m[1], 16)] = m[2]
+    return out
+
+
+def slot_decls(base):
+    return SLOT_DECLS if base == ACTOR_BASE else enemy_slot_decls()
 
 
 def symbols_lines():
@@ -478,44 +634,63 @@ def analyse(unit):
             continue
         res["sinit"] = {"name": s[0], "addr": text_base(unit) + s[1], "bss": int(bsyms[0][0][4:], 16),
                         "bss_name": bsyms[0][0]}
-    # dtors: 0x60 template functions
+    # dtors: 0x60 template functions, and the variants (dtor_enemy, dtor_sprite, dtor_emit)
     for s in o.funcs():
-        if s[2] != 0x60 or not same_as_template(o, s, "dtor"):
+        if s[2] == 0x60 and same_as_template(o, s, "dtor"):
+            kind = {"fam": "dtor", "base": ACTOR_BASE, "sprite": None, "releases": []}
+        elif s[2] <= 0x140 and not s[0].startswith("__sinit"):
+            kind = dtorx_kind(o, s)
+            if kind is None:
+                continue
+        else:
             continue
-        d, why = dtor_info(o, unit, s)
+        d, why = dtor_info(o, unit, s, kind)
         if why:
-            res["skip"].append(f"dtor {s[0]}: {why}")
+            res["skip"].append(f"{kind['fam']} {s[0]}: {why}")
         elif s[0].startswith("__dt__"):
             res["done"].append(s[0])
-        elif not s[0].startswith("fn_"):
-            res["skip"].append(f"dtor {s[0]}: not a placeholder name")
+        elif not re.fullmatch(r"(fn|dtor)_8[0-9A-F]{7}", s[0]):
+            res["skip"].append(f"{kind['fam']} {s[0]}: not a placeholder name")
         elif not d["vt_name"].startswith("lbl_"):
-            res["skip"].append(f"dtor {s[0]}: vtable already named {d['vt_name']}")
+            res["skip"].append(f"{kind['fam']} {s[0]}: vtable already named {d['vt_name']}")
         else:
             res["dtor"].append(d)
     return res
 
 
-def dtor_info(o, unit, s):
+def dtor_info(o, unit, s, kind=None):
     """The vtable a template dtor stores and the slots it overrides, or
-    (None, reason) when it is not a 19-slot direct child of ActorBase."""
+    (None, reason) when it is not a direct child of the kind's base with the
+    base's slot count (19 for ActorBase, 39 for EnemyBase)."""
+    kind = kind or {"fam": "dtor", "base": ACTOR_BASE, "sprite": None, "releases": []}
+    base = kind["base"]
+    vt_size = vt_size_of(base)
     data = o.sec(".data")
     rels = o.relocs_in(s[5], s[1], s[2])
     vt_sym = o.syms[[r for r in rels if r[1] == 6][0][2]]
     if vt_sym[5] != data:
         return None, f"vtable {vt_sym[0]} not in this unit"
     vt_addr = data_base(unit) + vt_sym[1]
-    why = vtable_problem(o, vt_sym, s)
+    why = vtable_problem(o, vt_sym, s, base)
     if why:
         return None, f"vtable 0x{vt_addr:08X}: {why}"
-    slots = {off - vt_sym[1]: o.syms[si][0] for off, typ, si, add in o.relocs_in(data, vt_sym[1], VT_SIZE)}
-    base = actorbase_slots()
-    overrides = {k: slots[k] for k in range(0x0C, VT_SIZE, 4) if slots[k] != base[k]}
+    slots = {off - vt_sym[1]: o.syms[si][0] for off, typ, si, add in o.relocs_in(data, vt_sym[1], vt_size)}
+    bslots = base_slots(base)
+    overrides = {k: slots[k] for k in range(0x0C, vt_size, 4) if slots[k] != bslots[k]}
     bad = [n for n in overrides.values() if o.func(n) is None]
     if bad:
         return None, f"vtable 0x{vt_addr:08X}: slot functions outside the unit ({', '.join(bad[:3])})"
+    decls = slot_decls(base)
+    nodecl = [k for k in overrides if k not in decls]
+    if nodecl:
+        return None, f"vtable 0x{vt_addr:08X}: no declaration for slot 0x{nodecl[0]:02X} in {base}'s header"
     return {"name": s[0], "addr": text_base(unit) + s[1], "vt": vt_addr, "vt_name": vt_sym[0],
-            "vt_size": vt_sym[2], "overrides": overrides}, None
+            "vt_size": vt_sym[2], "overrides": overrides, "fam": kind["fam"], "base": base,
+            "sprite": kind["sprite"], "releases": kind["releases"]}, None
+
+
+def vt_size_of(base):
+    return 8 + 4 * BASES[base]["slots"]
 
 
 def data_base(unit):
@@ -526,12 +701,13 @@ def data_base(unit):
     return 0
 
 
-_abase = None
+_bslots = {}
 
 
-def actorbase_slots():
-    global _abase
-    if _abase is None:
+def base_slots(base=ACTOR_BASE):
+    """{slot offset: function} of the base class's own vtable (dtk's split)."""
+    if base not in _bslots:
+        want, size = BASES[base]["vt_name"], vt_size_of(base)
         for u in game_units():
             p = target_obj(u)
             if not p.exists():
@@ -539,25 +715,31 @@ def actorbase_slots():
             o = Obj(p)
             d = o.sec(".data")
             for _, s in o.defined(".data"):
-                if s[0] == "__vt__18ActorBase_804A5770":
-                    _abase = {off - s[1]: o.syms[si][0] for off, t, si, a in o.relocs_in(d, s[1], VT_SIZE)}
-                    return _abase
-        die("ActorBase_804A5770's vtable not found")
-    return _abase
+                if s[0] == want:
+                    _bslots[base] = {off - s[1]: o.syms[si][0] for off, t, si, a in o.relocs_in(d, s[1], size)}
+                    return _bslots[base]
+        die(f"{base}'s vtable not found")
+    return _bslots[base]
 
 
-def vtable_problem(o, vt, dtor):
-    """None if vt is a 19-slot direct ActorBase child's vtable whose slot 0
-    is this dtor."""
-    if vt[2] not in (VT_SIZE, VT_SIZE + 4):
-        return f"vtable symbol is 0x{vt[2]:X}, not 0x{VT_SIZE:X} (+4 padding): not 19 slots"
+def actorbase_slots():
+    return base_slots(ACTOR_BASE)
+
+
+def vtable_problem(o, vt, dtor, base=ACTOR_BASE):
+    """None if vt is a direct child's vtable with the base's slot count
+    whose slot 0 is this dtor."""
+    n = BASES[base]["slots"]
+    size = vt_size_of(base)
+    if vt[2] not in (size, size + 4):
+        return f"vtable symbol is 0x{vt[2]:X}, not 0x{size:X} (+4 padding): not {n} slots"
     d = o.sec(".data")
     raw = o.e.data(d)[vt[1]:vt[1] + vt[2]]
-    if raw[:8] != b"\0" * 8 or raw[VT_SIZE:] != b"\0" * (vt[2] - VT_SIZE):
+    if raw[:8] != b"\0" * 8 or raw[size:] != b"\0" * (vt[2] - size):
         return "vtable header or padding not zero"
     rels = {off - vt[1]: (t, o.syms[si][0], a) for off, t, si, a in o.relocs_in(d, vt[1], vt[2])}
-    if sorted(rels) != list(range(8, VT_SIZE, 4)) or any(t != 1 or a for t, n, a in rels.values()):
-        return "vtable relocations are not 19 plain slots"
+    if sorted(rels) != list(range(8, size, 4)) or any(t != 1 or a for t, n_, a in rels.values()):
+        return f"vtable relocations are not {n} plain slots"
     if rels[8][1] != dtor[0]:
         return f"slot 0x08 is {rels[8][1]}, not the dtor"
     return None
@@ -570,23 +752,62 @@ def comment(text):
     return "\n".join("// " + l for l in textwrap.wrap(text, 76))
 
 
-def render_class(cls, naming, overrides, size, why=None):
-    slots = "".join(SLOT_LINE.format(off=k, decl=SLOT_DECLS[k]) for k in sorted(overrides))
-    fields = ""
-    if size and size > ACTOR_BASE_SIZE:
-        fields = PAD_LINE.format(off=ACTOR_BASE_SIZE, n=size - ACTOR_BASE_SIZE)
-    return CLASS_BLOCK.format(naming=comment(naming), cls=cls, slots=slots, fields=fields,
+def emitter_field(off):
+    return f"mEmitter{off:x}"
+
+
+def class_fields(d):
+    """[(offset, size, declaration)] of the class's own fields the destructor shows."""
+    out = []
+    if d.get("sprite") is not None:
+        out.append((d["sprite"], SPRITE_SIZE, f"{SPRITE_CLS} mAnim;"))
+    for off, _ in d.get("releases", []):
+        out.append((off, 4, f"JPABaseEmitter* {emitter_field(off)}; // released by the destructor"))
+    return sorted(out)
+
+
+def render_class(cls, naming, overrides, size, why=None, base=ACTOR_BASE, fields_of=()):
+    decls = slot_decls(base)
+    slots = "".join(SLOT_LINE.format(off=k, decl=decls[k]) for k in sorted(overrides))
+    fields, pos = "", BASES[base]["size"]
+    for off, n, decl in fields_of:
+        if off > pos:
+            fields += PAD_LINE.format(off=pos, n=off - pos)
+        fields += FIELD_LINE.format(off=off, decl=decl)
+        pos = off + n
+    if size and size > pos:
+        fields += PAD_LINE.format(off=pos, n=size - pos)
+    return CLASS_BLOCK.format(naming=comment(naming), cls=cls, base=base, slots=slots, fields=fields,
                               size=f"0x{size:X}" if size else why)
 
 
+def render_dtor(cls, d):
+    if not d.get("releases"):
+        return DTOR_DEF.format(cls=cls)
+    body = "".join((RELEASE_CHECKED if c else RELEASE).format(field=emitter_field(off))
+                   for off, c in d["releases"])
+    return DTOR_DEF_BODY.format(cls=cls, body=body)
+
+
 def dtor_plan(unit, d):
+    base = d.get("base", ACTOR_BASE)
     ctors = ctors_of(unit, d["vt_name"], d["name"])
     cls, naming = class_name(unit, d["vt"], ctors)
     size, why = alloc_size(ctors)
-    if size is not None and size < ACTOR_BASE_SIZE:
+    fields = class_fields(d)
+    end = max([BASES[base]["size"]] + [o + n for o, n, _ in fields])
+    if size is not None and size < end:
         return None
-    return {"cls": cls, "naming": naming, "size": size, "block": render_class(cls, naming, d["overrides"], size, why),
-            "def": DTOR_DEF.format(cls=cls)}
+    return {"cls": cls, "naming": naming, "size": size,
+            "block": render_class(cls, naming, d["overrides"], size, why, base, fields),
+            "def": render_dtor(cls, d), "includes": header_includes(d)}
+
+
+def header_includes(d):
+    out = [BASES[d.get("base", ACTOR_BASE)]["include"]]
+    if d.get("sprite") is not None:
+        out.append("game/SpriteAnim.h")
+    return out
 
 
 # ---------------------------------------------------------------- scan
@@ -760,16 +981,21 @@ def edit_source(unit, plan, text):
 
 def edit_header(unit, plan, text):
     blocks = "\n".join(d["block"] for d in plan["dtors"])
+    needed = []
+    for d in plan["dtors"]:
+        needed += [i for i in d.get("includes", ["game/ActorBase.h"]) if i not in needed]
     if text is None:
         guard = f"GAME_ACT_{unit.upper()}_H"
-        return HEADER.format(guard=guard, unit=unit, classblock=blocks), None
+        includes = "\n".join(f'#include "{i}"' for i in needed)
+        return HEADER.format(guard=guard, unit=unit, includes=includes, classblock=blocks), None
     for d in plan["dtors"]:
         if re.search(r"\b%s\b|_%08X\b" % (d["cls"], d["vt"]), text):
             return None, f"header already declares the class of vtable 0x{d['vt']:08X}"
-    if '#include "game/ActorBase.h"' not in text:
-        last = list(INCLUDE.finditer(text))
-        pos = last[-1].end() if last else text.index("\n", text.index("#define")) 
-        text = text[:pos] + '\n#include "game/ActorBase.h"' + text[pos:]
+    for inc in needed:
+        if f'#include "{inc}"' not in text:
+            last = list(INCLUDE.finditer(text))
+            pos = last[-1].end() if last else text.index("\n", text.index("#define"))
+            text = text[:pos] + f'\n#include "{inc}"' + text[pos:]
     k = text.rindex("#endif")
     return text[:k] + blocks + "\n" + text[k:], None
 
@@ -873,18 +1099,19 @@ def symbol_edits(unit, plan, ours):
         f = ours.func(f"__dt__{len(d['cls'])}{d['cls']}Fv")
         if not f:
             return None, f"our object lacks {d['cls']}'s destructor"
-        if not same_as_template(ours, f[1], "dtor", ours=True):
+        if not dtor_fits(ours, f[1], d, ours=True):
             return None, f"our {f[1][0]} differs from the template's compiled dtor"
+        vsize = vt_size_of(d.get("base", ACTOR_BASE))
         old = sym_line(lines, ".text", d["addr"], d["name"])
         edits.append((".text", d["addr"], [old], [rename_line(old, f[1][0])]))
         vts = [s for _, s in ours.defined(".data") if s[0] == f"__vt__{len(d['cls'])}{d['cls']}"]
-        if len(vts) != 1 or vts[0][2] != VT_SIZE:
-            return None, "our vtable is missing or not 0x54"
+        if len(vts) != 1 or vts[0][2] != vsize:
+            return None, f"our vtable is missing or not 0x{vsize:X}"
         vt = vts[0]
         old = sym_line(lines, ".data", d["vt"], d["vt_name"])
-        edits.append((".data", d["vt"], [old], [rename_line(old, vt[0], size=VT_SIZE)]))
+        edits.append((".data", d["vt"], [old], [rename_line(old, vt[0], size=vsize)]))
         dsec = ours.sec(".data")
-        oslots = {off - vt[1]: ours.syms[si][0] for off, t, si, a in ours.relocs_in(dsec, vt[1], VT_SIZE)}
+        oslots = {off - vt[1]: ours.syms[si][0] for off, t, si, a in ours.relocs_in(dsec, vt[1], vsize)}
         tbase = text_base(unit)
         tobj = Obj(target_obj(unit))
         for k, tname in d["overrides"].items():
@@ -893,7 +1120,7 @@ def symbol_edits(unit, plan, ours):
                 continue
             if not want or f"__{len(d['cls'])}{d['cls']}F" not in want:
                 return None, f"our slot 0x{k:02X} is {want}, not this class's override"
-            if not tname.startswith("fn_"):
+            if not re.fullmatch(r"(fn|dtor)_8[0-9A-F]{7}", tname):
                 return None, f"slot 0x{k:02X} target is already named {tname}"
             addr = tbase + tobj.func(tname)[1][1]
             if any(e[1] == addr for e in edits):
@@ -901,6 +1128,37 @@ def symbol_edits(unit, plan, ours):
             old = sym_line(lines, ".text", addr, tname)
             edits.append((".text", addr, [old], [rename_line(old, want)]))
     return edits, None
+
+
+def chain_renames(u, ours):
+    """A unit with a generated sinit whose source gains code: the compiler
+    numbers its 9 destructor-chain objects anew, so their symbols.txt lines
+    (at the unit's .bss + 0xC * k) take our object's @NNN names."""
+    lines = symbols_lines()
+    base = bss_base(u)
+    chain = sorted((t for _, t in ours.defined(".bss") if re.fullmatch(r"@\d+", t[0])), key=lambda t: t[1])
+    if [(t[1], t[2]) for t in chain] != [(0xC * k, 0xC) for k in range(N_POOLS)]:
+        return None, "our .bss chain is not 9 x 0xC"
+    edits = []
+    for t in chain:
+        old = sym_line(lines, ".bss", base + t[1])
+        m = SYMLINE.match(old.rstrip("\n")) if old else None
+        if not m or not re.fullmatch(r"@\d+", m[1]):
+            return None, f"symbols.txt has no @NNN at .bss 0x{base + t[1]:08X}"
+        if m[1] != t[0]:
+            edits.append((".bss", base + t[1], [old], [rename_line(old, t[0])]))
+    return edits, None
+
+
+def dtor_fits(o, s, d, ours=False):
+    """Function s (dtk's split, or ours) is d's destructor shape: the plain
+    template, or the same dtor variant (base, SpriteAnim offset, releases)."""
+    fam = d.get("fam", "dtor")
+    if fam == "dtor":
+        return same_as_template(o, s, "dtor", ours)
+    k = dtorx_kind(o, s, ours)
+    return bool(k) and (k["fam"], k["base"], k["sprite"], k["releases"]) == \
+        (fam, d["base"], d["sprite"], d["releases"])
 
 
 # ---------------------------------------------------------------- generate
@@ -949,8 +1207,14 @@ def members(plan, names):
     if plan["sinit"]:
         out.append(("sinit", names.get(plan["sinit"]["addr"]), "-", "-"))
     for d in plan["dtors"]:
-        out.append(("dtor", f"__dt__{len(d['cls'])}{d['cls']}Fv", d["cls"], f"0x{d['vt']:08X}"))
+        out.append((d.get("fam", "dtor"), f"__dt__{len(d['cls'])}{d['cls']}Fv", d["cls"], f"0x{d['vt']:08X}"))
     return out
+
+
+def manifest_rows():
+    if not MANIFEST.exists():
+        return []
+    return [r.split("\t") for r in MANIFEST.read_text().splitlines()[1:] if r.strip()]
 
 
 def blob(path):
@@ -971,7 +1235,7 @@ def claimed():
 
 
 def generate(units):
-    ninja(str(our_obj(TEMPLATE_UNIT)))
+    ninja(str(our_obj(TEMPLATE_UNIT)), *[str(our_obj(t[0])) for t in DTORX_TEMPLATES])
     plans, report = {}, {}
     taken = claimed()
     for u in units:
@@ -993,10 +1257,29 @@ def generate(units):
             before[u] = matched(objdiff(u))
         else:
             before[u] = set()
-        src, why = edit_source(u, p, snaps[u][src_path(u)])
+        # A unit with generated members already: its files are re-rendered
+        # from their recorded pre-generation versions with the old and new
+        # members together, so --check sees one generator edit.
+        prior = [r for r in manifest_rows() if r[0] == u and r[1] != "fwd"]
+        rp, why = plan_from_rows(u, prior) if prior else ({"dtors": []}, [])
+        why = "; ".join(why) if why else None
+        if not why and prior:
+            p["src_before"] = prior[0][5]
+            hb = {r[6] for r in prior if r[1].startswith("dtor")}
+            if hb:
+                p["hdr_before"] = hb.pop()
+        src_text = snaps[u][src_path(u)]
+        hdr_text = snaps[u][hdr_path(u)]
+        if prior and not why:
+            src_text = None if p["src_before"] == "new" else git_blob(p["src_before"])
+            if p["hdr_before"] not in ("-",):
+                hdr_text = None if p["hdr_before"] == "new" else git_blob(p["hdr_before"])
+        both = dict(p, dtors=sorted(rp["dtors"] + p["dtors"], key=lambda d: d["addr"]))
+        if not why:
+            src, why = edit_source(u, both, src_text)
         hdr = None
         if not why and p["dtors"]:
-            hdr, why = edit_header(u, p, snaps[u][hdr_path(u)])
+            hdr, why = edit_header(u, both, hdr_text)
         if why:
             report[u] = (f"skipped: {why}", p["skipped"])
             del plans[u]
@@ -1016,6 +1299,11 @@ def generate(units):
             why = "does not compile"
         else:
             edits, why = symbol_edits(u, p, Obj(our_obj(u)))
+            if not why and any(r[0] == u and r[1] == "sinit" for r in manifest_rows()):
+                more, why = chain_renames(u, Obj(our_obj(u)))
+                edits = edits + (more or [])
+                # the renamed chain objects: their old names are gone, not lost
+                p["renamed"] = {e[2][0].split(" = ")[0] for e in (more or [])}
             if not why and not edits_ok(edits):
                 why = "a symbols.txt line to rename is not where dtk's split has it"
         if why:
@@ -1034,8 +1322,10 @@ def generate(units):
         for u, p in plans.items():
             p["names"] = {e[1]: e[3][0].split(" = ")[0] for e in all_edits[u] if e[0] == ".text"}
             diff = objdiff(u) or {}
-            lost = sorted(before[u] - matched(diff))
+            lost = sorted(before[u] - matched(diff) - p.get("renamed", set()))
             probs = member_problems(u, p, diff) + ([f"lost {', '.join(lost)}"] if lost else [])
+            if "renamed" in p:  # the generated sinit's .bss chain, as --check sees it
+                probs += bss_problems(u, obj_fresh(target_obj(u)), obj_fresh(our_obj(u)), diff)
             if probs:
                 bad.append(u)
                 report[u] = ("backed out: " + "; ".join(probs), p["skipped"])
@@ -1080,21 +1370,32 @@ def member_problems(u, p, diff):
     t, o = obj_fresh(target_obj(u)), (obj_fresh(our_obj(u)) if our_obj(u).exists() else None)
     if o is None:
         return ["no compiled object"]
+    by_fn = {f"__dt__{len(d['cls'])}{d['cls']}Fv": d for d in p["dtors"]}
     for fam, fn, cls, vt in members(p, p["names"]):
         tf, of = t.func(fn), o.func(fn)
         if not tf:
             bad.append(f"{fn}: not in the target object (symbols.txt)")
             continue
-        if not same_as_template(t, tf[1], fam):
+        if fam == "sinit":
+            same_t = same_as_template(t, tf[1], fam)
+            same_o = of and same_as_template(o, of[1], fam, ours=True)
+        else:
+            d = by_fn[fn]
+            same_t = dtor_fits(t, tf[1], d)
+            same_o = of and dtor_fits(o, of[1], d, ours=True)
+            if of and fingerprint(t, tf[1], role_of) != fingerprint(o, of[1], role_of):
+                bad.append(f"{fn}: ours differs from dtk's split beyond this unit's own symbols")
+        if not same_t:
             bad.append(f"{fn}: target is not the {fam} template up to identifiers")
-        if not of or not same_as_template(o, of[1], fam, ours=True):
+        if not same_o:
             bad.append(f"{fn}: our compiled function is not the template's up to identifiers")
         if diff.get(fn) != 100:
             bad.append(f"{fn}: objdiff {diff.get(fn)}")
         if fam == "sinit":
             bad += bss_problems(u, t, o, diff)
         else:
-            bad += vtable_problems(u, t, o, tf[1], of[1] if of else None, diff)
+            bad += vtable_problems(u, t, o, tf[1], of[1] if of else None, diff,
+                                   vt_size_of(by_fn[fn].get("base", ACTOR_BASE)))
     return bad
 
 
@@ -1120,9 +1421,10 @@ def bss_problems(u, t, o, diff):
     return bad
 
 
-def vtable_problems(u, t, o, tf, of, diff):
-    """The vtable the dtor stores: same name in dtk's split and ours, 0x54 in
-    symbols.txt, every slot's relocation target named as ours, 100 %."""
+def vtable_problems(u, t, o, tf, of, diff, VT_SIZE=VT_SIZE):
+    """The vtable the dtor stores: same name in dtk's split and ours, 0x54
+    (0xA4 for an EnemyBase child) in symbols.txt, every slot's relocation
+    target named as ours, 100 %."""
     if of is None:
         return []
     def vt_of(x, f):
@@ -1207,7 +1509,13 @@ def plan_from_rows(u, rs):
         if fam == "sinit":
             p["sinit"] = {"addr": addr}
             continue
-        d, why = dtor_info(t, u, f[1])
+        kind = None
+        if fam != "dtor":
+            kind = dtorx_kind(t, f[1])
+            if not kind or kind["fam"] != fam:
+                bad.append(f"{fn}: dtk's split is no longer a {fam} member")
+                continue
+        d, why = dtor_info(t, u, f[1], kind)
         dp = dtor_plan(u, d) if d else None
         if why or not dp or dp["cls"] != cls or f"0x{d['vt']:08X}" != vt:
             bad.append(f"{fn}: no longer derives as class {cls}, vtable {vt}" + (f" ({why})" if why else ""))
@@ -1242,7 +1550,8 @@ def check(units):
     cfg = Path("build/G4SE01/config.json")
     if cfg.exists() and any(p.stat().st_mtime > cfg.stat().st_mtime for p in (SYMBOLS, SPLITS)):
         cfg.unlink()
-    out = ninja("build/G4SE01/config.json", *[str(our_obj(u)) for u in by_unit], keep_going=True)
+    out = ninja("build/G4SE01/config.json", *[str(our_obj(u)) for u in by_unit],
+                *[str(our_obj(t[0])) for t in DTORX_TEMPLATES], keep_going=True)
     if not Path("build/G4SE01/config.json").exists():
         print("split failed:", (out.stdout + out.stderr)[-1000:])
         return False
@@ -1260,7 +1569,7 @@ def check(units):
             rs = [r for r in rs if r[1] != "fwd"]
             if not rs:
                 continue
-        sbs, hbs = {r[5] for r in rs}, {r[6] for r in rs if r[1] == "dtor"}
+        sbs, hbs = {r[5] for r in rs}, {r[6] for r in rs if r[1].startswith("dtor")}
         p, bad = plan_from_rows(u, rs)
         if not bad:
             bad = member_problems(u, p, diffs[u] or {})
