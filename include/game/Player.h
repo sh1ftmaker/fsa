@@ -229,6 +229,11 @@ JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804C
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
+// Loops over the players and calls fn_80272DCC, which copies the 4 box floats
+// and stores r5/r6 (field_0x4, serial) as words.
+void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
+
 // Owner unit tu_8022AD64 (not written yet). 1 unit (tu_802242F4). Index of
 // the first player on `layer` whose box test (fn_80273FB8(player, box,
 // layer, out)) passes, or -1; *out (two floats, 0 and 4) is written by the

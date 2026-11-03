@@ -12,7 +12,7 @@ public:
     /* 0x08 */ virtual ~cls_804AE780();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
-    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    /* 0x230 */ s32 field_0x230; // top 5 bits of field_0x90
 }; // Size: 0x234
 
 #endif
