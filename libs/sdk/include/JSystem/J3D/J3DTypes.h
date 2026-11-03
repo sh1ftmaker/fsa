@@ -5,6 +5,7 @@
 #include <dolphin/mtx.h>
 #include "JSystem/J3D/J3DGXColor.h"
 #include "JSystem/J3D/J3DGD.h"
+#include "JSystem/J3D/J3DStruct.h"
 #include "JSystem/JGeometry.h"
 #include "JSystem/JMath/JMath.h"
 #include "types.h"
@@ -743,14 +744,6 @@ struct J3DTexCoord : public J3DTexCoordInfo {
 };
 
 extern u8 j3dTexCoordTable[7623];
-
-struct J3DTextureSRTInfo {
-	f32 mScaleX;       // _00
-	f32 mScaleY;       // _04
-	s16 mRotation;     // _08
-	f32 mTranslationX; // _0C
-	f32 mTranslationY; // _10
-};
 
 // hate this but whatever's in here can't have constructors bc of J3DTransform
 struct J3DTransformInfo {
