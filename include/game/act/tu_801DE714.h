@@ -1,13 +1,15 @@
-#ifndef GAME_CLS_804A51E4_H
-#define GAME_CLS_804A51E4_H
+#ifndef GAME_ACT_TU_801DE714_H
+#define GAME_ACT_TU_801DE714_H
 
 #include "types.h"
 #include "game/EnemyBase.h"
 
 // The TINK actor (spawner fn_801F9484; constructor fn_801E22A4, vtable
 // 0x804A51E4), code in game/tu_801DE714.cpp. Named after its vtable.
-// Only the members the written code uses are known: the constructor
-// (0x801E22A4) sets 0x2A8 and 0x2AC to -1. The size is not established yet.
+// Only the members the written code uses are known. The constructor
+// (0x801E22A4) writes -1 to 0x2A8-0x2BC and 0x2D0, plus other fields up to
+// 0x2D4.
+// Size: unknown (>= 0x2D4)
 class cls_804A51E4 : public EnemyBase_804A4808 {
 public:
     cls_804A51E4() {}

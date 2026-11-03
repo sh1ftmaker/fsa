@@ -1,5 +1,5 @@
 #include "game/GameAudio.h"
-#include "game/cls_804A51E4.h"
+#include "game/act/tu_801DE714.h"
 #include "game/ActorManager.h"
 
 // FIXME: 98.4%. Only the lwz of mTargetSerial into r31 is scheduled after the
