@@ -14,6 +14,12 @@ void cls_804A5D60::vfunc_0x24() {
     ActorBase_804A5770::vfunc_0x24();
 }
 
+void cls_804A5D60::fn_80209CA4(s32 player, s32 attack, const JGeometry::TVec3f* from, s32 type) {
+    if (fn_801F37AC(attack, from, 0, type, player)) {
+        mFlags &= ~ENEMY_FLAG_NO_HURT;
+    }
+}
+
 void cls_804A5D60::fn_80209D44() {
     mFlags |= 0x2000;
 }
