@@ -7,6 +7,6 @@ tests are `(mFlags >> n) & 1`, which gives extrwi), init, __sinit.
 Resistant: none. Matching flag left NonMatching: extab/extabindex show 47 %
 in try.py (same as sibling tu_8012F8AC).
 
-SHARED-EDITS: GameGlobals.h: extern "C" fn_8012FF9C() -> Unk_8053AAC4*,
-fn_801300B4(Unk_8053AAC4*, s32) (owner tu_8012FF9C, unwritten). gen_game.tsv: the
+SHARED-EDITS: GameGlobals.h: extern "C" fn_8012FF9C() -> cls_8012FFF4*,
+fn_801300B4(cls_8012FFF4*, s32) (owner tu_8012FF9C, unwritten). gen_game.tsv: the
 2 tu_8012FBCC rows removed. symbols.txt: fn_8012FC2C renamed to the mangled member.
