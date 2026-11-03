@@ -127,8 +127,6 @@ act_navi_maiden_crystal	sinit	__sinit_act_navi_maiden_crystal_cpp	-	-	new	new
 act_obj_lift	dtor	__dt__16OBJLift_804ACA00Fv	OBJLift_804ACA00	0x804ACA00	new	new
 act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
-act_octorok_rock	dtor	__dt__20OctorokRock_8049F5D8Fv	OctorokRock_8049F5D8	0x8049F5D8	new	new
-act_octorok_rock	sinit	__sinit_act_octorok_rock_cpp	-	-	new	new
 act_on_off_switch	sinit	__sinit_act_on_off_switch_cpp	-	-	new	-
 act_opening_goal	sinit	__sinit_act_opening_goal_cpp	-	-	new	-
 act_panel_rewrite_npc	sinit	__sinit_act_panel_rewrite_npc_cpp	-	-	new	-
@@ -159,7 +157,6 @@ act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
 act_seesaw_lift	dtor	__dt__19SeesawLift_804AD348Fv	SeesawLift_804AD348	0x804AD348	new	new
-act_shadow_link_bow	sinit	__sinit_act_shadow_link_bow_cpp	-	-	new	-
 act_shadow_link_demo	sinit	__sinit_act_shadow_link_demo_cpp	-	-	new	-
 act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
 act_shadow_link_giant_bomb	sinit	__sinit_act_shadow_link_giant_bomb_cpp	-	-	new	-
