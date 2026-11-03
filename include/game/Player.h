@@ -198,13 +198,13 @@ void fn_80230498(s32 player, const JGeometry::TVec3f* pos, s32 id, u8 a, s8 b, s
 // 34+ units. Takes a flag (clrlwi 24), not a player: loops all four players;
 // every caller passes 0. Result tested against 1.
 bool fn_80230534(bool flag);
-// Owner: tu_8022AD64 (0x8023077C, defined there). 1 unit (tu_802F4AEC).
+// Owner: tu_8022AD64 (0x8023077C, defined there). 2 units (tu_802F4AEC, act_zoom).
 // No arguments; returns a bool (clrlwi 24 by the caller); false without a
 // manager.
 bool fn_8023077C();
-// Owner: tu_8022AD64 (0x80230FD0, defined there). 1 unit (tu_802F4AEC).
-// (player, value): the body passes the player's slot to fn_8024F0E8 when
-// its byte 0xCAC is set; r4 is untouched.
+// Owner: tu_8022AD64 (0x80230FD0, defined there). 26 call sites.
+// (player, value): the body passes the player's slot and r4 on to
+// fn_8024F0E8 (compared with 0x20024 / 0x2002B) when its byte 0xCAC is set.
 void fn_80230FD0(s32 player, s32 value);
 // 3+ units (act_warp, act_view_mode). Owner: tu_8022AD64 (0x802373EC, defined
 // there; per-player query, 0 without a manager). Compared against 1 and 2.
@@ -239,6 +239,10 @@ bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec3f* pos, s32 arg);
 JGeometry::TVec3f* fn_8023A478(s32 player);
 bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
 bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, tu_8026FC20); else false
+// Any-player version of fn_8023B0F4: loops players 0-3 that are present and returns the index
+// of the first whose fn_802730D8 test (box, layer, flag, margin) hits, or -1 (also without a
+// manager). act_zoom passes (&box, field_0x4, false, 0.0f); tested against 0 with cmpwi.
+s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
 // are passed by act_attack_hitbox_when_player_is_thrown.
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
