@@ -496,12 +496,6 @@ extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
 class ActorBase_804A5770;
 extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 
-// game/tu_801D8400.cpp (owner unit, not written yet): the first function of
-// the unit; takes a cls_804A4C58 (state at 0x248) and, below state 8, calls
-// fn_801D9C58 with 8. Called by game/tu_801DAC6C.cpp.
-class cls_804A4C58;
-extern "C" void fn_801D8400(cls_804A4C58* enemy);
-
 // game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
 // (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:
 // fn_80211000 returns 0/1 (clrlwi 24) for "is the position inside the actor's

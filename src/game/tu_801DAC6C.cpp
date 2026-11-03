@@ -53,7 +53,7 @@ void Singleton_801DAC6C::fn_801DAD88() {
     if (serial >= 0) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
         if (actor != NULL) {
-            fn_801D8400(static_cast<cls_804A4C58*>(actor));
+            static_cast<cls_804A4C58*>(actor)->fn_801D8400();
         }
     }
 }
