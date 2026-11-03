@@ -1416,7 +1416,7 @@ config.libs = [
         Object(NonMatching, "game/act_treasure_chest.cpp"),
         Object(NonMatching, "game/act_enemy_generator_3.cpp"),
         Object(Matching, "game/act_zoom_out_npc.cpp"),
-        Object(NonMatching, "game/act_sandstorm.cpp"),
+        Object(Matching, "game/act_sandstorm.cpp"),
         Object(NonMatching, "game/act_stop_npc.cpp"),
         Object(NonMatching, "game/tu_802ED538.cpp"),
         Object(Matching, "game/act_chain_switch.cpp"),
