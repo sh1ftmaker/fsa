@@ -29,8 +29,7 @@ bool cls_8012F64C::fn_8012F3E4() {
 
 void cls_8012F64C::fn_8012F494() {
     mCount = 0;
-    // u32 index: the signed loop keeps a bounds check the original lacks (tried s32).
-    for (u32 i = 0; i < 64; i++) {
+    for (int i = 0; i < 64; i++) {
         mSerials[i] = -1;
     }
 }
