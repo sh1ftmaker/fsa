@@ -38,21 +38,7 @@
 <main>
   <section class="stats" id="stats" aria-label="Headline numbers"></section>
 
-  <section class="panel quest" id="quest-panel">
-    <div class="panel-head">
-      <div>
-        <h2>The quest</h2>
-        <p class="sub">The roadmap, phase by phase. Filled gems are done, the glowing one is under way, dim ones are ahead.
-          Bars are live, from the same report as the map. Pick a milestone to see its part of the DOL.</p>
-      </div>
-      <div class="legend" id="quest-legend"></div>
-    </div>
-    <ol class="path" id="path"></ol>
-    <div class="stage" id="stage" aria-live="polite"></div>
-    <ul class="vows" id="vows" aria-label="Rules every submission follows"></ul>
-  </section>
-
-  <section class="panel" id="map-panel">
+  <section class="panel" id="treemap">
     <div class="panel-head">
       <div>
         <h2>The whole DOL</h2>
@@ -68,6 +54,20 @@
       <div class="loading" id="map-loading" hidden>loading functions&hellip;</div>
     </div>
     <p class="hint" id="map-hint">Esc or the back arrow zooms out. Dashed tiles are code dtk has not split into a source file yet.</p>
+  </section>
+
+  <section class="panel quest" id="quest-panel">
+    <div class="panel-head">
+      <div>
+        <h2>The quest</h2>
+        <p class="sub">The roadmap, phase by phase. Filled gems are done, the glowing one is under way, dim ones are ahead.
+          Bars are live, from the same report as the map. Pick a milestone to see its part of the DOL.</p>
+      </div>
+      <div class="legend" id="quest-legend"></div>
+    </div>
+    <ol class="path" id="path"></ol>
+    <div class="stage" id="stage" aria-live="polite"></div>
+    <ul class="vows" id="vows" aria-label="Rules every submission follows"></ul>
   </section>
 
   <section class="panel" id="systems-panel">
