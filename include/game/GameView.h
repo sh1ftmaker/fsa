@@ -88,8 +88,8 @@ public:
     // 18 units / 26 calls. field_0x24 = a, field_0x28 = b.
     void fn_802D9FF4(s32 a, s32 b);
     // 1 unit (this unused). lbl_8053AB10->0x24's byte at 0x1E8, like
-    // fn_802DCD0C.
-    bool fn_802DA000();
+    // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
+    u8 fn_802DA000();
     // 1 unit each; no arguments. fn_802DA630 returns 0 or 1 (it moves the four
     // players with fn_80230498 and walks the actor list).
     void fn_802DA010();
