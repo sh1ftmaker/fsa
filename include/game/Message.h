@@ -46,7 +46,10 @@ class JUTResFont;
 // byte at 0x19E is declared (fn_80390B64 and fn_80390BA8 use it).
 class MessageProcessor_803944C8 {
 public:
-    /* 0x000 */ u8 field_0x0[0x19E];
+    /* 0x000 */ u8 field_0x0[0x148];
+    // fn_80390C38 returns it (-1 when the window is in neither state).
+    /* 0x148 */ s32 field_0x148;
+    /* 0x14C */ u8 field_0x14c[0x19E - 0x14C];
     /* 0x19E */ u8 field_0x19e;
 }; // Size: 0x3C4 (only the first 0x19F bytes are declared)
 
@@ -80,6 +83,10 @@ public:
     // fn_80390BA8: the byte at 0x19E of the processor of the window's state
     // (5: field_0x4c, 8: field_0x48), 0xFF in any other state.
     u8 fn_80390BA8();
+
+    // fn_80390C38: the field at 0x148 of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48), -1 in any other state.
+    s32 fn_80390C38();
 }; // Size: 0x5C
 
 // *lbl_8053AD78. Vtable 0x804AF070 (one slot, the destructor fn_8038D90C).
