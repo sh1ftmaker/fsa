@@ -3,6 +3,15 @@
 // written so far.
 
 #include "game/GameGlobals.h"
+#include "std/math.h"
+
+// FIXME: the instructions match; its four constants (0.0f, .5, 3.0, 0.0)
+// only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
+// .sdata2 is laid out in the original order. std::sqrtf out of line; 13
+// calls from 7 units.
+f32 fn_80154378(f32 x) {
+    return std::sqrtf(x);
+}
 
 // Keeps pos in the camera's view (3 units call it; they ignore r3).
 void fn_80154718(const JGeometry::TVec3f* pos) {

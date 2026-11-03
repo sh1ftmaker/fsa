@@ -5,6 +5,22 @@
 
 #include "game/ActorBase.h"
 
+// A ring that grows from mPos and hits each player once (no vtable;
+// named after its lowest-address function). cls_8049C718 has one at 0x290,
+// cls_804A6A00 (game/tu_80221B44.cpp) at 0x2BC.
+struct cls_800F802C {
+    // Grows the ring (by mTimer, 40 or 20 frames by mType) and hits the
+    // active players of layer 0 within mRadius (fn_80238548, arg 0xB).
+    void fn_800F802C();
+
+    /* 0x00 */ JGeometry::TVec3f mPos;
+    /* 0x0C */ u8 mActive;
+    /* 0x0D */ u8 mType;
+    /* 0x10 */ f32 mRadius;
+    /* 0x14 */ u16 mTimer;
+    /* 0x16 */ u8 mHitMask; // bit i: player i was hit
+}; // Size: 0x18
+
 // Named after its vtable, 0x8049C678.
 class cls_8049C678 : public ActorBase_804A5770 {
 public:

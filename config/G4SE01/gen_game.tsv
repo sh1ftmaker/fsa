@@ -50,7 +50,6 @@ act_enemy_for_ending_control	dtor	__dt__30EnemyForEndingControl_804AD48CFv	Enemy
 act_escort_woman	sinit	__sinit_act_escort_woman_cpp	-	-	new	-
 act_extending_lift	dtor	__dt__22ExtendingLift_804A78B0Fv	ExtendingLift_804A78B0	0x804A78B0	new	new
 act_extending_lift	sinit	__sinit_act_extending_lift_cpp	-	-	new	new
-act_eyeball_switch	sinit	__sinit_act_eyeball_switch_cpp	-	-	new	-
 act_eyegore	dtor	__dt__16Eyegore_804A3548Fv	Eyegore_804A3548	0x804A3548	new	new
 act_eyegore	sinit	__sinit_act_eyegore_cpp	-	-	new	new
 act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
@@ -100,8 +99,6 @@ act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_great_fairy_spfr	sinit	__sinit_act_great_fairy_spfr_cpp	-	-	new	-
 act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A88E8	new	new
 act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
-act_hardhat_beetle	dtor	__dt__12cls_804A06C0Fv	cls_804A06C0	0x804A06C0	new	new
-act_hardhat_beetle	sinit	__sinit_act_hardhat_beetle_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_horse_race_man	sinit	__sinit_act_horse_race_man_cpp	-	-	new	-
 act_hyrule_castle_barrier	sinit	__sinit_act_hyrule_castle_barrier_cpp	-	-	new	-
@@ -152,7 +149,6 @@ act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
 act_princess_zelda_motion_spawner	dtor	__dt__41PrincessZeldaMotionObjectSpawner_804A375CFv	PrincessZeldaMotionObjectSpawner_804A375C	0x804A375C	new	new
 act_princess_zelda_motion_spawner	sinit	__sinit_act_princess_zelda_motion_spawner_cpp	-	-	new	new
-act_quicksand	sinit	__sinit_act_quicksand_cpp	-	-	new	-
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
 act_rank_display	sinit	__sinit_act_rank_display_cpp	-	-	new	-
 act_recovery_heart	dtor	__dt__22RecoveryHeart_8049F4F0Fv	RecoveryHeart_8049F4F0	0x8049F4F0	new	new
@@ -228,9 +224,6 @@ act_zora_lotus	sinit	__sinit_act_zora_lotus_cpp	-	-	new	-
 tu_800F46C0	dtor	__dt__12cls_8049C4C0Fv	cls_8049C4C0	0x8049C4C0	new	new
 tu_800F46C0	dtor	__dt__23BoulderSpawner_8049C46CFv	BoulderSpawner_8049C46C	0x8049C46C	new	new
 tu_800F46C0	sinit	__sinit_tu_800F46C0_cpp	-	-	new	new
-tu_800F7FCC	dtor	__dt__12cls_8049C678Fv	cls_8049C678	0x8049C678	new	new
-tu_800F7FCC	dtor	__dt__12cls_8049C718Fv	cls_8049C718	0x8049C718	new	new
-tu_800F7FCC	sinit	__sinit_tu_800F7FCC_cpp	-	-	new	new
 tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
 tu_8010089C	dtor	__dt__12cls_8049C8ECFv	cls_8049C8EC	0x8049C8EC	new	new
@@ -246,7 +239,6 @@ tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
 tu_80130310	sinit	__sinit_tu_80130310_cpp	-	-	new	new
 tu_80134C04	sinit	__sinit_tu_80134C04_cpp	-	-	new	-
 tu_80139BE8	sinit	__sinit_tu_80139BE8_cpp	-	-	new	-
-tu_8013AAD4	sinit	__sinit_tu_8013AAD4_cpp	-	-	new	-
 tu_80147B50	sinit	__sinit_tu_80147B50_cpp	-	-	new	-
 tu_801555D8	sinit	__sinit_tu_801555D8_cpp	-	-	new	-
 tu_8015F454	sinit	__sinit_tu_8015F454_cpp	-	-	new	-
@@ -270,7 +262,6 @@ tu_80197070	sinit	__sinit_tu_80197070_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801A8194	dtor	__dt__12cls_804A2EC0Fv	cls_804A2EC0	0x804A2EC0	new	new
 tu_801A8194	sinit	__sinit_tu_801A8194_cpp	-	-	new	new
-tu_801A908C	sinit	__sinit_tu_801A908C_cpp	-	-	new	-
 tu_801AE9C4	dtor	__dt__12cls_804A3448Fv	cls_804A3448	0x804A3448	new	new
 tu_801AE9C4	sinit	__sinit_tu_801AE9C4_cpp	-	-	new	new
 tu_801B0A00	sinit	__sinit_tu_801B0A00_cpp	-	-	new	-
@@ -467,7 +458,6 @@ tu_8022AD64	fwd	fn_8023EE28__Fl	fn_8025F5CC__15Player_804A6F38Fv	-	6c9b922373655
 tu_8022AD64	fwd	fn_8023EEB4__Fl	fn_8025F648__15Player_804A6F38Fv	-	6c9b9223736554bc7a9894dac6e6ba63d8cb440a	-
 tu_8022AD64	fwd	fn_8023EF50__Fl	fn_8025F668__15Player_804A6F38Fv	-	6c9b9223736554bc7a9894dac6e6ba63d8cb440a	-
 tu_8022AD64	fwd	fn_8023EFEC__Fl	fn_8025F684__15Player_804A6F38Fv	-	6c9b9223736554bc7a9894dac6e6ba63d8cb440a	-
-tu_8023FBF0	sinit	__sinit_tu_8023FBF0_cpp	-	-	new	-
 tu_80256C74	sinit	__sinit_tu_80256C74_cpp	-	-	new	-
 tu_8025EB18	sinit	__sinit_tu_8025EB18_cpp	-	-	new	-
 tu_80264998	sinit	__sinit_tu_80264998_cpp	-	-	new	-

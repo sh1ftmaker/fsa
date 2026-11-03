@@ -101,6 +101,9 @@ public:
     bool fn_802413C8(); // via fn_80235744
     bool fn_802413E8(); // via fn_80230188
     bool fn_802413F0(); // via fn_8023188C
+    // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
+    // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
+    f32 fn_80246F28();
     bool fn_80241478(); // via fn_8022D930
     void fn_8024148C(); // via fn_80236C88
     bool fn_80241498(); // via fn_80236D14
@@ -206,7 +209,9 @@ public:
     bool fn_802732C4(const JGeometry::TBox2f* box, s32 layer); // via fn_8023B190
 
     /* 0x0000 */ // vtable
-    /* 0x0004 */ u8 field_0x4[0x8 - 0x4];
+    // The player's index (0-3): the constructor's argument; fn_80246F28
+    // counts the players 0..field_0x4.
+    /* 0x0004 */ s32 field_0x4;
     /* 0x0008 */ JGeometry::TVec3f mPos; // fn_8023E724 (193 units)
     /* 0x0014 */ u8 field_0x14[0x3B4 - 0x14];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
@@ -216,10 +221,37 @@ public:
     /* 0x03DC */ s32 field_0x3dc; // fn_80230CFC (2 without a player)
     /* 0x03E0 */ u8 field_0x3e0[0x3E8 - 0x3E0];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
-    /* 0x03EC */ u8 field_0x3ec[0xCAC - 0x3EC];
+    /* 0x03EC */ u8 field_0x3ec[0xC80 - 0x3EC];
+    // 0xC80, 0xCA0, 0xCE9, 0xCEE and 0x1215: the bytes fn_802413F0 tests
+    // (game/PlayerFlags.h).
+    /* 0x0C80 */ u8 field_0xc80;
+    /* 0x0C81 */ u8 field_0xc81[0xCA0 - 0xC81];
+    /* 0x0CA0 */ u8 field_0xca0;
+    /* 0x0CA1 */ u8 field_0xca1[0xCAC - 0xCA1];
     // Tested by every per-player query before it touches the player.
     /* 0x0CAC */ bool mActive;
-    /* 0x0CAD */ u8 field_0xcad[0x13BC - 0xCAD];
+    /* 0x0CAD */ u8 field_0xcad[0xCE9 - 0xCAD];
+    // A u8: fn_802413F0 converts it to its bool result (neg / or / srwi).
+    /* 0x0CE9 */ u8 field_0xce9;
+    /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];
+    /* 0x0CEE */ u8 field_0xcee;
+    /* 0x0CEF */ u8 field_0xcef[0xD60 - 0xCEF];
+    // Another player's index, or negative for none: fn_80246F28 asks the
+    // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
+    // own field_0x120c / field_0x1224 instead when it is negative.
+    /* 0x0D60 */ s32 field_0xd60;
+    /* 0x0D64 */ u8 field_0xd64[0x11EA - 0xD64];
+    /* 0x11EA */ u8 field_0x11ea;
+    /* 0x11EB */ u8 field_0x11eb;
+    /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
+    /* 0x11F0 */ u8 field_0x11f0[0x120C - 0x11F0];
+    /* 0x120C */ s32 field_0x120c;
+    /* 0x1210 */ u8 field_0x1210[0x1215 - 0x1210];
+    // A bool: fn_80240AF0 returns it as loaded (lbz; blr).
+    /* 0x1215 */ bool field_0x1215;
+    /* 0x1216 */ u8 field_0x1216[0x1224 - 0x1216];
+    /* 0x1224 */ s32 field_0x1224;
+    /* 0x1228 */ u8 field_0x1228[0x13BC - 0x1228];
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which

@@ -3,12 +3,7 @@
 #include "game/Message.h"
 #include "game/Player.h"
 #include "game/act/act_talking_sign.h"
-
-// GameView byte 0x131DF + layer. The layer is loaded before fn_802D6A9C is
-// called, as for an argument (the same helper is in game/tu_802242F4.cpp).
-static inline u8 viewLayerFlag(s32 layer) {
-    return fn_802D6A9C()->field_0x131df[layer];
-}
+#include "game/ViewLayer.h"
 
 TalkingSign_804AF428::~TalkingSign_804AF428() {}
 

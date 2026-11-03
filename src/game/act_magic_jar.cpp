@@ -3,12 +3,7 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 #include "game/act/act_magic_jar.h"
-
-// GameView byte 0x131DF + layer. The layer is loaded before fn_802D6A9C is called.
-static inline u8 viewLayerFlag(s32 layer) {
-    GameView_804A9950* view = fn_802D6A9C();
-    return view->field_0x131df[layer];
-}
+#include "game/ViewLayer.h"
 
 MagicJar_804AF018::~MagicJar_804AF018() {}
 

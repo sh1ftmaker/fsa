@@ -190,6 +190,46 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - `cmpw` operands swapped against a call result (`cmpw r3, rN` in the
   original): name the result first, `s32 owner = fn_X(...); if (owner ==
   player)`. That is a local read once, not a trick.
+- Game-mode test on lbl_8053AAF8 0x7F / 0x4C (cmpwi 7, 8, 9, 0x16, 0xA, 0xB
+  [, 0xC] in that order, never subi/cmplwi): `isGameModeSet()` (game/GameMode.h,
+  `const s32` mode names; literals or enumerators fold into range checks).
+  GameRoot2_8049F108::fn_8013B538 / fn_8013B618 (tu_8013AAD4).
+- `fn_802D6A9C()->field_0x131df[layer]`: `viewLayerFlag(layer)` (game/ViewLayer.h;
+  the view in a local, else the index add swaps). act_magic_jar, tu_802242F4.
+- Player bytes 0xC80 / 0xCEE / 0x1215 / 0xCA0 / 0xCE9 tested in a row:
+  `playerFlags_802413F0(player)` (game/PlayerFlags.h). Matches only the
+  out-of-line copy, Player_804A6F38::fn_802413F0; inlined sites still differ at
+  0xCE9 (cmplwi / bne there, neg / or / srwi here; fn_80246F28 94.8 %).
+- UNPROVEN (no 100 % example): sin x/y/z, cos x/y/z (bl sin; frsp) into a
+  stack Mtx times a scale: `TVec3f rot(x, y, z); setRotScaleMtx(mtx, rot, scale)`
+  (game/RotMatrix.h; scalar 0.0f angles become lfd doubles). tu_801A908C
+  fn_801A90D4 and act_hardhat_beetle's draw: 99.0 %, regalloc only.
+- frsqrte + three double Newton steps + NaN/fpclassify tail: `std::sqrtf(x)`
+  (std/math.h). Not a counted match: act_sword_soldier fn_80154378 is 99.74 %,
+  instructions identical, only its .sdata2 relocations differ.
+- frsqrte, frsp, one Newton step (`x <= 0` returns x): JGeometry's
+  `TUtilf::sqrt` / `inv_sqrt` via `TVec2f::length()`, `TVec3f::normalize()`
+  (isZero loads `__float_epsilon`: include libs/sdk's "JSystem/JGeometry.h", not
+  a literal epsilon); bare `frsqrte; fmuls` is `JMAFastSqrt`. cls_800F802C::fn_800F802C
+  (tu_800F7FCC, 100 %: TVec2f::length / TUtilf::sqrt). normalize / isZero /
+  inv_sqrt and JMAFastSqrt only in act_quicksand fn_80210E90 (86.6 %, not a
+  counted match).
+- A TVec2 stored member by member around calls (stfs x before the second
+  fn_8023E724 call), then reused for another value: one named `TVec2f v;`
+  assigned `v.x = ...; v.y = ...;` (cls_800F802C::fn_800F802C).
+- Emitter deleted and cleared (field read again after bl fn_8013C824):
+  `deleteEmitter(&mEmitter)` (game/EmitterDelete.h: the manager in a local).
+  act_eyeball_switch cls_804AE678::vfunc_0x24.
+- Plain calls, no wrapper: effect `fn_8013CC50(field_0x4, &mPos, id, ...)` and
+  sound `fn_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
+  `fn_801F856C()->fn_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
+  `->fn_801F9484(id, layer, &pos, arg, -1, -1)` (act_leaf_effect_npc_generator.cpp:58);
+  random `lbl_8053AAF8->mRandom.get_ufloat_1()` (tu_801C6A4C.cpp:75),
+  `(s32)(k * get_ufloat_1())` (act_sand_crab.cpp:49); resources
+  `lbl_8053AAF8->field_0xa4->getResource('SOB ', name)` (vtable slot 0x18,
+  tu_803536C4.cpp:45).
+- J2D pane lookup through vtable slot 0x3C with a two-word tag (r5/r6):
+  `mScreen->search(0x7072737374727431ull /* "prsstrt1" */)` (tu_803DA6B4.cpp:45).
 
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all
