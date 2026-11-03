@@ -6,12 +6,9 @@
 
 DummyConversation_804B1A48::~DummyConversation_804B1A48() {}
 
-// FIXME: 94.27 %. Two things differ. The original keeps `this` in r31 and
-// the player (field_0x90 >> 28) in r30; ours swaps them (the permutation
-// repeats in every instruction that touches either). And the by-value
-// mPos copy for fn_8038C678 is scheduled after r5/r6 in the original,
-// before them in ours: the TVec3f copy-order issue act_talking_npc.cpp
-// already documents.
+// FIXME: 99.96 %. Only the compare after fn_8022FD8C differs: the original
+// has `cmpw r3, r30` (result, player), ours `cmpw r30, r3` (regalloc-only,
+// operand order; writing the comparison the other way round changes nothing).
 void DummyConversation_804B1A48::update() {
     s32 player = field_0x90 >> 28;
     switch (mState) {
@@ -67,7 +64,7 @@ void DummyConversation_804B1A48::update() {
     case 1:
         fn_8022FE80(player, field_0x4, mSerial, 0, 0);
         if (fn_8022FD8C(mSerial) == player) {
-            if (fn_8038C678(player, mMessage, mSerial, field_0x4, mPos, 0x10)) {
+            if (open(player, field_0x4, mSerial, mPos, 0x10)) {
                 mState = 2;
             } else {
                 lbl_8053AED0->field_0x1f0[player] = 2;
