@@ -72,7 +72,10 @@ struct GameRoot_8049EF20 {
     /* 0x80 */ u8 field_0x80[0x2];
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
-    /* 0x84 */ u8 field_0x84[0xA4 - 0x84];
+    /* 0x84 */ u8 field_0x84[0x96 - 0x84];
+    // Stored by fn_80134FBC (game/tu_80134C04.cpp, 0x80134FBC, stb of r4).
+    /* 0x96 */ u8 field_0x96;
+    /* 0x97 */ u8 field_0x97[0xA4 - 0x97];
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
     // code calls it through vtable slot 0x18 = getResource(u32 type,
     // const char* name) with a 4CC and a name ('ENM ' in fn_801F62AC, 'TIMG'
