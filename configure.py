@@ -814,7 +814,7 @@ config.libs = [
         Object(Matching, "JSystem/JParticle/JPAParticle.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAResource.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPAResourceLoader.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JParticle/JPAResourceManager.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JParticle/JPAResourceManager.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JParticle/JPATexture.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JSupport", [
