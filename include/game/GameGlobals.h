@@ -302,6 +302,14 @@ extern "C" {
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4);
 }
 
+// game/tu_801CB270.cpp (not written yet); called from game/tu_80207548.cpp and
+// game/tu_80220F54.cpp. Forwards to ActorManager_804A5800::fn_801F8544 with
+// the fourcc 'RUPY' (0x52555059) and the layer and pos; the flag selects 4 or
+// 5 in the low bits of its last argument. Returns the result (an actor serial).
+extern "C" {
+s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag);
+}
+
 // game/tu_801CB270.cpp (not written yet); called from game/tu_801BD8C0.cpp.
 // Maps a 16-bit angle to the one mirrored about the 0x4000 axes (a piecewise
 // 0x4000 - a, a - 0x4000 negated, ... on the four quadrants). The body
