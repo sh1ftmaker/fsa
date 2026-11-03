@@ -144,6 +144,15 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   compiler @NNN labels to each includer and renumbers their split symbols.
 - A value kept in one register across a call: a local read once
   (`s32 layer = field_0x4;`) — the original read it once too.
+- Message calls taking the position BY VALUE (`fn_8038AD24`, `fn_8038BD08`,
+  `fn_8038C678`; 338 sites) where the original loads other arguments before
+  the psq copy of mPos: a class-local inline helper that takes the position
+  as `const JGeometry::TVec3f&` and passes it on by value. Arguments loaded
+  BEFORE the copy are the helper's parameters; members loaded AFTER it are
+  read inside the helper (e.g. `bool talk(u32 player, u32 msg, s32 layer,
+  const TVec3f& pos, u32 flags) { return fn_8038AD24(player, msg,
+  field_0x234, layer, pos, flags); }`). Read the split off the asm; don't
+  search parameter orders (scratchpad research_byval.md).
 
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all
