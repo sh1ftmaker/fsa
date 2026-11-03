@@ -1,4 +1,9 @@
 #include "game/GameAudio.h"
+#include "game/Map.h"
+
+void cls_804AA858::fn_802FF548() {
+    fn_802FF798();
+}
 
 // Element constructor of cls_804AA858's constructor (fn_802FFDEC): the
 // 0x28-byte array at this + 0xBF9C, 0x10 elements. Its element class is

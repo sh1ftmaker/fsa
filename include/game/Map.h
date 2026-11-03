@@ -76,6 +76,9 @@ public:
     // fn_802F9714 with a trailing byte flag (clrlwi. 24 at 0x802F9568); the
     // constructor of tu_8039003C and tu_803A85E4's pass false.
     void fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag);
+    // 0x802FF548 (game/tu_802F5040.cpp): r3 only, passed on unchanged to
+    // fn_802FF798. Called by tu_8013AAD4's fn_8013B4C0 with field_0x20.
+    void fn_802FF548();
     // 0x802FF798 (game/tu_802F5040.cpp, not written yet): no arguments;
     // called once by tu_8039003C's and tu_803A85E4's constructors before it loads the tile
     // resources.
