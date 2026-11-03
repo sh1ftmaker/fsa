@@ -218,6 +218,13 @@ s32 fn_802373EC(s32 player);
 s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
 s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
+// Owner: tu_8022AD64 (0x8022FEB8, defined there). 34 units (act_old_man, act_talking_sign, ...).
+// (box, layer, serial, a, b): called with the actor's box moved to its position, its field_0x4
+// and mSerial; a, b are li 0/1.
+void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
+// Owner: tu_8022AD64 (0x8022FD8C, defined there). The player index for actor `serial` (act_talking_sign
+// stores it and passes it to fn_8023E724); negative when none.
+s32 fn_8022FD8C(s32 serial);
 // Owner: tu_8022AD64 (0x8022DB04, defined there). 2 units (act_push_switch,
 // act_somaria_block). Same family as fn_80230050: tests the player slot's byte 0xCAC;
 // else false. Result tested with clrlwi 24.

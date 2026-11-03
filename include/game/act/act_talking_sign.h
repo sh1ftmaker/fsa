@@ -15,7 +15,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ s32 mState; // 0 watching the sign's area, 1 message open
+    /* 0x234 */ s32 mPlayer; // fn_8022FD8C(mSerial); -1 when none
 }; // Size: 0x238
 
 #endif
