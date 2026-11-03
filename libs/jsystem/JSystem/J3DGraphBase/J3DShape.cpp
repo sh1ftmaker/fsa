@@ -8,9 +8,6 @@
 #include "JSystem/J3D/J3DVertexData.h"
 #include "types.h"
 
-u8* J3DShape::sOldVcdVatCmd;
-u8 J3DShape::sEnvelopeFlag;
-
 /**
  * @note Address: 0x80060850
  * @note Size: 0x70
@@ -185,6 +182,8 @@ void J3DShape::makeVcdVatCmd()
 	OSRestoreInterrupts(sInterruptFlag);
 }
 
+u8* J3DShape::sOldVcdVatCmd;
+
 /**
  * @note Address: 0x80060E40
  * @note Size: 0xA0
@@ -197,6 +196,8 @@ void J3DShape::loadPreDrawSetting() const
 	}
 	mCurrentMtx.load();
 }
+
+u8 J3DShape::sEnvelopeFlag;
 
 void J3DLoadCPCmd(u8 cmd, u32 param)
 {
@@ -272,7 +273,7 @@ void J3DShape::drawFast() const
  */
 void J3DShape::draw() const
 {
-	resetVcdVatCache();
+	sOldVcdVatCmd = NULL;
 	loadPreDrawSetting();
 	drawFast();
 }
@@ -283,7 +284,7 @@ void J3DShape::draw() const
  */
 void J3DShape::simpleDraw() const
 {
-	resetVcdVatCache();
+	sOldVcdVatCmd = NULL;
 	loadPreDrawSetting();
 	J3DShapeMtx::setCurrentPipeline(getPipeline());
 
