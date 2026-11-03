@@ -331,18 +331,18 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
 
 // FIXME: 73.7 %. The target loads mPos.x/y before the player position and
 // the atanTable_ address after them; ours loads in the other order. Literal
-// order also off (10430.378f, see init).
+// order also off (the angle constant, see init).
 // The 16-bit angle from mPos to player `player`.
 s32 EnemyBase_804A4808::fn_801D0280(s32 player) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
-    return JMath::atanTable_.atan2_(playerPos->x - mPos.x, playerPos->y - mPos.y) * 10430.378f;
+    return JMath::atanTable_.atan2_(playerPos->x - mPos.x, playerPos->y - mPos.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
 }
 
 // FIXME: 44.8 %. Same instructions: the target loads pos and mPos before
 // materialising atanTable_; ours after. Literal order also off.
 // The 16-bit angle from mPos to *pos.
 s32 EnemyBase_804A4808::fn_801D02E0(const JGeometry::TVec3f* pos) {
-    return JMath::atanTable_.atan2_(pos->x - mPos.x, pos->y - mPos.y) * 10430.378f;
+    return JMath::atanTable_.atan2_(pos->x - mPos.x, pos->y - mPos.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
 }
 
 // Whether player `player` is within `dist` of *pos (x, y).

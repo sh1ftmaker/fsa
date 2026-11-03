@@ -15,10 +15,11 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x24 */ virtual void vfunc_0x24();
+    /* 0x24 */ virtual void vfunc_0x24(); // breaks the coconut
     /* 0x48 */ virtual void vfunc_0x48();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ s32 field_0x230; // state word handed to ActorBase::fn_801F132C by vfunc_0x4C; 0 in init
+    /* 0x234 */ u8 field_0x234;  // sprite alpha (draw): 0xFF in init and update, the carrying player's alpha while carried
 }; // Size: 0x238
 
 #endif
