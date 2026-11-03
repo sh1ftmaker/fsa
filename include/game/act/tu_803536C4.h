@@ -13,7 +13,17 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x3C]; // not yet known
+    /* 0x230 */ s32 field_0x230; // init zeroes it; nothing reads it
+    /* 0x234 */ s32 field_0x234; // 9 after init; counts down, advances field_0x23c
+    /* 0x238 */ s32 field_0x238; // 300 after init; counts down
+    /* 0x23C */ s32 field_0x23c; // 0..3, advanced by update
+    /* 0x240 */ s32 field_0x240; // 60 after init; counts down, advances field_0x244
+    /* 0x244 */ s32 field_0x244; // 0..3
+    /* 0x248 */ s32 field_0x248; // field_0x90 & 3
+    /* 0x24C */ s32 field_0x24c; // field_0x90 >> 4 & 0xF
+    /* 0x250 */ bool field_0x250; // field_0x90 >> 8 & 3 is nonzero
+    /* 0x254 */ f32 field_0x254;
+    /* 0x258 */ u8 field_0x258[0x14]; // not yet known
 }; // Size: 0x26C
 
 #endif
