@@ -221,14 +221,12 @@ def candidates(max_size):
     else:
         return []
     cfg = (INTEG / "configure.py").read_text()
-    # Generated units must stay byte-equal to their templates (gen_game.py --check).
-    generated = {l.split("\t")[0] for l in (INTEG / "config/G4SE01/gen_game.tsv").read_text().splitlines()[1:]}
     out = []
     for u in report:
         if "/game/" not in u["name"]:
             continue
         unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
-        if Path(unit).stem in generated or not (INTEG / "src" / unit).exists():  # no source yet: try.py/fdiff cannot score it
+        if not (INTEG / "src" / unit).exists():  # no source yet: try.py/fdiff cannot score it
             continue
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
@@ -318,6 +316,9 @@ def worker(args):
                 t0 = time.time()
                 cost = run_haiku(wt, unit, fn, size, pct)
                 why, ren = check_diff(wt, unit)
+                # Generated functions must stay byte-equal to their templates.
+                if not why and "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], wt).stdout:
+                    why = "breaks gen_game --check (edited a generated function or header)"
                 new_fns, new_secs = (fns, secs) if why else fdiff(wt, unit)
                 if not why:
                     ren = ren or {}
