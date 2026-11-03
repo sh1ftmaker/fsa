@@ -22,6 +22,57 @@ extern "C" void fn_803003A8() {}
 // yet and its constructor has no body.
 extern "C" void fn_803004C0() {}
 
+// Element of the 0x20-element, 0x88-byte array at this + 0xD324 of
+// cls_804AA858's constructor (fn_802FFDEC). Its constructor is the only code
+// seen for the type, so the class is named after it.
+class cls_8030029C {
+public:
+    cls_8030029C();
+
+    /* 0x00 */ u8 field_0x0[0x1C];
+    /* 0x1C */ u8 field_0x1c[0x10];
+    /* 0x2C */ s32 field_0x2c;
+    /* 0x30 */ s32 field_0x30;
+    /* 0x34 */ s32 field_0x34;
+    /* 0x38 */ u8 field_0x38[0x44 - 0x38];
+    /* 0x44 */ s32 field_0x44;
+    /* 0x48 */ u8 field_0x48[0x4C - 0x48];
+    /* 0x4C */ s32 field_0x4c;
+    /* 0x50 */ s32 field_0x50;
+    /* 0x54 */ s32 field_0x54;
+}; // Size: 0x88
+
+cls_8030029C::cls_8030029C() {
+    // Matching-only: 0x2C is stored twice (-1 here and after the table), as
+    // the original does; 0x30 is overwritten below.
+    field_0x2c = -1;
+    field_0x30 = -1;
+    for (u8 i = 0; i < 0x10; i++) {
+        field_0x1c[i] = i;
+    }
+    field_0x2c = -1;
+    field_0x30 = 0;
+    field_0x34 = 0;
+    field_0x38[0] = 0;
+    field_0x38[1] = 0;
+    field_0x38[2] = 0;
+    field_0x38[3] = 1;
+    field_0x38[4] = 1;
+    field_0x38[5] = 0;
+    field_0x38[6] = 0;
+    field_0x38[7] = 0;
+    field_0x38[8] = 0;
+    field_0x38[9] = 0;
+    field_0x38[10] = 1;
+    field_0x44 = 3;
+    field_0x48[0] = 1;
+    field_0x48[1] = 0;
+    field_0x48[2] = 0;
+    field_0x4c = -1;
+    field_0x50 = 0;
+    field_0x54 = 2;
+}
+
 // Layers 0-3 and 4-7 are separate branches in the original, with the rest
 // after them; all three store the same way.
 void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
