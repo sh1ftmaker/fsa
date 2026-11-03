@@ -134,8 +134,6 @@ act_gba_window	dtor	__dt__25GBAWindowControl_804AA440Fv	GBAWindowControl_804AA44
 act_gba_window	sinit	__sinit_act_gba_window_cpp	-	-	new	new
 act_giant_bomb	sinit	__sinit_act_giant_bomb_cpp	-	-	new	-
 act_gibdo	sinit	__sinit_act_gibdo_cpp	-	-	new	-
-act_global_switch	dtor	__dt__21GlobalSwitch_804AA060Fv	GlobalSwitch_804AA060	0x804AA060	new	new
-act_global_switch	sinit	__sinit_act_global_switch_cpp	-	-	new	new
 act_gohma	sinit	__sinit_act_gohma_cpp	-	-	new	-
 act_grass	dtor	__dt__14Grass_804A92D0Fv	Grass_804A92D0	0x804A92D0	new	new
 act_grass	sinit	__sinit_act_grass_cpp	-	-	new	new
