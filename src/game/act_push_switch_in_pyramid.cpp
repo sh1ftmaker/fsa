@@ -22,9 +22,9 @@ static const char* lbl_804AE8E0[5] = {
 
 PushSwitchInPyramid_804AE8F4::~PushSwitchInPyramid_804AE8F4() {}
 
-// FIXME: 94%. Only the registers of the squared-length test differ: the target
-// loads x/y with psq_l into f2 and z into f3 (ps_madd f1, f3, f3, f2); we use
-// f3 for the pair and f2 for z.
+// FIXME: 97.85%. In the squared-length test of field_0x54 the registers f2/f3
+// are swapped (the target has the psq pair in f2 and z in f3), and the target
+// loads y before x when filling the scale matrix.
 void PushSwitchInPyramid_804AE8F4::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -43,7 +43,8 @@ void PushSwitchInPyramid_804AE8F4::draw() {
         mtx[2][2] = field_0x54.z;
         params.mMtx = mtx;
     }
-    JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+    JGeometry::TVec3f pos;
+    pos.set(mPos);
     pos.x += 8.0f;
     void* res = fn_804032E8('TIMG', lbl_804AE8E0[field_0x241]);
     if (field_0x4 < 8) {
