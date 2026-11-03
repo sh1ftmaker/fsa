@@ -457,7 +457,6 @@ tu_802F4AEC	sinit	__sinit_tu_802F4AEC_cpp	-	-	new	new
 tu_802F5040	sinit	__sinit_tu_802F5040_cpp	-	-	new	-
 tu_8030AE84	sinit	__sinit_tu_8030AE84_cpp	-	-	new	-
 tu_8030C058	sinit	__sinit_tu_8030C058_cpp	-	-	new	-
-tu_80316E34	sinit	__sinit_tu_80316E34_cpp	-	-	new	-
 tu_803276C4	dtor	__dt__12cls_804AB528Fv	cls_804AB528	0x804AB528	new	new
 tu_803276C4	sinit	__sinit_tu_803276C4_cpp	-	-	new	new
 tu_80333958	dtor	__dt__12cls_804AB968Fv	cls_804AB968	0x804AB968	new	new
