@@ -818,7 +818,7 @@ config.libs = [
         Object(Matching, "JSystem/JParticle/JPATexture.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JSupport", [
-        Object(NonMatching, "JSystem/JSupport/JSUFileStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JSupport/JSUFileStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JSupport/JSUInputStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JSupport/JSUList.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JSupport/JSUMemoryStream.cpp", extra_cflags=["-O4,p"]),
