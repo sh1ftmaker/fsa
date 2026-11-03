@@ -1469,7 +1469,7 @@ config.libs = [
         Object(NonMatching, "game/act_thwomp_launch_npc.cpp"),
         Object(NonMatching, "game/act_warp_pillar.cpp"),
         Object(NonMatching, "game/act_flying_tile.cpp"),
-        Object(NonMatching, "game/act_post_warp_pillar_handling.cpp"),
+        Object(Matching, "game/act_post_warp_pillar_handling.cpp"),
         Object(NonMatching, "game/act_fairy_revival.cpp"),
         Object(NonMatching, "game/act_strange_block.cpp"),
         Object(NonMatching, "game/act_lotus.cpp"),
