@@ -250,6 +250,14 @@ struct GameRoot2_8049F108 {
 
 extern GameRoot2_8049F108* lbl_8053AB10;
 
+// Draws the shadow-like sprite of cls_804A0160 (lbl_8053AB10->0x2C). 18 units
+// (24 call sites) compute the layer and position first and load the receiver
+// last, which this wrapper reproduces (a direct chained call loads the
+// receiver first). Name is descriptive (scratchpad research_drawrecv).
+inline void drawShadow(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale) {
+    lbl_8053AB10->field_0x2c->fn_80158B5C(layer, pos, color, scale);
+}
+
 // The input object *lbl_8053AD30 (game/tu_803099FC.cpp, owner not written
 // yet): named after its vtable, 0x804AA8C8 (constructor fn_8030AC4C, which
 // stores it in lbl_8053AD30). Other members unknown.

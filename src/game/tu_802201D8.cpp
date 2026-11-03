@@ -3,13 +3,8 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_802201D8.h"
 
-// FIXME: 79%. Same instructions but the original loads field_0x4 (r4) and
-// computes &mPos from `this` (r3) before it loads lbl_8053AB10->field_0x2c
-// into r3 (receiver last); ours loads the receiver first, moves `this` to r7
-// and loads field_0x4 last. Tried a free function and a named TColor local.
 void cls_804A6828::draw() {
-    lbl_8053AB10->field_0x2c->fn_80158B5C(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80),
-                                          24.0f);
+    drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 24.0f);
 }
 
 void cls_804A6828::update() {
