@@ -133,6 +133,11 @@ struct Unk_8045A080 {
     void fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* initData, void* seqData);
     // game/tu_80457DFC.cpp: JASDriver::setOutputMode(mode).
     void fn_804594E4(u32 mode);
+    // game/tu_80457DFC.cpp (0x80458FF0). act_enemy_generator_3 calls it with
+    // (0x1000021, 1, 0) when field_0x58 differs from 0x1000021; the body
+    // compares r4 against 0x1000000+n, never reads r5 before writing it and
+    // stores r6 (a byte) at 0x8d.
+    void fn_80458FF0(s32 id, s32 arg1, bool flag);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
