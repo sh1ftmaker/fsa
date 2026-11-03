@@ -144,6 +144,13 @@ public:
     /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
     /* 0xD */ u8 field_0xd[3];   // not yet known
+
+    // 0x80158B5C (owner unit game/tu_80158624.cpp, not written yet). Draws a
+    // shadow-like sprite on `layer` (< 8) at *pos with a colour and scale;
+    // `this` is lbl_8053AB10->0x2C. Called by tu_802201D8's draw (colour
+    // 0,0,0,0x80; scale 24.0f). The colour is a TColor passed by value (a
+    // stack copy, its address in r6).
+    void fn_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale);
 }; // Size: 0x10
 // 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
