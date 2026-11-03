@@ -707,6 +707,12 @@ s32 fn_8022EA0C(s32 player);
 // the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.
 void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
 bool fn_8023061C(s32 player, bool flag);
+// Owner: tu_8022AD64 (0x80239B64, defined there). 1 unit (tu_8021693C). The
+// per-player box test of fn_8022FF8C's family: if the player is present
+// (byte 0xCAC set) it forwards (player object, box, layer, serial, a, b) to
+// fn_80272224 and returns its 0/1 result (clrlwi 24 / test in the caller).
+// tu_8021693C passes its hit box, the actor's field_0x4, a type word, 1, 1.
+bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b);
 // Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
 // player index to a window index (-1 without a manager; see Message.h).
 s32 fn_8022F340(s32 player);
@@ -777,6 +783,12 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // of the first present player whose box test (fn_802728AC(player, box, layer,
 // serial)) passes, or -1; 0 without a player manager.
 s32 fn_80239470(const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_eyeball_switch). Index (0-3)
+// of the first present player whose box test (fn_80273C30(player, box, layer,
+// out, flag), a bool OR of the player's tile probes) passes, or -1; -1
+// without a player manager. The caller ignores the result.
+s32 fn_8023BA68(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2<f32>* out, bool flag);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Whether
 // fn_802729F0(player object, serial) passes for any active player.
