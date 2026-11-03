@@ -806,6 +806,13 @@ void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bo
     }
 }
 
+void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    lbl_8053AC90->mPlayers[player]->fn_8024CD20(box, layer, serial, a, b);
+}
+
 void fn_8022FFC4(s32 player, const JGeometry::TVec3f* arg) {
     if (lbl_8053AC90 == NULL) {
         return;
