@@ -238,6 +238,11 @@ struct cls_801C0D70 {
 }; // Size: 0x160
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
+// game/tu_801C0D70.cpp (owner unit, not written yet). (obj, pos, out): true when
+// a target for the player at *pos was found; writes its x/y to *out (obj
+// is fn_801C0D70()'s object, r3; pos and out are read/written as x, y floats).
+// Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
+extern "C" bool fn_801C0FEC(cls_801C0D70* obj, const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
 
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
