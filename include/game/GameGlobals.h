@@ -673,4 +673,12 @@ extern "C" {
 GameRootSub24_8016A3AC* fn_8016A3AC(void);
 }
 
+// Owner: game/tu_8022461C.cpp (0x80225614 and 0x802258D4, not written yet).
+// Both take the position in r3 (read at +0/+4) and the layer in r4 and
+// return a byte; tu_80221B44 picks the effect (0x3d0 or 0x3cf) by them.
+extern "C" {
+u8 fn_802258D4(const JGeometry::TVec3f* pos, s32 layer);
+u8 fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
+}
+
 #endif

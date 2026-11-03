@@ -21,6 +21,11 @@ struct cls_800F802C {
     /* 0x16 */ u8 mHitMask; // bit i: player i was hit
 }; // Size: 0x18
 
+// 0x800F8210 (game/tu_800F7FCC.cpp, not written yet): starts the ring at pos
+// on `layer`; type 0-2 as in fn_800F802C. Called with 2 by cls_804A6AA8
+// (game/tu_80221B44.cpp).
+extern "C" void fn_800F8210(cls_800F802C* ring, s32 layer, JGeometry::TVec3f pos, u8 type);
+
 // Named after its vtable, 0x8049C678.
 class cls_8049C678 : public ActorBase_804A5770 {
 public:
