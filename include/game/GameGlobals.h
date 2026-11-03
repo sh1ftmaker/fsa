@@ -203,6 +203,13 @@ struct Unk_8045A080 {
     // not read): stops the sound at 0x80 and clears the fields at
     // 0x58-0x68.
     void fn_80458F9C(s32 frames);
+    // game/tu_80457DFC.cpp (0x80458408, 0x804580DC, 0x80458090); called by
+    // tu_803A85E4's constructor with the id 0x100001A (field_0x58's value
+    // when the stage music is set): (id, flag), then (3) on
+    // lbl_80529DEC.field_0xc (returns a byte), then () when that is 0.
+    void fn_80458408(s32 id, bool flag);
+    u8 fn_804580DC(s32 mode);
+    void fn_80458090();
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 

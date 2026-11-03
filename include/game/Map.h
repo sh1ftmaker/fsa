@@ -73,6 +73,18 @@ public:
     // 9 units / 198 calls. Sets it (sthx; callers clrlwi 16 the value,
     // act_panel_rewrite_npc 0x802C8AC4).
     void fn_802F9974(s32 layer, s32 index, u16 value);
+    // game/tu_802F5040.cpp (0x802F9714, 0x802F93F4). tu_803A85E4's constructor
+    // passes 'SCH ' / 'SCL ' resources (getResource's result) with
+    // (srcOffset, slot, dstOffset, size) = (0, 0 / 2 / 3, 0 / 0x7000 /
+    // 0x4000, 0); size 0 means the whole resource. The tile layer data they
+    // decode into is at this + 0x88 / 0x98 + slot * 4. fn_802F93F4 has one
+    // more argument (r9, 0 at the only call site).
+    void fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    void fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, u32 arg);
+    // game/tu_802F5040.cpp (0x802FF798). Resets the object's per-frame
+    // state (clears 0x235C-0x2365, presets 0x2368-0x2384 and the 0x24-byte
+    // tables); r3 only.
+    void fn_802FF798();
 
     /* 0x0000 vtable */
     /* 0x0004 */ u8 field_0x4[0x214 - 0x4];
