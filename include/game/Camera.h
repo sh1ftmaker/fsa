@@ -81,6 +81,11 @@ public:
     // Called once per frame from game/tu_8013AAD4.cpp only (no arguments
     // read; the caller ignores r3).
     void fn_8030DD68();
+    // 2 units: tu_8013AAD4 at 0x8013AE74 with a stack matrix, and
+    // fn_8013B3CC, which passes its own r4 on. Concatenates field_0x74 with m into a temporary
+    // (PSMTXConcat), makes GX_PNMTX9 the current matrix and loads the result
+    // as its position and normal matrix.
+    void fn_8030DD20(const Mtx m);
     void fn_8030E150(); // empty
     void fn_8030E154();
     void fn_8030E5BC();
