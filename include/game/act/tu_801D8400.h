@@ -28,6 +28,8 @@ class cls_804A4C58 : public EnemyBase_804A4808 {
 public:
     cls_804A4C58() {}
     /* 0x20 */ virtual void draw();
+    // 0x801D84E0: empty, no arguments read (vtable slot 0x24 of 0x804A4C58).
+    /* 0x24 */ virtual void vfunc_0x24();
 
     // 0x801D8400 (first function of tu_801D8400, called by tu_801DAC6C): below
     // state 8 (mState) calls fn_801D9C58 with 8.
