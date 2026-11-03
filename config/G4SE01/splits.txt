@@ -1394,7 +1394,7 @@ JSystem/JUtility/JUTXfb.cpp:
 	.sbss       start:0x8053A998 end:0x8053A9A0
 
 JSystem/JMath/JMath.cpp:
-	.text       start:0x80093280 end:0x80093340
+	.text       start:0x80093280 end:0x80093338
 	.sdata2     start:0x8053B940 end:0x8053B948
 
 JSystem/JMath/JMATrigonometric.cpp:

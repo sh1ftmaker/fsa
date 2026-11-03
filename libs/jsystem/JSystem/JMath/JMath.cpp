@@ -73,6 +73,12 @@ void JMAFastVECNormalize(register const Vec *src, register Vec *dst)
     }
 }
 
+// FIXME: FSA has an unnamed function here, fn_80093280 (0x2C bytes, called
+// from game code): the fast vector magnitude
+//   psq_l xy,0(v); lfs z,8(v); ps_mul; ps_madd; ps_sum0  (squared length)
+//   fcmpu 0.0f,sq; frsqrte r,sq; beqlr; fmuls sq,sq,r; blr
+// i.e. sq == 0 ? sq : sq * frsqrte(sq). No donor has it and none names it, so
+// it is not written yet (its 0.0f constant is .sdata2 0x8053B944).
 void JMAVECScaleAdd(register const Vec *vec1, register const Vec *vec2, register Vec *dst, register f32 scale)
 {
     register f32 v1xy, v2xy, rxy, v1z, v2z, rz;
