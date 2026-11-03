@@ -486,6 +486,45 @@ def worker(args):
             sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
+def usage():
+    """7-day plan utilization (0..1) from a minimal headless call's rate_limit_event, or None."""
+    try:
+        out = subprocess.run(["claude", "-p", "Reply: ok", "--model", MODEL, "--output-format", "stream-json",
+                              "--verbose"], cwd="/tmp", capture_output=True, text=True, timeout=180).stdout
+    except subprocess.TimeoutExpired:
+        return None
+    for line in out.splitlines():
+        try:
+            ev = json.loads(line)
+        except ValueError:
+            continue
+        info = ev.get("rate_limit_info") or {}
+        win = (info.get("unifiedWindows") or {}).get("seven_day") or {}
+        if "utilization" in win:
+            return float(win["utilization"])
+    return None
+
+
+def watch(args):
+    """Stop the workers gracefully at --soft utilization, immediately at --hard."""
+    while True:
+        u = usage()
+        with open(LOGS / "usage.tsv", "a") as f:
+            f.write(f"{datetime.datetime.now().isoformat(timespec='seconds')}\t{u}\n")
+        if u is not None and u >= args.hard:
+            subprocess.run("for s in $(sbg ls | grep -o 'grind-w[0-9]*' | sort -u); do sbg stop $s; done",
+                           shell=True, capture_output=True)
+            notify("FSA grind stopped", f"weekly usage {u:.0%}: workers stopped")
+            return
+        if u is not None and u >= args.soft and not (LOGS / "STOP").exists():
+            (LOGS / "STOP").touch()
+            notify("FSA grind stopping", f"weekly usage {u:.0%}: workers finish their current unit")
+        if (LOGS / "STOP").exists() and "grind-w" not in subprocess.run(["sbg", "ls"], capture_output=True, text=True).stdout:
+            notify("FSA grind stopped", f"all workers finished (usage {u})")
+            return
+        time.sleep(args.every)
+
+
 def status(_):
     rows = [l.split("\t") for l in (LOGS / "results.tsv").read_text().splitlines()] if (LOGS / "results.tsv").exists() else []
     acc = [r for r in rows if r[6] == "ACCEPT"]
@@ -508,6 +547,9 @@ def main():
     w.add_argument("--file-max", type=int, default=1536, help="file mode: max unwritten bytes per unit")
     w.set_defaults(f=worker)
     sp.add_parser("status").set_defaults(f=status)
+    wa = sp.add_parser("watch"); wa.add_argument("--soft", type=float, default=0.94)
+    wa.add_argument("--hard", type=float, default=0.95); wa.add_argument("--every", type=int, default=600)
+    wa.set_defaults(f=watch)
     a = ap.parse_args()
     a.f(a)
 
