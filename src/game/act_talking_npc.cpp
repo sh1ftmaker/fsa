@@ -11,18 +11,14 @@
 
 TalkingNPC_804AF548::~TalkingNPC_804AF548() {}
 
-// FIXME: 91.93 %. Only the order around the by-value position: the
-// original loads field_0x4 (r6) and sets r7 before the psq_l of mPos and
-// moves `mr r3, r31` between the psq_l and the lfs; ours loads r6 last.
-// tu_802F3B74's init call of fn_8038BD08 differs the same way, so it is
-// probably the TVec3f copy (mkdd's JGeometry has a user copy constructor
-// through setTVec3f; include/JSystem/JGeometry.h has none), not this code.
+void TalkingNPC_804AF548::draw() {}
+
 void TalkingNPC_804AF548::update() {
     u32 player = field_0x90 >> 28;
     u32 msg = field_0x90 & 0x0FFFFFFF;
     switch (mState) {
     case 0:
-        if (fn_8038AD24(player, msg, field_0x234, field_0x4, mPos, 0x1004)) {
+        if (talk(player, msg, field_0x4, mPos, 0x1004)) {
             mState = 1;
         } else {
             mAlive = false;
