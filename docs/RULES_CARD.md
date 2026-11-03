@@ -155,6 +155,12 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   search parameter orders (scratchpad research_byval.md). Layer before
   serial (fn_8022FE80's order) is a reviewed exception: act_dummy_conversation,
   act_merchant.
+- Two stack structs in each other's slots: MWCC gives address-taken
+  aggregate locals slots in REVERSE declaration order (the later one gets
+  the lower sp offset; scope doesn't matter). Declare the one the original
+  has higher first, e.g. `JGeometry::TBox2f box;` at the top of the block,
+  then `box.set(...)` where it is filled (tu_801EE24C, act_log_monitor_npc
+  do this; scratchpad research_stackslots.md).
 - A range check compiled as `cmpwi hi; bgt; cmpwi lo; bge body`: an early
   return `if (x > hi || x < lo) return;` (a switch gives `cmpwi hi+1; bge`).
 - Positions built on the stack as 8-byte objects (y stored with x, frame
