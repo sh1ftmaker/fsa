@@ -610,8 +610,7 @@ config.libs = [
         Object(Matching, "dolphin/gba/GBARead.c"),
         Object(Matching, "dolphin/gba/GBAWrite.c"),
         Object(Matching, "dolphin/gba/GBAXfer.c"),
-        # FIXME: the DSP microcode in .data has no licensed source; see GBAKey.c.
-        Object(NonMatching, "dolphin/gba/GBAKey.c"),
+        Object(Matching, "dolphin/gba/GBAKey.c"),  # .data: build-extracted microcode
     ]),
     SdkLib("gd", [
         Object(Matching, "dolphin/gd/GDBase.c"),
