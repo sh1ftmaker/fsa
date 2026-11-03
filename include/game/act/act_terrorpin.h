@@ -6,11 +6,11 @@
 #include "game/EnemyBase.h"
 
 // The PAME actor ("Terrorpin", docs/names/actors.tsv, high confidence): the
-// spawner constructs it with fn_801B94C8, which stores this vtable
+// spawner constructs it with __ct__18Terrorpin_804A3B10Fv (0x801B94C8), which stores this vtable
 // (config/G4SE01/game_units.tsv). Named after its vtable, 0x804A3B10.
 class Terrorpin_804A3B10 : public EnemyBase_804A4808 {
 public:
-    Terrorpin_804A3B10() {}
+    Terrorpin_804A3B10();
     /* 0x08 */ virtual ~Terrorpin_804A3B10();
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
@@ -24,7 +24,7 @@ public:
     /* 0x88 */ virtual void vfunc_0x88();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
-    /* 0x2A8 */ u8 field_0x2a8[0x4]; // not yet known
+    /* 0x2A8 */ s32 field_0x2a8; // not yet known
 }; // Size: 0x2AC
 
 #endif
