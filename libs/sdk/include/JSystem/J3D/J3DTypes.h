@@ -511,6 +511,8 @@ struct J3DLightObj {
 };
 
 struct J3DTevOrderInfo {
+	// __memcpy like tp's other 4-byte Infos (J3DStruct.h:143-145); tp's own J3DTevOrderInfo::operator=
+	// (J3DStruct.h:265-267) is a u32 cast, which is banned here (docs/COORDINATOR.md).
 	void operator=(const J3DTevOrderInfo& other) { __memcpy(this, &other, sizeof(J3DTevOrderInfo)); }
 
 	u8 mTexCoordID; // _00
@@ -697,6 +699,7 @@ struct J3DTevStage {
 };
 
 struct J3DTexCoordInfo {
+	// tp J3DStruct.h:224-227 (__memcpy).
 	void operator=(J3DTexCoordInfo const& other) { __memcpy(this, &other, sizeof(J3DTexCoordInfo)); }
 
 	u8 getTexGenType() { return mTexGenType; }

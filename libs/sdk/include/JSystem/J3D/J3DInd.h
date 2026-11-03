@@ -6,6 +6,7 @@
 #include "types.h"
 
 struct J3DIndTexCoordScaleInfo {
+	// tp J3DStruct.h:240-243 (__memcpy).
 	void operator=(const J3DIndTexCoordScaleInfo& other) { __memcpy(this, &other, sizeof(J3DIndTexCoordScaleInfo)); }
 
 	u8 mScaleS; // _00
@@ -58,6 +59,7 @@ struct J3DIndTexMtx : public J3DIndTexMtxInfo {
 };
 
 struct J3DIndTexOrderInfo {
+	// tp J3DStruct.h:143-145 (__memcpy).
 	void operator=(const J3DIndTexOrderInfo& other) { __memcpy(this, &other, sizeof(J3DIndTexOrderInfo)); }
 
 	u8 mTexCoordID; // _00

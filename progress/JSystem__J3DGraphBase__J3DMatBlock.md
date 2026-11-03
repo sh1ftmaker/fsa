@@ -208,3 +208,13 @@ Harness reproduces target with tp's cast, and ours with `__memcpy`.
   `*(GXColorS10*)this = o`: 4x lha/sth.
 Not tried: permuter (not allowed). Recommendation: the cast is almost certainly the original; whether to admit it
 is a policy decision, not a search problem.
+
+## w11-j3dcast, 2026-11-02: word-copy exception tried, then rejected
+tp's u32-cast operator= in J3DTevOrderInfo, J3DTexCoordInfo, J3DIndTexOrderInfo, J3DIndTexCoordScaleInfo and
+J3DGXColorS10(const GXColorS10&) took the unit to 431 / 431 (and J3DMaterialFactory to 120 / 120). Review showed
+`__memcpy` gives the same ShieldD `__as__` sizes (0xC, 0x14) at -O0 and tp's debug build uses it, so the debug map
+doesn't support the cast; the user reverted to the ban (docs/COORDINATOR.md, "Evaluated and rejected").
+Headers back to `__memcpy` with tp file:line citations; FIXMEs restored. Unit back to 412 / 431, .data 93.44 %
+(four weak base vtables, 0x1BC, UNREFERENCED DUPLICATE from J3DMaterial.o in the trial link; plus
+`__vt__21J3DColorBlockLightOff` 99.24 %, a trailing padding word in symbols.txt's size). Report identical to matching.
+J3DMaterialFactory can't flip: modifyPatchedCurrentMtx needs the same cast (99.66 %), its FIXME stands.

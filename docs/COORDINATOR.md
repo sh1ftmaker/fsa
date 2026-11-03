@@ -481,6 +481,30 @@ To list them, run `check_byte_arrays` over every tracked file.
 - Original SDK `asm` functions (nofralloc) are source, not tricks; workers
   keep them and never add new ones.
 
+## Evaluated and rejected: J3D word-copy `operator=` (2026-11-02)
+
+Don't retry this. tp's release build copies `J3DTevOrderInfo`,
+`J3DTexCoord`, `J3DIndTexOrder`, `J3DIndTexCoordScale` with
+`*(u32*)this = *(u32*)&other` and `J3DGXColorS10::operator=(const
+GXColorS10&)` with two `((u32*)this)[i]` copies, labelling most of them
+"Fakematch". In FSA this cast is the only form found that matches J3DMatBlock's 15
+setters (`lwz r5,0(r5); addi r0,r4,off; stwx r5,r3,r0`), its four TevBlock
+`initialize` (j3dDefaultTevColor's second word through a base register) and
+J3DMaterialFactory's `modifyPatchedCurrentMtx`. The Infos can't hold a u32
+(FSA: `J3DIndBlockFull::mIndTexOrder` at 0x5, `J3DTexCoord` stride 6,
+`J3DTevBlock1::mTevOrder` at 0xA). The user briefly allowed the cast on the
+strength of tp's ShieldD map (`__as__` 0xC for the four Infos, 0x14 for
+`__as__13J3DGXColorS10FRC11_GXColorS10`), but `__memcpy` compiles to the
+same sizes at -O0 (0xC byte-identical to the cast, 0x14), and tp's matched
+debug build uses `__memcpy` in those base `operator=` (J3DStruct.h:143-145,
+224-227, 240-243). The debug map rules out only a field-wise copy (0x34);
+the only evidence for the cast is release register order, which is what tp
+calls a fakematch. The user reverted to the ban: these types use
+`__memcpy`, and the affected functions stay below 100 % with FIXMEs.
+Variants already tried (unions, bitfields, u32 members, field-wise,
+aligned attributes, pointer temporaries, derived operator=) are listed in
+progress/JSystem__J3DGraphBase__J3DMatBlock.md.
+
 ## Fakematch debt imported from donors
 
 Donor code came with fakematches: mkdd's `JASFakeMatch*.h` headers (template

@@ -29,6 +29,10 @@ You don't fix anything and you don't commit. You produce a verdict.
    extension rather than because the data is that type; anything copied
    from the donor that doesn't fit FSA's version but happens to compile.
    Compare with the donor file: a difference from the donor needs a reason.
+   Pointer-cast word copies (`*(u32*)this = *(u32*)&other`) are tricks with
+   no exception: a J3D `operator=` exception was evaluated and rejected
+   (docs/COORDINATOR.md, "Evaluated and rejected").
+
 4. **Data and symbols.** `splits.txt` ranges are the unit's real data (check
    neighbours aren't swallowed or left with gaps); `symbols.txt` changes
    only rename placeholders, never move or resize; every new name has

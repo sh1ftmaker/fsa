@@ -77,6 +77,8 @@ struct J3DGXColorS10 : public GXColorS10 {
 		a                      = otherBytes->a;
 	}
 
+	// __memcpy like tp's copy ctor (J3DMatBlock.h:27). tp's operator= (J3DMatBlock.h:32-38) is a u32 cast
+	// it labels "Fakematch?"; banned here (docs/COORDINATOR.md).
 	J3DGXColorS10& operator=(const GXColorS10& color)
 	{
 		__memcpy(this, &color, sizeof(GXColorS10));
