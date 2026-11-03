@@ -235,8 +235,6 @@ act_spawner	sinit	__sinit_act_spawner_cpp	-	-	new	new
 act_special_bg_draw_object	dtor	__dt__28SpecialBGDrawObject_804AC760Fv	SpecialBGDrawObject_804AC760	0x804AC760	new	new
 act_special_bg_draw_object	sinit	__sinit_act_special_bg_draw_object_cpp	-	-	new	new
 act_special_conversation_npc	dtor	__dt__31SpecialConversationNPC_804AAFB8Fv	SpecialConversationNPC_804AAFB8	0x804AAFB8	new	new
-act_spike_floor_check	dtor	__dt__24SpikeFloorCheck_804A8170Fv	SpikeFloorCheck_804A8170	0x804A8170	new	new
-act_spike_floor_check	sinit	__sinit_act_spike_floor_check_cpp	-	-	new	new
 act_spotlight	sinit	__sinit_act_spotlight_cpp	-	-	new	-
 act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
