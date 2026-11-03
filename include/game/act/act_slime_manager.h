@@ -12,6 +12,9 @@ class cls_804A5BD8 : public cls_804A5B28 {
 public:
     // 0x80208BE0: the base constructor, then this vtable and zeroed fields.
     cls_804A5BD8();
+    // 0x80207D84: the vtables of the base classes and the members' destructors
+    // inline, then ActorBase's destructor; deletes this when the flag is > 0.
+    /* 0x08 */ virtual ~cls_804A5BD8();
 
     /* 0x88 */ virtual void vfunc_0x88();
 

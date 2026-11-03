@@ -6,6 +6,8 @@
 
 const f32 lbl_8053F8E0 = 0.0f;
 
+cls_804A5BD8::~cls_804A5BD8() {}
+
 cls_804A5BD8::cls_804A5BD8() {
     field_0x340 = 0;
     field_0x344 = 0;
