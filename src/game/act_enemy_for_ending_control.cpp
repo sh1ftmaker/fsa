@@ -11,6 +11,30 @@ void EnemyForEndingControl_804AD48C::fn_8035BE00() {
     }
 }
 
+// A step of a sequence table: the value (negative ends the sequence) and the
+// time the sequencer waits before reading the next step.
+struct EndingStep_804AD460 {
+    s32 value;
+    s32 time;
+};
+
+// Eleven sequence tables, indexed by fn_8035C15C's argument (.data).
+extern EndingStep_804AD460* lbl_804AD460[11];
+
+// Advances the sequencer; true once the sequence is over.
+bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
+    if (field_0x244 == 0) {
+        EndingStep_804AD460* steps = lbl_804AD460[seq];
+        if (steps[field_0x24c].value < 0) {
+            return true;
+        }
+        field_0x244 = steps[field_0x24c].time;
+        field_0x248 = steps[field_0x24c].value;
+        field_0x24c++;
+    }
+    return false;
+}
+
 EnemyForEndingControl_804AD48C::~EnemyForEndingControl_804AD48C() {}
 
 void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
