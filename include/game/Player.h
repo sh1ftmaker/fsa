@@ -778,6 +778,12 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // serial)) passes, or -1; 0 without a player manager.
 s32 fn_80239470(const JGeometry::TBox2f* box, s32 layer, s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_eyeball_switch). Index (0-3)
+// of the first present player whose box test (fn_80273C30(player, box, layer,
+// out, flag), a bool OR of the player's tile probes) passes, or -1; -1
+// without a player manager. The caller ignores the result.
+s32 fn_8023BA68(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2<f32>* out, bool flag);
+
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Whether
 // fn_802729F0(player object, serial) passes for any active player.
 bool fn_80239638(s32 serial);
