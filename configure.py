@@ -768,7 +768,7 @@ config.libs = [
     ]),
     MkddJSystemLib("mkdd_JKernel", [
         Object(Matching, "JSystem/JKernel/JKRAram.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramPiece.cpp", extra_cflags=["-O4,p"]),

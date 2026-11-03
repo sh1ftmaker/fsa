@@ -60,9 +60,68 @@ JKRAramArchive::~JKRAramArchive()
     }
 }
 
-#ifdef DEBUG
-CW_FORCE_STRINGS(JKRAramArchive_cpp, __FILE__, "isMounted()", "mMountCount == 1")
-#endif
+void JKRAramArchive::fixedInit(long entryNum, EMountDirection mountDirection)
+{
+    mIsMounted = false;
+    mMountDirection = mountDirection;
+    mMountMode = MOUNT_ARAM;
+    mMountCount = 1;
+    _58 = 2;
+    mHeap = JKRGetCurrentHeap();
+    mEntryNum = entryNum;
+
+    if (sCurrentVolume)
+        return;
+    sCurrentVolume = this;
+    sCurrentDirID = 0;
+}
+
+bool JKRAramArchive::mountFixed(long entryNum, EMountDirection mountDirection)
+{
+    if (entryNum < 0)
+        return false;
+
+    if (check_mount_already(entryNum, JKRGetCurrentHeap()))
+        return false;
+
+    fixedInit(entryNum, mountDirection);
+    if (open(entryNum) == false)
+        return false;
+
+    mVolumeType = 'RARC';
+    mVolumeName = &mStrTable[mDirectories->mOffset];
+    sVolumeList.prepend(&mFileLoaderLink);
+    mIsMounted = true;
+    return true;
+}
+
+void JKRAramArchive::unmountFixed()
+{
+    if (sCurrentVolume == this)
+        sCurrentVolume = nullptr;
+
+    if (mArcInfoBlock)
+    {
+        SDIFileEntry *fileEntries = mFileEntries;
+        for (int i = 0; i < mArcInfoBlock->num_file_entries; i++)
+        {
+            if (fileEntries->mData != nullptr) {
+                JKRFreeToHeap(mHeap, fileEntries->mData);
+            }
+            fileEntries++;
+        }
+        JKRFreeToHeap(mHeap, mArcInfoBlock);
+        mArcInfoBlock = nullptr;
+    }
+
+    if (mDvdFile)
+        delete mDvdFile;
+    if (mBlock)
+        delete mBlock;
+
+    sVolumeList.remove(&mFileLoaderLink);
+    mIsMounted = false;
+}
 
 bool JKRAramArchive::open(long entryNum) {
     mArcInfoBlock = nullptr;

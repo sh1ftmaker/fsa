@@ -225,6 +225,9 @@ public:
     virtual void *fetchResource(SDIFileEntry *, u32 *);              // _40
     virtual void *fetchResource(void *, u32, SDIFileEntry *, u32 *); // _44
 
+    void fixedInit(long, EMountDirection);
+    bool mountFixed(long, EMountDirection);
+    void unmountFixed();
     bool open(long);
     u32 getAramAddress_Entry(SDIFileEntry *fileEntry);
     u32 getAramAddress(const char *file);
