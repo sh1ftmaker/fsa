@@ -2,6 +2,25 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_801DE714.h"
 
+// .sdata2 float of this unit (no name evidence; read by the constructor).
+static const f32 lbl_8053F480[1] = {0.0f};
+
+// tu_801DE714 (0x801E22A4): the constructor, after EnemyBase's (a plain bl).
+cls_804A51E4::cls_804A51E4() {
+    field_0x2a8 = -1;
+    field_0x2ac = -1;
+    field_0x2b0 = -1;
+    field_0x2b4 = -1;
+    field_0x2b8 = -1;
+    mTargetSerial = -1;
+    field_0x2c0 = 0;
+    field_0x2c4 = lbl_8053F480[0];
+    field_0x2c8 = lbl_8053F480[0];
+    field_0x2cc = 0;
+    field_0x2ce = 0;
+    field_0x2d0 = -1;
+}
+
 // tu_801DE714 (0x801DE714): vtable slot 0x80. In state 0xA the floor check
 // is EnemyBase's, called directly (a plain bl, not through the vtable).
 void cls_804A51E4::vfunc_0x80() {
