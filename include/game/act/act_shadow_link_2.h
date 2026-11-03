@@ -7,6 +7,7 @@
 #include "game/cls_800FE8C0.h"
 #include "game/cls_804A46F4.h"
 #include "game/cls_80214244.h"
+#include "game/cls_80217128.h"
 #include "game/cls_80217374.h"
 #include "game/cls_80218A8C.h"
 
@@ -46,7 +47,7 @@ public:
     /* 0x358 */ cls_80214244 field_0x358;
     /* 0x4EC */ u8 field_0x4ec[0x524 - 0x4EC];
     /* 0x524 */ u32 field_0x524; // bits 0x8, 0x10, 0x20 pick the attack
-    /* 0x528 */ u8 field_0x528[0x540 - 0x528];
+    /* 0x528 */ cls_80217128 mHitBox; // mOwner is this actor
     /* 0x540 */ cls_80218A8C mHelper540;       // fn_801C573C calls its constructor
     /* 0x548 */ u8 field_0x548[0x550 - 0x548];
     /* 0x550 */ cls_80217374 field_0x550;
