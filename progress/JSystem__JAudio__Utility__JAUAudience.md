@@ -1,5 +1,29 @@
 # JSystem/JAudio/Utility/JAUAudience.cpp
 
+## Wave 13 (2026-11-03): no source change, 11/18 (data 38 %)
+- __sinit (9 pools). FSA constructs, after the 3 MT pools: 0x8052E78C, 0x8052E79C,
+  0x8052E7AC (local, own guards 0x8053A3C0..), JAUAudible<4> (0x804B21EC, named on
+  unit/JAUAudioMgr), 0x8052E7BC, JAUDopplerAudible<4> (0x804B21DC). MWCC constructs a
+  group in reverse instantiation order, so FSA's TU instantiated D<4>, 7BC, A<4>, 7AC,
+  79C, 78C. SMG's dummies (A1, A2, A4, D1, D2, D4, after the class's own D<4>) give
+  D2, D1, A4, A2, A1, D4: A<4> third, not fourth. No donor gives FSA's order; any
+  arrangement of dummies that does would be invented. Left as is.
+- newAudible (99.9 %): FSA allocates from 0x804B21DC (the pool symbols.txt calls
+  JAUDopplerAudible<4>) and passes __ct__17JAUAudibleChannelFv to __construct_array.
+  A derived JAUDopplerAudibleChannel always gets its own implicit ctor, and FSA has
+  none, so FSA's audible uses JAUAudibleChannel itself as its channel (matching the
+  0x24 channel and the missing doppler term in mixChannelOut). The `24JAUDopplerAudibleChannel`
+  in four real symbols.txt names (getOuterParams/__dt__/calc/__vt__ of
+  JAUGenericAudible_<4,...>) comes from the mkdd import, not FSA. Proposal (needs a
+  name review and approved_symbol_changes.txt lines): make the channel parameter
+  JAUAudibleChannel and rename those four to `...<4,17JAUAudibleChannel,23JAUDopplerAudibleAbsPos>...`.
+  Applied on branch unit/JSystem__JAudio__Utility__JAUAudience-channel: newAudible
+  AND calcPriority both reach 100 % (11 -> 13/18, code 49.2 -> 73.4 %), no other unit
+  changes. gate fails only on the four real-name renames until the coordinator adds,
+  after a name review, these approved_symbol_changes.txt lines (old old new review):
+  `getOuterParams__74JAUGenericAudible_<4,24JAUDopplerAudibleChannel,23JAUDopplerAudibleAbsPos>Fi` -> `getOuterParams__67JAUGenericAudible_<4,17JAUAudibleChannel,23JAUDopplerAudibleAbsPos>Fi`;
+  same for `__dt__...Fv`, `calc__...Fv` and `__vt__...`.
+
 Baseline (this round): `total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)`
 After: `total: 4506 / 11561 functions, 809288 / 4442088 bytes of code (18.22 %)`. Gate ok.
 Per-unit diff against the baseline report: only JAUAudience changed (6 -> 11).
