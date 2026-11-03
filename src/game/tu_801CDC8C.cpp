@@ -9,6 +9,7 @@
 #include "game/GameAudio.h"
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/GameView.h"
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JAudio/JAUSoundObject.h"
@@ -344,28 +345,24 @@ s32 EnemyBase_804A4808::fn_801D02E0(const JGeometry::TVec3f* pos) {
     return JMath::atanTable_.atan2_(pos->x - mPos.x, pos->y - mPos.y) * 10430.378f;
 }
 
-// FIXME: 92.0 %. The target does not fuse dx * dx + dy * dy (fmuls,
-// fmuls, fadds); ours makes an fmadds under -fp_contract on.
 // Whether player `player` is within `dist` of *pos (x, y).
 bool EnemyBase_804A4808::fn_801D0D50(s32 player, const JGeometry::TVec3f* pos, f32 dist) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
     f32 dy = playerPos->y - pos->y;
     f32 dx = playerPos->x - pos->x;
     bool result = false;
-    if (dx * dx + dy * dy <= dist * dist) {
+    if (square(dx) + square(dy) <= square(dist)) {
         result = true;
     }
     return result;
 }
 
-// FIXME: 87.7 %. As fn_801D0D50: the target keeps dx * dx + dy * dy
-// unfused; ours emits fmadds.
 // The squared (x, y) distance from *pos to player `player`.
 f32 EnemyBase_804A4808::fn_801D0DA0(s32 player, const JGeometry::TVec3f* pos) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
     f32 dy = playerPos->y - pos->y;
     f32 dx = playerPos->x - pos->x;
-    return dx * dx + dy * dy;
+    return square(dx) + square(dy);
 }
 
 // FIXME: 83.9 %. The target loads field_0x4 before saving r30 and returns
