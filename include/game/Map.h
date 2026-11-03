@@ -175,6 +175,12 @@ public:
     // counts to 0.
     void fn_8020D690();
 
+    // Descriptive name, not from the original. An inline wrapper: all 8
+    // visible fn_8020D7D0 call sites emit the identical sequence (the serial
+    // is loaded before fn_8020D58C is called, then the list is indexed by
+    // field_0x0), e.g. act_invisible_npc_wall_tomi's update (0x80376448).
+    void addBox(s32 serial) { mLists[field_0x0].fn_8020D7D0(serial); }
+
     /* 0x000 */ u8 field_0x0; // the list fn_8020D7D0 / fn_8020D8C0 fill
     /* 0x001 */ u8 field_0x1; // the list fn_8020D6AC reads
     /* 0x004 */ CollisionBoxList_8020D60C mLists[2];
