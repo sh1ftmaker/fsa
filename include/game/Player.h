@@ -176,6 +176,12 @@ void fn_8022FE80(s32 player, s32 layer, s32 serial, s32 a, s32 b);
 s32 fn_8022FD8C(s32 serial);
 bool fn_8023061C(s32 player, bool flag);
 bool fn_80230224(s32 player, bool flag);
+// 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
+// fn_80241DD0(player, layer, pos) and fn_8022B978 fn_80241BA0(player, layer,
+// box, flag); each returns 1 as soon as one player passes, else 0 (callers
+// test r3 with clrlwi.). Whether *pos / *box is visible for a player on `layer`.
+bool fn_8022BA58(s32 layer, const JGeometry::TVec3f* pos);
+bool fn_8022B978(s32 layer, const JGeometry::TBox2f* box, bool flag);
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in
 // field_0x14[player], a in field_0x44, b in field_0x54, c (stb) in field_0x64.
