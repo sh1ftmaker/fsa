@@ -15,7 +15,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    /* 0x230 */ s32 field_0x230; // field_0x90 >> 27 (init); the bit passed to GameView::fn_802D800C
 }; // Size: 0x234
 
 #endif

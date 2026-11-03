@@ -177,6 +177,9 @@ s32 fn_8022F3DC(s32 player);
 bool fn_8022F514(s32 player);
 bool fn_8022FA80(s32 player);            // 2 units. -> fn_8024C458 (byte 0xD4C); else false
 bool fn_80230188(s32 player);            // 56 units. -> fn_802413E8 (byte 0x454); else false
+// 3+ units (act_warp, act_view_mode). Owner: tu_8022AD64 (0x802373EC, defined
+// there; per-player query, 0 without a manager). Compared against 1 and 2.
+s32 fn_802373EC(s32 player);
 s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
 bool fn_80233D20(s32 player);            // 1 unit. -> byte 0x43F; else false
