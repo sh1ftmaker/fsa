@@ -177,6 +177,29 @@ starts), update its `status` in `docs/roadmap.yml` in the same merge
 commit**, and add a `landed:` commit for milestones that finished. Unknown
 library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 
+## Binary blobs (`config.yml` `extract:`)
+
+A unit whose data includes a binary blob with no source form (GBAKey's 0x380
+bytes of GBA key-exchange DSP microcode is the first) gets it the way
+tp/melee/oot-gc do: an `extract:` entry in `config/G4SE01/config.yml`
+(`symbol`, `header: assets/<lib path>/<name>.inc`, `header_type: raw`); `dtk
+dol split` writes the raw bytes into `build/G4SE01/include/assets/` from
+`orig/sys/main.dol`, and the source includes that header inside the array
+initializer. The `-i build/G4SE01/include` root is last in the include
+order. A fresh clone builds with `configure.py` + `ninja`: the split runs
+before build.ninja is regenerated and anything compiles.
+
+Allowed: data that is not C (DSP or other co-processor microcode), or tables
+generated from assets (fonts, images) with no source form in the game. Not
+allowed: any code or data with a source form, which includes strings,
+constants, jump tables, vtables and initialized structs. Those are written
+as C. `.incbin` and hand-typed byte arrays stay banned. config.yml is a
+protected file, so a worker asks for a new entry in its report and the user
+sanctions it. The gate (`check_blobs`) fails an include of `assets/...` that
+the extract list doesn't produce, an include that reaches into `build/`, an
+extract path outside `assets/`, and any tracked file under an `assets/`
+directory or named like an extracted file.
+
 ## Rakes (each cost time once)
 
 **Tooling and worktrees**

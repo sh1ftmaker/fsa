@@ -146,6 +146,29 @@ until someone checks it the same way.
    no `asm` blocks standing in for functions that were written in C, no
    matching-only hacks where a natural construct exists.
 
+6. **Binary blobs are extracted, never written or committed.** Data with
+   no source form (DSP microcode, tables generated from assets) comes from
+   the user's own `orig/sys/main.dol` at build time: an entry in
+   `config/G4SE01/config.yml`'s `extract:` list (dtk-template's mechanism:
+   `symbol`, `header: assets/<path>.inc`, `header_type: raw`) makes
+   `dtk dol split` write it to `build/G4SE01/include/assets/`, and the
+   source includes it inside the array's initializer:
+
+   ```c
+   static u8 lbl_804985D0[0x380] = {
+   #include "assets/dolphin/gba/GBAKey_ucode.inc"
+   };
+   ```
+
+   Never for anything with a source form: code (no extracted function
+   bodies), strings, float constants, jump tables, vtables, structs of
+   values the code uses, anything a C initializer can say. `.incbin` and
+   hand-typed byte arrays standing in for such data stay banned. config.yml
+   is protected, so each new entry needs the user's sanction; the gate fails
+   an `assets/` include that isn't in the list, any include reaching into
+   `build/`, and any tracked file under an `assets/` directory or named like
+   an extracted file.
+
 ## Code quality (KATAM / TP style)
 
 - Real names and real types. Use the SDK's and JSystem's own names (from
@@ -181,7 +204,8 @@ Then do the data splits (rule 2) by hand or with the donor's own
 ## Repo hygiene
 
 - Don't push without being asked.
-- Never commit game data: `orig/`, `build/`, disc images, extracted assets.
+- Never commit game data: `orig/`, `build/`, disc images, extracted assets
+  (blobs come from `orig/` at build time, rule 6; `gate.py` checks it).
 - Archived history: branch `archive/pre-matching-main` has the old m2c /
   port-agent pipeline and TWW game files; `archive/recomp-game-decomp` has the
   recomp-era game-code work.

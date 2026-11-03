@@ -28,6 +28,11 @@ Checks (see docs/PLAN.md, "Submission gate"):
     map of a current link that includes this exact object and whose DOL
     matches build.sha1; every stripped object differs from the compiled one
     only by those entries, and no other unit is diffed against a copy;
+  * binary blobs: a source may include a blob only as "assets/<path>" where
+    <path> is a header in config.yml's top-level extract: list (dtk writes it
+    from orig/ into build/G4SE01/include/assets/ at build time); no include
+    reaches into build/ any other way, and git tracks nothing under an
+    assets/ directory and no file named like an extracted header or binary;
   * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
     if not, tools/link_check.py names the Matching units at fault.
 
@@ -303,6 +308,66 @@ def check_fakematch(problems):
                 if FAKEMATCH.search(line):
                     problems.append(f"{src}:{n}: Matching unit with a fakematch: {line.strip()}")
                     break
+
+
+CONFIG_YML = Path("config/G4SE01/config.yml")
+ASSET_INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]((?:[^>"]*/)?assets/[^>"]+)[>"]', re.M)
+BUILD_INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]*\bbuild/[^>"]*)[>"]', re.M)
+
+
+def extract_entries(text):
+    """config.yml's top-level extract: list, as [{key: value}] (only the scalar
+    keys dtk reads: symbol, binary, header, header_type, ...)."""
+    entries, inside = [], False
+    for line in text.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith((" ", "-")):
+            inside = line.rstrip() == "extract:"
+            continue
+        if not inside:
+            continue
+        m = re.match(r"^\s*(-\s+)?(\w+):\s*(.*?)\s*$", line)
+        if not m:
+            entries.append({"?": line})
+            continue
+        if m.group(1) or not entries:
+            entries.append({})
+        entries[-1][m.group(2)] = m.group(3).strip("'\"")
+    return entries
+
+
+def check_blobs(problems):
+    """Binary blobs come only from config.yml's extract: list, extracted from
+    orig/ at build time; the source holds an #include, never the bytes."""
+    text = CONFIG_YML.read_text()
+    if re.search(r"^\s+extract:", text, re.M):
+        problems.append(f"{CONFIG_YML}: extract: only at the top level (no module extract lists)")
+    headers, outputs = set(), set()
+    for e in extract_entries(text):
+        header, binary = e.get("header"), e.get("binary")
+        if not e.get("symbol") or not header:
+            problems.append(f"{CONFIG_YML}: extract entry without symbol and header: {e}")
+            continue
+        for path in filter(None, (header, binary)):
+            if not path.startswith("assets/") or ".." in Path(path).parts:
+                problems.append(f"{CONFIG_YML}: extracted file {path} must be under assets/")
+            outputs.add(path)
+        headers.add(header)
+    tracked = git("ls-files").splitlines()
+    for path in tracked:
+        if "assets" in Path(path).parts[:-1]:
+            problems.append(f"{path}: tracked under an assets/ directory (blobs are extracted at build time, never committed)")
+        elif any(path == o or path.endswith("/" + o) or path.endswith("/" + Path(o).name) for o in outputs):
+            problems.append(f"{path}: tracked file with the name of an extracted blob")
+        if not SOURCE.search(path) or not Path(path).is_file():
+            continue
+        src = Path(path).read_text(errors="replace")
+        for inc in ASSET_INCLUDE.findall(src):
+            if inc not in headers:
+                problems.append(f"{path}: includes {inc}, which config.yml's extract: list doesn't produce")
+        for inc in BUILD_INCLUDE.findall(src):
+            problems.append(f"{path}: includes {inc} from build/ (use an extract: entry and \"assets/...\")")
 
 
 def ninja(*targets):
@@ -669,6 +734,7 @@ def main():
     tracked = git("ls-files", "--", "build/").split()
     if tracked:
         problems.append(f"build artifacts tracked by git (never commit build/): {', '.join(tracked[:5])}")
+    check_blobs(problems)
     check_configure(problems)
     check_report(problems)
     if not args.no_link:
