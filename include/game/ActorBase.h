@@ -481,6 +481,10 @@ public:
     // 0x8019CEB4, out of line in game/tu_80197070.cpp: returns field_0xb0.
     // Its caller (0x8019AA3C, 0x8019AC40) compares the result with 0xE.
     s32 fn_8019CEB4() const;
+    // 0x8017EAF8, out of line in game/tu_8017C01C.cpp: field_0x3c = v (a whole
+    // TVec3f copy, psq + stfs). Both callers in fn_8017C40C pass the actor
+    // from fn_801F666C and a stack TVec3f at 0x50(r1).
+    void fn_8017EAF8(const JGeometry::TVec3f& v);
 
     // Inline accessors. The spawner calls them out of line (it is too large
     // for the inliner), so they exist as weak functions in its unit at
