@@ -1,40 +1,53 @@
 # JSystem/JAudio/Utility/JAUAudience.cpp
 
-Baseline (progress.py): 3711 / 11561 functions, 710408 bytes (15.99 %).
-After: 3717 / 11561, 711320 bytes (16.01 %). gate: ok. Per-unit honest comparison
-against the baseline report: only JAUAudience (3 -> 8) and JAIAudible (0 -> 1) changed.
+Baseline (this round): `total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)`
+After: `total: 4506 / 11561 functions, 809288 / 4442088 bytes of code (18.22 %)`. Gate ok.
+Per-unit diff against the baseline report: only JAUAudience changed (6 -> 11).
 
-Unit: 3/18 -> 8/18 functions. .data 82 %, .sdata2 73.5 %.
+Unit: 6/18 -> 11/18 functions. .data 95.2 %, .sdata2 96.8 %, .bss 0 %. NonMatching.
 
-## Matched
-- `__ct__23JAUAudience_withSettingFv` (fn_8003C984): FSA has the ctor out of line right
-  after updateSetting (with updateSetting inlined into it), and game code calls it
-  (auto_fn_80459AE4). Moved the body from the header into the .cpp.
-- Vtables from the dtor chains (most derived first): `__vt__21JAUDopplerAudience<4>`
-  (804954D8), `__vt__98JAUAudience_<...>` (804954F8), `__vt__31JAUAudience_withSetting_doppler`
-  (80495480), `__vt__23JAUAudience_withSetting` (80495450), `__vt__20JAUDopplerAudible<4>`
-  (8049552C), `__vt__74JAUGenericAudible_<...>` (80495518); bases `__dt__11JAIAudienceFv`
-  (fn_80021D60, stores `__vt__11JAIAudience` = lbl_804916A0), `__dt__10JAIAudibleFv`
-  (fn_80027654 = JAIAudible.cpp's only defined function, stores `__vt__10JAIAudible` =
-  lbl_80491880). `fn_8003D200` = `__dt__74JAUGenericAudible_<...>Fv` (generic vtable,
-  then ~JAIAudible; same bytes as ours).
-- `lbl_804B21DC` = `JASPoolAllocObject<JAUDopplerAudible<4>>::memPool_` (newAudible alloc,
-  ~JAUDopplerAudible free), guard lbl_8053A2AF, dtor fn_80021C10. `__sinit_JAUAudience_cpp`.
-- Splits: .data 0x804954D8-0x80495540, .bss 0x804B4C28-0x804B4C98 (__sinit chain), .sdata2 0x8053B2B0-0x8053B2F0.
+## Done (commits 238e9b1, 9ee352e)
+- JAUAudience.h: FSA's layout (see the commit message for the byte evidence):
+  JAUGenericAudible_ 0x40 bytes with one channel slot, 0x24-byte channel
+  (params, relPos_, dist_), empty AbsPos, 0x30-byte audience state (Mtx);
+  mixChannelOut/calcPriority/newAudible rewritten to FSA's code.
+- JAUAudience3DSetting::init (SMG map name) defined first in the .cpp: gives
+  FSA's .sdata2 order; updateSetting and the ctor now match.
+- Placeholders named: mixChannelOut / calcPriority / newAudible (vtable slots).
 
-## Resistant (layout, not names)
-- FSA's `JAUDopplerAudible<4>` is 0x40 bytes (dtor frees 0x40; ours 0x10C), and
-  `getOuterParams` reads the channel pointer at +0x18 (ours +0x2C). The
-  JAUGenericAudible_/JAUDopplerAudible templates in JAUAudience.h need FSA's layout
-  before mixChannelOut (fn_8003CBC8, 0x23C), calcPriority (fn_8003CE20, 0x164),
-  newAudible (fn_8003D03C, 0x1C4) can match; ours are 0x330 / 0x2EC / 0x394.
-- `__sinit_JAUAudience_cpp`: 9 pools (3 MT, then 6 per-TU at 8052E78C.. / 804B21EC /
-  804B21DC; dtors fn_8003D488..D584 are local copies). Waits for the memPool_ work,
-  and the six non-MT pools' classes are not identified with evidence yet (tp's dummies
-  suggest JAUAudible<1,2,4> then JAUDopplerAudible<1,2,4>; the last is confirmed).
+## Resistant
+- calcPriority 98.9 %: register allocation only, second loop: FSA channel
+  r29 / deltaPriority cursor r26 / rv r25 / i r24; ours r24 / r29 / r26 / r25.
+  Declaring channel at function scope gets 99.4 %; taking the channel from the
+  state's inline (c9 variant) gets the registers right but reloads. Not kept.
+- newAudible 99.9 %: FSA passes `__ct__17JAUAudibleChannelFv` (0x8003B0B0,
+  JAUAudioMgr's range, a real name from the mkdd import) to __construct_array;
+  ours emits `__ct__24JAUDopplerAudibleChannelFv`. The bytes are identical
+  (JASSoundParams init). FSA has no copy of a Doppler-channel ctor, so either
+  that symbol's real name is __ct__24JAUDopplerAudibleChannelFv (rename
+  proposal, needs evidence of which TU emitted it first), or FSA's channel
+  storage is JAUAudibleChannel. Undecided.
+- __sinit_JAUAudience_cpp 15 % and fn_8003D488..D584 (local JASMemPool dtors):
+  9 pools: 3 MT (TChannelMgr, JASTrack, JASChannel), then 8052E78C, 8052E79C,
+  8052E7AC, cls_804B21EC, 8052E7BC, JAUDopplerAudible<4>. SMG's dummies
+  (newAudible_1/2/4, newDopplerAudible_1/2/4) suggest JAUAudible<1,2,4> and
+  JAUDopplerAudible<1,2,4>, but that order puts JAUAudible<4> third, while
+  cls_804B21EC (GameAudioBase's probable JAUAudible<4>) is fourth. Not done.
+- .data 95 %: the calc slot of both audible vtables. FSA's blr at 0x8003D260
+  is named `__ct__23JAUDopplerAudienceStateFv` in symbols.txt, but it is only
+  referenced from those two vtables' calc slot. Rename proposal (needs
+  approval): `__ct__23JAUDopplerAudienceStateFv` ->
+  `calc__74JAUGenericAudible_<4,24JAUDopplerAudibleChannel,23JAUDopplerAudibleAbsPos>Fv`
+  (SMG's map has the same calc for AudGenericAudible_). Our object still
+  emits the state ctor (testInstanciate) so that function keeps matching.
+
+## For the coordinator (GameAudio.h FIXME stand-in)
+Nothing new proven about what instantiates the JAUDopplerAudible<4> pool in
+the game units; the pool is constructed in this unit's __sinit (last of 9).
 
 ## SHARED-EDITS
-- libs/sdk/include/JSystem/JAudio/JAUAudience.h: ctor of JAUAudience_withSetting
-  declared only (body in JAUAudience.cpp). Separate commit; no other unit changed.
-- symbols.txt names in other units: JAIAudience/JAIAudible vtables and dtors.
-- FIXMEs added (review): JAUAudience.h at JAUGenericAudible_, mixChannelOut, calcPriority, newAudible; JAUAudience.cpp at the end for __sinit.
+- libs/sdk/include/JSystem/JAudio/JAUAudience.h (used by JAUAudioMgr,
+  JAUSeqDataBlockMgr, Inagaki headers and the game's GameAudio.h): layout
+  change. No other unit's matched functions changed (per-unit report diff).
+- JAUAudience_withSetting: setting_ is now a JAUAudience3DSetting (0x38),
+  the derived _3c.._4c are direct members.

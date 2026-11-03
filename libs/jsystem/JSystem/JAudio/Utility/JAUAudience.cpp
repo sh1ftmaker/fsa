@@ -2,33 +2,35 @@
 #include "JSystem/JAudio/System/JASHeapCtrl.h"
 #include "JSystem/JUtility/JUTAssert.h"
 
-// sdata2 ordering is incorrect, probably requires an exact match in testInstanciate...
+void JAUAudience3DSetting::init() {
+    _04 = 7000.0f;
+    _08 = 800.0f;
+    minVolume = 0.005f;
+    _14 = 8000.0f;
+    _10 = -4000.0f;
+    _28 = 0.1f;
+    _24 = 0.0f;
+    _18 = 1.0f;
+    _1c = 0.8f;
+    _20 = 0.0f;
+    _2c = 0.5f;
+    _38 = 0xff;
+    _30 = 3000.0f;
+    _34 = 1.5f;
+}
 
 void JAUAudience_withSetting::updateSetting() {
 #line 30
     JUT_ASSERT(setting_.minVolume >= 0.0f);
-    setting_._3c = (setting_._20 - setting_._1c) / setting_._10;
-    setting_._40 = (setting_._18 - setting_._1c) / setting_._14;
-    setting_._44 = (setting_.minVolume - 1.0f) / (setting_._04 - setting_._08);
-    setting_._48 = (f32)setting_._38 / (setting_._04 - setting_._08);
-    setting_._4c = (setting_._28 - setting_._24) / (setting_._04 - setting_._08);
+    _3c = (setting_._20 - setting_._1c) / setting_._10;
+    _40 = (setting_._18 - setting_._1c) / setting_._14;
+    _44 = (setting_.minVolume - 1.0f) / (setting_._04 - setting_._08);
+    _48 = (f32)setting_._38 / (setting_._04 - setting_._08);
+    _4c = (setting_._28 - setting_._24) / (setting_._04 - setting_._08);
 }
 
 JAUAudience_withSetting::JAUAudience_withSetting() {
-    setting_._04 = 7000.0f;
-    setting_._08 = 800.0f;
-    setting_.minVolume = 0.005f;
-    setting_._14 = 8000.0f;
-    setting_._10 = -4000.0f;
-    setting_._28 = 0.1f;
-    setting_._24 = 0.0f;
-    setting_._18 = 1.0f;
-    setting_._1c = 0.8f;
-    setting_._20 = 0.0f;
-    setting_._2c = 0.5f;
-    setting_._38 = 0xff;
-    setting_._30 = 3000.0f;
-    setting_._34 = 1.5f;
+    setting_.init();
     updateSetting();
 }
 
