@@ -93,6 +93,13 @@ bool JAUAudioArcInterpreter::readCommand_()
         readBMS_fromArchive(soundID);
         break;
     }
+    case 'vbnk': // voice bank
+    {
+        u32 waveBankNo = readU32_();
+        u32 bankNo = readU32_();
+        newVoiceBank(waveBankNo, bankNo);
+        break;
+    }
     case 'dsqb': // dynamic sequence block
     {
         u32 size = readU32_();

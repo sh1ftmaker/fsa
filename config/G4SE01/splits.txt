@@ -305,7 +305,7 @@ JSystem/JAudio/Task/osdsp_task.c:
 
 JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp:
 	.text       start:0x8003A50C end:0x8003AA08
-	.data       start:0x804953C0 end:0x80495400
+	.data       start:0x804953C0 end:0x80495408
 
 JSystem/JAudio/Utility/JAUAudioArcLoader.cpp:
 	.text       start:0x8003AA08 end:0x8003AE9C
