@@ -36,6 +36,7 @@ public:
     /* 0x30 */ Sprite mSprites[128];
 }; // Size: 0xA30
 
+// act_score also uses lbl_8053AF50: move the class and this extern to a header when act_score is written.
 extern cls_804B1E1C* lbl_8053AF50;
 
 static const char* lbl_804B1DF0[11] = {
@@ -62,9 +63,6 @@ void cls_804B1E1C::fn_804556A4() {
     }
 }
 
-// FIXME: 99%. Only the operand order of the two fnmsubs (size * 0.5 in f1, f2
-// in the original; f2, f1 here) differs, and the constructor's i and timg
-// swap r27/r28.
 void cls_804B1E1C::fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TColor color) {
     Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     f32 baseSize = 48.0f * camera->field_0x858;
@@ -75,8 +73,8 @@ void cls_804B1E1C::fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TC
             mSprites[i].active = 1;
             mSprites[i].digit = digit;
             mSprites[i].size = scale * baseSize;
-            mSprites[i].x = screen.x - mSprites[i].size * 0.5f;
-            mSprites[i].y = screen.y - mSprites[i].size * 0.5f;
+            mSprites[i].x = screen.x - mSprites[i].size / 2;
+            mSprites[i].y = screen.y - mSprites[i].size / 2;
             mSprites[i].color.set(color);
             break;
         }
