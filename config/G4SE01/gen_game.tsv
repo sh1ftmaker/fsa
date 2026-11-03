@@ -186,8 +186,6 @@ act_off_switch	sinit	__sinit_act_off_switch_cpp	-	-	new	new
 act_on_off_switch	sinit	__sinit_act_on_off_switch_cpp	-	-	new	-
 act_opening_goal	sinit	__sinit_act_opening_goal_cpp	-	-	new	-
 act_panel_rewrite_npc	sinit	__sinit_act_panel_rewrite_npc_cpp	-	-	new	-
-act_panel_rewrite_npc_2	dtor	__dt__12cls_804A9F58Fv	cls_804A9F58	0x804A9F58	new	new
-act_panel_rewrite_npc_2	sinit	__sinit_act_panel_rewrite_npc_2_cpp	-	-	new	new
 act_particle_npc	sinit	__sinit_act_particle_npc_cpp	-	-	new	-
 act_pengator	dtor	__dt__17Pengator_804A1888Fv	Pengator_804A1888	0x804A1888	new	new
 act_pengator	sinit	__sinit_act_pengator_cpp	-	-	new	new
