@@ -604,10 +604,16 @@ extern "C" void fn_80118798(cls_801192AC* obj, ActorBase_804A5770* actor);
 // act_shadow_link_2's helper tests its bit 0x400.
 struct cls_801C0D70 {
     /* 0x000 */ u16 field_0x0;
-    /* 0x002 */ u8 field_0x2[0x160 - 0x2]; // not yet known
+    /* 0x002 */ u8 field_0x2[0x50 - 0x2]; // not yet known
+    // act_shadow_link_2's fn_801C53F8 tests bit 0x80000000.
+    /* 0x050 */ u32 field_0x50;
+    /* 0x054 */ u8 field_0x54[0x160 - 0x54]; // not yet known
     // Owner tu_801C0D70. True when a target for the player at *pos was found;
     // writes its x/y to *out. Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
     bool fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
+    // Owner tu_801C0D70 (symbol fn_801C12B8). Called by act_shadow_link_2's
+    // fn_801C53F8 on the object from fn_801C0D70, not yet known beyond that.
+    void fn_801C12B8();
 }; // Size: 0x160
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();

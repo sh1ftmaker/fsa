@@ -11,6 +11,10 @@
 #include "game/cls_80217374.h"
 #include "game/cls_80218A8C.h"
 
+// .sdata2 floats: 0x8053EFB8 is also read by act_shadow_link_jump.cpp.
+extern const f32 lbl_8053EFB8;
+extern const f32 lbl_8053EFBC;
+
 // The SLK2 actor ("Shadow Link 2", docs/names/actors.tsv, high confidence):
 // the spawner constructs it with fn_801C573C, which calls the shared base's
 // constructor and stores this vtable (0x804A43E8). Named after its vtable.
@@ -29,6 +33,27 @@ public:
     bool fn_8021D020();
     // act_shadow_link_2.cpp: switches the animation/state by number.
     void fn_801C3B7C(int);
+    // act_shadow_link_2.cpp: true if mFlags has bit 0x40000 and the byte at
+    // 0x55C is at most 0x14.
+    bool fn_801C53C4();
+    // act_shadow_link_2.cpp: gravity, EnemyBase's vfunc_0x84 override. Unless
+    // field_0xd8 > 0 && field_0xf8 == 2, field_0x3c.z += lbl_8053EFB8, clamped
+    // at -lbl_8053EFBC from below.
+    /* 0x84 */ virtual void vfunc_0x84();
+    // act_shadow_link_2.cpp: copies field_0x98 (direction) into the animation
+    // sequencer's mDir, advances the sequencer unless it is in state 0x13 past
+    // its first tick or mFlags has bit 0x80000, then updates the hit box.
+    void fn_801C2E70();
+    // act_shadow_link_2.cpp: switches to state 0xD (fn_801C3B7C only).
+    void fn_801C26D8();
+    // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.
+    void fn_801C26FC();
+    // act_shadow_link_2.cpp: if the object from fn_801C0D70 has bit 0x80000000
+    // at 0x50 and mFlags has bit 0x2000, calls its fn_801C12B8.
+    void fn_801C53F8();
+    // act_shadow_link_2.cpp: if mFlags has bit 0x4000 and mState is 0 or 1,
+    // switches to state 2 (fn_801C3B7C).
+    void fn_801C27A8();
     // game/tu_801C6A4C.cpp: per-tick state handlers (field_0x340 anim
     // finished flags, then the next fn_801C3B7C state).
     void fn_801C6A4C();
