@@ -89,18 +89,46 @@ public:
     // mDrawEnabled; 199 of the 297 overrides reach GX/J3D (GXBegin,
     // GXLoadTexObj, ...) within 3 calls. Empty here.
     /* 0x20 */ virtual void draw();
-    /* 0x24 */ virtual void vfunc_0x24(); // fn_801F4F28
-    /* 0x28 */ virtual void vfunc_0x28(); // fn_801F4E0C
-    /* 0x2C */ virtual void vfunc_0x2C(); // fn_801F4850
-    /* 0x30 */ virtual void vfunc_0x30(); // fn_801F47CC
-    /* 0x34 */ virtual void vfunc_0x34(); // fn_801F4760
-    /* 0x38 */ virtual void vfunc_0x38(); // fn_801F471C
-    /* 0x3C */ virtual void vfunc_0x3C(); // fn_801F4710
-    /* 0x40 */ virtual void vfunc_0x40(); // fn_801F470C
-    /* 0x44 */ virtual void vfunc_0x44(); // fn_801F4708
-    /* 0x48 */ virtual void vfunc_0x48(); // fn_801F4704
-    /* 0x4C */ virtual void vfunc_0x4C(); // fn_801F15BC
-    /* 0x50 */ virtual void vfunc_0x50(); // fn_801F165C
+    // Slots 0x24-0x50: signatures from the base implementations in
+    // game/tu_801EE24C.cpp and the callers' argument setup.
+    /* 0x24 */ virtual void vfunc_0x24(); // 0x801F4F28: no arguments
+    // 0x801F4E0C: the int goes to fn_8013CC50's 4th argument (all four
+    // calls), the floats are added to mPos.x and mPos.y. Callers pass a
+    // sign-extended s8 (extsb) for the int, so it is a full int. The order
+    // of the int and the floats is not visible in the asm (GPRs and FPRs are
+    // allocated separately); int first is a guess.
+    /* 0x28 */ virtual void vfunc_0x28(s32, f32, f32);
+    /* 0x2C */ virtual bool vfunc_0x2C(); // 0x801F4850: returns 0 or 1
+    // 0x801F47CC: if vfunc_0x3C(), passes (view, vfunc_0x3C(), arg2, arg1)
+    // to fn_802D8050, which tests arg2 with clrlwi. and stores arg1 with stb
+    // (0xFF when cleared). Callers narrow the first argument (act_switch:
+    // clrlwi r4, r31, 24 on an int) and pass 0/1 for the second; with
+    // (s32, s32) neither the callers' clrlwi nor the missing bool
+    // conversion in 0x801F47CC would come out.
+    /* 0x30 */ virtual void vfunc_0x30(u8, bool);
+    // 0x801F4760: vfunc_0x3C() ? fn_802D800C(view, vfunc_0x3C()) (a bit
+    // test, 0 or 1) : 0
+    /* 0x34 */ virtual bool vfunc_0x34();
+    /* 0x38 */ virtual u8 vfunc_0x38(); // 0x801F471C: fn_802D7E04(view, vfunc_0x3C()), an lbz
+    /* 0x3C */ virtual s32 vfunc_0x3C(); // 0x801F4710: the top 5 bits of field_0x90 (srwi 27)
+    /* 0x40 */ virtual void vfunc_0x40(); // 0x801F470C: empty
+    /* 0x44 */ virtual void vfunc_0x44(); // 0x801F4708: empty
+    /* 0x48 */ virtual void vfunc_0x48(); // 0x801F4704: empty
+    // 0x801F15BC: the layer (cmpwi 8 in 0x801F165C) and a position go to
+    // fn_802265DC(pos, layer, 0) and fn_8020D6AC; returns 0 or 1.
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    // 0x801F165C: vfunc_0x4C(layer, pos), or pos (x, y) outside the
+    // view's box (0xCC, or 0xDC for layer 8 and up); returns 0 or 1.
+    /* 0x50 */ virtual bool vfunc_0x50(s32 layer, const JGeometry::TVec3f* pos);
+
+    // Non-virtual methods other units call (names are dtk's until their
+    // roles are proven).
+    // Clears mAlive, then reports the actor to the view: fn_802D7704(view,
+    // field_0x16c, field_0x1a8, field_0x4) when field_0x16c != -1, else
+    // fn_802D766C(view, field_0x1a8, field_0x4).
+    void fn_801F3668();
+    // id compared unsigned with 3 and 0x42; uses field_0x4 and mPos.
+    void fn_801F0D20(u32 id);
 
     // Inline accessors. The spawner calls them out of line (it is too large
     // for the inliner), so they exist as weak functions in its unit at
@@ -189,7 +217,11 @@ public:
     /* 0x110 */ s32 field_0x110; // spawner's 7th argument (default -1)
     /* 0x114 */ s32 field_0x114; // EnemyParam.csv column "atcp"
     /* 0x118 */ s32 field_0x118; // EnemyParam.csv column "atcn"
-    /* 0x11C */ bool mAlive;       // the update loop deletes the actor when false
+    // mAlive: the manager's update pass deletes the actor (virtual dtor)
+    // when it is false, and its collision queries (fn_801F8108,
+    // fn_801F82CC, ...) and draw pass skip it; fn_801F3668 clears it. Some
+    // actors clear it in init() (TMI2), which removes them at once.
+    /* 0x11C */ bool mAlive;
     /* 0x11D */ bool mDrawEnabled; // the draw loop skips the actor when false
     /* 0x11E */ u8 field_0x11e;    // update loop: updates the actor if set
     /* 0x11F */ u8 field_0x11f;    // draw/update loops: still drawn/updated
