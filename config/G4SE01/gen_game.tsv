@@ -127,8 +127,6 @@ act_keese	dtor	__dt__14Keese_804A02B8Fv	Keese_804A02B8	0x804A02B8	new	new
 act_keese	sinit	__sinit_act_keese_cpp	-	-	new	new
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_life_meter	dtor	__dt__18LifeMeter_804B174CFv	LifeMeter_804B174C	0x804B174C	new	new
-act_life_meter	sinit	__sinit_act_life_meter_cpp	-	-	new	new
 act_lift	dtor	__dt__13Lift_804A6F6CFv	Lift_804A6F6C	0x804A6F6C	new	new
 act_lift	sinit	__sinit_act_lift_cpp	-	-	new	new
 act_liftable_item	sinit	__sinit_act_liftable_item_cpp	-	-	new	-
