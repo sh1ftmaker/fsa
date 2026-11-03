@@ -28,6 +28,7 @@
 #include "JSystem/JFramework/JFWDisplay.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "game/GameState.h"
 
 extern "C" void LCEnable();
 extern "C" void LCDisable();
@@ -1523,18 +1524,6 @@ enum {
     THP_STATE_PAUSE = 4,
     THP_STATE_ERROR = 5,
 };
-
-// Game singleton at 0x80529DEC (0x354 bytes, used by many units); only the
-// heap pointer at 0x8 is known.
-class cls_80529DEC {
-public:
-    JKRHeap* getHeap_8042E780() { return mHeap; }
-
-    /* 0x0 */ u8 field_0x0[0x8];
-    /* 0x8 */ JKRHeap* mHeap;
-};
-
-extern cls_80529DEC lbl_80529DEC;
 
 inline JKRHeap* GetMovieHeap_8042E758() { return lbl_80529DEC.getHeap_8042E780(); }
 
