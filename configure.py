@@ -169,7 +169,7 @@ config.compilers_tag = "20251118"
 config.dtk_tag = "v1.8.4"
 config.objdiff_tag = "v3.8.3"
 config.sjiswrap_tag = "v1.2.2"
-config.wibo_tag = "1.0.3"
+config.wibo_tag = "1.1.0"  # not 1.2.0: sjiswrap.exe fails to load under it (GetProcAddressFail)
 
 # Project
 config.config_path = Path("config") / config.version / "config.yml"
@@ -441,7 +441,7 @@ def SdkGxLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "src_dir": "libs/sdk_gx",
         "mw_version": "GC/1.2.5n",
         "cflags": cflags_sdk_gx,
-        "progress_category": "sdk",
+        "progress_category": "gx",
         "host": False,
         "objects": objects,
     }
@@ -461,7 +461,7 @@ def MkddJSystemLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 
 
 # Helper function for JSystem libraries
-def JSystemLib(lib_name, objects, progress_category="third_party"):
+def JSystemLib(lib_name, objects, progress_category="jsystem"):
     return {
         "lib": lib_name,
         "mw_version": "GC/1.3.2",
@@ -790,7 +790,7 @@ config.libs = [
             "-use_lmw_stmw on", "-str reuse,readonly", "-common off",
             "-inline auto", "-inline deferred",
         ],
-        "progress_category": "sdk",
+        "progress_category": "runtime",
         "host": False,
         "objects": [
             Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__mem.c"),
@@ -816,7 +816,7 @@ config.libs = [
         "lib": "TRK_MINNOW_DOLPHIN",
         "mw_version": "GC/2.6",
         "cflags": cflags_trk,
-        "progress_category": "sdk",
+        "progress_category": "runtime",
         "host": False,
         "objects": [
         Object(Matching, "TRK_MINNOW_DOLPHIN/MetroTRK/Portable/mainloop.c"),
@@ -902,7 +902,7 @@ config.libs = [
         "lib": "Runtime",
         "mw_version": "GC/2.6",
         "cflags": cflags_msl,
-        "progress_category": "sdk",
+        "progress_category": "runtime",
         "host": False,
         "objects": [
         Object(Matching, "PowerPC_EABI_Support/Runtime/Src/__va_arg.c"),
@@ -919,7 +919,7 @@ config.libs = [
         "lib": "MSL_C",
         "mw_version": "GC/2.6",
         "cflags": cflags_msl,
-        "progress_category": "sdk",
+        "progress_category": "runtime",
         "host": False,
         "objects": [
         Object(Matching, "PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Src/abort_exit.c"),
@@ -978,9 +978,10 @@ config.custom_build_steps = {}
 version = VERSIONS[version_num]
 out_dir = config.build_dir / version
 
-# report.json counts every Matching (complete) unit as 100 % without diffing
-# it. Our tools (progress.py, gate.py, coord.py) read report_honest.json,
-# where every unit is diffed; see tools/honest_report.py.
+# report.json counts a Matching (complete) unit with no compiled object as
+# 100 % unseen and honors objdiff.json symbol_mappings. Our tools
+# (progress.py, gate.py, coord.py) read report_honest.json, where no unit is
+# complete and no mapping applies; see tools/honest_report.py.
 honest_objdiff = (config.objdiff_path if config.objdiff_path and config.objdiff_path.is_file()
                   else config.build_dir / "tools" / "objdiff-cli")
 config.custom_build_rules.append({
@@ -1012,19 +1013,125 @@ def link_order_callback(module_id: int, objects: List[str]) -> List[str]:
 # config.link_order_callback = link_order_callback
 
 
-# Optional extra categories for progress tracking
+# Progress categories: the same regions as the progress site
+# (tools/site_data.py REGIONS).
 config.progress_categories = [
-    ProgressCategory("game", "FSA Game Code"),
-    ProgressCategory("sdk", "SDK"),
+    ProgressCategory("game", "Game code"),
     ProgressCategory("jsystem", "JSystem"),
-    ProgressCategory("third_party", "Third Party"),
+    ProgressCategory("sdk", "Dolphin SDK"),
+    ProgressCategory("gx", "GX"),
+    ProgressCategory("runtime", "MSL, Runtime, TRK"),
 ]
+
+# dtk's auto units (the unsplit code, most of it the game's) have no Object,
+# so they get their category from the address of their code, the way
+# tools/site_data.py places unsplit functions: config/G4SE01/lib_map.tsv's
+# library ranges, then the game region (and lib_map's "game" row), then the
+# library just before the address.
+GAME_TEXT = (0x800F39EC, 0x8045BD00)
+
+
+def _lib_map():
+    rows = []
+    path = Path("config") / config.version / "lib_map.tsv"
+    if path.is_file():
+        import csv
+        with open(path, encoding="utf-8") as f:
+            for row in csv.DictReader(f, delimiter="\t"):
+                if row["text_start"].startswith("0x"):
+                    rows.append((int(row["text_start"], 16), int(row["text_end"], 16), row["library"]))
+    return rows
+
+
+def _library_category(library: str) -> Optional[str]:
+    if library == "game":
+        return "game"
+    if library == "SDK:gx":
+        return "gx"
+    if library.startswith("SDK:"):
+        return "sdk"
+    if library.startswith("JSystem:") or library == "J3D":
+        return "jsystem"
+    if library in ("MSL", "Runtime", "TRK"):
+        return "runtime"
+    return None
+
+
+def _first_function_name(obj_path: Optional[str]) -> Optional[str]:
+    """First function symbol of a (big-endian ELF32) dtk split object."""
+    import struct
+    try:
+        data = Path(obj_path).read_bytes() if obj_path else b""
+    except OSError:
+        return None
+    if data[:4] != b"\x7fELF":
+        return None
+    shoff, = struct.unpack_from(">I", data, 0x20)
+    shentsize, shnum = struct.unpack_from(">HH", data, 0x2E)
+    sections = [struct.unpack_from(">IIIIIIIIII", data, shoff + i * shentsize) for i in range(shnum)]
+    for sec in sections:
+        if sec[1] != 2:  # SHT_SYMTAB
+            continue
+        strtab = sections[sec[6]]
+        for off in range(sec[4] + 16, sec[4] + sec[5], 16):
+            name, _, _, info = struct.unpack_from(">IIIB", data, off)
+            if info & 0xF == 2:  # STT_FUNC
+                start = strtab[4] + name
+                return data[start:data.index(b"\0", start)].decode()
+    return None
+
+
+def _text_symbols() -> Dict[str, int]:
+    out: Dict[str, int] = {}
+    path = Path("config") / config.version / "symbols.txt"
+    if path.is_file():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            name, _, rest = line.partition(" = .text:0x")
+            if rest:
+                out.setdefault(name, int(rest[:8], 16))
+    return out
+
+
+_category_tables: Dict[str, Any] = {}
+
+
+def auto_progress_category(unit_name: str, obj_path: Optional[str]) -> Optional[str]:
+    import re
+    m = re.search(r"_([0-9A-F]{8})_(text|init)$", unit_name)
+    if m:
+        addr = int(m.group(1), 16)
+    elif unit_name.endswith("_text"):
+        if "symbols" not in _category_tables:
+            _category_tables["symbols"] = _text_symbols()
+        addr = _category_tables["symbols"].get(_first_function_name(obj_path) or "")
+        if addr is None:
+            return None
+    else:
+        return None  # data-only auto units: no code to count
+    if "lib_map" not in _category_tables:
+        _category_tables["lib_map"] = _lib_map()
+    rows = _category_tables["lib_map"]
+    hit = next((lib for start, end, lib in rows if start <= addr < end), None)
+    if hit is not None and hit != "game":
+        return _library_category(hit)
+    if hit == "game" or GAME_TEXT[0] <= addr < GAME_TEXT[1]:
+        return "game"
+    # A gap between lib_map ranges joins the library before it (as on the site).
+    before = [lib for start, _, lib in rows if start <= addr]
+    return _library_category(before[-1]) if before else None
+
+
+config.auto_progress_category = auto_progress_category
 config.progress_each_module = args.verbose
+# Relocation diffing: "all" compares the target symbol's name (or address)
+# and, for data targets, its value. objdiff's default "name_address" skips the
+# value; "data_value" ignores names entirely, so a call or load of a
+# differently named symbol would still count as matched. The same setting goes
+# into objdiff.json, so the GUI and `objdiff-cli diff` agree with the report.
+config.objdiff_options = {"functionRelocDiffs": "all"}
 # Optional extra arguments to `objdiff-cli report generate`
 config.progress_report_args = [
-    # Marks relocations as mismatching if the target value is different
-    # Default is "functionRelocDiffs=none", which is most lenient
-    "--config functionRelocDiffs=data_value",
+    "--config functionRelocDiffs=all",
 ]
 
 # Disable missing return type warnings for incomplete objects

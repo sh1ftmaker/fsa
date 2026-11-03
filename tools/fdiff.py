@@ -17,7 +17,7 @@ import subprocess
 import sys
 
 OBJDIFF = "build/tools/objdiff-cli"
-CONFIG = "functionRelocDiffs=data_value"
+CONFIG = "functionRelocDiffs=all"  # same as the report and objdiff.json
 
 
 def unit_name(arg):

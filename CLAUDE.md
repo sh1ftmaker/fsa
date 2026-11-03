@@ -39,11 +39,19 @@ matches, and lists them with the reason.
 
 Only the honest objdiff report counts: `build/G4SE01/report_honest.json`,
 written by ninja (`tools/honest_report.py`) with every unit diffed and
-`functionRelocDiffs=data_value`, so a function matches only if its
-relocations point at the same symbols too. `report.json` stays for
-decomp.dev-style tooling, but it counts every `Matching` unit as 100 %
-without diffing it, so never quote it. `progress.py`, `gate.py` and
-`coord.py` read the honest one.
+`functionRelocDiffs=all`: a relocation matches only if its target has the
+same name (or address) and, for data, the same value, so a function that
+calls or loads a differently named symbol doesn't count. (`data_value`, used
+here before, ignores names entirely; objdiff's default `name_address` skips
+the value.) objdiff.json carries the same setting in its `options`, so the
+objdiff GUI, `objdiff-cli diff` and `tools/fdiff.py` agree with the report.
+The honest report also marks no unit complete and drops objdiff.json
+`symbol_mappings`. `report.json` stays for decomp.dev-style tooling: objdiff
+3.8.3 diffs a `Matching` unit there too when its compiled object exists, but
+counts it as 100 % unseen when it has none, and it honors symbol mappings,
+so quote the honest one. `progress.py`, `gate.py` and `coord.py` read it;
+the gate fails a `Matching` unit without source or compiled object, and any
+symbol mapping.
 
 ```sh
 ninja build/G4SE01/report_honest.json
@@ -54,11 +62,9 @@ python3 tools/gate.py --all-units    # Matching units: 100 % honest, and main.do
 Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
-Status (2026-11-02, honest report): 1,202 of 11,560 functions, 219,068 of
-4,434,096 bytes of code (4.94 %). Every function in the compiled SDK units
-matches (651 / 651); the remaining SDK work is link and data fixes in the
-units marked `FIXME(link)` and the libraries not yet imported. JSystem
-550 / 1,014. 74 units are Matching and link byte-identical (`ninja` SHA-1 OK).
+<!-- status:start -->
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,319 of 11,561 functions, 772,344 of 4,442,088 bytes of code (17.39 %). Game code 0 / 6,791 functions (0 %); JSystem 3,266 / 3,700 functions (86.3 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 236 of 357 split units are Matching; `ninja` ends in SHA-1 OK.
+<!-- status:end -->
 
 ## Layout
 

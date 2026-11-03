@@ -10,6 +10,7 @@ Called by tools/site_data.py after it has written site/data/. Writes:
   site/data/badge-*.json               shields.io endpoint badges (served by Pages)
   README.md                            the text between <!-- <name>:start --> and
                                        <!-- <name>:end --> markers (progress, regions, now)
+  CLAUDE.md                            the same for its <!-- status:start/end --> marker
 
 All of it is original SVG drawn here: no fonts, logos or art from the game.
 GitHub shows README images through <img>, so the files carry no script and
@@ -26,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BADGES = ROOT / "site/badges"
 DATA = ROOT / "site/data"
 README = ROOT / "README.md"
+CLAUDE_MD = ROOT / "CLAUDE.md"
 SITE = "https://sh1ftmaker.github.io/fsa/"
 
 SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
@@ -480,21 +482,39 @@ def readme_blocks(summary, rm):
     return {"progress": progress, "regions": "\n".join(rows), "now": "\n".join(now)}
 
 
-def update_readme(blocks):
-    if not README.exists():
+def status_block(summary):
+    """CLAUDE.md's status paragraph, from the same honest-report totals."""
+    tot = summary["totals"]
+    day = summary["generated"][:10]
+    sha = {True: "`ninja` ends in SHA-1 OK", False: "`ninja` does **not** end in SHA-1 OK",
+           None: "`main.dol` was not linked for this run"}[tot["sha1_ok"]]
+    regions = "; ".join(f"{r['n']} {num(r['fm'])} / {num(r['f'])} functions ({pct(r['cm'], r['c'])})"
+                        for r in summary["regions"])
+    return (f"Status ({day}, honest report, written by `tools/site_data.py`): "
+            f"{num(tot['fns_matched'])} of {num(tot['fns'])} functions, {num(tot['code_matched'])} of "
+            f"{num(tot['code'])} bytes of code ({pct(tot['code_matched'], tot['code'], 2)}). {regions}. "
+            f"{num(tot['matching'])} of {num(tot['units'])} split units are Matching; {sha}.")
+
+
+def update_markers(path, blocks):
+    if not path.exists():
         return
-    text = README.read_text()
+    text = path.read_text()
     new = text
     for name, body in blocks.items():
         new = re.sub(rf"(<!-- {name}:start -->).*?(<!-- {name}:end -->)",
                      lambda m: f"{m.group(1)}\n{body}\n{m.group(2)}", new, flags=re.S)
     if new != text:
-        README.write_text(new)
+        path.write_text(new)
+
+
+def update_readme(blocks):
+    update_markers(README, blocks)
 
 
 # ---------- entry ----------
 
-OUTPUTS = ["site/badges", "site/data", "README.md"]
+OUTPUTS = ["site/badges", "site/data", "README.md", "CLAUDE.md"]
 
 
 def write_all(summary, rm):
@@ -505,3 +525,4 @@ def write_all(summary, rm):
         write_if_changed(BADGES / f"roadmap-{theme}.svg", roadmap_svg(rm, theme))
     badges(summary)
     update_readme(readme_blocks(summary, rm))
+    update_markers(CLAUDE_MD, {"status": status_block(summary)})
