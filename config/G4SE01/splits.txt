@@ -169,16 +169,17 @@ JSystem/JAudio/System/JASSoundParams.cpp:
 	.text       start:0x8002DC74 end:0x8002DCD0
 
 JSystem/JAudio/System/JASWSParser.cpp:
-	.text       start:0x8002DCD0 end:0x8002E2E0
+	.text       start:0x8002DCD0 end:0x8002E218
 	.sbss       start:0x8053A340 end:0x8053A348
 
 JSystem/JAudio/System/JASBasicBank.cpp:
-	.text       start:0x8002E2E0 end:0x8002E718
+	.text       start:0x8002E218 end:0x8002E428
 	.ctors      start:0x8045BD54 end:0x8045BD58
 	.data       start:0x80491980 end:0x804919A8
+	.bss        start:0x804B2850 end:0x804B2860
 
 JSystem/JAudio/System/JASBasicInst.cpp:
-	.text       start:0x8002E718 end:0x8002E90C
+	.text       start:0x8002E428 end:0x8002E90C
 	.ctors      start:0x8045BD58 end:0x8045BD5C
 
 JSystem/JAudio/System/JASBasicWaveBank.cpp:
