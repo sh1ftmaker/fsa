@@ -146,13 +146,15 @@ until someone checks it the same way.
    no `asm` blocks standing in for functions that were written in C, no
    matching-only hacks where a natural construct exists.
 
-6. **Binary blobs are extracted, never written or committed.** Data with
-   no source form (DSP microcode, tables generated from assets) comes from
-   the user's own `orig/sys/main.dol` at build time: an entry in
+6. **Binary blobs are extracted, never written or committed.** Only two
+   kinds qualify: non-PowerPC code (DSP or other co-processor microcode) and
+   byte-exact copies of an asset file. Each one is listed in
+   `config/G4SE01/blobs.txt` (coordinator-only, citing a review) and in
    `config/G4SE01/config.yml`'s `extract:` list (dtk-template's mechanism:
-   `symbol`, `header: assets/<path>.inc`, `header_type: raw`) makes
-   `dtk dol split` write it to `build/G4SE01/include/assets/`, and the
-   source includes it inside the array's initializer:
+   `symbol`, `header: assets/<path>.inc`, `header_type: raw`). `dtk dol
+   split` writes it from the user's own `orig/sys/main.dol` to
+   `build/G4SE01/include/assets/`, and the listed unit includes it inside the
+   array's initializer:
 
    ```c
    static u8 lbl_804985D0[0x380] = {
@@ -160,14 +162,19 @@ until someone checks it the same way.
    };
    ```
 
-   Never for anything with a source form: code (no extracted function
-   bodies), strings, float constants, jump tables, vtables, structs of
-   values the code uses, anything a C initializer can say. `.incbin` and
-   hand-typed byte arrays standing in for such data stay banned. config.yml
-   is protected, so each new entry needs the user's sanction; the gate fails
-   an `assets/` include that isn't in the list, any include reaching into
-   `build/`, and any tracked file under an `assets/` directory or named like
-   an extracted file.
+   Never for anything else: PowerPC code, strings, constants, jump tables,
+   vtables, structs and tables the code uses are written as C. `.incbin`
+   stays banned, and `gate.py` fails a changed initializer of more than 64
+   integer literals (or a string of more than 64 escaped bytes) unless
+   blobs.txt has an `array` line for the file. `check_blobs` checks each
+   blob against symbols.txt and splits.txt (a data section, exact address
+   and size, at most 0x2000 bytes, inside its unit). It also fails on:
+   - an `assets/` include that isn't allowlisted or comes from another file;
+   - an include path naming `build/`, and a computed `#include`;
+   - a configure.py include root under `build/` other than
+     `build/{version}/include`;
+   - a tracked file under any `assets/` directory or named like an extracted
+     header.
 
 ## Code quality (KATAM / TP style)
 
@@ -205,7 +212,8 @@ Then do the data splits (rule 2) by hand or with the donor's own
 
 - Don't push without being asked.
 - Never commit game data: `orig/`, `build/`, disc images, extracted assets
-  (blobs come from `orig/` at build time, rule 6; `gate.py` checks it).
+  (blobs come from `orig/` at build time, rule 6; `gate.py` checks it, and
+  bans tracked `assets/` directories anywhere in the repo).
 - Archived history: branch `archive/pre-matching-main` has the old m2c /
   port-agent pipeline and TWW game files; `archive/recomp-game-decomp` has the
   recomp-era game-code work.

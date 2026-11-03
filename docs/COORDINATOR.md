@@ -177,28 +177,49 @@ starts), update its `status` in `docs/roadmap.yml` in the same merge
 commit**, and add a `landed:` commit for milestones that finished. Unknown
 library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 
-## Binary blobs (`config.yml` `extract:`)
+## Binary blobs (`config.yml` `extract:`, `blobs.txt`)
 
-A unit whose data includes a binary blob with no source form (GBAKey's 0x380
-bytes of GBA key-exchange DSP microcode is the first) gets it the way
-tp/melee/oot-gc do: an `extract:` entry in `config/G4SE01/config.yml`
-(`symbol`, `header: assets/<lib path>/<name>.inc`, `header_type: raw`); `dtk
-dol split` writes the raw bytes into `build/G4SE01/include/assets/` from
-`orig/sys/main.dol`, and the source includes that header inside the array
-initializer. The `-i build/G4SE01/include` root is last in the include
-order. A fresh clone builds with `configure.py` + `ninja`: the split runs
-before build.ninja is regenerated and anything compiles.
+A unit whose data holds a blob with no C source form gets it the way
+tp/melee/oot-gc do. GBAKey's 0x380 bytes of GBA key-exchange DSP microcode is
+the first. The unit needs two entries:
+- a line in `config/G4SE01/blobs.txt`: symbol, section, address, size, unit,
+  header, review, justification;
+- an `extract:` entry in `config/G4SE01/config.yml`: `symbol`, `header:
+  assets/<lib path>/<name>.inc`, `header_type: raw`.
 
-Allowed: data that is not C (DSP or other co-processor microcode), or tables
-generated from assets (fonts, images) with no source form in the game. Not
-allowed: any code or data with a source form, which includes strings,
-constants, jump tables, vtables and initialized structs. Those are written
-as C. `.incbin` and hand-typed byte arrays stay banned. config.yml is a
-protected file, so a worker asks for a new entry in its report and the user
-sanctions it. The gate (`check_blobs`) fails an include of `assets/...` that
-the extract list doesn't produce, an include that reaches into `build/`, an
-extract path outside `assets/`, and any tracked file under an `assets/`
-directory or named like an extracted file.
+`dtk dol split` writes the raw bytes from `orig/sys/main.dol` into
+`build/G4SE01/include/assets/`. The unit includes that header inside the
+array initializer. `build/G4SE01/include` is an include root of every cflags
+set: dtk-template's `cflags_base` has it second (also for the PCH), and
+`cflags_sdk` has it last. A fresh clone builds with `configure.py` + `ninja`,
+because the split runs before build.ninja is regenerated and before anything
+compiles.
+
+Allowed: non-PowerPC code (DSP or other co-processor microcode), or a
+byte-exact copy of an asset file. Each needs its own review and a blobs.txt
+line. Anything with a C source form is not allowed: PowerPC code, strings,
+constants, jump tables, vtables, structs, tables the code uses. Those are
+written as C, even when a C initializer could spell out the same bytes.
+blobs.txt and config.yml are protected and coordinator-only, so a worker
+asks for an entry in its report.
+
+The gate has two checks. `check_blobs`:
+- reads config.yml with `yaml.safe_load` and fails on any other shape or key;
+- requires the extract list and blobs.txt to match 1:1;
+- checks each blob in symbols.txt (`.data`/`.rodata`/`.sdata`/`.sdata2`
+  object, exact address and size, at most 0x2000) and splits.txt (inside the
+  unit's range);
+- lets only the listed unit include the header, and only once;
+- fails other `assets/` includes, include paths naming `build/`, computed
+  includes, configure.py include roots under `build/` other than
+  `build/{version}/include`, and tracked files under any `assets/` directory.
+
+`check_byte_arrays` fails a changed initializer of more than 64 integer
+literals, or a string of more than 64 escaped bytes, unless blobs.txt has an
+`array` line for the file. Several donor files already embed microcode or
+tables as literals and are untouched: JAudio `dsptask.c`, `CARDUnlock.c`,
+`OSAudioSystem.c`, MSL `ctype.c`. Editing inside such an array needs an
+`array` line.
 
 ## Rakes (each cost time once)
 
