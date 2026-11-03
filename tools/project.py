@@ -223,6 +223,11 @@ class ProjectConfig:
         # Diff options written to objdiff.json's "options" (GUI, `objdiff-cli diff`
         # and `report generate` all apply them), e.g. {"functionRelocDiffs": "all"}
         self.objdiff_options: Dict[str, Any] = {}
+        # Progress category for units with no Object (dtk's auto units):
+        # called with the unit name and its target object path
+        self.auto_progress_category: Optional[
+            Callable[[str, Optional[str]], Optional[str]]
+        ] = None
 
         # Progress fancy printing
         self.progress_use_fancy: bool = False
@@ -1667,6 +1672,13 @@ def generate_objdiff_config(
 
         obj = objects.get(obj_name)
         if obj is None:
+            if config.auto_progress_category is not None:
+                category = config.auto_progress_category(obj_name, obj_path)
+                if category is not None:
+                    unit_config["metadata"]["progress_categories"] = [
+                        *progress_categories,
+                        category,
+                    ]
             objdiff_config["units"].append(unit_config)
             return
 
