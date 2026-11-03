@@ -1,0 +1,19 @@
+#ifndef GAME_ACT_ACT_POST_WARP_PILLAR_HANDLING_H
+#define GAME_ACT_ACT_POST_WARP_PILLAR_HANDLING_H
+
+// Code: game/act_post_warp_pillar_handling.cpp.
+
+#include "game/ActorBase.h"
+
+// Named after its vtable, 0x804AC1F8.
+class cls_804AC1F8 : public ActorBase_804A5770 {
+public:
+    cls_804AC1F8() {}
+    /* 0x08 */ virtual ~cls_804AC1F8();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+}; // Size: 0x234
+
+#endif
