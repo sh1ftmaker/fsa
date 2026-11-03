@@ -1579,13 +1579,25 @@ config.custom_build_rules.append({
     "command": f"$python tools/honest_report.py {honest_objdiff} $out $objdiff_report_args",
     "description": "REPORT $out",
 })
+# tools/link_check.py --unit records trial-link evidence here; adding or
+# replacing a record (by rename) changes the directory's mtime, so the report
+# reruns with it.
+config.custom_build_rules.append({
+    "name": "mkdir",
+    "command": "mkdir -p $out",
+    "description": "MKDIR $out",
+})
 config.custom_build_steps["post-build"] = [{
+    "rule": "mkdir",
+    "outputs": out_dir / "weakdedup_evidence",
+}, {
     "rule": "honest_report",
     "outputs": out_dir / "report_honest.json",
     # The link map and DOL: weak-duplicate stripping is proven only from the
     # current link, and only while its DOL matches build.sha1.
     "implicit": ["objdiff.json", "all_source", "tools/honest_report.py", honest_objdiff,
-                 out_dir / "fsa_game_code.elf.MAP", out_dir / "fsa_game_code.dol"],
+                 out_dir / "fsa_game_code.elf.MAP", out_dir / "fsa_game_code.dol",
+                 out_dir / "weakdedup_evidence"],
 }]
 
 

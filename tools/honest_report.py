@@ -30,6 +30,10 @@ entry only when ALL of these hold:
   * that map comes from a link whose inputs include this exact compiled
     object (path, and content unchanged since: mtime for ninja's link,
     SHA-1 for a recorded trial link), and the link's DOL matches build.sha1;
+    a trial link's record must be exactly what link_check.py --unit writes
+    for this unit against the current main link (same inputs with the one
+    object swapped), untracked by git, and tools/gate.py re-runs that link
+    and requires the same map and SHA-1;
   * the object's file name is unique among that link's inputs (the map
     names objects by file name only).
 Evidence comes from ninja's own link (Matching units) or from a trial link
@@ -108,27 +112,53 @@ def parse_map(path):
     return dups, unused
 
 
+def unit_slug(unit_name):
+    """fsa_game_code/game/tu_80214244 -> game__tu_80214244 (evidence file names)."""
+    return unit_name.split("/", 1)[-1].replace("/", "__")
+
+
+def trial_inputs(unit_name, base, main_inputs):
+    """The inputs of `link_check.py --unit`'s trial link: the main link's inputs
+    with dtk's split of this unit swapped for its compiled object (None if the
+    unit is already linked from its object, or has no split in the link)."""
+    split = str(BUILD / "obj" / (unit_name.split("/", 1)[-1] + ".o"))
+    if base in main_inputs or split not in main_inputs:
+        return None
+    return [base if o == split else o for o in main_inputs]
+
+
+def git_tracked(path):
+    out = subprocess.run(["git", "ls-files", "--", str(path)], capture_output=True, text=True)
+    return bool(out.stdout.strip())
+
+
 class Link:
     """One link whose map may prove removals: ninja's link or a recorded trial link."""
 
-    def __init__(self, kind, map_path, dol, inputs, objects=None, note=None):
-        self.kind, self.map, self.dol, self.inputs = kind, Path(map_path), Path(dol), inputs
+    def __init__(self, kind, map_path, inputs, dol=None, dol_sha1=None, map_sha1=None, objects=None):
+        self.kind, self.map, self.inputs = kind, Path(map_path), inputs
+        self.dol, self.dol_sha1, self.map_sha1 = dol, dol_sha1, map_sha1
         self.objects = objects or {}  # trial links: object path -> SHA-1 at link time
-        self.problem = note
         self._parsed = None
-        if not self.problem:
-            self.problem = self._check()
+        self.problem = self._check()
 
     def _check(self):
-        if not self.map.is_file() or not self.dol.is_file():
-            return f"{self.map} or {self.dol} missing"
         expected = SHA1.read_text().split()[0]
-        got = sha1(self.dol)
-        if got != expected:
-            return f"{self.dol} SHA-1 {got} != build.sha1 {expected}"
-        if self.kind == "main" and (MAIN_ELF.stat().st_mtime > self.map.stat().st_mtime + 1
-                                    or self.dol.stat().st_mtime + 1 < self.map.stat().st_mtime):
-            return f"{self.map} is not from the link that wrote {self.dol}"
+        if not self.map.is_file():
+            return f"{self.map} missing"
+        if self.kind == "main":
+            if not MAIN_ELF.is_file() or not Path(self.dol).is_file():
+                return f"{MAIN_ELF} or {self.dol} missing"
+            self.dol_sha1 = sha1(self.dol)
+            if (MAIN_ELF.stat().st_mtime > self.map.stat().st_mtime + 1
+                    or Path(self.dol).stat().st_mtime + 1 < self.map.stat().st_mtime):
+                return f"{self.map} is not from the link that wrote {self.dol}"
+        else:
+            # The trial DOL itself isn't kept; tools/gate.py re-runs the link.
+            if sha1(self.map) != self.map_sha1:
+                return f"{self.map} changed since the trial link"
+        if self.dol_sha1 != expected:
+            return f"the link's DOL SHA-1 {self.dol_sha1} != build.sha1 {expected}"
         return None
 
     def proves(self, obj):
@@ -153,26 +183,39 @@ class Link:
 
     def record(self):
         return {"kind": self.kind, "map": str(self.map), "map_sha1": sha1(self.map),
-                "dol": str(self.dol), "dol_sha1": sha1(self.dol), "inputs_sha1":
-                hashlib.sha1("\n".join(self.inputs).encode()).hexdigest()}
+                "dol": str(self.dol) if self.dol else None, "dol_sha1": self.dol_sha1,
+                "inputs_sha1": hashlib.sha1("\n".join(self.inputs).encode()).hexdigest()}
 
 
-def trial_links():
-    """obj path -> Link, from build/G4SE01/weakdedup_evidence/*.json (tools/link_check.py --unit)."""
-    out = {}
-    for ev in sorted(EVIDENCE.glob("*.json")) if EVIDENCE.is_dir() else []:
-        try:
-            rec = json.loads(ev.read_text())
-            link = Link("trial", rec["map"], rec["dol"], rec["inputs"], rec["objects"])
-            if not link.problem and sha1(link.map) != rec["map_sha1"]:
-                link.problem = f"{link.map} changed since the trial link"
-        except (OSError, KeyError, ValueError) as e:
-            print(f"weakdedup: ignoring {ev}: {e}", file=sys.stderr)
-            continue
-        link.evidence_file = str(ev)
-        for obj in rec["objects"]:
-            out[obj] = link
-    return out
+def trial_link(unit_name, base, main_inputs, notes):
+    """The Link recorded for this unit by `link_check.py --unit`, if its evidence
+    is exactly what that tool writes for the current main link, else None."""
+    slug = unit_slug(unit_name)
+    ev = EVIDENCE / f"{slug}.json"
+    if not ev.is_file():
+        return None
+    inputs = trial_inputs(unit_name, base, main_inputs)
+    try:
+        rec = json.loads(ev.read_text())
+        why = None
+        if git_tracked(ev) or git_tracked(EVIDENCE / f"{slug}.MAP"):
+            why = "evidence is tracked by git (build artifacts are never committed)"
+        elif rec.get("unit") != unit_name or rec.get("map") != str(EVIDENCE / f"{slug}.MAP"):
+            why = "evidence names another unit or map"
+        elif list(rec.get("objects", {})) != [base]:
+            why = f"evidence is not for {base}"
+        elif inputs is None or rec.get("inputs") != inputs:
+            why = "evidence is from another link (the Matching set or link order changed); rerun link_check.py --unit"
+        if why:
+            notes.append(f"{unit_name}: ignoring {ev}: {why}")
+            return None
+        link = Link("trial", rec["map"], inputs, dol_sha1=rec.get("dol_sha1"),
+                    map_sha1=rec.get("map_sha1"), objects=rec["objects"])
+    except (OSError, KeyError, ValueError, AttributeError) as e:
+        notes.append(f"{unit_name}: ignoring {ev}: {e}")
+        return None
+    link.evidence_file = str(ev)
+    return link
 
 
 # --------------------------------------------------------------- ELF objects
@@ -331,15 +374,15 @@ def dedup_unit(unit, base, link, notes):
 def weak_dedup(cfg):
     """Point base_path at stripped copies where a link proves the removal; write the manifest."""
     notes, entries, links = [], [], {}
-    main = Link("main", MAIN_MAP, MAIN_DOL, main_link_inputs())
+    main = Link("main", MAIN_MAP, main_link_inputs(), dol=MAIN_DOL)
     if main.problem:
         notes.append(f"main link can't prove removals: {main.problem}")
-    trials = trial_links()
+    EVIDENCE.mkdir(parents=True, exist_ok=True)  # an input of report_honest.json
     for unit in cfg["units"]:
         base = unit.get("base_path")
         if not base or not Path(base).is_file():
             continue
-        link = main if base in main.inputs else trials.get(base)
+        link = main if base in main.inputs else trial_link(unit["name"], base, main.inputs, notes)
         path, found = dedup_unit(unit["name"], base, link, notes)
         if path:
             unit["base_path"] = path
