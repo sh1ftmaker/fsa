@@ -177,18 +177,23 @@ bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
 
 // --- actor collision boxes (game/tu_8020D58C.cpp) ---
 
-// One registered box. Its empty out-of-line constructor is fn_8020D65C
-// (the list constructor's __construct_array, 0x50 x 0x18), hence the name.
+// One registered box. Its empty out-of-line constructor is
+// __ct__21CollisionBox_8020D65C (the list constructor's __construct_array,
+// 0x50 x 0x18), hence the name.
 struct CollisionBox_8020D65C {
+    CollisionBox_8020D65C(); // out-of-line, empty (game/tu_8020D58C.cpp)
+
     /* 0x00 */ JGeometry::TBox2f mBox;
     /* 0x10 */ s32 mLayer;  // the actor's field_0x4 (fn_8020D7D0)
     /* 0x14 */ s32 mSerial; // the actor's mSerial; fn_8020D6AC skips its own
 }; // Size: 0x18
 
-// Named after its constructor fn_8020D60C (count = 0, __construct_array of
-// the boxes).
+// Named after its constructor __ct__25CollisionBoxList_8020D60C (count = 0,
+// __construct_array of the boxes).
 class CollisionBoxList_8020D60C {
 public:
+    CollisionBoxList_8020D60C(); // out-of-line (game/tu_8020D58C.cpp)
+
     // 20 units / 22 calls. Whether pos (x, y) lies in a box on `layer`
     // registered by an actor other than `serial`; with ignoreIds (a list
     // ending in 'NULL', cmplw against ActorBase_804A5770::mActorId of the
@@ -212,6 +217,15 @@ public:
 // counts 0. Named after that getter.
 class CollisionBoxes_8020D58C {
 public:
+    // The function-local static's constructor, inlined by fn_8020D58C: the
+    // lists are constructed first (__construct_array), then reset.
+    CollisionBoxes_8020D58C() {
+        field_0x0 = 0;
+        field_0x1 = 1;
+        mLists[0].mCount = 0;
+        mLists[1].mCount = 0;
+    }
+
     // 1 unit (tu_801F6058, once a frame). Swaps field_0x0 and field_0x1
     // (xori 1) and empties the new write list.
     void fn_8020D660();
