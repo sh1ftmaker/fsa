@@ -7,12 +7,13 @@
 // The TINK actor (spawner fn_801F9484; constructor fn_801E22A4, vtable
 // 0x804A51E4), code in game/tu_801DE714.cpp. Named after its vtable.
 // Only the members the written code uses are known. The constructor
-// (0x801E22A4) writes -1 to 0x2A8-0x2BC and 0x2D0, plus other fields up to
-// 0x2D4.
+// (0x801E22A4, __ct__12cls_804A51E4Fv) writes -1 to 0x2A8-0x2BC and 0x2D0,
+// zeroes 0x2C0, 0x2CC and 0x2CE and sets the floats at 0x2C4 and 0x2C8.
 // Size: unknown (>= 0x2D4)
 class cls_804A51E4 : public EnemyBase_804A4808 {
 public:
-    cls_804A51E4() {}
+    // 0x801E22A4: the spawner (tu_801F9484) calls it after operator new(0x2D4).
+    cls_804A51E4();
 
     // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
     void draw();
@@ -26,6 +27,18 @@ public:
     // tu_8020CCA8 (0x8020D2AC): an effect (id 0x33A) beside mPos, 26 below
     // it in y and 6 to the side the actor faces (field_0x98).
     void fn_8020D2AC();
+    // tu_801DE714 (0x801DE714, vtable slot 0x80): calls EnemyBase's
+    // vfunc_0x80 (the floor check) only while mState is 0xA.
+    void vfunc_0x80();
+    // tu_801DE714 (0x801DE9C0, vtable slot 0x9C): EnemyBase's fn_801CE2BC
+    // (the step without the hit-bit test) with mapHit passed on, then
+    // fn_8021835C.
+    void vfunc_0x9C(u8 mapHit);
+    // tu_801DE714 (0x801E2004): removes the other live actors of mActorId
+    // (ActorManager fn_801F7AB8, this one excepted by serial), then sets mPos.x
+    // from the visible box's left edge (the second box from layer 8 up) and
+    // copies mPos.x and mPos.y to field_0x2c4 and field_0x2c8.
+    void fn_801E2004();
     // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
     bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.
@@ -47,8 +60,16 @@ public:
 
     /* 0x2A8 */ s32 field_0x2a8;
     /* 0x2AC */ s32 field_0x2ac;
-    /* 0x2B0 */ u8 field_0x2b0[0xC];
+    /* 0x2B0 */ s32 field_0x2b0;
+    /* 0x2B4 */ s32 field_0x2b4;
+    /* 0x2B8 */ s32 field_0x2b8;
     /* 0x2BC */ s32 mTargetSerial; // serial of the actor fn_8021FDB8 moves
+    /* 0x2C0 */ s32 field_0x2c0;
+    /* 0x2C4 */ f32 field_0x2c4;
+    /* 0x2C8 */ f32 field_0x2c8;
+    /* 0x2CC */ s16 field_0x2cc;
+    /* 0x2CE */ s16 field_0x2ce;
+    /* 0x2D0 */ s32 field_0x2d0;
 };
 
 #endif
