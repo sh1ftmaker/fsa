@@ -74,6 +74,10 @@ JSystem/JAudio/Interface/JAISoundHandles.cpp:
 	.ctors      start:0x8045BD24 end:0x8045BD28
 	.bss        start:0x804B23B0 end:0x804B23D8
 
+JSystem/JAudio/Interface/JAISoundInfo.cpp:
+	.text       start:0x8002622C end:0x800262AC
+	.data       start:0x80491808 end:0x80491830
+
 JSystem/JAudio/Interface/JAISoundParams.cpp:
 	.text       start:0x800262AC end:0x8002640C
 	.sdata2     start:0x8053B010 end:0x8053B018
@@ -346,6 +350,11 @@ JSystem/JAudio/Utility/JAUAudioMgr.cpp:
 JSystem/JAudio/Utility/JAUBankTable.cpp:
 	.text       start:0x8003B288 end:0x8003B2CC
 
+JSystem/JAudio/Utility/JAUClusterSound.cpp:
+	.text       start:0x8003B2CC end:0x8003B400
+	.ctors      start:0x8045BD8C end:0x8045BD90
+	.bss        start:0x804B4B18 end:0x804B4B40
+
 JSystem/JAudio/Utility/JAUInitializer.cpp:
 	.text       start:0x8003B400 end:0x8003B85C
 	.ctors      start:0x8045BD90 end:0x8045BD94
@@ -371,7 +380,8 @@ JSystem/JAudio/Utility/JAUSoundTable.cpp:
 	.bss        start:0x804B4BE0 end:0x804B4C28
 
 JSystem/JAudio/Utility/JAUStreamFileTable.cpp:
-	.text       start:0x8003C7A0 end:0x8003C878
+	.text       start:0x8003C794 end:0x8003C8D8
+	.data       start:0x804954C8 end:0x804954D8
 
 JSystem/JAudio/Utility/JAUAudience.cpp:
 	.text       start:0x8003C8D8 end:0x8003D5D8
