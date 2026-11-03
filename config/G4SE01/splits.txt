@@ -1581,13 +1581,13 @@ JSystem/J3DGraphLoader/J3DModelSaver.cpp:
 	.text       start:0x800D06E8 end:0x800D06F0
 
 JSystem/J3DGraphBase/J3DGD.cpp:
-	.text       start:0x800D06F0 end:0x800D3690
+	.text       start:0x800D06F0 end:0x800D3470
 	.data       start:0x8049AE70 end:0x8049AF18
 	.sdata      start:0x80539DC8 end:0x80539E10
 	.sdata2     start:0x8053BC88 end:0x8053BCC8
 
 JSystem/J3DGraphBase/J3DMatBlock.cpp:
-	.text       start:0x800D3690 end:0x800DF700
+	.text       start:0x800D3470 end:0x800DF700
 	.ctors      start:0x8045BDE4 end:0x8045BDE8
 	.data       start:0x8049AF18 end:0x8049BA98
 	.sdata      start:0x80539E10 end:0x80539E20

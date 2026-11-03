@@ -321,10 +321,10 @@ void J3DGDSetTexCoordGen(GXTexGenType type, GXTexGenSrc src)
 	}
 
 	switch (type) {
-	case GX_TG_MTX3x4:
+	case GX_TG_MTX2x4:
 		tgType = 0;
 		break;
-	case GX_TG_MTX2x4:
+	case GX_TG_MTX3x4:
 		tgType = 0;
 		proj   = 1;
 		break;
@@ -694,10 +694,21 @@ void J3DFifoLoadNrmMtxImm3x3(Mtx33 mtx, u32 idx)
  */
 static inline void WriteF32ToGX(f32* p)
 {
-	u32 _t = *(volatile u32*)p;
-	GX_WRITE_U32(_t);
+	GX_WRITE_U32(*(u32*)p);
 }
 
+static inline void J3DGXCmd1f32(f32 data)
+{
+	union {
+		f32 f;
+		u32 u;
+	} fid;
+	fid.f = data;
+	GX_WRITE_U32(fid.u);
+}
+
+// FIXME: FSA stores the three 0.0f words to the stack early (as here) but reloads each one
+// just before its FIFO write; we hoist those reloads. Same for the 3x3 version below.
 void J3DFifoLoadNrmMtxToTexMtx(Mtx mtx, u32 idx)
 {
 	GX_WRITE_U8(GX_FIFO_CMD_LOAD_XF_REG);
@@ -707,20 +718,17 @@ void J3DFifoLoadNrmMtxToTexMtx(Mtx mtx, u32 idx)
 	WriteF32ToGX(&(mtx[0][0]));
 	WriteF32ToGX(&(mtx[0][1]));
 	WriteF32ToGX(&(mtx[0][2]));
-	f32 x = 0.0f;
-	WriteF32ToGX(&x);
+	J3DGXCmd1f32(0.0f);
 
 	WriteF32ToGX(&(mtx[1][0]));
 	WriteF32ToGX(&(mtx[1][1]));
 	WriteF32ToGX(&(mtx[1][2]));
-	f32 y = 0.0f;
-	WriteF32ToGX(&y);
+	J3DGXCmd1f32(0.0f);
 
 	WriteF32ToGX(&(mtx[2][0]));
 	WriteF32ToGX(&(mtx[2][1]));
 	WriteF32ToGX(&(mtx[2][2]));
-	f32 z = 0.0f;
-	WriteF32ToGX(&z);
+	J3DGXCmd1f32(0.0f);
 }
 
 /**
@@ -736,20 +744,17 @@ void J3DFifoLoadNrmMtxToTexMtx3x3(Mtx33 mtx, u32 idx)
 	WriteF32ToGX(&(mtx[0][0]));
 	WriteF32ToGX(&(mtx[0][1]));
 	WriteF32ToGX(&(mtx[0][2]));
-	f32 x = 0.0f;
-	WriteF32ToGX(&x);
+	J3DGXCmd1f32(0.0f);
 
 	WriteF32ToGX(&(mtx[1][0]));
 	WriteF32ToGX(&(mtx[1][1]));
 	WriteF32ToGX(&(mtx[1][2]));
-	f32 y = 0.0f;
-	WriteF32ToGX(&y);
+	J3DGXCmd1f32(0.0f);
 
 	WriteF32ToGX(&(mtx[2][0]));
 	WriteF32ToGX(&(mtx[2][1]));
 	WriteF32ToGX(&(mtx[2][2]));
-	f32 z = 0.0f;
-	WriteF32ToGX(&z);
+	J3DGXCmd1f32(0.0f);
 }
 
 /**
