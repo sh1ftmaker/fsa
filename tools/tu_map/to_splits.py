@@ -7,14 +7,18 @@ Run from build/tu_map after refs.py (see README.md):
                                                        # and writes config/G4SE01/game_units.tsv
 
 Each unit gets the sections its evidence covers:
-- .text: the tu_map.tsv row.
+- .text: the tu_map.tsv row, minus leading this-adjusting thunks, which go
+  to the previous unit when its .data holds their vtable (CodeWarrior emits
+  thunks at the end of the file that emits the vtable).
 - extabindex / extab: the DOL's extabindex entries for the unit's functions
   (12 bytes each, in .text order); extab runs from the unit's first entry to
   the next unit's first entry.
 - .ctors: the slot holding a pointer to the unit's __sinit.
 - .rodata / .data / .bss / .sdata / .sbss / .sdata2: tiled from the data the
   unit owns ("anchors"): data its code alone references, then, transitively
-  across sections, data only its owned data points to. Between two units the cut goes
+  across sections, data only its owned data points to; also a .bss/.sbss
+  object only one unit's __sinit references, and a vtable several units
+  reference, to the one that defines most of its virtuals. Between two units the cut goes
   where the fewest unassigned symbols land on the wrong side (by the code
   and data that reference them); ties go to the later unit's first anchor.
   A section whose anchors interleave with another unit's is left out for
@@ -30,9 +34,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 from common import ROOT, rd, u32, load_syms, load_splits
 
 GAME0, TEXT_END = 0x800F39EC, 0x8045BCE4  # .text ends 0x8045BCE4 (tu_map.tsv says ..BD00)
-# Game code linked before JSystem (LIBMAP.md): two units, one __sinit each
-# (0x80021848, 0x80021DA8 in .ctors); dtk's extab grouping cuts at 0x80021D60.
-EARLY = [(0x80021840, 0x80021D60), (0x80021D60, 0x80021F24)]
+# Game code linked before JSystem (LIBMAP.md): one unit with extab (game
+# flags), __sinit 0x80021848. The next piece, 0x80021D60-0x80021F24, is
+# JSystem's JAIAudience.cpp (no extab; a library stanza in splits.txt).
+EARLY = [(0x80021840, 0x80021D60)]
 SEC = {'.rodata': (0x8045C660, 0x804916A0), '.data': (0x804916A0, 0x804B2140),
        '.bss': (0x804B2140, 0x80539BC0), '.sdata': (0x80539BC0, 0x8053A280),
        '.sbss': (0x8053A280, 0x8053AFA0), '.sdata2': (0x8053AFA0, 0x80543EF4)}
@@ -81,7 +86,26 @@ def load_units():
     rows = merged
     for a, b in reversed(EARLY):
         rows.insert(0, dict(start=a, end=b, conf='med', suggested=f'tu_{a:08X}', hints='', early=True))
+    for r in rows:
+        r['name_start'] = r['start']  # names keep the row's start when thunks move the cut
     return rows
+
+
+def is_thunk(a):
+    """`subi r3, r3, N; b fn`: a this-adjusting thunk (8 bytes)."""
+    w0, w1 = u32(a), u32(a + 4)
+    return w0 >> 16 == 0x3863 and w1 >> 26 == 18 and not w1 & 3
+
+
+def vtable_entries(s):
+    """Code pointers of a vtable (RTTI off: words 0 and 1 are zero), else None."""
+    a, n = s['addr'], s['size']
+    if n < 12 or n % 4 or u32(a) or u32(a + 4):
+        return None
+    ws = [u32(a + i) for i in range(8, n, 4)]
+    if not all(w == 0 or 0x80005600 <= w < TEXT_END for w in ws) or not any(ws):
+        return None
+    return [w for w in ws if w]
 
 
 def main(apply):
@@ -192,11 +216,65 @@ def main(apply):
     # .sdata2) belongs to that unit too. File-local data can't be pointed at
     # from another file's initialised data.
     alldata = [s for sec in DATASECS for s in symlist[sec]]
+    # Each unit's __sinit (its .ctors slot) and what it references: a file's
+    # global objects with constructors are built by its own __sinit, so a
+    # .bss/.sbss symbol exactly one __sinit references belongs to that unit even when
+    # other units' code uses it too (tu_8045B6F0's 49-entry JAISoundID table
+    # at 0x8052DEE0, read by tu_8045B010). The JAudio memPools every __sinit
+    # constructs have hundreds of such referencers and stay unowned.
+    fname = {f['addr']: f['name'] for f in fns}
+    sinit_refs = defaultdict(set)
+    for a in range(CTORS[0], CTORS[1], 4):
+        p = u32(a)
+        u = unit_of(p) if p else None
+        if u is not None:
+            for t in R['fn'].get(fname.get(p), []):
+                sinit_refs[t].add(u)
     gowner = {}
+    rule_hits = Counter()
     for s in alldata:
-        us = code_refs.get(s['addr'], set())
-        if len(us) == 1 and not outside[s['addr']]:
-            gowner[s['addr']] = next(iter(us))
+        a = s['addr']
+        us = code_refs.get(a, set())
+        if outside[a]:
+            continue
+        if len(us) == 1:
+            gowner[a] = next(iter(us))
+        elif secof(a) in ('.bss', '.sbss') and len(sinit_refs.get(a, ())) == 1:
+            gowner[a] = next(iter(sinit_refs[a]))
+            rule_hits['sinit'] += 1
+            report.append(f'{secof(a)} {a:08X}: built by the __sinit of {units[gowner[a]]["start"]:08X}, '
+                          f'also used by {", ".join(f"{units[v]['start']:08X}" for v in sorted(us - {gowner[a]}))} '
+                          f'-> owned by the __sinit\'s unit')
+    # A vtable several units reference (constructors inlined elsewhere)
+    # belongs to a referencing unit that defines some of its virtual
+    # functions (non-thunk entries): the one that defines the most, and on a
+    # tie the one where it fits the data order (fewest other units' owned
+    # .data on the wrong side of it).
+    dat_owned = sorted((a, u) for a, u in gowner.items() if secof(a) == '.data')
+
+    def misplaced(a, u):
+        return sum(1 for b, v in dat_owned if (v < u and b > a) or (v > u and b < a))
+
+    for s in symlist['.data']:
+        a = s['addr']
+        us = code_refs.get(a, set())
+        if a in gowner or outside[a] or len(us) < 2:
+            continue
+        ents = vtable_entries(s)
+        if not ents:
+            continue
+        cnt = Counter(unit_of(w) for w in ents if not is_thunk(w))
+        cands = sorted((-cnt[u], misplaced(a, u), u) for u in us if cnt[u])
+        if not cands:
+            continue
+        if len(cands) > 1 and cands[0][:2] == cands[1][:2]:
+            report.append(f'.data {a:08X}: vtable of several units, no single owner')
+            continue
+        u = cands[0][2]
+        gowner[a] = u
+        rule_hits['vtable'] += 1
+        report.append(f'.data {a:08X}: vtable used by {len(us)} units, '
+                      f'{-cands[0][0]} of its virtuals in {units[u]["start"]:08X} -> owned there')
     changed = True
     while changed:
         changed = False
@@ -303,6 +381,15 @@ def main(apply):
                 c = c8
             cut_hi[x] = c
             cut_lo[y] = c
+        # The early unit's last range runs up to the next library split: the
+        # JAudio memPools its __sinit builds first (0x804B21AC-0x804B2240,
+        # template statics, kept from the first file that instantiates them)
+        # are referenced by every game __sinit, so nothing anchors them.
+        for u in good:
+            if units[u].get('early') and u + 1 < len(units) and not units[u + 1].get('early'):
+                nxt = [a for (a, b, n) in exist_by_sec[sec] if a >= cut_hi[u]]
+                if nxt and not any(cut_hi[u] <= a < min(nxt) for a, v, _ in anchors if v != u):
+                    cut_hi[u] = min(nxt)
         for u in good:
             s, e = cut_lo[u], cut_hi[u]
             ov = overlaps(sec, s, e)
@@ -310,6 +397,42 @@ def main(apply):
                 report.append(f'{sec}: {units[u]["start"]:08X} {s:08X}-{e:08X} overlaps {ov}; left unsplit')
                 continue
             out[u][sec] = (s, e)
+
+    # ---- thunks: CodeWarrior emits a vtable's this-adjusting thunks
+    # (`subi r3, r3, N; b fn`) at the end of the file that emits the vtable,
+    # after its __sinit. tu_map cuts at the __sinit's end, so they open the
+    # next unit; each goes to the unit whose .data holds its vtable.
+    fstart = {f['addr'] for f in fns}
+    vt_of = defaultdict(set)  # thunk -> vtable symbols holding it
+    for s in symlist['.data']:
+        for w in vtable_entries(s) or ():
+            if is_thunk(w):
+                vt_of[w].add(s['addr'])
+
+    def data_unit(a):
+        return next((v for v in out if '.data' in out[v] and out[v]['.data'][0] <= a < out[v]['.data'][1]), None)
+
+    moved = set()
+    for t in sorted(vt_of):
+        u = unit_of(t)
+        if u is None:
+            continue  # library code
+        owners = {data_unit(v) for v in vt_of[t]}
+        lead = t == units[u]['start'] and t in fstart
+        if len(owners) == 1 and lead and owners == {u - 1}:
+            units[u - 1]['end'] = units[u]['start'] = t + 8
+            starts[u] = t + 8
+            out[u - 1]['.text'] = (out[u - 1]['.text'][0], t + 8)
+            out[u]['.text'] = (t + 8, out[u]['.text'][1])
+            moved.add(u)
+            report.append(f'.text {t:08X}: thunk in vtable {min(vt_of[t]):08X} of {units[u - 1]["name_start"]:08X} '
+                          f'-> moved there from {units[u]["name_start"]:08X}')
+        elif owners != {u}:
+            report.append(f'.text {t:08X}: thunk in vtables {sorted(vt_of[t])} owned by {owners}, '
+                          f'in unit {units[u]["name_start"]:08X}; not moved')
+    for u in moved:
+        if units[u]['start'] >= units[u]['end']:
+            raise SystemExit(f'unit {units[u]["name_start"]:08X} is only thunks')
 
     # ---- check: a unit's data pointing into another unit's .rodata/.sdata2
     # (file-local strings and constants) means a cut is still wrong there
@@ -410,7 +533,7 @@ def name_units(units, syms, byname, unit_of, out):
     seen = Counter()
     for i, u in enumerate(units):
         if i not in names:
-            names[i] = f'game/tu_{u["start"]:08X}.cpp'
+            names[i] = f'game/tu_{u["name_start"]:08X}.cpp'
             evid.setdefault(i, '')
         seen[names[i]] += 1
     # duplicate names: actors.tsv suggests one file stem for several IDs
@@ -419,7 +542,7 @@ def name_units(units, syms, byname, unit_of, out):
     for i, u in enumerate(units):
         if seen[names[i]] > 1:
             stem = names[i][:-4]
-            tag = act_id.get(i) or f'{u["start"]:08X}'
+            tag = act_id.get(i) or f'{u["name_start"]:08X}'
             names[i] = f'{stem}_{tag}.cpp'
     return names, evid
 
@@ -557,7 +680,7 @@ def apply_splits(names):
         if head.startswith('game/'):
             continue
         keep.append(block.rstrip('\n'))
-    new = '\n'.join(keep).rstrip('\n') + '\n\n' + open('game_splits.txt').read().rstrip('\n') + '\n'
+    new = '\n\n'.join(keep).rstrip('\n') + '\n\n' + open('game_splits.txt').read().rstrip('\n') + '\n'
     open(path, 'w').write(new)
     import shutil
     shutil.copy('game_units.tsv', ROOT + '/config/G4SE01/game_units.tsv')

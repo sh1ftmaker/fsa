@@ -63,7 +63,7 @@ Never report byte-pattern hits or objdiff's lenient default config as
 progress. Both were used here before and overstated it several times over.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,419 of 11,561 functions, 792,628 of 4,442,088 bytes of code (17.84 %). Game code 0 / 6,791 functions (0 %); JSystem 3,366 / 3,700 functions (89.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 250 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,421 of 11,561 functions, 793,080 of 4,442,088 bytes of code (17.85 %). Game code 0 / 6,789 functions (0 %); JSystem 3,368 / 3,702 functions (89.5 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 251 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
@@ -85,7 +85,7 @@ Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,419 of 11
 Compilers: SDK files use the compiler and flags their donor build used. FSA's
 JSystem and the game's own code are **GC/2.6**; the game code is `-O4,p`
 C++ with exception tables (`cflags_game`, proven in docs/PLAN.md "Game
-code"; its 529 units are `game/*.cpp` in `splits.txt` and configure.py).
+code"; its 528 units are `game/*.cpp` in `splits.txt` and configure.py).
 FSA's JSystem is `-O4,p`: the original saves 2-4 registers with separate
 `stw`, where `-O4,s` emits `stmw`. mkdd's `-O4,s` for JKernel and JUtility
 and J2DGraph was wrong for FSA and is gone; JAudio/Task still carries it

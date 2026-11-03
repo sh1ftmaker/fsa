@@ -683,6 +683,7 @@ config.libs = [
     ]),
     MkddJSystemLib("mkdd_JAudio", [
         Object(NonMatching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAIAudience.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISeMgr.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISeq.cpp", extra_cflags=["-O4,p"]),
@@ -1024,7 +1025,6 @@ config.libs = [
     },
     GameLib("game", [
         Object(NonMatching, "game/tu_80021840.cpp"),
-        Object(NonMatching, "game/tu_80021D60.cpp"),
         Object(NonMatching, "game/tu_800F39EC.cpp"),
         Object(NonMatching, "game/act_rat.cpp"),
         Object(NonMatching, "game/tu_800F46C0.cpp"),
