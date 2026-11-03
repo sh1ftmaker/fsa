@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="145.1" height="86" viewBox="0 0 145.1 86" role="img" aria-label="Dolphin SDK: 100 % of 131,224 bytes of code matched, 610 of 610 functions">
+<title>Dolphin SDK: 100 % of 131,224 bytes of code matched, 610 of 610 functions</title>
+<style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } text { paint-order: stroke; stroke: #161a34; stroke-opacity: 0.55; stroke-width: 2.5px; stroke-linejoin: round; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } @keyframes rise { from { transform: scaleY(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
+<rect x="3" y="3" width="139.1" height="80" rx="8" fill="#161a34"/>
+<rect x="6.5" y="6.5" width="55.4" height="38.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="6.5" y="6.5" width="55.4" height="38.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="6.5" y="46.0" width="55.4" height="33.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="6.5" y="46.0" width="55.4" height="33.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="62.9" y="6.5" width="25.3" height="49.8" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="62.9" y="6.5" width="25.3" height="49.8" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="62.9" y="57.3" width="25.3" height="22.2" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="62.9" y="57.3" width="25.3" height="22.2" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="89.2" y="6.5" width="24.3" height="22.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="89.2" y="6.5" width="24.3" height="22.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="114.5" y="6.5" width="24.1" height="22.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="114.5" y="6.5" width="24.1" height="22.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="89.2" y="30.0" width="25.3" height="21.2" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="89.2" y="30.0" width="25.3" height="21.2" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="115.4" y="30.0" width="23.2" height="21.2" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="115.4" y="30.0" width="23.2" height="21.2" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="89.2" y="52.2" width="16.3" height="27.3" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="89.2" y="52.2" width="16.3" height="27.3" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="106.4" y="52.2" width="13.9" height="13.8" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="106.4" y="52.2" width="13.9" height="13.8" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="106.4" y="67.0" width="13.9" height="12.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="106.4" y="67.0" width="13.9" height="12.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="121.4" y="52.2" width="17.2" height="9.3" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="121.4" y="52.2" width="17.2" height="9.3" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="121.4" y="62.5" width="8.5" height="17.0" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="121.4" y="62.5" width="8.5" height="17.0" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="130.8" y="62.5" width="7.8" height="12.2" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="130.8" y="62.5" width="7.8" height="12.2" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="130.8" y="75.6" width="3.3" height="3.9" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="130.8" y="75.6" width="3.3" height="3.9" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="135.1" y="75.6" width="3.5" height="2.9" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="135.1" y="75.6" width="3.5" height="2.9" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="135.1" y="79.6" width="2.9" height="0.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="135.1" y="79.6" width="2.9" height="0.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="139.0" y="79.6" width="0.5" height="0.5" rx="2" fill="#3d9cf0" fill-opacity="0.13"/>
+<rect class="rise" x="139.0" y="79.6" width="0.5" height="0.5" rx="2" fill="#3d9cf0" fill-opacity="0.85"/>
+<rect x="3.75" y="3.75" width="137.6" height="78.5" rx="7.5" fill="none" stroke="#3d9cf0" stroke-opacity="0.8" stroke-width="1.5"/>
+<rect x="70.1" y="56" width="67.0" height="22" rx="11" fill="#0b0d1a" fill-opacity="0.88" stroke="#3d9cf0" stroke-opacity="0.7"/>
+<g fill="#3d9cf0"><circle cx="82.1" cy="67" r="6"/></g>
+<text x="94.1" y="71.5" font-size="12" font-weight="700" fill="#eceefb">100 %</text>
+</svg>
