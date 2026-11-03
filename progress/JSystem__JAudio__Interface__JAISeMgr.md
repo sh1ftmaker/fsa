@@ -1,5 +1,7 @@
 # JSystem/JAudio/Interface/JAISeMgr.cpp
 
+
+**Update (infra/jaudio-interface-sym): Matching.** With JAudio/Interface and Utility built without `-sym on` (provisional, configure.py) `link_check.py --unit` gives SHA-1 OK; with it on the trial link differs. The notes below describe the earlier state.
 Baseline: total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
 After:    total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
 Unit: 22/22 functions, code 4736/4736, data 84/132 -> 132/132 (honest report).
