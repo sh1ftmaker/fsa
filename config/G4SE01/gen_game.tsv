@@ -36,8 +36,6 @@ act_colour_block	sinit	__sinit_act_colour_block_cpp	-	-	new	new
 act_crystal_ball	sinit	__sinit_act_crystal_ball_cpp	-	-	new	-
 act_cucco	dtor_emit	__dt__14Cucco_804AB8C0Fv	Cucco_804AB8C0	0x804AB8C0	new	new
 act_cucco	sinit	__sinit_act_cucco_cpp	-	-	new	-
-act_deadrock	dtor	__dt__17Deadrock_8049F498Fv	Deadrock_8049F498	0x8049F498	new	new
-act_deadrock	sinit	__sinit_act_deadrock_cpp	-	-	new	new
 act_digging_game	dtor	__dt__26DiggingGameKeeper_8049C970Fv	DiggingGameKeeper_8049C970	0x8049C970	new	new
 act_digging_game	sinit	__sinit_act_digging_game_cpp	-	-	new	new
 act_dodongo	sinit	__sinit_act_dodongo_cpp	-	-	new	-
