@@ -16,7 +16,9 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x30]; // not yet known
+    /* 0x230 */ u8 field_0x230[0xC]; // not yet known
+    /* 0x23C */ s32 field_0x23c; // act_shadow_link_bow: distance over speed (fn_80222730)
+    /* 0x240 */ u8 field_0x240[0x20]; // not yet known
 }; // Size: 0x260
 
 #endif
