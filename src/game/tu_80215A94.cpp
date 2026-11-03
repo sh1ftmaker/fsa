@@ -49,8 +49,6 @@ bool cls_80215E48::fn_80215D38() {
     return result;
 }
 
-extern "C" void fn_80215E18(s32* p);
-
 void cls_80215E48::fn_80215DB8() {
     cls_80215E48* entry = this;
     for (s32 i = 0; i < mCount; i++) {
