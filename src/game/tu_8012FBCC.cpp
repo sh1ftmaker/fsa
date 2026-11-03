@@ -3,6 +3,7 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_8012FBCC.h"
+#include "game/tu_8012FF9C.h"
 
 cls_8049EA00::~cls_8049EA00() {}
 
@@ -36,5 +37,5 @@ bool cls_8049EA00::fn_8012FC2C(const s32* v) {
 void cls_8049EA00::init() {
     ActorBase_804A5770::init();
     mFlags = field_0x90 & 0xF;
-    fn_801300B4(fn_8012FF9C(), mSerial);
+    fn_8012FF9C()->fn_801300B4(mSerial);
 }

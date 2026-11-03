@@ -291,18 +291,6 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
                             bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
 
-// game/tu_8012FF9C.cpp (owner unit, not written yet). The guarded static at
-// 0x8053AAC4: no vtable, constructor inlined into fn_8012FF9C, named after
-// its destructor fn_8012FFF4, which fn_8012FF9C registers with
-// __register_global_object. fn_801300D8 sets its words at 0x0 and 0x4 to -1
-// and 0. Called by cls_8049EA00::init.
-struct cls_8012FFF4;
-// Getter of the guarded static (returns its address).
-extern "C" cls_8012FFF4* fn_8012FF9C();
-// Appends `value` to the object's list when it is positive: stores it at
-// index obj[1] (stwx r4, r3, obj[1] * 4) and increments obj[1].
-extern "C" void fn_801300B4(cls_8012FFF4* obj, s32 value);
-
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its destructor fn_801192AC. Only the fields
 // fn_801186B0 writes are known.
