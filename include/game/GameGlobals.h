@@ -236,6 +236,9 @@ GameRootSub20_801902C0* fn_801902C0(void);
 // passes (0x3C, 0, 1, 0, 1, 0x5A, 0).
 class cls_80119E5C {
 public:
+    /* 0x00 */ u8 field_0x0; // tested by tu_801286C0's update (states 1 and 3)
+    /* 0x01 */ u8 field_0x1; // set to 1 by tu_801286C0's update (state 3)
+    /* 0x04 */ s32 field_0x4; // compared with 0xB3 by tu_801286C0's update
     void fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 };
 extern "C" cls_80119E5C* fn_80119DD0();
@@ -429,7 +432,14 @@ public:
 }; // Size: 0x10
 // 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
-class cls_804A03A8;
+// Only the flag and the float that tu_801286C0's update sets are known.
+class cls_804A03A8 {
+public:
+    /* 0x000 */ u8 field_0x0[0x284];
+    /* 0x284 */ u8 field_0x284; // 0 until set to 1 (tu_801286C0 update)
+    /* 0x285 */ u8 field_0x285[0x28C - 0x285];
+    /* 0x28C */ f32 field_0x28c; // set to 0.05f with the flag
+};
 
 struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
 
@@ -566,8 +576,8 @@ struct cls_801192AC {
     /* 0x00 */ u8 field_0x0;
     /* 0x01 */ u8 field_0x1;
     /* 0x02 */ u8 field_0x2;
-    /* 0x04 */ u32 field_0x4;
-    /* 0x08 */ u32 field_0x8;
+    /* 0x04 */ s32 field_0x4; // compared as signed in tu_801286C0's vfunc_0x54
+    /* 0x08 */ s32 field_0x8;
     /* 0x0C */ u8 field_0xc[0x14]; // not yet known
 }; // Size: 0x20
 
@@ -578,6 +588,9 @@ extern "C" cls_801192AC* fn_8011921C();
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
 // act_four_sword_demo.
 extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
+// game/tu_80118384.cpp (not written yet). Called with fn_8011921C() by
+// tu_801286C0's update (cases 3 and 5/7 of its state switch).
+extern "C" void fn_801183BC(cls_801192AC* obj);
 class ActorBase_804A5770;
 // game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
 // serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
