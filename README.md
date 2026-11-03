@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **19.92 %** of the code and **4,958 / 11,557** functions match. 361 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **19.99 %** of the code and **4,972 / 11,557** functions match. 361 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -71,12 +71,12 @@ interactive version, down to single functions.
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| Game code | 1.06 % of 3,573,784 bytes | 246 / 6,789 |
+| Game code | 1.15 % of 3,573,784 bytes | 260 / 6,789 |
 | JSystem | 97.8 % of 630,852 bytes | 3,649 / 3,702 |
 | Dolphin SDK | 100 % of 131,224 bytes | 610 / 610 |
 | GX | 100 % of 33,660 bytes | 172 / 172 |
 | MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **19.92 %** of 4,442,032 bytes | **4,958 / 11,557** |
+| **Whole DOL** | **19.99 %** of 4,442,032 bytes | **4,972 / 11,557** |
 <!-- regions:end -->
 
 </details>
@@ -100,7 +100,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 0 % of the code matched.
-- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. The first 12 actors are merged on the shared headers (every function matches). Currently 0.10 % of the code matched.
+- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. The first 12 actors are merged on the shared headers (every function matches). Currently 0.21 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
