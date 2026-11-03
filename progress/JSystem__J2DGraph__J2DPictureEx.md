@@ -23,3 +23,24 @@ Status: NonMatching. 74/75 functions (was 73/75), code 15824/17272, data 464/464
 
 ## SHARED-EDITS
 - none (symbols.txt lines are this unit's own data).
+
+## Wave 8 (2026-11-02)
+
+Baseline: total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
+Result: unchanged, 74/75; no Matching flip. Source: added tp's `GXEnd()` after the quad
+(an empty inline, no code change); FIXME on draw extended.
+
+draw__12J2DPictureExFffffbbb (97.57 %), variants tried this wave:
+- `GXEnd()` after the last vertex (tp): no change.
+- `volatile PPCWGPipe GXWGFifo : GXFIFO_ADDR;` in libs/sdk/include/dolphin/gx/GXVert.h
+  (the real SDK form: dolsdk2004, tp, sms, melee, pikmin2, lm, bfbb all declare it volatile;
+  only mkdd comments `/*volatile*/` out): draw becomes 100 %. Full-build report diff
+  against the baseline, though: J2DScreen::drawSelf 100 -> 88 %, J2DWindow::drawFrameTexture
+  (ffffUsUsUsUsb) 100 -> 92 %, drawFrameTexture(bbb) 90.6 -> 83 %, JPABaseShape JPADrawPoint
+  100 -> 91.5 %, JPADrawStripe/StripeX 100 -> 97.6/98.6 %, JPADrawLine 97.8 -> 93.9 %,
+  JUTResFont::drawChar_scale 100 -> 97.8 % (net -5 functions). Not applied. So FSA's
+  J2DPictureEx saw a volatile FIFO where those units did not; how (a different header or
+  an access through a volatile pointer in this file) is still open.
+- Blocked by nothing outside the unit; a codegen/header difference.
+
+SHARED-EDITS: none proposed (the GXVert.h change regresses other units).

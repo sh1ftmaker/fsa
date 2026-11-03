@@ -425,6 +425,9 @@ void J2DPictureEx::draw(f32 p1, f32 p2, u8 index, bool p4, bool p5, bool p6)
 
 // FIXME: register allocation in the vertex writes differs (the GX FIFO base
 // lands in r3 here, r6 in the original; colors and tex coords shift with it).
+// Declaring GXWGFifo volatile in GXVert.h (as the SDK and most donors do; mkdd
+// comments it out) matches this function exactly, but regresses J2DScreen,
+// J2DWindow, JPABaseShape and JUTResFont, so it is not the whole story.
 void J2DPictureEx::draw(f32 x, f32 y, f32 width, f32 height, bool p5, bool p6, bool p7)
 {
     if (!isVisible()) {
@@ -511,6 +514,7 @@ void J2DPictureEx::draw(f32 x, f32 y, f32 width, f32 height, bool p5, bool p6, b
         GXTexCoord2s16(p5 ? 0 : 0x8000, p6 ? 0 : 0x8000);
     }
 
+    GXEnd();
 
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_S16, 0);
     GXSetNumTexGens(0);
