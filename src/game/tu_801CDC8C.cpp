@@ -217,7 +217,6 @@ void EnemyBase_804A4808::vfunc_0x84() {
     }
 }
 
-// FIXME: 99.8 %, regalloc only (one register pair swapped).
 // The knock-back step while a hit bit is set.
 void EnemyBase_804A4808::fn_801CE5D4() {
     if (mFlags & 7) {
