@@ -1438,7 +1438,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8030C058.cpp"),
         Object(NonMatching, "game/act_somaria_block.cpp"),
         Object(NonMatching, "game/act_gambling_shop.cpp"),
-        Object(NonMatching, "game/act_gambling_chest.cpp"),
+        Object(Matching, "game/act_gambling_chest.cpp"),
         Object(NonMatching, "game/act_shovel_old_timer.cpp"),
         Object(NonMatching, "game/act_knight_of_hyrule.cpp"),
         Object(NonMatching, "game/act_tingle_tower.cpp"),
