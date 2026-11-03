@@ -253,6 +253,7 @@ def candidates(max_size):
     else:
         return []
     cfg = (INTEG / "configure.py").read_text()
+    bad = rejected()
     out = []
     for u in report:
         if "/game/" not in u["name"]:
@@ -264,11 +265,18 @@ def candidates(max_size):
             continue
         # Only unwritten functions: partial ones are mostly near-misses an Opus worker gave up on.
         fns = [f for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) == 0
-               and int(f.get("size", 0)) <= max_size]
+               and int(f.get("size", 0)) <= max_size and (unit, f["name"]) not in bad]
         if fns:
             out.append((unit, len(fns)))
     out.sort(key=lambda x: -x[1])
     return [u for u, _ in out]
+
+
+def rejected():
+    """(unit, function) pairs some attempt already failed; escalated workers don't retry them."""
+    p = LOGS / "results.tsv"
+    rows = [l.split("\t") for l in p.read_text().splitlines()] if p.exists() else []
+    return {(r[2], r[3]) for r in rows if len(r) > 6 and r[6] == "REJECT"}
 
 
 def done_units():
@@ -373,6 +381,7 @@ def file_candidates(max_bytes):
     else:
         return []
     cfg = (INTEG / "configure.py").read_text()
+    bad = rejected()
     out = []
     for u in report:
         if "/game/" not in u["name"]:
@@ -381,7 +390,7 @@ def file_candidates(max_bytes):
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
         left = sum(int(f.get("size", 0)) for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) == 0)
-        if 0 < left <= max_bytes:
+        if 0 < left <= max_bytes and (unit, "FILE") not in bad:
             out.append((left, unit))
     return [u for _, u in sorted(out)]
 
@@ -461,7 +470,9 @@ def worker(args):
                     sh(["git", "commit", "-qm", f"grind: {unit} +{gained} functions (whole file)\n\n{TRAILER}"], wt)
                     accepted = gained
                     log([owner, unit, "FILE", left, "-", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
-            todo = [] if args.mode == "file" else sorted((sz, f, p) for f, (sz, p) in fns.items() if p == 0 and sz <= args.max_size)
+            bad = rejected()
+            todo = [] if args.mode == "file" else sorted((sz, f, p) for f, (sz, p) in fns.items()
+                                                         if p == 0 and sz <= args.max_size and (unit, f) not in bad)
             for size, fn, pct in todo[:args.per_unit]:
                 if (LOGS / "STOP").exists():
                     break
@@ -505,6 +516,27 @@ def usage():
     return None
 
 
+LADDER = {"function": [2048, 4096, 8192, 10**9], "file": [8192, 16384, 32768, 10**9]}
+
+
+def escalate(running):
+    """Restart a worker that ran out of work with the next size limit (limits.json holds each one's)."""
+    path = LOGS / "limits.json"
+    limits = json.loads(path.read_text()) if path.exists() else {}
+    for n, (mode, limit) in sorted(limits.items()):
+        if f"grind-w{n} " in running or f"grind-w{n}." in running:
+            continue
+        nxt = [x for x in LADDER[mode] if x > limit]
+        if not nxt:
+            continue
+        limits[n] = [mode, nxt[0]]
+        path.write_text(json.dumps(limits, indent=1))
+        flag = ["--max-size", str(nxt[0]), "--per-unit", "10"] if mode == "function" else ["--mode", "file", "--file-max", str(nxt[0])]
+        subprocess.run(["sbg", "start", f"grind-w{n}", "--", "python3", "tools/grind.py", "worker", n] + flag,
+                       cwd=INTEG, capture_output=True)
+        notify("FSA grind", f"w{n} out of work: {mode} limit raised to {nxt[0]}")
+
+
 def watch(args):
     """Stop the workers gracefully at --soft utilization, immediately at --hard."""
     while True:
@@ -519,9 +551,12 @@ def watch(args):
         if u is not None and u >= args.soft and not (LOGS / "STOP").exists():
             (LOGS / "STOP").touch()
             notify("FSA grind stopping", f"weekly usage {u:.0%}: workers finish their current unit")
-        if (LOGS / "STOP").exists() and "grind-w" not in subprocess.run(["sbg", "ls"], capture_output=True, text=True).stdout:
+        running = subprocess.run(["sbg", "ls"], capture_output=True, text=True).stdout
+        if (LOGS / "STOP").exists() and "grind-w" not in running:
             notify("FSA grind stopped", f"all workers finished (usage {u})")
             return
+        if not (LOGS / "STOP").exists():
+            escalate(running)
         time.sleep(args.every)
 
 
