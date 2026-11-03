@@ -100,6 +100,7 @@ public:
     bool fn_80241284(); // via fn_802353AC
     bool fn_802412A4(); // via fn_80233E40
     bool fn_802412CC(); // via fn_80235448
+    u8 fn_802412C4();   // byte at 0x458
     void fn_802412D4(); // via fn_802356B8
     bool fn_80241380(); // via fn_8023561C
     bool fn_802413C8(); // via fn_80235744
@@ -259,7 +260,10 @@ public:
     /* 0x042E */ u8 field_0x42e[0x436 - 0x42E];
     // Returned by fn_80240860 (lbz; blr).
     /* 0x0436 */ bool field_0x436;
-    /* 0x0437 */ u8 field_0x437[0xBEC - 0x437];
+    /* 0x0437 */ u8 field_0x437[0x458 - 0x437];
+    // Returned by fn_802412C4 (a byte, read by its caller in tu_80256C74).
+    /* 0x0458 */ u8 field_0x458;
+    /* 0x0459 */ u8 field_0x459[0xBEC - 0x459];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
     /* 0x0BF0 */ u8 field_0xbf0[0xC80 - 0xBF0];

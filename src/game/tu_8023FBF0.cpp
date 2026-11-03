@@ -34,6 +34,10 @@ bool Player_804A6F38::fn_8023FC08() {
     return field_0x42c;
 }
 
+u8 Player_804A6F38::fn_802412C4() {
+    return field_0x458;
+}
+
 s32 Player_804A6F38::fn_8023FC24() {
     return field_0xbec;
 }
