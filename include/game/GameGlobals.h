@@ -123,6 +123,16 @@ extern GameRoot_8049EF20* lbl_8053AAF8;
 // 0x320; an update sets a position and a value and raises the flag, once the
 // pointer at 0xC is non-NULL and the flag is clear.
 struct GameRootSub20_801902C0 {
+    // Two smaller requests at 0x2A8 and 0x2C4 (act_environment_control_2's
+    // update: position copied in, flag raised once the pointer at 0xC is
+    // non-NULL and the flag is clear).
+    struct SmallRequest {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ void* field_0xc; // tested against NULL
+        /* 0x10 */ u8 field_0x10[8]; // not yet known
+        /* 0x18 */ u8 mActive;
+        /* 0x19 */ u8 field_0x19[3]; // not yet known
+    }; // Size: 0x1C
     struct Request {
         /* 0x00 */ JGeometry::TVec3f mPos;
         /* 0x0C */ void* field_0xc; // tested against NULL
@@ -132,8 +142,18 @@ struct GameRootSub20_801902C0 {
         /* 0x1C */ u8 mActive;
         /* 0x1D */ u8 field_0x1d[3]; // not yet known
     }; // Size: 0x20
-    /* 0x000 */ u8 field_0x0[0x2E0]; // not yet known
+    // Up to two positions queued by act_environment_control_2's update
+    // (count at 0x618, stored while it is below 2).
+    struct QueuedPos {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ u8 field_0xc[8]; // not yet known
+    }; // Size: 0x14
+    /* 0x000 */ u8 field_0x0[0x2A8]; // not yet known
+    /* 0x2A8 */ SmallRequest mSmallRequests[2];
     /* 0x2E0 */ Request mRequests[3];
+    /* 0x340 */ u8 field_0x340[0x5F0 - 0x340]; // not yet known
+    /* 0x5F0 */ QueuedPos mQueuedPos[2];
+    /* 0x618 */ s32 mQueuedPosCount;
 };
 extern "C" {
 // Owner: game/tu_801902C0.cpp (not written yet). No arguments; loads
@@ -570,5 +590,35 @@ extern "C" void fn_80401FEC(s32 priority, JKRHeap* heap, s32 arg);
 // progressive scan is wanted and active, lbl_8048C17C otherwise.
 extern const GXRenderModeObj lbl_8048C1B8;
 extern const GXRenderModeObj lbl_8048C17C;
+
+// The object fn_8016A3AC returns (lbl_8053AAF8->field_0x4->field_0x24; named
+// after that getter). Owner: game/tu_8016A2B4.cpp (not written yet). Only
+// the bytes act_environment_control_2 writes are declared.
+struct GameRootSub24_8016A3AC {
+    /* 0x000 */ u8 field_0x0[0x1CA];
+    /* 0x1CA */ u8 field_0x1ca;
+    /* 0x1CB */ u8 field_0x1cb[4];
+    /* 0x1CF */ u8 field_0x1cf;
+    /* 0x1D0 */ u8 field_0x1d0;
+    /* 0x1D1 */ u8 field_0x1d1;
+    /* 0x1D2 */ u8 field_0x1d2;
+    /* 0x1D3 */ u8 field_0x1d3;
+    /* 0x1D4 */ u8 field_0x1d4[4];
+    /* 0x1D8 */ s32 field_0x1d8;
+    /* 0x1DC */ u8 field_0x1dc;
+    /* 0x1DD */ u8 field_0x1dd;
+    /* 0x1DE */ u8 field_0x1de[0x1EF - 0x1DE];
+    /* 0x1EF */ u8 field_0x1ef;
+    /* 0x1F0 */ u8 field_0x1f0[2];
+    /* 0x1F2 */ u8 field_0x1f2;
+    /* 0x1F3 */ u8 field_0x1f3;
+    /* 0x1F4 */ u8 field_0x1f4;
+    /* 0x1F5 */ u8 field_0x1f5;
+};
+extern "C" {
+// Owner: game/tu_8016A2B4.cpp (0x8016A3AC, defined there; not written yet).
+// No arguments; loads lbl_8053AAF8->field_0x4->field_0x24 (lwz 0x4, lwz 0x24).
+GameRootSub24_8016A3AC* fn_8016A3AC(void);
+}
 
 #endif
