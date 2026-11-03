@@ -413,7 +413,7 @@ class JUTTexture;
 class cls_804A0160 {
 public:
     /* 0x0 */ void* vtable;      // from fn_801594E8
-    /* 0x4 */ s32 field_0x4;
+    /* 0x4 */ JUtility::TColor field_0x4; // colour: fn_80158B3C sets r,g,b = 0xFF, a = 0
     /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
     /* 0xD */ u8 field_0xd[3];   // not yet known
