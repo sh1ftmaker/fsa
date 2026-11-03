@@ -45,7 +45,7 @@ public:
     // (x, y) lies in field_0x154, appends pos to field_0x1f0 (count
     // field_0x7f0); returns 0 or 1. Actors pass &mPos, mostly for layers
     // below 8 (act_arrow 0x80165FD8).
-    bool fn_8030C210(const JGeometry::TVec3f* pos);
+    u8 fn_8030C210(const JGeometry::TVec3f* pos);
     // 3 units. The same for both corners of box (reads 0x0-0xC); it queues
     // them only when both lie in field_0x154. TBox2f is a guess: two
     // TVec2f would read the same.
@@ -66,9 +66,9 @@ public:
     // (JUTVideo's height / width), and field_0x17e to 1. Reads center 0x0
     // and 0x4 only (tu_8011CEC8 passes a stack pair, 0x8011D008).
     void fn_8030C7C4(const JGeometry::TVec2f* center, f32 size);
-    // 1 unit (GameView fn_802D9CB0). Clears field_0x1e8, copies the four
-    // bytes 0x235C-0x235F of lbl_8053AB10->0x20 to 0x2360-0x2363 where set,
-    // clears the view (fn_802DCDF4) and copies field_0x190 to field_0x154.
+    // 1 unit (GameView fn_802D9CB0). Clears field_0x1e8, zeroes each of the
+    // map's bytes 0x2360-0x2363 whose byte 0x235C-0x235F is set, clears the
+    // view (fn_802DCDF4) and copies field_0x190 to field_0x154.
     void fn_8030C85C();
     // 1 unit (GameView fn_802DCD1C passes &mVisibleBox). Stores box in
     // field_0x190 and updates the map object's scroll state (its 0x2360 and
@@ -81,6 +81,11 @@ public:
     // Called once per frame from game/tu_8013AAD4.cpp only (no arguments
     // read; the caller ignores r3).
     void fn_8030DD68();
+    // 2 units: tu_8013AAD4 at 0x8013AE74 with a stack matrix, and
+    // fn_8013B3CC, which passes its own r4 on. Concatenates field_0x74 with m into a temporary
+    // (PSMTXConcat), makes GX_PNMTX9 the current matrix and loads the result
+    // as its position and normal matrix.
+    void fn_8030DD20(const Mtx m);
     void fn_8030E150(); // empty
     void fn_8030E154();
     void fn_8030E5BC();
@@ -122,7 +127,10 @@ public:
     /* 0x17E */ u8 field_0x17e; // set by fn_8030C7C4
     /* 0x180 */ JGeometry::TBox2f field_0x180; // fn_8030C7C4
     /* 0x190 */ JGeometry::TBox2f field_0x190; // fn_8030C928; fn_8030C85C
-    /* 0x1A0 */ u8 field_0x1a0[0x1D4 - 0x1A0];
+    /* 0x1A0 */ u8 field_0x1a0[0x1B4 - 0x1A0];
+    // fn_8030C85C sets all four floats to one constant.
+    /* 0x1B4 */ JGeometry::TBox2f field_0x1b4;
+    /* 0x1C4 */ u8 field_0x1c4[0x1D4 - 0x1C4];
     // 19 units store both (act_escort_woman 0x80125048), next to
     // field_0x840.
     /* 0x1D4 */ f32 field_0x1d4;
