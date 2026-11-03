@@ -6,9 +6,6 @@
 #include "game/ActorBase.h"
 #include "JSystem/JUtility/TColor.h"
 
-// 0x8018330C, in this unit: the colour of lbl_8053AB10->0x2C (cls_804A0160).
-extern "C" JUtility::TColor fn_8018330C();
-
 // Named after its vtable, 0x804A1718.
 class cls_804A1718 : public ActorBase_804A5770 {
 public:
