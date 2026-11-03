@@ -67,13 +67,13 @@ void Sign_804A94D8::update() {
     } else {
         field_0x3c.z += -0.1f;
         mPos += field_0x3c;
-        s32 layer = field_0x114;
+        s32 damage = field_0x114;
         if (lbl_8053AAF8->field_0x7f) {
-            layer = 0;
+            damage = 0;
         }
         if (mPos.z < 0.0f || fn_801F2618(NULL, false)) {
             vfunc_0x24();
-        } else if (fn_801F2B7C(layer, field_0xc8, 1) || fn_801F2B20(0)) {
+        } else if (fn_801F2B7C(damage, field_0xc8, 1) || fn_801F2B20(0)) {
             vfunc_0x24();
         }
     }
