@@ -35,6 +35,10 @@ s32 SwordSoldier_8049FCA0::fn_801545E8() const {
     return mSerial;
 }
 
+void SwordSoldier_8049FCA0::fn_80154614(s32 value) {
+    field_0xb8 = value;
+}
+
 f32 fn_80154378(f32 x) {
     return std::sqrtf(x);
 }
