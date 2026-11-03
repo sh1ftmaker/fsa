@@ -1212,7 +1212,7 @@ config.libs = [
         Object(NonMatching, "game/act_zora.cpp"),
         Object(NonMatching, "game/act_wallmaster.cpp"),
         Object(NonMatching, "game/act_fire_bar.cpp"),
-        Object(NonMatching, "game/tu_801BD8C0.cpp"),
+        Object(Matching, "game/tu_801BD8C0.cpp"),
         Object(NonMatching, "game/act_beamos.cpp"),
         Object(NonMatching, "game/tu_801BEDBC.cpp"),
         Object(NonMatching, "game/act_vulture.cpp"),
