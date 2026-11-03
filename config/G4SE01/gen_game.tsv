@@ -127,8 +127,6 @@ act_keese	dtor	__dt__14Keese_804A02B8Fv	Keese_804A02B8	0x804A02B8	new	new
 act_keese	sinit	__sinit_act_keese_cpp	-	-	new	new
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_leaf_effect_npc	dtor	__dt__12cls_804AE2E0Fv	cls_804AE2E0	0x804AE2E0	new	new
-act_leaf_effect_npc	sinit	__sinit_act_leaf_effect_npc_cpp	-	-	new	new
 act_life_meter	dtor	__dt__18LifeMeter_804B174CFv	LifeMeter_804B174C	0x804B174C	new	new
 act_life_meter	sinit	__sinit_act_life_meter_cpp	-	-	new	new
 act_lift	dtor	__dt__13Lift_804A6F6CFv	Lift_804A6F6C	0x804A6F6C	new	new
@@ -208,8 +206,6 @@ act_somaria_block	dtor	__dt__27CaneOfSomariaBlock_804AA9F0Fv	CaneOfSomariaBlock_
 act_somaria_block	sinit	__sinit_act_somaria_block_cpp	-	-	new	new
 act_spawner	dtor	__dt__12cls_804A9328Fv	cls_804A9328	0x804A9328	new	new
 act_spawner	sinit	__sinit_act_spawner_cpp	-	-	new	new
-act_special_bg_draw_object	dtor	__dt__28SpecialBGDrawObject_804AC760Fv	SpecialBGDrawObject_804AC760	0x804AC760	new	new
-act_special_bg_draw_object	sinit	__sinit_act_special_bg_draw_object_cpp	-	-	new	new
 act_special_conversation_npc	dtor	__dt__31SpecialConversationNPC_804AAFB8Fv	SpecialConversationNPC_804AAFB8	0x804AAFB8	new	new
 act_spotlight	sinit	__sinit_act_spotlight_cpp	-	-	new	-
 act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
@@ -279,7 +275,6 @@ tu_801291A0	dtor	__dt__12cls_8049E5B8Fv	cls_8049E5B8	0x8049E5B8	new	new
 tu_801291A0	sinit	__sinit_tu_801291A0_cpp	-	-	new	new
 tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
 tu_80130310	sinit	__sinit_tu_80130310_cpp	-	-	new	new
-tu_801344C0	sinit	__sinit_tu_801344C0_cpp	-	-	new	-
 tu_80134C04	sinit	__sinit_tu_80134C04_cpp	-	-	new	-
 tu_80139BE8	sinit	__sinit_tu_80139BE8_cpp	-	-	new	-
 tu_8013AAD4	sinit	__sinit_tu_8013AAD4_cpp	-	-	new	-
@@ -315,7 +310,6 @@ tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
 tu_801B6C50	sinit	__sinit_tu_801B6C50_cpp	-	-	new	-
 tu_801BEDBC	sinit	__sinit_tu_801BEDBC_cpp	-	-	new	-
 tu_801C5B08	sinit	__sinit_tu_801C5B08_cpp	-	-	new	-
-tu_801C6A4C	sinit	__sinit_tu_801C6A4C_cpp	-	-	new	-
 tu_801C71BC	sinit	__sinit_tu_801C71BC_cpp	-	-	new	-
 tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801CB270	sinit	__sinit_tu_801CB270_cpp	-	-	da067d5aa0aa4985c17d7a2a8c2e04180bd5247f	-
@@ -333,12 +327,10 @@ tu_801DE714	sinit	__sinit_tu_801DE714_cpp	-	-	new	-
 tu_801E2540	sinit	__sinit_tu_801E2540_cpp	-	-	new	-
 tu_801E3618	sinit	__sinit_tu_801E3618_cpp	-	-	new	-
 tu_801E4D54	sinit	__sinit_tu_801E4D54_cpp	-	-	new	-
-tu_801E667C	sinit	__sinit_tu_801E667C_cpp	-	-	new	-
 tu_801E6D48	sinit	__sinit_tu_801E6D48_cpp	-	-	new	-
 tu_801E801C	sinit	__sinit_tu_801E801C_cpp	-	-	new	-
 tu_801EB00C	sinit	__sinit_tu_801EB00C_cpp	-	-	new	-
 tu_801ED3DC	sinit	__sinit_tu_801ED3DC_cpp	-	-	new	-
-tu_801EDBA4	sinit	__sinit_tu_801EDBA4_cpp	-	-	new	-
 tu_80206B30	sinit	__sinit_tu_80206B30_cpp	-	-	new	-
 tu_80207548	sinit	__sinit_tu_80207548_cpp	-	-	new	-
 tu_80209C14	sinit	__sinit_tu_80209C14_cpp	-	-	new	-
@@ -442,4 +434,3 @@ tu_8045560C	sinit	__sinit_tu_8045560C_cpp	-	-	new	-
 tu_80455CA4	sinit	__sinit_tu_80455CA4_cpp	-	-	new	-
 tu_80457DFC	sinit	__sinit_tu_80457DFC_cpp	-	-	new	-
 tu_8045A640	sinit	__sinit_tu_8045A640_cpp	-	-	new	-
-tu_8045B010	sinit	__sinit_tu_8045B010_cpp	-	-	new	-

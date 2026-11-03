@@ -19,7 +19,7 @@ void cls_804AE288::fn_8036D858(JGeometry::TVec3f pos) {
         if (actor != NULL && actor->mActorId == ACTOR_LEAF && actor->mAlive == 1 &&
             PSVECDistance(&pos, &actor->mPos) <= 57.0f &&
             __fabsf(actor->mPos.x - pos.x) <= 42.0f) {
-            static_cast<cls_804AE2E0*>(actor)->field_0x230[0] = 1;
+            static_cast<cls_804AE2E0*>(actor)->field_0x230 = 1;
             break;
         }
     }
@@ -31,9 +31,7 @@ void cls_804AE288::update() {}
 
 // The tile code under the cell at (x, y) on the actor's layer.
 static inline u16 tileCodeAt(cls_804AE288* self, s32 x, s32 y) {
-    JGeometry::TVec3f cell;
-    cell.x = x;
-    cell.y = y;
+    JGeometry::TVec2f cell(x, y);
     return lbl_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(&cell, self->field_0x4)) & 0x3FF;
 }
 
