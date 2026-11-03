@@ -77,7 +77,8 @@ struct GameRoot_8049EF20 {
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
 
-    // 1 unit (act_ending_map_skipper); called with (15, 0) there.
+    // 15 units / 17 calls. Stores at this+0x50, 0x58 and 0x84 (per review);
+    // act_ending_map_skipper calls it with (15, 0).
     void fn_80136798(s32 a, s32 b);
 };
 
