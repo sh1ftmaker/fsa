@@ -3,15 +3,8 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
+#include "game/ViewLayer.h"
 
-// GameView byte 0x131DF + layer. The layer is loaded before fn_802D6A9C is
-// called, as for an argument (the same helper is in game/tu_801CDC8C.cpp).
-static inline u8 viewLayerFlag(s32 layer) {
-    return fn_802D6A9C()->field_0x131df[layer];
-}
-
-// FIXME: 99.85 %. Only the index add differs: the target does addis r0,r3,1;
-// add r3,r0,r31 (view + layer), ours addis r0,r31,1; add r3,r0,r3.
 // Returns whether an actor with field_0x1a8 set and field_0x196 clear has
 // its box overlapping a player of its layer (the first such one is passed to
 // fn_801A3C50); on layers without the view's flag at GameView 0x131DF the actor must also be

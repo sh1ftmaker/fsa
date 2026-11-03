@@ -13,15 +13,9 @@
 #include "game/GameView.h"
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JAudio/JAUSoundObject.h"
+#include "game/ViewLayer.h"
 
 const bool lbl_8053EFC0 = false;
-
-// GameView byte 0x131DF + layer: set for the layers where landing goes
-// through vfunc_0x80 (the floor check). The callers load the layer before
-// they call fn_802D6A9C (0x801CE1C8, 0x801D0DE4), as for an argument.
-static inline u8 viewLayerFlag(s32 layer) {
-    return fn_802D6A9C()->field_0x131df[layer];
-}
 
 // Stops sound `soundId` on this actor's sound object.
 void EnemyBase_804A4808::fn_801CDC8C(u32 soundId) {

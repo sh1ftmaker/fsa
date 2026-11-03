@@ -87,6 +87,10 @@ public:
     // 9 units / 198 calls. Sets it (sthx; callers clrlwi 16 the value,
     // act_panel_rewrite_npc 0x802C8AC4).
     void fn_802F9974(s32 layer, s32 index, u16 value);
+    // 0x802FF0EC (game/tu_802F5040.cpp, not written yet): r3 only (saved
+    // in r21, fields 0x148+, 0x214, 0x230 read). Called by
+    // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
+    void fn_802FF0EC();
 
     /* 0x0000 vtable */
     /* 0x0004 */ u8 field_0x4[0x214 - 0x4];

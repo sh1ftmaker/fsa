@@ -342,12 +342,18 @@ public:
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 class cls_804A03A8;
 
+struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
+
 // *lbl_8053AB10: the second most-used singleton (267 units). Set in
 // game/tu_8013AAD4.cpp (0x8013C024) and game/tu_80134C04.cpp (0x801393C4).
 // Named after its vtable, 0x8049F108 (constructor fn_8013BFEC, which
 // allocates every member below and stores it at the offset given).
 struct GameRoot2_8049F108 {
-    /* 0x00 */ u8 field_0x0[0x10];
+    /* 0x00 */ u8 field_0x0[0x8];
+    // Two J3DDrawBuffers (initialize, allocBuffer(0x80) in the constructor,
+    // 0x8013C0xx); fn_8013B618 calls frameInit on both.
+    /* 0x08 */ J3DDrawBuffer* field_0x8;
+    /* 0x0C */ J3DDrawBuffer* field_0xc;
     // new J2DOrthoGraph(...) (__ct__13J2DOrthoGraphFffffff, stored at
     // 0x8013C11C); 36 units pass it to J2DScreen::draw as the
     // J2DGrafContext (67 sites).
@@ -364,6 +370,14 @@ struct GameRoot2_8049F108 {
     // `this` is lbl_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
     // J2DScreen::draw.
     void fn_8013B490();
+    // game/tu_8013AAD4.cpp. Called by GameRoot_8049EF20::fn_80137300
+    // (tu_80134C04); calls field_0x20->fn_802FF0EC() in the modes
+    // isGameModeSet() (game/GameMode.h) accepts.
+    void fn_8013B538();
+    // game/tu_8013AAD4.cpp. Called 12 times by tu_80134C04: the same mode
+    // test as fn_8013B538, then field_0x28->fn_8013D5D4() and frameInit on
+    // field_0x8 / field_0xc.
+    void fn_8013B618();
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;
@@ -379,6 +393,10 @@ public:
     // the second for fresh presses.
     u32 fn_80309D24(s32 slot, u32 mask);
     u32 fn_80309D6C(s32 slot, u32 mask);
+    // Owner: game/tu_803099FC.cpp. A float for input slot `slot` (the
+    // value at lbl_80541670 for slot -0x3E7, else from the bits of the word
+    // at 4 + 4*slot); Player_804A6F38::fn_80246F28 returns it.
+    f32 fn_80309D90(s32 slot);
 };
 extern cls_804AA8C8* lbl_8053AD30;
 extern "C" {
