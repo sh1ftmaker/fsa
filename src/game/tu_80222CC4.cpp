@@ -28,6 +28,9 @@ void cls_804A6C38::vfunc_0x88() {
     }
 }
 
+// FIXME: 99.9%. Only .data order differs: ours has the jump table first, the
+// weak __vt__12J3DFrameCtrl at 0x20 and the vtable at 0x2C; the original has
+// the vtable at 0 and the jump table at 0xA4.
 void cls_804A6C38::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -54,7 +57,7 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
                 mStateTimer = 0;
                 mState = 5;
             } else {
-                field_0x3c.z = 2.5f;
+                field_0x3c.z = lbl_8053FE70;
             }
         }
         break;

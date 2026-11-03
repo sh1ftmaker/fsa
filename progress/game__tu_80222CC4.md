@@ -10,7 +10,7 @@ Status: NonMatching. 6/7 functions at 100 % (__sinit generated); vfunc_0x90 is 9
 - vtable __vt__12cls_804A6C38 is 100 %.
 
 ## Resistant
-- vfunc_0x90 (0x80222D5C): instructions identical; only names differ: jumptable_804A6CDC vs @544, and the float literals (lbl_8053FE70 = 2.5f lives in tu_80220F54's pool: linker float dedup; our pool holds its own 2.5f). .sdata2 83.3 %, extab/extabindex 56 %: weak-dedup tooling, .data 83.7 % (our object also emits __vt__12J3DFrameCtrl and the jumptable under another name).
+- vfunc_0x90 (0x80222D5C): instructions identical; remaining gap is .data order (ours jump table, weak J3DFrameCtrl vtable, vtable; original vtable at 0, jump table at 0xA4). Names: jumptable_804A6CDC vs @544, and the float literals (lbl_8053FE70 = 2.5f is a named external constant, now declared extern in cls_804A6A00.h). .sdata2 83.3 %, extab/extabindex 56 %: weak-dedup tooling, .data 83.7 % (our object also emits __vt__12J3DFrameCtrl and the jumptable under another name).
 
 ## SHARED-EDITS
 - include/game/cls_804A6A00.h (new): the sub-base of tu_80220F54 / tu_80221B44 / act_shadow_link_* / tu_802233A4 (vtable 0x804A6A00; ctor 0x802218C8 stores it and 0x2A8-0x2B4).

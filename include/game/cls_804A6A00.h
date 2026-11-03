@@ -53,6 +53,10 @@ public:
     /* 0x2B4 */ f32 field_0x2b4; // mPos.y at init
 }; // Size: 0x2B8
 
+// 2.5f in tu_80220F54's .sdata2; loaded by act_shadow_link_jump,
+// tu_80221B44, act_shadow_link_bow, tu_80222CC4 and tu_802233A4.
+extern const f32 lbl_8053FE70;
+
 // mFlags bit fn_802216E8 sets, tested by cls_804A6C38's vfunc_0x90.
 #define CLS_804A6A00_FLAG_0x2000 0x2000
 
