@@ -13,7 +13,7 @@ public:
     // Advances the timer; when the current step's frame count is used up,
     // moves to the next step and finishes (mDone) after the last one.
     // Reloads mFrames and returns mDone.
-    bool fn_8021C848();
+    u8 fn_8021C848();
     // Restarts the sequence of the current type with table variant `variant`.
     void fn_8021C9C4(int variant);
     // Restarts the sequence with type `type` (the variant is kept).
