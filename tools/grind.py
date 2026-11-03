@@ -220,6 +220,8 @@ def run_haiku(wt, unit, fn, size, pct, model=MODEL, meta=None):
     prompt = PROMPT.format(fn=fn, size=size, pct=f"{pct:.2f} %" if pct else "missing",
                            unit=unit, base=Path(unit).stem, attempts=attempts)
     timeout = 1200 if size <= 512 else 2400 if size <= 2048 else 4800
+    if os.environ.get("GRIND_TIMEOUT"):  # A/B cap
+        timeout = int(os.environ["GRIND_TIMEOUT"])
     return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", timeout, model, meta)
 
 
