@@ -48,6 +48,10 @@ JSystem/JAudio/Interface/JAISeq.cpp:
 	.bss        start:0x804B22E8 end:0x804B2328
 	.sdata2     start:0x8053AFC0 end:0x8053AFD0
 
+JSystem/JAudio/Interface/JAISeqDataMgr.cpp:
+	.text       start:0x80024B50 end:0x80024BE0
+	.data       start:0x80491790 end:0x804917C0
+
 JSystem/JAudio/Interface/JAISeqMgr.cpp:
 	.text       start:0x80024BE0 end:0x80025474
 	.ctors      start:0x8045BD18 end:0x8045BD1C
