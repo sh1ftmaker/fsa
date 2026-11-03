@@ -688,7 +688,7 @@ config.libs = [
         Object(Matching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
-        Object(NonMatching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIAudience.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Interface/JAISeMgr.cpp", extra_cflags=["-O4,p"]),

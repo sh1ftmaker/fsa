@@ -94,6 +94,8 @@ JSystem/JAudio/Interface/JAIStreamMgr.cpp:
 JSystem/JAudio/Interface/JAIAudible.cpp:
 	.text       start:0x80027654 end:0x80027770
 	.ctors      start:0x8045BD34 end:0x8045BD38
+	.data       start:0x80491880 end:0x80491898
+	.bss        start:0x804B2470 end:0x804B2498
 
 JSystem/JAudio/System/JASCalc.cpp:
 	.text       start:0x80027770 end:0x80027EC4
