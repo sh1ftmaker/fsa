@@ -26,7 +26,7 @@ BlockFor2Or3Players_804AE728::~BlockFor2Or3Players_804AE728() {}
 
 void BlockFor2Or3Players_804AE728::update() {
     if (fn_80226850(&mPos, field_0x4) == 0x12) {
-        fn_801F9484(fn_801F856C(), ACTOR_BCK2, field_0x4, &mPos, 0x100, -1, -1);
+        fn_801F856C()->fn_801F9484(ACTOR_BCK2, field_0x4, &mPos, 0x100, -1, -1);
         mAlive = false;
     }
 }

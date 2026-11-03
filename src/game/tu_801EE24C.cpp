@@ -72,7 +72,7 @@ ActorBase_804A5770::~ActorBase_804A5770() {
     if (mEmitter104 != NULL) {
         releaseEmitter(mEmitter104);
     }
-    fn_801F8448(fn_801F856C(), this);
+    fn_801F856C()->fn_801F8448(this);
 }
 
 // FIXME: the float literals (0, 1, -8, 8, 40) pair with the target's .sdata2

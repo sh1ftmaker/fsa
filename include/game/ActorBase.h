@@ -335,7 +335,7 @@ public:
     // list, walked by 4 and compared with cmplw; callers pass .rodata
     // arrays), or NULL.
     ActorBase_804A5770* fn_801F26CC(const u32* ids);
-    // 30 units / 38 calls. fn_801F8108(mgr, this, actorId, mSerial, ...): the
+    // 30 units / 38 calls. fn_801F8108(this, actorId, mSerial, ...): the
     // serial of an actor with mActorId == actorId (4CC; cmplw) overlapping
     // this one on its layer, or -1.
     s32 fn_801F2718(u32 actorId);
