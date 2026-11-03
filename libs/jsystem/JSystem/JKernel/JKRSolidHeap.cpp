@@ -142,7 +142,7 @@ void *JKRSolidHeap::allocFromTail(u32 size, int alignment)
 
 void JKRSolidHeap::do_free(void *ptr)
 {
-
+    JUTWarningConsole_f("free: cannot free memory block (%08x)\n", ptr);
 }
 
 void JKRSolidHeap::do_freeAll(void)
@@ -194,6 +194,8 @@ int JKRSolidHeap::do_getSize(void *ptr)
     return -1;
 }
 
+// recordState and restoreState are dead-stripped from FSA's main.dol (their
+// State list is still walked by do_freeTail); the bodies follow mkdd.
 void JKRSolidHeap::recordState(u32 cnt)
 {
     lock();
@@ -201,8 +203,6 @@ void JKRSolidHeap::recordState(u32 cnt)
     u8 *head = mSolidHead;
     u8 *tail = mSolidTail;
     State *next = _78;
-    // NOTE: this is more than likely a fakematch, to me it makes more sense that placemnt new + ctor is used
-    // However since _78 is inside it too it can't be?
     State *state = (State *)alloc(sizeof(State), 4);
     if(state) {
         state->mCnt = cnt;

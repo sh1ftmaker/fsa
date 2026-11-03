@@ -1235,14 +1235,14 @@ JSystem/JKernel/JKRMemArchive.cpp:
 
 JSystem/JKernel/JKRSolidHeap.cpp:
 	.text       start:0x80084BAC end:0x80085474
-	.rodata     start:0x8045E6B0 end:0x8045E7A0
+	.rodata     start:0x8045E6B0 end:0x8045E820
 	.data       start:0x80498F48 end:0x80498FA8
 	.sdata2     start:0x8053B758 end:0x8053B770
 
 JSystem/JKernel/JKRThread.cpp:
 	.text       start:0x80085474 end:0x80085968
 	.ctors      start:0x8045BDC4 end:0x8045BDC8
-	.rodata     start:0x8045E7A0 end:0x8045E878
+	.rodata     start:0x8045E820 end:0x8045E878
 	.data       start:0x80498FA8 end:0x80498FB8
 	.bss        start:0x804BA058 end:0x804BA070
 	.bss        start:0x8052E850 end:0x8052E894 align:4 common
