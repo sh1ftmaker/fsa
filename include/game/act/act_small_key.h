@@ -30,6 +30,11 @@ public:
     // 0x802C1D90: passes the key's (0x230, 0x234) position and 0x238 layer to
     // GameView's fn_802D6C10 (view from fn_802D6A9C()), then clears mAlive.
     void fn_802C1D90();
+    // 0x802C1DFC: at the key's own layer (field_0x4 < 8) plays effect 0x503
+    // at mPos; from layer 8 up spawns a KMRI actor there instead. Then passes
+    // the (0x230, 0x234) position and 0x238 layer to GameView's fn_802D6C10
+    // and clears mAlive.
+    void fn_802C1DFC();
     // 0x802C5284: passes its position (0x230) and layer (0x238) to GameView's
     // fn_802D6C10, with the view from fn_802D6A9C().
     void fn_802C5284();
