@@ -1,4 +1,7 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
+#include "game/GameGlobals.h"
 #include "game/act/act_terrorpin.h"
 
 Terrorpin_804A3B10::Terrorpin_804A3B10() {
@@ -39,6 +42,33 @@ bool Terrorpin_804A3B10::vfunc_0x60() {
     return hit;
 }
 
+// The .sdata2 floats vfunc_0x6C copies into the 'RUPY' actors (not written yet).
+extern const f32 lbl_8053EB20;
+extern const f32 lbl_8053EB28;
+extern const f32 lbl_8053EB2C;
+
+// While mState is 5, spawns two 'RUPY' actors at mPos and sets each one's
+// field_0x3c: x is lbl_8053EB28 for the first and its negation for the second,
+// y and z are fixed.
+void Terrorpin_804A3B10::vfunc_0x6C() {
+    if (mState == 5) {
+        f32 negX = -lbl_8053EB28;
+        for (s32 i = 0; i < 2; i++) {
+            s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                if (actor != NULL) {
+                    f32 x = lbl_8053EB28;
+                    if (i != 0) {
+                        x = negX;
+                    }
+                    actor->field_0x3c = JGeometry::TVec3f(x, lbl_8053EB20, lbl_8053EB2C);
+                }
+            }
+        }
+    }
+}
+
 // The 0.1f is lbl_8053EB34, the sixth float of the unit's .sdata2 (after the
 // literals of draw, vfunc_0x24, vfunc_0x68 and vfunc_0x5C, not written yet).
 extern const f32 lbl_8053EB34;
@@ -57,7 +87,6 @@ void Terrorpin_804A3B10::vfunc_0x7C() {
 // (not written yet).
 extern const s32 lbl_8053A100;
 // The .sdata2 float vfunc_0x44 tests mPos.z against (not written yet).
-extern const f32 lbl_8053EB20;
 
 void Terrorpin_804A3B10::vfunc_0x44() {
     if (field_0xd4 == 1) {
