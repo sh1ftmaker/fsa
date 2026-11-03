@@ -161,6 +161,10 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
+// rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
+// through fn_8024145C; takes a player index (act_rock passes field_0xc8).
+JGeometry::TVec3f* fn_8023E7B0(s32 player);
 // Per-player queries, by address (legend as above).
 // act_heart_container's update: results tested with clrlwi 24 (bool); fn_80230224's
 // second argument is clrlwi 24 (a bool) and its result is unused.

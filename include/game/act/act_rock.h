@@ -17,7 +17,8 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ s32 field_0x230; // frames carried by a player (update), counts up to 1000; < 0x50 while thrown picks the break effect
+    /* 0x234 */ s32 field_0x234; // state word handed to ActorBase::fn_801F132C by vfunc_0x4C; 0 in init
 }; // Size: 0x238
 
 #endif
