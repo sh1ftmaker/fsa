@@ -707,6 +707,12 @@ s32 fn_8022EA0C(s32 player);
 // the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.
 void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
 bool fn_8023061C(s32 player, bool flag);
+// Owner: tu_8022AD64 (0x80239B64, defined there). 1 unit (tu_8021693C). The
+// per-player box test of fn_8022FF8C's family: if the player is present
+// (byte 0xCAC set) it forwards (player object, box, layer, serial, a, b) to
+// fn_80272224 and returns its 0/1 result (clrlwi 24 / test in the caller).
+// tu_8021693C passes its hit box, the actor's field_0x4, a type word, 1, 1.
+bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b);
 // Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
 // player index to a window index (-1 without a manager; see Message.h).
 s32 fn_8022F340(s32 player);
