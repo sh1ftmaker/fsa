@@ -11,17 +11,17 @@
 <rect x="415.2" y="18.5" width="189.2" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="415.2" y="176.2" width="189.2" height="2.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="605.4" y="18.5" width="154.7" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="605.4" y="162.6" width="154.7" height="16.5" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="605.4" y="161.9" width="154.7" height="17.1" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="180.0" width="178.2" height="128.9" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="415.2" y="284.8" width="178.2" height="24.1" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="309.9" width="178.2" height="103.6" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="415.2" y="411.1" width="178.2" height="2.4" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="594.4" y="180.0" width="165.7" height="102.9" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="594.4" y="268.2" width="165.7" height="14.8" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="594.4" y="267.5" width="165.7" height="15.4" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="594.4" y="283.9" width="121.4" height="67.8" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="594.4" y="336.8" width="121.4" height="14.8" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="594.4" y="352.7" width="121.4" height="60.8" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="594.4" y="406.7" width="121.4" height="6.8" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="594.4" y="406.6" width="121.4" height="6.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="716.8" y="283.9" width="43.3" height="50.4" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="716.8" y="294.1" width="43.3" height="40.3" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="716.8" y="335.3" width="43.3" height="45.6" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
@@ -110,13 +110,13 @@
 <text x="421.2" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80380000+</text>
 <text x="421.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">1.78 %</text>
 <text x="611.4" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80180000+</text>
-<text x="611.4" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">10.3 %</text>
+<text x="611.4" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">10.7 %</text>
 <text x="421.2" y="196.0" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80280000+</text>
 <text x="421.2" y="209.0" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">18.7 %</text>
 <text x="421.2" y="325.9" font-size="11.5" font-weight="600" fill="#eceefb">kk_* HUD refs</text>
 <text x="421.2" y="338.9" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">2.30 %</text>
 <text x="600.4" y="196.0" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80300000+</text>
-<text x="600.4" y="209.0" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">14.3 %</text>
+<text x="600.4" y="209.0" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">15.0 %</text>
 <text x="600.4" y="299.9" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 801000…</text>
 <text x="600.4" y="312.9" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">21.9 %</text>
 <text x="600.4" y="368.7" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 804000…</text>
@@ -130,7 +130,7 @@
 <text x="842.9" y="269.6" font-size="11.5" font-weight="600" fill="#eceefb">JUtility</text>
 <text x="842.9" y="282.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">100 %</text>
 <g fill="#3aae5c"><path d="M25.5 440L31 445.5L25.5 451L20 445.5Z"/></g>
-<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 9.57 %</text>
+<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 9.64 %</text>
 <g fill="#ef5b52"><path d="M143.7 440L149.2 451L138.2 451Z"/></g>
 <text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 97.8 %</text>
 <g fill="#3d9cf0"><circle cx="283.5" cy="445.5" r="5.5"/></g>
