@@ -69,6 +69,7 @@ public:
     bool fn_80240818(); // via fn_8022DCD8
     bool fn_80240840(s32 arg); // via fn_8022E39C
     bool fn_80240860(); // byte at 0x436
+    s32 fn_80240868(); // word 0x4 (the player index)
     bool fn_80240870(); // via fn_80234134
     void fn_80240878(); // via fn_80233F78
     s32 fn_80240888(); // via fn_80234004
@@ -774,7 +775,7 @@ s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
 s32 fn_8022FD8C(s32 serial);
 void fn_80231368();                      // 4 units.
 bool fn_80233D20(s32 player);            // 1 unit. -> byte 0x43F; else false
-// 1 unit. -> fn_80240868 (word 0x4); 0 without a manager. An inactive
+// 1 unit. -> Player_804A6F38::fn_80240868 (word 0x4); 0 without a manager. An inactive
 // player falls off the end with r3 still the index (the source has no final
 // return); the caller uses the result (mr r26, r3 at 0x80306B44).
 s32 fn_802340A0(s32 player);
