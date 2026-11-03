@@ -64,6 +64,9 @@ struct cls_801D6CEC {
 class cls_801E6AB8 {
 public:
     cls_801E6AB8();
+    // 0x801D69FC: destroys mAnim (its J3DFrameCtrl's vtable is stored at
+    // 0x34); the member with the delete flag is the implicit destructor.
+    ~cls_801E6AB8();
     // 0x801E667C: steps the timer and the state; true once state 4 is reached.
     bool fn_801E667C();
     // 0x801E67C4: enters state `state`.

@@ -2,6 +2,8 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_vaati_boss.h"
 
+cls_801E6AB8::~cls_801E6AB8() {}
+
 cls_801D6A58::cls_801D6A58() {
     fn_801D7874();
 }
