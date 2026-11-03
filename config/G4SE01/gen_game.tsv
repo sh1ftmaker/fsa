@@ -62,7 +62,6 @@ act_eyegore	dtor	__dt__16Eyegore_804A3548Fv	Eyegore_804A3548	0x804A3548	new	new
 act_eyegore	sinit	__sinit_act_eyegore_cpp	-	-	new	new
 act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
 act_fairy_invincible	sinit	__sinit_act_fairy_invincible_cpp	-	-	new	-
-act_fairy_revival	sinit	__sinit_act_fairy_revival_cpp	-	-	new	-
 act_falling_floor	dtor	__dt__21FallingFloor_804A9078Fv	FallingFloor_804A9078	0x804A9078	new	new
 act_falling_floor	sinit	__sinit_act_falling_floor_cpp	-	-	new	new
 act_fire_bar	sinit	__sinit_act_fire_bar_cpp	-	-	new	-
