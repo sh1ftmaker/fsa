@@ -10,6 +10,10 @@ bool Player_804A6F38::fn_802413F0() {
     return playerFlags_802413F0(this);
 }
 
+bool Player_804A6F38::fn_8023FC08() {
+    return field_0x42c;
+}
+
 // The team checks fn_80246F28 makes before it reads the input: the player
 // flags, then, when more than one player is on this team and the team mode
 // (fn_8022CAF8 / field_0x120c) is 4, the team count must match, and

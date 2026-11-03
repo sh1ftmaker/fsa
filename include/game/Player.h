@@ -249,7 +249,11 @@ public:
     /* 0x03DC */ s32 field_0x3dc; // fn_80230CFC (2 without a player)
     /* 0x03E0 */ u8 field_0x3e0[0x3E8 - 0x3E0];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
-    /* 0x03EC */ u8 field_0x3ec[0xC80 - 0x3EC];
+    /* 0x03EC */ u8 field_0x3ec[0x42C - 0x3EC];
+    // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
+    /* 0x042C */ bool field_0x42c;
+    /* 0x042D */ u8 field_0x42d;
+    /* 0x042E */ u8 field_0x42e[0xC80 - 0x42E];
     // 0xC80, 0xCA0, 0xCE9, 0xCEE and 0x1215: the bytes fn_802413F0 tests
     // (game/PlayerFlags.h).
     /* 0x0C80 */ u8 field_0xc80;
