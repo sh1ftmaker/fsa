@@ -59,6 +59,16 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
   candidates (G2). Its % is objdiff's on the compiled object; the honest
   report and the gate stay the measure of record (extab of pool units
   differs until the weak-duplicate strip).
+- `python3 tools/gen_game.py <unit> ...` (G2/G3): generates the 9-pool
+  `__sinit` and simple actor destructor members from the act_vaati_buster
+  templates, with each unit's own symbols.txt lines, and backs out any unit
+  that doesn't verify. It skips claimed units. `--scan` lists the families
+  and skipped variants; `--check` is the scripted per-member check for
+  review and the gate, over config/G4SE01/gen_game.tsv. Lifecycle: when a
+  later worker hand-edits a generated member, or anything else in a file
+  the generator wrote, that worker's commit removes the unit's rows from
+  gen_game.tsv, and the member then gets normal review. Generate in batches
+  and commit each batch separately; never as one mass symbols.txt edit.
 
 ## Harvesting names from the link (`tools/harvest_names.py`)
 

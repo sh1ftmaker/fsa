@@ -39,28 +39,39 @@ Usage:
 
 <unit> is `game/act_foo.cpp`, `act_foo` or `src/game/act_foo.cpp`.
 
-Generation: writes the source/header, compiles each unit, reads the @NNN,
-sinit and mangled names back from our object, edits each unit's own lines
-of symbols.txt in place (never re-sorts it), re-splits, recompiles and
-diffs every unit with objdiff-cli (functionRelocDiffs=all, as the honest
-report). A unit whose generated functions are not all 100 %, or where a
-function that matched before drops, is restored (source, header,
-symbols.txt lines) and the split redone. Generated members are recorded in
-config/G4SE01/gen_game.tsv; that file is what --check checks.
+Generation: skips units claimed in progress/claims.json; writes the
+source/header (a new source file holds only the includes and the
+destructors; an existing one gets only the GameAudio.h include, the header
+include and the definitions, and is refused when a comment may describe the
+generated code as unwritten); compiles each unit, reads the @NNN, sinit and
+mangled names back from our object, edits each unit's own lines of
+symbols.txt in place (never re-sorts it), re-splits, recompiles and runs
+the member checks below plus objdiff on every unit. A unit with any
+problem, or where a function that matched before drops, is restored
+(source, header, symbols.txt lines) and the split redone. Generated members
+are recorded in config/G4SE01/gen_game.tsv with the git blob of each file
+before generation (`new` when the generator created it).
 
---check (for the reviewer and the gate), per recorded member:
+--check (for the reviewer and the gate; whole manifest by default, objdiff
+runs in parallel), per recorded member:
   1. the target function (dtk's split of the original) is the template's
-     target up to identifiers;
-  2. our compiled function is the template's compiled function up to
-     identifiers;
-  3. the generated source text is the template's text with only the
-     identifiers (class name, vtable address, overridden slots, size)
-     substituted, and the unit has nothing else in its place: the dtor
-     definition is present verbatim, the header class block is exactly the
-     rendered block, and a sinit unit includes game/GameAudio.h before
-     anything else;
-  4. objdiff gives the member 100 %.
+     target up to identifiers, and our compiled function is the template's
+     compiled function up to identifiers;
+  2. objdiff gives it 100 %;
+  3. symbols.txt: sinit, the unit's .bss in dtk's split is exactly our 9
+     @NNN (0xC, each 100 %), then 9 unnamed lbl_<addr> of 0x10 at
+     +0x6C..+0xEC, then 4 unsplit bytes; dtor, the vtable it stores has our
+     vtable's name, size 0x54, every slot's relocation target named as in
+     our vtable, and 100 %;
+  4. the files: a file the generator created equals its rendering exactly;
+     an existing file equals the generator's edit re-run on its recorded
+     pre-generation blob, so nothing but the rendered lines was added.
 It prints one line per unit and `check: ok` or the problems; exit 1 on any.
+
+Lifecycle: when a later worker hand-edits a generated member (fills in the
+class's fields, rewrites the destructor, or edits anything else in a file
+the generator owns), that worker's commit removes the unit's rows from
+config/G4SE01/gen_game.tsv, and the member then gets normal review.
 """
 
 import json
@@ -68,6 +79,7 @@ import re
 import struct
 import subprocess
 import textwrap
+from concurrent.futures import ThreadPoolExecutor
 import sys
 from pathlib import Path
 
@@ -364,7 +376,12 @@ def alloc_size(ctors):
                     break  # another call between: not this ctor's allocation
                 k -= 4
             sizes.add(size)
-    return sizes.pop() if len(sizes) == 1 else None
+    sizes.discard(None)  # calls not preceded by a `new` (e.g. a base-class ctor call)
+    if len(sizes) == 1:
+        return sizes.pop(), None
+    if not sizes:
+        return None, "unknown, no `new` of it found"
+    return None, "unknown, its `new`s allocate " + ", ".join(f"0x{n:X}" for n in sorted(sizes))
 
 
 def class_name(unit, vt, ctors):
@@ -373,8 +390,10 @@ def class_name(unit, vt, ctors):
     (high/med confidence); `cls_<vtable>` otherwise. Returns (name, why)."""
     ev = evidence_for(unit)
     addrs = {c[3:].upper() for c in ctors if re.fullmatch(r"fn_[0-9A-Fa-f]{8}", c)}
-    hits = [(i, c) for i, c in re.findall(r"([A-Z0-9_]{4}) \((?:vtable [0-9A-F]{8} set by )?ctor ([0-9A-F]{8})\)", ev)
-            if c in addrs]
+    # "ID (vtable V set by ctor C)" with V this vtable, or "ID (ctor C)" with C
+    # one of the functions that store it
+    hits = [(i, c) for i, v, c in re.findall(r"([A-Z0-9_]{4}) \((?:vtable ([0-9A-F]{8}) set by )?ctor ([0-9A-F]{8})\)", ev)
+            if c in addrs and (not v or int(v, 16) == vt)]
     names = actor_names()
     if len({i for i, _ in hits}) == 1 and hits[0][0] in names:
         aid, c = hits[0]
@@ -534,22 +553,22 @@ def comment(text):
     return "\n".join("// " + l for l in textwrap.wrap(text, 76))
 
 
-def render_class(cls, naming, overrides, size):
+def render_class(cls, naming, overrides, size, why=None):
     slots = "".join(SLOT_LINE.format(off=k, decl=SLOT_DECLS[k]) for k in sorted(overrides))
     fields = ""
     if size and size > ACTOR_BASE_SIZE:
         fields = PAD_LINE.format(off=ACTOR_BASE_SIZE, n=size - ACTOR_BASE_SIZE)
     return CLASS_BLOCK.format(naming=comment(naming), cls=cls, slots=slots, fields=fields,
-                              size=f"0x{size:X}" if size else "unknown, no `new` of it found")
+                              size=f"0x{size:X}" if size else why)
 
 
 def dtor_plan(unit, d):
     ctors = ctors_of(unit, d["vt_name"], d["name"])
     cls, naming = class_name(unit, d["vt"], ctors)
-    size = alloc_size(ctors)
+    size, why = alloc_size(ctors)
     if size is not None and size < ACTOR_BASE_SIZE:
         return None
-    return {"cls": cls, "naming": naming, "size": size, "block": render_class(cls, naming, d["overrides"], size),
+    return {"cls": cls, "naming": naming, "size": size, "block": render_class(cls, naming, d["overrides"], size, why),
             "def": DTOR_DEF.format(cls=cls)}
 
 
@@ -601,7 +620,7 @@ def resplit():
 
 
 def objdiff(unit):
-    """{target function name: match % (None when we lack it)}."""
+    """{target symbol name: match % (None when we lack it)}, functions and data."""
     cmd = [OBJDIFF, "diff", "-p", ".", "-u", f"fsa_game_code/game/{unit}", "-o", "-",
            "-c", "functionRelocDiffs=all"]
     out = subprocess.run(cmd, capture_output=True, text=True)
@@ -609,7 +628,7 @@ def objdiff(unit):
         return None
     d = json.loads(out.stdout)
     return {s["name"]: (float(s.get("match_percent") or 0) if s.get("target_symbol") is not None else None)
-            for s in d["left"]["symbols"] if s.get("kind") == "SYMBOL_FUNCTION"}
+            for s in d["left"]["symbols"] if s.get("kind") in ("SYMBOL_FUNCTION", "SYMBOL_OBJECT")}
 
 
 def matched(diff):
@@ -674,12 +693,13 @@ def insert_def(text, unit, dtor_addr, definition):
     return text[:cut] + definition + "\n" + text[cut:]
 
 
+STALE = re.compile(r"//.*(__sinit|sinit|destructor|dtor|pool).*\b(not|still|yet|missing|unwritten|todo)\b"
+                   r"|//.*\b(not|still|yet)\b.*(__sinit|sinit|destructor|dtor)", re.I)
+
+
 def new_source(unit, plan):
-    parts = ["the JAudio pools' __sinit (game/GameAudio.h)"] if plan["sinit"] else []
-    if plan["dtors"]:
-        parts.append("the destructor")
-    out = (f"// So far only {' and '.join(parts)}, from tools/gen_game.py;\n"
-           f"// the rest of this unit is still to be written.\n\n{SINIT_INCLUDE}\n")
+    """A new unit's source: the includes and the destructors, nothing else."""
+    out = f"{SINIT_INCLUDE}\n"
     if plan["dtors"]:
         out += f'#include "game/act/{unit}.h"\n'
         for d in plan["dtors"]:
@@ -688,16 +708,25 @@ def new_source(unit, plan):
 
 
 def edit_source(unit, plan, text):
-    """Returns (new text, problem)."""
+    """Returns (new text, problem). Deterministic: --check re-runs it on the
+    file as it was before generation."""
     if text is None:
         return new_source(unit, plan), None
+    stale = [l.strip() for l in text.splitlines() if STALE.search(l)]
+    if stale:
+        return None, f"a comment may describe the generated code as unwritten ({stale[0][:60]!r}); edit it by hand"
     incs = INCLUDE.findall(text)
     if "game/GameAudio.h" not in incs:
         if any(i.startswith(("JSystem/JAudio", "game/GameAudioBase.h")) for i in incs):
             return None, "has JAudio includes but not game/GameAudio.h"
         m = INCLUDE.search(text)
-        pos = m.start() if m else len(text)
-        text = text[:pos] + SINIT_INCLUDE + "\n" + text[pos:]
+        if m:
+            pos = m.start()
+            sep = "\n" if pos and text[:pos].rstrip("\n").split("\n")[-1].lstrip().startswith("//") \
+                and not text[:pos].endswith("\n\n") else ""
+            text = text[:pos] + sep + SINIT_INCLUDE + "\n" + text[pos:]
+        else:
+            text = (text.rstrip("\n") + "\n\n" if text.strip() else "") + SINIT_INCLUDE + "\n"
     elif incs[0] != "game/GameAudio.h":
         return None, "game/GameAudio.h is not its first include (not reordering hand-written code)"
     if plan["dtors"]:
@@ -895,19 +924,43 @@ def restore(snap):
             p.write_text(t)
 
 
-def members(plan, edits_names):
+MANIFEST_HEAD = "unit\tfamily\tfunction\tclass\tvtable\tsrc_before\thdr_before"
+
+
+def members(plan, names):
     out = []
     if plan["sinit"]:
-        out.append(("sinit", edits_names.get(plan["sinit"]["addr"]), "", ""))
+        out.append(("sinit", names.get(plan["sinit"]["addr"]), "-", "-"))
     for d in plan["dtors"]:
         out.append(("dtor", f"__dt__{len(d['cls'])}{d['cls']}Fv", d["cls"], f"0x{d['vt']:08X}"))
     return out
 
 
+def blob(path):
+    """`new` if the generator creates the file, else the git blob of the file
+    before generation (written to the object store, so --check can re-run the
+    edit on it)."""
+    if not path.exists():
+        return "new"
+    return subprocess.run(["git", "hash-object", "-w", str(path)], capture_output=True,
+                          text=True, check=True).stdout.strip()
+
+
+def claimed():
+    try:
+        return {unit_slug(k) for k in json.loads(Path("progress/claims.json").read_text())}
+    except (OSError, ValueError):
+        return set()
+
+
 def generate(units):
     ninja(str(our_obj(TEMPLATE_UNIT)))
     plans, report = {}, {}
+    taken = claimed()
     for u in units:
+        if u in taken:
+            report[u] = ("skipped: claimed in progress/claims.json", [])
+            continue
         p = plan_unit(u)
         if not p["sinit"] and not p["dtors"]:
             report[u] = ("nothing to generate", p["skipped"])
@@ -916,6 +969,8 @@ def generate(units):
     snaps, before = {}, {}
     for u, p in list(plans.items()):
         snaps[u] = snapshot(u)
+        p["src_before"] = blob(src_path(u))
+        p["hdr_before"] = blob(hdr_path(u)) if p["dtors"] else "-"
         if src_path(u).exists():
             ninja(str(our_obj(u)))
             before[u] = matched(objdiff(u))
@@ -953,97 +1008,232 @@ def generate(units):
             continue
         all_edits[u] = edits
         apply_edits(edits)
+    split_done = False
     while plans:
         resplit()
+        split_done = True
         ninja(*[str(our_obj(u)) for u in plans], keep_going=True)
         bad = []
         for u, p in plans.items():
+            p["names"] = {e[1]: e[3][0].split(" = ")[0] for e in all_edits[u] if e[0] == ".text"}
             diff = objdiff(u) or {}
-            new_names = {e[1]: e[3][0].split(" = ")[0] for e in all_edits[u] if e[0] == ".text"}
-            gen = [n for n in new_names.values() if n.startswith(("__sinit_", "__dt__"))]
             lost = sorted(before[u] - matched(diff))
-            low = [f"{n} {diff.get(n)}" for n in gen if diff.get(n) != 100]
-            if low or lost:
+            probs = member_problems(u, p, diff) + ([f"lost {', '.join(lost)}"] if lost else [])
+            if probs:
                 bad.append(u)
-                report[u] = (f"backed out: {'; '.join(low)}{' lost ' + ', '.join(lost) if lost else ''}",
-                             p["skipped"])
+                report[u] = ("backed out: " + "; ".join(probs), p["skipped"])
             else:
-                after = matched(diff)
-                report[u] = (f"ok: {len(before[u])} -> {len(after)} functions match ("
+                gen = [m[1] for m in members(p, p["names"])]
+                report[u] = (f"ok: {len(before[u])} -> {len(matched(diff) & set(funcs_of(u)))} functions match ("
                              + ", ".join(sorted(gen)) + ")", p["skipped"])
-                p["names"] = new_names
         for u in bad:
             apply_edits(all_edits.pop(u), revert=True)
             restore(snaps[u])
             del plans[u]
+            split_done = False
         if not bad:
             break
-    if not plans and all_edits == {}:
+    if not split_done and any(r[0].startswith("backed out") for r in report.values()):
         resplit()  # everything was backed out after a split: split the restored symbols again
-    rows = MANIFEST.read_text().splitlines() if MANIFEST.exists() else \
-        ["unit\tfamily\tfunction\tclass\tvtable"]
+    rows = MANIFEST.read_text().splitlines()[1:] if MANIFEST.exists() else []
     for u, p in plans.items():
         for fam, fn, cls, vt in members(p, p["names"]):
-            row = f"{u}\t{fam}\t{fn}\t{cls}\t{vt}"
-            if row not in rows:
-                rows.append(row)
-    MANIFEST.write_text("\n".join([rows[0]] + sorted(rows[1:])) + "\n")
+            rows.append(f"{u}\t{fam}\t{fn}\t{cls}\t{vt}\t{p['src_before']}\t{p['hdr_before']}")
+    MANIFEST.write_text("\n".join([MANIFEST_HEAD] + sorted(set(rows))) + "\n")
     return report
 
 
+def funcs_of(unit):
+    return [s[0] for s in obj_fresh(target_obj(unit)).funcs()]
+
+
+def obj_fresh(path):
+    return Obj(path)
+
+
+# ---------------------------------------------------------------- per-member checks
+
+
+def member_problems(u, p, diff):
+    """Everything --check verifies about one unit's members except the file
+    text: template identity on both sides, objdiff 100 %, and the
+    symbols.txt side (sinit: the exact .bss layout; dtor: the vtable's name,
+    size, slot names and 100 %)."""
+    bad = []
+    t, o = obj_fresh(target_obj(u)), (obj_fresh(our_obj(u)) if our_obj(u).exists() else None)
+    if o is None:
+        return ["no compiled object"]
+    for fam, fn, cls, vt in members(p, p["names"]):
+        tf, of = t.func(fn), o.func(fn)
+        if not tf:
+            bad.append(f"{fn}: not in the target object (symbols.txt)")
+            continue
+        if not same_as_template(t, tf[1], fam):
+            bad.append(f"{fn}: target is not the {fam} template up to identifiers")
+        if not of or not same_as_template(o, of[1], fam, ours=True):
+            bad.append(f"{fn}: our compiled function is not the template's up to identifiers")
+        if diff.get(fn) != 100:
+            bad.append(f"{fn}: objdiff {diff.get(fn)}")
+        if fam == "sinit":
+            bad += bss_problems(u, t, o, diff)
+        else:
+            bad += vtable_problems(u, t, o, tf[1], of[1] if of else None, diff)
+    return bad
+
+
+def bss_problems(u, t, o, diff):
+    """The unit's .bss in dtk's split: exactly our 9 @NNN (0xC, 100 %), then 9
+    unnamed lbl_<addr> of 0x10 at +0x6C..+0xEC, then 4 unsplit bytes."""
+    tb, ob = t.sec(".bss"), o.sec(".bss")
+    if tb is None or t.e.sh[tb][5] != BSS_SIZE:
+        return [f".bss is not 0x{BSS_SIZE:X}"]
+    base = bss_base(u)
+    ours = sorted((s for _, s in o.defined(".bss") if re.fullmatch(r"@\d+", s[0])), key=lambda s: s[1])
+    want = [(s[0], s[1], 0xC) for s in ours]
+    want += [(f"lbl_{base + 0xC * N_POOLS + 0x10 * k:08X}", 0xC * N_POOLS + 0x10 * k, 0x10) for k in range(N_POOLS)]
+    pad = BSS_SIZE - 4
+    # the 4 unsplit bytes: dtk's split names them gap_<align>_<addr>_bss
+    want.append((f"gap_08_{base + pad:08X}_bss", pad, 4))
+    have = sorted(((s[0], s[1], s[2]) for _, s in t.defined(".bss")), key=lambda x: x[1])
+    bad = []
+    if [w[1:] for w in want[:N_POOLS]] != [(0xC * k, 0xC) for k in range(N_POOLS)] or have != want:
+        bad.append(".bss split is not our 9 @NNN + 9 lbl_ 0x10 copies + 4 pad bytes: "
+                   + ", ".join(f"{n}@+0x{a:X}/0x{z:X}" for n, a, z in have if (n, a, z) not in want)[:200])
+    bad += [f"{n}: objdiff {diff.get(n)}" for n, _, _ in want[:N_POOLS] if diff.get(n) != 100]
+    return bad
+
+
+def vtable_problems(u, t, o, tf, of, diff):
+    """The vtable the dtor stores: same name in dtk's split and ours, 0x54 in
+    symbols.txt, every slot's relocation target named as ours, 100 %."""
+    if of is None:
+        return []
+    def vt_of(x, f):
+        r = [r for r in x.relocs_in(f[5], f[1], f[2]) if r[1] == 6][0]
+        return x.syms[r[2]]
+    tv, ov = vt_of(t, tf), vt_of(o, of)
+    bad = []
+    if tv[0] != ov[0]:
+        return [f"vtable is {tv[0]} in symbols.txt, ours {ov[0]}"]
+    line = sym_line(symbols_lines(), ".data", data_base(u) + tv[1], tv[0])
+    if not line or f"size:0x{VT_SIZE:X}" not in line or tv[2] != VT_SIZE:
+        bad.append(f"{tv[0]}: symbols.txt size is not 0x{VT_SIZE:X}")
+    ts = {off - tv[1]: t.syms[si][0] for off, _, si, _ in t.relocs_in(t.sec(".data"), tv[1], VT_SIZE)}
+    os_ = {off - ov[1]: o.syms[si][0] for off, _, si, _ in o.relocs_in(o.sec(".data"), ov[1], VT_SIZE)}
+    for k in range(8, VT_SIZE, 4):
+        if ts.get(k) != os_.get(k):
+            bad.append(f"{tv[0]} slot 0x{k:02X}: symbols.txt names {ts.get(k)}, ours {os_.get(k)}")
+    if diff.get(tv[0]) != 100:
+        bad.append(f"{tv[0]}: objdiff {diff.get(tv[0])}")
+    return bad
+
+
+def bss_base(unit):
+    for l in SPLITS.read_text().split("\n\n"):
+        if l.startswith(f"game/{unit}.cpp:"):
+            m = re.search(r"\.bss\s+start:0x([0-9A-F]+)", l)
+            return int(m[1], 16) if m else 0
+    return 0
+
+
+def git_blob(h):
+    out = subprocess.run(["git", "cat-file", "blob", h], capture_output=True, text=True)
+    return out.stdout if out.returncode == 0 else None
+
+
+def text_problems(u, p, src_before, hdr_before):
+    """The unit's files are exactly what the generator writes: a created file
+    equals its rendering, an edited one equals the edit re-run on the file as
+    it was before generation (its blob)."""
+    bad = []
+    for path, before, render in ((src_path(u), src_before, edit_source),
+                                 (hdr_path(u), hdr_before, edit_header)):
+        if before == "-":
+            continue
+        old = None if before == "new" else git_blob(before)
+        if before != "new" and old is None:
+            bad.append(f"{path}: its pre-generation blob {before} is not in git")
+            continue
+        want, why = render(u, p, old)
+        have = path.read_text() if path.exists() else None
+        if why or have != want:
+            bad.append(f"{path}: not exactly the generator's output" + (f" ({why})" if why else
+                       first_diff(want or "", have or "")))
+    return bad
+
+
+def first_diff(a, b):
+    al, bl = a.splitlines(), b.splitlines()
+    for k in range(max(len(al), len(bl))):
+        x = al[k] if k < len(al) else "<end>"
+        y = bl[k] if k < len(bl) else "<end>"
+        if x != y:
+            return f" (line {k + 1}: expected {x[:60]!r}, found {y[:60]!r})"
+    return ""
+
+
 # ---------------------------------------------------------------- check
+
+
+def plan_from_rows(u, rs):
+    """Rebuild the unit's plan from its manifest rows and dtk's split."""
+    t = obj_fresh(target_obj(u))
+    p = {"unit": u, "sinit": None, "dtors": [], "names": {}}
+    bad = []
+    for _, fam, fn, cls, vt, sb, hb in rs:
+        f = t.func(fn)
+        if not f:
+            bad.append(f"{fn}: not in the target object (symbols.txt)")
+            continue
+        addr = text_base(u) + f[1][1]
+        p["names"][addr] = fn
+        if fam == "sinit":
+            p["sinit"] = {"addr": addr}
+            continue
+        d, why = dtor_info(t, u, f[1])
+        dp = dtor_plan(u, d) if d else None
+        if why or not dp or dp["cls"] != cls or f"0x{d['vt']:08X}" != vt:
+            bad.append(f"{fn}: no longer derives as class {cls}, vtable {vt}" + (f" ({why})" if why else ""))
+            continue
+        p["dtors"].append({**d, **dp})
+    p["dtors"].sort(key=lambda d: d["addr"])
+    return p, bad
 
 
 def check(units):
     rows = [r.split("\t") for r in MANIFEST.read_text().splitlines()[1:] if r.strip()]
     if units:
         rows = [r for r in rows if r[0] in units]
-    problems = []
     by_unit = {}
     for r in rows:
+        if len(r) != 7:
+            print(f"malformed manifest row: {r}")
+            return False
         by_unit.setdefault(r[0], []).append(r)
     cfg = Path("build/G4SE01/config.json")
     if cfg.exists() and any(p.stat().st_mtime > cfg.stat().st_mtime for p in (SYMBOLS, SPLITS)):
         cfg.unlink()
-    ninja("build/G4SE01/config.json", *[str(our_obj(u)) for u in by_unit], keep_going=True)
+    out = ninja("build/G4SE01/config.json", *[str(our_obj(u)) for u in by_unit], keep_going=True)
+    if not Path("build/G4SE01/config.json").exists():
+        print("split failed:", (out.stdout + out.stderr)[-1000:])
+        return False
+    with ThreadPoolExecutor(16) as ex:
+        diffs = dict(zip(by_unit, ex.map(objdiff, by_unit)))
+    problems = 0
     for u, rs in sorted(by_unit.items()):
-        bad = []
-        t, o = Obj(target_obj(u)), Obj(our_obj(u)) if our_obj(u).exists() else None
-        diff = objdiff(u) or {}
-        src = src_path(u).read_text() if src_path(u).exists() else ""
-        hdr = hdr_path(u).read_text() if hdr_path(u).exists() else ""
-        for _, fam, fn, cls, vt in rs:
-            tf, of = t.func(fn), (o.func(fn) if o else None)
-            if not tf:
-                bad.append(f"{fn}: not in the target object (symbols.txt)")
-                continue
-            if not same_as_template(t, tf[1], fam):
-                bad.append(f"{fn}: target is not the {fam} template up to identifiers")
-            if not of or not same_as_template(o, of[1], fam, ours=True):
-                bad.append(f"{fn}: our compiled function is not the template's up to identifiers")
-            if diff.get(fn) != 100:
-                bad.append(f"{fn}: objdiff {diff.get(fn)}")
-            incs = INCLUDE.findall(src)
-            if not incs or incs[0] != "game/GameAudio.h":
-                bad.append("game/GameAudio.h is not the first include")
-            if fam == "dtor":
-                d, why = dtor_info(t, u, tf[1])
-                if why:
-                    bad.append(f"{fn}: {why}")
-                    continue
-                p = dtor_plan(u, d)
-                if not p or p["cls"] != cls or f"0x{d['vt']:08X}" != vt:
-                    bad.append(f"{fn}: class/vtable no longer derive as {cls} {vt}")
-                    continue
-                if hdr.count(p["block"]) != 1 or len(re.findall(r"\bclass %s\b" % cls, hdr)) != 1:
-                    bad.append(f"{fn}: the header's class block is not the template's rendering")
-                if src.count(p["def"]) != 1:
-                    bad.append(f"{fn}: the definition is not the template's `{p['def'].strip()}`")
+        sbs, hbs = {r[5] for r in rs}, {r[6] for r in rs if r[1] == "dtor"}
+        p, bad = plan_from_rows(u, rs)
+        if not bad:
+            bad = member_problems(u, p, diffs[u] or {})
+            if len(sbs) != 1 or len(hbs) > 1:
+                bad.append("manifest rows disagree on the files' pre-generation versions")
+            else:
+                bad += text_problems(u, p, sbs.pop(), hbs.pop() if hbs else "-")
         print(f"{u}: {', '.join(r[2] for r in rs)}: " + ("ok" if not bad else "FAIL"))
         for b in bad:
             print(f"  {b}")
-        problems += bad
-    print("check: ok" if not problems else f"check: {len(problems)} problem(s)")
+        problems += len(bad)
+    print("check: ok" if not problems else f"check: {problems} problem(s)")
     return not problems
 
 
