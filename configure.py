@@ -490,12 +490,14 @@ def SdkGxLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
 
 
 # Helper function for JSystem from mkdd (libs/jsystem)
-def MkddJSystemLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+def MkddJSystemLib(
+    lib_name: str, objects: List[Object], extra_cflags: List[str] = []
+) -> Dict[str, Any]:
     return {
         "lib": lib_name,
         "src_dir": "libs/jsystem",
         "mw_version": "GC/2.6",
-        "cflags": cflags_jsystem_mkdd,
+        "cflags": cflags_jsystem_mkdd + extra_cflags,
         "progress_category": "jsystem",
         "host": False,
         "objects": objects,
@@ -751,7 +753,10 @@ config.libs = [
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
-    ]),
+    # FSA's JAudio was built with -sym on, as tp's JAudio2 and Petari's
+    # cflags_jsys_jaudio are: it puts weak and inline copies at the end of
+    # each object, which is FSA's layout. Not validated for other libraries.
+    ], extra_cflags=["-sym on"]),
     MkddJSystemLib("mkdd_JFramework", [
         Object(Matching, "JSystem/JFramework/JFWDisplay.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
