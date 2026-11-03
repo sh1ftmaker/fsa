@@ -25,6 +25,21 @@ void cls_804A4C58::vfunc_0x80() {
     EnemyBase_804A4808::vfunc_0x80();
 }
 
+// Vtable slot 0x9C (0x801D89BC). Any hit bit in mFlags skips the step
+// (vfunc_0x94 only in state 0xF); otherwise EnemyBase's state step runs.
+// Then the countdown at 0x336 and the effect pair at 0x2C8.
+void cls_804A4C58::vfunc_0x9C(u8 mapHit) {
+    if (!(mFlags & 7)) {
+        fn_801CE2BC(mapHit);
+    } else if (mState == 0xF) {
+        vfunc_0x94();
+    }
+    if (field_0x336 != 0) {
+        field_0x336--;
+    }
+    fn_801E61C4();
+}
+
 extern "C" void fn_801DA0FC() {
     lbl_8053AF80->fn_80458F9C(60);
 }
