@@ -127,3 +127,46 @@ Evidence: the same slot of the same vtable in our compiled J3DMatBlock.o.
 ## Next
 - Name the externals above (owner of J3DMaterial.cpp range), then see which base-class functions
   FSA's J3DMatBlock really defines, to drop the four extra base vtables.
+
+## Wave 8 (w8-j3d), 2026-11-03
+Baseline: total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %).
+Unit: 408 of 427 functions at 100 %, 19 below (.text 99.64 %, .data 93.44 %). Unchanged; FIXME comments added
+in J3DMatBlock.cpp. Stays NonMatching.
+
+### 15 setters (96 %), codegen, not blocked by another unit
+Target `slwi r4,r4,2; lwz r5,0(r5); addi r0,r4,off; stwx r5,r3,r0`; ours loads into r0 and adds into r4.
+Scratch harness (unit flags), variants of the 4-byte Info copy:
+- `__memcpy` operator= (void or returning ref), derived Ord::operator= calling Info's, local pointer
+  `Ord* p = &m[i]; *p = o`, direct `__memcpy(&m[i], &o, 4)`, explicit `m[i].Info::operator=(o)`: all r0 form.
+- implicit copy of u8[4] struct, `#pragma pack(2)`, aligned(4) attribute, member-wise u8 copy (tww's
+  J3DIndTexOrderInfo/J3DTexCoordInfo style): 4x lbz/stb.
+- tww's J3DTevOrderInfo (u8 fields, ALIGN_DECL(2), no operator=): lhz/lbz.
+- a real u32 member (`u32 x`, bitfields, union with u32) through operator= or implicit copy: folds to
+  `add; stw r4,0xc(r3)`.
+- `Info* p = &m[i]; p->x = o.x` / `u32* p = &m[i].x; *p = o.x` with a u32 member: matches, but needs the
+  Info struct to be a u32 (it is accessed as u8 fields everywhere), so not real.
+- `*(u32*)this = *(u32*)&other`: matches (tp; tp labels it a fakematch for J3DTexCoord/J3DIndTexOrder/
+  J3DIndTexCoordScale; tp's J3DTevOrderInfo::operator= uses the same cast unlabelled). Not used.
+The `stwx` + r5 reuse appears only when the store goes through a pointer the compiler can't fold to
+`this+off` and the value is a typed word load, never with __memcpy.
+
+### 4 initialize functions (TevBlock2 97.6 %, 16 94.7 %, 4 86.1 %, Patched 82.1 %), codegen
+FSA reads j3dDefaultTevColor's second word through a base register (`li rX, sym@sda21; lwz 0x4(rX)`),
+which costs one more saved register (stmw r27 / r21) and shifts the allocation. Variants:
+- J3DGXColorS10 `__memcpy` operator= (current), copy-ctor + assignment, by-value parameter: `lwz sym+4@sda21`.
+- GXColorS10 struct copy, member-wise r/g/b/a, tww's `mColor = color`: 4x lha/sth with the base register.
+- tp's `((u32*)this)[0] = ((u32*)&color)[0]; [1] = [1]`: matches (tp: "Fakematch? ... might be real").
+  Not used.
+
+### .data 93.44 %: tooling, not source
+Our object emits the weak vtables `__vt__10J3DPEBlock`, `__vt__11J3DIndBlock`, `__vt__14J3DTexGenBlock`,
+`__vt__13J3DColorBlock` (readelf: OBJECT WEAK), because the derived dtors inline the base dtors
+(the target's dtors do too: `__dt__13J3DPEBlockOpaFv` stores `__vt__10J3DPEBlock`). In FSA those vtables
+sit in J3DMaterial.cpp's .data (0x8049A4D0-0x8049A6D8), which is earlier in link order, so MWLD kept
+J3DMaterial's copy and dropped J3DMatBlock's. That is the weak-duplicate case of CLAUDE.md, for .data
+instead of extab: honest_report.py only strips weak extab entries, so .data can't reach 100 % from
+source. SHARED-EDIT (tooling, coordinator): extend the weak-dedup evidence to WEAK OBJECTs that the
+map lists as UNREFERENCED DUPLICATE for this object.
+
+### Is J3DMatBlock blocked by another unit?
+No: the 19 functions are codegen; .data is the tool limitation above.
