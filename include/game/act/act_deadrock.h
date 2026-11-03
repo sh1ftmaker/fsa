@@ -5,12 +5,6 @@
 
 #include "game/ActorBase.h"
 
-// Map checks update() makes with the actor's mSerial, its box and its
-// top-down position; not written yet (C linkage, no mangled names).
-extern "C" s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-extern "C" s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-extern "C" s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-
 // The DDRK actor ("Deadrock", docs/names/actors.tsv, high confidence): the
 // spawner constructs it with fn_80203F50, which stores this vtable
 // (config/G4SE01/game_units.tsv). Named after its vtable, 0x8049F498.
