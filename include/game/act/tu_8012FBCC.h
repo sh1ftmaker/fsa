@@ -11,7 +11,13 @@ public:
     cls_8049EA00() {}
     /* 0x08 */ virtual ~cls_8049EA00();
     /* 0x0C */ virtual void init();
-    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    // True when the escorted woman ('OPGL') actor exists and the 2-int
+    // vector at v points the wrong way for a flag in mFlags (fn_80130030
+    // calls it with an actor of this class).
+    bool fn_8012FC2C(const s32* v);
+    /* 0x230 */ u32 mFlags; // field_0x90 & 0xF; bit 0/1: v[0] must be
+                            // positive/negative, bit 2/3: v[1] must be
+
 }; // Size: 0x234
 
 #endif

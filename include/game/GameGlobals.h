@@ -140,4 +140,14 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
                             bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
 
+// game/tu_8012FF9C.cpp (owner unit, not written yet). The guarded static at
+// 0x8053AAC4 (constructed by fn_8012FFF4's registration; fn_801300D8 sets its
+// words at 0x0 and 0x4 to -1 and 0). Called by cls_8049EA00::init.
+struct Unk_8053AAC4;
+// Getter of the guarded static (returns its address).
+extern "C" Unk_8053AAC4* fn_8012FF9C();
+// Appends `value` to the object's list when it is positive: stores it at
+// index obj[1] (stwx r4, r3, obj[1] * 4) and increments obj[1].
+extern "C" void fn_801300B4(Unk_8053AAC4* obj, s32 value);
+
 #endif
