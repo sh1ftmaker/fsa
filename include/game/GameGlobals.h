@@ -94,6 +94,18 @@ struct GameRoot_8049EF20 {
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
+// The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
+// registered with __register_global_object) built on first use. Named after
+// the function fn_80119DD0 registers with __register_global_object (as the
+// static's destructor), fn_80119E5C. Owner: game/tu_80118384.cpp (not
+// written yet). 20+ units call fn_80119998 on it, e.g. game/tu_8012EA00.cpp
+// passes (0x3C, 0, 1, 0, 1, 0x5A, 0).
+class cls_80119E5C {
+public:
+    void fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+};
+extern "C" cls_80119E5C* fn_80119DD0();
+
 class ItemPedestal_804A82A8;
 extern "C" {
 // Owner: game/act_item_pedestal.cpp (not written yet; its generated header
@@ -306,9 +318,24 @@ extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 struct cls_801C0D70 {
     /* 0x000 */ u16 field_0x0;
     /* 0x002 */ u8 field_0x2[0x160 - 0x2]; // not yet known
+    // Owner tu_801C0D70. True when a target for the player at *pos was found;
+    // writes its x/y to *out. Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
+    bool fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
 }; // Size: 0x160
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
+
+// game/tu_80204638.cpp (owner unit, not written yet). The guarded static in
+// .bss at 0x804CADE0 (constructed on first use by fn_80204638, flag lbl_8053AC58);
+// named after that function. Only the byte at 0x0 is known: act_bandit_herding_npc's
+// update sets it to 1 (and the actor manager's reset functions call the getter).
+struct cls_80204638 {
+    /* 0x00 */ u8 field_0x0;
+    // The inlined constructor writes up to 0xD0 (a TVec3f[10] at 0x58), but the
+    // .bss symbol is 0x1D0 bytes: the real size is not known, so none is claimed.
+};
+// Getter of that object (returns its address).
+extern "C" cls_80204638* fn_80204638();
 
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.

@@ -124,6 +124,13 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - mPos loaded before a TBox2f copy: `JGeometry::TVec2<f32> p(mPos.x, mPos.y);
   TBox2f box(mBox); box.addPos(p);`. Loaded after the copy instead: add
   the corners by hand in the target's order (i.x, i.y, f.x, f.y).
+- Point-in-box test with x/y float registers swapped: a file-local inline
+  taking the point by reference or pointer,
+  `static inline bool contains(const TBox2f& b, const TVec3f& p) { return
+  p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y; }` — not
+  scalar (x, y) arguments, not `result = true` inside it.
+- A u8 converted to float with the signed form (xoris 0x8000): an explicit
+  `(s32)` on the u8 operand; plain `u8 * f32` gives the unsigned form.
 - A value kept in one register across a call: a local read once
   (`s32 layer = field_0x4;`) — the original read it once too.
 

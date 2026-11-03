@@ -15,7 +15,11 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x20]; // not yet known
+    /* 0x230 */ u8 field_0x230[4]; // not yet known
+    /* 0x234 */ s32 field_0x234;    // init(): field_0x90 & 0xFF; how many TZOK are to be herded in
+    /* 0x238 */ s32 field_0x238;    // update(): how many TZOK are inside the box this frame
+    /* 0x23C */ s32 field_0x23c;    // init(): (field_0x90 >> 22) & 0x1F; bit passed to GameView::fn_802D800C
+    /* 0x240 */ JGeometry::TBox2f field_0x240; // init(): mBox moved to mPos; the area TZOK must be in
 }; // Size: 0x250
 
 #endif
