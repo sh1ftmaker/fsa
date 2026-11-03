@@ -868,6 +868,7 @@ config.libs = [
     SdkGxLib("gx", [
         Object(Matching, "dolphin/gx/GXAttr.c"),
         Object(Matching, "dolphin/gx/GXBump.c"),
+        Object(Matching, "dolphin/gx/GXDraw.c", extra_cflags=["-fp_contract off"]),
         Object(Matching, "dolphin/gx/GXDisplayList.c"),
         Object(Matching, "dolphin/gx/GXFifo.c"),
         Object(Matching, "dolphin/gx/GXFrameBuf.c"),
