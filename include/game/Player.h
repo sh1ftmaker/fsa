@@ -168,6 +168,15 @@ extern "C" {
 void fn_8023F1D4(s32 player, const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c);
 s32 fn_8022BCD4(s32 player);             // 1 unit. -> fn_8023FC24 (word 0xBEC); else 0
 void fn_8022CA6C(s32 player, s32 a, bool b); // 11 units. act_post_warp_pillar_handling passes (i, 0, 1)
+// Per-player queries and setters of the 0x9C-byte family, owner tu_8022AD64
+// (cls_804AC388::update, game/tu_8033F448.cpp). Results are tested with
+// clrlwi 24 (bool); fn_80237810 is compared as a word and the value
+// minus 4 goes to fn_8023764C.
+bool fn_8022F478(s32 player);
+bool fn_80236A18(s32 player);
+bool fn_80236D14(s32 player);
+s32 fn_80237810(s32 player);
+void fn_8023764C(s32 player, s32 value);
 bool fn_8022CCAC(s32 player);            // 2 units. -> fn_80249068 (byte 0x121F); else false
 bool fn_8022D75C(s32 player);            // 29 units. -> fn_8024BBB0 (byte 0xCE8); else false
 // 1 unit (act_attack_hitbox_when_player_is_thrown; others call it too). Player pair test.
