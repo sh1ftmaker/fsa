@@ -285,7 +285,16 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   Before flipping such a unit, the worker runs
   `python3 tools/link_check.py --unit game/<unit>.cpp`, then
   `ninja build/G4SE01/report_honest.json`; after the flip ninja's own map
-  is the evidence and the trial is no longer needed.
+  is the evidence and the trial is no longer needed. The report re-links
+  each trial record before using it, but caches that in
+  `build/G4SE01/weakdedup_verified.json`, a local speed-up anyone who can
+  write `build/` could forge: only `gate.py` (which re-links without the
+  cache) proves a trial removal, so quote trial-based numbers after a gate
+  run. Every flip changes the main link inputs, so all recorded trial
+  evidence goes stale (the unit's data % drops back, with a note in the
+  manifest) until its `--unit` is re-run. Each trial keeps its map, about
+  5.4 MB (~2.8 GB if all ~523 pool units had one); delete
+  `build/G4SE01/weakdedup_evidence/` entries no longer needed.
 - Dead-stripped units (tu_802BA334 type): the unit's own functions were
   all dead-stripped in the original, so only its `__sinit` (the 9 pools),
   its `.ctors` entry and its `.bss` remain. dtk's split survives the link

@@ -442,7 +442,13 @@ def check_link_record(key, rec, expected):
             return f"trial evidence {key} missing or outside build/G4SE01/weakdedup_evidence", [], None
         if _tracked(ev) or _tracked(rec["map"]):
             return f"trial evidence {key} is tracked by git", [], None
-        r = json.loads(ev.read_text())
+        try:
+            r = json.loads(ev.read_text())
+            if not (isinstance(r, dict) and isinstance(r.get("unit"), str)
+                    and isinstance(r.get("objects"), dict) and isinstance(r.get("inputs"), list)):
+                raise ValueError("not an evidence record (unit, objects, inputs)")
+        except (OSError, ValueError) as err:
+            return f"trial evidence {key} is malformed: {err}", [], None
         slug = r.get("unit", "").split("/", 1)[-1].replace("/", "__")
         inputs, objects = r.get("inputs", []), r.get("objects", {})
         if ev.name != f"{slug}.json" or not (r.get("map") == rec["map"] == str(ev.with_suffix(".MAP"))):
@@ -526,9 +532,13 @@ def check_weakdedup(problems):
     links = {}
     for key, rec in man.get("links", {}).items():
         links[key] = check_link_record(key, rec, expected) + (rec,)
-    by_stripped = {}
+    by_stripped, seen = {}, set()
     for e in entries:
         tag = f"weakdedup {e.get('unit')}: {e.get('function')}"
+        if (e.get("object"), e.get("extabindex")) in seen:
+            problems.append(f"{tag}: listed twice in the manifest")
+            continue
+        seen.add((e.get("object"), e.get("extabindex")))
         key = e.get("link")
         if key not in links:
             problems.append(f"{tag}: no link record {key}")

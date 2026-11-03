@@ -34,8 +34,10 @@ entry only when ALL of these hold:
     for this unit against the current main link (same inputs with the one
     object swapped), untracked by git, and re-running that link
     (link_check.py --verify-unit; cached by everything the link depends on)
-    must give the same map and a DOL matching build.sha1 (tools/gate.py
-    re-runs it again on its own);
+    must give the same map and a DOL matching build.sha1. The cache
+    (build/G4SE01/weakdedup_verified.json) is a local speed-up, trusted like
+    any build output and forgeable by whoever can write build/; only
+    tools/gate.py, which re-links without reading it, proves a trial removal;
   * the object's file name is unique among that link's inputs (the map
     names objects by file name only).
 Evidence comes from ninja's own link (Matching units) or from a trial link
@@ -274,6 +276,8 @@ def relink(unit_name, base, rec, inputs):
         why = "the object isn't the one the trial link included"
     elif v["inputs_sha1"] != inputs_sha:
         why = "the trial link now has other inputs"
+    state = key.split()[0]
+    cache = {k: v for k, v in cache.items() if k.split()[0] == state}  # drop other link states
     cache[key] = why
     tmp = VERIFIED.with_suffix(".tmp")
     tmp.write_text(json.dumps(cache, indent=1))
