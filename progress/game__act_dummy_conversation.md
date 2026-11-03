@@ -5,11 +5,13 @@ After: 5840 / 11557, 1169180 bytes. Unit 2/4 -> 3/4 functions.
 
 Matched: __dt, init, __sinit (generated lines kept; gen_game.tsv rows removed).
 
-Resistant: update (94.27 %, scheduling+regalloc). `this` is r31 and player r30 in the
-original; ours swaps them (u32 player gives cmplw, original is cmpw, so s32; `player ==
-call` vs `call == player` made no difference to the swap). Also the by-value mPos copy
-for fn_8038C678 is ordered after the r5/r6 loads in the original (same as act_talking_npc).
-Replacing mPos with a dummy kept the r30/r31 swap, so it is not the copy.
+G4 revisit baseline: total 5922 / 11557 functions, 1186620 bytes (26.71 %); unit 3/4.
+Applied the by-value rule: member `open(player, layer, serial, const TVec3f&, flags)` in the
+act header reads mMessage inside (after the psq copy); layer before serial as parameters.
+update 94.27 -> 99.96 % (the r30/r31 swap went away too).
+
+Resolved in review: `s32 owner = fn_8022FD8C(mSerial); if (owner == player)` gives 100 %; 4/4.
+in the original vs `cmpw r30, r3` ours; `player == call` compiles identically. 3 tries used.
 
 SHARED-EDITS: include/game/GameGlobals.h (cls_804AA8C8 / lbl_8053AD30 + fn_8030AAF4,
 fn_80309D24, fn_80309D6C; cls_804B1920 / lbl_8053AED0 byte array at 0x1F0),
