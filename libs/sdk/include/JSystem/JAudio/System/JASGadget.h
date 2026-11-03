@@ -88,4 +88,31 @@ private:
     T *mArray[N];
 };
 
+// Singly linked pointer list (SMG's JASGadget.hpp; JASBasicInst and
+// JASDrumSet::TPerc keep their effects in one, appendEffect at 0x8002E6E8).
+template <typename T>
+class JASPtrListAdaptor
+{
+public:
+    JASPtrListAdaptor(T *data) : mNext(NULL), mData(data) {}
+
+    JASPtrListAdaptor<T> *getNext() const { return mNext; }
+    T *get() const { return mData; }
+
+    /* 0x0 */ JASPtrListAdaptor<T> *mNext;
+    /* 0x4 */ T *mData;
+};
+
+template <typename T>
+class JASPtrList
+{
+public:
+    JASPtrList() : mList(NULL) {}
+
+    bool isEmpty() const { return mList == NULL; }
+    JASPtrListAdaptor<T> *begin() const { return mList; }
+
+    /* 0x0 */ JASPtrListAdaptor<T> *mList;
+};
+
 #endif /* JAUDIO_JASGADGET_H */

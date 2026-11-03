@@ -96,7 +96,7 @@ namespace JASBNKParser
                 randp->setType(rand->type);
                 randp->setFloor(rand->floor);
                 randp->setCeiling(rand->ceiling);
-                instp->setEffect(j, randp);
+                instp->appendEffect(new (pHeap, 0) JASPtrListAdaptor<JASInstEffect>(randp));
             }
             for (int j = 0; j < 2; j++)
             {
@@ -108,7 +108,7 @@ namespace JASBNKParser
                 JUT_ASSERT(sensep != 0);                
                 sensep->setType(sense->type);
                 sensep->setParams(sense->trigger, sense->centerkey, sense->_4, sense->_8);
-                instp->setEffect(j + 2, sensep);
+                instp->appendEffect(new (pHeap, 0) JASPtrListAdaptor<JASInstEffect>(sensep));
             }
 
             instp->setKeyRegionCount(instrument->keyRegionCount, pHeap);

@@ -5,6 +5,7 @@
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JAudio/System/JASSoundParams.h"
 #include "JSystem/JAudio/System/JASOscillator.h"
+#include "JSystem/JAudio/System/JASGadget.h"
 
 enum JASInstTarget
 {
@@ -67,11 +68,13 @@ protected:
     int mType;
 };
 
+// FSA layout (as in SMG): 0x20 bytes (JASBNKParser news 0x20), effects in
+// a JASPtrList at 0x14 (appendEffect 0x8002E6E8), the key regions' count at
+// 0x18 and table at 0x1C (setKeyRegionCount 0x8002E65C).
 class JASBasicInst : public JASInst
 {
 public:
     static const int OSC_MAX = 2;
-    static const int EFFECT_MAX = 4;
 
     class TKeymap
     {
@@ -100,7 +103,7 @@ public:
     virtual ~JASBasicInst();                                    // 0x800970b8
     virtual bool getParam(int, int, JASInstParam *param) const; // 0x80097184
     void setKeyRegionCount(u32, JKRHeap *heap);                 // 0x800972dc
-    void setEffect(int index, JASInstEffect *effect);           // 0x800973c8
+    void appendEffect(JASPtrListAdaptor<JASInstEffect> *effect);
     void setOsc(int index, JASOscillator::Data *oscData);       // 0x80097494
     TKeymap *getKeyRegion(int index);                           // 0x80097560
 
@@ -111,16 +114,15 @@ public:
 
     // Inline/Unused
     void searchKeymap(int) const;
-    void getEffect(int);
     void getOsc(int);
     TKeymap *getKeyRegion(int) const;
 private:
-    f32 mVolume;                        // 04
-    f32 mPitch;                         // 08
-    JASOscillator::Data *mOsc[OSC_MAX]; // 0C
-    JASInstEffect *mEffect[EFFECT_MAX]; // 14
-    TKeymap *mKeymap;                   // 24
-    u32 mKeyRegionCount;                // 28
+    f32 mVolume;                          // 04
+    f32 mPitch;                           // 08
+    JASOscillator::Data *mOsc[OSC_MAX];   // 0C
+    JASPtrList<JASInstEffect> mEffects;   // 14
+    u32 mKeyRegionCount;                  // 18
+    TKeymap *mKeymap;                     // 1C
 };
 
 class JASInstRand : public JASInstEffect
