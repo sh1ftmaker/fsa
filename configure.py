@@ -1279,7 +1279,7 @@ config.libs = [
         Object(NonMatching, "game/act_quicksand.cpp"),
         Object(NonMatching, "game/tu_80212AC0.cpp"),
         Object(NonMatching, "game/tu_80212E3C.cpp"),
-        Object(NonMatching, "game/tu_80213E00.cpp"),
+        Object(Matching, "game/tu_80213E00.cpp"),
         Object(Matching, "game/tu_80214244.cpp"),
         Object(NonMatching, "game/tu_802144F0.cpp"),
         Object(Matching, "game/tu_802153A8.cpp"),
