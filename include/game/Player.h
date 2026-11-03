@@ -697,6 +697,10 @@ bool fn_80230188(s32 player);            // 56 units. -> fn_802413E8 (byte 0x454
 bool fn_8023EA28(s32 player);
 bool fn_8023561C(s32 player);
 
+// 1 unit (tu_801CB270 fn_801CD1D0). Owner: tu_80301CD0 (0x80303750), a player
+// query returning a byte (clrlwi 24 at the call site); unwritten.
+extern "C" u8 fn_80303750(s32 player);
+
 // 1 unit (act_horse_race_end_area). Owner: tu_8022AD64 (0x80230050). -> fn_8024E03C(player
 // slot) when the slot is present and its byte 0xCAC is set; else false.
 bool fn_80230050(s32 player);

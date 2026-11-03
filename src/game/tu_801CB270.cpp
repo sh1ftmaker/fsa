@@ -157,6 +157,17 @@ bool fn_801CD290(s32 layer) {
     return result;
 }
 
+// Whether `player` has no owner (fn_8022F514 is false) and fn_80303750 says yes.
+extern "C" bool fn_801CD1D0(s32 player) {
+    bool result = false;
+    if (!fn_8022F514(player)) {
+        if (fn_80303750(player)) {
+            result = true;
+        }
+    }
+    return result;
+}
+
 // Whether `layer` is one of the upper layers (8 and up).
 bool fn_801CD2F8(s32 layer) {
     bool result = false;
