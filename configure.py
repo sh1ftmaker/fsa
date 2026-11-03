@@ -687,7 +687,12 @@ config.libs = [
         Object(NonMatching, "JSystem/J2DGraph/J2DWindow.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/J2DGraph/J2DWindowEx.cpp", extra_cflags=["-O4,p"]),
     ]),
-    MkddJSystemLib("mkdd_JAudio", [
+    # JAudio/Interface and JAudio/Utility without -sym on. PROVISIONAL: drop
+    # if any Interface/Utility unit is later found to need -sym on.
+    # JAISeq, JAISeMgr, JAUAudioMgr and JAUSectionHeap match only with it
+    # off (their weak copies stay in place, as in FSA); every other unit of
+    # the two directories compiles identically either way.
+    MkddJSystemLib("mkdd_JAudio_Interface", [
         Object(Matching, "JSystem/JAudio/Interface/JAIAudible.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIAudience.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAISe.cpp", extra_cflags=["-O4,p"]),
@@ -701,6 +706,8 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Interface/JAISoundParams.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStreamMgr.cpp", extra_cflags=["-O4,p"]),
+    ]),
+    MkddJSystemLib("mkdd_JAudio", [
         Object(Matching, "JSystem/JAudio/System/JASAiCtrl.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASAramStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASAudioReseter.cpp", extra_cflags=["-O4,p"]),
@@ -742,6 +749,11 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Task/dsptask.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
         Object(Matching, "JSystem/JAudio/Task/osdsp.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
         Object(Matching, "JSystem/JAudio/Task/osdsp_task.c", extra_cflags=["-O4,p", "-O4,s", "-inline", "noauto", "-use_lmw_stmw", "off", "-func_align", "32"]),
+    # FSA's JAudio/System and Task were built with -sym on, as tp's JAudio2 and Petari's
+    # cflags_jsys_jaudio are: it puts weak and inline copies at the end of
+    # each object, which is FSA's layout. Not validated for other libraries.
+    ], extra_cflags=["-sym on"]),
+    MkddJSystemLib("mkdd_JAudio_Utility", [
         Object(NonMatching, "JSystem/JAudio/Utility/JAUAudience.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUAudioArcInterpreter.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUAudioArcLoader.cpp", extra_cflags=["-O4,p"]),
@@ -756,10 +768,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
-    # FSA's JAudio was built with -sym on, as tp's JAudio2 and Petari's
-    # cflags_jsys_jaudio are: it puts weak and inline copies at the end of
-    # each object, which is FSA's layout. Not validated for other libraries.
-    ], extra_cflags=["-sym on"]),
+    ]),
     MkddJSystemLib("mkdd_JFramework", [
         Object(Matching, "JSystem/JFramework/JFWDisplay.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
