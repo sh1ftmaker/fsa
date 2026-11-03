@@ -4,10 +4,10 @@
 #include "types.h"
 #include "game/EnemyBase.h"
 
-// The state machine the unit at 0x801DA7C0 steps (fn_801DA7C0, the first
-// function that reads it): word 0x4 is the current value, which
+// The state machine the unit at 0x801DA7C0 steps (named after its
+// out-of-line constructor fn_801DAA24, called on this + 0x2A8 at 0x801DA524): word 0x4 is the current value, which
 // fn_801DA904 / fn_801DA938 read. Only the written code's view is known.
-struct Sequencer_801DA7C0 {
+struct Sequencer_801DAA24 {
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ s32 field_0x4; // current value, 0-47
     /* 0x08 */ s32 field_0x8;
@@ -23,7 +23,7 @@ struct Sequencer_801DA7C0 {
 // mirrored when mFlags has 0x2000 and the sequencer is at 28 or more, and
 // keeps two pairs of effects (ids 0x25E/0x25F in mEmitter2c0/2c4, 0x25C/0x25D
 // in mEmitter2c8/2cc).
-// Size: unknown (>= 0x2D0)
+// Size: 0x340 (li r3, 0x340 before the constructor call fn_801DA504)
 class cls_804A4C58 : public EnemyBase_804A4808 {
 public:
     cls_804A4C58() {}
@@ -43,11 +43,12 @@ public:
     // 0x801E63D8: starts the pair at 0x2C0 (ids 0x25E, 0x25F) at mPos.
     void fn_801E63D8();
 
-    /* 0x2A8 */ Sequencer_801DA7C0 mSeq2a8;
+    /* 0x2A8 */ Sequencer_801DAA24 mSeq2a8;
     /* 0x2C0 */ JPABaseEmitter* mEmitter2c0;
     /* 0x2C4 */ JPABaseEmitter* mEmitter2c4;
     /* 0x2C8 */ JPABaseEmitter* mEmitter2c8;
     /* 0x2CC */ JPABaseEmitter* mEmitter2cc;
+    /* 0x2D0 */ u8 field_0x2d0[0x340 - 0x2D0]; // not yet known
 };
 
 #endif
