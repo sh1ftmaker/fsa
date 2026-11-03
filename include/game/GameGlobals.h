@@ -11,9 +11,7 @@
 // "Placeholder names"): the vtable when known, else the constructor, else
 // the first function seen reaching the object (said at each). Vectors:
 // JGeometry::TVec3f for game data, Vec only where a mangled name or a
-// PSMTX/PSVEC call proves it (fn_8030C5F0's mangled name says Vec; the
-// player position getter fn_8023E724 is untyped C and stays Vec* until its
-// unit shows otherwise).
+// PSMTX/PSVEC call proves it (fn_8030C5F0's mangled name says Vec).
 //
 // Owner: the shared-header owner (docs/COORDINATOR.md). Propose new fields
 // as SHARED-EDITS, with the offset, access width and the function that shows
@@ -109,7 +107,7 @@ EffectSystem_8013C824* fn_8013C824(void); // lbl_8053AB10->0x28
 extern "C" {
 bool fn_8023F264(s32 player);  // the player takes part
 s32 fn_8023DE58(s32 player);   // compared with ActorBase_804A5770::field_0x4
-Vec* fn_8023E724(s32 player);  // the player's position
+JGeometry::TVec3f* fn_8023E724(s32 player); // the player's position
 // Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box, field_0x4
 // and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);

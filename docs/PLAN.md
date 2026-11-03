@@ -303,7 +303,9 @@ Not settled: whether game files use `-common on` (the common `.bss` at
   `ActorManager_804A5800`, `GameRoot2_8049F108`. The address is the class's
   vtable; for a class without one, its constructor or first method (or,
   failing that, the first function seen reaching it); a comment says which.
-  The same goes for provisional function and global names. Names ending in
+  The same goes for provisional function and global names. Member names
+  (`init`, `update`, `draw`, `field_0x4`) need no suffix of their own: the
+  class's address suffix covers them, and they change with it. Names ending in
   `_80xxxxxx` count as placeholders for the gate, so they stay renameable.
   Evidenced names (`EnemyParam` from enemyparam.csv, JSystem and SDK types,
   the game's own strings) take no suffix.
