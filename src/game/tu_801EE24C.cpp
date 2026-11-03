@@ -172,6 +172,21 @@ void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::init() {}
 
+// Queues a warp to *pos on layer, unless one is pending (field_0x17c) or
+// running (field_0x174 > 0).
+void ActorBase_804A5770::fn_801F349C(s32 layer, const JGeometry::TVec3f* pos) {
+    if (field_0x17c != 0) {
+        return;
+    }
+    if (field_0x174 > 0) {
+        return;
+    }
+    field_0x30 = *pos;
+    field_0x178 = layer;
+    field_0x17c = 1;
+    field_0x174 = 0;
+}
+
 // Reports the actor's field_0x16c to the view, unless it is -1 (none).
 void ActorBase_804A5770::fn_801F34DC() {
     s32 bit = field_0x16c;
