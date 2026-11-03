@@ -79,16 +79,17 @@ stays OK):
   unit even when other units use it (4 objects; 3 had gone to the
   previous unit: tu_8045B6F0's JAISoundID table 0x8052DEE0,
   act_searchlight 0x804C0EA0, act_shooting_gallery 0x804C6330).
+  Units are tiled from the owned data; gaps nobody owns go to the
+  earlier unit. Check: only one unit's data still points into another unit's
+  `.rodata`/`.sdata2` (act_ganon's table into tu_801902C0, 77 pointers; the
+  table itself is never referenced by name), and the tool prints it.
 - Thunks: CodeWarrior emits a vtable's this-adjusting thunks (`subi r3,
   r3, N; b fn`) at the end of the file that emits the vtable, after its
   `__sinit`, so tu_map's cut put them at the start of the next unit. Each
   goes to the unit whose `.data` holds its vtable: 0x80457C08 to
   tu_80455CA4, 0x8045B010-0x8045B030 (four) to tu_8045A640, 0x8045B6F0 to
   tu_8045B010. These are the only thunks in the game code. The units keep
-  their names (tu_80457C08 now starts at 0x80457C10). Units are tiled from the owned data; gaps nobody owns go to the
-  earlier unit. Check: only one unit's data still points into another unit's
-  `.rodata`/`.sdata2` (act_ganon's table into tu_801902C0, 77 pointers; the
-  table itself is never referenced by name), and the tool prints it.
+  their names (tu_80457C08 now starts at 0x80457C10).
 - The tool's "references ... inside another unit" notes cover only
   references it anchors to a single unit (10 of them). Code also reads
   `.sdata2`/`.rodata` constants several units share (about 40 unit pairs,
