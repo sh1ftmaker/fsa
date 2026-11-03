@@ -193,3 +193,28 @@ the .cpp moved there in one byte-identical commit (branch
   together.
 - The ~2.3 MB of logic is the real job; the plan's aim is to make each of
   those functions cheap to attempt and quick to give up on.
+
+## Open question: `-inline auto` vs `-inline auto,deferred` (2026-11-03)
+
+Game code builds with `-inline auto`. Two research rounds
+(scratchpad notes `research_jtorder.md`, `deferred/`) found evidence both ways:
+
+- For `deferred`: in all 165 original game units with a switch jump table,
+  other `.data` (the class vtable) comes before the first jump table. Under
+  `auto`, MWCC emits a jump table with its function and the vtable at the end
+  of the TU, so no source order gives the original layout (tu_80222CC4
+  vfunc_0x90 stays at 99.91 %). `deferred` also puts tu_801D2C60's weak
+  inline dtor first, as in the original.
+- For `auto`: with every function reversed, `auto,deferred` keeps all 84
+  Matching game units at 100 % and the link SHA-1 OK (one explicit dtor
+  needed in act_tutorial_old_man; 20 generated sinit units renumber their
+  `.bss` `@NNN`). But it inlines calls the original keeps out of line
+  (tu_801CDC8C fn_801CF6B8/fn_801CF720, tu_801EDBA4 draw), net -2
+  functions. Under `auto` a callee defined after its caller is never
+  inlined, which is what the original shows there.
+
+Neither flag explains all of it, so nothing changes yet, and per-unit flags
+stay banned (rules card). Units blocked only by jump-table `.data` order or a
+first-placed weak dtor keep a FIXME naming this section. Whoever picks it up:
+look for what keeps those callees out of line under `deferred` (pragmas,
+`-inline` depth/size limits, different callee signatures in the original).

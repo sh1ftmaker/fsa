@@ -37,8 +37,6 @@ act_cheep_cheep	dtor	__dt__12cls_804A11B8Fv	cls_804A11B8	0x804A11B8	new	new
 act_cheep_cheep	sinit	__sinit_act_cheep_cheep_cpp	-	-	new	new
 act_chief_soldier	sinit	__sinit_act_chief_soldier_cpp	-	-	new	-
 act_cloud	sinit	__sinit_act_cloud_cpp	-	-	new	-
-act_coconut	dtor	__dt__16Coconut_804A9968Fv	Coconut_804A9968	0x804A9968	new	new
-act_coconut	sinit	__sinit_act_coconut_cpp	-	-	new	new
 act_colour_block	dtor	__dt__12cls_804AE620Fv	cls_804AE620	0x804AE620	new	new
 act_colour_block	sinit	__sinit_act_colour_block_cpp	-	-	new	new
 act_crystal_ball	sinit	__sinit_act_crystal_ball_cpp	-	-	new	-
