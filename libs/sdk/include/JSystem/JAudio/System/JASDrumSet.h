@@ -10,7 +10,6 @@ struct JASDrumSet : public JASInst
     {
     public:
         TPerc();
-        ~TPerc();
         void setVolume(f32 vol) { mVolume = vol; }
         void setPitch(f32 pitch) { mPitch = pitch; }
         void setPan(f32 pan) { mPan = pan; }

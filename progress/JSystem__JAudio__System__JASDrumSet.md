@@ -1,5 +1,19 @@
 # JSystem/JAudio/System/JASDrumSet.cpp
 
+## w10-jas (2026-11-02): Matching
+Baseline: progress.py total 4784 / 11561, 863464 bytes; unit 9/11 (~JASDrumSet 21.9 %, TPerc ct 64.3 %),
+.sbss 80 %, .sdata2 85.7 %.
+Now: 11/11, every section 100 %, Matching; `link_check --unit` SHA-1 OK; gate: ok. Total 4786, 863604 bytes.
+- ~JASDrumSet is empty (SMG's JASDrumSet.cpp): FSA's dtor only resets the vtables and deletes; mkdd's
+  loop deleting the TPercs is a later/earlier version. TPerc has no destructor in FSA (none in .text),
+  so its declaration and mkdd's body (delete[] mVelomap) are gone; nothing else used it.
+- TPerc::TPerc with SMG's member-initializer list (stores in member order, mEffects included).
+- Names: lbl_8053A350/lbl_8053A354 -> getParam's statics oscp$246 / init$247 (local); .sdata2
+  lbl_8053B1B0/B4/B8 -> @284/@285/@296 (1.0f, 0.0f, 0.5f; lbl_8053B1B8 0x8 -> 0x4, dtk had swallowed
+  the padding).
+
+## Earlier state (previous worker)
+
 Baseline: `total: 3711 / 11561 functions, 710408 / 4442088 bytes of code (15.99 %)`
 After (incl. cherry-picked memPool_ commits): 3717 / 11561, 713508 bytes. Gate ok.
 

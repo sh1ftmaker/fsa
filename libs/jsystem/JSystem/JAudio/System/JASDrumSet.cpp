@@ -9,11 +9,7 @@ JASDrumSet::JASDrumSet() {
     JASCalc::bzero(mPercArray, sizeof(mPercArray));
 }
 
-JASDrumSet::~JASDrumSet() {
-    for (u32 i = 0; i < sPercCount; i++) {
-        delete mPercArray[i];
-    }
-}
+JASDrumSet::~JASDrumSet() {}
 
 bool JASDrumSet::getParam(int key, int veloKey, JASInstParam *param) const {
     JUT_ASSERT(key >= 0);
@@ -74,18 +70,8 @@ void JASDrumSet::setPerc(int index, JASDrumSet::TPerc *pperc) {
     mPercArray[index] = pperc;
 }
 
-JASDrumSet::TPerc::TPerc() {
-    mVolume = 1.0f;
-    mPitch = 1.0f;
-    mPan = 0.5f;
-    mRelease = 1000;
-    mVelomapCount = 0;
-    mVelomap = NULL;
-}
-
-JASDrumSet::TPerc::~TPerc() {
-    delete[] mVelomap;
-}
+JASDrumSet::TPerc::TPerc()
+    : mVolume(1.0f), mPitch(1.0f), mPan(0.5f), mRelease(1000), mEffects(), mVelomapCount(0), mVelomap(NULL) {}
 
 void JASDrumSet::TPerc::setVeloRegionCount(u32 count, JKRHeap *pHeap) {
     delete[] mVelomap;
