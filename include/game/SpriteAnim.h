@@ -14,7 +14,7 @@
 // Owner: the shared-header owner (docs/COORDINATOR.md).
 
 #include "types.h"
-#include "JSystem/J3DGraphAnimator/J3DAnimation.h"
+#include "JSystem/J3D/J3DFrameCtrl.h" // mkdd's, with tww's accessors
 
 // The constructor stores the J3DFrameCtrl vtable at 0x24 and calls
 // J3DFrameCtrl::init(0) after its own stores (0x801D26D4), so mFrameCtrl is

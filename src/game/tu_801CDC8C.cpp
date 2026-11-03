@@ -32,6 +32,8 @@ void EnemyBase_804A4808::fn_801CDC8C(u32 soundId) {
     }
 }
 
+// FIXME: 99.4 %, regalloc only: the target loads pos->x into f2 and
+// pos->z into f0, ours the other way round.
 // Starts sound `soundId` as if this actor were at *pos on `layer`.
 void EnemyBase_804A4808::fn_801CDCD0(s32 layer, const JGeometry::TVec3f* pos, u32 soundId) {
     s32 savedLayer = field_0x4;
@@ -40,7 +42,7 @@ void EnemyBase_804A4808::fn_801CDCD0(s32 layer, const JGeometry::TVec3f* pos, u3
     mPos.set(pos->x, pos->y, pos->z);
     fn_801F0E34(soundId, 0);
     field_0x4 = savedLayer;
-    mPos = savedPos;
+    mPos.set(savedPos.x, savedPos.y, savedPos.z);
 }
 
 // FIXME: 92.3 %. The target keeps `this` in r30 and the flag in r31 (ours:
@@ -102,6 +104,8 @@ void EnemyBase_804A4808::update() {
 
 void EnemyBase_804A4808::vfunc_0xA0() {}
 
+// FIXME: 88.1 %. The target picks the y with one fsel (top - y >= 0);
+// ours compiles the ?: as fcmpo / cror / branch.
 // The screen position of the actor, raised to the top of the view box.
 void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
     s32 layer = field_0x4;
@@ -158,6 +162,9 @@ void EnemyBase_804A4808::vfunc_0x9C(u8 mapHit) {
     }
 }
 
+// FIXME: 96.3 % (moveStep): the target loads mAccel (lfs 0x25C) before the
+// mSpeed > mTargetSpeed branch and mDecel in it; ours branches first and
+// loads the chosen one after. Literal order also off (see init).
 void EnemyBase_804A4808::vfunc_0x98() {
     if (!(mFlags & 7)) {
         moveStep();
@@ -168,6 +175,7 @@ void EnemyBase_804A4808::fn_801CE2BC(u8 mapHit) {
     stateStep(mapHit);
 }
 
+// FIXME: 96.2 %, the same moveStep difference as vfunc_0x98.
 void EnemyBase_804A4808::fn_801CE32C() {
     moveStep();
 }
@@ -214,6 +222,7 @@ void EnemyBase_804A4808::vfunc_0x84() {
     }
 }
 
+// FIXME: 99.8 %, regalloc only (one register pair swapped).
 // The knock-back step while a hit bit is set.
 void EnemyBase_804A4808::fn_801CE5D4() {
     if (mFlags & 7) {
@@ -298,6 +307,7 @@ s32 EnemyBase_804A4808::fn_801CF720(s32 dir) {
     return newDir;
 }
 
+// FIXME: 99.8 %: only .sdata2 literal order (6.0f); see init.
 // Whether a step of 6 units past the box edge in direction `dir` is blocked.
 bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
     f32 dist = 6.0f;
@@ -318,17 +328,24 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
     return fn_801CFD68(dir, dist);
 }
 
+// FIXME: 73.7 %. The target loads mPos.x/y before the player position and
+// the atanTable_ address after them; ours loads in the other order. Literal
+// order also off (10430.378f, see init).
 // The 16-bit angle from mPos to player `player`.
 s32 EnemyBase_804A4808::fn_801D0280(s32 player) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
     return JMath::atanTable_.atan2_(playerPos->x - mPos.x, playerPos->y - mPos.y) * 10430.378f;
 }
 
+// FIXME: 44.8 %. Same instructions: the target loads pos and mPos before
+// materialising atanTable_; ours after. Literal order also off.
 // The 16-bit angle from mPos to *pos.
 s32 EnemyBase_804A4808::fn_801D02E0(const JGeometry::TVec3f* pos) {
     return JMath::atanTable_.atan2_(pos->x - mPos.x, pos->y - mPos.y) * 10430.378f;
 }
 
+// FIXME: 92.0 %. The target does not fuse dx * dx + dy * dy (fmuls,
+// fmuls, fadds); ours makes an fmadds under -fp_contract on.
 // Whether player `player` is within `dist` of *pos (x, y).
 bool EnemyBase_804A4808::fn_801D0D50(s32 player, const JGeometry::TVec3f* pos, f32 dist) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
@@ -341,6 +358,8 @@ bool EnemyBase_804A4808::fn_801D0D50(s32 player, const JGeometry::TVec3f* pos, f
     return result;
 }
 
+// FIXME: 87.7 %. As fn_801D0D50: the target keeps dx * dx + dy * dy
+// unfused; ours emits fmadds.
 // The squared (x, y) distance from *pos to player `player`.
 f32 EnemyBase_804A4808::fn_801D0DA0(s32 player, const JGeometry::TVec3f* pos) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
@@ -349,6 +368,8 @@ f32 EnemyBase_804A4808::fn_801D0DA0(s32 player, const JGeometry::TVec3f* pos) {
     return dx * dx + dy * dy;
 }
 
+// FIXME: 83.9 %. The target loads field_0x4 before saving r30 and returns
+// mPos.z <= 0 through branches (li 1 / li 0); ours uses mfcr / extrwi.
 // Whether the actor is on the ground.
 bool EnemyBase_804A4808::fn_801D0DD4() {
     if (viewLayerFlag(field_0x4)) {
@@ -363,6 +384,9 @@ bool EnemyBase_804A4808::fn_801D0DD4() {
 
 void EnemyBase_804A4808::vfunc_0x54() {}
 
+// FIXME: 99.6 %: only .sdata2 literal order. The target's literals follow
+// first use in address order (8.0f first in vfunc_0x80, 32.0f in
+// fn_801CEA60, ...); they line up once the unwritten functions are in.
 void EnemyBase_804A4808::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -371,6 +395,7 @@ void EnemyBase_804A4808::init() {
     mLifeBackup = mLife;
 }
 
+// FIXME: 99.9 %: only .sdata2 literal order (0.1f, 0.2f); see init.
 EnemyBase_804A4808::EnemyBase_804A4808()
     : mFlags(0), mPrevVel(0.0f, 0.0f, 0.0f), mPlayersHit(0), mLifeBackup(8), mState(0),
       mStateTimer(0), field_0x250(0), mSpeed(0.0f), mTargetSpeed(0.0f), mAccel(0.1f),

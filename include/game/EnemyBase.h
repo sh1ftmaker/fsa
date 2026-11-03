@@ -12,7 +12,8 @@
 // (fn_801F3D94, fn_801F2FAC, fn_801F2DB4, fn_801F2B7C) and a death hook once
 // mLife reaches 0, and most descendants are enemies in docs/names/actors.tsv.
 //
-// Destructor: inline. The vtable's slot 0x08 is dtor_801B7E1C, which lies
+// Destructor: inline. The vtable's slot 0x08 is __dt__18EnemyBase_804A4808Fv
+// (0x801B7E1C, dtk's dtor_801B7E1C before G1), which lies
 // in act_rope (outside tu_801CDC8C): the weak copy of an inline destructor,
 // kept from the first object that emitted it. It stores this vtable,
 // destroys mAnim (its J3DFrameCtrl: __vt__12J3DFrameCtrl at 0x294) and calls
@@ -224,7 +225,8 @@ public:
     // 1 unit / 4 calls (clrlwi.). fn_801CCB1C on (x, y - z - 16, 0) and
     // field_0x4: a map test 16 units in front; returns 0 or 1.
     bool fn_801CF144();
-    // 1 unit / 3 calls (act_gibdo: li 1 or nothing in r4, two lfs). A
+    // 1 unit / 3 calls (act_gibdo: r4 = li 1 in the first, a 0/1 bool
+    // local in the third; two lfs constants). A
     // direction toward the nearest player within `range` (f1, squared),
     // turning only when off by more than `margin` (f2); `turn` (clrlwi.
     // at 0x801CF53C) allows random turns (fn_801CF6B8). Callers compare r3
@@ -335,7 +337,8 @@ bool fn_801CD2F8(s32 layer);
 extern "C" {
 // Moves *value toward target by `step` (forwards r3, f1, f2 to
 // fn_801CD9F0). EnemyBase_804A4808's movement step passes &mSpeed,
-// mTargetSpeed and mAccel or mDecel.
+// mTargetSpeed and mAccel or mDecel. No caller reads r3, so the void
+// return is undecided until fn_801CD9F0 is read (not mangled either way).
 void fn_801CD950(f32* value, f32 target, f32 step);
 }
 

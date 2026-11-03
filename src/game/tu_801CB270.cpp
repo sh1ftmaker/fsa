@@ -143,7 +143,11 @@ bool fn_801CD290(s32 layer) {
 
 // Whether `layer` is one of the upper layers (8 and up).
 bool fn_801CD2F8(s32 layer) {
-    return layer >= 8;
+    bool result = false;
+    if (layer >= 8) {
+        result = true;
+    }
+    return result;
 }
 
 // A random integer in [0, 4) other than `except` (0-3, so at most three

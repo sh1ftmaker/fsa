@@ -10,7 +10,7 @@ Baseline 5021 / 11557 functions (game 309); after: 5056 (game 344).
   __nw__(0x2A8) for FSPO), `EnemyFlag_804A4808` bits, 37 exported members of
   tu_801CDC8C, `lbl_8053EFC0` (extern const bool), fn_801CD2F8, fn_801CD950.
 - `include/game/SpriteAnim.h`: the 0x270 member (tu_801D1C18), 0x38 bytes.
-- `include/JSystem/J3DGraphAnimator/J3DAnimation.h`: J3DFrameCtrl (tww).
+- `libs/sdk/include/JSystem/J3D/J3DFrameCtrl.h` (mkdd): tww's enums and accessors added; one definition.
 - `include/game/act/act_fuse_point.h`: FusePoint_804A54C0.
 
 ## SHARED-EDITS
