@@ -44,8 +44,6 @@ void MagicJar_804AF018::draw() {
     }
 }
 
-// FIXME: 99.63%. Only the stack layout differs: the original keeps the probe vector at 0x1c and
-// the player box at 0x28; ours puts the box at 0x1c and the probe at 0x2c (same instructions).
 void MagicJar_804AF018::update() {
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     mPos += field_0x3c;
@@ -53,6 +51,8 @@ void MagicJar_804AF018::update() {
     if (field_0x234 <= 0) {
         mAlive = false;
     } else {
+        s32 player;
+        JGeometry::TBox2f box;
         switch (field_0x230) {
         case 0:
             if (viewLayerFlag(field_0x4)) {
@@ -100,10 +100,9 @@ void MagicJar_804AF018::update() {
         case 2: // resting; nothing to do (the original switch has an unreachable branch here)
             break;
         }
-        JGeometry::TBox2f box(field_0x80);
+        box.set(field_0x80);
         box.addPos(p);
         s32 playerB = fn_8023B8E4(&box, field_0x4, &p, true);
-        s32 player;
         if (lbl_8053AAF8->field_0x7f) {
             player = fn_8023AF14(&box, field_0x4, false, 0.0f);
             if (player >= 0 && fn_80236B50(player)) {
