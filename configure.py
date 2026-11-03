@@ -1411,7 +1411,7 @@ config.libs = [
         Object(NonMatching, "game/act_panel_rewrite_npc_2.cpp"),
         Object(NonMatching, "game/act_magic_circle_generator.cpp"),
         Object(Matching, "game/act_local_switch.cpp"),
-        Object(NonMatching, "game/act_global_switch.cpp"),
+        Object(Matching, "game/act_global_switch.cpp"),
         Object(NonMatching, "game/tu_802E9428.cpp"),
         Object(NonMatching, "game/act_treasure_chest.cpp"),
         Object(NonMatching, "game/act_enemy_generator_3.cpp"),
