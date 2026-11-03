@@ -31,7 +31,15 @@ class ActorSoundObj_804578F4;
 
 class ActorManager_804A5800 {
 public:
-    /* 0x0000 vtable (0x804A5800: one slot, fn_801F8F6C) */
+    // The vtable's one slot, fn_801F8F6C, is the deleting destructor (it
+    // stores 0x804A5800 at 0x0, releases the sound objects and tests the
+    // delete flag in r4). Declared so that the fields below sit after the
+    // vtable pointer, at the offsets their users load (mActorEnd: lwz
+    // 0x1008 in act_log_monitor_npc 0x80357E8C); tu_801F6058 renames
+    // fn_801F8F6C when it defines it.
+    virtual ~ActorManager_804A5800();
+
+    /* 0x0000 vtable (0x804A5800) */
     /* 0x0004 */ JKRHeap* mHeap; // fn_80085A10(...), sized for 0x400 or
                                  // 0x200 actors; every spawn allocates here
     /* 0x0008 */ ActorBase_804A5770* mActors[ACTOR_MANAGER_MAX_ACTORS];

@@ -137,7 +137,7 @@ that need them.
 
 | Header | Holds |
 |---|---|
-| `game/ActorBase.h` | `ActorBase_804A5770` (named after its vtable), the base class of every spawned actor: 0x230 bytes, 19 virtual slots (dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorSub120_801F5AE0`, `ActorSub1DC_801EAD68` |
+| `game/ActorBase.h` | `ActorBase_804A5770` (named after its vtable), the base class of every spawned actor: 0x230 bytes, 19 virtual slots (dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `SpriteParams_801F5AE0` (the sprite drawing parameters at 0x120), `ActorSub1DC_801EAD68` |
 | `game/ActorId.h` | `enum ActorId`: the spawner's 354 case IDs (`ACTOR_RAIL = 'RAIL'`; DMCS, FGAM, ZSLE, ZSLG are empty cases that return -1), English names from docs/names/actors.tsv in comments |
 | `game/ActorManager.h` | `ActorManager_804A5800` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` declarations (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
 | `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot_8049EF20`) and `lbl_8053AB10` (`GameRoot2_8049F108`), the fields known so far, their getters `fn_802D6A9C` / `fn_8013C824` (`GameView_802D6A9C`, `EffectSystem_8013C824`), `cls_8030C058` (with its `fn_8030C5F0` rename in symbols.txt) and the per-player queries of tu_8022AD64 |

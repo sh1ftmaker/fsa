@@ -26,6 +26,7 @@
 
 #include "types.h"
 #include "JSystem/JGeometry.h"
+#include "dolphin/mtx.h"
 
 class ActorSoundObj_804578F4;
 class JPABaseEmitter;
@@ -47,25 +48,70 @@ struct ActorSub1DC_801EAD68 {
     /* 0x14 */ s32 field_0x14[16]; // -1 after construction
 }; // Size: 0x54
 
-// The member at 0x120 (no vtable and no out-of-line constructor; named
-// after the constructor it is inlined into, ActorBase's at 0x801F5AE0). Its
-// constructor initializes 0x130 and 0x134 and then
-// again after filling the table (the base constructor's stores show both),
-// hence the separate reset.
-struct ActorSub120_801F5AE0 {
-    ActorSub120_801F5AE0() : field_0x10(-1), field_0x14(-1) { reset(); }
+// The sprite drawing parameters (no vtable and no out-of-line constructor;
+// named after the constructor it is inlined into, ActorBase's at
+// 0x801F5AE0). One lives in every actor at 0x120, and draw() overrides
+// build others on the stack (act_rat 0x800F3C70: the same stores in the same
+// order) to pass to the "SOB " sprite functions (fn_801F06F0, fn_801F02BC,
+// fn_801EFD34, fn_801EF830, fn_801EF574), which NULL-check it and read
+// 0x13, 0x18, 0x1C and 0x1D (fn_801EF830, 0x801EFA64-0x801EFBB0). The
+// constructor sets 0x10 and 0x14 and then again after filling the table (the
+// base constructor's stores show both), hence the separate reset.
+struct SpriteParams_801F5AE0 {
+    SpriteParams_801F5AE0() : field_0x10(-1), field_0x14(-1) { reset(); }
     void reset() {
         for (u8 i = 0; i < 16; i++) {
             field_0x0[i] = i;
         }
         field_0x10 = -1;
         field_0x14 = 0;
+        mMtx = NULL;
+        field_0x1c = 0;
+        field_0x1d = 0;
+        field_0x1e = 0;
+        field_0x1f = 1;
+        field_0x20 = 1;
+        field_0x21 = 0;
+        field_0x22 = 0;
+        field_0x23 = 0;
+        field_0x24 = 0;
+        field_0x25 = 0;
+        field_0x26 = 1;
+        field_0x28 = 3;
+        field_0x2c = 1;
+        field_0x2d = 0;
+        field_0x2e = 0;
+        field_0x30 = -1;
+        field_0x34 = 0;
+        field_0x38 = 2;
     }
 
     /* 0x00 */ u8 field_0x0[16]; // 0, 1, ..., 15
-    /* 0x10 */ s32 field_0x10;
+    /* 0x10 */ s32 field_0x10;   // fn_801EF830 reads its low byte (lbz 0x13)
     /* 0x14 */ s32 field_0x14;
-}; // Size: 0x18
+    // When set, fn_801EF830 concatenates it with the sprite's scale matrix
+    // (PSMTXConcat, 0x801EFBD0) and keeps its translation column; act_rat's
+    // draw points it at a stack Mtx when its spawn parameter is nonzero.
+    /* 0x18 */ MtxP mMtx;
+    /* 0x1C */ u8 field_0x1c;
+    /* 0x1D */ u8 field_0x1d;
+    /* 0x1E */ u8 field_0x1e;
+    /* 0x1F */ u8 field_0x1f;
+    /* 0x20 */ u8 field_0x20;
+    /* 0x21 */ u8 field_0x21;
+    /* 0x22 */ u8 field_0x22;
+    /* 0x23 */ u8 field_0x23;
+    /* 0x24 */ u8 field_0x24;
+    /* 0x25 */ u8 field_0x25;
+    /* 0x26 */ u8 field_0x26;
+    /* 0x28 */ s32 field_0x28;
+    /* 0x2C */ u8 field_0x2c;
+    /* 0x2D */ u8 field_0x2d;
+    /* 0x2E */ u8 field_0x2e;
+    /* 0x30 */ s32 field_0x30;
+    /* 0x34 */ s32 field_0x34;
+    /* 0x38 */ s32 field_0x38;
+}; // Size: 0x3C
 
 class ActorBase_804A5770 {
 public:
@@ -222,19 +268,22 @@ public:
     void fn_801EF510();
     // 23 units / 49 calls. fn_801F06F0 with a resource already loaded
     // (fn_801EF830's res, used when no name is given) instead of a name;
-    // skipped while field_0x138 != 0. f1-f3 are kept in f30, f31, f28.
-    void fn_801EFD34(void* res, void* params, s32 flags, f32 scaleX, f32 scaleY, f32 arg_f3);
+    // skipped while mSpriteParams.mMtx is set. f1-f3 are kept in f30, f31,
+    // f28.
+    void fn_801EFD34(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 scaleX, f32 scaleY,
+                     f32 arg_f3);
     // 42 units / 59 calls. fn_801F06F0 with a scale mode (cmpwi 0 / 2 picks
     // the PSMTXScale variant, 0x801F031C-0x801F0344). `arg` is only stored
     // to the stack with stb (0x801F02E8); bool is a guess.
-    void fn_801F02BC(const char* name, s32 frame, void* params, s32 flags, s32 mode, bool arg,
-                     f32 scaleX, f32 scaleY);
+    void fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
+                     s32 mode, bool arg, f32 scaleX, f32 scaleY);
     // 116 units / 193 calls. Draws frame `frame` of the "SOB " sprite bank
     // `name` at mPos on this actor's layer: fn_801EF830(field_0x4, &mPos,
-    // params, flags, name, frame, NULL) (0x801F0740-0x801F0758). params is a
-    // 0x3C-byte struct or NULL (callers: a stack struct 131 times, 0 61
-    // times); flags is -1, 0 or 7 at most calls.
-    void fn_801F06F0(const char* name, s32 frame, void* params, s32 flags, f32 scaleX, f32 scaleY);
+    // params, flags, name, frame, NULL) (0x801F0740-0x801F0758). params may
+    // be NULL (callers: a stack struct 131 times, 0 61 times); flags is -1,
+    // 0 or 7 at most calls.
+    void fn_801F06F0(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
+                     f32 scaleX, f32 scaleY);
     // 53 units / 107 calls. id compared unsigned with 3 and 0x42; uses
     // field_0x4 and mPos.
     void fn_801F0D20(u32 id);
@@ -414,7 +463,7 @@ public:
     s32 getField_0x4() const { return field_0x4; }
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
-    void setField_0x90(s32 v) { field_0x90 = v; }
+    void setField_0x90(u32 v) { field_0x90 = v; }
     void setField_0xC0(s32 v) { field_0xc0 = v; }
     void setField_0x110(s32 v) { field_0x110 = v; }
     void setField_0x114(s32 v) { field_0x114 = v; }
@@ -443,11 +492,17 @@ public:
     /* 0x060 */ JGeometry::TBox2f mBox;  // (-8, -8)-(8, 8)
     /* 0x070 */ JGeometry::TBox2f mBox2; // zero; the spawner copies mBox here if
                                 // init() left it all zero
-    /* 0x080 */ f32 field_0x80;
-    /* 0x084 */ f32 field_0x84;
-    /* 0x088 */ f32 field_0x88;
-    /* 0x08C */ f32 field_0x8c;
-    /* 0x090 */ s32 field_0x90; // spawner's 5th argument
+    // A third box (min i, max f), relative to mPos like mBox: fn_801F2618
+    // sweeps it against the map (it hands &field_0x80 to fn_801F23BC as the
+    // box), fn_801F11B4 tests its width and height, and 182
+    // actor units set it with four stfs (act_log_monitor_npc's init sets it
+    // to the same values as mBox).
+    /* 0x080 */ JGeometry::TBox2f field_0x80;
+    // The spawner's 5th argument, a bit field each actor decodes. Unsigned:
+    // vfunc_0x3C takes its top 5 bits with srwi (0x801F4710), act_rat's draw
+    // tests it with cmplwi (0x800F3D7C), and the written units shift it as
+    // u32.
+    /* 0x090 */ u32 field_0x90;
     /* 0x094 */ s16 field_0x94;
     /* 0x098 */ s32 field_0x98;
     /* 0x09C */ s32 field_0x9c;
@@ -490,26 +545,7 @@ public:
     /* 0x11E */ u8 field_0x11e;    // update loop: updates the actor if set
     /* 0x11F */ u8 field_0x11f;    // draw/update loops: still drawn/updated
                                    // while the game is paused (fn_80134CC8)
-    /* 0x120 */ ActorSub120_801F5AE0 field_0x120;
-    /* 0x138 */ s32 field_0x138;
-    /* 0x13C */ u8 field_0x13c;
-    /* 0x13D */ u8 field_0x13d;
-    /* 0x13E */ u8 field_0x13e;
-    /* 0x13F */ u8 field_0x13f;
-    /* 0x140 */ u8 field_0x140;
-    /* 0x141 */ u8 field_0x141;
-    /* 0x142 */ u8 field_0x142;
-    /* 0x143 */ u8 field_0x143;
-    /* 0x144 */ u8 field_0x144;
-    /* 0x145 */ u8 field_0x145;
-    /* 0x146 */ u8 field_0x146;
-    /* 0x148 */ s32 field_0x148;
-    /* 0x14C */ u8 field_0x14c;
-    /* 0x14D */ u8 field_0x14d;
-    /* 0x14E */ u8 field_0x14e;
-    /* 0x150 */ s32 field_0x150;
-    /* 0x154 */ s32 field_0x154;
-    /* 0x158 */ s32 field_0x158;
+    /* 0x120 */ SpriteParams_801F5AE0 mSpriteParams; // the actor's own
     /* 0x15C */ ActorBase_804A5770* mListPrev; // the manager's actor list at
     /* 0x160 */ ActorBase_804A5770* mListNext; // ActorManager_804A5800 0x2018 (fn_801F84C4)
     /* 0x164 */ u8 field_0x164;
@@ -558,16 +594,17 @@ void fn_801EE434(JPABaseEmitter* emitter);
 // 7 units / 8 calls. Loads the "SOB " resource `sobName` (a .rodata string)
 // through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
 // 0x801EF7B4-0x801EF7F4) and hands it with pos, arg1 and params (a
-// 0x3C-byte struct or NULL, then defaults are used) to fn_802F86CC
+// SpriteParams_801F5AE0 or NULL, then defaults are used) to fn_802F86CC
 // (lbl_8053AB10->0x20).
-void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos, void* params);
+void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
+                 SpriteParams_801F5AE0* params);
 
 // 20 units / 34 calls. Draws frame `frame` of a "SOB " sprite at pos on
 // layer `layer` (cmpwi 8; GameView 0x131DF): `name` is loaded like
 // fn_801EF574 does, or when NULL `res` is used (fn_802F745C, 0x801EFC74).
 // flags: -1 skips, the low 10 bits are an index, 0x400 a mode bit. Callers
 // pass an actor's field_0x4 and &mPos.
-void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, void* params, s32 flags,
+void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, s32 flags,
                  const char* name, s32 frame, void* res);
 
 } // extern "C"
