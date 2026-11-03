@@ -1354,7 +1354,7 @@ config.libs = [
         Object(Matching, "game/act_pot_smoke.cpp"),
         Object(NonMatching, "game/act_arrow_marker.cpp"),
         Object(Matching, "game/act_spotlight.cpp"),
-        Object(NonMatching, "game/act_torch.cpp"),
+        Object(Matching, "game/act_torch.cpp"),
         Object(NonMatching, "game/tu_802B1558.cpp"),
         Object(NonMatching, "game/tu_802B214C.cpp"),
         Object(Matching, "game/act_spotlight_se.cpp"),
