@@ -38,9 +38,9 @@ public:
     // 0x801E6234: starts the pair at 0x2C8 (ids 0x25C, 0x25D) there.
     void fn_801E6234();
     // 0x801E62D4: starts effect 0x259 at mPos (the emitter is not kept).
-    void fn_801E62D4();
+    void fn_801E62D4() const;
     // 0x801E631C: starts effects 0x25A and 0x25B at mPos (not kept).
-    void fn_801E631C();
+    void fn_801E631C() const;
     // 0x801E6394: deletes the pair at 0x2C0 and clears it.
     void fn_801E6394();
     // 0x801E63D8: starts the pair at 0x2C0 (ids 0x25E, 0x25F) at mPos.
