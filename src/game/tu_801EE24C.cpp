@@ -6,6 +6,15 @@
 #include "game/GameGlobals.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
+// Five floats indexed by field_0xc0 (EnemyParam "efsz").
+static const f32 lbl_8046A00C[5] = {
+    0.0f, 1.0f, 1.3f, 1.6f, 2.0f,
+};
+
+f32 ActorBase_804A5770::fn_801EE4F0() {
+    return lbl_8046A00C[field_0xc0];
+}
+
 // Lets an emitter that is still on screen finish its particles; deletes one
 // that is off screen at once.
 static inline void releaseEmitter(JPABaseEmitter* emitter) {
