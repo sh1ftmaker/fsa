@@ -43,3 +43,21 @@ void cls_804A4C58::vfunc_0x9C(u8 mapHit) {
 extern "C" void fn_801DA0FC() {
     lbl_8053AF80->fn_80458F9C(60);
 }
+
+// 0x801DA504. The sequencer's constructor runs before the ceiling is set,
+// and the twelve TVec2f are built after it (the member initialisers run in
+// declaration order); the body then zeroes the fields at 0x334-0x33F and the
+// four emitters.
+cls_804A4C58::cls_804A4C58() : mSeq2a8(), field_0x2d0(lbl_8053F1CC) {
+    field_0x334 = 0;
+    field_0x336 = 0;
+    field_0x338 = 0;
+    field_0x33a = 0;
+    field_0x33c = 0;
+    field_0x33e = 0;
+    field_0x33f = 0;
+    mEmitter2c0 = NULL;
+    mEmitter2c4 = NULL;
+    mEmitter2c8 = NULL;
+    mEmitter2cc = NULL;
+}

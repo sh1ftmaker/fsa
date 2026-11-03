@@ -8,6 +8,10 @@
 // out-of-line constructor fn_801DAA24, called on this + 0x2A8 at 0x801DA524): word 0x4 is the current value, which
 // fn_801DA904 / fn_801DA938 read. Only the written code's view is known.
 struct Sequencer_801DAA24 {
+    // Constructor __ct__18Sequencer_801DAA24Fv (0x801DAA24, tu_801DA7C0.cpp,
+    // not written yet): zeroes every word but field_0x10, which it sets to 2.
+    Sequencer_801DAA24();
+
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ s32 field_0x4; // current value, 0-47
     /* 0x08 */ s32 field_0x8;
@@ -23,10 +27,12 @@ struct Sequencer_801DAA24 {
 // mirrored when mFlags has 0x2000 and the sequencer is at 28 or more, and
 // keeps two pairs of effects (ids 0x25E/0x25F in mEmitter2c0/2c4, 0x25C/0x25D
 // in mEmitter2c8/2cc).
-// Size: 0x340 (li r3, 0x340 before the constructor call fn_801DA504)
+// Size: 0x340 (li r3, 0x340 before the constructor, 0x801DA504 here).
 class cls_804A4C58 : public EnemyBase_804A4808 {
 public:
-    cls_804A4C58() {}
+    // 0x801DA504 (__ct__12cls_804A4C58Fv, game/tu_801D8400.cpp): EnemyBase's
+    // constructor, the vtable, the sequencer, the ceiling and the arrays.
+    cls_804A4C58();
     /* 0x20 */ virtual void draw();
     // 0x801D84E0: empty, no arguments read (vtable slot 0x24 of 0x804A4C58).
     /* 0x24 */ virtual void vfunc_0x24();
@@ -64,9 +70,15 @@ public:
     /* 0x2C8 */ JPABaseEmitter* mEmitter2c8;
     /* 0x2CC */ JPABaseEmitter* mEmitter2cc;
     /* 0x2D0 */ f32 field_0x2d0; // vfunc_0x80's ceiling for mPos.y
-    /* 0x2D4 */ u8 field_0x2d4[0x336 - 0x2D4]; // not yet known
+    /* 0x2D4 */ JGeometry::TVec2f field_0x2d4[12]; // constructed by __construct_array (8-byte TVec2f)
+    /* 0x334 */ u8 field_0x334; // zeroed by the constructor
+    /* 0x335 */ u8 field_0x335; // not written by the constructor
     /* 0x336 */ u16 field_0x336; // countdown, stepped down by vfunc_0x9C
-    /* 0x338 */ u8 field_0x338[0x340 - 0x338]; // not yet known
+    /* 0x338 */ u16 field_0x338; // zeroed by the constructor
+    /* 0x33A */ u16 field_0x33a; // zeroed by the constructor
+    /* 0x33C */ u16 field_0x33c; // zeroed by the constructor
+    /* 0x33E */ u8 field_0x33e; // zeroed by the constructor
+    /* 0x33F */ u8 field_0x33f; // zeroed by the constructor
 };
 
 #endif
