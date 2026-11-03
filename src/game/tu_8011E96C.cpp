@@ -4,13 +4,13 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 
-// Whether `layer` is 0 or any player's layer (fn_8023DE58).
-static inline bool isOnPlayerLayer(s32 layer) {
-    if (layer == 0) {
+// Whether the actor's layer is 0 or any player's layer (fn_8023DE58).
+static inline bool isOnPlayerLayer(const ActorBase_804A5770* actor) {
+    if (actor->field_0x4 == 0) {
         return true;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (layer == fn_8023DE58(i)) {
+        if (actor->field_0x4 == fn_8023DE58(i)) {
             return true;
         }
     }
@@ -19,9 +19,9 @@ static inline bool isOnPlayerLayer(s32 layer) {
 
 cls_8049DE90::~cls_8049DE90() {}
 
-// FIXME: 97%. Only the layer check in state 1 differs: the original reloads
-// field_0x4 from memory after each fn_8023DE58 call (no register hoist) and
-// has one extra unreachable `b` after the switch dispatch.
+// FIXME: 99%. Register allocation only, in the state-0 table block: the
+// original keeps the pick index in r29 and the table pointer in r25, mine
+// uses r26 and r27 (and the loop counter/pointer registers shift with them).
 void cls_8049DE90::update() {
     switch (mState) {
     case 0:
@@ -55,7 +55,7 @@ void cls_8049DE90::update() {
         }
         break;
     case 1: {
-        if (mDuration == 0 && isOnPlayerLayer(field_0x4)) {
+        if (mDuration == 0 && isOnPlayerLayer(this)) {
             mState = 0;
         } else if (vfunc_0x3C() == 0) {
             mState = 0;
@@ -64,6 +64,8 @@ void cls_8049DE90::update() {
         }
         break;
     }
+    case 2: // finished; nothing leaves this state
+        break;
     }
 }
 
