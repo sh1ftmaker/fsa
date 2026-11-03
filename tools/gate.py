@@ -28,11 +28,18 @@ Checks (see docs/PLAN.md, "Submission gate"):
     map of a current link that includes this exact object and whose DOL
     matches build.sha1; every stripped object differs from the compiled one
     only by those entries, and no other unit is diffed against a copy;
-  * binary blobs: a source may include a blob only as "assets/<path>" where
-    <path> is a header in config.yml's top-level extract: list (dtk writes it
-    from orig/ into build/G4SE01/include/assets/ at build time); no include
-    reaches into build/ any other way, and git tracks nothing under an
-    assets/ directory and no file named like an extracted header or binary;
+  * binary blobs (check_blobs): config.yml (read with yaml.safe_load, fail
+    closed) has only a top-level extract: list of {symbol, header: assets/...,
+    header_type: raw}, 1:1 with config/G4SE01/blobs.txt's `blob` lines; each
+    is a data-section object in symbols.txt of exactly the listed address and
+    size (at most BLOB_MAX), inside its unit's splits.txt range; its header is
+    included once, by the listed unit only; no other include names assets/,
+    a blob's file name or build/; no computed #include; configure.py names no
+    include root under build/ but build/{config.version}/include; git tracks
+    nothing under an assets/ directory or named like an extracted header;
+  * hand-typed bytes (check_byte_arrays): a changed initializer of more than
+    64 integer literals, or a string of more than 64 escaped bytes, unless
+    blobs.txt has an `array` line for the file;
   * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
     if not, tools/link_check.py names the Matching units at fault.
 
@@ -58,11 +65,14 @@ PROTECTED = [
     "tools/honest_report.py", "tools/link_check.py",
     # The SHA-1 the link is checked against, and config.yml's hash: of the original DOL.
     "config/G4SE01/build.sha1", "config/G4SE01/config.yml",
+    # Approved binary blobs (and large literal arrays), coordinator-only.
+    "config/G4SE01/blobs.txt",
     "tools/data_splits.py", "orig/",
     # Build artifacts (maps, weak-dedup evidence, objects) are never committed.
     "build/",
 ]
-PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\s*=|report|objdiff")
+PROTECTED_CONFIGURE = re.compile(r"functionRelocDiffs|progress_report_args|_tag\s*=|report|objdiff"
+                                 r"|-(?:i|I|ir|I-)\s*\S*build/")  # include roots under build/ (extracted blobs)
 # Link and SHA-1 settings in configure.py (unit Object(...) lines, which carry
 # FIXME(link) comments, are exempt).
 LINK_CONFIGURE = re.compile(r"check_sha|sha1|ldflags|linker_version|link_order|ldscript|custom_build"
@@ -311,63 +321,227 @@ def check_fakematch(problems):
 
 
 CONFIG_YML = Path("config/G4SE01/config.yml")
-ASSET_INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]((?:[^>"]*/)?assets/[^>"]+)[>"]', re.M)
-BUILD_INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]*\bbuild/[^>"]*)[>"]', re.M)
+BLOBS = Path("config/G4SE01/blobs.txt")
+BLOB_SECTIONS = {".data", ".rodata", ".sdata", ".sdata2"}  # initialized data only, never code
+BLOB_MAX = 0x2000  # a larger blob needs this cap raised, on the record
+EXTRACT_KEYS = {"symbol", "header", "header_type"}
+QUOTED_INCLUDE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.M)
+COMPUTED_INCLUDE = re.compile(r"^\s*#\s*include\s+(?![<\"])(\S+)", re.M)
+# The one include root under build/ configure.py may name (dtk-template's: PCH and extracted blobs).
+BUILD_ROOT = "build/{config.version}/include"
+CONFIGURE_ROOT = re.compile(r"-(?:i|I|ir|I-)\s*([^\s\"',\]]*build/[^\s\"',\]]*)")
 
 
-def extract_entries(text):
-    """config.yml's top-level extract: list, as [{key: value}] (only the scalar
-    keys dtk reads: symbol, binary, header, header_type, ...)."""
-    entries, inside = [], False
-    for line in text.splitlines():
+def read_blobs(problems):
+    """config/G4SE01/blobs.txt: `blob` lines (approved extracts) and `array`
+    lines (files allowed a large integer-literal initializer)."""
+    blobs, arrays = [], {}
+    if not BLOBS.is_file():
+        return blobs, arrays
+    for n, line in enumerate(BLOBS.read_text().splitlines(), 1):
         if not line.strip() or line.lstrip().startswith("#"):
             continue
-        if not line.startswith((" ", "-")):
-            inside = line.rstrip() == "extract:"
+        f = line.split()
+        if f[0] == "blob" and len(f) >= 9:
+            try:
+                addr, size = int(f[3], 16), int(f[4], 16)
+            except ValueError:
+                problems.append(f"{BLOBS}:{n}: address/size not hex: {line}")
+                continue
+            blobs.append({"symbol": f[1], "section": f[2], "address": addr, "size": size,
+                          "unit": f[5], "header": f[6], "review": f[7], "line": n})
+        elif f[0] == "array" and len(f) >= 4:
+            arrays[f[1]] = f[2]
+        else:
+            problems.append(f"{BLOBS}:{n}: not `blob symbol section address size unit header review why...` "
+                            f"or `array path review why...`: {line}")
+    return blobs, arrays
+
+
+def _yaml_extracts(problems):
+    """config.yml's extract: list via yaml.safe_load; anything unexpected fails."""
+    try:
+        import yaml
+    except ImportError:
+        problems.append("check_blobs needs PyYAML (pip install pyyaml) to read config.yml")
+        return []
+    try:
+        cfg = yaml.safe_load(CONFIG_YML.read_text())
+    except yaml.YAMLError as err:
+        problems.append(f"{CONFIG_YML}: not valid YAML: {err}")
+        return []
+    if not isinstance(cfg, dict):
+        problems.append(f"{CONFIG_YML}: not a mapping")
+        return []
+
+    def nested(node, path):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                if k == "extract" and path:
+                    problems.append(f"{CONFIG_YML}: extract: under {'/'.join(path)} (only the top-level list is allowed)")
+                nested(v, path + [str(k)])
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                nested(v, path + [str(i)])
+    nested(cfg, [])
+    extracts = cfg.get("extract")
+    if extracts is None:
+        return []
+    if not isinstance(extracts, list):
+        problems.append(f"{CONFIG_YML}: extract: is not a list")
+        return []
+    out = []
+    for e in extracts:
+        if not (isinstance(e, dict) and set(e) <= EXTRACT_KEYS and isinstance(e.get("symbol"), str)
+                and isinstance(e.get("header"), str) and e.get("header_type") == "raw"):
+            problems.append(f"{CONFIG_YML}: extract entry must be exactly symbol, header, header_type: raw: {e!r}")
             continue
-        if not inside:
+        h = e["header"]
+        if not h.startswith("assets/") or ".." in Path(h).parts or "\\" in h:
+            problems.append(f"{CONFIG_YML}: extracted header {h} must be under assets/")
             continue
-        m = re.match(r"^\s*(-\s+)?(\w+):\s*(.*?)\s*$", line)
-        if not m:
-            entries.append({"?": line})
-            continue
-        if m.group(1) or not entries:
-            entries.append({})
-        entries[-1][m.group(2)] = m.group(3).strip("'\"")
-    return entries
+        out.append((e["symbol"], h))
+    return out
+
+
+def _split_ranges(unit):
+    """{section: (start, end)} of the splits.txt stanza for this source path."""
+    stanzas, cur = {}, None
+    for line in Path("config/G4SE01/splits.txt").read_text().splitlines():
+        if line and not line[0].isspace() and line.rstrip().endswith(":"):
+            cur = stanzas.setdefault(line.rstrip()[:-1], {})
+        elif cur is not None and line.strip():
+            m = re.match(r"^\s+(\S+)\s+start:(0x[0-9A-Fa-f]+)\s+end:(0x[0-9A-Fa-f]+)", line)
+            if m:
+                cur[m[1]] = (int(m[2], 16), int(m[3], 16))
+    hits = [s for s in stanzas if unit == s or unit.endswith("/" + s)]
+    return stanzas[hits[0]] if len(hits) == 1 else None
 
 
 def check_blobs(problems):
-    """Binary blobs come only from config.yml's extract: list, extracted from
-    orig/ at build time; the source holds an #include, never the bytes."""
-    text = CONFIG_YML.read_text()
-    if re.search(r"^\s+extract:", text, re.M):
-        problems.append(f"{CONFIG_YML}: extract: only at the top level (no module extract lists)")
-    headers, outputs = set(), set()
-    for e in extract_entries(text):
-        header, binary = e.get("header"), e.get("binary")
-        if not e.get("symbol") or not header:
-            problems.append(f"{CONFIG_YML}: extract entry without symbol and header: {e}")
+    """Binary blobs come only from config.yml's extract: list, each one approved
+    in blobs.txt, extracted from orig/ at build time; the source holds an
+    #include, never the bytes."""
+    extracts = _yaml_extracts(problems)
+    blobs, _ = read_blobs(problems)
+    listed = {(b["symbol"], b["header"]): b for b in blobs}
+    if len(listed) != len(blobs):
+        problems.append(f"{BLOBS}: a blob is listed twice")
+    for key in set(extracts) ^ set(listed):
+        where = "config.yml's extract: list but not blobs.txt" if key in extracts else "blobs.txt but not config.yml's extract: list"
+        problems.append(f"blob {key[0]} ({key[1]}): in {where}")
+    if len(set(extracts)) != len(extracts) or len({h for _, h in extracts}) != len(extracts):
+        problems.append(f"{CONFIG_YML}: a symbol or header is extracted twice")
+    symbols = {}
+    for line in Path("config/G4SE01/symbols.txt").read_text().splitlines():
+        m = SYMBOL_LINE.match(line)
+        if m:
+            attrs = dict(a.split(":", 1) for a in m.group(4).split() if ":" in a)
+            symbols.setdefault(m.group(1), []).append((m.group(2), int(m.group(3), 16), attrs))
+    for b in blobs:
+        tag = f"{BLOBS}:{b['line']} {b['symbol']}"
+        sym = symbols.get(b["symbol"], [])
+        if len(sym) != 1:
+            problems.append(f"{tag}: not exactly one such symbol in symbols.txt")
             continue
-        for path in filter(None, (header, binary)):
-            if not path.startswith("assets/") or ".." in Path(path).parts:
-                problems.append(f"{CONFIG_YML}: extracted file {path} must be under assets/")
-            outputs.add(path)
-        headers.add(header)
+        sec, addr, attrs = sym[0]
+        size = int(attrs.get("size", "0"), 16)
+        if b["section"] not in BLOB_SECTIONS or sec != b["section"]:
+            problems.append(f"{tag}: section {sec} (listed {b['section']}); blobs are data only ({', '.join(sorted(BLOB_SECTIONS))})")
+        if attrs.get("type") != "object":
+            problems.append(f"{tag}: symbols.txt type {attrs.get('type')}, not object")
+        if (addr, size) != (b["address"], b["size"]) or not size:
+            problems.append(f"{tag}: symbols.txt has 0x{addr:08X} size 0x{size:X}, blobs.txt 0x{b['address']:08X} size 0x{b['size']:X}")
+        if size > BLOB_MAX:
+            problems.append(f"{tag}: 0x{size:X} bytes is over the 0x{BLOB_MAX:X} cap")
+        if not b["header"].startswith("assets/"):
+            problems.append(f"{tag}: header {b['header']} must be under assets/")
+        rng = _split_ranges(b["unit"]) if Path(b["unit"]).is_file() else None
+        r = (rng or {}).get(sec)
+        if not r or not (r[0] <= addr and addr + size <= r[1]):
+            problems.append(f"{tag}: not inside {b['unit']}'s {sec} range in splits.txt (or no such source/unit)")
+        if not Path(b["review"]).name.endswith(".md"):
+            problems.append(f"{tag}: review {b['review']} is not a review file")
+    # Includes: an allowlisted header only from its unit, exactly once; nothing else
+    # from build/'s include root, no computed includes.
+    allowed = {b["header"]: b["unit"] for b in blobs}
+    names = {Path(h).name for h in allowed}
+    seen = {}
     tracked = git("ls-files").splitlines()
     for path in tracked:
         if "assets" in Path(path).parts[:-1]:
             problems.append(f"{path}: tracked under an assets/ directory (blobs are extracted at build time, never committed)")
-        elif any(path == o or path.endswith("/" + o) or path.endswith("/" + Path(o).name) for o in outputs):
+        elif Path(path).name in names:
             problems.append(f"{path}: tracked file with the name of an extracted blob")
         if not SOURCE.search(path) or not Path(path).is_file():
             continue
-        src = Path(path).read_text(errors="replace")
-        for inc in ASSET_INCLUDE.findall(src):
-            if inc not in headers:
-                problems.append(f"{path}: includes {inc}, which config.yml's extract: list doesn't produce")
-        for inc in BUILD_INCLUDE.findall(src):
-            problems.append(f"{path}: includes {inc} from build/ (use an extract: entry and \"assets/...\")")
+        src = strip_comments(Path(path).read_text(errors="replace"))
+        for inc in QUOTED_INCLUDE.findall(src):
+            if "build/" in inc or inc.startswith("build"):
+                problems.append(f"{path}: includes {inc} from build/ by path")
+            elif inc in allowed:
+                if path == allowed[inc]:
+                    seen[inc] = seen.get(inc, 0) + 1
+                else:
+                    problems.append(f"{path}: includes blob {inc}, which blobs.txt allows only in {allowed[inc]}")
+            elif "assets" in Path(inc).parts or Path(inc).name in names:
+                problems.append(f"{path}: includes {inc}, which no blobs.txt / config.yml extract entry produces")
+        for inc in COMPUTED_INCLUDE.findall(src):
+            problems.append(f"{path}: computed #include {inc} (write the path)")
+    for h, unit in allowed.items():
+        if seen.get(h, 0) != 1:
+            problems.append(f"{unit}: includes blob {h} {seen.get(h, 0)} times (exactly once)")
+    # Include roots: configure.py may name build/ only as build/{config.version}/include.
+    for root in CONFIGURE_ROOT.findall(Path("configure.py").read_text()):
+        if root.rstrip("/") != BUILD_ROOT:
+            problems.append(f"configure.py: include root {root} under build/ (only {BUILD_ROOT})")
+
+
+INT_LITERAL = re.compile(r"^\(?\s*[-+]?\s*(0[xX][0-9A-Fa-f]+|\d+)[uUlL]*\s*\)?$|^'(\\.|[^'])+'$")
+STRING_ESCAPES = re.compile(r'"(?:[^"\\\n]|\\.)*"')
+
+
+def _initializers(text):
+    """(first line, last line, elements) of each brace initializer `= { ... }`."""
+    out = []
+    for m in re.finditer(r"=\s*\{", text):
+        depth, i = 0, m.end() - 1
+        while i < len(text):
+            depth += {"{": 1, "}": -1}.get(text[i], 0)
+            if depth == 0:
+                break
+            i += 1
+        body = re.sub(r"[{}]", ",", text[m.end():i])
+        out.append((text.count("\n", 0, m.start()) + 1, text.count("\n", 0, i) + 1,
+                    [e.strip() for e in body.split(",") if e.strip()]))
+    return out
+
+
+def check_byte_arrays(base, changed, problems, limit=64):
+    """Hand-typed bytes: a changed initializer with more than `limit` integer
+    (or char) literals, or a string literal with more than `limit` escapes,
+    fails unless blobs.txt has an `array` line for the file."""
+    _, arrays = read_blobs(problems)
+    for path in changed:
+        if not SOURCE.search(path) or not Path(path).is_file() or path in arrays:
+            continue
+        # Lines with a digit only: "};" and blank lines say nothing about where an edit was.
+        added = {l.strip() for l in added_lines(base, path) if re.search(r"\d", l)}
+        if not added:
+            continue
+        text = COMMENT.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), Path(path).read_text(errors="replace"))
+        lines = text.splitlines()
+        for first, last, elems in _initializers(text):
+            ints = sum(bool(INT_LITERAL.match(e)) for e in elems)
+            if ints > limit and ints >= 0.9 * len(elems) and any(l.strip() in added for l in lines[first - 1:last]):
+                problems.append(f"{path}:{first}: initializer of {ints} integer literals (hand-typed bytes? "
+                                f"extract a blob or write the data's source form)")
+        for n, line in enumerate(lines, 1):
+            if line.strip() not in added:
+                continue
+            for s in STRING_ESCAPES.findall(line):
+                if len(re.findall(r"\\(x[0-9A-Fa-f]+|[0-7]{1,3})", s)) > limit:
+                    problems.append(f"{path}:{n}: string literal of escaped bytes (hand-typed bytes?)")
 
 
 def ninja(*targets):
@@ -731,6 +905,7 @@ def main():
         check_provenance(args.base, sorted(changed), problems)
         check_protected(args.base, sorted(changed), problems)
         check_symbols(args.base, changed, problems)
+        check_byte_arrays(args.base, sorted(changed), problems)
     tracked = git("ls-files", "--", "build/").split()
     if tracked:
         problems.append(f"build artifacts tracked by git (never commit build/): {', '.join(tracked[:5])}")

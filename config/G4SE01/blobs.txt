@@ -1,0 +1,10 @@
+# Approved binary blobs, extracted from orig/sys/main.dol at build time
+# (config.yml extract:, header_type: raw) and never committed. Coordinator-only;
+# tools/gate.py (check_blobs) cross-checks every line against config.yml,
+# symbols.txt and splits.txt. Only non-PowerPC code (DSP or other co-processor
+# microcode) or a byte-exact copy of an asset file qualifies; anything with a
+# C source form is written as C.
+#
+# blob   symbol section address size unit header review justification
+# array  path review justification   (a large integer-literal initializer, check_byte_arrays)
+blob lbl_804985D0 .data 0x804985D0 0x380 libs/sdk/dolphin/gba/GBAKey.c assets/dolphin/gba/GBAKey_ucode.inc fsa-wt/_reviews/infra__blobs.review.md GBA key-exchange DSP microcode (DSP instruction words, no source form)
