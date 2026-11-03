@@ -53,6 +53,10 @@ public:
     // the hit overrides make; roles unknown.
     bool fn_8020609C() const;
     bool fn_802064E0();
+    // 0x802063FC (act_thief): sorts the actors on this layer
+    // by distance from mPos, then returns the serial of the first (of up to
+    // 20) whose way from mPos is clear, or -1.
+    s32 fn_802063FC();
 
     // 0x8020F80C: draws the shadow and the sprite at mPos on the layer for
     // sprite frame `frame` (the draw() argument).
