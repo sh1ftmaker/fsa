@@ -6,36 +6,37 @@ f32 JPAConvertFixToFloat(s16) {
     // UNUSED FUNCTION
 }
 
+// FIXME: 95.19 %. FSA loads vec.z twice before any store: lfs f9,0x8(r30) at
+// +0xA8 for the m[0][0]/m[1][1]/xyz terms and lfs f0,0x8(r30) again at +0xBC,
+// stored to m[2][2] at +0x10C. This body reuses the first load (stfs f8 at
+// +0x10C), which shifts every float register down by one. tp, tww and Petari
+// have this body; mkdd's `(Vec*)&vec` alias for the m[2][2] read matched only
+// by defeating that CSE, so it was dropped as a fakematch.
 void JPAGetDirMtx(const JGeometry::TVec3f &vec, Mtx m) {
-    Vec *v = (Vec *)&vec; // fakematch?
-    JGeometry::TVec3f newVec;
-    newVec.set(vec.y, -vec.x, 0.0f);
-    f32 mag = newVec.length();
-    if (mag <= JGeometry::TUtilf::epsilon()) {
-        newVec.zero();
+    JGeometry::TVec3f axis(vec.y, -vec.x, 0.0f);
+    f32 len = axis.length();
+
+    if (len <= JGeometry::TUtilf::epsilon()) {
+        axis.zero();
     } else {
-        newVec.scale(1.0f / mag);
+        axis.scale(1.0f / len);
     }
-
-    const f32 xSq  = newVec.x * newVec.x; // f30
-    const f32 ySq  = newVec.y * newVec.y; // f29
-    const f32 xLen = newVec.x * mag; // f28
-    const f32 yLen = newVec.y * mag; // f27
-    const f32 xyz  = (1.0f - vec.z) * (newVec.x * newVec.y); // f26
-
+    f32 xSq  = axis.x * axis.x;
+    f32 ySq  = axis.y * axis.y;
+    f32 xLen = axis.x * len;
+    f32 yLen = axis.y * len;
+    f32 xyz  = (1.0f - vec.z) * (axis.x * axis.y);
     m[0][0] = xSq + vec.z * (1.0f - xSq);
     m[0][1] = xyz;
     m[0][2] = -yLen;
     m[0][3] = 0.0f;
-
     m[1][0] = xyz;
     m[1][1] = ySq + vec.z * (1.0f - ySq);
     m[1][2] = xLen;
     m[1][3] = 0.0f;
-
     m[2][0] = yLen;
     m[2][1] = -xLen;
-    m[2][2] = v->z;
+    m[2][2] = vec.z;
     m[2][3] = 0.0f;
 }
 
