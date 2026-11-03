@@ -2,6 +2,10 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_vaati_boss.h"
 
+cls_801D6A58::cls_801D6A58() {
+    fn_801D7874();
+}
+
 void VaatiBoss_804A4958::vfunc_0x24() {}
 
 extern "C" void fn_801D652C() {

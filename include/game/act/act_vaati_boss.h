@@ -8,6 +8,24 @@
 #include "game/EnemyBase.h"
 #include "game/SpriteAnim.h"
 
+// An element of the 16-entry array at 0x308 of Vaati, built by
+// __construct_array in the actor's constructor (0x801D686C) with the
+// constructor 0x801D6A58 (game/act_vaati_boss.cpp). No vtable: named after
+// that constructor. fn_801D7874 (game/tu_801D6CEC.cpp, not written yet) sets
+// the fields below.
+struct cls_801D6A58 {
+    cls_801D6A58();
+    // 0x801D7874: sets field_0x0 to -1, the two bytes and the three floats to 0.
+    void fn_801D7874();
+
+    /* 0x00 */ s32 field_0x0;
+    /* 0x04 */ u8 field_0x4;
+    /* 0x05 */ u8 field_0x5;
+    /* 0x08 */ f32 field_0x8;
+    /* 0x0C */ f32 field_0xc;
+    /* 0x10 */ f32 field_0x10;
+}; // Size: 0x14
+
 // The shake offset at 0x52c of Vaati: three DampedSine_801E4A18
 // (game/tu_801E4A18.cpp, 0x14 bytes each, `value` first) for x, y and z.
 // The actor's constructor (0x801D686C) calls fn_801E4B0C on 0x52c, 0x540 and
@@ -67,7 +85,9 @@ public:
     // height-dependent factor (fn_802F5FF4 of mPos.z).
     void fn_801EDD0C();
 
-    /* 0x2A8 */ u8 field_0x2a8[0x52C - 0x2A8]; // not yet known
+    /* 0x2A8 */ u8 field_0x2a8[0x308 - 0x2A8]; // not yet known
+    /* 0x308 */ cls_801D6A58 field_0x308[0x10];
+    /* 0x448 */ u8 field_0x448[0x52C - 0x448]; // not yet known
     /* 0x52C */ cls_801D6CEC field_0x52c;
     /* 0x568 */ cls_801E6AB8 field_0x568;
     /* 0x5B0 */ u8 field_0x5b0[0x5D1 - 0x5B0]; // not yet known
