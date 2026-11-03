@@ -1442,7 +1442,7 @@ config.libs = [
         Object(NonMatching, "game/act_shovel_old_timer.cpp"),
         Object(NonMatching, "game/act_knight_of_hyrule.cpp"),
         Object(NonMatching, "game/act_tingle_tower.cpp"),
-        Object(NonMatching, "game/tu_80316E34.cpp"),
+        Object(Matching, "game/tu_80316E34.cpp"),
         Object(NonMatching, "game/act_tingle_first.cpp"),
         Object(NonMatching, "game/act_special_conversation_npc.cpp"),
         Object(NonMatching, "game/act_force_gem_winged.cpp"),
