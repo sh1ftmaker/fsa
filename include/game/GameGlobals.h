@@ -354,6 +354,23 @@ struct cls_80204638 {
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
 
+// game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
+// cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read
+// its current value (word 0x4), clamped to 0-47: fn_801DA938 returns that
+// entry of the string table lbl_804A4DA8; fn_801DA904 whether it is 28 or more.
+struct Sequencer_801DA7C0;
+extern "C" const char* fn_801DA938(Sequencer_801DA7C0* seq);
+extern "C" bool fn_801DA904(Sequencer_801DA7C0* seq);
+
+// game/tu_801DA7C0.cpp's neighbour starting at 0x801DAC6C (owner unit, not
+// written yet). The guarded static in .bss at 0x804C92D0 (constructed on first
+// use by fn_801DAC6C, flag lbl_8053AC28); named after that function. Words 0x0
+// and 0x4 start at -1 (0x4 is an actor serial: fn_801DAD2C looks that actor up
+// and returns fn_801DC264 of it, or 0).
+struct Singleton_801DAC6C;
+extern "C" Singleton_801DAC6C* fn_801DAC6C();
+extern "C" s32 fn_801DAD2C(Singleton_801DAC6C* obj);
+
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
