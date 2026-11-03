@@ -234,6 +234,14 @@ struct GameRoot2_8049F108 {
 
 extern GameRoot2_8049F108* lbl_8053AB10;
 
+// game/tu_8022AD64.cpp (owner unit, not written yet). Both forward their
+// arguments to fn_80241BA0 and return 0 or 1 (clrlwi. at the callers):
+// whether the point *pos (fn_8022BA58) or the box *box (fn_8022B978) is
+// visible on `layer` (8 and up, the upper layers). Called by
+// cls_804A51E4::fn_8021835C and fn_80218538 (tu_8021827C).
+extern "C" bool fn_8022BA58(s32 layer, const JGeometry::TVec3f* pos);
+extern "C" bool fn_8022B978(s32 layer, const JGeometry::TBox2f* box, bool flag);
+
 // game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
 // the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
 // param2 as a byte at 0xE5, the floats are a position (callers pass mPos.x,
