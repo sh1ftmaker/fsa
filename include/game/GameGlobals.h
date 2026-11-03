@@ -579,6 +579,8 @@ extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos,
 extern "C" bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d,
                             s32 e, s32 f, u8 g);
 
+class ActorBase_804A5770;
+
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its destructor fn_801192AC. Only the fields
 // fn_801186B0 writes are known.
@@ -588,11 +590,20 @@ struct cls_801192AC {
     /* 0x02 */ u8 field_0x2;
     /* 0x04 */ s32 field_0x4; // compared as signed in tu_801286C0's vfunc_0x54
     /* 0x08 */ s32 field_0x8;
-    /* 0x0C */ u8 field_0xc[0x14]; // not yet known
+    /* 0x0C */ u8 field_0xc[0x4]; // not yet known
+    // The actor list: fn_8011888C appends and fn_80118798 removes entries,
+    // fn_8011871C searches [mBegin, mEnd) for an actor by mActorId.
+    /* 0x10 */ ActorBase_804A5770** mBegin;
+    /* 0x14 */ ActorBase_804A5770** mEnd;
+    /* 0x18 */ u8 field_0x18[0x8]; // not yet known
 }; // Size: 0x20
 
 // game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
 extern "C" cls_801192AC* fn_8011921C();
+// game/tu_80118384.cpp (not written yet). Returns the first entry at or after
+// `from` whose actor's mActorId (0x1A0) is `actorId`, or obj->mEnd if none.
+extern "C" ActorBase_804A5770** fn_8011871C(cls_801192AC* obj, ActorBase_804A5770** from,
+                                           u32 actorId);
 // game/tu_80118384.cpp. Sets field_0x0 = 1, field_0x1 = field_0x2 = 0,
 // field_0x4 = value, field_0x8 = 0 unless fn_801F68E0 (after fn_801F856C)
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from

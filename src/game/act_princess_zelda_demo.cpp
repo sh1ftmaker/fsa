@@ -1,5 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/act/act_princess_zelda_demo.h"
+#include "game/ActorId.h"
+#include "game/GameGlobals.h"
+#include "game/cls_8049D740.h"
 
 s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
@@ -38,6 +41,29 @@ void PrincessZeldaDemo_8049D208::fn_80111CC0() {
     if (field_0x230 != 0) {
         fn_8010F4DC();
     }
+}
+
+void PrincessZeldaDemo_8049D208::fn_80111D44() {
+    cls_801192AC* list = fn_8011921C();
+    ActorBase_804A5770** goal = fn_8011871C(list, list->mBegin, ACTOR_DMGL);
+    if (goal != fn_8011921C()->mEnd) {
+        field_0x27c = (*goal)->mPos;
+    }
+
+    ActorBase_804A5770** node = fn_8011921C()->mBegin;
+    do {
+        node = fn_8011871C(fn_8011921C(), node, ACTOR_DMMD);
+        if (node == fn_8011921C()->mEnd) {
+            break;
+        }
+        cls_8049D740* maiden = static_cast<cls_8049D740*>(*node);
+        if (maiden->mMode < 6) {
+            field_0x288[maiden->mMode] = maiden->mPos;
+            node++;
+        }
+    } while (node != fn_8011921C()->mEnd);
+
+    field_0x2d0 = mPos;
 }
 
 void PrincessZeldaDemo_8049D208::fn_80110198() {

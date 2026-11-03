@@ -23,11 +23,19 @@ public:
     void fn_80110198();
     void fn_80110E9C();
     void fn_80111CC0();
+    void fn_80111D44();
 
     /* 0x230 */ u8 field_0x230; // set to 0 by the ctor
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ u8 field_0x23c[0xB8]; // not yet known
+    /* 0x23C */ u8 field_0x23c[0x40]; // not yet known
+    // The position of the Goal (DMGL) actor, copied by fn_80111D44.
+    /* 0x27C */ JGeometry::TVec3f field_0x27c;
+    // The Maiden (DMMD) actors' positions, one slot per mode (0..5).
+    /* 0x288 */ JGeometry::TVec3f field_0x288[6];
+    // A copy of mPos, taken at the end of fn_80111D44.
+    /* 0x2D0 */ JGeometry::TVec3f field_0x2d0;
+    /* 0x2DC */ u8 field_0x2dc[0x18]; // not yet known
     // Two sprite animations; the first one's mAnim (0x2FC) is the animation
     // index that fn_80110198 compares against.
     /* 0x2F4 */ SpriteAnim_801D267C mAnim0;
