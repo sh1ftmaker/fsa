@@ -1484,7 +1484,7 @@ config.libs = [
         Object(NonMatching, "game/act_special_bg_draw_object.cpp"),
         Object(NonMatching, "game/tu_803489A4.cpp"),
         Object(NonMatching, "game/act_bee_manager.cpp"),
-        Object(NonMatching, "game/tu_8034A6B0.cpp"),
+        Object(Matching, "game/tu_8034A6B0.cpp"),
         Object(NonMatching, "game/tu_8034AA40.cpp"),
         Object(NonMatching, "game/tu_8034C950.cpp"),
         Object(NonMatching, "game/tu_8034DFF0.cpp"),
