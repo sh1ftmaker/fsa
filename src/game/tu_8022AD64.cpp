@@ -965,6 +965,14 @@ void fn_80233BA0(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
     dst->set(*src);
 }
 
+// Out-of-line copy of TVec3<f32>::operator-: a copy of a, then sub(b).
+// Returned through the hidden pointer like any struct value.
+extern "C" JGeometry::TVec3f fn_80233BC4(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b) {
+    JGeometry::TVec3f diff = a;
+    diff.sub(b);
+    return diff;
+}
+
 bool fn_80233DA4(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
