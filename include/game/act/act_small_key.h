@@ -20,6 +20,9 @@ public:
     // 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
     // fn_802D6C10. Called by act_invisible_npc_wall_tomi (0x803764BC).
     void fn_802C2BD0();
+    // 0x802C1D90: passes the key's (0x230, 0x234) position and 0x238 layer to
+    // GameView's fn_802D6C10 (view from fn_802D6A9C()), then clears mAlive.
+    void fn_802C1D90();
     // 0x802C5284: passes its position (0x230) and layer (0x238) to GameView's
     // fn_802D6C10, with the view from fn_802D6A9C().
     void fn_802C5284();

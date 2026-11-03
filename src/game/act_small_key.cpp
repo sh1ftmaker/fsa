@@ -19,6 +19,13 @@ void SmallKey_804A8CD8::fn_802C2BD0() {
     fn_802D6A9C()->fn_802D6C10(pos, layer);
 }
 
+void SmallKey_804A8CD8::fn_802C1D90() {
+    JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
+    s32 layer = field_0x238;
+    fn_802D6A9C()->fn_802D6C10(pos, layer);
+    mAlive = false;
+}
+
 void SmallKey_804A8CD8::fn_802C5284() {
     JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
     s32 layer = field_0x238;
