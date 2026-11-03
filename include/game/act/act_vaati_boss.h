@@ -86,6 +86,9 @@ public:
     VaatiBoss_804A4958() {}
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // empty override
+    // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
+    // mState is 6, 7, 0xB or 0x17..0x1A (no call in those states).
+    /* 0x94 */ virtual void vfunc_0x94();
 
     // 0x801EDC0C (draw's body): adds the offset of field_0x52c to mPos,
     // shakes mPos.x by 1.0f every other frame in state 0xB once the timer is
