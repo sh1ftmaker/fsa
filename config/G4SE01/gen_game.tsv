@@ -8,8 +8,6 @@ act_battle_royale_end_check	dtor	__dt__29BattleRoyaleEndCheck_804B0380Fv	BattleR
 act_beamos	dtor_enemy	__dt__15Beamos_804A40E0Fv	Beamos_804A40E0	0x804A40E0	new	new
 act_beamos	sinit	__sinit_act_beamos_cpp	-	-	new	-
 act_bee_manager	sinit	__sinit_act_bee_manager_cpp	-	-	new	-
-act_bgm_change_npc	dtor	__dt__21BGMChangeNPC_804A9DA0Fv	BGMChangeNPC_804A9DA0	0x804A9DA0	new	new
-act_bgm_change_npc	sinit	__sinit_act_bgm_change_npc_cpp	-	-	new	new
 act_bird_manager	sinit	__sinit_act_bird_manager_cpp	-	-	new	-
 act_blade_trap	dtor	__dt__18BladeTrap_804A04D8Fv	BladeTrap_804A04D8	0x804A04D8	new	new
 act_blade_trap	sinit	__sinit_act_blade_trap_cpp	-	-	new	new
