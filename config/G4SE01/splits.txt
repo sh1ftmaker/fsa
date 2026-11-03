@@ -194,6 +194,9 @@ JSystem/JAudio/System/JASBNKParser.cpp:
 JSystem/JAudio/System/JASDrumSet.cpp:
 	.text       start:0x800304C4 end:0x80030828
 	.ctors      start:0x8045BD60 end:0x8045BD64
+	.data       start:0x80491A50 end:0x80491A68
+	.bss        start:0x804B2880 end:0x804B28A8
+	.sbss       start:0x8053A350 end:0x8053A358
 	.sdata2     start:0x8053B1B0 end:0x8053B1C0
 
 JSystem/JAudio/System/JASInstRand.cpp:
