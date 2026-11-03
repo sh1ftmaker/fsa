@@ -244,7 +244,7 @@ JSystem/JAudio/System/JASWaveArcLoader.cpp:
 	.sbss       start:0x8053A360 end:0x8053A368
 
 JSystem/JAudio/System/JASBank.cpp:
-	.text       start:0x80031750 end:0x8003189C
+	.text       start:0x80031484 end:0x8003189C
 	.ctors      start:0x8045BD6C end:0x8045BD70
 	.rodata     start:0x8045D1A8 end:0x8045D1D0
 	.sdata2     start:0x8053B1F0 end:0x8053B200
