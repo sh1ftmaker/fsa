@@ -171,9 +171,11 @@ and code shaped the way the original was.
 
 ## Verifying a match
 
-Only the honest report counts. It diffs every unit with relocations checked,
-so a function matches only if its calls and data references point at the same
-symbols. `build/G4SE01/report.json` exists for decomp.dev-style tooling but
+Only the honest report counts. It diffs every unit with relocations checked
+(`functionRelocDiffs=all`), so a function matches only if its calls and data
+references point at symbols with the same names (and, for data, the same
+values). A placeholder against a real name (`fn_80083E70` against
+`JSUTreeIterator<JKRHeap>::operator->`) is a miss until the name is fixed. `build/G4SE01/report.json` exists for decomp.dev-style tooling but
 counts every `Matching` unit as 100 % without diffing it; never quote it.
 
 ```sh

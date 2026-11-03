@@ -220,6 +220,9 @@ class ProjectConfig:
         self.progress_report_args: Optional[List[str]] = (
             None  # Flags to `objdiff-cli report generate`
         )
+        # Diff options written to objdiff.json's "options" (GUI, `objdiff-cli diff`
+        # and `report generate` all apply them), e.g. {"functionRelocDiffs": "all"}
+        self.objdiff_options: Dict[str, Any] = {}
 
         # Progress fancy printing
         self.progress_use_fancy: bool = False
@@ -1597,6 +1600,8 @@ def generate_objdiff_config(
         "units": [],
         "progress_categories": [],
     }
+    if config.objdiff_options:
+        objdiff_config["options"] = dict(config.objdiff_options)
 
     # decomp.me compiler name mapping
     COMPILER_MAP = {

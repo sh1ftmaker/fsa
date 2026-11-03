@@ -1020,11 +1020,15 @@ config.progress_categories = [
     ProgressCategory("third_party", "Third Party"),
 ]
 config.progress_each_module = args.verbose
+# Relocation diffing: "all" compares the target symbol's name (or address)
+# and, for data targets, its value. objdiff's default "name_address" skips the
+# value; "data_value" ignores names entirely, so a call or load of a
+# differently named symbol would still count as matched. The same setting goes
+# into objdiff.json, so the GUI and `objdiff-cli diff` agree with the report.
+config.objdiff_options = {"functionRelocDiffs": "all"}
 # Optional extra arguments to `objdiff-cli report generate`
 config.progress_report_args = [
-    # Marks relocations as mismatching if the target value is different
-    # Default is "functionRelocDiffs=none", which is most lenient
-    "--config functionRelocDiffs=data_value",
+    "--config functionRelocDiffs=all",
 ]
 
 # Disable missing return type warnings for incomplete objects

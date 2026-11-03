@@ -129,8 +129,11 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
 
 **Measuring honestly**
 - Only `build/G4SE01/report_honest.json` (every unit diffed,
-  `functionRelocDiffs=data_value`) counts; progress.py, gate.py and
-  coord.py read it.
+  `functionRelocDiffs=all`) counts; progress.py, gate.py and
+  coord.py read it. `data_value`, used until 2026-11-02, ignores relocation
+  target names: 24 functions counted as matched while calling or loading a
+  differently named symbol, among them a swapped pair of TRK statics
+  (`IsTRKConnected` / `g_CurrentSequence`) in a Matching, SHA-1-linked unit.
   objdiff's lenient default and byte-pattern hits overstated progress
   several times over.
 - `Matching` must mean 100 % code and data. 77 units were once marked

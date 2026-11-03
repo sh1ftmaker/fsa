@@ -11,7 +11,7 @@ files without a map; and what published AI-agent decomp efforts learned.
    not: a function counts only when natural source compiles to the original
    bytes.
 2. **Mechanical authority.** The objdiff report with relocations checked
-   (`functionRelocDiffs=data_value`) decides what matches; once the DOL links,
+   (`functionRelocDiffs=all`: target names and data values) decides what matches; once the DOL links,
    the SHA-1 of `main.dol` decides what is correct. Agents never touch the
    things that measure them.
 3. **One file, one owner.** Work is divided by translation unit (the original

@@ -39,8 +39,12 @@ matches, and lists them with the reason.
 
 Only the honest objdiff report counts: `build/G4SE01/report_honest.json`,
 written by ninja (`tools/honest_report.py`) with every unit diffed and
-`functionRelocDiffs=data_value`, so a function matches only if its
-relocations point at the same symbols too. `report.json` stays for
+`functionRelocDiffs=all`: a relocation matches only if its target has the
+same name (or address) and, for data, the same value, so a function that
+calls or loads a differently named symbol doesn't count. (`data_value`, used
+here before, ignores names entirely; objdiff's default `name_address` skips
+the value.) objdiff.json carries the same setting in its `options`, so the
+objdiff GUI, `objdiff-cli diff` and `tools/fdiff.py` agree with the report. `report.json` stays for
 decomp.dev-style tooling, but it counts every `Matching` unit as 100 %
 without diffing it, so never quote it. `progress.py`, `gate.py` and
 `coord.py` read the honest one.
