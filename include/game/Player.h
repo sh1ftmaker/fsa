@@ -219,6 +219,7 @@ public:
     s32 fn_8025F648(); // via fn_8023EEB4
     s32 fn_8025F668(); // via fn_8023EF50
     bool fn_8025F684(); // via fn_8023EFEC
+    void fn_802635D4(); // empty; the dispatch in fn_802870C8 calls it
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
