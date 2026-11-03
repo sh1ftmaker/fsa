@@ -366,8 +366,9 @@ JSystem/JAudio/Utility/JAUSoundMgr.cpp:
 	.bss        start:0x804B4B98 end:0x804B4BE0
 
 JSystem/JAudio/Utility/JAUSoundTable.cpp:
-	.text       start:0x8003C30C end:0x8003C7A0
+	.text       start:0x8003C30C end:0x8003C794
 	.ctors      start:0x8045BD98 end:0x8045BD9C
+	.bss        start:0x804B4BE0 end:0x804B4C28
 
 JSystem/JAudio/Utility/JAUStreamFileTable.cpp:
 	.text       start:0x8003C7A0 end:0x8003C878

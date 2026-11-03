@@ -1,4 +1,9 @@
 #include "JSystem/JAudio/JAUSoundTable.h"
+// FSA's __sinit constructs the JASTrack/JASChannel and JAIStream/JAISeq/JAISe pools,
+// as mkdd's does.
+#include "JSystem/JAudio/Interface/JAISe.h"
+#include "JSystem/JAudio/Interface/JAISeq.h"
+#include "JSystem/JAudio/Interface/JAIStream.h"
 
 void JAUSoundTable::init(const void *res) {
     if (res != NULL) {
