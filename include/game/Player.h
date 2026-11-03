@@ -188,6 +188,10 @@ void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial
 bool fn_802300EC(s32 player);
 bool fn_8023061C(s32 player, bool flag);
 bool fn_80230224(s32 player, bool flag);
+// Owner: tu_8022AD64 (0x80230AD4, defined there). 1 unit (act_pull_switch, result
+// unused); also called by ActorManager_804A5800::fn_801F6884. Returns fn_8024DCD0's
+// result on the player, 0 without one.
+s32 fn_80230AD4(s32 player);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
 // fn_80241DD0(player, layer, pos) and fn_8022B978 fn_80241BA0(player, layer,
 // box, flag); each returns 1 as soon as one player passes, else 0 (callers
@@ -353,6 +357,16 @@ bool fn_8023513C(s32 player);
 // Loops over the players and calls fn_80272DCC, which copies the 4 box floats
 // and stores r5/r6 (field_0x4, serial) as words.
 void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_pull_switch). Index (0-3)
+// of the first present player whose box test (fn_802728AC(player, box, layer,
+// serial)) passes, or -1; 0 without a player manager.
+s32 fn_80239470(const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_pull_switch). Adds the
+// vector to the player's position-like vector at 0x2D0 (fn_80252F14, which sets
+// byte 0x434) when the player is present.
+void fn_8023DFF4(s32 player, const JGeometry::TVec3f* offset);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (tu_802242F4). Index of
 // the first player on `layer` whose box test (fn_80273FB8(player, box,
