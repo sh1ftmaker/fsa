@@ -300,27 +300,46 @@ def run_haiku(wt, unit, fn, size, pct, model=MODEL, meta=None):
     return cost
 
 
+# Relative token prices (input = 1): Anthropic's cache-write, cache-read and output multipliers.
+# Used only to estimate the cost of a run killed at its time cap, scaled per model by the
+# $/weighted-token of that model's completed runs (ab-report).
+TOKEN_WEIGHTS = {"input_tokens": 1.0, "cache_creation_input_tokens": 1.25,
+                 "cache_read_input_tokens": 0.1, "output_tokens": 5.0}
+
+
 def _claude(wt, prompt, tag, timeout, model=MODEL, meta=None):
     tools = ",".join(["Read", "Edit", "Write", "Grep", "Glob",
                       "Bash(python3 tools/try.py:*)", "Bash(python3 tools/fdiff.py:*)",
                       "Bash(grep:*)", "Bash(sed -n:*)", "Bash(head:*)", "Bash(tail:*)"])
+    cmd = ["claude", "-p", prompt, "--model", model, "--output-format", "stream-json", "--verbose",
+           "--permission-mode", "acceptEdits", "--allowedTools", tools,
+           "--disallowedTools", "Agent,WebFetch,WebSearch"]
+    timed_out = False
     try:
-        r = sh(["claude", "-p", prompt, "--model", model, "--output-format", "json",
-                "--permission-mode", "acceptEdits", "--allowedTools", tools,
-                "--disallowedTools", "Agent,WebFetch,WebSearch"], wt, timeout=timeout)
-        out = r.stdout
-    except subprocess.TimeoutExpired:
-        out = '{"result": "timeout"}'
+        out = sh(cmd, wt, timeout=timeout).stdout
+    except subprocess.TimeoutExpired as e:  # keep what streamed before the kill
+        out = e.stdout.decode(errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
+        timed_out = True
+    result, turns, wtok = {}, 0, 0.0
+    for line in out.splitlines():
+        try:
+            ev = json.loads(line)
+        except ValueError:
+            continue
+        if ev.get("type") == "result":
+            result = ev
+        elif ev.get("type") == "assistant":
+            turns += 1
+            u = (ev.get("message") or {}).get("usage") or {}
+            wtok += sum(TOKEN_WEIGHTS[k] * (u.get(k) or 0) for k in TOKEN_WEIGHTS)
     d = LOGS / ("haiku" if model == MODEL else model)
     d.mkdir(parents=True, exist_ok=True)
-    (d / f"{tag}.json").write_text(out)
-    try:
-        j = json.loads(out)
-    except ValueError:
-        j = {}
+    (d / f"{tag}.json").write_text(json.dumps(result or {"result": "timeout" if timed_out else "no result"}))
     if meta is not None:
-        meta.update(turns=j.get("num_turns", ""), api_ms=j.get("duration_api_ms", ""))
-    return j.get("total_cost_usd", 0) or 0
+        meta["turns"] = result.get("num_turns", turns)
+        meta["wtok"] = meta.get("wtok", 0) + wtok
+        meta["timeout"] = meta.get("timeout", 0) or int(timed_out)
+    return result.get("total_cost_usd", 0) or 0
 
 
 # ---------------------------------------------------------------- worker
@@ -755,7 +774,7 @@ def ab(args):
                 f.write("\t".join(str(x) for x in [
                     datetime.datetime.now().isoformat(timespec="seconds"), model, unit, fn, s_["bucket"], size,
                     int(ok), f"{best:.2f}", f"{cost:.4f}", meta.get("turns", ""), int(time.time() - t0),
-                    (why or "")[:100]]) + "\n")
+                    (why or "")[:100], f"{meta.get('wtok', 0):.0f}", meta.get("timeout", 0)]) + "\n")
 
     threads = [threading.Thread(target=run, args=(n,)) for n in args.workers.split(",")]
     for t in threads:
@@ -777,7 +796,10 @@ def ab_report(args):
             if not rs:
                 continue
             solved = sum(int(r[6]) for r in rs)
-            cost = sum(float(r[8]) for r in rs)
+            # Capped runs report no cost: estimate from tokens at this model's completed-run $/token.
+            done = [r for r in rows if r[1] == m and len(r) > 13 and r[13] == "0" and float(r[12] or 0) > 0]
+            rate = sum(float(r[8]) for r in done) / sum(float(r[12]) for r in done) if done else 0
+            cost = sum(float(r[8]) if not (len(r) > 13 and r[13] == "1") else float(r[12] or 0) * rate for r in rs)
             turns = [int(r[9]) for r in rs if r[9].isdigit()]
             print(f"{b:8} {m:18} {len(rs):>4} {solved:>6} {cost:>8.2f} "
                   f"{(cost / solved if solved else float('inf')):>8.2f} "
