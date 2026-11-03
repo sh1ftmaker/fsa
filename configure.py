@@ -1397,7 +1397,7 @@ config.libs = [
         Object(NonMatching, "game/act_view_mode.cpp"),
         Object(Matching, "game/act_ura_colour.cpp"),
         Object(NonMatching, "game/act_particle_npc.cpp"),
-        Object(NonMatching, "game/act_off_switch.cpp"),
+        Object(Matching, "game/act_off_switch.cpp"),
         Object(NonMatching, "game/tu_802E2074.cpp"),
         Object(NonMatching, "game/tu_802E2990.cpp"),
         Object(Matching, "game/act_advance_notice_se.cpp"),
