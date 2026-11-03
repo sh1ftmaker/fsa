@@ -98,7 +98,15 @@ struct GameRoot_8049EF20 {
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
-    /* 0xB8 */ u8 field_0xb8[0x108 - 0xB8];
+    /* 0xB8 */ u8 field_0xb8[0xF8 - 0xB8];
+    // Cleared to 0 by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8), together
+    // with field_0xfc, when it is stored a 1 (stb of r4 at 0xFE first).
+    /* 0xF8 */ s32 field_0xf8;
+    /* 0xFC */ u8 field_0xfc;
+    /* 0xFD */ u8 field_0xfd[0xFE - 0xFD];
+    // Stored by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8, stb of r4).
+    /* 0xFE */ u8 field_0xfe;
+    /* 0xFF */ u8 field_0xff[0x108 - 0xFF];
     // Stored by fn_80134CC0 (game/tu_80134C04.cpp, 0x80134CC0), which
     // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
     // is not known yet.
@@ -123,6 +131,9 @@ struct GameRoot_8049EF20 {
     // Stores r4 at this+0x94 (stb), then sets this+0x95 to 1 unless the value
     // is 1. Defined in game/tu_80134C04.cpp (0x80134FC4); no callers found yet.
     void fn_80134FC4(u8 value);
+    // Stores r4 at this+0xFE (stb). When it is 1, clears this+0xFC (stb) and
+    // this+0xF8 (stw). Defined in game/tu_80134C04.cpp (0x801365C8); no callers found yet.
+    void fn_801365C8(u8 value);
     // Owner: game/tu_80134C04.cpp (next to fn_80134FBC; not written yet).
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).

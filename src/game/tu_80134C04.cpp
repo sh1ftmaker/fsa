@@ -17,6 +17,15 @@ void GameRoot_8049EF20::fn_80134FC4(u8 value) {
     field_0x95 = 1;
 }
 
+void GameRoot_8049EF20::fn_801365C8(u8 value) {
+    field_0xfe = value;
+    if (value != 1) {
+        return;
+    }
+    field_0xfc = 0;
+    field_0xf8 = 0;
+}
+
 void GameRoot_8049EF20::fn_80134D14(u8 value) {
     lbl_8053AAF8->field_0x88 = value;
 }
