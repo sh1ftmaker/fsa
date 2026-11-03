@@ -33,6 +33,10 @@ void GameView_804A9950::fn_802D790C(u8 value) {
     lbl_8053AAF8->field_0x4->mView->field_0x171 = value;
 }
 
+void GameView_804A9950::fn_802D7920(u8 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x170 = value;
+}
+
 GameView_804A9950* fn_802D6A9C(void) {
     return lbl_8053AAF8->field_0x4->mView;
 }
