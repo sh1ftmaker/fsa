@@ -26,6 +26,20 @@ bool cls_800FE3EC::fn_800FD548(u8 index) {
     return (field_0x4[index]->field_0x90 & 0x10) != 0;
 }
 
+bool cls_800FE3EC::fn_800FD594(u8 index) {
+    // Both arms feed one shared test; the original merges them the same way.
+    u32 flag;
+    if (index == 0xFF) {
+        flag = field_0x4[field_0x3]->field_0x90 & 0x4;
+    } else {
+        flag = field_0x4[index]->field_0x90 & 0x4;
+    }
+    if (flag != 0) {
+        return false;
+    }
+    return true;
+}
+
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index) {
     if (index == 0xFF) {
         *out = buffer->field_0x4[buffer->field_0x3]->pos;

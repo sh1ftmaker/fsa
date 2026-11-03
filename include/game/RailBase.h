@@ -56,6 +56,7 @@ public:
     u8 fn_800FD894(s32 layer, u8* out, s32 max);
     bool fn_800FD5E8(u8 index);
     bool fn_800FD548(u8 index);
+    bool fn_800FD594(u8 index);
     bool fn_800FD4C0(u8 a, u8 b);
     s32 fn_800FE25C(u8 index);
     u8 fn_800FE21C(u8 index);
