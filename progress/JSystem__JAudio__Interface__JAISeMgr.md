@@ -1,31 +1,36 @@
 # JSystem/JAudio/Interface/JAISeMgr.cpp
 
-Baseline (progress.py): 3711 / 11561 functions, 710408 bytes (15.99 %).
-After: 3721 / 11561, 713320 bytes (16.06 %). gate: ok.
+Baseline: total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+After:    total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+Unit: 22/22 functions, code 4736/4736, data 84/132 -> 132/132 (honest report).
 
-Unit: 14/22 -> 21/22 functions; .data, .rodata, .sdata2 100 %; .bss/.ctors 0 % (no __sinit).
+## Status: NonMatching: report 100 %, trial link fails with the block-wide -sym on
 
-## Matched
-- Relocation-only misses fixed by names: `__vt__8JAISeMgr` (lbl_80491718),
-  `__vt__16JAISeCategoryMgr` (lbl_8049172C), `__vt__14JAISeqDataUser` (lbl_804917A8) and
-  `__dt__14JAISeqDataUserFv` (fn_80024B50) from the ctors/dtors' vtable stores and base dtor call;
-  `sInstance` of `JASGlobalInstance<JAISeMgr>` (lbl_8053A29C, ctor/dtor) and
-  `<JAISoundInfo>` (lbl_8053A294, startSound); `JASPoolAllocObject<JAISe>::memPool_`
-  (lbl_804B222C, calc/startSound). .data split 0x80491718-0x80491740 (both vtables).
-- `fn_800231F8` = `JAISeMgr::stop(u32)`: loop over 16 categories calling the inlined
-  `JAISeCategoryMgr::stop(u32)`; Petari's JAISeMgr.cpp has it in the same place
-  (between stop() and stopSoundID) and its symbols list `stop__8JAISeMgrFUl` there.
+## Data gap and fix (committed)
+.bss (0 %): placeholder `lbl_804B22B8` (0x30) is the four 0xC destructor-chain
+objects __sinit registers (@1616..@1619). Split into lbl_804B22B8/22C4/22D0/22DC
+(0xC each); also matches __sinit's relocations.
 
-## Other names
-- `__sinit_JAISeMgr_cpp` (0x80023A68, .ctors entry), guard `lbl_8053A2B4`, pool dtor
-  `fn_80021A6C` = `JASMemPool<JAISe>::~JASMemPool`. .bss 0x804B22B8-0x804B22E8 (dtor chain).
-
-## Resistant
-- `__sinit_JAISeMgr_cpp`: FIXME in source, waits for the memPool_ definition (w3-jas).
-  JASFakeMatch2.h include removed (empty without MATCHING).
+## Blocker: -sym on (block-wide JAudio flag), not code
+`link_check --unit` with the current flags: DOL SHA-1 698d3557... != build.sha1.
+FSA places the weak `__ct__16JAISeCategoryMgrFv` at 0x80022DBC, right after
+the implicit `__dt__16JAISeCategoryMgrFv` that follows JAISeMgr::JAISeMgr,
+and `__dt__8JAISeMgrFv` at the end of the main .text before __sinit. With
+-sym on our object puts the explicit-inline ctor, JSUList<JAISe> dtor and
+~JAISeMgr into a separate .text section (#10), so everything from 0x80022DBC
+shifts (vtable words 0x80491724/28 differ too).
+Experiment (reverted, not committed): appending "-sym off" for this object
+only gives the target order (dt, ct, deduped JSUList/JASGlobalInstance dtors,
+..., ~JAISeMgr at the end) and `link_check --unit` reports byte-identical
+(SHA-1 d86b3d9f...). Per-unit flags are not allowed, so this needs a
+coordinator decision on which JAudio TUs were built with -sym on (JAISeq.cpp
+shows the same thing).
 
 ## SHARED-EDITS
-- libs/sdk/include/JSystem/JAudio/Interface/JAISeMgr.h: declares `void stop(u32 fadeCount);`
-  (non-virtual member, no layout change; separate commit).
-- symbols.txt: `__dt__14JAISeqDataUserFv` / `__vt__14JAISeqDataUser` (JAISeqDataMgr TU),
-  same lines as the JAISeq branch.
+- config/G4SE01/symbols.txt: placeholder lbl_804B22B8 split (4 x 0xC) (committed).
+- PROPOSED (coordinator, configure.py): JAISeMgr.cpp (and JAISeq.cpp) were not
+  built with -sym on in FSA; with "-sym off" the unit links SHA-1 OK and can
+  flip to Matching.
+
+## Resistant
+- Link only; all functions and data 100 % in the honest report.
