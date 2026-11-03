@@ -2,12 +2,14 @@
 #include <JSystem/JAudio/System/JASChannel.h>  // FSA's __sinit constructs the JASChannel pool
 #include <JSystem/JUtility/JUTDbg.h>
 
-// probably fakematch
+// FIXME: 97.6 %. FSA computes 2*(r-1) - 1.0f*(1.0f - FLT_EPSILON) with an unfolded multiply by
+// 1.0f (fmuls, then fnmsubs); this source folds it into one fmsubs. The source form of that
+// 1.0f factor is unknown. It also orders .sdata2 2.0f, 1.0f (ours 1.0f, 2.0f).
 void JASInstRand::effect(int, int, JASSoundParams *params) const
 {
     static JMath::TRandom_fast_ oRandom(0);
-    f32 val = (FLT_EPSILON); // has to be declared here to prevent regswaps
-    val = getY(1.0f - val, oRandom.get_ufloat_1() * 2.0f, 1.0f);
+    f32 max = 1.0f - FLT_EPSILON;
+    f32 val = oRandom.get_ufloat_1() * 2.0f - max;
     val *= mCeiling;
     val += mFloor;
 

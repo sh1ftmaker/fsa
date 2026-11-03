@@ -10,7 +10,7 @@
 <rect class="grow" x="330.00" y="28" width="3.69" height="16" fill="#3aae5c"/>
 <rect x="683.24" y="28" width="1.5" height="16" fill="#161a34"/>
 <rect x="683.99" y="28" width="62.49" height="16" fill="#ef5b52" fill-opacity="0.18"/>
-<rect class="grow" x="683.99" y="28" width="60.55" height="16" fill="#ef5b52"/>
+<rect class="grow" x="683.99" y="28" width="60.52" height="16" fill="#ef5b52"/>
 <rect x="745.73" y="28" width="1.5" height="16" fill="#161a34"/>
 <rect x="746.48" y="28" width="13.00" height="16" fill="#3d9cf0" fill-opacity="0.18"/>
 <rect class="grow" x="746.48" y="28" width="12.98" height="16" fill="#3d9cf0"/>
@@ -24,7 +24,7 @@
 </g>
 <text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#eceefb">19.74 %</text>
 <text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#7c82a8">4,896 / 11,561 fns</text>
-<text x="330" y="62" class="mono" font-size="11.5" fill="#7c82a8">876,996 / 4,442,088 bytes of code</text>
+<text x="330" y="62" class="mono" font-size="11.5" fill="#7c82a8">876,772 / 4,442,088 bytes of code</text>
 <line x1="20" x2="940" y1="80" y2="80" stroke="#262b4e"/>
 <g fill="#3aae5c"><path d="M34.5 99L41 105.5L34.5 112L28 105.5Z"/></g>
 <text x="50" y="111" font-size="16" font-weight="700" fill="#eceefb">Game code</text>
@@ -41,7 +41,7 @@
 <text x="50" y="177" font-size="16" font-weight="700" fill="#eceefb">JSystem</text>
 <text x="50" y="197" font-size="12" fill="#7c82a8">630,892 bytes · 11 libraries</text>
 <rect x="330" y="164" width="440" height="14" rx="4" fill="#1d2142"/>
-<rect class="grow" style="animation-delay:0.1s" x="330" y="164" width="426.30" height="14" rx="4" fill="#ef5b52"/>
+<rect class="grow" style="animation-delay:0.1s" x="330" y="164" width="426.14" height="14" rx="4" fill="#ef5b52"/>
 <rect x="330" y="184" width="440" height="5" rx="2.5" fill="#1d2142"/>
 <rect class="grow" style="animation-delay:0.3s" x="330" y="184" width="427.76" height="5" rx="2.5" fill="#ef5b52" fill-opacity="0.55"/>
 <text x="330" y="205" class="mono" font-size="11.5" fill="#7c82a8">code 96.9 % · functions 97.2 %</text>

@@ -249,6 +249,7 @@ JSystem/JAudio/System/JASInstRand.cpp:
 	.text       start:0x80030828 end:0x800309B8
 	.ctors      start:0x8045BD64 end:0x8045BD68
 	.data       start:0x80491A68 end:0x80491A78
+	.bss        start:0x804B28A8 end:0x804B28B4
 	.sbss       start:0x8053A358 end:0x8053A360
 	.sdata2     start:0x8053B1C0 end:0x8053B1D0
 

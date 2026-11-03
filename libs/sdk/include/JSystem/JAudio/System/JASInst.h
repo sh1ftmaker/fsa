@@ -137,12 +137,6 @@ public:
 
     virtual void effect(int, int, JASSoundParams *params) const;
 
-    // Fabricated
-    f32 getY(f32 in, f32 rnd, f32 mult) const
-    {
-        return rnd - (mult * in);
-    }
-
     // fabricated
     void setFloor(f32 floor) { mFloor = floor; }
     void setCeiling(f32 ceiling) { mCeiling = ceiling; }
