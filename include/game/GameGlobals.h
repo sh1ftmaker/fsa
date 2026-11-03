@@ -62,7 +62,11 @@ struct GameRoot_8049EF20 {
     /* 0x04 */ GameRootSub04_801F856C* field_0x4; // -> 0x8: the actor manager
     /* 0x08 */ u8 field_0x8[0x4C - 0x8];
     /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
-    /* 0x50 */ u8 field_0x50[0x7E - 0x50];
+    /* 0x50 */ u8 field_0x50[0x58 - 0x50];
+    // The fade state tested by cls_804A8390::fn_802AC8B4 (tu_802AC8AC): 1 and
+    // 5 step the black picture up, 4 steps it down, 6 counts field_0x14 down.
+    /* 0x58 */ s32 field_0x58;
+    /* 0x5C */ u8 field_0x5c[0x7E - 0x5C];
     /* 0x7E */ u8 field_0x7e;
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80[0x2];
