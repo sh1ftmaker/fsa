@@ -3,11 +3,16 @@
 
 // The base class of every actor the spawner creates (fn_801F9484, see
 // game/ActorManager.h). Its code is game/tu_801EE24C.cpp; its vtable is at
-// 0x804A5770 (__vt__9ActorBase).
+// 0x804A5770 (__vt__18ActorBase_804A5770).
 //
-// "ActorBase" is a placeholder: FSA has no RTTI and no symbol map, and no
-// string names the class. Rename it (and its mangled symbols) only on
-// evidence.
+// Naming (docs/PLAN.md, "Placeholder names"): a provisional descriptive
+// name carries the address of the class's vtable, or for a class without
+// one its constructor or first method, until evidence gives the real name.
+// FSA has no RTTI and no symbol map, and no string names these classes.
+// Rename (with their mangled symbols) only on evidence.
+//
+// Vectors: prototypes and members use JGeometry::TVec3f for game data;
+// dolphin's Vec only where a mangled name or a PSMTX/PSVEC call proves it.
 //
 // Layout: from the constructor (0x801F5AE0), the spawner's inline setters
 // (0x801FF630-0x801FF738), the actor manager's loops (game/tu_801F6058.cpp)
@@ -22,7 +27,7 @@
 #include "types.h"
 #include "JSystem/JGeometry.h"
 
-struct JPABaseEmitter;
+class JPABaseEmitter;
 
 // The two boxes at 0x60 and 0x70 are JGeometry::TBox2f (min i, max f) in the
 // actor's top-down space (x, y - z), relative to its position: the
@@ -30,21 +35,24 @@ struct JPABaseEmitter;
 // for TBox2<f32> (a plain struct of four floats copies with lfs/stfs), and
 // fn_801F5790 tests getWidth() > 0 and getHeight() > 0 before using one.
 
-// The member at 0x1DC: constructor fn_801EAD68, per-frame update
+// The member at 0x1DC (named after its constructor, 0x801EAD68; no vtable).
+// Constructor fn_801EAD68, per-frame update
 // fn_801EAB0C (both in game/tu_801EAB0C.cpp), called by the actor manager's
 // update loop before the actor's own update. Its purpose is unknown.
-struct ActorSub1DC {
-    ActorSub1DC();
+struct ActorSub1DC_801EAD68 {
+    ActorSub1DC_801EAD68();
     /* 0x00 */ u8 field_0x0[4];
     /* 0x04 */ u8 field_0x4[16];
     /* 0x14 */ s32 field_0x14[16]; // -1 after construction
 }; // Size: 0x54
 
-// The member at 0x120. Its constructor initializes 0x130 and 0x134 and then
+// The member at 0x120 (no vtable and no out-of-line constructor; named
+// after the constructor it is inlined into, ActorBase's at 0x801F5AE0). Its
+// constructor initializes 0x130 and 0x134 and then
 // again after filling the table (the base constructor's stores show both),
 // hence the separate reset.
-struct ActorSub120 {
-    ActorSub120() : field_0x10(-1), field_0x14(-1) { reset(); }
+struct ActorSub120_801F5AE0 {
+    ActorSub120_801F5AE0() : field_0x10(-1), field_0x14(-1) { reset(); }
     void reset() {
         for (u8 i = 0; i < 16; i++) {
             field_0x0[i] = i;
@@ -58,24 +66,29 @@ struct ActorSub120 {
     /* 0x14 */ s32 field_0x14;
 }; // Size: 0x18
 
-class ActorBase {
+class ActorBase_804A5770 {
 public:
-    ActorBase();
+    ActorBase_804A5770();
 
     // Virtual table at 0x804A5770. Slot offsets are into the vtable (MWCC:
     // two header words, the first slot at +0x8). Names only where the
     // caller makes the role unambiguous.
-    /* 0x08 */ virtual ~ActorBase();
-    /* 0x0C */ virtual void init();   // called once by the spawner after the
-                                      // spawn parameters are set; empty here
+    /* 0x08 */ virtual ~ActorBase_804A5770();
+    // init: called once by the spawner after the spawn fields are set; 69
+    // overrides call J3DFrameCtrl::init. Empty here.
+    /* 0x0C */ virtual void init();
     /* 0x10 */ virtual void vfunc_0x10(); // empty here
-    /* 0x14 */ virtual void update(); // the manager's update loop, every frame
-                                      // the actor is active; empty here
+    // update: called by the manager's update loop every frame the actor is
+    // active, right after savePrevPos(); 83 overrides drive
+    // J3DFrameCtrl::update/checkPass. Empty here.
+    /* 0x14 */ virtual void update();
     /* 0x18 */ virtual void vfunc_0x18(); // fn_801F5790: box vs. player screens
     /* 0x1C */ virtual void savePrevPos(); // mPrevPos = mPos; the update loop
                                            // calls it right before update()
-    /* 0x20 */ virtual void draw();   // the manager's draw loop (fn_801F8658)
-                                      // while mDrawEnabled; empty here
+    // draw: the manager's separate draw pass (fn_801F8658) while
+    // mDrawEnabled; 199 of the 297 overrides reach GX/J3D (GXBegin,
+    // GXLoadTexObj, ...) within 3 calls. Empty here.
+    /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // fn_801F4F28
     /* 0x28 */ virtual void vfunc_0x28(); // fn_801F4E0C
     /* 0x2C */ virtual void vfunc_0x2C(); // fn_801F4850
@@ -181,7 +194,7 @@ public:
     /* 0x11E */ u8 field_0x11e;    // update loop: updates the actor if set
     /* 0x11F */ u8 field_0x11f;    // draw/update loops: still drawn/updated
                                    // while the game is paused (fn_80134CC8)
-    /* 0x120 */ ActorSub120 field_0x120;
+    /* 0x120 */ ActorSub120_801F5AE0 field_0x120;
     /* 0x138 */ s32 field_0x138;
     /* 0x13C */ u8 field_0x13c;
     /* 0x13D */ u8 field_0x13d;
@@ -201,8 +214,8 @@ public:
     /* 0x150 */ s32 field_0x150;
     /* 0x154 */ s32 field_0x154;
     /* 0x158 */ s32 field_0x158;
-    /* 0x15C */ ActorBase* mListPrev; // the manager's actor list at
-    /* 0x160 */ ActorBase* mListNext; // ActorManager 0x2018 (fn_801F84C4)
+    /* 0x15C */ ActorBase_804A5770* mListPrev; // the manager's actor list at
+    /* 0x160 */ ActorBase_804A5770* mListNext; // ActorManager_804A5800 0x2018 (fn_801F84C4)
     /* 0x164 */ u8 field_0x164;
     /* 0x165 */ u8 mInList;           // set by fn_801F84C4 when linked
     /* 0x168 */ s32 field_0x168;
@@ -221,12 +234,12 @@ public:
     /* 0x195 */ u8 field_0x195;
     /* 0x196 */ u8 field_0x196;
     /* 0x198 */ s32 mSerial;  // the spawner's running spawn count, its return value
-    /* 0x19C */ s32 mSlot;    // index into ActorManager::mActors
+    /* 0x19C */ s32 mSlot;    // index into ActorManager_804A5800::mActors
     /* 0x1A0 */ u32 mActorId; // ActorId; 'NULL' until spawned
     /* 0x1A4 */ s32 field_0x1a4;
     /* 0x1A8 */ bool field_0x1a8; // EnemyParam.csv column "dstr" != 0
     /* 0x1AC */ JGeometry::TVec3f field_0x1ac[4];
-    /* 0x1DC */ ActorSub1DC field_0x1dc;
+    /* 0x1DC */ ActorSub1DC_801EAD68 field_0x1dc;
 }; // Size: 0x230
 
 #endif

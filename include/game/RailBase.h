@@ -6,9 +6,9 @@
 // "RailBase: Buffsize Error").
 //
 // The same file also holds the RAIL actor (ActorId ACTOR_RAIL): vtable
-// 0x8049C770, destructor fn_800FD438 (it chains to ~ActorBase), and an inline
+// 0x8049C770, destructor fn_800FD438 (it chains to ~ActorBase_804A5770), and an inline
 // constructor in the spawner's unit (fn_80202A0C, __nw__ 0x230, so no fields
-// beyond ActorBase). Its class may be "RailBase" itself, but nothing proves
+// beyond ActorBase_804A5770). Its class may be "RailBase" itself, but nothing proves
 // that yet, so it is not declared here. The unit's worker declares it here
 // as a SHARED-EDIT.
 //

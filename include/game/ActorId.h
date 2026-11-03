@@ -2,17 +2,21 @@
 #define GAME_ACTORID_H
 
 // Actor type IDs: the 4-character codes the actor spawner fn_801F9484
-// compares its 2nd argument against (ActorBase::mActorId). Generated from
-// the spawner's compare tree (the IDs it accepts with lis/addi/cmpw/beq,
+// compares its 2nd argument against (ActorBase_804A5770::mActorId).
+// Generated from the spawner's compare tree (every lis/addi/cmpw/beq case,
 // as tools/tu_map/to_splits.py decodes it) and docs/names/actors.tsv for
 // the comments (English name, confidence). IDs that appear only in
 // enemyparam.csv and not in the spawner are not listed. Multi-character
 // literals are big-endian under MWCC: 'RAIL' == 0x5241494C.
 //
+// 350 IDs allocate an actor. DMCS, FGAM, ZSLE and ZSLG are empty cases: the
+// spawner compares them but branches straight to its common tail with no
+// actor, so it returns -1 for them.
+//
 // Owner: the shared-header owner (docs/COORDINATOR.md).
 
 enum ActorId {
-    ACTOR_NULL = 'NULL', // ActorBase's value before the spawner sets the ID
+    ACTOR_NULL = 'NULL', // ActorBase_804A5770's value before the spawner sets the ID
     ACTOR_AGBW = 'AGBW', // GBA window control (med)
     ACTOR_ALCE = 'ALCE', // All enemies defeated (med)
     ACTOR_AMOS = 'AMOS', // Armos (high)
@@ -71,7 +75,7 @@ enum ActorId {
     ACTOR_DETH = 'DETH', // Reaper (Shinigami) (low)
     ACTOR_DGT2 = 'DGT2', // Big Moldorm tail (med)
     ACTOR_DGTL = 'DGTL', // Big Moldorm (high)
-    ACTOR_DMCS = 'DMCS', // not in actors.tsv
+    ACTOR_DMCS = 'DMCS', // empty case, spawner returns -1; not in actors.tsv
     ACTOR_DMGA = 'DMGA', // After goal (opening) (med)
     ACTOR_DMGF = 'DMGF', // Vaati (cutscene) (high)
     ACTOR_DMGL = 'DMGL', // Goal (opening) (med)
@@ -111,7 +115,7 @@ enum ActorId {
     ACTOR_FBMR = 'FBMR', // Fire bar (manager) (med)
     ACTOR_FBOB = 'FBOB', // not in actors.tsv
     ACTOR_FDWP = 'FDWP', // Room warp for L7-2 (med)
-    ACTOR_FGAM = 'FGAM', // not in actors.tsv
+    ACTOR_FGAM = 'FGAM', // empty case, spawner returns -1; not in actors.tsv
     ACTOR_FGN2 = 'FGN2', // Phantom Ganon 2 (high)
     ACTOR_FIRE = 'FIRE', // Fire Rod fire (high)
     ACTOR_FISH = 'FISH', // Fish (med)
@@ -364,8 +368,8 @@ enum ActorId {
     ACTOR_ZORA = 'ZORA', // Zora (enemy) (high)
     ACTOR_ZOSH = 'ZOSH', // not in actors.tsv
     ACTOR_ZSLA = 'ZSLA', // Shadow Link (bow, minor) (high)
-    ACTOR_ZSLE = 'ZSLE', // not in actors.tsv
-    ACTOR_ZSLG = 'ZSLG', // not in actors.tsv
+    ACTOR_ZSLE = 'ZSLE', // empty case, spawner returns -1; not in actors.tsv
+    ACTOR_ZSLG = 'ZSLG', // empty case, spawner returns -1; not in actors.tsv
     ACTOR_ZSLJ = 'ZSLJ', // Shadow Link (jump, minor) (high)
 };
 

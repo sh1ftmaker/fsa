@@ -99,20 +99,30 @@ that need them.
 
 | Header | Holds |
 |---|---|
-| `game/ActorBase.h` | `ActorBase` (placeholder name), the base class of every spawned actor: 0x230 bytes, vtable 0x804A5770 (19 slots: dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorSub120`, `ActorSub1DC` |
-| `game/ActorId.h` | `enum ActorId`: the 354 IDs the spawner fn_801F9484 accepts (`ACTOR_RAIL = 'RAIL'`), English names from docs/names/actors.tsv in comments |
-| `game/ActorManager.h` | `ActorManager` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` placeholders (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
-| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot`) and `lbl_8053AB10` (`GameRoot2`), the fields known so far, and their getters `fn_802D6A9C` / `fn_8013C824`; `cls_8030C058` (`lbl_8053AB10->0x24`, the world-to-screen projection `fn_8030C5F0`) |
-| `game/GameAudio.h` | The game's sound header, for **every** game unit: its JAudio includes plus `cls_804B21EC` (pool at 0x804B21EC, probably `JAUAudible<4>`, unproven) and a FIXME stand-in that instantiates the `JAUDopplerAudible<4>` pool. Together they give the 9-pool `__sinit` in FSA's order. Replace the stand-in with the game audience class from tu_80457DFC once it is known |
+| `game/ActorBase.h` | `ActorBase_804A5770` (named after its vtable), the base class of every spawned actor: 0x230 bytes, 19 virtual slots (dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorSub120_801F5AE0`, `ActorSub1DC_801EAD68` |
+| `game/ActorId.h` | `enum ActorId`: the spawner's 354 case IDs (`ACTOR_RAIL = 'RAIL'`; DMCS, FGAM, ZSLE, ZSLG are empty cases that return -1), English names from docs/names/actors.tsv in comments |
+| `game/ActorManager.h` | `ActorManager_804A5800` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` declarations (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
+| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot_8049EF20`) and `lbl_8053AB10` (`GameRoot2_8049F108`), the fields known so far, their getters `fn_802D6A9C` / `fn_8013C824` (`GameView_802D6A9C`, `EffectSystem_8013C824`), `cls_8030C058` (with its `fn_8030C5F0` rename in symbols.txt) and the per-player queries of tu_8022AD64 |
+| `game/GameAudio.h` | The game's sound header, for **every** game unit: its JAudio includes plus `cls_804B21EC` (pool at 0x804B21EC, probably `JAUAudible<4>`, unproven) and a FIXME stand-in that instantiates the `JAUDopplerAudible<4>` pool; together they give the 9-pool `__sinit` in FSA's order. Replace the stand-in with the game audience class of tu_80457DFC once known |
 | `game/RailBase.h` | `cls_800FE3EC` (0xC8 bytes, its method `fn_800FE3EC` in RailBase.cpp), and notes on the RAIL actor class (vtable 0x8049C770) |
 
-Conventions for game code: vectors are `JGeometry::TVec3f` (mkdd's
-`JSystem/JGeometry.h`: its `psq_l`/`psq_st` copy is the game's), matrices
-dolphin's `Mtx`. Unnamed functions are declared `extern "C"` under their dtk
-names so relocations match; a unit that defines one renames it in the
-header and symbols.txt together (a SHARED-EDIT). Derived actor classes:
-`class ActorFoo : public ActorBase`, constructor `ActorFoo() {}` plus their
-own members; the spawner's unit holds inline copies of many of them.
+Conventions for game code (docs/PLAN.md, "Symbols"):
+- Placeholder names: `cls_<addr>` for a class with no known role; a
+  provisional descriptive name keeps the address attached (`ActorBase_804A5770`):
+  the vtable, else the constructor or first method, said in a comment.
+  Evidenced names take no suffix.
+- `extern "C"`: only for declarations, in `include/game/` headers, of
+  functions another unfinished unit defines, under their dtk names. Never on
+  a definition, never in a .cpp. The defining unit renames symbols.txt and
+  updates the declaration in the same commit; reviewers check each
+  prototype against the asm.
+- Vectors: `JGeometry::TVec3f` (mkdd's `JSystem/JGeometry.h`; its
+  `psq_l`/`psq_st` copy is the game's) for game data, dolphin's `Vec` only
+  where a mangled name or a PSMTX/PSVEC call proves it; boxes are
+  `JGeometry::TBox2f`; matrices dolphin's `Mtx`.
+- Derived actor classes: `class Foo : public ActorBase_804A5770`,
+  constructor `Foo() {}` plus their own members; the spawner's unit holds
+  inline copies of many of their constructors.
 
 ## Merge commit messages
 

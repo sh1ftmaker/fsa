@@ -9,7 +9,7 @@
 // Lets an emitter that is still on screen finish its particles; deletes one
 // that is off screen at once.
 static inline void releaseEmitter(JPABaseEmitter* emitter) {
-    GameView* view = fn_802D6A9C();
+    GameView_802D6A9C* view = fn_802D6A9C();
     f32 x = emitter->mGlobalTrs.x;
     f32 y = emitter->mGlobalTrs.y - emitter->mGlobalTrs.z;
     bool onScreen = false;
@@ -26,9 +26,9 @@ static inline void releaseEmitter(JPABaseEmitter* emitter) {
     }
 }
 
-void ActorBase::draw() {}
+void ActorBase_804A5770::draw() {}
 
-void ActorBase::savePrevPos() {
+void ActorBase_804A5770::savePrevPos() {
     mPrevPos = mPos;
 }
 
@@ -40,7 +40,7 @@ static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& 
 
 // FIXME: float registers differ (the player's z lands in f7, the target uses
 // f5; the overlap box's max in f5/f6 instead of f6/f7); the rest matches.
-void ActorBase::vfunc_0x18() {
+void ActorBase_804A5770::vfunc_0x18() {
     if (mPos.z <= 16.0f && mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         JGeometry::TBox2f box;
         toScreenBox(&box, mBox, mPos);
@@ -51,7 +51,7 @@ void ActorBase::vfunc_0x18() {
                             *fn_8023E724(i));
                 JGeometry::TBox2f overlap = box;
                 if (overlap.intersect(playerBox)) {
-                    fn_802397B4(&box, field_0x4, mSerial);
+                    fn_802397B4(&box, getField_0x4(), mSerial);
                     return;
                 }
             }
@@ -59,13 +59,13 @@ void ActorBase::vfunc_0x18() {
     }
 }
 
-void ActorBase::update() {}
+void ActorBase_804A5770::update() {}
 
-void ActorBase::vfunc_0x10() {}
+void ActorBase_804A5770::vfunc_0x10() {}
 
-void ActorBase::init() {}
+void ActorBase_804A5770::init() {}
 
-ActorBase::~ActorBase() {
+ActorBase_804A5770::~ActorBase_804A5770() {
     if (mEmitter100 != NULL) {
         releaseEmitter(mEmitter100);
     }
@@ -75,7 +75,11 @@ ActorBase::~ActorBase() {
     fn_801F8448(fn_801F856C(), this);
 }
 
-ActorBase::ActorBase()
+// FIXME: the float literals (0, 1, -8, 8, 40) pair with the target's .sdata2
+// only once the unit's other functions fix its order. 40.0f also needs
+// lbl_8053F7F8's size in symbols.txt corrected (0x8 there: 40.0f plus a zero
+// word that is probably padding) before a 4-byte literal can pair with it.
+ActorBase_804A5770::ActorBase_804A5770()
     : field_0x4(0),
       field_0x8(0),
       mPos(0.0f, 0.0f, 0.0f),
