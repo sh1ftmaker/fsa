@@ -300,6 +300,17 @@ JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804C
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 5 units (act_armos, act_colour_block,
+// act_somaria_block, act_gravestone, ...). Index (0-3) of the first present
+// player whose box test (fn_80272768(player, box, layer, serial)) passes, or
+// -1; 0 without a player manager.
+s32 fn_80239558(const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 5 units (act_quicksand, act_switch,
+// act_warp, act_gravestone, tu_8023FBF0). Bool-tested (clrlwi 24) result of
+// fn_80240F28 on the player; false without a player.
+bool fn_8023513C(s32 player);
+
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
 // Loops over the players and calls fn_80272DCC, which copies the 4 box floats
 // and stores r5/r6 (field_0x4, serial) as words.
