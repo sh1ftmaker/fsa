@@ -21,7 +21,6 @@ JASHeap::JASHeap(JASDisposer *disposer) : mTree(this) {
 }
 
 void JASHeap::initRootHeap(void *base, u32 size) {
-#line 97
     JUT_ASSERT(! isAllocated());
     JASMutexLock lock(&mMutex);
     mBase = (u8*)OSRoundUp32B(base);
@@ -30,7 +29,6 @@ void JASHeap::initRootHeap(void *base, u32 size) {
 }
 
 bool JASHeap::alloc(JASHeap *mother, u32 param_1) {
-#line 120
     JUT_ASSERT(mother != 0);
     JASMutexLock lock(&mMutex);
     if (isAllocated()) {
@@ -164,7 +162,6 @@ void JASHeap::dump(int level) {
     // void JSUTree<JASHeap>::getFirstChild() const;
 }
 void JASHeap::insertChild(JASHeap *heap, JASHeap *next, void *param_2, u32 param_3, bool param_4) {
-#line 513
     JUT_ASSERT(heap != 0);
     JUT_ASSERT(next == 0 || &mTree == next->mTree.getParent());
     JASMutexLock lock(&mMutex);
@@ -258,10 +255,8 @@ JASGenericMemPool::~JASGenericMemPool() {
 }
 
 void JASGenericMemPool::newMemPool(u32 n, int count) {
-#line 734
     JUT_ASSERT(n >= sizeof(TNextOnFreeList))
     for (int i = 0; i < count; i++) {
-#line 738
         void *runner = new (JASDram, 0) u8[n];
         JUT_ASSERT(runner);
         *(void**)runner = mRunner;
@@ -300,7 +295,6 @@ JASMemChunkPool<1024, JASThreadingModel::ObjectLevelLockable> *sCommandHeap;
 static JASHeap audioAramHeap;
 
 void setupRootHeap(JKRSolidHeap *heap, u32 size) {
-#line 784
     JUT_ASSERT(heap);
 
     sSystemHeap = JKRExpHeap::create(size, heap, false);
@@ -320,7 +314,6 @@ JASMemChunkPool<1024, JASThreadingModel::ObjectLevelLockable> *getCommandHeap() 
 }
 
 void setupAramHeap(u32 base, u32 size) {
-#line 847
     JUT_ASSERT(base >= ARGetBaseAddress());
     sAramBase = base;
     audioAramHeap.initRootHeap((void*)base, size);

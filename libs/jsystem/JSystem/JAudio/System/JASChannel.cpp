@@ -48,7 +48,6 @@ mWaveData()
 
 JASChannel::~JASChannel() {
     if (mDspCh != NULL) {
-#line 62
         JUT_WARNING_F2("%s", "~JASChannel:: mDspCh != NULL");
         mDspCh->drop();
     }
@@ -97,7 +96,6 @@ void JASChannel::release(u16 release) {
         }
     }
 
-#line 124
     JUT_ASSERT(mDspCh);
     mDspCh->setPriority(JSUHiByte(mPriority));
     mStatus = STATUS_RELEASE;
@@ -105,13 +103,11 @@ void JASChannel::release(u16 release) {
 }
 
 void JASChannel::setOscInit(u32 oscnum, const JASOscillator::Data *data) {
-#line 136
     JUT_ASSERT(oscnum < OSC_NUM);
     mOscillators[oscnum].initStart(data);
 }
 
 void JASChannel::setMixConfig(u32 bus, u16 mixConfig) {
-#line 142
     JUT_ASSERT(bus < BUSOUT_CPUCH);
     mMixConfig[bus].whole = mixConfig;
 }
@@ -126,7 +122,6 @@ f32 JASChannel::calcPan(const JASChannel::PanVector *panVector) {
 }
 
 void JASChannel::effectOsc(u32 oscnum, JASOscillator::EffectParams *effectParams) {
-#line 165
     JUT_ASSERT(oscnum < OSC_NUM);
     f32 value = mOscillators[oscnum].getValue();
     switch (mOscillators[oscnum].getTarget()) {
@@ -153,7 +148,6 @@ void JASChannel::effectOsc(u32 oscnum, JASOscillator::EffectParams *effectParams
         effectParams->_18 *= value;
         break;
     default:
-#line 194
         JUT_WARNING_F2("%s", "Invalid osc target");
         break;
     }
@@ -235,7 +229,6 @@ s32 JASChannel::dspUpdateCallback(u32 status, JASDsp::TChannel *dspChannel, void
         delete channel;
         return -1;
     default:
-#line 311
         JUT_WARNING_F2("Unexpected JASDSPChannel::UpdateStatus %d", status);
         return 0;
     }
@@ -251,7 +244,6 @@ s32 JASChannel::initialUpdateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
 
     if (mWaveData.mInfo._24[0] == 0) {
-#line 334
         JUT_CRITICAL_WARNING_F("%s", "Lost wave data while playing");
         mDspCh->free();
         mDspCh = NULL;
@@ -260,7 +252,6 @@ s32 JASChannel::initialUpdateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
     
     if (checkBankDispose()) {
-#line 345
         JUT_CRITICAL_WARNING_F("%s", "Lost bank data while playing");
         mDspCh->free();
         mDspCh = NULL;
@@ -324,7 +315,6 @@ s32 JASChannel::initialUpdateDSPChannel(JASDsp::TChannel *dspChannel) {
 }
 
 s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
-#line 429
     JUT_ASSERT(mStatus == STATUS_PLAY || mStatus == STATUS_RELEASE)
     JUT_ASSERT(mDspCh);
     if (mCb) {
@@ -332,7 +322,6 @@ s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
 
     if (mWaveData.mInfo._24[0] == 0) {
-#line 441
         JUT_CRITICAL_WARNING_F("%s", "Lost wave data while playing");
         mDspCh->free();
         mDspCh = NULL;
@@ -341,7 +330,6 @@ s32 JASChannel::updateDSPChannel(JASDsp::TChannel *dspChannel) {
     }
     
     if (checkBankDispose()) {
-#line 452
         JUT_CRITICAL_WARNING_F("%s", "Lost bank data while playing");
         mDspCh->free();
         mDspCh = NULL;
@@ -511,7 +499,6 @@ void JASChannel::updateMixer(f32 volume, f32 pan, f32 fxmix, f32 dolby, u16* vol
 }
 
 void JASChannel::free() {
-#line 628
     JUT_ASSERT(mStatus == STATUS_RELEASE || mStatus == STATUS_STOP);
     mCb = NULL;
     mCbData = NULL;

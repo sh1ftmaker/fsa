@@ -46,7 +46,6 @@ int JASResArcLoader::loadResourceAsync(JKRArchive *arc, u16 id, u8 *buf, u32 buf
     resInfo.mCallbackArg = lCbArg;
     int res = JASDvd::getThreadPointer()->sendCmdMsg(loadResourceCallback, &resInfo, sizeof(resInfo));
     if (res == 0) {
-#line 160
         JUT_WARNING_F2("%s", "sendCmdMsg loadResourceCallback Failed");
     }
     return res;

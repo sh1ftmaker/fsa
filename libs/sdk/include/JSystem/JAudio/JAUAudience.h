@@ -217,7 +217,6 @@ public:
         }
     }
     ~JAUAudience_() {
-#line 617
         JUT_ASSERT(!isActive());
     }
 
@@ -226,7 +225,6 @@ public:
     int getMaxChannels() { return numPlayers_; }
 
     void setMaxChannels(int numPlayers) {
-#line 627
         JUT_ASSERT(numPlayers <= MAX_PLAYERS);
         JUT_ASSERT(numPlayers >= 1);
         JUT_ASSERT(! isActive());
@@ -379,7 +377,6 @@ public:
     }
 
     void setAudienceMtx(MtxPtr m, int playerNumber, bool doReset) {
-#line 756
         JUT_ASSERT(playerNumber >= 0);
         JUT_ASSERT(playerNumber < numPlayers_);
         if (doReset) {

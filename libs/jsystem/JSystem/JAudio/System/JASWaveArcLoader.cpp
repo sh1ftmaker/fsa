@@ -23,12 +23,10 @@ void setRootHeap(JASHeap *heap) {
 }
 
 void setCurrentDir(const char *dir) {
-#line 40
     JUT_ASSERT(std::strlen(dir) < DIR_MAX-1);
     std::strcpy(sCurrentDir, dir);
     size_t len = std::strlen(sCurrentDir);
     if (sCurrentDir[len-1] != '/') {
-#line 45
         JUT_ASSERT(len+1 < DIR_MAX);
         sCurrentDir[len] = '/';
         sCurrentDir[len + 1] = 0;
@@ -89,7 +87,6 @@ void JASWaveArc::loadToAramCallback(void *arg) {
     loadToAramCallbackParams *ripperArgs = (loadToAramCallbackParams*)arg;
     JASWaveArc *arc = ripperArgs->mWavArc;
     if (!JKRDvdAramRipper::loadToAram(ripperArgs->mEntryNum, ripperArgs->mBase, EXPAND_SWITCH_DEFAULT, 0, 0, NULL)) {
-#line 129
         JUT_WARNING_F2("%s", "loadToAram Failed");
         return;
     }
@@ -116,7 +113,6 @@ bool JASWaveArc::sendLoadCmd() {
     _5a++;
 
     if (!JASDvd::getThreadPointer()->sendCmdMsg(loadToAramCallback, &params, sizeof(params))) {
-#line 193
         JUT_WARNING_F2("%s", "sendCmdMsg loadToAramCallback Failed");
         mHeap.free();
         return false;
@@ -171,7 +167,6 @@ void JASWaveArc::setFileName(const char *fileName) {
     pathLen += std::strlen(fileName);
 
     char *path = new (JASKernel::getSystemHeap(), -4) char[pathLen +1];
-#line 322
     JUT_ASSERT(path);
     std::strcpy(path, dir);
     std::strcat(path, fileName);

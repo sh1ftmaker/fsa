@@ -13,7 +13,6 @@ JASSimpleWaveBank::~JASSimpleWaveBank() {
 void JASSimpleWaveBank::setWaveTableSize(u32 count, JKRHeap *heap) {
     delete[] mWaveTable;
     mWaveTable = new (heap, 0) TWaveHandle[count];
-#line 29
     JUT_ASSERT(mWaveTable != 0);
     mWaveCount = count;
 }

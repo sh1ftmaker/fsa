@@ -106,7 +106,6 @@ public:
     virtual ~JAISeMgr() {}; // weak
     JAISeCategoryMgr *getCategory(int categoryIndex)
     {
-#line 216
         JUT_ASSERT(categoryIndex >= 0)
         JUT_ASSERT(categoryIndex < NUM_CATEGORIES)
         return &mCategoryMgrs[categoryIndex];

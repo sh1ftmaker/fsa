@@ -134,7 +134,6 @@ bool JASSeqParser::conditionCheck(JASTrack *track, JASSeqParser::BranchCondition
     case 5:
         return 0x8000 > data;
     default:
-#line 462
         JUT_WARNING_F2("%s", "Unexpected condition flag");
         return 0;
     }
@@ -167,7 +166,6 @@ void JASSeqParser::writeReg(JASTrack *track, u32 reg, u32 data) {
         break;
     case 0x60:
     case 0x61:
-#line 501
         JUT_WARNING_F2("%s", "writeReg for Read-Only Register");
         break;
     case 0x62:
@@ -341,7 +339,6 @@ s32 JASSeqParser::cmdOpenTrack(JASTrack *track, u32 *pData) {
     u32 offset = pData[1];
     JASTrack *child = track->openChild(trackNo);
     if (!child) {
-#line 678
         JUT_WARNING_F2("%s", "Cannot open child track");
         return 0;
     }
@@ -369,7 +366,6 @@ s32 JASSeqParser::cmdCallF(JASTrack *track, u32 *pData) {
 
 s32 JASSeqParser::cmdRet(JASTrack *track, u32 *pData) {
     if (!track->getSeqCtrl()->ret()) {
-#line 717
         JUT_WARNING_F2("%s", "cannot ret for call-stack is NULL");
         return 0;
     }
@@ -379,7 +375,6 @@ s32 JASSeqParser::cmdRet(JASTrack *track, u32 *pData) {
 s32 JASSeqParser::cmdRetF(JASTrack *track, u32 *pData) {
     if (conditionCheck(track, BranchCondition(pData[0]))) {
         if (!track->getSeqCtrl()->ret()) {
-#line 728
             JUT_WARNING_F2("%s", "cannot ret for call-stack is NULL");
             return 0;
         }
@@ -457,7 +452,6 @@ s32 JASSeqParser::cmdParentWritePort(JASTrack *track, u32 *pData) {
         parent->writePort(pData[0], pData[1]);
     } 
     else {
-#line 834
         JUT_WARNING_F2("%s", "parent == NULL");
     }
     return 0;
@@ -470,7 +464,6 @@ s32 JASSeqParser::cmdChildWritePort(JASTrack *track, u32 *pData) {
         child->writePort(JSULoNibble(p0), pData[1]);
     } 
     else {
-#line 847
         JUT_WARNING_F2("%s", "child == NULL");
     }
     return 0;
@@ -483,7 +476,6 @@ s32 JASSeqParser::cmdParentReadPort(JASTrack *track, u32 *pData) {
         writeReg(track, pData[1], tmp);
     } 
     else {
-#line 863
         JUT_WARNING_F2("%s", "parent == NULL");
     }
     return 0;
@@ -497,7 +489,6 @@ s32 JASSeqParser::cmdChildReadPort(JASTrack *track, u32 *pData) {
         writeReg(track, pData[1], tmp);
     } 
     else {
-#line 879
         JUT_WARNING_F2("%s", "child == NULL");
     }
     return 0;
@@ -532,7 +523,6 @@ s32 JASSeqParser::cmdSetLastNote(JASTrack *track, u32 *pData) {
         track->setLatestKey(key);
     } 
     else {
-#line 927
         JUT_WARNING_F2("%s", "Too large latest key");
     }
     return 0;
@@ -629,7 +619,6 @@ s32 JASSeqParser::cmdIIRCutOff(JASTrack *track, u32 *pData) {
         track->setIIR(JASCalc::CUTOFF_TO_IIR_TABLE[cutOff]);
     } 
     else {
-#line 1068
         JUT_WARNING_F2("%s", "Too large cutoff");
     }
     return 0;
@@ -724,7 +713,6 @@ s32 JASSeqParser::cmdReg(JASTrack *track, u32 *pData) {
         res = readReg(track, reg) >> res;
         break;
     default:
-#line 1182
         JUT_WARNING_F2("%s", "cmdReg Not Supported RegCmdType");
         return 0;
     }
@@ -745,7 +733,6 @@ s32 JASSeqParser::cmdRegUni(JASTrack *track, u32 *pData) {
         res = -readReg(track, reg);
         break;
     default:
-#line 1208
         JUT_WARNING_F2("%s", "cmdRegUni Not Supported RegCmdType");
         return 0;
     }
@@ -779,7 +766,6 @@ s32 JASSeqParser::cmdRegTblLoad(JASTrack *track, u32 *pData) {
         res = seqCtrl->get32(tblAddr + offset);
         break;
     default:
-#line 1246
         JUT_WARNING_F2("%s", "cmdRegTblLoad Not Supported RegCmdType");
         return 0;
     }
@@ -924,7 +910,6 @@ s32 JASSeqParser::parseNoteOff(JASTrack *track, u8 note_id) {
         execNoteOff(track, note_id & 7);
     } 
     else {
-#line 1424
         JUT_WARNING_F2("%s", "noteoff for note_id == 0");
     }
     return 0;
@@ -951,7 +936,6 @@ s32 JASSeqParser::parseCommand(JASTrack *track, u8 cmd, u16 p2) {
     JASSeqCtrl *seqCtrl = track->getSeqCtrl();
     CmdInfo *cmdInfo = NULL;
     if (cmd != 0xb0) {
-#line 1468
         JUT_ASSERT(cmd >= 0xa0);
         cmdInfo = &sCmdInfo[cmd - 0xa0];
     } 

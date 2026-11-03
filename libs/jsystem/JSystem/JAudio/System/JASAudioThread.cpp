@@ -25,7 +25,6 @@ JASAudioThread::JASAudioThread(int prio, int msgCount, u32 stackSize) : JKRThrea
 }
 
 void JASAudioThread::create(s32 prio) {
-#line 42
     JASAudioThread *pAudioThread = new (JASDram, 0) JASAudioThread(prio, 0x10, 0x1000);
     JUT_ASSERT(pAudioThread);
     JKRHeap *pCurrentHeap = JKRGetSystemHeap();
@@ -62,7 +61,6 @@ void *JASAudioThread::run() {
             break;
         }
         case 1: {
-#line 119
             JUT_ASSERT(snIntCount != 0);
             snIntCount--;
             if (snIntCount == 0) {
@@ -91,7 +89,6 @@ void *JASAudioThread::run() {
 }
 
 void JASAudioThread::DMACallback() {
-#line 152
     JASAudioThread *pAudioThread = getInstance();
     JUT_ASSERT(pAudioThread);
 
@@ -104,20 +101,17 @@ void JASAudioThread::DMACallback() {
 }
 
 void JASAudioThread::DSPCallback(void*) {
-#line 169
     JASAudioThread *pAudioThread = getInstance();
     JUT_ASSERT(pAudioThread);
 
 	while (DSPCheckMailFromDSP() == 0) { }
 	u32 mail = DSPReadMailFromDSP();
     if (mail >> 0x10 != 0xF355) {
-#line 182
         JUT_WARNING_F(false, "DSP Mail format error %x\n", mail);
     }
     else if ((mail & 0xFF00) == 0xFF00) {
         BOOL res = pAudioThread->sendMessage((OSMessage)AUDIOMSG_DSP);
         if (res == FALSE) {
-#line 190
             JUT_WARNING_F1("%s", "----- syncDSP : Send Miss\n");
         }
     } else {

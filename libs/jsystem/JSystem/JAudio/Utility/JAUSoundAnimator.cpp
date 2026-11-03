@@ -47,7 +47,6 @@ void JAUSoundAnimator::removeAnimation() {
 }
 
 void JAUSoundAnimator::ageSounds_() {
-#line 61
     JUT_ASSERT(handles_);
 
     JAISoundHandles *handles = handles_; // fake?
@@ -117,7 +116,6 @@ void JAUSoundAnimator::updateSoundLifeTime_(f32 frame, f32 duration) {
                 case 1: {
                     JAUSoundAnimationSound* animationSound =
                         (JAUSoundAnimationSound*)handles->getHandle(i)->getUserData();
-#line 147
                     JUT_ASSERT(animationSound);
                     bool pauseOrStop = duration == 0.0f && animationSound->stopsWhenSpeedIsZero();
 
@@ -147,7 +145,6 @@ void JAUSoundAnimator::updateSoundLifeTime_(f32 frame, f32 duration) {
 }
 
 void JAUSoundAnimator::updateAnimation(f32 frame, const JGeometry::TVec3f &pos, JAISoundStarter *starter) {
-#line 191
     JUT_ASSERT(handles_);
     JAISoundHandles *handles = handles_; // fake?
     for (s32 i = 0; i < handles->getNumHandles(); i++) {
@@ -161,7 +158,6 @@ void JAUSoundAnimator::updateAnimation(f32 frame, const JGeometry::TVec3f &pos, 
     }
 
     if (!starter) {
-#line 206
         starter = JAISoundStarter::getInstance();
         JUT_ASSERT(starter);
     }
@@ -218,7 +214,6 @@ JAISoundHandle *JAUSoundAnimator::getFreeHandle(const JAUSoundAnimationSound *an
 }
 
 void JAUSoundAnimator::startSound_(const JGeometry::TVec3f &pos, f32 duration, JAISoundStarter *starter) {
-#line 275
     JUT_ASSERT(curSoundIndex_ >= 0);
     JUT_ASSERT(curSoundIndex_ < animation_->getNumSounds());
     

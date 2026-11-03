@@ -30,7 +30,6 @@ void JAISound::releaseHandle()
 
 void JAISound::attachHandle(JAISoundHandle *handle)
 {
-#line 55
     JUT_ASSERT(handle)
     if (handle->isSoundAttached())
     {
@@ -115,7 +114,6 @@ bool JAISound::acceptsNewAudible() const
 void JAISound::newAudible(const JGeometry::TVec3f &param_0,
                           const JGeometry::TVec3f *param_1, u32 param_2, JAIAudience *audience)
 {
-#line 153
     JUT_ASSERT(acceptsNewAudible())
     if (audience != NULL)
     {
@@ -128,7 +126,6 @@ void JAISound::newAudible(const JGeometry::TVec3f &param_0,
 
 void JAISound::stop(u32 fadeCount)
 {
-#line 166
     JUT_ASSERT(status_.isAlive());
     if (fadeCount == 0)
     {
@@ -192,7 +189,6 @@ bool JAISound::calc_JAISound_()
     {
         return false;
     }
-#line 232
     JUT_ASSERT(status_.isAlive());
     bool isPlaying = status_.isPlaying();
     if (isPlaying)
@@ -243,7 +239,6 @@ bool JAISound::calc_JAISound_()
 
 void JAISound::initTrack_JAISound_(JASTrack *track)
 {
-#line 288
     JUT_ASSERT(audience_);
     JUT_ASSERT(audible_);
     JASSoundParams *soundParams[8];

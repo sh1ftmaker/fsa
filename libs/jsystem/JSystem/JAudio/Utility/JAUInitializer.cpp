@@ -33,7 +33,6 @@ void JAU_JASInitializer::initJASystem(JKRSolidHeap *heap)
 {
     if (JASAudioThread::getThreadPointer() != NULL)
     {
-#line 48
         JUT_WARNING_F2("%s", "Though initialized JASAudioThread, called JAU_JASInitializer::initJASystem()\n");
     }
     else if (JASDvd::getThreadPointer() != NULL)

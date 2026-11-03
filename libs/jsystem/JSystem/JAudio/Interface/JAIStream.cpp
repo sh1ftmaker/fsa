@@ -64,7 +64,6 @@ bool JAIStream::prepare_prepareStream_()
     {
     case 0: {
         JAIStreamAramMgr *streamAramMgr = mStreamMgr->getStreamAramMgr();
-#line 100
         JUT_ASSERT(streamAramMgr);
         mAramAddr = streamAramMgr->newStreamAram(&aramSize);
         if (mAramAddr != NULL)
@@ -111,7 +110,6 @@ bool JAIStream::prepare_prepareStream_()
     case 3:
         return true;
     case 4:
-#line 155
         JUT_WARNING_F2("%s", "PC must not pass here.");
         break;
     }
@@ -127,7 +125,6 @@ void JAIStream::prepare_()
     switch (status_.state.unk)
     {
     case 6:
-#line 171
         JUT_ASSERT(false)
         break;
     case 0:
@@ -298,7 +295,6 @@ JAISoundChild *JAIStream::getChild(int i_idx)
         mChilds[i_idx] = new JAISoundChild();
         if (mChilds[i_idx] == NULL)
         {
-#line 370
             JUT_WARNING_F2("%s", "JASPoolAllocObject::<JAISoundChild>::operator new failed .\n")
         }
     }

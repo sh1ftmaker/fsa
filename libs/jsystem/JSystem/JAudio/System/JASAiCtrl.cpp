@@ -55,18 +55,15 @@ void initAI(AIDCallback cb) {
     u32 size = getDacSize() * 2;
     for (int i = 0; i < 3; i++) {
         sDmaDacBuffer[i] = new (JASDram, 0x20) s16[size / 2];
-#line 98
         JUT_ASSERT(sDmaDacBuffer[i]);
         JASCalc::bzero(sDmaDacBuffer[i], size);
         DCStoreRange(sDmaDacBuffer[i], size);
     }
 
     sDspDacBuffer = new (JASDram, 0) s16*[sDspDacBufferCount];
-#line 109
     JUT_ASSERT(sDspDacBuffer);
     for (int i = 0; i < sDspDacBufferCount; i++) {
         sDspDacBuffer[i] = new (JASDram, 0x20) s16[getDacSize()];
-#line 115
         JUT_ASSERT(sDspDacBuffer[i]);
         JASCalc::bzero(sDspDacBuffer[i], size);
         DCStoreRange(sDspDacBuffer[i], size);
@@ -152,7 +149,6 @@ void updateDSP() {
     old_time                   = new_time;
     u32 subFrame               = getSubFrames();
     u32 count                  = JASAudioThread::getDSPSyncCount();
-#line 250
     JUT_ASSERT(subFrame <= 10);
     history[subFrame - count] = delta;
     if (subFrame != count && ((history[0] / (f32)delta) < 1.1f)) {

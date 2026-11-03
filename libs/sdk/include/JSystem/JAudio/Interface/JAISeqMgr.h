@@ -32,7 +32,6 @@ public:
     JAISeqDataMgr *getSeqDataMgr() { return seqDataMgr_; }
     void setSeqDataMgr(JAISeqDataMgr *seqDataMgr)
     {
-#line 124
         JUT_ASSERT(!isActive());
         resetSeqDataMgr();
         seqDataMgr_ = seqDataMgr;
@@ -40,7 +39,6 @@ public:
     }
     void resetSeqDataMgr()
     {
-#line 131
         JUT_ASSERT(!isActive());
         if (seqDataMgr_)
         {

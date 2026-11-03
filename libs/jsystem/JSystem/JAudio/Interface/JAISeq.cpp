@@ -45,7 +45,6 @@ void JAISeq::JAISeqMgr_startID_(JAISoundID soundID, const JGeometry::TVec3f *pos
 
 void JAISeq::playSeqData_(const JASSoundParams &params, JAISoundActivity activity)
 {
-#line 72
     JUT_ASSERT(JASTrack_isFreeOrStopped( & inner_.outputTrack ))
     inner_.outputTrack.setSeqData(inner_.mSeqData._0, inner_.mSeqData._4);
     if (audible_)
@@ -63,7 +62,6 @@ void JAISeq::playSeqData_(const JASSoundParams &params, JAISoundActivity activit
 
 void JAISeq::reserveChildTracks_(int count)
 {
-#line 92
     JUT_ASSERT(inner_.outputTrack.getStatus() == JASTrack::STATUS_FREE)
     for (int i = 0; i < 2; i++)
     {
@@ -89,7 +87,6 @@ void JAISeq::reserveChildTracks_(int count)
         }
         else
         {
-#line 118
             JUT_WARNING_F2("%s", "JASPoolAllocObject::<JASTrack>::operator new failed .\n")
         }
     }
@@ -122,7 +119,6 @@ bool JAISeq::prepare_getSeqData_()
         return true;
     }
     JAISeqDataMgr *seqDataMgr = inner_.seqMgr->getSeqDataMgr();
-#line 156
     JUT_ASSERT(seqDataMgr)
     switch (seqDataMgr->getSeqData(soundID_, &inner_.mSeqData))
     {
@@ -144,7 +140,6 @@ bool JAISeq::prepare_(const JASSoundParams &params, JAISoundActivity activity)
     switch (status_.state.unk)
     {
     case 6:
-#line 187
         JUT_ASSERT(false)
         break;
     case 2:
@@ -200,7 +195,6 @@ void JAISeq::JAISeqMgr_calc_()
 
 void JAISeq::die_()
 {
-#line 263
     JUT_ASSERT(JASTrack_isFreeOrStopped( & inner_.outputTrack ))
     for (int i = 0; i < NUM_CHILDREN; i++)
     {
@@ -288,7 +282,6 @@ s32 JAISeq::getNumChild() const
 
 JAISoundChild *JAISeq::getChild(int index)
 {
-#line 365
     JUT_ASSERT(status_.isAlive());
     JUT_ASSERT(index >= 0);
     JUT_ASSERT(index < NUM_CHILDREN);

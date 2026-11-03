@@ -127,7 +127,6 @@ public:
 
     void setChannelVolume(u32 channel, f32 volume)
     {
-#line 288
         JUT_ASSERT(channel < CHANNEL_MAX);
         mChannelVolume[channel] = volume;
     }

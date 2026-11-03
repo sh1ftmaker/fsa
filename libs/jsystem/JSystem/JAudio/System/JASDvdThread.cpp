@@ -14,7 +14,6 @@ namespace JASDvd
         // check if createThread already has been called
         if (sThread != 0)
         {
-#line 32
             JUT_CRITICAL_WARNING_F("%s", "JASDvd::createThread が２回呼び出されました");
             return false;
         }

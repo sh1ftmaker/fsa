@@ -20,7 +20,6 @@ void JAUAudience3DSetting::init() {
 }
 
 void JAUAudience_withSetting::updateSetting() {
-#line 30
     JUT_ASSERT(setting_.minVolume >= 0.0f);
     _3c = (setting_._20 - setting_._1c) / setting_._10;
     _40 = (setting_._18 - setting_._1c) / setting_._14;

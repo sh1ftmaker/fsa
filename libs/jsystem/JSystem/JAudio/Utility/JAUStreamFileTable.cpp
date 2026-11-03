@@ -25,7 +25,6 @@ const char *JAUStreamFileTable::getFilePath(int index) const
 {
     if (mBuf == NULL)
         return NULL;
-#line 52
     JUT_ASSERT(index >= 0);
     JUT_ASSERT(index < getNumFiles());
 

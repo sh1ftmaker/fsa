@@ -110,7 +110,6 @@ void JASSeqCtrl::checkIntr() {
     if (intr < 0)
         return;
 
-#line 143
     u32 vec = mIntrTable;
     JUT_ASSERT(vec != 0);
     vec += intr * 3;

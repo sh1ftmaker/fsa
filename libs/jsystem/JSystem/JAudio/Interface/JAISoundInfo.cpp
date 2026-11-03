@@ -12,6 +12,5 @@ JAISoundInfo::JAISoundInfo(bool p1) : JASGlobalInstance<JAISoundInfo>(p1)
 
 JAISoundInfo::~JAISoundInfo()
 {
-#line 14
     JUT_ASSERT(false);
 }

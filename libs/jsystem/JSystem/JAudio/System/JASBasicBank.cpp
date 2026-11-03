@@ -9,7 +9,6 @@ JASBasicBank::JASBasicBank() {
 }
 
 void JASBasicBank::setInst(int prg_no, JASInst *inst) {
-#line 22
     JUT_ASSERT(prg_no < INST_MAX);
     JUT_ASSERT(prg_no >= 0);
 

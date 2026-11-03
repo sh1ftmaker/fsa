@@ -66,7 +66,6 @@ void JASRegisterParam::write(JASRegisterParam::RegID regID, u32 val) {
         mRegs[13] = val;
         break;
     default:
-#line 92
         JUT_WARNING_F2("%s", "Warning: Unsupported REG id");
         break;
     }
@@ -120,7 +119,6 @@ u32 JASRegisterParam::read(JASRegisterParam::RegID regID) {
         rv |= mRegs[11];
         break;
     default:
-#line 160
         JUT_WARNING_F2("%s", "Warning: Unsupported REG id");
         break;
     }

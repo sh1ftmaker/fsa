@@ -23,14 +23,12 @@ public:
 
     JAISound *getSound()
     {
-#line 41
         JUT_ASSERT(sound_ != 0);
         return sound_;
     }
 
     JAISound *operator->()
     {
-#line 58
         JUT_ASSERT(sound_ != 0)
         return sound_;
     }
@@ -335,7 +333,6 @@ public:
 
     void setLifeTime(u32 newLifeTime, bool pause)
     {
-#line 333
         JUT_ASSERT(status_.state.flags.calcedOnce == 0);
         lifeTime_ = newLifeTime;
         setComesBack(pause);
@@ -344,7 +341,6 @@ public:
 
     void setComesBack(bool pause)
     {
-#line 354
         JUT_ASSERT(status_.state.flags.calcedOnce == 0)
         status_._1.flags.flag1 = 1;
         if (pause)

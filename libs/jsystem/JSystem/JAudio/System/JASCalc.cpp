@@ -151,7 +151,6 @@ namespace JASCalc
 
     void bcopyfast(const void *src, void *dest, u32 size)
     {
-#line 226
         JUT_ASSERT((reinterpret_cast<u32>(src) & 0x03) == 0);
         JUT_ASSERT((reinterpret_cast<u32>(dest) & 0x03) == 0);
         JUT_ASSERT((size & 0x0f) == 0);
@@ -229,7 +228,6 @@ namespace JASCalc
 
     void bzerofast(void *dest, u32 size)
     {
-#line 336
         JUT_ASSERT((reinterpret_cast<u32>(dest) & 0x03) == 0);
         JUT_ASSERT((size & 0x0f) == 0);
 

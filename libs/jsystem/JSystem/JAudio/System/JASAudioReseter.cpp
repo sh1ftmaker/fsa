@@ -24,7 +24,6 @@ bool JASAudioReseter::start(u32 param_0, bool stop) {
 
     JAS_CS_START
     if (!JASDriver::registerDspSyncCallback(callback, this)) {
-#line 40
         JUT_WARNING_F2("%s", "Failed JASAudioReseter start\n");
         return false;
     } else {
@@ -37,7 +36,6 @@ bool JASAudioReseter::start(u32 param_0, bool stop) {
 }
 
 void JASAudioReseter::resume() {
-#line 55
     JUT_ASSERT(mDoneFlag);
     JUT_ASSERT(! mThreadStopFlag);
     JASDriver::setDSPLevel(mDSPLevel);
@@ -57,7 +55,6 @@ int JASAudioReseter::calc() {
         }
         if(mThreadStopFlag) {
             JASAudioThread *pAudioThread = JASGlobalInstance<JASAudioThread>::getInstance();
-#line 78
             JUT_ASSERT(pAudioThread);
             pAudioThread->stop();
         }

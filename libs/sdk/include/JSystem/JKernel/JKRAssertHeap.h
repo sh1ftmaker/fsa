@@ -20,7 +20,6 @@ public:
     virtual void do_destroy();                                        // _20
     virtual u8 do_changeGroupID(u8)                                   // _4C
     {
-#line 41
         JUT_ASSERT(0&&"illegal changeGroupID()");
         return 0;
     }
@@ -38,7 +37,6 @@ public:
     virtual void do_freeTail() { JUT_ASSERT(0&&"illegal freeTail()"); };     // _30
     virtual void do_fillFreeArea(){};                                                   // _34
 
-#line 61
     virtual int do_resize(void *, u32) { JUT_ASSERT(0&&"illegal resize") return 0; }; // _38
     virtual int do_getSize(void *) { return 0; };                                                // _3C
     virtual u32 do_getFreeSize() { return 0; };                                                  // _40

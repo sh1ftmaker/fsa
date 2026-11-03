@@ -26,7 +26,6 @@ void JAIStreamMgr::startStreamDirect(const char *fileName, JAISoundHandle *handl
 
 bool JAIStreamMgr::startSound(JAISoundID soundID, JAISoundHandle *handle, const JGeometry::TVec3f *pos)
 {
-#line 37
     JUT_ASSERT(streamDataMgr_)
 
     if (handle && *handle)
@@ -35,7 +34,6 @@ bool JAIStreamMgr::startSound(JAISoundID soundID, JAISoundHandle *handle, const 
     s32 entryID = streamDataMgr_->getStreamFileEntry(soundID);
     if (entryID < 0)
     {
-#line 46
         JUT_WARNING_F2("Cannot find the stream file entry for ID:%08x\n", (u32)soundID);
         return false;
     }
@@ -80,7 +78,6 @@ void JAIStreamMgr::freeDeadStream_()
             if (aramAddr)
             {
                 u8 result = streamAramMgr_->deleteStreamAram(aramAddr);
-#line 105
                 JUT_ASSERT(result)
             }
             delete stream;
@@ -120,7 +117,6 @@ JAIStream *JAIStreamMgr::newStream_()
 {
     if (streamAramMgr_ == NULL)
     {
-#line 229
         JUT_WARNING_F2("%s", "JAIStreamAramMgr must be set.\n");
         return NULL;
     }
@@ -128,7 +124,6 @@ JAIStream *JAIStreamMgr::newStream_()
     JAIStream *stream = new JAIStream(this, strategyMgr_);
     if (stream == NULL)
     {
-#line 235
         JUT_WARNING_F2("%s", "JASPoolAllocObject::<JAIStream>::operator new failed .\n")
         return NULL;
     }

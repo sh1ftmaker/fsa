@@ -5,6 +5,5 @@ JAISeqDataUser::~JAISeqDataUser() {}
 
 JAISeqDataMgr::~JAISeqDataMgr() 
 {
-#line 14
     JUT_ASSERT(false);
 }

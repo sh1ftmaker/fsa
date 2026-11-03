@@ -124,7 +124,6 @@ bool JAUAudioArcInterpreter::readCommand_()
     default:
         if (!readCommandMore(cmd))
         {
-#line 138
             JUT_ASSERT(false);
         }
         break;

@@ -7,7 +7,6 @@
 
 JAUSoundObject::JAUSoundObject(JGeometry::TVec3f *pos, u8 numHandles, JKRHeap *heap)
     : JAISoundHandles(new (heap, 0) JAISoundHandle[numHandles], numHandles), _10(0), mSoundPos(pos) {
-#line 22
     JUT_ASSERT(handles_);
     mIsAllocated = true;
 }
@@ -197,7 +196,6 @@ JAISoundHandle *JAUDopplerSoundObject::startLevelSound(JAISoundID soundID) {
     JAISeMgr *seMgr = JAISeMgr::getInstance();
     JAISoundHandle *handle = getHandleSoundID(soundID);
     if (handle) {
-#line 209
         JUT_ASSERT_F((*handle), "%s", "handle exist, but (*handle) is not exist!!\n");
         (*handle)->updateLifeTime(1);
     }

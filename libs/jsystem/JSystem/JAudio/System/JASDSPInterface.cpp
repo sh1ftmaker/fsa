@@ -141,7 +141,6 @@ void syncFrame(u32 p1, u32 p2, u32 p3) {
 void setDSPMixerLevel(f32 dsp_level) {
     sDSPVolume = dsp_level;
     dsp_level *= 4.0f;
-#line 269
     JUT_ASSERT((0.0 <= dsp_level) && (dsp_level <= 8.0));
     DsetMixerLevel(dsp_level);
 }
@@ -182,7 +181,6 @@ void invalChannelAll() {
 }
 
 void initBuffer() {
-#line 345
     CH_BUF = new(JASDram, 0x20) TChannel[0x40];
     JUT_ASSERT(CH_BUF);
     FX_BUF = new(JASDram, 0x20) Fxline[4];
@@ -220,7 +218,6 @@ bool setFXLine(u8 p1, s16 *buffer, FxlineConfig_ *config) {
         u32 bufsize = config->mBufCount * 0xa0;
         fxLine->_04 = buffer;
         JASCalc::bzero(buffer, bufsize);
-#line 412
         JUT_ASSERT((reinterpret_cast<u32>(buffer) & 0x1f) == 0);
         JUT_ASSERT((bufsize & 0x1f) == 0)
         DCFlushRange(buffer, bufsize);

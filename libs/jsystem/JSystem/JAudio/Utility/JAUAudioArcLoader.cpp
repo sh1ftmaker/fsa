@@ -5,7 +5,6 @@
 
 JAUAudioArcLoader::JAUAudioArcLoader(JAUSection *section)
 {
-#line 13
     JUT_ASSERT(section->isOpen());
     JUT_ASSERT(section->isBuilding());
     mSection = section;
@@ -69,7 +68,6 @@ void JAUAudioArcLoader::newVoiceBank(u32 waveBankNo, u32 bankNo)
 void JAUAudioArcLoader::newDynamicSeqBlock(u32 size)
 {
     JAUSectionHeap *sectionHeap = mSection->asSectionHeap();
-#line 67
     JUT_ASSERT(sectionHeap);
     sectionHeap->newDynamicSeqBlock(size);
 }

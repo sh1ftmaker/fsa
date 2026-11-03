@@ -13,7 +13,6 @@ JAISoundStarter::~JAISoundStarter() {}
 bool JAISoundStarter::startLevelSound(JAISoundID soundID, JAISoundHandle *handlePtr, const JGeometry::TVec3f *pos)
 {
     // UNUSED
-#line 20
     JUT_ASSERT(handlePtr)
 
     if (*handlePtr) {
