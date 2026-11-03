@@ -6,13 +6,6 @@
 #include "game/ActorBase.h"
 #include "game/SpriteAnim.h"
 
-extern "C" {
-// Not named yet; a plain C symbol in the original. update() calls it after
-// paying for kinds 4-7, with 9, 4, 3 or 6 as the second argument by kind and
-// 1 as the third (its types are guesses from the calls).
-void fn_802372F8(s32 player, s32 value, bool flag);
-} // extern "C"
-
 // The SITM actor ("Shop item", docs/names/actors.tsv, med confidence): the
 // spawner constructs it with __ct__17ShopItem_8049CDC0Fv (0x801092B0), which
 // stores this vtable (config/G4SE01/game_units.tsv). Named after its vtable,

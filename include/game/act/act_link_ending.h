@@ -5,10 +5,6 @@
 
 #include "game/act/act_princess_zelda_ending.h" // cls_804A5958, EndingPartnerView
 
-// Defined in another, unfinished unit (0x802382D0, two li 0 arguments; the
-// parameter types are not known yet).
-extern "C" void fn_802382D0(s32 a, s32 b);
-
 // The ELNK actor ("Link (ending)", docs/names/actors.tsv): the spawner
 // constructs it with fn_80200BB4, which stores this vtable
 // (config/G4SE01/game_units.tsv). Named after its vtable, 0x804AD858. Its
