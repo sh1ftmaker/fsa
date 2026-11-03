@@ -13,8 +13,13 @@ class JAUAudioMgr : public JAUSoundMgr, JAUSoundInfo {
 public:
     JAUAudioMgr(JAUSectionHeap *);
 private:
-    //JAUAudience<4> audience;
-    JAUAudience<4> mAudience;
+    // FSA's JAUAudioMgr.cpp keeps the weak dtors and vtables of
+    // JAUAudience_withSetting_doppler and JAUAudience_withSetting (the doppler
+    // dtor first), the JAUAudibleChannel ctor and the JAUAudible<4> pool, but
+    // no JAUDopplerAudible<4> pool: plain audibles on the doppler setting
+    // base. The real member type is unknown (all JAUAudioMgr code is
+    // dead-stripped); this one reproduces those weak copies.
+    JAUAudience_<4, JAUAudible<4>, JAUAudienceState, JAUAudience_withSetting_doppler> mAudience;
     JASHeap mHeaps[4];
 };
 

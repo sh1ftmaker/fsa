@@ -314,8 +314,11 @@ JSystem/JAudio/Utility/JAUAudioArcLoader.cpp:
 	.bss        start:0x804B4A90 end:0x804B4AC0
 
 JSystem/JAudio/Utility/JAUAudioMgr.cpp:
-	.text       start:0x8003AF6C end:0x8003B288
+	.text       start:0x8003AE9C end:0x8003B288
 	.ctors      start:0x8045BD88 end:0x8045BD8C
+	.data       start:0x80495450 end:0x804954A0
+	.bss        start:0x804B4AC0 end:0x804B4B18
+	.sdata2     start:0x8053B298 end:0x8053B2A8
 
 JSystem/JAudio/Utility/JAUBankTable.cpp:
 	.text       start:0x8003B288 end:0x8003B400
