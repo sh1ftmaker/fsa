@@ -12,6 +12,10 @@ __vt__22JAUAudioArcInterpreter  0x40  0x44  fsa-wt/_reviews/JSystem__JAudio__Uti
 one__11JASWaveInfo  0x8  0x4  fsa-wt/_reviews/JSystem__JAudio__System__JASDSPInterface.review.md (DOL has 00000001 00000000; tp lists 0x4; the next .sdata object belongs to dspproc.c)
 __vt__7J2DPane  0x98  0x94  fsa-wt/_reviews/JSystem__J2DGraph__J2DPane.review.md (35 slots + 8-byte header; +0x94 is 0, alignment before __vt__10J2DPicture at 0x80499628; mkdd/tp 0x94)
 j3dDefaultViewNo  0x8  0x4  fsa-wt/_reviews/JSystem__J3DGraphBase__J3DSys.review.md (one u32; tww/tp/mkdd/pikmin2 GPVE01 size 0x4 with the next .sbss object 8 bytes later; only ref is J3DShape::initialize @sda21)
+__vt__10JAIAudible  0x18  0x14  fsa-wt/_reviews/JSystem__JAudio__Interface__JAIAudible.review.md (2 header words + dtor + getOuterParams + calc; +0x14 is 0, alignment before __vt__13JASTaskThread at 0x80491898; mkdd/tp 0x14)
+__vt__14JAUSoundObject  0x28  0x24  fsa-wt/_reviews/JSystem__JAudio__Utility__JAUSoundObject.review.md (2 header words + 7 slots; +0x24 is 0, alignment before 0x804955E0)
+sortFuncTable__13J3DDrawBuffer  0x60  0x48  fsa-wt/_reviews/JSystem__J3DGraphBase__J3DDrawBuffer.review.md (6 PTMFs; 0x8049A888/0x8049A894 are the drawHead/drawTail PTMF constants @389/@390; tp/tww 0x48)
+entryNum__13J3DDrawBuffer  0x8  0x4  fsa-wt/_reviews/JSystem__J3DGraphBase__J3DDrawBuffer.review.md (int; padding before J3DJoint.o's .sbss at 0x8053A9E8; tp/tww 0x4)
 # Renames: name  old_name  new_name  review
 cmdTypeAndStatus$371  cmdTypeAndStatus$371  cmdTypeAndStatus$372  fsa-wt/_reviews/dolphin__si__SIBios.review.md (our compile, mkdd and tp emit $372)
 g_CurrentSequence  g_CurrentSequence  IsTRKConnected  fsa-wt/_reviews/infra__measure.review.md (0x804B8090 is the flag Get/SetTRKConnected and TRKDoConnect/Disconnect access; gTRKFramingState+0x18 as in mkdd/pikmin2/ttyd/mp4)
