@@ -573,12 +573,12 @@ def run_haiku_file(wt, unit, fns):
 
 
 def save_nearmiss(wt, unit, before, why):
-    """Keep a rejected run's source when it left a function at 90-99.99 % (from below 90): the
-    starting point for the permuter / crack pass, which a revert would otherwise throw away."""
+    """Keep a rejected run's source when it left a function at 70-99.99 % (from below 70): the
+    starting point for the crack pass, which a revert would otherwise throw away."""
     if not why.startswith("no new 100 %"):
         return
     now = fdiff(wt, unit)[0] if (wt / "src" / unit).exists() else {}
-    near = [(f, p) for f, (_, p) in now.items() if 90 <= p < 100 and before.get(f, (0, 0))[1] < 90]
+    near = [(f, p) for f, (_, p) in now.items() if 70 <= p < 100 and before.get(f, (0, 0))[1] < 70]
     if not near:
         return
     d = LOGS / "nearmiss"
