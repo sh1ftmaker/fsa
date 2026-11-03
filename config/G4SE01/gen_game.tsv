@@ -248,7 +248,6 @@ tu_801688AC	sinit	__sinit_tu_801688AC_cpp	-	-	new	new
 tu_80170008	sinit	__sinit_tu_80170008_cpp	-	-	new	-
 tu_8017A44C	dtor	__dt__12cls_804A1160Fv	cls_804A1160	0x804A1160	new	new
 tu_8017A44C	sinit	__sinit_tu_8017A44C_cpp	-	-	new	new
-tu_8017C01C	sinit	__sinit_tu_8017C01C_cpp	-	-	new	-
 tu_8017EF40	sinit	__sinit_tu_8017EF40_cpp	-	-	new	-
 tu_80182914	dtor_emit	__dt__12cls_804A1718Fv	cls_804A1718	0x804A1718	new	new
 tu_80182914	sinit	__sinit_tu_80182914_cpp	-	-	new	-
