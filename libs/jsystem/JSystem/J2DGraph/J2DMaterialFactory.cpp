@@ -386,6 +386,9 @@ J2DIndTexOrder J2DMaterialFactory::newIndTexOrder(int idx, int p2) const
     return texOrder;
 }
 
+// FIXME: 96.6 %. In the inlined J2DIndTexMtx() copy of j2dDefaultIndTexMtxInfo the
+// original loads mScale (lbz 0x18) after the last lfs (0x14); ours schedules it right
+// after lfs 0x8. pikmin2 matches only with a pointer cast in operator=, not used here.
 J2DIndTexMtx J2DMaterialFactory::newIndTexMtx(int idx, int p2) const
 {
     J2DIndTexMtx mtx;
