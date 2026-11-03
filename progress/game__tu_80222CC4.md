@@ -19,3 +19,15 @@ Status: NonMatching. 6/7 functions at 100 % (__sinit generated); vfunc_0x90 is 9
 
 ## Next
 tu_80220F54 should adopt cls_804A6A00.h (its names are already in symbols.txt).
+
+## Jump-table .data order (re-check 2026-11-03)
+- Cause: `-inline auto` emits a function's jump table when the function is compiled and the class vtable at the
+  end of the TU (weak J3DFrameCtrl vtable in between). The original (vt 0, jt 0xA4) is what `-inline auto,deferred`
+  gives with the functions in reverse order (scratchpad research_jtorder.md; docs/GAME_PLAN.md "-inline auto vs deferred").
+- Ruled out (new measurement, scratch TU jtorder/a.cpp, switch fn defined before ctor/dtor): GC/2.0, 2.5, 2.6, 2.7,
+  3.0a3, 3.0a5.2 all put the jump table at .data 0 and the vtable after it under `-inline auto`; the compiler
+  version is not the cause. vfunc_0x90 can't be an inline (weak) function either: it sits between strong
+  functions in the original .text (0x80222D5C), before init/dtor/ctor.
+- Reloc-name: not a separate problem. Matching units with switches (JASChannel, J2DPrint, vi) keep `@NNN` vs
+  `jumptable_8...` and still score 100 %: objdiff pairs local data by position. Fixing the order fixes the name.
+- Verdict: blocked on the project-wide `-inline` decision; nothing to change in the source.

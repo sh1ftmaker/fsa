@@ -9,3 +9,6 @@ keeps reach/x/bottom in f24/f25/f26 (ours f25/f24/f26 swapped pairs), loads box.
 .sdata2 pool order 32 vs 64. Tried: member assignment, locals, ctor arg orders, decl orders (98.67 best).
 SHARED-EDITS: include/game/act/act_octorok_rock.h (field_0x23c s32 at 0x23C, split of the unknown array; evidence: fn_80222730 stores
 (s32)(reach/speed) there on the 'OKTM' actor); config gen_game.tsv: removed act_octorok_rock rows (2) and act_shadow_link_bow row (1).
+
+Jump-table order re-check (2026-11-03): same cause as tu_80222CC4 (see its progress file); blocked on the
+project-wide `-inline` decision. fn_80222730 (98.67 %) also keeps the unit NonMatching.
