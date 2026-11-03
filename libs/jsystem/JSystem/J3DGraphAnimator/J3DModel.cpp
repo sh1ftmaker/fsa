@@ -58,6 +58,31 @@ int J3DModel::entryModelData(J3DModelData* data, u32 matFlags, u32 viewNum)
 	}
 	mVertexBuffer.setVertexData(&data->mVertexData);
 	prepareShapePackets();
+
+	if (matFlags & J3DMODEL_Unk1) {
+		onFlag(J3DMODEL_Unk1);
+	}
+	if (matFlags & J3DMODEL_UseDefaultJ3D) {
+		onFlag(J3DMODEL_UseDefaultJ3D);
+	}
+	if (matFlags & J3DMODEL_LevelOfDetail) {
+		onFlag(J3DMODEL_LevelOfDetail);
+	}
+	if (matFlags & J3DMODEL_CreateNewDL) {
+		onFlag(J3DMODEL_CreateNewDL);
+	}
+	if (matFlags & J3DMODEL_UseSingleSharedDL) {
+		onFlag(J3DMODEL_UseSingleSharedDL);
+	}
+	if (matFlags & J3DMODEL_ShareDL) {
+		onFlag(J3DMODEL_ShareDL);
+	}
+	if (matFlags & J3DMODEL_SkinPosCpu) {
+		onFlag(J3DMODEL_SkinPosCpu);
+	}
+	if (matFlags & J3DMODEL_SkinNrmCpu) {
+		onFlag(J3DMODEL_SkinNrmCpu);
+	}
 	return 0;
 }
 
