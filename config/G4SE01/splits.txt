@@ -6098,7 +6098,7 @@ game/tu_8036FB60.cpp:
 	.rodata     start:0x80474ED0 end:0x80474F98
 	.data       start:0x804AE390 end:0x804AE508
 	.bss        start:0x8050C840 end:0x8050CA00
-	.sbss       start:0x8053AD60 end:0x8053ADD8
+	.sbss       start:0x8053AD60 end:0x8053AD80
 	.sdata2     start:0x80542DC0 end:0x80542E50
 
 game/act_tutorial_old_man.cpp:
@@ -6298,6 +6298,7 @@ game/tu_8039003C.cpp:
 	.rodata     start:0x80475670 end:0x804756D8
 	.data       start:0x804AF480 end:0x804AF490
 	.bss        start:0x8050E118 end:0x8050E218
+	.sbss       start:0x8053AD80 end:0x8053AD88
 
 game/tu_80390818.cpp:
 	extab       start:0x8000EED8 end:0x8000EF38
@@ -6365,6 +6366,7 @@ game/tu_803A85E4.cpp:
 	.rodata     start:0x804761A0 end:0x80476208
 	.data       start:0x804AF878 end:0x804AF888
 	.bss        start:0x8050E858 end:0x8050E958
+	.sbss       start:0x8053AD98 end:0x8053ADA0
 
 game/tu_803A8DFC.cpp:
 	extab       start:0x8000F3C4 end:0x8000F5D4

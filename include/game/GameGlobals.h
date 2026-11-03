@@ -47,6 +47,10 @@ struct GameRootSub04_801F856C {
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
     /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
+    /* 0x10 */ u8 field_0x10[0x30 - 0x10];
+    // A heap: game/tu_8044B80C.cpp makes it current, frees its J2DScreens
+    // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
+    /* 0x30 */ JKRHeap* field_0x30;
 };
 
 // *lbl_8053AAF8: the most-used game singleton (309 of 529 units read it).
@@ -203,6 +207,18 @@ struct Unk_8045A080 {
     // not read): stops the sound at 0x80 and clears the fields at
     // 0x58-0x68.
     void fn_80458F9C(s32 frames);
+    // game/tu_80457DFC.cpp (0x80458090): loads wave archives 2, 3 and 4 of
+    // the JAUSection at 0x44 (loadWaveArc). Called by tu_8039003C's
+    // constructor when fn_804580DC returned 0.
+    void fn_80458090();
+    // game/tu_80457DFC.cpp (0x804580DC). Looks up entry `index` (a byte) of
+    // the JAUSection at 0x44 and returns a byte (1 when its state is 2);
+    // tu_8039003C's constructor passes 3.
+    u8 fn_804580DC(u8 index);
+    // game/tu_80457DFC.cpp (0x80458408). Acts only for id 0x100001A on the
+    // sound at 0x80; r5 is tested with clrlwi. 24 (0x80458488). Called by
+    // tu_8039003C's constructor with (0x100001A, true).
+    void fn_80458408(s32 id, bool flag);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
@@ -289,6 +305,11 @@ public:
     /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
     /* 0xD */ u8 field_0xd[3];   // not yet known
+
+    // 0x80158B3C (owner unit game/tu_80158624.cpp, not written yet). Resets
+    // the colour bytes: 0x4-0x6 = 0xFF, 0x7 = 0, 0xC = 0xFF. `this` is
+    // lbl_8053AB10->0x2C; called by tu_8039003C's constructor.
+    void fn_80158B3C();
 
     // 0x80158B5C (owner unit game/tu_80158624.cpp, not written yet). Draws a
     // shadow-like sprite on `layer` (< 8) at *pos with a colour and scale;

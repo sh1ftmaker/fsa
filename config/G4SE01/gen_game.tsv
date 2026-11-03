@@ -26,8 +26,6 @@ act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
 act_bumper	dtor	__dt__15Bumper_804A0260Fv	Bumper_804A0260	0x804A0260	new	new
 act_bumper	sinit	__sinit_act_bumper_cpp	-	-	new	new
-act_burning_block	dtor	__dt__12cls_804A7B90Fv	cls_804A7B90	0x804A7B90	new	new
-act_burning_block	sinit	__sinit_act_burning_block_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
 act_buzz_blob	sinit	__sinit_act_buzz_blob_cpp	-	-	new	new
 act_cannon	sinit	__sinit_act_cannon_cpp	-	-	new	-
@@ -168,8 +166,6 @@ act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-
 act_room_transfer_lift	dtor	__dt__12cls_8049CC40Fv	cls_8049CC40	0x8049CC40	new	new
 act_room_transfer_lift	sinit	__sinit_act_room_transfer_lift_cpp	-	-	new	new
 act_rope	sinit	__sinit_act_rope_cpp	-	-	new	-
-act_sand_crab	dtor	__dt__17SandCrab_8049F3B0Fv	SandCrab_8049F3B0	0x8049F3B0	new	new
-act_sand_crab	sinit	__sinit_act_sand_crab_cpp	-	-	new	new
 act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
@@ -197,8 +193,6 @@ act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
 act_stone	dtor	__dt__14Stone_804A93D0Fv	Stone_804A93D0	0x804A93D0	new	new
 act_stone	sinit	__sinit_act_stone_cpp	-	-	new	new
-act_stone_disguised_npc	dtor	__dt__29NPCDisguisedAsAStone_804A8750Fv	NPCDisguisedAsAStone_804A8750	0x804A8750	new	new
-act_stone_disguised_npc	sinit	__sinit_act_stone_disguised_npc_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
@@ -532,11 +526,9 @@ tu_80376FA0	dtor	__dt__12cls_804AE7D8Fv	cls_804AE7D8	0x804AE7D8	new	new
 tu_80376FA0	sinit	__sinit_tu_80376FA0_cpp	-	-	new	new
 tu_80379F84	sinit	__sinit_tu_80379F84_cpp	-	-	new	-
 tu_8037ACC4	sinit	__sinit_tu_8037ACC4_cpp	-	-	new	-
-tu_8039003C	sinit	__sinit_tu_8039003C_cpp	-	-	new	-
 tu_80390818	sinit	__sinit_tu_80390818_cpp	-	-	new	-
 tu_803A3484	sinit	__sinit_tu_803A3484_cpp	-	-	new	-
 tu_803A60E4	sinit	__sinit_tu_803A60E4_cpp	-	-	new	-
-tu_803A85E4	sinit	__sinit_tu_803A85E4_cpp	-	-	new	-
 tu_803A8DFC	sinit	__sinit_tu_803A8DFC_cpp	-	-	new	-
 tu_803B7DCC	sinit	__sinit_tu_803B7DCC_cpp	-	-	new	-
 tu_803D7098	sinit	__sinit_tu_803D7098_cpp	-	-	new	-
@@ -556,7 +548,6 @@ tu_80447FAC	sinit	__sinit_tu_80447FAC_cpp	-	-	new	-
 tu_80448940	sinit	__sinit_tu_80448940_cpp	-	-	new	-
 tu_8044998C	sinit	__sinit_tu_8044998C_cpp	-	-	new	-
 tu_8044A828	sinit	__sinit_tu_8044A828_cpp	-	-	new	-
-tu_8044B80C	sinit	__sinit_tu_8044B80C_cpp	-	-	new	-
 tu_8044C7F0	sinit	__sinit_tu_8044C7F0_cpp	-	-	new	-
 tu_80453AF8	sinit	__sinit_tu_80453AF8_cpp	-	-	new	-
 tu_80455CA4	sinit	__sinit_tu_80455CA4_cpp	-	-	new	-

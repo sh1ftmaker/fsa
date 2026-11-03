@@ -335,6 +335,7 @@ bool fn_8022D930(s32 player); // -> fn_80241478; else false
 bool fn_8022D9CC(s32 player); // -> fn_80250090; else false
 bool fn_8022DA68(s32 player); // -> fn_80250ACC; else false
 bool fn_8022DBA0(s32 player); // -> fn_8024F630; else false
+// 1 unit (act_sand_crab's update: clrlwi 24 on the result, like fn_80230188 beside it).
 bool fn_8022DCD8(s32 player); // -> fn_80240818; else false
 bool fn_8022DD74(s32 player); // -> fn_8024AFF8; else false
 bool fn_8022DEAC(s32 player); // -> fn_8024B24C; else false
@@ -682,8 +683,20 @@ bool fn_80239638(s32 serial);
 // flag) passes, or -1 (also without a manager); *out is two floats.
 s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Counts
+// (compared with 1 by the caller) the active players for which fn_80250030(player
+// object, serial) passes.
+s32 fn_80239108(s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Index
+// (0-3, read from the player object's 0x3DC) of the first active player for which
+// fn_80250030(player object, serial) passes, or -1 (fn_80239108 not positive).
+s32 fn_80238BC4(s32 serial);
 
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Calls
+// fn_8024FFB4(player object, serial) on every active player for which
+// fn_80250030 passes.
+void fn_80238E08(s32 serial);
 }
 
 #endif

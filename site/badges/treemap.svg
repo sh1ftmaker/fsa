@@ -3,13 +3,13 @@
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } @keyframes rise { from { transform: scaleY(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="0.5" y="0.5" width="959" height="499" rx="14" fill="#161a34" stroke="#262b4e"/>
 <rect x="18.5" y="18.5" width="206.0" height="395.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="18.5" y="369.8" width="206.0" height="43.7" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="18.5" y="368.5" width="206.0" height="45.0" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="225.5" y="18.5" width="188.7" height="205.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="225.5" y="208.5" width="188.7" height="15.0" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="225.5" y="224.5" width="188.7" height="189.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="225.5" y="403.8" width="188.7" height="9.7" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="18.5" width="189.2" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="415.2" y="176.2" width="189.2" height="2.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="415.2" y="174.9" width="189.2" height="4.1" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="605.4" y="18.5" width="154.7" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="605.4" y="161.1" width="154.7" height="17.9" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="415.2" y="180.0" width="178.2" height="128.9" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
@@ -21,7 +21,7 @@
 <rect x="594.4" y="283.9" width="121.4" height="67.8" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="594.4" y="336.1" width="121.4" height="15.6" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="594.4" y="352.7" width="121.4" height="60.8" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
-<rect class="rise" x="594.4" y="405.7" width="121.4" height="7.8" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
+<rect class="rise" x="594.4" y="404.7" width="121.4" height="8.8" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="716.8" y="283.9" width="43.3" height="50.4" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect class="rise" x="716.8" y="294.1" width="43.3" height="40.3" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="716.8" y="335.3" width="43.3" height="45.6" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
@@ -102,13 +102,13 @@
 <rect class="rise" x="865.4" y="383.8" width="76.1" height="29.7" rx="2" fill="#c35ee6" fill-opacity="0.85"/>
 <rect x="863.4" y="381.8" width="80.1" height="33.7" rx="4" fill="none" stroke="#c35ee6" stroke-opacity="0.75" stroke-width="1.5"/>
 <text x="24.5" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">enemy_*_sob refs</text>
-<text x="24.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">11.1 %</text>
+<text x="24.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">11.4 %</text>
 <text x="231.5" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80200000+</text>
 <text x="231.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">7.33 %</text>
 <text x="231.5" y="240.5" font-size="11.5" font-weight="600" fill="#eceefb">other hints</text>
 <text x="231.5" y="253.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">5.14 %</text>
 <text x="421.2" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80380000+</text>
-<text x="421.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">1.78 %</text>
+<text x="421.2" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">2.58 %</text>
 <text x="611.4" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80180000+</text>
 <text x="611.4" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">11.2 %</text>
 <text x="421.2" y="196.0" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80280000+</text>
@@ -120,7 +120,7 @@
 <text x="600.4" y="299.9" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 801000…</text>
 <text x="600.4" y="312.9" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">23.0 %</text>
 <text x="600.4" y="368.7" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 804000…</text>
-<text x="600.4" y="381.7" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">12.8 %</text>
+<text x="600.4" y="381.7" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">14.4 %</text>
 <text x="771.1" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">J3D</text>
 <text x="771.1" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">98.2 %</text>
 <text x="863.6" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">J2DGraph</text>
@@ -130,7 +130,7 @@
 <text x="842.9" y="269.6" font-size="11.5" font-weight="600" fill="#eceefb">JUtility</text>
 <text x="842.9" y="282.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">100 %</text>
 <g fill="#3aae5c"><path d="M25.5 440L31 445.5L25.5 451L20 445.5Z"/></g>
-<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 10.3 %</text>
+<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 10.5 %</text>
 <g fill="#ef5b52"><path d="M143.7 440L149.2 451L138.2 451Z"/></g>
 <text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 97.8 %</text>
 <g fill="#3d9cf0"><circle cx="283.5" cy="445.5" r="5.5"/></g>

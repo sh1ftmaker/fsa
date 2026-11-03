@@ -66,6 +66,20 @@ public:
     // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
     // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
     void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F9714 (game/tu_802F5040.cpp, not written yet): the same arguments
+    // and tile-data rewrite as fn_802FA160 (checkCompressed / getResSize for
+    // size 0, then the slot rows at this + 0x98 + slot * 4); tu_8039003C's
+    // constructor passes the 'SCH ' resources (slots 0, 0, 2, 3), as does
+    // tu_803A85E4's (slots 0, 0, 2, 3; dstOffset 0 / 0x7000 / 0x4000 / 0).
+    void fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F93F4 (game/tu_802F5040.cpp, not written yet): the 'SCL ' form of
+    // fn_802F9714 with a trailing byte flag (clrlwi. 24 at 0x802F9568); the
+    // constructor of tu_8039003C and tu_803A85E4's pass false.
+    void fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag);
+    // 0x802FF798 (game/tu_802F5040.cpp, not written yet): no arguments;
+    // called once by tu_8039003C's and tu_803A85E4's constructors before it loads the tile
+    // resources.
+    void fn_802FF798();
     // 17 units. The tile code of cell `index` on `layer` (lhzx from the
     // layer's u16 grid, a pointer at 0x28 + layer * 4; the body has three
     // identical branches for layers 0-3, 4-7 and the rest).
@@ -131,7 +145,7 @@ void fn_80226CA8(s32 index, s32 layer, JGeometry::TVec3f* out);
 // fn_8022461C (computed inline), 0 / 2 / 0x50 never, 0x22 only while
 // GameView field_0x170 is set; `flag` (clrlwi 24, 0x80226344) selects
 // further cases. Returns 0 or 1.
-bool fn_802260DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
+bool fn_802260DC(const JGeometry::TVec2f* pos, s32 layer, bool flag); // reads pos+0/+4 only
 // 19 units / 37 calls. A plain call of fn_802260DC with the same
 // arguments (ActorBase_804A5770::vfunc_0x4C passes flag 0).
 bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
