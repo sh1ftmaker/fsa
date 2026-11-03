@@ -73,6 +73,7 @@ public:
     bool fn_80240870(); // via fn_80234134
     void fn_80240878(); // via fn_80233F78
     s32 fn_80240888(); // via fn_80234004
+    bool fn_802408C0(); // byte at 0x1217
     void fn_802408C8(s32 a, const JGeometry::TVec3f* b); // via fn_802348C4
     bool fn_80240AD4(); // via fn_80234950
     bool fn_80240AF0(); // via fn_802349EC
@@ -297,7 +298,10 @@ public:
     /* 0x1214 */ bool field_0x1214;
     // A bool: fn_80240AF0 returns it as loaded (lbz; blr).
     /* 0x1215 */ bool field_0x1215;
-    /* 0x1216 */ u8 field_0x1216[0x1224 - 0x1216];
+    /* 0x1216 */ u8 field_0x1216;
+    // A bool: fn_802408C0 returns it as loaded (lbz; blr).
+    /* 0x1217 */ bool field_0x1217;
+    /* 0x1218 */ u8 field_0x1218[0x1224 - 0x1218];
     /* 0x1224 */ s32 field_0x1224;
     /* 0x1228 */ u8 field_0x1228[0x13BC - 0x1228];
 }; // Size: 0x13BC

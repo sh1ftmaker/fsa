@@ -22,6 +22,10 @@ bool Player_804A6F38::fn_80240AF8() {
     return field_0x1214;
 }
 
+bool Player_804A6F38::fn_802408C0() {
+    return field_0x1217;
+}
+
 bool Player_804A6F38::fn_802413F0() {
     return playerFlags_802413F0(this);
 }
