@@ -219,7 +219,7 @@ phases:
         measure: {kind: code}
       - id: wave-actors
         title: "Wave 2: actor families"
-        desc: Enemies, NPCs and objects that share a base class. About 30 small actor files are merged one Sonnet agent per file (most at every function matching); 11 game units are Matching, weak-dedup evidence and the original function order were the missing pieces.
+        desc: Enemies, NPCs and objects that share a base class. Fourteen waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 53 game units are Matching. Recurring shapes (square(), drawShadow(), box/position forms, empty switch cases) are in the rules card.
         status: active
         covers: ["game:enemy_*_sob refs"]
         measure: {kind: code}
