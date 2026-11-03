@@ -29,6 +29,9 @@ public:
     bool fn_8021D020();
     // act_shadow_link_2.cpp: switches the animation/state by number.
     void fn_801C3B7C(int);
+    // act_shadow_link_2.cpp: true if mFlags has bit 0x40000 and the byte at
+    // 0x55C is at most 0x14.
+    bool fn_801C53C4();
     // act_shadow_link_2.cpp: switches to state 0xD (fn_801C3B7C only).
     void fn_801C26D8();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.

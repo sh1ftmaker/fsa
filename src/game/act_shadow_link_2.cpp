@@ -18,6 +18,17 @@ extern "C" s32 fn_801C5340() {
     return 0;
 }
 
+// Member: true when mFlags has bit 0x40000 set and the byte at 0x55C is at most 0x14.
+bool ShadowLink2_804A43E8::fn_801C53C4() {
+    u8 result = 0;
+    if (mFlags & 0x40000) {
+        if (field_0x55c[0] <= 0x14) {
+            result = true;
+        }
+    }
+    return result;
+}
+
 // Packs five fields into one word: bits 0-4, 5-7, 8-11, 12-15, 20-27.
 extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
     return ((e & 0xFF) << 20) | ((d & 0xF) << 12) | ((c & 0xF) << 8) | ((b & 0x7) << 5) | (a & 0x1F);
