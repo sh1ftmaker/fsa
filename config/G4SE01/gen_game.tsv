@@ -40,8 +40,6 @@ act_candlestick_switch	sinit	__sinit_act_candlestick_switch_cpp	-	-	new	-
 act_cannon	sinit	__sinit_act_cannon_cpp	-	-	new	-
 act_carrot	dtor	__dt__15Carrot_804AC6B0Fv	Carrot_804AC6B0	0x804AC6B0	new	new
 act_carrot	sinit	__sinit_act_carrot_cpp	-	-	new	new
-act_chain_switch	dtor	__dt__20ChainSwitch_804AA3E8Fv	ChainSwitch_804AA3E8	0x804AA3E8	new	new
-act_chain_switch	sinit	__sinit_act_chain_switch_cpp	-	-	new	new
 act_cheep_cheep	dtor	__dt__12cls_804A11B8Fv	cls_804A11B8	0x804A11B8	new	new
 act_cheep_cheep	sinit	__sinit_act_cheep_cheep_cpp	-	-	new	new
 act_chief_soldier	sinit	__sinit_act_chief_soldier_cpp	-	-	new	-
