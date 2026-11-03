@@ -189,7 +189,7 @@ def build():
         return None
 
     data_unsplit = [0, 0]
-    loose = []  # dtk's pad_ pieces between splits: they join the file before them
+    loose = []  # unsplit functions outside lib_map.tsv's rows: they join the file before them
     for u in report["units"]:
         name = u["name"]
         m = u.get("measures", {})
@@ -199,6 +199,11 @@ def build():
             data_unsplit[0] += int(m.get("total_data", 0))
             data_unsplit[1] += int(m.get("matched_data", 0))
             for f in u.get("functions", []):
+                if f["name"].startswith("pad_"):
+                    # dtk's name for zero fill between two splits (the linker's
+                    # alignment padding before a 32-aligned .text), not a function;
+                    # give the next unit's .text `align:32` in splits.txt instead
+                    continue
                 addr = int(f["metadata"]["virtual_address"])
                 where = place_auto(addr)
                 if where is None:
