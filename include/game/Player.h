@@ -260,6 +260,22 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // layer, out)) passes, or -1; *out (two floats, 0 and 4) is written by the
 // test.
 s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+
+// Owner unit tu_8022AD64 (not written yet). 3 units (act_cactus ignores the
+// result, act_ice_wall and act_gohma test it with clrlwi 24). If `player` is
+// active, fn_80271098(player object, pos), which is fn_80238548(player, 0,
+// pos, 13): the hit position (act_cactus passes its mPos; the others a stack
+// vector whose x and y they store).
+bool fn_802379E4(s32 player, const JGeometry::TVec3f* pos);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Whether
+// fn_802729F0(player object, serial) passes for any active player.
+bool fn_80239638(s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_cactus). Index of the
+// first active player for which fn_80273D44(player object, box, layer, out,
+// flag) passes, or -1 (also without a manager); *out is two floats.
+s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
 }
 
 #endif

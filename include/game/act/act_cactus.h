@@ -15,7 +15,10 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x10]; // not yet known
+    /* 0x230 */ s32 field_0x230; // 0 idle, 1 hit (counts field_0x23c up to 7)
+    /* 0x234 */ s32 field_0x234; // cleared by init, never read here
+    /* 0x238 */ s32 field_0x238; // cleared by init, never read here
+    /* 0x23C */ s32 field_0x23c; // hit animation frame, indexes lbl_804718E8
 }; // Size: 0x240
 
 #endif
