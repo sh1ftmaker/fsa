@@ -3,7 +3,23 @@
 Baseline: total: 4319 / 11561 functions, 772344 / 4442088 bytes of code (17.39 %)
 Now:      total: 4321 / 11561 functions, 772984 / 4442088 bytes of code (17.40 %)
 
-## Status: 2/3 functions (code 640/748), NonMatching
+## Wave 6: 3/3 functions, Matching
+Baseline (wave 6): total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
+Now:               total: 4502 / 11561 functions, 808200 / 4442088 bytes of code (18.19 %)
+
+fn_8021BD18 matches with the switch in a file-local inline helper
+(`argToIndex`, a source-only name: inlines leave no symbol) that returns the
+index, called as `field_0x4 = argToIndex(arg);` after `field_0x8 = 0;`. After
+inlining, MWCC shares the 0 of the field_0x8 store with the helper's
+`index = 0` and leaves case 1's emptied block as the dead `b` the original
+has. Standalone tests before it (scratch harness, all GC/2.6 -O4,p): a chained
+`field_0x8 = index = 0`, `u32 index = field_0x8 = 0`, case order changes, an
+explicit default, case 1 grouped with default, u32 field_0x8, per-case field
+stores, and a helper with `return` per case (one block too many): none match.
+Trial link SHA-1 OK, honest report 100 % in every section (extab via the
+weak-dedup trial evidence), flipped to Matching; `gate: ok`.
+
+## Earlier status: 2/3 functions (code 640/748), NonMatching
 
 A 12-byte class `cls_8021BCBC`, named after its first method because it has no
 vtable. It has a value (0x0 = table[index] + 0x3B5), an index (0x4, u32, 0..3)
