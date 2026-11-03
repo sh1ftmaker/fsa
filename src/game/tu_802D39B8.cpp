@@ -17,7 +17,11 @@ void GameView_804A9950::fn_802D9FF4(s32 a, s32 b) {
     field_0x28 = b;
 }
 
-// FIXME: everything before 0x802DE814 is not written yet.
+GameView_804A9950* fn_802D6A9C(void) {
+    return lbl_8053AAF8->field_0x4->mView;
+}
+
+// FIXME: everything between 0x802D6AAC and 0x802DE814 is not written yet.
 
 bool fn_802DE814(void) {
     if (lbl_8053AAF8->field_0x7f == 0) {
