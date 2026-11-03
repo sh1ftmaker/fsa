@@ -28,6 +28,10 @@ public:
     // Mangled fn_800FE3EC__12cls_800FE3ECFUcQ29JGeometry8TVec3<f>i; the vector
     // is passed by value.
     void fn_800FE3EC(u8, JGeometry::TVec3f, int);
+    u8 fn_800FD894(s32 layer, u8* out, s32 max);
+    bool fn_800FD5E8(u8 index);
+    bool fn_800FD4C0(u8 a, u8 b);
+    s32 fn_800FE25C(u8 index);
 
     void clear() {
         field_0x2 = 0;
@@ -48,17 +52,6 @@ extern "C" {
 // the entry's +0xC. r3 out, r4 buffer, r5 index (clrlwi 24).
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
 
-// game/RailBase.cpp (not written yet), used by game/tu_801D3320.cpp. All take
-// the buffer in r3.
-// Fills out[0..max) with the indices of the entries on `layer`; returns how
-// many (clrlwi 24).
-u8 fn_800FD894(cls_800FE3EC* buffer, s32 layer, u8* out, s32 max);
-// Whether entry `index` is usable (clrlwi.).
-bool fn_800FD5E8(cls_800FE3EC* buffer, u8 index);
-// Whether entries `a` and `b` are connected (clrlwi.).
-bool fn_800FD4C0(cls_800FE3EC* buffer, u8 a, u8 b);
-// The layer of entry `index`.
-s32 fn_800FE25C(cls_800FE3EC* buffer, u8 index);
 }
 
 #endif

@@ -30,11 +30,11 @@ void ShadowLink2_804A43E8::fn_801D3320() {
     JGeometry::TVec3f pB;
     if (mFlags & 0x2000000) {
         u8 entries[0x30];
-        u8 count = fn_800FD894(field_0x358.fn_80214244(), field_0x4, entries, 0x30);
+        u8 count = field_0x358.fn_80214244()->fn_800FD894(field_0x4, entries, 0x30);
         u8 best = 0;
         f32 bestDist = -1.0f;
         for (s32 i = 0; i < count; i++) {
-            if (fn_800FD5E8(field_0x358.fn_80214244(), entries[i])) {
+            if (field_0x358.fn_80214244()->fn_800FD5E8(entries[i])) {
                 fn_800FE294(&tmpA, field_0x358.fn_80214244(), entries[i]);
                 pA.set(tmpA);
                 bool ok = true;
@@ -59,7 +59,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
         field_0x32c.set(railA);
     } else {
         u8 entries[0x30];
-        u8 count = fn_800FD894(field_0x358.fn_80214244(), field_0x4, entries, 0x30);
+        u8 count = field_0x358.fn_80214244()->fn_800FD894(field_0x4, entries, 0x30);
         u8 numUsable = 0;
         u8* out = usable;
         for (s32 i = 0; i < count; i++) {
@@ -85,8 +85,8 @@ void ShadowLink2_804A43E8::fn_801D3320() {
             return;
         }
         s32 layer = field_0x4;
-        u32 player = fn_801C976C(this);
-        if (layer != fn_800FE25C(field_0x358.fn_80214244(), player)) {
+        u32 player = fn_801C976C();
+        if (layer != field_0x358.fn_80214244()->fn_800FE25C(player)) {
             return;
         }
         bool found = false;
@@ -102,7 +102,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
         from = field_0x32c;
         fn_800FE294(&tmpTo, field_0x358.fn_80214244(), player);
         to = tmpTo;
-        if (fn_800FD4C0(field_0x358.fn_80214244(), sel, player) &&
+        if (field_0x358.fn_80214244()->fn_800FD4C0(sel, player) &&
             fn_801CF888(&from, &to, field_0x4)) {
             return;
         }
@@ -115,8 +115,8 @@ void ShadowLink2_804A43E8::fn_801D3320() {
         dir = step;
         f32 rnd = lbl_8053AAF8->mRandom.get_ufloat_1();
         step.scale(rnd);
-        bool selOk = fn_800FD5E8(field_0x358.fn_80214244(), sel);
-        bool playerOk = fn_800FD5E8(field_0x358.fn_80214244(), player);
+        bool selOk = field_0x358.fn_80214244()->fn_800FD5E8(sel);
+        bool playerOk = field_0x358.fn_80214244()->fn_800FD5E8(player);
         if (selOk) {
             if (step.squared() < 1024.0f) {
                 step.set(dir);
@@ -138,7 +138,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
             ok = false;
         }
         if (ok) {
-            if (!fn_801CAEF4(this, &field_0x32c, field_0x4)) {
+            if (!fn_801CAEF4(&field_0x32c, field_0x4)) {
                 return;
             }
         }
@@ -152,7 +152,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
             field_0x32c.set(to);
         } else {
             field_0x32c.set(from);
-            if (fn_801CAEF4(this, &field_0x32c, field_0x4)) {
+            if (fn_801CAEF4(&field_0x32c, field_0x4)) {
                 cls_800FE3EC* c = field_0x358.fn_80214244();
                 if (player < c->field_0x2) {
                     c->field_0x3 = player;

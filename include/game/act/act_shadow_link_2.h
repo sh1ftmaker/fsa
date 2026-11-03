@@ -36,6 +36,8 @@ public:
     // game/tu_801C9AF8.cpp (not written yet): 0 if field_0x560 is 4 or
     // `player`, else 1.
     bool fn_801CAED4(int player);
+    u8 fn_801C976C();
+    bool fn_801CAEF4(const JGeometry::TVec3f* pos, s32 layer);
     // game/tu_801D3320.cpp: picks the next waypoint of the rail in
     // field_0x358 and moves field_0x32c toward it.
     void fn_801D3320();
@@ -65,15 +67,6 @@ public:
     /* 0x5B0 */ f32 field_0x5b0; // squared against the distance to the player
 }; // Size: at least 0x5B4
 
-extern "C" {
-// game/tu_801C71BC.cpp (not written yet; a vtable entry there): the
-// index of the rail entry nearest the actor (the caller narrows it with
-// clrlwi 24).
-u32 fn_801C976C(ShadowLink2_804A43E8* actor);
-// game/tu_801C9AF8.cpp (not written yet; clrlwi.): whether *pos on `layer` is
-// free.
-bool fn_801CAEF4(ShadowLink2_804A43E8* actor, const JGeometry::TVec3f* pos, s32 layer);
-}
 
 // Table at 0x8046A748 (0x28 bytes, 5 u16 per state; only [0] is read).
 extern const u16 lbl_8046A748[][5];
