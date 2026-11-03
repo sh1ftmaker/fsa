@@ -2,14 +2,12 @@
 #include "game/cls_804A71A8.h"
 #include "game/ViewLayer.h"
 
-extern const f32 lbl_80540228;
-
 // Four (x, y) corner offsets of +-4.
-extern const f32 lbl_8046BA68[4][2] = {
+static const f32 lbl_8046BA68[4][2] = {
     {4.0f, 4.0f}, {-4.0f, 4.0f}, {4.0f, -4.0f}, {-4.0f, -4.0f},
 };
 
-// Runs fn_802685D4 with mPos.z held at lbl_80540228 unless the player is in
+// Runs fn_802685D4 with mPos.z held at 0.0f unless the player is in
 // state 5 and fn_80240808 is set; the z is kept only if fn_802685D4 left it.
 void Player_804A6F38::fn_80268B3C() {
     if (fn_802486A0() == 5 && fn_80240808()) {
@@ -17,9 +15,9 @@ void Player_804A6F38::fn_80268B3C() {
         return;
     }
     f32 saved = mPos.z;
-    mPos.z = lbl_80540228;
+    mPos.z = 0.0f;
     fn_802685D4();
-    if (lbl_80540228 == mPos.z) {
+    if (0.0f == mPos.z) {
         mPos.z = saved;
     }
 }
