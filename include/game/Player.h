@@ -225,6 +225,12 @@ JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804C
 // Called by ActorBase_804A5770::vfunc_0x18 with the actor's screen box,
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (tu_802242F4). Index of
+// the first player on `layer` whose box test (fn_80273FB8(player, box,
+// layer, out)) passes, or -1; *out (two floats, 0 and 4) is written by the
+// test.
+s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 }
 
 #endif
