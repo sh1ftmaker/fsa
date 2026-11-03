@@ -354,6 +354,17 @@ struct cls_80204638 {
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
 
+// game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
+// (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:
+// fn_80211000 returns 0/1 (clrlwi 24) for "is the position inside the actor's
+// area" and fn_80210E90 writes the push-out vector to *out (r5; zeroed first).
+// Called by game/tu_80212AC0.cpp's fn_80212AF0.
+class ActorBase_804A5770;
+extern "C" {
+bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
+void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
+}
+
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
