@@ -47,6 +47,27 @@ extern const f32 lbl_8053EB20;
 extern const f32 lbl_8053EB28;
 extern const f32 lbl_8053EB2C;
 
+void Terrorpin_804A3B10::vfunc_0x24() {
+    // The original reads field_0x10c here, not mState (0x248) as the other vfuncs do.
+    if ((mFlags & 0x2000) && (mFlags & 0x4000) && field_0x10c >= 0 && field_0x10c < 4 && field_0x10c == field_0x2a8) {
+        f32 negX = -lbl_8053EB28;
+        for (s32 i = 0; i < 2; i++) {
+            s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                if (actor != NULL) {
+                    f32 x = lbl_8053EB28;
+                    if (i != 0) {
+                        x = negX;
+                    }
+                    actor->field_0x3c = JGeometry::TVec3f(x, lbl_8053EB20, lbl_8053EB2C);
+                }
+            }
+        }
+    }
+    ActorBase_804A5770::vfunc_0x24();
+}
+
 // While mState is 5, spawns two 'RUPY' actors at mPos and sets each one's
 // field_0x3c: x is lbl_8053EB28 for the first and its negation for the second,
 // y and z are fixed.
