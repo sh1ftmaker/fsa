@@ -2,6 +2,12 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_801D8400.h"
 
+void cls_804A4C58::fn_801D8400() {
+    if (mState < 8) {
+        fn_801D9C58(8);
+    }
+}
+
 void cls_804A4C58::vfunc_0x24() {}
 
 extern "C" void fn_801DA0FC() {

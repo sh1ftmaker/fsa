@@ -34,6 +34,9 @@ public:
     // 0x801D8400 (first function of tu_801D8400, called by tu_801DAC6C): below
     // state 8 (mState) calls fn_801D9C58 with 8.
     void fn_801D8400();
+    // 0x801D9C58 (tu_801D8400 and tu_801DD1AC call it on this with a state
+    // number in r4, e.g. 8 from fn_801D8400); its body is not written yet.
+    void fn_801D9C58(int state);
     // 0x801E61C4 (tu_801D8400's code calls it): moves the pair at 0x2C8 to
     // 40 units below mPos (in y).
     void fn_801E61C4();
