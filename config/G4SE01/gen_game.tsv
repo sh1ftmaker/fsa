@@ -64,7 +64,6 @@ act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
 act_fairy_invincible	sinit	__sinit_act_fairy_invincible_cpp	-	-	new	-
 act_falling_floor	dtor	__dt__21FallingFloor_804A9078Fv	FallingFloor_804A9078	0x804A9078	new	new
 act_falling_floor	sinit	__sinit_act_falling_floor_cpp	-	-	new	new
-act_fire_bar	sinit	__sinit_act_fire_bar_cpp	-	-	new	-
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
