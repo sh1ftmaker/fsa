@@ -210,7 +210,8 @@ def run_trial(unit, cmd, objects):
         sys.exit(f"{unit['name']}: already linked from {base} (ninja's own map is the evidence), "
                  f"or dtk's split of it is not a link input")
     obj_sha = sha1_file(base)
-    tag = f"trial_{unit_slug(unit['name'])}"
+    # MWLD truncates output file names to 31 characters, so keep the tag short.
+    tag = "t_" + hashlib.sha1(unit_slug(unit["name"]).encode()).hexdigest()[:12]
     elf, log = link(cmd, inputs, tag)
     sha = None
     if elf:
