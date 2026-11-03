@@ -22,9 +22,9 @@ public:
     // the position outright; anything else falls to ActorBase's test.
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
 
-    // Read and written by other Zora functions too (0x801BAF6C, 0x801BB338,
-    // 0x801BB348); the type is not yet known.
-    /* 0x2A8 */ s32 field_0x2a8;
+    // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
+    // by the destructor (0x801BB30C), which passes it to fn_801EE434.
+    /* 0x2A8 */ JPABaseEmitter* field_0x2a8;
 };
 
 #endif

@@ -8,6 +8,11 @@ ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
     field_0x2a8 = 0;
 }
 
+ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
+    fn_801EE434(field_0x2a8);
+    field_0x2a8 = NULL;
+}
+
 extern "C" void fn_801BA65C() {}
 extern "C" s32 fn_801BA660() { return 0; }
 extern "C" void fn_801BA668() {}
