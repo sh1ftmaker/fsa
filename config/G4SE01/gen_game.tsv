@@ -290,7 +290,6 @@ tu_8020C0A8	sinit	__sinit_tu_8020C0A8_cpp	-	-	new	-
 tu_80212E3C	dtor_enemy	__dt__12cls_804A6340Fv	cls_804A6340	0x804A6340	new	new
 tu_80212E3C	sinit	__sinit_tu_80212E3C_cpp	-	-	new	-
 tu_802144F0	sinit	__sinit_tu_802144F0_cpp	-	-	new	-
-tu_80215A94	sinit	__sinit_tu_80215A94_cpp	-	-	new	-
 tu_80220F54	sinit	__sinit_tu_80220F54_cpp	-	-	new	-
 tu_802233A4	sinit	__sinit_tu_802233A4_cpp	-	-	new	-
 tu_8022461C	sinit	__sinit_tu_8022461C_cpp	-	-	new	-
