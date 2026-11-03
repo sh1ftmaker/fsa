@@ -16,14 +16,13 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    // 0x802C2BD0 (act_small_key's range): takes the key in r3, sets byte
+    // 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
+    // fn_802D6C10. Called by act_invisible_npc_wall_tomi (0x803764BC).
+    void fn_802C2BD0();
     /* 0x230 */ u8 field_0x230[0x10]; // not yet known
     /* 0x240 */ s32 field_0x240; // state; 4 is tested by act_invisible_npc_wall_tomi
     /* 0x244 */ u8 field_0x244[0x74]; // not yet known
 }; // Size: 0x2B8
-
-// act_small_key (unwritten), 0x802C2BD0: takes the key in r3, sets byte
-// 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
-// fn_802D6C10. Called by act_invisible_npc_wall_tomi (0x803764BC).
-extern "C" void fn_802C2BD0(SmallKey_804A8CD8* key);
 
 #endif
