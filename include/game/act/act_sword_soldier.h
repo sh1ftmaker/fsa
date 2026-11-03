@@ -13,6 +13,7 @@ public:
     /* 0x288 */ s32 field_0x288;
     /* 0x28C */ s32 field_0x28c;
     s32 fn_801544AC() const;
+    u32 fn_801544C8() const;
     s32 fn_801544C0();
 };
 

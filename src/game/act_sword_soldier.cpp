@@ -18,6 +18,10 @@ s32 SwordSoldier_8049FCA0::fn_801544C0() {
     return field_0x288;
 }
 
+u32 SwordSoldier_8049FCA0::fn_801544C8() const {
+    return field_0x90;
+}
+
 f32 fn_80154378(f32 x) {
     return std::sqrtf(x);
 }
