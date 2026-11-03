@@ -16,6 +16,16 @@ s32 cls_800FE3EC::fn_800FE25C(u8 index) {
     return field_0x4[index]->layer;
 }
 
+bool cls_800FE3EC::fn_800FD548(u8 index) {
+    if (index == 0xFF) {
+        index = field_0x3;
+    }
+    if (field_0x1 != 0) {
+        return (field_0x4[index]->field_0x90 & 0x8) != 0;
+    }
+    return (field_0x4[index]->field_0x90 & 0x10) != 0;
+}
+
 u8 cls_800FE3EC::fn_800FE21C(u8 index) {
     if (index == 0xFF) {
         return field_0x4[field_0x3]->field_0x90 >> 24;
