@@ -188,6 +188,8 @@ JSystem/JAudio/System/JASBasicWaveBank.cpp:
 JSystem/JAudio/System/JASBNKParser.cpp:
 	.text       start:0x8002F274 end:0x800304C4
 	.ctors      start:0x8045BD5C end:0x8045BD60
+	.bss        start:0x804B2870 end:0x804B2880
+	.sbss       start:0x8053A348 end:0x8053A350
 
 JSystem/JAudio/System/JASDrumSet.cpp:
 	.text       start:0x800304C4 end:0x80030828
