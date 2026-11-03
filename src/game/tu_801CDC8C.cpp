@@ -3,7 +3,7 @@
 //
 // Not written yet: vfunc_0x80 (0x801CE694), fn_801CE800, fn_801CEA60,
 // fn_801CEBD0, fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
-// fn_801CFA70, fn_801CFD68, fn_801D0020, fn_801D00B4, fn_801D01A0,
+// fn_801CFA70, fn_801CFD68, fn_801D00B4, fn_801D01A0,
 // fn_801D0338, fn_801D05F8, fn_801D08B4, fn_801D0B44.
 
 #include "game/GameAudio.h"
@@ -320,6 +320,27 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
         break;
     }
     return fn_801CFD68(dir, dist);
+}
+
+// The direction from *pos to player `player` on the dominant axis: 0 +x,
+// 1 -x, 2 +y, 3 -y. The |dx| <= |dy| test for `axis` is what the target
+// branches on; the ||/&& shape keeps both clauses as the target has them.
+s32 EnemyBase_804A4808::fn_801D0020(const JGeometry::TVec3f* pos, s32 player, bool axis) {
+    JGeometry::TVec3f* playerPos = &field_0x1ac[player];
+    f32 dx = playerPos->x - pos->x;
+    f32 dy = playerPos->y - pos->y;
+    f32 absY = __fabsf(dy);
+    f32 absX = __fabsf(dx);
+    if ((absX > absY && !axis) || (absX <= absY && axis == true)) {
+        if (pos->x < playerPos->x) {
+            return 0;
+        }
+        return 1;
+    }
+    if (pos->y < playerPos->y) {
+        return 2;
+    }
+    return 3;
 }
 
 // FIXME: 99.8 %. Only the literal order (the angle constant, see init).
