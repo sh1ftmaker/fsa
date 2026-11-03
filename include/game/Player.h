@@ -189,6 +189,10 @@ void fn_80230498(s32 player, const JGeometry::TVec3f* pos, s32 id, u8 a, s8 b, s
 // 34+ units. Takes a flag (clrlwi 24), not a player: loops all four players;
 // every caller passes 0. Result tested against 1.
 bool fn_80230534(bool flag);
+// 1 unit (act_zoom). Owner: tu_8022AD64 (0x8023077C). Loops all four players like
+// fn_80230534 and returns 0 as soon as one present player's fn_8024E060 or fn_8024DCD0
+// is false; else 1 (after fn_8037AE00(lbl_8053AD70)). Result tested against 1.
+bool fn_8023077C();
 // 3+ units (act_warp, act_view_mode). Owner: tu_8022AD64 (0x802373EC, defined
 // there; per-player query, 0 without a manager). Compared against 1 and 2.
 s32 fn_802373EC(s32 player);
@@ -224,6 +228,10 @@ bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, el
 bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, tu_8026FC20); else false
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
 // are passed by act_attack_hitbox_when_player_is_thrown.
+// Any-player version of fn_8023B0F4: loops players 0-3 that are present and returns the index
+// of the first whose fn_802730D8 test (box, layer, flag, margin) hits, or -1 (also without a
+// manager). act_zoom passes (&box, field_0x4, false, 0.0f); tested against 0 with cmpwi.
+s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false

@@ -303,8 +303,6 @@ act_warp_entrance_wall	sinit	__sinit_act_warp_entrance_wall_cpp	-	-	new	new
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
 act_wind_environment	sinit	__sinit_act_wind_environment_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
-act_zoom	dtor	__dt__13Zoom_804A9DF8Fv	Zoom_804A9DF8	0x804A9DF8	new	new
-act_zoom	sinit	__sinit_act_zoom_cpp	-	-	new	new
 act_zora	sinit	__sinit_act_zora_cpp	-	-	new	-
 act_zora_escort	sinit	__sinit_act_zora_escort_cpp	-	-	new	-
 act_zora_escort_goal	sinit	__sinit_act_zora_escort_goal_cpp	-	-	new	-
