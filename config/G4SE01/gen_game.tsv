@@ -186,7 +186,6 @@ act_tektite	dtor	__dt__16Tektite_8049FD50Fv	Tektite_8049FD50	0x8049FD50	new	new
 act_tektite	sinit	__sinit_act_tektite_cpp	-	-	new	new
 act_temple_bti_display	sinit	__sinit_act_temple_bti_display_cpp	-	-	new	-
 act_terrorpin	sinit	__sinit_act_terrorpin_cpp	-	-	new	-
-act_thief	sinit	__sinit_act_thief_cpp	-	-	new	-
 act_thwomp_launch_npc	dtor	__dt__28NPCLaunchedByThwomp_804AC010Fv	NPCLaunchedByThwomp_804AC010	0x804AC010	new	new
 act_thwomp_launch_npc	sinit	__sinit_act_thwomp_launch_npc_cpp	-	-	new	new
 act_thwomp_launch_npc_2	dtor	__dt__29NPCLaunchedByThwomp2_804AD1C8Fv	NPCLaunchedByThwomp2_804AD1C8	0x804AD1C8	new	new
@@ -280,7 +279,6 @@ tu_801E4D54	sinit	__sinit_tu_801E4D54_cpp	-	-	new	-
 tu_801E6D48	sinit	__sinit_tu_801E6D48_cpp	-	-	new	-
 tu_801E801C	sinit	__sinit_tu_801E801C_cpp	-	-	new	-
 tu_801EB00C	sinit	__sinit_tu_801EB00C_cpp	-	-	new	-
-tu_80206B30	sinit	__sinit_tu_80206B30_cpp	-	-	new	-
 tu_80209C14	sinit	__sinit_tu_80209C14_cpp	-	-	new	-
 tu_8020B354	sinit	__sinit_tu_8020B354_cpp	-	-	new	-
 tu_8020C0A8	sinit	__sinit_tu_8020C0A8_cpp	-	-	new	-

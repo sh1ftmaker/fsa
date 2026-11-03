@@ -8,6 +8,7 @@
 // padding until act_thief is written.
 
 #include "game/cls_804A46F4.h"
+#include "game/tu_801D2918.h"
 
 class JPABaseEmitter;
 
@@ -28,6 +29,22 @@ public:
 
     virtual ~Thief_804A5A30();
     /* 0x20 */ virtual void draw();
+    // Overrides in game/tu_80206B30.cpp (0x80206B30-0x80207004; slot order).
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    /* 0x58 */ virtual bool vfunc_0x58();
+    /* 0x5C */ virtual bool vfunc_0x5C();
+    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x64 */ virtual bool vfunc_0x64();
+    /* 0x68 */ virtual u8 vfunc_0x68();
+
+    // 0x802072E4 (tu_80206B30): mBox = (-8, -16)-(8, 8), copied to mBox2.
+    void fn_802072E4();
+    // 0x80205E0C (act_thief, not written yet): switches to state `state`.
+    void fn_80205E0C(s32 state);
+    // 0x8020609C and 0x802064E0 (act_thief, not written yet): state tests
+    // the hit overrides make; roles unknown.
+    bool fn_8020609C();
+    bool fn_802064E0();
 
     // 0x8020F80C: draws the shadow and the sprite at mPos on the layer for
     // sprite frame `frame` (the draw() argument).
@@ -39,7 +56,8 @@ public:
     /* 0x350 */ s32 mType;            // index into lbl_8046A238
     /* 0x354 */ s32 field_0x354;
     /* 0x358 */ JPABaseEmitter* mEmitter358;
-    /* 0x35C */ u8 field_0x35c[0x388 - 0x35C];
+    /* 0x35C */ Damped2D_801D2918 field_0x35c; // a hit player pushes it (vfunc_0x68)
+    /* 0x368 */ u8 field_0x368[0x388 - 0x368];
 }; // Size: 0x388
 
 extern const Thief_804A5A30::TypeParams lbl_8046A238[];
