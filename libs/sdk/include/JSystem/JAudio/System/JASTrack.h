@@ -263,4 +263,12 @@ public:
     JGadget::TLinkListNode mNode;
 }; // Size: 0x250
 
+// FAKEMATCH(crack-pass): dummy function template, instantiated only by JASTrack.cpp's unused
+// JASTrack_orderDummyUse; being the last thing instantiated at end of TU it puts __sinit in this
+// header's weak .text section (after MoveParam_ ct, before free/__dl) as in FSA. Both are dead-stripped.
+#ifdef JASTRACK_ORDER_DUMMY // FAKEMATCH(crack-pass): defined only by JASTrack.cpp, so no other unit's @NNN labels shift
+template <typename T>
+void JASTrack_orderDummy(T) {}
+#endif
+
 #endif

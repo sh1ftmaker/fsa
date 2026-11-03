@@ -150,3 +150,24 @@ Ruled out by reasoning:
 
 Next: look for a function template that FSA's JASTrack.h could have held, e.g. an unreferenced small
 weak function in JAI*/JASSeq* .text. Otherwise the unit stays NonMatching (100 % in objdiff).
+
+## lead-jastrack (2026-11-03): weak-template lead closed; crack-pass trick verified
+Part A (honest lead), no candidate:
+- FSA asm: the only functions outside JASTrack.o with JASTrack in their names are ordinary
+  members of JAISound/JAISoundChild/JASSeqCtrl/JASSeqParser/JASTrackPort and the two memPool dtors
+  kept in game/tu_80021840. No JASTrack.h inline/template is out of line anywhere else.
+- Every bl in FSA's JASTrack range goes to a known non-JASTrack.h function (JASSeqCtrl, JASTrackPort,
+  JASRegisterParam, JASChannel, JASBank, JASDriver, JGadget, OS, the pools); __sinit registers only
+  the BankTable/TList/memPool dtors. So a dropped weak duplicate of a JASTrack.h template would leave
+  no reference in FSA; an all-unreferenced one leaves no trace at all. Not provable either way.
+- symbols.txt scope:weak functions in 0x80021D60..0x80039A84: only JAISe thunks, TList dt, getBank.
+- mkdd/TP/SMG JASTrack.h have no templates or out-of-class inlines.
+Part B (trick, user-allowed for the crack pass; see docs/CRACK_PASS.md):
+- `JASTrack_orderDummy<T>` at the end of JASTrack.h under `#ifdef JASTRACK_ORDER_DUMMY` (defined only
+  by JASTrack.cpp; unguarded it shifted every game unit's @NNN labels by one and failed
+  gen_game --check), plus an unused static caller at the end of JASTrack.cpp. Gives exactly
+  MoveParam ct, dummy, __sinit, memPool dts, TList dt, ... ; the linker dead-strips both dummies.
+- Explicit instantiation (`template void f<int>(int);`) does not work: emitted immediately, global.
+- Verified: JASTrack Matching, then + tu_80021840 Matching: SHA-1 OK
+  (d86b3d9f785566e34264035e140ef3daf3cc19f0), both 100 % honest. Back to NonMatching: gate: ok.
+  progress.py total unchanged (6458 / 11557).

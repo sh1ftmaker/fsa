@@ -1,3 +1,4 @@
+#define JASTRACK_ORDER_DUMMY // FAKEMATCH(crack-pass): enables JASTrack_orderDummy in JASTrack.h (see there)
 #include "JSystem/JAudio/System/JASTrack.h"
 #include "JSystem/JAudio/System/JASBank.h"
 #include "JSystem/JAudio/System/JASBankTable.h"
@@ -824,3 +825,7 @@ void JASTrack::TChannelMgr::setPauseFlag(bool pause) {
         }
     }
 }
+
+// FAKEMATCH(crack-pass): unused caller that instantiates JASTrack_orderDummy (see JASTrack.h) so
+// __sinit lands in JASTrack.h's weak .text section; the linker dead-strips both.
+static void JASTrack_orderDummyUse() { JASTrack_orderDummy(0); }
