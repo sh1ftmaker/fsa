@@ -3,6 +3,7 @@
 #include "JSystem/J2D/J2DMaterial.h"
 #include "JSystem/J2D/J2DPrint.h"
 #include "JSystem/J2D/J2DPane.h"
+#include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DMatBlock.h"
 #include "JSystem/J2D/J2DTypes.h"
 #include "JSystem/JSupport/JSUStream.h"
@@ -21,6 +22,18 @@ J2DTextBox::J2DTextBox()
     , mBlack()
 {
     initiate(nullptr, nullptr, 0, J2DHBIND_Left, J2DVBIND_Top);
+}
+
+J2DTextBox::J2DTextBox(const char* fontName, const char* str, s16 strLength)
+    : J2DPane()
+    , mFont(nullptr)
+    , mCharColor()
+    , mGradientColor()
+    , mStringPtr(nullptr)
+    , mWhite()
+    , mBlack()
+{
+    initiate((const ResFONT*)J2DScreen::getNameResource(fontName), str, strLength, J2DHBIND_Left, J2DVBIND_Top);
 }
 
 J2DTextBox::J2DTextBox(J2DPane* parent, JSURandomInputStream* input, JKRArchive* archive)
@@ -156,6 +169,19 @@ J2DTextBox::J2DTextBox(u64 tag, const JGeometry::TBox2f& box, const ResFONT* res
     , mBlack()
 {
     initiate(resFont, str, strLength, hb, vb);
+}
+
+J2DTextBox::J2DTextBox(u64 tag, const JGeometry::TBox2f& box, const char* fontName, const char* str, s16 strLength,
+                       J2DTextBoxHBinding hb, J2DTextBoxVBinding vb)
+    : J2DPane(tag, box)
+    , mFont(nullptr)
+    , mCharColor()
+    , mGradientColor()
+    , mStringPtr(nullptr)
+    , mWhite()
+    , mBlack()
+{
+    initiate((const ResFONT*)J2DScreen::getNameResource(fontName), str, strLength, hb, vb);
 }
 
 void J2DTextBox::initiate(const ResFONT* resFont, const char* str, s16 strLength, J2DTextBoxHBinding hb, J2DTextBoxVBinding vb)
