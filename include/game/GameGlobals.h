@@ -400,6 +400,14 @@ public:
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
     // more arguments (0 in most calls).
     void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
+
+    // 0x8043CB24 (game/tu_8043A0E8.cpp): queues the decimal number `value`
+    // for drawing with `digits` digits (r7), centred around (x, y) at `scale`.
+    // Returns false when all ten slots (the byte at 0x252) are taken. r5 is
+    // stored as a byte at 0x244 + slot, r6 (at most 5) at 0x23A + slot, and r8
+    // (`flag`) switches the leading-zero handling. act_digging_game and
+    // tu_8010089C call it too; tu_801ED3DC passes (n, 255, 0, 1, false).
+    bool fn_8043CB24(s32 value, u8 alpha, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale);
 };
 extern cls_804B1920* lbl_8053AED0;
 
