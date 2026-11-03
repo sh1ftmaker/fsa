@@ -6,9 +6,6 @@
 
 DummyConversation_804B1A48::~DummyConversation_804B1A48() {}
 
-// FIXME: 99.96 %. Only the compare after fn_8022FD8C differs: the original
-// has `cmpw r3, r30` (result, player), ours `cmpw r30, r3` (regalloc-only,
-// operand order; writing the comparison the other way round changes nothing).
 void DummyConversation_804B1A48::update() {
     s32 player = field_0x90 >> 28;
     switch (mState) {
@@ -63,7 +60,8 @@ void DummyConversation_804B1A48::update() {
         break;
     case 1:
         fn_8022FE80(player, field_0x4, mSerial, 0, 0);
-        if (fn_8022FD8C(mSerial) == player) {
+        s32 owner = fn_8022FD8C(mSerial);
+        if (owner == player) {
             if (open(player, field_0x4, mSerial, mPos, 0x10)) {
                 mState = 2;
             } else {

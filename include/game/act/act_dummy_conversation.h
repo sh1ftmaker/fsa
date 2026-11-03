@@ -19,6 +19,7 @@ public:
     // (fn_8038C678), 2 waits for the window to close.
     // Opens the message with the position passed on by value; the message
     // id is read after the position copy (research_byval, rules card).
+    // layer comes before serial, as in fn_8022FE80's argument order (act_merchant's call site matches only that way too).
     bool open(s32 player, s32 layer, s32 serial, const JGeometry::TVec3f& pos, u32 flags) {
         return fn_8038C678(player, mMessage, serial, layer, pos, flags);
     }
