@@ -292,7 +292,9 @@ public:
     /* 0x0CA1 */ u8 field_0xca1[0xCAC - 0xCA1];
     // Tested by every per-player query before it touches the player.
     /* 0x0CAC */ bool mActive;
-    /* 0x0CAD */ u8 field_0xcad[0xCE9 - 0xCAD];
+    /* 0x0CAD */ u8 field_0xcad[0xCE8 - 0xCAD];
+    // A bool: fn_8024BBB0 returns it as loaded (lbz; blr).
+    /* 0x0CE8 */ bool field_0xce8;
     // A u8: fn_802413F0 converts it to its bool result (neg / or / srwi).
     /* 0x0CE9 */ u8 field_0xce9;
     /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];

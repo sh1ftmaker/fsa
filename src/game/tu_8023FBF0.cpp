@@ -152,3 +152,7 @@ extern "C" void fn_80252FBC() {}
 bool Player_804A6F38::fn_80249068() {
     return field_0x121f;
 }
+
+bool Player_804A6F38::fn_8024BBB0() {
+    return field_0xce8;
+}
