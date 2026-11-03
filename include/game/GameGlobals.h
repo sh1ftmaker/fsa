@@ -128,4 +128,12 @@ extern GameRoot2_8049F108* lbl_8053AB10;
 extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, f32 f4,
                             JUtility::TColor color);
 
+// game/tu_80301CD0.cpp (per-player lists, not written yet). ~100 calls in ~90
+// units, mostly from actors' draw: serial, layer, position, then a sprite id.
+// The callee tests d as a bool and reads g and the two stack arguments as
+// bytes (clrlwi / lbz 0x4b, 0x4f); returns a 0/1 flag. Argument meanings
+// unknown. Review: fsa-wt/_reviews/game__act_force_gem_shadow.review.md.
+extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
+                            bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
+
 #endif
