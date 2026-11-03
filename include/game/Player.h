@@ -193,6 +193,9 @@ s32 fn_80235ACC(s32 player);             // 2 units. -> fn_80270358 (word 0xC50,
 s32 fn_80236228(s32 player);
 s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08); else -1
 JGeometry::TVec3f* fn_80238430(s32 player); // 1 unit. -> 0x324; else &lbl_804CF460
+// 5+ units (act_thwomp_switch, act_warp, ...). Same shape as fn_8023A51C below.
+JGeometry::TVec3f* fn_8023A478(s32 player);
+bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
 bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, tu_8026FC20); else false
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
