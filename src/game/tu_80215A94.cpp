@@ -59,6 +59,14 @@ void cls_80215E48::fn_80215DB8() {
     }
 }
 
+void cls_80215E48::fn_8021600C() {
+    cls_80215E48* entry = this;
+    for (s32 i = 0; i < mCount; i++) {
+        reinterpret_cast<cls_801ED3DC*>(entry->pad_0x1C)->fn_801ED798();
+        entry++;
+    }
+}
+
 void cls_80215E48::fn_80215FB8(s32 index, s32 key, f32 fraction) {
     reinterpret_cast<cls_801ED3DC*>((this + index)->pad_0x1C)->fn_801ED5C8(fraction);
     (this + index)->mKey = key;

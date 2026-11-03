@@ -27,6 +27,8 @@ struct cls_80215E48 {
     bool fn_80215D38();
     // Calls fn_80215E18 on every entry's mId, in order.
     void fn_80215DB8();
+    // Zeroes every entry's stopwatch and leaves the watches running.
+    void fn_8021600C();
     // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its
     // mKey to `key`.
     void fn_80215FB8(s32 index, s32 key, f32 fraction);
