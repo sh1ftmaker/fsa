@@ -55,9 +55,9 @@ cls_804B1D20::cls_804B1D20() {
     field_0x10 = 308.0f + mScreen[1]->search('Tp02')->getBounds()->i.y;
     f32 height = mScreen[1]->search('Tp01')->getHeight();
     J2DPane* pane = mScreen[1]->search('Tp01');
-    mScreen[1]->search('Tp01')->resize(pane->getWidth(), height = 6.0f * height);
+    mScreen[1]->search('Tp01')->resize(pane->getWidth(), 6.0f * height);
     pane = mScreen[1]->search('Tp02');
-    mScreen[1]->search('Tp02')->resize(pane->getWidth(), height);
+    mScreen[1]->search('Tp02')->resize(pane->getWidth(), 6.0f * height);
     ((J2DPicture*)mScreen[1]->search(0x50626c6b3031ull /* "Pblk01" */))
         ->setBlackWhite(JUtility::TColor(0), JUtility::TColor(0));
     field_0x18 = false;
