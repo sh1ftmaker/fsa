@@ -13,7 +13,7 @@
 // the game pads, the heaps, the loader and the memory card, then runs the
 // frame loop forever.
 //
-// FIXME: 94%. (1) The target allocates the main heap to r30 and the audio
+// FIXME: 94%. (A nested 4x8 copy loop reaches 96% but only steers the unroll; rejected.) (1) The target allocates the main heap to r30 and the audio
 // object to r31 (we swap them, and route the heap through r0 once); (2) the
 // prologue's constants (1, 0x200000, 0x40000) use other volatiles, and the
 // save-region copy loop strength-reduces to two running pointers where the
@@ -75,7 +75,7 @@ int main() {
 
     JFWDisplay::createManager(NULL, JKRHeap::getSystemHeap(), JUTXfb::DoubleBuffer, true);
     JFWDisplay::getManager()->clearAllXfb();
-    fn_803BA980(&lbl_8051C1A0);
+    lbl_8051C1A0.fn_803BA980();
 
     JKRSolidHeap* solidHeap = JKRSolidHeap::create(0x180000, JKRHeap::getRootHeap(), false);
     JKRExpHeap* mainHeap = JKRExpHeap::create(0xFFFFFFFF, JKRHeap::getRootHeap(), false);
@@ -93,7 +93,7 @@ int main() {
 
     bool flag = false;
     for (;;) {
-        fn_803B9E2C(&lbl_8051C1A0);
+        lbl_8051C1A0.fn_803B9E2C();
         if (DVDGetDriveStatus() != -1) {
             JUTGamePad::read();
         }

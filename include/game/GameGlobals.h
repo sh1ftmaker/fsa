@@ -104,7 +104,8 @@ struct GameRoot_8049EF20 {
     // endRender / endFrame; the first only while lbl_80529DEC's byte 0x251 is 0.
     void fn_80136828();
     void fn_80137300();
-};
+    s32 fn_80138A30();
+}; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
@@ -422,7 +423,7 @@ public:
     void fn_803FF420();
     void fn_803FFAA8();
 
-    /* 0x00 */ void* field_0x0; // vtable
+    /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
     /* 0x04 */ u8 field_0x4[0x78 - 0x4];
     /* 0x78 */ u8 mState;
     /* 0x79 */ u8 field_0x79[0x7C - 0x79];
@@ -432,16 +433,18 @@ extern cls_804B0F50* lbl_8053AAF0;
 // The memory card manager, owner game/tu_803B9940.cpp (0x2120 bytes at
 // lbl_8051C1A0): fn_803BA980 runs CARDInit, initialises its mutex and
 // condition and starts its thread; main calls fn_803B9E2C on it every frame.
-class cls_803B9940_Card;
-extern cls_803B9940_Card lbl_8051C1A0;
-extern "C" {
-void fn_803BA980(cls_803B9940_Card* card);
-void fn_803B9E2C(cls_803B9940_Card* card);
-}
+class cls_803B9940 {
+public:
+    void fn_803BA980();
+    void fn_803B9E2C();
+
+    /* 0x0 */ u8 field_0x0[0x2120]; // fields unknown (mutex at 0x1FD4, cond at 0x1FEC)
+}; // Size: 0x2120
+extern cls_803B9940 lbl_8051C1A0;
 
 // Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
 // lbl_8053ACA8), owner game/tu_802B1558.cpp. The first three read bytes of
-// the save region in lbl_80529DEC (see SaveRegion_80700000); fn_802B1D98
+// the save region in lbl_80529DEC (see GameState_804B0FE0::SaveRegion); fn_802B1D98
 // clears one and stores 0 at this+6.
 class cls_804A8578 {
 public:

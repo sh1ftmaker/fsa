@@ -37,30 +37,30 @@ class JKRSolidHeap;
 class J2DPane;
 struct Unk_8045A080; // GameGlobals.h
 
-// The 0x20 bytes at 0x80700000 (OSSetSaveRegion(0x80700000, 0x8070001F)),
-// as main (tu_801344C0) sees them inside GameState_804B0FE0 at 0x216. Only
-// the bytes main and its neighbours touch are named; offsets are within the
-// region.
-union SaveRegion_80700000 {
-    u8 bytes[0x20];
-    struct Fields {
-        /* 0x00 */ u16 magic0; // 0xA759 when valid
-        /* 0x02 */ u16 magic1; // 0xDC96 when valid
-        /* 0x04 */ u8 field_0x4[0x09 - 0x04];
-        /* 0x09 */ u8 field_0x9; // fn_802B1DCC tests it
-        /* 0x0A */ u8 field_0xa;
-        /* 0x0B */ u8 field_0xb; // fn_802B1D7C tests it; fn_802B1D98 clears it
-        /* 0x0C */ u8 field_0xc; // 0xFF preset; fn_802B1D60 returns it if <= 3
-        /* 0x0D */ u8 field_0xd; // tu_803FF2C4's loader constructor tests it
-        /* 0x0E */ u8 field_0xe;
-        /* 0x0F */ u8 field_0xf;
-        /* 0x10 */ u8 field_0x10; // 1: progressive scan wanted
-        /* 0x11 */ u8 field_0x11[0x20 - 0x11];
-    } f;
-}; // Size: 0x20
-
 class GameState_804B0FE0 {
 public:
+    // The 0x20 bytes at 0x80700000 (OSSetSaveRegion(0x80700000, 0x8070001F)),
+    // as main (tu_801344C0) sees them inside GameState_804B0FE0 at 0x216. Only
+    // the bytes main and its neighbours touch are named; offsets are within the
+    // region.
+    union SaveRegion {
+        u8 bytes[0x20];
+        struct Fields {
+            /* 0x00 */ u16 magic0; // 0xA759 when valid
+            /* 0x02 */ u16 magic1; // 0xDC96 when valid
+            /* 0x04 */ u8 field_0x4[0x09 - 0x04];
+            /* 0x09 */ u8 field_0x9; // fn_802B1DCC tests it
+            /* 0x0A */ u8 field_0xa;
+            /* 0x0B */ u8 field_0xb; // fn_802B1D7C tests it; fn_802B1D98 clears it
+            /* 0x0C */ u8 field_0xc; // 0xFF preset; fn_802B1D60 returns it if <= 3
+            /* 0x0D */ u8 field_0xd; // tu_803FF2C4's loader constructor tests it
+            /* 0x0E */ u8 field_0xe;
+            /* 0x0F */ u8 field_0xf;
+            /* 0x10 */ u8 field_0x10; // 1: progressive scan wanted
+            /* 0x11 */ u8 field_0x11[0x20 - 0x11];
+        } f;
+    }; // Size: 0x20
+
     // fn_8040384C: stores the vtable, constructs field_0x1c4 (TVec3f's
     // empty constructor through __construct_array) and zeroes or presets
     // most fields (it repeats fn_80403680's resets).
@@ -147,7 +147,7 @@ public:
     // main (tu_801344C0, 0x801344F8-0x80134624) copies 0x20 bytes here from
     // 0x80700000, the region it registers with OSSetSaveRegion (it survives a
     // reset), and presets it unless the first two halfwords are the magic.
-    /* 0x216 */ SaveRegion_80700000 mSaveRegion;
+    /* 0x216 */ SaveRegion mSaveRegion;
     /* 0x236 */ u8 field_0x236; // bit per player; fn_80402FBC
     /* 0x237 */ u8 field_0x237; // 24 units
     /* 0x238 */ u8 field_0x238; // 0xFF after fn_8040384C; fn_803FFAA8
