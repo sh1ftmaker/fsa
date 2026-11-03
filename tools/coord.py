@@ -129,6 +129,71 @@ another's. The per-unit instructions follow.
 """
 
 
+ASM_INS = re.compile(r"^/\* [0-9A-F]{8} [0-9A-F]{8}  (?:[0-9A-F]{2} ){4}\*/\t(\S+)\s*(.*)$")
+
+
+def asm_streams(path):
+    """{function: normalised instruction stream} of one dtk .s file (the
+    normalisation of the twin scan: labels, symbols and call targets become
+    placeholders, so only the instructions and their operands remain)."""
+    out, cur, body = {}, None, []
+    for line in path.read_text(errors="replace").splitlines():
+        if line.startswith(".fn "):
+            cur, body = line[4:].rsplit(",", 1)[0].strip().strip('"'), []
+        elif line.startswith(".endfn") and cur:
+            out[cur] = tuple(body)
+            cur = None
+        elif cur:
+            m = ASM_INS.match(line)
+            if m:
+                mn, op = m[1], m[2]
+                if mn in ("bl", "b") and not op.startswith(".L"):
+                    op = "SYM"
+                op = re.sub(r"\.L_[0-9A-F]+", "L", op)
+                op = re.sub(r'"[^"]*"|[A-Za-z_@$][\w@$<>,:.]*@(?:ha|l|h|sda21)', "SYM", op)
+                op = re.sub(r"\b(?:fn|lbl|jumptable|dtor|__\w+)_?[\w@$]*", "SYM", op)
+                body.append(f"{mn} {op}")
+    return out
+
+
+def template_twins(unit, limit=6):
+    """Lines for the worker prompt: the unit's open functions whose instruction
+    stream equals a function already 100 % somewhere, with where to copy from."""
+    asm = REPO / "build/G4SE01/asm"
+    report = json.loads((REPO / "build/G4SE01/report_honest.json").read_text())["units"]
+    pct = {}
+    for u in report:
+        name = u["name"].split("/", 1)[-1]
+        for f in u.get("functions", []):
+            pct[(name, f["name"])] = f.get("fuzzy_match_percent") or 0
+    own = asm / (re.sub(r"\.[^.]*$", "", unit) + ".s")
+    if not own.exists():
+        return ""
+    stem = re.sub(r"\.[^.]*$", "", unit)
+    mine = {f: s for f, s in asm_streams(own).items() if len(s) > 2 and pct.get((stem, f), 0) < 100}
+    if not mine:
+        return ""
+    done = {}
+    for p in asm.rglob("*.s"):
+        src = str(p.relative_to(asm))[:-2]
+        for f, s in asm_streams(p).items():
+            if s in mine.values() and pct.get((src, f), 0) >= 100:
+                done.setdefault(s, (src, f))
+    hits = {}
+    for f, s in mine.items():
+        if s in done:
+            hits.setdefault(done[s], []).append(f)
+    if not hits:
+        return ""
+    lines = ["Template twins (same instructions as a function already at 100 %; copy its source and change the names):"]
+    for (src, f), fs in sorted(hits.items(), key=lambda kv: -len(kv[1]))[:limit]:
+        more = f" (+{len(fs) - 3} more)" if len(fs) > 3 else ""
+        lines.append(f"- {', '.join(sorted(fs)[:3])}{more}: like {f} in {src}")
+    if len(hits) > limit:
+        lines.append(f"- and {len(hits) - limit} more templates")
+    return "\n".join(lines)
+
+
 def start_one(unit, owner, notes):
     rows = {r[0]: r for r in unit_rows()}
     if unit not in rows:
@@ -138,8 +203,10 @@ def start_one(unit, owner, notes):
     wt = str(Path(wt).resolve())
     with_claims(lambda c: c[unit].update(state="working"))
     template = (REPO / "docs/prompts/unit.md").read_text()
+    twins = template_twins(unit)
+    notes = "\n\n".join(x for x in (notes, twins) if x)
     return template.format(unit=unit, source=src, worktree=wt, branch=f"unit/{slug_of(unit)}",
-                           status=status, notes=notes or "")
+                           status=status, notes=notes)
 
 
 def cmd_start(args):
