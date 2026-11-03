@@ -884,10 +884,11 @@ def check_link_record(key, rec, expected):
     return None, inputs, None
 
 
-def expected_stripped(a, removed):
+def expected_stripped(a, removed, undef=frozenset()):
     """Compare an independently rebuilt expectation of the stripped object with b:
-    `removed` = {section index: [(offset, size)]} cut from the compiled object a.
-    Returns a function b -> list of differences."""
+    `removed` = {section index: [(offset, size)]} cut from the compiled object a;
+    removed symbols become absolute 0, or undefined if their index is in undef
+    (weak data kept in another object). Returns a function b -> list of differences."""
     def shift(sec, x):
         return sum(sz for o, sz in removed.get(sec, []) if o + sz <= x)
 
@@ -903,9 +904,9 @@ def expected_stripped(a, removed):
             ha, hb = a.sh[i], b.sh[i]
             if i == a.symtab:
                 want = []
-                for name, val, size, bind, typ, shndx, nm, other in a.syms:
+                for k, (name, val, size, bind, typ, shndx, nm, other) in enumerate(a.syms):
                     if shndx in removed and size and cut(shndx, val):
-                        want.append((name, 0, 0, bind, typ, 0xFFF1, nm, other))
+                        want.append((name, 0, 0, bind, typ, 0 if k in undef else 0xFFF1, nm, other))
                     elif shndx in removed:
                         want.append((name, val - shift(shndx, val), size, bind, typ, shndx, nm, other))
                     else:
@@ -1044,16 +1045,11 @@ def _container(elf, r, off):
     return src[0] if len(src) == 1 else None
 
 
-def check_dead_layout(elf, sec, rem, mp, name, entries):
-    """The stripped section must have the layout the link gave this object's
-    section: every kept sized symbol at the offset (from the object's section
-    start) and with the size the map places it at, and the next object's
-    section in the layout 0 to 7 bytes (alignment) after the stripped end.
-    No live relocation may reach the section through its section symbol, or a
-    size-0 label of it, at or past the first removed byte (its addend isn't
-    moved); a size-0 label any allocated relocation targets must be listed
-    UNUSED for this object, and so must each of its referencers, as the
-    manifest's `anchors` say. Returns why not, or None."""
+def _stripped_layout(elf, sec, rem, mp, name):
+    """Why the map's layout of this object's section isn't the stripped one:
+    every kept sized symbol at the offset (from the object's section start)
+    and with the size the map places it at, the removed ones not placed, and
+    the next object's section 0 to 7 bytes (alignment) after the stripped end."""
     secname = elf.names[sec]
     objs = _map_objects(mp)
     block = objs.get((secname, name), {"placed": [], "unused": {}})["placed"]
@@ -1062,7 +1058,11 @@ def check_dead_layout(elf, sec, rem, mp, name, entries):
         return f"the map doesn't place this object's {secname} exactly once"
     start = starts[0][0]
     for x in elf.syms:
-        if x[5] != sec or not x[2] or x[4] == STT_SECTION or any(o <= x[1] < o + n for o, n in rem):
+        if x[5] != sec or not x[2] or x[4] == STT_SECTION:
+            continue
+        if any(o <= x[1] < o + n for o, n in rem):
+            if any(p[2] == x[0] for p in block[1:]):
+                return f"the map places {x[0]}, which is removed"
             continue
         new = x[1] - sum(n for o, n in rem if o + n <= x[1])
         got = [p for p in block[1:] if p[2] == x[0]]
@@ -1075,6 +1075,160 @@ def check_dead_layout(elf, sec, rem, mp, name, entries):
     gap = order[idx[0] + 1][0] - (start + elf.sh[sec][5] - sum(n for _, n in rem))
     if not 0 <= gap < 8:
         return f"the next object in the map starts {gap} bytes after the stripped end, not within alignment"
+    return None
+
+
+_TREE_DUP = re.compile(r"^\s*(\d+)\] >>> UNREFERENCED DUPLICATE (\S+)\s*$")
+_TREE_DEF = re.compile(r"^\s*(\d+)\] (\S+) \((\w+),(\w+)\) found in (\S+)\s*$")
+_TREE_FOUND = re.compile(r"^\s*(\d+)\] >>> \((\w+),(\w+)\) found in (\S+)\s*$")
+
+
+def _weak_kept(path, cache={}):
+    """{(object, name): {kept object of every link-tree node that lists name as
+    an UNREFERENCED DUPLICATE (object,weak) found in object}}, read
+    independently of tools/honest_report.py. A node whose line before the
+    duplicate line isn't `<name> (object,...) found in <kept>` at the same
+    depth counts as kept in None."""
+    if path not in cache:
+        out, lines = {}, _map_lines(path)
+        for n, line in enumerate(lines):
+            m = _TREE_DUP.match(line)
+            if not m:
+                continue
+            d = _TREE_DEF.match(lines[n - 1]) if n else None
+            kept = d[5] if d and (d[1], d[2], d[3]) == (m[1], m[2], "object") else None
+            for nxt in lines[n + 1:]:
+                f = _TREE_FOUND.match(nxt)
+                if not f:
+                    break
+                if (f[1], f[2], f[3]) == (m[1], "object", "weak"):
+                    out.setdefault((f[4], m[2]), set()).add(kept)
+        cache[path] = out
+    return cache[path]
+
+
+def _named_relocs(elf, sym):
+    """Relocations inside data symbol sym: sorted (offset in it, type, target
+    name, addend), or None if one targets a local, section or unnamed symbol."""
+    out = []
+    for i, h in enumerate(elf.sh):
+        if h[1] != 4 or h[7] != sym[5]:
+            continue
+        for off, info, add in elf.rela(i):
+            if sym[1] <= off < sym[1] + sym[2]:
+                t = elf.syms[info >> 8]
+                if t[3] == 0 or t[4] == STT_SECTION or not t[0]:
+                    return None
+                out.append((off - sym[1], info & 0xFF, t[0], add))
+    return sorted(out)
+
+
+def check_weak_data(e, elf, name, mp, inputs, main):
+    """One discarded weak data object of the manifest, checked against the
+    object, the kept copy's object and the map: (section index, offset, bytes
+    removed, symbol index) or why it isn't proven."""
+    sec = elf.names.index(e.get("section")) if e.get("section") in elf.names else None
+    if sec is None or not _data_section(elf, sec):
+        return f"{e.get('section')} is not a data section of the object"
+    secname = elf.names[sec]
+    idx = [k for k, x in enumerate(elf.syms) if x[0] == e.get("symbol")]
+    if len(idx) != 1:
+        return "not exactly one symbol of that name in the object"
+    k = idx[0]
+    sym = elf.syms[k]
+    if (sym[5], sym[1], sym[2]) != (sec, e.get("offset"), e.get("size")) or not sym[2] or (sym[3], sym[4]) != (2, STT_OBJECT):
+        return "the object's symbol isn't the listed WEAK OBJECT"
+    if sym[0] in _map_objects(mp).get((secname, name), {"unused": {}})["unused"]:
+        return "the map lists it UNUSED for this object (dead data, not a weak duplicate)"
+    # The map's link tree: kept copy, duplicate, found in this object.
+    lines = _map_lines(mp)
+    ev = e.get("evidence")
+    if not (isinstance(ev, list) and len(ev) == 3 and all(isinstance(x, dict) and isinstance(x.get("line"), int)
+                                                           and 0 < x["line"] <= len(lines)
+                                                           and lines[x["line"] - 1] == x.get("text") for x in ev)):
+        return f"map evidence missing or doesn't match {mp}"
+    d, u, f = (lines[x["line"] - 1] for x in ev)
+    md, mu, mf = _TREE_DEF.match(d), _TREE_DUP.match(u), _TREE_FOUND.match(f)
+    if not (md and mu and mf and ev[1]["line"] == ev[0]["line"] + 1 and ev[2]["line"] > ev[1]["line"]
+            and all(_TREE_FOUND.match(lines[i]) for i in range(ev[1]["line"], ev[2]["line"] - 1))
+            and md[1] == mu[1] == mf[1] and md[2] == mu[2] == sym[0] and md[3] == "object"
+            and (mf[2], mf[3], mf[4]) == ("object", "weak", name)):
+        return f"the map lines aren't `{sym[0]} (object,...) found in <kept>`, its UNREFERENCED DUPLICATE and `(object,weak) found in {name}`"
+    kept = md[5]
+    if kept == name or _weak_kept(mp).get((name, sym[0])) != {kept}:
+        return f"the map doesn't keep every listed copy in one other object ({sorted(map(str, _weak_kept(mp).get((name, sym[0]), [])))})"
+    # The kept copy: a uniquely named input of the link, placed by the map, same bytes and relocations.
+    paths = [i for i in inputs if Path(i).name == kept]
+    if len(paths) != 1 or e.get("kept_object") != paths[0] or not Path(paths[0]).is_file():
+        return f"{kept} isn't a uniquely named input of the link, or the manifest names another file"
+    if _sha1(paths[0]) != e.get("kept_object_sha1"):
+        return f"{paths[0]} changed since the report"
+    if main and Path(paths[0]).stat().st_mtime > Path(mp).stat().st_mtime + 1:
+        return f"{paths[0]} is newer than the link map"
+    kp = [p for p in _map_objects(mp).get((secname, kept), {"placed": []})["placed"] if p[2] == sym[0]]
+    if len(kp) != 1 or kp[0][1] != sym[2]:
+        return f"the map doesn't place the kept copy in {kept}'s {secname} with size 0x{sym[2]:x}"
+    ke = Elf(paths[0])
+    ks = [x for x in ke.syms if x[0] == sym[0] and 0 < x[5] < len(ke.sh)]
+    if len(ks) != 1 or ke.names[ks[0][5]] != secname or ks[0][2] != sym[2]:
+        return f"{paths[0]} doesn't define exactly one {secname} {sym[0]} of its size"
+    ks = ks[0]
+    if elf.data(sec)[sym[1]:sym[1] + sym[2]] != ke.data(ks[5])[ks[1]:ks[1] + ks[2]]:
+        return f"its bytes differ from the kept copy in {paths[0]}"
+    mine = _named_relocs(elf, sym)
+    if mine is None or mine != _named_relocs(ke, ks):
+        return f"its relocations differ from the kept copy's in {paths[0]} (or name a local symbol)"
+    # What goes with it: up to the next symbol or the section end, zero padding only.
+    lo, hi = sym[1], sym[1] + sym[2]
+    nxt = min([x[1] for x in elf.syms if x[5] == sec and x[2] and x[1] >= hi] + [elf.sh[sec][5]])
+    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]):
+        return "the removed range isn't the object plus zero padding up to the next symbol"
+    # Every allocated relocation into it or its padding names it (the link resolves it to the kept copy).
+    refs = 0
+    for r, h in enumerate(elf.sh):
+        if not h[2] & SHF_ALLOC:
+            continue
+        for off, si, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t[5] != sec or not lo <= t[1] + add < nxt or (r == sec and lo <= off < hi):
+                continue
+            if si != k:
+                return f"{elf.names[r]}+0x{off:x} reaches it through {t[0] or 'the section symbol'}, not by its name"
+            refs += 1
+    if e.get("references") != refs:
+        return f"the manifest counts {e.get('references')} references, the object has {refs}"
+    return (sec, lo, nxt - lo, k)
+
+
+def check_weak_layout(elf, sec, rem, mp, name):
+    """A section that loses weak data must have the stripped layout in the map,
+    and nothing (dead code included) may reach it through its section symbol or
+    a size-0 label at or past the first removed byte. Returns why not, or None."""
+    first = min(o for o, _ in rem)
+    for r, h in enumerate(elf.sh):
+        if not h[2] & SHF_ALLOC:
+            continue
+        for off, si, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t[5] == sec and (t[4] == STT_SECTION or not t[2]) and t[1] + add >= first:
+                return f"{elf.names[r]}+0x{off:x} reaches {elf.names[sec]} through {t[0] or 'its section symbol'} past a removed object"
+    return _stripped_layout(elf, sec, rem, mp, name)
+
+
+def check_dead_layout(elf, sec, rem, mp, name, entries):
+    """The stripped section must have the layout the link gave this object's
+    section: every kept sized symbol at the offset (from the object's section
+    start) and with the size the map places it at, and the next object's
+    section in the layout 0 to 7 bytes (alignment) after the stripped end.
+    No live relocation may reach the section through its section symbol, or a
+    size-0 label of it, at or past the first removed byte (its addend isn't
+    moved); a size-0 label any allocated relocation targets must be listed
+    UNUSED for this object, and so must each of its referencers, as the
+    manifest's `anchors` say. Returns why not, or None."""
+    secname = elf.names[sec]
+    why = _stripped_layout(elf, sec, rem, mp, name)
+    if why:
+        return why
     first = min(o for o, _ in rem)
     anchors = {}
     for r, h in enumerate(elf.sh):
@@ -1113,15 +1267,17 @@ def check_weakdedup(problems):
     for key, rec in man.get("links", {}).items():
         links[key] = check_link_record(key, rec, expected) + (rec,)
     by_stripped, seen, dd_sections, rec_maps, dd_entries = {}, set(), set(), {}, {}
+    wd_sections, undef = set(), {}
     for e in entries:
         tag = f"weakdedup {e.get('unit')}: {e.get('function')}"
         kind = e.get("kind", "weak_extab")
-        if kind == "dead_data":
-            tag = f"dead data {e.get('unit')}: {e.get('symbol')}"
+        if kind in ("dead_data", "weak_data"):
+            tag = f"{kind.replace('_', ' ')} {e.get('unit')}: {e.get('symbol')}"
         elif kind != "weak_extab":
             problems.append(f"{tag}: unknown kind of removal {kind!r}")
             continue
-        ident = (e.get("object"), e.get("symbol") if kind == "dead_data" else e.get("extabindex"), kind)
+        # A data object is removed once, as dead or as weak data, never both.
+        ident = (e.get("object"), e.get("symbol") if kind != "weak_extab" else e.get("extabindex"), kind == "weak_extab")
         if ident in seen:
             problems.append(f"{tag}: listed twice in the manifest")
             continue
@@ -1152,6 +1308,21 @@ def check_weakdedup(problems):
             elf = Elf(obj)
         except (OSError, ValueError, StopIteration) as err:
             problems.append(f"{tag}: {err}")
+            continue
+        if kind == "weak_data":
+            if rec_maps.setdefault(e["unit"], rec["map"]) != rec["map"]:
+                problems.append(f"{tag}: the unit's removals cite different links")
+                continue
+            try:
+                why = check_weak_data(e, elf, name, rec["map"], inputs, key == "main")
+            except (OSError, ValueError, StopIteration, IndexError, struct.error) as err:
+                why = f"{err}"
+            if isinstance(why, str):
+                problems.append(f"{tag}: {why}")
+            else:
+                wd_sections.add((e["unit"], why[0]))
+                by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append(why[:3])
+                undef.setdefault((e["unit"], obj, e["stripped_object"]), set()).add(why[3])
             continue
         if kind == "dead_data":
             if rec_maps.setdefault(e["unit"], rec["map"]) != rec["map"]:
@@ -1230,7 +1401,9 @@ def check_weakdedup(problems):
             diffs = [f"{a.names[sec]}: {why}" for (unit, sec) in sorted(dd_sections) if unit == u["name"]
                      for why in [check_dead_layout(a, sec, removed[sec], rec_maps[u["name"]], Path(obj).name,
                                                        dd_entries[(u["name"], a.names[sec])])] if why]
-            diffs += expected_stripped(a, removed)(Elf(stripped))
+            diffs += [f"{a.names[sec]}: {why}" for (unit, sec) in sorted(wd_sections) if unit == u["name"]
+                      for why in [check_weak_layout(a, sec, removed[sec], rec_maps[u["name"]], Path(obj).name)] if why]
+            diffs += expected_stripped(a, removed, undef.get((u["name"], obj, stripped), set()))(Elf(stripped))
         except (OSError, ValueError, StopIteration, IndexError, struct.error) as err:
             diffs = [str(err)]
         problems += [f"{u['name']}: {stripped}: {d}" for d in diffs]
