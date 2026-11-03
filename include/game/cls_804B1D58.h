@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+class J2DScreen;
+
 // 0x10-byte element of field_0x164, named after its constructor
 // __ct__12Unk_80453830Fv (fn_80453830, game/tu_8044C7F0.cpp), which
 // __construct_array runs on the two elements.
@@ -34,7 +36,8 @@ public:
     void fn_80452308(); // 0x80452308
     void fn_80452350(); // 0x80452350
 
-    /* 0x004 */ u8 field_0x4[0xFA - 0x4];
+    /* 0x004 */ J2DScreen* mScreen; // drawn by fn_80452308
+    /* 0x008 */ u8 field_0x8[0xFA - 0x8];
     // fn_804522C8 tests it against 7, 8 and 9 (lha).
     /* 0x0FA */ s16 field_0xfa;
     /* 0x0FC */ u8 field_0xfc[0x13F - 0xFC];
