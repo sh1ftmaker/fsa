@@ -23,6 +23,7 @@
 
 class ActorBase_804A5770;
 class JKRHeap;
+class JAISoundHandle;
 class JAISoundID; // JSystem/JAudio/Interface/JAISound.h; complete wherever fn_804561D8 is called
 
 // The per-actor sound object (ActorManager_804A5800::mSounds): built by
@@ -41,11 +42,20 @@ public:
     // (act_wave_se fn_802E73B4, BgRewrite's constructor).
     ActorSoundObj_804578F4(JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles);
     virtual ~ActorSoundObj_804578F4();
+    // 0x804560D0 (game/tu_80455CA4.cpp): vtable slot 0x10, where
+    // JAUSoundObject has stopOK.
+    virtual bool stopOK(JAISoundHandle& handle);
 
     // 0x804561D8 (game/tu_80455CA4.cpp, next to the ctor): r3 is this. `id`
     // is passed by value (the callee re-copies it for fn_80456334), `fade`
     // goes unextended into fn_80456334's u32 fade time.
     void fn_804561D8(JAISoundID id, u8 a, u32 fade, u8 c);
+
+    // 0x80456334 (game/tu_80455CA4.cpp): r3 is this, r4 the id (copied to the
+    // stack by the caller), r5 a fade time (fn_804561D8 passes its own);
+    // returns the handle the sound was started on, or NULL. Called by
+    // cls_804B20F8::startSound (game/tu_8045B010.cpp) with 0.
+    JAISoundHandle* fn_80456334(JAISoundID id, u32 fade);
 
     /* 0x30 */ u8 field_0x30[0x2C]; // not read by any caller yet
 }; // Size: 0x5C (every __nw__ of it)

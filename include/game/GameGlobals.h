@@ -35,6 +35,7 @@
 #include "game/Map.h"
 
 class ActorManager_804A5800;
+class JAISeMgr;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
 class J2DOrthoGraph;
@@ -78,6 +79,7 @@ struct GameRoot_8049EF20 {
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
+    /* 0xB8 */ u8 field_0xb8[0x11C - 0xB8]; // main allocates 0x11C bytes
 
     // 15 units / 17 calls. Stores at this+0x50, 0x58 and 0x84 (per review);
     // act_ending_map_skipper calls it with (15, 0).
@@ -92,9 +94,48 @@ struct GameRoot_8049EF20 {
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
     void fn_80134DE4(s32 a, s32 b);
-};
+    // game/tu_80134C04.cpp, called by main (tu_801344C0) only. The
+    // constructor allocated with __nw__(0x11C); no arguments.
+    GameRoot_8049EF20();
+    // game/tu_80134C04.cpp (0x80138C9C), called once by main right after the
+    // constructor. No further arguments.
+    void fn_80138C9C();
+    // game/tu_80134C04.cpp (0x80136828 and 0x80137300): main calls them each
+    // frame once the loader is done, between beginRender / endRender and
+    // endRender / endFrame; the first only while lbl_80529DEC's byte 0x251 is 0.
+    void fn_80136828();
+    void fn_80137300();
+    // Owner: game/tu_80134C04.cpp (0x80138A30; not written yet). 107 units.
+    // The number of players that take part: the set bits of field_0x82 (bits
+    // 0-3). Its body reads lbl_8053AAF8 itself; callers load it into r3.
+    s32 fn_80138A30();
+}; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
+
+// The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
+// after that getter). Owner: game/tu_801902C0.cpp (not written yet).
+// act_special_bg_draw_object: three 0x20-byte requests at 0x2E0, 0x300 and
+// 0x320; an update sets a position and a value and raises the flag, once the
+// pointer at 0xC is non-NULL and the flag is clear.
+struct GameRootSub20_801902C0 {
+    struct Request {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ void* field_0xc; // tested against NULL
+        /* 0x10 */ u8 field_0x10[4]; // not yet known
+        /* 0x14 */ f32 mValue;
+        /* 0x18 */ u8 field_0x18[4]; // not yet known
+        /* 0x1C */ u8 mActive;
+        /* 0x1D */ u8 field_0x1d[3]; // not yet known
+    }; // Size: 0x20
+    /* 0x000 */ u8 field_0x0[0x2E0]; // not yet known
+    /* 0x2E0 */ Request mRequests[3];
+};
+extern "C" {
+// Owner: game/tu_801902C0.cpp (not written yet). No arguments; loads
+// lbl_8053AAF8->field_0x4->field_0x20 (0x801902C0-0x801902C8).
+GameRootSub20_801902C0* fn_801902C0(void);
+}
 
 // The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
 // registered with __register_global_object) built on first use. Named after
@@ -126,7 +167,9 @@ void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
 // the u32 at 0x58 (act_enemy_count_wipe_out_check copies it in init and
 // compares it later).
 struct Unk_8045A080 {
-    /* 0x00 */ u8 field_0x0[0x58];
+    /* 0x00 */ u8 field_0x0[0x34];
+    /* 0x34 */ JAISeMgr* field_0x34; // fn_8045B154 (game/tu_8045B010.cpp) calls stopSoundID on it
+    /* 0x38 */ u8 field_0x38[0x58 - 0x38];
     /* 0x58 */ u32 field_0x58;
     /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
     // game/tu_80457DFC.cpp: stores `pause` at 0x8a and passes it to
@@ -145,6 +188,21 @@ struct Unk_8045A080 {
     // compares r4 against 0x1000000+n, tests r5 with clrlwi. 24 (0x8045908C) and
     // stores r6 (a byte) at 0x8d.
     void fn_80458FF0(s32 id, bool arg1, bool flag);
+    // game/tu_80457DFC.cpp (0x8045A080): the constructor main calls on the
+    // 0x90-byte object it allocates in the main heap.
+    Unk_8045A080();
+    // game/tu_80457DFC.cpp (0x80458880). fn_8045B030 (game/tu_8045B010.cpp)
+    // calls it with an id from lbl_8052DEE0 in r4, or -1; the id is not a
+    // JAISoundID (passed in a register).
+    void fn_80458880(s32 id, s32 arg);
+    // game/tu_80457DFC.cpp (0x80458F04). Callers pass a table entry in r4: if
+    // the sound at 0x84 is not already id, creates it through the category
+    // object at 0x30 (vtable slot 0xC) and starts a volume move.
+    void fn_80458F04(u32 id);
+    // game/tu_80457DFC.cpp (0x80458F9C). 30+ units pass 0x3C (the argument is
+    // not read): stops the sound at 0x80 and clears the fields at
+    // 0x58-0x68.
+    void fn_80458F9C(s32 frames);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
@@ -193,7 +251,7 @@ extern "C" {
 s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
 // Steps *angle towards target by at most step (a tail-call wrapper of
 // fn_801CD970; the 0/1 it passes on is unused by all 9 callers).
-void fn_801CD930(s16* angle, s16 target, s16 step);
+void fn_801CD930(s16* angle, s32 target, s32 step);
 }
 
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
@@ -389,8 +447,100 @@ bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
 void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
 }
 
+// game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor
+// (a result of ActorManager_804A5800::fn_801F666C) in r3; field 0x248 is its
+// state. fn_8021D734 / fn_8021D764 switch it to state 8 / 6 unless already
+// there; fn_8021D794 returns whether it is in state 5. Called by
+// game/tu_8021F064.cpp.
+class ActorBase_804A5770;
+extern "C" {
+void fn_8021D734(ActorBase_804A5770* navi);
+void fn_8021D764(ActorBase_804A5770* navi);
+bool fn_8021D794(ActorBase_804A5770* navi);
+}
+
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
+// The next one (64.0f, 8053EDF4), same owner; act_shadow_link_2's
+// game/tu_801C6A4C.cpp loads it and squares it at run time.
+extern const f32 lbl_8053EDF4;
+
+// Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
+// 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
+// multiplies -12.0f by the second at run time (fmuls), so neither is a literal.
+extern const f32 lbl_8053F0B8;
+extern const f32 lbl_8053F0BC;
+
+// Owner: game/tu_802F5040.cpp (defined there). f1 in, f1 out: 1.0f / (1.0f -
+// max(x, a constant)) (0x802F5FF4); game/tu_801EDBA4.cpp scales by it.
+extern "C" f32 fn_802F5FF4(f32 x);
+
+// Objects and functions of the boot sequence main (game/tu_801344C0.cpp)
+// runs; their owner units are not written yet. Named after their vtables.
+
+// The loader (0x7C bytes; vtable 0x804B0F50, constructor fn_804009CC),
+// owner game/tu_803FF2C4.cpp. main allocates it in the main heap and calls
+// fn_803FF420 / fn_803FFAA8 each frame while mState is below 4, then
+// fn_803FF2C4 (which frees its archives) once it reaches 4.
+class cls_804B0F50 {
+public:
+    cls_804B0F50();
+    void fn_803FF2C4();
+    void fn_803FF420();
+    void fn_803FFAA8();
+
+    /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
+    /* 0x04 */ u8 field_0x4[0x78 - 0x4];
+    /* 0x78 */ u8 mState;
+    /* 0x79 */ u8 field_0x79[0x7C - 0x79];
+}; // Size: 0x7C
+extern cls_804B0F50* lbl_8053AAF0;
+
+// The memory card manager, owner game/tu_803B9940.cpp (0x2120 bytes at
+// lbl_8051C1A0): fn_803BA980 runs CARDInit, initialises its mutex and
+// condition and starts its thread; main calls fn_803B9E2C on it every frame.
+class cls_803B9940 {
+public:
+    void fn_803BA980();
+    void fn_803B9E2C();
+
+    /* 0x0 */ u8 field_0x0[0x2120]; // fields unknown (mutex at 0x1FD4, cond at 0x1FEC)
+}; // Size: 0x2120
+extern cls_803B9940 lbl_8051C1A0;
+
+// Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
+// lbl_8053ACA8), owner game/tu_802B1558.cpp. The first three read bytes of
+// the save region in lbl_80529DEC (see GameState_804B0FE0::SaveRegion); fn_802B1D98
+// clears one and stores 0 at this+6.
+class cls_804A8578 {
+public:
+    bool fn_802B1DCC();
+    bool fn_802B1D7C();
+    s32 fn_802B1D60();
+    void fn_802B1D98();
+};
+extern cls_804A8578* lbl_8053ACA8;
+
+// Global object with vtable 0x804B0F90 (destructor fn_80401848), owner
+// game/tu_80400DC4.cpp; main polls fn_80401518 each frame (it watches the
+// DVD drive status) and goes on once it returns 0.
+class cls_804B0F90 {
+public:
+    virtual ~cls_804B0F90();
+    s32 fn_80401518();
+    s32 field_0x4;
+};
+extern cls_804B0F90 lbl_8053ADE8;
+
+// game/tu_80401848.cpp (0x80401FEC): creates and resumes a thread of the
+// given priority. main passes the current thread's priority minus 1, an
+// expanded heap of 0x800 bytes and 0.
+extern "C" void fn_80401FEC(s32 priority, JKRHeap* heap, s32 arg);
+
+// .rodata render modes (GXRenderModeObj); main picks lbl_8048C1B8 when
+// progressive scan is wanted and active, lbl_8048C17C otherwise.
+extern const GXRenderModeObj lbl_8048C1B8;
+extern const GXRenderModeObj lbl_8048C17C;
 
 #endif
