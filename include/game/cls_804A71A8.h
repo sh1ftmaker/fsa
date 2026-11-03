@@ -16,6 +16,11 @@ public:
     // 0x8026F998: r4 = the delete flag; > 0 frees the object (__dl__FPv).
     virtual ~cls_804A71A8();
 
+    // tu_802684A4: copies the owner's mPos into *pos, then, while the owner
+    // is in state 2, offsets x and y by the corner table entry for its
+    // fn_80248778 index (y's sign follows viewLayerFlag of its layer).
+    void fn_8026947C(JGeometry::TVec3f* pos);
+
     /* 0x4 */ Player_804A6F38* field_0x4;
 };
 
