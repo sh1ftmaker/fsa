@@ -302,6 +302,10 @@ void fn_801CD930(s16* angle, s32 target, s32 step);
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
 f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
+// game/tu_801CB270.cpp; called from game/tu_801BEDBC.cpp. Whether the tile at pos
+// is one of the codes 0x40-0x49.
+bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer);
+
 // game/tu_801CB270.cpp (not written yet); called from game/tu_801D2C60.cpp.
 // Two effects (fn_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
