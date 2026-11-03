@@ -1397,6 +1397,9 @@ JSystem/JMath/JMath.cpp:
 	.text       start:0x80093280 end:0x80093338
 	.sdata2     start:0x8053B940 end:0x8053B948
 
+JSystem/JMath/random.cpp:
+	.text       start:0x80093338 end:0x80093340
+
 JSystem/JMath/JMATrigonometric.cpp:
 	.text       start:0x80093340 end:0x80093768
 	.ctors      start:0x8045BDD0 end:0x8045BDD4

@@ -794,6 +794,7 @@ config.libs = [
     MkddJSystemLib("mkdd_JMath", [
         Object(Matching, "JSystem/JMath/JMATrigonometric.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JMath/random.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JMessage", [
         Object(Matching, "JSystem/JMessage/resource.cpp", extra_cflags=["-O4,p"]),
