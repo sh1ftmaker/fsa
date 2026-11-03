@@ -1333,7 +1333,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8028FBA0.cpp"),
         Object(NonMatching, "game/tu_802957CC.cpp"),
         Object(NonMatching, "game/act_push_switch.cpp"),
-        Object(NonMatching, "game/act_burning_block.cpp"),
+        Object(Matching, "game/act_burning_block.cpp"),
         Object(NonMatching, "game/tu_8029C584.cpp"),
         Object(Matching, "game/act_attack_hitbox_when_player_is_thrown.cpp"),
         Object(NonMatching, "game/tu_8029D898.cpp"),
