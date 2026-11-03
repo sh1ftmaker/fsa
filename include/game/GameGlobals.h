@@ -20,6 +20,7 @@
 #include "types.h"
 #include "dolphin/mtx.h"
 #include "JSystem/JGeometry.h"
+#include "JSystem/JUtility/TColor.h"
 
 class ActorManager_804A5800;
 class JPAEmitterManager;
@@ -35,6 +36,11 @@ struct GameView_802D6A9C {
     /* 0xD0 */ f32 mVisibleMinY;
     /* 0xD4 */ f32 mVisibleMaxX;
     /* 0xD8 */ f32 mVisibleMaxY;
+    /* 0xDC */ u8 field_0xdc[0x131DE - 0xDC]; // 0xDC: a second box, used for
+                                              // actor layers 8 and up (0x801F165C)
+    /* 0x131DE */ u8 field_0x131de; // lbz in act_bg_rewrite_check_switch;
+                                    // stb in fn_802D782C and 8 more places in
+                                    // game/tu_802D39B8.cpp
 };
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
@@ -112,5 +118,44 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // the player's position
 // and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 }
+
+// Functions of game/tu_802D39B8.cpp that take the view (fn_802D6A9C()) as
+// their first argument. Several ignore it and re-fetch the view through
+// lbl_8053AAF8 (said at each); names are dtk's.
+extern "C" {
+// Stores value at 0x5C of the view (r3 unused).
+void fn_802D7934(GameView_802D6A9C* view, s32 value);
+// Sets the byte at 0x131F0 of the view from flag (clrlwi 24, cmplwi 1) and
+// lbl_8053AAF8's bytes 0x7E/0x7F.
+void fn_802D7440(GameView_802D6A9C* view, bool flag);
+// ORs bits into the u16 at 0x131B8 + index * 2 of the view (r3 unused).
+void fn_802D77BC(GameView_802D6A9C* view, s32 index, u16 bits);
+// Tests bit `bit` of the word at 0x348 + (view->0x4 * 16) + (view->0x8 * 4);
+// returns 0 or 1 (neg/or/srwi 31).
+bool fn_802D7F40(GameView_802D6A9C* view, s32 bit);
+// Returns the byte at lbl_8053AB10->0x24->0x1E8 (r3 unused).
+bool fn_802DCD0C(GameView_802D6A9C* view);
+}
+
+// game/tu_8022461C.cpp. Returns a 16-bit value for a position (clrlwi 22 of
+// a lookup on a 0x200 x 0x200 grid relative to the view's box: 0xCC, or 0xDC
+// for layer 8 and up), 0xF when the position is outside the box; callers
+// clrlwi 16 the result.
+extern "C" u16 fn_80226850(const JGeometry::TVec3f* pos, s32 layer);
+
+// game/tu_8022AD64.cpp: set (fn_8022ADE4) and clear (fn_8022ADCC) the byte at
+// 0x73 of *lbl_8053AC90 when it exists.
+extern "C" {
+void fn_8022ADE4(void);
+void fn_8022ADCC(void);
+}
+
+// game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
+// the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
+// param2 as a byte at 0xE5, the floats are a position (callers pass mPos.x,
+// mPos.y, mPos.z, mPos.z), and the colour (passed by value) is copied byte by
+// byte into the text box.
+extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, f32 f4,
+                            JUtility::TColor color);
 
 #endif
