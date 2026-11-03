@@ -167,20 +167,20 @@ phases:
     milestones:
       - id: jsystem-grind
         title: JSystem file by file
-        desc: Per-file agents on the JSystem units still NonMatching, JAudio and J3D first.
+        desc: Per-file agents on the JSystem units still NonMatching. JUTException, the JAU utilities and most JAS stragglers are merged; JAudio's -sym on build and the J2D/J3D holdouts are in progress.
         status: active
         covers: [jsystem]
         measure: {kind: units}
       - id: lib-fixes
         title: SDK, GX and MSL link fixes
-        desc: The FIXME(link) units, the last GX and MSL functions, and data splits. Most link fixes are merged; left are J3DAnimation's weak-dtor order, JGadget binary.cpp, MSL ansi_fp/strtoul and a clean-room qsort.c.
+        desc: The FIXME(link) units, the last GX and MSL functions, and data splits. GX is 100 % and linked; dead-stripped data is now proven from the link map (dvdfs, GXPerf, GXPixel, mtx, mtx44). Left are GBAKey's microcode (build-time extraction, in review) and MSL ansi_fp/strtoul.
         status: active
         covers: [sdk, gx, runtime]
         measure: {kind: units}
       - id: thp
         title: THP video
-        desc: The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. The library is identified (sms's version, 28/28 functions with the game flags); it matches when the game unit that includes it (0x80427D2C) is decompiled.
-        status: next
+        desc: The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit. 159 of 168 functions match; names and the last register differences are in progress.
+        status: active
         covers: ["game:THP"]
         measure: {kind: code}
 

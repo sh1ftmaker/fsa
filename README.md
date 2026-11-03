@@ -95,12 +95,12 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 51.6 % of the split files Matching.
-- **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Most link fixes are merged; left are J3DAnimation's weak-dtor order, JGadget binary.cpp, MSL ansi_fp/strtoul and a clean-room qsort.c. Currently 98.3 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JUTException, the JAU utilities and most JAS stragglers are merged; JAudio's -sym on build and the J2D/J3D holdouts are in progress. Currently 51.6 % of the split files Matching.
+- **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. GX is 100 % and linked; dead-stripped data is now proven from the link map (dvdfs, GXPerf, GXPixel, mtx, mtx44). Left are GBAKey's microcode (build-time extraction, in review) and MSL ansi_fp/strtoul. Currently 98.3 % of the split files Matching.
+- **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit. 159 of 168 functions match; names and the last register differences are in progress. Currently 0 % of the code matched.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
 - **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 0 % of the code matched.
 - **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. The first 12 actors are merged on the shared headers (every function matches). Currently 0.10 % of the code matched.
-- **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. The library is identified (sms's version, 28/28 functions with the game flags); it matches when the game unit that includes it (0x80427D2C) is decompiled. Currently 0 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
