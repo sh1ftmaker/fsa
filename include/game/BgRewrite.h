@@ -74,6 +74,10 @@ public:
     // (act_switch 0x802A756C) or clrlwi 16 a word first
     // (act_panel_rewrite_npc), so it is a u16.
     void fn_802A3884(const JGeometry::TVec3f* pos, s32 player, s32 layer, u16 tile);
+    // 1 unit besides tu_8029D898 (act_gravestone). Writes the four tile
+    // codes a..d (u16, clrlwi 16 / lhz) into the cells at and after pos on
+    // `layer` (two fn_802F9974 calls per pair, like fn_802A3948).
+    void fn_8029E050(const JGeometry::TVec3f* pos, s32 layer, u16 a, u16 b, u16 c, u16 d);
     // 17 units / 62 calls. fn_802A3884 with fn_802D7D00(..., true): sets
     // the bit. `player` as above (0 at 41 sites, 1 at 3, act_gravestone's
     // 0x238 player index).

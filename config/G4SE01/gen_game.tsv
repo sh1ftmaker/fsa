@@ -108,8 +108,6 @@ act_gibdo	sinit	__sinit_act_gibdo_cpp	-	-	new	-
 act_gohma	sinit	__sinit_act_gohma_cpp	-	-	new	-
 act_grass	dtor	__dt__14Grass_804A92D0Fv	Grass_804A92D0	0x804A92D0	new	new
 act_grass	sinit	__sinit_act_grass_cpp	-	-	new	new
-act_gravestone	dtor	__dt__19Gravestone_804A99C0Fv	Gravestone_804A99C0	0x804A99C0	new	new
-act_gravestone	sinit	__sinit_act_gravestone_cpp	-	-	new	new
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_great_fairy_spfr	sinit	__sinit_act_great_fairy_spfr_cpp	-	-	new	-
 act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A88E8	new	new
