@@ -169,8 +169,6 @@ act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_popo	dtor	__dt__13Popo_804A0868Fv	Popo_804A0868	0x804A0868	new	new
 act_popo	sinit	__sinit_act_popo_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
-act_pot_smoke	dtor	__dt__12cls_804A8418Fv	cls_804A8418	0x804A8418	new	new
-act_pot_smoke	sinit	__sinit_act_pot_smoke_cpp	-	-	new	new
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
 act_princess_zelda_motion_spawner	dtor	__dt__41PrincessZeldaMotionObjectSpawner_804A375CFv	PrincessZeldaMotionObjectSpawner_804A375C	0x804A375C	new	new
