@@ -17,6 +17,7 @@ public:
     s32 fn_801544C0();
     s32 fn_80154510() const;
     s32 fn_801545E0() const;
+    s32 fn_801545E8() const;
 };
 
 #endif
