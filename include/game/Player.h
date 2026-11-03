@@ -343,6 +343,21 @@ bool fn_80239638(s32 serial);
 // first active player for which fn_80273D44(player object, box, layer, out,
 // flag) passes, or -1 (also without a manager); *out is two floats.
 s32 fn_8023BB50(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). If `player`
+// is active (slot present, byte 0xCAC set), fn_802732C4(player object, box,
+// layer): a box test, bool-tested (clrlwi 24) by the caller; else false.
+bool fn_8023B190(s32 player, const JGeometry::TBox2f* box, s32 layer);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
+// then fn_80272DCC(player object, box, layer, serial) (the per-player form of
+// fn_80239914); the caller ignores the result.
+void fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_thwomp). Same guard,
+// then fn_802729F0(player object, serial) (the per-player form of
+// fn_80239638); the caller stores the result in a byte.
+bool fn_80239718(s32 player, s32 serial);
 }
 
 #endif
