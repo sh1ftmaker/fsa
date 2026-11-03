@@ -192,6 +192,17 @@ u8 ActorBase_804A5770::fn_801F36D4(s32 v) {
     return result;
 }
 
+// If field_0xc4 is set: clears it, field_0x3c = *v, returns 1; else 0.
+u8 ActorBase_804A5770::fn_801F3708(const JGeometry::TVec3f* v) {
+    s32 result = false;
+    if (field_0xc4 != 0) {
+        field_0xc4 = 0;
+        field_0x3c.set(*v);
+        result = true;
+    }
+    return result;
+}
+
 // Sets field_0xa4 and clears the per-hit and timer state; field_0xe0 is only
 // cleared while the actor has life left.
 void ActorBase_804A5770::fn_801F3780(s32 v) {

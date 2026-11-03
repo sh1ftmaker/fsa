@@ -445,7 +445,7 @@ public:
     u8 fn_801F36D4(s32 v);
     // 1 unit / 2 calls (tu_8025EB18). If field_0xc4: clears it, field_0x3c =
     // *v, returns 1; else 0.
-    bool fn_801F3708(const JGeometry::TVec3f* v);
+    u8 fn_801F3708(const JGeometry::TVec3f* v);
     // 1 unit / 9 calls (tu_8025EB18; callers pass a field_0x4). If not
     // field_0xc4: field_0xc4 = 1, field_0xc8 = field_0x110 = v, field_0xcc
     // = 0, field_0xd0 = -1, returns 1; else 0.
