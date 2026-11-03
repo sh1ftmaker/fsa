@@ -123,6 +123,15 @@ struct J2DColorChanInfo {
     u8 _01; // _01
     u8 _02; // _02, padding?
     u8 _03; // _03, padding?
+
+    J2DColorChanInfo& operator=(const J2DColorChanInfo& other)
+    {
+        _00 = other._00;
+        _01 = other._01;
+        _02 = other._02;
+        _03 = other._03;
+        return *this;
+    }
 };
 
 inline u8 J2DCalcColorChanID(u8 id) { return id; }
@@ -200,6 +209,15 @@ struct J2DTevSwapModeInfo {
 };
 
 struct J2DTevSwapModeTableInfo {
+    J2DTevSwapModeTableInfo& operator=(const J2DTevSwapModeTableInfo& other)
+    {
+        mR = other.mR;
+        mG = other.mG;
+        mB = other.mB;
+        mA = other.mA;
+        return *this;
+    }
+
     u8 mR; // _00
     u8 mG; // _01
     u8 mB; // _02

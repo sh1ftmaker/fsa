@@ -409,6 +409,9 @@ J2DTevBlock2::~J2DTevBlock2()
     }
 }
 
+// FIXME: scheduling only. The original computes &j2dDefaultIndTevStageInfo early
+// (lis/addi among the mKColorSels stores) and copies the first stage info in the
+// order +4, +8, +0; ours folds the address into an lwzu at the first copy.
 void J2DTevBlock2::initialize()
 {
     mTexIndices[0] = -1;
@@ -437,7 +440,7 @@ void J2DTevBlock2::initialize()
     mKAlphaSels[1] = 0xff;
 
     for (int i = 0; i < 4; i++) {
-        mSwapModeTables[i] = j2dDefaultTevSwapModeTable;
+        mSwapModeTables[i].setTevSwapModeTableInfo(j2dDefaultTevSwapModeTable);
     }
 
     mIndStages[0].setIndTevStageInfo(j2dDefaultIndTevStageInfo);
@@ -862,7 +865,7 @@ void J2DTevBlock4::initialize()
         mKAlphaSels[i] = -1;
     }
     for (int i = 0; i < 4; i++) {
-        mSwapModeTables[i] = j2dDefaultTevSwapModeTable;
+        mSwapModeTables[i].setTevSwapModeTableInfo(j2dDefaultTevSwapModeTable);
     }
     for (int i = 0; i < 4; i++) {
         mIndStages[i].setIndTevStageInfo(j2dDefaultIndTevStageInfo);
@@ -1284,6 +1287,9 @@ J2DTevBlock8::~J2DTevBlock8()
     }
 }
 
+// FIXME: register allocation. The original loads j2dDefaultTevColor into four
+// registers at the top (stmw r21, 0x50 frame); ours loads it after the tev
+// order copies into r18-r21 (stmw r18, 0x60 frame).
 void J2DTevBlock8::initialize()
 {
     for (int i = 0; i < 8; i++) {
@@ -1308,7 +1314,7 @@ void J2DTevBlock8::initialize()
         mKAlphaSels[i] = -1;
     }
     for (int i = 0; i < 4; i++) {
-        mSwapModeTables[i] = j2dDefaultTevSwapModeTable;
+        mSwapModeTables[i].setTevSwapModeTableInfo(j2dDefaultTevSwapModeTable);
     }
     for (int i = 0; i < 8; i++) {
         mIndStages[i].setIndTevStageInfo(j2dDefaultIndTevStageInfo);
@@ -1404,7 +1410,7 @@ bool J2DTevBlock8::insertTexture(u32 id, const ResTIMG* timg, JUTPalette* palett
         } else {
             texture->storeTIMG(timg, palette);
         }
-        bool local_38[4];
+        bool local_38[8];
         for (u8 i = 0; i < 8; i++) {
             local_38[i] = (mUndeleteFlag & 1 << i);
         }
@@ -1751,7 +1757,7 @@ void J2DTevBlock16::initialize()
         mKAlphaSels[i] = -1;
     }
     for (int i = 0; i < 4; i++) {
-        mSwapModeTables[i] = j2dDefaultTevSwapModeTable;
+        mSwapModeTables[i].setTevSwapModeTableInfo(j2dDefaultTevSwapModeTable);
     }
     for (int i = 0; i < 16; i++) {
         mIndStages[i].setIndTevStageInfo(j2dDefaultIndTevStageInfo);
@@ -1847,7 +1853,7 @@ bool J2DTevBlock16::insertTexture(u32 id, const ResTIMG* timg, JUTPalette* palet
         } else {
             texture->storeTIMG(timg, palette);
         }
-        bool local_38[4];
+        bool local_38[8];
         for (u8 i = 0; i < 8; i++) {
             local_38[i] = (mUndeleteFlag & 1 << i);
         }
