@@ -130,6 +130,8 @@ void ActorBase_804A5770::vfunc_0x18() {
 
 void ActorBase_804A5770::vfunc_0x40() {}
 
+void ActorBase_804A5770::vfunc_0x44() {}
+
 // The actor's bit in the screen and stage tables of the view (game/GameView.h):
 // the top five bits of field_0x90, 0 for none.
 s32 ActorBase_804A5770::vfunc_0x3C() {
