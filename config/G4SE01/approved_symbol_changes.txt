@@ -10,6 +10,7 @@ j3dSys  0x1A4  0x11C  fsa-wt/_reviews/infra__bss-names.review.md (dtk recorded t
 __vt__11J3DShapeMtx  0x24  0x20  fsa-wt/_reviews/JSystem__J3DGraphBase__J3DShapeMtx.review.md (2 header words + 6 slots; dtk included 4 bytes of padding before 0x8049BD98)
 __vt__22JAUAudioArcInterpreter  0x40  0x44  fsa-wt/_reviews/JSystem__JAudio__Utility__JAUAudioArcInterpreter.review.md (2 header words + dtor + 13 pure slots + readCommandMore = 17 words; target word 0x80495400 is readCommandMore; tp 0x44)
 one__11JASWaveInfo  0x8  0x4  fsa-wt/_reviews/JSystem__JAudio__System__JASDSPInterface.review.md (DOL has 00000001 00000000; tp lists 0x4; the next .sdata object belongs to dspproc.c)
+__vt__7J2DPane  0x98  0x94  fsa-wt/_reviews/JSystem__J2DGraph__J2DPane.review.md (35 slots + 8-byte header; +0x94 is 0, alignment before __vt__10J2DPicture at 0x80499628; mkdd/tp 0x94)
 # Renames: name  old_name  new_name  review
 cmdTypeAndStatus$371  cmdTypeAndStatus$371  cmdTypeAndStatus$372  fsa-wt/_reviews/dolphin__si__SIBios.review.md (our compile, mkdd and tp emit $372)
 g_CurrentSequence  g_CurrentSequence  IsTRKConnected  fsa-wt/_reviews/infra__measure.review.md (0x804B8090 is the flag Get/SetTRKConnected and TRKDoConnect/Disconnect access; gTRKFramingState+0x18 as in mkdd/pikmin2/ttyd/mp4)
