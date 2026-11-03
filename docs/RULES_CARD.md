@@ -115,6 +115,18 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - `symbols.txt`: rename or split placeholders only; never change a real
   symbol's address, size or type, never rename a real name.
 
+## Known game-code shapes (reviewed; natural source)
+- Unfused `fmuls, fmuls, fadds` squared sums: `square(a) + square(b)` (game/GameMath.h).
+- An extra unreachable `b` after a switch dispatch: an empty `case N: break;`
+  for a state value nothing sets (one-line comment).
+- A bool the original materialises (li 1 / li 0, then `cmplwi 1`):
+  `bool result = false; if (cond) result = true;` or `x == true`.
+- mPos loaded before a TBox2f copy: `JGeometry::TVec2<f32> p(mPos.x, mPos.y);
+  TBox2f box(mBox); box.addPos(p);`. Loaded after the copy instead: add
+  the corners by hand in the target's order (i.x, i.y, f.x, f.y).
+- A value kept in one register across a call: a local read once
+  (`s32 layer = field_0x4;`) — the original read it once too.
+
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all
 its sections: .text, .data, .rodata, .sdata(2), .bss, .sbss, .ctors, extab);
