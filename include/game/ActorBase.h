@@ -439,6 +439,10 @@ public:
     // view: fn_802D7704(view, field_0x16c, field_0x1a8, field_0x4) when
     // field_0x16c != -1, else fn_802D766C(view, field_0x1a8, field_0x4).
     void fn_801F3668();
+    // 1 unit / 3 calls (tu_80204638, on actors from the manager's lists).
+    // Returns 1 if field_0x94 == 1 or field_0xc4 is set, else 0. Defined in
+    // game/act_thief.cpp.
+    bool fn_80204D44();
     // 2 units / 2 calls (act_vulture, act_wallmaster vfunc_0x60s, via
     // EnemyBase_804A4808::fn_801CEA60). Whether this is a live 'BMTY' (Bombchu):
     // mActorId == 'BMTY' and EnemyBase mFlags (0x230) != 3. Defined in
