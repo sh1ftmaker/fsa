@@ -442,7 +442,10 @@ public:
     // 48 units / 63 calls. Works on field_0xd8-0x10c, field_0x3c and mPos
     // (role unproven); flag is tested with clrlwi. (0x801F3E04; callers
     // pass 1, 0 or a clrlwi 24 value). Returns 1, 0 or -1 (0x801F4630).
-    s32 fn_801F3D94(bool flag);
+    // u8, not bool: EnemyBase_804A4808::update() passes a bool local with
+    // clrlwi r4, r31, 24 (0x801CDE0C), which MWCC emits for a bool going to
+    // an unsigned char parameter (a bool one takes it with mr).
+    s32 fn_801F3D94(u8 flag);
     // 2 units / 6 calls. Plays the actor's EnemyParam "voic" sound
     // (fn_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
     // sound 0x40002.
@@ -508,7 +511,9 @@ public:
     // tests it with cmplwi (0x800F3D7C), and the written units shift it as
     // u32.
     /* 0x090 */ u32 field_0x90;
-    /* 0x094 */ s16 field_0x94;
+    // u16: 311 of the 324 game loads of an actor's 0x94 are lhz (e.g.
+    // fn_801CC910's cmplwi tests against 0 and 3).
+    /* 0x094 */ u16 field_0x94;
     /* 0x098 */ s32 field_0x98;
     /* 0x09C */ s32 field_0x9c;
     /* 0x0A0 */ s32 field_0xa0;

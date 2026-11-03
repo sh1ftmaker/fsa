@@ -2,6 +2,8 @@
 // at its start and the random helpers fn_801CD580/fn_801CD664 (the latter is
 // called from 52 units).
 
+#include "game/ActorBase.h"
+#include "game/ActorId.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "JSystem/ResTIMG.h"
@@ -35,6 +37,54 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj) {
                     timg->mMinLOD * 0.125f, timg->mMaxLOD * 0.125f, timg->mLODBias * 0.01f,
                     timg->mIsBiasClamp, timg->mDoEdgeLOD, (GXAnisotropy)timg->mIsMaxAnisotropy);
     return timg->mSizeY * (1.0f / timg->mSizeX);
+}
+
+// The kind of a Force Gem ('RUPY', act_force_gem): the low byte of its
+// spawn bits while field_0x94 is 0 or 3, else -1. The actor manager's
+// queries (fn_801F7274, fn_801F7464, fn_801F750C) and tu_801DE714 filter
+// actors with these three.
+static inline s32 forceGemKind(ActorBase_804A5770* actor) {
+    s32 kind = -1;
+    if (actor->field_0x94 == 0 || actor->field_0x94 == 3) {
+        kind = actor->field_0x90 & 0xFF;
+    }
+    return kind;
+}
+
+// Whether `actor` is a Force Gem of kind 8-11.
+bool fn_801CC910(ActorBase_804A5770* actor) {
+    bool result = false;
+    if (actor->mActorId == ACTOR_RUPY) {
+        s32 kind = forceGemKind(actor);
+        if (kind >= 8 && kind <= 11) {
+            result = true;
+        }
+    }
+    return result;
+}
+
+// Whether `actor` is a Force Gem of kind 4-7.
+bool fn_801CC960(ActorBase_804A5770* actor) {
+    bool result = false;
+    if (actor->mActorId == ACTOR_RUPY) {
+        s32 kind = forceGemKind(actor);
+        if (kind >= 4 && kind <= 7) {
+            result = true;
+        }
+    }
+    return result;
+}
+
+// Whether `actor` is a Force Gem with a kind (0 or more).
+bool fn_801CC9B0(ActorBase_804A5770* actor) {
+    bool result = false;
+    if (actor->mActorId == ACTOR_RUPY) {
+        s32 kind = forceGemKind(actor);
+        if (kind >= 0) {
+            result = true;
+        }
+    }
+    return result;
 }
 
 // Whether the tile at pos is one of the codes 0x40-0x49.
@@ -89,6 +139,11 @@ bool fn_801CD290(s32 layer) {
         }
     }
     return result;
+}
+
+// Whether `layer` is one of the upper layers (8 and up).
+bool fn_801CD2F8(s32 layer) {
+    return layer >= 8;
 }
 
 // A random integer in [0, 4) other than `except` (0-3, so at most three

@@ -287,4 +287,14 @@ s32 fn_801F8108(ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz)
 
 } // extern "C"
 
+// Force Gem ('RUPY', act_force_gem) tests, defined in game/tu_801CB270.cpp:
+// actor->mActorId == 'RUPY' and its kind (the low byte of field_0x90 while
+// field_0x94 is 0 or 3, else -1) is in 8-11 / 4-7 / 0 and up. Callers pass
+// an actor (fn_801F666C's result, or mActors[i] in fn_801F7274, fn_801F732C,
+// fn_801F7464, fn_801F750C) and test r3 with clrlwi 24. Whether the pointer
+// is const is not visible.
+bool fn_801CC910(ActorBase_804A5770* actor);
+bool fn_801CC960(ActorBase_804A5770* actor);
+bool fn_801CC9B0(ActorBase_804A5770* actor);
+
 #endif
