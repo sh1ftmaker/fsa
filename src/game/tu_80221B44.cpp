@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Effect.h"
+#include "game/Map.h"
 #include "game/act/tu_80221B44.h"
 
 cls_804A6AA8::~cls_804A6AA8() {}

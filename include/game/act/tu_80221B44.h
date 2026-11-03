@@ -20,7 +20,7 @@ public:
 
     // Starts the shockwave ring at pos (taken by value, as the original does).
     void startRing(s32 layer, const JGeometry::TVec3f& pos) {
-        fn_800F8210(&mRing, layer, pos, 2);
+        mRing.fn_800F8210(layer, pos, 2);
     }
 
     // Landings counted in state 7 (the third one goes to state 8).
