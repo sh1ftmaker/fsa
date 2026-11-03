@@ -80,7 +80,7 @@ below, ~0.5–0.65B.
 
 1. **Rules card instead of docs.** Agents re-read CLAUDE.md, briefs, PLAN.md
    and COORDINATOR.md (+9k units, +24k reviewers, paid on every turn). A
-   ~1.5k-token card replaces them.
+   ~2k-token card replaces them.
 2. **`tools/try.py`.** One call compiles the file and diffs it (or one
    function in it), prints ≤20
    lines with a classification (regalloc only, scheduling, missing

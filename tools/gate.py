@@ -75,7 +75,7 @@ APPROVALS = Path("config/G4SE01/approved_symbol_changes.txt")
 PROTECTED = [
     "config/G4SE01/approved_symbol_changes.txt", "config/G4SE01/provenance_reviewed.txt",
     "tools/gate.py", "tools/fdiff.py", "tools/progress.py", "tools/project.py",
-    "tools/honest_report.py", "tools/link_check.py",
+    "tools/honest_report.py", "tools/link_check.py", "tools/try.py",
     # The SHA-1 the link is checked against, and config.yml's hash: of the original DOL.
     "config/G4SE01/build.sha1", "config/G4SE01/config.yml",
     # Approved binary blobs (and large literal arrays), coordinator-only.

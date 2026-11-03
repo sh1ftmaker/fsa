@@ -3,8 +3,8 @@
 All you need. Workers don't read PLAN.md, COORDINATOR.md or the briefs;
 reviewers read this card and REVIEW_BRIEF.md. CLAUDE.md and the global
 CLAUDE.md (`sbg`, never kill the shared browser on CDP :9222) are already
-loaded. Changes in your worktree you didn't make may be the user's: ask,
-don't revert.
+loaded. Changes in your worktree you didn't make may be the user's: leave them
+and mention them in your report.
 
 ## Setup
 - Your worktree `../fsa-wt/<slug>` on branch `unit/<slug>` was made for you
