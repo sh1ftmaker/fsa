@@ -756,7 +756,7 @@ config.libs = [
         Object(Matching, "JSystem/JGadget/linklist.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JKernel", [
-        Object(NonMatching, "JSystem/JKernel/JKRAram.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JKernel/JKRAram.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JKernel/JKRAramArchive.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramBlock.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JKernel/JKRAramHeap.cpp", extra_cflags=["-O4,p"]),

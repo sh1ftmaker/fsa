@@ -1096,7 +1096,7 @@ JSystem/JMessage/control.cpp:
 	.data       start:0x80498B10 end:0x80498B20
 
 JSystem/JKernel/JKRAram.cpp:
-	.text       start:0x800790A8 end:0x80079F38
+	.text       start:0x800790A8 end:0x80079EFC
 	.ctors      start:0x8045BDA8 end:0x8045BDAC
 	.rodata     start:0x8045E0C8 end:0x8045E0F8
 	.data       start:0x80498B50 end:0x80498B90
@@ -1107,7 +1107,7 @@ JSystem/JKernel/JKRAram.cpp:
 	.sdata2     start:0x8053B6C8 end:0x8053B6D0
 
 JSystem/JKernel/JKRAramArchive.cpp:
-	.text       start:0x80079F38 end:0x8007AC2C
+	.text       start:0x80079EFC end:0x8007AC2C
 	.rodata     start:0x8045E0F8 end:0x8045E120
 	.data       start:0x80498B90 end:0x80498C00
 	.sdata2     start:0x8053B6D0 end:0x8053B6D8
