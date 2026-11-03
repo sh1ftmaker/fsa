@@ -88,6 +88,21 @@ any symbols.txt change (the gate accepts placeholder renames).
   SHARED-EDIT.
 - 38 medium units may hold several files: a boundary found inside one is a
   SHARED-EDIT for the coordinator (split stanza, new configure.py line).
+- Weak `memPool_` copies in `.bss` (tell game workers in `--notes`): a unit
+  whose `__sinit` constructs the 9 JAudio pools has, after its 9 0xC
+  destructor-chain objects (`@NNN`, the names its object emits), a 0x94
+  placeholder (e.g. `lbl_804CD1A4`) that is really 9 weak 0x10 `memPool_`
+  copies: the linker resolves the names to the first copy (tu_80021840's)
+  but keeps each object's space. The worker splits that placeholder in
+  symbols.txt into 9 unnamed `lbl_<addr>` symbols of size 0x10, one per
+  copy at +0x00..+0x80, in the object's own order (the `_MultiThreaded`
+  pools first), and leaves the 4 alignment bytes after them unsplit. That
+  is the real object layout and claims no names: naming them `memPool___...`
+  would make a second global definition and redirect relocations. Per unit,
+  never as a global symbols.txt pass (the copies differ per unit: tu_80457C08
+  has 8). With the split and the proven extab removal (CLAUDE.md, "Measuring
+  progress") such a unit reaches 100 % data; without the split it stays at
+  ~1 %.
 
 ## Shared game headers (`include/game/`)
 
