@@ -159,7 +159,6 @@ act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
 act_seesaw_lift	dtor	__dt__19SeesawLift_804AD348Fv	SeesawLift_804AD348	0x804AD348	new	new
-act_shadow_link_2	sinit	__sinit_act_shadow_link_2_cpp	-	-	new	-
 act_shadow_link_bow	sinit	__sinit_act_shadow_link_bow_cpp	-	-	new	-
 act_shadow_link_demo	sinit	__sinit_act_shadow_link_demo_cpp	-	-	new	-
 act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
@@ -271,7 +270,6 @@ tu_801C71BC	sinit	__sinit_tu_801C71BC_cpp	-	-	new	-
 tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801CB270	sinit	__sinit_tu_801CB270_cpp	-	-	da067d5aa0aa4985c17d7a2a8c2e04180bd5247f	-
 tu_801D11FC	sinit	__sinit_tu_801D11FC_cpp	-	-	new	-
-tu_801D3320	sinit	__sinit_tu_801D3320_cpp	-	-	new	-
 tu_801D3CBC	sinit	__sinit_tu_801D3CBC_cpp	-	-	new	-
 tu_801D6CEC	sinit	__sinit_tu_801D6CEC_cpp	-	-	new	-
 tu_801D7AFC	sinit	__sinit_tu_801D7AFC_cpp	-	-	new	-

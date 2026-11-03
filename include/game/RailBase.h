@@ -47,6 +47,18 @@ extern "C" {
 // `index` (0xFF: the current one, entry field_0x3) of the buffer, read from
 // the entry's +0xC. r3 out, r4 buffer, r5 index (clrlwi 24).
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
+
+// game/RailBase.cpp (not written yet), used by game/tu_801D3320.cpp. All take
+// the buffer in r3.
+// Fills out[0..max) with the indices of the entries on `layer`; returns how
+// many (clrlwi 24).
+u8 fn_800FD894(cls_800FE3EC* buffer, s32 layer, u8* out, s32 max);
+// Whether entry `index` is usable (clrlwi.).
+bool fn_800FD5E8(cls_800FE3EC* buffer, u8 index);
+// Whether entries `a` and `b` are connected (clrlwi.).
+bool fn_800FD4C0(cls_800FE3EC* buffer, u8 a, u8 b);
+// The layer of entry `index`.
+s32 fn_800FE25C(cls_800FE3EC* buffer, u8 index);
 }
 
 #endif

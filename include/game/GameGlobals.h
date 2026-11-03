@@ -277,6 +277,13 @@ cls_804B0FA0* fn_804019A8(const char* path, u8 mode, JKRHeap* heap);
 cls_804B0FC0* fn_80401E10(const char* path, u8 mode, JKRHeap* heap);
 }
 
+extern "C" {
+// game/tu_801CB270.cpp (not written yet; both clrlwi.): map tests of a
+// point on `layer`.
+bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer);
+bool fn_801CCB1C(const JGeometry::TVec3f* pos, s32 layer);
+}
+
 // Random helpers on lbl_8053AAF8->mRandom, defined in game units.
 f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
 s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
