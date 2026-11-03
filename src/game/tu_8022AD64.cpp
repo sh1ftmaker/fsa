@@ -2089,6 +2089,18 @@ bool fn_8023F264(s32 player) {
     return isPlayerActive(player);
 }
 
+extern "C" void fn_8023F6C4() {
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player;
+        if (lbl_8053AC90 == NULL) {
+            player = NULL;
+        } else {
+            player = lbl_8053AC90->mPlayers[i];
+        }
+        player->fn_80254660();
+    }
+}
+
 GameRoot_8049EF20* fn_8023F9B0() {
     return lbl_8053AAF8;
 }
