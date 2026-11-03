@@ -727,6 +727,12 @@ dolphin/gx/GXPixel.c:
 	.data       start:0x80497528 end:0x80497548
 	.sdata2     start:0x8053B3B0 end:0x8053B3E8
 
+dolphin/gx/GXDraw.c:
+	.text       start:0x8005F78C end:0x8005FC54
+	.data       start:0x80497548 end:0x80497858
+	.bss        start:0x804B6410 end:0x804B6698
+	.sdata2     start:0x8053B3E8 end:0x8053B400
+
 dolphin/gx/GXDisplayList.c:
 	.text       start:0x8005FC54 end:0x8005FCC4
 
