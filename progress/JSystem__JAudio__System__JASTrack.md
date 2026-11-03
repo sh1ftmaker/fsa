@@ -99,3 +99,54 @@ DWARF1 .line block to get its file. Nothing in the repo changed; still NonMatchi
 - mkdd (licensed) has no generic memPool_ definition in JASHeapCtrl.h; it puts explicit `template <>` specialisations in JASFakeMatch*.h headers included by JASTrack.cpp and others. Tried in FSA's JASTrack.cpp: __sinit_JASTrack_cpp drops to 32 % (no `__init__memPool_` guard tests), main.dol SHA-1 fails. FSA used the generic, guarded definition.
 - TP (JAudio2) uses a function-local static in `getMemPool_()`: a later design, no template static member, not FSA's.
 - TWW and Pikmin 2 use the older JAudio (JASystem / JAS), with no JASPoolAllocObject memPool_ to compare.
+
+## abs-jastrack (2026-11-03): source-organisation hypotheses for the end-of-.text order; no natural fix
+Nothing in the repo changed (scratch overlays in front of `-i libs/sdk/include`, same ninja flags, GC/2.6;
+read each weak `.text` section's function list). Still NonMatching; game/tu_80021840 not flipped.
+
+Rules (measured, they explain every case so far):
+1. Weak sections are per defining file, ordered by the first function emitted into each. JASTrack's emission
+   order is MoveParam ct, Lock dts, CritSec dt, free x2, __dl x2, __sinit, memPool dts, TList dt, TLinkList dt,
+   BankTable dt, GlobalInstance dt, getBank (B1 below shows it in a single section).
+2. Template static data is instantiated at end of TU in reverse order of the class template instantiation
+   (LIFO): guards/inits run TChannelMgr, JASTrack, JASChannel, but JASChannel's base is instantiated first
+   (JASChannel.h). Non-member function templates are instantiated after that.
+3. __sinit and implicit dtors go to the "current file": the file of the last thing that end-of-TU pass
+   instantiated (template static's definition, or a function template's definition).
+FSA's order needs __sinit in a section opened before free/__dl, i.e. JASTrack.h's (MoveParam ct) section,
+because `~TList() {}` is explicit in JASTrack.h and is emitted after __sinit.
+
+Experiments:
+- H1 memPool_ definition at the end of JASChannel.h (every MT memPool_ user includes JASChannel.h; 12 units
+  include it without JASTrack.h): __sinit opens a new JASChannel.h section after free/__dl. Wrong.
+- GC/2.0, 2.5, 2.7: same layout as 2.6 (3.0a3 differs throughout). Not a compiler-version effect.
+- B1 implicit TList dtor (drop `~TList() {}`): same code size; TList dt follows __sinit into JASHeapCtrl.h.
+  Only helps if __sinit's file were one whose section opens before free (JASTrack.h, JASHeap.h with
+  JASThreadingModel, or JASCriticalSection.h). memPool_'s definition can't be in the last two (they come
+  before the class template).
+- D1 generic `template <class T> T *JASGlobalInstance<T>::sInstance;` in JASGadget.h (like Petari's
+  JASGlobal.hpp; FSA's sInstance<JASDefaultBankTable> is scope:weak, so FSA probably had a generic def):
+  sInstance becomes a weak definition, is instantiated after memPool_ (rule 2), and __sinit moves into
+  JASGadget.h's section, which opens after free. Wrong order, but confirms rule 3 with zero-init data.
+- D2 a function template defined in JASTrack.h and used by JASTrack.cpp (diagnostic only):
+  MoveParam ct, tmpl, __sinit, memPool dts, TList dt, TLinkList dt, BankTable dt | Lock | CritSec | free x2,
+  __dl x2 | GI dt | getBank. This is FSA's order if the template copy is a dropped weak duplicate. So one
+  explanation is a function template in FSA's JASTrack.h, instantiated in JASTrack.cpp and also emitted
+  by an earlier-linked unit (JAI*, JASSeqCtrl, JASSeqParser include JASTrack.h). No candidate found: no
+  JASTrack.h template in mkdd/TP/SMG, and the earlier units' symbols have no such template function.
+
+Ruled out by reasoning:
+- memPool_ definition only in JASTrack.h: JASBank, JASDrumSet, JASChannel, JASBasicInst, JASVoiceBank,
+  JASAudioThread, JASBasicBank, JASAramStream, JASInstSense, JASBNKParser, JASAiCtrl, JASInstRand have one
+  pool and an __sinit, so they need the definition without JASTrack.h. Including JASTrack.h there would
+  instantiate all three pools (game units show inclusion alone instantiates them).
+- Definition in two headers: MWCC "redefined"; guarding it on JASTrack.h's guard is a trick.
+- A separate definitions header (included by JASChannel.h/JASTrack.h): its own section, opened at __sinit
+  after free (like H1).
+- Explicit `template <>` per class (mkdd JASFakeMatch): no guards, __sinit 32 % (earlier).
+- MoveParam ct non-inline in JASTrack.cpp: __sinit would still sit in JASHeapCtrl.h after free.
+- TP (-ipa file, function-local static memPool_) has MoveParam ct, memPool dts, __sinit, TList dt, but
+  different mechanics, so it isn't evidence for FSA's headers.
+
+Next: look for a function template that FSA's JASTrack.h could have held, e.g. an unreferenced small
+weak function in JAI*/JASSeq* .text. Otherwise the unit stays NonMatching (100 % in objdiff).
