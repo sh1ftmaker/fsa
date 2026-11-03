@@ -6,6 +6,7 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
+#include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "JSystem/ResTIMG.h"
@@ -176,4 +177,10 @@ s32 fn_801CD664(s32 n) {
 // not used.
 void fn_801CD930(s16* angle, s32 target, s32 step) {
     fn_801CD970(angle, target, step);
+}
+
+// Moves *value toward target by `step`; nonzero while it has not reached the
+// target (see EnemyBase.h).
+s32 fn_801CD950(f32* value, f32 target, f32 step) {
+    return fn_801CD9F0(value, target, step);
 }
