@@ -9,6 +9,7 @@
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
 
@@ -171,6 +172,15 @@ s32 fn_801CD580(s32 except) {
 // A random integer in [0, n).
 s32 fn_801CD664(s32 n) {
     return n * lbl_8053AAF8->mRandom.get_ufloat_1();
+}
+
+// Makes the emitter immortal and then invalid (it stops creating particles and
+// is deleted once they are gone). Does nothing for a NULL emitter.
+void fn_801CB7A0(JPABaseEmitter* emitter) {
+    if (emitter != NULL) {
+        emitter->setStatus(JPAEMIT_Immortal);
+        emitter->becomeInvalidEmitter();
+    }
 }
 
 // Steps *angle towards target by at most step; the result of fn_801CD970 is
