@@ -42,6 +42,8 @@ LOGS = WT / "grind-logs"
 MODEL = "claude-haiku-5-5"
 TRAILER = "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>"
 BANNED = re.compile(r"\basm\b|__asm|#\s*pragma|fakematch|force_order|\bgoto\b|NO_INLINE|dummy", re.I)
+# A placeholder free function whose first parameter is a class pointer is a member function.
+C_TAKES_CLASS = re.compile(r'extern\s+"C"\s+[\w\s\*]+\bfn_\w+\s*\(\s*(const\s+)?[A-Z]\w*\s*\*')
 FN_LINE = re.compile(r"^[ *] (\S+)\s+(\d+) bytes\s+(missing|[\d.]+ %)")
 SEC_LINE = re.compile(r"^(\.\S+|extab\S*)\s+([\d.]+) %")
 
@@ -129,15 +131,18 @@ def symbol_renames(wt):
 
 def check_diff(wt, unit):
     base = Path(unit).stem
-    allowed = {f"src/{unit}", f"include/game/act/{base}.h", "config/G4SE01/symbols.txt"}
-    st = sh(["git", "status", "--porcelain"], wt).stdout.splitlines()
+    allowed = {f"src/{unit}", "config/G4SE01/symbols.txt"}
+    st = sh(["git", "status", "--porcelain", "-uall"], wt).stdout.splitlines()
     paths = {l[3:] for l in st if l[3:] not in ("progress/claims.json", "objdiff.json")}
-    extra = paths - allowed
+    # Game headers are shared: allowed, and the merge step rejects any loss elsewhere.
+    extra = {p for p in paths - allowed if not (p.startswith("include/game/") and p.endswith(".h"))}
     if extra:
         return f"touched {sorted(extra)}", None
     added = [l for l in sh(["git", "diff", "-U0"], wt).stdout.splitlines() if l.startswith("+")]
     added += sh(["git", "ls-files", "--others", "--exclude-standard"], wt).stdout.splitlines()
     for l in added:
+        if C_TAKES_CLASS.search(l):
+            return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
         if BANNED.search(l):
             return f"banned: {l.strip()[:80]}", None
     ren = symbol_renames(wt)
@@ -170,8 +175,11 @@ differing rows, change one thing, repeat. Stop when it prints 100 %, when it pri
 or after 8 attempts. Matched functions in the same file and include/game/ headers show the style.
 
 Rules (a script checks them and throws away your work if broken):
-- Edit only `src/{unit}`, `include/game/act/{base}.h`, and, for a placeholder name only,
-  rename lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else).
+- Edit only `src/{unit}`, headers under include/game/ (add a member or split a field only with
+  evidence from the asm; other files use them too), and, for a placeholder name only, rename
+  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else).
+- A placeholder function that takes a class pointer as its first argument is a member function
+  of that class: declare it in the class and write it as a member, not as extern "C".
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
   types, as the original programmers would. Other functions in the file must not get worse.
 - Do not run git, ninja or any build other than tools/try.py.
@@ -246,15 +254,24 @@ def claim(unit, owner, wt):
     return True
 
 
+def progress_count():
+    m = re.search(r"total: (\d+) /", sh(["python3", "tools/progress.py"], INTEG).stdout)
+    return int(m.group(1)) if m else None
+
+
 def merge_into_grind(wt, branch, unit):
     lock = open(LOGS / "merge.lock", "w")
     fcntl.flock(lock, fcntl.LOCK_EX)
     pre = sh(["git", "rev-parse", "HEAD"], INTEG, check=True).stdout.strip()
+    before = progress_count()
     if sh(["git", "merge", "-q", "--no-edit", branch], INTEG).returncode:
         sh(["git", "merge", "--abort"], INTEG)
         return "merge conflict"
     ok = sh("timeout 3600 ninja >/dev/null 2>&1 && sha1sum -c config/G4SE01/build.sha1", INTEG).returncode == 0
     why = "" if ok else "SHA-1"
+    after = progress_count() if ok else None
+    if ok and (after is None or before is None or after < before):
+        ok, why = False, f"total functions {before} -> {after}"
     if ok and "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], INTEG).stdout:
         ok, why = False, "gen_game --check"
     if ok:
