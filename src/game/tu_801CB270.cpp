@@ -251,3 +251,14 @@ void fn_801CD930(s16* angle, s32 target, s32 step) {
 s32 fn_801CD950(f32* value, f32 target, f32 step) {
     return fn_801CD9F0(value, target, step);
 }
+
+// Whether fn_80230188 holds for every player that takes part (fn_80138A30).
+extern "C" bool fn_801CCF7C() {
+    s32 count = lbl_8053AAF8->fn_80138A30();
+    for (s32 i = 0; i < count; i++) {
+        if (!fn_80230188(i)) {
+            return false;
+        }
+    }
+    return true;
+}
