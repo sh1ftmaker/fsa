@@ -104,9 +104,6 @@ void SwitchRelatedNpc_804A8C28::update() {
     }
 }
 
-// FIXME: 97.86 %. Only the scheduling of the mPos.x / mPos.y copy to the
-// stack TVec3f: the original loads y (f1) first, then x (f0), and stores x
-// then y; ours loads x first.
 void SwitchRelatedNpc_804A8C28::init() {
     mType = field_0x90 & 0x3F;
     field_0x238 = (field_0x90 >> 6) & 0xF;
@@ -118,9 +115,7 @@ void SwitchRelatedNpc_804A8C28::init() {
     } else {
         mEffects = false;
     }
-    JGeometry::TVec3f cell;
-    cell.x = mPos.x;
-    cell.y = mPos.y;
+    JGeometry::TVec2f cell(mPos.x, mPos.y);
     mCell = fn_80226BC4(&cell, field_0x4);
     mDelay = 0;
     switch (mType) {
