@@ -239,6 +239,17 @@ struct cls_801C0D70 {
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
 
+// game/tu_80204638.cpp (owner unit, not written yet). The guarded static in
+// .bss at 0x804CADE0 (constructed on first use by fn_80204638, flag lbl_8053AC58);
+// named after that function. Only the byte at 0x0 is known: act_bandit_herding_npc's
+// update sets it to 1 (and the actor manager's reset functions call the getter).
+struct cls_80204638 {
+    /* 0x00 */ u8 field_0x0;
+    /* 0x01 */ u8 field_0x1[0xD0 - 0x1]; // not yet known (size not proven)
+};
+// Getter of that object (returns its address).
+extern "C" cls_80204638* fn_80204638();
+
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
