@@ -47,6 +47,6 @@ public:
     /* 0x286 */ u8 field_0x286; // ... 0x1F4
     /* 0x287 */ u8 field_0x287; // ... 0x1F5
     /* 0x288 */ u8 field_0x288; // ... 0x1EF
-}; // Size: unknown (>= 0x289)
+}; // Size: 0x28C (li r3, 0x28c before __nw__ at 0x801FD7FC)
 
 #endif
