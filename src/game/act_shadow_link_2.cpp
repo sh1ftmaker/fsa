@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/act/act_shadow_link_2.h"
 
 // Gravity override (EnemyBase's vfunc_0x84): z changes by lbl_8053EFB8 per call,
@@ -58,4 +59,18 @@ bool ShadowLink2_804A43E8::fn_801C53C4() {
 // Packs five fields into one word: bits 0-4, 5-7, 8-11, 12-15, 20-27.
 extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
     return ((e & 0xFF) << 20) | ((d & 0xF) << 12) | ((c & 0xF) << 8) | ((b & 0x7) << 5) | (a & 0x1F);
+}
+
+// Member: calls fn_801C12B8 on the fn_801C0D70 object when that object's
+// word at 0x50 has its top bit set and mFlags has bit 0x2000.
+void ShadowLink2_804A43E8::fn_801C53F8() {
+    // The bit is materialised as a 0/1 value before the test, as in the
+    // original; this local is there to match that.
+    u8 clear = (fn_801C0D70()->field_0x50 >> 31) == 0;
+    if (clear) {
+        return;
+    }
+    if (mFlags & 0x2000) {
+        fn_801C0D70()->fn_801C12B8();
+    }
 }

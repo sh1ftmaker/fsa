@@ -44,6 +44,9 @@ public:
     void fn_801C26D8();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.
     void fn_801C26FC();
+    // act_shadow_link_2.cpp: if the object from fn_801C0D70 has bit 0x80000000
+    // at 0x50 and mFlags has bit 0x2000, calls its fn_801C12B8.
+    void fn_801C53F8();
     // act_shadow_link_2.cpp: if mFlags has bit 0x4000 and mState is 0 or 1,
     // switches to state 2 (fn_801C3B7C).
     void fn_801C27A8();
