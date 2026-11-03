@@ -38,6 +38,8 @@ struct RailPoint {
     /* 0x04 */ s32 layer;
     /* 0x08 */ u8 field_0x8[4];
     /* 0x0C */ JGeometry::TVec3f pos;
+    /* 0x18 */ u8 field_0x18[0x90 - 0x18];
+    /* 0x90 */ u32 field_0x90; // top byte: fn_800FE21C's result (srwi 24)
 };
 
 // The element class of a 0xC8-byte buffer (0x31 pointer entries). Its method
@@ -55,6 +57,7 @@ public:
     bool fn_800FD5E8(u8 index);
     bool fn_800FD4C0(u8 a, u8 b);
     s32 fn_800FE25C(u8 index);
+    u8 fn_800FE21C(u8 index);
 
     void clear() {
         field_0x2 = 0;
