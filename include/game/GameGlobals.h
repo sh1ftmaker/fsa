@@ -18,6 +18,7 @@
 // it.
 
 #include "types.h"
+#include "dolphin/gx.h"
 #include "dolphin/mtx.h"
 #include "JSystem/JGeometry.h"
 #include "JSystem/JKernel/JKRArchive.h"
@@ -87,6 +88,16 @@ struct GameRoot_8049EF20 {
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
+
+// Random helpers on lbl_8053AAF8->mRandom, defined in game units.
+f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
+s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
+s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
+
+// Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
+// (and tlutObj, if given, for a palette texture); returns height / width.
+// game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
+f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
 // lbl_8053AB10->0x28 (type unknown; named after its getter fn_8013C824).
 struct EffectSystem_8013C824 {
