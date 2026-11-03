@@ -96,6 +96,18 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - Provisional descriptive names keep the address: `ActorBase_804A5770`,
   `StartMovie_80428630` (vtable, else ctor/first method; a comment says
   which). Members (`init`, `field_0x4`) need no suffix.
+- Data with no name evidence (tables, file statics) keeps its `lbl_<addr>`
+  name, even as a function-local static. Classes/structs are named after
+  their vtable, else constructor, else destructor (e.g. the one passed to
+  `__register_global_object`), else first function — never a data address.
+- A function of another, unwritten unit: grep `include/game/` first; else
+  declare it ONCE, `extern "C"`, in the shared header of its owning area
+  (GameGlobals.h if none fits) in its own block with an owner-unit comment.
+  Never in a .cpp or your unit's act header. If it clearly takes an
+  existing class in r3 and sits in that class's unit, make it a member.
+  Types come from the callee's body and other callers, not from what makes
+  your function match. Squared sums the target leaves unfused (fmuls,
+  fmuls, fadds) use `square()` from game/GameMath.h.
 - `symbols.txt`: rename or split placeholders only; never change a real
   symbol's address, size or type, never rename a real name.
 
