@@ -133,9 +133,7 @@ void cls_804A6550::fn_8021B5C4() {
     mEmitter = fn_8013CC50(layer, &mPos, 0x344, 0, shift, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 93.3%. Same instructions; the original loads field_0x4 into r31 first
-// thing (before the mr r29, r3 and the li r30, 0), here the load follows them.
-void cls_804A6550::fn_8021B668() {
+void cls_804A6550::fn_8021B668() const {
     s32 layer = field_0x4;
     s8 shift = 0;
     if (fn_80219E04()) {

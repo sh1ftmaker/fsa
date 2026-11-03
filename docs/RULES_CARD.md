@@ -204,6 +204,13 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   [, 0xC] in that order, never subi/cmplwi): `isGameModeSet()` (game/GameMode.h,
   `const s32` mode names; literals or enumerators fold into range checks).
   GameRoot2_8049F108::fn_8013B538 / fn_8013B618 (tu_8013AAD4).
+- A load off `this` (e.g. `lwz rX, 4(r3)`, field_0x4) scheduled above a
+  prologue save (`stw r0`/`stw r31`), above `mr r29, r3`, or a few slots
+  earlier than ours: the method is `const`. MWCC hoists loads through a const
+  `this` past stores; through a plain `this`, a local, a cast or an inlined
+  const accessor it never does. Callees on `this` must be const too (only if
+  they just read, e.g. fn_801F0E34, fn_80219E04); rename the symbols to `...CFv`.
+  tu_8020CCA8, tu_801E5FC8, tu_8021AF28 fn_8021B668.
 - `fn_802D6A9C()->field_0x131df[layer]`: `viewLayerFlag(layer)` (game/ViewLayer.h;
   the view in a local, else the index add swaps). act_magic_jar, tu_802242F4.
 - Player bytes 0xC80 / 0xCEE / 0x1215 / 0xCA0 / 0xCE9 tested in a row:
