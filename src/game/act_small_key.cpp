@@ -6,10 +6,6 @@
 #include "game/Map.h"
 #include "game/act/act_small_key.h"
 
-// The 1.0f in .sdata2 is named (lbl_80540C7C) in the original, which needs an
-// array here: a scalar const is folded into an anonymous literal.
-static const f32 lbl_80540C7C[1] = {1.0f};
-
 SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
 
 bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
@@ -61,7 +57,7 @@ void SmallKey_804A8CD8::fn_802C1DFC() {
     if (layer >= 8) {
         fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 0, -1, -1);
     } else {
-        fn_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, lbl_80540C7C[0]);
+        fn_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
     }
     JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
     layer = field_0x238;
