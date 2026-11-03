@@ -60,6 +60,11 @@ public:
     // fn_80390894 indexes it with the window's argument; the array runs to
     // the end of the object, its real length is not known.
     /* 0x3B2 */ u8 field_0x3b2[0x3C4 - 0x3B2];
+
+    // Defined in game/tu_803944C8.cpp (not yet written); both take the
+    // processor as their object (fn_80390E68 loads it from the window's 0x48).
+    void fn_80394690();
+    void fn_8039499C(bool flag);
 }; // Size: 0x3C4 (only the first 0x19F bytes and 0x3B2 on are declared)
 
 // One per player, field_0x114 of the manager (created there with
@@ -81,13 +86,22 @@ public:
     // Window state byte (fn_80384C58 compares it with 5 and 8; callers of
     // fn_8037F1E4, which returns it, compare with 1, 3 and 5).
     /* 0x24 */ u8 field_0x24;
-    /* 0x25 */ u8 field_0x25[0x2C - 0x25];
+    /* 0x25 */ u8 field_0x25[0x28 - 0x25];
+    // Option flags, read by fn_80390E68: 0x2 gates the update, 0x40 picks
+    // fn_80394690 over fn_8039499C (which gets 0x2000 as its flag).
+    /* 0x28 */ u16 field_0x28;
+    /* 0x2A */ u8 field_0x2a[0x2C - 0x2A];
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
     /* 0x30 */ u8 field_0x30[0x44 - 0x30];
     /* 0x44 */ u8 field_0x44;
     /* 0x48 */ MessageProcessor_803944C8* field_0x48;
     /* 0x4C */ MessageProcessor_803944C8* field_0x4c;
     /* 0x50 */ u8 field_0x50[0x5C - 0x50];
+
+    // fn_80390E68: with bit 0x2 of field_0x28 set, runs the processor of
+    // field_0x48 through fn_80394690 (bit 0x40) or else fn_8039499C (its flag
+    // is bit 0x2000).
+    void fn_80390E68();
 
     // fn_80390850: the field at 0x174 of the processor of the window's state
     // (1-5: field_0x4c, 6-8: field_0x48), -1 in any other state.

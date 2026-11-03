@@ -1,6 +1,21 @@
 #include "game/GameAudio.h"
 #include "game/Message.h"
 
+void MessageWindow_804AF490::fn_80390E68() {
+    bool flag = false;
+    u16 flags = field_0x28;
+    if ((flags >> 1) & 1) {
+        if (flags & 0x40) {
+            field_0x48->fn_80394690();
+        } else {
+            if (flags & 0x2000) {
+                flag = true;
+            }
+            field_0x48->fn_8039499C(flag);
+        }
+    }
+}
+
 s32 MessageWindow_804AF490::fn_80390850() {
     // A signed word, not the byte: the original compares it with cmpwi.
     s32 state = field_0x24;
