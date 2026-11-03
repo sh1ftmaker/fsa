@@ -1,6 +1,7 @@
 // cls_80217374, a wandering-direction timer (see its header). The unit's
-// __sinit (the 9 JAudio pools) is not written yet.
+// __sinit (the 9 JAudio pools) comes from the GameAudio.h include.
 
+#include "game/GameAudio.h"
 #include "game/cls_80217374.h"
 #include "game/GameGlobals.h"
 
