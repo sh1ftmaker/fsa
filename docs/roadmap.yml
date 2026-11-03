@@ -167,7 +167,7 @@ phases:
     milestones:
       - id: jsystem-grind
         title: JSystem file by file
-        desc: Per-file agents on the JSystem units still NonMatching. JSystem is at 97.7 % of functions; 51 are left in 21 files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed.
+        desc: Per-file agents on the JSystem units still NonMatching. JSystem is at 3605 of 3706 functions; 52 are still in no split unit (gap agent running) and about 49 are left in split files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed.
         status: active
         covers: [jsystem]
         measure: {kind: units}
