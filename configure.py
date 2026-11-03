@@ -1490,7 +1490,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8034DFF0.cpp"),
         Object(NonMatching, "game/act_obj_lift.cpp"),
         Object(NonMatching, "game/act_bandit_herding_npc.cpp"),
-        Object(NonMatching, "game/act_side_view_gate_display_npc.cpp"),
+        Object(Matching, "game/act_side_view_gate_display_npc.cpp"),
         Object(NonMatching, "game/act_tingle_time_up_manager.cpp"),
         Object(NonMatching, "game/tu_803536C4.cpp"),
         Object(NonMatching, "game/act_vaati_time_up.cpp"),
