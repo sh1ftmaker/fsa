@@ -1233,7 +1233,7 @@ JSystem/JKernel/JKRHeap.cpp:
 	.rodata     start:0x8045E678 end:0x8045E688
 	.data       start:0x80498E98 end:0x80498EF8
 	.sdata      start:0x80539D80 end:0x80539D88
-	.sbss       start:0x8053A8A8 end:0x8053A8D8
+	.sbss       start:0x8053A8A8 end:0x8053A8D0
 	.sdata2     start:0x8053B740 end:0x8053B750
 
 JSystem/JKernel/JKRMemArchive.cpp:
@@ -1255,6 +1255,7 @@ JSystem/JKernel/JKRThread.cpp:
 	.data       start:0x80498FA8 end:0x80498FB8
 	.bss        start:0x804BA058 end:0x804BA070
 	.bss        start:0x8052E850 end:0x8052E894 align:4 common
+	.sbss       start:0x8053A8D0 end:0x8053A8D8
 	.sdata2     start:0x8053B770 end:0x8053B788
 
 JSystem/JSupport/JSUInputStream.cpp:
