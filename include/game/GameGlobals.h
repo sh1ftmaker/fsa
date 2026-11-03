@@ -385,4 +385,10 @@ void fn_80210E90(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeome
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
 
+// Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
+// 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
+// multiplies -12.0f by the second at run time (fmuls), so neither is a literal.
+extern const f32 lbl_8053F0B8;
+extern const f32 lbl_8053F0BC;
+
 #endif
