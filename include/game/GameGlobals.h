@@ -779,6 +779,9 @@ public:
     // fn_802B1DE8: clears this+4/+5 and the save-region bytes 0x9/0xA, then
     // copies the 0x20-byte save region in lbl_80529DEC to 0x80700000.
     void fn_802B1DE8();
+    // fn_802B1610: the JUTGamePad C3ButtonReset handler (tu_80134C04's
+    // fn_80139994 forwards its port and argument to it). Not written yet.
+    void fn_802B1610(s32 port, void* arg);
 
     /* 0x4 */ u8 field_0x4;
     /* 0x5 */ u8 field_0x5;
@@ -786,6 +789,10 @@ public:
     /* 0x7 */ u8 field_0x7; // 0xFF preset by the constructor
 };
 extern cls_804A8578* lbl_8053ACA8;
+
+// game/tu_80021840.cpp (0x80021840): a stub that returns 0; tu_80134C04
+// compares the result with 0, 1 and 2 (a screen mode query).
+s32 fn_80021840();
 
 // Global object with vtable 0x804B0F90 (destructor fn_80401848), owner
 // game/tu_80400DC4.cpp; main polls fn_80401518 each frame (it watches the
