@@ -6707,7 +6707,7 @@ game/tu_80442810.cpp:
 	.rodata     start:0x8048FB10 end:0x8048FB88
 	.data       start:0x804B1A38 end:0x804B1A48
 	.bss        start:0x8052CA00 end:0x8052CB00
-	.sbss       start:0x8053AEE8 end:0x8053AF58
+	.sbss       start:0x8053AEE8 end:0x8053AEF0
 
 game/act_dummy_conversation.cpp:
 	extab       start:0x800111F4 end:0x80011214
