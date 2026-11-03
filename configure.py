@@ -1455,7 +1455,7 @@ config.libs = [
         Object(NonMatching, "game/act_bombchu.cpp"),
         Object(NonMatching, "game/act_fairy_invincible.cpp"),
         Object(NonMatching, "game/tu_803276C4.cpp"),
-        Object(NonMatching, "game/act_cactus.cpp"),
+        Object(Matching, "game/act_cactus.cpp"),
         Object(NonMatching, "game/act_thwomp.cpp"),
         Object(NonMatching, "game/act_force_gem_spawner.cpp"),
         Object(NonMatching, "game/act_force_gem.cpp"),
