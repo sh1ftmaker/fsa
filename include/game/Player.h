@@ -611,6 +611,13 @@ s32 fn_8022EA0C(s32 player);
 // the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.
 void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
 bool fn_8023061C(s32 player, bool flag);
+// Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
+// player index to a window index (-1 without a manager; see Message.h).
+s32 fn_8022F340(s32 player);
+// Owner: tu_8022AD64 (0x802362C4, defined there). act_gambling_chest (also
+// act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
+// object, value) when the player exists and its byte 0xCAC is set.
+void fn_802362C4(s32 player, s32 value);
 bool fn_80230224(s32 player, bool flag);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
 // fn_80241DD0(player, layer, pos) and fn_8022B978 fn_80241BA0(player, layer,
