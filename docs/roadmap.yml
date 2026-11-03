@@ -208,7 +208,7 @@ phases:
         covers: [game]
       - id: generated
         title: Generated audio initialisers and destructors
-        desc: tools/gen_game.py writes the 9-pool __sinit and simple actor destructors from one reviewed template, and the 152 player forwarders in tu_8022AD64 (bool/void/value variants, types read from callers); about 440 units, each checked by gen_game.py --check in the gate.
+        desc: tools/gen_game.py writes the 9-pool __sinit and simple actor destructors from one reviewed template, and the player forwarders in tu_8022AD64 (152, plus 18 near-twins and 10 all-players loops), and 35 more actor dtors from hand-matched templates; about 440 units, each checked by gen_game.py --check in the gate.
         status: done
         covers: [game]
       - id: wave-small

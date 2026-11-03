@@ -17,14 +17,6 @@ static const s32 lbl_8046A6B4[4][7] = {
 };
 static const s32 lbl_8046A724[4][2] = {{0xF1, 0x3C}, {0xF9, 0x3D}, {0x101, 0x3E}, {0x109, 0x3F}};
 
-// Only [0] of each state is read (by ShadowLink2_804A43E8::fn_8021CDE4).
-extern const u16 lbl_8046A748[][5] = {
-    {0x0C, 0x0A, 0x1E, 0x3C, 0x78},
-    {0x0C, 0x0A, 0x1E, 0x3C, 0x78},
-    {0x08, 0x0A, 0x1E, 0x3C, 0x78},
-    {0x01, 0x0A, 0x1E, 0x3C, 0x78},
-};
-
 // The frame count of the current step of the current type's table.
 static inline s32 stepFrames(const cls_8021CBA0& seq) {
     s32 frames = 0;

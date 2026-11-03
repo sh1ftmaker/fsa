@@ -114,6 +114,15 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   its generated lines unchanged, and list it under SHARED-EDITS.
 - `symbols.txt`: rename or split placeholders only; never change a real
   symbol's address, size or type, never rename a real name.
+- Weak-function order (`-sym on`, i.e. JSystem/SDK): weak functions are
+  grouped per defining file, and the groups follow the order in which each
+  file's first function was emitted. `__sinit` and implicit dtors join the
+  section of whatever was emitted just before them, usually the file holding
+  the last template static's definition. Fix the order by where definitions
+  live, never with dummy functions. Game code is `-sym off`: one section, in
+  emission order.
+- A 4-byte zero gap before an 8-aligned `.rodata` object marks the start of
+  the next unit's data (tu_8021C848 / tu_8021CDE4).
 
 ## Known game-code shapes (reviewed; natural source)
 - Unfused `fmuls, fmuls, fadds` squared sums: `square(a) + square(b)` (game/GameMath.h).
