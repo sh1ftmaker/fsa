@@ -1,7 +1,7 @@
 #ifndef GAME_ACT_TU_80210630_H
 #define GAME_ACT_TU_80210630_H
 
-// Code: game/tu_80210630.cpp (not written yet; the members below are in it).
+// Code: game/tu_80210630.cpp.
 // The shared base of the actor in game/tu_8020FE50.cpp: vtable 0x804A61C8.
 // Its constructor fn_80210AB4 calls EnemyBase's, stores this vtable and sets
 // 0x2A8; the destructor is inline (tu_8020FE50's stores this vtable, then
@@ -38,11 +38,9 @@ public:
     /* 0x2A8 */ f32 field_0x2a8;
 }; // Size: 0x2AC
 
-extern "C" {
-// Owner: game/tu_80210630.cpp. Called with a direction (0-3, field_0x98) and
+// Defined in game/tu_80210630.cpp. Called with a direction (0-3, field_0x98) and
 // multiplied by field_0x58 / field_0x54 into a position offset.
 f32 fn_80210AF8(s32 dir);
 f32 fn_80210B34(s32 dir);
-}
 
 #endif
