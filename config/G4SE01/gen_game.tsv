@@ -264,8 +264,6 @@ act_thwomp_launch_npc_2	sinit	__sinit_act_thwomp_launch_npc_2_cpp	-	-	new	new
 act_tingle_first	sinit	__sinit_act_tingle_first_cpp	-	-	new	-
 act_tingle_time_up_manager	dtor	__dt__12cls_804ACBF0Fv	cls_804ACBF0	0x804ACBF0	new	new
 act_tingle_time_up_manager	sinit	__sinit_act_tingle_time_up_manager_cpp	-	-	new	new
-act_tingle_wallet	dtor	__dt__12cls_804A3948Fv	cls_804A3948	0x804A3948	new	new
-act_tingle_wallet	sinit	__sinit_act_tingle_wallet_cpp	-	-	new	new
 act_torch	sinit	__sinit_act_torch_cpp	-	-	new	-
 act_tower_collapse_effect	sinit	__sinit_act_tower_collapse_effect_cpp	-	-	new	-
 act_treasure_chest	sinit	__sinit_act_treasure_chest_cpp	-	-	new	-
