@@ -1,7 +1,7 @@
 # JSystem/JAudio/System/JASWaveArcLoader.cpp
 
-Baseline (progress.py): total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
-After: total: 4504 / 11561 functions, 808104 / 4442088 bytes of code (18.19 %); gate: ok.
+Merged with infra/jaudio-sym (JAudio-wide -sym on); see that branch's review for the report diff.
+
 
 Status: **Matching** (8/8 functions, .text/.data/.sbss 100 %), gate: ok, main link SHA-1 OK.
 No source change: splits and names. The flip relies on the mkdd_JAudio block's `-sym on`
