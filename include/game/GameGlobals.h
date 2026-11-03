@@ -301,9 +301,12 @@ s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 // game/tu_801CB270.cpp functions its source doesn't define yet.
 extern "C" {
 s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
-// Steps *angle towards target by at most step (a tail-call wrapper of
-// fn_801CD970; the 0/1 it passes on is unused by all 9 callers).
+// Steps *angle towards target by at most step (a wrapper of fn_801CD970;
+// the 0/1 it passes on is unused by all 9 callers).
 void fn_801CD930(s16* angle, s32 target, s32 step);
+// game/tu_801CB270.cpp (not written yet): the stepper fn_801CD930 wraps; true
+// when *angle reached target.
+bool fn_801CD970(s16* angle, s32 target, s32 step);
 }
 
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj

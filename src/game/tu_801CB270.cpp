@@ -6,8 +6,11 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
+#include "game/ActorManager.h"
+#include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
 
@@ -51,6 +54,18 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
         kind = actor->field_0x90 & 0xFF;
     }
     return kind;
+}
+
+// Whether this is a live Bombchu ('BMTY'): its mFlags (0x230, past ActorBase)
+// is not 3.
+bool ActorBase_804A5770::fn_801CC8E4() {
+    bool result = false;
+    if (mActorId == ACTOR_BMTY) {
+        if ((s32)static_cast<EnemyBase_804A4808*>(this)->mFlags != 3) {
+            result = true;
+        }
+    }
+    return result;
 }
 
 // Whether `actor` is a Force Gem of kind 8-11.
@@ -143,6 +158,17 @@ bool fn_801CD290(s32 layer) {
     return result;
 }
 
+// Whether `player` has no owner (fn_8022F514 is false) and fn_80303750 says yes.
+extern "C" bool fn_801CD1D0(s32 player) {
+    bool result = false;
+    if (!fn_8022F514(player)) {
+        if (fn_80303750(player)) {
+            result = true;
+        }
+    }
+    return result;
+}
+
 // Whether `layer` is one of the upper layers (8 and up).
 bool fn_801CD2F8(s32 layer) {
     bool result = false;
@@ -154,6 +180,40 @@ bool fn_801CD2F8(s32 layer) {
 
 // A random integer in [0, 4) other than `except` (0-3, so at most three
 // candidates remain).
+// Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
+s32 fn_801CD354(s32 value) {
+    s32 result = 0;
+    switch (value) {
+    case 0:
+        result = 1;
+        break;
+    case 2:
+        result = 3;
+        break;
+    case 3:
+        result = 2;
+        break;
+    }
+    return result;
+}
+
+// Maps 0 to 3, 1 to 2, 3 to 1; 2 and anything else to 0.
+extern "C" s32 fn_801CD30C(s32 value) {
+    s32 result = 0;
+    switch (value) {
+    case 0:
+        result = 3;
+        break;
+    case 1:
+        result = 2;
+        break;
+    case 3:
+        result = 1;
+        break;
+    }
+    return result;
+}
+
 s32 fn_801CD580(s32 except) {
     s32 choices[3];
     s32* out = choices;
@@ -170,4 +230,42 @@ s32 fn_801CD580(s32 except) {
 // A random integer in [0, n).
 s32 fn_801CD664(s32 n) {
     return n * lbl_8053AAF8->mRandom.get_ufloat_1();
+}
+
+// Makes the emitter immortal and then invalid (it stops creating particles and
+// is deleted once they are gone). Does nothing for a NULL emitter.
+void fn_801CB7A0(JPABaseEmitter* emitter) {
+    if (emitter != NULL) {
+        emitter->setStatus(JPAEMIT_Immortal);
+        emitter->becomeInvalidEmitter();
+    }
+}
+
+// Steps *angle towards target by at most step; the result of fn_801CD970 is
+// not used.
+void fn_801CD930(s16* angle, s32 target, s32 step) {
+    fn_801CD970(angle, target, step);
+}
+
+// Moves *value toward target by `step`; nonzero while it has not reached the
+// target (see EnemyBase.h).
+s32 fn_801CD950(f32* value, f32 target, f32 step) {
+    return fn_801CD9F0(value, target, step);
+}
+
+// Whether fn_80230188 holds for every player that takes part (fn_80138A30).
+extern "C" bool fn_801CCF7C() {
+    s32 count = lbl_8053AAF8->fn_80138A30();
+    for (s32 i = 0; i < count; i++) {
+        if (!fn_80230188(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
+// `layer`; the flag picks 5 or 4 in the low bits of its last argument.
+extern "C" s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
+    return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
 }
