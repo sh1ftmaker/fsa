@@ -17,12 +17,12 @@ public:
     // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
     void draw();
     // tu_8020CCA8 (0x8020CF7C): an effect (id 0x48D) at mPos.
-    void fn_8020CF7C();
+    void fn_8020CF7C() const;
     // tu_8020CCA8 (0x8020CFC4): effects and a sound for the tile under mPos.
-    void fn_8020CFC4();
+    void fn_8020CFC4() const;
     // tu_8020CCA8 (0x8020D16C): the same for the tile under mPos (0x39 or
     // the fn_80224B88 / fn_8022517C / fn_80224E88 tile tests).
-    void fn_8020D16C();
+    void fn_8020D16C() const;
     // tu_8020CCA8 (0x8020D2AC): an effect (id 0x33A) beside mPos, 26 below
     // it in y and 6 to the side the actor faces (field_0x98).
     void fn_8020D2AC();

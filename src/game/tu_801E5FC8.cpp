@@ -48,17 +48,11 @@ void cls_804A4C58::fn_801E6234() {
     mEmitter2cc = fn_8013CC50(field_0x4, &pos, 0x25d, 0, 0, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 88.89%. Only scheduling differs: the target loads field_0x4 into r3 right
-// after `addi r4, r4, 0xc`, before the li r5..r10 arguments; this loads it after
-// the first li r5/li r6. (An inline wrapper and a `layer` local changed nothing.)
-void cls_804A4C58::fn_801E62D4() {
+void cls_804A4C58::fn_801E62D4() const {
     fn_8013CC50(field_0x4, &mPos, 0x259, 0, 0, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 93.33%. Only scheduling differs, in the first call: the target loads
-// field_0x4 (lwz r3, 4(r3)) right after `mr r31, r3`, before `addi r4, r31, 0xc`
-// and `li r9`; this loads it after li r9. The second call matches.
-void cls_804A4C58::fn_801E631C() {
+void cls_804A4C58::fn_801E631C() const {
     fn_8013CC50(field_0x4, &mPos, 0x25a, 0, 0, NULL, NULL, true, 1.0f);
     fn_8013CC50(field_0x4, &mPos, 0x25b, 0, 0, NULL, NULL, true, 1.0f);
 }

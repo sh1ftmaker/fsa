@@ -29,7 +29,7 @@ public:
     // states call).
     // 0x80219E04 (act_kaepora_gaebora): true in states 6-10 and in state 2
     // while field_0x2b4 == 3; the sprites and effects then move by -6.
-    bool fn_80219E04();
+    bool fn_80219E04() const;
     // Draws the flipped sprite with the 0x25C + mAnim.mCel frame.
     void fn_8021AFB8();
     // Draws the body (frame 0x279) and the rotated head (frame 0x27A).
@@ -41,7 +41,7 @@ public:
     // Replaces the emitter with effect 0x344.
     void fn_8021B5C4();
     // Effect 0x343 at this actor's position (not kept).
-    void fn_8021B668();
+    void fn_8021B668() const;
 
     /* 0x2A8 */ u8 field_0x2a8[4]; // not yet known
     /* 0x2AC */ f32 field_0x2ac;

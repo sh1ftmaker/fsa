@@ -58,15 +58,11 @@ void cls_804A51E4::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, frame, false, 2, -1, 1, 0, 0);
 }
 
-// FIXME: 88.89%. Only the lwz of field_0x4 is scheduled two instructions earlier
-// in the original (before li r5/r6, right after the addi of the position).
-void cls_804A51E4::fn_8020CF7C() {
+void cls_804A51E4::fn_8020CF7C() const {
     fn_8013CC50(field_0x4, &mPos, 0x48D, 0, 0, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 98.11%. Only the first lwz of field_0x4 is scheduled before the
-// prologue's stw r0 in the original (every later load stays where it is).
-void cls_804A51E4::fn_8020CFC4() {
+void cls_804A51E4::fn_8020CFC4() const {
     switch (fn_8022461C(&mPos, field_0x4)) {
     case 0xD:
         fn_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.2f);
@@ -93,9 +89,7 @@ void cls_804A51E4::fn_8020CFC4() {
     }
 }
 
-// FIXME: 97.50%. Only the first lwz of field_0x4 is scheduled before the
-// prologue's stw r0 in the original.
-void cls_804A51E4::fn_8020D16C() {
+void cls_804A51E4::fn_8020D16C() const {
     if (fn_8022461C(&mPos, field_0x4) == 0x39) {
         fn_8013CC50(field_0x4, &mPos, 0x15B, 0, 1, NULL, NULL, true, 1.0f);
         fn_8013CC50(field_0x4, &mPos, 0x15C, -1, 0, NULL, NULL, true, 1.0f);
