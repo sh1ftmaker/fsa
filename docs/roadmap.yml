@@ -203,8 +203,13 @@ phases:
         covers: [game]
       - id: shared-headers
         title: Shared headers, one owner each
-        desc: The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
-        status: active
+        desc: "Done: ActorBase (19 slots, 52 members), ActorManager, Player, GameView, Effect, Map/collision, Camera, GameState, EnemyBase + SpriteAnim, Message, BgRewrite, GameMath (square()), one header per actor in include/game/act/. Remaining owners get headers as their files are written."
+        status: done
+        covers: [game]
+      - id: generated
+        title: Generated audio initialisers and destructors
+        desc: tools/gen_game.py writes the 9-pool __sinit and simple actor destructors from one reviewed template; about 440 units, each checked by gen_game.py --check in the gate.
+        status: done
         covers: [game]
       - id: wave-small
         title: "Wave 1: small files and minigames"
@@ -214,7 +219,7 @@ phases:
         measure: {kind: code}
       - id: wave-actors
         title: "Wave 2: actor families"
-        desc: Enemies, NPCs and objects that share a base class. The first 12 actors are merged on the shared headers (every function matches).
+        desc: Enemies, NPCs and objects that share a base class. About 30 small actor files are merged one Sonnet agent per file (most at every function matching); 11 game units are Matching, weak-dedup evidence and the original function order were the missing pieces.
         status: active
         covers: ["game:enemy_*_sob refs"]
         measure: {kind: code}

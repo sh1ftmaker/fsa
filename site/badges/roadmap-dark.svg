@@ -43,11 +43,11 @@
 <text x="480.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#ef5b52">under way · 0/3</text>
 <path class="pulse" d="M605.714 27L630.714 62L605.714 97L580.714 62Z" fill="#3aae5c" fill-opacity="0.18"/>
 <path d="M605.714 36L623.714 62L605.714 88L587.714 62Z" fill="#3aae5c" fill-opacity="0.1" stroke="#3aae5c" stroke-width="1.6"/>
-<g clip-path="url(#rc4)"><rect class="rise" style="animation-delay:0.48s" x="587.7142857142857" y="65.50" width="36" height="22.50" fill="#3aae5c"/></g>
+<g clip-path="url(#rc4)"><rect class="rise" style="animation-delay:0.48s" x="587.7142857142857" y="59.06" width="36" height="28.94" fill="#3aae5c"/></g>
 <path d="M605.7142857142857 36L623.7142857142857 62L605.7142857142857 62Z" fill="#fff" fill-opacity="0.16"/>
 <text x="605.7" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 5</text>
 <text x="605.7" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Game code</text>
-<text x="605.7" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3aae5c">under way · 2/6</text>
+<text x="605.7" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3aae5c">under way · 4/7</text>
 <path class="pulse" d="M731.429 27L756.429 62L731.429 97L706.429 62Z" fill="#c35ee6" fill-opacity="0.18"/>
 <path d="M731.429 36L749.429 62L731.429 88L713.429 62Z" fill="#c35ee6" fill-opacity="0.1" stroke="#c35ee6" stroke-width="1.6"/>
 <g clip-path="url(#rc5)"><rect class="rise" style="animation-delay:0.60s" x="713.4285714285714" y="66.77" width="36" height="21.23" fill="#c35ee6"/></g>
