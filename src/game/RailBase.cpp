@@ -1,6 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/RailBase.h"
 
+cls_8049C770::~cls_8049C770() {}
+
 void cls_8049C770::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
