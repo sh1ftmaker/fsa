@@ -133,9 +133,5 @@ JAIStream *JAIStreamMgr::newStream_()
 }
 
 #ifdef DEBUG
-CW_FORCE_STRINGS(JAIStreamMgr_cpp, "category >= 0"); // string from JAIStreamMgr::stopCategory(int)
-#endif
-
-#ifdef DEBUG
 #pragma sym off
 #endif
