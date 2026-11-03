@@ -18,12 +18,17 @@
 // it.
 
 #include "types.h"
+#include "dolphin/gx.h"
 #include "dolphin/mtx.h"
 #include "JSystem/JGeometry.h"
+#include "JSystem/JKernel/JKRArchive.h"
+#include "JSystem/JMath/JMath.h"
 #include "JSystem/JUtility/TColor.h"
 
 class ActorManager_804A5800;
 class JPAEmitterManager;
+// JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
+struct J2DOrthoGraph;
 
 // lbl_8053AAF8->0x4->0xC, returned by fn_802D6A9C (type unknown; named after
 // that getter, no vtable or constructor known). The
@@ -66,11 +71,33 @@ struct GameRoot_8049EF20 {
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
     /* 0x84 */ u8 field_0x84[0xA4 - 0x84];
-    /* 0xA4 */ void* field_0xa4; // has a vtable; slot 0x18 looks a resource
-                                 // up by type 'ENM ' and name (fn_801F62AC)
+    // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
+    // code calls it through vtable slot 0x18 = getResource(u32 type,
+    // const char* name) with a 4CC and a name ('ENM ' in fn_801F62AC, 'TIMG'
+    // in the constructor at 0x801395D8), and through slot 0x30 =
+    // getResSize(const void*) (24 sites, e.g. in tu_801F6058). JKRFileLoader declares
+    // both slots too, so the code is the same either way; the game's loaders
+    // build JKRAramArchive/JKRMemArchive (fn_80401AC8, fn_80401D20).
+    /* 0xA4 */ JKRArchive* field_0xa4;
+    /* 0xA8 */ u8 field_0xa8[0xB4 - 0xA8];
+    // Constructed with __ct__Q25JMath13TRandom_fast_FUl at this+0xB4 by the
+    // constructor fn_80139300 (0x8013932C-0x80139338). 132 units inline
+    // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
+    // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
+    /* 0xB4 */ JMath::TRandom_fast_ mRandom;
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
+
+// Random helpers on lbl_8053AAF8->mRandom, defined in game units.
+f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
+s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
+s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
+
+// Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
+// (and tlutObj, if given, for a palette texture); returns height / width.
+// game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
+f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
 // lbl_8053AB10->0x28 (type unknown; named after its getter fn_8013C824).
 struct EffectSystem_8013C824 {
@@ -88,15 +115,35 @@ public:
     void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
 };
 
+// The objects at lbl_8053AB10->0x20, 0x2C and 0x30, named after their
+// vtables (stored at 0 by their constructors); no members declared yet.
+// 0x804AA858: game/tu_802F5040.cpp, constructor fn_802FFDEC, 0x11B9C bytes.
+// Called with r3 = it by fn_802F9974 (197 sites), fn_802F86CC (143),
+// fn_802F9908, fn_802F745C, fn_802F6CF4, ... in 138 units.
+class cls_804AA858;
+// 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
+// Read by fn_80158B3C / fn_80158B5C and directly (+0x4, +0xC) in 28 units.
+class cls_804A0160;
+// 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
+// Its +0x284 is read in 56 places; fn_8015F8FC takes it.
+class cls_804A03A8;
+
 // *lbl_8053AB10: the second most-used singleton (267 units). Set in
 // game/tu_8013AAD4.cpp (0x8013C024) and game/tu_80134C04.cpp (0x801393C4).
-// Its most-read fields are 0x24 (181 loads right after the global), 0x20
-// (106) and 0x30 (54); 0x20 and 0x30 are untyped until a unit shows them.
-// Named after its vtable, 0x8049F108 (constructor fn_8013BFEC).
+// Named after its vtable, 0x8049F108 (constructor fn_8013BFEC, which
+// allocates every member below and stores it at the offset given).
 struct GameRoot2_8049F108 {
-    /* 0x00 */ u8 field_0x0[0x24];
+    /* 0x00 */ u8 field_0x0[0x10];
+    // new J2DOrthoGraph(...) (__ct__13J2DOrthoGraphFffffff, stored at
+    // 0x8013C11C); 36 units pass it to J2DScreen::draw as the
+    // J2DGrafContext (67 sites).
+    /* 0x10 */ J2DOrthoGraph* field_0x10;
+    /* 0x14 */ u8 field_0x14[0x20 - 0x14];
+    /* 0x20 */ cls_804AA858* field_0x20;
     /* 0x24 */ cls_8030C058* field_0x24;
     /* 0x28 */ EffectSystem_8013C824* field_0x28;
+    /* 0x2C */ cls_804A0160* field_0x2c;
+    /* 0x30 */ cls_804A03A8* field_0x30;
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;
