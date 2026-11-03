@@ -65,8 +65,6 @@ act_dropped_item	dtor	__dt__20DroppedItem_804A8C80Fv	DroppedItem_804A8C80	0x804A
 act_dropped_item	sinit	__sinit_act_dropped_item_cpp	-	-	new	new
 act_dummy_conversation	dtor	__dt__26DummyConversation_804B1A48Fv	DummyConversation_804B1A48	0x804B1A48	new	new
 act_dummy_conversation	sinit	__sinit_act_dummy_conversation_cpp	-	-	new	new
-act_enemy_count_wipe_out_check	dtor	__dt__12cls_804A8250Fv	cls_804A8250	0x804A8250	new	new
-act_enemy_count_wipe_out_check	sinit	__sinit_act_enemy_count_wipe_out_check_cpp	-	-	new	new
 act_enemy_for_ending_control	dtor	__dt__30EnemyForEndingControl_804AD48CFv	EnemyForEndingControl_804AD48C	0x804AD48C	new	new
 act_enemy_generator_3	dtor	__dt__24EnemyGenerator3_804AA1D0Fv	EnemyGenerator3_804AA1D0	0x804AA1D0	new	new
 act_enemy_generator_3	sinit	__sinit_act_enemy_generator_3_cpp	-	-	new	new
