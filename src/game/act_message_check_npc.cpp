@@ -8,7 +8,7 @@
 // The one animation: cel 0 for 20 frames, then the terminator.
 static const s16 lbl_8053C4F8[4] = {0, 20, -1, -1};
 // The table of animations (one), followed by a zero word in the original.
-static s16* lbl_80539EF0[2] = {(s16*)lbl_8053C4F8, NULL};
+static const s16* lbl_80539EF0[2] = {lbl_8053C4F8, NULL};
 
 MessageCheckNPC_8049D0E8::~MessageCheckNPC_8049D0E8() {}
 
