@@ -577,7 +577,7 @@ def source_text(path):
         return None
     if b"\0" in raw[:4096]:
         return None
-    text = raw.decode("latin-1").replace("\r\n", "\n")
+    text = raw.decode("latin-1").replace("\r\n", "\n").replace("\r", "\n")
     text = re.sub(r"\\[ \t]*\n", "", text)
     text = re.sub(r"\?\?/[ \t]*\n", "", text)
     return blank_comments(text)
@@ -592,7 +592,8 @@ def blank_comments(text):
     return LEXEME.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)) if m.group(0)[0] == "/" else m.group(0), text)
 
 
-DIRECTIVE = re.compile(r"^[ \t]*(?:#|%:|\?\?=)[ \t]*(\w+)(.*)$", re.M)
+# MWCC treats \f and \v as whitespace before and after the directive mark.
+DIRECTIVE = re.compile(r"^[ \t\f\v]*(?:#|%:|\?\?=)[ \t\f\v]*(\w+)(.*)$", re.M)
 
 
 def include_directives(text):
