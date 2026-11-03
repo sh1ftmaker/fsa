@@ -13,6 +13,10 @@
 // destructor chain after it.
 JGeometry::TVec3f lbl_804CF460(0.0f, 0.0f, 0.0f);
 
+extern "C" void fn_8022AD64() {
+    lbl_8053AAF8->fn_80138B7C();
+}
+
 // fn_8022ADFC inlines the flag getters below, which come after it.
 
 static inline bool getFlag_0x6c() {
