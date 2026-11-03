@@ -113,6 +113,30 @@ struct GameRoot_8049EF20 {
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
+// The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
+// after that getter). Owner: game/tu_801902C0.cpp (not written yet).
+// act_special_bg_draw_object: three 0x20-byte requests at 0x2E0, 0x300 and
+// 0x320; an update sets a position and a value and raises the flag, once the
+// pointer at 0xC is non-NULL and the flag is clear.
+struct GameRootSub20_801902C0 {
+    struct Request {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ void* field_0xc; // tested against NULL
+        /* 0x10 */ u8 field_0x10[4]; // not yet known
+        /* 0x14 */ f32 mValue;
+        /* 0x18 */ u8 field_0x18[4]; // not yet known
+        /* 0x1C */ u8 mActive;
+        /* 0x1D */ u8 field_0x1d[3]; // not yet known
+    }; // Size: 0x20
+    /* 0x000 */ u8 field_0x0[0x2E0]; // not yet known
+    /* 0x2E0 */ Request mRequests[3];
+};
+extern "C" {
+// Owner: game/tu_801902C0.cpp (not written yet). No arguments; loads
+// lbl_8053AAF8->field_0x4->field_0x20 (0x801902C0-0x801902C8).
+GameRootSub20_801902C0* fn_801902C0(void);
+}
+
 // The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
 // registered with __register_global_object) built on first use. Named after
 // the function fn_80119DD0 registers with __register_global_object (as the
