@@ -15,8 +15,10 @@ namespace std
 #if __MWERKS__ > 0x2301
 extern inline float sqrtf(float x)
 {
-    static const double _half = .5f;
-    static const double _three = 3.0f;
+    // Not static: FSA pools these per object in .sdata2 (JUTGamePad's
+    // CStick::update), with no weak $localstatic copies.
+    const double _half = .5f;
+    const double _three = 3.0f;
     if (x > 0.0f)
     {
         double xd = (double)x;

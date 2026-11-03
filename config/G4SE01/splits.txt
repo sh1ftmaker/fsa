@@ -1323,7 +1323,8 @@ JSystem/JUtility/JUTGamePad.cpp:
 	.bss        start:0x804BA498 end:0x804BA4B0
 	.bss        start:0x8052E8A0 end:0x8052EBC0 align:4 common
 	.sdata      start:0x80539D98 end:0x80539DB0
-	.sbss       start:0x8053A918 end:0x8053A958
+	.sbss       start:0x8053A920 end:0x8053A958
+	.sdata2     start:0x8053B890 end:0x8053B8C8
 
 JSystem/JUtility/JUTGraphFifo.cpp:
 	.text       start:0x8008E7A4 end:0x8008E93C

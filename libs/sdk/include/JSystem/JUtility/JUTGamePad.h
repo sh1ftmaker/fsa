@@ -4,7 +4,6 @@
 #include "types.h"
 #include <dolphin/os.h>
 #include <dolphin/pad.h>
-#include "JSystem/Logitech/Wheels.h"
 #include "JSystem/JUtility/JUTAssert.h"
 #include "JSystem/JKernel/JKRDisposer.h"
 
@@ -111,7 +110,8 @@ public:
 
     void assign();
     void checkResetCallback(OSTime time);
-    void clearForReset();
+    static void clearForReset();
+    static JUTGamePad *getGamePad(int port);
     static void init();
     void initList();
     static u32 read();
@@ -125,10 +125,8 @@ public:
     static bool mListInitialized;
     static u8 mPadAssign[PAD_CONTROLLER_NUM];
     static u32 sSuppressPadReset;
-    static bool sErrorReport;
     static u32 sAnalogMode;
     static u32 sRumbleSupported;
-    static s32 msaSIType[PAD_CONTROLLER_NUM]; // check type?
 
     static void setAnalogMode(u32 mode)
     {
@@ -152,7 +150,6 @@ public:
         return JUTGamePad::sClampMode;
     }
 
-    static LGWheels *getLGWheels() { return mspLGWheels; }
     static const PADStatus &getPadStatus(u8 port)
     {
 #line 363
@@ -164,20 +161,6 @@ public:
     {
         JUT_ASSERT(0 <= port && port < 4);
         return mPadStatus[port].err;
-    }
-
-    static s32 getSIType(u8 port) {
-#line 528
-        JUT_ASSERT(port < 4);
-        return msaSIType[port];
-    }
-
-    static const LGPosition &getLGPosition(u8 port)
-    {
-#line 535
-        JUT_ASSERT(port < 4);
-        JUT_ASSERT(mspLGWheels);
-        return mspLGWheels->getPosition(port);
     }
 
     bool isPushing3ButtonReset() const
@@ -337,7 +320,6 @@ public:
 
         void clear();
         void update(const PADStatus *padStatus, u32 buttons);
-        void update(const LGPosition *padStatus, u32 buttons);
         void setRepeat(u32 mask, u32 delay, u32 frequency);
 
         u32 mButton;           // buttons held down
@@ -367,7 +349,6 @@ public:
         void clear();
         u32 update(s8 x, s8 y, JUTGamePad::EStickMode, JUTGamePad::EWhichStick); // old or non mkdd version?
         u32 update(s8 x, s8 y, JUTGamePad::EStickMode, JUTGamePad::EWhichStick, u32);
-        u32 update(s8, u32);
         u32 getButton(u32);
 
         f32 mX;
@@ -400,9 +381,10 @@ public:
             stopMotor(port, true);
         }
 
-        static bool isEnabledPort(int port) {
-            return (0 <= port && port < 4) ? isEnabled(sChannelMask[port]) : false;
-        } 
+        static bool isEnabledPort(int port)
+        {
+            return isEnabled(sChannelMask[port]);
+        }
         static bool isEnabled(u32 channel)
         {
             return (JUTGamePad::CRumble::mEnabled & channel) ? true : false;
@@ -411,7 +393,10 @@ public:
         void clear();
         void clear(JUTGamePad *gamePad);
         void update(s16);
-        void setEnable(u32);
+        void triggerPatternedRumble(u32 length);
+        void startPatternedRumble(void *data, ERumble rumble, u32 length);
+        void stopPatternedRumble(s16 port);
+        static void setEnabled(u32 mask);
 
         static u32 sChannelMask[4];
 
@@ -449,7 +434,6 @@ public:
         return ret;
     }
 
-    static LGWheels *mspLGWheels;
     static JSUList<JUTGamePad> mPadList;
     static CButton mPadButton[PAD_CONTROLLER_NUM];
     static CStick mPadMStick[PAD_CONTROLLER_NUM];
@@ -471,6 +455,7 @@ public:
     JUTGamePadRecordBase *mPadReplay;
     C3ButtonReset mButtonReset; // _98
     OSTime mResetTime;          // _A0
+    u8 _A8;                     // _A8, 3-button reset is ignored while 0
 };
 #pragma pop
 #endif
