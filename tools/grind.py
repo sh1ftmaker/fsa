@@ -214,31 +214,36 @@ End with one line: the final match % of {fn}.
 """
 
 
-def run_haiku(wt, unit, fn, size, pct):
+def run_haiku(wt, unit, fn, size, pct, model=MODEL, meta=None):
     # Bigger functions get more attempts and time (try.py's own budget also scales with size).
-    attempts = 8 if size <= 128 else 12 if size <= 512 else 16
+    attempts = 8 if size <= 128 else 12 if size <= 512 else 16 if size <= 2048 else 24
     prompt = PROMPT.format(fn=fn, size=size, pct=f"{pct:.2f} %" if pct else "missing",
                            unit=unit, base=Path(unit).stem, attempts=attempts)
-    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", 1200 if size <= 512 else 2400)
+    timeout = 1200 if size <= 512 else 2400 if size <= 2048 else 4800
+    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", timeout, model, meta)
 
 
-def _claude(wt, prompt, tag, timeout):
+def _claude(wt, prompt, tag, timeout, model=MODEL, meta=None):
     tools = ",".join(["Read", "Edit", "Write", "Grep", "Glob",
                       "Bash(python3 tools/try.py:*)", "Bash(python3 tools/fdiff.py:*)",
                       "Bash(grep:*)", "Bash(sed -n:*)", "Bash(head:*)", "Bash(tail:*)"])
     try:
-        r = sh(["claude", "-p", prompt, "--model", MODEL, "--output-format", "json",
+        r = sh(["claude", "-p", prompt, "--model", model, "--output-format", "json",
                 "--permission-mode", "acceptEdits", "--allowedTools", tools,
                 "--disallowedTools", "Agent,WebFetch,WebSearch"], wt, timeout=timeout)
         out = r.stdout
     except subprocess.TimeoutExpired:
         out = '{"result": "timeout"}'
-    (LOGS / "haiku").mkdir(parents=True, exist_ok=True)
-    (LOGS / "haiku" / f"{tag}.json").write_text(out)
+    d = LOGS / ("haiku" if model == MODEL else model)
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{tag}.json").write_text(out)
     try:
-        return json.loads(out).get("total_cost_usd", 0)
+        j = json.loads(out)
     except ValueError:
-        return 0
+        j = {}
+    if meta is not None:
+        meta.update(turns=j.get("num_turns", ""), api_ms=j.get("duration_api_ms", ""))
+    return j.get("total_cost_usd", 0) or 0
 
 
 # ---------------------------------------------------------------- worker
@@ -569,6 +574,132 @@ def watch(args):
         time.sleep(args.every)
 
 
+# ---------------------------------------------------------------- A/B: models on the same functions
+
+BUCKETS = [("tiny", 0, 32), ("small", 33, 128), ("medium", 129, 512), ("large", 513, 2048),
+           ("xlarge", 2049, 8192), ("huge", 8193, 10**9)]
+AB = LOGS / "ab"
+
+
+def ab_sample(per_bucket, seed):
+    """Unwritten functions per size bucket (one per unit), the same set for every model."""
+    import random
+    report = json.loads((INTEG / "build/G4SE01/report_honest.json").read_text())["units"]
+    cfg = (INTEG / "configure.py").read_text()
+    bad = rejected()
+    pool = {b[0]: [] for b in BUCKETS}
+    for u in report:
+        if "/game/" not in u["name"]:
+            continue
+        unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
+        if not (INTEG / "src" / unit).exists() or f'Object(NonMatching, "{unit}"' not in cfg:
+            continue
+        for f in u.get("functions", []):
+            size = int(f.get("size", 0))
+            if f.get("fuzzy_match_percent", 0) == 0 and (unit, f["name"]) not in bad:
+                b = next(b[0] for b in BUCKETS if b[1] <= size <= b[2])
+                pool[b].append((unit, f["name"], size))
+    rng = random.Random(seed)
+    sample = []
+    for b, items in pool.items():
+        rng.shuffle(items)
+        seen = set()
+        for unit, fn, size in items:
+            if unit in seen or any(unit == x["unit"] for x in sample):
+                continue
+            seen.add(unit)
+            sample.append({"bucket": b, "unit": unit, "fn": fn, "size": size})
+            if len(seen) == per_bucket:
+                break
+    return sample
+
+
+def ab(args):
+    """Every sampled function, once per model, in fresh copies of grind; nothing is merged.
+    Successful diffs are kept as patches under grind-logs/ab/<model>/."""
+    import threading, queue
+    AB.mkdir(parents=True, exist_ok=True)
+    sp = AB / "sample.json"
+    if not sp.exists():
+        sp.write_text(json.dumps(ab_sample(args.per_bucket, args.seed), indent=1))
+    sample = json.loads(sp.read_text())
+    models = args.models.split(",")
+    tsv = AB / "results.tsv"
+    done = {tuple(l.split("\t")[1:4]) for l in tsv.read_text().splitlines()} if tsv.exists() else set()
+    jobs = queue.Queue()
+    for s_ in sample:  # interleave models so a stop leaves comparable pairs
+        for m in models:
+            if (m, s_["unit"], s_["fn"]) not in done:
+                jobs.put((m, s_))
+    stop = threading.Event()
+    lock = threading.Lock()
+
+    def run(n):
+        wt = WT / f"grind-w{n}"
+        sh(["git", "reset", "-q", "--hard", "grind"], wt, check=True)
+        sh("timeout 3600 ninja build/G4SE01/report_honest.json", wt)
+        while not stop.is_set():
+            try:
+                model, s_ = jobs.get_nowait()
+            except queue.Empty:
+                return
+            u = usage()
+            if u is not None and u >= args.stop_usage:
+                stop.set()
+                notify("FSA A/B stopped", f"weekly usage {u:.0%}")
+                return
+            unit, fn, size = s_["unit"], s_["fn"], s_["size"]
+            sh(["git", "reset", "-q", "--hard", "grind"], wt, check=True)
+            revert(wt)
+            t0, meta = time.time(), {}
+            try:
+                fns, secs = fdiff(wt, unit)
+                pct = fns.get(fn, (size, 0.0))[1]
+                cost = run_haiku(wt, unit, fn, size, pct, model, meta)
+                why, new_fns, _, gained, ren = judge(wt, unit, fns, secs, fn)
+                best = new_fns.get(ren.get(fn, fn) if ren else fn, (0, 0))[1]
+                ok = why is None and best == 100
+                if ok:
+                    pd = AB / model
+                    pd.mkdir(exist_ok=True)
+                    sh(["git", "add", "-A", "src", "include", "config/G4SE01"], wt)
+                    (pd / f"{Path(unit).stem}__{fn[:80]}.patch").write_text(
+                        sh(["git", "diff", "--cached"], wt).stdout)
+            except Exception as e:
+                cost, ok, best, why = 0, False, 0, f"error {str(e)[:120]}"
+            revert(wt)
+            sh(["git", "reset", "-q", "--hard", "grind"], wt)
+            with lock, open(tsv, "a") as f:
+                f.write("\t".join(str(x) for x in [
+                    datetime.datetime.now().isoformat(timespec="seconds"), model, unit, fn, s_["bucket"], size,
+                    int(ok), f"{best:.2f}", f"{cost:.4f}", meta.get("turns", ""), int(time.time() - t0),
+                    (why or "")[:100]]) + "\n")
+
+    threads = [threading.Thread(target=run, args=(n,)) for n in args.workers.split(",")]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    notify("FSA A/B finished", "python3 tools/grind.py ab-report")
+    ab_report(args)
+
+
+def ab_report(_):
+    rows = [l.split("\t") for l in (AB / "results.tsv").read_text().splitlines()]
+    print(f"{'bucket':8} {'model':18} {'runs':>4} {'solved':>6} {'cost':>8} {'$/solve':>8} {'turns':>6} {'min':>5}")
+    for b, *_ in BUCKETS:
+        for m in sorted({r[1] for r in rows}):
+            rs = [r for r in rows if r[4] == b and r[1] == m]
+            if not rs:
+                continue
+            solved = sum(int(r[6]) for r in rs)
+            cost = sum(float(r[8]) for r in rs)
+            turns = [int(r[9]) for r in rs if r[9].isdigit()]
+            print(f"{b:8} {m:18} {len(rs):>4} {solved:>6} {cost:>8.2f} "
+                  f"{(cost / solved if solved else float('inf')):>8.2f} "
+                  f"{(sum(turns) / len(turns) if turns else 0):>6.1f} {sum(int(r[10]) for r in rs) / len(rs) / 60:>5.1f}")
+
+
 def status(_):
     rows = [l.split("\t") for l in (LOGS / "results.tsv").read_text().splitlines()] if (LOGS / "results.tsv").exists() else []
     acc = [r for r in rows if r[6] == "ACCEPT"]
@@ -592,6 +723,11 @@ def main():
     w.add_argument("--file-max", type=int, default=1536, help="file mode: max unwritten bytes per unit")
     w.set_defaults(f=worker)
     sp.add_parser("status").set_defaults(f=status)
+    a = sp.add_parser("ab"); a.add_argument("--models", default="claude-haiku-5-5,claude-opus-5-5")
+    a.add_argument("--per-bucket", type=int, default=4); a.add_argument("--seed", type=int, default=1)
+    a.add_argument("--workers", default="1,2,3,4", help="worktree numbers to use")
+    a.add_argument("--stop-usage", type=float, default=0.97); a.set_defaults(f=ab)
+    sp.add_parser("ab-report").set_defaults(f=ab_report)
     wa = sp.add_parser("watch"); wa.add_argument("--soft", type=float, default=0.94)
     wa.add_argument("--hard", type=float, default=0.95); wa.add_argument("--every", type=int, default=600)
     wa.set_defaults(f=watch)
