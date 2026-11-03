@@ -2,6 +2,10 @@
 #include "game/GameGlobals.h"
 #include "game/PlayerFlags.h"
 
+bool Player_804A6F38::fn_80240860() {
+    return field_0x436;
+}
+
 bool Player_804A6F38::fn_80240870() {
     return field_0xcfe;
 }
