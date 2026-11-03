@@ -43,6 +43,10 @@ class JPABaseEmitter;
 // update loop before the actor's own update. Its purpose is unknown.
 struct ActorSub1DC_801EAD68 {
     ActorSub1DC_801EAD68();
+    void fn_801EAB0C();
+    bool fn_801EAC20(int index);
+    bool fn_801EAC54(int id);
+    bool isLive(int id);
     /* 0x00 */ u8 field_0x0[4];
     /* 0x04 */ u8 field_0x4[16];
     /* 0x14 */ s32 field_0x14[16]; // -1 after construction
