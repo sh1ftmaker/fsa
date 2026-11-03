@@ -13,7 +13,11 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x10]; // not yet known
+    /* 0x230 */ u32 field_0x230; // not yet known
+    /* 0x234 */ u32 mSoundIndex; // field_0x90 & 0xFFF (init), indexes the u32 table in .rodata
+    /* 0x238 */ u32 mVariant; // (field_0x90 >> 24) & 7, indexes the u8 table in .sdata2
+    /* 0x23C */ u8 mFlag; // (field_0x90 >> 23) & 1
+    /* 0x23D */ u8 field_0x23d[3]; // padding
 }; // Size: 0x240
 
 #endif
