@@ -112,6 +112,7 @@ JSystem/JAudio/System/JASCallback.cpp:
 JSystem/JAudio/System/JASCmdStack.cpp:
 	.text       start:0x800280E8 end:0x800282C0
 	.ctors      start:0x8045BD38 end:0x8045BD3C
+	.bss        start:0x804B2498 end:0x804B24B0
 	.bss        start:0x8052E184 end:0x8052E1A8 align:4 common
 
 JSystem/JAudio/System/JASDvdThread.cpp:
