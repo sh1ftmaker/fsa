@@ -181,8 +181,6 @@ act_rank_display	sinit	__sinit_act_rank_display_cpp	-	-	new	-
 act_recovery_heart	dtor	__dt__22RecoveryHeart_8049F4F0Fv	RecoveryHeart_8049F4F0	0x8049F4F0	new	new
 act_recovery_heart	sinit	__sinit_act_recovery_heart_cpp	-	-	new	new
 act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-
-act_rock	dtor	__dt__13Rock_804A9480Fv	Rock_804A9480	0x804A9480	new	new
-act_rock	sinit	__sinit_act_rock_cpp	-	-	new	new
 act_room_transfer_lift	dtor	__dt__12cls_8049CC40Fv	cls_8049CC40	0x8049CC40	new	new
 act_room_transfer_lift	sinit	__sinit_act_room_transfer_lift_cpp	-	-	new	new
 act_rope	sinit	__sinit_act_rope_cpp	-	-	new	-
