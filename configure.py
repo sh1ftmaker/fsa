@@ -1239,7 +1239,7 @@ config.libs = [
         Object(NonMatching, "game/tu_801DAC6C.cpp"),
         Object(NonMatching, "game/tu_801DB18C.cpp"),
         Object(NonMatching, "game/act_frostare_tail.cpp"),
-        Object(NonMatching, "game/tu_801DCC98.cpp"),
+        Object(Matching, "game/tu_801DCC98.cpp"),
         Object(NonMatching, "game/tu_801DD1AC.cpp"),
         Object(NonMatching, "game/tu_801DE714.cpp"),
         Object(NonMatching, "game/tu_801E2540.cpp"),
