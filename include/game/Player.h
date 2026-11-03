@@ -796,6 +796,18 @@ s32 fn_80238BC4(s32 serial);
 // fn_8024FFB4(player object, serial) on every active player for which
 // fn_80250030 passes.
 void fn_80238E08(s32 serial);
+
+// Owner unit tu_8022AD64 (not written yet). 1 unit (tu_80206B30 vfunc_0x58).
+// Four sibling probes over the players: each calls a per-player box test
+// (fn_802576CC / fn_80256F44 / fn_802574CC / fn_802575B8: player object,
+// box, layer, out) and the test stores two floats through `out` (callers
+// read it as a TVec2f). fn_8023AA18 and fn_8023AC74 return the index of the
+// first player whose test passes, fn_8023AE34 and fn_8023AD54 the last one;
+// all return -1 when none does (also without a player manager).
+s32 fn_8023AE34(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+s32 fn_8023AA18(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+s32 fn_8023AC74(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+s32 fn_8023AD54(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 }
 
 #endif

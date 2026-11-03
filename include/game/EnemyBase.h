@@ -345,6 +345,22 @@ s32 fn_801CD950(f32* value, f32 target, f32 step);
 // or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.
 void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
 void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
+
+// game/tu_801CB270.cpp (owner unit, not written yet; 1 caller unit,
+// tu_80206B30 vfunc_0x58). Each fetches the actor a player's getter
+// (fn_8023B2B0 / fn_8023B22C / fn_8023B358) names, with r3 (the player index)
+// forwarded untouched, and tests its kind at 0x1A0 (and that it is alive).
+// 'ARRW' with field_0x108 > 0: *out = its field_0x3c, then fn_801F3668 on
+// it; `out` is zeroed first. Returns whether it was found.
+bool fn_801CC820(s32 player, JGeometry::TVec3f* out);
+// 'BOME': *outPlayer = the index (-1 first), its field_0x254 = 1 and, when
+// `out` is given, *out = (pos.x, pos.y, 0) minus its field_0x3c * lbl_8053EF90.
+// Returns whether it was found.
+bool fn_801CC538(s32 player, const JGeometry::TVec2f* pos, JGeometry::TVec3f* out, s32* outPlayer);
+// 'PCDM' with field_0x108 > 0: *outPlayer = the index (-1 first), *outVel =
+// its field_0x3c (zeroed first), then its field_0x108 = 0. Returns whether
+// it was found.
+bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
 }
 
 #endif
