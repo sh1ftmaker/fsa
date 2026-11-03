@@ -21,6 +21,36 @@ void Thief_804A5A30::vfunc_0xA0() {
     }
 }
 
+void Thief_804A5A30::vfunc_0x98() {
+    if (mState == 3) {
+        if (field_0xc4 != 0) {
+            field_0x98 = fn_80230CFC(field_0xc8);
+            field_0x33c = fn_801F6874(field_0x98);
+            JGeometry::TVec3f* pos = fn_8023E7B0(field_0xc8);
+            mPos.x = pos->x;
+            mPos.y = pos->y;
+            mPos.z = pos->z;
+            field_0x3c.x = lbl_8053F860[0];
+            field_0x3c.y = lbl_8053F860[0];
+            field_0x3c.z = lbl_8053F860[0];
+            if (field_0x4 != fn_8023DE58(field_0xc8)) {
+                field_0x4 = fn_8023DE58(field_0xc8);
+                mPathCount = 0;
+                s32 player = field_0xc8;
+                if (fn_8022F514(player)) {
+                    player = fn_8022F3DC(player);
+                }
+                JGeometry::TVec3f* playerPos = fn_8023E724(player);
+                field_0x32c.x = playerPos->x;
+                field_0x32c.y = playerPos->y;
+                field_0x32c.z = playerPos->z;
+            }
+        }
+    } else if ((mFlags & 7) == 0) {
+        fn_801CE32C();
+    }
+}
+
 bool ActorBase_804A5770::fn_80204D44() {
     bool result = false;
     if (field_0x94 == 1 || field_0xc4 != 0) {

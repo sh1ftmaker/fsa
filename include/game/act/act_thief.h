@@ -44,6 +44,12 @@ public:
     // 0x80204D6C (act_thief): the last slot of the vtable. Tells the camera
     // to keep mPos in view, unless the thief is in state 8 or 9.
     /* 0xA0 */ virtual void vfunc_0xA0();
+    // 0x80204DAC (act_thief): the Thief's slot 0x98 (EnemyBase's step). In
+    // state 3 with field_0xc4 set it takes the player in field_0xc8's
+    // direction, angle and position (and, on a layer change, its position
+    // in field_0x32c); in other states it runs fn_801CE32C when no hit bit
+    // is set.
+    /* 0x98 */ virtual void vfunc_0x98();
 
     // 0x802072E4 (tu_80206B30): mBox = (-8, -16)-(8, 8), copied to mBox2.
     void fn_802072E4();
