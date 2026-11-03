@@ -1392,7 +1392,7 @@ config.libs = [
         Object(Matching, "game/act_rock.cpp"),
         Object(NonMatching, "game/act_sign.cpp"),
         Object(NonMatching, "game/tu_802D39B8.cpp"),
-        Object(NonMatching, "game/act_coconut.cpp"),
+        Object(Matching, "game/act_coconut.cpp"),
         Object(Matching, "game/act_gravestone.cpp"),
         Object(NonMatching, "game/act_view_mode.cpp"),
         Object(Matching, "game/act_ura_colour.cpp"),
