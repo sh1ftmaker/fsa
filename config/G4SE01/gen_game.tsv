@@ -132,8 +132,6 @@ act_gambling_chest	sinit	__sinit_act_gambling_chest_cpp	-	-	new	new
 act_gambling_shop	dtor	__dt__21GamblingShop_804AAA70Fv	GamblingShop_804AAA70	0x804AAA70	new	new
 act_gambling_shop	sinit	__sinit_act_gambling_shop_cpp	-	-	new	new
 act_gba_appear	sinit	__sinit_act_gba_appear_cpp	-	-	new	-
-act_gba_window	dtor	__dt__25GBAWindowControl_804AA440Fv	GBAWindowControl_804AA440	0x804AA440	new	new
-act_gba_window	sinit	__sinit_act_gba_window_cpp	-	-	new	new
 act_giant_bomb	sinit	__sinit_act_giant_bomb_cpp	-	-	new	-
 act_gibdo	sinit	__sinit_act_gibdo_cpp	-	-	new	-
 act_global_switch	dtor	__dt__21GlobalSwitch_804AA060Fv	GlobalSwitch_804AA060	0x804AA060	new	new
