@@ -12,6 +12,11 @@
 // scale). Arrays, so the names survive into the object.
 static const f32 lbl_8053FBA0[1] = {6.0f};
 static const f32 lbl_8053FBA4[1] = {1.0f};
+static const f32 lbl_8053FBA8[1] = {24.0f};
+static const f32 lbl_8053FBAC[1] = {2.0f};
+static const f32 lbl_8053FBB0[1] = {26.0f};
+static const f32 lbl_8053FBB4[1] = {4.0f};
+static const f32 lbl_8053FBB8[1] = {18.0f};
 
 cls_802150B8::cls_802150B8() : field_0x0(0), field_0x18(0), field_0x30(-1), mOwner(0) {}
 
@@ -20,6 +25,28 @@ void cls_802150B8::fn_802144F0() {
     JGeometry::TVec3f pos = mOwner->mPos;
     pos.y += lbl_8053FBA0[0];
     fn_8013CC50(mOwner->field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, lbl_8053FBA4[0]);
+}
+
+void cls_802150B8::fn_80214578() {
+    JGeometry::TVec3f pos = mOwner->mPos;
+    switch (mOwner->field_0x98) {
+    case 0:
+        pos.x -= lbl_8053FBA8[0];
+        break;
+    case 1:
+        pos.x += lbl_8053FBA8[0];
+        break;
+    case 2:
+        pos.x += lbl_8053FBAC[0];
+        pos.y -= lbl_8053FBB0[0];
+        break;
+    case 3:
+        pos.x -= lbl_8053FBB4[0];
+        pos.y += lbl_8053FBB8[0];
+        break;
+    }
+    fn_8013CC50(mOwner->field_0x4, &pos, 0xCB, 0, 1, NULL, NULL, true, lbl_8053FBA4[0]);
+    fn_8013CC50(mOwner->field_0x4, &pos, 0xCC, 0, 1, NULL, NULL, true, lbl_8053FBA4[0]);
 }
 
 void cls_802150B8::fn_802146A4() const {
