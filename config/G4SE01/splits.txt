@@ -1297,6 +1297,12 @@ JSystem/JKernel/JKRThread.cpp:
 	.bss        start:0x8052E850 end:0x8052E894 align:4 common
 	.sbss       start:0x8053A8D0 end:0x8053A8D8
 
+JSystem/JKernel/JKRUnitHeap.cpp:
+	.text       start:0x80085A10 end:0x80086A54
+	.rodata     start:0x8045E820 end:0x8045E878
+	.data       start:0x80498FB8 end:0x80499018
+	.sdata2     start:0x8053B770 end:0x8053B788
+
 JSystem/JSupport/JSUInputStream.cpp:
 	.text       start:0x80086A9C end:0x80086E2C
 	.data       start:0x80499028 end:0x80499068
