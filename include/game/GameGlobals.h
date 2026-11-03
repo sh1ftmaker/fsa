@@ -25,29 +25,15 @@
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JUtility/TColor.h"
 #include "game/Player.h"
+// The view (fn_802D6A9C) and the effect system (fn_8013C824) moved to
+// their own headers; included here so existing users keep compiling.
+#include "game/Effect.h"
+#include "game/GameView.h"
 
 class ActorManager_804A5800;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
 class J2DOrthoGraph;
-
-// lbl_8053AAF8->0x4->0xC, returned by fn_802D6A9C (type unknown; named after
-// that getter, no vtable or constructor known). The
-// box at 0xCC is the visible area in top-down coordinates (x, y - z):
-// ActorBase_804A5770's destructor lets an emitter inside it run out instead of
-// deleting it.
-struct GameView_802D6A9C {
-    /* 0x00 */ u8 field_0x0[0xCC];
-    /* 0xCC */ f32 mVisibleMinX;
-    /* 0xD0 */ f32 mVisibleMinY;
-    /* 0xD4 */ f32 mVisibleMaxX;
-    /* 0xD8 */ f32 mVisibleMaxY;
-    /* 0xDC */ u8 field_0xdc[0x131DE - 0xDC]; // 0xDC: a second box, used for
-                                              // actor layers 8 and up (0x801F165C)
-    /* 0x131DE */ u8 field_0x131de; // lbz in act_bg_rewrite_check_switch;
-                                    // stb in fn_802D782C and 8 more places in
-                                    // game/tu_802D39B8.cpp
-};
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
 // fn_801F856C, the first function seen reading it).
@@ -55,7 +41,7 @@ struct GameRootSub04_801F856C {
     /* 0x0 */ u8 field_0x0[0x8];
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
-    /* 0xC */ GameView_802D6A9C* mView;             // fn_802D6A9C
+    /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
 };
 
 // *lbl_8053AAF8: the most-used game singleton (309 of 529 units read it).
@@ -100,12 +86,6 @@ s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
 f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
-// lbl_8053AB10->0x28 (type unknown; named after its getter fn_8013C824).
-struct EffectSystem_8013C824 {
-    /* 0x0 */ u8 field_0x0[0xC];
-    /* 0xC */ JPAEmitterManager* mEmitterManager;
-};
-
 // lbl_8053AB10->0x24. No vtable; its methods are in game/tu_8030C058.cpp.
 // Also called from tu_8011CEC8, tu_8015F454, tu_802F5040, tu_8045BA84.
 class cls_8030C058 {
@@ -142,37 +122,12 @@ struct GameRoot2_8049F108 {
     /* 0x14 */ u8 field_0x14[0x20 - 0x14];
     /* 0x20 */ cls_804AA858* field_0x20;
     /* 0x24 */ cls_8030C058* field_0x24;
-    /* 0x28 */ EffectSystem_8013C824* field_0x28;
+    /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;
-
-// Out-of-line getters (extern "C" keeps the dtk names as link names until
-// their units name them).
-extern "C" {
-GameView_802D6A9C* fn_802D6A9C(void);     // lbl_8053AAF8->0x4->0xC
-EffectSystem_8013C824* fn_8013C824(void); // lbl_8053AB10->0x28
-}
-
-// Functions of game/tu_802D39B8.cpp that take the view (fn_802D6A9C()) as
-// their first argument. Several ignore it and re-fetch the view through
-// lbl_8053AAF8 (said at each); names are dtk's.
-extern "C" {
-// Stores value at 0x5C of the view (r3 unused).
-void fn_802D7934(GameView_802D6A9C* view, s32 value);
-// Sets the byte at 0x131F0 of the view from flag (clrlwi 24, cmplwi 1) and
-// lbl_8053AAF8's bytes 0x7E/0x7F.
-void fn_802D7440(GameView_802D6A9C* view, bool flag);
-// ORs bits into the u16 at 0x131B8 + index * 2 of the view (r3 unused).
-void fn_802D77BC(GameView_802D6A9C* view, s32 index, u16 bits);
-// Tests bit `bit` of the word at 0x348 + (view->0x4 * 16) + (view->0x8 * 4);
-// returns 0 or 1 (neg/or/srwi 31).
-bool fn_802D7F40(GameView_802D6A9C* view, s32 bit);
-// Returns the byte at lbl_8053AB10->0x24->0x1E8 (r3 unused).
-bool fn_802DCD0C(GameView_802D6A9C* view);
-}
 
 // game/tu_8022461C.cpp. Returns a 16-bit value for a position (clrlwi 22 of
 // a lookup on a 0x200 x 0x200 grid relative to the view's box: 0xCC, or 0xDC

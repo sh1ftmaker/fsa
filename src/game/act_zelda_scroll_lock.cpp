@@ -15,7 +15,7 @@ void ZeldaScrollLock_804AC708::draw() {}
 void ZeldaScrollLock_804AC708::update() {
     switch (mState) {
     case 0:
-        if (!fn_802DCD0C(fn_802D6A9C())) {
+        if (!fn_802D6A9C()->fn_802DCD0C()) {
             fn_8022ADE4();
             mState = 1;
         }

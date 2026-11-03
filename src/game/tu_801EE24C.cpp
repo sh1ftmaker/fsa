@@ -9,12 +9,12 @@
 // Lets an emitter that is still on screen finish its particles; deletes one
 // that is off screen at once.
 static inline void releaseEmitter(JPABaseEmitter* emitter) {
-    GameView_802D6A9C* view = fn_802D6A9C();
+    GameView_804A9950* view = fn_802D6A9C();
     f32 x = emitter->mGlobalTrs.x;
     f32 y = emitter->mGlobalTrs.y - emitter->mGlobalTrs.z;
     bool onScreen = false;
-    if (x >= view->mVisibleMinX && y >= view->mVisibleMinY && x < view->mVisibleMaxX &&
-        y < view->mVisibleMaxY)
+    if (x >= view->mVisibleBox.i.x && y >= view->mVisibleBox.i.y && x < view->mVisibleBox.f.x &&
+        y < view->mVisibleBox.f.y)
     {
         onScreen = true;
     }

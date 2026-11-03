@@ -9,7 +9,7 @@
 
 void VaatiBuster_8049E3A8::init() {
     ActorBase_804A5770::init();
-    fn_802D7440(fn_802D6A9C(), false);
+    fn_802D6A9C()->fn_802D7440(false);
 }
 
 VaatiBuster_8049E3A8::~VaatiBuster_8049E3A8() {}

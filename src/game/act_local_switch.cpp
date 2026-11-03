@@ -14,7 +14,7 @@ void LocalSwitch_804AA008::draw() {}
 // When the flag selected by bits 22-26 of the spawn parameter (0x90) is set,
 // calls slot 0x30 with (0xFF, true).
 void LocalSwitch_804AA008::update() {
-    if (fn_802D7F40(fn_802D6A9C(), ((u32)field_0x90 >> 22) & 0x1F)) {
+    if (fn_802D6A9C()->fn_802D7F40(((u32)field_0x90 >> 22) & 0x1F)) {
         vfunc_0x30(0xFF, true);
     }
 }
