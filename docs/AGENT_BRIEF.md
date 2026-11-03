@@ -3,7 +3,11 @@
 You own one translation unit (source file) of the Four Swords Adventures
 decompilation. Your job: make every function, its data and its relocations
 byte-identical to the original, with source a Nintendo programmer could have
-written. Read `CLAUDE.md` and `docs/PLAN.md` first.
+written.
+
+**Entry point: `docs/RULES_CARD.md`.** The card distils this brief, PLAN.md,
+CLAUDE.md and COORDINATOR.md into what a worker needs; agents read the card,
+not this file. This brief is the longer reference behind it.
 
 ## Your setup
 
@@ -13,6 +17,9 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
   `matching`, never push, never rebase or merge.
 - Build: `ninja build/G4SE01/report_honest.json` (compiles changed units and writes
   the report). Prefix long runs with `timeout`.
+- Each attempt: `python3 tools/try.py <unit> [<function>]` compiles only the
+  unit, diffs it and classifies what differs (regalloc-only, scheduling,
+  reloc-name, missing/extra) in ≤20 lines, and counts attempts.
 - Check: `python3 tools/fdiff.py <unit>` lists every function with its match;
   `python3 tools/fdiff.py <unit> <function>` shows the differing
   instructions (target | ours). 100 % there means matched in the report.
@@ -30,10 +37,10 @@ written. Read `CLAUDE.md` and `docs/PLAN.md` first.
    dolsdk2004, ...). FSA's SDK is the 2003 build: OS/GX Jul 23 2003,
    PAD Aug 6 2003, DVD Sep 16 2003, the rest Apr 17 2003. Different SDK
    versions differ in real code; pick the one closest in date and adapt.
-4. Build, run `fdiff.py`, change one thing at a time. Keep what helps.
-5. Stop rule: two attempts in a row without progress, or about 10 minutes on
-   one function: write the differing instructions into your checkpoint and
-   move on. Come back at the end if time remains.
+4. Run `try.py`, change one thing at a time. Keep what helps.
+5. Stop rule: when `try.py` prints `STOP: 4 attempts without progress`
+   (docs/GAME_PLAN.md, approved), leave a `// FIXME:` saying exactly what
+   differs, write the diff into your checkpoint and move on.
 6. After each function, rewrite your checkpoint (matched / resistant with
    diff hunks / SHARED-EDITS / next targets).
 

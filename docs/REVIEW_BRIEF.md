@@ -3,16 +3,19 @@
 You review one unit branch (`unit/<name>`) before it is merged into
 `matching`. You have not seen the author's reasoning, and you shouldn't trust
 its report: assume the author wanted the percentage to go up and look for
-every way it might have cheated, cut corners or guessed. Read `CLAUDE.md`,
-`docs/PLAN.md` and `docs/AGENT_BRIEF.md` first; they define what's allowed.
+every way it might have cheated, cut corners or guessed.
+**Entry point: `docs/RULES_CARD.md`**: it states what's allowed (distilled
+from CLAUDE.md, PLAN.md and AGENT_BRIEF.md, which you only open to cite a
+section).
 
 You don't fix anything and you don't commit. You produce a verdict.
 
 ## What to check
 
 1. **Measurements are real.** In the branch's worktree:
-   `ninja build/G4SE01/report_honest.json`, `python3 tools/gate.py`,
-   `python3 tools/fdiff.py <unit>`. Confirm the claimed functions are 100 %,
+   `python3 tools/try.py <unit>` (compiles and diffs only this unit),
+   the main checkout's `python3 tools/gate.py` (builds the report, links),
+   `python3 tools/fdiff.py <unit> <function>` for a full diff. Confirm the claimed functions are 100 %,
    the unit's `Matching` flag (if set) holds for code and data, and
    `tools/progress.py` total is not below `matching`'s (build `matching` in a
    scratch worktree if you need the baseline).

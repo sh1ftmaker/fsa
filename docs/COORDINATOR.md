@@ -38,6 +38,23 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
 - Notes for `start`: tell the worker what's already known about the unit
   (which names other units found, which donor has the right SDK version).
 
+## Tools (G0)
+
+- `docs/RULES_CARD.md` is the only doc workers and reviewers read
+  (`docs/prompts/*.md` point at it). Keep it ~1.5k tokens: a new rule goes
+  in the card only in distilled form, with the long version here or in the
+  briefs. Don't add "read COORDINATOR.md/PLAN.md" to `--notes`; put the
+  unit-specific facts in the notes themselves.
+- `python3 tools/try.py <unit> [<function>]`: one attempt = compile only
+  that unit + objdiff + classification (regalloc-only, scheduling,
+  reloc-name, missing/extra, ...), ≤20 lines. Attempt log in
+  `build/try/<unit slug>.json` (best %, attempts, attempts since the last
+  gain); STOP after 4 without progress. A worker's report should give each
+  resistant function's class; regalloc-only and scheduling ones are permuter
+  candidates (G2). Its % is objdiff's on the compiled object; the honest
+  report and the gate stay the measure of record (extab of pool units
+  differs until the weak-duplicate strip).
+
 ## Harvesting names from the link (`tools/harvest_names.py`)
 
 After merges, once a full `ninja` ends in SHA-1 OK:

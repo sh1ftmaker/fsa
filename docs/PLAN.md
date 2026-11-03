@@ -169,8 +169,9 @@ names, resource tables). Each produces an evidence-backed `names.tsv`.
   natural C/C++ with real types, compile with the exact ninja command, check
   that one function with objdiff, change one thing at a time. Small and leaf
   functions first.
-- Stop rule: two measurements without progress, or about 10 minutes on one
-  function: record the differing instructions and move on. Leftovers go to a
+- Stop rule (since G0, docs/GAME_PLAN.md): `tools/try.py` counts attempts
+  and prints STOP after 4 without progress: record the differing
+  instructions in a FIXME and move on. Leftovers go to a
   later crack pass (stronger model; the permuter for C units).
 - After every function it rewrites `progress/<unit>.md`: matched, resistant
   (with diff hunks), shared edits needed, next targets.
