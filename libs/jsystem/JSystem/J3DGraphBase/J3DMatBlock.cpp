@@ -24,7 +24,9 @@ static size_t SizeOfJ3DColorBlockAmbientOnLoad = SizeOfLoadMatColors + SizeOfLoa
 // FIXME: the 20-byte setters (J3DTevBlock*::setTevOrder, J3DTexGenBlockPatched::setTexCoord,
 // J3DIndBlockFull::setIndTexOrder/setIndTexCoordScale) copy the 4-byte Info with
 // `lwz r5,0(r5); addi r0,r4,off; stwx r5,r3,r0`; the __memcpy operator= gives
-// `lwz r0,0(r5); addi r4,r4,off; stwx r0,r3,r4`. Only a u32 cast copy (tp's labelled fakematch) matches.
+// `lwz r0,0(r5); addi r4,r4,off; stwx r0,r3,r4`. Only tp's `*(u32*)this = *(u32*)&other` matches.
+// The Infos can't hold a u32 (union, bitfields): FSA places J3DIndBlockFull::mIndTexOrder at 0x5 and
+// J3DTevBlock1::mTevOrder at 0xA, so the word load is a cast of byte-aligned storage.
 
 // this has to get defined here to stop an sdata2 fragment going EVERYWHERE IN THE PROJECT smh
 inline u8 J3DColorChan::getAttnFn() const
@@ -138,7 +140,8 @@ void J3DTevBlockNull::initialize()
 
 // FIXME: FSA copies j3dDefaultTevColor as two words, the second through a base register
 // (`li rX, j3dDefaultTevColor@sda21; lwz 0x4(rX)`); J3DGXColorS10's __memcpy gives
-// `lwz j3dDefaultTevColor+0x4@sda21`. Only tp's `((u32*)this)[i]` copy (tp: "Fakematch?") matches.
+// `lwz j3dDefaultTevColor+0x4@sda21`. Only tp's `((u32*)this)[i]` copy (tp: "Fakematch?") matches;
+// GXColorS10 is s16-only, so no u32 member can produce the word loads.
 // Same in J3DTevBlock2/4/16::initialize.
 /**
  * @note Address: 0x800773AC

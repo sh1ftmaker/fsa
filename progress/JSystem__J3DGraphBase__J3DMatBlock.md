@@ -170,3 +170,41 @@ map lists as UNREFERENCED DUPLICATE for this object.
 
 ### Is J3DMatBlock blocked by another unit?
 No: the 19 functions are codegen; .data is the tool limitation above.
+
+## Wave 9 crack pass (w9-crack), 2026-11-02
+Goal: a natural (non-`*(u32*)`) source form for the 15 setters and 4 initialize functions. Result: none
+exists; the layout of FSA's own objects rules out every u32-typed Info. Unit unchanged at 408 / 427
+(FIXME wording updated with the evidence below). No header change kept.
+
+### Decisive evidence (target asm)
+- `setIndTexOrder__15J3DIndBlockFull`: `addi r0,r4,0x5`, so `mIndTexOrder` sits at offset 0x5: J3DIndTexOrder has
+  alignment 1. `setTexCoord__21J3DTexGenBlockPatched`: `mulli r4,r4,6` (J3DTexCoord stride 6, alignment <= 2).
+  `J3DTevBlock1::load/initialize`: `mTevOrder` at 0xA (alignment <= 2). So no Info can contain a u32 (union or
+  bitfield) and the target's `lwz` is a u32-typed access to byte storage: a cast. `__memcpy` is the only other
+  word copy and always gives the r0 form.
+- tp ShieldD (debug) symbols.txt: `__as__15J3DTevOrderInfoFRC15J3DTevOrderInfo`, `__as__23J3DIndTexCoordScaleInfo...`,
+  `__as__15J3DTexCoordInfo...`, `__as__18J3DIndTexOrderInfo...` all size 0xC: a user-declared Info::operator= that
+  is one word copy (`lwz r0; stw r0; blr`). Checked with GC/2.6 at -O0: the cast and `__memcpy` both give 0xC;
+  pikmin2/mkdd's field-wise operator= gives 0x34. Consistent with tp's cast, rules out field-wise.
+- J3DGXColorS10: base is `_GXColorS10` (ShieldD `__as__13J3DGXColorS10FRC11_GXColorS10`), s16-only, so the two
+  `lwz` (second through a base register) also need a cast; `__memcpy` gives `sym+4@sda21`.
+
+### Variants tried this pass (scratch harness with the unit's flags; then the real build where noted)
+Harness reproduces target with tp's cast, and ours with `__memcpy`.
+- anon union {u8 fields; u32 w} with `w = o.w` operator= (void / returning ref / this->w / by value): folds to `add; stw 0xc`.
+- union Info as a member of Ord; plain `u32 w` Info; Info with u32 bitfields, implicit copy: fold to `add; stw`.
+- u32-typed Info (union, plain u32, bitfields) + `J3DTevOrder::operator=(const J3DTevOrder&) { *(Info*)this = o; }`
+  or `{ getTevOrderInfo() = o; }`: matches in the harness. REAL BUILD (all four Infos as `u32 x:8` bitfields, derived
+  operator= via base): 13 setters reach 100 %, but layout breaks: TevBlock1 mTevOrder moves 0xA->0xC, IndBlockFull
+  mIndTexOrder 0x5->0x8, TexCoord stride 6->8; 50 functions below 100 %. Reverted. Ruled out.
+- aligned(4) attribute on the struct or first member, u16+u8+u8 layout, `*(Info*)&m[i] = *o` with u8 Info,
+  `*(m + i) = *o`: byte/halfword copies.
+- `Ord(const Info&)` ctor + `m[i] = Ord(*o)`: stack temp.
+- `set(const Ord&)` with `__memcpy`, `memcpy` (real call), `__memcpy(&m[i], o, 4)`, `const Ord&` param,
+  `int` index: all r0 form.
+- field-wise operator= in either order: 4x lbz/stb.
+- GXColorS10: union {GXColorS10; u32 w[2]} with `w[0]=..; w[1]=..` or a 2-iteration loop matches the base-register
+  form in the harness, but J3DGXColorS10 derives from SDK `_GXColorS10` (ShieldD), so this is the same punning.
+  `*(GXColorS10*)this = o`: 4x lha/sth.
+Not tried: permuter (not allowed). Recommendation: the cast is almost certainly the original; whether to admit it
+is a policy decision, not a search problem.
