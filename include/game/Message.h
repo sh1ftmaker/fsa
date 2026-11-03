@@ -11,7 +11,7 @@
 //   (MessageWindow_804AF490), which own the JMessage processors of
 //   game/tu_803944C8.cpp (its four vtables derive from JMessage's
 //   TProcessor / TRenderingProcessor / TSequenceProcessor / TReference; the
-//   0x3C4-byte objects are built by fn_803973E8). Only tu_80390818 calls
+//   0x3C4-byte objects are built by the constructor below). Only tu_80390818 calls
 //   into tu_803944C8, so those classes are not declared here.
 // * lbl_8050DB0C: the layout constants object (cls_804AF32C), 20 units.
 //
@@ -41,13 +41,50 @@
 class J2DTextBox;
 class JUTResFont;
 
+// The 0x3C4-byte processor objects of game/tu_803944C8.cpp (their constructor).
+// No vtable is chosen as the class's, so the name is a placeholder. Only the
+// byte at 0x19E is declared (fn_80390B64 and fn_80390BA8 use it).
+class MessageWindow_804AF490;
+
+class MessageProcessor_803944C8 {
+public:
+    // Constructor, defined in game/tu_803944C8.cpp (not yet written; the
+    // symbol was fn_803973E8). Called right after the operator new of the
+    // 0x3C4 bytes, with the window, its index and the BMG name; the
+    // constructor reading is a guess from that shape.
+    MessageProcessor_803944C8(MessageWindow_804AF490* window, s32 index, const char* bmgName);
+
+    /* 0x000 */ u8 field_0x0[0x148];
+    // fn_80390C38 returns it (-1 when the window is in neither state).
+    /* 0x148 */ s32 field_0x148;
+    /* 0x14C */ u8 field_0x14c[0x150 - 0x14C];
+    // fn_80390BDC counts it down to 0 and returns it.
+    /* 0x150 */ u32 field_0x150;
+    /* 0x154 */ u8 field_0x154[0x174 - 0x154];
+    // fn_80390850 returns it (-1 when the window is in neither state).
+    /* 0x174 */ s32 field_0x174;
+    /* 0x178 */ u8 field_0x178[0x19E - 0x178];
+    /* 0x19E */ u8 field_0x19e;
+    // fn_80390B64 writes 1 here (the byte after 0x19E, which it sets to 0xFF).
+    /* 0x19F */ u8 field_0x19f;
+    /* 0x1A0 */ u8 field_0x1a0[0x3B2 - 0x1A0];
+    // fn_80390894 indexes it with the window's argument; the array runs to
+    // the end of the object, its real length is not known.
+    /* 0x3B2 */ u8 field_0x3b2[0x3C4 - 0x3B2];
+
+    // Defined in game/tu_803944C8.cpp (not yet written); both take the
+    // processor as their object (fn_80390E68 loads it from the window's 0x48).
+    void fn_80394690();
+    void fn_8039499C(bool flag);
+}; // Size: 0x3C4 (only the first 0x19F bytes and 0x3B2 on are declared)
+
 // One per player, field_0x114 of the manager (created there with
 // __nw__(0x5C)). Code in game/tu_80390818.cpp. Named after its vtable
 // (0x804AF490, stored first by the constructor).
 class MessageWindow_804AF490 {
 public:
     // fn_80391A1C: stores the vtable and index, builds field_0x48 and
-    // field_0x4c (two 0x3C4-byte objects, fn_803973E8), field_0x44 = 0,
+    // field_0x4c (two 0x3C4-byte objects, MessageProcessor_803944C8), field_0x44 = 0,
     // field_0x1c = 1.
     MessageWindow_804AF490(s32 index);
     /* 0x08 */ virtual ~MessageWindow_804AF490(); // fn_80391974
@@ -60,13 +97,47 @@ public:
     // Window state byte (fn_80384C58 compares it with 5 and 8; callers of
     // fn_8037F1E4, which returns it, compare with 1, 3 and 5).
     /* 0x24 */ u8 field_0x24;
-    /* 0x25 */ u8 field_0x25[0x2C - 0x25];
+    /* 0x25 */ u8 field_0x25[0x28 - 0x25];
+    // Option flags, read by fn_80390E68: 0x2 gates the update, 0x40 picks
+    // fn_80394690 over fn_8039499C (which gets 0x2000 as its flag).
+    /* 0x28 */ u16 field_0x28;
+    /* 0x2A */ u8 field_0x2a[0x2C - 0x2A];
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
     /* 0x30 */ u8 field_0x30[0x44 - 0x30];
     /* 0x44 */ u8 field_0x44;
-    /* 0x48 */ void* field_0x48; // 0x3C4-byte object, game/tu_803944C8.cpp
-    /* 0x4C */ void* field_0x4c; // the same
+    /* 0x48 */ MessageProcessor_803944C8* field_0x48;
+    /* 0x4C */ MessageProcessor_803944C8* field_0x4c;
     /* 0x50 */ u8 field_0x50[0x5C - 0x50];
+
+    // fn_80390E68: with bit 0x2 of field_0x28 set, runs the processor of
+    // field_0x48 through fn_80394690 (bit 0x40) or else fn_8039499C (its flag
+    // is bit 0x2000).
+    void fn_80390E68();
+
+    // fn_80390850: the field at 0x174 of the processor of the window's state
+    // (1-5: field_0x4c, 6-8: field_0x48), -1 in any other state.
+    s32 fn_80390850();
+
+    // fn_80390B64: sets the byte at 0x19E of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48) to 0xFF and the one at 0x19F to 1.
+    void fn_80390B64();
+
+    // fn_80390BA8: the byte at 0x19E of the processor of the window's state
+    // (5: field_0x4c, 8: field_0x48), 0xFF in any other state.
+    u8 fn_80390BA8();
+
+    // fn_80390BDC: decrements the field at 0x150 of the processor of the
+    // window's state (5: field_0x4c, 8: field_0x48) unless it is 0, and
+    // returns it; 0 in any other state.
+    u32 fn_80390BDC();
+
+    // fn_80390C38: the field at 0x148 of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48), -1 in any other state.
+    s32 fn_80390C38();
+
+    // fn_80390894: the byte at index + 0x3B2 of the processor of the window's
+    // state (5: field_0x4c, 8: field_0x48), 0 in any other state.
+    u8 fn_80390894(s32 index);
 }; // Size: 0x5C
 
 // *lbl_8053AD78. Vtable 0x804AF070 (one slot, the destructor fn_8038D90C).
