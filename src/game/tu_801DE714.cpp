@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/act/tu_801DE714.h"
 
 // tu_801DE714 (0x801E1D9C)
@@ -8,6 +9,11 @@ bool cls_804A51E4::fn_801E1D9C() const {
         result = true;
     }
     return result;
+}
+
+// tu_801DE714 (0x801E1DE8): forwards the result of fn_801CCF7C.
+bool cls_804A51E4::fn_801E1DE8() {
+    return fn_801CCF7C();
 }
 
 // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.

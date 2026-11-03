@@ -401,6 +401,12 @@ extern "C" {
 s32 fn_801CB7CC(s16 angle);
 }
 
+// game/tu_801CB270.cpp; called from game/tu_801DE714.cpp. Whether fn_80230188
+// holds for every player that takes part (fn_80138A30); takes no arguments.
+extern "C" {
+bool fn_801CCF7C();
+}
+
 // The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
 // (stored at 0 by their constructors); no members declared yet. 0x20
 // (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
