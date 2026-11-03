@@ -40,8 +40,8 @@
 class GameView_804A9950 {
 public:
     // fn_802DE64C (1 unit): stores the vtable, constructs the four TVec2f
-    // arrays (__construct_array with fn_801546E4, an empty 8-byte
-    // constructor) and zeroes the words noted below.
+    // arrays (__construct_array with TVec2f's empty 8-byte
+    // constructor, __ct__Q29JGeometry8TVec2<f>Fv at 0x801546E4) and zeroes the words noted below.
     GameView_804A9950();
 
     // Virtual table at 0x804A9950: 4 slots. tu_80139BE8 calls 0xC

@@ -79,6 +79,7 @@ bool cls_804A46F4::fn_801D12CC() {
             }
         }
         result = true;
+        // fn_801CF888 reads only (x, y) of its first position (8-byte slots).
         if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &pos, field_0x4)) {
             mPathCount = 0;
             field_0x32c.set(pos.x, pos.y, 0.0f);
@@ -166,7 +167,8 @@ bool cls_804A46F4::fn_801D183C(f32 range) {
             pos.set(playerPos.x, playerPos.y, playerPos.z);
         }
         if (range == 0.0f || square(pos.x - mPos.x) + square(pos.y - mPos.y) <= square(range)) {
-            if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &pos, field_0x4)) {
+            // fn_801CF888 reads only (x, y) of its first position (8-byte slots).
+        if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &pos, field_0x4)) {
                 result = true;
             }
         }

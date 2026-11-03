@@ -102,6 +102,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
         from = field_0x32c;
         fn_800FE294(&tmpTo, field_0x358.fn_80214244(), player);
         to = tmpTo;
+        // fn_801CF888 reads only (x, y) of its first position (8-byte slots).
         if (field_0x358.fn_80214244()->fn_800FD4C0(sel, player) &&
             fn_801CF888((const JGeometry::TVec2f*)&from, &to, field_0x4)) {
             return;
