@@ -147,8 +147,9 @@ below, ~0.5–0.65B.
    GameRoot2 +0x10/+0x20/+0x2C/+0x30.
 3. ActorManager.h: the remaining manager functions.
 4. Player.h, GameView.h, Effect.h (225–325 dependent units each).
-5. Per-actor header convention `include/game/act/<actor>.h`; move the 12
-   existing classes out of their .cpp files.
+5. Per-actor header convention `include/game/act/<unit>.h` (proposal
+   below, "Per-actor headers"); move the existing classes out of their .cpp
+   files.
 6. Map/Collision, Camera.
 7. EnemyBase.h, with tu_801CDC8C and tu_801D1C18 matched early.
 8. Sound, UI2D, Message, Game.
@@ -172,6 +173,63 @@ budget. Measure tokens per matched function every wave and adjust tiers.
 
 **G5 — the spawner** (`tu_801F9484`, 0x61AC bytes, 367 new + constructor
 pairs), once most actor headers exist.
+
+## Per-actor headers (G1 item 5): proposal
+
+**Why.** The spawner's unit `tu_801F9484` holds 285 weak, out-of-line
+actor constructors (0x801FF744-0x80204298; the spawner itself is too
+large to inline them), each `ActorBase` ctor (or the enemy base's) plus a
+vtable store. They are the `Foo() {}` of each actor class, emitted where
+they are used, and only the spawner uses them. So the spawner's .cpp must
+see every actor class, and an actor class declared in its own .cpp can't
+be shared. The vtable and the out-of-line virtuals stay in the actor's
+unit (its destructor is the key function).
+
+**Path and name.** One header per unit, named like the unit:
+`include/game/act/<unit>.h` for `src/game/<unit>.cpp`, so
+`act_rat.cpp` ↔ `act/act_rat.h` and an actor class in an unnamed unit
+`tu_802F4AEC.cpp` ↔ `act/tu_802F4AEC.h`. A unit rename renames the header
+in the same commit. A unit with several actor classes (4 units have 2)
+declares all of them in its one header. Class names keep today's rule:
+the actors.tsv English name plus the vtable address
+(`Rat_8049C400`), renamed with their mangled symbols only on evidence.
+
+**What goes in the header.**
+- Include guard `GAME_ACT_<UNIT>_H`; includes only the base class's
+  header (`game/ActorBase.h`, later `game/EnemyBase.h` or an intermediate
+  base's unit header) and forward declarations for pointer members.
+- A comment with the actor ID(s) (`game/ActorId.h`), the spawner's
+  `__nw__` size and address, and the constructor's address in the
+  spawner's unit.
+- The class: the inline constructor exactly as the spawner's weak copy
+  needs it (member initializers for the fields it sets; most are `{}`),
+  the destructor and virtual overrides as declarations with their slot
+  offsets, any non-virtual members other units call, and the fields with
+  offsets and `}; // Size: 0xNNN` equal to the `__nw__` size.
+- Nothing else: no function bodies besides the constructor and small
+  accessors other units inline, no data, no `.sdata2` literals. The
+  destructor is never inline (that would move the vtable into the spawner;
+  the enemy base is the one known exception, its inline destructor is
+  emitted weak in act_rope).
+
+**What stays in the .cpp.** Every out-of-line member, file statics and
+tables, unit-local inline helpers, FIXME notes.
+
+**Order.** MWCC places the spawner's weak constructors in reverse order of
+their first call in `fn_801F9484` (all 284 neighbouring pairs are
+inverted), so the spawner's include order does not decide their layout;
+the switch's case order does. G5 still has to confirm this on a build.
+
+**Moving the existing files.** 16 `act_*.cpp` now declare their class in
+the .cpp: the 12 from before G1 and act_explosion, act_log_monitor_npc,
+act_rat, act_side_view_gate_display_npc from the G1 ActorBase check
+(act_sword_soldier has no class yet). The move is mechanical: cut the class (with its inline
+constructor and its comment) into `include/game/act/<unit>.h`, include
+that from the .cpp after the shared headers, change nothing else. Their
+objects must stay byte-identical, so the gate and an unchanged honest
+report are the review; one commit for all of them, no symbols.txt
+change. New actor units follow the convention from the start, and the
+rules card tells workers to put the class in the header.
 
 ## Expectations
 
