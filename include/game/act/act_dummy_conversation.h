@@ -14,7 +14,10 @@ public:
     /* 0x08 */ virtual ~DummyConversation_804B1A48();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    // update: 0 picks the message with the d-pad/buttons, 1 opens it
+    // (fn_8038C678), 2 waits for the window to close.
+    /* 0x230 */ s32 mState;
+    /* 0x234 */ u32 mMessage; // message id, starts at 1
 }; // Size: 0x238
 
 #endif

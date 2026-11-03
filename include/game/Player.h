@@ -167,6 +167,14 @@ extern "C" {
 bool fn_8023ED8C(s32 player);
 bool fn_8023EBB8(s32 player);
 bool fn_802308E0(s32 player);
+// 1 unit (act_dummy_conversation). Owner: tu_8022AD64. fn_8022FE80 forwards
+// (layer, serial, a, b) to the player's fn_8024CAC8 (it compares serial with
+// the player's word 0xD44); fn_8022FD8C returns the player index whose
+// fn_8024CA0C accepts serial, or -1; fn_8023061C(player, 0) is called when a
+// conversation test starts or is cancelled (result unused).
+void fn_8022FE80(s32 player, s32 layer, s32 serial, s32 a, s32 b);
+s32 fn_8022FD8C(s32 serial);
+bool fn_8023061C(s32 player, bool flag);
 bool fn_80230224(s32 player, bool flag);
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in

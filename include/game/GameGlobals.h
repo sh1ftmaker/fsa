@@ -239,6 +239,36 @@ struct GameRoot2_8049F108 {
 
 extern GameRoot2_8049F108* lbl_8053AB10;
 
+// The input object *lbl_8053AD30 (game/tu_803099FC.cpp, owner not written
+// yet): named after its vtable, 0x804AA8C8 (constructor fn_8030AC4C, which
+// stores it in lbl_8053AD30). Other members unknown.
+class cls_804AA8C8 {
+public:
+    // Owner: game/tu_803099FC.cpp. Return the word at 4 + 4*slot (resp.
+    // 0x24 + 4*slot) of the object ANDed with mask, or 0 for slot -0x3E7.
+    // act_dummy_conversation's update tests the first for held buttons and
+    // the second for fresh presses.
+    u32 fn_80309D24(s32 slot, u32 mask);
+    u32 fn_80309D6C(s32 slot, u32 mask);
+};
+extern cls_804AA8C8* lbl_8053AD30;
+extern "C" {
+// Owner: game/tu_803099FC.cpp. fn_8030AAF4 maps a player index (0-3) to an
+// input slot (-0x3E7 for none); masks used: 0x100/0x200/0x400/0x20 and 1/2.
+s32 fn_8030AAF4(s32 player);
+} // extern "C"
+
+// The object *lbl_8053AED0 (game/tu_8043A0E8.cpp, owner not written yet):
+// named after its vtable, 0x804B1920 (constructor fn_8043F504, which stores
+// it in lbl_8053AED0). Only the bytes at 0x1F0 are known (act_dummy_conversation
+// stores 2 at 0x1F0 + player); its size and the rest are unknown.
+class cls_804B1920 {
+public:
+    /* 0x000 */ u8 pad_0x0[0x1F0]; // vtable pointer and unknown fields
+    /* 0x1F0 */ u8 field_0x1f0[4]; // per player
+};
+extern cls_804B1920* lbl_8053AED0;
+
 // game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
 // the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
 // param2 as a byte at 0xE5, the floats are a position (callers pass mPos.x,
