@@ -6366,6 +6366,7 @@ game/tu_803A85E4.cpp:
 	.rodata     start:0x804761A0 end:0x80476208
 	.data       start:0x804AF878 end:0x804AF888
 	.bss        start:0x8050E858 end:0x8050E958
+	.sbss       start:0x8053AD98 end:0x8053ADA0
 
 game/tu_803A8DFC.cpp:
 	extab       start:0x8000F3C4 end:0x8000F5D4
