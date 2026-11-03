@@ -300,7 +300,10 @@ public:
     /* 0x0CEF */ u8 field_0xcef[0xCFE - 0xCEF];
     // Returned by fn_80240870 (via fn_80234134).
     /* 0x0CFE */ bool field_0xcfe;
-    /* 0x0CFF */ u8 field_0xcff[0xD60 - 0xCFF];
+    /* 0x0CFF */ u8 field_0xcff[0xD08 - 0xCFF];
+    // Returned by fn_8024322C (via fn_8023697C, which returns -1 without a player).
+    /* 0x0D08 */ s32 field_0xd08;
+    /* 0x0D0C */ u8 field_0xd0c[0xD60 - 0xD0C];
     // Another player's index, or negative for none: fn_80246F28 asks the
     // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
     // own field_0x120c / field_0x1224 instead when it is negative.
