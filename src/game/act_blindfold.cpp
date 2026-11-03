@@ -64,6 +64,7 @@ void Blindfold_804A8EF8::update() {
     if (lbl_8053AAF8->field_0x7e == 1) {
         for (s32 i = 0; i < 4; i++) {
             bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+            // Both branches are the same: the original has two full copies of the body (separate stack slots).
             if (takesPart == true) {
                 if (contains(box, *fn_8023E724(fn_8022EA0C(i)))) {
                     covered = true;
@@ -112,6 +113,7 @@ void Blindfold_804A8EF8::update() {
         }
         break;
     case 3:
+        // The always-true <= 0xFF test on the u8 is in the original (cmplwi 0xff; bgt).
         if (field_0x241 <= 0xFF) {
             field_0x244 += 12;
             if (field_0x244 >= 0xFF) {
