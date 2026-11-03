@@ -61,13 +61,19 @@ struct ActorSub1DC_801EAD68 {
 // 0x13, 0x18, 0x1C and 0x1D (fn_801EF830, 0x801EFA64-0x801EFBB0). The
 // constructor sets 0x10 and 0x14 and then again after filling the table (the
 // base constructor's stores show both), hence the separate reset.
+union SpriteParamsWord_801F5AE0 {
+    SpriteParamsWord_801F5AE0(s32 v) : word(v) {}
+    s32 word;
+    u8 bytes[4];
+};
+
 struct SpriteParams_801F5AE0 {
     SpriteParams_801F5AE0() : field_0x10(-1), field_0x14(-1) { reset(); }
     void reset() {
         for (u8 i = 0; i < 16; i++) {
             field_0x0[i] = i;
         }
-        field_0x10 = -1;
+        field_0x10.word = -1;
         field_0x14 = 0;
         mMtx = NULL;
         field_0x1c = 0;
@@ -91,7 +97,7 @@ struct SpriteParams_801F5AE0 {
     }
 
     /* 0x00 */ u8 field_0x0[16]; // 0, 1, ..., 15
-    /* 0x10 */ s32 field_0x10;   // fn_801EF830 reads its low byte (lbz 0x13)
+    /* 0x10 */ SpriteParamsWord_801F5AE0 field_0x10; // fn_801EF830 reads its low byte (lbz 0x13)
     /* 0x14 */ s32 field_0x14;
     // When set, fn_801EF830 concatenates it with the sprite's scale matrix
     // (PSMTXConcat, 0x801EFBD0) and keeps its translation column; act_rat's

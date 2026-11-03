@@ -308,6 +308,24 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
                             bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
 
+// game/tu_801CB270.cpp (not written yet). 4 units. Given the address of an
+// emitter pointer: with *emitter set, moves it to pos by fn_8013CB44(*emitter,
+// pos, height, depth, true) or, when its view is not drawn, deletes it and
+// clears the pointer (0x801CB71C-0x801CB798).
+class JPABaseEmitter;
+extern "C" void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height,
+                            s32 depth);
+// game/tu_801CB270.cpp. NULL-checks the emitter, then sets the status bits 0x40 and 0x1 and a
+// word at 0x24 to 1 (0x801CB7A0).
+extern "C" void fn_801CB7A0(JPABaseEmitter* emitter);
+
+// game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
+// fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the id
+// (tail-calls fn_803075AC, or fn_80307830 for small ids); the bool and the
+// int are converted to 0/1 flags for the callee. The result is unused.
+extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d,
+                            s32 e, s32 f);
+
 // The 0x20-byte object in .bss at 0x804BC540 (function-local static of
 // fn_8011921C, built on first use); named after its destructor fn_801192AC. Only the fields
 // fn_801186B0 writes are known.

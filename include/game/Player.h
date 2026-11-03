@@ -283,6 +283,8 @@ s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
+// 15 units. -> fn_8023FC5C (a byte); 0xFF without a player manager, 0xFF for an inactive player.
+u8 fn_8023BCD4(s32 player);
 bool fn_8023BE0C(s32 player);            // 3 units. -> fn_8023FF88 (byte 0x1200); else false
 // Signed counts, not flags. Callers sign-extend the result before using it
 // as an int and never clrlwi it: fn_8023CA88 extsb. + ble at 0x80306D7C and
