@@ -169,7 +169,7 @@ config.compilers_tag = "20251118"
 config.dtk_tag = "v1.8.4"
 config.objdiff_tag = "v3.8.3"
 config.sjiswrap_tag = "v1.2.2"
-config.wibo_tag = "1.0.3"
+config.wibo_tag = "1.1.0"  # not 1.2.0: sjiswrap.exe fails to load under it (GetProcAddressFail)
 
 # Project
 config.config_path = Path("config") / config.version / "config.yml"
