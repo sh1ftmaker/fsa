@@ -50,3 +50,31 @@ The same header commits are cherry-picked on unit/JSystem__J3DGraphLoader__J3DAn
 - J3DAnmLoaderDataBase::load sits at the end of the J3DShapeFactory.cpp .text split
   (0x800CEDxx, before 0x800CF3E8); the J3DAnmLoader unit needs that boundary moved.
 - JUTNameTab's dtor is weak; FSA keeps the copy at 0x8008EAEC (fn_8008EAEC) in JUTNameTab's range.
+
+## Wave 8 (w8-j3d-hold), 2026-11-03
+Baseline (this worktree): total: 4523 / 11561 functions, 819036 / 4442088 bytes of code (18.44 %). Unchanged.
+62/62 functions and all data 100 %; stays NonMatching (link order). No source change.
+
+### -sym on lead (coordinator): does not apply here
+- The unit's ninja command line has no `-sym on` (`-O4,p -inline auto`, cflags_jsystem_mkdd).
+- Scratch compile with `-sym on`: every inline/weak function moves to its own .text section after the
+  main one (~J3DAnmBase, ~JUTNameTab, the VtxColor/Color/... dtor+getKind groups), and
+  JGadget/linklist.h's `#line 77`/`#line 541` (pulled in via JUTNameTab/JGadget) split the main section
+  (init..J3DAnmTransform ctor land in a separate section). With those `#line`s removed (scratch include
+  override) the main functions are one section again, but all weak functions still sit in trailing
+  sections. FSA (and MKDD, same layout at 0x80021480) interleaves them: ~J3DAnmBase after update,
+  ~J3DAnmVtxColor right after J3DAnmVtxColorFull's ctor, ~J3DAnmColor after J3DAnmColorFull's ctor.
+  So `-sym on` gives the wrong layout for this unit; no SHARED-EDIT from it.
+
+### What decides the position (scratch tests, unit flags)
+MWCC emits a base class's inline dtor right *after* the first function that constructs a derived object
+(the base-subobject cleanup reference), never before it: base ctor inline or out-of-line, pure or
+inline-defined dtor, initializer or body, `new D`, a local `D d`, all give `ctor, ~B`. An explicit
+`x->~C()` emits ~C right after that function. Vtable-only weak functions (~D, getKind) go to the end.
+`-inline deferred` reverses the whole file. So FSA's ~J3DAnmBase after update means a function between
+update and the J3DAnmTransform ctor, dead-stripped in FSA, constructed a J3DAnmBase subclass.
+Evidence from SMS (2002 JSystem): `__ct__10J3DAnmBaseFv`, `__ct__10J3DAnmBaseFs`, `__dt__10J3DAnmBaseFv`
+follow update__12J3DFrameCtrlFv directly; their out-of-line J3DAnmBase ctors alone don't emit ~J3DAnmBase
+in our compiler (tested), and an out-of-line ~J3DAnmBase contradicts J3DAnmLoader's inlined copy.
+Which dead-stripped function it was is unknown; adding one would be a fabricated function. Left as FIXME.
+Blocked by: codegen/source knowledge, not another unit.
