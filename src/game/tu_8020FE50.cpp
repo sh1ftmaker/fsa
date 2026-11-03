@@ -7,11 +7,6 @@
 #include "game/GameView.h"
 #include "game/act/tu_8020FE50.h"
 
-// The original reads the __float_epsilon word at run time (the SDK's float.h
-// in the mkdd and bfbb donors defines FLT_EPSILON this way).
-#undef FLT_EPSILON
-#define FLT_EPSILON (*(f32*)__float_epsilon)
-
 static inline bool isTiny(const JGeometry::TVec3f& v) {
     return v.squared() <= 32.0f * FLT_EPSILON;
 }
