@@ -37,6 +37,7 @@ struct J2DPicture : public J2DPane {
     J2DPicture(const ResTIMG*);
     J2DPicture(const char*);
     J2DPicture(JUTTexture* texture);
+    J2DPicture(u64 tag, const JGeometry::TBox2f& bounds, const ResTIMG* timg, const ResTLUT* tlut);
     J2DPicture(u64 id, const JGeometry::TBox2f& bounds);
 
     virtual ~J2DPicture();                                                                                               // _08

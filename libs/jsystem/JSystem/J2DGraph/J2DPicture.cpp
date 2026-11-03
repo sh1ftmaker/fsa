@@ -138,6 +138,19 @@ J2DPicture::J2DPicture(JUTTexture* texture)
     initinfo();
 }
 
+J2DPicture::J2DPicture(u64 tag, const JGeometry::TBox2f& bounds, const ResTIMG* timg, const ResTLUT* tlut)
+    : J2DPane(tag, bounds)
+    , mPalette(nullptr)
+{
+    for (int i = 0; i < 4; i++) {
+        mTextures[i] = nullptr;
+    }
+    mUsedTextureFlags = 0;
+    mTextureCount     = 0;
+    private_initiate(timg, tlut);
+    initinfo();
+}
+
 J2DPicture::J2DPicture(u64 id, const JGeometry::TBox2f& bounds)
     : J2DPane(id, bounds)
     , mPalette(nullptr)
