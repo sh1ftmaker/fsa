@@ -59,6 +59,9 @@ public:
     void fn_800FDE38();
     bool fn_800FD548(u8 index);
     bool fn_800FD594(u8 index);
+    // RailBase.cpp (not written yet): steps the rail in direction dir (1 or -1);
+    // called from fn_801C79A0 (tu_801C71BC.cpp) with the result of fn_80214244.
+    void fn_800FD818(s32 dir);
     bool fn_800FD4C0(u8 a, u8 b);
     s32 fn_800FE25C(u8 index);
     u8 fn_800FE21C(u8 index);

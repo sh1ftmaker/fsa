@@ -63,6 +63,14 @@ public:
     // a rail query (fn_800FD894 on field_0x358) and fn_801CD664; otherwise
     // from fn_801CD664(0xC) alone.
     void fn_801C8BC4(u8 flag);
+    // game/tu_801C71BC.cpp: rail step. Clears mFlags 0x2000000, sets or clears
+    // 0x20000 from fn_800FD594 on field_0x358, reads the rail point at 0xFF
+    // into field_0x32c, mPos and mPrevPos, steps the rail (fn_800FD818) in the
+    // direction of its field_0x1, then fn_801C8BC4(1) and fn_801C3B7C 0x17/0x18.
+    void fn_801C79A0();
+    // game/tu_801C71BC.cpp (not written yet): called with (0, 1) and (0, 0),
+    // the arguments are literals; s32 is a guess until its body is read.
+    void fn_801C8C84(s32, s32);
     // game/tu_801C9AF8.cpp (not written yet): 0 if field_0x560 is 4 or
     // `player`, else 1.
     bool fn_801CAED4(int player);
