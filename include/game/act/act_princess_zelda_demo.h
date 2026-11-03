@@ -13,6 +13,10 @@ class PrincessZeldaDemo_8049D208 : public cls_8049D140 {
 public:
     /* 0x58 */ virtual s32 vfunc_0x58();
 
+    void fn_8010E2D4(s32 arg);
+    void fn_8010E7E8(s32 arg);
+    void fn_8010F9F0();
+
     /* 0x230 */ u8 field_0x230; // set to 0 by the ctor
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
