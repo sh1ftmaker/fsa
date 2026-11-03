@@ -1494,7 +1494,7 @@ config.libs = [
         Object(NonMatching, "game/act_tingle_time_up_manager.cpp"),
         Object(NonMatching, "game/tu_803536C4.cpp"),
         Object(NonMatching, "game/act_vaati_time_up.cpp"),
-        Object(NonMatching, "game/act_force_gem_shadow.cpp"),
+        Object(Matching, "game/act_force_gem_shadow.cpp"),
         Object(NonMatching, "game/tu_80354D64.cpp"),
         Object(NonMatching, "game/act_thwomp_launch_npc_2.cpp"),
         Object(NonMatching, "game/act_npc_ride_switch.cpp"),
