@@ -178,6 +178,14 @@ bool fn_802308E0(s32 player);
 // conversation test starts or is cancelled (result unused).
 void fn_8022FE80(s32 player, s32 layer, s32 serial, s32 a, s32 b);
 s32 fn_8022FD8C(s32 serial);
+// Owner: tu_8022AD64 (0x8022FF8C, defined there). 1 unit (act_merchant's update, state 1):
+// fn_8022FEB8's box test for a given player (player, box, layer, serial, a, b), called with
+// the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.
+void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
+// Owner: tu_8022AD64 (0x802300EC, defined there). 1 unit (act_merchant's update), also called
+// by ActorManager_804A5800::fn_801F6884's loop. Per-player query on the index fn_8022FD8C
+// returned; result tested with clrlwi 24.
+bool fn_802300EC(s32 player);
 bool fn_8023061C(s32 player, bool flag);
 bool fn_80230224(s32 player, bool flag);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
@@ -287,6 +295,8 @@ s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
 bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
+// 15 units. -> fn_8023FC5C (a byte); 0xFF without a player manager, 0xFF for an inactive player.
+u8 fn_8023BCD4(s32 player);
 bool fn_8023BE0C(s32 player);            // 3 units. -> fn_8023FF88 (byte 0x1200); else false
 // Signed counts, not flags. Callers sign-extend the result before using it
 // as an int and never clrlwi it: fn_8023CA88 extsb. + ble at 0x80306D7C and

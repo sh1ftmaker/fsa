@@ -142,7 +142,6 @@ act_magic_circle_generator	sinit	__sinit_act_magic_circle_generator_cpp	-	-	new	
 act_magic_jar	dtor	__dt__17MagicJar_804AF018Fv	MagicJar_804AF018	0x804AF018	new	new
 act_magic_jar	sinit	__sinit_act_magic_jar_cpp	-	-	new	new
 act_maiden_demo	sinit	__sinit_act_maiden_demo_cpp	-	-	new	-
-act_merchant	sinit	__sinit_act_merchant_cpp	-	-	new	-
 act_navi	sinit	__sinit_act_navi_cpp	-	-	new	-
 act_navi_maiden_crystal	dtor	__dt__12cls_804ADFE8Fv	cls_804ADFE8	0x804ADFE8	new	new
 act_navi_maiden_crystal	sinit	__sinit_act_navi_maiden_crystal_cpp	-	-	new	new
@@ -164,8 +163,6 @@ act_poe	dtor	__dt__12Poe_8049F330Fv	Poe_8049F330	0x8049F330	new	new
 act_poe	sinit	__sinit_act_poe_cpp	-	-	new	new
 act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
-act_popo	dtor	__dt__13Popo_804A0868Fv	Popo_804A0868	0x804A0868	new	new
-act_popo	sinit	__sinit_act_popo_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_princess_zelda_demo	sinit	__sinit_act_princess_zelda_demo_cpp	-	-	new	-
@@ -349,7 +346,6 @@ tu_80209C14	sinit	__sinit_tu_80209C14_cpp	-	-	new	-
 tu_8020B354	sinit	__sinit_tu_8020B354_cpp	-	-	new	-
 tu_8020C0A8	sinit	__sinit_tu_8020C0A8_cpp	-	-	new	-
 tu_8020CCA8	sinit	__sinit_tu_8020CCA8_cpp	-	-	new	-
-tu_8020F798	sinit	__sinit_tu_8020F798_cpp	-	-	new	-
 tu_8020FE50	sinit	__sinit_tu_8020FE50_cpp	-	-	new	-
 tu_80210630	sinit	__sinit_tu_80210630_cpp	-	-	new	-
 tu_80212E3C	sinit	__sinit_tu_80212E3C_cpp	-	-	new	-
