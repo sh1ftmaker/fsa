@@ -26,6 +26,8 @@ public:
     /* 0x64 */ virtual void vfunc_0x64();
     // fn_80124C2C: returns the result of the base's fn_80121DB0.
     /* 0x74 */ virtual s32 vfunc_0x74();
+    // fn_80124AD8: returns the base's vfunc_0x6C(9), as the zora's 0x88 does.
+    /* 0x94 */ virtual s32 vfunc_0x94();
 
     /* 0x340 */ u8 field_0x340[0x35C - 0x340]; // not declared yet
     /* 0x35C */ s32 field_0x35c; // the low byte of field_0x90, set by vfunc_0x64
