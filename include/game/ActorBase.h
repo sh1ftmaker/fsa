@@ -24,19 +24,11 @@
 
 struct JPABaseEmitter;
 
-// Axis-aligned 2D box in the actor's top-down space: (x, y - z) of a point.
-// fn_801F5790 checks max > min on both axes and offsets it by the actor's
-// position; the spawner copies the whole box with one struct assignment
-// (fn_801FF630). Member names are descriptive placeholders.
-struct ActorBox {
-    ActorBox() {}
-    ActorBox(f32 x0, f32 y0, f32 x1, f32 y1) : minX(x0), minY(y0), maxX(x1), maxY(y1) {}
-
-    /* 0x0 */ f32 minX;
-    /* 0x4 */ f32 minY;
-    /* 0x8 */ f32 maxX;
-    /* 0xC */ f32 maxY;
-}; // Size: 0x10
+// The two boxes at 0x60 and 0x70 are JGeometry::TBox2f (min i, max f) in the
+// actor's top-down space (x, y - z), relative to its position: the
+// spawner's whole-box copy (fn_801FF630) is the word-by-word copy MWCC emits
+// for TBox2<f32> (a plain struct of four floats copies with lfs/stfs), and
+// fn_801F5790 tests getWidth() > 0 and getHeight() > 0 before using one.
 
 // The member at 0x1DC: constructor fn_801EAD68, per-frame update
 // fn_801EAB0C (both in game/tu_801EAB0C.cpp), called by the actor manager's
@@ -107,13 +99,14 @@ public:
         mPrevPos = pos;
     }
     void setSpawnPos(const JGeometry::TVec3f& pos) { mSpawnPos = pos; }
-    ActorBox* getBox() { return &mBox; }
-    ActorBox* getBox2() { return &mBox2; }
-    void setBox2(const ActorBox& box) { mBox2 = box; }
+    JGeometry::TBox2f* getBox() { return &mBox; }
+    JGeometry::TBox2f* getBox2() { return &mBox2; }
+    void setBox2(const JGeometry::TBox2f& box) { mBox2 = box; }
     void setActorId(u32 id) { mActorId = id; }
     void setSerial(s32 serial) { mSerial = serial; }
     void setSlot(s32 slot) { mSlot = slot; }
     void setLife(s32 life) { mLife = life; }
+    s32 getField_0x4() const { return field_0x4; }
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
     void setField_0x90(s32 v) { field_0x90 = v; }
@@ -142,8 +135,8 @@ public:
     /* 0x03C */ JGeometry::TVec3f field_0x3c;
     /* 0x048 */ JGeometry::TVec3f field_0x48; // 1.0f
     /* 0x054 */ JGeometry::TVec3f field_0x54; // 1.0f
-    /* 0x060 */ ActorBox mBox;  // (-8, -8, 8, 8)
-    /* 0x070 */ ActorBox mBox2; // zero; the spawner copies mBox here if
+    /* 0x060 */ JGeometry::TBox2f mBox;  // (-8, -8)-(8, 8)
+    /* 0x070 */ JGeometry::TBox2f mBox2; // zero; the spawner copies mBox here if
                                 // init() left it all zero
     /* 0x080 */ f32 field_0x80;
     /* 0x084 */ f32 field_0x84;

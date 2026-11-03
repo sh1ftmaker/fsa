@@ -13,6 +13,7 @@
 
 #include "types.h"
 #include "dolphin/mtx.h"
+#include "JSystem/JGeometry.h"
 
 class ActorManager;
 struct JPAEmitterManager;
@@ -89,6 +90,17 @@ extern GameRoot2* lbl_8053AB10;
 extern "C" {
 GameView* fn_802D6A9C(void);     // lbl_8053AAF8->0x4->0xC
 EffectSystem* fn_8013C824(void); // lbl_8053AB10->0x28
+}
+
+// Per-player queries in game/tu_8022AD64.cpp (player index 0-3; each
+// checks lbl_8053AC90 and the index first). Names are dtk's.
+extern "C" {
+bool fn_8023F264(s32 player);  // the player takes part
+s32 fn_8023DE58(s32 player);   // compared with ActorBase::field_0x4
+Vec* fn_8023E724(s32 player);  // the player's position
+// Called by ActorBase::vfunc_0x18 with the actor's screen box, field_0x4
+// and mSerial when the box overlaps a player's.
+void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 }
 
 #endif

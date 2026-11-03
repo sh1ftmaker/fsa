@@ -31,6 +31,33 @@ void ActorBase::savePrevPos() {
     mPrevPos = mPos;
 }
 
+// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
+                               const Vec& pos) {
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+}
+
+// FIXME: float registers differ (the player's z lands in f7, the target uses
+// f5; the overlap box's max in f5/f6 instead of f6/f7); the rest matches.
+void ActorBase::vfunc_0x18() {
+    if (mPos.z <= 16.0f && mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        JGeometry::TBox2f box;
+        toScreenBox(&box, mBox, mPos);
+        for (int i = 0; i < 4; i++) {
+            if (fn_8023F264(i) && getField_0x4() == fn_8023DE58(i)) {
+                JGeometry::TBox2f playerBox;
+                toScreenBox(&playerBox, JGeometry::TBox2f(-12.0f, -28.0f, 12.0f, 12.0f),
+                            *fn_8023E724(i));
+                JGeometry::TBox2f overlap = box;
+                if (overlap.intersect(playerBox)) {
+                    fn_802397B4(&box, field_0x4, mSerial);
+                    return;
+                }
+            }
+        }
+    }
+}
+
 void ActorBase::update() {}
 
 void ActorBase::vfunc_0x10() {}
