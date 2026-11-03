@@ -170,10 +170,8 @@ def check_diff(wt, unit):
             return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
         if BANNED.search(l):
             return f"banned: {l.strip()[:80]}", None
-    for old in ren:
-        hits = sh(["git", "grep", "-h", "-w", old, "--", "src", "include", "libs"], wt).stdout.splitlines()
-        if any(re.search(rf"\b{re.escape(old)}\b", h.split("//")[0]) for h in hits):  # comments may keep it
-            return f"renamed {old} is still used in source", None
+    # A leftover use of a renamed symbol can't be told from text (members keep the short C++
+    # name); it breaks the link or another unit's relocations, which the merge checks reject.
     return None, ren
 
 
@@ -258,7 +256,8 @@ def candidates(max_size):
             continue
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
-        fns = [f for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) < 100
+        # Only unwritten functions: partial ones are mostly near-misses an Opus worker gave up on.
+        fns = [f for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) == 0
                and int(f.get("size", 0)) <= max_size]
         if fns:
             out.append((unit, len(fns)))
@@ -362,7 +361,7 @@ def file_candidates(max_bytes):
         unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
-        left = sum(int(f.get("size", 0)) for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) < 100)
+        left = sum(int(f.get("size", 0)) for f in u.get("functions", []) if f.get("fuzzy_match_percent", 0) == 0)
         if 0 < left <= max_bytes:
             out.append((left, unit))
     return [u for _, u in sorted(out)]
@@ -373,7 +372,8 @@ into C++ that compiles to the exact original bytes (Metrowerks GC/2.6, -O4,p, C+
 Your working directory is the repository; stay in it.
 
 Unit `{unit}`, source `src/{unit}` ({state}). Original assembly of the whole file:
-`build/G4SE01/asm/game/{base}.s`. Functions not yet matching (name, bytes, current %):
+`build/G4SE01/asm/game/{base}.s`. Functions not written yet (name, bytes, current %); leave the
+partly matched ones alone:
 {todo}
 Read docs/RULES_CARD.md once, especially "Known game-code shapes"; look at matched src/game/*.cpp
 files and include/game/ headers for the style and the classes this file uses.
@@ -399,7 +399,7 @@ End with one line: how many functions are at 100 %.
 
 
 def run_haiku_file(wt, unit, fns):
-    todo = "\n".join(f"  {f}  {sz}  {p:.2f} %" for f, (sz, p) in sorted(fns.items(), key=lambda x: x[1][0]) if p < 100)
+    todo = "\n".join(f"  {f}  {sz}  {p:.2f} %" for f, (sz, p) in sorted(fns.items(), key=lambda x: x[1][0]) if p == 0)
     state = "exists" if (wt / "src" / unit).exists() else "does not exist yet: create it, following other src/game/*.cpp files"
     prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state)
     return _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700)
@@ -429,7 +429,7 @@ def worker(args):
             accepted = 0
             if args.mode == "file":
                 t0 = time.time()
-                left = sum(sz for sz, p in fns.values() if p < 100)
+                left = sum(sz for sz, p in fns.values() if p == 0)
                 cost = run_haiku_file(wt, unit, fns)
                 why, new_fns, new_secs, gained, ren = judge(wt, unit, fns, secs)
                 if why:
@@ -440,7 +440,7 @@ def worker(args):
                     sh(["git", "commit", "-qm", f"grind: {unit} +{gained} functions (whole file)\n\n{TRAILER}"], wt)
                     accepted = gained
                     log([owner, unit, "FILE", left, "-", "ACCEPT", f"+{gained}", f"{cost:.3f}", int(time.time() - t0)])
-            todo = [] if args.mode == "file" else sorted((sz, f, p) for f, (sz, p) in fns.items() if p < 100 and sz <= args.max_size)
+            todo = [] if args.mode == "file" else sorted((sz, f, p) for f, (sz, p) in fns.items() if p == 0 and sz <= args.max_size)
             for size, fn, pct in todo[:args.per_unit]:
                 if (LOGS / "STOP").exists():
                     break
@@ -484,7 +484,7 @@ def main():
     w = sp.add_parser("worker"); w.add_argument("n", type=int)
     w.add_argument("--max-size", type=int, default=256); w.add_argument("--per-unit", type=int, default=6)
     w.add_argument("--mode", choices=["function", "file"], default="function")
-    w.add_argument("--file-max", type=int, default=1536, help="file mode: max unmatched bytes per unit")
+    w.add_argument("--file-max", type=int, default=1536, help="file mode: max unwritten bytes per unit")
     w.set_defaults(f=worker)
     sp.add_parser("status").set_defaults(f=status)
     a = ap.parse_args()
