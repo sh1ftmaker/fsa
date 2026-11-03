@@ -201,7 +201,6 @@ act_somaria_block	sinit	__sinit_act_somaria_block_cpp	-	-	new	new
 act_spawner	dtor	__dt__12cls_804A9328Fv	cls_804A9328	0x804A9328	new	new
 act_spawner	sinit	__sinit_act_spawner_cpp	-	-	new	new
 act_special_conversation_npc	dtor	__dt__31SpecialConversationNPC_804AAFB8Fv	SpecialConversationNPC_804AAFB8	0x804AAFB8	new	new
-act_spotlight	sinit	__sinit_act_spotlight_cpp	-	-	new	-
 act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
@@ -306,7 +305,6 @@ tu_801C71BC	sinit	__sinit_tu_801C71BC_cpp	-	-	new	-
 tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801CB270	sinit	__sinit_tu_801CB270_cpp	-	-	da067d5aa0aa4985c17d7a2a8c2e04180bd5247f	-
 tu_801D11FC	sinit	__sinit_tu_801D11FC_cpp	-	-	new	-
-tu_801D2C60	sinit	__sinit_tu_801D2C60_cpp	-	-	new	-
 tu_801D3320	sinit	__sinit_tu_801D3320_cpp	-	-	new	-
 tu_801D3CBC	sinit	__sinit_tu_801D3CBC_cpp	-	-	new	-
 tu_801D6CEC	sinit	__sinit_tu_801D6CEC_cpp	-	-	new	-
