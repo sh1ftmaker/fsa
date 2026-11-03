@@ -396,7 +396,7 @@ To list them, run `check_byte_arrays` over every tracked file.
   of the section is the stripped one; the gate redoes it from both objects.
   A kept copy in a dtk split passes when its relocation names equal ours
   (J2DMatBlock.o, `auto_07_80498B20_data.o`); one whose targets are still
-  `fn_...` doesn't (`__vt__10JSUIosBase`, kept in `auto_07_80498FB8_data.o`).
+  `fn_...` doesn't (`__vt__10JSUIosBase`, kept in `JSUOutputStream.o`).
   On matching (705995b) 12 copies are stripped from 9 Matching units
   already at 100 %, whose numbers don't change: JKRCompArchive and
   JKRDvdFile (`__vt__7JKRFile`), JUTResFont and J2DTextBox

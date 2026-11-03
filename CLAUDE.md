@@ -139,7 +139,7 @@ removals of a section checked together. (For dead and weak data alike,
 becomes undefined, as in dtk's split. A kept copy may be in a dtk split
 (J2DMatBlock.o, an `auto_` data object); it passes only when its relocation
 target names equal ours, so a split that still says `fn_...` keeps ours
-(the `__vt__10JSUIosBase` copies, kept in `auto_07_80498FB8_data.o`). The manifest lists these as `weak_data` with
+(the `__vt__10JSUIosBase` copies, kept in `JSUOutputStream.o`). The manifest lists these as `weak_data` with
 the three tree lines, the kept copy's placement and the layout lines; the
 gate recomputes all of it from both objects and the map. Nothing else is
 stripped: dead functions' code (objdiff doesn't count functions the target
