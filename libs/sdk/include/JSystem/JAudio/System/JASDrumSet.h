@@ -15,21 +15,21 @@ struct JASDrumSet : public JASInst
         void setPitch(f32 pitch) { mPitch = pitch; }
         void setPan(f32 pan) { mPan = pan; }
 
-        void setEffect(int index, JASInstEffect *effect);
+        void appendEffect(JASPtrListAdaptor<JASInstEffect> *effect);
         void setRelease(u32 release);
         JASVelo *getVeloRegion(int index);
         void setVeloRegionCount(u32 count, JKRHeap *heap);
 
-         static const int EFFECT_MAX = 4;
-
+        // FSA layout (as in SMG): 0x1C bytes, effects in a JASPtrList at
+        // 0x10 (appendEffect 0x8003078C).
         f32 mVolume;  // 00
         f32 mPitch;   // 04
         f32 mPan;     // 08
         u16 mRelease; // 0c
 
-        JASInstEffect *mEffects[EFFECT_MAX];
-        u32 mVelomapCount;
-        JASVelo *mVelomap;
+        JASPtrList<JASInstEffect> mEffects; // 10
+        u32 mVelomapCount;                  // 14
+        JASVelo *mVelomap;                  // 18
     };
 
     JASDrumSet();

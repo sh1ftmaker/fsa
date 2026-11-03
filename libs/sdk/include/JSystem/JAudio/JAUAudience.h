@@ -197,6 +197,9 @@ public:
         audiblep = param;
     }
 
+    // FIXME: one slot although N is 4: FSA's object is 0x40 bytes and
+    // newAudible constructs one channel. Where N went in FSA's source is
+    // not known.
     static const int MAX_CHANNELS = 1;
 
     JAUAudibleParam audiblep;              // 10
@@ -454,10 +457,10 @@ public:
     Mtx mMtx;
 };
 
+// No user ctor: FSA's TU has no state ctor (0x8003D260, once named
+// __ct__23JAUDopplerAudienceStateFv, is the audibles' calc).
 class JAUDopplerAudienceState {
 public:
-    JAUDopplerAudienceState() {}
-
     void init() {
         PSMTXIdentity(mMtx);
     }

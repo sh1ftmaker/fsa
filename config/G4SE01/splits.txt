@@ -210,8 +210,10 @@ JSystem/JAudio/System/JASBasicWaveBank.cpp:
 JSystem/JAudio/System/JASBNKParser.cpp:
 	.text       start:0x8002F274 end:0x800304C4
 	.ctors      start:0x8045BD5C end:0x8045BD60
+	.data       start:0x80491A40 end:0x80491A50
 	.bss        start:0x804B2870 end:0x804B2880
 	.sbss       start:0x8053A348 end:0x8053A350
+	.sdata2     start:0x8053B188 end:0x8053B1B0
 
 JSystem/JAudio/System/JASDrumSet.cpp:
 	.text       start:0x800304C4 end:0x80030828
@@ -224,11 +226,13 @@ JSystem/JAudio/System/JASDrumSet.cpp:
 JSystem/JAudio/System/JASInstRand.cpp:
 	.text       start:0x80030828 end:0x800309B8
 	.ctors      start:0x8045BD64 end:0x8045BD68
+	.data       start:0x80491A68 end:0x80491A78
 	.sbss       start:0x8053A358 end:0x8053A360
 	.sdata2     start:0x8053B1C0 end:0x8053B1D0
 
 JSystem/JAudio/System/JASInstSense.cpp:
 	.text       start:0x800309B8 end:0x80030B78
+	.data       start:0x80491A78 end:0x80491A88
 	.sdata2     start:0x8053B1D0 end:0x8053B1F0
 
 JSystem/JAudio/System/JASSimpleWaveBank.cpp:

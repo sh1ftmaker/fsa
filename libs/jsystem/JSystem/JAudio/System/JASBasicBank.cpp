@@ -17,9 +17,20 @@ void JASBasicBank::setInst(int prg_no, JASInst *inst) {
     mInstTable[prg_no] = inst;
 }
 
-JASInst *JASBasicBank::getInst(u32 id) const {
-    if (id >= INST_MAX) {
-        return nullptr;
+bool JASBasicBank::getInstParam(int prg_no, int key, int vel, JASInstParam *param) const {
+    JASInst *inst = getInst(prg_no);
+    if (inst == NULL) {
+        return false;
     }
-    return mInstTable[id];
+    return inst->getParam(key, vel, param);
+}
+
+JASInst *JASBasicBank::getInst(int prg_no) const {
+    if (prg_no < 0) {
+        return NULL;
+    }
+    if (prg_no >= INST_MAX) {
+        return NULL;
+    }
+    return mInstTable[prg_no];
 }

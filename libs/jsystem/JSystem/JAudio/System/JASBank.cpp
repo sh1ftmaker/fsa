@@ -13,12 +13,8 @@ JASChannel *JASBank::noteOn(const JASBank *pBnk, u32 instId, u8 param_2, u8 vel,
     if (!pBnk) {
         return NULL;
     }
-    JASInst *inst = pBnk->getInst(instId);
-    if (!inst) {
-        return NULL;
-    }
     JASInstParam instParam;
-    if (!inst->getParam(param_2, vel, &instParam)) {
+    if (!pBnk->getInstParam(instId, param_2, vel, &instParam)) {
         return NULL;
     }
     JASWaveBank *waveBank = pBnk->getWaveBank();

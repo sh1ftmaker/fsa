@@ -50,10 +50,8 @@ bool JASDrumSet::getParam(int key, int veloKey, JASInstParam *param) const {
     param->_1c = &oscp;
     param->_20 = 1;
 
-    for (int i = 0; i < 4; i++) {
-        JASInstEffect *effect = perc->mEffects[i];
-        if (effect)
-            effect->effect(key, veloKey, param);
+    for (JASPtrListAdaptor<JASInstEffect> *it = perc->mEffects.begin(); it != NULL; it = it->getNext()) {
+        it->get()->effect(key, veloKey, param);
     }
 
     for (u32 i = 0; i <  perc->mVelomapCount; i++) {
@@ -85,13 +83,9 @@ JASDrumSet::TPerc::TPerc() {
     mRelease = 1000;
     mVelomapCount = 0;
     mVelomap = NULL;
-    JASCalc::bzero(mEffects, sizeof(mEffects));
 }
 
 JASDrumSet::TPerc::~TPerc() {
-    for (int i = 0; i < EFFECT_MAX; i++) {
-        delete mEffects[i];
-    }
     delete[] mVelomap;
 }
 
@@ -110,13 +104,18 @@ JASVelo *JASDrumSet::TPerc::getVeloRegion(int index) {
     return &mVelomap[index];
 }
 
-void JASDrumSet::TPerc::setEffect(int index, JASInstEffect *effect) {
-#line 160
-    JUT_ASSERT(index < EFFECT_MAX);
-    JUT_ASSERT(index >= 0);
-    mEffects[index] = effect;
-}
+void JASDrumSet::TPerc::appendEffect(JASPtrListAdaptor<JASInstEffect> *effect) {
+    JASPtrListAdaptor<JASInstEffect> *it;
+    if ((it = mEffects.begin()) == NULL) {
+        mEffects.mList = effect;
+        return;
+    }
 
+    while (it->getNext() != NULL) {
+        it = it->getNext();
+    }
+    it->mNext = effect;
+}
 
 void JASDrumSet::TPerc::setRelease(u32 release) {
 #line 178
