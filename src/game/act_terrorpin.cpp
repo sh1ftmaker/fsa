@@ -11,6 +11,56 @@ Terrorpin_804A3B10::Terrorpin_804A3B10() {
 
 Terrorpin_804A3B10::~Terrorpin_804A3B10() {}
 
+// The two animations' keys (cel pairs for 10 frames each, then -1) and the
+// table the init hands to SpriteAnim::fn_801D2608 (names unknown).
+static const s16 lbl_80469180[6] = {0, 10, 1, 10, -1, -1};
+static const s16 lbl_8046918C[6] = {2, 10, 3, 10, -1, -1};
+static const s16* lbl_8053A120[2] = {lbl_80469180, lbl_8046918C};
+
+// The .sdata2 float init uses as the speed and the scale of the hit box
+// (not written yet).
+extern const f32 lbl_8053EB5C;
+extern const f32 lbl_8053EB68;
+
+void Terrorpin_804A3B10::init() {
+    EnemyBase_804A4808::init();
+    // field_0x90 bit 0 enables the scaled box; bits 1..3 pick field_0x2a8.
+    if (field_0x90 & 1) {
+        mFlags |= 0x2000;
+        u32 sel = (field_0x90 >> 1) & 7;
+        if (sel >= 1 && sel <= 4) {
+            mFlags |= 0x4000;
+            field_0x2a8 = sel - 1;
+        }
+    }
+    if (mFlags & 0x2000) {
+        f32 scale = lbl_8053EB68;
+        field_0x54.x = scale;
+        field_0x54.y = scale;
+        field_0x54.z = scale;
+        mBox.i.x *= scale;
+        mBox.i.y *= scale;
+        mBox.f.x *= scale;
+        mBox.f.y *= scale;
+        field_0x80.i.x = mBox.i.x;
+        field_0x80.i.y = mBox.i.y;
+        field_0x80.f.x = mBox.f.x;
+        field_0x80.f.y = mBox.f.y;
+    } else {
+        mLife = 1;
+    }
+    mLifeBackup = mLife;
+    field_0xb0 = 0x4130B;
+    mState = 0;
+    mStateTimer = 0;
+    field_0x250 = fn_801CD664(16) + 30;
+    mSpeed = lbl_8053EB5C;
+    mTargetSpeed = lbl_8053EB5C;
+    mAnim.fn_801D2608(lbl_8053A120, 2);
+    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.fn_801D1D60();
+}
+
 bool Terrorpin_804A3B10::vfunc_0x60() {
     bool hit = false;
     bool againstActor = true;
