@@ -13,6 +13,8 @@
 class EscortWoman_8049E1D0 : public EscortBase_8049E0C8 {
 public:
     /* 0x08 */ virtual ~EscortWoman_8049E1D0();
+    // fn_80125858: the vtable's init slot (ActorBase's 0x0C); calls the base's fn_80124448.
+    /* 0x0C */ virtual void init();
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual void vfunc_0x58();
     /* 0x5C */ virtual void vfunc_0x5C();
