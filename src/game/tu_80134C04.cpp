@@ -48,3 +48,7 @@ s32 fn_80021840();
 extern "C" void fn_801365A8() {
     fn_80021840();
 }
+
+extern "C" void fn_80139958() {
+    fn_8037A708(lbl_8053AD68);
+}
