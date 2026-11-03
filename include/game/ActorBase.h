@@ -475,6 +475,9 @@ public:
     // (fn_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
     // sound 0x40002.
     void fn_801F4694();
+    // 0x8019CEAC, out of line in game/tu_80197070.cpp: field_0xb0 = v. One
+    // caller (fn_80198828, 0x8019AE20) passes 0x11.
+    void fn_8019CEAC(s32 v);
 
     // Inline accessors. The spawner calls them out of line (it is too large
     // for the inliner), so they exist as weak functions in its unit at

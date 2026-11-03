@@ -264,7 +264,6 @@ tu_80184D64	dtor	__dt__12cls_804A18E0Fv	cls_804A18E0	0x804A18E0	new	new
 tu_80184D64	sinit	__sinit_tu_80184D64_cpp	-	-	new	new
 tu_8018EB94	sinit	__sinit_tu_8018EB94_cpp	-	-	new	-
 tu_801902C0	sinit	__sinit_tu_801902C0_cpp	-	-	new	-
-tu_80197070	sinit	__sinit_tu_80197070_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801A8194	dtor	__dt__12cls_804A2EC0Fv	cls_804A2EC0	0x804A2EC0	new	new
 tu_801A8194	sinit	__sinit_tu_801A8194_cpp	-	-	new	new
