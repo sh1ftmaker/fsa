@@ -1,7 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/cls_8031709C.h"
 #include "game/Effect.h"
-#include "game/GameGlobals.h"
+#include "game/Message.h"
 
 // One step of a state's sequence: the id for field_0x0 and how many frames it
 // lasts (-1 ends the sequence, -2 restarts it).

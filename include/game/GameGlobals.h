@@ -177,11 +177,6 @@ extern GameRoot2_8049F108* lbl_8053AB10;
 extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, f32 f4,
                             JUtility::TColor color);
 
-// game/tu_8037DF68.cpp (owner unit, not written yet). Maps a player index to
-// the sound-state index (0..3) that game/tu_80316E34.cpp's sequencer uses (its
-// result is that of fn_80390850); argument and result both 32-bit.
-extern "C" s32 fn_8037E9F4(s32 player);
-
 // game/tu_80301CD0.cpp (per-player lists, not written yet). ~100 calls in ~90
 // units, mostly from actors' draw: serial, layer, position, then a sprite id.
 // The callee tests d as a bool and reads g and the two stack arguments as
