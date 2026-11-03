@@ -6,6 +6,14 @@ void ActorBase_804A5770::fn_8017EAF8(const JGeometry::TVec3f& v) {
     field_0x3c = v;
 }
 
+// Copies a TVec3f from src into dst. Like fn_8017EB0C, the original keeps it
+// as a plain global function taking the destination by pointer.
+extern "C" void fn_8017EADC(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
+}
+
 // Stores x, y, z into v and returns it (the caller uses the result as the
 // source of a copy). Not a JGeometry member: its object is passed by pointer
 // and the original keeps it as a plain global function.
