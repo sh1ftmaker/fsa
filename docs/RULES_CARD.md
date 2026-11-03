@@ -166,6 +166,14 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   don't write `!= false`.
 - `fnmsubs` with the operands as `x - size*0.5`: write `x - size / 2`
   (MWCC turns the divide into the multiply-subtract in the original order).
+- Radians to an s16 angle (`fmuls f0, f1, f0`, the atan2 result first):
+  `atan2_(y, x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180())`
+  (JMath.h). The constant must come out of an inline call; a literal
+  10430.378f gives the operands swapped.
+- A by-value position temporary sharing a slot it shouldn't: the original
+  copied into a NAMED local (e.g. `TVec3f playerPos;` declared at the top
+  of the block, `playerPos = *fn_8023E724(player);`), and helpers take it by
+  `const TVec3f&` (act_pull_switch).
 - A range check compiled as `cmpwi hi; bgt; cmpwi lo; bge body`: an early
   return `if (x > hi || x < lo) return;` (a switch gives `cmpwi hi+1; bge`).
 - Positions built on the stack as 8-byte objects (y stored with x, frame
