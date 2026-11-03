@@ -19,7 +19,9 @@ public:
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual void vfunc_0x58();
     /* 0x5C */ virtual void vfunc_0x5C();
-    /* 0x60 */ virtual void vfunc_0x60();
+    // Returns a byte: the escort woman's override (act_escort_woman.h) does,
+    // and fn_80131D98 reads it as bool.
+    /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x64 */ virtual void vfunc_0x64();
     /* 0x68 */ virtual void vfunc_0x68();
     // fn_80123E80: stores the argument at 0x33c and the old value at 0x340,
