@@ -3,7 +3,7 @@
 //
 // Not written yet: vfunc_0x80 (0x801CE694), fn_801CE800, fn_801CEA60,
 // fn_801CEBD0, fn_801CECF4, fn_801CF1B0, fn_801CF798, fn_801CF888,
-// fn_801CFA70, fn_801CFD68, fn_801D00B4, fn_801D01A0,
+// fn_801CFA70, fn_801CFD68, fn_801D00B4,
 // fn_801D0338, fn_801D05F8, fn_801D08B4, fn_801D0B44.
 
 #include "game/GameAudio.h"
@@ -341,6 +341,38 @@ s32 EnemyBase_804A4808::fn_801D0020(const JGeometry::TVec3f* pos, s32 player, bo
         return 2;
     }
     return 3;
+}
+
+// FIXME: 78.3 %. The target takes the reciprocal root into the square's own
+// register (f7) and multiplies the short-offset case straight from f7; ours
+// copies the square into f0 for that case (regalloc). The first test is also
+// compiled as fcmpo; ble where the target has fcmpo; cror; beq.
+// The velocity from mPos toward *target (x, y), at most `speed` long: the
+// offset is normalised (a short one is scaled by its square), then scaled by
+// the shorter of `speed` and the length of the offset.
+void EnemyBase_804A4808::fn_801D01A0(const JGeometry::TVec3f* target, JGeometry::TVec2f* out, f32 speed) {
+    f32 dx = target->x - mPos.x;
+    f32 dy = target->y - mPos.y;
+    f32 sq = dx * dx + dy * dy;
+    bool isZero = sq <= 32.0f * FLT_EPSILON;
+    if (!isZero) {
+        if (sq > 1.0f) {
+            sq = JGeometry::TUtil<f32>::inv_sqrt(sq);
+        }
+        dx *= sq;
+        dy *= sq;
+    }
+    out->x = dx;
+    out->y = dy;
+    f32 len = square(target->x - mPos.x) + square(target->y - mPos.y);
+    if (len > 1.0f) {
+        len = __frsqrte(len) * len;
+    }
+    if (len < speed) {
+        speed = len;
+    }
+    out->x *= speed;
+    out->y *= speed;
 }
 
 // FIXME: 99.8 %. Only the literal order (the angle constant, see init).
