@@ -219,13 +219,16 @@ JSystem/JAudio/System/JASBank.cpp:
 	.sdata2     start:0x8053B1F0 end:0x8053B200
 
 JSystem/JAudio/System/JASAramStream.cpp:
-	.text       start:0x8003189C end:0x80033098
+	.text       start:0x8003189C end:0x80033018
 	.ctors      start:0x8045BD70 end:0x8045BD74
 	.rodata     start:0x8045D1D0 end:0x8045D1F8
+	.data       start:0x80491B38 end:0x80491B70
+	.bss        start:0x804B28D8 end:0x804B28E8
+	.sbss       start:0x8053A368 end:0x8053A380
 	.sdata2     start:0x8053B200 end:0x8053B220
 
 JSystem/JAudio/System/JASRegisterParam.cpp:
-	.text       start:0x80033098 end:0x800332D0
+	.text       start:0x80033018 end:0x800332D0
 
 JSystem/JAudio/System/JASSeqCtrl.cpp:
 	.text       start:0x800332D0 end:0x80033778
