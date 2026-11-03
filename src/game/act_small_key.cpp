@@ -1,8 +1,22 @@
 #include "game/GameAudio.h"
 #include "game/GameView.h"
+#include "game/Map.h"
 #include "game/act/act_small_key.h"
 
 SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
+
+bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    if (field_0x288 == 0) {
+        s32 serial = mSerial;
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+        if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+            return true;
+        }
+        return fn_802C1970(layer, pos);
+    }
+    field_0x288--;
+    return false;
+}
 
 void SmallKey_804A8CD8::fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer) {
     field_0x260 = pos;

@@ -16,6 +16,9 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    // 0x802C1970 (act_small_key's range): the key's own check after the
+    // collision list finds nothing (layer, pos); returns 0 or 1.
+    bool fn_802C1970(s32 layer, const JGeometry::TVec3f* pos);
     // 0x802C2BD0 (act_small_key's range): takes the key in r3, sets byte
     // 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
     // fn_802D6C10. Called by act_invisible_npc_wall_tomi (0x803764BC).
@@ -42,7 +45,9 @@ public:
     /* 0x244 */ u8 field_0x244[0x260 - 0x244]; // not yet known
     /* 0x260 */ JGeometry::TVec3f field_0x260; // position, set by fn_802C1D30
     /* 0x26C */ s32 field_0x26c; // layer, set by fn_802C1D30
-    /* 0x270 */ u8 field_0x270[0x2AA - 0x270]; // not yet known
+    /* 0x270 */ u8 field_0x270[0x288 - 0x270]; // not yet known
+    /* 0x288 */ s32 field_0x288; // countdown: while nonzero, vfunc_0x4C decrements it and returns 0
+    /* 0x28C */ u8 field_0x28c[0x2AA - 0x28C]; // not yet known
     /* 0x2AA */ u16 field_0x2aa; // screen column in the high byte, row in the low
     /* 0x2AC */ u8 field_0x2ac[0x2B0 - 0x2AC]; // not yet known
     /* 0x2B0 */ bool field_0x2b0; // set to true by fn_802C2BD0
