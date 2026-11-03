@@ -849,6 +849,7 @@ config.libs = [
         Object(Matching, "JSystem/JSupport/JSUInputStream.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JSupport/JSUList.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JSupport/JSUMemoryStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JSupport/JSUOutputStream.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JUtility", [
         Object(Matching, "JSystem/JUtility/JUTAssert.cpp", extra_cflags=["-O4,p"]),
