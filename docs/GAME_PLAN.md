@@ -86,9 +86,10 @@ below, ~0.5–0.65B.
    lines with a classification (regalloc only, scheduling, missing
    instructions, relocation name), counts attempts, and says STOP after 4
    tries without progress. Regalloc-only goes to the permuter queue.
-3. **Per-file packets, fresh small contexts.** The unit of work is a whole
-   file (user decision, 2026-11-02): one agent owns one game unit and works
-   toward the whole file matching, not toward individual functions. A script
+3. **Per-file packets, fresh small contexts.** Agents are allocated by file
+   (user decision, 2026-11-02): one agent owns one game unit and works through
+   its functions, rather than agents being handed scattered single functions.
+   Goals and metrics stay in matched functions. A script
    builds the agent's input for that file: its asm, a cleaned m2c draft of
    every function (m2c is GPL-3, used as a tool, output is from our own
    binary), the file's data and `.sdata2` literals in order, callee
@@ -156,8 +157,7 @@ generator and get a normal review.
 
 **G4 — waves of whole files.** The 288 direct 19-slot actor units, smallest first; then the
 EnemyBase family; then managers and systems; large functions last with a
-budget. Measure tokens per matched file (and per byte) every wave and adjust
-tiers.
+budget. Measure tokens per matched function every wave and adjust tiers.
 
 **G5 — the spawner** (`tu_801F9484`, 0x61AC bytes, 367 new + constructor
 pairs), once most actor headers exist.
