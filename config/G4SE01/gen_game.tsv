@@ -70,8 +70,6 @@ act_force_gem_spawner	dtor_emit	__dt__24ForceGemSpawner_804AB660Fv	ForceGemSpawn
 act_force_gem_spawner	sinit	__sinit_act_force_gem_spawner_cpp	-	-	new	-
 act_force_gem_winged	dtor	__dt__23WingedForceGem_804AB098Fv	WingedForceGem_804AB098	0x804AB098	new	new
 act_force_gem_winged	sinit	__sinit_act_force_gem_winged_cpp	-	-	new	new
-act_force_gem_wooden	dtor_emit	__dt__23WoodenForceGem_804AB1F0Fv	WoodenForceGem_804AB1F0	0x804AB1F0	new	new
-act_force_gem_wooden	sinit	__sinit_act_force_gem_wooden_cpp	-	-	new	-
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_four_person_pull_switch	dtor	__dt__12cls_804AE230Fv	cls_804AE230	0x804AE230	new	new
 act_four_person_pull_switch	sinit	__sinit_act_four_person_pull_switch_cpp	-	-	new	new

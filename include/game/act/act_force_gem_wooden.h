@@ -16,7 +16,20 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x38]; // not yet known
+    /* 0x230 */ s32 field_0x230; // state: 2 on tiles 0xC/0x3/0xE, 3 otherwise set (vfunc_0x4C)
+    /* 0x234 */ f32 field_0x234; // 30.0f (init)
+    /* 0x238 */ f32 field_0x238; // 1.0f (init)
+    /* 0x23C */ f32 field_0x23c; // 0.0f (init)
+    /* 0x240 */ f32 field_0x240; // 0.6f or 1.0f by field_0x258 (init)
+    /* 0x244 */ s32 field_0x244; // 0 (init)
+    /* 0x248 */ s32 field_0x248; // bits 16-19 of field_0x90 (init)
+    /* 0x24C */ s32 field_0x24c; // 60 * random + 60 (init)
+    /* 0x250 */ s32 field_0x250; // 0 (init)
+    /* 0x254 */ s32 field_0x254; // -1 (init)
+    /* 0x258 */ s32 field_0x258; // bits 0-3 of field_0x90 (init)
+    /* 0x25C */ s32 field_0x25c; // 0 (init)
+    /* 0x260 */ s32 field_0x260; // bits 22-26 of field_0x90 (init)
+    /* 0x264 */ s16 field_0x264; // 0 (init)
     /* 0x268 */ JPABaseEmitter* mEmitter268; // released by the destructor
 }; // Size: 0x26C
 
