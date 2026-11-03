@@ -96,8 +96,6 @@ act_four_switch_monitor	dtor	__dt__12cls_804A80A0Fv	cls_804A80A0	0x804A80A0	new	
 act_four_switch_monitor	sinit	__sinit_act_four_switch_monitor_cpp	-	-	new	new
 act_four_sword_demo	sinit	__sinit_act_four_sword_demo_cpp	-	-	new	-
 act_frostare_tail	sinit	__sinit_act_frostare_tail_cpp	-	-	new	-
-act_gambling_shop	dtor	__dt__21GamblingShop_804AAA70Fv	GamblingShop_804AAA70	0x804AAA70	new	new
-act_gambling_shop	sinit	__sinit_act_gambling_shop_cpp	-	-	new	new
 act_gba_appear	sinit	__sinit_act_gba_appear_cpp	-	-	new	-
 act_giant_bomb	sinit	__sinit_act_giant_bomb_cpp	-	-	new	-
 act_gibdo	dtor_enemy	__dt__14Gibdo_804A3BF8Fv	Gibdo_804A3BF8	0x804A3BF8	new	new
@@ -178,7 +176,6 @@ act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
 act_seesaw_lift	dtor	__dt__19SeesawLift_804AD348Fv	SeesawLift_804AD348	0x804AD348	new	new
-act_shadow_link_2	sinit	__sinit_act_shadow_link_2_cpp	-	-	new	-
 act_shadow_link_bow	sinit	__sinit_act_shadow_link_bow_cpp	-	-	new	-
 act_shadow_link_demo	sinit	__sinit_act_shadow_link_demo_cpp	-	-	new	-
 act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
@@ -201,8 +198,6 @@ act_special_conversation_npc	dtor	__dt__31SpecialConversationNPC_804AAFB8Fv	Spec
 act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
-act_stone	dtor	__dt__14Stone_804A93D0Fv	Stone_804A93D0	0x804A93D0	new	new
-act_stone	sinit	__sinit_act_stone_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
@@ -238,7 +233,6 @@ act_warp	sinit	__sinit_act_warp_cpp	-	-	new	-
 act_warp_cannon	dtor_sprite	__dt__19WarpCannon_8049EAE0Fv	WarpCannon_8049EAE0	0x8049EAE0	new	new
 act_warp_cannon	sinit	__sinit_act_warp_cannon_cpp	-	-	new	-
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
-act_wind_environment	sinit	__sinit_act_wind_environment_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zora	sinit	__sinit_act_zora_cpp	-	-	new	-
 act_zora_escort	sinit	__sinit_act_zora_escort_cpp	-	-	new	-
@@ -257,8 +251,6 @@ tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
 tu_801213EC	sinit	__sinit_tu_801213EC_cpp	-	-	new	-
 tu_80125B58	sinit	__sinit_tu_80125B58_cpp	-	-	new	-
 tu_801286C0	sinit	__sinit_tu_801286C0_cpp	-	-	new	-
-tu_801291A0	dtor	__dt__12cls_8049E5B8Fv	cls_8049E5B8	0x8049E5B8	new	new
-tu_801291A0	sinit	__sinit_tu_801291A0_cpp	-	-	new	new
 tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
 tu_80130310	sinit	__sinit_tu_80130310_cpp	-	-	new	new
 tu_80134C04	sinit	__sinit_tu_80134C04_cpp	-	-	new	-
@@ -302,7 +294,6 @@ tu_801C71BC	sinit	__sinit_tu_801C71BC_cpp	-	-	new	-
 tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801CB270	sinit	__sinit_tu_801CB270_cpp	-	-	da067d5aa0aa4985c17d7a2a8c2e04180bd5247f	-
 tu_801D11FC	sinit	__sinit_tu_801D11FC_cpp	-	-	new	-
-tu_801D3320	sinit	__sinit_tu_801D3320_cpp	-	-	new	-
 tu_801D3CBC	sinit	__sinit_tu_801D3CBC_cpp	-	-	new	-
 tu_801D6CEC	sinit	__sinit_tu_801D6CEC_cpp	-	-	new	-
 tu_801D7AFC	sinit	__sinit_tu_801D7AFC_cpp	-	-	new	-
@@ -319,25 +310,19 @@ tu_801E801C	dtor_emit	__dt__12cls_804A5568Fv	cls_804A5568	0x804A5568	new	new
 tu_801E801C	sinit	__sinit_tu_801E801C_cpp	-	-	new	-
 tu_801EB00C	sinit	__sinit_tu_801EB00C_cpp	-	-	new	-
 tu_80206B30	sinit	__sinit_tu_80206B30_cpp	-	-	new	-
-tu_80207548	sinit	__sinit_tu_80207548_cpp	-	-	new	-
 tu_80209C14	dtor_enemy	__dt__12cls_804A5D60Fv	cls_804A5D60	0x804A5D60	new	new
 tu_80209C14	sinit	__sinit_tu_80209C14_cpp	-	-	new	-
 tu_8020B354	dtor_enemy	__dt__12cls_804A5E98Fv	cls_804A5E98	0x804A5E98	new	new
 tu_8020B354	sinit	__sinit_tu_8020B354_cpp	-	-	new	-
 tu_8020C0A8	dtor_enemy	__dt__12cls_804A5F40Fv	cls_804A5F40	0x804A5F40	new	new
 tu_8020C0A8	sinit	__sinit_tu_8020C0A8_cpp	-	-	new	-
-tu_8020CCA8	sinit	__sinit_tu_8020CCA8_cpp	-	-	new	-
-tu_80210630	sinit	__sinit_tu_80210630_cpp	-	-	new	-
 tu_80212E3C	dtor_enemy	__dt__12cls_804A6340Fv	cls_804A6340	0x804A6340	new	new
 tu_80212E3C	sinit	__sinit_tu_80212E3C_cpp	-	-	new	-
 tu_802144F0	sinit	__sinit_tu_802144F0_cpp	-	-	new	-
 tu_80215A94	sinit	__sinit_tu_80215A94_cpp	-	-	new	-
 tu_8021693C	sinit	__sinit_tu_8021693C_cpp	-	-	new	-
-tu_8021A570	sinit	__sinit_tu_8021A570_cpp	-	-	new	-
 tu_8021AF28	sinit	__sinit_tu_8021AF28_cpp	-	-	new	-
-tu_8021F4B0	sinit	__sinit_tu_8021F4B0_cpp	-	-	new	-
 tu_80220F54	sinit	__sinit_tu_80220F54_cpp	-	-	new	-
-tu_80221B44	sinit	__sinit_tu_80221B44_cpp	-	-	new	-
 tu_802233A4	sinit	__sinit_tu_802233A4_cpp	-	-	new	-
 tu_8022461C	sinit	__sinit_tu_8022461C_cpp	-	-	new	-
 tu_8022AD64	fwd	fn_8022BC38__FllPCQ29JGeometry8TVec3<f>	fn_80241E28__15Player_804A6F38FlPCQ29JGeometry8TVec3<f>	-	6c9b9223736554bc7a9894dac6e6ba63d8cb440a	-
@@ -550,8 +535,6 @@ tu_8030AE84	sinit	__sinit_tu_8030AE84_cpp	-	-	new	-
 tu_8030C058	sinit	__sinit_tu_8030C058_cpp	-	-	new	-
 tu_803276C4	dtor	__dt__12cls_804AB528Fv	cls_804AB528	0x804AB528	new	new
 tu_803276C4	sinit	__sinit_tu_803276C4_cpp	-	-	new	new
-tu_80333958	dtor	__dt__12cls_804AB968Fv	cls_804AB968	0x804AB968	new	new
-tu_80333958	sinit	__sinit_tu_80333958_cpp	-	-	new	new
 tu_80334318	sinit	__sinit_tu_80334318_cpp	-	-	new	-
 tu_80343A70	dtor	__dt__12cls_804AC600Fv	cls_804AC600	0x804AC600	new	new
 tu_80343A70	sinit	__sinit_tu_80343A70_cpp	-	-	new	new

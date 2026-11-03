@@ -337,9 +337,9 @@ bool fn_801CD2F8(s32 layer);
 extern "C" {
 // Moves *value toward target by `step` (forwards r3, f1, f2 to
 // fn_801CD9F0). EnemyBase_804A4808's movement step passes &mSpeed,
-// mTargetSpeed and mAccel or mDecel. No caller reads r3, so the void
-// return is undecided until fn_801CD9F0 is read (not mangled either way).
-void fn_801CD950(f32* value, f32 target, f32 step);
+// mTargetSpeed and mAccel or mDecel. Returns nonzero while the value has
+// not reached the target (cls_804A61C8::fn_80210A6C tests r3 with cmpwi).
+s32 fn_801CD950(f32* value, f32 target, f32 step);
 // Convert a position between the two view-box spaces: out = (in.x, in.y)
 // minus the view's 0xCC/0xD0 box corner plus its 0xDC/0xE0 one (fn_801CD150),
 // or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.

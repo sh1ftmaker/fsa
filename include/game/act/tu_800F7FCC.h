@@ -12,6 +12,10 @@ struct cls_800F802C {
     // Grows the ring (by mTimer, 40 or 20 frames by mType) and hits the
     // active players of layer 0 within mRadius (fn_80238548, arg 0xB).
     void fn_800F802C();
+    // 0x800F8210 (game/tu_800F7FCC.cpp, not written yet): starts the ring at
+    // pos on `layer`; type 0-2 as in fn_800F802C. Called with 2 by
+    // cls_804A6AA8 (game/tu_80221B44.cpp).
+    void fn_800F8210(s32 layer, JGeometry::TVec3f pos, u8 type);
 
     /* 0x00 */ JGeometry::TVec3f mPos;
     /* 0x0C */ u8 mActive;

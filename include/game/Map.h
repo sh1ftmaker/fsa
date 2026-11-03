@@ -158,6 +158,10 @@ bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
 bool fn_8022517C(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224B88(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224E88(const JGeometry::TVec3f* pos, s32 layer);
+// 1 unit (tu_80221B44 picks effect 0x3d0 or 0x3cf by them). Position in r3,
+// layer in r4; return a byte.
+bool fn_802258D4(const JGeometry::TVec3f* pos, s32 layer);
+bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
 }
 
 // --- actor collision boxes (game/tu_8020D58C.cpp) ---

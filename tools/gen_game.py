@@ -2183,6 +2183,19 @@ def fwd_member_line(m):
     return f"    {m['ret']} {m['callee']}({', '.join(f'{t} {n}' for t, n in sp[1:])}); // via {m['name']}"
 
 
+def drop_lines(lines, drop):
+    """lines without the indices in drop; a blank line left next to another
+    blank one by a removal goes too."""
+    out = []
+    for k, l in enumerate(lines):
+        if k in drop:
+            continue
+        if not l.strip() and out and not out[-1].strip() and k - 1 in drop:
+            continue
+        out.append(l)
+    return out
+
+
 def extract_declared(lines, plan):
     """(line indices to drop, moved comment groups, moved declaration lines)
     of the plan's declared members in the extern "C" block, or a reason."""
@@ -2239,7 +2252,7 @@ def fwd_edit_header(plan, text):
     block += sorted(new + moved_lines, key=lambda l: DECL_RE.match(l)[2])
     for g in moved_groups:
         block += [""] + g
-    out = [l for k, l in enumerate(lines) if k not in drop]
+    out = drop_lines(lines, drop)
     a = next((k for k, l in enumerate(out) if l.startswith(FWD_DECL_ANCHOR)), None)
     b = next((k for k, l in enumerate(out) if l.startswith(FWD_MEMBER_ANCHOR)), None)
     if a is None or b is None:
@@ -2718,7 +2731,7 @@ def fwd_extend_header(plan, text):
     if isinstance(got, str):
         return None, got
     drop, moved_groups, moved_lines = got
-    lines = [l for k, l in enumerate(lines) if k not in drop]
+    lines = drop_lines(lines, drop)
     h = next((k for k, l in enumerate(lines) if l.startswith(FWD_DECL_HEAD.split("\n")[0][:45])), None)
     b = next((k for k, l in enumerate(lines) if l == FWD_MEMBER_HEAD.rstrip("\n")), None)
     if h is None or b is None or b > h:

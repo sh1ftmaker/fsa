@@ -36,6 +36,11 @@ public:
     // game/tu_801C9AF8.cpp (not written yet): 0 if field_0x560 is 4 or
     // `player`, else 1.
     bool fn_801CAED4(int player);
+    u8 fn_801C976C();
+    bool fn_801CAEF4(const JGeometry::TVec3f* pos, s32 layer);
+    // game/tu_801D3320.cpp: picks the next waypoint of the rail in
+    // field_0x358 and moves field_0x32c toward it.
+    void fn_801D3320();
 
     /* 0x340 */ cls_800FE8C0 field_0x340; // animation sequencer (mIndex at 0x34D, mFlags at 0x354)
     /* 0x358 */ cls_80214244 field_0x358;
@@ -61,6 +66,7 @@ public:
     /* 0x5A0 */ u8 field_0x5a0[0x5B0 - 0x5A0];
     /* 0x5B0 */ f32 field_0x5b0; // squared against the distance to the player
 }; // Size: at least 0x5B4
+
 
 // Table at 0x8046A748 (0x28 bytes, 5 u16 per state; only [0] is read).
 extern const u16 lbl_8046A748[][5];

@@ -218,3 +218,18 @@ stay banned (rules card). Units blocked only by jump-table `.data` order or a
 first-placed weak dtor keep a FIXME naming this section. Whoever picks it up:
 look for what keeps those callees out of line under `deferred` (pragmas,
 `-inline` depth/size limits, different callee signatures in the original).
+
+More evidence (waves 24–25):
+
+- tu_8021A570: the original inlines fn_8021ABC0's body into fn_8021A570
+  although fn_8021ABC0 comes later in `.text`. Plain `auto` can't do that
+  without an earlier inline body (written as a file-static helper that the
+  out-of-line fn_8021ABC0 wraps). This points to `deferred`.
+- tu_801291A0: the original keeps the small, earlier-defined fn_8012952C out
+  of line (three `bl` in update), and `auto` inlines it (update 80.6 %).
+  This points away from plain size-based auto inlining, so a size limit or an
+  `#pragma dont_inline` region is a candidate.
+- JASTrack setChannelPauseFlag: MWCC's recursive-inline depth depends on how
+  the null test is written (declaration in the condition gives 7 bodies,
+  `!= NULL` gives 6). Inline decisions are sensitive to source form, so
+  "callee X stays out of line" is not by itself proof of a flag.

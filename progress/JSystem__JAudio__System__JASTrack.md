@@ -36,3 +36,29 @@ NonMatching (setChannelPauseFlag). gate: ok.
 ## SHARED-EDITS
 - symbols.txt names in other units' ranges (JASHeapCtrl alloc/free, JASDriver, JASBank, JASRegisterParam, __construct_array).
 - linklist.cpp split/name above (not applied).
+
+## p_JASTrack (2026-11-03)
+Baseline: progress.py total 6296 / 11557 functions, 1260584 bytes; unit 64/65, .text 99.23 %, data 236/236.
+Now: 65/65 functions, all sections 100 % in objdiff; total 6297 / 11557, 1261232 bytes. gate: ok. Still NonMatching.
+- setChannelPauseFlag 83.11 -> 100 %: `if (JASTrack *child = mChildren[i])` (declaration in the
+  condition). MWCC's recursive auto-inline depth depends on the condition's tree shape: an
+  assignment/declaration as the whole condition gives 7 bodies (FSA), `child != NULL`, `!= 0`,
+  `if (child)` after a separate declaration all give 6. Measured on a minimal TU (scratch); same
+  holds for `if ((m = mChannelMgrs[i]))` in the channel loop. Precedent: assignment-in-condition is
+  JSystem style (tp JAudio2/JAISound.cpp:184, J2DScreen.cpp:144).
+- Flip to Matching BLOCKED (tried; reverted): linking our JASTrack.o breaks main.dol SHA-1
+  (gate: 106 problems, other units' dedup evidence lost, JASChannel/mtx drop below 100 %).
+  Cause: deferred-function layout at the end of .text. With -sym on MWCC puts weak/deferred
+  functions in one .text section per defining header; __sinit lands in JASHeapCtrl.h's section
+  (the memPool_ definitions), after free/__dl:
+    ours: MoveParam_ ct | TList dt, BankTable dt | free<JASTrack>, free<TChannelMgr>, __dl x2, __sinit | getBank
+    FSA:  MoveParam_ ct | __sinit | TList dt | BankTable dt | free x2 | __dl x2 | getBank
+  Every bl into free/__dl/__sinit shifts by 0x18C (and .ctors 0x8045BD7C). Same mechanism in
+  JASSeqParser/JASChannel (__sinit first in the JASHeapCtrl.h section, fine there because no
+  free/__dl precede it). Fix likely needs __sinit before the out-of-line free/__dl emission, i.e. how
+  FSA defined memPool_ / where its JASHeapCtrl inlines live: shared header JASHeapCtrl.h, not mine.
+  Moving sDefaultBankTable/sTrackList to the end of the file changes nothing.
+
+## Next
+- Solve the end-of-.text order above (JASHeapCtrl.h memPool_/free/__dl), then flip; that unblocks
+  game/tu_80021840.

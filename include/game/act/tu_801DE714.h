@@ -14,6 +14,20 @@ class cls_804A51E4 : public EnemyBase_804A4808 {
 public:
     cls_804A51E4() {}
 
+    // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
+    void draw();
+    // tu_8020CCA8 (0x8020CF7C): an effect (id 0x48D) at mPos.
+    void fn_8020CF7C();
+    // tu_8020CCA8 (0x8020CFC4): effects and a sound for the tile under mPos.
+    void fn_8020CFC4();
+    // tu_8020CCA8 (0x8020D16C): the same for the tile under mPos (0x39 or
+    // the fn_80224B88 / fn_8022517C / fn_80224E88 tile tests).
+    void fn_8020D16C();
+    // tu_8020CCA8 (0x8020D2AC): an effect (id 0x33A) beside mPos, 26 below
+    // it in y and 6 to the side the actor faces (field_0x98).
+    void fn_8020D2AC();
+    // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
+    bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.
     bool fn_801E1D9C();
     // tu_801DE714 (0x801E1DE8): calls fn_801CCF7C (r3 is not forwarded; it

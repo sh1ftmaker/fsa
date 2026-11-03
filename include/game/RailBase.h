@@ -28,6 +28,10 @@ public:
     // Mangled fn_800FE3EC__12cls_800FE3ECFUcQ29JGeometry8TVec3<f>i; the vector
     // is passed by value.
     void fn_800FE3EC(u8, JGeometry::TVec3f, int);
+    u8 fn_800FD894(s32 layer, u8* out, s32 max);
+    bool fn_800FD5E8(u8 index);
+    bool fn_800FD4C0(u8 a, u8 b);
+    s32 fn_800FE25C(u8 index);
 
     void clear() {
         field_0x2 = 0;
@@ -47,6 +51,7 @@ extern "C" {
 // `index` (0xFF: the current one, entry field_0x3) of the buffer, read from
 // the entry's +0xC. r3 out, r4 buffer, r5 index (clrlwi 24).
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
+
 }
 
 #endif

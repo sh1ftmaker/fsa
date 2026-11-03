@@ -18,7 +18,10 @@ public:
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x48 */ virtual void vfunc_0x48();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ s32 field_0x230; // state word handed to ActorBase::fn_801F132C by vfunc_0x4C; 0 in init
+    /* 0x234 */ u8 field_0x234;  // 0xFF unless carried by a player (update): the player's fn_8023BCD4 value; draw uses it as the sprite alpha
+    /* 0x235 */ bool field_0x235; // set by update once the stone has been reset to the ground (layer flag set)
+    /* 0x236 */ u8 field_0x236[2]; // padding
 }; // Size: 0x238
 
 #endif
