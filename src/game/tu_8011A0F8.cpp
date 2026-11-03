@@ -2,15 +2,16 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_8011A0F8.h"
 
-// FIXME: 97%. The vfunc_0x34 test ends in `beq end` in the original; here it is
-// `bne body; b end`.
 void cls_8049DAD8::update() {
     ActorBase_804A5770::update();
     if (!field_0x239) {
         if (field_0x238) {
             field_0x234++;
             if (field_0x234 >= 30) {
-                if (fn_8011921C()->field_0x0 || !fn_801186B0(fn_8011921C(), field_0x230)) {
+                if (fn_8011921C()->field_0x0) {
+                    return;
+                }
+                if (!fn_801186B0(fn_8011921C(), field_0x230)) {
                     return;
                 }
                 field_0x239 = true;
