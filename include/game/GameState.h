@@ -156,7 +156,9 @@ public:
     /* 0x242 */ u8 field_0x242; // 19 units
     /* 0x243 */ u8 field_0x243[0x245 - 0x243];
     /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor
-    /* 0x246 */ u8 field_0x246[0x24F - 0x246];
+    /* 0x246 */ u8 field_0x246[0x248 - 0x246];
+    /* 0x248 */ u8 field_0x248; // tu_8039003C's constructor sets it to 1 after fn_80458408
+    /* 0x249 */ u8 field_0x249[0x24F - 0x249];
     /* 0x24F */ u8 field_0x24f; // 20 units
     /* 0x250 */ u8 field_0x250;
     /* 0x251 */ u8 field_0x251; // main counts it up from 1 to 0x5B, one per frame
