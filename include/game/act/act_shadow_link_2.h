@@ -13,6 +13,9 @@
 class ShadowLink2_804A43E8 : public EnemyBase_804A4808 {
 public:
     ShadowLink2_804A43E8() {}
+    // game/tu_801C0D70.cpp. Whether a player is near mPos (fn_801D05F8 with
+    // 1.0f, then fn_801D0D50 with `range`); 0 or 1.
+    bool fn_801C5348(f32 range);
     /* 0x2A8 */ u8 field_0x2a8[0x540 - 0x2A8]; // not yet known
     /* 0x540 */ cls_80218A8C mHelper540;       // fn_801C573C calls its constructor
     /* 0x548 */ u8 field_0x548[0x564 - 0x548]; // not yet known

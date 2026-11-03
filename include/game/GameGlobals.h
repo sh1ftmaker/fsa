@@ -205,15 +205,8 @@ struct cls_801C0D70 {
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
 
-// game/tu_801C0D70.cpp. Whether an EnemyBase_804A4808 player is within the
-// squared `range` of the enemy's mPos and fn_801D0D50 accepts it
-// (fn_801D05F8(mPos, 1.0f) >= 0 first); 0 or 1. Called by act_shadow_link_2's
-// helper with 64.0f.
-class EnemyBase_804A4808;
-extern "C" bool fn_801C5348(EnemyBase_804A4808* enemy, f32 range);
-
-// A shared .sdata2 constant (1.0f), defined by another unit's literal pool;
-// act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
+// A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
+// .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
 extern const f32 lbl_8053EDF0;
 
 #endif

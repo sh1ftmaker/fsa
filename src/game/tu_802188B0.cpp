@@ -20,12 +20,11 @@ void cls_80218A8C::fn_802188B0() {
         return;
     }
     if (mOwner->mPos.z <= 0.0f && mOwner->mSpeed >= lbl_8053EDF0 - 0.001f
-        && !fn_801C5348(mOwner, 64.0f)) {
-        ShadowLink2_804A43E8* owner = mOwner;
-        switch (owner->mState) {
+        && !mOwner->fn_801C5348(64.0f)) {
+        switch (mOwner->mState) {
         case 0x11:
         case 0x1b:
-            fn_801F856C()->fn_801F9484(ACTOR_HBMB, owner->field_0x4, &owner->mPos, 10, -1, -1);
+            fn_801F856C()->fn_801F9484(ACTOR_HBMB, mOwner->field_0x4, &mOwner->mPos, 10, -1, -1);
             mTimer = fn_801CD664(0x79) + 0xf0;
             break;
         }
