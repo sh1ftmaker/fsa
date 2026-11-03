@@ -98,7 +98,7 @@ public:
     // of the int and the floats is not visible in the asm (GPRs and FPRs are
     // allocated separately); int first is a guess.
     /* 0x28 */ virtual void vfunc_0x28(s32, f32, f32);
-    /* 0x2C */ virtual bool vfunc_0x2C(); // 0x801F4850: returns 0 or 1
+    /* 0x2C */ virtual bool vfunc_0x2C(f32 x, f32 y, f32 scale); // 0x801F4850: reads f1-f3 (mPos + (x, y) plus a random offset scaled by f3); returns 0 or 1. Callers: fn_801D8430, 0x8017C4A4, 0x8017FBA8
     // 0x801F47CC: if vfunc_0x3C(), passes (view, vfunc_0x3C(), arg2, arg1)
     // to fn_802D8050, which tests arg2 with clrlwi. and stores arg1 with stb
     // (0xFF when cleared). Callers narrow the first argument (act_switch:
