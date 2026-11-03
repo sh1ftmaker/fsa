@@ -1,4 +1,10 @@
 #include "game/GameAudio.h"
+#include "game/act/act_shadow_link_2.h"
+
+// Member: r3 (this) is passed straight through to fn_801C3B7C.
+void ShadowLink2_804A43E8::fn_801C26D8() {
+    fn_801C3B7C(0xD);
+}
 
 // Takes no arguments, so it is a free function rather than a member.
 extern "C" s32 fn_801C5340() {

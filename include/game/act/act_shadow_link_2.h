@@ -29,6 +29,8 @@ public:
     bool fn_8021D020();
     // act_shadow_link_2.cpp: switches the animation/state by number.
     void fn_801C3B7C(int);
+    // act_shadow_link_2.cpp: switches to state 0xD (fn_801C3B7C only).
+    void fn_801C26D8();
     // game/tu_801C6A4C.cpp: per-tick state handlers (field_0x340 anim
     // finished flags, then the next fn_801C3B7C state).
     void fn_801C6A4C();
