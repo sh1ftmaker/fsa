@@ -209,4 +209,19 @@ extern "C" cls_801192AC* fn_8011921C();
 // act_four_sword_demo.
 extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 
+// game/tu_801C0D70.cpp (owner unit, not written yet). The 0x160-byte object
+// in .bss at 0x804C7E70, built on first use by fn_801C0D70 (guard byte
+// lbl_8053AC10); named after that function. Only the u16 at 0x0 is known:
+// act_shadow_link_2's helper tests its bit 0x400.
+struct cls_801C0D70 {
+    /* 0x000 */ u16 field_0x0;
+    /* 0x002 */ u8 field_0x2[0x160 - 0x2]; // not yet known
+}; // Size: 0x160
+// Getter of that object (returns its address).
+extern "C" cls_801C0D70* fn_801C0D70();
+
+// A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
+// .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
+extern const f32 lbl_8053EDF0;
+
 #endif
