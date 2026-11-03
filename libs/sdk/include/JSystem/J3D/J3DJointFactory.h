@@ -23,8 +23,8 @@ struct J3DJointInitData {
 	s8 mIgnoreParentScaling;         // _02
 	J3DTransformInfo mTransformInfo; // _04
 	f32 mRadius;                     // _24, bounding sphere radius
-	JGeometry::TVec3f mMin;          // _28
-	JGeometry::TVec3f mMax;          // _34
+	Vec mMin;                        // _28
+	Vec mMax;                        // _34
 };
 
 #endif
