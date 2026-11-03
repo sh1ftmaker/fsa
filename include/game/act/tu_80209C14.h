@@ -22,7 +22,8 @@ public:
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
 
     void fn_80209D44(); // sets mFlags bit 0x2000
-    /* 0x2A8 */ u8 field_0x2a8[0x18]; // not yet known
+    /* 0x2A8 */ s32 mTargetSerial; // the actor vfunc_0x24 looks up (fn_801F666C)
+    /* 0x2AC */ u8 field_0x2ac[0x14]; // not yet known
     /* 0x2C0 */ JGeometry::TVec2f field_0x2c0; // vfunc_0x54: mSpawnPos - mPos (x, y)
     /* 0x2C8 */ u8 field_0x2c8[8]; // not yet known
 }; // Size: 0x2D0
