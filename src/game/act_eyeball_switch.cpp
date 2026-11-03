@@ -133,9 +133,6 @@ void cls_804AE678::vfunc_0x10() {
     }
 }
 
-// FIXME: 97.1 %. Only the players == 2 / 3 test of the third case differs:
-// the target computes (u8)(players - 2) and compares it <= 1 (subi, clrlwi,
-// cmplwi), we compare against 2 and 3 separately.
 void cls_804AE678::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
@@ -161,7 +158,7 @@ void cls_804AE678::init() {
             active = 1;
         }
     } else if (field_0x240 == 2) {
-        if (players < 2 || players > 3) {
+        if (!(players == 2 || players == 3)) {
             active = 1;
         }
     } else if (field_0x240 == 3) {
