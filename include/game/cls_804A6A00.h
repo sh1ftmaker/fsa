@@ -40,6 +40,9 @@ public:
     void fn_80221334();
     void fn_802212AC();
     void fn_80221250();
+    // 0x80221670 (game/tu_80220F54.cpp, not written yet): called by
+    // act_shadow_link_jump's fn_8022089C before it aims field_0x3c.
+    void fn_80221670();
     // Sets the sprite animation and sound of `state` (0, 1, 2 ...).
     void fn_8022149C(s32 state);
     // Sets 0x2000 in mFlags once the state timer reaches `limit` (kind 0),
