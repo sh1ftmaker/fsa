@@ -157,7 +157,7 @@ public:
     /* 0x243 */ u8 field_0x243[0x245 - 0x243];
     /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor
     /* 0x246 */ u8 field_0x246[0x248 - 0x246];
-    /* 0x248 */ u8 field_0x248; // tu_803A85E4's constructor: 1 once audio set 0x100001A
+    /* 0x248 */ u8 field_0x248; // tu_8039003C's and tu_803A85E4's constructors set it to 1 after fn_80458408
     /* 0x249 */ u8 field_0x249[0x24F - 0x249];
     /* 0x24F */ u8 field_0x24f; // 20 units
     /* 0x250 */ u8 field_0x250;

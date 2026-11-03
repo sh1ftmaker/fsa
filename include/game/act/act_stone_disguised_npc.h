@@ -16,7 +16,14 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
-    /* 0x230 */ u8 field_0x230[0x20]; // not yet known
+    /* 0x230 */ s32 mState; // update(): 0 find the player, 1 slide, 2 wait, 3 chase
+    /* 0x234 */ f32 field_0x234; // target velocity x (+-2 or 0)
+    /* 0x238 */ f32 field_0x238; // target velocity y (+-2 or 0)
+    /* 0x23C */ f32 field_0x23c; // zeroed, never read
+    /* 0x240 */ f32 field_0x240; // velocity step rate: 0.75 from init, 1.0 once chasing
+    /* 0x244 */ f32 field_0x244; // chase speed (4.0)
+    /* 0x248 */ s32 field_0x248; // wait timer
+    /* 0x24C */ s32 field_0x24c; // player found by fn_8023AF14, -1 for none
 }; // Size: 0x250
 
 #endif

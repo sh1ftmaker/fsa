@@ -70,11 +70,9 @@ void cls_8021C2B4::fn_8021C468() {
                 piece->mVel.x = 0.0f;
                 piece->mVel.y = 0.0f;
                 piece->mVel.z = 0.0f;
-                // FIXME: 99.9 %. Regalloc only: the target multiplies the atan2 result (f1)
-                // by 10430.378f (f0) as fmuls f0, f1, f0; ours emits fmuls f0, f0, f1.
                 s32 angle = JMath::atanTable_.atan2_(piece->mStart.x - piece->mTarget.x,
                                                      piece->mStart.y - piece->mTarget.y) *
-                            10430.378f;
+                            (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
                 piece->mAnim.fn_8021C9C4(fn_801F681C(angle));
                 continue;
             }

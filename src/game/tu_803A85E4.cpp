@@ -82,15 +82,15 @@ cls_804AF878::cls_804AF878() {
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
         lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
         lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
         lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
         lbl_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x4 = new cls_804B0B00();
