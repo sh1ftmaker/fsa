@@ -160,6 +160,10 @@ library names or statuses there stop `site_data.py`, so a typo can't show 0 %.
   JASTrack/JASChannel memPool_ commons, JAUAudience's unk_common_8052E78C).
   dtk's guess of the inflated size (j3dSys 0x1A4 instead of 0x11C) shifted
   .sdata by 0x88 and broke the SHA-1 in the first J3D import.
+  An object's inflation disappears entirely when its first common is unused
+  or resolves elsewhere (a weak copy in `.bss`); that is why JAUAudience
+  needs the stripped `unk_common_8052E78C` first (tested with standalone
+  GC/2.6 links in the infra/bss-names review).
 
 **Measuring honestly**
 - Only `build/G4SE01/report_honest.json` (every unit diffed,
