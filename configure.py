@@ -1243,7 +1243,7 @@ config.libs = [
         Object(NonMatching, "game/tu_801DD1AC.cpp"),
         Object(NonMatching, "game/tu_801DE714.cpp"),
         Object(NonMatching, "game/tu_801E2540.cpp"),
-        Object(NonMatching, "game/act_tingle_buster.cpp"),
+        Object(Matching, "game/act_tingle_buster.cpp"),
         Object(NonMatching, "game/tu_801E3618.cpp"),
         Object(NonMatching, "game/tu_801E4A18.cpp"),
         Object(NonMatching, "game/tu_801E4D54.cpp"),
