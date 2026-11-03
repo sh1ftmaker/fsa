@@ -1,5 +1,21 @@
 # JSystem/JAudio/Utility/JAUAudioMgr.cpp
 
+## Wave 10 (2026-11-02)
+Baseline (progress.py): total 4784 / 11561 functions, 863464 / 4442088 bytes (19.44 %).
+After: unchanged (no commit-worthy change found). Since the `-sym on` merge the unit
+is 4/5: `__ct__17JAUAudibleChannelFv` now matches and .sdata2 is 93.75 % (ours has
+1.0, 0.0, 0.5, 32.0; FSA 1.0, 0.0, 0.5 + pad: the 32.0 is from dead-stripped code).
+- `__sinit_JAUAudioMgr_cpp` 99.63 %: still only the cls_804B21EC pool name (below).
+  Blocked by the cls_804B21EC rename (coordinator + include/game/GameAudioBase.h).
+- .sdata2: the extra 32.0 can only be dropped by the honest report's dead-data rule,
+  which needs a SHA-1-OK trial link; `link_check --unit` fails today (DOL SHA-1
+  a2a071ac...) because the __sinit references memPool_<JAUAudible<4>> instead of the
+  symbol at 0x804B21EC. Resizing placeholder lbl_8053B2A0 0x8 -> 0x4 lowers .sdata2
+  to 85.71 % until then (tried, reverted).
+- Next: after the cls_804B21EC -> JAUAudible<4> rename, rerun link_check --unit; if
+  SHA-1 OK, the 32.0 should be stripped as dead data and the unit can flip.
+
+## Earlier wave
 Baseline (progress.py): 4501 / 11561 functions, 808092 bytes (18.19 %).
 After: 4504 / 11561, 808624 bytes (18.20 %). gate: ok.
 
