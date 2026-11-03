@@ -6,6 +6,7 @@
 #include "game/EnemyBase.h"
 #include "game/cls_802150B8.h"
 #include "game/cls_804A64A8.h"
+#include "game/act/act_shadow_link_2.h"
 
 // .sdata2 floats: 6.0f (raises the effect's position) and 1.0f (the effect's
 // scale). Arrays, so the names survive into the object.
@@ -19,6 +20,16 @@ void cls_802150B8::fn_802144F0() {
     JGeometry::TVec3f pos = mOwner->mPos;
     pos.y += lbl_8053FBA0[0];
     fn_8013CC50(mOwner->field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, lbl_8053FBA4[0]);
+}
+
+void cls_802150B8::fn_802146A4() const {
+    ShadowLink2_804A43E8* owner = static_cast<ShadowLink2_804A43E8*>(mOwner);
+    s32 flag = 0;
+    if (owner->field_0x524 & 0x400) {
+        flag = 1;
+    }
+    fn_8013CC50(owner->field_0x4, &owner->mPos, 0x416, 0, flag - 1, NULL, NULL, true, lbl_8053FBA4[0]);
+    fn_8013CC50(mOwner->getField_0x4(), mOwner->getPos(), 0x417, 0, flag, NULL, NULL, true, lbl_8053FBA4[0]);
 }
 
 void cls_802150B8::fn_80214900() {

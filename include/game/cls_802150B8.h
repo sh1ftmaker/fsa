@@ -24,6 +24,11 @@ public:
     // at 0x18 and calls mOwner's fn_801CDC8C(0x4000E).
     void fn_80214900();
 
+    // game/tu_802144F0.cpp: spawns effect 0x416 at mOwner's position with
+    // height flag - 1 and effect 0x417 with height flag, flag being the
+    // owner's field_0x524 bit 0x400 (act_shadow_link_2).
+    void fn_802146A4() const;
+
     /* 0x00 */ u32 field_0x0;
     /* 0x04 */ cls_804A64A8 field_0x4;
     /* 0x18 */ JPABaseEmitter* field_0x18;
