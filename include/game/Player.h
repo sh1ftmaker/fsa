@@ -741,6 +741,12 @@ s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08);
 bool fn_80236B50(s32 player);
 s32 fn_802375B0(s32 player);
 void fn_80230EB8(s32 player, s32 arg);
+// game/tu_8022AD64.cpp (not written yet). Called by act_recovery_heart's update() with
+// (player, 4, 0) once the heart reaches a player; the result is unused.
+extern "C" void fn_80236554(s32 player, s32 arg, s32 flag);
+// Owner not written yet. Called by act_recovery_heart's update() when fn_8023B8E4 finds no
+// player on the box; the result is unused.
+extern "C" void fn_8023B768(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos);
 void fn_80237524(s32 player, s32 arg);
 
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
