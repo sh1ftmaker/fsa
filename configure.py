@@ -1552,7 +1552,7 @@ config.libs = [
         Object(NonMatching, "game/act_battle_royale_end_check.cpp"),
         Object(NonMatching, "game/tu_803D7098.cpp"),
         Object(NonMatching, "game/tu_803D9944.cpp"),
-        Object(NonMatching, "game/tu_803DA6B4.cpp"),
+        Object(Matching, "game/tu_803DA6B4.cpp"),
         Object(NonMatching, "game/tu_803DAC3C.cpp"),
         Object(NonMatching, "game/tu_803E1668.cpp"),
         Object(NonMatching, "game/tu_803F0A54.cpp"),
