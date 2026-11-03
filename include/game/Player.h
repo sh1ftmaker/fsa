@@ -229,9 +229,9 @@ JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804C
 // field_0x4 and mSerial when the box overlaps a player's.
 void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
-// Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall). Same
-// signature as fn_802397B4 (same size, same caller shape): the actor's
-// world-space box, field_0x4 and mSerial.
+// Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
+// Loops over the players and calls fn_80272DCC, which copies the 4 box floats
+// and stores r5/r6 (field_0x4, serial) as words.
 void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (tu_802242F4). Index of
