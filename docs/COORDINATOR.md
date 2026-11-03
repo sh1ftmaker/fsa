@@ -103,7 +103,8 @@ that need them.
 | `game/ActorId.h` | `enum ActorId`: the 354 IDs the spawner fn_801F9484 accepts (`ACTOR_RAIL = 'RAIL'`), English names from docs/names/actors.tsv in comments |
 | `game/ActorManager.h` | `ActorManager` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` placeholders (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
 | `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot`) and `lbl_8053AB10` (`GameRoot2`), the fields known so far, and their getters `fn_802D6A9C` / `fn_8013C824`; `cls_8030C058` (`lbl_8053AB10->0x24`, the world-to-screen projection `fn_8030C5F0`) |
-| `game/GameAudio.h` | `cls_804B21EC`, the pool-allocated audio class whose `memPool_` is at 0x804B21EC (include it where a unit declared the class, to keep the pool order) |
+| `game/GameAudio.h` | The game's sound header, for **every** game unit: its JAudio includes plus `cls_804B21EC` (pool at 0x804B21EC, probably `JAUAudible<4>`, unproven) and a FIXME stand-in that instantiates the `JAUDopplerAudible<4>` pool. Together they give the 9-pool `__sinit` in FSA's order. Replace the stand-in with the game audience class from tu_80457DFC once it is known |
+| `game/RailBase.h` | `cls_800FE3EC` (0xC8 bytes, its method `fn_800FE3EC` in RailBase.cpp), and notes on the RAIL actor class (vtable 0x8049C770) |
 
 Conventions for game code: vectors are `JGeometry::TVec3f` (mkdd's
 `JSystem/JGeometry.h`: its `psq_l`/`psq_st` copy is the game's), matrices

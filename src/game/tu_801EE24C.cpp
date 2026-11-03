@@ -2,6 +2,7 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
+#include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
