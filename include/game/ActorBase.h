@@ -330,11 +330,11 @@ public:
     // (0x801F2670-0x801F2688); returns 0 or 1. Callers pass 0 or a stack
     // TVec3f for out and 0 for `flag` (197 of 201).
     bool fn_801F2618(JGeometry::TVec3f* out, bool flag);
-    // 6 units / 7 calls. fn_801F7F58(mgr, this, ids, mSerial, ...): an
-    // actor overlapping this one whose mActorId is in `ids` (a 'NULL'-ended
-    // list, walked by 4 and compared with cmplw; callers pass .rodata
-    // arrays), or NULL.
-    ActorBase_804A5770* fn_801F26CC(const u32* ids);
+    // 6 units / 7 calls. fn_801F7F58(mgr, this, ids, mSerial, 32.0f): the
+    // serial of an actor overlapping this one whose mActorId is in `ids` (a
+    // 'NULL'-ended list, walked by 4 and compared with cmplw; callers pass
+    // .rodata arrays), or -1 (callers test r3 with cmpwi/blt).
+    s32 fn_801F26CC(const u32* ids);
     // 30 units / 38 calls. fn_801F8108(this, actorId, mSerial, ...): the
     // serial of an actor with mActorId == actorId (4CC; cmplw) overlapping
     // this one on its layer, or -1.

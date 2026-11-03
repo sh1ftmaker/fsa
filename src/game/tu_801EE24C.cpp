@@ -26,6 +26,34 @@ static inline void releaseEmitter(JPABaseEmitter* emitter) {
     }
 }
 
+// FIXME: 81.9 %. Same instructions; the target loads mSlot (lwz 0x19c) before
+// lbl_8053AAF8 and its 0x4 / 0x8, this code after.
+ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() {
+    return lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
+}
+
+// 32.0f is lbl_8053F748; fn_801F26CC (reloc-name) and fn_801F2718 pair with
+// it only once the unit's .sdata2 order is fixed (see the constructor's FIXME).
+s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
+    return fn_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
+}
+
+// FIXME: 88.0 %. Besides the literal, the target loads mSerial (lwz 0x198)
+// before 32.0f (lfs), this code after.
+s32 ActorBase_804A5770::fn_801F2718(u32 actorId) {
+    return fn_801F8108(this, actorId, mSerial, 32.0f);
+}
+
+u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
+    u8 prev = field_0x164;
+    field_0x168 = arg;
+    fn_801F856C()->fn_801F84C4(this);
+    if (field_0x164 != 0) {
+        field_0x164 = 0;
+    }
+    return prev;
+}
+
 void ActorBase_804A5770::draw() {}
 
 void ActorBase_804A5770::savePrevPos() {
