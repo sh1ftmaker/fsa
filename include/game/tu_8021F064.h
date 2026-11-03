@@ -17,7 +17,7 @@ struct cls_8021F064 {
     cls_8021F064() : mFlags(0), mCount(0) {}
     // True when the list is non-empty and fn_8021D794 holds for every listed
     // actor that still exists.
-    bool fn_8021F094();
+    bool fn_8021F094() const;
     // For every listed actor: bit 0 calls fn_8021D764, bit 1 calls fn_8021D734.
     // Then clears both bits.
     void fn_8021F130();

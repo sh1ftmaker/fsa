@@ -8,14 +8,11 @@ cls_8021F064* fn_8021F064() {
     return &lbl_804CE640;
 }
 
-bool cls_8021F064::fn_8021F094() {
-    // FIXME: 83%. The original keeps mCount in r31 and this in r30; here the
-    // two are swapped (count r30, this r31), so the prologue saves and the
-    // loop's lwz/addi/cmpw registers differ.
-    s32 count = mCount;
-    if (count <= 0) {
+bool cls_8021F064::fn_8021F094() const {
+    if (mCount <= 0) {
         return false;
     }
+    s32 count = mCount;
     bool result = true;
     for (s32 i = 0; i < count; i++) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);

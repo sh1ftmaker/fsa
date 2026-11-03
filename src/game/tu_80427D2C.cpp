@@ -756,10 +756,7 @@ void THPGXRestore() {
     GXSetTevSwapModeTable(GX_TEV_SWAP3, GX_CH_BLUE, GX_CH_BLUE, GX_CH_BLUE, GX_CH_ALPHA);
 }
 
-// FIXME: 98.4 %: the target loads fbWidth before the -1.0f literal and
-// converts w before h; ours schedules them the other way round. The GXColorS10
-// literal's relocation also differs while .sdata2 order differs (see below).
-void THPGXYuv2RgbSetup(GXRenderModeObj* rmode) {
+void THPGXYuv2RgbSetup(const GXRenderModeObj* rmode) {
     s32 w, h;
     Mtx44 m;
     Mtx e_m;

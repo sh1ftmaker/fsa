@@ -99,15 +99,14 @@ static inline void growBox(JGeometry::TBox2f& box, const JGeometry::TBox2f& rel)
     }
 }
 
-// FIXME: 87%. Scheduling and register numbers only: the original loads mBox's
-// x extent and the 0.0f first (before mPos) and keeps `result` in r29 (li
-// after the first stores) with `this` in r30; ours puts li result first and
-// this in r29, so every later register is shifted; the stack slots of
-// the two TVec3f also differ (the first is at 0x8 in the original, 0x14 in
+// FIXME: 93.3 %. Register numbers and slots only: the original keeps `result`
+// in r29 (li after the first stores) and `this` in r30; ours puts li result
+// first and this in r29, so every later register is shifted; the stack slots
+// of the two TVec3f also differ (the first is at 0x8 in the original, 0x14 in
 // ours).
 // Whether the actor's box around mPos is in view (the camera's screen, or
 // fn_8022B978 on the upper layers).
-bool cls_804A51E4::fn_80218538() {
+bool cls_804A51E4::fn_80218538() const {
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     JGeometry::TBox2f box(p, p);
     bool result = false;

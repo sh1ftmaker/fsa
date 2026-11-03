@@ -4,14 +4,11 @@
 #include "game/act/act_ice_floor_check_npc.h"
 #include "game/tu_8012F3E4.h"
 
-// FIXME: 90%. Same instructions; the allocator puts this in r31 and the count in r30
-// (the original has the count in r31, this in r30), so the saves and the loads
-// of mCount are ordered differently.
-bool cls_8012F64C::fn_8012F3E4() {
-    s32 count = mCount;
-    if (count <= 0) {
+bool cls_8012F64C::fn_8012F3E4() const {
+    if (mCount <= 0) {
         return false;
     }
+    s32 count = mCount;
     for (s32 i = 0; i < count; i++) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);
         if (actor == NULL) {

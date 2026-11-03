@@ -17,7 +17,7 @@ struct cls_80212AC0 {
     cls_80212AC0() : mCount(0) {}
     // Looks the tracked actors up in order; for the first one whose area
     // contains *pos, pushes *pos out by the vector fn_80210E90 returns.
-    void fn_80212AF0(JGeometry::TVec3f* pos);
+    void fn_80212AF0(JGeometry::TVec3f* pos) const;
     // Removes the first entry equal to serial, shifting the rest down.
     void fn_80212BA0(s32 serial);
     // Appends serial.

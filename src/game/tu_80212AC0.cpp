@@ -8,11 +8,12 @@ cls_80212AC0* fn_80212AC0() {
     return &lbl_804CCDB8;
 }
 
-void cls_80212AC0::fn_80212AF0(JGeometry::TVec3f* pos) {
+void cls_80212AC0::fn_80212AF0(JGeometry::TVec3f* pos) const {
+    // FIXME: 88.5 %. The original sets found (li r29, 0) before the mCount
+    // load and copies it into i (mr r30, r29), and numbers the registers
+    // differently (pos r26, this r27, actor r28, found r29, i r30; ours this
+    // r30, actor r27, i r28); ours sets i and found with two li after it.
     ActorBase_804A5770* found = NULL;
-    // FIXME: 86%. The original loads mCount once into r31 before the loop and
-    // numbers the registers differently (pos r26, this r27, actor r28, found
-    // r29, i r30); here mCount is reloaded at the loop test.
     for (s32 i = 0; i < mCount; i++) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);
         if (actor != NULL && fn_80211000(actor, pos)) {
