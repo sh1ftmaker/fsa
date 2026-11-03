@@ -19,7 +19,7 @@ JASMemPool_MultiThreaded<JASChannel> JASPoolAllocObject_MultiThreaded<JASChannel
 
 volatile int JASAudioThread::snIntCount;
 
-JASAudioThread::JASAudioThread(int prio, int msgCount, u32 stackSize) : JKRThread(JASDram, stackSize, msgCount, prio), JASGlobalInstance<JASAudioThread>(true)  {
+inline JASAudioThread::JASAudioThread(int prio, int msgCount, u32 stackSize) : JKRThread(JASDram, stackSize, msgCount, prio), JASGlobalInstance<JASAudioThread>(true)  {
     sbPauseFlag = false;
     OSInitThreadQueue(&sThreadQueue);
 }
