@@ -223,6 +223,7 @@ public:
     void fn_802635D4(); // empty; the dispatch in fn_802870C8 calls it
     void fn_802636C4(); // byte at 0x458 = 0 (stb r0)
     void fn_80263848(); // byte at 0x458 = 0 (stb r0)
+    void fn_80263854(); // byte at 0x459 = 0 (stb r0)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
     bool fn_8026FCB0(); // via fn_8023A3DC
@@ -281,7 +282,9 @@ public:
     /* 0x0455 */ u8 field_0x455[0x458 - 0x455];
     // Returned by fn_802412C4 (a byte, read by its caller in tu_80256C74).
     /* 0x0458 */ u8 field_0x458;
-    /* 0x0459 */ u8 field_0x459[0x460 - 0x459];
+    // Cleared by fn_80263854 (stb r0).
+    /* 0x0459 */ u8 field_0x459;
+    /* 0x045A */ u8 field_0x45A[0x460 - 0x45A];
     // Returned by fn_802412CC (lbz; blr), read through fn_80235448.
     /* 0x0460 */ bool field_0x460;
     /* 0x0461 */ u8 field_0x461[0xB9B - 0x461];
