@@ -23,6 +23,7 @@ void cls_804AA228::update() {
     switch (mState) {
     case 0:
         if (vfunc_0x34()) {
+            // The original makes the request twice (0x802EC7E8, 0x802EC804); only the second result is used.
             takeCamera(lbl_8053AB10->field_0x24);
             if (takeCamera(lbl_8053AB10->field_0x24) == 1) {
                 mState = 1;
@@ -31,9 +32,7 @@ void cls_804AA228::update() {
         }
         break;
     case 1:
-        if (lbl_8053AB10->field_0x24->field_0x7f4 == 0) {
-            lbl_8053AB10->field_0x24->field_0x7f5 = 1;
-        }
+        takeCamera(lbl_8053AB10->field_0x24);
         mTimer--;
         if (mTimer == 0) {
             mAlive = false;
