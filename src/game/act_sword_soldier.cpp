@@ -3,7 +3,12 @@
 // written so far.
 
 #include "game/GameGlobals.h"
+#include "game/act/act_sword_soldier.h"
 #include "std/math.h"
+
+s32 SwordSoldier_8049FCA0::fn_801544AC() const {
+    return field_0x28c;
+}
 
 // FIXME: the instructions match; its four constants (0.0f, .5, 3.0, 0.0)
 // only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
