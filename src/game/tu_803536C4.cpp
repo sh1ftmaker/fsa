@@ -10,6 +10,7 @@ static const s32 lbl_80472260[4] = {3, 4, 5, 4};
 cls_804ACC68::~cls_804ACC68() {}
 
 void cls_804ACC68::draw() {
+    // The original copies mPos to 0x14(r1) and never reads it back (a dead local).
     JGeometry::TVec3f pos(mPos);
     SpriteParams_801F5AE0 params;
     params.field_0x2d = 1;
