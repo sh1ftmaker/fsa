@@ -186,8 +186,6 @@ act_shadow_link_jump	sinit	__sinit_act_shadow_link_jump_cpp	-	-	new	-
 act_shop_item	sinit	__sinit_act_shop_item_cpp	-	-	new	-
 act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
-act_shutter	dtor	__dt__16Shutter_804A8118Fv	Shutter_804A8118	0x804A8118	new	new
-act_shutter	sinit	__sinit_act_shutter_cpp	-	-	new	new
 act_sign	dtor	__dt__13Sign_804A94D8Fv	Sign_804A94D8	0x804A94D8	new	new
 act_sign	sinit	__sinit_act_sign_cpp	-	-	new	new
 act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
