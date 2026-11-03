@@ -1337,7 +1337,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8029C584.cpp"),
         Object(Matching, "game/act_attack_hitbox_when_player_is_thrown.cpp"),
         Object(NonMatching, "game/tu_8029D898.cpp"),
-        Object(NonMatching, "game/act_heart_container.cpp"),
+        Object(Matching, "game/act_heart_container.cpp"),
         Object(NonMatching, "game/tu_802A4654.cpp"),
         Object(NonMatching, "game/act_switch.cpp"),
         Object(NonMatching, "game/act_explosion.cpp"),
