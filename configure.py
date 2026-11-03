@@ -320,6 +320,8 @@ cflags_sdk = [
     "-multibyte",
     "-i libs/sdk/include",
     "-i libs/sdk/msl_include",
+    # Blobs extracted from orig/ at build time (config.yml extract:), as "assets/..."
+    f"-i build/{config.version}/include",
     "-DNDEBUG=1",
     "-lang=c",
     "-fp fmadd",
