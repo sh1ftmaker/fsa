@@ -198,6 +198,8 @@ public:
     s32 fn_8024FF6C(); // via fn_8022D7F8
     s32 fn_8024FF84(); // via fn_80238CB4
     bool fn_80250090(); // via fn_8022D9CC
+    void fn_802685D4(); // tu_802684A4 (0x568); reads the player's fields directly
+    void fn_80268B3C(); // tu_802684A4; holds mPos.z at 0 across fn_802685D4
     bool fn_80250ACC(); // via fn_8022DA68
     bool fn_80250D30(); // via fn_8022DB04
     bool fn_802517E4(); // via fn_8022D894
