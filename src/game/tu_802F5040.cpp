@@ -73,6 +73,69 @@ cls_8030029C::cls_8030029C() {
     field_0x54 = 2;
 }
 
+// Element of the 0x100-element, 0x9C-byte array at this + 0x2398 of
+// cls_804AA858's constructor (fn_802FFDEC). Its constructor is the only code
+// seen for the type, so the class is named after it.
+class cls_803003AC {
+public:
+    cls_803003AC();
+
+    /* 0x00 */ u8 field_0x0[0x28];
+    /* 0x28 */ u8 field_0x28[0x10];
+    /* 0x38 */ s32 field_0x38;
+    /* 0x3C */ s32 field_0x3c;
+    /* 0x40 */ s32 field_0x40;
+    /* 0x44 */ u8 field_0x44;
+    /* 0x45 */ u8 field_0x45;
+    /* 0x46 */ u8 field_0x46;
+    /* 0x47 */ u8 field_0x47;
+    /* 0x48 */ u8 field_0x48;
+    /* 0x49 */ u8 field_0x49[0x4E - 0x49];
+    /* 0x4E */ u8 field_0x4e;
+    /* 0x50 */ s32 field_0x50;
+    /* 0x54 */ u8 field_0x54;
+    /* 0x55 */ u8 field_0x55[0x58 - 0x55];
+    /* 0x58 */ s32 field_0x58;
+    /* 0x5C */ s32 field_0x5c;
+    /* 0x60 */ s32 field_0x60;
+    /* 0x64 */ u8 field_0x64[0x94 - 0x64];
+    /* 0x94 */ s32 field_0x94;
+    /* 0x98 */ s32 field_0x98;
+}; // Size: 0x9C
+
+cls_803003AC::cls_803003AC() {
+    // Matching-only: 0x38 is stored twice (-1 here and after the table), and
+    // 0x3C is stored twice too, as the original does.
+    field_0x38 = -1;
+    field_0x3c = -1;
+    for (u8 i = 0; i < 0x10; i++) {
+        field_0x28[i] = i;
+    }
+    field_0x38 = -1;
+    field_0x3c = 0;
+    field_0x40 = 0;
+    field_0x44 = 0;
+    field_0x45 = 0;
+    field_0x46 = 0;
+    field_0x47 = 1;
+    field_0x48 = 1;
+    field_0x49[0] = 0;
+    field_0x49[1] = 0;
+    field_0x49[2] = 0;
+    field_0x49[3] = 0;
+    field_0x49[4] = 0;
+    field_0x4e = 1;
+    field_0x50 = 3;
+    field_0x54 = 1;
+    field_0x55[0] = 0;
+    field_0x55[1] = 0;
+    field_0x58 = -1;
+    field_0x5c = 0;
+    field_0x60 = 2;
+    field_0x94 = -1;
+    field_0x98 = -1;
+}
+
 // Layers 0-3 and 4-7 are separate branches in the original, with the rest
 // after them; all three store the same way.
 void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
