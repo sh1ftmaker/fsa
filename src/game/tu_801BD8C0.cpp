@@ -3,6 +3,7 @@
 #include "game/GameGlobals.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/tu_801BD8C0.h"
+#include "game/DrawShadow.h"
 
 static const u16 lbl_8053EC88[2] = {0x19E, 0x19C};
 
@@ -19,14 +20,8 @@ void cls_804A4038::fn_801BD8C0(const JGeometry::TVec3f* pos, s16 angle) {
     }
 }
 
-// FIXME: 79%. Same instructions as cls_804A6828::draw (tu_802201D8): the
-// original loads field_0x4 (r4) and computes &mPos (r5) from `this` before
-// it loads lbl_8053AB10->field_0x2c into r3 (receiver last) and builds the
-// colour first; ours loads the receiver first and moves `this` to r7. A
-// local colour and receiver made it worse (77%).
 void cls_804A4038::draw() {
-    lbl_8053AB10->field_0x2c->fn_80158B5C(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80),
-                                          32.0f);
+    drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 32.0f);
 }
 
 void cls_804A4038::update() {
