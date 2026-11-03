@@ -1,36 +1,44 @@
 # JSystem/J3DGraphLoader/J3DAnmLoader.cpp
 
-Baseline (progress.py first line at start): total: 3711 / 11561 functions, 710408 / 4442088 bytes of code (15.99 %)
-After: total: 3741 / 11561 functions, 713800 / 4442088 bytes of code (16.07 %)
-(per-unit compare against the base report: only J3DAnmLoader 29 -> 41 functions and J3DAnimation
-26 -> 44, the latter from the shared J3DAnimation names; nothing else moved.)
+Baseline: total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+After:    total: 4784 / 11561 functions, 863464 / 4442088 bytes of code (19.44 %)
+Unit: 41/41 functions, code 6684/6684, data 96/104 (unchanged; 104/104 once the tooling below exists).
 
-Status: NonMatching. 41/41 functions (was 29/35; the split grew by 6), .text/.data 100 %,
-.sdata2 75 %. gate: ok.
+## Status: NonMatching: code 100 %, link_check --unit SHA-1 OK; .sdata2 blocked by tooling
 
-## Changes
-- splits.txt: J3DAnmLoader .text starts at 0x800CECCC, not 0x800CF3E8. The six functions
-  0x800CECCC-0x800CF3E8 (load, J3DAnmFullLoader_v15 ctor/dtor, ~J3DAnmLoader, J3DAnmKeyLoader_v15
-  ctor/dtor) were at the end of J3DShapeFactory.cpp's range; their vtables are this unit's .data.
-  J3DShapeFactory.cpp's .text now ends at 0x800CECCC (after its last JSUConvertOffsetToPtr<_GXVtxDescList>).
-- J3DAnmLoaderDataBase::load takes `J3DAnmLoaderDataBaseFlag` (mkdd/TP); flag bit 1 builds a
-  J3DAnmTransformFullWithLerp for 'bca1' (target tests `clrlwi. r30, 31` and stores vtable 0x8049A9CC).
-  Mangled name `load__20J3DAnmLoaderDataBaseFPCv24J3DAnmLoaderDataBaseFlag` as in mkdd's symbols (same size 0x5E4).
-- fn_800D06B8/06D0 = JSUConvertOffsetToPtr<J3DAnmCluster{Key,Full}Table>__FPCvPCv (both overloads
-  compile to the same bytes; every donor map uses the void* form, offsets stay `void*`).
-- Names: vtables 0x8049AE10.. (KeyLoader_v15, FullLoader_v15, J3DAnmLoader, J3DAnmVisibilityFull
-  (getKind 6), J3DAnmTransformKey (getKind 8)) and their functions, from vtable slots.
+## Data gap
+.sdata2 target = 0.0f + 4 bytes padding. Our object has 0.0f (@576) and 1.0f
+(@866). @866 is used only by our weak copy of
+`getWeight__13J3DAnmClusterCFUs` (an inline from J3DAnimation.h, `lfs f1,
+1.0f; blr`), which the linker deduplicates: FSA keeps J3DAnimation.o's copy
+(0x800C6DD4). So @866 is data of a deduplicated weak function, a case the
+honest report doesn't strip yet (manifest note: "@866 kept: the map lists it
+UNUSED but live getWeight__13J3DAnmClusterCFUs references it").
 
-## Resistant
-- .sdata2 (0x8053BC80, 8 bytes): target is 0.0f + 4 zero bytes; ours 0.0f, 1.0f. The 1.0f belongs to
-  the weak J3DAnmCluster::getWeight copy this TU emits (the kept copy is in J3DAnimation, 0x800C6DD4);
-  FSA's linker stripped the duplicate and left padding. Resizing lbl_8053BC80 to 4 made it worse (gap
-  symbol, 66 %). Not fixable in source; the unit can't be flagged Matching while objdiff counts this.
+Trial-link map (build/G4SE01/weakdedup_evidence/JSystem__J3DGraphLoader__J3DAnmLoader.MAP, SHA-1 OK):
+    21432:            11] getWeight__13J3DAnmClusterCFUs (func,global) found in J3DAnimation.o
+    21433:            11] >>> UNREFERENCED DUPLICATE getWeight__13J3DAnmClusterCFUs
+    21434:            11] >>> (func,weak) found in J3DAnmLoader.o
+    69922:  00000ce0 000008 8053bc80  1 .sdata2   J3DAnmLoader.o
+    69923:  00000ce0 000004 8053bc80  4 @576      J3DAnmLoader.o
+    69924:  UNUSED   000004 ........ @866 J3DAnmLoader.o
+    69925:  00000ce8 000040 8053bc88  1 .sdata2   J3DGD.o
+
+Committed: placeholder `lbl_8053BC80` 0x8 -> 0x4 (the map's @576 is 4 bytes;
+the rest is padding before J3DGD.o), so the unit reaches 100 % as soon as
+@866 is stripped.
 
 ## SHARED-EDITS
-- Cherry-picked from unit/JSystem__J3DGraphAnimator__J3DAnimation (identical commits): the J3D header
-  commit (out-of-line J3DAnm ctors, J3DAnmTransformFullWithLerp, checkPass) and the follow-up that keeps
-  ~J3DAnmBase inline (this unit's ~J3DAnmTransformKey/~J3DAnmVisibilityFull need it inline).
-- symbols.txt: the 52 J3DAnimation renames (ctors, dtors, vtables), identical lines to that branch,
-  needed for this unit's relocations.
-- splits.txt: J3DShapeFactory.cpp .text end 0x800CF3E8 -> 0x800CECCC.
+- config/G4SE01/symbols.txt: placeholder lbl_8053BC80 0x8 -> 0x4 (committed).
+- TOOLING PROPOSAL (honest_report.py / gate.py, not touched): in the dead_data
+  rule, accept as a dead referencer a WEAK FUNC of this object that the
+  verified map lists as `>>> UNREFERENCED DUPLICATE <name>` followed by
+  `>>> (func,weak) found in <this object>` (the same evidence the weak-extab
+  removal already uses), in addition to referencers listed `UNUSED`. Here the
+  object is @866 (4 bytes, .sdata2 +0x4), its only referencer
+  getWeight__13J3DAnmClusterCFUs (map lines 21432-21434), its own UNUSED line
+  69924, and the layout lines 69922/69923/69925 (next object 0 bytes after
+  the stripped end). Then flip J3DAnmLoader.cpp to Matching.
+
+## Resistant
+None in code.
