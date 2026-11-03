@@ -20,14 +20,12 @@ static inline bool takeCamera(Camera_804AA9E4* cam) {
     return got;
 }
 
-// FIXME: 92%. Scheduling/regalloc only, same shape as act_attack_hitbox_when_player_is_thrown:
-// the original loads mPos.y then mPos.x (f6, f2) before copying mBox to the stack and then adds
-// into f4/f3/f2/f0; ours loads mBox first and mPos.x/y after the raw copy.
 void Zoom_804A9DF8::update() {
     switch (mState) {
     case 0: {
+        JGeometry::TVec2<f32> p(mPos.x, mPos.y);
         JGeometry::TBox2f box(mBox);
-        box.addPos(mPos.x, mPos.y);
+        box.addPos(p);
         if (fn_8023AF14(&box, field_0x4, false, 0.0f) >= 0) {
             if (takeCamera(lbl_8053AB10->field_0x24) == 1) {
                 if (field_0x90 >> 27) {
