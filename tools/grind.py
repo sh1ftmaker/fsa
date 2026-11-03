@@ -56,6 +56,14 @@ def claude_env():
     return dict(os.environ, ANTHROPIC_API_KEY=key) if key else None
 TRAILER = "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>"
 BANNED = re.compile(r"\basm\b|__asm|#\s*pragma|fakematch|force_order|\bgoto\b|NO_INLINE|dummy", re.I)
+
+
+def code_part(line):
+    """A diff line without its comments: "read off the asm" in a comment isn't an asm block."""
+    t = line[1:] if line[:1] in "+-" else line
+    if t.lstrip().startswith(("*", "/*")):
+        return ""
+    return re.sub(r"/\*.*?\*/", "", t).split("//")[0]
 # A placeholder free function whose first parameter is a class pointer is a member function.
 C_TAKES_CLASS = re.compile(r'extern\s+"C"\s+[\w\s\*]+\bfn_\w+\s*\(\s*(const\s+)?[A-Z]\w*\s*\*')
 FN_LINE = re.compile(r"^[ *] (\S+)\s+(\d+) bytes\s+(missing|[\d.]+ %)")
@@ -186,7 +194,7 @@ def check_diff(wt, unit):
     for l in added:
         if C_TAKES_CLASS.search(l):
             return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
-        if BANNED.search(l):
+        if BANNED.search(code_part(l)):
             return f"banned: {l.strip()[:80]}", None
     # A leftover use of a renamed symbol can't be told from text (members keep the short C++
     # name); it breaks the link or another unit's relocations, which the merge checks reject.
