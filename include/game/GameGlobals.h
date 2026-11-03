@@ -72,7 +72,22 @@ struct GameRoot_8049EF20 {
     /* 0x80 */ u8 field_0x80[0x2];
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
-    /* 0x84 */ u8 field_0x84[0xA4 - 0x84];
+    /* 0x84 */ u8 field_0x84[0x86 - 0x84];
+    // Toggled between 0 and 1 by fn_80134DC0 (game/tu_80134C04.cpp, 0x80134DC0,
+    // stb of r3 at 0x86 only).
+    /* 0x86 */ u8 field_0x86;
+    /* 0x87 */ u8 field_0x87;
+    // Stored by fn_80134D14 (game/tu_80134C04.cpp, 0x80134D14, stb of r4).
+    /* 0x88 */ u8 field_0x88;
+    /* 0x89 */ u8 field_0x89[0x94 - 0x89];
+    // Stored by fn_80134FC4 (game/tu_80134C04.cpp, 0x80134FC4, stb of r4), which
+    // sets field_0x95 to 1 unless the value is 1.
+    /* 0x94 */ u8 field_0x94;
+    // Set to 1 by fn_80134FC4 (game/tu_80134C04.cpp) when field_0x94 is not 1.
+    /* 0x95 */ u8 field_0x95;
+    // Stored by fn_80134FBC (game/tu_80134C04.cpp, 0x80134FBC, stb of r4).
+    /* 0x96 */ u8 field_0x96;
+    /* 0x97 */ u8 field_0x97[0xA4 - 0x97];
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
     // code calls it through vtable slot 0x18 = getResource(u32 type,
     // const char* name) with a 4CC and a name ('ENM ' in fn_801F62AC, 'TIMG'
@@ -87,7 +102,23 @@ struct GameRoot_8049EF20 {
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
-    /* 0xB8 */ u8 field_0xb8[0x11C - 0xB8]; // main allocates 0x11C bytes
+    /* 0xB8 */ u8 field_0xb8[0xF8 - 0xB8];
+    // Cleared to 0 by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8), together
+    // with field_0xfc, when it is stored a 1 (stb of r4 at 0xFE first).
+    /* 0xF8 */ s32 field_0xf8;
+    /* 0xFC */ u8 field_0xfc;
+    /* 0xFD */ u8 field_0xfd[0xFE - 0xFD];
+    // Stored by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8, stb of r4).
+    /* 0xFE */ u8 field_0xfe;
+    /* 0xFF */ u8 field_0xff[0x108 - 0xFF];
+    // Stored by fn_80134CC0 (game/tu_80134C04.cpp, 0x80134CC0), which
+    // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
+    // is not known yet.
+    /* 0x108 */ s32 field_0x108;
+    /* 0x10C */ u8 field_0x10c[0x11C - 0x10C]; // main allocates 0x11C bytes
+    // Owner: game/tu_80134C04.cpp (0x80134CC0; defined there). Stores r4 at
+    // this+0x108 (stw).
+    void fn_80134CC0(s32 value);
 
     // 15 units / 17 calls. Stores at this+0x50, 0x58 and 0x84 (per review);
     // act_ending_map_skipper calls it with (15, 0).
@@ -95,9 +126,21 @@ struct GameRoot_8049EF20 {
     // ~28 units. In tu_80134C04 with GameRoot's constructor; uses this->0xA0.
     // r3 only.
     void fn_80138B7C();
+    // Flips this+0x86 between 0 and 1 (lbz, then stb of 1 or 0). Defined in
+    // game/tu_80134C04.cpp (0x80134DC0); no callers found yet.
+    void fn_80134DC0();
+    // Stores r4 at lbl_8053AAF8+0x88 (stb). Defined in game/tu_80134C04.cpp;
+    // the body reads the global itself, r3 (this) is lbl_8053AAF8 at every call.
+    void fn_80134D14(u8 value);
     // Stores r4 at this+0x96 (stb). Defined in game/tu_80134C04.cpp; called
     // by act_stop_npc (0x802ED1B4, 0).
     void fn_80134FBC(u8 value);
+    // Stores r4 at this+0x94 (stb), then sets this+0x95 to 1 unless the value
+    // is 1. Defined in game/tu_80134C04.cpp (0x80134FC4); no callers found yet.
+    void fn_80134FC4(u8 value);
+    // Stores r4 at this+0xFE (stb). When it is 1, clears this+0xFC (stb) and
+    // this+0xF8 (stw). Defined in game/tu_80134C04.cpp (0x801365C8); no callers found yet.
+    void fn_801365C8(u8 value);
     // Owner: game/tu_80134C04.cpp (next to fn_80134FBC; not written yet).
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
@@ -711,6 +754,18 @@ extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016A3AC, defined there; not written yet).
 // No arguments; loads lbl_8053AAF8->field_0x4->field_0x24 (lwz 0x4, lwz 0x24).
 GameRootSub24_8016A3AC* fn_8016A3AC(void);
+}
+
+// The 4-byte pointer at .sbss lbl_8053AD68 (type unknown). Passed in r3 to
+// fn_8037A708, fn_8037A580 and fn_8037A664 (game/tu_80379F84.cpp) by
+// game/tu_80134C04.cpp's fn_80139958 and the code around 0x80136FC4.
+extern void* lbl_8053AD68;
+
+extern "C" {
+// Owner: game/tu_80379F84.cpp (0x8037A708, defined there; not written yet).
+// Takes the object lbl_8053AD68 holds; it reads the pointers at 0x4, 0x8 and
+// 0xC and clears the byte at 0x1C.
+void fn_8037A708(void* obj);
 }
 
 #endif

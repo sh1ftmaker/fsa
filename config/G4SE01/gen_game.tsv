@@ -244,7 +244,6 @@ tu_80125B58	sinit	__sinit_tu_80125B58_cpp	-	-	new	-
 tu_801286C0	sinit	__sinit_tu_801286C0_cpp	-	-	new	-
 tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
 tu_80130310	sinit	__sinit_tu_80130310_cpp	-	-	new	new
-tu_80134C04	sinit	__sinit_tu_80134C04_cpp	-	-	new	-
 tu_80139BE8	sinit	__sinit_tu_80139BE8_cpp	-	-	new	-
 tu_80147B50	sinit	__sinit_tu_80147B50_cpp	-	-	new	-
 tu_801555D8	sinit	__sinit_tu_801555D8_cpp	-	-	new	-
