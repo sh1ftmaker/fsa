@@ -47,7 +47,10 @@ struct GameRootSub04_801F856C {
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
     /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
-    /* 0x10 */ u8 field_0x10[0x30 - 0x10];
+    /* 0x10 */ u8 field_0x10[0x24 - 0x10];
+    // fn_8016A3AC returns it (game/tu_8016A2B4.cpp).
+    /* 0x24 */ struct GameRootSub24_8016A3AC* field_0x24;
+    /* 0x28 */ u8 field_0x28[0x30 - 0x28];
     // A heap: game/tu_8044B80C.cpp makes it current, frees its J2DScreens
     // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
     /* 0x30 */ JKRHeap* field_0x30;
