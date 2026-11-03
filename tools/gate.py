@@ -760,7 +760,11 @@ def check_report(problems):
         elif code[0] != code[1] or data[0] != data[1]:
             problems.append(
                 f"{meta.get('source_path', unit['name'])}: marked Matching but code {code[0]}/{code[1]}, data {data[0]}/{data[1]}")
-    check_weakdedup(problems)
+    try:
+        check_weakdedup(problems)
+    except (KeyError, TypeError, ValueError, AttributeError, IndexError, OSError, struct.error) as err:
+        # A malformed manifest or evidence field fails the gate with a message, not a traceback.
+        problems.append(f"build/G4SE01/weakdedup_manifest.json or its evidence is malformed: {type(err).__name__}: {err}")
 
 
 class Elf:
@@ -1024,8 +1028,8 @@ def check_dead_data(e, elf, name, mp):
             return f"{x['symbol']} references it, and the map doesn't list {x['symbol']} UNUSED for {name}"
     # What goes with it: up to the next symbol or the section end, zero padding only.
     nxt = min([x[1] for x in elf.syms if x[5] == sec and x[2] and x[1] >= hi] + [elf.sh[sec][5]])
-    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]):
-        return "the removed range isn't the object plus zero padding up to the next symbol"
+    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]) or any(hi <= off < nxt for off, _, _ in elf.relocs(sec)):
+        return "the removed range isn't the object plus zero padding (no relocations) up to the next symbol"
     return (sec, lo, nxt - lo)
 
 
@@ -1181,8 +1185,8 @@ def check_weak_data(e, elf, name, mp, inputs, main):
     # What goes with it: up to the next symbol or the section end, zero padding only.
     lo, hi = sym[1], sym[1] + sym[2]
     nxt = min([x[1] for x in elf.syms if x[5] == sec and x[2] and x[1] >= hi] + [elf.sh[sec][5]])
-    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]):
-        return "the removed range isn't the object plus zero padding up to the next symbol"
+    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]) or any(hi <= off < nxt for off, _, _ in elf.relocs(sec)):
+        return "the removed range isn't the object plus zero padding (no relocations) up to the next symbol"
     # Every allocated relocation into it or its padding names it (the link resolves it to the kept copy).
     refs = 0
     for r, h in enumerate(elf.sh):
