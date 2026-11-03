@@ -591,6 +591,10 @@ bool fn_80239718(s32 player, s32 serial);
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards
+// (player object, out) to the player's fn_8024B2BC when the player is present;
+// *out (3 floats, read as a position) is written by it.
+void fn_8022E114(s32 player, JGeometry::TVec3f* out);
 // Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
 // rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
 // through fn_8024145C; takes a player index (act_rock passes field_0xc8).

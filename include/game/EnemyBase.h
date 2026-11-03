@@ -245,7 +245,7 @@ public:
     // 4 units / 15 calls (clrlwi.). Whether the way from `from` to `to`
     // (x, y) on `layer` is clear, tested with fn_801CFA70 at the ends and
     // in between.
-    bool fn_801CF888(const JGeometry::TVec3f* from, const JGeometry::TVec3f* to, s32 layer);
+    bool fn_801CF888(const JGeometry::TVec2f* from, const JGeometry::TVec3f* to, s32 layer);
     // 1 unit / 5 calls (clrlwi; cmplwi 1). Both points inside the view's
     // box for `layer` (0xCC, or 0xDC for layer 8 and up) and the map
     // between them clear (fn_8022461C-style lookups on layer).
