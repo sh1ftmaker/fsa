@@ -263,7 +263,10 @@ public:
     /* 0x0437 */ u8 field_0x437[0x458 - 0x437];
     // Returned by fn_802412C4 (a byte, read by its caller in tu_80256C74).
     /* 0x0458 */ u8 field_0x458;
-    /* 0x0459 */ u8 field_0x459[0xBEC - 0x459];
+    /* 0x0459 */ u8 field_0x459[0xB9B - 0x459];
+    // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
+    /* 0x0B9B */ bool field_0xb9b;
+    /* 0x0B9C */ u8 field_0xb9c[0xBEC - 0xB9C];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
     /* 0x0BF0 */ u8 field_0xbf0[0xC80 - 0xBF0];
