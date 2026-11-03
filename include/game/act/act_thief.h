@@ -36,6 +36,9 @@ public:
     /* 0x60 */ virtual bool vfunc_0x60();
     /* 0x64 */ virtual bool vfunc_0x64();
     /* 0x68 */ virtual u8 vfunc_0x68();
+    // 0x80204D6C (act_thief): the last slot of the vtable. Tells the camera
+    // to keep mPos in view, unless the thief is in state 8 or 9.
+    /* 0xA0 */ virtual void vfunc_0xA0();
 
     // 0x802072E4 (tu_80206B30): mBox = (-8, -16)-(8, 8), copied to mBox2.
     void fn_802072E4();
