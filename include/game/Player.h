@@ -290,6 +290,17 @@ bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, 
 // of the first whose fn_802730D8 test (box, layer, flag, margin) hits, or -1 (also without a
 // manager). act_zoom passes (&box, field_0x4, false, 0.0f); tested against 0 with cmpwi.
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
+// act_magic_jar's pickup test (tu_8022AD64 forwards to fn_80274238 for each present player):
+// the first player whose box overlaps `box` on `layer`, or -1. `pos` is forwarded to fn_80274238, which adds the view offset into it in place
+// (0x80274344-0x80274360) when a player hits; `flag` is only passed on.
+s32 fn_8023B8E4(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag);
+// Per-player forwarders of tu_8022AD64 (act_magic_jar's pickup): fn_80236B50 -> fn_80270A8C (a
+// bool, true without a manager or player), fn_802375B0 -> fn_80241794 (an int compared with 0x180),
+// fn_80230EB8 -> fn_8024EFF8 and fn_80237524 -> fn_802416FC (void, one int argument).
+bool fn_80236B50(s32 player);
+s32 fn_802375B0(s32 player);
+void fn_80230EB8(s32 player, s32 arg);
+void fn_80237524(s32 player, s32 arg);
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
 // are passed by act_attack_hitbox_when_player_is_thrown.
 bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
