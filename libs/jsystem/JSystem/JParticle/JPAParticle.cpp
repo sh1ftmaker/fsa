@@ -190,6 +190,8 @@ void JPABaseParticle::init_c(JPAEmitterWorkData *workData, JPABaseParticle* part
     } else {
         mRotateSpeed = 0;
     }
+
+    mTexAnmIdx = 0;
 }
 
 bool JPABaseParticle::calc_p(JPAEmitterWorkData *workData)
