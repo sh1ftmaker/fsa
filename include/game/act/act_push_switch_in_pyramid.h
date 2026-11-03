@@ -15,7 +15,12 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x14]; // not yet known
+    /* 0x230 */ u8 field_0x230[0xC]; // not yet known
+    /* 0x23C */ s32 field_0x23c; // state: 0 pressing, 1 pushed in one step, 2 done
+    /* 0x240 */ u8 field_0x240;  // the player index that must push (1 after init)
+    /* 0x241 */ u8 field_0x241;  // how far the switch is pushed in (0-4)
+    /* 0x242 */ u8 field_0x242;  // frames the player has pushed
+    /* 0x243 */ u8 field_0x243;  // push progress within a step
 }; // Size: 0x244
 
 #endif
