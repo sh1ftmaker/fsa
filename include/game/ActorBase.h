@@ -617,11 +617,15 @@ void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
 void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, s32 flags,
                  const char* name, s32 frame, void* res);
 
-// Owner unit tu_801A3C50 (not written yet; a member of an actor class derived
-// from ActorBase_804A5770: it sets fields 0x108, 0x10C and 0xA0 from `player`
-// and calls vtable slot 0x44). 1 unit (tu_802242F4).
-void fn_801A3C50(ActorBase_804A5770* actor, s32 player);
+} // extern "C"
 
+// Not written yet in game/tu_801A3C50.cpp (a member of an actor class derived
+// from ActorBase_804A5770, so it takes the actor in r3): extern "C" keeps the
+// dtk name until that unit defines it. 1 unit (tu_802242F4). Stores 0 in
+// field 0x108 and `player` in fields 0x10C and 0xA0, then calls vtable slot
+// 0x44.
+extern "C" {
+void fn_801A3C50(ActorBase_804A5770* actor, s32 player);
 } // extern "C"
 
 #endif
