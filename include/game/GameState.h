@@ -35,6 +35,7 @@
 class JKRArchive;
 class JKRSolidHeap;
 class J2DPane;
+struct Unk_8045A080; // GameGlobals.h
 
 class GameState_804B0FE0 {
 public:
@@ -64,7 +65,7 @@ public:
     // and the 0x90-byte object fn_8045A080 builds in that heap.
     /* 0x004 */ JKRSolidHeap* field_0x4;
     /* 0x008 */ JKRExpHeap* mHeap;
-    /* 0x00C */ void* field_0xc;
+    /* 0x00C */ Unk_8045A080* field_0xc; // the object lbl_8053AF80 also holds (calls fn_80459AE4)
     // Resource archives (the loader object's 0x14, an archive fn_80401AC8 /
     // fn_80401D20 create as JKRAramArchive or JKRMemArchive). The ones set
     // in fn_803FFAA8 (tu_803FF2C4) come from these paths (0x80400334-
@@ -127,7 +128,9 @@ public:
     /* 0x239 */ u8 field_0x239; // bit per player; cls_804AC388::update ORs it
     /* 0x23A */ u8 field_0x23a[0x242 - 0x23A];
     /* 0x242 */ u8 field_0x242; // 19 units
-    /* 0x243 */ u8 field_0x243[0x24F - 0x243];
+    /* 0x243 */ u8 field_0x243[0x245 - 0x243];
+    /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor
+    /* 0x246 */ u8 field_0x246[0x24F - 0x246];
     /* 0x24F */ u8 field_0x24f; // 20 units
     /* 0x250 */ u8 field_0x250[0x258 - 0x250];
 }; // Size: 0x258 (at most; see above)
