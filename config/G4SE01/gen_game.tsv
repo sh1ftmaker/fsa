@@ -78,7 +78,6 @@ act_fire_bar	sinit	__sinit_act_fire_bar_cpp	-	-	new	-
 act_fire_manager	dtor	__dt__12cls_804AB2B0Fv	cls_804AB2B0	0x804AB2B0	new	new
 act_fire_manager	sinit	__sinit_act_fire_manager_cpp	-	-	new	new
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
-act_fireball_generator	sinit	__sinit_act_fireball_generator_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
 act_flame	sinit	__sinit_act_flame_cpp	-	-	new	-
