@@ -199,7 +199,7 @@ public:
     // clear, within maxDz in z (unless the view's layer flag is set) and
     // whose box overlaps actor's, skipping 'ARIJ' (Antlion) actors unless
     // `includeArij` (clrlwi. 24; callers pass their byte at 0x195); or -1.
-    s32 fn_801F82CC(ActorBase_804A5770* actor, bool includeArij, f32 maxDz);
+    s32 fn_801F82CC(ActorBase_804A5770* actor, u8 includeArij, f32 maxDz);
     // Unlink an actor from the manager's list (true if it was linked).
     // 1 unit / 1 call (ActorBase's destructor).
     bool fn_801F8448(ActorBase_804A5770* actor);
