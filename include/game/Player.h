@@ -215,6 +215,9 @@ s32 fn_80237810(s32 player);
 void fn_8023764C(s32 player, s32 value);
 bool fn_8022CCAC(s32 player);            // 2 units. -> fn_80249068 (byte 0x121F); else false
 bool fn_8022D75C(s32 player);            // 29 units. -> fn_8024BBB0 (byte 0xCE8); else false
+// 1 unit (act_sand_crab's update: clrlwi 24 on the result, like fn_80230188 beside it). Owner:
+// tu_8022AD64, not written yet.
+bool fn_8022DCD8(s32 player);
 // 1 unit (act_attack_hitbox_when_player_is_thrown; others call it too). Player pair test.
 bool fn_8022E438(s32 player, s32 other);
 // 48 units. -> fn_80240644 (word 0xD60: another player's index, or -1);

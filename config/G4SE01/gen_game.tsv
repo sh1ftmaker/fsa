@@ -166,8 +166,6 @@ act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-
 act_room_transfer_lift	dtor	__dt__12cls_8049CC40Fv	cls_8049CC40	0x8049CC40	new	new
 act_room_transfer_lift	sinit	__sinit_act_room_transfer_lift_cpp	-	-	new	new
 act_rope	sinit	__sinit_act_rope_cpp	-	-	new	-
-act_sand_crab	dtor	__dt__17SandCrab_8049F3B0Fv	SandCrab_8049F3B0	0x8049F3B0	new	new
-act_sand_crab	sinit	__sinit_act_sand_crab_cpp	-	-	new	new
 act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
