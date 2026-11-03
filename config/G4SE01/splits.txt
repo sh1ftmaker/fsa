@@ -142,8 +142,8 @@ JSystem/JAudio/System/JASAiCtrl.cpp:
 	.sdata2     start:0x8053B080 end:0x8053B0B0
 
 JSystem/JAudio/System/JASAudioReseter.cpp:
-	.text       start:0x8002A55C end:0x8002AAF8
-	.ctors      start:0x8045BD44 end:0x8045BD48
+	.text       start:0x8002A55C end:0x8002A740
+	.sdata2     start:0x8053B0B0 end:0x8053B0B8
 
 JSystem/JAudio/System/JASChannel.cpp:
 	.text       start:0x8002AAF8 end:0x8002C308

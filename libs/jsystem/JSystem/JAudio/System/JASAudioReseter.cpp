@@ -1,5 +1,4 @@
 #include "JSystem/JAudio/System/JASAudioThread.h"
-#include "JSystem/JAudio/System/JASChannel.h"  // FSA's __sinit constructs the JASChannel pool
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 #include "JSystem/JAudio/System/JASDriver.h"
 #include "JSystem/JAudio/System/JASDsp.h"
