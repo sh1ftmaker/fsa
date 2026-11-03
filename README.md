@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **17.43 %** of the code and **4,324 / 11,561** functions match. 237 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **17.46 %** of the code and **4,328 / 11,561** functions match. 238 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -72,11 +72,11 @@ interactive version, down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | Game code | 0 % of 3,574,236 bytes | 0 / 6,791 |
-| JSystem | 86.6 % of 630,440 bytes | 3,271 / 3,700 |
+| JSystem | 86.8 % of 630,440 bytes | 3,275 / 3,700 |
 | Dolphin SDK | 99.6 % of 131,240 bytes | 606 / 614 |
 | GX | 95.8 % of 33,660 bytes | 166 / 172 |
 | MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **17.43 %** of 4,442,088 bytes | **4,324 / 11,561** |
+| **Whole DOL** | **17.46 %** of 4,442,088 bytes | **4,328 / 11,561** |
 <!-- regions:end -->
 
 </details>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 39.5 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching, JAudio and J3D first. Currently 40.0 % of the split files Matching.
 - **Next** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. Currently 95.3 % of the split files Matching.
 - **Next** (phase 4): **THP video.** The THP player in the game region, with doldecomp/sms's THPDec.c and THPAudio.c inside its unit. Currently 0 % of the code matched.
 - **Next** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
