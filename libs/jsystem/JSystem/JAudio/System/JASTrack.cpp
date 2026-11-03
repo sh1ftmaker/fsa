@@ -594,8 +594,10 @@ void JASTrack::setChannelPauseFlag(bool pause) {
         }
     }
     for (int i = 0; i < MAX_CHILDREN; i++) {
-        JASTrack *child = mChildren[i];
-        if (child != NULL) {
+        // The declaration in the condition lets MWCC inline the recursion one level deeper
+        // (7 bodies, as in the original); a separate `child != NULL` test stops at 6.
+        // Assignment-in-condition is JSystem style (JAudio2/JAISound.cpp:184 in tp).
+        if (JASTrack *child = mChildren[i]) {
             child->setChannelPauseFlag(pause);
         }
     }
