@@ -15,14 +15,12 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x24() {
 
 void AttackHitboxWhenPlayerIsThrown_804A7C40::draw() {}
 
-// FIXME: 97.5%. Scheduling/regalloc only: the box copy and offset adds use f2/f3 swapped
-// (maxx, maxy) and the stfs of box.f.x lands before the second lfs of mPos.y instead of after.
 void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
     mPos.set(*fn_8023E724(field_0x230));
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
-    box.f.x += mPos.x;
     box.i.y += mPos.y;
+    box.f.x += mPos.x;
     box.f.y += mPos.y;
     s32 damage = lbl_8053AAF8->field_0x7f ? 0 : field_0x114;
     for (s32 i = 0; i < 4; i++) {
