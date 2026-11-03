@@ -164,17 +164,27 @@ until someone checks it the same way.
 
    Never for anything else: PowerPC code, strings, constants, jump tables,
    vtables, structs and tables the code uses are written as C. `.incbin`
-   stays banned, and `gate.py` fails a changed initializer of more than 64
-   integer literals (or a string of more than 64 escaped bytes) unless
-   blobs.txt has an `array` line for the file. `check_blobs` checks each
-   blob against symbols.txt and splits.txt (a data section, exact address
-   and size, at most 0x2000 bytes, inside its unit). It also fails on:
-   - an `assets/` include that isn't allowlisted or comes from another file;
+   stays banned. Hand-typed bytes are also banned, and **review is the real
+   enforcement**: `check_byte_arrays` in `gate.py` is only a tripwire. It
+   fails a changed file that gains large integer-literal initializers, bare
+   literal lists or escaped string bytes, unless blobs.txt has an `array`
+   line for the file. A determined writer can get around it, and a reviewer
+   who sees that is looking at a REJECT.
+
+   `check_blobs` checks each blob against symbols.txt and splits.txt (a data
+   section, exact address and size, at most 0x2000 bytes, inside its unit),
+   and against dtk's split of the original (no relocations, no vtable or RTTI
+   names). Before checking include paths it normalizes them the way MWCC
+   resolves them: continuations spliced, `\` read as `/`, any case. It fails
+   on:
+   - an `assets/` include that isn't allowlisted, comes from another file or
+     sits under `#if`;
+   - any non-blob include inside an initializer;
    - an include path naming `build/`, and a computed `#include`;
    - a configure.py include root under `build/` other than
      `build/{version}/include`;
-   - a tracked file under any `assets/` directory or named like an extracted
-     header.
+   - a tracked symlink, a tracked file under any directory named `assets`
+     (any case), or a tracked file named like an extracted header.
 
 ## Code quality (KATAM / TP style)
 

@@ -209,17 +209,38 @@ The gate has two checks. `check_blobs`:
 - checks each blob in symbols.txt (`.data`/`.rodata`/`.sdata`/`.sdata2`
   object, exact address and size, at most 0x2000) and splits.txt (inside the
   unit's range);
-- lets only the listed unit include the header, and only once;
-- fails other `assets/` includes, include paths naming `build/`, computed
-  includes, configure.py include roots under `build/` other than
-  `build/{version}/include`, and tracked files under any `assets/` directory.
+- rejects `__vt__`/`__RTTI__`/compiler symbols, and any blob whose range holds
+  relocations in dtk's split of the original;
+- normalizes include paths as MWCC under wibo resolves them (continuations
+  spliced, `\` as `/`, `./` dropped, casefolded);
+- lets only the listed unit include the header, exactly once and
+  unconditionally;
+- fails other `assets/` includes, any non-blob include inside an
+  initializer, include paths naming `build/`, computed includes and
+  configure.py include roots under `build/` other than
+  `build/{version}/include`;
+- fails tracked symlinks, tracked files under any directory named `assets`
+  (any case, anywhere), and tracked files named like a blob header.
 
-`check_byte_arrays` fails a changed initializer of more than 64 integer
-literals, or a string of more than 64 escaped bytes, unless blobs.txt has an
-`array` line for the file. Several donor files already embed microcode or
-tables as literals and are untouched: JAudio `dsptask.c`, `CARDUnlock.c`,
-`OSAudioSystem.c`, MSL `ctype.c`. Editing inside such an array needs an
-`array` line.
+`check_byte_arrays` is a tripwire; review is the real enforcement. On any
+changed source-like file (headers and `.inc` too) it fails:
+- an edited initializer of more than 64 integer literals or 128 bytes' worth;
+- a gain of 256 literals or 512 bytes' worth across the file's initializers;
+- a bare literal list over 64 that grew;
+- a gain of more than 128 escaped bytes in string literals.
+
+Every number counts, including casts and `+0`; hex words count by their
+digits. An `array` line in blobs.txt exempts a file.
+
+Donor files already on `matching` hold large literal arrays, and only an
+edit inside one of them, or growth, trips the check. There are about 17 such
+files, for example:
+- DSP microcode: JAudio `dsptask.c`, `CARDUnlock.c`, `OSAudioSystem.c`;
+- lookup tables: `JASCalc.cpp`, `JASDSPInterface.cpp`, `JPAResource.cpp`,
+  `JUTDirectPrint.cpp`, `JUTResFont.cpp`, `J2DWindowEx.cpp`, `vi.c`,
+  `thp.h`, `rom_tables.h`, MSL `ctype.c`, `e_rem_pio2.c`, `k_rem_pio2.c`.
+
+To list them, run `check_byte_arrays` over every tracked file.
 
 ## Rakes (each cost time once)
 
