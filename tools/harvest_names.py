@@ -44,8 +44,8 @@ SPLITS = Path("config/G4SE01/splits.txt")
 ELF = Path("build/G4SE01/fsa_game_code.elf")
 DTK = Path("build/tools/dtk")
 
-PLACEHOLDER = re.compile(r"^(fn_|lbl_)|_80[0-9A-Fa-f]{6}$")
-NOT_REAL = re.compile(r"^(fn_|lbl_|auto_|func_|jumptable_|@|\.\.\.)|_80[0-9A-Fa-f]{6}$|^__unknown")
+PLACEHOLDER = re.compile(r"^(fn_|lbl_)|_80[0-9A-Fa-f]{6}(?![0-9a-z])|cls_[0-9A-Fa-f]{8}|__sinit_tu_[0-9A-Fa-f]{8}")
+NOT_REAL = re.compile(r"^(fn_|lbl_|auto_|func_|jumptable_|@|\.\.\.)|_80[0-9A-Fa-f]{6}(?![0-9a-z])|cls_[0-9A-Fa-f]{8}|__sinit_tu_[0-9A-Fa-f]{8}|^__unknown")
 LINE = re.compile(r"^(\S+) = (\S+):0x([0-9A-Fa-f]+); // (.*)$")
 SHN_UNDEF, SHN_COMMON = 0, 0xFFF2
 

@@ -76,7 +76,9 @@ RESTRICTED = [
     (re.compile(r"^\s*#\s*pragma\b.*"), "#pragma"),
     (re.compile(r"\bgoto\s+\w+\s*;"), "goto"),
 ]
-PLACEHOLDER = re.compile(r"^(fn_|lbl_|auto_|func_|jumptable_|@)|_80[0-9A-Fa-f]{6}$")
+# Placeholders: dtk's names, address-suffixed provisional names (also inside mangled names,
+# e.g. init__18ActorBase_804A5770Fv), cls_<addr> classes and provisional game-unit __sinit names.
+PLACEHOLDER = re.compile(r"^(fn_|lbl_|auto_|func_|jumptable_|@)|_80[0-9A-Fa-f]{6}(?![0-9a-z])|cls_[0-9A-Fa-f]{8}|__sinit_tu_[0-9A-Fa-f]{8}")
 SYMBOL_LINE = re.compile(r"^(\S+) = (\S+):(0x[0-9A-Fa-f]+); // (.*)$")
 
 
