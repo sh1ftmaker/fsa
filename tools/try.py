@@ -2,36 +2,45 @@
 """One attempt: compile one unit, diff it, say what kind of difference is left.
 
 Usage:
-  python3 tools/try.py <unit> [<function>]   # e.g. game/act_rat.cpp, JSystem/JKernel/JKRUnitHeap.cpp
-  python3 tools/try.py <unit> <function> --reset   # forget the attempt log of that function
+  python3 tools/try.py <unit> [<function>] [--budget N]
+      e.g. game/act_rat.cpp, JSystem/JKernel/JKRUnitHeap.cpp
 
 Compiles only the unit's object (ninja <its .o>; first re-splits with dtk if
 splits.txt or symbols.txt is newer than build/G4SE01/config.json; no link,
-no report), diffs it with objdiff-cli
-under the report's relocation setting (functionRelocDiffs=all, as
-tools/fdiff.py does) and prints at most 20 lines:
+no report), diffs it with objdiff-cli under the report's relocation setting
+(functionRelocDiffs=all, as tools/fdiff.py does) and prints at most 20 lines:
 
   * without <function>: the unit's sections below 100 % and every function
     below 100 %, each with a classification;
   * with <function>: its match %, the classification and the first
     differing rows (target | ours).
 
-Classifications (non-matching functions):
-  regalloc-only   same instructions apart from register numbers
-  scheduling      same instructions (multiset), different order (+regalloc: registers differ too)
-  reloc-name      same instructions, only relocation targets differ (a symbol name or a split)
-  reloc+regalloc  only registers and relocation targets differ
-  reloc-data      identical instructions and targets; a referenced data value differs
-  missing/extra   N instructions more or fewer than the target
-  different       same length, different instructions
-  missing         the function isn't in our object (not written yet, or named differently)
+Classifications (non-matching functions; shape and reloc-name combine):
+  regalloc-only        same instructions apart from register numbers
+  scheduling           same instructions (multiset), different order
+  scheduling+regalloc  the same, and registers differ too
+  operands             same opcodes in the same order, an immediate differs
+  missing/extra        N instructions more or fewer than the target
+  different            same length, different opcodes
+  reloc-name           objdiff marks a relocation target as different
+                       (target vs ours, paired by row)
+  same-text            identical as printed, but objdiff marks rows (a referenced data
+                       value, or offsets from a base register it pairs differently)
+  missing              the function isn't in our object (unwritten, or named differently)
 
 Attempt log: build/try/<unit slug>.json. An attempt is a run in which the
-function's compiled code differs from the previous run's (re-running without a
-change counts nothing). After 4 attempts without beating the best %, it prints
-`STOP: 4 attempts without progress — leave a FIXME`. The % here is objdiff's
-for the compiled object; the honest report (ninja build/G4SE01/report_honest.json,
-tools/gate.py) stays the measure of record.
+function's own compiled code changed since the previous run (compiler @NNN
+label numbers are ignored, so edits elsewhere in the file, comments and
+no-op rewrites count nothing). Try budget by the target's size (GAME_PLAN
+item 8): 3 tries up to 32 instructions, 6 up to 128, and for larger
+functions the budget the coordinator sets with --budget N (default 10).
+When a function has used its budget without beating its best %, try.py
+prints STOP: leave a FIXME saying what differs and carry on with the rest
+of the file. Only the coordinator resets the log (delete the file).
+
+The % here is objdiff's for the compiled object; the honest report
+(ninja build/G4SE01/report_honest.json, tools/gate.py) stays the measure of
+record.
 """
 
 import hashlib
@@ -45,7 +54,8 @@ from pathlib import Path
 OBJDIFF = "build/tools/objdiff-cli"
 CONFIG = "functionRelocDiffs=all"  # same as the honest report and objdiff.json
 LOGDIR = Path("build/try")
-STOP_AFTER = 4
+LARGE_BUDGET = 10  # >128 instructions, unless --budget N
+LOCAL_LABEL = re.compile(r"@\d+")
 MAX_LINES = 20
 REG = re.compile(r"^(r|f|cr|qr)\d+$")
 
@@ -135,7 +145,7 @@ def insn_list(side, sym):
         ins = row.get("instruction")
         if not ins:
             continue
-        mn, args = "", []
+        mn, args, rel_arg = "", [], None
         for p in ins.get("parts", []):
             if "opcode" in p:
                 mn = p["opcode"].get("mnemonic", "")
@@ -146,6 +156,7 @@ def insn_list(side, sym):
                 elif "branch_dest" in a:
                     args.append(f"@{int(a['branch_dest']) - start:x}")
                 elif "reloc" in a:
+                    rel_arg = len(args)
                     args.append("RELOC")
                 else:
                     args.append(str(next(iter(a.values()))))
@@ -156,8 +167,24 @@ def insn_list(side, sym):
             target = syms[t]["name"] if t is not None and t < len(syms) else "?"
             if rel.get("addend"):
                 target += f"+{rel['addend']}"
-        res.append((mn, tuple(args), target, ins.get("formatted", "")))
+        res.append((mn, tuple(args), target, rel_arg))
     return res
+
+
+def reloc_pairs(lsym, rsym, left, right):
+    """(target name, our name) for each aligned row where objdiff marks the
+    relocation argument as different."""
+    pairs = []
+    for a, b in zip(lsym.get("instructions", []), rsym.get("instructions", [])):
+        if not (a.get("instruction") and b.get("instruction")) or not (a.get("diff_kind") or b.get("diff_kind")):
+            continue
+        ta, = insn_list(left, {"address": lsym.get("address", 0), "instructions": [a]})
+        tb, = insn_list(right, {"address": rsym.get("address", 0), "instructions": [b]})
+        marked = any(k is not None and k < len(d.get("arg_diff", [])) and d["arg_diff"][k]
+                     for k, d in ((ta[3], a), (tb[3], b)))
+        if marked and (ta[2], tb[2]) not in pairs:
+            pairs.append((ta[2] or "-", tb[2] or "-"))
+    return pairs
 
 
 def noreg(i):
@@ -172,16 +199,10 @@ def nobranch(i):
     return (i[0], tuple("@" if a.startswith("@") else a for a in i[1]), i[2])
 
 
-def full(i):
-    return i[:3]
 
-
-def classify(t, o):
-    """(class, detail) for target and our instruction lists.
-
-    The instruction shape (with relocation targets erased) gives one of
-    regalloc-only, scheduling(+regalloc), missing/extra, different; differing
-    relocation targets add reloc-name. Nothing else differing: reloc-data."""
+def classify(t, o, rpairs):
+    """(class, detail) from target and our instruction lists and the
+    relocation pairs objdiff marked (reloc_pairs)."""
     tags, details = [], []
     T, O = [noreloc(i) for i in t], [noreloc(i) for i in o]
     if T == O:
@@ -204,23 +225,31 @@ def classify(t, o):
         n = len(O) - len(T)
         tags.append("missing/extra")
         details.append(f"ours has {abs(n)} {'more' if n > 0 else 'fewer'} instrs ({len(O)} vs {len(T)})")
+    elif [i[0] for i in T] == [i[0] for i in O]:
+        tags.append("operands")
+        details.append("same opcodes, an immediate or offset differs")
     else:
         ops = sum(1 for a, b in zip(T, O) if a[0] != b[0])
         tags.append("different")
         details.append(f"same length, {ops} opcodes differ")
-    rt = Counter(i[2] for i in t if i[2])
-    ro = Counter(i[2] for i in o if i[2])
-    gone, new = sorted(rt - ro), sorted(ro - rt)
-    if gone or new:
-        names = [f"{a} vs {b}" for a, b in zip(gone, new)]
-        names += [f"{a} vs -" for a in gone[len(new):]] + [f"- vs {b}" for b in new[len(gone):]]
+    if rpairs:
+        names = [f"{a} vs {b}" for a, b in rpairs]
         tags.append("reloc-name")
         details.append("target vs ours: " + "; ".join(names[:3]) + (f" (+{len(names) - 3})" if len(names) > 3 else ""))
-        if any(b.startswith("@") for b in new) and any(a.startswith("lbl_") for a in gone):
+        if any(b.startswith("@") for a, b in rpairs if a.startswith("lbl_")):
             details.append("@NNN vs lbl_: literals not yet split into this unit or not in the original order")
     if not tags:
-        return "reloc-data", "same instructions and targets; a referenced data value differs"
+        return "same-text", "identical as printed; objdiff marks rows (a data value, or offsets from a base it pairs differently)"
     return " + ".join(tags), "; ".join(details)
+
+
+def budget_for(n, large):
+    """GAME_PLAN item 8: tries per function by the target's instruction count."""
+    if n <= 32:
+        return 3, "<=32 instrs"
+    if n <= 128:
+        return 6, "33-128 instrs"
+    return large, ">128 instrs"
 
 
 def window(lsym, rsym, rows=7, structural=False):
@@ -253,30 +282,30 @@ def window(lsym, rsym, rows=7, structural=False):
 # ---------------------------------------------------------------- attempt log
 
 def code_hash(o):
-    return hashlib.sha1(repr([full(i) for i in o]).encode()).hexdigest()[:16]
+    """Our function's code, with compiler label numbers (@NNN) erased: they are
+    renumbered across the file whenever a literal is added anywhere earlier."""
+    norm = [(i[0], i[1], LOCAL_LABEL.sub("@", i[2]) if i[2] else None) for i in o]
+    return hashlib.sha1(repr(norm).encode()).hexdigest()[:16]
 
 
-def record(log, name, pct, o, cls, src=None):
+def record(log, name, pct, o, cls, budget, tier):
     """Update the log; returns (entry, note) where note is '' or a STOP line.
-
-    An attempt is a run where the function's code changed, or (src given: the
-    function was named on the command line) where the unit's source changed."""
+    An attempt is a run where the function's own (normalised) code changed."""
     h = code_hash(o) if o is not None else "missing"
     e = log.get(name)
     if e is None:
-        e = log[name] = {"best": pct, "start": pct, "attempts": 0, "stale": 0, "hash": h, "src": src}
-    elif h != e["hash"] or (src is not None and e.get("src") not in (None, src)):
+        e = log[name] = {"best": pct, "start": pct, "attempts": 0, "stale": 0, "hash": h}
+    elif h != e["hash"]:
         e["attempts"] += 1
         e["hash"] = h
         if pct > e["best"]:
             e["best"], e["stale"] = pct, 0
         else:
             e["stale"] += 1
-    e["last"], e["class"] = pct, cls
-    if src is not None:
-        e["src"] = src
-    if pct < 100 and e["stale"] >= STOP_AFTER:
-        return e, f"STOP: {STOP_AFTER} attempts without progress — leave a FIXME"
+    e["last"], e["class"], e["budget"] = pct, cls, budget
+    if pct < 100 and e["stale"] >= budget:
+        return e, (f"STOP: {budget} tries without progress ({tier}) — leave a FIXME saying what"
+                   " differs and carry on with the rest of the file")
     return e, ""
 
 
@@ -287,8 +316,16 @@ def fmt_pct(p):
 # ---------------------------------------------------------------- main
 
 def main():
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    if not args or "-h" in sys.argv or "--help" in sys.argv:
+    argv, large = sys.argv[1:], LARGE_BUDGET
+    if "--budget" in argv:
+        k = argv.index("--budget")
+        try:
+            large = int(argv[k + 1])
+        except (IndexError, ValueError):
+            die("--budget needs a number")
+        del argv[k:k + 2]
+    args = [a for a in argv if not a.startswith("-")]
+    if not args or "-h" in argv or "--help" in argv:
         print(__doc__)
         return
     unit = build(args[0])
@@ -311,12 +348,15 @@ def main():
     def analyse(s):
         r = ours(s)
         pct = s.get("match_percent") if r is not None else None
+        t = insn_list(left, s)
+        budget, tier = budget_for(len(t), large)
         if r is None:
-            return 0.0, None, ("missing", "not in our object (unwritten, or named differently)"), r
-        if pct == 100:
-            return 100.0, insn_list(right, r), ("match", ""), r
+            cls = ("missing", "not in our object (unwritten, or named differently)")
+            return 0.0, None, cls, r, budget, tier
         o = insn_list(right, r)
-        return float(pct or 0), o, classify(insn_list(left, s), o), r
+        if pct == 100:
+            return 100.0, o, ("match", ""), r, budget, tier
+        return float(pct or 0), o, classify(t, o, reloc_pairs(s, r, left, right)), r, budget, tier
 
     lines = []
     if len(args) == 1:
@@ -337,8 +377,8 @@ def main():
             lines.append(f"ours only ({len(extra)}): " + ", ".join(extra[:4])[:150])
         rest, missing = [], []
         for s in funcs:
-            pct, o, (cls, detail), _ = analyse(s)
-            _, note = record(log, s["name"], pct, o, cls)
+            pct, o, (cls, detail), _, budget, tier = analyse(s)
+            _, note = record(log, s["name"], pct, o, cls, budget, tier)
             if cls == "match":
                 continue
             if cls == "missing":
@@ -355,7 +395,8 @@ def main():
         if len(rest) > room:
             lines.append(f"  ... {len(rest) - room} more (name one: try.py <unit> <function>)")
         elif any("STOP" in r for r in rest):
-            lines.append(f"STOP marks: {STOP_AFTER} attempts without progress — leave a FIXME")
+            lines.append("STOP: try budget used without progress — leave a FIXME saying what differs"
+                         " and carry on with the rest of the file")
     else:
         want = args[1]
         hits = [s for s in funcs if s["name"] == want] or \
@@ -365,10 +406,8 @@ def main():
             names = [s["name"] for s in hits] or [s["name"] for s in funcs]
             die(f"{want!r} matches {len(hits)} target functions: " + ", ".join(names[:12]))
         s = hits[0]
-        pct, o, (cls, detail), r = analyse(s)
-        source = Path((unit.get("metadata") or {}).get("source_path") or "-")
-        src = hashlib.sha1(source.read_bytes()).hexdigest()[:16] if source.is_file() else None
-        e, note = record(log, s["name"], pct, o, cls, src)
+        pct, o, (cls, detail), r, budget, tier = analyse(s)
+        e, note = record(log, s["name"], pct, o, cls, budget, tier)
         lines.append(f"{s['name']}: {fmt_pct(None if o is None else pct)} ({int(s['size'])} bytes)")
         if cls == "missing":
             extra = [x["name"] for x in right["symbols"]
@@ -381,7 +420,7 @@ def main():
             lines.append(f"{cls}: {detail}")
             lines += window(s, r, rows=min(11, MAX_LINES - 5),
                             structural=cls.split(" ")[0] in ("missing/extra", "different"))
-        lines.append(f"attempts {e['attempts']}, best {e['best']:.2f}%, start {e['start']:.2f}%"
+        lines.append(f"attempts {e['attempts']}, best {e['best']:.2f}%, start {e['start']:.2f}%, budget {budget} ({tier})"
                      + (f", {e['stale']} since last gain" if e["stale"] else ""))
         if note:
             lines.append(note)
@@ -389,20 +428,6 @@ def main():
     print("\n".join(lines[:MAX_LINES]))
 
 
-def reset():
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    units = load_units() or []
-    unit = find_unit(units, args[0]) if args else None
-    if unit is None:
-        die("usage: try.py <unit> [<function>] --reset")
-    logpath = LOGDIR / f"{slug_of(unit['name'])}.json"
-    log = json.loads(logpath.read_text()) if logpath.exists() else {}
-    for k in [k for k in log if len(args) < 2 or args[1] in k]:
-        del log[k]
-    logpath.parent.mkdir(parents=True, exist_ok=True)
-    logpath.write_text(json.dumps(log, indent=1, sort_keys=True) + "\n")
-    print(f"attempt log reset: {logpath}" + (f" ({args[1]})" if len(args) > 1 else ""))
-
 
 if __name__ == "__main__":
-    reset() if "--reset" in sys.argv else main()
+    main()
