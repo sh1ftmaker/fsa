@@ -106,9 +106,21 @@ public:
 // flags of the actors they name. No vtable; named after that destructor.
 class cls_801D7730 {
 public:
+    // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
+    cls_801D7730();
     ~cls_801D7730();
     /* 0x00 */ s32 field_0x0[0x10];
-    /* 0x40 */ u8 field_0x40[0x68 - 0x40]; // not yet known
+    /* 0x40 */ s32 field_0x40; // cleared by the constructor
+    /* 0x44 */ s32 field_0x44; // cleared by the constructor
+    /* 0x48 */ f32 field_0x48; // cleared by the constructor
+    /* 0x4C */ f32 field_0x4c; // cleared by the constructor
+    /* 0x50 */ f32 field_0x50; // cleared by the constructor
+    /* 0x54 */ s16 field_0x54; // cleared by the constructor
+    /* 0x56 */ s16 field_0x56; // cleared by the constructor
+    /* 0x58 */ u8 field_0x58; // cleared by the constructor
+    /* 0x5C */ f32 field_0x5c; // cleared by the constructor
+    /* 0x60 */ f32 field_0x60; // cleared by the constructor
+    /* 0x64 */ s32 field_0x64; // cleared by the constructor
 }; // Size: 0x68
 
 // The boss Vaati (actor 'BOGF', EnemyBase_804A4808 child), named after its
