@@ -342,6 +342,9 @@ extern "C" {
 s32 fn_801CD950(f32* value, f32 target, f32 step);
 // game/tu_801CB270.cpp (same unit, not written yet): the step fn_801CD950 wraps.
 s32 fn_801CD9F0(f32* value, f32 target, f32 step);
+// game/tu_801CB270.cpp (same unit): returns the next sprite direction for
+// `value` (field_0x98 is stored back from it, then fn_801D22DC plays it).
+s32 fn_801CD30C(s32 value);
 // Convert a position between the two view-box spaces: out = (in.x, in.y)
 // minus the view's 0xCC/0xD0 box corner plus its 0xDC/0xE0 one (fn_801CD150),
 // or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.
