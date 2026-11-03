@@ -30,8 +30,20 @@ bool Player_804A6F38::fn_802413F0() {
     return playerFlags_802413F0(this);
 }
 
+void Player_804A6F38::fn_80241454(u8 value) {
+    field_0xc80 = value;
+}
+
 bool Player_804A6F38::fn_8023FC08() {
     return field_0x42c;
+}
+
+bool Player_804A6F38::fn_802413E8() {
+    return field_0x454;
+}
+
+bool Player_804A6F38::fn_802412CC() {
+    return field_0x460;
 }
 
 u8 Player_804A6F38::fn_802412C4() {
@@ -44,6 +56,10 @@ s32 Player_804A6F38::fn_8023FC24() {
 
 s32 Player_804A6F38::fn_80240644() {
     return field_0xd60;
+}
+
+s32 Player_804A6F38::fn_8024322C() {
+    return field_0xd08;
 }
 
 bool Player_804A6F38::fn_8023FF88() {
@@ -132,3 +148,27 @@ f32 Player_804A6F38::fn_80246F28() {
 }
 
 extern "C" void fn_80252FBC() {}
+
+bool Player_804A6F38::fn_80249068() {
+    return field_0x121f;
+}
+
+bool Player_804A6F38::fn_8024BBB0() {
+    return field_0xce8;
+}
+
+bool Player_804A6F38::fn_8024C458() {
+    return field_0xd4c;
+}
+
+JGeometry::TVec3f* Player_804A6F38::fn_8024E018() {
+    return &field_0x2b8;
+}
+
+s8 Player_804A6F38::fn_8024EE0C() {
+    return field_0x3d9;
+}
+
+s8 Player_804A6F38::fn_8024EE14() {
+    return field_0x3d8;
+}
