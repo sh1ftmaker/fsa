@@ -213,8 +213,6 @@ act_pengator	dtor	__dt__17Pengator_804A1888Fv	Pengator_804A1888	0x804A1888	new	n
 act_pengator	sinit	__sinit_act_pengator_cpp	-	-	new	new
 act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
 act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
-act_player_start_position	dtor	__dt__28PlayerStartPosition_804A8338Fv	PlayerStartPosition_804A8338	0x804A8338	new	new
-act_player_start_position	sinit	__sinit_act_player_start_position_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
 act_poe	dtor	__dt__12Poe_8049F330Fv	Poe_8049F330	0x8049F330	new	new
 act_poe	sinit	__sinit_act_poe_cpp	-	-	new	new
