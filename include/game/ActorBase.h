@@ -442,7 +442,7 @@ public:
     // 1 unit / 2 calls (tu_8025EB18, on an actor found by serial). If
     // neither field_0xcc nor field_0xc4: field_0xcc = 1, field_0xd0 = v,
     // returns 1; else 0.
-    bool fn_801F36D4(s32 v);
+    u8 fn_801F36D4(s32 v);
     // 1 unit / 2 calls (tu_8025EB18). If field_0xc4: clears it, field_0x3c =
     // *v, returns 1; else 0.
     bool fn_801F3708(const JGeometry::TVec3f* v);

@@ -172,6 +172,18 @@ void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::init() {}
 
+// If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
+// loop with field_0xd0 = v and returns 1 (0 otherwise).
+u8 ActorBase_804A5770::fn_801F36D4(s32 v) {
+    s32 result = false;
+    if (field_0xcc == 0 && field_0xc4 == 0) {
+        field_0xcc = 1;
+        field_0xd0 = v;
+        result = true;
+    }
+    return result;
+}
+
 // Sets field_0xa4 and clears the per-hit and timer state; field_0xe0 is only
 // cleared while the actor has life left.
 void ActorBase_804A5770::fn_801F3780(s32 v) {
