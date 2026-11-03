@@ -3,8 +3,9 @@
 
 #include "JSystem/JAudio/System/JASGadget.h"
 #include "JSystem/JAudio/System/JASBankList.h"
-#include "JSystem/JAudio/System/JASBank.h"
 #include "JSystem/JSupport/JSUList.h"
+
+class JASBank;
 
 class JAUBankTable : public JASBankList
 {

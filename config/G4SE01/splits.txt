@@ -344,8 +344,7 @@ JSystem/JAudio/Utility/JAUAudioMgr.cpp:
 	.sdata2     start:0x8053B298 end:0x8053B2A8
 
 JSystem/JAudio/Utility/JAUBankTable.cpp:
-	.text       start:0x8003B288 end:0x8003B400
-	.ctors      start:0x8045BD8C end:0x8045BD90
+	.text       start:0x8003B288 end:0x8003B2CC
 
 JSystem/JAudio/Utility/JAUInitializer.cpp:
 	.text       start:0x8003B400 end:0x8003B85C
