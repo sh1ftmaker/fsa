@@ -91,8 +91,6 @@ act_flame	sinit	__sinit_act_flame_cpp	-	-	new	-
 act_floormaster	sinit	__sinit_act_floormaster_cpp	-	-	new	-
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
-act_focus_npc	dtor	__dt__17FocusNPC_804A8EA0Fv	FocusNPC_804A8EA0	0x804A8EA0	new	new
-act_focus_npc	sinit	__sinit_act_focus_npc_cpp	-	-	new	new
 act_force_gem	dtor	__dt__17ForceGem_804AB6D8Fv	ForceGem_804AB6D8	0x804AB6D8	new	new
 act_force_gem	sinit	__sinit_act_force_gem_cpp	-	-	new	new
 act_force_gem_2	sinit	__sinit_act_force_gem_2_cpp	-	-	new	-
