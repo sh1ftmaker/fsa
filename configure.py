@@ -756,7 +756,7 @@ config.libs = [
         Object(Matching, "JSystem/JFramework/JFWSystem.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JGadget", [
-        Object(NonMatching, "JSystem/JGadget/binary.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JGadget/binary.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JGadget/linklist.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JKernel", [

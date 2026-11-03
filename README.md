@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **18.91 %** of the code and **4,610 / 11,561** functions match. 284 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **18.91 %** of the code and **4,611 / 11,561** functions match. 285 of 886 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -72,11 +72,11 @@ interactive version, down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | Game code | 0.42 % of 3,573,784 bytes | 81 / 6,789 |
-| JSystem | 94.6 % of 630,892 bytes | 3,476 / 3,702 |
+| JSystem | 94.6 % of 630,892 bytes | 3,477 / 3,702 |
 | Dolphin SDK | 99.6 % of 131,240 bytes | 606 / 614 |
 | GX | 95.8 % of 33,660 bytes | 166 / 172 |
 | MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **18.91 %** of 4,442,088 bytes | **4,610 / 11,561** |
+| **Whole DOL** | **18.91 %** of 4,442,088 bytes | **4,611 / 11,561** |
 <!-- regions:end -->
 
 </details>
@@ -95,7 +95,7 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JUTException, the JAU utilities and most JAS stragglers are merged; JAudio's -sym on build and the J2D/J3D holdouts are in progress. Currently 52.7 % of the split files Matching.
+- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JUTException, the JAU utilities and most JAS stragglers are merged; JAudio's -sym on build and the J2D/J3D holdouts are in progress. Currently 53.2 % of the split files Matching.
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The FIXME(link) units, the last GX and MSL functions, and data splits. GX is 100 % and linked; dead-stripped data is now proven from the link map (dvdfs, GXPerf, GXPixel, mtx, mtx44). Left are GBAKey's microcode (build-time extraction, in review) and MSL ansi_fp/strtoul. Currently 98.3 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit. 159 of 168 functions match; names and the last register differences are in progress. Currently 0 % of the code matched.
 - **Now** (phase 5): **Shared headers, one owner each.** The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
