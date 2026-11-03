@@ -3,7 +3,9 @@
 // query of each shape (a getter call, a setter call with an argument, a
 // field, a field's address), the templates for the rest.
 
+#include "game/BgRewrite.h"
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
 
 // What the position queries return when there is no such player. The
@@ -11,6 +13,14 @@
 // JAudio pools; dtk's lbl_804CF460 (0x108) also covers the pools'
 // destructor chain after it.
 JGeometry::TVec3f lbl_804CF460(0.0f, 0.0f, 0.0f);
+
+extern "C" void fn_8022AD64() {
+    lbl_8053AAF8->fn_80138B7C();
+}
+
+extern "C" void fn_8022AD88() {
+    lbl_8053AC98->fn_8029D898(0x19);
+}
 
 // fn_8022ADFC inlines the flag getters below, which come after it.
 
@@ -796,6 +806,13 @@ void fn_8022FEB8(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bo
     }
 }
 
+void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    lbl_8053AC90->mPlayers[player]->fn_8024CD20(box, layer, serial, a, b);
+}
+
 void fn_8022FFC4(s32 player, const JGeometry::TVec3f* arg) {
     if (lbl_8053AC90 == NULL) {
         return;
@@ -940,6 +957,20 @@ bool fn_802319B4(s32 player, s32 arg) {
         return lbl_8053AC90->mPlayers[player]->fn_80251BFC(arg);
     }
     return false;
+}
+
+// Out-of-line copy of TBox2<f32>::set(const TBox2&) (JGeometry.h). Its two
+// callers in fn_80232A0C copy a box into a stack TBox2f before passing it on.
+void fn_80233BA0(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
+    dst->set(*src);
+}
+
+// Out-of-line copy of TVec3<f32>::operator-: a copy of a, then sub(b).
+// Returned through the hidden pointer like any struct value.
+extern "C" JGeometry::TVec3f fn_80233BC4(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b) {
+    JGeometry::TVec3f diff = a;
+    diff.sub(b);
+    return diff;
 }
 
 bool fn_80233DA4(s32 player) {
@@ -2056,4 +2087,25 @@ bool fn_8023EFEC(s32 player) {
 
 bool fn_8023F264(s32 player) {
     return isPlayerActive(player);
+}
+
+extern "C" void fn_8023F6C4() {
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player;
+        if (lbl_8053AC90 == NULL) {
+            player = NULL;
+        } else {
+            player = lbl_8053AC90->mPlayers[i];
+        }
+        player->fn_80254660();
+    }
+}
+
+GameRoot_8049EF20* fn_8023F9B0() {
+    return lbl_8053AAF8;
+}
+
+bool GameRoot_8049EF20::fn_8023F98C(s32 player) {
+    u8 bit = 1 << player;
+    return (field_0x82 & bit) != 0;
 }

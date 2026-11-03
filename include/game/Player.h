@@ -49,6 +49,7 @@ public:
     bool fn_8023F984() { return mActive; }
 
     // tu_8023FBF0 getters and setters the queries forward to.
+    void fn_80254660(); // tu_8023FBF0; the player's reset, run per slot by fn_8023F6C4
     bool fn_8023FC08();          // byte at 0x42C
     void fn_8023FC10(s32 value); // 0xCA8 = max(0xCA8, value)
     // Getters and setters the generated queries forward to (tools/gen_game.py).
