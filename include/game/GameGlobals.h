@@ -65,17 +65,25 @@ struct GameRoot_8049EF20 {
     /* 0x04 */ GameRootSub04_801F856C* field_0x4; // -> 0x8: the actor manager
     /* 0x08 */ u8 field_0x8[0x4C - 0x8];
     /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
-    /* 0x50 */ u8 field_0x50[0x58 - 0x50];
+    /* 0x50 */ u8 field_0x50[0x54 - 0x50];
+    // Stored by fn_8019CDC4 (game/tu_80197070.cpp, 0x8019CDC4, stw of r3).
+    /* 0x54 */ s32 field_0x54;
     // The fade state tested by cls_804A8390::fn_802AC8B4 (tu_802AC8AC): 1 and
     // 5 step the black picture up, 4 steps it down, 6 counts field_0x14 down.
     /* 0x58 */ s32 field_0x58;
-    /* 0x5C */ u8 field_0x5c[0x7E - 0x5C];
+    /* 0x5C */ u8 field_0x5c[0x74 - 0x5C];
+    // Both cleared by fn_8019CDC4 (game/tu_80197070.cpp, stw of 0).
+    /* 0x74 */ s32 field_0x74;
+    /* 0x78 */ s32 field_0x78;
+    /* 0x7C */ u8 field_0x7c[0x7E - 0x7C];
     /* 0x7E */ u8 field_0x7e;
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80[0x2];
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
-    /* 0x84 */ u8 field_0x84[0x86 - 0x84];
+    /* 0x84 */ u8 field_0x84;
+    // Set to 1 by fn_8019CDC4 (game/tu_80197070.cpp, stb of 1).
+    /* 0x85 */ u8 field_0x85;
     // Toggled between 0 and 1 by fn_80134DC0 (game/tu_80134C04.cpp, 0x80134DC0,
     // stb of r3 at 0x86 only).
     /* 0x86 */ u8 field_0x86;
@@ -165,6 +173,10 @@ struct GameRoot_8049EF20 {
     s32 fn_80138A30();
     // game/tu_8022AD64.cpp (0x8023F98C): whether bit `player` of field_0x82 is set.
     bool fn_8023F98C(s32 player);
+    // Owner: not written yet (0x8013670C, 0x8C bytes). Called by
+    // fn_8019CD9C (game/tu_80197070.cpp) with its s32 argument; r3 is
+    // lbl_8053AAF8 (the only object that unit's call passes).
+    void fn_8013670C(s32 value);
 }; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
