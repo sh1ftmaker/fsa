@@ -81,7 +81,9 @@ unit before its flip, a trial link: `python3 tools/link_check.py --unit
 place of dtk's split and records the map (and the DOL's SHA-1) in
 `build/G4SE01/weakdedup_evidence/` only if the SHA-1 matches; the report
 uses that record only for its own unit, against the current main link
-inputs, and never if git tracks it. Each removal and its map lines go to
+inputs, never if git tracks it, and only after linking it again itself
+(cached in `build/G4SE01/weakdedup_verified.json` by everything the link
+depends on; ~0.7 s per record when anything changed). Each removal and its map lines go to
 `build/G4SE01/weakdedup_manifest.json` (with notes on what wasn't stripped
 and why). `gate.py` re-runs every trial link the manifest relies on
 (`link_check.py --verify-unit`, ~1 s) and requires the same map and a

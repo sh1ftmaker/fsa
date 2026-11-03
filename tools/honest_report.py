@@ -32,8 +32,10 @@ entry only when ALL of these hold:
     SHA-1 for a recorded trial link), and the link's DOL matches build.sha1;
     a trial link's record must be exactly what link_check.py --unit writes
     for this unit against the current main link (same inputs with the one
-    object swapped), untracked by git, and tools/gate.py re-runs that link
-    and requires the same map and SHA-1;
+    object swapped), untracked by git, and re-running that link
+    (link_check.py --verify-unit; cached by everything the link depends on)
+    must give the same map and a DOL matching build.sha1 (tools/gate.py
+    re-runs it again on its own);
   * the object's file name is unique among that link's inputs (the map
     names objects by file name only).
 Evidence comes from ninja's own link (Matching units) or from a trial link
@@ -211,11 +213,72 @@ def trial_link(unit_name, base, main_inputs, notes):
             return None
         link = Link("trial", rec["map"], inputs, dol_sha1=rec.get("dol_sha1"),
                     map_sha1=rec.get("map_sha1"), objects=rec["objects"])
+        if not link.problem:
+            why = relink(unit_name, base, rec, inputs)
+            if why:
+                notes.append(f"{unit_name}: ignoring {ev}: {why}")
+                return None
     except (OSError, KeyError, ValueError, AttributeError) as e:
         notes.append(f"{unit_name}: ignoring {ev}: {e}")
         return None
     link.evidence_file = str(ev)
     return link
+
+
+VERIFIED = BUILD / "weakdedup_verified.json"
+_link_state = None
+
+
+def link_state(main_inputs):
+    """SHA-1 of everything a trial link's result depends on besides the swapped
+    object: build.ninja (linker, flags), the linker script, build.sha1 and
+    every main link input's path and contents."""
+    global _link_state
+    if _link_state is None:
+        h = hashlib.sha1()
+        for f in ("build.ninja", BUILD / "ldscript.lcf", SHA1):
+            h.update(Path(f).read_bytes() if Path(f).is_file() else b"-")
+        for i in main_inputs:
+            h.update(f"{i}={sha1(i) if Path(i).is_file() else '-'}\n".encode())
+        _link_state = h.hexdigest()
+    return _link_state
+
+
+def relink(unit_name, base, rec, inputs):
+    """Link the trial again (tools/link_check.py --verify-unit) and return why the
+    record isn't what that link produces, or None. Results are cached in
+    build/G4SE01/weakdedup_verified.json by (link state, object SHA-1, map SHA-1),
+    so a record is re-linked only when anything that link depends on changed."""
+    obj_sha = sha1(base)
+    inputs_sha = hashlib.sha1("\n".join(inputs).encode()).hexdigest()
+    key = f"{link_state(main_link_inputs())} {obj_sha} {inputs_sha} {rec['map_sha1']}"
+    try:
+        cache = json.loads(VERIFIED.read_text())
+    except (OSError, ValueError):
+        cache = {}
+    if key in cache:
+        return cache[key]
+    out = subprocess.run([sys.executable, "tools/link_check.py", "--verify-unit", unit_name],
+                         capture_output=True, text=True)
+    try:
+        v = json.loads(out.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return f"the trial link couldn't be re-run: {(out.stdout + out.stderr)[-300:]}"  # not cached
+    expected = SHA1.read_text().split()[0]
+    why = None
+    if v["dol_sha1"] != expected:
+        why = f"re-running the trial link gives DOL SHA-1 {v['dol_sha1']}, not build.sha1"
+    elif v["map_sha1"] != rec["map_sha1"]:
+        why = "re-running the trial link gives another map"
+    elif v["object_sha1"] != obj_sha or rec["objects"].get(base) != obj_sha:
+        why = "the object isn't the one the trial link included"
+    elif v["inputs_sha1"] != inputs_sha:
+        why = "the trial link now has other inputs"
+    cache[key] = why
+    tmp = VERIFIED.with_suffix(".tmp")
+    tmp.write_text(json.dumps(cache, indent=1))
+    tmp.replace(VERIFIED)
+    return why
 
 
 # --------------------------------------------------------------- ELF objects
