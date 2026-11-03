@@ -616,7 +616,7 @@ config.libs = [
         Object(Matching, "dolphin/gd/GDGeometry.c"),
     ]),
     SdkLib("mtx", [
-        Object(NonMatching, "dolphin/mtx/mtx.c"),
+        Object(Matching, "dolphin/mtx/mtx.c"),
         Object(Matching, "dolphin/mtx/mtx44.c"),
         Object(Matching, "dolphin/mtx/mtxvec.c"),
         Object(Matching, "dolphin/mtx/vec.c"),
