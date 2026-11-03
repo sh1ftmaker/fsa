@@ -1132,7 +1132,7 @@ config.libs = [
         Object(Matching, "game/tu_8012FF9C.cpp"),
         Object(NonMatching, "game/tu_80130310.cpp"),
         Object(NonMatching, "game/act_warp_cannon.cpp"),
-        Object(NonMatching, "game/tu_80131D98.cpp"),
+        Object(Matching, "game/tu_80131D98.cpp"),
         Object(NonMatching, "game/act_great_fairy_spfr.cpp"),
         Object(NonMatching, "game/tu_8013394C.cpp"),
         Object(NonMatching, "game/tu_801344C0.cpp"),
