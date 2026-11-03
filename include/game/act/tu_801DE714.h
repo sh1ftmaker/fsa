@@ -26,6 +26,9 @@ public:
     // tu_8020CCA8 (0x8020D2AC): an effect (id 0x33A) beside mPos, 26 below
     // it in y and 6 to the side the actor faces (field_0x98).
     void fn_8020D2AC();
+    // tu_801DE714 (0x801DE714, vtable slot 0x80): calls EnemyBase's
+    // vfunc_0x80 (the floor check) only while mState is 0xA.
+    void vfunc_0x80();
     // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
     bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.

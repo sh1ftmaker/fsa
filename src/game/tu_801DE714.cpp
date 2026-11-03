@@ -2,6 +2,14 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_801DE714.h"
 
+// tu_801DE714 (0x801DE714): vtable slot 0x80. In state 0xA the floor check
+// is EnemyBase's, called directly (a plain bl, not through the vtable).
+void cls_804A51E4::vfunc_0x80() {
+    if (mState == 0xA) {
+        EnemyBase_804A4808::vfunc_0x80();
+    }
+}
+
 // tu_801DE714 (0x801E1D9C)
 bool cls_804A51E4::fn_801E1D9C() const {
     bool result = false;
