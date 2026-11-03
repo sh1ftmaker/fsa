@@ -300,8 +300,9 @@ public:
     // params, flags, name, frame, NULL) (0x801F0740-0x801F0758). params may
     // be NULL (callers: a stack struct 131 times, 0 61 times); flags is -1,
     // 0 or 7 at most calls.
+    // const: the asm has no store through `this`.
     void fn_801F06F0(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
-                     f32 scaleX, f32 scaleY);
+                     f32 scaleX, f32 scaleY) const;
     // 53 units / 107 calls. id compared unsigned with 3 and 0x42; uses
     // field_0x4 and mPos.
     void fn_801F0D20(u32 id);

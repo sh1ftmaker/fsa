@@ -6,9 +6,6 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_shadow_link_2.h"
 
-// FIXME: 98.33 %. The original dispatch has one extra unreachable `b` (to the end of the
-// switch) after the jump to the default body; ours has none. An empty case for an unset
-// state changes the compare tree, so none is added.
 void ShadowLink2_804A43E8::fn_801D3CBC() {
     switch (mState) {
     case 0:
@@ -16,7 +13,7 @@ void ShadowLink2_804A43E8::fn_801D3CBC() {
     case 2:
     case 3:
     case 0xD:
-        break;
+        return;
     case 0x17:
         if (field_0x524 & 0x200) {
             fn_801D41B8();
@@ -43,11 +40,8 @@ void ShadowLink2_804A43E8::fn_801D3CBC() {
     }
 }
 
-// FIXME: 97.26 %. Scheduling only: the original loads field_0x4 (the layer for viewLayerFlag)
-// among the SpriteParams constructor stores, ours just before fn_802D6A9C; and in the
-// state 8/9 branch it loads field_0x560 and mState together before the palette stb, ours
-// loads mState after it.
-void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) {
+// FIXME: 99.61 %. One instruction differs (see try.py).
+void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
     SpriteParams_801F5AE0 params;
     params.field_0x30 = 0xE;
     params.field_0x2e = 0x40;
@@ -100,12 +94,8 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) {
     fn_80307830(mSerial, field_0x4, &mPos, frame, false, 1, 0, player);
 }
 
-// FIXME: 87.61 %. Scheduling only, same instructions: the original loads this->0x56c (the
-// fn_801CD2F8 argument) before it zeroes pos, loads mPos / field_0x570 x, y, z into
-// f6, f5, f4 (in that order) and stores them after the alpha arithmetic, and keeps
-// the tile result's check as a switch; ours copies pos with one lfs/stfs pair per
-// member, ordered differently.
-void ShadowLink2_804A43E8::fn_801D41B8() {
+// FIXME: 98.83 %. Register allocation only.
+void ShadowLink2_804A43E8::fn_801D41B8() const {
     JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
     s32 id;
     u8 alpha;
