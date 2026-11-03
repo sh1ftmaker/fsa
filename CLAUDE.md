@@ -98,7 +98,7 @@ extab/extabindex bytes) and fails anything else, and fails any file under
 are diffed as compiled.
 
 <!-- status:start -->
-Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,547 of 11,561 functions, 822,648 of 4,442,088 bytes of code (18.52 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,413 / 3,702 functions (91.8 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 272 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,552 of 11,561 functions, 823,320 of 4,442,088 bytes of code (18.53 %). Game code 81 / 6,789 functions (0.42 %); JSystem 3,418 / 3,702 functions (91.9 %); Dolphin SDK 606 / 614 functions (99.6 %); GX 166 / 172 functions (95.8 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 273 of 886 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout

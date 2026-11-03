@@ -1,3 +1,7 @@
+// FSA's __sinit builds the JAISeq pool between the JAIStream and JAISe ones,
+// so JAISeq is seen after JAISe and before JAIStream (JAUSoundMgr.h).
+#include "JSystem/JAudio/Interface/JAISeMgr.h"
+#include "JSystem/JAudio/Interface/JAISeq.h"
 #include "JSystem/JAudio/JAUSoundMgr.h"
 
 #include "JSystem/JAudio/Interface/JAISound.h"
@@ -31,4 +35,10 @@ void JAUSoundMgr::mixOut() {
     mSeMgr.mixOut();
     mSeqMgr.mixOut();
     mStreamMgr.mixOut();
+}
+
+void JAUSoundMgr::stop() {
+    mSeMgr.stop();
+    mSeqMgr.stop();
+    mStreamMgr.stop();
 }

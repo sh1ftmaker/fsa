@@ -14,6 +14,7 @@ public:
     bool startSound(JAISoundID soundID, JAISoundHandle *handlePtr, const JGeometry::TVec3f *pos);
     void calc();
     void mixOut();
+    void stop();
 
     // FABRICATED {
     JAISeMgr& getSeMgr() {
