@@ -1,6 +1,7 @@
 # Game code plan
 
-Status: **proposed** (2026-11-02). Decisions marked **[decide]** are the user's.
+Status: **approved** (2026-11-02). The user chose tiered models, template +
+scripted-check review for generated members, and to start G0 + G1 now.
 Built from three research reports (structure, shapes, token cost), each measured
 on `matching` at 4947/11557 functions. Game code: 243 / 6789 functions,
 1.04 % of 3,573,784 bytes.
@@ -99,7 +100,7 @@ below, ~0.5–0.65B.
    exceptions only and starts fresh each wave.
 7. **Permuter** (decomp-permuter, MIT) for regalloc-only diffs, under `sbg`,
    niced, with a time budget, instead of 150–200-turn agents.
-8. **Model tiers [decide].** Clones: no model. ≤32 instructions: a cheaper
+8. **Model tiers (approved).** Clones: no model. ≤32 instructions: a cheaper
    model, 3 tries. 32–128: strong model, 6 tries. >128 (334 functions over
    0x800, 36 % of bytes): last, strong model + permuter, hard budget, FIXME
    allowed.
@@ -136,7 +137,7 @@ simple dtor, vtable-slot empties, the per-player query block once one is
 matched by hand), review packet, `run-wave`, permuter wiring.
 
 **G3 — generated families.** ~700 functions / ~280 KB. Review policy for
-generated members **[decide]**: the template gets a full adversarial review;
+generated members (approved): the template gets a full adversarial review;
 each member gets a scripted check that it differs from the template only by
 identifiers, plus the normal gate. Members that need any hand edit leave the
 generator and get a normal review.
