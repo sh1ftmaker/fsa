@@ -84,6 +84,21 @@ struct GameRoot_8049EF20 {
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
+// fn_80138B7C(lbl_8053AAF8) is called by act_enemy_count_wipe_out_check and
+// BgRewrite::fn_8029D898 (r3 only); defined in an unwritten unit.
+extern "C" void fn_80138B7C(GameRoot_8049EF20* root);
+
+// The 0x90-byte object fn_8045A080 (game/tu_80457DFC.cpp) initialises and
+// stores in lbl_8053AF80; owner unit not written yet, members unknown but
+// the u32 at 0x58 (act_enemy_count_wipe_out_check copies it in init and
+// compares it later).
+struct Unk_8053AF80 {
+    /* 0x00 */ u8 field_0x0[0x58];
+    /* 0x58 */ u32 field_0x58;
+    /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
+}; // Size: 0x90
+extern Unk_8053AF80* lbl_8053AF80;
+
 // Random helpers on lbl_8053AAF8->mRandom, defined in game units.
 f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
 s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
