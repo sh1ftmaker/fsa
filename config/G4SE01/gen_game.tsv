@@ -285,8 +285,6 @@ act_stop_npc	sinit	__sinit_act_stop_npc_cpp	-	-	new	-
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
-act_switch_or	dtor	__dt__17SwitchOR_804A8800Fv	SwitchOR_804A8800	0x804A8800	new	new
-act_switch_or	sinit	__sinit_act_switch_or_cpp	-	-	new	new
 act_switch_related_npc	dtor	__dt__12cls_804A8C28Fv	cls_804A8C28	0x804A8C28	new	new
 act_switch_related_npc	sinit	__sinit_act_switch_related_npc_cpp	-	-	new	new
 act_talking_sign	dtor	__dt__20TalkingSign_804AF428Fv	TalkingSign_804AF428	0x804AF428	new	new
