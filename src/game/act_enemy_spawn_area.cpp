@@ -109,6 +109,7 @@ void EnemySpawnArea_804A2CB0::init() {
     if (mCount == 0) {
         mCount = 3;
     }
+    // Written out: a for loop is unrolled too but leaves a dead cmpwi 15/bge guard (88.4% vs 92.2%).
     mSerials[0] = -1;
     mSerials[1] = -1;
     mSerials[2] = -1;
