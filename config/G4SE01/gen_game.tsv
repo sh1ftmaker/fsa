@@ -221,7 +221,6 @@ act_warp_cannon	sinit	__sinit_act_warp_cannon_cpp	-	-	new	-
 act_warp_pillar	sinit	__sinit_act_warp_pillar_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zora	sinit	__sinit_act_zora_cpp	-	-	new	-
-act_zora_escort	sinit	__sinit_act_zora_escort_cpp	-	-	new	-
 act_zora_escort_goal	sinit	__sinit_act_zora_escort_goal_cpp	-	-	new	-
 act_zora_fish_herder	sinit	__sinit_act_zora_fish_herder_cpp	-	-	new	-
 act_zora_lotus	sinit	__sinit_act_zora_lotus_cpp	-	-	new	-
