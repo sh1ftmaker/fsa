@@ -104,7 +104,6 @@ public:
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
     f32 fn_80246F28();
-    bool fn_80246F28_check();
     bool fn_80241478(); // via fn_8022D930
     void fn_8024148C(); // via fn_80236C88
     bool fn_80241498(); // via fn_80236D14

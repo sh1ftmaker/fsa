@@ -6,9 +6,9 @@
 
 cls_804A06C0::~cls_804A06C0() {}
 
-// FIXME: 99.2 %. regalloc-only: the original keeps mScale in f29 and cos x
-// in f31, ours the other way round; cos z and the cx * cz product swap
-// f3 / f10.
+// FIXME: 99.0 %. regalloc-only: the original keeps mScale in f29 and cos x
+// in f31, ours the other way round, and sin x / sin z get f28 / f26 there,
+// f26 / f28 here.
 void cls_804A06C0::draw() {
     if (mState == 2) {
         SpriteParams_801F5AE0 params;

@@ -18,9 +18,9 @@ void cls_804A2FB0::draw() {
     }
 }
 
-// FIXME: 99.2 %. regalloc-only: the original keeps the angle (and then
-// cos y) in f30 and cos x in f31, ours the other way round; cos z and the
-// sx * sy product swap f3 / f2.
+// FIXME: 99.0 %. regalloc-only: the original keeps the angle (and then
+// cos y) in f30 and cos x in f31, ours the other way round, and sin x / sin z
+// get f29 / f27 there, f27 / f29 here.
 void cls_804A2FB0::fn_801A90D4() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
