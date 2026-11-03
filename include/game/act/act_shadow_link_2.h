@@ -42,6 +42,15 @@ public:
     // game/tu_801D3320.cpp: picks the next waypoint of the rail in
     // field_0x358 and moves field_0x32c toward it.
     void fn_801D3320();
+    // game/tu_801D3CBC.cpp: per-tick draw by state (mState 0-3, 0xD: none;
+    // 0x17 calls fn_801D41B8 while field_0x524 has bit 0x200).
+    void fn_801D3CBC();
+    // game/tu_801D3CBC.cpp: draws the player sprite (player_sob.bin) at mPos,
+    // frame `frame`, faded in states 8 and 9, then the shadow sprite.
+    void fn_801D3DAC(s32 frame) const;
+    // game/tu_801D3CBC.cpp: draws a sprite at field_0xc or field_0x570 with an
+    // alpha ramped by mStateTimer when the tile there is 0x9B or 0x9C.
+    void fn_801D41B8() const;
 
     /* 0x340 */ cls_800FE8C0 field_0x340; // animation sequencer (mIndex at 0x34D, mFlags at 0x354)
     /* 0x358 */ cls_80214244 field_0x358;
