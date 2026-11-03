@@ -54,7 +54,7 @@ void cls_8021C2B4::fn_8021C468() {
         cls_8021C5B0* piece = &mPieces[i];
         if (fn_8023F264(i)) {
             JGeometry::TVec2f target;
-            if (fn_801C0FEC(fn_801C0D70(), fn_8023E724(i), &target)) {
+            if (fn_801C0D70()->fn_801C0FEC(fn_8023E724(i), &target)) {
                 piece->mActive = true;
                 piece->mDone = false;
                 piece->mPlayer = i;
@@ -83,4 +83,6 @@ void cls_8021C2B4::fn_8021C468() {
     }
 }
 
-cls_8021C5B0::cls_8021C5B0() {}
+cls_8021C5B0::cls_8021C5B0()
+    : mActive(false), mDone(false), mPlayer(-1), mStart(0.0f, 0.0f), mTarget(0.0f, 0.0f),
+      mPos(0.0f, 0.0f, 0.0f), mVel(0.0f, 0.0f, 0.0f) {}

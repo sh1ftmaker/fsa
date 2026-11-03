@@ -235,14 +235,12 @@ extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 struct cls_801C0D70 {
     /* 0x000 */ u16 field_0x0;
     /* 0x002 */ u8 field_0x2[0x160 - 0x2]; // not yet known
+    // Owner tu_801C0D70. True when a target for the player at *pos was found;
+    // writes its x/y to *out. Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
+    bool fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
 }; // Size: 0x160
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
-// game/tu_801C0D70.cpp (owner unit, not written yet). (obj, pos, out): true when
-// a target for the player at *pos was found; writes its x/y to *out (obj
-// is fn_801C0D70()'s object, r3; pos and out are read/written as x, y floats).
-// Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
-extern "C" bool fn_801C0FEC(cls_801C0D70* obj, const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
 
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.

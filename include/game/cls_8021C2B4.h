@@ -5,24 +5,13 @@
 #include "JSystem/JGeometry.h"
 #include "game/cls_8021CBA0.h"
 
-// The position state of one flying piece (the first 0x30 bytes of
-// cls_8021C5B0). Its constructor is inlined into cls_8021C5B0's, before the
-// call to cls_8021CBA0's, so it is a base class here.
-class cls_8021C5B0_State {
+// One flying piece aimed at a player (shadow Link's thrown object), defined
+// in game/tu_8021C2B4.cpp. No vtable; named after its constructor
+// (fn_8021C5B0, the element constructor act_shadow_link_generator passes to
+// __construct_array).
+class cls_8021C5B0 {
 public:
-    cls_8021C5B0_State()
-        : mActive(false), mDone(false), mPlayer(-1) {
-        mStart.x = 0.0f;
-        mStart.y = 0.0f;
-        mTarget.x = 0.0f;
-        mTarget.y = 0.0f;
-        mPos.x = 0.0f;
-        mPos.y = 0.0f;
-        mPos.z = 0.0f;
-        mVel.x = 0.0f;
-        mVel.y = 0.0f;
-        mVel.z = 0.0f;
-    }
+    cls_8021C5B0();
 
     /* 0x00 */ u8 mActive;
     /* 0x01 */ u8 mDone;
@@ -31,16 +20,6 @@ public:
     /* 0x10 */ JGeometry::TVec2f mTarget;
     /* 0x18 */ JGeometry::TVec3f mPos;
     /* 0x24 */ JGeometry::TVec3f mVel;
-}; // Size: 0x30
-
-// One flying piece aimed at a player (shadow Link's thrown object), defined
-// in game/tu_8021C2B4.cpp. No vtable; named after its constructor
-// (fn_8021C5B0, the element constructor act_shadow_link_generator passes to
-// __construct_array).
-class cls_8021C5B0 : public cls_8021C5B0_State {
-public:
-    cls_8021C5B0();
-
     /* 0x30 */ cls_8021CBA0 mAnim;
 }; // Size: 0x48
 
