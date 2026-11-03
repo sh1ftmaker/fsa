@@ -9,8 +9,6 @@
 s32 lbl_804D4768[0x90];
 // Frame counter of the update; 0 after init.
 s32 lbl_8053ACB0;
-// Resource name format: "d_enemy_map<stage>_<tens><ones>.bin".
-const char lbl_8046E9F8[] = "d_enemy_map%s_%d%d.bin";
 
 cls_804A9BC8::~cls_804A9BC8() {}
 
@@ -35,7 +33,7 @@ void cls_804A9BC8::init() {
         tile = 0;
     }
     char buf[0x20];
-    sprintf(buf, lbl_8046E9F8, name, tile / 10, tile % 10);
+    sprintf(buf, "d_enemy_map%s_%d%d.bin", name, tile / 10, tile % 10);
     u32 type = 'B' << 24 | name[0] << 16 | name[1] << 8 | name[2];
     field_0x244 = (u8*)fn_804032E8(type, buf);
     field_0x248 = 0;
