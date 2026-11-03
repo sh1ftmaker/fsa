@@ -28,6 +28,11 @@ Checks (see docs/PLAN.md, "Submission gate"):
     map of a current link that includes this exact object and whose DOL
     matches build.sha1; every stripped object differs from the compiled one
     only by those entries, and no other unit is diffed against a copy;
+    every dead-stripped data object it left out is listed UNUSED (with its
+    size) for this object in that map, every allocated location referencing
+    it lies in a function or object the map lists UNUSED for this object,
+    only zero padding goes with it, and the map places every kept symbol of
+    its section where the stripped copy has it;
   * main.dol links and its SHA-1 equals build.sha1 (ninja build/G4SE01/ok);
     if not, tools/link_check.py names the Matching units at fault.
 
@@ -519,6 +524,139 @@ def expected_stripped(a, removed):
         return diffs
     return differences
 
+SHT_PROGBITS, SHF_ALLOC, SHF_EXECINSTR, STT_OBJECT, STT_FUNC, STT_SECTION = 1, 2, 4, 1, 2, 3
+_UNUSED = re.compile(r"^\s+UNUSED\s+([0-9a-f]+) \.+ (\S+) (\S+)\s*$")
+_PLACED = re.compile(r"^\s+([0-9a-f]{8}) ([0-9a-f]{6}) ([0-9a-f]{8})\s+(\d+) (\S+)\s+(\S+)\s*$")
+
+
+def _map_objects(path, cache={}):
+    """{(section, object): {"placed": [(offset, size, label)], "unused": {label: [line numbers]}}}
+    from a map's section layouts, read independently of tools/honest_report.py."""
+    if path not in cache:
+        out, section = {}, None
+        for n, line in enumerate(_map_lines(path), 1):
+            m = re.match(r"^(\S+) section layout\s*$", line)
+            if m:
+                section = m[1]
+                continue
+            if section is None:
+                continue
+            m = _UNUSED.match(line)
+            if m:
+                out.setdefault((section, m[3]), {"placed": [], "unused": {}})["unused"].setdefault(m[2], []).append(n)
+                continue
+            m = _PLACED.match(line)
+            if m:
+                out.setdefault((section, m[6]), {"placed": [], "unused": {}})["placed"].append(
+                    (int(m[1], 16), int(m[2], 16), m[5]))
+        cache[path] = out
+    return cache[path]
+
+
+def _data_section(elf, i):
+    if not 0 <= i < len(elf.sh):
+        return False
+    h = elf.sh[i]
+    return (h[1] == SHT_PROGBITS and h[2] & SHF_ALLOC and not h[2] & SHF_EXECINSTR
+            and elf.names[i] not in ("extab", "extabindex"))
+
+
+def _dead_in_map(elf, mp, name, sec, sym, evidence):
+    """True if `evidence` is the map line listing sym UNUSED for this object in
+    section sec's layout, with sym's size, and the map doesn't also place it."""
+    lines = _map_lines(mp)
+    if sum(x[0] == sym[0] for x in elf.syms) != 1 or not isinstance(evidence, dict):
+        return False
+    n = evidence.get("line")
+    if not isinstance(n, int) or not 0 < n <= len(lines) or lines[n - 1] != evidence.get("text"):
+        return False
+    m = _UNUSED.match(lines[n - 1])
+    block = _map_objects(mp).get((elf.names[sec], name), {"placed": [], "unused": {}})
+    return bool(m and (int(m[1], 16), m[2], m[3]) == (sym[2], sym[0], name)
+                and _map_section(lines, n) == elf.names[sec]
+                and not any(p[2] == sym[0] for p in block["placed"]))
+
+
+def check_dead_data(e, elf, name, mp):
+    """One dead-stripped data object of the manifest, checked against the object
+    and the map: (section index, offset, bytes removed) or why it isn't proven."""
+    sec = elf.names.index(e.get("section")) if e.get("section") in elf.names else None
+    if sec is None or not _data_section(elf, sec):
+        return f"{e.get('section')} is not a data section of the object"
+    sym = [x for x in elf.syms if x[0] == e.get("symbol")]
+    if len(sym) != 1:
+        return "not exactly one symbol of that name in the object"
+    sym = sym[0]
+    if (sym[5], sym[1], sym[2]) != (sec, e.get("offset"), e.get("size")) or not sym[2] or sym[4] in (STT_FUNC, STT_SECTION):
+        return "the object's symbol isn't the listed data object"
+    ev = e.get("evidence")
+    if not (isinstance(ev, list) and len(ev) == 1 and _dead_in_map(elf, mp, name, sec, sym, ev[0])):
+        return f"map evidence missing or doesn't match {mp}"
+    # Every allocated location that reaches into it is in a symbol the map lists UNUSED.
+    lo, hi = sym[1], sym[1] + sym[2]
+    want = set()
+    for r, h in enumerate(elf.sh):
+        if not h[2] & SHF_ALLOC:
+            continue
+        for off, si, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t[5] != sec or not (t is sym or lo <= t[1] + add < hi):
+                continue
+            src = [x for x in elf.syms if x[5] == r and x[2] and x[1] <= off < x[1] + x[2] and x[4] in (STT_OBJECT, STT_FUNC)]
+            if len(src) != 1:
+                return f"referenced from {elf.names[r]}+0x{off:x}, which no single function or object contains"
+            want.add((elf.names[r], src[0][0]))
+    refs = e.get("referencers") or []
+    got = {(x.get("section"), x.get("symbol")) for x in refs if isinstance(x, dict)}
+    if got != want:
+        return f"the manifest's referencers {sorted(got)} aren't the object's {sorted(want)}"
+    for x in refs:
+        rs = [y for y in elf.syms if y[0] == x["symbol"] and y[5] < len(elf.names) and elf.names[y[5]] == x["section"]]
+        if len(rs) != 1 or not _dead_in_map(elf, mp, name, rs[0][5], rs[0], x.get("evidence")):
+            return f"{x['symbol']} references it, and the map doesn't list {x['symbol']} UNUSED for {name}"
+    # What goes with it: up to the next symbol or the section end, zero padding only.
+    nxt = min([x[1] for x in elf.syms if x[5] == sec and x[2] and x[1] >= hi] + [elf.sh[sec][5]])
+    if e.get("removed") != nxt - lo or any(elf.data(sec)[hi:nxt]):
+        return "the removed range isn't the object plus zero padding up to the next symbol"
+    return (sec, lo, nxt - lo)
+
+
+def check_dead_layout(elf, sec, rem, mp, name):
+    """The stripped section must have the layout the link gave this object's
+    section: every kept sized symbol at the offset (from the object's section
+    start) and with the size the map places it at; and no live relocation may
+    reach the section through its section symbol at or past the first removed
+    byte (its addend isn't moved). Returns why not, or None."""
+    secname = elf.names[sec]
+    objs = _map_objects(mp)
+    block = objs.get((secname, name), {"placed": [], "unused": {}})["placed"]
+    starts = [p for p in block if p[2] == secname]
+    if len(starts) != 1 or block[0] != starts[0]:
+        return f"the map doesn't place this object's {secname} exactly once"
+    start = starts[0][0]
+    for x in elf.syms:
+        if x[5] != sec or not x[2] or x[4] == STT_SECTION or any(o <= x[1] < o + n for o, n in rem):
+            continue
+        new = x[1] - sum(n for o, n in rem if o + n <= x[1])
+        got = [p for p in block[1:] if p[2] == x[0]]
+        if len(got) != 1 or (got[0][0] - start, got[0][1]) != (new, x[2]):
+            return f"the map doesn't place {x[0]} at 0x{new:x}, size 0x{x[2]:x}, of the stripped section"
+    first = min(o for o, _ in rem)
+    for r, h in enumerate(elf.sh):
+        if not h[2] & SHF_ALLOC:
+            continue
+        for off, si, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t[4] != STT_SECTION or t[5] != sec or t[1] + add < first:
+                continue
+            src = [x for x in elf.syms if x[5] == r and x[2] and x[1] <= off < x[1] + x[2] and x[4] in (STT_OBJECT, STT_FUNC)]
+            blk = objs.get((elf.names[r], name), {"placed": [], "unused": {}})
+            if not (len(src) == 1 and sum(y[0] == src[0][0] for y in elf.syms) == 1
+                    and len(blk["unused"].get(src[0][0], [])) == 1
+                    and not any(p[2] == src[0][0] for p in blk["placed"])):
+                return f"live {elf.names[r]}+0x{off:x} reaches {secname} through its section symbol past a removed object"
+    return None
+
 
 def check_weakdedup(problems):
     """Re-verify every extab entry the honest report left out (tools/honest_report.py)."""
@@ -532,13 +670,20 @@ def check_weakdedup(problems):
     links = {}
     for key, rec in man.get("links", {}).items():
         links[key] = check_link_record(key, rec, expected) + (rec,)
-    by_stripped, seen = {}, set()
+    by_stripped, seen, dd_sections, rec_maps = {}, set(), set(), {}
     for e in entries:
         tag = f"weakdedup {e.get('unit')}: {e.get('function')}"
-        if (e.get("object"), e.get("extabindex")) in seen:
+        kind = e.get("kind", "weak_extab")
+        if kind == "dead_data":
+            tag = f"dead data {e.get('unit')}: {e.get('symbol')}"
+        elif kind != "weak_extab":
+            problems.append(f"{tag}: unknown kind of removal {kind!r}")
+            continue
+        ident = (e.get("object"), e.get("symbol") if kind == "dead_data" else e.get("extabindex"), kind)
+        if ident in seen:
             problems.append(f"{tag}: listed twice in the manifest")
             continue
-        seen.add((e.get("object"), e.get("extabindex")))
+        seen.add(ident)
         key = e.get("link")
         if key not in links:
             problems.append(f"{tag}: no link record {key}")
@@ -561,12 +706,23 @@ def check_weakdedup(problems):
         if key != "main" and json.loads(Path(key).read_text()).get("objects", {}).get(obj) != e["object_sha1"]:
             problems.append(f"{tag}: {obj} isn't the object the trial link included")
             continue
-        # The object: the extabindex entry points at a WEAK FUNC and at the extab label.
         try:
             elf = Elf(obj)
         except (OSError, ValueError, StopIteration) as err:
             problems.append(f"{tag}: {err}")
             continue
+        if kind == "dead_data":
+            if rec_maps.setdefault(e["unit"], rec["map"]) != rec["map"]:
+                problems.append(f"{tag}: the unit's removals cite different links")
+                continue
+            why = check_dead_data(e, elf, name, rec["map"])
+            if isinstance(why, str):
+                problems.append(f"{tag}: {why}")
+            else:
+                dd_sections.add((e["unit"], why[0]))
+                by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append(why)
+            continue
+        # The object: the extabindex entry points at a WEAK FUNC and at the extab label.
         syms = {}
         for sym in elf.syms:
             syms.setdefault((sym[0], elf.names[sym[5]] if sym[5] < len(elf.names) else None), sym)
@@ -604,7 +760,8 @@ def check_weakdedup(problems):
         if not ok:
             problems.append(f"{tag}: map evidence missing or doesn't match {rec['map']}")
             continue
-        by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append((eti, etb))
+        by_stripped.setdefault((e["unit"], obj, e["stripped_object"]), []).append((eti[5], eti[1], 12))
+        by_stripped[(e["unit"], obj, e["stripped_object"])].append((etb[5], etb[1], etb[2]))
     # Every unit diffed against another object than its compiled one is in the
     # manifest, and that copy is the compiled object less exactly those entries.
     honest = Path("build/G4SE01/honest/objdiff.json")
@@ -623,11 +780,13 @@ def check_weakdedup(problems):
             continue
         obj, stripped = proven[u["name"]]
         removed = {}
-        for eti, etb in by_stripped[(u["name"], obj, stripped)]:
-            removed.setdefault(eti[5], []).append((eti[1], 12))
-            removed.setdefault(etb[5], []).append((etb[1], etb[2]))
+        for sec, off, size in by_stripped[(u["name"], obj, stripped)]:
+            removed.setdefault(sec, []).append((off, size))
         try:
-            diffs = expected_stripped(Elf(obj), removed)(Elf(stripped))
+            a = Elf(obj)
+            diffs = [f"{a.names[sec]}: {why}" for (unit, sec) in sorted(dd_sections) if unit == u["name"]
+                     for why in [check_dead_layout(a, sec, removed[sec], rec_maps[u["name"]], Path(obj).name)] if why]
+            diffs += expected_stripped(a, removed)(Elf(stripped))
         except (OSError, ValueError, StopIteration, IndexError, struct.error) as err:
             diffs = [str(err)]
         problems += [f"{u['name']}: {stripped}: {d}" for d in diffs]
