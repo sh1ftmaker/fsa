@@ -122,11 +122,6 @@ bool Thief_804A5A30::vfunc_0x60() {
     return hit;
 }
 
-// FIXME: 98.14 %. Same instructions; the target builds mPos - vel48 in a
-// second stack temporary (the xy pair is stored to 0x20 and the z reloaded
-// from 0x1c) before the scalar copy into `from`, this code does it in place.
-// `w = diff; from.set(w.x, w.y, w.z);` reproduces it (100 %) but is a
-// redundant copy kept only for the bytes, so it is not used.
 bool Thief_804A5A30::vfunc_0x58() {
     if (field_0xc4 != 0 || mState == 3 || mState == 4 || mBox2.getWidth() <= 0.0f ||
         mBox2.getHeight() <= 0.0f) {
@@ -136,13 +131,12 @@ bool Thief_804A5A30::vfunc_0x58() {
     JGeometry::TVec3f vel48;
     JGeometry::TBox2f box;
     JGeometry::TVec3f from;
-    JGeometry::TVec3f diff;
     JGeometry::TVec2f probe;
     s32 player;
     s32 other;
     bool arrow = false;
-    bool bomb = false;
-    bool seed = false;
+    bool actorB = false;
+    bool actorC = false;
     other = -1;
     vel48.set(0.0f, 0.0f, 0.0f);
     fn_801F317C(&box);
@@ -152,11 +146,11 @@ bool Thief_804A5A30::vfunc_0x58() {
     } else {
         player = fn_8023AA18(&box, field_0x4, &probe);
         if (player >= 0) {
-            bomb = true;
+            actorB = true;
         } else {
             player = fn_8023AC74(&box, field_0x4, &probe);
             if (player >= 0) {
-                seed = fn_801CC538(player, &probe, &vel54, &other);
+                actorC = fn_801CC538(player, &probe, &vel54, &other);
             } else {
                 player = fn_8023AD54(&box, field_0x4, &probe);
                 if (player >= 0) {
@@ -169,14 +163,12 @@ bool Thief_804A5A30::vfunc_0x58() {
     if (player >= 0) {
         from = *fn_8023E724(player);
         s32 type = 0;
-        if (bomb) {
+        if (actorB) {
             type = 4;
-        } else if (seed) {
+        } else if (actorC) {
             from.set(vel54.x, vel54.y, vel54.z);
         } else {
-            diff = mPos;
-            diff.sub(vel48);
-            from.set(diff.x, diff.y, diff.z);
+            from.set(mPos - vel48);
             if (arrow) {
                 type = 3;
             }

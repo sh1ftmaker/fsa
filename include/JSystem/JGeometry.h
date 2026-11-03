@@ -138,6 +138,12 @@ struct TVec3<f32> : public Vec {
         z = a.z - b.z;
     }
 
+    TVec3 operator-(const TVec3& b) const {
+        TVec3 a = *this;
+        a.sub(b);
+        return a;
+    }
+
     void mul(const TVec3<f32>& b) {
         x *= b.x;
         y *= b.y;
