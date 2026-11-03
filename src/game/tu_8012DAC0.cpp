@@ -9,11 +9,9 @@ static const u16 lbl_8053CC30[] = {0x8B, 0x8C, 0x8D, 0x8E};
 
 cls_8049E848::~cls_8049E848() {}
 
-// FIXME: 99%. The original's switch dispatch has a second, unreachable
-// `b` to the epilogue (+0x34) after the `cmpwi 0; bge; b`; ours has one.
 void cls_8049E848::update() {
     switch (field_0x230) {
-    case 0:
+    case 0: {
         if (vfunc_0x3C() != 0 && !vfunc_0x34()) {
             field_0x230 = 1;
             break;
@@ -48,12 +46,15 @@ void cls_8049E848::update() {
             field_0x238 = 0;
         }
         break;
+    }
     case 1:
         if (vfunc_0x3C() == 0) {
             field_0x230 = 0;
         } else if (vfunc_0x34()) {
             field_0x230 = 0;
         }
+        break;
+    case 2: // nothing in this unit sets state 2
         break;
     }
 }
