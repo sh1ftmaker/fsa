@@ -215,9 +215,11 @@ End with one line: the final match % of {fn}.
 
 
 def run_haiku(wt, unit, fn, size, pct):
+    # Bigger functions get more attempts and time (try.py's own budget also scales with size).
+    attempts = 8 if size <= 128 else 12 if size <= 512 else 16
     prompt = PROMPT.format(fn=fn, size=size, pct=f"{pct:.2f} %" if pct else "missing",
-                           unit=unit, base=Path(unit).stem)
-    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", 1200)
+                           unit=unit, base=Path(unit).stem, attempts=attempts)
+    return _claude(wt, prompt, f"{Path(unit).stem}__{fn[:80]}", 1200 if size <= 512 else 2400)
 
 
 def _claude(wt, prompt, tag, timeout):
@@ -398,7 +400,7 @@ files and include/game/ headers for the style and the classes this file uses.
 Work smallest function first. Loop: edit, run `python3 tools/try.py {unit}` (overview) or
 `python3 tools/try.py {unit} <function>` (one function's differing rows), change one thing, repeat.
 When a function hits STOP or 8 attempts without progress, move on. Get as many functions to
-100 % as you can; data sections (.data/.rodata/.sdata2) count too. About 30 attempts in total.
+100 % as you can; data sections (.data/.rodata/.sdata2) count too. About {attempts} attempts in total.
 
 Rules (a script checks them and throws away ALL your work if one is broken):
 - Edit only `src/{unit}`, headers under include/game/ (add members or split fields only with
@@ -418,8 +420,10 @@ End with one line: how many functions are at 100 %.
 def run_haiku_file(wt, unit, fns):
     todo = "\n".join(f"  {f}  {sz}  {p:.2f} %" for f, (sz, p) in sorted(fns.items(), key=lambda x: x[1][0]) if p == 0)
     state = "exists" if (wt / "src" / unit).exists() else "does not exist yet: create it, following other src/game/*.cpp files"
-    prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state)
-    return _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700)
+    left = sum(sz for sz, p in fns.values() if p == 0)
+    attempts = 30 if left <= 3072 else 50
+    prompt = FILE_PROMPT.format(unit=unit, base=Path(unit).stem, todo=todo, state=state, attempts=attempts)
+    return _claude(wt, prompt, f"{Path(unit).stem}__FILE", 2700 if left <= 3072 else 5400)
 
 
 def worker(args):
