@@ -44,6 +44,9 @@ public:
     void fn_801C26D8();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.
     void fn_801C26FC();
+    // act_shadow_link_2.cpp: if mFlags has bit 0x4000 and mState is 0 or 1,
+    // switches to state 2 (fn_801C3B7C).
+    void fn_801C27A8();
     // game/tu_801C6A4C.cpp: per-tick state handlers (field_0x340 anim
     // finished flags, then the next fn_801C3B7C state).
     void fn_801C6A4C();

@@ -28,6 +28,17 @@ void ShadowLink2_804A43E8::fn_801C26FC() {
     }
 }
 
+// Member: switches to state 2 when mState is 0 or 1 and mFlags has bit 0x4000.
+void ShadowLink2_804A43E8::fn_801C27A8() {
+    if (!(mFlags & 0x4000)) {
+        return;
+    }
+    if (mState >= 2 || mState < 0) {
+        return;
+    }
+    fn_801C3B7C(2);
+}
+
 // Takes no arguments, so it is a free function rather than a member.
 extern "C" s32 fn_801C5340() {
     return 0;
