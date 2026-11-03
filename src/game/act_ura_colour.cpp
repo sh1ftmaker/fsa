@@ -7,16 +7,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
-
-// Named after its vtable, 0x804A9A70.
-class UraColour_804A9A70 : public ActorBase_804A5770 {
-public:
-    UraColour_804A9A70() {}
-    virtual ~UraColour_804A9A70();
-    virtual void init();
-    virtual void update();
-    virtual void draw();
-};
+#include "game/act/act_ura_colour.h"
 
 UraColour_804A9A70::~UraColour_804A9A70() {}
 

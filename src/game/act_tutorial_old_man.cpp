@@ -6,16 +6,7 @@
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
-
-// Named after its vtable (0x804AE508).
-class TutorialOldMan_804AE508 : public ActorBase_804A5770 {
-public:
-    TutorialOldMan_804AE508() {}
-
-    /* 0x0C */ virtual void init();
-    /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw();
-};
+#include "game/act/act_tutorial_old_man.h"
 
 void TutorialOldMan_804AE508::draw() {}
 

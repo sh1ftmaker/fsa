@@ -5,16 +5,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
-
-// Named after its vtable (0x804AA008).
-class LocalSwitch_804AA008 : public ActorBase_804A5770 {
-public:
-    LocalSwitch_804AA008() {}
-    virtual ~LocalSwitch_804AA008();
-    /* 0x0C */ virtual void init();
-    /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw();
-}; // Size: 0x230
+#include "game/act/act_local_switch.h"
 
 LocalSwitch_804AA008::~LocalSwitch_804AA008() {}
 

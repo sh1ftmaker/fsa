@@ -5,14 +5,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
-
-// Named after its vtable, 0x8049E3A8.
-class VaatiBuster_8049E3A8 : public ActorBase_804A5770 {
-public:
-    VaatiBuster_8049E3A8() {}
-    virtual ~VaatiBuster_8049E3A8();
-    virtual void init();
-};
+#include "game/act/act_vaati_buster.h"
 
 void VaatiBuster_8049E3A8::init() {
     ActorBase_804A5770::init();

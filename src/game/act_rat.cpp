@@ -4,27 +4,10 @@
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
+#include "game/act/act_rat.h"
 
 // Frame offsets per animation step.
 static u8 lbl_80539E68[] = {0, 3, 1, 2};
-
-// Named after its vtable (0x8049C400).
-class Rat_8049C400 : public ActorBase_804A5770 {
-public:
-    Rat_8049C400() {}
-    virtual ~Rat_8049C400();
-    /* 0x0C */ virtual void init();
-    /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw();
-
-    /* 0x230 */ s32 field_0x230;
-    /* 0x234 */ u8 mDir;  // draw: 2 frames per step
-    /* 0x235 */ u8 mStep; // draw: index into lbl_80539E68
-    /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ s32 field_0x23c;
-    /* 0x240 */ s32 mFrameBase; // draw: added to every frame
-    /* 0x244 */ s32 field_0x244;
-}; // Size: 0x248
 
 // FIXME: update (0x800F3E08) and init (0x800F43D0) are not written yet:
 // init draws a random number through the TRandom_fast_ at

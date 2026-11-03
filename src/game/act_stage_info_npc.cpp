@@ -7,17 +7,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
-
-// Named after its vtable (0x804AA7A8).
-class StageInfoNpc_804AA7A8 : public ActorBase_804A5770 {
-public:
-    StageInfoNpc_804AA7A8() {}
-
-    /* 0x08 */ virtual ~StageInfoNpc_804AA7A8();
-    /* 0x0C */ virtual void init();
-    /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw();
-};
+#include "game/act/act_stage_info_npc.h"
 
 StageInfoNpc_804AA7A8::~StageInfoNpc_804AA7A8() {}
 

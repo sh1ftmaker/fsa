@@ -181,8 +181,9 @@ The spawner's unit emits every actor's inline constructor, so each actor
 class goes in `include/game/act/<unit>.h` (named like its .cpp): the class
 with its inline `Foo() {}` constructor, its overrides and fields with
 offsets and size, and any members other units call. Bodies, statics and
-literals stay in the .cpp. The 16 act_*.cpp that declare their class today
-move there in one byte-identical commit (not done yet).
+literals stay in the .cpp. The 16 act_*.cpp that declared their class in
+the .cpp moved there in one byte-identical commit (branch
+`infra/g1-actormgr`); every new actor follows.
 
 ## Expectations
 
