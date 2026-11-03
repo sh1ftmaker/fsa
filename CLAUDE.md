@@ -85,7 +85,7 @@ Status (2026-11-03, honest report, written by `tools/site_data.py`): 4,319 of 11
 Compilers: SDK files use the compiler and flags their donor build used. FSA's
 JSystem and the game's own code are **GC/2.6**; the game code is `-O4,p`
 C++ with exception tables (`cflags_game`, proven in docs/PLAN.md "Game
-code"; its 529 units are `game/*.cpp` in `splits.txt` and configure.py).
+code"; its 528 units are `game/*.cpp` in `splits.txt` and configure.py).
 FSA's JSystem is `-O4,p`: the original saves 2-4 registers with separate
 `stw`, where `-O4,s` emits `stmw`. mkdd's `-O4,s` for JKernel and JUtility
 and J2DGraph was wrong for FSA and is gone; JAudio/Task still carries it

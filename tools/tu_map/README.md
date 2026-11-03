@@ -47,10 +47,27 @@ python3 ../../tools/tu_map/to_splits.py --apply   # replace the game/ stanzas in
   where the fewest symbols land on the wrong side, then down to an 8-byte
   boundary when that takes nothing the previous unit references. Data that
   still points into another unit's `.rodata`/`.sdata2` is reported.
+- `__sinit` objects: a `.bss`/`.sbss` symbol exactly one unit's `__sinit`
+  references is that unit's (a global with a constructor, built by its own
+  file's `__sinit`), even when other units' code uses it too. The JAudio
+  memPools every `__sinit` builds stay unowned; the early unit's ranges
+  run up to the next library split, which gives it those pools.
+- Shared vtables: a `.data` vtable (RTTI words 0, then code pointers)
+  several units reference goes to the referencing unit that defines most
+  of its virtual functions (thunks not counted); on a tie, the one with the
+  fewest other units' `.data` on the wrong side of it.
+- Thunks: a `subi r3, r3, N; b fn` thunk is emitted at the end of the file
+  that emits its vtable, after that file's `__sinit`, so it opens the next
+  tu_map row. Thunks at a unit's start move to the previous unit when the
+  previous unit's `.data` holds their vtable (anything else is reported).
+  The unit keeps its `tu_<row start>` name.
 - The spawner's compare tree is decoded along its branches; an ID counts
   only from `lis`/`addi r0`/`cmpw r29, r0`/`beq`. Where actors.tsv
   suggests one file stem for several IDs, each unit gets its ID appended.
 - `MERGE` holds the corrections dtk or the data proved (see docs/PLAN.md).
+- `EARLY` is the game unit linked before JSystem (0x80021840-0x80021D60).
+  0x80021D60-0x80021F24 is JSystem's `JAIAudience.cpp`, a library stanza
+  the tool leaves alone (existing splits are never overlapped).
 - Names: a `*.cpp` string the unit references (`RailBase.cpp`), else the
   actor table (`docs/names/actors.tsv`, high/medium names only, all of a
   unit's actors agreeing) through the actor spawner `fn_801F9484`: the

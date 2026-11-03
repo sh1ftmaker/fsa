@@ -61,11 +61,12 @@ any symbols.txt change (the gate accepts placeholder renames).
 
 ## Game units
 
-- All 529 game units are in `splits.txt` and configure.py's
+- All 528 game units are in `splits.txt` and configure.py's
   `GameLib("game", ...)` block (`NonMatching`, category `game`) before
   anyone starts them; `config/G4SE01/game_units.tsv` lists each unit's
   range, confidence, sections and name evidence (actor IDs included).
-- Names: `game/tu_<text start>.cpp` (258 units), or an evidenced name
+- Names: `game/tu_<text start>.cpp` (257 units; the address is tu_map's
+  row start, kept when a thunk moved to the previous unit), or an evidenced name
   (270 `game/act_<actor>.cpp` from the actor table, `game/RailBase.cpp`).
   Renames need evidence and touch the `splits.txt` stanza, the configure.py
   line and `game_units.tsv` together: a coordinator edit, not a worker's.
