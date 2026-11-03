@@ -8,3 +8,11 @@ void cls_804A5BD8::vfunc_0x88() {
     field_0x3c.y = lbl_8053F8E0;
     field_0x3c.z = lbl_8053F8E0;
 }
+
+void cls_804A5BD8::fn_80207E24() {
+    switch (mState) {
+    case 4:
+        fn_80208244(2);
+        break;
+    }
+}
