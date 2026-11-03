@@ -710,6 +710,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Interface/JAISoundParams.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAISoundStarter.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAIStreamDataMgr.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStreamMgr.cpp", extra_cflags=["-O4,p"]),
     ]),
     MkddJSystemLib("mkdd_JAudio", [
