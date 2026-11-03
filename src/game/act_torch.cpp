@@ -5,12 +5,11 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_torch.h"
 
-// FIXME: 99.88%. Only the stack slots of the four TColor temporaries differ:
-// the original pairs each call's by-value copy and its temporary (copy at
-// sp+0x20/0x18/0x10/0x8, temporary 4 bytes above it); ours puts the four
-// temporaries at 0x24/0x20/0x1c/0x18 and the copies at 0x14/0x10/0xc/0x8.
-// Tried a named TColor local, a static inline wrapper taking the alpha, and
-// declaring scale after pos (worse).
+// Builds the colour inside, which pairs each temporary with its by-value copy as the original does.
+static inline void drawTorchShadow(s32 layer, const JGeometry::TVec3f* pos, u8 alpha, f32 scale) {
+    lbl_8053AB10->field_0x2c->fn_80158B5C(layer, pos, JUtility::TColor(0, 0, 0, alpha), scale);
+}
+
 void Torch_804A8520::draw() {
     if (fn_802D6A9C()->field_0x131f5 != 0) {
         if (mShadowScale > 0.0f) {
@@ -38,13 +37,13 @@ void Torch_804A8520::draw() {
         if (mOn == 1) {
             f32 scale = mShadowScale;
             JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
-            drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
+            drawTorchShadow(field_0x4, &pos, 0x80, scale);
         }
         break;
     case 1: {
         f32 scale = mShadowScale;
         JGeometry::TVec3f pos(mPos.x, mPos.y - 4.0f, mPos.z);
-        drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0xC8), scale);
+        drawTorchShadow(field_0x4, &pos, 0xC8, scale);
         break;
     }
     case 2:
@@ -52,14 +51,14 @@ void Torch_804A8520::draw() {
             lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
             f32 scale = mShadowScale;
             JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
-            drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
+            drawTorchShadow(field_0x4, &pos, 0x80, scale);
         }
         break;
     case 3: {
         lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
         f32 scale = mShadowScale;
         JGeometry::TVec3f pos(mPos.x, mPos.y - 4.0f, mPos.z);
-        drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0xC8), scale);
+        drawTorchShadow(field_0x4, &pos, 0xC8, scale);
         break;
     }
     }

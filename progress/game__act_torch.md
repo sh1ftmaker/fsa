@@ -6,5 +6,5 @@ Resistant: draw__14Torch_804A8520Fv 99.88% (operands). Only the stack slots of t
 TColor temporaries differ: original pairs copy (sp+0x20/0x18/0x10/0x8) with its
 temporary 4 bytes above; ours has temporaries 0x24/0x20/0x1c/0x18 and copies
 0x14/0x10/0xc/0x8. Tried named local, inline wrapper, scale after pos.
-.data 97.67% is the vtable's reference to draw.
+.data 97.67% was the vtable symbol (size 0x58 vs 0x54); renamed __vt__14Torch_804A8520.
 SHARED-EDITS: none (gen_game.tsv: removed act_torch sinit row).
