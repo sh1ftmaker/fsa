@@ -1,0 +1,21 @@
+#ifndef GAME_ACT_ACT_ITEM_PEDESTAL_H
+#define GAME_ACT_ACT_ITEM_PEDESTAL_H
+
+// Code: game/act_item_pedestal.cpp.
+
+#include "game/ActorBase.h"
+
+// The ITMS actor ("Item pedestal", docs/names/actors.tsv, med confidence): the
+// spawner constructs it with fn_80203688, which stores this vtable
+// (config/G4SE01/game_units.tsv). Named after its vtable, 0x804A82A8.
+class ItemPedestal_804A82A8 : public ActorBase_804A5770 {
+public:
+    ItemPedestal_804A82A8() {}
+    /* 0x08 */ virtual ~ItemPedestal_804A82A8();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x230 */ u8 field_0x230[0x14]; // not yet known
+}; // Size: 0x244
+
+#endif

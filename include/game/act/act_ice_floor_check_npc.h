@@ -1,0 +1,18 @@
+#ifndef GAME_ACT_ACT_ICE_FLOOR_CHECK_NPC_H
+#define GAME_ACT_ACT_ICE_FLOOR_CHECK_NPC_H
+
+// Code: game/act_ice_floor_check_npc.cpp.
+
+#include "game/ActorBase.h"
+
+// Named after its vtable, 0x8049E950.
+class cls_8049E950 : public ActorBase_804A5770 {
+public:
+    cls_8049E950() {}
+    /* 0x08 */ virtual ~cls_8049E950();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+}; // Size: 0x238
+
+#endif
