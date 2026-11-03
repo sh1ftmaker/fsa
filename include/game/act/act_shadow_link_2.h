@@ -40,6 +40,10 @@ public:
     // field_0xd8 > 0 && field_0xf8 == 2, field_0x3c.z += lbl_8053EFB8, clamped
     // at -lbl_8053EFBC from below.
     /* 0x84 */ virtual void vfunc_0x84();
+    // act_shadow_link_2.cpp: copies field_0x98 (direction) into the animation
+    // sequencer's mDir, advances the sequencer unless it is in state 0x13 past
+    // its first tick or mFlags has bit 0x80000, then updates the hit box.
+    void fn_801C2E70();
     // act_shadow_link_2.cpp: switches to state 0xD (fn_801C3B7C only).
     void fn_801C26D8();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.

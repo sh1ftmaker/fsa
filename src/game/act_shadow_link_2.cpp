@@ -40,6 +40,19 @@ void ShadowLink2_804A43E8::fn_801C27A8() {
     fn_801C3B7C(2);
 }
 
+// Member: copies field_0x98 into the sequencer's direction, advances the
+// sequencer unless it is in state 0x13 past its first tick or mFlags has bit
+// 0x80000, then updates the attack hit box.
+void ShadowLink2_804A43E8::fn_801C2E70() {
+    field_0x340.mDir = field_0x98;
+    if (mState != 0x13 || mStateTimer <= 1) {
+        if (!(mFlags & 0x80000)) {
+            field_0x340.fn_800FE8C0();
+        }
+    }
+    mHitBox.fn_80216A8C();
+}
+
 // Takes no arguments, so it is a free function rather than a member.
 extern "C" s32 fn_801C5340() {
     return 0;
