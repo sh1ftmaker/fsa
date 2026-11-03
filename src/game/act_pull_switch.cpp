@@ -7,7 +7,7 @@
 
 // result = a - b, the operands by value.
 static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
-                              JGeometry::TVec3f b) {
+                              const JGeometry::TVec3f& b) {
     a.sub(b);
     result = a;
 }
@@ -23,10 +23,6 @@ void PullSwitch_804A7908::draw() {
     fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x23c + 0x147, false, 1, -1, 0, 0, 0);
 }
 
-// FIXME: 99.94%, stack slots only. The original keeps the push vector for
-// fn_8023DFF4 at sp+0x20, apart from the by-value copy of the player position
-// (sp+0x2c); ours puts it in that copy's slot (sp+0x2c), so the four
-// stores/addi for the push vector use 0x2c..0x34 instead of 0x20..0x28.
 void PullSwitch_804A7908::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -58,6 +54,7 @@ void PullSwitch_804A7908::update() {
     }
     s32 player = fn_80239470(&box, field_0x4, mSerial);
     if (player >= 0) {
+        JGeometry::TVec3f playerPos;
         fn_80239914(&box, field_0x4, mSerial);
         f32 dx = mPos.x - fn_8023E724(player)->x;
         if (__fabsf(dx) >= 2.0f) {
@@ -91,7 +88,8 @@ void PullSwitch_804A7908::update() {
                 field_0x230 = mPos;
                 field_0x230.y += 16.0f;
                 JGeometry::TVec3f diff;
-                difference(diff, field_0x230, *fn_8023E724(player));
+                playerPos = *fn_8023E724(player);
+                difference(diff, field_0x230, playerPos);
                 fn_8023DFF4(player, &diff);
             }
             field_0x244 += 0.25f;
