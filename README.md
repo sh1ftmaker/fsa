@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **19.50 %** of the code and **4,801 / 11,561** functions match. 301 of 888 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **19.51 %** of the code and **4,804 / 11,561** functions match. 301 of 888 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
@@ -72,11 +72,11 @@ interactive version, down to single functions.
 | Region | Code matched | Functions |
 |---|--:|--:|
 | Game code | 1.04 % of 3,573,784 bytes | 243 / 6,789 |
-| JSystem | 95.2 % of 630,892 bytes | 3,504 / 3,702 |
+| JSystem | 95.2 % of 630,892 bytes | 3,507 / 3,702 |
 | Dolphin SDK | 99.8 % of 131,240 bytes | 607 / 614 |
 | GX | 95.8 % of 33,660 bytes | 166 / 172 |
 | MSL, Runtime, TRK | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **19.50 %** of 4,442,088 bytes | **4,801 / 11,561** |
+| **Whole DOL** | **19.51 %** of 4,442,088 bytes | **4,804 / 11,561** |
 <!-- regions:end -->
 
 </details>
