@@ -66,9 +66,9 @@ public:
     // (JUTVideo's height / width), and field_0x17e to 1. Reads center 0x0
     // and 0x4 only (tu_8011CEC8 passes a stack pair, 0x8011D008).
     void fn_8030C7C4(const JGeometry::TVec2f* center, f32 size);
-    // 1 unit (GameView fn_802D9CB0). Clears field_0x1e8, copies the four
-    // bytes 0x235C-0x235F of lbl_8053AB10->0x20 to 0x2360-0x2363 where set,
-    // clears the view (fn_802DCDF4) and copies field_0x190 to field_0x154.
+    // 1 unit (GameView fn_802D9CB0). Clears field_0x1e8, zeroes each of the
+    // map's bytes 0x2360-0x2363 whose byte 0x235C-0x235F is set, clears the
+    // view (fn_802DCDF4) and copies field_0x190 to field_0x154.
     void fn_8030C85C();
     // 1 unit (GameView fn_802DCD1C passes &mVisibleBox). Stores box in
     // field_0x190 and updates the map object's scroll state (its 0x2360 and
@@ -127,7 +127,10 @@ public:
     /* 0x17E */ u8 field_0x17e; // set by fn_8030C7C4
     /* 0x180 */ JGeometry::TBox2f field_0x180; // fn_8030C7C4
     /* 0x190 */ JGeometry::TBox2f field_0x190; // fn_8030C928; fn_8030C85C
-    /* 0x1A0 */ u8 field_0x1a0[0x1D4 - 0x1A0];
+    /* 0x1A0 */ u8 field_0x1a0[0x1B4 - 0x1A0];
+    // fn_8030C85C sets all four floats to one constant.
+    /* 0x1B4 */ JGeometry::TBox2f field_0x1b4;
+    /* 0x1C4 */ u8 field_0x1c4[0x1D4 - 0x1C4];
     // 19 units store both (act_escort_woman 0x80125048), next to
     // field_0x840.
     /* 0x1D4 */ f32 field_0x1d4;
