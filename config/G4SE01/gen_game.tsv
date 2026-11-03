@@ -110,8 +110,6 @@ act_force_gem_fleeing	dtor	__dt__24FleeingForceGem_804AB170Fv	FleeingForceGem_80
 act_force_gem_fleeing	sinit	__sinit_act_force_gem_fleeing_cpp	-	-	new	new
 act_force_gem_rain	dtor	__dt__21ForceGemRain_804A8010Fv	ForceGemRain_804A8010	0x804A8010	new	new
 act_force_gem_rain	sinit	__sinit_act_force_gem_rain_cpp	-	-	new	new
-act_force_gem_shadow	dtor	__dt__26ForceGemShadowNPC_804ACD18Fv	ForceGemShadowNPC_804ACD18	0x804ACD18	new	new
-act_force_gem_shadow	sinit	__sinit_act_force_gem_shadow_cpp	-	-	new	new
 act_force_gem_spawner	sinit	__sinit_act_force_gem_spawner_cpp	-	-	new	-
 act_force_gem_winged	dtor	__dt__23WingedForceGem_804AB098Fv	WingedForceGem_804AB098	0x804AB098	new	new
 act_force_gem_winged	sinit	__sinit_act_force_gem_winged_cpp	-	-	new	new
