@@ -187,24 +187,24 @@ phases:
   - id: game
     hue: green
     title: Game code
-    status: next
+    status: active
     summary: FSA's own 3.4 MiB of C++, after the file map, the compiler setup and shared headers.
     milestones:
       - id: tu-splits
         title: The file map in splits.txt
-        desc: Load tu_map.tsv's 530 game files with their data ranges; actor files named from actors.tsv.
-        status: next
+        desc: 529 game units with their extab, .ctors and data ranges; 57 named from actors.tsv and a source-name string.
+        status: done
         covers: [game]
         measure: {kind: split}
       - id: game-compiler
         title: Game compiler setup
-        desc: GC/2.6 -O4,p with C++ exceptions, proven on the 26 recomp-era game functions.
-        status: next
+        desc: GC/2.6 -O4,p, C++ exceptions, stmw on, fp_contract on, read-only strings; proven on five game functions and THP.
+        status: done
         covers: [game]
       - id: shared-headers
         title: Shared headers, one owner each
         desc: The actor base class, enemy/NPC/demo bases, scene manager, game state, heap and messages.
-        status: later
+        status: next
         covers: [game]
       - id: wave-small
         title: "Wave 1: small files and minigames"

@@ -13,6 +13,18 @@ Sections:
 	.sdata2     type:rodata align:32
 	.sbss2      type:bss align:32
 
+game/tu_80021840.cpp:
+	extab       start:0x80005600 end:0x80005650
+	extabindex  start:0x80011860 end:0x800118D8
+	.text       start:0x80021840 end:0x80021D60
+	.ctors      start:0x8045BD04 end:0x8045BD08
+	.bss        start:0x804B2140 end:0x804B2240
+
+game/tu_80021D60.cpp:
+	.text       start:0x80021D60 end:0x80021F24
+	.ctors      start:0x8045BD08 end:0x8045BD0C
+	.bss        start:0x804B2240 end:0x804B2288
+
 JSystem/JAudio/Interface/JAISe.cpp:
 	.text       start:0x80021F24 end:0x800228F4
 	.ctors      start:0x8045BD0C end:0x8045BD10
@@ -1704,6 +1716,4908 @@ JSystem/JParticle/JPAResourceManager.cpp:
 JSystem/JParticle/JPATexture.cpp:
 	.text       start:0x800F3920 end:0x800F39EC
 	.data       start:0x8049C3A8 end:0x8049C3B8
+
+game/tu_800F39EC.cpp:
+	extab       start:0x80005698 end:0x800056A0
+	extabindex  start:0x80011914 end:0x80011920
+	.text       start:0x800F39EC end:0x800F3C10
+	.ctors      start:0x8045BDF0 end:0x8045BDF4
+	.bss        start:0x804BA5F8 end:0x804BA6F8
+
+game/act_rat.cpp:
+	extab       start:0x800056A0 end:0x800056C8
+	extabindex  start:0x80011920 end:0x8001195C
+	.text       start:0x800F3C10 end:0x800F46C0
+	.ctors      start:0x8045BDF4 end:0x8045BDF8
+	.rodata     start:0x80463660 end:0x80463678
+	.data       start:0x8049C3E0 end:0x8049C458
+	.bss        start:0x804BA6F8 end:0x804BA7F8
+	.sdata      start:0x80539E68 end:0x80539E70
+	.sdata2     start:0x8053BE58 end:0x8053BE88
+
+game/tu_800F46C0.cpp:
+	extab       start:0x800056C8 end:0x80005720
+	extabindex  start:0x8001195C end:0x800119E0
+	.text       start:0x800F46C0 end:0x800F6820
+	.ctors      start:0x8045BDF8 end:0x8045BDFC
+	.rodata     start:0x80463678 end:0x80463710
+	.data       start:0x8049C458 end:0x8049C518
+	.bss        start:0x804BA7F8 end:0x804BA8F8
+	.sdata2     start:0x8053BE88 end:0x8053BF30
+
+game/act_force_like.cpp:
+	extab       start:0x80005720 end:0x80005750
+	extabindex  start:0x800119E0 end:0x80011A28
+	.text       start:0x800F6820 end:0x800F7FCC
+	.ctors      start:0x8045BDFC end:0x8045BE00
+	.rodata     start:0x80463710 end:0x80463800
+	.data       start:0x8049C518 end:0x8049C5D0
+	.bss        start:0x804BA8F8 end:0x804BA9F8
+	.sdata      start:0x80539E70 end:0x80539E80
+	.sdata2     start:0x8053BF30 end:0x8053BFA0
+
+game/tu_800F7FCC.cpp:
+	extab       start:0x80005750 end:0x80005848
+	extabindex  start:0x80011A28 end:0x80011B9C
+	.text       start:0x800F7FCC end:0x800FD438
+	.ctors      start:0x8045BE00 end:0x8045BE04
+	.rodata     start:0x80463800 end:0x80463A70
+	.data       start:0x8049C5D0 end:0x8049C7C8
+	.bss        start:0x804BA9F8 end:0x804BAAF8
+	.sdata      start:0x80539E80 end:0x80539EA8
+	.sdata2     start:0x8053BFA0 end:0x8053C0B0
+
+game/RailBase.cpp:
+	extab       start:0x80005848 end:0x80005888
+	extabindex  start:0x80011B9C end:0x80011BFC
+	.text       start:0x800FD438 end:0x800FE8C0
+	.ctors      start:0x8045BE04 end:0x8045BE08
+	.rodata     start:0x80463A70 end:0x80463AA0
+	.bss        start:0x804BAAF8 end:0x804BABF8
+	.sdata2     start:0x8053C0B0 end:0x8053C0E0
+
+game/act_boss_display_test_npc.cpp:
+	extab       start:0x80005888 end:0x80005898
+	extabindex  start:0x80011BFC end:0x80011C14
+	.text       start:0x800FE8C0 end:0x800FEDD0
+	.ctors      start:0x8045BE08 end:0x8045BE0C
+	.rodata     start:0x80463AA0 end:0x80463B78
+	.data       start:0x8049C7C8 end:0x8049C848
+	.bss        start:0x804BABF8 end:0x804BACF8
+	.sdata2     start:0x8053C0E0 end:0x8053C110
+
+game/tu_800FEDD0.cpp:
+	extab       start:0x80005898 end:0x800058A8
+	extabindex  start:0x80011C14 end:0x80011C2C
+	.text       start:0x800FEDD0 end:0x800FF060
+	.ctors      start:0x8045BE0C end:0x8045BE10
+	.bss        start:0x804BACF8 end:0x804BADF8
+
+game/tu_800FF060.cpp:
+	extab       start:0x800058A8 end:0x800058D8
+	extabindex  start:0x80011C2C end:0x80011C74
+	.text       start:0x800FF060 end:0x8010089C
+	.ctors      start:0x8045BE10 end:0x8045BE14
+	.rodata     start:0x80463B78 end:0x80463BA0
+	.data       start:0x8049C848 end:0x8049C8D8
+	.bss        start:0x804BADF8 end:0x804BAEF8
+	.sdata      start:0x80539EA8 end:0x80539EB0
+	.sdata2     start:0x8053C110 end:0x8053C140
+
+game/tu_8010089C.cpp:
+	extab       start:0x800058D8 end:0x80005918
+	extabindex  start:0x80011C74 end:0x80011CD4
+	.text       start:0x8010089C end:0x80102278
+	.ctors      start:0x8045BE14 end:0x8045BE18
+	.rodata     start:0x80463BA0 end:0x80463BB8
+	.data       start:0x8049C8D8 end:0x8049C970
+	.bss        start:0x804BAEF8 end:0x804BAFF8
+	.sdata      start:0x80539EB0 end:0x80539EB8
+	.sdata2     start:0x8053C140 end:0x8053C1A8
+
+game/tu_80102278.cpp:
+	extab       start:0x80005918 end:0x80005940
+	extabindex  start:0x80011CD4 end:0x80011D10
+	.text       start:0x80102278 end:0x8010307C
+	.ctors      start:0x8045BE18 end:0x8045BE1C
+	.rodata     start:0x80463BB8 end:0x80463BD0
+	.data       start:0x8049C970 end:0x8049CA98
+	.bss        start:0x804BAFF8 end:0x804BB0F8
+	.sdata      start:0x80539EB8 end:0x80539EC0
+	.sdata2     start:0x8053C1A8 end:0x8053C1D0
+
+game/tu_8010307C.cpp:
+	extab       start:0x80005940 end:0x80005958
+	extabindex  start:0x80011D10 end:0x80011D34
+	.text       start:0x8010307C end:0x80103348
+	.ctors      start:0x8045BE1C end:0x8045BE20
+	.bss        start:0x804BB0F8 end:0x804BB1F8
+
+game/tu_80103348.cpp:
+	extab       start:0x80005958 end:0x80005988
+	extabindex  start:0x80011D34 end:0x80011D7C
+	.text       start:0x80103348 end:0x801042D0
+	.ctors      start:0x8045BE20 end:0x8045BE24
+	.rodata     start:0x80463BD0 end:0x80463C30
+	.bss        start:0x804BB1F8 end:0x804BB2F8
+	.sdata2     start:0x8053C1D0 end:0x8053C1F8
+
+game/act_temple_bti_display.cpp:
+	extab       start:0x80005988 end:0x800059B0
+	extabindex  start:0x80011D7C end:0x80011DB8
+	.text       start:0x801042D0 end:0x80104C3C
+	.ctors      start:0x8045BE24 end:0x8045BE28
+	.rodata     start:0x80463C30 end:0x80463EE0
+	.data       start:0x8049CA98 end:0x8049CBB0
+	.bss        start:0x804BB2F8 end:0x804BB3F8
+	.sdata2     start:0x8053C1F8 end:0x8053C228
+
+game/tu_80104C3C.cpp:
+	extab       start:0x800059B0 end:0x800059D8
+	extabindex  start:0x80011DB8 end:0x80011DF4
+	.text       start:0x80104C3C end:0x80105368
+	.ctors      start:0x8045BE28 end:0x8045BE2C
+	.rodata     start:0x80463EE0 end:0x80463FB8
+	.bss        start:0x804BB3F8 end:0x804BB4F8
+
+game/act_cloud.cpp:
+	extab       start:0x800059D8 end:0x80005A34
+	extabindex  start:0x80011DF4 end:0x80011E60
+	.text       start:0x80105368 end:0x80106040
+	.ctors      start:0x8045BE2C end:0x8045BE30
+	.data       start:0x8049CBB0 end:0x8049CC40
+	.bss        start:0x804BB4F8 end:0x804BB5F8
+	.sdata      start:0x80539EC0 end:0x80539EC8
+	.sdata2     start:0x8053C228 end:0x8053C270
+
+game/act_room_transfer_lift.cpp:
+	extab       start:0x80005A34 end:0x80005A64
+	extabindex  start:0x80011E60 end:0x80011EA8
+	.text       start:0x80106040 end:0x80106ADC
+	.ctors      start:0x8045BE30 end:0x8045BE34
+	.rodata     start:0x80463FB8 end:0x80463FD0
+	.data       start:0x8049CC40 end:0x8049CC98
+	.bss        start:0x804BB5F8 end:0x804BB6F8
+	.sdata      start:0x80539EC8 end:0x80539ED0
+	.sdata2     start:0x8053C270 end:0x8053C2A0
+
+game/act_wind_environment.cpp:
+	extab       start:0x80005A64 end:0x80005AC0
+	extabindex  start:0x80011EA8 end:0x80011EFC
+	.text       start:0x80106ADC end:0x80107360
+	.ctors      start:0x8045BE34 end:0x8045BE38
+	.data       start:0x8049CC98 end:0x8049CCF0
+	.bss        start:0x804BB6F8 end:0x804BB7F8
+	.sdata2     start:0x8053C2A0 end:0x8053C2B8
+
+game/act_cannon.cpp:
+	extab       start:0x80005AC0 end:0x80005B0C
+	extabindex  start:0x80011EFC end:0x80011F50
+	.text       start:0x80107360 end:0x80108414
+	.ctors      start:0x8045BE38 end:0x8045BE3C
+	.rodata     start:0x80463FD0 end:0x80464000
+	.data       start:0x8049CCF0 end:0x8049CD48
+	.bss        start:0x804BB7F8 end:0x804BB8F8
+	.sdata      start:0x80539ED0 end:0x80539ED8
+	.sbss       start:0x8053AA70 end:0x8053AA80
+	.sdata2     start:0x8053C2B8 end:0x8053C318
+
+game/act_merchant.cpp:
+	extab       start:0x80005B0C end:0x80005B50
+	extabindex  start:0x80011F50 end:0x80011F98
+	.text       start:0x80108414 end:0x80108A6C
+	.ctors      start:0x8045BE3C end:0x8045BE40
+	.rodata     start:0x80464000 end:0x80464028
+	.data       start:0x8049CD48 end:0x8049CDA0
+	.bss        start:0x804BB8F8 end:0x804BB9F8
+	.sdata      start:0x80539ED8 end:0x80539EE0
+	.sdata2     start:0x8053C318 end:0x8053C368
+
+game/tu_80108A6C.cpp:
+	extab       start:0x80005B50 end:0x80005B94
+	extabindex  start:0x80011F98 end:0x80011FE0
+	.text       start:0x80108A6C end:0x80109534
+	.ctors      start:0x8045BE40 end:0x8045BE44
+	.rodata     start:0x80464028 end:0x804641F8
+	.data       start:0x8049CDA0 end:0x8049CE70
+	.bss        start:0x804BB9F8 end:0x804BBAF8
+	.sdata2     start:0x8053C368 end:0x8053C3E0
+
+game/act_princess_zelda.cpp:
+	extab       start:0x80005B94 end:0x80005BF0
+	extabindex  start:0x80011FE0 end:0x8001204C
+	.text       start:0x80109534 end:0x8010B284
+	.ctors      start:0x8045BE44 end:0x8045BE48
+	.rodata     start:0x804641F8 end:0x804642F0
+	.data       start:0x8049CE70 end:0x8049CFC8
+	.bss        start:0x804BBAF8 end:0x804BBBF8
+	.sbss       start:0x8053AA80 end:0x8053AA88
+	.sdata2     start:0x8053C3E0 end:0x8053C450
+
+game/act_icicle.cpp:
+	extab       start:0x80005BF0 end:0x80005C44
+	extabindex  start:0x8001204C end:0x800120AC
+	.text       start:0x8010B284 end:0x8010C294
+	.ctors      start:0x8045BE48 end:0x8045BE4C
+	.rodata     start:0x804642F0 end:0x80464328
+	.data       start:0x8049CFC8 end:0x8049D020
+	.bss        start:0x804BBBF8 end:0x804BBCF8
+	.sdata      start:0x80539EE0 end:0x80539EE8
+	.sdata2     start:0x8053C450 end:0x8053C490
+
+game/tu_8010C294.cpp:
+	extab       start:0x80005C44 end:0x80005C90
+	extabindex  start:0x800120AC end:0x80012100
+	.text       start:0x8010C294 end:0x8010DA6C
+	.ctors      start:0x8045BE4C end:0x8045BE50
+	.rodata     start:0x80464328 end:0x80464348
+	.data       start:0x8049D020 end:0x8049D0E8
+	.bss        start:0x804BBCF8 end:0x804BBDF8
+	.sdata      start:0x80539EE8 end:0x80539EF0
+	.sdata2     start:0x8053C490 end:0x8053C500
+
+game/act_message_check_npc.cpp:
+	extab       start:0x80005C90 end:0x80005CD4
+	extabindex  start:0x80012100 end:0x80012148
+	.text       start:0x8010DA6C end:0x8010DF44
+	.ctors      start:0x8045BE50 end:0x8045BE54
+	.rodata     start:0x80464348 end:0x80464550
+	.data       start:0x8049D0E8 end:0x8049D140
+	.bss        start:0x804BBDF8 end:0x804BBEF8
+	.sdata      start:0x80539EF0 end:0x80539EF8
+	.sdata2     start:0x8053C500 end:0x8053C510
+
+game/tu_8010DF44.cpp:
+	extab       start:0x80005CD4 end:0x80005D04
+	extabindex  start:0x80012148 end:0x80012190
+	.text       start:0x8010DF44 end:0x8010E2D4
+	.ctors      start:0x8045BE54 end:0x8045BE58
+	.data       start:0x8049D140 end:0x8049D1A0
+	.bss        start:0x804BBEF8 end:0x804BBFF8
+	.sdata2     start:0x8053C510 end:0x8053C548
+
+game/act_princess_zelda_demo.cpp:
+	extab       start:0x80005D04 end:0x80005DC4
+	extabindex  start:0x80012190 end:0x80012274
+	.text       start:0x8010E2D4 end:0x801123C8
+	.ctors      start:0x8045BE58 end:0x8045BE5C
+	.rodata     start:0x80464550 end:0x80464678
+	.data       start:0x8049D1A0 end:0x8049D710
+	.bss        start:0x804BBFF8 end:0x804BC0F8
+	.sdata      start:0x80539EF8 end:0x80539F00
+	.sdata2     start:0x8053C548 end:0x8053C628
+
+game/act_maiden_demo.cpp:
+	extab       start:0x80005DC4 end:0x80005E28
+	extabindex  start:0x80012274 end:0x800122EC
+	.text       start:0x801123C8 end:0x80113788
+	.ctors      start:0x8045BE5C end:0x8045BE60
+	.rodata     start:0x80464678 end:0x804647C8
+	.data       start:0x8049D710 end:0x8049D820
+	.bss        start:0x804BC0F8 end:0x804BC1F8
+	.sdata2     start:0x8053C628 end:0x8053C678
+
+game/tu_80113788.cpp:
+	extab       start:0x80005E28 end:0x80005EA8
+	extabindex  start:0x800122EC end:0x80012370
+	.text       start:0x80113788 end:0x801158B8
+	.ctors      start:0x8045BE60 end:0x8045BE64
+	.rodata     start:0x804647C8 end:0x80464990
+	.data       start:0x8049D820 end:0x8049D930
+	.bss        start:0x804BC1F8 end:0x804BC2F8
+	.sdata      start:0x80539F00 end:0x80539F08
+	.sdata2     start:0x8053C678 end:0x8053C6D0
+
+game/act_vaati_demo.cpp:
+	extab       start:0x80005EA8 end:0x80005F44
+	extabindex  start:0x80012370 end:0x80012400
+	.text       start:0x801158B8 end:0x80116E8C
+	.ctors      start:0x8045BE64 end:0x8045BE68
+	.rodata     start:0x80464990 end:0x80464A38
+	.data       start:0x8049D930 end:0x8049DA00
+	.bss        start:0x804BC2F8 end:0x804BC3F8
+	.sdata      start:0x80539F08 end:0x80539F10
+	.sbss       start:0x8053AA88 end:0x8053AA90
+	.sdata2     start:0x8053C6D0 end:0x8053C740
+
+game/act_four_sword_demo.cpp:
+	extab       start:0x80005F44 end:0x80005FA0
+	extabindex  start:0x80012400 end:0x8001246C
+	.text       start:0x80116E8C end:0x80118384
+	.ctors      start:0x8045BE68 end:0x8045BE6C
+	.rodata     start:0x80464A38 end:0x80464AF8
+	.data       start:0x8049DA00 end:0x8049DAD8
+	.bss        start:0x804BC3F8 end:0x804BC4F8
+	.sdata2     start:0x8053C740 end:0x8053C798
+
+game/tu_80118384.cpp:
+	extab       start:0x80005FA0 end:0x80006070
+	extabindex  start:0x8001246C end:0x8001258C
+	.text       start:0x80118384 end:0x8011A0F8
+	.ctors      start:0x8045BE6C end:0x8045BE70
+	.bss        start:0x804BC4F8 end:0x804BC660
+	.sdata      start:0x80539F10 end:0x80539F18
+	.sbss       start:0x8053AA90 end:0x8053AA98
+	.sdata2     start:0x8053C798 end:0x8053C7B8
+
+game/tu_8011A0F8.cpp:
+	extab       start:0x80006070 end:0x80006098
+	extabindex  start:0x8001258C end:0x800125C8
+	.text       start:0x8011A0F8 end:0x8011A4BC
+	.ctors      start:0x8045BE70 end:0x8045BE74
+	.data       start:0x8049DAD8 end:0x8049DB30
+	.bss        start:0x804BC660 end:0x804BC760
+
+game/act_opening_goal.cpp:
+	extab       start:0x80006098 end:0x800060EC
+	extabindex  start:0x800125C8 end:0x80012628
+	.text       start:0x8011A4BC end:0x8011B390
+	.ctors      start:0x8045BE74 end:0x8045BE78
+	.data       start:0x8049DB30 end:0x8049DB90
+	.bss        start:0x804BC760 end:0x804BC860
+	.sdata      start:0x80539F18 end:0x80539F20
+	.sdata2     start:0x8053C7B8 end:0x8053C7D8
+
+game/act_shadow_link_demo.cpp:
+	extab       start:0x800060EC end:0x80006134
+	extabindex  start:0x80012628 end:0x80012694
+	.text       start:0x8011B390 end:0x8011CEC8
+	.ctors      start:0x8045BE78 end:0x8045BE7C
+	.rodata     start:0x80464AF8 end:0x80464B98
+	.data       start:0x8049DB90 end:0x8049DD68
+	.bss        start:0x804BC860 end:0x804BC960
+	.sdata2     start:0x8053C7D8 end:0x8053C860
+
+game/tu_8011CEC8.cpp:
+	extab       start:0x80006134 end:0x80006174
+	extabindex  start:0x80012694 end:0x800126F4
+	.text       start:0x8011CEC8 end:0x8011DA20
+	.ctors      start:0x8045BE7C end:0x8045BE80
+	.rodata     start:0x80464B98 end:0x80464BE8
+	.data       start:0x8049DD68 end:0x8049DE18
+	.bss        start:0x804BC960 end:0x804BCA60
+	.sdata      start:0x80539F20 end:0x80539F28
+	.sbss       start:0x8053AA98 end:0x8053AAA8
+	.sdata2     start:0x8053C860 end:0x8053C8B8
+
+game/act_ice_wall.cpp:
+	extab       start:0x80006174 end:0x800061B8
+	extabindex  start:0x800126F4 end:0x8001273C
+	.text       start:0x8011DA20 end:0x8011E96C
+	.ctors      start:0x8045BE80 end:0x8045BE84
+	.rodata     start:0x80464BE8 end:0x80464CC0
+	.data       start:0x8049DE18 end:0x8049DEE8
+	.bss        start:0x804BCA60 end:0x804BCB60
+	.sdata      start:0x80539F28 end:0x80539F38
+	.sdata2     start:0x8053C8B8 end:0x8053C8F8
+
+game/tu_8011E96C.cpp:
+	extab       start:0x800061B8 end:0x800061D8
+	extabindex  start:0x8001273C end:0x8001276C
+	.text       start:0x8011E96C end:0x8011EEEC
+	.ctors      start:0x8045BE84 end:0x8045BE88
+	.bss        start:0x804BCB60 end:0x804BCC60
+
+game/act_hyrule_castle_barrier.cpp:
+	extab       start:0x800061D8 end:0x80006218
+	extabindex  start:0x8001276C end:0x800127CC
+	.text       start:0x8011EEEC end:0x8011FFB8
+	.ctors      start:0x8045BE88 end:0x8045BE8C
+	.data       start:0x8049DEE8 end:0x8049DF40
+	.bss        start:0x804BCC60 end:0x804BCD60
+	.sdata2     start:0x8053C8F8 end:0x8053C960
+
+game/tu_8011FFB8.cpp:
+	extab       start:0x80006218 end:0x80006298
+	extabindex  start:0x800127CC end:0x8001288C
+	.text       start:0x8011FFB8 end:0x801213EC
+	.ctors      start:0x8045BE8C end:0x8045BE90
+	.rodata     start:0x80464CC0 end:0x80464CD8
+	.data       start:0x8049DF40 end:0x8049E0C8
+	.bss        start:0x804BCD60 end:0x804BCE60
+	.sdata2     start:0x8053C960 end:0x8053C9B0
+
+game/tu_801213EC.cpp:
+	extab       start:0x80006298 end:0x800063F0
+	extabindex  start:0x8001288C end:0x80012A54
+	.text       start:0x801213EC end:0x80124AD8
+	.ctors      start:0x8045BE90 end:0x8045BE94
+	.rodata     start:0x80464CD8 end:0x80464E80
+	.data       start:0x8049E0C8 end:0x8049E198
+	.bss        start:0x804BCE60 end:0x804BCF60
+	.sdata2     start:0x8053C9B0 end:0x8053CA40
+
+game/act_escort_woman.cpp:
+	extab       start:0x800063F0 end:0x80006470
+	extabindex  start:0x80012A54 end:0x80012B14
+	.text       start:0x80124AD8 end:0x80125B58
+	.ctors      start:0x8045BE94 end:0x8045BE98
+	.rodata     start:0x80464E80 end:0x80464EE8
+	.data       start:0x8049E198 end:0x8049E330
+	.bss        start:0x804BCF60 end:0x804BD060
+	.sdata2     start:0x8053CA40 end:0x8053CA70
+
+game/act_vaati_buster.cpp:
+	extab       start:0x80006470 end:0x800064A8
+	extabindex  start:0x80012B14 end:0x80012B68
+	.text       start:0x80125B58 end:0x8012679C
+	.ctors      start:0x8045BE98 end:0x8045BE9C
+	.rodata     start:0x80464EE8 end:0x80464F88
+	.data       start:0x8049E330 end:0x8049E400
+	.bss        start:0x804BD060 end:0x804BD160
+	.sdata2     start:0x8053CA70 end:0x8053CAA0
+
+game/tu_8012679C.cpp:
+	extab       start:0x800064A8 end:0x800064C0
+	extabindex  start:0x80012B68 end:0x80012B8C
+	.text       start:0x8012679C end:0x80126A4C
+	.ctors      start:0x8045BE9C end:0x8045BEA0
+	.bss        start:0x804BD160 end:0x804BD260
+
+game/act_zora_escort_goal.cpp:
+	extab       start:0x800064C0 end:0x8000650C
+	extabindex  start:0x80012B8C end:0x80012BE0
+	.text       start:0x80126A4C end:0x80127E20
+	.ctors      start:0x8045BEA0 end:0x8045BEA4
+	.rodata     start:0x80464F88 end:0x80464FC0
+	.data       start:0x8049E400 end:0x8049E500
+	.bss        start:0x804BD260 end:0x804BD360
+	.sdata2     start:0x8053CAA0 end:0x8053CAD8
+
+game/tu_80127E20.cpp:
+	extab       start:0x8000650C end:0x8000656C
+	extabindex  start:0x80012BE0 end:0x80012C70
+	.text       start:0x80127E20 end:0x801286C0
+	.ctors      start:0x8045BEA4 end:0x8045BEA8
+	.bss        start:0x804BD360 end:0x804BD490
+	.sbss       start:0x8053AAA8 end:0x8053AAB0
+	.sdata2     start:0x8053CAD8 end:0x8053CAE0
+
+game/tu_801286C0.cpp:
+	extab       start:0x8000656C end:0x800065A4
+	extabindex  start:0x80012C70 end:0x80012CC4
+	.text       start:0x801286C0 end:0x801291A0
+	.ctors      start:0x8045BEA8 end:0x8045BEAC
+	.rodata     start:0x80464FC0 end:0x80465000
+	.data       start:0x8049E500 end:0x8049E610
+	.bss        start:0x804BD490 end:0x804BD590
+	.sdata      start:0x80539F38 end:0x80539F40
+	.sdata2     start:0x8053CAE0 end:0x8053CB20
+
+game/tu_801291A0.cpp:
+	extab       start:0x800065A4 end:0x800065CC
+	extabindex  start:0x80012CC4 end:0x80012D00
+	.text       start:0x801291A0 end:0x80129B0C
+	.ctors      start:0x8045BEAC end:0x8045BEB0
+	.rodata     start:0x80465000 end:0x80465098
+	.bss        start:0x804BD590 end:0x804BD690
+	.sdata2     start:0x8053CB20 end:0x8053CB38
+
+game/act_rainbow_bridge.cpp:
+	extab       start:0x800065CC end:0x800065F4
+	extabindex  start:0x80012D00 end:0x80012D3C
+	.text       start:0x80129B0C end:0x8012A5EC
+	.ctors      start:0x8045BEB0 end:0x8045BEB4
+	.rodata     start:0x80465098 end:0x804650B0
+	.data       start:0x8049E610 end:0x8049E668
+	.bss        start:0x804BD690 end:0x804BD790
+	.sdata2     start:0x8053CB38 end:0x8053CB60
+
+game/tu_8012A5EC.cpp:
+	extab       start:0x800065F4 end:0x8000667C
+	extabindex  start:0x80012D3C end:0x80012E08
+	.text       start:0x8012A5EC end:0x8012CF5C
+	.ctors      start:0x8045BEB4 end:0x8045BEB8
+	.rodata     start:0x804650B0 end:0x804650F8
+	.data       start:0x8049E668 end:0x8049E7F0
+	.bss        start:0x804BD790 end:0x804BD8F0
+	.sbss       start:0x8053AAB0 end:0x8053AAB8
+	.sdata2     start:0x8053CB60 end:0x8053CC20
+
+game/act_blizzard_battle.cpp:
+	extab       start:0x8000667C end:0x800066A4
+	extabindex  start:0x80012E08 end:0x80012E44
+	.text       start:0x8012CF5C end:0x8012DAC0
+	.ctors      start:0x8045BEB8 end:0x8045BEBC
+	.data       start:0x8049E7F0 end:0x8049E8A0
+	.bss        start:0x804BD8F0 end:0x804BD9F0
+	.sdata2     start:0x8053CC20 end:0x8053CC30
+
+game/tu_8012DAC0.cpp:
+	extab       start:0x800066A4 end:0x800066BC
+	extabindex  start:0x80012E44 end:0x80012E68
+	.text       start:0x8012DAC0 end:0x8012DF70
+	.ctors      start:0x8045BEBC end:0x8045BEC0
+	.rodata     start:0x804650F8 end:0x80465120
+	.bss        start:0x804BD9F0 end:0x804BDAF0
+	.sdata2     start:0x8053CC30 end:0x8053CC38
+
+game/tu_8012DF70.cpp:
+	extab       start:0x800066BC end:0x800066EC
+	extabindex  start:0x80012E68 end:0x80012EB0
+	.text       start:0x8012DF70 end:0x8012EA00
+	.ctors      start:0x8045BEC0 end:0x8045BEC4
+	.data       start:0x8049E8A0 end:0x8049E950
+	.bss        start:0x804BDAF0 end:0x804BDBF0
+	.sdata      start:0x80539F40 end:0x80539F48
+	.sdata2     start:0x8053CC38 end:0x8053CC68
+
+game/tu_8012EA00.cpp:
+	extab       start:0x800066EC end:0x8000670C
+	extabindex  start:0x80012EB0 end:0x80012EE0
+	.text       start:0x8012EA00 end:0x8012F008
+	.ctors      start:0x8045BEC4 end:0x8045BEC8
+	.bss        start:0x804BDBF0 end:0x804BDCF0
+	.sdata2     start:0x8053CC68 end:0x8053CC78
+
+game/act_ice_floor_check_npc.cpp:
+	extab       start:0x8000670C end:0x80006734
+	extabindex  start:0x80012EE0 end:0x80012F1C
+	.text       start:0x8012F008 end:0x8012F3E4
+	.ctors      start:0x8045BEC8 end:0x8045BECC
+	.data       start:0x8049E950 end:0x8049EA58
+	.bss        start:0x804BDCF0 end:0x804BDDF0
+
+game/tu_8012F3E4.cpp:
+	extab       start:0x80006734 end:0x80006754
+	extabindex  start:0x80012F1C end:0x80012F4C
+	.text       start:0x8012F3E4 end:0x8012F8AC
+	.ctors      start:0x8045BECC end:0x8045BED0
+	.bss        start:0x804BDDF0 end:0x804BE000
+	.sbss       start:0x8053AAB8 end:0x8053AAC0
+
+game/tu_8012F8AC.cpp:
+	extab       start:0x80006754 end:0x80006774
+	extabindex  start:0x80012F4C end:0x80012F7C
+	.text       start:0x8012F8AC end:0x8012FBCC
+	.ctors      start:0x8045BED0 end:0x8045BED4
+	.bss        start:0x804BE000 end:0x804BE100
+
+game/tu_8012FBCC.cpp:
+	extab       start:0x80006774 end:0x80006794
+	extabindex  start:0x80012F7C end:0x80012FAC
+	.text       start:0x8012FBCC end:0x8012FF9C
+	.ctors      start:0x8045BED4 end:0x8045BED8
+	.bss        start:0x804BE100 end:0x804BE200
+
+game/tu_8012FF9C.cpp:
+	extab       start:0x80006794 end:0x800067B4
+	extabindex  start:0x80012FAC end:0x80012FDC
+	.text       start:0x8012FF9C end:0x80130310
+	.ctors      start:0x8045BED8 end:0x8045BEDC
+	.bss        start:0x804BE200 end:0x804BE308
+	.sbss       start:0x8053AAC0 end:0x8053AAD0
+
+game/tu_80130310.cpp:
+	extab       start:0x800067B4 end:0x800067EC
+	extabindex  start:0x80012FDC end:0x80013030
+	.text       start:0x80130310 end:0x80130FAC
+	.ctors      start:0x8045BEDC end:0x8045BEE0
+	.data       start:0x8049EA58 end:0x8049EAE0
+	.bss        start:0x804BE308 end:0x804BE408
+	.sdata2     start:0x8053CC78 end:0x8053CCA0
+
+game/act_warp_cannon.cpp:
+	extab       start:0x800067EC end:0x80006838
+	extabindex  start:0x80013030 end:0x80013084
+	.text       start:0x80130FAC end:0x80131D98
+	.ctors      start:0x8045BEE0 end:0x8045BEE4
+	.rodata     start:0x80465120 end:0x80465150
+	.data       start:0x8049EAE0 end:0x8049EB80
+	.bss        start:0x804BE408 end:0x804BE508
+	.sdata      start:0x80539F48 end:0x80539F50
+	.sbss       start:0x8053AAD0 end:0x8053AAE0
+	.sdata2     start:0x8053CCA0 end:0x8053CCF0
+
+game/tu_80131D98.cpp:
+	extab       start:0x80006838 end:0x80006860
+	extabindex  start:0x80013084 end:0x800130C0
+	.text       start:0x80131D98 end:0x801321DC
+	.ctors      start:0x8045BEE4 end:0x8045BEE8
+	.bss        start:0x804BE508 end:0x804BE620
+	.sbss       start:0x8053AAE0 end:0x8053AAE8
+
+game/act_great_fairy.cpp:
+	extab       start:0x80006860 end:0x800068BC
+	extabindex  start:0x800130C0 end:0x8001312C
+	.text       start:0x801321DC end:0x8013394C
+	.ctors      start:0x8045BEE8 end:0x8045BEEC
+	.rodata     start:0x80465150 end:0x80465288
+	.data       start:0x8049EB80 end:0x8049ED88
+	.bss        start:0x804BE620 end:0x804BE720
+	.sdata2     start:0x8053CCF0 end:0x8053CD30
+
+game/tu_8013394C.cpp:
+	extab       start:0x800068BC end:0x800068F4
+	extabindex  start:0x8001312C end:0x80013180
+	.text       start:0x8013394C end:0x801344C0
+	.ctors      start:0x8045BEEC end:0x8045BEF0
+	.rodata     start:0x80465288 end:0x804652F0
+	.bss        start:0x804BE720 end:0x804BE838
+	.sdata      start:0x80539F50 end:0x80539F58
+	.sbss       start:0x8053AAE8 end:0x8053AAF8
+	.sdata2     start:0x8053CD30 end:0x8053CD50
+
+game/tu_801344C0.cpp:
+	extab       start:0x800068F4 end:0x8000695C
+	extabindex  start:0x80013180 end:0x80013198
+	.text       start:0x801344C0 end:0x80134C04
+	.ctors      start:0x8045BEF0 end:0x8045BEF4
+	.bss        start:0x804BE838 end:0x804BE938
+
+game/tu_80134C04.cpp:
+	extab       start:0x8000695C end:0x80006A2C
+	extabindex  start:0x80013198 end:0x800132D0
+	.text       start:0x80134C04 end:0x80139BE8
+	.ctors      start:0x8045BEF4 end:0x8045BEF8
+	.rodata     start:0x804652F0 end:0x80465920
+	.data       start:0x8049ED88 end:0x8049F080
+	.bss        start:0x804BE938 end:0x804BEA38
+	.sdata2     start:0x8053CD50 end:0x8053CDC0
+
+game/tu_80139BE8.cpp:
+	extab       start:0x80006A2C end:0x80006A84
+	extabindex  start:0x800132D0 end:0x80013354
+	.text       start:0x80139BE8 end:0x8013AAD4
+	.ctors      start:0x8045BEF8 end:0x8045BEFC
+	.rodata     start:0x80465920 end:0x80465970
+	.data       start:0x8049F080 end:0x8049F090
+	.bss        start:0x804BEA38 end:0x804BEB38
+	.sbss       start:0x8053AAF8 end:0x8053AB18
+	.sdata2     start:0x8053CDC0 end:0x8053CDD8
+
+game/tu_8013AAD4.cpp:
+	extab       start:0x80006A84 end:0x80006B64
+	extabindex  start:0x80013354 end:0x800134A4
+	.text       start:0x8013AAD4 end:0x8013C5C8
+	.ctors      start:0x8045BEFC end:0x8045BF00
+	.rodata     start:0x80465970 end:0x80465980
+	.data       start:0x8049F090 end:0x8049F118
+	.bss        start:0x804BEB38 end:0x804BEC38
+	.sdata2     start:0x8053CDD8 end:0x8053CE00
+
+game/tu_8013C5C8.cpp:
+	extab       start:0x80006B64 end:0x80006C24
+	extabindex  start:0x800134A4 end:0x800135C4
+	.text       start:0x8013C5C8 end:0x8013F9A8
+	.ctors      start:0x8045BF00 end:0x8045BF04
+	.rodata     start:0x80465980 end:0x80465A80
+	.data       start:0x8049F118 end:0x8049F1A0
+	.bss        start:0x804BEC38 end:0x804BED50
+	.sbss       start:0x8053AB18 end:0x8053AB28
+	.sdata2     start:0x8053CE00 end:0x8053CE28
+
+game/tu_8013F9A8.cpp:
+	extab       start:0x80006C24 end:0x80006C4C
+	extabindex  start:0x800135C4 end:0x80013600
+	.text       start:0x8013F9A8 end:0x80140E24
+	.ctors      start:0x8045BF04 end:0x8045BF08
+	.rodata     start:0x80465A80 end:0x80465A98
+	.data       start:0x8049F1A0 end:0x8049F2B8
+	.bss        start:0x804BED50 end:0x804BEE50
+	.sbss       start:0x8053AB28 end:0x8053AB30
+	.sdata2     start:0x8053CE28 end:0x8053CEA0
+
+game/tu_80140E24.cpp:
+	extab       start:0x80006C4C end:0x80006C6C
+	extabindex  start:0x80013600 end:0x80013630
+	.text       start:0x80140E24 end:0x80142624
+	.ctors      start:0x8045BF08 end:0x8045BF0C
+	.rodata     start:0x80465A98 end:0x80465B50
+	.bss        start:0x804BEE50 end:0x804BEF50
+	.sdata2     start:0x8053CEA0 end:0x8053CF28
+
+game/tu_80142624.cpp:
+	extab       start:0x80006C6C end:0x80006C94
+	extabindex  start:0x80013630 end:0x8001366C
+	.text       start:0x80142624 end:0x80143874
+	.ctors      start:0x8045BF0C end:0x8045BF10
+	.rodata     start:0x80465B50 end:0x80465B68
+	.data       start:0x8049F2B8 end:0x8049F408
+	.bss        start:0x804BEF50 end:0x804BF050
+	.sdata2     start:0x8053CF28 end:0x8053CFA8
+
+game/tu_80143874.cpp:
+	extab       start:0x80006C94 end:0x80006CBC
+	extabindex  start:0x8001366C end:0x800136A8
+	.text       start:0x80143874 end:0x80144134
+	.ctors      start:0x8045BF10 end:0x8045BF14
+	.rodata     start:0x80465B68 end:0x80465B80
+	.bss        start:0x804BF050 end:0x804BF150
+	.sdata2     start:0x8053CFA8 end:0x8053CFD8
+
+game/tu_80144134.cpp:
+	extab       start:0x80006CBC end:0x80006CE4
+	extabindex  start:0x800136A8 end:0x800136E4
+	.text       start:0x80144134 end:0x8014529C
+	.ctors      start:0x8045BF14 end:0x8045BF18
+	.rodata     start:0x80465B80 end:0x80465B98
+	.data       start:0x8049F408 end:0x8049F548
+	.bss        start:0x804BF150 end:0x804BF250
+	.sdata2     start:0x8053CFD8 end:0x8053D020
+
+game/tu_8014529C.cpp:
+	extab       start:0x80006CE4 end:0x80006D0C
+	extabindex  start:0x800136E4 end:0x80013720
+	.text       start:0x8014529C end:0x80145F60
+	.ctors      start:0x8045BF18 end:0x8045BF1C
+	.rodata     start:0x80465B98 end:0x80465BC0
+	.bss        start:0x804BF250 end:0x804BF350
+	.sdata2     start:0x8053D020 end:0x8053D040
+
+game/tu_80145F60.cpp:
+	extab       start:0x80006D0C end:0x80006D3C
+	extabindex  start:0x80013720 end:0x80013768
+	.text       start:0x80145F60 end:0x80146BC8
+	.ctors      start:0x8045BF1C end:0x8045BF20
+	.rodata     start:0x80465BC0 end:0x80465BD8
+	.bss        start:0x804BF350 end:0x804BF450
+	.sdata2     start:0x8053D040 end:0x8053D078
+
+game/act_octorok_rock.cpp:
+	extab       start:0x80006D3C end:0x80006D64
+	extabindex  start:0x80013768 end:0x800137A4
+	.text       start:0x80146BC8 end:0x80147B50
+	.ctors      start:0x8045BF20 end:0x8045BF24
+	.rodata     start:0x80465BD8 end:0x80465D30
+	.data       start:0x8049F548 end:0x8049F630
+	.bss        start:0x804BF450 end:0x804BF550
+	.sdata2     start:0x8053D078 end:0x8053D0B0
+
+game/tu_80147B50.cpp:
+	extab       start:0x80006D64 end:0x80006DA4
+	extabindex  start:0x800137A4 end:0x80013804
+	.text       start:0x80147B50 end:0x8014AD2C
+	.ctors      start:0x8045BF24 end:0x8045BF28
+	.rodata     start:0x80465D30 end:0x80465D48
+	.data       start:0x8049F630 end:0x8049F760
+	.bss        start:0x804BF550 end:0x804BF650
+	.sdata      start:0x80539F58 end:0x80539F68
+	.sbss       start:0x8053AB30 end:0x8053AB40
+	.sdata2     start:0x8053D0B0 end:0x8053D128
+
+game/act_bomb.cpp:
+	extab       start:0x80006DA4 end:0x80006DFC
+	extabindex  start:0x80013804 end:0x80013888
+	.text       start:0x8014AD2C end:0x8014DCD4
+	.ctors      start:0x8045BF28 end:0x8045BF2C
+	.rodata     start:0x80465D48 end:0x80465D60
+	.data       start:0x8049F760 end:0x8049F840
+	.bss        start:0x804BF650 end:0x804BF750
+	.sdata2     start:0x8053D128 end:0x8053D1D0
+
+game/act_hinox.cpp:
+	extab       start:0x80006DFC end:0x80006E2C
+	extabindex  start:0x80013888 end:0x800138D0
+	.text       start:0x8014DCD4 end:0x8014FD5C
+	.ctors      start:0x8045BF2C end:0x8045BF30
+	.rodata     start:0x80465D60 end:0x80465D78
+	.data       start:0x8049F840 end:0x8049FA30
+	.bss        start:0x804BF750 end:0x804BF850
+	.sdata2     start:0x8053D1D0 end:0x8053D258
+
+game/tu_8014FD5C.cpp:
+	extab       start:0x80006E2C end:0x80006EBC
+	extabindex  start:0x800138D0 end:0x800139A8
+	.text       start:0x8014FD5C end:0x801549B0
+	.ctors      start:0x8045BF30 end:0x8045BF34
+	.rodata     start:0x80465D78 end:0x80465DE8
+	.data       start:0x8049FA30 end:0x8049FDA8
+	.bss        start:0x804BF850 end:0x804BF960
+	.sdata      start:0x80539F68 end:0x80539F70
+	.sbss       start:0x8053AB40 end:0x8053AB50
+	.sdata2     start:0x8053D258 end:0x8053D330
+
+game/tu_801549B0.cpp:
+	extab       start:0x80006EBC end:0x80006EEC
+	extabindex  start:0x800139A8 end:0x800139F0
+	.text       start:0x801549B0 end:0x801555D8
+	.ctors      start:0x8045BF34 end:0x8045BF38
+	.rodata     start:0x80465DE8 end:0x80465E00
+	.bss        start:0x804BF960 end:0x804BFA60
+	.sdata2     start:0x8053D330 end:0x8053D378
+
+game/tu_801555D8.cpp:
+	extab       start:0x80006EEC end:0x80006F24
+	extabindex  start:0x800139F0 end:0x80013A44
+	.text       start:0x801555D8 end:0x80158624
+	.ctors      start:0x8045BF38 end:0x8045BF3C
+	.rodata     start:0x80465E00 end:0x80465E28
+	.data       start:0x8049FDA8 end:0x804A0160
+	.bss        start:0x804BFA60 end:0x804BFB60
+	.sbss       start:0x8053AB50 end:0x8053AB58
+	.sdata2     start:0x8053D378 end:0x8053D420
+
+game/tu_80158624.cpp:
+	extab       start:0x80006F24 end:0x80006F64
+	extabindex  start:0x80013A44 end:0x80013AA4
+	.text       start:0x80158624 end:0x801597B8
+	.ctors      start:0x8045BF3C end:0x8045BF40
+	.rodata     start:0x80465E28 end:0x80465E38
+	.data       start:0x804A0160 end:0x804A0170
+	.bss        start:0x804BFB60 end:0x804BFCA0
+	.sdata2     start:0x8053D420 end:0x8053D460
+
+game/tu_801597B8.cpp:
+	extab       start:0x80006F64 end:0x80006FA4
+	extabindex  start:0x80013AA4 end:0x80013B04
+	.text       start:0x801597B8 end:0x8015B98C
+	.ctors      start:0x8045BF40 end:0x8045BF44
+	.rodata     start:0x80465E38 end:0x804660E0
+	.data       start:0x804A0170 end:0x804A0228
+	.bss        start:0x804BFCA0 end:0x804BFDA0
+	.sdata2     start:0x8053D460 end:0x8053D4B8
+
+game/tu_8015B98C.cpp:
+	extab       start:0x80006FA4 end:0x80006FCC
+	extabindex  start:0x80013B04 end:0x80013B40
+	.text       start:0x8015B98C end:0x8015C828
+	.ctors      start:0x8045BF44 end:0x8045BF48
+	.rodata     start:0x804660E0 end:0x804660F8
+	.data       start:0x804A0228 end:0x804A0310
+	.bss        start:0x804BFDA0 end:0x804BFEA0
+	.sdata2     start:0x8053D4B8 end:0x8053D520
+
+game/tu_8015C828.cpp:
+	extab       start:0x80006FCC end:0x80006FFC
+	extabindex  start:0x80013B40 end:0x80013B88
+	.text       start:0x8015C828 end:0x8015DE10
+	.ctors      start:0x8045BF48 end:0x8045BF4C
+	.rodata     start:0x804660F8 end:0x80466110
+	.bss        start:0x804BFEA0 end:0x804BFFA0
+	.sdata2     start:0x8053D520 end:0x8053D590
+
+game/tu_8015DE10.cpp:
+	extab       start:0x80006FFC end:0x80007034
+	extabindex  start:0x80013B88 end:0x80013BDC
+	.text       start:0x8015DE10 end:0x8015F454
+	.ctors      start:0x8045BF4C end:0x8045BF50
+	.rodata     start:0x80466110 end:0x804661B0
+	.data       start:0x804A0310 end:0x804A03A8
+	.bss        start:0x804BFFA0 end:0x804C00A0
+	.sdata      start:0x80539F70 end:0x80539F78
+	.sdata2     start:0x8053D590 end:0x8053D628
+
+game/tu_8015F454.cpp:
+	extab       start:0x80007034 end:0x80007064
+	extabindex  start:0x80013BDC end:0x80013C24
+	.text       start:0x8015F454 end:0x80160650
+	.ctors      start:0x8045BF50 end:0x8045BF54
+	.rodata     start:0x804661B0 end:0x804661C8
+	.data       start:0x804A03A8 end:0x804A0410
+	.bss        start:0x804C00A0 end:0x804C01A0
+	.sdata2     start:0x8053D628 end:0x8053D670
+
+game/tu_80160650.cpp:
+	extab       start:0x80007064 end:0x8000708C
+	extabindex  start:0x80013C24 end:0x80013C60
+	.text       start:0x80160650 end:0x801618D0
+	.ctors      start:0x8045BF54 end:0x8045BF58
+	.rodata     start:0x804661C8 end:0x804661E0
+	.bss        start:0x804C01A0 end:0x804C02A0
+	.sdata2     start:0x8053D670 end:0x8053D6B8
+
+game/tu_801618D0.cpp:
+	extab       start:0x8000708C end:0x8000710C
+	extabindex  start:0x80013C60 end:0x80013CC0
+	.text       start:0x801618D0 end:0x801643C4
+	.ctors      start:0x8045BF58 end:0x8045BF5C
+	.rodata     start:0x804661E0 end:0x80466288
+	.data       start:0x804A0410 end:0x804A0530
+	.bss        start:0x804C02A0 end:0x804C03A0
+	.sbss       start:0x8053AB58 end:0x8053AB70
+	.sdata2     start:0x8053D6B8 end:0x8053D778
+
+game/tu_801643C4.cpp:
+	extab       start:0x8000710C end:0x8000713C
+	extabindex  start:0x80013CC0 end:0x80013D08
+	.text       start:0x801643C4 end:0x8016545C
+	.ctors      start:0x8045BF5C end:0x8045BF60
+	.rodata     start:0x80466288 end:0x804662E8
+	.bss        start:0x804C03A0 end:0x804C04A0
+	.sdata2     start:0x8053D778 end:0x8053D7C0
+
+game/tu_8016545C.cpp:
+	extab       start:0x8000713C end:0x8000716C
+	extabindex  start:0x80013D08 end:0x80013D50
+	.text       start:0x8016545C end:0x80166BD0
+	.ctors      start:0x8045BF60 end:0x8045BF64
+	.rodata     start:0x804662E8 end:0x80466320
+	.data       start:0x804A0530 end:0x804A0638
+	.bss        start:0x804C04A0 end:0x804C05A0
+	.sdata2     start:0x8053D7C0 end:0x8053D7F8
+
+game/tu_80166BD0.cpp:
+	extab       start:0x8000716C end:0x8000718C
+	extabindex  start:0x80013D50 end:0x80013D80
+	.text       start:0x80166BD0 end:0x80167938
+	.ctors      start:0x8045BF64 end:0x8045BF68
+	.rodata     start:0x80466320 end:0x80466338
+	.data       start:0x804A0638 end:0x804A0718
+	.bss        start:0x804C05A0 end:0x804C06A0
+	.sdata2     start:0x8053D7F8 end:0x8053D840
+
+game/tu_80167938.cpp:
+	extab       start:0x8000718C end:0x800071AC
+	extabindex  start:0x80013D80 end:0x80013DB0
+	.text       start:0x80167938 end:0x801688AC
+	.ctors      start:0x8045BF68 end:0x8045BF6C
+	.rodata     start:0x80466338 end:0x80466350
+	.bss        start:0x804C06A0 end:0x804C07A0
+	.sdata2     start:0x8053D840 end:0x8053D8A8
+
+game/tu_801688AC.cpp:
+	extab       start:0x800071AC end:0x800071E4
+	extabindex  start:0x80013DB0 end:0x80013E04
+	.text       start:0x801688AC end:0x8016A2B4
+	.ctors      start:0x8045BF6C end:0x8045BF70
+	.rodata     start:0x80466350 end:0x80466368
+	.data       start:0x804A0718 end:0x804A0790
+	.bss        start:0x804C07A0 end:0x804C08A0
+	.sdata2     start:0x8053D8A8 end:0x8053D910
+
+game/tu_8016A2B4.cpp:
+	extab       start:0x800071E4 end:0x800073A4
+	extabindex  start:0x80013E04 end:0x80013F9C
+	.text       start:0x8016A2B4 end:0x80170008
+	.ctors      start:0x8045BF70 end:0x8045BF74
+	.rodata     start:0x80466368 end:0x804667D8
+	.data       start:0x804A0790 end:0x804A07D8
+	.bss        start:0x804C08A0 end:0x804C09A0
+	.sdata2     start:0x8053D910 end:0x8053DA10
+
+game/tu_80170008.cpp:
+	extab       start:0x800073A4 end:0x800073D4
+	extabindex  start:0x80013F9C end:0x80013FE4
+	.text       start:0x80170008 end:0x80172170
+	.ctors      start:0x8045BF74 end:0x8045BF78
+	.rodata     start:0x804667D8 end:0x804667F0
+	.data       start:0x804A07D8 end:0x804A08C0
+	.bss        start:0x804C09A0 end:0x804C0AA0
+	.sdata2     start:0x8053DA10 end:0x8053DA90
+
+game/tu_80172170.cpp:
+	extab       start:0x800073D4 end:0x800073FC
+	extabindex  start:0x80013FE4 end:0x80014020
+	.text       start:0x80172170 end:0x80172894
+	.ctors      start:0x8045BF78 end:0x8045BF7C
+	.rodata     start:0x804667F0 end:0x80466808
+	.bss        start:0x804C0AA0 end:0x804C0BA0
+	.sdata2     start:0x8053DA90 end:0x8053DAB8
+
+game/tu_80172894.cpp:
+	extab       start:0x800073FC end:0x8000745C
+	extabindex  start:0x80014020 end:0x800140B0
+	.text       start:0x80172894 end:0x80175684
+	.ctors      start:0x8045BF7C end:0x8045BF80
+	.rodata     start:0x80466808 end:0x80466820
+	.data       start:0x804A08C0 end:0x804A0C10
+	.bss        start:0x804C0BA0 end:0x804C0CA0
+	.sdata      start:0x80539F78 end:0x80539F80
+	.sdata2     start:0x8053DAB8 end:0x8053DB50
+
+game/tu_80175684.cpp:
+	extab       start:0x8000745C end:0x80007484
+	extabindex  start:0x800140B0 end:0x800140EC
+	.text       start:0x80175684 end:0x801769D8
+	.ctors      start:0x8045BF80 end:0x8045BF84
+	.rodata     start:0x80466820 end:0x80466838
+	.data       start:0x804A0C10 end:0x804A0D50
+	.bss        start:0x804C0CA0 end:0x804C0DA0
+	.sdata2     start:0x8053DB50 end:0x8053DBB0
+
+game/tu_801769D8.cpp:
+	extab       start:0x80007484 end:0x800074B4
+	extabindex  start:0x800140EC end:0x80014134
+	.text       start:0x801769D8 end:0x80179150
+	.ctors      start:0x8045BF84 end:0x8045BF88
+	.rodata     start:0x80466838 end:0x80466868
+	.data       start:0x804A0D50 end:0x804A0FF8
+	.bss        start:0x804C0DA0 end:0x804C0FA8
+	.sdata2     start:0x8053DBB0 end:0x8053DC20
+
+game/tu_80179150.cpp:
+	extab       start:0x800074B4 end:0x800074DC
+	extabindex  start:0x80014134 end:0x80014170
+	.text       start:0x80179150 end:0x8017A44C
+	.ctors      start:0x8045BF88 end:0x8045BF8C
+	.rodata     start:0x80466868 end:0x80466880
+	.data       start:0x804A0FF8 end:0x804A10A0
+	.sdata      start:0x80539F80 end:0x80539F88
+	.sdata2     start:0x8053DC20 end:0x8053DC78
+
+game/tu_8017A44C.cpp:
+	extab       start:0x800074DC end:0x8000750C
+	extabindex  start:0x80014170 end:0x800141B8
+	.text       start:0x8017A44C end:0x8017B140
+	.ctors      start:0x8045BF8C end:0x8045BF90
+	.rodata     start:0x80466880 end:0x804668A8
+	.data       start:0x804A10A0 end:0x804A1210
+	.bss        start:0x804C0FA8 end:0x804C10A8
+	.sdata2     start:0x8053DC78 end:0x8053DCA0
+
+game/tu_8017B140.cpp:
+	extab       start:0x8000750C end:0x8000753C
+	extabindex  start:0x800141B8 end:0x80014200
+	.text       start:0x8017B140 end:0x8017C01C
+	.ctors      start:0x8045BF90 end:0x8045BF94
+	.rodata     start:0x804668A8 end:0x80466E50
+	.bss        start:0x804C10A8 end:0x804C11A8
+	.sdata2     start:0x8053DCA0 end:0x8053DD20
+
+game/tu_8017C01C.cpp:
+	extab       start:0x8000753C end:0x80007574
+	extabindex  start:0x80014200 end:0x80014254
+	.text       start:0x8017C01C end:0x8017EF40
+	.ctors      start:0x8045BF94 end:0x8045BF98
+	.data       start:0x804A1210 end:0x804A13E0
+	.bss        start:0x804C11A8 end:0x804C12A8
+	.sdata      start:0x80539F88 end:0x80539F98
+	.sdata2     start:0x8053DD20 end:0x8053DDD8
+
+game/tu_8017EF40.cpp:
+	extab       start:0x80007574 end:0x800075B4
+	extabindex  start:0x80014254 end:0x800142B4
+	.text       start:0x8017EF40 end:0x80182914
+	.ctors      start:0x8045BF98 end:0x8045BF9C
+	.rodata     start:0x80466E50 end:0x80466E90
+	.data       start:0x804A13E0 end:0x804A1718
+	.bss        start:0x804C12A8 end:0x804C13A8
+	.sdata      start:0x80539F98 end:0x80539FB8
+	.sbss       start:0x8053AB70 end:0x8053AB78
+	.sdata2     start:0x8053DDD8 end:0x8053DEC8
+
+game/tu_80182914.cpp:
+	extab       start:0x800075B4 end:0x800075E4
+	extabindex  start:0x800142B4 end:0x800142FC
+	.text       start:0x80182914 end:0x80183544
+	.ctors      start:0x8045BF9C end:0x8045BFA0
+	.rodata     start:0x80466E90 end:0x80466EA8
+	.data       start:0x804A1718 end:0x804A1790
+	.bss        start:0x804C13A8 end:0x804C14A8
+	.sdata2     start:0x8053DEC8 end:0x8053DEE0
+
+game/tu_80183544.cpp:
+	extab       start:0x800075E4 end:0x80007614
+	extabindex  start:0x800142FC end:0x80014344
+	.text       start:0x80183544 end:0x80184040
+	.ctors      start:0x8045BFA0 end:0x8045BFA4
+	.rodata     start:0x80466EA8 end:0x80466EC0
+	.data       start:0x804A1790 end:0x804A1808
+	.bss        start:0x804C14A8 end:0x804C15A8
+	.sdata2     start:0x8053DEE0 end:0x8053DF00
+
+game/tu_80184040.cpp:
+	extab       start:0x80007614 end:0x80007644
+	extabindex  start:0x80014344 end:0x8001438C
+	.text       start:0x80184040 end:0x80184D64
+	.ctors      start:0x8045BFA4 end:0x8045BFA8
+	.rodata     start:0x80466EC0 end:0x80466ED8
+	.data       start:0x804A1808 end:0x804A18E0
+	.bss        start:0x804C15A8 end:0x804C16A8
+	.sdata2     start:0x8053DF00 end:0x8053DF40
+
+game/tu_80184D64.cpp:
+	extab       start:0x80007644 end:0x8000766C
+	extabindex  start:0x8001438C end:0x800143C8
+	.text       start:0x80184D64 end:0x80187144
+	.ctors      start:0x8045BFA8 end:0x8045BFAC
+	.rodata     start:0x80466ED8 end:0x804674C8
+	.data       start:0x804A18E0 end:0x804A1960
+	.bss        start:0x804C16A8 end:0x804C17A8
+	.sdata2     start:0x8053DF40 end:0x8053DFE0
+
+game/tu_80187144.cpp:
+	extab       start:0x8000766C end:0x800076BC
+	extabindex  start:0x800143C8 end:0x80014440
+	.text       start:0x80187144 end:0x8018A8D8
+	.ctors      start:0x8045BFAC end:0x8045BFB0
+	.data       start:0x804A1960 end:0x804A1B70
+	.bss        start:0x804C17A8 end:0x804C18B8
+	.sdata      start:0x80539FB8 end:0x80539FC8
+	.sbss       start:0x8053AB78 end:0x8053AB88
+	.sdata2     start:0x8053DFE0 end:0x8053E0C8
+
+game/tu_8018A8D8.cpp:
+	extab       start:0x800076BC end:0x80007724
+	extabindex  start:0x80014440 end:0x800144DC
+	.text       start:0x8018A8D8 end:0x8018EB94
+	.ctors      start:0x8045BFB0 end:0x8045BFB4
+	.rodata     start:0x804674C8 end:0x804674F0
+	.data       start:0x804A1B70 end:0x804A1FF8
+	.bss        start:0x804C18B8 end:0x804C19C0
+	.sdata      start:0x80539FC8 end:0x80539FD8
+	.sdata2     start:0x8053E0C8 end:0x8053E1C8
+
+game/tu_8018EB94.cpp:
+	extab       start:0x80007724 end:0x8000774C
+	extabindex  start:0x800144DC end:0x80014518
+	.text       start:0x8018EB94 end:0x801902C0
+	.ctors      start:0x8045BFB4 end:0x8045BFB8
+	.rodata     start:0x804674F0 end:0x80467508
+	.bss        start:0x804C19C0 end:0x804C1AC0
+	.sdata      start:0x80539FD8 end:0x80539FE8
+	.sbss       start:0x8053AB88 end:0x8053AB90
+	.sdata2     start:0x8053E1C8 end:0x8053E208
+
+game/tu_801902C0.cpp:
+	extab       start:0x8000774C end:0x8000779C
+	extabindex  start:0x80014518 end:0x80014560
+	.text       start:0x801902C0 end:0x80192038
+	.ctors      start:0x8045BFB8 end:0x8045BFBC
+	.rodata     start:0x80467508 end:0x80467F68
+	.bss        start:0x804C1AC0 end:0x804C1BC0
+	.sdata2     start:0x8053E208 end:0x8053E278
+
+game/tu_80192038.cpp:
+	extab       start:0x8000779C end:0x8000784C
+	extabindex  start:0x80014560 end:0x800145F0
+	.text       start:0x80192038 end:0x80197070
+	.ctors      start:0x8045BFBC end:0x8045BFC0
+	.rodata     start:0x80467F68 end:0x80468428
+	.data       start:0x804A1FF8 end:0x804A2700
+	.bss        start:0x804C1BC0 end:0x804C1D30
+	.sdata      start:0x80539FE8 end:0x8053A0E8
+	.sbss       start:0x8053AB90 end:0x8053AB98
+	.sdata2     start:0x8053E278 end:0x8053E370
+
+game/tu_80197070.cpp:
+	extab       start:0x8000784C end:0x800078AC
+	extabindex  start:0x800145F0 end:0x80014680
+	.text       start:0x80197070 end:0x8019D12C
+	.ctors      start:0x8045BFC0 end:0x8045BFC4
+	.rodata     start:0x80468428 end:0x80468480
+	.data       start:0x804A2700 end:0x804A2B08
+	.bss        start:0x804C1D30 end:0x804C1E30
+	.sdata      start:0x8053A0E8 end:0x8053A0F8
+	.sbss       start:0x8053AB98 end:0x8053ABB0
+	.sdata2     start:0x8053E370 end:0x8053E440
+
+game/tu_8019D12C.cpp:
+	extab       start:0x800078AC end:0x800078E4
+	extabindex  start:0x80014680 end:0x800146D4
+	.text       start:0x8019D12C end:0x8019E37C
+	.ctors      start:0x8045BFC4 end:0x8045BFC8
+	.bss        start:0x804C1E30 end:0x804C6440
+	.sbss       start:0x8053ABB0 end:0x8053ABC0
+	.sdata2     start:0x8053E440 end:0x8053E460
+
+game/tu_8019E37C.cpp:
+	extab       start:0x800078E4 end:0x8000793C
+	extabindex  start:0x800146D4 end:0x80014758
+	.text       start:0x8019E37C end:0x801A0710
+	.ctors      start:0x8045BFC8 end:0x8045BFCC
+	.rodata     start:0x80468480 end:0x804684E8
+	.data       start:0x804A2B08 end:0x804A2B90
+	.sdata2     start:0x8053E460 end:0x8053E4F0
+
+game/tu_801A0710.cpp:
+	extab       start:0x8000793C end:0x8000798C
+	extabindex  start:0x80014758 end:0x800147D0
+	.text       start:0x801A0710 end:0x801A35AC
+	.ctors      start:0x8045BFCC end:0x8045BFD0
+	.rodata     start:0x804684E8 end:0x80468500
+	.data       start:0x804A2B90 end:0x804A2C80
+	.bss        start:0x804C6440 end:0x804C6540
+	.sdata      start:0x8053A0F8 end:0x8053A108
+	.sbss       start:0x8053ABC0 end:0x8053ABC8
+	.sdata2     start:0x8053E4F0 end:0x8053E5B0
+
+game/tu_801A35AC.cpp:
+	extab       start:0x8000798C end:0x800079A4
+	extabindex  start:0x800147D0 end:0x800147F4
+	.text       start:0x801A35AC end:0x801A3C50
+	.ctors      start:0x8045BFD0 end:0x8045BFD4
+	.data       start:0x804A2C80 end:0x804A2D08
+	.bss        start:0x804C6540 end:0x804C6640
+	.sdata2     start:0x8053E5B0 end:0x8053E5C8
+
+game/tu_801A3C50.cpp:
+	extab       start:0x800079A4 end:0x80007A0C
+	extabindex  start:0x800147F4 end:0x80014890
+	.text       start:0x801A3C50 end:0x801A6690
+	.ctors      start:0x8045BFD4 end:0x8045BFD8
+	.data       start:0x804A2D08 end:0x804A2E30
+	.bss        start:0x804C6640 end:0x804C6770
+	.sbss       start:0x8053ABC8 end:0x8053ABD0
+	.sdata2     start:0x8053E5C8 end:0x8053E628
+
+game/tu_801A6690.cpp:
+	extab       start:0x80007A0C end:0x80007A3C
+	extabindex  start:0x80014890 end:0x800148D8
+	.text       start:0x801A6690 end:0x801A8194
+	.ctors      start:0x8045BFD8 end:0x8045BFDC
+	.rodata     start:0x80468500 end:0x80468518
+	.data       start:0x804A2E30 end:0x804A2F18
+	.bss        start:0x804C6770 end:0x804C6870
+	.sdata2     start:0x8053E628 end:0x8053E690
+
+game/tu_801A8194.cpp:
+	extab       start:0x80007A3C end:0x80007A5C
+	extabindex  start:0x800148D8 end:0x80014908
+	.text       start:0x801A8194 end:0x801A908C
+	.ctors      start:0x8045BFDC end:0x8045BFE0
+	.rodata     start:0x80468518 end:0x804689C0
+	.bss        start:0x804C6870 end:0x804C6970
+	.sdata2     start:0x8053E690 end:0x8053E6E0
+
+game/tu_801A908C.cpp:
+	extab       start:0x80007A5C end:0x80007AAC
+	extabindex  start:0x80014908 end:0x80014980
+	.text       start:0x801A908C end:0x801AAC8C
+	.ctors      start:0x8045BFE0 end:0x8045BFE4
+	.data       start:0x804A2F18 end:0x804A3020
+	.bss        start:0x804C6970 end:0x804C6A70
+	.sdata      start:0x8053A108 end:0x8053A110
+	.sbss       start:0x8053ABD0 end:0x8053ABD8
+	.sdata2     start:0x8053E6E0 end:0x8053E740
+
+game/tu_801AAC8C.cpp:
+	extab       start:0x80007AAC end:0x80007AEC
+	extabindex  start:0x80014980 end:0x800149E0
+	.text       start:0x801AAC8C end:0x801AC8EC
+	.ctors      start:0x8045BFE4 end:0x8045BFE8
+	.data       start:0x804A3020 end:0x804A3108
+	.bss        start:0x804C6A70 end:0x804C6B70
+	.sbss       start:0x8053ABD8 end:0x8053ABE0
+	.sdata2     start:0x8053E740 end:0x8053E7D0
+
+game/tu_801AC8EC.cpp:
+	extab       start:0x80007AEC end:0x80007B34
+	extabindex  start:0x800149E0 end:0x80014A4C
+	.text       start:0x801AC8EC end:0x801AE9C4
+	.ctors      start:0x8045BFE8 end:0x8045BFEC
+	.rodata     start:0x804689C0 end:0x804690C8
+	.data       start:0x804A3108 end:0x804A33B8
+	.bss        start:0x804C6B70 end:0x804C6C70
+	.sdata      start:0x8053A110 end:0x8053A118
+	.sbss       start:0x8053ABE0 end:0x8053AC08
+	.sdata2     start:0x8053E7D0 end:0x8053E838
+
+game/tu_801AE9C4.cpp:
+	extab       start:0x80007B34 end:0x80007B6C
+	extabindex  start:0x80014A4C end:0x80014AA0
+	.text       start:0x801AE9C4 end:0x801AFB38
+	.ctors      start:0x8045BFEC end:0x8045BFF0
+	.data       start:0x804A33B8 end:0x804A34F8
+	.bss        start:0x804C6C70 end:0x804C6D70
+	.sdata2     start:0x8053E838 end:0x8053E888
+
+game/tu_801AFB38.cpp:
+	extab       start:0x80007B6C end:0x80007B94
+	extabindex  start:0x80014AA0 end:0x80014ADC
+	.text       start:0x801AFB38 end:0x801B0A00
+	.ctors      start:0x8045BFF0 end:0x8045BFF4
+	.data       start:0x804A34F8 end:0x804A35A0
+	.bss        start:0x804C6D70 end:0x804C6E70
+	.sdata2     start:0x8053E888 end:0x8053E8E0
+
+game/tu_801B0A00.cpp:
+	extab       start:0x80007B94 end:0x80007BC4
+	extabindex  start:0x80014ADC end:0x80014B24
+	.text       start:0x801B0A00 end:0x801B27DC
+	.ctors      start:0x8045BFF4 end:0x8045BFF8
+	.rodata     start:0x804690C8 end:0x804690E0
+	.data       start:0x804A35A0 end:0x804A3660
+	.bss        start:0x804C6E70 end:0x804C6F70
+	.sdata2     start:0x8053E8E0 end:0x8053E930
+
+game/tu_801B27DC.cpp:
+	extab       start:0x80007BC4 end:0x80007BF4
+	extabindex  start:0x80014B24 end:0x80014B6C
+	.text       start:0x801B27DC end:0x801B3F60
+	.ctors      start:0x8045BFF8 end:0x8045BFFC
+	.rodata     start:0x804690E0 end:0x804690F8
+	.data       start:0x804A3660 end:0x804A3740
+	.bss        start:0x804C6F70 end:0x804C7070
+	.sdata2     start:0x8053E930 end:0x8053E9C0
+
+game/tu_801B3F60.cpp:
+	extab       start:0x80007BF4 end:0x80007C0C
+	extabindex  start:0x80014B6C end:0x80014B90
+	.text       start:0x801B3F60 end:0x801B4D0C
+	.ctors      start:0x8045BFFC end:0x8045C000
+	.data       start:0x804A3740 end:0x804A37E0
+	.bss        start:0x804C7070 end:0x804C7170
+	.sdata2     start:0x8053E9C0 end:0x8053EA10
+
+game/tu_801B4D0C.cpp:
+	extab       start:0x80007C0C end:0x80007C4C
+	extabindex  start:0x80014B90 end:0x80014BF0
+	.text       start:0x801B4D0C end:0x801B6634
+	.ctors      start:0x8045C000 end:0x8045C004
+	.rodata     start:0x804690F8 end:0x80469120
+	.data       start:0x804A37E0 end:0x804A39A0
+	.bss        start:0x804C7170 end:0x804C7270
+	.sdata      start:0x8053A118 end:0x8053A120
+	.sdata2     start:0x8053EA10 end:0x8053EA98
+
+game/tu_801B6634.cpp:
+	extab       start:0x80007C4C end:0x80007C6C
+	extabindex  start:0x80014BF0 end:0x80014C20
+	.text       start:0x801B6634 end:0x801B6C50
+	.ctors      start:0x8045C004 end:0x8045C008
+	.rodata     start:0x80469120 end:0x80469168
+	.bss        start:0x804C7270 end:0x804C7370
+	.sdata2     start:0x8053EA98 end:0x8053EAC0
+
+game/tu_801B6C50.cpp:
+	extab       start:0x80007C6C end:0x80007C8C
+	extabindex  start:0x80014C20 end:0x80014C50
+	.text       start:0x801B6C50 end:0x801B7784
+	.ctors      start:0x8045C008 end:0x8045C00C
+	.data       start:0x804A39A0 end:0x804A3A58
+	.bss        start:0x804C7370 end:0x804C7470
+	.sdata2     start:0x8053EAC0 end:0x8053EAF0
+
+game/act_rope.cpp:
+	extab       start:0x80007C8C end:0x80007CCC
+	extabindex  start:0x80014C50 end:0x80014CB0
+	.text       start:0x801B7784 end:0x801B80C0
+	.ctors      start:0x8045C00C end:0x8045C010
+	.rodata     start:0x80469168 end:0x80469198
+	.data       start:0x804A3A58 end:0x804A3B10
+	.bss        start:0x804C7470 end:0x804C7570
+	.sdata2     start:0x8053EAF0 end:0x8053EB20
+
+game/act_terrorpin.cpp:
+	extab       start:0x80007CCC end:0x80007D4C
+	extabindex  start:0x80014CB0 end:0x80014D70
+	.text       start:0x801B80C0 end:0x801B9730
+	.ctors      start:0x8045C010 end:0x8045C014
+	.rodata     start:0x80469198 end:0x80469300
+	.data       start:0x804A3B10 end:0x804A3BB8
+	.bss        start:0x804C7570 end:0x804C7670
+	.sdata      start:0x8053A120 end:0x8053A128
+	.sdata2     start:0x8053EB20 end:0x8053EB70
+
+game/act_gibdo.cpp:
+	extab       start:0x80007D4C end:0x80007D9C
+	extabindex  start:0x80014D70 end:0x80014DE8
+	.text       start:0x801B9730 end:0x801BA65C
+	.ctors      start:0x8045C014 end:0x8045C018
+	.rodata     start:0x80469300 end:0x80469380
+	.data       start:0x804A3BB8 end:0x804A3D68
+	.bss        start:0x804C7670 end:0x804C7770
+	.sdata2     start:0x8053EB70 end:0x8053EBA8
+
+game/tu_801BA65C.cpp:
+	extab       start:0x80007D9C end:0x80007DE4
+	extabindex  start:0x80014DE8 end:0x80014E54
+	.text       start:0x801BA65C end:0x801BB618
+	.ctors      start:0x8045C018 end:0x8045C01C
+	.rodata     start:0x80469380 end:0x804693B8
+	.data       start:0x804A3D68 end:0x804A3E30
+	.bss        start:0x804C7770 end:0x804C7870
+	.sdata2     start:0x8053EBA8 end:0x8053EC00
+
+game/act_wallmaster.cpp:
+	extab       start:0x80007DE4 end:0x80007E44
+	extabindex  start:0x80014E54 end:0x80014EE4
+	.text       start:0x801BB618 end:0x801BD108
+	.ctors      start:0x8045C01C end:0x8045C020
+	.rodata     start:0x804693B8 end:0x804693D8
+	.data       start:0x804A3E30 end:0x804A3F90
+	.bss        start:0x804C7870 end:0x804C7970
+	.sdata2     start:0x8053EC00 end:0x8053EC70
+
+game/tu_801BD108.cpp:
+	extab       start:0x80007E44 end:0x80007E6C
+	extabindex  start:0x80014EE4 end:0x80014F20
+	.text       start:0x801BD108 end:0x801BD8C0
+	.ctors      start:0x8045C020 end:0x8045C024
+	.data       start:0x804A3F90 end:0x804A4038
+	.bss        start:0x804C7970 end:0x804C7A70
+	.sdata2     start:0x8053EC70 end:0x8053EC88
+
+game/tu_801BD8C0.cpp:
+	extab       start:0x80007E6C end:0x80007EA4
+	extabindex  start:0x80014F20 end:0x80014F74
+	.text       start:0x801BD8C0 end:0x801BDE5C
+	.ctors      start:0x8045C024 end:0x8045C028
+	.data       start:0x804A4038 end:0x804A40E0
+	.bss        start:0x804C7A70 end:0x804C7B70
+	.sdata2     start:0x8053EC88 end:0x8053ECA0
+
+game/act_beamos.cpp:
+	extab       start:0x80007EA4 end:0x80007F04
+	extabindex  start:0x80014F74 end:0x80015004
+	.text       start:0x801BDE5C end:0x801BEDBC
+	.ctors      start:0x8045C028 end:0x8045C02C
+	.rodata     start:0x804693D8 end:0x80469400
+	.data       start:0x804A40E0 end:0x804A4188
+	.bss        start:0x804C7B70 end:0x804C7C70
+	.sbss       start:0x8053AC08 end:0x8053AC10
+	.sdata2     start:0x8053ECA0 end:0x8053ED00
+
+game/tu_801BEDBC.cpp:
+	extab       start:0x80007F04 end:0x80007F44
+	extabindex  start:0x80015004 end:0x80015064
+	.text       start:0x801BEDBC end:0x801BF810
+	.ctors      start:0x8045C02C end:0x8045C030
+	.data       start:0x804A4188 end:0x804A4230
+	.bss        start:0x804C7C70 end:0x804C7D70
+	.sdata2     start:0x8053ED00 end:0x8053ED30
+
+game/act_vulture.cpp:
+	extab       start:0x80007F44 end:0x80007FB4
+	extabindex  start:0x80015064 end:0x8001510C
+	.text       start:0x801BF810 end:0x801C0D70
+	.ctors      start:0x8045C030 end:0x8045C034
+	.rodata     start:0x80469400 end:0x80469418
+	.data       start:0x804A4230 end:0x804A4310
+	.bss        start:0x804C7D70 end:0x804C7E70
+	.sdata      start:0x8053A128 end:0x8053A130
+	.sdata2     start:0x8053ED30 end:0x8053ED90
+
+game/tu_801C0D70.cpp:
+	extab       start:0x80007FB4 end:0x80007FFC
+	extabindex  start:0x8001510C end:0x80015178
+	.text       start:0x801C0D70 end:0x801C1768
+	.ctors      start:0x8045C034 end:0x8045C038
+	.bss        start:0x804C7E70 end:0x804C7FD0
+	.sbss       start:0x8053AC10 end:0x8053AC18
+	.sdata2     start:0x8053ED90 end:0x8053EDA8
+
+game/act_shadow_link_generator.cpp:
+	extab       start:0x80007FFC end:0x80008050
+	extabindex  start:0x80015178 end:0x800151D8
+	.text       start:0x801C1768 end:0x801C26D8
+	.ctors      start:0x8045C038 end:0x8045C03C
+	.rodata     start:0x80469418 end:0x80469450
+	.data       start:0x804A4310 end:0x804A43E8
+	.bss        start:0x804C7FD0 end:0x804C80D0
+	.sbss       start:0x8053AC18 end:0x8053AC28
+	.sdata2     start:0x8053EDA8 end:0x8053EE00
+
+game/act_shadow_link_2.cpp:
+	extab       start:0x80008050 end:0x80008120
+	extabindex  start:0x800151D8 end:0x800152D4
+	.text       start:0x801C26D8 end:0x801C5B08
+	.ctors      start:0x8045C03C end:0x8045C040
+	.rodata     start:0x80469450 end:0x80469460
+	.data       start:0x804A43E8 end:0x804A4798
+	.bss        start:0x804C80D0 end:0x804C81D0
+	.sdata2     start:0x8053EE00 end:0x8053EE68
+
+game/tu_801C5B08.cpp:
+	extab       start:0x80008120 end:0x80008148
+	extabindex  start:0x800152D4 end:0x80015310
+	.text       start:0x801C5B08 end:0x801C6A4C
+	.ctors      start:0x8045C040 end:0x8045C044
+	.bss        start:0x804C81D0 end:0x804C82D0
+	.sdata2     start:0x8053EE68 end:0x8053EEB0
+
+game/tu_801C6A4C.cpp:
+	extab       start:0x80008148 end:0x80008168
+	extabindex  start:0x80015310 end:0x80015340
+	.text       start:0x801C6A4C end:0x801C71BC
+	.ctors      start:0x8045C044 end:0x8045C048
+	.bss        start:0x804C82D0 end:0x804C83D0
+	.sdata2     start:0x8053EEB0 end:0x8053EEC8
+
+game/tu_801C71BC.cpp:
+	extab       start:0x80008168 end:0x800081E0
+	extabindex  start:0x80015340 end:0x800153F4
+	.text       start:0x801C71BC end:0x801C9AF8
+	.ctors      start:0x8045C048 end:0x8045C04C
+	.bss        start:0x804C83D0 end:0x804C84D0
+	.sdata2     start:0x8053EEC8 end:0x8053EF18
+
+game/tu_801C9AF8.cpp:
+	extab       start:0x800081E0 end:0x80008220
+	extabindex  start:0x800153F4 end:0x80015454
+	.text       start:0x801C9AF8 end:0x801CB270
+	.ctors      start:0x8045C04C end:0x8045C050
+	.data       start:0x804A4798 end:0x804A4808
+	.bss        start:0x804C84D0 end:0x804C85D0
+	.sdata2     start:0x8053EF18 end:0x8053EF58
+
+game/tu_801CB270.cpp:
+	extab       start:0x80008220 end:0x80008350
+	extabindex  start:0x80015454 end:0x8001561C
+	.text       start:0x801CB270 end:0x801CDC8C
+	.ctors      start:0x8045C050 end:0x8045C054
+	.bss        start:0x804C85D0 end:0x804C86D0
+	.sdata2     start:0x8053EF58 end:0x8053EFC0
+
+game/tu_801CDC8C.cpp:
+	extab       start:0x80008350 end:0x800084AC
+	extabindex  start:0x8001561C end:0x80015808
+	.text       start:0x801CDC8C end:0x801D11FC
+	.ctors      start:0x8045C054 end:0x8045C058
+	.bss        start:0x804C86D0 end:0x804C87D0
+	.sdata2     start:0x8053EFC0 end:0x8053F018
+
+game/tu_801D11FC.cpp:
+	extab       start:0x800084AC end:0x800084E8
+	extabindex  start:0x80015808 end:0x80015844
+	.text       start:0x801D11FC end:0x801D1C18
+	.ctors      start:0x8045C058 end:0x8045C05C
+	.bss        start:0x804C87D0 end:0x804C88D0
+	.sdata2     start:0x8053F018 end:0x8053F038
+
+game/tu_801D1C18.cpp:
+	extab       start:0x800084E8 end:0x80008540
+	extabindex  start:0x80015844 end:0x800158C8
+	.text       start:0x801D1C18 end:0x801D2918
+	.ctors      start:0x8045C05C end:0x8045C060
+	.bss        start:0x804C88D0 end:0x804C89D0
+	.sdata2     start:0x8053F038 end:0x8053F050
+
+game/tu_801D2918.cpp:
+	extab       start:0x80008540 end:0x80008548
+	extabindex  start:0x800158C8 end:0x800158D4
+	.text       start:0x801D2918 end:0x801D2C60
+	.ctors      start:0x8045C060 end:0x8045C064
+	.bss        start:0x804C89D0 end:0x804C8AD0
+	.sdata2     start:0x8053F050 end:0x8053F068
+
+game/tu_801D2C60.cpp:
+	extab       start:0x80008548 end:0x80008580
+	extabindex  start:0x800158D4 end:0x80015928
+	.text       start:0x801D2C60 end:0x801D3320
+	.ctors      start:0x8045C064 end:0x8045C068
+	.rodata     start:0x80469460 end:0x80469488
+	.bss        start:0x804C8AD0 end:0x804C8BD0
+	.sdata      start:0x8053A130 end:0x8053A138
+	.sdata2     start:0x8053F068 end:0x8053F080
+
+game/tu_801D3320.cpp:
+	extab       start:0x80008580 end:0x80008590
+	extabindex  start:0x80015928 end:0x80015940
+	.text       start:0x801D3320 end:0x801D3CBC
+	.ctors      start:0x8045C068 end:0x8045C06C
+	.bss        start:0x804C8BD0 end:0x804C8CD0
+	.sdata2     start:0x8053F080 end:0x8053F0A0
+
+game/tu_801D3CBC.cpp:
+	extab       start:0x80008590 end:0x800085B0
+	extabindex  start:0x80015940 end:0x80015970
+	.text       start:0x801D3CBC end:0x801D46FC
+	.ctors      start:0x8045C06C end:0x8045C070
+	.rodata     start:0x80469488 end:0x804694C0
+	.bss        start:0x804C8CD0 end:0x804C8DD0
+	.sdata2     start:0x8053F0A0 end:0x8053F0C8
+
+game/act_vaati_boss.cpp:
+	extab       start:0x800085B0 end:0x800086AC
+	extabindex  start:0x80015970 end:0x80015A54
+	.text       start:0x801D46FC end:0x801D6CEC
+	.ctors      start:0x8045C070 end:0x8045C074
+	.rodata     start:0x804694C0 end:0x80469A98
+	.data       start:0x804A4808 end:0x804A4BB0
+	.bss        start:0x804C8DD0 end:0x804C8ED0
+	.sdata      start:0x8053A138 end:0x8053A140
+	.sdata2     start:0x8053F0C8 end:0x8053F150
+
+game/tu_801D6CEC.cpp:
+	extab       start:0x800086AC end:0x800086FC
+	extabindex  start:0x80015A54 end:0x80015ACC
+	.text       start:0x801D6CEC end:0x801D7AFC
+	.ctors      start:0x8045C074 end:0x8045C078
+	.bss        start:0x804C8ED0 end:0x804C8FD0
+	.sdata2     start:0x8053F150 end:0x8053F1A0
+
+game/tu_801D7AFC.cpp:
+	extab       start:0x800086FC end:0x8000872C
+	extabindex  start:0x80015ACC end:0x80015B14
+	.text       start:0x801D7AFC end:0x801D8400
+	.ctors      start:0x8045C078 end:0x8045C07C
+	.data       start:0x804A4BB0 end:0x804A4C58
+	.bss        start:0x804C8FD0 end:0x804C90D0
+	.sdata      start:0x8053A140 end:0x8053A148
+	.sdata2     start:0x8053F1A0 end:0x8053F1C8
+
+game/tu_801D8400.cpp:
+	extab       start:0x8000872C end:0x800087C8
+	extabindex  start:0x80015B14 end:0x80015BE0
+	.text       start:0x801D8400 end:0x801DA7C0
+	.ctors      start:0x8045C07C end:0x8045C080
+	.data       start:0x804A4C58 end:0x804A4DA8
+	.bss        start:0x804C90D0 end:0x804C91D0
+	.sdata2     start:0x8053F1C8 end:0x8053F2D8
+
+game/tu_801DA7C0.cpp:
+	extab       start:0x800087C8 end:0x800087D0
+	extabindex  start:0x80015BE0 end:0x80015BEC
+	.text       start:0x801DA7C0 end:0x801DAC6C
+	.ctors      start:0x8045C080 end:0x8045C084
+	.data       start:0x804A4DA8 end:0x804A4EE8
+	.bss        start:0x804C91D0 end:0x804C92D0
+
+game/tu_801DAC6C.cpp:
+	extab       start:0x800087D0 end:0x80008800
+	extabindex  start:0x80015BEC end:0x80015C34
+	.text       start:0x801DAC6C end:0x801DB18C
+	.ctors      start:0x8045C084 end:0x8045C088
+	.bss        start:0x804C92D0 end:0x804C9458
+	.sbss       start:0x8053AC28 end:0x8053AC38
+	.sdata2     start:0x8053F2D8 end:0x8053F2E0
+
+game/tu_801DB18C.cpp:
+	extab       start:0x80008800 end:0x80008860
+	extabindex  start:0x80015C34 end:0x80015CC4
+	.text       start:0x801DB18C end:0x801DC264
+	.ctors      start:0x8045C088 end:0x8045C08C
+	.rodata     start:0x80469A98 end:0x80469AB8
+	.data       start:0x804A4EE8 end:0x804A4F90
+	.bss        start:0x804C9458 end:0x804C9558
+	.sdata      start:0x8053A148 end:0x8053A150
+	.sdata2     start:0x8053F2E0 end:0x8053F340
+
+game/act_frostare_tail.cpp:
+	extab       start:0x80008860 end:0x800088B0
+	extabindex  start:0x80015CC4 end:0x80015D3C
+	.text       start:0x801DC264 end:0x801DCC98
+	.ctors      start:0x8045C08C end:0x8045C090
+	.rodata     start:0x80469AB8 end:0x80469C40
+	.data       start:0x804A4F90 end:0x804A5038
+	.bss        start:0x804C9558 end:0x804C9658
+	.sdata      start:0x8053A150 end:0x8053A158
+	.sdata2     start:0x8053F340 end:0x8053F378
+
+game/tu_801DCC98.cpp:
+	extab       start:0x800088B0 end:0x800088D8
+	extabindex  start:0x80015D3C end:0x80015D78
+	.text       start:0x801DCC98 end:0x801DD1AC
+	.ctors      start:0x8045C090 end:0x8045C094
+	.data       start:0x804A5038 end:0x804A50E0
+	.bss        start:0x804C9658 end:0x804C9758
+	.sdata2     start:0x8053F378 end:0x8053F388
+
+game/tu_801DD1AC.cpp:
+	extab       start:0x800088D8 end:0x80008908
+	extabindex  start:0x80015D78 end:0x80015DC0
+	.text       start:0x801DD1AC end:0x801DE714
+	.ctors      start:0x8045C094 end:0x8045C098
+	.data       start:0x804A50E0 end:0x804A51A0
+	.bss        start:0x804C9758 end:0x804C9858
+	.sdata2     start:0x8053F388 end:0x8053F480
+
+game/tu_801DE714.cpp:
+	extab       start:0x80008908 end:0x800089A0
+	extabindex  start:0x80015DC0 end:0x80015EA4
+	.text       start:0x801DE714 end:0x801E2540
+	.ctors      start:0x8045C098 end:0x8045C09C
+	.data       start:0x804A51A0 end:0x804A5370
+	.bss        start:0x804C9858 end:0x804C9958
+	.sdata2     start:0x8053F480 end:0x8053F4D0
+
+game/tu_801E2540.cpp:
+	extab       start:0x800089A0 end:0x800089E0
+	extabindex  start:0x80015EA4 end:0x80015F04
+	.text       start:0x801E2540 end:0x801E31C0
+	.ctors      start:0x8045C09C end:0x8045C0A0
+	.bss        start:0x804C9958 end:0x804C9A58
+	.sdata2     start:0x8053F4D0 end:0x8053F508
+
+game/act_tingle_buster.cpp:
+	extab       start:0x800089E0 end:0x80008A08
+	extabindex  start:0x80015F04 end:0x80015F40
+	.text       start:0x801E31C0 end:0x801E3618
+	.ctors      start:0x8045C0A0 end:0x8045C0A4
+	.data       start:0x804A5370 end:0x804A5418
+	.bss        start:0x804C9A58 end:0x804C9B58
+	.sdata2     start:0x8053F508 end:0x8053F510
+
+game/tu_801E3618.cpp:
+	extab       start:0x80008A08 end:0x80008A50
+	extabindex  start:0x80015F40 end:0x80015FAC
+	.text       start:0x801E3618 end:0x801E4A18
+	.ctors      start:0x8045C0A4 end:0x8045C0A8
+	.bss        start:0x804C9B58 end:0x804C9C58
+	.sdata2     start:0x8053F510 end:0x8053F568
+
+game/tu_801E4A18.cpp:
+	extab       start:0x80008A50 end:0x80008A60
+	extabindex  start:0x80015FAC end:0x80015FC4
+	.text       start:0x801E4A18 end:0x801E4D54
+	.ctors      start:0x8045C0A8 end:0x8045C0AC
+	.bss        start:0x804C9C58 end:0x804C9D58
+	.sdata2     start:0x8053F568 end:0x8053F578
+
+game/tu_801E4D54.cpp:
+	extab       start:0x80008A60 end:0x80008A80
+	extabindex  start:0x80015FC4 end:0x80015FF4
+	.text       start:0x801E4D54 end:0x801E5FC8
+	.ctors      start:0x8045C0AC end:0x8045C0B0
+	.bss        start:0x804C9D58 end:0x804C9E58
+	.sdata2     start:0x8053F578 end:0x8053F5A0
+
+game/tu_801E5FC8.cpp:
+	extab       start:0x80008A80 end:0x80008AC0
+	extabindex  start:0x80015FF4 end:0x80016054
+	.text       start:0x801E5FC8 end:0x801E667C
+	.ctors      start:0x8045C0B0 end:0x8045C0B4
+	.bss        start:0x804C9E58 end:0x804C9F58
+	.sdata2     start:0x8053F5A0 end:0x8053F5B0
+
+game/tu_801E667C.cpp:
+	extab       start:0x80008AC0 end:0x80008AFC
+	extabindex  start:0x80016054 end:0x80016090
+	.text       start:0x801E667C end:0x801E6D48
+	.ctors      start:0x8045C0B4 end:0x8045C0B8
+	.bss        start:0x804C9F58 end:0x804CA058
+	.sdata      start:0x8053A158 end:0x8053A168
+	.sdata2     start:0x8053F5B0 end:0x8053F5C0
+
+game/tu_801E6D48.cpp:
+	extab       start:0x80008AFC end:0x80008B64
+	extabindex  start:0x80016090 end:0x8001612C
+	.text       start:0x801E6D48 end:0x801E7BF4
+	.ctors      start:0x8045C0B8 end:0x8045C0BC
+	.rodata     start:0x80469C40 end:0x80469C78
+	.data       start:0x804A5418 end:0x804A54C0
+	.bss        start:0x804CA058 end:0x804CA158
+	.sbss       start:0x8053AC38 end:0x8053AC40
+	.sdata2     start:0x8053F5C0 end:0x8053F5F0
+
+game/act_fuse_point.cpp:
+	extab       start:0x80008B64 end:0x80008B84
+	extabindex  start:0x8001612C end:0x8001615C
+	.text       start:0x801E7BF4 end:0x801E801C
+	.ctors      start:0x8045C0BC end:0x8045C0C0
+	.data       start:0x804A54C0 end:0x804A5568
+	.bss        start:0x804CA158 end:0x804CA258
+	.sdata2     start:0x8053F5F0 end:0x8053F5F8
+
+game/tu_801E801C.cpp:
+	extab       start:0x80008B84 end:0x80008C00
+	extabindex  start:0x8001615C end:0x800161F8
+	.text       start:0x801E801C end:0x801E9AFC
+	.ctors      start:0x8045C0C0 end:0x8045C0C4
+	.data       start:0x804A5568 end:0x804A5610
+	.bss        start:0x804CA258 end:0x804CA358
+	.sbss       start:0x8053AC40 end:0x8053AC50
+	.sdata2     start:0x8053F5F8 end:0x8053F650
+
+game/tu_801E9AFC.cpp:
+	extab       start:0x80008C00 end:0x80008C50
+	extabindex  start:0x800161F8 end:0x80016270
+	.text       start:0x801E9AFC end:0x801EAB0C
+	.ctors      start:0x8045C0C4 end:0x8045C0C8
+	.rodata     start:0x80469C78 end:0x80469CB8
+	.data       start:0x804A5610 end:0x804A5620
+	.bss        start:0x804CA358 end:0x804CA5D8
+	.sbss       start:0x8053AC50 end:0x8053AC58
+	.sdata2     start:0x8053F650 end:0x8053F678
+
+game/tu_801EAB0C.cpp:
+	extab       start:0x80008C50 end:0x80008C58
+	extabindex  start:0x80016270 end:0x8001627C
+	.text       start:0x801EAB0C end:0x801EB00C
+	.ctors      start:0x8045C0C8 end:0x8045C0CC
+	.bss        start:0x804CA5D8 end:0x804CA6D8
+
+game/tu_801EB00C.cpp:
+	extab       start:0x80008C58 end:0x80008C98
+	extabindex  start:0x8001627C end:0x800162DC
+	.text       start:0x801EB00C end:0x801EBC84
+	.ctors      start:0x8045C0CC end:0x8045C0D0
+	.bss        start:0x804CA6D8 end:0x804CA7D8
+	.sdata2     start:0x8053F678 end:0x8053F6B8
+
+game/act_horse_race_man.cpp:
+	extab       start:0x80008C98 end:0x80008CFC
+	extabindex  start:0x800162DC end:0x80016354
+	.text       start:0x801EBC84 end:0x801ED3DC
+	.ctors      start:0x8045C0D0 end:0x8045C0D4
+	.rodata     start:0x80469CB8 end:0x80469D30
+	.data       start:0x804A5620 end:0x804A5760
+	.bss        start:0x804CA7D8 end:0x804CA8D8
+	.sdata2     start:0x8053F6B8 end:0x8053F6F0
+
+game/tu_801ED3DC.cpp:
+	extab       start:0x80008CFC end:0x80008D24
+	extabindex  start:0x80016354 end:0x80016390
+	.text       start:0x801ED3DC end:0x801EDBA4
+	.ctors      start:0x8045C0D4 end:0x8045C0D8
+	.bss        start:0x804CA8D8 end:0x804CA9D8
+	.sdata2     start:0x8053F6F0 end:0x8053F718
+
+game/tu_801EDBA4.cpp:
+	extab       start:0x80008D24 end:0x80008D44
+	extabindex  start:0x80016390 end:0x800163C0
+	.text       start:0x801EDBA4 end:0x801EE24C
+	.ctors      start:0x8045C0D8 end:0x8045C0DC
+	.rodata     start:0x80469D30 end:0x80469D48
+	.data       start:0x804A5760 end:0x804A5770
+	.bss        start:0x804CA9D8 end:0x804CAAD8
+	.sdata2     start:0x8053F718 end:0x8053F728
+
+game/tu_801EE24C.cpp:
+	extab       start:0x80008D44 end:0x80008F04
+	extabindex  start:0x800163C0 end:0x80016660
+	.text       start:0x801EE24C end:0x801F6058
+	.ctors      start:0x8045C0DC end:0x8045C0E0
+	.rodata     start:0x80469D48 end:0x8046A048
+	.data       start:0x804A5770 end:0x804A5800
+	.bss        start:0x804CAAD8 end:0x804CABD8
+	.sdata2     start:0x8053F728 end:0x8053F800
+
+game/tu_801F6058.cpp:
+	extab       start:0x80008F04 end:0x80008FCC
+	extabindex  start:0x80016660 end:0x8001678C
+	.text       start:0x801F6058 end:0x801F9484
+	.ctors      start:0x8045C0E0 end:0x8045C0E4
+	.rodata     start:0x8046A048 end:0x8046A238
+	.data       start:0x804A5800 end:0x804A5810
+	.bss        start:0x804CABD8 end:0x804CACE0
+	.sdata      start:0x8053A168 end:0x8053A170
+	.sdata2     start:0x8053F800 end:0x8053F830
+
+game/tu_801F9484.cpp:
+	extab       start:0x80008FCC end:0x80009BE8
+	extabindex  start:0x8001678C end:0x80017560
+	.text       start:0x801F9484 end:0x80204638
+	.ctors      start:0x8045C0E4 end:0x8045C0E8
+	.data       start:0x804A5810 end:0x804A59B0
+	.bss        start:0x804CACE0 end:0x804CADE0
+	.sdata2     start:0x8053F830 end:0x8053F838
+
+game/tu_80204638.cpp:
+	extab       start:0x80009BE8 end:0x80009C10
+	extabindex  start:0x80017560 end:0x8001759C
+	.text       start:0x80204638 end:0x80204D44
+	.ctors      start:0x8045C0E8 end:0x8045C0EC
+	.bss        start:0x804CADE0 end:0x804CAFB0
+	.sbss       start:0x8053AC58 end:0x8053AC60
+	.sdata2     start:0x8053F838 end:0x8053F860
+
+game/act_thief.cpp:
+	extab       start:0x80009C10 end:0x80009CA4
+	extabindex  start:0x8001759C end:0x8001765C
+	.text       start:0x80204D44 end:0x80206B30
+	.ctors      start:0x8045C0EC end:0x8045C0F0
+	.rodata     start:0x8046A238 end:0x8046A348
+	.data       start:0x804A59B0 end:0x804A5B28
+	.bss        start:0x804CAFB0 end:0x804CB0B0
+	.sbss       start:0x8053AC60 end:0x8053AC68
+	.sdata2     start:0x8053F860 end:0x8053F8A8
+
+game/tu_80206B30.cpp:
+	extab       start:0x80009CA4 end:0x80009CDC
+	extabindex  start:0x8001765C end:0x800176B0
+	.text       start:0x80206B30 end:0x80207548
+	.ctors      start:0x8045C0F0 end:0x8045C0F4
+	.bss        start:0x804CB0B0 end:0x804CB1B0
+	.sdata2     start:0x8053F8A8 end:0x8053F8C8
+
+game/tu_80207548.cpp:
+	extab       start:0x80009CDC end:0x80009D20
+	extabindex  start:0x800176B0 end:0x800176F8
+	.text       start:0x80207548 end:0x80207D84
+	.ctors      start:0x8045C0F4 end:0x8045C0F8
+	.bss        start:0x804CB1B0 end:0x804CB2B0
+	.sdata2     start:0x8053F8C8 end:0x8053F8E0
+
+game/act_slime_manager.cpp:
+	extab       start:0x80009D20 end:0x80009D88
+	extabindex  start:0x800176F8 end:0x80017794
+	.text       start:0x80207D84 end:0x80208E5C
+	.ctors      start:0x8045C0F8 end:0x8045C0FC
+	.data       start:0x804A5B28 end:0x804A5C88
+	.bss        start:0x804CB2B0 end:0x804CB3B0
+	.sdata2     start:0x8053F8E0 end:0x8053F918
+
+game/tu_80208E5C.cpp:
+	extab       start:0x80009D88 end:0x80009DC8
+	extabindex  start:0x80017794 end:0x800177F4
+	.text       start:0x80208E5C end:0x80209C14
+	.ctors      start:0x8045C0FC end:0x8045C100
+	.data       start:0x804A5C88 end:0x804A5D38
+	.bss        start:0x804CB3B0 end:0x804CB4B0
+	.sdata2     start:0x8053F918 end:0x8053F960
+
+game/tu_80209C14.cpp:
+	extab       start:0x80009DC8 end:0x80009E30
+	extabindex  start:0x800177F4 end:0x80017890
+	.text       start:0x80209C14 end:0x8020B354
+	.ctors      start:0x8045C100 end:0x8045C104
+	.rodata     start:0x8046A348 end:0x8046A368
+	.data       start:0x804A5D38 end:0x804A5E98
+	.bss        start:0x804CB4B0 end:0x804CB5B0
+	.sdata2     start:0x8053F960 end:0x8053F9B8
+
+game/tu_8020B354.cpp:
+	extab       start:0x80009E30 end:0x80009E98
+	extabindex  start:0x80017890 end:0x8001792C
+	.text       start:0x8020B354 end:0x8020C0A8
+	.ctors      start:0x8045C104 end:0x8045C108
+	.rodata     start:0x8046A368 end:0x8046A398
+	.data       start:0x804A5E98 end:0x804A5F40
+	.bss        start:0x804CB5B0 end:0x804CB6B0
+	.sdata      start:0x8053A170 end:0x8053A178
+	.sdata2     start:0x8053F9B8 end:0x8053F9E0
+
+game/tu_8020C0A8.cpp:
+	extab       start:0x80009E98 end:0x80009EE8
+	extabindex  start:0x8001792C end:0x800179A4
+	.text       start:0x8020C0A8 end:0x8020CCA8
+	.ctors      start:0x8045C108 end:0x8045C10C
+	.rodata     start:0x8046A398 end:0x8046A3C0
+	.data       start:0x804A5F40 end:0x804A5FE8
+	.bss        start:0x804CB6B0 end:0x804CB7B0
+	.sdata      start:0x8053A178 end:0x8053A180
+	.sdata2     start:0x8053F9E0 end:0x8053FA00
+
+game/tu_8020CCA8.cpp:
+	extab       start:0x80009EE8 end:0x80009F18
+	extabindex  start:0x800179A4 end:0x800179EC
+	.text       start:0x8020CCA8 end:0x8020D58C
+	.ctors      start:0x8045C10C end:0x8045C110
+	.rodata     start:0x8046A3C0 end:0x8046A430
+	.bss        start:0x804CB7B0 end:0x804CB8B0
+	.sdata2     start:0x8053FA00 end:0x8053FA18
+
+game/tu_8020D58C.cpp:
+	extab       start:0x80009F18 end:0x80009F40
+	extabindex  start:0x800179EC end:0x80017A28
+	.text       start:0x8020D58C end:0x8020DB74
+	.ctors      start:0x8045C110 end:0x8045C114
+	.bss        start:0x804CB8B0 end:0x804CC8B8
+	.sbss       start:0x8053AC68 end:0x8053AC70
+	.sdata2     start:0x8053FA18 end:0x8053FA28
+
+game/act_floormaster.cpp:
+	extab       start:0x80009F40 end:0x80009FB0
+	extabindex  start:0x80017A28 end:0x80017AD0
+	.text       start:0x8020DB74 end:0x8020F798
+	.ctors      start:0x8045C114 end:0x8045C118
+	.rodata     start:0x8046A430 end:0x8046A448
+	.data       start:0x804A5FE8 end:0x804A6100
+	.bss        start:0x804CC8B8 end:0x804CC9B8
+	.sdata2     start:0x8053FA28 end:0x8053FA90
+
+game/tu_8020F798.cpp:
+	extab       start:0x80009FB0 end:0x80009FD0
+	extabindex  start:0x80017AD0 end:0x80017B00
+	.text       start:0x8020F798 end:0x8020FE50
+	.ctors      start:0x8045C118 end:0x8045C11C
+	.rodata     start:0x8046A448 end:0x8046A470
+	.bss        start:0x804CC9B8 end:0x804CCAB8
+	.sdata2     start:0x8053FA90 end:0x8053FAA0
+
+game/tu_8020FE50.cpp:
+	extab       start:0x80009FD0 end:0x8000A010
+	extabindex  start:0x80017B00 end:0x80017B60
+	.text       start:0x8020FE50 end:0x80210630
+	.ctors      start:0x8045C11C end:0x8045C120
+	.data       start:0x804A6100 end:0x804A61A8
+	.bss        start:0x804CCAB8 end:0x804CCBB8
+	.sdata2     start:0x8053FAA0 end:0x8053FAB8
+
+game/tu_80210630.cpp:
+	extab       start:0x8000A010 end:0x8000A050
+	extabindex  start:0x80017B60 end:0x80017BC0
+	.text       start:0x80210630 end:0x80210D90
+	.ctors      start:0x8045C120 end:0x8045C124
+	.rodata     start:0x8046A470 end:0x8046A550
+	.data       start:0x804A61A8 end:0x804A6270
+	.bss        start:0x804CCBB8 end:0x804CCCB8
+	.sdata2     start:0x8053FAB8 end:0x8053FAF8
+
+game/act_quicksand.cpp:
+	extab       start:0x8000A050 end:0x8000A0B8
+	extabindex  start:0x80017BC0 end:0x80017C5C
+	.text       start:0x80210D90 end:0x80212AC0
+	.ctors      start:0x8045C124 end:0x8045C128
+	.data       start:0x804A6270 end:0x804A6330
+	.bss        start:0x804CCCB8 end:0x804CCDB8
+	.sdata2     start:0x8053FAF8 end:0x8053FB48
+
+game/tu_80212AC0.cpp:
+	extab       start:0x8000A0B8 end:0x8000A0C8
+	extabindex  start:0x80017C5C end:0x80017C74
+	.text       start:0x80212AC0 end:0x80212E3C
+	.ctors      start:0x8045C128 end:0x8045C12C
+	.bss        start:0x804CCDB8 end:0x804CCF38
+	.sbss       start:0x8053AC70 end:0x8053AC78
+
+game/tu_80212E3C.cpp:
+	extab       start:0x8000A0C8 end:0x8000A128
+	extabindex  start:0x80017C74 end:0x80017D04
+	.text       start:0x80212E3C end:0x80213E00
+	.ctors      start:0x8045C12C end:0x8045C130
+	.rodata     start:0x8046A550 end:0x8046A590
+	.data       start:0x804A6330 end:0x804A6400
+	.bss        start:0x804CCF38 end:0x804CD038
+	.sdata2     start:0x8053FB48 end:0x8053FB80
+
+game/tu_80213E00.cpp:
+	extab       start:0x8000A128 end:0x8000A150
+	extabindex  start:0x80017D04 end:0x80017D40
+	.text       start:0x80213E00 end:0x80214244
+	.ctors      start:0x8045C130 end:0x8045C134
+	.data       start:0x804A6400 end:0x804A64C0
+	.bss        start:0x804CD038 end:0x804CD138
+	.sdata      start:0x8053A180 end:0x8053A188
+	.sdata2     start:0x8053FB80 end:0x8053FB90
+
+game/tu_80214244.cpp:
+	extab       start:0x8000A150 end:0x8000A160
+	extabindex  start:0x80017D40 end:0x80017D58
+	.text       start:0x80214244 end:0x802144F0
+	.ctors      start:0x8045C134 end:0x8045C138
+	.bss        start:0x804CD138 end:0x804CD238
+
+game/tu_802144F0.cpp:
+	extab       start:0x8000A160 end:0x8000A1C0
+	extabindex  start:0x80017D58 end:0x80017DE8
+	.text       start:0x802144F0 end:0x802153A8
+	.ctors      start:0x8045C138 end:0x8045C13C
+	.bss        start:0x804CD238 end:0x804CD338
+	.sdata2     start:0x8053FB90 end:0x8053FBD8
+
+game/tu_802153A8.cpp:
+	extab       start:0x8000A1C0 end:0x8000A1D0
+	extabindex  start:0x80017DE8 end:0x80017E00
+	.text       start:0x802153A8 end:0x802157B8
+	.ctors      start:0x8045C13C end:0x8045C140
+	.bss        start:0x804CD338 end:0x804CD438
+
+game/tu_802157B8.cpp:
+	extab       start:0x8000A1D0 end:0x8000A1D8
+	extabindex  start:0x80017E00 end:0x80017E0C
+	.text       start:0x802157B8 end:0x80215A94
+	.ctors      start:0x8045C140 end:0x8045C144
+	.data       start:0x804A64C0 end:0x804A64E0
+	.bss        start:0x804CD438 end:0x804CD538
+
+game/tu_80215A94.cpp:
+	extab       start:0x8000A1D8 end:0x8000A258
+	extabindex  start:0x80017E0C end:0x80017ECC
+	.text       start:0x80215A94 end:0x8021693C
+	.ctors      start:0x8045C144 end:0x8045C148
+	.rodata     start:0x8046A590 end:0x8046A5A0
+	.bss        start:0x804CD538 end:0x804CD638
+	.sdata2     start:0x8053FBD8 end:0x8053FC00
+
+game/tu_8021693C.cpp:
+	extab       start:0x8000A258 end:0x8000A268
+	extabindex  start:0x80017ECC end:0x80017EE4
+	.text       start:0x8021693C end:0x80217374
+	.ctors      start:0x8045C148 end:0x8045C14C
+	.data       start:0x804A64E0 end:0x804A6540
+	.bss        start:0x804CD638 end:0x804CD738
+	.sdata2     start:0x8053FC00 end:0x8053FC28
+
+game/tu_80217374.cpp:
+	extab       start:0x8000A268 end:0x8000A280
+	extabindex  start:0x80017EE4 end:0x80017F08
+	.text       start:0x80217374 end:0x8021775C
+	.ctors      start:0x8045C14C end:0x8045C150
+	.bss        start:0x804CD738 end:0x804CD838
+	.sdata2     start:0x8053FC28 end:0x8053FC38
+
+game/tu_8021775C.cpp:
+	extab       start:0x8000A280 end:0x8000A2E8
+	extabindex  start:0x80017F08 end:0x80017FA4
+	.text       start:0x8021775C end:0x8021827C
+	.ctors      start:0x8045C150 end:0x8045C154
+	.rodata     start:0x8046A5A0 end:0x8046A640
+	.bss        start:0x804CD838 end:0x804CD940
+	.sdata2     start:0x8053FC38 end:0x8053FC40
+
+game/tu_8021827C.cpp:
+	extab       start:0x8000A2E8 end:0x8000A308
+	extabindex  start:0x80017FA4 end:0x80017FD4
+	.text       start:0x8021827C end:0x802188B0
+	.ctors      start:0x8045C154 end:0x8045C158
+	.bss        start:0x804CD940 end:0x804CDA40
+	.sdata2     start:0x8053FC40 end:0x8053FC48
+
+game/tu_802188B0.cpp:
+	extab       start:0x8000A308 end:0x8000A328
+	extabindex  start:0x80017FD4 end:0x80018004
+	.text       start:0x802188B0 end:0x80218CF4
+	.ctors      start:0x8045C158 end:0x8045C15C
+	.bss        start:0x804CDA40 end:0x804CDB40
+	.sdata2     start:0x8053FC48 end:0x8053FC58
+
+game/act_kaepora_gaebora.cpp:
+	extab       start:0x8000A328 end:0x8000A38C
+	extabindex  start:0x80018004 end:0x8001807C
+	.text       start:0x80218CF4 end:0x8021A570
+	.ctors      start:0x8045C15C end:0x8045C160
+	.rodata     start:0x8046A640 end:0x8046A660
+	.data       start:0x804A6540 end:0x804A6660
+	.bss        start:0x804CDB40 end:0x804CDC40
+	.sdata2     start:0x8053FC58 end:0x8053FCB0
+
+game/tu_8021A570.cpp:
+	extab       start:0x8000A38C end:0x8000A3A4
+	extabindex  start:0x8001807C end:0x800180A0
+	.text       start:0x8021A570 end:0x8021AF28
+	.ctors      start:0x8045C160 end:0x8045C164
+	.bss        start:0x804CDC40 end:0x804CDD40
+	.sdata2     start:0x8053FCB0 end:0x8053FCC8
+
+game/tu_8021AF28.cpp:
+	extab       start:0x8000A3A4 end:0x8000A3E4
+	extabindex  start:0x800180A0 end:0x80018100
+	.text       start:0x8021AF28 end:0x8021B904
+	.ctors      start:0x8045C164 end:0x8045C168
+	.rodata     start:0x8046A660 end:0x8046A678
+	.bss        start:0x804CDD40 end:0x804CDE40
+	.sdata2     start:0x8053FCC8 end:0x8053FCE0
+
+game/tu_8021B904.cpp:
+	extab       start:0x8000A3E4 end:0x8000A3FC
+	extabindex  start:0x80018100 end:0x80018124
+	.text       start:0x8021B904 end:0x8021BCBC
+	.ctors      start:0x8045C168 end:0x8045C16C
+	.bss        start:0x804CDE40 end:0x804CDF40
+
+game/tu_8021BCBC.cpp:
+	extab       start:0x8000A3FC end:0x8000A404
+	extabindex  start:0x80018124 end:0x80018130
+	.text       start:0x8021BCBC end:0x8021BFA8
+	.ctors      start:0x8045C16C end:0x8045C170
+	.rodata     start:0x8046A678 end:0x8046A688
+	.bss        start:0x804CDF40 end:0x804CE040
+
+game/tu_8021BFA8.cpp:
+	extab       start:0x8000A404 end:0x8000A40C
+	extabindex  start:0x80018130 end:0x8001813C
+	.text       start:0x8021BFA8 end:0x8021C2B4
+	.ctors      start:0x8045C170 end:0x8045C174
+	.bss        start:0x804CE040 end:0x804CE140
+	.sdata2     start:0x8053FCE0 end:0x8053FCF8
+
+game/tu_8021C2B4.cpp:
+	extab       start:0x8000A40C end:0x8000A42C
+	extabindex  start:0x8001813C end:0x8001816C
+	.text       start:0x8021C2B4 end:0x8021C848
+	.ctors      start:0x8045C174 end:0x8045C178
+	.bss        start:0x804CE140 end:0x804CE240
+	.sdata2     start:0x8053FCF8 end:0x8053FD20
+
+game/tu_8021C848.cpp:
+	extab       start:0x8000A42C end:0x8000A434
+	extabindex  start:0x8001816C end:0x80018178
+	.text       start:0x8021C848 end:0x8021CDE4
+	.ctors      start:0x8045C178 end:0x8045C17C
+	.rodata     start:0x8046A688 end:0x8046A770
+	.bss        start:0x804CE240 end:0x804CE340
+	.sdata2     start:0x8053FD20 end:0x8053FD30
+
+game/tu_8021CDE4.cpp:
+	extab       start:0x8000A434 end:0x8000A444
+	extabindex  start:0x80018178 end:0x80018190
+	.text       start:0x8021CDE4 end:0x8021D26C
+	.ctors      start:0x8045C17C end:0x8045C180
+	.bss        start:0x804CE340 end:0x804CE440
+	.sdata2     start:0x8053FD30 end:0x8053FD38
+
+game/tu_8021D26C.cpp:
+	extab       start:0x8000A444 end:0x8000A46C
+	extabindex  start:0x80018190 end:0x800181CC
+	.text       start:0x8021D26C end:0x8021D734
+	.ctors      start:0x8045C180 end:0x8045C184
+	.data       start:0x804A6660 end:0x804A6708
+	.bss        start:0x804CE440 end:0x804CE540
+	.sdata2     start:0x8053FD38 end:0x8053FD50
+
+game/act_navi.cpp:
+	extab       start:0x8000A46C end:0x8000A4DC
+	extabindex  start:0x800181CC end:0x80018274
+	.text       start:0x8021D734 end:0x8021F064
+	.ctors      start:0x8045C184 end:0x8045C188
+	.rodata     start:0x8046A770 end:0x8046AAA0
+	.data       start:0x804A6708 end:0x804A6808
+	.bss        start:0x804CE540 end:0x804CE640
+	.sdata      start:0x8053A188 end:0x8053A198
+	.sdata2     start:0x8053FD50 end:0x8053FDD0
+
+game/tu_8021F064.cpp:
+	extab       start:0x8000A4DC end:0x8000A4F4
+	extabindex  start:0x80018274 end:0x80018298
+	.text       start:0x8021F064 end:0x8021F4B0
+	.ctors      start:0x8045C188 end:0x8045C18C
+	.bss        start:0x804CE640 end:0x804CE760
+	.sbss       start:0x8053AC78 end:0x8053AC80
+
+game/tu_8021F4B0.cpp:
+	extab       start:0x8000A4F4 end:0x8000A51C
+	extabindex  start:0x80018298 end:0x800182D4
+	.text       start:0x8021F4B0 end:0x8021FDB8
+	.ctors      start:0x8045C18C end:0x8045C190
+	.bss        start:0x804CE760 end:0x804CE860
+	.sdata2     start:0x8053FDD0 end:0x8053FDF8
+
+game/tu_8021FDB8.cpp:
+	extab       start:0x8000A51C end:0x8000A52C
+	extabindex  start:0x800182D4 end:0x800182EC
+	.text       start:0x8021FDB8 end:0x802201D8
+	.ctors      start:0x8045C190 end:0x8045C194
+	.data       start:0x804A6808 end:0x804A6828
+	.bss        start:0x804CE860 end:0x804CE960
+	.sdata2     start:0x8053FDF8 end:0x8053FE10
+
+game/tu_802201D8.cpp:
+	extab       start:0x8000A52C end:0x8000A55C
+	extabindex  start:0x800182EC end:0x80018334
+	.text       start:0x802201D8 end:0x802205E0
+	.ctors      start:0x8045C194 end:0x8045C198
+	.data       start:0x804A6828 end:0x804A68D0
+	.bss        start:0x804CE960 end:0x804CEA60
+	.sdata2     start:0x8053FE10 end:0x8053FE18
+
+game/tu_802205E0.cpp:
+	extab       start:0x8000A55C end:0x8000A5B0
+	extabindex  start:0x80018334 end:0x80018394
+	.text       start:0x802205E0 end:0x80220F54
+	.ctors      start:0x8045C198 end:0x8045C19C
+	.data       start:0x804A68D0 end:0x804A6990
+	.bss        start:0x804CEA60 end:0x804CEB60
+	.sbss       start:0x8053AC80 end:0x8053AC90
+	.sdata2     start:0x8053FE18 end:0x8053FE70
+
+game/tu_80220F54.cpp:
+	extab       start:0x8000A5B0 end:0x8000A628
+	extabindex  start:0x80018394 end:0x80018448
+	.text       start:0x80220F54 end:0x80221B44
+	.ctors      start:0x8045C19C end:0x8045C1A0
+	.rodata     start:0x8046AAA0 end:0x8046AAB0
+	.data       start:0x804A6990 end:0x804A6AA8
+	.bss        start:0x804CEB60 end:0x804CEC60
+	.sdata2     start:0x8053FE70 end:0x8053FEA0
+
+game/tu_80221B44.cpp:
+	extab       start:0x8000A628 end:0x8000A660
+	extabindex  start:0x80018448 end:0x8001849C
+	.text       start:0x80221B44 end:0x802223FC
+	.ctors      start:0x8045C1A0 end:0x8045C1A4
+	.data       start:0x804A6AA8 end:0x804A6B70
+	.bss        start:0x804CEC60 end:0x804CED60
+	.sdata2     start:0x8053FEA0 end:0x8053FEC0
+
+game/act_shadow_link_bow.cpp:
+	extab       start:0x8000A660 end:0x8000A6A0
+	extabindex  start:0x8001849C end:0x800184FC
+	.text       start:0x802223FC end:0x80222CC4
+	.ctors      start:0x8045C1A4 end:0x8045C1A8
+	.data       start:0x804A6B70 end:0x804A6C38
+	.bss        start:0x804CED60 end:0x804CEE60
+	.sdata2     start:0x8053FEC0 end:0x8053FEF0
+
+game/tu_80222CC4.cpp:
+	extab       start:0x8000A6A0 end:0x8000A6D8
+	extabindex  start:0x800184FC end:0x80018550
+	.text       start:0x80222CC4 end:0x802233A4
+	.ctors      start:0x8045C1A8 end:0x8045C1AC
+	.data       start:0x804A6C38 end:0x804A6D00
+	.bss        start:0x804CEE60 end:0x804CEF60
+	.sdata2     start:0x8053FEF0 end:0x8053FF08
+
+game/tu_802233A4.cpp:
+	extab       start:0x8000A6D8 end:0x8000A730
+	extabindex  start:0x80018550 end:0x800185D4
+	.text       start:0x802233A4 end:0x802242F4
+	.ctors      start:0x8045C1AC end:0x8045C1B0
+	.data       start:0x804A6D00 end:0x804A6E20
+	.bss        start:0x804CEF60 end:0x804CF060
+	.sdata2     start:0x8053FF08 end:0x8053FF40
+
+game/tu_802242F4.cpp:
+	extab       start:0x8000A730 end:0x8000A740
+	extabindex  start:0x800185D4 end:0x800185EC
+	.text       start:0x802242F4 end:0x8022461C
+	.ctors      start:0x8045C1B0 end:0x8045C1B4
+	.bss        start:0x804CF060 end:0x804CF160
+	.sdata2     start:0x8053FF40 end:0x8053FF48
+
+game/tu_8022461C.cpp:
+	extab       start:0x8000A740 end:0x8000A7F8
+	extabindex  start:0x800185EC end:0x80018700
+	.text       start:0x8022461C end:0x80226FC8
+	.ctors      start:0x8045C1B4 end:0x8045C1B8
+	.rodata     start:0x8046AAB0 end:0x8046ABE8
+	.bss        start:0x804CF160 end:0x804CF260
+	.sdata2     start:0x8053FF48 end:0x8053FF60
+
+game/tu_80226FC8.cpp:
+	extab       start:0x8000A7F8 end:0x8000A840
+	extabindex  start:0x80018700 end:0x8001876C
+	.text       start:0x80226FC8 end:0x8022979C
+	.ctors      start:0x8045C1B8 end:0x8045C1BC
+	.rodata     start:0x8046ABE8 end:0x8046ACC8
+	.bss        start:0x804CF260 end:0x804CF360
+	.sdata2     start:0x8053FF60 end:0x8053FFD8
+
+game/tu_8022979C.cpp:
+	extab       start:0x8000A840 end:0x8000A868
+	extabindex  start:0x8001876C end:0x800187A8
+	.text       start:0x8022979C end:0x8022AD64
+	.ctors      start:0x8045C1BC end:0x8045C1C0
+	.rodata     start:0x8046ACC8 end:0x8046AE08
+	.data       start:0x804A6E20 end:0x804A6F28
+	.bss        start:0x804CF360 end:0x804CF460
+	.sdata2     start:0x8053FFD8 end:0x80540008
+
+game/tu_8022AD64.cpp:
+	extab       start:0x8000A868 end:0x8000B280
+	extabindex  start:0x800187A8 end:0x800196B4
+	.text       start:0x8022AD64 end:0x8023FBF0
+	.ctors      start:0x8045C1C0 end:0x8045C1C4
+	.data       start:0x804A6F28 end:0x804A6F38
+	.bss        start:0x804CF460 end:0x804CF568
+	.sbss       start:0x8053AC90 end:0x8053ACB0
+	.sdata2     start:0x80540008 end:0x80540030
+
+game/tu_8023FBF0.cpp:
+	extab       start:0x8000B280 end:0x8000B7CC
+	extabindex  start:0x800196B4 end:0x80019D74
+	.text       start:0x8023FBF0 end:0x80255F4C
+	.ctors      start:0x8045C1C4 end:0x8045C1C8
+	.rodata     start:0x8046AE08 end:0x8046AF00
+	.data       start:0x804A6F38 end:0x804A6F48
+	.bss        start:0x804CF568 end:0x804CF668
+	.sdata2     start:0x80540030 end:0x805400A0
+
+game/tu_80255F4C.cpp:
+	extab       start:0x8000B7CC end:0x8000B7FC
+	extabindex  start:0x80019D74 end:0x80019DBC
+	.text       start:0x80255F4C end:0x80256C74
+	.ctors      start:0x8045C1C8 end:0x8045C1CC
+	.data       start:0x804A6F48 end:0x804A6FC0
+	.bss        start:0x804CF668 end:0x804CF768
+	.sdata2     start:0x805400A0 end:0x805400C0
+
+game/tu_80256C74.cpp:
+	extab       start:0x8000B7FC end:0x8000B954
+	extabindex  start:0x80019DBC end:0x80019FC0
+	.text       start:0x80256C74 end:0x8025EB18
+	.ctors      start:0x8045C1CC end:0x8045C1D0
+	.rodata     start:0x8046AF00 end:0x8046B250
+	.bss        start:0x804CF768 end:0x804CF868
+	.sdata2     start:0x805400C0 end:0x80540150
+
+game/tu_8025EB18.cpp:
+	extab       start:0x8000B954 end:0x8000BA64
+	extabindex  start:0x80019FC0 end:0x8001A158
+	.text       start:0x8025EB18 end:0x80264998
+	.ctors      start:0x8045C1D0 end:0x8045C1D4
+	.rodata     start:0x8046B250 end:0x8046B960
+	.data       start:0x804A6FC0 end:0x804A7060
+	.bss        start:0x804CF868 end:0x804CF968
+	.sdata2     start:0x80540150 end:0x805401F0
+
+game/tu_80264998.cpp:
+	extab       start:0x8000BA64 end:0x8000BAC4
+	extabindex  start:0x8001A158 end:0x8001A1E8
+	.text       start:0x80264998 end:0x802684A4
+	.ctors      start:0x8045C1D4 end:0x8045C1D8
+	.rodata     start:0x8046B960 end:0x8046B998
+	.data       start:0x804A7060 end:0x804A71A8
+	.bss        start:0x804CF968 end:0x804CFA68
+	.sdata2     start:0x805401F0 end:0x80540220
+
+game/tu_802684A4.cpp:
+	extab       start:0x8000BAC4 end:0x8000BB6C
+	extabindex  start:0x8001A1E8 end:0x8001A2E4
+	.text       start:0x802684A4 end:0x8026FC20
+	.ctors      start:0x8045C1D8 end:0x8045C1DC
+	.rodata     start:0x8046B998 end:0x8046BB48
+	.data       start:0x804A71A8 end:0x804A74E0
+	.bss        start:0x804CFA68 end:0x804CFB68
+	.sdata2     start:0x80540220 end:0x80540288
+
+game/tu_8026FC20.cpp:
+	extab       start:0x8000BB6C end:0x8000BDEC
+	extabindex  start:0x8001A2E4 end:0x8001A6A4
+	.text       start:0x8026FC20 end:0x8027E5BC
+	.ctors      start:0x8045C1DC end:0x8045C1E0
+	.rodata     start:0x8046BB48 end:0x8046BDA8
+	.bss        start:0x804CFB68 end:0x804CFC68
+	.sdata2     start:0x80540288 end:0x80540348
+
+game/tu_8027E5BC.cpp:
+	extab       start:0x8000BDEC end:0x8000BF6C
+	extabindex  start:0x8001A6A4 end:0x8001A8E4
+	.text       start:0x8027E5BC end:0x80285E58
+	.ctors      start:0x8045C1E0 end:0x8045C1E4
+	.rodata     start:0x8046BDA8 end:0x8046C0E8
+	.bss        start:0x804CFC68 end:0x804CFD68
+	.sdata2     start:0x80540348 end:0x80540410
+
+game/tu_80285E58.cpp:
+	extab       start:0x8000BF6C end:0x8000BFAC
+	extabindex  start:0x8001A8E4 end:0x8001A944
+	.text       start:0x80285E58 end:0x80289648
+	.ctors      start:0x8045C1E4 end:0x8045C1E8
+	.data       start:0x804A74E0 end:0x804A7960
+	.bss        start:0x804CFD68 end:0x804CFE68
+	.sdata2     start:0x80540410 end:0x80540460
+
+game/tu_80289648.cpp:
+	extab       start:0x8000BFAC end:0x8000BFD4
+	extabindex  start:0x8001A944 end:0x8001A980
+	.text       start:0x80289648 end:0x8028A33C
+	.ctors      start:0x8045C1E8 end:0x8045C1EC
+	.bss        start:0x804CFE68 end:0x804CFF68
+	.sdata      start:0x8053A198 end:0x8053A1A0
+	.sdata2     start:0x80540460 end:0x80540490
+
+game/tu_8028A33C.cpp:
+	extab       start:0x8000BFD4 end:0x8000BFFC
+	extabindex  start:0x8001A980 end:0x8001A9BC
+	.text       start:0x8028A33C end:0x8028AB7C
+	.ctors      start:0x8045C1EC end:0x8045C1F0
+	.rodata     start:0x8046C0E8 end:0x8046C100
+	.bss        start:0x804CFF68 end:0x804D0068
+	.sdata2     start:0x80540490 end:0x805404C0
+
+game/tu_8028AB7C.cpp:
+	extab       start:0x8000BFFC end:0x8000C034
+	extabindex  start:0x8001A9BC end:0x8001AA10
+	.text       start:0x8028AB7C end:0x8028C068
+	.ctors      start:0x8045C1F0 end:0x8045C1F4
+	.rodata     start:0x8046C100 end:0x8046C120
+	.data       start:0x804A7960 end:0x804A7A68
+	.bss        start:0x804D0068 end:0x804D0168
+	.sdata2     start:0x805404C0 end:0x805404F8
+
+game/tu_8028C068.cpp:
+	extab       start:0x8000C034 end:0x8000C084
+	extabindex  start:0x8001AA10 end:0x8001AA88
+	.text       start:0x8028C068 end:0x8028DD78
+	.ctors      start:0x8045C1F4 end:0x8045C1F8
+	.rodata     start:0x8046C120 end:0x8046C228
+	.bss        start:0x804D0168 end:0x804D0268
+	.sdata2     start:0x805404F8 end:0x80540570
+
+game/tu_8028DD78.cpp:
+	extab       start:0x8000C084 end:0x8000C0A4
+	extabindex  start:0x8001AA88 end:0x8001AAB8
+	.text       start:0x8028DD78 end:0x8028FBA0
+	.ctors      start:0x8045C1F8 end:0x8045C1FC
+	.data       start:0x804A7A68 end:0x804A7C98
+	.bss        start:0x804D0268 end:0x804D0368
+	.sdata2     start:0x80540570 end:0x805405A8
+
+game/tu_8028FBA0.cpp:
+	extab       start:0x8000C0A4 end:0x8000C20C
+	extabindex  start:0x8001AAB8 end:0x8001ACD4
+	.text       start:0x8028FBA0 end:0x802957CC
+	.ctors      start:0x8045C1FC end:0x8045C200
+	.rodata     start:0x8046C228 end:0x8046C238
+	.bss        start:0x804D0368 end:0x804D0468
+	.sdata2     start:0x805405A8 end:0x80540658
+
+game/tu_802957CC.cpp:
+	extab       start:0x8000C20C end:0x8000C2A4
+	extabindex  start:0x8001ACD4 end:0x8001ADB8
+	.text       start:0x802957CC end:0x8029B75C
+	.ctors      start:0x8045C200 end:0x8045C204
+	.rodata     start:0x8046C238 end:0x8046C398
+	.bss        start:0x804D0468 end:0x804D0568
+	.sdata2     start:0x80540658 end:0x805406F8
+
+game/tu_8029B75C.cpp:
+	extab       start:0x8000C2A4 end:0x8000C2C4
+	extabindex  start:0x8001ADB8 end:0x8001ADE8
+	.text       start:0x8029B75C end:0x8029BD18
+	.ctors      start:0x8045C204 end:0x8045C208
+	.bss        start:0x804D0568 end:0x804D0668
+	.sdata2     start:0x805406F8 end:0x80540710
+
+game/tu_8029BD18.cpp:
+	extab       start:0x8000C2C4 end:0x8000C2EC
+	extabindex  start:0x8001ADE8 end:0x8001AE24
+	.text       start:0x8029BD18 end:0x8029C584
+	.ctors      start:0x8045C208 end:0x8045C20C
+	.rodata     start:0x8046C398 end:0x8046C400
+	.bss        start:0x804D0668 end:0x804D0768
+	.sdata2     start:0x80540710 end:0x80540738
+
+game/tu_8029C584.cpp:
+	extab       start:0x8000C2EC end:0x8000C314
+	extabindex  start:0x8001AE24 end:0x8001AE60
+	.text       start:0x8029C584 end:0x8029D430
+	.ctors      start:0x8045C20C end:0x8045C210
+	.rodata     start:0x8046C400 end:0x8046C4A8
+	.bss        start:0x804D0768 end:0x804D0868
+	.sdata2     start:0x80540738 end:0x80540768
+
+game/tu_8029D430.cpp:
+	extab       start:0x8000C314 end:0x8000C32C
+	extabindex  start:0x8001AE60 end:0x8001AE84
+	.text       start:0x8029D430 end:0x8029D898
+	.ctors      start:0x8045C210 end:0x8045C214
+	.bss        start:0x804D0868 end:0x804D0968
+	.sdata2     start:0x80540768 end:0x80540780
+
+game/tu_8029D898.cpp:
+	extab       start:0x8000C32C end:0x8000C43C
+	extabindex  start:0x8001AE84 end:0x8001B004
+	.text       start:0x8029D898 end:0x802A40B8
+	.ctors      start:0x8045C214 end:0x8045C218
+	.rodata     start:0x8046C4A8 end:0x8046C640
+	.data       start:0x804A7C98 end:0x804A7EB0
+	.bss        start:0x804D0968 end:0x804D0A68
+	.sdata2     start:0x80540780 end:0x805407A0
+
+game/tu_802A40B8.cpp:
+	extab       start:0x8000C43C end:0x8000C45C
+	extabindex  start:0x8001B004 end:0x8001B034
+	.text       start:0x802A40B8 end:0x802A4654
+	.ctors      start:0x8045C218 end:0x8045C21C
+	.rodata     start:0x8046C640 end:0x8046C658
+	.bss        start:0x804D0A68 end:0x804D0B68
+	.sdata2     start:0x805407A0 end:0x805407C0
+
+game/tu_802A4654.cpp:
+	extab       start:0x8000C45C end:0x8000C48C
+	extabindex  start:0x8001B034 end:0x8001B07C
+	.text       start:0x802A4654 end:0x802A6A4C
+	.ctors      start:0x8045C21C end:0x8045C220
+	.rodata     start:0x8046C658 end:0x8046C828
+	.data       start:0x804A7EB0 end:0x804A7F38
+	.bss        start:0x804D0B68 end:0x804D0C68
+	.sdata2     start:0x805407C0 end:0x805407F0
+
+game/tu_802A6A4C.cpp:
+	extab       start:0x8000C48C end:0x8000C4BC
+	extabindex  start:0x8001B07C end:0x8001B0C4
+	.text       start:0x802A6A4C end:0x802A7D3C
+	.ctors      start:0x8045C220 end:0x8045C224
+	.rodata     start:0x8046C828 end:0x8046C850
+	.data       start:0x804A7F38 end:0x804A8010
+	.bss        start:0x804D0C68 end:0x804D0D68
+	.sdata2     start:0x805407F0 end:0x80540820
+
+game/tu_802A7D3C.cpp:
+	extab       start:0x8000C4BC end:0x8000C4D4
+	extabindex  start:0x8001B0C4 end:0x8001B0E8
+	.text       start:0x802A7D3C end:0x802A8220
+	.ctors      start:0x8045C224 end:0x8045C228
+	.bss        start:0x804D0D68 end:0x804D0E68
+	.sdata2     start:0x80540820 end:0x80540840
+
+game/tu_802A8220.cpp:
+	extab       start:0x8000C4D4 end:0x8000C4F4
+	extabindex  start:0x8001B0E8 end:0x8001B118
+	.text       start:0x802A8220 end:0x802A964C
+	.ctors      start:0x8045C228 end:0x8045C22C
+	.data       start:0x804A8010 end:0x804A80A0
+	.bss        start:0x804D0E68 end:0x804D0F68
+	.sdata2     start:0x80540840 end:0x80540880
+
+game/tu_802A964C.cpp:
+	extab       start:0x8000C4F4 end:0x8000C50C
+	extabindex  start:0x8001B118 end:0x8001B13C
+	.text       start:0x802A964C end:0x802AA364
+	.ctors      start:0x8045C22C end:0x8045C230
+	.rodata     start:0x8046C850 end:0x8046C860
+	.data       start:0x804A80A0 end:0x804A81C8
+	.bss        start:0x804D0F68 end:0x804D1068
+	.sdata2     start:0x80540880 end:0x80540888
+
+game/tu_802AA364.cpp:
+	extab       start:0x8000C50C end:0x8000C52C
+	extabindex  start:0x8001B13C end:0x8001B16C
+	.text       start:0x802AA364 end:0x802AABFC
+	.ctors      start:0x8045C230 end:0x8045C234
+	.rodata     start:0x8046C860 end:0x8046C878
+	.bss        start:0x804D1068 end:0x804D1168
+	.sdata2     start:0x80540888 end:0x80540890
+
+game/tu_802AABFC.cpp:
+	extab       start:0x8000C52C end:0x8000C54C
+	extabindex  start:0x8001B16C end:0x8001B19C
+	.text       start:0x802AABFC end:0x802AB1D4
+	.ctors      start:0x8045C234 end:0x8045C238
+	.rodata     start:0x8046C878 end:0x8046C890
+	.bss        start:0x804D1168 end:0x804D1268
+
+game/tu_802AB1D4.cpp:
+	extab       start:0x8000C54C end:0x8000C56C
+	extabindex  start:0x8001B19C end:0x8001B1CC
+	.text       start:0x802AB1D4 end:0x802ABC74
+	.ctors      start:0x8045C238 end:0x8045C23C
+	.data       start:0x804A81C8 end:0x804A82A8
+	.bss        start:0x804D1268 end:0x804D1368
+	.sdata2     start:0x80540890 end:0x805408B8
+
+game/tu_802ABC74.cpp:
+	extab       start:0x8000C56C end:0x8000C584
+	extabindex  start:0x8001B1CC end:0x8001B1F0
+	.text       start:0x802ABC74 end:0x802AC03C
+	.ctors      start:0x8045C23C end:0x8045C240
+	.bss        start:0x804D1368 end:0x804D1468
+
+game/tu_802AC03C.cpp:
+	extab       start:0x8000C584 end:0x8000C5A4
+	extabindex  start:0x8001B1F0 end:0x8001B220
+	.text       start:0x802AC03C end:0x802AC58C
+	.ctors      start:0x8045C240 end:0x8045C244
+	.data       start:0x804A82A8 end:0x804A8390
+	.bss        start:0x804D1468 end:0x804D1568
+
+game/tu_802AC58C.cpp:
+	extab       start:0x8000C5A4 end:0x8000C5BC
+	extabindex  start:0x8001B220 end:0x8001B244
+	.text       start:0x802AC58C end:0x802AC8AC
+	.ctors      start:0x8045C244 end:0x8045C248
+	.rodata     start:0x8046C890 end:0x8046C8A0
+	.bss        start:0x804D1568 end:0x804D1668
+
+game/tu_802AC8AC.cpp:
+	extab       start:0x8000C5BC end:0x8000C5F4
+	extabindex  start:0x8001B244 end:0x8001B280
+	.text       start:0x802AC8AC end:0x802ACEA4
+	.ctors      start:0x8045C248 end:0x8045C24C
+	.rodata     start:0x8046C8A0 end:0x8046C8B0
+	.data       start:0x804A8390 end:0x804A83A0
+	.bss        start:0x804D1668 end:0x804D1768
+	.sdata2     start:0x805408B8 end:0x805408C8
+
+game/tu_802ACEA4.cpp:
+	extab       start:0x8000C5F4 end:0x8000C61C
+	extabindex  start:0x8001B280 end:0x8001B2BC
+	.text       start:0x802ACEA4 end:0x802AF32C
+	.ctors      start:0x8045C24C end:0x8045C250
+	.rodata     start:0x8046C8B0 end:0x8046CA50
+	.data       start:0x804A83A0 end:0x804A8578
+	.bss        start:0x804D1768 end:0x804D1868
+	.sdata2     start:0x805408C8 end:0x80540960
+
+game/tu_802AF32C.cpp:
+	extab       start:0x8000C61C end:0x8000C634
+	extabindex  start:0x8001B2BC end:0x8001B2E0
+	.text       start:0x802AF32C end:0x802AFA10
+	.ctors      start:0x8045C250 end:0x8045C254
+	.rodata     start:0x8046CA50 end:0x8046CA68
+	.bss        start:0x804D1868 end:0x804D1968
+	.sdata2     start:0x80540960 end:0x80540968
+
+game/tu_802AFA10.cpp:
+	extab       start:0x8000C634 end:0x8000C65C
+	extabindex  start:0x8001B2E0 end:0x8001B31C
+	.text       start:0x802AFA10 end:0x802B055C
+	.ctors      start:0x8045C254 end:0x8045C258
+	.rodata     start:0x8046CA68 end:0x8046CA80
+	.bss        start:0x804D1968 end:0x804D1A68
+	.sdata2     start:0x80540968 end:0x80540990
+
+game/tu_802B055C.cpp:
+	extab       start:0x8000C65C end:0x8000C67C
+	extabindex  start:0x8001B31C end:0x8001B34C
+	.text       start:0x802B055C end:0x802B0CD8
+	.ctors      start:0x8045C258 end:0x8045C25C
+	.bss        start:0x804D1A68 end:0x804D1B68
+	.sdata2     start:0x80540990 end:0x805409B0
+
+game/tu_802B0CD8.cpp:
+	extab       start:0x8000C67C end:0x8000C6A4
+	extabindex  start:0x8001B34C end:0x8001B388
+	.text       start:0x802B0CD8 end:0x802B1558
+	.ctors      start:0x8045C25C end:0x8045C260
+	.bss        start:0x804D1B68 end:0x804D1C68
+	.sdata2     start:0x805409B0 end:0x805409C8
+
+game/tu_802B1558.cpp:
+	extab       start:0x8000C6A4 end:0x8000C6CC
+	extabindex  start:0x8001B388 end:0x8001B3C4
+	.text       start:0x802B1558 end:0x802B214C
+	.ctors      start:0x8045C260 end:0x8045C264
+	.data       start:0x804A8578 end:0x804A8638
+	.bss        start:0x804D1C68 end:0x804D1D68
+
+game/tu_802B214C.cpp:
+	extab       start:0x8000C6CC end:0x8000C704
+	extabindex  start:0x8001B3C4 end:0x8001B418
+	.text       start:0x802B214C end:0x802B334C
+	.ctors      start:0x8045C264 end:0x8045C268
+	.rodata     start:0x8046CA80 end:0x8046CA98
+	.bss        start:0x804D1D68 end:0x804D1E68
+	.sdata2     start:0x805409C8 end:0x80540A18
+
+game/tu_802B334C.cpp:
+	extab       start:0x8000C704 end:0x8000C71C
+	extabindex  start:0x8001B418 end:0x8001B43C
+	.text       start:0x802B334C end:0x802B3674
+	.ctors      start:0x8045C268 end:0x8045C26C
+	.rodata     start:0x8046CA98 end:0x8046CAB8
+	.bss        start:0x804D1E68 end:0x804D1F68
+
+game/tu_802B3674.cpp:
+	extab       start:0x8000C71C end:0x8000C77C
+	extabindex  start:0x8001B43C end:0x8001B4B4
+	.text       start:0x802B3674 end:0x802B61C8
+	.ctors      start:0x8045C26C end:0x8045C270
+	.data       start:0x804A8638 end:0x804A8858
+	.bss        start:0x804D1F68 end:0x804D2068
+	.sdata      start:0x8053A1A0 end:0x8053A1A8
+	.sdata2     start:0x80540A18 end:0x80540A38
+
+game/tu_802B61C8.cpp:
+	extab       start:0x8000C77C end:0x8000C7A4
+	extabindex  start:0x8001B4B4 end:0x8001B4F0
+	.text       start:0x802B61C8 end:0x802B6A70
+	.ctors      start:0x8045C270 end:0x8045C274
+	.rodata     start:0x8046CAB8 end:0x8046CAD0
+	.bss        start:0x804D2068 end:0x804D2168
+	.sdata2     start:0x80540A38 end:0x80540A78
+
+game/tu_802B6A70.cpp:
+	extab       start:0x8000C7A4 end:0x8000C7D4
+	extabindex  start:0x8001B4F0 end:0x8001B538
+	.text       start:0x802B6A70 end:0x802B7890
+	.ctors      start:0x8045C274 end:0x8045C278
+	.rodata     start:0x8046CAD0 end:0x8046CB40
+	.bss        start:0x804D2168 end:0x804D2268
+	.sdata2     start:0x80540A78 end:0x80540AB8
+
+game/tu_802B7890.cpp:
+	extab       start:0x8000C7D4 end:0x8000C7EC
+	extabindex  start:0x8001B538 end:0x8001B55C
+	.text       start:0x802B7890 end:0x802B7C78
+	.ctors      start:0x8045C278 end:0x8045C27C
+	.rodata     start:0x8046CB40 end:0x8046CB60
+	.bss        start:0x804D2268 end:0x804D2368
+
+game/tu_802B7C78.cpp:
+	extab       start:0x8000C7EC end:0x8000C834
+	extabindex  start:0x8001B55C end:0x8001B5C8
+	.text       start:0x802B7C78 end:0x802B8F7C
+	.ctors      start:0x8045C27C end:0x8045C280
+	.rodata     start:0x8046CB60 end:0x8046CB88
+	.data       start:0x804A8858 end:0x804A8A50
+	.bss        start:0x804D2368 end:0x804D2468
+	.sdata2     start:0x80540AB8 end:0x80540AF0
+
+game/tu_802B8F7C.cpp:
+	extab       start:0x8000C834 end:0x8000C854
+	extabindex  start:0x8001B5C8 end:0x8001B5F8
+	.text       start:0x802B8F7C end:0x802B9CAC
+	.ctors      start:0x8045C280 end:0x8045C284
+	.bss        start:0x804D2468 end:0x804D2568
+	.sdata2     start:0x80540AF0 end:0x80540B48
+
+game/tu_802B9CAC.cpp:
+	extab       start:0x8000C854 end:0x8000C86C
+	extabindex  start:0x8001B5F8 end:0x8001B61C
+	.text       start:0x802B9CAC end:0x802BA048
+	.ctors      start:0x8045C284 end:0x8045C288
+	.bss        start:0x804D2568 end:0x804D2668
+	.sdata2     start:0x80540B48 end:0x80540B50
+
+game/tu_802BA048.cpp:
+	extab       start:0x8000C86C end:0x8000C884
+	extabindex  start:0x8001B61C end:0x8001B640
+	.text       start:0x802BA048 end:0x802BA334
+	.ctors      start:0x8045C288 end:0x8045C28C
+	.bss        start:0x804D2668 end:0x804D2768
+
+game/tu_802BA334.cpp:
+	extab       start:0x8000C884 end:0x8000C88C
+	extabindex  start:0x8001B640 end:0x8001B64C
+	.text       start:0x802BA334 end:0x802BA558
+	.ctors      start:0x8045C28C end:0x8045C290
+	.bss        start:0x804D2768 end:0x804D2868
+
+game/tu_802BA558.cpp:
+	extab       start:0x8000C88C end:0x8000C8E4
+	extabindex  start:0x8001B64C end:0x8001B6D0
+	.text       start:0x802BA558 end:0x802BC83C
+	.ctors      start:0x8045C290 end:0x8045C294
+	.rodata     start:0x8046CB88 end:0x8046D3B0
+	.bss        start:0x804D2868 end:0x804D2968
+	.sdata2     start:0x80540B50 end:0x80540BB8
+
+game/tu_802BC83C.cpp:
+	extab       start:0x8000C8E4 end:0x8000C914
+	extabindex  start:0x8001B6D0 end:0x8001B718
+	.text       start:0x802BC83C end:0x802BD8C0
+	.ctors      start:0x8045C294 end:0x8045C298
+	.rodata     start:0x8046D3B0 end:0x8046D448
+	.data       start:0x804A8A50 end:0x804A8CD8
+	.bss        start:0x804D2968 end:0x804D2A68
+	.sdata2     start:0x80540BB8 end:0x80540BE0
+
+game/tu_802BD8C0.cpp:
+	extab       start:0x8000C914 end:0x8000C93C
+	extabindex  start:0x8001B718 end:0x8001B754
+	.text       start:0x802BD8C0 end:0x802BE39C
+	.ctors      start:0x8045C298 end:0x8045C29C
+	.bss        start:0x804D2A68 end:0x804D2B68
+	.sdata2     start:0x80540BE0 end:0x80540C00
+
+game/tu_802BE39C.cpp:
+	extab       start:0x8000C93C end:0x8000C954
+	extabindex  start:0x8001B754 end:0x8001B778
+	.text       start:0x802BE39C end:0x802BE8F8
+	.ctors      start:0x8045C29C end:0x8045C2A0
+	.rodata     start:0x8046D448 end:0x8046D460
+	.bss        start:0x804D2B68 end:0x804D2C68
+	.sdata2     start:0x80540C00 end:0x80540C10
+
+game/tu_802BE8F8.cpp:
+	extab       start:0x8000C954 end:0x8000C974
+	extabindex  start:0x8001B778 end:0x8001B7A8
+	.text       start:0x802BE8F8 end:0x802BF03C
+	.ctors      start:0x8045C2A0 end:0x8045C2A4
+	.bss        start:0x804D2C68 end:0x804D2D68
+	.sdata2     start:0x80540C10 end:0x80540C30
+
+game/tu_802BF03C.cpp:
+	extab       start:0x8000C974 end:0x8000C994
+	extabindex  start:0x8001B7A8 end:0x8001B7D8
+	.text       start:0x802BF03C end:0x802BF410
+	.ctors      start:0x8045C2A4 end:0x8045C2A8
+	.rodata     start:0x8046D460 end:0x8046D470
+	.bss        start:0x804D2D68 end:0x804D2E68
+
+game/tu_802BF410.cpp:
+	extab       start:0x8000C994 end:0x8000C9B4
+	extabindex  start:0x8001B7D8 end:0x8001B808
+	.text       start:0x802BF410 end:0x802BFB7C
+	.ctors      start:0x8045C2A8 end:0x8045C2AC
+	.rodata     start:0x8046D470 end:0x8046D4F0
+	.bss        start:0x804D2E68 end:0x804D2F68
+	.sdata2     start:0x80540C30 end:0x80540C38
+
+game/tu_802BFB7C.cpp:
+	extab       start:0x8000C9B4 end:0x8000C9F4
+	extabindex  start:0x8001B808 end:0x8001B868
+	.text       start:0x802BFB7C end:0x802C1614
+	.ctors      start:0x8045C2AC end:0x8045C2B0
+	.rodata     start:0x8046D4F0 end:0x8046D560
+	.bss        start:0x804D2F68 end:0x804D3068
+	.sdata2     start:0x80540C38 end:0x80540C70
+
+game/tu_802C1614.cpp:
+	extab       start:0x8000C9F4 end:0x8000CAA4
+	extabindex  start:0x8001B868 end:0x8001B970
+	.text       start:0x802C1614 end:0x802C5950
+	.ctors      start:0x8045C2B0 end:0x8045C2B4
+	.rodata     start:0x8046D560 end:0x8046D598
+	.data       start:0x804A8CD8 end:0x804A8D88
+	.bss        start:0x804D3068 end:0x804D3168
+	.sdata2     start:0x80540C70 end:0x80540D00
+
+game/tu_802C5950.cpp:
+	extab       start:0x8000CAA4 end:0x8000CAC4
+	extabindex  start:0x8001B970 end:0x8001B9A0
+	.text       start:0x802C5950 end:0x802C8500
+	.ctors      start:0x8045C2B4 end:0x8045C2B8
+	.rodata     start:0x8046D598 end:0x8046D808
+	.data       start:0x804A8D88 end:0x804A8F50
+	.bss        start:0x804D3168 end:0x804D3268
+	.sdata2     start:0x80540D00 end:0x80540D58
+
+game/tu_802C8500.cpp:
+	extab       start:0x8000CAC4 end:0x8000CAF4
+	extabindex  start:0x8001B9A0 end:0x8001B9E8
+	.text       start:0x802C8500 end:0x802C94F4
+	.ctors      start:0x8045C2B8 end:0x8045C2BC
+	.rodata     start:0x8046D808 end:0x8046D818
+	.bss        start:0x804D3268 end:0x804D3368
+	.sdata2     start:0x80540D58 end:0x80540D70
+
+game/tu_802C94F4.cpp:
+	extab       start:0x8000CAF4 end:0x8000CB0C
+	extabindex  start:0x8001B9E8 end:0x8001BA0C
+	.text       start:0x802C94F4 end:0x802C9944
+	.ctors      start:0x8045C2BC end:0x8045C2C0
+	.bss        start:0x804D3368 end:0x804D3468
+
+game/tu_802C9944.cpp:
+	extab       start:0x8000CB0C end:0x8000CB34
+	extabindex  start:0x8001BA0C end:0x8001BA48
+	.text       start:0x802C9944 end:0x802CA284
+	.ctors      start:0x8045C2C0 end:0x8045C2C4
+	.rodata     start:0x8046D818 end:0x8046D878
+	.bss        start:0x804D3468 end:0x804D3568
+	.sdata2     start:0x80540D70 end:0x80540D88
+
+game/tu_802CA284.cpp:
+	extab       start:0x8000CB34 end:0x8000CB5C
+	extabindex  start:0x8001BA48 end:0x8001BA84
+	.text       start:0x802CA284 end:0x802CB1C4
+	.ctors      start:0x8045C2C4 end:0x8045C2C8
+	.rodata     start:0x8046D878 end:0x8046D8F8
+	.data       start:0x804A8F50 end:0x804A9078
+	.bss        start:0x804D3568 end:0x804D3668
+	.sdata2     start:0x80540D88 end:0x80540DA8
+
+game/tu_802CB1C4.cpp:
+	extab       start:0x8000CB5C end:0x8000CB8C
+	extabindex  start:0x8001BA84 end:0x8001BACC
+	.text       start:0x802CB1C4 end:0x802CC1C4
+	.ctors      start:0x8045C2C8 end:0x8045C2CC
+	.rodata     start:0x8046D8F8 end:0x8046D908
+	.bss        start:0x804D3668 end:0x804D3768
+	.sdata2     start:0x80540DA8 end:0x80540DD0
+
+game/tu_802CC1C4.cpp:
+	extab       start:0x8000CB8C end:0x8000CBB4
+	extabindex  start:0x8001BACC end:0x8001BB08
+	.text       start:0x802CC1C4 end:0x802CCEB0
+	.ctors      start:0x8045C2CC end:0x8045C2D0
+	.rodata     start:0x8046D908 end:0x8046D920
+	.bss        start:0x804D3768 end:0x804D3868
+	.sdata2     start:0x80540DD0 end:0x80540DE0
+
+game/tu_802CCEB0.cpp:
+	extab       start:0x8000CBB4 end:0x8000CBCC
+	extabindex  start:0x8001BB08 end:0x8001BB2C
+	.text       start:0x802CCEB0 end:0x802CDD3C
+	.ctors      start:0x8045C2D0 end:0x8045C2D4
+	.data       start:0x804A9078 end:0x804A90F0
+	.bss        start:0x804D3868 end:0x804D3968
+	.sdata2     start:0x80540DE0 end:0x80540E28
+
+game/tu_802CDD3C.cpp:
+	extab       start:0x8000CBCC end:0x8000CBF4
+	extabindex  start:0x8001BB2C end:0x8001BB68
+	.text       start:0x802CDD3C end:0x802CEB60
+	.ctors      start:0x8045C2D4 end:0x8045C2D8
+	.rodata     start:0x8046D920 end:0x8046DFB8
+	.data       start:0x804A90F0 end:0x804A9328
+	.bss        start:0x804D3968 end:0x804D3A68
+	.sdata2     start:0x80540E28 end:0x80540E48
+
+game/tu_802CEB60.cpp:
+	extab       start:0x8000CBF4 end:0x8000CC44
+	extabindex  start:0x8001BB68 end:0x8001BBE0
+	.text       start:0x802CEB60 end:0x802CFDCC
+	.ctors      start:0x8045C2D8 end:0x8045C2DC
+	.rodata     start:0x8046DFB8 end:0x8046DFD0
+	.bss        start:0x804D3A68 end:0x804D3B68
+	.sdata2     start:0x80540E48 end:0x80540E70
+
+game/tu_802CFDCC.cpp:
+	extab       start:0x8000CC44 end:0x8000CC64
+	extabindex  start:0x8001BBE0 end:0x8001BC10
+	.text       start:0x802CFDCC end:0x802D0B24
+	.ctors      start:0x8045C2DC end:0x8045C2E0
+	.rodata     start:0x8046DFD0 end:0x8046E058
+	.data       start:0x804A9328 end:0x804A9530
+	.bss        start:0x804D3B68 end:0x804D3C68
+	.sdata2     start:0x80540E70 end:0x80540EA8
+
+game/tu_802D0B24.cpp:
+	extab       start:0x8000CC64 end:0x8000CC9C
+	extabindex  start:0x8001BC10 end:0x8001BC64
+	.text       start:0x802D0B24 end:0x802D14DC
+	.ctors      start:0x8045C2E0 end:0x8045C2E4
+	.rodata     start:0x8046E058 end:0x8046E070
+	.bss        start:0x804D3C68 end:0x804D3D68
+	.sdata2     start:0x80540EA8 end:0x80540EC8
+
+game/tu_802D14DC.cpp:
+	extab       start:0x8000CC9C end:0x8000CCDC
+	extabindex  start:0x8001BC64 end:0x8001BCC4
+	.text       start:0x802D14DC end:0x802D2AA4
+	.ctors      start:0x8045C2E4 end:0x8045C2E8
+	.rodata     start:0x8046E070 end:0x8046E118
+	.bss        start:0x804D3D68 end:0x804D3E68
+	.sdata2     start:0x80540EC8 end:0x80540F18
+
+game/tu_802D2AA4.cpp:
+	extab       start:0x8000CCDC end:0x8000CD0C
+	extabindex  start:0x8001BCC4 end:0x8001BD0C
+	.text       start:0x802D2AA4 end:0x802D3184
+	.ctors      start:0x8045C2E8 end:0x8045C2EC
+	.rodata     start:0x8046E118 end:0x8046E130
+	.bss        start:0x804D3E68 end:0x804D3F68
+	.sdata2     start:0x80540F18 end:0x80540F38
+
+game/tu_802D3184.cpp:
+	extab       start:0x8000CD0C end:0x8000CD44
+	extabindex  start:0x8001BD0C end:0x8001BD60
+	.text       start:0x802D3184 end:0x802D39B8
+	.ctors      start:0x8045C2EC end:0x8045C2F0
+	.rodata     start:0x8046E130 end:0x8046E148
+	.bss        start:0x804D3F68 end:0x804D4068
+	.sdata2     start:0x80540F38 end:0x80540FD8
+
+game/tu_802D39B8.cpp:
+	extab       start:0x8000CD44 end:0x8000CE54
+	extabindex  start:0x8001BD60 end:0x8001BEF8
+	.text       start:0x802D39B8 end:0x802DF458
+	.ctors      start:0x8045C2F0 end:0x8045C2F4
+	.rodata     start:0x8046E148 end:0x8046E998
+	.data       start:0x804A9530 end:0x804A9AC8
+	.bss        start:0x804D4068 end:0x804D4168
+	.sdata      start:0x8053A1A8 end:0x8053A1B0
+	.sdata2     start:0x80540FD8 end:0x80541168
+
+game/tu_802DF458.cpp:
+	extab       start:0x8000CE54 end:0x8000CE8C
+	extabindex  start:0x8001BEF8 end:0x8001BF4C
+	.text       start:0x802DF458 end:0x802DFCE8
+	.ctors      start:0x8045C2F4 end:0x8045C2F8
+	.rodata     start:0x8046E998 end:0x8046E9B0
+	.bss        start:0x804D4168 end:0x804D4268
+	.sdata2     start:0x80541168 end:0x80541188
+
+game/tu_802DFCE8.cpp:
+	extab       start:0x8000CE8C end:0x8000CEAC
+	extabindex  start:0x8001BF4C end:0x8001BF7C
+	.text       start:0x802DFCE8 end:0x802E038C
+	.ctors      start:0x8045C2F8 end:0x8045C2FC
+	.rodata     start:0x8046E9B0 end:0x8046E9D8
+	.bss        start:0x804D4268 end:0x804D4368
+	.sdata2     start:0x80541188 end:0x805411A8
+
+game/tu_802E038C.cpp:
+	extab       start:0x8000CEAC end:0x8000CECC
+	extabindex  start:0x8001BF7C end:0x8001BFAC
+	.text       start:0x802E038C end:0x802E07C8
+	.ctors      start:0x8045C2FC end:0x8045C300
+	.bss        start:0x804D4368 end:0x804D4468
+
+game/tu_802E07C8.cpp:
+	extab       start:0x8000CECC end:0x8000CEEC
+	extabindex  start:0x8001BFAC end:0x8001BFDC
+	.text       start:0x802E07C8 end:0x802E0AB4
+	.ctors      start:0x8045C300 end:0x8045C304
+	.bss        start:0x804D4468 end:0x804D4568
+
+game/tu_802E0AB4.cpp:
+	extab       start:0x8000CEEC end:0x8000CF1C
+	extabindex  start:0x8001BFDC end:0x8001C00C
+	.text       start:0x802E0AB4 end:0x802E1B40
+	.ctors      start:0x8045C304 end:0x8045C308
+	.data       start:0x804A9AC8 end:0x804A9D28
+	.bss        start:0x804D4568 end:0x804D4668
+	.sdata2     start:0x805411A8 end:0x805411B8
+
+game/tu_802E1B40.cpp:
+	extab       start:0x8000CF1C end:0x8000CF3C
+	extabindex  start:0x8001C00C end:0x8001C03C
+	.text       start:0x802E1B40 end:0x802E2074
+	.ctors      start:0x8045C308 end:0x8045C30C
+	.bss        start:0x804D4668 end:0x804D4768
+
+game/tu_802E2074.cpp:
+	extab       start:0x8000CF3C end:0x8000CF5C
+	extabindex  start:0x8001C03C end:0x8001C06C
+	.text       start:0x802E2074 end:0x802E2990
+	.ctors      start:0x8045C30C end:0x8045C310
+	.rodata     start:0x8046E9D8 end:0x8046EA10
+	.bss        start:0x804D4768 end:0x804D49A8
+	.sbss       start:0x8053ACB0 end:0x8053ACB8
+	.sdata2     start:0x805411B8 end:0x805411C8
+
+game/tu_802E2990.cpp:
+	extab       start:0x8000CF5C end:0x8000CF84
+	extabindex  start:0x8001C06C end:0x8001C0A8
+	.text       start:0x802E2990 end:0x802E40A8
+	.ctors      start:0x8045C310 end:0x8045C314
+	.rodata     start:0x8046EA10 end:0x8046F0B8
+	.bss        start:0x804D49A8 end:0x804D4AA8
+	.sdata2     start:0x805411C8 end:0x805411F8
+
+game/tu_802E40A8.cpp:
+	extab       start:0x8000CF84 end:0x8000CFA4
+	extabindex  start:0x8001C0A8 end:0x8001C0D8
+	.text       start:0x802E40A8 end:0x802E43E0
+	.ctors      start:0x8045C314 end:0x8045C318
+	.rodata     start:0x8046F0B8 end:0x8046F0C8
+	.bss        start:0x804D4AA8 end:0x804D4BA8
+	.sdata2     start:0x805411F8 end:0x80541200
+
+game/tu_802E43E0.cpp:
+	extab       start:0x8000CFA4 end:0x8000CFD4
+	extabindex  start:0x8001C0D8 end:0x8001C108
+	.text       start:0x802E43E0 end:0x802E4C74
+	.ctors      start:0x8045C318 end:0x8045C31C
+	.bss        start:0x804D4BA8 end:0x804D4CA8
+	.sdata2     start:0x80541200 end:0x80541208
+
+game/tu_802E4C74.cpp:
+	extab       start:0x8000CFD4 end:0x8000D00C
+	extabindex  start:0x8001C108 end:0x8001C15C
+	.text       start:0x802E4C74 end:0x802E5C44
+	.ctors      start:0x8045C31C end:0x8045C320
+	.rodata     start:0x8046F0C8 end:0x8046F1C8
+	.data       start:0x804A9D28 end:0x804AA0B8
+	.bss        start:0x804D4CA8 end:0x804D4DA8
+	.sdata2     start:0x80541208 end:0x80541228
+
+game/tu_802E5C44.cpp:
+	extab       start:0x8000D00C end:0x8000D02C
+	extabindex  start:0x8001C15C end:0x8001C18C
+	.text       start:0x802E5C44 end:0x802E694C
+	.ctors      start:0x8045C320 end:0x8045C324
+	.rodata     start:0x8046F1C8 end:0x8046F260
+	.bss        start:0x804D4DA8 end:0x804D4EA8
+	.sdata2     start:0x80541228 end:0x80541238
+
+game/tu_802E694C.cpp:
+	extab       start:0x8000D02C end:0x8000D04C
+	extabindex  start:0x8001C18C end:0x8001C1BC
+	.text       start:0x802E694C end:0x802E6EC4
+	.ctors      start:0x8045C324 end:0x8045C328
+	.rodata     start:0x8046F260 end:0x8046F270
+	.bss        start:0x804D4EA8 end:0x804D4FA8
+	.sdata2     start:0x80541238 end:0x80541250
+
+game/tu_802E6EC4.cpp:
+	extab       start:0x8000D04C end:0x8000D064
+	extabindex  start:0x8001C1BC end:0x8001C1E0
+	.text       start:0x802E6EC4 end:0x802E72A4
+	.ctors      start:0x8045C328 end:0x8045C32C
+	.bss        start:0x804D4FA8 end:0x804D50A8
+
+game/tu_802E72A4.cpp:
+	extab       start:0x8000D064 end:0x8000D094
+	extabindex  start:0x8001C1E0 end:0x8001C210
+	.text       start:0x802E72A4 end:0x802E7634
+	.ctors      start:0x8045C32C end:0x8045C330
+	.bss        start:0x804D50A8 end:0x804D51A8
+
+game/tu_802E7634.cpp:
+	extab       start:0x8000D094 end:0x8000D0AC
+	extabindex  start:0x8001C210 end:0x8001C234
+	.text       start:0x802E7634 end:0x802E794C
+	.ctors      start:0x8045C330 end:0x8045C334
+	.bss        start:0x804D51A8 end:0x804D52A8
+	.sdata2     start:0x80541250 end:0x80541258
+
+game/tu_802E794C.cpp:
+	extab       start:0x8000D0AC end:0x8000D0CC
+	extabindex  start:0x8001C234 end:0x8001C264
+	.text       start:0x802E794C end:0x802E7DB4
+	.ctors      start:0x8045C334 end:0x8045C338
+	.bss        start:0x804D52A8 end:0x804D53A8
+	.sdata2     start:0x80541258 end:0x80541260
+
+game/tu_802E7DB4.cpp:
+	extab       start:0x8000D0CC end:0x8000D0FC
+	extabindex  start:0x8001C264 end:0x8001C2AC
+	.text       start:0x802E7DB4 end:0x802E8DFC
+	.ctors      start:0x8045C338 end:0x8045C33C
+	.rodata     start:0x8046F270 end:0x8046F280
+	.bss        start:0x804D53A8 end:0x804D54A8
+	.sdata2     start:0x80541260 end:0x805412E8
+
+game/tu_802E8DFC.cpp:
+	extab       start:0x8000D0FC end:0x8000D11C
+	extabindex  start:0x8001C2AC end:0x8001C2DC
+	.text       start:0x802E8DFC end:0x802E910C
+	.ctors      start:0x8045C33C end:0x8045C340
+	.bss        start:0x804D54A8 end:0x804D55A8
+
+game/tu_802E910C.cpp:
+	extab       start:0x8000D11C end:0x8000D13C
+	extabindex  start:0x8001C2DC end:0x8001C30C
+	.text       start:0x802E910C end:0x802E9428
+	.ctors      start:0x8045C340 end:0x8045C344
+	.bss        start:0x804D55A8 end:0x804D56A8
+
+game/tu_802E9428.cpp:
+	extab       start:0x8000D13C end:0x8000D174
+	extabindex  start:0x8001C30C end:0x8001C360
+	.text       start:0x802E9428 end:0x802EB21C
+	.ctors      start:0x8045C344 end:0x8045C348
+	.rodata     start:0x8046F280 end:0x8046F398
+	.data       start:0x804AA0B8 end:0x804AA330
+	.bss        start:0x804D56A8 end:0x804D58B8
+	.sdata2     start:0x805412E8 end:0x805413B0
+
+game/tu_802EB21C.cpp:
+	extab       start:0x8000D174 end:0x8000D1A4
+	extabindex  start:0x8001C360 end:0x8001C3A8
+	.text       start:0x802EB21C end:0x802EC1D4
+	.ctors      start:0x8045C348 end:0x8045C34C
+	.bss        start:0x804D58B8 end:0x804D59B8
+	.sdata2     start:0x805413B0 end:0x805413F0
+
+game/tu_802EC1D4.cpp:
+	extab       start:0x8000D1A4 end:0x8000D1BC
+	extabindex  start:0x8001C3A8 end:0x8001C3CC
+	.text       start:0x802EC1D4 end:0x802EC73C
+	.ctors      start:0x8045C34C end:0x8045C350
+	.rodata     start:0x8046F398 end:0x8046F508
+	.bss        start:0x804D59B8 end:0x804D5AB8
+	.sdata2     start:0x805413F0 end:0x805413F8
+
+game/tu_802EC73C.cpp:
+	extab       start:0x8000D1BC end:0x8000D1D4
+	extabindex  start:0x8001C3CC end:0x8001C3F0
+	.text       start:0x802EC73C end:0x802ECAD4
+	.ctors      start:0x8045C350 end:0x8045C354
+	.bss        start:0x804D5AB8 end:0x804D5BB8
+
+game/tu_802ECAD4.cpp:
+	extab       start:0x8000D1D4 end:0x8000D204
+	extabindex  start:0x8001C3F0 end:0x8001C420
+	.text       start:0x802ECAD4 end:0x802ED140
+	.ctors      start:0x8045C354 end:0x8045C358
+	.bss        start:0x804D5BB8 end:0x804D5CB8
+	.sdata2     start:0x805413F8 end:0x80541400
+
+game/tu_802ED140.cpp:
+	extab       start:0x8000D204 end:0x8000D224
+	extabindex  start:0x8001C420 end:0x8001C450
+	.text       start:0x802ED140 end:0x802ED538
+	.ctors      start:0x8045C358 end:0x8045C35C
+	.bss        start:0x804D5CB8 end:0x804D5DB8
+
+game/tu_802ED538.cpp:
+	extab       start:0x8000D224 end:0x8000D25C
+	extabindex  start:0x8001C450 end:0x8001C4A4
+	.text       start:0x802ED538 end:0x802EEC50
+	.ctors      start:0x8045C35C end:0x8045C360
+	.rodata     start:0x8046F508 end:0x8046F610
+	.data       start:0x804AA330 end:0x804AA4F0
+	.bss        start:0x804D5DB8 end:0x804D5EB8
+	.sdata2     start:0x80541400 end:0x80541430
+
+game/tu_802EEC50.cpp:
+	extab       start:0x8000D25C end:0x8000D27C
+	extabindex  start:0x8001C4A4 end:0x8001C4D4
+	.text       start:0x802EEC50 end:0x802EF0A0
+	.ctors      start:0x8045C360 end:0x8045C364
+	.bss        start:0x804D5EB8 end:0x804D5FB8
+
+game/tu_802EF0A0.cpp:
+	extab       start:0x8000D27C end:0x8000D29C
+	extabindex  start:0x8001C4D4 end:0x8001C504
+	.text       start:0x802EF0A0 end:0x802EF448
+	.ctors      start:0x8045C364 end:0x8045C368
+	.bss        start:0x804D5FB8 end:0x804D60B8
+
+game/tu_802EF448.cpp:
+	extab       start:0x8000D29C end:0x8000D2B4
+	extabindex  start:0x8001C504 end:0x8001C528
+	.text       start:0x802EF448 end:0x802EF76C
+	.ctors      start:0x8045C368 end:0x8045C36C
+	.rodata     start:0x8046F610 end:0x8046F628
+	.bss        start:0x804D60B8 end:0x804D61B8
+
+game/tu_802EF76C.cpp:
+	extab       start:0x8000D2B4 end:0x8000D2D4
+	extabindex  start:0x8001C528 end:0x8001C558
+	.text       start:0x802EF76C end:0x802F032C
+	.ctors      start:0x8045C36C end:0x8045C370
+	.data       start:0x804AA4F0 end:0x804AA590
+	.bss        start:0x804D61B8 end:0x804D62B8
+	.sdata2     start:0x80541430 end:0x80541438
+
+game/tu_802F032C.cpp:
+	extab       start:0x8000D2D4 end:0x8000D304
+	extabindex  start:0x8001C558 end:0x8001C588
+	.text       start:0x802F032C end:0x802F184C
+	.ctors      start:0x8045C370 end:0x8045C374
+	.rodata     start:0x8046F628 end:0x8046F788
+	.data       start:0x804AA590 end:0x804AA628
+	.bss        start:0x804D62B8 end:0x804D63B8
+	.sdata2     start:0x80541438 end:0x80541440
+
+game/tu_802F184C.cpp:
+	extab       start:0x8000D304 end:0x8000D32C
+	extabindex  start:0x8001C588 end:0x8001C5C4
+	.text       start:0x802F184C end:0x802F3B74
+	.ctors      start:0x8045C374 end:0x8045C378
+	.rodata     start:0x8046F788 end:0x8046F928
+	.data       start:0x804AA628 end:0x804AA858
+	.bss        start:0x804D63B8 end:0x804D64B8
+	.sdata2     start:0x80541440 end:0x805414D0
+
+game/tu_802F3B74.cpp:
+	extab       start:0x8000D32C end:0x8000D354
+	extabindex  start:0x8001C5C4 end:0x8001C600
+	.text       start:0x802F3B74 end:0x802F3F7C
+	.ctors      start:0x8045C378 end:0x8045C37C
+	.bss        start:0x804D64B8 end:0x804D65B8
+
+game/tu_802F3F7C.cpp:
+	extab       start:0x8000D354 end:0x8000D36C
+	extabindex  start:0x8001C600 end:0x8001C624
+	.text       start:0x802F3F7C end:0x802F43C0
+	.ctors      start:0x8045C37C end:0x8045C380
+	.bss        start:0x804D65B8 end:0x804D66B8
+
+game/tu_802F43C0.cpp:
+	extab       start:0x8000D36C end:0x8000D38C
+	extabindex  start:0x8001C624 end:0x8001C654
+	.text       start:0x802F43C0 end:0x802F4820
+	.ctors      start:0x8045C380 end:0x8045C384
+	.rodata     start:0x8046F928 end:0x8046F940
+	.bss        start:0x804D66B8 end:0x804D67B8
+	.sdata2     start:0x805414D0 end:0x805414E8
+
+game/tu_802F4820.cpp:
+	extab       start:0x8000D38C end:0x8000D3A4
+	extabindex  start:0x8001C654 end:0x8001C678
+	.text       start:0x802F4820 end:0x802F4AEC
+	.ctors      start:0x8045C384 end:0x8045C388
+	.bss        start:0x804D67B8 end:0x804D68B8
+
+game/tu_802F4AEC.cpp:
+	extab       start:0x8000D3A4 end:0x8000D3C4
+	extabindex  start:0x8001C678 end:0x8001C6A8
+	.text       start:0x802F4AEC end:0x802F5040
+	.ctors      start:0x8045C388 end:0x8045C38C
+	.bss        start:0x804D68B8 end:0x804D69B8
+
+game/tu_802F5040.cpp:
+	extab       start:0x8000D3C4 end:0x8000D4FC
+	extabindex  start:0x8001C6A8 end:0x8001C84C
+	.text       start:0x802F5040 end:0x803006E8
+	.ctors      start:0x8045C38C end:0x8045C390
+	.rodata     start:0x8046F940 end:0x804711F0
+	.data       start:0x804AA858 end:0x804AA888
+	.bss        start:0x804D69B8 end:0x804D6AB8
+	.sdata2     start:0x805414E8 end:0x80541618
+
+game/tu_803006E8.cpp:
+	extab       start:0x8000D4FC end:0x8000D52C
+	extabindex  start:0x8001C84C end:0x8001C894
+	.text       start:0x803006E8 end:0x80301CD0
+	.ctors      start:0x8045C390 end:0x8045C394
+	.rodata     start:0x804711F0 end:0x80471208
+	.data       start:0x804AA888 end:0x804AA8B8
+	.bss        start:0x804D6AB8 end:0x804DB798
+	.sbss       start:0x8053ACB8 end:0x8053ACD0
+	.sdata2     start:0x80541618 end:0x80541630
+
+game/tu_80301CD0.cpp:
+	extab       start:0x8000D52C end:0x8000D614
+	extabindex  start:0x8001C894 end:0x8001C9F0
+	.text       start:0x80301CD0 end:0x803099FC
+	.ctors      start:0x8045C394 end:0x8045C398
+	.rodata     start:0x80471208 end:0x80471368
+	.data       start:0x804AA8B8 end:0x804AA8C8
+	.bss        start:0x804DB798 end:0x805076E8
+	.sbss       start:0x8053ACD0 end:0x8053AD38
+	.sdata2     start:0x80541630 end:0x80541670
+
+game/tu_803099FC.cpp:
+	extab       start:0x8000D614 end:0x8000D644
+	extabindex  start:0x8001C9F0 end:0x8001CA38
+	.text       start:0x803099FC end:0x8030AE84
+	.ctors      start:0x8045C398 end:0x8045C39C
+	.data       start:0x804AA8C8 end:0x804AA8D8
+	.bss        start:0x805076E8 end:0x805077F8
+	.sbss       start:0x8053AD38 end:0x8053AD40
+	.sdata2     start:0x80541670 end:0x80541698
+
+game/tu_8030AE84.cpp:
+	extab       start:0x8000D644 end:0x8000D69C
+	extabindex  start:0x8001CA38 end:0x8001CABC
+	.text       start:0x8030AE84 end:0x8030C058
+	.ctors      start:0x8045C39C end:0x8045C3A0
+	.data       start:0x804AA8D8 end:0x804AA8E8
+	.bss        start:0x805077F8 end:0x805078F8
+	.sdata2     start:0x80541698 end:0x805416C8
+
+game/tu_8030C058.cpp:
+	extab       start:0x8000D69C end:0x8000D734
+	extabindex  start:0x8001CABC end:0x8001CBA0
+	.text       start:0x8030C058 end:0x8030E9A0
+	.ctors      start:0x8045C3A0 end:0x8045C3A4
+	.data       start:0x804AA8E8 end:0x804AA9F0
+	.bss        start:0x805078F8 end:0x805079F8
+	.sdata2     start:0x805416C8 end:0x80541738
+
+game/tu_8030E9A0.cpp:
+	extab       start:0x8000D734 end:0x8000D764
+	extabindex  start:0x8001CBA0 end:0x8001CBE8
+	.text       start:0x8030E9A0 end:0x8030FD60
+	.ctors      start:0x8045C3A4 end:0x8045C3A8
+	.rodata     start:0x80471368 end:0x804713C0
+	.data       start:0x804AA9F0 end:0x804AAA70
+	.bss        start:0x805079F8 end:0x80507AF8
+	.sdata2     start:0x80541738 end:0x80541778
+
+game/tu_8030FD60.cpp:
+	extab       start:0x8000D764 end:0x8000D78C
+	extabindex  start:0x8001CBE8 end:0x8001CC24
+	.text       start:0x8030FD60 end:0x80310DE8
+	.ctors      start:0x8045C3A8 end:0x8045C3AC
+	.rodata     start:0x804713C0 end:0x80471438
+	.data       start:0x804AAA70 end:0x804AAB98
+	.bss        start:0x80507AF8 end:0x80507BF8
+	.sdata2     start:0x80541778 end:0x80541798
+
+game/tu_80310DE8.cpp:
+	extab       start:0x8000D78C end:0x8000D7C4
+	extabindex  start:0x8001CC24 end:0x8001CC78
+	.text       start:0x80310DE8 end:0x8031179C
+	.ctors      start:0x8045C3AC end:0x8045C3B0
+	.rodata     start:0x80471438 end:0x80471488
+	.bss        start:0x80507BF8 end:0x80507CF8
+	.sdata2     start:0x80541798 end:0x805417B8
+
+game/tu_8031179C.cpp:
+	extab       start:0x8000D7C4 end:0x8000D7F4
+	extabindex  start:0x8001CC78 end:0x8001CCC0
+	.text       start:0x8031179C end:0x80312668
+	.ctors      start:0x8045C3B0 end:0x8045C3B4
+	.rodata     start:0x80471488 end:0x804714A0
+	.bss        start:0x80507CF8 end:0x80507DF8
+	.sdata2     start:0x805417B8 end:0x805417E8
+
+game/tu_80312668.cpp:
+	extab       start:0x8000D7F4 end:0x8000D81C
+	extabindex  start:0x8001CCC0 end:0x8001CCFC
+	.text       start:0x80312668 end:0x80313C20
+	.ctors      start:0x8045C3B4 end:0x8045C3B8
+	.rodata     start:0x804714A0 end:0x804714D8
+	.data       start:0x804AAB98 end:0x804AAC58
+	.bss        start:0x80507DF8 end:0x80507EF8
+	.sdata2     start:0x805417E8 end:0x80541880
+
+game/act_tingle_tower.cpp:
+	extab       start:0x8000D81C end:0x8000D8C0
+	extabindex  start:0x8001CCFC end:0x8001CDBC
+	.text       start:0x80313C20 end:0x80316E34
+	.ctors      start:0x8045C3B8 end:0x8045C3BC
+	.rodata     start:0x804714D8 end:0x804715A8
+	.data       start:0x804AAC58 end:0x804AADB8
+	.bss        start:0x80507EF8 end:0x80507FF8
+	.sdata2     start:0x80541880 end:0x805418B8
+
+game/tu_80316E34.cpp:
+	extab       start:0x8000D8C0 end:0x8000D8D8
+	extabindex  start:0x8001CDBC end:0x8001CDE0
+	.text       start:0x80316E34 end:0x803172DC
+	.ctors      start:0x8045C3BC end:0x8045C3C0
+	.rodata     start:0x804715A8 end:0x80471620
+	.data       start:0x804AADB8 end:0x804AADC8
+	.bss        start:0x80507FF8 end:0x805080F8
+	.sdata2     start:0x805418B8 end:0x805418C0
+
+game/act_tingle_first.cpp:
+	extab       start:0x8000D8D8 end:0x8000D92C
+	extabindex  start:0x8001CDE0 end:0x8001CE28
+	.text       start:0x803172DC end:0x80317EB8
+	.ctors      start:0x8045C3C0 end:0x8045C3C4
+	.rodata     start:0x80471620 end:0x80471638
+	.data       start:0x804AADC8 end:0x804AAE68
+	.bss        start:0x805080F8 end:0x805081F8
+	.sdata2     start:0x805418C0 end:0x805418F8
+
+game/tu_80317EB8.cpp:
+	extab       start:0x8000D92C end:0x8000D9A4
+	extabindex  start:0x8001CE28 end:0x8001CEDC
+	.text       start:0x80317EB8 end:0x8031A210
+	.ctors      start:0x8045C3C4 end:0x8045C3C8
+	.rodata     start:0x80471638 end:0x80471678
+	.data       start:0x804AAE68 end:0x804AB038
+	.bss        start:0x805081F8 end:0x805082F8
+	.sdata      start:0x8053A1B0 end:0x8053A1B8
+	.sdata2     start:0x805418F8 end:0x80541920
+
+game/tu_8031A210.cpp:
+	extab       start:0x8000D9A4 end:0x8000D9CC
+	extabindex  start:0x8001CEDC end:0x8001CF18
+	.text       start:0x8031A210 end:0x8031C050
+	.ctors      start:0x8045C3C8 end:0x8045C3CC
+	.rodata     start:0x80471678 end:0x804716E0
+	.data       start:0x804AB038 end:0x804AB130
+	.bss        start:0x805082F8 end:0x805083F8
+	.sdata2     start:0x80541920 end:0x805419B8
+
+game/tu_8031C050.cpp:
+	extab       start:0x8000D9CC end:0x8000D9FC
+	extabindex  start:0x8001CF18 end:0x8001CF60
+	.text       start:0x8031C050 end:0x8031E144
+	.ctors      start:0x8045C3CC end:0x8045C3D0
+	.rodata     start:0x804716E0 end:0x80471708
+	.data       start:0x804AB130 end:0x804AB248
+	.bss        start:0x805083F8 end:0x805084F8
+	.sdata2     start:0x805419B8 end:0x80541A20
+
+game/tu_8031E144.cpp:
+	extab       start:0x8000D9FC end:0x8000DA2C
+	extabindex  start:0x8001CF60 end:0x8001CFA8
+	.text       start:0x8031E144 end:0x8031EF4C
+	.ctors      start:0x8045C3D0 end:0x8045C3D4
+	.rodata     start:0x80471708 end:0x80471740
+	.bss        start:0x805084F8 end:0x805085F8
+	.sdata2     start:0x80541A20 end:0x80541A58
+
+game/tu_8031EF4C.cpp:
+	extab       start:0x8000DA2C end:0x8000DA54
+	extabindex  start:0x8001CFA8 end:0x8001CFE4
+	.text       start:0x8031EF4C end:0x8031FD60
+	.ctors      start:0x8045C3D4 end:0x8045C3D8
+	.rodata     start:0x80471740 end:0x80471760
+	.data       start:0x804AB248 end:0x804AB308
+	.bss        start:0x805085F8 end:0x805086F8
+	.sdata2     start:0x80541A58 end:0x80541A98
+
+game/tu_8031FD60.cpp:
+	extab       start:0x8000DA54 end:0x8000DA74
+	extabindex  start:0x8001CFE4 end:0x8001D014
+	.text       start:0x8031FD60 end:0x80320374
+	.ctors      start:0x8045C3D8 end:0x8045C3DC
+	.bss        start:0x805086F8 end:0x805087F8
+	.sdata2     start:0x80541A98 end:0x80541AD8
+
+game/tu_80320374.cpp:
+	extab       start:0x8000DA74 end:0x8000DAD4
+	extabindex  start:0x8001D014 end:0x8001D0A4
+	.text       start:0x80320374 end:0x803239A0
+	.ctors      start:0x8045C3DC end:0x8045C3E0
+	.rodata     start:0x80471760 end:0x80471840
+	.data       start:0x804AB308 end:0x804AB3A8
+	.bss        start:0x805087F8 end:0x805088F8
+	.sdata2     start:0x80541AD8 end:0x80541B68
+
+game/tu_803239A0.cpp:
+	extab       start:0x8000DAD4 end:0x8000DB04
+	extabindex  start:0x8001D0A4 end:0x8001D0EC
+	.text       start:0x803239A0 end:0x8032500C
+	.ctors      start:0x8045C3E0 end:0x8045C3E4
+	.rodata     start:0x80471840 end:0x80471860
+	.data       start:0x804AB3A8 end:0x804AB440
+	.bss        start:0x805088F8 end:0x805089F8
+	.sdata2     start:0x80541B68 end:0x80541BC8
+
+game/tu_8032500C.cpp:
+	extab       start:0x8000DB04 end:0x8000DB4C
+	extabindex  start:0x8001D0EC end:0x8001D158
+	.text       start:0x8032500C end:0x80326A90
+	.ctors      start:0x8045C3E4 end:0x8045C3E8
+	.rodata     start:0x80471860 end:0x80471888
+	.data       start:0x804AB440 end:0x804AB518
+	.bss        start:0x805089F8 end:0x80508AF8
+	.sdata2     start:0x80541BC8 end:0x80541C28
+
+game/tu_80326A90.cpp:
+	extab       start:0x8000DB4C end:0x8000DB74
+	extabindex  start:0x8001D158 end:0x8001D194
+	.text       start:0x80326A90 end:0x803276C4
+	.ctors      start:0x8045C3E8 end:0x8045C3EC
+	.rodata     start:0x80471888 end:0x804718D0
+	.bss        start:0x80508AF8 end:0x80508BF8
+	.sdata2     start:0x80541C28 end:0x80541C68
+
+game/tu_803276C4.cpp:
+	extab       start:0x8000DB74 end:0x8000DB9C
+	extabindex  start:0x8001D194 end:0x8001D1D0
+	.text       start:0x803276C4 end:0x803287F0
+	.ctors      start:0x8045C3EC end:0x8045C3F0
+	.rodata     start:0x804718D0 end:0x804718E8
+	.data       start:0x804AB518 end:0x804AB630
+	.bss        start:0x80508BF8 end:0x80508CF8
+	.sdata2     start:0x80541C68 end:0x80541CB8
+
+game/tu_803287F0.cpp:
+	extab       start:0x8000DB9C end:0x8000DBBC
+	extabindex  start:0x8001D1D0 end:0x8001D200
+	.text       start:0x803287F0 end:0x80328D6C
+	.ctors      start:0x8045C3F0 end:0x8045C3F4
+	.rodata     start:0x804718E8 end:0x80471918
+	.bss        start:0x80508CF8 end:0x80508DF8
+	.sdata2     start:0x80541CB8 end:0x80541CE0
+
+game/tu_80328D6C.cpp:
+	extab       start:0x8000DBBC end:0x8000DBDC
+	extabindex  start:0x8001D200 end:0x8001D230
+	.text       start:0x80328D6C end:0x80329468
+	.ctors      start:0x8045C3F4 end:0x8045C3F8
+	.rodata     start:0x80471918 end:0x80471930
+	.bss        start:0x80508DF8 end:0x80508EF8
+	.sdata2     start:0x80541CE0 end:0x80541D10
+
+game/tu_80329468.cpp:
+	extab       start:0x8000DBDC end:0x8000DC0C
+	extabindex  start:0x8001D230 end:0x8001D278
+	.text       start:0x80329468 end:0x8032AB80
+	.ctors      start:0x8045C3F8 end:0x8045C3FC
+	.rodata     start:0x80471930 end:0x80471948
+	.data       start:0x804AB630 end:0x804AB6D8
+	.bss        start:0x80508EF8 end:0x80508FF8
+	.sdata2     start:0x80541D10 end:0x80541D80
+
+game/tu_8032AB80.cpp:
+	extab       start:0x8000DC0C end:0x8000DC6C
+	extabindex  start:0x8001D278 end:0x8001D308
+	.text       start:0x8032AB80 end:0x8032DF94
+	.ctors      start:0x8045C3FC end:0x8045C400
+	.rodata     start:0x80471948 end:0x80471A50
+	.data       start:0x804AB6D8 end:0x804AB810
+	.bss        start:0x80508FF8 end:0x805090F8
+	.sdata2     start:0x80541D80 end:0x80541E40
+
+game/tu_8032DF94.cpp:
+	extab       start:0x8000DC6C end:0x8000DC9C
+	extabindex  start:0x8001D308 end:0x8001D350
+	.text       start:0x8032DF94 end:0x8032F148
+	.ctors      start:0x8045C400 end:0x8045C404
+	.rodata     start:0x80471A50 end:0x80471A68
+	.data       start:0x804AB810 end:0x804AB8C0
+	.bss        start:0x805090F8 end:0x805091F8
+	.sdata2     start:0x80541E40 end:0x80541E98
+
+game/tu_8032F148.cpp:
+	extab       start:0x8000DC9C end:0x8000DD1C
+	extabindex  start:0x8001D350 end:0x8001D410
+	.text       start:0x8032F148 end:0x80333958
+	.ctors      start:0x8045C404 end:0x8045C408
+	.rodata     start:0x80471A68 end:0x80471A90
+	.data       start:0x804AB8C0 end:0x804AB9C0
+	.bss        start:0x805091F8 end:0x805092F8
+	.sdata2     start:0x80541E98 end:0x80541F38
+
+game/tu_80333958.cpp:
+	extab       start:0x8000DD1C end:0x8000DD4C
+	extabindex  start:0x8001D410 end:0x8001D458
+	.text       start:0x80333958 end:0x80334318
+	.ctors      start:0x8045C408 end:0x8045C40C
+	.rodata     start:0x80471A90 end:0x80471AB8
+	.bss        start:0x805092F8 end:0x805093F8
+	.sdata2     start:0x80541F38 end:0x80541F70
+
+game/tu_80334318.cpp:
+	extab       start:0x8000DD4C end:0x8000DD7C
+	extabindex  start:0x8001D458 end:0x8001D4A0
+	.text       start:0x80334318 end:0x80335A7C
+	.ctors      start:0x8045C40C end:0x8045C410
+	.rodata     start:0x80471AB8 end:0x80471AE0
+	.data       start:0x804AB9C0 end:0x804AC010
+	.bss        start:0x805093F8 end:0x805094F8
+	.sdata2     start:0x80541F70 end:0x80541FF8
+
+game/tu_80335A7C.cpp:
+	extab       start:0x8000DD7C end:0x8000DD9C
+	extabindex  start:0x8001D4A0 end:0x8001D4D0
+	.text       start:0x80335A7C end:0x80336040
+	.ctors      start:0x8045C410 end:0x8045C414
+	.bss        start:0x805094F8 end:0x805095F8
+	.sdata2     start:0x80541FF8 end:0x80542028
+
+game/tu_80336040.cpp:
+	extab       start:0x8000DD9C end:0x8000DDCC
+	extabindex  start:0x8001D4D0 end:0x8001D518
+	.text       start:0x80336040 end:0x803372D0
+	.ctors      start:0x8045C414 end:0x8045C418
+	.rodata     start:0x80471AE0 end:0x80471BA0
+	.bss        start:0x805095F8 end:0x805096F8
+	.sdata2     start:0x80542028 end:0x80542050
+
+game/tu_803372D0.cpp:
+	extab       start:0x8000DDCC end:0x8000DDE4
+	extabindex  start:0x8001D518 end:0x8001D53C
+	.text       start:0x803372D0 end:0x80337650
+	.ctors      start:0x8045C418 end:0x8045C41C
+	.rodata     start:0x80471BA0 end:0x80471BB8
+	.bss        start:0x805096F8 end:0x805097F8
+	.sdata2     start:0x80542050 end:0x80542058
+
+game/tu_80337650.cpp:
+	extab       start:0x8000DDE4 end:0x8000DE1C
+	extabindex  start:0x8001D53C end:0x8001D590
+	.text       start:0x80337650 end:0x80338AE0
+	.ctors      start:0x8045C41C end:0x8045C420
+	.rodata     start:0x80471BB8 end:0x80471D60
+	.data       start:0x804AC010 end:0x804AC100
+	.bss        start:0x805097F8 end:0x805098F8
+	.sdata2     start:0x80542058 end:0x805420A0
+
+game/tu_80338AE0.cpp:
+	extab       start:0x8000DE1C end:0x8000DE3C
+	extabindex  start:0x8001D590 end:0x8001D5C0
+	.text       start:0x80338AE0 end:0x803397C0
+	.ctors      start:0x8045C420 end:0x8045C424
+	.bss        start:0x805098F8 end:0x805099F8
+	.sdata2     start:0x805420A0 end:0x805420E8
+
+game/tu_803397C0.cpp:
+	extab       start:0x8000DE3C end:0x8000DE7C
+	extabindex  start:0x8001D5C0 end:0x8001D620
+	.text       start:0x803397C0 end:0x8033C080
+	.ctors      start:0x8045C424 end:0x8045C428
+	.rodata     start:0x80471D60 end:0x80471E10
+	.data       start:0x804AC100 end:0x804AC2A8
+	.bss        start:0x805099F8 end:0x80509AF8
+	.sdata2     start:0x805420E8 end:0x80542160
+
+game/tu_8033C080.cpp:
+	extab       start:0x8000DE7C end:0x8000DE9C
+	extabindex  start:0x8001D620 end:0x8001D650
+	.text       start:0x8033C080 end:0x8033C584
+	.ctors      start:0x8045C428 end:0x8045C42C
+	.bss        start:0x80509AF8 end:0x80509BF8
+	.sdata2     start:0x80542160 end:0x80542178
+
+game/tu_8033C584.cpp:
+	extab       start:0x8000DE9C end:0x8000DEC4
+	extabindex  start:0x8001D650 end:0x8001D68C
+	.text       start:0x8033C584 end:0x8033CCE4
+	.ctors      start:0x8045C42C end:0x8045C430
+	.rodata     start:0x80471E10 end:0x80471E28
+	.bss        start:0x80509BF8 end:0x80509CF8
+	.sdata2     start:0x80542178 end:0x805421A0
+
+game/tu_8033CCE4.cpp:
+	extab       start:0x8000DEC4 end:0x8000DEFC
+	extabindex  start:0x8001D68C end:0x8001D6E0
+	.text       start:0x8033CCE4 end:0x8033E638
+	.ctors      start:0x8045C430 end:0x8045C434
+	.rodata     start:0x80471E28 end:0x80471E98
+	.data       start:0x804AC2A8 end:0x804AC3E0
+	.bss        start:0x80509CF8 end:0x80509DF8
+	.sdata2     start:0x805421A0 end:0x80542210
+
+game/tu_8033E638.cpp:
+	extab       start:0x8000DEFC end:0x8000DF24
+	extabindex  start:0x8001D6E0 end:0x8001D71C
+	.text       start:0x8033E638 end:0x8033F448
+	.ctors      start:0x8045C434 end:0x8045C438
+	.rodata     start:0x80471E98 end:0x80471EB0
+	.bss        start:0x80509DF8 end:0x80509EF8
+	.sdata2     start:0x80542210 end:0x80542258
+
+game/tu_8033F448.cpp:
+	extab       start:0x8000DF24 end:0x8000DF3C
+	extabindex  start:0x8001D71C end:0x8001D740
+	.text       start:0x8033F448 end:0x8033F9A0
+	.ctors      start:0x8045C438 end:0x8045C43C
+	.bss        start:0x80509EF8 end:0x80509FF8
+	.sdata2     start:0x80542258 end:0x80542268
+
+game/act_zora_lotus.cpp:
+	extab       start:0x8000DF3C end:0x8000DF8C
+	extabindex  start:0x8001D740 end:0x8001D7B8
+	.text       start:0x8033F9A0 end:0x80340EC8
+	.ctors      start:0x8045C43C end:0x8045C440
+	.rodata     start:0x80471EB0 end:0x80471EC8
+	.data       start:0x804AC3E0 end:0x804AC4B8
+	.bss        start:0x80509FF8 end:0x8050A0F8
+	.sdata2     start:0x80542268 end:0x805422B8
+
+game/tu_80340EC8.cpp:
+	extab       start:0x8000DF8C end:0x8000DFB4
+	extabindex  start:0x8001D7B8 end:0x8001D7F4
+	.text       start:0x80340EC8 end:0x80341CB0
+	.ctors      start:0x8045C440 end:0x8045C444
+	.rodata     start:0x80471EC8 end:0x80471FA0
+	.data       start:0x804AC4B8 end:0x804AC558
+	.bss        start:0x8050A0F8 end:0x8050A1F8
+	.sdata2     start:0x805422B8 end:0x805422E8
+
+game/tu_80341CB0.cpp:
+	extab       start:0x8000DFB4 end:0x8000DFF4
+	extabindex  start:0x8001D7F4 end:0x8001D854
+	.text       start:0x80341CB0 end:0x80343A70
+	.ctors      start:0x8045C444 end:0x8045C448
+	.rodata     start:0x80471FA0 end:0x80471FE0
+	.data       start:0x804AC558 end:0x804AC8C0
+	.bss        start:0x8050A1F8 end:0x8050A2F8
+	.sdata2     start:0x805422E8 end:0x80542350
+
+game/tu_80343A70.cpp:
+	extab       start:0x8000DFF4 end:0x8000E024
+	extabindex  start:0x8001D854 end:0x8001D89C
+	.text       start:0x80343A70 end:0x8034543C
+	.ctors      start:0x8045C448 end:0x8045C44C
+	.rodata     start:0x80471FE0 end:0x80471FF8
+	.bss        start:0x8050A2F8 end:0x8050A3F8
+	.sdata2     start:0x80542350 end:0x805423A0
+
+game/tu_8034543C.cpp:
+	extab       start:0x8000E024 end:0x8000E05C
+	extabindex  start:0x8001D89C end:0x8001D8F0
+	.text       start:0x8034543C end:0x80346E24
+	.ctors      start:0x8045C44C end:0x8045C450
+	.rodata     start:0x80471FF8 end:0x80472010
+	.bss        start:0x8050A3F8 end:0x8050A4F8
+	.sdata2     start:0x805423A0 end:0x80542438
+
+game/tu_80346E24.cpp:
+	extab       start:0x8000E05C end:0x8000E08C
+	extabindex  start:0x8001D8F0 end:0x8001D938
+	.text       start:0x80346E24 end:0x80347E90
+	.ctors      start:0x8045C450 end:0x8045C454
+	.rodata     start:0x80472010 end:0x804720B8
+	.bss        start:0x8050A4F8 end:0x8050A5F8
+	.sdata2     start:0x80542438 end:0x80542470
+
+game/tu_80347E90.cpp:
+	extab       start:0x8000E08C end:0x8000E0A4
+	extabindex  start:0x8001D938 end:0x8001D95C
+	.text       start:0x80347E90 end:0x803481B8
+	.ctors      start:0x8045C454 end:0x8045C458
+	.bss        start:0x8050A5F8 end:0x8050A6F8
+
+game/tu_803481B8.cpp:
+	extab       start:0x8000E0A4 end:0x8000E0C4
+	extabindex  start:0x8001D95C end:0x8001D98C
+	.text       start:0x803481B8 end:0x803489A4
+	.ctors      start:0x8045C458 end:0x8045C45C
+	.bss        start:0x8050A6F8 end:0x8050A7F8
+	.sdata2     start:0x80542470 end:0x80542480
+
+game/tu_803489A4.cpp:
+	extab       start:0x8000E0C4 end:0x8000E0E4
+	extabindex  start:0x8001D98C end:0x8001D9BC
+	.text       start:0x803489A4 end:0x80349914
+	.ctors      start:0x8045C45C end:0x8045C460
+	.rodata     start:0x804720B8 end:0x804720D0
+	.bss        start:0x8050A7F8 end:0x8050A8F8
+	.sdata2     start:0x80542480 end:0x805424D0
+
+game/tu_80349914.cpp:
+	extab       start:0x8000E0E4 end:0x8000E104
+	extabindex  start:0x8001D9BC end:0x8001D9EC
+	.text       start:0x80349914 end:0x8034A6B0
+	.ctors      start:0x8045C460 end:0x8045C464
+	.bss        start:0x8050A8F8 end:0x8050A9F8
+	.sdata2     start:0x805424D0 end:0x80542508
+
+game/tu_8034A6B0.cpp:
+	extab       start:0x8000E104 end:0x8000E124
+	extabindex  start:0x8001D9EC end:0x8001DA1C
+	.text       start:0x8034A6B0 end:0x8034AA40
+	.ctors      start:0x8045C464 end:0x8045C468
+	.rodata     start:0x804720D0 end:0x804720E8
+	.bss        start:0x8050A9F8 end:0x8050AAF8
+	.sdata2     start:0x80542508 end:0x80542510
+
+game/tu_8034AA40.cpp:
+	extab       start:0x8000E124 end:0x8000E164
+	extabindex  start:0x8001DA1C end:0x8001DA7C
+	.text       start:0x8034AA40 end:0x8034C950
+	.ctors      start:0x8045C468 end:0x8045C46C
+	.rodata     start:0x804720E8 end:0x80472190
+	.data       start:0x804AC8C0 end:0x804ACA00
+	.bss        start:0x8050AAF8 end:0x8050ABF8
+	.sdata2     start:0x80542510 end:0x80542570
+
+game/tu_8034C950.cpp:
+	extab       start:0x8000E164 end:0x8000E19C
+	extabindex  start:0x8001DA7C end:0x8001DAD0
+	.text       start:0x8034C950 end:0x8034DFF0
+	.ctors      start:0x8045C46C end:0x8045C470
+	.rodata     start:0x80472190 end:0x804721C8
+	.bss        start:0x8050ABF8 end:0x8050ACF8
+	.sdata2     start:0x80542570 end:0x805425A0
+
+game/tu_8034DFF0.cpp:
+	extab       start:0x8000E19C end:0x8000E1CC
+	extabindex  start:0x8001DAD0 end:0x8001DB18
+	.text       start:0x8034DFF0 end:0x8034EDDC
+	.ctors      start:0x8045C470 end:0x8045C474
+	.rodata     start:0x804721C8 end:0x80472228
+	.bss        start:0x8050ACF8 end:0x8050ADF8
+	.sdata2     start:0x805425A0 end:0x805425D8
+
+game/tu_8034EDDC.cpp:
+	extab       start:0x8000E1CC end:0x8000E23C
+	extabindex  start:0x8001DB18 end:0x8001DBC0
+	.text       start:0x8034EDDC end:0x80351EC4
+	.ctors      start:0x8045C474 end:0x8045C478
+	.rodata     start:0x80472228 end:0x80472240
+	.data       start:0x804ACA00 end:0x804ACBF0
+	.bss        start:0x8050ADF8 end:0x8050AFF8
+	.sbss       start:0x8053AD40 end:0x8053AD48
+	.sdata2     start:0x805425D8 end:0x80542680
+
+game/tu_80351EC4.cpp:
+	extab       start:0x8000E23C end:0x8000E25C
+	extabindex  start:0x8001DBC0 end:0x8001DBF0
+	.text       start:0x80351EC4 end:0x803524C8
+	.ctors      start:0x8045C478 end:0x8045C47C
+	.bss        start:0x8050AFF8 end:0x8050B0F8
+	.sdata2     start:0x80542680 end:0x805426A0
+
+game/tu_803524C8.cpp:
+	extab       start:0x8000E25C end:0x8000E274
+	extabindex  start:0x8001DBF0 end:0x8001DC14
+	.text       start:0x803524C8 end:0x8035280C
+	.ctors      start:0x8045C47C end:0x8045C480
+	.bss        start:0x8050B0F8 end:0x8050B1F8
+	.sdata2     start:0x805426A0 end:0x805426A8
+
+game/tu_8035280C.cpp:
+	extab       start:0x8000E274 end:0x8000E294
+	extabindex  start:0x8001DC14 end:0x8001DC44
+	.text       start:0x8035280C end:0x803536C4
+	.ctors      start:0x8045C480 end:0x8045C484
+	.data       start:0x804ACBF0 end:0x804AD2D0
+	.bss        start:0x8050B1F8 end:0x8050B2F8
+	.sdata2     start:0x805426A8 end:0x80542710
+
+game/tu_803536C4.cpp:
+	extab       start:0x8000E294 end:0x8000E2BC
+	extabindex  start:0x8001DC44 end:0x8001DC80
+	.text       start:0x803536C4 end:0x80353E70
+	.ctors      start:0x8045C484 end:0x8045C488
+	.rodata     start:0x80472240 end:0x80472288
+	.bss        start:0x8050B2F8 end:0x8050B3F8
+	.sdata2     start:0x80542710 end:0x80542730
+
+game/tu_80353E70.cpp:
+	extab       start:0x8000E2BC end:0x8000E2E4
+	extabindex  start:0x8001DC80 end:0x8001DCBC
+	.text       start:0x80353E70 end:0x80354A44
+	.ctors      start:0x8045C488 end:0x8045C48C
+	.rodata     start:0x80472288 end:0x804722B0
+	.bss        start:0x8050B3F8 end:0x8050B4F8
+	.sdata2     start:0x80542730 end:0x80542788
+
+game/tu_80354A44.cpp:
+	extab       start:0x8000E2E4 end:0x8000E304
+	extabindex  start:0x8001DCBC end:0x8001DCEC
+	.text       start:0x80354A44 end:0x80354D64
+	.ctors      start:0x8045C48C end:0x8045C490
+	.bss        start:0x8050B4F8 end:0x8050B5F8
+	.sdata2     start:0x80542788 end:0x80542790
+
+game/tu_80354D64.cpp:
+	extab       start:0x8000E304 end:0x8000E344
+	extabindex  start:0x8001DCEC end:0x8001DD4C
+	.text       start:0x80354D64 end:0x803567AC
+	.ctors      start:0x8045C490 end:0x8045C494
+	.rodata     start:0x804722B0 end:0x80472390
+	.bss        start:0x8050B5F8 end:0x8050B6F8
+	.sdata2     start:0x80542790 end:0x805427E0
+
+game/tu_803567AC.cpp:
+	extab       start:0x8000E344 end:0x8000E374
+	extabindex  start:0x8001DD4C end:0x8001DD94
+	.text       start:0x803567AC end:0x803578D8
+	.ctors      start:0x8045C494 end:0x8045C498
+	.rodata     start:0x80472390 end:0x804724E0
+	.bss        start:0x8050B6F8 end:0x8050B7F8
+	.sdata2     start:0x805427E0 end:0x80542820
+
+game/tu_803578D8.cpp:
+	extab       start:0x8000E374 end:0x8000E394
+	extabindex  start:0x8001DD94 end:0x8001DDC4
+	.text       start:0x803578D8 end:0x80357DE8
+	.ctors      start:0x8045C498 end:0x8045C49C
+	.bss        start:0x8050B7F8 end:0x8050B8F8
+	.sdata2     start:0x80542820 end:0x80542848
+
+game/tu_80357DE8.cpp:
+	extab       start:0x8000E394 end:0x8000E3AC
+	extabindex  start:0x8001DDC4 end:0x8001DDE8
+	.text       start:0x80357DE8 end:0x80358460
+	.ctors      start:0x8045C49C end:0x8045C4A0
+	.bss        start:0x8050B8F8 end:0x8050B9F8
+	.sdata2     start:0x80542848 end:0x80542868
+
+game/tu_80358460.cpp:
+	extab       start:0x8000E3AC end:0x8000E414
+	extabindex  start:0x8001DDE8 end:0x8001DE84
+	.text       start:0x80358460 end:0x8035B5F0
+	.ctors      start:0x8045C4A0 end:0x8045C4A4
+	.rodata     start:0x804724E0 end:0x80472700
+	.data       start:0x804AD2D0 end:0x804AD3A0
+	.bss        start:0x8050B9F8 end:0x8050BAF8
+	.sdata      start:0x8053A1B8 end:0x8053A1C0
+	.sdata2     start:0x80542868 end:0x805428D0
+
+game/tu_8035B5F0.cpp:
+	extab       start:0x8000E414 end:0x8000E46C
+	extabindex  start:0x8001DE84 end:0x8001DF08
+	.text       start:0x8035B5F0 end:0x8035C940
+	.ctors      start:0x8045C4A4 end:0x8045C4A8
+	.rodata     start:0x80472700 end:0x80472718
+	.data       start:0x804AD3A0 end:0x804AD4E0
+	.bss        start:0x8050BAF8 end:0x8050BBF8
+	.sdata2     start:0x805428D0 end:0x80542910
+
+game/tu_8035C940.cpp:
+	extab       start:0x8000E46C end:0x8000E4CC
+	extabindex  start:0x8001DF08 end:0x8001DF98
+	.text       start:0x8035C940 end:0x8035DED8
+	.ctors      start:0x8045C4A8 end:0x8045C4AC
+	.rodata     start:0x80472718 end:0x804727F8
+	.data       start:0x804AD4E0 end:0x804AD660
+	.bss        start:0x8050BBF8 end:0x8050BCF8
+	.sdata2     start:0x80542910 end:0x80542988
+
+game/tu_8035DED8.cpp:
+	extab       start:0x8000E4CC end:0x8000E514
+	extabindex  start:0x8001DF98 end:0x8001E004
+	.text       start:0x8035DED8 end:0x8035E8CC
+	.ctors      start:0x8045C4AC end:0x8045C4B0
+	.rodata     start:0x804727F8 end:0x80472820
+	.data       start:0x804AD660 end:0x804AD798
+	.bss        start:0x8050BCF8 end:0x8050BDF8
+	.sdata2     start:0x80542988 end:0x805429A8
+
+game/tu_8035E8CC.cpp:
+	extab       start:0x8000E514 end:0x8000E56C
+	extabindex  start:0x8001E004 end:0x8001E088
+	.text       start:0x8035E8CC end:0x8035F360
+	.ctors      start:0x8045C4B0 end:0x8045C4B4
+	.rodata     start:0x80472820 end:0x80472848
+	.data       start:0x804AD798 end:0x804AD900
+	.bss        start:0x8050BDF8 end:0x8050BEF8
+	.sdata2     start:0x805429A8 end:0x805429F8
+
+game/tu_8035F360.cpp:
+	extab       start:0x8000E56C end:0x8000E5E4
+	extabindex  start:0x8001E088 end:0x8001E13C
+	.text       start:0x8035F360 end:0x80362634
+	.ctors      start:0x8045C4B4 end:0x8045C4B8
+	.rodata     start:0x80472848 end:0x80474320
+	.data       start:0x804AD900 end:0x804ADB60
+	.bss        start:0x8050BEF8 end:0x8050C028
+	.sbss       start:0x8053AD48 end:0x8053AD50
+	.sdata2     start:0x805429F8 end:0x80542A78
+
+game/tu_80362634.cpp:
+	extab       start:0x8000E5E4 end:0x8000E69C
+	extabindex  start:0x8001E13C end:0x8001E250
+	.text       start:0x80362634 end:0x8036766C
+	.ctors      start:0x8045C4B8 end:0x8045C4BC
+	.rodata     start:0x80474320 end:0x80474C20
+	.data       start:0x804ADB60 end:0x804ADFE8
+	.bss        start:0x8050C028 end:0x8050C200
+	.sbss       start:0x8053AD50 end:0x8053AD58
+	.sdata2     start:0x80542A78 end:0x80542C08
+
+game/tu_8036766C.cpp:
+	extab       start:0x8000E69C end:0x8000E6C4
+	extabindex  start:0x8001E250 end:0x8001E28C
+	.text       start:0x8036766C end:0x80368198
+	.ctors      start:0x8045C4BC end:0x8045C4C0
+	.rodata     start:0x80474C20 end:0x80474C38
+	.data       start:0x804ADFE8 end:0x804AE058
+	.bss        start:0x8050C200 end:0x8050C300
+	.sdata2     start:0x80542C08 end:0x80542C58
+
+game/act_crystal_demo_2.cpp:
+	extab       start:0x8000E6C4 end:0x8000E784
+	extabindex  start:0x8001E28C end:0x8001E358
+	.text       start:0x80368198 end:0x8036CB5C
+	.ctors      start:0x8045C4C0 end:0x8045C4C4
+	.rodata     start:0x80474C38 end:0x80474E70
+	.data       start:0x804AE058 end:0x804AE390
+	.bss        start:0x8050C300 end:0x8050C400
+	.sdata      start:0x8053A1C0 end:0x8053A1D0
+	.sdata2     start:0x80542C58 end:0x80542CD8
+
+game/tu_8036CB5C.cpp:
+	extab       start:0x8000E784 end:0x8000E7B4
+	extabindex  start:0x8001E358 end:0x8001E3A0
+	.text       start:0x8036CB5C end:0x8036D7F8
+	.ctors      start:0x8045C4C4 end:0x8045C4C8
+	.rodata     start:0x80474E70 end:0x80474EC0
+	.bss        start:0x8050C400 end:0x8050C500
+	.sdata2     start:0x80542CD8 end:0x80542D10
+
+game/tu_8036D7F8.cpp:
+	extab       start:0x8000E7B4 end:0x8000E7D4
+	extabindex  start:0x8001E3A0 end:0x8001E3D0
+	.text       start:0x8036D7F8 end:0x8036DD6C
+	.ctors      start:0x8045C4C8 end:0x8045C4CC
+	.bss        start:0x8050C500 end:0x8050C600
+	.sdata2     start:0x80542D10 end:0x80542D38
+
+game/tu_8036DD6C.cpp:
+	extab       start:0x8000E7D4 end:0x8000E7F4
+	extabindex  start:0x8001E3D0 end:0x8001E400
+	.text       start:0x8036DD6C end:0x8036E544
+	.ctors      start:0x8045C4CC end:0x8045C4D0
+	.bss        start:0x8050C600 end:0x8050C700
+	.sdata2     start:0x80542D38 end:0x80542D58
+
+game/tu_8036E544.cpp:
+	extab       start:0x8000E7F4 end:0x8000E81C
+	extabindex  start:0x8001E400 end:0x8001E43C
+	.text       start:0x8036E544 end:0x8036FB60
+	.ctors      start:0x8045C4D0 end:0x8045C4D4
+	.rodata     start:0x80474EC0 end:0x80474ED0
+	.bss        start:0x8050C700 end:0x8050C840
+	.sbss       start:0x8053AD58 end:0x8053AD60
+	.sdata2     start:0x80542D58 end:0x80542DC0
+
+game/tu_8036FB60.cpp:
+	extab       start:0x8000E81C end:0x8000E8DC
+	extabindex  start:0x8001E43C end:0x8001E55C
+	.text       start:0x8036FB60 end:0x80372EA8
+	.ctors      start:0x8045C4D4 end:0x8045C4D8
+	.rodata     start:0x80474ED0 end:0x80474F98
+	.data       start:0x804AE390 end:0x804AE560
+	.bss        start:0x8050C840 end:0x8050CA00
+	.sbss       start:0x8053AD60 end:0x8053ADD8
+	.sdata2     start:0x80542DC0 end:0x80542E50
+
+game/tu_80372EA8.cpp:
+	extab       start:0x8000E8DC end:0x8000E8EC
+	extabindex  start:0x8001E55C end:0x8001E574
+	.text       start:0x80372EA8 end:0x80373138
+	.ctors      start:0x8045C4D8 end:0x8045C4DC
+	.bss        start:0x8050CA00 end:0x8050CB00
+
+game/tu_80373138.cpp:
+	extab       start:0x8000E8EC end:0x8000E91C
+	extabindex  start:0x8001E574 end:0x8001E5BC
+	.text       start:0x80373138 end:0x80373BD8
+	.ctors      start:0x8045C4DC end:0x8045C4E0
+	.rodata     start:0x80474F98 end:0x80475060
+	.data       start:0x804AE560 end:0x804AE8E0
+	.bss        start:0x8050CB00 end:0x8050CC00
+	.sdata2     start:0x80542E50 end:0x80542E88
+
+game/tu_80373BD8.cpp:
+	extab       start:0x8000E91C end:0x8000E94C
+	extabindex  start:0x8001E5BC end:0x8001E604
+	.text       start:0x80373BD8 end:0x80374788
+	.ctors      start:0x8045C4E0 end:0x8045C4E4
+	.rodata     start:0x80475060 end:0x804750C0
+	.bss        start:0x8050CC00 end:0x8050CD00
+	.sdata2     start:0x80542E88 end:0x80542ED8
+
+game/tu_80374788.cpp:
+	extab       start:0x8000E94C end:0x8000E97C
+	extabindex  start:0x8001E604 end:0x8001E64C
+	.text       start:0x80374788 end:0x80375970
+	.ctors      start:0x8045C4E4 end:0x8045C4E8
+	.rodata     start:0x804750C0 end:0x80475138
+	.bss        start:0x8050CD00 end:0x8050CE00
+	.sdata2     start:0x80542ED8 end:0x80542F20
+
+game/tu_80375970.cpp:
+	extab       start:0x8000E97C end:0x8000E9AC
+	extabindex  start:0x8001E64C end:0x8001E694
+	.text       start:0x80375970 end:0x80376394
+	.ctors      start:0x8045C4E8 end:0x8045C4EC
+	.rodata     start:0x80475138 end:0x80475148
+	.bss        start:0x8050CE00 end:0x8050CF00
+	.sdata2     start:0x80542F20 end:0x80542F40
+
+game/tu_80376394.cpp:
+	extab       start:0x8000E9AC end:0x8000E9CC
+	extabindex  start:0x8001E694 end:0x8001E6C4
+	.text       start:0x80376394 end:0x80376850
+	.ctors      start:0x8045C4EC end:0x8045C4F0
+	.bss        start:0x8050CF00 end:0x8050D000
+	.sdata2     start:0x80542F40 end:0x80542F60
+
+game/tu_80376850.cpp:
+	extab       start:0x8000E9CC end:0x8000E9E4
+	extabindex  start:0x8001E6C4 end:0x8001E6E8
+	.text       start:0x80376850 end:0x80376B4C
+	.ctors      start:0x8045C4F0 end:0x8045C4F4
+	.bss        start:0x8050D000 end:0x8050D100
+
+game/tu_80376B4C.cpp:
+	extab       start:0x8000E9E4 end:0x8000EA04
+	extabindex  start:0x8001E6E8 end:0x8001E718
+	.text       start:0x80376B4C end:0x80376FA0
+	.ctors      start:0x8045C4F4 end:0x8045C4F8
+	.bss        start:0x8050D100 end:0x8050D200
+	.sdata2     start:0x80542F60 end:0x80542F78
+
+game/tu_80376FA0.cpp:
+	extab       start:0x8000EA04 end:0x8000EA2C
+	extabindex  start:0x8001E718 end:0x8001E754
+	.text       start:0x80376FA0 end:0x80377E20
+	.ctors      start:0x8045C4F8 end:0x8045C4FC
+	.rodata     start:0x80475148 end:0x804751A8
+	.bss        start:0x8050D200 end:0x8050D300
+	.sdata2     start:0x80542F78 end:0x80542FC0
+
+game/tu_80377E20.cpp:
+	extab       start:0x8000EA2C end:0x8000EA4C
+	extabindex  start:0x8001E754 end:0x8001E784
+	.text       start:0x80377E20 end:0x80378294
+	.ctors      start:0x8045C4FC end:0x8045C500
+	.bss        start:0x8050D300 end:0x8050D400
+	.sdata2     start:0x80542FC0 end:0x80542FD0
+
+game/tu_80378294.cpp:
+	extab       start:0x8000EA4C end:0x8000EA84
+	extabindex  start:0x8001E784 end:0x8001E7D8
+	.text       start:0x80378294 end:0x80379078
+	.ctors      start:0x8045C500 end:0x8045C504
+	.rodata     start:0x804751A8 end:0x804751F8
+	.bss        start:0x8050D400 end:0x8050D500
+	.sdata2     start:0x80542FD0 end:0x80543010
+
+game/tu_80379078.cpp:
+	extab       start:0x8000EA84 end:0x8000EAAC
+	extabindex  start:0x8001E7D8 end:0x8001E814
+	.text       start:0x80379078 end:0x80379870
+	.ctors      start:0x8045C504 end:0x8045C508
+	.rodata     start:0x804751F8 end:0x804752C0
+	.data       start:0x804AE8E0 end:0x804AE9A0
+	.bss        start:0x8050D500 end:0x8050D600
+	.sdata2     start:0x80543010 end:0x80543038
+
+game/tu_80379870.cpp:
+	extab       start:0x8000EAAC end:0x8000EAD4
+	extabindex  start:0x8001E814 end:0x8001E850
+	.text       start:0x80379870 end:0x80379F84
+	.ctors      start:0x8045C508 end:0x8045C50C
+	.rodata     start:0x804752C0 end:0x804753C0
+	.bss        start:0x8050D600 end:0x8050D700
+	.sdata2     start:0x80543038 end:0x80543048
+
+game/tu_80379F84.cpp:
+	extab       start:0x8000EAD4 end:0x8000EB64
+	extabindex  start:0x8001E850 end:0x8001E8C8
+	.text       start:0x80379F84 end:0x8037ACC4
+	.ctors      start:0x8045C50C end:0x8045C510
+	.data       start:0x804AE9A0 end:0x804AE9B0
+	.bss        start:0x8050D700 end:0x8050D800
+
+game/tu_8037ACC4.cpp:
+	extab       start:0x8000EB64 end:0x8000EBEC
+	extabindex  start:0x8001E8C8 end:0x8001E964
+	.text       start:0x8037ACC4 end:0x8037B374
+	.ctors      start:0x8045C510 end:0x8045C514
+	.data       start:0x804AE9B0 end:0x804AE9C0
+	.bss        start:0x8050D800 end:0x8050D900
+
+game/act_old_man.cpp:
+	extab       start:0x8000EBEC end:0x8000EC48
+	extabindex  start:0x8001E964 end:0x8001E9B8
+	.text       start:0x8037B374 end:0x8037D784
+	.ctors      start:0x8045C514 end:0x8045C518
+	.rodata     start:0x804753C0 end:0x80475588
+	.data       start:0x804AE9C0 end:0x804AF070
+	.bss        start:0x8050D900 end:0x8050DA00
+	.sdata      start:0x8053A1D0 end:0x8053A210
+	.sdata2     start:0x80543048 end:0x80543090
+
+game/tu_8037D784.cpp:
+	extab       start:0x8000EC48 end:0x8000EC68
+	extabindex  start:0x8001E9B8 end:0x8001E9E8
+	.text       start:0x8037D784 end:0x8037DF68
+	.ctors      start:0x8045C518 end:0x8045C51C
+	.rodata     start:0x80475588 end:0x804755A0
+	.bss        start:0x8050DA00 end:0x8050DB00
+	.sdata2     start:0x80543090 end:0x805430B8
+
+game/tu_8037DF68.cpp:
+	extab       start:0x8000EC68 end:0x8000EE28
+	extabindex  start:0x8001E9E8 end:0x8001EC40
+	.text       start:0x8037DF68 end:0x8038DE74
+	.ctors      start:0x8045C51C end:0x8045C520
+	.rodata     start:0x804755A0 end:0x804755E0
+	.data       start:0x804AF070 end:0x804AF338
+	.bss        start:0x8050DB00 end:0x8050DF18
+	.sdata2     start:0x805430B8 end:0x80543100
+
+game/tu_8038DE74.cpp:
+	extab       start:0x8000EE28 end:0x8000EE58
+	extabindex  start:0x8001EC40 end:0x8001EC88
+	.text       start:0x8038DE74 end:0x8038F9F4
+	.ctors      start:0x8045C520 end:0x8045C524
+	.rodata     start:0x804755E0 end:0x80475670
+	.data       start:0x804AF338 end:0x804AF480
+	.bss        start:0x8050DF18 end:0x8050E018
+	.sdata2     start:0x80543100 end:0x80543158
+
+game/tu_8038F9F4.cpp:
+	extab       start:0x8000EE58 end:0x8000EE78
+	extabindex  start:0x8001EC88 end:0x8001ECB8
+	.text       start:0x8038F9F4 end:0x8039003C
+	.ctors      start:0x8045C524 end:0x8045C528
+	.bss        start:0x8050E018 end:0x8050E118
+	.sdata2     start:0x80543158 end:0x80543168
+
+game/tu_8039003C.cpp:
+	extab       start:0x8000EE78 end:0x8000EED8
+	extabindex  start:0x8001ECB8 end:0x8001ED18
+	.text       start:0x8039003C end:0x80390818
+	.ctors      start:0x8045C528 end:0x8045C52C
+	.rodata     start:0x80475670 end:0x804756D8
+	.data       start:0x804AF480 end:0x804AF490
+	.bss        start:0x8050E118 end:0x8050E218
+
+game/tu_80390818.cpp:
+	extab       start:0x8000EED8 end:0x8000EF38
+	extabindex  start:0x8001ED18 end:0x8001ED78
+	.text       start:0x80390818 end:0x80391CE4
+	.ctors      start:0x8045C52C end:0x8045C530
+	.rodata     start:0x804756D8 end:0x80475710
+	.data       start:0x804AF490 end:0x804AF4C0
+	.bss        start:0x8050E218 end:0x8050E318
+	.sdata2     start:0x80543168 end:0x80543170
+
+game/tu_80391CE4.cpp:
+	extab       start:0x8000EF38 end:0x8000EF80
+	extabindex  start:0x8001ED78 end:0x8001EDE4
+	.text       start:0x80391CE4 end:0x80394134
+	.ctors      start:0x8045C530 end:0x8045C534
+	.rodata     start:0x80475710 end:0x80475768
+	.data       start:0x804AF4C0 end:0x804AF5A0
+	.bss        start:0x8050E318 end:0x8050E418
+	.sdata2     start:0x80543170 end:0x805431D0
+
+game/tu_80394134.cpp:
+	extab       start:0x8000EF80 end:0x8000EF98
+	extabindex  start:0x8001EDE4 end:0x8001EE08
+	.text       start:0x80394134 end:0x803944C8
+	.ctors      start:0x8045C534 end:0x8045C538
+	.bss        start:0x8050E418 end:0x8050E518
+
+game/tu_803944C8.cpp:
+	extab       start:0x8000EF98 end:0x8000F254
+	extabindex  start:0x8001EE08 end:0x8001EFD0
+	.text       start:0x803944C8 end:0x803A3484
+	.ctors      start:0x8045C538 end:0x8045C53C
+	.rodata     start:0x80475768 end:0x80475F58
+	.data       start:0x804AF5A0 end:0x804AF7D8
+	.bss        start:0x8050E518 end:0x8050E658
+	.sdata2     start:0x805431D0 end:0x805432D8
+
+game/tu_803A3484.cpp:
+	extab       start:0x8000F254 end:0x8000F324
+	extabindex  start:0x8001EFD0 end:0x8001F018
+	.text       start:0x803A3484 end:0x803A60E4
+	.ctors      start:0x8045C53C end:0x8045C540
+	.rodata     start:0x80475F58 end:0x80476168
+	.data       start:0x804AF7D8 end:0x804AF860
+	.bss        start:0x8050E658 end:0x8050E758
+	.sdata2     start:0x805432D8 end:0x80543350
+
+game/tu_803A60E4.cpp:
+	extab       start:0x8000F324 end:0x8000F374
+	extabindex  start:0x8001F018 end:0x8001F078
+	.text       start:0x803A60E4 end:0x803A85E4
+	.ctors      start:0x8045C540 end:0x8045C544
+	.rodata     start:0x80476168 end:0x804761A0
+	.data       start:0x804AF860 end:0x804AF878
+	.bss        start:0x8050E758 end:0x8050E858
+	.sdata2     start:0x80543350 end:0x80543378
+
+game/tu_803A85E4.cpp:
+	extab       start:0x8000F374 end:0x8000F3C4
+	extabindex  start:0x8001F078 end:0x8001F0C0
+	.text       start:0x803A85E4 end:0x803A8DFC
+	.ctors      start:0x8045C544 end:0x8045C548
+	.rodata     start:0x804761A0 end:0x80476208
+	.data       start:0x804AF878 end:0x804AF888
+	.bss        start:0x8050E858 end:0x8050E958
+
+game/tu_803A8DFC.cpp:
+	extab       start:0x8000F3C4 end:0x8000F5D4
+	extabindex  start:0x8001F0C0 end:0x8001F2D0
+	.text       start:0x803A8DFC end:0x803B7DCC
+	.ctors      start:0x8045C548 end:0x8045C54C
+	.rodata     start:0x80476208 end:0x80476520
+	.data       start:0x804AF888 end:0x804AFAB0
+	.bss        start:0x8050E958 end:0x8050EA58
+	.sdata2     start:0x80543378 end:0x80543440
+
+game/tu_803B7DCC.cpp:
+	extab       start:0x8000F5D4 end:0x8000F63C
+	extabindex  start:0x8001F2D0 end:0x8001F324
+	.text       start:0x803B7DCC end:0x803B8970
+	.ctors      start:0x8045C54C end:0x8045C550
+	.rodata     start:0x80476520 end:0x80476548
+	.data       start:0x804AFAB0 end:0x804AFB30
+	.bss        start:0x8050EA58 end:0x8050EB58
+	.sdata2     start:0x80543440 end:0x80543458
+
+game/tu_803B8970.cpp:
+	extab       start:0x8000F63C end:0x8000F654
+	extabindex  start:0x8001F324 end:0x8001F348
+	.text       start:0x803B8970 end:0x803B8C74
+	.ctors      start:0x8045C550 end:0x8045C554
+	.bss        start:0x8050EB58 end:0x8050EC60
+
+game/tu_803B8C74.cpp:
+	extab       start:0x8000F654 end:0x8000F684
+	extabindex  start:0x8001F348 end:0x8001F390
+	.text       start:0x803B8C74 end:0x803B9940
+	.ctors      start:0x8045C554 end:0x8045C558
+	.rodata     start:0x80476548 end:0x80476568
+	.data       start:0x804AFB30 end:0x804AFB48
+	.bss        start:0x8050EC60 end:0x80510E60
+
+game/tu_803B9940.cpp:
+	extab       start:0x8000F684 end:0x8000F704
+	extabindex  start:0x8001F390 end:0x8001F450
+	.text       start:0x803B9940 end:0x803BACF8
+	.ctors      start:0x8045C558 end:0x8045C55C
+	.rodata     start:0x80476568 end:0x80476578
+	.data       start:0x804AFB48 end:0x804AFB90
+	.bss        start:0x80510E60 end:0x8051E2C0
+
+game/tu_803BACF8.cpp:
+	extab       start:0x8000F704 end:0x8000F724
+	extabindex  start:0x8001F450 end:0x8001F480
+	.text       start:0x803BACF8 end:0x803BC6F0
+	.ctors      start:0x8045C55C end:0x8045C560
+	.rodata     start:0x80476578 end:0x804765D0
+	.bss        start:0x8051E2C0 end:0x80527E68
+
+game/tu_803BC6F0.cpp:
+	extab       start:0x8000F724 end:0x8000F954
+	extabindex  start:0x8001F480 end:0x8001F780
+	.text       start:0x803BC6F0 end:0x803D2C34
+	.ctors      start:0x8045C560 end:0x8045C564
+	.rodata     start:0x804765D0 end:0x80476F20
+	.data       start:0x804AFB90 end:0x804B0048
+	.bss        start:0x80527E68 end:0x80527F68
+	.sdata2     start:0x80543458 end:0x805434C0
+
+game/tu_803D2C34.cpp:
+	extab       start:0x8000F954 end:0x8000FA6C
+	extabindex  start:0x8001F780 end:0x8001F8F4
+	.text       start:0x803D2C34 end:0x803D6434
+	.ctors      start:0x8045C564 end:0x8045C568
+	.rodata     start:0x80476F20 end:0x80476F80
+	.data       start:0x804B0048 end:0x804B02D8
+	.bss        start:0x80527F68 end:0x80528068
+	.sdata2     start:0x805434C0 end:0x80543520
+
+game/tu_803D6434.cpp:
+	extab       start:0x8000FA6C end:0x8000FAB4
+	extabindex  start:0x8001F8F4 end:0x8001F960
+	.text       start:0x803D6434 end:0x803D7098
+	.ctors      start:0x8045C568 end:0x8045C56C
+	.data       start:0x804B02D8 end:0x804B03D8
+	.bss        start:0x80528068 end:0x80528168
+	.sdata2     start:0x80543520 end:0x80543530
+
+game/tu_803D7098.cpp:
+	extab       start:0x8000FAB4 end:0x8000FB44
+	extabindex  start:0x8001F960 end:0x8001F9D8
+	.text       start:0x803D7098 end:0x803D9944
+	.ctors      start:0x8045C56C end:0x8045C570
+	.rodata     start:0x80476F80 end:0x804774A0
+	.data       start:0x804B03D8 end:0x804B03E8
+	.bss        start:0x80528168 end:0x80528268
+	.sdata2     start:0x80543530 end:0x80543590
+
+game/tu_803D9944.cpp:
+	extab       start:0x8000FB44 end:0x8000FB6C
+	extabindex  start:0x8001F9D8 end:0x8001FA14
+	.text       start:0x803D9944 end:0x803DA6B4
+	.ctors      start:0x8045C570 end:0x8045C574
+	.data       start:0x804B03E8 end:0x804B04F8
+	.bss        start:0x80528268 end:0x80528368
+	.sdata      start:0x8053A210 end:0x8053A218
+	.sdata2     start:0x80543590 end:0x805435B0
+
+game/tu_803DA6B4.cpp:
+	extab       start:0x8000FB6C end:0x8000FB9C
+	extabindex  start:0x8001FA14 end:0x8001FA44
+	.text       start:0x803DA6B4 end:0x803DAC3C
+	.ctors      start:0x8045C574 end:0x8045C578
+	.rodata     start:0x804774A0 end:0x804774C8
+	.data       start:0x804B04F8 end:0x804B0508
+	.bss        start:0x80528368 end:0x80528468
+	.sdata2     start:0x805435B0 end:0x805435D8
+
+game/tu_803DAC3C.cpp:
+	extab       start:0x8000FB9C end:0x8000FC6C
+	extabindex  start:0x8001FA44 end:0x8001FB04
+	.text       start:0x803DAC3C end:0x803E1668
+	.ctors      start:0x8045C578 end:0x8045C57C
+	.rodata     start:0x804774C8 end:0x80477970
+	.data       start:0x804B0508 end:0x804B06A0
+	.bss        start:0x80528468 end:0x80528568
+	.sdata2     start:0x805435D8 end:0x80543648
+
+game/tu_803E1668.cpp:
+	extab       start:0x8000FC6C end:0x8000FE1C
+	extabindex  start:0x8001FB04 end:0x8001FC9C
+	.text       start:0x803E1668 end:0x803F0A54
+	.ctors      start:0x8045C57C end:0x8045C580
+	.rodata     start:0x80477970 end:0x80478A60
+	.data       start:0x804B06A0 end:0x804B0B40
+	.bss        start:0x80528568 end:0x80528668
+	.sdata2     start:0x80543648 end:0x80543710
+
+game/tu_803F0A54.cpp:
+	extab       start:0x8000FE1C end:0x8000FFB4
+	extabindex  start:0x8001FC9C end:0x8001FE10
+	.text       start:0x803F0A54 end:0x803FF2C4
+	.ctors      start:0x8045C580 end:0x8045C584
+	.rodata     start:0x80478A60 end:0x80479AC0
+	.data       start:0x804B0B40 end:0x804B0F50
+	.bss        start:0x80528668 end:0x80528768
+	.sdata2     start:0x80543710 end:0x805437D8
+
+game/tu_803FF2C4.cpp:
+	extab       start:0x8000FFB4 end:0x800100C4
+	extabindex  start:0x8001FE10 end:0x8001FE58
+	.text       start:0x803FF2C4 end:0x80400DC4
+	.ctors      start:0x8045C584 end:0x8045C588
+	.rodata     start:0x80479AC0 end:0x80479C60
+	.data       start:0x804B0F50 end:0x804B0F90
+	.bss        start:0x80528768 end:0x80528868
+	.sdata2     start:0x805437D8 end:0x80543830
+
+game/tu_80400DC4.cpp:
+	extab       start:0x800100C4 end:0x8001014C
+	extabindex  start:0x8001FE58 end:0x8001FE88
+	.text       start:0x80400DC4 end:0x80401848
+	.ctors      start:0x8045C588 end:0x8045C58C
+	.rodata     start:0x80479C60 end:0x8048C160
+	.bss        start:0x80528868 end:0x80528980
+	.sbss       start:0x8053ADD8 end:0x8053ADF0
+	.sdata2     start:0x80543830 end:0x80543860
+
+game/tu_80401848.cpp:
+	extab       start:0x8001014C end:0x800101BC
+	extabindex  start:0x8001FE88 end:0x8001FF30
+	.text       start:0x80401848 end:0x804023D0
+	.ctors      start:0x8045C58C end:0x8045C590
+	.data       start:0x804B0F90 end:0x804B0FE0
+	.bss        start:0x80528980 end:0x80529DE0
+	.sdata      start:0x8053A218 end:0x8053A220
+	.sbss       start:0x8053ADF0 end:0x8053AE20
+
+game/tu_804023D0.cpp:
+	extab       start:0x800101BC end:0x80010284
+	extabindex  start:0x8001FF30 end:0x8002005C
+	.text       start:0x804023D0 end:0x80403D84
+	.ctors      start:0x8045C590 end:0x8045C594
+	.rodata     start:0x8048C160 end:0x8048C1F8
+	.data       start:0x804B0FE0 end:0x804B0FF0
+	.bss        start:0x80529DE0 end:0x8052A140
+	.sdata2     start:0x80543860 end:0x80543880
+
+game/tu_80403D84.cpp:
+	extab       start:0x80010284 end:0x80010484
+	extabindex  start:0x8002005C end:0x8002029C
+	.text       start:0x80403D84 end:0x80414F6C
+	.ctors      start:0x8045C594 end:0x8045C598
+	.rodata     start:0x8048C1F8 end:0x8048CD50
+	.data       start:0x804B0FF0 end:0x804B1330
+	.bss        start:0x8052A140 end:0x8052A240
+	.sdata2     start:0x80543880 end:0x805439B8
+
+game/tu_80414F6C.cpp:
+	extab       start:0x80010484 end:0x800104DC
+	extabindex  start:0x8002029C end:0x80020308
+	.text       start:0x80414F6C end:0x80418B64
+	.ctors      start:0x8045C598 end:0x8045C59C
+	.rodata     start:0x8048CD50 end:0x8048D320
+	.data       start:0x804B1330 end:0x804B1390
+	.bss        start:0x8052A240 end:0x8052A340
+	.sdata2     start:0x805439B8 end:0x805439F0
+
+game/tu_80418B64.cpp:
+	extab       start:0x800104DC end:0x800105F4
+	extabindex  start:0x80020308 end:0x8002041C
+	.text       start:0x80418B64 end:0x8042165C
+	.ctors      start:0x8045C59C end:0x8045C5A0
+	.rodata     start:0x8048D320 end:0x8048E1B8
+	.data       start:0x804B1390 end:0x804B1428
+	.bss        start:0x8052A340 end:0x8052A440
+	.sdata2     start:0x805439F0 end:0x80543A40
+
+game/tu_8042165C.cpp:
+	extab       start:0x800105F4 end:0x800106EC
+	extabindex  start:0x8002041C end:0x80020500
+	.text       start:0x8042165C end:0x80427D2C
+	.ctors      start:0x8045C5A0 end:0x8045C5A4
+	.rodata     start:0x8048E1B8 end:0x8048F270
+	.data       start:0x804B1428 end:0x804B14C0
+	.bss        start:0x8052A440 end:0x8052A540
+	.sdata2     start:0x80543A40 end:0x80543A90
+
+game/tu_80427D2C.cpp:
+	extab       start:0x800106EC end:0x80010B54
+	extabindex  start:0x80020500 end:0x80020B54
+	.text       start:0x80427D2C end:0x8042E964
+	.ctors      start:0x8045C5A4 end:0x8045C5A8
+	.rodata     start:0x8048F270 end:0x8048F390
+	.data       start:0x804B14C0 end:0x804B1600
+	.bss        start:0x8052A540 end:0x8052BFD8
+	.sbss       start:0x8053AE20 end:0x8053AED0
+	.sdata2     start:0x80543A90 end:0x80543AE8
+
+game/tu_8042E964.cpp:
+	extab       start:0x80010B54 end:0x80010C74
+	extabindex  start:0x80020B54 end:0x80020CB0
+	.text       start:0x8042E964 end:0x80432638
+	.ctors      start:0x8045C5A8 end:0x8045C5AC
+	.rodata     start:0x8048F390 end:0x8048F438
+	.data       start:0x804B1600 end:0x804B1640
+	.bss        start:0x8052BFD8 end:0x8052C0D8
+	.sdata2     start:0x80543AE8 end:0x80543BA8
+
+game/tu_80432638.cpp:
+	extab       start:0x80010C74 end:0x80010CDC
+	extabindex  start:0x80020CB0 end:0x80020D04
+	.text       start:0x80432638 end:0x80434370
+	.ctors      start:0x8045C5AC end:0x8045C5B0
+	.rodata     start:0x8048F438 end:0x8048F598
+	.data       start:0x804B1640 end:0x804B1678
+	.bss        start:0x8052C0D8 end:0x8052C1D8
+	.sdata2     start:0x80543BA8 end:0x80543BC8
+
+game/tu_80434370.cpp:
+	extab       start:0x80010CDC end:0x80010D44
+	extabindex  start:0x80020D04 end:0x80020D88
+	.text       start:0x80434370 end:0x80437C10
+	.ctors      start:0x8045C5B0 end:0x8045C5B4
+	.rodata     start:0x8048F598 end:0x8048F6D0
+	.data       start:0x804B1678 end:0x804B16C0
+	.bss        start:0x8052C1D8 end:0x8052C2D8
+	.sdata2     start:0x80543BC8 end:0x80543C00
+
+game/tu_80437C10.cpp:
+	extab       start:0x80010D44 end:0x80010D64
+	extabindex  start:0x80020D88 end:0x80020DB8
+	.text       start:0x80437C10 end:0x80438540
+	.ctors      start:0x8045C5B4 end:0x8045C5B8
+	.data       start:0x804B16C0 end:0x804B1738
+	.bss        start:0x8052C2D8 end:0x8052C3D8
+	.sdata2     start:0x80543C00 end:0x80543C20
+
+game/tu_80438540.cpp:
+	extab       start:0x80010D64 end:0x80010D84
+	extabindex  start:0x80020DB8 end:0x80020DE8
+	.text       start:0x80438540 end:0x80438C68
+	.ctors      start:0x8045C5B8 end:0x8045C5BC
+	.data       start:0x804B1738 end:0x804B17A0
+	.bss        start:0x8052C3D8 end:0x8052C4D8
+	.sdata2     start:0x80543C20 end:0x80543C40
+
+game/tu_80438C68.cpp:
+	extab       start:0x80010D84 end:0x80010DD4
+	extabindex  start:0x80020DE8 end:0x80020E30
+	.text       start:0x80438C68 end:0x8043A0E8
+	.ctors      start:0x8045C5BC end:0x8045C5C0
+	.rodata     start:0x8048F6D0 end:0x8048F710
+	.data       start:0x804B17A0 end:0x804B1810
+	.bss        start:0x8052C4D8 end:0x8052C5D8
+	.sdata2     start:0x80543C40 end:0x80543C88
+
+game/tu_8043A0E8.cpp:
+	extab       start:0x80010DD4 end:0x8001110C
+	extabindex  start:0x80020E30 end:0x80020FBC
+	.text       start:0x8043A0E8 end:0x80440BF4
+	.ctors      start:0x8045C5C0 end:0x8045C5C4
+	.rodata     start:0x8048F710 end:0x8048FAA8
+	.data       start:0x804B1810 end:0x804B1988
+	.bss        start:0x8052C5D8 end:0x8052C700
+	.sbss       start:0x8053AED0 end:0x8053AEE8
+	.sdata2     start:0x80543C88 end:0x80543D30
+
+game/tu_80440BF4.cpp:
+	extab       start:0x8001110C end:0x80011164
+	extabindex  start:0x80020FBC end:0x80021028
+	.text       start:0x80440BF4 end:0x80441318
+	.ctors      start:0x8045C5C4 end:0x8045C5C8
+	.rodata     start:0x8048FAA8 end:0x8048FAF0
+	.data       start:0x804B1988 end:0x804B1998
+	.bss        start:0x8052C700 end:0x8052C800
+	.sdata2     start:0x80543D30 end:0x80543D40
+
+game/tu_80441318.cpp:
+	extab       start:0x80011164 end:0x80011194
+	extabindex  start:0x80021028 end:0x80021070
+	.text       start:0x80441318 end:0x80441A1C
+	.ctors      start:0x8045C5C8 end:0x8045C5CC
+	.data       start:0x804B1998 end:0x804B19F0
+	.bss        start:0x8052C800 end:0x8052C900
+
+game/tu_80441A1C.cpp:
+	extab       start:0x80011194 end:0x800111D4
+	extabindex  start:0x80021070 end:0x800210B8
+	.text       start:0x80441A1C end:0x80442810
+	.ctors      start:0x8045C5CC end:0x8045C5D0
+	.rodata     start:0x8048FAF0 end:0x8048FB10
+	.data       start:0x804B19F0 end:0x804B1A38
+	.bss        start:0x8052C900 end:0x8052CA00
+	.sdata2     start:0x80543D40 end:0x80543D60
+
+game/tu_80442810.cpp:
+	extab       start:0x800111D4 end:0x800111F4
+	extabindex  start:0x800210B8 end:0x800210E8
+	.text       start:0x80442810 end:0x80442C64
+	.ctors      start:0x8045C5D0 end:0x8045C5D4
+	.rodata     start:0x8048FB10 end:0x8048FB88
+	.data       start:0x804B1A38 end:0x804B1AA0
+	.bss        start:0x8052CA00 end:0x8052CB00
+	.sbss       start:0x8053AEE8 end:0x8053AF58
+
+game/tu_80442C64.cpp:
+	extab       start:0x800111F4 end:0x80011214
+	extabindex  start:0x800210E8 end:0x80021118
+	.text       start:0x80442C64 end:0x804432DC
+	.ctors      start:0x8045C5D4 end:0x8045C5D8
+	.bss        start:0x8052CB00 end:0x8052CC00
+
+game/tu_804432DC.cpp:
+	extab       start:0x80011214 end:0x8001125C
+	extabindex  start:0x80021118 end:0x8002116C
+	.text       start:0x804432DC end:0x80443B0C
+	.ctors      start:0x8045C5D8 end:0x8045C5DC
+	.rodata     start:0x8048FB88 end:0x8048FBD0
+	.data       start:0x804B1AA0 end:0x804B1B00
+	.bss        start:0x8052CC00 end:0x8052CD00
+	.sdata2     start:0x80543D60 end:0x80543D70
+
+game/tu_80443B0C.cpp:
+	extab       start:0x8001125C end:0x800112C4
+	extabindex  start:0x8002116C end:0x800211F0
+	.text       start:0x80443B0C end:0x804455E0
+	.ctors      start:0x8045C5DC end:0x8045C5E0
+	.rodata     start:0x8048FBD0 end:0x8048FC08
+	.data       start:0x804B1B00 end:0x804B1B78
+	.bss        start:0x8052CD00 end:0x8052CE00
+	.sdata2     start:0x80543D70 end:0x80543D88
+
+game/tu_804455E0.cpp:
+	extab       start:0x800112C4 end:0x80011304
+	extabindex  start:0x800211F0 end:0x80021238
+	.text       start:0x804455E0 end:0x804465B8
+	.ctors      start:0x8045C5E0 end:0x8045C5E4
+	.rodata     start:0x8048FC08 end:0x80490038
+	.data       start:0x804B1B78 end:0x804B1BC0
+	.bss        start:0x8052CE00 end:0x8052CF00
+	.sdata2     start:0x80543D88 end:0x80543D90
+
+game/tu_804465B8.cpp:
+	extab       start:0x80011304 end:0x80011344
+	extabindex  start:0x80021238 end:0x80021280
+	.text       start:0x804465B8 end:0x80447618
+	.ctors      start:0x8045C5E4 end:0x8045C5E8
+	.rodata     start:0x80490038 end:0x80490410
+	.data       start:0x804B1BC0 end:0x804B1BF8
+	.bss        start:0x8052CF00 end:0x8052D000
+	.sdata2     start:0x80543D90 end:0x80543D98
+
+game/tu_80447618.cpp:
+	extab       start:0x80011344 end:0x80011384
+	extabindex  start:0x80021280 end:0x800212C8
+	.text       start:0x80447618 end:0x80447FAC
+	.ctors      start:0x8045C5E8 end:0x8045C5EC
+	.rodata     start:0x80490410 end:0x804906A8
+	.data       start:0x804B1BF8 end:0x804B1C30
+	.bss        start:0x8052D000 end:0x8052D100
+	.sdata2     start:0x80543D98 end:0x80543DA0
+
+game/tu_80447FAC.cpp:
+	extab       start:0x80011384 end:0x800113C4
+	extabindex  start:0x800212C8 end:0x80021310
+	.text       start:0x80447FAC end:0x80448940
+	.ctors      start:0x8045C5EC end:0x8045C5F0
+	.rodata     start:0x804906A8 end:0x80490940
+	.data       start:0x804B1C30 end:0x804B1C68
+	.bss        start:0x8052D100 end:0x8052D200
+	.sdata2     start:0x80543DA0 end:0x80543DA8
+
+game/tu_80448940.cpp:
+	extab       start:0x800113C4 end:0x80011404
+	extabindex  start:0x80021310 end:0x80021358
+	.text       start:0x80448940 end:0x8044998C
+	.ctors      start:0x8045C5F0 end:0x8045C5F4
+	.rodata     start:0x80490940 end:0x80490C40
+	.data       start:0x804B1C68 end:0x804B1CA0
+	.bss        start:0x8052D200 end:0x8052D300
+	.sdata2     start:0x80543DA8 end:0x80543DB0
+
+game/tu_8044998C.cpp:
+	extab       start:0x80011404 end:0x80011444
+	extabindex  start:0x80021358 end:0x800213A0
+	.text       start:0x8044998C end:0x8044A828
+	.ctors      start:0x8045C5F4 end:0x8045C5F8
+	.rodata     start:0x80490C40 end:0x80490DB8
+	.data       start:0x804B1CA0 end:0x804B1CD8
+	.bss        start:0x8052D300 end:0x8052D400
+	.sdata2     start:0x80543DB0 end:0x80543DB8
+
+game/tu_8044A828.cpp:
+	extab       start:0x80011444 end:0x80011484
+	extabindex  start:0x800213A0 end:0x800213E8
+	.text       start:0x8044A828 end:0x8044B80C
+	.ctors      start:0x8045C5F8 end:0x8045C5FC
+	.rodata     start:0x80490DB8 end:0x80490F48
+	.data       start:0x804B1CD8 end:0x804B1D10
+	.bss        start:0x8052D400 end:0x8052D500
+	.sdata2     start:0x80543DB8 end:0x80543DC0
+
+game/tu_8044B80C.cpp:
+	extab       start:0x80011484 end:0x800114BC
+	extabindex  start:0x800213E8 end:0x80021424
+	.text       start:0x8044B80C end:0x8044C028
+	.ctors      start:0x8045C5FC end:0x8045C600
+	.rodata     start:0x80490F48 end:0x80490FA0
+	.data       start:0x804B1D10 end:0x804B1D20
+	.bss        start:0x8052D500 end:0x8052D600
+	.sdata2     start:0x80543DC0 end:0x80543DC8
+
+game/tu_8044C028.cpp:
+	extab       start:0x800114BC end:0x80011504
+	extabindex  start:0x80021424 end:0x80021460
+	.text       start:0x8044C028 end:0x8044C7F0
+	.ctors      start:0x8045C600 end:0x8045C604
+	.rodata     start:0x80490FA0 end:0x80490FC8
+	.data       start:0x804B1D20 end:0x804B1D30
+	.bss        start:0x8052D600 end:0x8052D700
+	.sdata2     start:0x80543DC8 end:0x80543DD8
+
+game/tu_8044C7F0.cpp:
+	extab       start:0x80011504 end:0x8001157C
+	extabindex  start:0x80021460 end:0x800214FC
+	.text       start:0x8044C7F0 end:0x80453AF8
+	.ctors      start:0x8045C604 end:0x8045C608
+	.rodata     start:0x80490FC8 end:0x80491470
+	.data       start:0x804B1D30 end:0x804B1DA8
+	.bss        start:0x8052D700 end:0x8052D800
+	.sdata2     start:0x80543DD8 end:0x80543E40
+
+game/tu_80453AF8.cpp:
+	extab       start:0x8001157C end:0x800115BC
+	extabindex  start:0x800214FC end:0x80021544
+	.text       start:0x80453AF8 end:0x8045560C
+	.ctors      start:0x8045C608 end:0x8045C60C
+	.rodata     start:0x80491470 end:0x80491600
+	.data       start:0x804B1DA8 end:0x804B1DF0
+	.bss        start:0x8052D800 end:0x8052D900
+	.sdata2     start:0x80543E40 end:0x80543E60
+
+game/tu_8045560C.cpp:
+	extab       start:0x800115BC end:0x800115F4
+	extabindex  start:0x80021544 end:0x80021580
+	.text       start:0x8045560C end:0x80455CA4
+	.ctors      start:0x8045C60C end:0x8045C610
+	.data       start:0x804B1DF0 end:0x804B1E28
+	.bss        start:0x8052D900 end:0x8052DA00
+	.sdata2     start:0x80543E60 end:0x80543E68
+
+game/tu_80455CA4.cpp:
+	extab       start:0x800115F4 end:0x80011650
+	extabindex  start:0x80021580 end:0x800215EC
+	.text       start:0x80455CA4 end:0x80457C08
+	.ctors      start:0x8045C610 end:0x8045C614
+	.data       start:0x804B1E28 end:0x804B1E60
+	.bss        start:0x8052DA00 end:0x8052DB00
+	.sbss       start:0x8053AF58 end:0x8053AF78
+	.sdata2     start:0x80543E68 end:0x80543EB0
+
+game/tu_80457C08.cpp:
+	extab       start:0x80011650 end:0x80011658
+	extabindex  start:0x800215EC end:0x800215F8
+	.text       start:0x80457C08 end:0x80457DFC
+	.ctors      start:0x8045C614 end:0x8045C618
+	.bss        start:0x8052DB00 end:0x8052DBE0
+
+game/tu_80457DFC.cpp:
+	extab       start:0x80011658 end:0x800117C4
+	extabindex  start:0x800215F8 end:0x8002173C
+	.text       start:0x80457DFC end:0x8045A640
+	.ctors      start:0x8045C618 end:0x8045C61C
+	.rodata     start:0x80491600 end:0x80491680
+	.data       start:0x804B1E60 end:0x804B2098
+	.bss        start:0x8052DBE0 end:0x8052DCE0
+	.sdata      start:0x8053A220 end:0x8053A270
+	.sbss       start:0x8053AF78 end:0x8053AF88
+	.sdata2     start:0x80543EB0 end:0x80543ED8
+
+game/tu_8045A640.cpp:
+	extab       start:0x800117C4 end:0x8001181C
+	extabindex  start:0x8002173C end:0x800217C0
+	.text       start:0x8045A640 end:0x8045B010
+	.ctors      start:0x8045C61C end:0x8045C620
+	.bss        start:0x8052DCE0 end:0x8052DDE0
+	.sdata2     start:0x80543ED8 end:0x80543EE8
+
+game/tu_8045B010.cpp:
+	extab       start:0x8001181C end:0x8001183C
+	extabindex  start:0x800217C0 end:0x800217F0
+	.text       start:0x8045B010 end:0x8045B6F0
+	.ctors      start:0x8045C620 end:0x8045C624
+	.rodata     start:0x80491680 end:0x80491690
+	.bss        start:0x8052DDE0 end:0x8052E088
+	.sbss       start:0x8053AF88 end:0x8053AF90
+	.sdata2     start:0x80543EE8 end:0x80543EF4
+
+game/tu_8045B6F0.cpp:
+	extab       start:0x8001183C end:0x80011844
+	extabindex  start:0x800217F0 end:0x800217FC
+	.text       start:0x8045B6F0 end:0x8045BA84
+	.ctors      start:0x8045C624 end:0x8045C628
+
+game/tu_8045BA84.cpp:
+	extab       start:0x80011844 end:0x80011854
+	extabindex  start:0x800217FC end:0x80021814
+	.text       start:0x8045BA84 end:0x8045BCE4
+	.ctors      start:0x8045C628 end:0x8045C62C
+	.bss        start:0x8052E088 end:0x8052E184
 
 PowerPC_EABI_Support/Runtime/Src/__mem.c:
 	.init       start:0x8000540C end:0x80005544

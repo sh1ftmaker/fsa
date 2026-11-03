@@ -22,3 +22,32 @@ mkdir -p build/tu_map && cd build/tu_map
 python3 ../../tools/tu_map/refs.py && python3 ../../tools/tu_map/build_map.py
 python3 ../../tools/tu_map/validate.py   # checks the method against splits.txt
 ```
+
+## Into splits.txt
+
+`to_splits.py` turns the map into `splits.txt` stanzas (`game/<name>.cpp`)
+with every section the evidence covers, and writes
+`config/G4SE01/game_units.tsv` (unit, text range, confidence, sections, name
+evidence). Run it after `refs.py`, from the same directory:
+
+```sh
+python3 ../../tools/tu_map/to_splits.py           # dry run: game_splits.txt, game_units.tsv, notes
+python3 ../../tools/tu_map/to_splits.py --apply   # replace the game/ stanzas in splits.txt
+```
+
+- extab/extabindex come from the DOL's extabindex entries, `.ctors` from
+  the slot pointing at the unit's `__sinit`.
+- Data sections are tiled from the data only the unit's code references;
+  a unit's references inside another unit's data (extern consts, shared
+  buffers) are reported and dropped; cuts between units go where the
+  fewest unassigned symbols land on the wrong side, then down to an
+  8-byte boundary when that takes nothing the previous unit references.
+- `MERGE` holds the corrections dtk or the data proved (see docs/PLAN.md).
+- Names: a `*.cpp` string the unit references (`RailBase.cpp`), else the
+  actor table (`docs/names/actors.tsv`, high/medium names only) through the
+  actor spawner `fn_801F9484`: the case's constructor, or the vtable it
+  stores when the constructor is an inline copy in the spawner's file,
+  places the actor in a unit. Anything else is `game/tu_<start>.cpp`.
+
+Rerunning after `symbols.txt` gains names can change data cuts slightly;
+diff `game_splits.txt` against `splits.txt` before applying.
