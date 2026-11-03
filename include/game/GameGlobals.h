@@ -453,6 +453,12 @@ extern "C" cls_801192AC* fn_8011921C();
 // returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
 // act_four_sword_demo.
 extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
+class ActorBase_804A5770;
+// game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
+// serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
+// by cls_8049D140's init and destructor (tu_8010DF44) and act_opening_goal.
+extern "C" void fn_8011888C(cls_801192AC* obj, ActorBase_804A5770* actor);
+extern "C" void fn_80118798(cls_801192AC* obj, ActorBase_804A5770* actor);
 
 // game/tu_801C0D70.cpp (owner unit, not written yet). The 0x160-byte object
 // in .bss at 0x804C7E70, built on first use by fn_801C0D70 (guard byte
