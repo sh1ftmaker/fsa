@@ -4,6 +4,7 @@
 // field, a field's address), the templates for the rest.
 
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
 
 // What the position queries return when there is no such player. The
@@ -2056,4 +2057,8 @@ bool fn_8023EFEC(s32 player) {
 
 bool fn_8023F264(s32 player) {
     return isPlayerActive(player);
+}
+
+GameRoot_8049EF20* fn_8023F9B0() {
+    return lbl_8053AAF8;
 }
