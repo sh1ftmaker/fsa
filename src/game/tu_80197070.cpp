@@ -33,3 +33,7 @@ extern "C" void fn_8019CDC4(s32 v) {
 extern "C" void fn_8019CEE8(u8 v) {
     lbl_80529DEC.field_0x24d = v;
 }
+
+extern "C" void fn_8019CD9C(s32 v) {
+    lbl_8053AAF8->fn_8013670C(v);
+}

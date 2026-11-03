@@ -173,6 +173,10 @@ struct GameRoot_8049EF20 {
     s32 fn_80138A30();
     // game/tu_8022AD64.cpp (0x8023F98C): whether bit `player` of field_0x82 is set.
     bool fn_8023F98C(s32 player);
+    // Owner: not written yet (0x8013670C, 0x8C bytes). Called by
+    // fn_8019CD9C (game/tu_80197070.cpp) with its s32 argument; r3 is
+    // lbl_8053AAF8 (the only object that unit's call passes).
+    void fn_8013670C(s32 value);
 }; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
