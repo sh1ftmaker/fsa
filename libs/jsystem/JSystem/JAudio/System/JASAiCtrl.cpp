@@ -326,7 +326,3 @@ u32 getSubFrameCounter() {
 }
 
 }
-
-#ifdef MATCHING
-
-#endif

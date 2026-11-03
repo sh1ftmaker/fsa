@@ -3,9 +3,6 @@
 #include "JSystem/JAudio/System/JASInst.h"
 #include "JSystem/JUtility/JUTAssert.h"
 
-#ifdef MATCHING
-#endif
-
 JASBasicInst::JASBasicInst() {
     mVolume = 1.0f;
     mPitch = 1.0f;

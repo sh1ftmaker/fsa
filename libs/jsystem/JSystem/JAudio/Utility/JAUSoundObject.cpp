@@ -216,8 +216,3 @@ JAISoundHandle *JAUDopplerSoundObject::startLevelSound(JAISoundID soundID) {
     }
     return handle;
 }
-
-// FIXME: __sinit_JAUSoundObject_cpp (0x8003F504) is not emitted yet. FSA constructs the
-// JASTrack::TChannelMgr, JASTrack and JASChannel multi-threaded pools and
-// JASPoolAllocObject<JAISe>::memPool_ here; it needs the generic memPool_
-// definition (JASHeapCtrl.h, pending) visible in this TU.

@@ -9,9 +9,6 @@
 #include "JSystem/JUtility/JUTAssert.h"
 #include "dolphin/dvd/dvdfs.h"
 
-#ifdef MATCHING
-#endif
-
 JASTaskThread *JASAramStream::sLoadThread;
 u8 *JASAramStream::sReadBuffer;
 u32 JASAramStream::sBlockSize;

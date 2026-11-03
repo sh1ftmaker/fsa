@@ -1,6 +1,6 @@
 #define JAUSECTIONHEAP_FIX
 #include "JSystem/JAudio/Interface/JAISeqDataMgr.h"
-#include "JSystem/JAudio/Interface/JAISe.h"
+#include "JSystem/JAudio/Interface/JAISe.h"  // FSA's __sinit constructs the JASTrack/JASChannel and JAISe pools
 #include "JSystem/JAudio/JAUAudience.h"
 #include "JSystem/JAudio/JAUSectionHeap.h"
 #include "JSystem/JAudio/JAUSeqCollection.h"

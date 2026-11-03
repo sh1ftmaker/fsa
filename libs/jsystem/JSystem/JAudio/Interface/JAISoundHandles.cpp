@@ -1,5 +1,5 @@
 #include "JSystem/JAudio/Interface/JAISoundHandles.h"
-#include "JSystem/JAudio/System/JASTrack.h"
+#include "JSystem/JAudio/System/JASTrack.h"  // FSA's __sinit constructs the JASTrack/JASChannel pools
 
 #ifdef DEBUG
 #pragma sym on
