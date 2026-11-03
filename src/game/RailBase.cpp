@@ -26,6 +26,14 @@ bool cls_800FE3EC::fn_800FD548(u8 index) {
     return (field_0x4[index]->field_0x90 & 0x10) != 0;
 }
 
+void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index) {
+    if (index == 0xFF) {
+        *out = buffer->field_0x4[buffer->field_0x3]->pos;
+    } else {
+        *out = buffer->field_0x4[index]->pos;
+    }
+}
+
 u8 cls_800FE3EC::fn_800FE21C(u8 index) {
     if (index == 0xFF) {
         return field_0x4[field_0x3]->field_0x90 >> 24;

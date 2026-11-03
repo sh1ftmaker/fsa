@@ -74,7 +74,7 @@ public:
 }; // Size: 0xC8
 
 extern "C" {
-// game/RailBase.cpp (not written yet): *out = the position of entry
+// game/RailBase.cpp: *out = the position of entry
 // `index` (0xFF: the current one, entry field_0x3) of the buffer, read from
 // the entry's +0xC. r3 out, r4 buffer, r5 index (clrlwi 24).
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
