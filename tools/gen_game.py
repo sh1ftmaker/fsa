@@ -1611,11 +1611,17 @@ def fwd_plan(header_text=None):
                 continue
             ret, params = rp
             declared = False
-        decl_re = re.compile(r"^(?!\s*//)[^/]*\b(%s|%s)\s*\(" % (s[0], callee), re.M)
+        names = (s[0], callee)
+        decl_re = re.compile(r"^(?!\s*//)[^/]*\b(%s|%s)\s*\(" % names, re.M)
+        # in sources only declarations and definitions count (a return type, then the name), not calls
+        src_re = re.compile(r"^\s*(?!return\b|else\b|case\b)(?:extern\s+\"C\"\s+)?(?:static\s+)?(?:const\s+)?"
+                            r"[\w:<>]+\s*\**\s+(?:\w+::)?(%s|%s)\s*\(" % names, re.M)
         others = [p for p in Path("include").rglob("*.h") if p != PLAYER_H
                   and decl_re.search(p.read_text(errors="replace"))]
+        others += [p for p in [*Path("src").rglob("*.cpp"), *Path("src").rglob("*.h")] if p != src_path(FWD_UNIT)
+                   and src_re.search(p.read_text(errors="replace"))]
         if others:
-            skipped.append(f"{s[0]}: declared in {others[0]}")
+            skipped.append(f"{s[0]}: declared or defined in {others[0]}")
             continue
         seen_callees.add(callee)
         plan.append({"name": s[0], "addr": text_base(FWD_UNIT) + s[1], "callee": callee, "callee_addr": ca,

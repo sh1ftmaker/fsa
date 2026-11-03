@@ -203,7 +203,11 @@ def start_one(unit, owner, notes):
     wt = str(Path(wt).resolve())
     with_claims(lambda c: c[unit].update(state="working"))
     template = (REPO / "docs/prompts/unit.md").read_text()
-    twins = template_twins(unit)
+    try:
+        twins = template_twins(unit)
+    except (OSError, ValueError, KeyError) as e:  # no report or asm yet: start without the note
+        twins = ""
+        print(f"note: template twins skipped ({e})", file=sys.stderr)
     notes = "\n\n".join(x for x in (notes, twins) if x)
     return template.format(unit=unit, source=src, worktree=wt, branch=f"unit/{slug_of(unit)}",
                            status=status, notes=notes)
