@@ -317,7 +317,6 @@ tu_802ED538	dtor_emit	__dt__12cls_804AA350Fv	cls_804AA350	0x804AA350	new	new
 tu_802ED538	sinit	__sinit_tu_802ED538_cpp	-	-	new	-
 tu_802EF76C	sinit	__sinit_tu_802EF76C_cpp	-	-	new	-
 tu_8030AE84	sinit	__sinit_tu_8030AE84_cpp	-	-	new	-
-tu_8030C058	sinit	__sinit_tu_8030C058_cpp	-	-	new	-
 tu_803276C4	dtor	__dt__12cls_804AB528Fv	cls_804AB528	0x804AB528	new	new
 tu_803276C4	sinit	__sinit_tu_803276C4_cpp	-	-	new	new
 tu_80334318	sinit	__sinit_tu_80334318_cpp	-	-	new	-
