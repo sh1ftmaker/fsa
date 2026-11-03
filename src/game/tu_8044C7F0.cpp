@@ -4,3 +4,7 @@
 u8 cls_804B1D58::fn_8044CB00() {
     return field_0x140;
 }
+
+u8 cls_804B1D58::fn_8044D290() {
+    return field_0x140;
+}
