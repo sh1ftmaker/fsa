@@ -10,10 +10,10 @@ Status: NonMatching. 5/5 functions at 100 %; .sdata2 82.93 %, extab/extabindex 1
 - symbols.txt: four functions renamed to what the source emits. gen_game.tsv row deleted.
 
 ## Resistant
-- .sdata2: original section is 24 bytes (E0:4, E4:8, EC:12); ours is 17 (4 + 5 padded to 4 + 5). Order matches. Local function statics were worse (names differ, 18 %). Cause of the 7 missing tail bytes unknown (maybe the original tables are longer than their indexed range).
+- .sdata2 (82.93%): ours is 0x11 bytes with 8-byte alignment; the target's 0x18 is 7 zero bytes of alignment padding up to the next unit's 8-aligned .sdata2 at 0x8053FCF8 (linked DOL identical). Tables and order match; not a source difference.
 
 ## SHARED-EDITS
 none
 
 ## Next
-Find the sdata2 tail layout; extab once the tooling lands.
+extab once the tooling lands.
