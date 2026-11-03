@@ -86,6 +86,10 @@ struct GameRoot_8049EF20 {
     // Stores r4 at this+0x96 (stb). Defined in game/tu_80134C04.cpp; called
     // by act_stop_npc (0x802ED1B4, 0).
     void fn_80134FBC(u8 value);
+    // Owner: game/tu_80134C04.cpp (next to fn_80134FBC; not written yet).
+    // 1 unit. act_wait_switch calls it with (10, count) when its switch is
+    // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
+    void fn_80134DE4(s32 a, s32 b);
 };
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
