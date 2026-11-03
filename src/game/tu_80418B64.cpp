@@ -1,6 +1,63 @@
 #include "game/GameAudio.h"
 #include "game/cls_804B13D4.h"
 #include "game/GameState.h"
+#include "game/Player.h"
+#include "JSystem/J2D/J2DPicture.h"
+
+// J2DPane::search tags, as u64 (the names are padded with leading zeros).
+static const u64 lbl_8048DDD0[6] = {
+    0x00000050746B3031ull, /* "Ptk01" */
+    0x0000000050743031ull, /* "Pt01" */
+    0x00000050746B3032ull, /* "Ptk02" */
+    0x0000000050743032ull, /* "Pt02" */
+    0x00005074696D3031ull, /* "Ptim01" */
+    0x00005074696D3032ull, /* "Ptim02" */
+};
+
+// FIXME: lbl_804B139C (10 name pointers in .data at 0x804B139C, 0x28 bytes) is not
+// written yet. Its entries are the 'TIMG' names fn_8041918C passes to fn_804030C4;
+// the function matches with only the declaration, the unit's data does not.
+extern "C" const char* lbl_804B139C[10];
+
+void cls_804B13D4::fn_8041918C(s32 player) {
+    if (fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {
+        s32 level = fn_802366CC(fn_8022EA0C(player)) / 60 + 1;
+        if (level != field_0x294[player]) {
+            if (level > 99) {
+                level = 99;
+            }
+            if (level < 0) {
+                level = 0;
+            }
+            if (level < 10) {
+                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
+                if (field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible() == true) {
+                    field_0x2c[player]->search(lbl_8048DDD0[2])->hide();
+                    field_0x2c[player]->search(lbl_8048DDD0[3])->hide();
+                }
+            } else {
+                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level / 10]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
+                res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level % 10]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[2]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[3]))->changeTexture(res, 0);
+                if (!field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible()) {
+                    field_0x2c[player]->search(lbl_8048DDD0[2])->show();
+                    field_0x2c[player]->search(lbl_8048DDD0[3])->show();
+                }
+            }
+            field_0x294[player] = level;
+        }
+    } else {
+        field_0x294[player] = 0;
+    }
+    if (field_0x234[player] > 0) {
+        field_0x234[player]--;
+    }
+}
 
 cls_804B13D4::~cls_804B13D4() {
     if (field_0x50 != NULL) {

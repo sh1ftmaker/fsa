@@ -12,17 +12,23 @@
 #include "types.h"
 
 class cls_804AF86C;
+class J2DPane;
 
 class cls_804B13D4 {
 public:
     /* 0x08 */ virtual ~cls_804B13D4();
+
+    // tu_80418B64 (0x8041918C). Takes the player index; sets the byte at
+    // 0x294 + player to a level (fn_802366CC / 60 + 1, clamped to 0..99) and
+    // shows the pictures of the player's pane tags for it.
+    void fn_8041918C(s32 player);
 
     /* 0x00 */ // vtable
     /* 0x04 */ cls_804AF86C* field_0x4;
     /* 0x08 */ cls_804AF86C* field_0x8[4];
     /* 0x18 */ cls_804AF86C* field_0x18;
     /* 0x1C */ u8 field_0x1c[0x2C - 0x1C];
-    /* 0x2C */ cls_804AF86C* field_0x2c[4];
+    /* 0x2C */ J2DPane* field_0x2c[4]; // search(u64) at vtable 0x3C (fn_8041918C)
     /* 0x3C */ u8 field_0x3c[0x4C - 0x3C];
     /* 0x4C */ cls_804AF86C* field_0x4c;
     /* 0x50 */ cls_804AF86C* field_0x50;
@@ -40,7 +46,10 @@ public:
     /* 0xC4 */ cls_804AF86C* field_0xc4[4];
     /* 0xD4 */ cls_804AF86C* field_0xd4[4];
     /* 0xE4 */ cls_804AF86C* field_0xe4[4];
-    /* 0xF4 */ u8 field_0xf4[0x290 - 0xF4];
-}; // Size: 0x290 or more (fn_8041E3B4 reads the byte at 0x28F)
+    /* 0xF4 */ u8 field_0xf4[0x234 - 0xF4];
+    /* 0x234 */ s16 field_0x234[4]; // countdown per player, stepped down by fn_8041918C
+    /* 0x23C */ u8 field_0x23c[0x294 - 0x23C];
+    /* 0x294 */ u8 field_0x294[4];  // level per player, set by fn_8041918C
+}; // Size: 0x298 or more (fn_8041E3B4 reads the byte at 0x28F)
 
 #endif
