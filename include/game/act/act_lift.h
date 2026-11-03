@@ -15,7 +15,20 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x10]; // not yet known
+
+    // Steps the lift around its spawn point (fn_80256410, called by update).
+    void fn_80256410();
+    // Tests lift `index` (fn_802565BC); clrlwi 24 by its caller.
+    bool fn_802565BC(s32 index);
+
+    // The mode is the low 7 bits of field_0x90, compared as signed.
+    s32 getMode() { return field_0x90 & 0x7F; }
+
+    /* 0x230 */ u32 field_0x230; // step counter; limit is 0x90 bits 17-21, times 32
+    /* 0x234 */ u32 field_0x234; // frames to wait; 60 after each step
+    /* 0x238 */ s16 field_0x238; // angle, +0x40 per frame while mode < 6
+    /* 0x23A */ s16 field_0x23a; // angle, +0x40 per frame in mode 8
+    /* 0x23C */ void* field_0x23c; // resource from lbl_8053AAF8->0xA4 (init)
 }; // Size: 0x240
 
 #endif

@@ -785,6 +785,11 @@ bool fn_8023513C(s32 player);
 // byte 0x434) when the player is present.
 void fn_8023DFF4(s32 player, const JGeometry::TVec3f* offset);
 
+// Owner unit: not yet written (game/tu_8022AD64.cpp area, after fn_8023DE58).
+// 1 unit (act_lift update) so far, called with the actor's index and a vector
+// (mPos - mPrevPos); its result is unused there.
+void fn_8023DF68(s32 player, const JGeometry::TVec3f* offset);
+
 // Owner unit tu_8022AD64. 3 units (act_cactus ignores the
 // result, act_ice_wall and act_gohma test it with clrlwi 24). If `player` is
 // active, fn_80271098(player object, pos), which is fn_80238548(player, 0,
