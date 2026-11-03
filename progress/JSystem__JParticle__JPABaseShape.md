@@ -25,3 +25,17 @@ Status: NonMatching. 80/81 functions (was 78/81), code 15556/15980, data 488/488
 
 ## SHARED-EDITS
 - none beyond the draw__19JPAParticleCallBack line shared with the JPAParticle branch.
+
+## Wave 8 (2026-11-02)
+
+Baseline: total: 4501 / 11561 functions, 808092 / 4442088 bytes of code (18.19 %)
+Result: unchanged, 80/81, data 100 %. Only the comment on JPADrawLine became a FIXME with
+the exact diff.
+
+JPADrawLine (97.75 %), variants tried this wave (none changed the result):
+- `f32 zero = 0.0f` local for the tex coords (pikmin2's form, again with one literal).
+- without `GXEnd()` (pikmin2 omits it; it is an empty inline).
+- `volatile` GXWGFifo in GXVert.h (the SDK's form; see J2DPictureEx's checkpoint):
+  93.9 %, worse, and regresses JPADrawPoint/JPADrawStripe/JPADrawStripeX.
+tp, Petari and mkdd have the same body as ours. A genuine scheduling difference, not
+blocked by another unit.

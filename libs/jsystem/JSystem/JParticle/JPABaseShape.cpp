@@ -1024,7 +1024,9 @@ void JPADrawPoint(JPAEmitterWorkData *work, JPABaseParticle *ptcl)
     GXSetVtxDesc(GX_VA_TEX0, GX_INDEX8);
 }
 
-// incorrect scheduling and regswaps for the GXPosition stuff
+// FIXME: scheduling of the second vertex. The original loads position2's y, z, x
+// (0xc, 0x10, 0x8) after the first tex coord and keeps 0.0f in f4; ours loads x
+// first and stores it before the 0.0f tex coord (0.0f in f3).
 void JPADrawLine(JPAEmitterWorkData *work, JPABaseParticle *particle)
 {
     if (particle->checkStatus(JPAEMIT_EnableDeleteEmitter) != 0)
