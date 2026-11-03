@@ -81,6 +81,9 @@ PROTECTED = [
     # Approved binary blobs (and large literal arrays), coordinator-only.
     "config/G4SE01/blobs.txt",
     "tools/data_splits.py", "orig/",
+    # The template generator and its member list: --check is the per-member
+    # review of generated code (GAME_PLAN G3).
+    "tools/gen_game.py", "config/G4SE01/gen_game.tsv",
     # Build artifacts (maps, weak-dedup evidence, objects) are never committed.
     "build/",
 ]
@@ -258,8 +261,35 @@ def check_sources(base, changed, problems):
                 problems.append(f"{path}: new {what} not in the file before or its donor: {line.strip()}")
 
 
+GEN_MANIFEST = "config/G4SE01/gen_game.tsv"
+
+
+def rows_only_deleted(base, path):
+    """True when the working-tree file is the base's file with whole lines
+    deleted and nothing added, edited or reordered (the header line kept)."""
+    old = file_at(base, path).splitlines()
+    try:
+        new = Path(path).read_text().splitlines()
+    except OSError:
+        return False
+    if not old or not new or new[0] != old[0]:
+        return False
+    k = 0
+    for line in new:
+        while k < len(old) and old[k] != line:
+            k += 1
+        if k == len(old):
+            return False
+        k += 1
+    return True
+
+
 def check_protected(base, changed, problems):
     for path in changed:
+        if path == GEN_MANIFEST and rows_only_deleted(base, path):
+            # Lifecycle (tools/gen_game.py): a worker who hand-edits a
+            # generated member removes its unit's rows; nothing else.
+            continue
         if any(path == p or path.startswith(p) for p in PROTECTED if p.endswith("/")) or path in PROTECTED:
             problems.append(f"{path}: protected file changed")
     if "configure.py" in changed:
@@ -1413,6 +1443,19 @@ def check_weakdedup(problems):
         problems += [f"{u['name']}: {stripped}: {d}" for d in diffs]
 
 
+def check_gen_game(problems):
+    """Generated members (config/G4SE01/gen_game.tsv): tools/gen_game.py
+    --check, the scripted identifier-only check the approved review policy
+    puts in place of a per-member review. Needs the split and compiled
+    objects, so it runs after check_report."""
+    if not Path("config/G4SE01/gen_game.tsv").exists():
+        return
+    out = subprocess.run([sys.executable, "tools/gen_game.py", "--check"], capture_output=True, text=True)
+    if out.returncode != 0:
+        lines = [l for l in out.stdout.splitlines() if l.startswith(("  ", "check:", "malformed", "split"))]
+        problems.append("tools/gen_game.py --check failed:\n" + "\n".join(lines[:40]))
+
+
 def check_link(problems):
     """Every Matching unit must link: main.dol's SHA-1 must equal build.sha1."""
     out = ninja("build/G4SE01/ok")
@@ -1453,6 +1496,7 @@ def main():
     check_blobs(problems)
     check_configure(problems)
     check_report(problems)
+    check_gen_game(problems)
     if not args.no_link:
         check_link(problems)
     check_fakematch(problems)

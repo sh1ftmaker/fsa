@@ -73,6 +73,12 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
   from generator batches, which the coordinator runs and merges. Tell G4
   workers on a generated unit this in `--notes`. Generate in batches and
   commit each batch separately; never as one mass symbols.txt edit.
+  A batch adds rows, so it can't pass `check_protected` on a worker branch:
+  the coordinator runs it on matching, checks that each new row's
+  pre-generation blob equals the file at the batch's base commit, and
+  verifies with `gen_game.py --check` and `gate.py --base HEAD` after
+  committing. When a branch deletes a unit's rows, its reviewer gives that
+  unit a full review.
 
 ## Harvesting names from the link (`tools/harvest_names.py`)
 
