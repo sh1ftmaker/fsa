@@ -19,7 +19,7 @@ void cls_804AE288::fn_8036D858(JGeometry::TVec3f pos) {
         if (actor != NULL && actor->mActorId == ACTOR_LEAF && actor->mAlive == 1 &&
             PSVECDistance(&pos, &actor->mPos) <= 57.0f &&
             __fabsf(actor->mPos.x - pos.x) <= 42.0f) {
-            static_cast<cls_804AE2E0*>(actor)->field_0x230[0] = 1;
+            static_cast<cls_804AE2E0*>(actor)->field_0x230 = 1;
             break;
         }
     }
