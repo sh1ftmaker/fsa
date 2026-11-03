@@ -199,6 +199,16 @@ void fn_801CD930(s16* angle, s16 target, s16 step);
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
 f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 
+// game/tu_801CB270.cpp (not written yet); called from game/tu_801BD8C0.cpp.
+// Maps a 16-bit angle to the one mirrored about the 0x4000 axes (a piecewise
+// 0x4000 - a, a - 0x4000 negated, ... on the four quadrants). The body
+// clrlwi 16s the argument for its unsigned compares and ends every path in
+// extsh; the caller (0x801BD908) extends the result again, so the return
+// type is an int.
+extern "C" {
+s32 fn_801CB7CC(s16 angle);
+}
+
 // The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
 // (stored at 0 by their constructors); no members declared yet. 0x20
 // (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
