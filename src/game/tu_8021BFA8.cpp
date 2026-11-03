@@ -1,9 +1,5 @@
 #include "game/GameAudio.h"
 
-// FIXME: .sdata2 82.93%. Our section is 0x11 bytes with 8-byte alignment; the
-// target's 0x18 is 7 zero bytes of alignment padding up to the next unit's
-// 8-aligned .sdata2 at 0x8053FCF8 (the linked DOL is identical). The tables
-// and their order match.
 static const u8 lbl_8053FCE0[4] = {0x0C, 0x0D, 0x0E, 0x0F};
 static const u8 lbl_8053FCE4[5] = {3, 4, 5, 3, 0x1D};
 static const u8 lbl_8053FCEC[5] = {5, 5, 7, 7, 0x3C};
