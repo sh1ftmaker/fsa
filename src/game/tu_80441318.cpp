@@ -8,8 +8,6 @@
 #include "game/act/tu_80441318.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
-extern s32 lbl_8053A160; // game/tu_801E667C.cpp
-
 static inline s32 centreX() {
     return (JUTVideo::getManager()->getRenderMode()->fbWidth - 365) / 2;
 }

@@ -24,11 +24,11 @@ public:
     // Empty (tu_80418B64 calls it at 0x804201C0).
     void fn_8044172C();
 
-    // State 0: waits for a player, then takes its window.
+    // State 2: takes the window of the player fn_80231A50 reports; state 1 when none.
     void fn_80441318();
-    // State 1: counts up to 300 frames, then waits for a player again.
+    // State 1: counts up to 300 frames, then state 2 once a player exists.
     void fn_804413F0();
-    // State 2: back to state 1 once the view has left its screen.
+    // State 0: state 1 (timer 0) once the view has left its screen.
     void fn_80441444();
 
     /* 0x00 */ // vtable

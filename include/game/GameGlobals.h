@@ -117,6 +117,9 @@ struct GameRoot_8049EF20 {
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
 
+// Owner: game/tu_801E667C.cpp (.sdata). Read by tu_80441318 and act_horse_race_man.
+extern s32 lbl_8053A160;
+
 // The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
 // after that getter). Owner: game/tu_801902C0.cpp (not written yet).
 // act_special_bg_draw_object: three 0x20-byte requests at 0x2E0, 0x300 and
