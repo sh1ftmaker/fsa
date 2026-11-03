@@ -198,10 +198,14 @@ public:
     s32 fn_8024FF6C(); // via fn_8022D7F8
     s32 fn_8024FF84(); // via fn_80238CB4
     bool fn_80250090(); // via fn_8022D9CC
+    void fn_802685D4(); // tu_802684A4 (0x568); reads the player's fields directly
+    void fn_80268B3C(); // tu_802684A4; holds mPos.z at 0 across fn_802685D4
     bool fn_80250ACC(); // via fn_8022DA68
     bool fn_80250D30(); // via fn_8022DB04
     bool fn_802517E4(); // via fn_8022D894
     bool fn_80251BFC(s32 arg); // via fn_802319B4
+    bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8
+    bool fn_8026E5F8(const JGeometry::TVec2f* pos); // tu_802684A4 (0x8026E5F8)
     void fn_80252F14(const JGeometry::TVec3f* offset); // via fn_8023DFF4
     void fn_80252F40(s32 arg); // via fn_8023E080
     void fn_80252F50(s32 arg); // via fn_8023CC5C
@@ -267,7 +271,10 @@ public:
     /* 0x0014 */ u8 field_0x14[0x2B8 - 0x14];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
-    /* 0x02C4 */ u8 field_0x2c4[0x344 - 0x2C4];
+    /* 0x02C4 */ u8 field_0x2c4[0x324 - 0x2C4];
+    // The x and y that fn_8026E5F8 stores (its z is left alone).
+    /* 0x0324 */ JGeometry::TVec2f field_0x324;
+    /* 0x032C */ u8 field_0x32c[0x344 - 0x32C];
     // Zeroed by fn_802954B8 (three stfs of 0.0f).
     /* 0x0344 */ JGeometry::TVec3f field_0x344;
     /* 0x0350 */ u8 field_0x350[0x3B4 - 0x350];
@@ -354,7 +361,8 @@ public:
     // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
     // own field_0x120c / field_0x1224 instead when it is negative.
     /* 0x0D60 */ s32 field_0xd60;
-    /* 0x0D64 */ u8 field_0xd64[0xD68 - 0xD64];
+    /* 0x0D64 */ u8 field_0xd64;
+    /* 0x0D65 */ u8 field_0xd65[0xD68 - 0xD65];
     /* 0x0D68 */ s32 field_0xd68; // fn_8025EDD4 (-1 until set); fn_8025EE34 compares it
     /* 0x0D6C */ u8 field_0xd6c[0x11EA - 0xD6C];
     /* 0x11EA */ u8 field_0x11ea;
