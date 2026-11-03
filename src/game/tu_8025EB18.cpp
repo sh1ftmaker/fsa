@@ -27,4 +27,8 @@ void Player_804A6F38::fn_80264768() {
     field_0x458 = 0;
 }
 
+bool Player_804A6F38::fn_8025EE34(s32 arg) {
+    return field_0xd68 == arg;
+}
+
 extern "C" void fn_802636D0() {}

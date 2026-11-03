@@ -332,7 +332,9 @@ public:
     // per-player queries about it (fn_8022CAF8, fn_80234004) and reads its
     // own field_0x120c / field_0x1224 instead when it is negative.
     /* 0x0D60 */ s32 field_0xd60;
-    /* 0x0D64 */ u8 field_0xd64[0x11EA - 0xD64];
+    /* 0x0D64 */ u8 field_0xd64[0xD68 - 0xD64];
+    /* 0x0D68 */ s32 field_0xd68; // fn_8025EDD4 (-1 until set); fn_8025EE34 compares it
+    /* 0x0D6C */ u8 field_0xd6c[0x11EA - 0xD6C];
     /* 0x11EA */ u8 field_0x11ea;
     /* 0x11EB */ u8 field_0x11eb;
     /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
