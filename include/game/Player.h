@@ -716,6 +716,10 @@ bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, 
 // Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
 // player index to a window index (-1 without a manager; see Message.h).
 s32 fn_8022F340(s32 player);
+// Owner: tu_8022AD64 (0x80231A50, defined there). tu_80441318. No arguments
+// (r3 is not loaded); returns a player index, or a negative value for none
+// (the caller maps a non-negative one through fn_8022F340).
+s32 fn_80231A50();
 // Owner: tu_8022AD64 (0x802362C4, defined there). act_gambling_chest (also
 // act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
 // object, value) when the player exists and its byte 0xCAC is set.

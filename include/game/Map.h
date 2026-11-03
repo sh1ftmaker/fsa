@@ -98,9 +98,20 @@ public:
     /* 0x0215 */ u8 field_0x215;
     /* 0x0216 */ u8 field_0x216; // 9 units set it to 1 (act_four_switch_monitor 0x802A9E78)
     /* 0x0217 */ u8 field_0x217[4]; // tu_80418B64 stores them (0x8041AEBC, 0x8041F43C-0x8041F48C)
-    /* 0x021B */ u8 field_0x21b[0x230 - 0x21B];
+    /* 0x021B */ u8 field_0x21b[0x22C - 0x21B];
+    // 0x22C-0x244: the window of one player (tu_80441318's setWindow, from
+    // fn_80441318 / update): field_0x22c is the window index, field_0x234 a
+    // flag (0, or MessageManager's byte 0xEE), field_0x238 / field_0x23c the
+    // top-left corner (centred in the screen) and field_0x240 / field_0x244
+    // the size (365 x 261).
+    /* 0x022C */ s32 field_0x22c;
     /* 0x0230 */ s32 field_0x230; // 2 units read it (tu_80432638 0x80432BE4)
-    /* 0x0234 */ u8 field_0x234[0x235C - 0x234];
+    /* 0x0234 */ s32 field_0x234;
+    /* 0x0238 */ s32 field_0x238;
+    /* 0x023C */ s32 field_0x23c;
+    /* 0x0240 */ s32 field_0x240;
+    /* 0x0244 */ s32 field_0x244;
+    /* 0x0248 */ u8 field_0x248[0x235C - 0x248];
     // Per-player bytes: tu_80139BE8 (0x80139C24), tu_802D39B8, tu_803A8DFC
     // and tu_803B7DCC store them; Camera_804AA9E4::fn_8030C85C /
     // fn_8030C928 copy them to field_0x2360.

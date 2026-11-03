@@ -139,7 +139,11 @@ public:
     /* 0x124 */ s32 field_0x124;
     /* 0x128 */ s32 field_0x128;
     /* 0x12C */ s32 field_0x12c;
-    /* 0x130 */ u8 field_0x130[0x1C4 - 0x130]; // per-player tables, 0x130-0x1C0
+    /* 0x130 */ u8 field_0x130[0x1A8 - 0x130]; // per-player tables, 0x130-0x1A4
+    // -1 after the reset; tu_80441318's update picks the window from it
+    // (0-3 a player, 4 all players).
+    /* 0x1A8 */ s32 field_0x1a8;
+    /* 0x1AC */ u8 field_0x1ac[0x1C4 - 0x1AC];
     // Per player (fn_80402FBC indexes it with fn_8022F340's player index).
     /* 0x1C4 */ JGeometry::TVec3f field_0x1c4[4];
     /* 0x1F4 */ s16 field_0x1f4[4]; // per player; fn_802702EC clears one
