@@ -144,26 +144,35 @@ def symbol_renames(wt):
 
 
 def check_diff(wt, unit):
-    base = Path(unit).stem
     allowed = {f"src/{unit}", "config/G4SE01/symbols.txt"}
     st = sh(["git", "status", "--porcelain", "-uall"], wt).stdout.splitlines()
     paths = {l[3:] for l in st if l[3:] not in ("progress/claims.json", "objdiff.json")}
+    ren = symbol_renames(wt)
+    if ren is None:
+        return "symbols.txt change is not a pure rename", None
+    names = set(ren) | set(ren.values())
     # Game headers are shared: allowed, and the merge step rejects any loss elsewhere.
-    extra = {p for p in paths - allowed if not (p.startswith("include/game/") and p.endswith(".h"))}
-    if extra:
-        return f"touched {sorted(extra)}", None
+    # Other source files may change only at the uses of a renamed symbol.
+    for p in sorted(paths - allowed):
+        if p.startswith("include/game/") and p.endswith(".h"):
+            continue
+        if not (p.startswith("src/") and p in {l[3:] for l in st if l.startswith(" M")}):
+            return f"touched {p}", None
+        d = sh(["git", "diff", "-U0", "--", p], wt).stdout.splitlines()
+        body = [l[1:] for l in d if l[:1] in "+-" and not l.startswith(("+++", "---"))]
+        if not names or any(not any(re.search(rf"\b{re.escape(n)}\b", l) for n in names) for l in body):
+            return f"touched {p} beyond renamed-symbol uses", None
     added = [l for l in sh(["git", "diff", "-U0"], wt).stdout.splitlines() if l.startswith("+")]
-    added += sh(["git", "ls-files", "--others", "--exclude-standard"], wt).stdout.splitlines()
+    for f in sh(["git", "ls-files", "--others", "--exclude-standard"], wt).stdout.splitlines():
+        added += (wt / f).read_text(errors="replace").splitlines()  # new files: every line is added
     for l in added:
         if C_TAKES_CLASS.search(l):
             return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
         if BANNED.search(l):
             return f"banned: {l.strip()[:80]}", None
-    ren = symbol_renames(wt)
-    if ren is None:
-        return "symbols.txt change is not a pure rename", None
     for old in ren:
-        if sh(["git", "grep", "-q", "-w", old, "--", "src", "include", "libs"], wt).returncode == 0:
+        hits = sh(["git", "grep", "-h", "-w", old, "--", "src", "include", "libs"], wt).stdout.splitlines()
+        if any(re.search(rf"\b{re.escape(old)}\b", h.split("//")[0]) for h in hits):  # comments may keep it
             return f"renamed {old} is still used in source", None
     return None, ren
 
@@ -191,8 +200,9 @@ or after 8 attempts. Matched functions in the same file and include/game/ header
 Rules (a script checks them and throws away your work if broken):
 - Edit only `src/{unit}`, headers under include/game/ (add a member or split a field only with
   evidence from the asm; other files use them too), and, for a placeholder name only, rename
-  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). Never
-  rename a symbol that other source files still use (`grep -rw <name> src include libs`).
+  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). If you
+  rename, update every use of the old name in src/ and include/ (`grep -rw <name> src include`);
+  in other src files change nothing but those uses.
 - A placeholder function that takes a class pointer as its first argument is a member function
   of that class: declare it in the class and write it as a member, not as extern "C".
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
@@ -376,8 +386,9 @@ When a function hits STOP or 8 attempts without progress, move on. Get as many f
 Rules (a script checks them and throws away ALL your work if one is broken):
 - Edit only `src/{unit}`, headers under include/game/ (add members or split fields only with
   evidence from the asm; other files use them too), and, for a placeholder name only, rename
-  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). Never
-  rename a symbol that other source files still use (`grep -rw <name> src include libs`).
+  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). If you
+  rename, update every use of the old name in src/ and include/ (`grep -rw <name> src include`);
+  in other src files change nothing but those uses.
 - A placeholder function that takes a class pointer as its first argument is a member function
   of that class: declare it in the class and write it as a member, not as extern "C".
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
