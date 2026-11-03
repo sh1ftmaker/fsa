@@ -753,7 +753,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Utility/JAUSeqCollection.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUSeqDataBlockMgr.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUSoundMgr.cpp", extra_cflags=["-O4,p"]),
-        Object(NonMatching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Utility/JAUSoundObject.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUSoundTable.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Utility/JAUStreamFileTable.cpp", extra_cflags=["-O4,p"]),
     # FSA's JAudio was built with -sym on, as tp's JAudio2 and Petari's
