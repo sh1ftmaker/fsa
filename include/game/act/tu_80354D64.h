@@ -1,7 +1,8 @@
-#ifndef GAME_ACT_ACT_LOG_H
-#define GAME_ACT_ACT_LOG_H
+#ifndef GAME_ACT_TU_80354D64_H
+#define GAME_ACT_TU_80354D64_H
 
-// Code: game/act_log.cpp (not written yet).
+// Code: game/tu_80354D64.cpp (not written yet; it holds the vtable and
+// destructor fn_80356514).
 
 #include <float.h>
 

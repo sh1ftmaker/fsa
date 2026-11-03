@@ -3,7 +3,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameMath.h"
-#include "game/act/act_log.h"
+#include "game/act/tu_80354D64.h"
 #include "game/act/act_npc_ride_switch.h"
 
 NPCRideSwitch_804AD220::~NPCRideSwitch_804AD220() {}
