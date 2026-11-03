@@ -33,8 +33,7 @@ public:
 // tu_80134C04 calls it with no arguments (0x801378D4-0x80137920).
 s32 fn_803A85E4();
 
-// Data of game/tu_8036FB60.cpp's .sbss placeholder (the object belongs to
-// this unit; its .sbss split is not made yet).
+// Data of game/tu_803A85E4.cpp.
 extern cls_804AF878* lbl_8053AD98;
 
 #endif

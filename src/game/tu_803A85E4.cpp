@@ -6,6 +6,8 @@
 #include "game/tu_803F0A54.h"
 #include "JSystem/JKernel/JKRArchive.h"
 
+cls_804AF878* lbl_8053AD98;
+
 s32 fn_803A85E4() {
     if (lbl_8053AD98 != NULL) {
         return lbl_8053AD98->field_0xc;
