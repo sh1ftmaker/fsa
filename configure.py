@@ -1481,7 +1481,7 @@ config.libs = [
         Object(NonMatching, "game/act_fish.cpp"),
         Object(NonMatching, "game/act_carrot.cpp"),
         Object(Matching, "game/act_zelda_scroll_lock.cpp"),
-        Object(NonMatching, "game/act_special_bg_draw_object.cpp"),
+        Object(Matching, "game/act_special_bg_draw_object.cpp"),
         Object(NonMatching, "game/tu_803489A4.cpp"),
         Object(NonMatching, "game/act_bee_manager.cpp"),
         Object(Matching, "game/tu_8034A6B0.cpp"),
