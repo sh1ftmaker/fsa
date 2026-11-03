@@ -162,6 +162,12 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // until that unit defines them.
 extern "C" {
 // Per-player queries, by address (legend as above).
+// act_heart_container's update: results tested with clrlwi 24 (bool); fn_80230224's
+// second argument is clrlwi 24 (a bool) and its result is unused.
+bool fn_8023ED8C(s32 player);
+bool fn_8023EBB8(s32 player);
+bool fn_802308E0(s32 player);
+bool fn_80230224(s32 player, bool flag);
 // 2 units / 7 calls (act_player_start_position, tu_802D39B8 x6). Calls
 // fn_80252F80(mPlayers[player], pos, a, b, c), then stores pos in
 // field_0x14[player], a in field_0x44, b in field_0x54, c (stb) in field_0x64.
