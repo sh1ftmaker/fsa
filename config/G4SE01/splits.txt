@@ -1133,6 +1133,10 @@ dolphin/gba/GBAKey.c:
 	.text       start:0x80076EBC end:0x80077124
 	.data       start:0x804985D0 end:0x80498978
 
+JSystem/JStudio_JParticle/object-particle.cpp:
+	.text       start:0x80077124 end:0x80077134
+	.data       start:0x80498978 end:0x80498998
+
 JSystem/JMessage/resource.cpp:
 	.text       start:0x80077134 end:0x80077844
 	.data       start:0x80498998 end:0x80498A10

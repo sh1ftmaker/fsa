@@ -798,6 +798,13 @@ config.libs = [
         Object(NonMatching, "JSystem/JMath/JMath.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JMath/random.cpp", extra_cflags=["-O4,p"]),
     ]),
+    # Linked just before JMessage, as in pikmin2. FSA uses no JStudio, so the
+    # link dead-stripped all of it except the first (kept) weak copies of
+    # JPAEmitterCallBack's vtable and empty virtuals (pikmin2 ends this file's
+    # .text with the same four, in the same order).
+    MkddJSystemLib("mkdd_JStudio_JParticle", [
+        Object(NonMatching, "JSystem/JStudio_JParticle/object-particle.cpp", extra_cflags=["-O4,p"]),
+    ]),
     MkddJSystemLib("mkdd_JMessage", [
         Object(Matching, "JSystem/JMessage/resource.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JMessage/processor.cpp", extra_cflags=["-O4,p"]),
