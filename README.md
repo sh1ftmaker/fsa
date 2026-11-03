@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **28.60 %** of the code and **6,340 / 11,557** functions match. 443 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-03: **28.60 %** of the code and **6,340 / 11,557** functions match. 445 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
