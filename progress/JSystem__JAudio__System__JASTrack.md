@@ -62,3 +62,35 @@ Now: 65/65 functions, all sections 100 % in objdiff; total 6297 / 11557, 1261232
 ## Next
 - Solve the end-of-.text order above (JASHeapCtrl.h memPool_/free/__dl), then flip; that unblocks
   game/tu_80021840.
+
+## jastrack-sinit (2026-11-03): end-of-.text order, measured; no evidenced fix
+Measured on scratch copies (same flags as ninja, GC/2.6 -sym on), reading each weak .text section's
+DWARF1 .line block to get its file. Nothing in the repo changed; still NonMatching.
+- Sections are per defining file; functions without line info (__sinit, implicit dtors such as
+  JASDefaultBankTable's) go to the "current" section. For __sinit that is the file holding the
+  `template <typename T> JASMemPool_MultiThreaded<T> JASPoolAllocObject_MultiThreaded<T>::memPool_;`
+  definition, NOT where memPool_ is first used: an inline function at the end of JASTrack.h that uses
+  all three memPool_s (memPool_ made public for the test) leaves __sinit in the JASHeapCtrl.h section.
+- Definition in JASHeapCtrl.h (today): MoveParam ct, TList dt, TLinkList dt, BankTable dt | Lock dts |
+  CritSec dt | free x2, __dl x2, __sinit, memPool dts | GlobalInstance dt | getBank (the bad order).
+- No free/__dl at all (all `delete child` removed): __sinit still opens its own JASHeapCtrl.h section.
+- Definition moved to JASTrack.cpp (after the includes): __sinit goes to the end of the main .text.
+- Definition moved to the end of JASTrack.h: MoveParam ct, __sinit, memPool dts x3, TList dt,
+  TLinkList dt, BankTable dt | Lock dts | CritSec dt | free x2, __dl x2 | GlobalInstance dt | getBank.
+  That is exactly FSA's order once the weak duplicates drop out. TList/BankTable dts are generated after
+  __sinit (it registers them), so FSA's __sinit-before-TList-dt says FSA's __sinit was in the same
+  section as MoveParam ct: JASTrack.h's (or the main file's, if MoveParam_ ct and ~TList were also in the .cpp).
+- The definition can't be in both headers: MWCC errors "object 'JASPoolAllocObject_MultiThreaded::memPool_'
+  redefined". Moving it out of JASHeapCtrl.h into JASTrack.h leaves every memPool_ user that
+  doesn't include JASTrack.h without one. That covers JASChannel.cpp, JASBank, JASDrumSet,
+  JASBasicInst, JASAiCtrl and the other JAudio units, plus the ~500 game units through GameAudio.h.
+  So a fix is a shared header reorganisation with no donor evidence yet. Not done.
+- Other units are consistent with either placement. In FSA, __sinit directly follows the last main
+  function in JASSeqParser, JASAiCtrl and JASChannel; their weak functions in between are dropped
+  duplicates. JASAiCtrl's ours has __sinit inside clamp<s,l>'s JASCalc.h section, so the current file
+  can also be set by a template function instantiated after the memPool_ data.
+- Next: find evidence of where FSA (or another game with this JAudio vintage) defines the
+  MultiThreaded memPool_. One idea: a per-type definition next to each class, which would need
+  the guard flags `__init__memPool_...` that FSA's __sinit uses, so a generic (template)
+  definition, not an explicit specialisation. Then decide on the header move with the coordinator.
+  game/tu_80021840 stays blocked on this.
