@@ -40,7 +40,7 @@ entry only when ALL of these hold:
     tools/gate.py, which re-links without reading it, proves a trial removal;
   * the object's file name is unique among that link's inputs (the map
     names objects by file name only).
-Data the link dead-stripped (the second and last kind of removal): an object
+Data the link dead-stripped (the second kind of removal): an object
 keeps every data object its compiled functions use, also those of functions
 the original linker dead-stripped (C_MTXPerspective's two constants, the
 jump table of GXReadGPMetric, dvdfs's dead OSPanic strings), while dtk's
@@ -51,6 +51,14 @@ location that references it lies in a function or object the map also
 lists `UNUSED` for this object, it goes with zero padding only, and the map
 places every kept symbol of its section at the offset the stripped copy
 gives it (see dead_data()). Debug sections don't count as references.
+Weak data the link kept from another object (the third and last kind): an
+inline class's weak vtable, emitted by every TU that uses it. It is left
+out only when the same link map's tree lists it as an UNREFERENCED
+DUPLICATE (object,weak) found in this object, kept in one other link input
+whose copy has the same bytes and relocations (by target name), every
+reference into ours names the symbol, and the map gives the section the
+stripped layout (see weak_data()); the symbol becomes undefined, as in
+dtk's split.
 
 Evidence comes from ninja's own link (Matching units) or from a trial link
 recorded by `tools/link_check.py --unit <unit>` (a NonMatching unit linked
@@ -141,6 +149,43 @@ def parse_map(path):
     return dups, unused, placed, starts
 
 
+DUP_LINE = re.compile(r"^\s*(\d+)\] >>> UNREFERENCED DUPLICATE (\S+)\s*$")
+KEPT_LINE = re.compile(r"^\s*(\d+)\] (\S+) \((\w+),(\w+)\) found in (\S+)\s*$")
+FOUND_LINE = re.compile(r"^\s*(\d+)\] >>> \((\w+),(\w+)\) found in (\S+)\s*$")
+
+
+def parse_weak_objects(path):
+    """Weak data objects the link discarded, from an MWLD map's link tree:
+    {(object, name): [(kept object, [(line, text) of the kept copy's line, the
+    `>>> UNREFERENCED DUPLICATE <name>` line right after it, and this object's
+    `>>> (object,weak) found in <object>` line])]}, one item per tree node that
+    lists it. The kept copy's line is `<name> (object,<bind>) found in <kept>`,
+    at the same tree depth; the found lines follow the duplicate line, with only
+    other `>>> (...) found in` lines between them."""
+    out = defaultdict(list)
+    prev, cur = None, None
+    with open(path, encoding="latin-1") as f:
+        for n, line in enumerate(f, 1):
+            line = line.rstrip("\n")
+            m = DUP_LINE.match(line)
+            if m:
+                k = KEPT_LINE.match(prev[1]) if prev else None
+                cur = None
+                if k and k[1] == m[1] and k[2] == m[2] and k[3] == "object":
+                    cur = (m[1], m[2], k[5], prev, (n, line))
+                prev = (n, line)
+                continue
+            m = FOUND_LINE.match(line)
+            if m and cur:
+                if m[1] == cur[0] and (m[2], m[3]) == ("object", "weak"):
+                    out[(m[4], cur[1])].append((cur[2], [cur[3], cur[4], (n, line)]))
+                prev = (n, line)
+                continue
+            cur = None
+            prev = (n, line)
+    return out
+
+
 def unit_slug(unit_name):
     """fsa_game_code/game/tu_80214244 -> game__tu_80214244 (evidence file names)."""
     return unit_name.split("/", 1)[-1].replace("/", "__")
@@ -209,6 +254,23 @@ class Link:
         if self._parsed is None:
             self._parsed = parse_map(self.map)
         return self._parsed
+
+    def weak_objects(self):
+        if getattr(self, "_weak_objects", None) is None:
+            self._weak_objects = parse_weak_objects(self.map)
+        return self._weak_objects
+
+    def kept_object(self, kept):
+        """The link input whose file name is `kept` (the map names objects by
+        file name only), or why it can't stand for the kept copy."""
+        paths = [i for i in self.inputs if Path(i).name == kept]
+        if len(paths) != 1:
+            return None, f"{kept} is not a unique file name among the link inputs"
+        if not Path(paths[0]).is_file():
+            return None, f"{paths[0]} missing"
+        if self.kind == "main" and Path(paths[0]).stat().st_mtime > self.map.stat().st_mtime + 1:
+            return None, f"{paths[0]} is newer than {self.map}"
+        return paths[0], None
 
     def record(self):
         return {"kind": self.kind, "map": str(self.map), "map_sha1": sha1(self.map),
@@ -382,7 +444,7 @@ SHT_PROGBITS, SHF_ALLOC, SHF_EXECINSTR = 1, 2, 4
 UNUSED_LINE = re.compile(r"^\s+UNUSED\s+([0-9a-f]+) \.+ (\S+) (\S+)\s*$")
 
 
-def dead_data(elf, name, unused, placed, starts, notes, unit):
+def dead_data(elf, name, unused, placed, starts, notes, unit, extra=None):
     """Data the link dead-stripped from this object: (removals, entries), where
     removals = {section index: [(offset, size)]}. A data object (a sized,
     non-function symbol in an allocated PROGBITS section other than .text,
@@ -393,7 +455,8 @@ def dead_data(elf, name, unused, placed, starts, notes, unit):
         symbol value plus addend, lies in it) lies in a symbol the map also
         lists `UNUSED` for this object in that section's layout (a dead
         function, or other dead data), so no live code or data uses it;
-      * the bytes up to the next symbol (or the section end) are zero padding,
+      * the bytes up to the next symbol (or the section end) are zero padding
+        with no relocation in them,
         removed with it, and the map places every kept symbol of the section
         at the offset (from the object's section start) and size it has in
         the stripped copy, so the copy has the layout the link gave it;
@@ -406,7 +469,9 @@ def dead_data(elf, name, unused, placed, starts, notes, unit):
       * in the map's layout of this section, the next object's section
         starts 0 to 7 bytes (alignment) after this object's start plus the
         stripped size, so the removed tail is really absent from the link.
-    References from debug sections (not allocated) don't keep data alive."""
+    References from debug sections (not allocated) don't keep data alive.
+    `extra` = {section: [(offset, size)]}: weak data removed from the same
+    sections (weak_data()), part of the layout the map must confirm."""
     count = defaultdict(int)
     for s in elf.syms:
         count[s["name"]] += 1
@@ -473,8 +538,8 @@ def dead_data(elf, name, unused, placed, starts, notes, unit):
         nxt = min([x["value"] for x in elf.syms if x["shndx"] == sec and x["size"] and x["value"] >= val + s["size"]]
                   + [elf.sh[sec][5]])
         o = elf.sh[sec][4]
-        if any(elf.d[o + val + s["size"]:o + nxt]):
-            notes.append(f"{unit}: {s['name']} kept: non-zero bytes between it and the next symbol")
+        if any(elf.d[o + val + s["size"]:o + nxt]) or any(val + s["size"] <= off < nxt for off, *_ in elf.relocs(sec)):
+            notes.append(f"{unit}: {s['name']} kept: non-zero bytes or a relocation between it and the next symbol")
             continue
         removals[sec].append((val, nxt - val))
         entries.append({"section": elf.names[sec], "symbol": s["name"], "offset": val, "size": s["size"],
@@ -491,8 +556,8 @@ def dead_data(elf, name, unused, placed, starts, notes, unit):
             anchor_ev.append({"symbol": a["name"], "evidence": ev(listed(sec, a)),
                               "referencers": [{"section": elf.names[r], "symbol": src["name"], "evidence": ev(dead)}
                                               for r, src, dead in rs]})
-        why = why or layout_problem(elf, sec, rem, placed.get((elf.names[sec], name), []), live_section_refs[sec],
-                                    starts.get(elf.names[sec], []), name)
+        why = why or layout_problem(elf, sec, rem + (extra or {}).get(sec, []), placed.get((elf.names[sec], name), []),
+                                    live_section_refs[sec], starts.get(elf.names[sec], []), name)
         if isinstance(why, str):
             notes.append(f"{unit}: dead data in {elf.names[sec]} kept: {why}")
             del removals[sec]
@@ -547,9 +612,158 @@ def layout_problem(elf, sec, rem, block, live_refs, order, name):
     return lines
 
 
-def strip(elf, removals):
+STB_LOCAL, STT_OBJECT = 0, 1
+
+
+def symbol_relocs(elf, s):
+    """The relocations inside data object s as (offset in s, type, target name,
+    addend), sorted, or None if one targets a local, section or unnamed symbol
+    (a name that means nothing outside this object)."""
+    out = []
+    for off, si, typ, add in elf.relocs(s["shndx"]):
+        if s["value"] <= off < s["value"] + s["size"]:
+            t = elf.syms[si]
+            if t["bind"] == STB_LOCAL or t["type"] == STT_SECTION or not t["name"]:
+                return None
+            out.append((off - s["value"], typ, t["name"], add))
+    return sorted(out)
+
+
+def weak_data(elf, name, link, notes, unit):
+    """Weak data objects the link kept from another object: (removals, entries),
+    removals = {section index: [(offset, size)]}, without the layout check (see
+    dedup_unit). A data object (a sized symbol in an allocated PROGBITS section
+    other than .text, extab and extabindex) is removed only when
+      * it is WEAK OBJECT in this object, and its name is unique among the
+        object's symbols;
+      * the map's link tree lists `<name> (object,...) found in <kept>`, then
+        `>>> UNREFERENCED DUPLICATE <name>` and `>>> (object,weak) found in
+        <this object>`, with one kept object for every tree node that lists it,
+        and <kept> is another, uniquely named input of the same link (not
+        newer than ninja's map);
+      * the map places the kept copy, with this size, in <kept>'s layout of
+        the same section, and <kept>'s symbol of that name (exactly one,
+        defined) has the same section name, size, bytes and relocations
+        (offset, type, target name, addend; no local or section targets);
+      * every allocated relocation whose target (symbol value plus addend)
+        lies in it or its padding targets the symbol itself, by name: the
+        link resolves those to the kept copy, so they stay;
+      * the bytes up to the next symbol (or the section end) are zero padding
+        with no relocation in them,
+        removed with it.
+    In the stripped copy its symbol becomes undefined, as in dtk's split of
+    the original, which references the kept copy as an external symbol."""
+    count = defaultdict(int)
+    for s in elf.syms:
+        count[s["name"]] += 1
+
+    def data_section(i):
+        h = elf.sh[i]
+        return (h[1] == SHT_PROGBITS and h[2] & SHF_ALLOC and not h[2] & SHF_EXECINSTR
+                and elf.names[i] not in ("extab", "extabindex"))
+
+    def ev(line):
+        return {"line": line[0], "text": line[1]}
+
+    wobjs = link.weak_objects()
+    _, unused, placed, _ = link.parsed()
+    removals, entries = defaultdict(list), []
+    for s in elf.syms:
+        if not (s["shndx"] < elf.shnum and data_section(s["shndx"]) and s["size"]
+                and s["bind"] == STB_WEAK and s["type"] == STT_OBJECT):
+            continue
+        sec, secname = s["shndx"], elf.names[s["shndx"]]
+        nodes = wobjs.get((name, s["name"]))
+        if not nodes:
+            continue
+        why = None
+        kept = {k for k, _ in nodes}
+        if count[s["name"]] != 1:
+            why = "its name isn't unique in the object"
+        elif (secname, name, s["name"]) in unused:
+            why = "the map also lists it UNUSED for this object (dead data, not a weak duplicate)"
+        elif len(kept) != 1 or name in kept:
+            why = f"the map's kept copies are in {sorted(kept)}"
+        if why is None:
+            kept_name = kept.pop()
+            kept_path, why = link.kept_object(kept_name)
+        if why is None:
+            ks = None
+            try:
+                ke = Elf(Path(kept_path).read_bytes())
+                ks = [x for x in ke.syms if x["name"] == s["name"] and 0 < x["shndx"] < ke.shnum]
+            except (OSError, ValueError, StopIteration) as e:
+                why = f"{kept_path}: {e}"
+            if why is None and (len(ks) != 1 or ke.names[ks[0]["shndx"]] != secname or ks[0]["size"] != s["size"]):
+                why = f"{kept_path} doesn't define exactly one {secname} {s['name']} of size 0x{s['size']:x}"
+        if why is None:
+            ks = ks[0]
+            mine = elf.d[elf.sh[sec][4] + s["value"]:][:s["size"]]
+            theirs = ke.d[ke.sh[ks["shndx"]][4] + ks["value"]:][:ks["size"]]
+            if mine != theirs:
+                why = f"its bytes differ from the kept copy in {kept_path}"
+            elif symbol_relocs(elf, s) is None or symbol_relocs(elf, s) != symbol_relocs(ke, ks):
+                why = f"its relocations differ from the kept copy's in {kept_path} (or name a local symbol)"
+        if why is None:
+            kp = [b for b in placed.get((secname, kept_name), []) if b[2] == s["name"]]
+            if len(kp) != 1 or kp[0][1] != s["size"]:
+                why = f"the map doesn't place the kept copy in {kept_name}'s {secname} with size 0x{s['size']:x}"
+        nxt = min([x["value"] for x in elf.syms if x["shndx"] == sec and x["size"] and x["value"] >= s["value"] + s["size"]]
+                  + [elf.sh[sec][5]])
+        if why is None:
+            o = elf.sh[sec][4]
+            if any(elf.d[o + s["value"] + s["size"]:o + nxt]) or \
+                    any(s["value"] + s["size"] <= off < nxt for off, *_ in elf.relocs(sec)):
+                why = "non-zero bytes or a relocation between it and the next symbol"
+        refs = 0
+        if why is None:
+            for r in range(elf.shnum):
+                if not elf.sh[r][2] & SHF_ALLOC:
+                    continue
+                for off, si, _, add in elf.relocs(r):
+                    t = elf.syms[si]
+                    if t["shndx"] != sec or not s["value"] <= t["value"] + add < nxt:
+                        continue
+                    if r == sec and s["value"] <= off < s["value"] + s["size"]:
+                        continue  # inside it: compared with the kept copy, removed with it
+                    if t is not s:
+                        why = f"{elf.names[r]}+0x{off:x} reaches it through {t['name'] or 'the section symbol'}, not by its name"
+                        break
+                    refs += 1
+                if why:
+                    break
+        if why:
+            notes.append(f"{unit}: weak {s['name']} kept: {why}")
+            continue
+        removals[sec].append((s["value"], nxt - s["value"]))
+        entries.append({"section": secname, "symbol": s["name"], "offset": s["value"], "size": s["size"],
+                        "removed": nxt - s["value"], "references": refs,
+                        "kept_object": kept_path, "kept_object_sha1": sha1(kept_path),
+                        "kept_placed": {"line": kp[0][3], "text": kp[0][4]},
+                        "evidence": [ev(x) for x in nodes[0][1]]})
+    return dict(removals), entries
+
+
+def weak_layout_problem(elf, sec, rem, block, starts, name):
+    """layout_problem for a section that loses weak data: nothing may reach the
+    section through its section symbol or a size-0 label at or past the first
+    removed byte (dead code included: its addend wouldn't move)."""
+    first = min(a for a, _ in rem)
+    for r in range(elf.shnum):
+        if not elf.sh[r][2] & SHF_ALLOC:
+            continue
+        for off, si, _, add in elf.relocs(r):
+            t = elf.syms[si]
+            if t["shndx"] == sec and (t["type"] == STT_SECTION or not t["size"]) and t["value"] + add >= first:
+                return f"{elf.names[r]}+0x{off:x} reaches it through {t['name'] or 'its section symbol'} past a removed object"
+    return layout_problem(elf, sec, rem, block, [], starts, name)
+
+
+def strip(elf, removals, undef=()):
     """Remove byte ranges {section: [(offset, size)]}, with their relocations;
-    later symbols and relocations move down, removed symbols become absolute 0."""
+    later symbols and relocations move down, removed symbols become absolute 0,
+    or undefined if their symbol table offset is in undef (weak data whose
+    kept copy is in another object)."""
     d, sh = elf.d, elf.sh
     for sec, rem in removals.items():
         rem.sort()
@@ -576,7 +790,8 @@ def strip(elf, removals):
                 continue
             if s["size"] and removed(s["value"]):
                 struct.pack_into(">II", d, s["off"] + 4, 0, 0)
-                struct.pack_into(">H", d, s["off"] + 14, 0xFFF1)  # SHN_ABS: out of the section
+                # SHN_UNDEF: resolved elsewhere; SHN_ABS: out of the section
+                struct.pack_into(">H", d, s["off"] + 14, 0 if s["off"] in undef else 0xFFF1)
             else:
                 struct.pack_into(">I", d, s["off"] + 4, s["value"] - shift(s["value"]))
     for i in range(elf.shnum):
@@ -620,18 +835,46 @@ def dedup_unit(unit, base, link, notes):
     if len(found) < len(entries):
         notes.append(f"{unit}: {len(entries) - len(found)} weak extab entries kept: "
                      f"{link.map} has no discarded-duplicate evidence for them")
-    data_removals, data_found = dead_data(elf, name, unused, placed, starts, notes, unit)
-    for sec, rem in data_removals.items():
+    # Weak data first: dead data in the same section is checked against the
+    # layout without both, and a section whose weak removals the map doesn't
+    # confirm keeps its weak data (dead data is then checked again without it).
+    weak_rem, weak_found = weak_data(elf, name, link, notes, unit)
+    while True:
+        dd_notes = []
+        data_removals, data_found = dead_data(elf, name, unused, placed, starts, dd_notes, unit, weak_rem)
+        bad = {}
+        for sec, rem in weak_rem.items():
+            why = weak_layout_problem(elf, sec, rem + data_removals.get(sec, []),
+                                      placed.get((elf.names[sec], name), []), starts.get(elf.names[sec], []), name)
+            if isinstance(why, str):
+                bad[sec] = why
+            else:
+                for e in weak_found:
+                    if e["section"] == elf.names[sec]:
+                        e["layout"] = why
+        if not bad:
+            break
+        for sec, why in bad.items():
+            notes.append(f"{unit}: weak data in {elf.names[sec]} kept: {why}")
+            del weak_rem[sec]
+            weak_found = [e for e in weak_found if e["section"] != elf.names[sec]]
+    notes += dd_notes
+    for sec, rem in list(data_removals.items()) + list(weak_rem.items()):
         removals[sec] += rem
     for e in data_found:
         found.append({"kind": "dead_data", "unit": unit, "object": base, "object_sha1": sha1(base),
                       "function": None, **e, "link": getattr(link, "evidence_file", None) or link.kind})
+    for e in weak_found:
+        found.append({"kind": "weak_data", "unit": unit, "object": base, "object_sha1": sha1(base),
+                      "function": None, **e, "link": getattr(link, "evidence_file", None) or link.kind})
     if not found:
         return None, []
+    undef = {s["off"] for s in elf.syms if any(e["symbol"] == s["name"] for e in weak_found)
+             and s["shndx"] in weak_rem and s["size"]}
     out = STRIPPED / Path(base).relative_to(BUILD)
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.with_suffix(".tmp")
-    tmp.write_bytes(strip(elf, removals))
+    tmp.write_bytes(strip(elf, removals, undef))
     tmp.replace(out)
     for e in found:
         e["stripped_object"] = str(out)
@@ -668,7 +911,9 @@ def weak_dedup(cfg):
     tmp.replace(MANIFEST)
     units = len({e["unit"] for e in entries})
     data = [e for e in entries if e["kind"] == "dead_data"]
-    print(f"weakdedup: {len(entries) - len(data)} extab entries of discarded weak duplicates and "
+    weak = [e for e in entries if e["kind"] == "weak_data"]
+    print(f"weakdedup: {len(entries) - len(data) - len(weak)} extab entries of discarded weak duplicates, "
+          f"{len(weak)} discarded weak data objects and "
           f"{len(data)} dead-stripped data objects removed from {units} units ({MANIFEST})", file=sys.stderr)
 
 
