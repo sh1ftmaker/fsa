@@ -700,6 +700,7 @@ config.libs = [
         Object(Matching, "JSystem/JAudio/Interface/JAISoundInfo.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAISoundParams.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStream.cpp", extra_cflags=["-O4,p"]),
+        Object(Matching, "JSystem/JAudio/Interface/JAIStreamDataMgr.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/Interface/JAIStreamMgr.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JAudio/System/JASAiCtrl.cpp", extra_cflags=["-O4,p"]),
         Object(NonMatching, "JSystem/JAudio/System/JASAramStream.cpp", extra_cflags=["-O4,p"]),
