@@ -319,4 +319,29 @@ Not settled: whether game files use `-common on` (the common `.bss` at
   that keeps the address, e.g. a free function `fn_80154248(int, int, int,
   int)` → `fn_80154248__Fiiii`; methods of an unnamed class get a
   placeholder class named after its vtable (`cls_8049CC34`). Say which in
-  the unit's report. Never `extern "C"` just to keep a name.
+  the unit's report.
+- Placeholder names (the user's decision, 2026-11-02): a class with no
+  known role is `cls_<addr>`. A provisional descriptive name keeps the
+  address attached until a real name is proven: `ActorBase_804A5770`,
+  `ActorManager_804A5800`, `GameRoot2_8049F108`. The address is the class's
+  vtable; for a class without one, its constructor or first method (or,
+  failing that, the first function seen reaching it); a comment says which.
+  The same goes for provisional function and global names. Member names
+  (`init`, `update`, `draw`, `field_0x4`) need no suffix of their own: the
+  class's address suffix covers them, and they change with it. Names ending in
+  `_80xxxxxx` count as placeholders for the gate, so they stay renameable.
+  Evidenced names (`EnemyParam` from enemyparam.csv, JSystem and SDK types,
+  the game's own strings) take no suffix.
+- `extern "C"` (approved 2026-11-02): functions defined in *another,
+  unfinished* unit are declared once, only in an `include/game/` header, as
+  `extern "C"` under their dtk name (`fn_801F9484`), with a comment naming
+  the owning unit. The call's bytes and relocation are what the target has
+  (the 100 % ~ActorBase_804A5770 proves it). Never in a .cpp, never
+  duplicated, and never on a definition: a unit defines its functions only
+  as real C++ (a member of its class, or `fn_<addr>` with C++ linkage), and
+  its symbols.txt rename and the header's declaration change land in the
+  same commit. Methods of a placeholder class that callers already need
+  (`cls_8030C058::fn_8030C5F0`) are declared as members only when the
+  symbols.txt rename ships with the header. Reviewers check every
+  `extern "C"` prototype's argument and return types against the asm, since
+  C linkage hides signature errors from the linker and objdiff.

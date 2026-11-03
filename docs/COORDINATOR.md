@@ -89,6 +89,43 @@ any symbols.txt change (the gate accepts placeholder renames).
 - 38 medium units may hold several files: a boundary found inside one is a
   SHARED-EDIT for the coordinator (split stanza, new configure.py line).
 
+## Shared game headers (`include/game/`)
+
+Every game unit includes these instead of declaring its own copies. Each has
+one owner (wave 1: the `hdr/actor` agent); game-file agents never edit them
+and list what they need under SHARED-EDITS (offset, width, type, the
+function that shows it, and the evidence for any name). The owner applies
+reviewed edits on its branch; the coordinator merges them before the units
+that need them.
+
+| Header | Holds |
+|---|---|
+| `game/ActorBase.h` | `ActorBase_804A5770` (named after its vtable), the base class of every spawned actor: 0x230 bytes, 19 virtual slots (dtor, `init` 0x0C, `update` 0x14, `savePrevPos` 0x1C, `draw` 0x20, the rest `vfunc_0xNN`), field layout from its ctor/dtor, the spawner's setters and the manager's loops; the inline setters the spawner uses; `ActorSub120_801F5AE0`, `ActorSub1DC_801EAD68` |
+| `game/ActorId.h` | `enum ActorId`: the spawner's 354 case IDs (`ACTOR_RAIL = 'RAIL'`; DMCS, FGAM, ZSLE, ZSLG are empty cases that return -1), English names from docs/names/actors.tsv in comments |
+| `game/ActorManager.h` | `ActorManager_804A5800` (0x3060 bytes: actor slots, sound objects, actor list, EnemyParam.csv table), the EnemyParam column keys, and the spawner and manager functions as `extern "C"` declarations (`fn_801F9484`, `fn_801F8544`, `fn_801F620C`, `fn_801F856C`, ...) |
+| `game/GameGlobals.h` | The two most-used singletons `lbl_8053AAF8` (`GameRoot_8049EF20`) and `lbl_8053AB10` (`GameRoot2_8049F108`), the fields known so far, their getters `fn_802D6A9C` / `fn_8013C824` (`GameView_802D6A9C`, `EffectSystem_8013C824`), `cls_8030C058` (with its `fn_8030C5F0` rename in symbols.txt) and the per-player queries of tu_8022AD64 |
+| `game/GameAudioBase.h` | The base sound header: the JAI includes and `cls_804B21EC` (pool at 0x804B21EC, probably `JAUAudible<4>`, unproven; its memPool_, guard and dtor are renamed in symbols.txt). Gives the 8-pool `__sinit` of tu_80457C08 and tu_8045B6F0 |
+| `game/GameAudio.h` | The full sound header for the 526 game units with the 9-pool `__sinit`: GameAudioBase.h plus JAUAudience.h and a FIXME stand-in (`FIXME_instantiateDopplerAudiblePool`, never call or copy it) that instantiates the `JAUDopplerAudible<4>` pool. Replace the stand-in with the game audience class of tu_80457DFC once known. **Include GameAudio.h / GameAudioBase.h before any other JAudio header**: including e.g. JAIStreamMgr.h first reorders the pools |
+| `game/RailBase.h` | `cls_800FE3EC` (0xC8 bytes, its method `fn_800FE3EC` in RailBase.cpp), and notes on the RAIL actor class (vtable 0x8049C770) |
+
+Conventions for game code (docs/PLAN.md, "Symbols"):
+- Placeholder names: `cls_<addr>` for a class with no known role; a
+  provisional descriptive name keeps the address attached (`ActorBase_804A5770`):
+  the vtable, else the constructor or first method, said in a comment.
+  Evidenced names take no suffix.
+- `extern "C"`: only for declarations, in `include/game/` headers, of
+  functions another unfinished unit defines, under their dtk names. Never on
+  a definition, never in a .cpp. The defining unit renames symbols.txt and
+  updates the declaration in the same commit; reviewers check each
+  prototype against the asm.
+- Vectors: `JGeometry::TVec3f` (mkdd's `JSystem/JGeometry.h`; its
+  `psq_l`/`psq_st` copy is the game's) for game data, dolphin's `Vec` only
+  where a mangled name or a PSMTX/PSVEC call proves it; boxes are
+  `JGeometry::TBox2f`; matrices dolphin's `Mtx`.
+- Derived actor classes: `class Foo : public ActorBase_804A5770`,
+  constructor `Foo() {}` plus their own members; the spawner's unit holds
+  inline copies of many of their constructors.
+
 ## Merge commit messages
 
 `<unit> matches (N/N)` or `<unit>: <what> (n/N functions)`, then a short body:

@@ -3,6 +3,7 @@
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } @keyframes rise { from { transform: scaleY(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="0.5" y="0.5" width="959" height="499" rx="14" fill="#161a34" stroke="#262b4e"/>
 <rect x="18.5" y="18.5" width="206.0" height="395.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
+<rect class="rise" x="18.5" y="413.1" width="206.0" height="0.4" rx="2" fill="#3aae5c" fill-opacity="0.85"/>
 <rect x="225.5" y="18.5" width="188.7" height="205.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect x="225.5" y="224.5" width="188.7" height="189.0" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
 <rect x="415.2" y="18.5" width="189.2" height="160.5" rx="2" fill="#3aae5c" fill-opacity="0.13"/>
@@ -88,7 +89,7 @@
 <rect class="rise" x="865.4" y="385.1" width="76.1" height="28.4" rx="2" fill="#c35ee6" fill-opacity="0.85"/>
 <rect x="863.4" y="381.8" width="80.1" height="33.7" rx="4" fill="none" stroke="#c35ee6" stroke-opacity="0.75" stroke-width="1.5"/>
 <text x="24.5" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">enemy_*_sob refs</text>
-<text x="24.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">0 %</text>
+<text x="24.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">0.10 %</text>
 <text x="231.5" y="34.5" font-size="11.5" font-weight="600" fill="#eceefb">unnamed 80200000+</text>
 <text x="231.5" y="47.5" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">0 %</text>
 <text x="231.5" y="240.5" font-size="11.5" font-weight="600" fill="#eceefb">other hints</text>
@@ -116,14 +117,14 @@
 <text x="842.9" y="269.6" font-size="11.5" font-weight="600" fill="#eceefb">JUtility</text>
 <text x="842.9" y="282.6" class="mono" font-size="10" fill="#eceefb" fill-opacity="0.75">76.4 %</text>
 <g fill="#3aae5c"><path d="M25.5 440L31 445.5L25.5 451L20 445.5Z"/></g>
-<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 0 %</text>
-<g fill="#ef5b52"><path d="M122.1 440L127.6 451L116.6 451Z"/></g>
-<text x="133.6" y="450" font-size="12.5" fill="#b4b9d8">JSystem 89.5 %</text>
-<g fill="#3d9cf0"><circle cx="261.9" cy="445.5" r="5.5"/></g>
-<text x="273.4" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.6 %</text>
-<g fill="#c35ee6"><rect x="367.4" y="440" width="11" height="11" rx="1.5"/></g>
-<text x="384.4" y="450" font-size="12.5" fill="#b4b9d8">GX 95.8 %</text>
-<g fill="#d29a2e"><path d="M476.7 440L478.02 444.18L482.2 445.5L478.02 446.82L476.7 451L475.38 446.82L471.2 445.5L475.38 444.18Z"/></g>
-<text x="488.2" y="450" font-size="12.5" fill="#b4b9d8">MSL/RT/TRK 90.0 %</text>
+<text x="37" y="450" font-size="12.5" fill="#b4b9d8">Game 0.03 %</text>
+<g fill="#ef5b52"><path d="M143.7 440L149.2 451L138.2 451Z"/></g>
+<text x="155.2" y="450" font-size="12.5" fill="#b4b9d8">JSystem 89.5 %</text>
+<g fill="#3d9cf0"><circle cx="283.5" cy="445.5" r="5.5"/></g>
+<text x="295.0" y="450" font-size="12.5" fill="#b4b9d8">SDK 99.6 %</text>
+<g fill="#c35ee6"><rect x="389" y="440" width="11" height="11" rx="1.5"/></g>
+<text x="406.0" y="450" font-size="12.5" fill="#b4b9d8">GX 95.8 %</text>
+<g fill="#d29a2e"><path d="M498.3 440L499.62 444.18L503.8 445.5L499.62 446.82L498.3 451L496.98 446.82L492.8 445.5L496.98 444.18Z"/></g>
+<text x="509.8" y="450" font-size="12.5" fill="#b4b9d8">MSL/RT/TRK 90.0 %</text>
 <text x="20" y="476" font-size="12.5" fill="#7c82a8">area = bytes of code · fill = matched · explore it on the site ↗</text>
 </svg>
