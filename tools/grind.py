@@ -177,7 +177,8 @@ or after 8 attempts. Matched functions in the same file and include/game/ header
 Rules (a script checks them and throws away your work if broken):
 - Edit only `src/{unit}`, headers under include/game/ (add a member or split a field only with
   evidence from the asm; other files use them too), and, for a placeholder name only, rename
-  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else).
+  lines in config/G4SE01/symbols.txt (change just the name before ` = `; nothing else). Never
+  rename a symbol that other source files still use (`grep -rw <name> src include libs`).
 - A placeholder function that takes a class pointer as its first argument is a member function
   of that class: declare it in the class and write it as a member, not as extern "C".
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
@@ -220,12 +221,14 @@ def candidates(max_size):
     else:
         return []
     cfg = (INTEG / "configure.py").read_text()
+    # Generated units must stay byte-equal to their templates (gen_game.py --check).
+    generated = {l.split("\t")[0] for l in (INTEG / "config/G4SE01/gen_game.tsv").read_text().splitlines()[1:]}
     out = []
     for u in report:
         if "/game/" not in u["name"]:
             continue
         unit = "game/" + u["name"].split("/game/")[1] + ".cpp"
-        if not (INTEG / "src" / unit).exists():  # no source yet: try.py/fdiff cannot score it
+        if Path(unit).stem in generated or not (INTEG / "src" / unit).exists():  # no source yet: try.py/fdiff cannot score it
             continue
         if f'Object(NonMatching, "{unit}"' not in cfg:
             continue
