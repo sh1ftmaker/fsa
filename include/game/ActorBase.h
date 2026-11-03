@@ -449,7 +449,7 @@ public:
     // 1 unit / 9 calls (tu_8025EB18; callers pass a field_0x4). If not
     // field_0xc4: field_0xc4 = 1, field_0xc8 = field_0x110 = v, field_0xcc
     // = 0, field_0xd0 = -1, returns 1; else 0.
-    bool fn_801F3744(s32 v);
+    u8 fn_801F3744(s32 v);
     // 1 unit / 3 calls (tu_801A3C50, always 300). field_0xa4 = v and clears
     // field_0xd5, 0xd8, 0xe4, 0xe8 (and 0xe0 while mLife > 0).
     void fn_801F3780(s32 v);
