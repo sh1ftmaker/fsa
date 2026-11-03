@@ -26,8 +26,6 @@ act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
 act_bumper	dtor	__dt__15Bumper_804A0260Fv	Bumper_804A0260	0x804A0260	new	new
 act_bumper	sinit	__sinit_act_bumper_cpp	-	-	new	new
-act_burning_block	dtor	__dt__12cls_804A7B90Fv	cls_804A7B90	0x804A7B90	new	new
-act_burning_block	sinit	__sinit_act_burning_block_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
 act_buzz_blob	sinit	__sinit_act_buzz_blob_cpp	-	-	new	new
 act_cannon	sinit	__sinit_act_cannon_cpp	-	-	new	-
@@ -37,8 +35,6 @@ act_cheep_cheep	dtor	__dt__12cls_804A11B8Fv	cls_804A11B8	0x804A11B8	new	new
 act_cheep_cheep	sinit	__sinit_act_cheep_cheep_cpp	-	-	new	new
 act_chief_soldier	sinit	__sinit_act_chief_soldier_cpp	-	-	new	-
 act_cloud	sinit	__sinit_act_cloud_cpp	-	-	new	-
-act_coconut	dtor	__dt__16Coconut_804A9968Fv	Coconut_804A9968	0x804A9968	new	new
-act_coconut	sinit	__sinit_act_coconut_cpp	-	-	new	new
 act_colour_block	dtor	__dt__12cls_804AE620Fv	cls_804AE620	0x804AE620	new	new
 act_colour_block	sinit	__sinit_act_colour_block_cpp	-	-	new	new
 act_crystal_ball	sinit	__sinit_act_crystal_ball_cpp	-	-	new	-
@@ -64,7 +60,6 @@ act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
 act_fairy_invincible	sinit	__sinit_act_fairy_invincible_cpp	-	-	new	-
 act_falling_floor	dtor	__dt__21FallingFloor_804A9078Fv	FallingFloor_804A9078	0x804A9078	new	new
 act_falling_floor	sinit	__sinit_act_falling_floor_cpp	-	-	new	new
-act_fire_bar	sinit	__sinit_act_fire_bar_cpp	-	-	new	-
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
@@ -186,10 +181,6 @@ act_shadow_link_jump	sinit	__sinit_act_shadow_link_jump_cpp	-	-	new	-
 act_shop_item	sinit	__sinit_act_shop_item_cpp	-	-	new	-
 act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
-act_shutter	dtor	__dt__16Shutter_804A8118Fv	Shutter_804A8118	0x804A8118	new	new
-act_shutter	sinit	__sinit_act_shutter_cpp	-	-	new	new
-act_sign	dtor	__dt__13Sign_804A94D8Fv	Sign_804A94D8	0x804A94D8	new	new
-act_sign	sinit	__sinit_act_sign_cpp	-	-	new	new
 act_slime_manager	sinit	__sinit_act_slime_manager_cpp	-	-	new	-
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
 act_snow_wall	sinit	__sinit_act_snow_wall_cpp	-	-	new	-
@@ -410,7 +401,6 @@ tu_80447FAC	sinit	__sinit_tu_80447FAC_cpp	-	-	new	-
 tu_80448940	sinit	__sinit_tu_80448940_cpp	-	-	new	-
 tu_8044998C	sinit	__sinit_tu_8044998C_cpp	-	-	new	-
 tu_8044A828	sinit	__sinit_tu_8044A828_cpp	-	-	new	-
-tu_8044B80C	sinit	__sinit_tu_8044B80C_cpp	-	-	new	-
 tu_8044C7F0	sinit	__sinit_tu_8044C7F0_cpp	-	-	new	-
 tu_80453AF8	sinit	__sinit_tu_80453AF8_cpp	-	-	new	-
 tu_80455CA4	sinit	__sinit_tu_80455CA4_cpp	-	-	new	-
