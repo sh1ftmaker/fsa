@@ -49,30 +49,27 @@ void cls_804AC9A8::fn_8034E050() {
     }
 }
 
-// .rodata string, named after the original's label.
-static const char lbl_80472210[] = "enemy_both_sob.bin";
-
+// FIXME: 99.91 %. Only the string's .rodata offset differs: the original has
+// update()'s table (0x804721D4, update isn't written yet) between lbl_804721C8
+// and "enemy_both_sob.bin".
 void cls_804AC9A8::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x1d = -3;
     params.field_0x1c = 0;
     s32 frame = field_0x238 + 0xD;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', lbl_80472210);
+        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
         lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
     fn_80307AC8(mSerial, field_0x4, &mPos, field_0x238 + 0xD, 0, 0, -1);
 }
 
-// .sdata2 constants, named after the original's labels.
-static const f32 lbl_805425D0[1] = {-15.0f};
-static const f32 lbl_805425D4[1] = {15.0f};
-
-// FIXME: 99.88 %. Only the zeroing loop's store order differs: the original stores
-// each field_0x254 vector as z, y, x, and this build stores x, y, z.
+// FIXME: 99.72 %. The zeroing loop's store order differs (the original stores
+// each field_0x254 vector as z, y, x, this build x, y, z), and -15/15 sit at other
+// .sdata2 offsets: update()'s literals, not written yet, come before them.
 void cls_804AC9A8::init() {
-    field_0x80.set(lbl_805425D0[0], lbl_805425D0[0], lbl_805425D4[0], lbl_805425D4[0]);
-    mBox.set(lbl_805425D0[0], lbl_805425D0[0], lbl_805425D4[0], lbl_805425D4[0]);
+    field_0x80.set(-15.0f, -15.0f, 15.0f, 15.0f);
+    mBox.set(-15.0f, -15.0f, 15.0f, 15.0f);
     field_0x238 = 0;
     field_0x23c = field_0x238;
     field_0x244 = 0;

@@ -132,10 +132,6 @@ void Terrorpin_804A3B10::vfunc_0x7C() {
     }
 }
 
-// The s32 of .sdata (lbl_8053A100) that vfunc_0x44 compares with field_0x2a8
-// (not written yet).
-extern const s32 lbl_8053A100;
-
 void Terrorpin_804A3B10::vfunc_0x44() {
     if (field_0xd4 == 1) {
         bool active = false;
