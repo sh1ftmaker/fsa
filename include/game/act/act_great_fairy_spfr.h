@@ -13,7 +13,11 @@ class cls_8049EB8C : public cls_8049D140 {
 public:
     cls_8049EB8C();
     /* 0x08 */ virtual ~cls_8049EB8C();
+    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
+
+    // Not yet written (0x80132454, same unit). Takes an index into lbl_80465204.
+    void fn_80132454(s32 index);
 
     /* 0x230 */ u8 field_0x230; // set to 0 by the constructor, not yet known
     /* 0x234 */ s32 field_0x234; // state: fn_801321E4 switches on it
