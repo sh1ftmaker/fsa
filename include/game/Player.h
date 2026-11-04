@@ -50,6 +50,7 @@ public:
 
     // tu_8023FBF0 getters and setters the queries forward to.
     void fn_80254660(); // tu_8023FBF0; the player's reset, run per slot by fn_8023F6C4
+    void fn_80252FBC(); // tu_8023FBF0; empty, called per player slot from tu_8022AD64 (0x8023F504)
     bool fn_8023FC08();          // byte at 0x42C
     void fn_8023FC10(s32 value); // 0xCA8 = max(0xCA8, value)
     // Getters and setters the generated queries forward to (tools/gen_game.py).
@@ -226,6 +227,9 @@ public:
     s32 fn_8025F668(); // via fn_8023EF50
     bool fn_8025F684(); // via fn_8023EFEC
     void fn_802635D4(); // empty; the dispatch in fn_802870C8 calls it
+    void fn_802636D0(); // tu_8025EB18; empty, called by the same dispatch
+    void fn_80277100(); // tu_8026FC20; empty, called by the same dispatch
+    void fn_802791AC(); // tu_8026FC20; empty, called by the same dispatch
     void fn_80264410(); // byte at 0x458 = 0 (stb r0)
     void fn_80264768(); // byte at 0x458 = 0 (stb r0)
     void fn_802636C4(); // byte at 0x458 = 0 (stb r0)

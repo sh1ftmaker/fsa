@@ -14,11 +14,11 @@
 // destructor chain after it.
 JGeometry::TVec3f lbl_804CF460(0.0f, 0.0f, 0.0f);
 
-extern "C" void fn_8022AD64() {
+void fn_8022AD64() {
     lbl_8053AAF8->fn_80138B7C();
 }
 
-extern "C" void fn_8022AD88() {
+void fn_8022AD88() {
     lbl_8053AC98->fn_8029D898(0x19);
 }
 
@@ -967,7 +967,7 @@ void fn_80233BA0(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
 
 // Out-of-line copy of TVec3<f32>::operator-: a copy of a, then sub(b).
 // Returned through the hidden pointer like any struct value.
-extern "C" JGeometry::TVec3f fn_80233BC4(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b) {
+JGeometry::TVec3f fn_80233BC4(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b) {
     JGeometry::TVec3f diff = a;
     diff.sub(b);
     return diff;
@@ -2089,7 +2089,7 @@ bool fn_8023F264(s32 player) {
     return isPlayerActive(player);
 }
 
-extern "C" void fn_8023F6C4() {
+void fn_8023F6C4() {
     for (s32 i = 0; i < 4; i++) {
         Player_804A6F38* player;
         if (lbl_8053AC90 == NULL) {

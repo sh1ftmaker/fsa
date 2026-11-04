@@ -3,7 +3,7 @@
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 
-extern "C" bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
+bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
     return fn_802252F4(pos, layer);
 }
 

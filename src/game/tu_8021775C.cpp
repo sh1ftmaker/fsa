@@ -6,12 +6,11 @@
 #include "game/GameGlobals.h"
 #include "game/ActorBase.h"
 #include "game/Effect.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_vaati_boss.h"
 
-// The emitter scale: 1.7f on each of the three axes. Written to each emitter's
-// bytes 0x98..0xB4 by the spawners below (not written yet: those bytes are
-// not named in JPAEmitter.h).
-static f32 lbl_804CD838[66] = {lbl_8053F0BC, lbl_8053F0BC, lbl_8053F0BC};
+// The emitter scale the spawners below give their emitters.
+static JGeometry::TVec3f lbl_804CD838(lbl_8053F0BC, lbl_8053F0BC, lbl_8053F0BC);
 
 // Effect ids for the six emitters of fn_80217ED4.
 static const u16 lbl_8046A5A0[8] = {0x022A, 0x022B, 0x022C, 0x022D, 0x0549, 0x022E, 0x0000, 0x0000};
@@ -117,54 +116,79 @@ void cls_80217F80::fn_80217874(f32 t) {
     fn_8013CB44(mEmitters[3], &pos, 1, 1, true);
 }
 
-// FIXME: 58.44 %. The spawners also store lbl_804CD838 (1.7f on each axis) into
-// the emitter's bytes 0x98..0xB4, which JPAEmitter.h doesn't name for JPABaseEmitter
-// (mEmitterDirMtx at 0x98 belongs to JPAEmitterInfo), so those stores are missing.
 void cls_80217F80::fn_80217AB8() {
     if (mEmitters[4] == NULL) {
-        mEmitters[4] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x224, 1, 1, NULL,
-                                   NULL, true, 1.0f);
+        mEmitters[4] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x224, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[4] != NULL) {
+            mEmitters[4]->setGlobalScale(lbl_804CD838);
+        }
     }
     if (mEmitters[5] == NULL) {
-        mEmitters[5] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x225, 1, 1, NULL,
-                                   NULL, true, 1.0f);
+        mEmitters[5] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x225, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[5] != NULL) {
+            mEmitters[5]->setGlobalScale(lbl_804CD838);
+        }
     }
 }
 
-// FIXME: 0.00 %. Same as fn_80217AB8: the emitter scale stores are missing.
+// FIXME: 93.82 %. Register choice only: the original loads mOwner into r3 and
+// takes &mPos before the layer; ours loads it into r4.
 void cls_80217F80::fn_80217BC8() {
     if (mEmitters[2] == NULL) {
-        mEmitters[2] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x22F, 1, 1, NULL, NULL,
-                                   true, 1.0f);
+        mEmitters[2] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x22F, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[2] != NULL) {
+            mEmitters[2]->setGlobalScale(lbl_804CD838);
+        }
     }
     if (mEmitters[3] == NULL) {
-        mEmitters[3] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x230, 1, 1, NULL, NULL,
-                                   true, 1.0f);
+        mEmitters[3] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x230, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[3] != NULL) {
+            mEmitters[3]->setGlobalScale(lbl_804CD838);
+        }
     }
 }
 
-// FIXME: 0.00 %. Same as fn_80217AB8: the emitter scale stores are missing.
+// FIXME: 93.82 %. Register choice only: the original loads mOwner into r3 and
+// takes &mPos before the layer; ours loads it into r4.
 void cls_80217F80::fn_80217CD8() {
     if (mEmitters[0] == NULL) {
-        mEmitters[0] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x228, 1, 1, NULL, NULL,
-                                   true, 1.0f);
+        mEmitters[0] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x228, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[0] != NULL) {
+            mEmitters[0]->setGlobalScale(lbl_804CD838);
+        }
     }
     if (mEmitters[1] == NULL) {
-        mEmitters[1] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x229, 1, 1, NULL, NULL,
-                                   true, 1.0f);
+        mEmitters[1] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x229, 1, 1, NULL, NULL, true, 1.0f);
+        if (mEmitters[1] != NULL) {
+            mEmitters[1]->setGlobalScale(lbl_804CD838);
+        }
     }
 }
 
-// FIXME: 0.00 %. Same as fn_80217AB8: the emitter scale stores are missing.
+// FIXME: 92.88 %. Register choice: the original keeps the first emitter in r31
+// and reloads mOwner into r6 for the second spawn; ours differs in registers.
 void cls_80217F80::fn_80217DE8() {
-    fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x231, 1, 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x232, 1, 1, NULL, NULL, true, 1.0f);
+    JPABaseEmitter* emitter =
+        fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x231, 1, 1, NULL, NULL, true, 1.0f);
+    JPABaseEmitter* emitter2 =
+        fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x232, 1, 1, NULL, NULL, true, 1.0f);
+    if (emitter != NULL) {
+        emitter->setGlobalScale(lbl_804CD838);
+    }
+    if (emitter2 != NULL) {
+        emitter2->setGlobalScale(lbl_804CD838);
+    }
 }
 
-// FIXME: 0.00 %. Same as fn_80217AB8: the emitter scale stores are missing.
+// FIXME: 98.95 %. Register allocation only.
 void cls_80217F80::fn_80217ED4() {
+    VaatiBoss_804A4958* owner = mOwner;
+    const JGeometry::TVec3f* pos = &owner->mPos;
     for (s32 i = 0; i < 6; i++) {
-        fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, lbl_8046A5A0[i], 1, 1, NULL, NULL, true,
-                    1.0f);
+        JPABaseEmitter* emitter =
+            fn_8013CC50(owner->field_0x4, pos, lbl_8046A5A0[i], 1, 1, NULL, NULL, true, 1.0f);
+        if (emitter != NULL) {
+            emitter->setGlobalScale(lbl_804CD838);
+        }
     }
 }

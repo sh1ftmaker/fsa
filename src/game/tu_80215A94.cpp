@@ -7,53 +7,32 @@
 static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
 
 void cls_80215E48::fn_80215B6C(s32 index) {
-    cls_80215E48* entry = this + index;
-    s32 kind = entry->mKey;
+    s32 kind = mEntries[index].mKey;
     if (kind >= 0 && kind < 4) {
         s32 value = lbl_8046A590[kind];
         if (value > 0) {
-            lbl_8053AED0->fn_8043D874(entry->mId, value, 0);
+            lbl_8053AED0->fn_8043D874(mEntries[index].mId, value, 0);
         }
     }
 }
 
-s32 cls_80215E48::fn_80215E48(s32 index) {
-    return (this + index)->mKey;
-}
-
-s32 cls_80215E48::fn_80215E58(s32 key) {
-    s32 result = -1;
-    cls_80215E48* entry = this;
-    for (s32 i = 0; i < mCount; i++) {
-        if (key == entry->mKey) {
-            result = i;
-            break;
-        }
-        entry++;
+void cls_80215E48::fn_80215BCC(s32 index) {
+    // FIXME: 93.62 %. The original loads mCentis (lbz 0x25) right after
+    // mSeconds, before the second save-row index load; ours loads it after.
+    if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
+        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x79 = mEntries[index].mWatch.mSeconds;
+        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x78 = mEntries[index].mWatch.mCentis;
+        fn_802D6A9C()->fn_802D7844(1, mEntries[index].mId);
     }
-    return result;
-}
-
-s32 cls_80215E48::fn_80215E98() {
-    s32 count = 0;
-    cls_80215E48* entry = this;
-    for (s32 i = 0; i < mCount; i++) {
-        if (entry->mKey >= 0) {
-            count++;
-        }
-        entry++;
-    }
-    return count;
 }
 
 bool cls_80215E48::fn_80215D38() {
-    cls_80215E48* entry = this;
     bool ready;
     bool result = true;
     for (s32 i = 0; i < mCount; i++) {
         ready = false;
-        if (entry->mFlagC != 0) {
-            if (entry->mFlagE == 0) {
+        if (mEntries[i].mFlag8 != 0) {
+            if (mEntries[i].mFlagA == 0) {
                 ready = true;
             }
         }
@@ -61,84 +40,85 @@ bool cls_80215E48::fn_80215D38() {
             result = false;
             break;
         }
-        entry++;
     }
     return result;
-}
-
-void cls_80215E48::fn_80215BCC(s32 index) {
-    // FIXME: 73.75%. The original folds the stopwatch's mStopped load into
-    // lbz 0x1c(entry) off the entry pointer; ours computes &entry->pad_0x1C
-    // first (addi/add) and keeps it in a register, so one more register is
-    // saved. The stopwatch is 0xA bytes past the entry's 0x24 stride, so it
-    // can't be a struct member here.
-    if (reinterpret_cast<cls_801ED3DC*>(this[index].pad_0x1C)->mStopped != 0 &&
-        !reinterpret_cast<cls_801ED3DC*>(this[index].pad_0x1C)->fn_801ED7B0()) {
-        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x79 =
-            reinterpret_cast<cls_801ED3DC*>(this[index].pad_0x1C)->mSeconds;
-        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x78 =
-            reinterpret_cast<cls_801ED3DC*>(this[index].pad_0x1C)->mCentis;
-        fn_802D6A9C()->fn_802D7844(1, this[index].mId);
-    }
 }
 
 void cls_80215E48::fn_80215D8C(s32 index) {
-    cls_80215E48* entry = this + index;
-    if (entry->mFlagC != 0) {
+    if (mEntries[index].mFlag8 != 0) {
         return;
     }
-    if (entry->mFlagD != 0) {
+    if (mEntries[index].mFlag9 != 0) {
         return;
     }
-    entry->mFlagD = 1;
+    mEntries[index].mFlag9 = 1;
 }
 
 void cls_80215E48::fn_80215DB8() {
-    cls_80215E48* entry = this;
     for (s32 i = 0; i < mCount; i++) {
-        fn_80215E18(&entry->mId);
-        entry++;
+        mEntries[i].fn_80215E18();
     }
 }
 
-bool cls_80215E48::fn_8021606C() {
-    bool result = false;
-    cls_80215E48* entry = this;
-    // FIXME: 86.76%. The original loads mCount ahead of `entry = this` and
-    // keeps it in r31; ours reads it in the loop test and the two copies of
-    // this swap registers.
+s32 cls_80215E48::fn_80215E48(s32 index) {
+    return mEntries[index].mKey;
+}
+
+s32 cls_80215E48::fn_80215E58(s32 key) {
+    s32 result = -1;
     for (s32 i = 0; i < mCount; i++) {
-        if (entry->mKey < 0) {
-            if (reinterpret_cast<cls_801ED3DC*>(entry->pad_0x1C)->fn_801ED7B0()) {
-                result = true;
-                break;
-            }
+        if (key == mEntries[i].mKey) {
+            result = i;
+            break;
         }
-        entry++;
     }
     return result;
 }
 
-void cls_80215E48::fn_8021600C() {
-    cls_80215E48* entry = this;
+s32 cls_80215E48::fn_80215E98() {
+    s32 count = 0;
     for (s32 i = 0; i < mCount; i++) {
-        reinterpret_cast<cls_801ED3DC*>(entry->pad_0x1C)->fn_801ED798();
-        entry++;
+        if (mEntries[i].mKey >= 0) {
+            count++;
+        }
     }
+    return count;
 }
 
 void cls_80215E48::fn_80215ECC() {
     s32 count = mCount;
-    cls_80215E48* entry = this;
-    // FIXME: 92.00%. The count load (lwz r31, 0(r3)) is scheduled before
-    // `mr r30, r3` in the original; ours loads it after `li r29, 0`.
+    cls_80216238* entry = mEntries;
+    // FIXME: 89.48 %. The original keeps the entry walk off `this` (lwz
+    // 0x4(r30), addi 0x1c) with the count loaded first; ours adds 4 first.
     for (s32 i = 0; i < count; i++) {
-        reinterpret_cast<cls_801ED3DC*>(entry->pad_0x1C)->fn_801ED3DC(entry->mId, entry->mKey);
+        entry->mWatch.fn_801ED3DC(entry->mId, entry->mKey);
         entry++;
     }
 }
 
 void cls_80215E48::fn_80215FB8(s32 index, s32 key, f32 fraction) {
-    reinterpret_cast<cls_801ED3DC*>((this + index)->pad_0x1C)->fn_801ED5C8(fraction);
-    (this + index)->mKey = key;
+    mEntries[index].mWatch.fn_801ED5C8(fraction);
+    mEntries[index].mKey = key;
+}
+
+void cls_80215E48::fn_8021600C() {
+    for (s32 i = 0; i < mCount; i++) {
+        mEntries[i].mWatch.fn_801ED798();
+    }
+}
+
+bool cls_80215E48::fn_8021606C() {
+    // FIXME: 91.62 %. The original loads mCount above `mr r30, r3` (a const
+    // `this`?); ours loads it after the register saves.
+    s32 count = mCount;
+    bool result = false;
+    for (s32 i = 0; i < count; i++) {
+        if (mEntries[i].mKey < 0) {
+            if (mEntries[i].mWatch.fn_801ED7B0()) {
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
 }
