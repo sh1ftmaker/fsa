@@ -16,6 +16,11 @@ public:
     /* 0x44 */ virtual void vfunc_0x44();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
+
+    // Placeholder names (see docs/PLAN.md). fn_80212F14 is not virtual: it is
+    // only in an extabindex entry. fn_80213774 takes a mode argument (0 or 1).
+    void fn_80212F14();
+    void fn_80213774(int mode);
 }; // Size: 0x2A8
 
 #endif
