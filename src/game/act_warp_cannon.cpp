@@ -11,7 +11,6 @@
 static const s16 lbl_80465120[] = {0, 3, 1, 2, 2, 2, 3, 3, 4, 3, 5, 3, -1, -1};
 static const s16* lbl_80539F48[] = {lbl_80465120, NULL};
 
-
 // FIXME: 95.30%. The loop over fn_80230360 is the same, but after it the
 // original falls through into the field_0x278 store on its own `cmpwi 4; blt`,
 // where ours compares i again (cmpwi; bne): 3 extra instructions. The switch's

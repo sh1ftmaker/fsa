@@ -5,8 +5,6 @@
 #include "game/Player.h"
 #include "game/act/tu_8017A44C.h"
 
-
-
 // .rodata: the actor ids fn_8020D6AC skips, ended by 'NULL'.
 static const u32 lbl_80466880[5] = {'TOMI', 'BMST', 'IPOT', 'IBBM', 'NULL'};
 
