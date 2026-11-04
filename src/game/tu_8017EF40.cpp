@@ -11,3 +11,9 @@ void fn_80182640(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
     v->y = y;
     v->z = z;
 }
+
+void fn_80182650(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
+    v->x = x;
+    v->y = y;
+    v->z = z;
+}
