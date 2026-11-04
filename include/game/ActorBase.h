@@ -507,9 +507,6 @@ public:
     // 0x80182660, out of line in game/tu_8017EF40.cpp: mPos = pos (a whole
     // TVec3f copy, psq + stfs). Called with the actor and a stack TVec3f.
     void fn_80182660(const JGeometry::TVec3f& pos);
-    // 0x8017EF40, out of line in game/tu_8017EF40.cpp: starts sound 0x40038
-    // (fn_801F0E34(0x40038, 0)), then vfunc_0x28(2, 0.0f, -24.0f).
-    void fn_8017EF40();
     JGeometry::TBox2f* getBox() { return &mBox; }
     JGeometry::TBox2f* getBox2() { return &mBox2; }
     void setBox2(const JGeometry::TBox2f& box) { mBox2 = box; }
