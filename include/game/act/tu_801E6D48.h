@@ -18,6 +18,10 @@ public:
     /* 0x08 */ virtual ~cls_804A5418();
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
+    // 0x801E6DE8: unless mFlags has 0x8000, or mState is not 0 or 2, puts
+    // mPos's (x, y) offset by the direction field_0x98 into a TVec2f and
+    // calls fn_801EA108 with it, field_0x2b0 and a static scale of 128.
+    void fn_801E6DE8();
     // 0x801E6EAC: with mFlags bit 0x8000, reports field_0x2b4 (if set) to the
     // view and calls fn_801F3668(); else, unless mState is 1, sets state 1.
     void fn_801E6EAC();

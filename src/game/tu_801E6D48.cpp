@@ -4,6 +4,30 @@
 
 cls_804A5418::~cls_804A5418() {}
 
+// Function-local statics of fn_801E6DE8, in the original's .sbss order.
+static f32 lbl_8053AC38;
+static s8 lbl_8053AC3C;
+
+void cls_804A5418::fn_801E6DE8() {
+    if (mFlags & 0x8000) {
+        return;
+    }
+    if (lbl_8053AC3C == 0) {
+        lbl_8053AC38 = 128.0f;
+        lbl_8053AC3C = 1;
+    }
+    switch (mState) {
+    case 0:
+    case 2: {
+        f32 dx = fn_80210B34(field_0x98);
+        f32 dy = fn_80210AF8(field_0x98);
+        JGeometry::TVec2f pos(mPos.x + dx, mPos.y + dy);
+        fn_801EA108(fn_801E9AFC(), &pos, field_0x2b0, lbl_8053AC38);
+        break;
+    }
+    }
+}
+
 cls_804A5418::cls_804A5418() {
     field_0x2ac = -1;
     field_0x2b0 = 0;

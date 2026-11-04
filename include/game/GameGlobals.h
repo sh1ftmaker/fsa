@@ -678,6 +678,10 @@ struct cls_801E9AFC {
 }; // Size: at least 0xF1 (the selector byte is the last field known)
 // Getter of that object (returns its address; builds it on first use).
 extern "C" cls_801E9AFC* fn_801E9AFC();
+// game/tu_801E9AFC.cpp (owner unit, not written yet): draws at pos (x, y only)
+// with the given angle (an index into the sin/cos table) and scale. arg0 is
+// the slots object fn_801E9AFC returned; the callee doesn't read it at entry.
+extern "C" void fn_801EA108(cls_801E9AFC* slots, const JGeometry::TVec2f* pos, s16 angle, f32 scale);
 
 // game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
 // cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read
