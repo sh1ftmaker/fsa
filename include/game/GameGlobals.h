@@ -47,18 +47,26 @@ class J2DOrthoGraph;
 class cls_804B1D10;
 class BgRewrite_804A7C98;
 class cls_804AE9B0;
+class cls_804B1920;
+class cls_804B17A0;
+class PlayerManager_804A6F28;
 
 struct GameRootSub04_801F856C {
-    /* 0x0 */ u8 field_0x0[0x8];
+    // vtable at 0x0 (0x8049F080); its one slot is the destructor below.
+    virtual ~GameRootSub04_801F856C();
+
+    /* 0x4 */ PlayerManager_804A6F28* field_0x4; // constructor fn_8013A538 (tu_80139BE8)
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
     /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
     // fn_802A3D80 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
     /* 0x10 */ BgRewrite_804A7C98* field_0x10;
-    // Passed to fn_8043EDF8 by fn_8013A1A4 (game/tu_80139BE8.cpp); type unknown.
-    /* 0x14 */ void* field_0x14;
-    // Passed to fn_80439AB0 by fn_8013A1A4 (game/tu_80139BE8.cpp); type unknown.
-    /* 0x18 */ void* field_0x18;
+    // fn_8043EDF8 is called with it by fn_8013A1A4 (game/tu_80139BE8.cpp); the
+    // object fn_8043F504 builds (cls_804B1920).
+    /* 0x14 */ cls_804B1920* field_0x14;
+    // fn_80439AB0 is called with it by fn_8013A1A4 (game/tu_80139BE8.cpp); the
+    // object fn_80439C78 builds (cls_804B17A0).
+    /* 0x18 */ cls_804B17A0* field_0x18;
     // fn_8037AFC0 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
     /* 0x1C */ cls_804AE9B0* field_0x1c;
     // Passed to fn_801902D0 by fn_80139CC4 (game/tu_80139BE8.cpp); its type
@@ -644,7 +652,9 @@ s32 fn_8030AAF4(s32 player);
 // stores 2 at 0x1F0 + player); its size and the rest are unknown.
 class cls_804B1920 {
 public:
-    /* 0x000 */ u8 pad_0x0[0xDC];  // vtable pointer and unknown fields
+    // Virtual destructor first: the vtable pointer goes where it is declared.
+    virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
+    /* 0x004 */ u8 pad_0x4[0xDC - 0x4];  // unknown fields
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
     // the battle royale end check ORs with 0x10 when it picks its winner.
     /* 0xDC */ u8 field_0xdc;
@@ -681,6 +691,21 @@ public:
     void fn_8043E7CC(JGeometry::TVec3f pos);
 };
 extern cls_804B1920* lbl_8053AED0;
+
+// The 0x60-byte object fn_80439C78 builds (game/tu_80438C68.cpp, not written
+// yet), stored at GameRootSub04_801F856C::field_0x18. Named after its vtable,
+// 0x804B17A0; it keeps a J2DScreen at 0x4 and its layout is not known beyond
+// the destructor.
+class cls_804B17A0 {
+public:
+    /* 0x000 */ // vtable, whose one slot is the destructor below
+    virtual ~cls_804B17A0(); // owner game/tu_80438C68.cpp (not written yet)
+};
+
+// The 4-byte pointer at .sbss lbl_8053AB00: the heap GameRootSub04_801F856C's
+// constructor (fn_8013A538, game/tu_80139BE8.cpp) stores, which the destructor
+// asks for getTotalFreeSize between its steps.
+extern JKRHeap* lbl_8053AB00;
 
 // 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): C-linkage
 // (the original calls them by plain name), each taking the object in r3 and
@@ -1030,6 +1055,13 @@ void fn_8016DB60(GameRootSub24_8016A3AC* self);
 // Owner: game/tu_8016A2B4.cpp (0x8016EDB0, not written yet). Takes field_0x24
 // of GameRootSub04_801F856C (fn_8013A1A4); its body is not read yet.
 void fn_8016EDB0(GameRootSub24_8016A3AC* self);
+// Owner not known (0x8016EE84, 0x238 bytes, not written yet). Called on
+// field_0x24 of GameRootSub04_801F856C by its destructor (fn_8013A27C,
+// game/tu_80139BE8.cpp) with 1; the second argument's type is not known.
+void fn_8016EE84(GameRootSub24_8016A3AC* self, s32 arg);
+// Owner not known (0x80191744, 0x9C bytes, not written yet). Called on
+// field_0x20 of GameRootSub04_801F856C by its destructor (fn_8013A27C) with 1.
+void fn_80191744(void* self, s32 arg);
 // Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
 // at field_0x20 of GameRootSub04_801F856C (fn_80139CC4); its type is unknown.
 void fn_801902D0(void* self);
