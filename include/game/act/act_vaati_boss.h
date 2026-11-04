@@ -8,6 +8,7 @@
 #include "game/EnemyBase.h"
 #include "game/SpriteAnim.h"
 #include "game/cls_8021BCBC.h"
+#include "game/cls_801EB8CC.h" // the member at 0x464
 
 // An element of the 4-entry array at 0x2A8 of Vaati, built by
 // __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
@@ -128,15 +129,6 @@ public:
     /* 0x00 */ JPABaseEmitter* mEmitters[6];
     /* 0x18 */ VaatiBoss_804A4958* mOwner;
 }; // Size: 0x1C
-
-// The member at 0x464 of Vaati: its destructor (dtor_801EB8CC, tu_801EB00C,
-// not written yet) frees the words at 0x34..0x50 with fn_801EE434. No
-// vtable; named after that destructor.
-class cls_801EB8CC {
-public:
-    ~cls_801EB8CC();
-    /* 0x00 */ u8 field_0x0[0x60]; // not yet known
-}; // Size: 0x60
 
 // The member at 0x4C4 of Vaati: its destructor (dtor_801D7730, tu_801D6CEC,
 // not written yet) clears the 16 actor serials in field_0x0 and the
