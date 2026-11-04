@@ -53,8 +53,12 @@ public:
     // 0x3C4 bytes, with the window, its index and the BMG name; the
     // constructor reading is a guess from that shape.
     MessageProcessor_803944C8(MessageWindow_804AF490* window, s32 index, const char* bmgName);
+    // Virtual: MessageWindow_804AF490's destructor deletes these through the
+    // vtable (lwz 8(r12), deleting flag 1), so the dtor is in slot 2.
+    /* 0x008 */ virtual ~MessageProcessor_803944C8();
 
-    /* 0x000 */ u8 field_0x0[0x148];
+    /* 0x000 */ // vtable
+    /* 0x004 */ u8 field_0x4[0x148 - 0x4];
     // fn_80390C38 returns it (-1 when the window is in neither state).
     /* 0x148 */ s32 field_0x148;
     /* 0x14C */ u8 field_0x14c[0x150 - 0x14C];
@@ -93,7 +97,9 @@ public:
     /* 0x04 */ u8 field_0x4[0x18 - 0x4];
     /* 0x18 */ s32 mIndex;
     /* 0x1C */ s32 field_0x1c;
-    /* 0x20 */ u8 field_0x20[0x24 - 0x20];
+    // fn_80390E40 stores its word argument here while the state is 0 or the
+    // flag is set.
+    /* 0x20 */ s32 field_0x20;
     // Window state byte (fn_80384C58 compares it with 5 and 8; callers of
     // fn_8037F1E4, which returns it, compare with 1, 3 and 5).
     /* 0x24 */ u8 field_0x24;
@@ -108,6 +114,14 @@ public:
     /* 0x48 */ MessageProcessor_803944C8* field_0x48;
     /* 0x4C */ MessageProcessor_803944C8* field_0x4c;
     /* 0x50 */ u8 field_0x50[0x5C - 0x50];
+
+    // fn_80390818: maps the window state to a 0-2 class (0: state 0 or 9+,
+    // 1: 6-8, 2: 1-5). Placeholder name, no caller identified yet.
+    s32 fn_80390818();
+
+    // fn_80390E40: stores value at 0x20 when the state is 0 or flag is set and
+    // returns true; false otherwise.
+    bool fn_80390E40(s32 value, bool flag);
 
     // fn_80390E68: with bit 0x2 of field_0x28 set, runs the processor of
     // field_0x48 through fn_80394690 (bit 0x40) or else fn_8039499C (its flag
