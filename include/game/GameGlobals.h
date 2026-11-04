@@ -930,17 +930,6 @@ extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
 class ActorBase_804A5770;
 extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 
-// game/act_quicksand.cpp (owner unit, not written yet). Both take an actor
-// (a result of ActorManager_804A5800::fn_801F666C) in r3 and a position in r4:
-// fn_80211000 returns 0/1 (clrlwi 24) for "is the position inside the actor's
-// area" and fn_80210E90 writes the push-out vector to *out (r5; zeroed first).
-// Called by game/tu_80212AC0.cpp's fn_80212AF0.
-class ActorBase_804A5770;
-extern "C" {
-bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos);
-void fn_80210E90(const ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
-}
-
 // game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor
 // (a result of ActorManager_804A5800::fn_801F666C) in r3; field 0x248 is its
 // state. fn_8021D734 / fn_8021D764 switch it to state 8 / 6 unless already

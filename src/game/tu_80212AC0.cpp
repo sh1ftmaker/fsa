@@ -2,6 +2,7 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/tu_80212AC0.h"
+#include "game/act/act_quicksand.h"
 
 cls_80212AC0* fn_80212AC0() {
     static cls_80212AC0 lbl_804CCDB8;
@@ -16,14 +17,14 @@ void cls_80212AC0::fn_80212AF0(JGeometry::TVec3f* pos) const {
     ActorBase_804A5770* found = NULL;
     for (s32 i = 0; i < mCount; i++) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);
-        if (actor != NULL && fn_80211000(actor, pos)) {
+        if (actor != NULL && static_cast<cls_804A6270*>(actor)->fn_80211000(pos)) {
             found = actor;
             break;
         }
     }
     if (found != NULL) {
         JGeometry::TVec3f push;
-        fn_80210E90(found, pos, &push);
+        static_cast<cls_804A6270*>(found)->fn_80210E90(pos, &push);
         *pos += push;
     }
 }

@@ -35,11 +35,11 @@ void cls_804ADAC8::fn_8035FF70() {
     }
 }
 
-// FIXME: the member-function table update() calls through (6 entries of 12
-// bytes at 0x804ADA50, the unit's .data). Its entries are not identified yet,
-// so it is declared here and not defined; the function's bytes do not depend
-// on its contents.
-extern void (cls_804ADAC8::*lbl_804ADA50[6])();
+// The update() steps, indexed by mPtmfIndex; built at static init time.
+void (cls_804ADAC8::*lbl_804ADA50[6])() = {
+    &cls_804ADAC8::fn_8036003C, &cls_804ADAC8::fn_8035FF70, &cls_804ADAC8::fn_8035FD6C,
+    &cls_804ADAC8::fn_8035FCD8, &cls_804ADAC8::fn_8035FB64, &cls_804ADAC8::fn_8035F9C8,
+};
 
 void cls_804ADAC8::update() {
     if (field_0x280 != 0) {

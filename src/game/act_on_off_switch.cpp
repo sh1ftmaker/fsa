@@ -8,13 +8,12 @@
 #include "game/Player.h"
 #include "game/act/act_on_off_switch.h"
 #include "game/act/tu_801BEDBC.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 
-// FIXME: the original clears word 0xF4 and word 0x24 of an emitter inline (no
-// header names those words, see act_rank_display) and nulls the member; here
-// fn_801EE434 releases it, so the release sites differ.
+// Stops an emitter (it runs out) and forgets it (as act_rank_display).
 static inline void releaseEmitter(JPABaseEmitter*& emitter) {
     if (emitter != NULL) {
-        fn_801EE434(emitter);
+        emitter->becomeInvalidEmitter();
         emitter = NULL;
     }
 }
@@ -25,11 +24,6 @@ void cls_804A8FC8::draw() {
     }
 }
 
-// FIXME: 75.51 %. Missing/extra: the original branches to state 2's countdown
-// when 0x23C or 0x254 is non-zero and falls through into the main path; here
-// the main path is the branch target, so the blocks are laid out in another
-// order. The six inline emitter releases are fn_801EE434 calls (releaseEmitter),
-// which the original does not make.
 void cls_804A8FC8::update() {
     JGeometry::TBox2f box;
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
@@ -111,23 +105,6 @@ void cls_804A8FC8::update() {
             }
         }
         break;
-    case 1:
-        if (field_0x23c != 0) {
-            field_0x23c--;
-            break;
-        }
-        field_0x254 = 0;
-        if (field_0x240 == 3) {
-            fn_802D6A9C()->fn_802D78B4(field_0x244, false);
-        }
-        lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
-        vfunc_0x30(0xFF, false);
-        mState = 3;
-        fn_801F0E34(0x30009, 0);
-        field_0x23c = 25;
-        releaseEmitter(mEmitter230);
-        releaseEmitter(mEmitter234);
-        break;
     case 2:
         if (field_0x23c == 0 && field_0x254 == 0) {
             if (!(playerB < 0 && playerC < 0 && lnbmSerial < 0 && tuboSerial < 0 && hbmbSerial < 0)) {
@@ -149,8 +126,8 @@ void cls_804A8FC8::update() {
                 lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
                 vfunc_0x30(0xFF, false);
                 mState = 3;
-                fn_801F0E34(0x30009, 0);
                 field_0x23c = 25;
+                fn_801F0E34(0x30009, 0);
                 releaseEmitter(mEmitter230);
                 releaseEmitter(mEmitter234);
             } else if (field_0x240 == 3 && fn_802D6A9C()->fn_802D7888(field_0x244) == false) {
@@ -168,6 +145,23 @@ void cls_804A8FC8::update() {
             if (playerB < 0 && playerC < 0 && lnbmSerial < 0 && tuboSerial < 0 && hbmbSerial < 0) {
                 field_0x254 = 0;
             }
+        }
+        break;
+    case 1:
+        if (field_0x23c == 0) {
+            field_0x254 = 0;
+            if (field_0x240 == 3) {
+                fn_802D6A9C()->fn_802D78B4(field_0x244, false);
+            }
+            lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
+            vfunc_0x30(0xFF, false);
+            mState = 3;
+            fn_801F0E34(0x30009, 0);
+            field_0x23c = 25;
+            releaseEmitter(mEmitter230);
+            releaseEmitter(mEmitter234);
+        } else {
+            field_0x23c--;
         }
         break;
     case 3:
