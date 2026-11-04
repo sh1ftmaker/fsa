@@ -389,6 +389,27 @@ void fn_801CD930(s16* angle, s32 target, s32 step);
 bool fn_801CD970(s16* angle, s32 target, s32 step);
 }
 
+// game/tu_804023D0.cpp (not written yet); called from game/tu_80376FA0.cpp.
+// Returns lbl_80529DEC->field_0x10->getResource(type, name) (vtable slot
+// 0x18); the callers pass the 4CC 'TIMG' and a .bti name.
+extern "C" {
+void* fn_804032E8(u32 type, const char* name);
+}
+
+// game/act_block.cpp (not written yet); called from game/tu_80376FA0.cpp.
+// Returns 1 or 0 (li 1 / li 0); its body reads *pos and writes it back with
+// psq on the 1 path. The layer goes to fn_802D7544 on GameView.
+extern "C" {
+u8 fn_8028D4DC(JGeometry::TVec3f* pos, s32 index, s32 layer);
+}
+
+// game/act_strange_block.cpp (not written yet); called from game/tu_80376FA0.cpp
+// on one axis. Returns center + radius, or center - radius on the side pos is
+// not on (the side test is on pos against center).
+extern "C" {
+f32 fn_8033D4AC(f32 pos, f32 center, f32 radius);
+}
+
 // Loads the TIMG resource `name` from lbl_8053AAF8->field_0xa4 into texObj
 // (and tlutObj, if given, for a palette texture); returns height / width.
 // game/tu_801CB270.cpp; called from game/tu_801E9AFC.cpp.
