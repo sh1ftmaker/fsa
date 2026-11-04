@@ -223,6 +223,20 @@ struct GameRootSub20_801902C0 {
     /* 0x340 */ u8 field_0x340[0x5F0 - 0x340]; // not yet known
     /* 0x5F0 */ QueuedPos mQueuedPos[2];
     /* 0x618 */ s32 mQueuedPosCount;
+    /* 0x61C */ u8 field_0x61c[0x7D0 - 0x61C]; // not yet known
+
+    // SHARED-EDIT (act_ice_melted_by_four_players): the request the ICEB
+    // update (act_ice_melted_by_four_players.cpp) fills at 0x7D0 when its pointer at 0x10 is NULL and
+    // mActive is clear: its position, a percentage (100 - field_0x238 * 100)
+    // and mActive = 1. Owner: game/tu_801902C0.cpp (not written yet).
+    struct IceRequest {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ s32 mPercent;
+        /* 0x10 */ void* field_0x10; // tested against NULL
+        /* 0x14 */ u8 field_0x14[8]; // not yet known
+        /* 0x1C */ u8 mActive;
+    }; // Size: 0x20
+    /* 0x7D0 */ IceRequest mIceRequest;
 };
 extern "C" {
 // Owner: game/tu_801902C0.cpp (not written yet). No arguments; loads
@@ -873,6 +887,16 @@ void fn_802B39E8(ActorBase_804A5770* actor);
 extern "C" {
 u8 fn_8035C15C(ActorBase_804A5770* actor, s32 id);
 void fn_8035C1C4(ActorBase_804A5770* actor, s32 id, s32 arg);
+}
+
+// SHARED-EDIT (act_ice_melted_by_four_players): owner game/act_fire_rod_fire.cpp
+// (0x802BA9F0 and 0x802BA9F8, defined there; the FIRE actor's unit, not written
+// yet). Both read a word of the actor in r3 (lwz 0x260 and 0x264) and return
+// it; the only caller passes the FIRE actor it finds by serial as an
+// ActorBase_804A5770*.
+extern "C" {
+s32 fn_802BA9F0(ActorBase_804A5770* actor);
+s32 fn_802BA9F8(ActorBase_804A5770* actor);
 }
 
 // A word in .sbss that many units load and pass on in r3 (lwz
