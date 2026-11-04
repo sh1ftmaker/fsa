@@ -112,7 +112,6 @@ act_magic_circle_generator	sinit	__sinit_act_magic_circle_generator_cpp	-	-	new	
 act_navi	sinit	__sinit_act_navi_cpp	-	-	new	-
 act_navi_maiden_crystal	dtor	__dt__12cls_804ADFE8Fv	cls_804ADFE8	0x804ADFE8	new	new
 act_navi_maiden_crystal	sinit	__sinit_act_navi_maiden_crystal_cpp	-	-	new	new
-act_obj_lift	dtor	__dt__16OBJLift_804ACA00Fv	OBJLift_804ACA00	0x804ACA00	new	new
 act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
 act_on_off_switch	dtor_emit	__dt__12cls_804A8FC8Fv	cls_804A8FC8	0x804A8FC8	new	new
