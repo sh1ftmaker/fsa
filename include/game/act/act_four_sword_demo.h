@@ -16,6 +16,16 @@ class cls_8049DA0C : public cls_8049D140 {
 public:
     /* 0x08 */ virtual ~cls_8049DA0C();
 
+    // Slot 0x54, overriding cls_8049D140::vfunc_0x54 (0x801174C0, game/act_four_sword_demo.cpp).
+    // Reads field_0x4 and field_0x8 of fn_8011921C()'s object and, when the
+    // first is 2, calls fn_80117074 with the index of the matching
+    // lbl_80464A7C entry.
+    /* 0x54 */ virtual void vfunc_0x54();
+
+    // Mangled fn_80117074__12cls_8049DA0CFl (0x80117074, same unit, not written
+    // yet). Takes the table index 2..12 found by vfunc_0x54.
+    void fn_80117074(s32 index);
+
     // Slot 0x58, overriding cls_8049D140::vfunc_0x58 (game/tu_8010DF44.cpp).
     // Returns field_0x234.
     /* 0x58 */ virtual s32 vfunc_0x58();
