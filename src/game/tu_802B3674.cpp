@@ -1,6 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/EmitterDelete.h"
+#include "game/GameView.h"
 #include "game/cls_804A8638.h"
+#include "game/tu_802EF76C.h"
 
 void cls_804A8638::draw() {}
 
@@ -35,4 +37,19 @@ void cls_804A8638::vfunc_0x54(s32 a, s32 b, s32 c, s32 d, s32 e, s32 state) {
         return;
     }
     field_0x240 = 0xc;
+}
+
+void cls_804A8638::vfunc_0x10() {
+    if (field_0x288 != 4) {
+        return;
+    }
+    fn_802D6A9C()->fn_802D6BF8(0);
+    field_0x288 = 0;
+    field_0x2e0 = field_0x300;
+    field_0x2e4 = field_0x304;
+    field_0x2e8 = field_0x308;
+    deleteEmitter(&field_0x234);
+    deleteEmitter(&field_0x238);
+    u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+    fn_8013A884(&color);
 }
