@@ -7,75 +7,11 @@
 #include "game/cls_804AE9B0.h"
 #include "game/act/act_warp_cannon.h"
 
-WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
-    field_0x268 = 0;
-    field_0x26c = -1;
-    field_0x270 = 0;
-    field_0x274 = 0;
-    field_0x278 = 0;
-    field_0x27c = 0.0f;
-    field_0x280 = 0.0f;
-    field_0x284 = 0.0f;
-    field_0x288 = 0.0f;
-    field_0x28c = 0.0f;
-    field_0x290.set(0.0f, 0.0f, 0.0f);
-}
-
 // The animation: (cel, duration) pairs, ended by a cel of -1.
 static const s16 lbl_80465120[] = {0, 3, 1, 2, 2, 2, 3, 3, 4, 3, 5, 3, -1, -1};
 static const s16* lbl_80539F48[] = {lbl_80465120, NULL};
 
-static const f32 lbl_8053CCE8[1] = {-16.0f};
-static const f32 lbl_8053CCD8[1] = {16.0f};
-static const f32 lbl_8053CCEC[1] = {-12.0f};
-static const f32 lbl_8053CCC0[1] = {2.0f};
-static const f32 lbl_8053CCA8[1] = {1.0f};
-static const f32 lbl_8053CCA0[1] = {0.0f};
-static const f32 lbl_8053CCB4[1] = {4.0f};
-static const f32 lbl_8053CCCC[1] = {90.0f};
-static const f32 lbl_8053CCDC[1] = {13.0f};
-static const f32 lbl_8053CCE0[1] = {-2.0f};
-
-void WarpCannon_8049EAE0::init() {
-    field_0x274 = field_0x90 >> 8 & 0xFF;
-    field_0x270 = field_0x90 >> 16 & 0xFF;
-    mBox.set(lbl_8053CCE8[0], lbl_8053CCE8[0], lbl_8053CCD8[0], lbl_8053CCEC[0]);
-    mBox2.set(mBox);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0xb0 = 0x50303;
-    mAnim.fn_801D2608(lbl_80539F48, 1);
-    mAnim.fn_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-    field_0x284 = mPos.x;
-    field_0x288 = mPos.y;
-    field_0x28c = mPos.z;
-}
-
-// FIXME: 99.27%. Regalloc only: the original keeps 0.0 in f3 and 2.0 in f0 (the
-// first zero store uses f3), ours swaps them.
-void WarpCannon_8049EAE0::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x1d = 1;
-    Mtx mtx;
-    mtx[0][3] = lbl_8053CCA0[0];
-    mtx[1][3] = lbl_8053CCA0[0];
-    mtx[2][3] = lbl_8053CCA0[0];
-    mtx[0][0] = lbl_8053CCC0[0];
-    mtx[0][1] = lbl_8053CCA0[0];
-    mtx[0][2] = lbl_8053CCA0[0];
-    mtx[1][0] = lbl_8053CCA0[0];
-    mtx[1][1] = lbl_8053CCC0[0];
-    mtx[1][2] = lbl_8053CCA0[0];
-    mtx[2][0] = lbl_8053CCA0[0];
-    mtx[2][1] = lbl_8053CCA0[0];
-    mtx[2][2] = lbl_8053CCC0[0];
-    params.mMtx = mtx;
-    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x14C, &params, 0x407, 1, false,
-                lbl_8053CCA8[0], lbl_8053CCA8[0]);
-}
-
-// FIXME: 95.30%. The loop over fn_80230360 is the same, but after it the
+// FIXME: 95.15 %. The loop over fn_80230360 is the same, but after it the
 // original falls through into the field_0x278 store on its own `cmpwi 4; blt`,
 // where ours compares i again (cmpwi; bne): 3 extra instructions. The switch's
 // jump table is the compiler's (@NNN) where the original names
@@ -87,7 +23,7 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
         fn_80230FD0(field_0x26c, 0x20035);
         break;
     case 2:
-        field_0x27c = lbl_8053CCDC[0];
+        field_0x27c = 13.0f;
         fn_80230FD0(0, 0x20036);
         lbl_8053AAF8->fn_80134DE4(1, 0);
         lbl_8053AD70->fn_8037AE00();
@@ -116,10 +52,10 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
         for (s32 i = 0; i < 4; i++) {
             fn_80230FD0(i, 0x10003);
         }
-        field_0x27c = lbl_8053CCB4[0];
-        fn_802F601C(lbl_8053AB10->field_0x20, &field_0x290, 1, 0, lbl_8053CCA8[0],
-                    lbl_8053CCE0[0]);
-        fn_8013CC50(0, &field_0x290, 0x17D, 1, 0, NULL, NULL, true, lbl_8053CCA8[0]);
+        field_0x27c = 4.0f;
+        fn_802F601C(lbl_8053AB10->field_0x20, &field_0x290, 1, 0, 1.0f,
+                    -2.0f);
+        fn_8013CC50(0, &field_0x290, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
         break;
     case 6:
         fn_80230534(false);
@@ -132,10 +68,10 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
         field_0x278 = 0;
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            pos.z = lbl_8053CCCC[0];
+            pos.z = 90.0f;
             fn_80230498(i, &pos, 0xB0, 0xFF, -0x80, -0x80, true);
         }
-        field_0x27c = lbl_8053CCA0[0];
+        field_0x27c = 0.0f;
         break;
     }
     case 8:
@@ -145,4 +81,57 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
     }
 }
 
+// FIXME: 99.90 %. Only the .sdata2 offsets of its literals differ: the
+// original's pool (0x8053CCA0) also holds update()'s, which isn't written yet.
+void WarpCannon_8049EAE0::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x1d = 1;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    mtx[0][0] = 2.0f;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = 2.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = 2.0f;
+    params.mMtx = mtx;
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x14C, &params, 0x407, 1, false,
+                1.0f, 1.0f);
+}
+
+void WarpCannon_8049EAE0::init() {
+    field_0x274 = field_0x90 >> 8 & 0xFF;
+    field_0x270 = field_0x90 >> 16 & 0xFF;
+    mBox.set(-16.0f, -16.0f, 16.0f, -12.0f);
+    mBox2.set(mBox);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    field_0xb0 = 0x50303;
+    mAnim.fn_801D2608(lbl_80539F48, 1);
+    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+    field_0x284 = mPos.x;
+    field_0x288 = mPos.y;
+    field_0x28c = mPos.z;
+}
+
 WarpCannon_8049EAE0::~WarpCannon_8049EAE0() {}
+
+WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
+    field_0x268 = 0;
+    field_0x26c = -1;
+    field_0x270 = 0;
+    field_0x274 = 0;
+    field_0x278 = 0;
+    field_0x27c = 0.0f;
+    field_0x280 = 0.0f;
+    field_0x284 = 0.0f;
+    field_0x288 = 0.0f;
+    field_0x28c = 0.0f;
+    field_0x290.set(0.0f, 0.0f, 0.0f);
+}

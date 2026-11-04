@@ -6,6 +6,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/tu_80212AC0.h"
+#include "game/tu_80182914.h"
 #include "game/act/tu_80182914.h"
 
 // The emitter's colour comes from field_0x238 while view layer 0x13 is flagged.

@@ -670,4 +670,13 @@ extern "C" {
 void fn_801A3C50(ActorBase_804A5770* actor, s32 player);
 } // extern "C"
 
+// game/tu_801A3C50.cpp (not written yet; C linkage, no mangled names): map
+// checks act_deadrock's update() makes with its mSerial, its box and its
+// top-down position.
+extern "C" {
+s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
+s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
+s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
+} // extern "C"
+
 #endif

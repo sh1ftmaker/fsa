@@ -35,12 +35,9 @@ void cls_804B1D58::fn_804522C8() {
     }
 }
 
-// .sdata2 float, also read by other functions of this unit.
-extern const f32 lbl_80543DFC;
-
 void cls_804B1D58::fn_80452308() {
     lbl_8053AB10->fn_8013B490();
-    mScreen->draw(lbl_80543DFC, lbl_80543DFC, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
 }
 
 s32 fn_8044F664() {

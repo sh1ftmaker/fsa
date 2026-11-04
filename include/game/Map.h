@@ -190,6 +190,9 @@ bool fn_80224E88(const JGeometry::TVec3f* pos, s32 layer);
 // layer in r4; return a byte.
 bool fn_802258D4(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
+// tu_8022461C (not written yet): tests the x/y of pos against the box of
+// `layer` (fn_801CCBD0's family); fn_802255F4 forwards to it.
+bool fn_802252F4(const JGeometry::TVec3f* pos, s32 layer);
 }
 
 // --- actor collision boxes (game/tu_8020D58C.cpp) ---

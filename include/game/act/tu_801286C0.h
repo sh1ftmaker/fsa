@@ -32,4 +32,7 @@ public:
     /* 0x23C */ void* field_0x23c;
 }; // Size: at least 0x240
 
+// Stores the value in the byte at 0xC of the object at lbl_8053AB10->0x2C.
+void fn_80128C58(s32 value);
+
 #endif

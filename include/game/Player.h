@@ -865,6 +865,15 @@ s32 fn_80231A50();
 // act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
 // object, value) when the player exists and its byte 0xCAC is set.
 void fn_802362C4(s32 player, s32 value);
+// game/tu_8022AD64.cpp (not written yet; plain C symbols). fn_802372F8:
+// act_shop_item's update() calls it after paying for kinds 4-7, with 9, 4, 3
+// or 6 as the second argument by kind and 1 as the third (types guessed from
+// the calls). fn_802382D0: act_link_ending, two li 0 arguments (types not
+// known yet).
+extern "C" {
+void fn_802372F8(s32 player, s32 value, bool flag);
+void fn_802382D0(s32 a, s32 b);
+}
 bool fn_80230224(s32 player, bool flag);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
 // fn_80241DD0(player, layer, pos) and fn_8022B978 fn_80241BA0(player, layer,

@@ -9,11 +9,8 @@
 #include "game/GameView.h"
 #include "game/act/act_thief.h"
 
-static const f32 lbl_8053F860[1] = {0.0f};
 static JGeometry::TVec2f lbl_8053AC60; // the sort origin, set by fn_802063FC
-extern "C" int fn_802068A0(const void* a, const void* b);
-// The SDK's qsort (MSL, not in the sdk headers this build sees).
-extern "C" void qsort(void* base, size_t nmemb, size_t size, int (*compar)(const void*, const void*));
+static int fn_802068A0(const void* a, const void* b);
 
 void Thief_804A5A30::vfunc_0xA0() {
     if (mState != 9 && mState != 8) {
@@ -30,9 +27,9 @@ void Thief_804A5A30::vfunc_0x98() {
             mPos.x = pos->x;
             mPos.y = pos->y;
             mPos.z = pos->z;
-            field_0x3c.x = lbl_8053F860[0];
-            field_0x3c.y = lbl_8053F860[0];
-            field_0x3c.z = lbl_8053F860[0];
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.z = 0.0f;
             if (field_0x4 != fn_8023DE58(field_0xc8)) {
                 field_0x4 = fn_8023DE58(field_0xc8);
                 mPathCount = 0;
@@ -120,7 +117,7 @@ Thief_804A5A30::~Thief_804A5A30() {
 }
 
 // qsort comparator (0x802068A0): orders actors by squared distance from lbl_8053AC60.
-extern "C" int fn_802068A0(const void* a, const void* b) {
+static int fn_802068A0(const void* a, const void* b) {
     const ActorBase_804A5770* actorA = *(ActorBase_804A5770* const*)a;
     const ActorBase_804A5770* actorB = *(ActorBase_804A5770* const*)b;
     f32 distA = square(actorA->mPos.x - lbl_8053AC60.x) + square(actorA->mPos.y - lbl_8053AC60.y);
@@ -147,8 +144,8 @@ Thief_804A5A30::Thief_804A5A30() {
     field_0x354 = 0;
     mEmitter358 = NULL;
     field_0x35c.frames = 0;
-    field_0x35c.vel.x = lbl_8053F860[0];
-    field_0x35c.vel.y = lbl_8053F860[0];
+    field_0x35c.vel.x = 0.0f;
+    field_0x35c.vel.y = 0.0f;
     field_0x368.fn_80217484();
     field_0x374.fn_8021BA30(0);
 }

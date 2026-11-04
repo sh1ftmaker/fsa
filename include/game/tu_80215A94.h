@@ -37,4 +37,10 @@ struct cls_80215E48 {
     void fn_80215B6C(s32 index);
 }; // Size: 0x24
 
+// tu_80215A94 (0x80215E18, not written yet): called by
+// cls_80215E48::fn_80215DB8 with each entry's &mId.
+extern "C" {
+void fn_80215E18(s32* p);
+}
+
 #endif

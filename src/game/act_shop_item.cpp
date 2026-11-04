@@ -10,7 +10,6 @@ static const u16 lbl_80464028[10] = {300, 100, 16, 300, 200, 300, 600, 900, 1000
 // Message ids: [0] offered when a player stands by the item, [2] when the
 // player can't pay, [3] when the message in progress reports a result.
 static const u32 lbl_8046403C[4] = {0x257, 0x25C, 0x25A, 0x25B};
-static const char lbl_8046404C[] = "enemy_both2_sob.bin";
 
 // The eight animations: cel 0-7 for 60 frames, then the terminator.
 static const s16 lbl_8053C328[4] = {0, 60, -1, -1};
@@ -39,7 +38,7 @@ ShopItem_8049CDC0::~ShopItem_8049CDC0() {}
 void ShopItem_8049CDC0::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
-    fn_801F02BC(lbl_8046404C, mAnim.mCel + 0x17B, &params, 7, 0, false, 1.0f, 1.0f);
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x17B, &params, 7, 0, false, 1.0f, 1.0f);
 }
 
 void ShopItem_8049CDC0::update() {

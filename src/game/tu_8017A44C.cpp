@@ -5,20 +5,8 @@
 #include "game/Player.h"
 #include "game/act/tu_8017A44C.h"
 
-// .sdata2 floats (arrays, so the names survive into the object).
-static const f32 lbl_8053DC78[1] = {1.0f};
-static const f32 lbl_8053DC84[1] = {0.0f};
-static const f32 lbl_8053DC8C[1] = {-2.0f};
-static const f32 lbl_8053DC90[1] = {2.0f};
-static const f32 lbl_8053DC94[1] = {-4.0f};
-static const f32 lbl_8053DC98[2] = {4.0f, 0.0f};
-
-// .rodata: the "SOB " bank draw() shows.
-static const char lbl_80466894[] = "enemy_both2_sob.bin";
-
-// .rodata: the four-character ids fn_8020D6AC skips ("TOMI", "BMST", "IPOT",
-// "IBBM", "NULL").
-static const u32 lbl_80466880[5] = {0x544F4D49, 0x424D5354, 0x49504F54, 0x4942424D, 0x4E554C4C};
+// .rodata: the actor ids fn_8020D6AC skips, ended by 'NULL'.
+static const u32 lbl_80466880[5] = {'TOMI', 'BMST', 'IPOT', 'IBBM', 'NULL'};
 
 cls_804A1160::~cls_804A1160() {}
 
@@ -33,9 +21,9 @@ void cls_804A1160::draw() {
     }
     s32 frame = field_0x254 + 0x12d;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', lbl_80466894);
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, lbl_8053DC78[0],
-                                              lbl_8053DC78[0]);
+        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f,
+                                              1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + 0x12d, false, 2, -1, 0, 0, 0);
 }
@@ -115,14 +103,14 @@ bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 void cls_804A1160::init() {
-    field_0x80.i.x = lbl_8053DC8C[0];
-    field_0x80.i.y = lbl_8053DC8C[0];
-    field_0x80.f.x = lbl_8053DC90[0];
-    field_0x80.f.y = lbl_8053DC90[0];
-    mBox.i.x = lbl_8053DC94[0];
-    mBox.i.y = lbl_8053DC94[0];
-    mBox.f.x = lbl_8053DC98[0];
-    mBox.f.y = lbl_8053DC98[0];
+    field_0x80.i.x = -2.0f;
+    field_0x80.i.y = -2.0f;
+    field_0x80.f.x = 2.0f;
+    field_0x80.f.y = 2.0f;
+    mBox.i.x = -4.0f;
+    mBox.i.y = -4.0f;
+    mBox.f.x = 4.0f;
+    mBox.f.y = 4.0f;
 
     // The 0x90 word of the spawner's parameters: bits 4-5 go to 0x98, bits 0-3
     // to the player (0x258) and bits 8-11 to 0x25C.
@@ -146,7 +134,7 @@ void cls_804A1160::init() {
     field_0x238 = 0;
     field_0x254 = 0;
     field_0x118 = fn_8023B630(field_0x258);
-    field_0x3c.x = field_0x3c.y = field_0x3c.z = lbl_8053DC84[0];
+    field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
     field_0x23c = 2;
     field_0x230 = 0;
     fn_801F0E34(0x30026, 0);
