@@ -16,7 +16,6 @@
 #include "game/ViewLayer.h"
 
 const bool lbl_8053EFC0 = false;
-const f32 lbl_8053EFC4 = 0.0f;
 
 // Stops sound `soundId` on this actor's sound object.
 void EnemyBase_804A4808::fn_801CDC8C(u32 soundId) {
@@ -307,7 +306,7 @@ bool EnemyBase_804A4808::fn_801CEBD0() {
                 fn_8023B6CC(i);
                 fn_802379E4(i, &mPos);
                 if (flag == 1 && field_0x1dc.fn_801EAC20(i)) {
-                    hitPos.set(xy.x, xy.y, lbl_8053EFC4);
+                    hitPos.set(xy.x, xy.y, 0.0f);
                     fn_801CB538(field_0x4, &hitPos, 0, 0);
                     hit = true;
                 }
@@ -371,31 +370,15 @@ s32 EnemyBase_804A4808::fn_801D0020(const JGeometry::TVec3f* pos, s32 player, bo
     return 3;
 }
 
-// FIXME: 78.3 %. The target takes the reciprocal root into the square's own
-// register (f7) and multiplies the short-offset case straight from f7; ours
-// copies the square into f0 for that case (regalloc). The first test is also
-// compiled as fcmpo; ble where the target has fcmpo; cror; beq.
+// FIXME: 90.9 %. Same instructions; the target loads the second offset's
+// coordinates before it stores *out (ours stores first), and registers differ.
 // The velocity from mPos toward *target (x, y), at most `speed` long: the
-// offset is normalised (a short one is scaled by its square), then scaled by
-// the shorter of `speed` and the length of the offset.
+// normalised offset scaled by the shorter of `speed` and the offset's length.
 void EnemyBase_804A4808::fn_801D01A0(const JGeometry::TVec3f* target, JGeometry::TVec2f* out, f32 speed) {
-    f32 dx = target->x - mPos.x;
-    f32 dy = target->y - mPos.y;
-    f32 sq = dx * dx + dy * dy;
-    bool isZero = sq <= 32.0f * FLT_EPSILON;
-    if (!isZero) {
-        if (sq > 1.0f) {
-            sq = JGeometry::TUtil<f32>::inv_sqrt(sq);
-        }
-        dx *= sq;
-        dy *= sq;
-    }
-    out->x = dx;
-    out->y = dy;
-    f32 len = square(target->x - mPos.x) + square(target->y - mPos.y);
-    if (len > 1.0f) {
-        len = __frsqrte(len) * len;
-    }
+    JGeometry::TVec2f dir(target->x - mPos.x, target->y - mPos.y);
+    dir.normalize();
+    *out = dir;
+    f32 len = JMAFastSqrt(square(target->x - mPos.x) + square(target->y - mPos.y));
     if (len < speed) {
         speed = len;
     }

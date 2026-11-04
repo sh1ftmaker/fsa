@@ -138,6 +138,8 @@ public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
     cls_801D7730();
     ~cls_801D7730();
+    // 0x801D7638: clears mAlive of the actors the serials name.
+    void fn_801D7638();
     /* 0x00 */ s32 field_0x0[0x10];
     /* 0x40 */ s32 field_0x40; // cleared by the constructor
     /* 0x44 */ s32 field_0x44; // cleared by the constructor

@@ -2,10 +2,10 @@
 #include "game/ActorManager.h"
 #include "game/act/act_vaati_boss.h"
 
-// Clears mAlive of each actor named by a serial in the 16-entry array (serials
-// below 0 are empty slots).
-extern "C" void fn_801D7638(const s32* serials) {
-    const s32* p = serials;
+// Clears mAlive of each actor named by one of the 16 serials (serials below 0
+// are empty slots). Vaati calls it on field_0x4c4 right before reconstructing it.
+void cls_801D7730::fn_801D7638() {
+    s32* p = field_0x0;
     s32 serial;
     for (s32 i = 0; i < 0x10; i++, p++) {
         serial = *p;

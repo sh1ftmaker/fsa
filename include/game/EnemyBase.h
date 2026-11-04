@@ -333,18 +333,18 @@ extern const bool lbl_8053EFC0;
 // Whether `layer` is 8 or more (cmpwi 8): the layers fn_801EF830 and the
 // view's boxes (0xDC instead of 0xCC) treat as the upper ones. 0 or 1.
 bool fn_801CD2F8(s32 layer);
-
-extern "C" {
 // Moves *value toward target by `step` (forwards r3, f1, f2 to
 // fn_801CD9F0). EnemyBase_804A4808's movement step passes &mSpeed,
 // mTargetSpeed and mAccel or mDecel. Returns nonzero while the value has
 // not reached the target (cls_804A61C8::fn_80210A6C tests r3 with cmpwi).
 s32 fn_801CD950(f32* value, f32 target, f32 step);
+// Returns the next sprite direction for `value` (field_0x98 is stored back
+// from it, then fn_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
+s32 fn_801CD30C(s32 value);
+
+extern "C" {
 // game/tu_801CB270.cpp (same unit, not written yet): the step fn_801CD950 wraps.
 s32 fn_801CD9F0(f32* value, f32 target, f32 step);
-// game/tu_801CB270.cpp (same unit): returns the next sprite direction for
-// `value` (field_0x98 is stored back from it, then fn_801D22DC plays it).
-s32 fn_801CD30C(s32 value);
 // Convert a position between the two view-box spaces: out = (in.x, in.y)
 // minus the view's 0xCC/0xD0 box corner plus its 0xDC/0xE0 one (fn_801CD150),
 // or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.

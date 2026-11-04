@@ -134,10 +134,6 @@ bool fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 heig
 // JPAEmitterManager::forceDeleteEmitter and sets *emitter to NULL. Does
 // nothing for a NULL emitter.
 void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth);
-// game/tu_801CB270.cpp (owner unit, not written yet; 3 caller units: tu_801EE24C,
-// tu_8021AF28, tu_8020F798). NULL-checks the emitter, then sets its status bits
-// 0x40 and 0x1 (word 0xF4) and word 0x24 to 1 (0x801CB7A0).
-void fn_801CB7A0(JPABaseEmitter* emitter);
 
 // 224 units / 1866 calls. Spawns effect `id` at pos and returns its emitter
 // (NULL when scale <= 0 or nothing was made). On layer 0 it places pos as
@@ -162,5 +158,10 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
 // each), 0, a flag (0 or 1), 0 and 4.0f; argument types are read off that call.
 void fn_8013AC90(const JGeometry::TVec3f* pos, u8* table, s32 a, s32 flag, s32 c, f32 scale);
 }
+
+// game/tu_801CB270.cpp (3 caller units: tu_801EE24C, tu_8021AF28,
+// tu_8020F798). NULL-checks the emitter, then makes it immortal and invalid
+// (status bits 0x40 and 0x1 of word 0xF4, word 0x24 = 1).
+void fn_801CB7A0(JPABaseEmitter* emitter);
 
 #endif
