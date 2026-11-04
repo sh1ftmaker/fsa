@@ -706,6 +706,11 @@ public:
     // f1 with only `this` (*lbl_8053AED0) in r3. game/tu_8044998C.cpp passes
     // it as y to cls_804AF86C::fn_80402E08 on both of its panes.
     f32 fn_8043D514();
+
+    // 0x8043D57C (game/tu_8043A0E8.cpp, not written yet): like fn_8043D514,
+    // returns a float in f1 with only `this` (*lbl_8053AED0) in r3.
+    // game/tu_804455E0.cpp's fn_804455E0 passes it as y for the slots 2 and 3.
+    f32 fn_8043D57C();
 };
 extern cls_804B1920* lbl_8053AED0;
 
