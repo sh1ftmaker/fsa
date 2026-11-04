@@ -18,7 +18,9 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x40 */ virtual void vfunc_0x40();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x78]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x50]; // not yet known
+    /* 0x280 */ u8 field_0x280; // cleared once vfunc_0x34 reports done (vfunc_0x10)
+    /* 0x281 */ u8 field_0x281[0x27]; // not yet known
 }; // Size: 0x2A8
 
 #endif
