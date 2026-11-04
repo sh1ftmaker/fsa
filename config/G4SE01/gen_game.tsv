@@ -91,8 +91,6 @@ act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
 act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
 act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
-act_poe	dtor	__dt__12Poe_8049F330Fv	Poe_8049F330	0x8049F330	new	new
-act_poe	sinit	__sinit_act_poe_cpp	-	-	new	new
 act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
