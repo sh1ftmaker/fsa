@@ -11,8 +11,12 @@ class cls_8049DB90 : public cls_8049D140 {
 public:
     cls_8049DB90();
     /* 0x08 */ virtual ~cls_8049DB90();
+    /* 0x54 */ virtual void vfunc_0x54(); // compares fn_8011921C()'s field_0x8 with lbl_80464AF8
     /* 0x58 */ virtual s32 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C(); // 1 or 0, as cls_8049D140::vfunc_0x5C
+
+    // Unwritten, in this unit (0x8011B878); called by vfunc_0x54 with the index of the matched entry.
+    void fn_8011B878(s32 index);
 
     /* 0x230 */ u8 field_0x230; // set to 1 by the constructor
     /* 0x231 */ u8 field_0x231; // cleared by the constructor
