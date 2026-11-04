@@ -8,6 +8,16 @@ void Player_804A6F38::fn_802922D0() {
     field_0x3f9 = 0;
 }
 
+void Player_804A6F38::fn_80292454() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    field_0x3dc = 3;
+    field_0x3e8 = 3;
+    if (field_0x3b4 >= 8 && field_0xce4 < 8) {
+        fn_8024EFA0(0);
+    }
+}
+
 void Player_804A6F38::fn_802925C4() {
     field_0x124d = 1;
     field_0x458 = 0;

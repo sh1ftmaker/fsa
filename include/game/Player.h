@@ -190,6 +190,7 @@ public:
     s8 fn_8024EE0C(); // via fn_8023CB24
     s8 fn_8024EE14(); // via fn_8023CA88
     u16 fn_8024EE1C(); // via fn_8023CBC0
+    void fn_8024EFA0(s32 arg); // called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
     void fn_8024EFF8(s32 arg); // via fn_80230EB8
     void fn_8024F0E8(s32 value); // via fn_80230FD0
     bool fn_8024F5E4(); // via fn_8023E854
@@ -237,6 +238,7 @@ public:
     void fn_80292E90(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C)
     void fn_802938B8(); // 0x124D = 1, 0x458 = 0, 0x3FD = 1 (stb); then fn_8024F0E8(0x2000C) unless 0xCF4 == 0x1D
     void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
+    void fn_80292454(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 3, 0x3E8 = 3 (stw); fn_8024EFA0(0) if 0x3B4 >= 8 && 0xCE4 < 8
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
@@ -337,7 +339,9 @@ public:
     /* 0x0CA1 */ u8 field_0xca1[0xCAC - 0xCA1];
     // Tested by every per-player query before it touches the player.
     /* 0x0CAC */ bool mActive;
-    /* 0x0CAD */ u8 field_0xcad[0xCE8 - 0xCAD];
+    /* 0x0CAD */ u8 field_0xcad[0xCE4 - 0xCAD];
+    // Compared with 8 (lwz; cmpwi) by fn_80292454 before it calls fn_8024EFA0.
+    /* 0x0CE4 */ s32 field_0xce4;
     // A bool: fn_8024BBB0 returns it as loaded (lbz; blr).
     /* 0x0CE8 */ bool field_0xce8;
     // A u8: fn_802413F0 converts it to its bool result (neg / or / srwi).
