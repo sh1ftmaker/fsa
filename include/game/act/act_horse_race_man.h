@@ -14,6 +14,9 @@ public:
     // 0x801ED144. Sets the player count, clears the race state and starts the
     // countdown and the entry table.
     HorseRaceMan_804A5630();
+    // 0x801ED0AC (deleting destructor). Empty in source: the base and member
+    // destructors are inline and the deleting form adds the __dl__ call.
+    virtual ~HorseRaceMan_804A5630();
     /* 0x94 */ virtual void vfunc_0x94();
 
     /* 0x2A8 */ s32 field_0x2a8;   // fn_80138A30(): the number of players taking part
