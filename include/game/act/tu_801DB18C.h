@@ -10,6 +10,7 @@
 // with fn_8013CB44 (height 1, depth 0, adjusted).
 class cls_804A4EE8 : public EnemyBase_804A4808 {
 public:
+    /* 0x94 */ virtual void vfunc_0x94();
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
     /* 0x2A8 */ u8 field_0x2a8[0x3C]; // not yet known
     /* 0x2E4 */ JPABaseEmitter* field_0x2e4; // emitter moved with mPos
