@@ -32,7 +32,7 @@ class JAISoundID; // JSystem/JAudio/Interface/JAISound.h; complete wherever fn_8
 // JKRDisposer at 0x18 and stores vtable + 0x24 there, so slots 0x24/0x28 are
 // that base's vtable header, 0x2C (fn_80457C08) is its destructor thunk
 // (this - 0x18, then the destructor) and 0x30 is the deleting destructor
-// fn_8045787C. fn_80457840 points the object at the actor's position. Layout
+// __dt__22ActorSoundObj_804578F4Fv (0x8045787C). fn_80457840 points the object at the actor's position. Layout
 // beyond the bases is opaque until that unit is done.
 class ActorSoundObj_804578F4 : public JAUSoundObject, public JKRDisposer {
 public:
@@ -61,7 +61,38 @@ public:
     // cls_804B20F8::startSound (game/tu_8045B010.cpp) with 0.
     JAISoundHandle* fn_80456334(JAISoundID id, u32 fade);
 
-    /* 0x30 */ u8 field_0x30[0x2C]; // not read by any caller yet
+    // 0x80455F40 (game/tu_80455CA4.cpp): r3 is this, r4 the handle. Does
+    // nothing for a NULL handle or one without a sound; otherwise writes
+    // track ports 0xA, 0x9 and 0xB from field_0x44 and field_0x45. Called by
+    // three functions of game/tu_80455CA4.cpp (0x804571D4, 0x80457390, 0x80457814).
+    void fn_80455F40(JAISoundHandle* handle);
+
+    // 0x80456120 (game/tu_80455CA4.cpp): clears field_0x31, then calls
+    // dispose() through the vtable (slot 0xC). ActorManager's release code
+    // calls it on each mSounds entry and on field_0x200c (game/tu_801F6058.cpp).
+    void fn_80456120();
+
+    // 0x80456154 (game/tu_80455CA4.cpp): points mSoundPos at a copy of
+    // *field_0x34 (NULL when field_0x34 is NULL), swaps the copy's y and z,
+    // and counts down field_0x50 and field_0x51 while they are nonzero.
+    void fn_80456154();
+
+    // 0x80457840 (game/tu_80455CA4.cpp): r3 is this, r4 the position (NULL
+    // clears the pointer at 0x14). Stores r4 at 0x34, copies it to field_0x38
+    // and points mSoundPos (JAUSoundObject 0x14) at the copy.
+    void fn_80457840(JGeometry::TVec3f* pos);
+
+    /* 0x30 */ u8 field_0x30; // cleared by the constructor; not read by any caller yet
+    /* 0x31 */ u8 field_0x31; // 1 in the constructor; cleared by fn_80456120
+    /* 0x32 */ u8 field_0x32[2]; // not read by any caller yet
+    /* 0x34 */ JGeometry::TVec3f* field_0x34; // the position passed to fn_80457840
+    /* 0x38 */ JGeometry::TVec3f field_0x38; // copy of *field_0x34, read through mSoundPos
+    /* 0x44 */ u8 field_0x44; // stored by fn_804561D8 (its 4th argument)
+    /* 0x45 */ u8 field_0x45; // cleared by the constructor
+    /* 0x46 */ u8 field_0x46[0xA]; // not read by any caller yet
+    /* 0x50 */ u8 field_0x50; // counter, counted down by fn_80456154
+    /* 0x51 */ u8 field_0x51; // counter, counted down by fn_80456154
+    /* 0x52 */ u8 field_0x52[0x9]; // cleared by the constructor; not read by any caller yet
 }; // Size: 0x5C (every __nw__ of it)
 
 #define ACTOR_MANAGER_MAX_ACTORS 0x400
