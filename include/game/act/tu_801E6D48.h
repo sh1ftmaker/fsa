@@ -15,6 +15,11 @@ public:
     cls_804A5418();
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
+    // 0x801E6EAC: with mFlags bit 0x8000, reports field_0x2b4 (if set) to the
+    // view and calls fn_801F3668(); else, unless mState is 1, sets state 1.
+    void fn_801E6EAC();
+    // 0x801E728C: state setter (this in r3); its callers pass 1 or 2.
+    void fn_801E728C(int state);
     // 0x801E6F28: unless mFlags has 0x8000, draws through cls_804A61C8's
     // fn_80210630 with bit 0x2000 of mFlags, and field_0x2a8 in state 2.
     /* 0x20 */ virtual void draw();
