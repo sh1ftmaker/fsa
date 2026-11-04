@@ -1,6 +1,22 @@
 #include "game/ActorBase.h"
 #include "game/GameAudio.h"
 #include "game/GameView.h"
+#include "game/Player.h"
+#include "game/cls_804A1630.h"
+
+// The actor's destructor: unless field_0x90 is set, it turns the view's flag
+// off and calls fn_8022ADCC; then it releases its two emitters.
+cls_804A1630::~cls_804A1630() {
+    if (field_0x90 == 0) {
+        fn_802D6A9C()->fn_802D7440(true);
+        fn_8022ADCC();
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (mEmitter318[i] != NULL) {
+            fn_801EE434(mEmitter318[i]);
+        }
+    }
+}
 
 void ActorBase_804A5770::fn_8017EF40() {
     fn_801F0E34(0x40038, 0);
