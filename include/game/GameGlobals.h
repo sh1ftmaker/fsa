@@ -1033,6 +1033,11 @@ public:
     bool fn_802B1D7C();
     s32 fn_802B1D60();
     void fn_802B1D98();
+    // fn_802B1DB0: tests save-region byte 0xA (tu_80134C04 calls it on
+    // lbl_8053ACA8).
+    bool fn_802B1DB0();
+    // fn_802B1EB0: empty; tu_803FF2C4 calls it on the object it allocated.
+    void fn_802B1EB0();
     // fn_802B1DE8: clears this+4/+5 and the save-region bytes 0x9/0xA, then
     // copies the 0x20-byte save region in lbl_80529DEC to 0x80700000.
     void fn_802B1DE8();
@@ -1139,13 +1144,6 @@ void fn_8019169C(void* self);
 // fn_8037A664). Used by game/tu_80134C04.cpp's fn_80139958 and the code
 // around 0x80136FC4.
 extern cls_804AE9A0* lbl_8053AD68;
-
-// SHARED-EDIT (act_blizzard_battle): owner game/tu_802B3674.cpp (0x802B39E8,
-// defined there; not written yet). Takes the actor in r3 (fn_801F666C's result)
-// and reads its 0x23C emitter (forceDeleteEmitter) and 0x290 word.
-extern "C" {
-void fn_802B39E8(ActorBase_804A5770* actor);
-}
 
 // SHARED-EDIT (act_ice_melted_by_four_players): owner game/act_fire_rod_fire.cpp
 // (0x802BA9F0 and 0x802BA9F8, defined there; the FIRE actor's unit, not written

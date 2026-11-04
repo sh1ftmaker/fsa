@@ -1,9 +1,11 @@
 #ifndef GAME_CLS_804A8638_H
 #define GAME_CLS_804A8638_H
 
-// Code: game/tu_802B3674.cpp. An ActorBase whose vtable is lbl_804A8638 (its
-// constructor, fn_802B51C0, stores it). No actor id is known for it, so it is
-// named after the vtable.
+// Code: game/tu_802B3674.cpp. An ActorBase whose vtable is lbl_804A8638 (slot
+// 0x8, the destructor, is fn_802B51C0). No actor id is confirmed for it (it
+// sets the fog colour, so likely SWEV, the environment switch control:
+// act_blizzard_battle finds the SWEV actor and calls fn_802B39E8 on it), so it
+// is named after the vtable.
 #include "game/ActorBase.h"
 
 class JPABaseEmitter;
@@ -15,6 +17,10 @@ public:
     /* 0x54 */ virtual void vfunc_0x54(s32 a, s32 b, s32 c, s32 d, s32 e, s32 state);
     /* 0x58 */ virtual void vfunc_0x58();
     /* 0x5C */ virtual void vfunc_0x5C();
+
+    // 0x802B39E8: clears field_0x290 and deletes mEmitter. act_blizzard_battle's
+    // notifySwev calls it on the SWEV actor.
+    void fn_802B39E8();
 
     /* 0x230 */ u8 field_0x230[0x234 - 0x230]; // not yet identified
     /* 0x234 */ JPABaseEmitter* field_0x234; // emitter, deleted by vfunc_0x10

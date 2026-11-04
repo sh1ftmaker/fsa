@@ -2,6 +2,22 @@
 #include "game/GameGlobals.h"
 #include "game/PlayerFlags.h"
 
+bool Player_804A6F38::fn_8023FC08() {
+    return field_0x42c;
+}
+
+s32 Player_804A6F38::fn_8023FC24() {
+    return field_0xbec;
+}
+
+bool Player_804A6F38::fn_8023FF88() {
+    return field_0x1200;
+}
+
+s32 Player_804A6F38::fn_80240644() {
+    return field_0xd60;
+}
+
 bool Player_804A6F38::fn_80240860() {
     return field_0x436;
 }
@@ -14,6 +30,10 @@ bool Player_804A6F38::fn_80240870() {
     return field_0xcfe;
 }
 
+bool Player_804A6F38::fn_802408C0() {
+    return field_0x1217;
+}
+
 bool Player_804A6F38::fn_80240AF0() {
     return field_0x1215;
 }
@@ -22,8 +42,16 @@ bool Player_804A6F38::fn_80240AF8() {
     return field_0x1214;
 }
 
-bool Player_804A6F38::fn_802408C0() {
-    return field_0x1217;
+u8 Player_804A6F38::fn_802412C4() {
+    return field_0x458;
+}
+
+bool Player_804A6F38::fn_802412CC() {
+    return field_0x460;
+}
+
+bool Player_804A6F38::fn_802413E8() {
+    return field_0x454;
 }
 
 bool Player_804A6F38::fn_802413F0() {
@@ -34,36 +62,8 @@ void Player_804A6F38::fn_80241454(u8 value) {
     field_0xc80 = value;
 }
 
-bool Player_804A6F38::fn_8023FC08() {
-    return field_0x42c;
-}
-
-bool Player_804A6F38::fn_802413E8() {
-    return field_0x454;
-}
-
-bool Player_804A6F38::fn_802412CC() {
-    return field_0x460;
-}
-
-u8 Player_804A6F38::fn_802412C4() {
-    return field_0x458;
-}
-
-s32 Player_804A6F38::fn_8023FC24() {
-    return field_0xbec;
-}
-
-s32 Player_804A6F38::fn_80240644() {
-    return field_0xd60;
-}
-
 s32 Player_804A6F38::fn_8024322C() {
     return field_0xd08;
-}
-
-bool Player_804A6F38::fn_8023FF88() {
-    return field_0x1200;
 }
 
 // The team checks fn_80246F28 makes before it reads the input: the player
@@ -147,8 +147,6 @@ f32 Player_804A6F38::fn_80246F28() {
     return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
 }
 
-extern "C" void fn_80252FBC() {}
-
 bool Player_804A6F38::fn_80249068() {
     return field_0x121f;
 }
@@ -172,3 +170,5 @@ s8 Player_804A6F38::fn_8024EE0C() {
 s8 Player_804A6F38::fn_8024EE14() {
     return field_0x3d8;
 }
+
+void Player_804A6F38::fn_80252FBC() {}
