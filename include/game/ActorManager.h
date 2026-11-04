@@ -61,6 +61,12 @@ public:
     // cls_804B20F8::startSound (game/tu_8045B010.cpp) with 0.
     JAISoundHandle* fn_80456334(JAISoundID id, u32 fade);
 
+    // 0x80455F40 (game/tu_80455CA4.cpp): r3 is this, r4 the handle. Does
+    // nothing for a NULL handle or one without a sound; otherwise writes
+    // track ports 0xA, 0x9 and 0xB from field_0x44 and field_0x45. Called by
+    // three functions of game/tu_80455CA4.cpp (0x804571D4, 0x80457390, 0x80457814).
+    void fn_80455F40(JAISoundHandle* handle);
+
     // 0x80456120 (game/tu_80455CA4.cpp): clears field_0x31, then calls
     // dispose() through the vtable (slot 0xC). ActorManager's release code
     // calls it on each mSounds entry and on field_0x200c (game/tu_801F6058.cpp).
