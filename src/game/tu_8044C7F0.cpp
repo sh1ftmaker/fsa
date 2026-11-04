@@ -4,13 +4,6 @@
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
-Unk_80453830::Unk_80453830() {
-    field_0x0 = -1;
-    field_0x4 = -1;
-    field_0x8 = -1;
-    field_0xc = -1;
-}
-
 u8 cls_804B1D58::fn_8044CB00() {
     return field_0x140;
 }
@@ -19,14 +12,11 @@ u8 cls_804B1D58::fn_8044D290() {
     return field_0x140;
 }
 
-// Stores x, y, z into v and returns it (the caller passes a stack TVec3f and
-// uses the returned pointer as the copy source). Like fn_8017EB0C, the original
-// keeps it as a plain global function, not a JGeometry member.
-extern "C" JGeometry::TVec3f* fn_80453874(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
-    v->x = x;
-    v->y = y;
-    v->z = z;
-    return v;
+s32 fn_8044F664() {
+    if (lbl_8053AF40 != NULL) {
+        return lbl_8053AF40->field_0x184;
+    }
+    return 9;
 }
 
 void cls_804B1D58::fn_804522C8() {
@@ -40,9 +30,9 @@ void cls_804B1D58::fn_80452308() {
     mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
 }
 
-s32 fn_8044F664() {
-    if (lbl_8053AF40 != nullptr) {
-        return lbl_8053AF40->field_0x184;
-    }
-    return 9;
+cls_80453830::cls_80453830() {
+    field_0x0 = -1;
+    field_0x4 = -1;
+    field_0x8 = -1;
+    field_0xc = -1;
 }

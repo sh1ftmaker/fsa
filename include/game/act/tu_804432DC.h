@@ -29,6 +29,8 @@ public:
     void fn_804435E4();
     // Calls the state's pointer-to-member from lbl_804B1AC4 on the object.
     void fn_80443638();
+    // Empty; called on lbl_8053AEF0 by game/tu_8043A0E8.cpp.
+    void fn_80443688();
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen;
