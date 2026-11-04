@@ -21,21 +21,13 @@ public:
     // Vtable slot 0x4C (fn_801BA88C): tile code 0xD (fn_8022461C) blocks
     // the position outright; anything else falls to ActorBase's test.
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    // Vtable slot 0x68 (0x80340650, in act_zora_lotus.cpp): returns 0, so
-    // no player or actor hit mask is reported (EnemyBase's vfunc_0x68 is
-    // the bitmask hook).
-    /* 0x68 */ virtual u8 vfunc_0x68();
-    // Vtable slot 0x5C (0x80340660, in act_zora_lotus.cpp): returns false,
-    // so no player hit is reported (EnemyBase's vfunc_0x5C is that check).
-    /* 0x5C */ virtual bool vfunc_0x5C();
-    // Vtable slot 0x60 (0x80340658, in act_zora_lotus.cpp): returns false,
-    // so no actor hit is reported (EnemyBase's vfunc_0x60 is the actor-hit
-    // check that ENEMY_FLAG_HIT_ACTOR records).
-    /* 0x60 */ virtual bool vfunc_0x60();
-    // Vtable slot 0xA4, the first slot this class adds (0x80340BC8, in
-    // act_zora_lotus.cpp): clears the flags below and puts mPos.y back at
-    // mSpawnPos.y.
+    // Slots 0xA4-0xB0, the four this class appends. ZoraEnemy's own are
+    // empty (0xAC returns false); the lotus Zora (cls_804AC3E0,
+    // act_zora_lotus.cpp) overrides all four.
     /* 0xA4 */ virtual void vfunc_0xA4();
+    /* 0xA8 */ virtual void vfunc_0xA8();
+    /* 0xAC */ virtual bool vfunc_0xAC();
+    /* 0xB0 */ virtual void vfunc_0xB0();
 
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
     // by the destructor (0x801BB30C), which passes it to fn_801EE434.

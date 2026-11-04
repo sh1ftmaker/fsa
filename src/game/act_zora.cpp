@@ -13,10 +13,16 @@ ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
     field_0x2a8 = NULL;
 }
 
-extern "C" void fn_801BA65C() {}
-extern "C" s32 fn_801BA660() { return 0; }
-extern "C" void fn_801BA668() {}
-extern "C" void fn_801BA66C() {}
+void ZoraEnemy_804A3D7C::vfunc_0xB0() {}
+
+bool ZoraEnemy_804A3D7C::vfunc_0xAC() {
+    return false;
+}
+
+void ZoraEnemy_804A3D7C::vfunc_0xA8() {}
+
+void ZoraEnemy_804A3D7C::vfunc_0xA4() {}
+
 extern "C" void fn_801BB1A8() {}
 
 void ZoraEnemy_804A3D7C::vfunc_0xA0() {
