@@ -43,17 +43,14 @@ void LinkEnding_804AD858::fn_8035E93C() {
     }
 }
 
-// State 6: follows the partner's state and height: while the partner is below
-// 1810 it picks the animation base (0x3D, or 0x3F while the partner is in
+// State 6: follows the partner's state and height: while the partner is at or
+// above 1810 it picks the animation base (0x3D, or 0x3F while the partner is in
 // state 4 with a countdown under 0xF0), and on the partner's go flag it moves
 // to state 7 with base frame 0x10.
-// FIXME: 99.88 %. The original branches on the partner's height with cror and
-// a bne past the block; this layout puts the block after a beq, the one
-// opcode that differs.
 void LinkEnding_804AD858::fn_8035E9A0() {
     EndingPartnerView* partner =
         static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x90));
-    if (partner != NULL && !(partner->mPos.y >= 1810.0f)) {
+    if (partner != NULL && partner->mPos.y >= 1810.0f) {
         field_0x248 = 0;
         field_0x250 = 0x3d;
         if (partner->mState == 4 && partner->field_0x234 < 0xF0) {
