@@ -44,18 +44,71 @@ class J2DOrthoGraph;
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
 // fn_801F856C, the first function seen reading it).
+class cls_804B1D10;
+class BgRewrite_804A7C98;
+class cls_804AE9B0;
+class cls_804B1920;
+class cls_804B17A0;
+class PlayerManager_804A6F28;
+
 struct GameRootSub04_801F856C {
-    /* 0x0 */ u8 field_0x0[0x8];
+    // vtable at 0x0 (0x8049F080); its one slot is the destructor below.
+    virtual ~GameRootSub04_801F856C();
+
+    /* 0x4 */ PlayerManager_804A6F28* field_0x4; // constructor fn_8013A538 (tu_80139BE8)
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
     /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
-    /* 0x10 */ u8 field_0x10[0x24 - 0x10];
+    // fn_802A3D80 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
+    /* 0x10 */ BgRewrite_804A7C98* field_0x10;
+    // fn_8043EDF8 is called with it by fn_8013A1A4 (game/tu_80139BE8.cpp); the
+    // object fn_8043F504 builds (cls_804B1920).
+    /* 0x14 */ cls_804B1920* field_0x14;
+    // fn_80439AB0 is called with it by fn_8013A1A4 (game/tu_80139BE8.cpp); the
+    // object fn_80439C78 builds (cls_804B17A0).
+    /* 0x18 */ cls_804B17A0* field_0x18;
+    // fn_8037AFC0 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
+    /* 0x1C */ cls_804AE9B0* field_0x1c;
+    // Passed to fn_801902D0 by fn_80139CC4 (game/tu_80139BE8.cpp); its type
+    // is not known yet.
+    /* 0x20 */ void* field_0x20;
     // fn_8016A3AC returns it (game/tu_8016A2B4.cpp).
     /* 0x24 */ struct GameRootSub24_8016A3AC* field_0x24;
-    /* 0x28 */ u8 field_0x28[0x30 - 0x28];
+    /* 0x28 */ u8 field_0x28[0x2C - 0x28];
+    // The staff-roll page loader (game/act/tu_8044B80C.h); fn_80139C84 draws it.
+    /* 0x2C */ cls_804B1D10* field_0x2c;
     // A heap: game/tu_8044B80C.cpp makes it current, frees its J2DScreens
     // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
     /* 0x30 */ JKRHeap* field_0x30;
+    // Cleared (stw 0) by fn_8013A1A4 (game/tu_80139BE8.cpp); type unknown.
+    /* 0x34 */ s32 field_0x34;
+
+    // 0x8013A1A4 (game/tu_80139BE8.cpp, not written yet in this file's copy).
+    // Calls fn_8016EDB0 on field_0x24, fn_801F8E4C on mActorManager and
+    // vfunc_0xC on mView; fn_8023F088 when lbl_8053AAF8->field_0x7e is 1; then
+    // fn_8023F78C and fn_8023F728, sets lbl_8053ACD0, runs the calls on
+    // field_0x10, field_0x14, field_0x18, field_0x1c and field_0x20, fn_8038D870,
+    // and clears field_0x34 and lbl_80529DEC's 0x240 and 0x1F4 words.
+    void fn_8013A1A4();
+
+    // 0x80139BE8 (game/tu_80139BE8.cpp, not written yet). Calls fn_801F857C on
+    // mActorManager, clears lbl_8053ACD0 and the four bytes at 0x235C of
+    // lbl_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
+    void fn_80139BE8();
+
+    // 0x80139C84 (game/tu_80139BE8.cpp, not written yet). Calls
+    // fn_8043DC98 on lbl_8053AED0, then draws field_0x2c when it is set.
+    void fn_80139C84();
+
+    // 0x80139CC4 (game/tu_80139BE8.cpp, not written yet). Calls fn_8013B438 on
+    // lbl_8053AB10 twice around the vfunc_0x14 of mView, fn_8023F2BC, fn_801F8658
+    // on mActorManager and fn_801902D0 on field_0x20; then fn_8016DA6C on
+    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
+    void fn_80139CC4();
+
+    // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
+    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
+    void fn_80139D3C();
 };
 
 // *lbl_8053AAF8: the most-used game singleton (309 of 529 units read it).
@@ -540,6 +593,15 @@ struct GameRoot2_8049F108 {
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
+    /* 0x34 */ u8 field_0x34[0x39 - 0x34];
+    // Read as a byte by fn_80139CC4 and fn_80139D3C (game/tu_80139BE8.cpp);
+    // not yet known what sets it.
+    /* 0x39 */ u8 field_0x39;
+
+    // game/tu_8013AAD4.cpp (owner unit, not written yet). Calls
+    // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by
+    // fn_80139CC4 (game/tu_80139BE8.cpp).
+    void fn_8013B438();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
     // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
@@ -598,7 +660,9 @@ s32 fn_8030AAF4(s32 player);
 // stores 2 at 0x1F0 + player); its size and the rest are unknown.
 class cls_804B1920 {
 public:
-    /* 0x000 */ u8 pad_0x0[0xDC];  // vtable pointer and unknown fields
+    // Virtual destructor first: the vtable pointer goes where it is declared.
+    virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
+    /* 0x004 */ u8 pad_0x4[0xDC - 0x4];  // unknown fields
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
     // the battle royale end check ORs with 0x10 when it picks its winner.
     /* 0xDC */ u8 field_0xdc;
@@ -613,6 +677,10 @@ public:
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
     // more arguments (0 in most calls).
     void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
+
+    // 0x8043D5F0 (game/tu_8043A0E8.cpp, not written yet): takes no arguments
+    // besides the object; fn_80139C5C calls it, then fn_8038D4A8.
+    void fn_8043D5F0();
 
     // 0x8043D874 (game/tu_8043A0E8.cpp, not written yet): called with the id in
     // r4, a value in r5 (a table entry or 300 in act_shooting_gallery) and 0 in r6.
@@ -636,6 +704,32 @@ public:
     f32 fn_8043D514();
 };
 extern cls_804B1920* lbl_8053AED0;
+
+// The 0x60-byte object fn_80439C78 builds (game/tu_80438C68.cpp, not written
+// yet), stored at GameRootSub04_801F856C::field_0x18. Named after its vtable,
+// 0x804B17A0; it keeps a J2DScreen at 0x4 and its layout is not known beyond
+// the destructor.
+class cls_804B17A0 {
+public:
+    /* 0x000 */ // vtable, whose one slot is the destructor below
+    virtual ~cls_804B17A0(); // owner game/tu_80438C68.cpp (not written yet)
+};
+
+// The 4-byte pointer at .sbss lbl_8053AB00: the heap GameRootSub04_801F856C's
+// constructor (fn_8013A538, game/tu_80139BE8.cpp) stores, which the destructor
+// asks for getTotalFreeSize between its steps.
+extern JKRHeap* lbl_8053AB00;
+
+// 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): C-linkage
+// (the original calls them by plain name), each taking the object in r3 and
+// no other arguments. fn_80139D70 calls them in turn.
+extern "C" {
+void fn_8043D644(cls_804B1920* self);
+void fn_8043D8B4(cls_804B1920* self);
+// 0x8043DC98 (game/tu_8043A0E8.cpp, not written yet): takes the object in r3
+// and no other arguments; fn_80139C84 calls it first.
+void fn_8043DC98(cls_804B1920* self);
+} // extern "C"
 
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
 // game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
@@ -710,6 +804,10 @@ extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 // game/tu_80118384.cpp (not written yet). Called with fn_8011921C() by
 // tu_801286C0's update (cases 3 and 5/7 of its state switch).
 extern "C" void fn_801183BC(cls_801192AC* obj);
+// game/tu_80118384.cpp (0x801184F0, 0x1C0 bytes, not written yet). Called with
+// fn_8011921C() and a flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal);
+// the flag is tested as a byte.
+extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
 class ActorBase_804A5770;
 // game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
 // serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
@@ -958,11 +1056,45 @@ struct GameRootSub24_8016A3AC {
     /* 0x1F3 */ u8 field_0x1f3;
     /* 0x1F4 */ u8 field_0x1f4;
     /* 0x1F5 */ u8 field_0x1f5;
+
+    // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
+    // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
+    void fn_8016DA6C();
 };
 extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016A3AC, defined there; not written yet).
 // No arguments; loads lbl_8053AAF8->field_0x4->field_0x24 (lwz 0x4, lwz 0x24).
 GameRootSub24_8016A3AC* fn_8016A3AC(void);
+// Owner: game/tu_8016A2B4.cpp (0x8016DB60, not written yet). Takes the object
+// fn_8016A3AC returns and calls a run of fn_8016xxxx functions on it.
+void fn_8016DB60(GameRootSub24_8016A3AC* self);
+// Owner: game/tu_8016A2B4.cpp (0x8016EDB0, not written yet). Takes field_0x24
+// of GameRootSub04_801F856C (fn_8013A1A4); its body is not read yet.
+void fn_8016EDB0(GameRootSub24_8016A3AC* self);
+// Owner not known (0x8016EE84, 0x238 bytes, not written yet). Called on
+// field_0x24 of GameRootSub04_801F856C by its destructor (fn_8013A27C,
+// game/tu_80139BE8.cpp) with 1; the second argument's type is not known.
+void fn_8016EE84(GameRootSub24_8016A3AC* self, s32 arg);
+// Owner not known (0x80191744, 0x9C bytes, not written yet). Called on
+// field_0x20 of GameRootSub04_801F856C by its destructor (fn_8013A27C) with 1.
+void fn_80191744(void* self, s32 arg);
+// Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
+// at field_0x20 of GameRootSub04_801F856C (fn_80139CC4); its type is unknown.
+void fn_801902D0(void* self);
+// Owner not known (0x8023F2BC, not written yet). No arguments; called by
+// fn_80139CC4 (game/tu_80139BE8.cpp) between the two fn_8013B438 calls.
+void fn_8023F2BC(void);
+// Owners not known (0x8023F088, 0x8023F728, 0x8023F78C, 0x8038D870,
+// 0x803B8C90, 0x8043EDF8, 0x80439AB0, 0x8019169C; not written yet). Called by
+// fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
+void fn_8023F088(void);
+void fn_8023F728(void);
+void fn_8023F78C(void);
+void fn_8038D870(void);
+u8 fn_803B8C90(void);
+void fn_8043EDF8(void* self);
+void fn_80439AB0(void* self);
+void fn_8019169C(void* self);
 }
 
 // The 4-byte pointer at .sbss lbl_8053AD68 (the cls_804AE9A0 object, declared
@@ -1030,5 +1162,15 @@ bool fn_80239F10();
 void fn_802B3A48(ActorBase_804A5770* actor);
 void fn_801367E0(GameRoot_8049EF20* root, s32 value);
 }
+
+// game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
+// arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
+extern "C" void fn_8030361C();
+// game/tu_8037DF68.cpp (0x8038D454, 0x54 bytes, not written yet). Takes no
+// arguments; called by game/tu_80139BE8.cpp (fn_80139BE8) and tu_802D39B8.
+extern "C" void fn_8038D454();
+// .sbss byte at 0x8053ACD0, owned by game/tu_80301CD0.cpp (its split starts
+// there). Read with lbz by that unit; stored as 0 by game/tu_80139BE8.cpp.
+extern u8 lbl_8053ACD0;
 
 #endif

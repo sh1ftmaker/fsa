@@ -238,6 +238,8 @@ u8 fn_8037F1E4(s32 player);
 s32 fn_8037E9F4(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).
 s32 fn_8037EFB4(s32 player);
+// 1 unit (tu_80139BE8's fn_80139C5C). Takes no arguments.
+void fn_8038D4A8();
 // 16 units / 196 calls (the menu units). Copies the text of message msg
 // (mBmg's INF1 entry msg) into out, or into out2 / out3 (when not NULL)
 // as a counter that control codes advance reaches 1 / 2; one control code
