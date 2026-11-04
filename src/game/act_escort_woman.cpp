@@ -23,6 +23,12 @@ static const s16* lbl_8049E198[14] = {
     lbl_80464E2C, lbl_80464E38, lbl_80464E44, lbl_80464E5C, lbl_80464E68, lbl_80464E74, lbl_80464E80,
 };
 
+EscortWoman_8049E1D0::EscortWoman_8049E1D0() : EscortBase_8049E0C8("enemy_gc_sob.bin", 0x2E6, 1) {
+    field_0x3c4 = 0;
+    field_0x3c8 = 0;
+    field_0x3cc = 0;
+}
+
 s32 EscortWoman_8049E1D0::vfunc_0x74() {
     return fn_80121DB0();
 }

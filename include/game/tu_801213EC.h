@@ -13,6 +13,9 @@
 // (fn_801247C8) and both destructors its destructor (fn_80124740).
 class EscortBase_8049E0C8 : public ActorBase_804A5770 {
 public:
+    // __ct__19EscortBase_8049E0C8FPCcll (tu_801213EC): the constructor. Both children pass their
+    // SOB file name, a number and a flag (0x2E6 and 1 for the escort woman).
+    EscortBase_8049E0C8(const char* sobName, s32 arg2, s32 arg3);
     /* 0x08 */ virtual ~EscortBase_8049E0C8();
     /* 0x14 */ virtual void update(); // fn_80124278; the vtable's update slot
     // Slots 0x54-0x68 of the vtable (fn_801213EC, fn_80123E94, ...) are not

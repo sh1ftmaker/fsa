@@ -10,7 +10,7 @@
 // (fn_80121104) call the escort base's constructor and destructor.
 class ZoraEscort_8049DF78 : public EscortBase_8049E0C8 {
 public:
-    ZoraEscort_8049DF78() {}
+    ZoraEscort_8049DF78() : EscortBase_8049E0C8("enemy_both2_sob.bin", 0x242, 0) {}
     /* 0x14 */ virtual void update();
     // Vtable slot 0x88, fn_80120098: forwards 9 to the state slot 0x6C.
     /* 0x88 */ virtual s32 vfunc_0x88();

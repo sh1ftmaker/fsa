@@ -8,10 +8,13 @@
 
 // The escorted woman ('OPGL', actors.tsv). "EscortWoman_8049E1D0" is a
 // provisional name carrying its vtable address; the constructor is
-// fn_801258D8. It calls fn_801247C8 (tu_801213EC), so its parent is
+// __ct__20EscortWoman_8049E1D0Fv. It calls the base constructor (tu_801213EC), so its parent is
 // EscortBase_8049E0C8.
 class EscortWoman_8049E1D0 : public EscortBase_8049E0C8 {
 public:
+    // __ct__20EscortWoman_8049E1D0Fv: passes "enemy_gc_sob.bin", 0x2E6 and 1 to the base constructor,
+    // then clears field_0x3c4, field_0x3c8 and field_0x3cc.
+    EscortWoman_8049E1D0();
     /* 0x08 */ virtual ~EscortWoman_8049E1D0();
     // fn_80125858: the vtable's init slot (ActorBase's 0x0C); calls the base's fn_80124448.
     /* 0x0C */ virtual void init();
@@ -47,7 +50,9 @@ public:
 
     /* 0x340 */ u8 field_0x340[0x35C - 0x340]; // not declared yet
     /* 0x35C */ s32 field_0x35c; // the low byte of field_0x90, set by vfunc_0x64
-    /* 0x360 */ u8 field_0x360[0x3CC - 0x360]; // not declared yet
+    /* 0x360 */ u8 field_0x360[0x3C4 - 0x360]; // not declared yet
+    /* 0x3C4 */ s32 field_0x3c4; // cleared by the constructor
+    /* 0x3C8 */ s32 field_0x3c8; // cleared by the constructor
     /* 0x3CC */ s32 field_0x3cc; // field_0x90 bits 5-9 (from the top), set by vfunc_0x64
 };
 
