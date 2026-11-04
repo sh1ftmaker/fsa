@@ -23,7 +23,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
     field_0x238 = 0x31;
 }
 
-void PrincessZeldaDemo_8049D208::fn_80111CC0() {
+void PrincessZeldaDemo_8049D208::update() {
     cls_8049D140::update();
     switch (field_0x234) {
     case 0:
@@ -43,7 +43,7 @@ void PrincessZeldaDemo_8049D208::fn_80111CC0() {
     }
 }
 
-void PrincessZeldaDemo_8049D208::fn_80111D44() {
+void PrincessZeldaDemo_8049D208::vfunc_0x10() {
     cls_801192AC* list = fn_8011921C();
     ActorBase_804A5770** goal = fn_8011871C(list, list->mBegin, ACTOR_DMGL);
     if (goal != fn_8011921C()->mEnd) {
@@ -66,7 +66,7 @@ void PrincessZeldaDemo_8049D208::fn_80111D44() {
     field_0x2d0 = mPos;
 }
 
-void PrincessZeldaDemo_8049D208::fn_80110198() {
+void PrincessZeldaDemo_8049D208::draw() {
     cls_8049D140::draw();
     if (field_0x230 == 0) {
         if (mAnim0.mAnim >= 0x13) {

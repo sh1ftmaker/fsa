@@ -26,6 +26,8 @@ cls_8049DB30::~cls_8049DB30() {
     mEmitter258 = NULL;
 }
 
+// FIXME: 99.8 %. Code identical; only the float literal relocations differ
+// (this unit's .sdata2 literals are not split to match yet).
 void cls_8049DB30::init() {
     cls_8049D140::init();
     field_0x238 = field_0x90 & 0xF;
@@ -36,6 +38,8 @@ void cls_8049DB30::init() {
     fn_802D6A9C()->fn_802D7440(false);
 }
 
+// FIXME: 99.7 %. Code identical; only the float literal relocations differ
+// (this unit's .sdata2 literals are not split to match yet).
 void cls_8049DB30::vfunc_0x54() {
     switch (field_0x234) {
     case 3:
@@ -151,6 +155,8 @@ static inline void fadeColour(u8& colour, s32 target, f32 frames) {
     }
 }
 
+// FIXME: 99.6 %. Code identical; only the float literal relocations differ
+// (this unit's .sdata2 literals are not split to match yet).
 void cls_8049DB30::fn_8011A4BC() {
     switch (field_0x234) {
     case 1:

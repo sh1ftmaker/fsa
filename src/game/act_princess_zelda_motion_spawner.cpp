@@ -5,6 +5,8 @@ PrincessZeldaMotionObjectSpawner_804A375C::~PrincessZeldaMotionObjectSpawner_804
 
 void PrincessZeldaMotionObjectSpawner_804A375C::draw() {}
 
+// FIXME: 99.8 %. Code identical; only the float literal relocations differ
+// (this unit's .sdata2 literals are not split to match yet).
 void PrincessZeldaMotionObjectSpawner_804A375C::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;

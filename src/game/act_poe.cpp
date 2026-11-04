@@ -57,11 +57,10 @@ void Poe_8049F330::draw() {
     }
 }
 
-// FIXME: 99.28%. The first random draw takes its manager pointer through a
-// block-scoped local, which is what matches its registers. Still differs: the
-// second and third draws swap the manager and LCG-constant registers, the
-// tail's row index sits in r3 (ours r0), and the literals and the jump table
-// are @NNN vs lbl_/jumptable_ names (data split, not code).
+// FIXME: 98.88 %. Regalloc only in the three random draws (the manager and
+// LCG-constant registers swap) and the tail's row index (r3 in the original);
+// the literals and the jump table are @NNN vs lbl_/jumptable_ names (data
+// split, not code).
 void Poe_8049F330::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -79,10 +78,7 @@ void Poe_8049F330::init() {
     field_0x238[7] = 0;
     field_0x238[8] = 0;
     field_0x270 = 255.0f;
-    {
-        GameRoot_8049EF20* root = lbl_8053AAF8;
-        field_0x238[1] = (s32)(60.0f * root->mRandom.get_ufloat_1()) + 60;
-    }
+    field_0x238[1] = (s32)(60.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 60;
     field_0x234 = 0;
     field_0xb0 = 0;
     field_0x260.x = mPos.x;
