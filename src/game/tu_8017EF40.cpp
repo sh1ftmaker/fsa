@@ -2,6 +2,11 @@
 #include "game/GameAudio.h"
 #include "game/GameView.h"
 
+void ActorBase_804A5770::fn_8017EF40() {
+    fn_801F0E34(0x40038, 0);
+    vfunc_0x28(2, 0.0f, -24.0f);
+}
+
 // Copies a TVec2f from src into dst. Like fn_8017EADC, the original keeps it
 // as a plain global function taking both vectors by pointer.
 extern "C" void fn_80182690(JGeometry::TVec2f* dst, const JGeometry::TVec2f* src) {
