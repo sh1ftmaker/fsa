@@ -13,6 +13,7 @@ class cls_804A5418 : public cls_804A61C8 {
 public:
     // 0x801E78F0
     cls_804A5418();
+    /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     // 0x801E6F28: unless mFlags has 0x8000, draws through cls_804A61C8's
     // fn_80210630 with bit 0x2000 of mFlags, and field_0x2a8 in state 2.
