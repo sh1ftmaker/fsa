@@ -16,6 +16,10 @@ public:
     // Returns field_0x234.
     /* 0x58 */ virtual s32 vfunc_0x58();
 
+    // Slot 0x5C, overriding cls_8049D140::vfunc_0x5C (game/tu_8010DF44.cpp).
+    // 1 when field_0x234 is 12, else 0.
+    /* 0x5C */ virtual s32 vfunc_0x5C();
+
     /* 0x230 */ u8 field_0x230;
     /* 0x231 */ u8 field_0x231;
     /* 0x234 */ s32 field_0x234;
