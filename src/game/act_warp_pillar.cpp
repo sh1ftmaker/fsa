@@ -2,21 +2,7 @@
 #include "game/Effect.h"
 #include "game/act/act_warp_pillar.h"
 
-// .sdata2 constants, named after the original's labels (as in act_pengator.cpp).
-static const f32 lbl_805420AC[1] = {16.0f};
-static const f32 lbl_805420BC[1] = {1.0f};
-static const f32 lbl_805420C8[1] = {0.0f};
-static const f32 lbl_805420D8[1] = {-47.0f};
-static const f32 lbl_805420DC[1] = {47.0f};
-static const f32 lbl_805420E0[2] = {15.0f, 0.0f};
-
-WarpPillar_804AC0A8::~WarpPillar_804AC0A8() {
-    fn_801EE434(mEmitter264);
-    fn_801EE434(mEmitter268);
-    for (s32 i = 0; i < 4; i++) {
-        fn_801EE434(mEmitter26c[i]);
-    }
-}
+void WarpPillar_804AC0A8::draw() {}
 
 void WarpPillar_804AC0A8::init() {
     field_0x94 = field_0x90 & 0xF;
@@ -27,7 +13,7 @@ void WarpPillar_804AC0A8::init() {
     field_0x244 = 0;
     field_0x238 = (field_0x90 >> 4) & 0xF;
     field_0x23c = (field_0x90 >> 8) & 0xF;
-    field_0x258 = lbl_805420C8[0];
+    field_0x258 = 0.0f;
     mEmitter264 = NULL;
     mEmitter268 = NULL;
     field_0x25c[0] = false;
@@ -48,18 +34,24 @@ void WarpPillar_804AC0A8::init() {
     field_0x260[3] = false;
 
     if (mEmitter264 == NULL) {
-        JGeometry::TVec3f pos(mPos.x, lbl_805420AC[0] + mPos.y, mPos.z);
-        mEmitter264 = fn_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, lbl_805420BC[0]);
+        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
+        mEmitter264 = fn_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, 1.0f);
     }
     if (mEmitter268 == NULL) {
-        JGeometry::TVec3f pos(mPos.x, lbl_805420AC[0] + mPos.y, mPos.z);
-        mEmitter268 = fn_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, lbl_805420BC[0]);
+        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
+        mEmitter268 = fn_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, 1.0f);
     }
 
-    mBox.i.x = lbl_805420D8[0];
-    mBox.i.y = lbl_805420D8[0];
-    mBox.f.x = lbl_805420DC[0];
-    mBox.f.y = lbl_805420E0[0];
+    mBox.i.x = -47.0f;
+    mBox.i.y = -47.0f;
+    mBox.f.x = 47.0f;
+    mBox.f.y = 15.0f;
 }
 
-void WarpPillar_804AC0A8::draw() {}
+WarpPillar_804AC0A8::~WarpPillar_804AC0A8() {
+    fn_801EE434(mEmitter264);
+    fn_801EE434(mEmitter268);
+    for (s32 i = 0; i < 4; i++) {
+        fn_801EE434(mEmitter26c[i]);
+    }
+}
