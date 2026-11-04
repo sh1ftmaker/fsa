@@ -18,7 +18,20 @@ public:
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x48 */ virtual void vfunc_0x48();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x18]; // not yet known
+    // Not virtual. Called from update(); true when a BLZ2 actor overlaps this
+    // one's box, after which it plays the effect and sound itself.
+    bool fn_802CF598();
+    // Not virtual. The spawn state machine vfunc_0x24 runs after a hit; it
+    // clears mAlive at its end, as vfunc_0x24 does.
+    void fn_802CEC10();
+    /* 0x230 */ s32 field_0x230; // state word, tested by fn_802CEC10
+    /* 0x234 */ s32 field_0x234; // state word, tested first by fn_802CEC10
+    /* 0x238 */ s32 field_0x238; // state word, tested by fn_802CEC10
+    /* 0x23C */ s32 field_0x23c; // state word handed to ActorBase::fn_801F132C by vfunc_0x4C
+    /* 0x240 */ s32 field_0x240; // countdown, 30 when init sets up the second branch
+    /* 0x244 */ u8 field_0x244; // 0xFF from init
+    /* 0x245 */ u8 field_0x245; // 0 from init
+    /* 0x246 */ u8 field_0x246[0x2]; // not yet known
 }; // Size: 0x248
 
 #endif
