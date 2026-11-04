@@ -1,6 +1,21 @@
 #include "game/GameAudio.h"
 #include "game/Player.h"
 
+bool Player_804A6F38::fn_8028FBA0() {
+    JGeometry::TVec3f pos;
+    pos.x = field_0xcb0.x;
+    pos.y = field_0xcb0.y;
+    pos.z = field_0xcb0.z;
+    if (field_0xcf2 == 0) {
+        pos.y = field_0xcb0.y - 16.0f;
+    }
+    if (fn_80290070(0, &mPos, &pos, 5)) {
+        field_0xbdc = 0;
+        return true;
+    }
+    return false;
+}
+
 void Player_804A6F38::fn_802922D0() {
     field_0x124d = 1;
     field_0x458 = 0;

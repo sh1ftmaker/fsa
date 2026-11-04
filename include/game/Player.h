@@ -241,6 +241,11 @@ public:
     void fn_80292454(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 3, 0x3E8 = 3 (stw); fn_8024EFA0(0) if 0x3B4 >= 8 && 0xCE4 < 8
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     void fn_80292124(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 3, 0x3E8 = 3 (stw); fn_8024EFA0(0) if !fn_80240670() && 0x3B4 >= 8 && 0xCE4 < 8
+    // Copies 0xCB0 (TVec3f), lowers its y by 16 unless 0xCF2 is set, then calls
+    // fn_80290070(0, &mPos, &copy, 5); on success clears 0xBDC and returns true.
+    bool fn_8028FBA0();
+    // Not written yet (tu_8028FBA0); this in r3, &mPos passed as the second position.
+    u8 fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
@@ -321,7 +326,10 @@ public:
     /* 0x0461 */ u8 field_0x461[0xB9B - 0x461];
     // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
     /* 0x0B9B */ bool field_0xb9b;
-    /* 0x0B9C */ u8 field_0xb9c[0xBEC - 0xB9C];
+    /* 0x0B9C */ u8 field_0xb9c[0xBDC - 0xB9C];
+    // Cleared (stb 0) by fn_8028FBA0 when fn_80290070 succeeds.
+    /* 0x0BDC */ u8 field_0xbdc;
+    /* 0x0BDD */ u8 field_0xbdd[0xBEC - 0xBDD];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
     /* 0x0BF0 */ u8 field_0xbf0[0xC64 - 0xBF0];
@@ -340,7 +348,10 @@ public:
     /* 0x0CA1 */ u8 field_0xca1[0xCAC - 0xCA1];
     // Tested by every per-player query before it touches the player.
     /* 0x0CAC */ bool mActive;
-    /* 0x0CAD */ u8 field_0xcad[0xCE4 - 0xCAD];
+    /* 0x0CAD */ u8 field_0xcad[0xCB0 - 0xCAD];
+    // Read by fn_8023E32C (5 units); copied by fn_8028FBA0 and passed to fn_80290070.
+    /* 0x0CB0 */ JGeometry::TVec3f field_0xcb0;
+    /* 0x0CBC */ u8 field_0xcbc[0xCE4 - 0xCBC];
     // Compared with 8 (lwz; cmpwi) by fn_80292454 before it calls fn_8024EFA0.
     /* 0x0CE4 */ s32 field_0xce4;
     // A bool: fn_8024BBB0 returns it as loaded (lbz; blr).
@@ -349,7 +360,10 @@ public:
     /* 0x0CE9 */ u8 field_0xce9;
     /* 0x0CEA */ u8 field_0xcea[0xCEE - 0xCEA];
     /* 0x0CEE */ u8 field_0xcee;
-    /* 0x0CEF */ u8 field_0xcef[0xCF4 - 0xCEF];
+    /* 0x0CEF */ u8 field_0xcef[0xCF2 - 0xCEF];
+    // Tested against zero (lbz; cmplwi) by fn_8028FBA0 before it lowers 0xCB4.
+    /* 0x0CF2 */ u8 field_0xcf2;
+    /* 0x0CF3 */ u8 field_0xcf3;
     // Compared with 0x1D (lwz; cmpwi) by fn_802938B8 before it calls fn_8024F0E8.
     /* 0x0CF4 */ s32 field_0xcf4;
     /* 0x0CF8 */ u8 field_0xcf8[0xCFE - 0xCF8];
