@@ -26,6 +26,8 @@ public:
     /* 0x64 */ virtual void vfunc_0x64();
     // fn_80124C2C: returns the result of the base's fn_80121DB0.
     /* 0x74 */ virtual s32 vfunc_0x74();
+    // fn_80124B90: returns the base's vfunc_0x6C(5).
+    /* 0x88 */ virtual s32 vfunc_0x88();
     // fn_80124B60: returns the base's vfunc_0x6C(8).
     /* 0x8C */ virtual s32 vfunc_0x8C();
     // fn_80124AD8: returns the base's vfunc_0x6C(9), as the zora's 0x88 does.

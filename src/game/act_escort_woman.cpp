@@ -9,6 +9,10 @@ s32 EscortWoman_8049E1D0::vfunc_0x94() {
     return vfunc_0x6C(9);
 }
 
+s32 EscortWoman_8049E1D0::vfunc_0x88() {
+    return vfunc_0x6C(5);
+}
+
 s32 EscortWoman_8049E1D0::vfunc_0x8C() {
     return vfunc_0x6C(8);
 }
