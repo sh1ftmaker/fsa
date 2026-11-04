@@ -16,8 +16,6 @@ act_bomb	sinit	__sinit_act_bomb_cpp	-	-	new	-
 act_bombchu	sinit	__sinit_act_bombchu_cpp	-	-	new	-
 act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
-act_bumper	dtor	__dt__15Bumper_804A0260Fv	Bumper_804A0260	0x804A0260	new	new
-act_bumper	sinit	__sinit_act_bumper_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
 act_buzz_blob	sinit	__sinit_act_buzz_blob_cpp	-	-	new	new
 act_cannon	dtor_sprite	__dt__15Cannon_8049CCF0Fv	Cannon_8049CCF0	0x8049CCF0	new	new

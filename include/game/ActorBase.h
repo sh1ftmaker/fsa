@@ -677,6 +677,7 @@ extern "C" {
 s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
 s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
 s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
+s32 fn_801A4F5C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
 } // extern "C"
 
 #endif
