@@ -3,10 +3,18 @@
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/BgRewrite.h"
+#include "game/Camera.h"
+#include "game/ActorManager.h"
 #include "game/act/tu_8017A44C.h"
 
 // .rodata: the actor ids fn_8020D6AC skips, ended by 'NULL'.
 static const u32 lbl_80466880[5] = {'TOMI', 'BMST', 'IPOT', 'IBBM', 'NULL'};
+
+// .data: the 3-entry-per-direction frame tables update() reads (index
+// field_0x98 * 3 + field_0x248).
+s32 lbl_804A10A0[24] = {3, 4, 0, 8, 9, 5, 0xD, 0xE, 0xA, 0x12, 0x13, 0xF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+s32 lbl_804A1100[24] = {0, 1, 2, 5, 6, 7, 0xA, 0xB, 0xC, 0xF, 0x10, 0x11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 cls_804A1160::~cls_804A1160() {}
 
@@ -28,12 +36,130 @@ void cls_804A1160::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + 0x12d, false, 2, -1, 0, 0, 0);
 }
 
-// FIXME: 65 %. The original keeps the two tile codes as signed s32s (cmpwi
-// against each listed code, the listed codes not merged into ranges, and
-// the 0x10..0x17 test as subi + cmplwi 7); ours takes them as u16, merges
-// the runs 2-7, 0x27-0x2F and 0x39-0x3B into range tests and emits the
-// 0x10..0x17 test as two compares. The mSerial argument is also copied to
-// r6 before pos goes to r5.
+// The hit effect at mPos: fn_8013CC50 on the low layers, else the HTMK actor.
+static inline void spawnHitEffect(s32 layer, const JGeometry::TVec3f* pos) {
+    if (layer < 8) {
+        fn_8013CC50(layer, pos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
+    } else {
+        fn_801F856C()->fn_801F9484('HTMK', layer, pos, 0, -1, -1);
+    }
+}
+
+void cls_804A1160::update() {
+    mPos += field_0x3c;
+
+    if (field_0x25c == 1) {
+        s16 angle = fn_801F6874(field_0x98);
+        angle += 0x2000;
+        const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
+        for (s32 i = 0; i < 2; i++) {
+            JGeometry::TVec3f pos;
+            pos.set(mPos);
+            pos.x += 8.0f * sincos.sinShort(angle);
+            pos.y += 8.0f * sincos.cosShort(angle);
+            lbl_8053AC98->fn_802A20F0(&pos, field_0x258, field_0x4, 0, 0);
+            angle -= 0x4000;
+        }
+    }
+
+    bool moved = fn_801F2618(NULL, false);
+    if (field_0x230 != 2 && (moved || fn_801F2B20(2))) {
+        if (!moved) {
+            mAlive = false;
+            return;
+        }
+        spawnHitEffect(field_0x4, &mPos);
+        field_0x240 = 0;
+        field_0x244 = 0x24;
+        field_0x230 = 2;
+        return;
+    }
+
+    switch (field_0x230) {
+    case 0:
+        if (field_0x23c == 0) {
+            field_0x23c = 2;
+            field_0x248 = field_0x248 + 1;
+            if (field_0x248 > 2) {
+                field_0x23c = 1;
+                field_0x248 = 0;
+                field_0x240 = 100;
+                field_0x244 = 0x88;
+                switch (field_0x98) {
+                case 0:
+                    field_0x3c.x = 5.0f;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    break;
+                case 1:
+                    field_0x3c.x = -5.0f;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    break;
+                case 2:
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = 5.0f;
+                    field_0x3c.z = 0.0f;
+                    break;
+                case 3:
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = -5.0f;
+                    field_0x3c.z = 0.0f;
+                    break;
+                }
+                field_0x230 = 1;
+            }
+        }
+        break;
+    case 1:
+        if (fn_801F2A10(field_0x258, field_0x98, true, true)) {
+            spawnHitEffect(field_0x4, &mPos);
+            mAlive = false;
+            return;
+        }
+        if (field_0x23c == 0) {
+            field_0x23c = 2;
+            field_0x248 = field_0x248 + 1;
+            if (field_0x248 > 2) {
+                field_0x248 = 0;
+            }
+        }
+        // fall through
+    case 2:
+        if (field_0x240 == 0) {
+            field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+        }
+        if (field_0x244 == 0) {
+            mAlive = false;
+        }
+        if (field_0x4 < 8) {
+            lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+        }
+        break;
+    }
+
+    if (field_0x230 == 0) {
+        field_0x254 = lbl_804A10A0[field_0x98 * 3 + field_0x248];
+    } else {
+        field_0x254 = lbl_804A1100[field_0x98 * 3 + field_0x248];
+    }
+    if (field_0x23c > 0) {
+        field_0x23c--;
+    }
+    if (field_0x240 > 0) {
+        field_0x240--;
+    }
+    if (field_0x244 > 0) {
+        field_0x244--;
+    }
+}
+
+// FIXME: 72.66 %. The tile codes are signed s32s as in the original, but
+// MWCC merges the listed-code test into subi/cmplwi ranges (runs 2-7,
+// 0x27-0x2F, 0x39-0x3B) where the original compares each code with its own
+// beq, and the 0x10..0x17 test is two cmpwi here, subi + cmplwi 7 in the
+// original. The fn_8020D6AC call also loads pos into r5 after serial's copy
+// to r6, the reverse of the original.
 bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -41,8 +167,8 @@ bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return true;
     }
 
-    u16 code = fn_8022461C(pos, layer);
-    u16 code2 = fn_80226850(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
+    s32 code2 = fn_80226850(pos, layer);
     if ((code >= 0x10 && code <= 0x17) || (code2 >= 0x140 && code2 <= 0x15F)) {
         field_0x238 = 0;
         field_0x234 = 1;
