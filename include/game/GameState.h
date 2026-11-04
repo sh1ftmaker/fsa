@@ -179,7 +179,9 @@ public:
     /* 0x24F */ u8 field_0x24f; // 20 units
     /* 0x250 */ u8 field_0x250;
     /* 0x251 */ u8 field_0x251; // main counts it up from 1 to 0x5B, one per frame
-    /* 0x252 */ u8 field_0x252[0x258 - 0x252];
+    /* 0x252 */ u8 field_0x252;
+    /* 0x253 */ u8 field_0x253; // stored 0 by fn_8013A1A4 (game/tu_80139BE8.cpp)
+    /* 0x254 */ u8 field_0x254[0x258 - 0x254];
 }; // Size: 0x258 (at most; see above)
 
 extern GameState_804B0FE0 lbl_80529DEC;
