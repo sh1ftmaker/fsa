@@ -35,8 +35,6 @@ static const s16* lbl_804A3BB8[16] = {
 
 Gibdo_804A3BF8::~Gibdo_804A3BF8() {}
 
-Gibdo_804A3BF8::Gibdo_804A3BF8() {}
-
 void Gibdo_804A3BF8::draw() {
     SpriteParams_801F5AE0 params;
     if (mFlags & 0x4000) {
@@ -219,3 +217,5 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D22DC(field_0x98, 2, false);
     mAnim.fn_801D1D60();
 }
+
+Gibdo_804A3BF8::Gibdo_804A3BF8() {}

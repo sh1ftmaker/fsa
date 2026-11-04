@@ -2,24 +2,15 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_great_fairy_spfr.h"
 
-cls_8049EB8C::cls_8049EB8C()
-    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(-1), field_0x240(0),
-      field_0x244(0), field_0x248(0), field_0x24c(0), field_0x288(0) {}
-
-cls_8049EB8C::~cls_8049EB8C() {
-    fn_801EE434(field_0x288);
-    field_0x288 = 0;
-}
-
-s32 cls_8049EB8C::vfunc_0x58() {
-    return field_0x234;
-}
-
 // lbl_80465204 (.rodata): values fn_8011921C()->field_0x8 is matched against, by index.
 static const s32 lbl_80465204[27] = {
     0, 0, 0, 0, 0, 0x28, 0x64, 0xC8, 0x104, 0x208, 0x26C, 0x32A, 0x366, 0x55A,
     0x578, 0x5BE, 0x5F0, 0x663, 0x6C7, 0x703, 0x767, 0x7CB, 0xC8, 0x12C, 0x190, 0x1F4, 0,
 };
+
+s32 cls_8049EB8C::vfunc_0x58() {
+    return field_0x234;
+}
 
 void cls_8049EB8C::vfunc_0x54() {
     if (fn_8011921C()->field_0x4 != 0xE) {
@@ -83,3 +74,12 @@ void cls_8049EB8C::vfunc_0x54() {
         break;
     }
 }
+
+cls_8049EB8C::~cls_8049EB8C() {
+    fn_801EE434(field_0x288);
+    field_0x288 = 0;
+}
+
+cls_8049EB8C::cls_8049EB8C()
+    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(-1), field_0x240(0),
+      field_0x244(0), field_0x248(0), field_0x24c(0), field_0x288(0) {}

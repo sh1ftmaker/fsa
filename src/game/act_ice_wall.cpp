@@ -5,17 +5,6 @@
 static const s16 lbl_8053C8B0[] = {0, 2, -1, -1};
 static const s16* lbl_80539F28[] = {lbl_8053C8B0, NULL};
 
-// FIXME: 99.81%. Code matches; the 1.0f literal is loaded from its own .sdata2
-// entry in ours, the original's is lbl_8053C8BC (a data split, not code).
-IceWall_8049DE18::IceWall_8049DE18()
-    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(1.0f), mSprite(),
-      field_0x27c(NULL) {}
-
-IceWall_8049DE18::~IceWall_8049DE18() {
-    fn_801EE434(field_0x27c);
-    field_0x27c = NULL;
-}
-
 // FIXME: 99.39%. Code matches; the float literals are separate .sdata2 entries
 // in ours (the original's are split as lbl_8053C8xx, a data split, not code).
 void IceWall_8049DE18::init() {
@@ -62,3 +51,14 @@ void IceWall_8049DE18::init() {
     mSprite.fn_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
 }
+
+IceWall_8049DE18::~IceWall_8049DE18() {
+    fn_801EE434(field_0x27c);
+    field_0x27c = NULL;
+}
+
+// FIXME: 99.81%. Code matches; the 1.0f literal is loaded from its own .sdata2
+// entry in ours, the original's is lbl_8053C8BC (a data split, not code).
+IceWall_8049DE18::IceWall_8049DE18()
+    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(1.0f), mSprite(),
+      field_0x27c(NULL) {}

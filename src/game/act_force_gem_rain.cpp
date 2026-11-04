@@ -10,41 +10,6 @@ ForceGemRain_804A8010::~ForceGemRain_804A8010() {}
 
 void ForceGemRain_804A8010::draw() {}
 
-void ForceGemRain_804A8010::init() {
-    field_0x248 = 0;
-    field_0x24c = 0;
-    field_0x230 = 0;
-    field_0x23c = 0;
-    field_0x240 = 0;
-    field_0x244 = field_0x90 & 0xFF;
-    if (!(field_0x244 == 3 || field_0x244 == 0xC)) {
-        if (vfunc_0x34()) {
-            mAlive = false;
-        }
-    }
-    field_0x240 = (field_0x90 >> 12) & 0xFF;
-    if (field_0x240 == 0) {
-        field_0x240 = 0x100;
-    }
-    field_0x234 = 1;
-    field_0x238 = 0;
-    switch (field_0x240) {
-    case 0x28:
-        field_0x238 = 1;
-        break;
-    case 0x78:
-        field_0x238 = 2;
-        break;
-    case 0xC8:
-        field_0x238 = 3;
-        break;
-    }
-    if (field_0x244 == 2 || field_0x244 == 4 || (u32)field_0x244 <= 1 ||
-        (u32)(field_0x244 - 8) <= 3 || field_0x244 == 0xD) {
-        field_0x24c = 0x28;
-    }
-}
-
 // FIXME: 75.31 %. Codegen only: the layer, spawn id and angle sit in r25, r30
 // and r28 where the original has r27, r28 and r30; the RNG loads and the float
 // ops of each position are scheduled in another order (same arithmetic); the
@@ -388,4 +353,39 @@ void ForceGemRain_804A8010::update() {
     GameView_804A9950* v = fn_802D6A9C();
     v->fn_802D8050((field_0x90 >> 22) & 0x1F, true, 0xFF);
     fn_801F3668();
+}
+
+void ForceGemRain_804A8010::init() {
+    field_0x248 = 0;
+    field_0x24c = 0;
+    field_0x230 = 0;
+    field_0x23c = 0;
+    field_0x240 = 0;
+    field_0x244 = field_0x90 & 0xFF;
+    if (!(field_0x244 == 3 || field_0x244 == 0xC)) {
+        if (vfunc_0x34()) {
+            mAlive = false;
+        }
+    }
+    field_0x240 = (field_0x90 >> 12) & 0xFF;
+    if (field_0x240 == 0) {
+        field_0x240 = 0x100;
+    }
+    field_0x234 = 1;
+    field_0x238 = 0;
+    switch (field_0x240) {
+    case 0x28:
+        field_0x238 = 1;
+        break;
+    case 0x78:
+        field_0x238 = 2;
+        break;
+    case 0xC8:
+        field_0x238 = 3;
+        break;
+    }
+    if (field_0x244 == 2 || field_0x244 == 4 || (u32)field_0x244 <= 1 ||
+        (u32)(field_0x244 - 8) <= 3 || field_0x244 == 0xD) {
+        field_0x24c = 0x28;
+    }
 }

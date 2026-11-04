@@ -12,20 +12,6 @@ cls_804A80A0::~cls_804A80A0() {}
 
 void cls_804A80A0::draw() {}
 
-void cls_804A80A0::init() {
-    static const s32 lbl_8046C850[4] = {22, 17, 12, 7};
-
-    field_0x234 = field_0x90 & 0x1F;
-    if (field_0x234 != 5) {
-        field_0x230 = 0;
-    } else {
-        field_0x230 = 7;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x244[i] = (field_0x90 >> lbl_8046C850[i]) & 0x1F;
-    }
-}
-
 // Snaps a coordinate to the middle of its 16-unit cell.
 static inline f32 snapToCell(f32 v) {
     return (f32)((s32)v / 16 * 16 + 8);
@@ -55,11 +41,13 @@ static inline s32 slotsCollide(const s32* flags, const s32* keys) {
     return collide;
 }
 
-// FIXME: 91.23 %. The original runs the same slot check twice, once in each arm
+// FIXME: 91.95 %. The original runs the same slot check twice, once in each arm
 // of `lbl_8053AAF8->field_0x7e == 1` (two identical loops; `li r0, 0` before the
 // test), and ours runs it once, so the registers and block layout after it differ.
 // The switch table is `jumptable_804A80F4` in the original but a compiler-made
-// `@NNN` here (reloc-name, a data-naming issue).
+// `@NNN` here (reloc-name, a data-naming issue). `(field_0x83 & 3) == 1` is an
+// unsigned compare (cmplwi) in the original, signed here: field_0x83's type is
+// not known yet.
 void cls_804A80A0::update() {
     s32 count = 0;
     s32 flags[4];
@@ -180,7 +168,9 @@ void cls_804A80A0::update() {
                         field_0x23c = 0x78;
                         field_0x240 = 0x3C;
                         for (s32 k = 0; k < 4; k++) {
-                            if ((lbl_8053AAF8->field_0x82 & (1 << k)) == true) {
+                            u8 bit = 1 << k;
+                            bool entered = lbl_8053AAF8->field_0x82 & bit;
+                            if (entered == true) {
                                 fn_80230E1C(k, 0);
                             }
                         }
@@ -254,5 +244,19 @@ void cls_804A80A0::update() {
         }
         break;
     }
+    }
+}
+
+void cls_804A80A0::init() {
+    static const s32 lbl_8046C850[4] = {22, 17, 12, 7};
+
+    field_0x234 = field_0x90 & 0x1F;
+    if (field_0x234 != 5) {
+        field_0x230 = 0;
+    } else {
+        field_0x230 = 7;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x244[i] = (field_0x90 >> lbl_8046C850[i]) & 0x1F;
     }
 }

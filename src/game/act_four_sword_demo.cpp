@@ -9,6 +9,19 @@ static const s32 lbl_80464A7C[13] = {
     0x000000FF, 0x000001DB, 0x0000032A, 0x00000348, 0x000003C0, 0x000003DE,
 };
 
+s32 cls_8049DA0C::vfunc_0x5C() {
+    switch (field_0x234) {
+    case 12:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+s32 cls_8049DA0C::vfunc_0x58() {
+    return field_0x234;
+}
+
 void cls_8049DA0C::vfunc_0x54() {
     if (fn_8011921C()->field_0x4 == 2) {
         s32 value = fn_8011921C()->field_0x8;
@@ -42,18 +55,5 @@ cls_8049DA0C::~cls_8049DA0C() {
         mEmitters298[i] = NULL;
         fn_801EE434(mEmitter2a8);
         mEmitter2a8 = NULL;
-    }
-}
-
-s32 cls_8049DA0C::vfunc_0x58() {
-    return field_0x234;
-}
-
-s32 cls_8049DA0C::vfunc_0x5C() {
-    switch (field_0x234) {
-    case 12:
-        return 1;
-    default:
-        return 0;
     }
 }
