@@ -61,7 +61,14 @@ public:
     // cls_804B20F8::startSound (game/tu_8045B010.cpp) with 0.
     JAISoundHandle* fn_80456334(JAISoundID id, u32 fade);
 
-    /* 0x30 */ u8 field_0x30[0x2C]; // not read by any caller yet
+    // 0x80456120 (game/tu_80455CA4.cpp): clears field_0x31, then calls
+    // dispose() through the vtable (slot 0xC). ActorManager's release code
+    // calls it on each mSounds entry and on field_0x200c (game/tu_801F6058.cpp).
+    void fn_80456120();
+
+    /* 0x30 */ u8 field_0x30; // cleared by the constructor; not read by any caller yet
+    /* 0x31 */ u8 field_0x31; // 1 in the constructor; cleared by fn_80456120
+    /* 0x32 */ u8 field_0x32[0x2A]; // not read by any caller yet
 }; // Size: 0x5C (every __nw__ of it)
 
 #define ACTOR_MANAGER_MAX_ACTORS 0x400
