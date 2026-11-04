@@ -183,6 +183,21 @@ public:
     // 0x801E4348: runs the attack-state checks for one player in range and
     // returns whether it acted (game/tu_801E3618.cpp).
     bool fn_801E4348();
+    // 0x801E4D54 (game/tu_801E4D54.cpp): clears mFlags' 0x4000 bit, zeroes
+    // field_0x5ce and sets the float at 0x4BC (field_0x464's field_0x58) to 0.
+    void fn_801E4D54();
+    // 0x801E4D74: the same, with 0x32 at 0x5CE and 255.0f at 0x4BC.
+    void fn_801E4D74();
+    // 0x801E5BA8 (game/tu_801E4D54.cpp): the first element of field_0x308
+    // whose serial is actor's mSerial gets a direction (x, y) and a z. flag 0:
+    // dir normalised and doubled, z 1.5. Otherwise a player within 160 units
+    // of mPos whose field_0x2a8 entry has field_0x0 clear gives the sin and
+    // cos of its angle, else dir is normalised; both are quadrupled, z 3.
+    void fn_801E5BA8(const ActorBase_804A5770* actor, const JGeometry::TVec2f* dir, bool flag);
+    // 0x801E5754 (game/tu_801E4D54.cpp): steps the four player records in
+    // field_0x2a8 (countdowns, the 0x2AC timers) against this boss's layer and
+    // the positions of the players.
+    void fn_801E5754();
 
     /* 0x2A8 */ cls_801D6A88 field_0x2a8[0x4];
     /* 0x308 */ cls_801D6A58 field_0x308[0x10];
@@ -191,7 +206,9 @@ public:
     /* 0x4C4 */ cls_801D7730 field_0x4c4;
     /* 0x52C */ cls_801D6CEC field_0x52c;
     /* 0x568 */ cls_801E6AB8 field_0x568;
-    /* 0x5B0 */ u8 field_0x5b0[0x5D1 - 0x5B0]; // not yet known
+    /* 0x5B0 */ u8 field_0x5b0[0x5CE - 0x5B0]; // not yet known
+    /* 0x5CE */ u8 field_0x5ce; // 0 or 0x32, set by fn_801E4D54 / fn_801E4D74
+    /* 0x5CF */ u8 field_0x5cf[0x5D1 - 0x5CF]; // not yet known
     /* 0x5D1 */ u8 field_0x5d1;
     /* 0x5D2 */ u8 field_0x5d2[0x5FC - 0x5D2]; // not yet known
     /* 0x5FC */ s32 field_0x5fc; // effect layer (fn_8013CC50's first argument)
