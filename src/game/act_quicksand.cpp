@@ -7,6 +7,22 @@
 // scale match. The original picks the length with one fsel
 // (push - field_0x3a4 >= 0) where ours compares and branches (an explicit
 // `push - field_0x3a4 >= 0.0f` gave 88.9 %).
+// Whether a position at or below the ground lies inside the quicksand's area:
+// within 0.9 * (16 * field_0x54.x) of mPos in x and y, once it is active.
+bool fn_80211000(ActorBase_804A5770* actor, const JGeometry::TVec3f* pos) {
+    const cls_804A6270* sand = static_cast<const cls_804A6270*>(actor);
+    bool inside = false;
+    if (pos->z <= 0.0f && sand->mState != 0) {
+        f32 radius = 0.9f * (16.0f * sand->field_0x54.x);
+        f32 dx = pos->x - sand->mPos.x;
+        f32 dy = pos->y - sand->mPos.y;
+        if (square(dx) + square(dy) <= square(radius)) {
+            inside = true;
+        }
+    }
+    return inside;
+}
+
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
