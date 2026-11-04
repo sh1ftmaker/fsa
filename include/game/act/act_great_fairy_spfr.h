@@ -12,6 +12,7 @@
 class cls_8049EB8C : public cls_8049D140 {
 public:
     cls_8049EB8C();
+    /* 0x08 */ virtual ~cls_8049EB8C();
     /* 0x58 */ virtual s32 vfunc_0x58();
 
     /* 0x230 */ u8 field_0x230; // set to 0 by the constructor, not yet known
@@ -23,7 +24,7 @@ public:
     /* 0x248 */ s32 field_0x248; // set to 0 by the constructor, not yet known
     /* 0x24C */ s32 field_0x24c; // set to 0 by the constructor, not yet known
     /* 0x250 */ SpriteAnim_801D267C mAnim; // constructed after the words above
-    /* 0x288 */ s32 field_0x288; // set to 0 by the constructor, after mAnim
+    /* 0x288 */ JPABaseEmitter* field_0x288; // emitter, freed by the destructor with fn_801EE434; set to 0 by the constructor, after mAnim
 }; // Size: at least 0x28C
 
 #endif
