@@ -628,6 +628,14 @@ public:
 };
 extern cls_804B1920* lbl_8053AED0;
 
+// 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): C-linkage
+// (the original calls them by plain name), each taking the object in r3 and
+// no other arguments. fn_80139D70 calls them in turn.
+extern "C" {
+void fn_8043D644(cls_804B1920* self);
+void fn_8043D8B4(cls_804B1920* self);
+} // extern "C"
+
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
 // game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
 // *pos.

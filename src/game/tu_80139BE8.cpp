@@ -6,3 +6,8 @@ extern "C" void fn_80139C5C() {
     lbl_8053AED0->fn_8043D5F0();
     fn_8038D4A8();
 }
+
+extern "C" void fn_80139D70() {
+    fn_8043D644(lbl_8053AED0);
+    fn_8043D8B4(lbl_8053AED0);
+}
