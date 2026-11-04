@@ -1,5 +1,5 @@
 #include "game/GameAudio.h"
-#include "game/act/act_zora.h"
+#include "game/act/act_zora_lotus.h"
 
 bool ZoraEnemy_804A3D7C::vfunc_0x60() {
     return false;
@@ -21,4 +21,8 @@ void ZoraEnemy_804A3D7C::vfunc_0xA4() {
     field_0x2b2 = 0;
     field_0x2b0 = 0;
     mPos.y = mSpawnPos.y;
+}
+
+cls_804AC3E0::cls_804AC3E0() {
+    field_0x2b8 = 0;
 }
