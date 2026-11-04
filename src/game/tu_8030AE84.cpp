@@ -1,6 +1,9 @@
 #include "game/GameAudio.h"
 #include "game/tu_8030AE84.h"
 
+// The deleting form (__dl__FPv when asked) is the compiler's; nothing to clean up.
+cls_804AA8D8::~cls_804AA8D8() {}
+
 cls_804AA8D8::cls_804AA8D8() {
     field_0x28c = 0;
     field_0x2b4 = -1;
