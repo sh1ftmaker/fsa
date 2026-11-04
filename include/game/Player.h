@@ -963,6 +963,11 @@ JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804C
 // and stores r5/r6 (field_0x4, serial) as words.
 void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 
+// Owner unit not written yet (C linkage, 0x802378AC, 1 unit: act_bumper).
+// Called with a player index and a box centre after fn_80134DE4; the result
+// is not used.
+extern "C" void fn_802378AC(s32 player, const JGeometry::TVec2f* pos);
+
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_pull_switch). Index (0-3)
 // of the first present player whose box test (fn_802728AC(player, box, layer,
 // serial)) passes, or -1; 0 without a player manager.
