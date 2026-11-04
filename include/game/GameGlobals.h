@@ -151,6 +151,11 @@ struct GameRoot_8049EF20 {
     // Stores r4 at this+0x94 (stb), then sets this+0x95 to 1 unless the value
     // is 1. Defined in game/tu_80134C04.cpp (0x80134FC4); no callers found yet.
     void fn_80134FC4(u8 value);
+    // Owner: game/tu_80134C04.cpp (0x80134FE0, not written yet). Stores r4 at
+    // this+0x94 (stb), reads it back, and calls fn_80458658 on lbl_8053AF80 when
+    // it is 1, else sets this+0x95 to 1. Callers: game/tu_8029C584.cpp
+    // (cls_804A7BE8's destructor, with 0), game/tu_8023FBF0.cpp and game/tu_802D39B8.cpp.
+    void fn_80134FE0(u8 value);
     // Stores r4 at this+0xFE (stb). When it is 1, clears this+0xFC (stb) and
     // this+0xF8 (stw). Defined in game/tu_80134C04.cpp (0x801365C8); no callers found yet.
     void fn_801365C8(u8 value);

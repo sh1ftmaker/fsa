@@ -534,6 +534,11 @@ s32 fn_8022CAF8(s32 player); // -> fn_802486A0; else 0
 void fn_8022CB94(s32 player); // -> fn_8024B9E8
 void fn_8022CC20(s32 player); // -> fn_8024BAEC
 void fn_8022CD48(s32 player); // -> fn_80248FF0
+// Owner: game/tu_8022AD64.cpp (0x8022CDD4 and 0x8022CF08, not written yet).
+// Called with a player index by cls_804A7BE8 (game/tu_8029C584.cpp): the
+// destructor calls fn_8022CDD4, init fn_8022CF08.
+extern "C" void fn_8022CDD4(s32 player);
+extern "C" void fn_8022CF08(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
 s32 fn_8022D7F8(s32 player); // -> fn_8024FF6C; else 0
 bool fn_8022D894(s32 player); // -> fn_802517E4; else false
