@@ -50,7 +50,9 @@ public:
     /* 0x244 */ u8 field_0x244[0x260 - 0x244]; // not yet known
     /* 0x260 */ JGeometry::TVec3f field_0x260; // position, set by fn_802C1D30
     /* 0x26C */ s32 field_0x26c; // layer, set by fn_802C1D30
-    /* 0x270 */ u8 field_0x270[0x288 - 0x270]; // not yet known
+    /* 0x270 */ u8 field_0x270[0x280 - 0x270]; // not yet known
+    /* 0x280 */ s32 field_0x280; // 6 is tested by act_magic_circle_generator fn_802E7DB8 (word compare)
+    /* 0x284 */ u8 field_0x284[0x288 - 0x284]; // not yet known
     /* 0x288 */ s32 field_0x288; // countdown: while nonzero, vfunc_0x4C decrements it and returns 0
     /* 0x28C */ u8 field_0x28c[0x2AA - 0x28C]; // not yet known
     /* 0x2AA */ u16 field_0x2aa; // screen column in the high byte, row in the low
