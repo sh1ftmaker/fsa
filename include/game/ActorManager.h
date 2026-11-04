@@ -66,6 +66,11 @@ public:
     // calls it on each mSounds entry and on field_0x200c (game/tu_801F6058.cpp).
     void fn_80456120();
 
+    // 0x80456154 (game/tu_80455CA4.cpp): points mSoundPos at a copy of
+    // *field_0x34 (NULL when field_0x34 is NULL), swaps the copy's y and z,
+    // and counts down field_0x50 and field_0x51 while they are nonzero.
+    void fn_80456154();
+
     // 0x80457840 (game/tu_80455CA4.cpp): r3 is this, r4 the position (NULL
     // clears the pointer at 0x14). Stores r4 at 0x34, copies it to field_0x38
     // and points mSoundPos (JAUSoundObject 0x14) at the copy.
@@ -76,7 +81,12 @@ public:
     /* 0x32 */ u8 field_0x32[2]; // not read by any caller yet
     /* 0x34 */ JGeometry::TVec3f* field_0x34; // the position passed to fn_80457840
     /* 0x38 */ JGeometry::TVec3f field_0x38; // copy of *field_0x34, read through mSoundPos
-    /* 0x44 */ u8 field_0x44[0x18]; // not read by any caller yet
+    /* 0x44 */ u8 field_0x44; // stored by fn_804561D8 (its 4th argument)
+    /* 0x45 */ u8 field_0x45; // cleared by the constructor
+    /* 0x46 */ u8 field_0x46[0xA]; // not read by any caller yet
+    /* 0x50 */ u8 field_0x50; // counter, counted down by fn_80456154
+    /* 0x51 */ u8 field_0x51; // counter, counted down by fn_80456154
+    /* 0x52 */ u8 field_0x52[0x9]; // cleared by the constructor; not read by any caller yet
 }; // Size: 0x5C (every __nw__ of it)
 
 #define ACTOR_MANAGER_MAX_ACTORS 0x400
