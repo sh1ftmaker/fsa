@@ -171,7 +171,6 @@ tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801DA7C0	sinit	__sinit_tu_801DA7C0_cpp	-	-	new	-
 tu_801DD1AC	sinit	__sinit_tu_801DD1AC_cpp	-	-	new	-
 tu_801E2540	sinit	__sinit_tu_801E2540_cpp	-	-	new	-
-tu_801E4D54	sinit	__sinit_tu_801E4D54_cpp	-	-	new	-
 tu_801E801C	dtor_emit	__dt__12cls_804A5568Fv	cls_804A5568	0x804A5568	new	new
 tu_801E801C	sinit	__sinit_tu_801E801C_cpp	-	-	new	-
 tu_8020B354	dtor_enemy	__dt__12cls_804A5E98Fv	cls_804A5E98	0x804A5E98	new	new

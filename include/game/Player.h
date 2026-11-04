@@ -718,6 +718,9 @@ bool fn_802300EC(s32 player);
 // unused); also called by ActorManager_804A5800::fn_801F6884. Returns fn_8024DCD0's
 // result on the player, 0 without one.
 s32 fn_80230AD4(s32 player);
+// Owner unit: not written yet (0x80230C6C, 0x90 bytes). Called on a player for
+// its result-free state change in fn_801E5754 (game/tu_801E4D54.cpp).
+extern "C" void fn_80230C6C(s32 player);
 
 // Per-player queries and setters of the 0x9C-byte family, owner tu_8022AD64
 // (cls_804AC388::update, game/tu_8033F448.cpp). Results are tested with

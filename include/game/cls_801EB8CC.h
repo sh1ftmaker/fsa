@@ -2,9 +2,17 @@
 #define GAME_CLS_801EB8CC_H
 
 #include "types.h"
+#include "JSystem/JGeometry.h"
 #include "game/cls_801EBA14.h"
 
 class JPABaseEmitter;
+class cls_801EB8CC;
+
+// game/tu_801EB00C.cpp (owner unit, not written yet; 0x801EB00C, 0x1E8 bytes;
+// 1 caller unit, tu_801E4D54 fn_801E5754). Called on the member at 0x464 of
+// Vaati with a player's position and a stack TVec3f: the vector it leaves in
+// *out has a z the caller compares with 0.
+extern "C" void fn_801EB00C(cls_801EB8CC* self, const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
 
 // A class known by its destructor, __dt__12cls_801EB8CCFv (0x801EB8CC, defined in
 // game/tu_801EB00C.cpp), which runs fn_801EE434 on the pointers at 0x34
