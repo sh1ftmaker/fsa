@@ -25,6 +25,24 @@ public:
     // lbl_804649A4 entry.
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
+    // Slot 0x5C, overriding cls_8049D140::vfunc_0x5C (0x801162B8, game/act_vaati_demo.cpp,
+    // was fn_801162B8): 1 when field_0x230 is 11, else 0.
+    /* 0x5C */ virtual s32 vfunc_0x5C();
+
+    // Mangled fn_80115A7C__12cls_8049D940Fv (0x80115A7C, game/act_vaati_demo.cpp,
+    // was fn_80115A7C). Called by fn_8011661C; returns true.
+    bool fn_80115A7C();
+    // Placeholder fn_80115BC4 (0x80115BC4, same unit, not written yet): takes
+    // this, the position and an output vector.
+    void fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
+
+    // Mangled fn_801158B8__12cls_8049D940Fv (0x801158B8, same unit, not
+    // written yet): called by draw() when field_0x230 is 10 or more.
+    void fn_801158B8();
+
+    // Slot 0x20, overriding cls_8049D140::draw (0x80116458, game/act_vaati_demo.cpp,
+    // was fn_80116458).
+    /* 0x20 */ virtual void draw();
 
     // Mangled fn_80115F9C__12cls_8049D940Fl (0x80115F9C, same unit, not written
     // yet). Takes the table index 1..11 found by vfunc_0x54.
