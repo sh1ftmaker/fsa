@@ -1139,7 +1139,7 @@ void fn_802B39E8(ActorBase_804A5770* actor);
 // the caller tests against 1 (clrlwi 24, cmplwi 1).
 extern "C" {
 u8 fn_8035C15C(ActorBase_804A5770* actor, s32 id);
-void fn_8035C1C4(ActorBase_804A5770* actor, s32 id, s32 arg);
+void fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(ActorBase_804A5770* actor, s32 id, s32 arg);
 }
 
 // SHARED-EDIT (act_ice_melted_by_four_players): owner game/act_fire_rod_fire.cpp

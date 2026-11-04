@@ -32,7 +32,7 @@ void PrincessZeldaEnding_804AD6F0::update() {
 void PrincessZeldaEnding_804AD6F0::fn_8035E394() {
     if (field_0x238 != 0) {
         mState = 1;
-        fn_8035C1C4(this, 0, 0x274);
+        fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,0, 0x274);
         field_0x238 = 0;
     }
 }
@@ -61,7 +61,7 @@ void PrincessZeldaEnding_804AD6F0::fn_8035DFE4() {
                 partner->field_0x234 = 1;
             }
         } else {
-            fn_8035C1C4(this, 6, 0x9b);
+            fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,6, 0x9b);
             mState++;
         }
     } else if (field_0x234 < 0xF0) {
@@ -74,7 +74,7 @@ void PrincessZeldaEnding_804AD6F0::fn_8035DFE4() {
 void PrincessZeldaEnding_804AD6F0::fn_8035DF48() {
     if (mPos.y < 1966.0f) {
         if (fn_8035C15C(this, 6) == 1) {
-            fn_8035C1C4(this, 6, 0x9b);
+            fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,6, 0x9b);
         }
         mPos.y += 0.23f;
     } else {
@@ -93,21 +93,21 @@ void PrincessZeldaEnding_804AD6F0::fn_8035DF48() {
 void PrincessZeldaEnding_804AD6F0::fn_8035E274() {
     if (field_0x238 == 0) {
         if (fn_8035C15C(this, 0) == 1) {
-            fn_8035C1C4(this, 1, 0x21b);
+            fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,1, 0x21b);
             field_0x240 = 0;
             field_0x238 = 4;
         }
     } else if (field_0x238 == 4) {
         if (fn_8035C15C(this, 1) == 1) {
-            fn_8035C1C4(this, 1, 0x21b);
+            fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,1, 0x21b);
         }
     } else if (field_0x238 == 1) {
-        fn_8035C1C4(this, 3, 0x274);
+        fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,3, 0x274);
         field_0x240 = 1;
         field_0x238 = 2;
     } else if (field_0x238 == 2) {
         if (fn_8035C15C(this, 2) == 1) {
-            fn_8035C1C4(this, 2, 0x274);
+            fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,2, 0x274);
         }
     } else if (field_0x238 == 3) {
         field_0x248 = 3;
@@ -129,29 +129,29 @@ void PrincessZeldaEnding_804AD6F0::fn_8035E070() {
     if (field_0x234 != 0) {
         if (field_0x234 == 1) {
             if (field_0x238 == 0) {
-                fn_8035C1C4(this, 5, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,5, 0x9b);
             }
         }
     } else {
         if (field_0x238 == 0) {
             if (fn_8035C15C(this, 5) == 1) {
-                fn_8035C1C4(this, 5, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,5, 0x9b);
             }
             if (mPos.x < 1234.0f) {
                 mPos.x -= 0.31f;
             } else {
                 mPos.x = 1234.0f;
-                fn_8035C1C4(this, 6, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,6, 0x9b);
                 field_0x238++;
                 field_0x234 = 0x10;
             }
         } else if (field_0x238 == 1) {
             if (fn_8035C15C(this, 6) == 1) {
-                fn_8035C1C4(this, 6, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,6, 0x9b);
             }
             if (mPos.y >= 1810.0f) {
                 mPos.y = 1810.0f;
-                fn_8035C1C4(this, 4, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,4, 0x9b);
                 field_0x238++;
                 field_0x234 = 0x10;
             } else {
@@ -159,11 +159,11 @@ void PrincessZeldaEnding_804AD6F0::fn_8035E070() {
             }
         } else {
             if (fn_8035C15C(this, 4) == 1) {
-                fn_8035C1C4(this, 4, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,4, 0x9b);
             }
             if (mPos.x >= 1260.0f) {
                 mPos.y = 1810.0f;
-                fn_8035C1C4(this, 4, 0x9b);
+                fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(this,4, 0x9b);
                 field_0x238 = 0;
                 mState++;
                 field_0x234 = 0x16f;
