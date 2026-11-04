@@ -6,10 +6,10 @@
 class J2DScreen;
 
 // 0x10-byte element of field_0x164, named after its constructor
-// __ct__12Unk_80453830Fv (fn_80453830, game/tu_8044C7F0.cpp), which
+// __ct__12cls_80453830Fv (fn_80453830, game/tu_8044C7F0.cpp), which
 // __construct_array runs on the two elements.
-struct Unk_80453830 {
-    Unk_80453830(); // out-of-line (game/tu_8044C7F0.cpp): every word -1
+struct cls_80453830 {
+    cls_80453830(); // out-of-line (game/tu_8044C7F0.cpp): every word -1
 
     /* 0x0 */ s32 field_0x0;
     /* 0x4 */ s32 field_0x4;
@@ -44,7 +44,7 @@ public:
     /* 0x13F */ u8 field_0x13f; // fn_8037ADD8 / fn_8037AE00 / fn_8037AE30
     /* 0x140 */ u8 field_0x140; // fn_8044CB00 returns it
     /* 0x141 */ u8 field_0x141[0x164 - 0x141];
-    /* 0x164 */ Unk_80453830 field_0x164[2]; // constructed by __construct_array (0x10 x 2)
+    /* 0x164 */ cls_80453830 field_0x164[2]; // constructed by __construct_array (0x10 x 2)
     /* 0x184 */ s32 field_0x184; // fn_8044F664 returns it
 }; // Size: 0x188
 

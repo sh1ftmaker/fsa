@@ -5,22 +5,6 @@
 #include "game/Map.h"
 #include <dolphin/gx.h>
 
-void Camera_804AA9E4::fn_8030DD68() {
-    GXSetCurrentMtx(GX_PNMTX8);
-}
-
-Camera_804AA9E4::~Camera_804AA9E4() {}
-
-void Camera_804AA9E4::fn_8030DD20(const Mtx m) {
-    Mtx tmp;
-    PSMTXConcat(field_0x74, m, tmp);
-    GXSetCurrentMtx(GX_PNMTX9);
-    GXLoadPosMtxImm(tmp, GX_PNMTX9);
-    GXLoadNrmMtxImm(tmp, GX_PNMTX9);
-}
-
-void Camera_804AA9E4::fn_8030E150() {}
-
 static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec2f& p) {
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
 }
@@ -56,3 +40,19 @@ void Camera_804AA9E4::fn_8030C85C() {
     field_0x1b4.f.y = 0.0f;
     field_0x1b4.f.x = 0.0f;
 }
+
+void Camera_804AA9E4::fn_8030DD20(const Mtx m) {
+    Mtx tmp;
+    PSMTXConcat(field_0x74, m, tmp);
+    GXSetCurrentMtx(GX_PNMTX9);
+    GXLoadPosMtxImm(tmp, GX_PNMTX9);
+    GXLoadNrmMtxImm(tmp, GX_PNMTX9);
+}
+
+void Camera_804AA9E4::fn_8030DD68() {
+    GXSetCurrentMtx(GX_PNMTX8);
+}
+
+void Camera_804AA9E4::fn_8030E150() {}
+
+Camera_804AA9E4::~Camera_804AA9E4() {}

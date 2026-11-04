@@ -5,10 +5,32 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 
-void GameView_804A9950::vfunc_0x14() {}
-
 void GameView_804A9950::fn_802D39B8(s32 index, s32 value) {
     field_0x131a8[index] = value;
+}
+
+GameView_804A9950* fn_802D6A9C(void) {
+    return lbl_8053AAF8->field_0x4->mView;
+}
+
+void GameView_804A9950::fn_802D6AAC(u8 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x131f9 = value;
+}
+
+void GameView_804A9950::fn_802D6BC8(u8 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x131f4 = value;
+}
+
+void GameView_804A9950::fn_802D790C(u8 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x171 = value;
+}
+
+void GameView_804A9950::fn_802D7920(u8 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x170 = value;
+}
+
+void GameView_804A9950::fn_802D7934(s32 value) {
+    lbl_8053AAF8->field_0x4->mView->field_0x5c = value;
 }
 
 void GameView_804A9950::fn_802D9FE8(s32 a, s32 b) {
@@ -29,31 +51,9 @@ u8 GameView_804A9950::fn_802DCD0C() {
     return lbl_8053AB10->field_0x24->field_0x1e8;
 }
 
-void GameView_804A9950::fn_802D790C(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x171 = value;
-}
+void GameView_804A9950::vfunc_0x14() {}
 
-void GameView_804A9950::fn_802D7920(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x170 = value;
-}
-
-void GameView_804A9950::fn_802D7934(s32 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x5c = value;
-}
-
-void GameView_804A9950::fn_802D6AAC(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f9 = value;
-}
-
-void GameView_804A9950::fn_802D6BC8(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f4 = value;
-}
-
-GameView_804A9950* fn_802D6A9C(void) {
-    return lbl_8053AAF8->field_0x4->mView;
-}
-
-// FIXME: everything between 0x802D6AAC and 0x802DE814 is not written yet.
+// FIXME: the other GameView_804A9950 functions before 0x802DE814 are not written yet.
 
 bool fn_802DE814(void) {
     if (lbl_8053AAF8->field_0x7f == 0) {

@@ -14,10 +14,19 @@ static const u64 lbl_8048DDD0[6] = {
     0x00005074696D3032ull, /* "Ptim02" */
 };
 
-// FIXME: lbl_804B139C (10 name pointers in .data at 0x804B139C, 0x28 bytes) is not
-// written yet. Its entries are the 'TIMG' names fn_8041918C passes to fn_804030C4;
-// the function matches with only the declaration, the unit's data does not.
-extern "C" const char* lbl_804B139C[10];
+// The digit textures fn_8041918C passes to fn_804030C4 ('TIMG').
+const char* lbl_804B139C[10] = {
+    "kk_rupyNum_00.bti",
+    "kk_rupyNum_01.bti",
+    "kk_rupyNum_02.bti",
+    "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti",
+    "kk_rupyNum_05.bti",
+    "kk_rupyNum_06.bti",
+    "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti",
+    "kk_rupyNum_09.bti",
+};
 
 void cls_804B13D4::fn_8041918C(s32 player) {
     if (fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {

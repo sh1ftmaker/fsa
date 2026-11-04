@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/tu_80379F84.h"
 
 void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
@@ -48,7 +49,7 @@ extern "C" void fn_801365A8() {
 }
 
 extern "C" void fn_80139958() {
-    fn_8037A708(lbl_8053AD68);
+    lbl_8053AD68->fn_8037A708();
 }
 
 // JUTGamePad C3ButtonReset callback (JUTResetBtnCb).

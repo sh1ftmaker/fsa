@@ -1137,17 +1137,10 @@ void fn_8019169C(void* self);
 }
 
 // The 4-byte pointer at .sbss lbl_8053AD68 (the cls_804AE9A0 object, declared
-// in game/tu_80379F84.h). Passed in r3 to
-// fn_8037A708, fn_8037A580 and fn_8037A664 (game/tu_80379F84.cpp) by
-// game/tu_80134C04.cpp's fn_80139958 and the code around 0x80136FC4.
+// in game/tu_80379F84.h with its members fn_8037A708, fn_8037A580 and
+// fn_8037A664). Used by game/tu_80134C04.cpp's fn_80139958 and the code
+// around 0x80136FC4.
 extern cls_804AE9A0* lbl_8053AD68;
-
-extern "C" {
-// Owner: game/tu_80379F84.cpp (0x8037A708, defined there; not written yet).
-// Takes the object lbl_8053AD68 holds; it reads the pointers at 0x4, 0x8 and
-// 0xC and clears the byte at 0x1C.
-void fn_8037A708(cls_804AE9A0* obj);
-}
 
 // SHARED-EDIT (act_blizzard_battle): owner game/tu_802B3674.cpp (0x802B39E8,
 // defined there; not written yet). Takes the actor in r3 (fn_801F666C's result)

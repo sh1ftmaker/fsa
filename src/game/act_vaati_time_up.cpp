@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameView.h"
 #include "game/tu_802EF76C.h"
+#include "game/tu_80182914.h"
 #include "game/act/act_vaati_time_up.h"
 
 // Frame offsets of the "enemy_gc_sob.bin" sprite, indexed by field_0x2c8.
@@ -10,7 +11,6 @@ VaatiTimeUp_804ACCC0::~VaatiTimeUp_804ACCC0() {}
 
 void VaatiTimeUp_804ACCC0::init() {
     cls_801EBA14 rec;
-    GXColor color;
 
     mViewBox = fn_802D6A9C()->mVisibleBox;
     mPos.x = 64.0f + mViewBox.f.x;
@@ -41,8 +41,7 @@ void VaatiTimeUp_804ACCC0::init() {
     field_0x2d0 = 0;
     field_0x2f8 = 1;
 
-    fn_8018330C(&color, 0);
-    field_0x2d4.mColor = color;
+    field_0x2d4.mColor = fn_8018330C();
     field_0x2d8 = (f32)(field_0x2d4.mWord >> 24);
     field_0x2dc = (f32)((field_0x2d4.mWord >> 16) & 0xFF);
     field_0x2e0 = (f32)((field_0x2d4.mWord >> 8) & 0xFF);

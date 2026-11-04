@@ -15,8 +15,6 @@ static const s16 lbl_8048FBA4[8] = {-138, -346, 22, -103, 303, 365, 56, 0};
 
 static const s16 lbl_8048FBB4[8] = {29, -266, 235, -137, 10, -268, -130, 0};
 
-extern "C" void fn_80443688() {}
-
 // Starts the window animation of kind 0-7 with timer a and hold time b (only
 // while idle). Returns false.
 // FIXME: 98.0 %. Scheduling only: the target computes the table addresses
@@ -65,9 +63,9 @@ void cls_804B1AE8::fn_804435B8() {
     mState = 1;
 }
 
-// FIXME: 96.3 %. The target's table base is one object, lbl_8048FB88, with
-// the x and y arrays at offsets 0x1c and 0x2c. Ours are separate arrays, so
-// the base reads as ...rodata.0 (a single struct moved the base load, 61.8 %).
+// FIXME: 96.6 %. Only the scale's division: the original loads the pane's
+// field_0x18 before the table value (lfs f2 / lfsx f0); ours loads them the
+// other way round.
 void cls_804B1AE8::fn_804434B8() {
     mTimer++;
     mPtestmap->fn_80402B10(30, 0, 0.0f, (f32)lbl_8048FBA4[mKind]);
@@ -109,6 +107,9 @@ void cls_804B1AE8::fn_80443638() {
         (lbl_8053AEF0->*lbl_804B1AC4[mState])();
     }
 }
+
+// Empty; tu_8043A0E8 calls it on lbl_8053AEF0.
+void cls_804B1AE8::fn_80443688() {}
 
 cls_804B1AE8::~cls_804B1AE8() {
     delete mScreen;

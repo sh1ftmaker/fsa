@@ -2,6 +2,7 @@
 #include "game/tu_802EF76C.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
+#include "game/tu_80182914.h"
 
 // Steps colour channel i toward its end value; it lands on the end when the
 // step would pass it.
@@ -21,9 +22,6 @@ static inline void applyColor(cls_804AA4F0* actor) {
     fn_8013A884(&packed);
 }
 
-// A two-float zero constant in this unit's .sdata2 (8 bytes); init reads the first.
-const f32 lbl_80541430[2] = {0.0f, 0.0f};
-
 cls_804AA4F0::~cls_804AA4F0() {}
 
 void cls_804AA4F0::draw() {}
@@ -40,9 +38,7 @@ void cls_804AA4F0::init() {
     s32 index = (field_0x90 >> 22) & 0x1F;
     field_0x240 = index;
     mState = 0;
-    GXColor color;
-    fn_8018330C(&color, index);
-    mColor.mColor = color;
+    mColor.mColor = fn_8018330C();
     mColorCur[0] = (u32)mColor.mWord >> 24;
     mColorCur[1] = ((u32)mColor.mWord >> 16) & 0xFF;
     mColorCur[2] = ((u32)mColor.mWord >> 8) & 0xFF;
@@ -51,7 +47,7 @@ void cls_804AA4F0::init() {
     Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     field_0x234 = -camera->field_0x4[0][3];
     field_0x238 = -camera->field_0x4[1][3];
-    field_0x23c = lbl_80541430[0];
+    field_0x23c = 0.0f;
     switch (field_0x244) {
     case 0:
         vfunc_0x54(0xD2, 0xC8, 0xAA, 0, 0xA, 4);
