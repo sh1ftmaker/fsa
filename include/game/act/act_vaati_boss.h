@@ -177,6 +177,12 @@ public:
     // state 5 it draws it once more first and scales the matrix by a
     // height-dependent factor (fn_802F5FF4 of mPos.z).
     void fn_801EDD0C();
+    // 0x801D5D84: the state setter (a jump table on `state`, up to 0x1A; it
+    // uses the emitters at 0x448).
+    void fn_801D5D84(s32 state);
+    // 0x801E4348: runs the attack-state checks for one player in range and
+    // returns whether it acted (game/tu_801E3618.cpp).
+    bool fn_801E4348();
 
     /* 0x2A8 */ cls_801D6A88 field_0x2a8[0x4];
     /* 0x308 */ cls_801D6A58 field_0x308[0x10];
