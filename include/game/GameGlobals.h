@@ -885,4 +885,8 @@ extern "C" {
 void fn_804316EC(void* obj);
 }
 
+// game/tu_801A0710.cpp (.sdata 0x8053A100, not written yet; -1 in the
+// original): act_terrorpin's vfunc_0x44 compares its field_0x2a8 with it.
+extern s32 lbl_8053A100;
+
 #endif
