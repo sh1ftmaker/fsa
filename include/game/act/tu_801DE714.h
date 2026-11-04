@@ -14,6 +14,10 @@ class cls_804A51E4 : public EnemyBase_804A4808 {
 public:
     // 0x801E22A4: the spawner (tu_801F9484) calls it after operator new(0x2D4).
     cls_804A51E4();
+    // 0x801E2180 (vtable slot 0x08, the deleting destructor): gives back the
+    // count in field_0x2c0 to the save row and clears mAlive of the actor
+    // mTargetSerial names, then EnemyBase's destructor.
+    /* 0x08 */ virtual ~cls_804A51E4();
 
     // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
     void draw();

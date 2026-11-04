@@ -58,7 +58,10 @@ struct SaveRow_8050EC80 {
     /* 0x14 */ u8 field_0x14[0x28 - 0x14];
     // Bit stage * 4 + sub set by fn_80379FF4.
     /* 0x28 */ s32 field_0x28;
-    /* 0x2C */ u8 field_0x2c[0x78 - 0x2C];
+    // Added by tu_801DE714 (__dt__12cls_804A51E4Fv, the TINK actor's destructor): an s32
+    // that is added to and clamped at 0 from below.
+    /* 0x2C */ s32 field_0x2c;
+    /* 0x30 */ u8 field_0x30[0x78 - 0x30];
     /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
     /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
     /* 0x7A */ u8 field_0x7a[0xC8 - 0x7A];

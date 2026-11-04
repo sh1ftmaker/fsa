@@ -2,6 +2,33 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_801DE714.h"
+#include "game/tu_80379F84.h"
+
+// tu_801DE714 (0x801E2180, vtable slot 0x08): the deleting destructor. Its
+// own part runs first; EnemyBase's destructor is inlined after it.
+cls_804A51E4::~cls_804A51E4() {
+    if (mTargetSerial >= 0) {
+        if (field_0x2c0 > 0) {
+            // Bit 0x80000 of mFlags is not in EnemyFlag_804A4808 yet.
+            if ((mFlags & 0x80000) == 0) {
+                SaveRow_8050EC80& row = lbl_8050EC80[lbl_8050EC80[0].field_0x10];
+                row.field_0x2c += field_0x2c0;
+                // The clamp looks the row up again: a second reference keeps
+                // the stores on the same register as the original.
+                SaveRow_8050EC80& clamped = lbl_8050EC80[lbl_8050EC80[0].field_0x10];
+                if (clamped.field_0x2c < 0) {
+                    clamped.field_0x2c = 0;
+                }
+            }
+            field_0x2c0 = 0;
+        }
+        ActorBase_804A5770* target = fn_801F856C()->fn_801F666C(mTargetSerial);
+        if (target != NULL) {
+            target->mAlive = false;
+        }
+        mTargetSerial = -1;
+    }
+}
 
 // tu_801DE714 (0x801DE714): vtable slot 0x80. In state 0xA the floor check
 // is EnemyBase's, called directly (a plain bl, not through the vtable).
