@@ -43,6 +43,11 @@ public:
     void fn_80210D90();
     // 0x802110A8, direct call from vfunc_0x88 (not virtual).
     void fn_802110A8();
+    // Called by the quicksand list (cls_80212AC0::fn_80212AF0, tu_80212AC0)
+    // on each listed actor: whether *pos lies in this quicksand's area, and
+    // the push-out vector for it.
+    bool fn_80211000(const JGeometry::TVec3f* pos) const;
+    void fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const;
 
     /* 0x2A8 */ s32 field_0x2a8; // not yet known; the constructor zeroes it
     /* 0x2AC */ s32 field_0x2ac; // not yet known; the constructor zeroes it
