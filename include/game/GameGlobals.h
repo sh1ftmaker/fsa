@@ -220,7 +220,19 @@ struct GameRootSub20_801902C0 {
     /* 0x000 */ u8 field_0x0[0x2A8]; // not yet known
     /* 0x2A8 */ SmallRequest mSmallRequests[2];
     /* 0x2E0 */ Request mRequests[3];
-    /* 0x340 */ u8 field_0x340[0x5F0 - 0x340]; // not yet known
+    // Up to ten entries, filled by act_quicksand's vfunc_0x9C while
+    // mQuicksandCount (0x4A8) is below 10: the quicksand's position, then
+    // three of its floats (field_0x54.x, 0x398 and 0x3A8).
+    struct QuicksandEntry {
+        /* 0x00 */ JGeometry::TVec3f mPos;
+        /* 0x0C */ f32 field_0xc;
+        /* 0x10 */ f32 field_0x10;
+        /* 0x14 */ f32 field_0x14;
+        /* 0x18 */ u8 field_0x18[0x24 - 0x18]; // not yet known
+    }; // Size: 0x24
+    /* 0x340 */ QuicksandEntry mQuicksandEntries[10];
+    /* 0x4A8 */ s32 mQuicksandCount;
+    /* 0x4AC */ u8 field_0x4ac[0x5F0 - 0x4AC]; // not yet known
     /* 0x5F0 */ QueuedPos mQueuedPos[2];
     /* 0x618 */ s32 mQueuedPosCount;
     /* 0x61C */ u8 field_0x61c[0x7D0 - 0x61C]; // not yet known

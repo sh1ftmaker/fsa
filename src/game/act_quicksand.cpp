@@ -94,6 +94,42 @@ void cls_804A6270::vfunc_0x54() {
     }
 }
 
+void cls_804A6270::vfunc_0x9C(u8 mapHit) {
+    EnemyBase_804A4808::vfunc_0x9C(mapHit);
+    bool active = false;
+    if (mState != 0 && field_0x54.x != 0.0f && field_0x398 != 0.0f) {
+        active = true;
+    }
+    if (active) {
+        // Matching-only: declared in one order and loaded in the reverse, which
+        // is what the original's register assignment (f29-f31) needs.
+        f32 scaleX;
+        f32 field398;
+        f32 field3a8;
+        field3a8 = field_0x3a8;
+        field398 = field_0x398;
+        scaleX = field_0x54.x;
+        GameRootSub20_801902C0* shared = fn_801902C0();
+        if (shared->mQuicksandCount < 10) {
+            GameRootSub20_801902C0::QuicksandEntry& entry = shared->mQuicksandEntries[shared->mQuicksandCount];
+            entry.mPos.x = mPos.x;
+            entry.mPos.y = mPos.y;
+            entry.mPos.z = mPos.z;
+            entry.field_0xc = scaleX;
+            entry.field_0x10 = field398;
+            entry.field_0x14 = field3a8;
+            shared->mQuicksandCount++;
+        }
+    }
+    active = false;
+    if (mState != 0 && field_0x54.x != 0.0f && field_0x398 != 0.0f) {
+        active = true;
+    }
+    if (active) {
+        fn_801F0E34(0x30073, 0);
+    }
+}
+
 cls_804A6270::cls_804A6270() {
     field_0x2a8 = 0;
     field_0x2ac = 0;

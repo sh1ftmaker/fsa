@@ -23,6 +23,12 @@ public:
     // 0x80211078: zeroes field_0x3c, then calls fn_802110A8. Its only caller
     // is the vtable (slot 0x88, over EnemyBase's vfunc_0x88).
     /* 0x88 */ virtual void vfunc_0x88();
+    // 0x80211354 (vtable slot 0x9C, over EnemyBase's vfunc_0x9C): calls
+    // EnemyBase's vfunc_0x9C with mapHit; then, when mState is set and
+    // field_0x54.x and field_0x398 are not 0.0f, appends an entry to the
+    // shared list fn_801902C0 returns; then, under the same test, plays
+    // sound 0x30073 (fn_801F0E34).
+    /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
     // 0x80210D90 (not virtual): sets mFlags bit 0x20000, calls ActorBase's
     // fn_801F3604, then acts on mState: state 1 calls fn_80212ECC on the
     // actor serial field_0x388 and passes field_0x2b8 to GameView with bit
