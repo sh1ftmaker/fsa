@@ -7,15 +7,12 @@
 #include "game/Player.h"
 #include "game/act/act_rank_display.h"
 #include "game/tu_80379F84.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 
-// Emitters are released as fn_801EE434 does (the nearest helper, as in
-// act_warp_pillar). FIXME: the original clears the emitter's status word
-// directly (word 0xF4 |= 1, word 0x24 = 1) and nulls the member itself, inline
-// (the destructor unrolled for the four players, update in three places), so
-// those sites differ.
-static inline void releaseEmitter(JPABaseEmitter*& emitter) {
+// Stops an emitter (it runs out) and forgets it.
+static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     if (emitter != NULL) {
-        fn_801EE434(emitter);
+        emitter->becomeInvalidEmitter();
         emitter = NULL;
     }
 }
@@ -184,11 +181,10 @@ void RankDisplay_804A8F74::draw() {
     }
 }
 
-// FIXME: 70.6 %. The three inline emitter releases (lwz 0xF4; ori 1; stw 0xF4;
-// stw 1 to 0x24) are bl fn_801EE434 here; the emitter position and scale words
-// (0x98-0xB4) are not written (see below), so the original keeps f30 and f31
-// live across the fn_8023E724 calls (frame 0x90, ours 0x60); the rank loops
-// differ in register numbers.
+// FIXME: 99.2 %. Register allocation only: the loop counters and the read-once
+// rank values sit in other callee-saved registers (r23/r24/r31/r29 swapped),
+// the zero stored for absent players comes from the counter register in the
+// original (mr r27, r31), and the rank counter is cleared one slot earlier.
 void RankDisplay_804A8F74::update() {
     JGeometry::TVec3f* player = fn_8023E724(0);
     mPos.x = player->x;
@@ -204,8 +200,9 @@ void RankDisplay_804A8F74::update() {
             }
             for (s32 i = 0; i < lbl_8053AAF8->fn_80138A30(); i++) {
                 s32 rank = 0;
+                s32 time = times[i];
                 for (s32 j = 0; j < lbl_8053AAF8->fn_80138A30(); j++) {
-                    if (i != j && times[i] < times[j]) {
+                    if (i != j && time < times[j]) {
                         rank++;
                     }
                 }
@@ -220,20 +217,13 @@ void RankDisplay_804A8F74::update() {
                     pl[i] = 0;
                 }
             }
-            // The four players' ranks, unrolled in the original.
             for (s32 k = 0; k < 4; k++) {
                 s32 rank = 0;
-                if (k != 0 && pl[k] < pl[0]) {
-                    rank++;
-                }
-                if (k != 1 && pl[k] < pl[1]) {
-                    rank++;
-                }
-                if (k != 2 && pl[k] < pl[2]) {
-                    rank++;
-                }
-                if (k != 3 && pl[k] < pl[3]) {
-                    rank++;
+                s32 value = pl[k];
+                for (s32 j = 0; j < 4; j++) {
+                    if (k != j && value < pl[j]) {
+                        rank++;
+                    }
                 }
                 field_0x244[k] = rank;
             }
@@ -244,19 +234,12 @@ void RankDisplay_804A8F74::update() {
         if (field_0x244[i] != field_0x254[i]) {
             if (field_0x278 != 0 && !fn_8022AF5C()) {
                 for (s32 k = 0; k < 4; k++) {
-                    if (playerTakesPart(k) != true) {
+                    if (playerTakesPart(k) == false) {
                         continue;
                     }
-                    SaveRow_8050EC80& row = lbl_8050EC80[lbl_8050EC80->field_0x10];
-                    if (lbl_8053AAF8->field_0x7f == 1) {
-                        if (row.field_0x7a[0x88 - 0x7A] == 0) {
-                            continue;
-                        }
-                    } else if (lbl_8053AAF8->field_0x7f == 0) {
-                        if (row.field_0x7a[0x89 - 0x7A] == 0) {
-                            continue;
-                        }
-                    } else {
+                    u8 mode = lbl_8053AAF8->field_0x7f;
+                    if (!((mode == 1 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x88 != 0) ||
+                          (mode == 0 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x89 != 0))) {
                         continue;
                     }
                     if (fn_8023DE58(k) >= 8) {
@@ -265,21 +248,15 @@ void RankDisplay_804A8F74::update() {
                     field_0x27c[k] = 180;
                     field_0x28c[k] = 1;
                     if (field_0x244[k] < field_0x254[k]) {
-                        releaseEmitter(mEmitters[k]);
+                        invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
-                            JGeometry::TVec3f pos;
-                            pos.z = fn_8023E724(k)->z;
-                            pos.y = fn_8023E724(k)->y - 28.0f;
-                            pos.x = fn_8023E724(k)->x;
+                            JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
                             mEmitters[k] = fn_8013CC50(0, &pos, 0x3A6, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     } else if (field_0x244[k] > field_0x254[k]) {
-                        releaseEmitter(mEmitters[k]);
+                        invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
-                            JGeometry::TVec3f pos;
-                            pos.z = fn_8023E724(k)->z;
-                            pos.y = fn_8023E724(k)->y - 28.0f;
-                            pos.x = fn_8023E724(k)->x;
+                            JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
                             mEmitters[k] = fn_8013CC50(0, &pos, 0x3A5, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     }
@@ -301,20 +278,18 @@ void RankDisplay_804A8F74::update() {
         if (fn_8022D75C(k)) {
             field_0x274[k] = fn_8023BCD4(k);
         }
-        if (field_0x27c[k] == 0) {
-            field_0x28c[k] = 0;
-        } else {
+        if (field_0x27c[k] != 0) {
             field_0x27c[k]--;
+        } else {
+            field_0x28c[k] = 0;
         }
         if (field_0x28c[k] == 1) {
             if (mEmitters[k] != NULL) {
-                // FIXME: the original writes the emitter's position words
-                // (0xA4-0xAC, from fn_8023E724(k) as z, y - 28, x) and five
-                // 0.4f words at 0x98-0xB4 here. JPABaseEmitter names none of
-                // them, so they are left out.
+                mEmitters[k]->setGlobalTranslation(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
+                mEmitters[k]->setScale(0.4f);
             }
         } else {
-            releaseEmitter(mEmitters[k]);
+            invalidateEmitter(mEmitters[k]);
         }
     }
 }
@@ -346,11 +321,11 @@ void RankDisplay_804A8F74::init() {
     field_0x11f = 1;
 }
 
-// FIXME: 69.3 %. The four emitter releases are inline in the original (word
-// 0xF4 |= 1, word 0x24 = 1, member nulled), each a bl fn_801EE434 here.
 RankDisplay_804A8F74::~RankDisplay_804A8F74() {
-    releaseEmitter(mEmitters[0]);
-    releaseEmitter(mEmitters[1]);
-    releaseEmitter(mEmitters[2]);
-    releaseEmitter(mEmitters[3]);
+    for (s32 i = 0; i < 4; i++) {
+        if (mEmitters[i] != NULL) {
+            mEmitters[i]->becomeInvalidEmitter();
+            mEmitters[i] = NULL;
+        }
+    }
 }

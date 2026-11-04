@@ -64,7 +64,12 @@ struct SaveRow_8050EC80 {
     /* 0x30 */ u8 field_0x30[0x78 - 0x30];
     /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
     /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
-    /* 0x7A */ u8 field_0x7a[0xC8 - 0x7A];
+    /* 0x7A */ u8 field_0x7a[0x88 - 0x7A];
+    // Tested by act_rank_display's update before it shows a rank change:
+    // field_0x88 when GameRoot's field_0x7f is 1, field_0x89 when it is 0.
+    /* 0x88 */ u8 field_0x88;
+    /* 0x89 */ u8 field_0x89;
+    /* 0x8A */ u8 field_0x8a[0xC8 - 0x8A];
 }; // Size: 0xC8
 
 extern SaveRow_8050EC80 lbl_8050EC80[];
