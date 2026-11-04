@@ -35,6 +35,13 @@ public:
     // the (0x230, 0x234) position and 0x238 layer to GameView's fn_802D6C10
     // and clears mAlive.
     void fn_802C1DFC();
+    // 0x802C2300 (act_small_key's range): takes a player bitmask (bits 1-3
+    // pick players 1-3, else 0). Stores the player's index in 0x2A4 and the
+    // index of the player it is paired with (fn_8022F3DC, if fn_8022F514
+    // holds) in 0x2A0. Returns false when the early checks or the view's
+    // bit 0x168 (fn_802D46D8) refuse; otherwise returns true, calling
+    // fn_8022FE80 when the conversation test (fn_802308E0 or fn_8023077C) holds.
+    bool fn_802C2300(u8 playerBits);
     // 0x802C5284: passes its position (0x230) and layer (0x238) to GameView's
     // fn_802D6C10, with the view from fn_802D6A9C().
     void fn_802C5284();
@@ -54,7 +61,10 @@ public:
     /* 0x280 */ s32 field_0x280; // 6 is tested by act_magic_circle_generator fn_802E7DB8 (word compare)
     /* 0x284 */ u8 field_0x284[0x288 - 0x284]; // not yet known
     /* 0x288 */ s32 field_0x288; // countdown: while nonzero, vfunc_0x4C decrements it and returns 0
-    /* 0x28C */ u8 field_0x28c[0x2AA - 0x28C]; // not yet known
+    /* 0x28C */ u8 field_0x28c[0x2A0 - 0x28C]; // not yet known
+    /* 0x2A0 */ s32 field_0x2a0; // player's index (0..3, u8), set by 0x802C2300
+    /* 0x2A4 */ s32 field_0x2a4; // player's index (0..3, u8), set by 0x802C2300
+    /* 0x2A8 */ u8 field_0x2a8[0x2AA - 0x2A8]; // not yet known
     /* 0x2AA */ u16 field_0x2aa; // screen column in the high byte, row in the low
     /* 0x2AC */ u8 field_0x2ac[0x2B0 - 0x2AC]; // not yet known
     /* 0x2B0 */ bool field_0x2b0; // set to true by fn_802C2BD0
