@@ -1,4 +1,5 @@
 #include "game/GameGlobals.h"
+#include "game/GameMode.h"
 #include "JSystem/JUtility/JUTTexture.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
@@ -16,7 +17,7 @@ void cls_804A0160::fn_8015945C() {
 
 cls_804A0160::cls_804A0160(JKRHeap* heap) : field_0x4() {
     field_0x8 = new (heap, 0) JUTTexture(
-        static_cast<const ResTIMG*>(lbl_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, "circle.bti")), 0);
+        static_cast<const ResTIMG*>(lbl_8053AAF8->field_0xa4->getResource('?\?\?\?', "circle.bti")), 0);
 }
 
 cls_804A0160::~cls_804A0160() {
@@ -43,40 +44,15 @@ void fn_80158E88() {
     GXSetChanMatColor(GX_COLOR0A0, mat);
 }
 
-// FIXME: 65.71%. Missing/extra. The original tests `mode == 0xC` as a value
-// (subfic/cntlzw/extrwi, then bne to the epilogue), not as cmpwi/beq, and
-// lays out the 0x7F and 0x94/0x96 tests differently. Tried: one bool chain
-// (27.7%) and the body inside `if (mode != 0xC)` (56%); neither gave the shape.
+// FIXME: 96.5 %. The original materialises the mode-0xC test as a byte
+// (subfic / cntlzw / extrwi., then bne) where ours compares (cmpwi / beq);
+// a bool or u8 local and a u8 inline didn't give it. The rest is
+// isGameModeSet() (game/GameMode.h).
 void cls_804A0160::fn_80159330() {
-    if (lbl_8053AAF8->field_0x4c == 0xC) {
+    if (lbl_8053AAF8->field_0x4c == GAME_MODE_C) {
         return;
     }
-    bool flag = false;
-    if (lbl_8053AAF8->field_0x7f != 0) {
-        switch (lbl_8053AAF8->field_0x4c) {
-        case 7:
-        case 8:
-        case 9:
-        case 0x16:
-        case 0xA:
-        case 0xB:
-            flag = true;
-            break;
-        }
-    } else {
-        switch (lbl_8053AAF8->field_0x4c) {
-        case 7:
-        case 8:
-        case 9:
-        case 0x16:
-        case 0xA:
-        case 0xB:
-        case 0xC:
-            flag = true;
-            break;
-        }
-    }
-    if (!flag || !fn_802D6A9C()->fn_802DCD0C()) {
+    if (!isGameModeSet() || !fn_802D6A9C()->fn_802DCD0C()) {
         if (lbl_8053AAF8->field_0x94 == 0 && lbl_8053AAF8->field_0x96 == 0) {
             field_0xd[0] = 0;
         }
@@ -136,16 +112,16 @@ void cls_804A0160::fn_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility
     GXTexCoord2f32(-1.0f, 1.0f);
 }
 
-// FIXME: 97.98%. Two instructions short: the original converts the two u16
-// render-mode sizes with the unsigned xoris 0x8000 sequence (lbl_8053D448,
-// 2^52 + 2^31); ours reads them as plain u16 floats. The 0.0f literal is @475.
+// FIXME: 99.92 %. The tev colour's stack slot is 0xC where the original has
+// 0x10, and the 0.0f literal is @NNN (.sdata2 not split). The u16 sizes are
+// converted with the signed (xoris 0x8000) form: an explicit (s32).
 void cls_804A0160::fn_80158F70() {
     if (field_0x4.toUInt32() == 0xFFFFFF00 && field_0xc >= 0xFF) {
         return;
     }
     GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
-    f32 fbWidth = renderMode->fbWidth;
-    f32 efbHeight = renderMode->efbHeight;
+    f32 fbWidth = (s32)renderMode->fbWidth;
+    f32 efbHeight = (s32)renderMode->efbHeight;
     lbl_8053AB10->fn_8013B460();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);

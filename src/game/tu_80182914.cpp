@@ -221,8 +221,6 @@ void cls_804A1718::vfunc_0x44() {
     field_0x230 = 4;
 }
 
-// FIXME: 99.95 %. The original zeroes field_0x268 and field_0x3c one float at a
-// time, z then y then x; TVec3::set stores x, y, z, so the six stores are reordered.
 void cls_804A1718::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -244,8 +242,8 @@ void cls_804A1718::init() {
         field_0x238[1] = (field_0x234.toUInt32() >> 16) & 0xFF;
         field_0x238[2] = (field_0x234.toUInt32() >> 8) & 0xFF;
     }
-    field_0x268.set(0.0f, 0.0f, 0.0f);
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x268.zero();
+    field_0x3c.zero();
     field_0x258 = 0;
     field_0x264 = 0;
     field_0x195 = 1;
@@ -254,6 +252,6 @@ void cls_804A1718::init() {
 }
 
 // Returns the colour of the cls_804A0160 at lbl_8053AB10->0x2C.
-extern "C" JUtility::TColor fn_8018330C() {
+JUtility::TColor fn_8018330C() {
     return lbl_8053AB10->field_0x2c->field_0x4;
 }

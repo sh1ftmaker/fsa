@@ -23,8 +23,6 @@ void ZoraEnemy_804A3D7C::vfunc_0xA8() {}
 
 void ZoraEnemy_804A3D7C::vfunc_0xA4() {}
 
-extern "C" void fn_801BB1A8() {}
-
 void ZoraEnemy_804A3D7C::vfunc_0xA0() {
     if (mState != 0) {
         lbl_8053AB10->field_0x24->fn_8030C210(&mPos);

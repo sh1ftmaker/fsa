@@ -5,6 +5,7 @@
 #include "game/Player.h"
 #include "game/Effect.h"
 #include "game/Message.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_two_sword_motion.h"
 
 // Offsets from the actor's position for each swing phase: row = fn_80230CFC's
@@ -85,11 +86,10 @@ static inline f32 swingPhase(s32 index, s32 phase) {
     return (f32)index - ((f32)phase - 1.0f) * 0.5f;
 }
 
-// FIXME: 87.03 %. The state dispatch, the spawn calls and the countdowns match
-// in order; the stack frame is 0x80 bytes where the original's is 0x90 (its
-// extra temporaries are the by-value mPos copy for fn_8038BD08 and the
-// swing positions), so the argument registers and some stack slots differ.
-// The emitter flag writes of state 3 are missing (see the FIXME there).
+// FIXME: 96.1 %. At the fn_8038BD08 call the original loads field_0x4 and
+// the address of its by-value mPos copy before the psq copy and builds the
+// copy at sp+0x44 (frame 0x90); ours builds it at sp+0x8, so the stack slots
+// of the later position temporaries differ.
 void TwoSwordMotion_804ABA90::update() {
     switch (field_0x230) {
     case 0:
@@ -261,10 +261,15 @@ void TwoSwordMotion_804ABA90::update() {
                 none = false;
                 break;
             }
-            if (none) {
-                // FIXME: the original sets bit 0 of word 0xF4 and word 0x24 of
-                // each of field_0x2a0[i] / field_0x2b0[i] to 1 here; JPABaseEmitter
-                // declares neither word (the flags it has are at 0x20C).
+            if (none == true) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (field_0x2a0[i] != NULL) {
+                        field_0x2a0[i]->becomeInvalidEmitter();
+                    }
+                    if (field_0x2b0[i] != NULL) {
+                        field_0x2b0[i]->becomeInvalidEmitter();
+                    }
+                }
                 mAlive = false;
             }
         }
@@ -321,9 +326,6 @@ bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
     return fn_802265DC(pos, layer, true);
 }
 
-// FIXME: 99.98 %. The only difference is the 0.0f stores: the original loads
-// them from lbl_80542048 (an sdata2 pair of zeros, a data split), ours from a
-// compiler literal.
 void TwoSwordMotion_804ABA90::init() {
     field_0x24c = field_0x90 & 3;
     field_0x250 = (field_0x90 >> 2) & 3;
@@ -380,9 +382,7 @@ void TwoSwordMotion_804ABA90::init() {
     field_0x274 = 0;
     field_0x264 = 0;
     field_0x278 = 0;
-    field_0x294.x = 0.0f;
-    field_0x294.y = 0.0f;
-    field_0x294.z = 0.0f;
+    field_0x294.zero();
     field_0x11f = 1;
     field_0x230 = 0;
 }

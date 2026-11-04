@@ -198,22 +198,12 @@ void WarpPillar_804AC0A8::init() {
     field_0x258 = 0.0f;
     mEmitter264 = NULL;
     mEmitter268 = NULL;
-    field_0x25c[0] = false;
-    mEmitter26c[0] = NULL;
-    field_0x248[0] = 0;
-    field_0x260[0] = false;
-    field_0x25c[1] = false;
-    mEmitter26c[1] = NULL;
-    field_0x248[1] = 0;
-    field_0x260[1] = false;
-    field_0x25c[2] = false;
-    mEmitter26c[2] = NULL;
-    field_0x248[2] = 0;
-    field_0x260[2] = false;
-    field_0x25c[3] = false;
-    mEmitter26c[3] = NULL;
-    field_0x248[3] = 0;
-    field_0x260[3] = false;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x25c[i] = false;
+        mEmitter26c[i] = NULL;
+        field_0x248[i] = 0;
+        field_0x260[i] = false;
+    }
 
     if (mEmitter264 == NULL) {
         JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);

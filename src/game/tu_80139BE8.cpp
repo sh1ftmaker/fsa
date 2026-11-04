@@ -24,7 +24,7 @@ void GameRootSub04_801F856C::fn_80139BE8() {
     lbl_8053AB10->field_0x20->field_0x235c[3] = 0;
 }
 
-extern "C" void fn_80139C5C() {
+void fn_80139C5C() {
     lbl_8053AED0->fn_8043D5F0();
     fn_8038D4A8();
 }
@@ -36,7 +36,7 @@ void GameRootSub04_801F856C::fn_80139C84() {
     }
 }
 
-extern "C" void fn_80139D70() {
+void fn_80139D70() {
     fn_8043D644(lbl_8053AED0);
     fn_8043D8B4(lbl_8053AED0);
 }
@@ -55,12 +55,12 @@ void GameRootSub04_801F856C::fn_80139CC4() {
 
 void GameRootSub04_801F856C::fn_80139D3C() {
     if (lbl_8053AB10->field_0x39 == 0) {
-        fn_8016DB60(field_0x24);
+        field_0x24->fn_8016DB60();
     }
 }
 
 void GameRootSub04_801F856C::fn_8013A1A4() {
-    fn_8016EDB0(field_0x24);
+    field_0x24->fn_8016EDB0();
     mActorManager->fn_801F8E4C();
     mView->vfunc_0xC();
     if (lbl_8053AAF8->field_0x7e == 1) {
@@ -101,7 +101,7 @@ GameRootSub04_801F856C::~GameRootSub04_801F856C() {
         field_0x30->destroy();
     }
     lbl_8053AB00->getTotalFreeSize();
-    fn_8016EE84(field_0x24, 1);
+    field_0x24->fn_8016EE84(1);
     field_0x24 = NULL;
     lbl_8053AB00->getTotalFreeSize();
     fn_80191744(field_0x20, 1);

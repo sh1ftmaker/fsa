@@ -25,7 +25,7 @@ void cls_804A1630::vfunc_0x24() {
 
 // The view's box for an actor layer: mVisibleBox for layers 0-7, field_0xdc
 // for the rest.
-extern "C" JGeometry::TBox2f* fn_801826A4(s32 layer) {
+JGeometry::TBox2f* fn_801826A4(s32 layer) {
     GameView_804A9950* view = fn_802D6A9C();
     if (layer < 8) {
         return &view->mVisibleBox;

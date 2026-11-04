@@ -163,6 +163,8 @@ public:
     virtual ~VaatiBoss_804A4958();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // empty override
+    // 0x801D652C: lbl_8053AF80->fn_80458F9C(60).
+    /* 0x54 */ virtual void vfunc_0x54();
     // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
     // mState is 6, 7, 0xB or 0x17..0x1A (no call in those states).
     /* 0x94 */ virtual void vfunc_0x94();

@@ -33,6 +33,6 @@ void VaatiBoss_804A4958::vfunc_0x94() {
     }
 }
 
-extern "C" void fn_801D652C() {
+void VaatiBoss_804A4958::vfunc_0x54() {
     lbl_8053AF80->fn_80458F9C(60);
 }
