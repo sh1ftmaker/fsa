@@ -30,15 +30,15 @@ void fn_80139C5C() {
 }
 
 void GameRootSub04_801F856C::fn_80139C84() {
-    fn_8043DC98(lbl_8053AED0);
+    lbl_8053AED0->fn_8043DC98();
     if (field_0x2c != NULL) {
         field_0x2c->fn_8044B8EC();
     }
 }
 
 void fn_80139D70() {
-    fn_8043D644(lbl_8053AED0);
-    fn_8043D8B4(lbl_8053AED0);
+    lbl_8053AED0->fn_8043D644();
+    lbl_8053AED0->fn_8043D8B4();
 }
 
 void GameRootSub04_801F856C::fn_80139CC4() {

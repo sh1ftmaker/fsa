@@ -736,6 +736,14 @@ public:
     // returns a float in f1 with only `this` (*lbl_8053AED0) in r3.
     // game/tu_804455E0.cpp's fn_804455E0 passes it as y for the slots 2 and 3.
     f32 fn_8043D57C();
+
+    // 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): no
+    // arguments besides the object; fn_80139D70 calls them in turn.
+    void fn_8043D644();
+    void fn_8043D8B4();
+    // 0x8043DC98 (game/tu_8043A0E8.cpp, not written yet): no arguments besides
+    // the object; GameRootSub04_801F856C::fn_80139C84 calls it first.
+    void fn_8043DC98();
 };
 extern cls_804B1920* lbl_8053AED0;
 
@@ -753,17 +761,6 @@ public:
 // constructor (fn_8013A538, game/tu_80139BE8.cpp) stores, which the destructor
 // asks for getTotalFreeSize between its steps.
 extern JKRHeap* lbl_8053AB00;
-
-// 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): C-linkage
-// (the original calls them by plain name), each taking the object in r3 and
-// no other arguments. fn_80139D70 calls them in turn.
-extern "C" {
-void fn_8043D644(cls_804B1920* self);
-void fn_8043D8B4(cls_804B1920* self);
-// 0x8043DC98 (game/tu_8043A0E8.cpp, not written yet): takes the object in r3
-// and no other arguments; fn_80139C84 calls it first.
-void fn_8043DC98(cls_804B1920* self);
-} // extern "C"
 
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
 // game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
@@ -957,7 +954,7 @@ extern const s32 lbl_8053EE00;
 // into the u32 an 'SLK2' spawn takes as its arg_0x90: a in bits 0-4, b in
 // 5-7, c in 8-11, d in 12-15 and e in 20-27. act_shadow_link_generator passes
 // (8, 0, slot, 0, 0) for each spawn.
-extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e);
+u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e);
 
 // Shared .sdata2 constants owned by game/tu_801CB270.cpp (not written yet),
 // global consts read by several Shadow Link and enemy units: the gravity step
