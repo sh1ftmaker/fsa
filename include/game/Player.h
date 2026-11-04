@@ -1015,6 +1015,9 @@ void fn_80238E08(s32 serial);
 // first player whose test passes, fn_8023AE34 and fn_8023AD54 the last one;
 // all return -1 when none does (also without a player manager).
 s32 fn_8023AE34(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+// Owner unit not written yet (0x8023A6CC, 0xF0 bytes). 1 unit (act_on_off_switch
+// update), which passes a box and a layer only; the s32 result is tested with cmpwi.
+extern "C" s32 fn_8023A6CC(const JGeometry::TBox2f* box, s32 layer);
 s32 fn_8023AA18(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 s32 fn_8023AC74(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 s32 fn_8023AD54(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);

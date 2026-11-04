@@ -102,8 +102,6 @@ act_navi_maiden_crystal	dtor	__dt__12cls_804ADFE8Fv	cls_804ADFE8	0x804ADFE8	new	
 act_navi_maiden_crystal	sinit	__sinit_act_navi_maiden_crystal_cpp	-	-	new	new
 act_octorok	dtor	__dt__16Octorok_8049F208Fv	Octorok_8049F208	0x8049F208	new	new
 act_octorok	sinit	__sinit_act_octorok_cpp	-	-	new	new
-act_on_off_switch	dtor_emit	__dt__12cls_804A8FC8Fv	cls_804A8FC8	0x804A8FC8	new	new
-act_on_off_switch	sinit	__sinit_act_on_off_switch_cpp	-	-	new	-
 act_panel_rewrite_npc	sinit	__sinit_act_panel_rewrite_npc_cpp	-	-	new	-
 act_particle_npc	sinit	__sinit_act_particle_npc_cpp	-	-	new	-
 act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
