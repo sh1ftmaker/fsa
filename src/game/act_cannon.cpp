@@ -46,7 +46,7 @@ void Cannon_8049CCF0::init() {
     mAnim.fn_801D2608(lbl_80539ED0, 1);
     mAnim.fn_801D22DC(0, 2, false);
     mAnim.fn_801D1F14(0.0f);
-    static_cast<Vec&>(mHomePos) = mPos;
+    mHomePos.set(mPos);
     if (vfunc_0x3C()) {
         if (vfunc_0x34()) {
             field_0x269 = 1;
@@ -113,12 +113,6 @@ bool Cannon_8049CCF0::fn_80107360() {
     field_0x284 = 0.0f;
     return true;
 }
-
-// File statics of the state-3 animation (.sbss).
-static s32 lbl_8053AA70;
-static s8 lbl_8053AA74;
-static f32 lbl_8053AA78;
-static s8 lbl_8053AA7C;
 
 // The swing (state 0 and 2): moves mPos.x between mHomePos.x +- 8 * field_0x280
 // with a speed that falls off near the ends.
@@ -231,12 +225,7 @@ void Cannon_8049CCF0::update() {
         field_0x270++;
         if (field_0x270 >= 180 && field_0x270 < 300) {
             s16 a = (field_0x270 - 180) * (field_0x270 - 180) / 6;
-            f32 sinv;
-            if ((f32)a < 0.0f) {
-                sinv = -JMath::sincosTable_.mTable[(int)(-5.688889f * (f32)a) & 0x7FF].first;
-            } else {
-                sinv = JMath::sincosTable_.mTable[(int)(5.688889f * (f32)a) & 0x7FF].first;
-            }
+            f32 sinv = JMath::sincosTable_.sinDegree(a);
             mPos.y = mHomePos.y + (f32)(12 * ((200 - (field_0x270 - 180)) / 100) + 2) * sinv;
         } else if (field_0x270 >= 300) {
             fn_80231590(field_0x26c, mSerial);
@@ -283,14 +272,8 @@ void Cannon_8049CCF0::update() {
         }
         break;
     case 3:
-        if (lbl_8053AA74 == 0) {
-            lbl_8053AA70 = 0;
-            lbl_8053AA74 = 1;
-        }
-        if (lbl_8053AA7C == 0) {
-            lbl_8053AA7C = 1;
-            lbl_8053AA78 = 0.0f;
-        }
+        static s32 lbl_8053AA70 = 0;
+        static f32 lbl_8053AA78 = 0.0f;
         lbl_8053AA78 = lbl_8053AA78 + 0.1f;
         if (lbl_8053AA78 >= 1.0f) {
             lbl_8053AA78 = 1.0f;

@@ -31,18 +31,6 @@ public:
     /* 0x20 */ virtual void draw();
 };
 
-// One entry of the buffer. Only the fields read so far are named: +0x4 is the
-// layer (compared with fn_800FE25C's result in game/tu_801D3320.cpp), +0xC the
-// position (read by fn_800FE294).
-struct RailPoint {
-    /* 0x00 */ u8 field_0x0[4];
-    /* 0x04 */ s32 layer;
-    /* 0x08 */ u8 field_0x8[4];
-    /* 0x0C */ JGeometry::TVec3f pos;
-    /* 0x18 */ u8 field_0x18[0x90 - 0x18];
-    /* 0x90 */ u32 field_0x90; // top byte: fn_800FE21C's result (srwi 24)
-};
-
 // The element class of a 0xC8-byte buffer (0x31 pointer entries). Its method
 // fn_800FE3EC (RailBase.cpp) starts by clearing bytes 2, 3 and 1, as the
 // inline clear() does, and then fills the entries. Users: the pair container
@@ -80,7 +68,7 @@ public:
     /* 0x01 */ u8 field_0x1;
     /* 0x02 */ u8 field_0x2;
     /* 0x03 */ u8 field_0x3;
-    /* 0x04 */ RailPoint* field_0x4[0x31];
+    /* 0x04 */ ActorBase_804A5770* field_0x4[0x31]; // the rail points (fn_801F71E8 fills them)
 }; // Size: 0xC8
 
 extern "C" {

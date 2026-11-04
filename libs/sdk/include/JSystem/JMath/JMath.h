@@ -147,6 +147,12 @@ namespace JMath
             }
             return mTable[static_cast<u16>((T)(1 << N) / TAngleConstant_<T>::RADIAN_DEG360() * x) & ((1 << N) - 1)].first;
         }
+        f32 sinDegree(f32 x) const {
+            if (x < 0.0f) {
+                return -mTable[static_cast<u16>(-((T)(1 << N) / (T)360.0) * x) & ((1 << N) - 1)].first;
+            }
+            return mTable[static_cast<u16>(((T)(1 << N) / (T)360.0) * x) & ((1 << N) - 1)].first;
+        }
 
         std::pair<f32, f32> mTable[2048];
     };

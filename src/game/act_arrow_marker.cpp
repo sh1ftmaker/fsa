@@ -6,7 +6,7 @@
 #include "game/Player.h"
 #include "game/act/act_arrow_marker.h"
 
-static const s32 kArrowStep[2] = {4, -4};
+static const s32 lbl_80540968[2] = {4, -4};
 
 ArrowMarker_804A8470::~ArrowMarker_804A8470() {}
 
@@ -72,7 +72,7 @@ void ArrowMarker_804A8470::update() {
             }
             break;
         case 1:
-            field_0x254 = field_0x254 + kArrowStep[field_0x258];
+            field_0x254 = field_0x254 + lbl_80540968[field_0x258];
             lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
             // The original copies mPos into a named local before the by-value call.
             JGeometry::TVec3f pos = mPos;
@@ -135,7 +135,7 @@ void ArrowMarker_804A8470::update() {
             }
             break;
         case 1:
-            field_0x254 = field_0x254 + kArrowStep[field_0x258];
+            field_0x254 = field_0x254 + lbl_80540968[field_0x258];
             lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
             JGeometry::TVec3f pos = mPos;
             lbl_8053AED0->fn_8043E7CC(pos);

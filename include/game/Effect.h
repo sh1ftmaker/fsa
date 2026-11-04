@@ -31,6 +31,9 @@ class JPAResourceManager;
 // include/JSystem/JParticle yet.
 class JPAEmitterCallBack;
 class JPAParticleCallBack;
+namespace JUtility {
+struct TColor;
+}
 
 class EffectSystem_8049F178 {
 public:
@@ -158,9 +161,11 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
                             JPAParticleCallBack* particleCB, bool adjust, f32 scale);
 
 // game/tu_8013AAD4.cpp (owner unit, not written yet). Called by act_beamos draw()
-// with a position (the actor's mPos with a sincos offset), a 4-byte table (0xFF
-// each), 0, a flag (0 or 1), 0 and 4.0f; argument types are read off that call.
-void fn_8013AC90(const JGeometry::TVec3f* pos, u8* table, s32 a, s32 flag, s32 c, f32 scale);
+// with a position (the actor's mPos with a sincos offset), a colour (a
+// function-local static JUtility::TColor, white: the guarded first-call init
+// stores its four bytes), 0, a flag (0 or 1), 0 and 4.0f; argument types are
+// read off that call.
+void fn_8013AC90(const JGeometry::TVec3f* pos, JUtility::TColor* color, s32 a, s32 flag, s32 c, f32 scale);
 }
 
 #endif
