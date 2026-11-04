@@ -95,14 +95,7 @@ void ForceGem2_804AB850::init() {
     mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
 }
 
-// FIXME: 99.25 %. Register allocation only: the original keeps the scale (field_0x238)
-// in f29 and the cos of the zero angle in f31; ours swap them, so the products and the
-// sin / cos results shift registers. Loading the scale before or after the rotation
-// vector does not change it.
-// FIXME: 97.72 %. The state-5 tail's emitter block differs: the original sets the status
-// word (0xF4 |= 1) and 0x24 = 1 on mEmitter284 directly (no call), where stopCreateParticle()
-// stands in, and mEmitter284 is not cleared there. The remaining rows are literal and
-// jump-table labels (@NNN) and a few register picks.
+// FIXME: 97.72 %. Literal and jump-table labels (@NNN) and a few register picks.
 void ForceGem2_804AB850::update() {
     s32 player = 0;
     u16 angle = 0;
@@ -233,7 +226,7 @@ void ForceGem2_804AB850::update() {
         field_0x238 -= 0.01f;
         if (field_0x238 < 0.1f) {
             if (mState == 6 && mEmitter284 != NULL) {
-                mEmitter284->stopCreateParticle();
+                mEmitter284->becomeInvalidEmitter();
             }
             fn_801F3668();
         }
@@ -260,6 +253,10 @@ void ForceGem2_804AB850::update() {
     }
 }
 
+// FIXME: 99.25 %. Register allocation only: the original keeps the scale (field_0x238)
+// in f29 and the cos of the zero angle in f31; ours swap them, so the products and the
+// sin / cos results shift registers. Loading the scale before or after the rotation
+// vector does not change it.
 void ForceGem2_804AB850::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;

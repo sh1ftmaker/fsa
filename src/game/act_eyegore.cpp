@@ -40,14 +40,10 @@ void Eyegore_804A3548::draw() {
 }
 
 // Runs only when mLife has changed since the last call.
-// FIXME: 99.04 %. regalloc-only: the original keeps the zero in r5 and the
-// mRandom pointer in r6, ours the other way round. The 1.0f and 60.0f literals
-// are @NNN, not lbl_8053E888 / lbl_8053E8BC (.sdata2 not split into this unit).
-// FIXME: 99.04 %. Two differences remain. The zero for mTimers[0] and
-// field_0x244 sits in r6 in ours and r5 in the original (the pointer
-// lbl_8053AAF8 takes the other register, so this is an allocation swap).
-// The f2 and f0 constants are @NNN in ours (lbl_8053E8BC, lbl_8053E888 in the
-// original): the unit's .sdata2 split doesn't cover them yet.
+// FIXME: 99.04 %. regalloc-only: the zero for mTimers[0] and field_0x244 is
+// in r6 and the lbl_8053AAF8 pointer in r5 here, the other way round in the
+// original; the 1.0f and 60.0f literals are @NNN, not lbl_8053E888 /
+// lbl_8053E8BC (the unit's .sdata2 is not split yet).
 void Eyegore_804A3548::vfunc_0x44() {
     if (field_0x254 != mLife) {
         field_0x254 = mLife;
@@ -135,10 +131,8 @@ void Eyegore_804A3548::update() {
         JGeometry::TVec2f pos(mPos.x, mPos.y);
         JGeometry::TVec2f center;
         box.addPos(pos);
-        f32 fx = box.f.x;
-        f32 fy = box.f.y;
-        center.x = fx + 0.5f * (box.i.x - fx);
-        center.y = fy + 0.5f * (box.i.y - fy);
+        center.x = box.f.x + 0.5f * (box.i.x - box.f.x);
+        center.y = box.f.y + 0.5f * (box.i.y - box.f.y);
         if (fn_80237948(player, &center)) {
             fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
             fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);

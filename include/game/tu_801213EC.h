@@ -31,18 +31,31 @@ public:
     // fn_80123E80: stores the argument at 0x33c and the old value at 0x340,
     // returns 1. The zora's and the escort woman's code call it with 0xC.
     /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
+    // Slots 0x70-0x94 (the base's own entries: fn_8012140C, fn_80121410,
+    // 0x78, fn_80123D30, fn_80123B94, fn_80121414-fn_80121424). Only 0x78 is
+    // known; the others are declared to number the slots the escort woman
+    // overrides, with her overrides' signatures.
+    /* 0x70 */ virtual void vfunc_0x70();
+    /* 0x74 */ virtual s32 vfunc_0x74();
+    // 0x80123D88 (tu_801213EC): returns 1 when the escort's state word
+    // (0x344) is in range and the test passes, else 0. The escort woman's
+    // override calls it for states 4 and 5.
+    /* 0x78 */ virtual s32 vfunc_0x78();
+    /* 0x7C */ virtual void vfunc_0x7C();
+    /* 0x80 */ virtual void vfunc_0x80();
+    /* 0x84 */ virtual s32 vfunc_0x84();
+    /* 0x88 */ virtual s32 vfunc_0x88();
+    /* 0x8C */ virtual s32 vfunc_0x8C();
+    /* 0x90 */ virtual void vfunc_0x90();
+    /* 0x94 */ virtual s32 vfunc_0x94();
     // fn_80121DB0 (tu_801213EC): clears three bytes at 0x269-0x26B, returns 1.
     // The zora's fn_801200F8 and the escort woman's vfunc 0x74 call it.
     s32 fn_80121DB0();
     // fn_80124448 (tu_801213EC): calls ActorBase::init, then the vtable's 0x64
     // slot, then sets the state fields 0x60-0x6C. The escort woman's init calls it.
     void fn_80124448();
-    // fn_80123D88 (tu_801213EC): returns 1 when the escort's state word
-    // (0x344) is in range and the test passes, else 0. The escort woman's
-    // vfunc 0x78 calls it.
-    s32 fn_80123D88();
     // fn_80122834 (tu_801213EC): returns true when the word at 0x108 and the
-    // byte at 0x333 are both zero. The escort woman's fn_80124B08 calls it.
+    // byte at 0x333 are both zero. The escort woman's vfunc_0x90 calls it.
     bool fn_80122834();
     // The escort's sprite animation; act_escort_woman's vfunc 0x70 sets its key tables.
     /* 0x230 */ SpriteAnim_801D267C mAnim;
