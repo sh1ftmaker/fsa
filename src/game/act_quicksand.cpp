@@ -32,3 +32,9 @@ void cls_804A6270::vfunc_0x88() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     fn_802110A8();
 }
+
+void cls_804A6270::vfunc_0x54() {
+    if (mFlags & 0x8000 && field_0x2bc != 0) {
+        field_0x2c0.fn_800FE3EC(field_0x2bc, mPos, field_0x4);
+    }
+}
