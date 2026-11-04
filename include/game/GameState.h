@@ -139,7 +139,11 @@ public:
     /* 0x124 */ s32 field_0x124;
     /* 0x128 */ s32 field_0x128;
     /* 0x12C */ s32 field_0x12c;
-    /* 0x130 */ u8 field_0x130[0x1A4 - 0x130]; // per-player tables, 0x130-0x1A3
+    /* 0x130 */ u8 field_0x130[0x140 - 0x130]; // per-player tables, 0x130-0x13F
+    // SHARED-EDIT (act_battle_royale_end_check fn_803D6494): one word per
+    // player, counted up each time that player wins the battle royale.
+    /* 0x140 */ s32 field_0x140[4];
+    /* 0x150 */ u8 field_0x150[0x1A4 - 0x150]; // per-player tables, 0x150-0x1A3
     // A word read by fn_8035EE34 (game/act_link_ending.cpp) as the player index
     // to draw for (0 when negative, fn_8022F514/fn_8022F3DC on it).
     /* 0x1A4 */ s32 field_0x1a4;
@@ -159,7 +163,11 @@ public:
     /* 0x237 */ u8 field_0x237; // 24 units
     /* 0x238 */ u8 field_0x238; // 0xFF after fn_8040384C; fn_803FFAA8
     /* 0x239 */ u8 field_0x239; // bit per player; cls_804AC388::update ORs it
-    /* 0x23A */ u8 field_0x23a[0x242 - 0x23A];
+    /* 0x23A */ u8 field_0x23a[0x240 - 0x23A];
+    // SHARED-EDIT (act_battle_royale_end_check fn_803D6BDC): set to 1 when the
+    // battle royale end check picks its winner.
+    /* 0x240 */ u8 field_0x240;
+    /* 0x241 */ u8 field_0x241[0x242 - 0x241];
     /* 0x242 */ u8 field_0x242; // 19 units
     /* 0x243 */ u8 field_0x243[0x245 - 0x243];
     /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor

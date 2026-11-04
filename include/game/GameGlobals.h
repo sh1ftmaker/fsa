@@ -570,8 +570,16 @@ s32 fn_8030AAF4(s32 player);
 // stores 2 at 0x1F0 + player); its size and the rest are unknown.
 class cls_804B1920 {
 public:
-    /* 0x000 */ u8 pad_0x0[0x1F0]; // vtable pointer and unknown fields
+    /* 0x000 */ u8 pad_0x0[0xDC];  // vtable pointer and unknown fields
+    // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
+    // the battle royale end check ORs with 0x10 when it picks its winner.
+    /* 0xDC */ u8 field_0xdc;
+    /* 0xDD */ u8 pad_0xdd[0x1F0 - 0xDD];
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
+    /* 0x1F4 */ u8 field_0x1f4[0x256 - 0x1F4]; // not yet known
+    // SHARED-EDIT (act_battle_royale_end_check draw, 0x256 = the byte its
+    // mFocus is stored into when mFocus is not 0xFF).
+    /* 0x256 */ u8 field_0x256;
 
     // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
@@ -974,5 +982,17 @@ void fn_804316EC(void* obj);
 // game/tu_801A0710.cpp (.sdata 0x8053A100, not written yet; -1 in the
 // original): act_terrorpin's vfunc_0x44 compares its field_0x2a8 with it.
 extern s32 lbl_8053A100;
+
+// SHARED-EDIT (act_battle_royale_end_check fn_803D6BDC): the only callers
+// known so far. Owner units not written yet. fn_80239F10 (0x80239F10, 0x294
+// bytes) takes no arguments and returns a bool; fn_802B3A48 (0x802B3A48,
+// 0x6C bytes) takes the actor it was found in, as ActorBase_804A5770*.
+// SHARED-EDIT (act_battle_royale_end_check fn_803D6494): called with the
+// battle royale's GameRoot in r3 and 10; owner unit not written yet.
+extern "C" {
+bool fn_80239F10();
+void fn_802B3A48(ActorBase_804A5770* actor);
+void fn_801367E0(GameRoot_8049EF20* root, s32 value);
+}
 
 #endif
