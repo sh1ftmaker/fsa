@@ -34,8 +34,6 @@ act_dropped_item	dtor	__dt__20DroppedItem_804A8C80Fv	DroppedItem_804A8C80	0x804A
 act_dropped_item	sinit	__sinit_act_dropped_item_cpp	-	-	new	new
 act_extending_lift	dtor	__dt__22ExtendingLift_804A78B0Fv	ExtendingLift_804A78B0	0x804A78B0	new	new
 act_extending_lift	sinit	__sinit_act_extending_lift_cpp	-	-	new	new
-act_fairy	dtor_emit	__dt__14Fairy_804A03B8Fv	Fairy_804A03B8	0x804A03B8	new	new
-act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
