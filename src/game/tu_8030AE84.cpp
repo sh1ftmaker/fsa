@@ -2,6 +2,13 @@
 #include "game/Player.h"
 #include "game/tu_8030AE84.h"
 
+void cls_804AA8D8::fn_8030AE84(JGeometry::TBox2f* out) {
+    out->i.x = (f32)field_0x290;
+    out->i.y = (f32)field_0x294;
+    out->f.x = (f32)(field_0x290 + 0xF0);
+    out->f.y = (f32)(field_0x294 + 0xA0);
+}
+
 void cls_804AA8D8::fn_8030BD3C(s32 player) {
     field_0x288 = player;
     if (field_0x2b0 < 0) {

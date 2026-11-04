@@ -7,6 +7,7 @@
 // bytes.
 
 #include "types.h"
+#include "JSystem/JGeometry.h"
 
 class cls_804AA8D8 {
 public:
@@ -19,6 +20,9 @@ public:
     // Mangled fn_8030BD3C__12cls_804AA8D8Fl (game/tu_8030AE84.cpp): stores the
     // player, then the callees below.
     void fn_8030BD3C(s32 player);
+    // Mangled fn_8030AE84__12cls_804AA8D8FPQ29JGeometry8TBox2<f> (this unit).
+    // Writes the box of 240x160 around the two position words (0x290, 0x294).
+    void fn_8030AE84(JGeometry::TBox2f* out);
     // Code in this unit, not yet written (mangled fn_8030B97C__12cls_804AA8D8Fv).
     void fn_8030B97C();
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
