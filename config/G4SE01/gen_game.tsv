@@ -124,7 +124,6 @@ act_somaria_block	dtor	__dt__27CaneOfSomariaBlock_804AA9F0Fv	CaneOfSomariaBlock_
 act_somaria_block	sinit	__sinit_act_somaria_block_cpp	-	-	new	new
 act_spawner	dtor	__dt__12cls_804A9328Fv	cls_804A9328	0x804A9328	new	new
 act_spawner	sinit	__sinit_act_spawner_cpp	-	-	new	new
-act_spreading_fire	sinit	__sinit_act_spreading_fire_cpp	-	-	new	-
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
