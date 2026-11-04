@@ -10,6 +10,10 @@
 // with fn_8013CB44 (height 1, depth 0, adjusted).
 class cls_804A4EE8 : public EnemyBase_804A4808 {
 public:
+    // 0x801DBEF4, the deleting destructor (vtable slot 0x08): releases the
+    // emitter at 0x2E4 and the serial at 0x198 (the singleton list), then
+    // the EnemyBase and ActorBase destructors.
+    /* 0x08 */ virtual ~cls_804A4EE8();
     /* 0x94 */ virtual void vfunc_0x94();
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
 

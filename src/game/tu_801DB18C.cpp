@@ -1,6 +1,15 @@
 #include "game/GameAudio.h"
 #include "game/Effect.h"
 #include "game/act/tu_801DB18C.h"
+#include "game/act/tu_801DAC6C.h"
+
+cls_804A4EE8::~cls_804A4EE8() {
+    fn_801EE434(field_0x2e4);
+    field_0x2e4 = NULL;
+    if (field_0x16c == -1) {
+        fn_801DAC6C()->fn_801DAEAC(mSerial);
+    }
+}
 
 void cls_804A4EE8::vfunc_0x94() {
     s32 cel = mAnim.mCel;
