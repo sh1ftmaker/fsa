@@ -27,3 +27,8 @@ void fn_80210E90(const ActorBase_804A5770* actor, const JGeometry::TVec3f* pos, 
         }
     }
 }
+
+void cls_804A6270::vfunc_0x88() {
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    fn_802110A8();
+}
