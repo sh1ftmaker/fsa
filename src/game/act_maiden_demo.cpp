@@ -24,6 +24,73 @@ static const s16* lbl_8049D710[12] = {
     lbl_80464694, lbl_804646A8, lbl_804646B8, lbl_804646D4, lbl_804646E4, lbl_804646F4,
 };
 
+// Maps (kind, mode) to a message id. Each kind has its own mode table.
+s32 fn_801123C8(s32 kind, s32 mode) {
+    switch (kind) {
+    case 0:
+        switch (mode) {
+        case 0: return 0x2FD;
+        case 1: return 0x307;
+        case 2: return 0x301;
+        case 3: return 0x2FF;
+        case 4: return 0x305;
+        case 5:
+        default: return 0x303;
+        }
+    case 1:
+        switch (mode) {
+        case 0: return 0x2FE;
+        case 1: return 0x308;
+        case 2: return 0x302;
+        case 3: return 0x300;
+        case 4: return 0x306;
+        case 5:
+        default: return 0x304;
+        }
+    case 2:
+        switch (mode) {
+        case 0: return 0x2CF;
+        case 1: return 0x2DE;
+        case 2: return 0x2D5;
+        case 3: return 0x2D2;
+        case 4: return 0x2DB;
+        case 5:
+        default: return 0x2D8;
+        }
+    case 3:
+        switch (mode) {
+        case 0: return 0x2D0;
+        case 1: return 0x2DF;
+        case 2: return 0x2D6;
+        case 3: return 0x2D3;
+        case 4: return 0x2DC;
+        case 5:
+        default: return 0x2D9;
+        }
+    case 4:
+        switch (mode) {
+        case 0: return 0x2D1;
+        case 1: return 0x2E0;
+        case 2: return 0x2D7;
+        case 3: return 0x2D4;
+        case 4: return 0x2DD;
+        case 5:
+        default: return 0x2DA;
+        }
+    case 5:
+    default:
+        switch (mode) {
+        case 0: return 0x2E4;
+        case 1: return 0x2E9;
+        case 2: return 0x2E6;
+        case 3: return 0x2E5;
+        case 4: return 0x2E8;
+        case 5:
+        default: return 0x2E7;
+        }
+    }
+}
+
 void cls_8049D740::fn_801133C0() {
     cls_8049D140::init();
     mMode = field_0x90 & 0x1F;
