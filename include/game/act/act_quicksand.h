@@ -12,6 +12,10 @@ class cls_804A6270 : public EnemyBase_804A4808 {
 public:
     // 0x80212800 (__ct__12cls_804A6270Fv). Runs after EnemyBase's constructor.
     cls_804A6270();
+    // 0x80212760 (__dt__12cls_804A6270Fv, vtable slot 0x08, over ActorBase's
+    // destructor): the body removes mSerial from the list fn_80212AC0 returns;
+    // EnemyBase's inline destructor follows, then ActorBase's.
+    /* 0x08 */ virtual ~cls_804A6270();
     // 0x80212170 (vtable slot 0x54, over EnemyBase's empty vfunc_0x54): if
     // mFlags has bit 0x8000 and field_0x2bc is set, the rail at field_0x2c0
     // is called with field_0x2bc, mPos and field_0x4.

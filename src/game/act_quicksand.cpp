@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
 #include "game/act/act_quicksand.h"
+#include "game/tu_80212AC0.h"
 
 // FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
 // scale match. The original picks the length with one fsel
@@ -74,4 +75,8 @@ cls_804A6270::cls_804A6270() {
     field_0x3ac = -1;
     field_0x3b0 = 0;
     field_0x2c0.clear();
+}
+
+cls_804A6270::~cls_804A6270() {
+    fn_80212AC0()->fn_80212BA0(mSerial);
 }
