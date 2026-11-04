@@ -171,8 +171,6 @@ tu_801902C0	sinit	__sinit_tu_801902C0_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801A8194	dtor	__dt__12cls_804A2EC0Fv	cls_804A2EC0	0x804A2EC0	new	new
 tu_801A8194	sinit	__sinit_tu_801A8194_cpp	-	-	new	new
-tu_801AE9C4	dtor	__dt__12cls_804A3448Fv	cls_804A3448	0x804A3448	new	new
-tu_801AE9C4	sinit	__sinit_tu_801AE9C4_cpp	-	-	new	new
 tu_801B0A00	sinit	__sinit_tu_801B0A00_cpp	-	-	new	-
 tu_801B27DC	sinit	__sinit_tu_801B27DC_cpp	-	-	new	-
 tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
