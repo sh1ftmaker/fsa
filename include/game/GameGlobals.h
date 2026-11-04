@@ -328,6 +328,9 @@ struct Unk_8045A080 {
     // sound at 0x80; r5 is tested with clrlwi. 24 (0x80458488). Called by
     // tu_8039003C's constructor with (0x100001A, true).
     void fn_80458408(s32 id, bool flag);
+    // game/tu_80457DFC.cpp (0x8045815C, not written yet in this file's copy). Called by
+    // fn_80290E90 with false when the player's 0xCE4 is below 8, with true when it is 8.
+    void fn_8045815C(bool flag);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
