@@ -21,6 +21,10 @@ public:
     // Vtable slot 0x4C (fn_801BA88C): tile code 0xD (fn_8022461C) blocks
     // the position outright; anything else falls to ActorBase's test.
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    // Vtable slot 0x68 (0x80340650, in act_zora_lotus.cpp): returns 0, so
+    // no player or actor hit mask is reported (EnemyBase's vfunc_0x68 is
+    // the bitmask hook).
+    /* 0x68 */ virtual u8 vfunc_0x68();
 
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
     // by the destructor (0x801BB30C), which passes it to fn_801EE434.
