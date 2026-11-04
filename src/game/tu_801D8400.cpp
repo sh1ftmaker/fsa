@@ -10,6 +10,32 @@ void cls_804A4C58::fn_801D8400() {
 
 void cls_804A4C58::vfunc_0x24() {}
 
+// Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
+void cls_804A4C58::vfunc_0xA0() {
+    if (mState == 0) {
+        return;
+    }
+    if (mState >= 0 && mState < 4) {
+        cls_804A03A8* obj = lbl_8053AB10->field_0x30;
+        if (!obj->field_0x284) {
+            obj->field_0x284 = 1;
+            obj->field_0x28c = 0.05f;
+        }
+        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+        if (!camera->field_0x7f5) {
+            camera->field_0x7f4 = 1;
+            camera->field_0x7f8 = 4;
+            camera->field_0x7fc.set(mPos);
+            camera->field_0x7f6 = 0;
+        }
+    } else {
+        lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+        if (!lbl_8053AB10->field_0x24->field_0x179) {
+            lbl_8053AB10->field_0x24->field_0x178 = 1;
+        }
+    }
+}
+
 // Vtable slot 0x80 (0x801D8980). A position above the ceiling in
 // field_0x2d0 is clamped to it, its vertical speed is zeroed, and then
 // EnemyBase's floor check runs.
