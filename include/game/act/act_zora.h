@@ -32,10 +32,20 @@ public:
     // so no actor hit is reported (EnemyBase's vfunc_0x60 is the actor-hit
     // check that ENEMY_FLAG_HIT_ACTOR records).
     /* 0x60 */ virtual bool vfunc_0x60();
+    // Vtable slot 0xA4, the first slot this class adds (0x80340BC8, in
+    // act_zora_lotus.cpp): clears the flags below and puts mPos.y back at
+    // mSpawnPos.y.
+    /* 0xA4 */ virtual void vfunc_0xA4();
 
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
     // by the destructor (0x801BB30C), which passes it to fn_801EE434.
     /* 0x2A8 */ JPABaseEmitter* field_0x2a8;
+    /* 0x2AC */ u8 field_0x2ac;
+    /* 0x2AD */ u8 field_0x2ad;
+    /* 0x2AE */ u8 field_0x2ae;
+    /* 0x2AF */ u8 field_0x2af;
+    /* 0x2B0 */ u8 field_0x2b0;
+    /* 0x2B2 */ u16 field_0x2b2;
 };
 
 #endif

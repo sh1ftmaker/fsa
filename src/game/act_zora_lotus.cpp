@@ -12,3 +12,13 @@ bool ZoraEnemy_804A3D7C::vfunc_0x5C() {
 u8 ZoraEnemy_804A3D7C::vfunc_0x68() {
     return 0;
 }
+
+void ZoraEnemy_804A3D7C::vfunc_0xA4() {
+    field_0x2ac = 0;
+    field_0x2ad = 0;
+    field_0x2ae = 0;
+    field_0x2af = 0;
+    field_0x2b2 = 0;
+    field_0x2b0 = 0;
+    mPos.y = mSpawnPos.y;
+}
