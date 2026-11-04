@@ -44,6 +44,8 @@ class J2DOrthoGraph;
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
 // fn_801F856C, the first function seen reading it).
+class cls_804B1D10;
+
 struct GameRootSub04_801F856C {
     /* 0x0 */ u8 field_0x0[0x8];
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
@@ -52,10 +54,16 @@ struct GameRootSub04_801F856C {
     /* 0x10 */ u8 field_0x10[0x24 - 0x10];
     // fn_8016A3AC returns it (game/tu_8016A2B4.cpp).
     /* 0x24 */ struct GameRootSub24_8016A3AC* field_0x24;
-    /* 0x28 */ u8 field_0x28[0x30 - 0x28];
+    /* 0x28 */ u8 field_0x28[0x2C - 0x28];
+    // The staff-roll page loader (game/act/tu_8044B80C.h); fn_80139C84 draws it.
+    /* 0x2C */ cls_804B1D10* field_0x2c;
     // A heap: game/tu_8044B80C.cpp makes it current, frees its J2DScreens
     // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
     /* 0x30 */ JKRHeap* field_0x30;
+
+    // 0x80139C84 (game/tu_80139BE8.cpp, not written yet). Calls
+    // fn_8043DC98 on lbl_8053AED0, then draws field_0x2c when it is set.
+    void fn_80139C84();
 
     // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
     // field_0x24 unless lbl_8053AB10->field_0x39 is set.
@@ -642,6 +650,9 @@ extern cls_804B1920* lbl_8053AED0;
 extern "C" {
 void fn_8043D644(cls_804B1920* self);
 void fn_8043D8B4(cls_804B1920* self);
+// 0x8043DC98 (game/tu_8043A0E8.cpp, not written yet): takes the object in r3
+// and no other arguments; fn_80139C84 calls it first.
+void fn_8043DC98(cls_804B1920* self);
 } // extern "C"
 
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
