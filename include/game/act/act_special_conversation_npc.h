@@ -21,6 +21,17 @@ public:
     // The message state machine (fn_803185A8, not yet named): the box test
     // of the message's two states and the cycling of field_0x25c.
     void fn_803185A8();
+    // The other state-table entries (lbl_804AAED4's initialiser lbl_804AAE68
+    // holds them with fn_803185A8, so they are members taking no arguments);
+    // not written yet.
+    void fn_80317F18();
+    void fn_8031825C();
+    void fn_803187F4();
+    void fn_80318B84();
+    void fn_80318D74();
+    void fn_803190E0();
+    void fn_803193B4();
+    void fn_80319658();
 
     // fn_8038AD24 takes the position by value. The original loads the message,
     // serial and layer before that copy, so they are parameters here.

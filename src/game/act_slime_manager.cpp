@@ -4,8 +4,6 @@
 #include "game/ActorManager.h"
 #include "game/act/tu_80209C14.h"
 
-const f32 lbl_8053F8E0 = 0.0f;
-
 cls_804A5BD8::~cls_804A5BD8() {}
 
 cls_804A5BD8::cls_804A5BD8() {
@@ -18,9 +16,9 @@ cls_804A5BD8::cls_804A5BD8() {
 }
 
 void cls_804A5BD8::vfunc_0x88() {
-    field_0x3c.x = lbl_8053F8E0;
-    field_0x3c.y = lbl_8053F8E0;
-    field_0x3c.z = lbl_8053F8E0;
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
 }
 
 void cls_804A5BD8::fn_80207E24() {

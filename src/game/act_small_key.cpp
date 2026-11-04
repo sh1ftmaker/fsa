@@ -24,9 +24,10 @@ bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME: 85.76 %. The original keeps the tile-code compares as one linear
+// FIXME: 85.34 %. The original keeps the tile-code compares as one linear
 // chain of cmpwi/beq to the shared return (no switch, no range folding); the
-// switch here is a binary search. pos and layer take r30/r28 the other way
+// switch here is a binary search, and the 0x10-0x17 / 0x18-0x1B chains fold
+// into one range check each (the original splits off 0x17 and 0x1B). pos and layer take r30/r28 the other way
 // round (the original copies pos to r30 before this, layer to r28 after), and
 // the mPos.z / field_0x3c float compares load their operands in another order.
 bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
@@ -80,7 +81,8 @@ bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
     case 0x24:
         return false;
     }
-    if (tileCode - 0x10 <= 6 || tileCode == 0x17) {
+    if (tileCode == 0x10 || tileCode == 0x11 || tileCode == 0x12 || tileCode == 0x13 ||
+        tileCode == 0x14 || tileCode == 0x15 || tileCode == 0x16 || tileCode == 0x17) {
         if (field_0x280 == 7 || field_0x280 == 8) {
             return false;
         }
@@ -104,7 +106,7 @@ bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
     if (tileCode == 0x26) {
         return fn_802D6A9C()->field_0x171 == 1;
     }
-    if (tileCode - 0x18 <= 2 || tileCode == 0x1B) {
+    if (tileCode == 0x18 || tileCode == 0x19 || tileCode == 0x1A || tileCode == 0x1B) {
         return false;
     }
     if (tileCode == 0x22) {
