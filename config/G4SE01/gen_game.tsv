@@ -187,7 +187,6 @@ tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
 tu_8010089C	dtor	__dt__12cls_8049C8ECFv	cls_8049C8EC	0x8049C8EC	new	new
 tu_8010089C	sinit	__sinit_tu_8010089C_cpp	-	-	new	new
-tu_80113788	sinit	__sinit_tu_80113788_cpp	-	-	new	-
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
 tu_801213EC	sinit	__sinit_tu_801213EC_cpp	-	-	new	-
 tu_80130310	dtor	__dt__12cls_8049EA88Fv	cls_8049EA88	0x8049EA88	new	new
