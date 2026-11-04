@@ -23,6 +23,12 @@ public:
     void fn_801DB950(s32 state);
     // 0x801DB9CC, called by the state setter with only `this`.
     void fn_801DB9CC();
+    // 0x801DB2C8: hits every player whose box overlaps mBox (fn_801F2740(-1)),
+    // at the centre of mBox (fn_801F3128) or, for a player for whom
+    // fn_801F329C holds, that centre converted by fn_801CD0D0, with
+    // fn_80238548(player, field_0x114, &pos, 1). Returns the bitmask of the
+    // players overlapping mBox (0 when mBox is empty).
+    u8 fn_801DB2C8();
 
     /* 0x2A8 */ s32 mTargetPlayer;  // fn_801D05F8's result (-1: none)
     /* 0x2AC */ s32 field_0x2ac;    // cleared when state 1 starts

@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/Effect.h"
+#include "game/Player.h"
 #include "game/act/tu_801DB18C.h"
 #include "game/act/tu_801DAC6C.h"
 
@@ -37,4 +38,34 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     EnemyBase_804A4808::vfunc_0x9C(mapHit);
     fn_8013CB44(field_0x2e4, &mPos, 1, 0, true);
+}
+
+u8 cls_804A4EE8::fn_801DB2C8() {
+    u8 hitPlayers = 0;
+    if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        hitPlayers = fn_801F2740(-1);
+        if (hitPlayers != 0) {
+            JGeometry::TVec3f conv;
+            JGeometry::TVec3f center3;
+            JGeometry::TVec2f center;
+            JGeometry::TVec2f pos;
+            fn_801F3128(&center);
+            for (s32 player = 0; player < 4; player++) {
+                if (hitPlayers & (1 << player)) {
+                    if (fn_801F329C(player)) {
+                        center3.x = center.x;
+                        center3.y = center.y;
+                        center3.z = 0.0f;
+                        fn_801CD0D0(&center3, &conv);
+                        pos.x = conv.x;
+                        pos.y = conv.y;
+                    } else {
+                        pos = center;
+                    }
+                    fn_80238548(player, field_0x114, &pos, 1);
+                }
+            }
+        }
+    }
+    return hitPlayers;
 }
