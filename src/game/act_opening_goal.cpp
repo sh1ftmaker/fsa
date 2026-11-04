@@ -2,6 +2,7 @@
 #include "game/act/act_opening_goal.h"
 
 #include "game/GameGlobals.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 
 // A key table of mAnim: (cel, frames) s16 pairs, ended by a cel of -1.
 static const s16 lbl_80464AE8[8] = {0, 2, 1, 2, 2, 2, -1, -1};
@@ -80,18 +81,10 @@ void cls_8049DB30::vfunc_0x54() {
     }
 }
 
-// FIXME: the original sets bit 1 of the emitter's word at 0xF4 and writes 1 to
-// its word at 0x24 before clearing the member. JPABaseEmitter
-// (include/JSystem/JParticle/JPAEmitter.h) names neither word, so only the
-// member is cleared here.
-static inline void releaseEmitter(JPABaseEmitter** emitter) {
-    *emitter = NULL;
-}
-
-// FIXME: 86.56 %. Ours is 10 instructions short: the original's emitter
-// releases (see releaseEmitter) also write the emitter words. The constant 1
-// stored at 0x7A8 is kept in r30 across the calls (li r30) instead of being
-// loaded into r0 at the store.
+// FIXME: 93.5 %. Ours keeps the constant 1 stored at 0x7A8 in r30 (saved)
+// instead of loading it into r0 at the store, lacks the bge/b pair after the
+// switch's cmpwi 2, swaps f3/f4 in the box sums and loads the 1 of the bit mask
+// later (no clrlwi); the float literals are not split into this unit yet.
 void cls_8049DB30::update() {
     cls_8049D140::update();
     fn_801902C0()->field_0x7a8 = 1;
@@ -106,10 +99,12 @@ void cls_8049DB30::update() {
             }
         } else {
             if (mEmitter254 != NULL) {
-                releaseEmitter(&mEmitter254);
+                mEmitter254->becomeInvalidEmitter();
+                mEmitter254 = NULL;
             }
             if (mEmitter258 != NULL) {
-                releaseEmitter(&mEmitter258);
+                mEmitter258->becomeInvalidEmitter();
+                mEmitter258 = NULL;
             }
         }
         if (fn_8011921C()->field_0x0 == 0) {

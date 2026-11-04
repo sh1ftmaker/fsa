@@ -4,25 +4,16 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_warp_pillar.h"
-
-// Emitters are released as fn_801EE434 does (the nearest helper). FIXME: the
-// original clears the emitter's status word directly (word 0xF4 |= 1, word
-// 0x24 = 1) and nulls the member itself, so these sites differ.
-static inline void releaseEmitter(JPABaseEmitter*& emitter) {
-    if (emitter != NULL) {
-        fn_801EE434(emitter);
-        emitter = NULL;
-    }
-}
 
 static const u16 lbl_805420A0[4] = {0x4E3, 0x4E5, 0x4E2, 0x4E4};
 
-// FIXME: 86.31 %. The six inline emitter releases (lwz 0xF4; ori 1; stw 0xF4;
-// stw 1 to 0x24) are a bl fn_801EE434 here (30 instructions fewer). The
-// original keeps this in r28 and saves r27-r31 with one stmw; ours keeps it
-// in r29 and saves r28-r31 with stw. The stack slots of order, pos and a/b
-// also differ (pos at 0x48 in the fourth block, 0x44 in the original).
+// FIXME: 94.3 %. Register allocation differs (this in r28 and the loop
+// counter in r27 in the original), `order` is copied from a .rodata table
+// instead of stored with li 0-3, the bubble-sort swap goes through a stack
+// temporary in the original, the owner test branches the other way, and the
+// stack slots of order, pos and a/b differ.
 void WarpPillar_804AC0A8::update() {
     f32 top = mPos.y + mBox.i.y;
     f32 bottom = mPos.y + mBox.f.y;
@@ -78,8 +69,9 @@ void WarpPillar_804AC0A8::update() {
                     JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
                     mEmitter26c[i] = fn_8013CC50(field_0x4, &pos, lbl_805420A0[i], 1, 2, NULL, NULL, true, 1.0f);
                 }
-            } else {
-                releaseEmitter(mEmitter26c[i]);
+            } else if (mEmitter26c[i] != NULL) {
+                mEmitter26c[i]->becomeInvalidEmitter();
+                mEmitter26c[i] = NULL;
             }
         }
         if (field_0x234 >= 4 && fn_8023077C()) {
@@ -170,10 +162,19 @@ void WarpPillar_804AC0A8::update() {
         if (field_0x244 <= 0) {
             fn_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
             lbl_8053AAF8->fn_80136798(0xF, 0);
-            releaseEmitter(mEmitter264);
-            releaseEmitter(mEmitter268);
+            if (mEmitter264 != NULL) {
+                mEmitter264->becomeInvalidEmitter();
+                mEmitter264 = NULL;
+            }
+            if (mEmitter268 != NULL) {
+                mEmitter268->becomeInvalidEmitter();
+                mEmitter268 = NULL;
+            }
             for (s32 i = 0; i < 4; i++) {
-                releaseEmitter(mEmitter26c[i]);
+                if (mEmitter26c[i] != NULL) {
+                    mEmitter26c[i]->becomeInvalidEmitter();
+                    mEmitter26c[i] = NULL;
+                }
             }
             mAlive = false;
         }
