@@ -1,8 +1,46 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/ActorManager.h"
 #include "game/GameMath.h"
 #include "game/act/act_quicksand.h"
 #include "game/tu_80212AC0.h"
+
+void cls_804A6270::fn_80210D90() {
+    mFlags |= 0x20000;
+    fn_801F3604();
+    switch (mState) {
+    case 1: {
+        s32 serial = field_0x388;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            if (actor != NULL) {
+                fn_80212ECC(static_cast<EnemyBase_804A4808*>(actor));
+            }
+        }
+        s32 viewSerial = field_0x2b8;
+        if (viewSerial != 0) {
+            fn_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
+        }
+        break;
+    }
+    case 6: {
+        s32 viewSerial = field_0x2b8;
+        if (viewSerial != 0) {
+            fn_802D6A9C()->fn_802D8050(viewSerial, false, 0xff);
+        }
+        break;
+    }
+    }
+    s32 serial = field_0x388;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor != NULL) {
+            static_cast<EnemyBase_804A4808*>(actor)->mFlags |= 0x4000;
+        }
+    }
+    mStateTimer = 0;
+    mState = 6;
+}
 
 // FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
 // scale match. The original picks the length with one fsel

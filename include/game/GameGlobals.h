@@ -264,6 +264,14 @@ extern "C" {
 bool fn_80138AB0();
 }
 
+class EnemyBase_804A4808;
+extern "C" {
+// Owner: game/tu_80212E3C.cpp (defined there; not written yet). Reads an
+// EnemyBase's mFlags (0x230) and mState (0x248); takes the actor serial's
+// result (fn_801F666C) in r3. Called by act_quicksand fn_80210D90 in state 1.
+void fn_80212ECC(EnemyBase_804A4808* actor);
+}
+
 class ItemPedestal_804A82A8;
 extern "C" {
 // Owner: game/act_item_pedestal.cpp (not written yet; its generated header

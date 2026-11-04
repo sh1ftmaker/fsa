@@ -23,6 +23,12 @@ public:
     // 0x80211078: zeroes field_0x3c, then calls fn_802110A8. Its only caller
     // is the vtable (slot 0x88, over EnemyBase's vfunc_0x88).
     /* 0x88 */ virtual void vfunc_0x88();
+    // 0x80210D90 (not virtual): sets mFlags bit 0x20000, calls ActorBase's
+    // fn_801F3604, then acts on mState: state 1 calls fn_80212ECC on the
+    // actor serial field_0x388 and passes field_0x2b8 to GameView with bit
+    // set; state 6 passes it with bit clear. Then the actor in field_0x388
+    // gets mFlags bit 0x4000, and the state becomes 6 (mStateTimer 0).
+    void fn_80210D90();
     // 0x802110A8, direct call from vfunc_0x88 (not virtual).
     void fn_802110A8();
 
