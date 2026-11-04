@@ -366,6 +366,10 @@ bool fn_801CC538(s32 player, const JGeometry::TVec2f* pos, JGeometry::TVec3f* ou
 // its field_0x3c (zeroed first), then its field_0x108 = 0. Returns whether
 // it was found.
 bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
+// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CC9F8, 0x124
+// bytes; 1 caller unit, tu_801C5B08 fn_801C6784). Called with the position
+// of an actor and its layer (mPos, field_0x4); returns whether it holds.
+bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer);
 }
 
 #endif
