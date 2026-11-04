@@ -14,7 +14,7 @@ cls_804AADD8::~cls_804AADD8() {
     }
 }
 
-// FIXME: 99.32%. Only the float constants differ: the target loads -8, -24 and 24 (lbl_805418E4/E8/EC)
+// FIXME: 99.43%. Only the float constants differ: the target loads -8, -24 and 24 (lbl_805418E4/E8/EC)
 // and -20 and 20 (lbl_805418F0/F4) from .sdata2 by name; ours are @NNN literals, since splits.txt
 // has no .sdata2 for this unit.
 void cls_804AADD8::init() {

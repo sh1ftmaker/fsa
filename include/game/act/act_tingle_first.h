@@ -25,6 +25,7 @@ public:
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ cls_8031709C* field_0x24c; // sound/effect sequencer, owned here
+    /* 0x250 */ u8 field_0x250[0x260 - 0x250]; // not yet known
     /* 0x260 */ f32 field_0x260;
     /* 0x264 */ f32 field_0x264;
     /* 0x268 */ f32 field_0x268;

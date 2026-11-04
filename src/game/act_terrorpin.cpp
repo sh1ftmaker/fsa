@@ -7,6 +7,10 @@
 
 Terrorpin_804A3B10::~Terrorpin_804A3B10() {}
 
+// FIXME: vfunc_0x24, 0x44, 0x68, 0x6C, 0x7C, 0x94 and init are instruction-identical;
+// only their float literals are @NNN, not the original lbl_ (.sdata2 order, owned
+// partly by the unwritten draw / vfunc_0x5C / vfunc_0x88 / vfunc_0x90).
+
 // The two animations' keys (cel pairs for 10 frames each, then -1) and the
 // table the init hands to SpriteAnim::fn_801D2608 (names unknown).
 static const s16 lbl_80469180[6] = {0, 10, 1, 10, -1, -1};
@@ -17,7 +21,6 @@ void Terrorpin_804A3B10::vfunc_0x24() {
     // The original reads field_0x10c here, not mState (0x248) as the other vfuncs do.
     if ((mFlags & 0x2000) && (mFlags & 0x4000) && field_0x10c >= 0 && field_0x10c < 4 && field_0x10c == field_0x2a8) {
         f32 speed = 1.5f;
-        f32 negX = -speed;
         for (s32 i = 0; i < 2; i++) {
             s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
@@ -25,7 +28,7 @@ void Terrorpin_804A3B10::vfunc_0x24() {
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {
-                        x = negX;
+                        x = -speed;
                     }
                     actor->field_0x3c = JGeometry::TVec3f(x, 0.0f, 4.5f);
                 }
@@ -73,7 +76,6 @@ u8 Terrorpin_804A3B10::vfunc_0x68() {
 void Terrorpin_804A3B10::vfunc_0x6C() {
     if (mState == 5) {
         f32 speed = 1.5f;
-        f32 negX = -speed;
         for (s32 i = 0; i < 2; i++) {
             s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
@@ -81,7 +83,7 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {
-                        x = negX;
+                        x = -speed;
                     }
                     actor->field_0x3c = JGeometry::TVec3f(x, 0.0f, 4.5f);
                 }
