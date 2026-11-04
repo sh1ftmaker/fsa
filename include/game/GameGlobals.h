@@ -546,7 +546,12 @@ bool fn_801CCF7C();
 class JUTTexture;
 class cls_804A0160 {
 public:
-    /* 0x0 */ void* vtable;      // from fn_801594E8
+    // Constructor (0x801594E8, game/tu_80158624.cpp): loads "circle.bti" from
+    // lbl_8053AAF8->field_0xa4 into a new JUTTexture on `heap`. Its vtable
+    // (lbl_804A0160) has one virtual destructor, at offset 0 (vptr).
+    cls_804A0160(JKRHeap* heap);
+    virtual ~cls_804A0160();
+
     /* 0x4 */ JUtility::TColor field_0x4; // colour: fn_80158B3C sets r,g,b = 0xFF, a = 0
     /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
@@ -563,7 +568,26 @@ public:
     // 0,0,0,0x80; scale 24.0f). The colour is a TColor passed by value (a
     // stack copy, its address in r6).
     void fn_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale);
+
+    // 0x8015945C (owner unit game/tu_80158624.cpp, not written yet). Resets the
+    // colour and flag bytes 0x4-0x7, 0xC and 0xD-0xE of this object.
+    void fn_8015945C();
+
+    // 0x80159330 (owner unit game/tu_80158624.cpp, not written yet). Returns at
+    // once when lbl_8053AAF8->0x4C is 0xC; otherwise sets 0xE to 0xFF and, unless
+    // the GameView check (fn_802D6A9C()->fn_802DCD0C()) passes, clears 0xD[0]
+    // when lbl_8053AAF8's 0x94 and 0x96 bytes are 0.
+    void fn_80159330();
+
+    // 0x80158F70 (owner unit game/tu_80158624.cpp, not written yet). Draws up
+    // to three quads the size of the render mode (JUTVideo::sManager); `this`
+    // is lbl_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
+    void fn_80158F70();
 }; // Size: 0x10
+// 0x80543F28 (.sbss2, 8 bytes; no owner split yet). Its word is the colour
+// that cls_804A0160::fn_80158F70 (game/tu_80158624.cpp) puts in TEV register 1
+// with its own alpha byte.
+extern JUtility::TColor lbl_80543F28;
 // 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 // Only the flag and the float that tu_801286C0's update sets are known.
@@ -606,6 +630,10 @@ struct GameRoot2_8049F108 {
     // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by
     // fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8013B438();
+    // 0x8013B460 (between fn_8013B438 and fn_8013B490; body not yet known).
+    // Called with `this` = lbl_8053AB10 by cls_804A0160::fn_80158F70
+    // (game/tu_80158624.cpp), before its GX setup.
+    void fn_8013B460();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
     // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
