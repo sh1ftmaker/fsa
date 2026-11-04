@@ -134,9 +134,6 @@ act_warp	sinit	__sinit_act_warp_cpp	-	-	new	-
 act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zora_escort_goal	sinit	__sinit_act_zora_escort_goal_cpp	-	-	new	-
 act_zora_fish_herder	sinit	__sinit_act_zora_fish_herder_cpp	-	-	new	-
-tu_800F46C0	dtor	__dt__12cls_8049C4C0Fv	cls_8049C4C0	0x8049C4C0	new	new
-tu_800F46C0	dtor	__dt__23BoulderSpawner_8049C46CFv	BoulderSpawner_8049C46C	0x8049C46C	new	new
-tu_800F46C0	sinit	__sinit_tu_800F46C0_cpp	-	-	new	new
 tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
 tu_8010089C	dtor	__dt__12cls_8049C8ECFv	cls_8049C8EC	0x8049C8EC	new	new
