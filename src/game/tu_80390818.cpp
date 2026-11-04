@@ -1,6 +1,30 @@
 #include "game/GameAudio.h"
 #include "game/Message.h"
 
+s32 MessageWindow_804AF490::fn_80390818() {
+    s32 result = 0;
+    s32 state = field_0x24;
+    // FIXME: 56.43 %. The original tests state >= 6 first with cmpwi, returns
+    // 0 through bgelr before the state >= 1 test, and returns 2 from the
+    // low range with its own li/blr; ours folds the 1-5 range into a bltlr.
+    if (state < 6) {
+        if (state >= 1) {
+            return 2;
+        }
+    } else if (state < 9) {
+        result = 1;
+    }
+    return result;
+}
+
+bool MessageWindow_804AF490::fn_80390E40(s32 value, bool flag) {
+    if (field_0x24 == 0 || flag) {
+        field_0x20 = value;
+        return true;
+    }
+    return false;
+}
+
 void MessageWindow_804AF490::fn_80390E68() {
     bool flag = false;
     u16 flags = field_0x28;
@@ -95,6 +119,13 @@ s32 MessageWindow_804AF490::fn_80390C38() {
         return field_0x48->field_0x148;
     }
     return -1;
+}
+
+MessageWindow_804AF490::~MessageWindow_804AF490() {
+    delete field_0x48;
+    field_0x48 = NULL;
+    delete field_0x4c;
+    field_0x4c = NULL;
 }
 
 MessageWindow_804AF490::MessageWindow_804AF490(s32 index) {
