@@ -254,6 +254,6 @@ void cls_804A1718::init() {
 }
 
 // Returns the colour of the cls_804A0160 at lbl_8053AB10->0x2C.
-extern "C" JUtility::TColor fn_8018330C() {
+JUtility::TColor fn_8018330C() {
     return lbl_8053AB10->field_0x2c->field_0x4;
 }
