@@ -146,7 +146,6 @@ act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0
 act_seesaw_lift	dtor	__dt__19SeesawLift_804AD348Fv	SeesawLift_804AD348	0x804AD348	new	new
 act_shadow_link_demo	sinit	__sinit_act_shadow_link_demo_cpp	-	-	new	-
 act_shadow_link_generator	sinit	__sinit_act_shadow_link_generator_cpp	-	-	new	-
-act_shadow_link_giant_bomb	sinit	__sinit_act_shadow_link_giant_bomb_cpp	-	-	new	-
 act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
 act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
