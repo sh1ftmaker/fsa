@@ -9,105 +9,6 @@ static const s32 lbl_804751A8[15] = {
     30, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1,
 };
 
-IceMeltedByFourPlayers_804AE888::~IceMeltedByFourPlayers_804AE888() {
-    if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
-        mEmitter230 = NULL;
-    }
-}
-
-// FIXME: 99.58 %. The code matches; the four box literals (-92, -16, 92, 16)
-// and 1.0f are numbered in another order (@NNN vs lbl_, a data split).
-void IceMeltedByFourPlayers_804AE888::init() {
-    mBox.set(-92.0f, -16.0f, 92.0f, 16.0f);
-    mBox2.set(mBox);
-    field_0x80.set(mBox);
-    field_0xb8 = 1;
-    field_0xf8 = 2;
-    field_0xbc = 3;
-    field_0x1a4 = 1;
-    field_0xb0 = 0x0A040304;
-    field_0x234 = 0;
-    field_0x23c = 1.0f;
-    field_0x238 = 1.0f;
-    mEmitter230 = NULL;
-    field_0x240 = 0;
-    field_0x250 = 0;
-    field_0x251 = 0;
-    field_0x244 = 0;
-    field_0x248 = -1;
-    field_0x24c = 0;
-}
-
-// FIXME: 97.98 %. Same shape; the box copy's adds are scheduled differently
-// (the original keeps f.x in f2 and reloads pos.y into it), case 1 stores the
-// 0 of field_0x24c from a register the original holds for its loop, the
-// request copy and the literals (@NNN vs lbl_) differ.
-void IceMeltedByFourPlayers_804AE888::update() {
-    if (fn_8037845C() == 1) {
-        return;
-    }
-    JGeometry::TBox2f box;
-    box.set(mBox);
-    box.i.x += mPos.x;
-    box.f.x += mPos.x;
-    box.i.y += mPos.y;
-    box.f.y += mPos.y;
-    fn_80239914(&box, field_0x4, mSerial);
-    fn_8020D58C()->addBox(mSerial);
-    fn_80378680();
-    switch (field_0x234) {
-    case 0:
-        mBox.set(-96.0f, -16.0f, 96.0f, 16.0f);
-        if (fn_80378880() == 1) {
-            if (mEmitter230 == NULL) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x456, 0, 1, NULL, NULL, true, 1.0f);
-            }
-            field_0x238 -= 0.002f;
-            if (field_0x238 < 0.5f) {
-                field_0x234 = 1;
-            }
-            fn_801F0E34(0x50087, 0);
-        } else if (mEmitter230 != NULL) {
-            fn_801EE434(mEmitter230);
-            mEmitter230 = NULL;
-        }
-        break;
-    case 1:
-        fn_801F0E34(0x50087, 0);
-        field_0x23c -= 0.005;
-        if (field_0x23c < 0.01f) {
-            field_0x23c = 0.01f;
-        }
-        field_0x238 -= 0.002f;
-        if (field_0x238 < 0.002f) {
-            field_0x238 = 0.01f;
-            if (fn_8023077C()) {
-                field_0x244 = 50;
-                field_0x248 = 4;
-                field_0x24c = 0;
-                for (s32 i = 0; i < 4; i++) {
-                    fn_80230498(i, fn_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
-                }
-            }
-            if (mEmitter230 != NULL) {
-                fn_801EE434(mEmitter230);
-                mEmitter230 = NULL;
-            }
-        }
-        break;
-    }
-    field_0x54.set(field_0x23c, 1.0f, field_0x238);
-    s32 percent = 100 - (s32)(100.0f * field_0x238);
-    GameRootSub20_801902C0* root = fn_801902C0();
-    if (root->mIceRequest.field_0x10 != NULL && root->mIceRequest.mActive == 0) {
-        root->mIceRequest.mPos.set(mPos);
-        root->mIceRequest.mPercent = percent;
-        root->mIceRequest.mActive = 1;
-    }
-    field_0x251 = 1;
-}
-
 // FIXME: 99.30 %. regalloc only: the original keeps the 0.0f in f0 and the
 // scale (field_0x238) in f1 for the matrix stores; ours swaps them (the
 // literals are @NNN vs lbl_, a data split).
@@ -257,4 +158,103 @@ u8 IceMeltedByFourPlayers_804AE888::fn_80378880() {
         playerMask |= 1 << fn_802BA9F0(other);
     }
     return playerMask == 0xF;
+}
+
+// FIXME: 97.98 %. Same shape; the box copy's adds are scheduled differently
+// (the original keeps f.x in f2 and reloads pos.y into it), case 1 stores the
+// 0 of field_0x24c from a register the original holds for its loop, the
+// request copy and the literals (@NNN vs lbl_) differ.
+void IceMeltedByFourPlayers_804AE888::update() {
+    if (fn_8037845C() == 1) {
+        return;
+    }
+    JGeometry::TBox2f box;
+    box.set(mBox);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    fn_8020D58C()->addBox(mSerial);
+    fn_80378680();
+    switch (field_0x234) {
+    case 0:
+        mBox.set(-96.0f, -16.0f, 96.0f, 16.0f);
+        if (fn_80378880() == 1) {
+            if (mEmitter230 == NULL) {
+                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x456, 0, 1, NULL, NULL, true, 1.0f);
+            }
+            field_0x238 -= 0.002f;
+            if (field_0x238 < 0.5f) {
+                field_0x234 = 1;
+            }
+            fn_801F0E34(0x50087, 0);
+        } else if (mEmitter230 != NULL) {
+            fn_801EE434(mEmitter230);
+            mEmitter230 = NULL;
+        }
+        break;
+    case 1:
+        fn_801F0E34(0x50087, 0);
+        field_0x23c -= 0.005;
+        if (field_0x23c < 0.01f) {
+            field_0x23c = 0.01f;
+        }
+        field_0x238 -= 0.002f;
+        if (field_0x238 < 0.002f) {
+            field_0x238 = 0.01f;
+            if (fn_8023077C()) {
+                field_0x244 = 50;
+                field_0x248 = 4;
+                field_0x24c = 0;
+                for (s32 i = 0; i < 4; i++) {
+                    fn_80230498(i, fn_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
+                }
+            }
+            if (mEmitter230 != NULL) {
+                fn_801EE434(mEmitter230);
+                mEmitter230 = NULL;
+            }
+        }
+        break;
+    }
+    field_0x54.set(field_0x23c, 1.0f, field_0x238);
+    s32 percent = 100 - (s32)(100.0f * field_0x238);
+    GameRootSub20_801902C0* root = fn_801902C0();
+    if (root->mIceRequest.field_0x10 != NULL && root->mIceRequest.mActive == 0) {
+        root->mIceRequest.mPos.set(mPos);
+        root->mIceRequest.mPercent = percent;
+        root->mIceRequest.mActive = 1;
+    }
+    field_0x251 = 1;
+}
+
+IceMeltedByFourPlayers_804AE888::~IceMeltedByFourPlayers_804AE888() {
+    if (mEmitter230 != NULL) {
+        fn_801EE434(mEmitter230);
+        mEmitter230 = NULL;
+    }
+}
+
+// FIXME: 99.58 %. The code matches; the four box literals (-92, -16, 92, 16)
+// and 1.0f are numbered in another order (@NNN vs lbl_, a data split).
+void IceMeltedByFourPlayers_804AE888::init() {
+    mBox.set(-92.0f, -16.0f, 92.0f, 16.0f);
+    mBox2.set(mBox);
+    field_0x80.set(mBox);
+    field_0xb8 = 1;
+    field_0xf8 = 2;
+    field_0xbc = 3;
+    field_0x1a4 = 1;
+    field_0xb0 = 0x0A040304;
+    field_0x234 = 0;
+    field_0x23c = 1.0f;
+    field_0x238 = 1.0f;
+    mEmitter230 = NULL;
+    field_0x240 = 0;
+    field_0x250 = 0;
+    field_0x251 = 0;
+    field_0x244 = 0;
+    field_0x248 = -1;
+    field_0x24c = 0;
 }

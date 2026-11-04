@@ -32,65 +32,6 @@ void GamblingShop_804AAA70::fn_8030FDC0(s32 value) {
     mState = 6;
 }
 
-void GamblingShop_804AAA70::vfunc_0x10() {
-    // FIXME: 99.46 %. Regalloc only: the original keeps the chest-slot pointer
-    // (this, stored with 0x250(rN)) in r28 and the loop's byte offset in r29.
-    s32 actorEnd = fn_801F856C()->mActorEnd;
-    s32 count = 0;
-    for (s32 i = 0; i < actorEnd; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
-        if (actor != NULL && actor->mActorId == 'GMTB') {
-            field_0x250[count] = i;
-            count++;
-            if (count >= 3) {
-                break;
-            }
-        }
-    }
-    if (count == 0) {
-        mAlive = false;
-        return;
-    }
-    field_0x24c = count;
-    s32 pick = (s32)(6.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
-    switch (pick) {
-    case 0: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[1];
-        field_0x250[1] = tmp;
-        break;
-    }
-    case 1: {
-        s32 tmp = field_0x250[1];
-        field_0x250[1] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 2: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 3: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[1];
-        field_0x250[1] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 4: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[2];
-        field_0x250[2] = field_0x250[1];
-        field_0x250[1] = tmp;
-        break;
-    }
-    case 5:
-        break;
-    }
-}
-
 void GamblingShop_804AAA70::draw() {
     if (field_0x288) {
         fn_801F06F0("enemy_both_sob.bin", field_0x240 + 0x12C, NULL, 0, 1.0f, 1.0f);
@@ -408,6 +349,65 @@ void GamblingShop_804AAA70::update() {
         }
         break;
     }
+    }
+}
+
+void GamblingShop_804AAA70::vfunc_0x10() {
+    // FIXME: 99.46 %. Regalloc only: the original keeps the chest-slot pointer
+    // (this, stored with 0x250(rN)) in r28 and the loop's byte offset in r29.
+    s32 actorEnd = fn_801F856C()->mActorEnd;
+    s32 count = 0;
+    for (s32 i = 0; i < actorEnd; i++) {
+        ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+        if (actor != NULL && actor->mActorId == 'GMTB') {
+            field_0x250[count] = i;
+            count++;
+            if (count >= 3) {
+                break;
+            }
+        }
+    }
+    if (count == 0) {
+        mAlive = false;
+        return;
+    }
+    field_0x24c = count;
+    s32 pick = (s32)(6.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+    switch (pick) {
+    case 0: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[1];
+        field_0x250[1] = tmp;
+        break;
+    }
+    case 1: {
+        s32 tmp = field_0x250[1];
+        field_0x250[1] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 2: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 3: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[1];
+        field_0x250[1] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 4: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[2];
+        field_0x250[2] = field_0x250[1];
+        field_0x250[1] = tmp;
+        break;
+    }
+    case 5:
+        break;
     }
 }
 
