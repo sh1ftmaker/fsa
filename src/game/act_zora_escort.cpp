@@ -1,11 +1,21 @@
 #include "game/GameAudio.h"
 #include "game/act/act_zora_escort.h"
 
-extern "C" int fn_8011FFB8() { return 0; }
-extern "C" int fn_8011FFC0() { return 0; }
-extern "C" void fn_8011FFC8() {}
-extern "C" void fn_8011FFCC() {}
-extern "C" int fn_80120040() { return 1; }
+u8 ZoraEscort_8049DF78::vfunc_0x60() {
+    return 0;
+}
+
+s32 ZoraEscort_8049DF78::vfunc_0x78() {
+    return 0;
+}
+
+void ZoraEscort_8049DF78::vfunc_0x90() {}
+
+void ZoraEscort_8049DF78::vfunc_0x94() {}
+
+s32 ZoraEscort_8049DF78::vfunc_0xC0() {
+    return 1;
+}
 
 void ZoraEscort_8049DF78::update() {
     if (field_0x33c != 0xF) {

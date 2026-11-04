@@ -1104,10 +1104,9 @@ struct GameRootSub24_8016A3AC {
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8016DA6C();
 };
+// game/tu_8016A2B4.cpp (0x8016A3AC): returns lbl_8053AAF8->field_0x4->field_0x24.
+GameRootSub24_8016A3AC* fn_8016A3AC();
 extern "C" {
-// Owner: game/tu_8016A2B4.cpp (0x8016A3AC, defined there; not written yet).
-// No arguments; loads lbl_8053AAF8->field_0x4->field_0x24 (lwz 0x4, lwz 0x24).
-GameRootSub24_8016A3AC* fn_8016A3AC(void);
 // Owner: game/tu_8016A2B4.cpp (0x8016DB60, not written yet). Takes the object
 // fn_8016A3AC returns and calls a run of fn_8016xxxx functions on it.
 void fn_8016DB60(GameRootSub24_8016A3AC* self);
