@@ -558,6 +558,10 @@ void fn_80230F44(s32 player, s32 arg); // -> fn_8024F54C
 bool fn_80231230(s32 player, s32 arg); // -> fn_80260048; else false
 void fn_80231424(); // -> fn_80242560 on every active player
 bool fn_8023162C(s32 player, s32 arg); // -> fn_80242704; else false
+// Owner: tu_8022AD64's area (0x80231590, not written yet). 0x80231590 is
+// unmangled, so it is C linkage. act_cannon's update calls it with
+// (player, serial).
+extern "C" void fn_80231590(s32 player, s32 serial);
 void fn_80234810(); // -> fn_80248DAC on every active player
 void fn_802348C4(s32 player, s32 a, const JGeometry::TVec3f* b); // -> fn_802408C8
 
