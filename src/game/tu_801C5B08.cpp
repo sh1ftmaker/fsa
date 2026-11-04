@@ -98,10 +98,7 @@ void ShadowLink2_804A43E8::fn_801C5EBC(s32 player, bool flag) {
     fn_801CD930(&field_0x33c, angle, 0xAAA);
 }
 
-// FIXME: 96.81 %. (1) fn_801C5340 is declared s32 (its definition in
-// act_shadow_link_2.cpp returns s32); the original tests the result as a byte
-// (clrlwi.), ours compares it (cmpwi). Changing that definition to u8 would
-// fix it. (2) Register choice for the locals (the original holds the entry
+// FIXME: 97.07 %. Register choice for the locals (the original holds the entry
 // index in r26 and the rail index in r27, the player in r30, ours differs),
 // and the literal labels (@NNN vs lbl_ for lbl_8053EE6C, EE70, EE74, EE80,
 // EE88: data split).
@@ -109,7 +106,7 @@ void ShadowLink2_804A43E8::fn_801C5EBC(s32 player, bool flag) {
 // field_0x5ac and, in state 0x1B, a rail or a turn toward it; otherwise it
 // steers toward the player (fn_801C5EBC).
 void ShadowLink2_804A43E8::fn_801C5B08(bool flag) {
-    if (fn_801C5340() != 0) {
+    if (fn_801C5340()) {
         mFlags |= 0x2000000;
         fn_801C3B7C(0x1E);
         return;

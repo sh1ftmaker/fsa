@@ -52,7 +52,7 @@ void ShadowLink2_804A43E8::fn_801C2E70() {
 }
 
 // Takes no arguments and ignores r3; callers test the result as a byte.
-extern "C" bool fn_801C5340() {
+bool fn_801C5340() {
     return 0;
 }
 

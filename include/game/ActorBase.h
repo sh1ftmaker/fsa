@@ -447,11 +447,6 @@ public:
     // its 20-value table. r3 (the actor) is never read; callers pass the
     // actor and (field_0x90 & 0xFF) (act_thief, tu_801DE714).
     s32 fn_8032D564(s32 index);
-    // 2 units / 2 calls (act_vulture, act_wallmaster vfunc_0x60s, via
-    // EnemyBase_804A4808::fn_801CEA60). Whether this is a live 'BMTY' (Bombchu):
-    // mActorId == 'BMTY' and EnemyBase mFlags (0x230) != 3. Defined in
-    // game/tu_801CB270.cpp.
-    bool fn_801CC8E4();
     // 1 unit / 2 calls (tu_8025EB18, on an actor found by serial). If
     // neither field_0xcc nor field_0xc4: field_0xcc = 1, field_0xd0 = v,
     // returns 1; else 0.

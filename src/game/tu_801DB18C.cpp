@@ -40,7 +40,7 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     fn_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
-u8 cls_804A4EE8::fn_801DB2C8() {
+u8 cls_804A4EE8::vfunc_0x68() {
     u8 hitPlayers = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         hitPlayers = fn_801F2740(-1);

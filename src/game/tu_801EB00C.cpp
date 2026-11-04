@@ -43,22 +43,15 @@ cls_801EBA14::cls_801EBA14() {
     field_0x24 = 0x600;
 }
 
-// Constructor (fn_801EB950, now __ct__12cls_801EB8CCFv): zeroes the floats and
-// emitter pointers, builds field_0xc and reads the timer from fn_801CD664(1).
-// FIXME: 42.08 %. The original builds field_0xc (the cls_801EBA14 constructor,
-// inlined) between the float stores at 0x0..0x8 and the pointer clears; ours
-// constructs field_0xc as a member before the body, so the body's stores come
-// after it (missing/extra; the literal offsets differ as above).
-cls_801EB8CC::cls_801EB8CC() {
-    for (s32 i = 0; i < 3; i++) {
-        field_0x0[i] = 0.0f;
-    }
+// Constructor (fn_801EB950, now __ct__12cls_801EB8CCFv): zeroes the vector,
+// builds field_0xc (its constructor inlined), clears the rest, takes the timer
+// from fn_801CD664(0x10000) and then clears the seven emitter pointers.
+// FIXME: 98.1 %. Only the literal labels (@NNN vs lbl_8053F678...: the
+// literals of fn_801EB00C..fn_801EB710, not written yet, come first).
+cls_801EB8CC::cls_801EB8CC()
+    : field_0x0(0.0f, 0.0f, 0.0f), field_0x50(NULL), field_0x54(0.0f), field_0x58(0.0f), field_0x5c(0),
+      field_0x5e(fn_801CD664(0x10000)) {
     for (s32 i = 0; i < 7; i++) {
         field_0x34[i] = NULL;
     }
-    field_0x50 = NULL;
-    field_0x54 = 0.0f;
-    field_0x58 = 0.0f;
-    field_0x5c = 0;
-    field_0x5e = fn_801CD664(1);
 }

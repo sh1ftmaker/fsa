@@ -462,15 +462,17 @@ f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
 s32 fn_801CD664(s32 n);     // [0, n); game/tu_801CB270.cpp
 s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 
-// game/tu_801CB270.cpp functions its source doesn't define yet.
-extern "C" {
-s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
+// game/tu_801CB270.cpp: steps *angle towards target by at most step (a
+// wrapper of fn_801CD970; the 0/1 it passes on is unused by all 9 callers).
+void fn_801CD930(s16* angle, s32 target, s32 step);
+
 // act_shadow_link_2.cpp (returns 0, no arguments). Callers (tu_801C5B08,
 // tu_801C71BC) test the result as a byte (clrlwi. 24).
 bool fn_801C5340();
-// Steps *angle towards target by at most step (a wrapper of fn_801CD970;
-// the 0/1 it passes on is unused by all 9 callers).
-void fn_801CD930(s16* angle, s32 target, s32 step);
+
+// game/tu_801CB270.cpp functions its source doesn't define yet.
+extern "C" {
+s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
 // game/tu_801CB270.cpp (not written yet): the stepper fn_801CD930 wraps; true
 // when *angle reached target.
 bool fn_801CD970(s16* angle, s32 target, s32 step);
@@ -513,13 +515,11 @@ extern "C" {
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4);
 }
 
-// game/tu_801CB270.cpp (not written yet); called from game/tu_80207548.cpp and
+// game/tu_801CB270.cpp; called from game/tu_80207548.cpp and
 // game/tu_80220F54.cpp. Forwards to ActorManager_804A5800::fn_801F8544 with
-// the fourcc 'RUPY' (0x52555059) and the layer and pos; the flag selects 4 or
-// 5 in the low bits of its last argument. Returns the result (an actor serial).
-extern "C" {
+// 'RUPY' and the layer and pos; the flag selects 4 or 5 in the low bits of
+// its last argument. Returns the result (an actor serial).
 s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag);
-}
 
 // game/tu_801CB270.cpp (not written yet); called from game/tu_801BD8C0.cpp.
 // Maps a 16-bit angle to the one mirrored about the 0x4000 axes (a piecewise
@@ -533,9 +533,7 @@ s32 fn_801CB7CC(s16 angle);
 
 // game/tu_801CB270.cpp; called from game/tu_801DE714.cpp. Whether fn_80230188
 // holds for every player that takes part (fn_80138A30); takes no arguments.
-extern "C" {
 bool fn_801CCF7C();
-}
 
 // The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
 // (stored at 0 by their constructors); no members declared yet. 0x20

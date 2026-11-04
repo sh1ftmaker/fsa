@@ -8,7 +8,7 @@
 // 0x804A51E4), code in game/tu_801DE714.cpp. Named after its vtable.
 // Only the members the written code uses are known. The constructor
 // (0x801E22A4, __ct__12cls_804A51E4Fv) writes -1 to 0x2A8-0x2BC and 0x2D0,
-// zeroes 0x2C0, 0x2CC and 0x2CE and sets the floats at 0x2C4 and 0x2C8.
+// zeroes 0x2C0, 0x2CC and 0x2CE and sets the TVec2f at 0x2C4 to 0.
 // Size: unknown (>= 0x2D4)
 class cls_804A51E4 : public EnemyBase_804A4808 {
 public:
@@ -38,11 +38,11 @@ public:
     // (the step without the hit-bit test) with mapHit passed on, then
     // fn_8021835C.
     void vfunc_0x9C(u8 mapHit);
-    // tu_801DE714 (0x801E2004): removes the other live actors of mActorId
+    // tu_801DE714 (0x801E2004, vtable slot 0x54): removes the other live actors of mActorId
     // (ActorManager fn_801F7AB8, this one excepted by serial), then sets mPos.x
     // from the visible box's left edge (the second box from layer 8 up) and
-    // copies mPos.x and mPos.y to field_0x2c4 and field_0x2c8.
-    void fn_801E2004();
+    // copies mPos.x and mPos.y to field_0x2c4.
+    /* 0x54 */ virtual void vfunc_0x54();
     // tu_801DE714 (0x801E1D7C): whether mState is 0xB or 0xC.
     bool fn_801E1D7C();
     // tu_801DE714 (0x801E1D9C): whether mAnim's current animation is 2.
@@ -69,8 +69,7 @@ public:
     /* 0x2B8 */ s32 field_0x2b8;
     /* 0x2BC */ s32 mTargetSerial; // serial of the actor fn_8021FDB8 moves
     /* 0x2C0 */ s32 field_0x2c0;
-    /* 0x2C4 */ f32 field_0x2c4;
-    /* 0x2C8 */ f32 field_0x2c8;
+    /* 0x2C4 */ JGeometry::TVec2f field_0x2c4; // vfunc_0x54: set(mPos.x, mPos.y)
     /* 0x2CC */ s16 field_0x2cc;
     /* 0x2CE */ s16 field_0x2ce;
     /* 0x2D0 */ s32 field_0x2d0;

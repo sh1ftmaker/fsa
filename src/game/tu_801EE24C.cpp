@@ -198,22 +198,22 @@ void ActorBase_804A5770::fn_801F34DC() {
 // If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
 // loop with field_0xd0 = v and returns 1 (0 otherwise).
 u8 ActorBase_804A5770::fn_801F36D4(s32 v) {
-    s32 result = false;
+    s32 result = 0;
     if (field_0xcc == 0 && field_0xc4 == 0) {
         field_0xcc = 1;
         field_0xd0 = v;
-        result = true;
+        result = 1;
     }
     return result;
 }
 
 // If field_0xc4 is set: clears it, field_0x3c = *v, returns 1; else 0.
 u8 ActorBase_804A5770::fn_801F3708(const JGeometry::TVec3f* v) {
-    s32 result = false;
+    s32 result = 0;
     if (field_0xc4 != 0) {
         field_0xc4 = 0;
         field_0x3c.set(*v);
-        result = true;
+        result = 1;
     }
     return result;
 }
@@ -221,14 +221,14 @@ u8 ActorBase_804A5770::fn_801F3708(const JGeometry::TVec3f* v) {
 // If field_0xc4 is clear: sets it, field_0xc8 = field_0x110 = v, clears
 // field_0xcc, field_0xd0 = -1, returns 1; else 0.
 u8 ActorBase_804A5770::fn_801F3744(s32 v) {
-    s32 result = false;
+    s32 result = 0;
     if (field_0xc4 == 0) {
         field_0xc4 = 1;
         field_0xc8 = v;
         field_0xcc = 0;
         field_0xd0 = -1;
         field_0x110 = v;
-        result = true;
+        result = 1;
     }
     return result;
 }

@@ -363,6 +363,9 @@ s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 
 // fn_801F7464, fn_801F750C) and test r3 with clrlwi 24. Whether the pointer
 // is const is not visible.
 bool fn_801CC910(ActorBase_804A5770* actor);
+// Whether `actor` is a live Bombchu: mActorId == 'BMTY' and its field_0x230
+// != 3 (act_vulture, act_wallmaster vfunc_0x60s via fn_801CEA60).
+bool fn_801CC8E4(ActorBase_804A5770* actor);
 bool fn_801CC960(ActorBase_804A5770* actor);
 bool fn_801CC9B0(ActorBase_804A5770* actor);
 

@@ -62,7 +62,9 @@ void cls_804A4C58::vfunc_0x9C(u8 mapHit) {
     fn_801E61C4();
 }
 
-extern "C" void fn_801DA0FC() {
+// Vtable slot 0x54 (0x801DA0FC): EnemyBase's start hook; asks
+// lbl_8053AF80 for fn_80458F9C(60).
+void cls_804A4C58::vfunc_0x54() {
     lbl_8053AF80->fn_80458F9C(60);
 }
 

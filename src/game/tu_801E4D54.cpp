@@ -49,10 +49,11 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
     }
 }
 
-// FIXME: 98.86%. The loop counter and the layer swap registers (the original keeps
+// FIXME: 98.8 %. The loop counter and the layer swap registers (the original keeps
 // the counter in r30 and the layer, read before fn_8023DE58, in r31; this has them
 // the other way round), and the original tests the countdown twice (a second ble
-// to the loop end before its decrement), which no natural form here produces.
+// to the loop end before its decrement), which no natural form here produces; dx and dy also take each other's
+// FPRs (the original computes dy first).
 void VaatiBoss_804A4958::fn_801E5754() {
     for (s32 i = 0; i < 4; i++) {
         if (field_0x2a8[i].field_0x0 != 0) {
@@ -79,15 +80,13 @@ void VaatiBoss_804A4958::fn_801E5754() {
         if (field_0x2a8[i].field_0x0 == 0 && !fn_801D08B4(i, &mPos, field_0x464.field_0xc.field_0xc)) {
             continue;
         }
-        // Declaration order sets the stack slots (later declarations get lower
-        // offsets) and the FPRs; dy is computed first, as in the original.
+        // Address-taken locals get stack slots in reverse declaration order.
         JGeometry::TVec3f playerPos;
         JGeometry::TVec3f sum;
         JGeometry::TVec3f out;
         JGeometry::TVec2f v;
-        f32 dx;
+        f32 dx = mPos.x - mPrevPos.x;
         f32 dy = mPos.y - mPrevPos.y;
-        dx = mPos.x - mPrevPos.x;
         // Copied field by field, as the original loads three scalars.
         JGeometry::TVec3f* pos = fn_8023E724(i);
         playerPos.x = pos->x;
@@ -103,7 +102,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
                 }
             }
         }
-        fn_801EB00C(&field_0x464, &playerPos, &out);
+        field_0x464.fn_801EB00C(&playerPos, &out);
         if (out.z > 0.0f) {
             if ((mFlags & 0x4000) && !fn_80230188(i) && fn_802300EC(i) && !fn_80236BEC(i)) {
                 fn_80230C6C(i);

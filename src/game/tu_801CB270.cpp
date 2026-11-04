@@ -1,6 +1,5 @@
-// Unnamed unit (0x801CB270-0x801CDC8C). Written so far: the texture loader
-// at its start and the random helpers fn_801CD580/fn_801CD664 (the latter is
-// called from 52 units).
+// Unnamed unit (0x801CB270-0x801CDC8C): the texture loader at its start and
+// small helpers the enemy code shares (random picks, steppers, actor tests).
 
 #include "game/GameAudio.h"
 
@@ -10,6 +9,7 @@
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "game/act/act_bombchu.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
@@ -56,12 +56,11 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
     return kind;
 }
 
-// Whether this is a live Bombchu ('BMTY'): its mFlags (0x230, past ActorBase)
-// is not 3.
-bool ActorBase_804A5770::fn_801CC8E4() {
+// Whether `actor` is a live Bombchu ('BMTY'): its field_0x230 is not 3.
+bool fn_801CC8E4(ActorBase_804A5770* actor) {
     bool result = false;
-    if (mActorId == ACTOR_BMTY) {
-        if ((s32)static_cast<EnemyBase_804A4808*>(this)->mFlags != 3) {
+    if (actor->mActorId == ACTOR_BMTY) {
+        if (static_cast<Bombchu_804AB464*>(actor)->field_0x230 != 3) {
             result = true;
         }
     }
@@ -159,7 +158,7 @@ bool fn_801CD290(s32 layer) {
 }
 
 // Whether `player` has no owner (fn_8022F514 is false) and fn_80303750 says yes.
-extern "C" bool fn_801CD1D0(s32 player) {
+bool fn_801CD1D0(s32 player) {
     bool result = false;
     if (!fn_8022F514(player)) {
         if (fn_80303750(player)) {
@@ -178,8 +177,6 @@ bool fn_801CD2F8(s32 layer) {
     return result;
 }
 
-// A random integer in [0, 4) other than `except` (0-3, so at most three
-// candidates remain).
 // Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
 s32 fn_801CD354(s32 value) {
     s32 result = 0;
@@ -198,7 +195,7 @@ s32 fn_801CD354(s32 value) {
 }
 
 // Maps 0 to 3, 1 to 2, 3 to 1; 2 and anything else to 0.
-extern "C" s32 fn_801CD30C(s32 value) {
+s32 fn_801CD30C(s32 value) {
     s32 result = 0;
     switch (value) {
     case 0:
@@ -214,6 +211,8 @@ extern "C" s32 fn_801CD30C(s32 value) {
     return result;
 }
 
+// A random integer in [0, 4) other than `except` (0-3, so at most three
+// candidates remain).
 s32 fn_801CD580(s32 except) {
     s32 choices[3];
     s32* out = choices;
@@ -254,7 +253,7 @@ s32 fn_801CD950(f32* value, f32 target, f32 step) {
 }
 
 // Whether fn_80230188 holds for every player that takes part (fn_80138A30).
-extern "C" bool fn_801CCF7C() {
+bool fn_801CCF7C() {
     s32 count = lbl_8053AAF8->fn_80138A30();
     for (s32 i = 0; i < count; i++) {
         if (!fn_80230188(i)) {
@@ -266,6 +265,6 @@ extern "C" bool fn_801CCF7C() {
 
 // Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
 // `layer`; the flag picks 5 or 4 in the low bits of its last argument.
-extern "C" s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
+s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
     return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
 }

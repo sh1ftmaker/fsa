@@ -6,9 +6,9 @@
 
 // The actor collision boxes: a function-local static pair of box lists, one
 // written this frame and one read (see Map.h).
-CollisionBoxes_8020D58C* fn_8020D58C(void) {
-    static CollisionBoxes_8020D58C boxes;
-    return &boxes;
+CollisionBoxes_8020D58C* fn_8020D58C() {
+    static CollisionBoxes_8020D58C lbl_804CB8B0;
+    return &lbl_804CB8B0;
 }
 
 CollisionBoxList_8020D60C::CollisionBoxList_8020D60C() {
@@ -39,29 +39,29 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
 // Whether (x, y) lies in a box on `layer` registered by an actor other than
 // `serial`. A box whose actor has one of the ids in `ignoreIds` (a list ending
 // in 'NULL') doesn't count, and neither does a box whose actor is gone.
-bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds) {
+// FIXME: 97.7 %. Registers only: the original keeps the box pointer, `found`
+// and the counter in r26/r24/r23, ours in other callee-saved registers. The
+// method is const (the original loads mCount above the prologue moves).
+bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds) const {
     bool found = false;
-    s32 count = mCount;
-    for (s32 i = 0; i < count; i++) {
-        CollisionBox_8020D65C& box = mBoxes[i];
-        if (box.mLayer == layer && box.mSerial != serial && contains(box.mBox, *pos)) {
-            if (ignoreIds == NULL) {
-                found = true;
-                break;
-            }
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(box.mSerial);
-            if (actor != NULL) {
-                bool ignored = false;
-                for (const u32* id = ignoreIds; *id != 'NULL'; id++) {
-                    if (actor->mActorId == *id) {
-                        ignored = true;
-                        break;
+    for (s32 i = 0; i < mCount; i++) {
+        if (mBoxes[i].mLayer == layer && mBoxes[i].mSerial != serial && contains(mBoxes[i].mBox, *pos)) {
+            found = true;
+            if (ignoreIds != NULL) {
+                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mBoxes[i].mSerial);
+                if (actor == NULL) {
+                    found = false;
+                } else {
+                    for (const u32* id = ignoreIds; *id != 'NULL'; id++) {
+                        if (*id == actor->mActorId) {
+                            found = false;
+                            break;
+                        }
                     }
                 }
-                if (!ignored) {
-                    found = true;
-                    break;
-                }
+            }
+            if (found) {
+                break;
             }
         }
     }
@@ -70,6 +70,8 @@ bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* 
 
 // Adds the box of the actor `serial` (moved by its position) if the actor is
 // alive, the box is not empty and fewer than 0x50 boxes are listed.
+// FIXME: 87.1 %. The original loads the actor's layer (field_0x4) before the
+// count check and adds the box corners in another order; the rest is the same.
 void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
     ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
     if (actor == NULL) {
@@ -98,16 +100,14 @@ void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
 }
 
 // Adds `box` on `layer` for `serial`, with the same checks as fn_8020D7D0.
+// FIXME: 89.3 %. The original keeps only box->i.x from the size test and
+// loads i.y, f.x and f.y again for the copy; ours keeps all four in registers.
 void CollisionBoxList_8020D60C::fn_8020D8C0(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
     if (mCount < 0x50) {
-        if (box->f.x - box->i.x > 0.0f && box->f.y - box->i.y > 0.0f) {
-            CollisionBox_8020D65C& entry = mBoxes[mCount];
-            entry.mBox.i.x = box->i.x;
-            entry.mBox.i.y = box->i.y;
-            entry.mBox.f.x = box->f.x;
-            entry.mBox.f.y = box->f.y;
-            entry.mLayer = layer;
-            entry.mSerial = serial;
+        if (box->getWidth() > 0.0f && box->getHeight() > 0.0f) {
+            mBoxes[mCount].mBox.set(*box);
+            mBoxes[mCount].mLayer = layer;
+            mBoxes[mCount].mSerial = serial;
             mCount++;
         }
     }

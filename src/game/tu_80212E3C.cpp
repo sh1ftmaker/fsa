@@ -36,7 +36,7 @@ void cls_804A6340::vfunc_0x24() {
     if ((s32)field_0x90 >= 0) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C((s32)field_0x90);
         if (actor != NULL) {
-            ((cls_804A6270*)actor)->fn_80210D90();
+            static_cast<cls_804A6270*>(actor)->fn_80210D90();
         }
     }
     ActorBase_804A5770::vfunc_0x24();
