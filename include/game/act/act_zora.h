@@ -25,6 +25,9 @@ public:
     // no player or actor hit mask is reported (EnemyBase's vfunc_0x68 is
     // the bitmask hook).
     /* 0x68 */ virtual u8 vfunc_0x68();
+    // Vtable slot 0x5C (0x80340660, in act_zora_lotus.cpp): returns false,
+    // so no player hit is reported (EnemyBase's vfunc_0x5C is that check).
+    /* 0x5C */ virtual bool vfunc_0x5C();
     // Vtable slot 0x60 (0x80340658, in act_zora_lotus.cpp): returns false,
     // so no actor hit is reported (EnemyBase's vfunc_0x60 is the actor-hit
     // check that ENEMY_FLAG_HIT_ACTOR records).
