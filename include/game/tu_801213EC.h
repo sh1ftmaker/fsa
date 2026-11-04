@@ -10,7 +10,7 @@
 // The escort base class (vtable 0x8049E0C8), parent of EscortWoman_8049E1D0
 // ('OPGL', act_escort_woman) and ZoraEscort_8049DF78 ('FAZR', act_zora_escort).
 // Named after its vtable. Both children's constructors call its constructor
-// (fn_801247C8) and both destructors its destructor (fn_80124740).
+// (fn_801247C8) and both destructors its destructor (__dt__19EscortBase_8049E0C8Fv).
 class EscortBase_8049E0C8 : public ActorBase_804A5770 {
 public:
     // __ct__19EscortBase_8049E0C8FPCcll (tu_801213EC): the constructor. Both children pass their
