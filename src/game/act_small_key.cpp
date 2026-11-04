@@ -6,6 +6,7 @@
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/ViewLayer.h"
 #include "game/act/act_small_key.h"
 
 SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
@@ -21,6 +22,95 @@ bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     }
     field_0x288--;
     return false;
+}
+
+// FIXME: 85.76 %. The original keeps the tile-code compares as one linear
+// chain of cmpwi/beq to the shared return (no switch, no range folding); the
+// switch here is a binary search. pos and layer take r30/r28 the other way
+// round (the original copies pos to r30 before this, layer to r28 after), and
+// the mPos.z / field_0x3c float compares load their operands in another order.
+bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
+    s32 tileCode = fn_8022461C(pos, layer);
+    s32 rawCode = fn_80226850(pos, layer);
+    if (rawCode == 0x230 || rawCode == 0x231) {
+        return false;
+    }
+    if (rawCode == 0x19E || rawCode == 0x19F || rawCode == 0x350 || rawCode == 0x351 || rawCode == 0x342 ||
+        rawCode == 0x343 || rawCode == 0x345 || rawCode == 0x346 || rawCode == 0x355 || rawCode == 0x356 ||
+        rawCode == 0x2EE || rawCode == 0x2EF || rawCode == 0x2FE || rawCode == 0x2FF || rawCode == 0x338 ||
+        rawCode == 0x339 || rawCode == 0x32A || rawCode == 0x32B || rawCode == 0x32D || rawCode == 0x32E ||
+        rawCode == 0x33D || rawCode == 0x33E || rawCode == 0x2CE || rawCode == 0x2CF || rawCode == 0x2DE ||
+        rawCode == 0x2DF || rawCode == 0x3B0 || rawCode == 0x3B1 || rawCode == 0x3A2 || rawCode == 0x3A3 ||
+        rawCode == 0x3A5 || rawCode == 0x3A6 || rawCode == 0x3B6 || rawCode == 0x398 || rawCode == 0x399 ||
+        rawCode == 0x38A || rawCode == 0x38B || rawCode == 0x39D || rawCode == 0x38D || rawCode == 0x38E ||
+        rawCode == 0x39E) {
+        return true;
+    }
+    if ((field_0x280 == 0 || field_0x280 == 1 || field_0x280 == 2 || field_0x280 == 6 || field_0x280 == 9) &&
+        (rawCode == 0x1A8 || rawCode == 0x1A9 || rawCode == 0x1AA)) {
+        return true;
+    }
+    if (viewLayerFlag(field_0x4) && rawCode == 0x14) {
+        return false;
+    }
+    switch (tileCode) {
+    case 0:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 2:
+    case 3:
+    case 0x50:
+    case 0xE:
+    case 0xC:
+    case 0x2C:
+    case 0x2D:
+    case 0x2E:
+    case 0x2F:
+    case 0x20:
+    case 0xD:
+    case 0x39:
+    case 0x3A:
+    case 0x3B:
+    case 0x4C:
+    case 0x4D:
+    case 0x4E:
+    case 0x4F:
+    case 0x24:
+        return false;
+    }
+    if (tileCode - 0x10 <= 6 || tileCode == 0x17) {
+        if (field_0x280 == 7 || field_0x280 == 8) {
+            return false;
+        }
+        if (mPos.z > 15.0f && field_0x3c.x == 0.0f) {
+            field_0x288 = 300;
+            if (mPos.z < 18.0f) {
+                mPos.z = 18.0f;
+            }
+            return false;
+        }
+    }
+    if (rawCode == 0x3A) {
+        return true;
+    }
+    if (rawCode == 0x3D) {
+        return false;
+    }
+    if (tileCode == 0x25) {
+        return fn_802D6A9C()->field_0x171 == 0;
+    }
+    if (tileCode == 0x26) {
+        return fn_802D6A9C()->field_0x171 == 1;
+    }
+    if (tileCode - 0x18 <= 2 || tileCode == 0x1B) {
+        return false;
+    }
+    if (tileCode == 0x22) {
+        return fn_802D6A9C()->field_0x170 == 1;
+    }
+    return true;
 }
 
 void SmallKey_804A8CD8::fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer) {
