@@ -5,41 +5,48 @@
 #include "game/act/act_quicksand.h"
 #include "game/tu_80212AC0.h"
 
-void cls_804A6270::fn_80210D90() {
-    mFlags |= 0x20000;
-    fn_801F3604();
-    switch (mState) {
+// Ends the active state: state 1 hands the actor to fn_80212ECC and the view
+// bit on, state 6 clears it; then the actor gets mFlags 0x4000 and the state
+// becomes 6.
+static inline void leaveSand(cls_804A6270* sand) {
+    switch (sand->mState) {
     case 1: {
-        s32 serial = field_0x388;
+        s32 serial = sand->field_0x388;
         if (serial >= 0) {
             ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
             if (actor != NULL) {
                 fn_80212ECC(static_cast<EnemyBase_804A4808*>(actor));
             }
         }
-        s32 viewSerial = field_0x2b8;
+        s32 viewSerial = sand->field_0x2b8;
         if (viewSerial != 0) {
             fn_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
         }
         break;
     }
     case 6: {
-        s32 viewSerial = field_0x2b8;
+        s32 viewSerial = sand->field_0x2b8;
         if (viewSerial != 0) {
             fn_802D6A9C()->fn_802D8050(viewSerial, false, 0xff);
         }
         break;
     }
     }
-    s32 serial = field_0x388;
+    s32 serial = sand->field_0x388;
     if (serial >= 0) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
         if (actor != NULL) {
             static_cast<EnemyBase_804A4808*>(actor)->mFlags |= 0x4000;
         }
     }
-    mStateTimer = 0;
-    mState = 6;
+    sand->mStateTimer = 0;
+    sand->mState = 6;
+}
+
+void cls_804A6270::fn_80210D90() {
+    mFlags |= 0x20000;
+    fn_801F3604();
+    leaveSand(this);
 }
 
 // FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
@@ -127,6 +134,28 @@ void cls_804A6270::vfunc_0x9C(u8 mapHit) {
     }
     if (active) {
         fn_801F0E34(0x30073, 0);
+    }
+}
+
+void cls_804A6270::fn_80211C94() {
+    // Matching: the state range is a switch; an `if (mState >= 2 && mState < 6)`
+    // block compiles with the branches in another order.
+    switch (mState) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        if (field_0x2ac == 3) {
+            s32 viewBit = field_0x2b0;
+            if (viewBit != 0 && !fn_802D6A9C()->fn_802D800C(viewBit)) {
+                leaveSand(this);
+                return;
+            }
+        }
+        if (field_0x2ac == 4 && fn_801D05F8(&mPos, field_0x3a0) < 0) {
+            leaveSand(this);
+        }
+        break;
     }
 }
 

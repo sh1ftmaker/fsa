@@ -29,6 +29,12 @@ public:
     // shared list fn_801902C0 returns; then, under the same test, plays
     // sound 0x30073 (fn_801F0E34).
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
+    // 0x80211C94 (not virtual; called by fn_8021148C with this). Only while
+    // mState is 2 to 5: when field_0x2ac is 3 and field_0x2b0 is set but the
+    // view does not report that bit (fn_802D800C), or when it is 4 and
+    // fn_801D05F8 finds no player within field_0x3a0, the state is left
+    // (see leaveSand in the .cpp).
+    void fn_80211C94();
     // 0x80210D90 (not virtual): sets mFlags bit 0x20000, calls ActorBase's
     // fn_801F3604, then acts on mState: state 1 calls fn_80212ECC on the
     // actor serial field_0x388 and passes field_0x2b8 to GameView with bit
