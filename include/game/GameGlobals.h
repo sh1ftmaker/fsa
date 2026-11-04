@@ -708,6 +708,30 @@ extern "C" cls_80204638* fn_80204638();
 class ActorBase_804A5770;
 extern "C" void fn_802049E0(cls_80204638* table, ActorBase_804A5770* actor);
 
+// game/tu_801E9AFC.cpp (owner unit, not written yet). One element of the guarded
+// static array in .bss at 0x804CA358 (guard lbl_8053AC50), named after its
+// constructor fn_801E9B54 (an empty function). Only its member function is known.
+struct cls_801E9B54 {
+    /* 0x00 */ u8 field_0x0[0x78]; // not yet known
+    // Owner tu_801E9AFC. With arg0 == 0, appends arg1 to the list at 0x64 (its
+    // count at 0x74) and returns -1. Otherwise finds the entry whose byte at 0x4
+    // is arg0, stores arg1 in its word at 0x8, and returns the serial (0x198) of
+    // the actor its pointer at 0x0 names, or -1 when there is none.
+    s32 fn_801EA6D8(u8 arg0, s32 arg1);
+}; // Size: 0x78
+// The object at 0x804CA358: two elements, then the byte at 0xF0 that selects
+// one of them. Returned by fn_801E9AFC (owner unit tu_801E9AFC, not written yet).
+struct cls_801E9AFC {
+    /* 0x00 */ cls_801E9B54 field_0x0[2];
+    /* 0xF0 */ u8 field_0xf0;
+}; // Size: at least 0xF1 (the selector byte is the last field known)
+// Getter of that object (returns its address; builds it on first use).
+extern "C" cls_801E9AFC* fn_801E9AFC();
+// game/tu_801E9AFC.cpp (owner unit, not written yet): draws at pos (x, y only)
+// with the given angle (an index into the sin/cos table) and scale. arg0 is
+// the slots object fn_801E9AFC returned; the callee doesn't read it at entry.
+extern "C" void fn_801EA108(cls_801E9AFC* slots, const JGeometry::TVec2f* pos, s16 angle, f32 scale);
+
 // game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
 // cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read
 // its current value (word 0x4), clamped to 0-47: fn_801DA938 returns that
