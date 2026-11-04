@@ -43,6 +43,11 @@ public:
     // 0xF; with none, fn_801CE2BC(mapHit). Then field_0x336 counts down to
     // 0 and fn_801E61C4 moves the pair at 0x2C8.
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
+    // 0x801D84E4: the last slot of the vtable (0xA0). Below state 4 (and not
+    // 0) a state 1-3 sets the flag at GameRoot2's 0x30 once and, when the
+    // camera's 0x7F5 is clear, starts a scripted move to mPos; other states
+    // queue mPos with the camera and, unless 0x179 is set, set 0x178.
+    /* 0xA0 */ virtual void vfunc_0xA0();
 
     // 0x801D8400 (first function of tu_801D8400, called by tu_801DAC6C): below
     // state 8 (mState) calls fn_801D9C58 with 8.
