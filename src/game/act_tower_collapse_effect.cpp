@@ -23,6 +23,10 @@ static inline void setSpriteRotation(Mtx mtx, SpriteParams_801F5AE0& params, s32
     params.field_0x1d = 1;
 }
 
+// FIXME: 86.64 %. Scheduling: the original loads the rotation constants and
+// field_0x23c/0x240 interleaved with the mPos stores and the int-to-float
+// conversion; ours keeps them in source order (4 more instructions), and the
+// literals are @NNN, not lbl_8053C1D0-lbl_8053C1E0.
 void TowerCollapseEffect_8049CA40::fn_80103348() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -92,6 +96,8 @@ void TowerCollapseEffect_8049CA40::init() {
     }
 }
 
+// FIXME: 99.66 %. The original's mode-1 dispatch has a second unconditional
+// `b` to the end after the state-0 test (0x3E8); ours has one.
 void TowerCollapseEffect_8049CA40::update() {
     switch (mMode) {
     case 0:

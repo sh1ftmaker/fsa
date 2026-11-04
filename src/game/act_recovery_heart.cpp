@@ -5,10 +5,6 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_recovery_heart.h"
 
-// .sbss ints that only this unit's update() uses (no owner written yet).
-extern s32 lbl_8053AB9C;
-extern s32 lbl_8053ABEC;
-
 RecoveryHeart_8049F4F0::~RecoveryHeart_8049F4F0() {}
 
 // The ignore list is the multi-character tags 'TOMI' and 'NULL'.
@@ -23,7 +19,8 @@ bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos)
     }
     s32 kind = fn_8022461C(pos, layer);
     s32 floor = fn_80226850(pos, layer);
-    if ((u32)(kind - 0x10) <= 7 || (floor >= 0x140 && floor <= 0x15F)) {
+    if (kind == 0x10 || kind == 0x11 || kind == 0x12 || kind == 0x13 || kind == 0x14 ||
+        kind == 0x15 || kind == 0x16 || kind == 0x17 || (floor >= 0x140 && floor <= 0x15F)) {
         return false;
     }
     if (kind == 0 || kind == 4 || kind == 5 || kind == 6 || kind == 7 || kind == 2 ||

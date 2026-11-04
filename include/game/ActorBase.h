@@ -515,9 +515,14 @@ public:
     void setSlot(s32 slot) { mSlot = slot; }
     void setLife(s32 life) { mLife = life; }
     s32 getField_0x4() const { return field_0x4; }
-    // The same field (the layer), out of line in game/act_sword_soldier.cpp
-    // (0x8015461C): other units call it on their own actors with a bl.
-    s32 fn_8015461C() const;
+    // Out-of-line accessors in game/act_sword_soldier.cpp; act_ganon,
+    // act_phantom_ganon_2, tu_80197070, tu_8018A8D8 (and tu_803944C8 for
+    // fn_801544C8) call them with a bl on actors of other classes.
+    u32 fn_801544C8() const;               // field_0x90 (0x801544C8)
+    JGeometry::TVec3f* fn_801544DC();      // &mPos (0x801544DC)
+    s32 fn_80154510() const;               // field_0x114, the "atcp" damage (0x80154510)
+    s32 fn_801545E8() const;               // mSerial (0x801545E8)
+    s32 fn_8015461C() const;               // field_0x4, the layer (0x8015461C)
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
     void setField_0x90(u32 v) { field_0x90 = v; }

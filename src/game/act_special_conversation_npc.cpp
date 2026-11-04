@@ -6,7 +6,15 @@
 
 SpecialConversationNPC_804AAFB8::~SpecialConversationNPC_804AAFB8() {}
 
-static void (SpecialConversationNPC_804AAFB8::*lbl_804AAED4[9])() = {};
+// The state table update() runs from (field_0x238). Not const, so its
+// initialiser (lbl_804AAE68) is copied into it at static-init time.
+static void (SpecialConversationNPC_804AAFB8::*lbl_804AAED4[9])() = {
+    &SpecialConversationNPC_804AAFB8::fn_80319658, &SpecialConversationNPC_804AAFB8::fn_803190E0,
+    &SpecialConversationNPC_804AAFB8::fn_80318D74, &SpecialConversationNPC_804AAFB8::fn_80318B84,
+    &SpecialConversationNPC_804AAFB8::fn_803187F4, &SpecialConversationNPC_804AAFB8::fn_803185A8,
+    &SpecialConversationNPC_804AAFB8::fn_8031825C, &SpecialConversationNPC_804AAFB8::fn_80317F18,
+    &SpecialConversationNPC_804AAFB8::fn_803193B4,
+};
 // The frame counts of the cycle (field_0x25c), indexed by field_0x264.
 static s32 lbl_804AAF40[6] = {2, 3, 4, 5, 4, 3};
 

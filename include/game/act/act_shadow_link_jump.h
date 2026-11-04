@@ -3,9 +3,6 @@
 
 #include "game/cls_804A6A00.h"
 
-// A float in .sdata2 (0x8053EFB8), read by vfunc_0x88 and fn_8022089C.
-extern const f32 lbl_8053EFB8;
-
 // A minor Shadow Link actor (sub-base cls_804A6A00) that waits until a player
 // is near, then hops along field_0x98 (a 16-bit direction) a few times and
 // wanders off. Code in game/act_shadow_link_jump.cpp. Named after its vtable

@@ -11,10 +11,6 @@
 #include "game/cls_80217374.h"
 #include "game/cls_80218A8C.h"
 
-// .sdata2 floats: 0x8053EFB8 is also read by act_shadow_link_jump.cpp.
-extern const f32 lbl_8053EFB8;
-extern const f32 lbl_8053EFBC;
-
 // The SLK2 actor ("Shadow Link 2", docs/names/actors.tsv, high confidence):
 // the spawner constructs it with fn_801C573C, which calls the shared base's
 // constructor and stores this vtable (0x804A43E8). Named after its vtable.

@@ -8,8 +8,6 @@ void ShadowLink2_804A43E8::vfunc_0x84() {
     if (field_0xd8 > 0 && field_0xf8 == 2) {
         return;
     }
-    // The negated floor is computed before the store, as in the original; this
-    // local is there to match that order.
     f32 minZ = -lbl_8053EFBC;
     field_0x3c.z += lbl_8053EFB8;
     if (field_0x3c.z < minZ) {
@@ -53,8 +51,8 @@ void ShadowLink2_804A43E8::fn_801C2E70() {
     mHitBox.fn_80216A8C();
 }
 
-// Takes no arguments, so it is a free function rather than a member.
-extern "C" s32 fn_801C5340() {
+// Takes no arguments and ignores r3; callers test the result as a byte.
+extern "C" bool fn_801C5340() {
     return 0;
 }
 
@@ -77,9 +75,7 @@ extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
 // Member: calls fn_801C12B8 on the fn_801C0D70 object when that object's
 // word at 0x50 has its top bit set and mFlags has bit 0x2000.
 void ShadowLink2_804A43E8::fn_801C53F8() {
-    // The bit is materialised as a 0/1 value before the test, as in the
-    // original; this local is there to match that.
-    u8 clear = (fn_801C0D70()->field_0x50 >> 31) == 0;
+    bool clear = (fn_801C0D70()->field_0x50 >> 31) == 0;
     if (clear) {
         return;
     }

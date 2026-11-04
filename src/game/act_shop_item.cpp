@@ -41,6 +41,10 @@ void ShopItem_8049CDC0::draw() {
     fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x17B, &params, 7, 0, false, 1.0f, 1.0f);
 }
 
+// FIXME: 97.63 %. In state 1 the original reloads mPlayer (lwz 0x270) where ours
+// zeroes canAfford up front (li r29, 0), so the affordability test is shaped
+// differently there (4 instructions fewer here); the jump tables are @NNN, not
+// jumptable_8049CE14/34/54.
 void ShopItem_8049CDC0::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box = mBox;

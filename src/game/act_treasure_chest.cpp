@@ -11,6 +11,7 @@
 #include "game/ViewLayer.h"
 #include "game/cls_804AE9B0.h"
 #include "game/tu_80379F84.h"
+#include "game/act/act_liftable_item.h"
 #include "game/act/act_treasure_chest.h"
 
 TreasureChest_804AA178::~TreasureChest_804AA178() {}
@@ -65,6 +66,9 @@ void TreasureChest_804AA178::init() {
     field_0x24c[3] = -1;
 }
 
+// FIXME: 96.10 %. In state 2 the spawn code is built in other registers (the
+// original compares field_0x244 with i as `cmpw r29, r0` and reloads
+// field_0x234 off r28), and the literals are @NNN, not lbl_805413C0 onwards.
 void TreasureChest_804AA178::update() {
     JGeometry::TVec2f pos(mPos.x, mPos.y);
     s32 layer = field_0x4;
@@ -180,8 +184,7 @@ void TreasureChest_804AA178::draw() {}
 
 bool TreasureChest_804AA178::fn_802EB27C() {
     // FIXME: 97.11 %. The original copies fn_801F666C's result through r0
-    // (mr r0, r3; mr. r30, r0) where ours has mr. r30, r3; the assignment in
-    // the condition gives the same bytes.
+    // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
     s32 serial;
     bool result = false;
     for (s32 i = 0; i < 4; i++) {
@@ -189,9 +192,9 @@ bool TreasureChest_804AA178::fn_802EB27C() {
         if (serial < 0) {
             continue;
         }
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
-        if (actor != NULL && fn_801597B8(actor) == 3) {
-            fn_801597C0(actor);
+        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(fn_801F856C()->fn_801F666C(serial));
+        if (item != NULL && item->fn_801597B8() == 3) {
+            item->fn_801597C0();
             result = true;
         }
     }
@@ -229,8 +232,8 @@ bool TreasureChest_804AA178::vfunc_0x54() {
                 open = (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & (1 << (sub + stage * 4))) != 0;
             }
             if (open && (field_0x234 <= 2 || field_0x234 == 0x2F)) {
-                s32 r30 = lbl_8053AAF8->fn_80138A30();
-                if (fn_801F856C()->fn_801F6058(r30 - 1) == field_0x240) {
+                s32 count = lbl_8053AAF8->fn_80138A30();
+                if (fn_801F856C()->fn_801F6058(count - 1) == field_0x240) {
                     s32 limit = 20;
                     if (lbl_8053AAF8->fn_80138A30() == 3) {
                         limit = 30;
@@ -244,7 +247,6 @@ bool TreasureChest_804AA178::vfunc_0x54() {
             }
         }
 
-        f32 one = 1.0f;
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
             JGeometry::TVec3f at = pos;
@@ -308,9 +310,9 @@ bool TreasureChest_804AA178::vfunc_0x54() {
                 fn_802D6A9C()->fn_802D7D00(field_0x4, bit, true);
             }
             JGeometry::TVec3f fxA(field_0x25c.x + 8.0f, field_0x25c.y + 8.0f, 0.0f);
-            fn_8013CC50(field_0x4, &fxA, 0xD0, 0, 0, NULL, NULL, true, one);
+            fn_8013CC50(field_0x4, &fxA, 0xD0, 0, 0, NULL, NULL, true, 1.0f);
             JGeometry::TVec3f fxB(field_0x25c.x + 8.0f, field_0x25c.y + 8.0f, 0.0f);
-            fn_8013CC50(field_0x4, &fxB, 0xD1, 0, 1, NULL, NULL, true, one);
+            fn_8013CC50(field_0x4, &fxB, 0xD1, 0, 1, NULL, NULL, true, 1.0f);
         }
         result = true;
     }

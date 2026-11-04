@@ -29,7 +29,7 @@ public:
     // game/act_shadow_link_generator.cpp: spawns four 'SLK2' actors, one per
     // step, each on a random slot from mSlotFirst to mSlotLast, and switches
     // each one that is found to its state 0xD.
-    void fn_801C186C();
+    void fn_801C186C() const;
 
     // The slot range comes from the spawn argument field_0x90 (init: bits
     // 8-15 and 16-23); fn_801C5660 keeps the low nibble of a slot.
