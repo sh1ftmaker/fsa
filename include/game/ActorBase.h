@@ -500,6 +500,9 @@ public:
         mPrevPos = pos;
     }
     void setSpawnPos(const JGeometry::TVec3f& pos) { mSpawnPos = pos; }
+    // 0x80182660, out of line in game/tu_8017EF40.cpp: mPos = pos (a whole
+    // TVec3f copy, psq + stfs). Called with the actor and a stack TVec3f.
+    void fn_80182660(const JGeometry::TVec3f& pos);
     JGeometry::TBox2f* getBox() { return &mBox; }
     JGeometry::TBox2f* getBox2() { return &mBox2; }
     void setBox2(const JGeometry::TBox2f& box) { mBox2 = box; }
