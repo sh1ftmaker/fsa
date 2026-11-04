@@ -56,6 +56,10 @@ struct GameRootSub04_801F856C {
     // A heap: game/tu_8044B80C.cpp makes it current, frees its J2DScreens
     // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
     /* 0x30 */ JKRHeap* field_0x30;
+
+    // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
+    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
+    void fn_80139D3C();
 };
 
 // *lbl_8053AAF8: the most-used game singleton (309 of 529 units read it).
@@ -532,6 +536,10 @@ struct GameRoot2_8049F108 {
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
+    /* 0x34 */ u8 field_0x34[0x39 - 0x34];
+    // Read as a byte by fn_80139CC4 and fn_80139D3C (game/tu_80139BE8.cpp);
+    // not yet known what sets it.
+    /* 0x39 */ u8 field_0x39;
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
     // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
@@ -959,6 +967,9 @@ extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016A3AC, defined there; not written yet).
 // No arguments; loads lbl_8053AAF8->field_0x4->field_0x24 (lwz 0x4, lwz 0x24).
 GameRootSub24_8016A3AC* fn_8016A3AC(void);
+// Owner: game/tu_8016A2B4.cpp (0x8016DB60, not written yet). Takes the object
+// fn_8016A3AC returns and calls a run of fn_8016xxxx functions on it.
+void fn_8016DB60(GameRootSub24_8016A3AC* self);
 }
 
 // The 4-byte pointer at .sbss lbl_8053AD68 (the cls_804AE9A0 object, declared
