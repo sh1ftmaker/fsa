@@ -279,7 +279,10 @@ public:
     // counts the players 0..field_0x4.
     /* 0x0004 */ s32 field_0x4;
     /* 0x0008 */ JGeometry::TVec3f mPos; // fn_8023E724 (193 units)
-    /* 0x0014 */ u8 field_0x14[0x2B8 - 0x14];
+    /* 0x0014 */ u8 field_0x14[0x2C - 0x14];
+    // fn_802685D4's step is mPos - field_0x2c; it copies mPos here at the end.
+    /* 0x002C */ JGeometry::TVec3f field_0x2c;
+    /* 0x0038 */ u8 field_0x38[0x2B8 - 0x38];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
     /* 0x02C4 */ u8 field_0x2c4[0x324 - 0x2C4];
@@ -292,7 +295,14 @@ public:
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
-    /* 0x03B8 */ u8 field_0x3b8[0x3D8 - 0x3B8];
+    /* 0x03B8 */ u8 field_0x3b8[0x3BC - 0x3B8];
+    // Copy of field_0x3b4 that fn_802685D4 stores each frame.
+    /* 0x03BC */ s32 field_0x3bc;
+    // fn_802685D4 sets field_0x3c0 (li 1, stb); it clears field_0x3c1 and 0x3c2.
+    /* 0x03C0 */ bool field_0x3c0;
+    /* 0x03C1 */ bool field_0x3c1;
+    /* 0x03C2 */ bool field_0x3c2;
+    /* 0x03C3 */ u8 field_0x3c3[0x3D8 - 0x3C3];
     // Signed count read by fn_8024EE14 (tu_8023FBF0) and fn_8023CA88.
     /* 0x03D8 */ s8 field_0x3d8;
     // Signed count read by fn_8024EE0C (tu_8023FBF0) and fn_8023CB24.
@@ -311,7 +321,10 @@ public:
     /* 0x03FE */ u8 field_0x3fe[0x400 - 0x3FE];
     // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
     /* 0x0400 */ u8 field_0x400;
-    /* 0x0401 */ u8 field_0x401[0x42C - 0x401];
+    /* 0x0401 */ u8 field_0x401[0x420 - 0x401];
+    // Offset added to mPos at the end of fn_802685D4 (ps_add). Zeroed while
+    // mPos.z > 0; otherwise its x and y decay under the tile code.
+    /* 0x0420 */ JGeometry::TVec3f field_0x420;
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
@@ -338,7 +351,9 @@ public:
     /* 0x0BDD */ u8 field_0xbdd[0xBEC - 0xBDD];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
-    /* 0x0BF0 */ u8 field_0xbf0[0xC64 - 0xBF0];
+    // Object pointer passed (as r3) to fn_80268BC4, which reads fields of it.
+    /* 0x0BF0 */ void* field_0xbf0;
+    /* 0x0BF4 */ u8 field_0xbf4[0xC64 - 0xBF4];
     // Word returned by fn_80270350 (tu_8026FC20).
     /* 0x0C64 */ s32 field_0xc64;
     /* 0x0C68 */ u8 field_0xc68[0xC70 - 0xC68];
@@ -389,7 +404,10 @@ public:
     /* 0x0D64 */ u8 field_0xd64;
     /* 0x0D65 */ u8 field_0xd65[0xD68 - 0xD65];
     /* 0x0D68 */ s32 field_0xd68; // fn_8025EDD4 (-1 until set); fn_8025EE34 compares it
-    /* 0x0D6C */ u8 field_0xd6c[0x11EA - 0xD6C];
+    /* 0x0D6C */ u8 field_0xd6c[0xD70 - 0xD6C];
+    // Passed to fn_8022D75C (lwz r3) by fn_802685D4.
+    /* 0x0D70 */ s32 field_0xd70;
+    /* 0x0D74 */ u8 field_0xd74[0x11EA - 0xD74];
     /* 0x11EA */ u8 field_0x11ea;
     /* 0x11EB */ u8 field_0x11eb;
     /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
@@ -411,11 +429,17 @@ public:
     /* 0x121F */ bool field_0x121f;
     /* 0x1220 */ u8 field_0x1220[0x1224 - 0x1220];
     /* 0x1224 */ s32 field_0x1224;
-    /* 0x1228 */ u8 field_0x1228[0x124D - 0x1228];
+    // Word compared with 0 (lwz; cmpwi) by fn_802685D4.
+    /* 0x1228 */ s32 field_0x1228;
+    /* 0x122C */ u8 field_0x122c[0x124D - 0x122C];
     // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
     /* 0x124D */ u8 field_0x124d;
     /* 0x124E */ u8 field_0x124e[0x13BC - 0x124E];
 }; // Size: 0x13BC
+
+// tu_802684A4 (0x80268BC4), not written yet. The symbol has no mangled
+// suffix, so C linkage; its r3 is Player_804A6F38::field_0xbf0.
+extern "C" void fn_80268BC4(void* self);
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
 // deletes the four players and clears lbl_8053AC90). Constructor 0x8023F8B0
