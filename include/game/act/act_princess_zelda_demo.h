@@ -13,6 +13,10 @@
 class PrincessZeldaDemo_8049D208 : public cls_8049D140 {
 public:
     /* 0x58 */ virtual s32 vfunc_0x58();
+    // __dt__26PrincessZeldaDemo_8049D208Fv (0x80111F74, game/act_princess_zelda_demo.cpp).
+    // Frees the emitters at 0x364, 0x368, 0x36C, 0x370[0..3] and 0x380[0..1]
+    // with fn_801EE434, then the members and cls_8049D140's destructor run.
+    /* 0x08 */ virtual ~PrincessZeldaDemo_8049D208();
 
     void fn_8010E2D4(s32 arg);
     void fn_8010E7E8(s32 arg);
@@ -40,6 +44,11 @@ public:
     // index that fn_80110198 compares against.
     /* 0x2F4 */ SpriteAnim_801D267C mAnim0;
     /* 0x32C */ SpriteAnim_801D267C mAnim1;
-}; // Size: unknown (>= 0x364)
+    /* 0x364 */ JPABaseEmitter* field_0x364; // released by the destructor
+    /* 0x368 */ JPABaseEmitter* field_0x368; // released by the destructor
+    /* 0x36C */ JPABaseEmitter* field_0x36c; // released by the destructor
+    /* 0x370 */ JPABaseEmitter* field_0x370[4]; // released by the destructor
+    /* 0x380 */ JPABaseEmitter* field_0x380[2]; // the first two released by the destructor
+}; // Size: unknown (>= 0x388)
 
 #endif

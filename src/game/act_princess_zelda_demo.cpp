@@ -78,3 +78,20 @@ void PrincessZeldaDemo_8049D208::fn_80110198() {
         }
     }
 }
+
+PrincessZeldaDemo_8049D208::~PrincessZeldaDemo_8049D208() {
+    fn_801EE434(field_0x364);
+    field_0x364 = NULL;
+    fn_801EE434(field_0x368);
+    field_0x368 = NULL;
+    fn_801EE434(field_0x36c);
+    field_0x36c = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        fn_801EE434(field_0x370[i]);
+        field_0x370[i] = NULL;
+        if (i < 2) {
+            fn_801EE434(field_0x380[i]);
+            field_0x380[i] = NULL;
+        }
+    }
+}
