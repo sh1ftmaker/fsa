@@ -16,6 +16,10 @@ public:
     // not to, then runs the base destructor and frees the object if the
     // delete flag is set.
     /* 0x08 */ virtual ~ChiefSoldier_804A0B90();
+    // 0x80172900 (game/act_chief_soldier.cpp): the draw override. Draws the
+    // "enemy_gc_sob.bin" sprite at mPos, through the visible box and a
+    // SpriteParams, unless field_0x90 is 7 or 8 (fn_80172BC8) or lbl_8053AB60 is 1.
+    /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     // 0x801744E4 (game/act_chief_soldier.cpp): vtable slot 0x44, where
     // ActorBase has vfunc_0x44. Runs the spawned state (field_0x90 2 or 3)

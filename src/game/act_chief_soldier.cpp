@@ -42,6 +42,45 @@ static inline void setScaleMtx(Mtx m, f32 s) {
     m[2][2] = s;
 }
 
+void ChiefSoldier_804A0B90::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (lbl_8053AB60 != 1) {
+        if ((s32)(field_0x90 & 0xFF) == 7 || (s32)(field_0x90 & 0xFF) == 8) {
+            fn_80172BC8();
+        } else {
+            s32 hasMtx = 0;
+            params.field_0x0[1] = field_0x234[0];
+            if (field_0x230 == 6 && field_0x264 >= 3) {
+                params.field_0x30 = 0x11;
+            }
+            if (field_0x4 >= 8) {
+                if (field_0x23c == 1) {
+                    setScaleMtx(mtx, 2.0f);
+                    hasMtx = 1;
+                    params.mMtx = mtx;
+                }
+                JGeometry::TBox2f box;
+                box = fn_802D6A9C()->mVisibleBox;
+                JGeometry::TVec3f pos;
+                pos.set(mPos);
+                pos.x += box.i.x;
+                pos.y += box.i.y;
+                if ((s32)(field_0x90 & 0xFF) != 6) {
+                    fn_801EF574("enemy_gc_sob.bin", field_0x280 + 0x226, &pos, &params);
+                }
+                fn_803075AC(mSerial, field_0x4, &mPos, field_0x280 + 0x318, hasMtx, 2, -1, 0, 0, 0);
+            } else {
+                fn_801F02BC("enemy_gc_sob.bin", field_0x280 + 0x226, &params, 7, 0, false, 1.0f,
+                            1.0f);
+            }
+        }
+    }
+}
+
 void ChiefSoldier_804A0B90::fn_80172BC8() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
