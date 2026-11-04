@@ -34,6 +34,11 @@ public:
     // index must be the one at 0x28C; indices below 8 pass outright, others
     // must lie inside the bounds at 0x2A0-0x2AC.
     bool fn_8030B110(s32 index, const JGeometry::TVec2f* pos);
+    // Mangled fn_8030AF10__12cls_804AA8D8FlPCQ29JGeometry8TBox2<f>b (this
+    // unit). Tests the box against the bounds at 0x290/0x294 (240x160):
+    // with overlap set, any part of the box inside them passes; otherwise
+    // the whole box must be inside. Index rules as fn_8030B084.
+    bool fn_8030AF10(s32 index, const JGeometry::TBox2f* box, bool overlap);
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
     // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
     s32 fn_8030B570(s32* outA, s32* outB);

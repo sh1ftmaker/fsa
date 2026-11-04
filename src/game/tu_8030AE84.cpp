@@ -9,6 +9,44 @@ void cls_804AA8D8::fn_8030AE84(JGeometry::TBox2f* out) {
     out->f.y = (f32)(field_0x294 + 0xA0);
 }
 
+bool cls_804AA8D8::fn_8030AF10(s32 index, const JGeometry::TBox2f* box, bool overlap) {
+    if (index < 8 || index != field_0x28c) {
+        return false;
+    }
+    if (overlap) {
+        if ((s32)box->f.x < field_0x290) {
+            return false;
+        }
+        if ((s32)box->i.x > field_0x290 + 0xF0) {
+            return false;
+        }
+        if ((s32)box->f.y < field_0x294) {
+            return false;
+        }
+        if ((s32)box->i.y > field_0x294 + 0xA0) {
+            return false;
+        }
+    } else {
+        s32 x = (s32)box->i.x;
+        if (x < field_0x290 || x > field_0x290 + 0xF0) {
+            return false;
+        }
+        x = (s32)box->f.x;
+        if (x < field_0x290 || x > field_0x290 + 0xF0) {
+            return false;
+        }
+        s32 y = (s32)box->i.y;
+        if (y < field_0x294 || y > field_0x294 + 0xA0) {
+            return false;
+        }
+        y = (s32)box->f.y;
+        if (y < field_0x294 || y > field_0x294 + 0xA0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void cls_804AA8D8::fn_8030BD3C(s32 player) {
     field_0x288 = player;
     if (field_0x2b0 < 0) {
