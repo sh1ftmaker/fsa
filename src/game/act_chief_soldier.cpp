@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
+#include "game/Map.h"
 #include "game/act/act_chief_soldier.h"
 
 ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
@@ -26,6 +27,39 @@ void ChiefSoldier_804A0B90::vfunc_0x24() {
         fn_801F856C()->fn_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
     }
     ActorBase_804A5770::vfunc_0x24();
+}
+
+// Sets the 3x3 part of m to a uniform scale; the translation column is the caller's.
+static inline void setScaleMtx(Mtx m, f32 s) {
+    m[0][0] = s;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = s;
+    m[1][2] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = s;
+}
+
+void ChiefSoldier_804A0B90::fn_80172BC8() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (field_0x90 != 7) {
+        setScaleMtx(mtx, 2.0f);
+        if (field_0x23c == 0) {
+            setScaleMtx(mtx, 1.0f);
+        }
+        params.mMtx = mtx;
+        s32 frame = field_0x280 + 0x3FD;
+        if (field_0x4 < 8) {
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+    }
 }
 
 void ChiefSoldier_804A0B90::vfunc_0x44() {

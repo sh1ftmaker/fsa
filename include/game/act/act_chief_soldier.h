@@ -21,6 +21,10 @@ public:
     // ActorBase has vfunc_0x44. Runs the spawned state (field_0x90 2 or 3)
     // and, once mLife is 0 or less, clears the actor at field_0x238.
     /* 0x44 */ virtual void vfunc_0x44();
+    // 0x80172BC8 (game/act_chief_soldier.cpp): draws the "enemy_gc_sob.bin"
+    // sprite at mPos with a 3x3 scale matrix (2.0, or 1.0 while field_0x23c
+    // is 0), unless field_0x90 is 7 or the layer (field_0x4) is 8 or more.
+    void fn_80172BC8();
 
     /* 0x230 */ s32 field_0x230; // set to 2 by vfunc_0x44
     /* 0x234 */ u8 field_0x234[0x238 - 0x234];
@@ -31,7 +35,9 @@ public:
     /* 0x250 */ s32 field_0x250; // set to 0x14 by vfunc_0x44
     /* 0x254 */ u8 field_0x254[0x264 - 0x254];
     /* 0x264 */ s32 field_0x264; // cleared by vfunc_0x44
-    /* 0x268 */ u8 field_0x268[0x288 - 0x268];
+    /* 0x268 */ u8 field_0x268[0x280 - 0x268];
+    /* 0x280 */ s32 field_0x280; // frame base: fn_80172BC8 draws frame field_0x280 + 0x3FD
+    /* 0x284 */ u8 field_0x284[0x288 - 0x284];
     /* 0x288 */ s32 field_0x288; // set to 2 by vfunc_0x44
     /* 0x28C */ u8 field_0x28c[0x2A5 - 0x28C];
     /* 0x2A5 */ u8 field_0x2a5; // vfunc_0x44 tests it against 1
