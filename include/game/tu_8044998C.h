@@ -19,8 +19,8 @@ public:
     // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
     // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_8044A024();
-    // Sets the digit pictures to the first 'TIMG' name and clears the pane
-    // bytes 0xB0 of 'Ndata01' and 'Ndata00'.
+    // Sets the digit pictures to the first 'TIMG' name and hides the panes
+    // 'Ndata01' and 'Ndata00'.
     void fn_8044A06C();
     // Updates the two-digit counters (field_0x10; field_0x11 and field_0x12)
     // and their digit pictures, shows or hides the panes 'Ndata01' and

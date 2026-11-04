@@ -21,8 +21,8 @@ public:
     // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80449070();
     // Resets the screen: sets the first 'TIMG' name on the 'Pt' pictures of
-    // the four slots and of the counter, clears field_0x32's bits, and clears
-    // the 0xB0 bytes of the slot panes and of 'Ndata00'.
+    // the four slots and of the counter, clears field_0x32's bits, and hides
+    // the slot panes and 'Ndata00'.
     void fn_804490B8();
     // Per frame: sets the four slots' fn_80402E08 positions, shows or hides
     // each slot by its bit of field_0x32, updates the slot digits

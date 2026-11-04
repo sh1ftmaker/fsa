@@ -6,21 +6,6 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 
-// FSA's J2DPane has a byte at 0xB0 that the shared header doesn't name (the
-// same byte tu_8044998C.cpp and tu_804432DC.cpp write).
-struct J2DPaneB0 {
-    u8 field_0x0[0xB0];
-    u8 field_0xb0;
-};
-
-static inline u8 getPaneByteB0(J2DPane* pane) {
-    return ((J2DPaneB0*)pane)->field_0xb0;
-}
-
-static inline void setPaneByteB0(J2DPane* pane, u8 value) {
-    ((J2DPaneB0*)pane)->field_0xb0 = value;
-}
-
 // Pane tags, as u64 (names zero-padded to 8 bytes), four groups of 24. The
 // constructor searches entries 1, 8 and 23 of each group.
 static const u64 lbl_8048FC08[4][24] = {
@@ -103,17 +88,17 @@ void cls_804B1BB0::fn_804455E0() {
             field_0x28[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
         }
         if (field_0x44 & (u8)(1 << i)) {
-            if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][23])) == 0) {
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][8]), 1);
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][23]), 1);
+            if (!mScreen->search(lbl_8048FC08[i][23])->isVisible()) {
+                mScreen->search(lbl_8048FC08[i][8])->show();
+                mScreen->search(lbl_8048FC08[i][23])->show();
             }
         } else {
-            if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][23])) != 0) {
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][8]), 0);
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][23]), 0);
+            if (mScreen->search(lbl_8048FC08[i][23])->isVisible()) {
+                mScreen->search(lbl_8048FC08[i][8])->hide();
+                mScreen->search(lbl_8048FC08[i][23])->hide();
             }
         }
-        if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][23])) != 0) {
+        if (mScreen->search(lbl_8048FC08[i][23])->isVisible()) {
             if (field_0x38[i] >= 100) {
                 field_0x38[i] = 99;
             }
@@ -139,15 +124,15 @@ void cls_804B1BB0::fn_804455E0() {
             static_cast<J2DPicture*>(mScreen->search(lbl_8048FC08[i][22]))->changeTexture(res, 0);
         }
         if (field_0x44 & (u8)(1 << (i + 4))) {
-            if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][1])) == 0) {
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][1]), 1);
+            if (!mScreen->search(lbl_8048FC08[i][1])->isVisible()) {
+                mScreen->search(lbl_8048FC08[i][1])->show();
             }
         } else {
-            if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][1])) != 0) {
-                setPaneByteB0(mScreen->search(lbl_8048FC08[i][1]), 0);
+            if (mScreen->search(lbl_8048FC08[i][1])->isVisible()) {
+                mScreen->search(lbl_8048FC08[i][1])->hide();
             }
         }
-        if (getPaneByteB0(mScreen->search(lbl_8048FC08[i][1])) != 0) {
+        if (mScreen->search(lbl_8048FC08[i][1])->isVisible()) {
             u8 rank = field_0x40[i];
             if (rank >= 1 && rank <= 4) {
                 const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1BA0[rank - 1]));
@@ -177,9 +162,9 @@ void cls_804B1BB0::fn_80445D24() {
         res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1BA0[0]));
         static_cast<J2DPicture*>(mScreen->search(lbl_8048FC08[i][0]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_8048FC08[i][1]))->changeTexture(res, 0);
-        setPaneByteB0(mScreen->search(lbl_8048FC08[i][8]), 0);
-        setPaneByteB0(mScreen->search(lbl_8048FC08[i][23]), 0);
-        setPaneByteB0(mScreen->search(lbl_8048FC08[i][1]), 0);
+        mScreen->search(lbl_8048FC08[i][8])->hide();
+        mScreen->search(lbl_8048FC08[i][23])->hide();
+        mScreen->search(lbl_8048FC08[i][1])->hide();
     }
 }
 

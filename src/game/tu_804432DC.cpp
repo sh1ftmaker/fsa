@@ -5,17 +5,6 @@
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
-// FSA's J2DPane has a byte at 0xB0 that the shared header doesn't name (the
-// pane wrappers' helpers read its neighbour at 0xB2 too).
-struct J2DPaneB0 {
-    u8 field_0x0[0xB0];
-    u8 field_0xb0;
-};
-
-static inline void setPaneByteB0(J2DPane* pane, u8 value) {
-    ((J2DPaneB0*)pane)->field_0xb0 = value;
-}
-
 // Per-kind scales and the x and y offsets of the panes (kinds 0-7), in
 // address order.
 static const f32 lbl_8048FB88[7] = {
@@ -45,12 +34,12 @@ bool cls_804B1AE8::fn_804432DC(u8 kind, s16 a, s16 b) {
             mPtestmap->field_0x24 = 0;
             mPtestmap->fn_80402E08(0.0f, 0.0f);
             mPtestmap->fn_80402CE0(1.0f, 1.0f);
-            setPaneByteB0(mPtestmap->mPane, 1);
-            setPaneByteB0(mPmapten->mPane, 0);
+            mPtestmap->mPane->show();
+            mPmapten->mPane->hide();
             mState = 0;
         } else if (kind == 7) {
-            setPaneByteB0(mPtestmap->mPane, 0);
-            setPaneByteB0(mPmapten->mPane, 1);
+            mPtestmap->mPane->hide();
+            mPmapten->mPane->show();
             mState = 2;
         } else {
             mPtestmap->field_0x20 = 0;
@@ -59,8 +48,8 @@ bool cls_804B1AE8::fn_804432DC(u8 kind, s16 a, s16 b) {
             mPtestmap->fn_80402E08((f32)lbl_8048FBA4[mKind], (f32)lbl_8048FBB4[mKind]);
             f32 scale = lbl_8048FB88[mKind] / mPtestmap->field_0x18;
             mPtestmap->fn_80402CE0(scale, scale);
-            setPaneByteB0(mPtestmap->mPane, 1);
-            setPaneByteB0(mPmapten->mPane, 0);
+            mPtestmap->mPane->show();
+            mPmapten->mPane->hide();
             mState = 2;
         }
     }

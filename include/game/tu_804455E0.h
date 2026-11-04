@@ -25,11 +25,11 @@ public:
     // lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80445CDC();
     // For each of the four slots: clears bits slot and slot + 4 of field_0x44,
-    // resets the digit and rank pictures to their first TIMG names, and clears
-    // the 0xB0 byte of three panes.
+    // resets the digit and rank pictures to their first TIMG names, and hides
+    // three panes.
     void fn_80445D24();
     // Per slot: the time of field_0x3c / field_0x38 as digit pictures, the
-    // best-time and rank panes' 0xB0 bytes, and the rank picture; clears
+    // best-time and rank panes' visibility, and the rank picture; clears
     // field_0x44 at the end.
     void fn_804455E0();
 

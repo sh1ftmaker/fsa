@@ -27,7 +27,7 @@ public:
     // lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80446D68();
     // Per slot: clears the slot's two bits of field_0x30, sets the ten picture
-    // panes of the slot to the first 'TIMG' name and clears the 0xB0 byte of
+    // panes of the slot to the first 'TIMG' name and hides
     // nine panes.
     void fn_80446DB0();
 

@@ -32,21 +32,6 @@ static const char* lbl_804B1CD8[10] = {
     "kk_rupyNum_09.bti",
 };
 
-// FSA's J2DPane has a byte at 0xB0 that the shared header doesn't name (the
-// same byte tu_8044998C.cpp writes).
-struct J2DPaneB0 {
-    u8 field_0x0[0xB0];
-    u8 field_0xb0;
-};
-
-static inline u8 getPaneByteB0(J2DPane* pane) {
-    return ((J2DPaneB0*)pane)->field_0xb0;
-}
-
-static inline void setPaneByteB0(J2DPane* pane, u8 value) {
-    ((J2DPaneB0*)pane)->field_0xb0 = value;
-}
-
 cls_804B1D00::cls_804B1D00() {
     lbl_8053AF28 = this;
     mScreen = new J2DScreen();
@@ -95,8 +80,8 @@ void cls_804B1D00::fn_8044AFD8() {
     static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[9]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[10]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[11]))->changeTexture(res, 0);
-    setPaneByteB0(mScreen->search(lbl_80490DB8[8]), 0);
-    setPaneByteB0(mScreen->search(lbl_80490E00[12]), 0);
+    mScreen->search(lbl_80490DB8[8])->hide();
+    mScreen->search(lbl_80490E00[12])->hide();
 }
 
 // FIXME: 90.50 %. Register allocation in the digit blocks: the original's
@@ -109,15 +94,15 @@ void cls_804B1D00::fn_8044A828() {
         mPanes[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
     }
     if (field_0x14 & 1) {
-        if (getPaneByteB0(mScreen->search(lbl_80490DB8[8])) == 0) {
-            setPaneByteB0(mScreen->search(lbl_80490DB8[8]), 1);
+        if (!mScreen->search(lbl_80490DB8[8])->isVisible()) {
+            mScreen->search(lbl_80490DB8[8])->show();
         }
     } else {
-        if (getPaneByteB0(mScreen->search(lbl_80490DB8[8])) != 0) {
-            setPaneByteB0(mScreen->search(lbl_80490DB8[8]), 0);
+        if (mScreen->search(lbl_80490DB8[8])->isVisible()) {
+            mScreen->search(lbl_80490DB8[8])->hide();
         }
     }
-    if (getPaneByteB0(mScreen->search(lbl_80490DB8[8])) != 0) {
+    if (mScreen->search(lbl_80490DB8[8])->isVisible()) {
         if (field_0x10 >= 1000) {
             field_0x10 = 999;
         }
@@ -136,15 +121,15 @@ void cls_804B1D00::fn_8044A828() {
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[7]))->changeTexture(res, 0);
     }
     if (field_0x14 & 2) {
-        if (getPaneByteB0(mScreen->search(lbl_80490E00[12])) == 0) {
-            setPaneByteB0(mScreen->search(lbl_80490E00[12]), 1);
+        if (!mScreen->search(lbl_80490E00[12])->isVisible()) {
+            mScreen->search(lbl_80490E00[12])->show();
         }
     } else {
-        if (getPaneByteB0(mScreen->search(lbl_80490E00[12])) != 0) {
-            setPaneByteB0(mScreen->search(lbl_80490E00[12]), 0);
+        if (mScreen->search(lbl_80490E00[12])->isVisible()) {
+            mScreen->search(lbl_80490E00[12])->hide();
         }
     }
-    if (getPaneByteB0(mScreen->search(lbl_80490E00[12])) != 0) {
+    if (mScreen->search(lbl_80490E00[12])->isVisible()) {
         if (field_0x12 >= 100) {
             field_0x12 = 99;
             field_0x13 = 99;

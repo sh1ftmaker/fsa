@@ -6,21 +6,6 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 
-// FSA's J2DPane has a byte at 0xB0 that the shared header doesn't name (the
-// same byte tu_804432DC writes).
-struct J2DPaneB0 {
-    u8 field_0x0[0xB0];
-    u8 field_0xb0;
-};
-
-static inline u8 getPaneByteB0(J2DPane* pane) {
-    return ((J2DPaneB0*)pane)->field_0xb0;
-}
-
-static inline void setPaneByteB0(J2DPane* pane, u8 value) {
-    ((J2DPaneB0*)pane)->field_0xb0 = value;
-}
-
 // Pane tags, as u64: 'Pfi01', 'Pfik01', 'Pf01', 'Pfk01', 'Pf02', 'Pfk02',
 // 'Ndata01'.
 static const u64 lbl_80490C40[7] = {
@@ -76,7 +61,7 @@ void cls_804B1CC8::fn_8044A024() {
     mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
 }
 
-// Updates the digit pictures of the counters and their panes' 0xB0 bytes.
+// Updates the digit pictures of the counters and shows or hides their panes.
 // FIXME: 91.22 %. Mostly register assignment (arg_mismatch): the target keeps
 // field_0x12 in r31 and its tens in r30, ours in r30 and r28. The lis/addi
 // loads of lbl_804B1CA0 sit at other points in our schedule, so those reloc
@@ -86,15 +71,15 @@ void cls_804B1CC8::fn_8044998C() {
         mPanes[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
     }
     if (field_0x13 & 1) {
-        if (getPaneByteB0(mScreen->search(lbl_80490C40[6])) == 0) {
-            setPaneByteB0(mScreen->search(lbl_80490C40[6]), 1);
+        if (!mScreen->search(lbl_80490C40[6])->isVisible()) {
+            mScreen->search(lbl_80490C40[6])->show();
         }
     } else {
-        if (getPaneByteB0(mScreen->search(lbl_80490C40[6])) != 0) {
-            setPaneByteB0(mScreen->search(lbl_80490C40[6]), 0);
+        if (mScreen->search(lbl_80490C40[6])->isVisible()) {
+            mScreen->search(lbl_80490C40[6])->hide();
         }
     }
-    if (getPaneByteB0(mScreen->search(lbl_80490C40[6])) != 0) {
+    if (mScreen->search(lbl_80490C40[6])->isVisible()) {
         if (field_0x10 >= 100) {
             field_0x10 = 99;
         }
@@ -108,15 +93,15 @@ void cls_804B1CC8::fn_8044998C() {
         static_cast<J2DPicture*>(mScreen->search(lbl_80490C40[5]))->changeTexture(res, 0);
     }
     if (field_0x13 & 2) {
-        if (getPaneByteB0(mScreen->search(lbl_80490C78[12])) == 0) {
-            setPaneByteB0(mScreen->search(lbl_80490C78[12]), 1);
+        if (!mScreen->search(lbl_80490C78[12])->isVisible()) {
+            mScreen->search(lbl_80490C78[12])->show();
         }
     } else {
-        if (getPaneByteB0(mScreen->search(lbl_80490C78[12])) != 0) {
-            setPaneByteB0(mScreen->search(lbl_80490C78[12]), 0);
+        if (mScreen->search(lbl_80490C78[12])->isVisible()) {
+            mScreen->search(lbl_80490C78[12])->hide();
         }
     }
-    if (getPaneByteB0(mScreen->search(lbl_80490C78[12])) != 0) {
+    if (mScreen->search(lbl_80490C78[12])->isVisible()) {
         if (field_0x11 >= 100) {
             field_0x11 = 99;
             field_0x12 = 99;
@@ -144,8 +129,8 @@ void cls_804B1CC8::fn_8044998C() {
     field_0x13 = 0;
 }
 
-// Sets the digit pictures to the 'TIMG' name lbl_804B1CA0[0] and clears the
-// pane bytes 0xB0 of 'Ndata01' and 'Ndata00'.
+// Sets the digit pictures to the 'TIMG' name lbl_804B1CA0[0] and hides the
+// panes 'Ndata01' and 'Ndata00'.
 void cls_804B1CC8::fn_8044A06C() {
     field_0x13 &= ~1;
     const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CA0[0]));
@@ -163,6 +148,6 @@ void cls_804B1CC8::fn_8044A06C() {
     static_cast<J2DPicture*>(mScreen->search(lbl_80490C78[9]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(mScreen->search(lbl_80490C78[10]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(mScreen->search(lbl_80490C78[11]))->changeTexture(res, 0);
-    setPaneByteB0(mScreen->search(lbl_80490C40[6]), 0);
-    setPaneByteB0(mScreen->search(lbl_80490C78[12]), 0);
+    mScreen->search(lbl_80490C40[6])->hide();
+    mScreen->search(lbl_80490C78[12])->hide();
 }
