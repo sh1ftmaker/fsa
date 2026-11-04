@@ -6,10 +6,12 @@
 #include "game/EnemyBase.h"
 #include "game/RailBase.h"
 
-// Named after its vtable, 0x804A6270 (still lbl_804A6270 in symbols.txt).
+// Named after its vtable, 0x804A6270 (__vt__12cls_804A6270).
 // Only the fields fn_80210E90 and vfunc_0x54 read are known.
 class cls_804A6270 : public EnemyBase_804A4808 {
 public:
+    // 0x80212800 (__ct__12cls_804A6270Fv). Runs after EnemyBase's constructor.
+    cls_804A6270();
     // 0x80212170 (vtable slot 0x54, over EnemyBase's empty vfunc_0x54): if
     // mFlags has bit 0x8000 and field_0x2bc is set, the rail at field_0x2c0
     // is called with field_0x2bc, mPos and field_0x4.
@@ -20,12 +22,25 @@ public:
     // 0x802110A8, direct call from vfunc_0x88 (not virtual).
     void fn_802110A8();
 
-    /* 0x2A8 */ u8 field_0x2a8[0x2BC - 0x2A8]; // not yet known
+    /* 0x2A8 */ s32 field_0x2a8; // not yet known; the constructor zeroes it
+    /* 0x2AC */ s32 field_0x2ac; // not yet known; the constructor zeroes it
+    /* 0x2B0 */ s32 field_0x2b0; // not yet known; the constructor zeroes it
+    /* 0x2B4 */ s32 field_0x2b4; // not yet known; the constructor zeroes it
+    /* 0x2B8 */ s32 field_0x2b8; // not yet known; the constructor zeroes it
     /* 0x2BC */ u8 field_0x2bc; // vfunc_0x54's first argument, and its test
     /* 0x2BD */ u8 field_0x2bd[0x2C0 - 0x2BD]; // not yet known
     /* 0x2C0 */ cls_800FE3EC field_0x2c0; // the rail vfunc_0x54 calls (0xC8 bytes)
-    /* 0x388 */ u8 field_0x388[0x3A4 - 0x388]; // not yet known
+    /* 0x388 */ s32 field_0x388; // an actor's serial (-1 for none); not yet known
+    /* 0x38C */ s32 field_0x38c; // another actor's serial (-1 for none)
+    /* 0x390 */ f32 field_0x390; // not yet known; the constructor zeroes it
+    /* 0x394 */ f32 field_0x394; // not yet known; the constructor zeroes it
+    /* 0x398 */ f32 field_0x398; // not yet known; the constructor zeroes it
+    /* 0x39C */ f32 field_0x39c; // not yet known; the constructor zeroes it
+    /* 0x3A0 */ f32 field_0x3a0; // not yet known; the constructor zeroes it
     /* 0x3A4 */ f32 field_0x3a4; // the most fn_80210E90 pushes a position out by
+    /* 0x3A8 */ f32 field_0x3a8; // not yet known; the constructor sets it to 1.0f
+    /* 0x3AC */ s32 field_0x3ac; // not yet known; the constructor sets it to -1
+    /* 0x3B0 */ u8 field_0x3b0; // not yet known; the constructor clears it
 }; // Size: not yet known
 
 #endif

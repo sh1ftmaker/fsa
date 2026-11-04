@@ -54,3 +54,24 @@ void cls_804A6270::vfunc_0x54() {
         field_0x2c0.fn_800FE3EC(field_0x2bc, mPos, field_0x4);
     }
 }
+
+cls_804A6270::cls_804A6270() {
+    field_0x2a8 = 0;
+    field_0x2ac = 0;
+    field_0x2b0 = 0;
+    field_0x2b4 = 0;
+    field_0x2b8 = 0;
+    field_0x2bc = 0;
+    field_0x388 = -1;
+    field_0x38c = -1;
+    field_0x390 = 0.0f;
+    field_0x394 = 0.0f;
+    field_0x398 = 0.0f;
+    field_0x39c = 0.0f;
+    field_0x3a0 = 0.0f;
+    field_0x3a4 = 0.0f;
+    field_0x3a8 = 1.0f;
+    field_0x3ac = -1;
+    field_0x3b0 = 0;
+    field_0x2c0.clear();
+}
