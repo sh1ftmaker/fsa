@@ -25,6 +25,10 @@ public:
     void fn_8030AE84(JGeometry::TBox2f* out);
     // Code in this unit, not yet written (mangled fn_8030B97C__12cls_804AA8D8Fv).
     void fn_8030B97C();
+    // Mangled fn_8030B084__12cls_804AA8D8FlPCQ29JGeometry8TVec2<f> (this unit).
+    // Called from game/tu_8023FBF0.cpp with the position copied to the stack
+    // as an 8-byte x/y pair, so it takes a TVec2f pointer.
+    bool fn_8030B084(s32 index, const JGeometry::TVec2f* pos);
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
     // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
     s32 fn_8030B570(s32* outA, s32* outB);
