@@ -52,13 +52,13 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
 // setup flag.
 void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
     if (field_0x234 != 0) {
-        EndingPartnerView* ezld =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
-        EndingPartnerView* elnk =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x294));
+        cls_804A5958* elnk =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x294));
         if (elnk != NULL) {
             elnk->field_0x238 = 1;
         }
@@ -83,8 +83,8 @@ void EnemyForEndingControl_804AD48C::fn_8035B81C() {
         arrived++;
     }
     if (arrived >= 2) {
-        EndingPartnerView* ezld =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
@@ -102,7 +102,7 @@ void EnemyForEndingControl_804AD48C::fn_8035BE00() {
 extern "C" void fn_8035BE20() {}
 
 // Advances the sequencer; true once the sequence is over.
-bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
+bool cls_804A5958::fn_8035C15C(s32 seq) {
     if (field_0x244 == 0) {
         EndingStep_804AD460* steps = lbl_804AD460[seq];
         if (steps[field_0x24c].value < 0) {
@@ -117,8 +117,8 @@ bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
 
 // Restarts the sequencer on table `seq`: stores `arg` (0x250), clears the
 // timer and the step index, then runs the first step (fn_8035C15C inlined).
-void EnemyForEndingControl_804AD48C::fn_8035C1C4(s32 seq, s32 arg) {
-    field_0x250 = arg;
+void cls_804A5958::fn_8035C1C4(s32 seq, s32 frame) {
+    field_0x250 = frame;
     field_0x244 = 0;
     field_0x24c = 0;
     fn_8035C15C(seq);

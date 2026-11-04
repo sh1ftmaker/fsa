@@ -57,8 +57,6 @@ public:
     void fn_8035B7A8();
     void fn_8035B81C();
     void fn_8035BE00();
-    bool fn_8035C15C(s32 seq);
-    void fn_8035C1C4(s32 seq, s32 arg);
 }; // Size: 0x2A4
 
 #endif

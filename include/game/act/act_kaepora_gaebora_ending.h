@@ -18,7 +18,13 @@ public:
     /* 0x20 */ virtual void draw();
     // Advances the swinging head (mSway) while field_0x2B0 is 1, and steps
     // through the table of sway targets (lbl_804742A8) once the head is idle.
+    // The update() steps, called through lbl_804ADA50 (mPtmfIndex).
+    void fn_8035F9C8();
+    void fn_8035FB64();
+    void fn_8035FCD8();
+    void fn_8035FD6C();
     void fn_8035FF70();
+    void fn_8036003C();
     void fn_80360914();
     // Owned by this unit (0x8035F3C0); takes this and returns a byte, looped
     // on in update().

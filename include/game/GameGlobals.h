@@ -1160,16 +1160,6 @@ extern "C" {
 void fn_802B39E8(ActorBase_804A5770* actor);
 }
 
-// SHARED-EDIT (act_princess_zelda_ending): owner game/tu_8035C15C (0x8035C15C
-// and 0x8035C1C4, defined there; not written yet). Both take the actor in r3
-// (the EZLD actor, act_princess_zelda_ending.cpp) and an id in r4; the
-// caller ignores the result of fn_8035C1C4. fn_8035C15C returns a byte that
-// the caller tests against 1 (clrlwi 24, cmplwi 1).
-extern "C" {
-u8 fn_8035C15C(ActorBase_804A5770* actor, s32 id);
-void fn_8035C1C4__30EnemyForEndingControl_804AD48CFll(ActorBase_804A5770* actor, s32 id, s32 arg);
-}
-
 // SHARED-EDIT (act_ice_melted_by_four_players): owner game/act_fire_rod_fire.cpp
 // (0x802BA9F0 and 0x802BA9F8, defined there; the FIRE actor's unit, not written
 // yet). Both read a word of the actor in r3 (lwz 0x260 and 0x264) and return

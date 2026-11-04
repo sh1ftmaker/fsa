@@ -3,7 +3,7 @@
 
 // Code: game/act_link_ending.cpp.
 
-#include "game/act/act_princess_zelda_ending.h" // cls_804A5958, EndingPartnerView
+#include "game/act/act_princess_zelda_ending.h" // cls_804A5958
 
 // The ELNK actor ("Link (ending)", docs/names/actors.tsv): the spawner
 // constructs it with fn_80200BB4, which stores this vtable
@@ -31,15 +31,6 @@ public:
     void fn_8035E9A0();
     void fn_8035E93C();
 
-    /* 0x230 */ s32 mState;       // index into the state table
-    /* 0x234 */ s32 field_0x234;  // countdown, decremented by update()
-    /* 0x238 */ s32 field_0x238;  // go flag set by the partner (fn_8035E9A0)
-    /* 0x23C */ s32 field_0x23c;  // serial of the partner actor (fn_801F666C)
-    /* 0x240 */ s32 field_0x240;  // not read by these functions
-    /* 0x244 */ s32 field_0x244;  // second countdown, decremented by update()
-    /* 0x248 */ s32 field_0x248;  // animation step 0-7, wrapped by the states
-    /* 0x24C */ s32 field_0x24c;  // not read by these functions
-    /* 0x250 */ s32 field_0x250;  // base frame of the animation; init() sets 0x18
     // Three sprite x positions (32 + mPos.x + 32 * i), set by init().
     /* 0x254 */ f32 field_0x254[3];
     /* 0x260 */ f32 field_0x260;  // mPos.y, copied by fn_8035ED60 and fn_8035EB90
