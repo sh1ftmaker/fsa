@@ -8,6 +8,7 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 #include "game/act/act_blizzard_battle.h"
+#include "game/cls_804A8638.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // The visible box is passed by value: that is what makes the original copy it to
@@ -35,7 +36,7 @@ inline void cls_8049E7F0::notifySwev() {
     s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_SWEV);
     ActorBase_804A5770* swev = fn_801F856C()->fn_801F666C(serial);
     if (swev != NULL) {
-        fn_802B39E8(swev);
+        static_cast<cls_804A8638*>(swev)->fn_802B39E8();
     }
 }
 

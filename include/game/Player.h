@@ -37,6 +37,8 @@
 // for indices 0-3. Size 0x13BC: the manager's __nw__(0x13BC) (0x8023F904).
 // Fields only where code outside the player's own units reads them inline;
 // the player's getters (tu_8023FBF0) read the rest.
+class cls_804A71A8;
+
 class Player_804A6F38 {
 public:
     Player_804A6F38(s32 index);
@@ -355,8 +357,9 @@ public:
     /* 0x0BDD */ u8 field_0xbdd[0xBEC - 0xBDD];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
-    // Object pointer passed (as r3) to fn_80268BC4, which reads fields of it.
-    /* 0x0BF0 */ void* field_0xbf0;
+    // The player's cls_804A71A8 (allocated by the constructor); fn_802685D4
+    // calls its fn_80268BC4.
+    /* 0x0BF0 */ cls_804A71A8* field_0xbf0;
     /* 0x0BF4 */ u8 field_0xbf4[0xC64 - 0xBF4];
     // Word returned by fn_80270350 (tu_8026FC20).
     /* 0x0C64 */ s32 field_0xc64;
@@ -440,10 +443,6 @@ public:
     /* 0x124D */ u8 field_0x124d;
     /* 0x124E */ u8 field_0x124e[0x13BC - 0x124E];
 }; // Size: 0x13BC
-
-// tu_802684A4 (0x80268BC4), not written yet. The symbol has no mangled
-// suffix, so C linkage; its r3 is Player_804A6F38::field_0xbf0.
-extern "C" void fn_80268BC4(void* self);
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
 // deletes the four players and clears lbl_8053AC90). Constructor 0x8023F8B0

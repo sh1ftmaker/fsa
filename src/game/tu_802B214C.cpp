@@ -15,10 +15,9 @@ u8 cls_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
 // Two entries; field_0x248 indexes it when field_0x240 is 1.
 static const f32 lbl_805409C8[2] = {1.0f, -1.0f};
 
-// FIXME: 82.09 %. Only the literal split differs (lbl_80540A0C/0A10/0A14 are @NNN here).
-// The original's direction vectors go through stack TVec3f temporaries (stwu frame,
-// psq copies); MWCC keeps them in registers when built from a named local, so the
-// frame is missing.
+// FIXME: 99.46 %. Instructions identical; only the literal split differs
+// (lbl_80540A0C/0A10/0A14 and others are @NNN here: earlier, unwritten
+// functions of this unit own the first literals).
 void cls_804A8588::init() {
     mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
     field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
@@ -35,7 +34,7 @@ void cls_804A8588::init() {
     } else {
         field_0x25c = 1;
     }
-    field_0x270.set(0.0f, 0.0f, 0.0f);
+    field_0x270.x = field_0x270.y = field_0x270.z = 0.0f;
     field_0x27c = 1;
     if (field_0x240 == 1) {
         field_0x260 = lbl_805409C8[field_0x248];
@@ -46,16 +45,16 @@ void cls_804A8588::init() {
         field_0x80.set(-6.0f, -6.0f, 6.0f, 6.0f);
         switch (field_0x248) {
         case 0:
-            field_0x3c.set(1.0f, 0.0f, 0.0f);
+            field_0x3c = JGeometry::TVec3f(1.0f, 0.0f, 0.0f);
             break;
         case 1:
-            field_0x3c.set(-1.0f, 0.0f, 0.0f);
+            field_0x3c = JGeometry::TVec3f(-1.0f, 0.0f, 0.0f);
             break;
         case 2:
-            field_0x3c.set(0.0f, 1.0f, 0.0f);
+            field_0x3c = JGeometry::TVec3f(0.0f, 1.0f, 0.0f);
             break;
         case 3:
-            field_0x3c.set(0.0f, -1.0f, 0.0f);
+            field_0x3c = JGeometry::TVec3f(0.0f, -1.0f, 0.0f);
             break;
         }
     }

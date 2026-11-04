@@ -1037,6 +1037,11 @@ public:
     bool fn_802B1D7C();
     s32 fn_802B1D60();
     void fn_802B1D98();
+    // fn_802B1DB0: tests save-region byte 0xA (tu_80134C04 calls it on
+    // lbl_8053ACA8).
+    bool fn_802B1DB0();
+    // fn_802B1EB0: empty; tu_803FF2C4 calls it on the object it allocated.
+    void fn_802B1EB0();
     // fn_802B1DE8: clears this+4/+5 and the save-region bytes 0x9/0xA, then
     // copies the 0x20-byte save region in lbl_80529DEC to 0x80700000.
     void fn_802B1DE8();
@@ -1151,13 +1156,6 @@ extern "C" {
 // Takes the object lbl_8053AD68 holds; it reads the pointers at 0x4, 0x8 and
 // 0xC and clears the byte at 0x1C.
 void fn_8037A708(cls_804AE9A0* obj);
-}
-
-// SHARED-EDIT (act_blizzard_battle): owner game/tu_802B3674.cpp (0x802B39E8,
-// defined there; not written yet). Takes the actor in r3 (fn_801F666C's result)
-// and reads its 0x23C emitter (forceDeleteEmitter) and 0x290 word.
-extern "C" {
-void fn_802B39E8(ActorBase_804A5770* actor);
 }
 
 // SHARED-EDIT (act_princess_zelda_ending): owner game/tu_8035C15C (0x8035C15C

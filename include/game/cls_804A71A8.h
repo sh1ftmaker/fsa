@@ -20,8 +20,12 @@ public:
     // is in state 2, offsets x and y by the corner table entry for its
     // fn_80248778 index (y's sign follows viewLayerFlag of its layer).
     void fn_8026947C(JGeometry::TVec3f* pos);
+    // 0x80268BC4 (not written yet): called by the owner's fn_802685D4 each
+    // frame; reads and shifts the bytes at 0x30-0x4C.
+    void fn_80268BC4();
 
     /* 0x4 */ Player_804A6F38* field_0x4;
-};
+    /* 0x8 */ u8 field_0x8[0xC0 - 0x8]; // not yet known
+}; // Size: 0xC0
 
 #endif

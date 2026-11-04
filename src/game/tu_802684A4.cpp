@@ -89,7 +89,7 @@ void Player_804A6F38::fn_802685D4() {
         }
     }
 
-    fn_80268BC4(field_0xbf0);
+    field_0xbf0->fn_80268BC4();
     field_0x2c.set(mPos);
     field_0x3bc = field_0x3b4;
     field_0x3c0 = true;
@@ -182,5 +182,5 @@ bool Player_804A6F38::fn_8026E5F8(const JGeometry::TVec2f* pos) {
 }
 
 cls_804A71A8::~cls_804A71A8() {
-    field_0x4 = nullptr;
+    field_0x4 = NULL;
 }

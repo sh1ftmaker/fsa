@@ -31,6 +31,16 @@ void Player_804A6F38::fn_80290E90() {
     }
 }
 
+void Player_804A6F38::fn_80292124() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    field_0x3dc = 3;
+    field_0x3e8 = 3;
+    if (!fn_80240670() && field_0x3b4 >= 8 && field_0xce4 < 8) {
+        fn_8024EFA0(0);
+    }
+}
+
 void Player_804A6F38::fn_802922D0() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -53,16 +63,6 @@ void Player_804A6F38::fn_802925C4() {
     field_0x458 = 0;
     field_0x3dc = 2;
     field_0x3e8 = 2;
-}
-
-void Player_804A6F38::fn_80292124() {
-    field_0x124d = 1;
-    field_0x458 = 0;
-    field_0x3dc = 3;
-    field_0x3e8 = 3;
-    if (!fn_80240670() && field_0x3b4 >= 8 && field_0xce4 < 8) {
-        fn_8024EFA0(0);
-    }
 }
 
 void Player_804A6F38::fn_80292E90() {
@@ -91,6 +91,9 @@ void Player_804A6F38::fn_80293B1C() {
     field_0x458 = 0;
 }
 
+// FIXME: 99.0 %. Instructions identical; the 0.0f and -0.5f literals the original
+// loads from .sdata2 (lbl_805405B4, lbl_80540644) belong to earlier, unwritten
+// functions of this unit, so ours are new @ labels.
 void Player_804A6F38::fn_80295240() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -99,6 +102,9 @@ void Player_804A6F38::fn_80295240() {
     field_0x344.z = 0.0f;
 }
 
+// FIXME: 99.4 %. Instructions identical; the 0.0f literal the original
+// loads from .sdata2 (lbl_805405B4) belongs to earlier, unwritten
+// functions of this unit, so ours are new @ labels.
 void Player_804A6F38::fn_802954B8() {
     field_0x124d = 1;
     field_0x458 = 0;
