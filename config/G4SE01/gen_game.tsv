@@ -11,7 +11,6 @@ act_blade_trap	sinit	__sinit_act_blade_trap_cpp	-	-	new	new
 act_block	dtor	__dt__14Block_804A7A10Fv	Block_804A7A10	0x804A7A10	new	new
 act_block	sinit	__sinit_act_block_cpp	-	-	new	new
 act_bomb	sinit	__sinit_act_bomb_cpp	-	-	new	-
-act_bombchu	sinit	__sinit_act_bombchu_cpp	-	-	new	-
 act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new

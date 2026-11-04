@@ -27,7 +27,7 @@
 // game units calling the function. "layer" is an actor layer
 // (ActorBase_804A5770::field_0x4). Not declared yet: the 2-unit tile
 // pattern writers fn_8029DB2C, fn_8029DD50, fn_8029DEBC, fn_8029DF80,
-// fn_8029EC84 (act_door, tu_802D39B8), fn_8029EDB8 (act_bomb, act_bombchu),
+// fn_8029EC84 (act_door, tu_802D39B8),
 // fn_802A20F0 (10 units; spreads fire over burnable tiles) and the 1-unit
 // ones; their argument types need their bodies read first.
 //
@@ -78,6 +78,13 @@ public:
     // codes a..d (u16, clrlwi 16 / lhz) into the cells at and after pos on
     // `layer` (two fn_802F9974 calls per pair, like fn_802A3948).
     void fn_8029E050(const JGeometry::TVec3f* pos, s32 layer, u16 a, u16 b, u16 c, u16 d);
+    // 2 units (act_bomb, act_bombchu), 4 calls. Called with pos = &mPos,
+    // player 0 and layer = the actor's field_0x4; the fourth argument is a
+    // 12-byte stack slot the body may write, handed back to the caller
+    // (act_bomb passes the same slot on to fn_8014D868). The return value
+    // is tested with clrlwi 24 and cmplwi 1 in act_bomb, so it is a u8.
+    // out: its type is a guess from the slot's size; the body is not read.
+    u8 fn_8029EDB8(const JGeometry::TVec3f* pos, s32 player, s32 layer, JGeometry::TVec3f* out);
     // 17 units / 62 calls. fn_802A3884 with fn_802D7D00(..., true): sets
     // the bit. `player` as above (0 at 41 sites, 1 at 3, act_gravestone's
     // 0x238 player index).
