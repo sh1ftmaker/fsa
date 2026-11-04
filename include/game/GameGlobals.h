@@ -465,10 +465,9 @@ s32 fn_801CD580(s32 except); // [0, 4) except `except`; game/tu_801CB270.cpp
 // game/tu_801CB270.cpp functions its source doesn't define yet.
 extern "C" {
 s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
-// act_shadow_link_2.cpp (returns 0, no arguments; game/tu_801C5B08.cpp's
-// fn_801C5B08 tests it, the original as a byte). Declared s32 to match its
-// definition.
-s32 fn_801C5340();
+// act_shadow_link_2.cpp (returns 0, no arguments). Callers (tu_801C5B08,
+// tu_801C71BC) test the result as a byte (clrlwi. 24).
+bool fn_801C5340();
 // Steps *angle towards target by at most step (a wrapper of fn_801CD970;
 // the 0/1 it passes on is unused by all 9 callers).
 void fn_801CD930(s16* angle, s32 target, s32 step);
@@ -973,6 +972,14 @@ extern const s32 lbl_8053EE00;
 // (8, 0, slot, 0, 0) for each spawn.
 extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e);
 
+// Shared .sdata2 constants owned by game/tu_801CB270.cpp (not written yet),
+// global consts read by several Shadow Link and enemy units: the gravity step
+// (act_shadow_link_2 vfunc_0x84, act_shadow_link_jump, act_terrorpin,
+// act_frostare_tail, tu_801D8400) and the fall-speed limit (act_shadow_link_2,
+// tu_801DE714).
+extern const f32 lbl_8053EFB8;
+extern const f32 lbl_8053EFBC;
+
 // Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
 // 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
 // multiplies -12.0f by the second at run time (fmuls), so neither is a literal.
@@ -1228,5 +1235,12 @@ extern u8 lbl_8053ACD0;
 // .sbss byte at 0x8053AB60 (8 bytes). Read with lbz by game/act_chief_soldier.cpp
 // (draw), which skips the draw when it is 1; no writer found yet.
 extern u8 lbl_8053AB60;
+
+// .sbss word at 0x8053AB9C, owned by game/tu_80197070.cpp (not written yet).
+// Set to 4 by act_recovery_heart (update) when ZLD2 exists; act_fairy writes it too.
+extern s32 lbl_8053AB9C;
+// .sbss word at 0x8053ABEC, owned by game/act_dodongo.cpp (data not defined yet).
+// Set to 4 by act_recovery_heart (update) when ZLD4 exists; act_fairy writes it too.
+extern s32 lbl_8053ABEC;
 
 #endif

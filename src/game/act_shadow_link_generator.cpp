@@ -53,13 +53,11 @@ ShadowLinkGenerator_804A4310::ShadowLinkGenerator_804A4310()
 
 // Spawns four 'SLK2' actors, one after another, each on a random slot from
 // mSlotFirst to mSlotLast; a spawned one that is found is switched to state 0xD.
-// FIXME: 89.77 %. Same instructions; the original loads mSlotLast (lbz 0x2A9) above
-// the stmw prologue, and the loads of mSlotFirst/mSlotLast land in other registers.
-void ShadowLinkGenerator_804A4310::fn_801C186C() {
-    s32 range = mSlotLast - mSlotFirst;
-    u8 first = mSlotFirst;
+// FIXME: 99.30 %. Register allocation only: the original keeps the range in r30 and
+// the spawn serial (then the found actor) in r29; ours swaps them.
+void ShadowLinkGenerator_804A4310::fn_801C186C() const {
     for (s32 i = 0; i < 4; i++) {
-        s32 slot = first + fn_801CD664(range + 1);
+        s32 slot = mSlotFirst + fn_801CD664(mSlotLast - mSlotFirst + 1);
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_SLK2, field_0x4, &mPos, fn_801C5660(8, 0, slot, 0, 0), -1, -1);
         if (serial >= 0) {
             ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
@@ -84,10 +82,6 @@ void ShadowLinkGenerator_804A4310::draw() {
     }
 }
 
-// The texture name init() loads, set on its first call (flag lbl_8053AC1C).
-static const char* lbl_8053AC18;
-static s8 lbl_8053AC1C;
-
 void ShadowLinkGenerator_804A4310::init() {
     EnemyBase_804A4808::init();
     mSlotFirst = (field_0x90 >> 8) & 0xFF;
@@ -105,10 +99,7 @@ void ShadowLinkGenerator_804A4310::init() {
     field_0x250 = -1;
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
-    if (lbl_8053AC1C == 0) {
-        lbl_8053AC18 = "jen_8_3.bti";
-        lbl_8053AC1C = 1;
-    }
+    static const char* lbl_8053AC18 = "jen_8_3.bti";
     mTexture = fn_804032E8('TIMG', lbl_8053AC18);
     if (vfunc_0x34()) {
         mState = 0xB;

@@ -12,12 +12,6 @@ static inline void setBox(JGeometry::TBox2f& box, f32 lo, f32 hi) {
     box.f.y = hi;
 }
 
-// Function-local statics of fn_8022089C, in the original's .sbss order.
-static f32 lbl_8053AC80;
-static s8 lbl_8053AC84;
-static f32 lbl_8053AC88;
-static s8 lbl_8053AC8C;
-
 cls_804A68D0::cls_804A68D0() {
     mKind = 0;
     mHops = 0;
@@ -120,10 +114,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
         mBox2.i = mBox.i;
         mBox2.f = mBox.f;
         setBox(field_0x80, 1.0f, -1.0f);
-        if (lbl_8053AC84 == 0) {
-            lbl_8053AC84 = 1;
-            lbl_8053AC80 = 0.5f * (45.0f * -lbl_8053EFB8);
-        }
+        static f32 lbl_8053AC80 = 0.5f * (45.0f * -lbl_8053EFB8);
         field_0x3c.z = lbl_8053AC80;
         switch (mKind) {
         case 0:
@@ -166,10 +157,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
         mBox2.i = mBox.i;
         mBox2.f = mBox.f;
         setBox(field_0x80, 1.0f, -1.0f);
-        if (lbl_8053AC8C == 0) {
-            lbl_8053AC8C = 1;
-            lbl_8053AC88 = 0.5f * (120.0f * -lbl_8053EFB8);
-        }
+        static f32 lbl_8053AC88 = 0.5f * (120.0f * -lbl_8053EFB8);
         field_0x3c.z = lbl_8053AC88;
         fn_80221670();
         field_0x3c.x = (field_0x2b0 - mPos.x) * 0.008333334f;
