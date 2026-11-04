@@ -621,6 +621,11 @@ public:
     // 0x8043E7CC (game/tu_8043A0E8.cpp): act_gba_appear's update calls it with a
     // position passed by value.
     void fn_8043E7CC(JGeometry::TVec3f pos);
+
+    // 0x8043D514 (game/tu_8043A0E8.cpp, not written yet): returns a float in
+    // f1 with only `this` (*lbl_8053AED0) in r3. game/tu_8044998C.cpp passes
+    // it as y to cls_804AF86C::fn_80402E08 on both of its panes.
+    f32 fn_8043D514();
 };
 extern cls_804B1920* lbl_8053AED0;
 
