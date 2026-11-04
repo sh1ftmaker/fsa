@@ -14,8 +14,8 @@ const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
 
 void cls_8049E500::init() {
     cls_8049D140::init();
-    // 0x3F3F3F3F is the four-character type '????'.
-    field_0x23c = lbl_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, lbl_80539F38);
+    // '????' (escaped: "??'" would be a trigraph).
+    field_0x23c = lbl_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_80539F38);
     fn_802D6A9C()->fn_802D7440(false);
     fn_80128728(0);
 }
