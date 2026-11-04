@@ -52,8 +52,6 @@ act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
 act_flame	sinit	__sinit_act_flame_cpp	-	-	new	-
-act_floormaster	dtor_emit	__dt__20Floormaster_804A6004Fv	Floormaster_804A6004	0x804A6004	new	new
-act_floormaster	sinit	__sinit_act_floormaster_cpp	-	-	new	-
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
 act_force_gem	dtor	__dt__17ForceGem_804AB6D8Fv	ForceGem_804AB6D8	0x804AB6D8	new	new
