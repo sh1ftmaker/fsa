@@ -240,6 +240,7 @@ public:
     void fn_802922D0(); // bytes 0x124D = 1, 0x458 = 0, 0x3FB = 1, 0x3F9 = 0 (stb)
     void fn_80292454(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 3, 0x3E8 = 3 (stw); fn_8024EFA0(0) if 0x3B4 >= 8 && 0xCE4 < 8
     void fn_802925C4(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
+    void fn_80292124(); // 0x124D = 1, 0x458 = 0 (stb); 0x3DC = 3, 0x3E8 = 3 (stw); fn_8024EFA0(0) if !fn_80240670() && 0x3B4 >= 8 && 0xCE4 < 8
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
