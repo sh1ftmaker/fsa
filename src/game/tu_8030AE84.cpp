@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameView.h"
 #include "game/Player.h"
 #include "game/tu_8030AE84.h"
 
@@ -90,6 +91,71 @@ bool cls_804AA8D8::fn_8030B110(s32 index, const JGeometry::TVec2f* pos) {
         return false;
     }
     return true;
+}
+
+s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
+    s32 player = fn_8022EA0C(field_0x288);
+    if (fn_80234950(player)) {
+        player = field_0x2b4;
+    }
+    if (fn_8023DE58(player) != field_0x28c) {
+        player = field_0x2b0;
+    }
+    if (fn_8023DE58(player) != field_0x28c) {
+        player = field_0x288;
+    }
+
+    s32 x;
+    s32 y;
+    if (fn_8023DE58(player) >= 8) {
+        x = (s32)fn_8023E724(player)->x;
+        y = (s32)fn_8023E724(player)->y;
+        if (fn_80234ECC(player)) {
+            y -= (s32)fn_8023E724(player)->z;
+        }
+    } else {
+        // Each axis fetches the view again, as the original does (the calls
+        // aren't CSE'd across the position call).
+        GameView_804A9950* viewA = fn_802D6A9C();
+        GameView_804A9950* viewB = fn_802D6A9C();
+        x = (s32)(fn_8023E724(player)->x - viewA->mVisibleBox.i.x + viewB->field_0xdc.i.x);
+        viewA = fn_802D6A9C();
+        viewB = fn_802D6A9C();
+        y = (s32)(fn_8023E724(player)->y - viewA->mVisibleBox.i.y + viewB->field_0xdc.i.y);
+    }
+
+    // The x test uses the position before the half-width is taken off, as
+    // the original does; the y test uses the offset top edge.
+    s32 right = x + 0x78;
+    y -= 0x50;
+    x -= 0x78;
+    if (right >= field_0x2a0) {
+        x = field_0x2a0 - 0xF0;
+    } else if (x <= field_0x2a4) {
+        x = field_0x2a4;
+    }
+    if (y + 0xA0 >= field_0x2a8) {
+        y = field_0x2a8 - 0xA0;
+    } else if (y <= field_0x2ac) {
+        y = field_0x2ac;
+    }
+
+    x += field_0x298;
+    y += field_0x29c;
+    if (x < 0) {
+        x = 0;
+    } else if (x > 0x110) {
+        x = 0x110;
+    }
+    if (y < 0) {
+        y = 0;
+    } else if (y > 0x160) {
+        y = 0x160;
+    }
+
+    *outA = x;
+    *outB = y;
+    return player;
 }
 
 // The deleting form (__dl__FPv when asked) is the compiler's; nothing to clean up.
