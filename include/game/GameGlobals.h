@@ -1173,6 +1173,16 @@ void fn_802B3A48(ActorBase_804A5770* actor);
 void fn_801367E0(GameRoot_8049EF20* root, s32 value);
 }
 
+// SHARED-EDIT (act_treasure_chest fn_802EB27C): owner game/act_liftable_item.cpp
+// (0x801597B8 and 0x801597C0, defined there; the IMUP unit, not written yet).
+// Both take the actor in r3 (fn_801F666C's result): fn_801597B8 returns its
+// word at 0x230 (lwz), fn_801597C0 calls the actor's vfunc_0x24 and returns
+// nothing.
+extern "C" {
+s32 fn_801597B8(ActorBase_804A5770* actor);
+void fn_801597C0(ActorBase_804A5770* actor);
+}
+
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
 // arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
 extern "C" void fn_8030361C();
