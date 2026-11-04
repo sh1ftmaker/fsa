@@ -58,4 +58,11 @@ extern "C" {
 void fn_80215E18(s32* p);
 }
 
+// tu_80215A94 (0x80216178, not written yet): the table's constructor, called by
+// the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
+// member. Stores the player count (fn_80138A30) as the entry count.
+extern "C" {
+void fn_80216178(cls_80215E48* table);
+}
+
 #endif
