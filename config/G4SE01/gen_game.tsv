@@ -79,7 +79,6 @@ act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_horse_race_man	sinit	__sinit_act_horse_race_man_cpp	-	-	new	-
 act_hyrule_castle_barrier	sinit	__sinit_act_hyrule_castle_barrier_cpp	-	-	new	-
-act_ice_wall	sinit	__sinit_act_ice_wall_cpp	-	-	new	-
 act_icicle	sinit	__sinit_act_icicle_cpp	-	-	new	-
 act_inextinguishable_flame	sinit	__sinit_act_inextinguishable_flame_cpp	-	-	new	-
 act_item_pedestal	dtor	__dt__21ItemPedestal_804A82A8Fv	ItemPedestal_804A82A8	0x804A82A8	new	new
