@@ -151,13 +151,14 @@ void cls_8049D940::fn_801158B8() {
     }
 }
 
+// FIXME: 99.9 %. Only the 20.0f literal: .sdata2 not split (lbl_8053C704 vs @NNN).
 void cls_8049D940::init() {
     cls_8049D140::init();
     for (s32 i = 0; i < 4; i++) {
         field_0x31c[i] = fn_804032E8('TIMG', lbl_8049D930[i]);
     }
-    // 0x3F3F3F3F is the four-character type '????'.
-    field_0x32c = lbl_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, "kk_black.bti");
+    // '????' (escaped: "??'" would be a trigraph).
+    field_0x32c = lbl_8053AAF8->field_0xa4->getResource('?\?\?\?', "kk_black.bti");
     mPos.z = 20.0f;
     field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
     mDrawEnabled = false;
