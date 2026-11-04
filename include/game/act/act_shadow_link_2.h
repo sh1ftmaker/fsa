@@ -33,6 +33,20 @@ public:
     bool fn_8021D020();
     // act_shadow_link_2.cpp: switches the animation/state by number.
     void fn_801C3B7C(int);
+    // game/tu_801C5B08.cpp (0x801C6784): turns field_0x33c to the side of
+    // player field_0x590 that mPos is on (0x4000 or -0x4000), or to the
+    // angle toward that player (fn_801D0280) when the layer's view flag is
+    // clear or fn_801CC9F8 holds.
+    void fn_801C6784();
+    // game/tu_801C5B08.cpp (0x801C5EBC): the turn toward player `player`,
+    // called by fn_801C5B08 with its flag argument.
+    void fn_801C5EBC(s32 player, bool flag);
+    // game/tu_801C5B08.cpp (0x801C5B08): the per-tick driver of the Shadow
+    // Link 2 state machine (fn_801C2ED4 calls it).
+    void fn_801C5B08(bool flag);
+    // game/tu_801C5B08.cpp (0x801C6260, not written yet): called by fn_801C5B08
+    // after field_0x338 is set to the nearest player.
+    void fn_801C6260();
     // act_shadow_link_2.cpp: true if mFlags has bit 0x40000 and the byte at
     // 0x55C is at most 0x14.
     bool fn_801C53C4();
@@ -106,11 +120,18 @@ public:
     /* 0x57C */ s32 field_0x57c;
     /* 0x580 */ JGeometry::TVec3f field_0x580;
     /* 0x58C */ s32 field_0x58c;
-    /* 0x590 */ u8 field_0x590[0x594 - 0x590];
+    /* 0x590 */ s32 field_0x590; // a player index (0-3), lwz / mulli 12 in fn_801C6784
     /* 0x594 */ u8 field_0x594; // counts finished animation loops
-    /* 0x595 */ u8 field_0x595[0x59E - 0x595];
+    /* 0x595 */ u8 field_0x595; // counts ticks without a turn (fn_801C5EBC)
+    /* 0x596 */ u8 field_0x596; // the tick count it waits for (fn_801C5EBC)
+    /* 0x597 */ u8 field_0x597;
+    /* 0x598 */ u8 field_0x598; // a timer (fn_801C5B08 sets 0x78)
+    /* 0x599 */ u8 field_0x599;
+    /* 0x59A */ u8 field_0x59a; // fn_801C5B08 stores 0xB4 here
+    /* 0x59B */ u8 field_0x59b[0x59E - 0x59B];
     /* 0x59E */ u16 field_0x59e;
-    /* 0x5A0 */ u8 field_0x5a0[0x5B0 - 0x5A0];
+    /* 0x5A0 */ u8 field_0x5a0[0x5AC - 0x5A0];
+    /* 0x5AC */ f32 field_0x5ac; // the range fn_801C5B08 gives fn_801D05F8
     /* 0x5B0 */ f32 field_0x5b0; // squared against the distance to the player
 }; // Size: at least 0x5B4
 
