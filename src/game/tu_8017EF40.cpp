@@ -29,3 +29,10 @@ void fn_80182650(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
 void ActorBase_804A5770::fn_80182660(const JGeometry::TVec3f& pos) {
     mPos = pos;
 }
+
+// Copies a TVec3f from src into dst, like fn_80182690 does for TVec2f.
+extern "C" void fn_80182674(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
+}
