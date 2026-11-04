@@ -12,3 +12,9 @@ void cls_804A6340::fn_80212F14() {
         fn_80213774(1);
     }
 }
+
+void cls_804A6340::vfunc_0x44() {
+    if (field_0xd4 == 1 && mState != 0 && !(mFlags & 0x4000)) {
+        fn_80213774(4);
+    }
+}
