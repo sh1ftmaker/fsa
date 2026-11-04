@@ -5,6 +5,7 @@
 #include "game/Player.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_enemy_for_ending_control.h"
+#include "game/act/act_princess_zelda_ending.h"
 
 // A step of a sequence table: the value (negative ends the sequence) and the
 // time the sequencer waits before reading the next step.
@@ -47,6 +48,50 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
     }
 }
 
+// Once the setup has run, flags the EZLD and ELNK actors and clears the
+// setup flag.
+void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
+    if (field_0x234 != 0) {
+        EndingPartnerView* ezld =
+            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        if (ezld != NULL) {
+            ezld->field_0x238 = 1;
+        }
+        EndingPartnerView* elnk =
+            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x294));
+        if (elnk != NULL) {
+            elnk->field_0x238 = 1;
+        }
+        field_0x234 = 0;
+    }
+}
+
+// Moves field_0x240 toward 1765 and field_0x254 toward 125, each by its step;
+// once both have arrived, flags EZLD and counts the step in 0x230.
+void EnemyForEndingControl_804AD48C::fn_8035B81C() {
+    s32 arrived = 0;
+    if (field_0x240 < 1765.0f) {
+        field_0x240 = field_0x240 + field_0x258;
+    } else {
+        field_0x240 = 1765.0f;
+        arrived = 1;
+    }
+    if (field_0x254 > 125.0f) {
+        field_0x254 = field_0x254 - field_0x25c;
+    } else {
+        field_0x254 = 125.0f;
+        arrived++;
+    }
+    if (arrived >= 2) {
+        EndingPartnerView* ezld =
+            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        if (ezld != NULL) {
+            ezld->field_0x238 = 1;
+        }
+        field_0x230++;
+    }
+}
+
 void EnemyForEndingControl_804AD48C::fn_8035BE00() {
     if (field_0x254 > 110.0f) {
         field_0x254 -= 1.0f;
@@ -68,6 +113,15 @@ bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
         field_0x24c++;
     }
     return false;
+}
+
+// Restarts the sequencer on table `seq`: stores `arg` (0x250), clears the
+// timer and the step index, then runs the first step (fn_8035C15C inlined).
+void EnemyForEndingControl_804AD48C::fn_8035C1C4(s32 seq, s32 arg) {
+    field_0x250 = arg;
+    field_0x244 = 0;
+    field_0x24c = 0;
+    fn_8035C15C(seq);
 }
 
 // Draws the sprite with mPos raised by 1 for this call only.
