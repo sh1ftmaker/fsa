@@ -1197,5 +1197,8 @@ extern "C" void fn_8038D454();
 // .sbss byte at 0x8053ACD0, owned by game/tu_80301CD0.cpp (its split starts
 // there). Read with lbz by that unit; stored as 0 by game/tu_80139BE8.cpp.
 extern u8 lbl_8053ACD0;
+// .sbss byte at 0x8053AB60 (8 bytes). Read with lbz by game/act_chief_soldier.cpp
+// (draw), which skips the draw when it is 1; no writer found yet.
+extern u8 lbl_8053AB60;
 
 #endif
