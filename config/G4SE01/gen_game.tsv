@@ -187,8 +187,6 @@ tu_8028DD78	dtor	__dt__12cls_804A7A68Fv	cls_804A7A68	0x804A7A68	new	new
 tu_8028DD78	sinit	__sinit_tu_8028DD78_cpp	-	-	new	new
 tu_8029D898	sinit	__sinit_tu_8029D898_cpp	-	-	new	-
 tu_802A4654	sinit	__sinit_tu_802A4654_cpp	-	-	new	-
-tu_802B7C78	dtor	__dt__12cls_804A886CFv	cls_804A886C	0x804A886C	new	new
-tu_802B7C78	sinit	__sinit_tu_802B7C78_cpp	-	-	new	new
 tu_802E2990	sinit	__sinit_tu_802E2990_cpp	-	-	new	-
 tu_802E9428	dtor	__dt__12cls_804AA0FCFv	cls_804AA0FC	0x804AA0FC	new	new
 tu_802ED538	dtor_emit	__dt__12cls_804AA350Fv	cls_804AA350	0x804AA350	new	new
