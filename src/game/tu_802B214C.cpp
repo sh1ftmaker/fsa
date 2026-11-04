@@ -1,6 +1,5 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
-#include "game/DrawShadow.h"
 #include "game/cls_804A8588.h"
 
 cls_804A8588::~cls_804A8588() {}
@@ -11,19 +10,6 @@ u8 cls_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
         field_0x27c = 0;
     }
     return result;
-}
-
-// FIXME: 40.17 %. The original builds a SpriteParams_801F5AE0 on the stack (default
-// constructor stores at 0x18..0x50) and still passes NULL to fn_801F06F0; with no
-// use of the struct MWCC drops those stores (try.py: 61 instructions missing). The
-// two float literals of the shadow call and fn_801F06F0 are @NNN vs lbl_ (data split).
-void cls_804A8588::fn_802B2728() {
-    if (field_0x25c == 0) {
-        return;
-    }
-    fn_801F06F0("enemy_both2_sob.bin", field_0x258 + 0x78, NULL, 1, 1.0f, 1.0f);
-    drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 30.0f);
-    fn_803075AC(mSerial, field_0x4, &mPos, field_0x258 + 0x78, false, 2, -1, 0, 0, 0);
 }
 
 // Two entries; field_0x248 indexes it when field_0x240 is 1.
