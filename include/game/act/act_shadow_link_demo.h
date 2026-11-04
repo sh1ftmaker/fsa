@@ -9,12 +9,25 @@
 
 class cls_8049DB90 : public cls_8049D140 {
 public:
+    cls_8049DB90();
     /* 0x08 */ virtual ~cls_8049DB90();
     /* 0x58 */ virtual s32 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C(); // 1 or 0, as cls_8049D140::vfunc_0x5C
 
-    /* 0x230 */ u8 field_0x230[0x238 - 0x230]; // not yet known
+    /* 0x230 */ u8 field_0x230; // set to 1 by the constructor
+    /* 0x231 */ u8 field_0x231; // cleared by the constructor
+    /* 0x232 */ u8 field_0x232[0x234 - 0x232]; // not yet known
+    /* 0x234 */ s32 field_0x234; // cleared by the constructor
     /* 0x238 */ s32 field_0x238; // returned by vfunc_0x58
-}; // Size: at least 0x23C
+    /* 0x23C */ s32 field_0x23c; // cleared by the constructor
+    /* 0x240 */ s32 field_0x240; // cleared by the constructor
+    /* 0x244 */ f32 field_0x244; // cleared by the constructor
+    /* 0x248 */ f32 field_0x248; // cleared by the constructor
+    /* 0x24C */ u8 field_0x24c[0x250 - 0x24C]; // not yet known
+    /* 0x250 */ f32 field_0x250; // cleared by the constructor
+    /* 0x254 */ f32 field_0x254; // cleared by the constructor
+    /* 0x258 */ f32 field_0x258; // cleared by the constructor
+    /* 0x25C */ f32 field_0x25c; // cleared by the constructor
+}; // Size: at least 0x260
 
 #endif
