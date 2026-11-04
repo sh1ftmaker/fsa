@@ -196,10 +196,36 @@ def added_lines(wt):
     return out
 
 
-def style_violation(path, text, lines=None):
-    """First F1/F5/F7 violation among `lines` (None: all) of a C/C++ file, or None."""
+def unit_ranges(wt, unit):
+    """{section: (start, end)} of a unit in splits.txt."""
+    out, cur = {}, False
+    for l in (wt / "config/G4SE01/splits.txt").read_text().splitlines():
+        if l and not l[0].isspace():
+            cur = l.rstrip(":") == unit
+        elif cur:
+            m = re.match(r"\s+(\S+)\s+start:0x([0-9A-Fa-f]+)\s+end:0x([0-9A-Fa-f]+)", l)
+            if m:
+                out[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
+    return out
+
+
+GAME_CLASS = r"(?:cls_[0-9A-Fa-f]{8}|\w+_80[0-9A-Fa-f]{6})"
+# Review 2: a placeholder of this unit declared C-linkage with a game-class (or void* self) first parameter.
+C_MEMBER = re.compile(rf"\b(fn_(8[0-9A-Fa-f]{{7}}))\w*\s*\(\s*(?:const\s+)?(?:{GAME_CLASS}\s*\*|void\s*\*\s*(?:self|obj|this_?)\b)")
+OVERLAY = re.compile(r"^\s*(?:struct\s+\w+\s*\{\s*)?u8\s+(?:field|pad|unk)_0x0\s*\[\s*0x[0-9A-Fa-f]+\s*\]\s*;")
+EXTERN_LBL = re.compile(r"\bextern\b[^;(]*?\blbl_([0-9A-Fa-f]{8})\b")
+
+
+def style_violation(path, text, lines=None, ranges=None):
+    """First F1/F5/F7 violation among `lines` (None: all) of a C/C++ file, or None. With the
+    unit's split `ranges`, also review 2's unit-aware rules."""
     depth, extern_c, cpp = 0, [], path.endswith(".cpp")
     ones = set(ONE.findall(text))  # one-element literal arrays, read as name[0]
+    # Hand-written guard of a function-local static: if (!lbl_X) { ...; lbl_X = 1; }
+    guards = {n for n in re.findall(r"if\s*\(\s*!\s*(lbl_[0-9A-Fa-f]{8})\s*\)", text)
+              if re.search(rf"\b{n}\s*=\s*1\s*;", text)}
+    text_r = (ranges or {}).get(".text")
+    in_unit = lambda a: any(lo <= a < hi for lo, hi in (ranges or {}).values())
     for i, raw in enumerate(text.splitlines(), 1):
         code = code_part(raw)
         if (lines is None or i in lines) and code.strip():
@@ -213,6 +239,17 @@ def style_violation(path, text, lines=None):
                 return f"prototype in a .cpp (declare it in the owner's shared header): {where}"
             if path.startswith("include/game/act/") and 'extern "C"' in code:
                 return f"extern C in an act header (use the owner's shared header): {where}"
+            if cpp and OVERLAY.search(code):
+                return f"overlay struct (declare the real member in the class's header): {where}"
+            if any(re.search(rf"\b{n}\b", code) for n in guards):
+                return f"hand-written static guard (write a function-local static): {where}"
+            m = C_MEMBER.search(code)
+            if m and text_r and (bool(extern_c) or 'extern "C"' in code) and text_r[0] <= int(m.group(2), 16) < text_r[1]:
+                return f"this unit's function declared extern C taking a class (write a member): {where}"
+            m = EXTERN_LBL.search(code)
+            if (m and cpp and ranges and "=" not in code and in_unit(int(m.group(1), 16))
+                    and not re.search(rf"\blbl_{m.group(1)}\b[^;(]*=", text)):
+                return f"extern of this unit's own data (define it here): {where}"
         if re.search(r'extern\s+"C"\s*\{', code):
             extern_c.append(depth)
         depth += code.count("{") - code.count("}")
@@ -221,10 +258,11 @@ def style_violation(path, text, lines=None):
     return None
 
 
-def style_check(wt):
+def style_check(wt, unit=None):
+    ranges = unit_ranges(wt, unit) if unit else None
     for path, lines in added_lines(wt).items():
         if path.endswith((".cpp", ".h", ".c")) and (wt / path).exists():
-            v = style_violation(path, (wt / path).read_text(errors="replace"), lines)
+            v = style_violation(path, (wt / path).read_text(errors="replace"), lines, ranges)
             if v:
                 return v
     return None
@@ -261,7 +299,7 @@ def check_diff(wt, unit):
             return f"extern C taking a class pointer (write a member): {l.strip()[:80]}", None
         if BANNED.search(code_part(l)):
             return f"banned: {l.strip()[:80]}", None
-    v = style_check(wt)
+    v = style_check(wt, unit)
     if v:
         return v, None
     # A leftover use of a renamed symbol can't be told from text (members keep the short C++
@@ -305,6 +343,14 @@ Rules (a script checks them and throws away your work if broken):
   for a float or string; four-character tags as `'NULL'`, not hex. `@NNN vs lbl_` on literals is a
   data split for the main project, not code: leave it. Declare another unit's function in the
   shared header of its owning area (GameGlobals.h if none fits), never in a .cpp or an act header.
+- A function you can't get to 70 % or more stays unwritten: no guessed bodies. A FIXME may describe
+  only a codegen difference (registers, order), never missing or guessed behaviour. Before writing a
+  helper for a JSystem/SDK object, grep its header for the inline the original used. Use the real
+  members of a class, never a padding array or a local overlay struct.
+- A function of this unit whose first argument is an object is a member of that object's class (check
+  which class's vtable lists it in the asm before putting a virtual on a class); never extern "C" with
+  a cls_/void* self parameter. Function-local statics are written as such, not as lbl_ guard flags;
+  this unit's own data is defined here, never declared extern.
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
   types, as the original programmers would. Other functions in the file must not get worse.
 - Do not run git, ninja or any build other than tools/try.py.
@@ -548,6 +594,32 @@ def release_generated(wt, unit):
         tsv.write_text("".join(keep))
 
 
+def vtable_owner_problem(wt, ren):
+    """A member named onto class X whose function sits only in other classes' vtables (asm)."""
+    asm = list((wt / "build/G4SE01/asm/game").glob("*.s"))
+    for new in ren.values():
+        cls = class_of(new)
+        if not cls:
+            continue
+        hits = sh(["grep", "-l", "-w", new] + [str(a) for a in asm], wt).stdout.split()
+        tables = set()
+        for f in hits:
+            cur = None
+            for l in Path(f).read_text(errors="replace").splitlines():
+                if l.startswith(".obj "):
+                    cur = l.split()[1].rstrip(",")
+                elif l.startswith(".endobj"):
+                    cur = None
+                elif cur and cur.startswith("__vt__") and re.search(rf"\b{re.escape(new)}\b", l):
+                    tables.add(cur)
+        if tables and not any(t == f"__vt__{len(cls)}{cls}" for t in tables):
+            return f"{new} is in {sorted(tables)[0]}, not {cls}'s vtable (wrong class)"
+    return None
+
+
+FLOOR = 70.0  # a newly written function below this is guesswork, not a draft: leave it unwritten
+
+
 def judge(wt, unit, fns, secs, focus=None):
     """Script verdict on the worktree's changes: (why-rejected or None, fns, secs, gained, renames)."""
     release_generated(wt, unit)
@@ -564,7 +636,13 @@ def judge(wt, unit, fns, secs, focus=None):
     # extab/extabindex shift whenever a function is added; they can't score until the file is whole.
     worse += [k for k, p in secs.items() if new_secs.get(k, 0) < p - 0.001 and not k.startswith("extab")]
     gained = sum(p == 100 for _, p in new_fns.values()) - sum(p == 100 for _, p in fns.values())
-    if worse:
+    low = [k for k, (_, p) in new_fns.items() if 0 < p < FLOOR and renamed.get(k, (0, 0))[1] == 0]
+    owner = vtable_owner_problem(wt, ren) if ren else None
+    if owner:
+        why = owner
+    elif low:
+        why = f"wrote {low[0]} at {new_fns[low[0]][1]:.1f} % (below {FLOOR:.0f} %: leave it unwritten)"
+    elif worse:
         why = f"worse: {worse[:3]}"
     elif gained <= 0:
         best = new_fns.get(ren.get(focus, focus), (0, 0))[1] if focus else 0
@@ -627,6 +705,14 @@ Rules (a script checks them and throws away ALL your work if one is broken):
   for a float or string; four-character tags as `'NULL'`, not hex. `@NNN vs lbl_` on literals is a
   data split for the main project, not code: leave it. Declare another unit's function in the
   shared header of its owning area (GameGlobals.h if none fits), never in a .cpp or an act header.
+- A function you can't get to 70 % or more stays unwritten: no guessed bodies. A FIXME may describe
+  only a codegen difference (registers, order), never missing or guessed behaviour. Before writing a
+  helper for a JSystem/SDK object, grep its header for the inline the original used. Use the real
+  members of a class, never a padding array or a local overlay struct.
+- A function of this unit whose first argument is an object is a member of that object's class (check
+  which class's vtable lists it in the asm before putting a virtual on a class); never extern "C" with
+  a cls_/void* self parameter. Function-local statics are written as such, not as lbl_ guard flags;
+  this unit's own data is defined here, never declared extern.
 - No asm, no #pragma, no goto, no dummy/fake functions, no tricks: write natural C++ with real
   types, as the original programmers would. Functions already at 100 % must stay at 100 %.
 - Do not run git, ninja or any build other than tools/try.py.
