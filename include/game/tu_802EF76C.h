@@ -7,14 +7,15 @@
 
 #include "types.h"
 #include "game/ActorBase.h"
-#include "dolphin/gx/GXStruct.h"
 
 // Owned by other units (not written yet). fn_80128C58 has C++ linkage
-// (fn_80128C58__Fl; game/tu_801286C0.cpp declares it the same way).
+// (fn_80128C58__Fl; game/act/tu_801286C0.h declares it the same way).
+// fn_8013A884 (game/tu_80139BE8.cpp) copies the four bytes at color into the
+// colour of the object at lbl_8053AB10->0x2C; fn_801B7550 (game/tu_801B6C50.cpp)
+// returns that object's byte at 0xC. fn_8018330C is in game/tu_80182914.h.
 void fn_80128C58(s32 value);
 extern "C" {
 void fn_8013A884(u32* color);
-void fn_8018330C(GXColor* out, s32 index);
 u8 fn_801B7550(void);
 }
 
@@ -34,7 +35,7 @@ public:
     /* 0x230 */ s32 mState; // 0..5, the update's state machine; set by vfunc_0x54
     /* 0x234 */ f32 field_0x234; // -x of the camera's view translation (lbl_8053AB10->field_0x24->field_0x4[0][3]), set in init
     /* 0x238 */ f32 field_0x238; // -y of the same translation ([1][3]), set in init
-    /* 0x23C */ f32 field_0x23c; // 0.0f (lbl_80541430, this unit's .sdata2), set in init
+    /* 0x23C */ f32 field_0x23c; // 0.0f, set in init
     /* 0x240 */ s32 field_0x240; // field_0x90 bits 22-26
     /* 0x244 */ s32 field_0x244; // field_0x90 & 0xFF, or -1; the switch index in init
     /* 0x248 */ SpriteParamsColor_801F5AE0 mColor; // written by fn_8018330C; its four bytes are split below

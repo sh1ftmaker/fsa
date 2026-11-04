@@ -104,9 +104,10 @@ public:
 
     /* 0x0000 vtable */
     /* 0x0004 */ u8 field_0x4[0x28 - 0x4];
-    // The u16 tile grid of each layer (fn_802F9908 / fn_802F9974 index it
-    // by layer * 4; 32 x 32 cells).
-    /* 0x0028 */ u16* mLayerGrid[8];
+    // The u16 tile grids of layers 0-3 and 4-7 (fn_802F9908 / fn_802F9974
+    // test the two ranges separately; 32 x 32 cells).
+    /* 0x0028 */ u16* mLayerGrid[4];
+    /* 0x0038 */ u16* mLayerGrid2[4];
     /* 0x0048 */ u8 field_0x48[0x214 - 0x48];
     /* 0x0214 */ u8 field_0x214; // 2 units compare it with 1 (act_player_sword_level_check_npc 0x802F1350)
     /* 0x0215 */ u8 field_0x215;

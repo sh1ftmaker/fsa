@@ -10,9 +10,9 @@
 // after its first compare with 5; ours has no such instruction. Tried: an s32
 // mode (cmpwi throughout, 87.86 %) and a u32 mode with (u8) casts on the later
 // compares (same 96.43 %: the byte load already fits, so no clrlwi is emitted).
-bool fn_80379F84(cls_804AE9A0* obj) {
+bool cls_804AE9A0::fn_80379F84() {
     GameRoot_8049EF20* root = lbl_8053AAF8;
-    if (root->field_0x7f == 1 && root->field_0x7e == 1 && lbl_8053AD68 != NULL && obj->field_0x4 != NULL) {
+    if (root->field_0x7f == 1 && root->field_0x7e == 1 && lbl_8053AD68 != NULL && field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
         if (mode != 5 && mode != 8 && mode != 7 && mode != 9) {
             return true;
@@ -63,28 +63,28 @@ u8 fn_8037A120(void) {
 }
 
 // FIXME: 94.74 %. Same mode-byte clrlwi as fn_80379F84 and fn_8037A664.
-void fn_8037A580(cls_804AE9A0* obj) {
-    if (obj->field_0x4 != NULL) {
+void cls_804AE9A0::fn_8037A580() {
+    if (field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
         if (mode != 5 && mode != 8 && mode != 7) {
-            fn_803A8F5C(lbl_8053ADA0);
+            lbl_8053ADA0->fn_803A8F5C();
         } else {
             fn_8037AA7C();
-            fn_803B31AC(lbl_8053ADA0);
+            lbl_8053ADA0->fn_803B31AC();
         }
     }
-    if (obj->field_0x8 != NULL) {
+    if (field_0x8 != NULL) {
         u8 mode = lbl_8053ADA8->field_0x294;
         if (mode == 5 || mode == 8 || mode == 7) {
             fn_8037AA7C();
-            fn_803B7DCC(lbl_8053ADA8);
+            lbl_8053ADA8->fn_803B7DCC();
         }
     }
-    if (obj->field_0xc != NULL) {
+    if (field_0xc != NULL) {
         u8 mode = lbl_8053ADC0->field_0x76;
         if (mode == 2 || mode == 8 || mode == 7) {
-            fn_803D8364(lbl_8053ADC0);
-            fn_803D82EC(lbl_8053ADC0);
+            lbl_8053ADC0->fn_803D8364();
+            lbl_8053ADC0->fn_803D82EC();
         }
     }
 }
@@ -93,35 +93,35 @@ void fn_8037A580(cls_804AE9A0* obj) {
 // the mode byte again (clrlwi r0, r0, 24) after its first compare with 5, in
 // both blocks. Tried: nested ifs and a function-scope mode (same code); a u32
 // mode (same code); a negated || chain (MWCC turns it into a range check, 84.59 %).
-void fn_8037A664(cls_804AE9A0* obj) {
-    if (obj->field_0x4 != NULL) {
+void cls_804AE9A0::fn_8037A664() {
+    if (field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
         if (mode != 5 && mode != 8 && mode != 7) {
-            fn_803A97A0(lbl_8053ADA0);
+            lbl_8053ADA0->fn_803A97A0();
         }
     }
-    if (obj->field_0x8 != NULL) {
+    if (field_0x8 != NULL) {
         u8 mode = lbl_8053ADA8->field_0x294;
         if (mode != 5 && mode != 8 && mode != 7) {
-            fn_803B7E64(lbl_8053ADA8);
+            lbl_8053ADA8->fn_803B7E64();
         }
     }
-    if (obj->field_0xc != NULL) {
-        fn_803D8670(lbl_8053ADC0);
+    if (field_0xc != NULL) {
+        lbl_8053ADC0->fn_803D8670();
     }
 }
 
-void fn_8037A708(cls_804AE9A0* obj) {
-    if (obj->field_0x4 != NULL) {
-        fn_803B6768(obj->field_0x4);
+void cls_804AE9A0::fn_8037A708() {
+    if (field_0x4 != NULL) {
+        field_0x4->fn_803B6768();
     }
-    if (obj->field_0x8 != NULL) {
-        fn_803B8188(obj->field_0x8);
+    if (field_0x8 != NULL) {
+        field_0x8->fn_803B8188();
     }
-    if (obj->field_0xc != NULL) {
-        fn_803D87C0(obj->field_0xc);
+    if (field_0xc != NULL) {
+        field_0xc->fn_803D87C0();
     }
-    obj->field_0x1c = 0;
+    field_0x1c = 0;
 }
 
 u8 fn_8037AA28(void) {
@@ -129,13 +129,13 @@ u8 fn_8037AA28(void) {
 }
 
 void fn_8037AA34(void) {
-    fn_803D5090(lbl_8053ADB8);
+    lbl_8053ADB8->fn_803D5090();
 }
 
 void fn_8037AA58(void) {
-    fn_803D5554(lbl_8053ADB8);
+    lbl_8053ADB8->fn_803D5554();
 }
 
 void fn_8037AA7C(void) {
-    fn_803D521C(lbl_8053ADB8);
+    lbl_8053ADB8->fn_803D521C();
 }

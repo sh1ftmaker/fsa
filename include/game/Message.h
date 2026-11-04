@@ -41,21 +41,21 @@
 class J2DTextBox;
 class JUTResFont;
 
-// The 0x3C4-byte processor objects of game/tu_803944C8.cpp (their constructor).
-// No vtable is chosen as the class's, so the name is a placeholder. Only the
-// byte at 0x19E is declared (fn_80390B64 and fn_80390BA8 use it).
+// The 0x3C4-byte objects of game/tu_803944C8.cpp. Named after the vtable
+// their constructor (0x803973E8) stores at 0x0, 0x804AF5A0. Only the fields
+// tu_80390818 uses are declared.
 class MessageWindow_804AF490;
 
-class MessageProcessor_803944C8 {
+class cls_804AF5A0 {
 public:
     // Constructor, defined in game/tu_803944C8.cpp (not yet written; the
     // symbol was fn_803973E8). Called right after the operator new of the
     // 0x3C4 bytes, with the window, its index and the BMG name; the
     // constructor reading is a guess from that shape.
-    MessageProcessor_803944C8(MessageWindow_804AF490* window, s32 index, const char* bmgName);
+    cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char* bmgName);
     // Virtual: MessageWindow_804AF490's destructor deletes these through the
     // vtable (lwz 8(r12), deleting flag 1), so the dtor is in slot 2.
-    /* 0x008 */ virtual ~MessageProcessor_803944C8();
+    /* 0x008 */ virtual ~cls_804AF5A0();
 
     /* 0x000 */ // vtable
     /* 0x004 */ u8 field_0x4[0x148 - 0x4];
@@ -88,7 +88,7 @@ public:
 class MessageWindow_804AF490 {
 public:
     // fn_80391A1C: stores the vtable and index, builds field_0x48 and
-    // field_0x4c (two 0x3C4-byte objects, MessageProcessor_803944C8), field_0x44 = 0,
+    // field_0x4c (two 0x3C4-byte objects, cls_804AF5A0), field_0x44 = 0,
     // field_0x1c = 1.
     MessageWindow_804AF490(s32 index);
     /* 0x08 */ virtual ~MessageWindow_804AF490(); // fn_80391974
@@ -111,8 +111,8 @@ public:
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
     /* 0x30 */ u8 field_0x30[0x44 - 0x30];
     /* 0x44 */ u8 field_0x44;
-    /* 0x48 */ MessageProcessor_803944C8* field_0x48;
-    /* 0x4C */ MessageProcessor_803944C8* field_0x4c;
+    /* 0x48 */ cls_804AF5A0* field_0x48;
+    /* 0x4C */ cls_804AF5A0* field_0x4c;
     /* 0x50 */ u8 field_0x50[0x5C - 0x50];
 
     // fn_80390818: maps the window state to a 0-2 class (0: state 0 or 9+,

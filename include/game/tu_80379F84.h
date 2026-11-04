@@ -3,51 +3,88 @@
 
 #include "types.h"
 
-// The object lbl_8053ADB8 points to (.sbss, in dtk's auto split). Only the byte
-// at 0x216C is read in this unit (fn_8037AA28). Named after that getter, the
-// first function seen reading it; its real layout is unknown.
-struct Unk_8037AA28 {
-    /* 0x0000 */ u8 field_0x0[0x216C];
-    /* 0x216C */ u8 field_0x216c;
+// The four screen objects whose constructors store them in .sbss globals
+// (lbl_8053ADA0, lbl_8053ADA8, lbl_8053ADC0, lbl_8053ADB8). Each is named after
+// its vtable (slot 0x08 is the destructor); their units are not written yet,
+// so only what game/tu_80379F84.cpp uses is declared here.
+
+// Vtable 0x804AF9A0; constructor fn_803B6FD8, destructor fn_803B6D04
+// (game/tu_803A8DFC.cpp). The constructor stores the object in lbl_8053ADA0.
+class cls_804AF9A0 {
+public:
+    /* 0x08 */ virtual ~cls_804AF9A0();
+    // game/tu_803A8DFC.cpp, not written yet; no other arguments.
+    void fn_803A8F5C();
+    void fn_803A97A0();
+    void fn_803B31AC();
+    void fn_803B6768();
+
+    /* 0x0004 */ u8 field_0x4[0x4C0 - 0x4];
+    /* 0x04C0 */ u8 field_0x4c0; // mode, read by fn_80379F84
+}; // Size: at least 0x4C1
+
+// Vtable 0x804AFAB0; constructor fn_803B8414, destructor fn_803B82FC
+// (game/tu_803B7DCC.cpp). The constructor stores the object in lbl_8053ADA8.
+class cls_804AFAB0 {
+public:
+    /* 0x08 */ virtual ~cls_804AFAB0();
+    // game/tu_803B7DCC.cpp, not written yet; no other arguments.
+    void fn_803B7DCC();
+    void fn_803B7E64();
+    void fn_803B8188();
+
+    /* 0x004 */ u8 field_0x4[0x294 - 0x4];
+    /* 0x294 */ u8 field_0x294; // mode, read by fn_8037A120
+}; // Size: at least 0x295
+
+// Vtable 0x804B03D8; constructor fn_803D901C, destructor fn_803D8D74
+// (game/tu_803D7098.cpp). The constructor stores the object in lbl_8053ADC0.
+class cls_804B03D8 {
+public:
+    /* 0x08 */ virtual ~cls_804B03D8();
+    // game/tu_803D7098.cpp, not written yet; no other arguments.
+    void fn_803D82EC();
+    void fn_803D8364();
+    void fn_803D8670();
+    void fn_803D87C0();
+
+    /* 0x04 */ u8 field_0x4[0x76 - 0x4];
+    /* 0x76 */ u8 field_0x76; // mode, read by fn_8037A120
+}; // Size: at least 0x77
+
+// Vtable 0x804B0288; constructor fn_803D58E0, destructor fn_803D5710
+// (game/tu_803D2C34.cpp). The constructor stores the object in lbl_8053ADB8.
+class cls_804B0288 {
+public:
+    /* 0x08 */ virtual ~cls_804B0288();
+    // game/tu_803D2C34.cpp, not written yet; no other arguments.
+    void fn_803D5090();
+    void fn_803D521C();
+    void fn_803D5554();
+
+    /* 0x0004 */ u8 field_0x4[0x216C - 0x4];
+    /* 0x216C */ u8 field_0x216c; // read by fn_8037AA28
 }; // Size: at least 0x216D
 
 // The object lbl_8053AD68 holds (declared in GameGlobals.h, which forward
-// declares it). Its pointers at 0x4, 0x8 and 0xC are tested against NULL
-// (fn_80379F84, fn_8037A120); only the test is seen, so they stay void*.
-// Named after its vtable 0x804AE9A0 (.data, this unit): fn_8037A8D4 is its
-// constructor and stores the object in lbl_8053AD68; fn_8037A768 is its
-// destructor. Only the fields the functions here touch are named.
+// declares it). Named after its vtable 0x804AE9A0 (.data, this unit):
+// fn_8037A8D4 is its constructor and stores the object in lbl_8053AD68;
+// fn_8037A768 is its destructor. Its three pointers are the screens above
+// (fn_8037A708 calls their members with them; fn_80379F84, fn_8037A580 and
+// fn_8037A664 test them and use the screens' globals).
 struct cls_804AE9A0 {
-    /* 0x00 */ u8 field_0x0[0x4];
-    /* 0x04 */ void* field_0x4;
-    /* 0x08 */ void* field_0x8;
-    /* 0x0C */ void* field_0xc;
+    /* 0x08 */ virtual ~cls_804AE9A0();
+    bool fn_80379F84();
+    void fn_8037A580();
+    void fn_8037A664();
+    void fn_8037A708();
+
+    /* 0x04 */ cls_804AF9A0* field_0x4;
+    /* 0x08 */ cls_804AFAB0* field_0x8;
+    /* 0x0C */ cls_804B03D8* field_0xc;
     /* 0x10 */ u8 field_0x10[0x1C - 0x10];
     /* 0x1C */ u8 field_0x1c; // cleared by fn_8037A708
 }; // Size: at least 0x1D
-
-// The object lbl_8053ADA0 points to (.sbss, auto split). fn_80379F84 reads
-// the byte at 0x4C0. Named after the first function reading it (fn_80379F84),
-// with its global as suffix, since fn_80379F84 is also the first function to
-// read cls_804AE9A0 and the plain name would clash with it.
-struct Unk_80379F84_ADA0 {
-    /* 0x0000 */ u8 field_0x0[0x4C0];
-    /* 0x04C0 */ u8 field_0x4c0;
-}; // Size: at least 0x4C1
-
-// The object lbl_8053ADA8 points to (.sbss, auto split). fn_8037A120 reads the
-// byte at 0x294; first reader fn_8037A120, the suffix as above.
-struct Unk_8037A120_ADA8 {
-    /* 0x000 */ u8 field_0x0[0x294];
-    /* 0x294 */ u8 field_0x294;
-}; // Size: at least 0x295
-
-// The object lbl_8053ADC0 points to (.sbss, auto split). fn_8037A120 reads the
-// byte at 0x76; first reader fn_8037A120, the suffix as above.
-struct Unk_8037A120_ADC0 {
-    /* 0x00 */ u8 field_0x0[0x76];
-    /* 0x76 */ u8 field_0x76;
-}; // Size: at least 0x77
 
 // One row of the save table lbl_8050EC80 (.bss, 0x21E0 bytes; GameState.h and
 // GameView.h describe it; fn_80403514 in game/tu_803BC6F0.cpp picks rows). The
@@ -75,11 +112,11 @@ struct SaveRow_8050EC80 {
 extern SaveRow_8050EC80 lbl_8050EC80[];
 
 // .sbss 0x8053ADB8, 0x8053ADA0, 0x8053ADA8, 0x8053ADC0 (auto split, 8 bytes
-// each; the globals are stored by units not written yet).
-extern Unk_8037AA28* lbl_8053ADB8;
-extern Unk_80379F84_ADA0* lbl_8053ADA0;
-extern Unk_8037A120_ADA8* lbl_8053ADA8;
-extern Unk_8037A120_ADC0* lbl_8053ADC0;
+// each; stored by the constructors above, in units not written yet).
+extern cls_804B0288* lbl_8053ADB8;
+extern cls_804AF9A0* lbl_8053ADA0;
+extern cls_804AFAB0* lbl_8053ADA8;
+extern cls_804B03D8* lbl_8053ADC0;
 
 extern "C" {
 // Owner: game/tu_80379F84.cpp.
@@ -88,36 +125,9 @@ void fn_8037AA34(void);
 void fn_8037AA58(void);
 void fn_8037AA7C(void);
 u8 fn_8037A120(void);
-// Takes the object lbl_8053AD68 holds (tu_80301CD0 passes the global).
-bool fn_80379F84(cls_804AE9A0* obj);
 // Steps lbl_80529DEC's stage (0x118) and sub-stage (0x11C) and sets the flag bit
 // of the current save row.
 void fn_80379FF4(void);
-// Takes the object lbl_8053AD68 holds (game/tu_80134C04.cpp passes the global).
-void fn_8037A580(cls_804AE9A0* obj);
-void fn_8037A664(cls_804AE9A0* obj);
-// fn_8037A708 (GameGlobals.h) takes the same object. The three below are not
-// written yet (their unit is unknown); each takes one pointer field of
-// lbl_8053AD68's object in r3, as fn_8037A708 passes it.
-void fn_803B6768(void* obj);
-void fn_803B8188(void* obj);
-void fn_803D87C0(void* obj);
-// fn_8037A580 / fn_8037A664: the object each one is called with (lbl_8053ADA0,
-// lbl_8053ADA8 or lbl_8053ADC0 in r3, as loaded for the test before the call).
-void fn_803A8F5C(Unk_80379F84_ADA0* obj);
-void fn_803B31AC(Unk_80379F84_ADA0* obj);
-void fn_803A97A0(Unk_80379F84_ADA0* obj);
-void fn_803B7DCC(Unk_8037A120_ADA8* obj);
-void fn_803B7E64(Unk_8037A120_ADA8* obj);
-void fn_803D82EC(Unk_8037A120_ADC0* obj);
-void fn_803D8364(Unk_8037A120_ADC0* obj);
-void fn_803D8670(Unk_8037A120_ADC0* obj);
-
-// Not written yet (their unit is unknown); each takes the object lbl_8053ADB8
-// holds, in r3, and returns nothing this unit reads.
-void fn_803D5090(Unk_8037AA28* obj);
-void fn_803D5554(Unk_8037AA28* obj);
-void fn_803D521C(Unk_8037AA28* obj);
 }
 
 #endif
