@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
 
 bool Player_804A6F38::fn_8028FBA0() {
@@ -14,6 +15,20 @@ bool Player_804A6F38::fn_8028FBA0() {
         return true;
     }
     return false;
+}
+
+void Player_804A6F38::fn_80290E90() {
+    if (!fn_80240670()) {
+        fn_80301D54(field_0x4);
+    }
+    field_0x400 = 0;
+    if (lbl_8053AAF8->field_0x7e == 0 && !fn_80240670()) {
+        if (field_0xce4 < 8) {
+            lbl_8053AF80->fn_8045815C(false);
+        } else if (field_0xce4 == 8) {
+            lbl_8053AF80->fn_8045815C(true);
+        }
+    }
 }
 
 void Player_804A6F38::fn_802922D0() {

@@ -246,6 +246,9 @@ public:
     bool fn_8028FBA0();
     // Not written yet (tu_8028FBA0); this in r3, &mPos passed as the second position.
     u8 fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
+    // Not written yet (tu_8028FBA0's fn_80290E90 is 0x90 bytes): fn_80301D54(field_0x4) unless
+    // fn_80240670(), clears 0x400, then fn_8045815C on lbl_8053AF80 (0 below 8, 1 at 8) by 0xCE4.
+    void fn_80290E90();
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
     bool fn_8026FC84(); // via fn_8023A5B8
@@ -305,7 +308,10 @@ public:
     /* 0x03FB */ u8 field_0x3fb;
     /* 0x03FC */ u8 field_0x3fc;
     /* 0x03FD */ u8 field_0x3fd; // set to 1 by fn_80295584 (stb)
-    /* 0x03FE */ u8 field_0x3fe[0x42C - 0x3FE];
+    /* 0x03FE */ u8 field_0x3fe[0x400 - 0x3FE];
+    // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
+    /* 0x0400 */ u8 field_0x400;
+    /* 0x0401 */ u8 field_0x401[0x42C - 0x401];
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
@@ -734,6 +740,9 @@ bool fn_8023561C(s32 player);
 // 1 unit (tu_801CB270 fn_801CD1D0). Owner: tu_80301CD0 (0x80303750), a player
 // query returning a byte (clrlwi 24 at the call site); unwritten.
 extern "C" u8 fn_80303750(s32 player);
+// Not written yet (tu_80301CD0, 0x80301D54): called with a player index (field_0x4) by
+// fn_80290E90 and tu_8028FBA0's fn_802901DC path.
+extern "C" void fn_80301D54(s32 player);
 
 // 1 unit (act_horse_race_end_area). Owner: tu_8022AD64 (0x80230050). -> fn_8024E03C(player
 // slot) when the slot is present and its byte 0xCAC is set; else false.
