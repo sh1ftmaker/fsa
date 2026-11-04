@@ -2,8 +2,10 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
+#include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Map.h"
+#include "game/Player.h"
 #include "game/act/act_small_key.h"
 
 SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
@@ -34,6 +36,57 @@ void SmallKey_804A8CD8::fn_802C2BD0() {
     JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
     s32 layer = field_0x238;
     fn_802D6A9C()->fn_802D6C10(pos, layer);
+}
+
+bool SmallKey_804A8CD8::fn_802C2300(u8 playerBits) {
+    if (field_0x280 != 0) {
+        return false;
+    }
+    if (!fn_802DE7CC()) {
+        return false;
+    }
+
+    u8 player = 0;
+    if (playerBits & 2) {
+        player = 1;
+    } else if (playerBits & 4) {
+        player = 2;
+    } else if (playerBits & 8) {
+        player = 3;
+    }
+
+    if (fn_8022CAF8(player) == 4) {
+        if (fn_8022F478(player)) {
+            return false;
+        }
+        field_0x2a4 = player;
+        u8 index = player;
+        if (fn_8022F514(player)) {
+            index = fn_8022F3DC(player);
+        }
+        field_0x2a0 = index;
+    } else {
+        u8 index = player;
+        if (fn_8022F514(player)) {
+            index = fn_8022F3DC(player);
+        }
+        field_0x2a4 = index;
+        field_0x2a0 = index;
+    }
+
+    if (!fn_802D6A9C()->fn_802D46D8(field_0x2a0, 0x168, false)) {
+        if (lbl_8053AAF8->field_0x7e == 1) {
+            if (fn_802308E0(field_0x2a0) == true) {
+                fn_8022FE80(field_0x2a4, field_0x4, mSerial, 0, 0);
+            }
+        } else {
+            if (fn_8023077C() == true) {
+                fn_8022FE80(field_0x2a4, field_0x4, mSerial, 0, 0);
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 void SmallKey_804A8CD8::fn_802C2B64() {
