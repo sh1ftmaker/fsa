@@ -51,7 +51,7 @@ void cls_802150B8::fn_802146A4() const {
     if (owner->field_0x524 & 0x400) {
         flag = 1;
     }
-    fn_8013CC50(owner->field_0x4, &owner->mPos, 0x416, 0, flag - 1, NULL, NULL, true, 1.0f);
+    fn_8013CC50(owner->getField_0x4(), owner->getPos(), 0x416, 0, flag - 1, NULL, NULL, true, 1.0f);
     fn_8013CC50(mOwner->getField_0x4(), mOwner->getPos(), 0x417, 0, flag, NULL, NULL, true, 1.0f);
 }
 
@@ -248,16 +248,3 @@ cls_802150B8::~cls_802150B8() {
 }
 
 cls_802150B8::cls_802150B8() : field_0x0(0), field_0x18(0), field_0x30(-1), mOwner(0) {}
-
-void cls_804A64A8::execute(JPABaseEmitter*, JPABaseParticle* particle) {
-    if (field_0x10 != 0) {
-        return;
-    }
-    // The particle's position is written by offset (0x18), not through a
-    // JPABaseParticle member. Component stores, not a struct copy: the
-    // original does lfs/stfs per component.
-    JGeometry::TVec3f* pos = reinterpret_cast<JGeometry::TVec3f*>(reinterpret_cast<u8*>(particle) + 0x18);
-    pos->x = field_0x4.x;
-    pos->y = field_0x4.y;
-    pos->z = field_0x4.z;
-}

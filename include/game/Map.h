@@ -219,7 +219,7 @@ public:
     // ending in 'NULL', cmplw against ActorBase_804A5770::mActorId of the
     // box's actor, fn_801F666C), boxes of those actors don't count.
     // Returns 0 or 1. Callers use the read list (field_0x1).
-    bool fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds);
+    bool fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds) const;
     // 15 units / 16 calls. Registers the box of the actor `serial` (its
     // box at 0x80 moved by mPos.x / mPos.y, layer field_0x4) if the actor
     // has byte 0x11C set, the box is not empty and fewer than 0x50 are
@@ -265,7 +265,7 @@ public:
 }; // Size: 0xF0C
 
 // 42 units. The collision boxes (see above).
-extern "C" CollisionBoxes_8020D58C* fn_8020D58C(void);
+CollisionBoxes_8020D58C* fn_8020D58C();
 
 // --- sprite draw (owner: game/tu_802F5040.cpp, not written yet) ---
 extern "C" {
