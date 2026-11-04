@@ -117,7 +117,6 @@ act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
 act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
-act_rank_display	sinit	__sinit_act_rank_display_cpp	-	-	new	-
 act_red_blue_switch	dtor_emit	__dt__12cls_804A9020Fv	cls_804A9020	0x804A9020	new	new
 act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-
 act_room_transfer_lift	dtor	__dt__12cls_8049CC40Fv	cls_8049CC40	0x8049CC40	new	new
