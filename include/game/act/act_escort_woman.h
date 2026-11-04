@@ -25,6 +25,9 @@ public:
     // 5-9 (from the top) of field_0x90 to field_0x3cc.
     /* 0x64 */ virtual void vfunc_0x64();
     // fn_80124C2C: returns the result of the base's fn_80121DB0.
+    // fn_80124C4C: sets the key tables of mAnim (14 of them, lbl_8049E198),
+    // plays animation 7 in mode 2 without keeping the frame, and sets frame 0.
+    /* 0x70 */ virtual void vfunc_0x70();
     /* 0x74 */ virtual s32 vfunc_0x74();
     // fn_80124BF0: returns the base's fn_80123D88 when field_0x33c is 4 or 5, else 0.
     /* 0x78 */ virtual s32 vfunc_0x78();

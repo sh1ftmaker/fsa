@@ -5,6 +5,7 @@
 // actors call is declared.
 
 #include "game/ActorBase.h"
+#include "game/SpriteAnim.h"
 
 // The escort base class (vtable 0x8049E0C8), parent of EscortWoman_8049E1D0
 // ('OPGL', act_escort_woman) and ZoraEscort_8049DF78 ('FAZR', act_zora_escort).
@@ -40,7 +41,9 @@ public:
     // fn_80122834 (tu_801213EC): returns true when the word at 0x108 and the
     // byte at 0x333 are both zero. The escort woman's fn_80124B08 calls it.
     bool fn_80122834();
-    /* 0x230 */ u8 field_0x230[0x33C - 0x230]; // not declared yet
+    // The escort's sprite animation; act_escort_woman's vfunc 0x70 sets its key tables.
+    /* 0x230 */ SpriteAnim_801D267C mAnim;
+    /* 0x268 */ u8 field_0x268[0x33C - 0x268]; // not declared yet
     /* 0x33C */ s32 field_0x33c; // a state word, 0 after construction; the zora's update skips update() while it is 0xF
     // Size: unknown (only the fields above are declared)
 };
