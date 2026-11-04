@@ -7,6 +7,7 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/act/act_inextinguishable_flame.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 
 // Offsets of the eight neighbouring flames (update) and of the four
 // neighbours tested by vfunc_0x58.
@@ -48,17 +49,18 @@ void InextinguishableFlame_804A9D28::vfunc_0x24() {
     fn_801F35AC();
 }
 
-// FIXME: 0.00 %. The original releases each emitter inline (word 0xF4 |= 1,
-// word 0x24 = 1, member nulled) and never calls fn_801EE434 here; the
-// inline form needs the emitter words named in JPAEmitter.h (not ours).
+static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
+    if (emitter != NULL) {
+        emitter->becomeInvalidEmitter();
+        emitter = NULL;
+    }
+}
+
 void InextinguishableFlame_804A9D28::vfunc_0x54() {
-    for (s32 i = 0; i < 16; i += 2) {
-        for (s32 row = 0; row < 3; row++) {
-            if (mEmitters[row][i] != NULL) {
-                fn_801EE434(mEmitters[row][i]);
-                mEmitters[row][i] = NULL;
-            }
-        }
+    for (s32 i = 0; i < 16; i++) {
+        invalidateEmitter(mEmitters[0][i]);
+        invalidateEmitter(mEmitters[1][i]);
+        invalidateEmitter(mEmitters[2][i]);
     }
 }
 
