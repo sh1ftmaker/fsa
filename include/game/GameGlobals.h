@@ -299,6 +299,9 @@ struct Unk_8045A080 {
     // not read): stops the sound at 0x80 and clears the fields at
     // 0x58-0x68.
     void fn_80458F9C(s32 frames);
+    // game/tu_80457DFC.cpp (0x80459274, same unit). Called on lbl_8053AF80
+    // by cls_804B19F0::fn_80441A1C (game/tu_80441A1C.cpp) after the 0x0 call.
+    void fn_80459274();
     // game/tu_80457DFC.cpp (0x80458090): loads wave archives 2, 3 and 4 of
     // the JAUSection at 0x44 (loadWaveArc). Called by tu_8039003C's
     // constructor when fn_804580DC returned 0.
@@ -504,6 +507,17 @@ public:
     // value at lbl_80541670 for slot -0x3E7, else from the bits of the word
     // at 4 + 4*slot); Player_804A6F38::fn_80246F28 returns it.
     f32 fn_80309D90(s32 slot);
+    // Owner: game/tu_803099FC.cpp (0x80309C4C, same unit). Called by
+    // cls_804B19F0::fn_80441A1C with mask 0x1300 and slot -1; returns a
+    // pointer-sized word that is tested for zero.
+    u32 fn_80309C4C(u32 mask, s32 slot);
+    // Owner: game/tu_803099FC.cpp (0x8030A258 / 0x8030A2E4 / 0x8030A364 /
+    // 0x8030A388, same unit). Each takes an input slot from fn_8030AAF4 and
+    // returns a bool (byte) that cls_804B19F0::fn_80441A1C tests.
+    u8 fn_8030A258(s32 slot);
+    u8 fn_8030A2E4(s32 slot);
+    u8 fn_8030A364(s32 slot);
+    u8 fn_8030A388(s32 slot);
 };
 extern cls_804AA8C8* lbl_8053AD30;
 extern "C" {
