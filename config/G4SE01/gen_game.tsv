@@ -46,8 +46,6 @@ act_eyegore	dtor	__dt__16Eyegore_804A3548Fv	Eyegore_804A3548	0x804A3548	new	new
 act_eyegore	sinit	__sinit_act_eyegore_cpp	-	-	new	new
 act_fairy	dtor_emit	__dt__14Fairy_804A03B8Fv	Fairy_804A03B8	0x804A03B8	new	new
 act_fairy	sinit	__sinit_act_fairy_cpp	-	-	new	-
-act_falling_floor	dtor	__dt__21FallingFloor_804A9078Fv	FallingFloor_804A9078	0x804A9078	new	new
-act_falling_floor	sinit	__sinit_act_falling_floor_cpp	-	-	new	new
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
