@@ -68,6 +68,35 @@ void cls_804A8638::vfunc_0x5C() {
     fn_8013A884(&color);
 }
 
+void cls_804A8638::vfunc_0x58() {
+    field_0x310 -= 4;
+    if (field_0x2e0 > field_0x2f0) {
+        field_0x2e0 += field_0x318;
+    } else {
+        field_0x2e0 = field_0x2f0;
+    }
+    if (field_0x2e4 > field_0x2f4) {
+        field_0x2e4 += field_0x31c;
+    } else {
+        field_0x2e4 = field_0x2f4;
+    }
+    if (field_0x2e8 > field_0x2f8) {
+        field_0x2e8 += field_0x320;
+    } else {
+        field_0x2e8 = field_0x2f8;
+    }
+    if (field_0x310 <= field_0x314) {
+        field_0x310 = field_0x314;
+        field_0x2e0 = field_0x2f0;
+        field_0x2e4 = field_0x2f4;
+        field_0x2e8 = field_0x2f8;
+        field_0x240 = 9;
+    }
+    fn_80128C58((u8)field_0x310);
+    u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+    fn_8013A884(&color);
+}
+
 void cls_804A8638::vfunc_0x10() {
     if (field_0x288 != 4) {
         return;

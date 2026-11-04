@@ -13,6 +13,7 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54(s32 a, s32 b, s32 c, s32 d, s32 e, s32 state);
+    /* 0x58 */ virtual void vfunc_0x58();
     /* 0x5C */ virtual void vfunc_0x5C();
 
     /* 0x230 */ u8 field_0x230[0x234 - 0x230]; // not yet identified
