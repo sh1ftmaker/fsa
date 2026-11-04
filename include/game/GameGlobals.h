@@ -934,6 +934,12 @@ extern const s32 lbl_8053EDF8;
 extern const s32 lbl_8053EDFC;
 extern const s32 lbl_8053EE00;
 
+// game/act_shadow_link_2.cpp (owner unit, defined there). Packs five fields
+// into the u32 an 'SLK2' spawn takes as its arg_0x90: a in bits 0-4, b in
+// 5-7, c in 8-11, d in 12-15 and e in 20-27. act_shadow_link_generator passes
+// (8, 0, slot, 0, 0) for each spawn.
+extern "C" u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e);
+
 // Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
 // 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
 // multiplies -12.0f by the second at run time (fmuls), so neither is a literal.
