@@ -1103,20 +1103,19 @@ struct GameRootSub24_8016A3AC {
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8016DA6C();
+    // game/tu_8016A2B4.cpp (0x8016DB60, not written yet): runs a sequence of
+    // fn_8016xxxx calls on this; called by fn_80139D3C.
+    void fn_8016DB60();
+    // game/tu_8016A2B4.cpp (0x8016EDB0, not written yet); called by fn_8013A1A4.
+    void fn_8016EDB0();
+    // game/tu_8016A2B4.cpp (0x8016EE84, 0x238 bytes, not written yet). Called
+    // with 1 by GameRootSub04_801F856C's destructor, without a null check,
+    // before it clears field_0x24.
+    void fn_8016EE84(s32 arg);
 };
 // game/tu_8016A2B4.cpp (0x8016A3AC): returns lbl_8053AAF8->field_0x4->field_0x24.
 GameRootSub24_8016A3AC* fn_8016A3AC();
 extern "C" {
-// Owner: game/tu_8016A2B4.cpp (0x8016DB60, not written yet). Takes the object
-// fn_8016A3AC returns and calls a run of fn_8016xxxx functions on it.
-void fn_8016DB60(GameRootSub24_8016A3AC* self);
-// Owner: game/tu_8016A2B4.cpp (0x8016EDB0, not written yet). Takes field_0x24
-// of GameRootSub04_801F856C (fn_8013A1A4); its body is not read yet.
-void fn_8016EDB0(GameRootSub24_8016A3AC* self);
-// Owner not known (0x8016EE84, 0x238 bytes, not written yet). Called on
-// field_0x24 of GameRootSub04_801F856C by its destructor (fn_8013A27C,
-// game/tu_80139BE8.cpp) with 1; the second argument's type is not known.
-void fn_8016EE84(GameRootSub24_8016A3AC* self, s32 arg);
 // Owner not known (0x80191744, 0x9C bytes, not written yet). Called on
 // field_0x20 of GameRootSub04_801F856C by its destructor (fn_8013A27C) with 1.
 void fn_80191744(void* self, s32 arg);

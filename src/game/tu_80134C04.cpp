@@ -39,19 +39,19 @@ void GameRoot_8049EF20::fn_80134DC0() {
 }
 
 // The 2-bit field of field_0x83 for `index` (0-3), as the caller reads it.
-extern "C" s32 fn_8013997C(s32 index) {
+s32 fn_8013997C(s32 index) {
     return (lbl_8053AAF8->field_0x83 >> (index * 2)) & 3;
 }
 
-extern "C" void fn_801365A8() {
+void fn_801365A8() {
     fn_80021840();
 }
 
-extern "C" void fn_80139958() {
+void fn_80139958() {
     fn_8037A708(lbl_8053AD68);
 }
 
 // JUTGamePad C3ButtonReset callback (JUTResetBtnCb).
-extern "C" void fn_80139994(s32 port, void* arg) {
+void fn_80139994(int port, void* arg) {
     lbl_8053ACA8->fn_802B1610(port, arg);
 }
