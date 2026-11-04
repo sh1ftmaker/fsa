@@ -13,9 +13,9 @@ void cls_8049C770::draw() {}
 
 s32 cls_800FE3EC::fn_800FE25C(u8 index) {
     if (index == 0xFF) {
-        return field_0x4[field_0x3]->layer;
+        return field_0x4[field_0x3]->field_0x4;
     }
-    return field_0x4[index]->layer;
+    return field_0x4[index]->field_0x4;
 }
 
 void cls_800FE3EC::fn_800FDE38() {
@@ -60,9 +60,9 @@ bool cls_800FE3EC::fn_800FD594(u8 index) {
 
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index) {
     if (index == 0xFF) {
-        *out = buffer->field_0x4[buffer->field_0x3]->pos;
+        *out = buffer->field_0x4[buffer->field_0x3]->mPos;
     } else {
-        *out = buffer->field_0x4[index]->pos;
+        *out = buffer->field_0x4[index]->mPos;
     }
 }
 

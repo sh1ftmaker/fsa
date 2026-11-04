@@ -45,14 +45,14 @@ s32 EscortWoman_8049E1D0::vfunc_0x78() {
     if (field_0x33c >= 6 || field_0x33c <= 3) {
         return 0;
     }
-    return fn_80123D88();
+    return EscortBase_8049E0C8::vfunc_0x78();
 }
 
 s32 EscortWoman_8049E1D0::vfunc_0x94() {
     return vfunc_0x6C(9);
 }
 
-void EscortWoman_8049E1D0::fn_80124B08() {
+void EscortWoman_8049E1D0::vfunc_0x90() {
     if (fn_80122834() && field_0x33c < 10) {
         vfunc_0x6C(10);
     }

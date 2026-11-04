@@ -78,7 +78,7 @@ void Bumper_804A0260::update() {
                     idx[i] = j;
                     idx[j] = i;
                     dist[i] = dist[j];
-                    dist[j] = (f32)idx[i];
+                    dist[j] = (f32)idx[i]; // sic: the original stores the swapped index, not the distance
                 }
             }
         }
@@ -103,12 +103,12 @@ void Bumper_804A0260::update() {
         }
     }
 
-    s32 r22 = fn_801F285C(NULL, NULL, false, -1);
-    s32 rr = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+    s32 touchPlayer = fn_801F285C(NULL, NULL, false, -1);
+    s32 actorHit = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     field_0xb0 = 0x42304;
 
     bool clear = false;
-    if (found < 0 && r22 < 0 && rr < 0 && field_0x9c < 0 && field_0x94 != 1) {
+    if (found < 0 && touchPlayer < 0 && actorHit < 0 && field_0x9c < 0 && field_0x94 != 1) {
         clear = fn_801A4D1C(mSerial, &boxA, &pos) == 0 && fn_801A6108(mSerial, &boxA, &pos) == 0 &&
                 fn_801A46FC(mSerial, &boxA, &pos) == 0 && fn_801A4F5C(mSerial, &boxA, &pos) == 0;
     }
@@ -119,9 +119,9 @@ void Bumper_804A0260::update() {
         if (found >= 0) {
             lbl_8053AAF8->fn_80134DE4(1, 0);
             fn_802378AC(found, &c);
-        } else if (r22 >= 0) {
+        } else if (touchPlayer >= 0) {
             lbl_8053AAF8->fn_80134DE4(1, 0);
-            fn_802378AC(r22, &c);
+            fn_802378AC(touchPlayer, &c);
         }
         if (field_0x230 != 1) {
             fn_801F0E34(0x30012, 0);

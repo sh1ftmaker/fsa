@@ -108,8 +108,8 @@ void Fairy_804A03B8::init() {
     if (field_0x230 == 0 || field_0x230 == 5) {
         if (lbl_8053AAF8->field_0x7f == 1) {
             SaveRow_8050EC80& row = lbl_8050EC80[lbl_8050EC80[0].field_0x10];
-            if ((row.field_0x7a[0x87 - 0x7A] & 1) == 0) {
-                row.field_0x7a[0x87 - 0x7A] |= 1;
+            if ((row.field_0x87 & 1) == 0) {
+                row.field_0x87 |= 1;
                 lbl_8053AED0->fn_8043D67C(0x339, 0, lbl_80529DEC.field_0x24f);
             }
         }

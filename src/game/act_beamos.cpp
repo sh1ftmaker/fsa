@@ -6,11 +6,6 @@
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_beamos.h"
-#include <float.h>
-
-// The draw's once-only state (.sbss): a flag, then four bytes of 0xFF.
-static s8 lbl_8053AC08;
-static u8 lbl_8053AC0C[4];
 
 Beamos_804A40E0::Beamos_804A40E0() {
     field_0x2a8 = 0;
@@ -104,8 +99,8 @@ void Beamos_804A40E0::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME: 85.63 %. The original computes the depth test's -15 + y in its own
-// register before the sin/cos loads and the x term; ours reuses the y sum.
+// FIXME: 99.76 %. Instructions identical; only the .sdata2 literal names differ
+// (the unit's literals are not split in the original order yet).
 void Beamos_804A40E0::fn_801BE6C4(s32 state) {
     switch (state) {
     case 0:
@@ -113,12 +108,10 @@ void Beamos_804A40E0::fn_801BE6C4(s32 state) {
         break;
     case 2: {
         const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-        JGeometry::TVec3f pos;
-        pos.x = mPos.x + 10.0f * sincos.sinShort(field_0x2a8);
-        pos.y = -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y);
-        pos.z = mPos.z;
+        JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
+                              -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
         s32 depth = 0;
-        if (pos.y < -15.0f + mPos.y) {
+        if (pos.y >= -15.0f + mPos.y) {
             depth = 1;
         }
         fn_8013CC50(field_0x4, &pos, 0x1C, 0, depth, NULL, NULL, true, 1.0f);
@@ -142,26 +135,13 @@ void Beamos_804A40E0::fn_801BE6C4(s32 state) {
     }
 }
 
-// FIXME: 75.41 %. Same position and depth sums as fn_801BE6C4, but the original
-// keeps the table pointer in r30 and the actor in r31 and schedules the
-// sin/cos loads and the (x, y) temporaries differently; the normalise is the
-// JGeometry one (TUtil::inv_sqrt, 32 * FLT_EPSILON) and matches.
-static inline void normalize(JGeometry::TVec2f& v) {
-    f32 sq = v.x * v.x + v.y * v.y;
-    if (sq <= 32.0f * FLT_EPSILON) {
-        return;
-    }
-    f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
-    v.x *= norm;
-    v.y *= norm;
-}
-
+// FIXME: 81.63 %. One instruction short: the original keeps the sincos table
+// and its cos half (table + 4) in r30 and loads mPos.y before mPos.x; ours keeps
+// only the table base and loads the literals earlier.
 void Beamos_804A40E0::fn_801BE86C() {
     const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-    JGeometry::TVec3f pos;
-    pos.x = mPos.x + 10.0f * sincos.sinShort(field_0x2a8);
-    pos.y = -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y);
-    pos.z = mPos.z;
+    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
+                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
     s32 serial = fn_801F856C()->fn_801F9484('LNBM', field_0x4, &pos, mSerial, -1, -1);
     if (serial < 0) {
         return;
@@ -171,20 +151,19 @@ void Beamos_804A40E0::fn_801BE86C() {
         return;
     }
     s32 depth = 0;
-    if (pos.y < -15.0f + mPos.y) {
+    if (pos.y >= -15.0f + mPos.y) {
         depth = 1;
     }
     actor->field_0x94 = depth;
     JGeometry::TVec2f dir(10.0f * sincos.sinShort(field_0x2a8), 6.0f * sincos.cosShort(field_0x2a8));
-    normalize(dir);
-    dir.x *= 10.5f;
-    dir.y *= 10.5f;
+    dir.normalize();
+    dir.scale(10.5f);
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
 }
 
-// FIXME: 94.45 %. The sprite call and the once-only table match. The position
-// block is one instruction shorter than the original's: the table pointer and
-// the x term are loaded in another order (the same sum as fn_801BE86C).
+// FIXME: 95.22 %. Same instructions modulo registers: the position block's
+// table pointer and x term are scheduled in another order (as in fn_801BE86C),
+// plus the .sdata2 literal names.
 void Beamos_804A40E0::draw() {
     SpriteParams_801F5AE0 params;
     if (mState == 2) {
@@ -196,23 +175,16 @@ void Beamos_804A40E0::draw() {
     if (mFlags & 0x2000) {
         return;
     }
-    if (!lbl_8053AC08) {
-        for (s32 i = 0; i < 4; i++) {
-            lbl_8053AC0C[i] = 0xFF;
-        }
-        lbl_8053AC08 = 1;
-    }
+    static JUtility::TColor lbl_8053AC0C(0xFF, 0xFF, 0xFF, 0xFF);
     const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     f32 floorY = -15.0f + mPos.y;
-    JGeometry::TVec3f pos;
-    pos.x = mPos.x + 10.0f * sincos.sinShort(field_0x2a8);
-    pos.y = -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y);
-    pos.z = mPos.z;
+    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
+                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
     s32 depth = 0;
-    if (floorY > pos.y) {
+    if (pos.y >= floorY) {
         depth = 1;
     }
-    fn_8013AC90(&pos, lbl_8053AC0C, 0, depth, 0, 4.0f);
+    fn_8013AC90(&pos, &lbl_8053AC0C, 0, depth, 0, 4.0f);
 }
 
 void Beamos_804A40E0::vfunc_0x98() {}

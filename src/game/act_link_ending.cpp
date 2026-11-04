@@ -48,8 +48,8 @@ void LinkEnding_804AD858::fn_8035E93C() {
 // state 4 with a countdown under 0xF0), and on the partner's go flag it moves
 // to state 7 with base frame 0x10.
 void LinkEnding_804AD858::fn_8035E9A0() {
-    EndingPartnerView* partner =
-        static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x90));
+    cls_804A5958* partner =
+        static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x90));
     if (partner != NULL && partner->mPos.y >= 1810.0f) {
         field_0x248 = 0;
         field_0x250 = 0x3d;
@@ -68,8 +68,8 @@ void LinkEnding_804AD858::fn_8035E9A0() {
 void LinkEnding_804AD858::fn_8035EA48() {
     if (field_0x234 == 0) {
         mState++;
-        EndingPartnerView* partner =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x23c));
+        cls_804A5958* partner =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->mState = 3;
         }
@@ -81,8 +81,8 @@ void LinkEnding_804AD858::fn_8035EA48() {
 void LinkEnding_804AD858::fn_8035EAA4() {
     if (field_0x234 == 0) {
         fn_801F0E34(0x30085, 0);
-        EndingPartnerView* partner =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x23c));
+        cls_804A5958* partner =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->field_0x238 = 1;
         }
@@ -161,8 +161,8 @@ void LinkEnding_804AD858::fn_8035ED60() {
         field_0x268 = 0;
         field_0x248 = 0;
         field_0x244 = 0;
-        EndingPartnerView* partner =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x23c));
+        cls_804A5958* partner =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->mState = 2;
         }

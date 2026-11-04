@@ -34,12 +34,8 @@ void Deadrock_8049F498::update() {
             }
             // The original builds the centre on the stack as an 8-byte pair
             // and passes it as a TVec3f; the callee reads only x and y.
-            // The box.f copies are locals to match the original's register
-            // use in the centre sums.
-            f32 fx = box.f.x;
-            f32 fy = box.f.y;
-            center.x = fx + 0.5f * (box.i.x - fx);
-            center.y = fy + 0.5f * (box.i.y - fy);
+            center.x = box.f.x + 0.5f * (box.i.x - box.f.x);
+            center.y = box.f.y + 0.5f * (box.i.y - box.f.y);
             if (fn_802379E4(player, (const JGeometry::TVec3f*)&center)) {
                 fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
                 fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
