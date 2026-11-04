@@ -5,6 +5,13 @@ s32 EscortWoman_8049E1D0::vfunc_0x74() {
     return fn_80121DB0();
 }
 
+s32 EscortWoman_8049E1D0::vfunc_0x78() {
+    if (field_0x33c >= 6 || field_0x33c <= 3) {
+        return 0;
+    }
+    return fn_80123D88();
+}
+
 s32 EscortWoman_8049E1D0::vfunc_0x94() {
     return vfunc_0x6C(9);
 }

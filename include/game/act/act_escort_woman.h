@@ -26,6 +26,8 @@ public:
     /* 0x64 */ virtual void vfunc_0x64();
     // fn_80124C2C: returns the result of the base's fn_80121DB0.
     /* 0x74 */ virtual s32 vfunc_0x74();
+    // fn_80124BF0: returns the base's fn_80123D88 when field_0x33c is 4 or 5, else 0.
+    /* 0x78 */ virtual s32 vfunc_0x78();
     // fn_80124B90: returns the base's vfunc_0x6C(5).
     // fn_80124BC0: returns the base's vfunc_0x6C(7).
     /* 0x84 */ virtual s32 vfunc_0x84();

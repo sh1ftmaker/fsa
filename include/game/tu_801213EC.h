@@ -33,6 +33,10 @@ public:
     // fn_80124448 (tu_801213EC): calls ActorBase::init, then the vtable's 0x64
     // slot, then sets the state fields 0x60-0x6C. The escort woman's init calls it.
     void fn_80124448();
+    // fn_80123D88 (tu_801213EC): returns 1 when the escort's state word
+    // (0x344) is in range and the test passes, else 0. The escort woman's
+    // vfunc 0x78 calls it.
+    s32 fn_80123D88();
     /* 0x230 */ u8 field_0x230[0x33C - 0x230]; // not declared yet
     /* 0x33C */ s32 field_0x33c; // a state word, 0 after construction; the zora's update skips update() while it is 0xF
     // Size: unknown (only the fields above are declared)
