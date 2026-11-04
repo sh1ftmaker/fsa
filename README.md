@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-03: **29.09 %** of the code and **6,459 / 11,557** functions match. 446 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-04: **31.27 %** of the code and **7,115 / 11,557** functions match. 447 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -58,7 +58,7 @@ progress site, which goes down to single functions.
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 12.4 % of 3,573,784 bytes matched, 1,746 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 12.4 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 15.1 % of 3,573,784 bytes matched, 2,402 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 15.1 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -76,30 +76,30 @@ progress site, which goes down to single functions.
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 12.4 % of 3,573,784 bytes | 1,746 / 6,789 |
+| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 15.1 % of 3,573,784 bytes | 2,402 / 6,789 |
 | [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 |
 | [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
 | [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
 | [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **29.09 %** of 4,442,032 bytes | **6,459 / 11,557** |
+| **Whole DOL** | **31.27 %** of 4,442,032 bytes | **7,115 / 11,557** |
 
 <details><summary>Game code: 14 file groups</summary>
 
 | File group | Code matched | Functions |
 |---|--:|--:|
-| [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 12.3 % of 995,968 bytes | 375 / 1,540 |
-| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 15.6 % of 474,992 bytes | 365 / 1,332 |
-| [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 5.81 % of 437,936 bytes | 77 / 684 |
-| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 2.58 % of 373,388 bytes | 36 / 398 |
-| [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 12.8 % of 305,692 bytes | 161 / 898 |
-| [unnamed 80280000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80280000) | 21.1 % of 282,868 bytes | 236 / 505 |
-| [kk\_\* HUD refs](https://sh1ftmaker.github.io/fsa/#/game/game-kk-hud-refs) | 2.52 % of 227,908 bytes | 16 / 232 |
-| [unnamed 80300000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80300000) | 18.2 % of 210,468 bytes | 146 / 430 |
-| [unnamed 80100000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80100000) | 25.6 % of 102,260 bytes | 104 / 312 |
-| [unnamed 80400000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80400000) | 15.6 % of 91,948 bytes | 45 / 201 |
+| [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 15.3 % of 995,968 bytes | 573 / 1,540 |
+| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 17.7 % of 474,992 bytes | 478 / 1,332 |
+| [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 7.76 % of 437,936 bytes | 166 / 684 |
+| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 2.96 % of 373,388 bytes | 44 / 398 |
+| [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 15.2 % of 305,692 bytes | 225 / 898 |
+| [unnamed 80280000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80280000) | 25.4 % of 282,868 bytes | 292 / 505 |
+| [kk\_\* HUD refs](https://sh1ftmaker.github.io/fsa/#/game/game-kk-hud-refs) | 4.87 % of 227,908 bytes | 34 / 232 |
+| [unnamed 80300000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80300000) | 21.5 % of 210,468 bytes | 187 / 430 |
+| [unnamed 80100000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80100000) | 29.3 % of 102,260 bytes | 136 / 312 |
+| [unnamed 80400000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80400000) | 16.5 % of 91,948 bytes | 50 / 201 |
 | [THP](https://sh1ftmaker.github.io/fsa/#/game/game-thp) | 79.9 % of 27,704 bytes | 162 / 168 |
-| [mg\_\* minigames](https://sh1ftmaker.github.io/fsa/#/game/game-mg-minigames) | 15.3 % of 25,132 bytes | 7 / 42 |
-| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 15.0 % of 16,208 bytes | 5 / 36 |
+| [mg\_\* minigames](https://sh1ftmaker.github.io/fsa/#/game/game-mg-minigames) | 49.6 % of 25,132 bytes | 29 / 42 |
+| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 24.2 % of 16,208 bytes | 15 / 36 |
 | [linked before JSystem](https://sh1ftmaker.github.io/fsa/#/game/game-linked-before-jsystem) | 100 % of 1,312 bytes | 11 / 11 |
 
 </details>
@@ -186,8 +186,8 @@ regenerated with every merge; see [How it works](#how-it-works).
 - **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JSystem is at 3605 of 3706 functions; 52 are still in no split unit (gap agent running) and about 49 are left in split files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed. Currently 86.0 % of the split files Matching.
 - **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.9 % of the split files Matching.
 - **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
-- **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 15.3 % of the code matched.
-- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Twenty-three waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 102 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. Currently 12.3 % of the code matched.
+- **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 49.6 % of the code matched.
+- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Twenty-three waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 102 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. The Haiku grind (tools/grind.py on branch grind, script-judged) added about 650 small game functions; an Opus review fixed about 200 and dropped 12 before they landed (6459 -> 7115 functions). Currently 15.3 % of the code matched.
 - **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
 <!-- now:end -->
 
