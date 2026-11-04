@@ -901,6 +901,10 @@ void fn_802362C4(s32 player, s32 value);
 extern "C" {
 void fn_802372F8(s32 player, s32 value, bool flag);
 void fn_802382D0(s32 a, s32 b);
+// Owner: tu_8022AD64 (0x80237948, defined there). 6 units (act_eyegore, act_blade_trap, ...).
+// Tests the player object's byte 0xCAC for player index `player` (0-3) and returns
+// fn_80271068(object) when it is set; the TVec2f pointer the callers pass is not read.
+bool fn_80237948(s32 player, const JGeometry::TVec2f* pos);
 }
 bool fn_80230224(s32 player, bool flag);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
