@@ -240,7 +240,10 @@ struct GameRootSub20_801902C0 {
     /* 0x4AC */ u8 field_0x4ac[0x5F0 - 0x4AC]; // not yet known
     /* 0x5F0 */ QueuedPos mQueuedPos[2];
     /* 0x618 */ s32 mQueuedPosCount;
-    /* 0x61C */ u8 field_0x61c[0x7D0 - 0x61C]; // not yet known
+    /* 0x61C */ u8 field_0x61c[0x7A8 - 0x61C]; // not yet known
+    // SHARED-EDIT (act_opening_goal update): set to 1 through fn_801902C0()'s result.
+    /* 0x7A8 */ u8 field_0x7a8;
+    /* 0x7A9 */ u8 field_0x7a9[0x7D0 - 0x7A9]; // not yet known
 
     // SHARED-EDIT (act_ice_melted_by_four_players): the request the ICEB
     // update (act_ice_melted_by_four_players.cpp) fills at 0x7D0 when its pointer at 0x10 is NULL and
@@ -692,6 +695,9 @@ struct cls_801192AC {
 
 // game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
 extern "C" cls_801192AC* fn_8011921C();
+// Not yet written (0x801184F0, game/tu_80118384.cpp range). Called on fn_8011921C()
+// with 0 or 1 by act_opening_goal's vfunc_0x54, tu_801286C0 and tu_80139BE8.
+extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
 // game/tu_80118384.cpp (not written yet). Returns the first entry at or after
 // `from` whose actor's mActorId (0x1A0) is `actorId`, or obj->mEnd if none.
 extern "C" ActorBase_804A5770** fn_8011871C(cls_801192AC* obj, ActorBase_804A5770** from,
