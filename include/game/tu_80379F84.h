@@ -58,7 +58,10 @@ struct SaveRow_8050EC80 {
     /* 0x14 */ u8 field_0x14[0x28 - 0x14];
     // Bit stage * 4 + sub set by fn_80379FF4.
     /* 0x28 */ s32 field_0x28;
-    /* 0x2C */ u8 field_0x2c[0xC8 - 0x2C];
+    /* 0x2C */ u8 field_0x2c[0x78 - 0x2C];
+    /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
+    /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
+    /* 0x7A */ u8 field_0x7a[0xC8 - 0x7A];
 }; // Size: 0xC8
 
 extern SaveRow_8050EC80 lbl_8050EC80[];

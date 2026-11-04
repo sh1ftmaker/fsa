@@ -16,10 +16,18 @@ struct cls_80215E48 {
     /* 0x4 */ s32 mId;    // the id fn_80215B6C passes to fn_8043D874
     /* 0x8 */ s32 mKey;   // the value fn_80215E58 searches for
     /* 0xC */ u8 mFlagC;  // read by fn_80215D38; must be set
-    /* 0xD */ u8 pad_0xD[0x1];
+    /* 0xD */ u8 mFlagD;  // set by fn_80215D8C
     /* 0xE */ u8 mFlagE;  // read by fn_80215D38; must be clear
     /* 0xF */ u8 pad_0xF[0x1C - 0xF];
     /* 0x1C */ u8 pad_0x1C[0x24 - 0x1C]; // the stopwatch (cls_801ED3DC) starts here
+    // Entry `index`'s mKey.
+    s32 fn_80215E48(s32 index);
+    // Once entry `index`'s stopwatch has stopped (and not at its 2 minute
+    // limit), copies its seconds and centis into the save row and calls
+    // fn_802D7844(1, mId) on the view.
+    void fn_80215BCC(s32 index);
+    // Sets entry `index`'s mFlagD unless it or mFlagC is already set.
+    void fn_80215D8C(s32 index);
     // Index of the first entry whose mKey is `key`, or -1 when none has it.
     s32 fn_80215E58(s32 key);
     // True when every entry has mFlagC set and mFlagE clear (true for an
@@ -27,6 +35,13 @@ struct cls_80215E48 {
     bool fn_80215D38();
     // Calls fn_80215E18 on every entry's mId, in order.
     void fn_80215DB8();
+    // Number of entries whose mKey is not negative.
+    s32 fn_80215E98();
+    // Starts every entry's stopwatch (cls_801ED3DC) with its mId and mKey.
+    void fn_80215ECC();
+    // True when some entry with a negative mKey has its stopwatch at the
+    // 2 minute limit.
+    bool fn_8021606C();
     // Zeroes every entry's stopwatch and leaves the watches running.
     void fn_8021600C();
     // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its
