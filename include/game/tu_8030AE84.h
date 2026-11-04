@@ -29,6 +29,11 @@ public:
     // Called from game/tu_8023FBF0.cpp with the position copied to the stack
     // as an 8-byte x/y pair, so it takes a TVec2f pointer.
     bool fn_8030B084(s32 index, const JGeometry::TVec2f* pos);
+    // Mangled fn_8030B110__12cls_804AA8D8FlPCQ29JGeometry8TVec2<f> (this
+    // unit). The positive form of fn_8030B084: the player must be active and
+    // index must be the one at 0x28C; indices below 8 pass outright, others
+    // must lie inside the bounds at 0x2A0-0x2AC.
+    bool fn_8030B110(s32 index, const JGeometry::TVec2f* pos);
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
     // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
     s32 fn_8030B570(s32* outA, s32* outB);
@@ -42,7 +47,11 @@ public:
     /* 0x294 */ s32 field_0x294;
     /* 0x298 */ s32 field_0x298;
     /* 0x29C */ s32 field_0x29c;
-    /* 0x2A0 */ u8 field_0x2a0[0x2B0 - 0x2A0];
+    /* 0x2A0 */ s32 field_0x2a0; // upper x bound (fn_8030B110)
+    /* 0x2A4 */ s32 field_0x2a4; // lower x bound
+    /* 0x2A8 */ s32 field_0x2a8; // upper y bound
+    /* 0x2AC */ s32 field_0x2ac; // lower y bound
+
     /* 0x2B0 */ s32 field_0x2b0;
     /* 0x2B4 */ s32 field_0x2b4;
     /* 0x2B8 */ u16 field_0x2b8;

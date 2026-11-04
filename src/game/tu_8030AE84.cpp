@@ -36,6 +36,24 @@ bool cls_804AA8D8::fn_8030B084(s32 index, const JGeometry::TVec2f* pos) {
     return true;
 }
 
+bool cls_804AA8D8::fn_8030B110(s32 index, const JGeometry::TVec2f* pos) {
+    if (!fn_8023F264(field_0x288) || index != field_0x28c) {
+        return false;
+    }
+    if (index < 8) {
+        return true;
+    }
+    s32 x = (s32)pos->x;
+    if (x < field_0x2a4 || x > field_0x2a0) {
+        return false;
+    }
+    s32 y = (s32)pos->y;
+    if (y < field_0x2ac || y > field_0x2a8) {
+        return false;
+    }
+    return true;
+}
+
 // The deleting form (__dl__FPv when asked) is the compiler's; nothing to clean up.
 cls_804AA8D8::~cls_804AA8D8() {}
 
