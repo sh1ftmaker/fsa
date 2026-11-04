@@ -32,7 +32,7 @@ class JAISoundID; // JSystem/JAudio/Interface/JAISound.h; complete wherever fn_8
 // JKRDisposer at 0x18 and stores vtable + 0x24 there, so slots 0x24/0x28 are
 // that base's vtable header, 0x2C (fn_80457C08) is its destructor thunk
 // (this - 0x18, then the destructor) and 0x30 is the deleting destructor
-// fn_8045787C. fn_80457840 points the object at the actor's position. Layout
+// __dt__22ActorSoundObj_804578F4Fv (0x8045787C). fn_80457840 points the object at the actor's position. Layout
 // beyond the bases is opaque until that unit is done.
 class ActorSoundObj_804578F4 : public JAUSoundObject, public JKRDisposer {
 public:

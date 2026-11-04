@@ -17,3 +17,5 @@ void ActorSoundObj_804578F4::fn_80457840(JGeometry::TVec3f* pos) {
         mSoundPos = NULL;
     }
 }
+
+ActorSoundObj_804578F4::~ActorSoundObj_804578F4() {}
