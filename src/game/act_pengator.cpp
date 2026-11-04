@@ -33,7 +33,7 @@ void Pengator_804A1888::draw() {
 // FIXME: 93.01 %. What differs: (1) the (field_0x98 & 2) test's branch layout
 // (the original falls through into the y check, we branch to it), so the
 // near-check blocks shuffle; (2) the case 2 velocity stores are ordered
-// differently (0x254 reloaded, DF2C and DF24 hoisted above the stores); (3)
+// differently (0x254 reloaded, 0.3f and 5.0f hoisted above the stores); (3)
 // the tail's field_0x23c decrement goes through `this + 8` in the original
 // (addi r4, r29, 8; stw 0x234(r4)), which natural `-= 1` doesn't reproduce;
 // (4) several register choices (lbl_8053AAF8 and the zero literal swap).

@@ -13,8 +13,7 @@ RecoveryHeart_8049F4F0::~RecoveryHeart_8049F4F0() {}
 
 // The ignore list is the multi-character tags 'TOMI' and 'NULL'.
 // FIXME: 61.51 %. The original compares each id 0, 4, 5, 6, 7, 2, 3 with its own cmpwi;
-// MWCC merges 2..7 in the || chain into one subi/cmplwi range check. Literals are also
-// not yet in the original .sdata2 order (lbl_8053D044 vs @436+4).
+// MWCC merges 2..7 in the || chain into one subi/cmplwi range check.
 bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     const u32 ignoreIds[2] = {'TOMI', 'NULL'};
     s32 serial = mSerial;
@@ -61,8 +60,7 @@ void RecoveryHeart_8049F4F0::draw() {
 // FIXME: 96.63 %. Landing in state 1 (z <= 0) matches. From the probe in state 3 on, the
 // original stores mPos.x and reloads it for the probe at 0x24(r1) (ours keeps it in f0 and
 // uses 0x34(r1)), stores probe.y twice (mPos.y, then mPos.y + 4), and its sway add result
-// is in f1, not f0; three instructions are missing. The literals are also not yet in the
-// original .sdata2 order (lbl_8053D04C vs @669).
+// is in f1, not f0; three instructions are missing.
 void RecoveryHeart_8049F4F0::update() {
     JGeometry::TVec2f basePos(mPos.x, mPos.y);
     if (field_0x240 == 0) {
