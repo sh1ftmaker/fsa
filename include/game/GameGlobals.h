@@ -61,6 +61,11 @@ struct GameRootSub04_801F856C {
     // and calls freeAll on it (becomeCurrentHeap / freeAll calls on r3).
     /* 0x30 */ JKRHeap* field_0x30;
 
+    // 0x80139BE8 (game/tu_80139BE8.cpp, not written yet). Calls fn_801F857C on
+    // mActorManager, clears lbl_8053ACD0 and the four bytes at 0x235C of
+    // lbl_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
+    void fn_80139BE8();
+
     // 0x80139C84 (game/tu_80139BE8.cpp, not written yet). Calls
     // fn_8043DC98 on lbl_8053AED0, then draws field_0x2c when it is set.
     void fn_80139C84();
@@ -725,6 +730,10 @@ extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
 // game/tu_80118384.cpp (not written yet). Called with fn_8011921C() by
 // tu_801286C0's update (cases 3 and 5/7 of its state switch).
 extern "C" void fn_801183BC(cls_801192AC* obj);
+// game/tu_80118384.cpp (0x801184F0, 0x1C0 bytes, not written yet). Called with
+// fn_8011921C() and a flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal);
+// the flag is tested as a byte.
+extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
 class ActorBase_804A5770;
 // game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
 // serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
@@ -1048,5 +1057,15 @@ bool fn_80239F10();
 void fn_802B3A48(ActorBase_804A5770* actor);
 void fn_801367E0(GameRoot_8049EF20* root, s32 value);
 }
+
+// game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
+// arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
+extern "C" void fn_8030361C();
+// game/tu_8037DF68.cpp (0x8038D454, 0x54 bytes, not written yet). Takes no
+// arguments; called by game/tu_80139BE8.cpp (fn_80139BE8) and tu_802D39B8.
+extern "C" void fn_8038D454();
+// .sbss byte at 0x8053ACD0, owned by game/tu_80301CD0.cpp (its split starts
+// there). Read with lbz by that unit; stored as 0 by game/tu_80139BE8.cpp.
+extern u8 lbl_8053ACD0;
 
 #endif

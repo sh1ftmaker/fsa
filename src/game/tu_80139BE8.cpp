@@ -1,7 +1,20 @@
+#include "game/ActorManager.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Message.h"
 #include "game/act/tu_8044B80C.h"
+
+void GameRootSub04_801F856C::fn_80139BE8() {
+    mActorManager->fn_801F857C();
+    lbl_8053ACD0 = 0;
+    fn_8030361C();
+    fn_8038D454();
+    fn_801184F0(fn_8011921C(), true);
+    lbl_8053AB10->field_0x20->field_0x235c[0] = 0;
+    lbl_8053AB10->field_0x20->field_0x235c[1] = 0;
+    lbl_8053AB10->field_0x20->field_0x235c[2] = 0;
+    lbl_8053AB10->field_0x20->field_0x235c[3] = 0;
+}
 
 extern "C" void fn_80139C5C() {
     lbl_8053AED0->fn_8043D5F0();
