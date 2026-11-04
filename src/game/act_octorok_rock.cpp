@@ -8,8 +8,8 @@
 
 // .data: the four facing directions' step order (lbl_8049F548), and the
 // frame table indexed by facing * 8 + step (lbl_8049F558).
-static const s32 lbl_8049F548[4] = {0, 2, 1, 3};
-static const s32 lbl_8049F558[32] = {
+static s32 lbl_8049F548[4] = {0, 2, 1, 3};
+static s32 lbl_8049F558[32] = {
     8,  9,  8,  9,  4,  8,  4,  0,  //
     10, 11, 10, 11, 5,  11, 5,  0,  //
     12, 13, 12, 13, 6,  12, 6,  0,  //
@@ -26,7 +26,7 @@ void OctorokRock_8049F5D8::draw() {
     case 0:
         if (field_0x4 == 8) {
             GameView_804A9950* view = fn_802D6A9C();
-            // FIXME: 94.4 %. The original loads the four words of the view's box
+            // FIXME: 94.3 %. The original loads the four words of the view's box
             // (0xCC-0xDB) into registers before storing them to the stack copy;
             // here each word is loaded and stored in turn, and the position's
             // scheduling follows from that.
@@ -62,24 +62,18 @@ void OctorokRock_8049F5D8::draw() {
     }
 }
 
-// The original compares field_0x90 with cmpwi in most of these tests (state 0,
-// the 1/5 test, the final switch) and with cmplwi in others (states 1, 2, 4).
-// The static_cast<s32> spellings keep the signed compares. `facing` is declared
-// before `blocked` and assigned after the position step: that puts the two in
-// the original's registers (r30, r29).
 void OctorokRock_8049F5D8::update() {
     s32 facing;
     bool blocked = false;
     mPos += field_0x3c;
     facing = field_0x98;
-    // FIXME: 94.3 %. The tail's `li 0` and the final switch's compares sit in
-    // other places than the original's (a `mAlive = false` store reuses a
-    // constant the original hoists to the top of the tail), and the sprite
-    // target's register (r29 here, r30 in the original).
+    // FIXME: 94.2 %. The original compares field_0x90 signed (cmpwi) in the
+    // state 0 tests and the final switch, unsigned elsewhere; the tail's `li 0`
+    // and the sprite target's register (r29 here, r30) differ too.
     switch (field_0x230) {
     case 0:
         if (field_0x23c == 0) {
-            if (static_cast<s32>(field_0x90) == 5) {
+            if (field_0x90 == 5) {
                 mAlive = false;
                 break;
             }
@@ -99,7 +93,7 @@ void OctorokRock_8049F5D8::update() {
             fn_8013CC50(field_0x4, &mPos, 0x24A, 0, 1, NULL, NULL, true, 1.0f);
             fn_8013CC50(field_0x4, &mPos, 0x24B, 0, 1, NULL, NULL, true, 1.0f);
             mAlive = false;
-        } else if (static_cast<s32>(field_0x90) != 1 && static_cast<s32>(field_0x90) != 5) {
+        } else if (field_0x90 != 1 && field_0x90 != 5) {
             fn_8013CC50(field_0x4, &mPos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
             mAlive = false;
         } else {
@@ -223,7 +217,7 @@ void OctorokRock_8049F5D8::update() {
             mAlive = false;
         }
     }
-    switch (static_cast<s32>(field_0x90)) {
+    switch (field_0x90) {
     case 2:
     case 4:
         if (field_0x238 == 0) {

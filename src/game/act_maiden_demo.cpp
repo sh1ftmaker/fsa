@@ -91,7 +91,7 @@ s32 fn_801123C8(s32 kind, s32 mode) {
     }
 }
 
-void cls_8049D740::fn_801133C0() {
+void cls_8049D740::init() {
     cls_8049D140::init();
     mMode = field_0x90 & 0x1F;
     mAnim.fn_801D2608(lbl_8049D710, 12);
