@@ -12,3 +12,13 @@ void cls_804A5418::update() {
         EnemyBase_804A4808::update();
     }
 }
+
+void cls_804A5418::draw() {
+    if ((mFlags & 0x8000) == 0) {
+        s32 arg = 0;
+        if (mState == 2) {
+            arg = (s32)field_0x2a8;
+        }
+        fn_80210630((mFlags >> 13) & 1, 0, 0, arg);
+    }
+}
