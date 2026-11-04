@@ -26,3 +26,6 @@ void ZoraEnemy_804A3D7C::vfunc_0xA4() {
 cls_804AC3E0::cls_804AC3E0() {
     field_0x2b8 = 0;
 }
+
+cls_804AC3E0::~cls_804AC3E0() {
+}

@@ -11,6 +11,10 @@ class cls_804AC3E0 : public ZoraEnemy_804A3D7C {
 public:
     cls_804AC3E0();
 
+    // 0x8033F9A0: vtable slot 0x8. r4 = the delete flag; > 0 frees the object
+    // (__dl__FPv). ZoraEnemy's destructor (0x801BB30C) runs first.
+    virtual ~cls_804AC3E0();
+
     // 0x2B4: nothing here in the constructors; ZoraEnemy's last field ends at 0x2B4.
     /* 0x2B4 */ u8 field_0x2b4[0x2B8 - 0x2B4];
     /* 0x2B8 */ s32 field_0x2b8; // the constructor stores 0
