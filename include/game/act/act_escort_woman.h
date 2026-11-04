@@ -37,6 +37,11 @@ public:
     // fn_80124AD8: returns the base's vfunc_0x6C(9), as the zora's 0x88 does.
     /* 0x94 */ virtual s32 vfunc_0x94();
 
+    // fn_80124B08: when the base's fn_80122834 is true and field_0x33c is
+    // below 10, calls the vtable's 0x6C slot with 10. Not known whether it
+    // is a vtable slot itself.
+    void fn_80124B08();
+
     /* 0x340 */ u8 field_0x340[0x35C - 0x340]; // not declared yet
     /* 0x35C */ s32 field_0x35c; // the low byte of field_0x90, set by vfunc_0x64
     /* 0x360 */ u8 field_0x360[0x3CC - 0x360]; // not declared yet

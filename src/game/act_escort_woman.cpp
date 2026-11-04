@@ -16,6 +16,12 @@ s32 EscortWoman_8049E1D0::vfunc_0x94() {
     return vfunc_0x6C(9);
 }
 
+void EscortWoman_8049E1D0::fn_80124B08() {
+    if (fn_80122834() && field_0x33c < 10) {
+        vfunc_0x6C(10);
+    }
+}
+
 s32 EscortWoman_8049E1D0::vfunc_0x88() {
     return vfunc_0x6C(5);
 }

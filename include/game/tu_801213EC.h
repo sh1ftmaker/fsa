@@ -37,6 +37,9 @@ public:
     // (0x344) is in range and the test passes, else 0. The escort woman's
     // vfunc 0x78 calls it.
     s32 fn_80123D88();
+    // fn_80122834 (tu_801213EC): returns true when the word at 0x108 and the
+    // byte at 0x333 are both zero. The escort woman's fn_80124B08 calls it.
+    bool fn_80122834();
     /* 0x230 */ u8 field_0x230[0x33C - 0x230]; // not declared yet
     /* 0x33C */ s32 field_0x33c; // a state word, 0 after construction; the zora's update skips update() while it is 0xF
     // Size: unknown (only the fields above are declared)
