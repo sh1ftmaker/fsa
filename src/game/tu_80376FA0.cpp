@@ -25,6 +25,32 @@ static inline void inflate(JGeometry::TBox2f& box, f32 d) {
 
 cls_804AE7D8::~cls_804AE7D8() {}
 
+// Whether one of the player's eight probe points (fn_8022E088) lies in the
+// actor's box; only players on the actor's layer count.
+inline bool cls_804AE7D8::touchesPlayer(s32 player, JGeometry::TVec3f& point) {
+    s32 layer = field_0x4;
+    s32 playerLayer = fn_8023DE58(player);
+    if (playerLayer != layer) {
+        return false;
+    }
+    f32 left = mBox.i.x + mPos.x;
+    f32 right = mBox.f.x + mPos.x;
+    f32 top = mBox.i.y + mPos.y;
+    f32 bottom = mBox.f.y + mPos.y;
+    for (s32 k = 0; k < 8; k++) {
+        fn_8022E088(player, k, &point);
+        point.z = 0.0f;
+        bool inside = false;
+        if (point.x >= left && point.y >= top && point.x < right && point.y < bottom) {
+            inside = true;
+        }
+        if (inside) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // FIXME: 99.81 %. The two names are .rodata string literals in the original
 // (lbl_80475188, lbl_80475198); ours are literals in the .o, so only their
 // relocation names differ. Code is identical.
@@ -51,22 +77,18 @@ void cls_804AE7D8::draw() {
     }
 }
 
-// FIXME: 15.9 %. The box copy from mBox keeps its four floats in f3, f2, f1, f4
-// in the original and adds mPos to them there; ours reloads them, so the
-// adds and stores are scheduled and register-allocated differently. The
-// state dispatch also lays out its blocks differently (the state 1 block
-// starts at another offset), so every later hunk shifts.
+// FIXME: 98.7 %. Float registers of the box sums differ (here and in
+// touchesPlayer, whose layer, counter and sums sit in r30/f27-f30 instead of
+// r28/f27-f30 in another order), the field_0x260 < 10 test branches to the
+// increment instead of falling into it, and the float literals are not split
+// into this unit yet.
 void cls_804AE7D8::update() {
     // Stack slots: the box (highest), then the position and the probe
     // result, as the original's frame lays them out.
-    JGeometry::TBox2f box;
+    JGeometry::TBox2f box(mBox);
     JGeometry::TVec3f pos;
     JGeometry::TVec3f tmp;
 
-    box.i.x = mBox.i.x;
-    box.i.y = mBox.i.y;
-    box.f.x = mBox.f.x;
-    box.f.y = mBox.f.y;
     box.i.x += mPos.x;
     box.f.x += mPos.x;
     box.i.y += mPos.y;
@@ -82,147 +104,135 @@ void cls_804AE7D8::update() {
             return;
         }
 
-        f32 margin;
+        f32 step;
         f32 spawnDist = PSVECDistance(&mPos, &mSpawnPos);
         if (spawnDist < 12.0f) {
-            margin = 11.9f;
+            step = 11.9f;
         } else if (spawnDist >= 44.1f) {
-            margin = 15.9f;
+            step = 19.9f;
         } else {
-            margin = 19.9f;
+            step = 15.9f;
         }
 
-        if (PSVECDistance(&mPos, &field_0x248) >= margin) {
-            // Arrived: move by field_0x3c, count down field_0x254, and when
-            // the offset is zero stop the emitter.
-            mPos += field_0x3c;
-            if (field_0x254 != 0) {
-                if (field_0x254 > 0) {
-                    field_0x254--;
-                }
-                return;
+        if (PSVECDistance(&mPos, &field_0x248) >= step) {
+            // A full step from where it started: snap to the spawn point when
+            // within 11.5 of it on an axis, else step back toward the start.
+            if (mPos.x <= mSpawnPos.x + 11.5f && mPos.x >= mSpawnPos.x - 11.5f) {
+                mPos.x = mSpawnPos.x;
+            } else {
+                mPos.x = fn_8033D4AC(mPos.x, field_0x248.x, step);
             }
-            if (field_0x3c.isZero()) {
-                if (mEmitter230 != NULL) {
+            if (mPos.y <= mSpawnPos.y + 11.5f && mPos.y >= mSpawnPos.y - 11.5f) {
+                mPos.y = mSpawnPos.y;
+            } else {
+                mPos.y = fn_8033D4AC(mPos.y, field_0x248.y, step);
+            }
+
+            field_0x248 = mPos;
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.z = 0.0f;
+            if (mEmitter230 != NULL) {
+                fn_801EE434(mEmitter230);
+                mEmitter230 = NULL;
+            }
+            field_0x254 = 8;
+            mPrevPos = mPos;
+            if (PSVECDistance(&mPos, &mSpawnPos) >= 63.9) {
+                vfunc_0x30(0xFF, true);
+
+                // The same offset loop as init().
+                f32 x = mPos.x;
+                x -= 24.0f;
+                f32 y = mPos.y;
+                f32 z = mPos.z;
+                s32 j;
+                for (s32 i = 0; i < 4; i++) {
+                    pos.x = x;
+                    pos.y = y;
+                    pos.z = z;
+                    const f32* offset = lbl_80475178;
+                    for (j = 0; j < 4; j++) {
+                        pos.y = y + *offset;
+                        lbl_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
+                        offset++;
+                    }
+                    x += 16.0f;
+                }
+                field_0x244 = 1;
+                field_0x25c = 50;
+                field_0x260 = 0;
+
+                if (mEmitter230 == NULL) {
+                    mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x542, 0, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CB44(mEmitter230, &mPos, -1, -1, true);
+                }
+                if (mEmitter234 == NULL) {
+                    mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0xb7, 0, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CB44(mEmitter234, &mPos, -1, -1, true);
+                }
+                if (mEmitter238 == NULL) {
+                    mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0xb8, 0, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CB44(mEmitter238, &mPos, 0, 0, true);
+                }
+                if (mEmitter23c == NULL) {
+                    mEmitter23c = fn_8013CC50(field_0x4, &mPos, 0xb9, 0, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CB44(mEmitter23c, &mPos, 0, 0, true);
+                }
+                if (mEmitter240 == NULL) {
+                    mEmitter240 = fn_8013CC50(field_0x4, &mPos, 0xba, 0, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CB44(mEmitter240, &mPos, 0, 0, true);
+                }
+                fn_801F0E34(0x50065, 0);
+                if (field_0x265 == 0) {
+                    fn_802D6A9C()->fn_802D7584(field_0x16c, (u8)field_0x258);
+                }
+            }
+        } else {
+            // Moving: step by field_0x3c, wait out field_0x254, then, while
+            // standing still, probe for the next push direction.
+            mPos += field_0x3c;
+            if (field_0x254 > 0) {
+                field_0x254--;
+            } else if (field_0x254 == 0) {
+                if (field_0x3c.isZero()) {
+                    if (fn_80239108(mSerial) >= 4 && PSVECDistance(&mPos, &mSpawnPos) < 63.9f) {
+                        if (field_0x260 < 10) {
+                            field_0x260++;
+                        } else {
+                            s32 index = fn_80238BC4(mSerial);
+                            if (field_0x258 == 0) {
+                                field_0x258 = index + 1;
+                            } else if (index + 1 != field_0x258) {
+                                return;
+                            }
+                            if (index < 0 || index >= 4) {
+                                return;
+                            }
+                            fn_80238E08(mSerial);
+                            field_0x3c.x = lbl_80475148[index][0];
+                            field_0x3c.y = lbl_80475148[index][1];
+                            field_0x3c.z = lbl_80475148[index][2];
+                            field_0x248.set(mPos);
+                            fn_801F0E34(0x30004, 0);
+                            mPos += field_0x3c;
+                            if (index == 0) {
+                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31a, 1, 1, NULL, NULL, true, 1.0f);
+                            } else if (index == 1) {
+                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31b, 1, 1, NULL, NULL, true, 1.0f);
+                            } else if (index == 2) {
+                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31c, 1, 1, NULL, NULL, true, 1.0f);
+                            } else {
+                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
+                            }
+                        }
+                    }
+                } else if (mEmitter230 != NULL) {
                     fn_8013CB44(mEmitter230, &mPos, 0, 0, true);
                 }
-                return;
             }
-            if (fn_80239108(mSerial) < 4) {
-                return;
-            }
-            if (PSVECDistance(&mPos, &mSpawnPos) >= 63.9f) {
-                return;
-            }
-            if (field_0x260 < 10) {
-                field_0x260++;
-                return;
-            }
-            s32 index = fn_80238BC4(mSerial);
-            if (field_0x258 == 0) {
-                field_0x258 = index + 1;
-            } else if (index + 1 != field_0x258) {
-                return;
-            }
-            if (index < 0 || index >= 4) {
-                return;
-            }
-            fn_80238E08(mSerial);
-            field_0x3c.x = lbl_80475148[index][0];
-            field_0x3c.y = lbl_80475148[index][1];
-            field_0x3c.z = lbl_80475148[index][2];
-            field_0x248 = mPos;
-            fn_801F0E34(0x30004, 0);
-            mPos += field_0x3c;
-            if (index == 0) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31a, 1, 1, NULL, NULL, true, 1.0f);
-            } else if (index == 1) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31b, 1, 1, NULL, NULL, true, 1.0f);
-            } else if (index == 2) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31c, 1, 1, NULL, NULL, true, 1.0f);
-            } else {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
-            }
-            return;
         }
-
-        // Still on the way: approach the spawn point's box on x and y.
-        f32 sx = mSpawnPos.x;
-        if (mPos.x > sx + 11.5f && mPos.x < sx - 11.5f) {
-            mPos.x = sx;
-        } else {
-            mPos.x = fn_8033D4AC(mPos.x, field_0x248.x, margin);
-        }
-        f32 sy = mSpawnPos.y;
-        if (mPos.y > sy + 11.5f && mPos.y < sy - 11.5f) {
-            mPos.y = sy;
-        } else {
-            mPos.y = fn_8033D4AC(mPos.y, field_0x248.y, margin);
-        }
-
-        field_0x248 = mPos;
-        field_0x3c.x = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.z = 0.0f;
-        if (mEmitter230 != NULL) {
-            fn_801EE434(mEmitter230);
-            mEmitter230 = NULL;
-        }
-        field_0x254 = 8;
-        mPrevPos = mPos;
-        if (PSVECDistance(&mPos, &mSpawnPos) >= 63.9) {
-            return;
-        }
-        vfunc_0x30(0xFF, true);
-
-        // The same offset loop as init().
-        f32 x = mPos.x;
-        x -= 24.0f;
-        f32 y = mPos.y;
-        f32 z = mPos.z;
-        s32 j;
-        for (s32 i = 0; i < 4; i++) {
-            pos.x = x;
-            pos.y = y;
-            pos.z = z;
-            const f32* offset = lbl_80475178;
-            for (j = 0; j < 4; j++) {
-                pos.y = y + *offset;
-                lbl_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
-                offset++;
-            }
-            x += 16.0f;
-        }
-        field_0x244 = 1;
-        field_0x25c = 50;
-        field_0x260 = 0;
-
-        if (mEmitter230 == NULL) {
-            mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x542, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CB44(mEmitter230, &mPos, -1, -1, true);
-        }
-        if (mEmitter234 == NULL) {
-            mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0xb7, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CB44(mEmitter234, &mPos, -1, -1, true);
-        }
-        if (mEmitter238 == NULL) {
-            mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0xb8, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CB44(mEmitter238, &mPos, 0, 0, true);
-        }
-        if (mEmitter23c == NULL) {
-            mEmitter23c = fn_8013CC50(field_0x4, &mPos, 0xb9, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CB44(mEmitter23c, &mPos, 0, 0, true);
-        }
-        if (mEmitter240 == NULL) {
-            mEmitter240 = fn_8013CC50(field_0x4, &mPos, 0xba, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CB44(mEmitter240, &mPos, 0, 0, true);
-        }
-        fn_801F0E34(0x50065, 0);
-        if (field_0x265 != 0) {
-            return;
-        }
-        fn_802D6A9C()->fn_802D7584(field_0x16c, (u8)field_0x258);
-        return;
+        break;
     }
     case 1: {
         if (field_0x25c != 0) {
@@ -232,22 +242,7 @@ void cls_804AE7D8::update() {
             }
         }
         for (s32 player = 0; player < 4; player++) {
-            bool hit = false;
-            if (fn_8023DE58(player) == field_0x4) {
-                f32 left = mBox.i.x + mPos.x;
-                f32 bottom = mBox.i.y + mPos.y;
-                f32 right = mBox.f.x + mPos.x;
-                f32 top = mBox.f.y + mPos.y;
-                for (s32 k = 0; k < 8; k++) {
-                    fn_8022E088(player, k, &tmp);
-                    tmp.z = 0.0f;
-                    if (tmp.x < left && tmp.y < bottom && tmp.x < right && tmp.y < top) {
-                        hit = true;
-                        break;
-                    }
-                }
-            }
-            if (hit) {
+            if (touchesPlayer(player, tmp)) {
                 fn_8022DF48(player);
             }
         }
