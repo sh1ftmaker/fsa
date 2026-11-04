@@ -25,6 +25,10 @@ public:
     // no player or actor hit mask is reported (EnemyBase's vfunc_0x68 is
     // the bitmask hook).
     /* 0x68 */ virtual u8 vfunc_0x68();
+    // Vtable slot 0x60 (0x80340658, in act_zora_lotus.cpp): returns false,
+    // so no actor hit is reported (EnemyBase's vfunc_0x60 is the actor-hit
+    // check that ENEMY_FLAG_HIT_ACTOR records).
+    /* 0x60 */ virtual bool vfunc_0x60();
 
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
     // by the destructor (0x801BB30C), which passes it to fn_801EE434.
