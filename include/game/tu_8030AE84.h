@@ -16,12 +16,25 @@ public:
     cls_804AA8D8();
     /* 0x08 */ virtual ~cls_804AA8D8();
 
+    // Mangled fn_8030BD3C__12cls_804AA8D8Fl (game/tu_8030AE84.cpp): stores the
+    // player, then the callees below.
+    void fn_8030BD3C(s32 player);
+    // Code in this unit, not yet written (mangled fn_8030B97C__12cls_804AA8D8Fv).
+    void fn_8030B97C();
+    // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
+    // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
+    s32 fn_8030B570(s32* outA, s32* outB);
+
     /* 0x004 */ u8 field_0x4[0x284 - 0x4];
     /* 0x284 */ u8 field_0x284;
     /* 0x285 */ u8 field_0x285[0x288 - 0x285];
     /* 0x288 */ s32 field_0x288;
     /* 0x28C */ s32 field_0x28c;
-    /* 0x290 */ u8 field_0x290[0x2B0 - 0x290];
+    /* 0x290 */ s32 field_0x290;
+    /* 0x294 */ s32 field_0x294;
+    /* 0x298 */ s32 field_0x298;
+    /* 0x29C */ s32 field_0x29c;
+    /* 0x2A0 */ u8 field_0x2a0[0x2B0 - 0x2A0];
     /* 0x2B0 */ s32 field_0x2b0;
     /* 0x2B4 */ s32 field_0x2b4;
     /* 0x2B8 */ u16 field_0x2b8;
