@@ -29,9 +29,12 @@ public:
     // sprite at mPos with a 3x3 scale matrix (2.0, or 1.0 while field_0x23c
     // is 0), unless field_0x90 is 7 or the layer (field_0x4) is 8 or more.
     void fn_80172BC8();
+    // The spawn type, the low byte of field_0x90 (compared signed: cmpwi).
+    s32 getType() const { return field_0x90 & 0xFF; }
 
     /* 0x230 */ s32 field_0x230; // set to 2 by vfunc_0x44
-    /* 0x234 */ u8 field_0x234[0x238 - 0x234];
+    /* 0x234 */ u8 field_0x234; // draw() passes it as the sprite params' byte 1
+    /* 0x235 */ u8 field_0x235[0x238 - 0x235];
     /* 0x238 */ s32 field_0x238; // serial of the actor the destructor clears
     /* 0x23C */ s32 field_0x23c; // vfunc_0x44 tests it against 0
     /* 0x240 */ s32 field_0x240; // cleared by vfunc_0x44

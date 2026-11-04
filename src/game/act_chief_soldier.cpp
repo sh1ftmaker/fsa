@@ -6,8 +6,8 @@
 #include "game/act/act_chief_soldier.h"
 
 ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
-    if ((s32)(field_0x90 & 0xFF) != 7 && (s32)(field_0x90 & 0xFF) != 8) {
-        if ((s32)(field_0x90 & 0xFF) != 6 && lbl_8053AAF8->field_0x4c != 9 &&
+    if (getType() != 7 && getType() != 8) {
+        if (getType() != 6 && lbl_8053AAF8->field_0x4c != 9 &&
             lbl_8053AAF8->field_0x4c != 0xB && mLife != 0) {
             lbl_8053AAF8->fn_80138B7C();
         }
@@ -22,7 +22,7 @@ ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
 }
 
 void ChiefSoldier_804A0B90::vfunc_0x24() {
-    if ((s32)(field_0x90 & 0xFF) == 6) {
+    if (getType() == 6) {
         field_0x18c = 0;
         fn_801F856C()->fn_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
     }
@@ -49,11 +49,11 @@ void ChiefSoldier_804A0B90::draw() {
     mtx[1][3] = 0.0f;
     mtx[2][3] = 0.0f;
     if (lbl_8053AB60 != 1) {
-        if ((s32)(field_0x90 & 0xFF) == 7 || (s32)(field_0x90 & 0xFF) == 8) {
+        if (getType() == 7 || getType() == 8) {
             fn_80172BC8();
         } else {
             s32 hasMtx = 0;
-            params.field_0x0[1] = field_0x234[0];
+            params.field_0x0[1] = field_0x234;
             if (field_0x230 == 6 && field_0x264 >= 3) {
                 params.field_0x30 = 0x11;
             }
@@ -69,7 +69,7 @@ void ChiefSoldier_804A0B90::draw() {
                 pos.set(mPos);
                 pos.x += box.i.x;
                 pos.y += box.i.y;
-                if ((s32)(field_0x90 & 0xFF) != 6) {
+                if (getType() != 6) {
                     fn_801EF574("enemy_gc_sob.bin", field_0x280 + 0x226, &pos, &params);
                 }
                 fn_803075AC(mSerial, field_0x4, &mPos, field_0x280 + 0x318, hasMtx, 2, -1, 0, 0, 0);
@@ -116,7 +116,7 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
         }
         field_0x230 = 2;
     }
-    if ((s32)(field_0x90 & 0xFF) != 7 && (s32)(field_0x90 & 0xFF) != 8 && mLife <= 0) {
+    if (getType() != 7 && getType() != 8 && mLife <= 0) {
         s32 serial = field_0x238;
         if (serial >= 0) {
             ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);

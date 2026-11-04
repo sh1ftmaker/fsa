@@ -14,8 +14,27 @@ struct EndingStep_804AD460 {
     s32 time;
 };
 
-// Eleven sequence tables, indexed by fn_8035C15C's argument (.data).
-extern EndingStep_804AD460* lbl_804AD460[11];
+// The sequence tables (.rodata), each ended by {-1, -1}.
+static const EndingStep_804AD460 lbl_804724F8[] = {{0, 8}, {1, 8}, {2, 40}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472518[] = {{0, 9}, {1, 9}, {2, 9}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472538[] = {{3, 9}, {4, 9}, {5, 9}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472558[] = {{0, 8}, {3, 8}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472570[] = {{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7},
+                                                   {5, 7}, {6, 7}, {7, 7}, {-1, -1}};
+static const EndingStep_804AD460 lbl_804725B8[] = {{8, 7},  {9, 7},  {10, 7}, {11, 7}, {12, 7},
+                                                   {13, 7}, {14, 7}, {15, 7}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472600[] = {{16, 7}, {17, 7}, {18, 7}, {19, 7}, {20, 7},
+                                                   {21, 7}, {22, 7}, {23, 7}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472648[] = {{0, 9}, {1, 9}, {2, 9}, {3, 9}, {4, 9}, {5, 9}, {-1, -1}};
+static const EndingStep_804AD460 lbl_80472680[] = {{14, 9}, {15, 9}, {16, 9}, {17, 9}, {18, 9}, {19, 9}, {-1, -1}};
+static const EndingStep_804AD460 lbl_804726B8[] = {{14, 16}, {-1, -1}};
+static const EndingStep_804AD460 lbl_804726C8[] = {{0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1}, {-1, -1}};
+
+// The sequence tables by fn_8035C15C's argument (.data).
+const EndingStep_804AD460* lbl_804AD460[11] = {
+    lbl_804724F8, lbl_80472518, lbl_80472538, lbl_80472558, lbl_80472570, lbl_804725B8,
+    lbl_80472600, lbl_80472648, lbl_80472680, lbl_804726B8, lbl_804726C8,
+};
 
 EnemyForEndingControl_804AD48C::~EnemyForEndingControl_804AD48C() {}
 
@@ -52,13 +71,13 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
 // setup flag.
 void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
     if (field_0x234 != 0) {
-        EndingPartnerView* ezld =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
-        EndingPartnerView* elnk =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x294));
+        cls_804A5958* elnk =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x294));
         if (elnk != NULL) {
             elnk->field_0x238 = 1;
         }
@@ -83,8 +102,8 @@ void EnemyForEndingControl_804AD48C::fn_8035B81C() {
         arrived++;
     }
     if (arrived >= 2) {
-        EndingPartnerView* ezld =
-            static_cast<EndingPartnerView*>(fn_801F856C()->fn_801F666C(field_0x278));
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
@@ -98,13 +117,13 @@ void EnemyForEndingControl_804AD48C::fn_8035BE00() {
     }
 }
 
-// Empty callback in the static table lbl_804AD3A0 (read by fn_8035C650).
-extern "C" void fn_8035BE20() {}
+// Empty phase handler in the member-pointer table lbl_804AD3A0 (read by fn_8035C650).
+void EnemyForEndingControl_804AD48C::fn_8035BE20() {}
 
 // Advances the sequencer; true once the sequence is over.
-bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
+bool cls_804A5958::fn_8035C15C(s32 seq) {
     if (field_0x244 == 0) {
-        EndingStep_804AD460* steps = lbl_804AD460[seq];
+        const EndingStep_804AD460* steps = lbl_804AD460[seq];
         if (steps[field_0x24c].value < 0) {
             return true;
         }
@@ -117,7 +136,7 @@ bool EnemyForEndingControl_804AD48C::fn_8035C15C(s32 seq) {
 
 // Restarts the sequencer on table `seq`: stores `arg` (0x250), clears the
 // timer and the step index, then runs the first step (fn_8035C15C inlined).
-void EnemyForEndingControl_804AD48C::fn_8035C1C4(s32 seq, s32 arg) {
+void cls_804A5958::fn_8035C1C4(s32 seq, s32 arg) {
     field_0x250 = arg;
     field_0x244 = 0;
     field_0x24c = 0;
