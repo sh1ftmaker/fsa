@@ -56,24 +56,40 @@ public:
     /* 0xA4 */ virtual void vfunc_0xA4();
     /* 0xA8 */ virtual void vfunc_0xA8();
     /* 0xAC */ virtual void vfunc_0xAC();
-    /* 0xB0 */ virtual void vfunc_0xB0();
+    /* 0xB0 */ virtual void vfunc_0xB0(f32* x, f32* y, s32* player); // fn_80122CAC
     /* 0xB4 */ virtual void vfunc_0xB4();
     /* 0xB8 */ virtual void vfunc_0xB8();
-    /* 0xBC */ virtual void vfunc_0xBC();
+    /* 0xBC */ virtual bool vfunc_0xBC(); // fn_801229E4: the escort's box overlaps a player's
     // fn_80121428: returns 1 (the zora overrides it, also returning 1).
     /* 0xC0 */ virtual s32 vfunc_0xC0();
     // fn_80121430: returns 0.
-    /* 0xC4 */ virtual s32 vfunc_0xC4();
+    /* 0xC4 */ virtual bool vfunc_0xC4();
     /* 0xC8 */ virtual void vfunc_0xC8(); // fn_80121BB8
     // fn_80121DB0 (tu_801213EC): clears three bytes at 0x269-0x26B, returns 1.
     // The zora's fn_801200F8 and the escort woman's vfunc 0x74 call it.
     s32 fn_80121DB0();
+    // fn_801216D0 (tu_801213EC): the index of the player (0-3) whose fn_8023ECF0 is `player`, else -1.
+    s32 fn_801216D0(s32 player);
+    // fn_80121764 (tu_801213EC): when field_0x332 is set, kills the life-meter actors whose serials
+    // are in field_0x364 and clears the entries.
+    void fn_80121764();
+    // fn_80121ABC (tu_801213EC): spawns field_0x360 life-meter actors ('LIMT') in a row at the
+    // escort, hidden, and stores their serials in field_0x364.
+    void fn_80121ABC();
     // fn_80121D68 (tu_801213EC): fills mRail from the escort's position; returns 1.
     s32 fn_80121D68();
     // fn_80121DC8 (tu_801213EC): the xy distance from the player's position to the escort's.
     f32 fn_80121DC8(s32 player);
+    // fn_80121E40 (tu_801213EC): eases field_0x3c toward zero on the axis field_0x98 selects, pulls
+    // its z down by 0.2, moves mPos by it; true (and z = 0) once mPos.z is at or below 0.
+    bool fn_80121E40();
     // fn_80121F34 (tu_801213EC): sets field_0x3c by field_0x98 (0-3: an axis, 2.5 either way).
     void fn_80121F34();
+    // fn_80121FA8, fn_8012202C, fn_801220C4 (tu_801213EC): an effect (0x33A) 24 units below the
+    // escort and a sound; fn_8012202C also starts animation 9.
+    void fn_80121FA8();
+    void fn_8012202C();
+    void fn_801220C4();
     // fn_801227D4 / fn_80122804 (tu_801213EC): count a frame counter up; true (and reset) at 90 / 15.
     bool fn_801227D4();
     bool fn_80122804();
