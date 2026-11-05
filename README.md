@@ -48,7 +48,7 @@ zeldaret/tp and KATAM.
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-05: **34.65 %** of the code and **8,319 / 11,557** functions match. 449 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+As of 2026-11-05: **35.15 %** of the code and **8,338 / 11,557** functions match. 449 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 The whole DOL by library: tile area is bytes of code, the fill is the share
@@ -58,7 +58,7 @@ progress site, which goes down to single functions.
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 19.3 % of 3,573,784 bytes matched, 3,606 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 19.3 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 20.0 % of 3,573,784 bytes matched, 3,625 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 20.0 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -76,12 +76,12 @@ progress site, which goes down to single functions.
 <!-- regions:start -->
 | Region | Code matched | Functions |
 |---|--:|--:|
-| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 19.3 % of 3,573,784 bytes | 3,606 / 6,789 |
+| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 20.0 % of 3,573,784 bytes | 3,625 / 6,789 |
 | [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 |
 | [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
 | [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
 | [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **34.65 %** of 4,442,032 bytes | **8,319 / 11,557** |
+| **Whole DOL** | **35.15 %** of 4,442,032 bytes | **8,338 / 11,557** |
 
 <details><summary>Game code: 14 file groups</summary>
 
@@ -90,7 +90,7 @@ progress site, which goes down to single functions.
 | [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 15.9 % of 995,968 bytes | 644 / 1,540 |
 | [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 24.0 % of 474,992 bytes | 797 / 1,332 |
 | [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 13.1 % of 437,936 bytes | 296 / 684 |
-| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 6.45 % of 373,388 bytes | 135 / 398 |
+| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 12.5 % of 373,388 bytes | 154 / 398 |
 | [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 31.5 % of 305,692 bytes | 598 / 898 |
 | [unnamed 80280000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80280000) | 25.6 % of 282,868 bytes | 293 / 505 |
 | [kk\_\* HUD refs](https://sh1ftmaker.github.io/fsa/#/game/game-kk-hud-refs) | 7.63 % of 227,908 bytes | 84 / 232 |
