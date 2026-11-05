@@ -77,6 +77,18 @@ static const u64 lbl_80479418[4] = {
     'Paccur01', 'Paccur03', 'Paccur05', 'Paccur07',
 };
 
+// mScreen's player-count panes (2-4 players), parts of the unsplit .rodata
+// object lbl_804795AC at their offsets there (fn_803F5410).
+static const u64 lbl_804798C0[3] = {
+    'Pnopb08', 'Pnopb12', 'Pnopb16',
+};
+static const u64 lbl_804798D8[3] = {
+    'Plibl02', 'Plibl03', 'Plibl04',
+};
+static const u64 lbl_804798F0[3] = {
+    'Plili02', 'Plili03', 'Plili04',
+};
+
 // field_0xc's player panes for 2, 3 and 4 players (field_0x1ac + 2).
 static const u64 lbl_80479920[3][4] = {
     {0x005032706C693031ull /* "P2pli01" */, 0x005032706C693032ull /* "P2pli02" */, 0, 0},
@@ -352,12 +364,12 @@ void cls_804B0F10::fn_803F3324() {
     mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
     field_0x114 = -100.0f;
     field_0x74->fn_80402E08(0.0f, field_0x114);
-    field_0x130 = -350.0f;
-    mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118 + field_0x130, field_0x124);
-    field_0x134 = -350.0f;
-    mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x11c + field_0x134, field_0x128);
-    field_0x138 = -350.0f;
-    mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x120 + field_0x138, field_0x12c);
+    field_0x130[0] = -350.0f;
+    mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118[0] + field_0x130[0], field_0x124[0]);
+    field_0x130[1] = -350.0f;
+    mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x118[1] + field_0x130[1], field_0x124[1]);
+    field_0x130[2] = -350.0f;
+    mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x118[2] + field_0x130[2], field_0x124[2]);
     field_0x144 = 400.0f;
     mScreen->search(0x004E646174613032ull /* "Ndata02" */)->move(field_0x13c + field_0x144, field_0x140);
     field_0x158 = 400.0f;
@@ -491,6 +503,73 @@ void cls_804B0F10::fn_803F38A4() {
     JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
     lbl_8053AB10->fn_8013B414(&box, true);
     fn_803F0A54();
+    lbl_8053AED8->fn_80440EE8();
+}
+
+// FIXME: 98.68. Stack slots and registers only: the original converts every
+// int / u8 to float in the one 0x8 slot (ours uses 0x8-0x18), and the loop's
+// table pointers / the lit alpha sit in other registers.
+// Draws states 2-4 (the player-count menu, mScreen): the cursor
+// 'Pscuro01' / 'Pscuro02' fades with field_0x1d0[0] (in state 4 it fades to
+// 230 over 15 frames, then by (n - 15)^2 / 225), the chosen count's pane
+// (field_0x1ac) bounces with field_0x240[0] and shows its lit version at
+// 80 * the fade; the others show the plain one.
+void cls_804B0F10::fn_803F5410() {
+    f32 alpha;
+    f32 t;
+    if (field_0x1c4 != 2) {
+        if (field_0x1d0[0] < 30) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
+        }
+        alpha = t * field_0x258;
+    } else {
+        if (field_0x1d0[0] < 15) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
+        }
+        alpha = 230.0f * t;
+    }
+    s32 bounce;
+    if (field_0x1c4 == 1 || (field_0x1c4 == 2 && field_0x240[0] <= 10)) {
+        if (field_0x240[0] < 5) {
+            bounce = field_0x240[0];
+        } else {
+            bounce = 10 - field_0x240[0];
+        }
+    } else {
+        bounce = 0;
+    }
+    f32 lit = 80.0f * t;
+    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+    for (s32 i = 0; i < 3; i++) {
+        if (i == field_0x1ac) {
+            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
+            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i] + offset);
+            if (i == 0) {
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, field_0xf0 + offset);
+            } else {
+                f32 top = mScreen->search(lbl_804798C0[0])->getBounds()->i.y;
+                f32 y = field_0xf0 + mScreen->search(lbl_804798C0[i])->getBounds()->i.y - top;
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, y);
+            }
+            mScreen->search(lbl_804798D8[i])->hide();
+            mScreen->search(lbl_804798F0[i])->show();
+            mScreen->search(lbl_804798F0[i])->setAlpha(lit);
+        } else {
+            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
+            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i]);
+            mScreen->search(lbl_804798D8[i])->show();
+            mScreen->search(lbl_804798F0[i])->hide();
+        }
+    }
+    mScreen->search('Pscuro01')->setAlpha(alpha);
+    mScreen->search('Pscuro02')->setAlpha(alpha);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 

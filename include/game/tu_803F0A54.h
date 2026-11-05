@@ -96,22 +96,18 @@ public:
     /* 0x088 */ f32 field_0x88;
     /* 0x08C */ f32 field_0x8c;
     /* 0x090 */ f32 field_0x90;
-    /* 0x094 */ u8 field_0x94[0xF8 - 0x94];
+    /* 0x094 */ u8 field_0x94[0xF0 - 0x94];
+    /* 0x0F0 */ f32 field_0xf0;    // mScreen 'Pscuro02' y
+    /* 0x0F4 */ u8 field_0xf4[0xF8 - 0xF4];
     /* 0x0F8 */ f32 field_0xf8;    // field_0xc 'Pscuro02' y
     /* 0x0FC */ f32 field_0xfc[3]; // field_0xc 'Pstab04' / 'Phanb04' / 'Prub04' y
     /* 0x108 */ f32 field_0x108; // 'Pmbabb07' x
     /* 0x10C */ f32 field_0x10c; // 'Pmbabb07' y
     /* 0x110 */ f32 field_0x110; // 'Pmbabb07' y offset
     /* 0x114 */ f32 field_0x114; // field_0x74 y offset
-    /* 0x118 */ f32 field_0x118; // 'Pnopb08' x
-    /* 0x11C */ f32 field_0x11c; // 'Pnopb12' x
-    /* 0x120 */ f32 field_0x120; // 'Pnopb16' x
-    /* 0x124 */ f32 field_0x124; // 'Pnopb08' y
-    /* 0x128 */ f32 field_0x128; // 'Pnopb12' y
-    /* 0x12C */ f32 field_0x12c; // 'Pnopb16' y
-    /* 0x130 */ f32 field_0x130; // 'Pnopb08' x offset
-    /* 0x134 */ f32 field_0x134; // 'Pnopb12' x offset
-    /* 0x138 */ f32 field_0x138; // 'Pnopb16' x offset
+    /* 0x118 */ f32 field_0x118[3]; // 'Pnopb08' / 12 / 16 x (2-4 players)
+    /* 0x124 */ f32 field_0x124[3]; // the same panes' y
+    /* 0x130 */ f32 field_0x130[3]; // the same panes' x offsets
     /* 0x13C */ f32 field_0x13c; // 'Ndata02' x
     /* 0x140 */ f32 field_0x140; // 'Ndata02' y
     /* 0x144 */ f32 field_0x144; // 'Ndata02' x offset
