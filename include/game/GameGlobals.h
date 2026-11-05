@@ -692,7 +692,7 @@ public:
     // (0x8030A308, same unit). Takes an input slot from fn_8030AAF4 and
     // returns a byte the caller tests after clrlwi 24 (the controller in
     // that slot is connected).
-    bool fn_8030A308(s32 slot);
+    u8 fn_8030A308(s32 slot);
     // Owner: game/tu_803099FC.cpp (0x8030A3B0, same unit). Called with a slot
     // from fn_8030AAF4 by Player_804A6F38::fn_80247564, result passed on.
     bool fn_8030A3B0(s32 slot);

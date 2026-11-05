@@ -385,15 +385,13 @@ s32 Player_804A6F38::fn_802418E8() {
     return field_0xc04;
 }
 
-// FIXME: 86.8 %. The clamp to zero of the word at 0xC04 is srwi / subi / and
-// in the original; the ternary compiles to srawi / andc here.
 s32 Player_804A6F38::fn_80241920() {
     s32 team = field_0xd60;
     if (team >= 0) {
         return fn_80236228(team);
     }
     s32 value = field_0xc04;
-    return value < 0 ? 0 : value;
+    return value >= 0 ? value : 0;
 }
 
 bool Player_804A6F38::fn_802426E0(s32 serial) {
@@ -504,7 +502,7 @@ f32 Player_804A6F38::fn_80246F28() {
     return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
 }
 
-bool Player_804A6F38::fn_80247534() {
+u8 Player_804A6F38::fn_80247534() {
     return lbl_8053AD30->fn_8030A308(fn_8030AAF4(field_0x11ec));
 }
 
@@ -771,10 +769,7 @@ bool Player_804A6F38::fn_80250030(s32 arg) {
     return false;
 }
 
-// FIXME: 88.0 %. The result is converted with extrwi r3, r0, 8, 19 in the
-// original (a u8 return) and srwi r3, r0, 5 here; fn_8022D894 passes the byte
-// on without converting it, so a u8 return would break that wrapper.
-bool Player_804A6F38::fn_802517E4() {
+u8 Player_804A6F38::fn_802517E4() {
     return field_0x1240 == 0x1a;
 }
 

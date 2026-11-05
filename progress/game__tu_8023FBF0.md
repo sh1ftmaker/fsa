@@ -7,8 +7,7 @@ Matched: 100 getters/setters/forwarders (<=128 B), fields added to Player.h (spl
 cls_804A71A8 fields 0x4A-0x4F/0x98/0x99/0xB4 and fn_80269420/fn_8026942C, cls_804AA8C8::fn_8030A3B0.
 
 Resistant:
-- fn_80241920 (86.8 %, STOP): original `x & ((x >>> 31) - 1)` (srwi/subi/and), ours srawi/andc for `x < 0 ? 0 : x`.
-- fn_802517E4 (88 %): original returns u8 (extrwi r3,r0,8,19); u8 would break wrapper fn_8022D894 (tu_8022AD64, bool pass-through).
+- (review) fn_80241920 now 100 % as `value >= 0 ? value : 0`; fn_802517E4 100 % with a u8 return (extrwi), carried through fn_8022D894 (tu_8022AD64) as u8; fn_8030A308/fn_80247534/fn_8022C8EC are u8 too (their asm has the extrwi / no conversion).
 - fn_80246F28 (94.8 %, from before).
 
 Unwritten small functions and why:

@@ -414,7 +414,7 @@ s32 fn_8022C5EC(s32 player, u32 arg) {
     return 0;
 }
 
-bool fn_8022C8EC(s32 player) {
+u8 fn_8022C8EC(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
     }
@@ -532,7 +532,7 @@ s32 fn_8022D7F8(s32 player) {
     return 0;
 }
 
-bool fn_8022D894(s32 player) {
+u8 fn_8022D894(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
     }

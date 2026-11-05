@@ -119,7 +119,7 @@ public:
     bool fn_802466B4(); // via fn_8022C3AC
     s32 fn_80246B10(u32 arg); // via fn_8022C52C
     s32 fn_80246D1C(u32 arg); // via fn_8022C5EC
-    bool fn_80247534(); // via fn_8022C8EC
+    u8 fn_80247534(); // via fn_8022C8EC
     bool fn_80247564(); // via fn_8022C9AC
     void fn_80248DAC(); // via fn_80234810
     bool fn_8024B108(s32 arg); // via fn_8022DE10
@@ -206,7 +206,7 @@ public:
     void fn_80268B3C(); // tu_802684A4; holds mPos.z at 0 across fn_802685D4
     bool fn_80250ACC(); // via fn_8022DA68
     bool fn_80250D30(); // via fn_8022DB04
-    bool fn_802517E4(); // via fn_8022D894
+    u8 fn_802517E4(); // via fn_8022D894
     bool fn_80251BFC(s32 arg); // via fn_802319B4
     bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8
     bool fn_8026E5F8(const JGeometry::TVec2f* pos); // tu_802684A4 (0x8026E5F8)
@@ -736,7 +736,7 @@ bool fn_8022C310(s32 player); // -> fn_80246228; else false
 bool fn_8022C3AC(s32 player); // -> fn_802466B4; else false (also for a player outside 0-3)
 s32 fn_8022C52C(s32 player, u32 arg); // -> fn_80246B10; else 0 (also for a player outside 0-3)
 s32 fn_8022C5EC(s32 player, u32 arg); // -> fn_80246D1C; else 0 (also for a player outside 0-3)
-bool fn_8022C8EC(s32 player); // -> fn_80247534; else false (also for a player outside 0-3)
+u8 fn_8022C8EC(s32 player); // -> fn_80247534; else false (also for a player outside 0-3)
 bool fn_8022C9AC(s32 player); // -> fn_80247564; else false (also for a player outside 0-3)
 void fn_8022CA6C(s32 player, s32 a, bool b); // 11 units. act_post_warp_pillar_handling passes (i, 0, 1)
 s32 fn_8022CAF8(s32 player); // -> fn_802486A0; else 0
@@ -750,7 +750,7 @@ extern "C" void fn_8022CDD4(s32 player);
 extern "C" void fn_8022CF08(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
 s32 fn_8022D7F8(s32 player); // -> fn_8024FF6C; else 0
-bool fn_8022D894(s32 player); // -> fn_802517E4; else false
+u8 fn_8022D894(s32 player); // -> fn_802517E4; else false
 bool fn_8022D930(s32 player); // -> fn_80241478; else false
 bool fn_8022D9CC(s32 player); // -> fn_80250090; else false
 bool fn_8022DA68(s32 player); // -> fn_80250ACC; else false
