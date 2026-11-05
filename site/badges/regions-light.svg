@@ -13,7 +13,7 @@
 </g>
 <text x="330" y="62" class="mono" font-size="11.5" fill="#6b7096">2,781,768 bytes left · game code 99.3 % of it</text>
 <text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#1b1f3a">37.38 %</text>
-<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 43.94 %</text>
+<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 44.00 %</text>
 <line x1="20" x2="940" y1="84" y2="84" stroke="#dfe2ef"/>
 <g fill="#d29a2e"><path d="M34.5 107L41 120L28 120Z"/></g>
 <text x="50" y="119" font-size="16" font-weight="700" fill="#1b1f3a">Libraries</text>
@@ -38,9 +38,9 @@
 <text x="50" y="263" font-size="16" font-weight="700" fill="#1b1f3a">Main menu to Shadow Battle</text>
 <text x="50" y="283" font-size="12" fill="#6b7096">60 files · 629 KiB · 8 Matching</text>
 <rect x="330" y="250" width="440" height="14" rx="4" fill="#e6e8f3"/>
-<rect class="grow" style="animation-delay:0.2s" x="330" y="250" width="151.20" height="14" rx="4" fill="#ef5b52" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.2s" x="330" y="250" width="152.84" height="14" rx="4" fill="#ef5b52" fill-opacity="0.35"/>
 <rect class="grow" style="animation-delay:0.2s" x="330" y="250" width="91.20" height="14" rx="4" fill="#ef5b52"/>
-<text x="330" y="283" class="mono" font-size="11.5" fill="#6b7096">honest 20.7 % · weighted 34.4 %</text>
+<text x="330" y="283" class="mono" font-size="11.5" fill="#6b7096">honest 20.7 % · weighted 34.7 %</text>
 <text x="932" y="264" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#ef5b52">20.7 %</text>
 <text x="932" y="284" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">790 / 1,336 fns</text>
 <g fill="#3d9cf0"><path d="M34.5 317L41 323.5L34.5 330L28 323.5Z"/></g>
