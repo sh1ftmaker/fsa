@@ -32,8 +32,70 @@
 #include "types.h"
 #include "JSystem/JGeometry.h"
 
+#include "dolphin/gx/GXStruct.h"
+#include "game/SpriteParams.h"
+#include "game/Camera.h" // ScreenRect_802FF3F0
+
 class JKRHeap;
-struct SpriteParams_801F5AE0; // game/ActorBase.h
+class JUTTexture;
+namespace JUtility {
+struct TColor;
+}
+
+// The element classes of cls_804AA858's arrays (constructed with
+// __construct_array in its constructor, fn_802FFDEC). Each is named after
+// its out-of-line constructor, the only code of its own.
+
+// 0x10 x 3 at 0x150 / 0x190 / 0x1D0; empty constructor.
+class cls_803004C0 {
+public:
+    cls_803004C0();
+
+    /* 0x00 */ u8 field_0x0[0x4];
+}; // Size: 0x4
+
+// 0x100 at 0x2398. fn_802FF568 counts field_0x0 down each frame.
+class cls_803003AC {
+public:
+    cls_803003AC();
+
+    /* 0x00 */ s32 field_0x0;
+    /* 0x04 */ u8 field_0x4[0x28 - 0x4];
+    /* 0x28 */ SpriteParams_801F5AE0 mParams;
+    /* 0x64 */ u8 field_0x64[0x94 - 0x64];
+    /* 0x94 */ s32 field_0x94;
+    /* 0x98 */ s32 field_0x98;
+}; // Size: 0x9C
+
+// 0x10 at 0xBF9C: a slot that fn_802F601C fills (mKind 0 is free, else the
+// slot with the smallest mTimer is reused).
+class cls_803003A8 {
+public:
+    cls_803003A8();
+
+    /* 0x00 */ s32 mKind;
+    /* 0x04 */ JGeometry::TVec3f mPos;
+    /* 0x10 */ s32 mTimer;
+    /* 0x14 */ f32 field_0x14;
+    /* 0x18 */ f32 field_0x18;
+    /* 0x1C */ JGeometry::TVec3f field_0x1c;
+}; // Size: 0x28
+
+// 0x20 x 2 at 0xC220 / 0xD324: a queued sprite. fn_802FF3F0 / fn_802FF2D8
+// draw it with fn_802F86CC (mRes, mFrame), else fn_802F745C (mImage), else
+// fn_802F6CF4 (field_0x18), passing &mParams.
+class cls_8030029C {
+public:
+    cls_8030029C();
+
+    /* 0x00 */ JGeometry::TVec3f mPos;
+    /* 0x0C */ void* mRes;
+    /* 0x10 */ s32 mFrame;
+    /* 0x14 */ void* mImage;
+    /* 0x18 */ void* field_0x18;
+    /* 0x1C */ SpriteParams_801F5AE0 mParams;
+    /* 0x58 */ u8 field_0x58[0x88 - 0x58];
+}; // Size: 0x88
 
 // lbl_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
 // allocated with __nw__(0xE464, heap, 0) in game/tu_8013AAD4.cpp
@@ -102,13 +164,62 @@ public:
     // Called by fn_802FF3B0 (the only caller seen).
     void fn_802FA3FC();
 
+    // 0x802F5E9C. The height under pos: pos->z plus the bilinear blend of
+    // the z of the four field_0x100[field_0x2388] grid points (8-unit cells,
+    // 65 per row) around pos, when field_0xc21c is positive and pos lies in
+    // the field_0x2380 x field_0x2384 cells from field_0x2368.
+    f32 fn_802F5E9C(const JGeometry::TVec3f* pos);
+    // 0x802F6CF4: the third sprite kind of the queues (cls_8030029C::field_0x18),
+    // called like fn_802F745C (pos, the resource, &params).
+    void fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
+    void fn_802FC80C(); // 0x802FC80C, called by fn_802FF3F0
+    void fn_802FCE74(); // 0x802FCE74, called by fn_802FF568 in the game modes of isGameModeSet()
+    void fn_802FDDD4(); // 0x802FDDD4, called by fn_802FF568 and fn_802FF798
+    void fn_802FEE68(); // 0x802FEE68, called by fn_802FF2D8
+    // 0x802FF2D8: draws the field_0xd324 queue, empties it, then fn_802FEE68.
+    void fn_802FF2D8();
+    // 0x802FF3F0: sets the camera's screen rectangle, fn_802FC80C, then draws
+    // the field_0xc220 queue and empties it.
+    void fn_802FF3F0();
+    // 0x802FF568: the per-frame update (fn_802FDDD4, timers of field_0x2398).
+    void fn_802FF568();
+
     /* 0x0000 vtable */
-    /* 0x0004 */ u8 field_0x4[0x28 - 0x4];
+    // The buffers the constructor allocates on `heap` (__nwa, alignment 0x20;
+    // sizes in the comments), freed by the destructor in reverse order.
+    /* 0x0004 */ u8* field_0x4[2];   // 0x8000
+    /* 0x000C */ u8* field_0xc[3];   // 0x200
+    /* 0x0018 */ u8* field_0x18[3];  // 0x200
+    /* 0x0024 */ u8* field_0x24;     // 0x2000
     // The u16 tile grids of layers 0-3 and 4-7 (fn_802F9908 / fn_802F9974
-    // test the two ranges separately; 32 x 32 cells).
+    // test the two ranges separately; 32 x 32 cells). 0x2000 each.
     /* 0x0028 */ u16* mLayerGrid[4];
     /* 0x0038 */ u16* mLayerGrid2[4];
-    /* 0x0048 */ u8 field_0x48[0x214 - 0x48];
+    /* 0x0048 */ u8* field_0x48[16]; // 0x2000
+    // 4-bit tile images (0x8000 each): fn_802F9714 / fn_802F93F4 write them,
+    // fn_802FF798 makes them the GXInitTexObjCI images of field_0xb5c.
+    /* 0x0088 */ u8* field_0x88[4];
+    /* 0x0098 */ u8* field_0x98[12]; // 0x200
+    // Palettes (0x200 each, 16 of 0x20): the GXInitTlutObj data of field_0x25c.
+    /* 0x00C8 */ u8* field_0xc8[12];
+    // 0x8000: where fn_802F9714 decodes compressed resources (JKRDecomp::decode).
+    /* 0x00F8 */ u8* field_0xf8;
+    /* 0x00FC */ struct cls_8043395C* field_0xfc; // new(0xB0), fn_8043395C; deleted through its vtable
+    // 65 x 65 grid points (0x1081 TVec3f / TColor each, __construct_new_array).
+    /* 0x0100 */ JGeometry::TVec3f (*field_0x100[2])[65];
+    /* 0x0108 */ JUtility::TColor* field_0x108[2];
+    /* 0x0110 */ JGeometry::TVec2f* field_0x110; // 0x1000 (4 x 64 x 16, filled by fn_802FF798)
+    /* 0x0114 */ u8 field_0x114[0x11C - 0x114];
+    /* 0x011C */ void* field_0x11c[4]; // __nw(0x68) each, no constructor
+    /* 0x012C */ u8 field_0x12c[4];
+    /* 0x0130 */ u8 field_0x130[0x138 - 0x130];
+    /* 0x0138 */ s32 field_0x138[4];
+    /* 0x0148 */ u8 field_0x148[4];
+    /* 0x014C */ u8 field_0x14c[4];
+    /* 0x0150 */ cls_803004C0 field_0x150[16];
+    /* 0x0190 */ cls_803004C0 field_0x190[16];
+    /* 0x01D0 */ cls_803004C0 field_0x1d0[16];
+    /* 0x0210 */ u8 field_0x210[4];
     /* 0x0214 */ u8 field_0x214; // 2 units compare it with 1 (act_player_sword_level_check_npc 0x802F1350)
     /* 0x0215 */ u8 field_0x215;
     /* 0x0216 */ u8 field_0x216; // 9 units set it to 1 (act_four_switch_monitor 0x802A9E78)
@@ -126,7 +237,12 @@ public:
     /* 0x023C */ s32 field_0x23c;
     /* 0x0240 */ s32 field_0x240;
     /* 0x0244 */ s32 field_0x244;
-    /* 0x0248 */ u8 field_0x248[0x235C - 0x248];
+    // When set, fn_802FF3F0 gives the camera's screen rectangle
+    // (Camera_804AA9E4::field_0x144) field_0x24c instead of the full screen.
+    /* 0x0248 */ u8 field_0x248;
+    /* 0x024C */ ScreenRect_802FF3F0 field_0x24c;
+    /* 0x025C */ GXTlutObj field_0x25c[3][4][16];
+    /* 0x0B5C */ GXTexObj field_0xb5c[3][4][16];
     // Per-player bytes: tu_80139BE8 (0x80139C24), tu_802D39B8, tu_803A8DFC
     // and tu_803B7DCC store them; Camera_804AA9E4::fn_8030C85C /
     // fn_8030C928 copy them to field_0x2360.
@@ -135,19 +251,41 @@ public:
     // fn_802F86CC draws nothing while it is 0; 6 units set it to 1
     // (tu_802D39B8 0x802D9BFC).
     /* 0x2364 */ u8 field_0x2364;
+    /* 0x2365 */ u8 field_0x2365;
     // Camera_804AA9E4::fn_8030C928 moves field_0x2368 to field_0x2374 and
     // stores the new box's corner (x0, y0, constant) in field_0x2368;
     // tu_8016A2B4 reads it (0x8016E014).
     /* 0x2368 */ JGeometry::TVec3f field_0x2368;
     /* 0x2374 */ JGeometry::TVec3f field_0x2374;
     // Written by tu_802D39B8 (0x802D92D4), read as ints by tu_8016A2B4
-    // (0x8016AE44).
+    // (0x8016AE44). The cell counts of fn_802F5E9C's grid (64 after fn_802FF798).
     /* 0x2380 */ s32 field_0x2380;
     /* 0x2384 */ s32 field_0x2384;
-    /* 0x2388 */ u8 field_0x2388[0xE451 - 0x2388];
+    /* 0x2388 */ s32 field_0x2388; // which field_0x100 grid fn_802F5E9C reads
+    /* 0x238C */ u8* field_0x238c; // __nwa(0x100)
+    /* 0x2390 */ s32 field_0x2390;
+    /* 0x2394 */ s32 field_0x2394;
+    /* 0x2398 */ cls_803003AC field_0x2398[0x100];
+    /* 0xBF98 */ u8 field_0xbf98;
+    /* 0xBF9C */ cls_803003A8 field_0xbf9c[16];
+    /* 0xC21C */ s32 field_0xc21c; // fn_802F5E9C reads the grid only while it is positive
+    // Two sprite queues: fn_802FF3F0 / fn_802FF2D8 draw the field_0xd320 /
+    // field_0xe424 entries and empty them.
+    /* 0xC220 */ cls_8030029C field_0xc220[0x20];
+    /* 0xD320 */ s32 field_0xd320;
+    /* 0xD324 */ cls_8030029C field_0xd324[0x20];
+    /* 0xE424 */ s32 field_0xe424;
+    /* 0xE428 */ JUTTexture* field_0xe428[10];
+    /* 0xE450 */ u8 field_0xe450;
     // fn_802FF3B0 tests it before calling fn_802FA3FC (the only reader seen).
     /* 0xE451 */ u8 field_0xe451;
-    /* 0xE452 */ u8 field_0xe452[0xE464 - 0xE452];
+    /* 0xE452 */ u8 field_0xe452[0xE454 - 0xE452];
+    /* 0xE454 */ JUTTexture* field_0xe454;
+    /* 0xE458 */ f32 field_0xe458;
+    /* 0xE45C */ f32 field_0xe45c;
+    /* 0xE460 */ u8 field_0xe460;
+    /* 0xE461 */ u8 field_0xe461;
+    /* 0xE462 */ u8 field_0xe462[0xE464 - 0xE462];
 }; // Size: 0xE464
 
 // --- tile queries (game/tu_8022461C.cpp) ---

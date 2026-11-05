@@ -981,9 +981,9 @@ extern const f32 lbl_8053EFBC;
 extern const f32 lbl_8053F0B8;
 extern const f32 lbl_8053F0BC;
 
-// Owner: game/tu_802F5040.cpp (defined there). f1 in, f1 out: 1.0f / (1.0f -
-// max(x, a constant)) (0x802F5FF4); game/tu_801EDBA4.cpp scales by it.
-extern "C" f32 fn_802F5FF4(f32 x);
+// Owner: game/tu_802F5040.cpp (defined there). f1 in, f1 out: 192 / (192 -
+// min(x, 96)) (0x802F5FF4); game/tu_801EDBA4.cpp scales by it.
+f32 fn_802F5FF4(f32 x);
 
 // Objects and functions of the boot sequence main (game/tu_801344C0.cpp)
 // runs; their owner units are not written yet. Named after their vtables.

@@ -116,16 +116,10 @@ EffectSystem_8049F178* fn_8013C824(void);
 // returns 0 or 1.
 bool fn_8013CAA4(JPABaseEmitter* emitter, f32 angle);
 
-// Owner unit not written yet (the map, cls_804AA858's unit; 2 callers:
-// fn_8013CB44 and cls_802150B8::fn_80214E50 in game/tu_802144F0.cpp, both with
-// lbl_8053AB10->field_0x20 in r3 and a position in r4). Returns the ground
-// height under pos (the z that fn_8013CB44 takes) in f1.
-f32 fn_802F5E9C(cls_804AA858* map, const JGeometry::TVec3f* pos);
-
 // 66 units / 197 calls. Moves a non-NULL emitter to pos, lifted by
 // height * 1024 + depth * 128 in y and z (with `adjust`, a positive pos.z
 // raises height below 1 by one and lowers depth by one) and with z taken
-// from the ground under pos (fn_802F5E9C on lbl_8053AB10->0x20); stores
+// from the ground under pos (cls_804AA858::fn_802F5E9C, game/Map.h, on lbl_8053AB10->0x20); stores
 // the result in the emitter's translation (0xA4-0xAC). Returns 0 or 1.
 bool fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
                  bool adjust);

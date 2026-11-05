@@ -5,6 +5,7 @@
 #include "game/Effect.h"
 #include "game/EmitterDelete.h"
 #include "game/GameGlobals.h"
+#include "game/Map.h"
 #include "game/EnemyBase.h"
 #include "game/cls_802150B8.h"
 #include "game/cls_804A64A8.h"
@@ -122,7 +123,7 @@ void cls_802150B8::fn_80214994() {
         f32 x = pos.x;
         f32 y = pos.y + lift;
         f32 z = pos.z + lift;
-        f32 ground = fn_802F5E9C(lbl_8053AB10->field_0x20, &pos);
+        f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
         z += ground - pos.z;
         field_0x1c.field_0x4.x = x;
         field_0x1c.field_0x4.y = y;
@@ -159,7 +160,7 @@ void cls_802150B8::fn_80214AF8() {
         f32 x = pos.x;
         f32 y = pos.y + lift;
         f32 z = pos.z + lift;
-        f32 ground = fn_802F5E9C(lbl_8053AB10->field_0x20, &pos);
+        f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
         z += ground - pos.z;
         field_0x1c.field_0x4.x = x;
         field_0x1c.field_0x4.y = y;
@@ -188,7 +189,7 @@ void cls_802150B8::fn_80214CE4() {
     f32 x = pos.x;
     f32 y = pos.y + lift;
     f32 z = pos.z + lift;
-    f32 ground = fn_802F5E9C(lbl_8053AB10->field_0x20, &pos);
+    f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
     z += ground - pos.z;
     field_0x4.field_0x4.x = x;
     field_0x4.field_0x4.y = y;
@@ -218,7 +219,7 @@ void cls_802150B8::fn_80214E50() {
     f32 x = pos.x;
     f32 y = pos.y + lift;
     f32 z = pos.z + lift;
-    f32 ground = fn_802F5E9C(lbl_8053AB10->field_0x20, &pos);
+    f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
     z += ground - pos.z;
     field_0x4.field_0x4.x = x;
     field_0x4.field_0x4.y = y;
