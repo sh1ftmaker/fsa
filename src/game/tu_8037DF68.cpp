@@ -4,294 +4,6 @@
 #include "game/GameState.h"
 #include "game/Message.h"
 
-// Constructs lbl_8050DB0C: the layout constants.
-cls_804AF32C::cls_804AF32C() {
-    field_0x4 = 0;
-    field_0x5 = 0;
-    field_0x6 = 0;
-    field_0x8 = 0.8f;
-    field_0x30[0] = 0.5f;
-    field_0x30[1] = -32.0f;
-    field_0x30[2] = 1.0f;
-    field_0x30[3] = 0.0f;
-    field_0x4c[0] = 6;
-    field_0x30[4] = 1.9f;
-    field_0x4c[1] = -40;
-    field_0x4c[2] = 80;
-    field_0x4c[3] = 5;
-    field_0x4c[4] = 80;
-    field_0x4c[5] = 3;
-    field_0x4c[6] = 0;
-    field_0x4c[7] = 60;
-    field_0x4c[8] = 3;
-    field_0x4c[9] = 10;
-    field_0x4c[10] = 15;
-    field_0x4c[11] = 30;
-    field_0x4c[12] = 4;
-    field_0x4c[13] = 22;
-    field_0x4c[14] = 16;
-    field_0x4c[15] = 24;
-    field_0x4c[16] = 120;
-    field_0x4c[17] = 0;
-    field_0x4c[18] = 22;
-    field_0x4c[20] = 5;
-    field_0x4c[21] = 30;
-    field_0x4c[22] = 0;
-    field_0x4c[23] = 30;
-    field_0x4c[24] = 5;
-    field_0x4c[25] = 5;
-    field_0x4c[26] = 50;
-    field_0x2fa = 0;
-    field_0x2fb = 0;
-    field_0x4c[32] = 28;
-    field_0x4c[33] = 5;
-    field_0x4c[34] = 26;
-    field_0x4c[35] = 5;
-    field_0x4c[36] = 14;
-    field_0x4c[37] = 10;
-    field_0x4c[38] = 10;
-    field_0x4c[39] = 50;
-    field_0x4c[40] = 1;
-    field_0x4c[41] = 30;
-    field_0x4c[62] = 0;
-    field_0x4c[63] = 22;
-    field_0x4c[64] = 20;
-    field_0x4c[65] = 20;
-    field_0x4c[66] = 14;
-    field_0x4c[67] = 20;
-    field_0x4c[68] = 20;
-    field_0x4c[69] = 16;
-    field_0x4c[70] = 5;
-    field_0x4c[71] = 20;
-    field_0x4c[72] = 10;
-    field_0x4c[73] = 16;
-    field_0x4c[74] = 12;
-    field_0x4c[75] = 5;
-    field_0x4c[76] = 10;
-    field_0x4c[77] = 20;
-    field_0x4c[78] = 0;
-    field_0x4c[79] = 10;
-    field_0x4c[80] = 5;
-    field_0x4c[81] = 2;
-    field_0x4c[82] = 20;
-    field_0x4c[83] = 0;
-    field_0x4c[84] = 20;
-    field_0x4c[85] = 5;
-    field_0x4c[86] = 10;
-    field_0x4c[87] = 5;
-    field_0x4c[92] = 10;
-    field_0x4c[93] = 3;
-    field_0x4c[94] = 10;
-    field_0x4c[95] = 20;
-    field_0x4c[102] = 0;
-    field_0x4c[103] = 18;
-    field_0x4c[104] = 8;
-    field_0x4c[105] = 22;
-    field_0x4c[106] = 0;
-    field_0x4c[107] = 15;
-    field_0x4c[108] = 18;
-    field_0x4c[109] = 15;
-    field_0x4c[110] = 100;
-    field_0x4c[111] = 200;
-    field_0x4c[112] = 30;
-    field_0x4c[113] = 20;
-    field_0x4c[132] = 0;
-    field_0x4c[133] = 20;
-    field_0x4c[134] = 6;
-    field_0x4c[135] = 0;
-    field_0x4c[136] = 20;
-    field_0x4c[137] = 0;
-    field_0x4c[138] = 20;
-    field_0x4c[142] = 0;
-    field_0x4c[143] = 18;
-    field_0x4c[144] = 0;
-    field_0x4c[145] = 10;
-    field_0x4c[146] = 8;
-    field_0x4c[147] = 10;
-    field_0x4c[148] = 20;
-    field_0x4c[149] = 6;
-    field_0x4c[152] = 0;
-    field_0x4c[153] = 16;
-    field_0x4c[154] = 6;
-    field_0x4c[155] = 10;
-    field_0x4c[156] = 20;
-    field_0x4c[157] = 10;
-    field_0x4c[158] = 10;
-    field_0x4c[159] = 8;
-    field_0x4c[162] = 0;
-    field_0x4c[163] = 20;
-    field_0x4c[164] = 0;
-    field_0x4c[165] = 10;
-    field_0x4c[166] = 8;
-    field_0x4c[167] = 20;
-    field_0x4c[168] = 20;
-    field_0x4c[169] = 10;
-    field_0x4c[172] = 0;
-    field_0x4c[173] = 20;
-    field_0x4c[174] = 0;
-    field_0x4c[175] = 6;
-    field_0x4c[176] = 8;
-    field_0x4c[177] = 0;
-    field_0x4c[178] = 20;
-    field_0x4c[182] = 0;
-    field_0x4c[183] = 20;
-    field_0x4c[184] = 0;
-    field_0x4c[185] = 10;
-    field_0x4c[186] = 8;
-    field_0x4c[187] = 0;
-    field_0x4c[188] = 20;
-    field_0x4c[192] = 0;
-    field_0x4c[193] = 20;
-    field_0x4c[194] = 0;
-    field_0x4c[195] = 20;
-    field_0x4c[196] = 0;
-    field_0x4c[197] = 10;
-    field_0x4c[198] = 8;
-    field_0x4c[199] = 20;
-    field_0x4c[200] = 20;
-    field_0x4c[202] = 0;
-    field_0x4c[203] = 10;
-    field_0x4c[204] = 8;
-    field_0x4c[205] = 20;
-    field_0x4c[206] = 10;
-    field_0x4c[207] = 8;
-    field_0x4c[208] = 0;
-    field_0x4c[209] = 20;
-    field_0x4c[210] = 0;
-    field_0x4c[211] = 20;
-    field_0x4c[212] = 0;
-    field_0x4c[213] = 20;
-    field_0x4c[214] = 0;
-    field_0x4c[215] = 10;
-    field_0x4c[216] = 8;
-    field_0x4c[217] = 20;
-    field_0x4c[218] = 20;
-    field_0x4c[219] = 10;
-    field_0x4c[222] = 0;
-    field_0x4c[223] = 20;
-    field_0x4c[224] = 0;
-    field_0x4c[225] = 20;
-    field_0x4c[226] = 20;
-    field_0x4c[227] = 20;
-    field_0x4c[232] = 0;
-    field_0x4c[233] = 20;
-    field_0x4c[234] = 0;
-    field_0x4c[235] = 10;
-    field_0x4c[236] = 8;
-    field_0x4c[237] = 20;
-    field_0x4c[238] = 20;
-    field_0x4c[239] = 30;
-    field_0x4c[240] = 80;
-    field_0x4c[241] = 30;
-    field_0x4c[242] = 0;
-    field_0x4c[243] = 0;
-    field_0x4c[244] = 0;
-    field_0x4c[245] = 0;
-    field_0x4c[246] = 10;
-    field_0x4c[248] = 10;
-    field_0x4c[247] = 4;
-    field_0x4c[249] = 0;
-    field_0x4c[250] = -55;
-    field_0x4c[252] = 12;
-    field_0x4c[253] = 4;
-    field_0x4c[254] = 8;
-    field_0x4c[255] = 10;
-    field_0x4c[256] = 8;
-    field_0x4c[257] = 4;
-    field_0x4c[258] = 8;
-    field_0x4c[259] = 7;
-    field_0x4c[260] = 4;
-    field_0x4c[261] = 8;
-    field_0x4c[262] = 30;
-    field_0x4c[263] = 5;
-    field_0x4c[264] = 8;
-    field_0x4c[265] = 10;
-    field_0x4c[266] = 0;
-    field_0x4c[267] = 12;
-    field_0x4c[268] = 0;
-    field_0x4c[269] = 12;
-    field_0x4c[270] = 5;
-    field_0x4c[272] = 24;
-    field_0x4c[273] = 15;
-    field_0x4c[290] = 80;
-    field_0x4c[274] = 2;
-    field_0x4c[275] = 5;
-    field_0x4c[276] = 0;
-    field_0x4c[277] = 6;
-    field_0x4c[278] = 0;
-    field_0x4c[279] = 0;
-    field_0x4c[280] = 0;
-    field_0x4c[281] = -12;
-    field_0x4c[282] = 0;
-    field_0x4c[283] = 0;
-    field_0x4c[284] = 60;
-    field_0x4c[285] = 20;
-    field_0x4c[286] = 10;
-    field_0x4c[287] = 8;
-    field_0x4c[288] = 6;
-    field_0x4c[289] = 4;
-    field_0x4c[292] = -60;
-    field_0x4c[293] = 300;
-    field_0x4c[294] = 350;
-    field_0x4c[295] = 490;
-    field_0x4c[296] = 36;
-    field_0x4c[297] = 50;
-    field_0x4c[298] = 0;
-    field_0x4c[299] = 0;
-    field_0x4c[300] = 0;
-    field_0x4c[301] = 0;
-    field_0x4c[302] = 16;
-    field_0x4c[303] = 2;
-    field_0x4c[304] = 0;
-    field_0x4c[305] = 0;
-    field_0x4c[306] = 1150;
-    field_0x4c[307] = 6;
-    field_0x4c[308] = 0;
-    field_0x4c[309] = 20;
-    field_0x4c[310] = 5;
-    field_0x4c[311] = 0;
-    field_0x4c[312] = 0;
-    field_0x4c[313] = 10;
-    field_0x4c[314] = 30;
-    field_0x4c[315] = 70;
-    field_0x4c[316] = 35;
-    field_0x4c[317] = 80;
-    field_0x4c[318] = 40;
-    field_0x4c[319] = 140;
-    field_0x4c[320] = 0;
-    field_0x4c[321] = 74;
-    field_0x4c[322] = 30;
-    field_0x4c[323] = 0;
-    field_0x4c[324] = 0;
-    field_0x4c[325] = 0;
-    field_0x4c[326] = 0;
-    field_0x4c[327] = 0;
-    field_0x4c[328] = 0;
-    field_0x4c[329] = 0;
-    field_0x4c[330] = 0;
-    field_0x4c[331] = 0;
-    field_0x4c[332] = 0;
-    field_0x4c[333] = 0;
-    field_0x4c[334] = 200;
-    field_0x4c[335] = 130;
-    field_0x4c[336] = 0;
-    field_0x4c[337] = 2;
-    field_0x30[5] = 1.0f;
-    field_0x30[6] = 0.8f;
-    field_0x2f8 = 80;
-    field_0x304[8] = 0;
-    field_0x304[0] = 80;
-    field_0x304[1] = 20;
-    field_0x304[2] = 150;
-    field_0x304[3] = 0;
-    field_0x304[4] = 0;
-    field_0x304[5] = 0;
-    field_0x304[6] = 0;
-    field_0x304[7] = 0;
-    field_0x304[8] = 0;
-    field_0x304[9] = 0;
-}
-
 // The window index of a player: the one fn_8022F340 maps it to in some game
 // modes, else the player itself.
 static inline s32 windowIndex(s32 player) {
@@ -304,7 +16,6 @@ static inline s32 windowIndex(s32 player) {
     return player;
 }
 
-cls_804AF32C lbl_8050DB0C;
 MessageManager_804AF070* lbl_8053AD78;
 
 bool fn_8037E4BC() {
@@ -438,7 +149,7 @@ const char* fn_80383E2C(u32 index, u8* out) {
     const char* text = (const char*)inf1 + (offset + 8);
     *out = 0;
     if (text[0] == 0x1A && text[2] == 2) {
-        switch ((s8)text[4]) {
+        switch (text[4]) {
         case 7:
         case 0x10:
         case 0x17:
@@ -622,7 +333,7 @@ bool fn_80389BF0(s32 player, s32 value) {
 
 bool MessageManager_804AF070::fn_80389F78(s32 player, s32 arg, s32 value, JGeometry::TVec3f pos, u32 flags) {
     if (fn_8037F1E4(player) == 0) {
-        u16 bits = flags;
+        u16 bits = flags; // only to match: a halfword copy of the flags parameter
         if (bits & 0x11F) {
             s32 plain = bits & 0x40;
             if (plain) {
@@ -633,7 +344,7 @@ bool MessageManager_804AF070::fn_80389F78(s32 player, s32 arg, s32 value, JGeome
                 lbl_8053AD78->mWindows[player]->field_0x28 |= 0x400;
             }
             lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
-            JGeometry::TVec3f boxPos = pos;
+            JGeometry::TVec3f boxPos = pos; // only to match: a local copy of the by-value position
             MessageWindow_804AF490* window = lbl_8053AD78->mWindows[player];
             window->field_0x50 = boxPos;
             window->field_0x30 = -1;
@@ -671,7 +382,7 @@ bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 
     if (fn_8037F1E4(player) == 0) {
         if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
             bool ready = false;
-            u16 bits = flags;
+            u16 bits = flags; // only to match: a halfword copy of the flags parameter
             if (flags & 0x1000) {
                 if (fn_8037EC98(actor, flags)) {
                     ready = true;
@@ -691,7 +402,7 @@ bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 
                     lbl_8053AD78->mWindows[player]->field_0x28 |= 0x400;
                 }
                 lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
-                JGeometry::TVec3f boxPos = pos;
+                JGeometry::TVec3f boxPos = pos; // only to match: a local copy of the by-value position
                 MessageWindow_804AF490* window = lbl_8053AD78->mWindows[player];
                 window->field_0x50 = boxPos;
                 window->field_0x30 = serial;
@@ -728,7 +439,7 @@ bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 
 bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 serial, u32 flags) {
     if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
         if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
-            u16 bits = flags;
+            u16 bits = flags; // only to match: a halfword copy of the flags parameter
             bool ready = false;
             if (flags & 0x1000) {
                 if (fn_8037EC98(actor, flags)) {
@@ -765,7 +476,7 @@ bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 
 // (r29) in the original; ours reuses the option-bits copy (r30).
 bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 flags) {
     if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
-        u16 bits = flags;
+        u16 bits = flags; // only to match: a halfword copy of the flags parameter
         if (bits & 0x91F) {
             lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
             lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 1;

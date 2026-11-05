@@ -356,7 +356,7 @@ extern MessageManager_804AF070* lbl_8053AD78;
 // store is the byte at 0x30D.
 class cls_804AF32C {
 public:
-    cls_804AF32C(); // fn_8037DF68
+    // The constructor (fn_8037DF68, constants only) is not written yet.
     /* 0x08 */ virtual ~cls_804AF32C(); // fn_8038DBF0
 
     /* 0x000 */ // vtable
