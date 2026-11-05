@@ -56,3 +56,23 @@ a [3][6] array (original overrun into field_0x285).
 - symbols.txt: placeholder renames (members of cls_804B0F10 / cls_804B16A8 /
   cls_804AA8C8, __vt__12cls_804B0F10, __sinit, __dt__), .data PMF-table
   split (@685-@723 initializers), .bss split.
+
+## Checkpoint (Opus 5.5 pass 2, twin units, 2026-11-05)
+Baseline total 8416. Twin of game/tu_803E1668.cpp (cls_804B0B00, the 1-4 player
+version; see its checkpoint for the screen map). Ported both ways:
+fn_803F38A4 99.6 (stack slots), fn_803F35B0 99.2, fn_803F5410 98.7 (operands: the
+original shares one int->float slot), fn_803F8AE4 / fn_803F8FBC 99.9 (reloc-name
+only); fn_803F0A54 now uses `size / 2` (fmadds operand order, proven at 98.3 in the
+twin's fn_803E1668; try.py 98.08 -> 98.24).
+Header: field_0xf0 ('Pscuro02' y), field_0xf8 / field_0xfc[3] (game-select panes),
+field_0x118 / 0x124 / 0x130 as [3] arrays (Pnopb08-16 x / y / offset; fn_803F3324
+updated), field_0x1a0 ('Paccur02' y).
+Partial .rodata tables (25 tags, under the tripwire): lbl_80479238[4] 'Pplli',
+lbl_804793D8 / F8 / 80479418 [4] cursor panes, lbl_804798C0 / D8 / F0 [3]; the
+.rodata objects lbl_80478A60 / lbl_80479238 / lbl_804795AC are still unsplit blobs.
+BLOCKER for the rest (fn_803F1C70, fn_803F9EA8, fn_803F943C, fn_803FAA88, fn_803FB9E4,
+fn_803F726C, fn_803F8354, the constructor): they index the big tag tables (4x6, 4x9,
+34-entry ...), i.e. this unit's whole .rodata as source data, which needs an `array`
+line in blobs.txt like tu_803E1668's (same table set, same layout). The twin's
+tables are the template.
+SHARED-EDITS: none (own header only).
