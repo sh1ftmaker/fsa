@@ -514,7 +514,7 @@ public:
     /* 0x0B8 */ s32 field_0xb8;
     /* 0x0BC */ s32 field_0xbc;
     /* 0x0C0 */ s32 field_0xc0; // EnemyParam.csv column "efsz"
-    /* 0x0C4 */ u8 field_0xc4;  // update loop: updates the actor if set
+    /* 0x0C4 */ bool field_0xc4;  // update loop: updates the actor if set
     /* 0x0C8 */ s32 field_0xc8;
     /* 0x0CC */ u8 field_0xcc;  // update loop: updates the actor if set
     /* 0x0D0 */ s32 field_0xd0;
