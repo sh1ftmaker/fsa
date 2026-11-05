@@ -692,7 +692,7 @@ public:
     // (0x8030A308, same unit). Takes an input slot from fn_8030AAF4 and
     // returns a byte the caller tests after clrlwi 24 (the controller in
     // that slot is connected).
-    u8 fn_8030A308(s32 slot);
+    bool fn_8030A308(s32 slot);
     // SHARED-EDIT (tu_803F0A54 fn_803F8050): owner game/tu_803099FC.cpp
     // (0x80309A9C, same unit). Called like fn_80309C4C (r4 a button mask 4 /
     // 8, r5 an input slot); the result is tested with cmplwi 0.
