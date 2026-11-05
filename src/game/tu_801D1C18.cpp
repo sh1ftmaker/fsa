@@ -15,17 +15,16 @@ static inline T clamp(T value, T min, T max) {
     return value;
 }
 
-// FIXME: calcCel's loop costs fn_801D1C18 (98.3 %), fn_801D1D60 (98.7 %),
-// fn_801D1F14 (98.5 %) and fn_801D22DC (98.7 %) the same difference: the
-// target keeps time/key/table/p/cel in r6/r5/r9/r7/r8 (ours r8/r7/r6/r5/r9)
-// and stores the int-to-float temporary's low word before its high word.
-// A while loop over `cel = p[0]` and a separate `p` declaration did the same.
+// FIXME: 99.9. calcCel's loop costs fn_801D1C18 (99.85 %), fn_801D1D60 (99.89 %),
+// fn_801D1F14 (99.87 %) and fn_801D22DC (99.88 %) the same difference: the target
+// stores the int-to-float temporary's low word (the xoris result) before its high
+// word (0x43300000) for `start`. Only scheduling.
 inline void SpriteAnim_801D267C::calcCel() {
+    const s16* p = mTables[mAnim];
     s32 time = 0;
     s32 key = 0;
-    const s16* table = mTables[mAnim];
     f32 frame = mFrameCtrl.getFrame();
-    for (const s16* p = table; p[0] >= 0; p += 2, key++) {
+    for (; p[0] >= 0; p += 2, key++) {
         s32 start = time;
         time += p[1];
         if (start <= frame && frame < time) {
@@ -34,7 +33,7 @@ inline void SpriteAnim_801D267C::calcCel() {
             return;
         }
     }
-    mCel = clamp<s32>(table[0], mMinCel, mMaxCel);
+    mCel = clamp<s32>(mTables[mAnim][0], mMinCel, mMaxCel);
     mKey = 0;
 }
 
@@ -157,16 +156,13 @@ void SpriteAnim_801D267C::fn_801D22DC(s32 anim, s32 mode, bool keepFrame) {
     }
 }
 
-// FIXME: 91.7 %. The target keeps the running min/max in the register it
-// stores (blt over `mr r0, r4`), and loads the key's cel before mMaxCel;
-// ours branches the other way. min/max templates gave the same code.
 void SpriteAnim_801D267C::fn_801D2608(const s16** tables, s32 count) {
     mTables = tables;
     mTableCount = count;
     for (s32 i = 0; i < mTableCount; i++) {
         for (const s16* p = mTables[i]; p[0] >= 0; p += 2) {
-            mMinCel = mMinCel < p[0] ? mMinCel : p[0];
-            mMaxCel = mMaxCel < p[0] ? p[0] : mMaxCel;
+            mMinCel = mMinCel >= p[0] ? p[0] : mMinCel;
+            mMaxCel = mMaxCel >= p[0] ? mMaxCel : p[0];
         }
     }
 }
