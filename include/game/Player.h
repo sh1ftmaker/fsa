@@ -1236,9 +1236,10 @@ bool fn_80230188(s32 player);            // 56 units. -> fn_802413E8 (byte 0x454
 bool fn_8023EA28(s32 player);
 bool fn_8023561C(s32 player);
 
-// 1 unit (tu_801CB270 fn_801CD1D0). Owner: tu_80301CD0 (0x80303750), a player
-// query returning a byte (clrlwi 24 at the call site); unwritten.
-extern "C" u8 fn_80303750(s32 player);
+// 1 unit (tu_801CB270 fn_801CD1D0). Owner: tu_80301CD0 (0x80303750), a layer
+// query (fn_8022F340) returning a byte: 0 without a GBA link, 1 while its transfer
+// queue is busy, else a per-player flag.
+u8 fn_80303750(s32 layer);
 // Not written yet (tu_80301CD0, 0x80301D54): called with a player index (field_0x4) by
 // fn_80290E90 and tu_8028FBA0's fn_802901DC path.
 extern "C" void fn_80301D54(s32 player);

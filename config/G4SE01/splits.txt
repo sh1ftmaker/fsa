@@ -5306,7 +5306,7 @@ game/tu_803006E8.cpp:
 game/tu_80301CD0.cpp:
 	extab       start:0x8000D52C end:0x8000D614
 	extabindex  start:0x8001C894 end:0x8001C9F0
-	.text       start:0x80301CD0 end:0x803099FC
+	.text       start:0x80301CD0 end:0x80309A00
 	.ctors      start:0x8045C394 end:0x8045C398
 	.rodata     start:0x80471208 end:0x80471368
 	.data       start:0x804AA8B8 end:0x804AA8C8
@@ -5317,7 +5317,7 @@ game/tu_80301CD0.cpp:
 game/tu_803099FC.cpp:
 	extab       start:0x8000D614 end:0x8000D644
 	extabindex  start:0x8001C9F0 end:0x8001CA38
-	.text       start:0x803099FC end:0x8030AE84
+	.text       start:0x80309A00 end:0x8030AE84
 	.ctors      start:0x8045C398 end:0x8045C39C
 	.data       start:0x804AA8C8 end:0x804AA8D8
 	.bss        start:0x805076E8 end:0x805077F8

@@ -1015,22 +1015,22 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 // The callee tests d as a bool and reads g and the two stack arguments as
 // bytes (clrlwi / lbz 0x4b, 0x4f); returns a 0/1 flag. Argument meanings
 // unknown. Review: fsa-wt/_reviews/game__act_force_gem_shadow.review.md.
-extern "C" bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id,
-                            bool d, s32 e, s32 f, u8 g, u8 h, u8 i);
+bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, s32 e,
+                 s32 player, u8 g, u8 h, u8 i);
 
 // game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
 // fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the
 // id only when e == 2; ids below 0x45 then go to fn_80307830, the others get
 // 0x400 added and go to fn_803075AC. d and e are converted to 0/1 flags for
 // the callee. The result is unused.
-extern "C" void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d,
-                            s32 e, s32 f);
+void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d, s32 e,
+                 s32 f);
 
 // game/tu_80301CD0.cpp. Same leading arguments as fn_803075AC (serial, layer,
 // position, sprite id, then d as a bool, e, f and g as a byte masked with 3);
 // returns 0 below layer 8. game/tu_801D3CBC.cpp calls it with (0, 1, 0, player).
-extern "C" bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d,
-                            s32 e, s32 f, u8 g);
+bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, bool e,
+                 s32 f, u8 g);
 
 class ActorBase_804A5770;
 
@@ -1644,7 +1644,7 @@ void fn_802B3A48(ActorBase_804A5770* actor);
 
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
 // arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
-extern "C" void fn_8030361C();
+void fn_8030361C();
 // game/tu_8037DF68.cpp (0x8038D454). Takes no arguments; called by
 // game/tu_80139BE8.cpp (fn_80139BE8) and tu_802D39B8.
 void fn_8038D454();
@@ -1672,13 +1672,13 @@ extern s32 lbl_8053ABEC;
 // game/tu_80301CD0.cpp (0x8030381C, not written yet). Takes a layer; returns a
 // byte (0 when fn_8030A308 on lbl_8053AD30 fails, else a per-layer table entry).
 // Called by game/tu_8023FBF0.cpp (fn_8024F54C).
-extern "C" u8 fn_8030381C(s32 layer);
+u8 fn_8030381C(s32 layer);
 // game/tu_80301CD0.cpp (0x803037D4, not written yet). Raises a per-layer
 // maximum to the value (unsigned compare). Called by game/tu_8023FBF0.cpp
 // (fn_8024F54C).
-extern "C" void fn_803037D4(s32 layer, u32 value);
+void fn_803037D4(s32 layer, u32 value);
 // game/tu_80301CD0.cpp (0x80308D0C, not written yet). Takes no arguments;
 // called by game/tu_802D39B8.cpp (GameView_804A9950::fn_802DCDF4).
-extern "C" void fn_80308D0C();
+void fn_80308D0C();
 
 #endif

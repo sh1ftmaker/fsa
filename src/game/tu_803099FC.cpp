@@ -3,9 +3,6 @@
 
 static u8 lbl_8053AD38[8];
 
-// 0x803099FC
-void fn_803099FC() {}
-
 // 0x80309A00
 bool cls_804AA8C8::fn_80309A00(s32 slot) {
     if (slot == -0x3E7) {
