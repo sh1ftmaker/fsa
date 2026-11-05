@@ -33,14 +33,14 @@ void Blindfold_804A8EF8::draw() {
     mtx[2][0] = 0.0f;
     mtx[2][1] = 0.0f;
     mtx[2][2] = height;
-    params.field_0x10.mColor.r = 0xFF;
-    params.field_0x10.mColor.g = 0xFF;
-    params.field_0x10.mColor.b = 0xFF;
-    params.field_0x10.mColor.a = field_0x244;
-    params.field_0x14.mColor.r = 0;
-    params.field_0x14.mColor.g = 0;
-    params.field_0x14.mColor.b = 0;
-    params.field_0x14.mColor.a = field_0x244;
+    params.field_0x10.r = 0xFF;
+    params.field_0x10.g = 0xFF;
+    params.field_0x10.b = 0xFF;
+    params.field_0x10.a = field_0x244;
+    params.field_0x14.r = 0;
+    params.field_0x14.g = 0;
+    params.field_0x14.b = 0;
+    params.field_0x14.a = field_0x244;
     params.mMtx = mtx;
     void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "black.bti");
     if (field_0x4 < 8) {

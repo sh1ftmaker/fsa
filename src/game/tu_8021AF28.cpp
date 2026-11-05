@@ -7,7 +7,7 @@
 // The second pass of each sprite draw: the same frame again, translucent,
 // unless the actor's own sprite matrix is set.
 static inline void drawSecond(cls_804A6550* self, SpriteParams_801F5AE0& params, s32 frame) {
-    params.field_0x10.mColor.a = 200;
+    params.field_0x10.a = 200;
     params.field_0x1d = 0;
     if (self->mSpriteParams.mMtx == NULL) {
         fn_801EF830(self->field_0x4, &self->mPos, &params, 0x407, "enemy_gc_sob.bin", frame, NULL);
@@ -102,7 +102,7 @@ void cls_804A6550::fn_8021B1AC() {
     mPos.y += -21.0f;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x27A, &params, -1, 1.0f, 1.0f);
     mPos.y -= -21.0f;
-    params.field_0x10.mColor.a = 200;
+    params.field_0x10.a = 200;
     params.field_0x1d = 0;
     mPos.y += -10.5f;
     if (mSpriteParams.mMtx == NULL) {

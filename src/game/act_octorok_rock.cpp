@@ -20,7 +20,7 @@ OctorokRock_8049F5D8::~OctorokRock_8049F5D8() {}
 
 void OctorokRock_8049F5D8::draw() {
     SpriteParams_801F5AE0 params;
-    params.field_0x10.mColor.a = field_0x248;
+    params.field_0x10.a = field_0x248;
     s32 state = field_0x90;
     switch (state) {
     case 0:

@@ -40,6 +40,28 @@ static inline f32 getScale(f32 z) {
     return 192.0f / (192.0f - h);
 }
 
+// The draw offset of a sprite with params at pos: field_0x1c / field_0x1d
+// in 0x400 / 0x80 units, one step up (0x1c + 1, 0x1d - 1) for a raised sprite
+// (the map's field_0xe461, params' field_0x20, above the ground) below step 1.
+// fn_802F5040 and fn_802F86CC inline it; both read the map through
+// gGameRoot2_8053AB10, also in the member.
+static inline f32 getDrawOffset(const SpriteParams_801F5AE0* params, const JGeometry::TVec3f* pos) {
+    u8 raised = gGameRoot2_8053AB10->field_0x20->field_0xe461;
+    if (raised) {
+        raised = params->field_0x20;
+    }
+    if (raised) {
+        raised = pos->z > 0.0f;
+    }
+    s32 a = params->field_0x1c;
+    s32 b = params->field_0x1d;
+    if (raised && a < 1) {
+        a++;
+        b--;
+    }
+    return (a << 10) + (b << 7);
+}
+
 // FIXME: 99.6. The z > 0.0f flag is extracted to r0 and moved to r3 (one mr more;
 // the original extracts straight into r3). Literals match.
 // Sets up the GX state of a sprite at pos: the view matrix (params' matrix,
@@ -49,20 +71,7 @@ static inline f32 getScale(f32 z) {
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out) {
     f32 offset;
     if (params != NULL) {
-        u8 raised = gGameRoot2_8053AB10->field_0x20->field_0xe461;
-        if (raised) {
-            raised = params->field_0x20;
-        }
-        if (raised) {
-            raised = pos->z > 0.0f;
-        }
-        s32 a = params->field_0x1c;
-        s32 b = params->field_0x1d;
-        if (raised && a < 1) {
-            a++;
-            b--;
-        }
-        offset = (a << 10) + (b << 7);
+        offset = getDrawOffset(params, pos);
     } else {
         offset = 0.0f;
     }
@@ -109,8 +118,8 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
         GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     }
     if (params != NULL) {
-        GXSetTevColor(GX_TEVREG0, params->field_0x10.mColor);
-        GXSetTevColor(GX_TEVREG1, params->field_0x14.mColor);
+        GXSetTevColor(GX_TEVREG0, params->field_0x10);
+        GXSetTevColor(GX_TEVREG1, params->field_0x14);
         GXSetZMode(params->field_0x26, GX_LEQUAL, params->field_0x2c);
     }
     if (params != NULL && params->field_0x2d) {
@@ -287,6 +296,250 @@ void TileMap_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const
     }
 }
 
+// Queues a sprite on field_0xd324 (drawn by fn_802FF2D8) with a copy of params
+// (its byte 0x22 cleared, its matrix copied into the entry), else the default
+// parameters; false when the queue is full.
+u8 TileMap_804AA858::fn_802F6298(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
+                                   void* res3, SpriteParams_801F5AE0* params) {
+    bool result = false;
+    if (field_0xe424 < 0x20) {
+        cls_8030029C* sprite = &field_0xd324[field_0xe424];
+        sprite->mPos.set(*pos);
+        sprite->mRes = res;
+        sprite->mFrame = frame;
+        sprite->mImage = image;
+        sprite->field_0x18 = res3;
+        if (params != NULL) {
+            sprite->mParams = *params;
+            sprite->mParams.field_0x22 = 0;
+            if (params->mMtx != NULL) {
+                JMath::gekko_ps_copy12(sprite->mMtx, params->mMtx);
+                sprite->mParams.mMtx = sprite->mMtx;
+            }
+        } else {
+            sprite->mParams.reset();
+        }
+        field_0xe424++;
+        result = true;
+    }
+    return result;
+}
+
+// The same for field_0xc220 (drawn by fn_802FF3F0), clearing byte 0x21.
+u8 TileMap_804AA858::fn_802F654C(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
+                                   void* res3, SpriteParams_801F5AE0* params) {
+    bool result = false;
+    if (field_0xd320 < 0x20) {
+        cls_8030029C* sprite = &field_0xc220[field_0xd320];
+        sprite->mPos.set(*pos);
+        sprite->mRes = res;
+        sprite->mFrame = frame;
+        sprite->mImage = image;
+        sprite->field_0x18 = res3;
+        if (params != NULL) {
+            sprite->mParams = *params;
+            sprite->mParams.field_0x21 = 0;
+            if (params->mMtx != NULL) {
+                JMath::gekko_ps_copy12(sprite->mMtx, params->mMtx);
+                sprite->mParams.mMtx = sprite->mMtx;
+            }
+        } else {
+            sprite->mParams.reset();
+        }
+        field_0xd320++;
+        result = true;
+    }
+    return result;
+}
+
+// One GBA OAM entry (attributes 0-2 and the affine halfword) as fn_802F86CC
+// unpacks the 6-byte little-endian entries of a "SOB " frame; the bit fields
+// in the GBA's order (big-endian bit fields, so the first is the high bits).
+struct SpriteObj_802F86CC {
+    /* 0x0 */ u16 mY : 8;
+    u16 mAffine : 2;
+    u16 mMode : 2;
+    u16 mMosaic : 1;
+    u16 mColor256 : 1;
+    u16 mShape : 2;
+    /* 0x2 */ u16 mX : 9;
+    u16 mAffineIndex : 3;
+    u16 mHFlip : 1;
+    u16 mVFlip : 1;
+    u16 mSize : 2;
+    /* 0x4 */ u16 mTile : 10;
+    u16 mPriority : 2;
+    u16 mPalette : 4;
+    /* 0x6 */ u16 mAffineParam;
+}; // Size: 0x8
+
+// A 6-byte entry of a "SOB " frame: the GBA OAM attributes 0-2 as stored
+// (little-endian halfwords, so each byte's fields from the high bits down).
+struct SobObj_802F86CC {
+    /* 0x0 */ u8 mY;
+    /* 0x1 */ u8 mShape : 2;
+    u8 mColor256 : 1;
+    u8 mMosaic : 1;
+    u8 mMode : 2;
+    u8 mAffine : 2;
+    /* 0x2 */ u8 mX;
+    /* 0x3 */ u8 mSize : 2;
+    u8 mVFlip : 1;
+    u8 mHFlip : 1;
+    u8 mAffineIndex : 3;
+    u8 mX8 : 1;
+    /* 0x4 */ u8 mTileLow;
+    /* 0x5 */ u8 mPalette : 4;
+    u8 mPriority : 2;
+    u8 mTileHigh : 2;
+}; // Size: 0x6
+
+// FIXME: 88.9. The original keeps obj in memory as if its address were taken:
+// every bit-field store is kept (byte 0x11 stored after each field, the
+// unused mAffineParam = 0 too) and the draw re-reads the fields; ours keeps
+// them in registers and drops the dead stores. The three tables are at
+// .rodata + 0x40 / 0x60 / 0xA0 here, + 0x1620 / 0x1640 / 0x1680 in the original
+// (the local tables of the later fn_802FA3FC ... fn_802FCE74 come first and
+// are not written yet). tmp's constructor stores are scheduled later.
+// Draws frame `frame` of the "SOB " resource res at pos: res + 2 holds the
+// little-endian start offsets of the frames, each frame 6-byte GBA OAM
+// entries, drawn last to first as quads of the 4-bit tile images (field_0xb5c,
+// palettes field_0x25c; the set is params' field_0x1e) scaled by (scaleX,
+// scaleY). params' bytes 0x21 / 0x22 queue the sprite instead (fn_802F654C /
+// fn_802F6298); field_0x30 adds the effect of fn_802F6800.
+void TileMap_804AA858::fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 frame,
+                                   SpriteParams_801F5AE0* params, f32 scaleX, f32 scaleY) {
+    // The GX texture maps of the (palette & 1, priority) images.
+    static const GXTexMapID lbl_80470F60[8] = {
+        GX_TEXMAP4, GX_TEXMAP5, GX_TEXMAP6, GX_TEXMAP7, GX_TEXMAP0, GX_TEXMAP1, GX_TEXMAP2, GX_TEXMAP3,
+    };
+    static const GXTlut lbl_80470F80[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    // The GBA sprite sizes in 8-pixel tiles (width, height) by shape and size.
+    static const s32 lbl_80470FC0[3][4][2] = {
+        {{1, 1}, {2, 2}, {4, 4}, {8, 8}},
+        {{2, 1}, {4, 1}, {4, 2}, {8, 4}},
+        {{1, 2}, {1, 4}, {2, 4}, {4, 8}},
+    };
+
+    if (!field_0x2364) {
+        return;
+    }
+    if (params != NULL && params->field_0x21 && fn_802F654C(pos, res, frame, NULL, NULL, params)) {
+        return;
+    }
+    if (params != NULL && params->field_0x22 && fn_802F6298(pos, res, frame, NULL, NULL, params)) {
+        return;
+    }
+    u8* data = (u8*)res;
+    s32 start = data[frame * 2 + 2] | data[frame * 2 + 3] << 8;
+    s32 end = data[frame * 2 + 4] | data[frame * 2 + 5] << 8;
+    s32 count = (end - start) / 6;
+    Mtx mtx;
+    SpriteParams_801F5AE0 tmp;
+    JGeometry::TVec3f out;
+    SpriteObj_802F86CC obj;
+    SpriteParams_801F5AE0* outParams;
+    bool loaded;
+    s32 lastPriority = -1;
+    s32 lastPalette = -1;
+    fn_802F5570(pos, params, &out, &outParams, mtx, &tmp);
+    f32 offset;
+    if (outParams != NULL) {
+        offset = getDrawOffset(outParams, &out);
+    } else {
+        offset = 0.0f;
+    }
+    fn_802F91AC(&out, outParams, &loaded, offset);
+    fn_802F8F0C(outParams);
+    s32 dy = 4.0f * (1.0f - scaleY);
+    s32 dx = 4.0f * (1.0f - scaleX);
+    for (s32 i = count - 1; i >= 0; i--) {
+        SobObj_802F86CC* entry = (SobObj_802F86CC*)(data + start) + i;
+        obj.mY = entry->mY;
+        obj.mAffine = entry->mAffine;
+        obj.mMode = entry->mMode;
+        obj.mMosaic = entry->mMosaic;
+        obj.mColor256 = entry->mColor256;
+        obj.mShape = entry->mShape;
+        obj.mX = entry->mX | (entry->mX & 0x80) << 1;
+        if (i != 0) {
+            obj.mY += dy;
+            obj.mX += dx;
+        }
+        obj.mAffineIndex = entry->mAffineIndex;
+        obj.mHFlip = entry->mHFlip;
+        obj.mVFlip = entry->mVFlip;
+        obj.mSize = entry->mSize;
+        obj.mTile = entry->mTileLow | entry->mTileHigh << 8;
+        obj.mPriority = entry->mPriority;
+        if (outParams != NULL) {
+            obj.mPalette = outParams->field_0x0[entry->mPalette];
+        } else {
+            obj.mPalette = entry->mPalette;
+        }
+        obj.mAffineParam = 0;
+        s32 priority = obj.mPriority;
+        if (lastPriority != priority || lastPalette != obj.mPalette) {
+            lastPriority = priority;
+            lastPalette = obj.mPalette;
+            s32 set = 0;
+            if (outParams != NULL) {
+                set = outParams->field_0x1e;
+            }
+            GXLoadTlut(&field_0x25c[set][priority][lastPalette], lbl_80470F80[lastPalette]);
+            GXLoadTexObj(&field_0xb5c[set][priority][lastPalette], lbl_80470F60[(lastPalette & 1) << 2 | priority]);
+            GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, lbl_80470F60[(lastPalette & 1) << 2 | priority], GX_COLOR_NULL);
+        }
+        f32 w = lbl_80470FC0[obj.mShape][obj.mSize][0] * 8;
+        f32 h = lbl_80470FC0[obj.mShape][obj.mSize][1] * 8;
+        f32 x;
+        if (obj.mX & 0x100) {
+            x = (s16)(obj.mX | 0xFE00);
+        } else {
+            x = (u8)obj.mX;
+        }
+        f32 y = 0.0f;
+        f32 z = -(f32)(s8)obj.mY;
+        if (!loaded) {
+            x += out.x;
+            y += out.y + offset;
+            z += out.z + offset;
+        }
+        f32 u0 = (8.0f * (obj.mTile & 0x1F) + 0.5f) / 256.0f;
+        f32 v0 = (8.0f * (obj.mTile & 0x3E0) / 32.0f + 0.5f) / 256.0f;
+        f32 u1;
+        if (obj.mHFlip) {
+            u1 = u0;
+            u0 = (w - 1.0f) / 256.0f + u0;
+        } else {
+            u1 = (w - 1.0f) / 256.0f + u0;
+        }
+        f32 v1;
+        if (obj.mVFlip) {
+            v1 = v0;
+            v0 = (h - 1.0f) / 256.0f + v0;
+        } else {
+            v1 = (h - 1.0f) / 256.0f + v0;
+        }
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(x, y, z);
+        GXTexCoord2f32(u0, v0);
+        GXPosition3f32(x + w * scaleX, y, z);
+        GXTexCoord2f32(u1, v0);
+        GXPosition3f32(x + w * scaleX, y, z - h * scaleY);
+        GXTexCoord2f32(u1, v1);
+        GXPosition3f32(x, y, z - h * scaleY);
+        GXTexCoord2f32(u0, v1);
+        GXEnd();
+    }
+    if (params != NULL && params->field_0x30 != -1) {
+        fn_802F6800(pos, res, frame, NULL, NULL, params);
+    }
+}
+
 // The GX state of a textured sprite quad (direct f32 position and texture
 // coordinates, one TEV stage of the texture times the register colours): the
 // TEV colours, blend mode, z mode and alpha update of params, else white /
@@ -303,8 +556,8 @@ void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
     GXSetNumTexGens(1);
     if (params != NULL) {
-        GXSetTevColor(GX_TEVREG0, params->field_0x10.mColor);
-        GXSetTevColor(GX_TEVREG1, params->field_0x14.mColor);
+        GXSetTevColor(GX_TEVREG0, params->field_0x10);
+        GXSetTevColor(GX_TEVREG1, params->field_0x14);
     } else {
         GXSetTevColor(GX_TEVREG0, lbl_805414F4);
         GXColor zero = {0, 0, 0, 0};

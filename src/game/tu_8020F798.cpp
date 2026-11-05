@@ -23,7 +23,7 @@ void Thief_804A5A30::fn_8020F80C(s32 frame) {
     Mtx mtx;
     if (field_0xc4 != 0) {
         u8 color = fn_8023BCD4(field_0xc8);
-        params.field_0x10.mColor.a = color;
+        params.field_0x10.a = color;
         if (color == 0) {
             return;
         }

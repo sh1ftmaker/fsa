@@ -48,7 +48,7 @@ void Coconut_804A9968::vfunc_0x24() {
 
 void Coconut_804A9968::draw() {
     SpriteParams_801F5AE0 params;
-    params.field_0x10.mColor.a = field_0x234;
+    params.field_0x10.a = field_0x234;
     if (field_0xc4 != 0) {
         params.field_0x20 = 0;
         params.field_0x1d = fn_8023CB24(field_0xc8) + 1;

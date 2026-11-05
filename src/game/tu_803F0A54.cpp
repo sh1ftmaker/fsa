@@ -193,7 +193,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
             if (lbl_80479920[field_0x1ac][i] != 0) {
                 SpriteParams_801F5AE0 params;
                 params.field_0x26 = 0;
-                params.field_0x10.mColor.a = 255.0f * ratio;
+                params.field_0x10.a = 255.0f * ratio;
                 f32 x;
                 PANE_CENTRE_X(x, lbl_80479920[field_0x1ac][i]);
                 pos.x = toSpriteX(x);
@@ -212,7 +212,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
         for (s32 i = 3; i >= 0; i--) {
             SpriteParams_801F5AE0 params;
             params.field_0x26 = 0;
-            params.field_0x10.mColor.a = 255.0f * ratio;
+            params.field_0x10.a = 255.0f * ratio;
             f32 from;
             f32 to;
             switch (field_0x1ac) {
@@ -243,7 +243,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
         for (s32 i = 0; i < 4; i++) {
             SpriteParams_801F5AE0 params;
             params.field_0x26 = 0;
-            params.field_0x10.mColor.a = 255.0f * ratio;
+            params.field_0x10.a = 255.0f * ratio;
             f32 x;
             PANE_CENTRE_X(x, lbl_80479920[2][i]);
                 pos.x = toSpriteX(x);
@@ -265,7 +265,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
         for (s32 i = 3; i >= 0; i--) {
             SpriteParams_801F5AE0 params;
             params.field_0x26 = 0;
-            params.field_0x10.mColor.a = 255.0f * ratio;
+            params.field_0x10.a = 255.0f * ratio;
             f32 from;
             f32 to;
             switch (field_0x1ac) {

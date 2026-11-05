@@ -50,7 +50,7 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
     s32 flags = 7;
     if (field_0x5d1 != 0) {
         flags = 0x407;
-        params.field_0x10.mColor.a = 0;
+        params.field_0x10.a = 0;
     }
     f32 scale = 1.0f + field_0x52c.field_0x28;
     scale = 0.001f - scale >= 0.0f ? 0.001f : scale;

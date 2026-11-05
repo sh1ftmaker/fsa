@@ -27,7 +27,7 @@ void Poe_8049F330::draw() {
         SpriteParams_801F5AE0 params;
         Mtx mtx;
         drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 40.0f);
-        params.field_0x10.mColor.a = (u8)field_0x270;
+        params.field_0x10.a = (u8)field_0x270;
         params.field_0x30 = 9;
         if (field_0x94 == 3 || field_0x94 == 7) {
             s32 index = field_0x25c;

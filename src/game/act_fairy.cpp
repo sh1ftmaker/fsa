@@ -16,7 +16,7 @@ void Fairy_804A03B8::draw() {
         }
         params.field_0x2d = 1;
         if (field_0x258 == 3) {
-            params.field_0x10.mColor.a = (u8)field_0x270;
+            params.field_0x10.a = (u8)field_0x270;
             params.field_0x30 = 0x11;
         }
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 1, 1.0f, 1.0f);

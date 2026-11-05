@@ -142,7 +142,9 @@ public:
     /* 0x14 */ void* mImage;
     /* 0x18 */ void* field_0x18;
     /* 0x1C */ SpriteParams_801F5AE0 mParams;
-    /* 0x58 */ u8 field_0x58[0x88 - 0x58];
+    // fn_802F6298 / fn_802F654C: a copy of params' matrix, mParams.mMtx then
+    // points here.
+    /* 0x58 */ Mtx mMtx;
 }; // Size: 0x88
 
 // gGameRoot2_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
@@ -169,6 +171,22 @@ public:
     // from fn_804030C4) at pos with the stack SpriteParams_801F5AE0 `params`
     // (fn_801EF830 calls it the same way, 0x801EFC74).
     void fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
+    // 0x802F6298 / 0x802F654C: queue a sprite (pos, the "SOB " resource and
+    // frame, or the image of fn_802F745C, or the fn_802F6CF4 resource) with a
+    // copy of params (field_0x22 / field_0x21 cleared so the queued draw does
+    // not queue again; its matrix copied into the entry) on field_0xd324 /
+    // field_0xc220; false when the queue's 0x20 entries are taken. The draws
+    // call them when params' byte 0x22 / 0x21 is set.
+    u8 fn_802F6298(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image, void* res3,
+                     SpriteParams_801F5AE0* params);
+    u8 fn_802F654C(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image, void* res3,
+                     SpriteParams_801F5AE0* params);
+    // 0x802F6800: called by the three draws (same arguments) when params'
+    // field_0x30 is not -1; adds a field_0x2398 effect of that kind (tables
+    // indexed by field_0x30) on frames where the sprite's resource address
+    // (res + image + res3) matches the frame counter modulo its period.
+    bool fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image, void* res3,
+                     SpriteParams_801F5AE0* params);
     // 5 units (act_shutter, act_red_blue_switch, act_spike_floor_check,
     // tu_802D39B8, tu_8029D898) plus BgRewrite's tile animation. Decodes
     // the 'SCH ' resource `res` (JKRDecomp::checkCompressed / decode, size

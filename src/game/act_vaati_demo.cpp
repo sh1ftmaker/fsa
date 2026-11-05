@@ -98,7 +98,7 @@ void cls_8049D940::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
     params.field_0x30 = 8;
-    params.field_0x10.mColor.a = field_0x234;
+    params.field_0x10.a = field_0x234;
     params.field_0x1c = 1;
     params.field_0x1d = 1;
     mtx[0][3] = 0.0f;
@@ -137,10 +137,10 @@ void cls_8049D940::fn_801158B8() {
     mtx[1][1] = 1.0f;
     mtx[2][2] = 64.0f;
     params.mMtx = mtx;
-    params.field_0x14.mColor.r = 0;
-    params.field_0x14.mColor.g = 0;
-    params.field_0x14.mColor.b = 0;
-    params.field_0x14.mColor.a = 255;
+    params.field_0x14.r = 0;
+    params.field_0x14.g = 0;
+    params.field_0x14.b = 0;
+    params.field_0x14.a = 255;
     params.field_0x1c = 1;
     params.field_0x1d = 3;
     params.field_0x2d = 1;

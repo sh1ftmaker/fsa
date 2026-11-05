@@ -110,7 +110,7 @@ void ReaperShinigami_804A886C::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x1c = 1;
     params.field_0x1d = 1;
-    params.field_0x10.mColor.a = field_0x270;
+    params.field_0x10.a = field_0x270;
     params.field_0x30 = 8;
     drawSprite_801F06F0("enemy_gc_sob.bin", lbl_8046CB60[field_0x24c] + 0x466, &params, 7, 1.0f, 1.0f);
 }

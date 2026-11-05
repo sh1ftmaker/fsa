@@ -125,7 +125,7 @@ void Grass_804A92D0::draw() {
     }
     s32 flags = 7;
     SpriteParams_801F5AE0 params;
-    params.field_0x10.mColor.a = field_0x244;
+    params.field_0x10.a = field_0x244;
     if (field_0xc4) {
         params.field_0x20 = 0;
         flags = -1;

@@ -7,10 +7,10 @@
 #include "types.h"
 #include "dolphin/mtx.h"
 #include "dolphin/gx/GXStruct.h"
+#include "JSystem/JUtility/TColor.h"
 
-// A colour word of SpriteParams_801F5AE0 (0x10 and 0x14), written whole
-// (-1, 0) and also bytewise: fn_801EF830 reads 0x13 (alpha of 0x10),
-// cls_804A4C58::draw adds to r, g and b of 0x14 (lbz/add/stb on 0x14-0x16).
+// A colour word: tu_802EF76C keeps fn_8018330C's colour in one and splits
+// its bytes.
 union SpriteParamsColor_801F5AE0 {
     s32 mWord;
     GXColor mColor;
@@ -22,21 +22,21 @@ union SpriteParamsColor_801F5AE0 {
 // build others on the stack (act_rat 0x800F3C70: the same stores in the same
 // order) to pass to the "SOB " sprite functions (drawSprite_801F06F0, fn_801F02BC,
 // fn_801EFD34, fn_801EF830, fn_801EF574), which NULL-check it and read
-// 0x13, 0x18, 0x1C and 0x1D (fn_801EF830, 0x801EFA64-0x801EFBB0). The
-// constructor sets 0x10 and 0x14 and then again after filling the table (the
-// base constructor's stores show both), hence the separate reset.
+// 0x13, 0x18, 0x1C and 0x1D (fn_801EF830, 0x801EFA64-0x801EFBB0).
+// The colours 0x10 / 0x14 are JUtility::TColor: the constructor stores -1
+// to both (TColor's default constructor) before reset() sets them again,
+// they are written whole (set) and bytewise, and a copy of the parameters
+// copies their four bytes one by one (TileMap_804AA858::fn_802F6298).
 struct SpriteParams_801F5AE0 {
     SpriteParams_801F5AE0() {
-        field_0x10.mWord = -1;
-        field_0x14.mWord = -1;
         reset();
     }
     void reset() {
         for (u8 i = 0; i < 16; i++) {
             field_0x0[i] = i;
         }
-        field_0x10.mWord = -1;
-        field_0x14.mWord = 0;
+        field_0x10.set(0xFFFFFFFF);
+        field_0x14.set(0);
         mMtx = NULL;
         field_0x1c = 0;
         field_0x1d = 0;
@@ -59,8 +59,8 @@ struct SpriteParams_801F5AE0 {
     }
 
     /* 0x00 */ u8 field_0x0[16]; // 0, 1, ..., 15
-    /* 0x10 */ SpriteParamsColor_801F5AE0 field_0x10; // fn_801EF830 reads mColor.a (lbz 0x13)
-    /* 0x14 */ SpriteParamsColor_801F5AE0 field_0x14;
+    /* 0x10 */ JUtility::TColor field_0x10; // fn_801EF830 reads a (lbz 0x13)
+    /* 0x14 */ JUtility::TColor field_0x14;
     // When set, fn_801EF830 concatenates it with the sprite's scale matrix
     // (PSMTXConcat, 0x801EFBD0) and keeps its translation column; act_rat's
     // draw points it at a stack Mtx when its spawn parameter is nonzero.

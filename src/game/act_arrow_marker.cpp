@@ -15,7 +15,7 @@ void ArrowMarker_804A8470::draw() {
     params.field_0x1d = -3;
     switch (field_0x244) {
     case 0: {
-        params.field_0x10.mColor.a = 0x60;
+        params.field_0x10.a = 0x60;
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
@@ -29,7 +29,7 @@ void ArrowMarker_804A8470::draw() {
         if (field_0x250 == 0) {
             break;
         }
-        params.field_0x10.mColor.a = field_0x254;
+        params.field_0x10.a = field_0x254;
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");

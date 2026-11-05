@@ -48,7 +48,7 @@ void Sign_804A94D8::vfunc_0x24() {
 void Sign_804A94D8::draw() {
     s32 flags = 7;
     SpriteParams_801F5AE0 params;
-    params.field_0x10.mColor.a = field_0x234;
+    params.field_0x10.a = field_0x234;
     if (field_0xc4) {
         params.field_0x20 = 0;
         flags = -1;

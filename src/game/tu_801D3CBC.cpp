@@ -50,20 +50,20 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
     }
     if (field_0x560 != 4 && (mState == 8 || mState == 9)) {
         if (mState == 8) {
-            params.field_0x10.mColor.a = 0xFF;
+            params.field_0x10.a = 0xFF;
         } else {
-            params.field_0x10.mColor.a = (u8)(255.0f - 255.0f * mStateTimer / lbl_8053EDF8);
+            params.field_0x10.a = (u8)(255.0f - 255.0f * mStateTimer / lbl_8053EDF8);
         }
-        if (params.field_0x10.mColor.a != 0) {
+        if (params.field_0x10.a != 0) {
             drawSprite_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         }
         params.field_0x0[7] = field_0x560 + 0xC;
         if (mState == 8) {
-            params.field_0x10.mColor.a = (u8)(255.0f * mStateTimer / lbl_8053EDFC);
+            params.field_0x10.a = (u8)(255.0f * mStateTimer / lbl_8053EDFC);
         } else {
-            params.field_0x10.mColor.a = 0xFF;
+            params.field_0x10.a = 0xFF;
         }
-        if (params.field_0x10.mColor.a != 0) {
+        if (params.field_0x10.a != 0) {
             drawSprite_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         }
     } else {
@@ -121,7 +121,7 @@ void ShadowLink2_804A43E8::fn_801D41B8() const {
         SpriteParams_801F5AE0 params;
         params.field_0x30 = 0xE;
         params.field_0x2e = 0;
-        params.field_0x10.mColor.a = alpha;
+        params.field_0x10.a = alpha;
         s32 layer = field_0x4;
         if (viewLayerFlag(layer)) {
             params.field_0x1f = 0;

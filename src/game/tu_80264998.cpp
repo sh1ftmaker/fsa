@@ -102,16 +102,16 @@ void Player_804A6F38::fn_80264998() {
             shadowParams.field_0x2c = 0;
         }
         if (alpha < field_0xca1) {
-            shadowParams.field_0x10.mColor.a = alpha;
+            shadowParams.field_0x10.a = alpha;
         } else {
-            shadowParams.field_0x10.mColor.a = field_0xca1;
+            shadowParams.field_0x10.a = field_0xca1;
         }
-        if (shadowParams.field_0x10.mColor.a >= 0x9F) {
-            shadowParams.field_0x10.mColor.a = 0x9F;
+        if (shadowParams.field_0x10.a >= 0x9F) {
+            shadowParams.field_0x10.a = 0x9F;
         }
         if (mPos.z > 0.0f) {
-            f32 a = shadowParams.field_0x10.mColor.a - 0.5f * mPos.z;
-            shadowParams.field_0x10.mColor.a = 79.0f >= a ? 79.0f : a;
+            f32 a = shadowParams.field_0x10.a - 0.5f * mPos.z;
+            shadowParams.field_0x10.a = 79.0f >= a ? 79.0f : a;
         }
         Mtx scale;
         if (field_0x3b4 == 8) {
@@ -119,13 +119,13 @@ void Player_804A6F38::fn_80264998() {
         } else {
             PSMTXScale(scale, 0.9f, 0.5f, 0.5f);
         }
-        shadowParams.field_0x10.mColor.r = 0;
+        shadowParams.field_0x10.r = 0;
         shadowParams.mMtx = scale;
-        shadowParams.field_0x10.mColor.g = 0;
-        shadowParams.field_0x10.mColor.b = 0;
-        shadowParams.field_0x14.mColor.r = 0x28;
-        shadowParams.field_0x14.mColor.g = 0x28;
-        shadowParams.field_0x14.mColor.b = 0x28;
+        shadowParams.field_0x10.g = 0;
+        shadowParams.field_0x10.b = 0;
+        shadowParams.field_0x14.r = 0x28;
+        shadowParams.field_0x14.g = 0x28;
+        shadowParams.field_0x14.b = 0x28;
         if (field_0x43f != true) {
             if (field_0x3b4 == 8) {
                 drawSob("player_sob.bin", pos + field_0x2b8, field_0x3c4, &shadowParams);
@@ -158,7 +158,7 @@ void Player_804A6F38::fn_80264998() {
     if (field_0x11e9) {
         bodyParams.field_0x30 = index + 4;
     }
-    bodyParams.field_0x10.mColor.a = alpha;
+    bodyParams.field_0x10.a = alpha;
     Mtx bodyScale;
     bodyScale[0][3] = 0.0f;
     bodyScale[1][3] = 0.0f;
@@ -193,24 +193,24 @@ void Player_804A6F38::fn_80264998() {
         field_0xca8--;
         switch (index) {
         case 0:
-            bodyParams.field_0x10.mColor.r = 0;
-            bodyParams.field_0x10.mColor.g = 0xFF;
-            bodyParams.field_0x10.mColor.b = 0;
+            bodyParams.field_0x10.r = 0;
+            bodyParams.field_0x10.g = 0xFF;
+            bodyParams.field_0x10.b = 0;
             break;
         case 1:
-            bodyParams.field_0x10.mColor.r = 0xFF;
-            bodyParams.field_0x10.mColor.g = 0;
-            bodyParams.field_0x10.mColor.b = 0;
+            bodyParams.field_0x10.r = 0xFF;
+            bodyParams.field_0x10.g = 0;
+            bodyParams.field_0x10.b = 0;
             break;
         case 2:
-            bodyParams.field_0x10.mColor.r = 0;
-            bodyParams.field_0x10.mColor.g = 0xFF;
-            bodyParams.field_0x10.mColor.b = 0xFF;
+            bodyParams.field_0x10.r = 0;
+            bodyParams.field_0x10.g = 0xFF;
+            bodyParams.field_0x10.b = 0xFF;
             break;
         case 3:
-            bodyParams.field_0x10.mColor.r = 0xFF;
-            bodyParams.field_0x10.mColor.g = 0;
-            bodyParams.field_0x10.mColor.b = 0xFF;
+            bodyParams.field_0x10.r = 0xFF;
+            bodyParams.field_0x10.g = 0;
+            bodyParams.field_0x10.b = 0xFF;
             break;
         }
     } else if (field_0x400 && !fn_802413E8()) {
@@ -218,13 +218,13 @@ void Player_804A6F38::fn_80264998() {
         if (level < 0) {
             level = 0;
         }
-        bodyParams.field_0x10.mColor.r = level;
-        bodyParams.field_0x10.mColor.g = level;
-        bodyParams.field_0x10.mColor.b = level;
+        bodyParams.field_0x10.r = level;
+        bodyParams.field_0x10.g = level;
+        bodyParams.field_0x10.b = level;
     } else if (!gGameRoot_8053AAF8->field_0x7f && field_0x1208 < 0x40) {
-        bodyParams.field_0x10.mColor.r = field_0x1208 * 4;
-        bodyParams.field_0x10.mColor.g = field_0x1208 * 4;
-        bodyParams.field_0x10.mColor.b = field_0x1208 * 4;
+        bodyParams.field_0x10.r = field_0x1208 * 4;
+        bodyParams.field_0x10.g = field_0x1208 * 4;
+        bodyParams.field_0x10.b = field_0x1208 * 4;
     }
     field_0x3d8 = bodyParams.field_0x1c;
     field_0x3d9 = bodyParams.field_0x1d;
@@ -251,7 +251,7 @@ void Player_804A6F38::fn_80264998() {
     }
     SpriteParams_801F5AE0 floorParams;
     if (field_0x458 == 1 && field_0x3dc == 2) {
-        floorParams.field_0x10.mColor.a = 0x80;
+        floorParams.field_0x10.a = 0x80;
     }
     u16 tile = fn_8022461C(&mPos, field_0x3b4);
     JGeometry::TVec3f floorPos(mPos);

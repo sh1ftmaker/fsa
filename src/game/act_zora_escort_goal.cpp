@@ -12,9 +12,9 @@ void ZoraEscortGoal_8049E424::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
     if (field_0x230 == 0xD || field_0x230 == 0xE) {
-        params.field_0x14.mColor.r = field_0x254;
-        params.field_0x14.mColor.g = field_0x254;
-        params.field_0x14.mColor.b = field_0x254;
+        params.field_0x14.r = field_0x254;
+        params.field_0x14.g = field_0x254;
+        params.field_0x14.b = field_0x254;
     }
     fn_801F02BC("enemy_both2_sob.bin", mAnim27c.mCel + 0x242, &params, 0x407, 0, false, 1.0f, 1.0f);
 }

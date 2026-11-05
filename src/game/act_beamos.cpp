@@ -15,9 +15,9 @@ Beamos_804A40E0::~Beamos_804A40E0() {}
 void Beamos_804A40E0::draw() {
     SpriteParams_801F5AE0 params;
     if (mState == 2) {
-        params.field_0x14.mColor.r = 0x80;
-        params.field_0x14.mColor.g = 0x80;
-        params.field_0x14.mColor.b = 0x80;
+        params.field_0x14.r = 0x80;
+        params.field_0x14.g = 0x80;
+        params.field_0x14.b = 0x80;
     }
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x13C, &params, -1, 1.0f, 1.0f);
     if (mFlags & 0x2000) {

@@ -54,7 +54,7 @@ void cls_804A61C8::fn_80210630(u8 arg0, u8 arg1, u8 arg2, s32 arg3) {
     mtx[2][0] = 0.0f;
     mtx[2][1] = 0.0f;
     mtx[2][2] = 0.33333334f * field_0x54.z;
-    params.field_0x14.mColor.r = arg3;
+    params.field_0x14.r = arg3;
     params.field_0x1c = arg1;
     params.field_0x1d = arg2;
     params.mMtx = mtx;
