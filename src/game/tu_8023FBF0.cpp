@@ -1854,6 +1854,31 @@ bool Player_804A6F38::fn_8024EFA0(bool arg) {
     return false;
 }
 
+// Plays sound `id` for this player (AudioMgr fn_80458880); with the pad
+// flag (fn_80247534) and fn_8030381C the ids 4 / 9 / 5 go to fn_803037D4 as
+// 4 / 5 / 6, and id 3 on a layer of 8 or more as 0xF.
+void Player_804A6F38::fn_8024EFF8(u32 id) {
+    if (fn_80247534() && fn_8030381C(field_0x4)) {
+        if (id == 4) {
+            fn_803037D4(field_0x4, 4);
+            return;
+        }
+        if (id == 9) {
+            fn_803037D4(field_0x4, 5);
+            return;
+        }
+        if (id == 5) {
+            fn_803037D4(field_0x4, 6);
+            return;
+        }
+    }
+    if (field_0x3b4 >= 8 && fn_8030381C(field_0x4) && id == 3) {
+        fn_803037D4(field_0x4, 0xf);
+        return;
+    }
+    gAudioMgr_8053AF80->fn_80458880(id, field_0x4);
+}
+
 void Player_804A6F38::fn_8024F54C(s32 arg) {
     if (field_0x3b4 >= 8 && fn_8030381C(fn_80240628()) && arg == 0x1000002) {
         fn_803037D4(fn_80240628(), 0x10);

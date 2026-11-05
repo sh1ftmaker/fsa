@@ -215,7 +215,7 @@ public:
     s8 fn_8024EE14(); // via fn_8023CA88
     u16 fn_8024EE1C(); // via fn_8023CBC0
     bool fn_8024EFA0(bool arg); // via fn_80230E1C; called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
-    void fn_8024EFF8(s32 arg); // via fn_80230EB8
+    void fn_8024EFF8(u32 id); // via fn_80230EB8 (cmplwi on the id)
     void fn_8024F0E8(s32 value); // via fn_80230FD0
     bool fn_8024F5E4(); // via fn_8023E854
     bool fn_8024F630(); // via fn_8022DBA0
