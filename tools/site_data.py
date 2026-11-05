@@ -162,12 +162,14 @@ def build():
 
     # file key -> record; functions collected per file
     files = {}
+    sj = REPORT.parent / "structural.json"
+    wfns = json.loads(sj.read_text()).get("weighted_fns", {}) if sj.exists() else {}
 
     def file_rec(region, lib, path, display):
         key = (region, lib, path)
         if key not in files:
             files[key] = {"path": path, "name": display, "region": region, "lib": lib, "status": "U",
-                          "code": 0, "cm": 0, "fn": 0, "fm": 0, "data": 0, "dm": 0, "fns": [], "addr": None}
+                          "code": 0, "cm": 0, "wm": 0.0, "fn": 0, "fm": 0, "data": 0, "dm": 0, "fns": [], "addr": None}
         return files[key]
 
     def place_auto(addr):
@@ -207,11 +209,11 @@ def build():
                 addr = int(f["metadata"]["virtual_address"])
                 where = place_auto(addr)
                 if where is None:
-                    loose.append((addr, f))
+                    loose.append((addr, f, wfns.get(name, {}).get(f["name"], 0)))
                     continue
                 region, lib, path, display = where
                 rec = file_rec(region, lib, path, display)
-                add_fn(rec, f, addr, tail=True)
+                add_fn(rec, f, addr, tail=True, w=wfns.get(name, {}).get(f["name"], 0))
             continue
         short = name[len(PREFIX):] if name.startswith(PREFIX) else name
         path = split_by_unit.get(short, short)
@@ -233,17 +235,17 @@ def build():
         rec["data"] += int(m.get("total_data", 0))
         rec["dm"] += int(m.get("matched_data", 0))
         for f in u.get("functions", []):
-            add_fn(rec, f, int(f["metadata"]["virtual_address"]), tail=False)
+            add_fn(rec, f, int(f["metadata"]["virtual_address"]), tail=False, w=wfns.get(name, {}).get(f["name"], 0))
     if loose:
         owners = sorted((fn[1], rec) for rec in files.values() for fn in rec["fns"])
         starts = [o[0] for o in owners]
-        for addr, f in loose:
+        for addr, f, w in loose:
             rec = owners[max(bisect.bisect_left(starts, addr) - 1, 0)][1]
-            add_fn(rec, f, addr, tail=True)
+            add_fn(rec, f, addr, tail=True, w=w)
     return report, files, data_unsplit
 
 
-def add_fn(rec, f, addr, tail):
+def add_fn(rec, f, addr, tail, w=0):
     size = int(f["size"])
     fuzzy = f.get("fuzzy_match_percent", 0.0)
     matched = fuzzy == 100.0
@@ -253,6 +255,8 @@ def add_fn(rec, f, addr, tail):
     if matched:
         rec["cm"] += size
         rec["fm"] += 1
+    else:
+        rec["wm"] += w  # partial credit (tools/structural.py), bytes
     rec["addr"] = addr if rec["addr"] is None else min(rec["addr"], addr)
     # [name, address, size, matched-ness: 100 = matched, else floor of fuzzy %, -1 = not split yet]
     rec["fns"].append([name, addr, size, -1 if tail else (100 if matched else int(fuzzy))])
@@ -295,9 +299,10 @@ def write(report, files, data_unsplit, subject):
                 out_files.append(row)
             (OUT / "lib" / f"{lid}.json").write_text(json.dumps({"id": lid, "files": detail}, separators=(",", ":")))
             out_libs.append({"id": lid, "n": lib, "c": sum(r["code"] for r in recs), "cm": sum(r["cm"] for r in recs),
+                             "wm": round(sum(r["cm"] + r["wm"] for r in recs)),
                              "f": sum(r["fn"] for r in recs), "fm": sum(r["fm"] for r in recs), "files": out_files})
         out_libs.sort(key=lambda l: -l["c"])
-        rt = {k: sum(l[k] for l in out_libs) for k in ("c", "cm", "f", "fm")}
+        rt = {k: sum(l[k] for l in out_libs) for k in ("c", "cm", "f", "fm", "wm")}
         reg_tot[rid] = rt
         regions.append({"id": rid, "n": rname, "desc": rdesc, **rt, "libs": out_libs})
 
@@ -321,6 +326,8 @@ def write(report, files, data_unsplit, subject):
         totals.update({
             "fns_structural": st["structural"]["functions"], "code_structural": st["structural"]["code"],
             "fns_structural_close": st["close"]["functions"], "code_structural_close": st["close"]["code"],
+            # weighted: honest bytes + size * match % for structurally done/close functions
+            "code_weighted": round(st["weighted"]["code"]), "code_weighted_partial": round(st["weighted"]["partial"]),
         })
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
                "totals": totals, "regions": regions}
@@ -350,6 +357,7 @@ def write(report, files, data_unsplit, subject):
         "data": totals["data_matched"], "data_total": totals["data"],
         "matching": matching,
         "regions": {rid: [t["cm"], t["c"], t["fm"], t["f"]] for rid, t in reg_tot.items()},
+        **({"code_weighted": totals["code_weighted"]} if "code_weighted" in totals else {}),
     })
     hist_path.write_text(json.dumps(hist, separators=(",", ":"), indent=None).replace("},{", "},\n{"))
     return summary

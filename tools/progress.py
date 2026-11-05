@@ -41,13 +41,21 @@ def main() -> None:
             f"(same instructions, register/order differences only; +{st['close']['functions']} close)"
         )
 
-    regions = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0, 0]))
+        w = st.get("weighted")
+        if w:
+            print(
+                f"weighted: {w['percent']:.1f} % of code ({int(round(w['code']))} / {int(st['total_code'])} bytes; "
+                f"honest 100 % functions + partial credit for structurally matched functions)"
+            )
+
+    regions = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0, 0, 0]))
     for (region, lib, _), rec in files.items():
         row = regions[region][lib or "-"]
         row[0] += rec["cm"]
         row[1] += rec["code"]
         row[2] += rec["fm"]
         row[3] += rec["fn"]
+        row[5] += rec["cm"] + rec["wm"]
         row[4] += sum(1 for fn in rec["fns"] if fn[3] == -1)  # functions in no split unit
 
     for rid, rname, _ in site_data.REGIONS:
@@ -57,10 +65,14 @@ def main() -> None:
         cm, c, fm, f, unsplit = (sum(r[i] for r in libs.values()) for i in range(5))
         pct = 100 * cm / c if c else 0
         note = f"  ({unsplit} not in any split unit)" if unsplit else ""
-        print(f"  {rname:30} {fm:5} / {f:<5} functions  {pct:6.2f} % of {c} bytes{note}")
+        wnote = ""
+        if rid == "game" and sj.exists() and st.get("weighted"):
+            wm = sum(r[5] for r in libs.values())
+            wnote = f"  (weighted {100 * wm / c:.2f} %)" if c else ""
+        print(f"  {rname:30} {fm:5} / {f:<5} functions  {pct:6.2f} % of {c} bytes{note}{wnote}")
         if rid == "game":
             continue  # game libraries are address bands and resource-name groups
-        for lib, (lcm, lc, lfm, lf, lun) in sorted(libs.items(), key=lambda kv: -kv[1][1]):
+        for lib, (lcm, lc, lfm, lf, lun, _w) in sorted(libs.items(), key=lambda kv: -kv[1][1]):
             if lfm < lf or lcm < lc:
                 lpct = 100 * lcm / lc if lc else 0
                 lnote = f"  ({lun} unsplit)" if lun else ""

@@ -98,6 +98,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 0 20px 40px; }
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
   padding: 16px 18px 14px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
+.stats.five { grid-template-columns: repeat(5, 1fr); }
 .stat::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c, var(--gold)); }
 .stat .k { font: 600 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink3); }
 .stat .v { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 2px; font-variant-numeric: tabular-nums; }
@@ -241,7 +242,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 10px 20px 40px; color: var(
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; padding-top: 28px; }
   .emblem { width: min(240px, 64vw); }
-  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stats, .stats.five { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
   body { font-size: 14px; }

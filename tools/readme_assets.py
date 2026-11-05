@@ -593,9 +593,14 @@ def status_block(summary):
            None: "`main.dol` was not linked for this run"}[tot["sha1_ok"]]
     regions = "; ".join(f"{r['n']} {num(r['fm'])} / {num(r['f'])} functions ({pct(r['cm'], r['c'])})"
                         for r in summary["regions"])
+    weighted = ""
+    if tot.get("code_weighted"):
+        weighted = (f"; weighted {pct(tot['code_weighted'], tot['code'], 2)} ({num(tot['code_weighted'])} bytes, honest "
+                    f"plus partial credit for {num(tot['fns_structural'] - tot['fns_matched'] + tot['fns_structural_close'])} "
+                    f"structurally matched functions)")
     return (f"Status ({day}, honest report, written by `tools/site_data.py`): "
             f"{num(tot['fns_matched'])} of {num(tot['fns'])} functions, {num(tot['code_matched'])} of "
-            f"{num(tot['code'])} bytes of code ({pct(tot['code_matched'], tot['code'], 2)}). {regions}. "
+            f"{num(tot['code'])} bytes of code ({pct(tot['code_matched'], tot['code'], 2)}){weighted}. {regions}. "
             f"{num(tot['matching'])} of {num(tot['units'])} split units are Matching; {sha}.")
 
 

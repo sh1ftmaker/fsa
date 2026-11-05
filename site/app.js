@@ -160,6 +160,9 @@ function drawStats() {
   const t = S.totals;
   const tiles = [
     { k: "Code matched", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes`, c: "var(--green)" },
+    ...(t.code_weighted == null ? [] : [{ k: "Weighted match", v: ratio(t.code_weighted, t.code), fmt: (x) => x.toFixed(2), unit: "%",
+      d: `${num(t.code_weighted)} of ${num(t.code)} bytes <br>includes partial credit for functions that are structurally matched. Honest (${pct(ratio(t.code_matched, t.code))}) counts only byte-identical functions`,
+      title: "Weighted match: honest matched bytes plus, for each structurally matched function, its size times its match percent. Honest counts only byte-identical functions.", c: "var(--gold)" }]),
     { k: "Functions", v: t.fns_matched, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.fns)}`, d: `${pct(ratio(t.fns_matched, t.fns))} of all functions`, m: ratio(t.fns_matched, t.fns), c: "var(--red)" },
     { k: "Data matched", v: ratio(t.data_matched, t.data), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.data_matched)} of ${num(t.data)} bytes`, c: "var(--blue)" },
     { k: "Units Matching", v: t.matching, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.units)}`,
@@ -167,7 +170,8 @@ function drawStats() {
       m: ratio(t.matching, t.units), c: "var(--purple)" },
   ];
   const host = $("#stats");
-  host.innerHTML = tiles.map((x, i) => `<div class="stat" style="--c:${x.c}"><div class="k">${x.k}</div>
+  host.classList.toggle("five", tiles.length === 5);
+  host.innerHTML = tiles.map((x, i) => `<div class="stat" style="--c:${x.c}"${x.title ? ` title="${esc(x.title)}"` : ""}><div class="k">${x.k}</div>
     <div class="v"><span data-i="${i}">0</span> <small>${x.unit}</small></div><div class="d">${x.d}</div>
     <div class="meter"><i data-w="${x.m ?? x.v}"></i></div></div>`).join("");
   tiles.forEach((x, i) => countUp(host.querySelector(`[data-i="${i}"]`), x.v, x.fmt));
@@ -178,7 +182,8 @@ function drawStats() {
   if (sx) {
     sx.innerHTML = t.fns_structural == null ? "" :
       `<span class="sx-k">structurally matched</span> <b>${num(t.fns_structural)}</b> / ${num(t.fns)} functions &middot; ${num(t.code_structural)} bytes`
-      + ` <span class="sx-d">(same instructions, register/order differences only; the honest numbers above count byte-identical functions only)</span>`;
+      + ` <span class="sx-d">(same instructions, register/order differences only; the honest numbers above count byte-identical functions only)</span>`
+      + (t.code_weighted == null ? "" : (g => ` <span class="sx-d">Weighted game code: ${g ? pct(ratio(g.wm, g.c)) : "–"} (honest ${g ? pct(ratio(g.cm, g.c)) : "–"}).</span>`)(S.regions.find((r) => r.id === "game")));
   }
 
   const seal = $("#seal");
