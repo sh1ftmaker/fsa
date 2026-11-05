@@ -31,7 +31,9 @@ static inline f32 getScale(f32 z) {
     return 192.0f / (192.0f - h);
 }
 
-// The height under pos (fn_802F5E9C), inlined into fn_802F5570 as well.
+// The height under pos: the body of fn_802F5E9C, which the original inlined into
+// fn_802F5570 (defined before it here, so it cannot be inlined from there; a
+// call-through wrapper costs fn_802F5E9C 0.6 %, hence two copies).
 inline f32 cls_804AA858::getHeight(const JGeometry::TVec3f* pos) {
     f32 z = pos->z;
     if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
@@ -255,11 +257,27 @@ bool cls_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
     return result;
 }
 
-// FIXME: 97.9. In getHeight the 8.0f literal and field_0x2368.y swap f5/f6, dy takes f9
-// (original reuses pos->y's f8), and the ix * 0xC / iy * 0x30C products swap r0/r3.
-// Its .sdata2 literals are @NNN until .sdata2 is emitted in order.
+// FIXME: 98.4. The 8.0f literal and field_0x2368.y swap f5/f6 (and 0.125f is in f6, not f7); the
+// ix * 0xC / iy * 0x30C products swap r0/r3. Its .sdata2 literals are @NNN until the
+// functions before it (fn_802F5040 ...) emit the unit's literals in order.
 f32 cls_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
-    return getHeight(pos);
+    f32 z = pos->z;
+    if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
+        pos->x < field_0x2368.x + 8.0f * field_0x2380 && pos->y >= field_0x2368.y &&
+        pos->y < field_0x2368.y + 8.0f * field_0x2384)
+    {
+        f32 dx = pos->x - field_0x2368.x;
+        f32 dy = pos->y - field_0x2368.y;
+        s32 ix = 0.125f * dx;
+        s32 iy = 0.125f * dy;
+        JGeometry::TVec3f* p = &field_0x100[field_0x2388][iy][ix];
+        f32 fx = 0.125f * (dx - 8.0f * ix);
+        f32 fy = 0.125f * (dy - 8.0f * iy);
+        f32 top = p[0].z * (1.0f - fx) + p[1].z * fx;
+        f32 bottom = (1.0f - fx) * p[65].z + fx * p[66].z;
+        z += (1.0f - fy) * top + fy * bottom;
+    }
+    return z;
 }
 
 // The scale for a height z (callers pass mPos.z).
