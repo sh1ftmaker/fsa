@@ -7,7 +7,8 @@
 #include "game/PlayerBit.h"
 #include "game/ActorId.h"
 
-// File-scope tables in address order (.rodata). Positions are offsets from mPos per
+// File-scope tables in address order (.rodata). The per-pose tables are flat Vec[4 * n] indexed
+// [pose + facing * n]: a 2-D Vec[4][n] indexed [facing][pose] changes the codegen (tried). Positions are offsets from mPos per
 // facing (0x3DC: right, left, down, up) and animation pose (0x3FD).
 // The held thing's position per facing and pose in the lift (state 0x11, fn_8026441C).
 static const Vec lbl_8046B250[4 * 4] = {
@@ -189,6 +190,7 @@ static inline bool letsGo_8025FCC8(const Player_804A6F38& p) {
         || (isField0xd64One(p) && !holdsPlayer(p)
             && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
         || (p.field_0xd6c == ACTOR_KEY0 && (state == 0x1E || state == 0x1F))
+        // plain == 1 here: via isField0xd64One it scores slightly lower (87.38 vs 87.39)
         || (p.field_0xd64 == 1 && !holdsPlayer(p) && (state == 0x4C || state == 0x4D))) {
         return false;
     }
@@ -524,7 +526,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
     }
 }
 
-// FIXME: 87.02. Two differences: the original tests state 0x11 on its own before the folded
+// FIXME: 87.39. Two differences: the original tests state 0x11 on its own before the folded
 // range 0x12-0x16 (ours folds 0x11-0x16), and it recomputes the field_0xd64 == 1 byte
 // (subfic / cntlzw / extrwi) inside each inlined fn_8025F590 where ours reuses it.
 bool Player_804A6F38::fn_8025FCC8() {
