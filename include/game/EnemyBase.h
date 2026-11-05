@@ -342,14 +342,18 @@ s32 fn_801CD950(f32* value, f32 target, f32 step);
 // from it, then fn_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
 s32 fn_801CD30C(s32 value);
 
-extern "C" {
-// game/tu_801CB270.cpp (same unit, not written yet): the step fn_801CD950 wraps.
+// game/tu_801CB270.cpp: the step fn_801CD950 wraps.
 s32 fn_801CD9F0(f32* value, f32 target, f32 step);
 // Convert a position between the two view-box spaces: out = (in.x, in.y)
 // minus the view's 0xCC/0xD0 box corner plus its 0xDC/0xE0 one (fn_801CD150),
 // or the other way round (fn_801CD0D0); z is copied. r3 in, r4 out.
 void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
 void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
+// game/tu_801CB270.cpp. Spawns an effect on `layer` at *pos; the two s32
+// arguments are the effect's height and depth - 1.
+void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
+
+extern "C" {
 
 // game/tu_801CB270.cpp (owner unit, not written yet; 1 caller unit,
 // tu_80206B30 vfunc_0x58). Each fetches the actor a player's getter
@@ -371,10 +375,6 @@ bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
 // outputs: *outPlayer = -1 and *outVel zeroed when given; returns whether it
 // was found.
 bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
-// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CB688, 0x94 bytes;
-// 1 caller unit, tu_801E3618 fn_801E4348). Spawns an effect on `layer` at
-// *pos; the two s32 arguments are passed on unnamed (types from the callee).
-void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
 // game/tu_801CB270.cpp (owner unit, not written yet; 0x801CC9F8, 0x124
 // bytes; 1 caller unit, tu_801C5B08 fn_801C6784). Called with the position
 // of an actor and its layer (mPos, field_0x4); returns whether it holds.

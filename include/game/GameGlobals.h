@@ -568,12 +568,13 @@ void fn_801CD930(s16* angle, s32 target, s32 step);
 // tu_801C71BC) test the result as a byte (clrlwi. 24).
 bool fn_801C5340();
 
-// game/tu_801CB270.cpp functions its source doesn't define yet.
+// game/tu_801CB270.cpp: the stepper fn_801CD930 wraps; true when *angle
+// reached target.
+bool fn_801CD970(s16* angle, s32 target, s32 step);
+
+// game/tu_801CB270.cpp function its source doesn't define yet.
 extern "C" {
 s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
-// game/tu_801CB270.cpp (not written yet): the stepper fn_801CD930 wraps; true
-// when *angle reached target.
-bool fn_801CD970(s16* angle, s32 target, s32 step);
 }
 
 // game/tu_804023D0.cpp; called from game/tu_80376FA0.cpp and others.
@@ -604,12 +605,10 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 // is one of the codes 0x40-0x49.
 bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer);
 
-// game/tu_801CB270.cpp (not written yet); called from game/tu_801D2C60.cpp.
+// game/tu_801CB270.cpp; called from game/tu_801D2C60.cpp.
 // Two effects (fn_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
-extern "C" {
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4);
-}
 
 // game/tu_801CB270.cpp; called from game/tu_80207548.cpp and
 // game/tu_80220F54.cpp. Forwards to ActorManager_804A5800::fn_801F8544 with
@@ -617,15 +616,13 @@ void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4);
 // its last argument. Returns the result (an actor serial).
 s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag);
 
-// game/tu_801CB270.cpp (not written yet); called from game/tu_801BD8C0.cpp.
+// game/tu_801CB270.cpp; called from game/tu_801BD8C0.cpp.
 // Maps a 16-bit angle to the one mirrored about the 0x4000 axes (a piecewise
 // 0x4000 - a, a - 0x4000 negated, ... on the four quadrants). The body
 // clrlwi 16s the argument for its unsigned compares and ends every path in
 // extsh; the caller (0x801BD908) extends the result again, so the return
 // type is an int.
-extern "C" {
 s32 fn_801CB7CC(s16 angle);
-}
 
 // game/tu_801CB270.cpp; called from game/tu_801DE714.cpp. Whether fn_80230188
 // holds for every player that takes part (fn_80138A30); takes no arguments.
