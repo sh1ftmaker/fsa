@@ -672,11 +672,13 @@ void Player_804A6F38::fn_8026022C() {
     }
 }
 
-// FIXME: 88.23. missing/extra (41 fewer): every call, branch and constant is in place, but
-// the original builds the layer-moved points in stack TVec2 temporaries (the my-layer
-// offset at sp 0x18 / 0x50, its frsp'd copy at 0x38, the probe at 0x58; 0x10 / 0x40 /
-// 0x08 / 0x48 / 0x30 / 0x28 for the midpoint), i.e. JGeometry TVec2 helpers this tree
-// doesn't have yet; ours keeps them in registers. Kept for the .sdata2 order (first 0.5).
+// FIXME: 88.23. missing/extra (41 fewer): every call, constant and field is in place (the
+// other rows are register numbers, one 0.5 reload and one beq/bne flip that follow the
+// missing code). The original builds the layer-moved points in stack TVec2 temporaries
+// (the my-layer offset at sp 0x18 / 0x50, its frsp'd copy at 0x38, the probe at 0x58;
+// 0x10 / 0x40 / 0x08 / 0x48 / 0x30 / 0x28 for the midpoint): TVec2 operator+ / operator-
+// style helpers that neither this tree nor the tp donor's JGeometry has; ours keeps them
+// in registers. Kept for the .sdata2 order (first 0.5).
 // Lift another player standing in front (16 along the facing, state 0x11, 'PLAY'): it
 // must be present and free, and both its spot seen from this layer and the midpoint of
 // the two (on both layers) must not be blocked (fn_802260DC / fn_802684A4 unless tile
@@ -1114,6 +1116,7 @@ void Player_804A6F38::fn_80261750() {
         } else {
             ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
             if (actor != 0) {
+                // Per-field copies: the original moves floats (lfs / stfs), not words.
                 mPos.x = field_0x300.x;
                 mPos.y = field_0x300.y;
                 mPos.z = field_0x300.z;
@@ -1136,6 +1139,7 @@ void Player_804A6F38::fn_80261750() {
         field_0xd78.z -= 0.25;
         JGeometry::TBox2f box;
         box = *layerBox(field_0x3b4);
+        // The view box inset by 16 (the original subtracts the -16 from i, adds it to f).
         box.i.x -= -16.0f;
         box.i.y -= -16.0f;
         box.f.x += -16.0f;
@@ -1733,6 +1737,7 @@ void Player_804A6F38::fn_8026441C() {
             field_0x3fd = 1;
             pose = 3;
         } else if (field_0x3fc == 48) {
+            // Its own test in the original (bge, then bne on the same compare with 48).
             field_0x3fd = 0;
             pose = 0;
         } else if (field_0x3fc <= 56) {

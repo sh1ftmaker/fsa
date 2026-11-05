@@ -490,17 +490,6 @@ static inline void leaveBy88(cls_804A71A8* p) {
     }
 }
 
-// Whether the owner was pushed along x (field_0x48 at -x or +x).
-static inline bool pushedSideways(const cls_804A71A8* p) {
-    if (p->field_0x48[1] == 1) {
-        return true;
-    }
-    if (p->field_0x48[0] == 1) {
-        return true;
-    }
-    return false;
-}
-
 // Advances the frames-shut-in counter; false when it was reset.
 static inline bool advanceCounter(cls_804A71A8* p) {
     if (p->field_0xbc > 0) {
@@ -830,7 +819,7 @@ void cls_804A71A8::fn_80269574() {
             field_0x4->field_0xd1c.set(field_0x4->mPos);
             field_0x4->field_0xd1c.z = 0.0f;
         } else if (!viewLayerFlag(field_0x4->field_0x3b4) && field_0x48[2] == 1 && field_0x48[3] != 1 &&
-                   !pushedSideways(this) && !anySet(field_0x30))
+                   !pushedAlongX() && !anySet(field_0x30))
         {
             // Pushed toward -y only, with passable tiles 8 below: remember the spot.
             JGeometry::TVec2f below;
