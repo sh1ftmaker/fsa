@@ -82,3 +82,35 @@ The same trick inlines fn_80222668 (the state change, later in .text) into
 vfunc_0x90, which the original calls out of line: vfunc_0x90 and fn_80222668
 drop out of the report (game functions -1). Reverted. Would need a second trick
 (e.g. `#pragma dont_inline` around fn_80222668) on top; not tried.
+
+## Open questions to revisit once more code is written (2026-11-05)
+
+Not tricks: patterns no honest form explains yet. Revisit after the
+surrounding code exists, since finishing the rest of a unit may show the cause.
+
+- **Literals pooled before their first visible use.** tu_8016A2B4 (ten GXColor
+  objects then 0.125/1/0.5/0 ahead of fn_8016A7DC's literals), tu_801213EC (8.0f
+  before 0.0f, 10430.378f before -24f), tu_803BC6F0 (0, -200, 200 first, used
+  only by later functions) and tu_8027E5BC (1.5f, 3.0f). Literals are created per
+  function in compile order, and an inline helper's aggregate initializers when
+  the inline is first read. Candidates: early inline helpers, dead code the
+  optimizer removed, or a deferred/reordered codegen mode. Each unit's
+  checkpoint has the pool layout.
+- **Inlining of later-defined functions.** tu_803099FC (fn_80309A9C/B74/C4C,
+  fn_80309D90), tu_8043A0E8 (fn_804408F0), tu_80256C74, tu_8016A2B4
+  (fn_8016DA6C), tu_802F5040 (fn_802F5570) and tu_803944C8 (do_reset,
+  fn_803A2F74): the original inlines a function defined after the caller,
+  which `-inline auto` can't. Same root as the tu_80222CC4 defer_codegen
+  finding above; decide them together.
+- **Weak destructor emitted first.** tu_8045A640: the original's .text starts
+  with the weak __dt__Q29GameAudio16CustomSoundTableFv; ours emits it after
+  getBgmSeqResourceID, so the unit can't link although every function matches.
+- **Save-data layout.** lbl_8050EC80 is a 0x20-byte header, three 0xC8-byte
+  rows at 0x20 and three 0x9C4-byte blocks at 0x280 (size 0x21E0), but users
+  still view it as SaveRow_8050EC80[] shifted by 0x20. Migrating all users to
+  one SaveData object drops tu_801DE714 __dt__12cls_804A51E4Fv (100 → 98.6 %) and
+  act_fairy init (97.86 → 97.39 %); FileSelect's constructor omits its
+  save-data loop until this is settled (progress/game__tu_803BC6F0.md).
+- **The 12 units still out of address order** (tools/order_check.py): reordering
+  changes inlining or the .sdata2 pool in each; same family as the two items
+  above.
