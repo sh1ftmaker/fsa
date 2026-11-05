@@ -464,18 +464,34 @@ u16 fn_803846A4(s32 index) {
 
 u32 fn_803846BC(u32 msg) {
     MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
-    u32 count = inf1->count;
     u32 i = 0;
-    for (; i < count; i++) {
+    for (; i < inf1->count; i++) {
         if (inf1->entries[i].id == msg) {
             msg = i;
             break;
         }
     }
-    if (i >= count) {
+    if (i >= inf1->count) {
         msg = 0x12B;
     }
     return msg;
+}
+
+bool fn_8038470C(s32 player, u32 msg) {
+    s32 index = windowIndex(player);
+    lbl_8053AD78->mWindows[index]->fn_803913E0();
+    u32 mapped = fn_80383EB0(index, msg);
+    if (fn_8037F1E4(index) == 5) {
+        lbl_8053AD78->mWindows[index]->fn_80390E40(mapped, true);
+        lbl_8053AD78->mWindows[windowIndex(index)]->field_0x24 = 1;
+        return true;
+    }
+    if (fn_8037F1E4(index) == 8) {
+        lbl_8053AD78->mWindows[index]->fn_80390E40(mapped, true);
+        lbl_8053AD78->mWindows[windowIndex(index)]->field_0x24 = 6;
+        return true;
+    }
+    return false;
 }
 
 bool fn_80388CAC(s32 player, s32 serial) {
@@ -530,6 +546,251 @@ void fn_803894BC(s32 player, s32 value) {
         value = 9;
     }
     lbl_8053AD78->mWindows[index]->field_0x3c = value;
+}
+
+// FIXME: 99.3. One instruction fewer: the original copies player into r31 (mr r31, r26)
+// before the loop reuses r26 as the index; ours keeps player in place.
+void MessageManager_804AF070::fn_803895EC(s32 player, s32 arg, bool a, bool b) {
+    s32 mapped = windowIndex(player);
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8037F1E4(i) == 9) {
+            if (a) {
+                if (i == mapped) {
+                    fn_8022FB1C(player, arg);
+                } else if (fn_8022CAF8(i) == 4) {
+                    fn_8022FB1C(fn_8022EA0C(i), arg);
+                } else {
+                    fn_8022FB1C(i, arg);
+                }
+            }
+            if (b) {
+                fn_8023061C(i, false);
+            }
+            lbl_8053AD78->mWindows[windowIndex(i)]->field_0x24 = 0;
+        }
+    }
+}
+
+// FIXME: 97.7. One instruction more than the original (an mr copying the
+// loop index before the fn_8022FA80 call) and the registers shifted by one.
+bool MessageManager_804AF070::fn_80389964(s32 exclude, u32 msg, u32 flags) {
+    u8 ready[4];
+    for (int i = 0; i < 4; i++) {
+        ready[i] = 0;
+        if (i != exclude && (lbl_8053AAF8->field_0x82 & (u8)(1 << i))) {
+            if (!fn_8022FA80(i) && fn_8037F1E4(i) == 0) {
+                if ((flags & 4) || (flags & 2) || msg == 0x265) {
+                    if (fn_80230188(i)) {
+                        ready[i] = 1;
+                        for (int j = 0; j < 4; j++) {
+                            if (fn_8022E438(i, j) && !fn_80230188(j)) {
+                                ready[i] = 0;
+                            }
+                        }
+                    }
+                } else if (fn_802300EC(i)) {
+                    ready[i] = 1;
+                    for (int j = 0; j < 4; j++) {
+                        if (fn_8022E438(i, j) && !fn_802300EC(j)) {
+                            ready[i] = 0;
+                        }
+                    }
+                }
+            }
+        } else {
+            ready[i] = 2;
+        }
+    }
+    if (ready[0] && ready[1] && ready[2] && ready[3]) {
+        return true;
+    }
+    return false;
+}
+
+bool fn_80389BF0(s32 player, s32 value) {
+    s32 index = windowIndex(player);
+    if (fn_8037F1E4(index) == 0 && !fn_80303750(index)) {
+        lbl_8053AD78->mWindows[index]->fn_80390E40(value, false);
+        lbl_8053AD78->mWindows[windowIndex(index)]->field_0x24 = 1;
+        lbl_8053AD78->mWindows[index]->field_0x28 |= 0x1000;
+        lbl_8053AD78->mWindows[index]->field_0x28 |= 0x80;
+        lbl_8053AD78->mWindows[index]->field_0x28 |= 0x20;
+        return true;
+    }
+    return false;
+}
+
+bool MessageManager_804AF070::fn_80389F78(s32 player, s32 arg, s32 value, JGeometry::TVec3f pos, u32 flags) {
+    if (fn_8037F1E4(player) == 0) {
+        u16 bits = flags;
+        if (bits & 0x11F) {
+            s32 plain = bits & 0x40;
+            if (plain) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x40;
+            } else if (bits & 0x200) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x200;
+            } else if (bits & 0x400) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x400;
+            }
+            lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
+            JGeometry::TVec3f boxPos = pos;
+            MessageWindow_804AF490* window = lbl_8053AD78->mWindows[player];
+            window->field_0x50 = boxPos;
+            window->field_0x30 = -1;
+            lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 6;
+            lbl_8053AD78->field_0xfc[lbl_8053AD78->field_0xf8] = windowIndex(player);
+            lbl_8053AD78->field_0xf8++;
+            if (bits & 2) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x80;
+            } else {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x1;
+            }
+            if (bits & 8) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x10;
+            } else if (bits & 0x10) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x20;
+            }
+            if (bits & 0x100) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x100;
+            }
+            if (bits & 0x4000) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x2000;
+            }
+            if (plain == 0) {
+                lbl_8053AF80->fn_80458880(0x28, -1);
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+// FIXME: 99.7. Regalloc only: the actor parameter, the option bits and the flags sit in
+// r29 / r30 / r28 in the original, r30 / r29 / r29 here.
+bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 serial, JGeometry::TVec3f pos, u32 flags) {
+    if (fn_8037F1E4(player) == 0) {
+        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
+            bool ready = false;
+            u16 bits = flags;
+            if (flags & 0x1000) {
+                if (fn_8037EC98(actor, flags)) {
+                    ready = true;
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x800;
+                }
+            } else if (fn_8022FCF0(actor, serial) && fn_8037EC98(actor, flags)) {
+                fn_8022FC54(actor, serial);
+                ready = true;
+            }
+            if (ready) {
+                s32 plain = bits & 0x40;
+                if (plain) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x40;
+                } else if (bits & 0x200) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x200;
+                } else if (bits & 0x400) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x400;
+                }
+                lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
+                JGeometry::TVec3f boxPos = pos;
+                MessageWindow_804AF490* window = lbl_8053AD78->mWindows[player];
+                window->field_0x50 = boxPos;
+                window->field_0x30 = serial;
+                lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 6;
+                lbl_8053AD78->field_0xfc[lbl_8053AD78->field_0xf8] = windowIndex(player);
+                lbl_8053AD78->field_0xf8++;
+                if (bits & 2) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x80;
+                }
+                if (bits & 0x80) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x4;
+                }
+                if (bits & 4) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x8;
+                }
+                if (bits & 0x100) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x100;
+                }
+                if (bits & 0x4000) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x2000;
+                }
+                if (plain == 0) {
+                    lbl_8053AF80->fn_80458880(0x28, -1);
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// FIXME: 99.7. Regalloc only: the flags parameter is r30 and the option bits r31 in the
+// original, the other way round here.
+bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 serial, u32 flags) {
+    if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
+        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
+            u16 bits = flags;
+            bool ready = false;
+            if (flags & 0x1000) {
+                if (fn_8037EC98(actor, flags)) {
+                    ready = true;
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x800;
+                }
+            } else if (fn_8022FCF0(actor, serial) && fn_8037EC98(actor, flags)) {
+                fn_8022FC54(actor, serial);
+                ready = true;
+            }
+            if (ready) {
+                lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
+                lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 1;
+                if (bits & 2) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x80;
+                }
+                if (bits & 0x80) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x4;
+                }
+                if (bits & 4) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x8;
+                }
+                if (bits & 0x100) {
+                    lbl_8053AD78->mWindows[player]->field_0x28 |= 0x100;
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// FIXME: 99.98. Regalloc only: the second fn_8037EC98 call passes the flags register
+// (r29) in the original; ours reuses the option-bits copy (r30).
+bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 flags) {
+    if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
+        u16 bits = flags;
+        if (bits & 0x91F) {
+            lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
+            lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 1;
+            if (bits & 2) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x80;
+            } else {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x1;
+            }
+            if (bits & 8) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x10;
+            } else if (bits & 0x10) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x20;
+            }
+            if (bits & 0x100) {
+                lbl_8053AD78->mWindows[player]->field_0x28 |= 0x100;
+            }
+            return true;
+        }
+        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 && fn_8037EC98(actor, flags)) {
+            lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
+            lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 1;
+            return true;
+        }
+    }
+    return false;
 }
 
 void fn_8038D454() {

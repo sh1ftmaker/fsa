@@ -193,7 +193,7 @@ public:
     /* 0x28 */ u16 field_0x28;
     /* 0x2A */ u8 field_0x2a[0x2C - 0x2A];
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
-    /* 0x30 */ u8 field_0x30[0x34 - 0x30];
+    /* 0x30 */ s32 field_0x30; // fn_80389F78 sets it to -1
     /* 0x34 */ s32 field_0x34; // fn_80389254 stores a value clamped to 99999
     /* 0x38 */ s32 field_0x38; // fn_8038911C: the same
     /* 0x3C */ s16 field_0x3c; // fn_803894BC: clamped to 9
@@ -202,7 +202,7 @@ public:
     /* 0x44 */ u8 field_0x44;
     /* 0x48 */ cls_804AF5A0* field_0x48;
     /* 0x4C */ cls_804AF5A0* field_0x4c;
-    /* 0x50 */ u8 field_0x50[0x5C - 0x50];
+    /* 0x50 */ JGeometry::TVec3f field_0x50; // fn_80389F78 stores the box position
 
     // fn_80390818: maps the window state to a 0-2 class (0: state 0 or 9+,
     // 1: 6-8, 2: 1-5). Placeholder name, no caller identified yet.
@@ -216,6 +216,9 @@ public:
     // Placeholder name: called by fn_8038D570 each frame for a player that
     // takes part (game/tu_80390818.cpp, not written yet).
     void fn_80390EBC();
+    // Placeholder name: called by fn_8038470C (game/tu_80390818.cpp, not
+    // written yet).
+    void fn_803913E0();
 
     // fn_80390E40: stores value at 0x20 when the state is 0 or flag is set and
     // returns true; false otherwise.
@@ -262,6 +265,39 @@ public:
     // the four windows and the text box, and zeroes the state below.
     MessageManager_804AF070();
     /* 0x08 */ virtual ~MessageManager_804AF070(); // fn_8038D90C
+
+    // 2 uses (this unit's fn_8038AD24 / fn_8038BD08 / fn_8038C678). Whether every
+    // player is ready for a message: players that do not take part, and
+    // `exclude`, count as ready; the others need their window idle (state 0) and
+    // fn_80230188 (flags 2 / 4 or msg 0x265) or fn_802300EC to hold for them and
+    // for everyone fn_8022E438 pairs them with.
+    bool fn_80389964(s32 exclude, u32 msg, u32 flags);
+    // (this is the manager and is unused.)
+
+    // 0x8038C60C (not written: the inlined fn_803846BC loop comes out in another
+    // order, 82 %): fn_8038A984 with msg turned into its INF1 index.
+    bool fn_8038C60C(s32 player, s32 actor, u32 msg, s32 serial, u32 flags);
+    // 0x8038B8A8 (this unused; callers pass the manager): the variant without a
+    // serial: the window goes to state 1 for flags with one of 0x91F, else when
+    // the player presses 0x100 and fn_8037EC98 (actor) holds.
+    bool fn_8038B8A8(s32 player, s32 actor, s32 value, u32 flags);
+    // 0x8038A984 (this unused; callers pass the manager): like fn_8038A42C
+    // without a position: the window goes to state 1 (an actor `serial`
+    // speaks); needs fn_80303750 to be 0 and fn_8022C8EC to hold.
+    bool fn_8038A984(s32 player, s32 actor, s32 value, s32 serial, u32 flags);
+    // 0x8038A42C (this unused; callers pass the manager): the same for an actor
+    // `serial`: `actor` is the player that talks (fn_8037EC98, fn_8022FCF0 /
+    // fn_8022FC54 with serial), the window's field_0x30 gets serial.
+    bool fn_8038A42C(s32 player, s32 actor, s32 value, s32 serial, JGeometry::TVec3f pos, u32 flags);
+    // 0x80389F78 (this unused; callers pass the manager): opens the player's
+    // window when it is idle and flags has one of 0x11F: option bits from flags,
+    // fn_80390E40(value, false), position pos, state 6, and the window index
+    // appended to field_0xfc; true then. arg is unused.
+    bool fn_80389F78(s32 player, s32 arg, s32 value, JGeometry::TVec3f pos, u32 flags);
+    // 0x803895EC (this unused; callers pass the manager): for every window in
+    // state 9, optionally (a) fn_8022FB1C(player or its mapped index, arg) and
+    // (b) fn_8023061C(window, 0); then the window goes back to state 0.
+    void fn_803895EC(s32 player, s32 arg, bool a, bool b);
 
     /* 0x000 */ // vtable
     // new J2DTextBox("rock_24_20_4i_e.bfn", field_0x80, 0x64) (fn_8038DA00).
@@ -376,6 +412,12 @@ bool fn_80388EEC(s32 player);
 // field_0xe5 presses 0x100 or it runs out), the counter field_0x44 against
 // field_0x48 and the view bit field_0xea, and the byte flags lbl_8053ACD8.
 void fn_8038D570();
+// 14 units. Returns 0 or 1. A window in state 5 goes to state 1, one in state
+// 8 to state 6 (both after fn_80390E40(mapped msg, true)); true then, else false.
+bool fn_8038470C(s32 player, u32 msg);
+// Opens the window for message `value` when it is idle and the player's
+// fn_80303750 is 0: state 1, option bits 0x1000 / 0x80 / 0x20 set; true then.
+bool fn_80389BF0(s32 player, s32 value);
 // The window's field_0x2c plus 1, wrapping to 0 after 3.
 s32 fn_8037EE8C(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).
@@ -415,8 +457,9 @@ void fn_8038D4A8();
 // writes '0' + value (addi 0x30). Returns a width summed from mFont's
 // vtable slot 0x2C per character (f1). value: s32 is a guess.
 f32 fn_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
-// 14 units. Returns 0 or 1.
-bool fn_8038470C(s32 player, u32 msg);
+// Message msg mapped for window `window` (this unit, not written yet); fn_8038470C
+// passes the result to the window's fn_80390E40.
+u32 fn_80383EB0(s32 window, u32 msg);
 // 1 unit (game/tu_80403D84.cpp) + 1 (tu_8043A0E8). Builds the text of message
 // msg into out (lines wrapped to width / height, the two counters are
 // fn_803832BC-style arguments); returns a line count that starts at 1.
