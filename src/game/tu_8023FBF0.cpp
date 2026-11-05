@@ -533,6 +533,17 @@ s32 Player_804A6F38::fn_80241544() {
     return field_0xc18;
 }
 
+// Sets field_0xc14 to arg and this player's bit in lbl_8053AED0's
+// field_0x255, unless field_0xc10 is 0 (or 2 with arg 2 or more).
+bool Player_804A6F38::fn_8024157C(s32 arg) {
+    if (field_0xc10 == 0 || (arg >= 2 && field_0xc10 == 2)) {
+        return false;
+    }
+    field_0xc14 = arg;
+    lbl_8053AED0->field_0x255 |= (u8)(1 << field_0x4);
+    return true;
+}
+
 s32 Player_804A6F38::fn_802415CC() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -991,6 +1002,28 @@ bool Player_804A6F38::fn_80247564() {
     return lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(field_0x11ec));
 }
 
+bool Player_804A6F38::fn_80247594(s32 arg) {
+    s32 team = field_0xd60;
+    if (team >= 0) {
+        return fn_80237488(team, arg);
+    }
+    if (field_0x1201 == 1) {
+        return true;
+    }
+    if (field_0xc08 >= arg) {
+        field_0xc08 -= arg;
+        field_0x1201 = 1;
+        return true;
+    }
+    if (field_0xc08 > 0) {
+        field_0xc08 = 0;
+        field_0x1201 = 1;
+        return true;
+    }
+    field_0x1202 = true;
+    return false;
+}
+
 // Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
 // not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
 // game/PlayerBit.h) with no partner asking for state 0 gets
@@ -1103,28 +1136,6 @@ void Player_804A6F38::fn_8024762C() {
         }
         fn_8022AD64();
     }
-}
-
-bool Player_804A6F38::fn_80247594(s32 arg) {
-    s32 team = field_0xd60;
-    if (team >= 0) {
-        return fn_80237488(team, arg);
-    }
-    if (field_0x1201 == 1) {
-        return true;
-    }
-    if (field_0xc08 >= arg) {
-        field_0xc08 -= arg;
-        field_0x1201 = 1;
-        return true;
-    }
-    if (field_0xc08 > 0) {
-        field_0xc08 = 0;
-        field_0x1201 = 1;
-        return true;
-    }
-    field_0x1202 = true;
-    return false;
 }
 
 s32 Player_804A6F38::fn_80247B9C() {
@@ -1846,6 +1857,10 @@ bool Player_804A6F38::fn_8025190C(bool a) {
     return false;
 }
 
+u8 Player_804A6F38::fn_8025196C(s32 index) {
+    return field_0xbf0->field_0x48[index];
+}
+
 bool Player_804A6F38::fn_80251AEC(s32 state) {
     return requestState(this, state);
 }
@@ -1897,6 +1912,10 @@ void Player_804A6F38::fn_80252F14(const JGeometry::TVec3f* offset) {
 
 void Player_804A6F38::fn_80252F40(s32 arg) {
     field_0xd28 = arg;
+}
+
+JGeometry::TVec3f* Player_804A6F38::fn_80252F48() {
+    return &field_0x11b4;
 }
 
 void Player_804A6F38::fn_80252F50(s32 arg) {

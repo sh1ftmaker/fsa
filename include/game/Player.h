@@ -119,6 +119,8 @@ public:
     bool fn_802413E8(); // via fn_80230188
     bool fn_802413F0(); // via fn_8023188C
     void fn_80241454(u8 value); // 0xC80 = value (stb r4)
+    // Called by tu_8022AD64 (0x80237214, tests r3 with clrlwi.).
+    bool fn_8024157C(s32 arg);
     // Whether pos is inside the view box for `layer`: the camera's
     // (fn_8030C2A8) on layers below 8, else this player's box (0xBEC).
     bool fn_80241DD0(s32 layer, const JGeometry::TVec3f* pos); // via fn_8022BA58
@@ -237,6 +239,10 @@ public:
     void fn_80252F14(const JGeometry::TVec3f* offset); // via fn_8023DFF4
     void fn_80252F40(s32 arg); // via fn_8023E080
     void fn_80252F50(s32 arg); // via fn_8023CC5C
+    // tu_8026FC20 (0x8027A698) passes field_0x3dc and tests r3 (clrlwi.).
+    u8 fn_8025196C(s32 index);
+    // tu_8027E5BC (0x8027FBC0) reads a TVec3f through it (psq_l / lfs 8).
+    JGeometry::TVec3f* fn_80252F48();
     void fn_80252F5C(s32 arg); // via fn_8023CCE8
     s32 fn_80252F68(); // via fn_8023CD74
     s32 fn_80252F74(); // via fn_8023CE10
