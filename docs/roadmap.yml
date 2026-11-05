@@ -81,7 +81,7 @@ phases:
         title: Library map and game file map
         desc: >-
           lib_map.tsv places every library file; tu_map.tsv found the game's
-          files from .ctors, extab and float pools, now 529 game units in
+          files from .ctors, extab and float pools, now 528 game units in
           splits.txt with their data ranges.
         status: done
         covers: [game]
