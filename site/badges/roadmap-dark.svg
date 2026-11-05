@@ -1,63 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="230" viewBox="0 0 960 230" role="img" aria-label="Roadmap: phase 1, Infrastructure and honest measurement: done; phase 2, Dolphin SDK and GX: done; phase 3, JSystem waves and the pikmin2 imports: done; phase 4, Library leftovers and per-file grinding: under way; phase 5, Game code: under way; phase 6, The naming track: under way; phase 7, Fakematch debt and crack passes: later">
-<title>Roadmap: phase 1, Infrastructure and honest measurement: done; phase 2, Dolphin SDK and GX: done; phase 3, JSystem waves and the pikmin2 imports: done; phase 4, Library leftovers and per-file grinding: under way; phase 5, Game code: under way; phase 6, The naming track: under way; phase 7, Fakematch debt and crack passes: later</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="230" viewBox="0 0 960 230" role="img" aria-label="Roadmap: phase 1, Foundations: done; phase 2, Libraries: under way; phase 3, Game code: the method: under way; phase 4, Game code: part by part: under way; phase 5, Crack pass, names and the finish: later">
+<title>Roadmap: phase 1, Foundations: done; phase 2, Libraries: under way; phase 3, Game code: the method: under way; phase 4, Game code: part by part: under way; phase 5, Crack pass, names and the finish: later</title>
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.4s cubic-bezier(.2,.8,.2,1) both; } @keyframes rise { from { transform: scaleY(0); } } .pulse { animation: pulse 2.8s ease-in-out infinite; } @keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
-<defs><clipPath id="rc0"><path d="M102.857 36L120.857 62L102.857 88L84.8571 62Z"/></clipPath><clipPath id="rc1"><path d="M228.571 36L246.571 62L228.571 88L210.571 62Z"/></clipPath><clipPath id="rc2"><path d="M354.286 36L372.286 62L354.286 88L336.286 62Z"/></clipPath><clipPath id="rc3"><path d="M480 36L498 62L480 88L462 62Z"/></clipPath><clipPath id="rc4"><path d="M605.714 36L623.714 62L605.714 88L587.714 62Z"/></clipPath><clipPath id="rc5"><path d="M731.429 36L749.429 62L731.429 88L713.429 62Z"/></clipPath><clipPath id="rc6"><path d="M857.143 36L875.143 62L857.143 88L839.143 62Z"/></clipPath></defs>
+<defs><clipPath id="rc0"><path d="M128 36L146 62L128 88L110 62Z"/></clipPath><clipPath id="rc1"><path d="M304 36L322 62L304 88L286 62Z"/></clipPath><clipPath id="rc2"><path d="M480 36L498 62L480 88L462 62Z"/></clipPath><clipPath id="rc3"><path d="M656 36L674 62L656 88L638 62Z"/></clipPath><clipPath id="rc4"><path d="M832 36L850 62L832 88L814 62Z"/></clipPath></defs>
 <rect x="0.5" y="0.5" width="959" height="229" rx="14" fill="#161a34" stroke="#262b4e"/>
-<line x1="124.9" x2="206.6" y1="62" y2="62" stroke="#353b66" stroke-width="2"/>
-<line x1="250.6" x2="332.3" y1="62" y2="62" stroke="#353b66" stroke-width="2"/>
-<line x1="376.3" x2="458.0" y1="62" y2="62" stroke="#353b66" stroke-width="2"/>
-<line x1="502.0" x2="583.7" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
-<line x1="627.7" x2="709.4" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
-<line x1="753.4" x2="835.1" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
-<path d="M102.857 36L120.857 62L102.857 88L84.8571 62Z" fill="#d29a2e" fill-opacity="0.1" stroke="#d29a2e" stroke-width="1.6"/>
-<g clip-path="url(#rc0)"><rect class="rise" style="animation-delay:0.00s" x="84.85714285714286" y="36.00" width="36" height="52.00" fill="#d29a2e"/></g>
-<path d="M102.85714285714286 36L120.85714285714286 62L102.85714285714286 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="102.9" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 1</text>
-<text x="102.9" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Infrastructure</text>
-<text x="102.9" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">and honest</text>
-<text x="102.9" y="166" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">measurement</text>
-<text x="102.9" y="214" text-anchor="middle" class="mono" font-size="11" fill="#d29a2e">done · 5/5</text>
-<path d="M228.571 36L246.571 62L228.571 88L210.571 62Z" fill="#3d9cf0" fill-opacity="0.1" stroke="#3d9cf0" stroke-width="1.6"/>
-<g clip-path="url(#rc1)"><rect class="rise" style="animation-delay:0.12s" x="210.57142857142856" y="36.00" width="36" height="52.00" fill="#3d9cf0"/></g>
-<path d="M228.57142857142856 36L246.57142857142856 62L228.57142857142856 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="228.6" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 2</text>
-<text x="228.6" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Dolphin SDK and</text>
-<text x="228.6" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">GX</text>
-<text x="228.6" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3d9cf0">done · 3/3</text>
-<path d="M354.286 36L372.286 62L354.286 88L336.286 62Z" fill="#ef5b52" fill-opacity="0.1" stroke="#ef5b52" stroke-width="1.6"/>
-<g clip-path="url(#rc2)"><rect class="rise" style="animation-delay:0.24s" x="336.2857142857143" y="36.00" width="36" height="52.00" fill="#ef5b52"/></g>
-<path d="M354.2857142857143 36L372.2857142857143 62L354.2857142857143 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="354.3" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 3</text>
-<text x="354.3" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">JSystem waves and</text>
-<text x="354.3" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">the pikmin2</text>
-<text x="354.3" y="166" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">imports</text>
-<text x="354.3" y="214" text-anchor="middle" class="mono" font-size="11" fill="#ef5b52">done · 7/7</text>
-<path class="pulse" d="M480 27L505 62L480 97L455 62Z" fill="#ef5b52" fill-opacity="0.18"/>
-<path d="M480 36L498 62L480 88L462 62Z" fill="#ef5b52" fill-opacity="0.1" stroke="#ef5b52" stroke-width="1.6"/>
-<g clip-path="url(#rc3)"><rect class="rise" style="animation-delay:0.36s" x="462.0" y="48.61" width="36" height="39.39" fill="#ef5b52"/></g>
+<line x1="150.0" x2="282.0" y1="62" y2="62" stroke="#353b66" stroke-width="2"/>
+<line x1="326.0" x2="458.0" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
+<line x1="502.0" x2="634.0" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
+<line x1="678.0" x2="810.0" y1="62" y2="62" stroke="#353b66" stroke-width="2" stroke-dasharray="3 5"/>
+<path d="M128 36L146 62L128 88L110 62Z" fill="#d29a2e" fill-opacity="0.1" stroke="#d29a2e" stroke-width="1.6"/>
+<g clip-path="url(#rc0)"><rect class="rise" style="animation-delay:0.00s" x="110.0" y="36.00" width="36" height="52.00" fill="#d29a2e"/></g>
+<path d="M128.0 36L146.0 62L128.0 62Z" fill="#fff" fill-opacity="0.16"/>
+<text x="128.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 1</text>
+<text x="128.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Foundations</text>
+<text x="128.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#d29a2e">done · 8/8</text>
+<path class="pulse" d="M304 27L329 62L304 97L279 62Z" fill="#d29a2e" fill-opacity="0.18"/>
+<path d="M304 36L322 62L304 88L286 62Z" fill="#d29a2e" fill-opacity="0.1" stroke="#d29a2e" stroke-width="1.6"/>
+<g clip-path="url(#rc1)"><rect class="rise" style="animation-delay:0.12s" x="286.0" y="38.16" width="36" height="49.84" fill="#d29a2e"/></g>
+<path d="M304.0 36L322.0 62L304.0 62Z" fill="#fff" fill-opacity="0.16"/>
+<text x="304.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 2</text>
+<text x="304.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Libraries</text>
+<text x="304.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#d29a2e">under way · 3/4</text>
+<path class="pulse" d="M480 27L505 62L480 97L455 62Z" fill="#3d9cf0" fill-opacity="0.18"/>
+<path d="M480 36L498 62L480 88L462 62Z" fill="#3d9cf0" fill-opacity="0.1" stroke="#3d9cf0" stroke-width="1.6"/>
+<g clip-path="url(#rc2)"><rect class="rise" style="animation-delay:0.24s" x="462.0" y="54.18" width="36" height="33.82" fill="#3d9cf0"/></g>
 <path d="M480.0 36L498.0 62L480.0 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="480.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 4</text>
-<text x="480.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Library leftovers</text>
-<text x="480.0" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">and per-file</text>
-<text x="480.0" y="166" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">grinding</text>
-<text x="480.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#ef5b52">under way · 0/3</text>
-<path class="pulse" d="M605.714 27L630.714 62L605.714 97L580.714 62Z" fill="#3aae5c" fill-opacity="0.18"/>
-<path d="M605.714 36L623.714 62L605.714 88L587.714 62Z" fill="#3aae5c" fill-opacity="0.1" stroke="#3aae5c" stroke-width="1.6"/>
-<g clip-path="url(#rc4)"><rect class="rise" style="animation-delay:0.48s" x="587.7142857142857" y="57.28" width="36" height="30.72" fill="#3aae5c"/></g>
-<path d="M605.7142857142857 36L623.7142857142857 62L605.7142857142857 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="605.7" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 5</text>
-<text x="605.7" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Game code</text>
-<text x="605.7" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3aae5c">under way · 4/7</text>
-<path class="pulse" d="M731.429 27L756.429 62L731.429 97L706.429 62Z" fill="#c35ee6" fill-opacity="0.18"/>
-<path d="M731.429 36L749.429 62L731.429 88L713.429 62Z" fill="#c35ee6" fill-opacity="0.1" stroke="#c35ee6" stroke-width="1.6"/>
-<g clip-path="url(#rc5)"><rect class="rise" style="animation-delay:0.60s" x="713.4285714285714" y="66.77" width="36" height="21.23" fill="#c35ee6"/></g>
-<path d="M731.4285714285714 36L749.4285714285714 62L731.4285714285714 62Z" fill="#fff" fill-opacity="0.16"/>
-<text x="731.4" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 6</text>
-<text x="731.4" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">The naming track</text>
-<text x="731.4" y="214" text-anchor="middle" class="mono" font-size="11" fill="#c35ee6">under way · 1/3</text>
-<path d="M857.143 36L875.143 62L857.143 88L839.143 62Z" fill="#d29a2e" fill-opacity="0.04" stroke="#d29a2e" stroke-width="1.6" stroke-dasharray="3 3" stroke-opacity="0.6"/>
-<text x="857.1" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 7</text>
-<text x="857.1" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#b4b9d8">Fakematch debt</text>
-<text x="857.1" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#b4b9d8">and crack passes</text>
-<text x="857.1" y="214" text-anchor="middle" class="mono" font-size="11" fill="#7c82a8">later · 0/2</text>
+<text x="480.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 3</text>
+<text x="480.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Game code: the method</text>
+<text x="480.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3d9cf0">under way · 4/6</text>
+<path class="pulse" d="M656 27L681 62L656 97L631 62Z" fill="#3aae5c" fill-opacity="0.18"/>
+<path d="M656 36L674 62L656 88L638 62Z" fill="#3aae5c" fill-opacity="0.1" stroke="#3aae5c" stroke-width="1.6"/>
+<g clip-path="url(#rc3)"><rect class="rise" style="animation-delay:0.36s" x="638.0" y="75.26" width="36" height="12.74" fill="#3aae5c"/></g>
+<path d="M656.0 36L674.0 62L656.0 62Z" fill="#fff" fill-opacity="0.16"/>
+<text x="656.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 4</text>
+<text x="656.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#eceefb">Game code: part by part</text>
+<text x="656.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#3aae5c">under way · 0/7</text>
+<path d="M832 36L850 62L832 88L814 62Z" fill="#c35ee6" fill-opacity="0.04" stroke="#c35ee6" stroke-width="1.6" stroke-dasharray="3 3" stroke-opacity="0.6"/>
+<text x="832.0" y="114" text-anchor="middle" class="mono" font-size="10.5" letter-spacing="0.12em" fill="#7c82a8">PHASE 5</text>
+<text x="832.0" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#b4b9d8">Crack pass, names and</text>
+<text x="832.0" y="150" text-anchor="middle" font-size="12.5" font-weight="600" fill="#b4b9d8">the finish</text>
+<text x="832.0" y="214" text-anchor="middle" class="mono" font-size="11" fill="#7c82a8">later · 1/5</text>
 </svg>

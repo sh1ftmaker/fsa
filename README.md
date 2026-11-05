@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://sh1ftmaker.github.io/fsa/">
-    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: a four-gem emblem whose gems fill to each region's matched code, and the share of the code matched">
+    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: an emblem with a gem for each part of the game code and a gold one for the libraries, each filled to its matched code, and the honest and weighted share of the code matched">
   </a>
 </p>
 
@@ -19,6 +19,8 @@
 <p align="center">
   <a href="https://sh1ftmaker.github.io/fsa/"><b>Progress site</b></a>
   &nbsp;·&nbsp;
+  <a href="#progress"><b>Progress</b></a>
+  &nbsp;·&nbsp;
   <a href="#roadmap"><b>Roadmap</b></a>
   &nbsp;·&nbsp;
   <a href="CONTRIBUTING.md"><b>Contributing</b></a>
@@ -26,102 +28,54 @@
   <a href="docs/PLAN.md"><b>Plan</b></a>
 </p>
 
----
-
-## About
-
-This repository reconstructs the C and C++ source of *Four Swords Adventures*
-(USA). The original Metrowerks CodeWarrior compilers build it back into a
-`main.dol` that is identical, byte for byte, to the retail one. Readable,
-correctly typed source with real names is part of the goal, in the style of
-zeldaret/tp and KATAM.
-
-| Property | Value |
-|---|---|
-| Game | The Legend of Zelda: Four Swords Adventures |
-| Platform | Nintendo GameCube |
-| Version | USA, `G4SE01` |
-| `main.dol` SHA-1 | `d86b3d9f785566e34264035e140ef3daf3cc19f0` |
-| Compilers | Metrowerks CodeWarrior GC/2.6 (game, JSystem, MSL, TRK); the SDK's own builds |
-| Build system | ninja + [decomp-toolkit](https://github.com/encounter/decomp-toolkit) + [objdiff](https://github.com/encounter/objdiff) |
-
-## Progress
-
-<!-- progress:start -->
-As of 2026-11-05: **35.15 %** of the code and **8,338 / 11,557** functions match. 449 of 902 split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
-<!-- progress:end -->
-
-The whole DOL by library: tile area is bytes of code, the fill is the share
-matched. Click a region to open it in the
-[interactive treemap](https://sh1ftmaker.github.io/fsa/#treemap) on the
-progress site, which goes down to single functions.
-
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game" title="Game code: 20.0 % of 3,573,784 bytes matched, 3,625 / 6,789 functions. Open it on the progress site."><img src="site/badges/treemap/game.svg" width="100%" alt="Game code: 20.0 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game/game-boot" title="Boot to main menu: 17.5 % of 1,258,252 bytes matched, 1,375 / 2,394 functions. Open it on the progress site."><img src="site/badges/treemap/boot.svg" width="35.02%" alt="Boot to main menu: 17.5 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-battle" title="Main menu to Shadow Battle: 13.6 % of 644,344 bytes matched, 654 / 1,336 functions. Open it on the progress site."><img src="site/badges/treemap/battle.svg" width="18.02%" alt="Main menu to Shadow Battle: 13.6 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-actors" title="Actors: 27.2 % of 1,027,824 bytes matched, 1,084 / 1,962 functions. Open it on the progress site."><img src="site/badges/treemap/actors.svg" width="28.76%" alt="Actors: 27.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-other" title="Everything else: 19.6 % of 643,364 bytes matched, 512 / 1,097 functions. Open it on the progress site."><img src="site/badges/treemap/other.svg" width="18%" alt="Everything else: 19.6 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
 <!-- treemap:end -->
 
+<p align="center"><sub>The whole DOL: area is bytes of code, the fill is the share byte-identical. The top row is the
+game code in its four parts, the bottom row the libraries. Click a block to open it in the
+<a href="https://sh1ftmaker.github.io/fsa/#treemap">interactive treemap</a>, which goes down to single functions.</sub></p>
+
+---
+
+## Progress
+
+<!-- progress:start -->
+As of 2026-11-05:
+
+- **Honest: 35.15 %** of the code is byte-identical, **8,338 / 11,557** functions (1,561,464 of 4,442,032 bytes; 100 % functions only).
+- **Weighted: 39.06 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 8,677 / 11,557 functions (same instructions, register or order differences only), +85 close.
+- **449 of 902** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+<!-- progress:end -->
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site/badges/regions-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="site/badges/regions-light.svg">
-  <img src="site/badges/regions-light.svg" width="100%" alt="Matched code and functions per region: game code, JSystem, Dolphin SDK, GX, and MSL, Runtime and TRK">
+  <img src="site/badges/regions-light.svg" width="100%" alt="Progress overview: where the remaining work is, the libraries as one group, and the game code's four parts with honest and weighted bars">
 </picture>
 
-<details>
-<summary>Numbers per region and library</summary>
+### Libraries
 
-<!-- regions:start -->
-| Region | Code matched | Functions |
-|---|--:|--:|
-| [Game code](https://sh1ftmaker.github.io/fsa/#/game) | 20.0 % of 3,573,784 bytes | 3,625 / 6,789 |
-| [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 |
-| [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 |
-| [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 |
-| [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 |
-| **Whole DOL** | **35.15 %** of 4,442,032 bytes | **8,338 / 11,557** |
+The Dolphin SDK, GX, JSystem, and MSL, Runtime and MetroTRK: imported from
+other decompilations and finished file by file. What is left is a few dozen
+holdouts.
 
-<details><summary>Game code: 14 file groups</summary>
+<!-- libraries:start -->
+**97.6 %** of 868,248 bytes of library code and **4,713 / 4,768** functions match (weighted 98.6 %).
 
-| File group | Code matched | Functions |
-|---|--:|--:|
-| [enemy\_\*\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-enemy-sob-refs) | 15.9 % of 995,968 bytes | 644 / 1,540 |
-| [unnamed 80200000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80200000) | 24.0 % of 474,992 bytes | 797 / 1,332 |
-| [other hints](https://sh1ftmaker.github.io/fsa/#/game/game-other-hints) | 13.1 % of 437,936 bytes | 296 / 684 |
-| [unnamed 80380000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80380000) | 12.5 % of 373,388 bytes | 154 / 398 |
-| [unnamed 80180000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80180000) | 31.5 % of 305,692 bytes | 598 / 898 |
-| [unnamed 80280000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80280000) | 25.6 % of 282,868 bytes | 293 / 505 |
-| [kk\_\* HUD refs](https://sh1ftmaker.github.io/fsa/#/game/game-kk-hud-refs) | 7.63 % of 227,908 bytes | 84 / 232 |
-| [unnamed 80300000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80300000) | 24.9 % of 210,468 bytes | 238 / 430 |
-| [unnamed 80100000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80100000) | 36.0 % of 102,260 bytes | 195 / 312 |
-| [unnamed 80400000+](https://sh1ftmaker.github.io/fsa/#/game/game-unnamed-80400000) | 23.6 % of 91,948 bytes | 108 / 201 |
-| [THP](https://sh1ftmaker.github.io/fsa/#/game/game-thp) | 79.9 % of 27,704 bytes | 162 / 168 |
-| [mg\_\* minigames](https://sh1ftmaker.github.io/fsa/#/game/game-mg-minigames) | 49.6 % of 25,132 bytes | 29 / 42 |
-| [player\_sob refs](https://sh1ftmaker.github.io/fsa/#/game/game-player-sob-refs) | 27.5 % of 16,208 bytes | 16 / 36 |
-| [linked before JSystem](https://sh1ftmaker.github.io/fsa/#/game/game-linked-before-jsystem) | 100 % of 1,312 bytes | 11 / 11 |
+| Library | Code matched | Functions | Left |
+|---|--:|--:|--:|
+| [Dolphin SDK](https://sh1ftmaker.github.io/fsa/#/sdk) | 100 % of 131,224 bytes | 610 / 610 | – |
+| [GX](https://sh1ftmaker.github.io/fsa/#/gx) | 100 % of 33,660 bytes | 172 / 172 | – |
+| [JSystem](https://sh1ftmaker.github.io/fsa/#/jsystem) | 97.9 % of 630,852 bytes | 3,650 / 3,702 | 52 |
+| [MSL, Runtime, TRK](https://sh1ftmaker.github.io/fsa/#/runtime) | 90.0 % of 72,512 bytes | 281 / 284 | 3 |
 
-</details>
-
-<details><summary>JSystem: 12 libraries</summary>
-
-| Library | Code matched | Functions |
-|---|--:|--:|
-| [J3D](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j3d) | 98.2 % of 173,328 bytes | 1,166 / 1,191 |
-| [J2DGraph](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j2dgraph) | 97.1 % of 159,196 bytes | 878 / 887 |
-| [JAudio](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jaudio) | 96.7 % of 120,700 bytes | 747 / 755 |
-| [JKernel](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jkernel) | 98.8 % of 55,724 bytes | 324 / 327 |
-| [JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jparticle) | 98.7 % of 54,360 bytes | 200 / 202 |
-| [JUtility](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jutility) | 100 % of 47,044 bytes | 190 / 190 |
-| [JMessage](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmessage) | 100 % of 7,936 bytes | 79 / 79 |
-| [JFramework](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jframework) | 100 % of 7,092 bytes | 21 / 21 |
-| [JSupport](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jsupport) | 100 % of 3,264 bytes | 29 / 29 |
-| [JMath](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmath) | 96.5 % of 1,256 bytes | 6 / 7 |
-| [JGadget](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jgadget) | 100 % of 936 bytes | 10 / 10 |
-| [JStudio\_JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jstudio-jparticle) | 0 % of 16 bytes | 0 / 4 |
-
-</details>
+<details><summary>Every library</summary>
 
 <details><summary>Dolphin SDK: 18 libraries</summary>
 
@@ -148,11 +102,22 @@ progress site, which goes down to single functions.
 
 </details>
 
-<details><summary>GX: 1 library</summary>
+<details><summary>JSystem: 12 libraries</summary>
 
 | Library | Code matched | Functions |
 |---|--:|--:|
-| [gx](https://sh1ftmaker.github.io/fsa/#/gx/gx-gx) | 100 % of 33,660 bytes | 172 / 172 |
+| [J3D](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j3d) | 98.2 % of 173,328 bytes | 1,166 / 1,191 |
+| [J2DGraph](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-j2dgraph) | 97.1 % of 159,196 bytes | 878 / 887 |
+| [JAudio](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jaudio) | 96.7 % of 120,700 bytes | 747 / 755 |
+| [JKernel](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jkernel) | 98.8 % of 55,724 bytes | 324 / 327 |
+| [JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jparticle) | 98.7 % of 54,360 bytes | 200 / 202 |
+| [JUtility](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jutility) | 100 % of 47,044 bytes | 190 / 190 |
+| [JMessage](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmessage) | 100 % of 7,936 bytes | 79 / 79 |
+| [JFramework](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jframework) | 100 % of 7,092 bytes | 21 / 21 |
+| [JSupport](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jsupport) | 100 % of 3,264 bytes | 29 / 29 |
+| [JMath](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jmath) | 96.5 % of 1,256 bytes | 6 / 7 |
+| [JGadget](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jgadget) | 100 % of 936 bytes | 10 / 10 |
+| [JStudio\_JParticle](https://sh1ftmaker.github.io/fsa/#/jsystem/jsystem-jstudio-jparticle) | 0 % of 16 bytes | 0 / 4 |
 
 </details>
 
@@ -165,13 +130,38 @@ progress site, which goes down to single functions.
 | [Runtime](https://sh1ftmaker.github.io/fsa/#/runtime/runtime-runtime) | 100 % of 3,844 bytes | 33 / 33 |
 
 </details>
-<!-- regions:end -->
 
 </details>
+<!-- libraries:end -->
+
+### Game code
+
+FSA's own code is most of what remains. It is cut into four parts: the two
+stretches of the [boot path](docs/BOOT_PATH.md) (every file the game runs
+from power-on to the main menu, then on to a live Shadow Battle, measured in
+Dolphin), then the actors and everything else. This is also the order the
+work goes in.
+
+<!-- game:start -->
+**20.0 %** of 3,573,784 bytes of game code and **3,625 / 6,789** functions match (weighted 24.6 %).
+
+| Part | Code matched | Weighted | Functions | Files Matching |
+|---|--:|--:|--:|--:|
+| [Boot to main menu](https://sh1ftmaker.github.io/fsa/#/game/game-boot) | 17.5 % of 1,258,252 bytes | 21.9 % | 1,375 / 2,394 | 6 / 83 |
+| [Main menu to Shadow Battle](https://sh1ftmaker.github.io/fsa/#/game/game-battle) | 13.6 % of 644,344 bytes | 16.0 % | 654 / 1,336 | 8 / 60 |
+| [Actors](https://sh1ftmaker.github.io/fsa/#/game/game-actors) | 27.2 % of 1,027,824 bytes | 33.9 % | 1,084 / 1,962 | 64 / 264 |
+| [Everything else](https://sh1ftmaker.github.io/fsa/#/game/game-other) | 19.6 % of 643,364 bytes | 23.8 % | 512 / 1,097 | 27 / 121 |
+
+- **Boot to main menu:** Code the game runs from power-on to the main menu: main(), the framework, the THP movie player, the title screen and the screens built at boot, such as file select, the game mode screen and the GBA link (boot path phases 1 and 2).
+- **Main menu to Shadow Battle:** Code first run between the main menu and a live Shadow Battle: stage load, the players, the field and the actors on it (boot path phase 3).
+- **Actors:** Enemies, NPCs and objects not on the boot path: act\_\* files and files whose classes the actor spawner builds.
+- **Everything else:** Systems, screens, minigames and still-unidentified tu\_\* files that the boot path does not reach.
+<!-- game:end -->
 
 All figures come from the honest objdiff report
 (`build/G4SE01/report_honest.json`): every unit is diffed, and a function
-counts only if its relocations point at the same symbols too. They are
+counts only if its relocations point at the same symbols too. The weighted
+figure is shown separately and never mixed into the honest one. They are
 regenerated with every merge; see [How it works](#how-it-works).
 
 ## Roadmap
@@ -183,16 +173,37 @@ regenerated with every merge; see [How it works](#how-it-works).
 </picture>
 
 <!-- now:start -->
-- **Now** (phase 4): **JSystem file by file.** Per-file agents on the JSystem units still NonMatching. JSystem is at 3605 of 3706 functions; 52 are still in no split unit (gap agent running) and about 49 are left in split files, about 30 of them register-allocation or fakematch holdouts (J3DMatBlock's word copies) kept honest with FIXMEs. Weak-data and dead-data map proofs landed. Currently 86.0 % of the split files Matching.
-- **Now** (phase 4): **SDK, GX and MSL link fixes.** The Dolphin SDK and GX are both 100 % and linked, GBAKey's DSP microcode extracted from the user's own main.dol at build time. Dead-stripped data is proven from the link map. Left are MSL ansi_fp/strtoul. Currently 98.9 % of the split files Matching.
-- **Now** (phase 4): **THP video.** The THP player in the game region (0x80427D2C), FSA's C++ port of the SDK sample player with sms's THPDec.c and THPAudio.c inside its unit, matched against tww's d_a_movie_player. 162 of 168 functions match; the six left differ only in register order and constant-pool order. Currently 79.9 % of the code matched.
-- **Now** (phase 5): **Wave 1: small files and minigames.** Small self-contained files and the mg_* minigames first. The first eight small game files are merged (all functions match; they reach Matching with the weak-dedup tooling). Currently 49.6 % of the code matched.
-- **Now** (phase 5): **Wave 2: actor families.** Enemies, NPCs and objects that share a base class. Twenty-three waves of six files are merged, one Sonnet agent per file and one reviewer per wave; 102 game units are Matching. Recurring shapes (square(), drawShadow(), the by-value message helper, TVec2f stack positions, box/position forms, early-return range checks, empty switch cases) are in the rules card. The Haiku grind (tools/grind.py on branch grind, script-judged) added about 650 small game functions; an Opus review fixed about 200 and dropped 12 before they landed (6459 -> 7115 functions). 63 game files were reordered to compile in original address order (tools/order_check.py; 12 left, where reordering changes inlining or the .sdata2 pool), which lifted 8 functions to 100 % (7123). tu_801F9484, the ActorManager spawner (one 25 KB switch over 367 actor types) with ~290 inlined actor constructors and the ActorBase accessors, is Matching (322 functions, 7446 in total). Currently 15.9 % of the code matched.
-- **Next** (phase 6): **Debug and assert strings.** OSReport output, assert and crash-debugger strings tied to the functions that print them.
+- **Now** (phase 2): **Library holdouts.** About fifty JSystem functions that resist (register allocation and J3DMatBlock's word copies, kept honest with FIXMEs) and MSL's ansi_fp and strtoul. Most go to the crack pass. Currently 98.6 % of the functions matched.
+- **Now** (phase 3): **Waves of small-function units.** One agent per file, one reviewer per wave. Actor waves, the ActorManager spawner (tu_801F9484, 322 functions) and many small units are merged; recurring shapes are in the rules card. Currently 53.4 % of the functions matched.
+- **Now** (phase 3): **Big functions, structure first.** Write a big function before it reaches 100 %, merge it when it is structurally done or close, so the literal pool, field offsets and callee names settle (docs/RULES_CARD.md). Just started on the file select, game mode screen and GBA link units.
+- **Now** (phase 4): **Boot to main menu.** main(), the framework, the THP movie player (162 of 168 functions), the title screen and the screens built at boot (file select, the game mode screen, the GBA link manager). Currently 17.5 % of the code matched.
+- **Now** (phase 4): **Main menu to Shadow Battle.** Stage load, the players, the field and the actors on it, up to two Links fighting on The Field. Currently 13.6 % of the code matched.
+- **Next** (phase 4): **Screens and menus.** The remaining screens, HUD and menus, after their boot-path owners are written.
+- **Next** (phase 4): **Actors by family.** Enemies, NPCs and objects family by family, sharing base classes and headers. The earlier actor waves matched the small ones; most update and init functions are still ahead. Currently 27.2 % of the code matched.
+- **Next** (phase 4): **The player.** The Link class and the per-player queries, after the boot path has fixed its layout.
+- **Next** (phase 4): **Map and stage.** Rooms, collision, background rewrites and the stage loader.
 <!-- now:end -->
 
 The phases and milestones are defined in [`docs/roadmap.yml`](docs/roadmap.yml);
-[`docs/PLAN.md`](docs/PLAN.md) explains the reasoning behind them.
+[`docs/PLAN.md`](docs/PLAN.md) and [`docs/GAME_PLAN.md`](docs/GAME_PLAN.md)
+explain the reasoning behind them.
+
+## About
+
+This repository reconstructs the C and C++ source of *Four Swords Adventures*
+(USA). The original Metrowerks CodeWarrior compilers build it back into a
+`main.dol` that is identical, byte for byte, to the retail one. Readable,
+correctly typed source with real names is part of the goal, in the style of
+zeldaret/tp and KATAM.
+
+| Property | Value |
+|---|---|
+| Game | The Legend of Zelda: Four Swords Adventures |
+| Platform | Nintendo GameCube |
+| Version | USA, `G4SE01` |
+| `main.dol` SHA-1 | `d86b3d9f785566e34264035e140ef3daf3cc19f0` |
+| Compilers | Metrowerks CodeWarrior GC/2.6 (game, JSystem, MSL, TRK); the SDK's own builds |
+| Build system | ninja + [decomp-toolkit](https://github.com/encounter/decomp-toolkit) + [objdiff](https://github.com/encounter/objdiff) |
 
 ## How it works
 

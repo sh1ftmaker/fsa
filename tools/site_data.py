@@ -9,13 +9,17 @@ Inputs (all local; CI can't build the game, so this runs before each commit):
   config/G4SE01/tu_map.tsv         the game-code file map (docs/PLAN.md)
   build/G4SE01/fsa_game_code.dol   hashed against config/G4SE01/build.sha1
   docs/roadmap.yml                 phases and milestones (hand-maintained statuses)
+  docs/BOOT_PATH.md                which boot-path phase first runs each game file
+  config/G4SE01/game_units.tsv     actor-spawner evidence (game files that are actors)
 
 Every function in the DOL is placed in region -> library/system -> file:
 split units by their path, dtk's auto splits (`auto_*`, not started yet) by
 address through lib_map.tsv and tu_map.tsv. So the totals are the whole DOL.
 
 Outputs:
-  site/data/summary.json       totals, regions, libraries, files
+  site/data/summary.json       totals, regions, libraries, files; the game region's
+                               "libraries" are the four GAME_PARTS, and "libraries"
+                               adds up the four library regions
   site/data/lib/<id>.json      functions per file of one library (loaded on demand)
   site/data/history.json       one entry per commit (appended or replaced)
   site/data/roadmap.json       docs/roadmap.yml with each milestone's live progress
@@ -90,7 +94,8 @@ def classify(path, libfield=""):
 
 def game_group(name, start):
     """Game files have no real names yet: group them by the resource names
-    they reference (tu_map.tsv's hints), or by address when there is none."""
+    they reference (tu_map.tsv's hints), or by address when there is none.
+    Only a placeholder until build() sorts game files into GAME_PARTS."""
     hint = re.sub(r"^tu_[0-9A-Fa-f]+_?", "", name or "")
     for pre, group in (("enemy_", "enemy_*_sob refs"), ("mg_", "mg_* minigames"), ("kk_", "kk_* HUD refs"),
                        ("player", "player_sob refs"), ("THP", "THP")):
@@ -102,6 +107,54 @@ def game_group(name, start):
         return "linked before JSystem"
     band = max(start & ~0x7FFFF, 0x80100000)
     return f"unnamed {band:08X}+"
+
+
+# The game code, cut into four parts that say where the remaining work is
+# (the libraries are one more group, see LIBRARIES). A game file goes to the
+# first part that claims it:
+#   boot, battle  the first phase of docs/BOOT_PATH.md (Dolphin execution
+#                 coverage from power-on to a live Shadow Battle) that runs it
+#   actors        act_* files, and files whose classes the actor spawner
+#                 constructs (game_units.tsv's "actor spawner" evidence)
+#   other         everything else: systems, screens, minigames, unidentified
+GAME_PARTS = [  # key, name, hue (site colour), description
+    ("boot", "Boot to main menu", "green",
+     "Code the game runs from power-on to the main menu: main(), the framework, the THP movie player, "
+     "the title screen and the screens built at boot, such as file select, the game mode screen and the GBA link "
+     "(boot path phases 1 and 2)"),
+    ("battle", "Main menu to Shadow Battle", "red",
+     "Code first run between the main menu and a live Shadow Battle: stage load, the players, the field "
+     "and the actors on it (boot path phase 3)"),
+    ("actors", "Actors", "blue",
+     "Enemies, NPCs and objects not on the boot path: act_* files and files whose classes the actor spawner builds"),
+    ("other", "Everything else", "purple",
+     "Systems, screens, minigames and still-unidentified tu_* files that the boot path does not reach"),
+]
+LIBRARIES = ("jsystem", "sdk", "gx", "runtime")  # the regions grouped as "Libraries" on the site
+
+
+def boot_phases():
+    """file stem -> the first docs/BOOT_PATH.md phase (1, 2, 3) that executes it."""
+    path = ROOT / "docs/BOOT_PATH.md"
+    first = {}
+    if not path.exists():
+        return first
+    for m in re.finditer(r"^## Phase (\d+):.*?(?=^## |\Z)", path.read_text(), flags=re.M | re.S):
+        body = m.group(0).split("### Libraries")[0]
+        for u in re.finditer(r"^\| `game/([^`/]+)\.[a-z]+`", body, flags=re.M):
+            first.setdefault(u.group(1), int(m.group(1)))
+    return first
+
+
+def game_part(stem, phases, actors):
+    phase = phases.get(stem)
+    if phase in (1, 2):
+        return "boot"
+    if phase == 3:
+        return "battle"
+    if stem.startswith("act_") or stem in actors:
+        return "actors"
+    return "other"
 
 
 def read_splits():
@@ -242,7 +295,31 @@ def build():
         for addr, f, w in loose:
             rec = owners[max(bisect.bisect_left(starts, addr) - 1, 0)][1]
             add_fn(rec, f, addr, tail=True, w=w)
-    return report, files, data_unsplit
+
+    # sort the game files into GAME_PARTS (a pure regrouping: no number changes)
+    phases = boot_phases()
+    actors = set()
+    with open(ROOT / "config/G4SE01/game_units.tsv") as f:
+        for row in csv.DictReader(f, delimiter="\t"):
+            if "actor spawner" in (row.get("name_evidence") or ""):
+                actors.add(re.sub(r"\.[^.]*$", "", row["unit"].rsplit("/", 1)[-1]))
+    names = {k: n for k, n, _, _ in GAME_PARTS}
+    regrouped = {}
+    for (region, lib, path), rec in files.items():
+        if region == "game":
+            stem = re.sub(r"\.[^.]*$", "", rec["name"])
+            lib = names[game_part(stem, phases, actors)]
+            rec["lib"] = lib
+        key = (region, lib, path)
+        if key in regrouped:  # the same path under two address groups: one file
+            other = regrouped[key]
+            for k in ("code", "cm", "wm", "fn", "fm", "data", "dm"):
+                other[k] += rec[k]
+            other["fns"] += rec["fns"]
+            other["addr"] = min(a for a in (other["addr"], rec["addr"]) if a is not None)
+            continue
+        regrouped[key] = rec
+    return report, regrouped, data_unsplit
 
 
 def add_fn(rec, f, addr, tail, w=0):
@@ -282,8 +359,10 @@ def write(report, files, data_unsplit, subject):
             if region == rid:
                 libs[lib].append(rec)
         out_libs = []
+        parts = {n: (k, hue, desc) for k, n, hue, desc in GAME_PARTS}
         for lib, recs in libs.items():
-            lid = f"{rid}-{slug(lib)}"
+            part = parts.get(lib) if rid == "game" else None
+            lid = f"{rid}-{part[0] if part else slug(lib)}"
             recs.sort(key=lambda r: r["addr"] or 0)
             detail = {}
             out_files = []
@@ -298,10 +377,17 @@ def write(report, files, data_unsplit, subject):
                     row["t"] = sum(fn[2] for fn in r["fns"] if fn[3] == -1)  # unsplit tail bytes
                 out_files.append(row)
             (OUT / "lib" / f"{lid}.json").write_text(json.dumps({"id": lid, "files": detail}, separators=(",", ":")))
-            out_libs.append({"id": lid, "n": lib, "c": sum(r["code"] for r in recs), "cm": sum(r["cm"] for r in recs),
-                             "wm": round(sum(r["cm"] + r["wm"] for r in recs)),
-                             "f": sum(r["fn"] for r in recs), "fm": sum(r["fm"] for r in recs), "files": out_files})
-        out_libs.sort(key=lambda l: -l["c"])
+            rec_out = {"id": lid, "n": lib, "c": sum(r["code"] for r in recs), "cm": sum(r["cm"] for r in recs),
+                       "wm": round(sum(r["cm"] + r["wm"] for r in recs)),
+                       "f": sum(r["fn"] for r in recs), "fm": sum(r["fm"] for r in recs), "files": out_files}
+            if part:  # a game part (GAME_PARTS): its selector key, colour and description
+                rec_out.update({"key": part[0], "hue": part[1], "desc": part[2]})
+            out_libs.append(rec_out)
+        if rid == "game":  # the parts in their fixed order: boot path first
+            order = [n for _, n, _, _ in GAME_PARTS]
+            out_libs.sort(key=lambda l: order.index(l["n"]) if l["n"] in order else len(order))
+        else:
+            out_libs.sort(key=lambda l: -l["c"])
         rt = {k: sum(l[k] for l in out_libs) for k in ("c", "cm", "f", "fm", "wm")}
         reg_tot[rid] = rt
         regions.append({"id": rid, "n": rname, "desc": rdesc, **rt, "libs": out_libs})
@@ -329,8 +415,13 @@ def write(report, files, data_unsplit, subject):
             # weighted: honest bytes + size * match % for structurally done/close functions
             "code_weighted": round(st["weighted"]["code"]), "code_weighted_partial": round(st["weighted"]["partial"]),
         })
+    # the four library regions as one group (the site's and README's "Libraries" section)
+    libs_tot = {k: sum(reg_tot[r][k] for r in LIBRARIES) for k in ("c", "cm", "wm", "f", "fm")}
+    libraries = {"n": "Libraries", "regions": list(LIBRARIES), **libs_tot,
+                 "units": sum(1 for (rg, _, _), r in files.items() if rg in LIBRARIES and r["status"] != "U"),
+                 "matching": sum(1 for (rg, _, _), r in files.items() if rg in LIBRARIES and r["status"] == "M")}
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
-               "totals": totals, "regions": regions}
+               "totals": totals, "regions": regions, "libraries": libraries}
     (OUT / "summary.json").write_text(json.dumps(summary, separators=(",", ":")))
     rm = roadmap(regions, totals, now)
     (OUT / "roadmap.json").write_text(json.dumps(rm, separators=(",", ":")))
@@ -384,6 +475,8 @@ def roadmap(regions, totals, now):
     for r in regions:
         for l in r["libs"]:
             libs[f"{r['id']}:{l['n']}"] = (r["id"], l)
+            if l.get("key"):  # game parts also by key: game:boot, game:actors
+                libs[f"{r['id']}:{l['key']}"] = (r["id"], l)
     reg = {r["id"]: r for r in regions}
 
     def resolve(sel):
@@ -394,7 +487,8 @@ def roadmap(regions, totals, now):
             rid, l = libs[sel]
             return f"{rid}/{l['id']}", [(rid, l)]
         raise SystemExit(f"docs/roadmap.yml: unknown selector {sel!r} "
-                         f"(regions: {', '.join(reg)}; libraries as region:name, e.g. jsystem:J3D)")
+                         f"(regions: {', '.join(reg)}; libraries as region:name, e.g. jsystem:J3D; "
+                         f"game parts as game:<key>, e.g. game:boot)")
 
     def measure(kind, sels):
         if kind == "linked":
@@ -440,7 +534,7 @@ def roadmap(regions, totals, now):
                 out["landed"] = ms["landed"]
             ms_out.append(out)
         phases.append({"id": ph["id"], "title": ph["title"], "summary": ph.get("summary", ""), "hue": ph.get("hue", "gold"),
-                       "status": ph["status"], "milestones": ms_out})
+                       "status": ph["status"], "milestones": ms_out, **({"focus": True} if ph.get("focus") else {})})
     return {"generated": now, "policies": rm.get("policies", []), "phases": phases, "owners": owners}
 
 

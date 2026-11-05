@@ -3,13 +3,18 @@
    docs/roadmap.yml). */
 "use strict";
 
+// Colours: the game code's four parts take the four Links' colours (HUE, from
+// summary.json's game libraries); the libraries are one gold group, a shade per region.
 const REGION = {
-  game:    { color: "#3aae5c", glyph: "diamond", short: "Game" },
-  jsystem: { color: "#ef5b52", glyph: "triangle", short: "JSystem" },
-  sdk:     { color: "#3d9cf0", glyph: "circle", short: "SDK" },
-  gx:      { color: "#c35ee6", glyph: "square", short: "GX" },
-  runtime: { color: "#d29a2e", glyph: "star", short: "MSL/RT/TRK" },
+  game:    { color: "#a9afe0", glyph: "diamond", short: "Game" },
+  jsystem: { color: "#d29a2e", glyph: "triangle", short: "JSystem" },
+  sdk:     { color: "#e9be5a", glyph: "circle", short: "SDK" },
+  gx:      { color: "#c4862b", glyph: "square", short: "GX" },
+  runtime: { color: "#f2d384", glyph: "star", short: "MSL/RT/TRK" },
 };
+const LIB_REGIONS = ["sdk", "gx", "jsystem", "runtime"];
+const PART = {}; // game part key -> { color, name, desc, short }
+const PART_SHORT = { boot: "Boot", battle: "Battle", actors: "Actors", other: "Other" };
 const REPO = "https://github.com/sh1ftmaker/fsa";
 const COARSE = window.matchMedia("(pointer: coarse)").matches;
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,6 +37,14 @@ function pct(x) {
 const ratio = (a, b) => (b ? (100 * a) / b : 0);
 const hex = (a) => "0x" + a.toString(16).toUpperCase().padStart(8, "0");
 
+// a node's colour: its game part's, else its region's
+const colOf = (n) => (n.part && PART[n.part] ? PART[n.part].color : REGION[n.region].color);
+const gradOf = (n) => (n.part && PART[n.part] ? `tg-p-${n.part}` : `tg-${n.region}`);
+function partGlyph(key, size = 10) {
+  const s = size, h = s / 2;
+  return `<svg class="glyph" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" fill="${PART[key].color}" aria-hidden="true"><path d="M${h} 0L${s} ${h}L${h} ${s}L0 ${h}Z"/></svg>`;
+}
+const nodeGlyph = (n, size = 10) => (n.part && PART[n.part] ? partGlyph(n.part, size) : glyph(n.region, size));
 function glyph(region, size = 10) {
   const c = REGION[region].color, s = size, h = s / 2;
   const shapes = {
@@ -54,15 +67,16 @@ function buildTree(summary) {
   ROOT = { id: "", kind: "root", name: "main.dol", c: t.code, cm: t.code_matched, f: t.fns, fm: t.fns_matched, children: [] };
   byId.set("", ROOT);
   for (const r of summary.regions) {
-    const rn = { id: r.id, kind: "region", region: r.id, name: r.n, desc: r.desc, c: r.c, cm: r.cm, f: r.f, fm: r.fm, parent: ROOT, children: [] };
+    const rn = { id: r.id, kind: "region", region: r.id, name: r.n, desc: r.desc, c: r.c, cm: r.cm, wm: r.wm, f: r.f, fm: r.fm, parent: ROOT, children: [] };
     ROOT.children.push(rn);
     byId.set(rn.id, rn);
     for (const l of r.libs) {
-      const ln = { id: `${r.id}/${l.id}`, lib: l.id, kind: "lib", region: r.id, name: l.n, c: l.c, cm: l.cm, f: l.f, fm: l.fm, parent: rn, children: [], loaded: false };
+      if (l.key) PART[l.key] = { color: HUE[l.hue] || HUE.gold, name: l.n, desc: l.desc, short: PART_SHORT[l.key] || l.n };
+      const ln = { id: `${r.id}/${l.id}`, lib: l.id, kind: "lib", region: r.id, part: l.key, desc: l.desc, name: l.n, c: l.c, cm: l.cm, wm: l.wm, f: l.f, fm: l.fm, parent: rn, children: [], loaded: false };
       rn.children.push(ln);
       byId.set(ln.id, ln);
       l.files.forEach((f, i) => {
-        const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, name: f.n, path: f.p, addr: f.a, s: f.s,
+        const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, part: ln.part, name: f.n, path: f.p, addr: f.a, s: f.s,
           c: f.c, cm: f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, parent: ln, children: null };
         ln.children.push(fnode);
         byId.set(fnode.id, fnode);
@@ -79,7 +93,7 @@ async function ensureLoaded(lib) {
   for (const file of lib.children) {
     const fns = data.files[String(file.idx)] || [];
     file.children = fns.map(([name, addr, size, m], j) => ({
-      id: `${file.id}/${j}`, kind: "fn", region: file.region, name, addr, c: size, cm: m === 100 ? size : 0,
+      id: `${file.id}/${j}`, kind: "fn", region: file.region, part: file.part, name, addr, c: size, cm: m === 100 ? size : 0,
       m, f: 1, fm: m === 100 ? 1 : 0, parent: file,
     }));
   }
@@ -99,47 +113,59 @@ function rhombusFill(a, h) {
   return a <= 0.5 ? h * Math.sqrt(2 * a) : 2 * h - h * Math.sqrt(2 * (1 - a));
 }
 
+// The emblem: the game code's four parts as the four Links' gems, each filled to its
+// matched share; the small gold gem in the middle is the libraries, all four together.
 function drawEmblem() {
   const svg = d3.select("#emblem");
+  const L = S.libraries;
   const gems = [
-    { id: "game", cx: 0, cy: -58, w: 30, h: 42, lx: 0, ly: -108, anchor: "middle" },
-    { id: "jsystem", cx: 58, cy: 0, w: 42, h: 30, lx: 106, ly: 4, anchor: "start" },
-    { id: "sdk", cx: 0, cy: 58, w: 30, h: 42, lx: 0, ly: 116, anchor: "middle" },
-    { id: "gx", cx: -58, cy: 0, w: 42, h: 30, lx: -106, ly: 4, anchor: "end" },
-    { id: "runtime", cx: 0, cy: 0, w: 13, h: 13, lx: 0, ly: 0, anchor: "middle" },
-  ];
+    { part: "boot", cx: 0, cy: -58, w: 30, h: 42, lx: 0, ly: -108, anchor: "middle" },
+    { part: "battle", cx: 58, cy: 0, w: 42, h: 30, lx: 106, ly: 4, anchor: "start" },
+    { part: "actors", cx: 0, cy: 58, w: 30, h: 42, lx: 0, ly: 116, anchor: "middle" },
+    { part: "other", cx: -58, cy: 0, w: 42, h: 30, lx: -106, ly: 4, anchor: "end" },
+    { lib: true, cx: 0, cy: 0, w: 15, h: 15 },
+  ].filter((g) => g.lib ? L : PART[g.part]);
   const defs = svg.append("defs");
   svg.append("circle").attr("class", "ring spin").attr("r", 104);
   svg.append("circle").attr("class", "ring").attr("r", 92).attr("stroke-dasharray", "1 10");
   for (const g of gems) {
-    const r = byId.get(g.id);
-    const col = REGION[g.id].color;
+    const key = g.lib ? "libs" : g.part;
+    const node = g.lib ? null : byId.get(`game/game-${g.part}`);
+    const r = g.lib ? { name: "Libraries", c: L.c, cm: L.cm } : node;
+    const col = g.lib ? "#d29a2e" : PART[g.part].color;
     const frac = r.c ? r.cm / r.c : 0;
-    const grad = defs.append("linearGradient").attr("id", `eg-${g.id}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
+    const grad = defs.append("linearGradient").attr("id", `eg-${key}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
     grad.append("stop").attr("offset", 0).attr("stop-color", col);
     grad.append("stop").attr("offset", 1).attr("stop-color", d3.color(col).brighter(0.9));
-    defs.append("clipPath").attr("id", `ec-${g.id}`).append("path").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h));
+    defs.append("clipPath").attr("id", `ec-${key}`).append("path").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h));
     const grp = svg.append("g").attr("class", "gem").attr("tabindex", 0).attr("role", "button")
       .attr("aria-label", `${r.name}: ${pct(100 * frac)} of code matched`);
     grp.append("path").attr("class", "gem-bg").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h))
       .attr("fill", d3.color(col).copy({ opacity: 0.12 })).attr("stroke", d3.color(col).copy({ opacity: 0.7 }));
     const fillH = rhombusFill(frac, g.h);
-    grp.append("rect").attr("clip-path", `url(#ec-${g.id})`).attr("x", g.cx - g.w).attr("width", 2 * g.w)
-      .attr("y", g.cy + g.h).attr("height", 0).attr("fill", `url(#eg-${g.id})`)
+    grp.append("rect").attr("clip-path", `url(#ec-${key})`).attr("x", g.cx - g.w).attr("width", 2 * g.w)
+      .attr("y", g.cy + g.h).attr("height", 0).attr("fill", `url(#eg-${key})`)
       .transition().delay(300).duration(REDUCED ? 0 : 1600).ease(d3.easeCubicOut)
       .attr("y", g.cy + g.h - fillH).attr("height", fillH);
-    // facet highlight
     grp.append("path").attr("d", `M${g.cx} ${g.cy - g.h}L${g.cx + g.w} ${g.cy}L${g.cx} ${g.cy}Z`).attr("fill", "rgba(255,255,255,0.06)").attr("pointer-events", "none");
-    if (g.id !== "runtime") {
-      const tx = g.cx, ty = g.cy + 4;
-      grp.append("text").attr("class", "gem-label").attr("x", tx).attr("y", ty).attr("text-anchor", "middle").text(pct(100 * frac));
-      grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly).attr("text-anchor", g.anchor).text(REGION[g.id].short);
+    if (!g.lib) {
+      grp.append("text").attr("class", "gem-label").attr("x", g.cx).attr("y", g.cy + 4).attr("text-anchor", "middle").text(pct(100 * frac));
+      grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly).attr("text-anchor", g.anchor).text(PART[g.part].short);
     }
     grp.on("click keydown", (ev) => {
       if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
-      go(g.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+      if (g.lib) { $("#libs-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); return; }
+      go(node.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
     });
-    grp.on("pointermove", (ev) => !COARSE && showTip(r, ev)).on("pointerleave", hideTip);
+    grp.on("pointermove", (ev) => {
+      if (COARSE) return;
+      if (node) { showTip(node, ev); return; }
+      tip.classList.remove("sheet");
+      tip.innerHTML = `<div class="t-name">Libraries</div><div class="t-path">Dolphin SDK, GX, JSystem, MSL/Runtime/TRK</div>
+        <div class="bar"><i style="width:${ratio(L.cm, L.c)}%;background:${col}"></i></div>
+        <dl><dt>Matched</dt><dd>${pct(ratio(L.cm, L.c))} of ${bytes(L.c)}</dd><dt>Functions</dt><dd>${num(L.fm)} / ${num(L.f)}</dd></dl>`;
+      tip.hidden = false; place(ev);
+    }).on("pointerleave", hideTip);
   }
 }
 
@@ -217,7 +243,7 @@ function layoutFor(focus) {
   return h;
 }
 
-function tileFill(n) { return d3.color(REGION[n.region].color); }
+function tileFill(n) { return d3.color(colOf(n)); }
 
 function drawLayer(focus) {
   const svg = d3.select("#map-svg");
@@ -268,7 +294,7 @@ function drawLayer(focus) {
   lg.filter((d) => d.data.node.cm > 0).append("rect").attr("class", "fill")
     .attr("x", (d) => d.x0).attr("width", (d) => d.x1 - d.x0)
     .attr("y", (d) => d.y1).attr("height", 0)
-    .attr("fill", (d) => `url(#tg-${d.data.node.region})`)
+    .attr("fill", (d) => `url(#${gradOf(d.data.node)})`)
     .attr("pointer-events", "none")
     .transition().delay((d, i) => (REDUCED ? 0 : 200 + Math.min(i, 200) * 2)).duration(REDUCED ? 0 : 800).ease(d3.easeCubicOut)
     .attr("y", (d) => d.y1 - (d.y1 - d.y0) * (d.data.node.cm / d.data.node.c))
@@ -385,7 +411,7 @@ function drawCrumbs() {
   const back = `<button class="back" type="button" aria-label="Zoom out" ${map.focus === ROOT ? "disabled" : ""}>&#8592;</button>`;
   el.innerHTML = back + chain.map((n, i) => {
     const label = n.kind === "root" ? "main.dol" : esc(n.name);
-    const g = n.region ? glyph(n.region, 9) + " " : "";
+    const g = n.region ? nodeGlyph(n, 9) + " " : "";
     return i === chain.length - 1 ? `<span class="cur">${g}${label} <span class="pill ${n.s || ""}" style="${n.s ? "" : "display:none"}">${statusText(n.s)}</span></span>`
       : `<button type="button" data-id="${esc(n.id)}">${g}${label}</button><span class="sep">/</span>`;
   }).join("");
@@ -402,7 +428,7 @@ function statusText(s) { return s === "M" ? "Matching" : s === "N" ? "NonMatchin
 
 const tip = $("#tip");
 function tipHTML(n) {
-  const col = n.region ? REGION[n.region].color : "#d29a2e";
+  const col = n.region ? colOf(n) : "#d29a2e";
   const share = ratio(n.c, TOTAL);
   if (n.kind === "fn") {
     const st = n.m === 100 ? "matched" : n.m === -1 ? "not split yet" : n.m > 0 ? `${n.m} % similar, not matched` : "not matched";
@@ -412,6 +438,7 @@ function tipHTML(n) {
   const rows = [
     ["Size", `${bytes(n.c)}`], ["Of the DOL", pct(share)],
     ["Matched", `${pct(ratio(n.cm, n.c))} (${bytes(n.cm)})`],
+    ...(n.wm != null && n.wm > n.cm ? [["Weighted", pct(ratio(n.wm, n.c))]] : []),
     ["Functions", `${num(n.fm)} / ${num(n.f)}`],
   ];
   if (n.kind === "file") {
@@ -427,8 +454,8 @@ function tipHTML(n) {
     if (q.cur) rows.push(["Milestone", `${q.cur.title} (${STATUS[q.cur.status].word})`]);
     if (q.next) rows.push(["Next", q.next.title]);
   }
-  const sub = n.kind === "file" ? n.path : n.kind === "region" ? n.desc : n.kind === "lib" ? n.parent.name : "";
-  return `<div class="t-name">${n.region ? glyph(n.region) + " " : ""}${esc(n.name)}</div>${sub ? `<div class="t-path">${esc(sub)}</div>` : ""}
+  const sub = n.kind === "file" ? n.path : n.kind === "region" ? n.desc : n.kind === "lib" ? (n.desc || n.parent.name) : "";
+  return `<div class="t-name">${n.region ? nodeGlyph(n) + " " : ""}${esc(n.name)}</div>${sub ? `<div class="t-path">${esc(sub)}</div>` : ""}
     <div class="bar"><i style="width:${ratio(n.cm, n.c)}%;background:${col}"></i></div>
     <dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
 }
@@ -462,10 +489,12 @@ function showSheet(n, d) {
 function initMap() {
   const svg = d3.select("#map-svg");
   const defs = svg.append("defs");
-  for (const [id, r] of Object.entries(REGION)) {
-    const g = defs.append("linearGradient").attr("id", `tg-${id}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
-    g.append("stop").attr("offset", 0).attr("stop-color", d3.color(r.color).darker(0.3));
-    g.append("stop").attr("offset", 1).attr("stop-color", d3.color(r.color).brighter(0.5));
+  const grads = [...Object.entries(REGION).map(([id, r]) => [`tg-${id}`, r.color]),
+    ...Object.entries(PART).map(([k, p]) => [`tg-p-${k}`, p.color])];
+  for (const [id, color] of grads) {
+    const g = defs.append("linearGradient").attr("id", id).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
+    g.append("stop").attr("offset", 0).attr("stop-color", d3.color(color).darker(0.3));
+    g.append("stop").attr("offset", 1).attr("stop-color", d3.color(color).brighter(0.5));
   }
   const measure = () => { const b = $("#map").getBoundingClientRect(); map.W = Math.round(b.width); map.H = Math.round(b.height); };
   measure();
@@ -483,36 +512,81 @@ function initMap() {
     if (tip.classList.contains("sheet") && !tip.contains(e.target) && !e.target.closest(".tile")) closeSheet();
   });
   const legend = $("#legend");
-  legend.innerHTML = Object.keys(REGION).map((id) => `<span>${glyph(id)} ${esc(byId.get(id).name)}</span>`).join("")
+  legend.innerHTML = Object.keys(PART).map((k) => `<span>${partGlyph(k)} ${esc(PART[k].name)}</span>`).join("")
+    + `<span>${glyph("jsystem")} Libraries</span>`
     + `<span><i class="fillkey"></i> matched share</span><span><i class="dashkey"></i> not split yet</span>`;
 }
 
-/* ---------- systems ---------- */
+/* ---------- overview: where the work is, the libraries, the game code ---------- */
 
-function drawSystems() {
-  const host = $("#systems");
-  host.innerHTML = ROOT.children.map((r) => {
-    const col = REGION[r.id].color;
-    const libs = r.children.map((l) => `<div class="lib" data-id="${esc(l.id)}" role="button" tabindex="0">
-        <span class="ln">${esc(l.name)}</span>
-        <span class="track"><i data-w="${ratio(l.cm, l.c)}" style="background:${col}"></i></span>
-        <span class="lv">${pct(ratio(l.cm, l.c))} &middot; ${num(l.fm)}/${num(l.f)} fn &middot; ${bytes(l.c)}</span></div>`).join("");
-    return `<details class="sys"${r.id === "jsystem" ? " open" : ""}><summary>
-        <span class="name"><span class="chev">&#9654;</span>${glyph(r.id, 12)} ${esc(r.name)}</span>
-        <span class="nums"><b>${pct(ratio(r.cm, r.c))}</b> &middot; ${num(r.fm)} / ${num(r.f)} functions &middot; ${bytes(r.c)} (${pct(ratio(r.c, TOTAL))} of the DOL)</span>
-        <span class="track"><i data-w="${ratio(r.cm, r.c)}" style="background:${col}"></i></span>
-        <span class="desc">${esc(r.desc)}</span>
-      </summary><div class="libs">${libs}</div></details>`;
-  }).join("");
+function growOnView(host) {
   const io = new IntersectionObserver((es) => es.forEach((e) => {
-    if (e.isIntersecting) { e.target.querySelectorAll(".track i").forEach((i) => (i.style.width = `${Math.max(+i.dataset.w, +i.dataset.w > 0 ? 0.8 : 0)}%`)); io.unobserve(e.target); }
+    if (e.isIntersecting) { e.target.querySelectorAll("[data-w]").forEach((i) => (i.style.width = `${Math.max(+i.dataset.w, +i.dataset.w > 0 ? 0.8 : 0)}%`)); io.unobserve(e.target); }
   }), { threshold: 0.1 });
   io.observe(host);
-  host.querySelectorAll(".lib").forEach((el) => {
-    const open = () => { go(el.dataset.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
-    el.onclick = open;
-    el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
+}
+function openOnClick(host, sel, fn) {
+  host.querySelectorAll(sel).forEach((el) => {
+    el.onclick = (e) => { if (!e.target.closest("a")) fn(el); };
+    el.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(el); } };
   });
+}
+const toMap = (id) => { go(id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
+
+// Remaining (not yet byte-identical) code, by part: the four game parts and the libraries.
+function drawRemaining() {
+  const host = $("#remaining");
+  const L = S.libraries;
+  const segs = [...Object.keys(PART).map((k) => { const n = byId.get(`game/game-${k}`); return { name: PART[k].name, col: PART[k].color, left: n.c - n.cm, glyph: partGlyph(k) }; }),
+    { name: "Libraries", col: "#d29a2e", left: L.c - L.cm, glyph: glyph("jsystem") }];
+  const total = segs.reduce((a, x) => a + x.left, 0);
+  const game = segs.slice(0, -1).reduce((a, x) => a + x.left, 0);
+  host.innerHTML = `<div class="rw-k">Where the remaining work is <span>${bytes(total)} of code not yet byte-identical; the game code is ${pct(ratio(game, total))} of it</span></div>
+    <div class="rw-bar" role="img" aria-label="${esc(segs.map((x) => `${x.name} ${pct(ratio(x.left, total))}`).join(", "))}">${segs.map((x) =>
+      `<i style="flex:${x.left} 1 0;background:${x.col}" title="${esc(`${x.name}: ${bytes(x.left)} left (${pct(ratio(x.left, total))})`)}"></i>`).join("")}</div>
+    <div class="rw-legend">${segs.map((x) => `<span>${x.glyph} ${esc(x.name)} <b>${pct(ratio(x.left, total))}</b></span>`).join("")}</div>`;
+}
+
+function drawLibraries() {
+  const host = $("#libraries");
+  const L = S.libraries;
+  if (!L) { $("#libs-panel").hidden = true; return; }
+  const rows = LIB_REGIONS.map((id) => byId.get(id)).filter(Boolean).map((r) => {
+    const left = r.f - r.fm;
+    return `<div class="lrow" data-id="${esc(r.id)}" role="button" tabindex="0">
+      <span class="ln">${glyph(r.id, 11)} ${esc(r.name)}</span>
+      <span class="track"><i data-w="${ratio(r.cm, r.c)}" style="background:${REGION[r.id].color}"></i></span>
+      <span class="lv"><b>${pct(ratio(r.cm, r.c))}</b> &middot; ${num(r.fm)}/${num(r.f)} fn${left ? ` &middot; ${num(left)} left` : ""}</span></div>`;
+  }).join("");
+  host.innerHTML = `<div class="lsum">
+      <div class="big">${pct(ratio(L.cm, L.c))}</div>
+      <div class="lsum-d">of ${bytes(L.c)} of library code byte-identical &middot; ${num(L.fm)} / ${num(L.f)} functions &middot;
+        ${num(L.matching)} / ${num(L.units)} files Matching${L.wm > L.cm ? ` <span class="wnote">weighted ${pct(ratio(L.wm, L.c))}</span>` : ""}</div>
+      <div class="track big-track"><i data-w="${ratio(L.cm, L.c)}" style="background:var(--gold)"></i></div>
+    </div><div class="lrows">${rows}</div>`;
+  growOnView(host);
+  openOnClick(host, ".lrow", (el) => toMap(el.dataset.id));
+}
+
+function drawGameParts() {
+  const host = $("#parts");
+  const g = byId.get("game");
+  const parts = Object.keys(PART).map((k) => byId.get(`game/game-${k}`)).filter(Boolean);
+  const gw = g.wm ?? g.cm;
+  $("#game-sum").innerHTML = `<b>${pct(ratio(g.cm, g.c))}</b> byte-identical &middot; <span class="wnote">weighted ${pct(ratio(gw, g.c))}</span> &middot; ${num(g.fm)} / ${num(g.f)} functions &middot; ${bytes(g.c)}`;
+  host.innerHTML = parts.map((n) => {
+    const p = PART[n.part], files = n.children, m = files.filter((f) => f.s === "M").length, wm = n.wm ?? n.cm;
+    return `<div class="part" data-id="${esc(n.id)}" role="button" tabindex="0" style="--c:${p.color}">
+      <div class="p-head"><span class="p-name">${partGlyph(n.part, 12)} ${esc(p.name)}</span><span class="p-pct">${pct(ratio(n.cm, n.c))}</span></div>
+      <div class="p-desc">${esc(p.desc)}</div>
+      <div class="p-bar" title="solid: byte-identical; light: weighted (partial credit for structurally matched functions)">
+        <i class="w" data-w="${ratio(wm, n.c)}"></i><i class="h" data-w="${ratio(n.cm, n.c)}"></i></div>
+      <div class="p-nums"><span>weighted <b>${pct(ratio(wm, n.c))}</b></span><span><b>${num(n.fm)}</b> / ${num(n.f)} functions</span>
+        <span><b>${num(m)}</b> / ${num(files.length)} files Matching</span><span>${bytes(n.c)} &middot; ${pct(ratio(n.c, g.c))} of the game</span></div>
+    </div>`;
+  }).join("");
+  growOnView(host);
+  openOnClick(host, ".part", (el) => toMap(el.dataset.id));
 }
 
 /* ---------- history ---------- */
@@ -520,10 +594,14 @@ function drawSystems() {
 function drawHistory(hist) {
   const host = $("#history");
   if (!hist.length) { host.innerHTML = `<p class="note">No history yet.</p>`; return; }
-  const ids = Object.keys(REGION);
+  // two series: the libraries (the four library regions) and the game code
+  const ids = ["libs", "game"];
+  const SERIES = { libs: { color: "#d29a2e", name: "Libraries", glyph: glyph("jsystem") }, game: { color: REGION.game.color, name: "Game code", glyph: glyph("game") } };
   const pts = hist.map((e) => {
     const p = { date: new Date(e.date), e };
-    for (const id of ids) p[id] = e.regions[id] ? (100 * e.regions[id][0]) / e.code_total : 0;
+    const share = (id) => (e.regions[id] ? (100 * e.regions[id][0]) / e.code_total : 0);
+    p.libs = LIB_REGIONS.reduce((a, id) => a + share(id), 0);
+    p.game = share("game");
     p.total = (100 * e.code) / e.code_total;
     return p;
   });
@@ -539,12 +617,12 @@ function drawHistory(hist) {
     for (const id of ids) {
       const w = x(acc + p[id]) - x(acc);
       if (w > 0) svg.append("rect").attr("x", x(acc)).attr("y", 20).attr("height", 34).attr("rx", 3)
-        .attr("fill", REGION[id].color).attr("width", Math.max(w - 2, 1));
+        .attr("fill", SERIES[id].color).attr("width", Math.max(w - 2, 1));
       acc += p[id];
     }
     svg.append("g").attr("class", "axis").attr("transform", "translate(0,62)").call(d3.axisBottom(x).ticks(5).tickFormat((d) => `${d} %`));
     host.insertAdjacentHTML("beforeend", `<p class="note">History starts at this commit (${pct(p.total)} of the DOL's code matched): `
-      + ids.filter((id) => p[id] > 0).map((id) => `${glyph(id)} ${esc(byId.get(id).name)} ${pct(p[id])}`).join(" &nbsp; ")
+      + ids.filter((id) => p[id] > 0).map((id) => `${SERIES[id].glyph} ${esc(SERIES[id].name)} ${pct(p[id])}`).join(" &nbsp; ")
       + `. Each merge to <code>matching</code> adds a point.</p>`);
     return;
   }
@@ -553,7 +631,7 @@ function drawHistory(hist) {
   const stack = d3.stack().keys(ids)(pts);
   svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat("")).select(".domain").remove();
   const area = d3.area().curve(d3.curveMonotoneX).x((d) => x(d.data.date)).y0((d) => y(d[0])).y1((d) => y(d[1]));
-  svg.append("g").selectAll("path").data(stack).join("path").attr("fill", (s) => REGION[s.key].color).attr("fill-opacity", 0.85)
+  svg.append("g").selectAll("path").data(stack).join("path").attr("fill", (s) => SERIES[s.key].color).attr("fill-opacity", 0.85)
     .attr("stroke", "#0b0d1a").attr("stroke-width", 1).attr("d", area);
   svg.append("path").datum(pts).attr("fill", "none").attr("stroke", "#fff").attr("stroke-width", 2)
     .attr("d", d3.line().curve(d3.curveMonotoneX).x((p) => x(p.date)).y((p) => y(p.total)));
@@ -573,7 +651,7 @@ function drawHistory(hist) {
       tip.innerHTML = `<div class="t-name">${pct(p.total)} of code matched</div>
         <div class="t-path">${esc(p.date.toISOString().slice(0, 16).replace("T", " "))} UTC &middot; ${c}</div>
         ${p.e.subject ? `<div style="margin-bottom:6px">${esc(p.e.subject)}</div>` : ""}
-        <dl>${ids.slice().reverse().map((id) => `<dt>${glyph(id)} ${esc(REGION[id].short)}</dt><dd>${pct(p[id])}</dd>`).join("")}
+        <dl>${ids.slice().reverse().map((id) => `<dt>${SERIES[id].glyph} ${esc(SERIES[id].name)}</dt><dd>${pct(p[id])} of the DOL</dd>`).join("")}
         <dt>Functions</dt><dd>${num(p.e.fns)} / ${num(p.e.fns_total)}</dd></dl>`;
       tip.hidden = false; place(ev);
     })
@@ -619,9 +697,9 @@ function renderTable() {
   });
   const shown = rows.slice(0, table.limit);
   $("#files tbody").innerHTML = shown.map((r) => {
-    const col = REGION[r.region].color;
+    const col = colOf(r.node);
     return `<tr data-id="${esc(r.node.id)}"><td><div class="fn">${esc(r.n)}</div><div class="fp">${esc(r.p)}</div></td>
-      <td class="hide-s"><span class="lb">${glyph(r.region)} ${esc(r.lib)}</span></td>
+      <td class="hide-s"><span class="lb">${nodeGlyph(r.node)} ${esc(r.lib)}</span></td>
       <td class="num">${bytes(r.c)}</td>
       <td class="num hide-s">${pct(r.share)}</td>
       <td class="num"><span class="mbar"><i style="width:${Math.max(0, r.pct)}%;background:${col}"></i></span>${r.c ? pct(r.pct) : "–"}</td>
@@ -649,8 +727,15 @@ function drawHonest() {
       and checks its SHA-1 (<code>${esc(S.sha1)}</code>). ${t.sha1_ok ? `It matched for this snapshot, so all ${num(t.matching)} Matching units link byte-identical.` : `<b>It did not match for this snapshot.</b>`}</p>
     <p>The total is the whole DOL: ${num(t.code)} bytes of code in ${num(t.fns)} functions. Code dtk has not split into a source file yet
       (${num(t.files_unsplit)} files) is placed by the library map (<code>lib_map.tsv</code>) and the game-code file map (<code>tu_map.tsv</code>), so
-      unstarted work shows at its true size. Game files have no real names yet: they are grouped by the resource names they reference,
-      or by address.</p>
+      unstarted work shows at its true size.</p>
+    <p>The game code is cut into four parts. The first two follow <code>docs/BOOT_PATH.md</code>: Dolphin recorded every instruction the game
+      runs from power-on to a live Shadow Battle, and each game file goes to the first stretch that runs it (boot to the main menu, or
+      main menu to the battle). Of the rest, <b>Actors</b> are the <code>act_*</code> files and the files whose classes the actor spawner
+      constructs (<code>game_units.tsv</code>); <b>Everything else</b> is systems, screens, minigames and files nobody has identified yet.
+      The grouping only sorts files: every number is the same honest count.</p>
+    <p>Weighted progress is a second, clearly separate figure: the honest bytes plus, for each function
+      <code>tools/structural.py</code> finds structurally matched (same instructions, registers or order differ), its size times its
+      match percent. It shows work under way in big functions; the honest numbers never include it.</p>
     <p>Snapshot ${esc(when.toISOString().slice(0, 16).replace("T", " "))} UTC, built on
       <a href="${REPO}/commit/${esc(S.base)}">${esc(S.base.slice(0, 8))}</a>. The data is regenerated locally with
       <code>tools/site_data.py</code> and committed with each merge; CI only publishes it.</p>`;
@@ -701,7 +786,7 @@ function initQuest(rm) {
   if (!rm || !rm.phases) { $("#quest-panel").hidden = true; $("#nownext").hidden = true; return; }
   RM = rm;
   rm.phases.forEach((ph, pi) => ph.milestones.forEach((m) => { m.phase = ph; m.pi = pi; m.ord = MS.size; MS.set(m.id, m); }));
-  quest.phase = (rm.phases.find((p) => p.status === "active") || rm.phases.find((p) => p.status === "next") || rm.phases[0]).id;
+  quest.phase = (rm.phases.find((p) => p.focus) || rm.phases.find((p) => p.status === "active") || rm.phases.find((p) => p.status === "next") || rm.phases[0]).id;
   $("#quest-legend").innerHTML = Object.keys(STATUS).map((s) => `<span>${gemSVG(s, "#d29a2e", 9, 12, 0.5)} ${STATUS[s].word}</span>`).join("");
   drawNowNext();
   drawPath();
@@ -709,7 +794,9 @@ function initQuest(rm) {
   $("#vows").innerHTML = (rm.policies || []).map((p) => `<li><b>${esc(p.title)}.</b> ${esc(p.text)}</li>`).join("");
 }
 
-const firstWith = (status) => [...MS.values()].find((m) => m.status === status);
+// the focus phase's first milestone with this status, else the first anywhere
+const firstWith = (status) => [...MS.values()].find((m) => m.status === status && m.phase.focus)
+  || [...MS.values()].find((m) => m.status === status);
 
 function drawNowNext() {
   const cards = [["Now", firstWith("active")], ["Next", firstWith("next")]].filter(([, m]) => m);
@@ -751,7 +838,7 @@ function drawPath() {
 function coverChip(id) {
   const n = byId.get(id);
   if (!n) return "";
-  return `<span class="m-cov">${glyph(n.region, 9)} ${esc(n.name)}</span>`;
+  return `<span class="m-cov">${nodeGlyph(n, 9)} ${esc(n.name)}</span>`;
 }
 
 function drawStage() {
@@ -871,7 +958,9 @@ async function main() {
   await navigate();
   // README tiles link to #treemap or a deep #/<region>/<lib>: land on the map once it is drawn
   if (location.hash === "#treemap" || location.hash.startsWith("#/")) $("#treemap").scrollIntoView();
-  drawSystems();
+  drawRemaining();
+  drawLibraries();
+  drawGameParts();
   drawHistory(hist.length ? hist : []);
   initTable();
   drawHonest();

@@ -30,21 +30,19 @@
     <div class="nownext" id="nownext" aria-label="What's happening now and next"></div>
   </div>
   <figure class="emblem-wrap">
-    <svg id="emblem" class="emblem" viewBox="-110 -110 220 220" role="img" aria-label="Progress emblem: one gem per region, filled to its matched share of code"></svg>
-    <figcaption id="emblem-cap">Each gem fills with its region's matched code</figcaption>
+    <svg id="emblem" class="emblem" viewBox="-110 -110 220 220" role="img" aria-label="Progress emblem: one gem per part of the game code and a gold one for the libraries, each filled to its matched share of code"></svg>
+    <figcaption id="emblem-cap">Four gems for the game code's four parts, gold in the middle for the libraries; each fills with its matched code</figcaption>
   </figure>
 </header>
 
 <main>
-  <section class="stats" id="stats" aria-label="Headline numbers"></section>
-  <p class="structural" id="structural" aria-label="Secondary measure: structurally matched"></p>
-
   <section class="panel" id="treemap">
     <div class="panel-head">
       <div>
         <h2>The whole DOL</h2>
         <p class="sub">Area is bytes of code. The bright fill rising in each tile is the share already matched.
-          Tap or click to dive in: region, library, file, function.</p>
+          The game code is coloured by its four parts, the libraries in gold.
+          Tap or click to dive in: region, part or library, file, function.</p>
       </div>
       <div class="legend" id="legend"></div>
     </div>
@@ -55,6 +53,35 @@
       <div class="loading" id="map-loading" hidden>loading functions&hellip;</div>
     </div>
     <p class="hint" id="map-hint">Esc or the back arrow zooms out. Dashed tiles are code dtk has not split into a source file yet.</p>
+  </section>
+
+  <section class="headline" aria-label="Headline numbers">
+    <div class="stats" id="stats"></div>
+    <p class="structural" id="structural" aria-label="Secondary measure: structurally matched"></p>
+    <div class="remaining" id="remaining"></div>
+  </section>
+
+  <section class="panel" id="libs-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Libraries</h2>
+        <p class="sub">Nintendo's and Metrowerks' code the game links: the Dolphin SDK, GX, JSystem, and MSL, Runtime and MetroTRK.
+          Imported from other decompilations and finished file by file. Pick one to open it in the map.</p>
+      </div>
+    </div>
+    <div id="libraries" class="libraries"></div>
+  </section>
+
+  <section class="panel" id="game-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Game code</h2>
+        <p class="sub">FSA's own code, in four parts: the two stretches of the boot path, in the order the game runs them, then the actors and everything else.
+          Solid bars are byte-identical; the lighter extension is weighted progress (partial credit for structurally matched functions).</p>
+        <p class="game-sum" id="game-sum"></p>
+      </div>
+    </div>
+    <div id="parts" class="parts"></div>
   </section>
 
   <section class="panel quest" id="quest-panel">
@@ -71,21 +98,11 @@
     <ul class="vows" id="vows" aria-label="Rules every submission follows"></ul>
   </section>
 
-  <section class="panel" id="systems-panel">
-    <div class="panel-head">
-      <div>
-        <h2>Systems</h2>
-        <p class="sub">Matched bytes of code per region and library. Open a region for its libraries.</p>
-      </div>
-    </div>
-    <div id="systems" class="systems"></div>
-  </section>
-
   <section class="panel" id="history-panel">
     <div class="panel-head">
       <div>
         <h2>Over time</h2>
-        <p class="sub">Matched code as a share of the whole DOL, one point per commit to <code>matching</code>, stacked by region.</p>
+        <p class="sub">Matched code as a share of the whole DOL, one point per commit to <code>matching</code>: the libraries below, the game code on top.</p>
       </div>
     </div>
     <div id="history" class="history"></div>
@@ -112,7 +129,7 @@
       <table class="files" id="files">
         <thead><tr>
           <th data-k="n">File</th>
-          <th data-k="lib" class="hide-s">Library</th>
+          <th data-k="lib" class="hide-s">Part / library</th>
           <th data-k="c" class="num">Size</th>
           <th data-k="share" class="num hide-s">% of DOL</th>
           <th data-k="pct" class="num">Matched</th>
