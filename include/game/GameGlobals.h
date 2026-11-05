@@ -1537,7 +1537,6 @@ GameRootSub24_8016A3AC* fn_8016A3AC();
 class J3DModel;
 class J3DAnmTextureSRTKey;
 class J3DAnmTevRegKey;
-extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016A3BC, not written yet). Loads a model
 // (getResource('J3D ', bmd) on `archive`, built in `heap`, `flags` its J3D
 // load flags) and up to two texture-SRT and two TEV-register animations, each
@@ -1548,7 +1547,6 @@ void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const c
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
                  J3DAnmTextureSRTKey** btk1Out, J3DAnmTextureSRTKey** btk2Out,
                  J3DAnmTevRegKey** brk1Out, J3DAnmTevRegKey** brk2Out);
-}
 // Owner: game/tu_8022AD64.cpp (0x8023F728, 0x8023F78C). Called by fn_8013A1A4: each
 // runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
 void fn_8023F728();
