@@ -63,6 +63,14 @@ class cls_804AE9B0;
 class cls_804B1920;
 class cls_804B13D4;
 class cls_804B146C;
+class cls_804B1AE8;
+class cls_804B1BB0;
+class cls_804B1BE8;
+class cls_804B1C20;
+class cls_804B1C58;
+class cls_804B1C90;
+class cls_804B1CC8;
+class cls_804B1D00;
 struct J2DScreen;
 class cls_804AF86C;
 class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (Unk_8045A080::fn_80457F80)
@@ -918,13 +926,23 @@ public:
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
     /* 0x1F4 */ u8 field_0x1f4[0x254 - 0x1F4]; // not yet known
     /* 0x254 */ u8 field_0x254; // set to 1 by fn_8043A208
-    /* 0x255 */ u8 pad_0x255;
+    /* 0x255 */ u8 field_0x255; // cleared by fn_8043EDF8
     // SHARED-EDIT (act_battle_royale_end_check draw, 0x256 = the byte its
     // mFocus is stored into when mFocus is not 0xFF).
     /* 0x256 */ u8 field_0x256;
     /* 0x257 */ u8 pad_0x257[0x290 - 0x257];
     /* 0x290 */ cls_804B13D4* field_0x290; // used when lbl_8053AAF8->field_0x7f is set
     /* 0x294 */ cls_804B146C* field_0x294; // used otherwise
+    // The objects fn_8043F504 allocates (by constructor); fn_8043EDF8 resets
+    // each one that exists.
+    /* 0x298 */ cls_804B1AE8* field_0x298; // also lbl_8053AEF0
+    /* 0x29C */ cls_804B1BB0* field_0x29c;
+    /* 0x2A0 */ cls_804B1BE8* field_0x2a0;
+    /* 0x2A4 */ cls_804B1C20* field_0x2a4;
+    /* 0x2A8 */ cls_804B1C58* field_0x2a8;
+    /* 0x2AC */ cls_804B1C90* field_0x2ac;
+    /* 0x2B0 */ cls_804B1CC8* field_0x2b0;
+    /* 0x2B4 */ cls_804B1D00* field_0x2b4;
 
     // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
@@ -965,6 +983,10 @@ public:
     void fn_8043DF8C(f32 x, f32 y);
     // 0x8043EDE8 (game/tu_8043A0E8.cpp): field_0xe0 = arg, field_0xe4 = 30.
     void fn_8043EDE8(s32 arg);
+    // 0x8043EDF8 (game/tu_8043A0E8.cpp): clears the flag bytes and resets the
+    // objects at 0x290 / 0x294 and 0x298..0x2B4; GameRootSub04_801F856C::fn_8013A1A4
+    // calls it.
+    void fn_8043EDF8();
 
     // 0x8043D5F0 (game/tu_8043A0E8.cpp, not written yet): takes no arguments
     // besides the object; fn_80139C5C calls it, then fn_8038D4A8.

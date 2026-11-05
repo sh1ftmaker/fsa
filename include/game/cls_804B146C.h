@@ -14,6 +14,9 @@ public:
     // Owner: game/tu_8042165C.cpp (0x80425234). Called with the three
     // arguments cls_804B1920::fn_8043D874 received.
     void fn_80425234(s32 id, s32 arg1, u32 arg2);
+    // Owner: game/tu_8042165C.cpp (0x804263A8). Called with only the object by
+    // cls_804B1920::fn_8043EDF8.
+    void fn_804263A8();
 };
 
 #endif

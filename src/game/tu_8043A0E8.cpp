@@ -4,6 +4,14 @@
 #include "game/GameState.h"
 #include "game/cls_804B13D4.h"
 #include "game/cls_804B146C.h"
+#include "game/cls_804B1C58.h"
+#include "game/cls_804B1D00.h"
+#include "game/act/tu_804432DC.h"
+#include "game/tu_804455E0.h"
+#include "game/tu_804465B8.h"
+#include "game/tu_80447618.h"
+#include "game/tu_80448940.h"
+#include "game/tu_8044998C.h"
 #include "game/tu_80379F84.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DScreen.h"
@@ -384,6 +392,41 @@ void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
 void cls_804B1920::fn_8043EDE8(s32 arg) {
     field_0xe0 = arg;
     field_0xe4 = 30;
+}
+
+void cls_804B1920::fn_8043EDF8() {
+    field_0xdd = 0;
+    field_0xdc = 0;
+    field_0x255 = 0;
+    if (lbl_8053AAF8->field_0x7f != 0) {
+        field_0x290->fn_8041FC2C();
+        if (field_0x2b0 != NULL) {
+            field_0x2b0->fn_8044A06C();
+        }
+        if (field_0x29c != NULL) {
+            field_0x29c->fn_80445D24();
+        }
+        if (field_0x2a8 != NULL) {
+            field_0x2a8->fn_80448334();
+        }
+        if (field_0x2b4 != NULL) {
+            field_0x2b4->fn_8044AFD8();
+        }
+        if (field_0x2ac != NULL) {
+            field_0x2ac->fn_804490B8();
+        }
+        if (field_0x2a4 != NULL) {
+            field_0x2a4->fn_804479A0();
+        }
+        if (field_0x2a0 != NULL) {
+            field_0x2a0->fn_80446DB0();
+        }
+    } else {
+        field_0x294->fn_804263A8();
+    }
+    if (field_0x298 != NULL) {
+        lbl_8053AEF0->fn_80443688();
+    }
 }
 
 void fn_80440928(f32 x, f32 y) {
