@@ -16,6 +16,73 @@
 #include "game/tu_8030AE84.h"
 #include "game/tu_80379F84.h"
 
+// The size of this player's group: itself, its leader (field_0xd60) and
+// every active follower (fn_8022F514) whose leader (fn_8022F3DC) is that
+// leader, or this player when it leads. fn_80248970's body; MWCC inlines it
+// into fn_80240670, fn_802486A0 and fn_802487FC, defined before it, so it is
+// a file inline.
+static inline s32 groupSize(const Player_804A6F38* player) {
+    s32 count = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i == player->field_0x4) {
+            count++;
+        } else if (fn_8022F514(i)) {
+            s32 team = player->field_0xd60;
+            if (team >= 0) {
+                if (team == fn_8022F3DC(i)) {
+                    count++;
+                }
+            } else {
+                s32 self = player->field_0x4;
+                if (self == fn_8022F3DC(i)) {
+                    count++;
+                }
+            }
+        } else if (i == player->field_0xd60) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// The group's mode: 5 alone, else the leader's (fn_8022CAF8) or, leading,
+// field_0x120c. fn_802486A0's body (inlined before its definition, as above).
+static inline s32 groupMode(const Player_804A6F38* player) {
+    if (groupSize(player) <= 1) {
+        return 5;
+    }
+    if (player->field_0xd60 >= 0) {
+        return fn_8022CAF8(player->field_0xd60);
+    }
+    return player->field_0x120c;
+}
+
+// Whose turn it is in the group: the leader's (fn_80234004) or, leading,
+// field_0x1224. fn_80240888's body (inlined by fn_80240670, before it).
+static inline s32 groupTurn(const Player_804A6F38* player) {
+    s32 team = player->field_0xd60;
+    if (team >= 0) {
+        return fn_80234004(team);
+    }
+    return player->field_0x1224;
+}
+
+// The place of this player in its leader's line (1 for the first follower),
+// or 0 when it leads. fn_80248778's body (inlined before its definition).
+static inline s32 linePlace(const Player_804A6F38* player) {
+    if (player->field_0xd60 < 0) {
+        return 0;
+    }
+    s32 count = 0;
+    for (s32 i = 0; i < player->field_0x4; i++) {
+        s32 partner = player->field_0xd60;
+        if (partner == fn_8022F3DC(i)) {
+            count++;
+        }
+    }
+    return count + 1;
+}
+
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
         return;
@@ -83,6 +150,22 @@ s32 Player_804A6F38::fn_8024064C() const {
     return fn_8022EA0C(field_0x4);
 }
 
+// FIXME: 98.8 %. Register allocation only: the group loop's count / index /
+// leader get r30 / r28 / r27 where the original has r28 / r27 / r30.
+// Whether this player does not act on its own: not taking part (bit
+// field_0x4 of lbl_8053AAF8->field_0x82 clear) without a leader; in group
+// mode 4 when it is not its turn; else when it has a leader. Const: the group
+// loop's field_0x4 is hoisted (r29), as in fn_80248778.
+bool Player_804A6F38::fn_80240670() const {
+    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && field_0xd60 < 0) {
+        return true;
+    }
+    if (groupMode(this) == 4) {
+        return groupTurn(this) != linePlace(this);
+    }
+    return field_0xd60 >= 0;
+}
+
 bool Player_804A6F38::fn_80240808() {
     return field_0xd60 >= 0;
 }
@@ -115,12 +198,8 @@ void Player_804A6F38::fn_80240878() {
     field_0x1224++;
 }
 
-s32 Player_804A6F38::fn_80240888() {
-    s32 team = field_0xd60;
-    if (team >= 0) {
-        return fn_80234004(team);
-    }
-    return field_0x1224;
+s32 Player_804A6F38::fn_80240888() const {
+    return groupTurn(this);
 }
 
 bool Player_804A6F38::fn_802408C0() {
@@ -456,71 +535,15 @@ s32 Player_804A6F38::fn_8024322C() {
     return field_0xd08;
 }
 
-// The size of this player's group: itself, its leader (field_0xd60) and
-// every active follower (fn_8022F514) whose leader (fn_8022F3DC) is that
-// leader, or this player when it leads. fn_80248970's body; MWCC inlines it
-// into fn_802486A0 and fn_802487FC, defined before it, so it is a file inline.
-static inline s32 groupSize(const Player_804A6F38* player) {
-    s32 count = 0;
-    for (s32 i = 0; i < 4; i++) {
-        if (i == player->field_0x4) {
-            count++;
-        } else if (fn_8022F514(i)) {
-            s32 team = player->field_0xd60;
-            if (team >= 0) {
-                if (team == fn_8022F3DC(i)) {
-                    count++;
-                }
-            } else {
-                s32 self = player->field_0x4;
-                if (self == fn_8022F3DC(i)) {
-                    count++;
-                }
-            }
-        } else if (i == player->field_0xd60) {
-            count++;
-        }
-    }
-    return count;
-}
-
-// The group's mode: 5 alone, else the leader's (fn_8022CAF8) or, leading,
-// field_0x120c. fn_802486A0's body (inlined before its definition, as above).
-static inline s32 groupMode(const Player_804A6F38* player) {
-    if (groupSize(player) <= 1) {
-        return 5;
-    }
-    if (player->field_0xd60 >= 0) {
-        return fn_8022CAF8(player->field_0xd60);
-    }
-    return player->field_0x120c;
-}
-
-// The place of this player in its leader's line (1 for the first follower),
-// or 0 when it leads. fn_80248778's body (inlined before its definition).
-static inline s32 linePlace(const Player_804A6F38* player) {
-    if (player->field_0xd60 < 0) {
-        return 0;
-    }
-    s32 count = 0;
-    for (s32 i = 0; i < player->field_0x4; i++) {
-        s32 partner = player->field_0xd60;
-        if (partner == fn_8022F3DC(i)) {
-            count++;
-        }
-    }
-    return count + 1;
-}
-
 // The gate in front of every pad query of the player (fn_80246904 and the
 // functions around it): the player flags (fn_802413F0); in group mode 4
-// only the player whose turn it is (fn_80240888 == its place in line); and
+// only the player whose turn it is (groupTurn == its place in line); and
 // field_0x11ea.
 static inline bool teamCheck(Player_804A6F38* player) {
     if (!playerFlags_802413F0(player)) {
         return false;
     }
-    if ((groupMode(player) == 4 && player->fn_80240888() != linePlace(player)) || !player->field_0x11ea) {
+    if ((groupMode(player) == 4 && groupTurn(player) != linePlace(player)) || !player->field_0x11ea) {
         return false;
     }
     return true;
@@ -1472,6 +1495,217 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 }
 
 void Player_804A6F38::fn_80252FBC() {}
+
+// Whether the player is in, or about to enter, state 0x1B (the current or
+// the requested state); a materialised bool where it is inlined (li 0 / li 1).
+static inline bool inState1B(const Player_804A6F38* player) {
+    bool result = false;
+    if (player->field_0x1240 == 0x1b || player->field_0x1244 == 0x1b) {
+        result = true;
+    }
+    return result;
+}
+
+// Scales v to unit length unless it is shorter than 32 * FLT_EPSILON (the
+// sequence of tu_80285E58's fn_8028676C and tu_802684A4's normalize2D).
+static inline void normalizeVec(JGeometry::TVec3f& v) {
+    f32 sq = v.squared();
+    if (!(sq <= 32.0f * FLT_EPSILON)) {
+        v.scale(JGeometry::TUtil<f32>::inv_sqrt(sq));
+    }
+}
+
+// FIXME: 99.1 %. Register allocation only: the first group loop's index
+// (r30 vs r28) and, in the normalisations, the float temporaries (f29-f31,
+// f3 / f4 swapped).
+// Update B (fn_8023F390, after every player's update A): a follower walks
+// to its leader's spot (fn_8027FA08), 2 a frame while 0x1218 runs, else 1.5
+// or 6 by the helper's flags, and arrives on it; a player held by another
+// (0xD9C / 0xDAC) moves to 16 beside it; else a carried player keeps its
+// position, and the rest are pushed by the players they touch.
+void Player_804A6F38::fn_80252FC0() {
+    if (field_0x121f) {
+        return;
+    }
+    if (field_0xce8) {
+        return;
+    }
+    if (field_0x454) {
+        return;
+    }
+    if (fn_80270A8C()) {
+        return;
+    }
+    if (fn_80241200()) {
+        return;
+    }
+    if (fn_8025F448()) {
+        return;
+    }
+    if (field_0x1240 == 0xe) {
+        return;
+    }
+    if (fn_802486A0() == 4) {
+        return;
+    }
+    if ((field_0xd60 >= 0 && field_0xd9c < 0 && field_0xdac < 0) || field_0x1216) {
+        if (fn_80240670() ? fn_80233EDC(fn_8022EA0C(field_0x4)) : inState1B(this)) {
+            return;
+        }
+        if (field_0x1240 == 0x19) {
+            return;
+        }
+        if (field_0x122c > 0) {
+            return;
+        }
+        JGeometry::TVec3f target;
+        fn_8027FA08(&target);
+        JGeometry::TVec3f step = target - mPos;
+        if (!field_0x1216) {
+            step.z = 0.0f;
+        }
+        f32 dist = PSVECMag(&step);
+        f32 speed;
+        if (field_0x1218 > 0) {
+            speed = 2.0f;
+        } else if (field_0xbf0->anyFlag48()) {
+            speed = 1.5f;
+        } else {
+            speed = 6.0f;
+        }
+        if (dist >= speed) {
+            normalizeVec(step);
+            step.scale(speed);
+            mPos += step;
+        } else {
+            mPos.x = target.x;
+            mPos.y = target.y;
+            mPos.z = target.z;
+            field_0x1216 = false;
+            if (!field_0x1214 && field_0x1218 == 0) {
+                field_0x1217 = true;
+            }
+            if (field_0xd60 >= 0 && field_0x1214 == true) {
+                field_0x1215 = true;
+            }
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+        return;
+    }
+    s32 holder = field_0xd9c;
+    if (holder >= 0 || field_0xdac >= 0) {
+        JGeometry::TVec3f pos;
+        if (holder >= 0) {
+            pos.set(*fn_8023E724(holder));
+        } else {
+            pos.set(*fn_8023E724(field_0xdac));
+        }
+        switch (field_0x3dc) {
+        case 0:
+            pos.x -= 16.0f;
+            break;
+        case 1:
+            pos.x += 16.0f;
+            break;
+        case 2:
+            pos.y -= 16.0f;
+            break;
+        case 3:
+            pos.y += 16.0f;
+            break;
+        }
+        JGeometry::TVec3f step = pos - mPos;
+        step.z = 0.0f;
+        f32 dist = PSVECMag(&step);
+        if (field_0xbf0->anyFlag48()) {
+            normalizeVec(step);
+            step.scale(1.5f);
+            mPos.x += step.x;
+            mPos.y += step.y;
+        } else if (dist >= 3.0f) {
+            normalizeVec(step);
+            step.scale(3.0f);
+            mPos.x += step.x;
+            mPos.y += step.y;
+        } else {
+            mPos.x = pos.x;
+            mPos.y = pos.y;
+        }
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (i != field_0x4 && fn_8022E438(i, field_0x4) && fn_8023EBB8(i)) {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(fn_8023EF50(i));
+            if (actor != NULL && actor->field_0x1a4 != 0) {
+                mPos.x = field_0x14.x;
+                mPos.y = field_0x14.y;
+                mPos.z = field_0x14.z;
+                return;
+            }
+        }
+    }
+    if (fn_802486A0() == 5) {
+        return;
+    }
+    if (fn_80250D30()) {
+        return;
+    }
+    if (viewLayerFlag(field_0x3b4)) {
+        return;
+    }
+    if (!fn_802341D0(field_0x4)) {
+        return;
+    }
+    f32 pushX = 0.0f;
+    f32 pushY = pushX;
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023F264(i) && fn_8022E438(i, field_0x4)) {
+            if (fn_8022D930(i) || fn_8022D894(i) || fn_8022D9CC(i)) {
+                JGeometry::TVec3f target;
+                fn_8027F854(&target, i);
+                JGeometry::TVec3f step = target - mPos;
+                step.z = 0.0f;
+                if (PSVECMag(&step) >= 5.0f) {
+                    normalizeVec(step);
+                    step.scale(5.0f);
+                    mPos.x += step.x;
+                    mPos.y += step.y;
+                } else {
+                    mPos.x = target.x;
+                    mPos.y = target.y;
+                }
+                return;
+            }
+            const JGeometry::TVec2f* push = fn_8022DFD4(i);
+            f32 x = push->x;
+            f32 y = push->y;
+            if (pushX == 0.0f) {
+                pushX = x;
+            } else if (pushX > 0.0f) {
+                if (x > pushX) {
+                    pushX = x;
+                }
+            } else if (x < pushX) {
+                pushX = x;
+            }
+            if (pushY == 0.0f) {
+                pushY = y;
+            } else if (pushY > 0.0f) {
+                if (y > pushY) {
+                    pushY = y;
+                }
+            } else if (y < pushY) {
+                pushY = y;
+            }
+        }
+    }
+    if ((pushX > 0.0f && field_0xbf0->field_0x14 >= 0.0f) || (pushX < 0.0f && field_0xbf0->field_0x14 <= 0.0f)) {
+        mPos.x += pushX - field_0xbf0->field_0x14;
+    }
+    if ((pushY > 0.0f && field_0xbf0->field_0x18 >= 0.0f) || (pushY < 0.0f && field_0xbf0->field_0x18 <= 0.0f)) {
+        mPos.y += pushY - field_0xbf0->field_0x18;
+    }
+}
 
 // The per-player cue of the update's join sequence: at frame `at` of the
 // counter field_0xd38 the 'here' effect, pad rumble and sound 0x25; at

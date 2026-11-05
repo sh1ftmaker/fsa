@@ -74,6 +74,21 @@ public:
     // 0x8026F710: clears the per-direction flags, the counters and the
     // owner's field_0xef0; called by the owner's reset fn_80254744.
     void fn_8026F710();
+    // Whether any of the eight flags at 0x48 is 1, flags 2, 4 and 5 not
+    // counting while field_0xb4 is set. No out-of-line copy: inlined by the
+    // owner's update B fn_80252FC0 (tu_8023FBF0) and in tu_80256C74,
+    // tu_8025EB18 and tu_8026FC20 (an 8-pass loop unrolled by 4).
+    bool anyFlag48() const {
+        for (int i = 0; i < 8; i++) {
+            if (field_0xb4 == true && (i == 2 || i == 4 || i == 5)) {
+                continue;
+            }
+            if (field_0x48[i] == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     // Inlined in fn_80268BC4; the owner's fn_8024B24C returns it.
     bool isField98Or99Set() const { return field_0x98 || field_0x99; }
@@ -101,7 +116,8 @@ public:
     // and 0x30).
     /* 0x40 */ u8 field_0x40[8];
     // Bytes tested for 1 by the owner's fn_802517F8, fn_802518AC and
-    // fn_8025190C (tu_8023FBF0).
+    // fn_8025190C (tu_8023FBF0), and in a loop by anyFlag48 (the owner's
+    // update B, lbzx 0x48 + i, i < 8).
     /* 0x48 */ u8 field_0x48[8];
     /* 0x50 */ u8 field_0x50[8];
     /* 0x58 */ u8 field_0x58[8];

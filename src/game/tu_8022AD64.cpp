@@ -744,10 +744,10 @@ bool fn_8022F478(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return false;
     }
-    if (isPlayerActive(player)) {
-        return lbl_8053AC90->mPlayers[player]->fn_80240670();
+    if (!isPlayerActive(player)) {
+        return true;
     }
-    return true;
+    return lbl_8053AC90->mPlayers[player]->fn_80240670();
 }
 
 bool fn_8022F514(s32 player) {
@@ -2422,10 +2422,10 @@ s32 fn_8023DE58(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 0;
     }
-    if (isPlayerActive(player)) {
-        return lbl_8053AC90->mPlayers[player]->field_0x3b4;
+    if (!isPlayerActive(player)) {
+        return 0;
     }
-    return 0;
+    return lbl_8053AC90->mPlayers[player]->field_0x3b4;
 }
 
 void fn_8023DEDC(s32 player, const JGeometry::TVec3f* offset) {
@@ -2739,6 +2739,46 @@ void fn_8023F2BC() {
         if (isPlayerBitSet(lbl_8053AAF8, i)) {
             playerAt(i)->fn_80264998();
         }
+    }
+}
+
+// FIXME: 99.7 %. One instruction: the last loop's slot offset starts as
+// `mr r30, r31` (a copy of the counter's zero) in the original and as
+// `li r30, 0` here; counter type, while / for and the NULL test's form
+// don't change it. Its fn_8022F478 / fn_8023DE58 copies are inlined.
+// The players' update: update A for every slot; unless the game is held
+// (lbl_8053AAF8->field_0x94 == 1) update B, the per-frame bytes 0x434/0x435,
+// the cross-player passes and fn_80252FBC; then the audio flag: 0 when an
+// active player without fn_80240670 is on a layer below 8, else 1.
+void fn_8023F390() {
+    for (s32 i = 0; i < 4; i++) {
+        playerAt(i)->fn_80253E6C();
+    }
+    if (lbl_8053AAF8->field_0x94 == 1) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        playerAt(i)->fn_80252FC0();
+    }
+    for (s32 i = 0; i < 4; i++) {
+        playerAt(i)->field_0x434 = 0;
+        playerAt(i)->field_0x435 = 0;
+    }
+    fn_80232A0C();
+    if (lbl_8053AAF8->field_0x7f) {
+        fn_80231DE4();
+    }
+    for (s32 i = 0; i < 4; i++) {
+        playerAt(i)->fn_80252FBC();
+    }
+    if (lbl_8053AC90 != NULL) {
+        for (s32 i = 0; i < 4; i++) {
+            if (isPlayerActive(i) && !fn_8022F478(i) && fn_8023DE58(i) < 8) {
+                lbl_8053AF80->fn_80457DFC(0);
+                return;
+            }
+        }
+        lbl_8053AF80->fn_80457DFC(1);
     }
 }
 

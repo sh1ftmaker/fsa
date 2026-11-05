@@ -73,7 +73,7 @@ public:
     s32 fn_80240354(); // via fn_80236768
     void fn_8024051C(); // via fn_802384BC
     s32 fn_80240644(); // via fn_8022F3DC
-    bool fn_80240670(); // via fn_8022F478
+    bool fn_80240670() const; // via fn_8022F478
     bool fn_80240808(); // via fn_8022F514
     bool fn_80240818(); // via fn_8022DCD8
     bool fn_80240840(s32 arg); // via fn_8022E39C
@@ -81,7 +81,7 @@ public:
     s32 fn_80240868(); // word 0x4 (the player index)
     bool fn_80240870(); // via fn_80234134
     void fn_80240878(); // via fn_80233F78
-    s32 fn_80240888(); // via fn_80234004
+    s32 fn_80240888() const; // via fn_80234004
     bool fn_802408C0(); // byte at 0x1217
     void fn_802408C8(s32 a, const JGeometry::TVec3f* b); // via fn_802348C4
     bool fn_80240AD4(); // via fn_80234950
@@ -1221,6 +1221,9 @@ s32 fn_8022D7F8(s32 player); // -> fn_8024FF6C; else 0
 u8 fn_8022D894(s32 player); // -> fn_802517E4; else false
 bool fn_8022D930(s32 player); // -> fn_80241478; else false
 bool fn_8022D9CC(s32 player); // -> fn_80250090; else false
+// -> fn_802422C4 (&field_0xbf0->field_0x14); else the address of a zeroed
+// stack TVec2f (8 bytes, stfs 0 at 0x10 / 0x14).
+const JGeometry::TVec2f* fn_8022DFD4(s32 player);
 bool fn_8022DA68(s32 player); // -> fn_80250ACC; else false
 bool fn_8022DBA0(s32 player); // -> fn_8024F630; else false
 bool fn_8022DE10(s32 player, s32 arg); // -> fn_8024B108; else false
