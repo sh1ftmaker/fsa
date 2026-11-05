@@ -10,10 +10,8 @@
 // vtable (config/G4SE01/game_units.tsv). Named after its vtable, 0x8049CA40.
 class TowerCollapseEffect_8049CA40 : public ActorBase_804A5770 {
 public:
-    // FIXME: 44.2 %. This constructor (emitted in game/tu_801F9484.cpp) also runs
-    // __construct_array over field_0x238[3] and builds field_0x28c; the original only stores
-    // the vtable, so the original's members at 0x238 and 0x28c have no constructor (not the
-    // JGeometry::TVec3f these are, whose empty constructor is out of line).
+    // The constructor (emitted in game/tu_801F9484.cpp) only stores the vtable: the members at
+    // 0x238 and 0x28C have no constructor, hence Vec rather than JGeometry::TVec3f.
     TowerCollapseEffect_8049CA40() {}
     /* 0x08 */ virtual ~TowerCollapseEffect_8049CA40();
     /* 0x0C */ virtual void init();
@@ -24,13 +22,13 @@ public:
     void fn_80103348();
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 mMode; // field_0x90 & 0xF; init() branches on it
-    /* 0x238 */ JGeometry::TVec3f field_0x238[3]; // copies of mPos (init)
+    /* 0x238 */ Vec field_0x238[3]; // copies of mPos (init)
     /* 0x25C */ s32 field_0x25c; // (field_0x90 >> 22) & 0x1F
     /* 0x260 */ JPABaseEmitter* mEmitter260; // released by the destructor
     /* 0x264 */ s32 field_0x264[3];
     /* 0x270 */ u8 field_0x270[0x18]; // not yet known
     /* 0x288 */ s32 field_0x288;
-    /* 0x28C */ JGeometry::TVec3f field_0x28c;
+    /* 0x28C */ Vec field_0x28c;
     /* 0x298 */ u8 field_0x298[0x1C]; // not yet known
 }; // Size: 0x2B4
 

@@ -29,17 +29,17 @@ void TowerCollapseEffect_8049CA40::fn_80103348() {
     void* res = fn_804032E8('TIMG', "kowareyuka_a.bti");
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
 
-    mPos.set(field_0x238[0]);
+    mPos.set(field_0x238[0].x, field_0x238[0].y, field_0x238[0].z);
     setSpriteRotation(mtx, params, field_0x264[0]);
     res = fn_804032E8('TIMG', "kowareyuka_b.bti");
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
 
-    mPos.set(field_0x238[1]);
+    mPos.set(field_0x238[1].x, field_0x238[1].y, field_0x238[1].z);
     setSpriteRotation(mtx, params, field_0x264[1]);
     res = fn_804032E8('TIMG', "kowareyuka_c.bti");
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
 
-    mPos.set(field_0x238[2]);
+    mPos.set(field_0x238[2].x, field_0x238[2].y, field_0x238[2].z);
     setSpriteRotation(mtx, params, field_0x264[2]);
     res = fn_804032E8('TIMG', "kowareyuka_d.bti");
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
@@ -177,9 +177,9 @@ void TowerCollapseEffect_8049CA40::init() {
         field_0x28c.x = 0.0f;
         field_0x28c.y = 0.0f;
         field_0x28c.z = 0.0f;
-        field_0x238[0].set(mPos);
-        field_0x238[1].set(mPos);
-        field_0x238[2].set(mPos);
+        field_0x238[0] = mPos;
+        field_0x238[1] = mPos;
+        field_0x238[2] = mPos;
         break;
     case 2:
         mEmitter260 = fn_8013CC50(field_0x4, &mPos, 0x496, 1, 0, NULL, NULL, true, 1.0f);
