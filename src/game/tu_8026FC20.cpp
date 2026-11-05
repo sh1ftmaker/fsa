@@ -1376,6 +1376,65 @@ u8 Player_804A6F38::fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeomet
     return hit;
 }
 
+// FIXME: 98.59. The test chain is an inline in the original: every early out is
+// `li r3, 0` into one join that copies r3 to r27 (`mr r27, r3`), and the function returns
+// `clrlwi r3, r27, 24` (a u8 return of a bool local, as fn_80273E7C). Written as a static
+// inline returning that result it is 100 % as `u8`, but then (1) -inline auto inlines all of
+// fn_80273FB8 into fn_80274238 (the original calls it) and (2) fn_80274238's `bool hit =`
+// would convert the u8 (its original takes r3 as is, i.e. sees a bool). Here the chain
+// assigns `hit` (r27) directly; the result register and the final clrlwi differ.
+// Like fn_802732C4's tail, but on layers without viewLayerFlag the player may be up to 8 high.
+bool Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    field_0x492 = 0;
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    bool hit = false;
+    if (fn_80247BD4() > 0) {
+        if (layer != field_0x3b4) {
+            hit = false;
+        } else if (isDown()) {
+            hit = false;
+        } else if (fn_802413E8()) {
+            hit = false;
+        } else if (!viewLayerFlag(field_0x3b4) && mPos.z > 8.0f) {
+            hit = false;
+        } else if (field_0xcee) {
+            hit = false;
+        } else if (field_0x1216) {
+            hit = false;
+        } else if (field_0x1215) {
+            hit = false;
+        } else if (field_0xcf0) {
+            hit = false;
+        } else if (field_0x1238 > 0) {
+            hit = false;
+        } else if (!fn_802413F0()) {
+            hit = false;
+        } else {
+            JGeometry::TBox2f overlap(field_0x4c0);
+            overlap.i.setMax(box->i);
+            overlap.f.setMin(box->f);
+            hit = false;
+            if (overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y) {
+                hit = true;
+            }
+        }
+        if (hit == true) {
+            out->x = mPos.x;
+            out->y = mPos.y;
+        }
+        field_0x492 = 1;
+    }
+    if (hit == true) {
+        out->add(layerBox(layer)->i);
+    }
+    return hit;
+}
+
 u8 Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag) {
     field_0x492 = 0;
     if (!fn_802413F0()) {
@@ -1394,6 +1453,107 @@ u8 Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeomet
         hit = fn_80273FB8(box, layer, pos);
     }
     return hit;
+}
+
+// Pose step of state 0x0B (fn_8027A1E0): the frame counter 0x3FA picks the pose 0x3FB,
+// in turn 0x3FD's two fixed sequences (0: eight poses of 7 frames, 2: six) end in 0x3FD = 1;
+// otherwise a 19-frame loop, twice as fast (0xBBA) while 0xBC0 > 0 or pad 0x200 is held
+// (unless fn_8022AF5C); past pose 0 it slows 0xBBC by 0.2 down to 2 (reset to 4 / 3).
+// Then the boxes 0x4B0 (+-20) and 0x4A0 (+-12) round mPos, 0x30C = mPos, 0x3F0 = -1.
+void Player_804A6F38::fn_8027439C() {
+    if (field_0x3fd == 0) {
+        field_0x3fa++;
+        if (field_0x3fa <= 7) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa <= 14) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa <= 21) {
+            field_0x3fb = 2;
+        } else if (field_0x3fa <= 28) {
+            field_0x3fb = 3;
+        } else if (field_0x3fa <= 35) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa <= 42) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa <= 49) {
+            field_0x3fb = 2;
+        } else if (field_0x3fa <= 56) {
+            field_0x3fb = 3;
+        } else {
+            field_0x3fd = 1;
+            field_0x3fa = 0;
+            field_0x3fb = 0;
+            if (field_0x490 == 1) {
+                lbl_8053AED0->fn_8043D67C(0x190, field_0x4, 0);
+                field_0x490 = 0;
+            }
+        }
+    } else if (field_0x3fd == 2) {
+        field_0x3fa++;
+        if (field_0x3fa <= 7) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa <= 14) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa <= 21) {
+            field_0x3fb = 2;
+        } else if (field_0x3fa <= 28) {
+            field_0x3fb = 3;
+        } else if (field_0x3fa <= 35) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa <= 42) {
+            field_0x3fb = 1;
+        } else {
+            field_0x3fd = 1;
+            field_0x3fa = 0;
+            field_0x3fb = 0;
+        }
+    } else {
+        if (field_0xbc0 > 0 || (fn_80246D1C(0x200) != 0 && !fn_8022AF5C())) {
+            field_0xbba = 1;
+        }
+        if (field_0xbba == 1) {
+            field_0x3fa += 2;
+        } else {
+            field_0x3fa++;
+        }
+        if (field_0x3fa >= 19) {
+            field_0x3fb = 0;
+            field_0x3fa = 0;
+            if (field_0xbba == 1) {
+                field_0xbbc = 4.0f;
+            } else {
+                field_0xbbc = 3.0f;
+            }
+            field_0xbba = 0;
+        }
+        if (field_0x3fa < 7) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 12) {
+            field_0x3fb = 1;
+        } else {
+            field_0x3fb = 2;
+        }
+        if (field_0x3fb >= 1) {
+            field_0xbbc -= 0.2f;
+            if (field_0xbbc < 2.0f) {
+                field_0xbbc = 2.0f;
+            }
+        }
+        if (mPos.z > 0.0f) {
+            if (field_0x344.z > 1.0f) {
+                field_0x3fb = 2;
+            } else {
+                field_0x3fb = 0;
+            }
+        }
+    }
+    field_0x4b0.set(mPos.x - 20.0f, mPos.y - 20.0f, mPos.x + 20.0f, mPos.y + 20.0f);
+    field_0x4a0.set(mPos.x - 12.0f, mPos.y - 12.0f, mPos.x + 12.0f, mPos.y + 12.0f);
+    field_0x30c.x = 0.0f;
+    field_0x30c.y = 0.0f;
+    field_0x30c.z = 0.0f;
+    field_0x30c.add(mPos);
+    field_0x3f0 = -1;
 }
 
 void Player_804A6F38::fn_80274728() {
