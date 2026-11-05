@@ -176,6 +176,15 @@ public:
     // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
     // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
     void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F99DC: loads the u16 tile grid of `layer` (little-endian in res)
+    // at byte dstOffset; tu_802D39B8 passes (res, 0, layer, 0, 0).
+    void fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstOffset, u32 size);
+    // 0x802F9BE8: loads the u16 grid field_0x24 the same way, from byte
+    // `start` on (tu_802D39B8).
+    void fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size);
+    // 0x802F9DA8: fn_802F93F4 for the sprite palettes field_0xc / field_0x18
+    // of slot 0-2 (tu_802D39B8).
+    void fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag);
     // 0x802F53F4. tu_80301CD0 (0x803051A0, 0x80305DEC). Keeps the record of
     // player `slot` in field_0x11c[slot] and hands it to fn_803068D0.
     void fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record);
@@ -238,6 +247,9 @@ public:
     // 0x802F6CF4: the third sprite kind of the queues (cls_8030029C::field_0x18),
     // called like fn_802F745C (pos, the resource, &params).
     void fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
+    // 0x802F91AC: loads the view matrix of a sprite at pos (fn_802F86CC
+    // passes its frame offset); *loaded is set when it is the sprite's own.
+    void fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, bool* loaded, f32 offset);
     // 0x802F8F0C: the GX state of a sprite quad drawn with params (or the
     // defaults for NULL); `this` is unused.
     void fn_802F8F0C(SpriteParams_801F5AE0* params);
@@ -262,7 +274,7 @@ public:
     /* 0x0004 */ u8* field_0x4[2];   // 0x8000
     /* 0x000C */ u8* field_0xc[3];   // 0x200
     /* 0x0018 */ u8* field_0x18[3];  // 0x200
-    /* 0x0024 */ u8* field_0x24;     // 0x2000
+    /* 0x0024 */ u16* field_0x24;    // 0x1000 (fn_802F9BE8 stores u16s)
     // The u16 tile grids of layers 0-3 and 4-7 (fn_802F9908 / fn_802F9974
     // test the two ranges separately; 32 x 32 cells). 0x2000 each.
     /* 0x0028 */ u16* mLayerGrid[4];
@@ -281,7 +293,7 @@ public:
     /* 0x0100 */ JGeometry::TVec3f (*field_0x100[2])[65];
     /* 0x0108 */ JUtility::TColor* field_0x108[2];
     /* 0x0110 */ JGeometry::TVec2f* field_0x110; // 0x1000 (4 x 64 x 16, filled by fn_802FF798)
-    /* 0x0114 */ u8 field_0x114[0x11C - 0x114];
+    /* 0x0114 */ u16 field_0x114[4]; // fn_802F9DA8: the first colour of each sprite palette set
     /* 0x011C */ cls_804AA858Sub11C* field_0x11c[4];
     /* 0x012C */ u8 field_0x12c[4]; // set by fn_802F53F4 for the slot it fills
     /* 0x0130 */ u8 field_0x130[4]; // fn_802F53F4: record bits 0x4 >> 5 (mode 3)

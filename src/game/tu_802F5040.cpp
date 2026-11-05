@@ -360,6 +360,52 @@ static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
     return result;
 }
 
+// The view matrix of a sprite at pos (raised by offset): params' matrix (a
+// zero diagonal made 1) or the identity, scaled for the height like
+// fn_802F5FF4 and moved to pos, when params has a matrix or pos is off the
+// ground; *loaded says whether it was loaded (else the plain camera matrix).
+void cls_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, bool* loaded,
+                               f32 offset) {
+    *loaded = false;
+    if ((params != NULL && params->mMtx != NULL) ||
+        (0.0f != pos->z && (params == NULL || params->field_0x1f)))
+    {
+        Mtx m;
+        if (params != NULL && params->mMtx != NULL) {
+            JMath::gekko_ps_copy12(m, params->mMtx);
+            if (0.0f == m[0][0] && 0.0f == m[1][1] && 0.0f == m[2][2]) {
+                m[0][0] = 1.0f;
+                m[1][1] = 1.0f;
+                m[2][2] = 1.0f;
+            }
+        } else {
+            PSMTXIdentity(m);
+        }
+        if (0.0f != pos->z && (params == NULL || params->field_0x1f)) {
+            f32 scale = getScale(pos->z);
+            m[0][0] *= scale;
+            m[1][0] *= scale;
+            m[2][0] *= scale;
+            m[0][1] *= scale;
+            m[1][1] *= scale;
+            m[2][1] *= scale;
+            m[0][2] *= scale;
+            m[1][2] *= scale;
+            m[2][2] *= scale;
+            m[0][3] *= scale;
+            m[1][3] *= scale;
+            m[2][3] *= scale;
+        }
+        m[0][3] += pos->x;
+        m[1][3] += pos->y + offset;
+        m[2][3] += pos->z + offset;
+        lbl_8053AB10->fn_8013B3CC(m);
+        *loaded = true;
+    } else {
+        lbl_8053AB10->fn_8013B3F0();
+    }
+}
+
 // FIXME: 94.9. Register allocation (res / srcOffset / dstOffset / len one register
 // off) and the original copies len to r4 before the first loop for the second
 // loop and DCFlushRange (ours after it); its src + srcOffset is added later.
@@ -485,6 +531,205 @@ void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
         mLayerGrid2[layer - 4][index] = value;
     } else {
         mLayerGrid[layer][index] = value;
+    }
+}
+
+// FIXME: 89.4. In the 4x-unrolled copy loop the original loads the second
+// element's low byte before storing the first (one mr more); registers differ.
+// Loads the 'SCN ' tile grid of `layer` from res (decoded first when
+// compressed; `size` bytes from srcOffset, else the resource's size):
+// little-endian u16 tile codes, stored at byte offset dstOffset of the grid.
+void cls_804AA858::fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstOffset, u32 size) {
+    u32 len;
+    if (size == 0) {
+        s32 resSize;
+        if (JKRDecomp::checkCompressed((u8*)res)) {
+            resSize = JKRDecompExpandSize((u8*)res);
+        } else {
+            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+        }
+        if (resSize < 0) {
+            len = 0x2000;
+        } else {
+            len = resSize;
+        }
+    } else {
+        len = size;
+    }
+    u8* src;
+    if (JKRDecomp::checkCompressed((u8*)res)) {
+        JKRDecomp::decode((u8*)res, field_0xf8, 0x8000, 0);
+        src = field_0xf8;
+    } else {
+        src = (u8*)res;
+    }
+    src += srcOffset;
+    u16* dst;
+    if (layer >= 0 && layer < 4) {
+        dst = &mLayerGrid[layer][dstOffset / 2];
+    } else if (layer >= 4 && layer < 8) {
+        dst = &mLayerGrid2[layer - 4][dstOffset / 2];
+    } else {
+        dst = &mLayerGrid[layer][dstOffset / 2];
+    }
+    for (u32 i = 0; i < len; i += 2) {
+        dst[i / 2] = (src[i + 1] << 8) | src[i];
+    }
+}
+
+// FIXME: 90.7. As in fn_802F99DC: one mr fewer in the 4x-unrolled copy loop (the
+// original loads the next low byte before the store); registers differ.
+// Loads the u16 grid field_0x24 from res like fn_802F99DC (little-endian,
+// `size` bytes, else the resource's size), from byte `start` on.
+void cls_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size) {
+    u32 len;
+    if (size == 0) {
+        s32 resSize;
+        if (JKRDecomp::checkCompressed((u8*)res)) {
+            resSize = JKRDecompExpandSize((u8*)res);
+        } else {
+            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+        }
+        if (resSize < 0) {
+            len = 0x2000;
+        } else {
+            len = resSize;
+        }
+    } else {
+        len = size;
+    }
+    u8* src;
+    if (JKRDecomp::checkCompressed((u8*)res)) {
+        JKRDecomp::decode((u8*)res, field_0xf8, 0x8000, 0);
+        src = field_0xf8;
+    } else {
+        src = (u8*)res;
+    }
+    src += srcOffset;
+    u32 index = start / 2;
+    for (u32 i = start; i < len; i += 2) {
+        field_0x24[index++] = (src[i + 1] << 8) | src[i];
+    }
+}
+
+// FIXME: 93.7. The high byte of colour 0xD8 is stored as clrlwi + srawi 8 in
+// the original (extrwi for 0xD9 / 0xDA, and for all three here); as in
+// fn_802F93F4, len is copied to r4 before the first loop; registers differ.
+// The 'SCL ' palettes of the sprite layer `slot` (0-2): fn_802F93F4 into
+// field_0xc[slot] (keeping the first colour, made transparent, in
+// field_0x114[slot]), colours 0xD8-0xDA made RGB4A3 with alpha 4 / 7, and the
+// adjusted copy in field_0x18[slot].
+void cls_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
+    u32 len;
+    if (size == 0) {
+        s32 resSize;
+        if (JKRDecomp::checkCompressed((u8*)res)) {
+            resSize = JKRDecompExpandSize((u8*)res);
+        } else {
+            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+        }
+        if (resSize < 0) {
+            len = 0x200;
+        } else {
+            len = resSize;
+        }
+    } else {
+        len = size;
+    }
+    u8* src;
+    if (JKRDecomp::checkCompressed((u8*)res)) {
+        JKRDecomp::decode((u8*)res, field_0xf8, 0x8000, 0);
+        src = field_0xf8;
+    } else {
+        src = (u8*)res;
+    }
+    src += srcOffset;
+    u8* dst = field_0xc[slot] + dstOffset;
+    u16 first;
+    for (s32 i = 0; i < len; i += 2) {
+        u16 color;
+        if (i != 0 && (i & 0x1F) == 0) {
+            color = 0;
+        } else {
+            u16 bgr = src[0] | (src[1] << 8);
+            color = ((bgr & 0x1F) << 10) | (bgr & 0x3E0) | ((bgr >> 10) & 0x1F) | 0x8000;
+            if (i == 0) {
+                first = color;
+                color = 0;
+            }
+        }
+        dst[i] = color >> 8;
+        dst[i + 1] = color;
+        src += 2;
+    }
+    field_0x114[slot] = first;
+    for (int j = 0; j < 3; j++) {
+        u8* entry = field_0xc[slot] + 0x1B0 + j * 2;
+        u16 color = (entry[0] << 8) | entry[1];
+        color = 0x4000 | ((color >> 3) & 0xF00) | ((color >> 2) & 0xF0) | ((color >> 1) & 0xF);
+        entry[0] = color >> 8;
+        entry[1] = color;
+    }
+    u8* out = field_0x18[slot] + dstOffset;
+    u8* in = field_0xc[slot] + dstOffset;
+    for (s32 i = 0; i < len; i += 2) {
+        u16 color = (in[i] << 8) | in[i + 1];
+        if (color & 0x8000) {
+            u8 r = adjustChannel((color >> 10) & 0x1F, 1.0f, 0.0f);
+            u8 g = adjustChannel((color >> 5) & 0x1F, 1.0f, 0.0f);
+            u8 b = adjustChannel(color & 0x1F, 1.0f, 0.0f);
+            if (flag) {
+                color = 0x8000 | (b << 10) | (r << 5) | g;
+            } else {
+                color = 0x8000 | (r << 10) | (g << 5) | b;
+            }
+        }
+        out[i] = color >> 8;
+        out[i + 1] = color;
+    }
+    DCFlushRange(out, len);
+}
+
+// FIXME: 88.1. As in fn_802F9714: the original loads the next source bytes of the
+// unrolled nibble-swap loop before storing the previous ones; registers differ.
+// fn_802F9714 for the 'SCH ' tile images of field_0x4[slot]; for slot 1 it
+// also keeps bytes 0x200-0x2FF of that buffer in field_0x238c.
+void cls_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
+    u32 len;
+    if (size == 0) {
+        s32 resSize;
+        if (JKRDecomp::checkCompressed((u8*)res)) {
+            resSize = JKRDecompExpandSize((u8*)res);
+        } else {
+            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+        }
+        if (resSize < 0) {
+            len = 0x8000;
+        } else {
+            len = resSize;
+        }
+    } else {
+        len = size;
+    }
+    u8* dst = field_0x4[slot] + dstOffset;
+    u8* src;
+    if (JKRDecomp::checkCompressed((u8*)res)) {
+        JKRDecomp::decode((u8*)res, field_0xf8, 0x8000, 0);
+        src = field_0xf8;
+    } else {
+        src = (u8*)res;
+    }
+    src += srcOffset;
+    for (u32 i = 0; i < len; i++) {
+        dst[i] = ((src[i] >> 4) & 0xF) | ((src[i] & 0xF) << 4);
+    }
+    DCFlushRange(dst, len);
+    if (slot == 1) {
+        u8* from = field_0x4[1] + 0x200;
+        u8* to = field_0x238c;
+        for (int i = 0; i < 0x100; i++) {
+            *to++ = *from++;
+        }
     }
 }
 
@@ -660,10 +905,9 @@ void cls_804AA858::fn_802FF568() {
     }
 }
 
-// FIXME: 87.7. Our 0x100- and 0x10-element clearing loops get an entry test
-// (cmpwi / bge) the original lacks, and the original keeps the shared zero in r5 / r8
-// across them; in the grid loop it loads the float constants before the outer loop
-// and the registers differ. Its .sdata2 literals are @NNN until .sdata2 is in order.
+// FIXME: 99.4. Register allocation in the per-player loop (r4-r8 one off); the
+// grid's .sdata2 literals are @NNN until the functions between fn_802FC80C and
+// it, which use the earlier pool entries, are written.
 void cls_804AA858::fn_802FF798() {
     for (s32 i = 0; i < 4; i++) {
         field_0x235c[i] = 0;
@@ -675,12 +919,12 @@ void cls_804AA858::fn_802FF798() {
     field_0x2374.x = field_0x2374.y = field_0x2374.z = 0.0f;
     field_0x2380 = 0x40;
     field_0x2384 = 0x40;
-    for (s32 i = 0; i < 0x100; i++) {
+    for (int i = 0; i < 0x100; i++) {
         field_0x2398[i].field_0x0 = 0;
     }
     field_0xbf98 = 0;
     field_0x2388 = 0;
-    for (s32 i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         field_0xbf9c[i].mKind = 0;
     }
     for (s32 y = 0; y < 0x40; y++) {
@@ -792,7 +1036,7 @@ cls_804AA858::cls_804AA858(JKRHeap* heap) {
         field_0xc[i] = new (heap, 0x20) u8[0x200];
         field_0x18[i] = new (heap, 0x20) u8[0x200];
     }
-    field_0x24 = new (heap, 0x20) u8[0x2000];
+    field_0x24 = new (heap, 0x20) u16[0x1000];
     for (s32 i = 0; i < 4; i++) {
         mLayerGrid[i] = new (heap, 0x20) u16[0x1000];
         mLayerGrid2[i] = new (heap, 0x20) u16[0x1000];
