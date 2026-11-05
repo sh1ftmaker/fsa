@@ -677,6 +677,68 @@ void Player_804A6F38::fn_80292944() {
     raiseHeldActor();
 }
 
+void Player_804A6F38::fn_802929FC() {
+    followCamera();
+    if (field_0x3fc == 60) {
+        if (field_0xcf4 != 0x1E && field_0xcf4 != 0x1F) {
+            fn_8013CC50(field_0xce0, &field_0xcc8, 0x546, 1, 1, NULL, NULL, true, 1.0f);
+            switch (field_0x4) {
+            case 0:
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x14E, 1, 1, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x14F, 1, 1, NULL, NULL, true, 1.0f);
+                if (fn_80241544() >= 2) {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x151, 1, 1, NULL, NULL, true, 1.0f);
+                } else {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x150, 1, 1, NULL, NULL, true, 1.0f);
+                }
+                break;
+            case 1:
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x157, 1, 1, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x158, 1, 1, NULL, NULL, true, 1.0f);
+                if (fn_80241544() >= 2) {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x15A, 1, 1, NULL, NULL, true, 1.0f);
+                } else {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x159, 1, 1, NULL, NULL, true, 1.0f);
+                }
+                break;
+            case 2:
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x14A, 1, 1, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x14B, 1, 1, NULL, NULL, true, 1.0f);
+                if (fn_80241544() >= 2) {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x14D, 1, 1, NULL, NULL, true, 1.0f);
+                } else {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x14C, 1, 1, NULL, NULL, true, 1.0f);
+                }
+                break;
+            case 3:
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x153, 1, 1, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0xce0, &field_0xcc8, 0x154, 1, 1, NULL, NULL, true, 1.0f);
+                if (fn_80241544() >= 2) {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x156, 1, 1, NULL, NULL, true, 1.0f);
+                } else {
+                    fn_8013CC50(field_0xce0, &field_0xcc8, 0x155, 1, 1, NULL, NULL, true, 1.0f);
+                }
+                break;
+            }
+            fn_8013CC50(field_0xce0, &field_0xcc8, 0x152, 1, 1, NULL, NULL, true, 1.0f);
+        }
+        field_0x3fd = 0;
+        fn_80241454(0);
+    } else if (field_0x3fc >= 118) {
+        field_0x124d = 0;
+        if (fn_80251AEC(0x25)) {
+            if (field_0x3b4 < 8) {
+                field_0xcb0 = mPos;
+            }
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    }
+    field_0x3fc++;
+    setHeldPos();
+}
+
 void Player_804A6F38::fn_80292E90() {
     field_0x124d = 1;
     field_0x458 = 0;
