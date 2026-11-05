@@ -7,6 +7,7 @@
 #include "game/Effect.h"
 #include "game/GameView.h"
 #include "game/tu_8030AE84.h"
+#include "game/ViewLayer.h"
 
 // Shared by the updates of states 0x2A and 0x2B (fn_80291B8C, fn_80291910):
 // the player turns a quarter every four frames of the counter 0x3FC
@@ -36,6 +37,15 @@ inline void Player_804A6F38::stepWalkCycle() {
         field_0x3f8 = 0;
     }
     field_0x3f9 = field_0x3f8 / 6;
+}
+
+// Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_80293774).
+inline void Player_804A6F38::spawnEffect17D() {
+    JGeometry::TVec3f pos;
+    pos.set(mPos);
+    pos.y += 32.0f;
+    pos.z += 16.0f;
+    fn_8013CC50(field_0x3b4, &pos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
 }
 
 // The held actor's position: mPos raised 16 (fn_80292820, raiseHeldActor).
@@ -226,11 +236,7 @@ void Player_804A6F38::fn_80291910() {
     }
     if (field_0x3fc == 60) {
         if (field_0xce0 == 8) {
-            JGeometry::TVec3f pos;
-            pos.set(mPos);
-            pos.y += 32.0f;
-            pos.z += 16.0f;
-            fn_8013CC50(field_0x3b4, &pos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
+            spawnEffect17D();
             fn_8024F0E8(0x20020);
         }
         fn_8024F0E8(0x2002F);
@@ -556,6 +562,30 @@ void Player_804A6F38::fn_80293760() {
     field_0x458 = 0;
 }
 
+void Player_804A6F38::fn_80293774() {
+    if (field_0x3fc == 60) {
+        if (field_0xcf4 != 0x1D) {
+            if (field_0x3b4 < 8) {
+                spawnEffect17D();
+            } else if (field_0x3b4 >= 8 && field_0xce4 < 8) {
+                fn_8024EFA0(false);
+            }
+        }
+        field_0x3fd = 0;
+    } else if (field_0x3fc >= 118) {
+        if (field_0x3b4 < 8) {
+            field_0xcb0 = mPos;
+        }
+        field_0x124d = 0;
+        if (fn_80251AEC(0x21)) {
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    }
+    field_0x3fc++;
+}
+
 void Player_804A6F38::fn_802938B8() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -568,6 +598,30 @@ void Player_804A6F38::fn_802938B8() {
 void Player_804A6F38::fn_80293B1C() {
     field_0x124d = 1;
     field_0x458 = 0;
+}
+
+void Player_804A6F38::fn_80293E8C() {
+    field_0x124d = 1;
+    mPos.z = 0.0f;
+    field_0x458 = 0;
+    fn_8024F0E8(0x10003);
+    fn_8024F0E8(0x2002D);
+    s32 layer = field_0x3b4;
+    if (layer > 8 && field_0xce4 > 8 && viewLayerFlag(layer) && viewLayerFlag(field_0xce4) &&
+        field_0xce4 != field_0x3b4)
+    {
+        field_0x3fc = 58;
+    }
+    setHeldPos();
+    if (field_0xcf4 == 0x24 && field_0x3b4 >= 8 && field_0xce4 < 8) {
+        fn_8024EFA0(false);
+    }
+    if (fn_802486A0() != 4) {
+        if (fn_802486A0() != 5) {
+            fn_80248004(5, true);
+        }
+        fn_8024BAEC();
+    }
 }
 
 // FIXME: 99.0 %. Instructions identical; the 0.0f and -0.5f literals the original
