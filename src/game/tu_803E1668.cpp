@@ -8,6 +8,9 @@
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DAnimation.h"
+#include "JSystem/J2D/J2DAnmLoader.h"
+#include "game/Message.h"
+#include "dolphin/os.h"
 
 // Entered when the state changes (index: the new state). The three tables
 // are filled at startup by the unit's static initialiser, as in
@@ -38,17 +41,195 @@ static cls_804B0B00::StateFunc lbl_804B0A24[15] = {
     &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E462C,
 };
 
-// Steps the cursor's blink counter (field_0x254) and the frame counter (field_0x220).
+// Steps the cursor's blink counter (field_0x254[0]) and the frame counter (field_0x220[0]).
+// .rodata: the unit's tables in address order (the functions address them
+// off one base); u64 tables are J2DPane::search tags.
+static const f32 lbl_80477970[16] = {
+    50.0f, 206.0f, 50.0f, 206.0f, 60.0f, 60.0f, 132.0f, 132.0f, 87.0f, 464.0f, 87.0f, 464.0f, 159.0f, 159.0f, 327.0f, 327.0f,
+};
+static const s32 lbl_804779B0[30] = {
+    0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
+};
+static const u64 lbl_80477A28[17] = {
+    'Pmadbb07', 'Pmadbb06', 'Pmadbb05', 'Pmadbb04', 'Pmadbb03', 'Pmadbb02', 'Pmadbb01', 'Pmadb05',
+    'Pmadb04', 'Pmadb03', 'Pmadb02', 'Pmadb01', 'Pmad02', 'Pmad01', 'Phy03', 'Phy02', 'Phy01',
+};
+static const u64 lbl_80477AB0[4][6] = {
+    {'Pnop01', 'Pnop02', 'Pnopb01', 'Pnopb02', 'Pnopb03', 'Pnopb04'},
+    {'Pnop03', 'Pnop04', 'Pnopb05', 'Pnopb06', 'Pnopb07', 'Pnopb08'},
+    {'Pnop05', 'Pnop06', 'Pnopb09', 'Pnopb10', 'Pnopb11', 'Pnopb12'},
+    {'Pnop07', 'Pnop08', 'Pnopb13', 'Pnopb14', 'Pnopb15', 'Pnopb16'},
+};
+static const u64 lbl_80477B70[29] = {
+    'Plibl01', 'Plibl02', 'Plibl03', 'Plibl04', 'Plw01', 'Plw02', 'Plw03', 'Plw04', 'Plw05',
+    'Plw06', 'Plw07', 'Plw08', 'Plw09', 'Plw10', 'Plw11', 'Plw12', 'Plili01', 'Plili02', 'Plili03',
+    'Plili04', 'Plib01', 'Plib02', 'Plib03', 'Plib04', 'Plib05', 'Plibk01', 'Plibk02', 'Plibk02',
+    'Plibk03',
+};
+static const u64 lbl_80477C58[22] = {
+    'P1pli01', 'P1pli02', 'P1pli03', 'P1pli04', 'P2pli01', 'P2pli02', 'P2pli03', 'P2pli04',
+    'P3pli01', 'P3pli02', 'P3pli03', 'P3pli04', 'P3pli05', 'P3pli06', 'P4pli01', 'P4pli02',
+    'P4pli03', 'P4pli04', 'P4pli05', 'P4pli06', 'P4pli07', 'P4pli08',
+};
+static const u64 lbl_80477D08[11] = {
+    'Ttkg01', 'Ttkg02', 'Ptkgb01', 'Ptkgbk01', 'Ptkgb02', 'Ptkgbk02', 'Ptkgb03', 'Ptkgb04',
+    'Ptkgb05', 'Ptkgbk03', 'Ptkgbk04',
+};
+static const u64 lbl_80477D60[6] = {
+    'Tten01', 'Tten02', 'Ptgba01', 'Ptgba02', 'Ptn01', 'Ptn02',
+};
+static const u64 lbl_80477D90[34] = {
+    'Pcgps01', 'Pcgp01', 'Pcgba01', 'Pcgbak01', 'Pcgps02', 'Pcgp02', 'Pcgba02', 'Pcgbak02',
+    'Pcgps03', 'Pcgp03', 'Pcgba03', 'Pcgbak03', 'Pcgps04', 'Pcgp04', 'Pcgba04', 'Pcgbak04', 'Pcc01',
+    'Pccaa01', 'Pcc02', 'Pccaa02', 'Pcc03', 'Pccaa03', 'Pcc04', 'Pccaa04', 'Pcca01', 'Pcca02',
+    'Pcca03', 'Pcca04', 'Pcca05', 'Pcca06', 'Pcca07', 'Pcca08', 'Pccu01', 'Pccuk01',
+};
+static const u64 lbl_80477EA0[4][9] = {
+    {'Ppln01', 'Pplli01', 'Ppllb01', 'Ppllb02', 'Ppllb03', 'Ppllb04', 'Ppllb05', 'Ppllbk01', 'Ppllbk02'},
+    {'Ppln02', 'Pplli02', 'Ppllb11', 'Ppllb12', 'Ppllb13', 'Ppllb14', 'Ppllb15', 'Ppllbk11', 'Ppllbk12'},
+    {'Ppln03', 'Pplli03', 'Ppllb21', 'Ppllb22', 'Ppllb23', 'Ppllb24', 'Ppllb25', 'Ppllbk21', 'Ppllbk22'},
+    {'Ppln04', 'Pplli04', 'Ppllb31', 'Ppllb32', 'Ppllb33', 'Ppllb34', 'Ppllb35', 'Ppllbk31', 'Ppllbk32'},
+};
+static const u64 lbl_80477FC0[17] = {
+    'Pmadbb07', 'Pmadbb06', 'Pmadbb05', 'Pmadbb04', 'Pmadbb03', 'Pmadbb02', 'Pmadbb01', 'Pmadb05',
+    'Pmadb04', 'Pmadb03', 'Pmadb02', 'Pmadb01', 'Pmad02', 'Pmad01', 'Phy03', 'Phy02', 'Phy01',
+};
+static const u64 lbl_80478048[3][5] = {
+    {'Tsta01', 'Pstab01', 'Pstab02', 'Pstab03', 'Pstab04'},
+    {'Than01', 'Phanb01', 'Phanb02', 'Phanb03', 'Phanb04'},
+    {'Trule01', 'Prub01', 'Prub02', 'Prub03', 'Prub04'},
+};
+static const u64 lbl_804780C0[26] = {
+    'Pcon01', 'Pcon02', 'Pgba01', 'Pgba02', 'Pnop01', 'Pnop02', 'Plwa01', 'Plwa02', 'Plwa03',
+    'Plwa04', 'Plwa05', 'Plwa06', 'Plwa07', 'Plwa08', 'Plwa09', 'Plwa10', 'Plibk01', 'Plibk02',
+    'Plibk03', 'Plibk04', 'Plibk11', 'Plibk12', 'Plibk05', 'Plibkk01', 'Plibkk02', 'Plibkk03',
+};
+static const u64 lbl_80478190[4] = {
+    'Pplli01', 'Pplli02', 'Pplli03', 'Pplli04',
+};
+static const u64 lbl_804781B0[4] = {
+    'Pcgbak01', 'Pcgbak02', 'Pcgbak03', 'Pcgbak04',
+};
+static const u64 lbl_804781D0[4] = {
+    'Pcgba01', 'Pcgba02', 'Pcgba03', 'Pcgba04',
+};
+static const u64 lbl_804781F0[4] = {
+    'Pcgp01', 'Pcgp02', 'Pcgp03', 'Pcgp04',
+};
+static const u64 lbl_80478210[4] = {
+    'Pcgps01', 'Pcgps02', 'Pcgps03', 'Pcgps04',
+};
+static const u64 lbl_80478230[4] = {
+    'Ppln01', 'Ppln02', 'Ppln03', 'Ppln04',
+};
+static const u64 lbl_80478250[4][4] = {
+    {'Pcc01', 'Pccaa01', 'Pcca01', 'Pcca02'},
+    {'Pcc02', 'Pccaa02', 'Pcca03', 'Pcca04'},
+    {'Pcc03', 'Pccaa03', 'Pcca05', 'Pcca06'},
+    {'Pcc04', 'Pccaa04', 'Pcca07', 'Pcca08'},
+};
+static const u64 lbl_804782D0[4] = {
+    'Par01', 'Par02', 'Par03', 'Par04',
+};
+static const u64 lbl_804782F0[4] = {
+    'Ndatay01', 'Ndatay02', 'Ndatay03', 'Ndatay04',
+};
+static const u64 lbl_80478310[4] = {
+    'Pbcur01', 'Pbcur02', 'Pbcur03', 'Pbcur04',
+};
+static const u64 lbl_80478330[4] = {
+    'Pscur01', 'Pscur02', 'Pscur03', 'Pscur04',
+};
+static const u64 lbl_80478350[4] = {
+    'Paccur02', 'Paccur04', 'Paccur06', 'Paccur08',
+};
+static const u64 lbl_80478370[4] = {
+    'Paccur01', 'Paccur03', 'Paccur05', 'Paccur07',
+};
+static const u64 lbl_80478390[4] = {
+    'P1s03', 'P2s03', 'P3s03', 'P4s03',
+};
+static const u64 lbl_804783B0[4] = {
+    'P1sk03', 'P2sk03', 'P3sk03', 'P4sk03',
+};
+static const u64 lbl_804783D0[4] = {
+    'P1s02', 'P2s02', 'P3s02', 'P4s02',
+};
+static const u64 lbl_804783F0[4] = {
+    'P1sk02', 'P2sk02', 'P3sk02', 'P4sk02',
+};
+static const u64 lbl_80478410[4] = {
+    'P1s01', 'P2s01', 'P3s01', 'P4s01',
+};
+static const u64 lbl_80478430[4] = {
+    'P1sk01', 'P2sk01', 'P3sk01', 'P4sk01',
+};
+// The rupee digit textures (the strings are emitted here, between the tag
+// tables).
+static const char* lbl_804B0AD8[10] = {
+    "kk_rupyNum_00.bti", "kk_rupyNum_01.bti", "kk_rupyNum_02.bti", "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti", "kk_rupyNum_05.bti", "kk_rupyNum_06.bti", "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti", "kk_rupyNum_09.bti",
+};
+static const u64 lbl_80478518[4][6] = {
+    {'Pp1lf01', 'Pp1lf02', 'Pp1lf03', 'Pp1lf04', 'Pp1lf05', 'Pp1lf06'},
+    {'Pp2lf01', 'Pp2lf02', 'Pp2lf03', 'Pp2lf04', 'Pp2lf05', 'Pp2lf06'},
+    {'Pp3lf01', 'Pp3lf02', 'Pp3lf03', 'Pp3lf04', 'Pp3lf05', 'Pp3lf06'},
+    {'Pp4lf01', 'Pp4lf02', 'Pp4lf03', 'Pp4lf04', 'Pp4lf05', 'Pp4lf06'},
+};
+static const u64 lbl_804785D8[4][6] = {
+    {'Pp1lfk01', 'Pp1lfk02', 'Pp1lfk03', 'Pp1lfk04', 'Pp1lfk05', 'Pp1lfk06'},
+    {'Pp2lfk01', 'Pp2lfk02', 'Pp2lfk03', 'Pp2lfk04', 'Pp2lfk05', 'Pp2lfk06'},
+    {'Pp3lfk01', 'Pp3lfk02', 'Pp3lfk03', 'Pp3lfk04', 'Pp3lfk05', 'Pp3lfk06'},
+    {'Pp4lfk01', 'Pp4lfk02', 'Pp4lfk03', 'Pp4lfk04', 'Pp4lfk05', 'Pp4lfk06'},
+};
+static const u64 lbl_80478698[4][6] = {
+    {'Pp1lf09', 'Pp1lf10', 'Pp1lf11', 'Pp1lf12', 'Pp1lf13', 'Pp1lf14'},
+    {'Pp2lf09', 'Pp2lf10', 'Pp2lf11', 'Pp2lf12', 'Pp2lf13', 'Pp2lf14'},
+    {'Pp3lf09', 'Pp3lf10', 'Pp3lf11', 'Pp3lf12', 'Pp3lf13', 'Pp3lf14'},
+    {'Pp4lf09', 'Pp4lf10', 'Pp4lf11', 'Pp4lf12', 'Pp4lf13', 'Pp4lf14'},
+};
+static const u64 lbl_80478758[4][6] = {
+    {'Pp1lfk09', 'Pp1lfk10', 'Pp1lfk11', 'Pp1lfk12', 'Pp1lfk13', 'Pp1lfk14'},
+    {'Pp2lfk09', 'Pp2lfk10', 'Pp2lfk11', 'Pp2lfk12', 'Pp2lfk13', 'Pp2lfk14'},
+    {'Pp3lfk09', 'Pp3lfk10', 'Pp3lfk11', 'Pp3lfk12', 'Pp3lfk13', 'Pp3lfk14'},
+    {'Pp4lfk09', 'Pp4lfk10', 'Pp4lfk11', 'Pp4lfk12', 'Pp4lfk13', 'Pp4lfk14'},
+};
+static const u64 lbl_80478818[4] = {
+    'Pnopb04', 'Pnopb08', 'Pnopb12', 'Pnopb16',
+};
+static const u64 lbl_80478838[4] = {
+    'Plibl01', 'Plibl02', 'Plibl03', 'Plibl04',
+};
+static const u64 lbl_80478858[4] = {
+    'Plili01', 'Plili02', 'Plili03', 'Plili04',
+};
+static const u64 lbl_80478878[3] = {
+    'Pblk01', 'Pblk02', 'Pblk03',
+};
+static const u64 lbl_80478890[4][4] = {
+    {'P1pli01', 0, 0, 0},
+    {'P2pli01', 'P2pli02', 0, 0},
+    {'P3pli01', 'P3pli02', 'P3pli03', 0},
+    {'P4pli01', 'P4pli02', 'P4pli03', 'P4pli04'},
+};
+// A pane's initial alpha scaled by rate. The constructor fades every pane
+// out with rate 0.0f: the original still multiplies (the constants reloaded
+// for each loop), which a literal `alpha * 0.0f` in the loop would fold.
+static inline u8 fadeAlpha(u8 alpha, f32 rate) {
+    return alpha * rate;
+}
+
 static inline void stepBlink(cls_804B0B00* self) {
-    if (self->field_0x254 != 0) {
-        self->field_0x254++;
-        if (self->field_0x254 > 10) {
-            self->field_0x254 = 0;
+    if (self->field_0x254[0] != 0) {
+        self->field_0x254[0]++;
+        if (self->field_0x254[0] > 10) {
+            self->field_0x254[0] = 0;
         }
     }
-    self->field_0x220++;
-    if (self->field_0x220 >= 30) {
-        self->field_0x220 = 0;
+    self->field_0x220[0]++;
+    if (self->field_0x220[0] >= 30) {
+        self->field_0x220[0] = 0;
     }
 }
 
@@ -64,7 +245,7 @@ void cls_804B0B00::fn_803E2A0C() {
 }
 
 void cls_804B0B00::fn_803E3548() {
-    field_0x254 = 0;
+    field_0x254[0] = 0;
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 10;
 }
@@ -86,15 +267,15 @@ void cls_804B0B00::fn_803E3C80() {
 }
 
 void cls_804B0B00::fn_803E3C94() {
-    field_0x254 = 0;
+    field_0x254[0] = 0;
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 6;
 }
 
 void cls_804B0B00::fn_803E4308() {
-    field_0x220 = 0;
-    field_0x254 = 0;
-    field_0x1e0 = 5;
+    field_0x220[0] = 0;
+    field_0x254[0] = 0;
+    field_0x1e0[0] = 5;
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 4;
 }
@@ -110,8 +291,8 @@ void cls_804B0B00::fn_803E45FC() {
 }
 
 void cls_804B0B00::fn_803E4610() {
-    field_0x1e0 = 0;
-    field_0x254 = 0;
+    field_0x1e0[0] = 0;
+    field_0x254[0] = 0;
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 0;
 }
@@ -158,21 +339,21 @@ void cls_804B0B00::fn_803E9034() {
         if (field_0x1b8 >= 3) {
             field_0x1b8 = 0;
         }
-        field_0x254 = 1;
-        field_0x1e0 = 30;
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
         lbl_8053AF80->fn_80458880(0x26, -1);
     } else if (lbl_8053AD30->fn_80309A9C(8, lbl_80529DEC.field_0x23c + 1)) {
         field_0x1b8--;
         if (field_0x1b8 < 0) {
             field_0x1b8 = 2;
         }
-        field_0x254 = 1;
-        field_0x1e0 = 30;
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
         lbl_8053AF80->fn_80458880(0x26, -1);
     }
-    field_0x1e0++;
-    if (field_0x1e0 >= 60) {
-        field_0x1e0 = 0;
+    field_0x1e0[0]++;
+    if (field_0x1e0[0] >= 60) {
+        field_0x1e0[0] = 0;
     }
 }
 
@@ -207,8 +388,8 @@ void cls_804B0B00::fn_803ED604() {
         } else {
             field_0x1b8 = 1;
         }
-        field_0x254 = 1;
-        field_0x1e0 = 30;
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
         lbl_8053AF80->fn_80458880(0x26, -1);
     } else if (lbl_8053AD30->fn_80309A9C(8, lbl_80529DEC.field_0x23c + 1)) {
         if (field_0x1b8 == 1) {
@@ -216,13 +397,13 @@ void cls_804B0B00::fn_803ED604() {
         } else {
             field_0x1b8 = 1;
         }
-        field_0x254 = 1;
-        field_0x1e0 = 30;
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
         lbl_8053AF80->fn_80458880(0x26, -1);
     }
-    field_0x1e0++;
-    if (field_0x1e0 >= 60) {
-        field_0x1e0 = 0;
+    field_0x1e0[0]++;
+    if (field_0x1e0[0] >= 60) {
+        field_0x1e0[0] = 0;
     }
 }
 
@@ -260,5 +441,304 @@ cls_804B0B00::~cls_804B0B00() {
     for (s32 i = 0; i < 4; i++) {
         delete field_0x7c[i];
         field_0x7c[i] = NULL;
+    }
+}
+
+// FIXME: 99.13. (1) The string literals sit 0x88 bytes lower in our pool:
+// the original's starts with the strings of the functions before this one
+// ("player_sob.bin", "kk_kettei_01.bti", "kk_modoru_01.bti",
+// "kk_nPlayerP1_01.bti".."P4", not written yet), so the addi offsets off the
+// .rodata base differ. (2) Registers only in most loops (e.g. the first
+// loop's array pointers are r24 / r26 in the original, r26 / r27 here).
+// (3) .sdata2 constants are @NNN here (sdata2 not split yet).
+cls_804B0B00::cls_804B0B00() {
+    field_0x1b4 = 0;
+    field_0x1bc = lbl_80529DEC.field_0x23c;
+    if (field_0x1bc == 0) {
+        field_0x1b8 = 1;
+    } else {
+        field_0x1b8 = 0;
+    }
+    field_0x1d0 = 0;
+    field_0x264 = 0;
+    field_0x26b = 0;
+    field_0x26c = 0;
+    field_0x1d8 = 2;
+    field_0x1d4 = 2;
+    field_0x1dc = 0;
+    for (int i = 0; i < 4; i++) {
+        field_0x1e0[i] = 0;
+        field_0x1f0[i] = fn_80403414(i);
+        field_0x200[i] = fn_804033D4(i);
+        field_0x210[i] = fn_8040336C(i);
+        field_0x220[i] = 0;
+        field_0x1c0[i] = 0;
+        field_0x254[i] = 0;
+    }
+    field_0x25e = 0;
+    field_0x25c = 0;
+    field_0x26e = 0;
+    field_0x26d = 0;
+    field_0x260 = 0;
+    field_0x360 = 4;
+
+    mScreen = new J2DScreen;
+    mScreen->setPriority("adv_n_player.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x8 = new J2DScreen;
+    field_0x8->setPriority("adv_entry.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0xc = new J2DScreen;
+    field_0xc->setPriority("adv_entry_con.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x10 = new J2DScreen;
+    field_0x10->setPriority("handicap.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x14 = new J2DScreen;
+    field_0x14->setPriority("adv_back.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    for (int i = 0; i < 4; i++) {
+        field_0x18[i] = new J2DScreen;
+        field_0x18[i]->setPriority("entry_arrow_anim.blo", 0x1100000, lbl_80529DEC.field_0x28);
+        field_0x28[i] = new J2DScreen;
+        field_0x28[i]->setPriority("entry_connect_anim.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    }
+    OSInitFastCast();
+    void* arrowAnm = fn_804031C4('SCRN', "entry_arrow_anim.bck");
+    void* connectAnm = fn_804031C4('SCRN', "entry_connect_anim.bck");
+    for (int i = 0; i < 4; i++) {
+        field_0x38[i] = static_cast<J2DAnmTransform*>(J2DAnmLoaderDataBase::load(arrowAnm));
+        field_0x48[i] = static_cast<J2DAnmTransform*>(J2DAnmLoaderDataBase::load(connectAnm));
+        field_0x18[i]->search('NULL_001')->setAnimation(field_0x38[i]);
+        field_0x28[i]->search('Ndatay00')->setAnimation(field_0x48[i]);
+        field_0x8->search(lbl_804782D0[i])->hide();
+        field_0x230[i] = 0;
+        field_0x240[i] = 0;
+    }
+    field_0x250 = -1;
+    field_0x252 = -1;
+
+    // mScreen: the initial alphas, then every pane faded out.
+    for (int i = 0; i < 17; i++) {
+        field_0x26f[i] = mScreen->search(lbl_80477A28[i])->getAlpha();
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 6; j++) {
+            field_0x280[i][j] = mScreen->search(lbl_80477AB0[i][j])->getAlpha();
+        }
+    }
+    for (int i = 0; i < 29; i++) {
+        field_0x298[i] = mScreen->search(lbl_80477B70[i])->getAlpha();
+    }
+    for (int i = 0; i < 22; i++) {
+        field_0x2b5[i] = mScreen->search(lbl_80477C58[i])->getAlpha();
+    }
+    for (int i = 0; i < 17; i++) {
+        mScreen->search(lbl_80477A28[i])->setAlpha(fadeAlpha(field_0x26f[i], 0.0f));
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 6; j++) {
+            mScreen->search(lbl_80477AB0[i][j])->setAlpha(fadeAlpha(field_0x280[i][j], 0.0f));
+        }
+    }
+    for (int i = 0; i < 29; i++) {
+        mScreen->search(lbl_80477B70[i])->setAlpha(fadeAlpha(field_0x298[i], 0.0f));
+    }
+    for (int i = 0; i < 22; i++) {
+        mScreen->search(lbl_80477C58[i])->setAlpha(fadeAlpha(field_0x2b5[i], 0.0f));
+    }
+    field_0x268 = 156;
+    field_0x19c = mScreen->search('Pscuro02')->getBounds()->i.x;
+    field_0x1a0 = mScreen->search('Pscuro02')->getBounds()->i.y;
+    field_0xf0 = mScreen->search('Pmadbb07')->getBounds()->i.x;
+    field_0xf4 = mScreen->search('Pmadbb07')->getBounds()->i.y;
+    field_0xf8 = 0.0f;
+    field_0xfc = 0.0f;
+    field_0x100[0] = mScreen->search('Pnopb04')->getBounds()->i.x;
+    field_0x110[0] = mScreen->search('Pnopb04')->getBounds()->i.y;
+    field_0x120[0] = 0.0f;
+    field_0x100[1] = mScreen->search('Pnopb08')->getBounds()->i.x;
+    field_0x110[1] = mScreen->search('Pnopb08')->getBounds()->i.y;
+    field_0x120[1] = 0.0f;
+    field_0x100[2] = mScreen->search('Pnopb12')->getBounds()->i.x;
+    field_0x110[2] = mScreen->search('Pnopb12')->getBounds()->i.y;
+    field_0x120[2] = 0.0f;
+    field_0x100[3] = mScreen->search('Pnopb16')->getBounds()->i.x;
+    field_0x110[3] = mScreen->search('Pnopb16')->getBounds()->i.y;
+    field_0x120[3] = 0.0f;
+    field_0x130 = mScreen->search('Ndata02')->getBounds()->i.x;
+    field_0x134 = mScreen->search('Ndata02')->getBounds()->i.y;
+    field_0x138 = 0.0f;
+    field_0x13c = mScreen->search('Ndata05')->getBounds()->i.x;
+    field_0x140 = mScreen->search('Ndata05')->getBounds()->i.y;
+    field_0x144 = mScreen->search('Ndata07')->getBounds()->i.x;
+    field_0x148 = mScreen->search('Ndata07')->getBounds()->i.y;
+    field_0x14c = 0.0f;
+
+    // field_0x8 (the entry screen).
+    for (int i = 0; i < 4; i++) {
+        field_0x8->search(lbl_80478190[i])->hide();
+        for (int j = 0; j < 2; j++) {
+            field_0x8->search(lbl_80478250[i][j])->hide();
+        }
+    }
+    for (int i = 0; i < 11; i++) {
+        field_0x2cb[i] = field_0x8->search(lbl_80477D08[i])->getAlpha();
+    }
+    for (int i = 0; i < 6; i++) {
+        field_0x2d6[i] = field_0x8->search(lbl_80477D60[i])->getAlpha();
+    }
+    for (int i = 0; i < 34; i++) {
+        field_0x2dc[i] = field_0x8->search(lbl_80477D90[i])->getAlpha();
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 9; j++) {
+            field_0x2fe[i][j] = field_0x8->search(lbl_80477EA0[i][j])->getAlpha();
+        }
+    }
+    field_0x265 = field_0x8->search(lbl_804781B0[0])->getAlpha();
+    field_0x266 = field_0x8->search(lbl_804781D0[0])->getAlpha();
+    field_0x267 = field_0x8->search(lbl_804781F0[0])->getAlpha();
+    for (int i = 0; i < 11; i++) {
+        field_0x8->search(lbl_80477D08[i])->setAlpha(fadeAlpha(field_0x2cb[i], 0.0f));
+    }
+    for (int i = 0; i < 6; i++) {
+        field_0x8->search(lbl_80477D60[i])->setAlpha(fadeAlpha(field_0x2d6[i], 0.0f));
+    }
+    for (int i = 0; i < 34; i++) {
+        field_0x8->search(lbl_80477D90[i])->setAlpha(fadeAlpha(field_0x2dc[i], 0.0f));
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 9; j++) {
+            field_0x8->search(lbl_80477EA0[i][j])->setAlpha(fadeAlpha(field_0x2fe[i][j], 0.0f));
+        }
+    }
+    JUTResFont* font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->setFont(font);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    field_0x98 = field_0x8->search('Ndata03')->getBounds()->i.x;
+    field_0x9c = field_0x8->search('Ndata03')->getBounds()->i.y;
+    field_0xa0 = 0.0f;
+    field_0xa4 = field_0x8->search('Ndata05')->getBounds()->i.x;
+    field_0xa8 = field_0x8->search('Ndata05')->getBounds()->i.y;
+    field_0xac = 0.0f;
+    field_0xb0 = field_0x8->search('Ndata06')->getBounds()->i.x;
+    field_0xb4 = field_0x8->search('Ndata06')->getBounds()->i.y;
+    field_0xb8 = 0.0f;
+    field_0xbc = 0.0f;
+    field_0xc0[0] = field_0x8->search('Ppllbk02')->getBounds()->i.x;
+    field_0xd0[0] = field_0x8->search('Ppllbk02')->getBounds()->i.y;
+    field_0xe0[0] = 0.0f;
+    field_0xc0[1] = field_0x8->search('Ppllbk12')->getBounds()->i.x;
+    field_0xd0[1] = field_0x8->search('Ppllbk12')->getBounds()->i.y;
+    field_0xe0[1] = 0.0f;
+    field_0xc0[2] = field_0x8->search('Ppllbk22')->getBounds()->i.x;
+    field_0xd0[2] = field_0x8->search('Ppllbk22')->getBounds()->i.y;
+    field_0xe0[2] = 0.0f;
+    field_0xc0[3] = field_0x8->search('Ppllbk32')->getBounds()->i.x;
+    field_0xd0[3] = field_0x8->search('Ppllbk32')->getBounds()->i.y;
+    field_0xe0[3] = 0.0f;
+
+    // field_0xc (the connect screen).
+    for (int i = 0; i < 17; i++) {
+        field_0x322[i] = field_0xc->search(lbl_80477FC0[i])->getAlpha();
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            field_0x333[i][j] = field_0xc->search(lbl_80478048[i][j])->getAlpha();
+        }
+    }
+    for (int i = 0; i < 26; i++) {
+        field_0x342[i] = field_0xc->search(lbl_804780C0[i])->getAlpha();
+    }
+    for (int i = 0; i < 17; i++) {
+        field_0xc->search(lbl_80477FC0[i])->setAlpha(fadeAlpha(field_0x322[i], 0.0f));
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            field_0xc->search(lbl_80478048[i][j])->setAlpha(fadeAlpha(field_0x333[i][j], 0.0f));
+        }
+    }
+    for (int i = 0; i < 26; i++) {
+        field_0xc->search(lbl_804780C0[i])->setAlpha(fadeAlpha(field_0x342[i], 0.0f));
+    }
+    field_0x15c = field_0xc->search('Pmadbb07')->getBounds()->i.x;
+    field_0x160 = field_0xc->search('Pmadbb07')->getBounds()->i.y;
+    field_0x164 = 0.0f;
+    field_0xbc = 0.0f;
+    field_0x16c[0] = field_0xc->search('Pstab04')->getBounds()->i.x;
+    field_0x178[0] = field_0xc->search('Pstab04')->getBounds()->i.y;
+    field_0x184[0] = 0.0f;
+    field_0x16c[1] = field_0xc->search('Phanb04')->getBounds()->i.x;
+    field_0x178[1] = field_0xc->search('Phanb04')->getBounds()->i.y;
+    field_0x184[1] = 0.0f;
+    field_0x16c[2] = field_0xc->search('Prub04')->getBounds()->i.x;
+    field_0x178[2] = field_0xc->search('Prub04')->getBounds()->i.y;
+    field_0x184[2] = 0.0f;
+    field_0x190 = field_0xc->search('Plibkk03')->getBounds()->i.x;
+    field_0x194 = field_0xc->search('Plibkk03')->getBounds()->i.y;
+    field_0x198 = 0.0f;
+    field_0x269 = 156;
+    field_0x1a4 = field_0xc->search('Pscuro02')->getBounds()->i.x;
+    field_0x1a8 = field_0xc->search('Pscuro02')->getBounds()->i.y;
+    field_0x150[0] = field_0xc->search('Pstab04')->getBounds()->i.y;
+    field_0x150[1] = field_0xc->search('Phanb04')->getBounds()->i.y;
+    field_0x150[2] = field_0xc->search('Prub04')->getBounds()->i.y;
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Trule01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Than01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Tsta01'))->setFont(font);
+    field_0xc->search('P1pli01')->hide();
+    field_0xc->search('P2pli01')->hide();
+    field_0xc->search('P2pli02')->hide();
+    field_0xc->search('P3pli01')->hide();
+    field_0xc->search('P3pli02')->hide();
+    field_0xc->search('P3pli03')->hide();
+    field_0xc->search('P4pli01')->hide();
+    field_0xc->search('P4pli02')->hide();
+    field_0xc->search('P4pli03')->hide();
+    field_0xc->search('P4pli04')->hide();
+
+    // field_0x10 (the handicap screen).
+    field_0x10->search('Ndatab01')->hide();
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->setFont(font);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    field_0x26a = 156;
+    field_0x1ac = field_0x10->search('Paccur02')->getBounds()->i.x;
+    field_0x1b0 = field_0x10->search('Paccur02')->getBounds()->i.y;
+    field_0x64 = new cls_804AF86C;
+    field_0x64->fn_80402F04(field_0x10->search('Pthabb07'));
+    field_0x68[0] = new cls_804AF86C;
+    field_0x68[0]->fn_80402F04(field_0x10->search('Pstrb14'));
+    field_0x68[1] = new cls_804AF86C;
+    field_0x68[1]->fn_80402F04(field_0x10->search('Pstrb24'));
+    field_0x68[2] = new cls_804AF86C;
+    field_0x68[2]->fn_80402F04(field_0x10->search('Pstrb34'));
+    field_0x68[3] = new cls_804AF86C;
+    field_0x68[3]->fn_80402F04(field_0x10->search('Pstrb44'));
+    field_0x78 = lbl_8053AED8->field_0x8;
+    const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti");
+    lbl_8053AED8->fn_80440D78(tex);
+    lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
+    field_0x5c = new cls_804B16A8;
+    tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x60 = new J2DPicture(tex);
+    field_0x60->setBlackWhite(JUtility::TColor(0x000000FF), JUtility::TColor(0x00000000));
+    for (int i = 0; i < 4; i++) {
+        field_0x7c[i] = new cls_804B20F8(i, NULL, NULL, 8);
     }
 }
