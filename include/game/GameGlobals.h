@@ -1307,7 +1307,7 @@ public:
     // (fn_803CC17C, before it waits in state 0xD).
     void fn_803B9DDC();
 
-    /* 0x0000 */ u8 field_0x4[0x20 - 0x4];
+    /* 0x0004 */ u8 field_0x4[0x20 - 0x4];
     /* 0x0020 */ u8 mHeader[0x260];
     /* 0x0280 */ u8 mSave[0x1FCC - 0x280];
     // fn_802B1558 (the reset path) waits, one VIWaitForRetrace per pass, while
