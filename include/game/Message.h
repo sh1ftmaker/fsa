@@ -38,6 +38,10 @@
 #include "types.h"
 #include "JSystem/JGeometry.h"
 
+namespace JMessage {
+struct TControl;
+}
+class cls_804B20F8;
 class J2DTextBox;
 class JUTResFont;
 
@@ -58,29 +62,82 @@ public:
     /* 0x008 */ virtual ~cls_804AF5A0();
 
     /* 0x000 */ // vtable
-    /* 0x004 */ u8 field_0x4[0x148 - 0x4];
-    // fn_80390C38 returns it (-1 when the window is in neither state).
-    /* 0x148 */ s32 field_0x148;
-    /* 0x14C */ u8 field_0x14c[0x150 - 0x14C];
+    /* 0x004 */ u8 field_0x4[0x8 - 0x4];
+    // fn_80396F94 updates it each frame (JMessage::TControl::update).
+    /* 0x008 */ JMessage::TControl* field_0x8;
+    /* 0x00C */ u8 field_0xc[0x13C - 0xC];
+    // fn_803A30FC stores into it by index; the constructor sets all three to -1.
+    /* 0x13C */ s32 field_0x13c[3];
+    /* 0x148 */ s32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
+    /* 0x14C */ s32 field_0x14c;
     // fn_80390BDC counts it down to 0 and returns it.
     /* 0x150 */ u32 field_0x150;
-    /* 0x154 */ u8 field_0x154[0x174 - 0x154];
+    /* 0x154 */ u8 field_0x154[0x15C - 0x154];
+    /* 0x15C */ s32 field_0x15c;
+    /* 0x160 */ s32 field_0x160;
+    /* 0x164 */ u8 field_0x164[0x168 - 0x164];
+    /* 0x168 */ s32 field_0x168;
+    /* 0x16C */ s32 field_0x16c;
+    /* 0x170 */ u8 field_0x170[0x174 - 0x170];
     // fn_80390850 returns it (-1 when the window is in neither state).
     /* 0x174 */ s32 field_0x174;
-    /* 0x178 */ u8 field_0x178[0x19E - 0x178];
+    /* 0x178 */ s32 field_0x178;
+    /* 0x17C */ s32 field_0x17c;
+    /* 0x180 */ s32 field_0x180[4];
+    /* 0x190 */ s16 field_0x190;
+    /* 0x192 */ s16 field_0x192;
+    /* 0x194 */ u8 field_0x194[0x19E - 0x194];
     /* 0x19E */ u8 field_0x19e;
     // fn_80390B64 writes 1 here (the byte after 0x19E, which it sets to 0xFF).
     /* 0x19F */ u8 field_0x19f;
-    /* 0x1A0 */ u8 field_0x1a0[0x3B2 - 0x1A0];
+    /* 0x1A0 */ u8 field_0x1a0;
+    /* 0x1A1 */ u8 field_0x1a1;
+    /* 0x1A2 */ u8 field_0x1a2[0x1A9 - 0x1A2];
+    /* 0x1A9 */ u8 field_0x1a9;
+    /* 0x1AA */ u8 field_0x1aa;
+    /* 0x1AB */ u8 field_0x1ab[0x3AE - 0x1AB];
+    /* 0x3AE */ u8 field_0x3ae;
+    /* 0x3AF */ u8 field_0x3af;
+    /* 0x3B0 */ u8 field_0x3b0;
+    /* 0x3B1 */ u8 field_0x3b1;
     // fn_80390894 indexes it with the window's argument; the array runs to
     // the end of the object, its real length is not known.
-    /* 0x3B2 */ u8 field_0x3b2[0x3C4 - 0x3B2];
+    /* 0x3B2 */ u8 field_0x3b2[0x3BC - 0x3B2];
+    /* 0x3BC */ cls_804B20F8* field_0x3bc; // new'd by the constructor
+    /* 0x3C0 */ u8 field_0x3c0[0x3C4 - 0x3C0];
 
-    // Defined in game/tu_803944C8.cpp (not yet written); both take the
-    // processor as their object (fn_80390E68 loads it from the window's 0x48).
+    // Defined in game/tu_803944C8.cpp; both take the processor as their
+    // object (fn_80390E68 loads it from the window's 0x48).
     void fn_80394690();
     void fn_8039499C(bool flag);
-}; // Size: 0x3C4 (only the first 0x19F bytes and 0x3B2 on are declared)
+
+    // game/tu_803944C8.cpp. The one-field accessors and setters the unit ends with.
+    void fn_803944C8(s32 value, u8 a, u8 b);
+    void fn_80396F94();
+    void fn_80395BE8();
+    void fn_80396884();
+    s32 fn_803A3050();
+    s32 fn_803A3058();
+    s16 fn_803A3060();
+    s16 fn_803A3068();
+    void fn_803A3070(s32 value);
+    void fn_803A3078();
+    void fn_803A3084(s32 index, s32 value);
+    s32 fn_803A3094();
+    cls_804B20F8* fn_803A309C();
+    void fn_803A30A4(u8 a, u32 b);
+    void fn_803A30B0();
+    s32 fn_803A30BC();
+    void fn_803A30C4();
+    void fn_803A30D0();
+    void fn_803A30DC(s32 value);
+    void fn_803A30E4();
+    void fn_803A30F0();
+    void fn_803A30FC(s32 index, s32 value);
+    s32 fn_803A310C();
+    void fn_803A3114();
+    u8 fn_803A313C();
+}; // Size: 0x3C4 (the fields game/tu_803944C8.cpp and tu_80390818 use are declared)
 
 // One per player, field_0x114 of the manager (created there with
 // __nw__(0x5C)). Code in game/tu_80390818.cpp. Named after its vtable

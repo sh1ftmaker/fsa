@@ -103,7 +103,10 @@ struct SaveRow_8050EC80 {
     // Added by tu_801DE714 (__dt__12cls_804A51E4Fv, the TINK actor's destructor): an s32
     // that is added to and clamped at 0 from below.
     /* 0x2C */ s32 field_0x2c;
-    /* 0x30 */ u8 field_0x30[0x78 - 0x30];
+    /* 0x30 */ u8 field_0x30[0x34 - 0x30];
+    /* 0x34 */ u16 field_0x34; // fn_803A3034 (game/tu_803944C8.cpp) returns it
+    /* 0x36 */ u16 field_0x36; // fn_803A3018 returns it
+    /* 0x38 */ u8 field_0x38[0x78 - 0x38];
     /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
     /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
     /* 0x7A */ u8 field_0x7a[0x87 - 0x7A];
