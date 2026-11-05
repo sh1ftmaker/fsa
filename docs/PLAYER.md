@@ -591,3 +591,52 @@ update) is 99.62 % (scheduling only; Player 0x1344 is now a TVec3f, the
 emitter position copied from mPos, moved 3 by facing and handed to the
 callback 0x1330's field_0x4); its .sdata2 literals set the pool order that
 makes the other 26 handlers match. Not written: fn_80290070 (above).
+
+## Round 5 (tu_80256C74) (agent H, Opus 5.5, 2026-11-05)
+
+38 -> 44 of 63 at 100 % (plus fn_80273C30 / fn_80273D44 in tu_8026FC20 now 100 %:
+fn_80256F44 and its forwarder fn_8023AAF8 return u8). Structurally done / close:
+fn_8025785C 90.4 %, fn_8025B22C 95.6 %, fn_8025D7E4 96.4 %, fn_8025E79C 89.9 %,
+fn_8025AED0 99.8 %, fn_80258890 99.97 % (rodata placement only), fn_8025D6AC 99.9 %
+(literal names).
+
+**fn_8025785C, the item check** (every frame; first user of the .sdata2 floats 2.0 / 0.0):
+while fn_8022B334(player) and fn_8022C310(player) hold, the selected item
+**fn_802416C4** (Player 0xC10, set with its level 0xC14 by fn_80241618) requests its
+state. A leader / follower copies the leader's item first (fn_80240808, fn_802373EC).
+Evidence for the item names is the actor each state spawns (docs/names/actors.tsv):
+
+| item | state (update / enter / exit) | what it is |
+|---|---|---|
+| 1 | 0x39 (8025DACC / 8025E79C / 8025D9FC) | enter: facing from the leader or the pad (fn_80246B10 2/1/8/4), fn_8027221C(6); exit releases the emitters 0x1360-0x1368 and clears 0xCE8 while 0xBAC / fn_8026FC20 > 0 |
+| 2 | 0x48 (802586D0 / 80258880 / 802586CC) | **Fire Rod**: frame 2 spawns ACTOR_FIRE ("Fire Rod fire") by the player when fn_80247594(0) allows and the last fire (0xB3C) is gone; level in bits 12+ of the argument; 8 frames |
+| 3 | 0x3D (8025B22C / 8025B35C / 8025F698) | **bomb (BOME)**: at most three alive (0xB00[3]) and none held (0xB18); frame 6 spawns 'BOME' (argument 0x100 at level >= 2) into 0xB18; done at frame 16 |
+| 4 | 0x3A | refused while 0xB18 is held, the 0xB74 cooldown runs, or (fn_8022B160) the player's byte of lbl_8053ABB8 is set |
+| 5 | 0x3C | - |
+| 6 | 0x45 (level >= 2) / 0x44 (at most three 0xB1C[3]) | - |
+| 7 | 0x46, or 0x14 while carrying (fn_8025F684) | refused while a living actor is held (0xD68), any player holds 'RCK2', the floor probe 2 above the hand point (fn_8024B298(2)) is tile 2 on floor layers, or mPos.z > 0 elsewhere |
+| 8 | (no state) | **bombs (HBMB, "Bomb")**: two at a time (0xB30[2]), placed 12.999 in front (lbl_8046B220) unless that tile is 0xE; sound 0x20006 |
+| 9 | 0x47 (80258890 / 80258BA8 / 8025888C) | **dig** 16 in front at floor level: frame 11 sets the 8x8 box 0x5CC (0xB9E), frame 12 asks BgRewrite fn_802A1844 (result in 0xBA0; 1-4 dig something up, 8 another sound); results 1-4 give an effect by result and facing (lbl_8046B200) at frame 28; a miss switches to the short animation (0x3FD = 1) |
+| 10 | 0x3B | refused while 0xB18 is held |
+| none | - | fn_80246228() sets 0x1200 |
+
+- **0x41 recoil hop** (enter 8025D7E4, update 8025D6AC): speed lbl_8046AFE0[facing]
+  = 2 back against the facing and 4 up, sound 0x20010, a view shake
+  (GameView fn_802D79E8), the TV effect of kind 3 aimed along the facing
+  (cls_804AA858 fn_802F601C); then 0x344 is added to mPos with gravity 0.25 (to -4)
+  until the player lands (state 0).
+- **0x42** (update 8025AED0, requested by fn_8025AA8C(serial) from tu_801688AC):
+  the player spins (facing every two frames) and is drawn 6 a frame across the floor
+  toward actor 0x11F8, until it is gone / on another layer, 0xAFC is 1 or a side
+  flag of 0xBF0 is set (anyFlag48). **0x43** (8025AB00, from act_arrow via
+  fn_8022E1A0) is the same with a speed min(distance, 6), the facing turned away
+  from the actor, and an end test on the arrow's field 0x230 (unwritten: that field
+  is padding in act_arrow.h).
+- fn_80256C74 is a fourth box test (field_0x5DC, only while fn_80270A8C and 0xBA4);
+  fn_80257DB4 is false when any of 21 state / flag tests holds, else 0xD3C < 0.
+- Data: .rodata is file-scope tables addressed off one base in the big handlers
+  (offsets 0x30 / 0x50 / 0xB0 from fn_8025DACC, 0x190-0x2C0 from the others);
+  lbl_8046AF00 (0x30), lbl_8046AFE0, lbl_8046B200, lbl_8046B220 are written.
+- Not written: fn_802570BC (needs Player 0x580 as a TBox2f, the box of actor 0xB28),
+  fn_8025AB00 (arrow field 0x230), fn_8025D0B0 and the big handlers 0x39, 0x3A, 0x3B,
+  0x3C, 0x44, 0x45, 0x46 updates (0x7FC-0xCD0 bytes).

@@ -6,6 +6,7 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_somaria_block.h"
 #include "game/Map.h"
+#include "game/cls_804A71A8.h"
 #include "game/BgRewrite.h"
 #include "game/Effect.h"
 #include "game/ViewLayer.h"
@@ -786,6 +787,48 @@ void Player_804A6F38::fn_8025AEB0() {
 
 void Player_804A6F38::fn_8025AEC4() {
     field_0x11f8 = -1;
+}
+
+// FIXME: 99.81. regalloc-only: the original keeps the speed 6.0f in f30 and dir.z of
+// the isZero test in f31 (ours swaps them), as fn_8025AB00 (state 0x43) does with its
+// variable speed.
+// Update of state 0x42 (requested by fn_8025AA8C with the actor serial field_0x11f8):
+// the player spins (the facing turns every two frames) and is drawn 6 a frame across
+// the floor toward that actor; it ends (state 0) when the actor is gone or on another
+// layer, field_0xafc is 1, or a side flag of field_0xbf0 is set (anyFlag48).
+void Player_804A6F38::fn_8025AED0() {
+    field_0x3fc++;
+    s32 turn = (field_0x3fc >> 1) & 3;
+    if (turn == 0) {
+        field_0x3dc = 0;
+        field_0x3e8 = 0;
+    } else if (turn == 1) {
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+    } else if (turn == 2) {
+        field_0x3dc = 1;
+        field_0x3e8 = 1;
+    } else {
+        field_0x3dc = 3;
+        field_0x3e8 = 3;
+    }
+    fn_80268B3C();
+    if (field_0xafc != 1 && !field_0xbf0->anyFlag48()) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0x11f8);
+        if (actor != NULL && actor->field_0x4 == field_0x3b4) {
+            JGeometry::TVec3f dir = actor->mPos - mPos;
+            dir.z = 0.0f;
+            dir.normalize();
+            if (!dir.isZero()) {
+                dir.scale(6.0f);
+                mPos += dir;
+            }
+            mPos.z = 0.0f;
+            return;
+        }
+    }
+    field_0x124d = 0;
+    fn_80251AEC(0);
 }
 
 void Player_804A6F38::fn_8025B218() {
