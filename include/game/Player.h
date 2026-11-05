@@ -231,6 +231,17 @@ public:
     bool fn_8025F684(); // via fn_8023EFEC
     void fn_802635D4(); // empty; the dispatch in fn_802870C8 calls it
     void fn_802636D0(); // tu_8025EB18; empty, called by the same dispatch
+    // Called by the same dispatch (tu_80285E58 fn_802870C8) with the player in r3.
+    void fn_802632A4(); // empty
+    void fn_80262234(); // forwards to fn_80258BBC
+    void fn_80262B6C(); // forwards to fn_80259660
+    void fn_80262B8C(); // forwards to fn_80283D2C
+    void fn_8026173C(); // clears field_0x121c, field_0xd84 = 20
+    void fn_80261468(); // counts field_0xd74 down to 0
+    void fn_80258BBC(); // tu_80256C74
+    void fn_80259660(); // tu_80256C74
+    void fn_80283D2C(); // tu_8027E5BC
+    bool fn_8025F484() const; // field_0xd68 is a living actor (field_0x1a4 > 0)
     void fn_80277100(); // tu_8026FC20; empty, called by the same dispatch
     void fn_802791AC(); // tu_8026FC20; empty, called by the same dispatch
     void fn_80264410(); // byte at 0x458 = 0 (stb r0)
@@ -378,7 +389,7 @@ public:
     /* 0x02DC */ u8 field_0x2dc[0x2E8 - 0x2DC];
     /* 0x02E8 */ JGeometry::TVec3f field_0x2e8;
     /* 0x02F4 */ JGeometry::TVec3f field_0x2f4;
-    /* 0x0300 */ u8 field_0x300[0x30C - 0x300];
+    /* 0x0300 */ JGeometry::TVec3f field_0x300; // fn_8025EE0C stores its argument
     /* 0x030C */ JGeometry::TVec3f field_0x30c;
     /* 0x0318 */ JGeometry::TVec3f field_0x318;
     // The x and y that fn_8026E5F8 stores (its z is left alone).
@@ -633,11 +644,13 @@ public:
     /* 0x0D64 */ u8 field_0xd64;
     /* 0x0D65 */ u8 field_0xd65[0xD68 - 0xD65];
     /* 0x0D68 */ s32 field_0xd68; // fn_8025EDD4 (-1 until set); fn_8025EE34 compares it
-    /* 0x0D6C */ u8 field_0xd6c[0xD70 - 0xD6C];
+    /* 0x0D6C */ s32 field_0xd6c; // fn_8025F648 returns it when field_0xd64 == 1, else 'NULL'
     // Passed to fn_8022D75C (lwz r3) by fn_802685D4.
     /* 0x0D70 */ s32 field_0xd70;
     /* 0x0D74 */ s32 field_0xd74;
-    /* 0x0D78 */ u8 field_0xd78[0xD8C - 0xD78];
+    /* 0x0D78 */ JGeometry::TVec3f field_0xd78; // fn_8025EDD4 stores its position
+    /* 0x0D84 */ s32 field_0xd84; // fn_8026173C sets it to 20
+    /* 0x0D88 */ s32 field_0xd88; // fn_8025EF68: the serial it was given, when accepted
     /* 0x0D8C */ s32 field_0xd8c;
     /* 0x0D90 */ u8 field_0xd90;
     /* 0x0D91 */ u8 field_0xd91[0xD94 - 0xD91];
@@ -692,7 +705,8 @@ public:
     // A bool: fn_802408C0 returns it as loaded (lbz; blr).
     /* 0x1217 */ bool field_0x1217;
     /* 0x1218 */ s32 field_0x1218;
-    /* 0x121C */ u8 field_0x121c[0x121E - 0x121C];
+    /* 0x121C */ u8 field_0x121c; // fn_8026173C clears it
+    /* 0x121D */ u8 field_0x121d;
     /* 0x121E */ u8 field_0x121e;
     // A bool: fn_80249068 returns it as loaded (lbz; blr).
     /* 0x121F */ bool field_0x121f;
