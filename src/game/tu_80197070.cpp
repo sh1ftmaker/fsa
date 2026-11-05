@@ -7,6 +7,7 @@
 #include "game/act/tu_801F9484.h"
 #include "game/GameView.h"
 #include "game/Player.h"
+#include "game/StageFlag.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/tu_80379F84.h"
 
@@ -74,13 +75,7 @@ void fn_8019CDE4(s32 stage, s32 sub) {
 }
 
 bool fn_8019CE40(s32 stage, s32 sub) {
-    if (stage < 0 || stage > 7) {
-        return false;
-    }
-    if (sub < 0 || sub > 3) {
-        return false;
-    }
-    return ((1 << (stage * 4 + sub)) & lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28) != 0;
+    return isStageFlagSet(stage, sub);
 }
 
 void ActorBase_804A5770::fn_8019CEAC(s32 v) {

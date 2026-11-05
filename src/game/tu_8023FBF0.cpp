@@ -7,6 +7,7 @@
 #include "game/GameState.h"
 #include "game/PlayerBit.h"
 #include "game/PlayerFlags.h"
+#include "game/StageFlag.h"
 #include "game/cls_804A71A8.h"
 #include "game/cls_804AE9B0.h"
 #include "game/cls_804B20F8.h"
@@ -1340,24 +1341,9 @@ void Player_804A6F38::fn_80254660() {
     field_0xbfc = field_0xbf8 - 4;
 }
 
-// Bit (stage * 4 + sub) of the current save row's field_0x28 for the view's
-// stage (field_0x4) and level (field_0x8): fn_8019CE40's test (tu_80197070),
-// which fn_80254744 inlines twice (a header inline in the original). Not written
-// as a call of a shared inline: that costs ~1 % (the original keeps the stage in
-// a saved register and tests the result as an int), so the body is repeated here.
-static inline BOOL viewStageFlag() {
-    s32 stage = fn_802D6A9C()->field_0x4;
-    s32 sub = fn_802D6A9C()->field_0x8;
-    if (stage < 0 || stage > 7) {
-        return false;
-    }
-    if (sub < 0 || sub > 3) {
-        return false;
-    }
-    return ((1 << (stage * 4 + sub)) & lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28) != 0;
-}
-
-// FIXME: 98.85. Besides the unit's float literals (@NNN vs lbl_, not yet in
+// FIXME: 98.34. The original keeps the view's stage in a saved register and tests
+// isStageFlagSet's result as an int (cmpwi), ours reloads it and tests the bool
+// (clrlwi.). Besides the unit's float literals (@NNN vs lbl_, not yet in
 // pool order), only scheduling and register numbers differ: at two of the
 // seven isPlayerBitSet sites (the 2-player and the else branch) the original
 // loads field_0x4 before lbl_8053AAF8 (the registers after them shift by one),
@@ -1369,7 +1355,7 @@ static inline BOOL viewStageFlag() {
 // the pad owner field_0x11ec and the start state 0 or 1) from the game mode,
 // places the player and clears nearly every per-player field.
 void Player_804A6F38::fn_80254744() {
-    if (field_0xd00 >= 2 && viewStageFlag()) {
+    if (field_0xd00 >= 2 && isStageFlagSet(fn_802D6A9C()->field_0x4, fn_802D6A9C()->field_0x8)) {
         field_0xd00 = 0;
         field_0xcfe = false;
     }
@@ -1862,7 +1848,7 @@ void Player_804A6F38::fn_80254744() {
     }
     field_0xbec->fn_8030BD3C(field_0x4);
     if (field_0xcfe == true) {
-        if (!viewStageFlag()) {
+        if (!isStageFlagSet(fn_802D6A9C()->field_0x4, fn_802D6A9C()->field_0x8)) {
             fn_8024DCD0();
             field_0x32c = mPos;
             field_0x450 = 0xc3;
