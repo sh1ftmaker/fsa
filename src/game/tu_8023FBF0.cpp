@@ -1809,7 +1809,7 @@ void Player_804A6F38::fn_8024CA20() {
 // Clears field_0x454: with `reset` the trail is reset to the current
 // position (fn_80248604), else fn_8024B2E0 runs first. Then the timers
 // 0xD74 / 0x11F0 = 10 and fn_8024D134.
-bool Player_804A6F38::fn_8024D058(bool reset) {
+bool Player_804A6F38::fn_8024D058(u8 reset) {
     if (reset) {
         field_0x454 = false;
         fn_80248604();
