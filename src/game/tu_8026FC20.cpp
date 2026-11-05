@@ -9,6 +9,7 @@
 #include "game/ActorManager.h"
 #include "game/PlayerBit.h"
 #include "game/GameMath.h"
+#include "game/BoxTest.h"
 #include "game/cls_804A71A8.h"
 #include "game/tu_80379F84.h"
 #include "JSystem/JMath/JMath.h"
@@ -985,15 +986,6 @@ bool Player_804A6F38::fn_802724E0(const JGeometry::TBox2f* box, s32 layer) {
 // Points 12 (fn_80272768) and 16 (fn_802728AC) in front of the player, by facing field_0x3dc.
 static const f32 lbl_8046BD68[4][2] = {{12.0f, 0.0f}, {-12.0f, 0.0f}, {0.0f, 12.0f}, {0.0f, -12.0f}};
 static const f32 lbl_8046BD48[4][2] = {{16.0f, 0.0f}, {-16.0f, 0.0f}, {0.0f, 16.0f}, {0.0f, -16.0f}};
-
-template <typename V>
-static inline bool containsPoint(const JGeometry::TBox2f& box, const V& p) {
-    bool result = false;
-    if (p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y) {
-        result = true;
-    }
-    return result;
-}
 
 // Whether the point 12 in front of the player is in `box` (on `layer`, serial matching
 // fn_8024FF84 when that is set, fn_80250D30); then remembers serial in field_0xd94.
@@ -2837,14 +2829,6 @@ void Player_804A6F38::fn_8027C4FC() {
 
 void Player_804A6F38::fn_8027C6B8() {
     field_0x436 = 0;
-}
-
-// `box` shrunk (d < 0) or grown by d on every side.
-static inline void growBox(JGeometry::TBox2f& box, f32 d) {
-    box.i.x -= d;
-    box.i.y -= d;
-    box.f.x += d;
-    box.f.y += d;
 }
 
 // The push 0x344 handed on to 0x368 (x / y) and cleared.

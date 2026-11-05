@@ -109,6 +109,9 @@ public:
     // under pos (fn_80226BC4 into field_0x20, fn_802F9908 into field_0x24) and
     // returns a result code that the caller tests for 1-4 and 8.
     s32 fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    // 1 unit (tu_80256C74, the ground smash of state 0x3C). Reads the tile under pos
+    // like fn_802A1844 (fields 0x20 / 0x24); returns li 1 / li 0 (the caller ignores it).
+    bool fn_802A1D44(const JGeometry::TVec3f* pos, s32 player, s32 layer);
     // 1 unit (tu_8025EB18 fn_80260C08, the pick-up in front). Read the tile
     // under pos like fn_802A1844 (fields 0x20 / 0x24); fn_8029E888 returns the
     // tile code == 0x30 as a u8 (subfic / cntlzw / extrwi; the caller tests 1),

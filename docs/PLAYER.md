@@ -1074,3 +1074,66 @@ State names stay provisional (evidence: the state requested, the tables, the act
   `bool r = false; ... return r;` queries, written as such (86.2 %, scheduling+regalloc).
 - cls_804A71A8::anyFlag48 takes `all` (default true): fn_8025197C(false) checks only flags 0-3.
 - 0xD3C / 0xD4E: the pending conversation serial and flag (fn_8024CAC8, via fn_8022FE80).
+
+## Round 11 (tu_80256C74) (agent S, Opus 5.5, 2026-11-05)
+
+50 -> 52 of 63 at 100 % (+2 honest against matching: fn_8025D0B0 flips now that the
+handlers before it fix the .sdata2 order; fn_8025E79C flips with the table entry copied
+component by component). All five remaining update handlers are written structure-first,
+so the unit's .text is 99.1 % and .sdata2 holds every literal in the original order (the
+section's last 4 bytes are padding). Left unwritten: none of the state handlers.
+
+| state | update | item | % / try.py class | what it is |
+|---|---|---|---|---|
+| 0x44 | fn_8025A15C | 6, level < 2 | 99.24 sched+regalloc | the Fire Rod flame of 0x45 without the block (below) |
+| 0x3C | fn_8025B3F0 | 5 | 99.95 regalloc-only | a ground smash (below) |
+| 0x3B | fn_8025BEB0 | 10 | 98.83 missing/extra (1) | **slingshot**: 'PCDM' (actors.tsv "Slingshot seed", med) |
+| 0x3A | fn_8025C894 | 4 | 98.89 (one instruction pair) | **bow**: 'ARRW' (actors.tsv "Arrow (player)", high) |
+| 0x39 | fn_8025DACC | 1 | 98.90 missing/extra (2) | a dash that burns its trail (below) |
+
+- **0x3B slingshot / 0x3A bow** (one shape, probably one source template): six frames of
+  drawing, then frame 6 holds while the button is held (fn_8022C274): field_0x3fc charges
+  to 48 (the bow twice as fast at level >= 2). A full charge puts the charge point in
+  field_0x12fc (carved: TVec3f; lbl_8046B040 / lbl_8046B010 by facing), lights it with
+  emitters 0xCB / 0xCC that follow it through the particle callbacks field_0x12d0 /
+  field_0x12e8 (the slingshot only below layer 8), plus a 'PEFF' (player effect) actor
+  field_0x12c0, sound 0x2000D. Meanwhile the player walks at 1.125 (14-frame cycle,
+  epsilonEqualsXY) or hops on button 0x20 (fn_80246B10): 2.5 along the stick, 1.5 up,
+  gravity 0.25, 3 frames' rest (field_0x43d) after landing. Letting go shoots into the
+  first free slot (slingshot field_0xb0c[3] / field_0xb4c, bow field_0xb00[3] /
+  field_0xb40; argument 0x100 when uncharged), sound 0x20004. A charged slingshot shot
+  at level >= 2 with all slots free sends two more along lbl_8046B070's side directions;
+  a bow shot under fn_8022B160 starts the 60-frame cooldown field_0xb74. Frame 14 ends
+  the state or, still held (and no cooldown), draws again. Both tick field_0x40c to 30,
+  then set the camera's field_0x7f5 (gGameRoot2_8053AB10->field_0x24) unless 0x7f4.
+- **0x3C** (item 5; descriptive, no actor or string names the item): the same charge to
+  48 (25 while fn_8022B244) with the charge point field_0x12a4 (lbl_8046B090); on the hit
+  frame (field_0xb99 rising: 1 or 5) the point field_0x5c0 (lbl_8046B0C0, the charged set
+  at +4) gets the box field_0x5b0 (16 or 8 around it), BgRewrite **fn_802A1D44** (now a
+  member, returns bool, caller ignores it) acts on the tile 16 in front (lbl_8046B120),
+  the TV effect kind 2 / 1 (fn_802F601C) with strength 1 / player count (fn_802487FC,
+  unless formation 5 or fn_80240AF0), halved below level 2; dust emitters 0x23B-0x23F and
+  0x3CF / 0x3D0 by tile (0x39 / 0xD), a view shake and fn_80134DE4(2) when charged.
+- **0x44** (item 6 below level 2): frame 11 of 0x45 without the Somaria block: while held,
+  'FIRE' (0x1040 | facing << 4 | player) sits on field_0x580 in front; letting go places
+  one 'FIRE' (0x1000 | ...) 8 in front into field_0xb1c (layer field_0xb5c, field_0xb78)
+  when no flame is out and no 'FIRE' of field_0xb1c is alive (a one-slot count).
+- **0x39** (item 1): a dash. Trail emitters by the ground tile (0x3D4 on 0x39; 0x116 and
+  0x115 elsewhere); the first 10 frames wind up and stop when the button is let go, then
+  the player runs (fn_8025D0B0) burning the eight points lbl_8046AF50 around it
+  (fn_802A20F0) until field_0xba8 counts down; a side flag along the facing or another
+  player ahead (fn_8022E438 / fn_802350A0) recoils (0x41). At level >= 2 off view-flag
+  layers it runs ledges: the leader with its player bit (isPlayerBitSet) and
+  field_0xbf0->field_0xb8 scans 16 a step inside the view box less 16 for the facing's
+  ledge tile (0x12 / 0x13 / 0x10 / 0x11), counting field_0xbac; followers copy the
+  leader's count (fn_8023A1A4) and at 4 jump to the leader. The actor field_0xbb4 is kept
+  34 ahead (lbl_8046AFB0). Item name: not proven (no actor spawned).
+- Shared: **game/BoxTest.h** (containsPoint, growBox) moved out of tu_8026FC20 (identical
+  bodies; tu_8026FC20 includes it), used by fn_8025DACC.
+- Idiom: a Vec table entry the original copies with three lfs / stfs (not psq) is
+  `const Vec& e = table[i]; v.set(e.x, e.y, e.z);` for a field, or plain component stores
+  for a local (`TVec3f(Vec)` gives psq). It flipped fn_8025E79C and lifted fn_8025D7E4
+  96.5 -> 98.3.
+- Open: `T pos = a + b` makes one extra stack copy where the original builds pos in place
+  (fn_8025DACC, fn_8025D7E4); the charged shot's argument `(index & 3) | (facing & 3) << 4`
+  comes out with the operands of the rlwimi swapped (fn_8025BEB0, fn_8025C894).

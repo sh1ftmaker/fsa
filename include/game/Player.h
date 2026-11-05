@@ -1085,7 +1085,10 @@ public:
     /* 0x12D0 */ cls_804A64A8 field_0x12d0;
     /* 0x12E4 */ JPABaseEmitter* field_0x12e4;
     /* 0x12E8 */ cls_804A64A8 field_0x12e8;
-    /* 0x12FC */ u8 field_0x12fc[0x1308 - 0x12FC];
+    // The charge point of the bow / slingshot (states 0x3A / 0x3B, fn_8025C894 /
+    // fn_8025BEB0), followed by the callbacks field_0x12d0 / field_0x12e8 and the 'PEFF'
+    // actor field_0x12c0.
+    /* 0x12FC */ JGeometry::TVec3f field_0x12fc;
     /* 0x1308 */ JPABaseEmitter* field_0x1308; // deleted with deleteEmitter() (fn_802708E8)
     /* 0x130C */ cls_804A64A8 field_0x130c;
     // The point the particle callback field_0x130c follows (fn_80279FE8: mPos raised by 16).
