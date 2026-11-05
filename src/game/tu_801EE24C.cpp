@@ -2,8 +2,10 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
+#include "game/EnemyBase.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/ViewLayer.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // Sound ids indexed by EnemyParam "voic" - 1 (fn_801F4694).
@@ -17,6 +19,44 @@ static const f32 lbl_8046A00C[5] = {
     0.0f, 1.0f, 1.3f, 1.6f, 2.0f,
 };
 
+// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
+static inline JGeometry::TBox2f* layerBox(s32 layer) {
+    GameView_804A9950* view = fn_802D6A9C();
+    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+// Finds a 'WARP' actor on this layer with type 8 (field_0x90's low byte)
+// and moves the actor through it: to the layer in the warp's bits 24-26
+// (0 stays 0, n goes to n + 7), at the same place relative to that layer's
+// view box, with z 200. Returns whether a warp was found.
+bool ActorBase_804A5770::fn_801EE24C() {
+    s32 serial = -1;
+    for (;;) {
+        serial = fn_801F856C()->fn_801F78F4('WARP', serial);
+        if (serial < 0) {
+            break;
+        }
+        ActorBase_804A5770* warp = fn_801F856C()->fn_801F666C(serial);
+        if (warp == NULL || field_0x4 != warp->field_0x4 || (warp->field_0x90 & 0xFF) != 8) {
+            continue;
+        }
+        JGeometry::TVec3f pos = mPos;
+        s32 layer = (warp->field_0x90 >> 24) & 7;
+        if (layer != 0) {
+            layer += 7;
+        }
+        pos.x -= layerBox(field_0x4)->i.x;
+        pos.y -= layerBox(field_0x4)->i.y;
+        pos.x += layerBox(layer)->i.x;
+        pos.y += layerBox(layer)->i.y;
+        pos.z = 200.0f;
+        mPos = pos;
+        field_0x4 = layer;
+        return true;
+    }
+    return false;
+}
+
 // Whether a map tile code is one of the listed kinds.
 // FIXME: 78.6. The target truncates each `tile - lo` to 16 bits (subi; clrlwi;
 // cmplwi) and leaves the parameter itself unextended; ours extends it once up
@@ -28,6 +68,28 @@ bool fn_801EE3C0(u16 tile) {
         return true;
     }
     return false;
+}
+
+// Lets an emitter that is still on screen finish its particles; deletes one
+// that is off screen at once. The destructor inlines it.
+void fn_801EE434(JPABaseEmitter* emitter) {
+    if (emitter != NULL) {
+        GameView_804A9950* view = fn_802D6A9C();
+        f32 x = emitter->mGlobalTrs.x;
+        f32 y = emitter->mGlobalTrs.y - emitter->mGlobalTrs.z;
+        bool onScreen = false;
+        if (x >= view->mVisibleBox.i.x && y >= view->mVisibleBox.i.y &&
+            x < view->mVisibleBox.f.x && y < view->mVisibleBox.f.y)
+        {
+            onScreen = true;
+        }
+        if (onScreen) {
+            emitter->clearStatus(JPAEMIT_Immortal);
+            emitter->becomeInvalidEmitter();
+        } else {
+            fn_8013C824()->mEmitterManager->forceDeleteEmitter(emitter);
+        }
+    }
 }
 
 f32 ActorBase_804A5770::fn_801EE4F0() {
@@ -49,24 +111,101 @@ void ActorBase_804A5770::fn_801EF510() {
     fn_801F2DB4('NULL', 'NULL', list);
 }
 
-// Lets an emitter that is still on screen finish its particles; deletes one
-// that is off screen at once.
-static inline void releaseEmitter(JPABaseEmitter* emitter) {
-    GameView_804A9950* view = fn_802D6A9C();
-    f32 x = emitter->mGlobalTrs.x;
-    f32 y = emitter->mGlobalTrs.y - emitter->mGlobalTrs.z;
-    bool onScreen = false;
-    if (x >= view->mVisibleBox.i.x && y >= view->mVisibleBox.i.y && x < view->mVisibleBox.f.x &&
-        y < view->mVisibleBox.f.y)
+// Plays sound effect `id` through the audio object; ids 3 and 0x42 on
+// layers 8 and up go to fn_803037D4 (0xF or 0xE) for the players near the
+// actor instead, and only fall back to the sound when none was.
+void ActorBase_804A5770::fn_801F0D20(u32 id) {
+    if (id == 3 || id == 0x42) {
+        if (field_0x4 >= 8 && !fn_8022BB48(field_0x4, &mPos)) {
+            return;
+        }
+        bool raised = false;
+        for (s32 i = 0; i < 4; i++) {
+            if ((lbl_8053AAF8->field_0x82 & (u8)(1 << i)) && field_0x4 >= 8 &&
+                fn_8022BC38(i, field_0x4, &mPos) && fn_8030381C(i))
+            {
+                if (id == 3) {
+                    fn_803037D4(i, 0xF);
+                } else {
+                    fn_803037D4(i, 0xE);
+                }
+                raised = true;
+            }
+        }
+        if (raised == true) {
+            return;
+        }
+    }
+    lbl_8053AF80->fn_80458880(id, -1);
+}
+
+// fn_803037D4(player, value) for each player that takes part (field_0x82),
+// is near the actor (fn_8022BC38) and passes fn_8030381C.
+static inline void raisePlayersNear(const ActorBase_804A5770* actor, u32 value) {
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022BC38(i, actor->getField_0x4(), &actor->mPos) && fn_8030381C(i) &&
+            (lbl_8053AAF8->field_0x82 & (u8)(1 << i)))
+        {
+            fn_803037D4(i, value);
+        }
+    }
+}
+
+// Starts sound soundId on the actor's sound object, with the layer
+// (field_0x4 >= 8) and a mode (field_0x45) from the view. Four sounds on
+// layers 8 and up go to fn_803037D4 for the players near the actor instead.
+// FIXME: 99.25. Register allocation only: the target keeps the player loops'
+// counter in r28 (where `sound` lives later), ours in r31 (fadeTime's).
+JAISoundHandle* ActorBase_804A5770::fn_801F0E34(u32 soundId, u32 fadeTime) const {
+    if (field_0x4 >= 8 && !fn_8022BB48(field_0x4, &mPos)) {
+        return NULL;
+    }
+    if (field_0x4 >= 8 &&
+        (lbl_8053AAF8->field_0x7e != 0 || (lbl_8053AAF8->field_0x83 & 3U) != 2))
     {
-        onScreen = true;
+        if (soundId == 0x30009) {
+            raisePlayersNear(this, 8);
+            return NULL;
+        } else if (soundId == 0x30004) {
+            raisePlayersNear(this, 0xB);
+            return NULL;
+        } else if (soundId == 0x30022) {
+            raisePlayersNear(this, 7);
+            return NULL;
+        } else if (soundId == 0x3004B) {
+            raisePlayersNear(this, 8);
+            return NULL;
+        }
     }
-    if (onScreen) {
-        emitter->clearStatus(JPAEMIT_Immortal);
-        emitter->becomeInvalidEmitter();
+    ActorSoundObj_804578F4* sound =
+        lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
+    sound->field_0x44 = field_0x4 >= 8;
+    if (fn_802D6A9C()->fn_802D7804(field_0x4, 0x800)) {
+        sound->field_0x45 = 0;
     } else {
-        fn_8013C824()->mEmitterManager->forceDeleteEmitter(emitter);
+        s32 layer = field_0x4;
+        if (layer < 8) {
+            if (fn_802D6A9C()->fn_802D7948() == 1) {
+                sound->field_0x45 = 2;
+            } else {
+                sound->field_0x45 = 0;
+            }
+        } else if (layer == 8) {
+            sound->field_0x45 = 3;
+        } else {
+            GameView_804A9950* view = fn_802D6A9C();
+            if (field_0x4 < view->field_0x54) {
+                if (fn_802D6A9C()->fn_802D7948() == 1) {
+                    sound->field_0x45 = 2;
+                } else {
+                    sound->field_0x45 = 1;
+                }
+            } else {
+                sound->field_0x45 = 2;
+            }
+        }
     }
+    return sound->fn_80456334(soundId, fadeTime);
 }
 
 ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() const {
@@ -101,6 +240,50 @@ s32 ActorBase_804A5770::fn_801F2718(u32 actorId) const {
     return fn_801F8108(this, actorId, mSerial, 32.0f);
 }
 
+// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
+                               const Vec& pos) {
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+}
+
+// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
+// function defined before the caller, so it is an inline of its own.
+static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
+    bool result = false;
+    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+        result = true;
+    }
+    return result;
+}
+
+// The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
+// on this layer, as bits; on a layer without the view's flag the player's z
+// must also be within 32 of mPos.z. fn_801F2B7C inlines it.
+// FIXME: 85.0. Two differences: the target ends in clrlwi r3, r30, 24 where
+// ours returns hits with mr (the callers' raw use of r3 shows a u8 return,
+// so the extra narrowing is unexplained), and it computes the box's first
+// floats before saving the registers, setting hits and i between them.
+// Besides, 32.0f is lbl_8053F748 once .sdata2 is in order.
+u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
+    JGeometry::TBox2f box;
+    toScreenBox(&box, mBox, mPos);
+    u8 hits = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i == skipPlayer) {
+            continue;
+        }
+        if (!viewLayerFlag(field_0x4) &&
+            __fabsf(mPos.z - fn_8023E724(i)->z) > 32.0f)
+        {
+            continue;
+        }
+        if (!fn_8022E438(i, skipPlayer) && !fn_8022D75C(i) && fn_8023B190(i, &box, field_0x4)) {
+            hits |= 1 << i;
+        }
+    }
+    return hits;
+}
+
 u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     u8 prev = field_0x164;
     field_0x168 = arg;
@@ -111,10 +294,43 @@ u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     return prev;
 }
 
-// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
-static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
-                               const Vec& pos) {
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+// Hits every player but skipPlayer whose box (fn_8023B190) overlaps mBox
+// on this layer, with fn_80238548 at the box's centre (moved through
+// fn_801CD0D0 for a player below layer 8 while this is on 8); damage -100
+// means field_0x114 ("atcp"). Returns the bits of the players hit.
+// FIXME: 98.2. Register allocation (this, damage, arg and the result one
+// register off; the inlined fn_801F2740's result is copied once more), and
+// the 32.0f, 0.5f and 0.0f literals (lbl_8053F748, lbl_8053F74C,
+// lbl_8053F740) pair only once .sdata2 is in order.
+u8 ActorBase_804A5770::fn_801F2B7C(s32 damage, s32 skipPlayer, s32 arg) {
+    u8 result = fn_801F2740(skipPlayer);
+    if (result) {
+        JGeometry::TBox2f screen;
+        toScreenBox(&screen, mBox, mPos);
+        f32 cx = screen.f.x + (screen.i.x - screen.f.x) * 0.5f;
+        f32 cy = screen.f.y + (screen.i.y - screen.f.y) * 0.5f;
+        for (s32 i = 0; i < 4; i++) {
+            if (!(result & (1 << i))) {
+                continue;
+            }
+            JGeometry::TVec2f pos;
+            if (isPlayerBelowLayer8(this, i)) {
+                JGeometry::TVec3f out;
+                JGeometry::TVec3f in(cx, cy, 0.0f);
+                fn_801CD0D0(&in, &out);
+                pos.x = out.x;
+                pos.y = out.y;
+            } else {
+                pos.x = cx;
+                pos.y = cy;
+            }
+            if (damage == -100) {
+                damage = field_0x114;
+            }
+            fn_80238548(i, damage, &pos, arg);
+        }
+    }
+    return result;
 }
 
 // The centre of mBox in screen space.
@@ -134,16 +350,6 @@ void ActorBase_804A5770::fn_801F317C(JGeometry::TBox2f* out) const {
 // mBox in screen space.
 void ActorBase_804A5770::fn_801F31C4(JGeometry::TBox2f* out) const {
     toScreenBox(out, mBox, mPos);
-}
-
-// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
-// function defined before the caller, so it is an inline of its own.
-static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
-    bool result = false;
-    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
-        result = true;
-    }
-    return result;
 }
 
 // Whether `player` is on this actor's layer (fn_8023DE58), or counts as on
@@ -350,12 +556,8 @@ void ActorBase_804A5770::vfunc_0x10() {}
 void ActorBase_804A5770::init() {}
 
 ActorBase_804A5770::~ActorBase_804A5770() {
-    if (mEmitter100 != NULL) {
-        releaseEmitter(mEmitter100);
-    }
-    if (mEmitter104 != NULL) {
-        releaseEmitter(mEmitter104);
-    }
+    fn_801EE434(mEmitter100);
+    fn_801EE434(mEmitter104);
     fn_801F856C()->fn_801F8448(this);
 }
 

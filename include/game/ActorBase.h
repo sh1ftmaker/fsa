@@ -31,6 +31,7 @@
 #include "game/SpriteParams.h" // SpriteParams_801F5AE0
 
 class ActorSoundObj_804578F4;
+class JAISoundHandle;
 class JPABaseEmitter;
 
 // The two boxes at 0x60 and 0x70 are JGeometry::TBox2f (min i, max f) in the
@@ -172,8 +173,8 @@ public:
     // is not part of the mangled name. Where a function takes ints and floats,
     // their order is not visible in the asm; ints first is a guess. Out-pointers
     // are NULL-checked by the body unless said otherwise. Exports that are not
-    // members (fn_801EE3C0, fn_801EE434, fn_801EF574, fn_801EF830) are extern
-    // "C" below the class.
+    // members are below the class (fn_801EE3C0, fn_801EE434 C++; fn_801EF574,
+    // fn_801EF830 extern "C").
 
     // 1 unit / 4 calls. Looks for a 'WARP' actor (fn_801F78F4) on this
     // layer whose (field_0x90 & 0xFF) == 8, moves mPos by the view boxes'
@@ -244,7 +245,7 @@ public:
     // unknown).
     // const: its lwz of field_0x4 is scheduled above the prologue's stw r28,
     // which MWCC does only for loads through a const `this`.
-    void* fn_801F0E34(u32 soundId, u32 fadeTime) const;
+    JAISoundHandle* fn_801F0E34(u32 soundId, u32 fadeTime) const;
     // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
     // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
     ActorSoundObj_804578F4* fn_801F1184() const;
@@ -285,7 +286,9 @@ public:
     s32 fn_801F2718(u32 actorId) const;
     // 16 units / 17 calls. Bit i set for each player i (other than
     // skipPlayer; callers pass -1 in 16 of 17) whose box overlaps mBox
-    // around mPos in screen space (0x801F2828-0x801F2844).
+    // around mPos in screen space (0x801F2828-0x801F2844). fn_801F2B7C
+    // inlines it. u8: the callers keep r3 raw and narrow it with clrlwi 24
+    // where they use it.
     u8 fn_801F2740(s32 skipPlayer);
     // 46 units / 65 calls. Index of a player (any when player < 0) whose box
     // overlaps mBox around mPos, or -1 (0x801F29F8). *outXY gets two floats
@@ -582,14 +585,16 @@ public:
 // Defined in this unit, so a C++ name (fn_801EE3C0__FUs).
 bool fn_801EE3C0(u16 tile);
 
-extern "C" {
-
 // 104 units / 258 calls. Releases an emitter: lets one inside the view's
 // visible box (0xCC-0xD8) run out (clearStatus(Immortal),
 // becomeInvalidEmitter()), deletes one outside it (forceDeleteEmitter,
-// 0x801EE4D8). The destructor inlines the same code for mEmitter100/104;
+// 0x801EE4D8). The destructor inlines it for mEmitter100/104;
 // derived actors call it for their own emitters (lwz 0x230-0x23C).
+// A C++ function (fn_801EE434__FP14JPABaseEmitter): no NULL check by the
+// callers is needed, it does its own (0x801EE444).
 void fn_801EE434(JPABaseEmitter* emitter);
+
+extern "C" {
 
 // 7 units / 8 calls. Loads the "SOB " resource `sobName` (a .rodata string)
 // through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
