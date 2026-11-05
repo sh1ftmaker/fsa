@@ -33,8 +33,12 @@ public:
     // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8 (not written yet).
     void fn_803C24BC();
     void fn_803BF004();
+    // fn_803CD2DC: the chosen file has save data (field_0x115 bit set).
+    void fn_803BF9C4();
     void fn_803C0018();
     void fn_803C0A34();
+    // fn_803CD2DC: the chosen file is empty.
+    void fn_803C1734();
 
     // State functions, lbl_804AFD70[state] (index in the comment).
     void fn_803C2E24(); // 39
@@ -87,6 +91,12 @@ public:
     void fn_803CE9EC();
     void fn_803CEED4();
     void fn_803CF504();
+
+    // field_0x115 has a bit per file that holds save data.
+    bool hasSaveData(s32 file) {
+        u8 bit = 1 << file;
+        return field_0x115 & bit;
+    }
 
     void setState(u8 state) {
         mPrevState = mState;
@@ -143,7 +153,7 @@ public:
     /* 0x112 */ u8 mPrevState;
     /* 0x113 */ u8 field_0x113;
     /* 0x114 */ u8 field_0x114;
-    /* 0x115 */ u8 field_0x115;
+    /* 0x115 */ u8 field_0x115; // bit per file with save data (hasSaveData)
     /* 0x116 */ u8 field_0x116; // message window: 0 idle, 1 opening, 2 open, 3 closing
     /* 0x117 */ u8 field_0x117;
     // The panes' initial alphas (J2DPane::mAlpha), read by the constructor:

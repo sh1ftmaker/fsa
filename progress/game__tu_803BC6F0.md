@@ -138,3 +138,35 @@ mScreenHuuin->search(table[file]):
   k=4 0xB4 / 0xB4: 0x650..0x608 (Pf?bb01..04)
 The group colours are copied to sp 0xE4 / 0xE0 and to each call's by-value
 temporaries; that copy pattern is what needs working out.
+
+## Session 2026-11-05 (Opus, boot-path functions)
+
+Baseline (progress.py): `total: 8297 / 11557 functions, 1530728 / 4442032 bytes of code (34.46 %)`
+After: same honest total (no new 100 %); structural `8630 / 11557 (+79 close)`.
+
+Written (all try.py-checked):
+- fn_803C24BC 99.93 reloc-name (instructions identical): shows the rows, title msg, row slide-in start, state 4.
+- fn_803CF504 99.93 reloc-name (instructions identical): resets the screen (ctor fields again, Tf?lv/fir/date hidden, rows' start).
+- fn_803CB3DC 98.40 missing/extra (1 instr): state 18, the other two rows slide out, board / buttons in (timings lbl_8050DB0C field_0x4c[0x98..0x9F]).
+  FIXME: row-loop start test folded (rowDelay + delay), fsubs operand order.
+- fn_803BC6F0 98.65 missing/extra (8 instrs): colour lerp of the row pictures. Group copies (sp 0xE4/0xE0 ..) are named
+  locals; the original copies them through one more temporary (sp 0x20 ..) per group. Tried: explicit TColor(...) temp,
+  const copy, default+assign (worse), (GXColor) cast (worse, bytewise). Group 2's 5th call is a plain one (only 1 and 3
+  rebuild black with alpha 0xFF).
+- fn_803CD2DC 99.83 reloc-name (instructions identical): state 5, picking a file.
+Proved: file-static inlines setRowAlphas / setTabAlphas (13 fn_804023D0 calls per row half; the target caches `file` in a
+register across them in fn_803CB3DC, so they are a helper with a `file` parameter; used by fn_803C24BC, fn_803CF504,
+fn_803CB3DC with identical code); hasSaveData(file) (`u8 bit = 1 << file`, the clrlwi before the and., 7 call sites);
+fn_803BF9C4 / fn_803C1734 are FileSelect members (this in r3).
+A shared 40-call inline for the rows' slide-in start is NOT inlined (MWCC refuses; ours called it), so that block is
+written in both fn_803C24BC and fn_803CF504.
+
+Near-misses: none flip. The pool still needs 0, -200, 200, dbl, dbl before 1.0, and fn_803BC6F0 (first in .text) uses
+1.0 first, so the leading literals come from something compiled before it that the linker dropped (fn_803CE9EC's
+kk-fade code shape: 0.0f, -200, 200, s32 and u8 conversions). Written functions' literals now pool in a different
+order, so fn_803C6690 99.85 -> 99.70, fn_803CE9EC 99.86 -> 99.79, fn_803CE11C 99.50 -> 99.46, ctor 98.829 -> 98.827
+(reloc-name only; instructions unchanged).
+
+SHARED-EDITS
+- symbols.txt: fn_803BF9C4 -> fn_803BF9C4__19FileSelect_804AFF60Fv, fn_803C1734 -> fn_803C1734__19FileSelect_804AFF60Fv.
+- tu_803BC6F0.h: members fn_803BF9C4, fn_803C1734; inline hasSaveData.

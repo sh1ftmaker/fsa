@@ -224,6 +224,198 @@ static FileSelect_804AFF60::StateFunc lbl_804AFD70[40] = {
     &FileSelect_804AFF60::fn_803C3904, &FileSelect_804AFF60::fn_803C2E24,
 };
 
+
+// FIXME: 98.65 %. 8 instructions missing: in groups 1-4 the original copies
+// black / white into the group copies (sp 0xE4 / 0xE0 ...) through a second
+// temporary (sp 0x20 / 0x24 ...: one extra word store each), which plain
+// copies don't produce; stack offsets shift from there. The .sdata2 literals
+// are @NNN (the pool's leading 0, -200, 200 come from no written function).
+// Fades file `file`'s row pictures between their colours and grey:
+// alpha 0 keeps the colours read by the constructor, alpha 1 sets each
+// group's black and white to fixed grey levels.
+void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
+    if (alpha > 1.0f) {
+        alpha = 1.0f;
+    }
+    if (alpha < 0.0f) {
+        alpha = 0.0f;
+    }
+    JUtility::TColor black;
+    JUtility::TColor white;
+
+    black.r = field_0xfc[0].r + (0 - field_0xfc[0].r) * alpha;
+    black.g = field_0xfc[0].g + (0 - field_0xfc[0].g) * alpha;
+    black.b = field_0xfc[0].b + (0 - field_0xfc[0].b) * alpha;
+    black.a = 0;
+    white.r = field_0xe8[0].r + (0x80 - field_0xe8[0].r) * alpha;
+    white.g = field_0xe8[0].g + (0x80 - field_0xe8[0].g) * alpha;
+    white.b = field_0xe8[0].b + (0x80 - field_0xe8[0].b) * alpha;
+    white.a = 0xFF;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BA8[file]))->setBlackWhite(black, white);
+
+    black.r = field_0xfc[1].r + (0x82 - field_0xfc[1].r) * alpha;
+    black.g = field_0xfc[1].g + (0x82 - field_0xfc[1].g) * alpha;
+    black.b = field_0xfc[1].b + (0x82 - field_0xfc[1].b) * alpha;
+    black.a = 0;
+    white.r = field_0xe8[1].r + (0xB4 - field_0xe8[1].r) * alpha;
+    white.g = field_0xe8[1].g + (0xB4 - field_0xe8[1].g) * alpha;
+    white.b = field_0xe8[1].b + (0xB4 - field_0xe8[1].b) * alpha;
+    white.a = 0xFF;
+    JUtility::TColor black1 = black;
+    JUtility::TColor white1 = white;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B90[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B78[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B60[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B48[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B30[file]))
+        ->setBlackWhite(JUtility::TColor(black1.r, black1.g, black1.b, 0xFF), white1);
+
+    black.r = field_0xfc[2].r + (0x50 - field_0xfc[2].r) * alpha;
+    black.g = field_0xfc[2].g + (0x50 - field_0xfc[2].g) * alpha;
+    black.b = field_0xfc[2].b + (0x50 - field_0xfc[2].b) * alpha;
+    black.a = 0;
+    white.r = field_0xe8[2].r + (0x80 - field_0xe8[2].r) * alpha;
+    white.g = field_0xe8[2].g + (0x80 - field_0xe8[2].g) * alpha;
+    white.b = field_0xe8[2].b + (0x80 - field_0xe8[2].b) * alpha;
+    white.a = 0xFF;
+    JUtility::TColor black2 = black;
+    JUtility::TColor white2 = white;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B18[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B00[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AE8[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AD0[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AB8[file]))->setBlackWhite(black2, white2);
+
+    black.r = field_0xfc[3].r + (0x82 - field_0xfc[3].r) * alpha;
+    black.g = field_0xfc[3].g + (0x82 - field_0xfc[3].g) * alpha;
+    black.b = field_0xfc[3].b + (0x82 - field_0xfc[3].b) * alpha;
+    black.a = 0;
+    white.r = field_0xe8[3].r + (0xB4 - field_0xe8[3].r) * alpha;
+    white.g = field_0xe8[3].g + (0xB4 - field_0xe8[3].g) * alpha;
+    white.b = field_0xe8[3].b + (0xB4 - field_0xe8[3].b) * alpha;
+    white.a = 0xFF;
+    JUtility::TColor black3 = black;
+    JUtility::TColor white3 = white;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C98[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C80[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C68[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C50[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C38[file]))
+        ->setBlackWhite(JUtility::TColor(black3.r, black3.g, black3.b, 0xFF), white3);
+
+    black.r = field_0xfc[4].r + (0xB4 - field_0xfc[4].r) * alpha;
+    black.g = field_0xfc[4].g + (0xB4 - field_0xfc[4].g) * alpha;
+    black.b = field_0xfc[4].b + (0xB4 - field_0xfc[4].b) * alpha;
+    black.a = 0;
+    white.r = field_0xe8[4].r + (0xB4 - field_0xe8[4].r) * alpha;
+    white.g = field_0xe8[4].g + (0xB4 - field_0xe8[4].g) * alpha;
+    white.b = field_0xe8[4].b + (0xB4 - field_0xe8[4].b) * alpha;
+    white.a = 0xFF;
+    JUtility::TColor black4 = black;
+    JUtility::TColor white4 = white;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C20[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C08[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BF0[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BD8[file]))->setBlackWhite(black4, white4);
+}
+
+// Sets the alphas of file row `file`'s lower panes (field_0x38: name, level,
+// date and frame) to their share of the row's fade.
+static inline void setRowAlphas(FileSelect_804AFF60* self, s32 file) {
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D50[file]), self->field_0x118[13]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D38[file]), self->field_0x118[14]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D20[file]), self->field_0x118[15]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C98[file]), self->field_0x118[16]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C80[file]), self->field_0x118[17]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C68[file]), self->field_0x118[18]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C50[file]), self->field_0x118[19]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C38[file]), self->field_0x118[20]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C20[file]), self->field_0x118[21]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C08[file]), self->field_0x118[22]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BF0[file]), self->field_0x118[23]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BD8[file]), self->field_0x118[24]);
+    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BC0[file]), self->field_0x118[25]);
+}
+
+// The same for the row's upper panes (field_0x44: the tab).
+static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BA8[file]), self->field_0x118[0]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B90[file]), self->field_0x118[1]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B78[file]), self->field_0x118[2]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B60[file]), self->field_0x118[3]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B48[file]), self->field_0x118[4]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B30[file]), self->field_0x118[5]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B18[file]), self->field_0x118[6]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B00[file]), self->field_0x118[7]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AE8[file]), self->field_0x118[8]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AD0[file]), self->field_0x118[9]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AB8[file]), self->field_0x118[10]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AA0[file]), self->field_0x118[11]);
+    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
+}
+
+// FIXME: 99.93 %. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_: the pool starts 0, -200, 200, which no earlier written
+// function produces in that order).
+// Shows the three file rows: refreshes them (fn_803CE4CC), puts up the
+// title message, slides the row panes in from their start positions with
+// alpha 0 and goes to state 4.
+void FileSelect_804AFF60::fn_803C24BC() {
+    fn_803CE4CC();
+    u32 msg = 0x117;
+    if (lbl_8053AAF8->field_0x7f != 0) {
+        msg = 0x116;
+    }
+    field_0x84 = msg;
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+        field_0xb0 = 0x5A;
+    }
+    field_0x14->mPane->hide();
+    field_0x18->mPane->hide();
+    field_0x1c->mPane->hide();
+    field_0x34->mPane->hide();
+    for (s32 i = 0; i < 4; i++) {
+        field_0x24[i]->mPane->hide();
+    }
+    field_0x50->mPane->show();
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->mPane->show();
+        field_0x44[i]->mPane->show();
+    }
+
+    field_0x50->fn_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->field_0x26 = 0;
+
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->mPane->setAlpha(0);
+        setRowAlphas(this, i);
+        field_0x38[i]->field_0x26 = 0;
+
+        field_0x44[i]->fn_80402E08(-300.0f, 0.0f);
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->mPane->setAlpha(0);
+        setTabAlphas(this, i);
+        field_0x44[i]->field_0x26 = 0;
+    }
+
+    field_0x54->fn_80402E08(0.0f, -200.0f);
+    field_0x54->field_0x22 = 0;
+    field_0x54->mPane->setAlpha(0);
+    field_0x54->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(4);
+}
+
 void FileSelect_804AFF60::fn_803C579C() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 2) {
@@ -273,6 +465,107 @@ void FileSelect_804AFF60::fn_803C9F14() {
         setState(0);
     } else if (result == 1) {
         fn_803C0A34();
+    }
+}
+
+// FIXME: 98.40 %. The row loop's start test `field_0xd8 > rowDelay + delay`:
+// ours folds rowDelay into the running delay (mr r24, r17; one add fewer per
+// pass), the original keeps the add; the `field_0x38[0]->field_0xc -
+// field_0x38[a4]->field_0xc` operands load into f2 / f0 (original f0 / f2);
+// registers shift from there (r17-r26). The same i * step form leaves the
+// button loop unfolded, as in the original.
+// Slides the other two file rows out and the command panes in, one after
+// another (the timings are lbl_8050DB0C's 0x98..0x9F), then goes to state 19.
+void FileSelect_804AFF60::fn_803CB3DC() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0x98];
+    s16 frames = lbl_8050DB0C.field_0x4c[0x99];
+    s16 rowStep = lbl_8050DB0C.field_0x4c[0x9A];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0x9B];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0x9C];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0x9D];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0x9E];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0x9F];
+    s32 end = rowDelay + (frames + rowStep);
+    if (end < boardDelay + boardFrames) {
+        end = boardDelay + boardFrames;
+    }
+    if (end < buttonDelay + (buttonFrames + buttonStep * 3)) {
+        end = buttonDelay + (buttonFrames + buttonStep * 3);
+    }
+
+    // The two files that weren't chosen.
+    s32 others[2];
+    s32* other = others;
+    for (s32 i = 0; i < 3; i++) {
+        if (i != field_0xa4) {
+            *other++ = i;
+        }
+    }
+
+    field_0xd8++;
+    s32 delay = 0;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > rowDelay + delay) {
+            field_0x38[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x38[others[i]]->fn_80402628(frames, field_0x38[others[i]]->field_0x28, 0);
+            setRowAlphas(this, others[i]);
+            field_0x44[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x44[others[i]]->fn_80402628(frames, field_0x44[others[i]]->field_0x28, 0);
+            setTabAlphas(this, others[i]);
+        }
+        delay += rowStep;
+    }
+    // The chosen row moves up to the first row's place.
+    if (field_0xa4 != 0 && field_0xd8 > rowDelay) {
+        field_0x38[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+        field_0x44[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc);
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x14->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
+        field_0x14->fn_80402628(boardFrames, 0, field_0x14->field_0x28);
+        field_0x18->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
+        field_0x18->fn_80402628(boardFrames, 0, field_0x18->field_0x28);
+        field_0x1c->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
+        field_0x1c->fn_80402628(boardFrames, 0, field_0x1c->field_0x28);
+        for (s32 j = 0; j < 81; j++) {
+            field_0x14->fn_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+        }
+        for (s32 j = 0; j < 19; j++) {
+            field_0x14->fn_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 100.0f, 0.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, 0, field_0x24[i]->field_0x28);
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(0x13);
     }
 }
 
@@ -454,6 +747,80 @@ void FileSelect_804AFF60::fn_803CC62C() {
             setState(2);
             lbl_8053AF80->fn_80458880(0xC, -1);
         }
+    }
+}
+
+// FIXME: 99.83 %. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_, see fn_803C24BC).
+// State 5: picking a file. A moves on (to fn_803BF9C4 for a file with save
+// data, else fn_803C1734), B leaves the screen, left / right move the cursor
+// (field_0xa4) with a little hop of the chosen row.
+void FileSelect_804AFF60::fn_803CD2DC() {
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
+        if (hasSaveData(field_0xa4)) {
+            field_0x114 = 1;
+            field_0x84 = 0x5E;
+            fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+            if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+                field_0xb0 = 0x5A;
+            }
+            fn_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x65, 0, NULL, NULL);
+            fn_803BF9C4();
+        } else {
+            field_0xa0 = 0;
+            fn_803C1734();
+        }
+        lbl_8053AF80->fn_80458880(0xB, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1) != 0) {
+        if (field_0x116 != 0) {
+            lbl_8053AEC0->fn_804310BC();
+            field_0x1a3 = 0;
+        }
+        field_0x1a8 = 2;
+        lbl_8053AF80->fn_80458880(0xC, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, 1) != 0) {
+        lbl_8053AF80->fn_80458880(0x26, -1);
+        field_0xa4++;
+        if (field_0xa4 >= 3) {
+            field_0xa4 = 0;
+        }
+        field_0xda = 1;
+        field_0x50->field_0x26 = 0x1E;
+    } else if (lbl_8053AD30->fn_80309A9C(8, 1) != 0) {
+        lbl_8053AF80->fn_80458880(0x26, -1);
+        field_0xa4--;
+        if (field_0xa4 < 0) {
+            field_0xa4 = 2;
+        }
+        field_0xda = 1;
+        field_0x50->field_0x26 = 0x1E;
+    }
+    if (mState == 5) {
+        f32 hop = 0.0f;
+        if (field_0xda != 0) {
+            if (field_0xda < 5) {
+                hop = 5.0f * (field_0xda * field_0xda) / 25.0f;
+                field_0xda++;
+            } else if (field_0xda < 10) {
+                hop = 5.0f * ((10 - field_0xda) * (10 - field_0xda)) / 25.0f;
+                field_0xda++;
+            } else {
+                field_0xda = 0;
+            }
+        }
+        for (s32 i = 0; i < 3; i++) {
+            if (0.0f != hop && i == field_0xa4) {
+                field_0x44[i]->fn_80402E08(0.0f, hop);
+            } else {
+                field_0x44[i]->fn_80402E08(0.0f, 0.0f);
+            }
+        }
+        field_0x50->fn_80402E08(0.0f, field_0x44[field_0xa4]->mPane->getBounds()->i.y - field_0x44[0]->field_0xc);
+        field_0x50->fn_8040245C(0x3C, 0, field_0x50->field_0x28, 1);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     }
 }
 
@@ -707,6 +1074,98 @@ void FileSelect_804AFF60::fn_803CE9EC() {
         }
     }
     card->field_0x1ff5 = 2;
+}
+
+// FIXME: 99.93 %. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_: the pool starts 0, -200, 200, which no earlier written
+// function produces in that order).
+// Resets the screen to its starting state (the constructor's settings, the
+// title message, all rows hidden behind their start positions).
+void FileSelect_804AFF60::fn_803CF504() {
+    field_0x1a8 = 3;
+    lbl_8053AEC0->fn_804310CC();
+    field_0x80 = 0;
+    field_0x7c = 0;
+    field_0x84 = 0x117;
+    field_0xa4 = lbl_80529DEC.field_0x23a[1];
+    field_0xa0 = 0;
+    field_0xa8 = 0;
+    field_0x113 = 0;
+    field_0xac = 0;
+    field_0x111 = 1;
+    mPrevState = 1;
+    mState = 1;
+    field_0x114 = 0;
+    field_0x115 = 0;
+    field_0xb0 = -1;
+    field_0xdc = 0;
+    field_0x116 = 0;
+    field_0xb4 = 0;
+    field_0x117 = 0;
+    u32 msg = field_0x84;
+    if (msg == 0x117 && lbl_8053AAF8->field_0x7f != 0) {
+        msg = 0x116;
+    }
+    field_0x84 = msg;
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+        field_0xb0 = 0x5A;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        field_0xb8[i] = fn_803B8CAC(0, i);
+    }
+    field_0x14->mPane->hide();
+    field_0x18->mPane->hide();
+    field_0x1c->mPane->hide();
+    field_0x20->mPane->hide();
+    field_0x34->mPane->hide();
+    for (s32 i = 0; i < 4; i++) {
+        field_0x24[i]->mPane->hide();
+    }
+    field_0x50->mPane->show();
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->mPane->show();
+        field_0x44[i]->mPane->show();
+        mScreenHuuin->search(lbl_804765D0[i])->hide();
+        mScreenHuuin->search(lbl_804765E8[i])->hide();
+        mScreenHuuin->search(lbl_80476600[i])->hide();
+    }
+
+    field_0x50->fn_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->field_0x26 = 0;
+
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->mPane->setAlpha(0);
+        setRowAlphas(this, i);
+        field_0x38[i]->field_0x26 = 0;
+
+        field_0x44[i]->fn_80402E08(-300.0f, 0.0f);
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->mPane->setAlpha(0);
+        setTabAlphas(this, i);
+        field_0x44[i]->field_0x26 = 0;
+    }
+
+    field_0x54->fn_80402E08(0.0f, -200.0f);
+    field_0x54->field_0x22 = 0;
+    field_0x54->mPane->setAlpha(0);
+    field_0x54->field_0x26 = 0;
+    field_0xde = 0;
+    field_0x1a4 = 0;
+    field_0x1a5 = 0;
+    field_0x1a6 = 0;
+    field_0x58->fn_80402E08(0.0f, -200.0f);
+    field_0x58->mPane->setAlpha(0);
+    field_0xd8 = 0;
+    field_0xda = 0;
 }
 
 FileSelect_804AFF60::~FileSelect_804AFF60() {
