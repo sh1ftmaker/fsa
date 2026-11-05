@@ -9,6 +9,7 @@
 #include "game/tu_8030AE84.h"
 #include "game/ViewLayer.h"
 #include "game/Camera.h"
+#include "game/Map.h"
 
 // Shared by the updates of states 0x2A and 0x2B (fn_80291B8C, fn_80291910):
 // the player turns a quarter every four frames of the counter 0x3FC
@@ -794,6 +795,71 @@ void Player_804A6F38::fn_80293900() {
 void Player_804A6F38::fn_80293B1C() {
     field_0x124d = 1;
     field_0x458 = 0;
+}
+
+void Player_804A6F38::fn_80293B30() {
+    if (field_0x3fc >= 58) {
+        field_0x3fc = 58;
+        field_0x3fd = 0;
+        field_0x3fb = 1;
+        fn_80241454(0);
+        if (!fn_80301CD0(field_0x4)) {
+            if (fn_80240670()) {
+                if (fn_8022D75C(fn_8024064C())) {
+                    return;
+                }
+                if (field_0xcf4 == 0x12) {
+                    field_0xcd4 = *fn_8023E724(fn_8024064C());
+                    field_0xce4 = fn_8023DE58(fn_8024064C());
+                }
+            }
+            if (field_0x3b4 < 8) {
+                field_0xcb0 = mPos;
+            }
+            field_0x124d = 0;
+            if (fn_80251AEC(0x1F)) {
+                if (fn_80241E28(field_0xce4, &field_0xcd4)) {
+                    if (fn_802486A0() == 5 && fn_80240808()) {
+                        field_0xcd4.set(*fn_8023E724(fn_80240644()));
+                    }
+                    u16 tile = fn_8022461C(&field_0xcd4, field_0xce4);
+                    if (fn_802265DC(&field_0xcd4, field_0xce4, true) || tile == 3 || tile == 0xE ||
+                        fn_802684A4(&field_0xcd4, field_0xce4))
+                    {
+                        if (field_0xce4 < 8) {
+                            field_0xcd4.set(field_0x2c4);
+                        } else {
+                            field_0xcd4.set(field_0xcbc);
+                        }
+                    }
+                }
+                field_0x3b4 = field_0xce4;
+                mPos = field_0xcd4;
+                // fn_80272160 reads only x and y of the position.
+                if (fn_802DEABC() && field_0x3b4 <= 8 && (field_0xcf4 == 9 || field_0xcf4 == 0x12)) {
+                    if (!fn_80240670()) {
+                        fn_80272160(2, (const JGeometry::TVec2f*)&mPos, 0x11);
+                    }
+                } else if (field_0x3b4 > 8 && (field_0xcf4 == 9 || field_0xcf4 == 0x12) && !fn_80240670()) {
+                    fn_80272160(2, (const JGeometry::TVec2f*)&mPos, 0x11);
+                }
+                if (field_0xcf4 == 9) {
+                    mPos.z = 0.0f;
+                } else if (field_0xcf4 == 0x24) {
+                    mPos.z = 128.0f;
+                } else if (viewLayerFlag(field_0x3b4)) {
+                    mPos.z = 0.0f;
+                } else if (field_0xce4 >= 8) {
+                    mPos.z = 128.0f;
+                } else {
+                    mPos.z = 0.0f;
+                }
+                field_0xbec->fn_8030BD3C(field_0x4);
+            }
+        }
+    }
+    fn_8027EDDC();
+    setHeldPos();
 }
 
 void Player_804A6F38::fn_80293E8C() {
