@@ -213,6 +213,9 @@ public:
     // resets it.
     u16 fn_80390C6C();
     void fn_80391678();
+    // Placeholder name: called by fn_8038D570 each frame for a player that
+    // takes part (game/tu_80390818.cpp, not written yet).
+    void fn_80390EBC();
 
     // fn_80390E40: stores value at 0x20 when the state is 0 or flag is set and
     // returns true; false otherwise.
@@ -368,6 +371,11 @@ bool fn_8037EC98(s32 player, u16 flags);
 // 20 units. True when the player's window is idle (field_0x24 == 0);
 // otherwise fn_803865B8(player) && fn_80385960(player).
 bool fn_80388EEC(s32 player);
+// The manager's per-frame update (0x8038D570): steps the windows (fn_80390EBC),
+// the countdown field_0x7c (with field_0xe4 cleared when a player of
+// field_0xe5 presses 0x100 or it runs out), the counter field_0x44 against
+// field_0x48 and the view bit field_0xea, and the byte flags lbl_8053ACD8.
+void fn_8038D570();
 // The window's field_0x2c plus 1, wrapping to 0 after 3.
 s32 fn_8037EE8C(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).

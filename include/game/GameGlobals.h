@@ -1651,6 +1651,9 @@ void fn_8038D454();
 // .sbss byte at 0x8053ACD0, owned by game/tu_80301CD0.cpp (its split starts
 // there). Read with lbz by that unit; stored as 0 by game/tu_80139BE8.cpp.
 extern u8 lbl_8053ACD0;
+// Per-player byte flags (.sbss 0x8053ACD8); game/tu_8037DF68.cpp's fn_8038D570 sets the first
+// fn_80138A30() of them to 1 (at most 4 players).
+extern u8 lbl_8053ACD8[4];
 // .sbss byte at 0x8053AAA0 (8 bytes), owned by game/tu_8011CEC8.cpp (its split starts
 // there). Cleared by tu_801213EC fn_80121ABC, read with lbz (!= 0) by act_escort_woman,
 // set to 1 by tu_801B6C50 and tu_803D9944.

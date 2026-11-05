@@ -305,6 +305,7 @@ static inline s32 windowIndex(s32 player) {
 }
 
 cls_804AF32C lbl_8050DB0C;
+MessageManager_804AF070* lbl_8053AD78;
 
 bool fn_8037E4BC() {
     for (s32 i = 0; i < 4; i++) {
@@ -477,24 +478,27 @@ u32 fn_803846BC(u32 msg) {
     return msg;
 }
 
-void fn_8038D454() {
-    for (s32 i = 0; i < 4; i++) {
-        lbl_8053AD78->mWindows[i]->fn_80391678();
+bool fn_80388CAC(s32 player, s32 serial) {
+    s32 index = windowIndex(player);
+    if (fn_8037F1E4(index) == 0) {
+        return true;
     }
+    if (fn_803865B8(player)) {
+        return fn_80384C58(player, serial);
+    }
+    return false;
 }
 
-void fn_8038D870() {
-    for (s32 i = 0; i < 4; i++) {
-        lbl_8053AD78->mWindows[i]->fn_80391678();
-        lbl_8053AD78->mWindows[i]->field_0x4 = lbl_8053AD78->mBmg;
-        lbl_8053AD78->field_0xfc[i] = -1;
-        lbl_8053AD78->field_0xf0[i] = 0;
+bool fn_80388EEC(s32 player) {
+    s32 index = windowIndex(player);
+    if (fn_8037F1E4(index) == 0) {
+        return true;
     }
-    lbl_8053AD78->field_0xf8 = 0;
-    lbl_8053AD78->field_0xe4 = 0;
+    if (fn_803865B8(player)) {
+        return fn_80385960(player);
+    }
+    return false;
 }
-
-cls_804AF32C::~cls_804AF32C() {}
 
 void fn_8038911C(s32 player, s32 value) {
     s32 index = windowIndex(player);
@@ -528,24 +532,88 @@ void fn_803894BC(s32 player, s32 value) {
     lbl_8053AD78->mWindows[index]->field_0x3c = value;
 }
 
-bool fn_80388CAC(s32 player, s32 serial) {
-    s32 index = windowIndex(player);
-    if (fn_8037F1E4(index) == 0) {
-        return true;
+void fn_8038D454() {
+    for (s32 i = 0; i < 4; i++) {
+        lbl_8053AD78->mWindows[i]->fn_80391678();
     }
-    if (fn_803865B8(player)) {
-        return fn_80384C58(player, serial);
-    }
-    return false;
 }
 
-bool fn_80388EEC(s32 player) {
-    s32 index = windowIndex(player);
-    if (fn_8037F1E4(index) == 0) {
-        return true;
+// Clears the manager's field_0xe4 when a player of field_0xe5 presses 0x100.
+static inline void clearOnPress() {
+    for (s32 i = 0; i < 4; i++) {
+        if (lbl_8053AD78->field_0xe5 & (1 << i)) {
+            if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(i), 0x100) != 0) {
+                lbl_8053AD78->field_0xe4 = 0;
+            }
+        }
     }
-    if (fn_803865B8(player)) {
-        return fn_80385960(player);
-    }
-    return false;
 }
+
+// FIXME: 98.8. Two opcodes: the original loads the constant 0 stored into
+// field_0xe4 by the second press loop with li (r30); ours copies the loop
+// index register (mr r30, r29).
+void fn_8038D570() {
+    lbl_8053AD78->field_0xe7 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+        if (takesPart == true) {
+            lbl_8053AD78->mWindows[i]->mIndex = i;
+            lbl_8053AD78->mWindows[i]->fn_80390EBC();
+        }
+    }
+    if (lbl_8053AD78->field_0xe4 != 0) {
+        if (lbl_8053AD78->field_0x7c == 0) {
+            clearOnPress();
+        } else {
+            lbl_8053AD78->field_0x7c--;
+            lbl_8053AD78->field_0x70 = lbl_8053AD78->field_0x70 - lbl_8053AD78->field_0x78;
+            if (lbl_8053AD78->field_0x7c == 0) {
+                lbl_8053AD78->field_0xe4 = 0;
+            }
+            clearOnPress();
+        }
+    }
+    MessageManager_804AF070* manager = lbl_8053AD78;
+    if (manager->field_0xe9 != 0) {
+        if (manager->field_0xe9 == 1 && manager->field_0x44 < 0x57E40u) {
+            manager->field_0x44++;
+        }
+        manager = lbl_8053AD78;
+        s32 minutes = manager->field_0x44 / 3600;
+        s32 seconds = manager->field_0x44 / 60 % 60;
+        if (seconds == 0) {
+            seconds = 1;
+        }
+        u32 elapsed = seconds + minutes * 60;
+        if (elapsed > manager->field_0x48) {
+            if (manager->field_0xeb != 0) {
+                if (!fn_802D6A9C()->fn_802D800C(manager->field_0xea)) {
+                    u8 bit = lbl_8053AD78->field_0xea;
+                    fn_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+                }
+            } else if (fn_802D6A9C()->fn_802D800C(manager->field_0xea) == true) {
+                u8 bit = lbl_8053AD78->field_0xea;
+                fn_802D6A9C()->fn_802D8050(bit, false, 0xFF);
+            }
+        }
+    }
+    if (lbl_8053AD78->field_0xed != 0) {
+        for (s32 i = 0; i < lbl_8053AAF8->fn_80138A30(); i++) {
+            lbl_8053ACD8[i] = 1;
+        }
+    }
+    lbl_8053AD78->field_0xe8 = 0;
+}
+
+void fn_8038D870() {
+    for (s32 i = 0; i < 4; i++) {
+        lbl_8053AD78->mWindows[i]->fn_80391678();
+        lbl_8053AD78->mWindows[i]->field_0x4 = lbl_8053AD78->mBmg;
+        lbl_8053AD78->field_0xfc[i] = -1;
+        lbl_8053AD78->field_0xf0[i] = 0;
+    }
+    lbl_8053AD78->field_0xf8 = 0;
+    lbl_8053AD78->field_0xe4 = 0;
+}
+
+cls_804AF32C::~cls_804AF32C() {}
