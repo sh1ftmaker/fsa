@@ -29,7 +29,14 @@ public:
     /* 0xAC */ virtual bool vfunc_0xAC(); // 0x80340734, not written yet
     /* 0xB0 */ virtual void vfunc_0xB0(); // 0x80340668, not written yet
 
-    // 0x2B4: nothing here in the constructors; ZoraEnemy's last field ends at 0x2B4.
+    // The flags cleared by vfunc_0xA4, after ZoraEnemy's 0x2AC bytes.
+    /* 0x2AC */ u8 field_0x2ac;
+    /* 0x2AD */ u8 field_0x2ad;
+    /* 0x2AE */ u8 field_0x2ae;
+    /* 0x2AF */ u8 field_0x2af;
+    /* 0x2B0 */ u8 field_0x2b0;
+    /* 0x2B2 */ u16 field_0x2b2;
+    // 0x2B4: nothing here in the constructors; the flags above end at 0x2B4.
     /* 0x2B4 */ u8 field_0x2b4[0x2B8 - 0x2B4];
     /* 0x2B8 */ s32 field_0x2b8; // the constructor stores 0
 };

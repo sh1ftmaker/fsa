@@ -12,6 +12,7 @@ public:
     /* 0x230 */ u8 field_0x230[0x58]; // not yet known
     /* 0x288 */ s32 field_0x288;
     /* 0x28C */ s32 field_0x28c;
+    /* 0x290 */ u8 field_0x290[0x2C8 - 0x290]; // not yet known (size: the spawner's __nw__)
     s32 fn_801544AC() const;
     s32 fn_801544C0();
     s32 fn_801545E0() const;

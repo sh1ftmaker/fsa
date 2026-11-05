@@ -48,6 +48,7 @@ public:
     /* 0x288 */ s32 field_0x288; // set to 2 by vfunc_0x44
     /* 0x28C */ u8 field_0x28c[0x2A5 - 0x28C];
     /* 0x2A5 */ u8 field_0x2a5; // vfunc_0x44 tests it against 1
+    /* 0x2A6 */ u8 field_0x2a6[0x2D0 - 0x2A6]; // not yet known (size: the spawner's __nw__)
 };
 
 #endif

@@ -19,6 +19,7 @@ public:
     /* 0x54 */ virtual void vfunc_0x54();
 
     /* 0x230 */ s32 field_0x230; // vfunc_0x48 sets it to 3; fn_801CC8E4 tests != 3 (cmpwi)
+    /* 0x234 */ u8 field_0x234[0x284 - 0x234]; // not yet known (size: the spawner's __nw__)
 };
 
 #endif

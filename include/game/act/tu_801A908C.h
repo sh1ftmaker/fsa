@@ -23,7 +23,8 @@ public:
     /* 0x280 */ JGeometry::TVec3f field_0x280[4];
     /* 0x2B0 */ u8 field_0x2b0[0x4];
     /* 0x2B4 */ f32 field_0x2b4; // an angle in s16 units (draw divides it by -10430.228f)
-}; // Size: not yet known (at least 0x2BC: the destructor reads 0x2B8)
+    /* 0x2B8 */ u8 field_0x2b8[0x2BC - 0x2B8]; // not yet known (size: the spawner's __nw__)
+}; // Size: 0x2BC
 
 // The 33 'TIMG' picture names, "e_tst_paku_green_0.bti" first (.data).
 extern const char* lbl_804A2F2C[33];

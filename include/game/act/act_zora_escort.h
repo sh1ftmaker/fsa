@@ -26,6 +26,8 @@ public:
     /* 0x94 */ virtual void vfunc_0x94(); // 0x8011FFCC, empty
     // 0x80120040: returns 1.
     /* 0xC0 */ virtual s32 vfunc_0xC0();
-};
+
+    /* 0x340 */ u8 field_0x340[0x3D4 - 0x340]; // not yet known (size: the spawner's __nw__)
+}; // Size: 0x3D4
 
 #endif

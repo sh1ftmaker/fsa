@@ -7,6 +7,9 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
+#include "game/act/act_princess_zelda_ending.h"
+#include "game/act/tu_8010DF44.h"
+#include "game/act/tu_801D2C60.h"
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
 #include "JSystem/JUtility/TColor.h"
@@ -52,7 +55,7 @@ public:
 }; // Size: 0x2F0
 
 // Spawned for 'DMGA'.
-class cls_8049DD68 : public ActorBase_804A5770 {
+class cls_8049DD68 : public cls_8049D140 {
 public:
     cls_8049DD68() : field_0x230(0), field_0x234(0), field_0x238(0.0f), field_0x23c(0.0f) {}
     /* 0x08 */ virtual ~cls_8049DD68();
@@ -460,11 +463,11 @@ public:
 }; // Size: 0x2E4
 
 // Spawned for 'EMIK'.
-class cls_804AD5B8 : public ActorBase_804A5770 {
+class cls_804AD5B8 : public cls_804A5958 {
 public:
     cls_804AD5B8() {}
     /* 0x08 */ virtual ~cls_804AD5B8();
-    /* 0x230 */ u8 field_0x230[0x4C];
+    /* 0x254 */ u8 field_0x254[0x28];
 }; // Size: 0x27C
 
 // Spawned for 'EETC'.
@@ -520,5 +523,21 @@ public:
     /* 0x260 */ JGeometry::TVec3f field_0x260[4];
     /* 0x290 */ u8 field_0x290[0x10];
 }; // Size: 0x2A0
+
+// ZOSH and ARSH ("ZOSH"/"ARSH", unwritten units): sub-classes of cls_804A48B0 that only add a
+// destructor (the base destructors are inlined into it, as in cls_804A5418). Named after their
+// vtables, 0x804A5810 and 0x804A58B4.
+class cls_804A5810 : public cls_804A48B0 {
+public:
+    // The body names the base's constructor again, which builds and destroys a temporary.
+    cls_804A5810() { cls_804A48B0(); }
+    virtual ~cls_804A5810() {}
+}; // Size: 0x2AC
+
+class cls_804A58B4 : public cls_804A48B0 {
+public:
+    cls_804A58B4() { cls_804A48B0(); }
+    virtual ~cls_804A58B4() {}
+}; // Size: 0x2AC
 
 #endif

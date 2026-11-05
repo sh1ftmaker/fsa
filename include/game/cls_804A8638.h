@@ -51,6 +51,7 @@ public:
     /* 0x318 */ s32 field_0x318;
     /* 0x31C */ s32 field_0x31c;
     /* 0x320 */ s32 field_0x320;
+    /* 0x324 */ u8 field_0x324[0x33C - 0x324]; // not yet known (size: the spawner's __nw__)
 }; // Size: 0x33C
 
 #endif

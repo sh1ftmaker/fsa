@@ -50,6 +50,7 @@ public:
     /* 0x3C4 */ s32 field_0x3c4; // cleared by the constructor
     /* 0x3C8 */ s32 field_0x3c8; // cleared by the constructor
     /* 0x3CC */ s32 field_0x3cc; // field_0x90 bits 5-9 (from the top), set by vfunc_0x64
-};
+    /* 0x3D0 */ u8 field_0x3d0[0x3D4 - 0x3D0]; // not yet known (size: the spawner's __nw__)
+}; // Size: 0x3D4
 
 #endif

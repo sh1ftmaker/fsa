@@ -2,7 +2,6 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
-#include "game/EnemyBase.h"
 #include "game/RailBase.h"
 #include "game/act/act_advance_notice_se.h"
 #include "game/act/act_all_enemies_defeated_check_switch.h"
@@ -643,7 +642,7 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
             mActors[i] = new (mHeap, 0) ZoraEnemy_804A3D7C;
             break;
         case ACTOR_ZOSH:
-            mActors[i] = new (mHeap, 0) EnemyBase_804A4808;
+            mActors[i] = new (mHeap, 0) cls_804A5810;
             break;
         case ACTOR_BOGF:
             mActors[i] = new (mHeap, 0) VaatiBoss_804A4958;
@@ -727,7 +726,7 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
             mActors[i] = new (mHeap, 0) cls_804A6340;
             break;
         case ACTOR_ARSH:
-            mActors[i] = new (mHeap, 0) EnemyBase_804A4808;
+            mActors[i] = new (mHeap, 0) cls_804A58B4;
             break;
         case ACTOR_INFR:
             mActors[i] = new (mHeap, 0) InvincibilityFairy_804AB4C0;

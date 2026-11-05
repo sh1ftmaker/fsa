@@ -32,6 +32,7 @@ public:
     /* 0x254 */ f32 field_0x254; // cleared by the constructor
     /* 0x258 */ f32 field_0x258; // cleared by the constructor
     /* 0x25C */ f32 field_0x25c; // cleared by the constructor
-}; // Size: at least 0x260
+    /* 0x260 */ u8 field_0x260[0x290 - 0x260]; // not yet known (size: the spawner's __nw__)
+}; // Size: 0x290
 
 #endif

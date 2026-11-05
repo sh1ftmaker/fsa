@@ -42,7 +42,6 @@ public:
     /* 0x254 */ JPABaseEmitter* mEmitter254;
     /* 0x258 */ JPABaseEmitter* mEmitter258;
     /* 0x25C */ SpriteAnim_801D267C mAnim; // constructed last
-    /* 0x7A8 */ u8 field_0x7a8; // set to 1 by update()
-}; // Size: at least 0x7A9
+}; // Size: 0x294
 
 #endif

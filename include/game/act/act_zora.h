@@ -32,12 +32,6 @@ public:
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
     // by the destructor (0x801BB30C), which passes it to fn_801EE434.
     /* 0x2A8 */ JPABaseEmitter* field_0x2a8;
-    /* 0x2AC */ u8 field_0x2ac;
-    /* 0x2AD */ u8 field_0x2ad;
-    /* 0x2AE */ u8 field_0x2ae;
-    /* 0x2AF */ u8 field_0x2af;
-    /* 0x2B0 */ u8 field_0x2b0;
-    /* 0x2B2 */ u16 field_0x2b2;
-};
+}; // Size: 0x2AC (the spawner's __nw__; the lotus Zora adds its flags after it)
 
 #endif

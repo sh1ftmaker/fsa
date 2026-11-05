@@ -14,6 +14,7 @@ public:
     Bomb_8049F784() {}
     /* 0x230 */ u8 field_0x230[0x238 - 0x230]; // not yet known
     /* 0x238 */ s32 field_0x238;               // act_shadow_link_2's helper ignores bombs with >= 5
-}; // Size: at least 0x23C
+    /* 0x23C */ u8 field_0x23c[0x29C - 0x23C]; // not yet known
+}; // Size: 0x29C
 
 #endif
