@@ -15,7 +15,7 @@ Note: the 0x1048-based u64 reads are field_0x1010[row][col][max(layer,7)]; fn_80
 SHARED-EDITS: GameGlobals.h (extern "C" void fn_80308D0C(), owner tu_80301CD0); GameView.h (fn_802DEA34 moved out of extern "C" to C++ linkage, fn_802DEDFC declared); symbols.txt: fn_802DEA34 -> __Fv, fn_802DEDFC -> __FPCl.
 
 ## Wave 2 (Opus 5.5, 2026-11-05)
-Baseline 8429 (matching 9309b311), unit 53/109. After: 8435, unit 59/109 (+6 honest); structural 8809 -> 8822 (+13).
+Baseline 8468 (matching c13ba094), unit 53/109. After: 8474, unit 59/109 (+6 honest); structural +13 (8860 after).
 100 %: fn_802D79A4, fn_802D79E8, fn_802D7D00 (85 calls), fn_802D9C1C, fn_802D9C4C, fn_802D9C7C.
 Structural (FIXME in source): __ct__ 99.9 reloc-name (512.0f pool position); fn_802D3A18 99.5 (z stored twice
 in the target: x, z, z, y); fn_802D46D8 78.3 sched+regalloc (table lis/addi order); fn_802D4C10 94.8
