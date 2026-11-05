@@ -4,6 +4,56 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_somaria_block.h"
 
+bool Player_804A6F38::fn_80256DCC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (!field_0xb9e) {
+        return false;
+    }
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    JGeometry::TBox2f overlap(field_0x5cc);
+    if (overlap.intersect(*box)) {
+        out->x = field_0x5cc.f.x + (field_0x5cc.i.x - field_0x5cc.f.x) * 0.5f;
+        out->y = field_0x5cc.f.y + (field_0x5cc.i.y - field_0x5cc.f.y) * 0.5f;
+        return true;
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (!field_0xb99) {
+        return false;
+    }
+    JGeometry::TBox2f overlap(field_0x5b0);
+    if (overlap.intersect(*box)) {
+        out->x = field_0x5b0.f.x + (field_0x5b0.i.x - field_0x5b0.f.x) * 0.5f;
+        out->y = field_0x5b0.f.y + (field_0x5b0.i.y - field_0x5b0.f.y) * 0.5f;
+        return true;
+    }
+    return false;
+}
+
 bool Player_804A6F38::fn_802573E0(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     if (field_0xb38 < 0) {
         return false;
