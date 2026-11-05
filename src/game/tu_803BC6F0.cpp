@@ -411,6 +411,7 @@ static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
 // their start position, the command buttons back at their colours, and the
 // copy labels; the timings are lbl_8050DB0C's 0xCA..0xCD.
 void FileSelect_804AFF60::fn_803BF9C4() {
+    // Function-scope counters: declared per loop, each switch case re-loads j = 0 (96.49 %).
     int i;
     int j;
     field_0x20->mPane->show();
@@ -943,7 +944,9 @@ void FileSelect_804AFF60::fn_803C9F14() {
 // `lbl_8050EC80[i]` row adds are base + offset (original offset + base, as
 // in fn_803CEED4); the four setBlackWhite calls' by-value copies take the
 // stack slots in the opposite order (sp 0x8 upwards in the original); the
-// bob's `frame * frame` is scheduled after the 0x4330 store; .sdata2 @NNN.
+// bob's `frame * frame` is scheduled after the 0x4330 store; the final
+// `field_0xa0 == 3` test lays out its two arms (0xC / 0xB sound) the other
+// way round (same logic); .sdata2 @NNN.
 // The file menu (state 19): A runs the highlighted command field_0xa0 (0:
 // start the chosen file, 1: copy, 2: delete, 3: back), B goes back, up /
 // down move the cursor (field_0xa0, skipping commands an empty file lacks);
