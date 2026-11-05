@@ -148,9 +148,9 @@ public:
     // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
     // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
     void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
-    // 0x802F9714 (game/tu_802F5040.cpp, not written yet): the same arguments
-    // and tile-data rewrite as fn_802FA160 (checkCompressed / getResSize for
-    // size 0, then the slot rows at this + 0x98 + slot * 4); tu_8039003C's
+    // 0x802F9714 (game/tu_802F5040.cpp): the same arguments as fn_802FA160
+    // (checkCompressed / getResSize for size 0); writes the nibble-swapped
+    // bytes to field_0x88[slot] + dstOffset and flushes them; tu_8039003C's
     // constructor passes the 'SCH ' resources (slots 0, 0, 2, 3), as does
     // tu_803A85E4's (slots 0, 0, 2, 3; dstOffset 0 / 0x7000 / 0x4000 / 0).
     void fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
@@ -161,7 +161,8 @@ public:
     // 0x802FF548 (game/tu_802F5040.cpp): r3 only, passed on unchanged to
     // fn_802FF798. Called by tu_8013AAD4's fn_8013B4C0 with field_0x20.
     void fn_802FF548();
-    // 0x802FF798 (game/tu_802F5040.cpp, not written yet): no arguments;
+    // 0x802FF798 (game/tu_802F5040.cpp): resets the map and sets up its
+    // GX texture and palette objects; no arguments;
     // called once by tu_8039003C's and tu_803A85E4's constructors before it loads the tile
     // resources.
     void fn_802FF798();
