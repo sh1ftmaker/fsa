@@ -148,8 +148,6 @@ public:
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
     f32 fn_80246F28();
-    f32 fn_8024712C(); // tu_8023FBF0 (0x8024712C): cls_804AA8C8::fn_80309F20 of the pad slot (gated), else 0
-    f32 fn_80247330(); // tu_8023FBF0 (0x80247330): cls_804AA8C8::fn_80309FCC of the pad slot (gated), else 0
     bool fn_80241478(); // via fn_8022D930
     void fn_8024148C(); // via fn_80236C88
     bool fn_80241498(); // via fn_80236D14
@@ -216,7 +214,8 @@ public:
     // field_0x1030[i] is `layer`; it then copies field_0xdb0[i] into
     // field_0xef0[i]. cls_804A71A8::fn_80268BC4 has it inlined twice.
     bool fn_802684A4(const JGeometry::TVec3f* pos, s32 layer);
-    // tu_8023FBF0 (0x80247330 / 0x8024712C, not written): f32 results
+    // tu_8023FBF0 (0x80247330 / 0x8024712C): the pad axes fn_80309FCC /
+    // fn_80309F20 of the player's slot behind the input gate, else 0; f32 results
     // that cls_804A71A8::fn_8026E1E0 compares with 0.0f for facings 0 / 1
     // (0x80247330) and 2 / 3 (0x8024712C).
     f32 fn_80247330();
