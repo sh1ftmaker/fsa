@@ -347,7 +347,6 @@ void GameMode_804B0688::fn_803DD764() {
             if (--field_0x98 <= 0) {
                 DVDFileInfo info;
                 if (DVDOpen("/DOL/framework.dol", &info) == TRUE) {
-                    GameState_804B0FE0* state = &lbl_80529DEC;
                     for (int i = 0; i < 0x20; i++) {
                         ((u8*)0x80700000)[i] = lbl_80529DEC.mSaveRegion.bytes[i];
                     }
@@ -606,7 +605,7 @@ void GameMode_804B0688::fn_803DE05C() {
 // State 2: slides the other entry out and the picked one up, fades the
 // entry panes out and the sub-menu panes in, then starts the movie and goes
 // to state 3.
-// FIXME: 96.27. The original stores the first other entry through the
+// FIXME: 96.35. The original stores the first other entry through the
 // pointer (ours stores it straight to the stack slot) and sets up the tag
 // table base (lbl_804774C8, ours via the section) one instruction earlier;
 // the alpha loops' counter and tag pointer registers are swapped.
@@ -831,7 +830,7 @@ void GameMode_804B0688::fn_803DEC44() {
 
 // State 0: slides the entry panes in and fades the screen's panes up, then
 // goes to state 1 once the three slides are done.
-// FIXME: 99.25. Registers only: in the three alpha loops the original keeps
+// FIXME: 99.32. Registers only: in the three alpha loops the original keeps
 // the counter in r22 and the tag pointer in r21, ours the other way round.
 void GameMode_804B0688::fn_803DF2B4() {
     u8 slid = false;
@@ -1100,6 +1099,9 @@ GameMode_804B0688::GameMode_804B0688() {
     field_0x58 = new cls_804AF86C;
     field_0x58->fn_80402F04(mScreen->search('Paccur02'));
     field_0x5c = lbl_8053AED8->field_0x8;
+    // `tex` and `font` are locals reused for each use: the original loads them
+    // before the call (inlined into the call arguments the constructor drops to
+    // 93.8 / 99.4 %).
     const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti");
     lbl_8053AED8->fn_80440D78(tex);
     lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
