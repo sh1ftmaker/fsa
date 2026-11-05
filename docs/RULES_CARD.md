@@ -50,6 +50,26 @@ in the original."), put the hunk in your checkpoint, and carry on with the
 rest of the file. `#ifdef NONMATCHING` bodies are fine for complete,
 correct functions.
 
+**Big functions: structure first.** A written function helps its file
+before it reaches 100 %: it fixes the unit's literal-pool order (constants
+are pooled in first-use order), proves field offsets and types, gives
+callees their real names, and lets the unit's data be written. So judge a
+sub-100 % function by its `try.py` class, not its percentage:
+- *structurally done*: `regalloc-only`, `scheduling`, `scheduling+regalloc`,
+  with or without `reloc-name`, at any percentage. Every field, call,
+  constant and branch is right. Merge it with its FIXME.
+- *structurally close*: `missing/extra` of a few instructions, about 85 %
+  or more, with a FIXME naming exactly what is missing (an inlined helper,
+  a type). Merge it.
+- anything else (`different`, or many instructions missing): keep working
+  or leave it unwritten; it misleads the headers more than it helps.
+In a big unit, write the constructor first (it proves the layout), then the
+unit's first functions (they fix the literal order), then the rest in
+address order. Honest progress still counts only 100 % functions;
+`python3 tools/progress.py` also shows the structural count. The
+no-tricks rules below apply unchanged: never raise a percentage with a
+trick, and never write a body twice.
+
 ## No tricks (gate.py checks some; review checks all)
 A function counts only when natural source produces the bytes. Banned, and
 a REJECT/CHANGES in review:
