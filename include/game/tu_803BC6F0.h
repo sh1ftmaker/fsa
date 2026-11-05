@@ -27,6 +27,9 @@ public:
     FileSelect_804AFF60();
     /* 0x08 */ virtual ~FileSelect_804AFF60();
 
+    // Fades the 'kk_' sprites (fn_803C6690 passes field_0xa4 and
+    // 1 - progress).
+    void fn_803BC6F0(s32 arg, f32 alpha);
     // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8 (not written yet).
     void fn_803C24BC();
     void fn_803BF004();
@@ -108,7 +111,8 @@ public:
     /* 0x058 */ cls_804AF86C* field_0x58; // lbl_8053AED8->field_0x8
     /* 0x05C */ void* field_0x5c; // &lbl_8050EC80[0] + 0x20 (memory card copy source)
     /* 0x060 */ void* field_0x60; // &lbl_8050EC80[0] + 0x280
-    /* 0x064 */ u8 field_0x64[0x7C - 0x64];
+    /* 0x064 */ f32 field_0x64[3]; // field_0x44[i] target x (fn_803C6690)
+    /* 0x070 */ f32 field_0x70[3]; // field_0x38[i] target x (fn_803C6690)
     /* 0x07C */ u32 field_0x7c; // message shown
     /* 0x080 */ u32 field_0x80; // message to show
     /* 0x084 */ u32 field_0x84;

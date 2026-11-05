@@ -2,9 +2,11 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/tu_80379F84.h"
+#include "game/Message.h"
 #include "game/tu_803BC6F0.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JKernel/JKRArchive.h"
 #include "dolphin/os/OSReset.h"
 
 // Run each frame by fn_803CE9EC (index: mState).
@@ -39,6 +41,25 @@ void FileSelect_804AFF60::fn_803C579C() {
         setState(0);
     } else if (result == 1) {
         fn_803BF004();
+    }
+}
+
+// FIXME: 99.85 %. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_: the literals of the unwritten earlier functions come first).
+void FileSelect_804AFF60::fn_803C6690() {
+    s16 delay = lbl_8050DB0C.field_0x4c[0xC0];
+    s16 frames = lbl_8050DB0C.field_0x4c[0xC1];
+    s32 end = delay + frames;
+    field_0xd8++;
+    if (field_0xd8 > delay) {
+        for (s32 i = 0; i < 3; i++) {
+            field_0x38[i]->fn_80402940(frames, 0, field_0x70[i], 0.0f);
+            field_0x44[i]->fn_80402940(frames, 0, field_0x64[i], 0.0f);
+        }
+        fn_803BC6F0(field_0xa4, 1.0f - (f32)(field_0xd8 - delay) / (f32)frames);
+    }
+    if (field_0xd8 > end) {
+        setState(5);
     }
 }
 
@@ -81,6 +102,34 @@ void FileSelect_804AFF60::fn_803CBEE0() {
     OSResetSystem(1, 1, 1);
 }
 
+void FileSelect_804AFF60::fn_803CBF0C() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            field_0x80 = 0;
+            setState(0x10);
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                field_0x80 = 0x5C;
+            } else {
+                field_0x80 = 0x256;
+            }
+            setState(3);
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+}
+
 void FileSelect_804AFF60::fn_803CC048() {
     if (field_0xb0 > 0) {
         field_0xb0--;
@@ -106,6 +155,57 @@ void FileSelect_804AFF60::fn_803CC0D8() {
         setState(0);
         field_0x113 = 0;
         lbl_80529DEC.field_0x24c = 0;
+    }
+}
+
+void FileSelect_804AFF60::fn_803CC17C() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            lbl_8051C1A0.fn_803B9DDC();
+            field_0x80 = 0x54;
+            setState(0xD);
+            field_0x113 = 1;
+            lbl_80529DEC.field_0x24c = 1;
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0x52;
+            setState(2);
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+}
+
+void FileSelect_804AFF60::fn_803CC2BC() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            field_0x80 = 0x53;
+            setState(0xC);
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0x52;
+            setState(2);
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        }
     }
 }
 
@@ -140,9 +240,117 @@ void FileSelect_804AFF60::fn_803CC490() {
     }
 }
 
+void FileSelect_804AFF60::fn_803CC62C() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            field_0x80 = 0x59;
+            setState(8);
+            field_0x113 = 1;
+            lbl_80529DEC.field_0x24c = 1;
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0x58;
+            setState(2);
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+}
+
+void FileSelect_804AFF60::fn_803CE05C() {
+    if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0) {
+        if (field_0x7c == 0x51) {
+            field_0x80 = 0x83;
+        } else if (field_0x7c == 0x83) {
+            field_0x80 = 0x84;
+            setState(0xF);
+        } else {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                field_0x80 = 0x5C;
+            } else {
+                field_0x80 = 0x256;
+            }
+            setState(3);
+        }
+        lbl_8053AF80->fn_80458880(0xB, -1);
+    }
+}
+
+// FIXME: 99.69 %. The bounds x and field_0x20->field_0x8 load into f2 / f1
+// (original f1 / f2, fsubs f1, f1, f2); 600.0f is still a @NNN literal.
+void FileSelect_804AFF60::fn_803CE370() {
+    if (field_0xb0 > 0) {
+        field_0xb0--;
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0 || field_0xb0 == 0) {
+        field_0xb0 = -1;
+        field_0x80 = 0;
+        u32 msg = 0x117;
+        if (lbl_8053AAF8->field_0x7f != 0) {
+            msg = 0x116;
+        }
+        field_0x84 = msg;
+        fn_803832BC(((J2DTextBox*)mScreenHuuin->search(0x5466743031ull /* "Tft01" */))->getStringPtr(),
+                    field_0x84, 0, NULL, NULL);
+        if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+            field_0xb0 = 0x5A;
+        }
+        if (field_0x20->mPane->getBounds()->i.x - field_0x20->field_0x8 < 600.0f) {
+            field_0x20->field_0x20 = 0;
+            field_0x20->field_0x26 = 0;
+            field_0x117 = 1;
+        }
+        setState(1);
+        lbl_8053AF80->fn_80458880(0xB, -1);
+    }
+}
+
 s32 FileSelect_804AFF60::fn_803CE4B0() {
     if (lbl_8053ADB0 != NULL) {
         return lbl_8053ADB0->field_0x1a8;
     }
     return 3;
+}
+
+FileSelect_804AFF60::~FileSelect_804AFF60() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    delete mScreen;
+    delete mScreenHuuin;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    delete field_0x18;
+    field_0x18 = NULL;
+    delete field_0x1c;
+    field_0x1c = NULL;
+    delete field_0x20;
+    field_0x20 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x24[i];
+        field_0x24[i] = NULL;
+    }
+    delete field_0x34;
+    field_0x34 = NULL;
+    for (s32 i = 0; i < 3; i++) {
+        delete field_0x38[i];
+        field_0x38[i] = NULL;
+        delete field_0x44[i];
+        field_0x44[i] = NULL;
+    }
+    delete field_0x50;
+    field_0x50 = NULL;
+    delete field_0x54;
+    field_0x54 = NULL;
+    lbl_80529DEC.field_0x30->unmount();
+    lbl_8053ADB0 = NULL;
 }

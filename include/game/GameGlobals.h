@@ -1024,19 +1024,24 @@ public:
     s32 fn_803B9A94(void* dst1, u32 size1, void* dst2, u32 size2, s32 offset);
     s32 fn_803B9BDC();
     s32 fn_803B9C5C();
+    // Sets the request word 0x1FCC to 4 and signals the condition at 0x1FEC
+    // (fn_803CC17C, before it waits in state 0xD).
+    void fn_803B9DDC();
 
     /* 0x0 */ u8 field_0x0[0x1FCC];
     // fn_802B1558 (the reset path) waits, one VIWaitForRetrace per pass, while
     // this word is nonzero.
     /* 0x1FCC */ s32 field_0x1fcc;
-    /* 0x1FD0 */ u8 field_0x1fd0[0x1FF5 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
+    /* 0x1FD0 */ u8 field_0x1fd0[0x1FF4 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
+    // SHARED-EDIT (tu_803BC6F0 fn_803CC53C): the card channel passed to
+    // CARDGetSerialNo.
+    /* 0x1FF4 */ u8 field_0x1ff4;
     // SHARED-EDIT (tu_803BC6F0): fn_803CE9EC stores 2 here every frame;
-    // fn_803CBE38 / fn_803CC3DC copy the doubleword into the first save row
-    // (lbl_8050EC80 + 8) after a load (both words loaded, then stored: a
-    // 64-bit copy).
+    // fn_803CBE38 / fn_803CC3DC copy it into the first save row
+    // (lbl_8050EC80 + 8) after a load.
     /* 0x1FF5 */ u8 field_0x1ff5;
     /* 0x1FF6 */ u8 field_0x1ff6[0x1FF8 - 0x1FF6];
-    /* 0x1FF8 */ s64 field_0x1ff8;
+    /* 0x1FF8 */ u64 field_0x1ff8; // CARDGetSerialNo's serial number (fn_803CC53C)
     /* 0x2000 */ u8 field_0x2000[0x2120 - 0x2000];
 }; // Size: 0x2120
 extern cls_803B9940 lbl_8051C1A0;

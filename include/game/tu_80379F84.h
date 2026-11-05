@@ -92,8 +92,8 @@ struct cls_804AE9A0 {
 struct SaveRow_8050EC80 {
     /* 0x00 */ u8 field_0x0[0x8];
     // SHARED-EDIT (tu_803BC6F0 fn_803CBE38, fn_803CC3DC): row 0 receives the
-    // memory card manager's doubleword 0x1FF8 after a load.
-    /* 0x08 */ s64 field_0x8;
+    // memory card serial number (cls_803B9940's 0x1FF8) after a load.
+    /* 0x08 */ u64 field_0x8;
     /* 0x10 */ s32 field_0x10;
     /* 0x14 */ u8 field_0x14[0x28 - 0x14];
     // Bit stage * 4 + sub set by fn_80379FF4.
