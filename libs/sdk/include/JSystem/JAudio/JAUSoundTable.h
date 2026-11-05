@@ -8,7 +8,7 @@ struct JAUSoundTableItem
 {
     u8 mPriority; // 00
     u8 _1; // (Other type of priority?) 01
-    u8 mVolume; // 02 (FSA: lbz 2, divided by 255.0f in getSeInfo/getSeqInfo)
+    u8 mVolume; // 02 (FSA: lbz 2, divided by 127.0f in getSeInfo/getSeqInfo)
     u8 _3; // 03
     u32 mSwBit; // 04
     u8 mPTrack; // 08
