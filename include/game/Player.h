@@ -416,6 +416,7 @@ public:
     void followCamera();  // tu_8028FBA0 inline: camera on mPos - (0, 150) on the TV
     bool requestArrival(); // tu_8028FBA0 inline: 0x33 / 0x3E / 0x12 / 0 after an arrival
     void spawnEffect15B(); // tu_8028FBA0 inline: effects 0x15B, 0x15C at the player
+    s32 life(); // tu_8028FBA0 inline: fn_80237774(fn_80240644()) if fn_80240808(), else fn_8024189C()
     void fallStep(); // tu_8028FBA0 inline: gravity on 0x344, then mPos += 0x344
     void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused

@@ -91,6 +91,15 @@ inline void Player_804A6F38::spawnEffect15B() {
     fn_8013CC50(field_0x3b4, &mPos, 0x15C, -1, 0, NULL, NULL, true, 1.0f);
 }
 
+// The life that decides between landing and state 0x33: the leader's
+// (fn_80237774 of fn_80240644) when fn_80240808 holds, else the player's own.
+inline s32 Player_804A6F38::life() {
+    if (fn_80240808()) {
+        return fn_80237774(fn_80240644());
+    }
+    return fn_8024189C();
+}
+
 // Gravity for the drops onto the floor below (fn_802953A0, fn_8029513C):
 // the fall speed 0x34C grows by 0.25 up to 4, then the player moves by 0x344.
 inline void Player_804A6F38::fallStep() {
@@ -738,6 +747,48 @@ void Player_804A6F38::fn_802938B8() {
     if (field_0xcf4 != 0x1D) {
         fn_8024F0E8(0x2000C);
     }
+}
+
+void Player_804A6F38::fn_80293900() {
+    if (field_0x3fc < 60) {
+        if (fn_80240670()) {
+            field_0x3fc = 60;
+        } else {
+            field_0x3fc++;
+        }
+    }
+    if (!fn_80240670()) {
+        if (field_0x3b4 != 0 && field_0xce4 != field_0xce0 && fn_80303750(field_0x4)) {
+            return;
+        }
+        if (field_0x3fc < 60) {
+            return;
+        }
+    }
+    if (field_0x3fc == 60) {
+        if (field_0x3b4 < 8) {
+            fn_8024F0E8(0x20021);
+        } else {
+            fn_803037D4(field_0x4, 0xD);
+        }
+    }
+    field_0x3fc++;
+    fn_80241454(1);
+    mPos.z -= 4.0f;
+    if (mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        field_0x124d = 0;
+        if (life() <= 0) {
+            fn_80251AEC(0x33);
+        } else if (fn_8025F684()) {
+            if (fn_80251AEC(0x12) && field_0xcf4 == 9) {
+                field_0x464 = 180;
+            }
+        } else if (fn_80251AEC(0) && field_0xcf4 == 9) {
+            field_0x464 = 180;
+        }
+    }
+    spinFacing();
 }
 
 void Player_804A6F38::fn_80293B1C() {
