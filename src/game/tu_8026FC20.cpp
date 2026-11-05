@@ -1319,10 +1319,6 @@ bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2
     return false;
 }
 
-// FIXME: 94.20. Only the end differs: the original converts fn_80256F44's result to bool
-// (clrlwi; neg; or; srwi), so that callee returns a u8 (tu_80256C74 / Player.h declare bool).
-// With u8 there this is 100 %, but the generated forwarder fn_8023AAF8 (tu_8022AD64, returns
-// bool) drops to 89.7 % until it returns u8 as well.
 bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
     if (fn_80274238(box, layer, out, flag)) {
         return true;
@@ -1342,10 +1338,6 @@ bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeom
     return fn_80256F44(box, layer, out);
 }
 
-// FIXME: 94.87. Only the end differs: the original converts fn_80256F44's result to bool
-// (clrlwi; neg; or; srwi), so that callee returns a u8 (tu_80256C74 / Player.h declare bool).
-// With u8 there this is 100 %, but the generated forwarder fn_8023AAF8 (tu_8022AD64, returns
-// bool) drops to 89.7 % until it returns u8 as well.
 bool Player_804A6F38::fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
     if (fn_80274238(box, layer, out, flag)) {
         return true;
