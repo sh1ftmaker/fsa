@@ -180,6 +180,70 @@ void EscortBase_8049E0C8::fn_801220C4() {
     fn_801F0E34(0x400ED, 0);
 }
 
+bool EscortBase_8049E0C8::fn_801227D4() {
+    field_0x350++;
+    if (field_0x350 >= 90) {
+        field_0x350 = 0;
+        return true;
+    }
+    return false;
+}
+
+bool EscortBase_8049E0C8::fn_80122804() {
+    field_0x358++;
+    if (field_0x358 >= 15) {
+        field_0x358 = 0;
+        return true;
+    }
+    return false;
+}
+
+bool EscortBase_8049E0C8::fn_80122834() {
+    if (mLife == 0 && field_0x333 == 0) {
+        return true;
+    }
+    return false;
+}
+
+s32 EscortBase_8049E0C8::fn_8012285C() const {
+    if (field_0x344 < 0 || field_0x344 >= 4) {
+        return -1;
+    }
+    return fn_8022EA0C(field_0x344);
+}
+
+// Passes the position on by value (the original loads the other arguments before its copy).
+static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
+    return fn_8038AD24(player, msg, serial, layer, pos, flags);
+}
+
+// FIXME: 96.8. The box corners' adds are scheduled differently (see vfunc_0xBC) and mSerial/field_0x4 are loaded in the other order before the talk call.
+s32 EscortBase_8049E0C8::fn_80122898(u16 msg) {
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    JGeometry::TVec3f pos(mPos);
+    pos.y -= 32.0f;
+    fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+    s32 player = fn_8022FD8C(mSerial);
+    if (player < 0 || player >= 4) {
+        field_0x34c = -1;
+        return -1;
+    }
+    if (!fn_802300EC(player)) {
+        field_0x34c = -1;
+        return -1;
+    }
+    if (talk(player, msg, mSerial, field_0x4, pos, 0x28)) {
+        field_0x34c = player;
+        return player;
+    }
+    field_0x34c = -1;
+    return -1;
+}
+
 // FIXME: 91.8. The box corners are added in a different order and the stores of the box's y values and the pt zero are interleaved differently (target: x pair, then y pair, stores after pt's).
 bool EscortBase_8049E0C8::vfunc_0xBC() {
     JGeometry::TBox2f box(mBox);
@@ -263,38 +327,6 @@ void EscortBase_8049E0C8::vfunc_0xB0(f32* x, f32* y, s32* player) {
     *y = 16.0f + v;
 }
 
-// Passes the position on by value (the original loads the other arguments before its copy).
-static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
-    return fn_8038AD24(player, msg, serial, layer, pos, flags);
-}
-
-// FIXME: 96.8. The box corners' adds are scheduled differently (see vfunc_0xBC) and mSerial/field_0x4 are loaded in the other order before the talk call.
-s32 EscortBase_8049E0C8::fn_80122898(u16 msg) {
-    JGeometry::TBox2f box(mBox);
-    box.i.x += mPos.x;
-    box.f.x += mPos.x;
-    box.i.y += mPos.y;
-    box.f.y += mPos.y;
-    JGeometry::TVec3f pos(mPos);
-    pos.y -= 32.0f;
-    fn_8022FEB8(&box, field_0x4, mSerial, true, false);
-    s32 player = fn_8022FD8C(mSerial);
-    if (player < 0 || player >= 4) {
-        field_0x34c = -1;
-        return -1;
-    }
-    if (!fn_802300EC(player)) {
-        field_0x34c = -1;
-        return -1;
-    }
-    if (talk(player, msg, mSerial, field_0x4, pos, 0x28)) {
-        field_0x34c = player;
-        return player;
-    }
-    field_0x34c = -1;
-    return -1;
-}
-
 void EscortBase_8049E0C8::vfunc_0xAC(f32* x, f32* y, s32* player) {
     f32 v = 0.0f;
     if (vfunc_0xC4()) {
@@ -346,36 +378,13 @@ void EscortBase_8049E0C8::vfunc_0xA8(f32* x, f32* y, s32* player) {
     }
 }
 
-bool EscortBase_8049E0C8::fn_801227D4() {
-    field_0x350++;
-    if (field_0x350 >= 90) {
-        field_0x350 = 0;
-        return true;
+void EscortBase_8049E0C8::vfunc_0x7C() {
+    if (lbl_8053AAF8->fn_80138A30() == 1) {
+        field_0x360 = 1;
+    } else {
+        field_0x360 = 4;
     }
-    return false;
-}
-
-bool EscortBase_8049E0C8::fn_80122804() {
-    field_0x358++;
-    if (field_0x358 >= 15) {
-        field_0x358 = 0;
-        return true;
-    }
-    return false;
-}
-
-bool EscortBase_8049E0C8::fn_80122834() {
-    if (mLife == 0 && field_0x333 == 0) {
-        return true;
-    }
-    return false;
-}
-
-s32 EscortBase_8049E0C8::fn_8012285C() const {
-    if (field_0x344 < 0 || field_0x344 >= 4) {
-        return -1;
-    }
-    return fn_8022EA0C(field_0x344);
+    mLife = field_0x360 * 4;
 }
 
 // FIXME: 93.6. Scheduling only: the original loads field_0x333 above the prologue's r31 save (a const this, which the
@@ -393,15 +402,6 @@ s32 EscortBase_8049E0C8::vfunc_0x78() {
         }
     }
     return 1;
-}
-
-void EscortBase_8049E0C8::vfunc_0x7C() {
-    if (lbl_8053AAF8->fn_80138A30() == 1) {
-        field_0x360 = 1;
-    } else {
-        field_0x360 = 4;
-    }
-    mLife = field_0x360 * 4;
 }
 
 s32 EscortBase_8049E0C8::vfunc_0x6C(s32 state) {
