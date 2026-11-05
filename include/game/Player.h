@@ -193,7 +193,7 @@ public:
     s8 fn_8024EE0C(); // via fn_8023CB24
     s8 fn_8024EE14(); // via fn_8023CA88
     u16 fn_8024EE1C(); // via fn_8023CBC0
-    void fn_8024EFA0(s32 arg); // called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
+    bool fn_8024EFA0(s32 arg); // via fn_80230E1C; called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
     void fn_8024EFF8(s32 arg); // via fn_80230EB8
     void fn_8024F0E8(s32 value); // via fn_80230FD0
     bool fn_8024F5E4(); // via fn_8023E854
@@ -442,6 +442,33 @@ public:
     // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
     /* 0x124D */ u8 field_0x124d;
     /* 0x124E */ u8 field_0x124e[0x13BC - 0x124E];
+    void fn_80241B44(JGeometry::TVec2f* out); // via fn_8022B8EC
+    s32 fn_80246904(u32 arg); // via fn_8022C46C
+    bool fn_8028FC2C(); // via fn_8022DC3C
+    void fn_8024B298(s32 index, JGeometry::TVec3f* out); // via fn_8022E088
+    void fn_8024B2BC(JGeometry::TVec3f* out); // via fn_8022E114
+    bool fn_8025AA24(s32 arg); // via fn_8022E1A0
+    bool fn_8024C5A0(s32 arg); // via fn_8022FC54
+    bool fn_8025FDD0(const JGeometry::TVec3f* pos); // via fn_80230D80
+    bool fn_8025FEDC(); // via fn_8023105C
+    bool fn_8025FF70(); // via fn_802310F8
+    bool fn_8026000C(); // via fn_80231194
+    bool fn_802600A0(s32 arg); // via fn_802312CC
+    bool fn_802426E0(s32 serial); // via fn_80231590
+    void fn_80270318(s32 value); // via fn_802359A4
+    void fn_8024E694(s32 value, s32 arg); // via fn_80236074
+    void fn_8024ECCC(s32 value); // via fn_8023619C
+    void fn_8024ED4C(s32 value); // via fn_802362C4
+    bool fn_80247594(s32 arg); // via fn_80237488
+    bool fn_80271038(const JGeometry::TVec2f* pos); // via fn_802378AC
+    bool fn_80271068(const JGeometry::TVec2f* pos); // via fn_80237948
+    bool fn_80256DCC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A97C
+    bool fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AAF8
+    bool fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023B848
+    void fn_80252BD0(const JGeometry::TVec3f* offset); // via fn_8023DEDC
+    s32 fn_8025F534(); // via fn_8023EC54
+    s32 fn_8025F55C(); // via fn_8023ECF0
+    s32 fn_80240628(); // via fn_8022F340
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
@@ -588,7 +615,7 @@ bool fn_8023162C(s32 player, s32 arg); // -> fn_80242704; else false
 // Owner: tu_8022AD64's area (0x80231590, not written yet). 0x80231590 is
 // unmangled, so it is C linkage. act_cannon's update calls it with
 // (player, serial).
-extern "C" void fn_80231590(s32 player, s32 serial);
+bool fn_80231590(s32 player, s32 serial);
 void fn_80234810(); // -> fn_80248DAC on every active player
 void fn_802348C4(s32 player, s32 a, const JGeometry::TVec3f* b); // -> fn_802408C8
 
@@ -609,9 +636,6 @@ void fn_802397B4(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // Owner unit tu_8022AD64 (0x80236074, 0x8C bytes). act_terrorpin's vfunc_0x68
 // calls it once per bit of a hit mask with (player, 0x64, 0). Not known yet
 // what the arguments mean.
-extern "C" {
-void fn_80236074(s32 player, s32 value, s32 arg);
-}
 
 // Owner unit tu_8022AD64. 5 units (act_armos, act_colour_block,
 // act_somaria_block, act_gravestone, ...). Index (0-3) of the first present
@@ -823,7 +847,7 @@ extern "C" void fn_80236554(s32 player, s32 arg, s32 flag);
 extern "C" void fn_8023B768(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos);
 // Not written yet (0x8022E088, its own unit): the point of player `player`'s
 // sample `index` (x, y, z) that act_cloud's fn_801053E8 tests against a box.
-extern "C" void fn_8022E088(s32 player, s32 index, JGeometry::TVec3f* out);
+void fn_8022E088(s32 player, s32 index, JGeometry::TVec3f* out);
 void fn_80237524(s32 player, s32 arg);
 
 // Box test: `box` on `layer`; `flag` (bool: fn_802730D8 tests r6 with clrlwi 24) and f1 = 0.0f
@@ -890,11 +914,9 @@ extern "C" {
 void fn_8022E2D8(s32 index);
 // Owner: tu_8022AD64 (0x80230E1C, defined there). 1 unit (act_four_switch_monitor's
 // update: fn_80230E1C(player, 0) for each player whose bit is set in field_0x82).
-void fn_80230E1C(s32 player, s32 flag);
 // Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards
 // (player object, out) to the player's fn_8024B2BC when the player is present;
 // *out (3 floats, read as a position) is written by it.
-void fn_8022E114(s32 player, JGeometry::TVec3f* out);
 // Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
 // rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
 // through fn_8024145C; takes a player index (act_rock passes field_0xc8).
@@ -923,7 +945,6 @@ bool fn_8023061C(s32 player, bool flag);
 bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b);
 // Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
 // player index to a window index (-1 without a manager; see Message.h).
-s32 fn_8022F340(s32 player);
 // Owner: tu_8022AD64 (0x80231A50, defined there). tu_80441318. No arguments
 // (r3 is not loaded); returns a player index, or a negative value for none
 // (the caller maps a non-negative one through fn_8022F340).
@@ -931,7 +952,6 @@ s32 fn_80231A50();
 // Owner: tu_8022AD64 (0x802362C4, defined there). act_gambling_chest (also
 // act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
 // object, value) when the player exists and its byte 0xCAC is set.
-void fn_802362C4(s32 player, s32 value);
 // game/tu_8022AD64.cpp (not written yet; plain C symbols). fn_802372F8:
 // act_shop_item's update() calls it after paying for kinds 4-7, with 9, 4, 3
 // or 6 as the second argument by kind and 1 as the third (types guessed from
@@ -943,7 +963,6 @@ void fn_802382D0(s32 a, s32 b);
 // Owner: tu_8022AD64 (0x80237948, defined there). 6 units (act_eyegore, act_blade_trap, ...).
 // Tests the player object's byte 0xCAC for player index `player` (0-3) and returns
 // fn_80271068(object) when it is set; the TVec2f pointer the callers pass is not read.
-bool fn_80237948(s32 player, const JGeometry::TVec2f* pos);
 }
 bool fn_80230224(s32 player, bool flag);
 // 1 unit (tu_8021827C). Loop over the four players: fn_8022BA58 calls
@@ -1009,7 +1028,6 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial);
 // Owner unit not written yet (C linkage, 0x802378AC, 1 unit: act_bumper).
 // Called with a player index and a box centre after fn_80134DE4; the result
 // is not used.
-extern "C" void fn_802378AC(s32 player, const JGeometry::TVec2f* pos);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_pull_switch). Index (0-3)
 // of the first present player whose box test (fn_802728AC(player, box, layer,
@@ -1056,5 +1074,31 @@ s32 fn_8023AA18(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out)
 s32 fn_8023AC74(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 s32 fn_8023AD54(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 }
+void fn_8022B8EC(s32 player, JGeometry::TVec2f* out);
+s32 fn_8022C46C(s32 player, u32 arg);
+bool fn_8022DC3C(s32 player);
+bool fn_8022E1A0(s32 player, s32 arg);
+bool fn_8022FC54(s32 player, s32 arg);
+bool fn_80230D80(s32 player, const JGeometry::TVec3f* pos);
+bool fn_8023105C(s32 player);
+bool fn_802310F8(s32 player);
+bool fn_80231194(s32 player);
+bool fn_802312CC(s32 player, s32 arg);
+void fn_802359A4(s32 player, s32 value);
+void fn_8023619C(s32 player, s32 value);
+bool fn_80237488(s32 player, s32 arg);
+bool fn_8023A97C(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+bool fn_8023AAF8(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+bool fn_8023B848(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+void fn_8023DEDC(s32 player, const JGeometry::TVec3f* offset);
+s32 fn_8023EC54(s32 player);
+s32 fn_8023ECF0(s32 player);
+bool fn_80237948(s32 player, const JGeometry::TVec2f* pos);
+void fn_8022E114(s32 player, JGeometry::TVec3f* out);
+s32 fn_8022F340(s32 player);
+bool fn_80230E1C(s32 player, s32 flag);
+void fn_80236074(s32 player, s32 value, s32 arg);
+void fn_802362C4(s32 player, s32 value);
+bool fn_802378AC(s32 player, const JGeometry::TVec2f* pos);
 
 #endif
