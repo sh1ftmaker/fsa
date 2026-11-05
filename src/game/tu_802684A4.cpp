@@ -2,6 +2,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameState.h"
 #include "game/cls_804A71A8.h"
 #include "game/Map.h"
 #include "game/ViewLayer.h"
@@ -9,6 +10,13 @@
 // One step of 16 along each facing (0: +x, 1: -x, 2: +y, 3: -y).
 static const Vec lbl_8046B998[4] = {
     {16.0f, 0.0f, 0.0f}, {-16.0f, 0.0f, 0.0f}, {0.0f, 16.0f, 0.0f}, {0.0f, -16.0f, 0.0f},
+};
+
+// The scan step of fn_8026E68C for ledge tiles 0x10-0x17: 8 units toward
+// -y, +y, -x, +x, then the diagonals.
+static const f32 lbl_8046B9C8[8][2] = {
+    {0.0f, -8.0f}, {0.0f, 8.0f}, {-8.0f, 0.0f}, {8.0f, 0.0f},
+    {-8.0f, -8.0f}, {8.0f, -8.0f}, {-8.0f, 8.0f}, {8.0f, 8.0f},
 };
 
 // Four (x, y) corner offsets of +-4.
@@ -401,51 +409,191 @@ static inline bool canPush(cls_804A71A8* p) {
     return false;
 }
 
-// The body of fn_8026F000 / fn_8026F1C4 / fn_8026F388 / fn_8026F54C for
-// their facing.
-// FIXME (all four, 88.25): canPush's step vector is built and added with
-// its x, y, z loaded in reverse and the z half added first (the original
-// loads x, y, z in order, then adds both halves); the spawn reads the
-// owner's facing after fn_801F856C (the original keeps the owner and the
-// facing in r29 / r30 across it).
-static inline void pushBlock(cls_804A71A8* p, s32 facing) {
-    if (p->field_0x4->field_0x3dc == facing) {
-        p->field_0xac = 1;
-        if (canPush(p)) {
-            JGeometry::TVec3f pos = p->field_0x8;
-            pos.z = 0.0f;
-            Player_804A6F38* owner = p->field_0x4;
-            s32 dir = owner->field_0x3dc;
-            s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
-            if (fn_8022461C(&pos, p->field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
-                p->field_0x4->field_0xd94 = serial;
+static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec2f& p) {
+    return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
+}
+
+// FIXME: 99.97. Code identical; the literals 16.0f (lbl_80540280) and the
+// int-to-float constant (lbl_80540270) stay @NNN until the unit's literal
+// pool is complete (fn_80269574 and fn_8026C350 come first).
+void cls_804A71A8::fn_8026E68C(u16 tile) {
+    fn_802381B8(field_0x4->field_0x4);
+    if (field_0x4->fn_80241230()) {
+        field_0x38[field_0x1c] = 1;
+    } else if (field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) {
+        field_0x38[field_0x1c] = 1;
+    } else if (!field_0x4->fn_80240670() &&
+               (fn_8026EB1C(tile) || field_0x4->fn_8024F5E4() || field_0x4->fn_80240F28() ||
+                (lbl_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 2 && lbl_80529DEC.field_0x11c == 1)))
+    {
+        JGeometry::TVec2f pos;
+        pos.x = field_0x8.x;
+        pos.y = field_0x8.y;
+        if (tile == 0x12 || tile == 0x13) {
+            pos.y += 16.0f;
+        }
+        bool found = false;
+        do {
+            pos.x += lbl_8046B9C8[tile - 0x10][0];
+            pos.y += lbl_8046B9C8[tile - 0x10][1];
+            if (!contains(*layerBox(field_0x4->field_0x3b4), pos)) {
+                break;
             }
-        } else {
-            p->field_0x38[p->field_0x1c] = 1;
+            u16 under = probeTile(pos, field_0x4->field_0x3b4);
+            if (under == 0 || under == 3 || under == 0xD || under == 0x39 || under == 0x3A) {
+                found = true;
+            }
+        } while (!found);
+        if (!found) {
+            // Tiles 0x12 / 0x13 scan again from the probe itself.
+            if (tile == 0x12 || tile == 0x13) {
+                pos.x = field_0x8.x;
+                pos.y = field_0x8.y;
+                do {
+                    pos.x += lbl_8046B9C8[tile - 0x10][0];
+                    pos.y += lbl_8046B9C8[tile - 0x10][1];
+                    if (!contains(*layerBox(field_0x4->field_0x3b4), pos)) {
+                        return;
+                    }
+                    u16 under = probeTile(pos, field_0x4->field_0x3b4);
+                    if (under == 0 || under == 3 || under == 0xD || under == 0x39 || under == 0x3A) {
+                        found = true;
+                    }
+                } while (!found);
+            } else {
+                return;
+            }
+        }
+        // The centre of the 16-unit cell.
+        pos.x = ((s32)pos.x & 0xFFFFFFF0) + 8.0f;
+        pos.y = ((s32)pos.y & 0xFFFFFFF0) + 8.0f;
+        if (fn_80226998((const JGeometry::TVec3f*)&pos, field_0x4->field_0x3b4) == 0x17E) {
+            pos.x += 8.0f;
+        } else if (fn_80226998((const JGeometry::TVec3f*)&pos, field_0x4->field_0x3b4) == 0x17F) {
+            pos.x -= 8.0f;
+        }
+        if (field_0x4->fn_8026E5F8(&pos) && tile == 0x11) {
+            field_0x4->field_0x441 = true;
         }
     } else {
-        p->field_0x38[p->field_0x1c] = 1;
+        field_0x38[field_0x1c] = 1;
     }
 }
 
-// FIXME: 88.25. See pushBlock.
+// Whether the tile allows a push toward the owner's facing.
+u8 cls_804A71A8::fn_8026EB1C(u16 tile) {
+    if (!field_0x4->fn_80250D30()) {
+        return false;
+    }
+    switch (tile) {
+    case 0x10:
+        return field_0x4->field_0x3dc == 3;
+    case 0x11:
+        return field_0x4->field_0x3dc == 2;
+    case 0x12:
+        return field_0x4->field_0x3dc == 1;
+    case 0x13:
+        return field_0x4->field_0x3dc == 0;
+    case 0x14:
+        if (field_0x4->field_0x3dc == 3) {
+            return true;
+        }
+        return field_0x4->field_0x3dc == 1;
+    case 0x15:
+        if (field_0x4->field_0x3dc == 3) {
+            return true;
+        }
+        return field_0x4->field_0x3dc == 0;
+    case 0x16:
+        if (field_0x4->field_0x3dc == 2) {
+            return true;
+        }
+        return field_0x4->field_0x3dc == 1;
+    case 0x17:
+        if (field_0x4->field_0x3dc == 2) {
+            return true;
+        }
+        return field_0x4->field_0x3dc == 0;
+    }
+    return false;
+}
+
+// FIXME: 86.81. As fn_8026EE60; the spawn also reads `player + 1` after
+// fn_801F856C like the original, but the owner and facing are reloaded.
+void cls_804A71A8::fn_8026EC88(s32 player) {
+    field_0xac = 1;
+    if (player != field_0x4->fn_80240868()) {
+        field_0x38[field_0x1c] = 1;
+    } else if (canPush(this)) {
+        JGeometry::TVec3f pos = field_0x8;
+        pos.z = 0.0f;
+        Player_804A6F38* owner = field_0x4;
+        s32 dir = owner->field_0x3dc;
+        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos,
+                                                ((player + 1) & 7) << 4 | (dir & 3) << 2, -1, -1);
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
+            field_0x4->field_0xd94 = serial;
+        }
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
+}
+
+// FIXME: 86.41. canPush's step vector is added with its x, y, z loaded in
+// reverse and its z half first (the original copies x, y, z in order to the
+// stack, then adds both halves); the spawn reads the owner's facing after
+// fn_801F856C (the original keeps the owner and the facing in r29 / r30
+// across it).
+void cls_804A71A8::fn_8026EE60() {
+    field_0xac = 1;
+    if (canPush(this)) {
+        JGeometry::TVec3f pos = field_0x8;
+        pos.z = 0.0f;
+        Player_804A6F38* owner = field_0x4;
+        s32 dir = owner->field_0x3dc;
+        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
+            field_0x4->field_0xd94 = serial;
+        }
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
+}
+
+// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F000() {
-    pushBlock(this, 1);
+    if (field_0x4->field_0x3dc == 1) {
+        fn_8026EE60();
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
 }
 
-// FIXME: 88.25. See pushBlock.
+// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F1C4() {
-    pushBlock(this, 0);
+    if (field_0x4->field_0x3dc == 0) {
+        fn_8026EE60();
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
 }
 
-// FIXME: 88.25. See pushBlock.
+// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F388() {
-    pushBlock(this, 2);
+    if (field_0x4->field_0x3dc == 2) {
+        fn_8026EE60();
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
 }
 
-// FIXME: 88.25. See pushBlock.
+// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F54C() {
-    pushBlock(this, 3);
+    if (field_0x4->field_0x3dc == 3) {
+        fn_8026EE60();
+    } else {
+        field_0x38[field_0x1c] = 1;
+    }
 }
 
 void cls_804A71A8::fn_8026F710() {

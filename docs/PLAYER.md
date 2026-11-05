@@ -370,3 +370,49 @@ fn_80285F44 (landing): picks the landing sound by the tile under the player
 (fn_8024F0E8 0x2001F/0x20054-0x20065) and splash/dust emitters 0x3CF/0x3D0,
 0x4F3-0x4FA plus a 'PEFF' actor, with a 4-frame cooldown in 0x448; then
 the step sound (0x2001C/0x2001E) while moving on the ground.
+
+## cls_804A71A8 (agent D, 2026-11-05)
+
+The Player's helper at Player+0xBF0 (0xC0 bytes, tu_802684A4) is the
+player's **wall / tile probe**. Proven from fn_8026F710, fn_80268BC4 and
+fn_8026E464 (include/game/cls_804A71A8.h has the layout):
+
+- 0x8 TVec3f probe point, 0x1C s32 probe direction (0-7), 0x14 / 0x18 the
+  owner's mPos x / y movement over fn_80268BC4.
+- 0x20-0x8F: fourteen `u8[8]` per-direction flag arrays, indexed by the
+  probe direction (stbx at field_0x1c + base). The directions are
+  lbl_8046BAE8: +x, -x, +y, -y (6.999 out), then the diagonals (+-5, +-5).
+  0x28 = probe inside one of the owner's 0x5FC boxes, 0x38 = blocked /
+  outside the view box, 0x40 = last frame's 0x48. The owner's fn_802517F8 /
+  fn_802518AC / fn_8025190C read field_0x48[0..7].
+- 0x98 / 0x99 u8 (fn_80269420 sets 0x98; fn_80268BC4 moves it to 0x99),
+  0x9A u8 "probe again" (fn_80268BC4 repeats its pass while it is 1, at most
+  100 times), 0xA0 / 0xA4 s32 push / idle frame counters (fn_8026E1E0),
+  0xAC, 0xB0 (pass counter), 0xBC s32; 0xB4-0xBA u8 (0xB4 -> 0xB5 each frame).
+  0x90-0x97 and 0x9B-0x9F are still unknown.
+- **fn_80268BC4** (per frame, from the owner's fn_802685D4): fn_8026E464
+  (start-of-frame reset, inlined: it also sets the owner's field_0xef0[0x50]
+  to -1); unless fn_80240B84 / fn_8025F448, passes of: clear the flags,
+  probe the 8 directions (inside an owner box -> 0x28; else in view or
+  fn_8026FC20 > 0 or fn_802DCD0C -> fn_8026C350(tile); else 0x38), with a
+  second probe on another player's layer (fn_8023DE58(owner->0xD70)) when
+  the owner is on layer 8 and fn_8025F590 holds (fn_8026B81C on a miss);
+  then fn_80269574, and fn_8026E1E0 after the first pass. Then 0xC90 = (1,
+  1, 1) unless 0x98 / 0x99.
+- Player::**fn_802684A4**(pos, layer) (100 %) is the box test (0x50 boxes
+  at 0x5FC with id 0xDB0 >= 0 and layer 0x1030; copies 0xDB0[i] to
+  0xEF0[i]); fn_80268BC4 has it inlined twice.
+- fn_8026C350's tile handlers: **fn_8026E68C** (ledge tiles 0x10-0x17, the
+  jump target scan in steps of lbl_8046B9C8, then the owner's fn_8026E5F8
+  inlined), **fn_8026EB1C** (which facings a ledge tile accepts),
+  **fn_8026EE60** (push a block: spawns 'BLCK' 16 units ahead check,
+  serial into the owner's 0xD94), **fn_8026EC88** (the same for player
+  blocks, tile 0x31 + player), **fn_8026F000 / F1C4 / F388 / F54C**
+  (fn_8026EE60 for one facing: 1 / 0 / 2 / 3).
+- Status: 13 / 25 at 100 %; fn_80268BC4 99.13 % (4 dead stack stores),
+  fn_8026E68C 99.97 % (literal names only), fn_8026EE60 / EC88 / F000 family
+  86-90 % (step-vector add order; owner/facing kept across fn_801F856C).
+  Unwritten: fn_80269574 (0x22A8, a state machine on 0xBC that walks the
+  direction arrays, searches 'WARP'-range actors and requests states),
+  fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with jump table
+  0x804A7338 / 0x804A71B4).

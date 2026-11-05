@@ -43,13 +43,30 @@ public:
     // 0x8026E464: the start-of-frame reset (inlined in fn_80268BC4 and
     // fn_8026F710); the owner's fn_80261750 (tu_8025EB18) calls it.
     void fn_8026E464();
-    // 0x8026F000 / 0x8026F1C4 / 0x8026F388 / 0x8026F54C: called by
-    // fn_8026C350 for a probe that hits a pushable tile, one per facing (1,
-    // 0, 2, 3). Facing that way, pushing (fn_80250D30) toward the probe
-    // with fn_8024FF84() < 0 and a free tile (0, 2 or 0x50) 16 units ahead,
-    // they spawn a 'BLCK' actor at the probe and keep its serial in the
-    // owner's field_0xd94 (unless the probe's tile is 0x50); otherwise the
-    // direction is marked in field_0x38.
+    // 0x8026E68C (fn_8026C350, tiles 0x10-0x17): a one-way ledge. When
+    // the owner may take it (fn_8026EB1C, or the other cases below), scans
+    // from the probe in steps of lbl_8046B9C8[tile - 0x10] for a landing
+    // tile (0, 3, 0xD, 0x39, 0x3A) inside the view and hands its 16-unit
+    // cell centre to the owner's fn_8026E5F8 (the jump; inlined); tile 0x11
+    // then sets the owner's field_0x441. Otherwise the direction is marked
+    // in field_0x38.
+    void fn_8026E68C(u16 tile);
+    // 0x8026EB1C (called by fn_8026E68C): whether the owner pushes
+    // (fn_80250D30) with a facing that tile 0x10-0x17 accepts (0x10-0x13
+    // one facing each, 0x14-0x17 two).
+    u8 fn_8026EB1C(u16 tile); // extrwi 8: a u8
+    // 0x8026EC88 (fn_8026C350, tiles 0x31 + player): fn_8026EE60 for the
+    // block of player `player` only (the owner's fn_80240868), its id + 1
+    // going into bits 4-6 of the 'BLCK' actor's field_0x90.
+    void fn_8026EC88(s32 player);
+    // 0x8026EE60 (fn_8026C350, a pushable tile): pushing (fn_80250D30)
+    // toward the probe with fn_8024FF84() < 0 and a free tile (0, 2 or
+    // 0x50) 16 units ahead spawns a 'BLCK' actor at the probe and keeps its
+    // serial in the owner's field_0xd94 (unless the probe's tile is 0x50);
+    // otherwise the direction is marked in field_0x38.
+    void fn_8026EE60();
+    // 0x8026F000 / 0x8026F1C4 / 0x8026F388 / 0x8026F54C: fn_8026EE60 for a
+    // tile that only moves toward facing 1 / 0 / 2 / 3.
     void fn_8026F000();
     void fn_8026F1C4();
     void fn_8026F388();
