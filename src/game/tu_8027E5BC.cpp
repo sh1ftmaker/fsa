@@ -5,12 +5,31 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
+#include "game/cls_804A71A8.h"
+#include "game/EmitterDelete.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_cannon.h"
 
 // PSVECMag on a const vector; the original's operator- temporary is passed by reference.
 static inline f32 magnitude(const JGeometry::TVec3f& v) {
     return PSVECMag(&v);
+}
+
+// Componentwise TUtil::epsilonEquals of two vectors.
+static inline bool epsilonEqualsXY(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b, f32 eps) {
+    bool equal = false;
+    if (JGeometry::TUtilf::epsilonEquals(a.x, b.x, eps) && JGeometry::TUtilf::epsilonEquals(a.y, b.y, eps)) {
+        equal = true;
+    }
+    return equal;
+}
+
+static inline bool epsilonEquals(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b, f32 eps) {
+    bool equal = false;
+    if (epsilonEqualsXY(a, b, eps) && JGeometry::TUtilf::epsilonEquals(a.z, b.z, eps)) {
+        equal = true;
+    }
+    return equal;
 }
 
 void Player_804A6F38::fn_8027E5BC(f32 speed) {
@@ -141,9 +160,150 @@ void Player_804A6F38::fn_8027EE84() {
     field_0x3f9 = field_0x3f8 / 2;
 }
 
+// FIXME: 99.31. regalloc only: in the epsilon compare the original loads __float_epsilon into f0 before the
+// 32.0f constant (f2) and keeps the difference in f0 / -epsilon in f3; ours uses f1-f4. In the 0.0f test the
+// fcmpu operands are swapped (f1, f0 in the original).
+void Player_804A6F38::fn_8027EEB4() {
+    if ((!fn_80240808() || !fn_80234ECC(fn_80240644())) && fn_80250D30()) {
+        fn_80251AEC(13);
+    } else if (field_0x1240 != 3 && field_0xbf0->field_0xb7 != 0 && field_0x368.isZero() &&
+               field_0xbf0->field_0xa0 == 0) {
+        fn_80251AEC(0);
+        field_0x3f8 = 0;
+    } else if (field_0xbf0->field_0xb7 != 0 && fn_8022C6AC(field_0x4) == 0.0f && field_0xbf0->field_0xa0 == 0) {
+        field_0x3f8 = 0;
+    } else if (field_0xbf0->field_0xb7 == 0 &&
+               epsilonEquals(mPos, field_0x14, JGeometry::TUtilf::epsilon()) &&
+               field_0xbf0->field_0xa0 == 0 && !field_0x434) {
+        fn_80251AEC(0);
+        field_0x3f8 = 0;
+    } else {
+        if (field_0xbf0->field_0xb7 != 0) {
+            if (field_0x3f8 % 3 == 0) {
+                field_0x3f8 += 2;
+            } else {
+                field_0x3f8 += 1;
+            }
+        } else {
+            field_0x3f8++;
+        }
+        if (field_0x3f8 >= 24) {
+            field_0x3f8 = 0;
+        }
+    }
+    field_0x3f9 = field_0x3f8 / 3;
+}
+
 void Player_804A6F38::fn_8027F16C() {
     if (!fn_80240808() && !fn_80245FEC() && field_0x1201 != 1) {
         fn_802416FC(0x180);
+    }
+}
+
+void Player_804A6F38::fn_8027F1C8() {
+    if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+        return;
+    }
+    if (fn_802413E8()) {
+        return;
+    }
+    if (!fn_802341D0(field_0x4) || fn_8024BBB0()) {
+        deleteEmitter(&field_0x1388);
+        return;
+    }
+    JGeometry::TVec3f pos;
+    pos.set(mPos);
+    pos.z = 0.0f;
+    switch (fn_802486A0()) {
+    case 0:
+        pos.x += 8.0f * (fn_802487FC() - 1);
+        break;
+    case 1:
+        pos.y += 8.0f * (fn_802487FC() - 1);
+        break;
+    case 2:
+        pos.x += 8.0f;
+        pos.y += 8.0f;
+        break;
+    case 3:
+        if (fn_80241284()) {
+            pos.set(field_0x11b4);
+        } else {
+            switch (field_0x4) {
+            case 0:
+                pos.y += 16.0f;
+                break;
+            case 1:
+                pos.x += 16.0f;
+                break;
+            case 2:
+                pos.x -= 16.0f;
+                break;
+            case 3:
+                pos.y -= 16.0f;
+                break;
+            }
+        }
+        break;
+    }
+    if (!field_0x121d) {
+        if (!lbl_8053AAF8->field_0x7e) {
+            if (field_0x1388 != NULL) {
+                fn_8013CB44(field_0x1388, &pos, 0, -1, true);
+            } else {
+                switch (fn_802486A0()) {
+                case 0:
+                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
+                    break;
+                case 1:
+                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
+                    break;
+                case 2:
+                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
+                    break;
+                case 3:
+                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
+                    break;
+                }
+            }
+        } else {
+            deleteEmitter(&field_0x1388);
+        }
+        return;
+    }
+    deleteEmitter(&field_0x1388);
+    switch (fn_802486A0()) {
+    case 0:
+        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1ba, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1bb, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 1:
+        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b8, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b9, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 2:
+        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b5, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b6, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b7, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 3:
+        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b2, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b3, 0, -1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &pos, 0x1b4, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(field_0x4, i)) {
+            fn_8022B860(i, 5);
+        }
+    }
+    field_0x121d = 0;
+    if (fn_802486A0() != 5 && fn_802486A0() != 4) {
+        fn_8024EFF8(0x37);
     }
 }
 

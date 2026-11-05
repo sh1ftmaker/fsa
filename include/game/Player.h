@@ -355,6 +355,9 @@ public:
     void fn_8027E7E0();
     void fn_8027E5BC(f32 speed);
     void fn_8027EDDC();
+    void fn_8027EEB4(); // steps the walk-animation counter field_0x3f8 (frame field_0x3f9)
+    void fn_8027F1C8(); // places or spawns the effect in field_0x1388 (ids 0x35E-0x361)
+    s32 fn_802487FC(); // tu_8023FBF0 (0x802487FC); a count of players (r3 only)
     void fn_80283848();
     void fn_8028434C();
     void fn_8024E344();
@@ -737,7 +740,9 @@ public:
     /* 0x117C */ s32 field_0x117c[8]; // zeroed by fn_8027023C
     /* 0x119C */ u8 field_0x119c[4][4]; // zeroed by fn_8027023C
     /* 0x11AC */ s32 field_0x11ac;
-    /* 0x11B0 */ u8 field_0x11b0[0x11C0 - 0x11B0];
+    /* 0x11B0 */ u8 field_0x11b0[0x11B4 - 0x11B0];
+    // Copied as the effect position by fn_8027F1C8 when fn_80241284 is true.
+    /* 0x11B4 */ JGeometry::TVec3f field_0x11b4;
     /* 0x11C0 */ s16 field_0x11c0;
     /* 0x11C2 */ u8 field_0x11c2[0x11CC - 0x11C2];
     /* 0x11CC */ s32 field_0x11cc;
@@ -816,7 +821,10 @@ public:
     /* 0x1378 */ JPABaseEmitter* field_0x1378;
     /* 0x137C */ JPABaseEmitter* field_0x137c;
     /* 0x1380 */ JPABaseEmitter* field_0x1380;
-    /* 0x1384 */ u8 field_0x1384[0x13BC - 0x1384];
+    /* 0x1384 */ u8 field_0x1384[0x1388 - 0x1384];
+    // fn_8027F1C8's effect (ids 0x35E-0x361), moved with fn_8013CB44.
+    /* 0x1388 */ JPABaseEmitter* field_0x1388;
+    /* 0x138C */ u8 field_0x138c[0x13BC - 0x138C];
     void fn_80241B44(JGeometry::TVec2f* out); // via fn_8022B8EC
     s32 fn_80246904(u32 arg); // via fn_8022C46C
     bool fn_8028FC2C(); // via fn_8022DC3C
@@ -982,6 +990,7 @@ bool fn_8023F264(s32 player);
 // "->": the player's getter (tu_8023FBF0 unless said) or field it returns.
 bool fn_8022B7C4(s32 player);            // 7 units. -> fn_8023FC08 (byte 0x42C); else false
 void fn_8022B860(s32 player, s32 value); // 1 unit. -> fn_8023FC10(value)
+f32 fn_8022C6AC(s32 player);             // -> fn_80246F28; else lbl_80540008
 s32 fn_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
 JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
 
@@ -1109,6 +1118,7 @@ bool fn_80233EDC(s32 player); // -> fn_80240B84; else false
 void fn_80233F78(s32 player); // -> fn_80240878
 s32 fn_80234004(s32 player); // -> fn_80240888; else 0
 bool fn_80234134(s32 player);            // 2 units. -> fn_80240870 (byte 0xCFE); else false
+bool fn_802341D0(s32 player);            // 0x17C bytes: loops over the players (true / false)
 bool fn_80234950(s32 player); // -> fn_80240AD4; else false
 bool fn_802349EC(s32 player);            // 4 units. -> fn_80240AF0 (byte 0x1215); else false
 bool fn_80234A88(s32 player);            // 1 unit. -> fn_80240AF8 (byte 0x1214); else false
