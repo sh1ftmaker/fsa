@@ -2376,6 +2376,62 @@ void Player_804A6F38::fn_8027B5F0() {
     deleteEmitter(&field_0x12bc);
 }
 
+// Enter of state 0x09 (fn_80275D9C requests it): 0xBF4 by the reason 0x11AC, three sounds,
+// the input history cleared, 0x11B4 = mPos moved by player index (to its own side), the
+// emitter 0x26A.
+void Player_804A6F38::fn_8027BA2C() {
+    switch (field_0x11ac) {
+    case 1:
+        field_0xbf4 = 8;
+        break;
+    case 2:
+        field_0xbf4 = 6;
+        break;
+    case 3:
+        field_0xbf4 = 4;
+        break;
+    case 4:
+        field_0xbf4 = 8;
+        break;
+    default:
+        field_0xbf4 = 4;
+        break;
+    }
+    field_0x458 = 1;
+    fn_8027EB04();
+    fn_8024F0E8(0x10001);
+    fn_8024F0E8(0x20001);
+    fn_8024F0E8(0x2000e);
+    fn_8027023C();
+    field_0x11b4 = mPos;
+    switch (field_0x4) {
+    case 0:
+        if (viewLayerFlag(field_0x3b4)) {
+            field_0x11b4.y -= 4.0f;
+        } else {
+            field_0x11b4.y += 16.0f;
+        }
+        break;
+    case 1:
+        field_0x11b4.x += 16.0f;
+        break;
+    case 2:
+        field_0x11b4.x -= 16.0f;
+        break;
+    case 3:
+        if (viewLayerFlag(field_0x3b4)) {
+            field_0x11b4.y += 4.0f;
+        } else {
+            field_0x11b4.y -= 16.0f;
+        }
+        break;
+    }
+    field_0x11c0 = 0;
+    if (field_0x12bc == NULL) {
+        field_0x12bc = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26a, 0, 1, NULL, NULL, true, 1.0f);
+    }
+}
+
 // Exit of state 0x08 (from the state switch in fn_802870C8): stops its emitters and the
 // 'PEFF' actor 0x12C0; with 0xCAE it calls fn_802356B8 for the rest of the group.
 void Player_804A6F38::fn_8027BC90() {
