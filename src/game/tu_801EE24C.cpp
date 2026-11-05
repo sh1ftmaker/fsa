@@ -383,7 +383,9 @@ u8 ActorBase_804A5770::fn_801F2B7C(s32 damage, s32 skipPlayer, s32 arg) {
 // (field_0x164 = 1). Returns whether it was hit.
 // FIXME: 99.4. The 32.0f and 1.0f literals (lbl_8053F748, lbl_8053F774)
 // pair only once .sdata2 is in order; and the target narrows the bool
-// result at the return (clrlwi r3, r28, 24), as fn_801F2618 (see there).
+// result at the return (clrlwi r3, r28, 24; ours mr). A u8 return type gives
+// that, but drops ~20 callers that use the result as a bool (EnemyBase
+// vfunc_0x5C/0x60/0x64, Thief, update() of several enemies), so it stays bool.
 bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
     bool hit = false;
     s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
@@ -454,7 +456,8 @@ bool ActorBase_804A5770::fn_801F2FAC() {
 // actor (fn_801F2DB4 with no filter).
 // FIXME: 97.9. One extra instruction: the target narrows the inlined
 // fn_801F2FAC's result straight into r3 (clrlwi. r3, r29, 24); ours narrows
-// it into r0 and copies it.
+// it into r0 and copies it. Follows from fn_801F2FAC staying bool (see there:
+// u8 gives the narrowing but drops ~20 bool-using callers).
 bool ActorBase_804A5770::fn_801F305C() {
     bool hit = fn_801F2FAC();
     if (!hit) {
