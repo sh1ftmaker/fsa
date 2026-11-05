@@ -238,7 +238,13 @@ public:
     // 0x802F6CF4: the third sprite kind of the queues (cls_8030029C::field_0x18),
     // called like fn_802F745C (pos, the resource, &params).
     void fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
+    // 0x802F8F0C: the GX state of a sprite quad drawn with params (or the
+    // defaults for NULL); `this` is unused.
+    void fn_802F8F0C(SpriteParams_801F5AE0* params);
     void fn_802FC80C(); // 0x802FC80C, called by fn_802FF3F0
+    // 0x802FC268: draws the tile grid `grid` of `layer` (converted to a float
+    // offset) at origin (PSMTXTrans, then the 16 palettes of field_0x18).
+    void fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u16* grid);
     void fn_802FCE74(); // 0x802FCE74, called by fn_802FF568 in the game modes of isGameModeSet()
     void fn_802FDDD4(); // 0x802FDDD4, called by fn_802FF568 and fn_802FF798
     void fn_802FEE68(); // 0x802FEE68, called by fn_802FF2D8

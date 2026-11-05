@@ -20,6 +20,15 @@ static const GXTlut lbl_8046F940[16] = {
     GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
 };
 
+// The TEV register colours of the sprite and tile GX setups (the user of each
+// in the comment). File-scope objects: they come before the unit's literal
+// pool in .sdata2 (a function's own constants are pooled in first-use order,
+// after the floats of fn_802F5040), and the two white ones are separate.
+static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
+static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0
+static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
+static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
+
 // The scale of a sprite at height z (fn_802F5FF4; fn_802F5040 inlines it).
 static inline f32 getScale(f32 z) {
     f32 h;
@@ -285,6 +294,141 @@ void cls_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGe
     }
 }
 
+// The GX state of a textured sprite quad (direct f32 position and texture
+// coordinates, one TEV stage of the texture times the register colours): the
+// TEV colours, blend mode, z mode and alpha update of params, else white /
+// zero, the plain blend and the default z mode. fn_802F86CC calls it after
+// fn_802F91AC.
+void cls_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_REG, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
+    GXSetNumChans(1);
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetNumTexGens(1);
+    if (params != NULL) {
+        GXSetTevColor(GX_TEVREG0, params->field_0x10.mColor);
+        GXSetTevColor(GX_TEVREG1, params->field_0x14.mColor);
+    } else {
+        GXSetTevColor(GX_TEVREG0, lbl_805414F4);
+        GXColor zero = {0, 0, 0, 0};
+        GXSetTevColor(GX_TEVREG1, zero);
+    }
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_C1);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_TEXA, GX_CA_A0, GX_CA_A1);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetNumTevStages(1);
+    GXSetNumIndStages(0);
+    if (params != NULL && params->field_0x34 == 1) {
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_ONE, GX_LO_NOOP);
+    } else if (params != NULL && params->field_0x34 == 2) {
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_DSTALPHA, GX_BL_INVDSTALPHA, GX_LO_NOOP);
+    } else {
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+    }
+    if (params != NULL) {
+        GXSetZMode(params->field_0x26, (GXCompare)params->field_0x28, params->field_0x2c);
+    } else {
+        GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+    }
+    GXSetZCompLoc(GX_FALSE);
+    GXSetColorUpdate(GX_TRUE);
+    if (params != NULL) {
+        GXSetAlphaUpdate(params->field_0x2d);
+        GXSetAlphaCompare(GX_GREATER, params->field_0x2e, GX_AOP_AND, GX_ALWAYS, 0);
+    } else {
+        GXSetAlphaUpdate(GX_FALSE);
+        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    }
+    GXSetCullMode(GX_CULL_NONE);
+}
+
+// One 5-bit colour channel times scale plus offset, clamped to 0-31
+// (fn_802F93F4's channel adjustment, inlined for r, g and b).
+static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
+    s32 result = value * scale + offset;
+    if (result < 0) {
+        result = 0;
+    } else if (result > 31) {
+        result = 31;
+    }
+    return result;
+}
+
+// FIXME: 94.9. Register allocation (res / srcOffset / dstOffset / len one register
+// off) and the original copies len to r4 before the first loop for the second
+// loop and DCFlushRange (ours after it); its src + srcOffset is added later.
+// Converts the 'SCL ' palette resource res (little-endian BGR555, decoded
+// first when compressed; `size` bytes from srcOffset, else the resource's
+// size) into the GX RGB5A3 palettes field_0x98[slot] + dstOffset, the first
+// colour of every 16 transparent; then copies them to field_0xc8[slot] with
+// each opaque colour's channels adjusted (rotated to b, r, g with `flag`) and
+// flushes that copy.
+void cls_804AA858::fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
+    u32 len;
+    if (size == 0) {
+        s32 resSize;
+        if (JKRDecomp::checkCompressed((u8*)res)) {
+            resSize = JKRDecompExpandSize((u8*)res);
+        } else {
+            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+        }
+        if (resSize < 0) {
+            len = 0x200;
+        } else {
+            len = resSize;
+        }
+    } else {
+        len = size;
+    }
+    u8* dst = field_0x98[slot] + dstOffset;
+    u8* src;
+    if (JKRDecomp::checkCompressed((u8*)res)) {
+        JKRDecomp::decode((u8*)res, field_0xf8, 0x8000, 0);
+        src = field_0xf8;
+    } else {
+        src = (u8*)res;
+    }
+    src += srcOffset;
+    for (s32 i = 0; i < len; i += 2) {
+        u16 color;
+        if (i != 0 && (i & 0x1F) == 0) {
+            color = 0;
+        } else {
+            u16 bgr = src[i] | (src[i + 1] << 8);
+            color = ((bgr & 0x1F) << 10) | (bgr & 0x3E0) | ((bgr >> 10) & 0x1F) | 0x8000;
+            if (i == 0) {
+                color = 0;
+            }
+        }
+        dst[i] = color >> 8;
+        dst[i + 1] = color;
+    }
+    u8* out = field_0xc8[slot] + dstOffset;
+    u8* in = field_0x98[slot] + dstOffset;
+    for (s32 i = 0; i < len; i += 2) {
+        u16 color = (in[i] << 8) | in[i + 1];
+        if (color & 0x8000) {
+            u8 r = adjustChannel((color >> 10) & 0x1F, 1.0f, 0.0f);
+            u8 g = adjustChannel((color >> 5) & 0x1F, 1.0f, 0.0f);
+            u8 b = adjustChannel(color & 0x1F, 1.0f, 0.0f);
+            if (flag) {
+                color = 0x8000 | (b << 10) | (r << 5) | g;
+            } else {
+                color = 0x8000 | (r << 10) | (g << 5) | b;
+            }
+        }
+        out[i] = color >> 8;
+        out[i + 1] = color;
+    }
+    DCFlushRange(out, len);
+}
+
 // FIXME: 84.4. In the unrolled nibble-swap loop the original loads the next
 // source byte before storing the previous one (ours stores, then loads), and the
 // computed length lives in r26 (ours r31; the parameters move up one register).
@@ -341,6 +485,97 @@ void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
         mLayerGrid2[layer - 4][index] = value;
     } else {
         mLayerGrid[layer][index] = value;
+    }
+}
+
+// Draws the tile layers: indexed f32 positions / RGBA8 colours of the
+// field_0x2388 height grid and the texture coordinates of field_0x110, the
+// tile texture times the vertex colour; with field_0xe450 set, three more TEV
+// stages put the player's field_0xe428 texture over it. Then each layer whose
+// field_0x235c / field_0x2360 byte is set (layers 0-3 at field_0x2368, 4-7 at
+// field_0x2374), and with field_0x2365 layer 0 a second time as pass 8.
+void cls_804AA858::fn_802FC80C() {
+    lbl_8053AB10->fn_8013B1E8();
+    lbl_8053AB10->fn_8013B438();
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
+    GXSetVtxDesc(GX_VA_CLR0, GX_INDEX16);
+    GXSetVtxDesc(GX_VA_TEX0, GX_INDEX16);
+    GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGB, GX_RGBA8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+    GXSetArray(GX_VA_POS, field_0x100[field_0x2388], sizeof(JGeometry::TVec3f));
+    GXSetArray(GX_VA_CLR0, field_0x108[field_0x2388], sizeof(JUtility::TColor));
+    GXSetArray(GX_VA_TEX0, field_0x110, sizeof(JGeometry::TVec2f));
+    GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_VTX, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
+    GXSetNumChans(1);
+    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetNumTexGens(2);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ONE, GX_CC_RASC, GX_CC_TEXC);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_KONST, GX_CA_RASA, GX_CA_TEXA);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevDirect(GX_TEVSTAGE0);
+    if (field_0xe450) {
+        s32 player;
+        if (isGameModeSet() && lbl_8053AAF8->field_0x4 != NULL) {
+            player = fn_802D6A9C()->field_0x50;
+        } else {
+            player = 0;
+        }
+        field_0xe428[player]->load(GX_TEXMAP1);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVREG0);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE2, GX_CC_ZERO, GX_CC_ONE, GX_CC_C0, GX_CC_CPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+        GXSetTevColorOp(GX_TEVSTAGE2, GX_TEV_SUB, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE2, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE2);
+        GXSetTevColor(GX_TEVREG1, lbl_805414E8);
+        GXSetTevOrder(GX_TEVSTAGE3, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE3, GX_CC_A1, GX_CC_APREV, GX_CC_CPREV, GX_CC_C0);
+        GXSetTevAlphaIn(GX_TEVSTAGE3, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+        GXSetTevColorOp(GX_TEVSTAGE3, GX_TEV_COMP_R8_GT, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE3, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE3, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE3);
+        GXSetNumTevStages(4);
+    } else {
+        GXSetNumTevStages(1);
+    }
+    GXSetNumIndStages(0);
+    GXInvalidateVtxCache();
+    GXSetCullMode(GX_CULL_NONE);
+    for (s32 i = 0; i <= 8; i++) {
+        if (i < 4 && field_0x235c[i]) {
+            if (i == 0 && field_0x2365) {
+                GXSetAlphaCompare(GX_EQUAL, 0xFF, GX_AOP_OR, GX_NEVER, 0);
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            } else {
+                GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_AND, GX_ALWAYS, 0);
+                GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            }
+            fn_802FC268(&field_0x2368, i, mLayerGrid[i]);
+        } else if (i >= 4 && i < 8 && field_0x2360[i - 4]) {
+            GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_AND, GX_ALWAYS, 0);
+            GXSetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
+            fn_802FC268(&field_0x2374, i - 4, mLayerGrid2[i - 4]);
+        } else if (field_0x2365 && i == 8 && field_0x235c[0]) {
+            GXSetAlphaCompare(GX_LESS, 0xFF, GX_AOP_AND, GX_GREATER, 0);
+            GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+            fn_802FC268(&field_0x2368, 0, mLayerGrid[0]);
+        }
     }
 }
 
@@ -503,6 +738,47 @@ void cls_804AA858::fn_802FF798() {
             }
         }
     }
+}
+
+// Frees what the constructor allocated, in reverse order. Only the first four
+// field_0x98 / field_0xc8 buffers are freed (in the loop of field_0x88).
+cls_804AA858::~cls_804AA858() {
+    delete field_0xe454;
+    for (s32 i = 9; i >= 0; i--) {
+        delete field_0xe428[i];
+    }
+    for (s32 i = 3; i >= 0; i--) {
+        delete field_0x11c[i];
+    }
+    delete[] field_0x110;
+    for (s32 i = 1; i >= 0; i--) {
+        delete[] field_0x108[i];
+        delete[] field_0x100[i];
+    }
+    delete[] field_0xf8;
+    for (s32 i = 3; i >= 0; i--) {
+        delete[] field_0xc8[i];
+        delete[] field_0x98[i];
+        delete[] field_0x88[i];
+    }
+    for (s32 i = 15; i >= 0; i--) {
+        delete[] field_0x48[i];
+    }
+    for (s32 i = 3; i >= 0; i--) {
+        delete[] mLayerGrid2[i];
+        delete[] mLayerGrid[i];
+    }
+    delete[] field_0x24;
+    for (s32 i = 2; i >= 0; i--) {
+        delete[] field_0x18[i];
+        delete[] field_0xc[i];
+    }
+    for (s32 i = 1; i >= 0; i--) {
+        delete[] field_0x4[i];
+    }
+    delete field_0xfc;
+    field_0xfc = NULL;
+    delete field_0x238c;
 }
 
 // FIXME: 99.9. Instructions identical; the two file names are @NNN strings, not
