@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
+#include "game/GameMode.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/J3D/J3DModel.h"
 
@@ -56,6 +57,8 @@ GameRootSub24_8016A3AC* fn_8016A3AC() {
     return lbl_8053AAF8->field_0x4->field_0x24;
 }
 
+// FIXME: 98.3. regalloc only: the original keeps the camera in r4 and the 0x4330
+// conversion constant in r3 (ours swaps them) and the float temporaries in f3/f5.
 void GameRootSub24_8016A3AC::fn_8016A7DC(J3DModel* model, const JGeometry::TVec3f& pos, s32 dir, bool followX, bool followY, f32 parallax, f32 scale) {
     if (dir == 1) {
         bool skip = lbl_8053AAF8->field_0x4c == 11 ? true : lbl_8053AAF8->field_0x88 == 2;
@@ -254,6 +257,15 @@ void GameRootSub24_8016A3AC::fn_8016D33C() {
     }
 }
 
+// FIXME: 75.2 %. The original calls fn_8016ADE0 and fn_8016AD84 (bl); here MWCC inlines
+// fn_8016AD84 (defined earlier in the unit), so the call is a copy of its body.
+void GameRootSub24_8016A3AC::fn_8016DA6C() {
+    if (isGameModeSet()) {
+        fn_8016ADE0();
+        fn_8016AD84();
+    }
+}
+
 void GameRootSub24_8016A3AC::fn_8016ED88() {
     field_0x0 = NULL;
     field_0x14 = NULL;
@@ -263,6 +275,30 @@ void GameRootSub24_8016A3AC::fn_8016ED88() {
     field_0x3c[4] = NULL;
     field_0x54 = NULL;
     field_0x68 = NULL;
+}
+
+void GameRootSub24_8016A3AC::fn_8016EDB0() {
+    fn_8016A330();
+    field_0x130 = 0;
+    field_0x134 = 0;
+    field_0x124 = NULL;
+    field_0x128 = NULL;
+    field_0x12c = NULL;
+    field_0x13c = 0;
+    field_0x138 = 0;
+    field_0x1b0 = 0x78;
+    field_0x1b8 = 0x3c;
+    field_0x1b4 = 0;
+    field_0x140 = 0;
+    field_0x154 = 0;
+    field_0x15c = 0;
+    field_0x170 = 0;
+    field_0x178 = 0;
+    field_0x18c = 0;
+    field_0x194 = 0;
+    field_0x1a8 = 0;
+    field_0x1bc = 0;
+    field_0x1c0 = 0;
 }
 
 void fn_8016FDE0() {}

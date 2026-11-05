@@ -1133,7 +1133,34 @@ struct GameRootSub24_8016A3AC {
     /* 0x124 */ struct JPABaseEmitter* field_0x124;
     /* 0x128 */ struct JPABaseEmitter* field_0x128;
     /* 0x12C */ struct JPABaseEmitter* field_0x12c;
-    /* 0x130 */ u8 field_0x130[0x1C4 - 0x130];
+    // Words cleared by fn_8016EDB0 (types unknown).
+    /* 0x130 */ s32 field_0x130;
+    /* 0x134 */ s32 field_0x134;
+    /* 0x138 */ s32 field_0x138;
+    /* 0x13C */ s32 field_0x13c;
+    /* 0x140 */ s32 field_0x140;
+    /* 0x144 */ u8 field_0x144[0x154 - 0x144];
+    /* 0x154 */ s32 field_0x154;
+    /* 0x158 */ u8 field_0x158[0x15C - 0x158];
+    /* 0x15C */ s32 field_0x15c;
+    /* 0x160 */ u8 field_0x160[0x170 - 0x160];
+    /* 0x170 */ s32 field_0x170;
+    /* 0x174 */ u8 field_0x174[0x178 - 0x174];
+    /* 0x178 */ s32 field_0x178;
+    /* 0x17C */ u8 field_0x17c[0x18C - 0x17C];
+    /* 0x18C */ s32 field_0x18c;
+    /* 0x190 */ u8 field_0x190[0x194 - 0x190];
+    /* 0x194 */ s32 field_0x194;
+    /* 0x198 */ u8 field_0x198[0x1A8 - 0x198];
+    /* 0x1A8 */ s32 field_0x1a8;
+    /* 0x1AC */ u8 field_0x1ac[0x1B0 - 0x1AC];
+    /* 0x1B0 */ s32 field_0x1b0;
+    /* 0x1B4 */ u8 field_0x1b4;
+    /* 0x1B5 */ u8 field_0x1b5[0x1B8 - 0x1B5];
+    /* 0x1B8 */ s32 field_0x1b8;
+    /* 0x1BC */ u8 field_0x1bc;
+    /* 0x1BD */ u8 field_0x1bd[0x1C0 - 0x1BD];
+    /* 0x1C0 */ s32 field_0x1c0;
     /* 0x1C4 */ u8 field_0x1c4;
     /* 0x1C5 */ u8 field_0x1c5;
     /* 0x1C6 */ u8 field_0x1c6;
@@ -1195,6 +1222,8 @@ struct GameRootSub24_8016A3AC {
     void fn_8016ED88();
     // 0x8016B0B0: places the six models of field_0x3c against the 2D camera.
     void fn_8016B0B0();
+    // Not written yet (game/tu_8016A2B4.cpp): called by fn_8016DA6C / fn_8016DB60.
+    void fn_8016ADE0();
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8016DA6C();
