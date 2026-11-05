@@ -543,3 +543,53 @@ largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
   unknown, and inlines fn_80270A8C before its definition), fn_80270948 (inlines
   fn_80270A8C before it is defined: needs a header inline + wrapper as for
   playerFlags_802413F0), fn_802796B8 (emitter stop sequence, as before).
+
+## Round 4 (state handlers)
+
+### tu_8028FBA0: states 0x1C-0x32 are screen / layer transitions (agent F, 2026-11-05)
+
+Every state of this unit moves the player between two places: 0xCF4 is the
+transition kind (0x29 = none; the arrive exit stores it in 0xCF8), 0xCD4 /
+0xCE4 the destination position / layer, 0xCC8 / 0xCE0 the departure, 0xCB0
+the last position on the TV. Layers 8 and up are the GBA screens (houses,
+caves): the handlers wait while the player's GBA link is busy
+(fn_80301CD0, fn_80303750), notify it (fn_803037D4(player, 0xD),
+fn_80301D54) and switch the music (lbl_8053AF80->fn_8045815C by 0xCE4 < 8).
+The states come in pairs: the even one leaves (exit **fn_80290E90**: GBA
+notice, 0x400 = 0, music), the odd one arrives (exit **fn_80290D58**:
+respawn point 0xCBC / 0xD1C unless fn_80241E28, 0xCF8 = 0xCF4, 0xCF4 =
+0x29, 0x468 = 60, camera box, pad mode 5, fn_80248604). 0x3FC is the
+frame counter of all of them; 0x3F8 / 0x3F9 the animation counter / frame;
+0x3DC / 0x3E8 the facing (0 right, 1 left, 2 down, 3 up, from the enter of
+0x1D). Names are provisional, from the motion, sounds (fn_8024F0E8) and
+effects (fn_8013CC50):
+
+| states | enter / update | what it is |
+|---|---|---|
+| 0x1C / 0x1D | 80294ADC, 802948C0 / 80294374, 80293FE4 | **walk out through an entrance / walk in**: 0x398 = start, 0x3A4 = 20 (stairs: 1.25) along the kind's direction (0x17 right, 0x18 left, 1/2 down, else up; 0x15 / 0x23 by layer), steps toward it (fn_8027E5BC(0.5)) for up to 50 / 80 frames; the walk mode comes from the previous state (0x4A/0x4B -> 0xCEB, 0xB -> 0xCEC: walk, push, carry animations). Arrival requests 0, 0x12 (carrying), 0xB, 0x4A/0x4B or 0x33 (no life) |
+| 0x1E / 0x1F | 80293E8C, 80293B30 / 80293B1C, 80293900 | **drop through a hole**: after 58 frames the landing is checked by tile (fn_8022461C 3 / 0xE, fn_802265DC, fn_802684A4; else 0x2C4 / 0xCBC) and the player appears at height 128 (or 0); 0x1F falls 4 a frame spinning, then 0 / 0x12 / 0x33 |
+| 0x20 / 0x21 | 802938B8, 80293774 / 80293760, 802935A4 | **leave / arrive with sparkle 0x17D** (118 frames out; in after the GBA wait) |
+| 0x22 / 0x23 | 80293534, 80293398 / 802932BC, 80292ECC | **spin up out of the screen** (riseToTarget, camera on mPos - 150) / **warp in**: per-player effects 0x13D-0x149, 0x143, 0x545 at 0xCD4, 171 frames |
+| 0x24 / 0x25 | 80292E90, 802929FC / 80292944, 80292820 | **warp out** (per-player 0x14A-0x15A, 0x152, 0x546 at 0xCC8; 118 frames) / **arrive** (60 frames, then requestArrival) while a held actor (0xD68) follows at 0x2F4 |
+| 0x26 / 0x27 | 802927B0, 802925E4 / 802925C4, 802924AC | **leave through a door, animated** (sound 0x20060, effect 0x547, 50-frame animation 0-11, effects 0x15B/0x15C) / **walk down out of the door** (walk cycle, y + 1 for 32 frames) -> 0x4B |
+| 0x28 / 0x29 | 80292454, 802922EC / 802922D0, 80292198 | **walk up into a door** (y - 0.5, frames 4-7, 67 frames) / **arrive** (walk cycle; 0x3FB / 0x400 wait) -> 0x4A |
+| 0x2A / 0x2B | 80291CB8, 80291B8C / 80291B64, 80291910 | **spin up** (60 frames, then riseToTarget) / **spin down** with gravity from 0x344 = (0, 0, 4), landing 0 / 0x3E / 0x33 |
+| 0x2C / 0x2D | 80295584, 802954DC / 802954B8, 802953A0 | **fall into a hole** (60 frames) / **drop onto the floor below** from height 128 with gravity (fallStep) |
+| 0x2E / 0x2F | 80295334, 80295268 / 80295240, 8029513C | **rise out** (after 10 frames, 4 a frame to 128) / **drop in** with gravity from 0x344 = (0, -0.5, 0) |
+| 0x30 / 0x31 | 80292124, 80291F10 / 80291E44, 80291D28 | **walk up through a door** (y - 0.1, frames 0-5, 'PEFF' dust at 4 and 8) / **arrive on the TV** (effects 0x15B/0x15C, sounds 0x20041/0x1000F, 0x5C frames; then 0x4A) |
+| 0x32 | 8029185C, 80290FC0 | **jump down a ledge** to 0xCD4: speed (0xCD4 - mPos) / 64 with z 8, gravity 0.25; kind 0xC adds the stage's splash emitters 0x242-0x249 (0x132C / 0x135C, turned by the facing table lbl_8046C228), kind 0xD a 130-frame scripted drop with per-player effects 0x16A-0x16F; extra exit fn_80290F20 kills both emitters |
+
+The transitions are started by **fn_80290070**(layer, from, to, kind)
+(0x80290070, 0xCE8 bytes; not written: it inlines fn_80290D58 and
+fn_80290E90, which come after it, so it needs deferred inlining).
+fn_8028FBA0 starts kind 5 back to 0xCB0; **fn_8028FC2C** (100 %) picks a
+per-stage respawn point for kind 0x27 (stage / level / screen of the view,
+the floor 0x3B4 - 7).
+
+Written in round 4: 50 of 53 (24 at 100 %, 26 structurally done; their only
+difference is the .sdata2 literal order, which fn_80290FC0 sets). Not
+written: fn_80290070 (above) and fn_80290FC0, which needs the u8 hole at
+0x1344 typed as a TVec3f (the emitter position it copies from mPos, moves
+3 by facing and hands to the callback 0x1330's field_0x4); with that field
+it is 99.6 % (scheduling) and the unit goes to 51 / 53 (the patch is in
+progress/game__tu_8028FBA0.md).
