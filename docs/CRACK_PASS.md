@@ -111,6 +111,10 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   one SaveData object drops tu_801DE714 __dt__12cls_804A51E4Fv (100 → 98.6 %) and
   act_fairy init (97.86 → 97.39 %); FileSelect's constructor omits its
   save-data loop until this is settled (progress/game__tu_803BC6F0.md).
+- **Data of dead-stripped functions.** tu_803A3484 (title screen): a 0x34-byte .rodata table and "enemy_both2_sob.bin" sit before
+  the title's strings, and 0.5f / 120.0f lead its .sdata2, but no surviving function references them; the table's tail {3,4,5,4}
+  matches tu_803536C4's lbl_80472260, also followed by that string. Likely a function the linker dropped (dead code or a weak
+  duplicate). Keeps fn_803A5380 and the ctor at 99.78 %. Same family as the leading-literal items above.
 - **The 12 units still out of address order** (tools/order_check.py): reordering
   changes inlining or the .sdata2 pool in each; same family as the two items
   above.
