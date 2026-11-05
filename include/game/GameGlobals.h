@@ -41,6 +41,9 @@ class JAISeMgr;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
 class J2DOrthoGraph;
+struct J2DPrint;
+struct J2DPicture;
+class JKRSolidHeap;
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
 // fn_801F856C, the first function seen reading it).
@@ -583,17 +586,39 @@ public:
     // to three quads the size of the render mode (JUTVideo::sManager); `this`
     // is lbl_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
     void fn_80158F70();
+    // 0x80158E88 (game/tu_80158624.cpp). Sets up the two lights; reads no
+    // member. Called with this = lbl_8053AB10->0x2C by fn_8013BB18.
+    void fn_80158E88();
 }; // Size: 0x10
 // 0x80543F28 (.sbss2, 8 bytes; no owner split yet). Its word is the colour
 // that cls_804A0160::fn_80158F70 (game/tu_80158624.cpp) puts in TEV register 1
 // with its own alpha byte.
 extern JUtility::TColor lbl_80543F28;
+// 0x80543F20 (.sbss2, 8 bytes; no owner split yet). Its word is TEV register 1's
+// colour in GameRoot2_8049F108::fn_8013B1E8 (game/tu_8013AAD4.cpp).
+extern JUtility::TColor lbl_80543F20;
 // 0x804A03A8: game/tu_8015F454.cpp, constructor fn_801602E8, 0x298 bytes.
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 // Only the flag and the float that tu_801286C0's update sets are known.
+class cls_804A03A8;
+extern "C" {
+// Owner: the unit at 0x8022AD64 (defined at 0x80239D38, not written yet).
+// No arguments; returns 0 or 1 (clrlwi 24); tested by GameRoot2_8049F108::fn_8013BBE0.
+bool fn_80239D38();
+}
 class cls_804A03A8 {
 public:
-    /* 0x000 */ u8 field_0x0[0x284];
+    // Constructor 0x801602E8 (called by GameRoot2_8049F108's constructor).
+    cls_804A03A8(JKRHeap* heap);
+    /* 0x000 vtable */
+    // Virtual destructor: GameRoot2_8049F108's destructor calls vtable slot 2.
+    virtual ~cls_804A03A8();
+    // 0x8015F9C0, 0x8016005C, 0x801601E0 (game/tu_8015F454.cpp, not written
+    // yet): called with this = lbl_8053AB10->0x30 by tu_8013AAD4.
+    void fn_8015F9C0();
+    void fn_8016005C();
+    void fn_801601E0();
+    /* 0x004 */ u8 field_0x4[0x284 - 0x4];
     /* 0x284 */ u8 field_0x284; // 0 until set to 1 (tu_801286C0 update)
     /* 0x285 */ u8 field_0x285[0x28C - 0x285];
     /* 0x28C */ f32 field_0x28c; // set to 0.05f with the flag
@@ -606,7 +631,14 @@ struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
 // Named after its vtable, 0x8049F108 (constructor fn_8013BFEC, which
 // allocates every member below and stores it at the offset given).
 struct GameRoot2_8049F108 {
-    /* 0x00 */ u8 field_0x0[0x8];
+    // Constructor (0x8013BFEC, game/tu_8013AAD4.cpp): stores itself in
+    // lbl_8053AB10 and allocates every member below on a solid heap or on
+    // `heap`. The vtable (0x8049F108) has only the destructor (0x8013BE60).
+    GameRoot2_8049F108(JKRHeap* heap);
+    virtual ~GameRoot2_8049F108();
+    // JKRSolidHeap::create(-1, heap); holds the two draw buffers; destroyed
+    // by the destructor.
+    /* 0x04 */ JKRSolidHeap* field_0x4;
     // Two J3DDrawBuffers (initialize, allocBuffer(0x80) in the constructor,
     // 0x8013C0xx); fn_8013B618 calls frameInit on both.
     /* 0x08 */ J3DDrawBuffer* field_0x8;
@@ -615,16 +647,48 @@ struct GameRoot2_8049F108 {
     // 0x8013C11C); 36 units pass it to J2DScreen::draw as the
     // J2DGrafContext (67 sites).
     /* 0x10 */ J2DOrthoGraph* field_0x10;
-    /* 0x14 */ u8 field_0x14[0x20 - 0x14];
+    // The second J2DOrthoGraph, same arguments (stored at 0x8013C190);
+    // fn_8013BBE0 places and scissors it.
+    /* 0x14 */ J2DOrthoGraph* field_0x14;
+    // new J2DPrint(font from lbl_8053AD78->0x154, 0, font height) (0x8013C1F8).
+    /* 0x18 */ J2DPrint* field_0x18;
+    // new J2DPicture of "kk_black.bti" (0x8013C338), filled with a colour
+    // through vtable slot 0x130.
+    /* 0x1C */ J2DPicture* field_0x1c;
     /* 0x20 */ cls_804AA858* field_0x20;
     /* 0x24 */ Camera_804AA9E4* field_0x24;
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
     /* 0x2C */ cls_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
-    /* 0x34 */ u8 field_0x34[0x39 - 0x34];
+    // new JUTTexture(efb width, efb height, 4) (0x8013C230).
+    /* 0x34 */ JUTTexture* field_0x34;
+    /* 0x38 */ u8 field_0x38;
     // Read as a byte by fn_80139CC4 and fn_80139D3C (game/tu_80139BE8.cpp);
-    // not yet known what sets it.
+    // set by fn_8013BBE0.
     /* 0x39 */ u8 field_0x39;
+
+    // 0x8013B414 (game/tu_8013AAD4.cpp): field_0x24->fn_8030DD8C(box, light).
+    void fn_8013B414(const JGeometry::TBox2f* box, bool light);
+    // 0x8013B4C0: field_0x28->fn_8013D5B0(), then field_0x20->fn_802FF548().
+    void fn_8013B4C0();
+    // 0x8013B4F8: field_0x28->fn_8013D5D4(), frameInit on both draw buffers.
+    void fn_8013B4F8();
+    // 0x8013B71C: the per-frame draw pass (map, effects, sprites).
+    void fn_8013B71C();
+    // 0x8013BAF4: field_0x28->fn_8013DB2C().
+    void fn_8013BAF4();
+    // 0x8013BB18: unless field_0x39, field_0x20->fn_802FF3F0() and
+    // field_0x24->fn_8030E150(); then fn_80158E88().
+    void fn_8013BB18();
+    // 0x8013BB64: field_0x24->fn_8030DFE8(false), the draw buffers into
+    // j3dSys, and the camera matrix as j3dSys's view matrix.
+    void fn_8013BB64();
+    // 0x8013BBBC: field_0x28->fn_8013DC1C().
+    void fn_8013BBBC();
+    // 0x8013BBE0: per-frame update of the members.
+    void fn_8013BBE0();
+    // 0x8013BE04: resets the members for a new scene.
+    void fn_8013BE04();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet). Calls
     // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by

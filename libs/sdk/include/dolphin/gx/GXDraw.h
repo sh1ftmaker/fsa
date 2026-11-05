@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 void GXDrawSphere(u8 numMajor, u8 numMinor);
+void GXDrawSphere1(u8 depth);
 void GXDrawCylinder(u8 numEdges);
 void GXDrawCube();
 

@@ -28,7 +28,7 @@ GXLightObj lbl_804BFB60[20];
 
 // FIXME: 99.48%. Only the .sdata2 float literals differ: the original's
 // lbl_8053D454, lbl_8053D458 and lbl_8053D440 are @472, @473 and @475 in ours.
-void fn_80158E88() {
+void cls_804A0160::fn_80158E88() {
     GXInitLightPos(&lbl_804BFB60[0], -100000.0f, -100000.0f, 100000.0f);
     GXInitLightAttn(&lbl_804BFB60[0], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
     GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};

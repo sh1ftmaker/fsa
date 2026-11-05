@@ -97,6 +97,15 @@ public:
     // (PSMTXConcat), makes GX_PNMTX9 the current matrix and loads the result
     // as its position and normal matrix.
     void fn_8030DD20(const Mtx m);
+    // 0x8030DD8C (game/tu_8030C058.cpp, not written yet). Sets the screen
+    // box (reads 0x0-0xC of box) as the ortho projection; when `light`
+    // is set also builds the light matrices. Called by
+    // GameRoot2_8049F108::fn_8013B414, which passes its arguments on.
+    void fn_8030DD8C(const JGeometry::TBox2f* box, bool light);
+    // 0x8030DFE8 (game/tu_8030C058.cpp, not written yet). Loads the
+    // projection, position matrix 0x74 and viewport / scissor from field_0x144;
+    // `copy` first copies the matrices from 0x4 / 0x34 into 0x74 / 0xA4.
+    void fn_8030DFE8(bool copy);
     void fn_8030E150(); // empty
     void fn_8030E154();
     void fn_8030E5BC();
