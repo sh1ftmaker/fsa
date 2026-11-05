@@ -12,9 +12,10 @@
 // vtable again.
 class cls_804B20F8 : public ActorSoundObj_804578F4 {
 public:
-    // 0x8045B46C: r4 = the byte stored at 0x5C, r5-r7 = the base
+    // 0x8045B46C: r4 = the byte stored at 0x5C (signed: every caller passes
+    // it through extsb), r5-r7 = the base
     // constructor's position, heap and handle count.
-    cls_804B20F8(u8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles);
+    cls_804B20F8(s8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles);
 
     // 0x8045B154: stops or retargets some sounds before starting `id`, then
     // starts it and detunes its pitch by the kind in field_0x5c.

@@ -100,6 +100,5 @@ JAISoundHandle* cls_804B20F8::startSound(JAISoundID id) {
     return handle;
 }
 
-// FIXME: 99.3%. Only the epilogue order differs: the original reloads r31, r30, then r0 (ours r0 first).
-cls_804B20F8::cls_804B20F8(u8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles)
+cls_804B20F8::cls_804B20F8(s8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles)
     : ActorSoundObj_804578F4(pos, heap, numHandles), field_0x5c(kind) {}
