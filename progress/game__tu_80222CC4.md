@@ -38,7 +38,7 @@ the measurements below rule out every layout tried and point at a compiler-mode 
 - Original survey (dtk split objects): 165 game units have jump tables, none of them is a Matching unit (the 102
   Matching game units have no switch tables). In 159 all jump tables come after every other .data object; jump
   tables always follow .text order (52/52 multi-function units). The 6 exceptions are informative: tu_800F7FCC has
-  `globals, __vt__12cls_8049C678, jt, jt, __vt__12cls_8049C718`: class 1's vtable (its dtor is at .text 0) comes before
+  `globals, __vt__30StoneArrghusChildPuff_8049C678, jt, jt, __vt__12cls_8049C718`: class 1's vtable (its dtor is at .text 0) comes before
   class 2's jump tables, class 2's vtable (dtor last in .text) after them. act_shadow_link_2 and tu_8037DF68: the
   vtable whose only referencers come after the switch functions is after the jump tables.
 - GC/2.6 `-inline auto` (scratch kf/a-c.cpp, game flags): file-scope data lands at its definition point (a global

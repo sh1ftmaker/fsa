@@ -184,7 +184,7 @@ void GamblingShop_804AAA70::update() {
             break;
         }
         field_0x248 = fn_8022F340(field_0x248);
-        s32 roll = (s32)(10.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        s32 roll = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         s32 bucket;
         if ((u32)roll <= field_0x26c) {
             bucket = 0;
@@ -316,7 +316,7 @@ void GamblingShop_804AAA70::update() {
                 static_cast<GamblingShopChest_804AAAE8*>(actor)->fn_80310E98();
             }
         }
-        s32 roll = (s32)(3.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        s32 roll = (s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         switch (roll) {
         case 0: {
             s32 tmp = field_0x250[0];
@@ -372,7 +372,7 @@ void GamblingShop_804AAA70::vfunc_0x10() {
         return;
     }
     field_0x24c = count;
-    s32 pick = (s32)(6.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+    s32 pick = (s32)(6.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     switch (pick) {
     case 0: {
         s32 tmp = field_0x250[0];
@@ -438,7 +438,7 @@ void GamblingShop_804AAA70::init() {
     field_0x278[1] = 0;
     field_0x278[2] = 0;
     field_0x278[3] = 0;
-    if (lbl_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 1 &&
+    if (gGameRoot_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 1 &&
         lbl_80529DEC.field_0x11c == 1) {
         field_0x288 = true;
     } else {

@@ -13,7 +13,7 @@
 void Sandstorm_804AA280::draw() {}
 
 void Sandstorm_804AA280::update() {
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     mPos244.x = -camera->field_0x4[0][3];
     mPos244.y = -camera->field_0x4[1][3];
     mPos244.z = 0.0f;
@@ -24,10 +24,10 @@ void Sandstorm_804AA280::update() {
             fn_80230534(false);
             u32 bits = field_0x90;
             getGameView_802D6A9C()->fn_802D9FF4((bits >> 8) & 0xF, (bits >> 12) & 0xF);
-            lbl_8053AAF8->fn_80136798(13, 0);
+            gGameRoot_8053AAF8->fn_80136798(13, 0);
         }
     } else {
-        if (lbl_8053AAF8->field_0x4c != 11) {
+        if (gGameRoot_8053AAF8->field_0x4c != 11) {
             mSound->startSound(0x50079);
         }
         if (mStarted == 0 && getGameView_802D6A9C()->field_0xc9 != 0) {
@@ -62,7 +62,7 @@ Sandstorm_804AA280::~Sandstorm_804AA280() {
 void Sandstorm_804AA280::init() {
     mKind = field_0x90 & 0xF;
     field_0x254 = (field_0x90 >> 4) & 0xF;
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     mPos244.x = -camera->field_0x4[0][3];
     mPos244.y = -camera->field_0x4[1][3];
     mPos244.z = 0.0f;

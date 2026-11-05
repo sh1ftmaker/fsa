@@ -98,7 +98,7 @@ void MagicJar_804AF018::update() {
         box.set(field_0x80);
         box.addPos(p);
         s32 playerB = fn_8023B8E4(&box, field_0x4, &p, true);
-        if (lbl_8053AAF8->field_0x7f) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
             player = fn_8023AF14(&box, field_0x4, false, 0.0f);
             if (player >= 0 && fn_80236B50(player)) {
                 player = -1;
@@ -116,7 +116,7 @@ void MagicJar_804AF018::update() {
         }
         if (field_0x4 < 8) {
             JGeometry::TVec3f camPos(mPos.x, mPos.y - mPos.z, 0.0f);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
         }
     }
 }

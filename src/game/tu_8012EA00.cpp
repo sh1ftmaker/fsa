@@ -14,7 +14,7 @@ inline bool cls_8049E8F8::playersInside() {
     box.f.y += mPos.y;
     for (s32 i = 0; i < 4; i++) {
         // (u8) gives the clrlwi on the mask that the original has.
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
             if (!fn_8023F264(i)) {
                 return false;
             }
@@ -49,7 +49,7 @@ inline void cls_8049E8F8::setState(s32 state) {
         break;
     case 2:
         getGameView_802D6A9C()->fn_802D9FF4(field_0x234, field_0x238);
-        lbl_8053AAF8->fn_80136798(15, 0);
+        gGameRoot_8053AAF8->fn_80136798(15, 0);
         break;
     }
 }

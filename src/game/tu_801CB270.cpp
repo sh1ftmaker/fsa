@@ -24,7 +24,7 @@
 // loads differently. JUTTexture::initTexObj's forms (? GX_TRUE : GX_FALSE,
 // image +=) and isMIPmapEnabled() were worse.
 f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj) {
-    ResTIMG* timg = (ResTIMG*)lbl_8053AAF8->field_0xa4->getResource('TIMG', name);
+    ResTIMG* timg = (ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', name);
     GXBool mipmap = timg->mIsMIPmapEnabled > 0;
     u32 imageOffset = timg->mImageDataOffset != 0 ? timg->mImageDataOffset : 0x20;
     void* image = (u8*)timg + imageOffset;
@@ -217,7 +217,7 @@ s32 fn_801CCDA4() {
     s32 best = -1;
     s32 tie = 0x7FFFFFFF;
     s32 lowest = tie;
-    s32 count = lbl_8053AAF8->fn_80138A30();
+    s32 count = gGameRoot_8053AAF8->fn_80138A30();
     for (s32 i = 0; i < count; i++) {
         if (fn_8023F264(i)) {
             s32 value = fn_80236228(i);
@@ -247,7 +247,7 @@ s32 fn_801CCF34(s32 player) {
 
 // Whether fn_80230188 holds for every player that takes part (fn_80138A30).
 bool fn_801CCF7C() {
-    s32 count = lbl_8053AAF8->fn_80138A30();
+    s32 count = gGameRoot_8053AAF8->fn_80138A30();
     for (s32 i = 0; i < count; i++) {
         if (!fn_80230188(i)) {
             return false;
@@ -368,12 +368,12 @@ s32 fn_801CD580(s32 except) {
             count++;
         }
     }
-    return choices[(s32)(count * lbl_8053AAF8->mRandom.get_ufloat_1())];
+    return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
 }
 
 // A random integer in [0, n).
 s32 fn_801CD664(s32 n) {
-    return n * lbl_8053AAF8->mRandom.get_ufloat_1();
+    return n * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
 }
 
 // Catmull-Rom spline through p1 (t = 0) and p2 (t = 1), with p0 and p3 as

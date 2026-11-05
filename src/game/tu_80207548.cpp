@@ -93,11 +93,11 @@ void cls_804A5B28::fn_80207830(u16 slot, s32 player, s32 arg3, const JGeometry::
         }
     }
     if (noneOthers) {
-        mTimer = lbl_8053F8C8[lbl_8053AAF8->fn_80138A30() - 1];
+        mTimer = lbl_8053F8C8[gGameRoot_8053AAF8->fn_80138A30() - 1];
     } else if (allOthers && mTimer) {
         s32 count = 1;
         mActive = true;
-        switch (lbl_8053AAF8->fn_80138A30()) {
+        switch (gGameRoot_8053AAF8->fn_80138A30()) {
         case 3:
             count = 2;
             break;

@@ -1,4 +1,4 @@
-# game/act_eyeball_switch (MEDM, cls_804AE678)
+# game/act_eyeball_switch (MEDM, EyeballSwitch_804AE678)
 
 Baseline: total: 6426 / 11557 functions, 1284740 / 4442032 bytes of code (28.92 %)
 After:    total: 6427 / 11557 functions, 1284864 / 4442032 bytes of code (28.93 %)
@@ -13,5 +13,5 @@ Functions 2/6 -> 4/6 (vfunc_0x24, __dt, init, __sinit match; Matching flag not s
 ## SHARED-EDITS
 - include/game/Player.h: fn_8023BA68(box, layer, TVec2f* out, bool) (tu_8022AD64),
   from fn_80273C30's call to fn_80274238(box, layer, TVec2f*, bool).
-- symbols.txt: renamed lbl_804AE678 -> __vt__12cls_804AE678 and the four fn_8037xxxx
-  placeholders of this unit to update/__dt/vfunc_0x10/init of cls_804AE678.
+- symbols.txt: renamed lbl_804AE678 -> __vt__22EyeballSwitch_804AE678 and the four fn_8037xxxx
+  placeholders of this unit to update/__dt/vfunc_0x10/init of EyeballSwitch_804AE678.

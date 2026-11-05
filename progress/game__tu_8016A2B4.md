@@ -2,7 +2,7 @@
 
 Baseline progress: total 7510 / 11557 functions. After: 7515 / 11557 (32.62 %).
 
-The unit: one class (GameRootSub24_8016A3AC, lbl_8053AAF8->field_0x4->field_0x24) that places and draws J3DModels (2D-camera backdrop layers); fn_8016A7DC places one J3DModel (setBaseScale, mPosMtx, calc/entry/viewCalc).
+The unit: one class (GameRootSub24_8016A3AC, gGameRoot_8053AAF8->field_0x4->field_0x24) that places and draws J3DModels (2D-camera backdrop layers); fn_8016A7DC places one J3DModel (setBaseScale, mPosMtx, calc/entry/viewCalc).
 
 Matched (code identical, 7 count in the honest report): fn_8016A2B4, A330, A3AC, FDE0, ED88, EDB0 (A330 inlined), B0B0 (99.7 % reloc-name only).
 Code-identical but reloc-name only (sdata2 literal order needs the unwritten functions): fn_8016A9EC..AD84, B054, B8AC, D284, D2E0, D33C (99.1-99.2 %).

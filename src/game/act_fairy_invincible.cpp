@@ -88,14 +88,14 @@ void InvincibilityFairy_804AB4C0::update() {
                 if (mCounters[1][1] != 0) {
                     field_0x248 += 0x100;
                 } else {
-                    mCounters[1][1] = 30 + (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
+                    mCounters[1][1] = 30 + (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
                     field_0x24c = 1;
                     field_0x258 = 0.0f;
                     field_0x25c = 0.0f;
                 }
             } else if (mCounters[1][1] == 0) {
-                field_0x248 += (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
-                mCounters[1][1] = 40 + (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 40.0f);
+                field_0x248 += (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
+                mCounters[1][1] = 40 + (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 40.0f);
                 field_0x24c = 0;
             }
 
@@ -192,8 +192,8 @@ void InvincibilityFairy_804AB4C0::init() {
     mCounters[0][0] = 0x400;
     field_0x260 = 10.0f;
     mCounters[1][0] = 10;
-    mCounters[1][1] = 30 + (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
-    field_0x248 = (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
+    mCounters[1][1] = 30 + (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
+    field_0x248 = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
     field_0x230 = 0;
     field_0xb0 = 0x20000;
     mEmitter264 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.5f);

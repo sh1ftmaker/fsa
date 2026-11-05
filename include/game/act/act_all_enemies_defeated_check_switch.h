@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A8AC8.
-class cls_804A8AC8 : public ActorBase_804A5770 {
+class AllEnemiesDefeatedCheckSwitch_804A8AC8 : public ActorBase_804A5770 {
 public:
-    cls_804A8AC8() {}
-    /* 0x08 */ virtual ~cls_804A8AC8();
+    AllEnemiesDefeatedCheckSwitch_804A8AC8() {}
+    /* 0x08 */ virtual ~AllEnemiesDefeatedCheckSwitch_804A8AC8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

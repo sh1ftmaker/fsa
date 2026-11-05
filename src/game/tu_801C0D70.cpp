@@ -198,7 +198,7 @@ void cls_801C0D70::fn_801C1374(bool flag) {
                 field_0x0 |= 0x200;
             }
             getGameView_802D6A9C()->fn_802D7440(true);
-            lbl_8053AAF8->fn_80138B7C();
+            gGameRoot_8053AAF8->fn_80138B7C();
             getGameView_802D6A9C()->fn_802D6BC8(0);
             bool noGenerator = (field_0x50 >> 31) == 0;
             if (!noGenerator) {

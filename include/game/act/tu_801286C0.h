@@ -24,16 +24,16 @@ public:
 
     /* 0x230 */ s32 field_0x230;
     // Converted to an integer by draw() and stored in the byte at 0xC of
-    // the object at lbl_8053AB10->0x2C (fn_80128C58).
+    // the object at gGameRoot2_8053AB10->0x2C (fn_80128C58).
     /* 0x234 */ f32 field_0x234;
     // Passed to fn_8044C028 by draw() when the state is 1..3 (its offset).
     /* 0x238 */ f32 field_0x238;
-    // getResource('????', lbl_80539F38) from the archive at lbl_8053AAF8
+    // getResource('????', lbl_80539F38) from the archive at gGameRoot_8053AAF8
     // (init); cleared by the destructor.
     /* 0x23C */ void* field_0x23c;
 }; // Size: at least 0x240
 
-// Stores the value in the byte at 0xC of the object at lbl_8053AB10->0x2C.
+// Stores the value in the byte at 0xC of the object at gGameRoot2_8053AB10->0x2C.
 void fn_80128C58(s32 value);
 
 #endif

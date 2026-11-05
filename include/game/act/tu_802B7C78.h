@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A886C.
-class cls_804A886C : public ActorBase_804A5770 {
+class ReaperShinigami_804A886C : public ActorBase_804A5770 {
 public:
-    cls_804A886C() {}
-    /* 0x08 */ virtual ~cls_804A886C();
+    ReaperShinigami_804A886C() {}
+    /* 0x08 */ virtual ~ReaperShinigami_804A886C();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

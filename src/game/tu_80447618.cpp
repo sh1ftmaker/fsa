@@ -40,8 +40,8 @@ static const u64 lbl_80490410[4][14] = {
 };
 
 void cls_804B1C20::fn_80447958() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 cls_804B1C20::~cls_804B1C20() {

@@ -22,9 +22,9 @@ void PanelRewriteNPC2_804A9F58::update() {
 
     if (vfunc_0x34() == true) {
         for (s32 i = 0; i < 0x400; i++) {
-            u16 tile = lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, i);
+            u16 tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, i);
             if (field_0x230 == tile) {
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4, i, field_0x234);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, i, field_0x234);
                 if (field_0x23c != 0) {
                     fn_80226CA8(i, field_0x4, &pos);
                     s32 layer = field_0x4;

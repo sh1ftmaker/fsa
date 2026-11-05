@@ -43,12 +43,12 @@ void Popo_804A0868::update() {
     switch (field_0x230) {
     case 0:
         if (mTimers[1] == 0) {
-            mTimers[1] = (s32)(10.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 10;
+            mTimers[1] = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
             field_0x240++;
             field_0x240 &= 1;
             if (field_0x240 == 0) {
-                field_0x250 = 0.5f * JMASinShort((s32)(65536.0f * lbl_8053AAF8->mRandom.get_ufloat_1()));
-                field_0x254 = 0.5f * JMACosShort((s32)(65536.0f * lbl_8053AAF8->mRandom.get_ufloat_1()));
+                field_0x250 = 0.5f * JMASinShort((s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()));
+                field_0x254 = 0.5f * JMACosShort((s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()));
             } else {
                 field_0x250 = 0.0f;
                 field_0x254 = 0.0f;
@@ -97,8 +97,8 @@ void Popo_804A0868::init() {
     field_0x3c.y = 0.0f;
     field_0x3c.z = 0.0f;
     field_0xb0 = 0x11101;
-    field_0x240 = (s32)(1.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
-    mTimers[1] = (s32)(10.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 10;
+    field_0x240 = (s32)(1.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    mTimers[1] = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     if (field_0x90 == 1) {
         field_0xb0 = 0;
     }

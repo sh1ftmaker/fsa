@@ -6,10 +6,10 @@
 // low confidence). Named after its vtable.
 #include "game/ActorBase.h"
 
-class cls_804A8588 : public ActorBase_804A5770 {
+class RotatingSkull_804A8588 : public ActorBase_804A5770 {
 public:
-    cls_804A8588() {}
-    /* 0x08 */ virtual ~cls_804A8588();
+    RotatingSkull_804A8588() {}
+    /* 0x08 */ virtual ~RotatingSkull_804A8588();
     /* 0x0C */ virtual void init();
 
     // Calls vfunc_0x4C(layer, pos); clears field_0x27c when it returns false.

@@ -20,7 +20,7 @@ struct cls_80453830 {
 // Vtable 0x804B1D58 (one slot, the destructor), 0x188 bytes, defined in
 // game/tu_8044C7F0.cpp (not written yet). The constructor fn_80452A80 stores
 // `this` in lbl_8053AF40; tu_8037ACC4 allocates it with __nw__(0x188) when
-// lbl_8053AAF8->field_0x7f is set.
+// gGameRoot_8053AAF8->field_0x7f is set.
 class cls_804B1D58 {
 public:
     cls_804B1D58(); // fn_80452A80

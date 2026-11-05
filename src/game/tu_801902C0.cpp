@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 GameRootSub20_801902C0* fn_801902C0() {
-    return lbl_8053AAF8->field_0x4->field_0x20;
+    return gGameRoot_8053AAF8->field_0x4->field_0x20;
 }
 
 // Each frame: when none of the pause / fade / view conditions hold, clears all
@@ -16,10 +16,10 @@ GameRootSub20_801902C0* fn_801902C0() {
 // fields); then counts the frame.
 void GameRootSub20_801902C0::fn_801914C4() {
     // The pause test is a materialised bool (li 1 / compare) in the original.
-    if ((!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) && lbl_8053AAF8->field_0x94 == 0 &&
-        lbl_8053AAF8->field_0x96 == 0 &&
-        (!lbl_8053AAF8->field_0x7f ||
-         (!fn_80239D38() && !(lbl_8053AAF8->field_0x4c == 11 ? true : lbl_8053AAF8->field_0x88 == 2))) &&
+    if ((!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) && gGameRoot_8053AAF8->field_0x94 == 0 &&
+        gGameRoot_8053AAF8->field_0x96 == 0 &&
+        (!gGameRoot_8053AAF8->field_0x7f ||
+         (!fn_80239D38() && !(gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 == 2))) &&
         lbl_80529DEC.field_0x240 == 0 && lbl_8053AEC8->field_0x5d == 0) {
         mCrystals[0].mActive = 0;
         mCrystals[1].mActive = 0;

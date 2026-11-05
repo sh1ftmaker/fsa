@@ -12,8 +12,8 @@ void FocusNPC_804A8EA0::update() {
     case 0:
         sw = mSwitch;
         if (sw == 0 || getGameView_802D6A9C()->fn_802D800C(sw)) {
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-            if (lbl_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
                 if ((field_0x90 >> 27) != 0) {
                     vfunc_0x30(0xFF, true);
                 }
@@ -23,7 +23,7 @@ void FocusNPC_804A8EA0::update() {
         }
         break;
     case 1:
-        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
         if (mTimer == 0) {
             mAlive = false;
         } else {
@@ -33,8 +33,8 @@ void FocusNPC_804A8EA0::update() {
     case 2:
         sw = mSwitch;
         if (sw == 0 || getGameView_802D6A9C()->fn_802D800C(sw)) {
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-            if (lbl_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
                 if ((field_0x90 >> 27) != 0) {
                     vfunc_0x30(0xFF, true);
                 }

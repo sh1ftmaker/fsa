@@ -178,7 +178,7 @@ u8 cls_804AF5A0::fn_803A313C() {
 }
 
 void fn_803A3144() {
-    lbl_8053AAF8->fn_80138B7C();
+    gGameRoot_8053AAF8->fn_80138B7C();
 }
 
 bool fn_803A3168(u8 index, s32 bit) {

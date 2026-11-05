@@ -250,7 +250,7 @@ void* fn_80403328(const char* name) {
 }
 
 s32 fn_8040336C(s32 player) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         if (lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0) {
             return 0;
         }
@@ -260,21 +260,21 @@ s32 fn_8040336C(s32 player) {
 }
 
 s32 fn_804033D4(s32 player) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         return lbl_80529DEC.field_0x78[player];
     }
     return lbl_80529DEC.field_0xa8[player];
 }
 
 s32 fn_80403414(s32 player) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         return lbl_80529DEC.field_0x68[player];
     }
     return lbl_80529DEC.field_0x98[player];
 }
 
 void fn_80403454(s32 player, s32 value) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         lbl_80529DEC.field_0x88[player] = value;
     } else {
         lbl_80529DEC.field_0xb8[player] = value;
@@ -282,7 +282,7 @@ void fn_80403454(s32 player, s32 value) {
 }
 
 void fn_80403494(s32 player, s32 value) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         lbl_80529DEC.field_0x78[player] = value;
     } else {
         lbl_80529DEC.field_0xa8[player] = value;
@@ -290,7 +290,7 @@ void fn_80403494(s32 player, s32 value) {
 }
 
 void fn_804034D4(s32 player, s32 value) {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         lbl_80529DEC.field_0x68[player] = value;
     } else {
         lbl_80529DEC.field_0x98[player] = value;

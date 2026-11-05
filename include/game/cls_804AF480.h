@@ -10,7 +10,7 @@ class BattleStageSelect_804B1378;
 // defined in game/tu_8039003C.cpp. tu_80134C04 allocates it with
 // __nw__(0x10, heap, 0) (0x801352B4) and constructs it with fn_8039027C,
 // which stores it in lbl_8053AD80. It holds one of two objects, picked by
-// lbl_8053AAF8->field_0x7f; the member functions below only forward to it
+// gGameRoot_8053AAF8->field_0x7f; the member functions below only forward to it
 // (this is unused; they read lbl_8053AD80's objects directly).
 class cls_804AF480 {
 public:

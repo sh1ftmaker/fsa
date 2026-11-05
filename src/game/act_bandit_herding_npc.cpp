@@ -41,7 +41,7 @@ void BanditHerdingNPC_804ACB40::update() {
     }
     lbl_8053AD78->field_0x10c = field_0x234 - field_0x238;
     if (field_0x238 > 0) {
-        lbl_8053AB10->field_0x24->fn_8030C058(&field_0x240);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C058(&field_0x240);
     }
     // FIXME: 94%. The original materialises (field_0x238 >= field_0x234) as a bool
     // (srawi/srwi/subfc/adde, then cmplwi 1) and keeps the 1 stored to the flag in r0

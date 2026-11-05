@@ -381,7 +381,7 @@ void EscortBase_8049E0C8::vfunc_0xA8(f32* x, f32* y, s32* player) {
 }
 
 void EscortBase_8049E0C8::vfunc_0x7C() {
-    if (lbl_8053AAF8->fn_80138A30() == 1) {
+    if (gGameRoot_8053AAF8->fn_80138A30() == 1) {
         field_0x360 = 1;
     } else {
         field_0x360 = 4;

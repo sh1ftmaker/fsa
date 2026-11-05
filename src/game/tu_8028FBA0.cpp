@@ -73,7 +73,7 @@ inline void Player_804A6F38::followCamera() {
     if (field_0x3b4 < 8) {
         JGeometry::TVec3f pos = mPos;
         pos.y -= 150.0f;
-        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
 
@@ -292,7 +292,7 @@ void Player_804A6F38::fn_80290E90() {
         fn_80301D54(field_0x4);
     }
     field_0x400 = 0;
-    if (lbl_8053AAF8->field_0x7e == 0 && !fn_80240670()) {
+    if (gGameRoot_8053AAF8->field_0x7e == 0 && !fn_80240670()) {
         if (field_0xce4 < 8) {
             gAudioMgr_8053AF80->fn_8045815C(false);
         } else if (field_0xce4 == 8) {

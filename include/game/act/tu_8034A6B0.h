@@ -7,10 +7,10 @@
 #include "game/GameGlobals.h"
 
 // Named after its vtable, 0x804AC868.
-class cls_804AC868 : public ActorBase_804A5770 {
+class UnknownHTMK_804AC868 : public ActorBase_804A5770 {
 public:
-    cls_804AC868() {}
-    /* 0x08 */ virtual ~cls_804AC868();
+    UnknownHTMK_804AC868() {}
+    /* 0x08 */ virtual ~UnknownHTMK_804AC868();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

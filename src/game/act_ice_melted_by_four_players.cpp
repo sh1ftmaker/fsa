@@ -37,7 +37,7 @@ void IceMeltedByFourPlayers_804AE888::draw() {
     }
     void* res = fn_804032E8('TIMG', "yukikabe.bti");
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 

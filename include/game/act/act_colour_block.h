@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AE620.
-class cls_804AE620 : public ActorBase_804A5770 {
+class ColourBlock1Player_804AE620 : public ActorBase_804A5770 {
 public:
-    cls_804AE620() {}
-    /* 0x08 */ virtual ~cls_804AE620();
+    ColourBlock1Player_804AE620() {}
+    /* 0x08 */ virtual ~ColourBlock1Player_804AE620();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

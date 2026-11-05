@@ -137,7 +137,7 @@ void Player_804A6F38::fn_80285F44() {
 // Toggles field_0x13b8 on a Z press (pad trigger 0x10) while the player
 // takes part and is on layer 8 or above; below layer 8 it is cleared.
 void Player_804A6F38::fn_80286688() {
-    GameRoot_8049EF20* root = lbl_8053AAF8;
+    GameRoot_8049EF20* root = gGameRoot_8053AAF8;
     if (root->field_0x4c == GAME_MODE_B) {
         return;
     }
@@ -221,7 +221,7 @@ void Player_804A6F38::fn_80286B74() {
         return;
     }
     JGeometry::TVec3f target;
-    if (lbl_8053AAF8->field_0x7f && fn_80241794() <= 0 && !fn_80241200()) {
+    if (gGameRoot_8053AAF8->field_0x7f && fn_80241794() <= 0 && !fn_80241200()) {
         if (field_0x3dc == 0) {
             target.set(mPos.x + 16.0f, mPos.y, mPos.z);
         } else if (field_0x3dc == 1) {
@@ -1369,16 +1369,16 @@ void Player_804A6F38::fn_802870C8() {
     if (fn_80240808() && field_0xcfe == true && fn_802486A0() != 4) {
         field_0xcfe = false;
     }
-    if (!fn_802413E8() && !fn_802DEBF8() && !fn_802DEBA0() && !lbl_8053AAF8->field_0x7e && !fn_80240670() &&
+    if (!fn_802413E8() && !fn_802DEBF8() && !fn_802DEBA0() && !gGameRoot_8053AAF8->field_0x7e && !fn_80240670() &&
         fn_80246B10(0x40)) {
         if (fn_80246B10(0x100)) {
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             if (!camera->field_0x7f4) {
                 camera->field_0x7f5 = 1;
             }
         } else if (fn_80246B10(0x200)) {
             s32 player = field_0x4;
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             if (!camera->field_0x7f5) {
                 camera->field_0x7f4 = 1;
                 camera->field_0x7f8 = player;

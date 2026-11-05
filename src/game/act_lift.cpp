@@ -47,8 +47,8 @@ void Lift_804A6F6C::draw() {
     setRotScaleMtxS16(mtx, 0, field_0x238, 0, 1.0f);
     const char* name = lbl_804A6F48[getMode()];
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', name);
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', name);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
@@ -143,7 +143,7 @@ void Lift_804A6F6C::init() {
     if (((field_0x90 >> 17) & 0x1F) == 0) {
         field_0x90 = field_0x90 | 0x20000;
     }
-    field_0x23c = lbl_8053AAF8->field_0xa4->getResource(0x3F3F3F3F /* "????": a char constant would be a trigraph */, lbl_804A6F48[getMode()]);
+    field_0x23c = gGameRoot_8053AAF8->field_0xa4->getResource(0x3F3F3F3F /* "????": a char constant would be a trigraph */, lbl_804A6F48[getMode()]);
     ResTIMG* res = static_cast<ResTIMG*>(field_0x23c);
     mBox.i.x = -(s32)res->mSizeX / 2;
     mBox.i.y = -(s32)res->mSizeY / 2;

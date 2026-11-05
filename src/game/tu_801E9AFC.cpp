@@ -90,7 +90,7 @@ void cls_801E9AFC::fn_801E9C74() {
         sprites = outlines || element->hasSerials();
     }
     if (outlines || sprites) {
-        lbl_8053AB10->fn_8013B438();
+        gGameRoot2_8053AB10->fn_8013B438();
         GXClearVtxDesc();
         GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);

@@ -9,6 +9,6 @@ Remaining: .sdata2 85.71 %. The original has a fourth float (0.0 at 0x80540C0C, 
 Not forced (would need a fake use). extab/extabindex 40 % as in other units of this wave.
 
 SHARED-EDITS:
-- include/game/GameGlobals.h: GameRoot_8049EF20::fn_80134DE4(s32, s32) member (called on lbl_8053AAF8, (10, count)).
+- include/game/GameGlobals.h: GameRoot_8049EF20::fn_80134DE4(s32, s32) member (called on gGameRoot_8053AAF8, (10, count)).
 - config/G4SE01/symbols.txt: fn_80134DE4 -> fn_80134DE4__17GameRoot_8049EF20Fll.
 - config/G4SE01/gen_game.tsv: removed both act_wait_switch rows.

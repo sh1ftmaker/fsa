@@ -27,7 +27,7 @@ void fn_804408F0(JGeometry::TVec3f* pos);
 void fn_80440928(f32 x, f32 y);
 
 void fn_8043A0E8(bool force) {
-    if (lbl_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
         lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0 && !force) {
         return;
     }
@@ -38,7 +38,7 @@ void fn_8043A0E8(bool force) {
 }
 
 void fn_8043A170(s32 player, bool force) {
-    if (lbl_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
         lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0 && !force) {
         return;
     }
@@ -90,7 +90,7 @@ void cls_804B1920::fn_8043A268(s32 stage, s32 sub, s16 value, f32 x, f32 y) {
         (stage == 6 && sub == 2) || (stage == 7 && sub == 1)) {
         return;
     }
-    if (lbl_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
         s32 index = sub + stage * 4;
         void* res;
         if (index != 0) {
@@ -115,7 +115,7 @@ void cls_804B1920::fn_8043A450(s32 stage, s32 sub) {
         (stage == 6 && sub == 2) || (stage == 7 && sub == 1)) {
         return;
     }
-    if (lbl_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
         s32 index = sub + stage * 4;
         void* res;
         if (index != 0) {
@@ -189,8 +189,8 @@ void cls_804B1920::fn_8043A638() {
         }
         field_0x8->search('Pw0101')->move(field_0xf4, field_0xf8);
     }
-    lbl_8053AB10->fn_8013B490();
-    field_0x8->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x8->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 static const char* lbl_804B1900[] = {
@@ -239,7 +239,7 @@ void cls_804B1920::fn_8043CDA0() {
 
 void cls_804B1920::fn_8043CEA0() {
     field_0x104--;
-    if (lbl_8053AAF8->field_0x4c != 7) {
+    if (gGameRoot_8053AAF8->field_0x4c != 7) {
         field_0x104 = 0;
     }
     if (field_0x104 > 0) {
@@ -289,15 +289,15 @@ void cls_804B1920::fn_8043D034() {
         }
         // The screen height of 16 units at the origin.
         JGeometry::TVec3f origin(0.0f, 0.0f, 0.0f);
-        lbl_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &originScreen);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &originScreen);
         JGeometry::TVec3f top(0.0f, 16.0f, 0.0f);
-        lbl_8053AB10->field_0x24->fn_8030C5F0(&top, false, false, &topScreen);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&top, false, false, &topScreen);
         f32 margin = (topScreen.y - originScreen.y) +
                      ((s32)JUTVideo::getManager()->getEfbHeight() - field_0x40[9]->field_0xc);
         u8 side[4];
         field_0x10c = 0;
         for (int i = 0; i < 4; i++) {
-            lbl_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(i), false, false, &screen);
+            gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(i), false, false, &screen);
             side[i] = 0;
             if (screen.x > 0.0f && screen.x < (s32)JUTVideo::getManager()->getFbWidth() && screen.y > 0.0f &&
                 screen.y < (s32)JUTVideo::getManager()->getEfbHeight()) {
@@ -348,9 +348,9 @@ f32 cls_804B1920::fn_8043D57C() {
 }
 
 void cls_804B1920::fn_8043D5F0() {
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     field_0x4->setScissor(true);
-    field_0x4->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 void cls_804B1920::fn_8043D644() {
@@ -408,7 +408,7 @@ bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
 }
 
 void cls_804B1920::fn_8043D834() {
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041E58C();
     } else {
         field_0x294->fn_80425128();
@@ -416,7 +416,7 @@ void cls_804B1920::fn_8043D834() {
 }
 
 void cls_804B1920::fn_8043D874(s32 id, s32 arg1, u32 arg2) {
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041E708(id, arg1, arg2);
     } else {
         field_0x294->fn_80425234(id, arg1, arg2);
@@ -426,9 +426,9 @@ void cls_804B1920::fn_8043D874(s32 id, s32 arg1, u32 arg2) {
 // FIXME: 99.7. Registers only: the second loop counts in r28 (ours r29, the first loop's).
 void cls_804B1920::fn_8043D8B4() {
     int i;
-    if (lbl_8053AAF8->field_0x7e == 0) {
+    if (gGameRoot_8053AAF8->field_0x7e == 0) {
         for (i = 0; i < 4; i++) {
-            if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+            if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
                 s32 player = fn_8022EA0C(i);
                 if (getPlayerLayer_8023DE58(player) < 8) {
                     JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
@@ -444,17 +444,17 @@ void cls_804B1920::fn_8043D8B4() {
                 JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 fn_804408F0(&pos);
             }
-            if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+            if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
                 lbl_80529DEC.field_0xc8[i] = fn_80237810(i);
                 lbl_80529DEC.field_0xf8[i] = fn_802373EC(i);
             }
         }
     }
-    if (lbl_8053AAF8->field_0x7e != 0 && fn_8037E4BC()) {
+    if (gGameRoot_8053AAF8->field_0x7e != 0 && fn_8037E4BC()) {
         lbl_8053AED0->field_0xdc |= 4;
         lbl_8053AED0->field_0xdc |= 8;
     }
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041EDB0();
         if (field_0x2b0 != NULL) {
             field_0x2b0->fn_8044998C();
@@ -490,7 +490,7 @@ void cls_804B1920::fn_8043D8B4() {
     if (field_0x298 != NULL) {
         lbl_8053AEF0->fn_80443638();
     }
-    if (lbl_8053AAF8->field_0x85 != 0) {
+    if (gGameRoot_8053AAF8->field_0x85 != 0) {
         field_0x257 = 1;
     } else {
         field_0x257 = 0;
@@ -498,7 +498,7 @@ void cls_804B1920::fn_8043D8B4() {
 }
 
 void cls_804B1920::fn_8043DC98() {
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041F720();
         if (field_0x2b0 != NULL) {
             field_0x2b0->fn_8044A024();
@@ -537,7 +537,7 @@ void cls_804B1920::fn_8043DC98() {
     for (int i = 0; i < 4; i++) {
         lbl_8053AED0->field_0xdc &= ~(1 << i);
     }
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     fn_8043BB84();
     fn_8043ACE4();
     fn_8043A638();
@@ -549,10 +549,10 @@ void cls_804B1920::fn_8043DC98() {
         lbl_8053AEF0->fn_804435E4();
     }
     if (field_0x257 != 0) {
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         field_0xc->search('Ndata05')->move(field_0x110 + lbl_8050DB0C.field_0x4c[(0x2A2 - 0x4C) / 2],
                                            field_0x114 + lbl_8050DB0C.field_0x4c[(0x2A4 - 0x4C) / 2]);
-        field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -571,7 +571,7 @@ bool cls_804B1920::fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin) {
 
 void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     Vec screen;
-    lbl_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
     fn_80440928(screen.x, screen.y);
 }
 
@@ -584,7 +584,7 @@ void cls_804B1920::fn_8043EDF8() {
     field_0xdd = 0;
     field_0xdc = 0;
     field_0x255 = 0;
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041FC2C();
         if (field_0x2b0 != NULL) {
             field_0x2b0->fn_8044A06C();

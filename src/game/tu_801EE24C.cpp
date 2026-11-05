@@ -121,7 +121,7 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
         }
         bool raised = false;
         for (s32 i = 0; i < 4; i++) {
-            if ((lbl_8053AAF8->field_0x82 & (u8)(1 << i)) && field_0x4 >= 8 &&
+            if ((gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) && field_0x4 >= 8 &&
                 fn_8022BC38(i, field_0x4, &mPos) && fn_8030381C(i))
             {
                 if (id == 3) {
@@ -144,7 +144,7 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
 static inline void raisePlayersNear(const ActorBase_804A5770* actor, u32 value) {
     for (s32 i = 0; i < 4; i++) {
         if (fn_8022BC38(i, actor->getField_0x4(), &actor->mPos) && fn_8030381C(i) &&
-            (lbl_8053AAF8->field_0x82 & (u8)(1 << i)))
+            (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)))
         {
             fn_803037D4(i, value);
         }
@@ -161,7 +161,7 @@ JAISoundHandle* ActorBase_804A5770::startSound_801F0E34(u32 soundId, u32 fadeTim
         return NULL;
     }
     if (field_0x4 >= 8 &&
-        (lbl_8053AAF8->field_0x7e != 0 || (lbl_8053AAF8->field_0x83 & 3U) != 2))
+        (gGameRoot_8053AAF8->field_0x7e != 0 || (gGameRoot_8053AAF8->field_0x83 & 3U) != 2))
     {
         if (soundId == 0x30009) {
             raisePlayersNear(this, 8);
@@ -178,7 +178,7 @@ JAISoundHandle* ActorBase_804A5770::startSound_801F0E34(u32 soundId, u32 fadeTim
         }
     }
     ActorSoundObj_804578F4* sound =
-        lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
+        gGameRoot_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
     sound->field_0x44 = field_0x4 >= 8;
     if (getGameView_802D6A9C()->fn_802D7804(field_0x4, 0x800)) {
         sound->field_0x45 = 0;
@@ -209,7 +209,7 @@ JAISoundHandle* ActorBase_804A5770::startSound_801F0E34(u32 soundId, u32 fadeTim
 }
 
 ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() const {
-    return lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
+    return gGameRoot_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
 }
 
 // Whether pos is blocked on layer: by a tile, or by another actor's

@@ -75,8 +75,8 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
                 fn_801EF830(field_0x4, &mPos, &params, 7, "player_sob.bin", frame, NULL);
             }
             if (field_0x4 < 8) {
-                void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
             }
             if (field_0x4 == 8) {
                 JGeometry::TVec3f pos;
@@ -129,8 +129,8 @@ void ShadowLink2_804A43E8::fn_801D41B8() const {
         if (field_0x560 != 4) {
             params.field_0x0[7] = field_0x560 + 0xC;
         }
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
 }
 

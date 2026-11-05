@@ -31,6 +31,6 @@ void cls_804A2FB0::fn_801A90D4() {
     JGeometry::TVec3f rot(0.0f, field_0x2b4 / -10430.228f, 0.0f);
     setRotScaleMtx(mtx, rot, 1.0f);
     params.mMtx = mtx;
-    void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A2F2C[32]);
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A2F2C[32]);
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
 }

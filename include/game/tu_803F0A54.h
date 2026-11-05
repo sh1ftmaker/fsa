@@ -13,11 +13,11 @@ class cls_804B20F8;
 // The multiplayer (GameCube + GBA) connect screen: vtable 0x804B0F10,
 // constructor fn_803FCBC4 (game/tu_803F0A54.cpp); 0x354 bytes
 // (__nw__(0x354) in cls_804AF878's constructor fn_803A8884, which builds it
-// as its field_0x8 while lbl_8053AAF8->field_0x7f is clear, i.e. when the
+// as its field_0x8 while gGameRoot_8053AAF8->field_0x7f is clear, i.e. when the
 // game is not in single-player mode). It loads seven J2DScreens from the
 // archive fn_804031C4 reads (field_0x28 of lbl_80529DEC), counts the
 // connected controllers (fn_8030A308 on each player's input slot) into
-// lbl_8053AAF8->field_0x82 and runs a 13-state machine through three
+// gGameRoot_8053AAF8->field_0x82 and runs a 13-state machine through three
 // pointer-to-member tables (enter, update, draw); state 13 runs the
 // previous state's entries. The fade picture field_0x5c covers the screen
 // while field_0x25e is set.

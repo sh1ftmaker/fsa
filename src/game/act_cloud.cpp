@@ -78,7 +78,7 @@ void Cloud_8049CBE0::draw() {
     }
     void* res = field_0x2f8[key];
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
     }
 }
 
@@ -91,7 +91,7 @@ void Cloud_8049CBE0::init() {
     field_0x368 = field_0x90 >> 22 & 0x1F;
     field_0x35c = field_0x90 >> 27;
     for (s32 i = 0; i < 4; i++) {
-        field_0x2f8[i] = lbl_8053AAF8->field_0xa4->getResource('????', lbl_8049CBB0[field_0x36c][i]);
+        field_0x2f8[i] = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8049CBB0[field_0x36c][i]);
     }
     // FIXME: 88.48%. The original's dispatch is `cmpwi 1; beq state1; bge L;
     // b default; L: cmpwi 3; bge default; b state2`, with the blocks laid out

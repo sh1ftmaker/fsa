@@ -247,7 +247,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - `cmpw` operands swapped against a call result (`cmpw r3, rN` in the
   original): name the result first, `s32 owner = fn_X(...); if (owner ==
   player)`. That is a local read once, not a trick.
-- Game-mode test on lbl_8053AAF8 0x7F / 0x4C (cmpwi 7, 8, 9, 0x16, 0xA, 0xB
+- Game-mode test on gGameRoot_8053AAF8 0x7F / 0x4C (cmpwi 7, 8, 9, 0x16, 0xA, 0xB
   [, 0xC] in that order, never subi/cmplwi): `isGameModeSet()` (game/GameMode.h,
   `const s32` mode names; literals or enumerators fold into range checks).
   GameRoot2_8049F108::fn_8013B538 / fn_8013B618 (tu_8013AAD4).
@@ -283,14 +283,14 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   assigned `v.x = ...; v.y = ...;` (cls_800F802C::fn_800F802C).
 - Emitter deleted and cleared (field read again after bl getEffectSystem_8013C824):
   `deleteEmitter(&mEmitter)` (game/EmitterDelete.h: the manager in a local).
-  act_eyeball_switch cls_804AE678::vfunc_0x24.
+  act_eyeball_switch EyeballSwitch_804AE678::vfunc_0x24.
 - Plain calls, no wrapper: effect `spawnEmitter_8013CC50(field_0x4, &mPos, id, ...)` and
   sound `startSound_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
   `getActorManager_801F856C()->findActorBySerial_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
   `->spawnActor_801F9484(id, layer, &pos, arg, -1, -1)` (act_leaf_effect_npc_generator.cpp:58);
-  random `lbl_8053AAF8->mRandom.get_ufloat_1()` (tu_801C6A4C.cpp:75),
+  random `gGameRoot_8053AAF8->mRandom.get_ufloat_1()` (tu_801C6A4C.cpp:75),
   `(s32)(k * get_ufloat_1())` (act_sand_crab.cpp:49); resources
-  `lbl_8053AAF8->field_0xa4->getResource('SOB ', name)` (vtable slot 0x18,
+  `gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name)` (vtable slot 0x18,
   tu_803536C4.cpp:45).
 - J2D pane lookup through vtable slot 0x3C with a two-word tag (r5/r6):
   `mScreen->search(0x7072737374727431ull /* "prsstrt1" */)` (tu_803DA6B4.cpp:45).

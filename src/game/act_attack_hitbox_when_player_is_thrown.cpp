@@ -22,7 +22,7 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
     box.i.y += mPos.y;
     box.f.x += mPos.x;
     box.f.y += mPos.y;
-    s32 damage = lbl_8053AAF8->field_0x7f ? 0 : field_0x114;
+    s32 damage = gGameRoot_8053AAF8->field_0x7f ? 0 : field_0x114;
     for (s32 i = 0; i < 4; i++) {
         if (fn_80236BEC(i) || fn_8022E438(field_0x110, i) || fn_8022E438(field_0x230, i)) {
             continue;

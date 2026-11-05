@@ -59,7 +59,7 @@ void cls_804B1288::fn_80403F50() {
 }
 
 bool cls_804B1288::fn_804045F8(s32 bit) {
-    if (lbl_8053AAF8->field_0x7e) {
+    if (gGameRoot_8053AAF8->field_0x7e) {
         return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7a[0] & (u8)(1 << bit);
     }
     return false;

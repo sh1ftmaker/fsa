@@ -49,7 +49,7 @@ static inline f32 getScale(f32 z) {
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out) {
     f32 offset;
     if (params != NULL) {
-        u8 raised = lbl_8053AB10->field_0x20->field_0xe461;
+        u8 raised = gGameRoot2_8053AB10->field_0x20->field_0xe461;
         if (raised) {
             raised = params->field_0x20;
         }
@@ -94,13 +94,13 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
         m[0][3] += pos->x;
         m[1][3] += pos->y + offset;
         m[2][3] += pos->z + offset;
-        lbl_8053AB10->fn_8013B3CC(m);
+        gGameRoot2_8053AB10->fn_8013B3CC(m);
         out->x = out->y = out->z = 0.0f;
     } else {
-        lbl_8053AB10->fn_8013B3F0();
+        gGameRoot2_8053AB10->fn_8013B3F0();
         out->set(pos->x, pos->y + offset, pos->z + offset);
     }
-    lbl_8053AB10->fn_8013B1E8();
+    gGameRoot2_8053AB10->fn_8013B1E8();
     if (params != NULL && params->field_0x34 == 1) {
         GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_ONE, GX_LO_NOOP);
     } else if (params != NULL && params->field_0x34 == 2) {
@@ -394,10 +394,10 @@ void TileMap_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_80
         m[0][3] += pos->x;
         m[1][3] += pos->y + offset;
         m[2][3] += pos->z + offset;
-        lbl_8053AB10->fn_8013B3CC(m);
+        gGameRoot2_8053AB10->fn_8013B3CC(m);
         *loaded = true;
     } else {
-        lbl_8053AB10->fn_8013B3F0();
+        gGameRoot2_8053AB10->fn_8013B3F0();
     }
 }
 
@@ -417,7 +417,7 @@ void TileMap_804AA858::fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOf
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x200;
@@ -480,7 +480,7 @@ void TileMap_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOf
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x8000;
@@ -541,7 +541,7 @@ void TileMap_804AA858::fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstO
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x2000;
@@ -583,7 +583,7 @@ void TileMap_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x2000;
@@ -623,7 +623,7 @@ void TileMap_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOf
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x200;
@@ -698,7 +698,7 @@ void TileMap_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOf
         if (JKRDecomp::checkCompressed((u8*)res)) {
             resSize = JKRDecompExpandSize((u8*)res);
         } else {
-            resSize = lbl_8053AAF8->field_0xa4->getResSize((u8*)res);
+            resSize = gGameRoot_8053AAF8->field_0xa4->getResSize((u8*)res);
         }
         if (resSize < 0) {
             len = 0x8000;
@@ -737,8 +737,8 @@ void TileMap_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOf
 // field_0x235c / field_0x2360 byte is set (layers 0-3 at field_0x2368, 4-7 at
 // field_0x2374), and with field_0x2365 layer 0 a second time as pass 8.
 void TileMap_804AA858::fn_802FC80C() {
-    lbl_8053AB10->fn_8013B1E8();
-    lbl_8053AB10->fn_8013B438();
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    gGameRoot2_8053AB10->fn_8013B438();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
     GXSetVtxDesc(GX_VA_CLR0, GX_INDEX16);
@@ -764,7 +764,7 @@ void TileMap_804AA858::fn_802FC80C() {
     GXSetTevDirect(GX_TEVSTAGE0);
     if (field_0xe450) {
         s32 player;
-        if (isGameModeSet() && lbl_8053AAF8->field_0x4 != NULL) {
+        if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
             player = getGameView_802D6A9C()->field_0x50;
         } else {
             player = 0;
@@ -839,7 +839,7 @@ void TileMap_804AA858::fn_802FF2D8() {
 }
 
 void TileMap_804AA858::fn_802FF3B0() {
-    if (field_0xe451 != 0 && lbl_8053AAF8->field_0x4 != NULL) {
+    if (field_0xe451 != 0 && gGameRoot_8053AAF8->field_0x4 != NULL) {
         fn_802FA3FC();
     }
 }
@@ -849,14 +849,14 @@ void TileMap_804AA858::fn_802FF3B0() {
 // word by word and drops the stack copy. The loop registers swap as in fn_802FF2D8.
 void TileMap_804AA858::fn_802FF3F0() {
     if (field_0x248 && field_0x24c.x1 != 0) {
-        lbl_8053AB10->field_0x24->field_0x144 = field_0x24c;
+        gGameRoot2_8053AB10->field_0x24->field_0x144 = field_0x24c;
     } else {
         ScreenRect_802FF3F0 rect;
         rect.x0 = 0;
         rect.y0 = 0;
         rect.x1 = JUTVideo::getManager()->getFbWidth();
         rect.y1 = JUTVideo::getManager()->getEfbHeight();
-        lbl_8053AB10->field_0x24->field_0x144 = rect;
+        gGameRoot2_8053AB10->field_0x24->field_0x144 = rect;
     }
     fn_802FC80C();
     for (s32 i = 0; i < field_0xd320; i++) {
@@ -888,11 +888,11 @@ void TileMap_804AA858::fn_802FF568() {
     }
     field_0xbf98 = 1;
     field_0xe461 = 1;
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         for (s32 i = 0; i < 4; i++) {
             if (fn_8023F264(i)) {
                 // tu_80441A1C reads these 2-bit per-player fields the same way.
-                u32 mode = (lbl_8053AAF8->field_0x83 >> (i * 2)) & 3;
+                u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3;
                 if (mode == 2) {
                     field_0xe461 = 0;
                     break;
@@ -1061,10 +1061,10 @@ TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
         char name[32];
         sprintf(name, "filter%d.bti", i == 0 ? 1 : i);
         field_0xe428[i] = new (heap, 0) JUTTexture(
-            (ResTIMG*)lbl_8053AAF8->field_0xa4->getResource('????', name), 0);
+            (ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('????', name), 0);
     }
     field_0xe454 = new (heap, 0) JUTTexture(
-        (ResTIMG*)lbl_8053AAF8->field_0xa4->getResource('????', "circle2.bti"), 0);
+        (ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('????', "circle2.bti"), 0);
     field_0xfc = new (heap, 0) cls_804B1668();
     field_0x238c = new (heap, 0x20) u8[0x100];
 }

@@ -21,7 +21,7 @@ void ShadowLink2_804A43E8::fn_801C5B08(bool flag) {
     }
     s32 player = fn_801D05F8(&mPos, field_0x5ac);
     if (player < 0) {
-        if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
             fn_801C3B7C(0xF);
         } else {
             fn_801C3B7C(0x11);
@@ -36,7 +36,7 @@ void ShadowLink2_804A43E8::fn_801C5B08(bool flag) {
     if (field_0x59a == 0 && mStateTimer >= 0xF0 && fn_801D0DD4() && !(field_0x524 & 0x40)) {
         s32 layer = field_0x4;
         if (viewLayerFlag(layer) != 0 && !fn_801CC9F8(&mPos, field_0x4)) {
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
                 field_0x33c = 0x4000;
             } else {
                 field_0x33c = -0x4000;
@@ -74,7 +74,7 @@ void ShadowLink2_804A43E8::fn_801C5B08(bool flag) {
                 s16 delta = field_0x33c - angle;
                 f32 d = __fabsf((f32)delta) * (1.0f / 32768.0f);
                 if (d <= 0.3f) {
-                    if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.05f) {
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.05f) {
                         found = true;
                     }
                 }
@@ -111,7 +111,7 @@ void ShadowLink2_804A43E8::fn_801C5EBC(s32 player, bool flag) {
                 field_0x33c = 0x4000;
                 return;
             }
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
                 field_0x33c = 0x4000;
             } else {
                 field_0x33c = -0x4000;
@@ -139,8 +139,8 @@ void ShadowLink2_804A43E8::fn_801C5EBC(s32 player, bool flag) {
             field_0x33c = 0x4000;
             return;
         }
-        if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.3f) {
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.3f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
                 field_0x33c = 0x4000;
             } else {
                 field_0x33c = -0x4000;

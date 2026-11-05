@@ -42,7 +42,7 @@ void ForceGemRain_804A8010::update() {
         }
         if (field_0x24c != 0) {
             if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-                Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+                Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
                 if (cam->field_0x7f4 == 0) {
                     cam->field_0x7f5 = 1;
                 }
@@ -50,7 +50,7 @@ void ForceGemRain_804A8010::update() {
             return;
         }
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -139,9 +139,9 @@ void ForceGemRain_804A8010::update() {
                             range = 64.0f;
                         }
                         f32 twoRange = 2.0f * range;
-                        pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
-                        pos.y = mPos.y + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
-                        pos.x = mPos.x + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
+                        pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+                        pos.y = mPos.y + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                        pos.x = mPos.x + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                     } else {
                         f32 s = JMath::sincosTable_.mTable[(u16)angle >> 5].first;
                         f32 c = JMath::sincosTable_.mTable[(u16)angle >> 5].second;
@@ -171,26 +171,26 @@ void ForceGemRain_804A8010::update() {
     }
     case 1: {
         if (field_0x238 == 1) {
-            if (lbl_8053AAF8->fn_80138A30() == 2) {
+            if (gGameRoot_8053AAF8->fn_80138A30() == 2) {
                 field_0x240 = 0x50;
             }
-            if (lbl_8053AAF8->fn_80138A30() > 2) {
+            if (gGameRoot_8053AAF8->fn_80138A30() > 2) {
                 field_0x240 = 0x50;
                 field_0x234 = 2;
             }
         } else if (field_0x238 == 2) {
-            if (lbl_8053AAF8->fn_80138A30() == 2) {
+            if (gGameRoot_8053AAF8->fn_80138A30() == 2) {
                 field_0x240 = 0xF0;
             }
-            if (lbl_8053AAF8->fn_80138A30() > 2) {
+            if (gGameRoot_8053AAF8->fn_80138A30() > 2) {
                 field_0x240 = 0xF0;
                 field_0x234 = 2;
             }
         } else if (field_0x238 == 3) {
-            if (lbl_8053AAF8->fn_80138A30() > 1) {
+            if (gGameRoot_8053AAF8->fn_80138A30() > 1) {
                 field_0x240 = 0xFF;
-                if (lbl_8053AAF8->fn_80138A30() > 2) {
-                    field_0x234 = lbl_8053AAF8->fn_80138A30() - 1;
+                if (gGameRoot_8053AAF8->fn_80138A30() > 2) {
+                    field_0x234 = gGameRoot_8053AAF8->fn_80138A30() - 1;
                 }
             }
         }
@@ -199,7 +199,7 @@ void ForceGemRain_804A8010::update() {
     // fall through
     case 2: {
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -217,10 +217,10 @@ void ForceGemRain_804A8010::update() {
                         range = 64.0f;
                     }
                     f32 twoRange = 2.0f * range;
-                    pos.x = mPos.x + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
+                    pos.x = mPos.x + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                 } else {
                     f32 w = box->f.x - box->i.x;
-                    pos.x = w * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
+                    pos.x = w * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
                 }
                 pos.z = 0.0f;
             } else {
@@ -231,18 +231,18 @@ void ForceGemRain_804A8010::update() {
                         range = 64.0f;
                     }
                     f32 twoRange = 2.0f * range;
-                    pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
-                    pos.y = mPos.y + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
-                    pos.x = mPos.x + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
+                    pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+                    pos.y = mPos.y + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                    pos.x = mPos.x + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                 } else {
-                    pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+                    pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
                     f32 h = box->f.y - box->i.y;
-                    pos.y = h * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
+                    pos.y = h * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
                     f32 w = box->f.x - box->i.x;
-                    pos.x = w * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
+                    pos.x = w * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
                 }
             }
-            s32 t = (s32)(100.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+            s32 t = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             s32 pick;
             if (t < 5) {
                 pick = 2;
@@ -271,15 +271,15 @@ void ForceGemRain_804A8010::update() {
                     range = 64.0f;
                 }
                 f32 twoRange = 2.0f * range;
-                pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
-                pos.y = mPos.y + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
-                pos.x = mPos.x + (range - twoRange * lbl_8053AAF8->mRandom.get_ufloat_1());
+                pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+                pos.y = mPos.y + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                pos.x = mPos.x + (range - twoRange * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             } else {
-                pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+                pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
                 f32 h = box->f.y - box->i.y;
-                pos.y = h * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
+                pos.y = h * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
                 f32 w = box->f.x - box->i.x;
-                pos.x = w * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
+                pos.x = w * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
             }
             if (field_0x244 == 7) {
                 getActorManager_801F856C()->spawnActor_801F9484('LPLK', field_0x4, &mPos, 0x400, -1, -1);
@@ -291,16 +291,16 @@ void ForceGemRain_804A8010::update() {
     }
     case 3: {
         if (field_0x244 == 1) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
         }
-        pos.z = 50.0f * lbl_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
+        pos.z = 50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 300.0f;
         f32 h = box->f.y - box->i.y;
-        pos.y = h * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
+        pos.y = h * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.y;
         f32 w = box->f.x - box->i.x;
-        pos.x = w * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
+        pos.x = w * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
         if (viewLayerFlag(field_0x4)) {
             pos.y = mPos.y;
             pos.z = 0.0f;
@@ -324,7 +324,7 @@ void ForceGemRain_804A8010::update() {
     }
     case 4:
         if (field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }

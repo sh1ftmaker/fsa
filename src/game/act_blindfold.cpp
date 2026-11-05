@@ -42,9 +42,9 @@ void Blindfold_804A8EF8::draw() {
     params.field_0x14.mColor.b = 0;
     params.field_0x14.mColor.a = field_0x244;
     params.mMtx = mtx;
-    void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', "black.bti");
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "black.bti");
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
@@ -61,9 +61,9 @@ void Blindfold_804A8EF8::update() {
     JGeometry::TBox2f box(mBox);
     box.addPos(offset);
     bool covered = false;
-    if (lbl_8053AAF8->field_0x7e == 1) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
         for (s32 i = 0; i < 4; i++) {
-            bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+            bool takesPart = gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i);
             // Both branches are the same: the original has two full copies of the body (separate stack slots).
             if (takesPart == true) {
                 if (contains(box, *getPlayerPos_8023E724(fn_8022EA0C(i)))) {

@@ -22,7 +22,7 @@ cls_804A1E50::~cls_804A1E50() {
 }
 
 s32 fn_8018E89C() {
-    return lbl_8053AAF8->fn_80138A30();
+    return gGameRoot_8053AAF8->fn_80138A30();
 }
 
 // Out-of-line copy of TVec3<f32>::set(const TVec3&).

@@ -31,10 +31,10 @@ public:
 }; // Size: 0x268
 
 // Spawned for 'SIBT'.
-class cls_8049CB04 : public ActorBase_804A5770 {
+class TempleBTIDisplay_8049CB04 : public ActorBase_804A5770 {
 public:
-    cls_8049CB04() {}
-    /* 0x08 */ virtual ~cls_8049CB04();
+    TempleBTIDisplay_8049CB04() {}
+    /* 0x08 */ virtual ~TempleBTIDisplay_8049CB04();
     /* 0x230 */ u8 field_0x230[0x18];
 }; // Size: 0x248
 
@@ -216,34 +216,34 @@ public:
 }; // Size: 0x338
 
 // Spawned for 'ALCE'.
-class cls_804A2AB0 : public ActorBase_804A5770 {
+class AllEnemiesDefeated_804A2AB0 : public ActorBase_804A5770 {
 public:
-    cls_804A2AB0() {}
-    /* 0x08 */ virtual ~cls_804A2AB0();
+    AllEnemiesDefeated_804A2AB0() {}
+    /* 0x08 */ virtual ~AllEnemiesDefeated_804A2AB0();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
 // Spawned for 'SYKY'.
-class cls_804A2B18 : public ActorBase_804A5770 {
+class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
 public:
-    cls_804A2B18() {}
-    /* 0x08 */ virtual ~cls_804A2B18();
+    ShootingGallery_804A2B18() {}
+    /* 0x08 */ virtual ~ShootingGallery_804A2B18();
     /* 0x230 */ u8 field_0x230[0x80];
 }; // Size: 0x2B0
 
 // Spawned for 'TENN'.
-class cls_804A2BF4 : public ActorBase_804A5770 {
+class TennisShop_804A2BF4 : public ActorBase_804A5770 {
 public:
-    cls_804A2BF4() {}
-    /* 0x08 */ virtual ~cls_804A2BF4();
+    TennisShop_804A2BF4() {}
+    /* 0x08 */ virtual ~TennisShop_804A2BF4();
     /* 0x230 */ u8 field_0x230[0x124];
 }; // Size: 0x354
 
 // Spawned for 'SAYA'.
-class cls_804A2E30 : public ActorBase_804A5770 {
+class ZoraFishHerding_804A2E30 : public ActorBase_804A5770 {
 public:
-    cls_804A2E30() {}
-    /* 0x08 */ virtual ~cls_804A2E30();
+    ZoraFishHerding_804A2E30() {}
+    /* 0x08 */ virtual ~ZoraFishHerding_804A2E30();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
@@ -342,10 +342,10 @@ public:
 }; // Size: 0x320
 
 // Spawned for 'SWTH'.
-class cls_804A7F38 : public ActorBase_804A5770 {
+class Switch_804A7F38 : public ActorBase_804A5770 {
 public:
-    cls_804A7F38() {}
-    /* 0x08 */ virtual ~cls_804A7F38();
+    Switch_804A7F38() {}
+    /* 0x08 */ virtual ~Switch_804A7F38();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
@@ -376,10 +376,10 @@ public:
 }; // Size: 0x2F8
 
 // Spawned for 'SWDL'.
-class cls_804AA590 : public ActorBase_804A5770 {
+class PlayerSwordLevelCheckNPC_804AA590 : public ActorBase_804A5770 {
 public:
-    cls_804AA590() {}
-    /* 0x08 */ virtual ~cls_804AA590();
+    PlayerSwordLevelCheckNPC_804AA590() {}
+    /* 0x08 */ virtual ~PlayerSwordLevelCheckNPC_804AA590();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
@@ -392,10 +392,10 @@ public:
 }; // Size: 0x27C
 
 // Spawned for 'SBAL'.
-class cls_804AB9C0 : public ActorBase_804A5770 {
+class IronBallHoming_804AB9C0 : public ActorBase_804A5770 {
 public:
-    cls_804AB9C0() {}
-    /* 0x08 */ virtual ~cls_804AB9C0();
+    IronBallHoming_804AB9C0() {}
+    /* 0x08 */ virtual ~IronBallHoming_804AB9C0();
     /* 0x230 */ u8 field_0x230[0x40];
 }; // Size: 0x270
 
@@ -408,10 +408,10 @@ public:
 }; // Size: 0x26C
 
 // Spawned for 'BEMN'.
-class cls_804AC810 : public ActorBase_804A5770 {
+class BeeManager_804AC810 : public ActorBase_804A5770 {
 public:
-    cls_804AC810() {}
-    /* 0x08 */ virtual ~cls_804AC810();
+    BeeManager_804AC810() {}
+    /* 0x08 */ virtual ~BeeManager_804AC810();
     /* 0x230 */ u8 field_0x230[0x54];
 }; // Size: 0x284
 

@@ -30,8 +30,8 @@ void cls_804B1600::fn_8042EB24() {
 
 void cls_804B1600::fn_8042EB98() {
     if (field_0x12 != 0) {
-        lbl_8053AB10->fn_8013B490();
-        field_0x4->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -116,7 +116,7 @@ bool cls_804B1634::fn_80431174(u8 cursor) {
     if (field_0x8->search(0x0050776375723031ull)->mIsVisible) {
         field_0xe8--;
         if (field_0xe8 <= 0) {
-            field_0xe8 = 10 + (s32)(11.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+            field_0xe8 = 10 + (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             if (field_0xeb < 2) {
                 field_0xeb++;
             } else {
@@ -156,8 +156,8 @@ bool cls_804B1634::fn_80431174(u8 cursor) {
 
 void cls_804B1634::fn_804316EC() {
     if (field_0xec != 0) {
-        lbl_8053AB10->fn_8013B490();
-        field_0x8->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x8->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -186,7 +186,7 @@ BOOL cls_804B1634::fn_804317AC() {
             s32 n = (13 - field_0xe8) * (13 - field_0xe8);
             field_0xc->moveFromCentre_80402E08(0.0f, 20.0f * n / 9.0f);
             if (field_0xe8 >= 13) {
-                field_0xe8 = 10 + (s32)(11.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+                field_0xe8 = 10 + (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                 field_0xc->field_0x22 = 0;
                 return TRUE;
             }

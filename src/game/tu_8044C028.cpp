@@ -23,10 +23,10 @@ void cls_804B1D20::fn_8044C038() {
 
 void cls_804B1D20::fn_8044C14C() {
     if (field_0x18) {
-        lbl_8053AB10->fn_8013B490();
-        mScreen[0]->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen[0]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         mScreen[1]->setScissor(true);
-        mScreen[1]->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        mScreen[1]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         field_0x18 = false;
     }
 }

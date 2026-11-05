@@ -1,7 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/act/act_red_blue_switch.h"
 
-cls_804A9020::~cls_804A9020() {
+RedBlueSwitch_804A9020::~RedBlueSwitch_804A9020() {
     if (mEmitter230 != NULL) {
         releaseEmitter_801EE434(mEmitter230);
     }

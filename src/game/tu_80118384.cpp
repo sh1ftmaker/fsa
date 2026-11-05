@@ -149,7 +149,7 @@ void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) 
 // in r31; here the constructor result takes an extra move through r0.
 void cls_80119E5C::fn_80119D48() {
     if (field_0x2c == NULL) {
-        void* texture = lbl_8053AAF8->field_0xa4->getResource('????', lbl_80539F10);
+        void* texture = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_80539F10);
         field_0x2c = new J2DPicture((ResTIMG*)texture);
     }
 }

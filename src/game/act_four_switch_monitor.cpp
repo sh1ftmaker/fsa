@@ -42,7 +42,7 @@ static inline s32 slotsCollide(const s32* flags, const s32* keys) {
 }
 
 // FIXME: 91.98 %. The original runs the same slot check twice, once in each arm
-// of `lbl_8053AAF8->field_0x7e == 1` (two identical loops; `li r0, 0` before the
+// of `gGameRoot_8053AAF8->field_0x7e == 1` (two identical loops; `li r0, 0` before the
 // test), and ours runs it once, so the registers and block layout after it differ.
 // The switch table is `jumptable_804A80F4` in the original but a compiler-made
 // `@NNN` here (reloc-name, a data-naming issue). `(field_0x83 & 3) == 1` is an
@@ -72,7 +72,7 @@ void FourSwitchMonitor_804A80A0::update() {
                     fn_8022E2D8(0xF);
                     vfunc_0x30(0xFF, true);
                     field_0x230 = 1;
-                } else if (lbl_8053AAF8->field_0x7f == 0 || fixedSlot == -1) {
+                } else if (gGameRoot_8053AAF8->field_0x7f == 0 || fixedSlot == -1) {
                     fn_8022E2D8(0xF);
                     vfunc_0x30(0xFF, true);
                     for (s32 i = 0; i < 4; i++) {
@@ -134,7 +134,7 @@ void FourSwitchMonitor_804A80A0::update() {
                         pos.x = snapToCell(pos.x);
                         pos.y = snapToCell(pos.y);
                         fn_80230498(i, &pos, 0xE8, 0xFF, -0x80, -0x80, true);
-                        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
                     }
                 }
             }
@@ -147,7 +147,7 @@ void FourSwitchMonitor_804A80A0::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x23c--;
         if (field_0x23c == 0) {
@@ -164,12 +164,12 @@ void FourSwitchMonitor_804A80A0::update() {
                 field_0x230 = 4;
                 field_0x23c = 10;
                 if (field_0x234 == 4) {
-                    if ((lbl_8053AAF8->field_0x83 & 3) == 1) {
+                    if ((gGameRoot_8053AAF8->field_0x83 & 3) == 1) {
                         field_0x23c = 0x78;
                         field_0x240 = 0x3C;
                         for (s32 k = 0; k < 4; k++) {
                             u8 bit = 1 << k;
-                            bool entered = lbl_8053AAF8->field_0x82 & bit;
+                            bool entered = gGameRoot_8053AAF8->field_0x82 & bit;
                             if (entered == true) {
                                 fn_80230E1C(k, 0);
                             }
@@ -184,14 +184,14 @@ void FourSwitchMonitor_804A80A0::update() {
         break;
     case 4:
         if (field_0x234 == 4) {
-            lbl_8053AB10->field_0x20->field_0x216 = 1;
+            gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
             if (field_0x23c == field_0x240) {
                 vfunc_0x30(0xFF, true);
             }
         } else {
             for (s32 i = 0; i < 4; i++) {
                 JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-                lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
             }
         }
         if (field_0x23c == 0) {
@@ -211,7 +211,7 @@ void FourSwitchMonitor_804A80A0::update() {
     case 5:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x23c == 0) {
             if (fn_80230534(false)) {

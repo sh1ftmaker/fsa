@@ -26,10 +26,10 @@ struct cls_800F802C {
 }; // Size: 0x18
 
 // Named after its vtable, 0x8049C678.
-class cls_8049C678 : public ActorBase_804A5770 {
+class StoneArrghusChildPuff_8049C678 : public ActorBase_804A5770 {
 public:
-    cls_8049C678() {}
-    /* 0x08 */ virtual ~cls_8049C678();
+    StoneArrghusChildPuff_8049C678() {}
+    /* 0x08 */ virtual ~StoneArrghusChildPuff_8049C678();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

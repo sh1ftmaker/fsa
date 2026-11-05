@@ -505,10 +505,10 @@ void GameMode_804B0688::fn_803DE05C() {
         mMovieState = 3;
         if (field_0x80 == 0) {
             if (field_0x9e == 0) {
-                lbl_8053AAF8->field_0x7f = 1;
+                gGameRoot_8053AAF8->field_0x7f = 1;
                 field_0x68 = 3;
             } else if (field_0x9e == 1) {
-                lbl_8053AAF8->field_0x7f = 0;
+                gGameRoot_8053AAF8->field_0x7f = 0;
                 field_0x68 = 3;
             } else if (field_0x9e == 2) {
                 field_0x7c = 0.0f;
@@ -888,13 +888,13 @@ void GameMode_804B0688::fn_803DF2B4() {
 
 void GameMode_804B0688::fn_803DF624() {
     (lbl_8053ADD0->*lbl_804B0628[mState])();
-    lbl_8053AB10->fn_8013B490();
-    mMovieScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mMovieScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (mMovieState == 2) {
         mMovie->draw_80427D2C(50, 159, -356, -283);
     }
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
     if (mState == 5) {
         field_0x10->setAlpha(field_0x7c);
@@ -1036,25 +1036,25 @@ GameMode_804B0688::~GameMode_804B0688() {
 
 GameMode_804B0688::GameMode_804B0688() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
-    lbl_8053AB10->field_0x2c->fn_80158B3C();
+    gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x60 = new cls_804AF860;
     mMovie = new THPMovie_804B15D0;

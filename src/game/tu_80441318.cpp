@@ -18,7 +18,7 @@ static inline s32 centreY() {
 
 // Opens window `index` of the map object, 365 x 261 at (x, y).
 static inline void setWindow(s32 index, s32 flag, s32 x, s32 y) {
-    TileMap_804AA858* map = lbl_8053AB10->field_0x20;
+    TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
     map->field_0x22c = index;
     map->field_0x238 = x;
     map->field_0x23c = y;
@@ -84,7 +84,7 @@ static void (cls_804B19E0::*lbl_804B19BC[3])() = {
 // setWindow (lbl_8053A160 branch): the render-mode pointer and the map
 // object are r7 / r10 here, r6 / r8 in the target.
 void cls_804B19E0::fn_80441490() {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         field_0x4 = -1;
         s32 count = 0;
         s32 x = centreX();
@@ -96,13 +96,13 @@ void cls_804B19E0::fn_80441490() {
             }
         } else if (player == 4) {
             for (s32 i = 0; i < 4; i++) {
-                if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+                if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
                     if (getPlayerLayer_8023DE58(i) >= 8) {
                         count++;
                     }
                 }
             }
-            if (count == lbl_8053AAF8->fn_80138A30()) {
+            if (count == gGameRoot_8053AAF8->fn_80138A30()) {
                 field_0x4 = 0;
             }
         }

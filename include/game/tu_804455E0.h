@@ -21,8 +21,8 @@ public:
     // arrays below.
     virtual ~cls_804B1BB0();
 
-    // Calls lbl_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
-    // lbl_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Calls gGameRoot2_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
+    // gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80445CDC();
     // For each of the four slots: clears bits slot and slot + 4 of field_0x44,
     // resets the digit and rank pictures to their first TIMG names, and hides

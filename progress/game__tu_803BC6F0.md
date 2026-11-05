@@ -191,7 +191,7 @@ Written (try.py class):
 - fn_803CEED4 99.89 regalloc-only: the draw. Seven separate fn_803B8CAC tests (a loop with break isn't unrolled; the
   field_0xb8 search loop is). `lbl_8050EC80[i]` adds base + offset in ours, offset + base in the original (also in
   fn_803CABAC, fn_803C1734; fn_803B8CAC's own row lookups look the same: probably an inlined per-file accessor).
-- fn_803CABAC 98.14 different (cmpwi vs cmplwi on `lbl_8053AAF8->field_0xff`; u8 / bool / s8 all fail, an int accessor?),
+- fn_803CABAC 98.14 different (cmpwi vs cmplwi on `gGameRoot_8053AAF8->field_0xff`; u8 / bool / s8 all fail, an int accessor?),
   plus bob scheduling, the add order above, setBlackWhite copy slots. State 19, the file menu.
 - fn_803C1734 99.01 regalloc-only: opens the file menu (state 18).
 - fn_803BF9C4 98.49 scheduling+regalloc: opens the copy board (state 32). Function-scope `int i; int j;` stops each

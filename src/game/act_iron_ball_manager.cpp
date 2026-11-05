@@ -21,7 +21,7 @@ void IronBallManager_804ABA38::update() {
                     field_0x246--;
                     field_0x90 &= ~1;
                     if (field_0x248 < 2) {
-                        if (lbl_8053AAF8->mRandom.get_ufloat_1() <= field_0x23c) {
+                        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() <= field_0x23c) {
                             pos.x += 8.0;
                             field_0x23c = 0.2f;
                         } else {
@@ -29,7 +29,7 @@ void IronBallManager_804ABA38::update() {
                             field_0x23c = 0.8f;
                         }
                     } else {
-                        if (lbl_8053AAF8->mRandom.get_ufloat_1() <= field_0x23c) {
+                        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() <= field_0x23c) {
                             pos.y += 8.0f;
                             field_0x23c = 0.2f;
                         } else {
@@ -42,7 +42,7 @@ void IronBallManager_804ABA38::update() {
             getActorManager_801F856C()->spawnActor_801F9484('BALL', field_0x4, &pos, field_0x90 & 0xF80000FF, -1, -1);
         }
         if (field_0x240 <= 0) {
-            field_0x240 = field_0x244 + (s32)(field_0x245 * lbl_8053AAF8->mRandom.get_ufloat_1());
+            field_0x240 = field_0x244 + (s32)(field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         } else {
             field_0x240--;
         }
@@ -55,7 +55,7 @@ void IronBallManager_804ABA38::init() {
     field_0x23c = 0.5f;
     field_0x244 = (field_0x90 >> 8) & 0xFF;
     field_0x245 = (field_0x90 >> 16) & 0xFF;
-    field_0x240 = (s32)(field_0x245 * lbl_8053AAF8->mRandom.get_ufloat_1());
+    field_0x240 = (s32)(field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     field_0x246 = 5;
     field_0x247 = field_0x90 & 0xF;
     field_0x248 = (field_0x90 >> 4) & 0xF;

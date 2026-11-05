@@ -14,8 +14,8 @@
 // Draws frame `frame` of the "SOB " sprite sheet `name` at pos.
 static inline void drawSob(const char* name, const JGeometry::TVec3f& pos, s32 frame,
                            SpriteParams_801F5AE0* params) {
-    void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', name);
-    lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
 }
 
 // drawSob on the TV layers (below 8); the GBA layers draw through
@@ -63,7 +63,7 @@ void Player_804A6F38::fn_80264998() {
     if (field_0xcee == 1) {
         return;
     }
-    if (field_0x1215 && !isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
+    if (field_0x1215 && !isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)) {
         return;
     }
     u8 alpha = fn_8023FC5C();
@@ -78,9 +78,9 @@ void Player_804A6F38::fn_80264998() {
         SpriteParams_801F5AE0 markParams;
         markParams.field_0x1c = 1;
         markParams.field_0x2d = 1;
-        s32 counter = lbl_8053AAF8->field_0x5c;
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
+        s32 counter = gGameRoot_8053AAF8->field_0x5c;
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
                                               &markParams, 1.0f, 1.0f);
     }
     SpriteParams_801F5AE0 shadowParams;
@@ -221,7 +221,7 @@ void Player_804A6F38::fn_80264998() {
         bodyParams.field_0x10.mColor.r = level;
         bodyParams.field_0x10.mColor.g = level;
         bodyParams.field_0x10.mColor.b = level;
-    } else if (!lbl_8053AAF8->field_0x7f && field_0x1208 < 0x40) {
+    } else if (!gGameRoot_8053AAF8->field_0x7f && field_0x1208 < 0x40) {
         bodyParams.field_0x10.mColor.r = field_0x1208 * 4;
         bodyParams.field_0x10.mColor.g = field_0x1208 * 4;
         bodyParams.field_0x10.mColor.b = field_0x1208 * 4;
@@ -838,7 +838,7 @@ void Player_804A6F38::fn_80267384() {
 }
 
 void Player_804A6F38::fn_80267470() {
-    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && !fn_80240808()) {
+    if (!isPlayerBitSet(gGameRoot_8053AAF8, field_0x4) && !fn_80240808()) {
         field_0x3c4 = 0x31D;
     } else {
         fn_80268194();

@@ -3,7 +3,7 @@
 
 // The stage map and its collision, from three units:
 //
-// * game/tu_802F5040.cpp: TileMap_804AA858, the object at lbl_8053AB10->0x20
+// * game/tu_802F5040.cpp: TileMap_804AA858, the object at gGameRoot2_8053AB10->0x20
 //   (124 consumer units). It holds the screen's tile layers (u16 tile codes
 //   on a 32 x 32 grid of 16-unit cells, fn_802F9908 / fn_802F9974) and
 //   draws the "SOB " sprites (fn_802F86CC, fn_802F745C).
@@ -145,7 +145,7 @@ public:
     /* 0x58 */ u8 field_0x58[0x88 - 0x58];
 }; // Size: 0x88
 
-// lbl_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
+// gGameRoot2_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
 // allocated with __nw__(0xE464, heap, 0) in game/tu_8013AAD4.cpp
 // (0x8013C230-0x8013C25C).
 class TileMap_804AA858 {
@@ -232,7 +232,7 @@ public:
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
     // 0x802FF3B0 (game/tu_802F5040.cpp): no arguments. Calls fn_802FA3FC
-    // when byte 0xE451 is set and lbl_8053AAF8->field_0x4 is not NULL.
+    // when byte 0xE451 is set and gGameRoot_8053AAF8->field_0x4 is not NULL.
     void fn_802FF3B0();
     // 0x802FA3FC (game/tu_802F5040.cpp, not written yet): no arguments; reads
     // this's 0x2368 / 0x2374 / 0x235C / 0x2380 fields (r15 = r3 on entry).

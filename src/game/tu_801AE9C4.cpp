@@ -3,7 +3,7 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_801AE9C4.h"
 
-cls_804A3448::~cls_804A3448() {}
+OkameSan_804A3448::~OkameSan_804A3448() {}
 
 // TIMG names indexed by field_0x24c. Not const: the table sits in .data.
 static const char* lbl_804A33D0[] = {
@@ -17,9 +17,9 @@ static const char* lbl_804A33D0[] = {
     "e_tes_nobi_tate_3.bti",   "e_tes_nobi_tate_2.bti",   "e_tes_nobi_tate_1.bti",
 };
 
-void cls_804A3448::draw() {
+void OkameSan_804A3448::draw() {
     SpriteParams_801F5AE0 params;
-    void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A33D0[field_0x24c]);
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A33D0[field_0x24c]);
     fn_801EFD34(res, &params, -1, field_0x26c, field_0x270, 0.0f);
 }
 
@@ -28,7 +28,7 @@ static u32 lbl_804A33B8[] = {'OKTA', 'PEAC', 'STAL'};
 static u32 lbl_804A33C4[] = {0, 0, 2};
 
 // FIXME: 99.90 %. The sdata2 literals differ only by @NNN names (data split).
-void cls_804A3448::init() {
+void OkameSan_804A3448::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x240 = 0;
@@ -38,7 +38,7 @@ void cls_804A3448::init() {
     field_0x238 = 0;
     field_0x23c = 0;
 
-    if (lbl_8053AAF8->fn_80138A30() <= 1) {
+    if (gGameRoot_8053AAF8->fn_80138A30() <= 1) {
         s32 k = (field_0x90 >> 8) & 0xF;
         if (k > 2) {
             k = 0;
@@ -81,7 +81,7 @@ void cls_804A3448::init() {
 // registers than the original's (box i.x in f29 where it has f31, mPos.x in
 // f31 where it has f27); the same instructions otherwise. The sdata2
 // literals and the jump table differ only by @NNN names (data split).
-void cls_804A3448::fn_801AF1EC() {
+void OkameSan_804A3448::fn_801AF1EC() {
     JGeometry::TVec2f center;
     s32 result = -1;
     JGeometry::TVec2f pos;
@@ -160,7 +160,7 @@ void cls_804A3448::fn_801AF1EC() {
     }
 }
 
-void cls_804A3448::fn_801AF678() {
+void OkameSan_804A3448::fn_801AF678() {
     if (field_0x234 != 0) {
         return;
     }
@@ -213,7 +213,7 @@ void cls_804A3448::fn_801AF678() {
 // FIXME: 83.46 %. The (6, 5) early return is `cmpwi r4,5; bne; blr` in the
 // original; ours is `cmpwi r4,5; beqlr`, one instruction fewer. The
 // jump table and the sdata2 literals differ only by @NNN names (data split).
-void cls_804A3448::fn_801AF7D0(s32 state) {
+void OkameSan_804A3448::fn_801AF7D0(s32 state) {
     if (field_0x258 == state) {
         return;
     }

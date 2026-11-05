@@ -5,11 +5,11 @@
 #include "game/Camera.h"
 #include "game/act/tu_802F4AEC.h"
 
-cls_804AA800::~cls_804AA800() {}
+UnknownGSCK_804AA800::~UnknownGSCK_804AA800() {}
 
-void cls_804AA800::draw() {}
+void UnknownGSCK_804AA800::draw() {}
 
-void cls_804AA800::update() {
+void UnknownGSCK_804AA800::update() {
     // FIXME: 99.34%. Registers only: the original keeps bit3 (field_0x90 >> 7) in r28,
     // bit1 in r30 and bit2 in r27; here bit3 gets r30, bit1 r28, and the player
     // loop counters get r27 (original r28/r30).
@@ -52,7 +52,7 @@ void cls_804AA800::update() {
     case 2:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x238--;
         if (field_0x238 == 0) {
@@ -74,7 +74,7 @@ void cls_804AA800::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x238 == 0) {
             if (fn_80230534(false)) {
@@ -89,7 +89,7 @@ void cls_804AA800::update() {
     }
 }
 
-void cls_804AA800::init() {
+void UnknownGSCK_804AA800::init() {
     field_0x230 = 0;
     update();
 }

@@ -180,7 +180,7 @@ bool SmallKey_804A8CD8::fn_802C2300(u8 playerBits) {
     }
 
     if (!getGameView_802D6A9C()->fn_802D46D8(field_0x2a0, 0x168, false)) {
-        if (lbl_8053AAF8->field_0x7e == 1) {
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
             if (fn_802308E0(field_0x2a0) == true) {
                 fn_8022FE80(field_0x2a4, field_0x4, mSerial, 0, 0);
             }

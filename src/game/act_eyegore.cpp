@@ -35,7 +35,7 @@ void Eyegore_804A3548::draw() {
     mtx[1][3] = 0.0f;
     mtx[2][3] = 0.0f;
     params.mMtx = mtx;
-    void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A34F8[field_0x250]);
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A34F8[field_0x250]);
     fn_801EFD34(res, &params, 3, 0.0f, -9.0f, 0.0f);
 }
 
@@ -139,7 +139,7 @@ void Eyegore_804A3548::update() {
             field_0x244 = 0;
             mTimers[0] = 0;
             field_0x24c = 0;
-            mTimers[2] = (s32)(140.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 140;
+            mTimers[2] = (s32)(140.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 140;
             field_0x230 = 4;
         }
         break;
@@ -178,13 +178,13 @@ void Eyegore_804A3548::update() {
         }
         field_0xb0 = 0x0A040010;
         field_0xbc = 3;
-        mTimers[1] = (s32)(20.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 20;
+        mTimers[1] = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 20;
         field_0x230 = 5;
         // fall through
     case 5:
         if (hit) {
             field_0x98 ^= 2;
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
                 field_0x98 ^= 1;
             }
             f32 savedX = mPos.x;
@@ -228,7 +228,7 @@ void Eyegore_804A3548::update() {
             field_0x3c.z = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
-            mTimers[3] = (s32)(20.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 20;
+            mTimers[3] = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 20;
             mTimers[0] = 0;
             field_0x3c.z = 0.0f;
             field_0x3c.y = 0.0f;
@@ -260,7 +260,7 @@ void Eyegore_804A3548::update() {
                 mTimers[0] = 0;
                 field_0x244 = 0;
                 field_0x250 = field_0x98 + 0x10;
-                mTimers[2] = (s32)(60.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 60;
+                mTimers[2] = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 60;
                 field_0x230 = 0;
             } else {
                 if (mTimers[0] == 0) {
@@ -290,7 +290,7 @@ void Eyegore_804A3548::update() {
 
 // Runs only when mLife has changed since the last call.
 // FIXME: 99.04 %. regalloc-only: the zero for mTimers[0] and field_0x244 is
-// in r6 and the lbl_8053AAF8 pointer in r5 here, the other way round in the
+// in r6 and the gGameRoot_8053AAF8 pointer in r5 here, the other way round in the
 // original; the 1.0f and 60.0f literals are @NNN, not lbl_8053E888 /
 // lbl_8053E8BC (the unit's .sdata2 is not split yet).
 void Eyegore_804A3548::vfunc_0x44() {
@@ -305,7 +305,7 @@ void Eyegore_804A3548::vfunc_0x44() {
         mTimers[0] = 0;
         field_0x244 = 0;
         field_0x250 = field_0x98 + 0x10;
-        mTimers[2] = (s32)(60.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x3C;
+        mTimers[2] = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x3C;
         field_0x230 = 0;
     }
 }

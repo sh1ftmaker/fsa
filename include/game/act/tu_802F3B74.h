@@ -11,10 +11,10 @@
 // identified yet. When its two player fields agree it spawns a PEFF
 // ("Player effect") actor and opens message field_0x230 for that player
 // (fn_8038BD08), and removes itself once the window is idle again.
-class cls_804AA6A0 : public ActorBase_804A5770 {
+class UnknownDMYK_804AA6A0 : public ActorBase_804A5770 {
 public:
-    cls_804AA6A0() {}
-    /* 0x08 */ virtual ~cls_804AA6A0();   // fn_802F3B74
+    UnknownDMYK_804AA6A0() {}
+    /* 0x08 */ virtual ~UnknownDMYK_804AA6A0();   // fn_802F3B74
     /* 0x0C */ virtual void init();       // fn_802F3C8C
     /* 0x14 */ virtual void update();     // fn_802F3BD8
     /* 0x20 */ virtual void draw();       // fn_802F3BD4, empty

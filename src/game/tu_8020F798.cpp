@@ -56,8 +56,8 @@ void Thief_804A5A30::fn_8020F80C(s32 frame) {
         mPos.z -= lbl_8046A238[mType].mHeight;
     }
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
     if (field_0x4 == 8) {
         JGeometry::TVec3f pos;

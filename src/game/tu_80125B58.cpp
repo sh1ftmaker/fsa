@@ -74,8 +74,8 @@ void cls_8049E350::draw() {
             pos.x += -10.0f;
         }
         if (field_0x4 < 8) {
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, mAnim27c.mCel + 0x2A3, NULL, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, mAnim27c.mCel + 0x2A3, NULL, 1.0f, 1.0f);
         }
     }
 }

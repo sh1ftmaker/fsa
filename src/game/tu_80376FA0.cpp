@@ -63,14 +63,14 @@ void cls_804AE7D8::draw() {
     case 0: {
         void* res = fn_804032E8('TIMG', "yy_1_1_iwa1.bti");
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
         break;
     }
     case 1: {
         void* res = fn_804032E8('TIMG', "yy_1_1_iwa2.bti");
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
         break;
     }

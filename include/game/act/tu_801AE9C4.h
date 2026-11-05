@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A3448.
-class cls_804A3448 : public ActorBase_804A5770 {
+class OkameSan_804A3448 : public ActorBase_804A5770 {
 public:
-    cls_804A3448() {}
-    /* 0x08 */ virtual ~cls_804A3448();
+    OkameSan_804A3448() {}
+    /* 0x08 */ virtual ~OkameSan_804A3448();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

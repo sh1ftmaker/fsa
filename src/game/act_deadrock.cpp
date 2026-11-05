@@ -136,14 +136,14 @@ void Deadrock_8049F498::update() {
         field_0x234 = 8;
         if (field_0x238 == 0 && field_0x254 == 0) {
             if ((field_0x98 & 2) == 0) {
-                f32 u = lbl_8053AAF8->mRandom.get_ufloat_1();
+                f32 u = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
                 if (u < 0.5f) {
                     field_0x98 = 2;
                 } else {
                     field_0x98 = 3;
                 }
             } else {
-                f32 u = lbl_8053AAF8->mRandom.get_ufloat_1();
+                f32 u = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
                 if (u < 0.5f) {
                     field_0x98 = 0;
                 } else {
@@ -173,7 +173,7 @@ void Deadrock_8049F498::update() {
                 break;
             }
             field_0x234 = 0;
-            f32 hold = lbl_8053AAF8->mRandom.get_ufloat_1();
+            f32 hold = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
             field_0x238 = (s32)(50.0f * hold) + 50;
             field_0x230 = 1;
         }
@@ -185,7 +185,7 @@ void Deadrock_8049F498::update() {
                 field_0x24c = 1;
             }
             field_0x234 = 8;
-            field_0x238 = (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 50;
+            field_0x238 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 50;
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
@@ -206,7 +206,7 @@ void Deadrock_8049F498::update() {
         break;
     case 4:
         if (field_0x23c == 0) {
-            f32 u = lbl_8053AAF8->mRandom.get_ufloat_1();
+            f32 u = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
             field_0x98 = (s32)(3.99f * u) & 3;
             switch (field_0x98) {
             case 0:
@@ -258,7 +258,7 @@ void Deadrock_8049F498::init() {
     field_0x80.i.y = -8.0f;
     field_0x80.f.x = 8.0f;
     field_0x80.f.y = 8.0f;
-    field_0x98 = (s32)(3.99f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 3;
+    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3;
     field_0x234 = 0;
     field_0x238 = 0;
     field_0x23c = 0;

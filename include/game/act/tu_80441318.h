@@ -7,7 +7,7 @@
 
 #include "types.h"
 
-// Picks the window (lbl_8053AB10->field_0x20's field_0x22c) one player's
+// Picks the window (gGameRoot2_8053AB10->field_0x20's field_0x22c) one player's
 // screen shows. Named after its vtable, 0x804B19E0 (only the destructor,
 // fn_80441730); the constructor is fn_80441778. fn_80441490 steps the state
 // machine below and sets the window; the two empty members are called by the

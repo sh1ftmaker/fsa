@@ -350,7 +350,7 @@ void Title_804AF820::fn_803A34A0() {
                     mAnm->setFrame(frame);
                 } else {
                     // The original reads mAnm's frame count after drawing the random number.
-                    s32 wait = (s32)(200.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+                    s32 wait = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                     if (frame >= wait + mAnm->getFrameMax() + 400) {
                         field_0x5c = 0;
                     }
@@ -406,7 +406,7 @@ inline void Title_804AF820::drawTitle(f32 blink) {
     mScreen->search('Ptlogo02')->setAlpha(field_0x4c);
     mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
     mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x82 > 0 && field_0x4c == 255.0f) {
         field_0x82--;
     }
@@ -426,23 +426,23 @@ void Title_804AF820::fn_803A44D8() {
     }
     f32 blink = 0.0f;
     if (mMovieState != 0) {
-        lbl_8053AB10->fn_8013B438();
+        gGameRoot2_8053AB10->fn_8013B438();
         mMovie->draw_80427D2C(0, 0, 0, 0);
         if (lbl_80529DEC.field_0x249[0] != 0 && field_0x80 != 0) {
             if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
                 field_0x82 == 0) {
                 calcBlink(blink);
             }
-            lbl_8053AB10->fn_8013B490();
+            gGameRoot2_8053AB10->fn_8013B490();
             mScreen->search('Pntd')->setAlpha(field_0x4c);
             mScreen->search('Ptlogo01')->setAlpha(0);
             mScreen->search('Ptlogo02')->setAlpha(0);
             mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
             mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-            mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+            mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         }
     } else {
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         if (lbl_80529DEC.field_0x238 == 0xFF && lbl_80529DEC.field_0x249[0] != 0) {
             if (field_0x154 == 1) {
                 // The six cloud models and the title's effects.
@@ -454,7 +454,7 @@ void Title_804AF820::fn_803A44D8() {
                 fn_8013AC54(mtx);
                 PSMTXCopy(mtx, info.mCamMtx);
                 C_MTXLightOrtho(info.mPrjMtx, 448.0f, 0.0f, 0.0f, 608.0f, 0.5f, 0.5f, 0.5f, 0.5f);
-                fn_8016D398(mtx, lbl_8053AAF8->field_0x5c, true, true, &field_0x90, &field_0x84, &field_0x88,
+                fn_8016D398(mtx, gGameRoot_8053AAF8->field_0x5c, true, true, &field_0x90, &field_0x84, &field_0x88,
                             &field_0x8c, field_0x11c, field_0x134, 7.0f);
                 for (int i = 0; i < 6; i++) {
                     mtx[0][0] = 1.0f;
@@ -476,7 +476,7 @@ void Title_804AF820::fn_803A44D8() {
                 manager->draw(&info, 0);
             }
             if (field_0x150 == 1) {
-                lbl_8053AB10->fn_8013B490();
+                gGameRoot2_8053AB10->fn_8013B490();
                 field_0x20->setAlpha(field_0x68);
                 field_0x20->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
             }
@@ -517,12 +517,12 @@ void Title_804AF820::fn_803A44D8() {
             }
             case 5:
             case 6:
-                lbl_8053AB10->fn_8013AB00();
+                gGameRoot2_8053AB10->fn_8013AB00();
                 lbl_80529DEC.field_0x251 = 1;
                 break;
             case 9:
                 if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_OFF) {
-                    lbl_8053AB10->fn_8013AAD4();
+                    gGameRoot2_8053AB10->fn_8013AAD4();
                 }
             case 10:
             case 11:
@@ -551,22 +551,22 @@ void Title_804AF820::fn_803A44D8() {
 void Title_804AF820::fn_803A5380() {
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
-            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
-            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x154 = 1;
     field_0x14c = 0;
@@ -731,6 +731,6 @@ Title_804AF820::Title_804AF820() {
     field_0x34[2] = NULL;
     field_0x34[3] = NULL;
     field_0x44 = NULL;
-    lbl_8053AB10->field_0x20->field_0x2364 = 1;
+    gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     lbl_80529DEC.field_0x250 = 0;
 }

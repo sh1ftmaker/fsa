@@ -19,10 +19,10 @@ public:
 }; // Size: 0x238
 
 // Named after its vtable, 0x8049C4C0.
-class cls_8049C4C0 : public ActorBase_804A5770 {
+class Boulder_8049C4C0 : public ActorBase_804A5770 {
 public:
-    cls_8049C4C0() {}
-    /* 0x08 */ virtual ~cls_8049C4C0();
+    Boulder_8049C4C0() {}
+    /* 0x08 */ virtual ~Boulder_8049C4C0();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

@@ -2,7 +2,7 @@
 #define GAME_CLS_804A7BE8_H
 
 // Code: game/tu_8029C584.cpp. An actor whose vtable is at 0x804A7BE8
-// (__vt__12cls_804A7BE8; the spawner's FORM case, docs/names/actors.tsv,
+// (__vt__20UnknownFORM_804A7BE8; the spawner's FORM case, docs/names/actors.tsv,
 // low confidence, so no real name yet). Named after its vtable. Its
 // constructor is not in this unit (set by 0x8020130C); the destructor,
 // init, update and draw are, and override the base's slots 0x8, 0xC, 0x14
@@ -10,11 +10,11 @@
 
 #include "game/ActorBase.h"
 
-class cls_804A7BE8 : public ActorBase_804A5770 {
+class UnknownFORM_804A7BE8 : public ActorBase_804A5770 {
 public:
     // 0x8029CF44: vtable slot 0x8. r4 = the delete flag; > 0 frees the
     // object (__dl__FPv). Runs its own cleanup, then the base's destructor.
-    virtual ~cls_804A7BE8();
+    virtual ~UnknownFORM_804A7BE8();
 
     // 0x8029CFF8: vtable slot 0xC. Sets up the actor from its position and
     // the player and view state; no arguments read.

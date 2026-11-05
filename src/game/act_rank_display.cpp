@@ -20,7 +20,7 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
 // Whether player i takes part (the bit of GameRoot's field_0x82).
 static inline bool playerTakesPart(s32 i) {
     u8 playerBit = 1 << i;
-    return lbl_8053AAF8->field_0x82 & playerBit;
+    return gGameRoot_8053AAF8->field_0x82 & playerBit;
 }
 
 // The rank colours: red, green and blue, each indexed by field_0x244.
@@ -77,7 +77,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F50[field_0x244[i]]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -107,7 +107,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noItem_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -137,7 +137,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noMagic_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -171,7 +171,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F60[field_0x28c[i] - 4]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -190,18 +190,18 @@ void RankDisplay_804A8F74::update() {
     mPos.x = player->x;
     mPos.y = player->y;
     mPos.z = player->z;
-    if (lbl_8053AAF8->field_0x7e == 1) {
-        if (lbl_8053AAF8->field_0x7f == 1) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+        if (gGameRoot_8053AAF8->field_0x7f == 1) {
             // One time per player that takes part in the stage, ranked by
             // fn_80236100 (the lowest time first).
             s32 times[4];
-            for (s32 i = 0; i < lbl_8053AAF8->fn_80138A30(); i++) {
+            for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
                 times[i] = fn_80236100(i);
             }
-            for (s32 i = 0; i < lbl_8053AAF8->fn_80138A30(); i++) {
+            for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
                 s32 rank = 0;
                 s32 time = times[i];
-                for (s32 j = 0; j < lbl_8053AAF8->fn_80138A30(); j++) {
+                for (s32 j = 0; j < gGameRoot_8053AAF8->fn_80138A30(); j++) {
                     if (i != j && time < times[j]) {
                         rank++;
                     }
@@ -237,7 +237,7 @@ void RankDisplay_804A8F74::update() {
                     if (playerTakesPart(k) == false) {
                         continue;
                     }
-                    u8 mode = lbl_8053AAF8->field_0x7f;
+                    u8 mode = gGameRoot_8053AAF8->field_0x7f;
                     if (!((mode == 1 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x88 != 0) ||
                           (mode == 0 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x89 != 0))) {
                         continue;
@@ -295,7 +295,7 @@ void RankDisplay_804A8F74::update() {
 }
 
 void RankDisplay_804A8F74::init() {
-    if (lbl_8053AAF8->field_0x7e == 1 && !fn_802DEBF8() && !fn_802DEBA0() && !fn_802DE814()) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1 && !fn_802DEBF8() && !fn_802DEBA0() && !fn_802DE814()) {
         field_0x278 = 1;
     } else {
         field_0x278 = 0;
@@ -307,7 +307,7 @@ void RankDisplay_804A8F74::init() {
         field_0x244[i] = 0;
         field_0x254[i] = 0;
         field_0x274[i] = 0xFF;
-        if (lbl_8053AAF8->field_0x82 & playerBit) {
+        if (gGameRoot_8053AAF8->field_0x82 & playerBit) {
             field_0x264[i] = fn_80237774(i);
         } else {
             field_0x264[i] = 0;

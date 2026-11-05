@@ -20,7 +20,7 @@ MessageManager_804AF070* lbl_8053AD78;
 
 bool fn_8037E4BC() {
     for (s32 i = 0; i < 4; i++) {
-        bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+        bool takesPart = gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i);
         if (takesPart && lbl_8053AD78->mWindows[i]->fn_80390818() == 1) {
             return true;
         }
@@ -90,7 +90,7 @@ bool fn_8037EC98(s32 player, u16 flags) {
     if ((flags & 4) || (flags & 2)) {
         return true;
     }
-    if (lbl_8053AAF8->field_0x7e == 1) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
         return fn_802308E0(index);
     }
     s32 players[4];
@@ -288,7 +288,7 @@ bool MessageManager_804AF070::fn_80389964(s32 exclude, u32 msg, u32 flags) {
     u8 ready[4];
     for (int i = 0; i < 4; i++) {
         ready[i] = 0;
-        if (i != exclude && (lbl_8053AAF8->field_0x82 & (u8)(1 << i))) {
+        if (i != exclude && (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i))) {
             if (!fn_8022FA80(i) && fn_8037F1E4(i) == 0) {
                 if ((flags & 4) || (flags & 2) || msg == 0x265) {
                     if (fn_80230188(i)) {
@@ -527,7 +527,7 @@ static inline void clearOnPress() {
 void fn_8038D570() {
     lbl_8053AD78->field_0xe7 = 0;
     for (s32 i = 0; i < 4; i++) {
-        bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+        bool takesPart = gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i);
         if (takesPart == true) {
             lbl_8053AD78->mWindows[i]->mIndex = i;
             lbl_8053AD78->mWindows[i]->fn_80390EBC();
@@ -570,7 +570,7 @@ void fn_8038D570() {
         }
     }
     if (lbl_8053AD78->field_0xed != 0) {
-        for (s32 i = 0; i < lbl_8053AAF8->fn_80138A30(); i++) {
+        for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
             lbl_8053ACD8[i] = 1;
         }
     }

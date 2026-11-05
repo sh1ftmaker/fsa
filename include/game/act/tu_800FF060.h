@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x8049C858.
-class cls_8049C858 : public ActorBase_804A5770 {
+class HammerShopMinigame_8049C858 : public ActorBase_804A5770 {
 public:
-    cls_8049C858() {}
-    /* 0x08 */ virtual ~cls_8049C858();
+    HammerShopMinigame_8049C858() {}
+    /* 0x08 */ virtual ~HammerShopMinigame_8049C858();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

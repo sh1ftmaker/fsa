@@ -2,7 +2,7 @@
 #include "game/Player.h"
 #include "game/act/tu_800F7FCC.h"
 
-cls_8049C678::~cls_8049C678() {}
+StoneArrghusChildPuff_8049C678::~StoneArrghusChildPuff_8049C678() {}
 
 void cls_800F802C::fn_800F802C() {
     if (!mActive) {

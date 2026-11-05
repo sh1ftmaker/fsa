@@ -7,7 +7,7 @@
 // spawner. Its own code is game/tu_801F6058.cpp (vtable 0x804A5800,
 // constructor fn_801F9078). One instance, allocated with
 // __nw__(0x3060, heap, 0) in game/tu_80139BE8.cpp and
-// stored at offset 0x8 of the object lbl_8053AAF8->0x4 points to; reach it
+// stored at offset 0x8 of the object gGameRoot_8053AAF8->0x4 points to; reach it
 // with getActorManager_801F856C().
 //
 // "ActorManager_804A5800" is a provisional name carrying its vtable address
@@ -120,7 +120,7 @@ public:
     // Non-virtual members other units call: every export of
     // game/tu_801F6058.cpp whose callers pass the manager in r3 (the result
     // of getActorManager_801F856C at all but a few calls; tu_80139BE8 loads it from
-    // GameRoot 0x4->0x8, tu_801EE24C from lbl_8053AAF8). "N units / M
+    // GameRoot 0x4->0x8, tu_801EE24C from gGameRoot_8053AAF8). "N units / M
     // calls" counts the other game units that call it and their calls.
     // As in ActorBase.h, the names stay dtk's placeholders and symbols.txt
     // carries the mangled name each declaration produces
@@ -133,7 +133,7 @@ public:
     // 2 units / 2 calls. field_0x3030[i] (0x801F6058).
     s32 fn_801F6058(s32 i);
     // Called by the update pass (fn_801F871C) first. Ranks the players
-    // taking part (lbl_8053AAF8 field_0x82) by fn_80236228, highest first:
+    // taking part (gGameRoot_8053AAF8 field_0x82) by fn_80236228, highest first:
     // field_0x3020 the values, field_0x3030 the player indices (others get
     // -9999 and 3); the entries past the last player repeat it.
     void fn_801F6068();
@@ -335,7 +335,7 @@ enum ActorParamColumn {
 // callers do not pass the manager in r3).
 //
 // Defined in game/tu_801F6058.cpp (C++ linkage, renamed in symbols.txt).
-// 241 units / 1662 calls. lbl_8053AAF8->0x4->0x8: the actor manager.
+// 241 units / 1662 calls. gGameRoot_8053AAF8->0x4->0x8: the actor manager.
 ActorManager_804A5800* getActorManager_801F856C(void);
 
 // Defined in game/tu_801F6058.cpp. 21 units / 38 calls. True when pos (x, y) is outside the view's box
@@ -366,7 +366,7 @@ void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
 // placeholder name as the link name until that unit defines it.
 extern "C" {
 
-// 6 units / 12 calls. Gets the manager itself (lbl_8053AAF8->0x4->0x8)
+// 6 units / 12 calls. Gets the manager itself (gGameRoot_8053AAF8->0x4->0x8)
 // and does fn_801F7F58's search for the single id `id` (a stack
 // {id, 'NULL'} list): the serial of an actor overlapping `actor` on its
 // layer, other than excludeSerial, or -1. Callers pass the actor in r3

@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AB968.
-class cls_804AB968 : public ActorBase_804A5770 {
+class IronBall_804AB968 : public ActorBase_804A5770 {
 public:
-    cls_804AB968() {}
-    /* 0x08 */ virtual ~cls_804AB968();
+    IronBall_804AB968() {}
+    /* 0x08 */ virtual ~IronBall_804AB968();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

@@ -61,8 +61,8 @@ void cls_804A5E98::draw() {
         fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
     }
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
 }
 
@@ -85,7 +85,7 @@ void cls_804A5E98::vfunc_0xA0() {
         JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z, 0.0f);
         f32 top = 0.001f + box->i.y;
         pos.y = top - pos.y >= 0.0f ? top : pos.y;
-        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
 

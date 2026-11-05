@@ -127,7 +127,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
     case 5:
         setBox(mBox, -8.0f, 8.0f);
         setBox(field_0x80, -8.0f, 8.0f);
-        if (lbl_8053AAF8->field_0x7e) {
+        if (gGameRoot_8053AAF8->field_0x7e) {
             field_0x250 = 6;
         } else {
             field_0x250 = 12;

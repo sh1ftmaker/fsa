@@ -54,7 +54,7 @@ void Fairy_804A03B8::init() {
     field_0x234 = 0x400;
     field_0x280 = 10.0f;
     field_0x23c = 10;
-    field_0x240 = (s32)(30.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 30;
+    field_0x240 = (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 30;
     field_0x260 = (field_0x90 >> 22) & 0x1F;
     field_0x258 = (field_0x90 >> 4) & 0xF;
     field_0x25c = field_0x90 & 0xF;
@@ -66,7 +66,7 @@ void Fairy_804A03B8::init() {
     } else {
         field_0x25c = -1;
     }
-    field_0x248 = (s32)(32768.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+    field_0x248 = (s32)(32768.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     field_0x230 = 0;
     field_0xb0 = 0x20000;
     field_0x254 = -1;
@@ -101,7 +101,7 @@ void Fairy_804A03B8::init() {
     mEmitter290 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
     mEmitter294 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
     if (field_0x230 == 0 || field_0x230 == 5) {
-        if (lbl_8053AAF8->field_0x7f == 1) {
+        if (gGameRoot_8053AAF8->field_0x7f == 1) {
             SaveRow_8050EC80& row = lbl_8050EC80[lbl_8050EC80[0].field_0x10];
             if ((row.field_0x87 & 1) == 0) {
                 row.field_0x87 |= 1;

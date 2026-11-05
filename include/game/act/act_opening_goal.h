@@ -21,7 +21,7 @@ public:
 
     // 0x8011A4BC: called from update(). Fades the five colour bytes below
     // towards their targets (state 1 and 2) and copies them to the shadow
-    // sprite's colour (lbl_8053AB10->0x2C).
+    // sprite's colour (gGameRoot2_8053AB10->0x2C).
     void fn_8011A4BC();
 
     /* 0x230 */ u8 field_0x230; // set to 1 by the constructor, not yet known

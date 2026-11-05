@@ -26,7 +26,7 @@ void EnemySpawnArea_804A2CB0::update() {
                     u32 id = mEnemyId;
                     u32 param = mEnemyParam;
                     if (mEnemyId == 0) {
-                        s32 pick = (s32)(5.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
+                        s32 pick = (s32)(5.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                         id = lbl_804A2C80[pick];
                         param = lbl_804A2C80[pick + 1];
                     }
@@ -39,8 +39,8 @@ void EnemySpawnArea_804A2CB0::update() {
                     } else {
                         pos.x += 16.0f * i;
                     }
-                    pos.x += 8.0f - 16.0f * lbl_8053AAF8->mRandom.get_ufloat_1();
-                    pos.y += 8.0f - 16.0f * lbl_8053AAF8->mRandom.get_ufloat_1();
+                    pos.x += 8.0f - 16.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    pos.y += 8.0f - 16.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
                     mSerials[i] = getActorManager_801F856C()->spawnActor_801F9484(id, field_0x4, &pos, param, -1, -1);
                     if (mSerials[i] != 0) {
                         getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HBMB, field_0x4, &pos, 0xB, -1, -1);

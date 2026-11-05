@@ -73,7 +73,7 @@ void EnemyGenerator3_804AA1D0::update() {
         if (mTimer == 0) {
             u32 param = lbl_8046F450[mTypeIndex];
             getActorManager_801F856C()->spawnActor_801F9484(mActorId, field_0x4, &mPos, param, -1, -1);
-            if (gAudioMgr_8053AF80->field_0x58 != 0x1000021 && lbl_8053AAF8->field_0x7f == 1 &&
+            if (gAudioMgr_8053AF80->field_0x58 != 0x1000021 && gGameRoot_8053AAF8->field_0x7f == 1 &&
                 mFlag == 0) {
                 gAudioMgr_8053AF80->fn_80458FF0(0x1000021, 1, false);
             }

@@ -11,7 +11,7 @@ static u8 lbl_80539E68[] = {0, 3, 1, 2};
 
 // FIXME: update (0x800F3E08) and init (0x800F43D0) are not written yet:
 // init draws a random number through the TRandom_fast_ at
-// lbl_8053AAF8->0xB4, which GameGlobals.h does not declare yet (G1 item 2).
+// gGameRoot_8053AAF8->0xB4, which GameGlobals.h does not declare yet (G1 item 2).
 
 Rat_8049C400::~Rat_8049C400() {}
 

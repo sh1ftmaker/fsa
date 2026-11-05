@@ -26,7 +26,7 @@ void FireballGenerator_804A6660::vfunc_0x90(u8 mapHit) {
 
 void FireballGenerator_804A6660::init() {
     EnemyBase_804A4808::init();
-    if (lbl_8053AAF8->field_0x7e != 0) {
+    if (gGameRoot_8053AAF8->field_0x7e != 0) {
         if ((field_0x90 >> 1) & 1) {
             mAlive = false;
             return;

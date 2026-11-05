@@ -16,9 +16,9 @@ static const u32 lbl_80466880[5] = {'TOMI', 'BMST', 'IPOT', 'IBBM', 'NULL'};
 s32 lbl_804A10A0[24] = {3, 4, 0, 8, 9, 5, 0xD, 0xE, 0xA, 0x12, 0x13, 0xF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 s32 lbl_804A1100[24] = {0, 1, 2, 5, 6, 7, 0xA, 0xB, 0xC, 0xF, 0x10, 0x11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-cls_804A1160::~cls_804A1160() {}
+UnknownSWBM_804A1160::~UnknownSWBM_804A1160() {}
 
-void cls_804A1160::draw() {
+void UnknownSWBM_804A1160::draw() {
     SpriteParams_801F5AE0 params;
     if (field_0x230 == 1 || field_0x230 == 2) {
         if (field_0x240 == 0) {
@@ -29,8 +29,8 @@ void cls_804A1160::draw() {
     }
     s32 frame = field_0x254 + 0x12d;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f,
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f,
                                               1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + 0x12d, false, 2, -1, 0, 0, 0);
@@ -45,7 +45,7 @@ static inline void spawnHitEffect(s32 layer, const JGeometry::TVec3f* pos) {
     }
 }
 
-void cls_804A1160::update() {
+void UnknownSWBM_804A1160::update() {
     mPos += field_0x3c;
 
     if (field_0x25c == 1) {
@@ -133,7 +133,7 @@ void cls_804A1160::update() {
             mAlive = false;
         }
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
         }
         break;
     }
@@ -160,7 +160,7 @@ void cls_804A1160::update() {
 // beq, and the 0x10..0x17 test is two cmpwi here, subi + cmplwi 7 in the
 // original. The fn_8020D6AC call also loads pos into r5 after serial's copy
 // to r6, the reverse of the original.
-bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+bool UnknownSWBM_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, lbl_80466880) == 1) {
@@ -228,7 +228,7 @@ bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-void cls_804A1160::init() {
+void UnknownSWBM_804A1160::init() {
     field_0x80.i.x = -2.0f;
     field_0x80.i.y = -2.0f;
     field_0x80.f.x = 2.0f;

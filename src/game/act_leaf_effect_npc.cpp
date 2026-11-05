@@ -22,7 +22,7 @@ inline void LeafEffectNPC_804AE2E0::spawnLeaves() {
 
 // The tile code under pos on the actor's layer.
 static inline u16 tileCodeAt(LeafEffectNPC_804AE2E0* self, const JGeometry::TVec2f* pos) {
-    return lbl_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(pos, self->field_0x4)) &
+    return gGameRoot2_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(pos, self->field_0x4)) &
            0x3FF;
 }
 

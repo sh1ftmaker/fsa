@@ -25,12 +25,12 @@ void cls_8049E848::update() {
         field_0x238++;
         if (field_0x238 >= field_0x23c) {
             s32 idx;
-            if (lbl_8053AAF8->field_0x7f) {
+            if (gGameRoot_8053AAF8->field_0x7f) {
                 field_0x240--;
                 if (field_0x240 < 0) {
                     field_0x240 = 3;
                 }
-                if (lbl_8053AAF8->field_0x7e) {
+                if (gGameRoot_8053AAF8->field_0x7e) {
                     idx = lbl_804650F8[field_0x240];
                 } else {
                     idx = field_0x240;

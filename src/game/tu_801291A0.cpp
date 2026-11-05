@@ -32,7 +32,7 @@ bool cls_8049E5B8::fn_80129200() {
         if (mKindCount <= 0) {
             kind = 1;
         } else {
-            kind = mKinds[(s32)(mKindCount * lbl_8053AAF8->mRandom.get_ufloat_1())];
+            kind = mKinds[(s32)(mKindCount * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
         }
     }
     switch (kind) {
@@ -40,12 +40,12 @@ bool cls_8049E5B8::fn_80129200() {
         mSpawned = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CRTL, field_0x4, &pos, field_0x280, -1, -1);
         break;
     case 2: {
-        s32 item = mItems[(s32)(mItemCount * lbl_8053AAF8->mRandom.get_ufloat_1())];
+        s32 item = mItems[(s32)(mItemCount * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
         if (mItemCount == 0) {
-            item = mItems[(s32)(10.0f * lbl_8053AAF8->mRandom.get_ufloat_1())];
+            item = mItems[(s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
         }
         u32 arg;
-        if ((lbl_8053AAF8->mRandom.get_ufloat_1() >= 0.8f && item != 2) || item == 11) {
+        if ((gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.8f && item != 2) || item == 11) {
             arg = item | 0x800180;
         } else {
             arg = item | 0x400180;

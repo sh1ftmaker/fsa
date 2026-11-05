@@ -36,7 +36,7 @@ void Pengator_804A1888::draw() {
 // differently (0x254 reloaded, 0.3f and 5.0f hoisted above the stores); (3)
 // the tail's field_0x23c decrement goes through `this + 8` in the original
 // (addi r4, r29, 8; stw 0x234(r4)), which natural `-= 1` doesn't reproduce;
-// (4) several register choices (lbl_8053AAF8 and the zero literal swap).
+// (4) several register choices (gGameRoot_8053AAF8 and the zero literal swap).
 void Pengator_804A1888::update() {
     // Entry copies: the box and the position's x, y are read before the calls.
     JGeometry::TBox2f box(field_0x80);
@@ -100,10 +100,10 @@ void Pengator_804A1888::update() {
                 field_0x3c.y = 0.0f;
                 field_0x3c.x = 0.0f;
             }
-            field_0x238 = (s32)(100.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
+            field_0x238 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
             bool flag = moved;
             if (!moved) {
-                if (lbl_8053AAF8->mRandom.get_ufloat_1() >= 0.7f) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.7f) {
                     field_0x234 = 8;
                     flag = true;
                 } else if (outDir != -1) {
@@ -115,9 +115,9 @@ void Pengator_804A1888::update() {
             }
             if (flag) {
                 if (field_0x98 & 2) {
-                    field_0x98 = (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 0 : 1;
+                    field_0x98 = (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 0 : 1;
                 } else {
-                    field_0x98 = (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 2 : 3;
+                    field_0x98 = (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 2 : 3;
                 }
             }
         }
@@ -224,7 +224,7 @@ void Pengator_804A1888::update() {
         field_0x3c.z = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.x = 0.0f;
-        field_0x23c = (s32)(100.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
+        field_0x23c = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
         field_0x230 = 0;
         break;
     }
@@ -247,7 +247,7 @@ void Pengator_804A1888::vfunc_0x18() {
 }
 
 // FIXME: 99.00 %. Regalloc only: the zero literal of the 0x234-0x248 stores
-// is in r7 in the original and r8 here (it swaps with the lbl_8053AAF8
+// is in r7 in the original and r8 here (it swaps with the gGameRoot_8053AAF8
 // pointer loaded after it).
 void Pengator_804A1888::init() {
     mBox.i.x = -8.0f;
@@ -264,7 +264,7 @@ void Pengator_804A1888::init() {
     field_0x234 = 0;
     field_0x238 = 0;
     field_0x23c = 0;
-    field_0x98 = (s32)(3.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
+    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     field_0x24c = field_0x98 << 2;
     field_0x260 = 0.0f;
     field_0x25c = 0.0f;

@@ -105,10 +105,10 @@ void Tektite_8049FD50::update() {
             } else {
                 field_0x3c.z = 12.0f;
             }
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
                 fn_801EEC98(mSerial, &angle, &dir, NULL, NULL, 0, 0);
             } else {
-                angle = (s32)(65536.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+                angle = (s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             }
             field_0x258.x = 2.0f * JMASinShort(angle);
             field_0x258.y = 2.0f * JMACosShort(angle);
@@ -143,10 +143,10 @@ void Tektite_8049FD50::update() {
             field_0x3c.z = 0.0f;
             mPos.z = 0.0f;
             field_0xb0 = 0x11101;
-            field_0x238 = 50 + (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+            field_0x238 = 50 + (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             if (field_0x90 & 1) {
                 if (mLife < 8) {
-                    field_0x238 = 4 + (s32)(8.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+                    field_0x238 = 4 + (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                 }
             }
             field_0x230 = 0;
@@ -191,7 +191,7 @@ void Tektite_8049FD50::init() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     field_0x254 = 0xFFFF;
     if (field_0x90 == 4 || field_0x90 == 5) {
-        u16 angle = (s32)(65536.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        u16 angle = (s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         s32 dir;
         fn_801EEC98(mSerial, &angle, &dir, NULL, NULL, 0, 0);
         if (dir >= 0) {
@@ -207,7 +207,7 @@ void Tektite_8049FD50::init() {
         field_0x230 = 1;
     } else {
         field_0xb0 = 0x11101;
-        field_0x238 = 0x14 + (s32)(20.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        field_0x238 = 0x14 + (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         field_0x250 = 0;
         field_0x230 = 0;
     }

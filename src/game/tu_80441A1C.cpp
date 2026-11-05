@@ -10,9 +10,9 @@
 static cls_804B19F0* lbl_8053AEE0;
 
 void cls_804B19F0::fn_80442200() {
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     if (field_0x18 != 0) {
-        field_0x4->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -57,7 +57,7 @@ void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
     field_0x1c = 0;
     char* str = ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->getStringPtr();
     s32 player = field_0x14;
-    u32 mode = (lbl_8053AAF8->field_0x83 >> (player * 2)) & 3;
+    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
     if (mode == 1) {
         getMessageText_803832BC(str, 0x3B, player + 1, NULL, NULL);
     } else if (mode == 2) {
@@ -72,7 +72,7 @@ void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
 // original loads the magic double and 480.0f before the ratio's first lfs).
 s32 cls_804B19F0::fn_80441A1C() {
     s32 player = field_0x14;
-    u32 mode = (lbl_8053AAF8->field_0x83 >> (player * 2)) & 3;
+    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
     if (mode == 1) {
         if (lbl_8053AD30->fn_8030A258(getPlayerInputSlot_8030AAF4(player))) {
             if (field_0x8->field_0x26 > lbl_8050DB0C.field_0x4c[36]) {
@@ -97,7 +97,7 @@ s32 cls_804B19F0::fn_80441A1C() {
 
     switch (field_0x18) {
     case 1: {
-        u32 bits = (lbl_8053AAF8->field_0x83 >> (field_0x14 * 2)) & 3;
+        u32 bits = (gGameRoot_8053AAF8->field_0x83 >> (field_0x14 * 2)) & 3;
         if (bits == 2) {
             if (!lbl_8053AD30->fn_8030A2E4(getPlayerInputSlot_8030AAF4(field_0x14))) {
                 break;
@@ -173,7 +173,7 @@ s32 cls_804B19F0::fn_80441A1C() {
         s32 count1 = 0;
         s32 count2 = 0;
         for (s32 i = 0; i < 4; i++) {
-            u32 bits = (lbl_8053AAF8->field_0x83 >> (i * 2)) & 3;
+            u32 bits = (gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3;
             if (bits != 0) {
                 count1++;
                 if (bits == 1) {
@@ -181,7 +181,7 @@ s32 cls_804B19F0::fn_80441A1C() {
                         count2++;
                     }
                 }
-                u32 bits2 = (lbl_8053AAF8->field_0x83 >> (i * 2)) & 3;
+                u32 bits2 = (gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3;
                 if (bits2 == 2) {
                     if (!lbl_8053AD30->fn_8030A364(getPlayerInputSlot_8030AAF4(i))) {
                         count2++;

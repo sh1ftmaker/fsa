@@ -137,7 +137,7 @@ void ActorManager_804A5800::fn_801F6884() {
 }
 
 s32 ActorManager_804A5800::fn_801F68E0() {
-    cls_804A03A8* obj = lbl_8053AB10->field_0x30;
+    cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
     if (!obj->field_0x284) {
         obj->field_0x284 = 1;
         obj->field_0x28c = 0.05f;
@@ -578,7 +578,7 @@ s32 ActorManager_804A5800::fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVe
 }
 
 ActorManager_804A5800* getActorManager_801F856C(void) {
-    return lbl_8053AAF8->field_0x4->mActorManager;
+    return gGameRoot_8053AAF8->field_0x4->mActorManager;
 }
 
 // Deletes the actor in `slot` (releasing its sound object first) and, when it
@@ -613,7 +613,7 @@ void ActorManager_804A5800::fn_801F857C() {
 
 void ActorManager_804A5800::fn_801F8658() {
     bool paused = false;
-    if (lbl_8053AAF8->fn_80134CC8()) {
+    if (gGameRoot_8053AAF8->fn_80134CC8()) {
         paused = true;
     }
     for (u32 i = 0; i < ACTOR_MANAGER_MAX_ACTORS; i++) {

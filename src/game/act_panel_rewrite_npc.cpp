@@ -112,7 +112,7 @@ void PanelRewriteNPC_804A8E40::vfunc_0x54(u8 arg) {
 // code under the actor.
 static inline void writeCell(PanelRewriteNPC_804A8E40* p) {
     if (p->field_0x234 == 0x30 || p->field_0x234 == 0x10) {
-        lbl_8053AB10->field_0x20->fn_802F9974(p->field_0x4 + p->field_0x256, p->field_0x250, p->field_0x234);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9974(p->field_0x4 + p->field_0x256, p->field_0x250, p->field_0x234);
     } else {
         u16 tile = fn_80226998(&p->mPos, p->field_0x4);
         if (tile == 2) {
@@ -204,7 +204,7 @@ PanelRewriteNPC_804A8E40::~PanelRewriteNPC_804A8E40() {
 }
 
 void PanelRewriteNPC_804A8E40::vfunc_0x10() {
-    u8 gameFlag = lbl_8053AAF8->fn_80138A30();
+    u8 gameFlag = gGameRoot_8053AAF8->fn_80138A30();
     s32 keep = 0;
     if (field_0x248 == 0) {
         keep = 1;
@@ -242,7 +242,7 @@ void PanelRewriteNPC_804A8E40::vfunc_0x10() {
         } else {
             field_0x24c = false;
         }
-        field_0x254 = lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x250);
+        field_0x254 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x250);
         field_0x230 = 0;
 
         if (field_0x234 == 0x30) {
@@ -252,12 +252,12 @@ void PanelRewriteNPC_804A8E40::vfunc_0x10() {
             getGameView_802D6A9C()->fn_802D4874(field_0x4, field_0x250, &bit, &mask);
             if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, field_0x250) == true) {
                 field_0x234 = 0x10;
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
                 mAlive = false;
             }
         } else if (field_0x234 >= 0x8B && field_0x234 <= 0x8E) {
             if (getGameView_802D6A9C()->fn_802D49A8(field_0x4, field_0x250) == true) {
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
                 field_0x230 = 1;
             }
         } else if (field_0x234 == 0x17 || field_0x234 == 0x16) {

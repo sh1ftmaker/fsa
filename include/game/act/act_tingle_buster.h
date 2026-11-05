@@ -19,7 +19,7 @@ public:
 
 // 0x801E3250, called by tu_801DE714. Whether the TINB actor on `layer`
 // (fn_801F7884) has a kind (low nibble of field_0x90, or the next one when
-// `highNibble`) that is 0, or 2 / 1 depending on lbl_8053AAF8->field_0x7e.
+// `highNibble`) that is 0, or 2 / 1 depending on gGameRoot_8053AAF8->field_0x7e.
 bool fn_801E3250(s32 layer, bool highNibble);
 
 #endif

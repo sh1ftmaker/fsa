@@ -32,8 +32,8 @@ void ForceGem2_804AB850::draw() {
         params.mMtx = mtx;
         s32 frame = field_0x24c + lbl_804AB810[field_0x264];
         if (field_0x4 < 8) {
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         return;
     }
@@ -52,8 +52,8 @@ void ForceGem2_804AB850::draw() {
         params.field_0x2d = 1;
         s32 frame = field_0x24c + lbl_804AB810[field_0x264];
         if (field_0x4 < 8) {
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x24c + lbl_804AB810[field_0x264], false, 2, -1, 0, 0, 0);
@@ -94,7 +94,7 @@ void ForceGem2_804AB850::update() {
     switch (mState) {
     case 0: {
         addCalc2_801F71A4(&mPos.z, 4.0f * JMath::sincosTable_.sinShort(field_0x250) + 24.0f, 0.3f, 1.0f);
-        field_0x250 += (s32)(256.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x200;
+        field_0x250 += (s32)(256.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x200;
         s32 mode = field_0x94;
         if (mode < 3) {
             if (mode >= 1 && field_0x244 == 0) {
@@ -201,7 +201,7 @@ void ForceGem2_804AB850::update() {
         field_0x24c += 1;
         field_0x24c &= 3;
         if (field_0x24c == 0) {
-            field_0x240 = (s32)(60.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 60;
+            field_0x240 = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 60;
         } else {
             field_0x240 = 2;
         }
@@ -261,18 +261,18 @@ void ForceGem2_804AB850::init() {
     }
     mRadius = 30.0f;
     mState = 0;
-    // FIXME: 99.35 %. The seed constant 0x19660D and the lbl_8053AAF8 pointer
+    // FIXME: 99.35 %. The seed constant 0x19660D and the gGameRoot_8053AAF8 pointer
     // swap r4/r5 (ours: constant in r5, original r4); the code is otherwise identical.
-    mAngle = (s32)(65535.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+    mAngle = (s32)(65535.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     switch (field_0x94) {
     case 1:
         mPos.z = 24.0f;
         field_0x98 = 2;
-        field_0x98 |= (s32)(1.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        field_0x98 |= (s32)(1.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         break;
     case 2:
         mPos.z = 24.0f;
-        field_0x98 |= (s32)(1.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
+        field_0x98 |= (s32)(1.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         break;
     case 3:
         mTimer = -100;

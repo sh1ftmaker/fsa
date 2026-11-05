@@ -12,7 +12,7 @@ HorseRaceMan_804A5630::~HorseRaceMan_804A5630() {
 }
 
 HorseRaceMan_804A5630::HorseRaceMan_804A5630() {
-    field_0x2a8 = lbl_8053AAF8->fn_80138A30();
+    field_0x2a8 = gGameRoot_8053AAF8->fn_80138A30();
     field_0x2ac = 0;
     field_0x2b0 = -1;
     field_0x2b4 = 0;

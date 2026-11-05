@@ -72,7 +72,7 @@ void ShadowLink2_804A43E8::fn_801C6C7C() {
             if (field_0x524 & 0x20) {
                 switch (fn_801CD664(6)) {
                 case 0:
-                    if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
                         fn_801C3B7C(0x23);
                     } else {
                         fn_801C3B7C(0x24);
@@ -89,7 +89,7 @@ void ShadowLink2_804A43E8::fn_801C6C7C() {
             } else if (field_0x524 & 0x10) {
                 switch (fn_801CD664(3)) {
                 case 0:
-                    if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
                         fn_801C3B7C(0x23);
                     } else {
                         fn_801C3B7C(0x24);
@@ -100,7 +100,7 @@ void ShadowLink2_804A43E8::fn_801C6C7C() {
                     break;
                 }
             } else if (field_0x524 & 0x8) {
-                if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
                     fn_801C3B7C(0x23);
                 } else {
                     fn_801C3B7C(0x24);
@@ -117,7 +117,7 @@ void ShadowLink2_804A43E8::fn_801C6C7C() {
         done = true;
     }
     if (done) {
-        if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.7f) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f) {
             fn_801C3B7C(0xF);
         } else {
             fn_801C3B7C(0x11);

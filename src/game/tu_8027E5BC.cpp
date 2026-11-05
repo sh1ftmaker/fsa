@@ -292,7 +292,7 @@ void Player_804A6F38::fn_8027F16C() {
 }
 
 void Player_804A6F38::fn_8027F1C8() {
-    if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+    if (!(gGameRoot_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
         return;
     }
     if (fn_802413E8()) {
@@ -338,7 +338,7 @@ void Player_804A6F38::fn_8027F1C8() {
         break;
     }
     if (!field_0x121d) {
-        if (!lbl_8053AAF8->field_0x7e) {
+        if (!gGameRoot_8053AAF8->field_0x7e) {
             if (field_0x1388 != NULL) {
                 setEmitterPos_8013CB44(field_0x1388, &pos, 0, -1, true);
             } else {
@@ -867,7 +867,7 @@ void Player_804A6F38::fn_80282094() {
     field_0x344.y = 3.0f;
     field_0x344.z = 0.0f;
     getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 4.0f, 0.0f, false);
-    lbl_8053AB10->field_0x20->fn_802F601C(&field_0xcb0, 1, NULL, 1.0f, -2.0f);
+    gGameRoot2_8053AB10->field_0x20->fn_802F601C(&field_0xcb0, 1, NULL, 1.0f, -2.0f);
     field_0x3fc = 20;
 }
 
@@ -1136,7 +1136,7 @@ void Player_804A6F38::fn_8028434C() {
     if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
         mPos.z = 0.0f;
         field_0x124d = 0;
-        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && !fn_80240808()) {
+        if (!(gGameRoot_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && !fn_80240808()) {
             fn_80251AEC(0);
         } else {
             fn_80251AEC(0xc);
@@ -1334,7 +1334,7 @@ void Player_804A6F38::fn_802857F0() {
         if (i == field_0x4) {
             continue;
         }
-        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << i))) {
+        if (!(gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i))) {
             continue;
         }
         if (fn_8023EA28(i) || !fn_802300EC(i) || !fn_8023B0F4(i, &field_0x4c0, field_0x3b4, false, 1.0f)) {

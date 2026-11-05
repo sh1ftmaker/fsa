@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A9020.
-class cls_804A9020 : public ActorBase_804A5770 {
+class RedBlueSwitch_804A9020 : public ActorBase_804A5770 {
 public:
-    cls_804A9020() {}
-    /* 0x08 */ virtual ~cls_804A9020();
+    RedBlueSwitch_804A9020() {}
+    /* 0x08 */ virtual ~RedBlueSwitch_804A9020();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

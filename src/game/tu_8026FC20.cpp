@@ -457,7 +457,7 @@ void Player_804A6F38::fn_80270DDC(s32 amount, bool flag) {
     if (field_0xd35) {
         return;
     }
-    if (!lbl_8053AAF8->field_0x7f && isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
+    if (!gGameRoot_8053AAF8->field_0x7f && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)) {
         if (!(field_0xbfc > 0 && !fn_80270A8C())) {
             return;
         }
@@ -505,7 +505,7 @@ bool Player_804A6F38::fn_80271098(const JGeometry::TVec3f* pos) {
 
 // The current save row's byte 0x7E while the game root's field_0x7f is set, else 0x7F.
 static inline u8 saveRowFlag() {
-    return lbl_8053AAF8->field_0x7f ? lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7e
+    return gGameRoot_8053AAF8->field_0x7f ? lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7e
                                     : lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7f;
 }
 
@@ -538,10 +538,10 @@ bool Player_804A6F38::fn_802710C8(s32 attacker, s32 damage, const JGeometry::TVe
     if (fn_80270A8C()) {
         return false;
     }
-    if (damage >= 4 && !lbl_8053AAF8->field_0x7f && saveRowFlag() == 1) {
+    if (damage >= 4 && !gGameRoot_8053AAF8->field_0x7f && saveRowFlag() == 1) {
         fn_8024E500();
     }
-    if (kind == 0x1b && lbl_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 2) {
+    if (kind == 0x1b && gGameRoot_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 2) {
         return false;
     }
     if (kind != 0x11 && !(kind == 0x12 || kind == 0x13)) {
@@ -579,13 +579,13 @@ bool Player_804A6F38::fn_802710C8(s32 attacker, s32 damage, const JGeometry::TVe
     if (damage > 0) {
         field_0x488 = 4;
     }
-    if (isPlayerBitSet(lbl_8053AAF8, field_0x4) && damage >= 4 && fn_8024189C() > 0) {
+    if (isPlayerBitSet(gGameRoot_8053AAF8, field_0x4) && damage >= 4 && fn_8024189C() > 0) {
         lbl_8053AED0->fn_8043D67C(0x18f, field_0x4, 0);
     }
     if (damage >= 4) {
-        lbl_8053AAF8->fn_80134DE4(2, 0);
+        gGameRoot_8053AAF8->fn_80134DE4(2, 0);
     } else if (damage >= 1) {
-        lbl_8053AAF8->fn_80134DE4(1, 0);
+        gGameRoot_8053AAF8->fn_80134DE4(1, 0);
     }
     if (kind == 0x16) {
         if (fn_80240B5C()) {

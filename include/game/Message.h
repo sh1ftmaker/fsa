@@ -261,7 +261,7 @@ public:
 class MessageManager_804AF070 {
 public:
     // fn_8038DA00: sets lbl_8053AD78, loads the font and the BMG from the
-    // archive at lbl_8053AAF8->0xA8 (getResource('????', name)), creates
+    // archive at gGameRoot_8053AAF8->0xA8 (getResource('????', name)), creates
     // the four windows and the text box, and zeroes the state below.
     MessageManager_804AF070();
     /* 0x08 */ virtual ~MessageManager_804AF070(); // fn_8038D90C

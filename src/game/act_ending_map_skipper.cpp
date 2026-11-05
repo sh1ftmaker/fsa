@@ -1,7 +1,7 @@
 // The EMSK actor (see game/act/act_ending_map_skipper.h). init stores the low
 // 7 bits of the spawn argument; update counts 500 frames down, then sets the
 // view's field_0x24/0x28 from a row of a three-row table and calls
-// lbl_8053AAF8->fn_80136798(15, 0).
+// gGameRoot_8053AAF8->fn_80136798(15, 0).
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
@@ -21,7 +21,7 @@ void EndingMapSkipper_804AA498::update() {
     if (mTimer == 0) {
         s32 first = sViewParams[mIndex][0];
         getGameView_802D6A9C()->fn_802D9FF4(first, sViewParams[mIndex][1]);
-        lbl_8053AAF8->fn_80136798(15, 0);
+        gGameRoot_8053AAF8->fn_80136798(15, 0);
     }
 }
 

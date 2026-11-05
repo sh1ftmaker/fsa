@@ -14,7 +14,7 @@ class THPMovie_804B15D0;
 // (__nw__(0x120) in tu_80134C04's fn_80135020 path). The constructor loads
 // "gamemode.blo" and "gamemode_movie.blo" from lbl_80529DEC's field_0x2c
 // archive, the GBA tile data ("gb_ch_obj_base_sch.szs", "player_sch.szs",
-// ...) into lbl_8053AB10->field_0x20, and stores `this` in lbl_8053ADD0.
+// ...) into gGameRoot2_8053AB10->field_0x20, and stores `this` in lbl_8053ADD0.
 // tu_80134C04 calls fn_803DF810 (update) and fn_803DF624 (draw) each frame;
 // both run mState through a pointer-to-member table (lbl_804B0568 /
 // lbl_804B0628, 8 entries). State 7 boots "/DOL/framework.dol".

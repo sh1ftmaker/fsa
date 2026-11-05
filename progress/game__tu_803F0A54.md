@@ -4,7 +4,7 @@ Baseline (progress.py before): `total: 7123 / 11557 functions, 1392832 / 4442032
 
 What it is: ConnectScreen_804B0F10 (vtable 0x804B0F10, ctor 0x803FCBC4, 0x354 bytes), the
 multiplayer GBA-connect screen that cls_804AF878 (tu_803A85E4) builds as its
-field_0x8 when lbl_8053AAF8->field_0x7f is clear. Seven J2DScreens from the
+field_0x8 when gGameRoot_8053AAF8->field_0x7f is clear. Seven J2DScreens from the
 fn_804031C4 archive, a 13-state machine through three static PMF tables
 (enter lbl_804B0BDC, update lbl_804B0D14, draw lbl_804B0E4C; state 13 runs
 field_0x1c8's entries), a full-screen fade J2DPicture (field_0x5c), four

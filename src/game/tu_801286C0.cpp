@@ -15,7 +15,7 @@ const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
 void cls_8049E500::init() {
     cls_8049D140::init();
     // '????' (escaped: "??'" would be a trigraph).
-    field_0x23c = lbl_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_80539F38);
+    field_0x23c = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_80539F38);
     getGameView_802D6A9C()->fn_802D7440(false);
     fn_80128728(0);
 }
@@ -28,8 +28,8 @@ void cls_8049E500::init() {
 // 1.0f and 40.0f constants at lower addresses.
 void cls_8049E500::update() {
     cls_8049D140::update();
-    lbl_8053AB10->field_0x24->field_0x179 = 1;
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     if (camera->field_0x840 == 0) {
         camera->field_0x840 = 1;
         camera->field_0x844.set(mPos.x, mPos.y - 96.0f, mPos.x, 96.0f + mPos.y);
@@ -38,7 +38,7 @@ void cls_8049E500::update() {
         camera->field_0x1d8 = -1.0f;
     }
     if (field_0x230 <= 9) {
-        cls_804A03A8* sub = lbl_8053AB10->field_0x30;
+        cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
         if (sub->field_0x284 == 0) {
             sub->field_0x284 = 1;
             sub->field_0x28c = 0.05f;
@@ -141,7 +141,7 @@ s32 cls_8049E500::vfunc_0x5C() {
     return field_0x230 == 10;
 }
 
-// Stores the value in the byte at 0xC of lbl_8053AB10->0x2C (ShadowCircle_804A0160).
+// Stores the value in the byte at 0xC of gGameRoot2_8053AB10->0x2C (ShadowCircle_804A0160).
 void fn_80128C58(s32 value) {
-    lbl_8053AB10->field_0x2c->field_0xc = value;
+    gGameRoot2_8053AB10->field_0x2c->field_0xc = value;
 }

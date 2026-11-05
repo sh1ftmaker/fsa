@@ -16,7 +16,7 @@ s32 fn_803A85E4() {
 }
 
 void cls_804AF878::fn_803A8600() {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         field_0x4->fn_803ED83C();
         field_0xc = field_0x4->field_0x360;
     } else {
@@ -26,7 +26,7 @@ void cls_804AF878::fn_803A8600() {
 }
 
 void cls_804AF878::fn_803A8664() {
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         field_0x4->fn_803EDA2C();
     } else {
         field_0x8->fn_803FC46C();
@@ -36,8 +36,8 @@ void cls_804AF878::fn_803A8664() {
 void cls_804AF878::fn_803A86A4() {
     field_0xc = 4;
     if (lbl_80529DEC.field_0x237 == 3 || lbl_80529DEC.field_0x237 == 4) {
-        if (lbl_8053AAF8->field_0x7f) {
-            if (lbl_8053AAF8->field_0x7e == 0) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
+            if (gGameRoot_8053AAF8->field_0x7e == 0) {
                 field_0x4->fn_803EDBF0(2);
             } else {
                 field_0x4->fn_803EDBF0(1);
@@ -54,7 +54,7 @@ void cls_804AF878::fn_803A86A4() {
             lbl_80529DEC.field_0x237 = 0;
         }
     } else {
-        if (lbl_8053AAF8->field_0x7f) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
             field_0x4->fn_803EDBF0(0);
         } else {
             field_0x8->fn_803FC5E4(0);
@@ -78,22 +78,22 @@ cls_804AF878::cls_804AF878() {
     field_0xc = 4;
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x4 = new cls_804B0B00();
     field_0x8 = new ConnectScreen_804B0F10();

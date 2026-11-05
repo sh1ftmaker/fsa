@@ -11,7 +11,7 @@
 // mode (cmpwi throughout, 87.86 %) and a u32 mode with (u8) casts on the later
 // compares (same 96.43 %: the byte load already fits, so no clrlwi is emitted).
 bool cls_804AE9A0::fn_80379F84() {
-    GameRoot_8049EF20* root = lbl_8053AAF8;
+    GameRoot_8049EF20* root = gGameRoot_8053AAF8;
     if (root->field_0x7f == 1 && root->field_0x7e == 1 && lbl_8053AD68 != NULL && field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
         if (mode != 5 && mode != 8 && mode != 7 && mode != 9) {

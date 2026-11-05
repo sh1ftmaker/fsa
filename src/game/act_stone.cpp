@@ -71,7 +71,7 @@ void Stone_804A93D0::update() {
         field_0x3c.z += -0.15f;
         mPos += field_0x3c;
         s32 damage = field_0x114;
-        if (lbl_8053AAF8->field_0x7f) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
             damage = 0;
         }
         if (mPos.z < 0.0f || fn_801F2618(NULL, false)) {
@@ -96,7 +96,7 @@ void Stone_804A93D0::update() {
         field_0x3c.y += 0.15f;
         mPos += field_0x3c;
         s32 damage = field_0x114;
-        if (lbl_8053AAF8->field_0x7f) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
             damage = 0;
         }
         if (fn_801F2618(NULL, false)) {

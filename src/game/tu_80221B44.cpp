@@ -124,7 +124,7 @@ void cls_804A6AA8::vfunc_0x90(u8 mapHit) {
             }
             startSound_801F0E34(0x400e6, 0);
             getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
-            lbl_8053AAF8->fn_80134DE4(1, 0);
+            gGameRoot_8053AAF8->fn_80134DE4(1, 0);
         }
         break;
     case 8:

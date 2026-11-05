@@ -602,10 +602,10 @@ void releaseEmitter_801EE434(JPABaseEmitter* emitter);
 extern "C" {
 
 // 7 units / 8 calls. Loads the "SOB " resource `sobName` (a .rodata string)
-// through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
+// through the archive at gGameRoot_8053AAF8->0xA4 (vtable slot 0x18,
 // 0x801EF7B4-0x801EF7F4) and hands it with pos, arg1 and params (a
 // SpriteParams_801F5AE0 or NULL, then defaults are used) to fn_802F86CC
-// (lbl_8053AB10->0x20).
+// (gGameRoot2_8053AB10->0x20).
 void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                  SpriteParams_801F5AE0* params);
 

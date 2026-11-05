@@ -43,8 +43,8 @@ void GameRoot2_8049F108::fn_8013AB00() {
 }
 
 void fn_8013AB2C() {
-    J3DDrawBuffer* opa = lbl_8053AB10->field_0x8;
-    J3DDrawBuffer* xlu = lbl_8053AB10->field_0xc;
+    J3DDrawBuffer* opa = gGameRoot2_8053AB10->field_0x8;
+    J3DDrawBuffer* xlu = gGameRoot2_8053AB10->field_0xc;
     j3dSys.drawInit();
     j3dSys.reinitGX();
     GXSetColorUpdate(GX_TRUE);
@@ -68,8 +68,8 @@ void fn_8013ABCC(J3DModel* model, const Vec& scale, Mtx mtx) {
 // FIXME: 98.87. Only the two draw-buffer loads: the original loads field_0x8
 // into r0 then field_0xc into r5; ours loads field_0xc first into r6.
 void fn_8013AC54(Mtx view) {
-    J3DDrawBuffer* opa = lbl_8053AB10->field_0x8;
-    J3DDrawBuffer* xlu = lbl_8053AB10->field_0xc;
+    J3DDrawBuffer* opa = gGameRoot2_8053AB10->field_0x8;
+    J3DDrawBuffer* xlu = gGameRoot2_8053AB10->field_0xc;
     j3dSys.setDrawBuffer(opa, 0);
     j3dSys.setDrawBuffer(xlu, 1);
     j3dSys.setViewMtx(view);
@@ -128,8 +128,8 @@ void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a
     rot[0][3] += x;
     rot[1][3] += y;
     rot[2][3] += z;
-    lbl_8053AB10->field_0x24->fn_8030DFE8(false);
-    lbl_8053AB10->field_0x24->fn_8030DD20(rot);
+    gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
+    gGameRoot2_8053AB10->field_0x24->fn_8030DD20(rot);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
@@ -269,8 +269,8 @@ void GameRoot2_8049F108::fn_8013B618() {
 }
 
 void GameRoot2_8049F108::fn_8013B71C() {
-    if (field_0x39 == 0 || lbl_8053AAF8->field_0x4c == 4 || lbl_8053AAF8->field_0x4c == 6) {
-        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
+    if (field_0x39 == 0 || gGameRoot_8053AAF8->field_0x4c == 4 || gGameRoot_8053AAF8->field_0x4c == 6) {
+        gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -278,10 +278,10 @@ void GameRoot2_8049F108::fn_8013B71C() {
         j3dSys.mDrawMode = J3DSys::SYSDRAW_Unk3;
         field_0x8->draw();
         j3dSys.reinitGX();
-        if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
+        if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4c != GAME_MODE_C) {
             field_0x20->fn_802FF3B0();
         }
-        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
+        gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -290,7 +290,7 @@ void GameRoot2_8049F108::fn_8013B71C() {
         j3dSys.mDrawMode = J3DSys::SYSDRAW_Unk4;
         field_0xc->draw();
         j3dSys.reinitGX();
-        if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
+        if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4c != GAME_MODE_C) {
             field_0x20->fn_802FF2D8();
         }
         field_0x28->fn_8013DA10();
@@ -298,9 +298,9 @@ void GameRoot2_8049F108::fn_8013B71C() {
         field_0x2c->fn_80158F70();
     }
     field_0x28->fn_8013D908();
-    if (field_0x39 == 0 || lbl_8053AAF8->field_0x4c == 4 || lbl_8053AAF8->field_0x4c == 6) {
+    if (field_0x39 == 0 || gGameRoot_8053AAF8->field_0x4c == 4 || gGameRoot_8053AAF8->field_0x4c == 6) {
         field_0x28->fn_8013D6E4();
-        if (isGameModeSet() || lbl_8053AAF8->field_0x4c == GAME_MODE_C) {
+        if (isGameModeSet() || gGameRoot_8053AAF8->field_0x4c == GAME_MODE_C) {
             field_0x30->fn_8015F9C0();
         }
     }
@@ -332,7 +332,7 @@ void GameRoot2_8049F108::fn_8013BBBC() {
 // FIXME: 97.41. The original materialises the mode-0xC test as a byte
 // (subfic / cntlzw / extrwi., then beq) where ours compares (cmpwi / bne).
 void GameRoot2_8049F108::fn_8013BBE0() {
-    if (lbl_8053AAF8->field_0x4c != 9) {
+    if (gGameRoot_8053AAF8->field_0x4c != 9) {
         field_0x24->fn_8030E154();
         field_0x20->fn_802FF568();
         field_0x28->fn_8013DC44();
@@ -342,7 +342,7 @@ void GameRoot2_8049F108::fn_8013BBE0() {
         JGeometry::TBox2f box((f32)r->x0, (f32)r->y0, (f32)r->x1, (f32)r->y1);
         field_0x14->place(box);
         field_0x14->scissor(box);
-        GameRoot_8049EF20* root = lbl_8053AAF8;
+        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
         if (!root->field_0x7f || root->field_0x4c == GAME_MODE_C) {
             field_0x39 = 0;
         } else if (!isGameModeSet()) {
@@ -390,7 +390,7 @@ GameRoot2_8049F108::~GameRoot2_8049F108() {
 // The (s32) casts give the original's signed int-to-float conversion of the u16 sizes.
 GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
     heap->getTotalFreeSize();
-    lbl_8053AB10 = this;
+    gGameRoot2_8053AB10 = this;
     field_0x4 = JKRSolidHeap::create(-1, heap, false);
     field_0x4->becomeCurrentHeap();
     field_0x8 = new (field_0x4, 0) J3DDrawBuffer(0x80);
@@ -416,5 +416,5 @@ GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
 }
 
 ScreenRect_802FF3F0* fn_8013C394() {
-    return &lbl_8053AB10->field_0x24->field_0x144;
+    return &gGameRoot2_8053AB10->field_0x24->field_0x144;
 }

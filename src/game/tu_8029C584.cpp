@@ -5,12 +5,12 @@
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 
-cls_804A7BE8::~cls_804A7BE8() {
+UnknownFORM_804A7BE8::~UnknownFORM_804A7BE8() {
     if (field_0x244 == 0 && field_0x240 != field_0x23c) {
         fn_8022CA6C(field_0x90 & 3, field_0x23c, true);
     }
-    if (lbl_8053AAF8->field_0x7e == 0) {
-        lbl_8053AAF8->fn_80134FE0(0);
+    if (gGameRoot_8053AAF8->field_0x7e == 0) {
+        gGameRoot_8053AAF8->fn_80134FE0(0);
     }
     fn_8022CDD4(field_0x90 & 3);
 }
@@ -20,7 +20,7 @@ cls_804A7BE8::~cls_804A7BE8() {
 // keeps the index in r28 and the offset in r30 whatever the declaration order
 // (tried: index before/after the end load, actor hoisted). The 30.0f literal is
 // lbl_8054075C in the original and an anonymous literal here (data split).
-void cls_804A7BE8::init() {
+void UnknownFORM_804A7BE8::init() {
     if (fn_8022F514(field_0x90 & 3)) {
         mAlive = false;
         return;

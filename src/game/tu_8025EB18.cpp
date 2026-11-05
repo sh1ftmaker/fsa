@@ -512,7 +512,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
         field_0xd64 = 0;
         field_0xd6c = 'NULL';
         field_0xd74 = 3;
-        if (held == true && fn_802486A0() != 4 && isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
+        if (held == true && fn_802486A0() != 4 && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)) {
             for (int i = 0; i < 4; i++) {
                 if (fn_8022E438(field_0x4, i) && i != field_0x4) {
                     s32 serial = fn_8023EF50(i);
@@ -593,8 +593,8 @@ bool Player_804A6F38::fn_802600A0(s32 player) {
     if (fn_80270A8C()) {
         return false;
     }
-    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && !fn_8022E438(field_0x4, player)
-        && (lbl_8053AAF8->field_0x7e == 0 || fn_802486A0() != 4)
+    if (!isPlayerBitSet(gGameRoot_8053AAF8, field_0x4) && !fn_8022E438(field_0x4, player)
+        && (gGameRoot_8053AAF8->field_0x7e == 0 || fn_802486A0() != 4)
         && (getPlayerLayer_8023DE58(player) != 8 || field_0x3b4 >= 8)) {
         field_0xd60 = fn_8022F340(player);
         field_0x11ec = fn_8022F340(player);
@@ -648,7 +648,7 @@ void Player_804A6F38::fn_80262188() {
     if (field_0x1248 != 0x33 && field_0xcfe == 0) {
         fn_8024F0E8(0x10007);
     }
-    if (field_0xd70 >= 0 && lbl_8053AAF8->field_0x7e != 0 && !isPlayerBitSet(lbl_8053AAF8, field_0x4)
+    if (field_0xd70 >= 0 && gGameRoot_8053AAF8->field_0x7e != 0 && !isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)
         && field_0xd60 < 0) {
         field_0x11ec = fn_8022F340(field_0xd70);
         field_0xd60 = fn_8022F340(field_0xd70);

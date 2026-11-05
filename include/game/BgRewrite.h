@@ -8,7 +8,7 @@
 // "BgRewrite_804A7C98" is a provisional descriptive name carrying its
 // vtable address (docs/PLAN.md, "Placeholder names"). Evidence for "BG
 // rewrite": nearly every function of the unit writes tile codes into the
-// map's tile layers (lbl_8053AB10->0x20, TileMap_804AA858::fn_802F9974, 0x2C
+// map's tile layers (gGameRoot2_8053AB10->0x20, TileMap_804AA858::fn_802F9974, 0x2C
 // calls in fn_802A20F0 alone; the packed cell index comes from fn_80226BC4)
 // and then sets GameView_804A9950::field_0x131de through fn_802D782C(1),
 // which the BGWC actor ("BG-rewrite check switch", docs/names/actors.tsv,
@@ -41,7 +41,7 @@ class ActorSoundObj_804578F4; // game/ActorManager.h
 
 // Vtable 0x804A7C98: one slot, the destructor. tu_80139BE8 allocates it with
 // __nw__(0x28, heap, 0) (0x8013A60C) and stores it at offset 0x10 of the
-// object lbl_8053AAF8->field_0x4 points to.
+// object gGameRoot_8053AAF8->field_0x4 points to.
 class BgRewrite_804A7C98 {
 public:
     // fn_802A3E2C (1 unit): stores the vtable, sets gBgRewrite_8053AC98 = this and
@@ -54,7 +54,7 @@ public:
 
     // 2 units (tu_8022AD64, act_knight_of_hyrule). Saves the view's
     // field_0x34, sets it to value (GameView_804A9950::fn_802D7970), calls
-    // GameRoot::fn_80138B7C on lbl_8053AAF8 and restores it. this unused.
+    // GameRoot::fn_80138B7C on gGameRoot_8053AAF8 and restores it. this unused.
     void fn_8029D898(s32 value);
     // 4 units (Player_804A6F38::fn_802870C8, act_block, act_somaria_block,
     // tu_8028FBA0). Reads pos x/y; player and layer follow.

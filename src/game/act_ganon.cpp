@@ -39,7 +39,7 @@ void fn_80196D24(JGeometry::TVec2f* v, f32 x, f32 y) {
 }
 
 void fn_80196D30(s32 a, s32 b) {
-    lbl_8053AAF8->fn_80134DE4(a, b);
+    gGameRoot_8053AAF8->fn_80134DE4(a, b);
 }
 
 // Out-of-line copy of TVec3<f32>::set(x, y, z).

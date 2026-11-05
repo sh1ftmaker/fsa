@@ -114,7 +114,7 @@ void ShadowLink2_804A43E8::fn_801D3320() {
             return;
         }
         dir = step;
-        f32 rnd = lbl_8053AAF8->mRandom.get_ufloat_1();
+        f32 rnd = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         step.scale(rnd);
         bool selOk = field_0x358.fn_80214244()->fn_800FD5E8(sel);
         bool playerOk = field_0x358.fn_80214244()->fn_800FD5E8(player);

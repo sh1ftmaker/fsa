@@ -129,7 +129,7 @@ public:
     /* 0x88 */ u8 field_0x88[8];
     /* 0x90 */ u8 field_0x90[0x98 - 0x90]; // not yet known
     // The owner's fn_8024B24C is true when either is set; fn_80269420 sets
-    // 0x98. fn_80268BC4 moves 0x98 into 0x99 (unless lbl_8053AAF8->0x96).
+    // 0x98. fn_80268BC4 moves 0x98 into 0x99 (unless gGameRoot_8053AAF8->0x96).
     /* 0x98 */ u8 field_0x98;
     /* 0x99 */ u8 field_0x99;
     // fn_80268BC4 repeats its probe pass while this is 1 (at most 100 passes).

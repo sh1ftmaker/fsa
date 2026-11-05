@@ -233,42 +233,42 @@ static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
     root->field_0x83 |= (u8)(kind << (2 * player));
 }
 
-// Sets bit `i` of lbl_8053AAF8->field_0x82 and the 2-bit field `i` of
+// Sets bit `i` of gGameRoot_8053AAF8->field_0x82 and the 2-bit field `i` of
 // field_0x83 to 1 for the field_0x1bc + 1 players that take part, and clears
 // both for the others.
 static inline void setEntries(cls_804B0B00* self) {
     for (s32 i = 0; i < 4; i++) {
         if (i < self->field_0x1bc + 1) {
-            lbl_8053AAF8->field_0x82 |= (u8)(1 << i);
-            setPlayerKind(lbl_8053AAF8, i, 1);
+            gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << i);
+            setPlayerKind(gGameRoot_8053AAF8, i, 1);
         } else {
-            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
-            setPlayerKind(lbl_8053AAF8, i, 0);
+            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+            setPlayerKind(gGameRoot_8053AAF8, i, 0);
         }
     }
 }
 
 // One player: sets bit 4 (connected) and bit 0 (taking part) of
-// lbl_8053AAF8->field_0x82 for player 0 only, and player 0's kind to 1 with
+// gGameRoot_8053AAF8->field_0x82 for player 0 only, and player 0's kind to 1 with
 // a controller in slot 0, else 2. fn_803E3320 (not written: written here
 // it gets inlined into fn_803E9034 / fn_803ED604, which call it out of line
 // in the original) has the same block, then setEntries for more players.
 static inline void setSingleEntry() {
-    lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
+    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 4);
     for (s32 i = 1; i < 4; i++) {
-        lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+        gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
     }
-    lbl_8053AAF8->field_0x82 |= (u8)(1 << 0);
+    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 0);
     for (s32 i = 1; i < 4; i++) {
-        lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+        gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << i);
     }
     if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
-        setPlayerKind(lbl_8053AAF8, 0, 1);
+        setPlayerKind(gGameRoot_8053AAF8, 0, 1);
     } else {
-        setPlayerKind(lbl_8053AAF8, 0, 2);
+        setPlayerKind(gGameRoot_8053AAF8, 0, 2);
     }
     for (s32 i = 1; i < 4; i++) {
-        lbl_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
+        gGameRoot_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
     }
 }
 
@@ -345,8 +345,8 @@ void cls_804B0B00::fn_803E1668() {
                 pos.z = 0.0f;
                 params.field_0x0[7] = i + 12;
                 s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
-                void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
             }
         }
     } else if (field_0x220[0] < 112) {
@@ -382,8 +382,8 @@ void cls_804B0B00::fn_803E1668() {
             pos.y = toSpriteY(y);
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     } else if (field_0x220[0] < 212) {
         for (s32 i = 0; i < 4; i++) {
@@ -403,8 +403,8 @@ void cls_804B0B00::fn_803E1668() {
                 params.field_0x0[7] = i + 12;
             }
             s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
         }
     } else {
         // Slide back to the field_0x1bc + 1 player panes.
@@ -439,8 +439,8 @@ void cls_804B0B00::fn_803E1668() {
             pos.y = toSpriteY(y);
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     }
 }
@@ -752,7 +752,7 @@ void cls_804B0B00::fn_803E4650() {
             }
         }
     }
-    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -832,9 +832,9 @@ void cls_804B0B00::fn_803E4940() {
     }
     field_0xc->search('Pscuro01')->setAlpha(alpha);
     field_0xc->search('Pscuro02')->setAlpha(alpha);
-    field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
-    lbl_8053AB10->fn_8013B414(&box, true);
+    gGameRoot2_8053AB10->fn_8013B414(&box, true);
     fn_803E1668();
     lbl_8053AED8->fn_80440EE8();
 }
@@ -902,7 +902,7 @@ void cls_804B0B00::fn_803E64A0() {
     }
     mScreen->search('Pscuro01')->setAlpha(alpha);
     mScreen->search('Pscuro02')->setAlpha(alpha);
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -1014,7 +1014,7 @@ void cls_804B0B00::fn_803E9A20() {
         if (field_0x1d0 == field_0x1bc + 1) {
             field_0x26c = 2;
             gAudioMgr_8053AF80->fn_80458880(11, -1);
-        } else if ((lbl_8053AAF8->field_0x82 & 0x10) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
+        } else if ((gGameRoot_8053AAF8->field_0x82 & 0x10) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
             if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23c + 1)) {
                 field_0x26c = 2;
                 gAudioMgr_8053AF80->fn_80458880(11, -1);
@@ -1037,7 +1037,7 @@ void cls_804B0B00::fn_803E9A20() {
         field_0x25c = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
             field_0x220[i]++;
             if (field_0x220[i] >= 130) {
                 field_0x220[i] = 100;
@@ -1106,7 +1106,7 @@ void cls_804B0B00::fn_803E9EE8() {
         field_0x25c = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
             field_0x220[i]++;
             if (field_0x220[i] >= 130) {
                 field_0x220[i] = 100;
@@ -1150,13 +1150,13 @@ void cls_804B0B00::fn_803EC804() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
         if (field_0x1bc == 0) {
             field_0x1b8 = 1;
-            lbl_8053AAF8->field_0x7e = 0;
+            gGameRoot_8053AAF8->field_0x7e = 0;
             setSingleEntry();
             field_0x1dc = 15;
             fn_803E4308();
         } else {
             field_0x1b8 = 0;
-            lbl_8053AAF8->field_0x7e = 1;
+            gGameRoot_8053AAF8->field_0x7e = 1;
             if (field_0x1d0 == field_0x1bc + 1) {
                 setEntries(this);
                 field_0x1dc = 15;
@@ -1251,31 +1251,31 @@ void cls_804B0B00::fn_803ED604() {
 }
 
 // cls_804AF878::fn_803A8600 each frame: counts the connected controllers
-// into field_0x1d0 and bits 4-7 of lbl_8053AAF8->field_0x82 (one player:
+// into field_0x1d0 and bits 4-7 of gGameRoot_8053AAF8->field_0x82 (one player:
 // slot 0 through fn_8030A3B0), then runs the state's update.
 void cls_804B0B00::fn_803ED83C() {
     field_0x1d0 = 0;
     if (field_0x1bc == 0) {
         if (lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(0))) {
-            lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
+            gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 4);
             field_0x1d0++;
         } else {
-            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << 4);
+            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << 4);
         }
         for (s32 i = 1; i < 4; i++) {
-            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
         }
     } else {
         for (s32 i = 0; i < 4; i++) {
             if (i <= field_0x1bc) {
                 if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
-                    lbl_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
+                    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
                     field_0x1d0++;
                 } else {
-                    lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                    gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
                 }
             } else {
-                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
             }
         }
     }
@@ -1297,8 +1297,8 @@ void cls_804B0B00::fn_803ED83C() {
 // (field_0x60). When the fade-out into state 9 ends, the decide / back
 // button textures of lbl_8053AED8 are set.
 void cls_804B0B00::fn_803EDA2C() {
-    lbl_8053AB10->fn_8013B490();
-    field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x1d4 != 15) {
         (this->*lbl_804B0A24[field_0x1d4])();
     } else {
@@ -1328,7 +1328,7 @@ void cls_804B0B00::fn_803EDA2C() {
             }
             break;
         }
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         field_0x60->setAlpha(field_0x26d);
         field_0x60->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
     }

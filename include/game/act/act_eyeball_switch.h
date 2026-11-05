@@ -10,10 +10,10 @@ class JPABaseEmitter;
 // The MEDM actor ("Eyeball switch", docs/names/actors.tsv, med confidence):
 // the spawner's constructor (0x802005C0) stores this vtable. Named after its
 // vtable, 0x804AE678.
-class cls_804AE678 : public ActorBase_804A5770 {
+class EyeballSwitch_804AE678 : public ActorBase_804A5770 {
 public:
-    cls_804AE678() {}
-    /* 0x08 */ virtual ~cls_804AE678();
+    EyeballSwitch_804AE678() {}
+    /* 0x08 */ virtual ~EyeballSwitch_804AE678();
     /* 0x0C */ virtual void init();
     /* 0x10 */ virtual void vfunc_0x10(); // looks for the switch monitor of its group
     /* 0x14 */ virtual void update();

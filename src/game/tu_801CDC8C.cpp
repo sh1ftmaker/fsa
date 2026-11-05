@@ -594,7 +594,7 @@ s32 EnemyBase_804A4808::fn_801CF1B0(bool turn, f32 range, f32 margin) {
         dir = fn_801CF6B8();
     } else {
         bool otherAxis = false;
-        if (lbl_8053AAF8->mRandom.get_ufloat_1() < margin) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < margin) {
             otherAxis = true;
         }
         dir = directionTo(&mPos, player, otherAxis);

@@ -16,7 +16,7 @@
 JGeometry::TVec3f lbl_804CF460(0.0f, 0.0f, 0.0f);
 
 void fn_8022AD64() {
-    lbl_8053AAF8->fn_80138B7C();
+    gGameRoot_8053AAF8->fn_80138B7C();
 }
 
 void fn_8022AD88() {
@@ -2776,12 +2776,12 @@ static inline Player_804A6F38* playerAt(s32 i) {
 // taking part, each from 3 down to 0.
 void fn_8023F2BC() {
     for (s32 i = 3; i >= 0; i--) {
-        if (!isPlayerBitSet(lbl_8053AAF8, i)) {
+        if (!isPlayerBitSet(gGameRoot_8053AAF8, i)) {
             playerAt(i)->fn_80264998();
         }
     }
     for (s32 i = 3; i >= 0; i--) {
-        if (isPlayerBitSet(lbl_8053AAF8, i)) {
+        if (isPlayerBitSet(gGameRoot_8053AAF8, i)) {
             playerAt(i)->fn_80264998();
         }
     }
@@ -2792,14 +2792,14 @@ void fn_8023F2BC() {
 // `li r30, 0` here; counter type, while / for and the NULL test's form
 // don't change it. Its fn_8022F478 / getPlayerLayer_8023DE58 copies are inlined.
 // The players' update: update A for every slot; unless the game is held
-// (lbl_8053AAF8->field_0x94 == 1) update B, the per-frame bytes 0x434/0x435,
+// (gGameRoot_8053AAF8->field_0x94 == 1) update B, the per-frame bytes 0x434/0x435,
 // the cross-player passes and fn_80252FBC; then the audio flag: 0 when an
 // active player without fn_80240670 is on a layer below 8, else 1.
 void fn_8023F390() {
     for (s32 i = 0; i < 4; i++) {
         playerAt(i)->fn_80253E6C();
     }
-    if (lbl_8053AAF8->field_0x94 == 1) {
+    if (gGameRoot_8053AAF8->field_0x94 == 1) {
         return;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -2810,7 +2810,7 @@ void fn_8023F390() {
         playerAt(i)->field_0x435 = 0;
     }
     fn_80232A0C();
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         fn_80231DE4();
     }
     for (s32 i = 0; i < 4; i++) {
@@ -2871,5 +2871,5 @@ bool GameRoot_8049EF20::fn_8023F98C(s32 player) {
 }
 
 GameRoot_8049EF20* fn_8023F9B0() {
-    return lbl_8053AAF8;
+    return gGameRoot_8053AAF8;
 }

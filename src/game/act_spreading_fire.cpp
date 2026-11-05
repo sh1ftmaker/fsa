@@ -58,7 +58,7 @@ void SpreadingFire_804A8A50::draw() {
 // it, and it keeps one more register than we do (r29). Left out: the copy has no source use.
 void SpreadingFire_804A8A50::update() {
     s32 damage = field_0x114;
-    if (lbl_8053AAF8->field_0x7f == 1) {
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
         damage = 0;
     }
     if (field_0x250 != 4) {
@@ -100,7 +100,7 @@ void SpreadingFire_804A8A50::update() {
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
         }
-        field_0x27c = (s32)(1000.88f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 7;
+        field_0x27c = (s32)(1000.88f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 7;
         field_0x298 = 8;
         break;
     }
@@ -196,7 +196,7 @@ void SpreadingFire_804A8A50::update() {
     }
 
     if (field_0x250 != 3) {
-        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 
@@ -295,7 +295,7 @@ void SpreadingFire_804A8A50::init() {
         } else {
             field_0x254 = nibble * 2;
             if (field_0x254 < 0x15) {
-                field_0x27c = (s32)(1000.88f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 7;
+                field_0x27c = (s32)(1000.88f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 7;
             }
         }
 

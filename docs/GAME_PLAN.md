@@ -29,7 +29,7 @@ on `matching` at 4947/11557 functions. Game code: 243 / 6789 functions,
   75 cover three quarters. The real bottleneck is about six struct layouts:
   GameRoot, GameRoot2, GameView, the player singleton, the UI struct
   `lbl_80529DEC`, and EnemyBase.
-- **Single biggest blocker:** `*lbl_8053AAF8 + 0xB4` is a
+- **Single biggest blocker:** `*gGameRoot_8053AAF8 + 0xB4` is a
   `JMath::TRandom_fast_`; its code is inlined 656 times in 132 units, none of
   which can match until the header has it.
 

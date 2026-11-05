@@ -69,7 +69,7 @@ void TalkingSign_804AF428::init() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     mState = 0;
     mPlayer = -1;
-    if (lbl_8053AAF8->field_0x7e == 1) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
         if (field_0x90 & 0x80000000) {
             mAlive = false;
         } else if (fn_80138AB0() == true && (field_0x90 & 0x20000000)) {

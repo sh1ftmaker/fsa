@@ -661,7 +661,7 @@ public:
     /* 0x03FD */ u8 field_0x3fd; // set to 1 by fn_80295584 (stb)
     /* 0x03FE */ u8 field_0x3fe;
     /* 0x03FF */ u8 field_0x3ff;
-    // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
+    // Cleared (stb 0) by fn_80290E90 before it checks gGameRoot_8053AAF8->field_0x7e.
     /* 0x0400 */ u8 field_0x400;
     /* 0x0401 */ u8 field_0x401;
     /* 0x0402 */ u8 field_0x402;
@@ -789,7 +789,7 @@ public:
     /* 0x0B85 */ u8 field_0xb85[0xB88 - 0xB85];
     /* 0x0B88 */ s32 field_0xb88;
     /* 0x0B8C */ s32 field_0xb8c;
-    /* 0x0B90 */ f32 field_0xb90; // fn_80254660: 0.0f, or 256/3 unless lbl_8053AAF8->field_0x7f
+    /* 0x0B90 */ f32 field_0xb90; // fn_80254660: 0.0f, or 256/3 unless gGameRoot_8053AAF8->field_0x7f
     /* 0x0B94 */ s32 field_0xb94;
     /* 0x0B98 */ u8 field_0xb98;
     /* 0x0B99 */ bool field_0xb99;
@@ -1249,7 +1249,7 @@ inline bool isPlayerActive(s32 player) {
 // Not declared yet: the ~300 others, whose getters take arguments or do more.
 //
 // Defined in game/tu_8022AD64.cpp (C++ linkage, renamed in symbols.txt).
-void fn_8022AD64(void); // lbl_8053AAF8->fn_80138B7C()
+void fn_8022AD64(void); // gGameRoot_8053AAF8->fn_80138B7C()
 // The manager's flags (no player index).
 bool fn_8022ADB0(void); // 0x73
 void fn_8022ADCC(void); // 0x73 = false
@@ -1346,7 +1346,7 @@ void fn_8022CB94(s32 player); // -> fn_8024B9E8
 void fn_8022CC20(s32 player); // -> fn_8024BAEC
 void fn_8022CD48(s32 player); // -> fn_80248FF0
 // Owner: game/tu_8022AD64.cpp (0x8022CDD4 and 0x8022CF08, not written yet).
-// Called with a player index by cls_804A7BE8 (game/tu_8029C584.cpp): the
+// Called with a player index by UnknownFORM_804A7BE8 (game/tu_8029C584.cpp): the
 // destructor calls fn_8022CDD4, init fn_8022CF08.
 extern "C" void fn_8022CDD4(s32 player);
 extern "C" void fn_8022CF08(s32 player);
@@ -1606,10 +1606,10 @@ s32 fn_802375B0(s32 player);
 
 // Owner: tu_8022AD64 (0x80236890, not written yet). No arguments; true without a
 // manager, else a scan of the players' byte 0xCAC. fn_80251BFC refuses a state
-// change when it holds while lbl_8053AAF8->field_0x7e is set.
+// change when it holds while gGameRoot_8053AAF8->field_0x7e is set.
 bool fn_80236890();
 // Owner: tu_8022AD64 (not written yet). The manager update's cross-player
-// passes: fn_80232A0C every frame, fn_80231DE4 only with lbl_8053AAF8->field_0x7f.
+// passes: fn_80232A0C every frame, fn_80231DE4 only with gGameRoot_8053AAF8->field_0x7f.
 void fn_80232A0C();
 void fn_80231DE4();
 void fn_80230EB8(s32 player, s32 arg);

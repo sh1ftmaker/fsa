@@ -45,7 +45,7 @@ void cls_804AEED0::fn_8037B3E0() {
         if (field_0x234 == 10) {
             field_0x238 = 1;
         } else if (field_0x234 <= 0) {
-            field_0x234 = (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 40;
+            field_0x234 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 40;
             field_0x238 = 0;
         }
     } else {

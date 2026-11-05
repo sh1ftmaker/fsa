@@ -10,7 +10,7 @@ class cls_804B1DA8;
 // defined in game/tu_8037ACC4.cpp. tu_80134C04 allocates it with
 // __nw__(0x10) and constructs it with fn_8037B0B8, which stores it in
 // lbl_8053AD70. It holds one of two objects, picked by
-// lbl_8053AAF8->field_0x7f; the member functions below forward to it
+// gGameRoot_8053AAF8->field_0x7f; the member functions below forward to it
 // (this is unused except by fn_8037AEAC and fn_8037AFC0).
 class cls_804AE9B0 {
 public:

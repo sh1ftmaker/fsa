@@ -61,7 +61,7 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
         mActive[1] = 0;
         mActive[2] = 0;
         mActive[3] = 0;
-        s32 count = lbl_8053AAF8->fn_80138A30();
+        s32 count = gGameRoot_8053AAF8->fn_80138A30();
         s32 j; // j before i to match (99.49 % otherwise)
         s32 i;
         for (i = 0; i < count; i++) {
@@ -107,7 +107,7 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
     case 4:
         if (field_0x8 == 0) {
             getGameView_802D6A9C()->fn_802D9FF4(9, 0);
-            lbl_8053AAF8->fn_80136798(13, 0);
+            gGameRoot_8053AAF8->fn_80136798(13, 0);
         }
         break;
     }

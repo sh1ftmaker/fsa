@@ -12,7 +12,7 @@
 
 static const s32 lbl_80475138[4] = {0x16, 0x11, 0xC, 7};
 
-void cls_804AE678::vfunc_0x24() {
+void EyeballSwitch_804AE678::vfunc_0x24() {
     deleteEmitter(&mEmitter);
     mAlive = false;
 }
@@ -21,7 +21,7 @@ void cls_804AE678::vfunc_0x24() {
 // (field_0x248) after the field_0x244 byte, we load it before; and the
 // .sdata2 literals come out as 32.0f, 1.0f, the target has 1.0f, 32.0f
 // (relocation names only).
-void cls_804AE678::update() {
+void EyeballSwitch_804AE678::update() {
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     JGeometry::TBox2f box(mBox);
     box.addPos(p);
@@ -101,7 +101,7 @@ void cls_804AE678::update() {
     }
 }
 
-cls_804AE678::~cls_804AE678() {
+EyeballSwitch_804AE678::~EyeballSwitch_804AE678() {
     if (mEmitter != NULL) {
         releaseEmitter_801EE434(mEmitter);
         mEmitter = NULL;
@@ -110,7 +110,7 @@ cls_804AE678::~cls_804AE678() {
 
 // FIXME: 98.5 %. Regalloc only: the target keeps this/end in r29/r28 (we swap
 // them) and params/table/params >> 27 in r27/r26/r25 (we have r25/r27/r26).
-void cls_804AE678::vfunc_0x10() {
+void EyeballSwitch_804AE678::vfunc_0x10() {
     s32 i;
     s32 end = getActorManager_801F856C()->mActorEnd;
     for (i = 0; i < end; i++) {
@@ -133,7 +133,7 @@ void cls_804AE678::vfunc_0x10() {
     }
 }
 
-void cls_804AE678::init() {
+void EyeballSwitch_804AE678::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
@@ -149,7 +149,7 @@ void cls_804AE678::init() {
     field_0x244 = false;
     field_0x234 = 0;
     mEmitter = NULL;
-    u8 players = lbl_8053AAF8->fn_80138A30();
+    u8 players = gGameRoot_8053AAF8->fn_80138A30();
     s32 active = 0;
     if (field_0x240 == 0) {
         active = 1;

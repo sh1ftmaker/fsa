@@ -11,7 +11,7 @@ class ConnectScreen_804B0F10;
 // __nw__(0x10, heap, 0) and the constructor fn_803A8884 (0x80135264-0x80135270)
 // and stores it at GameRoot + 0x2C. The constructor stores `this` in
 // lbl_8053AD98. Two objects of the same kind, one for the single-player
-// layout (field_0x4, used while lbl_8053AAF8->field_0x7f is set) and one for
+// layout (field_0x4, used while gGameRoot_8053AAF8->field_0x7f is set) and one for
 // the other (field_0x8); field_0xc mirrors the state one of them reports.
 class cls_804AF878 {
 public:

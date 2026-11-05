@@ -17,7 +17,7 @@ void ShadowCircle_804A0160::fn_8015945C() {
 
 ShadowCircle_804A0160::ShadowCircle_804A0160(JKRHeap* heap) : field_0x4() {
     field_0x8 = new (heap, 0) JUTTexture(
-        static_cast<const ResTIMG*>(lbl_8053AAF8->field_0xa4->getResource('?\?\?\?', "circle.bti")), 0);
+        static_cast<const ResTIMG*>(gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', "circle.bti")), 0);
 }
 
 ShadowCircle_804A0160::~ShadowCircle_804A0160() {
@@ -49,11 +49,11 @@ void ShadowCircle_804A0160::fn_80158E88() {
 // a bool or u8 local and a u8 inline didn't give it. The rest is
 // isGameModeSet() (game/GameMode.h).
 void ShadowCircle_804A0160::fn_80159330() {
-    if (lbl_8053AAF8->field_0x4c == GAME_MODE_C) {
+    if (gGameRoot_8053AAF8->field_0x4c == GAME_MODE_C) {
         return;
     }
     if (!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) {
-        if (lbl_8053AAF8->field_0x94 == 0 && lbl_8053AAF8->field_0x96 == 0) {
+        if (gGameRoot_8053AAF8->field_0x94 == 0 && gGameRoot_8053AAF8->field_0x96 == 0) {
             field_0xd[0] = 0;
         }
     }
@@ -69,7 +69,7 @@ void ShadowCircle_804A0160::drawShadow_80158B5C(s32 layer, const JGeometry::TVec
     if (field_0xc >= 0xFF && field_0x4.toUInt32() == 0xFFFFFF00) {
         return;
     }
-    lbl_8053AB10->fn_8013B438();
+    gGameRoot2_8053AB10->fn_8013B438();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -122,7 +122,7 @@ void ShadowCircle_804A0160::fn_80158F70() {
     GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     f32 fbWidth = (s32)renderMode->fbWidth;
     f32 efbHeight = (s32)renderMode->efbHeight;
-    lbl_8053AB10->fn_8013B460();
+    gGameRoot2_8053AB10->fn_8013B460();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);

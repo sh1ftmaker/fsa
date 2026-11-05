@@ -617,7 +617,7 @@ void FileSelect_804AFF60::fn_803C1734() {
 void FileSelect_804AFF60::fn_803C24BC() {
     fn_803CE4CC();
     u32 msg = 0x117;
-    if (lbl_8053AAF8->field_0x7f != 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
         msg = 0x116;
     }
     field_0x84 = msg;
@@ -854,7 +854,7 @@ void FileSelect_804AFF60::fn_803C4330() {
         field_0xb0 = -1;
         fn_803CE4CC();
         u32 msg = 0x117;
-        if (lbl_8053AAF8->field_0x7f != 0) {
+        if (gGameRoot_8053AAF8->field_0x7f != 0) {
             msg = 0x116;
         }
         field_0x84 = msg;
@@ -938,7 +938,7 @@ void FileSelect_804AFF60::fn_803C9F14() {
     }
 }
 
-// FIXME: 98.14 %. The two `lbl_8053AAF8->field_0xff != 0` tests compile to
+// FIXME: 98.14 %. The two `gGameRoot_8053AAF8->field_0xff != 0` tests compile to
 // cmplwi where the original has cmpwi (u8, bool and s8 fields all differ:
 // probably read through an int-returning accessor); the
 // `lbl_8050EC80[i]` row adds are base + offset (original offset + base, as
@@ -967,7 +967,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             lbl_80529DEC.field_0x23a[1] = field_0xa4;
             break;
         case 1:
-            if (lbl_8053AAF8->field_0xff != 0) {
+            if (gGameRoot_8053AAF8->field_0xff != 0) {
                 if (field_0xa4 == 0) {
                     if (lbl_8050EC80[1].field_0x20 == 0) {
                         field_0xa0 = 1;
@@ -998,7 +998,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             }
             return;
         case 2:
-            if (lbl_8053AAF8->field_0xff != 0 && lbl_8050EC80[field_0xa4].field_0x20 != 0) {
+            if (gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80[field_0xa4].field_0x20 != 0) {
                 field_0x114 = 1;
                 field_0x84 = 0x5E;
                 getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
@@ -1202,7 +1202,7 @@ void FileSelect_804AFF60::fn_803CBE38() {
     s32 result = lbl_8051C1A0.fn_803B9A94(field_0x5c, 0x258, field_0x60, 0x1D4C, 0);
     if (result != 0) {
         if (result == 1) {
-            lbl_8053AAF8->field_0xff = 1;
+            gGameRoot_8053AAF8->field_0xff = 1;
             fn_803C24BC();
             lbl_8050EC80[0].field_0x8 = lbl_8051C1A0.field_0x1ff8;
         } else if (result == 2) {
@@ -1232,7 +1232,7 @@ void FileSelect_804AFF60::fn_803CBF0C() {
             setState(0x10);
             gAudioMgr_8053AF80->fn_80458880(0xB, -1);
         } else {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 field_0x80 = 0x5C;
             } else {
                 field_0x80 = 0x256;
@@ -1329,7 +1329,7 @@ void FileSelect_804AFF60::fn_803CC3DC() {
     if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0 || field_0xb0 == 0) {
         field_0xb0 = -1;
         field_0x80 = 0;
-        lbl_8053AAF8->field_0xff = 1;
+        gGameRoot_8053AAF8->field_0xff = 1;
         fn_803C24BC();
         gAudioMgr_8053AF80->fn_80458880(0xB, -1);
         lbl_8050EC80[0].field_0x8 = lbl_8051C1A0.field_0x1ff8;
@@ -1514,7 +1514,7 @@ void FileSelect_804AFF60::fn_803CE05C() {
             field_0x80 = 0x84;
             setState(0xF);
         } else {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 field_0x80 = 0x5C;
             } else {
                 field_0x80 = 0x256;
@@ -1606,7 +1606,7 @@ void FileSelect_804AFF60::fn_803CE370() {
         field_0xb0 = -1;
         field_0x80 = 0;
         u32 msg = 0x117;
-        if (lbl_8053AAF8->field_0x7f != 0) {
+        if (gGameRoot_8053AAF8->field_0x7f != 0) {
             msg = 0x116;
         }
         field_0x84 = msg;
@@ -1782,8 +1782,8 @@ void FileSelect_804AFF60::fn_803CEED4() {
         mScreen->search('Padhu02')->move(field_0x88[1] + dx, field_0x94[1] + dy);
         mScreen->search('Padhu03')->move(field_0x88[2] + dx, field_0x94[2] + dy);
     }
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x14->mPane->isVisible() && (lbl_8050EC80[field_0xa8].field_0x28 & 1)) {
         // Seven separate calls in the original (a loop with a break isn't unrolled).
         if (fn_803B8CAC(field_0xa8, 0) && fn_803B8CAC(field_0xa8, 1) && fn_803B8CAC(field_0xa8, 2)
@@ -1805,7 +1805,7 @@ void FileSelect_804AFF60::fn_803CEED4() {
         mScreen->search('Padhu02')->hide();
         mScreen->search('Padhu03')->hide();
     }
-    mScreenHuuin->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreenHuuin->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x116 != 0) {
         field_0x10->setAlpha(field_0x1a3);
         field_0x10->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
@@ -1841,7 +1841,7 @@ void FileSelect_804AFF60::fn_803CF504() {
     field_0xb4 = 0;
     field_0x117 = 0;
     u32 msg = field_0x84;
-    if (msg == 0x117 && lbl_8053AAF8->field_0x7f != 0) {
+    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
         msg = 0x116;
     }
     field_0x84 = msg;
@@ -1952,26 +1952,26 @@ FileSelect_804AFF60::~FileSelect_804AFF60() {
 // fn_803BE3D8 and fn_803CE4CC, unwritten, come first).
 FileSelect_804AFF60::FileSelect_804AFF60() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
-    lbl_8053AAF8->field_0xff = 0;
+    gGameRoot_8053AAF8->field_0xff = 0;
     lbl_80529DEC.fn_80403680();
     if (!lbl_80529DEC.field_0x242) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
-        res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
 
     lbl_8053ADB0 = this;
@@ -2040,7 +2040,7 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
     lbl_8053AED8->fn_80440D78(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_kettei_01.bti")));
     lbl_8053AED8->fn_80440CE4(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_modoru_01.bti")));
 
-    if (lbl_8053AAF8->field_0x7f) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
         mScreenHuuin->search('Pbli04')->hide();
     } else {
         mScreenHuuin->search('Pbli14')->hide();

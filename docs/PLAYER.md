@@ -96,7 +96,7 @@ cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
 - **fn_80254744** (99.30 %): per-slot setup. `field_0xd00 >= 2` with the
   view's save-row stage flag set clears 0xD00/0xCFE. The slot's part comes
   from the game mode: no 0x7F and the player not taking part (bit
-  field_0x4 of lbl_8053AAF8->field_0x82) -> inactive, start state 1 (also
+  field_0x4 of gGameRoot_8053AAF8->field_0x82) -> inactive, start state 1 (also
   with 0x7F, fn_802DE814 and the bit clear); fn_802DEBF8 or 0x7E clear ->
   active, 0xD60 = -1 for player 0 and 0 for the others; otherwise players
   taking part lead (0xD60 = -1, pad 0x11EC = index) and the rest follow:
@@ -112,7 +112,7 @@ cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
 - **fn_80251AEC / fn_80251BFC** (100 %): as in State system below.
 - **fn_80253E6C** (update A, code identical; literal pool only): the
   order is fn_80270D08 + fn_80286688 + fn_80265E88 + clear 0xDB0/0x1030
-  and return while lbl_8053AAF8->field_0x94 == 1 or 0x121F (held);
+  and return while gGameRoot_8053AAF8->field_0x94 == 1 or 0x121F (held);
   otherwise 0x2F4 = mPos + (0, 0, 18), fn_802490A8 (unless 0x80),
   fn_8026FD14, fn_80251D50, then either the join sequence (0x80 set:
   counter 0xD38, effects 0x418-0x41A at 0x10, cues per player at
@@ -132,10 +132,10 @@ Update (GameRootSub04 fn_80139D9C -> **fn_8023F390**, PlayerManager update):
    fn_8026FD14, fn_80251D50 (position), fn_8024F0E8 (view box), per-player
    HUD/input blocks, fn_8024BDBC, fn_80276538, fn_80276078, fn_8024E0A0,
    cls_804AA8D8::fn_8030B774.
-2. unless lbl_8053AAF8+0x94 == 1: each player **fn_80252FC0** (update B:
+2. unless gGameRoot_8053AAF8+0x94 == 1: each player **fn_80252FC0** (update B:
    player-vs-actor interactions, fn_8027FA08, fn_8025F448); clear the
    per-frame bytes 0x434/0x435; **fn_80232A0C** (cross-player pass, 0x1194);
-   **fn_80231DE4** only when lbl_8053AAF8+0x7f; each player fn_80252FBC (empty).
+   **fn_80231DE4** only when gGameRoot_8053AAF8+0x7f; each player fn_80252FBC (empty).
 3. active players: fn_80240670; then the audio manager byte.
 
 **fn_80285E58** (Player update): while the freeze counter 0x11F4 > 0,
@@ -143,12 +143,12 @@ count it down and reset the 0xDB0 / 0x1030 word arrays to -1; otherwise
 **fn_802870C8** (state tick). Then fn_80265E88 (skeleton) and fn_8024CA20.
 
 Draw (GameRoot fn_80136828 -> fn_80139CC4 -> **fn_8023F2BC**): players 3..0
-in two passes split by bit i of lbl_8053AAF8+0x82, each **fn_80264998(player)**.
+in two passes split by bit i of gGameRoot_8053AAF8+0x82, each **fn_80264998(player)**.
 
 Reset: fn_8023F78C -> **fn_80254744** (scene enter, GameRootSub04
 fn_8013A1A4; stage change, fn_802DA8DC / fn_802DBD60); fn_8023F728 ->
 fn_802544B0; fn_8023F6C4 -> fn_80254660; fn_8023F088 -> fn_80252F80 when
-lbl_8053AAF8+0x7e == 1.
+gGameRoot_8053AAF8+0x7e == 1.
 
 cls_804A71A8 (Player+0xBF0): Player::fn_802685D4 (from state updates 0x46,
 0x19, 0x14) -> fn_80268BC4 -> fn_80269574 (0x22A8, the largest Player-area
@@ -162,7 +162,7 @@ states, 0x00-0x51.
 
 - **fn_80251AEC(state)** requests: **fn_80251BFC(state)** decides whether
   the switch is allowed (0x124C/0x124D, 0xCEE, 0xD60, 0xCE8, 0x1214/0x1215,
-  not current, not pending, lbl_8053AAF8+0x7e then fn_80236890); then it
+  not current, not pending, gGameRoot_8053AAF8+0x7e then fn_80236890); then it
   stores 0x1244 and sets the flags. Direct `stw 0x1244` sites also exist:
   fn_80242624 (0x4D), fn_80242704 (0x4C), fn_8024B108 (0x49), fn_8024BBB8
   (0x3F), fn_8024F63C (0x1A), fn_802520C0 (0x1B), fn_8024762C / fn_80247C0C
@@ -224,7 +224,7 @@ tu_8022AD64
 - 8022B334 0x490 86/292: composite query, 7 Player getters + 3 tu_80256C74 calls
 - 8022E438 0x49c 78/295: composite query over 6 Player getters
 - 8022EA0C 0x934 58/589: multi-player scan (28 fwds + 14 Player calls)
-- 80231DE4 0xc28 0/782: manager pass, only when lbl_8053AAF8+0x7f set (cutscene/demo?); GameView, state getters
+- 80231DE4 0xc28 0/782: manager pass, only when gGameRoot_8053AAF8+0x7f set (cutscene/demo?); GameView, state getters
 - 80232A0C 0x1194 370/1125: manager cross-player pass in update (111 fwds, effects, GameView, ChiefSoldier)
 - 8023434C, 8023BEA8, 8023C36C 0x4c4 0: three same-shape fwd blocks (10 Player + 9 fwd calls)
 - 80235B68 0x480, 80237A80 0x738 0: fwd composites (ActorBase, tu_8026FC20 calls)
@@ -765,7 +765,7 @@ copy at the end of the file (0x80268194, just before __sinit). Written as an
 
 **fn_80264998 = the draw** (manager fn_8023F2BC). Pipeline, in order:
 1. Gate: mActive, 0xCEE != 1, and with 0x1215 the player's bit of
-   lbl_8053AAF8->0x82. alpha = fn_8023FC5C(), index = fn_80240868(); the frame
+   gGameRoot_8053AAF8->0x82. alpha = fn_8023FC5C(), index = fn_80240868(); the frame
    is clamped to 0x3D4.
 2. Round shadow: field_0xb90 > 0 -> drawShadow(layer, &0x338, black, 0xb90)
    (ShadowCircle_804A0160, game/DrawShadow.h).

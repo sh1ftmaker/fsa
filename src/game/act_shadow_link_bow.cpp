@@ -8,7 +8,7 @@
 
 // A random offset in -range..range.
 static inline f32 spread(f32 range) {
-    return range * (2.0f * lbl_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
+    return range * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
 }
 
 cls_804A6B70::~cls_804A6B70() {}
@@ -101,7 +101,7 @@ void cls_804A6B70::fn_80222668(s32 state) {
 
 // FIXME: 98.7%. The original draws the y jitter (15) before the x jitter (7)
 // and keeps reach / x / bottom in f24 / f25 / f26 (ours f25 / f24 / f26 with
-// x and y swapped in the pairs), so two lbl_8053AAF8 loads use r4/r5 the
+// x and y swapped in the pairs), so two gGameRoot_8053AAF8 loads use r4/r5 the
 // other way round; it also loads box.f.y before box.i.y. The .sdata2 pool
 // order differs too (32.0f before 64.0f here).
 void cls_804A6B70::fn_80222730() {
@@ -122,7 +122,7 @@ void cls_804A6B70::fn_80222730() {
                 rock->field_0x98 = 2;
                 JGeometry::TVec3f vel;
                 vel.x = 0.0f;
-                vel.y = 3.2f + 0.6f * (2.0f * lbl_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
+                vel.y = 3.2f + 0.6f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
                 vel.z = 0.0f;
                 rock->field_0x3c = vel;
                 rock->field_0x194 = 1;

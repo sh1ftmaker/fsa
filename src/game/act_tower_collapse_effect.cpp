@@ -107,17 +107,17 @@ void TowerCollapseEffect_8049CA40::update() {
                 startSound_801F0E34(0x30071, 0);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x49d, 2, 2, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x49e, 2, 2, NULL, NULL, true, 1.0f);
-                lbl_8053AAF8->fn_80134DE4(1, 0);
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
             } else if (field_0x288 == 0x1E) {
                 startSound_801F0E34(0x30071, 0);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x49b, 2, 2, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x49c, 2, 2, NULL, NULL, true, 1.0f);
-                lbl_8053AAF8->fn_80134DE4(1, 0);
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
             } else if (field_0x288 == 0x3C) {
                 startSound_801F0E34(0x30070, 0);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x49f, 2, 2, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x4a0, 2, 2, NULL, NULL, true, 1.0f);
-                lbl_8053AAF8->fn_80134DE4(3, 0);
+                gGameRoot_8053AAF8->fn_80134DE4(3, 0);
             }
             if (field_0x288 == 0x46) {
                 u32 bit = field_0x25c;
@@ -142,7 +142,7 @@ void TowerCollapseEffect_8049CA40::update() {
                 field_0x230 = 2;
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0xd3, 2, 2, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0xd4, 2, 2, NULL, NULL, true, 1.0f);
-                lbl_8053AAF8->fn_80134DE4(1, 0);
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
                 startSound_801F0E34(0x30001, 0);
             }
             break;

@@ -129,7 +129,7 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
             field_0x250 += 10;
         } else if (mStateTimer >= field_0x250) {
             if (mState == 1) {
-                if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.35f) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.35f) {
                     idle();
                 } else {
                     walk();

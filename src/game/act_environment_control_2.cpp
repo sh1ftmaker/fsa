@@ -72,7 +72,7 @@ void EnvironmentControl2_804A9CD0::update() {
         shared->field_0x1d1 = 1;
     }
     if (field_0x24c != 0) {
-        if (lbl_8053AAF8->field_0x4c != 11) {
+        if (gGameRoot_8053AAF8->field_0x4c != 11) {
             mSound->startSound(0x50078);
         }
         GameRootSub24_8016A3AC* shared = fn_8016A3AC();

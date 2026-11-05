@@ -45,5 +45,5 @@ void cls_80217374::fn_80217484() {
     mState = 0;
     mTimer = 0;
     mDuration = fn_801CD664(1) + 180;
-    mDuration = mDuration * lbl_8053AAF8->mRandom.get_ufloat_1();
+    mDuration = mDuration * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
 }

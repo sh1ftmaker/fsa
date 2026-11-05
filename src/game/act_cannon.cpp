@@ -79,8 +79,8 @@ void Cannon_8049CCF0::draw() {
     s32 frame = mAnim.mCel + 0x14C;
     JGeometry::TVec3f* pos = &mPos;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, &params, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, &params, 1.0f, 1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x14C, false, 1, -1, 0, 0, 0);
 }
@@ -96,7 +96,7 @@ bool Cannon_8049CCF0::fn_80107360() {
         spawnEmitter_8013CC50(field_0x4, &pos, 0x5A, 0, 1, NULL, NULL, true, 1.0f);
     }
     fn_80230FD0(field_0x26c, 0x20036);
-    lbl_8053AAF8->fn_80134DE4(1, 0);
+    gGameRoot_8053AAF8->fn_80134DE4(1, 0);
     field_0x278 = field_0x274;
     field_0x274 = 3;
     // FIXME: 98.15 %. Only the branch layout differs: the original has one
@@ -177,7 +177,7 @@ void Cannon_8049CCF0::update() {
         s32 owner;
         for (owner = 0; owner < 4; owner++) {
             u8 bit = 1 << owner;
-            if ((lbl_8053AAF8->field_0x82 & bit) != 0 || fn_8022CAF8(owner) == 4) {
+            if ((gGameRoot_8053AAF8->field_0x82 & bit) != 0 || fn_8022CAF8(owner) == 4) {
                 if (fn_8023B0F4(owner, &box, field_0x4, false, 1000.0f) && field_0x26c < 0 &&
                     fn_8023162C(owner, mSerial)) {
                     break;

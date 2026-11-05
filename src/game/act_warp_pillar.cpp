@@ -24,7 +24,7 @@ void WarpPillar_804AC0A8::update() {
 
     startSound_801F0E34(0x5003B, 0);
 
-    ShadowCircle_804A0160* shadow = lbl_8053AB10->field_0x2c;
+    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
     if (shadow->field_0xc > 0x80) {
         u8 alpha = shadow->field_0xc - 1;
         if (alpha <= 0x80) {
@@ -163,7 +163,7 @@ void WarpPillar_804AC0A8::update() {
         field_0x244--;
         if (field_0x244 <= 0) {
             getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
-            lbl_8053AAF8->fn_80136798(0xF, 0);
+            gGameRoot_8053AAF8->fn_80136798(0xF, 0);
             if (mEmitter264 != NULL) {
                 mEmitter264->becomeInvalidEmitter();
                 mEmitter264 = NULL;

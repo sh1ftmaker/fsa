@@ -33,8 +33,8 @@ void WoodenForceGem_804AB1F0::draw() {
         setRotScaleMtx(mtxA, JGeometry::TVec3f(0.0f, field_0x23c, 0.0f), scale);
         params.mMtx = mtxA;
         if (field_0x4 < 8) {
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', name);
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         return;
     }
@@ -138,7 +138,7 @@ void WoodenForceGem_804AB1F0::update() {
         if (field_0x24c <= 0) {
             field_0x250 = (field_0x250 + 1) & 3;
             if (field_0x250 == 0) {
-                field_0x24c = (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
+                field_0x24c = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
             } else {
                 field_0x24c = 2;
             }
@@ -184,7 +184,7 @@ void WoodenForceGem_804AB1F0::init() {
     field_0x238 = 1.0f;
     field_0x23c = 0.0f;
     field_0x25c = 0;
-    field_0x24c = (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
+    field_0x24c = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
     field_0x250 = 0;
     if (field_0x258 == 4 || field_0x258 == 5) {
         field_0x240 = 0.6f;
@@ -207,7 +207,7 @@ void WoodenForceGem_804AB1F0::init() {
     mBox.i.y = -7.0f;
     mBox.f.x = 7.0f;
     mBox.f.y = 7.0f;
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         fn_801F3668();
     }
 }

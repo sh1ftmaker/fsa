@@ -17,8 +17,8 @@ PullSwitch_804A7908::~PullSwitch_804A7908() {}
 void PullSwitch_804A7908::draw() {
     s32 frame = field_0x23c + 0x147;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mSpawnPos, res, frame, NULL, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mSpawnPos, res, frame, NULL, 1.0f, 1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x23c + 0x147, false, 1, -1, 0, 0, 0);
 }

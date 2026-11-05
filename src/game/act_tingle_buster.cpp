@@ -23,7 +23,7 @@ bool fn_801E3250(s32 layer, bool highNibble) {
             }
             if (kind == 0) {
                 result = true;
-            } else if (lbl_8053AAF8->field_0x7e == 0) {
+            } else if (gGameRoot_8053AAF8->field_0x7e == 0) {
                 if (kind == 2) {
                     result = true;
                 }

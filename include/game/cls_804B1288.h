@@ -10,7 +10,7 @@ class PaneCtrl_804AF86C;
 // Vtable 0x804B1288 (one slot, the destructor), 0x66C bytes, defined in
 // game/tu_80403D84.cpp. The constructor fn_804122F4 stores
 // `this` in lbl_8053ADF8; tu_8039003C allocates it with __nw__(0x66C) when
-// lbl_8053AAF8->field_0x7f is set. Its methods are the handlers of a state
+// gGameRoot_8053AAF8->field_0x7f is set. Its methods are the handlers of a state
 // machine (field_0x350).
 class cls_804B1288 {
 public:
@@ -37,7 +37,7 @@ public:
     // field_0x278 (state 0xF), for 0x19 sets field_0x668; while 0x663 is set
     // it wobbles field_0x3a0 / field_0x3a4 with two sine waves.
     void fn_80409330();
-    // 0x804045F8 (this unused): when lbl_8053AAF8's byte 0x7E is set, whether
+    // 0x804045F8 (this unused): when gGameRoot_8053AAF8's byte 0x7E is set, whether
     // bit `bit` of byte 0x7A of the current save row is set.
     bool fn_804045F8(s32 bit);
     // 0x8040E278: counts field_0x384 up; past 100 the state becomes 0x15.

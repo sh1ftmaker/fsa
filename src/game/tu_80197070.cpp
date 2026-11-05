@@ -53,11 +53,11 @@ cls_804A2944::~cls_804A2944() {
 }
 
 void fn_8019CD9C(s32 v) {
-    lbl_8053AAF8->fn_8013670C(v);
+    gGameRoot_8053AAF8->fn_8013670C(v);
 }
 
 void fn_8019CDC4(s32 v) {
-    GameRoot_8049EF20* root = lbl_8053AAF8;
+    GameRoot_8049EF20* root = gGameRoot_8053AAF8;
     root->field_0x85 = 1;
     root->field_0x74 = 0;
     root->field_0x78 = 0;

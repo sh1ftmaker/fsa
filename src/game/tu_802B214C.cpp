@@ -2,9 +2,9 @@
 #include "game/GameGlobals.h"
 #include "game/cls_804A8588.h"
 
-cls_804A8588::~cls_804A8588() {}
+RotatingSkull_804A8588::~RotatingSkull_804A8588() {}
 
-u8 cls_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
+u8 RotatingSkull_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
     bool result = ActorBase_804A5770::vfunc_0x4C(layer, pos);
     if (!result) {
         field_0x27c = 0;
@@ -18,7 +18,7 @@ static const f32 lbl_805409C8[2] = {1.0f, -1.0f};
 // FIXME: 99.46 %. Instructions identical; only the literal split differs
 // (lbl_80540A0C/0A10/0A14 and others are @NNN here: earlier, unwritten
 // functions of this unit own the first literals).
-void cls_804A8588::init() {
+void RotatingSkull_804A8588::init() {
     mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
     field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
     mPos.y += 12.0f;

@@ -79,8 +79,8 @@ void ChiefSoldier_804A0B90::fn_80172BC8() {
         params.mMtx = mtx;
         s32 frame = field_0x280 + 0x3FD;
         if (field_0x4 < 8) {
-            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     }
 }
@@ -91,7 +91,7 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
         field_0x240 = 0;
         field_0x264 = 0;
         field_0x250 = 0x14;
-        if (field_0x23c == 0 && lbl_8053AAF8->field_0x7f == 1) {
+        if (field_0x23c == 0 && gGameRoot_8053AAF8->field_0x7f == 1) {
             gAudioMgr_8053AF80->fn_80458FF0(0x1000021, false, false);
         }
         field_0x288 = 2;
@@ -114,9 +114,9 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
 
 ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
     if (getType() != 7 && getType() != 8) {
-        if (getType() != 6 && lbl_8053AAF8->field_0x4c != 9 &&
-            lbl_8053AAF8->field_0x4c != 0xB && mLife != 0) {
-            lbl_8053AAF8->fn_80138B7C();
+        if (getType() != 6 && gGameRoot_8053AAF8->field_0x4c != 9 &&
+            gGameRoot_8053AAF8->field_0x4c != 0xB && mLife != 0) {
+            gGameRoot_8053AAF8->fn_80138B7C();
         }
         s32 serial = field_0x238;
         if (serial >= 0) {

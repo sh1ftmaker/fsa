@@ -22,7 +22,7 @@ static inline void normalize(JGeometry::TVec2f& v) {
     v.y *= norm;
 }
 
-cls_804A886C::~cls_804A886C() {}
+ReaperShinigami_804A886C::~ReaperShinigami_804A886C() {}
 
 void fn_802B7CD8(ActorBase_804A5770* actor) {
     getGameView_802D6A9C()->fn_802D9FBC();
@@ -33,7 +33,7 @@ void fn_802B7CD8(ActorBase_804A5770* actor) {
 // and its frame is 0x40 with the playerPos copy at 0x10 (ours: arg unsaved,
 // idx in r29, playerPos at 0x8). The direction temp's dead stack stores are
 // not reproduced.
-void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
+void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
     JGeometry::TVec3f playerPos(*getPlayerPos_8023E724(field_0x298));
     s32 dist = (s32)FABS(mPos.x - playerPos.x);
     if (dist < 40) {
@@ -63,7 +63,7 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
 
         s32 damage = field_0x114;
         s32 arg3 = 0x12;
-        if (lbl_8053AAF8->field_0x7f == 0) {
+        if (gGameRoot_8053AAF8->field_0x7f == 0) {
             s32 n = fn_80237774(field_0x298);
             damage = n > 1 ? n - 1 : 0;
             arg3 = 4;
@@ -79,7 +79,7 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
                     field_0x250 = 0;
                 }
                 field_0x280 = 100;
-                if (lbl_8053AAF8->field_0x7e == 0) {
+                if (gGameRoot_8053AAF8->field_0x7e == 0) {
                     mAlive = false;
                     startSound_801F0E34(0x40041, 0);
                 }
@@ -97,13 +97,13 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
     }
 }
 
-void cls_804A886C::vfunc_0x24() {
+void ReaperShinigami_804A886C::vfunc_0x24() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x173, 1, 0, NULL, NULL, true, 1.0f);
     mAlive = false;
     startSound_801F0E34(0x40041, 0);
 }
 
-void cls_804A886C::draw() {
+void ReaperShinigami_804A886C::draw() {
     if (field_0x230 == 0) {
         return;
     }
@@ -118,7 +118,7 @@ void cls_804A886C::draw() {
 // FIXME: 99.64 %. Only reloc-names: the -8.0f, 8.0f and 2.0f literals are
 // @603-@605 here, lbl_80540ADC/AE0/AE4 in the original; they sit at the right
 // offsets once fn_802B8078 and update() (which use 16.0f and 48.0f) are written.
-void cls_804A886C::init() {
+void ReaperShinigami_804A886C::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
     mBox.f.x = 8.0f;

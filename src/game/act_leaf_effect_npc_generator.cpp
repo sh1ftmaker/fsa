@@ -32,7 +32,7 @@ void LeafEffectNPCGenerator_804AE288::update() {}
 // The tile code under the cell at (x, y) on the actor's layer.
 static inline u16 tileCodeAt(LeafEffectNPCGenerator_804AE288* self, s32 x, s32 y) {
     JGeometry::TVec2f cell(x, y);
-    return lbl_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(&cell, self->field_0x4)) & 0x3FF;
+    return gGameRoot2_8053AB10->field_0x20->fn_802F9908(self->field_0x4, fn_80226BC4(&cell, self->field_0x4)) & 0x3FF;
 }
 
 // Spawns a LEAF actor on every cell of a 32 x 24 grid (16-unit cells, snapped

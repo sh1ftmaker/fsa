@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A81C8.
-class cls_804A81C8 : public ActorBase_804A5770 {
+class PointCheckNPC_804A81C8 : public ActorBase_804A5770 {
 public:
-    cls_804A81C8() {}
-    /* 0x08 */ virtual ~cls_804A81C8();
+    PointCheckNPC_804A81C8() {}
+    /* 0x08 */ virtual ~PointCheckNPC_804A81C8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

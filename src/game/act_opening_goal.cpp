@@ -48,13 +48,13 @@ void cls_8049DB30::fn_8011A4BC() {
         fadeColour(field_0x248, 0xFF, field_0x240);
         break;
     }
-    // The shadow sprite's colour (lbl_8053AB10->0x2C) follows this actor's.
-    ShadowCircle_804A0160* shadow = lbl_8053AB10->field_0x2c;
+    // The shadow sprite's colour (gGameRoot2_8053AB10->0x2C) follows this actor's.
+    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
     shadow->field_0x4.r = field_0x244;
     shadow->field_0x4.g = field_0x245;
     shadow->field_0x4.b = field_0x246;
     shadow->field_0x4.a = field_0x247;
-    lbl_8053AB10->field_0x2c->field_0xc = field_0x248;
+    gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x248;
 }
 
 s32 cls_8049DB30::vfunc_0x5C() {
@@ -154,7 +154,7 @@ void cls_8049DB30::update() {
                 flag = false;
             } else {
                 flag = true;
-                if (!(lbl_8053AAF8->field_0x82 & (1 << player))) {
+                if (!(gGameRoot_8053AAF8->field_0x82 & (1 << player))) {
                     flag = false;
                 }
             }
@@ -167,7 +167,7 @@ void cls_8049DB30::update() {
         }
         break;
     }
-    cls_804A03A8* field30 = lbl_8053AB10->field_0x30;
+    cls_804A03A8* field30 = gGameRoot2_8053AB10->field_0x30;
     if (field30->field_0x284 == 0) {
         field30->field_0x284 = 1;
         field30->field_0x28c = 0.05f;

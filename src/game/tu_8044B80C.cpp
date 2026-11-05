@@ -22,10 +22,10 @@ bool cls_804B1D10::fn_8044B80C(u8 idx) {
         mPage = idx;
         mState = 1;
         JKRHeap* saved = JKRHeap::sCurrentHeap;
-        lbl_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         delete mScreen;
         mScreen = NULL;
-        lbl_8053AAF8->field_0x4->field_0x30->freeAll();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
         saved->becomeCurrentHeap();
     } else if (mState == 0) {
         mPage = idx;
@@ -36,8 +36,8 @@ bool cls_804B1D10::fn_8044B80C(u8 idx) {
 
 void cls_804B1D10::fn_8044B8EC() {
     if (mDraw && mState == 3 && mScreen != NULL) {
-        lbl_8053AB10->fn_8013B490();
-        mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         mDraw = false;
     }
 }
@@ -47,10 +47,10 @@ void cls_804B1D10::fn_8044B960() {
         char path[0x1F];
         char name[0x11];
         JKRHeap* saved = JKRHeap::sCurrentHeap;
-        lbl_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         if (mState == 1) {
             snprintf(path, 0x1F, "/GC4Sword_usa/staff/staff%d.arc", mPage + 1);
-            mArchive = fn_80401E10(path, 0, lbl_8053AAF8->field_0x4->field_0x30);
+            mArchive = fn_80401E10(path, 0, gGameRoot_8053AAF8->field_0x4->field_0x30);
             mState = 2;
         }
         if (mArchive != NULL && mArchive->field_0x4 == 1) {
@@ -82,18 +82,18 @@ void cls_804B1D10::fn_8044B960() {
 cls_804B1D10::~cls_804B1D10() {
     if (field_0x4 != NULL) {
         JKRHeap* saved = JKRHeap::sCurrentHeap;
-        lbl_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         delete field_0x4;
         field_0x4 = NULL;
-        lbl_8053AAF8->field_0x4->field_0x30->freeAll();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
         saved->becomeCurrentHeap();
     }
     if (mScreen != NULL) {
         JKRHeap* saved = JKRHeap::sCurrentHeap;
-        lbl_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         delete mScreen;
         mScreen = NULL;
-        lbl_8053AAF8->field_0x4->field_0x30->freeAll();
+        gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
         saved->becomeCurrentHeap();
     }
     lbl_8053AF30 = NULL;

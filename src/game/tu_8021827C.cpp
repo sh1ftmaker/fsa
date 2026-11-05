@@ -37,7 +37,7 @@ void cls_804A51E4::vfunc_0xA0() {
         if (inside) {
             JGeometry::TVec3f screen;
             fn_801CE010(&screen);
-            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&screen);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&screen);
         }
     }
 }
@@ -62,7 +62,7 @@ void cls_804A51E4::fn_8021835C() {
             visible = true;
         }
     } else {
-        if (lbl_8053AB10->field_0x24->fn_8030C2A8(&a) && lbl_8053AB10->field_0x24->fn_8030C2A8(&b)) {
+        if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&a) && gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&b)) {
             visible = true;
         }
     }
@@ -116,7 +116,7 @@ bool cls_804A51E4::fn_80218538() const {
             result = true;
         }
     } else {
-        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
         bool inView = false;
         JGeometry::TVec3f a(box.i.x, box.i.y, 0.0f);
         if (camera->fn_8030C2A8(&a)) {

@@ -18,13 +18,13 @@ static inline void releaseEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-void cls_804A8FC8::draw() {
+void OnOffSwitch_804A8FC8::draw() {
     if (mState == 2 || mState == 1) {
         drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 70.0f);
     }
 }
 
-void cls_804A8FC8::update() {
+void OnOffSwitch_804A8FC8::update() {
     JGeometry::TBox2f box;
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     mBox.i.x = -8.0f;
@@ -176,7 +176,7 @@ void cls_804A8FC8::update() {
     }
 }
 
-cls_804A8FC8::~cls_804A8FC8() {
+OnOffSwitch_804A8FC8::~OnOffSwitch_804A8FC8() {
     if (mEmitter230 != NULL) {
         releaseEmitter_801EE434(mEmitter230);
     }
@@ -190,7 +190,7 @@ static const s32 lbl_8046D8F8[4] = {0x16, 0x11, 0xC, 7};
 // FIXME: 99.19 %. Regalloc only: the original keeps the actor count in r31 and
 // the byte offset of the array index in r30; we have them the other way round
 // (declaring the count in the for-init made it worse).
-void cls_804A8FC8::vfunc_0x10() {
+void OnOffSwitch_804A8FC8::vfunc_0x10() {
     s32 end = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
@@ -218,7 +218,7 @@ void cls_804A8FC8::vfunc_0x10() {
     }
 }
 
-void cls_804A8FC8::init() {
+void OnOffSwitch_804A8FC8::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
     field_0x244 = field_0x90 >> 27;
@@ -229,7 +229,7 @@ void cls_804A8FC8::init() {
     field_0x254 = 0;
     mEmitter230 = NULL;
     mEmitter234 = NULL;
-    u8 players = lbl_8053AAF8->fn_80138A30();
+    u8 players = gGameRoot_8053AAF8->fn_80138A30();
     s32 active = 0;
     if (field_0x248 == 0) {
         active = 1;

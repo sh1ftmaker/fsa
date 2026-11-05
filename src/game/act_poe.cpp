@@ -49,7 +49,7 @@ void Poe_8049F330::draw() {
             mtx[1][3] = 0.0f;
             mtx[2][3] = 0.0f;
             params.mMtx = mtx;
-            void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', lbl_8049F318[index]);
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_8049F318[index]);
             fn_801EFD34(res, &params, 7, 0.0f, -8.0f, 0.0f);
         } else {
             drawSprite_801F06F0("enemy_gc_sob.bin", field_0x25c + 0x84, &params, 7, 1.0f, 1.0f);
@@ -78,7 +78,7 @@ void Poe_8049F330::init() {
     field_0x238[7] = 0;
     field_0x238[8] = 0;
     field_0x270 = 255.0f;
-    field_0x238[1] = (s32)(60.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 60;
+    field_0x238[1] = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 60;
     field_0x234 = 0;
     field_0xb0 = 0;
     field_0x260.x = mPos.x;
@@ -89,8 +89,8 @@ void Poe_8049F330::init() {
         field_0x270 = 0.0f;
         // fall through
     case 2:
-        field_0x238[4] = (s32)lbl_8053AAF8->mRandom.get_ufloat_1();
-        field_0x238[0] = (s32)(150.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 150;
+        field_0x238[4] = (s32)gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+        field_0x238[0] = (s32)(150.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 150;
         if (field_0x94 == 2) {
             field_0xb0 = 0x201;
         }

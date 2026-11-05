@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AE574.
-class cls_804AE574 : public ActorBase_804A5770 {
+class FourPersonPullSwitchBTIVersion_804AE574 : public ActorBase_804A5770 {
 public:
-    cls_804AE574() {}
-    /* 0x08 */ virtual ~cls_804AE574();
+    FourPersonPullSwitchBTIVersion_804AE574() {}
+    /* 0x08 */ virtual ~FourPersonPullSwitchBTIVersion_804AE574();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

@@ -84,7 +84,7 @@ void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
 }
 
-// Whether the pause fade object (lbl_8053AB10->0x2C) is idle, while paused.
+// Whether the pause fade object (gGameRoot2_8053AB10->0x2C) is idle, while paused.
 u8 GameRoot_8049EF20::fn_80134CC8() {
     bool paused;
     if (field_0x4c == 11) {
@@ -93,13 +93,13 @@ u8 GameRoot_8049EF20::fn_80134CC8() {
         paused = field_0x88 == 2;
     }
     if (paused) {
-        return lbl_8053AB10->field_0x2c->field_0xc == 0;
+        return gGameRoot2_8053AB10->field_0x2c->field_0xc == 0;
     }
     return false;
 }
 
 void GameRoot_8049EF20::fn_80134D14(u8 value) {
-    lbl_8053AAF8->field_0x88 = value;
+    gGameRoot_8053AAF8->field_0x88 = value;
 }
 
 void GameRoot_8049EF20::fn_80134D20(bool arg) {
@@ -158,9 +158,9 @@ void GameRoot_8049EF20::fn_80135020(s32 mode) {
     case 7:
         if (field_0x4 == NULL) {
             field_0x4 = new (field_0x98, 0) GameRootSub04_801F856C(field_0x98);
-            lbl_8053AB10->fn_8013BE04();
+            gGameRoot2_8053AB10->fn_8013BE04();
             // The original loads both values before getGameView_802D6A9C() (level first).
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 s32 level = lbl_80529DEC.field_0x11c;
                 s32 stage = lbl_80529DEC.field_0x118;
                 GameView_804A9950* view = getGameView_802D6A9C();
@@ -294,7 +294,7 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
             fn_801352F4(12);
             OSReport("Game　連続空き容量　%fK 残り空き容量　%fK\n",
                      field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 char path[32];
                 if (fn_80021840() == 2) {
                     strcpy(path, "/GC4Sword/Boss/");
@@ -400,13 +400,13 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
         OSReport("MapSelect　連続空き容量　%fK 残り空き容量　%fK\n",
                  field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
         if (fn_80021840() == 2) {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 field_0xac = fn_80401E10("/GC4Sword/map1.arc", 0, lbl_80529DEC.mHeap);
             } else {
                 field_0xac = fn_80401E10("/GC4Sword/map2.arc", 0, lbl_80529DEC.mHeap);
             }
         } else if (fn_80021840() == 0 || fn_80021840() == 1) {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 field_0xac = fn_80401E10("/GC4Sword_usa/map1.arc", 0, lbl_80529DEC.mHeap);
             } else {
                 field_0xac = fn_80401E10("/GC4Sword_usa/map2.arc", 0, lbl_80529DEC.mHeap);
@@ -421,7 +421,7 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
 // FIXME: 85.9. The target tests mode == 0 separately and then folds 1-6 into one
 // range (subi; cmplwi 5), reusing r3 for the mode; ours folds 0-6 into one range.
 bool GameRoot_8049EF20::fn_80136320() {
-    if (lbl_8053AAF8 != NULL) {
+    if (gGameRoot_8053AAF8 != NULL) {
         s32 mode = field_0x4c;
         if (mode == 0 || (mode >= 1 && mode <= 6) || mode == 9 || mode == 12) {
             return true;
@@ -431,11 +431,11 @@ bool GameRoot_8049EF20::fn_80136320() {
 }
 
 void GameRoot_8049EF20::fn_80136500() {
-    u8 stopped = lbl_8053AAF8->field_0x94;
-    if (lbl_8053AAF8->field_0x96 != 0) {
+    u8 stopped = gGameRoot_8053AAF8->field_0x94;
+    if (gGameRoot_8053AAF8->field_0x96 != 0) {
         stopped = true;
     }
-    if (lbl_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
+    if (gGameRoot_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
         stopped = true;
     }
     if (field_0xfe == 1 && !stopped) {
@@ -513,7 +513,7 @@ void GameRoot_8049EF20::fn_801367E0(s32 value) {
 s32 GameRoot_8049EF20::fn_80138A30() {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
             count++;
         }
     }
@@ -521,7 +521,7 @@ s32 GameRoot_8049EF20::fn_80138A30() {
 }
 
 bool fn_80138AB0() {
-    if (lbl_8053AAF8->field_0x7e == 1) {
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
         if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(1)) &&
             lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(2)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(3)))
         {
@@ -540,7 +540,7 @@ void GameRoot_8049EF20::fn_80138B7C() {
     if (id == 0x11) {
         return;
     }
-    if (lbl_8053AAF8->field_0x7f == 1) {
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
         if (id == 0x14 || id == 0x1E) {
             field_0xa0->fn_80458F04(lbl_804652F0[id]);
         } else {
@@ -566,7 +566,7 @@ void GameRoot_8049EF20::fn_80138B7C() {
 // ours numbers 50.0f before get_ufloat_1's 1.0f (the original pools 1.0f first).
 void GameRoot_8049EF20::fn_80138C9C() {
     field_0xa0->field_0x5 = 4;
-    lbl_8053AB10->fn_8013BE04();
+    gGameRoot2_8053AB10->fn_8013BE04();
     field_0x10->fn_802ACB58();
     fn_80119DD0()->fn_80119D48();
     fn_8011921C()->fn_801190E4();
@@ -601,7 +601,7 @@ void GameRoot_8049EF20::fn_80138C9C() {
     field_0x83 = 0;
     field_0xff = 0;
     field_0xf0 = 0.0f;
-    field_0x86 = (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 1;
+    field_0x86 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 1;
     field_0xf4 = getMessageText_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
     strcpy(field_0xc4->getStringPtr(), field_0xc8);
     strcpy(field_0xc0->getStringPtr(), field_0xc8);
@@ -611,7 +611,7 @@ void GameRoot_8049EF20::fn_80138C9C() {
 // differ (0x324 vs 0x5E8: the strings of the unwritten fn_80135494 - fn_80137300
 // come first in the original .rodata) and the .sdata2 floats / "" are @NNN.
 GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
-    lbl_8053AAF8 = this;
+    gGameRoot_8053AAF8 = this;
     field_0x9c = lbl_80529DEC.field_0x4;
     field_0x98 = lbl_80529DEC.mHeap;
     field_0xa0 = lbl_80529DEC.field_0xc;
@@ -619,7 +619,7 @@ GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
     field_0xa8 = lbl_80529DEC.field_0x1c;
     field_0x98->becomeCurrentHeap();
     field_0x18 = new (field_0x98, 0) MessageManager_804AF070();
-    lbl_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
+    gGameRoot2_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
     field_0x8 = lbl_80529DEC.field_0x5c;
     field_0xc = lbl_80529DEC.field_0x60;
     field_0x10 = new (field_0x98, 0) cls_804A8390();
@@ -656,7 +656,7 @@ GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
     ResTIMG* img = (ResTIMG*)fn_804030C4('TIMG', "kk_rival_01.bti");
     field_0xb8 = new (field_0x98, 0) J2DPicture(img);
     field_0xb8->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xD2, 0, 0xFF));
-    img = (ResTIMG*)lbl_8053AAF8->field_0xa4->getResource('TIMG', "");
+    img = (ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "");
     field_0xbc = new (field_0x98, 0) J2DPicture(img);
     if (fn_80021840() == 2) {
         field_0xc0 = new (field_0x98, 0) J2DTextBox('TEXT1',
@@ -686,7 +686,7 @@ void fn_80139958() {
 
 // The 2-bit field of field_0x83 for `index` (0-3), as the caller reads it.
 s32 fn_8013997C(s32 index) {
-    return (lbl_8053AAF8->field_0x83 >> (index * 2)) & 3;
+    return (gGameRoot_8053AAF8->field_0x83 >> (index * 2)) & 3;
 }
 
 // JUTGamePad C3ButtonReset callback (JUTResetBtnCb).

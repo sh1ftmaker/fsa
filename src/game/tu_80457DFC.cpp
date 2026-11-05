@@ -430,7 +430,7 @@ AudioMgr_8045A080::AudioMgr_8045A080() {
 
 // 0x8045A0D8
 u8 fn_8045A0D8() {
-    return lbl_8053AAF8->field_0x96;
+    return gGameRoot_8053AAF8->field_0x96;
 }
 
 // The music volumes per mode (fn_80458744): music, second sequence, SE

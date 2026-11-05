@@ -13,10 +13,10 @@ static inline bool nearHalfTurn(s16 angle) {
 // The body of fn_8021ABC0, inlined into fn_8021A570.
 static inline void pickNext(cls_8021ACE0* self) {
     if (self->field_0xc == 0) {
-        if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.9f) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.9f) {
             self->mState = 1;
             self->mTimer2 = fn_801CD664(0xB5) + 0x78;
-            if (lbl_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
                 self->mSpeed = -0x180;
             } else {
                 self->mSpeed = 0x180;

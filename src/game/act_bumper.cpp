@@ -117,10 +117,10 @@ void Bumper_804A0260::update() {
         c.y = 0.5f * (boxB.i.y - boxB.f.y) + boxB.f.y;
         field_0x94 = 0;
         if (found >= 0) {
-            lbl_8053AAF8->fn_80134DE4(1, 0);
+            gGameRoot_8053AAF8->fn_80134DE4(1, 0);
             fn_802378AC(found, &c);
         } else if (touchPlayer >= 0) {
-            lbl_8053AAF8->fn_80134DE4(1, 0);
+            gGameRoot_8053AAF8->fn_80134DE4(1, 0);
             fn_802378AC(touchPlayer, &c);
         }
         if (field_0x230 != 1) {

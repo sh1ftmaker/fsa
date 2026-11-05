@@ -119,24 +119,24 @@ s32 GameView_804A9950::fn_802D39FC() {
 // (x, z, z, y); a second `pos.z = 0.0f;` matches but would be a duplicated statement, so the
 // source the original had here (an inline that also zeroes z?) is still unknown.
 void GameView_804A9950::fn_802D3A18() {
-    u8 paused = lbl_8053AAF8->field_0x94;
-    if (lbl_8053AAF8->field_0x96 != 0) {
+    u8 paused = gGameRoot_8053AAF8->field_0x94;
+    if (gGameRoot_8053AAF8->field_0x96 != 0) {
         paused = 1;
     }
-    if (lbl_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
+    if (gGameRoot_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
         paused = 1;
     }
-    if (lbl_8053AAF8->field_0x4->mView->field_0x131f0 == 1 && field_0xc4 != 0 && !paused) {
+    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 == 1 && field_0xc4 != 0 && !paused) {
         field_0xc4--;
         if (field_0xc4 == 1800) {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 lbl_8053AED0->fn_8043D67C(0x146, 0, 0);
             } else {
                 lbl_8053AED0->fn_8043D67C(0x195, 0, 0);
             }
             gAudioMgr_8053AF80->fn_80458880(0x30, -1);
         } else if (field_0xc4 == 660) {
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 lbl_8053AED0->fn_8043D67C(0x147, 0, 0);
             } else {
                 lbl_8053AED0->fn_8043D67C(0x196, 0, 0);
@@ -158,12 +158,12 @@ void GameView_804A9950::fn_802D3A18() {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
             gAudioMgr_8053AF80->fn_80458880(0x35, -1);
         } else if (field_0xc4 == 0) {
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             JGeometry::TVec3f pos;
             pos.x = -camera->field_0x4[0][3];
             pos.y = -camera->field_0x4[1][3];
             pos.z = 0.0f;
-            if (lbl_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7f != 0) {
                 getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TUTM, 0, &pos, 0, -1, -1);
                 field_0xc4 = 0x8CA0;
             } else {
@@ -181,9 +181,9 @@ void GameView_804A9950::fn_802D3A18() {
 bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     u32 word = bit / 32;
     if (!set) {
-        return (lbl_8053AAF8->field_0x4->mView->field_0x2d48[index][word] & lbl_8046E1CC[bit % 32]) != 0;
+        return (gGameRoot_8053AAF8->field_0x4->mView->field_0x2d48[index][word] & lbl_8046E1CC[bit % 32]) != 0;
     }
-    lbl_8053AAF8->field_0x4->mView->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
     return true;
 }
 
@@ -193,7 +193,7 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
 s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     for (int i = 0; i < 0x40; i++) {
-        if (id == lbl_8053AAF8->field_0x4->mView->field_0x2948[slot][i]) {
+        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i]) {
             return i;
         }
     }
@@ -201,11 +201,11 @@ s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
 }
 
 GameView_804A9950* getGameView_802D6A9C(void) {
-    return lbl_8053AAF8->field_0x4->mView;
+    return gGameRoot_8053AAF8->field_0x4->mView;
 }
 
 void GameView_804A9950::fn_802D6AAC(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f9 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f9 = value;
 }
 
 // FIXME: 91.0 %. Only scheduling: the target computes bit / 32 (srawi/addze) and
@@ -228,15 +228,15 @@ void GameView_804A9950::fn_802D6B24(s32 bit, bool set) {
 }
 
 void GameView_804A9950::fn_802D6BC8(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f4 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f4 = value;
 }
 
 void GameView_804A9950::fn_802D6BE0(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f3 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f3 = value;
 }
 
 void GameView_804A9950::fn_802D6BF8(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131f2 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f2 = value;
 }
 
 // Componentwise TUtil::epsilonEquals of two vectors (the shape of tu_8027E5BC's epsilonEqualsXY).
@@ -252,12 +252,12 @@ static inline bool epsilonEquals(const JGeometry::TVec2f& a, const JGeometry::TV
 // registers.
 void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
     for (int i = 0; i < 8; i++) {
-        if (id == lbl_8053AAF8->field_0x4->mView->field_0x13188[i] &&
-            epsilonEquals(lbl_8053AAF8->field_0x4->mView->field_0x13148[i], pos, JGeometry::TUtilf::epsilon())) {
-            lbl_8053AAF8->field_0x4->mView->field_0x130e8[i].set(0.0f, 0.0f);
-            lbl_8053AAF8->field_0x4->mView->field_0x13128[i] = -1;
-            lbl_8053AAF8->field_0x4->mView->field_0x13148[i].set(0.0f, 0.0f);
-            lbl_8053AAF8->field_0x4->mView->field_0x13188[i] = -1;
+        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] &&
+            epsilonEquals(gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i], pos, JGeometry::TUtilf::epsilon())) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x130e8[i].set(0.0f, 0.0f);
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] = -1;
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i].set(0.0f, 0.0f);
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] = -1;
             return;
         }
     }
@@ -269,19 +269,19 @@ void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
 bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id) {
     bool found = false;
     for (int i = 0; i < 8; i++) {
-        if (epsilonEquals(lbl_8053AAF8->field_0x4->mView->field_0x13148[i], b, JGeometry::TUtilf::epsilon()) &&
-            id == lbl_8053AAF8->field_0x4->mView->field_0x13188[i]) {
+        if (epsilonEquals(gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i], b, JGeometry::TUtilf::epsilon()) &&
+            id == gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i]) {
             found = true;
             break;
         }
     }
     if (!found) {
         for (int i = 0; i < 8; i++) {
-            if (lbl_8053AAF8->field_0x4->mView->field_0x13128[i] == -1) {
-                lbl_8053AAF8->field_0x4->mView->field_0x130e8[i] = a;
-                lbl_8053AAF8->field_0x4->mView->field_0x13148[i] = b;
-                lbl_8053AAF8->field_0x4->mView->field_0x13128[i] = value;
-                lbl_8053AAF8->field_0x4->mView->field_0x13188[i] = id;
+            if (gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] == -1) {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x130e8[i] = a;
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i] = b;
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] = value;
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] = id;
                 break;
             }
         }
@@ -330,7 +330,7 @@ void GameView_804A9950::fn_802D6F38(u32 key, JGeometry::TVec2f pos, s32 value, b
 }
 
 bool GameView_804A9950::fn_802D72BC(s32 bit) {
-    return ((1 << (bit % 32)) & lbl_8053AAF8->field_0x4->mView->field_0x12fe8[bit / 32]) != 0;
+    return ((1 << (bit % 32)) & gGameRoot_8053AAF8->field_0x4->mView->field_0x12fe8[bit / 32]) != 0;
 }
 
 void GameView_804A9950::fn_802D7310(s32 bit, bool set) {
@@ -364,7 +364,7 @@ void GameView_804A9950::fn_802D73CC(s32 bit, bool set) {
 }
 
 void GameView_804A9950::fn_802D752C(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131ef = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131ef = value;
 }
 
 u8 GameView_804A9950::fn_802D7544(s32 index) {
@@ -411,15 +411,15 @@ void GameView_804A9950::fn_802D7704(s32 bit, bool count, s32 layer) {
 
 // `bits ^ 0xFF` (not ~bits): the target clears with xori+and, not andc.
 void GameView_804A9950::fn_802D7790(s32 index, u16 bits) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131b8[index] &= bits ^ 0xFF;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] &= bits ^ 0xFF;
 }
 
 void GameView_804A9950::fn_802D77BC(s32 index, u16 bits) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131b8[index] |= bits;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] |= bits;
 }
 
 void GameView_804A9950::fn_802D77E4(s32 index, u16 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131b8[index] = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] = value;
 }
 
 // FIXME: 80.0 %. The clrlwi of bits is emitted before the lhz load in ours,
@@ -429,46 +429,46 @@ bool GameView_804A9950::fn_802D7804(s32 index, u16 bits) {
 }
 
 void GameView_804A9950::fn_802D782C(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131de = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = value;
 }
 
 void GameView_804A9950::fn_802D7844(u8 value, s32 index) {
     if (index >= 0 && index < 4) {
-        lbl_8053AAF8->field_0x4->mView->field_0x131d8[index] = value;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x131d8[index] = value;
     }
 }
 
 void GameView_804A9950::fn_802D7870(u16 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x131dc = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131dc = value;
 }
 
 bool GameView_804A9950::fn_802D7888(s32 bit) {
-    return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x174) != 0;
+    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x174) != 0;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc.
 void GameView_804A9950::fn_802D78B4(s32 bit, bool set) {
     if (set) {
-        lbl_8053AAF8->field_0x4->mView->field_0x174 |= 1 << bit;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x174 |= 1 << bit;
     } else {
-        lbl_8053AAF8->field_0x4->mView->field_0x174 &= (1 << bit) ^ -1;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x174 &= (1 << bit) ^ -1;
     }
 }
 
 void GameView_804A9950::fn_802D790C(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x171 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x171 = value;
 }
 
 void GameView_804A9950::fn_802D7920(u8 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x170 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x170 = value;
 }
 
 void GameView_804A9950::fn_802D7934(s32 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x5c = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x5c = value;
 }
 
 s32 GameView_804A9950::fn_802D7948() {
-    GameView_804A9950* view = lbl_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
     if (view->field_0x5c == 0) {
         return view->field_0x58;
     }
@@ -476,9 +476,9 @@ s32 GameView_804A9950::fn_802D7948() {
 }
 
 void GameView_804A9950::fn_802D7970(s32 value) {
-    lbl_8053AAF8->field_0x4->mView->field_0x34 = value;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x34 = value;
     if (value < 0x11) {
-        lbl_8053AAF8->field_0x4->mView->field_0x1328c = 0;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x1328c = 0;
     }
 }
 
@@ -514,45 +514,45 @@ void GameView_804A9950::fn_802D79E8(s32 index, f32 a, f32 b, bool flag) {
 
 u64 GameView_804A9950::fn_802D7AC4(s32 layer) {
     if (layer < 8) {
-        return lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
+        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
     }
-    return lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
+    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
 }
 
 // FIXME: 99.0. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
 s32 GameView_804A9950::fn_802D7B34(s32 layer, s32 slot) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
-    return (lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] & (0xFULL << shift)) >> shift;
+    return (gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] & (0xFULL << shift)) >> shift;
 }
 
 // FIXME: 99.4. Regalloc only, as fn_802D7B34: the target keeps the shift in r31 and the slot index in r30.
 void GameView_804A9950::fn_802D7BE8(s32 layer, s32 slot, u32 value) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
-    lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] &= (0xFULL << shift) ^ -1;
-    lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] |= (u64)value << shift;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] &= (0xFULL << shift) ^ -1;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] |= (u64)value << shift;
 }
 
 void GameView_804A9950::fn_802D7D00(s32 layer, s32 bit, bool set) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     if (set) {
-        lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] |= 1ULL << bit;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] |= 1ULL << bit;
     } else {
-        lbl_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] &= (1ULL << bit) ^ -1;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] &= (1ULL << bit) ^ -1;
     }
 }
 
 s32 GameView_804A9950::fn_802D7E04(s32 index) {
-    return lbl_8053AAF8->field_0x4->mView->field_0x308[index];
+    return gGameRoot_8053AAF8->field_0x4->mView->field_0x308[index];
 }
 
 s32 GameView_804A9950::fn_802D7E1C(s32 index) {
-    return lbl_8053AAF8->field_0x4->mView->field_0x328[index];
+    return gGameRoot_8053AAF8->field_0x4->mView->field_0x328[index];
 }
 
 void GameView_804A9950::fn_802D7E34(s32 index) {
-    GameView_804A9950* view = lbl_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
     if (view->field_0x308[index] < 0xFF) {
         view->field_0x308[index]++;
     }
@@ -561,33 +561,33 @@ void GameView_804A9950::fn_802D7E34(s32 index) {
 // FIXME: 85.2 %. Scheduling: the target loads field_0x8 before the stage
 // (field_0x4) and the view; ours loads the stage first.
 bool GameView_804A9950::fn_802D7F40(s32 bit) {
-    return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8]) != 0;
+    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8]) != 0;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc (as fn_802D78B4).
 void GameView_804A9950::fn_802D7F84(s32 bit, bool set) {
     if (set) {
-        lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] |= 1 << bit;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] |= 1 << bit;
     } else {
-        lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] &= (1 << bit) ^ -1;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] &= (1 << bit) ^ -1;
     }
 }
 
 bool GameView_804A9950::fn_802D800C(s32 bit) {
-    return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14]) != 0;
+    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14]) != 0;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc (as fn_802D78B4).
 void GameView_804A9950::fn_802D8050(s32 bit, bool set, u8 value) {
     if (set) {
-        lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] |= 1 << bit;
-        if (lbl_8053AAF8->field_0x4->mView->field_0x308[bit] < 0xFF) {
-            lbl_8053AAF8->field_0x4->mView->field_0x308[bit]++;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] |= 1 << bit;
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x308[bit] < 0xFF) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x308[bit]++;
         }
-        lbl_8053AAF8->field_0x4->mView->field_0x328[bit] = value;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit] = value;
     } else {
-        lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= (1 << bit) ^ -1;
-        lbl_8053AAF8->field_0x4->mView->field_0x328[bit] = 0xFF;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= (1 << bit) ^ -1;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit] = 0xFF;
     }
 }
 
@@ -601,7 +601,7 @@ const char* GameView_804A9950::fn_802D8128(s32 layer) {
         s32 stage = field_0x4;
         s32 level = field_0x8;
         const char* name;
-        if (lbl_8053AAF8->field_0x7f == 1) {
+        if (gGameRoot_8053AAF8->field_0x7f == 1) {
             name = lbl_804A9530[stage][level];
         } else {
             name = "500";
@@ -626,7 +626,7 @@ const char* GameView_804A9950::fn_802D8228(s32 layer) {
         s32 stage = field_0x4;
         s32 level = field_0x8;
         const char* name;
-        if (lbl_8053AAF8->field_0x7f == 1) {
+        if (gGameRoot_8053AAF8->field_0x7f == 1) {
             name = lbl_804A9530[stage][level];
         } else {
             name = "500";
@@ -656,18 +656,18 @@ const char* GameView_804A9950::fn_802D9C4C() {
 }
 
 const char* GameView_804A9950::fn_802D9C7C(s32 stage, s32 level) {
-    if (lbl_8053AAF8->field_0x7f == 1) {
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
         return lbl_804A9530[stage][level];
     }
     return "500";
 }
 
 void GameView_804A9950::fn_802D9CB0() {
-    lbl_8053AB10->field_0x24->fn_8030C85C();
+    gGameRoot2_8053AB10->field_0x24->fn_8030C85C();
 }
 
 void GameView_804A9950::fn_802D9FBC() {
-    if (lbl_8053AAF8->field_0x7f == 1) {
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
         field_0xc4 = 0x8CA0;
     } else {
         field_0xc4 = 0x2A30;
@@ -685,18 +685,18 @@ void GameView_804A9950::fn_802D9FF4(s32 a, s32 b) {
 }
 
 u8 GameView_804A9950::fn_802DA000() {
-    return lbl_8053AB10->field_0x24->field_0x1e8;
+    return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
 u8 GameView_804A9950::fn_802DCD0C() {
-    return lbl_8053AB10->field_0x24->field_0x1e8;
+    return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
 // FIXME: 94.2. One instruction: the target keeps the result in r6 (li r6, 0 at entry) and
 // returns it through clrlwi r3, r6, 24; ours builds it in r3 directly.
 bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
     bool moved = false;
-    if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
         if (dir[0] > 0) {
             field_0x14++;
         } else if (dir[0] < 0) {
@@ -710,7 +710,7 @@ bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
         getActorManager_801F856C()->fn_801F7E88();
         fn_802D8D50(true);
         fn_802D8328(false, false);
-        lbl_8053AB10->field_0x24->fn_8030C928(&mVisibleBox);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C928(&mVisibleBox);
         moved = true;
     }
     return moved;
@@ -720,7 +720,7 @@ void GameView_804A9950::fn_802DCDF4() {
     getActorManager_801F856C()->fn_801F7CAC();
     getActorManager_801F856C()->fn_801F6204(0);
     fn_80308D0C();
-    lbl_8053AAF8->field_0x4->mView->field_0x131de = 0;
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
     getEffectSystem_8013C824()->fn_8013C8CC();
     field_0xc9 = 0;
 }
@@ -733,7 +733,7 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     bool entered = false;
     u32 exits = 0xF;
     field_0xc9 = 0;
-    if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
         s32 end = getActorManager_801F856C()->mActorEnd;
         for (s32 i = 0; i < end; i++) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
@@ -800,10 +800,10 @@ GameView_804A9950::GameView_804A9950() {
 }
 
 bool fn_802DE764(s32 stage, s32 level, s32 value) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    GameView_804A9950* view = lbl_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
     if (stage == view->field_0x4 && level == view->field_0x8 && value == view->field_0x60[view->field_0x18][view->field_0x14]) {
         return true;
     }
@@ -811,17 +811,17 @@ bool fn_802DE764(s32 stage, s32 level, s32 value) {
 }
 
 bool fn_802DE7CC(void) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 0 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 0 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
         return true;
     }
     return false;
 }
 
 bool fn_802DE814(void) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
     s32 stage = lbl_80529DEC.field_0x118;
@@ -840,12 +840,12 @@ bool fn_802DE814(void) {
     return false;
 }
 
-// FIXME: 91.0 %. Same as fn_802DE9A0: the target keeps lbl_8053AAF8->0x4 in r4
+// FIXME: 91.0 %. Same as fn_802DE9A0: the target keeps gGameRoot_8053AAF8->0x4 in r4
 // and reloads the view (lwz 0xc) for the second pair; ours loads it once.
 bool fn_802DE93C(void) {
-    if (lbl_8053AAF8->field_0x7f != 0) {
-        if ((lbl_8053AAF8->field_0x4->mView->field_0x4 == 4 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) ||
-            (lbl_8053AAF8->field_0x4->mView->field_0x4 == 7 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 2))
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 4 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) ||
+            (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 2))
         {
             return true;
         }
@@ -854,15 +854,15 @@ bool fn_802DE93C(void) {
     return false;
 }
 
-// FIXME: 93.9 %. The target keeps lbl_8053AAF8->0x4 in r4 and reloads its
+// FIXME: 93.9 %. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
-// loads both once. No-ops: a local for lbl_8053AAF8->0x4, an inline view
+// loads both once. No-ops: a local for gGameRoot_8053AAF8->0x4, an inline view
 // getter defined in this file (with or without a local), a free inline on
 // GameRootSub04_801F856C; an inline isStage(stage, level) helper drops to 78 %.
 bool fn_802DE9A0(void) {
-    if (lbl_8053AAF8->field_0x7f != 0) {
-        if ((lbl_8053AAF8->field_0x4->mView->field_0x4 == 2 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) ||
-            (lbl_8053AAF8->field_0x4->mView->field_0x4 == 7 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 1))
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 2 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) ||
+            (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1))
         {
             return true;
         }
@@ -878,14 +878,14 @@ bool fn_802DE9A0(void) {
 // FIXME: 93.5. Same family as fn_802DEABC: the target reloads the view (lwz 0xc) before the second
 // pair and reuses it for the third; ours loads it once. An || of the last two blocks is 87 %.
 bool fn_802DEA34(void) {
-    if (lbl_8053AAF8->field_0x7f != 0) {
-        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
             return true;
         }
-        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 1) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1) {
             return true;
         }
-        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) {
             return true;
         }
         return false;
@@ -893,17 +893,17 @@ bool fn_802DEA34(void) {
     return false;
 }
 
-// FIXME: 94.2 %. The target keeps lbl_8053AAF8->0x4 in r4 and reloads its
+// FIXME: 94.2 %. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
 // loads both once. An inline view getter in this file is a no-op. Re-reading
 // the view into a local before each pair gives 96.9 % (field_0x4 reloaded,
 // mView still not) but has no precedent, so it is not used.
 bool fn_802DEABC(void) {
-    if (lbl_8053AAF8->field_0x7f != 0) {
-        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 7 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
             return true;
         }
-        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 7 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 2) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 2) {
             return true;
         }
         return false;
@@ -916,37 +916,37 @@ bool fn_802DEABC(void) {
 }
 
 bool fn_802DEB58(void) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 3 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 1) {
+    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 3 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1) {
         return true;
     }
     return false;
 }
 
 // FIXME: 89.8 %. Same as fn_802DE9A0: the target reloads the view (lwz 0xc off
-// the kept lbl_8053AAF8->0x4) for the stage >= 13 test; ours loads it once.
+// the kept gGameRoot_8053AAF8->0x4) for the stage >= 13 test; ours loads it once.
 bool fn_802DEBA0(void) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if ((lbl_8053AAF8->field_0x4->mView->field_0x4 == 9 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) || lbl_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
+    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
         return true;
     }
     return false;
 }
 
 bool fn_802DEBF8(void) {
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 8 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) {
+    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 8 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) {
         return true;
     }
     return false;
 }
 
 bool fn_802DEDFC(const s32* dir) {
-    return lbl_8053AAF8->field_0x4->mView->fn_802DCE5C(dir);
+    return gGameRoot_8053AAF8->field_0x4->mView->fn_802DCE5C(dir);
 }

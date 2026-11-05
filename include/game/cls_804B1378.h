@@ -9,7 +9,7 @@ class PaneCtrl_804AF86C;
 // Vtable 0x804B1378 (one slot, the destructor), 0x154 bytes, defined in
 // game/tu_80414F6C.cpp. The battle stage select screen ("bat_stage_select.blo"):
 // the constructor stores `this` in lbl_8053AE00; tu_8039003C allocates it
-// with __nw__(0x154) when lbl_8053AAF8->field_0x7f is clear. fn_804170B0 runs
+// with __nw__(0x154) when gGameRoot_8053AAF8->field_0x7f is clear. fn_804170B0 runs
 // the handler of state field_0x109 through a pointer-to-member table.
 class BattleStageSelect_804B1378 {
 public:

@@ -121,7 +121,7 @@ public:
     /* 0x064 */ s32 field_0x64; // -1 after fn_80403680; 15 units
     // Per-player word tables, preset by fn_80403680. fn_80403414 /
     // fn_804033D4 / fn_8040336C read 0x68 / 0x78 / 0x88 when
-    // lbl_8053AAF8->field_0x7f is set and 0x98 / 0xA8 / 0xB8 otherwise.
+    // gGameRoot_8053AAF8->field_0x7f is set and 0x98 / 0xA8 / 0xB8 otherwise.
     /* 0x068 */ s32 field_0x68[4];
     /* 0x078 */ s32 field_0x78[4];
     /* 0x088 */ s32 field_0x88[4];
@@ -134,7 +134,7 @@ public:
     /* 0x0F8 */ s32 field_0xf8[4];
     /* 0x108 */ s32 field_0x108[4];
     // The selected stage: fn_80135020 (tu_80134C04) copies 0x118 / 0x11C
-    // (lbl_8053AAF8->field_0x7f set) or 0x128 / 0x12C (clear) into
+    // (gGameRoot_8053AAF8->field_0x7f set) or 0x128 / 0x12C (clear) into
     // GameView_804A9950's field_0x4 / field_0x8, the pair that picks the
     // stage's map files. 96 and 94 units read 0x118 / 0x11C.
     /* 0x118 */ s32 field_0x118;
@@ -230,7 +230,7 @@ void fn_80402FBC(s32 player, JGeometry::TVec3f pos);
 // Entries of the rodata word tables lbl_8048C170 (2, 4, 6) and lbl_8048C160 (0, 300, 600, 900).
 s32 fn_8040305C(s32 index);
 s32 fn_80403070(s32 index);
-// Per-player word tables; lbl_8053AAF8->field_0x7f picks the set (see field_0x68).
+// Per-player word tables; gGameRoot_8053AAF8->field_0x7f picks the set (see field_0x68).
 s32 fn_8040336C(s32 player);
 s32 fn_804033D4(s32 player);
 s32 fn_80403414(s32 player);

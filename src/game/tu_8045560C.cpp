@@ -25,7 +25,7 @@ void cls_804B1E1C::fn_8045560C() {
 }
 
 void cls_804B1E1C::fn_804556A4() {
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     for (int i = 0; i < 128; i++) {
         Sprite& s = mSprites[i];
         if (s.active == 1) {
@@ -36,7 +36,7 @@ void cls_804B1E1C::fn_804556A4() {
 }
 
 void cls_804B1E1C::fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TColor color) {
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     f32 baseSize = 48.0f * camera->field_0x858;
     Vec screen;
     camera->fn_8030C5F0(pos, false, false, &screen);

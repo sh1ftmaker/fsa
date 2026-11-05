@@ -58,8 +58,8 @@ void cls_804AC9A8::draw() {
     params.field_0x1c = 0;
     s32 frame = field_0x238 + 0xD;
     if (field_0x4 < 8) {
-        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
     fn_80307AC8(mSerial, field_0x4, &mPos, field_0x238 + 0xD, 0, 0, -1);
 }

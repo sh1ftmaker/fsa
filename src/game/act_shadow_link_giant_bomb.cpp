@@ -63,7 +63,7 @@ void ShadowLinkGiantBomb_804AC4D0::init() {
         field_0x238 = 0;
         mStateTimer = field_0x90 & 0x7F;
     }
-    if (lbl_8053AAF8->field_0x7f == 0) {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
         s32 layer = field_0x4;
         if (viewLayerFlag(layer) == 1) {
             mPos.y += 4.0f;
@@ -73,7 +73,7 @@ void ShadowLinkGiantBomb_804AC4D0::init() {
     field_0x250 = 1.0f;
     GameView_804A9950* view = getGameView_802D6A9C();
     bool inView = view->fn_802D800C(field_0x248);
-    if (!inView && lbl_8053AAF8->field_0x7f == 1) {
+    if (!inView && gGameRoot_8053AAF8->field_0x7f == 1) {
         field_0x255 = 1;
     } else {
         field_0x255 = 0;
@@ -81,10 +81,10 @@ void ShadowLinkGiantBomb_804AC4D0::init() {
 }
 
 ShadowLinkGiantBomb_804AC4D0::~ShadowLinkGiantBomb_804AC4D0() {
-    if (lbl_8053AAF8->field_0x7f == 1) {
-        s32 mode = lbl_8053AAF8->field_0x4c;
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        s32 mode = gGameRoot_8053AAF8->field_0x4c;
         if (mode != 9 && mode != 0xB) {
-            lbl_8053AAF8->fn_80138B7C();
+            gGameRoot_8053AAF8->fn_80138B7C();
         }
     }
 }

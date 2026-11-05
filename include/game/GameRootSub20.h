@@ -10,7 +10,7 @@ class JKRSolidHeap;
 class JKRHeap;
 class ActorSoundObj_804578F4;
 
-// The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
+// The object fn_801902C0 returns (gGameRoot_8053AAF8->field_0x4->field_0x20; named
 // after that getter). Owner: game/tu_801902C0.cpp. A set of J3D effect models
 // (crystals, waterfalls, castle gate, sand, magic circles, altar, snow wall)
 // loaded from the stage archives by the constructor fn_801917E0 into its own
@@ -150,7 +150,7 @@ struct GameRootSub20_801902C0 {
     /* 0x7D0 */ IceRequest mIceRequest;
 }; // Size: 0x7F0
 
-// Owner: game/tu_801902C0.cpp (0x801902C0-0x801902C8): lbl_8053AAF8->field_0x4->field_0x20.
+// Owner: game/tu_801902C0.cpp (0x801902C0-0x801902C8): gGameRoot_8053AAF8->field_0x4->field_0x20.
 GameRootSub20_801902C0* fn_801902C0();
 
 #endif

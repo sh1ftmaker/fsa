@@ -4,7 +4,7 @@
 // The stage/screen state of game/tu_802D39B8.cpp: one instance, allocated
 // with __nw__(0x13290, heap, 0) and built by its constructor fn_802DE64C in
 // game/tu_80139BE8.cpp (0x8013A578-0x8013A594), stored at offset 0xC of the
-// object lbl_8053AAF8->0x4 points to; reach it with getGameView_802D6A9C(). 275 game
+// object gGameRoot_8053AAF8->0x4 points to; reach it with getGameView_802D6A9C(). 275 game
 // units use it.
 //
 // "GameView_804A9950" is a provisional name carrying its vtable address
@@ -20,7 +20,7 @@
 //
 // Members: every export of game/tu_802D39B8.cpp that other units call with
 // the view in r3 (all of them pass getGameView_802D6A9C()'s result; several bodies
-// ignore it and fetch the view again through lbl_8053AAF8, said at each as
+// ignore it and fetch the view again through gGameRoot_8053AAF8, said at each as
 // "(this unused)"). Names stay dtk's placeholders; symbols.txt carries the
 // mangled names these declarations produce, so a changed parameter type is a
 // symbols.txt rename too (the return type is not part of the name).
@@ -49,8 +49,8 @@ public:
     // reads an argument.
     /* 0x08 */ virtual ~GameView_804A9950(); // fn_802DE604
     /* 0x0C */ virtual void vfunc_0xC();      // fn_802DD808, 0xDFC bytes
-    // fn_802DD54C: copies field_0xf0[0] (negated when lbl_8053AAF8->0x5C has
-    // bit 1 set) to lbl_8053AB10->0x24 + 0x1DC and walks the players.
+    // fn_802DD54C: copies field_0xf0[0] (negated when gGameRoot_8053AAF8->0x5C has
+    // bit 1 set) to gGameRoot2_8053AB10->0x24 + 0x1DC and walks the players.
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void vfunc_0x14(); // fn_802DD548, empty
 
@@ -58,7 +58,7 @@ public:
     // 0x330 bytes; called by vfunc_0x10. The time limit: while field_0x131f0
     // is 1 and nothing pauses the game, counts field_0xc4 down, with the
     // warnings at 1800 / 660 frames and the countdown from 300, and at 0
-    // spawns the time-up actor ('TUTM', or 'TUGF' with lbl_8053AAF8->0x7F
+    // spawns the time-up actor ('TUTM', or 'TUGF' with gGameRoot_8053AAF8->0x7F
     // clear) at the camera.
     void fn_802D3A18();
     // 1 unit. field_0x131a8[index] = value (tu_801F6058 reads the four words).
@@ -87,20 +87,20 @@ public:
     // 9 units. Entry field_0x40 of the 28-entry table lbl_804A9660, or
     // lbl_8054106C.
     const char* fn_802D9C4C();
-    // 1 unit (this unused). lbl_804A9530[a][b] when lbl_8053AAF8->0x7F == 1,
+    // 1 unit (this unused). lbl_804A9530[a][b] when gGameRoot_8053AAF8->0x7F == 1,
     // else lbl_80541128.
     const char* fn_802D9C7C(s32 a, s32 b);
-    // 2 units. Calls fn_8030C85C on lbl_8053AB10->0x24 (this unused).
+    // 2 units. Calls fn_8030C85C on gGameRoot2_8053AB10->0x24 (this unused).
     void fn_802D9CB0();
     // 1 unit. 0x2E4 bytes; no arguments.
     void fn_802D9CD8();
-    // 1 unit. field_0xc4 = 0x8CA0 if lbl_8053AAF8->0x7F == 1, else 0x2A30.
+    // 1 unit. field_0xc4 = 0x8CA0 if gGameRoot_8053AAF8->0x7F == 1, else 0x2A30.
     void fn_802D9FBC();
     // 1 unit. field_0x1c = a, field_0x20 = b.
     void fn_802D9FE8(s32 a, s32 b);
     // 18 units / 26 calls. field_0x24 = a, field_0x28 = b.
     void fn_802D9FF4(s32 a, s32 b);
-    // 1 unit (this unused). lbl_8053AB10->0x24's byte at 0x1E8, like
+    // 1 unit (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8, like
     // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
     u8 fn_802DA000();
     // 1 unit each; no arguments. fn_802DA630 returns 0 or 1 (it moves the four
@@ -114,7 +114,7 @@ public:
     void fn_802DB6F0();
     // 3 units / 6 calls. 0xFAC bytes; no arguments.
     void fn_802DBD60();
-    // 31 units / 42 calls (this unused). lbl_8053AB10->0x24's byte at 0x1E8.
+    // 31 units / 42 calls (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8.
     u8 fn_802DCD0C();
     // 2 units / 5 calls. Unless fn_802DCD0C(), steps field_0x14 by the sign
     // of dir[0] or field_0x18 by that of dir[1], reloads the screen
@@ -149,7 +149,7 @@ public:
     // 3 units. Puts id in the first free slot and tests its bit in the
     // screen's mask; returns 0 or 1.
     bool fn_802D49A8(s32 layer, u16 id);
-    // 3 units (this unused). The same lookup, reading through lbl_8053AAF8.
+    // 3 units (this unused). The same lookup, reading through gGameRoot_8053AAF8.
     bool fn_802D4ADC(s32 layer, u16 id);
     // 4 units / 88 calls (this unused). The slot of id (cmplw against the
     // clrlwi 16 id) in the layer's list, or -1.
@@ -210,7 +210,7 @@ public:
     bool fn_802D7E5C(u8 index, s32 bit);
     void fn_802D7EB0(u8 index, s32 bit, bool set);
     // 6 units / 18 calls. Tests bit `bit` of field_0x348[field_0x4][field_0x8]
-    // (the word read through lbl_8053AAF8, the stage from this).
+    // (the word read through gGameRoot_8053AAF8, the stage from this).
     bool fn_802D7F40(s32 bit);
     // 4 units. Sets or clears it.
     void fn_802D7F84(s32 bit, bool set);
@@ -261,7 +261,7 @@ public:
     void fn_802D7934(s32 value); // 1 unit: field_0x5c
     // 23 units / 35 calls (this unused). Sets field_0x131f0 from flag, the
     // save data lbl_8050EC80 (byte 0x7C or 0x7D of entry [0x10], 0xC8 bytes
-    // each) and lbl_8053AAF8's bytes 0x7E/0x7F.
+    // each) and gGameRoot_8053AAF8's bytes 0x7E/0x7F.
     void fn_802D7440(bool flag);
     // 1 unit (this unused). field_0x5c ? field_0x5c - 1 : field_0x58.
     s32 fn_802D7948();
@@ -379,13 +379,13 @@ public:
     /* 0x1328C */ s32 field_0x1328c; // fn_802D7970; act_temple_bti_display, tu_80134C04
 }; // Size: 0x13290
 
-// lbl_8053AAF8->0x4->0xC (game/tu_802D39B8.cpp; 265 units).
+// gGameRoot_8053AAF8->0x4->0xC (game/tu_802D39B8.cpp; 265 units).
 extern "C" GameView_804A9950* getGameView_802D6A9C(void);
 
 // Free functions of game/tu_802D39B8.cpp: no view argument (callers leave r3
 // unset). Each returns 0 or 1 from the stage numbers of getGameView_802D6A9C() (the
 // view's field_0x4 / field_0x8), and returns 0 at once when
-// lbl_8053AAF8->0x7F is 0, except where said.
+// gGameRoot_8053AAF8->0x7F is 0, except where said.
 //
 // Defined in game/tu_802D39B8.cpp (C++ linkage, renamed in symbols.txt).
 // 8 units. Reads lbl_80529DEC's words 0x118 and 0x11C only.

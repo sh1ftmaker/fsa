@@ -6,7 +6,7 @@
 // Vtable 0x804B1DA8 (one slot, the destructor), 0x5C bytes, defined in
 // game/tu_80453AF8.cpp (not written yet). The constructor fn_80454DEC stores
 // `this` in lbl_8053AF48; tu_8037ACC4 allocates it with __nw__(0x5C) when
-// lbl_8053AAF8->field_0x7f is clear.
+// gGameRoot_8053AAF8->field_0x7f is clear.
 class cls_804B1DA8 {
 public:
     cls_804B1DA8(); // fn_80454DEC

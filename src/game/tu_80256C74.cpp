@@ -411,7 +411,7 @@ void Player_804A6F38::fn_802580E0() {
     f32 target;
     if (fn_80270A8C()) {
         target = 0.0f;
-    } else if (lbl_8053AAF8->field_0x7f) {
+    } else if (gGameRoot_8053AAF8->field_0x7f) {
         if (fn_802416C4() == 2) {
             target = 100.0f;
         } else {
@@ -1005,7 +1005,7 @@ void Player_804A6F38::fn_8025D7E4() {
     } else {
         getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 0.0f, 4.0f, false);
     }
-    lbl_8053AAF8->fn_80134DE4(1, 0);
+    gGameRoot_8053AAF8->fn_80134DE4(1, 0);
     JGeometry::TVec3f offset;
     if (field_0x3dc == 0 || field_0x3dc == 1) {
         offset.set(0.0f, -8.0f, 0.0f);
@@ -1016,7 +1016,7 @@ void Player_804A6F38::fn_8025D7E4() {
     dir.normalize();
     JGeometry::TVec3f pos = mPos + offset;
     if (field_0x3b4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F601C(&pos, 3, &dir, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F601C(&pos, 3, &dir, 1.0f, 1.0f);
     }
     field_0xb9c = true;
 }

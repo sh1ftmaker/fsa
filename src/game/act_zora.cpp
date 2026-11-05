@@ -16,7 +16,7 @@ void ZoraEnemy_804A3D7C::vfunc_0xA4() {}
 
 void ZoraEnemy_804A3D7C::vfunc_0xA0() {
     if (mState != 0) {
-        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 
