@@ -163,8 +163,7 @@ void Title_804AF820::fn_803A34A0() {
             }
             break;
         }
-        GameState_804B0FE0& state = lbl_80529DEC;
-        if (state.field_0x238 == 1) {
+        if (lbl_80529DEC.field_0x238 == 1) {
             if (SIProbe(0) != SI_GBA) {
                 field_0x78++;
                 if (field_0x78 >= 48) {
@@ -177,7 +176,7 @@ void Title_804AF820::fn_803A34A0() {
                 field_0x76++;
                 if (field_0x76 >= 48) {
                     if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON) {
-                        state.field_0x238 = 2;
+                        lbl_80529DEC.field_0x238 = 2;
                     } else {
                         resetProgressive();
                     }
@@ -187,12 +186,12 @@ void Title_804AF820::fn_803A34A0() {
             } else {
                 field_0x76 = 0;
             }
-            if (state.field_0x238 == 1 && lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+            if (lbl_80529DEC.field_0x238 == 1 && lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
                 if (field_0x74 < 3) {
                     field_0x74++;
                     if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON ||
                         lbl_8053AD30->fn_80309D24(fn_8030AAF4(0), 0x200) != 0) {
-                        state.field_0x238 = 2;
+                        lbl_80529DEC.field_0x238 = 2;
                         field_0x74 = 0;
                     }
                 } else {
@@ -201,7 +200,7 @@ void Title_804AF820::fn_803A34A0() {
                 }
             }
         }
-        if (state.field_0x238 == 0xFF) {
+        if (lbl_80529DEC.field_0x238 == 0xFF) {
             if (lbl_80529DEC.field_0x249[0] != 0) {
                 if ((lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
                     field_0x82 <= 0 && lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
@@ -229,7 +228,7 @@ void Title_804AF820::fn_803A34A0() {
                 mMovieState = 2;
             }
         } else {
-            switch (state.field_0x238) {
+            switch (lbl_80529DEC.field_0x238) {
             case 0:
             case 1:
                 break;
@@ -237,13 +236,13 @@ void Title_804AF820::fn_803A34A0() {
                 field_0x50 += 8.5f;
                 if (field_0x50 >= 255.0f) {
                     field_0x50 = 255.0f;
-                    state.field_0x238 = 3;
+                    lbl_80529DEC.field_0x238 = 3;
                 }
                 break;
             case 3:
                 field_0x74++;
                 if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(0), 0x100) != 0 || field_0x74 >= 600) {
-                    state.field_0x238 = 4;
+                    lbl_80529DEC.field_0x238 = 4;
                 } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(0), 2) != 0) {
                     field_0x14c = 1;
                     field_0x72 = 30;
@@ -264,34 +263,34 @@ void Title_804AF820::fn_803A34A0() {
                         if (field_0x14c == 0) {
                             field_0x72 = 0;
                             if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON) {
-                                state.field_0x238 = 6;
+                                lbl_80529DEC.field_0x238 = 6;
                                 OSSetProgressiveMode(OS_PROGRESSIVE_MODE_ON);
                             } else {
-                                state.field_0x238 = 5;
+                                lbl_80529DEC.field_0x238 = 5;
                                 OSSetProgressiveMode(OS_PROGRESSIVE_MODE_ON);
                             }
                         } else if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON) {
-                            state.field_0x238 = 9;
+                            lbl_80529DEC.field_0x238 = 9;
                             field_0x6e = 0;
                             OSSetProgressiveMode(OS_PROGRESSIVE_MODE_OFF);
                         } else {
-                            state.field_0x238 = 9;
+                            lbl_80529DEC.field_0x238 = 9;
                             field_0x6e = 0;
                         }
                     }
                 }
                 break;
             case 5:
-                state.field_0x238 = 7;
+                lbl_80529DEC.field_0x238 = 7;
                 break;
             case 6:
-                state.field_0x238 = 8;
+                lbl_80529DEC.field_0x238 = 8;
                 break;
             case 7:
             case 8:
                 field_0x72++;
                 if (lbl_80529DEC.field_0x251 > 90 && field_0x72 >= 90) {
-                    state.field_0x238 = 9;
+                    lbl_80529DEC.field_0x238 = 9;
                     field_0x6e = 0;
                     lbl_80529DEC.field_0x251 = 0;
                 }
@@ -300,7 +299,7 @@ void Title_804AF820::fn_803A34A0() {
                 field_0x50 += 8.5f;
                 if (field_0x50 >= 255.0f) {
                     field_0x50 = 255.0f;
-                    state.field_0x238 = 10;
+                    lbl_80529DEC.field_0x238 = 10;
                     field_0x72 = 0;
                 }
                 break;
@@ -308,14 +307,14 @@ void Title_804AF820::fn_803A34A0() {
                 field_0x72++;
                 if (field_0x72 >= 120) {
                     field_0x50 = 120.0f;
-                    state.field_0x238 = 11;
+                    lbl_80529DEC.field_0x238 = 11;
                 }
                 break;
             case 11:
                 field_0x50 -= 8.5f;
                 if (field_0x50 <= 0.0f) {
                     field_0x50 = 0.0f;
-                    state.field_0x238 = 0xFF;
+                    lbl_80529DEC.field_0x238 = 0xFF;
                     lbl_80529DEC.mSaveRegion.f.field_0x10 = 1;
                 }
                 break;
