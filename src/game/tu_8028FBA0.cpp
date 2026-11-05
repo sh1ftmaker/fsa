@@ -91,6 +91,16 @@ inline void Player_804A6F38::spawnEffect15B() {
     fn_8013CC50(field_0x3b4, &mPos, 0x15C, -1, 0, NULL, NULL, true, 1.0f);
 }
 
+// Gravity for the drops onto the floor below (fn_802953A0, fn_8029513C):
+// the fall speed 0x34C grows by 0.25 up to 4, then the player moves by 0x344.
+inline void Player_804A6F38::fallStep() {
+    field_0x344.z -= 0.25f;
+    if (field_0x344.z < -4.0f) {
+        field_0x344.z = -4.0f;
+    }
+    mPos += field_0x344;
+}
+
 // Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_80293774).
 inline void Player_804A6F38::spawnEffect17D() {
     JGeometry::TVec3f pos;
@@ -759,6 +769,68 @@ void Player_804A6F38::fn_80293E8C() {
     }
 }
 
+void Player_804A6F38::fn_802948C0() {
+    fn_8027E5BC(0.5f);
+    field_0x3fc++;
+    if ((field_0x3a4 - mPos).isZero() || field_0x3fc >= 50) {
+        if (field_0x3b4 < 8) {
+            field_0xcb0 = mPos;
+        }
+        field_0x124d = 0;
+        if (fn_80251AEC(0x1D)) {
+            fn_80241454(0);
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    } else if (field_0xcf4 == 2) {
+        fn_80265D68();
+    }
+    if (field_0xcf4 == 2) {
+        fn_80268B3C();
+    }
+    if (field_0xceb == 1) {
+        stepWalkCycle();
+    } else if (field_0xcec == 1) {
+        field_0x3f8++;
+        if (field_0x3f8 >= 19) {
+            field_0x3f8 = 0;
+        }
+        if (field_0x3f8 < 7) {
+            field_0x3f9 = 0;
+        } else if (field_0x3f8 < 12) {
+            field_0x3f9 = 1;
+        } else {
+            field_0x3f9 = 2;
+        }
+    } else if (fn_8025F684()) {
+        fn_8026152C(false);
+    } else {
+        fn_8027EE84();
+    }
+}
+
+void Player_804A6F38::fn_8029513C() {
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+        return;
+    }
+    fn_80241454(1);
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    fallStep();
+    if (mPos.z < 0.0f) {
+        mPos.z = 0.0f;
+        field_0x124d = 0;
+        if (fn_8024189C() <= 0) {
+            fn_80251AEC(0x33);
+        } else {
+            fn_80251AEC(0);
+        }
+    }
+}
+
 // FIXME: 99.0 %. Instructions identical; the 0.0f and -0.5f literals the original
 // loads from .sdata2 (lbl_805405B4, lbl_80540644) belong to earlier, unwritten
 // functions of this unit, so ours are new @ labels.
@@ -811,11 +883,7 @@ void Player_804A6F38::fn_802953A0() {
     if (field_0x3fc < 60) {
         return;
     }
-    field_0x344.z -= 0.25f;
-    if (field_0x344.z < -4.0f) {
-        field_0x344.z = -4.0f;
-    }
-    mPos += field_0x344;
+    fallStep();
     if (mPos.z < 0.0f) {
         mPos.z = 0.0f;
         field_0x124d = 0;

@@ -336,6 +336,7 @@ public:
     void fn_8025D6A0(); // field_0xb9c = 0
     // tu_8027E5BC (dispatch targets of tu_80285E58); fn_80248604, fn_8024D134 and fn_8024E3D8 are tu_8023FBF0 (r3 = Player)
     void fn_8027EE84();
+    void fn_8026152C(bool arg); // tu_8025EB18; field_0x2f4 from mPos (carry), called by fn_802948C0
     void fn_8027F16C();
     void fn_80281E84();
     void fn_8028211C();
@@ -415,6 +416,7 @@ public:
     void followCamera();  // tu_8028FBA0 inline: camera on mPos - (0, 150) on the TV
     bool requestArrival(); // tu_8028FBA0 inline: 0x33 / 0x3E / 0x12 / 0 after an arrival
     void spawnEffect15B(); // tu_8028FBA0 inline: effects 0x15B, 0x15C at the player
+    void fallStep(); // tu_8028FBA0 inline: gravity on 0x344, then mPos += 0x344
     void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
