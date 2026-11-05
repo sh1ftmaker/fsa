@@ -37,6 +37,9 @@ public:
     // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8 (not written yet).
     void fn_803C24BC();
     void fn_803BF004();
+    // fn_803C4054: the delete prompt's two answers.
+    void fn_803BF3BC();
+    void fn_803BF698();
     // fn_803CD2DC: the chosen file has save data (field_0x115 bit set).
     void fn_803BF9C4();
     void fn_803C0018();

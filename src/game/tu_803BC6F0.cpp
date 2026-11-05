@@ -780,6 +780,111 @@ void FileSelect_804AFF60::fn_803C2E24() {
     }
 }
 
+// FIXME: 96.12 %. Scheduling and registers only, in the cursor bob: the
+// original computes `(10 - frame)` into r0 and schedules both squares'
+// `lis 0x4330` / stack store before the mullw (same as fn_803CABAC); storing
+// field_0xda first (95.49) or a shared inline (95.96) was worse. .sdata2 @NNN.
+// The delete prompt (state 37): up / down move the cursor field_0x114
+// between its two buttons, A confirms (0: fn_803BF3BC, 1: back out through
+// fn_803BF698); the cursor bobs as in fn_803CABAC.
+void FileSelect_804AFF60::fn_803C4054() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            field_0xda = 1;
+            field_0x34->field_0x26 = 30;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            field_0xda = 1;
+            field_0x34->field_0x26 = 30;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            fn_803BF3BC();
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0;
+            fn_803BF698();
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+
+    if (mState == 37) {
+        s16 frame = field_0xda;
+        f32 bob = 0.0f;
+        if (frame != 0) {
+            if (frame < 5) {
+                bob = 5.0f * (frame * frame) / 25.0f;
+                field_0xda = frame + 1;
+            } else if (frame < 10) {
+                bob = 5.0f * ((10 - frame) * (10 - frame)) / 25.0f;
+                field_0xda = frame + 1;
+            } else {
+                field_0xda = 0;
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            if (bob != 0.0f && i == field_0x114) {
+                field_0x24[i]->fn_80402E08(0.0f, bob);
+            } else {
+                field_0x24[i]->fn_80402E08(0.0f, 0.0f);
+            }
+        }
+        field_0x34->fn_80402E08(field_0x24[field_0x114]->field_0x8 - field_0x24[0]->field_0x8, bob);
+        field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
+        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    }
+}
+
+// FIXME: 99.95 %. Instructions identical; only the .sdata2 literals differ
+// (pool order, see fn_803C24BC).
+// Back from the delete prompt (state 36), after its message or a button:
+// refreshes the rows (fn_803CE4CC), puts the title message back, hides the
+// file cursor and the command cursor, and goes to state 38.
+void FileSelect_804AFF60::fn_803C4330() {
+    if (field_0xb0 > 0) {
+        field_0xb0--;
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0 || field_0xb0 == 0) {
+        field_0xb0 = -1;
+        fn_803CE4CC();
+        u32 msg = 0x117;
+        if (lbl_8053AAF8->field_0x7f != 0) {
+            msg = 0x116;
+        }
+        field_0x84 = msg;
+        fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+        if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+            field_0xb0 = 0x5A;
+        }
+        field_0x50->fn_80402E08(-300.0f, 0.0f);
+        field_0x50->field_0x20 = 0;
+        field_0x50->mPane->setAlpha(0);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+        for (int i = 0; i < 3; i++) {
+            field_0x38[i]->field_0x20 = 0;
+            field_0x38[i]->field_0x22 = 0;
+            field_0x38[i]->field_0x26 = 0;
+            field_0x44[i]->field_0x20 = 0;
+            field_0x44[i]->field_0x22 = 0;
+            field_0x44[i]->field_0x26 = 0;
+        }
+        field_0x34->mPane->setAlpha(0);
+        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+        field_0xd8 = 0;
+        field_0xda = 0;
+        setState(38);
+        lbl_8053AF80->fn_80458880(0xB, -1);
+    }
+}
+
 void FileSelect_804AFF60::fn_803C579C() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 2) {
