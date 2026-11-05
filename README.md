@@ -48,8 +48,8 @@ game code in its four parts, the bottom row the libraries. Click a block to open
 As of 2026-11-05:
 
 - **Honest: 37.06 %** of the code is byte-identical, **8,572 / 11,557** functions (1,646,088 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 43.46 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 8,993 / 11,557 functions (same instructions, register or order differences only), +105 close.
+- **Weighted: 43.49 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 8,993 / 11,557 functions (same instructions, register or order differences only), +106 close.
 - **449 of 902** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
