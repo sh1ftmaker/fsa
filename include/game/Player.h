@@ -398,6 +398,20 @@ public:
     // tu_8026FC20, not written yet; called by the reset fn_80254744 and update A.
     void fn_80276538(); // sets the box field_0x4c0 around mPos
     void fn_80276078();
+    // The per-frame calls of the player's update A (fn_80253E6C), all on
+    // this player and not written yet: tu_8023FBF0 fn_802490A8 (input and
+    // actions), fn_80251D50, fn_8024BDBC, fn_8024E0A0; tu_8026FC20
+    // fn_8026FD14; tu_80264998 fn_80265E88 (skeleton); tu_80285E58
+    // fn_80285E58 (state update) and fn_80286688.
+    void fn_80253E6C();
+    void fn_802490A8();
+    void fn_80251D50();
+    void fn_8024BDBC();
+    void fn_8024E0A0();
+    void fn_8026FD14();
+    void fn_80265E88();
+    void fn_80285E58();
+    void fn_80286688();
     void fn_80277580(); // called by tu_80285E58
     void fn_8027761C(); // called by tu_80285E58
     void fn_8027774C(); // called by tu_80285E58

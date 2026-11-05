@@ -31,7 +31,11 @@ public:
     void fn_8026F710();
 
     /* 0x4 */ Player_804A6F38* field_0x4;
-    /* 0x8 */ u8 field_0x8[0x48 - 0x8]; // not yet known
+    /* 0x8 */ u8 field_0x8[0x14 - 0x8]; // not yet known
+    // Zeroed by the owner's update fn_80253E6C each frame.
+    /* 0x14 */ f32 field_0x14;
+    /* 0x18 */ f32 field_0x18;
+    /* 0x1C */ u8 field_0x1c[0x48 - 0x1C]; // not yet known
     // Bytes tested for 1 by the owner's fn_802517F8 (tu_8023FBF0).
     /* 0x48 */ u8 field_0x48;
     /* 0x49 */ u8 field_0x49;

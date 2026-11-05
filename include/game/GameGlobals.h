@@ -749,6 +749,9 @@ class cls_804A03A8;
 // Free function, no arguments (reads globals, r3 is not read); returns 0 or 1
 // (clrlwi 24); tested by GameRoot2_8049F108::fn_8013BBE0.
 bool fn_80239D38();
+// Owner: game/tu_8043A0E8.cpp (0x8043A170, defined there). Called by the
+// player's update fn_80253E6C with its index.
+void fn_8043A170(s32 player, bool force);
 class cls_804A03A8 {
 public:
     // Constructor 0x801602E8 (called by GameRoot2_8049F108's constructor).
@@ -759,6 +762,9 @@ public:
     // 0x8015F9C0, 0x8016005C, 0x801601E0 (game/tu_8015F454.cpp, not written
     // yet): called with this = lbl_8053AB10->0x30 by tu_8013AAD4.
     void fn_8015F9C0();
+    // 0x8015F8FC (not written yet): (layer, position, 1) from the player's
+    // update fn_80253E6C; layers 8 and up are ignored.
+    void fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode);
     void fn_8016005C();
     void fn_801601E0();
     /* 0x004 */ u8 field_0x4[0x284 - 0x4];

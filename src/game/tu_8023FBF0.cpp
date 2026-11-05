@@ -3,6 +3,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/Effect.h"
 #include "game/GameState.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
@@ -1143,6 +1144,124 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 
 void Player_804A6F38::fn_80252FBC() {}
 
+// The per-player cue of the update's join sequence: at frame `at` of the
+// counter field_0xd38 the 'here' effect, pad rumble and sound 0x25; at
+// `off` fn_8043A170. Written once per player in the original (the four
+// copies differ only in the frames), so a file-local inline.
+static inline void joinCue(Player_804A6F38* player, s32 at, s32 off) {
+    if (player->field_0xd38 == at) {
+        lbl_8053AB10->field_0x30->fn_8015F8FC(player->field_0x3b4, &player->mPos, 1);
+        if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(player->field_0x11ec))) {
+            fn_8030381C(player->field_0x4);
+        }
+        if (player->field_0x3b4 >= 8) {
+            fn_8030381C(player->field_0x4);
+        }
+        // The original converts the index to s8 (extsb) for the sound call.
+        lbl_8053AF80->fn_80458880(0x25, (s8)player->field_0x4);
+    } else if (player->field_0xd38 == off) {
+        fn_8043A170(player->field_0x4, false);
+    }
+}
+
+// FIXME: 99.99. Code identical; the float literal lbl_80540094 (18.0f) is @NNN until the
+// unit's earlier literals are written in pool order.
+// Update A: the player's per-frame update, called for every slot by the
+// manager update fn_8023F390.
+void Player_804A6F38::fn_80253E6C() {
+    if (!mActive) {
+        return;
+    }
+    if (field_0x1234 == 1 && lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec)) > 0.0f) {
+        field_0x1234 = 0;
+    }
+    if (field_0x11f0 > 0) {
+        field_0x11f0--;
+    }
+    if (field_0x13b8) {
+        lbl_8053AB10->field_0x20->field_0x216 = 1;
+    }
+    if (field_0x12c4 != NULL) {
+        if (lbl_8053AAF8->field_0x94 == 1 || field_0x121f || field_0x454) {
+            field_0x12c4->setStatus(JPAEMIT_StopDraw);
+            field_0x12c4->setStatus(JPAEMIT_StopCalc);
+        } else {
+            field_0x12c4->clearStatus(JPAEMIT_StopDraw);
+            field_0x12c4->clearStatus(JPAEMIT_StopCalc);
+        }
+    }
+    if (field_0x12c8 != NULL) {
+        if (lbl_8053AAF8->field_0x94 == 1 || field_0x121f || field_0x454) {
+            field_0x12c8->setStatus(JPAEMIT_StopDraw);
+            field_0x12c8->setStatus(JPAEMIT_StopCalc);
+        } else {
+            field_0x12c8->clearStatus(JPAEMIT_StopDraw);
+            field_0x12c8->clearStatus(JPAEMIT_StopCalc);
+        }
+    }
+    if (lbl_8053AAF8->field_0x94 == 1 || field_0x121f) {
+        fn_80270D08();
+        fn_80286688();
+        fn_80265E88();
+        for (int i = 0; i < 0x50; i++) {
+            field_0xdb0[i] = -1;
+            field_0x1030[i] = -1;
+        }
+        return;
+    }
+    field_0x2f4.set(0.0f, 0.0f, 18.0f);
+    field_0x2f4 += mPos;
+    field_0xc0c = field_0xc08;
+    cls_804A71A8* sub = field_0xbf0;
+    sub->field_0x14 = 0.0f;
+    sub->field_0x18 = 0.0f;
+    if (!lbl_8053AAF8->field_0x80) {
+        fn_802490A8();
+    }
+    fn_8026FD14();
+    fn_80251D50();
+    if (lbl_8053AAF8->field_0x80) {
+        field_0xd38++;
+        field_0x1208++;
+        if (field_0xd38 == 0x10) {
+            fn_8013CC50(field_0x3b4, &mPos, 0x418, 0, 1, NULL, NULL, true, 1.0f);
+            fn_8013CC50(field_0x3b4, &mPos, 0x419, 0, 1, NULL, NULL, true, 1.0f);
+            fn_8013CC50(field_0x3b4, &mPos, 0x41a, 0, 1, NULL, NULL, true, 1.0f);
+            fn_8024F0E8(0x4004e);
+        } else if (field_0xd38 == 0x83) {
+            field_0xc80 = 1;
+            fn_8024F0E8(0x20043);
+        }
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+            switch (field_0x4) {
+            case 0:
+                joinCue(this, 0xc0, 0xe0);
+                break;
+            case 1:
+                joinCue(this, 0xe0, 0x100);
+                break;
+            case 2:
+                joinCue(this, 0xf8, 0x118);
+                break;
+            case 3:
+                joinCue(this, 0x108, 0x128);
+                break;
+            }
+        }
+    } else {
+        fn_80285E58();
+    }
+    fn_8024BDBC();
+    fn_80276538();
+    fn_80276078();
+    field_0xbec->fn_8030B774();
+    fn_8024E0A0();
+    if (field_0xd48 > 0) {
+        field_0xd48--;
+    }
+}
+
+// FIXME: 99.95. Code identical; lbl_80540098 (256/3) is @NNN, as in fn_80254660.
 // Like fn_80254660, then clears the counters 0xC04-0xC7C.
 void Player_804A6F38::fn_802544B0() {
     field_0xc10 = fn_802D6A9C()->field_0x48;
