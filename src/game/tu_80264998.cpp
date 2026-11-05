@@ -940,31 +940,40 @@ void Player_804A6F38::fn_80267C6C() {
 }
 
 // The spin: frames 0x8F-0x96 from the facing's own one, by field_0x3fb.
-// The frame is computed as a byte (clrlwi 24 before each sth).
+// The frame number is a byte (clrlwi 24 before each sth).
 void Player_804A6F38::fn_80267D30() {
+    u8 f;
     if (field_0x3dc == 0) {
         if (field_0x3fb < 8) {
-            field_0x3c4 = (u8)((field_0x3fb & 7) + 0x8F);
+            f = (field_0x3fb & 7) + 0x8F;
+            field_0x3c4 = f;
         } else {
-            field_0x3c4 = (u8)(field_0x3fb + 0x8F);
+            f = field_0x3fb + 0x8F;
+            field_0x3c4 = f;
         }
     } else if (field_0x3dc == 1) {
         if (field_0x3fb < 8) {
-            field_0x3c4 = (u8)(((field_0x3fb + 4) & 7) + 0x8F);
+            f = ((field_0x3fb + 4) & 7) + 0x8F;
+            field_0x3c4 = f;
         } else {
-            field_0x3c4 = (u8)(field_0x3fb + 0x93);
+            f = field_0x3fb + 0x93;
+            field_0x3c4 = f;
         }
     } else if (field_0x3dc == 2) {
         if (field_0x3fb < 8) {
-            field_0x3c4 = (u8)(((field_0x3fb + 2) & 7) + 0x8F);
+            f = ((field_0x3fb + 2) & 7) + 0x8F;
+            field_0x3c4 = f;
         } else {
-            field_0x3c4 = (u8)(field_0x3fb + 0x97);
+            f = field_0x3fb + 0x97;
+            field_0x3c4 = f;
         }
     } else {
         if (field_0x3fb < 8) {
-            field_0x3c4 = (u8)(((field_0x3fb + 6) & 7) + 0x8F);
+            f = ((field_0x3fb + 6) & 7) + 0x8F;
+            field_0x3c4 = f;
         } else {
-            field_0x3c4 = (u8)(field_0x3fb + 0x9B);
+            f = field_0x3fb + 0x9B;
+            field_0x3c4 = f;
         }
     }
 }
