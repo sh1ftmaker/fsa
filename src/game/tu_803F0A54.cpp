@@ -1412,6 +1412,106 @@ void ConnectScreen_804B0F10::fn_803FB6F4() {
     stepCursorTimer(this);
 }
 
+// FIXME: 96.52. Registers throughout; both `> 0` counter tests are
+// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
+// the row loop keeps i * 5 in two registers there but one here; .sdata2
+// @NNN names.
+// Update state 0: slides the player-count screen mScreen in and fades it
+// up (field_0x240[0] counts the frames: the title from 0 to 25, the box
+// from 25 to 45, the three count rows 5 frames apart, the rest from 0 to
+// 15), then enters state 1 at 75.
+void ConnectScreen_804B0F10::fn_803FB9E4() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            field_0x110 = -150.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 20; i++) {
+                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], alpha));
+            }
+        } else {
+            field_0x110 = 0.0f;
+            for (int i = 0; i < 20; i++) {
+                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            field_0x114 = -100.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+        } else {
+            field_0x114 = 0.0f;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        if (field_0x240[0] > i * 5) {
+            if (field_0x240[0] < i * 5 + 10) {
+                field_0x130[i] = -350.0f * ((f32)((10 - (field_0x240[0] - i * 5)) * (10 - (field_0x240[0] - i * 5))) / 100.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 5) / 10.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 6; j++) {
+                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], alpha));
+                }
+            } else {
+                field_0x130[i] = 0.0f;
+                for (int j = 0; j < 6; j++) {
+                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 15) {
+            field_0x144 = field_0x158 = 400.0f * ((f32)((15 - field_0x240[0]) * (15 - field_0x240[0])) / 225.0f);
+            f32 alpha = (f32)field_0x240[0] / 15.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 24; i++) {
+                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], alpha));
+            }
+            for (int i = 0; i < 18; i++) {
+                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], alpha));
+            }
+        } else {
+            field_0x144 = field_0x158 = 0.0f;
+            for (int i = 0; i < 24; i++) {
+                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], 1.0f));
+            }
+            for (int i = 0; i < 18; i++) {
+                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F3310();
+    }
+    mScreen->search('Pmbabb07')->move(field_0x108, field_0x10c + field_0x110);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
+    // The y of each row is read one element on (the original reads
+    // field_0x124[1..3], the last one being field_0x130[0]).
+    mScreen->search('Pnopb08')->move(field_0x118[0] + field_0x130[0], field_0x124[1]);
+    mScreen->search('Pnopb12')->move(field_0x118[1] + field_0x130[1], field_0x124[2]);
+    mScreen->search('Pnopb16')->move(field_0x118[2] + field_0x130[2], field_0x124[3]);
+    mScreen->search('Ndata02')->move(field_0x13c + field_0x144, field_0x140);
+    mScreen->search('Ndata05')->move(field_0x148 + field_0x158, field_0x14c);
+    mScreen->search('Ndata07')->move(field_0x150 + field_0x158, field_0x154);
+    f32 y = mScreen->search('Pscuro02')->getBounds()->i.y;
+    mScreen->search('Pscuro02')->move(field_0xec + field_0x130[field_0x1ac], y);
+}
+
 void ConnectScreen_804B0F10::fn_803FC304() {
     field_0x1c0 = 0;
     for (s32 i = 0; i < 4; i++) {
