@@ -56,7 +56,7 @@ public:
 // cls_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
 // fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
 // reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
-struct cls_804AA858Sub11CBits {
+struct cls_804AA858Sub11C {
     /* 0x00 */ u32 field_0x0 : 16;
     /* 0x02 */ u32 mMode : 2;      // 2 / 3 select the bits of 0x5 / 0x4 kept; bit 0 enables the tables
     u32 field_0x2_5 : 1;
@@ -76,11 +76,6 @@ struct cls_804AA858Sub11CBits {
     /* 0x18 */ u32 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
 
-// fn_802F53F4 copies it as 13 double words (one block copy), hence the union.
-union cls_804AA858Sub11C {
-    /* 0x00 */ cls_804AA858Sub11CBits mBits;
-    /* 0x00 */ u32 mWords[0x68 / 4];
-}; // Size: 0x68
 
 // game/tu_80301CD0.cpp (owner unit, not written yet): per-player tables
 // filled by fn_802F53F4 (0x802F54AC) for the player `slot`, and the record
@@ -240,7 +235,6 @@ public:
     // 65 per row) around pos, when field_0xc21c is positive and pos lies in
     // the field_0x2380 x field_0x2384 cells from field_0x2368.
     f32 fn_802F5E9C(const JGeometry::TVec3f* pos);
-    inline f32 getHeight(const JGeometry::TVec3f* pos); // its body, defined in tu_802F5040.cpp
     // 0x802F6CF4: the third sprite kind of the queues (cls_8030029C::field_0x18),
     // called like fn_802F745C (pos, the resource, &params).
     void fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);

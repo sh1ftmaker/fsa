@@ -31,29 +31,6 @@ static inline f32 getScale(f32 z) {
     return 192.0f / (192.0f - h);
 }
 
-// The height under pos: the body of fn_802F5E9C, which the original inlined into
-// fn_802F5570 (defined before it here, so it cannot be inlined from there; a
-// call-through wrapper costs fn_802F5E9C 0.6 %, hence two copies).
-inline f32 cls_804AA858::getHeight(const JGeometry::TVec3f* pos) {
-    f32 z = pos->z;
-    if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
-        pos->x < field_0x2368.x + 8.0f * field_0x2380 && pos->y >= field_0x2368.y &&
-        pos->y < field_0x2368.y + 8.0f * field_0x2384)
-    {
-        f32 dx = pos->x - field_0x2368.x;
-        f32 dy = pos->y - field_0x2368.y;
-        s32 ix = 0.125f * dx;
-        s32 iy = 0.125f * dy;
-        JGeometry::TVec3f* p = &field_0x100[field_0x2388][iy][ix];
-        f32 fx = 0.125f * (dx - 8.0f * ix);
-        f32 fy = 0.125f * (dy - 8.0f * iy);
-        f32 top = p[0].z * (1.0f - fx) + p[1].z * fx;
-        f32 bottom = (1.0f - fx) * p[65].z + fx * p[66].z;
-        z += (1.0f - fy) * top + fy * bottom;
-    }
-    return z;
-}
-
 // FIXME: 99.4. The z > 0.0f flag is extracted to r0 and moved to r3 (the original
 // extracts straight into r3); its .sdata2 literals are @NNN until the four colour
 // constants of fn_802F8F0C ... fn_802FC80C, which precede the floats, are emitted.
@@ -133,65 +110,31 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
     }
 }
 
-// FIXME: 90.7. Register allocation only: the record and slot sit in r24 / r23
-// (original r23 / r26) and the table loop keeps slot * 4 in r26 instead of a
-// separate r25.
+// FIXME: 76.5. The original copies the 0x68-byte record into field_0x11c[slot]
+// with a 13-iteration double-word loop; ours unrolls a word copy. Registers also
+// differ (record and slot in r24 / r23, original r23 / r26).
 void cls_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
-    if (record->mBits.mValid == 0) {
+    if (record->mValid == 0) {
         return;
     }
-    if (record->mBits.mKind == 5 || record->mBits.mKind == 14) {
+    if (record->mKind == 5 || record->mKind == 14) {
         *field_0x11c[slot] = *record;
-        if (record->mBits.mMode == 2) {
-            field_0x134[slot] = record->mBits.field_0x5_7;
-        } else if (record->mBits.mMode == 3) {
-            field_0x130[slot] = record->mBits.field_0x4_5;
+        if (record->mMode == 2) {
+            field_0x134[slot] = record->field_0x5_7;
+        } else if (record->mMode == 3) {
+            field_0x130[slot] = record->field_0x4_5;
         }
-        if (record->mBits.mMode & 1) {
+        if (record->mMode & 1) {
             for (s32 i = 0; i < 4; i++) {
-                lbl_80506DA8[slot][i] = (record->mBits.field_0x6 >> (i * 2)) & 3;
-                lbl_80506DB8[slot][i] = (record->mBits.field_0x7_4 >> i) & 1;
-                lbl_80506DC8[slot][i] = (record->mBits.field_0x7_0 >> i) & 1;
+                lbl_80506DA8[slot][i] = (record->field_0x6 >> (i * 2)) & 3;
+                lbl_80506DB8[slot][i] = (record->field_0x7_4 >> i) & 1;
+                lbl_80506DC8[slot][i] = (record->field_0x7_0 >> i) & 1;
                 lbl_80506DD8[slot] = fn_8022EA0C(slot);
             }
         }
     }
     field_0x12c[slot] = 1;
     fn_803068D0(field_0x11c[slot]);
-}
-
-// FIXME: 89.4. The copy of params into tmp moves the colour words 0x10 / 0x14 as
-// words (SpriteParamsColor_801F5AE0 is a union with an s32); the original copies
-// them byte by byte (four u8). In the inlined getHeight 8.0f and field_0x2368.y swap
-// f5/f6 as in fn_802F5E9C. Its .sdata2 literals are @NNN until .sdata2 is in order.
-// Where and how a sprite at pos is drawn: params' field_0x38 selects the
-// ground's tilt (2, or no params: fn_802F58A8's matrix, concatenated with
-// params' own one into the copy tmp), the ground's height (1) or pos as is.
-void cls_804AA858::fn_802F5570(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params,
-                               JGeometry::TVec3f* out, SpriteParams_801F5AE0** outParams, Mtx mtx,
-                               SpriteParams_801F5AE0* tmp) {
-    if (params == NULL || params->field_0x38 == 2) {
-        if (fn_802F58A8(pos, mtx)) {
-            if (params != NULL) {
-                *tmp = *params;
-                if (tmp->mMtx != NULL) {
-                    PSMTXConcat(tmp->mMtx, mtx, mtx);
-                }
-            }
-            tmp->mMtx = mtx;
-            *outParams = tmp;
-        } else {
-            *outParams = params;
-        }
-        out->set(pos->x, pos->y, pos->z);
-    } else if (params->field_0x38 == 1) {
-        f32 z = pos->z + getHeight(pos);
-        out->set(pos->x, pos->y, z);
-        *outParams = params;
-    } else {
-        out->set(pos->x, pos->y, pos->z);
-        *outParams = params;
-    }
 }
 
 // FIXME: 88.2. Register allocation (the grid test uses f7-f11 for the original's
