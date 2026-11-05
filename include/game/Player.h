@@ -64,7 +64,7 @@ public:
     void fn_8023FBF0(); // via fn_80231928
     cls_804AA8D8* fn_8023FC24(); // via fn_8022BCD4
     s32 fn_8023FC2C(); // via fn_8023BC38
-    u8 fn_8023FC5C(); // via fn_8023BCD4
+    u8 fn_8023FC5C() const; // via fn_8023BCD4
     bool fn_8023FF50(); // via fn_8023BD70
     bool fn_8023FF88(); // via fn_8023BE0C
     s32 fn_8023FFAC(); // via fn_8022BECC

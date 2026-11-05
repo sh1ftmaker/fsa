@@ -83,6 +83,20 @@ static inline s32 linePlace(const Player_804A6F38* player) {
     return count + 1;
 }
 
+// Whether this player does not act on its own: not taking part (bit
+// field_0x4 of lbl_8053AAF8->field_0x82 clear) without a leader; in group
+// mode 4 when it is not its turn; else when it has a leader. fn_80240670's
+// body (inlined by fn_8023FC5C-fn_80240354, before it).
+static inline bool follows_80240670(const Player_804A6F38* player) {
+    if (!isPlayerBitSet(lbl_8053AAF8, player->field_0x4) && player->field_0xd60 < 0) {
+        return true;
+    }
+    if (groupMode(player) == 4) {
+        return groupTurn(player) != linePlace(player);
+    }
+    return player->field_0xd60 >= 0;
+}
+
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
         return;
@@ -112,6 +126,63 @@ s32 Player_804A6F38::fn_8023FC2C() {
         return 0;
     }
     return field_0x494;
+}
+
+// FIXME: 96.6 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0); otherwise the same instructions.
+// The byte 0xCA0, halved for a player following in group mode 4 (unless
+// 0xCFE or 0x454 is set); 0 when the player flags are clear. Const: the
+// group loops' field_0x4 is hoisted (r28, r30).
+u8 Player_804A6F38::fn_8023FC5C() const {
+    if (playerFlags_802413F0(this)) {
+        if (groupMode(this) == 4 && follows_80240670(this) && !field_0xcfe && !field_0x454) {
+            return field_0xca0 / 2;
+        }
+        return field_0xca0;
+    }
+    return 0;
+}
+
+// FIXME: 99.4 %. Register allocation only: the group loop's index / count /
+// leader r27 / r28 / r29 in ours vs r28 / r29 / r27 (and r30 for the turn).
+// The leader's value (fn_80236630, this function for the leader) for a following
+// player, else field_0xbe4 while field_0xbe8 is set, else 0.
+s32 Player_804A6F38::fn_8023FFC4() {
+    if (follows_80240670(this)) {
+        return fn_80236630(fn_8022EA0C(field_0x4));
+    }
+    if (field_0xbe8) {
+        return field_0xbe4;
+    }
+    return 0;
+}
+
+// FIXME: 99.4 %. Register allocation only: the group loop's index / count /
+// leader r27 / r28 / r29 in ours vs r28 / r29 / r27 (and r30 for the turn).
+// The leader's value (fn_802366CC, this function for the leader) for a following
+// player, else field_0xbe0 while field_0x42c is set, else 0.
+s32 Player_804A6F38::fn_8024018C() {
+    if (follows_80240670(this)) {
+        return fn_802366CC(fn_8022EA0C(field_0x4));
+    }
+    if (field_0x42c) {
+        return field_0xbe0;
+    }
+    return 0;
+}
+
+// FIXME: 99.4 %. Register allocation only: the group loop's index / count /
+// leader r27 / r28 / r29 in ours vs r28 / r29 / r27 (and r30 for the turn).
+// The leader's value (fn_80236768, this function for the leader) for a following
+// player, else field_0xbd8 while field_0xbdc is set, else 0.
+s32 Player_804A6F38::fn_80240354() {
+    if (follows_80240670(this)) {
+        return fn_80236768(fn_8022EA0C(field_0x4));
+    }
+    if (field_0xbdc) {
+        return field_0xbd8;
+    }
+    return 0;
 }
 
 bool Player_804A6F38::fn_8023FF50() {
@@ -150,20 +221,15 @@ s32 Player_804A6F38::fn_8024064C() const {
     return fn_8022EA0C(field_0x4);
 }
 
-// FIXME: 98.8 %. Register allocation only: the group loop's count / index /
-// leader get r30 / r28 / r27 where the original has r28 / r27 / r30.
-// Whether this player does not act on its own: not taking part (bit
-// field_0x4 of lbl_8053AAF8->field_0x82 clear) without a leader; in group
-// mode 4 when it is not its turn; else when it has a leader. Const: the group
-// loop's field_0x4 is hoisted (r29), as in fn_80248778.
+// FIXME: 97.8 %. One instruction fewer: the original sets r3 = 1 again for
+// the early true return, ours reuses the 1 of the bit shift; also the group
+// loop's count / index / leader registers (r30 / r28 / r27 vs r28 / r27 / r30).
+// The direct body was 98.8 % (registers only), but fn_8023FC5C-fn_80240354
+// inline it before its definition, so it is the file inline follows_80240670.
+// follows_80240670. Const: the group loop's field_0x4 is hoisted (r29), as
+// in fn_80248778.
 bool Player_804A6F38::fn_80240670() const {
-    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && field_0xd60 < 0) {
-        return true;
-    }
-    if (groupMode(this) == 4) {
-        return groupTurn(this) != linePlace(this);
-    }
-    return field_0xd60 >= 0;
+    return follows_80240670(this);
 }
 
 bool Player_804A6F38::fn_80240808() {
