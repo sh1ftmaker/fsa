@@ -868,3 +868,28 @@ names provisional, evidence = what the handlers do):
   fn_80283948 (0x49), fn_80283E70 (0x38), fn_802844F8 (0x1B), fn_80284978 (0x1A), fn_80284E04
   (0x0E), fn_80285098 (0x0D).
 
+
+## Round 7 (tu_8023FBF0) (agent L, Opus 5.5, 2026-11-05)
+
+- **Group mode** fn_80248004(mode, cue): only for groups of 2+, not while
+  walking to the spots (0x1216) or in the demo slot (0xCFE). A flagged view
+  layer forces mode 5; with 2-3 players taking part directions 2/3 become
+  1/0. Leaving mode 4 on this player's turn moves it onto the acting
+  player (layer 0x3B4 / 0xCE0 / 0xCE4, mPos, 0x2C, 0xCBC, 0xD1C, trail from
+  fn_8023E4E4 / fn_8023E45C). The old mode goes to 0x1210, 0x1224 = 0; a
+  leader plays the cues (0x10010 for mode 4, 0x20037 + 0x10017-0x1001A per
+  direction, 0x10011 when leaving 4) and resets the trail.
+- **Trail** (0x38 TVec3f[0x31] + 0x284 u8[0x31]): fn_8024B9E8 pushes mPos
+  and cls_804A71A8 0xB4 on the front; resetTrail (fn_80248604) refills it
+  with mPos (fn_8024B2E0 while 0x454); fn_802408C8 fills it with a spot
+  on the ground and starts mode 5.
+- **Countdown 0x48C** (fn_8024762C, per frame): state 0xB while it runs,
+  shared by the leader (fn_80247BD4 / fn_80247B9C), back to state 0 with
+  effect 0x503; music 0x1000019 calls fn_8022AD64 once nobody's runs.
+- fn_80240B84 (= fn_80233EDC's query) is `fn_80240670() ? leader's
+  fn_80233EDC : inState1B`, const like fn_80240670; fn_80252FC0 inlines it.
+- cls_804AA8D8::fn_8030B084 / fn_8030B110 take a TVec3f **by value**
+  (the callers' 12-byte stack copies).
+- Fields wanted (agent K): 0x1268 TVec3f (fn_8024C378 writes x/y/z
+  componentwise); cls_804A71A8 0x14/0x18 as a TVec2f (fn_802422C4 returns
+  its address).
