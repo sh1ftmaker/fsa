@@ -44,6 +44,9 @@ static cls_804B0B00::StateFunc lbl_804B0A24[15] = {
     &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E462C,
 };
 
+// Cursor y positions by field_0x1c0[i] (.sdata2, lhax).
+static const s16 lbl_80543648[4] = {-25, 25, 77, 77};
+
 // .rodata: the unit's tables in address order (the functions address them
 // off one base); u64 tables are J2DPane::search tags.
 static const f32 lbl_80477970[16] = {
@@ -395,6 +398,105 @@ void cls_804B0B00::fn_803E29C8() {
 void cls_804B0B00::fn_803E2A0C() {
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 13;
+}
+
+// FIXME: 98.17. Registers: the loop's table pointers and counter sit in other
+// registers (i in r18 here, r16 in the original), and the first digit
+// texture is copied through r0 into r17 (one extra mr) where the original
+// keeps it in r27.
+// Enter state 12 (the results / entry screen field_0x10): per player, the
+// 'Pblk' cover over the players beyond field_0x1bc + 1, the rupee count
+// (fn_80403070) as three digit textures, the fn_8040305C - 1 markers of the
+// four marker tables, the cursor panes by field_0x1c0[i] (3: joined,
+// 4: not); then the panes start their slide-in.
+void cls_804B0B00::fn_803E2A20() {
+    for (s32 i = 0; i < 4; i++) {
+        if (i >= 1) {
+            if (i > field_0x1bc) {
+                field_0x10->search(lbl_80478878[i - 1])->show();
+            } else {
+                field_0x10->search(lbl_80478878[i - 1])->hide();
+            }
+        }
+        field_0x1f0[i] = fn_80403414(i);
+        field_0x200[i] = fn_804033D4(i);
+        field_0x210[i] = fn_8040336C(i);
+        s32 rupees = fn_80403070(field_0x1f0[i]);
+        const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0AD8[rupees / 100]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80478410[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80478430[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0AD8[rupees % 100 / 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804783D0[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804783F0[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0AD8[rupees % 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80478390[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804783B0[i]))->changeTexture(tex, 0);
+        s32 count = fn_8040305C(field_0x200[i]) - 1;
+        for (s32 j = 0; j < 6; j++) {
+            if (j < count) {
+                field_0x10->search(lbl_80478518[i][j])->show();
+                field_0x10->search(lbl_804785D8[i][j])->show();
+                field_0x10->search(lbl_80478698[i][j])->hide();
+                field_0x10->search(lbl_80478758[i][j])->hide();
+            } else if (j == count) {
+                field_0x10->search(lbl_80478518[i][j])->hide();
+                field_0x10->search(lbl_804785D8[i][j])->hide();
+                field_0x10->search(lbl_80478698[i][j])->hide();
+                field_0x10->search(lbl_80478758[i][j])->show();
+            } else {
+                field_0x10->search(lbl_80478518[i][j])->hide();
+                field_0x10->search(lbl_804785D8[i][j])->hide();
+                field_0x10->search(lbl_80478698[i][j])->hide();
+                field_0x10->search(lbl_80478758[i][j])->hide();
+            }
+        }
+        field_0x10->search(lbl_80478350[i])->hide();
+    }
+    field_0x64->fn_80402E08(0.0f, -200.0f);
+    field_0x64->field_0x22 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1bc) {
+            field_0x68[i]->fn_80402E08(0.0f, 150.0f);
+            field_0x68[i]->field_0x22 = 0;
+        }
+        if (i <= field_0x1bc) {
+            field_0x1c0[i] = 3;
+        } else {
+            field_0x1c0[i] = 4;
+        }
+        field_0x1e0[i] = 30;
+        if (i <= field_0x1bc) {
+            if (field_0x1c0[i] < 3) {
+                field_0x10->search(lbl_80478310[i])->hide();
+                field_0x10->search(lbl_80478330[i])->show();
+                field_0x10->search(lbl_80478350[i])->hide();
+            } else if (field_0x1c0[i] == 3) {
+                field_0x10->search(lbl_80478310[i])->hide();
+                field_0x10->search(lbl_80478330[i])->show();
+                field_0x10->search(lbl_80478350[i])->show();
+            } else {
+                field_0x10->search(lbl_80478310[i])->show();
+                field_0x10->search(lbl_80478330[i])->hide();
+                field_0x10->search(lbl_80478350[i])->hide();
+            }
+        } else {
+            field_0x10->search(lbl_80478310[i])->hide();
+            field_0x10->search(lbl_80478330[i])->hide();
+            field_0x10->search(lbl_80478350[i])->hide();
+        }
+        s32 state = field_0x1c0[i];
+        if (state <= 3) {
+            f32 x = field_0x10->search(lbl_80478330[i])->getBounds()->i.x;
+            field_0x10->search(lbl_80478330[i])->move(x, lbl_80543648[state]);
+        }
+        field_0x254[i] = 0;
+        field_0x1e0[i] = 0;
+    }
+    field_0x78->fn_80402E08(0.0f, -200.0f);
+    field_0x78->field_0x22 = 0;
+    field_0x260 = 0;
+    field_0x1d8 = field_0x1d4;
+    field_0x1d4 = 12;
 }
 
 void cls_804B0B00::fn_803E3548() {
