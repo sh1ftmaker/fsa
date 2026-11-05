@@ -65,6 +65,18 @@ static const u64 lbl_80479238[4] = {
     'Pplli01', 'Pplli02', 'Pplli03', 'Pplli04',
 };
 
+// field_0x10's cursor panes, parts of the unsplit .rodata object
+// lbl_80479238 at their offsets there (fn_803F35B0).
+static const u64 lbl_804793D8[4] = {
+    'Pscur01', 'Pscur02', 'Pscur03', 'Pscur04',
+};
+static const u64 lbl_804793F8[4] = {
+    'Paccur02', 'Paccur04', 'Paccur06', 'Paccur08',
+};
+static const u64 lbl_80479418[4] = {
+    'Paccur01', 'Paccur03', 'Paccur05', 'Paccur07',
+};
+
 // field_0xc's player panes for 2, 3 and 4 players (field_0x1ac + 2).
 static const u64 lbl_80479920[3][4] = {
     {0x005032706C693031ull /* "P2pli01" */, 0x005032706C693032ull /* "P2pli02" */, 0, 0},
@@ -360,6 +372,44 @@ void cls_804B0F10::fn_803F3324() {
 
 void cls_804B0F10::fn_803F358C() {
     field_0x58->fn_80436668();
+}
+
+// FIXME: 99.26 (twin cls_804B0B00::fn_803E4650): stack slots only, the
+// blink's else-branch int conversion sits at 0x10 instead of 0x8.
+// Draws states 10 and 11 (the results screen field_0x10): each taking
+// player's cursor 'Pscur' fades with field_0x1d0[i] (60 frames), the
+// joined ones' 'Paccur' panes with it; outside state 10 the 'Paccur02'
+// pane and field_0x64[i] bounce with field_0x240[i]. Then lbl_8053AED8's
+// buttons.
+void cls_804B0F10::fn_803F35B0() {
+    for (s32 i = 0; i < 4; i++) {
+        f32 t;
+        if (field_0x1d0[i] < 30) {
+            t = (f32)(field_0x1d0[i] * field_0x1d0[i]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[i] - 30) * (field_0x1d0[i] - 30)) / 900.0f;
+        }
+        if (i <= field_0x1ac + 1) {
+            if (field_0x1b0[i] < 4) {
+                field_0x10->search(lbl_804793D8[i])->setAlpha(160.0f * t);
+            }
+            if (field_0x1b0[i] == 3) {
+                field_0x10->search(lbl_804793F8[i])->setAlpha(t * field_0x25a);
+                field_0x10->search(lbl_80479418[i])->setAlpha(t * field_0x25a);
+            }
+        }
+        if (field_0x1c4 != 10) {
+            s32 bounce = field_0x240[i] < 5 ? field_0x240[i] : 10 - field_0x240[i];
+            f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+            f32 x = field_0x10->search(lbl_804793F8[i])->getBounds()->i.x;
+            field_0x10->search(lbl_804793F8[i])->move(x, field_0x1a0 + offset);
+            if (field_0x1b0[i] >= 3) {
+                field_0x64[i]->fn_80402E08(0.0f, offset);
+            }
+        }
+    }
+    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
 }
 
 // FIXME: 99.60. Stack layout and float registers only: the original keeps

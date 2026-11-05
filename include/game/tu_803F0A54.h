@@ -120,7 +120,8 @@ public:
     /* 0x150 */ f32 field_0x150; // 'Ndata07' x
     /* 0x154 */ f32 field_0x154; // 'Ndata07' y
     /* 0x158 */ f32 field_0x158; // 'Ndata05' / 'Ndata07' x offset
-    /* 0x15C */ u8 field_0x15c[0x1A4 - 0x15C];
+    /* 0x15C */ u8 field_0x15c[0x1A0 - 0x15C];
+    /* 0x1A0 */ f32 field_0x1a0; // field_0x10 'Paccur02' y
     /* 0x1A4 */ s32 field_0x1a4;
     /* 0x1A8 */ s32 field_0x1a8;
     /* 0x1AC */ s32 field_0x1ac; // connected controllers beyond the first two
