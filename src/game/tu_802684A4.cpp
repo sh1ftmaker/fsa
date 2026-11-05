@@ -338,16 +338,6 @@ void cls_804A71A8::fn_8026947C(JGeometry::TVec3f* pos) {
     }
 }
 
-// Whether flags[i] == 1 for some direction i.
-static inline bool anyIs1(const u8* flags) {
-    for (s32 i = 0; i < 8; i++) {
-        if (flags[i] == 1) {
-            return true;
-        }
-    }
-    return false;
-}
-
 // Whether flags[i] != 0 for some direction i.
 static inline bool anySet(const u8* flags) {
     for (s32 i = 0; i < 8; i++) {
@@ -378,7 +368,13 @@ static inline void blockMarked50(cls_804A71A8* p) {
             return;
         }
     }
-    if (allSet(p->field_0x50)) {
+    s32 n;
+    for (n = 0; n < 8; n++) {
+        if (p->field_0x50[n] == 0) {
+            break;
+        }
+    }
+    if (n == 8) {
         return;
     }
     for (s32 i = 0; i < 8; i++) {
@@ -505,17 +501,57 @@ static inline bool pushedSideways(const cls_804A71A8* p) {
     return false;
 }
 
-// FIXME: 93.21. Every call, field, constant and branch target is in place,
-// but the original branches straight out of its early-exit tests where this
-// source materialises a bool (li 1 / li 0, clrlwi.): the `ready` / `nearWarp`
-// flags of the field_0xbc counter (the original jumps from each counter case
-// to the WARP search or to the cell snap, and from the near-'WARP' case past
-// the snap), and the loops allSet(field_0x50), allMarked68,
-// anyOpen68 / allMarked68Or38, allMarked58 and anyIs1(field_0x60) (67
-// instructions more, 2285 vs 2218). The snap's mPos x test (r4 kept from the
-// field_0xb0 test), the type-4 'WARP' turn test (field_0x4->field_0x4 loaded
-// before fn_80248778), the 0xB7 store (one shared stb in the original) and the
-// register numbers (r25 is saved) differ too.
+// Advances the frames-shut-in counter; false when it was reset.
+static inline bool advanceCounter(cls_804A71A8* p) {
+    if (p->field_0xbc > 0) {
+        p->field_0xbc++;
+        return true;
+    }
+    if (p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) {
+        p->field_0xbc = 0;
+        return false;
+    }
+    if (p->field_0x4->field_0x1216 == 1 || p->field_0x4->field_0x1228 > 0) {
+        p->field_0xbc = 0;
+        return false;
+    }
+    if (p->field_0x4->fn_802486A0() == 5 && p->field_0x4->fn_80240670() &&
+        fn_80234950(fn_8022F340(p->field_0x4->field_0x4)))
+    {
+        p->field_0xbc = 0;
+        return false;
+    }
+    if (viewLayerFlag(p->field_0x4->field_0x3b4)) {
+        for (s32 i = 0; i < 8; i++) {
+            if (p->field_0x68[i] == 1 && p->field_0x38[i] == 0) {
+                p->field_0xbc = 3;
+                return true;
+            }
+        }
+        p->field_0xbc = 0;
+        return false;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x68[i] == 0 && p->field_0x38[i] == 0) {
+            p->field_0xbc = 0;
+            return false;
+        }
+    }
+    p->field_0xbc++;
+    return true;
+}
+
+// FIXME: 96.27. Every call, field, constant and branch target is in place;
+// ours is 40 instructions longer (2258 vs 2218). Where the original branches
+// straight out of an early-exit test, this source materialises a value:
+// the loop index (li n / cmpwi n, 8) after the break-out check loops
+// (field_0x50, field_0x38 / 0x58 / 0x78, field_0x60 and the snap's
+// field_0x68 / 0x88 / 0x38), and the bools advanceCounter returns and
+// `nearWarp` (li 1 / clrlwi.), where the original jumps from each counter
+// case to the WARP search and from the near-'WARP' case past the snap. The
+// snap's mPos x test (r4 kept from the field_0xb0 test), the type-4 'WARP'
+// turn test (field_0x4->field_0x4 loaded before fn_80248778), the 0xB7 store
+// (one shared stb in the original) and the register numbers differ too.
 // The state machine on field_0xbc (frames shut in), the 'WARP' actors,
 // then the pushes and the owner's respawn point field_0xd1c.
 void cls_804A71A8::fn_80269574() {
@@ -526,35 +562,7 @@ void cls_804A71A8::fn_80269574() {
     if (isField98Or99Set() == true) {
         field_0xbc = 0;
     } else if (countClosed() < 6) {
-        bool ready = true;
-        if (field_0xbc > 0) {
-            field_0xbc++;
-        } else if (field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) {
-            field_0xbc = 0;
-            ready = false;
-        } else if (field_0x4->field_0x1216 == 1 || field_0x4->field_0x1228 > 0) {
-            field_0xbc = 0;
-            ready = false;
-        } else if (field_0x4->fn_802486A0() == 5 && field_0x4->fn_80240670() &&
-                   fn_80234950(fn_8022F340(field_0x4->field_0x4)))
-        {
-            field_0xbc = 0;
-            ready = false;
-        } else if (viewLayerFlag(field_0x4->field_0x3b4)) {
-            if (anyOpen68()) {
-                field_0xbc = 3;
-            } else {
-                field_0xbc = 0;
-                ready = false;
-            }
-        } else if (allMarked68Or38()) {
-            field_0xbc++;
-        } else {
-            field_0xbc = 0;
-            ready = false;
-        }
-
-        if (ready) {
+        if (advanceCounter(this)) {
             if (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() != field_0x4->fn_80248778()) {
                 field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
                 field_0xbc = 0;
@@ -587,7 +595,6 @@ void cls_804A71A8::fn_80269574() {
                     JGeometry::TVec2f d(field_0x4->mPos.x - warp->mPos.x, field_0x4->mPos.y - warp->mPos.y);
                     if (JGeometry::TUtil<f32>::sqrt(square(d.x) + square(d.y)) < 7.0f) {
                         field_0xbc = 0;
-                        ready = false;
                         nearWarp = true;
                         break;
                     }
@@ -642,7 +649,7 @@ void cls_804A71A8::fn_80269574() {
                 }
             }
 
-            if (ready) {
+            if (!nearWarp) {
                 if (field_0xbc >= 2) {
                     field_0x4->field_0x457 = 1;
                 }
@@ -661,7 +668,13 @@ void cls_804A71A8::fn_80269574() {
           fn_80234950(fn_8022F340(field_0x4->field_0x4))))
     {
         if (field_0x4->fn_80240808() && field_0x4->fn_802486A0() != 4) {
-            if (allMarked68()) {
+            s32 n;
+            for (n = 0; n < 8; n++) {
+                if (field_0x68[n] == 0 && field_0x88[n] == 0 && field_0x38[n] == 0) {
+                    break;
+                }
+            }
+            if (n == 8) {
                 fn_8022BC38(field_0x4->fn_80240644(), field_0x4->field_0x3b4, &field_0x4->mPos);
             }
         } else if (field_0xb0 <= 1) {
@@ -708,25 +721,39 @@ void cls_804A71A8::fn_80269574() {
         if (below) {
             field_0xb4 = 0;
             field_0xb6 = 0;
-        } else if (allMarked58() &&
-                   (field_0x4->fn_802486A0() == 4 || !field_0x4->fn_80240808() || field_0x4->fn_80270A8C()))
-        {
-            field_0xb4 = 1;
-            field_0xb6 = 1;
-            if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2 &&
-                  (field_0x4->field_0x3dc == 0 || field_0x4->field_0x3dc == 1)) &&
-                !field_0x4->fn_80240B34() && !field_0x4->fn_80240D64() && !field_0x4->fn_80240860() &&
-                !(field_0x4->fn_80270A8C() && field_0x4->field_0xd08 >= 0) && !field_0x4->fn_8024BBB0())
-            {
-                field_0x4->mPos.y += 4.0f;
+        } else {
+            s32 n;
+            for (n = 0; n < 8; n++) {
+                if (field_0x38[n] == 0 && field_0x58[n] == 0 && field_0x78[n] == 0) {
+                    break;
+                }
             }
-            field_0x9a = 1;
+            if (n == 8 &&
+                (field_0x4->fn_802486A0() == 4 || !field_0x4->fn_80240808() || field_0x4->fn_80270A8C()))
+            {
+                field_0xb4 = 1;
+                field_0xb6 = 1;
+                if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2 &&
+                      (field_0x4->field_0x3dc == 0 || field_0x4->field_0x3dc == 1)) &&
+                    !field_0x4->fn_80240B34() && !field_0x4->fn_80240D64() && !field_0x4->fn_80240860() &&
+                    !(field_0x4->fn_80270A8C() && field_0x4->field_0xd08 >= 0) && !field_0x4->fn_8024BBB0())
+                {
+                    field_0x4->mPos.y += 4.0f;
+                }
+                field_0x9a = 1;
+            }
         }
     }
     if (field_0xba == 1) {
         field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xcbc, 0xD);
     }
-    if (anyIs1(field_0x60)) {
+    s32 n60;
+    for (n60 = 0; n60 < 8; n60++) {
+        if (field_0x60[n60] == 1) {
+            break;
+        }
+    }
+    if (n60 < 8) {
         if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) && !field_0x4->fn_80240B34() &&
             !field_0x4->fn_80240D64() && !field_0x4->fn_80240860())
         {

@@ -113,16 +113,6 @@ public:
         return true;
     }
 
-    // Whether every direction is marked in field_0x68, field_0x88 or field_0x38.
-    bool allMarked68() const {
-        for (s32 i = 0; i < 8; i++) {
-            if (field_0x68[i] == 0 && field_0x88[i] == 0 && field_0x38[i] == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     // Whether every direction is closed (field_0x78, field_0x38 or field_0x28)
     // and at least one is marked in field_0x78.
     bool closedBy78() const {
@@ -137,36 +127,6 @@ public:
             }
         }
         return false;
-    }
-
-    // Whether some direction is marked in field_0x68 and not blocked.
-    bool anyOpen68() const {
-        for (s32 i = 0; i < 8; i++) {
-            if (field_0x68[i] == 1 && field_0x38[i] == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Whether every direction is marked in field_0x68 or field_0x38.
-    bool allMarked68Or38() const {
-        for (s32 i = 0; i < 8; i++) {
-            if (field_0x68[i] == 0 && field_0x38[i] == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Whether every direction is marked in field_0x38, field_0x58 or field_0x78.
-    bool allMarked58() const {
-        for (s32 i = 0; i < 8; i++) {
-            if (field_0x38[i] == 0 && field_0x58[i] == 0 && field_0x78[i] == 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     // Whether direction i is blocked or inside an owner box (as 1).

@@ -412,8 +412,8 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
 - Status: 13 / 25 at 100 %; fn_80268BC4 99.13 % (4 dead stack stores),
   fn_8026E68C 99.97 % (literal names only), fn_8026EE60 / EC88 / F000 family
   86-90 % (step-vector add order; owner/facing kept across getActorManager_801F856C).
-  Round 8 (agent M): **fn_80269574** written structure-first (93.2 %,
-  missing/extra: the original branches straight out of its early-exit tests
+  Round 8 (agent M): **fn_80269574** written structure-first (96.3 %,
+  missing/extra, 40 instructions longer: the original branches straight out of its early-exit tests
   where the source materialises bools). Order: field_0x50 directions become
   blocked; a follower closed in on all sides asks fn_8022BC38; the counter
   0xBC (frames closed in, < 6 sides; 3 at once on a flagged layer with an

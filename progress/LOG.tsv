@@ -1,3 +1,3 @@
 unit	date	model	minutes	before	after	notes
 dolphin/os/OSContext.c	2026-11-02	claude-opus-5-5	40	8/11	14/14	split .text to 0x80041598; RAS labels; __cvt_fp2unsigned; split string blob
-game/tu_802684A4.cpp	2026-11-05	claude-opus-5-5	135	13/25	14/25	round 8 agent M: fn_80269574 structure-first 93.21% (missing/extra: bool materialisation of early exits); fn_8026E68C 100% from literal order; cls_804A71A8 0x14 TVec2f; fn_8026B81C / fn_8026C350 unwritten (time)
+game/tu_802684A4.cpp	2026-11-05	claude-opus-5-5	135	13/25	14/25	round 8 agent M: fn_80269574 structure-first 96.27% (missing/extra +40: index and bool materialisation of early exits); fn_8026E68C 100% from literal order; cls_804A71A8 0x14 TVec2f; fn_8026B81C / fn_8026C350 unwritten (time)
