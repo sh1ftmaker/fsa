@@ -886,7 +886,8 @@ public:
     /* 0x010 */ J2DPicture* field_0x10; // "TIMG" resource, built in the constructor (mode 3)
     /* 0x014 */ u8 pad_0x14[0x40 - 0x14];
     /* 0x040 */ cls_804AF86C* field_0x40[12]; // the destructor's loop
-    /* 0x070 */ u8 pad_0x70[0xDC - 0x70];
+    /* 0x070 */ cls_804AF86C* field_0x70[2]; // text panes (fn_8043D034 copies field_0x78 into both)
+    /* 0x078 */ char field_0x78[0xDC - 0x78]; // message text (fn_803837A4 in fn_8043D034); ends at the next known field
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
     // the battle royale end check ORs with 0x10 when it picks its winner.
     /* 0xDC */ u8 field_0xdc;
@@ -895,12 +896,14 @@ public:
     /* 0xE0 */ s32 field_0xe0; // fn_8043EDE8's argument
     /* 0xE4 */ s32 field_0xe4; // 0x1E after fn_8043EDE8, 0 at construction
     /* 0xE8 */ s32 field_0xe8;
-    /* 0xEC */ u8 pad_0xec[0xFC - 0xEC];
+    /* 0xEC */ u8 pad_0xec[0xF4 - 0xEC];
+    /* 0xF4 */ f32 field_0xf4; // fn_8043A268's position
+    /* 0xF8 */ f32 field_0xf8;
     /* 0xFC */ s32 field_0xfc;
     /* 0x100 */ s32 field_0x100;
     /* 0x104 */ s16 field_0x104; // countdown, stepped by fn_8043CEA0
     /* 0x106 */ s16 field_0x106;
-    /* 0x108 */ u8 pad_0x108[0x10A - 0x108];
+    /* 0x108 */ s16 field_0x108; // fn_8043A268's s16 argument
     /* 0x10A */ u8 field_0x10a;
     /* 0x10B */ u8 field_0x10b; // selects the pane tested by fn_8043D514 / fn_8043D57C
     /* 0x10C */ u8 field_0x10c;
@@ -936,6 +939,14 @@ public:
     // 0x8043CEA0 (game/tu_8043A0E8.cpp): counts field_0x104 down; at 0 (or when
     // GameRoot's mode is not 7) resets the twelve panes' step counters, state 3.
     void fn_8043CEA0();
+    // 0x8043CDA0, 0x8043CF40, 0x8043D034 (game/tu_8043A0E8.cpp): the steps of
+    // fn_8043D644's table, picked by field_0x10b (3, 1 and 0; fn_8043CEA0 is 2).
+    void fn_8043CDA0();
+    void fn_8043CF40();
+    void fn_8043D034();
+    // 0x8043A268 (game/tu_8043A0E8.cpp): fn_8043A450 that also stores a
+    // position and a value; tu_802E9428 calls it from its tables.
+    void fn_8043A268(s32 stage, s32 sub, s16 value, f32 x, f32 y);
     // 0x8043A450 (game/tu_8043A0E8.cpp, not written yet): a stage / sub-stage
     // pair (GameState's 0x118 / 0x11C).
     void fn_8043A450(s32 stage, s32 sub);

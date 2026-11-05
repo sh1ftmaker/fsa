@@ -8,6 +8,10 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
+#include "JSystem/JUtility/JUTVideo.h"
+#include "game/Message.h"
+#include "game/Player.h"
+#include <string.h>
 
 void fn_80440928(f32 x, f32 y);
 
@@ -44,6 +48,11 @@ void cls_804B1920::fn_8043A208(u8 alpha, f32 a, f32 b, f32 c, f32 d) {
     }
 }
 
+// The rank pictures (fn_8043F504).
+static const char* lbl_804B1810[] = {
+    "kk_mainRank_01.bti", "kk_mainRank_02.bti", "kk_mainRank_03.bti", "kk_mainRank_04.bti",
+};
+
 static const char* lbl_804B1820[] = {
     "w01_01.bti", "w01_02.bti", "w01_03.bti", "w01_04.bti",
     "w02_01.bti", "w02_02.bti", "w02_03.bti", "w02_04.bti",
@@ -55,19 +64,21 @@ static const char* lbl_804B1820[] = {
     "w08_01.bti", "w08_02.bti", "w08_03.bti", "w08_04.bti",
 };
 
+// fn_8043D644's steps, indexed by field_0x10b; built at static init time.
 // Declared here, not at its use, to keep the .data order (0x804B1820, 0x804B18D0, 0x804B1900).
-static void (cls_804B1920::*lbl_804B18D0[4])() = {0, 0, 0, 0};
+static void (cls_804B1920::*lbl_804B18D0[4])() = {
+    &cls_804B1920::fn_8043D034,
+    &cls_804B1920::fn_8043CF40,
+    &cls_804B1920::fn_8043CEA0,
+    &cls_804B1920::fn_8043CDA0,
+};
 
-// FIXME: 99.0. The test for stage 7 / sub 1 is `bne next; b exit` in the original (ours: beq exit), one instruction fewer.
-void cls_804B1920::fn_8043A450(s32 stage, s32 sub) {
-    if (stage == 0 && sub == 2) return;
-    if (stage == 1 && sub == 2) return;
-    if (stage == 2 && sub == 2) return;
-    if (stage == 3 && sub == 2) return;
-    if (stage == 4 && sub == 2) return;
-    if (stage == 5 && sub == 2) return;
-    if (stage == 6 && sub == 2) return;
-    if (stage == 7 && sub == 1) return;
+void cls_804B1920::fn_8043A268(s32 stage, s32 sub, s16 value, f32 x, f32 y) {
+    if ((stage == 0 && sub == 2) || (stage == 1 && sub == 2) || (stage == 2 && sub == 2) ||
+        (stage == 3 && sub == 2) || (stage == 4 && sub == 2) || (stage == 5 && sub == 2) ||
+        (stage == 6 && sub == 2) || (stage == 7 && sub == 1)) {
+        return;
+    }
     if (lbl_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
         s32 index = sub + stage * 4;
         void* res;
@@ -76,9 +87,34 @@ void cls_804B1920::fn_8043A450(s32 stage, s32 sub) {
         } else {
             res = fn_804030C4('TIMG', lbl_804B1820[index]);
         }
-        static_cast<J2DPicture*>(field_0x8->search(0x0000507730313031ull))->changeTexture((const ResTIMG*)res, 0);
-        field_0x8->search(0x0000507730313031ull)->show();
-        field_0x8->search(0x0000005064663031ull)->hide();
+        static_cast<J2DPicture*>(field_0x8->search('Pw0101'))->changeTexture((const ResTIMG*)res, 0);
+        field_0x8->search('Pw0101')->show();
+        field_0x8->search('Pdf01')->hide();
+        field_0x106 = 1;
+        field_0x10d = 1;
+        field_0xf4 = x;
+        field_0xf8 = y;
+        field_0x108 = value;
+    }
+}
+
+void cls_804B1920::fn_8043A450(s32 stage, s32 sub) {
+    if ((stage == 0 && sub == 2) || (stage == 1 && sub == 2) || (stage == 2 && sub == 2) ||
+        (stage == 3 && sub == 2) || (stage == 4 && sub == 2) || (stage == 5 && sub == 2) ||
+        (stage == 6 && sub == 2) || (stage == 7 && sub == 1)) {
+        return;
+    }
+    if (lbl_8053AAF8->field_0x7f != 0 && stage < 8 && sub < 4) {
+        s32 index = sub + stage * 4;
+        void* res;
+        if (index != 0) {
+            res = fn_804032E8('TIMG', lbl_804B1820[index]);
+        } else {
+            res = fn_804030C4('TIMG', lbl_804B1820[index]);
+        }
+        static_cast<J2DPicture*>(field_0x8->search('Pw0101'))->changeTexture((const ResTIMG*)res, 0);
+        field_0x8->search('Pw0101')->show();
+        field_0x8->search('Pdf01')->hide();
         field_0x106 = 1;
         field_0x10d = 0;
     }
@@ -100,11 +136,36 @@ void cls_804B1920::fn_8043ABCC(s32 index) {
     } else {
         res = fn_804030C4('TIMG', lbl_804B1900[index]);
     }
-    static_cast<J2DPicture*>(field_0x8->search(0x0000005064663031ull))->changeTexture((const ResTIMG*)res, 0);
-    field_0x8->search(0x0000005064663031ull)->show();
-    field_0x8->search(0x0000507730313031ull)->hide();
+    static_cast<J2DPicture*>(field_0x8->search('Pdf01'))->changeTexture((const ResTIMG*)res, 0);
+    field_0x8->search('Pdf01')->show();
+    field_0x8->search('Pw0101')->hide();
     field_0x106 = 1;
     field_0x10d = 0;
+}
+
+// FIXME: 99.8. Code identical; the 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
+void cls_804B1920::fn_8043CDA0() {
+    f32 x;
+    f32 y;
+    if (field_0x10c == 0) {
+        x = 0.0f;
+        y = 100.0f;
+    } else {
+        x = 13.0f - field_0x40[9]->field_0xc;
+        y = x - 100.0f;
+    }
+    u8 done = field_0x40[0]->fn_80402940(11, 0, x, y);
+    for (int i = 1; i < 12; i++) {
+        field_0x40[i]->fn_80402940(11, 0, x, y);
+    }
+    if (done) {
+        cls_804B1920* screen = lbl_8053AED0;
+        screen->field_0x10a = 0;
+        screen->field_0xfc = 0;
+        screen->field_0xe8 = 0;
+        screen->field_0x100 = 0;
+        field_0x10b = 0;
+    }
 }
 
 void cls_804B1920::fn_8043CEA0() {
@@ -119,6 +180,84 @@ void cls_804B1920::fn_8043CEA0() {
         field_0x40[i]->field_0x22 = 0;
     }
     field_0x10b = 3;
+}
+
+// FIXME: 99.8. Code identical; the 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
+void cls_804B1920::fn_8043CF40() {
+    f32 x;
+    f32 y;
+    if (field_0x10c == 0) {
+        x = 100.0f;
+        y = 0.0f;
+    } else {
+        y = 13.0f - field_0x40[9]->field_0xc;
+        x = y - 100.0f;
+    }
+    u8 done = field_0x40[0]->fn_80402940(19, 0, x, y);
+    for (int i = 1; i < 12; i++) {
+        field_0x40[i]->fn_80402940(19, 0, x, y);
+    }
+    if (done) {
+        field_0x104 = 160;
+        field_0x10b = 2;
+    }
+}
+
+// FIXME: 98.9. The original loads field_0x70[0]->field_0x18 (f1) before the 0xFC / 0x100 words for
+// fn_803837A4 (ours after them, in r7); the 1.0 / 16.0 / 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
+void cls_804B1920::fn_8043D034() {
+    if (lbl_8053AED0->field_0x10a) {
+        Vec originScreen;
+        Vec topScreen;
+        Vec screen;
+        for (int i = 0; i < 12; i++) {
+            field_0x40[i]->field_0x22 = 0;
+        }
+        fn_803837A4(field_0x78, lbl_8053AED0->field_0xe8, lbl_8053AED0->field_0xfc, lbl_8053AED0->field_0x100,
+                    field_0x70[0]->field_0x18, 1.0f);
+        for (int i = 0; i < 2; i++) {
+            strcpy(((J2DTextBox*)field_0x70[i]->mPane)->getStringPtr(), field_0x78);
+        }
+        // The screen height of 16 units at the origin.
+        JGeometry::TVec3f origin(0.0f, 0.0f, 0.0f);
+        lbl_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &originScreen);
+        JGeometry::TVec3f top(0.0f, 16.0f, 0.0f);
+        lbl_8053AB10->field_0x24->fn_8030C5F0(&top, false, false, &topScreen);
+        f32 margin = (topScreen.y - originScreen.y) +
+                     ((s32)JUTVideo::getManager()->getEfbHeight() - field_0x40[9]->field_0xc);
+        u8 side[4];
+        field_0x10c = 0;
+        for (int i = 0; i < 4; i++) {
+            lbl_8053AB10->field_0x24->fn_8030C5F0(fn_8023E724(i), false, false, &screen);
+            side[i] = 0;
+            if (screen.x > 0.0f && screen.x < (s32)JUTVideo::getManager()->getFbWidth() && screen.y > 0.0f &&
+                screen.y < (s32)JUTVideo::getManager()->getEfbHeight()) {
+                if (screen.y > (s32)JUTVideo::getManager()->getEfbHeight() - margin) {
+                    side[i] = 1;
+                    field_0x10c = 1;
+                } else if (screen.y < margin) {
+                    side[i] = 2;
+                }
+            }
+        }
+        if (field_0x10c == 1) {
+            for (int i = 0; i < 4; i++) {
+                if (side[i] == 2) {
+                    field_0x10c = 0;
+                }
+            }
+        }
+        f32 y;
+        if (field_0x10c == 0) {
+            y = 100.0f;
+        } else {
+            y = 13.0f - field_0x40[9]->field_0xc - 100.0f;
+        }
+        for (int i = 0; i < 12; i++) {
+            field_0x40[i]->fn_80402E08(0.0f, y);
+        }
+        field_0x10b = 1;
+    }
 }
 
 // FIXME: 98.1. Registers differ: the original keeps the bounds value in f1 (the 0.0 default is dead there).
