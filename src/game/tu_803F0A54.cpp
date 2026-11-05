@@ -59,6 +59,12 @@ static const u64 lbl_80479168[2] = {
     0x000050636F6E3032ull, // "Pcon02"
 };
 
+// field_0x8's player panes (the effect positions of fn_803F8FBC); the
+// first table of the unsplit .rodata object lbl_80479238.
+static const u64 lbl_80479238[4] = {
+    'Pplli01', 'Pplli02', 'Pplli03', 'Pplli04',
+};
+
 // field_0xc's player panes for 2, 3 and 4 players (field_0x1ac + 2).
 static const u64 lbl_80479920[3][4] = {
     {0x005032706C693031ull /* "P2pli01" */, 0x005032706C693032ull /* "P2pli02" */, 0, 0},
@@ -123,12 +129,12 @@ static inline void stepCursorTimer(cls_804B0F10* self) {
 #define PANE_CENTRE_X(dst, tag)                                                    \
     do {                                                                           \
         f32 size = field_0xc->search(tag)->getWidth();                             \
-        dst = size * 0.5f + field_0xc->search(tag)->getGlobalBounds().i.x;         \
+        dst = size / 2 + field_0xc->search(tag)->getGlobalBounds().i.x;         \
     } while (0)
 #define PANE_CENTRE_Y(dst, tag)                                                    \
     do {                                                                           \
         f32 size = field_0xc->search(tag)->getHeight();                            \
-        dst = size * 0.5f + field_0xc->search(tag)->getGlobalBounds().i.y;         \
+        dst = size / 2 + field_0xc->search(tag)->getGlobalBounds().i.y;         \
     } while (0)
 
 // Screen coordinates (640 x 480 layout scaled to 280 x 210) of a point on
@@ -141,10 +147,20 @@ static inline f32 toSpriteY(f32 y) {
     return 210.0f * (8.0f + y) / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
 }
 
-// FIXME: 98.08 %. Same length. The rodata base offsets differ (.rodata not
+// The same point scaled to 224 x 168 (the effect layer).
+static inline f32 toEffectX(f32 x) {
+    return 224.0f * x / (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+}
+
+static inline f32 toEffectY(f32 y) {
+    return 168.0f * (8.0f + y) / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
+}
+
+// FIXME: 98.24 %. Same length. The rodata base offsets differ (.rodata not
 // split yet: the tables above sit at other offsets from the file's base), and
 // in the 112-212 and 212+ phases the i / 2 + (i % 2) * 2 index is scheduled
-// differently (the original computes i % 2 first, then i / 2).
+// differently (the original computes i % 2 first, then i / 2). The twin
+// cls_804B0B00::fn_803E1668 (rodata split) shows the same index scheduling.
 void cls_804B0F10::fn_803F0A54() {
     f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335;
     JGeometry::TVec3f pos;
@@ -346,6 +362,88 @@ void cls_804B0F10::fn_803F358C() {
     field_0x58->fn_80436668();
 }
 
+// FIXME: 99.60. Stack layout and float registers only: the original keeps
+// every int-to-float conversion in one 8-byte slot (0x18; frame 0x60), ours
+// uses two (frame 0x70), and the bounce offset / pane x swap f29 and f30.
+// Draws states 7-9 (the game-select menu, field_0xc): the cursor
+// 'Pscuro01' / 'Pscuro02' fades in and out (field_0x1d0[0] over 60 frames;
+// in state 9 it fades to 230 over 30, or is hidden while field_0x1cc is 0)
+// and the chosen entry ('Pstab04' / 'Phanb04' / 'Prub04', field_0x1a8)
+// bounces with field_0x240[0]; then the screen, the player sprites
+// (fn_803F0A54) and lbl_8053AED8's buttons.
+void cls_804B0F10::fn_803F38A4() {
+    f32 alpha;
+    if (field_0x1c4 != 9) {
+        f32 t;
+        if (field_0x1d0[0] < 30) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
+        }
+        alpha = t * field_0x259;
+    } else if (field_0x1cc == 0) {
+        alpha = 0.0f;
+    } else {
+        f32 t;
+        if (field_0x1d0[0] < 15) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
+        }
+        alpha = 230.0f * t;
+    }
+    s32 bounce;
+    if (field_0x1c4 == 8 || (field_0x1c4 == 9 && field_0x1cc != 0 && field_0x240[0] <= 10)) {
+        if (field_0x240[0] < 5) {
+            bounce = field_0x240[0];
+        } else {
+            bounce = 10 - field_0x240[0];
+        }
+    } else {
+        bounce = 0;
+    }
+    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+    if (field_0x1a8 == 0) {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0] + offset);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, field_0xf8 + offset);
+    } else if (field_0x1a8 == 1) {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1] + offset);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
+        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
+        f32 y = field_0xf8 + field_0xc->search('Phanb04')->getBounds()->i.y - top;
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, y);
+    } else {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2] + offset);
+        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
+        f32 y = field_0xf8 + field_0xc->search('Prub04')->getBounds()->i.y - top;
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, y);
+    }
+    field_0xc->search('Pscuro01')->setAlpha(alpha);
+    field_0xc->search('Pscuro02')->setAlpha(alpha);
+    field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
+    lbl_8053AB10->fn_8013B414(&box, true);
+    fn_803F0A54();
+    lbl_8053AED8->fn_80440EE8();
+}
+
 void cls_804B0F10::fn_803F59A0() {
     if (field_0x58->fn_804366B8() != 0) {
         if (field_0x25e == 0) {
@@ -411,6 +509,152 @@ void cls_804B0F10::fn_803F8050() {
         cursorMoved(this);
     }
     stepCursorTimer(this);
+}
+
+// Update state 5 (the GBA connection prompt): field_0x25c 255, or decide
+// (0x1100) without every controller connected, enters state 6
+// (fn_803F2AEC); decide with all connected reads the players' results and
+// enters state 4 (fn_803F2B5C); back (0x200) enters state 0.
+void cls_804B0F10::fn_803F8AE4() {
+    if (field_0x25c == 255) {
+        fn_803F2AEC();
+    } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
+        if (field_0x1c0 == field_0x1ac + 2) {
+            field_0x1a8 = 0;
+            for (s32 i = 0; i < 4; i++) {
+                field_0x1e0[i] = fn_80403414(i);
+                field_0x1f0[i] = fn_804033D4(i);
+                field_0x200[i] = fn_8040336C(i);
+            }
+            for (s32 i = 0; i < 4; i++) {
+                field_0x1b0[i] = 1;
+            }
+            fn_803F2B5C();
+            lbl_8053AF80->fn_80458880(11, -1);
+        } else {
+            fn_803F2AEC();
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
+        (this->*lbl_804B0BDC[0])();
+        lbl_8053AF80->fn_80458880(12, -1);
+    }
+    field_0x1d0[0]++;
+    if (field_0x1d0[0] >= 60) {
+        field_0x1d0[0] = 0;
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    field_0x24a++;
+    if (field_0x24a >= 100) {
+        field_0x24a = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
+}
+
+// Update state 6 (waiting for the GBA link through lbl_8053AEC0;
+// field_0x25c: 0 starting, 1 running, 2 ending into state 5, 3 ending with
+// field_0x350 = 2): all players connected, decide (0x1100) or back (0x200)
+// ends it; then each connected player's pane animation (field_0x210[i],
+// 100-129 looping) plays sound 0x10001 at frame 11 and at frame 36 sound
+// 0x2000E and effects 0xCB / 0xCC at the 'Pplli' pane.
+void cls_804B0F10::fn_803F8FBC() {
+    switch (field_0x25c) {
+    case 0:
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x25c = 1;
+        }
+        break;
+    case 2:
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x25c = 0;
+            field_0x1c8 = field_0x1c4;
+            field_0x1c4 = 5;
+        }
+        break;
+    case 3:
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x25c = 0;
+            field_0x350 = 2;
+        }
+        break;
+    default:
+        if (field_0x1c0 == field_0x1ac + 2) {
+            field_0x25c = 2;
+            lbl_8053AF80->fn_80458880(11, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
+            field_0x25c = 2;
+            lbl_8053AF80->fn_80458880(11, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
+            field_0x25c = 2;
+            lbl_8053AF80->fn_80458880(12, -1);
+        }
+        break;
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    field_0x24a++;
+    if (field_0x24a >= 100) {
+        field_0x24a = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
 }
 
 // FIXME: 99.41 %. Same register swap as fn_803F2580 in the inlined
