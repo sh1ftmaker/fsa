@@ -11,7 +11,7 @@ void cls_8049DAD8::update() {
                 if (fn_8011921C()->field_0x0) {
                     return;
                 }
-                if (!fn_801186B0(fn_8011921C(), field_0x230)) {
+                if (!fn_8011921C()->fn_801186B0(field_0x230)) {
                     return;
                 }
                 field_0x239 = true;

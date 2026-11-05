@@ -51,7 +51,7 @@ void cls_8049E500::update() {
     case 0:
         if (fn_8011921C()->field_0x0 == 0) {
             lbl_8053AF80->fn_80458F9C(60);
-            fn_801186B0(fn_8011921C(), 12);
+            fn_8011921C()->fn_801186B0(12);
         }
         break;
     case 1:
@@ -68,7 +68,7 @@ void cls_8049E500::update() {
     case 3:
         fn_801CD950(&field_0x238, 1640.0f, 0.4f);
         if (fn_80119DD0()->field_0x4 >= 0xB3) {
-            fn_801183BC(fn_8011921C());
+            fn_8011921C()->fn_801183BC();
             fn_80119DD0()->field_0x1 = 1;
         }
         break;
@@ -81,7 +81,7 @@ void cls_8049E500::update() {
         fn_8022FE80(0, field_0x4, mSerial, 1, 0);
         if (fn_803865B8(0)) {
             fn_80388EEC(0);
-            fn_801183BC(fn_8011921C());
+            fn_8011921C()->fn_801183BC();
         }
         break;
     case 6:
@@ -91,7 +91,7 @@ void cls_8049E500::update() {
         fn_8022FE80(0, field_0x4, mSerial, 1, 0);
         if (fn_803865B8(0)) {
             fn_80388EEC(0);
-            fn_801183BC(fn_8011921C());
+            fn_8011921C()->fn_801183BC();
         }
         break;
     }

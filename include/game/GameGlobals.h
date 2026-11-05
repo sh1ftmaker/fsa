@@ -340,14 +340,38 @@ GameRootSub20_801902C0* fn_801902C0(void);
 // static's destructor), fn_80119E5C. Owner: game/tu_80118384.cpp (not
 // written yet). 20+ units call fn_80119998 on it, e.g. game/tu_8012EA00.cpp
 // passes (0x3C, 0, 1, 0, 1, 0x5A, 0).
+class J2DPicture;
 class cls_80119E5C {
 public:
+    // Inline in game/tu_80118384.cpp: zeroes the fields the static needs.
+    cls_80119E5C();
+    // The destructor fn_80119DD0 registers: deletes the picture.
+    ~cls_80119E5C();
+
     /* 0x00 */ u8 field_0x0; // tested by tu_801286C0's update (states 1 and 3)
     /* 0x01 */ u8 field_0x1; // set to 1 by tu_801286C0's update (state 3)
+    /* 0x02 */ u8 field_0x2; // fn_80119998 sets it to field_0x10 > 0
     /* 0x04 */ s32 field_0x4; // compared with 0xB3 by tu_801286C0's update
+    /* 0x08 */ s32 field_0x8; // fn_80119998's first argument
+    /* 0x0C */ s32 field_0xc;
+    /* 0x10 */ s32 field_0x10;
+    /* 0x14 */ f32 field_0x14;
+    /* 0x18 */ f32 field_0x18;
+    /* 0x1C */ s32 field_0x1c; // 0, 1 or 2 selects the effect set / colour step
+    /* 0x20 */ s32 field_0x20;
+    /* 0x24 */ s32 field_0x24; // 2 starts the effects 0x3EC-0x3EF / 0x3F0-0x3F3
+    /* 0x28 */ s32 field_0x28;
+    /* 0x2C */ J2DPicture* field_0x2c; // "kk_black.bti", made by fn_80119D48
     void fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-};
-extern "C" cls_80119E5C* fn_80119DD0();
+    // 0x80119468 (game/tu_80118384.cpp): fn_80119998 with the fade length picked by `mode`.
+    void fn_80119468(s32 g, s32 mode);
+    // 0x80119958: resets every field but the picture.
+    void fn_80119958();
+    // 0x80119D48: makes the picture from "kk_black.bti" when there is none.
+    void fn_80119D48();
+}; // Size: 0x30
+// The function-local static (lbl_804BC504) of 0x80119DD0; game/tu_80118384.cpp.
+cls_80119E5C* fn_80119DD0();
 extern "C" {
 // Owner: game/tu_80134C04.cpp (defined there; not written yet). No arguments; reads
 // lbl_8053AAF8->field_0x7e and tests all four players. Returns 0 or 1 (clrlwi 24).
@@ -1006,6 +1030,17 @@ struct cls_801192AC {
     /* 0x10 */ ActorBase_804A5770** mBegin;
     /* 0x14 */ ActorBase_804A5770** mEnd;
     /* 0x18 */ u8 field_0x18[0x8]; // not yet known
+
+    // 0x80118384 (game/tu_80118384.cpp): fn_801F856C()->fn_801F6884(); field_0x0 = 0.
+    void fn_80118384();
+    // 0x801183BC: field_0x1 = 0, and the same in the fade object fn_80119DD0 returns.
+    void fn_801183BC();
+    // 0x80118454: field_0x1 = 1, and the same in the fade object fn_80119DD0 returns.
+    void fn_80118454();
+    // Sets field_0x0 = 1, field_0x1 = field_0x2 = 0, field_0x4 = value, field_0x8 = 0
+    // unless fn_801F68E0 (after fn_801F856C) returns 0; returns whether it did. Called
+    // with 2 from act_four_sword_demo.
+    bool fn_801186B0(u32 value);
 }; // Size: 0x20
 
 // game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
@@ -1017,14 +1052,6 @@ extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
 // `from` whose actor's mActorId (0x1A0) is `actorId`, or obj->mEnd if none.
 extern "C" ActorBase_804A5770** fn_8011871C(cls_801192AC* obj, ActorBase_804A5770** from,
                                            u32 actorId);
-// game/tu_80118384.cpp. Sets field_0x0 = 1, field_0x1 = field_0x2 = 0,
-// field_0x4 = value, field_0x8 = 0 unless fn_801F68E0 (after fn_801F856C)
-// returns 0; returns whether it did. Called with (fn_8011921C(), 2) from
-// act_four_sword_demo.
-extern "C" bool fn_801186B0(cls_801192AC* obj, u32 value);
-// game/tu_80118384.cpp (not written yet). Called with fn_8011921C() by
-// tu_801286C0's update (cases 3 and 5/7 of its state switch).
-extern "C" void fn_801183BC(cls_801192AC* obj);
 // game/tu_80118384.cpp (0x801184F0, 0x1C0 bytes, not written yet). Called with
 // fn_8011921C() and a flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal);
 // the flag is tested as a byte.
