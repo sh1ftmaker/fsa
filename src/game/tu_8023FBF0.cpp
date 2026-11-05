@@ -9,6 +9,7 @@
 #include "game/PlayerBit.h"
 #include "game/PlayerFlags.h"
 #include "game/StageFlag.h"
+#include "game/act/act_small_key.h"
 #include "game/ViewLayer.h"
 #include "game/cls_804A71A8.h"
 #include "game/cls_804AE9B0.h"
@@ -121,6 +122,36 @@ static inline void resetTrail(Player_804A6F38* player) {
             player->field_0x284[i] = false;
         }
     }
+}
+
+// Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
+// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
+// game/PlayerBit.h) with no partner asking for state 0 gets
+// state 1 instead; with field_0x434 set, state 0 becomes 2.
+// fn_80251AEC's body: fn_80242624 and fn_8024762C (before it) inline it, so it is a file
+// inline with fn_80251AEC as its out-of-line copy.
+static inline bool requestState(Player_804A6F38* player, s32 state) {
+    if (!player->fn_80251BFC(state)) {
+        return false;
+    }
+    if (!isPlayerBitSet(lbl_8053AAF8, player->field_0x4) && player->field_0xd60 < 0 && state == 0) {
+        player->field_0x1244 = 1;
+    } else if (player->field_0x434 && state == 0) {
+        if (player->field_0x1240 == 2) {
+            return false;
+        }
+        player->field_0x1244 = 2;
+    } else {
+        player->field_0x1244 = state;
+    }
+    player->field_0x124c = true;
+    if (state != 0 && state != 2 && state != 3) {
+        player->field_0x124d = true;
+    }
+    if (player->field_0xd60 < 0 && player->field_0xcfe == true && player->field_0x1244 != 0) {
+        player->field_0xcfe = false;
+    }
+    return true;
 }
 
 // Whether the player is in, or about to enter, state 0x1B (the current or
@@ -555,6 +586,22 @@ s32 Player_804A6F38::fn_802415CC() {
     return field_0xc14;
 }
 
+bool Player_804A6F38::fn_80241618(s32 item, s32 level) {
+    field_0xc10 = item;
+    if (field_0xc10 == 0) {
+        field_0xc14 = 0;
+    } else {
+        fn_8024157C(level);
+    }
+    if (field_0xc10 != 0) {
+        lbl_8053AED0->field_0x255 |= (u8)(1 << field_0x4);
+        if (!lbl_8053AAF8->field_0x7f && field_0x464 < 0x3c) {
+            field_0x464 = 0x3c;
+        }
+    }
+    return true;
+}
+
 s32 Player_804A6F38::fn_802416C4() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -659,6 +706,41 @@ bool Player_804A6F38::fn_80241DD0(s32 layer, const JGeometry::TVec3f* pos) {
 
 bool Player_804A6F38::fn_80241E28(s32 layer, const JGeometry::TVec3f* pos) {
     return field_0xbec->fn_8030B110(layer, *pos);
+}
+
+// Runs fn_802C1778 on the key the player holds (fn_8025F500 with a 'KEY0'
+// at field_0xd68), then fn_802C1674 and fn_802C1778 on every 'KEY0' actor;
+// then field_0x3b0 = 3.
+void Player_804A6F38::fn_80242560() {
+    if (fn_8025F500() && field_0xd6c == ACTOR_KEY0) {
+        ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+        if (held != NULL) {
+            static_cast<SmallKey_804A8CD8*>(held)->fn_802C1778();
+        }
+    }
+    s32 serial = -1;
+    while (true) {
+        serial = getActorManager_801F856C()->fn_801F78F4(ACTOR_KEY0, serial);
+        if (serial < 0) {
+            break;
+        }
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(actor);
+        if (key != NULL) {
+            key->fn_802C1674();
+            key->fn_802C1778();
+        }
+    }
+    field_0x3b0 = 3;
+}
+
+// Requests state 0x4D with pos as its target (field_0x374).
+bool Player_804A6F38::fn_80242624(JGeometry::TVec3f pos) {
+    if (requestState(this, 0x4d)) {
+        field_0x374.set(pos);
+        return true;
+    }
+    return false;
 }
 
 bool Player_804A6F38::fn_802426E0(s32 serial) {
@@ -1022,36 +1104,6 @@ bool Player_804A6F38::fn_80247594(s32 arg) {
     }
     field_0x1202 = true;
     return false;
-}
-
-// Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
-// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
-// game/PlayerBit.h) with no partner asking for state 0 gets
-// state 1 instead; with field_0x434 set, state 0 becomes 2.
-// fn_80251AEC's body: fn_8024762C (before it) inlines it, so it is a file
-// inline with fn_80251AEC as its out-of-line copy.
-static inline bool requestState(Player_804A6F38* player, s32 state) {
-    if (!player->fn_80251BFC(state)) {
-        return false;
-    }
-    if (!isPlayerBitSet(lbl_8053AAF8, player->field_0x4) && player->field_0xd60 < 0 && state == 0) {
-        player->field_0x1244 = 1;
-    } else if (player->field_0x434 && state == 0) {
-        if (player->field_0x1240 == 2) {
-            return false;
-        }
-        player->field_0x1244 = 2;
-    } else {
-        player->field_0x1244 = state;
-    }
-    player->field_0x124c = true;
-    if (state != 0 && state != 2 && state != 3) {
-        player->field_0x124d = true;
-    }
-    if (player->field_0xd60 < 0 && player->field_0xcfe == true && player->field_0x1244 != 0) {
-        player->field_0xcfe = false;
-    }
-    return true;
 }
 
 // The leader's field_0xbc0 (fn_8023BEA8) for a follower, else its own.

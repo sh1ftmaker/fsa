@@ -127,6 +127,8 @@ public:
     bool fn_80241E28(s32 a, const JGeometry::TVec3f* b); // via fn_8022BC38
     void fn_80241E64(); // via fn_8022BD70
     void fn_80242560(); // via fn_80231424
+    // Called by tu_8022AD64's fn_802314D8 with a TVec3f copied to its stack.
+    bool fn_80242624(JGeometry::TVec3f pos);
     bool fn_80242704(s32 arg); // via fn_8023162C
     bool fn_802466B4(); // via fn_8022C3AC
     u32 fn_80246B10(u32 arg); // via fn_8022C52C; tested with cmplwi by fn_802870C8

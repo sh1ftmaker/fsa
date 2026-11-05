@@ -19,6 +19,11 @@ public:
     // 0x802C1970 (act_small_key's range): the key's own check after the
     // collision list finds nothing (layer, pos); returns 0 or 1.
     bool fn_802C1970(s32 layer, const JGeometry::TVec3f* pos);
+    // 0x802C1674 / 0x802C1778 (act_small_key's range, not written yet): no
+    // arguments besides the key; Player_804A6F38::fn_80242560 calls them on
+    // every 'KEY0' actor (fn_802C1778 also on the key a player holds).
+    void fn_802C1674();
+    void fn_802C1778();
     // 0x802C2BD0 (act_small_key's range): takes the key in r3, sets byte
     // 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
     // fn_802D6C10. Called by act_invisible_npc_wall_tomi (0x803764BC).
