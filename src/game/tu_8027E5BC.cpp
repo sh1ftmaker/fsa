@@ -1,8 +1,11 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
+#include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "game/ViewLayer.h"
+#include "game/act/act_cannon.h"
 
 void Player_804A6F38::fn_8027EE84() {
     field_0x3f8++;
@@ -16,6 +19,24 @@ void Player_804A6F38::fn_8027F16C() {
     if (!fn_80240808() && !fn_80245FEC() && field_0x1201 != 1) {
         fn_802416FC(0x180);
     }
+}
+
+void Player_804A6F38::fn_802810E4() {
+    field_0x458 = 0;
+    fn_8013CC50(field_0x3b4, &mPos, 0x289, 0, 1, NULL, NULL, true, 1.0f);
+    if (field_0x1350 == NULL) {
+        field_0x1350 = fn_8013CC50(field_0x3b4, &mPos, 0x28a, 0, 1, NULL, NULL, true, 1.0f);
+    }
+    if (!fn_80240808()) {
+        fn_8024E3D8();
+    }
+    field_0x46c = 300;
+    field_0x484 = 0;
+    field_0x470 = 0;
+    field_0x474.x = 0.0f;
+    field_0x474.y = 0.0f;
+    field_0x474.z = 0.0f;
+    fn_8024F0E8(0x2003B);
 }
 
 void Player_804A6F38::fn_80281E84() {
@@ -44,6 +65,40 @@ void Player_804A6F38::fn_8028286C() {
     field_0x458 = 0;
     field_0x394 = 0;
     field_0xcea = 0;
+}
+
+void Player_804A6F38::fn_802828A8() {
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->fn_801F666C(field_0xd8c));
+    if (cannon != NULL) {
+        if (viewLayerFlag(field_0x3b4)) {
+            field_0x374.set(0.0f, -cannon->fn_801080B8(), 0.0f);
+        } else {
+            field_0x374.set(0.0f, 0.0f, cannon->fn_801080B8());
+        }
+    }
+    field_0xd8c = -1;
+    field_0xd90 = 0;
+}
+
+void Player_804A6F38::fn_80282958() {
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->fn_801F666C(field_0xd8c));
+    if (cannon != NULL) {
+        mPos.x = cannon->mPos.x;
+        mPos.y = cannon->mPos.y;
+        mPos.z = cannon->mPos.z;
+        mPos.y -= 16.0f;
+    }
+    mPos.z = 0.0f;
+    if (fn_80245DB0() || field_0xd90 == 1) {
+        field_0x124d = 0;
+        if (fn_80251AEC(0x4d)) {
+            if (cannon != NULL) {
+                cannon->fn_80107360();
+            }
+            fn_802685D4();
+        }
+    }
+    fn_8024BAEC();
 }
 
 void Player_804A6F38::fn_80282A24() {

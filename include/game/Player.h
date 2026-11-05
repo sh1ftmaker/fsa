@@ -308,6 +308,10 @@ public:
     void fn_8028447C();
     void fn_80248604();
     void fn_8024D134();
+    void fn_8024E3D8();
+    void fn_802810E4();
+    void fn_802828A8();
+    void fn_80282958();
     void fn_8027769C(); // called by tu_80285E58
     void fn_80277E18(); // called by tu_80285E58
     void fn_8027AA10(); // called by tu_80285E58
@@ -456,7 +460,7 @@ public:
     /* 0x0464 */ s32 field_0x464;
     /* 0x0468 */ s32 field_0x468;
     /* 0x046C */ s32 field_0x46c;
-    /* 0x0470 */ u8 field_0x470[0x474 - 0x470];
+    /* 0x0470 */ s32 field_0x470;
     /* 0x0474 */ JGeometry::TVec3f field_0x474;
     /* 0x0480 */ u8 field_0x480[0x484 - 0x480];
     /* 0x0484 */ u8 field_0x484;
@@ -693,7 +697,9 @@ public:
     /* 0x12BC */ JPABaseEmitter* field_0x12bc; // deleted with deleteEmitter() (fn_8027B5F0)
     /* 0x12C0 */ u8 field_0x12c0[0x1308 - 0x12C0];
     /* 0x1308 */ JPABaseEmitter* field_0x1308; // deleted with deleteEmitter() (fn_802708E8)
-    /* 0x130C */ u8 field_0x130c[0x1374 - 0x130C];
+    /* 0x130C */ u8 field_0x130c[0x1350 - 0x130C];
+    /* 0x1350 */ JPABaseEmitter* field_0x1350;
+    /* 0x1354 */ u8 field_0x1354[0x1374 - 0x1354];
     /* 0x1374 */ JPABaseEmitter* field_0x1374;
     /* 0x1378 */ JPABaseEmitter* field_0x1378;
     /* 0x137C */ JPABaseEmitter* field_0x137c;
