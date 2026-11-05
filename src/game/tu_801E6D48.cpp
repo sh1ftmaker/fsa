@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_801E6D48.h"
+#include "game/tu_801E9AFC.h"
 
 cls_804A5418::~cls_804A5418() {}
 
@@ -15,7 +16,7 @@ void cls_804A5418::fn_801E6DE8() {
         f32 dx = fn_80210B34(field_0x98);
         f32 dy = fn_80210AF8(field_0x98);
         JGeometry::TVec2f pos(mPos.x + dx, mPos.y + dy);
-        fn_801EA108(fn_801E9AFC(), &pos, field_0x2b0, lbl_8053AC38);
+        fn_801E9AFC()->fn_801EA108(&pos, field_0x2b0, lbl_8053AC38);
         break;
     }
     }
