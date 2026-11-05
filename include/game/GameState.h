@@ -173,7 +173,10 @@ public:
     /* 0x237 */ u8 field_0x237; // 24 units
     /* 0x238 */ u8 field_0x238; // 0xFF after fn_8040384C; fn_803FFAA8
     /* 0x239 */ u8 field_0x239; // bit per player; cls_804AC388::update ORs it
-    /* 0x23A */ u8 field_0x23a[0x23D - 0x23A];
+    /* 0x23A */ u8 field_0x23a[0x23C - 0x23A];
+    // SHARED-EDIT (tu_803E1668 fn_803ED604): input slot 1 + this is polled by
+    // the menu's update functions (fn_80309C4C / fn_80309A9C).
+    /* 0x23C */ u8 field_0x23c;
     // SHARED-EDIT (tu_803F0A54): copied to cls_804B0F10::field_0x1ac by its
     // constructor; input slot 2 + this is polled by its states (fn_803F8050).
     /* 0x23D */ u8 field_0x23d;
