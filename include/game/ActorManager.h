@@ -82,6 +82,10 @@ public:
     // and points mSoundPos (JAUSoundObject 0x14) at the copy.
     void fn_80457840(JGeometry::TVec3f* pos);
 
+    // Inline, called out of line by the spawner (0x801FF738, game/tu_801F9484.cpp):
+    // field_0x31 = 1, as the constructor does.
+    void setField_0x31() { field_0x31 = 1; }
+
     /* 0x30 */ u8 field_0x30; // cleared by the constructor; not read by any caller yet
     /* 0x31 */ u8 field_0x31; // 1 in the constructor; cleared by fn_80456120
     /* 0x32 */ u8 field_0x32[2]; // not read by any caller yet

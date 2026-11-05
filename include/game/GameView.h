@@ -60,8 +60,9 @@ public:
     // 1 unit. field_0x14 == field_0xc && field_0x18 == field_0x10.
     bool fn_802D39CC();
     // 1 unit (the spawner, into ActorBase_804A5770::field_0x170).
-    // field_0x60[field_0x18][field_0x14].
-    u8 fn_802D39FC();
+    // field_0x60[field_0x18][field_0x14]. s32: the spawner passes the result
+    // on to its s32 setter without a clrlwi.
+    s32 fn_802D39FC();
     // 1 unit / 1 call. sprintf of "d_map%s_%d%d_mmm_2_%d.szs" (lbl_8046E7E8)
     // into field_0x1321a for the current screen and `layer`; returns it, or
     // NULL off the grid (0x802D8210).
