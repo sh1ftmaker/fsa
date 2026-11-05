@@ -1199,6 +1199,117 @@ void Player_804A6F38::fn_802948C0() {
     stepTransitionAnim();
 }
 
+void Player_804A6F38::fn_80294ADC() {
+    if (field_0x1248 == 0x4A || field_0x1248 == 0x4B) {
+        field_0xceb = 1;
+        field_0xcec = 0;
+    } else if (field_0x1248 == 0xB) {
+        field_0xceb = 0;
+        field_0xcec = 1;
+    } else {
+        field_0xceb = 0;
+        field_0xcec = 0;
+    }
+    field_0x124d = 1;
+    field_0x458 = 0;
+    mPos.z = 0.0f;
+    field_0x398.set(mPos);
+    field_0x398.z = 0.0f;
+    field_0x3a4.set(mPos);
+    field_0x3a4.z = 0.0f;
+    if (field_0xcf4 == 0x15) {
+        if (viewLayerFlag(field_0x3b4)) {
+            if (field_0x3b4 < 8) {
+                field_0x3a4 += JGeometry::TVec3f(0.0f, -1.25f, 0.0f);
+                field_0x3dc = 3;
+                field_0x3e8 = 3;
+                fn_8024F0E8(0x20018);
+            } else {
+                field_0x3a4 += JGeometry::TVec3f(0.0f, 1.25f, 0.0f);
+                field_0x3dc = 2;
+                field_0x3e8 = 2;
+                fn_8024F0E8(0x2001A);
+            }
+        } else if (field_0x3b4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+            fn_8024F0E8(0x20018);
+        } else if (field_0xce4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+            fn_8024F0E8(0x2001A);
+        } else {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+            fn_8024F0E8(0x20018);
+        }
+    } else if (field_0xcf4 == 0x23) {
+        if (viewLayerFlag(field_0x3b4)) {
+            if (field_0x3b4 < 8) {
+                field_0x3a4 += JGeometry::TVec3f(0.0f, 1.25f, 0.0f);
+                field_0x3dc = 2;
+                field_0x3e8 = 2;
+                fn_8024F0E8(0x2001A);
+            } else {
+                field_0x3a4 += JGeometry::TVec3f(0.0f, -1.25f, 0.0f);
+                field_0x3dc = 3;
+                field_0x3e8 = 3;
+                fn_8024F0E8(0x20018);
+            }
+        } else if (field_0x3b4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+            fn_8024F0E8(0x2001A);
+        } else if (field_0xce4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+            fn_8024F0E8(0x20018);
+        } else {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+            fn_8024F0E8(0x2001A);
+        }
+    } else if (field_0xcf4 == 0x17) {
+        field_0x3a4 += JGeometry::TVec3f(20.0f, 0.0f, 0.0f);
+        field_0x3dc = 0;
+        field_0x3e8 = 0;
+        if (field_0xceb == 0) {
+            fn_8024F0E8(0x2001A);
+        }
+    } else if (field_0xcf4 == 0x18) {
+        field_0x3a4 += JGeometry::TVec3f(-20.0f, 0.0f, 0.0f);
+        field_0x3dc = 1;
+        field_0x3e8 = 1;
+        if (field_0xceb == 0) {
+            fn_8024F0E8(0x2001A);
+        }
+    } else if (field_0xcf4 == 1 || field_0xcf4 == 2) {
+        field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+        if (field_0xceb == 0) {
+            fn_8024F0E8(0x2001A);
+        }
+    } else {
+        field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+        field_0x3dc = 3;
+        field_0x3e8 = 3;
+        if (field_0xceb == 0) {
+            fn_8024F0E8(0x20018);
+        }
+    }
+    if (field_0x3b4 >= 8 && field_0xce4 < 8) {
+        fn_8024EFA0(false);
+    }
+    field_0xca0 = 0xFF;
+}
+
 void Player_804A6F38::fn_8029513C() {
     if (field_0x3fc < 60) {
         field_0x3fc++;
