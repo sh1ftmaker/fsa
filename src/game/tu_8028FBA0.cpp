@@ -28,13 +28,28 @@ inline void Player_804A6F38::spinFacing() {
 }
 }
 
+// The walk cycle of the GBA-screen arrivals (fn_80292198, fn_802924AC): 0x3F8
+// counts 0-23, the frame 0x3F9 is a quarter of it.
+inline void Player_804A6F38::stepWalkCycle() {
+    field_0x3f8++;
+    if (field_0x3f8 >= 24) {
+        field_0x3f8 = 0;
+    }
+    field_0x3f9 = field_0x3f8 / 6;
+}
+
+// The held actor's position: mPos raised 16 (fn_80292820, raiseHeldActor).
+inline void Player_804A6F38::setHeldPos() {
+    field_0x2f4.set(mPos);
+    field_0x2f4.z += 16.0f;
+}
+
 // Shared by the enters of states 0x25 and 0x23 (fn_80292944, fn_802932BC),
 // which inline the same block: 0x2F4 = mPos raised 16, and while the player
 // holds an actor (fn_8025F684, serial field_0xd68) that actor is warped there
 // on the player's layer. The GameView fetch's result is unused in both.
 inline void Player_804A6F38::raiseHeldActor() {
-    field_0x2f4.set(mPos);
-    field_0x2f4.z += 16.0f;
+    setHeldPos();
     if (fn_8025F684()) {
         s32 serial = field_0xd68;
         if (serial >= 0) {
@@ -393,6 +408,35 @@ void Player_804A6F38::fn_80292124() {
     }
 }
 
+void Player_804A6F38::fn_80292198() {
+    stepWalkCycle();
+    if (field_0x3fc == 2) {
+        fn_80241454(1);
+    }
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+    }
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    if (field_0x3fc < 60) {
+        return;
+    }
+    if (field_0x3fb == 0) {
+        if (field_0x400 != 0) {
+            field_0x400--;
+        } else {
+            field_0x124d = 0;
+            if (fn_80251AEC(0x4A) && field_0xce4 >= 8) {
+                fn_803037D4(field_0x4, 0xD);
+            }
+        }
+    } else {
+        field_0x3fb = 0;
+        field_0x400 = 8;
+    }
+}
+
 void Player_804A6F38::fn_802922D0() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -410,6 +454,28 @@ void Player_804A6F38::fn_80292454() {
     }
 }
 
+void Player_804A6F38::fn_802924AC() {
+    stepWalkCycle();
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+    }
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    if (field_0x3fc < 60) {
+        return;
+    }
+    if (field_0x3fc >= 92) {
+        field_0x124d = 0;
+        if (fn_80251AEC(0x4B) && field_0xce4 >= 8) {
+            fn_803037D4(field_0x4, 0xD);
+        }
+    } else if (field_0x3fc < 92) { // the original tests it again (a dead bge)
+        mPos.y += 1.0;
+        field_0x3fc++;
+    }
+}
+
 void Player_804A6F38::fn_802925C4() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -423,6 +489,31 @@ void Player_804A6F38::fn_802927B0() {
     field_0x3fb = 0;
     fn_8024F0E8(0x20060);
     fn_8013CC50(field_0x3b4, &mPos, 0x547, -1, 0, NULL, NULL, true, 1.0f);
+}
+
+void Player_804A6F38::fn_80292820() {
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+    }
+    if (field_0xce4 == field_0xce0 || fn_80240670() || !fn_80303750(field_0x4)) {
+        if (field_0x3fc >= 60) {
+            field_0x124d = 0;
+            bool requested;
+            if (fn_8024189C() <= 0) {
+                requested = fn_80251AEC(0x33);
+            } else if (field_0xcf0 == 1) {
+                requested = fn_80251AEC(0x3E);
+            } else if (fn_8025F684()) {
+                requested = fn_80251AEC(0x12);
+            } else {
+                requested = fn_80251AEC(0);
+            }
+            if (requested) {
+                fn_803037D4(field_0x4, 0xD);
+            }
+        }
+    }
+    setHeldPos();
 }
 
 void Player_804A6F38::fn_80292944() {
@@ -518,6 +609,37 @@ void Player_804A6F38::fn_80295334() {
     field_0x3dc = 2;
     field_0x3e8 = 2;
     mPos.z = 0.0f;
+}
+
+void Player_804A6F38::fn_802953A0() {
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+        return;
+    }
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    if (field_0x3fc < 60) {
+        return;
+    }
+    field_0x344.z -= 0.25f;
+    if (field_0x344.z < -4.0f) {
+        field_0x344.z = -4.0f;
+    }
+    mPos += field_0x344;
+    if (mPos.z < 0.0f) {
+        mPos.z = 0.0f;
+        field_0x124d = 0;
+        bool requested;
+        if (fn_8024189C() <= 0) {
+            requested = fn_80251AEC(0x33);
+        } else {
+            requested = fn_80251AEC(0);
+        }
+        if (requested) {
+            fn_803037D4(field_0x4, 0xD);
+        }
+    }
 }
 
 // FIXME: 99.4 %. Instructions identical; the 0.0f literal the original

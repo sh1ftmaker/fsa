@@ -408,6 +408,9 @@ public:
     void raiseHeldActor();
     // tu_8028FBA0 inline (the updates of 0x2A and 0x2B): facing turns with the counter 0x3FC.
     void spinFacing();
+    // tu_8028FBA0 inlines: the 0x3F8/0x3F9 walk cycle; field_0x2f4 = mPos raised 16.
+    void stepWalkCycle();
+    void setHeldPos();
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
     void fn_80242940();
