@@ -61,3 +61,63 @@ object's class?).
 - GameState.h cls_804AF86C::fn_80402628(s16, u8, u8) -> bool.
 - tu_80379F84.h SaveRow_8050EC80: u64 field_0x8 (row 0: card serial).
 - symbols.txt: renamed the placeholders above to their mangled names.
+
+## Session 2026-11-05 (structure-first trial: constructor)
+
+Baseline: `total: 8234 / 11557 functions, 1516064 / 4442032 bytes of code (34.13 %)`
+After: same (no new 100 % function; the constructor is structurally close).
+
+- `__ct__19FileSelect_804AFF60Fv` written whole: 98.78 %, try.py
+  `missing/extra + reloc-name`. Missing only the save-data setup (16
+  instructions: `for i < 3: fn_803B950C(lbl_8050EC80 + 0x20 + i*0xC8,
+  lbl_8050EC80 + 0x280 + i*0x9C4)` and field_0x5c / field_0x60), which the
+  SaveRow_8050EC80[] view can't express; registers around it shift (r7/r5,
+  r28/r29). String offsets are 0x58 short until fn_803BE3D8 / fn_803CE4CC
+  (whose strings come first) are written.
+- Proved: field_0x88[3] / field_0x94[3] (Padhu bounds x / y), 0xE0 / 0xE4
+  TColor (white / black of 'Pcopb01'; default TColor ctor inlined, the
+  arrays via __construct_array), field_0x118[26] / field_0x132[81] /
+  field_0x183[19] / field_0x196[9] / field_0x19f[4] (pane alphas),
+  field_0xb8[8] = fn_803B8CAC(0, i) (bool), field_0xa4 = GameState 0x23B
+  (written as field_0x23a[1]: tu_804023D0 writes the pair as an array).
+- .rodata 0x804765D0-0x80476F20 now fully split in symbols.txt and written as
+  source tables (u64 tag tables, s32[8] msg ids at 0x730, s32[6] at 0x818;
+  strings split as data:string). .rodata 98.12 %.
+- gate --base matching: check_byte_arrays trips on the 81- and 19-entry tag
+  tables (lbl_80476618, lbl_804768A0) and the file's total. They are pane tag
+  tables the asm indexes (u64 'Pabb10'.. etc.); needs a blobs.txt `array`
+  line from the coordinator (not added by the worker).
+
+### lbl_8050EC80 (save data) proposal, NOT applied
+Real layout (constructor, fn_803B950C, fn_803B9A94 sizes 0x258 / 0x1D4C):
+{u8[8]; u64 serial @8; s32 current @0x10; pad to 0x20; SaveRow rows[3] (0xC8,
+@0x20); pad; u8 blocks[3][0x9C4] @0x280}, size 0x21E0; old row fields shift
+by -0x20 (0x28 -> 0x8 etc.); first method fn_803B93E8 (this = lbl_8050EC80).
+Tried it with every user converted (tu_803944C8, tu_80379F84, tu_8043A0E8,
+tu_801DE714, act_fairy, act_rank_display, tu_80215A94, act_treasure_chest):
+all still match except tu_801DE714 __dt__12cls_804A51E4Fv (100 -> 98.6:
+`SaveRow& row = lbl_8050EC80.mRows[cur]` adds `addi r3, r3, 0x20` where the
+original folds 0x20 into the field offset; direct member access gives lwzx/
+stwx, 89.7; a SaveData* local and a reference-returning inline didn't help)
+and act_fairy init (97.86 -> 97.39). Reverted.
+
+### Literal order (.sdata2)
+Target pool: 0, -200, 200, (pad), dbl 0x4330/80000000, dbl 0x4330/0, 1, 360,
+0.5, 270, 13, 10, 12, -300, 600, ... fn_803BC6F0 uses only 1.0 (first in its
+code), 0.0 and the two doubles; -200 / 200 are used only by fn_803C24BC,
+fn_803CD75C, fn_803CE9EC, fn_803CF504 (200 only by fn_803CE9EC). So writing
+fn_803BC6F0 alone won't put -200 / 200 ahead of its doubles: something
+compiled before it uses 0, -200, 200 in that order. An in-class inline
+(`field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f)`) used from fn_803CE9EC
+did NOT move them (literals are pooled at use, not at parse). Open question.
+
+### Next
+- blobs.txt array line for the two tag tables (coordinator).
+- fn_803BC6F0 (956 instr, TColor lerps of field_0xe8/0xfc by alpha), then
+  fn_803BE3D8 / fn_803CE4CC for the string offsets.
+
+### SHARED-EDITS
+- GameGlobals.h: `bool fn_803B8CAC(s32 file, s32 index)` (extern "C", owner
+  tu_803B8C74; returns li 1 / li 0, the caller clrlwi's).
+- symbols.txt: lbl_804765D0 (0x368) and lbl_804769D0 (0x550) split into the
+  tables / strings above (placeholders only).

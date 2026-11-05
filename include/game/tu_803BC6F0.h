@@ -116,7 +116,10 @@ public:
     /* 0x07C */ u32 field_0x7c; // message shown
     /* 0x080 */ u32 field_0x80; // message to show
     /* 0x084 */ u32 field_0x84;
-    /* 0x088 */ u8 field_0x88[0xA0 - 0x88];
+    // Bounds of the 'Padhu01' (mScreenHuuin), 'Padhu02' and 'Padhu03'
+    // (mScreen) panes, read by the constructor.
+    /* 0x088 */ f32 field_0x88[3]; // getBounds()->i.x
+    /* 0x094 */ f32 field_0x94[3]; // getBounds()->i.y
     /* 0x0A0 */ s32 field_0xa0;
     /* 0x0A4 */ s32 field_0xa4; // lbl_80529DEC.field_0x23b
     /* 0x0A8 */ s32 field_0xa8;
@@ -128,10 +131,13 @@ public:
     /* 0x0DA */ s16 field_0xda;
     /* 0x0DC */ s16 field_0xdc;
     /* 0x0DE */ s16 field_0xde; // 'kk_' sprite fade frame
-    /* 0x0E0 */ s32 field_0xe0;
-    /* 0x0E4 */ s32 field_0xe4;
-    /* 0x0E8 */ JUtility::TColor field_0xe8[5];
-    /* 0x0FC */ JUtility::TColor field_0xfc[5];
+    // Colours of mScreenHuuin's pictures (J2DPicture getWhite / getBlack):
+    // 'Pcopb01' in 0xE0 / 0xE4; 'Pf1t01', 'Pf1tb01', 'Pf1tbb01', 'Pf1b01'
+    // and 'Pf1bb01' in field_0xe8 / field_0xfc.
+    /* 0x0E0 */ JUtility::TColor field_0xe0; // white
+    /* 0x0E4 */ JUtility::TColor field_0xe4; // black
+    /* 0x0E8 */ JUtility::TColor field_0xe8[5]; // white
+    /* 0x0FC */ JUtility::TColor field_0xfc[5]; // black
     /* 0x110 */ u8 mState;
     /* 0x111 */ u8 field_0x111; // last state seen by fn_803CE9EC
     /* 0x112 */ u8 mPrevState;
@@ -140,9 +146,15 @@ public:
     /* 0x115 */ u8 field_0x115;
     /* 0x116 */ u8 field_0x116; // message window: 0 idle, 1 opening, 2 open, 3 closing
     /* 0x117 */ u8 field_0x117;
-    /* 0x118 */ u8 field_0x118[0x196 - 0x118];
+    // The panes' initial alphas (J2DPane::mAlpha), read by the constructor:
+    // 'Pf1t01', 'Pf1tb01'..'05', 'Pf1tbb01'..'07', 'Tf1fir', 'Tf1lv',
+    // 'Tf1date', 'Pf1b01'..'05', 'Pf1bb01'..'05' of mScreenHuuin.
+    /* 0x118 */ u8 field_0x118[26];
+    /* 0x132 */ u8 field_0x132[81]; // mScreen, lbl_80476618
+    /* 0x183 */ u8 field_0x183[19]; // mScreenHuuin, lbl_804768A0
     /* 0x196 */ u8 field_0x196[9]; // alpha of the 'Pdb' / 'Tdb01' panes (fn_803CE11C)
-    /* 0x19F */ u8 field_0x19f[0x1A3 - 0x19F];
+    /* 0x19F */ u8 field_0x19f[4]; // mScreenHuuin 'Pbacb01'..'04'
+
     /* 0x1A3 */ u8 field_0x1a3;
     /* 0x1A4 */ u8 field_0x1a4; // 'kk_' sprite fade: 0 idle, 1 in, 2 out
     /* 0x1A5 */ u8 field_0x1a5;

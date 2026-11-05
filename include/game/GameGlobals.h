@@ -1375,6 +1375,13 @@ public:
 }; // Size: 0x2020
 extern cls_803B9940 lbl_8051C1A0;
 
+extern "C" {
+// Owner: game/tu_803B8C74.cpp (not written yet). Tests flag `index` (0..7)
+// of save file `file` in lbl_8050EC80; returns 1 or 0. FileSelect_804AFF60's
+// constructor reads flags 0..7 of file 0.
+bool fn_803B8CAC(s32 file, s32 index);
+}
+
 // Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
 // lbl_8053ACA8), owner game/tu_802B1558.cpp. The first three read bytes of
 // the save region in lbl_80529DEC (see GameState_804B0FE0::SaveRegion); fn_802B1D98
