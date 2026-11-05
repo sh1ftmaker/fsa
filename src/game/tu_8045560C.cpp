@@ -9,35 +9,7 @@
 #include "game/Camera.h"
 #include "game/GameState.h"
 #include "JSystem/J2D/J2DPicture.h"
-
-class cls_804B1E1C {
-public:
-    cls_804B1E1C();
-    virtual ~cls_804B1E1C();
-
-    void fn_8045560C();
-    void fn_804556A4();
-    void fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TColor color);
-
-    // One queued sprite (constructor fn_80455A74 sets the colour to -1).
-    struct Sprite {
-        Sprite() : color(0xFFFFFFFF) {}
-
-        /* 0x00 */ f32 x;
-        /* 0x04 */ f32 y;
-        /* 0x08 */ f32 size;
-        /* 0x0C */ JUtility::TColor color;
-        /* 0x10 */ u8 digit;
-        /* 0x11 */ u8 active;
-    }; // Size: 0x14
-
-    /* 0x00 */ // vtable
-    /* 0x04 */ J2DPicture* mDigits[11];
-    /* 0x30 */ Sprite mSprites[128];
-}; // Size: 0xA30
-
-// act_score also uses lbl_8053AF50: move the class and this extern to a header when act_score is written.
-extern cls_804B1E1C* lbl_8053AF50;
+#include "game/cls_804B1E1C.h"
 
 static const char* lbl_804B1DF0[11] = {
     "kk_rupyNum_00.bti", "kk_rupyNum_01.bti", "kk_rupyNum_02.bti",

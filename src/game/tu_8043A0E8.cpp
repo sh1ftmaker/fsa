@@ -12,6 +12,8 @@
 #include "game/tu_80447618.h"
 #include "game/tu_80448940.h"
 #include "game/tu_8044998C.h"
+#include "game/act/tu_8044C028.h"
+#include "game/cls_804B1E1C.h"
 #include "game/tu_80379F84.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DScreen.h"
@@ -21,6 +23,7 @@
 #include "game/Player.h"
 #include <string.h>
 
+void fn_804408F0(JGeometry::TVec3f* pos);
 void fn_80440928(f32 x, f32 y);
 
 void fn_8043A0E8(bool force) {
@@ -417,6 +420,80 @@ void cls_804B1920::fn_8043D874(s32 id, s32 arg1, u32 arg2) {
         field_0x290->fn_8041E708(id, arg1, arg2);
     } else {
         field_0x294->fn_80425234(id, arg1, arg2);
+    }
+}
+
+// FIXME: 99.7. Registers only: the second loop counts in r28 (ours r29, the first loop's).
+void cls_804B1920::fn_8043D8B4() {
+    int i;
+    if (lbl_8053AAF8->field_0x7e == 0) {
+        for (i = 0; i < 4; i++) {
+            if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+                s32 player = fn_8022EA0C(i);
+                if (fn_8023DE58(player) < 8) {
+                    JGeometry::TVec3f pos = *fn_8023E724(player);
+                    fn_804408F0(&pos);
+                }
+                lbl_80529DEC.field_0xc8[i] = fn_80237810(i);
+                lbl_80529DEC.field_0xf8[i] = fn_802373EC(i);
+            }
+        }
+    } else {
+        for (i = 0; i < 4; i++) {
+            if (fn_8023F264(i) && fn_8023DE58(i) < 8) {
+                JGeometry::TVec3f pos = *fn_8023E724(i);
+                fn_804408F0(&pos);
+            }
+            if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+                lbl_80529DEC.field_0xc8[i] = fn_80237810(i);
+                lbl_80529DEC.field_0xf8[i] = fn_802373EC(i);
+            }
+        }
+    }
+    if (lbl_8053AAF8->field_0x7e != 0 && fn_8037E4BC()) {
+        lbl_8053AED0->field_0xdc |= 4;
+        lbl_8053AED0->field_0xdc |= 8;
+    }
+    if (lbl_8053AAF8->field_0x7f != 0) {
+        field_0x290->fn_8041EDB0();
+        if (field_0x2b0 != NULL) {
+            field_0x2b0->fn_8044998C();
+        }
+        if (field_0x29c != NULL) {
+            field_0x29c->fn_804455E0();
+        }
+        if (field_0x2a8 != NULL) {
+            field_0x2a8->fn_80447FAC();
+        }
+        if (field_0x2b4 != NULL) {
+            field_0x2b4->fn_8044A828();
+        }
+        if (field_0x2ac != NULL) {
+            field_0x2ac->fn_80448940();
+        }
+        if (field_0x2a4 != NULL) {
+            field_0x2a4->fn_80447618();
+        }
+        if (field_0x2a0 != NULL) {
+            field_0x2a0->fn_804465B8();
+        }
+        if (field_0x2b8 != NULL) {
+            field_0x2b8->fn_8044C038();
+        }
+    } else {
+        field_0x294->fn_804257E4();
+    }
+    if (field_0x2bc != NULL) {
+        field_0x2bc->fn_8045560C();
+    }
+    field_0x255 = 0;
+    if (field_0x298 != NULL) {
+        lbl_8053AEF0->fn_80443638();
+    }
+    if (lbl_8053AAF8->field_0x85 != 0) {
+        field_0x257 = 1;
+    } else {
+        field_0x257 = 0;
     }
 }
 

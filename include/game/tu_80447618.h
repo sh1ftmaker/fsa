@@ -21,6 +21,8 @@ public:
     // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
     // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80447958();
+    // 0x80447618: called with only the object by cls_804B1920::fn_8043D8B4.
+    void fn_80447618();
     // 0x804479A0: called with only the object by cls_804B1920::fn_8043EDF8.
     void fn_804479A0();
 

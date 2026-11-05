@@ -71,6 +71,8 @@ class cls_804B1C58;
 class cls_804B1C90;
 class cls_804B1CC8;
 class cls_804B1D00;
+class cls_804B1D20;
+class cls_804B1E1C;
 struct J2DScreen;
 class cls_804AF86C;
 class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (Unk_8045A080::fn_80457F80)
@@ -931,7 +933,8 @@ public:
     // SHARED-EDIT (act_battle_royale_end_check draw, 0x256 = the byte its
     // mFocus is stored into when mFocus is not 0xFF).
     /* 0x256 */ u8 field_0x256;
-    /* 0x257 */ u8 pad_0x257[0x290 - 0x257];
+    /* 0x257 */ u8 field_0x257; // lbl_8053AAF8->field_0x85 != 0, set by fn_8043D8B4
+    /* 0x258 */ u8 pad_0x258[0x290 - 0x258];
     /* 0x290 */ cls_804B13D4* field_0x290; // used when lbl_8053AAF8->field_0x7f is set
     /* 0x294 */ cls_804B146C* field_0x294; // used otherwise
     // The objects fn_8043F504 allocates (by constructor); fn_8043EDF8 resets
@@ -944,6 +947,8 @@ public:
     /* 0x2AC */ cls_804B1C90* field_0x2ac;
     /* 0x2B0 */ cls_804B1CC8* field_0x2b0;
     /* 0x2B4 */ cls_804B1D00* field_0x2b4;
+    /* 0x2B8 */ cls_804B1D20* field_0x2b8; // also lbl_8053AF38
+    /* 0x2BC */ cls_804B1E1C* field_0x2bc; // also lbl_8053AF50
 
     // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
@@ -1024,6 +1029,9 @@ public:
     // 0x8043D644 and 0x8043D8B4 (game/tu_8043A0E8.cpp, not written yet): no
     // arguments besides the object; fn_80139D70 calls them in turn.
     void fn_8043D644();
+    // fn_8043D8B4 sends each player present to fn_804408F0, stores the per-player
+    // words of lbl_80529DEC at 0xC8 / 0xF8 and re-initialises the objects at
+    // 0x290 / 0x294 and 0x298..0x2BC.
     void fn_8043D8B4();
     // 0x8043DC98 (game/tu_8043A0E8.cpp, not written yet): no arguments besides
     // the object; GameRootSub04_801F856C::fn_80139C84 calls it first.
