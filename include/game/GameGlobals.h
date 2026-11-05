@@ -149,6 +149,11 @@ struct GameRootSub04_801F856C {
 struct Unk_8045A080;
 class cls_804A8390;
 class J2DTextBox;
+class MessageManager_804AF070;
+class cls_804B04F8;
+class cls_804B19F0;
+class cls_804B1988;
+class cls_804B1634;
 class Title_804AF820;
 class FileSelect_804AFF60;
 class GameMode_804B0688;
@@ -163,17 +168,27 @@ struct GameRoot_8049EF20 {
     // (field_0x4c) and fn_801352F4 (0x801352F4) deletes again; each is made in
     // field_0x98 with its heap group ID set to 1.
     /* 0x04 */ GameRootSub04_801F856C* field_0x4; // mode 7 (0x38 bytes); -> 0x8: the actor manager
-    /* 0x08 */ u8 field_0x8[0x10 - 0x8];
+    // Copied from lbl_80529DEC's field_0x5c / field_0x60 by the constructor
+    // (the input object cls_804AA8C8 and the 4-byte cls_804AA8B8); the
+    // destructor deletes both through their vtables.
+    /* 0x08 */ void* field_0x8;
+    /* 0x0C */ void* field_0xc;
     // The fade object (also lbl_8053ACA0); fn_80138C9C calls fn_802ACB58 on it.
     /* 0x10 */ cls_804A8390* field_0x10;
-    /* 0x14 */ u8 field_0x14[0x1C - 0x14];
+    /* 0x14 */ u8 field_0x14[0x18 - 0x14];
+    /* 0x18 */ MessageManager_804AF070* field_0x18; // new 0x158 in the constructor
     /* 0x1C */ cls_804AE9A0* field_0x1c;         // mode 12 (0x20 bytes)
     /* 0x20 */ Title_804AF820* field_0x20;       // mode 1 (0x158 bytes)
     /* 0x24 */ FileSelect_804AFF60* field_0x24;  // mode 3 (0x1AC bytes)
     /* 0x28 */ GameMode_804B0688* field_0x28;    // modes 2 and 5 (0x120 bytes)
     /* 0x2C */ cls_804AF878* field_0x2c;         // mode 4 (0x10 bytes)
     /* 0x30 */ cls_804AF480* field_0x30;         // mode 6 (0x10 bytes)
-    /* 0x34 */ u8 field_0x34[0x4C - 0x34];
+    // Made by the constructor (0x24, 0x28, 0x14 and 0xF0 bytes).
+    /* 0x34 */ cls_804B04F8* field_0x34;
+    /* 0x38 */ cls_804B19F0* field_0x38;
+    /* 0x3C */ cls_804B1988* field_0x3c;
+    /* 0x40 */ cls_804B1634* field_0x40;
+    /* 0x44 */ u8 field_0x44[0x4C - 0x44];
     /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
     // Set (with field_0x58 = 1) by fn_80136798, fn_8013670C and fn_801365E8 (game/tu_80134C04.cpp).
     /* 0x50 */ s32 field_0x50;
@@ -195,7 +210,7 @@ struct GameRoot_8049EF20 {
     // Both cleared by fn_8019CDC4 (game/tu_80197070.cpp, stw of 0).
     /* 0x74 */ s32 field_0x74;
     /* 0x78 */ s32 field_0x78;
-    /* 0x7C */ u8 field_0x7c[0x7E - 0x7C];
+    /* 0x7C */ s16 field_0x7c; // cleared by the constructor (sth)
     /* 0x7E */ u8 field_0x7e;
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80; // cleared by fn_80138C9C
@@ -224,7 +239,7 @@ struct GameRoot_8049EF20 {
     // The heap the screens of fn_80135020 are made in (lbl_80529DEC's mHeap,
     // copied by the constructor).
     /* 0x98 */ JKRHeap* field_0x98;
-    /* 0x9C */ u8 field_0x9c[0xA0 - 0x9C];
+    /* 0x9C */ JKRSolidHeap* field_0x9c; // lbl_80529DEC's field_0x4; destroyed by the destructor
     // The audio object (fn_80458880 / fn_804593D4 in fn_80134D20, game/tu_80134C04.cpp).
     /* 0xA0 */ Unk_8045A080* field_0xa0;
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
@@ -235,7 +250,11 @@ struct GameRoot_8049EF20 {
     // both slots too, so the code is the same either way; the game's loaders
     // build JKRAramArchive/JKRMemArchive (fn_80401AC8, fn_80401D20).
     /* 0xA4 */ JKRArchive* field_0xa4;
-    /* 0xA8 */ u8 field_0xa8[0xB4 - 0xA8];
+    /* 0xA8 */ JKRArchive* field_0xa8; // lbl_80529DEC's field_0x1c (msgus.arc)
+    // Cleared by the constructor; fn_80135494 tests their word 0x4 and calls
+    // their destructors through a vtable at +0x8.
+    /* 0xAC */ void* field_0xac;
+    /* 0xB0 */ void* field_0xb0;
     // Constructed with __ct__Q25JMath13TRandom_fast_FUl at this+0xB4 by the
     // constructor fn_80139300 (0x8013932C-0x80139338). 132 units inline
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
@@ -254,13 +273,14 @@ struct GameRoot_8049EF20 {
     // with field_0xfc, when it is stored a 1 (stb of r4 at 0xFE first).
     /* 0xF8 */ s32 field_0xf8;
     /* 0xFC */ u8 field_0xfc;
-    /* 0xFD */ u8 field_0xfd[0xFE - 0xFD];
+    /* 0xFD */ u8 field_0xfd; // cleared by the constructor; tested by fn_80135494
     // Stored by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8, stb of r4).
     /* 0xFE */ u8 field_0xfe;
     // SHARED-EDIT (tu_803BC6F0): the file select screen sets it to 1 before
     // it clears the save rows (fn_803D0264, fn_803CDEE8) or rebuilds them.
     /* 0xFF */ u8 field_0xff;
-    /* 0x100 */ u8 field_0x100[0x108 - 0x100];
+    /* 0x100 */ u8 field_0x100[0x104 - 0x100];
+    /* 0x104 */ void* field_0x104; // cleared by the constructor, deleted by the destructor
     // Stored by fn_80134CC0 (game/tu_80134C04.cpp, 0x80134CC0), which
     // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
     // is not known yet.
@@ -1733,6 +1753,9 @@ class cls_804AF86C;
 class cls_804B1600;
 class cls_804B1634 {
 public:
+    // fn_80431D84 (game/tu_8042E964.cpp, not written yet); GameRoot's
+    // constructor makes it with __nw__(0xF0).
+    cls_804B1634();
     // Slot 0x8 of the vtable 0x804B1634 (fn_80431C38, game/tu_8042E964.cpp).
     virtual ~cls_804B1634();
     // 0x804316EC: draws field_0x8 with lbl_8053AB10's grafcontext unless

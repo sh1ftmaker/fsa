@@ -6,12 +6,17 @@
 #include "game/cls_804AE9B0.h"
 #include "game/cls_804AF480.h"
 #include "game/cls_804AF878.h"
+#include "game/cls_804B19F0.h"
+#include "game/act/tu_803DA6B4.h"
+#include "game/act/tu_80440BF4.h"
 #include "game/tu_80379F84.h"
 #include "game/tu_803A3484.h"
 #include "game/tu_803BC6F0.h"
 #include "game/tu_803DAC3C.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/J2D/J2DPane.h"
+#include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JUtility/JUTVideo.h"
 #include <string.h>
 #include "JSystem/JUtility/JUTException.h"
 #include "JSystem/JUtility/JUTGamePad.h"
@@ -455,6 +460,79 @@ void GameRoot_8049EF20::fn_80138C9C() {
     field_0xf4 = fn_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
     strcpy(field_0xc4->getStringPtr(), field_0xc8);
     strcpy(field_0xc0->getStringPtr(), field_0xc8);
+}
+
+// FIXME: 99.65. Instructions identical; the string offsets off lbl_804652F0
+// differ (0x324 vs 0x5E8: the strings of the unwritten fn_80135494 - fn_80137300
+// come first in the original .rodata) and the .sdata2 floats / "" are @NNN.
+GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
+    lbl_8053AAF8 = this;
+    field_0x9c = lbl_80529DEC.field_0x4;
+    field_0x98 = lbl_80529DEC.mHeap;
+    field_0xa0 = lbl_80529DEC.field_0xc;
+    field_0xa4 = lbl_80529DEC.field_0x14;
+    field_0xa8 = lbl_80529DEC.field_0x1c;
+    field_0x98->becomeCurrentHeap();
+    field_0x18 = new (field_0x98, 0) MessageManager_804AF070();
+    lbl_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
+    field_0x8 = lbl_80529DEC.field_0x5c;
+    field_0xc = lbl_80529DEC.field_0x60;
+    field_0x10 = new (field_0x98, 0) cls_804A8390();
+    field_0x34 = new (field_0x98, 0) cls_804B04F8();
+    field_0x38 = new (field_0x98, 0) cls_804B19F0();
+    field_0x3c = new (field_0x98, 0) cls_804B1988();
+    field_0x40 = new (field_0x98, 0) cls_804B1634();
+    field_0xac = NULL;
+    field_0xb0 = NULL;
+    field_0x4 = NULL;
+    field_0x1c = NULL;
+    field_0x28 = NULL;
+    field_0x24 = NULL;
+    field_0x2c = NULL;
+    field_0x30 = NULL;
+    field_0xfd = 0;
+    field_0x84 = 0;
+    field_0x54 = 0;
+    field_0x85 = 0;
+    field_0x74 = 0;
+    field_0x78 = 0;
+    field_0x86 = 0;
+    field_0x88 = 0;
+    field_0x94 = 0;
+    field_0x95 = 0;
+    field_0x96 = 0;
+    field_0x10c = 0;
+    field_0x108 = 0;
+    field_0x7c = 0;
+    u8 group = field_0x98->changeGroupID(1);
+    field_0x20 = new (field_0x98, 0) Title_804AF820();
+    field_0x98->changeGroupID(group);
+    field_0x87 = 0;
+    ResTIMG* img = (ResTIMG*)fn_804030C4('TIMG', "kk_rival_01.bti");
+    field_0xb8 = new (field_0x98, 0) J2DPicture(img);
+    field_0xb8->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xD2, 0, 0xFF));
+    img = (ResTIMG*)lbl_8053AAF8->field_0xa4->getResource('TIMG', "");
+    field_0xbc = new (field_0x98, 0) J2DPicture(img);
+    if (fn_80021840() == 2) {
+        field_0xc0 = new (field_0x98, 0) J2DTextBox('TEXT1',
+            JGeometry::TBox2f(-30000.0f, 210.0f, 60000.0f + (s32)JUTVideo::getManager()->getFbWidth(), 180.0f),
+            "rock_24_20_4i_j.bfn", field_0xc8, 0x28, J2DHBIND_Center, J2DVBIND_Center);
+        field_0xc4 = new (field_0x98, 0) J2DTextBox('TEXT2',
+            JGeometry::TBox2f(-29997.0f, 213.0f, 60000.0f + (s32)JUTVideo::getManager()->getFbWidth(), 180.0f),
+            "rock_24_20_4i_j.bfn", field_0xc8, 0x28, J2DHBIND_Center, J2DVBIND_Center);
+    } else {
+        field_0xc0 = new (field_0x98, 0) J2DTextBox('TEXT1',
+            JGeometry::TBox2f(-30000.0f, 210.0f, 60000.0f + (s32)JUTVideo::getManager()->getFbWidth(), 180.0f),
+            "rock_24_20_4i_e.bfn", field_0xc8, 0x28, J2DHBIND_Center, J2DVBIND_Center);
+        field_0xc4 = new (field_0x98, 0) J2DTextBox('TEXT2',
+            JGeometry::TBox2f(-29997.0f, 213.0f, 60000.0f + (s32)JUTVideo::getManager()->getFbWidth(), 180.0f),
+            "rock_24_20_4i_e.bfn", field_0xc8, 0x28, J2DHBIND_Center, J2DVBIND_Center);
+    }
+    field_0xc0->setBlackWhite(JUtility::TColor(0x50502800), JUtility::TColor(0xFFFF50FF));
+    field_0xc4->setFontColor(JUtility::TColor(0x000000FF), JUtility::TColor(0x000000FF));
+    field_0x104 = NULL;
+    JUTException::appendMapFile("GC4Swords.MAP");
+    JUTException::setPreUserCallback(fn_80134C04);
 }
 
 void fn_80139958() {
