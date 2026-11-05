@@ -158,6 +158,10 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   the next unit's data (tu_8021C848 / tu_8021CDE4).
 
 ## Known game-code shapes (reviewed; natural source)
+- Pane-tag tables: J2D pane tags are u64 ASCII names; write them as multi-char constants (`'Pabb10'`), never hex. A real indexed table
+  of them that trips gate.py's check_byte_arrays gets an `array` line in config/G4SE01/blobs.txt once a reviewer confirms it
+  (real data the code indexes, original symbol sizes, address order) and writes fsa-wt/_reviews/<unit>.review.md; the owner
+  approved this as a standing rule (2026-11-05). Workers still stop and report; the coordinator adds the line.
 - Constant-bound `for` loops count with a plain `int`: an `s32` (signed long) counter makes CW emit a `cmpwi/bge` entry test the original lacks (tu_802F5040 fn_802FF798 87.7 → 99.4 %, tu_80301CD0 fn_80308D0C 93.8 → 100 %).
 - Unfused `fmuls, fmuls, fadds` squared sums: `square(a) + square(b)` (game/GameMath.h).
 - A two-value test compiled as `subi; clrlwi; cmplwi 1` is `(x == 2 || x == 3)` with literal constants; its negation is `!(x == 2 || x == 3)` (act_eyeball_switch init). `x != 2 && x != 3` and `x < 2 || x > 3` don't fold.
