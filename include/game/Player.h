@@ -302,6 +302,10 @@ public:
     void fn_802702A4(); // called by tu_8025EB18
     void fn_802702C4(); // called by tu_8023FBF0
     void fn_80270D34(s32 amount); // called by tu_8022AD64; subtracted from field_0xbfc
+    // Damage / hit from player `attacker` at `pos` with hit kind `kind` (0x1B, 0xD-0xF, 0x16,
+    // 0x18 ...): knockback (field_0x350 / field_0x35c), facing, state request. Called by
+    // fn_80238548 (tu_8022AD64) for each player.
+    bool fn_802710C8(s32 attacker, s32 damage, const JGeometry::TVec2f* pos, s32 kind);
     void fn_80277104(); // called by tu_80285E58
     void fn_802771BC(); // field_0x458 = 0; called by tu_80285E58
     // tu_80256C74
@@ -419,6 +423,11 @@ public:
     void spawnEffect15B(); // tu_8028FBA0 inline: effects 0x15B, 0x15C at the player
     s32 life(); // tu_8028FBA0 inline: fn_80237774(fn_80240644()) if fn_80240808(), else fn_8024189C()
     void fallStep(); // tu_8028FBA0 inline: gravity on 0x344, then mPos += 0x344
+    // tu_8026FC20 inline, defined at the top of that unit: fn_80270A8C's body (its out-of-line
+    // copy, which the other units call). fn_80270948 and fn_8027057C, before fn_80270A8C, have
+    // it inlined while the unit's .sdata2 order rules out deferred inlining, so it is an inline.
+    // State 0x33 (requested when the life 0xBFC reaches 0) requested or current, or 0x34.
+    bool isDown();
     void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
@@ -519,6 +528,11 @@ public:
     bool fn_80270A8C(); // via fn_80236B50
     bool fn_80270C88(); // via fn_80236BEC
     void fn_80270F00(s32 arg); // via fn_80236804
+    // via fn_80236554 (act_recovery_heart heals 4): adds `amount` to the life 0xBFC (or takes
+    // the group's, fn_802376D8), capped at 0xBF8; once per 0xD35, which is set to `flag`.
+    void fn_80270DDC(s32 amount, bool flag);
+    void fn_80270948(const JGeometry::TVec3f* pos); // called by tu_8023FBF0 fn_802422D0; 0xD10 = pos (mPos if NULL) once while down
+    void fn_8027057C(); // called by fn_80277F98 (update of state 0x33): revive; not written (inlines fn_80270DDC)
     bool fn_80271098(const JGeometry::TVec3f* pos); // via fn_802379E4
     s32 fn_80272184(); // via fn_8023B630
     s32 fn_802721A8(); // via fn_8023B6CC
@@ -863,7 +877,8 @@ public:
     // Returned by fn_8024322C (via fn_8023697C, which returns -1 without a player).
     /* 0x0D08 */ s32 field_0xd08;
     /* 0x0D0C */ s32 field_0xd0c;
-    /* 0x0D10 */ u8 field_0xd10[0xD1C - 0xD10];
+    // Where the player comes back after state 0x33 (fn_80270948 stores it, fn_8027057C restores mPos).
+    /* 0x0D10 */ JGeometry::TVec3f field_0xd10;
     /* 0x0D1C */ JGeometry::TVec3f field_0xd1c;
     /* 0x0D28 */ s32 field_0xd28;
     /* 0x0D2C */ u8 field_0xd2c;
@@ -1617,6 +1632,9 @@ extern "C" {
 // Owner: tu_8022AD64 (0x8023434C, defined there). tu_8026FC20 fn_80274728 tests it
 // (clrlwi.) for this player while fn_802486A0() == 3.
 bool fn_8023434C(s32 player);
+// Owner: tu_8022AD64 (0x80236468). (player, amount): fn_80270D34(amount) on every present
+// player of `player`'s group (fn_8022E438). Called by tu_8026FC20 fn_802710C8.
+void fn_80236468(s32 player, s32 amount);
 // Owner: tu_8022AD64 (0x80230E1C, defined there). 1 unit (act_four_switch_monitor's
 // update: fn_80230E1C(player, 0) for each player whose bit is set in field_0x82).
 // Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards
