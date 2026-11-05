@@ -6,6 +6,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/ViewLayer.h"
+#include "game/act/act_chief_soldier.h"
 #include "game/act/act_sword_soldier.h"
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
@@ -39,26 +40,26 @@ ActorBase_804A5770* fn_8015445C(s32 serial) {
     return fn_801F856C()->fn_801F666C(serial);
 }
 
-// fn_80154490, fn_8015449C, fn_801544B4 and fn_801544AC work on the actor
-// fn_80150284 finds with fn_801542AC (an SLR4 actor); its class is assumed to
-// be this one, as for fn_801544AC.
-void SwordSoldier_8049FCA0::fn_80154490() {
-    field_0x2a5 = true;
+// fn_80154490 to fn_801544C0: the sword soldier (SLR1) calls them on the
+// SLR4 (Chief Soldier) actor that fn_801542AC finds, so they are that class's
+// members; they sit here because this is the first unit that needs them.
+void ChiefSoldier_804A0B90::fn_80154490() {
+    field_0x2a5 = 1;
 }
 
-void SwordSoldier_8049FCA0::fn_8015449C() {
+void ChiefSoldier_804A0B90::fn_8015449C() {
     field_0x290 = field_0x290 + 1;
 }
 
-s32 SwordSoldier_8049FCA0::fn_801544AC() const {
+s32 ChiefSoldier_804A0B90::fn_801544AC() const {
     return field_0x28c;
 }
 
-void SwordSoldier_8049FCA0::fn_801544B4() {
+void ChiefSoldier_804A0B90::fn_801544B4() {
     field_0x290 = -1;
 }
 
-s32 SwordSoldier_8049FCA0::fn_801544C0() {
+s32 ChiefSoldier_804A0B90::fn_801544C0() {
     return field_0x288;
 }
 
@@ -66,7 +67,7 @@ u32 ActorBase_804A5770::fn_801544C8() const {
     return field_0x90;
 }
 
-void SwordSoldier_8049FCA0::fn_801544D0(s32 value) {
+void ActorBase_804A5770::fn_801544D0(s32 value) {
     field_0xd8 = value;
     field_0xdc = value;
 }
@@ -117,11 +118,11 @@ void fn_801545A4(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
     dst->set(*src);
 }
 
-bool SwordSoldier_8049FCA0::fn_801545C0(JGeometry::TVec3f* out, bool flag) {
+bool ActorBase_804A5770::fn_801545C0(JGeometry::TVec3f* out, bool flag) {
     return fn_801F2618(out, flag);
 }
 
-s32 SwordSoldier_8049FCA0::fn_801545E0() const {
+s32 ActorBase_804A5770::fn_801545E0() const {
     return field_0x9c;
 }
 
@@ -133,10 +134,9 @@ void fn_801545F0(JGeometry::TVec3f* a, const JGeometry::TVec3f* b) {
     a->add(*b);
 }
 
-void SwordSoldier_8049FCA0::fn_80154614(s32 value) {
+void ActorBase_804A5770::fn_80154614(s32 value) {
     field_0xb8 = value;
 }
-
 
 s32 ActorBase_804A5770::fn_8015461C() const {
     return field_0x4;

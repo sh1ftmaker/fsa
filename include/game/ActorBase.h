@@ -438,9 +438,13 @@ public:
     // act_phantom_ganon_2, tu_80197070, tu_8018A8D8 (and tu_803944C8 for
     // fn_801544C8) call them with a bl on actors of other classes.
     u32 fn_801544C8() const;               // field_0x90 (0x801544C8)
+    void fn_801544D0(s32 value);           // field_0xd8 and field_0xdc (0x801544D0)
     JGeometry::TVec3f* fn_801544DC();      // &mPos (0x801544DC)
     s32 fn_80154510() const;               // field_0x114, the "atcp" damage (0x80154510)
+    bool fn_801545C0(JGeometry::TVec3f* out, bool flag); // fn_801F2618 (0x801545C0)
+    s32 fn_801545E0() const;               // field_0x9c (0x801545E0)
     s32 fn_801545E8() const;               // mSerial (0x801545E8)
+    void fn_80154614(s32 value);           // field_0xb8 (0x80154614)
     s32 fn_8015461C() const;               // field_0x4, the layer (0x8015461C)
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }

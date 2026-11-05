@@ -29,6 +29,13 @@ public:
     // sprite at mPos with a 3x3 scale matrix (2.0, or 1.0 while field_0x23c
     // is 0), unless field_0x90 is 7 or the layer (field_0x4) is 8 or more.
     void fn_80172BC8();
+    // 0x80154490-0x801544C0 (game/act_sword_soldier.cpp, the first unit to need
+    // them): the sword soldier (SLR1) calls them on the SLR4 actor it found.
+    void fn_80154490();
+    void fn_8015449C();
+    s32 fn_801544AC() const;
+    void fn_801544B4();
+    s32 fn_801544C0();
     // The spawn type, the low byte of field_0x90 (compared signed: cmpwi).
     s32 getType() const { return field_0x90 & 0xFF; }
 
@@ -46,8 +53,10 @@ public:
     /* 0x280 */ s32 field_0x280; // frame base: fn_80172BC8 draws frame field_0x280 + 0x3FD
     /* 0x284 */ u8 field_0x284[0x288 - 0x284];
     /* 0x288 */ s32 field_0x288; // set to 2 by vfunc_0x44
-    /* 0x28C */ u8 field_0x28c[0x2A5 - 0x28C];
-    /* 0x2A5 */ u8 field_0x2a5; // vfunc_0x44 tests it against 1
+    /* 0x28C */ s32 field_0x28c; // fn_801544AC (out of line in game/act_sword_soldier.cpp)
+    /* 0x290 */ s32 field_0x290; // counter: fn_8015449C adds 1, fn_801544B4 sets -1
+    /* 0x294 */ u8 field_0x294[0x2A5 - 0x294];
+    /* 0x2A5 */ u8 field_0x2a5; // vfunc_0x44 tests it against 1; fn_80154490 sets it to 1
     /* 0x2A6 */ u8 field_0x2a6[0x2D0 - 0x2A6]; // not yet known (size: the spawner's __nw__)
 };
 
