@@ -1535,15 +1535,16 @@ void fn_801902D0(void* self);
 // Owner not known (0x8023F2BC, not written yet). No arguments; called by
 // fn_80139CC4 (game/tu_80139BE8.cpp) between the two fn_8013B438 calls.
 void fn_8023F2BC(void);
-// Owners not known (0x8023F088, 0x8023F728, 0x8023F78C, 0x8038D870,
+// Owners not known (0x8023F088, 0x8023F728, 0x8023F78C,
 // 0x803B8C90, 0x8043EDF8, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 void fn_8023F088(void);
-void fn_8038D870(void);
 u8 fn_803B8C90(void);
 void fn_8043EDF8(void* self);
 void fn_80439AB0(void* self);
 }
+// game/tu_8037DF68.cpp (0x8038D870); called by fn_8013A1A4 (game/tu_80139BE8.cpp).
+void fn_8038D870(void);
 
 // The 4-byte pointer at .sbss lbl_8053AD68 (the cls_804AE9A0 object, declared
 // in game/tu_80379F84.h with its members fn_8037A708, fn_8037A580 and
@@ -1644,9 +1645,9 @@ void fn_802B3A48(ActorBase_804A5770* actor);
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
 // arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
 extern "C" void fn_8030361C();
-// game/tu_8037DF68.cpp (0x8038D454, 0x54 bytes, not written yet). Takes no
-// arguments; called by game/tu_80139BE8.cpp (fn_80139BE8) and tu_802D39B8.
-extern "C" void fn_8038D454();
+// game/tu_8037DF68.cpp (0x8038D454). Takes no arguments; called by
+// game/tu_80139BE8.cpp (fn_80139BE8) and tu_802D39B8.
+void fn_8038D454();
 // .sbss byte at 0x8053ACD0, owned by game/tu_80301CD0.cpp (its split starts
 // there). Read with lbz by that unit; stored as 0 by game/tu_80139BE8.cpp.
 extern u8 lbl_8053ACD0;

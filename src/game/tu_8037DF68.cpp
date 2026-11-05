@@ -1,0 +1,551 @@
+#include "game/GameAudio.h"
+#include "game/GameGlobals.h"
+#include "game/GameMode.h"
+#include "game/GameState.h"
+#include "game/Message.h"
+
+// Constructs lbl_8050DB0C: the layout constants.
+cls_804AF32C::cls_804AF32C() {
+    field_0x4 = 0;
+    field_0x5 = 0;
+    field_0x6 = 0;
+    field_0x8 = 0.8f;
+    field_0x30[0] = 0.5f;
+    field_0x30[1] = -32.0f;
+    field_0x30[2] = 1.0f;
+    field_0x30[3] = 0.0f;
+    field_0x4c[0] = 6;
+    field_0x30[4] = 1.9f;
+    field_0x4c[1] = -40;
+    field_0x4c[2] = 80;
+    field_0x4c[3] = 5;
+    field_0x4c[4] = 80;
+    field_0x4c[5] = 3;
+    field_0x4c[6] = 0;
+    field_0x4c[7] = 60;
+    field_0x4c[8] = 3;
+    field_0x4c[9] = 10;
+    field_0x4c[10] = 15;
+    field_0x4c[11] = 30;
+    field_0x4c[12] = 4;
+    field_0x4c[13] = 22;
+    field_0x4c[14] = 16;
+    field_0x4c[15] = 24;
+    field_0x4c[16] = 120;
+    field_0x4c[17] = 0;
+    field_0x4c[18] = 22;
+    field_0x4c[20] = 5;
+    field_0x4c[21] = 30;
+    field_0x4c[22] = 0;
+    field_0x4c[23] = 30;
+    field_0x4c[24] = 5;
+    field_0x4c[25] = 5;
+    field_0x4c[26] = 50;
+    field_0x2fa = 0;
+    field_0x2fb = 0;
+    field_0x4c[32] = 28;
+    field_0x4c[33] = 5;
+    field_0x4c[34] = 26;
+    field_0x4c[35] = 5;
+    field_0x4c[36] = 14;
+    field_0x4c[37] = 10;
+    field_0x4c[38] = 10;
+    field_0x4c[39] = 50;
+    field_0x4c[40] = 1;
+    field_0x4c[41] = 30;
+    field_0x4c[62] = 0;
+    field_0x4c[63] = 22;
+    field_0x4c[64] = 20;
+    field_0x4c[65] = 20;
+    field_0x4c[66] = 14;
+    field_0x4c[67] = 20;
+    field_0x4c[68] = 20;
+    field_0x4c[69] = 16;
+    field_0x4c[70] = 5;
+    field_0x4c[71] = 20;
+    field_0x4c[72] = 10;
+    field_0x4c[73] = 16;
+    field_0x4c[74] = 12;
+    field_0x4c[75] = 5;
+    field_0x4c[76] = 10;
+    field_0x4c[77] = 20;
+    field_0x4c[78] = 0;
+    field_0x4c[79] = 10;
+    field_0x4c[80] = 5;
+    field_0x4c[81] = 2;
+    field_0x4c[82] = 20;
+    field_0x4c[83] = 0;
+    field_0x4c[84] = 20;
+    field_0x4c[85] = 5;
+    field_0x4c[86] = 10;
+    field_0x4c[87] = 5;
+    field_0x4c[92] = 10;
+    field_0x4c[93] = 3;
+    field_0x4c[94] = 10;
+    field_0x4c[95] = 20;
+    field_0x4c[102] = 0;
+    field_0x4c[103] = 18;
+    field_0x4c[104] = 8;
+    field_0x4c[105] = 22;
+    field_0x4c[106] = 0;
+    field_0x4c[107] = 15;
+    field_0x4c[108] = 18;
+    field_0x4c[109] = 15;
+    field_0x4c[110] = 100;
+    field_0x4c[111] = 200;
+    field_0x4c[112] = 30;
+    field_0x4c[113] = 20;
+    field_0x4c[132] = 0;
+    field_0x4c[133] = 20;
+    field_0x4c[134] = 6;
+    field_0x4c[135] = 0;
+    field_0x4c[136] = 20;
+    field_0x4c[137] = 0;
+    field_0x4c[138] = 20;
+    field_0x4c[142] = 0;
+    field_0x4c[143] = 18;
+    field_0x4c[144] = 0;
+    field_0x4c[145] = 10;
+    field_0x4c[146] = 8;
+    field_0x4c[147] = 10;
+    field_0x4c[148] = 20;
+    field_0x4c[149] = 6;
+    field_0x4c[152] = 0;
+    field_0x4c[153] = 16;
+    field_0x4c[154] = 6;
+    field_0x4c[155] = 10;
+    field_0x4c[156] = 20;
+    field_0x4c[157] = 10;
+    field_0x4c[158] = 10;
+    field_0x4c[159] = 8;
+    field_0x4c[162] = 0;
+    field_0x4c[163] = 20;
+    field_0x4c[164] = 0;
+    field_0x4c[165] = 10;
+    field_0x4c[166] = 8;
+    field_0x4c[167] = 20;
+    field_0x4c[168] = 20;
+    field_0x4c[169] = 10;
+    field_0x4c[172] = 0;
+    field_0x4c[173] = 20;
+    field_0x4c[174] = 0;
+    field_0x4c[175] = 6;
+    field_0x4c[176] = 8;
+    field_0x4c[177] = 0;
+    field_0x4c[178] = 20;
+    field_0x4c[182] = 0;
+    field_0x4c[183] = 20;
+    field_0x4c[184] = 0;
+    field_0x4c[185] = 10;
+    field_0x4c[186] = 8;
+    field_0x4c[187] = 0;
+    field_0x4c[188] = 20;
+    field_0x4c[192] = 0;
+    field_0x4c[193] = 20;
+    field_0x4c[194] = 0;
+    field_0x4c[195] = 20;
+    field_0x4c[196] = 0;
+    field_0x4c[197] = 10;
+    field_0x4c[198] = 8;
+    field_0x4c[199] = 20;
+    field_0x4c[200] = 20;
+    field_0x4c[202] = 0;
+    field_0x4c[203] = 10;
+    field_0x4c[204] = 8;
+    field_0x4c[205] = 20;
+    field_0x4c[206] = 10;
+    field_0x4c[207] = 8;
+    field_0x4c[208] = 0;
+    field_0x4c[209] = 20;
+    field_0x4c[210] = 0;
+    field_0x4c[211] = 20;
+    field_0x4c[212] = 0;
+    field_0x4c[213] = 20;
+    field_0x4c[214] = 0;
+    field_0x4c[215] = 10;
+    field_0x4c[216] = 8;
+    field_0x4c[217] = 20;
+    field_0x4c[218] = 20;
+    field_0x4c[219] = 10;
+    field_0x4c[222] = 0;
+    field_0x4c[223] = 20;
+    field_0x4c[224] = 0;
+    field_0x4c[225] = 20;
+    field_0x4c[226] = 20;
+    field_0x4c[227] = 20;
+    field_0x4c[232] = 0;
+    field_0x4c[233] = 20;
+    field_0x4c[234] = 0;
+    field_0x4c[235] = 10;
+    field_0x4c[236] = 8;
+    field_0x4c[237] = 20;
+    field_0x4c[238] = 20;
+    field_0x4c[239] = 30;
+    field_0x4c[240] = 80;
+    field_0x4c[241] = 30;
+    field_0x4c[242] = 0;
+    field_0x4c[243] = 0;
+    field_0x4c[244] = 0;
+    field_0x4c[245] = 0;
+    field_0x4c[246] = 10;
+    field_0x4c[248] = 10;
+    field_0x4c[247] = 4;
+    field_0x4c[249] = 0;
+    field_0x4c[250] = -55;
+    field_0x4c[252] = 12;
+    field_0x4c[253] = 4;
+    field_0x4c[254] = 8;
+    field_0x4c[255] = 10;
+    field_0x4c[256] = 8;
+    field_0x4c[257] = 4;
+    field_0x4c[258] = 8;
+    field_0x4c[259] = 7;
+    field_0x4c[260] = 4;
+    field_0x4c[261] = 8;
+    field_0x4c[262] = 30;
+    field_0x4c[263] = 5;
+    field_0x4c[264] = 8;
+    field_0x4c[265] = 10;
+    field_0x4c[266] = 0;
+    field_0x4c[267] = 12;
+    field_0x4c[268] = 0;
+    field_0x4c[269] = 12;
+    field_0x4c[270] = 5;
+    field_0x4c[272] = 24;
+    field_0x4c[273] = 15;
+    field_0x4c[290] = 80;
+    field_0x4c[274] = 2;
+    field_0x4c[275] = 5;
+    field_0x4c[276] = 0;
+    field_0x4c[277] = 6;
+    field_0x4c[278] = 0;
+    field_0x4c[279] = 0;
+    field_0x4c[280] = 0;
+    field_0x4c[281] = -12;
+    field_0x4c[282] = 0;
+    field_0x4c[283] = 0;
+    field_0x4c[284] = 60;
+    field_0x4c[285] = 20;
+    field_0x4c[286] = 10;
+    field_0x4c[287] = 8;
+    field_0x4c[288] = 6;
+    field_0x4c[289] = 4;
+    field_0x4c[292] = -60;
+    field_0x4c[293] = 300;
+    field_0x4c[294] = 350;
+    field_0x4c[295] = 490;
+    field_0x4c[296] = 36;
+    field_0x4c[297] = 50;
+    field_0x4c[298] = 0;
+    field_0x4c[299] = 0;
+    field_0x4c[300] = 0;
+    field_0x4c[301] = 0;
+    field_0x4c[302] = 16;
+    field_0x4c[303] = 2;
+    field_0x4c[304] = 0;
+    field_0x4c[305] = 0;
+    field_0x4c[306] = 1150;
+    field_0x4c[307] = 6;
+    field_0x4c[308] = 0;
+    field_0x4c[309] = 20;
+    field_0x4c[310] = 5;
+    field_0x4c[311] = 0;
+    field_0x4c[312] = 0;
+    field_0x4c[313] = 10;
+    field_0x4c[314] = 30;
+    field_0x4c[315] = 70;
+    field_0x4c[316] = 35;
+    field_0x4c[317] = 80;
+    field_0x4c[318] = 40;
+    field_0x4c[319] = 140;
+    field_0x4c[320] = 0;
+    field_0x4c[321] = 74;
+    field_0x4c[322] = 30;
+    field_0x4c[323] = 0;
+    field_0x4c[324] = 0;
+    field_0x4c[325] = 0;
+    field_0x4c[326] = 0;
+    field_0x4c[327] = 0;
+    field_0x4c[328] = 0;
+    field_0x4c[329] = 0;
+    field_0x4c[330] = 0;
+    field_0x4c[331] = 0;
+    field_0x4c[332] = 0;
+    field_0x4c[333] = 0;
+    field_0x4c[334] = 200;
+    field_0x4c[335] = 130;
+    field_0x4c[336] = 0;
+    field_0x4c[337] = 2;
+    field_0x30[5] = 1.0f;
+    field_0x30[6] = 0.8f;
+    field_0x2f8 = 80;
+    field_0x304[8] = 0;
+    field_0x304[0] = 80;
+    field_0x304[1] = 20;
+    field_0x304[2] = 150;
+    field_0x304[3] = 0;
+    field_0x304[4] = 0;
+    field_0x304[5] = 0;
+    field_0x304[6] = 0;
+    field_0x304[7] = 0;
+    field_0x304[8] = 0;
+    field_0x304[9] = 0;
+}
+
+// The window index of a player: the one fn_8022F340 maps it to in some game
+// modes, else the player itself.
+static inline s32 windowIndex(s32 player) {
+    if (isGameModeSet()) {
+        s32 mapped = fn_8022F340(player);
+        if (mapped >= 0 && mapped < 4) {
+            return mapped;
+        }
+    }
+    return player;
+}
+
+cls_804AF32C lbl_8050DB0C;
+
+bool fn_8037E4BC() {
+    for (s32 i = 0; i < 4; i++) {
+        bool takesPart = lbl_8053AAF8->field_0x82 & (u8)(1 << i);
+        if (takesPart && lbl_8053AD78->mWindows[i]->fn_80390818() == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+s32 fn_8037E54C(s32 player) {
+    if (player >= 0 && player < 4) {
+        s32 index = windowIndex(player);
+        if (lbl_80529DEC.field_0x118 >= 8 && lbl_80529DEC.field_0x11c == 0) {
+            return lbl_8053AD78->field_0x4c[index];
+        }
+    }
+    return 0;
+}
+
+u8 fn_8037E694(s32 player) {
+    return lbl_8053AD78->mWindows[windowIndex(player)]->field_0x44;
+}
+
+// FIXME: 97.2. Scheduling only: the original restores r31 after the result is
+// computed (lwz r31 / lwz r0 after the srwi); ours restores r31 before it.
+bool fn_8037E7AC(s32 player) {
+    return lbl_8053AD78->field_0xe8 & (u8)(1 << windowIndex(player));
+}
+
+void fn_8037E8D4(s32 player) {
+    lbl_8053AD78->field_0xe8 |= (u8)(1 << windowIndex(player));
+}
+
+s32 fn_8037E9F4(s32 player) {
+    return lbl_8053AD78->mWindows[windowIndex(player)]->fn_80390850();
+}
+
+void fn_8037EB0C(f32* a, f32* b, f32* c, f32* d, u8* e) {
+    *a = lbl_8053AD78->field_0x5c[0];
+    *b = lbl_8053AD78->field_0x5c[2];
+    *c = lbl_8053AD78->field_0x5c[1];
+    *d = lbl_8053AD78->field_0x5c[3];
+    *e = lbl_8053AD78->field_0xe6;
+}
+
+// FIXME: 97.4. Regalloc only: the loop's index registers and the two half-size floats are swapped (r28 / r29, f30 / f31).
+void fn_8037EB4C() {
+    for (s32 i = 0; i < 4; i++) {
+        MessageWindow_804AF490* window = lbl_8053AD78->mWindows[i];
+        f32 scale = 1.0f;
+        if ((window->field_0x28 >> 6) & 1) {
+            scale = lbl_8050DB0C.field_0x30[2];
+        }
+        f32 width = scale * window->field_0x48->field_0xb8;
+        f32 height = scale * window->field_0x48->field_0xbc;
+        if (window->field_0x24 != 0) {
+            f32 halfW = 0.5f * width;
+            f32 halfH = 0.5f * height;
+            lbl_8053AED0->fn_8043DF8C(lbl_8053AD78->field_0x124[i].x - halfW, lbl_8053AD78->field_0x124[i].y - halfH);
+            lbl_8053AED0->fn_8043DF8C(lbl_8053AD78->field_0x124[i].x + halfW, lbl_8053AD78->field_0x124[i].y - halfH);
+            lbl_8053AED0->fn_8043DF8C(lbl_8053AD78->field_0x124[i].x - halfW, lbl_8053AD78->field_0x124[i].y + halfH);
+            lbl_8053AED0->fn_8043DF8C(lbl_8053AD78->field_0x124[i].x + halfW, lbl_8053AD78->field_0x124[i].y + halfH);
+        }
+    }
+}
+
+bool fn_8037EC98(s32 player, u16 flags) {
+    s32 index = windowIndex(player);
+    if ((flags & 4) || (flags & 2)) {
+        return true;
+    }
+    if (lbl_8053AAF8->field_0x7e == 1) {
+        return fn_802308E0(index);
+    }
+    s32 players[4];
+    s32 count = 0;
+    s32 ready = 0;
+    for (s32 i = 0; i < 4; i++) {
+        players[i] = -1;
+        if (fn_8023F264(i) == true) {
+            players[i] = i;
+            count++;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (players[i] >= 0 && fn_802300EC(players[i]) == true) {
+            ready++;
+        }
+    }
+    if (count != ready) {
+        return false;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (players[i] >= 0) {
+            fn_80230AD4(players[i]);
+        }
+    }
+    return true;
+}
+
+s32 fn_8037EE8C(s32 player) {
+    s32 next = lbl_8053AD78->mWindows[windowIndex(player)]->field_0x2c + 1;
+    if (next > 3) {
+        next = 0;
+    }
+    return next;
+}
+
+s32 fn_8037EFB4(s32 player) {
+    return lbl_8053AD78->mWindows[windowIndex(player)]->field_0x2c;
+}
+
+u16 fn_8037F0CC(s32 player) {
+    return lbl_8053AD78->mWindows[windowIndex(player)]->fn_80390C6C();
+}
+
+u8 fn_8037F1E4(s32 player) {
+    return lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24;
+}
+
+// FIXME: 87.0. Scheduling and registers only: the original adds the INF1
+// size and the entry offset first, then 8, then the base; ours adds the 8
+// to the offset before the size.
+const char* fn_80383E2C(u32 index, u8* out) {
+    MessageFile_804AF070* bmg = lbl_8053AD78->mBmg;
+    MessageInf1_804AF070* inf1 = &bmg->inf1;
+    u32 offset = bmg->inf1.size + inf1->entries[index].textOffset;
+    const char* text = (const char*)inf1 + (offset + 8);
+    *out = 0;
+    if (text[0] == 0x1A && text[2] == 2) {
+        switch ((s8)text[4]) {
+        case 7:
+        case 0x10:
+        case 0x17:
+        case 0x18:
+        case 0x1D:
+        case 0x20:
+        case 0x21:
+        case 0x23:
+        case 0x2A:
+        case 0x2C:
+        case 0x30:
+        case 0x33:
+            *out = text[4];
+            return text;
+        }
+    }
+    return NULL;
+}
+
+u16 fn_803846A4(s32 index) {
+    return lbl_8053AD78->mBmg->inf1.entries[index].id;
+}
+
+u32 fn_803846BC(u32 msg) {
+    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
+    u32 count = inf1->count;
+    u32 i = 0;
+    for (; i < count; i++) {
+        if (inf1->entries[i].id == msg) {
+            msg = i;
+            break;
+        }
+    }
+    if (i >= count) {
+        msg = 0x12B;
+    }
+    return msg;
+}
+
+void fn_8038D454() {
+    for (s32 i = 0; i < 4; i++) {
+        lbl_8053AD78->mWindows[i]->fn_80391678();
+    }
+}
+
+void fn_8038D870() {
+    for (s32 i = 0; i < 4; i++) {
+        lbl_8053AD78->mWindows[i]->fn_80391678();
+        lbl_8053AD78->mWindows[i]->field_0x4 = lbl_8053AD78->mBmg;
+        lbl_8053AD78->field_0xfc[i] = -1;
+        lbl_8053AD78->field_0xf0[i] = 0;
+    }
+    lbl_8053AD78->field_0xf8 = 0;
+    lbl_8053AD78->field_0xe4 = 0;
+}
+
+cls_804AF32C::~cls_804AF32C() {}
+
+void fn_8038911C(s32 player, s32 value) {
+    s32 index = windowIndex(player);
+    if (value > 99999) {
+        value = 99999;
+    }
+    lbl_8053AD78->mWindows[index]->field_0x38 = value;
+}
+
+void fn_80389254(s32 player, s32 value) {
+    s32 index = windowIndex(player);
+    if (value > 99999) {
+        value = 99999;
+    }
+    lbl_8053AD78->mWindows[index]->field_0x34 = value;
+}
+
+void fn_8038938C(s32 player, s32 value) {
+    s32 index = windowIndex(player);
+    if (value > 9999) {
+        value = 9999;
+    }
+    lbl_8053AD78->mWindows[index]->field_0x3e = value;
+}
+
+void fn_803894BC(s32 player, s32 value) {
+    s32 index = windowIndex(player);
+    if (value > 9) {
+        value = 9;
+    }
+    lbl_8053AD78->mWindows[index]->field_0x3c = value;
+}
+
+bool fn_80388CAC(s32 player, s32 serial) {
+    s32 index = windowIndex(player);
+    if (fn_8037F1E4(index) == 0) {
+        return true;
+    }
+    if (fn_803865B8(player)) {
+        return fn_80384C58(player, serial);
+    }
+    return false;
+}
+
+bool fn_80388EEC(s32 player) {
+    s32 index = windowIndex(player);
+    if (fn_8037F1E4(index) == 0) {
+        return true;
+    }
+    if (fn_803865B8(player)) {
+        return fn_80385960(player);
+    }
+    return false;
+}

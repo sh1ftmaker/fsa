@@ -65,7 +65,11 @@ public:
     /* 0x004 */ u8 field_0x4[0x8 - 0x4];
     // fn_80396F94 updates it each frame (JMessage::TControl::update).
     /* 0x008 */ JMessage::TControl* field_0x8;
-    /* 0x00C */ u8 field_0xc[0x13C - 0xC];
+    /* 0x00C */ u8 field_0xc[0xB8 - 0xC];
+    // The window box's width and height (fn_8037EB4C scales them).
+    /* 0x0B8 */ f32 field_0xb8;
+    /* 0x0BC */ f32 field_0xbc;
+    /* 0x0C0 */ u8 field_0xc0[0x13C - 0xC0];
     // fn_803A30FC stores into it by index; the constructor sets all three to -1.
     /* 0x13C */ s32 field_0x13c[3];
     /* 0x148 */ s32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
@@ -139,6 +143,27 @@ public:
     u8 fn_803A313C();
 }; // Size: 0x3C4 (the fields game/tu_803944C8.cpp and tu_80390818 use are declared)
 
+// "gc_four_swords_text_e.bmg" (a JMessage BMG file): a 0x20-byte header, the
+// INF1 block (one 8-byte entry per message) and then the DAT1 text block. Only
+// what the game code reads is declared.
+struct MessageEntry_804AF070 {
+    /* 0x0 */ u32 textOffset; // into the DAT1 text
+    /* 0x4 */ u16 id;         // the message id fn_803846BC looks up
+    /* 0x6 */ u8 field_0x6[2];
+}; // Size: 0x8
+struct MessageInf1_804AF070 {
+    /* 0x00 */ u8 magic[4]; // 'INF1'
+    /* 0x04 */ u32 size;    // of the INF1 block; the DAT1 block follows it
+    /* 0x08 */ u16 count;   // entries
+    /* 0x0A */ u16 entrySize;
+    /* 0x0C */ u8 field_0xc[0x10 - 0xC];
+    /* 0x10 */ MessageEntry_804AF070 entries[1]; // `count` of them
+};
+struct MessageFile_804AF070 {
+    /* 0x00 */ u8 field_0x0[0x20];
+    /* 0x20 */ MessageInf1_804AF070 inf1;
+};
+
 // One per player, field_0x114 of the manager (created there with
 // __nw__(0x5C)). Code in game/tu_80390818.cpp. Named after its vtable
 // (0x804AF490, stored first by the constructor).
@@ -151,7 +176,9 @@ public:
     /* 0x08 */ virtual ~MessageWindow_804AF490(); // fn_80391974
 
     /* 0x00 */ // vtable
-    /* 0x04 */ u8 field_0x4[0x18 - 0x4];
+    // fn_8038D870 stores the manager's mBmg here.
+    /* 0x04 */ MessageFile_804AF070* field_0x4;
+    /* 0x08 */ u8 field_0x8[0x18 - 0x8];
     /* 0x18 */ s32 mIndex;
     /* 0x1C */ s32 field_0x1c;
     // fn_80390E40 stores its word argument here while the state is 0 or the
@@ -166,7 +193,12 @@ public:
     /* 0x28 */ u16 field_0x28;
     /* 0x2A */ u8 field_0x2a[0x2C - 0x2A];
     /* 0x2C */ s32 field_0x2c; // fn_8037EFB4 returns it
-    /* 0x30 */ u8 field_0x30[0x44 - 0x30];
+    /* 0x30 */ u8 field_0x30[0x34 - 0x30];
+    /* 0x34 */ s32 field_0x34; // fn_80389254 stores a value clamped to 99999
+    /* 0x38 */ s32 field_0x38; // fn_8038911C: the same
+    /* 0x3C */ s16 field_0x3c; // fn_803894BC: clamped to 9
+    /* 0x3E */ s16 field_0x3e; // fn_8038938C: clamped to 9999
+    /* 0x40 */ u8 field_0x40[0x44 - 0x40];
     /* 0x44 */ u8 field_0x44;
     /* 0x48 */ cls_804AF5A0* field_0x48;
     /* 0x4C */ cls_804AF5A0* field_0x4c;
@@ -174,7 +206,13 @@ public:
 
     // fn_80390818: maps the window state to a 0-2 class (0: state 0 or 9+,
     // 1: 6-8, 2: 1-5). Placeholder name, no caller identified yet.
-    s32 fn_80390818();
+    u8 fn_80390818();
+
+    // Placeholder names, bodies in game/tu_80390818.cpp (not written yet):
+    // fn_80390C6C steps the window and returns its halfword at 0x26; fn_80391678
+    // resets it.
+    u16 fn_80390C6C();
+    void fn_80391678();
 
     // fn_80390E40: stores value at 0x20 when the state is 0 or flag is set and
     // returns true; false otherwise.
@@ -227,7 +265,7 @@ public:
     /* 0x004 */ J2DTextBox* mTextBox;
     // The "gc_four_swords_text_e.bmg" resource; fn_803832BC reads its INF1
     // entries (8 bytes each from +0x20) and the text at +0x24.
-    /* 0x008 */ void* mBmg;
+    /* 0x008 */ MessageFile_804AF070* mBmg;
     /* 0x00C */ JGeometry::TVec3f field_0xc[4];
     // The message id the box was set up for, -1 when none; fn_8037F2FC
     // compares msg with it (cmplw).
@@ -255,9 +293,10 @@ public:
     /* 0x0EC */ u8 field_0xec;
     /* 0x0ED */ u8 field_0xed;
     /* 0x0EE */ u8 field_0xee;
-    /* 0x0EF */ u8 field_0xef[0xF8 - 0xEF];
+    /* 0x0EF */ u8 field_0xef;
+    /* 0x0F0 */ u16 field_0xf0[4]; // fn_8038D870 clears them
     /* 0x0F8 */ s32 field_0xf8;
-    /* 0x0FC */ u8 field_0xfc[0x10C - 0xFC];
+    /* 0x0FC */ s32 field_0xfc[4]; // fn_8038D870 sets them to -1
     /* 0x10C */ s32 field_0x10c; // act_bandit_herding_npc reads it
     /* 0x110 */ s32 field_0x110;
     /* 0x114 */ MessageWindow_804AF490* mWindows[4];
@@ -273,8 +312,9 @@ extern MessageManager_804AF070* lbl_8053AD78;
 // named after its vtable 0x804AF32C. The constructor only stores constants:
 // bytes, floats and from 0x4C on 0x156 halfwords (screen positions, sizes
 // and frame counts the message and menu code reads with lha; 20 units, 240
-// references, mostly one unit per halfword). dtk's object is 0x40C bytes;
-// the constructor's last store is the byte at 0x30D.
+// references, mostly one unit per halfword). the object is 0x310 bytes: the unit's
+// __sinit puts the pools' destructor chain right after it. The constructor's last
+// store is the byte at 0x30D.
 class cls_804AF32C {
 public:
     cls_804AF32C(); // fn_8037DF68
@@ -293,22 +333,72 @@ public:
     /* 0x2FB */ u8 field_0x2fb;
     /* 0x2FC */ u8 field_0x2fc[0x304 - 0x2FC];
     /* 0x304 */ u8 field_0x304[10];
-    /* 0x30E */ u8 field_0x30e[0x40C - 0x30E];
-}; // Size: 0x40C (dtk's object; see above)
+    /* 0x30E */ u8 field_0x30e[0x310 - 0x30E];
+}; // Size: 0x310 (the unit's __sinit places its destructor chain at 0x310)
 
 extern cls_804AF32C lbl_8050DB0C;
 
-// Functions of game/tu_8037DF68.cpp other units call. Return types: callers
-// clrlwi 24 / clrlwi. the bool ones.
-extern "C" {
-// 4 units. Returns field_0x114[window]->field_0x24, the window's state byte
-// (lbz with no bool conversion; tu_80301CD0 compares it with 3, 1 and 5).
-u8 fn_8037F1E4(s32 player);
+// Functions of game/tu_8037DF68.cpp with C++ linkage (written in that unit).
+// "window" is the player mapped to a window index as described above.
+// Whether any player's window is in state class 1 (fn_80390818).
+bool fn_8037E4BC();
+// 0 unless lbl_80529DEC's 0x118 is 8 or more and its 0x11C is 0 (the stage
+// check), then the manager's field_0x4c[window]. player outside 0-3 gives 0.
+s32 fn_8037E54C(s32 player);
+// field_0x114[window]->field_0x44.
+u8 fn_8037E694(s32 player);
+// Whether the manager's byte field_0xe8 has bit `window` set.
+bool fn_8037E7AC(s32 player);
+// Sets that bit.
+void fn_8037E8D4(s32 player);
 // 1 unit (tu_80316E34). Maps the player to a window and returns
 // fn_80390850(field_0x114[window]): -1 or field_0x174 of the window's object.
 s32 fn_8037E9F4(s32 player);
+// Copies four floats of the manager (0x5C, 0x64, 0x60, 0x68) and its byte at
+// 0xE6 to the pointers.
+void fn_8037EB0C(f32* a, f32* b, f32* c, f32* d, u8* e);
+// Calls fn_8043DF8C at the four corners of each open window's box (its 0xB8 /
+// 0xBC size, scaled by lbl_8050DB0C's field_0x30[2] when option 0x40 is set).
+void fn_8037EB4C();
+// Whether the players are ready for the message: true at once when flags has
+// bit 2 or 4; with GameRoot's field_0x7e == 1 it is fn_802308E0(window), else
+// every present player must pass fn_802300EC (then fn_80230AD4 is called on
+// each of them).
+bool fn_8037EC98(s32 player, u16 flags);
+// 20 units. True when the player's window is idle (field_0x24 == 0);
+// otherwise fn_803865B8(player) && fn_80385960(player).
+bool fn_80388EEC(s32 player);
+// The window's field_0x2c plus 1, wrapping to 0 after 3.
+s32 fn_8037EE8C(s32 player);
 // 16 units. field_0x114[window]->field_0x2c (callers cmpwi it).
 s32 fn_8037EFB4(s32 player);
+// The halfword at 0x4 of the manager's mBmg entry `index`: its message id.
+u16 fn_803846A4(s32 index);
+// Store a value into the window's field_0x38 / 0x34 (at most 99999), field_0x3e
+// (at most 9999) and field_0x3c (at most 9).
+void fn_8038911C(s32 player, s32 value);
+void fn_80389254(s32 player, s32 value);
+void fn_8038938C(s32 player, s32 value);
+void fn_803894BC(s32 player, s32 value);
+// The window's fn_80390C6C (its halfword at 0x26).
+u16 fn_8037F0CC(s32 player);
+// 4 units. Returns field_0x114[window]->field_0x24, the window's state byte
+// (lbz with no bool conversion; tu_80301CD0 compares it with 3, 1 and 5).
+u8 fn_8037F1E4(s32 player);
+// The message text of entry `index` when it starts with the control code 0x1A
+// (size 2) and its command byte (at +4) is one of twelve values (7, 0x10,
+// 0x17, 0x18, 0x1D, 0x20, 0x21, 0x23, 0x2A, 0x2C, 0x30, 0x33): *out gets the
+// command, else 0 and a NULL return.
+const char* fn_80383E2C(u32 index, u8* out);
+// The index of the message whose id is `msg` in the INF1 entries, 0x12B when
+// there is none.
+u32 fn_803846BC(u32 msg);
+
+// 41 units. Returns 0 or 1.
+bool fn_80388CAC(s32 player, s32 serial);
+// Functions of game/tu_8037DF68.cpp other units call. Return types: callers
+// clrlwi 24 / clrlwi. the bool ones.
+extern "C" {
 // 1 unit (tu_80139BE8's fn_80139C5C). Takes no arguments.
 void fn_8038D4A8();
 // 16 units / 196 calls (the menu units). Copies the text of message msg
@@ -319,16 +409,18 @@ void fn_8038D4A8();
 f32 fn_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
 // 14 units. Returns 0 or 1.
 bool fn_8038470C(s32 player, u32 msg);
+// 1 unit (game/tu_80403D84.cpp) + 1 (tu_8043A0E8). Builds the text of message
+// msg into out (lines wrapped to width / height, the two counters are
+// fn_803832BC-style arguments); returns a line count that starts at 1.
+s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 height);
 // 16 units (act_talking_npc calls it once fn_8038AD24 has succeeded).
 // Returns 0 or 1.
 bool fn_80384C58(s32 player, s32 serial);
 // 31 units. Returns 0 or 1; fn_80388EEC calls it.
 bool fn_803865B8(s32 player);
-// 41 units. Returns 0 or 1.
-bool fn_80388CAC(s32 player, s32 serial);
-// 20 units. True when the player's window is idle (field_0x24 == 0);
-// otherwise fn_803865B8(player) && fn_80385960(player).
-bool fn_80388EEC(s32 player);
+// Returns 0 or 1 (fn_80388EEC returns it; this unit, not written yet).
+bool fn_80385960(s32 player);
+
 // 36 units. Opens message msg (mapped by fn_80383EB0(window, msg)) for the
 // player, from the actor `serial` on `layer` at pos, through the manager's
 // fn_8038A42C; flags bits 0x40 / 0x2000 select variants (rlwinm tests; the

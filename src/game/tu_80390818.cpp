@@ -1,8 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/Message.h"
 
-s32 MessageWindow_804AF490::fn_80390818() {
-    s32 result = 0;
+u8 MessageWindow_804AF490::fn_80390818() {
+    u8 result = 0;
     switch (field_0x24) {
     case 1:
     case 2:
