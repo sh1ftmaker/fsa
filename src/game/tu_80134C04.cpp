@@ -1,10 +1,32 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
+#include "game/Message.h"
 #include "game/cls_804A8390.h"
 #include "game/cls_804AE9B0.h"
+#include "game/cls_804AF480.h"
+#include "game/cls_804AF878.h"
 #include "game/tu_80379F84.h"
+#include "game/tu_803A3484.h"
+#include "game/tu_803BC6F0.h"
+#include "game/tu_803DAC3C.h"
+#include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JUtility/JUTGamePad.h"
+
+void fn_80139958();
+
+// The stage music (sequence IDs) by GameView_804A9950::field_0x34
+// (fn_80138B7C).
+static const u32 lbl_804652F0[39] = {
+    0x01000000, 0x01000003, 0x0100000B, 0x0100000E, 0x01000010, 0x01000014,
+    0x0100000A, 0x01000009, 0x01000008, 0x01000012, 0x01000011, 0x01000015,
+    0x01000018, 0x01000016, 0x01000013, 0x0100000C, 0x01000004, 0x01000004,
+    0x0100001B, 0x0100001C, 0x01000023, 0x01000025, 0x01000007, 0x01000017,
+    0x01000021, 0x01000019, 0x01000024, 0x01000002, 0x0100000D, 0x01000008,
+    0x01000001, 0x01000029, 0x01000009, 0x01000026, 0x01000018, 0x0100000A,
+    0x0100002A, 0x0100002E, 0x01000030,
+};
+
 
 void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
@@ -74,6 +96,132 @@ void GameRoot_8049EF20::fn_80134FE0(u8 value) {
     }
 }
 
+// Creates the screen object of game mode `mode` unless it exists; the menu
+// screens are made in field_0x98 under heap group ID 1.
+// FIXME: 99.9. Code identical; the switch's jump table is @NNN, not
+// jumptable_8049EF2C (the .data order puts it after the vtable, project-wide
+// jump-table order issue, docs/GAME_PLAN.md).
+void GameRoot_8049EF20::fn_80135020(s32 mode) {
+    switch (mode) {
+    case 7:
+        if (field_0x4 == NULL) {
+            field_0x4 = new (field_0x98, 0) GameRootSub04_801F856C(field_0x98);
+            lbl_8053AB10->fn_8013BE04();
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                s32 level = lbl_80529DEC.field_0x11c;
+                s32 stage = lbl_80529DEC.field_0x118;
+                GameView_804A9950* view = fn_802D6A9C();
+                view->field_0x4 = stage;
+                view->field_0x8 = level;
+            } else {
+                s32 level = lbl_80529DEC.field_0x12c;
+                s32 stage = lbl_80529DEC.field_0x128;
+                GameView_804A9950* view = fn_802D6A9C();
+                view->field_0x4 = stage;
+                view->field_0x8 = level;
+            }
+            field_0x4->fn_8013A1A4();
+        }
+        break;
+    case 12:
+        if (field_0x1c == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x1c = new (field_0x98, 0) cls_804AE9A0();
+            field_0x98->changeGroupID(group);
+            fn_80139958();
+        }
+        break;
+    case 1:
+        if (field_0x20 == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x20 = new (field_0x98, 0) Title_804AF820();
+            field_0x98->changeGroupID(group);
+            field_0x87 = 0;
+        }
+        break;
+    case 2:
+    case 5:
+        if (field_0x28 == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x28 = new (field_0x98, 0) GameMode_804B0688();
+            field_0x98->changeGroupID(group);
+        }
+        break;
+    case 3:
+        if (field_0x24 == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x24 = new (field_0x98, 0) FileSelect_804AFF60();
+            field_0x98->changeGroupID(group);
+        }
+        break;
+    case 4:
+        if (field_0x2c == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x2c = new (field_0x98, 0) cls_804AF878();
+            field_0x98->changeGroupID(group);
+        }
+        break;
+    case 6:
+        if (field_0x30 == NULL) {
+            u8 group = field_0x98->changeGroupID(1);
+            field_0x30 = new (field_0x98, 0) cls_804AF480();
+            field_0x98->changeGroupID(group);
+        }
+        break;
+    }
+}
+
+// Deletes the screen object of game mode `mode` (see fn_80135020).
+// FIXME: 99.9. Code identical; jump table @NNN vs jumptable_8049EF60 (as fn_80135020).
+void GameRoot_8049EF20::fn_801352F4(s32 mode) {
+    switch (mode) {
+    case 7:
+        if (field_0x4 != NULL) {
+            field_0x4->fn_80139BE8();
+            delete field_0x4;
+            field_0x4 = NULL;
+        }
+        break;
+    case 12:
+        if (field_0x1c != NULL) {
+            delete field_0x1c;
+            field_0x1c = NULL;
+        }
+        break;
+    case 1:
+        if (field_0x20 != NULL) {
+            delete field_0x20;
+            field_0x20 = NULL;
+        }
+        break;
+    case 2:
+    case 5:
+        if (field_0x28 != NULL) {
+            delete field_0x28;
+            field_0x28 = NULL;
+        }
+        break;
+    case 3:
+        if (field_0x24 != NULL) {
+            delete field_0x24;
+            field_0x24 = NULL;
+        }
+        break;
+    case 4:
+        if (field_0x2c != NULL) {
+            delete field_0x2c;
+            field_0x2c = NULL;
+        }
+        break;
+    case 6:
+        if (field_0x30 != NULL) {
+            delete field_0x30;
+            field_0x30 = NULL;
+        }
+        break;
+    }
+}
+
 // Whether the game mode (field_0x4c) is one of 0 - 6, 9 or 12.
 // FIXME: 85.9. The target tests mode == 0 separately and then folds 1-6 into one
 // range (subi; cmplwi 5), reusing r3 for the mode; ours folds 0-6 into one range.
@@ -85,6 +233,23 @@ bool GameRoot_8049EF20::fn_80136320() {
         }
     }
     return false;
+}
+
+void GameRoot_8049EF20::fn_80136500() {
+    u8 stopped = lbl_8053AAF8->field_0x94;
+    if (lbl_8053AAF8->field_0x96 != 0) {
+        stopped = true;
+    }
+    if (lbl_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
+        stopped = true;
+    }
+    if (field_0xfe == 1 && !stopped) {
+        field_0xfc++;
+        if (field_0xfc >= 60) {
+            field_0xfc = 0;
+            field_0xf8++;
+        }
+    }
 }
 
 void fn_801365A8() {
@@ -107,6 +272,18 @@ void GameRoot_8049EF20::fn_801365E8(s32 a, s32 b, s32 c) {
     lbl_80529DEC.field_0x118 = a;
     lbl_80529DEC.field_0x11c = b;
     field_0x84 = 1;
+}
+
+void GameRoot_8049EF20::fn_8013665C(s32 a, s32 b) {
+    fn_801365E8(a, b, 0);
+    if (a == 10 && b == 2) {
+        if (field_0x4c == 9) {
+            lbl_80529DEC.field_0x24b = 2;
+        } else {
+            lbl_80529DEC.field_0x24b = 1;
+        }
+        lbl_80529DEC.field_0x237 = 7;
+    }
 }
 
 void GameRoot_8049EF20::fn_8013670C(s32 value) {
@@ -146,6 +323,45 @@ s32 GameRoot_8049EF20::fn_80138A30() {
         }
     }
     return count;
+}
+
+bool fn_80138AB0() {
+    if (lbl_8053AAF8->field_0x7e == 1) {
+        if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(1)) &&
+            lbl_8053AD30->fn_8030A308(fn_8030AAF4(2)) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(3)))
+        {
+            return true;
+        }
+    } else if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+        return true;
+    }
+    return false;
+}
+
+// Starts the music of the current stage (GameView_804A9950::field_0x34).
+void GameRoot_8049EF20::fn_80138B7C() {
+    s32 count = fn_802D6A9C()->field_0x1328c;
+    s32 id = fn_802D6A9C()->field_0x34;
+    if (id == 0x11) {
+        return;
+    }
+    if (lbl_8053AAF8->field_0x7f == 1) {
+        if (id == 0x14 || id == 0x1E) {
+            field_0xa0->fn_80458F04(lbl_804652F0[id]);
+        } else {
+            field_0xa0->fn_80458FF0(lbl_804652F0[id], false, count);
+            GameView_804A9950* view = fn_802D6A9C();
+            view->field_0x1328c = count + 1;
+        }
+    } else if (id != 0x19) {
+        if (field_0x86 == 0) {
+            field_0xa0->fn_80458FF0(0x1000004, false, false);
+        } else {
+            field_0xa0->fn_80458FF0(0x100000D, false, false);
+        }
+    } else {
+        field_0xa0->fn_80458FF0(0x1000019, false, false);
+    }
 }
 
 void fn_80139958() {

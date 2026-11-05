@@ -73,6 +73,8 @@ public:
 // (fn_8037A708 calls their members with them; fn_80379F84, fn_8037A580 and
 // fn_8037A664 test them and use the screens' globals).
 struct cls_804AE9A0 {
+    // fn_8037A8D4; GameRoot's fn_80135020 (tu_80134C04) makes it with __nw__(0x20).
+    cls_804AE9A0();
     /* 0x08 */ virtual ~cls_804AE9A0();
     bool fn_80379F84();
     void fn_8037A580();

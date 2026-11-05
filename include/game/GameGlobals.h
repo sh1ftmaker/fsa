@@ -81,6 +81,9 @@ class PlayerManager_804A6F28;
 struct GameRootSub20_801902C0;
 
 struct GameRootSub04_801F856C {
+    // 0x8013A538 (game/tu_80139BE8.cpp, not written yet): GameRoot's
+    // fn_80135020 makes it with __nw__(0x38) and passes GameRoot's heap.
+    GameRootSub04_801F856C(JKRHeap* heap);
     // vtable at 0x0 (0x8049F080); its one slot is the destructor below.
     virtual ~GameRootSub04_801F856C();
 
@@ -144,10 +147,29 @@ struct GameRootSub04_801F856C {
 // (0x80139340). Named after its vtable, 0x8049EF20 (constructor
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
 struct Unk_8045A080;
+class cls_804A8390;
+class Title_804AF820;
+class FileSelect_804AFF60;
+class GameMode_804B0688;
+class cls_804AF878;
+class cls_804AF480;
+struct cls_804AE9A0;
 struct GameRoot_8049EF20 {
-    /* 0x00 */ u8 field_0x0[0x4];
-    /* 0x04 */ GameRootSub04_801F856C* field_0x4; // -> 0x8: the actor manager
-    /* 0x08 */ u8 field_0x8[0x4C - 0x8];
+    // vtable 0x8049EF20: one slot, the destructor (0x80138E78).
+    virtual ~GameRoot_8049EF20();
+
+    // The screen objects fn_80135020 (0x80135020) creates for a game mode
+    // (field_0x4c) and fn_801352F4 (0x801352F4) deletes again; each is made in
+    // field_0x98 with its heap group ID set to 1.
+    /* 0x04 */ GameRootSub04_801F856C* field_0x4; // mode 7 (0x38 bytes); -> 0x8: the actor manager
+    /* 0x08 */ u8 field_0x8[0x1C - 0x8];
+    /* 0x1C */ cls_804AE9A0* field_0x1c;         // mode 12 (0x20 bytes)
+    /* 0x20 */ Title_804AF820* field_0x20;       // mode 1 (0x158 bytes)
+    /* 0x24 */ FileSelect_804AFF60* field_0x24;  // mode 3 (0x1AC bytes)
+    /* 0x28 */ GameMode_804B0688* field_0x28;    // modes 2 and 5 (0x120 bytes)
+    /* 0x2C */ cls_804AF878* field_0x2c;         // mode 4 (0x10 bytes)
+    /* 0x30 */ cls_804AF480* field_0x30;         // mode 6 (0x10 bytes)
+    /* 0x34 */ u8 field_0x34[0x4C - 0x34];
     /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
     // Set (with field_0x58 = 1) by fn_80136798, fn_8013670C and fn_801365E8 (game/tu_80134C04.cpp).
     /* 0x50 */ s32 field_0x50;
@@ -179,6 +201,7 @@ struct GameRoot_8049EF20 {
     // Toggled between 0 and 1 by fn_80134DC0 (game/tu_80134C04.cpp, 0x80134DC0,
     // stb of r3 at 0x86 only).
     /* 0x86 */ u8 field_0x86;
+    // Cleared when fn_80135020 creates the title screen (mode 1).
     /* 0x87 */ u8 field_0x87;
     // Stored by fn_80134D14 (game/tu_80134C04.cpp, 0x80134D14, stb of r4).
     /* 0x88 */ u8 field_0x88;
@@ -190,7 +213,11 @@ struct GameRoot_8049EF20 {
     /* 0x95 */ u8 field_0x95;
     // Stored by fn_80134FBC (game/tu_80134C04.cpp, 0x80134FBC, stb of r4).
     /* 0x96 */ u8 field_0x96;
-    /* 0x97 */ u8 field_0x97[0xA0 - 0x97];
+    /* 0x97 */ u8 field_0x97[0x98 - 0x97];
+    // The heap the screens of fn_80135020 are made in (lbl_80529DEC's mHeap,
+    // copied by the constructor).
+    /* 0x98 */ JKRHeap* field_0x98;
+    /* 0x9C */ u8 field_0x9c[0xA0 - 0x9C];
     // The audio object (fn_80458880 / fn_804593D4 in fn_80134D20, game/tu_80134C04.cpp).
     /* 0xA0 */ Unk_8045A080* field_0xa0;
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
@@ -275,6 +302,10 @@ struct GameRoot_8049EF20 {
     // 1 unit. act_wait_switch calls it with (10, count) when its switch is
     // seen; r3 is lbl_8053AAF8 (the only object this unit's calls pass).
     void fn_80134DE4(s32 a, s32 b);
+    // Owner: game/tu_80134C04.cpp (0x80135020, 0x801352F4). Create / delete
+    // the screen object of game mode `mode` (switch on 0-12; see 0x04-0x30).
+    void fn_80135020(s32 mode);
+    void fn_801352F4(s32 mode);
     // game/tu_80134C04.cpp, called by main (tu_801344C0) only. The
     // constructor allocated with __nw__(0x11C); no arguments.
     GameRoot_8049EF20();
@@ -296,6 +327,15 @@ struct GameRoot_8049EF20 {
     // fn_8019CD9C (game/tu_80197070.cpp) with its s32 argument; r3 is
     // lbl_8053AAF8 (the only object that unit's call passes).
     void fn_8013670C(s32 value);
+    // Owner: game/tu_80134C04.cpp (0x80136500; called by tu_80139BE8). Counts
+    // field_0xfc up to 60 frames, then field_0xf8 up by one, while field_0xfe
+    // is 1 and none of field_0x94, field_0x96 or (with field_0x7e clear)
+    // fn_8037F1E4(0) holds the game.
+    void fn_80136500();
+    // Owner: game/tu_80134C04.cpp (0x8013665C; act_tingle_tower, tu_8044C7F0).
+    // fn_801365E8(a, b, 0), then stage (10, 2) also sets lbl_80529DEC's 0x24B
+    // (2 in mode 9, else 1) and 0x237.
+    void fn_8013665C(s32 a, s32 b);
 }; // Size: 0x11C
 
 extern GameRoot_8049EF20* lbl_8053AAF8;
@@ -345,10 +385,11 @@ public:
 }; // Size: 0x30
 // The function-local static (lbl_804BC504) of 0x80119DD0; game/tu_80118384.cpp.
 cls_80119E5C* fn_80119DD0();
-extern "C" {
-// Owner: game/tu_80134C04.cpp (defined there; not written yet). No arguments; reads
-// lbl_8053AAF8->field_0x7e and tests all four players. Returns 0 or 1 (clrlwi 24).
+// Owner: game/tu_80134C04.cpp (0x80138AB0). No arguments; whether the input
+// slot of player 0 (all four players when lbl_8053AAF8->field_0x7e is 1) is
+// connected (cls_804AA8C8::fn_8030A308).
 bool fn_80138AB0();
+extern "C" {
 }
 
 class EnemyBase_804A4808;
@@ -423,8 +464,9 @@ struct Unk_8045A080 {
     // game/tu_80457DFC.cpp (0x80458FF0). act_enemy_generator_3 calls it with
     // (0x1000021, 1, 0) when field_0x58 differs from 0x1000021; the body
     // compares r4 against 0x1000000+n, tests r5 with clrlwi. 24 (0x8045908C) and
-    // stores r6 (a byte) at 0x8d.
-    void fn_80458FF0(s32 id, bool arg1, bool flag);
+    // stores r6 (a byte) at 0x8d. The third argument is a u8: GameRoot's
+    // fn_80138B7C (tu_80134C04) passes an s32 count with clrlwi 24.
+    void fn_80458FF0(s32 id, bool arg1, u8 flag);
     // game/tu_80457DFC.cpp (0x8045A080): the constructor main calls on the
     // 0x90-byte object it allocates in the main heap.
     Unk_8045A080();
