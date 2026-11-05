@@ -5,7 +5,9 @@ A function below 100 % counts as structurally done when tools/try.py's classifie
 (imported here, not copied) calls it regalloc-only, scheduling or
 scheduling+regalloc, with or without reloc-name: every instruction the same apart
 from register numbers and order. A function whose instructions are identical and
-only a relocation name differs (class reloc-name) counts too. "Structurally
+only relocation names differ (class reloc-name) counts too, but only when every
+differing relocation is ours @NNN against the target's lbl_XXXXXXXX with the same
+bytes in both objects (naming_only); otherwise it is reloc-name-unverified. "Structurally
 close" is missing/extra with |instruction difference| <= 4 and >= 85 %.
 
 Writes build/G4SE01/structural.json:
@@ -22,9 +24,10 @@ weak-duplicate stripping already applies), in parallel, and caches each unit's
 result by the mtimes of its objects (build/G4SE01/structural_cache.json).
 
 A reloc-name difference counts only when every differing relocation pair is
-ours @NNN against the target's lbl_XXXXXXXX (naming of a literal/data object);
-any other target difference could be a wrong call or global, so that function
-is class "... reloc-name-unverified" and left out of the structural total.
+ours @NNN against the target's lbl_XXXXXXXX, no addend, and the two symbols'
+bytes read from the two objects are equal (one a prefix of the other, not .bss).
+Anything else could be a wrong call, global or value, so that function is class
+"... reloc-name-unverified" and is left out of the structural total.
 
 Usage: python3 tools/structural.py [-j N] [--no-cache]
 Run after `ninja build/G4SE01/report_honest.json` (ninja runs it as
@@ -47,19 +50,61 @@ REPORT = OUT / "report_honest.json"
 CACHE = OUT / "structural_cache.json"
 DONE = {"regalloc-only", "scheduling", "scheduling+regalloc", "reloc-name"}
 CLOSE_INSNS, CLOSE_PCT = 4, 85.0
-VERSION = 2  # bump when the classification changes
+VERSION = 3  # bump when the classification changes
 
 
 LOCAL_LIT = re.compile(r"^@\d+$")
 ORIG_LBL = re.compile(r"^lbl_[0-9A-Fa-f]+$")
 
 
-def naming_only(pairs):
+def read_symbols(path):
+    """{name: [(bytes or None for NOBITS, section name)]} of an ELF32 big-endian object."""
+    import struct
+    d = Path(path).read_bytes()
+    shoff, = struct.unpack_from(">I", d, 0x20)
+    shentsize, shnum, shstrndx = struct.unpack_from(">HHH", d, 0x2E)
+    secs = [struct.unpack_from(">IIIIIIIIII", d, shoff + i * shentsize) for i in range(shnum)]
+
+    def cstr(off):
+        return d[off:d.index(b"\0", off)].decode(errors="replace")
+
+    shstr = secs[shstrndx][4]
+    names = [cstr(shstr + sh[0]) for sh in secs]
+    out = {}
+    for sh in secs:
+        if sh[1] != 2:  # SHT_SYMTAB
+            continue
+        strtab = secs[sh[6]][4]
+        for k in range(sh[5] // 16):
+            nm, val, size, info, other, shndx = struct.unpack_from(">IIIBBH", d, sh[4] + k * 16)
+            if not nm or shndx == 0 or shndx >= 0xFF00 or (info & 0xF) in (3, 4):
+                continue
+            tgt = secs[shndx]
+            data = None if tgt[1] == 8 else d[tgt[4] + val: tgt[4] + val + size]
+            out.setdefault(cstr(strtab + nm), []).append((data, names[shndx]))
+    return out
+
+
+def same_value(a, b):
+    """Symbol entry lists a (target) and b (ours): equal bytes (shorter is a prefix), not .bss."""
+    for da, sa in a:
+        for db, sb in b:
+            if da is None or db is None or "bss" in sa or "bss" in sb or not da or not db:
+                continue
+            n = min(len(da), len(db))
+            if da[:n] == db[:n]:
+                return True
+    return False
+
+
+def naming_only(pairs, tsyms=None, osyms=None):
     """True when every differing relocation is a compiler-local literal/data
     object (ours @NNN) against the target's unnamed data label (lbl_XXXXXXXX),
     no addend on either side: just naming. A call, a named global, or a
     differing addend is a possible wrong target and stays unverified."""
-    return bool(pairs) and all(LOCAL_LIT.match(b) and ORIG_LBL.match(a) for a, b in pairs)
+    return bool(pairs) and all(
+        LOCAL_LIT.match(b) and ORIG_LBL.match(a) and same_value(tsyms.get(a, []), osyms.get(b, []))
+        for a, b in pairs)
 
 
 def load_try():
@@ -71,7 +116,7 @@ def load_try():
 
 def is_done(cls):
     parts = cls.split(" + ")
-    return all(p in DONE for p in parts) and parts[0] in DONE
+    return all(p in DONE for p in parts)
 
 
 def mtime(p):
@@ -81,8 +126,12 @@ def mtime(p):
         return 0
 
 
+_HERE = Path(__file__).resolve().parent
+TOOLS_STAMP = [mtime(_HERE / "try.py"), mtime(_HERE / "structural.py")]
+
+
 def unit_stamp(u):
-    return [mtime(u.get("base_path", "")), mtime(u.get("target_path", "")), VERSION]
+    return [mtime(u.get("base_path", "")), mtime(u.get("target_path", "")), VERSION, *TOOLS_STAMP]
 
 
 def diff_unit(T, u):
@@ -93,6 +142,7 @@ def diff_unit(T, u):
         raise RuntimeError(f"{u['name']}: {out.stderr.strip()[-300:]}")
     d = json.loads(out.stdout)
     left, right = d["left"], d["right"]
+    tsyms = osyms = None
     res = {}
     for s in left["symbols"]:
         if s.get("kind") != "SYMBOL_FUNCTION" or s.get("match_percent") == 100:
@@ -105,8 +155,10 @@ def diff_unit(T, u):
             continue
         t, o = T.insn_list(left, s), T.insn_list(right, r)
         rp = T.reloc_pairs(s, r, left, right)
+        if rp and tsyms is None:
+            tsyms, osyms = read_symbols(u["target_path"]), read_symbols(u["base_path"])
         cls, _ = T.classify(t, o, rp)
-        if "reloc-name" in cls and not naming_only(rp):
+        if "reloc-name" in cls and not naming_only(rp, tsyms, osyms):
             cls = cls.replace("reloc-name", "reloc-name-unverified")
         res[s["name"]] = [float(s.get("match_percent") or 0), size, cls, len(o) - len(t)]
     return res
