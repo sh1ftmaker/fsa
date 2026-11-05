@@ -490,6 +490,26 @@ void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
     lbl_8053AB10->field_0x28->fn_8013C958(emitter);
 }
 
+// FIXME: 99.85. Code identical; only the .sdata2 relocations of 0.70710677f and 0.41421357f
+// differ (0.5f of the unwritten draw passes is missing before the int-to-float double).
+// Projects the particles: scales the manager's camera matrix by 1/sqrt 2 in y and z and moves
+// it by the emitter's translation times tan(22.5 deg) in y and z.
+void cls_8049F184::draw(JPABaseEmitter* emitter) {
+    JPAEmitterWorkData* work = lbl_8053AB10->field_0x28->mEmitterManager->pWd;
+    JGeometry::TSMtxf camera;
+    camera.set(work->mPosCamMtx);
+    Mtx m;
+    PSMTXScale(m, 1.0f, 0.70710677f, 0.70710677f);
+    PSMTXConcat(camera, m, camera);
+    JGeometry::TVec3f trans;
+    trans.set(emitter->mGlobalTrs);
+    trans.scale(0.41421357f);
+    trans.x = 0.0f;
+    PSMTXTrans(m, trans.x, trans.y, trans.z);
+    PSMTXConcat(camera, m, camera);
+    PSMTXCopy(camera, work->mPosCamMtx);
+}
+
 // FIXME: 97.7. Regalloc only: the original keeps lbl_8053AB10 in r3 and loads the effect
 // system into r4 first; here the root is in r4 and the camera comes in r5.
 void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
