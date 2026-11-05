@@ -21,6 +21,8 @@ public:
 
     cls_804B0B00();
     /* 0x08 */ virtual ~cls_804B0B00();
+    // Draws the four player sprites over field_0xc's player panes.
+    void fn_803E1668();
     void fn_803ED83C();
     void fn_803EDA2C();
     // `mode` is tested after clrlwi 24 (switch on 0, 1, 2).

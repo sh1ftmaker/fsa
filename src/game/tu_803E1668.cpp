@@ -7,9 +7,12 @@
 #include "game/tu_803E1668.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DAnimation.h"
 #include "JSystem/J2D/J2DAnmLoader.h"
 #include "game/Message.h"
+#include "game/Map.h"
+#include "JSystem/JUtility/JUTVideo.h"
 #include "dolphin/os.h"
 
 // Entered when the state changes (index: the new state). The three tables
@@ -234,6 +237,155 @@ static inline void stepBlink(cls_804B0B00* self) {
     }
 }
 
+// The centre of a pane of field_0xc. Macros: the original evaluates the tag
+// expression (table index, field_0x1bc and all) again for each search, and
+// reads the size before the second search (as in game/tu_803F0A54.cpp).
+#define PANE_CENTRE_X(dst, tag)                                                    \
+    do {                                                                           \
+        f32 size = field_0xc->search(tag)->getWidth();                             \
+        dst = size / 2 + field_0xc->search(tag)->getGlobalBounds().i.x;         \
+    } while (0)
+#define PANE_CENTRE_Y(dst, tag)                                                    \
+    do {                                                                           \
+        f32 size = field_0xc->search(tag)->getHeight();                            \
+        dst = size / 2 + field_0xc->search(tag)->getGlobalBounds().i.y;         \
+    } while (0)
+
+// Screen coordinates (640 x 480 layout scaled to 280 x 210) of a point on
+// the current render mode.
+static inline f32 toSpriteX(f32 x) {
+    return 280.0f * x / (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+}
+
+static inline f32 toSpriteY(f32 y) {
+    return 210.0f * (8.0f + y) / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
+}
+
+// FIXME: 98.08. Same length. Registers and scheduling of the table index
+// arithmetic (i / 2 + (i % 2) * 2 and the [field_0x1bc] row address are
+// computed in another order), plus .sdata2 @NNN names (sdata2 not split).
+// Draws the four player sprites ("player_sob.bin") over field_0xc's player
+// panes, sliding them between the field_0x1bc + 1 player layout and the
+// 4-player one as field_0x220[0] counts 100-112 and 212-224 (the
+// cls_804B0F10::fn_803F0A54 twin, with a 1-player row).
+void cls_804B0B00::fn_803E1668() {
+    f32 ratio = (f32)field_0xc->search(lbl_804780C0[0])->getAlpha() / (f32)field_0x342[0];
+    JGeometry::TVec3f pos;
+    if (field_0x220[0] < 100) {
+        for (s32 i = 0; i < 4; i++) {
+            if (lbl_80478890[field_0x1bc][i] != 0) {
+                SpriteParams_801F5AE0 params;
+                params.field_0x26 = 0;
+                params.field_0x10.mColor.a = 255.0f * ratio;
+                f32 x;
+                PANE_CENTRE_X(x, lbl_80478890[field_0x1bc][i]);
+                pos.x = toSpriteX(x);
+                f32 y;
+                PANE_CENTRE_Y(y, lbl_80478890[field_0x1bc][i]);
+                pos.y = toSpriteY(y);
+                pos.z = 0.0f;
+                params.field_0x0[7] = i + 12;
+                s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
+                void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+    } else if (field_0x220[0] < 112) {
+        // Slide from the field_0x1bc + 1 player panes to the 4-player ones.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1bc) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80478890[field_0x1bc][0]);
+                PANE_CENTRE_X(to, lbl_80478890[3][i]);
+                break;
+            case 1:
+                PANE_CENTRE_X(from, lbl_80478890[field_0x1bc][i % 2]);
+                PANE_CENTRE_X(to, lbl_80478890[3][i / 2 + (i % 2) * 2]);
+                break;
+            case 2:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80478890[field_0x1bc][i]);
+                    PANE_CENTRE_X(to, lbl_80478890[3][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80478890[field_0x1bc][2]);
+                    PANE_CENTRE_X(to, lbl_80478890[3][i]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x220[0] - 100) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80478890[3][i]);
+            pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
+    } else if (field_0x220[0] < 212) {
+        for (s32 i = 0; i < 4; i++) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 x;
+            PANE_CENTRE_X(x, lbl_80478890[3][i]);
+            pos.x = toSpriteX(x);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80478890[3][i]);
+            pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            if (field_0x1bc == 1) {
+                params.field_0x0[7] = i / 2 + (i % 2) * 2 + 12;
+            } else {
+                params.field_0x0[7] = i + 12;
+            }
+            s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+        }
+    } else {
+        // Slide back to the field_0x1bc + 1 player panes.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1bc) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80478890[3][i]);
+                PANE_CENTRE_X(to, lbl_80478890[field_0x1bc][0]);
+                break;
+            case 1:
+                PANE_CENTRE_X(from, lbl_80478890[3][i / 2 + (i % 2) * 2]);
+                PANE_CENTRE_X(to, lbl_80478890[field_0x1bc][i % 2]);
+                break;
+            case 2:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80478890[3][i]);
+                    PANE_CENTRE_X(to, lbl_80478890[field_0x1bc][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80478890[3][i]);
+                    PANE_CENTRE_X(to, lbl_80478890[field_0x1bc][2]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x220[0] - 212) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80478890[3][i]);
+            pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
+    }
+}
+
 void cls_804B0B00::fn_803E29C8() {
     field_0x5c->fn_8043670C(0);
     field_0x1d8 = field_0x1d4;
@@ -286,6 +438,33 @@ void cls_804B0B00::fn_803E4330() {
     field_0x1d4 = 3;
 }
 
+// Enter state 2: slides the menu panes off screen (offsets cleared by the
+// update functions as they slide back in). fn_803EDBF0 inlines it.
+void cls_804B0B00::fn_803E4344() {
+    field_0xf8 = -150.0f;
+    mScreen->search('Pmadbb07')->move(field_0xf0, field_0xf4 + field_0xf8);
+    field_0xfc = -200.0f;
+    field_0x78->fn_80402E08(0.0f, field_0xfc);
+    field_0x120[0] = -350.0f;
+    mScreen->search('Pnopb04')->move(field_0x100[0] + field_0x120[0], field_0x110[0]);
+    field_0x120[1] = -350.0f;
+    mScreen->search('Pnopb08')->move(field_0x100[1] + field_0x120[1], field_0x110[1]);
+    field_0x120[2] = -350.0f;
+    mScreen->search('Pnopb12')->move(field_0x100[2] + field_0x120[2], field_0x110[2]);
+    field_0x120[3] = -350.0f;
+    mScreen->search('Pnopb16')->move(field_0x100[3] + field_0x120[3], field_0x110[3]);
+    field_0x138 = 400.0f;
+    mScreen->search('Ndata02')->move(field_0x130 + field_0x138, field_0x134);
+    field_0x14c = 400.0f;
+    mScreen->search('Ndata05')->move(field_0x13c + field_0x14c, field_0x140);
+    mScreen->search('Ndata07')->move(field_0x144 + field_0x14c, field_0x148);
+    field_0x220[0] = 0;
+    field_0x1e0[0] = 0;
+    field_0x254[0] = 0;
+    field_0x1d8 = field_0x1d4;
+    field_0x1d4 = 2;
+}
+
 void cls_804B0B00::fn_803E45FC() {
     field_0x1d8 = field_0x1d4;
     field_0x1d4 = 1;
@@ -316,6 +495,30 @@ void cls_804B0B00::fn_803E6A2C() {
             field_0x1b8 = 0;
         }
         lbl_8053AF80->fn_80458880(11, -1);
+    }
+}
+
+// Update state 12: slides field_0x64, field_0x78 and the field_0x1bc + 1
+// player panes field_0x68[] in, then enters state 13.
+void cls_804B0B00::fn_803E8210() {
+    u8 done0 = false;
+    u8 done1 = false;
+    u8 done2 = false;
+    field_0x260++;
+    if (field_0x260 > 0) {
+        done0 = field_0x64->fn_80402940(22, 0, -200.0f, 0.0f);
+    }
+    if (field_0x260 > 16) {
+        done1 = field_0x78->fn_80402940(24, 0, -200.0f, 0.0f);
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1bc && field_0x260 > i * 5 + 4) {
+            done2 = field_0x68[i]->fn_80402940(18, 0, 150.0f, 0.0f);
+        }
+    }
+    if (done0 && done1 && done2) {
+        field_0x1d8 = field_0x1d4;
+        field_0x1d4 = 13;
     }
 }
 
@@ -406,6 +609,121 @@ void cls_804B0B00::fn_803ED604() {
     if (field_0x1e0[0] >= 60) {
         field_0x1e0[0] = 0;
     }
+}
+
+// cls_804AF878::fn_803A8600 each frame: counts the connected controllers
+// into field_0x1d0 and bits 4-7 of lbl_8053AAF8->field_0x82 (one player:
+// slot 0 through fn_8030A3B0), then runs the state's update.
+void cls_804B0B00::fn_803ED83C() {
+    field_0x1d0 = 0;
+    if (field_0x1bc == 0) {
+        if (lbl_8053AD30->fn_8030A3B0(fn_8030AAF4(0))) {
+            lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
+            field_0x1d0++;
+        } else {
+            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << 4);
+        }
+        for (s32 i = 1; i < 4; i++) {
+            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+        }
+    } else {
+        for (s32 i = 0; i < 4; i++) {
+            if (i <= field_0x1bc) {
+                if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+                    lbl_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
+                    field_0x1d0++;
+                } else {
+                    lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                }
+            } else {
+                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+            }
+        }
+    }
+    if (field_0x26e == 0 || field_0x1d4 == 6) {
+        if (field_0x1d4 != 15) {
+            (this->*lbl_804B08BC[field_0x1d4])();
+        } else {
+            (this->*lbl_804B08BC[field_0x1d8])();
+        }
+        for (s32 i = 0; i < 4; i++) {
+            field_0x7c[i]->fn_80456154();
+        }
+    }
+}
+
+// cls_804AF878::fn_803A8664: draws field_0x14, the state, then the fade
+// (field_0x60). When the fade-out into state 9 ends, the decide / back
+// button textures of lbl_8053AED8 are set.
+void cls_804B0B00::fn_803EDA2C() {
+    lbl_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    if (field_0x1d4 != 15) {
+        (this->*lbl_804B0A24[field_0x1d4])();
+    } else {
+        (this->*lbl_804B0A24[field_0x1d8])();
+    }
+    if (field_0x26e != 0) {
+        switch (field_0x26e) {
+        case 1:
+            if (field_0x26d >= 245) {
+                if (field_0x1dc == 9) {
+                    lbl_8053AED8->fn_80440D78((const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti"));
+                    lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
+                }
+                field_0x26d = 255;
+                field_0x26e = 2;
+                (this->*lbl_804B0754[field_0x1dc])();
+            } else {
+                field_0x26d += 10;
+            }
+            break;
+        case 2:
+            if (field_0x26d <= 10) {
+                field_0x26d = 0;
+                field_0x26e = 0;
+            } else {
+                field_0x26d -= 10;
+            }
+            break;
+        }
+        lbl_8053AB10->fn_8013B490();
+        field_0x60->setAlpha(field_0x26d);
+        field_0x60->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
+    }
+}
+
+// cls_804AF878::fn_803A86A4: `mode` 1 / 2 go straight to state 10 / 9;
+// otherwise field_0x1bc counts the connected controllers and the menu
+// starts in state 2.
+void cls_804B0B00::fn_803EDBF0(u8 mode) {
+    lbl_8053AEC0->fn_804310CC();
+    switch (mode) {
+    case 1:
+        field_0x1d4 = 10;
+        fn_803E3564();
+        break;
+    case 2:
+        field_0x1d4 = 9;
+        fn_803E3564();
+        break;
+    default:
+        if (lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) {
+            field_0x1bc = 0;
+        } else if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+            field_0x1bc = 0;
+            for (s32 i = 1; i < 4; i++) {
+                if (!lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+                    break;
+                }
+                field_0x1bc++;
+            }
+        }
+        field_0x1d4 = 2;
+        fn_803E4344();
+        break;
+    }
+    field_0x360 = 4;
 }
 
 cls_804B0B00::~cls_804B0B00() {
