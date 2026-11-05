@@ -249,6 +249,10 @@ public:
     // 1 unit / 5 calls (clrlwi; cmplwi 1). Both points inside the view's
     // box for `layer` (0xCC, or 0xDC for layer 8 and up) and the map
     // between them clear (fn_8022461C-style lookups on layer).
+    // It reads only (x, y) of both points, and fn_801CF888 passes it 8-byte
+    // TVec2f slots: the original's parameters were likely TVec2f (as are
+    // fn_802265FC's and fn_801CCD34's: vfunc_0x80 / fn_801CE800 pass them
+    // 8-byte slots too). Kept TVec3f for the TVec3f callers (tu_801C5B08).
     bool fn_801CFA70(const JGeometry::TVec3f* from, const JGeometry::TVec3f* to, s32 layer);
     // 1 unit / 6 calls (clrlwi.). fn_801CFD68(dir, 6.0f + the box edge on
     // that side): whether a step in direction `dir` is free.
@@ -305,6 +309,16 @@ public:
     // game/tu_801CDC8C.cpp.
     void moveStep();
     void stateStep(u8 mapHit);
+    void landStep();
+    // The player search fn_801D0B44 / fn_801D05F8 / fn_801D0DA0 do, inlined
+    // in the other searches of the unit.
+    bool isPlayerOnLayer(s32 player);
+    bool canTargetPlayer(s32 player);
+    f32 playerDistSq(s32 player, const JGeometry::TVec3f* pos);
+    bool isPlayerNear(s32 player, const JGeometry::TVec3f* pos, f32 dist);
+    s32 nearestPlayer(const JGeometry::TVec3f* pos, f32 range);
+    s32 directionTo(const JGeometry::TVec3f* pos, s32 player, bool axis);
+    void velocityToward(const JGeometry::TVec3f* target, JGeometry::TVec2f* out, f32 speed);
 
     /* 0x230 */ u32 mFlags; // EnemyFlag_804A4808
     /* 0x234 */ JGeometry::TVec3f mPrevVel; // field_0x3c at the start of update()
@@ -342,6 +356,11 @@ s32 fn_801CD950(f32* value, f32 target, f32 step);
 // from it, then startAnim_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
 s32 fn_801CD30C(s32 value);
 
+// game/tu_801CB270.cpp. The centre of the 16x16 tile holding *in (x, y)
+// into *out (vfunc_0x80's landing, fn_801D0E58).
+void fn_801CCD34(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
+// game/tu_801CB270.cpp. The opposite direction: 0 <-> 1, 2 <-> 3 (else 0).
+s32 fn_801CD354(s32 dir);
 // game/tu_801CB270.cpp: the step fn_801CD950 wraps.
 s32 fn_801CD9F0(f32* value, f32 target, f32 step);
 // Convert a position between the two view-box spaces: out = (in.x, in.y)
@@ -354,6 +373,11 @@ void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
 void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
 
 extern "C" {
+
+// game/tu_801CB270.cpp (not written yet; 0x801CCFE4, 0xEC bytes). Whether
+// player `player` is present: fn_8023F264 and none of a list of player
+// state tests (fn_80236B50, fn_8022DCD8, ...). Callers test r3 with clrlwi.
+bool fn_801CCFE4(s32 player);
 
 // game/tu_801CB270.cpp (owner unit, not written yet; 1 caller unit,
 // tu_80206B30 vfunc_0x58). Each fetches the actor a player's getter
