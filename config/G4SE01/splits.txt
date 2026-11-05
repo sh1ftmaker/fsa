@@ -5299,7 +5299,7 @@ game/tu_803006E8.cpp:
 	.ctors      start:0x8045C390 end:0x8045C394
 	.rodata     start:0x804711F0 end:0x80471208
 	.data       start:0x804AA888 end:0x804AA8B8
-	.bss        start:0x804D6AB8 end:0x804DB798
+	.bss        start:0x804D6AB8 end:0x804DBC18
 	.sbss       start:0x8053ACB8 end:0x8053ACD0
 	.sdata2     start:0x80541618 end:0x80541630
 
@@ -5310,7 +5310,7 @@ game/tu_80301CD0.cpp:
 	.ctors      start:0x8045C394 end:0x8045C398
 	.rodata     start:0x80471208 end:0x80471368
 	.data       start:0x804AA8B8 end:0x804AA8C8
-	.bss        start:0x804DB798 end:0x805076E8
+	.bss        start:0x804DBC18 end:0x805076E8
 	.sbss       start:0x8053ACD0 end:0x8053AD38
 	.sdata2     start:0x80541630 end:0x80541670
 

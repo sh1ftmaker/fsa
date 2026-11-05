@@ -530,10 +530,11 @@ void cls_804AA8B8::fn_80308E90() {
 // 0x80309014
 cls_804AA8B8::~cls_804AA8B8() {}
 
-// FIXME: __sinit_tu_80301CD0_cpp (compiler-generated: the two __construct_array calls for the
-// sprite lists and the JAudio pools of GameAudio.h) is 99.64 %, all instructions equal: its
-// .bss base is our section anchor (...bss.0) where the original names lbl_804DBC18 (the first
-// object of this unit's .bss; lbl_804DB798 is not part of this object, its offsets prove it).
+// __sinit_tu_80301CD0_cpp (compiler-generated: the two __construct_array calls for the sprite
+// lists and the JAudio pools of GameAudio.h). lbl_804DB798 (0x480, read by fn_80304FB0 here and
+// fn_8030A258) is not part of this object: with it first in the .bss, the sinit offsets shift by
+// 0x480, so this unit's .bss starts at lbl_804DBC18 and splits.txt gives the object to
+// tu_803006E8 (the previous unit).
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
 // fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
