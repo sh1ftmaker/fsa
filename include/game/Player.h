@@ -485,8 +485,8 @@ public:
     // (game/PlayerFlags.h).
     /* 0x0C80 */ u8 field_0xc80;
     /* 0x0C81 */ u8 field_0xc81[0xC84 - 0xC81];
-    /* 0x0C84 */ JGeometry::TVec2f field_0xc84; // set to 1.0f by fn_8026FC8C, with field_0xc8c
-    /* 0x0C8C */ f32 field_0xc8c;
+    // Set to (1, 1, 1) by fn_8026FC8C; fn_8023FBF0's code ramps z up to 1.0f.
+    /* 0x0C84 */ JGeometry::TVec3f field_0xc84;
     /* 0x0C90 */ JGeometry::TVec3f field_0xc90;
     /* 0x0C9C */ s32 field_0xc9c;
     /* 0x0CA0 */ u8 field_0xca0;

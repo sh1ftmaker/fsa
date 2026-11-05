@@ -51,7 +51,7 @@ void Player_804A6F38::fn_8023FF90(const JGeometry::TVec3f* arg) {
 }
 
 s32 Player_804A6F38::fn_8023FFAC() {
-    return field_0xc8c < 1.0f;
+    return field_0xc84.z < 1.0f;
 }
 
 s32 Player_804A6F38::fn_80240628() {
@@ -531,10 +531,10 @@ void Player_804A6F38::fn_80247F0C() {
         field_0xc9c--;
         return;
     }
-    if (field_0xc8c < 1.0f) {
-        field_0xc8c += 0.05f;
-        if (field_0xc8c >= 1.0f) {
-            field_0xc8c = 1.0f;
+    if (field_0xc84.z < 1.0f) {
+        field_0xc84.z += 0.05f;
+        if (field_0xc84.z >= 1.0f) {
+            field_0xc84.z = 1.0f;
         }
     }
 }

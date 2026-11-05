@@ -28,7 +28,7 @@ void Player_804A6F38::fn_8026FC8C() {
     field_0xc9c = 0;
     field_0xc84.x = 1.0f;
     field_0xc84.y = 1.0f;
-    field_0xc8c = 1.0f;
+    field_0xc84.z = 1.0f;
     field_0x468 = 10;
 }
 
@@ -55,6 +55,7 @@ void Player_804A6F38::fn_8027023C() {
     for (s32 i = 0; i < 8; i++) {
         field_0x117c[i] = 0;
     }
+    // The original walks the 4x4 byte table column by column.
     for (s32 i = 0; i < 4; i++) {
         for (s32 j = 0; j < 4; j++) {
             field_0x119c[j][i] = 0;
@@ -255,25 +256,23 @@ bool Player_804A6F38::fn_80272B4C(const JGeometry::TVec3f* pos) {
 void Player_804A6F38::fn_80277100() {}
 
 void Player_804A6F38::fn_80277104() {
-    u8 step = field_0x3fa;
-    if (step < 2) {
+    if (field_0x3fa < 2) {
         field_0x3fb = 0;
-    } else if (step < 6) {
+    } else if (field_0x3fa < 6) {
         field_0x3fb = 1;
-    } else if (step < 10) {
+    } else if (field_0x3fa < 10) {
         field_0x3fb = 2;
     } else {
         field_0x3fb = 3;
     }
-    step = field_0x3fa;
-    if (step >= 14) {
+    if (field_0x3fa >= 14) {
         if (field_0xcad) {
             fn_80251AEC(8);
         } else {
             fn_80251AEC(0);
         }
     } else {
-        field_0x3fa = step + 1;
+        field_0x3fa++;
     }
     fn_80268B3C();
 }
@@ -400,8 +399,7 @@ void Player_804A6F38::fn_8027C6B8() {
 void Player_804A6F38::fn_8027CAA8() {
     field_0x458 = 0;
     field_0x436 = 1;
-    s32 layer = field_0x3b4;
-    if (viewLayerFlag(layer)) {
+    if (viewLayerFlag(field_0x3b4)) {
         field_0x344.y = 0.0f;
         field_0xbf4 = 8;
         fn_8024F0E8(0x1000b);
@@ -416,9 +414,8 @@ void Player_804A6F38::fn_8027CB24() {
 }
 
 void Player_804A6F38::fn_8027CB44() {
-    u8 step = field_0x3fa;
-    if (step < 15) {
-        field_0x3fa = step + 1;
+    if (field_0x3fa < 15) {
+        field_0x3fa++;
     } else {
         fn_80251AEC(0);
     }
