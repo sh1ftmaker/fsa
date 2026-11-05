@@ -275,6 +275,33 @@ public:
     void fn_80270D34(s32 amount); // called by tu_8022AD64; subtracted from field_0xbfc
     void fn_80277104(); // called by tu_80285E58
     void fn_802771BC(); // field_0x458 = 0; called by tu_80285E58
+    // tu_8027E5BC (dispatch targets of tu_80285E58)
+    void fn_8027EE84();
+    void fn_8027F16C();
+    void fn_80281E84();
+    void fn_8028211C();
+    void fn_8028286C();
+    void fn_80282AA8();
+    void fn_80282FC8();
+    void fn_80283944();
+    void fn_80283CEC();
+    void fn_80283D00();
+    void fn_80283D20();
+    void fn_80284290();
+    void fn_80284328();
+    void fn_802848F0();
+    void fn_8028496C();
+    void fn_80284DD0();
+    void fn_80284DE4();
+    void fn_80285068();
+    void fn_80285074();
+    void fn_8028537C();
+    void fn_80285388();
+    void fn_80285668();
+    void fn_802857C8();
+    void fn_802859B8();
+    void fn_80285C28();
+    void fn_8027EB04();
     void fn_8027769C(); // called by tu_80285E58
     void fn_80277E18(); // called by tu_80285E58
     void fn_8027AA10(); // called by tu_80285E58
@@ -337,7 +364,7 @@ public:
     /* 0x02F4 */ JGeometry::TVec3f field_0x2f4;
     /* 0x0300 */ u8 field_0x300[0x30C - 0x300];
     /* 0x030C */ JGeometry::TVec3f field_0x30c;
-    /* 0x0318 */ u8 field_0x318[0x324 - 0x318];
+    /* 0x0318 */ JGeometry::TVec3f field_0x318;
     // The x and y that fn_8026E5F8 stores (its z is left alone).
     /* 0x0324 */ JGeometry::TVec2f field_0x324;
     /* 0x032C */ u8 field_0x32c[0x344 - 0x32C];
@@ -345,7 +372,13 @@ public:
     /* 0x0344 */ JGeometry::TVec3f field_0x344;
     /* 0x0350 */ u8 field_0x350[0x358 - 0x350];
     /* 0x0358 */ f32 field_0x358;
-    /* 0x035C */ u8 field_0x35c[0x3B4 - 0x35C];
+    /* 0x035C */ u8 field_0x35c[0x368 - 0x35C];
+    /* 0x0368 */ JGeometry::TVec3f field_0x368;
+    /* 0x0374 */ JGeometry::TVec3f field_0x374;
+    /* 0x0380 */ JGeometry::TVec3f field_0x380;
+    /* 0x038C */ u8 field_0x38c[0x394 - 0x38C];
+    /* 0x0394 */ s32 field_0x394;
+    /* 0x0398 */ u8 field_0x398[0x3B4 - 0x398];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
@@ -368,14 +401,16 @@ public:
     /* 0x03E0 */ s32 field_0x3e0;
     /* 0x03E4 */ u8 field_0x3e4[0x3E8 - 0x3E4];
     /* 0x03E8 */ s32 field_0x3e8; // fn_80230B70 (2 without a player)
-    /* 0x03EC */ u8 field_0x3ec[0x3F9 - 0x3EC];
+    /* 0x03EC */ u8 field_0x3ec[0x3F8 - 0x3EC];
+    /* 0x03F8 */ u8 field_0x3f8;
     // Cleared by fn_802922D0 (stb r0); 0x3FB set by it (stb r4).
     /* 0x03F9 */ u8 field_0x3f9;
     /* 0x03FA */ u8 field_0x3fa;
     /* 0x03FB */ u8 field_0x3fb;
     /* 0x03FC */ u8 field_0x3fc;
     /* 0x03FD */ u8 field_0x3fd; // set to 1 by fn_80295584 (stb)
-    /* 0x03FE */ u8 field_0x3fe[0x400 - 0x3FE];
+    /* 0x03FE */ u8 field_0x3fe;
+    /* 0x03FF */ u8 field_0x3ff;
     // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
     /* 0x0400 */ u8 field_0x400;
     /* 0x0401 */ u8 field_0x401[0x420 - 0x401];
@@ -385,14 +420,17 @@ public:
     // Read by fn_8023FC08 (tu_8023FBF0); fn_8023FBF0 sets the byte after it.
     /* 0x042C */ bool field_0x42c;
     /* 0x042D */ u8 field_0x42d;
-    /* 0x042E */ u8 field_0x42e[0x434 - 0x42E];
+    /* 0x042E */ u8 field_0x42e[0x430 - 0x42E];
+    /* 0x0430 */ s32 field_0x430;
     /* 0x0434 */ u8 field_0x434;
     /* 0x0435 */ u8 field_0x435[0x436 - 0x435];
     // Returned by fn_80240860 (lbz; blr).
     /* 0x0436 */ bool field_0x436;
-    /* 0x0437 */ u8 field_0x437[0x439 - 0x437];
+    /* 0x0437 */ u8 field_0x437;
+    /* 0x0438 */ u8 field_0x438;
     /* 0x0439 */ u8 field_0x439;
-    /* 0x043A */ u8 field_0x43a[0x43F - 0x43A];
+    /* 0x043A */ u8 field_0x43a[0x43E - 0x43A];
+    /* 0x043E */ u8 field_0x43e;
     // Returned by fn_80233D20 (lbz; blr).
     /* 0x043F */ bool field_0x43f;
     /* 0x0440 */ u8 field_0x440[0x454 - 0x440];
@@ -412,7 +450,11 @@ public:
     /* 0x0464 */ s32 field_0x464;
     /* 0x0468 */ s32 field_0x468;
     /* 0x046C */ s32 field_0x46c;
-    /* 0x0470 */ u8 field_0x470[0x48C - 0x470];
+    /* 0x0470 */ u8 field_0x470[0x474 - 0x470];
+    /* 0x0474 */ JGeometry::TVec3f field_0x474;
+    /* 0x0480 */ u8 field_0x480[0x484 - 0x480];
+    /* 0x0484 */ u8 field_0x484;
+    /* 0x0485 */ u8 field_0x485[0x48C - 0x485];
     /* 0x048C */ s32 field_0x48c;
     /* 0x0490 */ u8 field_0x490[0x492 - 0x490];
     /* 0x0492 */ u8 field_0x492;
@@ -453,7 +495,10 @@ public:
     /* 0x0BC4 */ u8 field_0xbc4[0xBDC - 0xBC4];
     // Cleared (stb 0) by fn_8028FBA0 when fn_80290070 succeeds.
     /* 0x0BDC */ u8 field_0xbdc;
-    /* 0x0BDD */ u8 field_0xbdd[0xBEC - 0xBDD];
+    /* 0x0BDD */ u8 field_0xbdd[0xBE4 - 0xBDD];
+    /* 0x0BE4 */ s32 field_0xbe4;
+    /* 0x0BE8 */ u8 field_0xbe8;
+    /* 0x0BE9 */ u8 field_0xbe9[0xBEC - 0xBE9];
     // Returned by fn_8023FC24 (via fn_8022BCD4).
     /* 0x0BEC */ s32 field_0xbec;
     // The player's cls_804A71A8 (allocated by the constructor); fn_802685D4
@@ -512,7 +557,8 @@ public:
     /* 0x0CE8 */ bool field_0xce8;
     // A u8: fn_802413F0 converts it to its bool result (neg / or / srwi).
     /* 0x0CE9 */ u8 field_0xce9;
-    /* 0x0CEA */ u8 field_0xcea[0xCED - 0xCEA];
+    /* 0x0CEA */ u8 field_0xcea;
+    /* 0x0CEB */ u8 field_0xceb[0xCED - 0xCEB];
     /* 0x0CED */ u8 field_0xced;
     /* 0x0CEE */ u8 field_0xcee;
     /* 0x0CEF */ u8 field_0xcef[0xCF2 - 0xCEF];
@@ -568,7 +614,9 @@ public:
     /* 0x0D90 */ u8 field_0xd90;
     /* 0x0D91 */ u8 field_0xd91[0xD94 - 0xD91];
     /* 0x0D94 */ s32 field_0xd94;
-    /* 0x0D98 */ u8 field_0xd98[0xDA4 - 0xD98];
+    /* 0x0D98 */ s32 field_0xd98;
+    /* 0x0D9C */ s32 field_0xd9c;
+    /* 0x0DA0 */ u8 field_0xda0[0xDA4 - 0xDA0];
     /* 0x0DA4 */ s32 field_0xda4;
     /* 0x0DA8 */ u8 field_0xda8[0xDAC - 0xDA8];
     /* 0x0DAC */ s32 field_0xdac;
@@ -576,7 +624,8 @@ public:
     /* 0x0EF0 */ s32 field_0xef0[72];
     /* 0x1010 */ u8 field_0x1010[0x1030 - 0x1010];
     /* 0x1030 */ s32 field_0x1030[0x50];
-    /* 0x1170 */ u8 field_0x1170[0x117C - 0x1170];
+    /* 0x1170 */ s32 field_0x1170;
+    /* 0x1174 */ u8 field_0x1174[0x117C - 0x1174];
     /* 0x117C */ s32 field_0x117c[8]; // zeroed by fn_8027023C
     /* 0x119C */ u8 field_0x119c[4][4]; // zeroed by fn_8027023C
     /* 0x11AC */ s32 field_0x11ac;
@@ -585,7 +634,9 @@ public:
     /* 0x11C2 */ u8 field_0x11c2[0x11CC - 0x11C2];
     /* 0x11CC */ s32 field_0x11cc;
     /* 0x11D0 */ s32 field_0x11d0;
-    /* 0x11D4 */ u8 field_0x11d4[0x11DC - 0x11D4];
+    /* 0x11D4 */ s32 field_0x11d4;
+    /* 0x11D8 */ u8 field_0x11d8;
+    /* 0x11D9 */ u8 field_0x11d9[0x11DC - 0x11D9];
     /* 0x11DC */ s32 field_0x11dc;
     /* 0x11E0 */ u8 field_0x11e0;
     /* 0x11E1 */ u8 field_0x11e1[0x11E4 - 0x11E1];
@@ -599,7 +650,7 @@ public:
     /* 0x11F8 */ u8 field_0x11f8[0x1200 - 0x11F8];
     // A bool: fn_8023FF88 returns it as loaded (lbz; blr).
     /* 0x1200 */ bool field_0x1200;
-    /* 0x1201 */ u8 field_0x1201[0x1202 - 0x1201];
+    /* 0x1201 */ u8 field_0x1201;
     /* 0x1202 */ bool field_0x1202;
     /* 0x1203 */ u8 field_0x1203[0x120C - 0x1203];
     /* 0x120C */ s32 field_0x120c;
@@ -616,7 +667,7 @@ public:
     /* 0x121E */ u8 field_0x121e;
     // A bool: fn_80249068 returns it as loaded (lbz; blr).
     /* 0x121F */ bool field_0x121f;
-    /* 0x1220 */ u8 field_0x1220[0x1224 - 0x1220];
+    /* 0x1220 */ s32 field_0x1220;
     /* 0x1224 */ s32 field_0x1224;
     // Word compared with 0 (lwz; cmpwi) by fn_802685D4.
     /* 0x1228 */ s32 field_0x1228;
