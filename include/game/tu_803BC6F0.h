@@ -94,7 +94,7 @@ public:
 
     // field_0x115 has a bit per file that holds save data.
     bool hasSaveData(s32 file) {
-        u8 bit = 1 << file;
+        u8 bit = 1 << file; // the u8 temporary gives the original's clrlwi before the and.
         return field_0x115 & bit;
     }
 

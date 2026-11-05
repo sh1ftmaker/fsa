@@ -261,6 +261,7 @@ void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
     white.g = field_0xe8[1].g + (0xB4 - field_0xe8[1].g) * alpha;
     white.b = field_0xe8[1].b + (0xB4 - field_0xe8[1].b) * alpha;
     white.a = 0xFF;
+    // The original copies the group colours through a per-group temporary (sp 0xE4 / 0xE0 ...).
     JUtility::TColor black1 = black;
     JUtility::TColor white1 = white;
     ((J2DPicture*)mScreenHuuin->search(lbl_80476B90[file]))->setBlackWhite(black1, white1);
@@ -278,6 +279,7 @@ void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
     white.g = field_0xe8[2].g + (0x80 - field_0xe8[2].g) * alpha;
     white.b = field_0xe8[2].b + (0x80 - field_0xe8[2].b) * alpha;
     white.a = 0xFF;
+    // The original copies the group colours through a per-group temporary (sp 0xE4 / 0xE0 ...).
     JUtility::TColor black2 = black;
     JUtility::TColor white2 = white;
     ((J2DPicture*)mScreenHuuin->search(lbl_80476B18[file]))->setBlackWhite(black2, white2);
@@ -294,6 +296,7 @@ void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
     white.g = field_0xe8[3].g + (0xB4 - field_0xe8[3].g) * alpha;
     white.b = field_0xe8[3].b + (0xB4 - field_0xe8[3].b) * alpha;
     white.a = 0xFF;
+    // The original copies the group colours through a per-group temporary (sp 0xE4 / 0xE0 ...).
     JUtility::TColor black3 = black;
     JUtility::TColor white3 = white;
     ((J2DPicture*)mScreenHuuin->search(lbl_80476C98[file]))->setBlackWhite(black3, white3);
@@ -311,6 +314,7 @@ void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
     white.g = field_0xe8[4].g + (0xB4 - field_0xe8[4].g) * alpha;
     white.b = field_0xe8[4].b + (0xB4 - field_0xe8[4].b) * alpha;
     white.a = 0xFF;
+    // The original copies the group colours through a per-group temporary (sp 0xE4 / 0xE0 ...).
     JUtility::TColor black4 = black;
     JUtility::TColor white4 = white;
     ((J2DPicture*)mScreenHuuin->search(lbl_80476C20[file]))->setBlackWhite(black4, white4);
@@ -384,6 +388,7 @@ void FileSelect_804AFF60::fn_803C24BC() {
         field_0x44[i]->mPane->show();
     }
 
+    // The original inlines this block into both fn_803C24BC and fn_803CF504; no out-of-line copy exists.
     field_0x50->fn_80402E08(-300.0f, 0.0f);
     field_0x50->field_0x20 = 0;
     field_0x50->mPane->setAlpha(0);
@@ -469,11 +474,12 @@ void FileSelect_804AFF60::fn_803C9F14() {
 }
 
 // FIXME: 98.40 %. The row loop's start test `field_0xd8 > rowDelay + delay`:
-// ours folds rowDelay into the running delay (mr r24, r17; one add fewer per
-// pass), the original keeps the add; the `field_0x38[0]->field_0xc -
+// with the accumulator form (`delay += rowStep`) ours still starts the
+// accumulator at rowDelay (mr r24, r17; one add fewer per pass) where the
+// original keeps the add; the `field_0x38[0]->field_0xc -
 // field_0x38[a4]->field_0xc` operands load into f2 / f0 (original f0 / f2);
-// registers shift from there (r17-r26). The same i * step form leaves the
-// button loop unfolded, as in the original.
+// registers shift from there (r17-r26). The button loop's i * step form
+// keeps the add, as in the original.
 // Slides the other two file rows out and the command panes in, one after
 // another (the timings are lbl_8050DB0C's 0x98..0x9F), then goes to state 19.
 void FileSelect_804AFF60::fn_803CB3DC() {
@@ -513,6 +519,7 @@ void FileSelect_804AFF60::fn_803CB3DC() {
             field_0x44[others[i]]->fn_80402628(frames, field_0x44[others[i]]->field_0x28, 0);
             setTabAlphas(this, others[i]);
         }
+        // The running delay keeps the original's add; `i * rowStep` scored worse here (97.94 %).
         delay += rowStep;
     }
     // The chosen row moves up to the first row's place.
@@ -1184,6 +1191,7 @@ void FileSelect_804AFF60::fn_803CF504() {
         mScreenHuuin->search(lbl_80476600[i])->hide();
     }
 
+    // The original inlines this block into both fn_803C24BC and fn_803CF504; no out-of-line copy exists.
     field_0x50->fn_80402E08(-300.0f, 0.0f);
     field_0x50->field_0x20 = 0;
     field_0x50->mPane->setAlpha(0);
