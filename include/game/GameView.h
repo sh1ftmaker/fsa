@@ -342,7 +342,7 @@ public:
     /* 0x13088 */ JGeometry::TVec2f field_0x13088[8];
     /* 0x130C8 */ u32 field_0x130c8[8]; // values, -1 when free (fn_802D6F38 compares them with cmplw)
     /* 0x130E8 */ JGeometry::TVec2f field_0x130e8[8]; // fn_802D6D70's a
-    /* 0x13128 */ s32 field_0x13128[8]; // fn_802D6D70's value, -1 when free
+    /* 0x13128 */ u32 field_0x13128[8]; // fn_802D6D70's value, -1 when free (compared with addis/cmplwi like field_0x130c8)
     /* 0x13148 */ JGeometry::TVec2f field_0x13148[8]; // fn_802D6D70's b
     /* 0x13188 */ u32 field_0x13188[8]; // ids, -1 when free
     /* 0x131A8 */ s32 field_0x131a8[4]; // fn_802D39B8; read by tu_801F6058

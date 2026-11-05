@@ -263,7 +263,7 @@ void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
     }
 }
 
-// FIXME: 84.6. Three instructions short: the target loads b.x once before the first loop
+// FIXME: 86.0. Two instructions short: the target loads b.x once before the first loop
 // and reloads mView (lwz 0xc) for the id test after the epsilon compare; ours keeps both
 // in the loop body / one register. Registers differ throughout.
 bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id) {
