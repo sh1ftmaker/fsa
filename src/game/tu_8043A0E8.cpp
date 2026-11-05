@@ -354,6 +354,56 @@ void cls_804B1920::fn_8043D644() {
     (this->*lbl_804B18D0[field_0x10b])();
 }
 
+// FIXME: 95.4. The original tests 0x199 / 0x1B5 unsigned (cmplwi) but switches signed (cmpwi on id
+// itself), compares the message type byte signed (cmpwi 0x2A), and turns field_0xde & bit into a
+// bool first (neg / or / srwi.; ours: and.).
+bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
+    if (field_0x10a != 0) {
+        return false;
+    }
+    if (id == 0x199) {
+        if (fn_802D6A9C()->fn_802D46D8(0, id, false) == true) {
+            return false;
+        }
+        fn_802D6A9C()->fn_802D46D8(0, id, true);
+    } else if (id == 0x1B5) {
+        u8 bit = 1 << arg1;
+        if (field_0xde & bit) {
+            return false;
+        }
+        field_0xde |= bit;
+    }
+    u8 type;
+    fn_80383E2C(id, &type);
+    if (type == 0x2A) {
+        if (fn_802D6A9C()->fn_802D46D8(0, id, false) == true) {
+            return false;
+        }
+        fn_802D6A9C()->fn_802D46D8(0, id, true);
+    }
+    field_0x10a = 1;
+    field_0xfc = arg1 + 1;
+    field_0xe8 = id;
+    field_0x100 = arg2;
+    switch (id) {
+    case 0x18F:
+    case 0x190:
+    case 0x195:
+    case 0x196:
+    case 0x197:
+    case 0x198:
+    case 0x1A8:
+        lbl_8053AF80->fn_80458880(0x40, -1);
+        break;
+    case 0x23F:
+        break;
+    default:
+        lbl_8053AF80->fn_80458880(0x39, -1);
+        break;
+    }
+    return true;
+}
+
 void cls_804B1920::fn_8043D834() {
     if (lbl_8053AAF8->field_0x7f != 0) {
         field_0x290->fn_8041E58C();

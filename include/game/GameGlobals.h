@@ -900,7 +900,8 @@ public:
     // the battle royale end check ORs with 0x10 when it picks its winner.
     /* 0xDC */ u8 field_0xdc;
     /* 0xDD */ u8 field_0xdd;  // per-player bits (fn_8043A170), 0xF set by fn_8043A0E8
-    /* 0xDE */ u8 pad_0xde[0xE0 - 0xDE];
+    /* 0xDE */ u8 field_0xde;  // per-player bits: message 0x1B5 already shown (fn_8043D67C)
+    /* 0xDF */ u8 pad_0xdf;
     /* 0xE0 */ s32 field_0xe0; // fn_8043EDE8's argument
     /* 0xE4 */ s32 field_0xe4; // 0x1E after fn_8043EDE8, 0 at construction
     /* 0xE8 */ s32 field_0xe8;
@@ -946,8 +947,10 @@ public:
 
     // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
-    // more arguments (0 in most calls).
-    void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
+    // more arguments (0 in most calls). Starts message `id` unless one is
+    // showing (field_0x10a) or it was shown once already; returns whether it
+    // did (li r3, 0 / 1; no caller reads it).
+    bool fn_8043D67C(s32 id, u32 arg1, u32 arg2);
 
     // 0x8043A208 (game/tu_8043A0E8.cpp): when field_0x10 exists, stores the four
     // floats at 0x1C0, sets its alpha (vtable slot 0x24) and flags 0x254.
