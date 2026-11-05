@@ -42,9 +42,11 @@ Baseline 8400 (matching 741d3ad0) -> 8402 (+2 honest: fn_8013D908, fn_8013DA10).
 - draw (cls_8049F184, 0x8013F5B0): 99.85 %, code identical, .sdata2 relocations only.
 - fn_8013CB44: still 99.93 % reloc-name. Cause found: the original pool is 0.0, 1.0, pi, -1.0,
   0.5, (pad), double, 0.7071, 0.4142 - 0.5 sits before the int-to-float double although its only
-  users are the draw passes fn_8013D5D4 / D6E4 / DB2C after fn_8013CB44. Likely the 0.5f literal
-  of a header inline (JPADrawInfo's ortho constructor) that the draw passes use. Once 0.5 is
-  pooled there, fn_8013CB44, fn_8013CC50 and draw should all reach 100 %.
+  users are the draw passes fn_8013D5D4 / D6E4 / DB2C after fn_8013CB44. Tested and ruled out:
+  a header inline's 0.5f (fn_8013D5D4 through JPADrawInfo's ortho constructor) still pools 0.5
+  after 0.7071. Something before fn_8013CB44 (a dead-stripped or inlined function?) must use 0.5;
+  once it is found, fn_8013CB44, fn_8013CC50 and draw should all reach 100 %. (The draw passes
+  convert fbWidth / efbHeight signed: xoris, i.e. through int.)
 - fn_8013D5D4 / D6E4 / DB2C unwritten: each default-constructs a JPADrawInfo (identity x2),
   calls fn_8013B490, default-constructs a SECOND JPADrawInfo that is never used (sp8/sp38), then
   PSMTXCopy(field_0x10->0x80 = J2DOrthoGraph posMtx, first.mCamMtx) and
