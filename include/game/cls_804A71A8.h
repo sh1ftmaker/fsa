@@ -90,6 +90,90 @@ public:
         return false;
     }
 
+    // fn_80269574 inlines (no out-of-line copies):
+    // How many directions are blocked (field_0x38) or inside an owner box
+    // (field_0x28).
+    s32 countClosed() const {
+        s32 count = 0;
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x38[i] != 0 || field_0x28[i] != 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // Whether every direction is blocked or inside an owner box.
+    bool allClosed() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x38[i] == 0 && field_0x28[i] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Whether every direction is marked in field_0x68, field_0x88 or field_0x38.
+    bool allMarked68() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x68[i] == 0 && field_0x88[i] == 0 && field_0x38[i] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Whether every direction is closed (field_0x78, field_0x38 or field_0x28)
+    // and at least one is marked in field_0x78.
+    bool closedBy78() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x78[i] == 0 && field_0x38[i] == 0 && field_0x28[i] == 0) {
+                return false;
+            }
+        }
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x78[i] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Whether some direction is marked in field_0x68 and not blocked.
+    bool anyOpen68() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x68[i] == 1 && field_0x38[i] == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Whether every direction is marked in field_0x68 or field_0x38.
+    bool allMarked68Or38() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x68[i] == 0 && field_0x38[i] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Whether every direction is marked in field_0x38, field_0x58 or field_0x78.
+    bool allMarked58() const {
+        for (s32 i = 0; i < 8; i++) {
+            if (field_0x38[i] == 0 && field_0x58[i] == 0 && field_0x78[i] == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Whether direction i is blocked or inside an owner box (as 1).
+    bool closedAt(int i) const {
+        return field_0x38[i] == 1 || field_0x28[i] == 1;
+    }
+
     // Inlined in fn_80268BC4; the owner's fn_8024B24C returns it.
     bool isField98Or99Set() const { return field_0x98 || field_0x99; }
 
@@ -98,9 +182,10 @@ public:
     // offset lbl_8046BAE8[field_0x1c] and tests the tile and boxes there.
     /* 0x8 */ JGeometry::TVec3f field_0x8;
     // Zeroed by the owner's update fn_80253E6C each frame; fn_80268BC4 sets
-    // them to how far the owner's mPos x / y moved during it.
-    /* 0x14 */ f32 field_0x14;
-    /* 0x18 */ f32 field_0x18;
+    // it to how far the owner's mPos x / y moved during it. A TVec2f: the
+    // owner's fn_802422C4 (tu_8023FBF0) returns its address as the
+    // `const TVec2f*` of fn_8022DFD4.
+    /* 0x14 */ JGeometry::TVec2f field_0x14;
     // The direction fn_80268BC4 is probing (0-7), the index into the
     // per-direction byte arrays below.
     /* 0x1C */ s32 field_0x1c;

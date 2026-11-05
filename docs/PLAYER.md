@@ -89,7 +89,8 @@ Types come from the store widths plus loads elsewhere (`psq_l` = TVec3f;
 | 0x12B0, 0x12B4, 0x132C, 0x1354-0x1370, 0x1384, 0x138C-0x1394 | JPABaseEmitter* | deleted in address order by fn_80241E64; their 0xF4 is the emitter's mFlags (StopDraw / StopCalc in update A) |
 | 0x1398.field_0x4/0x8, 0x13A8.field_0x4/0x8 | | the 'PEFF' callbacks get the index and 0 / 1 |
 
-cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
+cls_804A71A8 (0xBF0): TVec2f 0x14 (fn_802422C4 returns its address as
+fn_8022DFD4's `const TVec2f*`), zeroed by update A every frame.
 
 ### Reset and state request (written)
 
@@ -411,10 +412,28 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
 - Status: 13 / 25 at 100 %; fn_80268BC4 99.13 % (4 dead stack stores),
   fn_8026E68C 99.97 % (literal names only), fn_8026EE60 / EC88 / F000 family
   86-90 % (step-vector add order; owner/facing kept across getActorManager_801F856C).
-  Unwritten: fn_80269574 (0x22A8, a state machine on 0xBC that walks the
-  direction arrays, searches 'WARP'-range actors and requests states),
-  fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with jump table
-  0x804A7338 / 0x804A71B4).
+  Round 8 (agent M): **fn_80269574** written structure-first (93.2 %,
+  missing/extra: the original branches straight out of its early-exit tests
+  where the source materialises bools). Order: field_0x50 directions become
+  blocked; a follower closed in on all sides asks fn_8022BC38; the counter
+  0xBC (frames closed in, < 6 sides; 3 at once on a flagged layer with an
+  open 0x68 side) leads, unless group mode 4 is off its turn (screen change
+  9), to the 'WARP' search on the owner's layer: type 4 near (< 7) resets,
+  type 7 sends to cell ((bits 16-21) * 8 + 8, (bits 8-13) * 8 + 8) of layer
+  bits 24-26 (+ 7) (kind 7), type 8 to the same place on that layer (kind
+  8), 9 when that layer is >= 8 under gGameRoot 0x7E without fn_80247534;
+  no warp: 0x457 = 1 at 2, kind 9 at 3. Then the 16-unit cell snap (0x3C1 /
+  0x3C2), 0xB7 (slow floor: tiles 0x3EB / 0x34 above on a flagged layer,
+  0x50 under), state 0x4B / 0x4A (closed by 0x78), kind 0xD / 0xC (closed
+  by 0x88, fn_802DEB58), 0xB4 / 0xB6 and a 4-unit drop on a flagged layer,
+  kind 0xD to 0xCBC on 0xBA, a 0.125 lift with sound 0x20045 (0x60), then
+  the pushes (kind 0x22 when shut in: 7 sides with fn_80241230, all without,
+  or 6 for 60 frames, counted in 0xA8) by lbl_8046BA08 (0.25 on 0xB7 or
+  next to a blocked side) marking 0x48, and the respawn point 0xD1C.
+  Its literals put fn_8026E68C at 100 %. No code in the Player units reads
+  0x90-0x97, 0x9B-0x9F or 0xBB (left unnamed).
+  Unwritten: fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with
+  jump table 0x804A7338 / 0x804A71B4).
 
 ## Round 3, agent C (Opus 5.5, 2026-11-05): input, update B, manager update
 

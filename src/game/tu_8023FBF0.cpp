@@ -2403,11 +2403,11 @@ void Player_804A6F38::fn_80252FC0() {
             }
         }
     }
-    if ((pushX > 0.0f && field_0xbf0->field_0x14 >= 0.0f) || (pushX < 0.0f && field_0xbf0->field_0x14 <= 0.0f)) {
-        mPos.x += pushX - field_0xbf0->field_0x14;
+    if ((pushX > 0.0f && field_0xbf0->field_0x14.x >= 0.0f) || (pushX < 0.0f && field_0xbf0->field_0x14.x <= 0.0f)) {
+        mPos.x += pushX - field_0xbf0->field_0x14.x;
     }
-    if ((pushY > 0.0f && field_0xbf0->field_0x18 >= 0.0f) || (pushY < 0.0f && field_0xbf0->field_0x18 <= 0.0f)) {
-        mPos.y += pushY - field_0xbf0->field_0x18;
+    if ((pushY > 0.0f && field_0xbf0->field_0x14.y >= 0.0f) || (pushY < 0.0f && field_0xbf0->field_0x14.y <= 0.0f)) {
+        mPos.y += pushY - field_0xbf0->field_0x14.y;
     }
 }
 
@@ -2480,8 +2480,8 @@ void Player_804A6F38::fn_80253E6C() {
     field_0x2f4 += mPos;
     field_0xc0c = field_0xc08;
     cls_804A71A8* sub = field_0xbf0;
-    sub->field_0x14 = 0.0f;
-    sub->field_0x18 = 0.0f;
+    sub->field_0x14.x = 0.0f;
+    sub->field_0x14.y = 0.0f;
     if (!gGameRoot_8053AAF8->field_0x80) {
         fn_802490A8();
     }

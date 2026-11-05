@@ -1,7 +1,9 @@
 #include "game/GameAudio.h"
 #include "game/ActorId.h"
+#include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/GameState.h"
 #include "game/cls_804A71A8.h"
 #include "game/Map.h"
@@ -17,6 +19,14 @@ static const Vec lbl_8046B998[4] = {
 static const f32 lbl_8046B9C8[8][2] = {
     {0.0f, -8.0f}, {0.0f, 8.0f}, {-8.0f, 0.0f}, {8.0f, 0.0f},
     {-8.0f, -8.0f}, {8.0f, -8.0f}, {-8.0f, 8.0f}, {8.0f, 8.0f},
+};
+
+// fn_80269574's push out of a blocked direction (the index of the
+// per-direction flags): 0.5 away from each side, 0.3 per axis away from the
+// diagonals.
+static const f32 lbl_8046BA08[8][3] = {
+    {-0.5f, 0.0f, 0.0f}, {0.5f, 0.0f, 0.0f}, {0.0f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f},
+    {-0.3f, -0.3f, 0.0f}, {0.3f, -0.3f, 0.0f}, {-0.3f, 0.3f, 0.0f}, {0.3f, 0.3f, 0.0f},
 };
 
 // Four (x, y) corner offsets of +-4.
@@ -302,8 +312,8 @@ void cls_804A71A8::fn_80268BC4() {
         }
         JGeometry::TVec2f moved(field_0x4->mPos.x, field_0x4->mPos.y);
         moved.set(moved.x - startX, moved.y - startY);
-        field_0x14 = moved.x;
-        field_0x18 = moved.y;
+        field_0x14.x = moved.x;
+        field_0x14.y = moved.y;
     }
 }
 
@@ -324,6 +334,491 @@ void cls_804A71A8::fn_8026947C(JGeometry::TVec3f* pos) {
             pos->y -= lbl_8046BA68[field_0x4->fn_80248778()][1];
         } else {
             pos->y += lbl_8046BA68[field_0x4->fn_80248778()][1];
+        }
+    }
+}
+
+// Whether flags[i] == 1 for some direction i.
+static inline bool anyIs1(const u8* flags) {
+    for (s32 i = 0; i < 8; i++) {
+        if (flags[i] == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Whether flags[i] != 0 for some direction i.
+static inline bool anySet(const u8* flags) {
+    for (s32 i = 0; i < 8; i++) {
+        if (flags[i] != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Whether flags[i] != 0 for every direction i.
+static inline bool allSet(const u8* flags) {
+    for (s32 i = 0; i < 8; i++) {
+        if (flags[i] == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// fn_80269574's sections, each inlined once.
+
+// The directions of field_0x50 become blocked unless one already is or all
+// of them are marked.
+static inline void blockMarked50(cls_804A71A8* p) {
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x38[i] == 1) {
+            return;
+        }
+    }
+    if (allSet(p->field_0x50)) {
+        return;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x50[i] == 1) {
+            p->field_0x38[i] = 1;
+        }
+    }
+}
+
+// A follower (fn_80240808, not in group mode 4) closed in on every side
+// (field_0x68, 0x88 or 0x38) asks fn_8022BC38 to move to its leader.
+static inline void followLeader(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) {
+        return;
+    }
+    if (viewLayerFlag(p->field_0x4->field_0x3b4) || p->isField98Or99Set() == true) {
+        return;
+    }
+    if (p->field_0x4->field_0x1216 == 1 || p->field_0x4->field_0x1228 > 0) {
+        return;
+    }
+    if (p->field_0x4->fn_802486A0() == 5 && p->field_0x4->fn_80240670() &&
+        fn_80234950(fn_8022F340(p->field_0x4->field_0x4)))
+    {
+        return;
+    }
+    if (!p->field_0x4->fn_80240808() || p->field_0x4->fn_802486A0() == 4) {
+        return;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x68[i] == 0 && p->field_0x88[i] == 0 && p->field_0x38[i] == 0) {
+            return;
+        }
+    }
+    if (fn_8022BC38(p->field_0x4->fn_80240644(), p->field_0x4->field_0x3b4, &p->field_0x4->mPos)) {
+        fn_802381B8(p->field_0x4->fn_80240644());
+        fn_802348C4(p->field_0x4->fn_80240644(), p->field_0x4->field_0x3b4, &p->field_0x4->mPos);
+    }
+}
+
+// field_0xb7: the floor slows the pushes (tile 0x3EB / 0x34 just above on
+// a flagged layer, else tile 0x50 under the owner).
+static inline void checkSlowFloor(cls_804A71A8* p) {
+    if (viewLayerFlag(p->field_0x4->field_0x3b4)) {
+        JGeometry::TVec3f above(lbl_8046BA88[2][0], lbl_8046BA88[2][1], lbl_8046BA88[2][2]);
+        above += p->field_0x4->mPos;
+        above.z += 2.0f;
+        u16 tile = fn_80226850(&above, p->field_0x4->field_0x3b4);
+        if (tile == 0x3EB || tile == 0x34) {
+            p->field_0xb7 = 1;
+        }
+    } else if (fn_8022461C(&p->field_0x4->mPos, p->field_0x4->field_0x3b4) == 0x50) {
+        p->field_0xb7 = 1;
+    }
+}
+
+// Closed in on all sides by field_0x78 / 0x38: request state 0x4B (flagged
+// layer) or 0x4A.
+static inline void request4A(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) {
+        return;
+    }
+    if (p->field_0x4->fn_802486A0() == 5 && p->field_0x4->fn_80240670() &&
+        fn_80234950(fn_8022F340(p->field_0x4->field_0x4)))
+    {
+        return;
+    }
+    if (p->countClosed() >= 6 || p->field_0x4->fn_80240B00()) {
+        return;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x78[i] == 0 && p->field_0x38[i] == 0) {
+            return;
+        }
+        if (p->isField98Or99Set() == true) {
+            return;
+        }
+    }
+    Player_804A6F38* owner = p->field_0x4;
+    if (viewLayerFlag(owner->field_0x3b4)) {
+        owner->fn_80251AEC(0x4B);
+    } else {
+        owner->fn_80251AEC(0x4A);
+    }
+}
+
+// Closed in on all sides by field_0x88 / 0x38: screen change 0xD
+// (fn_802DEB58) or 0xC to field_0xd1c.
+static inline void leaveBy88(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) {
+        return;
+    }
+    if (p->field_0x4->fn_802486A0() == 5 && p->field_0x4->fn_80240670() &&
+        fn_80234950(fn_8022F340(p->field_0x4->field_0x4)))
+    {
+        return;
+    }
+    if (p->countClosed() >= 6) {
+        return;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x88[i] == 0 && p->field_0x38[i] == 0) {
+            return;
+        }
+        if (p->isField98Or99Set() == true) {
+            return;
+        }
+    }
+    if (fn_802DEB58()) {
+        p->field_0x4->fn_80290070(p->field_0x4->field_0x3b4, &p->field_0x4->mPos, &p->field_0x4->field_0xd1c, 0xD);
+    } else {
+        p->field_0x4->fn_80290070(p->field_0x4->field_0x3b4, &p->field_0x4->mPos, &p->field_0x4->field_0xd1c, 0xC);
+    }
+}
+
+// Whether the owner was pushed along x (field_0x48 at -x or +x).
+static inline bool pushedSideways(const cls_804A71A8* p) {
+    if (p->field_0x48[1] == 1) {
+        return true;
+    }
+    if (p->field_0x48[0] == 1) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 93.21. Every call, field, constant and branch target is in place,
+// but the original branches straight out of its early-exit tests where this
+// source materialises a bool (li 1 / li 0, clrlwi.): the `ready` / `nearWarp`
+// flags of the field_0xbc counter (the original jumps from each counter case
+// to the WARP search or to the cell snap, and from the near-'WARP' case past
+// the snap), and the loops allSet(field_0x50), allMarked68,
+// anyOpen68 / allMarked68Or38, allMarked58 and anyIs1(field_0x60) (67
+// instructions more, 2285 vs 2218). The snap's mPos x test (r4 kept from the
+// field_0xb0 test), the type-4 'WARP' turn test (field_0x4->field_0x4 loaded
+// before fn_80248778), the 0xB7 store (one shared stb in the original) and the
+// register numbers (r25 is saved) differ too.
+// The state machine on field_0xbc (frames shut in), the 'WARP' actors,
+// then the pushes and the owner's respawn point field_0xd1c.
+void cls_804A71A8::fn_80269574() {
+    blockMarked50(this);
+    followLeader(this);
+
+    bool nearWarp = false;
+    if (isField98Or99Set() == true) {
+        field_0xbc = 0;
+    } else if (countClosed() < 6) {
+        bool ready = true;
+        if (field_0xbc > 0) {
+            field_0xbc++;
+        } else if (field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) {
+            field_0xbc = 0;
+            ready = false;
+        } else if (field_0x4->field_0x1216 == 1 || field_0x4->field_0x1228 > 0) {
+            field_0xbc = 0;
+            ready = false;
+        } else if (field_0x4->fn_802486A0() == 5 && field_0x4->fn_80240670() &&
+                   fn_80234950(fn_8022F340(field_0x4->field_0x4)))
+        {
+            field_0xbc = 0;
+            ready = false;
+        } else if (viewLayerFlag(field_0x4->field_0x3b4)) {
+            if (anyOpen68()) {
+                field_0xbc = 3;
+            } else {
+                field_0xbc = 0;
+                ready = false;
+            }
+        } else if (allMarked68Or38()) {
+            field_0xbc++;
+        } else {
+            field_0xbc = 0;
+            ready = false;
+        }
+
+        if (ready) {
+            if (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() != field_0x4->fn_80248778()) {
+                field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
+                field_0xbc = 0;
+                return;
+            }
+
+            // A 'WARP' actor on the owner's layer: type 4 is near (< 7), type
+            // 7 sends to a cell of another layer, type 8 to the same place on
+            // another layer.
+            s32 serial = -1;
+            for (;;) {
+                serial = getActorManager_801F856C()->fn_801F78F4('WARP', serial);
+                if (serial < 0) {
+                    break;
+                }
+                ActorBase_804A5770* warp = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (warp == NULL || field_0x4->field_0x3b4 != warp->field_0x4) {
+                    continue;
+                }
+                u32 type = warp->field_0x90;
+                if ((type & 0xFF) == 4) {
+                    if (fn_8022F514(field_0x4->field_0x4)) {
+                        continue;
+                    }
+                    if (!fn_8022F514(field_0x4->field_0x4) && fn_8022CAF8(field_0x4->field_0x4) == 4 &&
+                        fn_80234004(field_0x4->field_0x4) != field_0x4->fn_80248778())
+                    {
+                        continue;
+                    }
+                    JGeometry::TVec2f d(field_0x4->mPos.x - warp->mPos.x, field_0x4->mPos.y - warp->mPos.y);
+                    if (JGeometry::TUtil<f32>::sqrt(square(d.x) + square(d.y)) < 7.0f) {
+                        field_0xbc = 0;
+                        ready = false;
+                        nearWarp = true;
+                        break;
+                    }
+                } else if ((type & 0xFF) == 7) {
+                    s32 layer = (type >> 24) & 7;
+                    f32 x;
+                    f32 y;
+                    if (layer == 0) {
+                        GameView_804A9950* view = getGameView_802D6A9C();
+                        x = view->mVisibleBox.i.x;
+                        y = view->mVisibleBox.i.y;
+                    } else {
+                        x = y = 0.0f;
+                        layer += 7;
+                    }
+                    if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
+                        if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
+                            field_0xbc = 0;
+                            return;
+                        }
+                        continue;
+                    }
+                    JGeometry::TVec3f dest;
+                    dest.x = 8.0f + (((type >> 16) & 0x3F) * 8 + x);
+                    dest.y = 8.0f + (((type >> 8) & 0x3F) * 8 + y);
+                    dest.z = 0.0f;
+                    if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &dest, 7)) {
+                        field_0xbc = 0;
+                        return;
+                    }
+                } else if ((type & 0xFF) == 8) {
+                    JGeometry::TVec3f pos(field_0x4->mPos);
+                    s32 layer = (type >> 24) & 7;
+                    if (layer != 0) {
+                        layer += 7;
+                    }
+                    pos.x -= layerBox(field_0x4->field_0x3b4)->i.x;
+                    pos.y -= layerBox(field_0x4->field_0x3b4)->i.y;
+                    pos.x += layerBox(layer)->i.x;
+                    pos.y += layerBox(layer)->i.y;
+                    if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
+                        if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
+                            field_0xbc = 0;
+                            return;
+                        }
+                        continue;
+                    }
+                    if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &pos, 8)) {
+                        field_0xbc = 0;
+                        return;
+                    }
+                }
+            }
+
+            if (ready) {
+                if (field_0xbc >= 2) {
+                    field_0x4->field_0x457 = 1;
+                }
+                if (field_0xbc >= 3) {
+                    field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
+                    field_0xbc = 0;
+                    return;
+                }
+            }
+        }
+    }
+
+    if (!nearWarp && !field_0x4->fn_80240F28() && !viewLayerFlag(field_0x4->field_0x3b4) &&
+        isField98Or99Set() != true && field_0x4->field_0x1216 != 1 && field_0x4->field_0x1228 <= 0 &&
+        !(field_0x4->fn_802486A0() == 5 && field_0x4->fn_80240670() &&
+          fn_80234950(fn_8022F340(field_0x4->field_0x4))))
+    {
+        if (field_0x4->fn_80240808() && field_0x4->fn_802486A0() != 4) {
+            if (allMarked68()) {
+                fn_8022BC38(field_0x4->fn_80240644(), field_0x4->field_0x3b4, &field_0x4->mPos);
+            }
+        } else if (field_0xb0 <= 1) {
+            if ((field_0x88[0] == 1 || field_0x68[0] == 1) && field_0x88[1] == 0 && field_0x68[1] == 0) {
+                s32 x = field_0x4->mPos.x;
+                if (!(x & 8)) {
+                    field_0x4->mPos.x = x / 16 * 16 + 8;
+                    field_0x4->field_0x3c1 = true;
+                }
+            }
+            if ((field_0x88[1] == 1 || field_0x68[1] == 1) && field_0x88[0] == 0 && field_0x68[0] == 0) {
+                s32 x = field_0x4->mPos.x;
+                if (x & 8) {
+                    field_0x4->mPos.x = x / 16 * 16 + 8;
+                    field_0x4->field_0x3c1 = true;
+                }
+            }
+            if ((field_0x88[2] == 1 || field_0x68[2] == 1) && field_0x88[3] == 0 && field_0x68[3] == 0) {
+                s32 y = field_0x4->mPos.y;
+                if (!(y & 8)) {
+                    field_0x4->mPos.y = y / 16 * 16 + 8;
+                    field_0x4->field_0x3c2 = true;
+                }
+            }
+            if ((field_0x88[3] == 1 || field_0x68[3] == 1) && field_0x88[2] == 0 && field_0x68[2] == 0) {
+                s32 y = field_0x4->mPos.y;
+                if (y & 8) {
+                    field_0x4->mPos.y = y / 16 * 16 + 8;
+                    field_0x4->field_0x3c2 = true;
+                }
+            }
+        }
+    }
+    checkSlowFloor(this);
+    request4A(this);
+    leaveBy88(this);
+    if (viewLayerFlag(field_0x4->field_0x3b4) && !closedBy78()) {
+        bool below;
+        if (field_0x4->fn_80240808() || field_0x4->fn_80240D50()) {
+            below = closedAt(2);
+        } else {
+            below = closedAt(2) || (closedAt(4) && !closedAt(0)) || (closedAt(5) && !closedAt(1));
+        }
+        if (below) {
+            field_0xb4 = 0;
+            field_0xb6 = 0;
+        } else if (allMarked58() &&
+                   (field_0x4->fn_802486A0() == 4 || !field_0x4->fn_80240808() || field_0x4->fn_80270A8C()))
+        {
+            field_0xb4 = 1;
+            field_0xb6 = 1;
+            if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2 &&
+                  (field_0x4->field_0x3dc == 0 || field_0x4->field_0x3dc == 1)) &&
+                !field_0x4->fn_80240B34() && !field_0x4->fn_80240D64() && !field_0x4->fn_80240860() &&
+                !(field_0x4->fn_80270A8C() && field_0x4->field_0xd08 >= 0) && !field_0x4->fn_8024BBB0())
+            {
+                field_0x4->mPos.y += 4.0f;
+            }
+            field_0x9a = 1;
+        }
+    }
+    if (field_0xba == 1) {
+        field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xcbc, 0xD);
+    }
+    if (anyIs1(field_0x60)) {
+        if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) && !field_0x4->fn_80240B34() &&
+            !field_0x4->fn_80240D64() && !field_0x4->fn_80240860())
+        {
+            field_0x4->mPos.y += 0.125f;
+            field_0x4->fn_8024F0E8(0x20045);
+        }
+        field_0xb9 = 1;
+        field_0x9a = 1;
+    }
+    if (field_0x4->fn_8026FC20() <= 0) {
+        // Unless its four sides are all closed, the owner's boxes
+        // (field_0x28) block their directions.
+        if (!((field_0x28[0] != 0 || field_0x38[0] != 0) && (field_0x28[1] != 0 || field_0x38[1] != 0) &&
+              (field_0x28[2] != 0 || field_0x38[2] != 0) && (field_0x28[3] != 0 || field_0x38[3] != 0)))
+        {
+            for (s32 i = 0; i < 8; i++) {
+                if (field_0x28[i] == 1) {
+                    field_0x30[i] = 1;
+                    field_0x38[i] = 1;
+                }
+            }
+        }
+        if (field_0xb0 <= 1 && countClosed() >= 6) {
+            if (field_0xa8 < 60) {
+                field_0xa8++;
+            }
+        } else {
+            field_0xa8 = 0;
+        }
+        if ((field_0x4->fn_80241230() && countClosed() >= 7) ||
+            (!field_0x4->fn_80241230() && allClosed()) || field_0xa8 >= 60)
+        {
+            field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 0x22);
+        } else {
+            for (s32 i = 0; i < 8; i++) {
+                if (field_0x38[i] != 0) {
+                    field_0x48[i] = 1;
+                    field_0x9a = 1;
+                    JGeometry::TVec3f push(lbl_8046BA08[i][0], lbl_8046BA08[i][1], lbl_8046BA08[i][2]);
+                    if (field_0xb7) {
+                        push.scale(0.25f);
+                    }
+                    if (i >= 4) {
+                        if (i == 4) {
+                            if (viewLayerFlag(field_0x4->field_0x3b4) && field_0x38[2] == 1) {
+                                push.x = 0.0f;
+                            } else if (field_0x38[0] == 1 || field_0x38[2] == 1) {
+                                push.scale(0.25f);
+                            }
+                        } else if (i == 5) {
+                            if (viewLayerFlag(field_0x4->field_0x3b4) && field_0x38[2] == 1) {
+                                push.x = 0.0f;
+                            } else if (field_0x38[1] == 1 || field_0x38[2] == 1) {
+                                push.scale(0.25f);
+                            }
+                        } else if (i == 6) {
+                            if (field_0x38[0] == 1 || field_0x38[3] == 1) {
+                                push.scale(0.25f);
+                            }
+                        } else if (i == 7) {
+                            if (field_0x38[1] == 1 || field_0x38[3] == 1) {
+                                push.scale(0.25f);
+                            }
+                        }
+                    }
+                    field_0x4->mPos += push;
+                }
+            }
+        }
+    }
+
+    if (!field_0x4->fn_80241230() || field_0x4->mPos.z <= 0.0f) {
+        if (allSet(field_0x20) && !fn_802265DC(&field_0x4->mPos, field_0x4->field_0x3b4, true)) {
+            field_0x4->field_0xd1c.set(field_0x4->mPos);
+            field_0x4->field_0xd1c.z = 0.0f;
+        } else if (!viewLayerFlag(field_0x4->field_0x3b4) && field_0x48[2] == 1 && field_0x48[3] != 1 &&
+                   !pushedSideways(this) && !anySet(field_0x30))
+        {
+            // Pushed toward -y only, with passable tiles 8 below: remember the spot.
+            JGeometry::TVec2f below;
+            if (probeTileXY(below, field_0x4->mPos.x, 8.0f + field_0x4->mPos.y, field_0x4->field_0x3b4) == 1) {
+                JGeometry::TVec2f left;
+                if (probeTileXY(left, field_0x4->mPos.x - 7.0f, 8.0f + field_0x4->mPos.y, field_0x4->field_0x3b4) == 1) {
+                    JGeometry::TVec2f right;
+                    if (probeTileXY(right, 7.0f + field_0x4->mPos.x, 8.0f + field_0x4->mPos.y,
+                                    field_0x4->field_0x3b4) == 1)
+                    {
+                        field_0x4->field_0xd1c.set(field_0x4->mPos);
+                        field_0x4->field_0xd1c.z = 0.0f;
+                    }
+                }
+            }
         }
     }
 }
@@ -613,8 +1108,8 @@ void cls_804A71A8::fn_8026F710() {
     field_0xbc = 0;
     field_0xb0 = 0;
     field_0xac = 0;
-    field_0x14 = 0.0f;
-    field_0x18 = 0.0f;
+    field_0x14.x = 0.0f;
+    field_0x14.y = 0.0f;
 }
 
 cls_804A71A8::~cls_804A71A8() {
