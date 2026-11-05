@@ -12,9 +12,9 @@
 #include "game/Camera.h"
 #include "game/Map.h"
 
-// Shared by the updates of states 0x2A and 0x2B (fn_80291B8C, fn_80291910):
-// the player turns a quarter every four frames of the counter 0x3FC
-// (down, right, up, left: 2, 1, 3, 0).
+// The spin while rising or dropping (updates of 0x2A, 0x2B, 0x22, 0x1F:
+// fn_80291B8C, fn_80291910, fn_80293398, fn_80293900): the facing 0x3DC/0x3E8
+// turns a quarter every four counts of 0x3FC (down, left, up, right).
 inline void Player_804A6F38::spinFacing() {
     s32 turn = (field_0x3fc >> 2) & 3;
     if (turn == 0) {
@@ -32,7 +32,7 @@ inline void Player_804A6F38::spinFacing() {
 }
 }
 
-// The walk cycle of the GBA-screen arrivals (fn_80292198, fn_802924AC): 0x3F8
+// The walk cycle (fn_80292198, fn_802924AC, stepTransitionAnim): 0x3F8
 // counts 0-23, the frame 0x3F9 is a quarter of it.
 inline void Player_804A6F38::stepWalkCycle() {
     field_0x3f8++;
@@ -63,7 +63,7 @@ inline void Player_804A6F38::riseToTarget(s32 state) {
 }
 
 // The camera follows a point 150 above the player while it is on the TV
-// (fn_80293398, fn_802935A4).
+// (fn_802929FC, fn_80292ECC, fn_80293398, fn_802935A4).
 inline void Player_804A6F38::followCamera() {
     if (field_0x3b4 < 8) {
         JGeometry::TVec3f pos = mPos;
@@ -95,6 +95,7 @@ inline void Player_804A6F38::spawnEffect15B() {
 
 // The life that decides between landing and state 0x33: the leader's
 // (fn_80237774 of fn_80240644) when fn_80240808 holds, else the player's own.
+// fn_80293900 inlines it, and the unwritten fn_80290FC0 twice.
 inline s32 Player_804A6F38::life() {
     if (fn_80240808()) {
         return fn_80237774(fn_80240644());
@@ -112,7 +113,8 @@ inline void Player_804A6F38::fallStep() {
     mPos += field_0x344;
 }
 
-// Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_80293774).
+// Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_802935A4,
+// fn_80293774).
 inline void Player_804A6F38::spawnEffect17D() {
     JGeometry::TVec3f pos;
     pos.set(mPos);
@@ -147,7 +149,8 @@ inline void Player_804A6F38::stepTransitionAnim() {
     }
 }
 
-// The held actor's position: mPos raised 16 (fn_80292820, raiseHeldActor).
+// The held actor's position: mPos raised 16 (raiseHeldActor and the updates
+// fn_80292820, fn_802929FC, fn_80292ECC, fn_80293398, fn_80293B30; enter fn_80293E8C).
 inline void Player_804A6F38::setHeldPos() {
     field_0x2f4.set(mPos);
     field_0x2f4.z += 16.0f;
@@ -323,6 +326,8 @@ void Player_804A6F38::fn_8029185C() {
     fn_8024BAEC();
 }
 
+// FIXME: 99.87 %. Instructions identical; only the .sdata2 relocations differ (32.0f, 1.0f, 0.25f and more): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80291910() {
     if (field_0x3fc < 60) {
         field_0x3fc++;
@@ -368,6 +373,8 @@ void Player_804A6F38::fn_80291910() {
     }
 }
 
+// FIXME: 99.50 %. Instructions identical; only the .sdata2 relocations differ (4.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80291B64() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -376,6 +383,8 @@ void Player_804A6F38::fn_80291B64() {
     field_0x344.z = 4.0f;
 }
 
+// FIXME: 99.87 %. Instructions identical; only the .sdata2 relocations differ (4.0f, 128.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80291B8C() {
     field_0x3fc++;
     if (field_0x3fc >= 60) {
@@ -425,6 +434,8 @@ void Player_804A6F38::fn_80291D28() {
     }
 }
 
+// FIXME: 99.80 %. Instructions identical; only the .sdata2 relocations differ (1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80291E44() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -439,6 +450,8 @@ void Player_804A6F38::fn_80291E44() {
     }
 }
 
+// FIXME: 99.96 %. Instructions identical; only the .sdata2 relocations differ (0.1): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80291F10() {
     field_0x3f8++;
     if (field_0x3f8 == 4 || field_0x3f8 == 8) {
@@ -535,6 +548,8 @@ void Player_804A6F38::fn_802922D0() {
     field_0x3f9 = 0;
 }
 
+// FIXME: 99.94 %. Instructions identical; only the .sdata2 relocations differ (0.5): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802922EC() {
     field_0x3f8++;
     if (field_0x3f8 < 7) {
@@ -580,6 +595,8 @@ void Player_804A6F38::fn_80292454() {
     }
 }
 
+// FIXME: 99.93 %. Instructions identical; only the .sdata2 relocations differ (1.0): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802924AC() {
     stepWalkCycle();
     if (field_0x3fc < 60) {
@@ -609,6 +626,8 @@ void Player_804A6F38::fn_802925C4() {
     field_0x3e8 = 2;
 }
 
+// FIXME: 99.91 %. Instructions identical; only the .sdata2 relocations differ (1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802925E4() {
     if (field_0x3f8 < 8) {
         field_0x3f9 = 0;
@@ -648,6 +667,8 @@ void Player_804A6F38::fn_802925E4() {
     field_0x3f8++;
 }
 
+// FIXME: 99.82 %. Instructions identical; only the .sdata2 relocations differ (1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802927B0() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -678,6 +699,8 @@ void Player_804A6F38::fn_80292944() {
     raiseHeldActor();
 }
 
+// FIXME: 99.68 %. Instructions identical; only the .sdata2 relocations differ (150.0f, 1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802929FC() {
     followCamera();
     if (field_0x3fc == 60) {
@@ -747,6 +770,8 @@ void Player_804A6F38::fn_80292E90() {
     fn_8024F0E8(0x2000C);
 }
 
+// FIXME: 99.70 %. Instructions identical; only the .sdata2 relocations differ (150.0f, 1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80292ECC() {
     followCamera();
     if (field_0x3fc < 60) {
@@ -803,6 +828,8 @@ void Player_804A6F38::fn_80292ECC() {
     setHeldPos();
 }
 
+// FIXME: 99.82 %. Instructions identical; only the .sdata2 relocations differ (-0.5f, 4.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802932BC() {
     field_0x124d = 1;
     mPos.z = 0.0f;
@@ -814,6 +841,8 @@ void Player_804A6F38::fn_802932BC() {
     }
 }
 
+// FIXME: 99.85 %. Instructions identical; only the .sdata2 relocations differ (150.0f, 4.0f, 128.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80293398() {
     followCamera();
     field_0x3fc++;
@@ -834,6 +863,8 @@ void Player_804A6F38::fn_80293534() {
     }
 }
 
+// FIXME: 99.86 %. Instructions identical; only the .sdata2 relocations differ (150.0f, 32.0f, 1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802935A4() {
     followCamera();
     if (field_0x3fc < 60) {
@@ -862,6 +893,8 @@ void Player_804A6F38::fn_80293760() {
     field_0x458 = 0;
 }
 
+// FIXME: 99.88 %. Instructions identical; only the .sdata2 relocations differ (32.0f, 1.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80293774() {
     if (field_0x3fc == 60) {
         if (field_0xcf4 != 0x1D) {
@@ -895,6 +928,8 @@ void Player_804A6F38::fn_802938B8() {
     }
 }
 
+// FIXME: 99.96 %. Instructions identical; only the .sdata2 relocations differ (4.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80293900() {
     if (field_0x3fc < 60) {
         if (fn_80240670()) {
@@ -942,6 +977,8 @@ void Player_804A6F38::fn_80293B1C() {
     field_0x458 = 0;
 }
 
+// FIXME: 99.95 %. Instructions identical; only the .sdata2 relocations differ (128.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80293B30() {
     if (field_0x3fc >= 58) {
         field_0x3fc = 58;
@@ -1031,6 +1068,8 @@ void Player_804A6F38::fn_80293E8C() {
     }
 }
 
+// FIXME: 99.96 %. Instructions identical; only the .sdata2 relocations differ (0.5f, 32.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80293FE4() {
     if (field_0x3fc < 30) {
         field_0x3fc++;
@@ -1090,6 +1129,8 @@ void Player_804A6F38::fn_80293FE4() {
     stepTransitionAnim();
 }
 
+// FIXME: 99.84 %. Instructions identical; only the .sdata2 relocations differ (-1.25f, 1.25f, -20.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80294374() {
     field_0x398.set(mPos);
     field_0x398.z = 0.0f;
@@ -1176,6 +1217,8 @@ void Player_804A6F38::fn_80294374() {
     }
 }
 
+// FIXME: 99.93 %. Instructions identical; only the .sdata2 relocations differ (0.5f, 32.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802948C0() {
     fn_8027E5BC(0.5f);
     field_0x3fc++;
@@ -1199,6 +1242,8 @@ void Player_804A6F38::fn_802948C0() {
     stepTransitionAnim();
 }
 
+// FIXME: 99.89 %. Instructions identical; only the .sdata2 relocations differ (-1.25f, 1.25f, -20.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80294ADC() {
     if (field_0x1248 == 0x4A || field_0x1248 == 0x4B) {
         field_0xceb = 1;
@@ -1310,6 +1355,8 @@ void Player_804A6F38::fn_80294ADC() {
     field_0xca0 = 0xFF;
 }
 
+// FIXME: 99.85 %. Instructions identical; only the .sdata2 relocations differ (0.25f, -4.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_8029513C() {
     if (field_0x3fc < 60) {
         field_0x3fc++;
@@ -1331,9 +1378,8 @@ void Player_804A6F38::fn_8029513C() {
     }
 }
 
-// FIXME: 99.0 %. Instructions identical; the 0.0f and -0.5f literals the original
-// loads from .sdata2 (lbl_805405B4, lbl_80540644) belong to earlier, unwritten
-// functions of this unit, so ours are new @ labels.
+// FIXME: 99.50 %. Instructions identical; only the .sdata2 relocations differ (-0.5f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80295240() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -1342,6 +1388,8 @@ void Player_804A6F38::fn_80295240() {
     field_0x344.z = 0.0f;
 }
 
+// FIXME: 99.80 %. Instructions identical; only the .sdata2 relocations differ (4.0f, 128.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_80295268() {
     field_0x3fc++;
     if (field_0x3fc >= 10) {
@@ -1372,6 +1420,8 @@ void Player_804A6F38::fn_80295334() {
     mPos.z = 0.0f;
 }
 
+// FIXME: 99.86 %. Instructions identical; only the .sdata2 relocations differ (0.25f, -4.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802953A0() {
     if (field_0x3fc < 60) {
         field_0x3fc++;
@@ -1410,6 +1460,8 @@ void Player_804A6F38::fn_802954B8() {
     field_0x344.z = 0.0f;
 }
 
+// FIXME: 99.88 %. Instructions identical; only the .sdata2 relocations differ (128.0f): the
+// pool order comes from fn_80290FC0, unwritten until Player field 0x1344 is a TVec3f.
 void Player_804A6F38::fn_802954DC() {
     if (field_0x3fc >= 60) {
         field_0x124d = 0;
