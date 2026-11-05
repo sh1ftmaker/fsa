@@ -37,18 +37,18 @@ public:
     // known; the others are declared to number the slots the escort woman
     // overrides, with her overrides' signatures.
     /* 0x70 */ virtual void vfunc_0x70();
-    /* 0x74 */ virtual s32 vfunc_0x74();
+    /* 0x74 */ virtual void vfunc_0x74();
     // 0x80123D88 (tu_801213EC): returns 1 when the escort's state word
     // (0x344) is in range and the test passes, else 0. The escort woman's
     // override calls it for states 4 and 5.
-    /* 0x78 */ virtual s32 vfunc_0x78();
+    /* 0x78 */ virtual s32 vfunc_0x78() const;
     /* 0x7C */ virtual void vfunc_0x7C();
     /* 0x80 */ virtual void vfunc_0x80();
     /* 0x84 */ virtual s32 vfunc_0x84();
     /* 0x88 */ virtual s32 vfunc_0x88();
-    /* 0x8C */ virtual s32 vfunc_0x8C();
+    /* 0x8C */ virtual void vfunc_0x8C();
     /* 0x90 */ virtual void vfunc_0x90();
-    /* 0x94 */ virtual s32 vfunc_0x94();
+    /* 0x94 */ virtual void vfunc_0x94();
     // Slots 0x98-0xBC are not known yet; declared to number 0xC0 (the zora overrides it).
     /* 0x98 */ virtual void vfunc_0x98();
     /* 0x9C */ virtual void vfunc_0x9C();

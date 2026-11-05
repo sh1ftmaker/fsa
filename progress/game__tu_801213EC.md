@@ -8,7 +8,7 @@ Resistant:
 - fn_80121D68 92.8 missing/extra: original passes field_0x35c (lwz) to fn_800FE3EC's u8 arg with no clrlwi.
 - fn_80121ABC 99.1 regalloc: array pointer r29 / counter r30 swapped.
 - vfunc_0xBC 91.8, fn_80122898 96.8: TBox2f copy then adds of mPos; target stores f.x before the y load. addPos(x,y) gives 86.6 / worse.
-- vfunc_0xB4 92.9 (missing/extra, not examined), vfunc_0x78 93.6 scheduling (const this; children override non-const).
+- vfunc_0xB4 92.9 (missing/extra, not examined), vfunc_0x78 (fixed in review: const on base and both overrides, 100 %).
 
 Unwritten: fn_80121438, 801217EC, 80121BB8, 80122148, 80122548, 80122730, 80122F6C, 8012309C, 80123394, vfunc_0x98 (80123AB4), vfunc_0x80 (80123B94), fn_80123E9C (vfunc_0x4C), fn_80123F9C, update, fn_80124448, fn_80124600, dtor, ctor, __sinit.
 

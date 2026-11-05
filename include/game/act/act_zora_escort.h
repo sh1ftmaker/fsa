@@ -17,11 +17,11 @@ public:
     // 0x8011FFB8: returns 0 (the base slot's u8 result).
     /* 0x60 */ virtual u8 vfunc_0x60();
     // 0x8011FFC0: returns 0.
-    /* 0x78 */ virtual s32 vfunc_0x78();
+    /* 0x78 */ virtual s32 vfunc_0x78() const;
     // Vtable slot 0x88, fn_80120098: forwards 9 to the state slot 0x6C.
     /* 0x88 */ virtual s32 vfunc_0x88();
     // Vtable slot 0x8C, fn_80120068: forwards 0xC to the state slot 0x6C.
-    /* 0x8C */ virtual s32 vfunc_0x8C();
+    /* 0x8C */ virtual void vfunc_0x8C();
     /* 0x90 */ virtual void vfunc_0x90(); // 0x8011FFC8, empty
     /* 0x94 */ virtual void vfunc_0x94(); // 0x8011FFCC, empty
     // 0x80120040: returns 1.

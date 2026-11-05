@@ -5,7 +5,7 @@ u8 ZoraEscort_8049DF78::vfunc_0x60() {
     return 0;
 }
 
-s32 ZoraEscort_8049DF78::vfunc_0x78() {
+s32 ZoraEscort_8049DF78::vfunc_0x78() const {
     return 0;
 }
 
@@ -17,8 +17,8 @@ s32 ZoraEscort_8049DF78::vfunc_0xC0() {
     return 1;
 }
 
-s32 ZoraEscort_8049DF78::vfunc_0x8C() {
-    return vfunc_0x6C(0xC);
+void ZoraEscort_8049DF78::vfunc_0x8C() {
+    vfunc_0x6C(0xC);
 }
 
 s32 ZoraEscort_8049DF78::vfunc_0x88() {

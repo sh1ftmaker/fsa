@@ -27,19 +27,18 @@ void EscortBase_8049E0C8::vfunc_0x68() {}
 
 void EscortBase_8049E0C8::vfunc_0x70() {}
 
-// The empty slots below return nothing in the original (a bare blr), though the
-// children's overrides return s32.
-s32 EscortBase_8049E0C8::vfunc_0x74() {}
+void EscortBase_8049E0C8::vfunc_0x74() {}
 
+// 0x84/0x88: s32 slots whose result the caller (fn_80123394) passes on, but the base body is a bare blr.
 s32 EscortBase_8049E0C8::vfunc_0x84() {}
 
 s32 EscortBase_8049E0C8::vfunc_0x88() {}
 
-s32 EscortBase_8049E0C8::vfunc_0x8C() {}
+void EscortBase_8049E0C8::vfunc_0x8C() {}
 
 void EscortBase_8049E0C8::vfunc_0x90() {}
 
-s32 EscortBase_8049E0C8::vfunc_0x94() {}
+void EscortBase_8049E0C8::vfunc_0x94() {}
 
 s32 EscortBase_8049E0C8::vfunc_0xC0() {
     return 1;
@@ -284,6 +283,9 @@ void EscortBase_8049E0C8::vfunc_0xB8(f32* x, f32* y, s32* player) {
     }
 }
 
+// FIXME: 92.9. Branch layout differs: the original tests target < 0 / >= 4 with a direct jump past the loop (result = target
+// on that path) and keeps target in r29, result in r31; ours copies target into result before the test (extra mr) and the
+// loop/result registers are shifted by one.
 void EscortBase_8049E0C8::vfunc_0xB4(f32* x, f32* y, s32* player) {
     *x = 0.0f;
     *y = 0.0f;
@@ -387,9 +389,7 @@ void EscortBase_8049E0C8::vfunc_0x7C() {
     mLife = field_0x360 * 4;
 }
 
-// FIXME: 93.6. Scheduling only: the original loads field_0x333 above the prologue's r31 save (a const this, which the
-// children's overrides would have to share).
-s32 EscortBase_8049E0C8::vfunc_0x78() {
+s32 EscortBase_8049E0C8::vfunc_0x78() const {
     if (field_0x333) {
         return 0;
     }

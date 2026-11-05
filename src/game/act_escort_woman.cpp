@@ -23,8 +23,8 @@ static const s16* lbl_8049E198[14] = {
     lbl_80464E2C, lbl_80464E38, lbl_80464E44, lbl_80464E5C, lbl_80464E68, lbl_80464E74, lbl_80464E80,
 };
 
-s32 EscortWoman_8049E1D0::vfunc_0x94() {
-    return vfunc_0x6C(9);
+void EscortWoman_8049E1D0::vfunc_0x94() {
+    vfunc_0x6C(9);
 }
 
 void EscortWoman_8049E1D0::vfunc_0x90() {
@@ -33,8 +33,8 @@ void EscortWoman_8049E1D0::vfunc_0x90() {
     }
 }
 
-s32 EscortWoman_8049E1D0::vfunc_0x8C() {
-    return vfunc_0x6C(8);
+void EscortWoman_8049E1D0::vfunc_0x8C() {
+    vfunc_0x6C(8);
 }
 
 s32 EscortWoman_8049E1D0::vfunc_0x88() {
@@ -45,15 +45,15 @@ s32 EscortWoman_8049E1D0::vfunc_0x84() {
     return vfunc_0x6C(7);
 }
 
-s32 EscortWoman_8049E1D0::vfunc_0x78() {
+s32 EscortWoman_8049E1D0::vfunc_0x78() const {
     if (field_0x33c >= 6 || field_0x33c <= 3) {
         return 0;
     }
     return EscortBase_8049E0C8::vfunc_0x78();
 }
 
-s32 EscortWoman_8049E1D0::vfunc_0x74() {
-    return fn_80121DB0();
+void EscortWoman_8049E1D0::vfunc_0x74() {
+    fn_80121DB0();
 }
 
 void EscortWoman_8049E1D0::vfunc_0x70() {
