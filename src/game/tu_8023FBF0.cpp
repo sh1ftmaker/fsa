@@ -751,6 +751,27 @@ bool Player_804A6F38::fn_802426E0(s32 serial) {
     return true;
 }
 
+// Counts field_0xbd8 down (fn_803037D4(index, 2) every 60 frames while
+// fn_8030381C allows it); a leader with field_0xbdc whose count ran out on
+// a layer of 8 or more calls fn_8028FBA0; below layer 8 the count is dropped.
+void Player_804A6F38::fn_80242BC0() {
+    if (field_0x454) {
+        return;
+    }
+    if (field_0xbd8 > 0) {
+        field_0xbd8--;
+        if (field_0xbd8 > 0 && field_0xbd8 % 60 == 0 && fn_8030381C(field_0x4)) {
+            fn_803037D4(field_0x4, 2);
+        }
+    }
+    if (field_0xd60 < 0 && field_0xbdc && field_0xbd8 <= 0 && field_0x3b4 >= 8) {
+        fn_8028FBA0();
+    }
+    if (field_0x3b4 < 8 && field_0xbd8 > 0) {
+        field_0xbd8 = 0;
+    }
+}
+
 bool Player_804A6F38::fn_80243194(s32 other) {
     return fn_8022E438(field_0x4, other);
 }
@@ -1687,6 +1708,29 @@ void Player_804A6F38::fn_8024CA20() {
 
 bool Player_804A6F38::fn_8024D98C() {
     field_0x455 = 1;
+    return true;
+}
+
+// Sets the target 0x32C to pos and steps the frame counter 0x452 (0-23);
+// 0x450 = 8 * facing + 0x452 / 3, 0xCA2 = flag; then fn_8024B2E0.
+bool Player_804A6F38::fn_8024D99C(const JGeometry::TVec3f* pos, bool flag) {
+    field_0x32c = *pos;
+    field_0x452++;
+    if (field_0x452 >= 0x18) {
+        field_0x452 = 0;
+    }
+    if (field_0x3dc == 0) {
+        field_0x450 = 0;
+    } else if (field_0x3dc == 1) {
+        field_0x450 = 8;
+    } else if (field_0x3dc == 2) {
+        field_0x450 = 0x10;
+    } else {
+        field_0x450 = 0x18;
+    }
+    field_0x450 += (u8)(field_0x452 / 3);
+    field_0xca2 = flag;
+    fn_8024B2E0();
     return true;
 }
 
