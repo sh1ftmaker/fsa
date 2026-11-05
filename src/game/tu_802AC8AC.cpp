@@ -6,33 +6,9 @@
 
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/cls_804A8390.h"
 #include "game/GameState.h"
 #include "JSystem/J2D/J2DPicture.h"
-
-class cls_804A8390 {
-public:
-    cls_804A8390();
-    virtual ~cls_804A8390();
-
-    void fn_802AC8AC(s32 value);
-    bool fn_802AC8B4();
-    void fn_802AC980();
-    void fn_802AC98C();
-    void fn_802ACA64();
-    void fn_802ACB58();
-
-    /* 0x00 */ // vtable
-    /* 0x04 */ J2DPicture* mPicture;
-    /* 0x08 */ u8 field_0x8[0xC - 0x8];
-    // Passed to the picture's vtable slot 0x24 (setAlpha) by fn_802AC98C and
-    // fn_802ACA64; fn_802AC8B4 steps it by 10 between 0 and 0xFF.
-    /* 0x0C */ s32 mAlpha;
-    /* 0x10 */ s32 field_0x10;
-    /* 0x14 */ s32 field_0x14;
-    /* 0x18 */ s32 field_0x18;
-}; // Size: 0x1C
-
-extern cls_804A8390* lbl_8053ACA0;
 
 void cls_804A8390::fn_802AC8AC(s32 value) {
     field_0x18 = value;

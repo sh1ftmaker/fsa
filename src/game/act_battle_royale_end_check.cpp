@@ -41,7 +41,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
         startCameraMove(lbl_8053AB10->field_0x24, -1);
     }
     if (lbl_8053AD30->fn_80309C4C(0x1100, -1) != 0) {
-        fn_801367E0(lbl_8053AAF8, 0xA);
+        lbl_8053AAF8->fn_801367E0(0xA);
         if (mWinner != -1) {
             lbl_80529DEC.field_0x140[mWinner]++;
             lbl_80529DEC.field_0x243[0] = 0;

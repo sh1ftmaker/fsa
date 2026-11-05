@@ -131,18 +131,24 @@ struct GameRootSub04_801F856C {
 // Set in game/tu_801344C0.cpp (0x80134998) and game/tu_80134C04.cpp
 // (0x80139340). Named after its vtable, 0x8049EF20 (constructor
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
+struct Unk_8045A080;
 struct GameRoot_8049EF20 {
     /* 0x00 */ u8 field_0x0[0x4];
     /* 0x04 */ GameRootSub04_801F856C* field_0x4; // -> 0x8: the actor manager
     /* 0x08 */ u8 field_0x8[0x4C - 0x8];
     /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
-    /* 0x50 */ u8 field_0x50[0x54 - 0x50];
+    // Set (with field_0x58 = 1) by fn_80136798, fn_8013670C and fn_801365E8 (game/tu_80134C04.cpp).
+    /* 0x50 */ s32 field_0x50;
     // Stored by fn_8019CDC4 (game/tu_80197070.cpp, 0x8019CDC4, stw of r3).
     /* 0x54 */ s32 field_0x54;
     // The fade state tested by cls_804A8390::fn_802AC8B4 (tu_802AC8AC): 1 and
     // 5 step the black picture up, 4 steps it down, 6 counts field_0x14 down.
     /* 0x58 */ s32 field_0x58;
-    /* 0x5C */ u8 field_0x5c[0x74 - 0x5C];
+    /* 0x5C */ u8 field_0x5c[0x60 - 0x5C];
+    // Cleared by fn_8013670C (game/tu_80134C04.cpp, stw of 0).
+    /* 0x60 */ s32 field_0x60;
+    /* 0x64 */ s32 field_0x64;
+    /* 0x68 */ u8 field_0x68[0x74 - 0x68];
     // Both cleared by fn_8019CDC4 (game/tu_80197070.cpp, stw of 0).
     /* 0x74 */ s32 field_0x74;
     /* 0x78 */ s32 field_0x78;
@@ -169,7 +175,9 @@ struct GameRoot_8049EF20 {
     /* 0x95 */ u8 field_0x95;
     // Stored by fn_80134FBC (game/tu_80134C04.cpp, 0x80134FBC, stb of r4).
     /* 0x96 */ u8 field_0x96;
-    /* 0x97 */ u8 field_0x97[0xA4 - 0x97];
+    /* 0x97 */ u8 field_0x97[0xA0 - 0x97];
+    // The audio object (fn_80458880 / fn_804593D4 in fn_80134D20, game/tu_80134C04.cpp).
+    /* 0xA0 */ Unk_8045A080* field_0xa0;
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
     // code calls it through vtable slot 0x18 = getResource(u32 type,
     // const char* name) with a 4CC and a name ('ENM ' in fn_801F62AC, 'TIMG'
@@ -200,7 +208,9 @@ struct GameRoot_8049EF20 {
     // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
     // is not known yet.
     /* 0x108 */ s32 field_0x108;
-    /* 0x10C */ u8 field_0x10c[0x11C - 0x10C]; // main allocates 0x11C bytes
+    // Cleared with field_0x108 by fn_80134D20 (game/tu_80134C04.cpp, stw of 0).
+    /* 0x10C */ s32 field_0x10c;
+    /* 0x110 */ u8 field_0x110[0x11C - 0x110]; // main allocates 0x11C bytes
     // Owner: game/tu_80134C04.cpp (0x80134CC0; defined there). Stores r4 at
     // this+0x108 (stw).
     void fn_80134CC0(s32 value);
@@ -228,6 +238,21 @@ struct GameRoot_8049EF20 {
     // it is 1, else sets this+0x95 to 1. Callers: game/tu_8029C584.cpp
     // (cls_804A7BE8's destructor, with 0), game/tu_8023FBF0.cpp and game/tu_802D39B8.cpp.
     void fn_80134FE0(u8 value);
+    // Owner: game/tu_80134C04.cpp (0x80134CC8). Whether the game is paused
+    // (field_0x4c == 11 or field_0x88 == 2) and the fade object lbl_8053AB10->0x2C
+    // has its byte at 0xC clear (0xC is 0 when it is idle).
+    u8 fn_80134CC8();
+    // Owner: game/tu_80134C04.cpp (0x80134D20; called by tu_8044C7F0).
+    void fn_80134D20(bool arg);
+    // Owner: game/tu_80134C04.cpp (0x80136320; 8 calls in tu_803099FC).
+    bool fn_80136320();
+    // Owner: game/tu_80134C04.cpp (0x801365E8; called by tu_801B4D0C). Stores
+    // 7 at this+0x50, 1 at this+0x58, starts the fade with c, stores a and b
+    // in the selected stage and sets this+0x84.
+    void fn_801365E8(s32 a, s32 b, s32 c);
+    // Owner: game/tu_80134C04.cpp (0x801367E0). Stores r4 at this+0x4C; value 10
+    // also resets the fade object (lbl_8053ACA0).
+    void fn_801367E0(s32 value);
     // Stores r4 at this+0xFE (stb). When it is 1, clears this+0xFC (stb) and
     // this+0xF8 (stw). Defined in game/tu_80134C04.cpp (0x801365C8); no callers found yet.
     void fn_801365C8(u8 value);
@@ -463,6 +488,9 @@ struct Unk_8045A080 {
     // calls it with an id from lbl_8052DEE0 in r4, or -1; the id is not a
     // JAISoundID (passed in a register).
     void fn_80458880(s32 id, s32 arg);
+    // game/tu_80457DFC.cpp (0x804593D4, not written yet). Sets 0x8e and pauses
+    // the sound categories of the object at 0x34 (called by fn_80134D20).
+    void fn_804593D4();
     // game/tu_80457DFC.cpp (0x80458F04). Callers pass a table entry in r4: if
     // the sound at 0x84 is not already id, creates it through the category
     // object at 0x30 (vtable slot 0xC) and starts a volume move.
@@ -1671,7 +1699,6 @@ extern s32 lbl_8053A100;
 extern "C" {
 bool fn_80239F10();
 void fn_802B3A48(ActorBase_804A5770* actor);
-void fn_801367E0(GameRoot_8049EF20* root, s32 value);
 }
 
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
