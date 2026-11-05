@@ -634,7 +634,8 @@ s32 Player_804A6F38::fn_80248778() const {
     }
     s32 count = 0;
     for (s32 i = 0; i < field_0x4; i++) {
-        if (field_0xd60 == fn_8022F3DC(i)) {
+        s32 partner = field_0xd60;
+        if (partner == fn_8022F3DC(i)) {
             count++;
         }
     }
@@ -1234,6 +1235,10 @@ static inline BOOL viewStageFlag() {
     return ((1 << (stage * 4 + sub)) & lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28) != 0;
 }
 
+// FIXME: 99.30. Besides the unit's float literals (@NNN vs lbl_, not yet in
+// pool order), only the setup of the first 0x31-entry loop differs: the
+// original makes the index 0 first and copies it for the byte 0 (li r5,0 /
+// mr r3,r5), ours loads li r6,0 / li r3,0 after li r4,1 (register order).
 // The per-slot reset, run for every slot on scene enter and stage change
 // (fn_8023F78C). Picks the slot's part (field_0xcac, the partner field_0xd60,
 // the pad owner field_0x11ec and the start state 0 or 1) from the game mode,
@@ -1271,7 +1276,7 @@ void Player_804A6F38::fn_80254744() {
         field_0x1248 = 0;
     } else if (lbl_8053AAF8->fn_80138A30() == 2) {
         mActive = true;
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+        if ((u8)(1 << field_0x4) & lbl_8053AAF8->field_0x82) {
             field_0xd60 = -1;
             field_0x11ec = field_0x4;
         } else {
@@ -1301,7 +1306,7 @@ void Player_804A6F38::fn_80254744() {
     } else {
         mActive = true;
         field_0xd60 = -1;
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+        if ((u8)(1 << field_0x4) & lbl_8053AAF8->field_0x82) {
             field_0x11ec = field_0x4;
             field_0x1244 = 0;
             field_0x1240 = 0;
@@ -1406,6 +1411,7 @@ void Player_804A6F38::fn_80254744() {
         case 0x1c1:
             field_0x3c4 = 0x3d;
             break;
+        case 1: // compared in the original's search (cmpwi 1), sharing default's code
         default:
             field_0x3c4 = 0x3e;
             break;
@@ -1738,7 +1744,7 @@ void Player_804A6F38::fn_80254744() {
             field_0xca3 = -0x80;
             field_0xca4 = -0x80;
             // Both operands load mPos (0x8) in the original.
-            JGeometry::TVec3f diff = mPos - mPos;
+            const JGeometry::TVec3f& diff = mPos - mPos;
             if (PSVECMag(&diff) >= 0.1f) {
                 fn_8024B2E0();
             }
@@ -1751,7 +1757,7 @@ void Player_804A6F38::fn_80254744() {
         field_0xca2 = 0xff;
         field_0xca3 = -0x80;
         field_0xca4 = -0x80;
-        JGeometry::TVec3f diff = mPos - mPos;
+        const JGeometry::TVec3f& diff = mPos - mPos;
         if (PSVECMag(&diff) >= 0.1f) {
             fn_8024B2E0();
         }
