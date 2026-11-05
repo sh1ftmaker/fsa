@@ -18,7 +18,7 @@ report_honest.json and the boot-path coverage dumps
 | tu_8023FBF0 | 8023FBF0-80256C74 | 254 | 147 | ~83,500 | Player core: getters/setters, input/actions, state request, update A/B, reset, ctor/dtor |
 | tu_80256C74 | 80256C74-8025EB18 | 63 | 38 | 27,132 | state handlers 0x39-0x3D, 0x41-0x48, helpers |
 | tu_8025EB18 | 8025EB18-80264998 | 59 | 33 | 22,220 | state handlers 0x11-0x19; shared exit fn_8025F698(bool) |
-| tu_80264998 | 80264998-802684A4 | 26 | 1 | 14,568 | draw fn_80264998, skeleton/animation fn_80265E88 + joint callbacks |
+| tu_80264998 | 80264998-802684A4 | 26 | 24 | 5,140 | draw fn_80264998, body-frame select fn_80265E88 + per-state frame functions (round 6) |
 | tu_802684A4 | 802684A4-8026FC20 | 25 | 5 | 29,428 | cls_804A71A8 (helper object at Player+0xBF0) |
 | tu_8026FC20 | 8026FC20-8027E5BC | 120 | 54 | 55,608 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
 | tu_8027E5BC | 8027E5BC-80285E58 | 73 | 36 | 25,556 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
@@ -736,3 +736,78 @@ The unit is the player's **hold / lift / throw** code. State names are provision
   0x18, 0x19 (fn_80261750, fn_80262254, fn_80262BAC, fn_80263078, fn_802632A8,
   fn_80263860, fn_80263C64, fn_8026441C). Player 0x580 as a TBox2f (for fn_802570BC)
   was not looked at.
+
+## Round 6 (draw, tu_80264998) (agent J, Opus 5.5, 2026-11-05)
+
+1 -> 24 of 26 at 100 %; fn_80264998 (draw) 99.74 % (stack slots / registers
+only), fn_80267ECC 96.69 % (one shared tail). There is no skeleton: the unit
+is the 2D body sprite. Names stay provisional.
+
+**fn_80265E88 = the body-frame select** (fn_80285E58 each frame, after the
+state tick; 100 %). field_0x3c6 = the old field_0x3c4, then field_0x3c4 =
+the "player_sob.bin" cel to draw: 0xC2 / 0xC3 while 0xCFE (by z > 0);
+field_0x450 with alpha 0xCA2 -> 0xCA0 for one frame after 0x456, or while
+fn_802413E8; 0x121 (= nothing drawn, see below) while 0x464 bit 1 and no
+0x488; else a `switch (field_0x1240)` (82 cases, jump table 0x804A7060) that
+picks a base by facing 0x3DC (right, left, down, up) and adds a counter:
+0x3F9 (walk cycle), 0x3FB (action), 0x3FD (sub-step). Per-state helpers
+fn_80267018-fn_80267ECC (all Player members now, r3 = this). Examples:
+standing 0x3C-0x3F (state 0 / 0x1F / 0x2A / 0x42; fn_80268194), walk 0x00 +
+8 * facing + 0x3F9 (states 2, 3, 0x38), spin 0x8F-0x96 (fn_80267D30, states
+9 / 0xA), the carried pose 0x1BF-0x1C3 of player 4 of a group outside the
+leader's slot (fn_802486A0() == 4 && fn_80240888() != fn_80248778()), state
+0x49 by field_0x1178 (0 / 1 / 2 -> 0x35F / 0x3D0 / 0x296 + 0x3FD).
+**fn_80268194 is an inline**: the frame functions after fn_80265E88 inline it
+(fn_80267384 / fn_80267598 are just its body, fn_80267ECC and fn_80267470 use it),
+fn_80265E88 is defined before it and calls it, so MWCC emits the out-of-line
+copy at the end of the file (0x80268194, just before __sinit). Written as an
+`inline` member definition after fn_80265E88; 100 %.
+
+**fn_80264998 = the draw** (manager fn_8023F2BC). Pipeline, in order:
+1. Gate: mActive, 0xCEE != 1, and with 0x1215 the player's bit of
+   lbl_8053AAF8->0x82. alpha = fn_8023FC5C(), index = fn_80240868(); the frame
+   is clamped to 0x3D4.
+2. Round shadow: field_0xb90 > 0 -> drawShadow(layer, &0x338, black, 0xb90)
+   (cls_804A0160, game/DrawShadow.h).
+3. GBA marker: layer > 8 and fn_80246B10(0x40) -> "enemy_gc_sob.bin" cel
+   0x73 + index * 3 + (frame counter 0x5C / 6) % 3 at 0xCB0 (a 3-frame blink
+   per player), params 0x1C = 0x2D = 1.
+4. Sprite shadow ("player_sob.bin", the body cel itself darkened), unless
+   fn_80240808 && fn_80240DAC, and only with fn_802413F0: at (x, y - 0.01, -5)
+   (y from 0x328 on fn_80240DAC), plus on layer 8 the view's top-left
+   (GameView mVisibleBox.i, the per-layer view offset) and (0, -z) (height
+   drawn as a y offset); alpha min(alpha, 0xCA1), cap 0x9F, minus z / 2 in
+   the air (floor 79); colour 0 / blend 0x28; scale matrix (1, 1, 1) on layer
+   8, else (0.9, 0.5, 0.5) (PSMTXScale, a squashed shadow). Skipped while
+   0x43F. In the air on the GBA layers (>= 8, view flag clear) a shadow cel
+   0x3CD goes through fn_803075AC (serial -40000 - index).
+5. Body: SpriteParams with [7] = index + 12 (the player's palette), [10] = 6
+   at fn_80241544() >= 2, 0x2D = 1, 0x30 = index + 4 with 0x11E9, alpha;
+   mMtx = diag(0xC84 * 0xC90) (squash / stretch); priorities 0x1C / 0x1D from
+   the held actor 0xD70 (fn_8023CA88 / fn_8023CB24 + 1) while fn_8025F418,
+   else +1 / +1 at z >= 20, +1 in the air or with fn_80240818; overrides
+   0xCA3 / 0xCA4 (-0x80 = none) under fn_802413E8 (copied back to 0x3D8 /
+   0x3D9). **Colour flash**: 0xCA8 counts down with the player's colour
+   (0 green, 1 red, 2 cyan, 3 magenta); else 0x400 darkens by 32 a step;
+   else (no 0x7F) 0x1208 < 64 fades in from black (x4). Drawn only if
+   fn_802413F0, alpha >= 0x20, not a follower whose leader is hidden, frame
+   != 0x121, at mPos + 0x2B8 rounded to whole units, TV layers only.
+6. Floor overlays ("enemy_both2_sob.bin", params 0x13 = 0x80 while 0x458 and
+   facing down) at mPos + (0, 1) when on the floor: fn_8022517C -> cel 0x3C8
+   (fn_80265AE4's 0x195-0x197 cycle); tile 0x39 / 0xD / 0x3B with fn_80270A8C
+   -> cel 0x3CA (0x18F-0x191; +3 on frames 0xC2-0xC4); else, unless
+   fn_802412A4 without fn_80241200 or fn_8024BBB0, tile 0x39 or fn_80225BE4 ->
+   cel 0x3CA. GBA layers: fn_803075AC (serial -10000 / -20000 - index).
+Helpers in the unit: drawSob / drawSobOnTv (the TV check is tested again
+after the frame load, so it is inside a helper), drawGba (the position is
+the call's argument, no named copy), setScaleMtx (the three scales are
+computed z first, i.e. as inline-call arguments).
+
+- fn_80265AE4 (idle counters 0x3CC / 0x3D0 / 0x3D4 -> cels 0x3C8 / 0x3CA;
+  effect 0x4D2 at the feet on tile 0x39, emitter 0x1384, released with
+  becomeInvalidEmitter), fn_80265D68 / fn_80265D8C (0xCA0 fade -8 / +8),
+  fn_80265DB0 (shadow alpha 0xCA1: 0 on frames 0x122 / 0xB7-0xBC or layer > 8,
+  0xFF on layer 8, fades while fn_8025F448 and the held actor is not on 8): 100 %.
+- Data: .rodata lbl_8046B960 was one 0x38 symbol; split into the three
+  strings (lbl_8046B960 / B974 / B984); .sdata2, .data (jump table) 100 %.
+- Field added: 0x1178 s32 (state 0x49's variant; stw at 0x8024B1A0).
