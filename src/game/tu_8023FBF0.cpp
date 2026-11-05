@@ -1523,17 +1523,37 @@ void Player_804A6F38::fn_80248DD8() {
     field_0x1217 = false;
 }
 
+// Clears field_0x121f (set by fn_8024909C; update B skips while it is set)
+// and holds field_0x11f0 at 5 or more. fn_80249070's body: fn_80248FF0
+// (before it) inlines it, so it is a file inline with fn_80249070 as its
+// out-of-line copy.
+static inline void clear121F_80249070(Player_804A6F38* player) {
+    if (player->field_0x121f == 1) {
+        player->field_0x121f = 0;
+        if (player->field_0x11f0 < 5) {
+            player->field_0x11f0 = 5;
+        }
+    }
+}
+
+// Ends the 'FORM' actor of serial field_0x1230 (fn_802490A8 spawns it), or
+// without one clear121F_80249070.
+void Player_804A6F38::fn_80248FF0() {
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x1230);
+    if (actor != NULL) {
+        actor->mAlive = false;
+        field_0x1230 = -1;
+    } else {
+        clear121F_80249070(this);
+    }
+}
+
 bool Player_804A6F38::fn_80249068() {
     return field_0x121f;
 }
 
 void Player_804A6F38::fn_80249070() {
-    if (field_0x121f == 1) {
-        field_0x121f = 0;
-        if (field_0x11f0 < 5) {
-            field_0x11f0 = 5;
-        }
-    }
+    clear121F_80249070(this);
 }
 
 void Player_804A6F38::fn_8024909C() {
@@ -2309,6 +2329,24 @@ bool Player_804A6F38::fn_80251BFC(s32 state) {
 
 void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {
     field_0x2e8 += *offset;
+}
+
+// Moves field_0x2dc by `offset` and the whole trail (field_0x38) by the
+// result.
+void Player_804A6F38::fn_80252BD0(const JGeometry::TVec3f* offset) {
+    field_0x2dc += *offset;
+    field_0x435 = 1;
+    for (s32 i = 0; i < 0x31; i++) {
+        field_0x38[i] += field_0x2dc;
+    }
+}
+
+// Moves field_0x2dc by `offset` and pushes the position onto the trail
+// twice (fn_8024B9E8).
+void Player_804A6F38::fn_80252CF0(const JGeometry::TVec3f* offset) {
+    field_0x2dc += *offset;
+    fn_8024B9E8();
+    fn_8024B9E8();
 }
 
 void Player_804A6F38::fn_80252F14(const JGeometry::TVec3f* offset) {
