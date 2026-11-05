@@ -2,6 +2,8 @@
 // Written so far: the stage predicates that also read GameState_804B0FE0.
 
 #include "game/GameAudio.h"
+#include "game/ActorManager.h"
+#include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 
@@ -35,6 +37,17 @@ void GameView_804A9950::fn_802D6AAC(u8 value) {
 // in the target; a mask local and swapped & operands are worse).
 bool GameView_804A9950::fn_802D6AC4(s32 bit) {
     return (field_0xfd68[field_0x18][field_0x14][bit / 32] & (1 << (bit % 32))) != 0;
+}
+
+void GameView_804A9950::fn_802D6B24(s32 bit, bool set) {
+    // word before shift: the declaration order decides the registers (as fn_802D7310).
+    s32 word = bit / 32;
+    s32 shift = bit % 32;
+    if (set) {
+        field_0xfd68[field_0x18][field_0x14][word] |= 1 << shift;
+    } else {
+        field_0xfd68[field_0x18][field_0x14][word] &= (1 << shift) ^ -1;
+    }
 }
 
 void GameView_804A9950::fn_802D6BC8(u8 value) {
@@ -97,6 +110,35 @@ u8 GameView_804A9950::fn_802D7544(s32 index) {
 void GameView_804A9950::fn_802D7584(s32 index, u8 value) {
     if (index >= 0 && index < 0x100) {
         field_0x9968[field_0x18][field_0x14][index] = value;
+    }
+}
+
+// FIXME: 91.3. Only scheduling: the word address add is emitted two slots earlier than in the target
+// (same as fn_802D6AC4; swapped & operands are worse).
+bool GameView_804A9950::fn_802D75BC(s32 bit) {
+    return (field_0x6768[field_0x18][field_0x14][bit / 32] & (1 << (bit % 32))) != 0;
+}
+
+void GameView_804A9950::fn_802D7618(s32 bit) {
+    field_0x6768[field_0x18][field_0x14][bit / 32] |= 1 << (bit % 32);
+}
+
+void GameView_804A9950::fn_802D766C(bool flag, s32 layer) {
+    if (flag) {
+        field_0x6748[layer < 8 ? 0 : layer - 7]++;
+    }
+}
+
+// FIXME: 91.3. Only scheduling: the word address add is emitted two slots earlier than in the target
+// (same as fn_802D6AC4; swapped & operands are worse).
+bool GameView_804A9950::fn_802D76A8(s32 bit) {
+    return (field_0x3548[field_0x18][field_0x14][bit / 32] & (1 << (bit % 32))) != 0;
+}
+
+void GameView_804A9950::fn_802D7704(s32 bit, bool count, s32 layer) {
+    field_0x3548[field_0x18][field_0x14][bit / 32] |= 1 << (bit % 32);
+    if (count) {
+        field_0x6748[layer < 8 ? 0 : layer - 7]++;
     }
 }
 
@@ -173,6 +215,20 @@ void GameView_804A9950::fn_802D7970(s32 value) {
     }
 }
 
+u64 GameView_804A9950::fn_802D7AC4(s32 layer) {
+    if (layer < 8) {
+        return lbl_8053AAF8->field_0x4->mView->field_0x1010[field_0x18][field_0x14][7];
+    }
+    return lbl_8053AAF8->field_0x4->mView->field_0x1010[field_0x18][field_0x14][layer];
+}
+
+// FIXME: 99.0. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
+s32 GameView_804A9950::fn_802D7B34(s32 layer, s32 slot) {
+    s32 idx = layer < 8 ? 0 : layer - 7;
+    s32 shift = 60 - slot * 4;
+    return (lbl_8053AAF8->field_0x4->mView->field_0x1010[field_0x18][field_0x14][7 + idx] & (0xFULL << shift)) >> shift;
+}
+
 s32 GameView_804A9950::fn_802D7E04(s32 index) {
     return lbl_8053AAF8->field_0x4->mView->field_0x308[index];
 }
@@ -194,8 +250,29 @@ bool GameView_804A9950::fn_802D7F40(s32 bit) {
     return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8]) != 0;
 }
 
+void GameView_804A9950::fn_802D7F84(s32 bit, bool set) {
+    if (set) {
+        lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] |= 1 << bit;
+    } else {
+        lbl_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] &= (1 << bit) ^ -1;
+    }
+}
+
 bool GameView_804A9950::fn_802D800C(s32 bit) {
     return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14]) != 0;
+}
+
+void GameView_804A9950::fn_802D8050(s32 bit, bool set, u8 value) {
+    if (set) {
+        lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] |= 1 << bit;
+        if (lbl_8053AAF8->field_0x4->mView->field_0x308[bit] < 0xFF) {
+            lbl_8053AAF8->field_0x4->mView->field_0x308[bit]++;
+        }
+        lbl_8053AAF8->field_0x4->mView->field_0x328[bit] = value;
+    } else {
+        lbl_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= (1 << bit) ^ -1;
+        lbl_8053AAF8->field_0x4->mView->field_0x328[bit] = 0xFF;
+    }
 }
 
 void GameView_804A9950::fn_802D9CB0() {
@@ -228,9 +305,20 @@ u8 GameView_804A9950::fn_802DCD0C() {
     return lbl_8053AB10->field_0x24->field_0x1e8;
 }
 
+void GameView_804A9950::fn_802DCDF4() {
+    fn_801F856C()->fn_801F7CAC();
+    fn_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    lbl_8053AAF8->field_0x4->mView->field_0x131de = 0;
+    fn_8013C824()->fn_8013C8CC();
+    field_0xc9 = 0;
+}
+
 void GameView_804A9950::vfunc_0x14() {}
 
 // FIXME: the other GameView_804A9950 functions before 0x802DE814 are not written yet.
+
+GameView_804A9950::~GameView_804A9950() {}
 
 bool fn_802DE764(s32 stage, s32 level, s32 value) {
     if (lbl_8053AAF8->field_0x7f == 0) {
@@ -308,7 +396,23 @@ bool fn_802DE9A0(void) {
     return false;
 }
 
-// FIXME: fn_802DEA34 is not written yet.
+// FIXME: 93.5. Same family as fn_802DEABC: the target reloads the view (lwz 0xc) before the second
+// pair and reuses it for the third; ours loads it once. An || of the last two blocks is 87 %.
+bool fn_802DEA34(void) {
+    if (lbl_8053AAF8->field_0x7f != 0) {
+        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+            return true;
+        }
+        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 1) {
+            return true;
+        }
+        if (lbl_8053AAF8->field_0x4->mView->field_0x4 == 6 && lbl_8053AAF8->field_0x4->mView->field_0x8 == 3) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
 
 // FIXME: 94.2 %. The target keeps lbl_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
@@ -362,4 +466,8 @@ bool fn_802DEBF8(void) {
         return true;
     }
     return false;
+}
+
+bool fn_802DEDFC(const s32* dir) {
+    return lbl_8053AAF8->field_0x4->mView->fn_802DCE5C(dir);
 }

@@ -388,12 +388,10 @@ bool fn_802DEB58(void);
 bool fn_802DEBA0(void);
 // 9 units. Stage (8, 3).
 bool fn_802DEBF8(void);
+// 0 callers found. Forwards to the view's fn_802DCE5C.
+bool fn_802DEDFC(const s32* dir);
 
-// Not written yet in game/tu_802D39B8.cpp: extern "C" keeps its dtk name
-// until that unit defines it.
-extern "C" {
 // 1 unit. Stage (6, 0), (6, 1) or (6, 3).
 bool fn_802DEA34(void);
-}
 
 #endif

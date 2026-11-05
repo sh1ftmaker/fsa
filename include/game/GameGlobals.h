@@ -1673,5 +1673,8 @@ extern "C" u8 fn_8030381C(s32 layer);
 // maximum to the value (unsigned compare). Called by game/tu_8023FBF0.cpp
 // (fn_8024F54C).
 extern "C" void fn_803037D4(s32 layer, u32 value);
+// game/tu_80301CD0.cpp (0x80308D0C, not written yet). Takes no arguments;
+// called by game/tu_802D39B8.cpp (GameView_804A9950::fn_802DCDF4).
+extern "C" void fn_80308D0C();
 
 #endif
