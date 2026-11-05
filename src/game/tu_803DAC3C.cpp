@@ -1034,3 +1034,166 @@ GameMode_804B0688::~GameMode_804B0688() {
     lbl_80529DEC.field_0x2c->unmount();
     lbl_8053ADD0 = NULL;
 }
+
+GameMode_804B0688::GameMode_804B0688() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    lbl_8053AB10->field_0x2c->fn_80158B3C();
+    if (lbl_80529DEC.field_0x242 == 0) {
+        lbl_80529DEC.field_0x242 = 1;
+        lbl_8053AB10->field_0x20->fn_802FF798();
+        lbl_8053AB10->field_0x20->fn_802F9714(
+            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F9714(
+            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(
+            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
+        lbl_8053AB10->field_0x20->fn_802F9714(
+            lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(
+            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
+        lbl_8053AB10->field_0x20->fn_802F9714(
+            lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F93F4(
+            lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+    }
+    field_0x60 = new cls_804AF860;
+    mMovie = new THPMovie_804B15D0;
+    mScreen = new J2DScreen;
+    mScreen->setPriority("gamemode.blo", 0x1100000, lbl_80529DEC.field_0x2c);
+    mMovieScreen = new J2DScreen;
+    mMovieScreen->setPriority("gamemode_movie.blo", 0x1100000, lbl_80529DEC.field_0x2c);
+    field_0x14[0] = new cls_804AF86C;
+    field_0x14[0]->fn_80402F04(mMovieScreen->search('Pmov01'));
+    field_0x14[1] = new cls_804AF86C;
+    field_0x14[1]->fn_80402F04(mScreen->search('Ndata08'));
+    field_0x14[2] = new cls_804AF86C;
+    field_0x14[2]->fn_80402F04(mScreen->search('Wgbco01'));
+    field_0x14[3] = new cls_804AF86C;
+    field_0x14[3]->fn_80402F04(mScreen->search('Wnop01'));
+    field_0x14[4] = new cls_804AF86C;
+    field_0x14[4]->fn_80402F04(mScreen->search('Pexpb09'));
+    field_0x14[5] = new cls_804AF86C;
+    field_0x14[5]->fn_80402F04(mScreen->search('Wnop02'));
+    field_0x14[6] = new cls_804AF86C;
+    field_0x14[6]->fn_80402F04(mScreen->search('Wgbco02'));
+    field_0x30 = new cls_804AF86C;
+    field_0x30->fn_80402F04(mScreen->search('Ndata05'));
+    field_0x34[0] = new cls_804AF86C;
+    field_0x34[0]->fn_80402F04(mScreen->search('Ndata02'));
+    field_0x34[1] = new cls_804AF86C;
+    field_0x34[1]->fn_80402F04(mScreen->search('Ndata03'));
+    field_0x40 = new cls_804AF86C;
+    field_0x40->fn_80402F04(mScreen->search('Pscuro02'));
+    field_0x44[0] = new cls_804AF86C;
+    field_0x44[0]->fn_80402F04(mScreen->search('Pscurh05'));
+    f32 x;
+    f32 y = 1.0f + mScreen->search('Pscurs05')->getBounds()->i.y;
+    x = mScreen->search('Pscurs05')->getBounds()->i.x;
+    mScreen->search('Pscurs05')->move(x, y);
+    field_0x44[1] = new cls_804AF86C;
+    field_0x44[1]->fn_80402F04(mScreen->search('Pscurs05'));
+    field_0x50[0] = new cls_804AF86C;
+    field_0x50[0]->fn_80402F04(mScreen->search('Pstrb04'));
+    field_0x50[1] = new cls_804AF86C;
+    field_0x50[1]->fn_80402F04(mScreen->search('Pbacb04'));
+    field_0x58 = new cls_804AF86C;
+    field_0x58->fn_80402F04(mScreen->search('Paccur02'));
+    field_0x5c = lbl_8053AED8->field_0x8;
+    const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti");
+    lbl_8053AED8->fn_80440D78(tex);
+    lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
+    tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x10 = new J2DPicture(tex);
+    field_0x10->setBlackWhite(JUtility::TColor(0x000000FF), JUtility::TColor(0x00000000));
+    field_0xa2 = 156;
+    JUTResFont* font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tagb01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tagb02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tagb03'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tagb04'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop03'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop04'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop05'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tnop06'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Texp01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tbac01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(mScreen->search('Tstr01'))->setFont(font);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop03'))->getStringPtr(), 0x93, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop04'))->getStringPtr(), 0x93, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop05'))->getStringPtr(), 0xF4, 0, NULL, NULL);
+    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop06'))->getStringPtr(), 0xF4, 0, NULL, NULL);
+    strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb01'))->getStringPtr(), "Only");
+    strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb02'))->getStringPtr(), "Only");
+    strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb03'))->getStringPtr(), "Only");
+    strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb04'))->getStringPtr(), "Only");
+    field_0x6c[0] = mScreen->search('Ndata02')->getBounds()->i.y +
+                    mScreen->search('Pmadbb07')->getBounds()->i.y +
+                    mScreen->search('Pmadbb01')->getBounds()->i.y;
+    field_0x6c[1] = mScreen->search('Ndata03')->getBounds()->i.y +
+                    mScreen->search('Pmbabb07')->getBounds()->i.y +
+                    mScreen->search('Pmbabb01')->getBounds()->i.y;
+    field_0x11a[0] = mMovieScreen->search('Pim01')->getAlpha();
+    field_0x11a[1] = mMovieScreen->search('Pim02')->getAlpha();
+    field_0x11a[2] = mMovieScreen->search('Pim11')->getAlpha();
+    field_0x11a[3] = mMovieScreen->search('Pim12')->getAlpha();
+    for (s32 i = 0; i < 7; i++) {
+        field_0x14[i]->mPane->hide();
+    }
+    for (s32 i = 0; i < 2; i++) {
+        field_0x50[i]->mPane->hide();
+    }
+    field_0x58->mPane->hide();
+    mState = 0;
+    field_0x9e = lbl_80529DEC.field_0x23a[0];
+    field_0x9f = field_0x9e;
+    field_0x80 = 0;
+    field_0x88 = 0;
+    field_0x7c = 0.0f;
+    field_0x78 = 0.0f;
+    field_0x9a = 0;
+    field_0x98 = 60;
+    mMovieState = 0;
+    field_0xa1 = 0;
+    for (s32 j = 0; j < 50; j++) {
+        if (j == 0) {
+            field_0xa3[j] = mMovieScreen->search(lbl_804774C8[j])->getAlpha();
+        } else {
+            field_0xa3[j] = mScreen->search(lbl_804774C8[j])->getAlpha();
+        }
+    }
+    for (s32 j = 0; j < 6; j++) {
+        field_0xd5[j] = mScreen->search(lbl_80477658[j])->getAlpha();
+    }
+    for (s32 j = 0; j < 17; j++) {
+        field_0xdb[j] = mScreen->search(lbl_80477688[j])->getAlpha();
+    }
+    for (s32 j = 0; j < 20; j++) {
+        field_0xec[j] = mScreen->search(lbl_80477710[j])->getAlpha();
+    }
+    for (s32 j = 0; j < 5; j++) {
+        field_0x110[j] = mScreen->search(lbl_80477830[j])->getAlpha();
+    }
+    for (s32 j = 0; j < 5; j++) {
+        field_0x115[j] = mScreen->search(lbl_80477858[j])->getAlpha();
+    }
+    field_0x94 = 1;
+    fn_803DAC58(field_0x9e, 0.0f);
+    lbl_8053ADD0 = this;
+}

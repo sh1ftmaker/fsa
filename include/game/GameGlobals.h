@@ -1699,6 +1699,9 @@ class cls_804AF860 {
 public:
     cls_804AF860(); // fn_803A7898
     virtual ~cls_804AF860();
-};
+
+    /* 0x00 */ // vtable
+    /* 0x04 */ u8 field_0x4[0x84 - 0x4];
+}; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
 
 #endif
