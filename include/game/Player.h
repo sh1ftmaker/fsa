@@ -1067,7 +1067,8 @@ public:
     /* 0x1278 */ cls_804A64A8 field_0x1278;
     /* 0x128C */ JPABaseEmitter* field_0x128c;
     /* 0x1290 */ cls_804A64A8 field_0x1290;
-    /* 0x12A4 */ u8 field_0x12a4[0x12B0 - 0x12A4];
+    // Position of the emitters 0x12B0 / 0x12B4 (spawnEmitter_8013CC50 argument; stfs x).
+    /* 0x12A4 */ JGeometry::TVec3f field_0x12a4;
     // 0x1274-0x1394: emitters, deleted in address order by fn_80241E64.
     /* 0x12B0 */ JPABaseEmitter* field_0x12b0;
     /* 0x12B4 */ JPABaseEmitter* field_0x12b4;

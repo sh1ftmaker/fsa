@@ -2373,6 +2373,42 @@ void Player_804A6F38::fn_8027B5F0() {
     deleteEmitter(&field_0x12bc);
 }
 
+// Enter of state 0x08 (fn_8027BE74 is its update): 0xCAD / 0x403 start once,
+// the push 0x344 is cleared, and the emitter 0x26F (below 0x30 frames of 0x403) or, at life 2,
+// 0x271 / 0x273 (else 0x270 / 0x272) by facing pair is started at 0x12A4.
+void Player_804A6F38::fn_8027C4FC() {
+    field_0xbf4 = 2;
+    field_0x458 = 1;
+    field_0xcae = 0;
+    field_0xcaf = 0;
+    if (!field_0xcad) {
+        field_0xcad = true;
+        field_0x403 = 0;
+    }
+    field_0x344.x = 0.0f;
+    field_0x344.y = 0.0f;
+    field_0x344.z = 0.0f;
+    if (field_0x403 < 0x30) {
+        if (field_0x12b0 == NULL) {
+            field_0x12b0 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26f, 0, 1, NULL, NULL, true, 1.0f);
+        }
+    } else if (field_0x12b4 == NULL) {
+        if (fn_80241544() == 2) {
+            if (field_0x3dc == 0 || field_0x3dc == 1) {
+                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x271, 0, -1, NULL, NULL, true, 1.0f);
+            } else {
+                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x273, 0, -1, NULL, NULL, true, 1.0f);
+            }
+        } else if (field_0x3dc == 0 || field_0x3dc == 1) {
+            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x270, 0, -1, NULL, NULL, true, 1.0f);
+        } else {
+            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x272, 0, -1, NULL, NULL, true, 1.0f);
+        }
+    }
+    field_0x404 = 0;
+    field_0x40c = 0;
+}
+
 void Player_804A6F38::fn_8027C6B8() {
     field_0x436 = 0;
 }
