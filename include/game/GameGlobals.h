@@ -243,7 +243,7 @@ extern GameRoot_8049EF20* lbl_8053AAF8;
 
 // Owner: game/tu_801E667C.cpp (.sdata). Read by tu_80441318 and act_horse_race_man.
 extern s32 lbl_8053A160;
-// .sdata word (0x8053A190, unit unknown): fn_8023F78C stores -1 to it.
+// .sdata word in act_navi's data (0x8053A188-0x8053A198): fn_8023F78C stores -1 to it.
 extern s32 lbl_8053A190;
 
 // The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named

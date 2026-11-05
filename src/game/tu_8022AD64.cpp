@@ -989,7 +989,7 @@ s32 fn_80230B70(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 2;
     }
-    // The bool test is materialised before the branch (RULES_CARD: x == true shape).
+    // The bool test is materialised before the branch (`== false` shape, RULES_CARD bool materialisation).
     if (isPlayerActive(player) == false) {
         return 2;
     }
@@ -1012,7 +1012,7 @@ void fn_80230C6C(s32 player) {
         return;
     }
     if (isPlayerActive(player)) {
-        lbl_8053AC90->mPlayers[player]->fn_8025F698(0);
+        lbl_8053AC90->mPlayers[player]->fn_8025F698(false);
     }
 }
 
@@ -1020,7 +1020,7 @@ s32 fn_80230CFC(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 2;
     }
-    // The bool test is materialised before the branch (RULES_CARD: x == true shape).
+    // The bool test is materialised before the branch (`== false` shape, RULES_CARD bool materialisation).
     if (isPlayerActive(player) == false) {
         return 2;
     }
@@ -1037,7 +1037,7 @@ bool fn_80230D80(s32 player, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-bool fn_80230E1C(s32 player, s32 flag) {
+bool fn_80230E1C(s32 player, bool flag) {
     if (lbl_8053AC90 == NULL) {
         return false;
     }
@@ -1555,6 +1555,7 @@ void fn_80235918(s32 player) {
     }
 }
 
+// The callee (fn_80270318) never reads its argument, yet the target forwarder passes it (r4 live: manager in r5); 98.7 % regalloc-only without it.
 void fn_802359A4(s32 player, s32 value) {
     if (lbl_8053AC90 == NULL) {
         return;
@@ -2524,12 +2525,12 @@ JGeometry::TVec3f* fn_8023E3B8(s32 player) {
 
 u8 fn_8023E45C(s32 player, s32 index) {
     if (lbl_8053AC90 == NULL) {
-        return false;
+        return 0;
     }
     if (isPlayerActive(player)) {
         return lbl_8053AC90->mPlayers[player]->field_0x284[index];
     }
-    return false;
+    return 0;
 }
 
 JGeometry::TVec3f* fn_8023E4E4(s32 player, s32 index) {
@@ -2728,6 +2729,7 @@ void fn_8023F6C4() {
     }
 }
 
+// The possibly-NULL getter is inlined per slot (a NULL manager gives a NULL player).
 void fn_8023F728() {
     for (s32 i = 0; i < 4; i++) {
         Player_804A6F38* player;
@@ -2740,6 +2742,7 @@ void fn_8023F728() {
     }
 }
 
+// As fn_8023F728.
 void fn_8023F78C() {
     for (s32 i = 0; i < 4; i++) {
         Player_804A6F38* player;

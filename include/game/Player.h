@@ -193,7 +193,7 @@ public:
     s8 fn_8024EE0C(); // via fn_8023CB24
     s8 fn_8024EE14(); // via fn_8023CA88
     u16 fn_8024EE1C(); // via fn_8023CBC0
-    bool fn_8024EFA0(s32 arg); // via fn_80230E1C; called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
+    bool fn_8024EFA0(bool arg); // via fn_80230E1C; called by fn_80292454 (0x3B4 >= 8 && 0xCE4 < 8)
     void fn_8024EFF8(s32 arg); // via fn_80230EB8
     void fn_8024F0E8(s32 value); // via fn_80230FD0
     bool fn_8024F5E4(); // via fn_8023E854
@@ -290,11 +290,11 @@ public:
     /* 0x0020 */ u8 field_0x20[0x2C - 0x20];
     // fn_802685D4's step is mPos - field_0x2c; it copies mPos here at the end.
     /* 0x002C */ JGeometry::TVec3f field_0x2c;
-    // 48 positions (fn_80252CF0 steps 0x30 of them); read by fn_8023E4E4.
-    /* 0x0038 */ JGeometry::TVec3f field_0x38[0x30];
-    /* 0x0278 */ u8 field_0x278[0x284 - 0x278];
-    // Byte table read by fn_8023E45C; its extent is only bounded by field_0x2b8.
-    /* 0x0284 */ u8 field_0x284[0x34];
+    // 0x31 positions (fn_80252CF0 shifts them up one, last store at 0x278); read by fn_8023E4E4.
+    /* 0x0038 */ JGeometry::TVec3f field_0x38[0x31];
+    // 0x31 bytes (fn_80252CF0 shifts them, lbz 0x283 -> stb 0x284); read by fn_8023E45C.
+    /* 0x0284 */ u8 field_0x284[0x31];
+    /* 0x02B5 */ u8 field_0x2b5[0x2B8 - 0x2B5];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
     // Address returned by fn_8023E604.
@@ -481,7 +481,7 @@ public:
     bool fn_8026000C(); // via fn_80231194
     bool fn_802600A0(s32 arg); // via fn_802312CC
     bool fn_802426E0(s32 serial); // via fn_80231590
-    void fn_80270318(s32 value); // via fn_802359A4
+    void fn_80270318(s32 value); // via fn_802359A4; the body never reads r4, but the forwarder keeps value live (mgr in r5)
     void fn_8024E694(s32 value, s32 arg); // via fn_80236074
     void fn_8024ECCC(s32 value); // via fn_8023619C
     void fn_8024ED4C(s32 value); // via fn_802362C4
@@ -505,7 +505,7 @@ public:
     void fn_80252CF0(const JGeometry::TVec3f* pos); // via fn_8023DF68
     JGeometry::TVec3f* fn_8024C378(); // via fn_8023E3B8
     JGeometry::TVec3f* fn_8024145C(); // via fn_8023E7B0
-    void fn_8025F698(s32 arg); // via fn_80230C6C
+    void fn_8025F698(bool arg); // via fn_80230C6C
     void fn_802544B0(); // via fn_8023F728
     void fn_80254744(); // via fn_8023F78C
 }; // Size: 0x13BC
@@ -1117,7 +1117,7 @@ s32 fn_8023ECF0(s32 player);
 bool fn_80237948(s32 player, const JGeometry::TVec2f* pos);
 void fn_8022E114(s32 player, JGeometry::TVec3f* out);
 s32 fn_8022F340(s32 player);
-bool fn_80230E1C(s32 player, s32 flag);
+bool fn_80230E1C(s32 player, bool flag);
 void fn_80236074(s32 player, s32 value, s32 arg);
 void fn_802362C4(s32 player, s32 value);
 bool fn_802378AC(s32 player, const JGeometry::TVec2f* pos);
