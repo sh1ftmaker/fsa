@@ -268,29 +268,6 @@ void GameRoot2_8049F108::fn_8013B618() {
     field_0xc->frameInit();
 }
 
-void GameRoot2_8049F108::fn_8013BAF4() {
-    field_0x28->fn_8013DB2C();
-}
-
-void GameRoot2_8049F108::fn_8013BB18() {
-    if (!field_0x39) {
-        field_0x20->fn_802FF3F0();
-        field_0x24->fn_8030E150();
-    }
-    field_0x2c->fn_80158E88();
-}
-
-void GameRoot2_8049F108::fn_8013BB64() {
-    field_0x24->fn_8030DFE8(false);
-    j3dSys.mDrawBuffer[0] = field_0x8;
-    j3dSys.mDrawBuffer[1] = field_0xc;
-    PSMTXCopy(field_0x24->field_0x4, j3dSys.mViewMtx);
-}
-
-void GameRoot2_8049F108::fn_8013BBBC() {
-    field_0x28->fn_8013DC1C();
-}
-
 void GameRoot2_8049F108::fn_8013B71C() {
     if (field_0x39 == 0 || lbl_8053AAF8->field_0x4c == 4 || lbl_8053AAF8->field_0x4c == 6) {
         lbl_8053AB10->field_0x24->fn_8030DFE8(false);
@@ -329,6 +306,29 @@ void GameRoot2_8049F108::fn_8013B71C() {
     }
 }
 
+void GameRoot2_8049F108::fn_8013BAF4() {
+    field_0x28->fn_8013DB2C();
+}
+
+void GameRoot2_8049F108::fn_8013BB18() {
+    if (!field_0x39) {
+        field_0x20->fn_802FF3F0();
+        field_0x24->fn_8030E150();
+    }
+    field_0x2c->fn_80158E88();
+}
+
+void GameRoot2_8049F108::fn_8013BB64() {
+    field_0x24->fn_8030DFE8(false);
+    j3dSys.mDrawBuffer[0] = field_0x8;
+    j3dSys.mDrawBuffer[1] = field_0xc;
+    PSMTXCopy(field_0x24->field_0x4, j3dSys.mViewMtx);
+}
+
+void GameRoot2_8049F108::fn_8013BBBC() {
+    field_0x28->fn_8013DC1C();
+}
+
 // FIXME: 97.41. The original materialises the mode-0xC test as a byte
 // (subfic / cntlzw / extrwi., then beq) where ours compares (cmpwi / bne).
 void GameRoot2_8049F108::fn_8013BBE0() {
@@ -339,7 +339,7 @@ void GameRoot2_8049F108::fn_8013BBE0() {
         field_0x2c->fn_80159330();
         field_0x30->fn_8016005C();
         ScreenRect_802FF3F0* r = fn_8013C394();
-        JGeometry::TBox2f box((f32)(u32)r->x0, (f32)(u32)r->y0, (f32)r->x1, (f32)(u32)r->y1);
+        JGeometry::TBox2f box((f32)r->x0, (f32)r->y0, (f32)r->x1, (f32)r->y1);
         field_0x14->place(box);
         field_0x14->scissor(box);
         GameRoot_8049EF20* root = lbl_8053AAF8;

@@ -37,10 +37,11 @@
 // one (cls_804AA858::fn_802FF3F0, game/tu_802F5040.cpp: copied whole from
 // cls_804AA858::field_0x24c, or (0, 0, fbWidth, efbHeight) built on the stack).
 struct ScreenRect_802FF3F0 {
-    /* 0x0 */ s32 x0;
-    /* 0x4 */ s32 y0;
+    // All four convert to float unsigned (GameRoot2_8049F108::fn_8013BBE0).
+    /* 0x0 */ u32 x0;
+    /* 0x4 */ u32 y0;
     /* 0x8 */ u32 x1; // cmplwi against 0 (0x802FF420)
-    /* 0xC */ s32 y1;
+    /* 0xC */ u32 y1;
 }; // Size: 0x10
 
 class Camera_804AA9E4 {
