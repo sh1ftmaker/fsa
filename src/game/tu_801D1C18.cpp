@@ -33,6 +33,7 @@ inline void SpriteAnim_801D267C::calcCel() {
             return;
         }
     }
+    // p has advanced past the first key; the first cel is reread from the table (a local copy changes register allocation).
     mCel = clamp<s32>(mTables[mAnim][0], mMinCel, mMaxCel);
     mKey = 0;
 }
