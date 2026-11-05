@@ -4,6 +4,7 @@
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/GameMode.h"
+#include "game/GameState.h"
 #include "game/Player.h"
 #include "game/cls_8049F140.h"
 #include "game/RotMatrix.h"
@@ -173,8 +174,9 @@ u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos,
     return result;
 }
 
-// The unit's static emitter callback (defined at the end of the file).
-extern cls_8049F184 lbl_8053AB18;
+// The unit's projecting emitter callback (spawnEmitter_8013CC50 picks it for ids
+// whose resource user work has bit 0).
+cls_8049F184 lbl_8053AB18;
 
 // FIXME: 99.95. Regalloc only, in the inlined depthPos tail (p.z += height - pos->z after
 // fn_802F5E9C): the original loads pos->z into f0 and p.z into f2, ours the other way round
@@ -502,14 +504,69 @@ void EffectSystem_8049F178::fn_8013DC44() {
     mEmitterManager->calc(9);
 }
 
+// fn_8013DDEC inlines this 25 times (one guard for the static callback);
+// the linker dead-stripped its own copy. Creates emitter `id` in draw group
+// `group` at the origin with the queue callback (cls_8049F15C, whose
+// executeAfter emits the queued positions), held (continuous, not creating)
+// in the next tracked slot with `word`.
+void EffectSystem_8049F178::addTrackedEmitter(u16 id, u8 group, s32 word) {
+    static cls_8049F15C callback;
+    JPABaseEmitter*& emitter = mEmitters[mEmitterNum];
+    emitter = mEmitterManager->createSimpleEmitterID(JGeometry::TVec3f(0.0f, 0.0f, 0.0f), id, group, 0, &callback, NULL);
+    emitter->becomeContinuousParticle();
+    emitter->stopCreateParticle();
+    mEmitterIds[mEmitterNum] = id;
+    field_0x40a8[mEmitterNum] = word;
+    mEmitterNum++;
+}
+
+void EffectSystem_8049F178::fn_8013DDEC() {
+    mEmitterManager->forceDeleteAllEmitter();
+    mEmitterNum = 0;
+    addTrackedEmitter(0x347, 0, 0);
+    addTrackedEmitter(0x346, 0, 0);
+    addTrackedEmitter(0x345, 0, 0);
+    addTrackedEmitter(0x357, 0, 0);
+    addTrackedEmitter(0x358, 0, 0);
+    addTrackedEmitter(0x348, 0, 0);
+    addTrackedEmitter(0x35C, 0, 0);
+    addTrackedEmitter(0x54D, 1, 0);
+    addTrackedEmitter(0x349, 0, 0);
+    addTrackedEmitter(0x34A, 0, 0);
+    addTrackedEmitter(0x34B, 0, 0);
+    addTrackedEmitter(0x34C, 0, 1);
+    addTrackedEmitter(0x34D, 0, 1);
+    addTrackedEmitter(0x354, 0, 0);
+    addTrackedEmitter(0x355, 0, 0);
+    addTrackedEmitter(0x356, 0, 0);
+    addTrackedEmitter(0x351, 0, 0);
+    addTrackedEmitter(0x352, 0, 0);
+    addTrackedEmitter(0x353, 0, 0);
+    addTrackedEmitter(0x34E, 0, 0);
+    addTrackedEmitter(0x34F, 0, 0);
+    addTrackedEmitter(0x350, 0, 0);
+    addTrackedEmitter(0x359, 0, 0);
+    addTrackedEmitter(0x35A, 0, 0);
+    addTrackedEmitter(0x35B, 0, 0);
+    JKRArchive* archive = lbl_80529DEC.field_0x10;
+    if (archive != NULL) {
+        for (s32 i = 0; i < 5; i++) {
+            ResTIMG* texture = (ResTIMG*)archive->getResource('TIMG', lbl_8049F118[i * 2]);
+            if (texture != NULL) {
+                mResourceManager->swapTexture(texture, lbl_8049F118[i * 2 + 1]);
+            }
+        }
+    }
+    for (int i = 0; i < 0x400; i++) {
+        mEntries[i].mCount = 0;
+    }
+}
+
 EffectSystem_8049F178::~EffectSystem_8049F178() {
     mEmitterManager->clearResourceManager(0);
     mHeap->destroy();
 }
 
-// FIXME: 99.86. Code identical; only the .rodata string relocations differ until
-// objdiff pairs them: the bytes are equal, but the original splits them as one 0x58-byte
-// object (lbl_80465A28) where ours are separate string literals.
 EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
     mHeap = JKRSolidHeap::create(-1, heap, false);
     mResourceManager = new (mHeap, 0)
@@ -564,4 +621,3 @@ void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
 
 cls_8049F184::~cls_8049F184() {}
 
-cls_8049F184 lbl_8053AB18;

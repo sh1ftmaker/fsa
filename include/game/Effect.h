@@ -70,7 +70,7 @@ public:
     // mEmitterManager->forceDeleteAllEmitter().
     void fn_8013D5B0();
     // Draw passes: JPAEmitterManager::draw with group 2 (unless paused,
-    // fn_80134CC8), 8 and 10 in an orthographic light matrix.
+    // fn_80134CC8), 8 and 10 in screen space (set2DDrawInfo in the unit).
     void fn_8013D5D4();
     // Draw groups 0, 3, 5 and 1 (with a JUTTexture::capture between).
     void fn_8013D6E4();
@@ -81,8 +81,14 @@ public:
     // mEmitterManager->calc(10).
     void fn_8013DC1C();
     void fn_8013DC44();
-    // 0x158C bytes; builds the callbacks of vtable 0x8049F15C.
+    // Scene reset: deletes every emitter, creates the 25 tracked emitters
+    // (addTrackedEmitter, ids 0x345-0x35C and 0x54D), swaps in the five claw
+    // textures from lbl_80529DEC's archive and clears the position queue.
     void fn_8013DDEC();
+    // Inlined into fn_8013DDEC (25 calls); its out-of-line copy was
+    // dead-stripped. Creates a held emitter for `id` (draw group `group`) in
+    // the next tracked slot, with `word` beside it.
+    void addTrackedEmitter(u16 id, u8 group, s32 word);
 
     /* 0x0000 vtable */
     /* 0x0004 */ JKRSolidHeap* mHeap; // JKRSolidHeap::create(-1, heap)
