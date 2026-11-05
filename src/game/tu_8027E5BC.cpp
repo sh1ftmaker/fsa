@@ -7,6 +7,27 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_cannon.h"
 
+void Player_804A6F38::fn_8027EDDC() {
+    if (field_0x3fc < 8) {
+        field_0x3fd = 0;
+    } else if (field_0x3fc < 16) {
+        field_0x3fd = 1;
+    } else if (field_0x3fc < 24) {
+        field_0x3fd = 2;
+    } else if (field_0x3fc < 30) {
+        field_0x3fd = 3;
+    } else if (field_0x3fc < 36) {
+        field_0x3fd = 4;
+    } else if (field_0x3fc < 42) {
+        field_0x3fd = 5;
+    } else if (field_0x3fc < 48) {
+        field_0x3fd = 4;
+    } else {
+        field_0x3fd = 3;
+    }
+    field_0x3fc++;
+}
+
 void Player_804A6F38::fn_8027EE84() {
     field_0x3f8++;
     if (field_0x3f8 >= 16) {
@@ -149,6 +170,47 @@ void Player_804A6F38::fn_80283D20() {
 }
 
 void Player_804A6F38::fn_80284290() {}
+
+void Player_804A6F38::fn_80283848() {
+    field_0x458 = 0;
+    field_0x344.x = 0.0f;
+    field_0x344.y = 0.0f;
+    field_0x344.z = 0.0f;
+    field_0x414.x = 0.0f;
+    field_0x414.y = 0.0f;
+    field_0x414.z = 0.0f;
+    field_0x3ff = 0;
+    field_0x400 = 0;
+    field_0x401 = 0;
+    field_0x410 = 0.0f;
+    field_0x42c = false;
+    field_0xbe0 = 0;
+    field_0x42d = 0;
+    field_0x430 = 0;
+    if (field_0x44c == 0 && field_0x1248 != 0x1b && field_0x1248 != 3 && field_0x1248 != 0x1d) {
+        fn_8013CC50(field_0x3b4, &mPos, 0x15b, 0, 1, NULL, NULL, true, 1.0f);
+        fn_8013CC50(field_0x3b4, &mPos, 0x15c, -1, 0, NULL, NULL, true, 1.0f);
+        fn_8024F0E8(0x2003A);
+        field_0x44c = 5;
+    }
+}
+
+void Player_804A6F38::fn_8028434C() {
+    mPos += field_0x344;
+    field_0x344.z -= 0.25f;
+    if (field_0x344.z < -4.0f) {
+        field_0x344.z = -4.0f;
+    }
+    if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        field_0x124d = 0;
+        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && !fn_80240808()) {
+            fn_80251AEC(0);
+        } else {
+            fn_80251AEC(0xc);
+        }
+    }
+}
 
 void Player_804A6F38::fn_80284294() {
     if (field_0x3fc < 10) {

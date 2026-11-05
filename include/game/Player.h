@@ -308,6 +308,9 @@ public:
     void fn_8028447C();
     void fn_80248604();
     void fn_8024D134();
+    void fn_8027EDDC();
+    void fn_80283848();
+    void fn_8028434C();
     void fn_8024E3D8();
     void fn_802810E4();
     void fn_802828A8();
@@ -423,7 +426,10 @@ public:
     /* 0x03FF */ u8 field_0x3ff;
     // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
     /* 0x0400 */ u8 field_0x400;
-    /* 0x0401 */ u8 field_0x401[0x420 - 0x401];
+    /* 0x0401 */ u8 field_0x401;
+    /* 0x0402 */ u8 field_0x402[0x410 - 0x402];
+    /* 0x0410 */ f32 field_0x410;
+    /* 0x0414 */ JGeometry::TVec3f field_0x414;
     // Offset added to mPos at the end of fn_802685D4 (ps_add). Zeroed while
     // mPos.z > 0; otherwise its x and y decay under the tile code.
     /* 0x0420 */ JGeometry::TVec3f field_0x420;
@@ -443,7 +449,9 @@ public:
     /* 0x043E */ u8 field_0x43e;
     // Returned by fn_80233D20 (lbz; blr).
     /* 0x043F */ bool field_0x43f;
-    /* 0x0440 */ u8 field_0x440[0x454 - 0x440];
+    /* 0x0440 */ u8 field_0x440[0x44C - 0x440];
+    /* 0x044C */ s32 field_0x44c;
+    /* 0x0450 */ u8 field_0x450[0x454 - 0x450];
     // Returned by fn_802413E8 (lbz; blr), read through fn_80230188.
     /* 0x0454 */ bool field_0x454;
     /* 0x0455 */ u8 field_0x455;
@@ -505,7 +513,8 @@ public:
     /* 0x0BC4 */ u8 field_0xbc4[0xBDC - 0xBC4];
     // Cleared (stb 0) by fn_8028FBA0 when fn_80290070 succeeds.
     /* 0x0BDC */ u8 field_0xbdc;
-    /* 0x0BDD */ u8 field_0xbdd[0xBE4 - 0xBDD];
+    /* 0x0BDD */ u8 field_0xbdd[0xBE0 - 0xBDD];
+    /* 0x0BE0 */ s32 field_0xbe0;
     /* 0x0BE4 */ s32 field_0xbe4;
     /* 0x0BE8 */ u8 field_0xbe8;
     /* 0x0BE9 */ u8 field_0xbe9[0xBEC - 0xBE9];
