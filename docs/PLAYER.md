@@ -486,3 +486,58 @@ fn_80250D30 or a flagged layer, and only with fn_802341D0: pulled 5 a frame
 toward fn_8027F854 by a player in fn_8022D930/D894/D9CC, else pushed by the
 largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
 0x18) beyond its own.
+
+## Round 4 (tu_8026FC20) (agent E, Opus 5.5, 2026-11-05)
+
+54 -> 66 of 120 at 100 %, plus 9 structurally done / close. Proven:
+
+- **Input history** (fn_8026FD14, every frame from update A; fn_80270088 from
+  enter state 4): field_0x117c[0..3] are per-direction hold timers (set to 60
+  while the stick axis fn_80247330 / fn_8024712C points that way alone, else
+  count down); field_0x117c[4..7] is a 4-deep history shifted by fn_80270088
+  (newest 60 at [4]) and counted down in a loop over `[i + 4]` (the original
+  steps a base register by 8 for the last two); field_0x119c[4][4] is a 4-deep
+  history per direction column (shifted down, newest 1 in row 0; a column is
+  cleared while its axis is not pressed). 0x11C4 / 0x11C8 / 0x11CC / 0x11D4 are
+  countdowns (0x11C8 counts frames with fn_80246F28() <= 0, up to 3).
+- **Kill counter** fn_80270360(serial): field_0xc50 (total, capped 9999999) and
+  field_0xc1c[13] by the dead actor's mActorId: OKTA 0, AMOS 1, POOH 2, BZBR 3,
+  DDRK 4, DGTL 5, HINO 6, SLR1 / SLR2 7, TKTA 8, KETH 9, BPOH 10, MOZO 11, Poon
+  12 (`switch (actor->mActorId)` compiles to the original's cmpw tree).
+- **Boxes**: 0x4A0 / 0x4B0, 0x5DC / 0x5EC are TBox2f (no other Player unit
+  touches 0x4A0-0x4BF; 0x5DC is also read by tu_80256C74). fn_80276538 sets
+  0x4C0 = mPos +-7 and 0x4D0 = mPos +-15 every frame; fn_80276078 sets 0x5EC to
+  the 8x16 box in front of the player for direction 0x3EC (0 +x, 1 -x, 2 +y,
+  3 -y, -1 = a flat +-15 box), from the facing 0x3DC in states 0/2/3, and from
+  a remapped facing under fn_80241338 / fn_802412E0 (a file inline with a
+  switch, inlined with field_0x3dc and with constants), and 0xB98 = 1 when set.
+- **Box tests**: the original's overlap test is the intersection compare chain
+  itself (`f.x >= i.x && f.y >= i.y` on a copy of the box, no `? true : false`,
+  so not JGeometry's TBox::intersect). Several tests make both boxes relative to
+  the layer's view corner (mVisibleBox below layer 8, else GameView 0xdc) by
+  adding a negated TVec2f filled member by member (a TVec2f(x, y) temporary
+  loads y first). fn_802730D8 / fn_802732C4 (boot path) are the "player can be
+  hit by `box`" tests (fn_802732C4 starts with fn_80270C88 inlined);
+  fn_802724E0 / fn_80272E98 the view-relative ones; fn_80272DCC adds a box to
+  the 0x50-slot table 0x5FC / 0xDB0 / 0x1030 (TBox2::set, float copies).
+- fn_802738F0(box, out, flag, center) tests the boxes 0x4A0 / 0x4B0 while
+  0x458 == 1 and writes their joint centre (sum / 4) or 0x4B0's midpoint to
+  *out; fn_80273E7C / fn_80274238 call it with a view-relative copy and add the
+  view corner back. fn_80273E7C returns a u8 (clrlwi of a bool local);
+  fn_80274238, fn_80256F44 (seen from fn_80273C30 / D44's neg/or/srwi) most
+  likely do too, but their generated forwarders in tu_8022AD64 pass them
+  through as bool, so they stay bool with FIXMEs.
+- fn_80274728 / fn_80274988 (from the 0x0A / 0x09 updates) step the spin
+  animation: 0x3FA frame, 0x3FB pose, 0x11C0 s16 angle by facing; mode 3
+  without fn_8023434C (tu_8022AD64, declared extern "C") changes the timing.
+- **Literal pool**: fn_802710C8 (0x1098, unwritten) is the first user of
+  eleven .sdata2 floats (6, 10430.378, 32, 0.5, 3, 1.5, 4, 0.75, 2, 1.4,
+  0.25); every later float user stays reloc-name until it is written.
+  fn_80276538, fn_80276078, fn_802738F0 and fn_80273518 have identical code
+  and only that.
+- Left unwritten: fn_8027057C / fn_80270DDC / fn_80270F00 (fn_80270DDC is the
+  heal routine on 0xBFC, inlined into the other two; it contains
+  `old = x; x++; if (x == old) for (;;); x = old;` whose source form is
+  unknown, and inlines fn_80270A8C before its definition), fn_80270948 (inlines
+  fn_80270A8C before it is defined: needs a header inline + wrapper as for
+  playerFlags_802413F0), fn_802796B8 (emitter stop sequence, as before).

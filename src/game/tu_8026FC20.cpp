@@ -668,6 +668,62 @@ bool Player_804A6F38::fn_802732C4(const JGeometry::TBox2f* box, s32 layer) {
     return overlaps(field_0x4c0, *box);
 }
 
+// FIXME: 99.74. Registers only (r29 / r30 swapped for the actor and the view layer in the
+// actor branch) plus the -8 / 8 / 0.5 literal names, which need the earlier .sdata2 users
+// (fn_802710C8 first) written.
+bool Player_804A6F38::fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    JGeometry::TBox2f viewBox(*box);
+    toView(viewBox, layer);
+    if (!(layer == field_0x3b4 || (field_0x3b4 == 8 && layer < 8))) {
+        return false;
+    }
+    if (field_0x459) {
+        JGeometry::TBox2f carried;
+        if (fn_8025F590()) {
+            carried.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            toView(carried, field_0x3b4);
+            JGeometry::TVec2f pos;
+            pos.x = field_0x2f4.x;
+            pos.y = field_0x2f4.y;
+            carried.addPos(pos);
+            if (overlaps(carried, viewBox)) {
+                out->x = carried.f.x + 0.5f * (carried.i.x - carried.f.x);
+                out->y = carried.f.y + 0.5f * (carried.i.y - carried.f.y);
+                return true;
+            }
+        } else {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xd68);
+            if (actor != NULL) {
+                carried.set(actor->mBox);
+                toView(carried, field_0x3b4);
+                JGeometry::TVec2f pos;
+                pos.x = field_0x2f4.x;
+                pos.y = field_0x2f4.y;
+                carried.addPos(pos);
+                if (overlaps(carried, viewBox)) {
+                    out->x = carried.f.x + 0.5f * (carried.i.x - carried.f.x);
+                    out->y = carried.f.y + 0.5f * (carried.i.y - carried.f.y);
+                    actor->vfunc_0x48();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 // FIXME: 99.93. Code identical; its 0.25 / 0.5 literals are reloc-name until the earlier
 // literal users (fn_802710C8 first) are written and the .sdata2 pool is in the original order.
 bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center) {
