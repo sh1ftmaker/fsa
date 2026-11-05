@@ -1012,11 +1012,11 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 
 // game/tu_80301CD0.cpp (per-player lists, not written yet). ~100 calls in ~90
 // units, mostly from actors' draw: serial, layer, position, then a sprite id.
-// The callee tests d as a bool and reads g and the two stack arguments as
-// bytes (clrlwi / lbz 0x4b, 0x4f); returns a 0/1 flag. Argument meanings
-// unknown. Review: fsa-wt/_reviews/game__act_force_gem_shadow.review.md.
-bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, s32 e,
-                 s32 player, u8 g, u8 h, u8 i);
+// The callee converts the byte d to a 0/1 flag (clrlwi, neg, or, srwi), tests g as a bool
+// and reads the two stack arguments as bytes (lbz 0x4b, 0x4f); returns a 0/1 flag. Callers
+// that hold d in a wider variable pass `x != 0`. Argument meanings unknown. Review: fsa-wt/_reviews/game__act_force_gem_shadow.review.md.
+bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e,
+                 s32 player, bool g, u8 h, u8 i);
 
 // game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
 // fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the
@@ -1027,9 +1027,9 @@ void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s3
                  s32 f);
 
 // game/tu_80301CD0.cpp. Same leading arguments as fn_803075AC (serial, layer,
-// position, sprite id, then d as a bool, e, f and g as a byte masked with 3);
+// position, sprite id, then d as a byte, e, f and g as a byte masked with 3);
 // returns 0 below layer 8. game/tu_801D3CBC.cpp calls it with (0, 1, 0, player).
-bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, bool e,
+bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e,
                  s32 f, u8 g);
 
 class ActorBase_804A5770;

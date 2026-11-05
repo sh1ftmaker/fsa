@@ -56,7 +56,7 @@ void ChiefSoldier_804A0B90::draw() {
                 if (getType() != 6) {
                     fn_801EF574("enemy_gc_sob.bin", field_0x280 + 0x226, &pos, &params);
                 }
-                fn_803075AC(mSerial, field_0x4, &mPos, field_0x280 + 0x318, hasMtx, 2, -1, 0, 0, 0);
+                fn_803075AC(mSerial, field_0x4, &mPos, field_0x280 + 0x318, hasMtx != 0, 2, -1, 0, 0, 0);
             } else {
                 fn_801F02BC("enemy_gc_sob.bin", field_0x280 + 0x226, &params, 7, 0, false, 1.0f,
                             1.0f);

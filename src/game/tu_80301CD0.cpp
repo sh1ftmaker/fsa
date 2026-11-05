@@ -367,16 +367,12 @@ s32 fn_803074A4(s32 kind, s32 id) {
     return 0;
 }
 
-// FIXME: 94.01. Before the player loop the original converts d to a 0/1 flag (clrlwi, neg, or,
-// srwi into r31) and g with a clrlwi into r29, and stores those; ours stores both parameters as
-// passed, which shifts the saved registers. With d declared u8 the d part matches (96.27 %),
-// but the callers (act_chief_soldier, act_pot_smoke, tu_802E6EC4 draw) need d as bool.
 // Shows the sprite of actor `serial` on the GBA screens of the players on
 // `layer` (or of player `player` when it is 0 or more), in their 40-entry
 // lists; returns whether any list took it.
 // 0x803075AC
-bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, s32 e,
-                 s32 player, u8 g, u8 h, u8 i) {
+bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e,
+                 s32 player, bool g, u8 h, u8 i) {
     if (layer < 8 && layer != -1) {
         return false;
     }
@@ -429,12 +425,9 @@ bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bo
     return result;
 }
 
-// FIXME: 94.97. As in fn_803075AC: the original converts d to a 0/1 flag once before the loop
-// (r31); ours stores d as passed. Declaring d u8 gives 100 % here but drops callers of
-// fn_803075AC that share the declaration style (d is bool there).
 // The same for the 16-entry lists of the players on `layer` (8 or more).
 // 0x80307830
-bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bool d, bool e,
+bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e,
                  s32 f, u8 g) {
     if (layer < 8) {
         return false;
@@ -495,9 +488,6 @@ bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, bo
     return result;
 }
 
-// FIXME: 92.17. Scheduling only: the two flag conversions are interleaved the other way round
-// (ours e first), and the id + 0x400 add sits two slots earlier. With d declared u8 in the
-// callees it is 100 % (see fn_803075AC).
 // Sprite ids below 0x45 (after adding 0x200 when e is 2) go to the 16-entry
 // lists, the others (plus 0x400) to the 40-entry ones.
 // 0x80307AC8

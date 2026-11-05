@@ -9,7 +9,7 @@ void cls_804A9E50::draw() {
     if (mFlag != 0) {
         flag = 1;
     }
-    fn_803075AC(mSerial, field_0x4, &mPos, mStep + 0x26D, flag, 2, -1, 1, 0, 0);
+    fn_803075AC(mSerial, field_0x4, &mPos, mStep + 0x26D, flag != 0, 2, -1, 1, 0, 0);
 }
 
 void cls_804A9E50::update() {
