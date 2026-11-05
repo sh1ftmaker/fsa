@@ -500,6 +500,8 @@ static inline bool overlaps(const JGeometry::TBox2f& a, const JGeometry::TBox2f&
 // `box` (on `layer`) against the player's box 0x4d0 (on its layer 0x3b4),
 // both made relative to their layer's view corner (fn_802724E0, fn_80272E98).
 static inline bool overlapsInView(const Player_804A6F38* player, const JGeometry::TBox2f& box, s32 layer) {
+    // The offsets are spelled out (not toView): through toView the original's extra
+    // f27 spill is lost (tried, 99 %).
     JGeometry::TBox2f other(box);
     const JGeometry::TVec2f& origin = layerBox(layer)->i;
     JGeometry::TVec2f offset;
@@ -761,8 +763,9 @@ bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2
 }
 
 // FIXME: 94.20. Only the end differs: the original converts fn_80256F44's result to bool
-// (clrlwi; neg; or; srwi), so that callee returns a u8 in the original; it is declared bool
-// here because the generated forwarder fn_8023AAF8 (tu_8022AD64) passes it through.
+// (clrlwi; neg; or; srwi), so that callee returns a u8 (tu_80256C74 / Player.h declare bool).
+// With u8 there this is 100 %, but the generated forwarder fn_8023AAF8 (tu_8022AD64, returns
+// bool) drops to 89.7 % until it returns u8 as well.
 bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
     if (fn_80274238(box, layer, out, flag)) {
         return true;
@@ -783,8 +786,9 @@ bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeom
 }
 
 // FIXME: 94.87. Only the end differs: the original converts fn_80256F44's result to bool
-// (clrlwi; neg; or; srwi), so that callee returns a u8 in the original; it is declared bool
-// here because the generated forwarder fn_8023AAF8 (tu_8022AD64) passes it through.
+// (clrlwi; neg; or; srwi), so that callee returns a u8 (tu_80256C74 / Player.h declare bool).
+// With u8 there this is 100 %, but the generated forwarder fn_8023AAF8 (tu_8022AD64, returns
+// bool) drops to 89.7 % until it returns u8 as well.
 bool Player_804A6F38::fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
     if (fn_80274238(box, layer, out, flag)) {
         return true;
@@ -823,10 +827,7 @@ u8 Player_804A6F38::fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeomet
     return hit;
 }
 
-// FIXME: 99.33. Only the return differs: the original truncates `hit` (clrlwi), i.e. returns
-// a u8 as fn_80273E7C does; kept bool because the generated pass-through forwarder in
-// tu_8022AD64 (0x8023BA4C) returns it as bool.
-bool Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag) {
+u8 Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag) {
     field_0x492 = 0;
     if (!fn_802413F0()) {
         return false;

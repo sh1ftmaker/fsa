@@ -489,7 +489,7 @@ largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
 
 ## Round 4 (tu_8026FC20) (agent E, Opus 5.5, 2026-11-05)
 
-54 -> 66 of 120 at 100 %, plus 9 structurally done / close. Proven:
+54 -> 67 of 120 at 100 %, plus 9 structurally done / close. Proven:
 
 - **Input history** (fn_8026FD14, every frame from update A; fn_80270088 from
   enter state 4): field_0x117c[0..3] are per-direction hold timers (set to 60
@@ -524,9 +524,11 @@ largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
   0x458 == 1 and writes their joint centre (sum / 4) or 0x4B0's midpoint to
   *out; fn_80273E7C / fn_80274238 call it with a view-relative copy and add the
   view corner back. fn_80273E7C returns a u8 (clrlwi of a bool local);
-  fn_80274238, fn_80256F44 (seen from fn_80273C30 / D44's neg/or/srwi) most
-  likely do too, but their generated forwarders in tu_8022AD64 pass them
-  through as bool, so they stay bool with FIXMEs.
+  fn_80274238 does too (100 % as u8; its only caller is the s32 loop
+  fn_8023B8E4). fn_80256F44 (seen from fn_80273C30 / D44's neg/or/srwi) returns
+  a u8 as well: with u8 in tu_80256C74 / Player.h both are 100 %, but the
+  generated forwarder fn_8023AAF8 (tu_8022AD64, bool) drops to 89.7 % until it
+  returns u8, so fn_80273C30 / D44 stay at 94 % with FIXMEs.
 - fn_80274728 / fn_80274988 (from the 0x0A / 0x09 updates) step the spin
   animation: 0x3FA frame, 0x3FB pose, 0x11C0 s16 angle by facing; mode 3
   without fn_8023434C (tu_8022AD64, declared extern "C") changes the timing.

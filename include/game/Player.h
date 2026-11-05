@@ -146,7 +146,7 @@ public:
     bool fn_80272C20(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial); // via fn_802397B4
     bool fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BB50
     bool fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A7BC
-    bool fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag); // via fn_8023B8E4
+    u8 fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag); // via fn_8023B8E4
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
     f32 fn_80246F28();
