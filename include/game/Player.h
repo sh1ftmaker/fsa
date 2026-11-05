@@ -308,6 +308,7 @@ public:
     void fn_8028447C();
     void fn_80248604();
     void fn_8024D134();
+    void fn_8027E7E0();
     void fn_8027E5BC(f32 speed);
     void fn_8027EDDC();
     void fn_80283848();
@@ -669,7 +670,8 @@ public:
     /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
     /* 0x11F0 */ s32 field_0x11f0;
     /* 0x11F4 */ s32 field_0x11f4;
-    /* 0x11F8 */ u8 field_0x11f8[0x1200 - 0x11F8];
+    /* 0x11F8 */ u8 field_0x11f8[0x11FC - 0x11F8];
+    /* 0x11FC */ s32 field_0x11fc;
     // A bool: fn_8023FF88 returns it as loaded (lbz; blr).
     /* 0x1200 */ bool field_0x1200;
     /* 0x1201 */ u8 field_0x1201;

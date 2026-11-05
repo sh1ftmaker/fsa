@@ -5,6 +5,7 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
+#include "JSystem/JMath/JMath.h"
 #include "game/act/act_cannon.h"
 
 // PSVECMag on a const vector; the original's operator- temporary is passed by reference.
@@ -53,6 +54,60 @@ void Player_804A6F38::fn_8027E5BC(f32 speed) {
         }
         if (mPos.y < field_0x3a4.y) {
             mPos.y = field_0x3a4.y;
+        }
+    }
+}
+
+// FIXME: 98.85. Same instructions; the original reads field_0x3b4 into r30 before loading field_0x11fc for the fn_8023DE58 call, ours loads it after the call.
+void Player_804A6F38::fn_8027E7E0() {
+    if (field_0x11fc >= 0) {
+        if (fn_80235580(field_0x11fc) || field_0x3b4 != fn_8023DE58(field_0x11fc) ||
+            magnitude(*fn_8023E724(field_0x11fc) - mPos) > 60.0f) {
+            field_0x11fc = -1;
+        }
+    }
+    f32 nearest;
+    if (field_0x11fc >= 0) {
+        nearest = magnitude(*fn_8023E724(field_0x11fc) - mPos);
+    } else {
+        nearest = 60.0f;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (i == field_0x4) {
+            continue;
+        }
+        if (fn_802486A0() == 4) {
+            s32 other = fn_80248778();
+            if (fn_80240888() != other) {
+                continue;
+            }
+        }
+        if (magnitude(*fn_8023E724(i) - mPos) < nearest - 10.0f) {
+            field_0x11fc = i;
+            nearest = magnitude(*fn_8023E724(i) - mPos);
+        }
+    }
+    if (field_0x11fc < 0) {
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+    } else {
+        JGeometry::TVec3f diff = *fn_8023E724(field_0x11fc) - mPos;
+        s16 angle = JMath::atanTable_.atan2_(diff.y, diff.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        if (angle < -0x6000) {
+            field_0x3dc = 1;
+            field_0x3e8 = 1;
+        } else if (angle < -0x2000) {
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+        } else if (angle < 0x2000) {
+            field_0x3dc = 0;
+            field_0x3e8 = 0;
+        } else if (angle < 0x6000) {
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+        } else {
+            field_0x3dc = 1;
+            field_0x3e8 = 1;
         }
     }
 }
@@ -204,23 +259,6 @@ void Player_804A6F38::fn_80282FC8() {
     field_0x400 = 0;
 }
 
-void Player_804A6F38::fn_80283944() {}
-
-void Player_804A6F38::fn_80283CEC() {
-    field_0x124d = 1;
-    field_0x458 = 0;
-}
-
-void Player_804A6F38::fn_80283D00() {
-    fn_8027EB04();
-}
-
-void Player_804A6F38::fn_80283D20() {
-    field_0x458 = 0;
-}
-
-void Player_804A6F38::fn_80284290() {}
-
 void Player_804A6F38::fn_80283848() {
     field_0x458 = 0;
     field_0x344.x = 0.0f;
@@ -245,22 +283,22 @@ void Player_804A6F38::fn_80283848() {
     }
 }
 
-void Player_804A6F38::fn_8028434C() {
-    mPos += field_0x344;
-    field_0x344.z -= 0.25f;
-    if (field_0x344.z < -4.0f) {
-        field_0x344.z = -4.0f;
-    }
-    if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
-        mPos.z = 0.0f;
-        field_0x124d = 0;
-        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && !fn_80240808()) {
-            fn_80251AEC(0);
-        } else {
-            fn_80251AEC(0xc);
-        }
-    }
+void Player_804A6F38::fn_80283944() {}
+
+void Player_804A6F38::fn_80283CEC() {
+    field_0x124d = 1;
+    field_0x458 = 0;
 }
+
+void Player_804A6F38::fn_80283D00() {
+    fn_8027EB04();
+}
+
+void Player_804A6F38::fn_80283D20() {
+    field_0x458 = 0;
+}
+
+void Player_804A6F38::fn_80284290() {}
 
 void Player_804A6F38::fn_80284294() {
     if (field_0x3fc < 10) {
@@ -280,6 +318,23 @@ void Player_804A6F38::fn_80284328() {
     field_0xc84.x = 1.0f;
     field_0xc84.y = 1.0f;
     field_0xc84.z = 1.0f;
+}
+
+void Player_804A6F38::fn_8028434C() {
+    mPos += field_0x344;
+    field_0x344.z -= 0.25f;
+    if (field_0x344.z < -4.0f) {
+        field_0x344.z = -4.0f;
+    }
+    if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        field_0x124d = 0;
+        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && !fn_80240808()) {
+            fn_80251AEC(0);
+        } else {
+            fn_80251AEC(0xc);
+        }
+    }
 }
 
 void Player_804A6F38::fn_80284430() {
