@@ -672,6 +672,8 @@ void cls_804B0B00::fn_803E4330() {
     field_0x1d4 = 3;
 }
 
+// FIXME: 99.77. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Enter state 2: slides the menu panes off screen (offsets cleared by the
 // update functions as they slide back in). fn_803EDBF0 inlines it.
 void cls_804B0B00::fn_803E4344() {
@@ -921,6 +923,8 @@ void cls_804B0B00::fn_803E6A2C() {
     }
 }
 
+// FIXME: 99.78. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 12: slides field_0x64, field_0x78 and the field_0x1bc + 1
 // player panes field_0x68[] in, then enters state 13.
 void cls_804B0B00::fn_803E8210() {
@@ -984,6 +988,8 @@ void cls_804B0B00::fn_803E9034() {
     }
 }
 
+// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 8 (waiting for the GBA link through lbl_8053AEC0;
 // field_0x26c: 0 starting, 1 running, 2 ending): decide (0x1100 / 0x1300) or
 // back (0x200) ends it; then each connected player's pane animation
@@ -1060,6 +1066,8 @@ void cls_804B0B00::fn_803E9A20() {
     }
 }
 
+// FIXME: 99.91. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 7 (the GBA connection prompt): field_0x26c 255 or decide
 // (0x1100) without every controller connected enters state 8 (fn_803E3C00);
 // decide with all connected reads the players' results and enters state 6
@@ -1283,6 +1291,8 @@ void cls_804B0B00::fn_803ED83C() {
     }
 }
 
+// FIXME: 99.73. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // cls_804AF878::fn_803A8664: draws field_0x14, the state, then the fade
 // (field_0x60). When the fade-out into state 9 ends, the decide / back
 // button textures of lbl_8053AED8 are set.
@@ -1324,6 +1334,8 @@ void cls_804B0B00::fn_803EDA2C() {
     }
 }
 
+// FIXME: 99.83. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // cls_804AF878::fn_803A86A4: `mode` 1 / 2 go straight to state 10 / 9;
 // otherwise field_0x1bc counts the connected controllers and the menu
 // starts in state 2.
