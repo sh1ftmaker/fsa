@@ -54,6 +54,8 @@ bool GameView_804A9950::fn_802D72BC(s32 bit) {
 }
 
 void GameView_804A9950::fn_802D7310(s32 bit, bool set) {
+    // word before shift: the declaration order decides the registers; `^ -1` because the target
+    // clears with xor+and, not andc.
     s32 word = bit / 32;
     s32 shift = bit % 32;
     if (set) {
@@ -70,6 +72,8 @@ bool GameView_804A9950::fn_802D7384(s32 bit) {
 }
 
 void GameView_804A9950::fn_802D73CC(s32 bit, bool set) {
+    // word before shift: the declaration order decides the registers; `^ -1` because the target
+    // clears with xor+and, not andc.
     s32 word = bit / 32;
     s32 shift = bit % 32;
     if (set) {
@@ -96,6 +100,7 @@ void GameView_804A9950::fn_802D7584(s32 index, u8 value) {
     }
 }
 
+// `bits ^ 0xFF` (not ~bits): the target clears with xori+and, not andc.
 void GameView_804A9950::fn_802D7790(s32 index, u16 bits) {
     lbl_8053AAF8->field_0x4->mView->field_0x131b8[index] &= bits ^ 0xFF;
 }
@@ -132,6 +137,7 @@ bool GameView_804A9950::fn_802D7888(s32 bit) {
     return ((1 << bit) & lbl_8053AAF8->field_0x4->mView->field_0x174) != 0;
 }
 
+// `^ -1` (not ~): the target clears with xor+and, not andc.
 void GameView_804A9950::fn_802D78B4(s32 bit, bool set) {
     if (set) {
         lbl_8053AAF8->field_0x4->mView->field_0x174 |= 1 << bit;
