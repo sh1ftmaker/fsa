@@ -136,6 +136,7 @@
 #include "game/act/act_panel_rewrite_npc_2.h"
 #include "game/act/act_particle_npc.h"
 #include "game/act/act_pengator.h"
+#include "game/act/act_phantom_ganon_2.h"
 #include "game/act/act_play_specified_se.h"
 #include "game/act/act_player_effect.h"
 #include "game/act/act_player_start_position.h"

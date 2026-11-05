@@ -446,6 +446,13 @@ public:
     s32 fn_801545E8() const;               // mSerial (0x801545E8)
     void fn_80154614(s32 value);           // field_0xb8 (0x80154614)
     s32 fn_8015461C() const;               // field_0x4, the layer (0x8015461C)
+    // Out-of-line accessors in game/act_phantom_ganon_2.cpp (0x8018A590-0x8018A5B0);
+    // act_ganon and tu_80197070 call them on other actors too.
+    u16 fn_8018A590() const;               // field_0x94 (0x8018A590)
+    void fn_8018A598(bool alive);          // mAlive (0x8018A598)
+    void fn_8018A5A0(s32 value);           // field_0x98 (0x8018A5A0)
+    void fn_8018A5A8(u16 value);           // field_0x94 (0x8018A5A8)
+    bool fn_8018A5B0() const;              // mAlive (0x8018A5B0)
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
     void setField_0x90(u32 v) { field_0x90 = v; }

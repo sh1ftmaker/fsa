@@ -194,14 +194,6 @@ public:
     /* 0x230 */ u8 field_0x230[0xB0];
 }; // Size: 0x2E0
 
-// Spawned for 'FGN2'.
-class cls_804A1A98 : public ActorBase_804A5770 {
-public:
-    cls_804A1A98() {}
-    /* 0x08 */ virtual ~cls_804A1A98();
-    /* 0x230 */ u8 field_0x230[0xE8];
-}; // Size: 0x318
-
 // Spawned for 'BPH2'.
 class cls_804A1E50 : public ActorBase_804A5770 {
 public:
