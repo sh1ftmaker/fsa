@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/cls_804A71A8.h"
 #include "game/Map.h"
 #include "game/ViewLayer.h"
@@ -7,6 +8,40 @@
 static const f32 lbl_8046BA68[4][2] = {
     {4.0f, 4.0f}, {-4.0f, 4.0f}, {4.0f, -4.0f}, {-4.0f, -4.0f},
 };
+
+// Eight (x, y, z) offsets: +-6.999 along each axis, then the four
+// diagonals at +-5 (fn_8026942C).
+static const f32 lbl_8046BA88[8][3] = {
+    {6.999f, 0.0f, 0.0f}, {-6.999f, 0.0f, 0.0f}, {0.0f, 6.999f, 0.0f}, {0.0f, -6.999f, 0.0f},
+    {5.0f, 5.0f, 0.0f}, {-5.0f, 5.0f, 0.0f}, {5.0f, -5.0f, 0.0f}, {-5.0f, -5.0f, 0.0f},
+};
+
+// The same eight directions for fn_80268BC4's probes: entry i is direction
+// i of the per-direction flag arrays (+x, -x, +y, -y, then the diagonals).
+static const f32 lbl_8046BAE8[8][3] = {
+    {6.999f, 0.0f, 0.0f}, {-6.999f, 0.0f, 0.0f}, {0.0f, 6.999f, 0.0f}, {0.0f, -6.999f, 0.0f},
+    {5.0f, 5.0f, 0.0f}, {-5.0f, 5.0f, 0.0f}, {5.0f, -5.0f, 0.0f}, {-5.0f, -5.0f, 0.0f},
+};
+
+static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
+    return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
+}
+
+// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
+static inline JGeometry::TBox2f* layerBox(s32 layer) {
+    GameView_804A9950* view = fn_802D6A9C();
+    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+bool Player_804A6F38::fn_802684A4(const JGeometry::TVec3f* pos, s32 layer) {
+    for (s32 i = 0; i < 0x50; i++) {
+        if (field_0xdb0[i] >= 0 && layer == field_0x1030[i] && contains(field_0x5fc[i], *pos)) {
+            field_0xef0[i] = field_0xdb0[i];
+            return true;
+        }
+    }
+    return false;
+}
 
 // Scales v to unit length when it is longer than 32 * FLT_EPSILON.
 static inline void normalize2D(JGeometry::TVec2f& v) {
@@ -152,6 +187,120 @@ void Player_804A6F38::fn_80268B3C() {
     }
 }
 
+// The start of each frame (fn_80268BC4, fn_8026F710): last frame's
+// field_0x48 moves to field_0x40, the owner's field_0xef0 entries are
+// cleared and field_0xb4 moves to field_0xb5.
+static inline void beginFrame(cls_804A71A8* p) {
+    for (s32 i = 0; i < 8; i++) {
+        p->field_0x40[i] = p->field_0x48[i];
+        p->field_0x48[i] = 0;
+        p->field_0x30[i] = 0;
+    }
+    // int, not s32: an s32 counter adds a bound check the original lacks.
+    for (int i = 0; i < 0x50; i++) {
+        p->field_0x4->field_0xef0[i] = -1;
+    }
+    p->field_0xb5 = p->field_0xb4;
+    p->field_0xb4 = 0;
+    p->field_0xb6 = 0;
+    p->field_0xb7 = 0;
+    p->field_0xb8 = 0;
+    p->field_0xb9 = 0;
+    p->field_0xba = 0;
+    p->field_0xac = 0;
+}
+
+// The start of each probe pass (fn_80268BC4, fn_8026F710).
+static inline void beginPass(cls_804A71A8* p) {
+    p->field_0x9a = 0;
+    p->field_0x1c = 0;
+    for (s32 i = 0; i < 8; i++) {
+        p->field_0x20[i] = 0;
+        p->field_0x28[i] = 0;
+        p->field_0x38[i] = 0;
+        p->field_0x50[i] = 0;
+        p->field_0x58[i] = 0;
+        p->field_0x60[i] = 0;
+        p->field_0x68[i] = 0;
+        p->field_0x70[i] = 0;
+        p->field_0x78[i] = 0;
+        p->field_0x80[i] = 0;
+        p->field_0x88[i] = 0;
+    }
+}
+
+// FIXME: 99.13. The end's TVec2f `moved` lives in registers; the original
+// also stores its x, y before and after the subtraction to a stack slot at
+// 0x8 (4 dead stores), as in fn_802685D4.
+void cls_804A71A8::fn_80268BC4() {
+    beginFrame(this);
+    f32 startX = field_0x4->mPos.x;
+    f32 startY = field_0x4->mPos.y;
+    if (!field_0x4->fn_80240B84() && !field_0x4->fn_8025F448()) {
+        field_0xb0 = 0;
+        do {
+            beginPass(this);
+            field_0xb0++;
+            for (s32 i = 0; i < 8; i++) {
+                field_0x8.set(lbl_8046BAE8[i][0], lbl_8046BAE8[i][1], lbl_8046BAE8[i][2]);
+                field_0x1c = i;
+                field_0x8 += field_0x4->mPos;
+                u16 tile = fn_8022461C(&field_0x8, field_0x4->field_0x3b4);
+                if (field_0x4->fn_8025F590() && field_0x4->field_0x3b4 == 8 &&
+                    fn_8023DE58(field_0x4->field_0xd70) < 8)
+                {
+                    // Probe the same spot on the layer of the player fn_8023DE58
+                    // names, moved from this layer's view box to that one's.
+                    JGeometry::TVec3f saved = field_0x8;
+                    field_0x8.x -= layerBox(field_0x4->field_0x3b4)->i.x;
+                    field_0x8.y -= layerBox(field_0x4->field_0x3b4)->i.y;
+                    field_0x8.x += layerBox(fn_8023DE58(field_0x4->field_0xd70))->i.x;
+                    field_0x8.y += layerBox(fn_8023DE58(field_0x4->field_0xd70))->i.y;
+                    if (field_0x4->fn_802684A4(&field_0x8, fn_8023DE58(field_0x4->field_0xd70))) {
+                        field_0x28[field_0x1c] = 1;
+                    } else {
+                        fn_8026B81C(fn_8022461C(&field_0x8, fn_8023DE58(field_0x4->field_0xd70)));
+                    }
+                    field_0x8 = saved;
+                }
+                if (field_0x4->fn_802684A4(&field_0x8, field_0x4->field_0x3b4)) {
+                    field_0x28[field_0x1c] = 1;
+                } else if (field_0x4->fn_8026FC20() <= 0 && !fn_802D6A9C()->fn_802DCD0C() &&
+                           !contains(*layerBox(field_0x4->field_0x3b4), field_0x8))
+                {
+                    field_0x38[field_0x1c] = 1;
+                } else {
+                    fn_8026C350(tile);
+                }
+            }
+            fn_80269574();
+            if (field_0xb0 <= 1) {
+                fn_8026E1E0();
+            }
+        } while (field_0x9a == 1 && field_0xb0 < 100);
+
+        if (!isField98Or99Set()) {
+            field_0x4->field_0xc90.set(1.0f, 1.0f, 1.0f);
+        } else if (lbl_8053AAF8->field_0x96 == 0) {
+            field_0x99 = field_0x98;
+            field_0x98 = 0;
+        }
+        JGeometry::TVec2f moved(field_0x4->mPos.x, field_0x4->mPos.y);
+        moved.set(moved.x - startX, moved.y - startY);
+        field_0x14 = moved.x;
+        field_0x18 = moved.y;
+    }
+}
+
+void cls_804A71A8::fn_80269420() {
+    field_0x98 = 1;
+}
+
+void cls_804A71A8::fn_8026942C(s32 index, JGeometry::TVec3f* out) {
+    out->set(lbl_8046BA88[index][0], lbl_8046BA88[index][1], lbl_8046BA88[index][2]);
+    *out += field_0x4->mPos;
+}
+
 void cls_804A71A8::fn_8026947C(JGeometry::TVec3f* pos) {
     *pos = field_0x4->mPos;
     if (field_0x4->fn_802486A0() == 2) {
@@ -181,6 +330,31 @@ bool Player_804A6F38::fn_8026E5F8(const JGeometry::TVec2f* pos) {
     return false;
 }
 
+void cls_804A71A8::fn_8026F710() {
+    for (s32 i = 0; i < 8; i++) {
+        field_0x48[i] = 0;
+        field_0x30[i] = 0;
+    }
+    field_0xb4 = 0;
+    field_0xb6 = 0;
+    beginFrame(this);
+    beginPass(this);
+    field_0x98 = 0;
+    field_0x99 = 0;
+    field_0xa0 = 0;
+    field_0xa4 = 0;
+    field_0xa8 = 0;
+    field_0xbc = 0;
+    field_0xb0 = 0;
+    field_0xac = 0;
+    field_0x14 = 0.0f;
+    field_0x18 = 0.0f;
+}
+
 cls_804A71A8::~cls_804A71A8() {
     field_0x4 = NULL;
+}
+
+cls_804A71A8::cls_804A71A8(Player_804A6F38* player) {
+    field_0x4 = player;
 }

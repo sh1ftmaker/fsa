@@ -207,6 +207,11 @@ public:
     s32 fn_8024FF6C(); // via fn_8022D7F8
     s32 fn_8024FF84(); // via fn_80238CB4
     bool fn_80250090(); // via fn_8022D9CC
+    // tu_802684A4 (0x802684A4): true when pos (x, y) is inside one of the
+    // 0x50 boxes field_0x5fc[i] whose field_0xdb0[i] is set (>= 0) and whose
+    // field_0x1030[i] is `layer`; it then copies field_0xdb0[i] into
+    // field_0xef0[i]. cls_804A71A8::fn_80268BC4 has it inlined twice.
+    bool fn_802684A4(const JGeometry::TVec3f* pos, s32 layer);
     void fn_802685D4(); // tu_802684A4 (0x568); reads the player's fields directly
     void fn_80268B3C(); // tu_802684A4; holds mPos.z at 0 across fn_802685D4
     bool fn_80250ACC(); // via fn_8022DA68

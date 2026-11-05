@@ -696,8 +696,7 @@ void Player_804A6F38::fn_8024909C() {
 }
 
 bool Player_804A6F38::fn_8024B24C() {
-    cls_804A71A8* sub = field_0xbf0;
-    return sub->field_0x98 || sub->field_0x99;
+    return field_0xbf0->isField98Or99Set();
 }
 
 void Player_804A6F38::fn_8024B274() {
@@ -990,22 +989,22 @@ u8 Player_804A6F38::fn_802517E4() {
 
 bool Player_804A6F38::fn_802517F8(bool a) {
     cls_804A71A8* sub = field_0xbf0;
-    if (sub->field_0x49 == 1) {
+    if (sub->field_0x48[1] == 1) {
         return true;
     }
-    if (sub->field_0x48 == 1) {
+    if (sub->field_0x48[0] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4c == 1) {
+    if (a == true && sub->field_0x48[4] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4d == 1) {
+    if (a == true && sub->field_0x48[5] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4e == 1) {
+    if (a == true && sub->field_0x48[6] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4f == 1) {
+    if (a == true && sub->field_0x48[7] == 1) {
         return true;
     }
     return false;
@@ -1013,13 +1012,13 @@ bool Player_804A6F38::fn_802517F8(bool a) {
 
 bool Player_804A6F38::fn_802518AC(bool a) {
     cls_804A71A8* sub = field_0xbf0;
-    if (sub->field_0x4a == 1) {
+    if (sub->field_0x48[2] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4c == 1) {
+    if (a == true && sub->field_0x48[4] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4d == 1) {
+    if (a == true && sub->field_0x48[5] == 1) {
         return true;
     }
     return false;
@@ -1027,13 +1026,13 @@ bool Player_804A6F38::fn_802518AC(bool a) {
 
 bool Player_804A6F38::fn_8025190C(bool a) {
     cls_804A71A8* sub = field_0xbf0;
-    if (sub->field_0x4b == 1) {
+    if (sub->field_0x48[3] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4e == 1) {
+    if (a == true && sub->field_0x48[6] == 1) {
         return true;
     }
-    if (a == true && sub->field_0x4f == 1) {
+    if (a == true && sub->field_0x48[7] == 1) {
         return true;
     }
     return false;
