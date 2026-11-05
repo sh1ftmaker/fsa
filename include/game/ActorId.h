@@ -77,6 +77,7 @@ enum ActorId {
     ACTOR_DGTL = 'DGTL', // Big Moldorm (high)
     ACTOR_DMCS = 'DMCS', // empty case, spawner returns -1; not in actors.tsv
     ACTOR_DMGA = 'DMGA', // After goal (opening) (med)
+    ACTOR_DMGE = 'DMGE', // Damage NPC (med)
     ACTOR_DMGF = 'DMGF', // Vaati (cutscene) (high)
     ACTOR_DMGL = 'DMGL', // Goal (opening) (med)
     ACTOR_DMLK = 'DMLK', // Shadow Link (cutscene) (high)

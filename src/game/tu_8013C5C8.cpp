@@ -130,6 +130,8 @@ u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
     return result;
 }
 
+// FIXME: 99.93. Code identical; only the int-to-float double's .sdata2 relocation differs: the
+// original pool has 0.5f (first used by the unwritten draw passes) before it.
 u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     bool result = false;
     if (emitter != NULL) {
@@ -149,6 +151,261 @@ u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height
         result = true;
     }
     return result;
+}
+
+// The unit's static emitter callback (defined at the end of the file).
+extern cls_8049F184 lbl_8053AB18;
+
+// FIXME: 99.86. Code identical; only the .sdata2 relocations of the int-to-float double and
+// 0.70710677f differ: the original pool has 0.5f (first used by the unwritten draw passes
+// fn_8013D5D4 / D6E4 / DB2C) before the double, as fn_8013CB44 shows too.
+JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height, s32 depth,
+                            JPAEmitterCallBack* emitterCB, JPAParticleCallBack* particleCB, bool adjust,
+                            f32 scale) {
+    JPABaseEmitter* emitter = NULL;
+    if (scale > 0.0f) {
+        if (layer == 0) {
+            // The original copies emitterCB into its own register here (mr r28, r8), a separate
+            // variable from the parameter the other layers pass on. group is declared before it:
+            // declared after, the two swap registers with layer / pos.
+            u8 group;
+            JPAEmitterCallBack* callback = emitterCB;
+            if (adjust) {
+                adjust = pos->z > 0.0f;
+            }
+            if (adjust && height < 1) {
+                height++;
+                depth--;
+            }
+            f32 offset = height * 1024 + depth * 128;
+            JGeometry::TVec3f p;
+            p.x = pos->x;
+            p.y = pos->y + offset;
+            p.z = pos->z + offset;
+            p.z += lbl_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
+
+            // The draw group (JPAEmitterManager group); 0xFF queues the
+            // position for the executeAfter callback instead.
+            switch (id) {
+            case 0x48E: case 0x48F: case 0x490: case 0x491: case 0x492: case 0x493: case 0x494:
+            case 0x495: case 0x558: case 0x559: case 0x55A: case 0x55B: case 0x55C: case 0x55D:
+            case 0x55E: case 0x569: case 0x56A: case 0x56B: case 0x56C: case 0x56D: case 0x56E:
+            case 0x56F: case 0x570: case 0x571:
+                group = 2;
+                break;
+            case 0x127: case 0x128: case 0x129: case 0x12A: case 0x12B: case 0x188: case 0x189:
+            case 0x18A: case 0x18B: case 0x18C: case 0x18D: case 0x2A8: case 0x4E0: case 0x4E1:
+                group = 3;
+                break;
+            case 0x241: case 0x3DD: case 0x4CF: case 0x4D0: case 0x4D1:
+                group = 4;
+                break;
+            case 0x543: case 0x544: case 0x54B:
+                group = 5;
+                break;
+            case 0x26A: case 0x277: case 0x278: case 0x279: case 0x27A: case 0x27B: case 0x27C:
+            case 0x27D: case 0x3A7: case 0x3A8: case 0x3A9: case 0x3AA: case 0x3AB: case 0x3AC:
+            case 0x3AD: case 0x3AE: case 0x3AF: case 0x3B0: case 0x3B1: case 0x3B2: case 0x3B3:
+                group = 7;
+                break;
+            case 0x566: case 0x567: case 0x568:
+                group = 8;
+                break;
+            case 0x385:
+                group = 9;
+                break;
+            case 0xD8: case 0xD9: case 0xDA: case 0xDB: case 0xDC: case 0xDD: case 0xDE: case 0xDF:
+            case 0xE0: case 0xE1: case 0xE2: case 0xE3: case 0xE4: case 0xE5: case 0xE6: case 0xE7:
+            case 0xE8: case 0xE9: case 0x1DC: case 0x1DD: case 0x1DE: case 0x1DF: case 0x1E0:
+            case 0x1E1: case 0x1E2: case 0x1E3: case 0x1E4: case 0x1E5: case 0x1E6: case 0x1E7:
+            case 0x1E8: case 0x1E9: case 0x1EA: case 0x1EB: case 0x1EC: case 0x1ED: case 0x1EE:
+            case 0x1EF: case 0x1F0: case 0x1F1: case 0x1F2: case 0x1F3: case 0x1F4: case 0x1F5:
+            case 0x1F6: case 0x1F7: case 0x1F8: case 0x1F9: case 0x1FA: case 0x1FB: case 0x1FC:
+            case 0x3EC: case 0x3ED: case 0x3EE: case 0x3EF: case 0x3F0: case 0x3F1: case 0x3F2:
+            case 0x3F3:
+                group = 10;
+                break;
+            case 0x345: case 0x346: case 0x347: case 0x348: case 0x349: case 0x34A: case 0x34B:
+            case 0x34C: case 0x34D: case 0x34E: case 0x34F: case 0x350: case 0x351: case 0x352:
+            case 0x353: case 0x354: case 0x355: case 0x356: case 0x357: case 0x358: case 0x359:
+            case 0x35A: case 0x35B: case 0x35C: case 0x54D:
+                group = 0xFF;
+                break;
+            default:
+                group = 0;
+                break;
+            }
+
+            if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
+                if (fn_802D6A9C()->field_0x131f1) {
+                    switch (id) {
+                    case 0x3CF:
+                        id = 0x454;
+                        break;
+                    case 0x3D3:
+                        id = 0x455;
+                        break;
+                    case 0x116:
+                        id = 0x44E;
+                        break;
+                    case 0x115:
+                        id = 0x44D;
+                        break;
+                    }
+                } else if (fn_802D6A9C()->field_0x131f2) {
+                    switch (id) {
+                    case 0x3D3:
+                        id = 0x3A4;
+                        break;
+                    case 0x3CF:
+                        id = 0x3A3;
+                        break;
+                    case 0x24E:
+                        id = 0x24C;
+                        break;
+                    case 0x24F:
+                        id = 0x24D;
+                        break;
+                    }
+                } else if (fn_802DEABC()) {
+                    switch (id) {
+                    case 0x3D3:
+                        id = 0xD6;
+                        break;
+                    case 0x3CF:
+                        id = 0xD5;
+                        break;
+                    }
+                } else if (fn_802DEB58()) {
+                    switch (id) {
+                    case 0x2A9:
+                        id = 0x45E;
+                        break;
+                    case 0x2AA:
+                        id = 0x45F;
+                        break;
+                    case 0x4F3:
+                    case 0x4F7:
+                        id = 0x4FB;
+                        break;
+                    case 0x4F4:
+                    case 0x4F8:
+                        id = 0x4FC;
+                        break;
+                    case 0x4F5:
+                    case 0x4F9:
+                        id = 0x4FD;
+                        break;
+                    case 0x4F6:
+                    case 0x4FA:
+                        id = 0x4FE;
+                        break;
+                    case 0x15B:
+                    case 0x15C:
+                    case 0x3D0:
+                        return NULL;
+                    }
+                }
+                if (!fn_802DE9A0()) {
+                    switch (id) {
+                    case 0x2A9:
+                        return NULL;
+                    case 0x2AA:
+                        return NULL;
+                    case 0x4F7:
+                        return NULL;
+                    case 0x4F8:
+                        return NULL;
+                    case 0x4F9:
+                        return NULL;
+                    case 0x4FA:
+                        return NULL;
+                    }
+                }
+            }
+
+            if (group == 0xFF) {
+                EffectSystem_8049F178* system = lbl_8053AB10->field_0x28;
+                for (s32 i = 0; i < 0x400; i++) {
+                    EffectSystem_8049F178::Entry& entry = system->mEntries[i];
+                    if (entry.mCount == 0) {
+                        entry.mPos.set(p);
+                        entry.mId = id;
+                        entry.mCount = 1;
+                        break;
+                    }
+                }
+            } else {
+                if (lbl_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 1) {
+                    callback = &lbl_8053AB18;
+                }
+                if ((lbl_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 2) && group != 5) {
+                    group = 1;
+                }
+                emitter = lbl_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
+                    p, id, group, 0, callback, particleCB);
+            }
+
+            if (emitter != NULL) {
+                f32 yz = 0.70710677f * scale;
+                if (group != 2 && group != 4 && group != 5 && group != 8 && group != 10) {
+                    Mtx m;
+                    m[0][0] = scale;
+                    m[0][1] = 0.0f;
+                    m[0][2] = 0.0f;
+                    m[0][3] = p.x;
+                    m[1][0] = 0.0f;
+                    m[1][1] = 0.0f;
+                    m[1][2] = yz;
+                    m[1][3] = p.y;
+                    m[2][0] = 0.0f;
+                    m[2][1] = yz;
+                    m[2][2] = 0.0f;
+                    m[2][3] = p.z;
+                    emitter->setGlobalSRTMatrix(m);
+                    emitter->setGlobalParticleScale(scale, scale);
+                } else {
+                    emitter->setScale(scale);
+                }
+            }
+        } else {
+            // Other layers: helper actors for a few ids.
+            switch (id) {
+            case 0x172:
+                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, pos, 0, -1, -1);
+                break;
+            case 0x33A:
+            case 0x33B:
+                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, pos, 2, -1, -1);
+                break;
+            case 0x19D:
+            case 0x24A:
+                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 0, -1, -1);
+                break;
+            case 0x174: case 0x175: case 0x176: case 0x177: case 0x178: case 0x179: case 0x17C:
+            case 0x473:
+                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 1, -1, -1);
+                break;
+            case 0xFF:
+                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 0x80, -1, -1);
+                break;
+            case 0x116:
+            case 0x24E: case 0x24F: case 0x250: case 0x251:
+            case 0x3D3: case 0x3D4:
+                emitter = lbl_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
+                    *pos, id, 6, 0, emitterCB, particleCB);
+                break;
+            case 0x15B:
+            case 0x3D0:
+                fn_801F856C()->fn_801F9484(ACTOR_PEFF, layer, pos, 0x2C, -1, 0);
+                break;
+            case 0x3CF:
+                fn_801F856C()->fn_801F9484(ACTOR_PEFF, layer, pos, 0x34, -1, 0);
+                break;
+            }
+        }
+    }
+    return emitter;
 }
 
 void EffectSystem_8049F178::fn_8013D5B0() {

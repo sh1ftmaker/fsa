@@ -306,7 +306,14 @@ struct JPABaseEmitter
     void setEmitterCallBackPtr(JPAEmitterCallBack *ptr) { mEmitterCallback = ptr; }
     void setGlobalRTMatrix(const Mtx m) { JPASetRMtxTVecfromMtx(m, mGlobalRot, &mGlobalTrs); }
     void setGlobalRMatrix(const Mtx m) { JPASetRMtxfromMtx(m, mGlobalRot); }
+    // pikmin2 / tp form (fn_8013CC50, game/tu_8013C5C8.cpp).
+    void setGlobalSRTMatrix(const Mtx m)
+    {
+        JPASetRMtxSTVecfromMtx(m, mGlobalRot, &mGlobalScl, &mGlobalTrs);
+        mGlobalPScl.set(mGlobalScl.x, mGlobalScl.y);
+    }
     void setGlobalParticleScale(const JGeometry::TVec3f &vec) { mGlobalPScl.set(vec.x, vec.y); }
+    void setGlobalParticleScale(f32 scaleX, f32 scaleY) { mGlobalPScl.set(scaleX, scaleY); } // tp form
     void setGlobalTranslation(f32 x, f32 y, f32 z) { mGlobalTrs.set(x, y, z); }
     void setGlobalTranslation(const JGeometry::TVec3f &vec) { mGlobalTrs.set(vec); }
     void getLocalTranslation(JGeometry::TVec3f &vec) { vec.set(mLocalTrs); }

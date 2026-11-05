@@ -135,10 +135,9 @@ u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height
 // nothing for a NULL emitter.
 void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth);
 
-extern "C" {
-
-// 224 units / 1866 calls. Spawns effect `id` at pos and returns its emitter
-// (NULL when scale <= 0 or nothing was made). On layer 0 it places pos as
+// 224 units / 1866 calls. A free function: r3 is the layer, not the system.
+// Spawns effect `id` at pos and returns its emitter (NULL when scale <= 0
+// or nothing was made). On layer 0 it places pos as
 // fn_8013CB44 does, picks the draw group from the id (a switch; 0xFF skips
 // the emitter) and on some stages a substitute id (fn_802D6A9C()'s
 // field_0x131f1/field_0x131f2, fn_802DEABC, fn_802DE9A0), queues the
@@ -154,7 +153,6 @@ extern "C" {
 JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height,
                             s32 depth, JPAEmitterCallBack* emitterCB,
                             JPAParticleCallBack* particleCB, bool adjust, f32 scale);
-}
 
 // game/tu_8013AAD4.cpp. Draws a lit sphere of `scale` at `pos` in `color`; act_beamos
 // draw() passes a null matrix. a / b are summed into a depth offset.
