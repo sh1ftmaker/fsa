@@ -62,7 +62,8 @@ u8 fn_8017EB44(const JGeometry::TVec3f* pos) {
     return result;
 }
 
-// Whether both corners of box are on screen.
+// Whether both corners of box are on screen. corner2 is declared before corner and
+// camera before result only to steer the stack slots and register order to the original's.
 bool fn_8017EB94(const JGeometry::TBox2f* box) {
     Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     bool result = false;
