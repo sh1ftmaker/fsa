@@ -873,6 +873,24 @@ bool Player_804A6F38::fn_802426E0(s32 serial) {
     return true;
 }
 
+// Requests state 0x4C (keeping `arg` in field_0xd8c, matched by
+// fn_802426E0) for a player acting on its own and not fn_8025F448.
+// FIXME: 99.51. Registers only (the inlined group loops' temporaries, as
+// fn_8024C828).
+bool Player_804A6F38::fn_80242704(s32 arg) {
+    if (follows_80240670(this)) {
+        return false;
+    }
+    if (fn_8025F448()) {
+        return false;
+    }
+    if (requestState(this, 0x4c)) {
+        field_0xd8c = arg;
+        return true;
+    }
+    return false;
+}
+
 // Counts field_0xbd8 down (fn_803037D4(index, 2) every 60 frames while
 // fn_8030381C allows it); a leader with field_0xbdc whose count ran out on
 // a layer of 8 or more calls fn_8028FBA0; below layer 8 the count is dropped.
