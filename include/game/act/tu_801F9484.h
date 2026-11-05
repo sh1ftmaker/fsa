@@ -7,7 +7,6 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
-class JPABaseEmitter;
 #include "game/act/act_princess_zelda_ending.h"
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
@@ -15,6 +14,8 @@ class JPABaseEmitter;
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
 #include "JSystem/JUtility/TColor.h"
+
+class JPABaseEmitter;
 
 // Spawned for 'LPLK'.
 class cls_8049C578 : public ActorBase_804A5770 {

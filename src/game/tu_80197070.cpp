@@ -42,6 +42,7 @@ cls_804A2944::~cls_804A2944() {
     for (s32 i = 0; i < 13; i++) {
         fn_801EE434(mEmitters[i]);
     }
+    // field_0x90 is u32, but the original tests it with a signed cmpwi.
     s32 param = field_0x90;
     if (param == 0) {
         fn_802D6A9C()->fn_802D7440(true);
@@ -62,10 +63,11 @@ void fn_8019CDC4(s32 v) {
     root->field_0x54 = v;
 }
 
-// FIXME: 95.43. The stage > 7 test is a bgtlr here; the original has ble over a
-// separate blr (the sub > 3 test matches that way).
 void fn_8019CDE4(s32 stage, s32 sub) {
-    if (stage < 0 || stage > 7 || sub < 0 || sub > 3) {
+    if (stage < 0 || stage > 7) {
+        return;
+    }
+    if (sub < 0 || sub > 3) {
         return;
     }
     lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 |= 1 << (stage * 4 + sub);
