@@ -2366,6 +2366,55 @@ void Player_804A6F38::fn_802796B8() {
     }
 }
 
+// By the last hit kind 0x11E4: kinds 7-9 and 0x1C start the emitters 0x135C (0x246-0x249) and
+// 0x132C (0x242-0x245, callback 0x1330) by facing with the sounds 0x10014 / 0x2004C; kind 3
+// plays 0x10016 / 0x2004D, the others 0x10004.
+void Player_804A6F38::fn_80279CFC() {
+    field_0x464 = 60;
+    field_0x458 = 0;
+    if (field_0x11e4 == 7 || field_0x11e4 == 8 || field_0x11e4 == 9 || field_0x11e4 == 0x1c) {
+        if (field_0x135c == NULL) {
+            switch (field_0x3dc) {
+            case 0:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x248, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            case 1:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x247, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            case 2:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x246, 0, -1, NULL, NULL, true, 1.0f);
+                break;
+            case 3:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x249, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            }
+        }
+        if (field_0x132c == NULL) {
+            switch (field_0x3dc) {
+            case 0:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x244, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 1:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x243, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 2:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x242, 0, -1, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 3:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x245, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            }
+        }
+        fn_8024F0E8(0x10014);
+        fn_8024F0E8(0x2004c);
+    } else if (field_0x11e4 == 3) {
+        fn_8024F0E8(0x10016);
+        fn_8024F0E8(0x2004d);
+    } else {
+        fn_8024F0E8(0x10004);
+    }
+}
+
 void Player_804A6F38::fn_80279F94() {
     deleteEmitter(&field_0x1308);
     field_0x464 = 60;
