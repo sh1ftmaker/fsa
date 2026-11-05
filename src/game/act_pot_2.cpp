@@ -17,12 +17,10 @@ void Pot2_804AA750::draw() {
     fn_803075AC(mSerial, field_0x4, &pos, 0x21, false, 2, -1, 0, 0, 0);
 }
 
-// FIXME: 80%. Same instructions; the target copies field_0x80 to the stack box
-// with lwz/stw word pairs before loading mPos, this code copies it with
-// lfs/stfs after loading mPos (the adds are scheduled differently as a result).
 void Pot2_804AA750::update() {
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    JGeometry::TBox2f box(field_0x80);
+    JGeometry::TBox2f box;
+    box = field_0x80;
     box.addPos(mPos.x, mPos.y);
     fn_80239914(&box, field_0x4, mSerial);
     fn_8020D58C()->addBox(mSerial);

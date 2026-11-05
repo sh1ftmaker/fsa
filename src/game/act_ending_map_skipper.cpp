@@ -13,16 +13,14 @@ EndingMapSkipper_804AA498::~EndingMapSkipper_804AA498() {}
 
 void EndingMapSkipper_804AA498::draw() {}
 
-// FIXME: 71%. The original loads row[0] into a saved register (r31) before
-// calling fn_802D6A9C and recomputes the table address for row[1] after it;
-// ours computes the row pointer once (saved in r31) and loads both after the
-// call, so the stack frame also drops the r30 save.
+// FIXME: 99.2%. Register allocation only: the original keeps the row offset
+// (index * 8) in r30 and row[0] in r31; ours has them swapped.
 void EndingMapSkipper_804AA498::update() {
-    static const s32 sViewParams[3][2] = {{3, 0}, {2, 5}, {4, 0}};
+    static const s32 lbl_8046F610[3][2] = {{3, 0}, {2, 5}, {4, 0}};
     mTimer--;
     if (mTimer == 0) {
-        const s32* row = sViewParams[mIndex];
-        fn_802D6A9C()->fn_802D9FF4(row[0], row[1]);
+        s32 first = lbl_8046F610[mIndex][0];
+        fn_802D6A9C()->fn_802D9FF4(first, lbl_8046F610[mIndex][1]);
         lbl_8053AAF8->fn_80136798(15, 0);
     }
 }
