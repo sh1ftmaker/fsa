@@ -118,7 +118,8 @@ bool Player_804A6F38::fn_802576CC(const JGeometry::TBox2f* box, s32 layer, JGeom
     return false;
 }
 
-bool Player_804A6F38::fn_802577E0() {
+// FIXME: 96.8. Only the final clrlwi r3, r3, 24 (bool to s32 on the tail call result) is extra; the original returns bool, and then its caller fn_8023B484 (tu_8022AD64, s32 today) would need to return bool too.
+s32 Player_804A6F38::fn_802577E0() {
     if (fn_80270C88()) {
         return false;
     }

@@ -217,7 +217,7 @@ public:
     void fn_80252F5C(s32 arg); // via fn_8023CCE8
     s32 fn_80252F68(); // via fn_8023CD74
     s32 fn_80252F74(); // via fn_8023CE10
-    bool fn_802577E0(); // via fn_8023B484
+    s32 fn_802577E0(); // via fn_8023B484
     bool fn_8025EE34(s32 arg); // via fn_8022F8AC
     bool fn_8025EF68(s32 arg); // via fn_8022F6E8
     bool fn_8025F2CC(); // via fn_8023E8F0
