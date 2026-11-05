@@ -412,6 +412,9 @@ public:
     void stepWalkCycle();
     void setHeldPos();
     void spawnEffect17D(); // tu_8028FBA0 inline: effect 0x17D above the player
+    void followCamera();  // tu_8028FBA0 inline: camera on mPos - (0, 150) on the TV
+    bool requestArrival(); // tu_8028FBA0 inline: 0x33 / 0x3E / 0x12 / 0 after an arrival
+    void spawnEffect15B(); // tu_8028FBA0 inline: effects 0x15B, 0x15C at the player
     void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).

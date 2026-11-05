@@ -60,6 +60,37 @@ inline void Player_804A6F38::riseToTarget(s32 state) {
     }
 }
 
+// The camera follows a point 150 above the player while it is on the TV
+// (fn_80293398, fn_802935A4).
+inline void Player_804A6F38::followCamera() {
+    if (field_0x3b4 < 8) {
+        JGeometry::TVec3f pos = mPos;
+        pos.y -= 150.0f;
+        lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+    }
+}
+
+// The state after an arrival while carrying (fn_80292820, fn_802935A4): 0x33
+// without life, 0x3E with 0xCF0, 0x12 while holding an actor, else 0.
+inline bool Player_804A6F38::requestArrival() {
+    if (fn_8024189C() <= 0) {
+        return fn_80251AEC(0x33);
+    }
+    if (field_0xcf0 == 1) {
+        return fn_80251AEC(0x3E);
+    }
+    if (fn_8025F684()) {
+        return fn_80251AEC(0x12);
+    }
+    return fn_80251AEC(0);
+}
+
+// Effects 0x15B and 0x15C at the player (fn_80291E44, fn_802925E4).
+inline void Player_804A6F38::spawnEffect15B() {
+    fn_8013CC50(field_0x3b4, &mPos, 0x15B, 0, 1, NULL, NULL, true, 1.0f);
+    fn_8013CC50(field_0x3b4, &mPos, 0x15C, -1, 0, NULL, NULL, true, 1.0f);
+}
+
 // Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_80293774).
 inline void Player_804A6F38::spawnEffect17D() {
     JGeometry::TVec3f pos;
@@ -354,8 +385,7 @@ void Player_804A6F38::fn_80291E44() {
     field_0x3dc = 2;
     field_0x3e8 = 2;
     if (field_0xce4 < 8) {
-        fn_8013CC50(field_0x3b4, &mPos, 0x15B, 0, 1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &mPos, 0x15C, -1, 0, NULL, NULL, true, 1.0f);
+        spawnEffect15B();
         fn_8024F0E8(0x20041);
         fn_8024F0E8(0x1000F);
         field_0x430 = 0x5C;
@@ -532,6 +562,45 @@ void Player_804A6F38::fn_802925C4() {
     field_0x3e8 = 2;
 }
 
+void Player_804A6F38::fn_802925E4() {
+    if (field_0x3f8 < 8) {
+        field_0x3f9 = 0;
+    } else if (field_0x3f8 < 14) {
+        field_0x3f9 = 1;
+    } else if (field_0x3f8 < 20) {
+        field_0x3f9 = 2;
+    } else if (field_0x3f8 < 26) {
+        field_0x3f9 = 3;
+    } else if (field_0x3f8 < 30) {
+        field_0x3f9 = 4;
+    } else if (field_0x3f8 < 34) {
+        field_0x3f9 = 5;
+    } else if (field_0x3f8 < 38) {
+        field_0x3f9 = 6;
+    } else if (field_0x3f8 < 42) {
+        field_0x3f9 = 7;
+    } else if (field_0x3f8 < 46) {
+        field_0x3f9 = 8;
+    } else if (field_0x3f8 < 48) {
+        field_0x3f9 = 9;
+    } else if (field_0x3f8 < 50) {
+        field_0x3f9 = 10;
+    } else {
+        field_0x3f9 = 11;
+        field_0x124d = 0;
+        if (fn_80251AEC(0x27)) {
+            spawnEffect15B();
+            if (field_0x3b4 < 8) {
+                field_0xcb0 = mPos;
+            }
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    }
+    field_0x3f8++;
+}
+
 void Player_804A6F38::fn_802927B0() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -547,17 +616,7 @@ void Player_804A6F38::fn_80292820() {
     if (field_0xce4 == field_0xce0 || fn_80240670() || !fn_80303750(field_0x4)) {
         if (field_0x3fc >= 60) {
             field_0x124d = 0;
-            bool requested;
-            if (fn_8024189C() <= 0) {
-                requested = fn_80251AEC(0x33);
-            } else if (field_0xcf0 == 1) {
-                requested = fn_80251AEC(0x3E);
-            } else if (fn_8025F684()) {
-                requested = fn_80251AEC(0x12);
-            } else {
-                requested = fn_80251AEC(0);
-            }
-            if (requested) {
+            if (requestArrival()) {
                 fn_803037D4(field_0x4, 0xD);
             }
         }
@@ -591,11 +650,7 @@ void Player_804A6F38::fn_802932BC() {
 }
 
 void Player_804A6F38::fn_80293398() {
-    if (field_0x3b4 < 8) {
-        JGeometry::TVec3f pos = mPos;
-        pos.y -= 150.0f;
-        lbl_8053AB10->field_0x24->fn_8030C210(&pos);
-    }
+    followCamera();
     field_0x3fc++;
     if (field_0x3fc >= 60 || field_0xcf4 == 0x1F) {
         riseToTarget(0x23);
@@ -611,6 +666,29 @@ void Player_804A6F38::fn_80293534() {
     fn_8024F0E8(0x2002E);
     if (field_0x3b4 >= 8 && field_0xce4 < 8) {
         fn_8024EFA0(false);
+    }
+}
+
+void Player_804A6F38::fn_802935A4() {
+    followCamera();
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+    }
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    if (field_0x3fc < 60) {
+        return;
+    }
+    field_0x124d = 0;
+    if (requestArrival()) {
+        if (field_0x3b4 < 8) {
+            spawnEffect17D();
+            fn_8024F0E8(0x20020);
+            fn_8024F0E8(0x20021);
+        } else {
+            fn_803037D4(field_0x4, 0xD);
+        }
     }
 }
 
