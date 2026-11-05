@@ -273,6 +273,17 @@ s32 Player_804A6F38::fn_80240354() {
     return 0;
 }
 
+// Sets field_0x43e (wait for the leader, see fn_80242CB0) unless the group
+// is turn-based (mode 4) or field_0x1215 is set.
+// FIXME: 95.2 %. Registers only (plus the stw r29 save scheduled after the
+// zeroing): the inlined group loop's index / count / leader are r31 / r30 /
+// r29 in the original, r30 / r29 / r31 here.
+void Player_804A6F38::fn_8024051C() {
+    if (groupMode(this) != 4 && !field_0x1215) {
+        field_0x43e = 1;
+    }
+}
+
 s32 Player_804A6F38::fn_80240628() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -1616,6 +1627,18 @@ void Player_804A6F38::fn_802490A8() {
     } else if (angle >= 0x3000 && angle < 0x5000) {
         fn_80248004(0, true);
     }
+}
+
+// Leaves state 0x49 for state 0 (requestState) unless carried.
+bool Player_804A6F38::fn_8024AFF8() {
+    if (field_0xce8 == true) {
+        return false;
+    }
+    if (field_0x1240 == 0x49) {
+        field_0x124d = 0;
+        return requestState(this, 0);
+    }
+    return false;
 }
 
 bool Player_804A6F38::fn_8024B24C() {
