@@ -381,6 +381,184 @@ void GameMode_804B0688::fn_803DD93C() {
     }
 }
 
+// State 1: the entry menu. A/Start picks the entry (3 leaves the screen),
+// B returns, up / down move the cursor (entry 2 is skipped).
+void GameMode_804B0688::fn_803DEC44() {
+    if (field_0x88 != 0) {
+        field_0x88++;
+        if (field_0x88 > 10) {
+            field_0x88 = 0;
+        }
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
+        if (field_0x9e == 3) {
+            field_0x9f = field_0x9e;
+            field_0x68 = 5;
+        } else {
+            field_0x9c = 0;
+            for (s32 i = 0; i < 2; i++) {
+                field_0x34[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x34[i]->field_0x20 = 0;
+                field_0x34[i]->field_0x22 = 0;
+                field_0x44[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x44[i]->field_0x20 = 0;
+                field_0x44[i]->field_0x22 = 0;
+            }
+            field_0x30->fn_80402E08(0.0f, 0.0f);
+            field_0x30->field_0x22 = 0;
+            field_0x40->mPane->hide();
+            for (s32 i = 0; i < 7; i++) {
+                field_0x14[i]->mPane->show();
+                field_0x14[i]->fn_80402E08(600.0f, 0.0f);
+                field_0x14[i]->field_0x20 = 0;
+            }
+            for (s32 i = 0; i < 2; i++) {
+                field_0x50[i]->mPane->show();
+                field_0x50[i]->fn_80402E08(0.0f, 150.0f);
+                field_0x50[i]->field_0x22 = 0;
+            }
+            switch (field_0x9e) {
+            case 0:
+                mScreen->search('Wgbco01')->hide();
+                mScreen->search('Wnop01')->hide();
+                mScreen->search('Wnop02')->hide();
+                mScreen->search('Wgbco02')->show();
+                break;
+            case 1:
+                mScreen->search('Wgbco01')->show();
+                mScreen->search('Wnop01')->show();
+                mScreen->search('Wnop02')->show();
+                mScreen->search('Wgbco02')->hide();
+                break;
+            default:
+                mScreen->search('Wgbco01')->show();
+                mScreen->search('Wnop01')->show();
+                mScreen->search('Wnop02')->show();
+                mScreen->search('Wgbco02')->hide();
+                break;
+            }
+            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop01'))->getStringPtr(),
+                        lbl_8047788C[field_0x9e], 0, NULL, NULL);
+            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop02'))->getStringPtr(),
+                        lbl_8047788C[field_0x9e], 0, NULL, NULL);
+            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Texp01'))->getStringPtr(),
+                        lbl_80477880[field_0x9e], 0, NULL, NULL);
+            field_0x44[field_0x9e]->mPane->hide();
+            mState = 2;
+            field_0x9f = field_0x9e;
+            field_0x90 = 1;
+        }
+        lbl_8053AF80->fn_80458880(11, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
+        field_0x68 = 1;
+        lbl_8053AF80->fn_80458880(12, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
+        field_0x9f = field_0x9e;
+        if (field_0x9e < 3) {
+            field_0x9e++;
+            if (field_0x9e == 2) {
+                field_0x9e = 3;
+            }
+        } else {
+            field_0x9e = 0;
+        }
+        field_0x88 = 1;
+        if (field_0x9e == 3) {
+            field_0x8c = 30;
+        } else {
+            field_0x8c = 60;
+        }
+        field_0x90 = 1;
+        lbl_8053AF80->fn_80458880(0x26, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
+        field_0x9f = field_0x9e;
+        if (field_0x9e != 0) {
+            field_0x9e--;
+            if (field_0x9e == 2) {
+                field_0x9e = 1;
+            }
+        } else {
+            field_0x9e = 3;
+        }
+        field_0x88 = 1;
+        if (field_0x9e == 3) {
+            field_0x8c = 30;
+        } else {
+            field_0x8c = 60;
+        }
+        field_0x90 = 1;
+        lbl_8053AF80->fn_80458880(0x26, -1);
+    }
+    field_0x8c++;
+    if (field_0x9e == 3) {
+        if (field_0x8c >= 60) {
+            field_0x8c = 0;
+        }
+    } else {
+        if (field_0x8c >= 120) {
+            field_0x8c = 0;
+        }
+    }
+}
+
+// State 0: slides the entry panes in and fades the screen's panes up, then
+// goes to state 1 once the three slides are done.
+// FIXME: 99.25. Registers only: in the three alpha loops the original keeps
+// the counter in r22 and the tag pointer in r21, ours the other way round.
+void GameMode_804B0688::fn_803DF2B4() {
+    u8 slid = false;
+    u8 titleSlid = false;
+    u8 windowSlid = false;
+    field_0x9c++;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x9c > i * 3) {
+            slid = field_0x34[i]->fn_80402B10(20, 0, 600.0f, 0.0f);
+            field_0x44[i]->fn_80402B10(20, 0, 600.0f, 0.0f);
+            s32 t = field_0x9c - i * 3;
+            if (t > 20) {
+                t = 20;
+            }
+            f32 alpha = (f32)(t * t) / 400.0f;
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 17; j++) {
+                    mScreen->search(lbl_80477688[j])->setAlpha(alpha * field_0xdb[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 20; j++) {
+                    mScreen->search(lbl_80477710[j])->setAlpha(alpha * field_0xec[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0x9c > 15) {
+        titleSlid = field_0x30->fn_80402940(15, 0, 150.0f, 0.0f);
+        s32 t = field_0x9c - 15;
+        if (t > 15) {
+            t = 15;
+        }
+        f32 alpha = (f32)(t * t) / 225.0f;
+        for (s32 j = 0; j < 6; j++) {
+            mScreen->search(lbl_80477658[j])->setAlpha(alpha * field_0xd5[j]);
+        }
+    }
+    if (field_0x9c > 20) {
+        windowSlid = field_0x5c->fn_80402940(25, 0, -200.0f, 0.0f);
+        s32 t = field_0x9c - 20;
+        if (t > 25) {
+            t = 25;
+        }
+        lbl_8053AED8->fn_80440E0C((f32)(t * t) / 625.0f);
+    }
+    if (slid && titleSlid && windowSlid) {
+        field_0x8c = 0;
+        mState = 1;
+        field_0x90 = 1;
+    }
+}
+
 void GameMode_804B0688::fn_803DF624() {
     (lbl_8053ADD0->*lbl_804B0628[mState])();
     lbl_8053AB10->fn_8013B490();
