@@ -608,7 +608,7 @@ _text_addrs = None
 def text_addr_of(name):
     """The .text address (8 upper-case hex digits) of a function: from its
     placeholder name fn_XXXXXXXX, or from symbols.txt once it has been renamed
-    to what the source emits (e.g. __ct__12cls_804AA800Fv)."""
+    to what the source emits (e.g. a mangled constructor name)."""
     global _text_addrs
     if re.fullmatch(r"fn_[0-9A-Fa-f]{8}", name):
         return name[3:].upper()

@@ -14,7 +14,22 @@ proven:
 |---|---|---|---|
 | high | the real name is proven: a game string naming it, an assert / OSReport / `__FILE__` text, an RTTI or symbol/map entry, or a donor's identical function in the same library (JSystem, SDK, MSL) | `RealName` (address dropped) | yes |
 | med | strong evidence of what it is, not of what Nintendo called it: behaviour read from the asm and documented in a shared header, a resource string it loads, the actor ID it is constructed for, a donor function of another game with the same body | `Descriptive_<addr>` | yes |
-| low | a guess, or evidence that the next reader could reasonably dispute | recorded only | no |
+| low | a guess, or evidence that the next reader could reasonably dispute | `Descriptive_<addr>` | yes, by owner decision (below) |
+
+**Low is applied, and stays low.** Owner decision (2026-11-05): "promote the
+low-confidence names too; keep a library of what's low confidence". The grade
+is the evidence's honest grade and is never relabelled to get a row applied;
+whether `tools/rename.py` applies a row is its own column, `apply` (yes|no).
+A low name is the weakest in the tree and the first to revisit. It keeps the
+address like every name below high, so the old name is recoverable and
+`gate.py` still treats it as a placeholder. Where the name itself was the
+problem (`gGameRoot2_8053AB10`: "GameRoot2" echoes the provisional type and
+says nothing about the role), the row is kept and the library says so; no
+replacement is invented without evidence. [`docs/names/LOW_CONFIDENCE.md`](LOW_CONFIDENCE.md)
+lists every low row (new name, address, kind, old name, why it is low, what
+would confirm or replace it); it is generated, so after changing the manifest
+run `python3 tools/names_low.py` (`--check` verifies). `apply` = no remains
+available for a row that must be held back (nothing uses it today).
 
 "Address" is the vtable for classes (else the constructor, as in
 RULES_CARD.md), the function's own address for functions and the object's
@@ -120,7 +135,7 @@ The rename changes text only; the DOL SHA-1 must stay equal.
   keeps every percentage; compare reports by address
   (`tools/names_compare.py BEFORE AFTER`).
 - Docs and progress notes are renamed too, so they stay greppable; this
-  file and names.tsv are not (they cite the old names on purpose).
+  file, LOW_CONFIDENCE.md and names.tsv are not (they cite the old names on purpose).
   `site/` (generated) and `config/` other than symbols.txt are left alone.
 
 ## Applying, re-applying, reverting
@@ -140,13 +155,17 @@ row's old name; symbols.txt places the old or new name at the row's address
 (and never at another one); no row is blocked. Any REFUSED row stops the
 whole run.
 
+`rename.py` takes the manifest's `apply` column (7 columns:
+address, kind, old, new, confidence, apply, evidence) and nothing else decides
+whether a row is applied; `to_current()` follows symbols.txt for those rows.
+
 Verification for an applied sweep: `ninja` (SHA-1 OK), `python3
 tools/gate.py --all-units`, `python3 tools/gen_game.py --check`, `python3
-tools/order_check.py`, and `tools/names_compare.py` against the report
+tools/order_check.py`, and `python3 tools/names_low.py --check`, `tools/names_compare.py` against the report
 built just before the rename (no function may drop).
 
 ## Adding names
 
 Add a row with the evidence (string address and text, donor file and line,
 msg#, actor ID, header and offset), dry-run, apply. Prefer fewer solid names
-over many guesses; a disputed row goes to `low` with the reason.
+over many guesses; a disputed row goes to `low` with the reason (still applied, see above), then regenerate the library.

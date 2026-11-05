@@ -20,7 +20,10 @@ Manifest columns (tab separated, `#` comments allowed):
   kind        class | function | global
   old         the current identifier (dtk placeholder or provisional name)
   new         the new identifier; must end in _<address> unless confidence is high
-  confidence  high | med | low   (low rows are recorded, never applied)
+  confidence  high | med | low   the honest evidence grade; never relabelled to get a row applied
+  apply       yes | no           whether the row is applied; decided per row, not by the grade.
+                                 Low rows are applied (owner decision 2026-11-05) and stay low:
+                                 docs/names/LOW_CONFIDENCE.md lists them (tools/names_low.py)
   evidence    citations (string address + text, donor file + function, msg#, actor ID, ...)
 
 What a row rewrites, in every tracked text file except the excluded ones:
@@ -59,12 +62,11 @@ MANIFEST = ROOT / "docs/names/names.tsv"
 SYMBOLS = "config/G4SE01/symbols.txt"
 SHA1_FILE = ROOT / "config/G4SE01/build.sha1"
 
-APPLY_CONF = {"high", "med"}
 KINDS = {"class", "function", "global"}
 
 # Never rewritten. Paths are relative to the repository root.
 EXCLUDE_PREFIX = ("build/", "orig/", "site/", ".github/", "tools/", "config/")
-EXCLUDE_FILES = {"docs/names/names.tsv", "docs/names/METHOD.md",
+EXCLUDE_FILES = {"docs/names/names.tsv", "docs/names/METHOD.md", "docs/names/LOW_CONFIDENCE.md",
                  "objdiff.json", "progress/claims.json"}
 INCLUDE_EXTRA = {SYMBOLS}  # the one config file that is rewritten
 COMMENT_ONLY = {"configure.py"}  # only its full-line `#` comments are rewritten
@@ -111,13 +113,15 @@ def read_manifest():
         f = line.split("\t")
         if f[0] == "address":
             continue
-        if len(f) != 6:
-            problems.append(f"names.tsv:{n}: expected 6 columns, got {len(f)}")
+        if len(f) != 7:
+            problems.append(f"names.tsv:{n}: expected 7 columns, got {len(f)}")
             continue
-        addr, kind, old, new, conf, ev = f
-        r = {"line": n, "addr": addr, "kind": kind, "old": old, "new": new, "conf": conf, "ev": ev}
+        addr, kind, old, new, conf, ap, ev = f
+        r = {"line": n, "apply": ap == "yes", "addr": addr, "kind": kind, "old": old, "new": new, "conf": conf, "ev": ev}
         if not re.fullmatch(r"[0-9A-F]{8}", addr):
             problems.append(f"names.tsv:{n}: address {addr!r} is not 8 upper-case hex digits")
+        if ap not in ("yes", "no"):
+            problems.append(f"names.tsv:{n}: apply {ap!r} is not yes|no")
         if kind not in KINDS:
             problems.append(f"names.tsv:{n}: kind {kind!r} not one of {sorted(KINDS)}")
         if conf not in ("high", "med", "low"):
@@ -224,7 +228,7 @@ _current = None
 
 def current_renames():
     """[(from, to, kind)] that bring a text to the tree's current names: an
-    applied row old -> new, an unapplied one new -> old (high/med rows whose
+    applied row old -> new, an unapplied one new -> old (rows with apply=yes, whose
     state symbols.txt shows)."""
     global _current
     if _current is None:
@@ -234,7 +238,7 @@ def current_renames():
         syms = parse_symbols((ROOT / SYMBOLS).read_text())
         _current = []
         for r in rows:
-            st = row_state(r, syms) if r["conf"] in APPLY_CONF else None
+            st = row_state(r, syms) if r["apply"] else None
             if st is True:
                 _current.append((r["old"], r["new"], r["kind"]))
             elif st is False:
@@ -301,12 +305,12 @@ def main(argv):
     syms = parse_symbols(texts[SYMBOLS])
 
     forward = not args.revert
-    todo, report = [], {"apply": 0, "done": 0, "blocked": 0, "low": 0, "missing": 0, "refused": 0}
+    todo, report = [], {"apply": 0, "done": 0, "blocked": 0, "not-applied": 0, "missing": 0, "refused": 0}
     for r in rows:
         src, dst = (r["old"], r["new"]) if forward else (r["new"], r["old"])
         tag = f"{r['old']} -> {r['new']}"
-        if r["conf"] not in APPLY_CONF:
-            report["low"] += 1
+        if not r["apply"]:
+            report["not-applied"] += 1
             continue
         # Blocked: the old name is spelled out where the rename must not go.
         hits = [f for f, t in btexts.items() if count(t, r["old"], r["kind"])]
