@@ -8,6 +8,7 @@
 #include "game/GameView.h"
 #include "game/tu_8030AE84.h"
 #include "game/ViewLayer.h"
+#include "game/BgRewrite.h"
 #include "game/Camera.h"
 #include "game/Map.h"
 
@@ -1087,6 +1088,92 @@ void Player_804A6F38::fn_80293FE4() {
         fn_80268B3C();
     }
     stepTransitionAnim();
+}
+
+void Player_804A6F38::fn_80294374() {
+    field_0x398.set(mPos);
+    field_0x398.z = 0.0f;
+    field_0x3a4.set(mPos);
+    field_0x3a4.z = 0.0f;
+    field_0x124d = 1;
+    if (field_0xcf4 == 0x15) {
+        if (viewLayerFlag(field_0x3b4)) {
+            if (field_0x3b4 < 8) {
+                field_0x398 += JGeometry::TVec3f(0.0f, -1.25f, 0.0f);
+                mPos.y -= 1.25f;
+                field_0x3dc = 2;
+                field_0x3e8 = 2;
+            } else {
+                field_0x398 += JGeometry::TVec3f(0.0f, 1.25f, 0.0f);
+                mPos.y += 1.25f;
+                field_0x3dc = 3;
+                field_0x3e8 = 3;
+            }
+        } else if (field_0x3b4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+        } else if (field_0xce0 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+        } else {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+        }
+    } else if (field_0xcf4 == 0x23) {
+        if (viewLayerFlag(field_0x3b4)) {
+            if (field_0x3b4 < 8) {
+                field_0x398 += JGeometry::TVec3f(0.0f, 1.25f, 0.0f);
+                mPos.y += 1.25f;
+                field_0x3dc = 3;
+                field_0x3e8 = 3;
+            } else {
+                field_0x398 += JGeometry::TVec3f(0.0f, -1.25f, 0.0f);
+                mPos.y -= 1.25f;
+                field_0x3dc = 2;
+                field_0x3e8 = 2;
+            }
+        } else if (field_0x3b4 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+        } else if (field_0xce0 < 8) {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+        } else {
+            field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+            field_0x3dc = 3;
+            field_0x3e8 = 3;
+        }
+    } else if (field_0xcf4 == 0 || field_0xcf4 == 3) {
+        field_0x3a4 += JGeometry::TVec3f(0.0f, -20.0f, 0.0f);
+        field_0x3dc = 3;
+        field_0x3e8 = 3;
+    } else if (field_0xcf4 == 0x17) {
+        field_0x3a4 += JGeometry::TVec3f(20.0f, 0.0f, 0.0f);
+        field_0x3dc = 0;
+        field_0x3e8 = 0;
+    } else if (field_0xcf4 == 0x18) {
+        field_0x3a4 += JGeometry::TVec3f(-20.0f, 0.0f, 0.0f);
+        field_0x3dc = 1;
+        field_0x3e8 = 1;
+    } else {
+        field_0x3a4 += JGeometry::TVec3f(0.0f, 20.0f, 0.0f);
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+    }
+    field_0x458 = 0;
+    if (field_0xcf4 == 1) {
+        lbl_8053AC98->fn_8029E508(&mPos, field_0x4, field_0x3b4);
+    }
+    if (field_0xcf4 == 3) {
+        field_0xca0 = 0;
+    } else {
+        field_0xca0 = 0xFF;
+    }
 }
 
 void Player_804A6F38::fn_802948C0() {
