@@ -28,6 +28,8 @@ static inline void drawSobOnTv(s32 layer, const char* name, const JGeometry::TVe
     }
 }
 
+// The scale part of m (its translation column is the caller's). The draw
+// computes the three scales z first, as arguments of an inline call.
 static inline void setScaleMtx(Mtx m, f32 x, f32 y, f32 z) {
     m[0][0] = x;
     m[0][1] = 0.0f;
@@ -40,10 +42,15 @@ static inline void setScaleMtx(Mtx m, f32 x, f32 y, f32 z) {
     m[2][2] = z;
 }
 
+// Frame `frame` on the GBA layers (fn_803075AC: serial, layer, pos, id). The
+// draw builds the position as the call's argument, with no named copy.
 static inline void drawGba(s32 serial, s32 layer, const JGeometry::TVec3f& pos, s32 frame) {
     fn_803075AC(serial, layer, &pos, frame, 0, 1, -1, false, 0, 0);
 }
 
+// FIXME: 99.74. Stack slots and registers only: the temporaries of the
+// position sums sit in other slots (e.g. 0x30 vs 0x3C), the view offset add
+// and the marker frame's index * 3 use other registers.
 // The player's draw (fn_8023F2BC, every player each frame): the shadow, the
 // GBA-layer marker above the player, the body sprite (frame field_0x3c4 of
 // "player_sob.bin") with its tint and scale, the height shadow on the GBA
@@ -234,6 +241,8 @@ void Player_804A6F38::fn_80264998() {
     if (frame == 0x121) {
         return;
     }
+    // The body is drawn at whole units. The original keeps the sum in the
+    // temporary itself (no named copy), as a reference bound to it does.
     const JGeometry::TVec3f& bodyPos = mPos + field_0x2b8;
     JGeometry::TVec3f drawPos(bodyPos.x, bodyPos.y, bodyPos.z);
     drawPos.set((s32)drawPos.x, (s32)drawPos.y, (s32)drawPos.z);
@@ -252,7 +261,7 @@ void Player_804A6F38::fn_80264998() {
         if (layer < 8) {
             drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3c8, &floorParams);
         } else {
-            fn_803075AC(-10000 - field_0x4, layer, &floorPos, field_0x3c8, 0, 1, -1, false, 0, 0);
+            drawGba(-10000 - field_0x4, layer, floorPos, field_0x3c8);
         }
     } else if (mPos.z <= 0.0f && fn_80270A8C() && (tile == 0x39 || tile == 0xD || tile == 0x3B)) {
         if (field_0x3c4 >= 0xC2 && field_0x3c4 < 0xC5) {
@@ -260,14 +269,14 @@ void Player_804A6F38::fn_80264998() {
             if (layer < 8) {
                 drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca + 3, &floorParams);
             } else {
-                fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca + 3, 0, 1, -1, false, 0, 0);
+                drawGba(-20000 - field_0x4, layer, floorPos, field_0x3ca + 3);
             }
         } else {
             s32 layer = field_0x3b4;
             if (layer < 8) {
                 drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca, &floorParams);
             } else {
-                fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca, 0, 1, -1, false, 0, 0);
+                drawGba(-20000 - field_0x4, layer, floorPos, field_0x3ca);
             }
         }
     } else if (mPos.z <= 0.0f) {
@@ -284,7 +293,7 @@ void Player_804A6F38::fn_80264998() {
         if (layer < 8) {
             drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca, &floorParams);
         } else {
-            fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca, 0, 1, -1, false, 0, 0);
+            drawGba(-20000 - field_0x4, layer, floorPos, field_0x3ca);
         }
     }
 }
@@ -390,6 +399,381 @@ static inline void setFacingFrame(Player_804A6F38* player, u16 right, u16 left, 
         player->field_0x3c4 = down;
     } else {
         player->field_0x3c4 = up;
+    }
+}
+
+// The body frame field_0x3c4 for this frame (fn_80285E58, every frame;
+// the previous one is kept in field_0x3c6): fixed frames for the overrides
+// (0xCFE; field_0x456 / fn_802413E8 take field_0x450 and the alpha
+// field_0xca2), else one per state (field_0x1240), mostly by facing plus a
+// walk / action counter (field_0x3f9, field_0x3fb, field_0x3fd).
+void Player_804A6F38::fn_80265E88() {
+    field_0x3c6 = field_0x3c4;
+    if (field_0xcfe) {
+        if (mPos.z > 0.0f) {
+            field_0x3c4 = 0xC2;
+        } else {
+            field_0x3c4 = 0xC3;
+        }
+        return;
+    }
+    if (field_0x456 == 1) {
+        field_0x3c4 = field_0x450;
+        field_0xca0 = field_0xca2;
+        field_0x456 = 0;
+        return;
+    }
+    if (fn_802413E8()) {
+        field_0x3c4 = field_0x450;
+        field_0xca0 = field_0xca2;
+        return;
+    }
+    if (!fn_80241230() && field_0x488 == 0 && (field_0x464 & 2) == 2) {
+        field_0x3c4 = 0x121;
+        return;
+    }
+    switch (field_0x1240) {
+    case 0x00:
+        fn_80268194();
+        break;
+    case 0x01:
+        field_0x3c4 = 0x31D;
+        break;
+    case 0x02:
+    case 0x03:
+    case 0x38:
+        setFacingFrame(this, 0x0, 0x8, 0x10, 0x18);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x04:
+        fn_80267ECC();
+        break;
+    case 0x05:
+    case 0x06:
+        setFacingFrame(this, 0x1C6, 0x1C9, 0x1CC, 0x1CF);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x07:
+        setFacingFrame(this, 0x262, 0x268, 0x26E, 0x274);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x08:
+        fn_80267E18();
+        break;
+    case 0x09:
+    case 0x0A:
+        fn_80267D30();
+        break;
+    case 0x0B:
+        fn_80267C6C();
+        break;
+    case 0x0C:
+        if (field_0x3fd == 0) {
+            field_0x3c4 = 0x3E;
+        } else if (field_0x3fd == 1) {
+            field_0x3c4 = 0x3D;
+        } else if (field_0x3fd == 2) {
+            field_0x3c4 = 0x3F;
+        } else {
+            field_0x3c4 = 0x3C;
+        }
+        break;
+    case 0x11:
+        setFacingFrame(this, 0x2B0, 0x2B4, 0x2B8, 0x2BC);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x12:
+        setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x13:
+        setFacingFrame(this, 0x36D, 0x36F, 0x371, 0x373);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x14:
+        fn_80267BA8();
+        break;
+    case 0x15:
+        setFacingFrame(this, 0x322, 0x327, 0x32C, 0x331);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x16:
+    case 0x17:
+        setFacingFrame(this, 0x322, 0x327, 0x32C, 0x331);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x18:
+        setFacingFrame(this, 0x322, 0x327, 0x32C, 0x331);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x19:
+        if (field_0x121c) {
+            field_0x3c4 = 0x31D;
+        } else {
+            field_0x3c4 = field_0x3fd + 0x296;
+        }
+        break;
+    case 0x0D:
+        setFacingFrame(this, 0x29A, 0x29E, 0x2A2, 0x2A9);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x0E:
+        setFacingFrame(this, 0x29A, 0x29E, 0x2A2, 0x2A9);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x1A:
+        setFacingFrame(this, 0x2D6, 0x2DA, 0x2DE, 0x2E2);
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x1B:
+        if (!field_0x43f) {
+            if (fn_8025F684()) {
+                setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+                field_0x3c4 += field_0x3f9;
+            } else if (field_0x3fd == 0) {
+                setFacingFrame(this, 0x0, 0x8, 0x10, 0x18);
+                field_0x3c4 += field_0x3f9;
+            } else if (field_0x3fd == 1) {
+                fn_802671C8();
+            } else if (field_0x3fd == 2) {
+                fn_802670CC();
+            } else {
+                setFacingFrame(this, 0x33A, 0x33D, 0x340, 0x343);
+                field_0x3c4 += field_0x3f9;
+            }
+        }
+        break;
+    case 0x1C:
+    case 0x1D:
+        if (field_0xceb == 1) {
+            if (viewLayerFlag(field_0x3b4)) {
+                fn_802670CC();
+            } else {
+                fn_802671C8();
+            }
+        } else if (field_0xcec == 1) {
+            setFacingFrame(this, 0x33A, 0x33D, 0x340, 0x343);
+            field_0x3c4 += field_0x3f9;
+        } else if (fn_8025F684()) {
+            setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+            field_0x3c4 += field_0x3f9;
+        } else {
+            setFacingFrame(this, 0x0, 0x8, 0x10, 0x18);
+            field_0x3c4 += field_0x3f9;
+        }
+        break;
+    case 0x1E:
+        field_0x3c4 = field_0x3fd + 0xB7;
+        break;
+    case 0x1F:
+        fn_80268194();
+        break;
+    case 0x20:
+    case 0x21:
+        if (fn_8025F684()) {
+            setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+            field_0x3c4 += field_0x3f9;
+        } else if (field_0x3fd == 1) {
+            field_0x3c4 = 0x31C;
+        } else if (field_0x3b4 < 8) {
+            field_0x3c4 = 0x121;
+        } else {
+            fn_80268194();
+        }
+        break;
+    case 0x22:
+    case 0x23:
+        if (fn_8025F684()) {
+            setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+            field_0x3c4 += field_0x3f9;
+        } else {
+            fn_80268194();
+        }
+        break;
+    case 0x26:
+        if (field_0x3f9 >= 0xB) {
+            field_0x3c4 = 0x121;
+        } else {
+            field_0x3c4 = 0x3C2;
+            field_0x3c4 += field_0x3f9;
+        }
+        break;
+    case 0x27:
+        fn_802670CC();
+        break;
+    case 0x28:
+        fn_802670CC();
+        break;
+    case 0x29:
+        fn_802671C8();
+        break;
+    case 0x24:
+        if (fn_8025F684()) {
+            setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+            field_0x3c4 += field_0x3f9;
+        } else if (field_0x3fd == 1) {
+            field_0x3c4 = 0x31C;
+        } else {
+            field_0x3c4 = 0x121;
+        }
+        break;
+    case 0x25:
+        if (fn_8025F684()) {
+            setFacingFrame(this, 0x2C0, 0x2C4, 0x2C8, 0x2CF);
+            field_0x3c4 += field_0x3f9;
+        } else {
+            fn_80268194();
+        }
+        break;
+    case 0x2A:
+    case 0x2B:
+        fn_80268194();
+        break;
+    case 0x2C:
+    case 0x2D:
+        field_0x3c4 = 0xB0;
+        break;
+    case 0x2E:
+    case 0x2F:
+        field_0x3c4 = 0xB0;
+        break;
+    case 0x30:
+        field_0x3c4 = 0x22C;
+        field_0x3c4 += field_0x3f9;
+        break;
+    case 0x31:
+        if (field_0x3b4 < 8) {
+            field_0x3c4 = 0x358;
+            field_0x3c4 += field_0x3f9;
+        } else {
+            field_0x3c4 = 0x3E;
+        }
+        break;
+    case 0x32:
+        fn_80267B18();
+        break;
+    case 0x0F:
+    case 0x10:
+        setFacingFrame(this, 0xA7, 0xAB, 0xAF, 0xB3);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x33:
+        if (field_0xd2d == 1 && field_0xd30 >= 0x3C) {
+            field_0x3c4 = 0x3E;
+        } else {
+            field_0x3c4 = field_0x3fd + 0xBD;
+        }
+        break;
+    case 0x34:
+        if (field_0xd30 >= 0x1A4) {
+            field_0x3c4 = 0x3E;
+        } else {
+            field_0x3c4 = 0xC3;
+        }
+        break;
+    case 0x35:
+        setFacingFrame(this, 0x28A, 0x28D, 0x290, 0x293);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x36:
+        fn_80267ECC();
+        break;
+    case 0x39:
+        fn_80267A54();
+        break;
+    case 0x3A:
+        fn_80267990();
+        break;
+    case 0x3B:
+        fn_802678CC();
+        break;
+    case 0x3C:
+        fn_80267818();
+        break;
+    case 0x3D:
+        setFacingFrame(this, 0x15B, 0x15F, 0x163, 0x167);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x3E:
+        fn_80267598();
+        break;
+    case 0x3F:
+        fn_80267470();
+        break;
+    case 0x40:
+        fn_80267384();
+        break;
+    case 0x41:
+        setFacingFrame(this, 0xA7, 0xAB, 0xAF, 0xB3);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x42:
+        fn_80268194();
+        break;
+    case 0x43:
+        setFacingFrame(this, 0xA7, 0xAB, 0xAF, 0xB3);
+        field_0x3c4 += field_0x3fd;
+        break;
+    case 0x44:
+    case 0x45:
+        fn_80267748();
+        break;
+    case 0x46:
+        fn_80267684();
+        break;
+    case 0x47:
+        setFacingFrame(this, 0x1A3, 0x1AA, 0x1B1, 0x1B8);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x48:
+        setFacingFrame(this, 0x362, 0x364, 0x366, 0x368);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x49:
+        if (field_0x1178 == 0) {
+            field_0x3c4 = field_0x3fd + 0x35F;
+        } else if (field_0x1178 == 1) {
+            field_0x3c4 = field_0x3fd + 0x3D0;
+        } else if (field_0x1178 == 2) {
+            field_0x3c4 = field_0x3fd + 0x296;
+        }
+        break;
+    case 0x37:
+        setFacingFrame(this, 0x111, 0x115, 0x119, 0x11D);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x4A:
+        fn_802671C8();
+        break;
+    case 0x4B:
+        fn_802670CC();
+        break;
+    case 0x4C:
+        field_0x3c4 = 0x3D0;
+        break;
+    case 0x4D:
+        if (field_0x3fc) {
+            field_0x3c4 = 0x121;
+        } else if (fn_8025F684()) {
+            setFacingFrame(this, 0x36D, 0x36F, 0x371, 0x373);
+            field_0x3c4 += field_0x3f9;
+        } else {
+            field_0x3c4 = 0xB0;
+        }
+        break;
+    case 0x4E:
+        field_0x3c4 = 0xB0;
+        break;
+    case 0x4F:
+        setFacingFrame(this, 0x302, 0x308, 0x30E, 0x314);
+        field_0x3c4 += field_0x3fb;
+        break;
+    case 0x50:
+        fn_80267018();
+        break;
+    case 0x51:
+        setFacingFrame(this, 0x31F, 0x31E, 0x321, 0x320);
+        break;
     }
 }
 
@@ -556,6 +940,7 @@ void Player_804A6F38::fn_80267C6C() {
 }
 
 // The spin: frames 0x8F-0x96 from the facing's own one, by field_0x3fb.
+// The frame is computed as a byte (clrlwi 24 before each sth).
 void Player_804A6F38::fn_80267D30() {
     if (field_0x3dc == 0) {
         if (field_0x3fb < 8) {
@@ -593,6 +978,9 @@ void Player_804A6F38::fn_80267E18() {
     field_0x3c4 += field_0x3f9;
 }
 
+// FIXME: 96.69. Case 4 of the switch gets its own copy of the closing
+// `field_0x3c4 += field_0x3fb` in the original (cases 0-3 and the default
+// share the other); ours shares one copy for all.
 void Player_804A6F38::fn_80267ECC() {
     if (field_0x3fb >= 8) {
         fn_80268194();
