@@ -2122,6 +2122,18 @@ void Player_804A6F38::fn_802771BC() {
     field_0x458 = 0;
 }
 
+void Player_804A6F38::fn_802771C8() {
+    field_0xd5c = 0;
+    if (field_0x136c != NULL) {
+        field_0x136c->becomeInvalidEmitter();
+        field_0x136c = NULL;
+    }
+    if (field_0x1370 != NULL) {
+        field_0x1370->becomeInvalidEmitter();
+        field_0x1370 = NULL;
+    }
+}
+
 void Player_804A6F38::fn_80277580() {
     if (field_0x1248 != 4) {
         field_0x45c = 0;
@@ -2132,6 +2144,17 @@ void Player_804A6F38::fn_80277580() {
         field_0x3fa = field_0x439;
     }
     field_0x458 = 0;
+}
+
+void Player_804A6F38::fn_802775C8() {
+    if (field_0x137c != NULL) {
+        field_0x137c->becomeInvalidEmitter();
+        field_0x137c = NULL;
+    }
+    if (field_0x1380 != NULL) {
+        field_0x1380->becomeInvalidEmitter();
+        field_0x1380 = NULL;
+    }
 }
 
 void Player_804A6F38::fn_8027761C() {
@@ -2241,6 +2264,21 @@ void Player_804A6F38::fn_8027966C() {
 void Player_804A6F38::fn_80279F94() {
     deleteEmitter(&field_0x1308);
     field_0x464 = 60;
+}
+
+void Player_804A6F38::fn_8027A178() {
+    if (field_0x1374 != NULL) {
+        field_0x1374->becomeInvalidEmitter();
+        field_0x1374 = NULL;
+    }
+    if (field_0x1378 != NULL) {
+        field_0x1378->becomeInvalidEmitter();
+        field_0x1378 = NULL;
+    }
+    field_0x11c0 = 0;
+    field_0xbb9 = 0;
+    field_0xbd4 = 0;
+    field_0xbba = 0;
 }
 
 void Player_804A6F38::fn_8027AA10() {
