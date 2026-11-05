@@ -191,7 +191,10 @@ class cls_804A1318 : public ActorBase_804A5770 {
 public:
     cls_804A1318() {}
     /* 0x08 */ virtual ~cls_804A1318();
-    /* 0x230 */ u8 field_0x230[0xB0];
+    /* 0x24 */ virtual void vfunc_0x24(); // fn_8017C01C
+    /* 0x230 */ u8 field_0x230[0x8A];
+    /* 0x2BA */ s8 field_0x2ba;
+    /* 0x2BB */ u8 field_0x2bb[0x25];
 }; // Size: 0x2E0
 
 // Spawned for 'BPH2'.
