@@ -285,13 +285,17 @@ public:
     // counts the players 0..field_0x4.
     /* 0x0004 */ s32 field_0x4;
     /* 0x0008 */ JGeometry::TVec3f mPos; // fn_8023E724 (193 units)
-    /* 0x0014 */ u8 field_0x14[0x2C - 0x14];
+    // Address returned by fn_8023E578.
+    /* 0x0014 */ JGeometry::TVec3f field_0x14;
+    /* 0x0020 */ u8 field_0x20[0x2C - 0x20];
     // fn_802685D4's step is mPos - field_0x2c; it copies mPos here at the end.
     /* 0x002C */ JGeometry::TVec3f field_0x2c;
     /* 0x0038 */ u8 field_0x38[0x2B8 - 0x38];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
-    /* 0x02C4 */ u8 field_0x2c4[0x324 - 0x2C4];
+    // Address returned by fn_8023E604.
+    /* 0x02C4 */ JGeometry::TVec3f field_0x2c4;
+    /* 0x02D0 */ u8 field_0x2d0[0x324 - 0x2D0];
     // The x and y that fn_8026E5F8 stores (its z is left alone).
     /* 0x0324 */ JGeometry::TVec2f field_0x324;
     /* 0x032C */ u8 field_0x32c[0x344 - 0x32C];
@@ -337,7 +341,10 @@ public:
     /* 0x042E */ u8 field_0x42e[0x436 - 0x42E];
     // Returned by fn_80240860 (lbz; blr).
     /* 0x0436 */ bool field_0x436;
-    /* 0x0437 */ u8 field_0x437[0x454 - 0x437];
+    /* 0x0437 */ u8 field_0x437[0x43F - 0x437];
+    // Returned by fn_80233D20 (lbz; blr).
+    /* 0x043F */ bool field_0x43f;
+    /* 0x0440 */ u8 field_0x440[0x454 - 0x440];
     // Returned by fn_802413E8 (lbz; blr), read through fn_80230188.
     /* 0x0454 */ bool field_0x454;
     /* 0x0455 */ u8 field_0x455[0x458 - 0x455];
@@ -348,7 +355,13 @@ public:
     /* 0x045A */ u8 field_0x45A[0x460 - 0x45A];
     // Returned by fn_802412CC (lbz; blr), read through fn_80235448.
     /* 0x0460 */ bool field_0x460;
-    /* 0x0461 */ u8 field_0x461[0xB9B - 0x461];
+    /* 0x0461 */ u8 field_0x461[0xB18 - 0x461];
+    // Returned by fn_8023B22C (-1 without a player).
+    /* 0x0B18 */ s32 field_0xb18;
+    /* 0x0B1C */ u8 field_0xb1c[0xB78 - 0xB1C];
+    // Returned by fn_8023B400 (lbz; blr).
+    /* 0x0B78 */ bool field_0xb78;
+    /* 0x0B79 */ u8 field_0xb79[0xB9B - 0xB79];
     // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
     /* 0x0B9B */ bool field_0xb9b;
     /* 0x0B9C */ u8 field_0xb9c[0xBDC - 0xB9C];
@@ -379,7 +392,13 @@ public:
     /* 0x0CAD */ u8 field_0xcad[0xCB0 - 0xCAD];
     // Read by fn_8023E32C (5 units); copied by fn_8028FBA0 and passed to fn_80290070.
     /* 0x0CB0 */ JGeometry::TVec3f field_0xcb0;
-    /* 0x0CBC */ u8 field_0xcbc[0xCE4 - 0xCBC];
+    /* 0x0CBC */ u8 field_0xcbc[0xCC8 - 0xCBC];
+    // Address returned by fn_8023E2A0.
+    /* 0x0CC8 */ JGeometry::TVec3f field_0xcc8;
+    // Address returned by fn_8023E214.
+    /* 0x0CD4 */ JGeometry::TVec3f field_0xcd4;
+    // Returned by fn_8023E190.
+    /* 0x0CE0 */ s32 field_0xce0;
     // Compared with 8 (lwz; cmpwi) by fn_80292454 before it calls fn_8024EFA0.
     /* 0x0CE4 */ s32 field_0xce4;
     // A bool: fn_8024BBB0 returns it as loaded (lbz; blr).
@@ -995,14 +1014,11 @@ bool fn_80230534(bool flag);
 // No arguments; returns a bool (clrlwi 24 by the caller); false without a
 // manager.
 bool fn_8023077C();
-s32 fn_80230B70(s32 player);             // 1 unit. -> field_0x3e8; else 2
 void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
-s32 fn_80230CFC(s32 player);             // 37 units. -> field_0x3dc; else 2
 // Owner: tu_8022AD64 (0x8022FD8C, defined there). The player index for actor `serial` (act_talking_sign
 // stores it and passes it to fn_8023E724); negative when none.
 s32 fn_8022FD8C(s32 serial);
 void fn_80231368();                      // 4 units.
-bool fn_80233D20(s32 player);            // 1 unit. -> byte 0x43F; else false
 // 1 unit. -> Player_804A6F38::fn_80240868 (word 0x4); 0 without a manager. An inactive
 // player falls off the end with r3 still the index (the source has no final
 // return); the caller uses the result (mr r26, r3 at 0x80306B44).
@@ -1018,15 +1034,6 @@ JGeometry::TVec3f* fn_8023A478(s32 player);
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin);
 // Called by act_fairy_invincible.cpp's update() on the tracked player in state 1; the owning unit is not written yet, result unused.
 void fn_8023C830(s32 player);
-s32 fn_8023B22C(s32 player);             // 2 units. -> word 0xB18; else -1
-bool fn_8023B400(s32 player);            // 1 unit. -> byte 0xB78; else false
-s32 fn_8023E10C(s32 player);             // 5 units. -> word 0xCE4; else 0
-s32 fn_8023E190(s32 player);             // 1 unit. -> word 0xCE0; else 0
-JGeometry::TVec3f* fn_8023E214(s32 player); // 3 units. -> 0xCD4; else &lbl_804CF460
-JGeometry::TVec3f* fn_8023E2A0(s32 player); // 1 unit. -> 0xCC8; else &lbl_804CF460
-JGeometry::TVec3f* fn_8023E32C(s32 player); // 5 units. -> 0xCB0; else &lbl_804CF460
-JGeometry::TVec3f* fn_8023E578(s32 player); // 3 units. -> 0x14; else &lbl_804CF460
-JGeometry::TVec3f* fn_8023E604(s32 player); // 3 units. -> 0x2C4; else &lbl_804CF460
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
 // Loops over the players and calls fn_80272DCC, which copies the 4 box floats
@@ -1115,5 +1122,17 @@ void fn_80239914(const JGeometry::TBox2f* box, s32 layer, s32 serial);
 s32 fn_8023AA18(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 s32 fn_8023AC74(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 s32 fn_8023BA68(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag);
+s32 fn_80230B70(s32 player);
+s32 fn_80230CFC(s32 player);
+bool fn_80233D20(s32 player);
+s32 fn_8023B22C(s32 player);
+bool fn_8023B400(s32 player);
+s32 fn_8023E10C(s32 player);
+s32 fn_8023E190(s32 player);
+JGeometry::TVec3f* fn_8023E214(s32 player);
+JGeometry::TVec3f* fn_8023E2A0(s32 player);
+JGeometry::TVec3f* fn_8023E32C(s32 player);
+JGeometry::TVec3f* fn_8023E578(s32 player);
+JGeometry::TVec3f* fn_8023E604(s32 player);
 
 #endif
