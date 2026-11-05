@@ -5,6 +5,7 @@
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/PlayerBit.h"
+#include "game/ActorId.h"
 
 // File-scope tables in address order (.rodata). Positions are offsets from mPos per
 // facing (0x3DC: right, left, down, up) and animation pose (0x3FD).
@@ -171,6 +172,24 @@ static inline bool canLift_8025F2CC(Player_804A6F38& p) {
         return false;
     }
     if (p.field_0xd88 < 0 && p.fn_80240808() && p.fn_802486A0() == 5) {
+        return false;
+    }
+    return true;
+}
+
+// fn_8025FCC8's body: whether the requested state makes the player let go of what it
+// holds (true unless the state is one of the lift / carry / throw states 0x11-0x18,
+// 0x1B-0x1D, a screen change 0x20-0x25 while holding something other than a player,
+// 0x1E / 0x1F holding a small key, or 0x4C / 0x4D while holding an actor).
+// fn_8025F698, before fn_8025FCC8, has it inlined; fn_8025FCC8 is its out-of-line copy.
+static inline bool letsGo_8025FCC8(const Player_804A6F38& p) {
+    s32 state = p.field_0x1244;
+    if (state == 0x11 || state == 0x12 || state == 0x13 || state == 0x14 || state == 0x15 || state == 0x16
+        || state == 0x18 || state == 0x1B || state == 0x1C || state == 0x1D
+        || (isField0xd64One(p) && !holdsPlayer(p)
+            && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
+        || (p.field_0xd6c == ACTOR_KEY0 && (state == 0x1E || state == 0x1F))
+        || (p.field_0xd64 == 1 && !holdsPlayer(p) && (state == 0x4C || state == 0x4D))) {
         return false;
     }
     return true;
@@ -416,24 +435,100 @@ bool Player_804A6F38::fn_8025F684() {
     return isLifting_8025F684(*this);
 }
 
+// FIXME: 95.94. The six missing instructions are the inlined fn_8025FCC8's (see there: state
+// 0x11 tested on its own, the field_0xd64 == 1 byte recomputed in each inlined
+// fn_8025F590); besides, the facing table's three loads for `step` are scheduled z first.
+// Let go of what the player holds (from the commit of every state change, with
+// checkState, and from fn_8026000C): a held player is thrown 16 a step along the facing
+// (snapped to the tile centre across when two of three steps are walls, else at 3.3
+// along the facing; nothing when the state is 0x1E / 0x32 or the player has no life),
+// an actor gets a speed along the facing by kind (crystal ball / Bombchu 2.5, grass 4,
+// dead 6, else 4); then the thrown player's group partners holding no living actor
+// leave their states too.
+void Player_804A6F38::fn_8025F698(bool checkState) {
+    if (field_0xd64 != 0 && (!checkState || letsGo_8025FCC8(*this))) {
+        bool held = true;
+        if (field_0xd6c == 'NULL') {
+            held = false;
+        }
+        if (holdsPlayer(*this)) {
+            JGeometry::TVec3f speed;
+            JGeometry::TVec3f step;
+            const Vec& dir = lbl_8046B8FC[field_0x3dc];
+            step.set(dir.x, dir.y, dir.z);
+            step.scale(16.0f);
+            if (field_0x1244 == 0x1E || field_0x1244 == 0x32 || fn_8024189C() <= 0) {
+                speed.set(0.0f, 0.0f, 0.0f);
+            } else {
+                JGeometry::TVec3f pos(*fn_8023E724(field_0xd70));
+                int walls = 0;
+                for (int i = 0; i < 3; i++) {
+                    pos += step;
+                    u16 tile = fn_8022461C(&pos, fn_8023DE58(field_0xd70));
+                    if (tile == 3 || tile == 0xE || tile == 0x3A) {
+                        walls++;
+                    }
+                }
+                const Vec& unit = lbl_8046B8FC[field_0x3dc];
+                speed.set(unit.x, unit.y, unit.z);
+                if (walls >= 2) {
+                    if (field_0x3dc == 0 || field_0x3dc == 1) {
+                        pos.x = (s32)pos.x / 16 * 16 + 8;
+                    } else {
+                        pos.y = (s32)pos.y / 16 * 16 + 8;
+                    }
+                    JGeometry::TVec3f diff = pos - *fn_8023E724(field_0xd70);
+                    speed.set(diff);
+                    speed.scale(1.0f / 14.0f);
+                } else {
+                    speed.scale(3.3f);
+                }
+            }
+            fn_80230D80(field_0xd70, &speed);
+            field_0xd70 = -1;
+            fn_8024F0E8(0x20014);
+        } else {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xd68);
+            if (actor != 0) {
+                JGeometry::TVec3f speed;
+                const Vec& dir = lbl_8046B92C[field_0x3dc];
+                speed.set(dir.x, dir.y, dir.z);
+                if (actor->mActorId == ACTOR_CRTL || actor->mActorId == ACTOR_BMTY) {
+                    speed.scale(2.5f);
+                } else if (actor->mActorId == ACTOR_GRAS) {
+                    speed.scale(4.0f);
+                } else if (actor->field_0x1a4 == 0) {
+                    speed.scale(6.0f);
+                } else {
+                    speed.scale(4.0f);
+                }
+                actor->fn_801F3708(&speed);
+                fn_8024F0E8(0x20014);
+            }
+            field_0xd68 = -1;
+        }
+        field_0xd64 = 0;
+        field_0xd6c = 'NULL';
+        field_0xd74 = 3;
+        if (held == true && fn_802486A0() != 4 && isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
+            for (int i = 0; i < 4; i++) {
+                if (fn_8022E438(field_0x4, i) && i != field_0x4) {
+                    s32 serial = fn_8023EF50(i);
+                    ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+                    if (other != 0 && other->field_0x1a4 <= 0) {
+                        fn_80230C6C(i);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // FIXME: 87.02. Two differences: the original tests state 0x11 on its own before the folded
 // range 0x12-0x16 (ours folds 0x11-0x16), and it recomputes the field_0xd64 == 1 byte
 // (subfic / cntlzw / extrwi) inside each inlined fn_8025F590 where ours reuses it.
-// Whether the requested state lets the player keep what it holds: false for the
-// lift / carry / throw states 0x11-0x18, 0x1B-0x1D, the screen changes 0x20-0x25
-// while holding something other than a player, 0x1E / 0x1F holding 'KEY0', and
-// 0x4C / 0x4D while holding an actor.
 bool Player_804A6F38::fn_8025FCC8() {
-    s32 state = field_0x1244;
-    if (state == 0x11 || state == 0x12 || state == 0x13 || state == 0x14 || state == 0x15 || state == 0x16
-        || state == 0x18 || state == 0x1B || state == 0x1C || state == 0x1D
-        || (isField0xd64One(*this) && !fn_8025F590()
-            && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
-        || (field_0xd6c == 'KEY0' && (state == 0x1E || state == 0x1F))
-        || (field_0xd64 == 1 && !fn_8025F590() && (state == 0x4C || state == 0x4D))) {
-        return false;
-    }
-    return true;
+    return letsGo_8025FCC8(*this);
 }
 
 // FIXME: 99.10. Registers only: the float temporaries of the view-corner offset.
@@ -501,7 +596,7 @@ bool Player_804A6F38::fn_802600A0(s32 player) {
         && (fn_8023DE58(player) != 8 || field_0x3b4 >= 8)) {
         field_0xd60 = fn_8022F340(player);
         field_0x11ec = fn_8022F340(player);
-        fn_801F856C()->fn_801F9484('TSNO', field_0x3b4, &mPos, (player & 3) | (field_0x4 << 2), -1, player);
+        fn_801F856C()->fn_801F9484(ACTOR_TSNO, field_0x3b4, &mPos, (player & 3) | (field_0x4 << 2), -1, player);
         if (player > field_0x4) {
             fn_80233F78(fn_80240644());
         }
@@ -621,7 +716,7 @@ void Player_804A6F38::fn_802636D4() {
             u16 thrower = field_0x4;
             s32 thrown = field_0xd70;
             pos = fn_8023E724(thrown);
-            fn_801F856C()->fn_801F9484('THCL', field_0x3b4, pos, thrown, -1, thrower);
+            fn_801F856C()->fn_801F9484(ACTOR_THCL, field_0x3b4, pos, thrown, -1, thrower);
         }
     }
     const Vec& offset = lbl_8046B400[field_0x3fd + field_0x3dc * 3];

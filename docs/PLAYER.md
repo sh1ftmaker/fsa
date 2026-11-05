@@ -690,3 +690,49 @@ Evidence for the item names is the actor each state spawns (docs/names/actors.ts
   [4][2]`, serial into 0xD94 / 0xDA4): 100 %. fn_80272C20: 97.24 %, extra `i >= 8`.
 - Next .sdata2 users before fn_80276078 / fn_80276538 can flip: fn_8027439C (0.2,
   20, 12), fn_802756E4 (-16, 16; 0x6B8, effects), fn_80275D9C (-4).
+
+## Round 6 (tu_8025EB18) (agent I, Opus 5.5, 2026-11-05)
+
+33 -> 40 of 59 at 100 % (+7 honest); structurally done fn_8025EB18 99.71 %, fn_8025FDD0
+99.10 % (registers only); structurally close fn_8025F698 95.94 %, fn_8025EE48 96.32 %,
+fn_8025EFFC 95.94 %, fn_8025F2CC 96.81 %, fn_8025FCC8 87.39 % (FIXMEs in the source).
+The unit is the player's **hold / lift / throw** code. State names are provisional
+(from the actors spawned, docs/names/actors.tsv, and the motion):
+
+- **What is held**: 0xD64 = 1 lifting (overhead), 0 = grabbing; 0xD70 the held player
+  index, 0xD68 the held actor serial, 0xD6C its mActorId ('NULL' when none), 0x2F4 the
+  held thing's position (mPos + a per-facing / per-pose table offset every frame).
+  File inlines (out-of-line copies in brackets): holdsPlayer [fn_8025F590],
+  isGrabbing_8025F448 [fn_8025F448], isLifting_8025F684 [fn_8025F684], canLift_8025F2CC
+  [fn_8025F2CC], letsGo_8025FCC8 [fn_8025FCC8]; earlier functions inline them.
+- **0x19 grab** (enter fn_80262188, sound 0x10007): fn_8025EE48(serial) grabs an actor;
+  fn_802600A0(player) grabs a player, or pairs up with it instead by spawning 'TSNO'
+  (two-sword motion) when neither is in a group, mode 4, nor on a GBA layer.
+- **0x11 / 0x12 lift / carry** (fn_8025EFFC(serial, lift, grabOnly): state 0x11 when
+  lift, else 0x12; sound 0x20022; enter of 0x12 fn_80263BA0 picks the carry pose by
+  the held actor's field_0x118 ("atcn"), 4 for a player). fn_8026152C(fast) is the
+  carry walk cycle (u8 pose table lbl_8046B790, offsets lbl_8046B7B0).
+- **0x16 throw wind-up / 0x17 throw** (fn_802636D4 / fn_802635D8, 100 %): 10 frames of
+  poses 0-1, then 0x17 and, for a held player, 'THCL' ("attack hitbox when player is
+  thrown") at its position; 0x17 runs poses 2-4 for 14 frames, then state 0.
+- **fn_8025F698(checkState), the release** (in every state commit): only when
+  letsGo_8025FCC8 says the new state drops the hold. A held player is thrown with
+  speed 3.3 along the facing, or toward the tile centre (/ 14 frames) when two of the
+  three 16-steps ahead are wall tiles (3, 0xE, 0x3A), and none in states 0x1E / 0x32 or
+  without life (fn_80230D80 -> fn_8025FDD0 on the thrown player); an actor gets
+  2.5 (CRTL crystal ball, BMTY Bombchu), 4 (GRAS grass), 6 (dead), else 4 along the
+  facing (fn_801F3708); sound 0x20014.
+- fn_8025EB18 is the put-down check (tile / box / vfunc_0x4C at 0x2F4, a held player on
+  a GBA layer checked on its own layer with the view-corner offset); fn_80261480 (from
+  the states 0-3 updates) tries fn_80260C08, fn_802604CC, then fn_8026022C (lift / push
+  starts; requests 0x11, 0x1A, 0x4F).
+- Data: every .rodata table is written (file scope, address order; the per-pose
+  tables are flat `Vec[4 * n]`, indexed `[pose + facing * n]` as the asm does).
+  fn_8025F698 is the .sdata2 pool's second user (16, 1/14, 3.3, 2.5, 4, 6 and the
+  int-to-float double); the next unwritten users are fn_802604CC (0.5), fn_8026152C
+  (32), fn_80261750 (2, 10, 1, 0.25d, -16).
+- Not written: fn_8026022C, fn_802604CC, fn_80260C08 (jump table 0x804A6FC0),
+  fn_8026152C (TVec3 epsilon test of mPos against 0x14), the state handlers 0x11-0x15,
+  0x18, 0x19 (fn_80261750, fn_80262254, fn_80262BAC, fn_80263078, fn_802632A8,
+  fn_80263860, fn_80263C64, fn_8026441C). Player 0x580 as a TBox2f (for fn_802570BC)
+  was not looked at.
