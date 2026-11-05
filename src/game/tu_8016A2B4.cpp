@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/cls_8016ED88.h"
 #include "game/Effect.h"
 #include "game/GameMode.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -268,15 +269,11 @@ void GameRootSub24_8016A3AC::fn_8016DA6C() {
     }
 }
 
-void GameRootSub24_8016A3AC::fn_8016ED88() {
-    field_0x0 = NULL;
-    field_0x14 = NULL;
-    field_0x1c = NULL;
-    field_0x30 = NULL;
-    field_0x38 = NULL;
-    field_0x3c[4] = NULL;
-    field_0x54 = NULL;
-    field_0x68 = NULL;
+void cls_8016ED88::fn_8016ED88() {
+    for (int i = 0; i < 4; i++) {
+        mEntries[i].field_0x0 = NULL;
+        mEntries[i].field_0x14 = NULL;
+    }
 }
 
 void GameRootSub24_8016A3AC::fn_8016EDB0() {
@@ -303,4 +300,4 @@ void GameRootSub24_8016A3AC::fn_8016EDB0() {
     field_0x1c0 = 0;
 }
 
-void fn_8016FDE0() {}
+cls_8016FDE0::cls_8016FDE0() {}

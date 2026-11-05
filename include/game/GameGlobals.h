@@ -1372,7 +1372,7 @@ extern const GXRenderModeObj lbl_8048C17C;
 // after that getter). Owner: game/tu_8016A2B4.cpp (not written yet). Only
 // the bytes act_environment_control_2 writes are declared.
 struct GameRootSub24_8016A3AC {
-    // Unknown pointers (cleared by fn_8016ED88): 0x0, 0x30, 0x38, 0x54, 0x68 (and the model at 0x4C).
+    // Unknown pointers: 0x0, 0x30, 0x38, 0x54, 0x68.
     /* 0x000 */ void* field_0x0;
     // The J3DModels below (0x4 ... 0xEC) are passed to fn_8016A7DC.
     /* 0x004 */ struct J3DModel* field_0x4;
@@ -1502,9 +1502,8 @@ struct GameRootSub24_8016A3AC {
     void fn_8016D284();
     void fn_8016D2E0();
     void fn_8016D33C();
-    // 0x8016B8AC and 0x8016ED88 (clears the pointer fields).
+    // 0x8016B8AC.
     void fn_8016B8AC();
-    void fn_8016ED88();
     // 0x8016B0B0: places the six models of field_0x3c against the 2D camera.
     void fn_8016B0B0();
     // Not written yet (game/tu_8016A2B4.cpp): called by fn_8016DA6C / fn_8016DB60.
