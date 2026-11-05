@@ -324,7 +324,7 @@ public:
     void fn_801F3128(JGeometry::TVec2f* out);
     // 9 units / 12 calls. mBox2 around mPos in screen space (x, y - z);
     // callers pass a stack box; not NULL-checked.
-    void fn_801F317C(JGeometry::TBox2f* out);
+    void fn_801F317C(JGeometry::TBox2f* out) const;
     // 11 units / 21 calls. The same for mBox; the manager's actor-vs-actor
     // test (0x801F801C) uses it too.
     void fn_801F31C4(JGeometry::TBox2f* out) const;
@@ -401,7 +401,7 @@ public:
     // 2 units / 6 calls. Plays the actor's EnemyParam "voic" sound
     // (fn_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
     // sound 0x40002.
-    void fn_801F4694();
+    void fn_801F4694() const;
     // 0x8019CEAC, out of line in game/tu_80197070.cpp: field_0xb0 = v. One
     // caller (fn_80198828, 0x8019AE20) passes 0x11.
     void fn_8019CEAC(s32 v);
@@ -572,12 +572,13 @@ public:
 // Exports of game/tu_801EE24C.cpp that are not ActorBase_804A5770 members
 // (their callers never pass an actor in r3). extern "C" keeps the dtk names
 // as link names until that unit names them.
-extern "C" {
-
 // 4 units / 8 calls. A map tile code (callers pass the lhz/clrlwi 16 result
 // of fn_80226850, e.g. act_spreading_fire 0x802BC9F8) in one of the ranges
 // 0x68-0x6B, 0x70-0x71, 0x74-0x75, 0xAA-0xAB or 0x4E, 0xFA, 0x146, 0x159.
+// Defined in this unit, so a C++ name (fn_801EE3C0__FUs).
 bool fn_801EE3C0(u16 tile);
+
+extern "C" {
 
 // 104 units / 258 calls. Releases an emitter: lets one inside the view's
 // visible box (0xCC-0xD8) run out (clearStatus(Immortal),

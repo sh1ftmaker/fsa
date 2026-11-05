@@ -6,13 +6,47 @@
 #include "game/GameGlobals.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
+// Sound ids indexed by EnemyParam "voic" - 1 (fn_801F4694).
+static const u32 lbl_80469F38[16] = {
+    0x000400AF, 0x000400A8, 0x000400AD, 0x00040083, 0x00040084, 0x0004008D, 0x0004007B, 0x00040096,
+    0x00040099, 0x0004009E, 0x0004009B, 0x000400AF, 0x00040072, 0x00040038, 0x000400A1, 0x00040037,
+};
+
 // Five floats indexed by field_0xc0 (EnemyParam "efsz").
 static const f32 lbl_8046A00C[5] = {
     0.0f, 1.0f, 1.3f, 1.6f, 2.0f,
 };
 
+// Whether a map tile code is one of the listed kinds.
+// FIXME: 78.6. The target truncates each `tile - lo` to 16 bits (subi; clrlwi;
+// cmplwi) and leaves the parameter itself unextended; ours extends it once up
+// front and compares the untruncated differences.
+bool fn_801EE3C0(u16 tile) {
+    if (tile - 0x68 <= 3U || tile - 0x70 <= 1U || tile - 0xAA <= 1U || tile == 0x159 ||
+        tile - 0x74 <= 1U || tile == 0x146 || tile == 0xFA || tile == 0x4E)
+    {
+        return true;
+    }
+    return false;
+}
+
 f32 ActorBase_804A5770::fn_801EE4F0() {
     return lbl_8046A00C[field_0xc0];
+}
+
+// Starts the two effects at mPos (fn_801CB71C), one into each emitter slot.
+void ActorBase_804A5770::fn_801EE508() {
+    fn_801CB71C(&mEmitter100, &mPos, 0, -1);
+    fn_801CB71C(&mEmitter104, &mPos, 0, 1);
+}
+
+// fn_801F2DB4 over the 17 actor ids below (the list is copied to the stack).
+// FIXME: 99.0. Instructions identical; the list is an @NNN literal here but lbl_80469FC8 in the
+// target (rodata order: the unit's earlier .rodata users are unwritten).
+void ActorBase_804A5770::fn_801EF510() {
+    u32 list[17] = {'SWBM', 'FIRE', 'BLZE', 'HBMB', 'FLME', 'THCL', 'GRAS', 'SSTN', 'STON',
+                    'ROCK', 'RCK2', 'BORD', 'TUBO', 'KEY0', 'YASI', 'SMRI', 'NULL'};
+    fn_801F2DB4('NULL', 'NULL', list);
 }
 
 // Lets an emitter that is still on screen finish its particles; deletes one
@@ -77,6 +111,31 @@ u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     return prev;
 }
 
+// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
+                               const Vec& pos) {
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+}
+
+// The centre of mBox in screen space.
+// FIXME: 99.8. Instructions identical; only the 0.5f literal (lbl_8053F74C) pairs once .sdata2 is in order.
+void ActorBase_804A5770::fn_801F3128(JGeometry::TVec2f* out) {
+    JGeometry::TBox2f box;
+    toScreenBox(&box, mBox, mPos);
+    out->x = box.f.x + (box.i.x - box.f.x) * 0.5f;
+    out->y = box.f.y + (box.i.y - box.f.y) * 0.5f;
+}
+
+// mBox2 in screen space.
+void ActorBase_804A5770::fn_801F317C(JGeometry::TBox2f* out) const {
+    toScreenBox(out, mBox2, mPos);
+}
+
+// mBox in screen space.
+void ActorBase_804A5770::fn_801F31C4(JGeometry::TBox2f* out) const {
+    toScreenBox(out, mBox, mPos);
+}
+
 // The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
 // function defined before the caller, so it is an inline of its own.
 static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
@@ -127,10 +186,41 @@ void ActorBase_804A5770::fn_801F34DC() {
     }
 }
 
-// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
-static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
-                               const Vec& pos) {
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+// Marks the actor dead, then fn_801F34DC's report.
+void ActorBase_804A5770::fn_801F3518() {
+    mAlive = false;
+    fn_801F34DC();
+}
+
+// Reports field_0x16c to the view with its layer (field_0x4), unless it is -1.
+void ActorBase_804A5770::fn_801F355C() {
+    s32 bit = field_0x16c;
+    if (bit != -1) {
+        fn_802D6A9C()->fn_802D7704(bit, false, field_0x4);
+    }
+}
+
+// Marks the actor dead, then fn_801F355C's report.
+void ActorBase_804A5770::fn_801F35AC() {
+    mAlive = false;
+    fn_801F355C();
+}
+
+// Reports field_0x16c (or, if it is -1, just the layer count) to the view
+// with field_0x1a8.
+void ActorBase_804A5770::fn_801F3604() {
+    s32 bit = field_0x16c;
+    if (bit != -1) {
+        fn_802D6A9C()->fn_802D7704(bit, field_0x1a8, field_0x4);
+    } else {
+        fn_802D6A9C()->fn_802D766C(field_0x1a8, field_0x4);
+    }
+}
+
+// Marks the actor dead, then fn_801F3604's report.
+void ActorBase_804A5770::fn_801F3668() {
+    mAlive = false;
+    fn_801F3604();
 }
 
 // If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
@@ -181,6 +271,19 @@ void ActorBase_804A5770::fn_801F3780(s32 v) {
     field_0xe8 = 0;
     if (mLife > 0) {
         field_0xe0 = 0;
+    }
+}
+
+// Plays the actor's "voic" sound (if it has one) and, unless field_0xe8 is
+// set, the sound 0x40002.
+// FIXME: 97.9. Instructions identical; only the lbl_80469F38 reference differs until the unit's
+// .rodata is in the original order.
+void ActorBase_804A5770::fn_801F4694() const {
+    if (field_0x190 > 0) {
+        fn_801F0E34(lbl_80469F38[field_0x190 - 1], 0);
+    }
+    if (field_0xe8 == 0) {
+        fn_801F0E34(0x40002, 0);
     }
 }
 
