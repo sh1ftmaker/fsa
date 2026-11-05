@@ -1063,7 +1063,7 @@ public:
     bool fn_80271038(const JGeometry::TVec2f* pos); // via fn_802378AC
     bool fn_80271068(const JGeometry::TVec2f* pos); // via fn_80237948
     bool fn_80256DCC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A97C
-    bool fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AAF8
+    u8 fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AAF8
     bool fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023B848
     void fn_80252BD0(const JGeometry::TVec3f* offset); // via fn_8023DEDC
     s32 fn_8025F534(); // via fn_8023EC54
@@ -1764,7 +1764,7 @@ void fn_802359A4(s32 player, s32 value);
 void fn_8023619C(s32 player, s32 value);
 bool fn_80237488(s32 player, s32 arg);
 bool fn_8023A97C(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
-bool fn_8023AAF8(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
+u8 fn_8023AAF8(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 bool fn_8023B848(s32 player, const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out);
 void fn_8023DEDC(s32 player, const JGeometry::TVec3f* offset);
 s32 fn_8023EC54(s32 player);

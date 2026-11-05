@@ -30,7 +30,7 @@ bool Player_804A6F38::fn_80256DCC(const JGeometry::TBox2f* box, s32 layer, JGeom
     return false;
 }
 
-bool Player_804A6F38::fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+u8 Player_804A6F38::fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     if (fn_80249068()) {
         return false;
     }
