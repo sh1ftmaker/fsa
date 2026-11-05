@@ -2096,37 +2096,73 @@ void Player_804A6F38::fn_80276538() {
     field_0x4d0.f.y += mPos.y;
 }
 
-// The boxes of the facing 0x3DC: 0x4B0 a 16x16 box 8-24 ahead (the attack box), 0x4A0 the
-// body box stretched 4 back / 16 ahead, 0x30C the point 16 ahead; 0x3F0 = the facing.
+// The boxes for facing `dir` (0 +x, 1 -x, 2 +y, 3 -y): 0x4B0 a 16x16 box 8-24 ahead (the
+// attack box), 0x4A0 the body box stretched 4 back / 16 ahead, 0x30C the point 16 ahead,
+// 0x3F0 = dir. fn_80276BB8 uses them for the opposite facing, fn_80276E5C for the facing.
+static inline void setBoxesPosX(Player_804A6F38* player) {
+    player->field_0x4b0.set(player->mPos.x + 16.0f, player->mPos.y - 8.0f, player->mPos.x + 32.0f, player->mPos.y + 8.0f);
+    player->field_0x4a0.set(player->mPos.x - 4.0f, player->mPos.y - 8.0f, player->mPos.x + 16.0f, player->mPos.y + 8.0f);
+    player->field_0x30c.set(16.0f, 0.0f, 0.0f);
+    player->field_0x30c.add(player->mPos);
+    player->field_0x3f0 = 0;
+}
+
+static inline void setBoxesNegX(Player_804A6F38* player) {
+    player->field_0x4b0.set(player->mPos.x - 32.0f, player->mPos.y - 8.0f, player->mPos.x - 16.0f, player->mPos.y + 8.0f);
+    player->field_0x4a0.set(player->mPos.x - 16.0f, player->mPos.y - 8.0f, player->mPos.x + 4.0f, player->mPos.y + 8.0f);
+    player->field_0x30c.set(-16.0f, 0.0f, 0.0f);
+    player->field_0x30c.add(player->mPos);
+    player->field_0x3f0 = 1;
+}
+
+static inline void setBoxesPosY(Player_804A6F38* player) {
+    player->field_0x4b0.set(player->mPos.x - 8.0f, player->mPos.y + 16.0f, player->mPos.x + 8.0f, player->mPos.y + 32.0f);
+    player->field_0x4a0.set(player->mPos.x - 8.0f, player->mPos.y - 4.0f, player->mPos.x + 8.0f, player->mPos.y + 16.0f);
+    player->field_0x30c.set(0.0f, 16.0f, 0.0f);
+    player->field_0x30c.add(player->mPos);
+    player->field_0x3f0 = 2;
+}
+
+static inline void setBoxesNegY(Player_804A6F38* player) {
+    player->field_0x4b0.set(player->mPos.x - 8.0f, player->mPos.y - 32.0f, player->mPos.x + 8.0f, player->mPos.y - 16.0f);
+    player->field_0x4a0.set(player->mPos.x - 8.0f, player->mPos.y - 16.0f, player->mPos.x + 8.0f, player->mPos.y + 4.0f);
+    player->field_0x30c.set(0.0f, -16.0f, 0.0f);
+    player->field_0x30c.add(player->mPos);
+    player->field_0x3f0 = 3;
+}
+
+// The boxes of the opposite of the facing 0x3DC.
+void Player_804A6F38::fn_80276BB8() {
+    switch (field_0x3dc) {
+    case 0:
+        setBoxesNegX(this);
+        break;
+    case 1:
+        setBoxesPosX(this);
+        break;
+    case 2:
+        setBoxesNegY(this);
+        break;
+    case 3:
+        setBoxesPosY(this);
+        break;
+    }
+}
+
+// The boxes of the facing 0x3DC.
 void Player_804A6F38::fn_80276E5C() {
     switch (field_0x3dc) {
     case 0:
-        field_0x4b0.set(mPos.x + 16.0f, mPos.y - 8.0f, mPos.x + 32.0f, mPos.y + 8.0f);
-        field_0x4a0.set(mPos.x - 4.0f, mPos.y - 8.0f, mPos.x + 16.0f, mPos.y + 8.0f);
-        field_0x30c.set(16.0f, 0.0f, 0.0f);
-        field_0x30c.add(mPos);
-        field_0x3f0 = 0;
+        setBoxesPosX(this);
         break;
     case 1:
-        field_0x4b0.set(mPos.x - 32.0f, mPos.y - 8.0f, mPos.x - 16.0f, mPos.y + 8.0f);
-        field_0x4a0.set(mPos.x - 16.0f, mPos.y - 8.0f, mPos.x + 4.0f, mPos.y + 8.0f);
-        field_0x30c.set(-16.0f, 0.0f, 0.0f);
-        field_0x30c.add(mPos);
-        field_0x3f0 = 1;
+        setBoxesNegX(this);
         break;
     case 2:
-        field_0x4b0.set(mPos.x - 8.0f, mPos.y + 16.0f, mPos.x + 8.0f, mPos.y + 32.0f);
-        field_0x4a0.set(mPos.x - 8.0f, mPos.y - 4.0f, mPos.x + 8.0f, mPos.y + 16.0f);
-        field_0x30c.set(0.0f, 16.0f, 0.0f);
-        field_0x30c.add(mPos);
-        field_0x3f0 = 2;
+        setBoxesPosY(this);
         break;
     case 3:
-        field_0x4b0.set(mPos.x - 8.0f, mPos.y - 32.0f, mPos.x + 8.0f, mPos.y - 16.0f);
-        field_0x4a0.set(mPos.x - 8.0f, mPos.y - 16.0f, mPos.x + 8.0f, mPos.y + 4.0f);
-        field_0x30c.set(0.0f, -16.0f, 0.0f);
-        field_0x30c.add(mPos);
-        field_0x3f0 = 3;
+        setBoxesNegY(this);
         break;
     }
 }
