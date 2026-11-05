@@ -51,3 +51,5 @@ Baseline 8389 / 11557 (honest), structural 8735. Rebased on matching after agent
 Written: fn_802490A8 97.4 (missing/extra, only the 0xCE9 test x13), fn_80252FC0 99.1 (regalloc), fn_8023F390 99.7 (tu_8022AD64, one mr/li), fn_80240670 97.8, fn_802486A0 97.7 (regalloc), fn_8023FC5C 96.6, fn_8023FFC4/8024018C/80240354 99.4 (regalloc), pad gates fn_802454C0..fn_80246D1C, fn_80244FFC, fn_80245238, fn_8024712C, fn_80247330, fn_80243234, fn_80243C64, fn_80244630 (96-97, the 0xCE9 test), fn_80246F28 94.8 -> 96.5.
 Not written: fn_802487FC / fn_80248970 (li/li vs li/mr zero of the group loop, class different).
 Open decision: playerFlags_802413F0's last test (see docs/PLAYER.md round 3).
+Follow-up (coordinator decision): playerFlagsGate (if form) for the inlined gate; fn_802413F0 unchanged (100 %). fn_802490A8 99.88, gates 99.46-99.89, fn_80243234/3C64/4630 99.9, fn_8023FC5C 98.7, all regalloc-only.
+fn_80254744 98.34 -> 98.32 is a literal-renumbering artifact (literals 3.0 / 16.0 now pooled earlier by fn_80252FC0); accepted by the coordinator.

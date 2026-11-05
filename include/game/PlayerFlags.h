@@ -29,4 +29,29 @@ inline bool playerFlags_802413F0(const Player_804A6F38* player) {
     return player->field_0xce9 != 0;
 }
 
+
+// The same five tests as the gate in front of the player's pad queries and
+// fn_8023FC5C (inlined about 40 times in tu_8023FBF0): these copies branch on
+// the last byte (cmplwi / bne, li 1 / li 0), which fn_802413F0's body above
+// cannot give (forcing one form on both drops fn_802413F0 to 84.6 %), so the
+// inlined gate is a separate source construct with the if form.
+inline bool playerFlagsGate(const Player_804A6F38* player) {
+    if (!player->field_0xc80) {
+        return false;
+    }
+    if (player->field_0xcee) {
+        return false;
+    }
+    if (player->field_0x1215) {
+        return false;
+    }
+    if (!player->field_0xca0) {
+        return false;
+    }
+    if (!player->field_0xce9) {
+        return false;
+    }
+    return true;
+}
+
 #endif

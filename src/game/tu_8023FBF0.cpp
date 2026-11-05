@@ -128,13 +128,13 @@ s32 Player_804A6F38::fn_8023FC2C() {
     return field_0x494;
 }
 
-// FIXME: 96.6 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0); otherwise the same instructions.
+// FIXME: 98.7 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 // The byte 0xCA0, halved for a player following in group mode 4 (unless
 // 0xCFE or 0x454 is set); 0 when the player flags are clear. Const: the
 // group loops' field_0x4 is hoisted (r28, r30).
 u8 Player_804A6F38::fn_8023FC5C() const {
-    if (playerFlags_802413F0(this)) {
+    if (playerFlagsGate(this)) {
         if (groupMode(this) == 4 && follows_80240670(this) && !field_0xcfe && !field_0x454) {
             return field_0xca0 / 2;
         }
@@ -606,7 +606,7 @@ s32 Player_804A6F38::fn_8024322C() {
 // only the player whose turn it is (groupTurn == its place in line); and
 // field_0x11ea.
 static inline bool teamCheck(Player_804A6F38* player) {
-    if (!playerFlags_802413F0(player)) {
+    if (!playerFlagsGate(player)) {
         return false;
     }
     if ((groupMode(player) == 4 && groupTurn(player) != linePlace(player)) || !player->field_0x11ea) {
@@ -633,8 +633,8 @@ static inline f32 padAxis_80247330(Player_804A6F38* player) {
     return lbl_8053AD30->fn_80309FCC(fn_8030AAF4(player->field_0x11ec));
 }
 
-// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test), in each of the five
-// inlined pad axis reads; otherwise the same instructions.
+// FIXME: 99.9 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 // Whether the pad points sideways for the facing 0x3DC on a flagged layer
 // (viewLayerFlag): x right while facing 0 or 1 turns the player to 3.
 bool Player_804A6F38::fn_80243234() {
@@ -654,8 +654,8 @@ bool Player_804A6F38::fn_80243234() {
     return false;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test), in the gate and in
-// each of the four inlined pad axis reads; otherwise the same instructions.
+// FIXME: 99.9 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 // Whether the pad points against the facing 0x3DC.
 bool Player_804A6F38::fn_80243C64() {
     if (teamCheck(this) == false) {
@@ -670,8 +670,8 @@ bool Player_804A6F38::fn_80243C64() {
     return false;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test), in the gate and in
-// each of the four inlined pad axis reads; otherwise the same instructions.
+// FIXME: 99.9 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 // Whether the pad points along the facing 0x3DC.
 bool Player_804A6F38::fn_80244630() {
     if (teamCheck(this) == false) {
@@ -686,8 +686,8 @@ bool Player_804A6F38::fn_80244630() {
     return false;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80244FFC() {
     if (teamCheck(this) == false) {
         return false;
@@ -698,8 +698,8 @@ bool Player_804A6F38::fn_80244FFC() {
     return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
-// FIXME: 97.1 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80245238() {
     if (teamCheck(this) == false) {
         return false;
@@ -716,8 +716,8 @@ bool Player_804A6F38::fn_80245238() {
     return false;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_802454C0() {
     if (teamCheck(this) == false) {
         return false;
@@ -731,8 +731,8 @@ bool Player_804A6F38::fn_802454C0() {
     return lbl_8053AD30->fn_80309A54(fn_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_802456FC() {
     if (teamCheck(this) == false) {
         return false;
@@ -746,8 +746,8 @@ bool Player_804A6F38::fn_802456FC() {
     return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80245938() {
     if (teamCheck(this) == false) {
         return false;
@@ -761,8 +761,8 @@ bool Player_804A6F38::fn_80245938() {
     return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80245B74() {
     if (teamCheck(this) == false) {
         return false;
@@ -776,8 +776,8 @@ bool Player_804A6F38::fn_80245B74() {
     return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80245DB0() {
     if (teamCheck(this) == false) {
         return false;
@@ -791,8 +791,8 @@ bool Player_804A6F38::fn_80245DB0() {
     return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80245FEC() {
     if (teamCheck(this) == false) {
         return false;
@@ -806,8 +806,8 @@ bool Player_804A6F38::fn_80245FEC() {
     return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
-// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80246228() {
     if (teamCheck(this) == false) {
         return false;
@@ -821,8 +821,8 @@ bool Player_804A6F38::fn_80246228() {
     return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
-// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_80246464() {
     if (teamCheck(this) == false) {
         return false;
@@ -839,8 +839,8 @@ bool Player_804A6F38::fn_80246464() {
     return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x200) != 0;
 }
 
-// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 bool Player_804A6F38::fn_802466B4() {
     if (teamCheck(this) == false) {
         return false;
@@ -857,8 +857,8 @@ bool Player_804A6F38::fn_802466B4() {
     return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x200) != 0;
 }
 
-// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 s32 Player_804A6F38::fn_80246904(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
@@ -866,8 +866,8 @@ s32 Player_804A6F38::fn_80246904(u32 mask) {
     return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), mask);
 }
 
-// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 u32 Player_804A6F38::fn_80246B10(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
@@ -875,8 +875,8 @@ u32 Player_804A6F38::fn_80246B10(u32 mask) {
     return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), mask);
 }
 
-// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 u32 Player_804A6F38::fn_80246D1C(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
@@ -884,13 +884,8 @@ u32 Player_804A6F38::fn_80246D1C(u32 mask) {
     return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), mask);
 }
 
-// FIXME: 96.5 %. The playerFlags_802413F0 chain ends in a byte test that
-// the original branches on (cmplwi / bne, li 1 / li 0) and ours converts
-// (neg / or / srwi, as fn_802413F0's own out-of-line copy does): the if form
-// `if (!field_0xce9) return false; return true;` gives the inlined copies
-// exactly (99.5 %, registers only) but breaks fn_802413F0 (100 -> 84.6 %),
-// so the header keeps the form fn_802413F0 proves. Also the group loop's
-// count / index / leader get r27 / r26 / r28 where the original has r28 / r27 / r26.
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 f32 Player_804A6F38::fn_80246F28() {
     // `== false`: the check's bool is materialised and tested (li 0 / li 1,
     // clrlwi.; bne to the call), as with `x == true` (docs/RULES_CARD.md).
@@ -900,14 +895,14 @@ f32 Player_804A6F38::fn_80246F28() {
     return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
 }
 
-// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 f32 Player_804A6F38::fn_8024712C() {
     return padAxis_8024712C(this);
 }
 
-// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
-// playerFlags_802413F0, and the group loop's registers).
+// FIXME: 99.5 %. Register allocation only (the group loops' count / index /
+// leader temporaries, as in fn_802486A0).
 f32 Player_804A6F38::fn_80247330() {
     return padAxis_80247330(this);
 }
@@ -1079,10 +1074,9 @@ void Player_804A6F38::fn_8024909C() {
     field_0x121f = 1;
 }
 
-// FIXME: 97.4 %. Every call, field and branch is in place; the 13 inlined
-// pad gates (fn_80246B10 / fn_80246D1C) differ only in the 0xCE9 byte test
-// of playerFlags_802413F0 (see fn_80246F28: 26 instructions); with the if
-// form there this is 99.9 %, registers only (field_0x4 copy r30 vs r26).
+// FIXME: 99.9 %. Register allocation only (the group loops' temporaries; the
+// acting-player copy of field_0x4 is r26 vs r30), plus the literal pool
+// (@NNN vs lbl_80540044) until the unit's literals are in order.
 // The player's input each frame (update A, fn_80253E6C): the 'FORM' call
 // of a group leader and the four direction picks (fn_80248004(dir, true))
 // on the pad buttons or the C stick.

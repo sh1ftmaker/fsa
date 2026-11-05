@@ -447,14 +447,13 @@ wrappers, as playerFlags_802413F0):
   fn_8023FC5C are **const**: the loop test's field_0x4 is hoisted, which
   MWCC only does through a const `this` (as in fn_80248778).
 
-**Open, affects ~40 functions:** every inlined copy of playerFlags_802413F0
-tests 0xCE9 with `cmplwi; bne; li 0 / li 1`, which `if (!ce9) return false;
-return true;` gives exactly; but fn_802413F0's own copy (100 %) needs
-`return ce9 != 0` (neg / or / srwi). With the if form every gated function
-here is registers-only (fn_802490A8 99.9 %) and fn_802413F0 drops to 84.6 %.
-The header keeps fn_802413F0's form; a decision is needed (two source forms?).
+**The 0xCE9 test (coordinator decision, 2026-11-05):** the ~40 inlined
+copies branch on byte 0xCE9 (`cmplwi; bne; li 0 / li 1`), which
+fn_802413F0's own body (`return ce9 != 0`, 100 %) cannot give, so the
+inlined gate is its own inline, playerFlagsGate (game/PlayerFlags.h, if
+form). With it every gated function here is registers-only (99.5-99.9 %).
 
-### fn_802490A8 (input, 97.4 %)
+### fn_802490A8 (input, 99.9 %, registers only)
 
 Skipped while 0x1220 > 0. Returns when the acting player (this one, or in
 mode 4 fn_8022EA0C of it) is fn_80230188 / fn_80236B50 / airborne (z > 0) /
