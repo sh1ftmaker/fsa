@@ -69,8 +69,8 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
 // Two effects (fn_8013CC50 0x473 and 0x474) at pos on `layer`; arg3 and arg4 + 1
 // are the height and depth of both.
 void fn_801CB4A4(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
-    fn_8013CC50(layer, pos, 0x473, arg3, 1 + arg4, NULL, NULL, true, 1.0f);
-    fn_8013CC50(layer, pos, 0x474, arg3, 1 + arg4, NULL, NULL, true, 1.0f);
+    fn_8013CC50(layer, pos, 0x473, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    fn_8013CC50(layer, pos, 0x474, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
 // FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
