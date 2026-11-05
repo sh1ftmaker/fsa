@@ -1364,6 +1364,10 @@ void fn_8022CF08(s32 player);
 // Owner: game/tu_8022AD64.cpp (0x8022CFE8, not written yet): a float per player index (lbl_80540008
 // without the manager); compared with 0.0f by fn_802859C4 (tu_8027E5BC).
 extern "C" f32 fn_8022CFE8(s32 player);
+// Owner: game/tu_8022AD64.cpp (0x8022D534, not written yet): a per-player test (false
+// without the manager); ActorBase_804A5770::fn_801EE558 skips players for which it holds
+// (clrlwi. of r3).
+extern "C" bool fn_8022D534(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
 s32 fn_8022D7F8(s32 player); // -> fn_8024FF6C; else 0
 u8 fn_8022D894(s32 player); // -> fn_802517E4; else false

@@ -5,8 +5,51 @@
 #include "game/EnemyBase.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameView.h"
+#include "game/Map.h"
 #include "game/ViewLayer.h"
 #include "JSystem/JParticle/JPAEmitter.h"
+
+// Drop chance per EnemyParam "dasu" (fn_801F52A4).
+static const f32 lbl_80469D48[12] = {
+    1.0f, 0.5f, 0.5f, 0.5f, 0.5f, 1.0f, 0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 1.0f,
+};
+
+// The drops of fn_801F52A4 (its switch): ids 'HART' / 'RUPY', count and
+// spawn parameter (_P<n>: parameter n, the rupee kind; a trailing number:
+// the count; 20_20: twenty of parameter 0 and twenty of parameter 1).
+enum DropKind_801F52A4 {
+    DROP_NONE,
+    DROP_HEART,
+    DROP_HEART_2,
+    DROP_RUPEE,
+    DROP_RUPEE_P1,
+    DROP_RUPEE_P2,
+    DROP_RUPEE_P3,
+    DROP_RUPEE_P4,
+    DROP_RUPEE_P5,
+    DROP_RUPEE_5,
+    DROP_RUPEE_10,
+    DROP_RUPEE_P1_5,
+    DROP_RUPEE_P1_10,
+    DROP_RUPEE_20_20,
+};
+
+// Eight equally likely drops per "dasu" (fn_801F52A4's switch).
+static const s32 lbl_80469D78[12][8] = {
+    {DROP_NONE, DROP_NONE, DROP_NONE, DROP_NONE, DROP_NONE, DROP_NONE, DROP_NONE, DROP_NONE},
+    {DROP_HEART, DROP_HEART, DROP_HEART, DROP_HEART, DROP_RUPEE, DROP_HEART, DROP_HEART, DROP_RUPEE},
+    {DROP_HEART_2, DROP_HEART_2, DROP_HEART_2, DROP_HEART_2, DROP_HEART, DROP_HEART_2, DROP_HEART_2, DROP_HEART},
+    {DROP_RUPEE_P1, DROP_RUPEE, DROP_RUPEE_P1, DROP_RUPEE_P2, DROP_RUPEE_P1, DROP_RUPEE, DROP_RUPEE_P1, DROP_RUPEE_P1},
+    {DROP_RUPEE_P2, DROP_RUPEE_P1, DROP_RUPEE_P2, DROP_RUPEE_P1, DROP_RUPEE_P2, DROP_HEART, DROP_RUPEE_P2, DROP_RUPEE},
+    {DROP_RUPEE_P4, DROP_RUPEE_P4, DROP_RUPEE_P4, DROP_RUPEE_P5, DROP_RUPEE_P4, DROP_RUPEE_P4, DROP_RUPEE_P5, DROP_RUPEE_P4},
+    {DROP_HEART, DROP_HEART, DROP_HEART_2, DROP_RUPEE_P1, DROP_HEART, DROP_HEART, DROP_HEART, DROP_RUPEE},
+    {DROP_RUPEE_P1, DROP_RUPEE, DROP_HEART, DROP_RUPEE_5, DROP_RUPEE, DROP_RUPEE_5, DROP_RUPEE, DROP_HEART},
+    {DROP_HEART, DROP_HEART_2, DROP_RUPEE_P2, DROP_RUPEE, DROP_RUPEE_P1_5, DROP_HEART, DROP_RUPEE_P2, DROP_RUPEE_P1_5},
+    {DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10},
+    {DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10},
+    {DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20},
+};
 
 // Sound ids indexed by EnemyParam "voic" - 1 (fn_801F4694).
 static const u32 lbl_80469F38[16] = {
@@ -14,15 +57,48 @@ static const u32 lbl_80469F38[16] = {
     0x00040099, 0x0004009E, 0x0004009B, 0x000400AF, 0x00040072, 0x00040038, 0x000400A1, 0x00040037,
 };
 
+// Shadow scale per kind (fn_801EF830).
+static const f32 lbl_80469FA8[8] = {1.0f, 1.0f, 1.0f, 2.0f, 3.0f, 4.0f, 1.5f, 1.0f};
+
 // Five floats indexed by field_0xc0 (EnemyParam "efsz").
 static const f32 lbl_8046A00C[5] = {
     0.0f, 1.0f, 1.3f, 1.6f, 2.0f,
 };
 
+// Tiles without a shadow (fn_801EF830; the last one only unless
+// fn_802DEB58()).
+static const u16 lbl_8053F730[4] = {2, 3, 14, 0};
+// Frame offsets of the animated tile-0x39 shadow (fn_801EF830).
+static const u8 lbl_8053F738[4] = {0, 1, 2, 1};
+
 // The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
 static inline JGeometry::TBox2f* layerBox(s32 layer) {
     GameView_804A9950* view = getGameView_802D6A9C();
     return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
+// function defined before the caller, so it is an inline of its own.
+static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
+    bool result = false;
+    if (getPlayerLayer_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+        result = true;
+    }
+    return result;
+}
+
+// The body of fn_801F320C: `player` is on this actor's layer, or below 8
+// while it is on 8. fn_801EE558 and fn_801EE8F4 inline it, and MWCC only
+// inlines a function defined before the caller, so it is an inline of its
+// own.
+static inline bool isPlayerOnLayer(const ActorBase_804A5770* actor, s32 player) {
+    s32 layer = actor->getField_0x4();
+    bool result = false;
+    s32 playerLayer = getPlayerLayer_8023DE58(player);
+    if (playerLayer == layer || isPlayerBelowLayer8(actor, player)) {
+        result = true;
+    }
+    return result;
 }
 
 // Finds a 'WARP' actor on this layer with type 8 (field_0x90's low byte)
@@ -102,6 +178,104 @@ void ActorBase_804A5770::fn_801EE508() {
     fn_801CB71C(&mEmitter104, &mPos, 0, 1);
 }
 
+// FIXME: 99.4. Scheduling and float registers only: the original loads
+// mPos.y before mPos.z and x last for `pos`; the literals are @NNN until the
+// unit's .sdata2 is in order.
+// The nearest player (all four, or only player - 1): the direction from
+// this actor's top-down position (x, y - z) to the player's position in
+// field_0x1ac[] goes normalised to *outDir (z 0), the distance to *outDist.
+// With no player found the direction is (0, 512, 0).
+void ActorBase_804A5770::fn_801EE558(JGeometry::TVec3f* outDir, f32* outDist, s32 player) {
+    JGeometry::TVec3f best(0.0f, 512.0f, 0.0f);
+    JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+    pos.y = pos.y - pos.z;
+    JGeometry::TVec3f diff;
+    bool first = true;
+    f32 bestDist = best.squared();
+    for (s32 i = 0; i < 4; i++) {
+        if (player != 0) {
+            i = player - 1;
+        }
+        if (fn_8023F264(i) && isPlayerOnLayer(this, i) && !fn_8022F478(i) && !fn_80236B50(i) &&
+            !fn_8022D534(i))
+        {
+            diff.sub(field_0x1ac[i], pos);
+            if (first) {
+                first = false;
+                bestDist = diff.squared();
+                best.set(diff);
+            } else {
+                f32 dist = diff.squared();
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best.set(diff);
+                }
+            }
+        }
+        if (player != 0) {
+            break;
+        }
+    }
+    if (outDir != NULL) {
+        best.z = 0.0f;
+        if (outDist != NULL) {
+            *outDist = outDir->normalize(best);
+        } else {
+            outDir->normalize(best);
+        }
+    } else if (outDist != NULL) {
+        *outDist = JGeometry::TUtilf::sqrt(bestDist);
+    }
+}
+
+// FIXME: 99.6. Scheduling and float registers in the prologue, as in
+// fn_801EE558; literals @NNN.
+// fn_801EE558 that also skips players failing fn_80230188 or fn_8022DCD8;
+// with no player found the direction is zero (and the distance unset).
+void ActorBase_804A5770::fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s32 player) {
+    JGeometry::TVec3f best(0.0f, 0.0f, 0.0f);
+    JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+    pos.y = pos.y - pos.z;
+    JGeometry::TVec3f diff;
+    bool first = true;
+    f32 bestDist;
+    for (s32 i = 0; i < 4; i++) {
+        if (player != 0) {
+            i = player - 1;
+        }
+        if (fn_8023F264(i) && isPlayerOnLayer(this, i) && !fn_80230188(i) && !fn_8022DCD8(i) &&
+            !fn_8022F478(i) && !fn_80236B50(i) &&
+            !fn_8022D534(i))
+        {
+            diff.sub(field_0x1ac[i], pos);
+            if (first) {
+                first = false;
+                bestDist = diff.squared();
+                best.set(diff);
+            } else {
+                f32 dist = diff.squared();
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best.set(diff);
+                }
+            }
+        }
+        if (player != 0) {
+            break;
+        }
+    }
+    if (outDir != NULL) {
+        best.z = 0.0f;
+        if (outDist != NULL) {
+            *outDist = outDir->normalize(best);
+        } else {
+            outDir->normalize(best);
+        }
+    } else if (outDist != NULL) {
+        *outDist = JGeometry::TUtilf::sqrt(bestDist);
+    }
+}
+
 // fn_801F2DB4 over the 17 actor ids below (the list is copied to the stack).
 // FIXME: 99.0. Instructions identical; the list is an @NNN literal here but lbl_80469FC8 in the
 // target (rodata order: the unit's earlier .rodata users are unwritten).
@@ -109,6 +283,107 @@ void ActorBase_804A5770::fn_801EF510() {
     u32 list[17] = {'SWBM', 'FIRE', 'BLZE', 'HBMB', 'FLME', 'THCL', 'GRAS', 'SSTN', 'STON',
                     'ROCK', 'RCK2', 'BORD', 'TUBO', 'KEY0', 'YASI', 'SMRI', 'NULL'};
     fn_801F2DB4('NULL', 'NULL', list);
+}
+
+// FIXME: 93.3. One instruction extra: MWCC keeps the .rodata base
+// (lbl_80469FA8 and the two strings) in r30 from the prologue (one more
+// saved register, shifting r20-r30); the original addresses each with its
+// own lis/addi. Also the copy of params' 0x1C/0x1D stores 0x1C before
+// loading 0x1D (the original loads both first).
+// Draws the shadow of kind `flags & 0x3FF` under pos on `layer` (flags -1:
+// none): "kage_sob.bin" frame `kind` scaled by lbl_80469FA8[kind], kind 7 a
+// flattened copy of the sprite `name` (or the loaded `res`), and kind 0 on
+// tile 0x39 at z 0 an animated "enemy_both2_sob.bin" frame instead. No
+// shadow on the tiles in lbl_8053F730 (the last one only unless
+// fn_802DEB58()). Its alpha fades with height; bit 0x400 multiplies it by
+// params' alpha.
+void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, s32 flags,
+                 const char* name, s32 frame, void* res) {
+    if (flags != -1 && layer < 8 && !viewLayerFlag(layer)) {
+        s32 kind = flags & 0x3FF;
+        u16 tile = fn_802265FC(pos, 0);
+        bool draw = true;
+        int count = 3;
+        if (fn_802DEB58()) {
+            count = 2;
+        }
+        for (int i = 0; i < count; i++) {
+            if (tile == lbl_8053F730[i]) {
+                draw = false;
+                break;
+            }
+        }
+        if (!draw) {
+            return;
+        }
+
+        SpriteParams_801F5AE0 sp;
+        // Declared here, in the order of their stack slots (MWCC: reverse
+        // declaration order).
+        Mtx m;
+        JGeometry::TVec3f flatPos;
+        JGeometry::TVec3f tilePos;
+        sp.field_0x10.a = 0xDF;
+        if (pos->z > 0.0f) {
+            f32 alpha = sp.field_0x10.a - pos->z * 0.5f;
+            sp.field_0x10.a = 159.0f >= alpha ? 159.0f : alpha;
+        }
+        if (params != NULL) {
+            if (flags & 0x400) {
+                sp.field_0x10.a = sp.field_0x10.a * params->field_0x10.a / 255;
+            }
+            sp.field_0x1c = params->field_0x1c;
+            sp.field_0x1d = params->field_0x1d;
+        }
+        sp.field_0x1d--;
+        sp.field_0x28 = 1;
+        sp.field_0x2e = sp.field_0x10.a >> 1;
+
+        if (tile == 0x39 && kind == 0 && pos->z == 0.0f) {
+            s32 frame2 = lbl_8053F738[(gGameRoot_8053AAF8->field_0x4->field_0x34 >> 2) & 3] + 0x18F;
+            sp.field_0x1d++;
+            tilePos.set(pos->x, pos->y + 0.1f, pos->z);
+            if (layer < 8) {
+                void* r = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&tilePos, r, frame2, &sp, 1.0f, 1.0f);
+            }
+        } else if (kind == 7) {
+            flatPos.set(pos->x, pos->y, -5.0f);
+            PSMTXScale(m, 0.9f, 0.5f, 0.5f);
+            if (params != NULL && params->mMtx != NULL) {
+                f32 x = params->mMtx[0][3];
+                f32 y = params->mMtx[1][3];
+                f32 z = params->mMtx[2][3];
+                PSMTXConcat(m, params->mMtx, m);
+                m[0][3] = x;
+                m[1][3] = y;
+                m[2][3] = z;
+            }
+            sp.field_0x10.r = 0;
+            sp.field_0x10.g = 0;
+            sp.field_0x10.b = 0;
+            sp.field_0x14.r = 40;
+            sp.field_0x14.g = 40;
+            sp.field_0x14.b = 40;
+            sp.field_0x14.a = 0;
+            sp.mMtx = m;
+            if (name != NULL) {
+                if (layer < 8) {
+                    void* r = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&flatPos, r, frame, &sp, 1.0f, 1.0f);
+                }
+            } else if (layer < 8) {
+                gGameRoot2_8053AB10->field_0x20->fn_802F745C(&flatPos, res, &sp);
+            }
+        } else {
+            JGeometry::TVec3f p(pos->x, pos->y, 0.0f);
+            f32 scale = lbl_80469FA8[kind];
+            if (layer < 8) {
+                void* r = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "kage_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&p, r, kind, &sp, scale, 1.0f);
+            }
+        }
+    }
 }
 
 // Plays sound effect `id` through the audio object; ids 3 and 0x42 on
@@ -286,16 +561,6 @@ static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& 
     out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
 }
 
-// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
-// function defined before the caller, so it is an inline of its own.
-static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
-    bool result = false;
-    if (getPlayerLayer_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
-        result = true;
-    }
-    return result;
-}
-
 // The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
 // on this layer, as bits; on a layer without the view's flag the player's z
 // must also be within 32 of mPos.z. fn_801F2B7C inlines it.
@@ -322,6 +587,26 @@ u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
         }
     }
     return hits;
+}
+
+// FIXME: 99.9. Instructions identical; 32.0f is @NNN (lbl_8053F748).
+// Whether a player other than skipPlayer's group (fn_8022E438) touches mBox
+// on this layer (fn_80239B64 with type, a and b); on a layer without the
+// view's flag the player's z must also be within 32 of mPos.z.
+bool ActorBase_804A5770::fn_801F2A10(s32 skipPlayer, s32 type, bool a, bool b) {
+    JGeometry::TBox2f box;
+    toScreenBox(&box, mBox, mPos);
+    for (s32 i = 0; i < 4; i++) {
+        if (!viewLayerFlag(field_0x4) &&
+            __fabsf(mPos.z - getPlayerPos_8023E724(i)->z) > 32.0f)
+        {
+            continue;
+        }
+        if (!fn_8022E438(i, skipPlayer) && fn_80239B64(i, &box, field_0x4, type, a, b)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
@@ -488,13 +773,7 @@ void ActorBase_804A5770::fn_801F31C4(JGeometry::TBox2f* out) const {
 // Whether `player` is on this actor's layer (getPlayerLayer_8023DE58), or counts as on
 // it through fn_801F329C.
 bool ActorBase_804A5770::fn_801F320C(s32 player) const {
-    s32 layer = field_0x4;
-    bool result = false;
-    s32 playerLayer = getPlayerLayer_8023DE58(player);
-    if (playerLayer == layer || isPlayerBelowLayer8(this, player)) {
-        result = true;
-    }
-    return result;
+    return isPlayerOnLayer(this, player);
 }
 
 // Whether `player` is on a layer below 8 while this actor is on layer 8.
@@ -690,6 +969,128 @@ bool ActorBase_804A5770::vfunc_0x34() {
 void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
     if (vfunc_0x3C()) {
         getGameView_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
+    }
+}
+
+// FIXME: 99.7. Instructions identical; 1.0f is @NNN (lbl_8053F774 once the
+// unit's .sdata2 is in order).
+// Starts the four effects 0x6D, 0x6A-0x6C at mPos + (x, y) and sets
+// field_0xd8 = 0, field_0x188 = 300 and the game root's 300 (fn_80134DE4).
+void ActorBase_804A5770::vfunc_0x28(s32 height, f32 x, f32 y) {
+    field_0xd8 = 0;
+    field_0x188 = 300;
+    JGeometry::TVec3f pos = mPos;
+    pos.x += x;
+    pos.y += y;
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x6D, height, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x6A, height, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x6B, height, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x6C, height, 0, NULL, NULL, true, 1.0f);
+    gGameRoot_8053AAF8->fn_80134DE4(300, 0);
+}
+
+// FIXME: 99.1. Register allocation only (r4-r11 in the switch prologue)
+// besides the data: the original's array initialisers are six separate
+// 4-byte objects (lbl_8053F728/72C 'NULL' at the very start of .sdata2,
+// lbl_80543F40-4C zero in .sbss2); MWCC makes one 8-byte @NNN per array here.
+// Drops items when the actor dies: with the chance lbl_80469D48[dasu]
+// (EnemyParam "dasu", field_0x18c), one of the eight drops in row dasu of
+// lbl_80469D78 (0 none, 1-2 hearts, 3-13 rupees: count and kind), spawned
+// at the actor's top-down position; several of one kind are fanned out 16
+// units around it.
+void ActorBase_804A5770::fn_801F52A4() {
+    s32 dasu = field_0x18c;
+    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < lbl_80469D48[dasu]) {
+        u32 ids[2] = {'NULL', 'NULL'};
+        u32 params[2] = {0, 0};
+        u32 counts[2] = {0, 0};
+        switch (lbl_80469D78[dasu][(s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1())]) {
+        case DROP_NONE:
+            break;
+        case DROP_HEART:
+            ids[0] = 'HART';
+            counts[0] = 1;
+            break;
+        case DROP_HEART_2:
+            ids[0] = 'HART';
+            counts[0] = 2;
+            break;
+        case DROP_RUPEE:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            break;
+        case DROP_RUPEE_P1:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            params[0] = 1;
+            break;
+        case DROP_RUPEE_P2:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            params[0] = 2;
+            break;
+        case DROP_RUPEE_P3:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            params[0] = 3;
+            break;
+        case DROP_RUPEE_P4:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            params[0] = 4;
+            break;
+        case DROP_RUPEE_P5:
+            ids[0] = 'RUPY';
+            counts[0] = 1;
+            params[0] = 5;
+            break;
+        case DROP_RUPEE_5:
+            ids[0] = 'RUPY';
+            counts[0] = 5;
+            break;
+        case DROP_RUPEE_10:
+            ids[0] = 'RUPY';
+            counts[0] = 10;
+            break;
+        case DROP_RUPEE_P1_5:
+            ids[0] = 'RUPY';
+            counts[0] = 5;
+            params[0] = 1;
+            break;
+        case DROP_RUPEE_P1_10:
+            ids[0] = 'RUPY';
+            counts[0] = 10;
+            params[0] = 1;
+            break;
+        case DROP_RUPEE_20_20:
+            ids[0] = 'RUPY';
+            counts[0] = 20;
+            ids[1] = 'RUPY';
+            counts[1] = 20;
+            params[1] = 1;
+            break;
+        }
+        f32 x = mPos.x;
+        f32 y = mPos.y - mPos.z;
+        for (int i = 0; i < 2 && ids[i] != 'NULL'; i++) {
+            params[i] |= 0x261E00;
+            for (u32 j = 0; j < counts[i]; j++) {
+                JGeometry::TVec3f pos(x, y, 0.0f);
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ids[i], field_0x4, &pos,
+                                                                             params[i], -1, -1);
+                if (serial >= 0 && counts[i] > 1) {
+                    ActorBase_804A5770* actor =
+                        getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (actor != NULL) {
+                        JGeometry::TVec3f p = pos;
+                        f32 angle = 360.0f * i / counts[i];
+                        p.x += 16.0f * JMath::sincosTable_.cosDegree(angle);
+                        p.y += 16.0f * JMath::sincosTable_.sinDegree(angle);
+                        actor->mPos = p;
+                    }
+                }
+            }
+        }
     }
 }
 

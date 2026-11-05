@@ -49,3 +49,34 @@ fn_8022BB48; ActorBase.h startSound_801F0E34 returns JAISoundHandle*, releaseEmi
 of extern "C"; tools/gen_game.py EMIT_RELEASE (protected: needs approval).
 Next: fn_801EE558 / fn_801EE8F4 (literal order), fn_801EEC98, drawSprite_801F06F0
 (SpriteParams copy), fn_801F285C, fn_801F37AC, fn_801EF830, fn_801F52A4.
+
+## 2026-11-05 leverage wave 7, ActorBase round 2 (Opus 5.5)
+Baseline 8623 honest / 9046 structural -> 8623 / 9050 (+0 honest, +4 structural); no
+function anywhere drops (compared by address against the main report).
+Written (all with FIXMEs):
+- fn_801EF830 93.3 % missing/extra (now C++ fn_801EF830__FlPCQ29JGeometry8TVec3<f>P21SpriteParams_801F5AE0lPCclPv):
+  it draws the actor's SHADOW ("kage_sob.bin" frame kind scaled by lbl_80469FA8[kind],
+  kind 7 a flattened copy of the sprite, tile 0x39 an animated "enemy_both2_sob.bin" frame).
+  One extra instruction: MWCC hoists the .rodata base (table + both strings) into r30, the
+  original addresses each with its own lis/addi; params 0x1C/0x1D copy order. Tried: table
+  file-scope / extern / local, a drawSob inline helper (no change).
+- fn_801F52A4 99.1 % regalloc-only (now member fn_801F52A4__18ActorBase_804A5770Fv): item
+  drops by EnemyParam "dasu" (lbl_80469D48 chance, lbl_80469D78 [12][8] drops as
+  DropKind_801F52A4 enum values). Array initialisers: the original has six separate 4-byte
+  objects (lbl_8053F728/72C 'NULL' first in .sdata2; lbl_80543F40-4C zero in .sbss2, not yet
+  in this unit's splits); MWCC emits one 8-byte @NNN per array here. Unresolved; file-scope
+  consts fold.
+- fn_801EE558 99.4 / fn_801EE8F4 99.6 scheduling+regalloc (pos load order in the prologue).
+  They inline fn_801F320C: new static inline isPlayerOnLayer (fn_801F320C now calls it),
+  following the existing isPlayerBelowLayer8 precedent.
+- vfunc_0x28 99.7, fn_801F2A10 99.9: instructions identical, literal names only.
+Data: lbl_8053F730 u16[4] / lbl_8053F738 u8[4] are file-scope statics: that puts them at the
+start of .sdata2 as in the original (function-local statics land in function order).
+Ctor: still needs every literal user before it (all floats up to lbl_8053F7F8) in order; not
+reachable this round.
+Not written: drawSprite_801F06F0 (copies *sp.mMtx into a stack Mtx after PSMTXIdentity with a
+12-word struct copy: the Mtx wrapper type is unknown), fn_801EEC98, the rest.
+SHARED-EDITS: symbols.txt renames fn_801EF830 -> C++ name, fn_801F52A4 -> member;
+ActorBase.h (fn_801EF830 out of extern "C", fn_801F52A4 member, comments, fn_801F2A10 param
+names); Player.h declares extern "C" bool fn_8022D534(s32) (owner tu_8022AD64; no fields
+touched); libs/sdk JMath.h TSinCosTable::cosDegree (from tp JMATrigonometric.h).

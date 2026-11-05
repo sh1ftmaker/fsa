@@ -194,7 +194,10 @@ public:
     // 0/4/8), the distance to *outDist.
     void fn_801EE558(JGeometry::TVec3f* outDir, f32* outDist, s32 player);
     // 6 units / 12 calls. fn_801EE558 with extra player filters
-    // (fn_80230188, fn_8022DCD8 at 0x801EE9E0, 0x801EE9F0).
+    // (fn_80230188, fn_8022DCD8 at 0x801EE9E0, 0x801EE9F0); with no player
+    // found *outDir is zero (fn_801EE558 gives (0, 512, 0)). Both skip
+    // players for which fn_8022F478, fn_80236B50 or fn_8022D534 holds and
+    // inline fn_801F320C's layer test.
     void fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s32 player);
     // 58 units / 104 calls. Never reads r3, but every caller passes an actor
     // there (`this` 102 times) and its own mSerial in r4, so a member is the
@@ -299,7 +302,7 @@ public:
     // 6 units / 6 calls. The mBox overlap test of fn_801F2740 against
     // fn_8022E438(player, skipPlayer) and fn_80239B64(.., arg2, arg3, arg4),
     // whose last two are clrlwi 24 bytes; returns 0 or 1.
-    bool fn_801F2A10(s32 skipPlayer, s32 arg2, bool arg3, bool arg4);
+    bool fn_801F2A10(s32 skipPlayer, s32 type, bool a, bool b);
     // 27 units / 42 calls. field_0x168 = arg and links the actor into the
     // manager's list (fn_801F84C4); returns the previous field_0x164
     // (0x801F2B64). Callers pass 0, 5, 6 or 2.
@@ -406,6 +409,11 @@ public:
     // clrlwi r4, r31, 24 (0x801CDE0C), which MWCC emits for a bool going to
     // an unsigned char parameter (a bool one takes it with mr).
     s32 fn_801F3D94(u8 flag);
+    // 0x801F52A4, called by vfunc_0x24 (0x801F50FC). Drops items by
+    // EnemyParam "dasu" (field_0x18c): a chance per dasu, then one of eight
+    // drops ('HART' / 'RUPY', count and spawn parameter) spawned at the
+    // actor's top-down position.
+    void fn_801F52A4();
     // 2 units / 6 calls. Plays the actor's EnemyParam "voic" sound
     // (startSound_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
     // sound 0x40002.
@@ -599,6 +607,17 @@ bool fn_801EE3C0(u16 tile);
 // callers is needed, it does its own (0x801EE444).
 void releaseEmitter_801EE434(JPABaseEmitter* emitter);
 
+// 20 units / 34 calls. Draws the shadow of kind `flags & 0x3FF` under pos on
+// layer `layer` (none for flags -1, layers 8 and up, or a hidden layer):
+// "kage_sob.bin" frame `kind` scaled per kind, for kind 7 a flattened copy
+// of the "SOB " sprite `name` frame `frame` (or, when name is NULL, the
+// loaded `res`, fn_802F745C), on tile 0x39 an "enemy_both2_sob.bin" frame.
+// params (or NULL) gives the alpha (flag 0x400), 0x1C/0x1D and the matrix.
+// Callers pass an actor's field_0x4 and &mPos. Defined in this unit, so a
+// C++ name (fn_801EF830__FlPCQ29JGeometry8TVec3<f>P21SpriteParams_801F5AE0lPCclPv).
+void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, s32 flags,
+                 const char* name, s32 frame, void* res);
+
 extern "C" {
 
 // 7 units / 8 calls. Loads the "SOB " resource `sobName` (a .rodata string)
@@ -608,14 +627,6 @@ extern "C" {
 // (gGameRoot2_8053AB10->0x20).
 void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                  SpriteParams_801F5AE0* params);
-
-// 20 units / 34 calls. Draws frame `frame` of a "SOB " sprite at pos on
-// layer `layer` (cmpwi 8; GameView 0x131DF): `name` is loaded like
-// fn_801EF574 does, or when NULL `res` is used (fn_802F745C, 0x801EFC74).
-// flags: -1 skips, the low 10 bits are an index, 0x400 a mode bit. Callers
-// pass an actor's field_0x4 and &mPos.
-void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, s32 flags,
-                 const char* name, s32 frame, void* res);
 
 } // extern "C"
 
