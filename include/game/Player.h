@@ -449,6 +449,26 @@ public:
     void fn_80265DB0();
     void fn_80280B30();
     void fn_80265E88(); // tu_80264998 (skeleton / animation), called by fn_80285E58
+    // tu_80264998: the frame functions fn_80265E88 calls per state (r3 = this).
+    void fn_80267018();
+    void fn_802670CC();
+    void fn_802671C8();
+    void fn_80267384();
+    void fn_80267470();
+    void fn_80267598();
+    void fn_80267684();
+    void fn_80267748();
+    void fn_80267818();
+    void fn_802678CC();
+    void fn_80267990();
+    void fn_80267A54();
+    void fn_80267B18();
+    void fn_80267BA8();
+    void fn_80267C6C();
+    void fn_80267D30();
+    void fn_80267E18();
+    void fn_80267ECC();
+    void fn_80268194();
     void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
     bool fn_8025197C(bool arg); // tu_8023FBF0
     void fn_80284430();
