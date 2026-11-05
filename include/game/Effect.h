@@ -6,7 +6,7 @@
 // fn_8013F3E4 in game/tu_8013AAD4.cpp (0x8013C29C), stored at
 // gGameRoot2_8053AB10->0x28; reach it with getEffectSystem_8013C824(). The constructor creates
 // a JKRSolidHeap, loads "particle.jpc" (its OSReport "***** particle.jpc
-// load *****", lbl_80465A28) into a JPAResourceManager and an
+// load *****", lbl_80465A48) into a JPAResourceManager and an
 // JPAEmitterManager. 229 game units use the unit, 224 of them through the
 // emitter spawner spawnEmitter_8013CC50.
 //
