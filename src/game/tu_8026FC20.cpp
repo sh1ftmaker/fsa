@@ -2328,6 +2328,13 @@ void Player_804A6F38::fn_802790C0() {
 
 void Player_804A6F38::fn_802791AC() {}
 
+void Player_804A6F38::fn_8027966C() {
+    field_0x464 = 60;
+    field_0x458 = 0;
+    fn_8024F0E8(0x10004);
+    field_0x350.z = 0.0f;
+}
+
 // By the last hit kind 0x11E4 (fn_802710C8): 4 / 7, 5 / 8, 6 / 9 each have their own reaction
 // (tu_8023FBF0), for the acting player of a group or a lone one; then four emitters stop.
 void Player_804A6F38::fn_802796B8() {
@@ -2357,13 +2364,6 @@ void Player_804A6F38::fn_802796B8() {
         field_0x1370->becomeInvalidEmitter();
         field_0x1370 = NULL;
     }
-}
-
-void Player_804A6F38::fn_8027966C() {
-    field_0x464 = 60;
-    field_0x458 = 0;
-    fn_8024F0E8(0x10004);
-    field_0x350.z = 0.0f;
 }
 
 void Player_804A6F38::fn_80279F94() {
