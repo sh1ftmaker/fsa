@@ -14,13 +14,13 @@ cls_804A9BC8::~cls_804A9BC8() {}
 
 void cls_804A9BC8::draw() {}
 
-// FIXME: 82.07 %. The original fills lbl_804D4768 with two passes of 40
+// FIXME: 86.53 %. The original fills lbl_804D4768 with two passes of 40
 // unrolled stores (ctr 2, stride 0xA0); this loop compiles to one store per
 // pass. The archive type is built as 0x42202020 with the first two chars
 // reduced by 0x20 (u32 'B' + name chars, not a multichar literal), and this,
 // stage and view sit in r30/r29/r31 where the original has r29/r31/r30.
 void cls_804A9BC8::init() {
-    for (s32 i = 0; i < 0x50; i++) {
+    for (int i = 0; i < 0x50; i++) {
         lbl_804D4768[i] = -1;
     }
     lbl_8053ACB0 = 0;

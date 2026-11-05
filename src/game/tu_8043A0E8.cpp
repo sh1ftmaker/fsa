@@ -107,7 +107,6 @@ void cls_804B1920::fn_8043ABCC(s32 index) {
     field_0x10d = 0;
 }
 
-// FIXME: 85.9. The original stores the twelve step counters unrolled with no loop guard; ours adds a cmpwi / bge guard and reloads.
 void cls_804B1920::fn_8043CEA0() {
     field_0x104--;
     if (lbl_8053AAF8->field_0x4c != 7) {
@@ -116,7 +115,7 @@ void cls_804B1920::fn_8043CEA0() {
     if (field_0x104 > 0) {
         return;
     }
-    for (s32 i = 0; i < 12; i++) {
+    for (int i = 0; i < 12; i++) {
         field_0x40[i]->field_0x22 = 0;
     }
     field_0x10b = 3;

@@ -242,10 +242,9 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
     }
 }
 
-// FIXME: 92.12 %. The clearing loop matches the original's shape (two blocks of
-// eight slots, unrolled, the base pointer stepping 0x20) but ours uses r3 as
-// the base and r0 as the zero; the original keeps this in r4 and keeps the zero
-// in r28 for the state-0 store too.
+// FIXME: 98.37 %. One instruction more than the original: it sets the zero it
+// reuses for the state-0 store (`li r28, 0`) before the first loop's
+// float literal load, ours has it later.
 void InextinguishableFlame_804A9D28::init() {
     mCountX = ((field_0x90 >> 22) & 0x1F) + 1;
     mCountY = ((field_0x90 >> 17) & 0x1F) + 1;
@@ -253,7 +252,7 @@ void InextinguishableFlame_804A9D28::init() {
     mFlag300 = (field_0x90 >> 4) & 1;
     mViewBit = (field_0x90 >> 12) & 0x1F;
 
-    for (s32 i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         mEmitters[0][i] = NULL;
         mEmitters[1][i] = NULL;
         mEmitters[2][i] = NULL;

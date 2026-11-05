@@ -138,17 +138,12 @@ void cls_8049E5B8::update() {
     }
 }
 
-// FIXME: 86.5%. try.py class: missing/extra (3 instrs). The original stores
-// the first ten mItems with no loop guard (i = 10 set up at the top, only the
-// last iteration guarded by cmpwi i, 11); ours emits an extra `cmpwi 0, 11 /
-// bge` guard before the ten stores. The remaining loops match. Tried: i <= 10,
-// a shared `i`, a 10 + 1 loop pair, do/while, mItems[11].
 void cls_8049E5B8::init() {
     mKind = field_0x90 & 0xF;
     field_0x280 |= 2;
     // 11 entries, one more than mItems holds: the last lands on mKinds[0],
     // which is set again below.
-    s32 i;
+    int i;
     for (i = 0; i < 11; i++) {
         mItems[i] = 10;
     }

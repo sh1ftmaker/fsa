@@ -41,7 +41,7 @@ static inline s32 slotsCollide(const s32* flags, const s32* keys) {
     return collide;
 }
 
-// FIXME: 91.95 %. The original runs the same slot check twice, once in each arm
+// FIXME: 91.98 %. The original runs the same slot check twice, once in each arm
 // of `lbl_8053AAF8->field_0x7e == 1` (two identical loops; `li r0, 0` before the
 // test), and ours runs it once, so the registers and block layout after it differ.
 // The switch table is `jumptable_804A80F4` in the original but a compiler-made
@@ -125,7 +125,7 @@ void cls_804A80A0::update() {
     case 2:
         if (fn_8023077C()) {
             s32 end = fn_801F856C()->mActorEnd;
-            for (s32 i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 for (s32 j = 0; j < end; j++) {
                     ActorBase_804A5770* actor = fn_801F856C()->mActors[j];
                     if (actor != NULL && actor->mActorId == ACTOR_SWTH &&
