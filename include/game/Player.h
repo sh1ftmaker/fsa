@@ -412,6 +412,7 @@ public:
     // tu_8028FBA0 inlines: the 0x3F8/0x3F9 walk cycle; field_0x2f4 = mPos raised 16.
     void stepWalkCycle();
     void setHeldPos();
+    void stepTransitionAnim(); // tu_8028FBA0 inline: walk / push / carry animation step
     void spawnEffect17D(); // tu_8028FBA0 inline: effect 0x17D above the player
     void followCamera();  // tu_8028FBA0 inline: camera on mPos - (0, 150) on the TV
     bool requestArrival(); // tu_8028FBA0 inline: 0x33 / 0x3E / 0x12 / 0 after an arrival

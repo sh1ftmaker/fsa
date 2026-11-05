@@ -120,6 +120,32 @@ inline void Player_804A6F38::spawnEffect17D() {
     fn_8013CC50(field_0x3b4, &pos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
 }
 
+// The animation while walking in or out through an entrance (fn_80293FE4,
+// fn_802948C0): the walk cycle with 0xCEB, a 19-count cycle of frames 0-2
+// with 0xCEC, the carry step (fn_8026152C) while holding an actor, else
+// fn_8027EE84.
+inline void Player_804A6F38::stepTransitionAnim() {
+    if (field_0xceb == 1) {
+        stepWalkCycle();
+    } else if (field_0xcec == 1) {
+        field_0x3f8++;
+        if (field_0x3f8 >= 19) {
+            field_0x3f8 = 0;
+        }
+        if (field_0x3f8 < 7) {
+            field_0x3f9 = 0;
+        } else if (field_0x3f8 < 12) {
+            field_0x3f9 = 1;
+        } else {
+            field_0x3f9 = 2;
+        }
+    } else if (fn_8025F684()) {
+        fn_8026152C(false);
+    } else {
+        fn_8027EE84();
+    }
+}
+
 // The held actor's position: mPos raised 16 (fn_80292820, raiseHeldActor).
 inline void Player_804A6F38::setHeldPos() {
     field_0x2f4.set(mPos);
@@ -886,6 +912,65 @@ void Player_804A6F38::fn_80293E8C() {
     }
 }
 
+void Player_804A6F38::fn_80293FE4() {
+    if (field_0x3fc < 30) {
+        field_0x3fc++;
+        return;
+    }
+    if (field_0xce4 != field_0xce0 && !fn_80240670() && fn_80303750(field_0x4)) {
+        return;
+    }
+    if (field_0x3fc == 30) {
+        if (field_0x3a4.y > field_0x398.y) {
+            if (field_0x3b4 < 8) {
+                if (field_0xceb == 0) {
+                    fn_8024F0E8(0x2001B);
+                }
+                fn_8024F0E8(0x20021);
+            } else {
+                fn_803037D4(field_0x4, 0xD);
+            }
+        } else {
+            if (field_0x3b4 < 8) {
+                if (field_0xceb == 0) {
+                    fn_8024F0E8(0x20019);
+                }
+                fn_8024F0E8(0x20021);
+            } else {
+                fn_803037D4(field_0x4, 0xD);
+            }
+        }
+    }
+    if (field_0xcf4 == 3) {
+        fn_80265D8C();
+    }
+    field_0x3fc++;
+    fn_80241454(1);
+    fn_8027E5BC(0.5f);
+    if ((field_0x3a4 - mPos).isZero() || field_0x3fc >= 80) {
+        field_0x124d = 0;
+        if (fn_8024189C() <= 0) {
+            fn_80251AEC(0x33);
+        } else if (field_0xceb == 1) {
+            if (viewLayerFlag(field_0x3b4)) {
+                fn_80251AEC(0x4B);
+            } else {
+                fn_80251AEC(0x4A);
+            }
+        } else if (field_0xcec == 1) {
+            fn_80251AEC(0xB);
+        } else if (fn_8025F684()) {
+            fn_80251AEC(0x12);
+        } else {
+            fn_80251AEC(0);
+        }
+    }
+    if (!((field_0xcf4 == 0x15 || field_0xcf4 == 0x23) && viewLayerFlag(field_0x3b4))) {
+        fn_80268B3C();
+    }
+    stepTransitionAnim();
+}
+
 void Player_804A6F38::fn_802948C0() {
     fn_8027E5BC(0.5f);
     field_0x3fc++;
@@ -906,25 +991,7 @@ void Player_804A6F38::fn_802948C0() {
     if (field_0xcf4 == 2) {
         fn_80268B3C();
     }
-    if (field_0xceb == 1) {
-        stepWalkCycle();
-    } else if (field_0xcec == 1) {
-        field_0x3f8++;
-        if (field_0x3f8 >= 19) {
-            field_0x3f8 = 0;
-        }
-        if (field_0x3f8 < 7) {
-            field_0x3f9 = 0;
-        } else if (field_0x3f8 < 12) {
-            field_0x3f9 = 1;
-        } else {
-            field_0x3f9 = 2;
-        }
-    } else if (fn_8025F684()) {
-        fn_8026152C(false);
-    } else {
-        fn_8027EE84();
-    }
+    stepTransitionAnim();
 }
 
 void Player_804A6F38::fn_8029513C() {
