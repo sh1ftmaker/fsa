@@ -31,15 +31,16 @@ game/tu_8022AD64.cpp, hand-matched and reviewed):
          ActorBase_804A5770 or EnemyBase_804A4808 (39 slots, 0xA4 vtable)
          whose destructor is a hand-matched one (DTORX_TEMPLATES) up to
          identifiers, the offset of a SpriteAnim_801D267C member (mAnim) and
-         the number of `fn_801EE434(mEmitterNNN)` releases (with or without
-         the NULL test, each kind only where a template shows it). The class
-         header declares those fields (JPABaseEmitter*, fn_801EE434's
-         parameter) with padding between them; otherwise as dtor. A unit
+         the number of emitter releases `<release>(mEmitterNNN)` (the function
+         at 0x801EE434, ActorBase.h; with or without the NULL test, each kind
+         only where a template shows it). The class header declares those
+         fields (JPABaseEmitter*, the release's parameter) with padding
+         between them; otherwise as dtor. A unit
          with a generated sinit is re-rendered from its recorded files, and
          its 9 chain objects take the @NNN names the longer source gives them.
 
   fwd    the per-player forwarders of tu_8022AD64 (templates fn_8022B7C4 and
-         fn_8022B860 there): `if (lbl_8053AC90 == NULL) return <fallback>;
+         fn_8022B860 there): `if (<mgr> == NULL) return <fallback>;
          if (isPlayerActive(player)) return mPlayers[player]-><getter>(...);
          return <fallback>;` and its void form. The forwarder and its getter
          (a new Player_804A6F38 member) are declared in include/game/Player.h;
@@ -82,6 +83,17 @@ problem, or where a function that matched before drops, is restored
 are recorded in config/G4SE01/gen_game.tsv with the git blob of each file
 before generation (`new` when the generator created it).
 
+Names (docs/names/METHOD.md): the generator follows tools/rename.py's
+manifest. Entities its templates spell out (the emitter release 0x801EE434,
+the player manager <mgr> = .sbss 0x8053AC90, Player.h's anchor 0x8023E724)
+are referred to by address and take their current name from symbols.txt;
+a class name is the naming rule's name brought to the current names; and
+the records (gen_game.tsv's names, the pinned pre-generation blobs) are read
+through rename.to_current(), which renames them as the manifest has been
+applied (or reverted). The records themselves are never rewritten, so
+`rename.py --apply` / `--revert` need no generator edit and --check stays
+exact: anything but a manifest rename still differs.
+
 --check (for the reviewer and the gate; whole manifest by default, objdiff
 runs in parallel), per recorded member:
   1. the target function (dtk's split of the original) is the template's
@@ -120,6 +132,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from gate import Elf  # noqa: E402  (read-only reuse of the gate's ELF reader)
+from rename import to_current  # noqa: E402  (the names manifest, docs/names/METHOD.md)
 
 SYMBOLS = Path("config/G4SE01/symbols.txt")
 SPLITS = Path("config/G4SE01/splits.txt")
@@ -190,8 +203,8 @@ SLOT_LINE = "    /* 0x{off:02X} */ {decl}\n"
 PAD_LINE = "    /* 0x{off:03X} */ u8 field_0x{off:x}[0x{n:X}]; // not yet known\n"
 DTOR_DEF = "{cls}::~{cls}() {{}}\n"
 DTOR_DEF_BODY = "{cls}::~{cls}() {{\n{body}}}\n"
-RELEASE = "    fn_801EE434({field});\n"
-RELEASE_CHECKED = "    if ({field} != NULL) {{\n        fn_801EE434({field});\n    }}\n"
+RELEASE = "    {release}({field});\n"
+RELEASE_CHECKED = "    if ({field} != NULL) {{\n        {release}({field});\n    }}\n"
 FIELD_LINE = "    /* 0x{off:03X} */ {decl}\n"
 
 # ---------------------------------------------------------------- helpers
@@ -334,14 +347,15 @@ def same_as_template(o, s, kind, ours=False):
 #   - the class's own fields at r30 displacements of the skeleton (a
 #     SpriteAnim_801D267C member: `addic. r0, r30, X` and the store of its
 #     J3DFrameCtrl's vtable at X + 0x24, as MessageCheckNPC's mAnim), and
-#   - the number of emitter releases, each `fn_801EE434(mEmitterNNN);`
-#     (`lwz r3, NNN(r30); bl fn_801EE434`) or, with the NULL test,
-#     `lwz r3, NNN(r30); cmplwi r3, 0; beq +8; bl fn_801EE434`. A release
+#   - the number of emitter releases, each `<release>(mEmitterNNN);`
+#     (`lwz r3, NNN(r30); bl <release>`) or, with the NULL test,
+#     `lwz r3, NNN(r30); cmplwi r3, 0; beq +8; bl <release>`. A release
 #     kind is accepted only where a template with the same skeleton has it.
 # The skeleton is the identifier-only fingerprint with the release blocks
 # taken out and the displacement of every relocation-free branch masked
-# (taking blocks out moves them). fn_801EE434 takes a JPABaseEmitter*
-# (ActorBase.h), which types the released fields.
+# (taking blocks out moves them). <release> is the function at
+# EMIT_RELEASE_AT; it takes a JPABaseEmitter* (ActorBase.h), which types the
+# released fields.
 
 BASES = {
     "ActorBase_804A5770": {"vt_name": "__vt__18ActorBase_804A5770", "slots": 19, "size": 0x230,
@@ -359,7 +373,7 @@ DTORX_TEMPLATES = [  # (unit, destructor, base), all hand-matched and reviewed
     ("act_torch", "__dt__14Torch_804A8520Fv", ACTOR_BASE),
     ("act_spotlight", "__dt__18Spotlight_804A84C8Fv", ACTOR_BASE),
 ]
-EMIT_RELEASE = "fn_801EE434__FP14JPABaseEmitter"  # the C++ name (symbols.txt)
+EMIT_RELEASE_AT = 0x801EE434  # the emitter release; its name: emit_release()
 SPRITE_CLS = "SpriteAnim_801D267C"
 SPRITE_SIZE = 0x38            # include/game/SpriteAnim.h
 SPRITE_FRAMECTRL = 0x24       # its J3DFrameCtrl, whose vtable the inline dtor stores
@@ -380,11 +394,11 @@ def dtor_decompose(o, s):
         w, rr = tk[k]
         if w >> 16 == LWZ_R3_R30:
             if k + 3 < len(tk) and tk[k + 1][0] == CMPLWI_R3_0 and tk[k + 2][0] == BEQ_8 \
-                    and tk[k + 3][1] and tk[k + 3][1][1] == EMIT_RELEASE:
+                    and tk[k + 3][1] and tk[k + 3][1][1] == emit_release():
                 rels.append((w & 0xFFFF, True))
                 k += 4
                 continue
-            if k + 1 < len(tk) and tk[k + 1][1] and tk[k + 1][1][1] == EMIT_RELEASE:
+            if k + 1 < len(tk) and tk[k + 1][1] and tk[k + 1][1][1] == emit_release():
                 rels.append((w & 0xFFFF, False))
                 k += 2
                 continue
@@ -471,6 +485,31 @@ def symbols_lines():
 
 
 SYMLINE = re.compile(r"^(\S+) = (\.\w+):0x([0-9A-Fa-f]+); // (.*)$")
+
+_sym_at = {}
+
+
+def sym_at(sec, addr):
+    """symbols.txt's name for sec:addr: how the templates name an entity
+    they spell out, so a manifest rename (tools/rename.py) is followed."""
+    if (sec, addr) not in _sym_at:
+        for l in symbols_lines():
+            m = SYMLINE.match(l.rstrip("\n"))
+            if m and m[2] == sec and int(m[3], 16) == addr:
+                _sym_at[(sec, addr)] = m[1]
+                break
+        else:
+            die(f"symbols.txt has no symbol at {sec}:0x{addr:08X}")
+    return _sym_at[(sec, addr)]
+
+
+def emit_release():
+    """The emitter release's C++ (mangled) name."""
+    return sym_at(".text", EMIT_RELEASE_AT)
+
+
+def release_name():
+    return emit_release().split("__")[0]
 
 
 def actor_names():
@@ -598,11 +637,11 @@ def class_name(unit, vt, ctors):
         eng, conf = names[aid]
         if conf in ("high", "med") and re.fullmatch(r"[A-Za-z][A-Za-z0-9 ]*", eng):
             camel = "".join(w[:1].upper() + w[1:] for w in eng.split())
-            return (f"{camel}_{vt:08X}",
+            return (to_current(f"{camel}_{vt:08X}"),
                     f"The {aid} actor (\"{eng}\", docs/names/actors.tsv, {conf} confidence):"
                     f" the spawner constructs it with fn_{c}, which stores this vtable"
                     f" (config/G4SE01/game_units.tsv). Named after its vtable, 0x{vt:08X}.")
-    return f"cls_{vt:08X}", f"Named after its vtable, 0x{vt:08X}."
+    return to_current(f"cls_{vt:08X}"), f"Named after its vtable, 0x{vt:08X}."
 
 
 def text_base(unit):
@@ -809,7 +848,7 @@ def render_class(cls, naming, overrides, size, why=None, base=ACTOR_BASE, fields
 def render_dtor(cls, d):
     if not d.get("releases"):
         return DTOR_DEF.format(cls=cls)
-    body = "".join((RELEASE_CHECKED if c else RELEASE).format(field=emitter_field(off))
+    body = "".join((RELEASE_CHECKED if c else RELEASE).format(field=emitter_field(off), release=release_name())
                    for off, c in d["releases"])
     return DTOR_DEF_BODY.format(cls=cls, body=body)
 
@@ -1237,9 +1276,10 @@ def members(plan, names):
 
 
 def manifest_rows():
+    """The rows in the tree's current names (rename.to_current)."""
     if not MANIFEST.exists():
         return []
-    return [r.split("\t") for r in MANIFEST.read_text().splitlines()[1:] if r.strip()]
+    return [to_current(r).split("\t") for r in MANIFEST.read_text().splitlines()[1:] if r.strip()]
 
 
 def blob(path):
@@ -1481,8 +1521,9 @@ def bss_base(unit):
 
 
 def git_blob(h):
+    """A pinned pre-generation blob, in the tree's current names."""
     out = subprocess.run(["git", "cat-file", "blob", h], capture_output=True, text=True)
-    return out.stdout if out.returncode == 0 else None
+    return to_current(out.stdout) if out.returncode == 0 else None
 
 
 def text_problems(u, p, src_before, hdr_before):
@@ -1559,7 +1600,7 @@ def check(units):
         print(f"malformed manifest header: {lines[:1]}")
         return False
     known = set(game_units())
-    rows = [r.split("\t") for r in lines[1:] if r.strip()]
+    rows = [to_current(r).split("\t") for r in lines[1:] if r.strip()]
     for r in rows:
         if r[0] not in known:
             print(f"malformed manifest row (not a game unit): {r}")
@@ -1646,7 +1687,8 @@ FWD_RANGED_REF = 0x8022C3AC
 PLAYER_H = Path("include/game/Player.h")
 PLAYER_CLS = "Player_804A6F38"
 PLAYER_TEXT = (0x8023FBF0, 0x8027E5BC)
-FWD_MGR = "lbl_8053AC90"
+FWD_MGR_AT = 0x8053AC90  # the player manager (.sbss); its name: fwd_mgr()
+FWD_ANCHOR_AT = 0x8023E724  # Player.h: new forwarders are declared after it
 ASM_DIR = Path("build/G4SE01/asm")
 
 FWD_DEF = """\
@@ -1697,9 +1739,16 @@ FWD_DECL_HEAD = """\
 // const JGeometry::TVec3f*, stores -> JGeometry::TVec3f*).
 """
 FWD_MEMBER_HEAD = "    // Getters and setters the generated queries forward to (tools/gen_game.py).\n"
-FWD_DECL_ANCHOR = "JGeometry::TVec3f* fn_8023E724(s32 player);"
 FWD_MEMBER_ANCHOR = "    void fn_8023FC10(s32 value);"
 DECL_RE = re.compile(r"^((?:const )?[\w:<>]+\*?)\s+(fn_8[0-9A-F]{7})\(([^)]*)\);(.*)$")
+
+
+def fwd_mgr():
+    return sym_at(".sbss", FWD_MGR_AT)
+
+
+def fwd_decl_anchor():
+    return f"JGeometry::TVec3f* {sym_at('.text', FWD_ANCHOR_AT).split('__')[0]}(s32 player);"
 
 
 def shape_of(o, s):
@@ -1758,7 +1807,7 @@ def fwd_shape(o, s):
             continue
         rels = o.relocs_in(s[5], s[1], s[2])
         code = o.bytes_of(s)
-        mgr = [r for r in rels if r[1] == 109 and o.syms[r[2]][0] == FWD_MGR]
+        mgr = [r for r in rels if r[1] == 109 and o.syms[r[2]][0] == fwd_mgr()]
         calls = [r for r in rels if r[1] == 10]
         if len(mgr) != 1 or len(calls) != 1:
             return None
@@ -2164,12 +2213,12 @@ def fwd_render_def(m):
     args = ", ".join(n for t, n in sp[1:])
     if not m["void"] and len(m["fb"]) == 4:
         lit = [fallback_literal(m["ret"], v) for v in m["fb"]]
-        return FWD_DEF_RANGED.format(ret=m["ret"], name=m["name"], params=m["params"], mgr=FWD_MGR,
+        return FWD_DEF_RANGED.format(ret=m["ret"], name=m["name"], params=m["params"], mgr=fwd_mgr(),
                                      callee=m["callee"], args=args, fb0=lit[0], fb1=lit[1], fb2=lit[2],
                                      fb3=lit[3])
     if m["void"]:
-        return FWD_DEF_VOID.format(name=m["name"], params=m["params"], mgr=FWD_MGR, callee=m["callee"], args=args)
-    return FWD_DEF.format(ret=m["ret"], name=m["name"], params=m["params"], mgr=FWD_MGR, callee=m["callee"],
+        return FWD_DEF_VOID.format(name=m["name"], params=m["params"], mgr=fwd_mgr(), callee=m["callee"], args=args)
+    return FWD_DEF.format(ret=m["ret"], name=m["name"], params=m["params"], mgr=fwd_mgr(), callee=m["callee"],
                           args=args, fb=fallback_literal(m["ret"], m["fb"][0]),
                           fb2=fallback_literal(m["ret"], m["fb"][1]))
 
@@ -2260,7 +2309,7 @@ def extract_declared(lines, plan):
 def fwd_edit_header(plan, text):
     """Player.h: declared forwarders move out of the extern "C" block (with
     their comment when it describes only generated ones), new ones are
-    declared after fn_8023E724, and each getter is declared in the class."""
+    declared after the anchor (FWD_ANCHOR_AT), and each getter is declared in the class."""
     lines = text.split("\n")
     got = extract_declared(lines, plan)
     if isinstance(got, str):
@@ -2272,7 +2321,7 @@ def fwd_edit_header(plan, text):
     for g in moved_groups:
         block += [""] + g
     out = drop_lines(lines, drop)
-    a = next((k for k, l in enumerate(out) if l.startswith(FWD_DECL_ANCHOR)), None)
+    a = next((k for k, l in enumerate(out) if l.startswith(fwd_decl_anchor())), None)
     b = next((k for k, l in enumerate(out) if l.startswith(FWD_MEMBER_ANCHOR)), None)
     if a is None or b is None:
         return None, "Player.h anchors not found"
@@ -2365,7 +2414,7 @@ def loop_shape(o, s):
     bodies, _ = asm_bodies()
     rels = o.relocs_in(s[5], s[1], s[2])
     calls = [r for r in rels if r[1] == 10]
-    mgr = [r for r in rels if r[1] == 109 and o.syms[r[2]][0] == FWD_MGR]
+    mgr = [r for r in rels if r[1] == 109 and o.syms[r[2]][0] == fwd_mgr()]
     if len(calls) != 1 or len(mgr) != 2:
         return None
     code = o.bytes_of(s)
@@ -2512,7 +2561,7 @@ def loop_plan(header_text=None):
 def loop_render_def(m):
     args = ", ".join(n for t, n in (split_params(m["params"]) or []))
     tmpl = LOOP_DEF_FIND if m["kind"] == "find" else LOOP_DEF_EACH
-    return tmpl.format(name=m["name"], params=m["params"], mgr=FWD_MGR, callee=m["callee"], args=args,
+    return tmpl.format(name=m["name"], params=m["params"], mgr=fwd_mgr(), callee=m["callee"], args=args,
                        fb=fallback_literal("s32", m["fb"]) if m["fb"] is not None else "")
 
 

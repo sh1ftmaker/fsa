@@ -83,13 +83,26 @@ only for technical labels), or a role inferred from a single caller.
   `configure.py`, objdiff units, claims and progress files; left for a
   separate, coordinator-run step.
 - Names spelled out in tools or protected files: `tools/**/*.py`,
-  `configure.py`, `config/G4SE01/{gen_game.tsv,config.yml,splits.txt,
-  approved_symbol_changes.txt,provenance_reviewed.txt}`, a `blob` line's
-  symbol in `blobs.txt`, and every generator-owned file (the units listed in
-  `gen_game.tsv`: their source, and the act header for dtor families), whose
-  text `tools/gen_game.py --check` re-renders. `rename.py` reports such a row
-  as BLOCKED and skips it; renaming it needs the generator (or the tool) to
-  change first, a coordinator decision.
+  `configure.py` code (its `#` comment lines are renamed),
+  `config/G4SE01/{config.yml,splits.txt,approved_symbol_changes.txt,
+  provenance_reviewed.txt}` and a `blob` line's symbol in `blobs.txt`.
+  `rename.py` reports such a row as BLOCKED and skips it; renaming it needs
+  the tool to change first (refer to the entity by address, as
+  `tools/gen_game.py` and `tools/tu_map/to_splits.py` do), a coordinator
+  decision.
+
+Generator-owned files (the units listed in `gen_game.tsv`: their source,
+and the act header for dtor families) are renamed like any other source,
+because `tools/gen_game.py` follows the manifest: the entities its templates
+spell out are looked up in symbols.txt by address (the emitter release
+0x801EE434, the player manager 0x8053AC90, Player.h's anchor 0x8023E724), a
+class name is the naming rule's name brought to the current names, and its
+records (the names in `gen_game.tsv` and the pinned pre-generation blobs)
+are read through `rename.to_current()`: an applied row's old name becomes
+the new one, an unapplied row's new name the old one, as symbols.txt shows.
+The records are never rewritten, so `gen_game.tsv` and the pins keep the
+names they were generated with and `--revert` restores everything exactly;
+`gen_game.py --check` still fails on any edit that is not a manifest rename.
 
 ## How a name flows through the build
 

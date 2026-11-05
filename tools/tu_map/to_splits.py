@@ -44,7 +44,7 @@ SEC = {'.rodata': (0x8045C660, 0x804916A0), '.data': (0x804916A0, 0x804B2140),
 EXTABINDEX = (0x80011860, 0x80021814)  # _eti_init_info follows
 EXTAB_END = 0x80011854
 CTORS = (0x8045BD00, 0x8045C630)
-SPAWNER = 'fn_801F9484'
+SPAWNER_AT = 0x801F9484  # the actor spawner, by address (its name: spawner())
 DATASECS = ['.rodata', '.data', '.bss', '.sdata', '.sbss', '.sdata2']
 
 
@@ -134,7 +134,7 @@ def main(apply):
     # constructors, so its references to their vtables are copies: when
     # another unit references the same symbol, the spawner's file doesn't
     # count towards ownership.
-    spawner = unit_of(byname[SPAWNER]['addr'])
+    spawner = unit_of(SPAWNER_AT)
     for a, us in code_refs.items():
         if spawner in us and len(us) > 1:
             us.discard(spawner)
@@ -507,7 +507,7 @@ def name_units(units, syms, byname, unit_of, out):
         for (s, e), i in data_owner.items():
             if s <= a < e:
                 return i
-    spawner_unit = unit_of(byname[SPAWNER]['addr'])
+    spawner_unit = unit_of(SPAWNER_AT)
     for aid, ctor in cases.items():
         u = unit_of(ctor) if ctor else None
         how = f'ctor {ctor:08X}'
@@ -527,9 +527,9 @@ def name_units(units, syms, byname, unit_of, out):
         if len(files) == 1 and not lows:
             names[i] = f'game/{files.pop()}.cpp'
             act_id[i] = '_'.join(sorted(a for a, _ in ids)).lower()
-            evid[i] = f'actor spawner {SPAWNER}: {idtxt}; actors.tsv'
+            evid[i] = f'actor spawner {spawner_base()}: {idtxt}; actors.tsv'
         else:
-            evid[i] = f'actor spawner {SPAWNER}: {idtxt}; not named (several or low-confidence actors)'
+            evid[i] = f'actor spawner {spawner_base()}: {idtxt}; not named (several or low-confidence actors)'
     seen = Counter()
     for i, u in enumerate(units):
         if i not in names:
@@ -553,7 +553,7 @@ def asm_fn(name):
         for f in fs:
             p = os.path.join(dp, f)
             txt = open(p, errors='replace').read()
-            m = re.search(rf'^\.fn {re.escape(name)},.*?^\.endfn {re.escape(name)}$', txt, re.S | re.M)
+            m = re.search(rf'^\.fn "?{re.escape(name)}"?,.*?^\.endfn "?{re.escape(name)}"?$', txt, re.S | re.M)
             if m:
                 return m.group(0)
 
@@ -563,7 +563,7 @@ _fn_cache = {}
 
 def spawner_cases():
     """Actor ID -> constructor address, from the spawner's compare tree."""
-    body = asm_fn(SPAWNER)
+    body = asm_fn(spawner())
     lines = body.splitlines()
     # Walk the compare tree along its branches (a register set by `lis` on one
     # path is not live on another), from the entry. An ID is accepted only from
@@ -669,6 +669,15 @@ def load_syms_cached():
     if _S is None:
         _S = load_syms()
     return _S
+
+
+def spawner():
+    """The spawner's symbols.txt name (mangled), whatever tools/rename.py made it."""
+    return next(s['name'] for s in load_syms_cached() if s['sec'] == '.text' and s['addr'] == SPAWNER_AT)
+
+
+def spawner_base():
+    return spawner().split('__')[0]
 
 
 def apply_splits(names):

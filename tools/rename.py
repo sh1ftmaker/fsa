@@ -32,11 +32,19 @@ A class name inside a mangled template argument (`<...>`) would change the
 template's own length prefix: such a row is refused.
 
 A row is BLOCKED (reported, not applied) when its old name occurs in a file
-the rename must not touch: the tools (tools/**/*.py), configure.py, the
-protected config files, the generator manifest or any generator-owned file
-(config/G4SE01/gen_game.tsv: its units' sources and act headers, whose text
-tools/gen_game.py --check re-renders). Such names need a coordinator change
-to the generator first.
+the rename must not touch: the tools (tools/**/*.py), configure.py outside
+its `#` comment lines, or the protected config files. Such names need a
+coordinator change to the tool first (refer to the entity by address).
+
+Generator-owned files (the units of config/G4SE01/gen_game.tsv: their
+sources and act headers) are renamed like any source: tools/gen_game.py
+follows the manifest. It takes the names it emits from symbols.txt (by
+address) and reads its own records, the gen_game.tsv rows and the
+pre-generation blobs they pin, through to_current() below, which brings a
+text to the names the tree currently uses (an applied row's old name ->
+new, an unapplied row's new name -> old). So gen_game.tsv and the pinned
+blobs stay as recorded, and --apply / --revert need no generator edit.
+configure.py's comment lines are renamed too (its code never is).
 """
 
 import argparse
@@ -49,7 +57,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "docs/names/names.tsv"
 SYMBOLS = "config/G4SE01/symbols.txt"
-GEN_TSV = "config/G4SE01/gen_game.tsv"
 SHA1_FILE = ROOT / "config/G4SE01/build.sha1"
 
 APPLY_CONF = {"high", "med"}
@@ -57,14 +64,15 @@ KINDS = {"class", "function", "global"}
 
 # Never rewritten. Paths are relative to the repository root.
 EXCLUDE_PREFIX = ("build/", "orig/", "site/", ".github/", "tools/", "config/")
-EXCLUDE_FILES = {"docs/names/names.tsv", "docs/names/METHOD.md", "configure.py",
+EXCLUDE_FILES = {"docs/names/names.tsv", "docs/names/METHOD.md",
                  "objdiff.json", "progress/claims.json"}
 INCLUDE_EXTRA = {SYMBOLS}  # the one config file that is rewritten
+COMMENT_ONLY = {"configure.py"}  # only its full-line `#` comments are rewritten
 TEXT_SUFFIX = {".c", ".cpp", ".cp", ".h", ".hpp", ".inc", ".s", ".md", ".txt", ".tsv", ".py", ".yml", ""}
 
 # Blocking: an old name here means "do not rename" (generator / tooling / protected).
 BLOCK_PREFIX = ("tools/",)
-BLOCK_FILES = {"configure.py", GEN_TSV, "config/G4SE01/config.yml",
+BLOCK_FILES = {"config/G4SE01/config.yml",
                "config/G4SE01/approved_symbol_changes.txt", "config/G4SE01/provenance_reviewed.txt",
                "config/G4SE01/splits.txt"}
 
@@ -77,21 +85,22 @@ def git_files():
     return [f for f in out.stdout.decode().split("\0") if f]
 
 
-def generator_owned():
-    """Files tools/gen_game.py --check re-renders (whole units of gen_game.tsv)."""
-    p = ROOT / GEN_TSV
-    owned = set()
-    if not p.exists():
-        return owned
-    for line in p.read_text().splitlines()[1:]:
-        f = line.split("\t")
-        if len(f) < 7:
-            continue
-        unit = f[0]
-        owned.add(f"src/game/{unit}.cpp")
-        if f[1].startswith("dtor"):
-            owned.add(f"include/game/act/{unit}.h")
-    return owned
+def comment_lines(text, keep):
+    """configure.py: its full-line `#` comments (keep=True) or everything
+    else (keep=False), the other lines blanked so line structure stays."""
+    return "\n".join(l if l.lstrip().startswith("#") == keep else ""
+                     for l in text.split("\n"))
+
+
+def on_comments(text, a, b, kind):
+    """substitute() on the full-line comments of text only."""
+    out, n = [], 0
+    for l in text.split("\n"):
+        if l.lstrip().startswith("#"):
+            l, k = substitute(l, a, b, kind)
+            n += k
+        out.append(l)
+    return "\n".join(out), n
 
 
 def read_manifest():
@@ -195,6 +204,55 @@ def symbol_problems(r, syms, name):
     return None
 
 
+def row_state(r, syms):
+    """True when symbols.txt holds the row's new name (applied), False when
+    it holds the old one, None when it holds neither."""
+    def present(name):
+        if r["kind"] == "class":
+            pre = f"{len(name)}{name}"
+            return any(pre in s for s, _ in syms)
+        return any(base_name(s) == name and ad == r["addr"] for s, ad in syms)
+    if present(r["new"]):
+        return True
+    if present(r["old"]):
+        return False
+    return None
+
+
+_current = None
+
+
+def current_renames():
+    """[(from, to, kind)] that bring a text to the tree's current names: an
+    applied row old -> new, an unapplied one new -> old (high/med rows whose
+    state symbols.txt shows)."""
+    global _current
+    if _current is None:
+        rows, problems = read_manifest()
+        if problems:
+            raise SystemExit("names.tsv: " + "; ".join(problems[:3]))
+        syms = parse_symbols((ROOT / SYMBOLS).read_text())
+        _current = []
+        for r in rows:
+            st = row_state(r, syms) if r["conf"] in APPLY_CONF else None
+            if st is True:
+                _current.append((r["old"], r["new"], r["kind"]))
+            elif st is False:
+                _current.append((r["new"], r["old"], r["kind"]))
+    return _current
+
+
+def to_current(text):
+    """text (a generator record: a pinned blob, a gen_game.tsv field) in the
+    names the tree uses now. Every new name carries its address (or is
+    unique, for high rows), so neither direction can hit another name."""
+    if text is None:
+        return None
+    for a, b, kind in current_renames():
+        text, _ = substitute(text, a, b, kind)
+    return text
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     g = ap.add_mutually_exclusive_group()
@@ -214,12 +272,11 @@ def main(argv):
         rows = [r for r in rows if r["old"] in only or r["new"] in only]
 
     files = git_files()
-    owned = generator_owned()
     scan = [f for f in files if (f in INCLUDE_EXTRA or not (f.startswith(EXCLUDE_PREFIX) or f in EXCLUDE_FILES))
-            and Path(f).suffix in TEXT_SUFFIX and f not in owned]
+            and Path(f).suffix in TEXT_SUFFIX]
     self_ = {"tools/rename.py", "tools/names_compare.py"}  # their docs cite example names
     block = [f for f in files if f.startswith(BLOCK_PREFIX) and f.endswith(".py") and f not in self_] + \
-            [f for f in BLOCK_FILES if (ROOT / f).exists()] + sorted(owned & set(files))
+            [f for f in BLOCK_FILES if (ROOT / f).exists()]
     texts = {}
     for f in scan:
         try:
@@ -237,6 +294,10 @@ def main(argv):
             btexts[f] = (ROOT / f).read_text(encoding="utf-8", errors="replace")
         except (FileNotFoundError, IsADirectoryError):
             pass
+    for f in COMMENT_ONLY:  # code blocks, comments are renamed
+        if f in texts:
+            btexts[f] = comment_lines(texts[f], keep=False)
+    ctexts = {f: comment_lines(t, keep=True) if f in COMMENT_ONLY else t for f, t in texts.items()}
     syms = parse_symbols(texts[SYMBOLS])
 
     forward = not args.revert
@@ -254,8 +315,8 @@ def main(argv):
             if not args.quiet:
                 print(f"BLOCKED  {tag}: in {', '.join(hits[:4])}{' ...' if len(hits) > 4 else ''}")
             continue
-        n_src = sum(count(t, src, r["kind"]) for t in texts.values())
-        n_dst = sum(count(t, dst, r["kind"]) for t in texts.values())
+        n_src = sum(count(t, src, r["kind"]) for t in ctexts.values())
+        n_dst = sum(count(t, dst, r["kind"]) for t in ctexts.values())
         why = []
         if r["kind"] == "class":
             tmpl = re.compile(r"<[^<>]*" + re.escape(f"{len(src)}{src}"))
@@ -296,7 +357,7 @@ def main(argv):
     changed = set()
     for r, src, dst in todo:
         for f, t in texts.items():
-            t2, k = substitute(t, src, dst, r["kind"])
+            t2, k = (on_comments if f in COMMENT_ONLY else substitute)(t, src, dst, r["kind"])
             if k:
                 texts[f] = t2
                 changed.add(f)
