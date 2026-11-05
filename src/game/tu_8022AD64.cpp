@@ -690,10 +690,10 @@ bool fn_8022D75C(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_8024BBB0();
+    if (!isPlayerActive(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_8024BBB0();
 }
 
 s32 fn_8022D7F8(s32 player) {
@@ -877,17 +877,6 @@ bool fn_8022E23C(s32 player, s32 arg) {
     return false;
 }
 
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
-}
-
 bool fn_8022E39C(s32 player, s32 arg) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
@@ -932,10 +921,10 @@ s32 fn_8022F3DC(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return -1;
     }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80240644();
+    if (!isPlayerActive(player)) {
+        return -1;
     }
-    return -1;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80240644();
 }
 
 bool fn_8022F478(s32 player) {
@@ -952,10 +941,10 @@ bool fn_8022F514(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80240808();
+    if (!isPlayerActive(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80240808();
 }
 
 bool fn_8022F5B0(s32 player) {
@@ -1157,10 +1146,10 @@ bool fn_80230188(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_802413E8();
+    if (!isPlayerActive(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_802413E8();
 }
 
 bool fn_80230224(s32 player, s32 flag) {
@@ -1658,6 +1647,26 @@ bool fn_802341D0(s32 player) {
     return true;
 }
 
+// FIXME: 99.95 %. reloc-name only: MWCC inlines the recursion three levels deep, and
+// the deepest level calls the player test out of line, fn_8023F264 in the original
+// and isPlayerActive's weak copy here (so the original's isPlayerActive is
+// fn_8023F264 itself, defined later in this file; see docs/CRACK_PASS.md, inlining
+// of later-defined functions). The weak Player::fn_8023F984 copy comes from here.
+// fn_80241964 on the player, or on its leader (fn_8022F3DC) when it follows one
+// (fn_8022F514), recursively; false without the player.
+bool fn_8023434C(s32 player) {
+    if (gPlayerManager_8053AC90 == NULL) {
+        return false;
+    }
+    if (!isPlayerActive(player)) {
+        return false;
+    }
+    if (fn_8022F514(player)) {
+        return fn_8023434C(fn_8022F3DC(player));
+    }
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80241964();
+}
+
 void fn_80234810() {
     if (gPlayerManager_8053AC90 == NULL) {
         return;
@@ -1976,6 +1985,24 @@ s32 fn_80235ACC(s32 player) {
     return 0;
 }
 
+// FIXME: 96.49 %. The original tests the mPlayerMask bit through an inline chain
+// whose deeper copies MWCC calls out of line as the recursion is inlined: level 2
+// calls fn_8023F9B0 (the game-root getter) and inlines GameRoot::fn_8023F98C, level 3
+// calls both, level 4 calls fn_8018A614 (the one-argument form, act_phantom_ganon_2);
+// here isPlayerBitSet loads gGameRoot_8053AAF8 directly (one instruction more at
+// level 2, and isPlayerBitSet's / isPlayerActive's own copies at the deepest level).
+// fn_80270360(serial) on the player when it takes part (mPlayerMask), else, while it
+// follows one (fn_8022F514), on its leader (fn_8022F3DC), recursively.
+void fn_80235B68(s32 player, s32 serial) {
+    if (gPlayerManager_8053AC90 != NULL && isPlayerActive(player)) {
+        if (isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+            gPlayerManager_8053AC90->mPlayers[player]->fn_80270360(serial);
+        } else if (fn_8022F514(player)) {
+            fn_80235B68(fn_8022F3DC(player), serial);
+        }
+    }
+}
+
 void fn_80235FE8(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return;
@@ -2139,10 +2166,10 @@ bool fn_80236A18(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return true;
     }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80270A04();
+    if (!isPlayerActive(player)) {
+        return true;
     }
-    return true;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80270A04();
 }
 
 bool fn_80236AB4(s32 player) {
@@ -2620,28 +2647,6 @@ bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial
     return false;
 }
 
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
 bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
@@ -2679,6 +2684,32 @@ bool fn_80239D38() {
         }
     }
     return true;
+}
+
+// Outside the game root's field_0x7f mode: whether no taking-part (mPlayerMask) present
+// player has fn_80230188 or fn_8022D75C set and at most one of them lacks fn_80236A18.
+bool fn_80239F10() {
+    if (gPlayerManager_8053AC90 == NULL) {
+        return false;
+    }
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        return false;
+    }
+    s32 count = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive(i) && isPlayerBitSet(gGameRoot_8053AAF8, i)) {
+            if (fn_80230188(i)) {
+                return false;
+            }
+            if (fn_8022D75C(i)) {
+                return false;
+            }
+            if (!fn_80236A18(i)) {
+                count++;
+            }
+        }
+    }
+    return count <= 1;
 }
 
 s32 fn_8023A1A4(s32 player) {
@@ -2766,18 +2797,6 @@ void fn_8023A654(s32 player) {
     if (isPlayerActive(player)) {
         gPlayerManager_8053AC90->mPlayers[player]->field_0xb9f = true;
     }
-}
-
-s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80256C74(a, b)) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
@@ -2894,18 +2913,6 @@ s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) 
     }
     for (s32 i = 0; i < 4; i++) {
         if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802730D8(box, layer, flag, margin)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
             return i;
         }
     }
@@ -3135,6 +3142,58 @@ bool fn_8023BE0C(s32 player) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_8023FF88();
     }
     return false;
+}
+
+// FIXME: 99.95 %. reloc-name only, as fn_8023434C: the deepest inlined level calls the
+// out-of-line player test, fn_8023F264 in the original, isPlayerActive's copy here.
+// fn_80247B9C on the player or, while it follows one (fn_8022F514), on its leader
+// (fn_8022F3DC), recursively; 0 without the player.
+s32 fn_8023BEA8(s32 player) {
+    if (gPlayerManager_8053AC90 == NULL) {
+        return 0;
+    }
+    if (!isPlayerActive(player)) {
+        return 0;
+    }
+    if (fn_8022F514(player)) {
+        return fn_8023BEA8(fn_8022F3DC(player));
+    }
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80247B9C();
+}
+
+// FIXME: 99.95 %. reloc-name only, as fn_8023434C: the deepest inlined level calls the
+// out-of-line player test, fn_8023F264 in the original, isPlayerActive's copy here.
+// fn_80247BD4 on the player or, while it follows one (fn_8022F514), on its leader
+// (fn_8022F3DC), recursively; 0 without the player.
+s32 fn_8023C36C(s32 player) {
+    if (gPlayerManager_8053AC90 == NULL) {
+        return 0;
+    }
+    if (!isPlayerActive(player)) {
+        return 0;
+    }
+    if (fn_8022F514(player)) {
+        return fn_8023C36C(fn_8022F3DC(player));
+    }
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80247BD4();
+}
+
+// fn_80247C0C on a present player for which fn_8022F478 does not hold: on the player
+// it follows (fn_8022F3DC) when fn_8022F514 holds, else on itself. False otherwise.
+bool fn_8023C830(s32 player) {
+    if (gPlayerManager_8053AC90 == NULL) {
+        return false;
+    }
+    if (!isPlayerActive(player)) {
+        return false;
+    }
+    if (fn_8022F478(player)) {
+        return false;
+    }
+    if (fn_8022F514(player)) {
+        return gPlayerManager_8053AC90->mPlayers[fn_8022F3DC(player)]->fn_80247C0C();
+    }
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80247C0C();
 }
 
 s8 fn_8023CA88(s32 player) {

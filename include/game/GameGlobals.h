@@ -1733,12 +1733,9 @@ extern cls_804B1634* lbl_8053AEC0;
 extern s32 lbl_8053A100;
 
 // SHARED-EDIT (act_battle_royale_end_check fn_803D6BDC): the only caller
-// known so far. Owner unit not written yet. fn_80239F10 (0x80239F10, 0x294
-// bytes) takes no arguments and returns a bool. (fn_802B3A48 is
+// known so far. Owner: game/tu_8022AD64.cpp (0x80239F10). (fn_802B3A48 is
 // cls_804A8638::fn_802B3A48, game/cls_804A8638.h.)
-extern "C" {
 bool fn_80239F10();
-}
 
 // game/tu_803006E8.cpp (0x803007A0, not written yet). Takes no arguments; calls
 // vtable slot 0xC of *lbl_8053ACB8. GameRoot's destructor calls it.

@@ -77,6 +77,7 @@ public:
     s32 fn_80240644(); // via fn_8022F3DC
     bool fn_80240670() const; // via fn_8022F478
     bool fn_80240808(); // via fn_8022F514
+    bool fn_80247C0C(); // tu_8023FBF0 (li 1 / li 0); via fn_8023C830 (on the leader, fn_8022F3DC, of a follower)
     bool fn_80240818(); // via fn_8022DCD8
     bool fn_80240840(s32 arg); // via fn_8022E39C
     bool fn_80240860(); // byte at 0x436
@@ -1715,9 +1716,6 @@ bool fn_80239718(s32 player, s32 serial);
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
-// Owner: tu_8022AD64 (0x8023434C, defined there). tu_8026FC20 fn_80274728 tests it
-// (clrlwi.) for this player while fn_802486A0() == 3.
-bool fn_8023434C(s32 player);
 // Owner: tu_8022AD64 (0x80230E1C, defined there). 1 unit (act_four_switch_monitor's
 // update: fn_80230E1C(player, 0) for each player whose bit is set in field_0x82).
 // Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards
@@ -1751,8 +1749,6 @@ extern "C" {
 bool fn_8022E438(s32 player, s32 other);
 // Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
 bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg); // reads pos+0/+4 only
-// Called by act_fairy_invincible.cpp's update() on the tracked player in state 1; the owning unit is not written yet, result unused.
-void fn_8023C830(s32 player);
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
 // Loops over the players and calls fn_80272DCC, which copies the 4 box floats
@@ -1784,7 +1780,17 @@ bool fn_802370FC(s32 player, s32 arg);
 bool fn_80236ED8(s32 player, s32 value);
 // Whether every present player passes fn_8024E060, then fn_8024DCD0; then fn_8037AE00 on
 // lbl_8053AD70. False without a manager. 8+ units (act_zoom, act_small_key, ...).
+// fn_80241964 on the player or, while it follows one (fn_8022F514), on its leader
+// (fn_8022F3DC), recursively. tu_8026FC20 fn_80274728 tests it (clrlwi.) for this player
+// while fn_802486A0() == 3.
+bool fn_8023434C(s32 player);
 bool fn_8023077C();
+// fn_80270360(serial) on the player if it takes part (mPlayerMask), else on its leader while it
+// follows one, recursively.
+void fn_80235B68(s32 player, s32 serial);
+// fn_80247C0C on the player (its leader when fn_8022F514 holds) unless fn_8022F478 holds; false
+// without the player. Called by act_fairy_invincible.cpp's update() in state 1, result unused.
+bool fn_8023C830(s32 player);
 // fn_8023077C's two passes over a present `player`'s group (fn_8022E438), without the
 // final call. 7 units (act_small_key, act_treasure_chest, act_heart_container, ...).
 bool fn_802308E0(s32 player);
