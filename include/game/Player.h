@@ -1017,7 +1017,7 @@ public:
     /* 0x1320 */ u8 field_0x1320[0x132C - 0x1320];
     /* 0x132C */ JPABaseEmitter* field_0x132c;
     /* 0x1330 */ cls_804A64A8 field_0x1330;
-    /* 0x1344 */ u8 field_0x1344[0x1350 - 0x1344];
+    /* 0x1344 */ JGeometry::TVec3f field_0x1344;
     /* 0x1350 */ JPABaseEmitter* field_0x1350;
     /* 0x1354 */ JPABaseEmitter* field_0x1354;
     /* 0x1358 */ JPABaseEmitter* field_0x1358;

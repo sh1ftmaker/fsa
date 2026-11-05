@@ -586,10 +586,8 @@ fn_8028FBA0 starts kind 5 back to 0xCB0; **fn_8028FC2C** (100 %) picks a
 per-stage respawn point for kind 0x27 (stage / level / screen of the view,
 the floor 0x3B4 - 7).
 
-Written in round 4: 50 of 53 (24 at 100 %, 26 structurally done; their only
-difference is the .sdata2 literal order, which fn_80290FC0 sets). Not
-written: fn_80290070 (above) and fn_80290FC0, which needs the u8 hole at
-0x1344 typed as a TVec3f (the emitter position it copies from mPos, moves
-3 by facing and hands to the callback 0x1330's field_0x4); with that field
-it is 99.6 % (scheduling) and the unit goes to 51 / 53 (the patch is in
-progress/game__tu_8028FBA0.md).
+Written in round 4: 51 of 53 at 100 % (all but two). fn_80290FC0 (state 0x32
+update) is 99.62 % (scheduling only; Player 0x1344 is now a TVec3f, the
+emitter position copied from mPos, moved 3 by facing and handed to the
+callback 0x1330's field_0x4); its .sdata2 literals set the pool order that
+makes the other 26 handlers match. Not written: fn_80290070 (above).

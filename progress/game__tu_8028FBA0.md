@@ -216,3 +216,9 @@ index 18c75968..52fbdc0c 100644
      field_0x124d = 1;
      field_0x458 = 0;
 ```
+
+## Review (Sonnet 5.5), 2026-11-05
+Rebased onto matching 9309b311 (only a docs/PLAYER.md conflict, both sections kept). Applied the
+fn_80290FC0 patch (Player 0x1344 = TVec3f, TEMP-LOCAL tag dropped); 51 / 53 (+39 over matching's 12),
+fn_80290FC0 99.62 % scheduling with an exact FIXME; the 26 literal-pool FIXMEs and the 99.4 % one on
+fn_802954B8 removed (all 100 %). Zero drops against matching's honest report.
