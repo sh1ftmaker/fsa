@@ -41,7 +41,6 @@ static cls_804B0B00::StateFunc lbl_804B0A24[15] = {
     &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E462C,
 };
 
-// Steps the cursor's blink counter (field_0x254[0]) and the frame counter (field_0x220[0]).
 // .rodata: the unit's tables in address order (the functions address them
 // off one base); u64 tables are J2DPane::search tags.
 static const f32 lbl_80477970[16] = {
@@ -220,6 +219,8 @@ static inline u8 fadeAlpha(u8 alpha, f32 rate) {
     return alpha * rate;
 }
 
+// Steps the cursor's blink counter (field_0x254[0]) and the frame counter (field_0x220[0]).
+// Shared by fn_803E9034 and fn_803ED604 (the two menu update functions).
 static inline void stepBlink(cls_804B0B00* self) {
     if (self->field_0x254[0] != 0) {
         self->field_0x254[0]++;
