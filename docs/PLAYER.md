@@ -1137,3 +1137,21 @@ section's last 4 bytes are padding). Left unwritten: none of the state handlers.
 - Open: `T pos = a + b` makes one extra stack copy where the original builds pos in place
   (fn_8025DACC, fn_8025D7E4); the charged shot's argument `(index & 3) | (facing & 3) << 4`
   comes out with the operands of the rlwimi swapped (fn_8025BEB0, fn_8025C894).
+## Round 11 (tu_8022AD64) (agent T, Opus 5.5, 2026-11-05)
+
+- Unit 331 -> 349 / 373 (+18 honest), .bss 100 %. Written: the group / all-player passes
+  (fn_8022CDD4 ... fn_8023C830), fn_80239F10 (battle end test, boot path), screen x / y
+  fn_8023D9B0 / fn_8023D4F8, fn_80238430 (const TVec2f*), __sinit, the weak
+  Player::fn_8023F984; fn_8023F088 99.88 % (reloc-name), recursive leader queries
+  fn_8023434C / fn_8023BEA8 / fn_8023C36C 99.95 % (reloc-name), fn_80235B68 96.49 %.
+- **Forwarder form**: a forwarder that another function in this unit inlines must be written
+  inverted (`if (!isPlayerActive(p)) return F; return mPlayers[p]->get();`): standalone both
+  forms compile alike, inlined only the inverted one gives the original's blocks. Ten are now.
+- **Deferred inlining evidence**: fn_8023434C inlines its own recursion three levels and calls
+  the player test out of line at the bottom as fn_8023F264, so isPlayerActive is fn_8023F264
+  itself (a plain function at 0x8023F264); fn_80235B68's bottom calls fn_8018A614. The 16
+  functions still unwritten all inline functions defined after them (forwarders,
+  getPlayerPos_8023E724, getPlayerLayer_8023DE58, fn_80238A68): CRACK_PASS's open question.
+- **PS JGeometry**: fn_80233C08 is libs' JGeometry/Vec.h TVec3<f32>::normalize() (PSVECSquareMag
+  + PSVECScale); the game's JGeometry.h has no paired-single TVec3. fn_80232A0C (cross-player
+  pass, 370 boot instructions) needs the same.

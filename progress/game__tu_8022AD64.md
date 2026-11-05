@@ -127,3 +127,50 @@ the rows' src_before re-pinned to that blob.
 - The larger ones (>= 296 bytes) and __sinit.
 - fn_80233C9C is written with the final compare spelled out: through TBox::intersect / isValid
   (TVec2::isAbove's `? true : false`) it is 83.94 % (4 extra instructions renormalising the bool).
+
+# Player track round 11, agent T (2026-11-05, Opus)
+
+Baseline (progress.py): total 8666 / 11557; unit 331/373. Now: total 8684 (+18); unit 349/373;
+structural 9129. .bss 100 % (sinit split).
+
+## Done (100 % unless said)
+- Group / all-player passes: fn_8022CDD4, fn_8022D36C, fn_8023061C, fn_8023077C, fn_802308E0,
+  fn_802341D0, fn_80236ED8, fn_802370FC, fn_802382D0, fn_80238A68, fn_80239D38, fn_80239F10
+  (boot path: battle end), fn_8023C830.
+- fn_8023D4F8 / fn_8023D9B0: screen y / x of a TVec3f against the player's fn_8023CD74 /
+  fn_8023CE10, 0xE0 / 0x180 off screen (u16; tu_80301CD0 keeps 8 / 9 bits: OAM-style).
+- fn_80238430 returns `const TVec2f*` (&field_0x324; the TVec3f fallback cast with a comment,
+  RULES_CARD's TVec2f-probe shape); its tu_8023FBF0 caller's local follows.
+- fn_8023F088 99.88 % reloc-name only (4.0f / 1.0f pooled after unwritten functions' literals):
+  start-entry shuffle with GameRoot::mRandom.get_ufloat_1().
+- Recursive leader queries fn_8023434C / fn_8023BEA8 / fn_8023C36C 99.95 % (reloc-name only)
+  and fn_80235B68 96.49 % (structurally close); the weak Player::fn_8023F984 copy (100 %) comes
+  with them. __sinit_tu_8022AD64_cpp 100 % (symbols.txt: fn_8023F9B8 renamed, the 0x108 .bss
+  placeholder split into the TVec3f, @9473-@9481 chain objects and 9 memPool_ copies; the @NNN
+  names follow our object's numbering and move if an include adds inline functions).
+- Inverted forwarders: fn_8022D7F8, fn_8023CD74, fn_8023CE10, fn_80236AB4, fn_80236B50,
+  fn_8022F3DC, fn_8022F514, fn_80230188, fn_8022D75C, fn_80236A18 are now written
+  `if (!isPlayerActive(p)) return F; return ...;` - the same code standalone, but the callers
+  that inline them (fn_80238A68, fn_8023D4F8/9B0, fn_80239D38, fn_8023C830, fn_80239F10)
+  show this block layout and reach 100 % only with it.
+- Types: Player::fn_8024DCD0 and fn_80230AD4 return bool; Player::fn_80247C0C (bool) declared.
+
+## Evidence for the "inlining of later-defined functions" question (CRACK_PASS)
+fn_8023434C inlines its own recursion three levels; at the depth limit MWCC calls the inline
+player test out of line, and the original calls fn_8023F264 there (ours: isPlayerActive's weak
+copy). So the original's isPlayerActive IS fn_8023F264, a plain function defined at 0x8023F264
+that every earlier function inlines. Likewise fn_80235B68's level 4 calls fn_8018A614 (a
+one-argument mPlayerMask test whose level-2/3 copies are fn_8023F9B0()->fn_8023F98C()). This
+unit was therefore compiled with deferred inlining (or equivalent); see "Not done".
+
+## Not done (18 unwritten; 6 written below 100 %: the four recursive queries, fn_8023F088, fn_8023F390)
+- Inline later-defined functions (rule: left unwritten): fn_8022B334, fn_8022CFE8 (fn_8022F514,
+  fn_8023561C, getPlayerPos_8023E724 inlined; a test with calls gives 45.9 %), fn_8022D534,
+  fn_8022E438, fn_8022EA0C, fn_802316C8, fn_80231A50 (getPlayerLayer_8023DE58), fn_80231DE4
+  (fn_8023ED8C), fn_80237A80 (fn_8023EA28), fn_80238548, fn_8023885C (fn_80238A68),
+  fn_80239108, fn_8023CEAC, fn_8023D21C, fn_8023D644, fn_8023DAF4 (getPlayerPos_8023E724).
+- Paired-single JGeometry: fn_80233C08 is exactly libs/sdk/include/JSystem/JGeometry/Vec.h's
+  TVec3<f32>::normalize() (JMathInlineVEC::PSVECSquareMag, 32 * FLT_EPSILON, inv_sqrt, PSVECScale,
+  returns inv * sq); the game's include/JSystem/JGeometry.h has only the C form (literal
+  epsilon, scalar scale, returns inv). fn_80232A0C also scales with ps_muls0. Adopting the
+  libs TVec3 is a shared-header decision.
