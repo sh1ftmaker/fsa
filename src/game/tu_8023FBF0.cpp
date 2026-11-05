@@ -1604,6 +1604,20 @@ void Player_804A6F38::fn_8024B2BC(JGeometry::TVec3f* out) {
     field_0xbf0->fn_8026947C(out);
 }
 
+// Pushes the current position (and the helper's airborne flag 0xB4) onto
+// the front of the trail, unless the player walks to its spot.
+void Player_804A6F38::fn_8024B9E8() {
+    if (field_0x1216) {
+        return;
+    }
+    for (s32 i = 0x30; i > 0; i--) {
+        field_0x38[i] = field_0x38[i - 1];
+        field_0x284[i] = field_0x284[i - 1];
+    }
+    field_0x38[0] = mPos;
+    field_0x284[0] = field_0xbf0->field_0xb4;
+}
+
 void Player_804A6F38::fn_8024BAEC() {
     if (field_0x1216) {
         return;
