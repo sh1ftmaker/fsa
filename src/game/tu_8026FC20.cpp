@@ -1722,6 +1722,9 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
     }
 }
 
+// Emitter offsets from mPos by facing (fn_80274CB8 is its first user, fn_8027D320).
+static const f32 lbl_8046BB48[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
+
 // Pose step of state 0x0E's sub-mode 0x45C (from fn_8027D5F0): the frame counter 0x3FA
 // picks the pose 0x3FB; at the sub-mode's last frame the state returns to 8 (fn_80246464)
 // or 0. Sub-modes 0 / 1 also turn the pose into an angle by the facing 0x3DC and put the
@@ -2469,6 +2472,40 @@ void Player_804A6F38::fn_8027CBB0() {
         }
         field_0x12c0 = -1;
     }
+}
+
+// Enter of state 0x05: pushed down (0x344.z = -4), lifted to 0.5 on a flagged layer, three
+// sounds, the emitters 0xCB / 0xCC (callbacks 0x1278 / 0x1290, immortal) and a 'PEFF' actor
+// (serial 0x12C0) at 0x12A4 = mPos + the facing's offset.
+void Player_804A6F38::fn_8027D320() {
+    field_0x458 = 0;
+    field_0x460 = true;
+    field_0x436 = true;
+    field_0x344.x = 0.0f;
+    field_0x344.y = 0.0f;
+    field_0x344.z = -4.0f;
+    if (viewLayerFlag(field_0x3b4) && mPos.z < 0.5f) {
+        mPos.z = 0.5f;
+    }
+    fn_8024F0E8(0x10001);
+    fn_8024F0E8(0x20001);
+    fn_8024F0E8(0x2000e);
+    const f32* offset = lbl_8046BB48[field_0x3dc];
+    field_0x12a4.set(offset[0], offset[1], offset[2]);
+    field_0x12a4.add(mPos);
+    if (field_0x1274 == NULL) {
+        field_0x1274 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcb, 0, -1, NULL, &field_0x1278, true, 1.0f);
+        if (field_0x1274 != NULL) {
+            field_0x1274->setStatus(JPAEMIT_Immortal);
+        }
+    }
+    if (field_0x128c == NULL) {
+        field_0x128c = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcc, 0, -1, NULL, &field_0x1290, true, 1.0f);
+        if (field_0x128c != NULL) {
+            field_0x128c->setStatus(JPAEMIT_Immortal);
+        }
+    }
+    field_0x12c0 = getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &field_0x12a4, (field_0x4 & 3) | 8, -1, -1);
 }
 
 void Player_804A6F38::fn_8027D4F4() {
