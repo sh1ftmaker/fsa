@@ -7,6 +7,7 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
+class JPABaseEmitter;
 #include "game/act/act_princess_zelda_ending.h"
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
@@ -224,10 +225,15 @@ class cls_804A2944 : public ActorBase_804A5770 {
 public:
     cls_804A2944() {}
     /* 0x08 */ virtual ~cls_804A2944();
+    // 0x8019C500 (game/tu_80197070.cpp): for each present player on this actor's
+    // layer, draws a marker (fn_80230498) at its stored position field_0x2a4[i];
+    // the y is this actor's y plus a constant unless `keepY`.
+    void fn_8019C500(s32 keepY);
     /* 0x230 */ u8 field_0x230[0x74];
     /* 0x2A4 */ JGeometry::TVec3f field_0x2a4[4];
     /* 0x2D4 */ JGeometry::TVec3f field_0x2d4[4];
-    /* 0x304 */ u8 field_0x304[0x34];
+    // SHARED-EDIT: thirteen emitters, each freed by the destructor (game/tu_80197070.cpp).
+    /* 0x304 */ JPABaseEmitter* mEmitters[13];
 }; // Size: 0x338
 
 // Spawned for 'ALCE'.

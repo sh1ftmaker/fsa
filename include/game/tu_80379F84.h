@@ -120,6 +120,12 @@ struct SaveRow_8050EC80 {
 
 extern SaveRow_8050EC80 lbl_8050EC80[];
 
+// Owner: game/tu_80197070.cpp (0x8019CDE4 / 0x8019CE40). Set / test bit
+// stage * 4 + sub of the current save row's field_0x28 (stage 0-7, sub 0-3;
+// anything else is ignored / false).
+void fn_8019CDE4(s32 stage, s32 sub);
+bool fn_8019CE40(s32 stage, s32 sub);
+
 // .sbss 0x8053ADB8, 0x8053ADA0, 0x8053ADA8, 0x8053ADC0 (auto split, 8 bytes
 // each; stored by the constructors above, in units not written yet).
 extern cls_804B0288* lbl_8053ADB8;
