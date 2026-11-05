@@ -998,6 +998,99 @@ void ConnectScreen_804B0F10::fn_803F8050() {
     stepCursorTimer(this);
 }
 
+// FIXME: 96.29. Registers throughout (one more saved register in the
+// original), the counter's first test is `lha r0; cmpwi` there but
+// `lha r3; extsh.` here, and the three-row loop's i * 10 sits in two
+// registers there (li r30; mr r28, r30) but one here; .sdata2 @NNN names.
+// Update state 7: slides field_0xc's game-select panes in and fades them up
+// (field_0x240[0] counts the frames: the title from 0 to 25, the rows
+// 10 frames apart, the rule box from 0 to 15), then enters state 8 at 75.
+void ConnectScreen_804B0F10::fn_803F8354() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            s32 d = 25 - field_0x240[0];
+            field_0x164 = -200.0f * ((f32)(d * d) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 20; i++) {
+                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], alpha));
+            }
+        } else {
+            field_0x164 = 0.0f;
+            for (int i = 0; i < 20; i++) {
+                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            s32 d = 20 - (field_0x240[0] - 25);
+            field_0x168 = -200.0f * ((f32)(d * d) / 400.0f);
+        } else {
+            field_0x168 = 0.0f;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        if (field_0x240[0] > i * 10) {
+            if (field_0x240[0] < i * 10 + 15) {
+                s32 d = 15 - (field_0x240[0] - i * 10);
+                field_0x184[i] = 300.0f * ((f32)(d * d) / 225.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 10) / 15.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 5; j++) {
+                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], alpha));
+                }
+            } else {
+                field_0x184[i] = 0.0f;
+                for (int j = 0; j < 5; j++) {
+                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 15) {
+            s32 d = 15 - field_0x240[0];
+            field_0x198 = -450.0f * ((f32)(d * d) / 225.0f);
+            f32 alpha = (f32)field_0x240[0] / 15.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 26; i++) {
+                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], alpha));
+            }
+        } else {
+            field_0x198 = 0.0f;
+            for (int i = 0; i < 26; i++) {
+                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F2660();
+    }
+    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
+    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
+    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
+    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
+    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
+    f32 y = field_0xc->search('Pscuro02')->getBounds()->i.y;
+    field_0xc->search('Pscuro02')->move(field_0xf4, y);
+}
+
 // FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
 // follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 5 (the GBA connection prompt): field_0x25c 255, or decide
