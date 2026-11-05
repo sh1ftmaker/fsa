@@ -69,6 +69,11 @@ public:
     // field_0x60[field_0x18][field_0x14]. s32: the spawner passes the result
     // on to its s32 setter without a clrlwi.
     s32 fn_802D39FC();
+    // 0x990 bytes; this unit only (fn_802D9CD8, vfunc_0xC). Reads the map
+    // CSV tables lbl_804A9710 / lbl_804A9830; r3 is the view.
+    void fn_802D3D48();
+    // 0x92C bytes; this unit only (fn_802D9CD8, fn_802DBD60, vfunc_0xC).
+    void fn_802D92F0();
     // 1 unit / 1 call. sprintf of "d_map%s_%d%d_mmm_2_%d.szs" (lbl_8046E7E8)
     // into field_0x1321a for the current screen and `layer`; returns it, or
     // NULL off the grid (0x802D8210).
@@ -92,7 +97,9 @@ public:
     const char* fn_802D9C7C(s32 a, s32 b);
     // 2 units. Calls fn_8030C85C on gGameRoot2_8053AB10->0x24 (this unused).
     void fn_802D9CB0();
-    // 1 unit. 0x2E4 bytes; no arguments.
+    // 1 unit. 0x2E4 bytes; no arguments. Clears the per-screen bit and byte
+    // tables, rebuilds the screen (fn_802D3D48, fn_802D92F0, fn_802D8D50,
+    // fn_802D8328) and hands mVisibleBox to the camera and the tile map.
     void fn_802D9CD8();
     // 1 unit. field_0xc4 = 0x8CA0 if gGameRoot_8053AAF8->0x7F == 1, else 0x2A30.
     void fn_802D9FBC();
@@ -103,10 +110,15 @@ public:
     // 1 unit (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8, like
     // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
     u8 fn_802DA000();
-    // 1 unit each; no arguments. fn_802DA630 returns 0 or 1 (it moves the four
-    // players with fn_80230498 and walks the actor list).
+    // 1 unit each; no arguments.
     void fn_802DA010();
-    bool fn_802DA630();
+    // Unless fn_802DA000() (returned as is, no clrlwi), moves the four players
+    // 70 units against field_0x2c[0]'s direction (fn_80230498) and the first
+    // 'OSIN' actor in state 2 with them.
+    u8 fn_802DA630();
+    // Steps the screen towards column field_0x1c (field_0x2c = (+-1, 0),
+    // fn_802DEDFC); on success clears the screen (clearScreen), places the
+    // players at lbl_8046E148 + mVisibleBox.i and restarts the time limit.
     void fn_802DA788();
     // 4 units. 0xE14 bytes; no arguments.
     void fn_802DA8DC();
@@ -123,8 +135,11 @@ public:
     // is a guess, a two-int struct passed by value would look the same.
     bool fn_802DCD1C(const s32* dir);
     // 1 unit. Clears the actors (fn_801F7CAC, fn_801F6204), field_0x131de and
-    // the effects (fn_8013C8CC), and field_0xc9.
+    // the effects (fn_8013C8CC), and field_0xc9: the out-of-line copy of
+    // clearScreen, which game/tu_802D39B8.cpp defines (inline) before
+    // fn_802DA788 and inlines there after a fn_8038D454 call.
     void fn_802DCDF4();
+    inline void clearScreen();
     // 1 unit. The screen change of fn_802DCD1C with dir read the same way
     // (lwz 0/4; the same guess); returns 0 or 1.
     bool fn_802DCE5C(const s32* dir);
@@ -154,8 +169,11 @@ public:
     // 4 units / 88 calls (this unused). The slot of id (cmplw against the
     // clrlwi 16 id) in the layer's list, or -1.
     s32 fn_802D4C10(s32 layer, u16 id);
-    // 1 unit / 4 calls. The screen's mask for the layer (r3:r4).
+    // 1 unit / 4 calls. The screen's mask for the layer (r3:r4): the
+    // out-of-line copy of screenMask, which game/tu_802D39B8.cpp defines
+    // (inline) before fn_802D4768 and inlines into fn_802D4768-fn_802D4ADC.
     u64 fn_802D7AC4(s32 layer);
+    inline u64 screenMask(s32 layer);
     // 1 unit. The 4-bit field `slot` (bits 60 - slot * 4) of the screen's
     // mask: __shr2u, then the low word (callers clrlwi 16).
     s32 fn_802D7B34(s32 layer, s32 slot);
@@ -288,8 +306,9 @@ public:
     /* 0x00020 */ s32 field_0x20;
     /* 0x00024 */ s32 field_0x24;
     /* 0x00028 */ s32 field_0x28;
-    /* 0x0002C */ s32 field_0x2c; // fn_802DA630 tests > 0
-    /* 0x00030 */ u8 field_0x30[0x34 - 0x30];
+    // The screen step fn_802DA788 passes to fn_802DEDFC: (1, 0) or (-1, 0);
+    // fn_802DA630 tests [0] > 0.
+    /* 0x0002C */ s32 field_0x2c[2];
     /* 0x00034 */ s32 field_0x34; // fn_802D7970; 3 units read it
     /* 0x00038 */ s32 field_0x38;
     /* 0x0003C */ s32 field_0x3c;
@@ -322,9 +341,10 @@ public:
     /* 0x00308 */ u8 field_0x308[0x20]; // counters per bit: fn_802D8050, fn_802D7E04
     /* 0x00328 */ u8 field_0x328[0x20]; // values per bit: fn_802D8050, fn_802D7E1C
     /* 0x00348 */ u32 field_0x348[8][4]; // bits per (stage, level): fn_802D7F40
-    // 0x3C8 + index * 0x320 holds a 64-bit mask (fn_802D7E5C); the rest of
-    // this block is not mapped yet.
-    /* 0x003C8 */ u8 field_0x3c8[0x1048 - 0x3C8];
+    // Four 64-bit masks per screen: fn_802DEE2C clears [0..3][row][col]
+    // (0x3C8, 0x6E8, 0xA08, 0xD28 + row * 0x50 + col * 8); fn_802D7E5C /
+    // fn_802D7EB0 use the first screen's of [index].
+    /* 0x003C8 */ u64 field_0x3c8[4][10][10];
     // Per screen and layer slot (the folded layer, as field_0x2948): every
     // access adds 0x1048 + slot * 8 (fn_802D7AC4, fn_802D7D00), and the
     // array ends where field_0x2948 starts.

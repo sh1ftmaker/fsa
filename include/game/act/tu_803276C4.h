@@ -13,7 +13,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x3C];
+    /* 0x230 */ s32 field_0x230; // state word (lwz/stw); GameView_804A9950::fn_802DA630 tests 2
+    /* 0x234 */ u8 field_0x234[0x26C - 0x234];
     /* 0x26C */ JGeometry::TVec3f field_0x26c[4];
 }; // Size: 0x29C
 

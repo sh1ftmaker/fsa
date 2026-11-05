@@ -5,6 +5,9 @@
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
+#include "game/act/tu_803276C4.h"
+#include "game/cls_804AE9B0.h"
+#include "game/tu_80379F84.h"
 #include "game/Camera.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
@@ -187,6 +190,105 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     return true;
 }
 
+// The screen's 64-bit mask for the layer. fn_802D4768-fn_802D4ADC inline this body
+// (0x802D47F8, 0x802D4928, 0x802D4A44, 0x802D4B6C) though their out-of-line copy,
+// fn_802D7AC4, comes later, so the original defined it before them as an inline.
+inline u64 GameView_804A9950::screenMask(s32 layer) {
+    if (layer < 8) {
+        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
+    }
+    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
+}
+
+// FIXME: 96.7. Scheduling and regalloc, as fn_802D4C10: the target adds the view to i * 2
+// before the slot row in the search loop.
+void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMask) {
+    s32 slot = layer < 8 ? 0 : layer - 7;
+    s32 i;
+    for (i = 0x3C; i > 0; i -= 4) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+            break;
+        }
+    }
+    *outSlot = 15 - (i >> 2);
+    *outMask = screenMask(layer);
+}
+
+// FIXME: 97.1. Scheduling and regalloc, as fn_802D4C10 (the search loop's address add).
+// The shift loop is a for (;;) with the test at the top: the target's loop has its test at
+// the top and a plain branch back (0x802D48FC), which MWCC emits for neither while nor for
+// with a condition (those it rotates and unrolls).
+void GameView_804A9950::fn_802D4874(s32 layer, u16 id, u64* outBit, u64* outMask) {
+    s32 slot = layer < 8 ? 0 : layer - 7;
+    s32 i;
+    for (i = 0; i < 0x40; i++) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+            break;
+        }
+    }
+    *outBit = 1;
+    for (;;) {
+        if (i == 0) {
+            break;
+        }
+        *outBit <<= 1;
+        i--;
+    }
+    *outMask = screenMask(layer);
+}
+
+// FIXME: 97.1. Scheduling and regalloc, as fn_802D4C10; the shift loop as in fn_802D4874.
+bool GameView_804A9950::fn_802D49A8(s32 layer, u16 id) {
+    s32 slot = layer < 8 ? 0 : layer - 7;
+    s32 i;
+    for (i = 0; i < 0x40; i++) {
+        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+            break;
+        }
+    }
+    u64 bit = 1;
+    for (;;) {
+        if (i == 0) {
+            break;
+        }
+        bit <<= 1;
+        i--;
+    }
+    if ((screenMask(layer) & bit) != 0) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 95.5. Scheduling and regalloc, as fn_802D4C10. The match test, the i >= 0x40 check
+// (0x802D4B30) and the rest sit inside the loop in the target; the check is kept as it is.
+bool GameView_804A9950::fn_802D4ADC(s32 layer, u16 id) {
+    s32 slot = layer < 8 ? 0 : layer - 7;
+    for (s32 i = 0; i < 0x40; i++) {
+        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i]) {
+            if (i >= 0x40) {
+                return false;
+            }
+            u64 bit = 1;
+            for (;;) {
+                if (i == 0) {
+                    break;
+                }
+                bit <<= 1;
+                i--;
+            }
+            if ((screenMask(layer) & bit) != 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
 // FIXME: 94.8. Scheduling and regalloc: the target adds the view to i * 2 before the slot
 // row (view + i * 2 + 0x2948, then lhzx with slot << 7); ours adds the row and i first and
 // loads the view (r5) after.
@@ -363,6 +465,30 @@ void GameView_804A9950::fn_802D73CC(s32 bit, bool set) {
     }
 }
 
+void GameView_804A9950::fn_802D7440(bool flag) {
+    if (flag == true) {
+        u8 enabled;
+        if (gGameRoot_8053AAF8->field_0x7f != 0) {
+            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
+        } else {
+            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
+        }
+        if (enabled != 1) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+        } else if (gGameRoot_8053AAF8->field_0x7f != 0) {
+            if (gGameRoot_8053AAF8->field_0x7e == 1) {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 1;
+            } else {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+            }
+        } else {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 1;
+        }
+    } else {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+    }
+}
+
 void GameView_804A9950::fn_802D752C(u8 value) {
     gGameRoot_8053AAF8->field_0x4->mView->field_0x131ef = value;
 }
@@ -512,11 +638,9 @@ void GameView_804A9950::fn_802D79E8(s32 index, f32 a, f32 b, bool flag) {
     }
 }
 
+// Out-of-line copy of screenMask (defined above fn_802D4768).
 u64 GameView_804A9950::fn_802D7AC4(s32 layer) {
-    if (layer < 8) {
-        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
-    }
-    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
+    return screenMask(layer);
 }
 
 // FIXME: 99.0. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
@@ -555,6 +679,18 @@ void GameView_804A9950::fn_802D7E34(s32 index) {
     GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
     if (view->field_0x308[index] < 0xFF) {
         view->field_0x308[index]++;
+    }
+}
+
+bool GameView_804A9950::fn_802D7E5C(u8 index, s32 bit) {
+    return (1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0];
+}
+
+void GameView_804A9950::fn_802D7EB0(u8 index, s32 bit, bool set) {
+    if (set) {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0] |= 1 << bit;
+    } else {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0] &= (1 << bit) ^ 0xFFFFFFFF;
     }
 }
 
@@ -666,6 +802,33 @@ void GameView_804A9950::fn_802D9CB0() {
     gGameRoot2_8053AB10->field_0x24->fn_8030C85C();
 }
 
+// FIXME: 96.3. One opcode at the loop set-up: the target starts the row offsets with
+// mr from the row counter (li r5, 0; mr r8, r5; mr r9, r5), ours with a second li.
+void GameView_804A9950::fn_802D9CD8() {
+    fn_802D3D48();
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            // Every bit of the screen's two 1024-bit tables, a word at a time (a plain
+            // word loop unrolls differently: the target steps the word offset in a register).
+            for (int bit = 0; bit < 1024; bit += 32) {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x3548[row][col][bit / 32] = 0;
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x6768[row][col][bit / 32] = 0;
+            }
+            for (int i = 0; i < 0x100; i++) {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x9968[row][col][i] = 0;
+            }
+        }
+    }
+    getActorManager_801F856C()->fn_801F7B18();
+    fn_8016A3AC()->fn_8016A330();
+    gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+    fn_802D92F0();
+    fn_802D8D50(false);
+    fn_802D8328(true, false);
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+}
+
 void GameView_804A9950::fn_802D9FBC() {
     if (gGameRoot_8053AAF8->field_0x7f == 1) {
         field_0xc4 = 0x8CA0;
@@ -686,6 +849,81 @@ void GameView_804A9950::fn_802D9FF4(s32 a, s32 b) {
 
 u8 GameView_804A9950::fn_802DA000() {
     return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
+}
+
+// FIXME: 94.5. Regalloc in the actor loop (the target keeps i, i * 4 and the end in r28,
+// r29, r30) and reloc-name: -70.0f / 70.0f are pooled after literals of functions not
+// written yet (lbl_80541160 / lbl_80541164).
+u8 GameView_804A9950::fn_802DA630() {
+    u8 busy = fn_802DA000();
+    if (busy == 0) {
+        f32 dx;
+        if (field_0x2c[0] > 0) {
+            dx = -70.0f;
+        } else {
+            dx = 70.0f;
+        }
+        for (int i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            pos.x += dx;
+            fn_80230498(i, &pos, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
+        }
+        s32 end = getActorManager_801F856C()->mActorEnd;
+        for (int i = 0; i < end; i++) {
+            cls_804AB528* actor = (cls_804AB528*)getActorManager_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == ACTOR_OSIN && actor->field_0x230 == 2) {
+                JGeometry::TVec3f pos = actor->mPos;
+                pos.x += dx;
+                actor->mPos = pos;
+                break;
+            }
+        }
+    }
+    return busy;
+}
+
+// fn_802DA788 inlines this body (0x802DA7EC) though its out-of-line copy, fn_802DCDF4,
+// comes later, so the original defined it before fn_802DA788 as an inline.
+inline void GameView_804A9950::clearScreen() {
+    getActorManager_801F856C()->fn_801F7CAC();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    field_0xc9 = 0;
+}
+
+// The players' positions on a new screen, from its top-left corner (fn_802DA788).
+static const f32 lbl_8046E148[4][3] = {
+    {192.0f, 200.0f, 0.0f},
+    {224.0f, 200.0f, 0.0f},
+    {192.0f, 232.0f, 0.0f},
+    {224.0f, 232.0f, 0.0f},
+};
+
+// FIXME: 98.1. One instruction: the target reuses the loop counter's li r30, 0 for the
+// inlined clearScreen's field_0xc9 = 0; ours loads 0 into r0 for it.
+void GameView_804A9950::fn_802DA788() {
+    if (field_0x14 < field_0x1c) {
+        field_0x2c[0] = 1;
+        field_0x2c[1] = 0;
+    } else {
+        field_0x2c[0] = -1;
+        field_0x2c[1] = 0;
+    }
+    if (fn_802DEDFC(field_0x2c)) {
+        fn_8038D454();
+        clearScreen();
+        for (int i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
+            pos.x += mVisibleBox.i.x;
+            pos.y += mVisibleBox.i.y;
+            fn_8023F1D4(i, &pos, 2, 0, 0);
+        }
+        fn_8022BD70();
+        lbl_8053AD70->fn_8037AE30();
+        fn_802D9FBC();
+    }
 }
 
 u8 GameView_804A9950::fn_802DCD0C() {
@@ -716,13 +954,65 @@ bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
     return moved;
 }
 
+// Out-of-line copy of clearScreen (defined above fn_802DA788).
 void GameView_804A9950::fn_802DCDF4() {
-    getActorManager_801F856C()->fn_801F7CAC();
-    getActorManager_801F856C()->fn_801F6204(0);
-    fn_80308D0C();
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
-    getEffectSystem_8013C824()->fn_8013C8CC();
-    field_0xc9 = 0;
+    clearScreen();
+}
+
+// FIXME: 95.0. Four instructions: the target materialises (byte == 1) as a bool
+// (subfic, cntlzw, extrwi) before the inlined fn_802D7440 compares it with 1; ours
+// folds the compare into the branch (a bool local or cast does not change it). The bit
+// tables are cleared a word per 32 bits, as in fn_802D9CD8.
+bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
+    bool moved = false;
+    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
+        fn_802D752C(0);
+        u8 enabled;
+        if (gGameRoot_8053AAF8->field_0x7f != 0) {
+            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
+        } else {
+            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
+        }
+        fn_802D7440(enabled == 1);
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
+        for (int i = 0; i < 0x10; i++) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x308[i] = 0;
+        }
+        for (int bit = 0; bit < 0x400; bit += 32) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit / 32] = 0xFF;
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x12f68[bit / 32] = 0;
+        }
+        for (int layer = 0; layer < 8; layer++) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x6748[layer] = 0;
+            for (int i = 0; i < 0x40; i++) {
+                gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[layer][i] = 0;
+            }
+        }
+        if (dir[0] > 0) {
+            field_0x14++;
+            field_0xc8 = 1;
+        } else if (dir[0] < 0) {
+            field_0x14--;
+            field_0xc8 = 2;
+        } else if (dir[1] > 0) {
+            field_0x18++;
+            field_0xc8 = 4;
+        } else {
+            field_0x18--;
+            field_0xc8 = 8;
+        }
+        fn_802D9FBC();
+        fn_80231424();
+        getActorManager_801F856C()->fn_801F7E88();
+        fn_802D8D50(true);
+        fn_802D6BE0(0);
+        fn_802D6BC8(0);
+        fn_802D8328(false, false);
+        fn_802D6BF8(0);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C9E4(&mVisibleBox);
+        moved = true;
+    }
+    return moved;
 }
 
 // FIXME: 99.0. One opcode: the target returns the result through clrlwi r3, r29, 24 (as
@@ -771,6 +1061,82 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
 }
 
 void GameView_804A9950::vfunc_0x14() {}
+
+// Stage (9, 3), or stage 13 and up, with gGameRoot_8053AAF8->0x7F set. vfunc_0x10
+// inlines this body (0x802DD6D4) though its out-of-line copy, fn_802DEBA0, comes
+// later, so the original defined it before vfunc_0x10 as an inline.
+static inline bool isStage93OrFrom13() {
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
+        return false;
+    }
+    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
+        return true;
+    }
+    return false;
+}
+
+// The step by which vfunc_0x10 runs the field_0xf0 offsets down to 0 (the unit's .sdata).
+static f32 lbl_8053A1A8 = 0.2f;
+
+// FIXME: 98.7. Two instructions: in the inlined isStage93OrFrom13 the target reloads the view
+// for the stage >= 13 test, as fn_802DEBA0 itself does (see there).
+void GameView_804A9950::vfunc_0x10() {
+    f32 x = field_0xf0[0].x;
+    f32 y = field_0xf0[0].y;
+    if (gGameRoot_8053AAF8->field_0x5c & 2) {
+        y = -y;
+        x = -x;
+    }
+    gGameRoot2_8053AB10->field_0x24->field_0x1dc.set(x, y, 0.0f);
+
+    for (int i = 0; i < 4; i++) {
+        if (fn_8023F264(i)) {
+            s32 dx = field_0xf0[getPlayerLayer_8023DE58(i)].x;
+            s32 dy = field_0xf0[getPlayerLayer_8023DE58(i)].y;
+            if (gGameRoot_8053AAF8->field_0x5c & 2) {
+                dy = -dy;
+                dx = -dx;
+            }
+            fn_8023CCE8(i, dx);
+            fn_8023CC5C(i, dy + (s32)field_0x1323c[i]);
+        }
+    }
+
+    for (int i = 0; i < 16; i++) {
+        if (field_0xf0[i].x > lbl_8053A1A8) {
+            field_0xf0[i].x -= lbl_8053A1A8;
+            gAudioMgr_8053AF80->fn_80458880(0x4F, -1);
+        } else {
+            field_0xf0[i].x = 0.0f;
+        }
+        if (field_0xf0[i].y > lbl_8053A1A8) {
+            field_0xf0[i].y -= lbl_8053A1A8;
+            gAudioMgr_8053AF80->fn_80458880(0x4F, -1);
+        } else {
+            field_0xf0[i].y = 0.0f;
+        }
+    }
+
+    if (gGameRoot_8053AAF8->field_0x4c == 7 && !isStage93OrFrom13() && !fn_802DCD0C()) {
+        fn_802D3A18();
+    }
+
+    for (int i = 0; i < 4; i++) {
+        if (field_0x1327c[i] == 1) {
+            field_0x1323c[i] += field_0x1324c[i];
+            if (field_0x1323c[i] <= 0.0f) {
+                field_0x1323c[i] = 0.0f;
+                field_0x1327c[i] = 0;
+            }
+            field_0x1324c[i] -= field_0x1325c[i];
+        } else if (field_0x1324c[i] != 0.0f) {
+            field_0x1324c[i] += field_0x1326c[i];
+            if (field_0x1324c[i] > 0.0f) {
+                field_0x1324c[i] = 0.0f;
+            }
+        }
+    }
+}
 
 // FIXME: the other GameView_804A9950 functions before 0x802DE814 are not written yet.
 
@@ -927,14 +1293,9 @@ bool fn_802DEB58(void) {
 
 // FIXME: 89.8 %. Same as fn_802DE9A0: the target reloads the view (lwz 0xc off
 // the kept gGameRoot_8053AAF8->0x4) for the stage >= 13 test; ours loads it once.
+// Out-of-line copy of isStage93OrFrom13 (defined above vfunc_0x10).
 bool fn_802DEBA0(void) {
-    if (gGameRoot_8053AAF8->field_0x7f == 0) {
-        return false;
-    }
-    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
-        return true;
-    }
-    return false;
+    return isStage93OrFrom13();
 }
 
 bool fn_802DEBF8(void) {

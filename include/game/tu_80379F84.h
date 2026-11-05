@@ -114,7 +114,11 @@ struct SaveRow_8050EC80 {
     /* 0x38 */ u8 field_0x38[0x78 - 0x38];
     /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
     /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
-    /* 0x7A */ u8 field_0x7a[0x7E - 0x7A];
+    /* 0x7A */ u8 field_0x7a[0x7C - 0x7A];
+    // GameView_804A9950::fn_802D7440 (game/tu_802D39B8.cpp): field_0x7c while
+    // GameRoot's field_0x7f is set, else field_0x7d; 1 lets the time limit run.
+    /* 0x7C */ u8 field_0x7c;
+    /* 0x7D */ u8 field_0x7d;
     // Read by Player::fn_802710C8 (tu_8026FC20): 0x7E while GameRoot's field_0x7f is set,
     // else 0x7F; a value of 1 there calls fn_8024E500 on a hit of 4 or more.
     /* 0x7E */ u8 field_0x7e;
