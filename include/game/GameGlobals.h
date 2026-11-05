@@ -1119,23 +1119,41 @@ class ActorBase_804A5770;
 extern "C" void fn_8011888C(cls_801192AC* obj, ActorBase_804A5770* actor);
 extern "C" void fn_80118798(cls_801192AC* obj, ActorBase_804A5770* actor);
 
-// game/tu_801C0D70.cpp (owner unit, not written yet). The 0x160-byte object
-// in .bss at 0x804C7E70, built on first use by fn_801C0D70 (guard byte
-// lbl_8053AC10); named after that function. Only the u16 at 0x0 is known:
-// act_shadow_link_2's helper tests its bit 0x400.
+// game/tu_801C0D70.cpp. The 0x60-byte object in .bss at 0x804C7E70, built on
+// first use by fn_801C0D70 (guard byte lbl_8053AC10); named after that
+// function. It tracks the Shadow Link fight: field_0x0 holds state bits, the
+// serials of the 'SLK2' actors it spawned are in mSerials[0..mCount), and
+// field_0x50 is the serial of the generator (-1 when there is none).
+class ShadowLink2_804A43E8;
 struct cls_801C0D70 {
-    /* 0x000 */ u16 field_0x0;
-    /* 0x002 */ u8 field_0x2[0x50 - 0x2]; // not yet known
+    cls_801C0D70(); // game/tu_801C0D70.cpp (inlined into the getter)
+    /* 0x00 */ u16 field_0x0;
+    /* 0x02 */ u16 field_0x2;
+    /* 0x04 */ u16 field_0x4;
+    /* 0x06 */ u16 field_0x6;
+    /* 0x08 */ u16 field_0x8;
+    /* 0x0C */ s32 mCount;
+    /* 0x10 */ s32 mSerials[16];
     // act_shadow_link_2's fn_801C53F8 tests bit 0x80000000.
-    /* 0x050 */ u32 field_0x50;
-    /* 0x054 */ u8 field_0x54[0x160 - 0x54]; // not yet known
+    /* 0x50 */ u32 field_0x50;
+    /* 0x54 */ JGeometry::TVec3f field_0x54;
     // Owner tu_801C0D70. True when a target for the player at *pos was found;
     // writes its x/y to *out. Called by cls_8021C2B4::fn_8021C468 and act_shadow_link_2.
-    bool fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* out);
+    bool fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* out) const;
     // Owner tu_801C0D70 (symbol fn_801C12B8). Called by act_shadow_link_2's
-    // fn_801C53F8 on the object from fn_801C0D70, not yet known beyond that.
+    // fn_801C53F8 on the object from fn_801C0D70: marks one of the actors.
     void fn_801C12B8();
-}; // Size: 0x160
+    void fn_801C0DCC();
+    void fn_801C115C();
+    void fn_801C11A4();
+    bool fn_801C11F0();
+    void fn_801C1224(s32 value) const;
+    bool fn_801C1314();
+    void fn_801C1374(bool flag);
+    void fn_801C1440(s32 serial);
+    u16 fn_801C14A8(s32 serial);
+    void fn_801C151C();
+}; // Size: 0x60
 // Getter of that object (returns its address).
 extern "C" cls_801C0D70* fn_801C0D70();
 

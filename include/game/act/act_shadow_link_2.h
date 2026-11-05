@@ -58,6 +58,10 @@ public:
     void fn_801C26D8();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.
     void fn_801C26FC();
+    // act_shadow_link_2.cpp (0x801C272C, not written yet): sets the byte at
+    // 0x11D, then picks a state by the fn_801C0D70 object (fn_801C11F0 and
+    // its bit 1). Called by cls_801C0D70::fn_801C0DCC.
+    void fn_801C272C();
     // act_shadow_link_2.cpp: if the object from fn_801C0D70 has bit 0x80000000
     // at 0x50 and mFlags has bit 0x2000, calls its fn_801C12B8.
     void fn_801C53F8();
