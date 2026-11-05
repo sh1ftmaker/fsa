@@ -286,6 +286,22 @@ public:
     void fn_80270D34(s32 amount); // called by tu_8022AD64; subtracted from field_0xbfc
     void fn_80277104(); // called by tu_80285E58
     void fn_802771BC(); // field_0x458 = 0; called by tu_80285E58
+    // tu_80256C74
+    void fn_802586CC(); // empty
+    void fn_80258880(); // field_0x458 = 0
+    void fn_8025888C(); // empty
+    void fn_80258BA8(); // clears 0x458, 0xb9f, 0xba0
+    void fn_80258BBC(); // clears 0xb79 and 0x1204; mPos.z = 0 unless 0x1244 is 5 or 7
+    void fn_80259778(); // field_0x34c = 5.4f
+    void fn_8025AAF4(); // field_0x11f8 = -1
+    void fn_8025AEB0(); // field_0x124d = 1, field_0x458 = 0
+    void fn_8025AEC4(); // field_0x11f8 = -1
+    void fn_8025B218(); // field_0x124d = 1, field_0x458 = 0
+    void fn_8025B35C(); // field_0x458 = 0
+    void fn_8025BDC8(); // clears 0x458 and 0x40c
+    void fn_8025C79C(); // clears 0x458, field_0x344 and 0x40c
+    void fn_8025D090(); // clears 0x458, field_0x344 and 0x40c
+    void fn_8025D6A0(); // field_0xb9c = 0
     // tu_8027E5BC (dispatch targets of tu_80285E58); fn_80248604, fn_8024D134 and fn_8024E3D8 are tu_8023FBF0 (r3 = Player)
     void fn_8027EE84();
     void fn_8027F16C();
@@ -443,7 +459,8 @@ public:
     // Cleared (stb 0) by fn_80290E90 before it checks lbl_8053AAF8->field_0x7e.
     /* 0x0400 */ u8 field_0x400;
     /* 0x0401 */ u8 field_0x401;
-    /* 0x0402 */ u8 field_0x402[0x410 - 0x402];
+    /* 0x0402 */ u8 field_0x402[0x40C - 0x402];
+    /* 0x040C */ s32 field_0x40c;
     /* 0x0410 */ f32 field_0x410;
     /* 0x0414 */ JGeometry::TVec3f field_0x414;
     // Offset added to mPos at the end of fn_802685D4 (ps_add). Zeroed while
@@ -512,7 +529,7 @@ public:
     /* 0x0B1C */ u8 field_0xb1c[0xB78 - 0xB1C];
     // Returned by fn_8023B400 (lbz; blr).
     /* 0x0B78 */ bool field_0xb78;
-    /* 0x0B79 */ u8 field_0xb79[0xB7A - 0xB79];
+    /* 0x0B79 */ u8 field_0xb79;
     /* 0x0B7A */ bool field_0xb7a;
     /* 0x0B7B */ bool field_0xb7b;
     /* 0x0B7C */ u8 field_0xb7c[0xB9A - 0xB7C];
@@ -524,7 +541,7 @@ public:
     /* 0x0B9E */ u8 field_0xb9e[0xB9F - 0xB9E];
     // Set by fn_8023A654.
     /* 0x0B9F */ bool field_0xb9f;
-    /* 0x0BA0 */ u8 field_0xba0[0xBA4 - 0xBA0];
+    /* 0x0BA0 */ s32 field_0xba0;
     /* 0x0BA4 */ u8 field_0xba4;
     /* 0x0BA5 */ u8 field_0xba5[0xBAC - 0xBA5];
     /* 0x0BAC */ s32 field_0xbac;
@@ -688,13 +705,15 @@ public:
     /* 0x11EC */ s32 field_0x11ec; // a player index for fn_8030AAF4
     /* 0x11F0 */ s32 field_0x11f0;
     /* 0x11F4 */ s32 field_0x11f4;
-    /* 0x11F8 */ u8 field_0x11f8[0x11FC - 0x11F8];
+    /* 0x11F8 */ s32 field_0x11f8;
     /* 0x11FC */ s32 field_0x11fc;
     // A bool: fn_8023FF88 returns it as loaded (lbz; blr).
     /* 0x1200 */ bool field_0x1200;
     /* 0x1201 */ u8 field_0x1201;
     /* 0x1202 */ bool field_0x1202;
-    /* 0x1203 */ u8 field_0x1203[0x120C - 0x1203];
+    /* 0x1203 */ u8 field_0x1203;
+    /* 0x1204 */ u8 field_0x1204;
+    /* 0x1205 */ u8 field_0x1205[0x120C - 0x1205];
     /* 0x120C */ s32 field_0x120c;
     /* 0x1210 */ u8 field_0x1210[0x1214 - 0x1210];
     // A bool: fn_80240AF8 returns it as loaded (lbz; blr).
