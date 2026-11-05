@@ -89,6 +89,8 @@ struct cls_804AE9A0 {
 // One row of the save table lbl_8050EC80 (.bss, 0x21E0 bytes; GameState.h and
 // GameView.h describe it; fn_80403514 in game/tu_803BC6F0.cpp picks rows). The
 // word at 0x10 of row 0 is the index of the current row.
+// The first 0x20 bytes of lbl_8050EC80 are a save header (serial at +8,
+// index at +0x10) seen here through row 0; tu_803BC6F0 reads them that way.
 struct SaveRow_8050EC80 {
     /* 0x00 */ u8 field_0x0[0x8];
     // SHARED-EDIT (tu_803BC6F0 fn_803CBE38, fn_803CC3DC): row 0 receives the

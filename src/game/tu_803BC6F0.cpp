@@ -364,6 +364,8 @@ void FileSelect_804AFF60::fn_803CE11C() {
     }
 }
 
+// FIXME: 99.69. The bounds x and field_0x8 load into f2 / f1 (original f1 / f2)
+// and the fsubs operands swap; 600.0f is still @NNN until fn_803BC6F0 is written.
 void FileSelect_804AFF60::fn_803CE370() {
     if (field_0xb0 > 0) {
         field_0xb0--;
