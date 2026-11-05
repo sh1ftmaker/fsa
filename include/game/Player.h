@@ -348,6 +348,18 @@ public:
     void fn_8027EB04();
     void fn_80284294();
     void fn_80282A24();
+    // tu_80285E58: the update (fn_80285E58, from fn_80253E6C), the state tick
+    // fn_802870C8 and the helpers it calls.
+    void fn_80285E58();
+    void fn_80285F44();
+    void fn_80286688();
+    void fn_8028676C();
+    void fn_80286B74();
+    void fn_80286E10();
+    void fn_802870C8();
+    void fn_80265E88(); // tu_80264998 (skeleton / animation), called by fn_80285E58
+    void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
+    bool fn_8025197C(bool arg); // tu_8023FBF0
     void fn_80284430();
     void fn_8028447C();
     void fn_80247F58();

@@ -254,3 +254,50 @@ the boot path. tu_8028FBA0 (states 0x1C-0x32) executes nothing there.
 
 Small getters in every unit are cheap matches once their fields are carved;
 the Haiku/Sonnet passes have taken most of them already.
+
+## tu_80285E58: state tick details (agent B, 2026-11-05)
+
+Proven from the asm of fn_802870C8 and its three jump tables (generated
+from the tables' relocations, so every case below is the table entry):
+
+- The exit table (0x804A7770) is indexed by `state - 3` (`subi 3; cmplwi
+  0x4e`), so states 0-2 have no exit case. Five entries point at the
+  switch's end, i.e. have **no exit case**: 0x11, 0x12, 0x3D, 0x3E, 0x3F
+  (the table above lists fn_8025F698 for them; that is the call in the
+  commit, which runs for every state change, not their exit).
+- The commit calls **fn_8025F698(true)** (`li r4, 1`), not (0), after
+  `0x124D = 0; 0x1248 = 0x1240; 0x1240 = 0x1244`, copying bytes
+  0x3F8-0x3FD to 0x437-0x43C, clearing 0x3F8-0x3FD and 0x43D, and zeroing
+  the floats 0x38C, 0x390 and the TVec3f 0x2B8.
+- Exit of state 0x32 calls two functions: fn_80290D58 then fn_80290F20.
+  Every other case is a single `handler(); break;`.
+- The exit switch only runs when 0x124C (request pending) is set, and the
+  whole state machine is skipped while 0xCEE is set or fn_802413E8()
+  (byte 0x454) holds; then the tick only restores mPos from the TVec3f at
+  0x32C.
+- Between ENTER and UPDATE: fn_80131F0C(); a damage call
+  fn_80238548(index, 0x20, &mPos, 0x12) when fn_80131D98() or
+  lbl_8053ABA8 / lbl_8053ABF0 is set, else a request of state **0x33**
+  when fn_8024189C() <= 0 and !fn_80270A8C(); then the push vector at
+  0x35C is added to mPos and damped (x0.95 above length 2, x0.9 below) in
+  states 8 / 0x37 (or when fn_80241380()), added and damped x0.6 in states
+  0x12, 0x15-0x18, else damped x0.9, and zeroed below length 0.2.
+- After UPDATE the tick runs, in order: fn_80286E10, state 3 request when
+  0x1215 == 1, fn_80242BC0, fn_80242940, fn_80242CB0, fn_80280B30,
+  fn_8025250C, ..., fn_8027F1C8, eight per-frame countdowns (0x488, 0xD58,
+  0x122C, 0x3F4, 0xD84, 0x1218, 0x44C, 0x1220), fn_80250090, fn_8024F63C,
+  fn_80285F44, **fn_80286688 inlined** (it is defined first; the 0x13B8
+  toggle on pad trigger 0x10), fn_80286B74, fn_8028676C, and the three
+  emitters at 0x138C / 0x1390 / 0x1394 (ids 0x4FF-0x502 by 0x3DC, 0xD7,
+  0x1B1).
+- fn_80285E58 and fn_802870C8 share the reset loop of the s32[0x50]
+  arrays at 0xDB0 / 0x1030 (`for (int i = 0; i < 0x50; i++)`; an `s32`
+  counter adds a bound check the original lacks).
+
+Fields the unwritten tu_80285E58 functions need that Player.h still has as
+padding (carving them unblocks the unit): fn_80285F44: s32 0x3B8, s32
+0x448. fn_80286688: u8 0x13B8. fn_80286B74: TVec3f 0x338. fn_802870C8:
+TVec3f 0x32C, s32 0x3B0, u8 0x11E9, s32 0x123C, u8 0xCEF, TVec3f 0xCBC,
+TVec3f 0xD1C, u8 0x43B-0x43D, f32 0x38C / 0x390, TVec3f 0x35C, s32 0x3E4,
+s32 0x3F4, u8 0x403, u8 0x456, s32 0x488, s32 0xD58, s32 0xDA8, s32
+0x122C, JPABaseEmitter* 0x138C / 0x1390 / 0x1394, u8 0x13B8.
