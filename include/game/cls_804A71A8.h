@@ -26,6 +26,9 @@ public:
     // tu_8026942C area (not written yet); the owner's fn_8024B274 / fn_8024B298 forward to them.
     void fn_80269420();
     void fn_8026942C(s32 index, JGeometry::TVec3f* out);
+    // 0x8026F710 (tu_802684A4, not written yet): clears the byte flags at
+    // 0x30-0x37, 0x48-0x4F, 0xB4 and 0xB6; called by the owner's reset fn_80254744.
+    void fn_8026F710();
 
     /* 0x4 */ Player_804A6F38* field_0x4;
     /* 0x8 */ u8 field_0x8[0x48 - 0x8]; // not yet known

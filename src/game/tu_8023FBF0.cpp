@@ -6,8 +6,10 @@
 #include "game/GameState.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
+#include "game/cls_804AE9B0.h"
 #include "game/cls_804B20F8.h"
 #include "game/tu_8030AE84.h"
+#include "game/tu_80379F84.h"
 
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
@@ -623,16 +625,16 @@ void Player_804A6F38::fn_80248604() {
     }
 }
 
+// The place of this player in its partner's line (1 for the first follower),
+// or 0 without a partner. fn_80254744 inlines it and reloads both fields on
+// every pass; this const copy keeps them in registers.
 s32 Player_804A6F38::fn_80248778() const {
-    s32 players; // declared first: register assignment order (r31)
-    s32 team = field_0xd60;
-    if (team < 0) {
+    if (field_0xd60 < 0) {
         return 0;
     }
-    players = field_0x4;
     s32 count = 0;
-    for (s32 i = 0; i < players; i++) {
-        if (team == fn_8022F3DC(i)) {
+    for (s32 i = 0; i < field_0x4; i++) {
+        if (field_0xd60 == fn_8022F3DC(i)) {
             count++;
         }
     }
@@ -1033,6 +1035,70 @@ bool Player_804A6F38::fn_8025190C(bool a) {
     return false;
 }
 
+// Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
+// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, the test
+// of GameRoot_8049EF20::fn_8023F98C) with no partner asking for state 0 gets
+// state 1 instead; with field_0x434 set, state 0 becomes 2.
+bool Player_804A6F38::fn_80251AEC(s32 state) {
+    if (!fn_80251BFC(state)) {
+        return false;
+    }
+    if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && field_0xd60 < 0 && state == 0) {
+        field_0x1244 = 1;
+    } else if (field_0x434 && state == 0) {
+        if (field_0x1240 == 2) {
+            return false;
+        }
+        field_0x1244 = 2;
+    } else {
+        field_0x1244 = state;
+    }
+    field_0x124c = true;
+    if (state != 0 && state != 2 && state != 3) {
+        field_0x124d = true;
+    }
+    if (field_0xd60 < 0 && field_0xcfe == true && field_0x1244 != 0) {
+        field_0xcfe = false;
+    }
+    return true;
+}
+
+// Whether a request for `state` may be made now.
+bool Player_804A6F38::fn_80251BFC(s32 state) {
+    if (field_0x124d == true) {
+        return false;
+    }
+    if (field_0x124c == true && field_0x1244 != 0 && !(field_0x1244 == 2 || field_0x1244 == 3)) {
+        return false;
+    }
+    if (field_0x124c == true && field_0x1244 == 2 && (state == 0 || state == 3)) {
+        return false;
+    }
+    s32 requested = field_0x1244;
+    if (requested == 1 && state != 0) {
+        return false;
+    }
+    if (field_0xcee == true) {
+        return false;
+    }
+    if (field_0xd60 >= 0 && !field_0xce8 && field_0x1214 && state != 3) {
+        return false;
+    }
+    if (field_0x1215 && state != 3) {
+        return false;
+    }
+    if (field_0x1240 == state) {
+        return false;
+    }
+    if (requested == state) {
+        return false;
+    }
+    if (lbl_8053AAF8->field_0x7e && fn_80236890()) {
+        return false;
+    }
+    return true;
+}
+
 void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {
     field_0x2e8 += *offset;
 }
@@ -1076,6 +1142,56 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 
 void Player_804A6F38::fn_80252FBC() {}
 
+// Like fn_80254660, then clears the counters 0xC04-0xC7C.
+void Player_804A6F38::fn_802544B0() {
+    field_0xc10 = fn_802D6A9C()->field_0x48;
+    field_0xc14 = fn_802D6A9C()->field_0x4c;
+    field_0xc18 = 1;
+    field_0xb7a = false;
+    field_0xb7b = false;
+    if (lbl_8053AAF8->field_0x7f) {
+        if (field_0xd60 >= 0) {
+            field_0xbf8 = 0x10;
+        } else {
+            field_0xbf8 = fn_8040305C(fn_804033D4(field_0x4)) * 4;
+        }
+    } else {
+        field_0xbf8 = fn_8040305C(fn_804033D4(field_0x4)) * 4;
+    }
+    if (lbl_8053AAF8->field_0x7f) {
+        field_0xb90 = 0.0f;
+    } else {
+        field_0xb90 = 256.0f / 3.0f;
+    }
+    field_0xc08 = 0x180;
+    field_0xc0c = 0x180;
+    field_0xbfc = field_0xbf8 - 4;
+    if (lbl_8053AAF8->field_0x7f) {
+        if (field_0xd60 >= 0) {
+            field_0xc04 = 0;
+        } else {
+            field_0xc04 = 0;
+        }
+    } else {
+        field_0xc04 = 0;
+    }
+    for (int i = 0; i < 13; i++) {
+        field_0xc1c[i] = 0;
+    }
+    field_0xc50 = 0;
+    field_0xc54 = 0;
+    field_0xc58 = 0;
+    field_0xc5c = 0;
+    field_0xc60 = 0;
+    field_0xc64 = 0;
+    field_0xc68 = 0;
+    field_0xc6c = 0;
+    field_0xc70 = 0;
+    field_0xc74 = 0;
+    field_0xc78 = 0;
+    field_0xc7c = 0;
+}
+
 // FIXME: 99.91. Code identical; the float literal lbl_80540098 (256/3) is @NNN until the
 // unit's earlier literals are written in pool order.
 void Player_804A6F38::fn_80254660() {
@@ -1101,6 +1217,547 @@ void Player_804A6F38::fn_80254660() {
     field_0xc08 = 0x180;
     field_0xc0c = 0x180;
     field_0xbfc = field_0xbf8 - 4;
+}
+
+// Bit (stage * 4 + sub) of the current save row's field_0x28 for the view's
+// stage (field_0x4) and level (field_0x8): fn_8019CE40's test (tu_80197070),
+// which fn_80254744 inlines twice, so the original had it as a header inline.
+static inline BOOL viewStageFlag() {
+    s32 stage = fn_802D6A9C()->field_0x4;
+    s32 sub = fn_802D6A9C()->field_0x8;
+    if (stage < 0 || stage > 7) {
+        return false;
+    }
+    if (sub < 0 || sub > 3) {
+        return false;
+    }
+    return ((1 << (stage * 4 + sub)) & lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28) != 0;
+}
+
+// The per-slot reset, run for every slot on scene enter and stage change
+// (fn_8023F78C). Picks the slot's part (field_0xcac, the partner field_0xd60,
+// the pad owner field_0x11ec and the start state 0 or 1) from the game mode,
+// places the player and clears nearly every per-player field.
+void Player_804A6F38::fn_80254744() {
+    if (field_0xd00 >= 2 && viewStageFlag()) {
+        field_0xd00 = 0;
+        field_0xcfe = false;
+    }
+    if (!lbl_8053AAF8->field_0x7f && !(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+        mActive = false;
+        field_0xd60 = -1;
+        field_0x11ec = -1;
+        field_0x1244 = 1;
+        field_0x1240 = 1;
+        field_0x1248 = 1;
+    } else if (lbl_8053AAF8->field_0x7f && fn_802DE814() &&
+               !(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+        mActive = false;
+        field_0xd60 = -1;
+        field_0x11ec = -1;
+        field_0x1244 = 1;
+        field_0x1240 = 1;
+        field_0x1248 = 1;
+    } else if (fn_802DEBF8() || !lbl_8053AAF8->field_0x7e) {
+        mActive = true;
+        field_0x11ec = 0;
+        if (field_0x4 == 0) {
+            field_0xd60 = -1;
+        } else {
+            field_0xd60 = 0;
+        }
+        field_0x1244 = 0;
+        field_0x1240 = 0;
+        field_0x1248 = 0;
+    } else if (lbl_8053AAF8->fn_80138A30() == 2) {
+        mActive = true;
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+            field_0xd60 = -1;
+            field_0x11ec = field_0x4;
+        } else {
+            field_0xd60 = field_0x4 - 2;
+            field_0x11ec = field_0xd60;
+        }
+        field_0x1244 = 0;
+        field_0x1240 = 0;
+        field_0x1248 = 0;
+    } else if (lbl_8053AAF8->fn_80138A30() == 3) {
+        mActive = true;
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+            field_0xd60 = -1;
+            field_0x11ec = field_0x4;
+        } else {
+            s32 partner = lbl_80529DEC.field_0x64;
+            if (partner < 0 || partner >= 3) {
+                field_0xd60 = 0;
+            } else {
+                field_0xd60 = partner;
+            }
+            field_0x11ec = field_0xd60;
+        }
+        field_0x1244 = 0;
+        field_0x1240 = 0;
+        field_0x1248 = 0;
+    } else {
+        mActive = true;
+        field_0xd60 = -1;
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+            field_0x11ec = field_0x4;
+            field_0x1244 = 0;
+            field_0x1240 = 0;
+            field_0x1248 = 0;
+        } else {
+            field_0x11ec = -1;
+            field_0x1244 = 1;
+            field_0x1240 = 1;
+            field_0x1248 = 1;
+        }
+    }
+
+    // A partner starts next to the player it follows, 16 units per place in the line.
+    if (field_0xd60 >= 0 && !field_0xcfe) {
+        field_0x2c4 = *fn_8023E724(field_0xd60);
+        if (field_0xd04) {
+            field_0x2c4.y += 16.0f * fn_80248778();
+        } else {
+            field_0x2c4.x += 16.0f * fn_80248778();
+        }
+    }
+    field_0x11ea = 1;
+    mPos = field_0x2c4;
+    field_0x2f4 = mPos;
+    field_0xcbc = field_0x2f4;
+    field_0xcb0 = field_0xcbc;
+    field_0xcd4 = field_0xcb0;
+    field_0xcc8 = field_0xcd4;
+    field_0x32c = field_0xcc8;
+    field_0xd1c = field_0x32c;
+    if (field_0xd00 == 2) {
+        mPos.z = 1.0f;
+        field_0x32c.z = 1.0f;
+    }
+    field_0x318 = mPos;
+    field_0x14 = mPos;
+    field_0x20 = field_0x14;
+    field_0x2c = field_0x20;
+    field_0x3c0 = false;
+    field_0x3c1 = false;
+    field_0x3c2 = false;
+    if (field_0xcfe == true) {
+        field_0x120c = 4;
+        field_0x1210 = 4;
+    } else {
+        field_0x120c = 5;
+        field_0x1210 = 5;
+    }
+    field_0x121c = 0;
+    field_0x121d = 0;
+    field_0x121f = false;
+    field_0x1220 = 0;
+    field_0x1258 = mPos;
+    field_0x434 = 0;
+    field_0x435 = 0;
+    field_0x2d0.zero();
+    field_0x2dc.zero();
+    field_0x2e8.zero();
+    field_0x3b4 = 0;
+    field_0x3b8 = 0;
+    field_0xce4 = 0;
+    field_0xce0 = 0;
+    field_0x3bc = field_0x3b4;
+    field_0xd28 = field_0x3b4;
+    field_0x455 = 0;
+    field_0x3f0 = field_0x3e4 = field_0x3dc = field_0x3e8 = field_0x3ec = field_0x3e0;
+    field_0x124d = 0;
+    field_0x124c = false;
+    field_0x458 = 0;
+    field_0x459 = 0;
+    field_0x3f4 = 0;
+    field_0x3f9 = 0;
+    field_0x3f8 = 0;
+    field_0x3fb = 0;
+    field_0x3fa = 0;
+    field_0x3fd = 0;
+    field_0x3fc = 0;
+    field_0x3fe = 0;
+    field_0x3b0 = 0;
+    field_0x437 = field_0x3f8;
+    field_0x438 = field_0x3f9;
+    field_0x439 = field_0x3fa;
+    field_0x43a = field_0x3fb;
+    field_0x43b = field_0x3fc;
+    field_0x43c = field_0x3fd;
+    field_0x3ff = 0;
+    field_0x400 = 0;
+    field_0x401 = 0;
+    field_0x402 = 0;
+    field_0x403 = 0;
+    field_0x404 = 0;
+    field_0x40c = 0;
+    field_0x408 = 0;
+    field_0x410 = 0.0f;
+    if (field_0x1240 == 1) {
+        field_0x3c4 = 0x31d;
+    } else {
+        switch (field_0x3dc) {
+        case 0:
+            field_0x3c4 = 0x3c;
+            break;
+        case 0x1c1:
+            field_0x3c4 = 0x3d;
+            break;
+        default:
+            field_0x3c4 = 0x3e;
+            break;
+        case 3:
+            field_0x3c4 = 0x3f;
+            break;
+        }
+    }
+    field_0x3c6 = field_0x3c4;
+    field_0x458 = 0;
+    field_0x45c = 0;
+    field_0x43d = 0;
+    field_0x3d8 = 0;
+    field_0x3d9 = 0;
+    field_0xca3 = -0x80;
+    field_0xca4 = -0x80;
+    fn_80276538();
+    fn_80276078();
+    field_0xbf4 = 0;
+    field_0x464 = 0;
+    field_0x468 = 0;
+    field_0x46c = 0;
+    field_0x470 = 0;
+    field_0x474.set(0.0f, 0.0f, 0.0f);
+    field_0x484 = 0;
+    field_0x480 = 0;
+    field_0x488 = 0;
+    field_0x48c = 0;
+    field_0x490 = 0;
+    field_0x491 = 0;
+    field_0x457 = 0;
+    field_0xcad = false;
+    field_0xcae = 0;
+    field_0xcaf = 0;
+    field_0xd64 = 0;
+    field_0xd6c = 'NULL';
+    field_0xbf0->fn_8026F710();
+    field_0xce8 = false;
+    field_0xce9 = 1;
+    field_0xcf4 = 0x29;
+    field_0xcf8 = 0x29;
+    field_0xcea = 0;
+    field_0xceb = 0;
+    field_0xcec = 0;
+    field_0xcf2 = 0;
+    field_0xced = 0;
+    field_0xcf1 = 0;
+    field_0xcf0 = 0;
+    field_0x344.set(0.0f, 0.0f, 0.0f);
+    field_0x350.set(0.0f, 0.0f, 0.0f);
+    field_0x35c.set(0.0f, 0.0f, 0.0f);
+    field_0xd78.set(0.0f, 0.0f, 0.0f);
+    field_0x414.set(0.0f, 0.0f, 0.0f);
+    field_0x420.set(0.0f, 0.0f, 0.0f);
+    field_0x368.set(0.0f, 0.0f, 0.0f);
+    field_0x38c = 0.0f;
+    field_0x390 = 0.0f;
+    field_0x374.set(0.0f, 0.0f, 0.0f);
+    field_0x2b8.set(0.0f, 0.0f, 0.0f);
+    if (lbl_8053AAF8->field_0x7f) {
+        field_0xc80 = 1;
+    } else {
+        field_0xc80 = 0;
+    }
+    field_0xc84.set(1.0f, 1.0f, 1.0f);
+    field_0xc90.set(1.0f, 1.0f, 1.0f);
+    field_0xc9c = 0;
+    fn_8027221C(0);
+    field_0xcfc = 0;
+    field_0xcfd = 0;
+    field_0xd08 = -1;
+    field_0xd0c = 0;
+    field_0xd2c = 0;
+    field_0xd2d = 0;
+    field_0xd30 = 0;
+    field_0x494 = 0;
+    field_0x498 = 0;
+    field_0x499 = 0;
+    field_0x49c = -1;
+    field_0xd34 = false;
+    field_0xc00 = 0;
+    field_0xd35 = 0;
+    field_0xd70 = -1;
+    field_0xd68 = -1;
+    field_0xd88 = -1;
+    field_0xd8c = -1;
+    field_0xd94 = -1;
+    field_0xda0 = -1;
+    field_0xd98 = 0;
+    field_0xd9c = -1;
+    field_0xda4 = -1;
+    field_0xda8 = 0;
+    field_0xdac = -1;
+    for (int i = 0; i < 0x50; i++) {
+        field_0xdb0[i] = -1;
+        field_0xef0[i] = -1;
+        field_0x1030[i] = -1;
+    }
+    field_0x1170 = 0;
+    for (int i = 0; i < 3; i++) {
+        field_0xb00[i] = -1;
+        field_0xb40[i] = -1;
+    }
+    field_0xb7c = -1;
+    field_0xb74 = 0;
+    for (int i = 0; i < 3; i++) {
+        field_0xb0c[i] = -1;
+        field_0xb4c[i] = -1;
+    }
+    field_0xb80 = -1;
+    for (int i = 0; i < 2; i++) {
+        field_0xb30[i] = -1;
+    }
+    field_0xb18 = -1;
+    for (int i = 0; i < 3; i++) {
+        field_0xb1c[i] = -1;
+        field_0xb5c[i] = -1;
+    }
+    field_0xb78 = false;
+    field_0xb28 = -1;
+    field_0xb2c = -1;
+    field_0xbb8 = 0;
+    field_0xb38 = -1;
+    field_0xb6c = -1;
+    field_0xb68 = 0;
+    field_0xb3c = -1;
+    field_0xb70 = -1;
+    field_0xb58 = -1;
+    field_0xb99 = false;
+    field_0xb9e = false;
+    field_0xb9f = false;
+    field_0xba0 = 0;
+    field_0xba4 = 0;
+    field_0xb9a = false;
+    field_0xb9b = false;
+    field_0xb9c = false;
+    field_0xbb4 = -1;
+    field_0xbb9 = 0;
+    field_0xbba = 0;
+    field_0xbbc = 3.0f;
+    field_0xbd4 = 0;
+    field_0xbc0 = 0;
+    field_0xbac = 0;
+    field_0xb79 = 0;
+    field_0x1204 = 0;
+    field_0xca0 = 0xff;
+    field_0xca1 = 0xff;
+    field_0xca2 = 0xff;
+    field_0xca8 = 0;
+    field_0x1264 = 0;
+    field_0x11dc = 0;
+    field_0x1274 = NULL;
+    field_0x128c = NULL;
+    field_0x12b0 = NULL;
+    field_0x12b4 = NULL;
+    field_0x12b8 = NULL;
+    field_0x12bc = NULL;
+    field_0x12c0 = -1;
+    field_0x12c4 = NULL;
+    field_0x12c8 = NULL;
+    field_0x12cc = NULL;
+    field_0x12e4 = NULL;
+    field_0x1308 = NULL;
+    field_0x132c = NULL;
+    field_0x1350 = NULL;
+    field_0x1354 = NULL;
+    field_0x1358 = NULL;
+    field_0x136c = NULL;
+    field_0x1370 = NULL;
+    field_0x135c = NULL;
+    field_0x1374 = NULL;
+    field_0x1378 = NULL;
+    field_0x1368 = NULL;
+    field_0x1360 = NULL;
+    field_0x1364 = NULL;
+    field_0x137c = NULL;
+    field_0x1380 = NULL;
+    field_0x1384 = NULL;
+    field_0x1388 = NULL;
+    field_0x138c = NULL;
+    field_0x1390 = NULL;
+    field_0x1394 = NULL;
+    field_0x1398.field_0x4 = field_0x4;
+    field_0x1398.field_0x8 = 0;
+    field_0x13a8.field_0x4 = field_0x4;
+    field_0x13a8.field_0x8 = 1;
+    field_0xd74 = 0;
+    field_0x11e0 = 0;
+    field_0x11b0 = 0;
+    fn_8027023C();
+    field_0x11e9 = 0;
+    field_0x1174 = 0;
+    field_0x454 = false;
+    field_0x456 = 0;
+    field_0x452 = 0;
+    field_0xd38 = 0;
+    field_0xd3c = -1;
+    field_0xd44 = -1;
+    field_0xd4c = false;
+    field_0xd4d = 0;
+    field_0xd4e = false;
+    field_0xd50 = 0;
+    field_0x11f4 = 0;
+    field_0xd54 = 0;
+    field_0xd58 = 0;
+    field_0x11f8 = -1;
+    field_0x1230 = -1;
+    field_0x1234 = 0;
+    field_0xafc = 0;
+    field_0xb9d = false;
+    field_0xd5c = 0;
+    field_0x11fc = -1;
+    field_0x460 = false;
+    field_0xb84 = false;
+    field_0x11b4 = mPos;
+    field_0x11c0 = 0;
+    field_0xcee = 0;
+    field_0xcef = 0;
+    field_0x42c = false;
+    field_0xbe0 = 0;
+    field_0x430 = 0;
+    field_0x42d = 0;
+    field_0x43e = 0;
+    field_0x43f = false;
+    field_0x440 = false;
+    field_0x441 = false;
+    field_0x444 = 0.0f;
+    field_0xbd8 = 0;
+    field_0xbdc = 0;
+    field_0xbe4 = 0;
+    field_0xbe8 = 0;
+    field_0x1214 = false;
+    field_0x1216 = false;
+    field_0x1215 = false;
+    field_0x1217 = false;
+    field_0x1218 = 0;
+    field_0x1224 = 0;
+    field_0x123c = 0;
+    field_0x1228 = 0;
+    field_0x122c = 0;
+    field_0x1238 = 0;
+    field_0x11ac = 0;
+    field_0x492 = 0;
+    field_0x1200 = false;
+    field_0x1201 = 0;
+    field_0x1202 = false;
+    field_0x11c4 = 0;
+    field_0x11c8 = 0;
+    field_0x11d4 = 0;
+    field_0x11d8 = 0;
+    field_0x11cc = 0;
+    field_0x3c8 = 0x195;
+    field_0x3ca = 0x18f;
+    field_0x3cc = 0;
+    field_0x3d0 = 0;
+    field_0x3d4 = 0;
+    field_0xd90 = 0;
+    field_0x394 = 0;
+    field_0x1208 = 0;
+    field_0xd48 = 0;
+    field_0xba8 = 0;
+    field_0x436 = false;
+    field_0x1203 = 0;
+    field_0xb94 = 0;
+    field_0x448 = 3;
+    field_0x44c = 0;
+    field_0x13b8 = 0;
+    field_0xd84 = 0;
+    field_0x11f0 = 0;
+    field_0x11e8 = 0;
+    if (fn_802DEBF8()) {
+        field_0x121e = 1;
+        field_0x1214 = true;
+        if (field_0xd60 >= 0) {
+            field_0x1215 = true;
+            mPos.set(*fn_8023E724(field_0xd60));
+            fn_80251AEC(3);
+        }
+        field_0x1224 = 0;
+        field_0x1217 = false;
+    } else {
+        field_0x121e = 0;
+    }
+    if (!field_0x1216) {
+        if (field_0x454) {
+            fn_8024B2E0();
+        } else {
+            for (int i = 0; i < 0x31; i++) {
+                field_0x38[i].set(mPos);
+                if (mPos.z > 0.0f) {
+                    field_0x284[i] = 1;
+                } else {
+                    field_0x284[i] = 0;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < 0x31; i++) {
+        // An unused copy: the original stores mPos on the stack each pass.
+        JGeometry::TVec3f pos = mPos;
+        if (field_0xd04) {
+            field_0x38[i].set(mPos.x, mPos.y + 16.0f * i / 12.0f, 0.0f);
+        } else {
+            field_0x38[i].set(mPos.x + 16.0f * i / 12.0f, mPos.y, 0.0f);
+        }
+        field_0x284[i] = 0;
+    }
+    if (lbl_8053AAF8->field_0x7f && fn_80241794() <= 0 && !fn_80241200()) {
+        if (field_0x3dc == 0) {
+            field_0x338.set(16.0f + mPos.x, mPos.y, mPos.z);
+        } else if (field_0x3dc == 1) {
+            field_0x338.set(mPos.x - 16.0f, mPos.y, mPos.z);
+        } else if (field_0x3dc == 2) {
+            field_0x338.set(mPos.x, 16.0f + mPos.y, mPos.z);
+        } else {
+            field_0x338.set(mPos.x, mPos.y - 16.0f, mPos.z);
+        }
+    } else {
+        field_0x338.x = mPos.x;
+        field_0x338.y = mPos.y;
+        field_0x338.z = mPos.z;
+    }
+    field_0xbec->fn_8030BD3C(field_0x4);
+    if (field_0xcfe == true) {
+        if (!viewStageFlag()) {
+            fn_8024DCD0();
+            field_0x32c = mPos;
+            field_0x450 = 0xc3;
+            field_0xca2 = 0xff;
+            field_0xca3 = -0x80;
+            field_0xca4 = -0x80;
+            // Both operands load mPos (0x8) in the original.
+            JGeometry::TVec3f diff = mPos - mPos;
+            if (PSVECMag(&diff) >= 0.1f) {
+                fn_8024B2E0();
+            }
+            lbl_8053AD70->fn_8037AE00();
+        }
+    } else if (field_0xd00 == 2) {
+        fn_8024DCD0();
+        field_0x32c = mPos;
+        field_0x450 = 0x121;
+        field_0xca2 = 0xff;
+        field_0xca3 = -0x80;
+        field_0xca4 = -0x80;
+        JGeometry::TVec3f diff = mPos - mPos;
+        if (PSVECMag(&diff) >= 0.1f) {
+            fn_8024B2E0();
+        }
+        field_0xcfe = false;
+        lbl_8053AD70->fn_8037AE00();
+    }
 }
 
 Player_804A6F38::~Player_804A6F38() {

@@ -368,7 +368,7 @@ void Player_804A6F38::fn_8027966C() {
     field_0x464 = 60;
     field_0x458 = 0;
     fn_8024F0E8(0x10004);
-    field_0x358 = 0.0f;
+    field_0x350.z = 0.0f;
 }
 
 void Player_804A6F38::fn_80279F94() {
