@@ -381,6 +381,112 @@ void GameMode_804B0688::fn_803DD93C() {
     }
 }
 
+// State 2: slides the other entry out and the picked one up, fades the
+// entry panes out and the sub-menu panes in, then starts the movie and goes
+// to state 3.
+// FIXME: 96.27. The original stores the first other entry through the
+// pointer (ours stores it straight to the stack slot) and sets up the tag
+// table base (lbl_804774C8, ours via the section) one instruction earlier;
+// the alpha loops' counter and tag pointer registers are swapped.
+void GameMode_804B0688::fn_803DE58C() {
+    s32 others[2];
+    field_0x9c++;
+    s32* other = others;
+    u8 slid = false;
+    u8 menuSlid = false;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x9e != i) {
+            *other++ = i;
+        }
+    }
+    for (s32 i = 0; i < 1; i++) {
+        if (field_0x9c > i) {
+            field_0x34[others[i]]->fn_80402B10(8, 0, 0.0f, 600.0f);
+            field_0x44[others[i]]->fn_80402B10(8, 0, 0.0f, 600.0f);
+            s32 t = field_0x9c - i;
+            if (t > 8) {
+                t = 8;
+            }
+            f32 alpha = (f32)(t * t) / 64.0f;
+            switch (others[i]) {
+            case 0:
+                for (s32 j = 0; j < 17; j++) {
+                    mScreen->search(lbl_80477688[j])->setAlpha((1.0f - alpha) * field_0xdb[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 20; j++) {
+                    mScreen->search(lbl_80477710[j])->setAlpha((1.0f - alpha) * field_0xec[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0x9c > 0) {
+        field_0x34[field_0x9e]->fn_80402940(20, 0, 0.0f, 27.0f - field_0x6c[field_0x9e]);
+        field_0x44[field_0x9e]->fn_80402940(20, 0, 0.0f, 27.0f - field_0x6c[field_0x9e]);
+    }
+    if (field_0x9c > 0) {
+        field_0x30->fn_80402940(15, 0, 0.0f, 150.0f);
+        s32 t = field_0x9c;
+        if (t > 15) {
+            t = 15;
+        }
+        f32 alpha = 1.0f - (f32)(t * t) / 225.0f;
+        for (s32 j = 0; j < 6; j++) {
+            mScreen->search(lbl_80477658[j])->setAlpha(alpha * field_0xd5[j]);
+        }
+    }
+    if (field_0x9c > 0) {
+        slid = field_0x14[0]->fn_80402B10(20, 0, 600.0f, 0.0f);
+        for (s32 i = 1; i < 7; i++) {
+            field_0x14[i]->fn_80402B10(20, 0, 600.0f, 0.0f);
+        }
+        s32 t = field_0x9c;
+        if (t > 20) {
+            t = 20;
+        }
+        f32 alpha = (f32)(t * t) / 400.0f;
+        for (s32 j = 0; j < 50; j++) {
+            if (j == 0) {
+                mMovieScreen->search(lbl_804774C8[j])->setAlpha(alpha * field_0xa3[j]);
+            } else {
+                mScreen->search(lbl_804774C8[j])->setAlpha(alpha * field_0xa3[j]);
+            }
+        }
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x9c > i * 5) {
+            menuSlid = field_0x50[i]->fn_80402940(20, 0, 150.0f, 0.0f);
+            s32 t = field_0x9c - i * 5;
+            if (t > 20) {
+                t = 20;
+            }
+            f32 alpha = (f32)(t * t) / 400.0f;
+            if (i == 0) {
+                for (s32 j = 0; j < 5; j++) {
+                    mScreen->search(lbl_80477830[j])->setAlpha(alpha * field_0x110[j]);
+                }
+            } else {
+                for (s32 j = 0; j < 5; j++) {
+                    mScreen->search(lbl_80477858[j])->setAlpha(alpha * field_0x115[j]);
+                }
+            }
+        }
+    }
+    if (slid && menuSlid) {
+        field_0x34[others[0]]->mPane->hide();
+        field_0x44[others[0]]->mPane->hide();
+        field_0x30->mPane->hide();
+        field_0x58->mPane->show();
+        field_0x80 = 0;
+        field_0x88 = 0;
+        field_0x8c = 0;
+        mMovieState = 1;
+        mState = 3;
+    }
+}
+
 // State 1: the entry menu. A/Start picks the entry (3 leaves the screen),
 // B returns, up / down move the cursor (entry 2 is skipped).
 void GameMode_804B0688::fn_803DEC44() {

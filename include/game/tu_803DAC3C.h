@@ -76,8 +76,7 @@ public:
     /* 0x060 */ cls_804AF860* field_0x60;
     /* 0x064 */ THPMovie_804B15D0* mMovie;
     /* 0x068 */ s32 field_0x68;
-    /* 0x06C */ f32 field_0x6c;
-    /* 0x070 */ f32 field_0x70;
+    /* 0x06C */ f32 field_0x6c[2]; // per entry: the height of its panes (constructor)
     /* 0x074 */ u8 field_0x74[0x78 - 0x74];
     /* 0x078 */ f32 field_0x78; // fade value (0-255)
     /* 0x07C */ f32 field_0x7c; // fade value (0-255)
