@@ -19,17 +19,19 @@ fn_803F358C, fn_803F59A0, fn_803F8050, fn_803FC304, __dt__12cls_804B0F10Fv.
 .bss 100 % (9 @NNN dtor chains + 9 weak memPool copies split per COORDINATOR).
 
 ## Resistant
-- fn_803F3324 99.74, fn_803F715C 99.56, fn_803FC46C 99.79, fn_803FC5E4 99.80:
-  reloc-name only. The .sdata2 literal pool follows first use; fn_803F0A54
-  (0x11C4, first in the file, 49 literal loads) and the other unwritten
-  functions come first, so our @NNN literals sit at other addresses.
-  They match once every earlier function exists.
+- fn_803F0A54 98.08 (`different`): written whole; its literals now sit at the
+  original .sdata2 addresses (with the file-scope s16 lbl_80543710[4] that
+  fn_803F1C70 / fn_803F5A0C index, emitted first). Left: rodata base offsets
+  (.rodata unsplit) and the i / 2 + (i % 2) * 2 scheduling in two phases.
+- fn_803F3324 99.77, fn_803F715C 99.78, fn_803FC46C 99.89, fn_803FC5E4 99.83:
+  reloc-name only (.sdata2 literals of the still unwritten fn_803F1C70 and
+  later functions come first). They match once every earlier function exists.
 - fn_803F2580 98.04, fn_803FB6F4 99.41 (`different`, regalloc): setEntries'
   loop gets i / 2*i in swapped registers (orig: zero already live -> 2*i,
   fresh li -> i). fn_803F8050 inlines fn_803F2580 and matches.
 
-## Not written (18)
-fn_803F0A54 (sprite draw, SpriteParams on stack, fn_802F86CC), fn_803F1C70,
+## Not written (17)
+fn_803F1C70,
 fn_803F267C, fn_803F2B78, fn_803F35B0, fn_803F38A4, fn_803F4120,
 fn_803F5410, fn_803F5A0C, fn_803F726C, fn_803F8354, fn_803F8AE4,
 fn_803F8FBC, fn_803F943C, fn_803F9EA8, fn_803FAA88, fn_803FB9E4, ctor.
@@ -41,14 +43,16 @@ a [3][6] array (original overrun into field_0x285).
 
 ## SHARED-EDITS
 - include/game/GameGlobals.h: cls_804AA8C8::fn_8030A308(s32) -> u8,
-  cls_804AA8C8::fn_80309A9C(u32, s32) -> u32; extern "C" fn_804310CC(void*),
-  fn_80431A9C(void*, s32, u8, void*) (tu_8042E964).
+  cls_804AA8C8::fn_80309A9C(u32, s32) -> u32; review fix: lbl_8053AEC0 is a
+  cls_804B1634* (vtable 0x804B1634, ctor fn_80431D84, tu_8042E964) with
+  members fn_804310CC(), fn_804316EC(), fn_80431A9C(s32, u8, void*) (were
+  extern "C" void* functions); tu_8044C7F0's caller updated.
 - include/game/GameState.h: GameState_804B0FE0 0x23D u8 field_0x23d (split
   from field_0x23a[]; ctor copies it, fn_803F8050 polls slot 2 + it);
   cls_804AF86C::fn_80402940 returns u8 (li 1 / li 0 in its body).
 - include/game/cls_804B16A8.h (new): vtable 0x804B16A8, ctor fn_804372C4
   (tu_80434370), fn_80436668 / fn_804366B8 / fn_8043670C(u8).
-- include/game/tu_803F0A54.h: full class layout (used by tu_803A85E4 too).
+- include/game/tu_803F0A54.h: full class layout (+ field_0x335) (used by tu_803A85E4 too).
 - symbols.txt: placeholder renames (members of cls_804B0F10 / cls_804B16A8 /
   cls_804AA8C8, __vt__12cls_804B0F10, __sinit, __dt__), .data PMF-table
   split (@685-@723 initializers), .bss split.

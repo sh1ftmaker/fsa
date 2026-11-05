@@ -28,6 +28,11 @@ public:
     cls_804B0F10();
     /* 0x08 */ virtual ~cls_804B0F10();
 
+    // Draws the four player sprites ("player_sob.bin") over field_0xc's
+    // player panes, sliding them between the 2/3-player and 4-player
+    // layouts as field_0x210[0] counts 100-112 and 212-224.
+    void fn_803F0A54();
+
     // Enter functions, lbl_804B0BDC[state] (set field_0x1c8 to the current
     // state and field_0x1c4 to the new one).
     void fn_803F1C18(); // 12
@@ -151,7 +156,9 @@ public:
     /* 0x273 */ u8 field_0x273[3][6];  // initial alpha of 3 x 6 mScreen panes
     /* 0x285 */ u8 field_0x285[24];    // initial alpha of 24 mScreen panes
     /* 0x29D */ u8 field_0x29d[18];    // initial alpha of 18 mScreen panes
-    /* 0x2AF */ u8 field_0x2af[0x350 - 0x2AF];
+    /* 0x2AF */ u8 field_0x2af[0x335 - 0x2AF];
+    /* 0x335 */ u8 field_0x335; // initial alpha of field_0xc's 'Pcon01' (fn_803F0A54 divides by it)
+    /* 0x336 */ u8 field_0x336[0x350 - 0x336];
     /* 0x350 */ s32 field_0x350; // fn_803A8600 copies it to cls_804AF878::field_0xc
 }; // Size: 0x354
 

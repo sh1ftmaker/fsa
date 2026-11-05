@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/Effect.h"
+#include "game/ActorBase.h"
 #include "game/Map.h"
 #include "game/Message.h"
 #include "game/act/tu_80440BF4.h"
@@ -12,6 +13,7 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DAnimation.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 // Entered when the state changes (index: the new state).
 static cls_804B0F10::StateFunc lbl_804B0BDC[13] = {
@@ -38,6 +40,32 @@ static cls_804B0F10::StateFunc lbl_804B0E4C[13] = {
     &cls_804B0F10::fn_803F4120, &cls_804B0F10::fn_803F38A4, &cls_804B0F10::fn_803F38A4,
     &cls_804B0F10::fn_803F38A4, &cls_804B0F10::fn_803F35B0, &cls_804B0F10::fn_803F35B0,
     &cls_804B0F10::fn_803F358C,
+};
+
+// Pane x offsets (lhax, index 0-3) read by fn_803F1C70 and fn_803F5A0C
+// (not written yet).
+static const s16 lbl_80543710[4] = {-25, 25, 77, 77};
+
+// Sprite frame offsets for field_0x210[0] % 30 (the player sprites' idle
+// animation).
+static const s32 lbl_80478AA0[30] = {
+    0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
+};
+
+// FIXME: .rodata 0x80478A60-0x80479AC0 is not split yet; these tables are
+// only the parts fn_803F0A54 reads, at their addresses.
+static const u64 lbl_80479168[2] = {
+    0x000050636F6E3031ull, // "Pcon01"
+    0x000050636F6E3032ull, // "Pcon02"
+};
+
+// field_0xc's player panes for 2, 3 and 4 players (field_0x1ac + 2).
+static const u64 lbl_80479920[3][4] = {
+    {0x005032706C693031ull /* "P2pli01" */, 0x005032706C693032ull /* "P2pli02" */, 0, 0},
+    {0x005033706C693031ull /* "P3pli01" */, 0x005033706C693032ull /* "P3pli02" */,
+     0x005033706C693033ull /* "P3pli03" */, 0},
+    {0x005034706C693031ull /* "P4pli01" */, 0x005034706C693032ull /* "P4pli02" */,
+     0x005034706C693033ull /* "P4pli03" */, 0x005034706C693034ull /* "P4pli04" */},
 };
 
 // Sets the 2-bit field `player` of root->field_0x83 to `kind`.
@@ -86,6 +114,144 @@ static inline void stepCursorTimer(cls_804B0F10* self) {
     self->field_0x1d0[0]++;
     if (self->field_0x1d0[0] >= 60) {
         self->field_0x1d0[0] = 0;
+    }
+}
+
+// The centre of a pane of field_0xc. Macros: the original evaluates the tag
+// expression (table index, field_0x1ac and all) again for each search, and
+// reads the size before the second search.
+#define PANE_CENTRE_X(dst, tag)                                                    \
+    do {                                                                           \
+        f32 size = field_0xc->search(tag)->getWidth();                             \
+        dst = size * 0.5f + field_0xc->search(tag)->getGlobalBounds().i.x;         \
+    } while (0)
+#define PANE_CENTRE_Y(dst, tag)                                                    \
+    do {                                                                           \
+        f32 size = field_0xc->search(tag)->getHeight();                            \
+        dst = size * 0.5f + field_0xc->search(tag)->getGlobalBounds().i.y;         \
+    } while (0)
+
+// Screen coordinates (640 x 480 layout scaled to 280 x 210) of a point on
+// the current render mode.
+static inline f32 toSpriteX(f32 x) {
+    return 280.0f * x / (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+}
+
+static inline f32 toSpriteY(f32 y) {
+    return 210.0f * (8.0f + y) / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
+}
+
+// FIXME: 98.08 %. Same length. The rodata base offsets differ (.rodata not
+// split yet: the tables above sit at other offsets from the file's base), and
+// in the 112-212 and 212+ phases the i / 2 + (i % 2) * 2 index is scheduled
+// differently (the original computes i % 2 first, then i / 2).
+void cls_804B0F10::fn_803F0A54() {
+    f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335;
+    JGeometry::TVec3f pos;
+    if (field_0x210[0] < 100) {
+        for (s32 i = 0; i < 4; i++) {
+            if (lbl_80479920[field_0x1ac][i] != 0) {
+                SpriteParams_801F5AE0 params;
+                params.field_0x26 = 0;
+                params.field_0x10.mColor.a = 255.0f * ratio;
+                f32 x;
+                PANE_CENTRE_X(x, lbl_80479920[field_0x1ac][i]);
+                pos.x = toSpriteX(x);
+                f32 y;
+                PANE_CENTRE_Y(y, lbl_80479920[field_0x1ac][i]);
+                pos.y = toSpriteY(y);
+                pos.z = 0.0f;
+                params.field_0x0[7] = i + 12;
+                s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
+                void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+    } else if (field_0x210[0] < 112) {
+        // Slide from the 2/3-player panes to the 4-player ones.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1ac) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i % 2]);
+                PANE_CENTRE_X(to, lbl_80479920[2][i / 2 + (i % 2) * 2]);
+                break;
+            case 1:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][2]);
+                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 100) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
+    } else if (field_0x210[0] < 212) {
+        for (s32 i = 0; i < 4; i++) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 x;
+            PANE_CENTRE_X(x, lbl_80479920[2][i]);
+                pos.x = toSpriteX(x);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            if (field_0x1ac == 0) {
+                params.field_0x0[7] = i / 2 + (i % 2) * 2 + 12;
+            } else {
+                params.field_0x0[7] = i + 12;
+            }
+            s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+        }
+    } else {
+        // Slide back to the 2/3-player panes.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.mColor.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1ac) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80479920[2][i / 2 + (i % 2) * 2]);
+                PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i % 2]);
+                break;
+            case 1:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][2]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 212) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
     }
 }
 
@@ -151,7 +317,7 @@ void cls_804B0F10::fn_803F3310() {
     field_0x1c4 = 1;
 }
 
-// FIXME: 99.74 %. Instructions identical; only the .sdata2 literals differ (see
+// FIXME: 99.77 %. Instructions identical; only the .sdata2 literals differ (see
 // fn_803F715C). fn_803FC5E4 inlines this function.
 void cls_804B0F10::fn_803F3324() {
     field_0x110 = -150.0f;
@@ -192,8 +358,8 @@ void cls_804B0F10::fn_803F59A0() {
 }
 
 // FIXME: 99.56 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and fn_803F0A54 and the other
-// unwritten functions before this one use the earlier literals.
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
 void cls_804B0F10::fn_803F715C() {
     u8 done0 = false;
     u8 done1 = false;
@@ -314,8 +480,8 @@ void cls_804B0F10::fn_803FC304() {
 }
 
 // FIXME: 99.79 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and fn_803F0A54 and the other
-// unwritten functions before this one use the earlier literals.
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
 void cls_804B0F10::fn_803FC46C() {
     lbl_8053AB10->fn_8013B490();
     field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
@@ -351,8 +517,8 @@ void cls_804B0F10::fn_803FC46C() {
 }
 
 // FIXME: 99.80 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and fn_803F0A54 and the other
-// unwritten functions before this one use the earlier literals.
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
 void cls_804B0F10::fn_803FC5E4(u8 flag) {
     lbl_8053AEC0->fn_804310CC();
     if (flag) {
