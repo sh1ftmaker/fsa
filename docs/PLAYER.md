@@ -1053,3 +1053,24 @@ State names stay provisional (evidence: the state requested, the tables, the act
 - Left: fn_80263078 (enter of the cucco glide: needs Cucco_804AB8C0 byte 0x2A1, tested == 1;
   act_cucco.h is generated, so its gen_game rows must go first) and fn_80263C64 (0x7AC,
   first user of 1.25 / 1.5).
+
+## Round 10 (tu_8023FBF0) (agent Q, Opus 5.5, 2026-11-05)
+
+- **Counter 0xC04** (with a leader, the leader's: fn_8023619C / fn_802362C4): fn_8024ECCC adds
+  and clamps to -5000..9999; fn_8024ED4C (file inline addCounter_8024ED4C, inlined twice with
+  -count by fn_8024E694, the 'GOLD' drop) adds up to 9999, a negative value stops at 0. Both
+  start with halt checks: `if (c > 9999) { for (;;) {} }` gives the original's `ble; b .` and
+  fn_8024ED4C also writes c + 1, reads it back and halts if unchanged, then restores it (the same
+  check guards 0xBFC in tu_8026FC20). Written as plain code; no assert macro is proven.
+- **Probe up** fn_80248A24 / fn_80248B9C (Player members, symbols renamed): step a point 8 up
+  from mPos until tile 0x231 (fn_80226998), clamped to 24 inside the view box (viewBox /
+  inViewBox file inlines; layer read before getGameView), then fn_8026E5F8 24 further on sets
+  0x43F (and 0x440 when clamped); B9C first climbs to tile 0x3E (fn_802265FC) and clears 0x444.
+  fn_8024BBB8 requests state 0x3F when an unreachable player on the layer is within 50 / 80 / 100.
+- fn_80241BA0 = the four-corner view test of a TBox2f (any / all); the bounds call takes
+  `&TBox2f(*box)` (a temporary copy below the corner temporaries).
+- fn_80240DCC: true in state 0x49 or when carried on a layer without view bit 1 while the
+  previous layer (0xCE4) has it; the original's li / mr / mr zeroing comes from inlined
+  `bool r = false; ... return r;` queries, written as such (86.2 %, scheduling+regalloc).
+- cls_804A71A8::anyFlag48 takes `all` (default true): fn_8025197C(false) checks only flags 0-3.
+- 0xD3C / 0xD4E: the pending conversation serial and flag (fn_8024CAC8, via fn_8022FE80).
