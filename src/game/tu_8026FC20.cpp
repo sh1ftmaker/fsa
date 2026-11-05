@@ -8,6 +8,7 @@
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/PlayerBit.h"
+#include "game/GameMath.h"
 #include "game/cls_804A71A8.h"
 #include "game/tu_80379F84.h"
 #include "JSystem/JMath/JMath.h"
@@ -2654,6 +2655,70 @@ void Player_804A6F38::fn_8027B5F0() {
     field_0x11c0 = 0;
     field_0x11ac = 0;
     deleteEmitter(&field_0x12bc);
+}
+
+// Whether the life (the leader's under fn_80240808, as life()) is at its maximum.
+static inline bool lifeFull(Player_804A6F38* player) {
+    if (player->fn_80240808()) {
+        if (fn_80237774(player->fn_80240644()) < fn_80237810(player->fn_80240644())) {
+            return false;
+        }
+    } else if (player->fn_8024189C() < player->fn_802417CC()) {
+        return false;
+    }
+    return true;
+}
+
+// Where the 'SWBM' actor of the spin (fn_8027B648) starts, by facing.
+static const f32 lbl_8046BD88[4][2] = {{24.0f, 0.0f}, {-24.0f, 0.0f}, {2.0f, 24.0f}, {-2.0f, -18.0f}};
+
+// Update of state 0x09 (the spin): fn_80274988 steps the animation; in group mode 3 (without
+// fn_8023434C) frames 11-34 walk toward fn_8027FA08's spot at 6 per frame. At frame 10, with
+// no 'SWBM' actor yet (0xB38), one is spawned in front when the life is full (or with
+// fn_80241284 and 0x11AC == 1 at 2+ life); the emitter 0x12BC circles mPos at 20 by 0x11C0.
+// FIXME: 96.22. The inlined lifeFull result is materialised (li r0, 0 / 1; clrlwi.) where the
+// original branches straight from its two compares into the spawn block (bge / blt), and with
+// the extra live value the saved registers are r29-r31 shifted by one (this in r30, not r31).
+void Player_804A6F38::fn_8027B648() {
+    fn_80274988();
+    if (fn_802486A0() == 3 && !fn_8023434C(field_0x4) && field_0x3fa >= 11 && field_0x3fa < 35) {
+        JGeometry::TVec3f to;
+        fn_8027FA08(&to);
+        JGeometry::TVec3f dir = to - mPos;
+        dir.z = 0.0f;
+        if (magnitude(dir) >= 6.0f) {
+            dir.normalize();
+            dir.scale(6.0f);
+            mPos += dir;
+        } else {
+            mPos.set(to);
+        }
+    }
+    gBgRewrite_8053AC98->fn_802A20F0(&field_0x30c, field_0x4, field_0x3b4, 0, 1);
+    fn_80268B3C();
+    if (field_0x3fa == 10) {
+        s32 facing = field_0x3dc;
+        if (field_0xb38 < 0 && ((fn_80241284() && field_0x11ac == 1 && fn_80241544() >= 2) || lifeFull(this))) {
+            JGeometry::TVec3f pos;
+            pos.set(mPos);
+            pos.x += lbl_8046BD88[facing][0];
+            pos.y += lbl_8046BD88[facing][1];
+            if (fn_80241284() && field_0x11ac == 1) {
+                field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484('SWBM', field_0x3b4, &pos, ((facing & 3) << 4) | 0x100 | (field_0x4 & 3), -1, field_0x4);
+            } else {
+                field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484('SWBM', field_0x3b4, &pos, ((facing & 3) << 4) | (field_0x4 & 3), -1, field_0x4);
+            }
+            if (field_0xb38 >= 0) {
+                field_0xb6c = field_0x3b4;
+            }
+        }
+    }
+    if (field_0x12bc != NULL) {
+        JGeometry::TVec3f pos = mPos;
+        pos.x += 20.0f * JMath::sincosTable_.cosShort(field_0x11c0);
+        pos.y += 20.0f * JMath::sincosTable_.sinShort(field_0x11c0);
+        setEmitterPos_8013CB44(field_0x12bc, &pos, 0, 1, true);
+    }
 }
 
 // Enter of state 0x09 (fn_80275D9C requests it): 0xBF4 by the reason 0x11AC, three sounds,
