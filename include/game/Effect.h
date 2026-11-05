@@ -22,6 +22,7 @@
 #include "JSystem/JGeometry.h"
 
 class JKRHeap;
+class JKRSolidHeap;
 class cls_804AA858;
 class JPABaseEmitter;
 class JPAEmitterManager;
@@ -61,6 +62,9 @@ public:
     // 1 unit (tu_802D39B8, 6 calls). deleteAllParticle() on every live
     // emitter whose id is 0x349-0x34B.
     void fn_8013C8CC();
+    // The executeAfter callback of vtable 0x8049F15C (fn_8013F588 passes the
+    // emitter): see Entry.
+    void fn_8013C958(JPABaseEmitter* emitter);
     // The rest are called once each by GameRoot2 (game/tu_8013AAD4.cpp,
     // lbl_8053AB10->0x28 in r3); none reads another argument.
     // mEmitterManager->forceDeleteAllEmitter().
@@ -81,7 +85,7 @@ public:
     void fn_8013DDEC();
 
     /* 0x0000 vtable */
-    /* 0x0004 */ JKRHeap* mHeap; // JKRSolidHeap::create(-1, heap)
+    /* 0x0004 */ JKRSolidHeap* mHeap; // JKRSolidHeap::create(-1, heap)
     /* 0x0008 */ JPAResourceManager* mResourceManager;
     // new JPAEmitterManager(0x1C00, 0x200, heap, 0xB, 8); 48 units use it
     // (e.g. forceDeleteEmitter in ActorBase_804A5770's destructor).
