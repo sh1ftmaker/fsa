@@ -23,6 +23,13 @@ public:
     // shows the pictures of the player's pane tags for it.
     void fn_8041918C(s32 player);
 
+    // Owner: game/tu_80418B64.cpp (0x8041E58C). Called with only the object by
+    // cls_804B1920::fn_8043D834.
+    void fn_8041E58C();
+    // Owner: game/tu_80418B64.cpp (0x8041E708). Called with the three
+    // arguments cls_804B1920::fn_8043D874 received.
+    void fn_8041E708(s32 id, s32 arg1, u32 arg2);
+
     /* 0x00 */ // vtable
     /* 0x04 */ cls_804AF86C* field_0x4;
     /* 0x08 */ cls_804AF86C* field_0x8[4];

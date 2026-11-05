@@ -60,6 +60,10 @@ class cls_804B1D10;
 class BgRewrite_804A7C98;
 class cls_804AE9B0;
 class cls_804B1920;
+class cls_804B13D4;
+class cls_804B146C;
+struct J2DScreen;
+class cls_804AF86C;
 class cls_804B17A0;
 class PlayerManager_804A6F28;
 
@@ -905,21 +909,76 @@ class cls_804B1920 {
 public:
     // Virtual destructor first: the vtable pointer goes where it is declared.
     virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
-    /* 0x004 */ u8 pad_0x4[0xDC - 0x4];  // unknown fields
+    /* 0x004 */ J2DScreen* field_0x4;
+    /* 0x008 */ J2DScreen* field_0x8;
+    /* 0x00C */ u8 pad_0xc[0x10 - 0xC];  // unknown fields
+    /* 0x010 */ J2DPicture* field_0x10; // "TIMG" resource, built in the constructor (mode 3)
+    /* 0x014 */ u8 pad_0x14[0x40 - 0x14];
+    /* 0x040 */ cls_804AF86C* field_0x40[12]; // the destructor's loop
+    /* 0x070 */ u8 pad_0x70[0xDC - 0x70];
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
     // the battle royale end check ORs with 0x10 when it picks its winner.
     /* 0xDC */ u8 field_0xdc;
-    /* 0xDD */ u8 pad_0xdd[0x1F0 - 0xDD];
+    /* 0xDD */ u8 field_0xdd;  // per-player bits (fn_8043A170), 0xF set by fn_8043A0E8
+    /* 0xDE */ u8 pad_0xde[0xE0 - 0xDE];
+    /* 0xE0 */ s32 field_0xe0; // fn_8043EDE8's argument
+    /* 0xE4 */ s32 field_0xe4; // 0x1E after fn_8043EDE8, 0 at construction
+    /* 0xE8 */ s32 field_0xe8;
+    /* 0xEC */ u8 pad_0xec[0xFC - 0xEC];
+    /* 0xFC */ s32 field_0xfc;
+    /* 0x100 */ s32 field_0x100;
+    /* 0x104 */ s16 field_0x104; // countdown, stepped by fn_8043CEA0
+    /* 0x106 */ s16 field_0x106;
+    /* 0x108 */ u8 pad_0x108[0x10A - 0x108];
+    /* 0x10A */ u8 field_0x10a;
+    /* 0x10B */ u8 field_0x10b; // selects the pane tested by fn_8043D514 / fn_8043D57C
+    /* 0x10C */ u8 field_0x10c;
+    /* 0x10D */ u8 field_0x10d;
+    /* 0x10E */ u8 pad_0x10e[0x1C0 - 0x10E];
+    /* 0x1C0 */ f32 field_0x1c0; // four floats set by fn_8043A208, zero at construction
+    /* 0x1C4 */ f32 field_0x1c4;
+    /* 0x1C8 */ f32 field_0x1c8;
+    /* 0x1CC */ f32 field_0x1cc;
+    /* 0x1D0 */ u8 pad_0x1d0[0x1F0 - 0x1D0];
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
-    /* 0x1F4 */ u8 field_0x1f4[0x256 - 0x1F4]; // not yet known
+    /* 0x1F4 */ u8 field_0x1f4[0x254 - 0x1F4]; // not yet known
+    /* 0x254 */ u8 field_0x254; // set to 1 by fn_8043A208
+    /* 0x255 */ u8 pad_0x255;
     // SHARED-EDIT (act_battle_royale_end_check draw, 0x256 = the byte its
     // mFocus is stored into when mFocus is not 0xFF).
     /* 0x256 */ u8 field_0x256;
+    /* 0x257 */ u8 pad_0x257[0x290 - 0x257];
+    /* 0x290 */ cls_804B13D4* field_0x290; // used when lbl_8053AAF8->field_0x7f is set
+    /* 0x294 */ cls_804B146C* field_0x294; // used otherwise
 
     // 0x8043D67C (game/tu_8043A0E8.cpp): 27 units call it with *lbl_8053AED0
     // in r3, an id in r4 (tu_8020FE50's actor passes 0x1A8 or 0x1C1) and two
     // more arguments (0 in most calls).
     void fn_8043D67C(s32 id, u32 arg1, u32 arg2);
+
+    // 0x8043A208 (game/tu_8043A0E8.cpp): when field_0x10 exists, stores the four
+    // floats at 0x1C0, sets its alpha (vtable slot 0x24) and flags 0x254.
+    void fn_8043A208(u8 alpha, f32 a, f32 b, f32 c, f32 d);
+    // 0x8043ABCC (game/tu_8043A0E8.cpp): shows the rank picture `index` (0-3, clamped
+    // at 0) on the pane "Pdf01" of field_0x8.
+    void fn_8043ABCC(s32 index);
+    // 0x8043CEA0 (game/tu_8043A0E8.cpp): counts field_0x104 down; at 0 (or when
+    // GameRoot's mode is not 7) resets the twelve panes' step counters, state 3.
+    void fn_8043CEA0();
+    // 0x8043A450 (game/tu_8043A0E8.cpp, not written yet): a stage / sub-stage
+    // pair (GameState's 0x118 / 0x11C).
+    void fn_8043A450(s32 stage, s32 sub);
+    // 0x8043A608 (game/tu_8043A0E8.cpp): fn_8043A450 for the selected stage.
+    void fn_8043A608();
+    // 0x8043D834 (game/tu_8043A0E8.cpp): picks the object by field_0x7f.
+    void fn_8043D834();
+    // 0x8043DF24 (game/tu_8043A0E8.cpp): this is unused. True when (px, py) is
+    // outside the box around (x, y), grown by margin.
+    bool fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin);
+    // 0x8043DF8C (game/tu_8043A0E8.cpp, not written yet): takes a screen x, y.
+    void fn_8043DF8C(f32 x, f32 y);
+    // 0x8043EDE8 (game/tu_8043A0E8.cpp): field_0xe0 = arg, field_0xe4 = 30.
+    void fn_8043EDE8(s32 arg);
 
     // 0x8043D5F0 (game/tu_8043A0E8.cpp, not written yet): takes no arguments
     // besides the object; fn_80139C5C calls it, then fn_8038D4A8.
