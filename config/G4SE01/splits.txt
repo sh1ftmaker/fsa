@@ -6602,7 +6602,7 @@ game/tu_80427D2C.cpp:
 	.rodata     start:0x8048F270 end:0x8048F390
 	.data       start:0x804B14C0 end:0x804B1600
 	.bss        start:0x8052A540 end:0x8052BFD8
-	.sbss       start:0x8053AE20 end:0x8053AED0
+	.sbss       start:0x8053AE20 end:0x8053AEC0
 	.sdata2     start:0x80543A90 end:0x80543AE8
 
 game/tu_8042E964.cpp:
@@ -6613,6 +6613,7 @@ game/tu_8042E964.cpp:
 	.rodata     start:0x8048F390 end:0x8048F438
 	.data       start:0x804B1600 end:0x804B1640
 	.bss        start:0x8052BFD8 end:0x8052C0D8
+	.sbss       start:0x8053AEC0 end:0x8053AED0
 	.sdata2     start:0x80543AE8 end:0x80543BA8
 
 game/tu_80432638.cpp:

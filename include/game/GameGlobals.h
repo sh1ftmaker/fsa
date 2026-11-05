@@ -1323,8 +1323,13 @@ s32 fn_802BA9F8(ActorBase_804A5770* actor);
 // (game/tu_8042E964.cpp, owner not written yet), named after its vtable
 // 0x804B1634; its constructor fn_80431D84 stores `this` in lbl_8053AEC0.
 // Size and most fields unknown.
+class J2DScreen;
+class cls_804AF86C;
+class cls_804B1600;
 class cls_804B1634 {
 public:
+    // Slot 0x8 of the vtable 0x804B1634 (fn_80431C38, game/tu_8042E964.cpp).
+    virtual ~cls_804B1634();
     // 0x804316EC: draws field_0x8 with lbl_8053AB10's grafcontext unless
     // the byte 0xEC is 0. Called by cls_804B1D58::fn_804522C8 (tu_8044C7F0).
     void fn_804316EC();
@@ -1343,6 +1348,17 @@ public:
     // closed; return 1 when done, else 0 (callers test with cmpwi, BOOL).
     BOOL fn_804317AC();
     BOOL fn_80431740();
+    // 0x804310BC: clears field_0xe8 and field_0xec (owner game/tu_8042E964.cpp).
+    void fn_804310BC();
+
+    /* 0x04 */ cls_804B1600* field_0x4;  // new in fn_80431D84, a 0x14-byte object
+    /* 0x08 */ J2DScreen* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
+    /* 0x0C */ cls_804AF86C* field_0xc;  // pane wrapper
+    /* 0x10 */ u8 field_0x10[0xD8];      // not decoded yet (pointer slots from 0x10, TVec2<s> arrays at 0x38 and 0x78)
+    /* 0xE8 */ s16 field_0xe8;           // frame counter of the window's open/close steps
+    /* 0xEA */ u8 field_0xea;            // out byte of fn_80431A9C
+    /* 0xEB */ u8 field_0xeb;
+    /* 0xEC */ u8 field_0xec;            // window shown / animating
 };
 extern cls_804B1634* lbl_8053AEC0;
 
