@@ -991,6 +991,120 @@ bool Player_804A6F38::fn_80247564() {
     return lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(field_0x11ec));
 }
 
+// Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
+// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
+// game/PlayerBit.h) with no partner asking for state 0 gets
+// state 1 instead; with field_0x434 set, state 0 becomes 2.
+// fn_80251AEC's body: fn_8024762C (before it) inlines it, so it is a file
+// inline with fn_80251AEC as its out-of-line copy.
+static inline bool requestState(Player_804A6F38* player, s32 state) {
+    if (!player->fn_80251BFC(state)) {
+        return false;
+    }
+    if (!isPlayerBitSet(lbl_8053AAF8, player->field_0x4) && player->field_0xd60 < 0 && state == 0) {
+        player->field_0x1244 = 1;
+    } else if (player->field_0x434 && state == 0) {
+        if (player->field_0x1240 == 2) {
+            return false;
+        }
+        player->field_0x1244 = 2;
+    } else {
+        player->field_0x1244 = state;
+    }
+    player->field_0x124c = true;
+    if (state != 0 && state != 2 && state != 3) {
+        player->field_0x124d = true;
+    }
+    if (player->field_0xd60 < 0 && player->field_0xcfe == true && player->field_0x1244 != 0) {
+        player->field_0xcfe = false;
+    }
+    return true;
+}
+
+// The leader's field_0xbc0 (fn_8023BEA8) for a follower, else its own.
+// fn_80247B9C's body, inlined by fn_8024762C before it.
+static inline s32 sharedBC0_80247B9C(const Player_804A6F38* player) {
+    s32 team = player->field_0xd60;
+    if (team >= 0) {
+        return fn_8023BEA8(team);
+    }
+    return player->field_0xbc0;
+}
+
+// The leader's field_0x48c (fn_8023C36C) for a follower, else its own.
+// fn_80247BD4's body, inlined by fn_8024762C before it.
+static inline s32 shared48C_80247BD4(const Player_804A6F38* player) {
+    s32 team = player->field_0xd60;
+    if (team >= 0) {
+        return fn_8023C36C(team);
+    }
+    return player->field_0x48c;
+}
+
+// Per frame: the field_0x48c countdown (state 0xB while it runs, back to 0
+// with effect 0x503 when it ends), shared by a leader's followers; in the
+// demo (fn_8022AF5C) only state 0xB and field_0xbc0. With music 0x1000019,
+// fn_8022AD64 once no player's countdown runs.
+// FIXME: 99.2 %. Two extra instructions: for a follower the original reuses
+// the field_0xd60 test of the leader/own split for the first inlined
+// fn_80247BD4 (bge to its blt), ours loads and compares field_0xd60 again;
+// also registers of the inlined group loops. Tried the branches swapped and
+// fn_80240808().
+void Player_804A6F38::fn_8024762C() {
+    if (fn_8022AF5C()) {
+        if (!field_0xce8 && field_0x1240 != 0xb && requestState(this, 0xb)) {
+            field_0xbd4 = 1;
+        }
+        if (field_0xd60 < 0 && field_0xbc0 > 0) {
+            field_0xbc0--;
+        }
+        return;
+    }
+    if (field_0x454) {
+        return;
+    }
+    if (fn_80240B84()) {
+        return;
+    }
+    if (field_0xce8) {
+        return;
+    }
+    if (field_0xd60 < 0) {
+        if (field_0x48c > 0) {
+            field_0x48c--;
+            if (field_0x491 == 1) {
+                field_0x48c = 1;
+            }
+        }
+        if (field_0x48c == 0) {
+            field_0xbc0 = 0;
+        } else if (field_0xbc0 > 0) {
+            field_0xbc0--;
+        }
+    } else {
+        if (shared48C_80247BD4(this) > 0 && field_0x48c == 0) {
+            field_0x490 = 1;
+        }
+        field_0x48c = shared48C_80247BD4(this);
+        field_0xbc0 = sharedBC0_80247B9C(this);
+    }
+    if (shared48C_80247BD4(this) > 0 && field_0x1240 != 0xb) {
+        requestState(this, 0xb);
+    } else if (shared48C_80247BD4(this) == 0 && field_0x1240 == 0xb) {
+        if (requestState(this, 0) && !field_0xbd4) {
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
+        }
+    }
+    if (isPlayerBitSet(lbl_8053AAF8, field_0x4) && gAudioMgr_8053AF80->field_0x58 == 0x1000019) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023C36C(i) > 0) {
+                return;
+            }
+        }
+        fn_8022AD64();
+    }
+}
+
 bool Player_804A6F38::fn_80247594(s32 arg) {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -1014,19 +1128,11 @@ bool Player_804A6F38::fn_80247594(s32 arg) {
 }
 
 s32 Player_804A6F38::fn_80247B9C() {
-    s32 team = field_0xd60;
-    if (team >= 0) {
-        return fn_8023BEA8(team);
-    }
-    return field_0xbc0;
+    return sharedBC0_80247B9C(this);
 }
 
 s32 Player_804A6F38::fn_80247BD4() {
-    s32 team = field_0xd60;
-    if (team >= 0) {
-        return fn_8023C36C(team);
-    }
-    return field_0x48c;
+    return shared48C_80247BD4(this);
 }
 
 void Player_804A6F38::fn_80247F0C() {
@@ -1740,32 +1846,8 @@ bool Player_804A6F38::fn_8025190C(bool a) {
     return false;
 }
 
-// Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
-// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
-// game/PlayerBit.h) with no partner asking for state 0 gets
-// state 1 instead; with field_0x434 set, state 0 becomes 2.
 bool Player_804A6F38::fn_80251AEC(s32 state) {
-    if (!fn_80251BFC(state)) {
-        return false;
-    }
-    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && field_0xd60 < 0 && state == 0) {
-        field_0x1244 = 1;
-    } else if (field_0x434 && state == 0) {
-        if (field_0x1240 == 2) {
-            return false;
-        }
-        field_0x1244 = 2;
-    } else {
-        field_0x1244 = state;
-    }
-    field_0x124c = true;
-    if (state != 0 && state != 2 && state != 3) {
-        field_0x124d = true;
-    }
-    if (field_0xd60 < 0 && field_0xcfe == true && field_0x1244 != 0) {
-        field_0xcfe = false;
-    }
-    return true;
+    return requestState(this, state);
 }
 
 // Whether a request for `state` may be made now.
@@ -1856,8 +1938,8 @@ static inline void normalizeVec(JGeometry::TVec3f& v) {
     }
 }
 
-// FIXME: 99.1 %. Register allocation only: the first group loop's index
-// (r30 vs r28) and, in the normalisations, the float temporaries (f29-f31,
+// FIXME: 99.06 %. Register allocation only: the group loops' count / index
+// (r29 / r30 vs r28 / r29) and, in the normalisations, the float temporaries (f29-f31,
 // f3 / f4 swapped).
 // Update B (fn_8023F390, after every player's update A): a follower walks
 // to its leader's spot (fn_8027FA08), 2 a frame while 0x1218 runs, else 1.5

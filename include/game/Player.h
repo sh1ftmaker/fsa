@@ -1239,6 +1239,7 @@ inline bool isPlayerActive(s32 player) {
 // Not declared yet: the ~300 others, whose getters take arguments or do more.
 //
 // Defined in game/tu_8022AD64.cpp (C++ linkage, renamed in symbols.txt).
+void fn_8022AD64(void); // lbl_8053AAF8->fn_80138B7C()
 // The manager's flags (no player index).
 bool fn_8022ADB0(void); // 0x73
 void fn_8022ADCC(void); // 0x73 = false
