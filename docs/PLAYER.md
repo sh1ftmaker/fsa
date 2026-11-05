@@ -56,10 +56,74 @@ The destructor (0x802558E4) calls fn_80241E64 (emitter teardown), deletes
 per-slot reset fn_80254744 (0x11A0 bytes) and fn_80254660; those two prove
 most of the remaining fields.
 
-Remaining padding: 89 `u8` holes, about 800 of 0x13BC bytes. Largest: 0x34
-at 0xC1C, 0x27 at 0x499, 0x20 at 0x1354 / 0x1010 / 0x5DC, 0x18 at 0xD10 /
-0xBC4 / 0x32C, 0x14 at 0x12A4, 0x12 at 0x3C6, 0x10 at 0x1320 / 0x1264 /
-0xC54 / 0xBB0 / 0x580.
+Remaining padding (after fn_80254744, agent A 2026-11-05): 47 `u8` holes,
+267 bytes. Largest: 0x20 at 0x4A0 / 0x5DC, 0x10 at 0x580 / 0xBC4, 0xC at
+0x12A4 / 0x12FC / 0x1320 / 0x1344 / 0x1268 / 0xD10.
+
+### Fields proven by the reset fn_80254744 / fn_802544B0 / update A
+
+Types come from the store widths plus loads elsewhere (`psq_l` = TVec3f;
+`lhz` = u16). Names stay `field_0x...`: nothing names them.
+
+| offset | type | evidence |
+|---|---|---|
+| 0x20 | TVec3f | psq copy chain 0x14 -> 0x20 -> 0x2C |
+| 0x2DC | TVec3f | zeroed z, y, x like 0x2D0 / 0x2E8 (`zero()`) |
+| 0x32C, 0x338 | TVec3f | psq copy of mPos; 0x338 = mPos moved 16 along the facing 0x3DC in battle mode |
+| 0x350, 0x35C | TVec3f | psq_l in tu_8026FC20 / tu_80285E58; the old f32 0x358 is 0x350.z |
+| 0x38C, 0x390 | f32 | stfs 0.0f |
+| 0x3B0, 0x3B8, 0x3E4, 0x3EC, 0x3F0, 0x3F4 | s32 | stw; 0x3DC/0x3E4/0x3E8/0x3EC/0x3F0 all take 0x3E0 |
+| 0x3C6, 0x3C8, 0x3CA | u16 | 0x3C6 = 0x3C4; 0x3C8 = 0x195, 0x3CA = 0x18F (lhz in tu_80264998) |
+| 0x3CC-0x3D4 | s32 x3 | stw 0 |
+| 0x402-0x404, 0x43A-0x43D, 0x456, 0x457, 0x490, 0x491, 0x499 | u8 | stb; 0x437-0x43C are copies of 0x3F8-0x3FD |
+| 0x408, 0x448, 0x480, 0x488, 0x49C | s32 | 0x448 = 3, 0x49C = -1 |
+| 0x450, 0x452 | u16 | sth 0xC3 / 0x121; lhz at 0x8024DA2C |
+| 0xAFC, 0xB68, 0xBB8-0xBBA, 0xBD4, 0xCEB, 0xCEC, 0xCEF-0xCF1, 0xD2C, 0xD5C, 0x1174, 0x11E8, 0x11E9, 0x13B8 | u8 | stb 0 |
+| 0xB74, 0xB94, 0xBA8, 0xBB4, 0xBD8, 0xCF8, 0xD38, 0xD48, 0xD54, 0xD58, 0xDA0, 0xDA8, 0x11B0, 0x11C4, 0x11C8, 0x1208, 0x1210, 0x122C, 0x1234, 0x123C, 0x1264 | s32 | stw; 0xBB4 = -1, 0xCF8 = 0x29 |
+| 0xBBC | f32 | 3.0f |
+| 0xC1C | s32[13] | zeroed in a loop by fn_802544B0; indexed by tu_8026FC20 |
+| 0xC54-0xC60, 0xC68, 0xC6C | s32 | counters zeroed one by one with 0xC50 / 0xC64 / 0xC70-0xC7C |
+| 0xCA1, 0xCA2 / 0xCA3, 0xCA4 | u8 / s8 | 0xFF; -0x80 |
+| 0xCBC, 0xD1C | TVec3f | psq copy chain mPos -> 0x2F4 -> 0xCBC -> 0xCB0 -> 0xCD4 -> 0xCC8 -> 0x32C -> 0xD1C |
+| 0xEF0 | s32[0x50] | one loop with 0xDB0 and 0x1030 (the 0x1010 hole is gone) |
+| 0x12B0, 0x12B4, 0x132C, 0x1354-0x1370, 0x1384, 0x138C-0x1394 | JPABaseEmitter* | deleted in address order by fn_80241E64; their 0xF4 is the emitter's mFlags (StopDraw / StopCalc in update A) |
+| 0x1398.field_0x4/0x8, 0x13A8.field_0x4/0x8 | | the 'PEFF' callbacks get the index and 0 / 1 |
+
+cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
+
+### Reset and state request (written)
+
+- **fn_80254744** (99.30 %): per-slot setup. `field_0xd00 >= 2` with the
+  view's save-row stage flag set clears 0xD00/0xCFE. The slot's part comes
+  from the game mode: no 0x7F and the player not taking part (bit
+  field_0x4 of lbl_8053AAF8->field_0x82) -> inactive, start state 1 (also
+  with 0x7F, fn_802DE814 and the bit clear); fn_802DEBF8 or 0x7E clear ->
+  active, 0xD60 = -1 for player 0 and 0 for the others; otherwise players
+  taking part lead (0xD60 = -1, pad 0x11EC = index) and the rest follow:
+  2 players (fn_80138A30) -> 0xD60 = index - 2, 3 players -> 0xD60 =
+  lbl_80529DEC.field_0x64 (0-2), else inactive in state 1. A follower starts at its leader's
+  position (fn_8023E724) plus 16 per place in line (inlined fn_80248778).
+  Then mPos is copied into the position history, fn_80276538 / fn_80276078,
+  cls_804A71A8::fn_8026F710, fn_8027221C(0), fn_8027023C; with
+  fn_802DEBF8 it requests state 3 (inlined fn_80251AEC(3)); last the camera
+  box fn_8030BD3C and, for 0xCFE / 0xD00 == 2, fn_8024DCD0 + fn_8024B2E0.
+- **fn_802544B0** (code identical, literal pool only): fn_80254660's body,
+  then 0xC04 and the counters 0xC1C-0xC7C.
+- **fn_80251AEC / fn_80251BFC** (100 %): as in State system below.
+- **fn_80253E6C** (update A, code identical; literal pool only): the
+  order is fn_80270D08 + fn_80286688 + fn_80265E88 + clear 0xDB0/0x1030
+  and return while lbl_8053AAF8->field_0x94 == 1 or 0x121F (held);
+  otherwise 0x2F4 = mPos + (0, 0, 18), fn_802490A8 (unless 0x80),
+  fn_8026FD14, fn_80251D50, then either the join sequence (0x80 set:
+  counter 0xD38, effects 0x418-0x41A at 0x10, cues per player at
+  0xC0/0xE0/0xF8/0x108) or fn_80285E58; then fn_8024BDBC, fn_80276538,
+  fn_80276078, cls_804AA8D8::fn_8030B774, fn_8024E0A0.
+- **fn_8023F2BC** (manager draw, 100 %).
+- **fn_8023F390** (manager update) is still unwritten: every call and
+  field matches, but the inlined forwarders fn_8022F478 / fn_8023DE58 in
+  its last loop come out with their two outcomes in the other block
+  order (the `true` / 0 fallback before the call, 95.15 %, class
+  `different`).
 
 ## Per-frame flow
 
