@@ -90,6 +90,19 @@ public:
         return false;
     }
 
+    // Whether the owner was pushed along x (field_0x48 at -x or +x). No
+    // out-of-line copy: tu_802684A4 (as a file inline, pushedSideways) and the
+    // owner's fn_80261750 (tu_8025EB18) inline it.
+    bool pushedSideways() const {
+        if (field_0x48[1] == 1) {
+            return true;
+        }
+        if (field_0x48[0] == 1) {
+            return true;
+        }
+        return false;
+    }
+
     // fn_80269574 inlines (no out-of-line copies):
     // How many directions are blocked (field_0x38) or inside an owner box
     // (field_0x28).

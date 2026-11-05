@@ -109,6 +109,15 @@ public:
     // under pos (fn_80226BC4 into field_0x20, fn_802F9908 into field_0x24) and
     // returns a result code that the caller tests for 1-4 and 8.
     s32 fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    // 1 unit (tu_8025EB18 fn_80260C08, the pick-up in front). Read the tile
+    // under pos like fn_802A1844 (fields 0x20 / 0x24); fn_8029E888 returns the
+    // tile code == 0x30 as a u8 (subfic / cntlzw / extrwi; the caller tests 1),
+    // fn_802A01F0 1 for code 0x71 or fn_802A0800's result for 0x16 / 0x17
+    // (clrlwi.), fn_802A02A8 the kind of object on the tile (-1, 0-0x27; the
+    // caller switches on it).
+    u8 fn_8029E888(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    bool fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    s32 fn_802A02A8(const JGeometry::TVec3f* pos, s32 player, s32 layer);
 
     /* 0x00 */ // vtable
     /* 0x04 */ ActorSoundObj_804578F4* field_0x4;
