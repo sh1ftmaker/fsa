@@ -119,11 +119,10 @@ cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
   0xC0/0xE0/0xF8/0x108) or fn_80285E58; then fn_8024BDBC, fn_80276538,
   fn_80276078, cls_804AA8D8::fn_8030B774, fn_8024E0A0.
 - **fn_8023F2BC** (manager draw, 100 %).
-- **fn_8023F390** (manager update) is still unwritten: every call and
-  field matches, but the inlined forwarders fn_8022F478 / fn_8023DE58 in
-  its last loop come out with their two outcomes in the other block
-  order (the `true` / 0 fallback before the call, 95.15 %, class
-  `different`).
+- **fn_8023F390** (manager update, 99.7 %): written in round 3. The
+  forwarders fn_8022F478 / fn_8023DE58 test `!isPlayerActive` first (their
+  out-of-line copies stay 100 %, the inlined ones now have the original
+  block order); one `mr`/`li` of the last loop's offset differs.
 
 ## Per-frame flow
 
@@ -416,3 +415,75 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
   direction arrays, searches 'WARP'-range actors and requests states),
   fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with jump table
   0x804A7338 / 0x804A71B4).
+
+## Round 3, agent C (Opus 5.5, 2026-11-05): input, update B, manager update
+
+### Groups (leader / followers) and the input gate
+
+Proven by the inlining (MWCC only inlines what is defined earlier, and these
+bodies are inlined into functions placed before their out-of-line copies, so
+they are file inlines in tu_8023FBF0.cpp with the out-of-line copies as
+wrappers, as playerFlags_802413F0):
+- **groupSize** (fn_80248970): this player, its leader 0xD60 and every
+  follower (fn_8022F514) whose leader (fn_8022F3DC) is that leader (or this
+  player when 0xD60 < 0).
+- **groupMode** (fn_802486A0): 5 alone, else the leader's mode (fn_8022CAF8)
+  or, leading, **0x120C**. Mode 4 = turn-based: **groupTurn** (fn_80240888:
+  the leader's fn_80234004 or, leading, **0x1224**) against **linePlace**
+  (fn_80248778).
+- **follows_80240670** (fn_80240670): not taking part without a leader; in
+  mode 4 not its turn; else has a leader. fn_8023FFC4 / fn_8024018C /
+  fn_80240354 return the leader's value (0xBE4 / 0xBE0 / 0xBD8, valid while
+  0xBE8 / 0x42C / 0xBDC) through it.
+- **teamCheck** (no out-of-line copy): playerFlags_802413F0, the mode-4 turn
+  test, and **0x11EA**. Every pad query of the player goes through it:
+  fn_80246904 / fn_80246B10 / fn_80246D1C (cls_804AA8C8 A78 / D24 / D6C with a
+  mask, u32), the fixed-mask bools fn_802454C0-fn_802466B4 (also require
+  0x456 clear and 0x11F0 <= 0; fn_80246464 / fn_802466B4 also !fn_8022B244),
+  fn_80244FFC / fn_80245238, and the axes fn_8024712C (fn_80309F20) /
+  fn_80247330 (fn_80309FCC). fn_80243234 / fn_80243C64 / fn_80244630 compare
+  those axes with the facing 0x3DC (fn_80243234 also turns 0x3DC/0x3E8 to 3).
+- fn_802486A0 / fn_802487FC / fn_80248970 / fn_80240670 / fn_80240888 /
+  fn_8023FC5C are **const**: the loop test's field_0x4 is hoisted, which
+  MWCC only does through a const `this` (as in fn_80248778).
+
+**Open, affects ~40 functions:** every inlined copy of playerFlags_802413F0
+tests 0xCE9 with `cmplwi; bne; li 0 / li 1`, which `if (!ce9) return false;
+return true;` gives exactly; but fn_802413F0's own copy (100 %) needs
+`return ce9 != 0` (neg / or / srwi). With the if form every gated function
+here is registers-only (fn_802490A8 99.9 %) and fn_802413F0 drops to 84.6 %.
+The header keeps fn_802413F0's form; a decision is needed (two source forms?).
+
+### fn_802490A8 (input, 97.4 %)
+
+Skipped while 0x1220 > 0. Returns when the acting player (this one, or in
+mode 4 fn_8022EA0C of it) is fn_80230188 / fn_80236B50 / airborne (z > 0) /
+fn_8023EA28, or a player it can reach (fn_8022E438) is busy (fn_8023E98C
+without fn_8022E438 back, fn_8022DEAC outside mode 4, ten state queries);
+also in demo mode with 0xCFE == 1, fn_8022AF5C, or **0x121E == 1**. Then:
+a leader (0xD60 < 0) of a group of 2+ pressing 0x40 (fn_80309D6C) either
+spawns the 'FORM' actor (mode 5; serial in **0x1230**, fn_80134FE0(1)
+outside demo mode) or calls fn_80248004(5, true); on a layer without
+viewLayerFlag, button 0x40 held plus a direction (8/1/4/2 without the
+crossing ones) calls fn_80248004(2/3/1/0, true); last the C stick
+(JUTGamePad sub stick value > 0.5, angle sectors of 0x2000) picks the same
+four directions, unless a reachable player has fn_8022DEAC or the pad
+(fn_8030A308) is busy.
+
+### fn_80252FC0 (update B, 99.1 %)
+
+Skipped for 0x121F, 0xCE8, 0x454, fn_80270A8C, fn_80241200, fn_8025F448,
+state 0x0E, mode 4. A follower (0xD60 >= 0, not held: **0xD9C / 0xDAC**
+< 0) or a player with **0x1216** set walks to fn_8027FA08's spot at 2 a
+frame while **0x1218** > 0, else 1.5 when cls_804A71A8::anyFlag48 (the
+eight bytes at 0x48 are an array), else 6; on arrival 0x1216 = 0, 0x1217
+= 1 (unless 0x1214 or 0x1218), 0x1215 = 1 (follower with 0x1214) and the
+camera box is reset (fn_8030BD3C). Skipped while fn_80240670 says the
+leader's fn_80233EDC, state 0x1B current or requested, state 0x19, 0x122C
+> 0. A held player (0xD9C, else 0xDAC) moves to 16 beside the holder by
+its facing 0x3DC (1.5 or 3 a frame). Otherwise: snapped back to 0x14 while
+a reachable player's fn_8023EF50 actor has field_0x1a4; not in mode 5,
+fn_80250D30 or a flagged layer, and only with fn_802341D0: pulled 5 a frame
+toward fn_8027F854 by a player in fn_8022D930/D894/D9CC, else pushed by the
+largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
+0x18) beyond its own.
