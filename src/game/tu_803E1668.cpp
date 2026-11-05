@@ -639,6 +639,45 @@ void cls_804B0B00::fn_803E462C() {
     field_0x5c->fn_80436668();
 }
 
+// FIXME: 99.26. Stack slots only: the original converts both blink
+// branches' ints in the 0x8 slot, ours the else branch's in 0x10 (as in
+// fn_803E4940).
+// Draws states 12 and 13 (the results screen field_0x10): each taking
+// player's cursor 'Pscur' fades with field_0x1e0[i] (60 frames), the
+// joined ones' 'Paccur' panes with it; outside state 12 the 'Paccur02'
+// pane and field_0x68[i] bounce with field_0x254[i]. Then lbl_8053AED8's
+// buttons.
+void cls_804B0B00::fn_803E4650() {
+    for (s32 i = 0; i < 4; i++) {
+        f32 t;
+        if (field_0x1e0[i] < 30) {
+            t = (f32)(field_0x1e0[i] * field_0x1e0[i]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1e0[i] - 30) * (field_0x1e0[i] - 30)) / 900.0f;
+        }
+        if (i <= field_0x1bc) {
+            if (field_0x1c0[i] < 4) {
+                field_0x10->search(lbl_80478330[i])->setAlpha(160.0f * t);
+            }
+            if (field_0x1c0[i] == 3) {
+                field_0x10->search(lbl_80478350[i])->setAlpha(t * field_0x26a);
+                field_0x10->search(lbl_80478370[i])->setAlpha(t * field_0x26a);
+            }
+        }
+        if (field_0x1d4 != 12) {
+            s32 bounce = field_0x254[i] < 5 ? field_0x254[i] : 10 - field_0x254[i];
+            f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+            f32 x = field_0x10->search(lbl_80478350[i])->getBounds()->i.x;
+            field_0x10->search(lbl_80478350[i])->move(x, field_0x1b0 + offset);
+            if (field_0x1c0[i] >= 3) {
+                field_0x68[i]->fn_80402E08(0.0f, offset);
+            }
+        }
+    }
+    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
+}
+
 // FIXME: 99.60. Stack layout and float registers only: the original keeps
 // every int-to-float conversion in one 8-byte slot (0x18; frame 0x60), ours
 // uses two (frame 0x70), and the bounce offset / pane x swap f29 and f30.
