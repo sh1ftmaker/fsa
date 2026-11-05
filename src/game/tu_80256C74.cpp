@@ -39,6 +39,39 @@ void Player_804A6F38::fn_80258070() {
     }
 }
 
+void Player_804A6F38::fn_8025819C() {
+    s32 serial = field_0xb3c;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor == NULL) {
+            field_0xb3c = -1;
+            field_0xb70 = -1;
+        } else {
+            JGeometry::TVec2<f32> pos;
+            pos.x = actor->mPos.x;
+            pos.y = actor->mPos.y;
+            field_0xb70 = actor->field_0x4;
+            field_0x5a0.set(actor->mBox);
+            field_0x5a0.addPos(pos);
+        }
+    }
+}
+
+void Player_804A6F38::fn_80258470() {
+    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xb18);
+    if (actor == NULL) {
+        field_0xb18 = -1;
+        field_0xb58 = -1;
+    } else {
+        JGeometry::TVec2<f32> pos;
+        pos.x = actor->mPos.x;
+        pos.y = actor->mPos.y;
+        field_0xb58 = actor->field_0x4;
+        field_0x540.set(actor->mBox);
+        field_0x540.addPos(pos);
+    }
+}
+
 void Player_804A6F38::fn_802586CC() {}
 
 void Player_804A6F38::fn_80258880() {
