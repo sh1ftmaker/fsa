@@ -38,6 +38,15 @@ class ActorManager_804A5800;
 // The object lbl_8053AD68 holds (game/tu_80379F84.cpp); defined in tu_80379F84.h.
 struct cls_804AE9A0;
 class JAISeMgr;
+class JAISeqMgr;
+class JAISound;
+struct JASAudioReseter;
+class JAUSoundMgr;
+class JAUSectionHeap;
+class JAUDopplerAudienceState;
+class JAUAudience_withSetting_doppler;
+template <int N> class JAUDopplerAudible;
+template <int N, class Audible, class State, class Audience> class JAUAudience_;
 class JPAEmitterManager;
 // JSystem/J2D/J2DGrafContext.h (mkdd's J2D, which FSA's J2DGraph units use).
 class J2DOrthoGraph;
@@ -366,11 +375,43 @@ void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
 // the u32 at 0x58 (act_enemy_count_wipe_out_check copies it in init and
 // compares it later).
 struct Unk_8045A080 {
-    /* 0x00 */ u8 field_0x0[0x34];
+    /* 0x00 */ u32 field_0x0;
+    /* 0x04 */ u8 field_0x4;
+    /* 0x05 */ u8 field_0x5;
+    /* 0x06 */ u8 field_0x6;
+    /* 0x07 */ u8 field_0x7;
+    /* 0x08 */ JGeometry::TVec3f field_0x8;
+    /* 0x14 */ u8 field_0x14[0x2C - 0x14];
+    /* 0x2C */ JASAudioReseter* field_0x2c; // fn_80459AE4 news it
+    /* 0x30 */ JAUSoundMgr* field_0x30; // fn_80459AE4 news it
     /* 0x34 */ JAISeMgr* field_0x34; // fn_8045B154 (game/tu_8045B010.cpp) calls stopSoundID on it
-    /* 0x38 */ u8 field_0x38[0x58 - 0x38];
+    /* 0x38 */ JAISeqMgr* field_0x38; // fn_80459AE4: field_0x30 + 0x728
+    /* 0x3C */ JAUAudience_<4, JAUDopplerAudible<4>, JAUDopplerAudienceState, JAUAudience_withSetting_doppler>* field_0x3c; // fn_80459AE4 news it
+    /* 0x40 */ u8 field_0x40[0x44 - 0x40];
+    /* 0x44 */ JAUSectionHeap* field_0x44; // fn_80458090 loads wave archives of it
+    /* 0x48 */ u8 field_0x48[0x58 - 0x48];
     /* 0x58 */ u32 field_0x58;
-    /* 0x5C */ u8 field_0x5c[0x90 - 0x5C];
+    /* 0x5C */ u32 field_0x5c;
+    /* 0x60 */ u32 field_0x60;
+    /* 0x64 */ s32 field_0x64;
+    /* 0x68 */ u8 field_0x68;
+    /* 0x69 */ u8 field_0x69;
+    /* 0x6A */ u8 field_0x6a[0x6B - 0x6A];
+    /* 0x6B */ u8 field_0x6b;
+    /* 0x6C */ u8 field_0x6c;
+    /* 0x6D */ u8 field_0x6d;
+    /* 0x6E */ u8 field_0x6e[0x70 - 0x6E];
+    /* 0x70 */ u32 field_0x70;
+    /* 0x74 */ u8 field_0x74;
+    /* 0x75 */ u8 field_0x75[0x7C - 0x75];
+    /* 0x7C */ u8 field_0x7c;
+    /* 0x7D */ u8 field_0x7d[0x80 - 0x7D];
+    /* 0x80 */ JAISound* field_0x80;
+    /* 0x84 */ JAISound* field_0x84;
+    /* 0x88 */ u8 field_0x88[0x8B - 0x88];
+    /* 0x8B */ u8 field_0x8b;
+    /* 0x8C */ u8 field_0x8c;
+    /* 0x8D */ u8 field_0x8d[0x90 - 0x8D];
     // game/tu_80457DFC.cpp: stores `pause` at 0x8a and passes it to
     // JAISeCategoryMgr::pause(bool) of three categories of the object at
     // 0x34 (0x8045868C-0x804586A8); called by act_stop_npc.
@@ -412,7 +453,7 @@ struct Unk_8045A080 {
     // game/tu_80457DFC.cpp (0x804580DC). Looks up entry `index` (a byte) of
     // the JAUSection at 0x44 and returns a byte (1 when its state is 2);
     // tu_8039003C's constructor passes 3.
-    u8 fn_804580DC(u8 index);
+    bool fn_804580DC(u8 index);
     // game/tu_80457DFC.cpp (0x80458408). Acts only for id 0x100001A on the
     // sound at 0x80; r5 is tested with clrlwi. 24 (0x80458488). Called by
     // tu_8039003C's constructor with (0x100001A, true).
@@ -420,6 +461,27 @@ struct Unk_8045A080 {
     // game/tu_80457DFC.cpp (0x8045815C, not written yet in this file's copy). Called by
     // fn_80290E90 with false when the player's 0xCE4 is below 8, with true when it is 8.
     void fn_8045815C(bool flag);
+    // game/tu_80457DFC.cpp (0x80457DFC): stores r4 (a byte) at 0x6.
+    void fn_80457DFC(u8 value);
+    // game/tu_80457DFC.cpp (0x80457E04): when 0x8c and 0x8b are 0, calls
+    // fn_80458744 with 3 (flag set) or 0.
+    void fn_80457E04(bool flag);
+    // game/tu_80457DFC.cpp (0x80458744): switch on r4 (0-3).
+    void fn_80458744(s32 mode);
+    // game/tu_80457DFC.cpp (0x80457F60): sets the byte at 0x74.
+    void fn_80457F60();
+    // game/tu_80457DFC.cpp (0x80457F6C): clears the byte at 0x74, sets 0x6d to 0xB4.
+    void fn_80457F6C();
+    // game/tu_80457DFC.cpp (0x8045873C): stores r4 (a byte) at 0x69.
+    void fn_8045873C(u8 value);
+    // game/tu_80457DFC.cpp (0x8045959C): 0 until fn_804595E4 ran, then
+    // 1 / 2 by JASAudioReseter::checkDone of the object at 0x2C.
+    int fn_8045959C();
+    // game/tu_80457DFC.cpp (0x804595E4): JASAudioReseter::start(5, flag) on the object at 0x2C.
+    void fn_804595E4(bool flag);
+    // game/tu_80457DFC.cpp (0x80459624): stores the position at 0x8/0xC/0x10 (x, z, y)
+    // and copies `mtx` into listener `index` of the audience at 0x3C.
+    void fn_80459624(const JGeometry::TVec3f* pos, Mtx mtx, s32 index);
 }; // Size: 0x90
 extern Unk_8045A080* lbl_8053AF80;
 
