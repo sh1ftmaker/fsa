@@ -36,10 +36,7 @@ namespace GameAudio
     private:
         void getSoundInfo_(JAISoundID soundID, JAISound *sound) const;
 
-        bool isValid() const {
-            return JASGlobalInstance<JAUSoundTable>::getInstance() != NULL
-                && JASGlobalInstance<JAUSoundTable>::getInstance()->getResource() != NULL;
-        }
+        JAUSoundTable *mSoundTable; // 0C (FSA holds the table instead of using the global instance)
     };
 }
 
