@@ -824,6 +824,59 @@ void FileSelect_804AFF60::fn_803CD2DC() {
     }
 }
 
+// FIXME: 95.09 %. One instruction extra: the original computes
+// frames + rowStep * 2 first and spills rowDelay at once (reloading it from
+// the stack), ours adds rowDelay to rowStep * 2 first, and keeps frames in r17
+// for the cursor's fn_80402B10 (mr r4, r17) where the original's r4 still
+// holds it; registers differ from there. Literals are @NNN (see fn_803C24BC).
+// State 4: slides the cursor, the three rows (bottom row first) and the
+// board in (the timings are lbl_8050DB0C's 0x84..0x8A), starts the 'kk_'
+// sprite fade-in, then goes to state 5.
+void FileSelect_804AFF60::fn_803CD75C() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0x84];
+    s16 frames = lbl_8050DB0C.field_0x4c[0x85];
+    s32 rowStep = lbl_8050DB0C.field_0x4c[0x86];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0x87];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0x88];
+    s16 kkDelay = lbl_8050DB0C.field_0x4c[0x89];
+    s16 kkFrames = lbl_8050DB0C.field_0x4c[0x8A];
+    s32 end = rowDelay + frames;
+    if (end < rowDelay + (frames + rowStep * 2)) {
+        end = rowDelay + (frames + rowStep * 2);
+    }
+    if (end < boardDelay + boardFrames) {
+        end = boardDelay + boardFrames;
+    }
+    if (end < kkDelay + kkFrames) {
+        end = kkDelay + kkFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > rowDelay) {
+        field_0x50->fn_80402B10(frames, 0, -300.0f, 0.0f);
+    }
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xd8 > rowDelay + i * rowStep) {
+            field_0x38[2 - i]->fn_80402940(frames, 0, 300.0f, 0.0f);
+            field_0x38[2 - i]->fn_80402628(frames, 0, field_0x38[2 - i]->field_0x28);
+            setRowAlphas(this, 2 - i);
+            field_0x44[i]->fn_80402B10(frames, 0, -300.0f, 0.0f);
+            field_0x44[i]->fn_80402628(frames, 0, field_0x44[i]->field_0x28);
+            setTabAlphas(this, i);
+        }
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x54->fn_80402940(boardFrames, 0, -200.0f, 0.0f);
+        field_0x54->fn_80402628(boardFrames, 0, field_0x54->field_0x28);
+    }
+    if (field_0xd8 == kkDelay + 1) {
+        field_0x1a4 = 1;
+    }
+    if (field_0xd8 > end) {
+        setState(5);
+    }
+}
+
 void FileSelect_804AFF60::fn_803CE05C() {
     if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0) {
         if (field_0x7c == 0x51) {

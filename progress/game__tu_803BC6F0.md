@@ -170,3 +170,12 @@ order, so fn_803C6690 99.85 -> 99.70, fn_803CE9EC 99.86 -> 99.79, fn_803CE11C 99
 SHARED-EDITS
 - symbols.txt: fn_803BF9C4 -> fn_803BF9C4__19FileSelect_804AFF60Fv, fn_803C1734 -> fn_803C1734__19FileSelect_804AFF60Fv.
 - tu_803BC6F0.h: members fn_803BF9C4, fn_803C1734; inline hasSaveData.
+- fn_803CD75C 95.09 missing/extra (1 instr): state 4, cursor / rows / board slide in, 'kk_' fade start (lbl_8050DB0C
+  0x84..0x8A). Uses setRowAlphas(this, 2 - i) and setTabAlphas(this, i). `rowDelay + i * rowStep` keeps the add as the
+  original does (a running `delay += rowStep` folds; the same holds for fn_803CB3DC's button loop).
+  FIXME: end computation order (frames + rowStep * 2 first) and r4 reuse for the cursor call.
+
+### Next
+- The literal pool: the four reloc-name near-misses (and the five new reloc-name functions) need the leading
+  0, -200, 200, dbl, dbl, which nothing written produces; see above.
+- fn_803BDD44, fn_803CEED4, fn_803CE4CC, fn_803CABAC, fn_803C1734 (boot path, unwritten); fn_803BF9C4 next to them.
