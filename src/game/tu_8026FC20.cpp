@@ -8,6 +8,7 @@
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/PlayerBit.h"
+#include "game/cls_804A71A8.h"
 #include "game/tu_80379F84.h"
 #include "JSystem/JMath/JMath.h"
 
@@ -1902,6 +1903,133 @@ void Player_804A6F38::fn_802756E4() {
         fn_80276E5C();
         break;
     }
+}
+
+// lbl_8046BCA8 (0xA0 bytes) is one object: only its start is referenced (by fn_80275D9C,
+// the push per facing) and the linker kept the rest with it. The two later members are
+// typed by their contents only (bytes 0 2 4 6 / 0 8 10 12; float triples with z = 2);
+// nothing in this unit reads them.
+static const struct {
+    f32 push[4][2];
+    u8 field_0x20[8][4];
+    f32 field_0x40[8][3];
+} lbl_8046BCA8 = {
+    {{1.5f, 0.0f}, {-1.5f, 0.0f}, {0.0f, 1.5f}, {0.0f, -1.5f}},
+    {
+        {0, 2, 4, 6},
+        {0, 2, 4, 6},
+        {0, 2, 4, 6},
+        {0, 2, 4, 6},
+        {0, 2, 4, 6},
+        {0, 8, 10, 12},
+        {0, 2, 4, 6},
+        {0, 8, 10, 12},
+    },
+    {
+        {18.0f, 0.0f, 2.0f},
+        {-18.0f, 0.0f, 2.0f},
+        {4.0f, 18.0f, 2.0f},
+        {-4.0f, -18.0f, 2.0f},
+        {-24.0f, 3.0f, 2.0f},
+        {24.0f, 3.0f, 2.0f},
+        {1.0f, -24.0f, 2.0f},
+        {-5.0f, 22.0f, 2.0f},
+    },
+};
+
+// All four direction hold timers field_0x117c[0..3] running.
+static inline bool allDirectionsHeld(const Player_804A6F38* player) {
+    for (s32 i = 0; i < 4; i++) {
+        if (player->field_0x117c[i] <= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// A row of the press history field_0x119c: any direction column set.
+static inline bool rowPressed(const Player_804A6F38* player, s32 i) {
+    bool pressed = false;
+    for (s32 j = 0; j < 4; j++) {
+        if (player->field_0x119c[i][j] == 1) {
+            pressed = true;
+        }
+    }
+    return pressed;
+}
+
+// How many of the newest press history entries (timer field_0x117c[4 + i] running and a
+// direction column of field_0x119c[i] set) are in a row.
+static inline s32 recentPresses(const Player_804A6F38* player) {
+    for (s32 i = 0; i < 4; i++) {
+        if (player->field_0x117c[i + 4] <= 0) {
+            return i;
+        }
+        if (!rowPressed(player, i)) {
+            return i;
+        }
+    }
+    return 4;
+}
+
+// The attack input check of the move updates (true ends them early, tu_8027E5BC): with
+// fn_802466B4 pressed, all four directions held -> state 9 (0x11AC = 2); three or more recent
+// presses in the history 0x117C[4..7] / 0x119C -> state 9 (3); 0x11D4 running -> state 9 (4);
+// else with cls_804A71A8 0xB4 set state 7 (pushed by 1.5 along the facing, z -4) under
+// fn_80243234, otherwise state 5; without it state 4.
+// FIXME: 98.61. Registers only in the inlined recentPresses: the original keeps the count in
+// r4 and the row result in r3 (ours swap them) and sets up the base pointer r6 after the
+// held test instead of before it.
+bool Player_804A6F38::fn_80275D9C() {
+    if (field_0xc9c > 0) {
+        return false;
+    }
+    if (fn_80240808() && fn_802486A0() == 5) {
+        return false;
+    }
+    if (fn_80240808() && fn_8023EA28(fn_80240644()) && fn_802486A0() != 4) {
+        return false;
+    }
+    if (fn_802DEBF8()) {
+        return false;
+    }
+    if (fn_80241544() <= 0) {
+        return false;
+    }
+    if (fn_802466B4()) {
+        if (allDirectionsHeld(this)) {
+            if (fn_80251AEC(9)) {
+                field_0x11ac = 2;
+                return true;
+            }
+        } else {
+            if (recentPresses(this) >= 3) {
+                if (fn_80251AEC(9)) {
+                    field_0x11ac = 3;
+                    return true;
+                }
+            } else if (field_0x11d4 > 0) {
+                if (fn_80251AEC(9)) {
+                    field_0x11ac = 4;
+                    return true;
+                }
+            } else if (field_0xbf0->field_0xb4) {
+                if (fn_80243234()) {
+                    if (fn_80251AEC(7)) {
+                        field_0x344.x = lbl_8046BCA8.push[field_0x3dc][0];
+                        field_0x344.y = lbl_8046BCA8.push[field_0x3dc][1];
+                        field_0x344.z = -4.0f;
+                        return true;
+                    }
+                } else if (fn_80251AEC(5)) {
+                    return true;
+                }
+            } else if (fn_80251AEC(4)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 // FIXME: 99.77. Code identical; the 15 literal is reloc-name until the earlier .sdata2 users
