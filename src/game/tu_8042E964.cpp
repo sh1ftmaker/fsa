@@ -10,6 +10,10 @@
 cls_804B1634* lbl_8053AEC0;
 static cls_804B1600* lbl_8053AEC4;
 
+// Two 4-entry tables read with lhax by byte index (0xEB): fn_80431174, fn_8042F6DC.
+static const s16 lbl_80543AE8[4] = {0x8, 0x154, 0x5, 0x0};
+static const s16 lbl_80543AF0[4] = {0x164, 0xA, 0x160, 0x0};
+
 void cls_804B1600::fn_8042EB14() {
     field_0x10 = 0;
     field_0x12 = 0;
@@ -44,15 +48,12 @@ bool cls_804B1600::fn_8042EBEC() {
     return true;
 }
 
-// FIXME: 98.7 %. Only the float registers differ: the original loads the
-// -500.0f and 0.015625f constants into f5 and f2 (fmadds f2, f3, f2, f0), we
-// use f4 and f5 (fmadds f2, f5, f2, f0).
 bool cls_804B1600::fn_8042EC7C() {
     if (field_0x12 != 0) {
         field_0x10++;
         if (field_0x10 < 8) {
             s32 n = (8 - field_0x10) * (8 - field_0x10);
-            field_0x8->fn_80402E08(0.0f, 26.0f + 0.015625f * (-500.0f * n));
+            field_0x8->fn_80402E08(0.0f, -500.0f * n / 64.0f + 26.0f);
             field_0xc->fn_80402628(8, 0, field_0xc->field_0x28);
         } else {
             s32 n = (11 - field_0x10) * (11 - field_0x10);
@@ -143,4 +144,68 @@ BOOL cls_804B1634::fn_804317AC() {
         }
     }
     return FALSE;
+}
+
+bool cls_804B1634::fn_80431900(s32 id, u8 value, u8* out) {
+    if (field_0xec == 0) {
+        fn_8042EF9C(((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getStringPtr(), id, value);
+        if (out != NULL) {
+            field_0x8->search(0x0050776375723031ull)->show();
+            field_0x8->search(0x0050776375723032ull)->show();
+        } else {
+            field_0x8->search(0x0050776375723031ull)->hide();
+            field_0x8->search(0x0050776375723032ull)->hide();
+        }
+        field_0xc->fn_80402E08(0.0f, -480.0f);
+        field_0xc->field_0x22 = 0;
+        field_0xe8 = 0;
+        field_0xeb = 0;
+        field_0xec = 1;
+        fn_8042F6DC();
+        if (out != NULL) {
+            *out = field_0xea;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool cls_804B1634::fn_80431A9C(s32 id, u8 value, u8* out) {
+    if (field_0xec == 0) {
+        fn_8042EF9C(((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getStringPtr(), id, value);
+        if (out != NULL) {
+            field_0x8->search(0x0050776375723031ull)->show();
+            field_0x8->search(0x0050776375723032ull)->show();
+        } else {
+            field_0x8->search(0x0050776375723031ull)->hide();
+            field_0x8->search(0x0050776375723032ull)->hide();
+        }
+        field_0xc->fn_80402E08(0.0f, -480.0f);
+        field_0xc->field_0x22 = 0;
+        field_0xe8 = 0;
+        field_0xeb = 0;
+        field_0xec = 1;
+        fn_8042F6DC();
+        if (out != NULL) {
+            *out = field_0xea;
+        }
+        return true;
+    }
+    return false;
+}
+
+cls_804B1634::~cls_804B1634() {
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    for (s32 i = 0; i < 5; i++) {
+        delete field_0x10[i];
+        field_0x10[i] = NULL;
+        delete field_0x24[i];
+        field_0x24[i] = NULL;
+    }
+    lbl_8053AEC0 = NULL;
 }

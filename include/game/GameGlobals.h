@@ -1348,13 +1348,23 @@ public:
     // closed; return 1 when done, else 0 (callers test with cmpwi, BOOL).
     BOOL fn_804317AC();
     BOOL fn_80431740();
+    // 0x80431900: the same function as fn_80431A9C, kept twice (tu_8044C7F0's
+    // fn_804522C8-area callers pass 0x10A, 0 and the address of a u8 field).
+    bool fn_80431900(s32 id, u8 value, u8* out);
+    // 0x8042EF9C: lays the text `id` of the message window out into `str`
+    // (game/tu_8042E964.cpp, not written yet). Called by fn_80431900 / fn_80431A9C.
+    void fn_8042EF9C(char* str, s32 id, u8 value);
+    // 0x8042F6DC: second layout pass over the same window (not written yet).
+    void fn_8042F6DC();
     // 0x804310BC: clears field_0xe8 and field_0xec (owner game/tu_8042E964.cpp).
     void fn_804310BC();
 
     /* 0x04 */ cls_804B1600* field_0x4;  // new in fn_80431D84, a 0x14-byte object
     /* 0x08 */ J2DScreen* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
     /* 0x0C */ cls_804AF86C* field_0xc;  // pane wrapper
-    /* 0x10 */ u8 field_0x10[0xD8];      // not decoded yet (pointer slots from 0x10, TVec2<s> arrays at 0x38 and 0x78)
+    /* 0x10 */ cls_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
+    /* 0x24 */ cls_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
+    /* 0x38 */ u8 field_0x38[0xB0];      // not decoded yet (TVec2<s> arrays at 0x38 and 0x78, floats from 0xB8)
     /* 0xE8 */ s16 field_0xe8;           // frame counter of the window's open/close steps
     /* 0xEA */ u8 field_0xea;            // out byte of fn_80431A9C
     /* 0xEB */ u8 field_0xeb;
