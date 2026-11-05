@@ -299,7 +299,7 @@ public:
     void fn_80258BA8(); // clears 0x458, 0xb9f, 0xba0
     void fn_80258BBC(); // clears 0xb79 and 0x1204; mPos.z = 0 unless 0x1244 is 5 or 7
     void fn_80259778(); // field_0x34c = 5.4f
-    void fn_80259784(); // ends the emitters at 0x12c4 and 0x12c8, kills the FIRE actor field_0xb28 (fn_802BAA00)
+    void fn_80259784(); // ends the emitters at 0x12c4 and 0x12c8, kills the actor field_0xb28 (fn_802BAA00)
     void fn_8025A0B0(); // same body as fn_80259784
     void fn_8025A04C(); // clears 0x458; field_0xb84 = fn_80241794() > 0; 0xb88, 0xb8c = 0, 0xb28 = -1
     void fn_8025A9C0(); // same body as fn_8025A04C

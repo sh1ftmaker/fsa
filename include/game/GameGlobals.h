@@ -1321,7 +1321,8 @@ s32 fn_802BA9F8(ActorBase_804A5770* actor);
 
 // SHARED-EDIT (tu_80256C74): owner game/act_fire_rod_fire.cpp (0x802BAA00, defined
 // there, not written yet). `li r0, 0; stb r0, 0x11c(r3); blr`: clears mAlive of
-// the FIRE actor tu_80256C74 finds by serial (the same field fn_8025BDD8 clears).
+// the actor tu_80256C74 finds by serial in Player field_0xb28 (the same field
+// fn_8025BDD8 clears).
 extern "C" void fn_802BAA00(ActorBase_804A5770* actor);
 
 // SHARED-EDIT (tu_803F0A54, review): the singleton *lbl_8053AEC0
