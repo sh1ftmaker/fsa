@@ -434,7 +434,7 @@ GameState_804B0FE0::GameState_804B0FE0() {
     field_0x238 = 0xFF;
     field_0x23a[0] = 0;
     field_0x23a[1] = 0;
-    field_0x23a[2] = 0;
+    field_0x23c = 0;
     field_0x23d = 0;
     field_0x239 = 0;
     field_0x1a0 = 0;
