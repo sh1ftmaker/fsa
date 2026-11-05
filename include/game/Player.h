@@ -476,6 +476,11 @@ public:
     void fn_8026FD14();
     void fn_80270088(); // called by fn_8027DEA0 (enter state 4)
     void fn_80270360(s32 serial); // called by tu_8022AD64 (fn_80235B68)
+    void fn_80274728(); // called by fn_8027AAD0 (update of state 0x0A)
+    void fn_80274988(); // called by fn_8027B648 (update of state 0x09)
+    void fn_802765C0();
+    bool fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center);
+    u8 fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // called by tu_8022AD64
     // The manager's other per-player calls (fn_8023F390 / fn_8023F2BC):
     // update B (tu_8023FBF0, not written yet) and the draw (tu_80264998).
     void fn_80252FC0();
@@ -663,7 +668,9 @@ public:
     /* 0x0499 */ u8 field_0x499;
     /* 0x049A */ u8 field_0x49a[0x49C - 0x49A];
     /* 0x049C */ s32 field_0x49c;
-    /* 0x04A0 */ u8 field_0x4a0[0x4C0 - 0x4A0];
+    // Two boxes tested by fn_802738F0 (view-relative, against its box argument).
+    /* 0x04A0 */ JGeometry::TBox2f field_0x4a0;
+    /* 0x04B0 */ JGeometry::TBox2f field_0x4b0;
     /* 0x04C0 */ JGeometry::TBox2f field_0x4c0;
     /* 0x04D0 */ JGeometry::TBox2f field_0x4d0;
     /* 0x04E0 */ JGeometry::TBox2f field_0x4e0[3];
@@ -1581,6 +1588,9 @@ bool fn_80239718(s32 player, s32 serial);
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8023434C, defined there). tu_8026FC20 fn_80274728 tests it
+// (clrlwi.) for this player while fn_802486A0() == 3.
+bool fn_8023434C(s32 player);
 // Owner: tu_8022AD64 (0x80230E1C, defined there). 1 unit (act_four_switch_monitor's
 // update: fn_80230E1C(player, 0) for each player whose bit is set in field_0x82).
 // Owner: tu_8022AD64 (0x8022E114, defined there). 2 uses (tu_801D11FC). Forwards

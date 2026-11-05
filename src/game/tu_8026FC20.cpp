@@ -496,6 +496,22 @@ bool Player_804A6F38::fn_80272B4C(const JGeometry::TVec3f* pos) {
     return false;
 }
 
+// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
+// (as in tu_802684A4).
+static inline JGeometry::TBox2f* layerBox(s32 layer) {
+    GameView_804A9950* view = fn_802D6A9C();
+    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+// `box` made relative to the top-left corner of `layer`'s view box.
+static inline void toView(JGeometry::TBox2f& box, s32 layer) {
+    const JGeometry::TVec2f& origin = layerBox(layer)->i;
+    JGeometry::TVec2f offset;
+    offset.x = -origin.x;
+    offset.y = -origin.y;
+    box.addPos(offset);
+}
+
 // Whether two boxes overlap (the intersection is not empty); the result is
 // the compare chain itself, not TBox::intersect's `? true : false`.
 static inline bool overlaps(const JGeometry::TBox2f& a, const JGeometry::TBox2f& b) {
@@ -505,11 +521,40 @@ static inline bool overlaps(const JGeometry::TBox2f& a, const JGeometry::TBox2f&
     return overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y;
 }
 
-// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
-// (as in tu_802684A4).
-static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = fn_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+// `box` (on `layer`) against the player's box 0x4d0 (on its layer 0x3b4),
+// both made relative to their layer's view corner (fn_802724E0, fn_80272E98).
+static inline bool overlapsInView(const Player_804A6F38* player, const JGeometry::TBox2f& box, s32 layer) {
+    JGeometry::TBox2f other(box);
+    const JGeometry::TVec2f& origin = layerBox(layer)->i;
+    JGeometry::TVec2f offset;
+    offset.x = -origin.x;
+    offset.y = -origin.y;
+    other.addPos(offset);
+    JGeometry::TBox2f own(player->field_0x4d0);
+    const JGeometry::TVec2f& ownOrigin = layerBox(player->field_0x3b4)->i;
+    JGeometry::TVec2f ownOffset;
+    ownOffset.x = -ownOrigin.x;
+    ownOffset.y = -ownOrigin.y;
+    own.addPos(ownOffset);
+    own.i.setMax(other.i);
+    own.f.setMin(other.f);
+    return own.f.x >= own.i.x && own.f.y >= own.i.y;
+}
+
+bool Player_804A6F38::fn_802724E0(const JGeometry::TBox2f* box, s32 layer) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (!(layer == field_0x3b4 || (field_0x3b4 < 8 && layer == 8))) {
+        return false;
+    }
+    if (mPos.z > 0.0f) {
+        return false;
+    }
+    if (!(fn_80270A8C() && fn_80270A04()) && !fn_80251BFC(0x19)) {
+        return false;
+    }
+    return overlapsInView(this, *box, layer);
 }
 
 bool Player_804A6F38::fn_80272DCC(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -546,20 +591,7 @@ bool Player_804A6F38::fn_80272E98(const JGeometry::TBox2f* box, s32 layer) {
     if (!fn_80251BFC(0x11)) {
         return false;
     }
-    // Both boxes relative to the view's top-left corner.
-    JGeometry::TBox2f other(*box);
-    const JGeometry::TVec2f& origin = layerBox(layer)->i;
-    JGeometry::TVec2f offset;
-    offset.x = -origin.x;
-    offset.y = -origin.y;
-    other.addPos(offset);
-    JGeometry::TBox2f own(field_0x4d0);
-    const JGeometry::TVec2f& ownOrigin = layerBox(field_0x3b4)->i;
-    JGeometry::TVec2f ownOffset;
-    ownOffset.x = -ownOrigin.x;
-    ownOffset.y = -ownOrigin.y;
-    own.addPos(ownOffset);
-    return overlaps(own, other);
+    return overlapsInView(this, *box, layer);
 }
 
 bool Player_804A6F38::fn_802730D8(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 height) {
@@ -634,6 +666,265 @@ bool Player_804A6F38::fn_802732C4(const JGeometry::TBox2f* box, s32 layer) {
         return false;
     }
     return overlaps(field_0x4c0, *box);
+}
+
+// FIXME: 99.93. Code identical; its 0.25 / 0.5 literals are reloc-name until the earlier
+// literal users (fn_802710C8 first) are written and the .sdata2 pool is in the original order.
+bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (field_0x458 == 1) {
+        JGeometry::TBox2f a(field_0x4a0);
+        toView(a, field_0x3b4);
+        JGeometry::TBox2f b(field_0x4b0);
+        toView(b, field_0x3b4);
+        if (overlaps(a, *box)) {
+            out->x = (a.i.x + a.f.x + b.i.x + b.f.x) / 4;
+            out->y = (a.i.y + a.f.y + b.i.y + b.f.y) / 4;
+            return true;
+        }
+        if (flag && overlaps(b, *box)) {
+            if (center) {
+                out->x = (a.i.x + a.f.x + b.i.x + b.f.x) / 4;
+                out->y = (a.i.y + a.f.y + b.i.y + b.f.y) / 4;
+                return true;
+            }
+            out->x = b.f.x + 0.5f * (b.i.x - b.f.x);
+            out->y = b.f.y + 0.5f * (b.i.y - b.f.y);
+            return true;
+        }
+    }
+    return false;
+}
+
+u8 Player_804A6F38::fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    JGeometry::TBox2f viewBox(*box);
+    toView(viewBox, layer);
+    bool hit = fn_802738F0(&viewBox, out, flag, false);
+    if (hit == true) {
+        out->add(layerBox(layer)->i);
+    }
+    return hit;
+}
+
+// FIXME: 94.20. Only the end differs: the original converts fn_80256F44's result to bool
+// (clrlwi; neg; or; srwi), so that callee returns a u8 in the original; it is declared bool
+// here because the generated forwarder fn_8023AAF8 (tu_8022AD64) passes it through.
+bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
+    if (fn_80274238(box, layer, out, flag)) {
+        return true;
+    }
+    if (fn_802576CC(box, layer, out)) {
+        return true;
+    }
+    if (fn_802575B8(box, layer, out)) {
+        return true;
+    }
+    if (fn_802574CC(box, layer, out)) {
+        return true;
+    }
+    if (fn_802570BC(box, layer, out)) {
+        return true;
+    }
+    return fn_80256F44(box, layer, out);
+}
+
+// FIXME: 94.87. Only the end differs: the original converts fn_80256F44's result to bool
+// (clrlwi; neg; or; srwi), so that callee returns a u8 in the original; it is declared bool
+// here because the generated forwarder fn_8023AAF8 (tu_8022AD64) passes it through.
+bool Player_804A6F38::fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
+    if (fn_80274238(box, layer, out, flag)) {
+        return true;
+    }
+    if (fn_802576CC(box, layer, out)) {
+        return true;
+    }
+    if (fn_802575B8(box, layer, out)) {
+        return true;
+    }
+    if (fn_802574CC(box, layer, out)) {
+        return true;
+    }
+    if (fn_802573E0(box, layer, out)) {
+        return true;
+    }
+    if (fn_802570BC(box, layer, out)) {
+        return true;
+    }
+    return fn_80256F44(box, layer, out);
+}
+
+// FIXME: 99.33. Only the return differs: the original truncates `hit` (clrlwi), i.e. returns
+// a u8 as fn_80273E7C does; kept bool because the generated pass-through forwarder in
+// tu_8022AD64 (0x8023BA4C) returns it as bool.
+bool Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag) {
+    field_0x492 = 0;
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    JGeometry::TBox2f viewBox(*box);
+    toView(viewBox, layer);
+    bool hit = fn_802738F0(&viewBox, pos, flag, true);
+    if (hit == true) {
+        pos->add(layerBox(layer)->i);
+    }
+    if (!hit) {
+        hit = fn_80273FB8(box, layer, pos);
+    }
+    return hit;
+}
+
+void Player_804A6F38::fn_80274728() {
+    if (fn_802486A0() == 3 && !fn_8023434C(field_0x4)) {
+        field_0x3fa++;
+    } else if (field_0x3fa >= 14 && field_0x3fa < 37) {
+        field_0x3fa += 2;
+        if (field_0x3fa > 37) {
+            field_0x3fa = 37;
+        }
+    } else {
+        field_0x3fa++;
+    }
+    field_0x11c0 = 0;
+    if (field_0x3fa < 6) {
+        field_0x3fb = 8;
+    } else if (field_0x3fa < 8) {
+        field_0x3fb = 9;
+    } else if (field_0x3fa < 9) {
+        field_0x3fb = 10;
+    } else if (field_0x3fa < 10) {
+        field_0x3fb = 0;
+    } else if (field_0x3fa < 31) {
+        field_0x3fb = ((field_0x3fa - 10) / 3 + 1) & 7;
+        field_0x11c0 = (field_0x3fa - 10) * 0xaaa;
+    } else if (field_0x3fa < 33) {
+        field_0x3fb = ((field_0x3fa - 10) / 3 + 1) & 7;
+        field_0x11c0 = (field_0x3fa - 10) * 0xaaa;
+    } else {
+        lbl_8053AC98->fn_802A20F0(&mPos, field_0x4, field_0x3b4, 0, 1);
+        field_0x11b0++;
+        s32 limit;
+        if (fn_802486A0() == 3 && !fn_8023434C(field_0x4)) {
+            limit = 6;
+        } else {
+            limit = 12;
+        }
+        if (field_0x11b0 < limit) {
+            field_0x3fa = 10;
+            field_0x3fb = 0;
+        } else {
+            field_0x3fb = 11;
+            fn_80251AEC(12);
+        }
+        field_0x11c0 = 0;
+    }
+    switch (field_0x3dc) {
+    case 0:
+        break;
+    case 1:
+        field_0x11c0 += 0x8000;
+        break;
+    case 2:
+        field_0x11c0 += 0x4000;
+        break;
+    case 3:
+        field_0x11c0 -= 0x4000;
+        break;
+    }
+    fn_802765C0();
+}
+
+void Player_804A6F38::fn_80274988() {
+    field_0x3fa++;
+    field_0x11c0 = 0;
+    if (fn_802486A0() == 3 && !fn_8023434C(field_0x4)) {
+        if (field_0x3fa < 3) {
+            field_0x3fb = 9;
+            field_0x11c0 = -0x6000;
+        } else if (field_0x3fa < 7) {
+            field_0x3fb = 8;
+            field_0x11c0 = -0x7000;
+        } else if (field_0x3fa < 8) {
+            field_0x3fb = 9;
+            field_0x11c0 = -0x6000;
+        } else if (field_0x3fa < 9) {
+            field_0x3fb = 10;
+            field_0x11c0 = -0x4000;
+        } else if (field_0x3fa < 10) {
+            field_0x3fb = 0;
+            field_0x11c0 = -0x2000;
+        } else if (field_0x3fa < 31) {
+            field_0x3fb = ((field_0x3fa - 10) / 3 + 1) & 7;
+            field_0x11c0 = (field_0x3fa - 10) * 0xaaa;
+        } else if (field_0x3fa < 34) {
+            field_0x3fb = 11;
+            field_0x11c0 = (field_0x3fa - 10) * 0xaaa;
+        } else {
+            field_0x3fb = 11;
+            lbl_8053AC98->fn_802A20F0(&mPos, field_0x4, field_0x3b4, 0, 1);
+            fn_80251AEC(0);
+        }
+    } else {
+        if (field_0x3fa < 3) {
+            field_0x3fb = 9;
+            field_0x11c0 = -0x6000;
+        } else if (field_0x3fa < 7) {
+            field_0x3fb = 8;
+            field_0x11c0 = -0x7000;
+        } else if (field_0x3fa < 8) {
+            field_0x3fb = 9;
+            field_0x11c0 = -0x6000;
+        } else if (field_0x3fa < 9) {
+            field_0x3fb = 10;
+            field_0x11c0 = -0x4000;
+        } else if (field_0x3fa < 10) {
+            field_0x3fb = 0;
+            field_0x11c0 = -0x2000;
+        } else if (field_0x3fa < 24) {
+            field_0x3fb = ((field_0x3fa - 10) / 2 + 1) & 7;
+            field_0x11c0 = (field_0x3fa - 10) * 0x1000;
+        } else if (field_0x3fa < 26) {
+            field_0x3fb = 11;
+            field_0x11c0 = (field_0x3fa - 10) * 0x1000;
+        } else {
+            field_0x3fb = 11;
+            lbl_8053AC98->fn_802A20F0(&mPos, field_0x4, field_0x3b4, 0, 1);
+            fn_80251AEC(0);
+        }
+    }
+    switch (field_0x3dc) {
+    case 0:
+        break;
+    case 1:
+        field_0x11c0 += 0x8000;
+        break;
+    case 2:
+        field_0x11c0 += 0x4000;
+        break;
+    case 3:
+        field_0x11c0 -= 0x4000;
+        break;
+    }
+    if (viewLayerFlag(field_0x3b4)) {
+        field_0x11c0 = -field_0x11c0;
+    }
+    fn_802765C0();
 }
 
 void Player_804A6F38::fn_80277100() {}
