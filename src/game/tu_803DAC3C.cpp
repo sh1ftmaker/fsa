@@ -13,6 +13,7 @@
 #include "JSystem/JKernel/JKRArchive.h"
 #include "dolphin/dvd.h"
 #include "dolphin/os.h"
+#include "dolphin/pad.h"
 #include <string.h>
 
 // .rodata: the pane tag tables (J2DPane::search), in address order; the
@@ -54,6 +55,9 @@ static const u64 lbl_80477830[5] = {
 static const u64 lbl_80477858[5] = {
     'Pbacb04', 'Pbacb03', 'Pbacb02', 'Pbacb01', 'Tbac01',
 };
+// fn_803DEC44.
+static const s32 lbl_80477880[3] = {0x34, 0x35, 0x36};
+static const s32 lbl_8047788C[3] = {0xF3, 0xF4, 0xF3};
 
 // Run each frame by fn_803DF810 (index: mState).
 static GameMode_804B0688::StateFunc lbl_804B0568[8] = {
@@ -182,13 +186,181 @@ void GameMode_804B0688::fn_803DAC58(s32 entry, f32 alpha) {
     }
 }
 
+// Cross-fades the movie screen's 'Pim' pictures from the previous entry
+// (field_0x9f) to the selected one (field_0x9e) over the frames of
+// lbl_8050DB0C's halfword 0x12E.
+void GameMode_804B0688::fn_803DCCA4() {
+    if (field_0x90 == 0) {
+        return;
+    }
+    field_0x90++;
+    f32 t = (f32)field_0x90 / (f32)lbl_8050DB0C.field_0x4c[0x71];
+    if (field_0x90 >= lbl_8050DB0C.field_0x4c[0x71]) {
+        field_0x90 = 0;
+    }
+    if (field_0x9e != 0 && field_0x9f != 0) {
+        mMovieScreen->search('Pim01')->setAlpha(0);
+        mMovieScreen->search('Pim02')->setAlpha(0);
+    }
+    if (field_0x9e != 1 && field_0x9f != 1) {
+        mMovieScreen->search('Pim11')->setAlpha(0);
+        mMovieScreen->search('Pim12')->setAlpha(0);
+    }
+    if (mState != 2) {
+        switch (field_0x9e) {
+        case 0:
+            mMovieScreen->search('Pim01')->setAlpha(field_0x11a[0] * t);
+            mMovieScreen->search('Pim02')->setAlpha(field_0x11a[1] * t);
+            break;
+        case 1:
+            mMovieScreen->search('Pim11')->setAlpha(field_0x11a[2] * t);
+            mMovieScreen->search('Pim12')->setAlpha(field_0x11a[3] * t);
+            break;
+        case 2: // entry 2 has no movie pictures
+            break;
+        }
+    }
+    t = 1.0f - t;
+    if (mState == 1 && field_0x9e == field_0x9f) {
+        return;
+    }
+    switch (field_0x9f) {
+    case 0:
+        mMovieScreen->search('Pim01')->setAlpha(field_0x11a[0] * t);
+        mMovieScreen->search('Pim02')->setAlpha(field_0x11a[1] * t);
+        break;
+    case 1:
+        mMovieScreen->search('Pim11')->setAlpha(field_0x11a[2] * t);
+        mMovieScreen->search('Pim12')->setAlpha(field_0x11a[3] * t);
+        break;
+    case 2: // entry 2 has no movie pictures
+        break;
+    }
+}
+
 void GameMode_804B0688::fn_803DD19C() {}
 
 void GameMode_804B0688::fn_803DD1A0() {}
 
+void GameMode_804B0688::fn_803DD1A4() {
+    f32 alpha;
+    if (field_0x8c < 30) {
+        alpha = (f32)(field_0x8c * field_0x8c) / 900.0f;
+    } else {
+        s32 t = field_0x8c - 30;
+        alpha = 1.0f - (f32)(t * t) / 900.0f;
+    }
+    s32 frame = field_0x88;
+    s32 step = frame < 5 ? frame : 10 - frame;
+    f32 y = 5.0f * (f32)(step * step) / 25.0f;
+    if (field_0x80 == 0) {
+        field_0x50[0]->fn_80402E08(0.0f, y);
+        field_0x50[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x58->fn_80402E08(0.0f, y);
+    } else {
+        field_0x50[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x50[1]->fn_80402E08(0.0f, y);
+        field_0x58->fn_80402E08(field_0x50[1]->field_0x8 - field_0x50[0]->field_0x8, y);
+    }
+    mScreen->search('Paccur01')->setAlpha(field_0xa2 * alpha);
+    mScreen->search('Paccur02')->setAlpha(field_0xa2 * alpha);
+}
+
 void GameMode_804B0688::fn_803DD3DC() {}
 
+void GameMode_804B0688::fn_803DD3E0() {
+    u8 entry = field_0x9e;
+    f32 alpha;
+    if (entry == 3 || mState != 1) {
+        if (field_0x8c < 30) {
+            alpha = (f32)(field_0x8c * field_0x8c) / 900.0f;
+        } else {
+            s32 t = field_0x8c - 30;
+            alpha = 1.0f - (f32)(t * t) / 900.0f;
+        }
+    } else {
+        if (field_0x8c < 60) {
+            alpha = (f32)(field_0x8c * field_0x8c) / 3600.0f;
+        } else {
+            s32 t = field_0x8c - 60;
+            alpha = 1.0f - (f32)(t * t) / 3600.0f;
+        }
+    }
+    s32 frame = field_0x88;
+    s32 step = frame < 5 ? frame : 10 - frame;
+    f32 y = 5.0f * (f32)(step * step) / 25.0f;
+    switch (entry) {
+    case 0:
+        field_0x34[0]->fn_80402E08(0.0f, y);
+        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x30->fn_80402E08(0.0f, 0.0f);
+        field_0x44[0]->fn_80402E08(0.0f, y);
+        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
+        fn_803DAC58(field_0x9e, alpha);
+        field_0x40->mPane->hide();
+        break;
+    case 1:
+        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x34[1]->fn_80402E08(0.0f, y);
+        field_0x30->fn_80402E08(0.0f, 0.0f);
+        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x44[1]->fn_80402E08(0.0f, y);
+        fn_803DAC58(field_0x9e, alpha);
+        field_0x40->mPane->hide();
+        break;
+    case 2:
+        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x30->fn_80402E08(0.0f, 0.0f);
+        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
+        fn_803DAC58(field_0x9e, alpha);
+        field_0x40->mPane->hide();
+        break;
+    default:
+        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
+        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x30->fn_80402E08(0.0f, y);
+        field_0x40->fn_80402E08(0.0f, y);
+        fn_803DAC58(field_0x9e, alpha);
+        field_0x40->mPane->show();
+        break;
+    }
+}
+
 void GameMode_804B0688::fn_803DD760() {}
+
+// State 7: fades to black, waits for the sound to stop and the countdown
+// field_0x98, then copies the save region to 0x80700000 (it survives the
+// reset, see main) and reboots into "/DOL/framework.dol".
+// FIXME: 93.9. The save-region copy loop: the original re-adds the index to
+// lbl_80529DEC's address for every eight bytes (add r4, r5, r12), ours steps a
+// source pointer (one instruction fewer); the same loop is unsolved in main
+// (tu_801344C0) and cls_804A8578::fn_802B1DE8.
+void GameMode_804B0688::fn_803DD764() {
+    field_0x7c += 10.0f;
+    if (field_0x7c >= 255.0f) {
+        field_0x7c = 255.0f;
+        if (lbl_8053AF80->fn_80457F80(JAISoundID(11), -2)) {
+            if (--field_0x98 <= 0) {
+                DVDFileInfo info;
+                if (DVDOpen("/DOL/framework.dol", &info) == TRUE) {
+                    GameState_804B0FE0* state = &lbl_80529DEC;
+                    for (int i = 0; i < 0x20; i++) {
+                        ((u8*)0x80700000)[i] = lbl_80529DEC.mSaveRegion.bytes[i];
+                    }
+                    OSSetSaveRegion((void*)0x80700000, (void*)0x8070001F);
+                    __PADDisableRecalibration(TRUE);
+                    lbl_8053ACA8->fn_802B1558();
+                    OSSetBootDol(info.startAddr);
+                    OSResetSystem(0, 0, FALSE);
+                }
+            }
+        }
+    }
+}
 
 void GameMode_804B0688::fn_803DD8E8() {
     field_0x78 += 10.0f;

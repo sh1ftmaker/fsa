@@ -43,6 +43,7 @@ struct OSResetFunctionInfo {
 
 void OSResetSystem(BOOL reset, u32 resetCode, BOOL forceMenu);
 void OSRegisterResetFunction(OSResetFunctionInfo *func);
+u32 OSSetBootDol(u32 dolOffset);
 
 #ifdef __cplusplus
 }
