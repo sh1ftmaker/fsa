@@ -163,7 +163,7 @@ lacks), `.bss` (split weak `memPool_` copies yourself, see
 docs/COORDINATOR.md) and kept weak copies are diffed as compiled.
 
 <!-- status:start -->
-Status (2026-11-05, honest report, written by `tools/site_data.py`): 8,317 of 11,557 functions, 1,538,392 of 4,442,032 bytes of code (34.63 %); weighted 38.52 % (1,710,864 bytes, honest plus partial credit for 423 structurally matched functions). Game code 3,604 / 6,789 functions (19.3 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 449 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-05, honest report, written by `tools/site_data.py`): 8,319 of 11,557 functions, 1,539,044 of 4,442,032 bytes of code (34.65 %); weighted 38.53 % (1,711,523 bytes, honest plus partial credit for 422 structurally matched functions). Game code 3,606 / 6,789 functions (19.3 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 449 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
