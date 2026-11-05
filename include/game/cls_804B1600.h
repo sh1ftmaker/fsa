@@ -20,8 +20,8 @@ public:
     void fn_8042EB14();
     void fn_8042EB24();
     void fn_8042EB98();
-    bool fn_8042EBEC();
-    bool fn_8042EC7C();
+    BOOL fn_8042EBEC();
+    BOOL fn_8042EC7C();
     bool fn_8042EDAC(u32 message, u8 value);
 
     /* 0x04 */ J2DScreen* field_0x4;
@@ -30,5 +30,8 @@ public:
     /* 0x10 */ s16 field_0x10;
     /* 0x12 */ u8 field_0x12;
 }; // Size: 0x14
+
+// .sbss of game/tu_8042E964.cpp (the constructor sets it).
+extern cls_804B1600* lbl_8053AEC4;
 
 #endif

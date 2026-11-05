@@ -8,7 +8,7 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 
 cls_804B1634* lbl_8053AEC0;
-static cls_804B1600* lbl_8053AEC4;
+cls_804B1600* lbl_8053AEC4;
 
 // Two 4-entry tables read with lhax by byte index (0xEB); used by fn_80431174 / fn_8042F6DC (not written yet).
 static const s16 lbl_80543AE8[4] = {0x8, 0x154, 0x5, 0x0};
@@ -35,7 +35,7 @@ void cls_804B1600::fn_8042EB98() {
     }
 }
 
-bool cls_804B1600::fn_8042EBEC() {
+BOOL cls_804B1600::fn_8042EBEC() {
     if (field_0x12 != 0) {
         u8 done = field_0x8->fn_80402940(10, 0, 0.0f, -480.0f);
         field_0xc->fn_80402628(10, field_0xc->field_0x28, 0);
@@ -48,7 +48,7 @@ bool cls_804B1600::fn_8042EBEC() {
     return true;
 }
 
-bool cls_804B1600::fn_8042EC7C() {
+BOOL cls_804B1600::fn_8042EC7C() {
     if (field_0x12 != 0) {
         field_0x10++;
         if (field_0x10 < 8) {

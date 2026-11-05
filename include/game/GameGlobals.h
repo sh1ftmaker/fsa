@@ -1301,6 +1301,10 @@ bool fn_803B8CAC(s32 file, s32 index);
 // Owner: game/tu_803B8C74.cpp. True for index < 3, else whether save file
 // `file`'s flag word (lbl_8050EC80 row 0x28) has its top bit set (li 1 / li 0).
 bool fn_803B90E4(s32 file, s32 index);
+// SHARED-EDIT (tu_80414F6C cls_804B1378's constructor): 0x803B9120, same
+// owner. Whether battle stage `stage` (0..7) is open: stages 0-2 always,
+// the others by a bit of the current save file; returns 1 or 0.
+bool fn_803B9120(s32 stage);
 }
 
 // Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
