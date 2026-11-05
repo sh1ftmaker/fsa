@@ -2634,11 +2634,15 @@ def generate_fwd(family="fwd"):
             m["cname"] = calls[0]
             old = sym_line(lines, ".text", m["addr"], m["name"])
             oldc = sym_line(lines, ".text", m["callee_addr"], m["callee"])
-            if not old or not oldc:
+            # a getter the hand-written code already declared (Player.h) was
+            # renamed to the very name our object emits: nothing to edit
+            named = sym_line(lines, ".text", m["callee_addr"], m["cname"])
+            if not old or not (oldc or named):
                 drop.append((m, "symbols.txt line not found"))
                 continue
-            edits += [(".text", m["addr"], [old], [rename_line(old, m["mname"])]),
-                      (".text", m["callee_addr"], [oldc], [rename_line(oldc, m["cname"])])]
+            edits.append((".text", m["addr"], [old], [rename_line(old, m["mname"])]))
+            if oldc and not named:
+                edits.append((".text", m["callee_addr"], [oldc], [rename_line(oldc, m["cname"])]))
         if drop:
             for m, why in drop:
                 skipped.append(f"{m['name']}: backed out: {why}")
