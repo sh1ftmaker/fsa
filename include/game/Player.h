@@ -547,6 +547,8 @@ public:
     void fn_80270360(s32 serial); // called by tu_8022AD64 (fn_80235B68)
     void fn_80274728(); // called by fn_8027AAD0 (update of state 0x0A)
     void fn_80274988(); // called by fn_8027B648 (update of state 0x09)
+    void fn_802756E4(); // called by fn_8027D5F0 (update of state 0x0E)
+    void fn_80276E5C();
     void fn_8027439C(); // called by fn_8027A1E0 (update of state 0x0B): pose 0x3FA / 0x3FB, boxes 0x4A0 / 0x4B0
     void fn_802765C0();
     bool fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center);

@@ -1721,6 +1721,189 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
     }
 }
 
+// Pose step of state 0x0E's sub-mode 0x45C (from fn_8027D5F0): the frame counter 0x3FA
+// picks the pose 0x3FB; at the sub-mode's last frame the state returns to 8 (fn_80246464)
+// or 0. Sub-modes 0 / 1 also turn the pose into an angle by the facing 0x3DC and put the
+// point 0x30C 16 away from mPos in that (8-way) direction.
+void Player_804A6F38::fn_802756E4() {
+    s32 angle = 0;
+    switch (field_0x45c) {
+    case 0:
+        if (field_0x3fa < 4) {
+            field_0x3fb = field_0x3fa;
+        } else {
+            field_0x3fb = field_0x3fa - 1;
+        }
+        if (field_0x3fb >= 7) {
+            field_0x3fb = 6;
+        }
+        if (field_0x3fa >= 7) {
+            if (fn_80246464()) {
+                fn_80251AEC(8);
+            } else {
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0x3fa++;
+        }
+        switch (field_0x3dc) {
+        case 0:
+            angle = (s16)(field_0x3fb << 12) - 0x4000;
+            break;
+        case 1:
+            angle = (s16)(-field_0x3fb << 12) - 0x4000;
+            break;
+        case 2:
+            angle = (s16)(-field_0x3fb << 12) - 0x8000;
+            break;
+        case 3:
+            angle = (s16)(-field_0x3fb << 12);
+            break;
+        }
+        break;
+    case 1:
+        if (field_0x3fa < 4) {
+            field_0x3fb = field_0x3fa;
+        } else {
+            field_0x3fb = field_0x3fa - 1;
+        }
+        if (field_0x3fb >= 8) {
+            field_0x3fb = 7;
+        }
+        if (field_0x3fa >= 8) {
+            if (fn_80246464()) {
+                fn_80251AEC(8);
+            } else {
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0x3fa++;
+        }
+        switch (field_0x3dc) {
+        case 0:
+            angle = (s16)(-field_0x3fb << 12) + 0x4000;
+            break;
+        case 1:
+            angle = (s16)(field_0x3fb << 12) + 0x4000;
+            break;
+        case 2:
+            angle = (s16)(field_0x3fb << 12);
+            break;
+        case 3:
+            angle = (s16)(field_0x3fb << 12) - 0x8000;
+            break;
+        }
+        break;
+    case 2:
+        if (field_0x3fa < 1) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 5) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 6) {
+            field_0x3fb = 2;
+        } else {
+            field_0x3fb = 3;
+        }
+        if (field_0x3fa >= 7) {
+            if (fn_80246464()) {
+                fn_80251AEC(8);
+            } else {
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0x3fa++;
+        }
+        fn_80276E5C();
+        break;
+    case 3:
+        if (field_0x3fa < 2) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 4) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 13) {
+            field_0x3fb = 2;
+        } else {
+            field_0x3fb = 3;
+        }
+        if (field_0x3fa >= 15) {
+            if (fn_80246464()) {
+                fn_80251AEC(8);
+            } else {
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0x3fa++;
+        }
+        fn_80276E5C();
+        break;
+    case 4:
+        if (field_0x3fa < 6) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 7) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 8) {
+            field_0x3fb = 2;
+        } else if (field_0x3fa < 9) {
+            field_0x3fb = 3;
+        } else if (field_0x3fa < 11) {
+            field_0x3fb = 4;
+        } else {
+            field_0x3fb = 5;
+        }
+        if (field_0x3fa >= 30) {
+            if (fn_80246464()) {
+                fn_80251AEC(8);
+            } else {
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0x3fa++;
+        }
+        fn_80276E5C();
+        break;
+    }
+    switch (field_0x45c) {
+    case 0:
+    case 1:
+        fn_80276E5C();
+        s16 dir = angle; // the angle is compared as an s16 (extsh at the compare only)
+        if (dir <= -0x7000) {
+            field_0x30c.set(-16.0f, 0.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= -0x5000) {
+            field_0x30c.set(-16.0f, -16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= -0x3000) {
+            field_0x30c.set(0.0f, -16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= -0x1000) {
+            field_0x30c.set(16.0f, -16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= 0x1000) {
+            field_0x30c.set(16.0f, 0.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= 0x3000) {
+            field_0x30c.set(16.0f, 16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= 0x5000) {
+            field_0x30c.set(0.0f, 16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else if (dir <= 0x7000) {
+            field_0x30c.set(-16.0f, 16.0f, 0.0f);
+            field_0x30c.add(mPos);
+        } else {
+            field_0x30c.set(-16.0f, 0.0f, 0.0f);
+            field_0x30c.add(mPos);
+        }
+        break;
+    case 2:
+    case 3:
+    case 4:
+        fn_80276E5C();
+        break;
+    }
+}
+
 // FIXME: 99.77. Code identical; the 15 literal is reloc-name until the earlier .sdata2 users
 // (fn_8027439C, fn_802756E4, fn_80275D9C: 0.2, 20, 12, -16, 16, -4) are written.
 void Player_804A6F38::fn_80276078() {
