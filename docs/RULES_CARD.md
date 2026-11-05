@@ -158,6 +158,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   the next unit's data (tu_8021C848 / tu_8021CDE4).
 
 ## Known game-code shapes (reviewed; natural source)
+- Constant-bound `for` loops count with a plain `int`: an `s32` (signed long) counter makes CW emit a `cmpwi/bge` entry test the original lacks (tu_802F5040 fn_802FF798 87.7 → 99.4 %, tu_80301CD0 fn_80308D0C 93.8 → 100 %).
 - Unfused `fmuls, fmuls, fadds` squared sums: `square(a) + square(b)` (game/GameMath.h).
 - A two-value test compiled as `subi; clrlwi; cmplwi 1` is `(x == 2 || x == 3)` with literal constants; its negation is `!(x == 2 || x == 3)` (act_eyeball_switch init). `x != 2 && x != 3` and `x < 2 || x > 3` don't fold.
 - A position difference that the original routes through an extra stack TVec3f (xy psq_st, z reloaded, then a copy) is `a - b` with JGeometry's `TVec3::operator-` (pikmin2 form), e.g. `from.set(mPos - vel48)` (tu_80206B30 vfunc_0x58). Don't add a redundant named copy instead.
