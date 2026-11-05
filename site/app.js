@@ -173,6 +173,14 @@ function drawStats() {
   tiles.forEach((x, i) => countUp(host.querySelector(`[data-i="${i}"]`), x.v, x.fmt));
   requestAnimationFrame(() => host.querySelectorAll(".meter i").forEach((el) => (el.style.width = `${Math.max(0.6, +el.dataset.w)}%`)));
 
+  // secondary measure, shown under the honest tiles
+  const sx = $("#structural");
+  if (sx) {
+    sx.innerHTML = t.fns_structural == null ? "" :
+      `<span class="sx-k">structurally matched</span> <b>${num(t.fns_structural)}</b> / ${num(t.fns)} functions &middot; ${num(t.code_structural)} bytes`
+      + ` <span class="sx-d">(same instructions, register/order differences only; the honest numbers above count byte-identical functions only)</span>`;
+  }
+
   const seal = $("#seal");
   seal.innerHTML = t.sha1_ok
     ? `<span class="ok">&#10003; main.dol SHA-1 OK</span> <span>${esc(S.sha1.slice(0, 12))}&hellip;</span> <span>&middot; honest objdiff report</span>`

@@ -32,6 +32,15 @@ def main() -> None:
         f"({m['matched_code_percent']:.2f} %)"
     )
 
+    sj = site_data.REPORT.parent / "structural.json"
+    if sj.exists():
+        st = json.loads(sj.read_text())
+        print(
+            f"structural: {st['structural']['functions']} / {st['total_functions']} functions "
+            f"(honest + structurally done), {st['structural']['code']} bytes "
+            f"(same instructions, register/order differences only; +{st['close']['functions']} close)"
+        )
+
     regions = defaultdict(lambda: defaultdict(lambda: [0, 0, 0, 0, 0]))
     for (region, lib, _), rec in files.items():
         row = regions[region][lib or "-"]

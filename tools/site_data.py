@@ -315,6 +315,13 @@ def write(report, files, data_unsplit, subject):
         "linked": matching if ok else None, "sha1_ok": ok,
         "files": len(files), "files_unsplit": sum(1 for r in files.values() if r["status"] == "U"),
     }
+    sj = REPORT.parent / "structural.json"
+    if sj.exists():  # tools/structural.py: a secondary, clearly labelled measure
+        st = json.loads(sj.read_text())
+        totals.update({
+            "fns_structural": st["structural"]["functions"], "code_structural": st["structural"]["code"],
+            "fns_structural_close": st["close"]["functions"], "code_structural_close": st["close"]["code"],
+        })
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
                "totals": totals, "regions": regions}
     (OUT / "summary.json").write_text(json.dumps(summary, separators=(",", ":")))

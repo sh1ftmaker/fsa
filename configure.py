@@ -1622,6 +1622,13 @@ config.custom_build_rules.append({
     "command": f"$python tools/honest_report.py {honest_objdiff} $out $objdiff_report_args",
     "description": "REPORT $out",
 })
+# Second metric, next to the honest one: functions whose instructions match
+# apart from register numbers and order (tools/structural.py).
+config.custom_build_rules.append({
+    "name": "structural_report",
+    "command": "$python tools/structural.py",
+    "description": "STRUCTURAL $out",
+})
 # tools/link_check.py --unit records trial-link evidence here; adding or
 # replacing a record (by rename) changes the directory's mtime, so the report
 # reruns with it.
@@ -1641,6 +1648,10 @@ config.custom_build_steps["post-build"] = [{
     "implicit": ["objdiff.json", "all_source", "tools/honest_report.py", honest_objdiff,
                  out_dir / "fsa_game_code.elf.MAP", out_dir / "fsa_game_code.dol",
                  out_dir / "weakdedup_evidence"],
+}, {
+    "rule": "structural_report",
+    "outputs": out_dir / "structural.json",
+    "implicit": [out_dir / "report_honest.json", "tools/structural.py", "tools/try.py"],
 }]
 
 
