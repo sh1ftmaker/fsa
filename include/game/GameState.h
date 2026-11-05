@@ -36,6 +36,8 @@ class JKRArchive;
 class JKRSolidHeap;
 class J2DPane;
 struct AudioMgr_8045A080; // GameGlobals.h
+class cls_804AA8C8;      // GameGlobals.h
+class cls_804AA8B8;      // GameGlobals.h
 
 class GameState_804B0FE0 {
 public:
@@ -116,8 +118,8 @@ public:
     // fn_803FFAA8: the archive of the loader at its +0x44, the 0xEC-byte
     // object of fn_8030AC4C and the 4-byte object of fn_8030905C.
     /* 0x058 */ JKRArchive* field_0x58;
-    /* 0x05C */ void* field_0x5c;
-    /* 0x060 */ void* field_0x60;
+    /* 0x05C */ cls_804AA8C8* field_0x5c; // GameRoot's destructor deletes it (vtable slot 0x8)
+    /* 0x060 */ cls_804AA8B8* field_0x60; // the same
     /* 0x064 */ s32 field_0x64; // -1 after fn_80403680; 15 units
     // Per-player word tables, preset by fn_80403680. fn_80403414 /
     // fn_804033D4 / fn_8040336C read 0x68 / 0x78 / 0x88 when

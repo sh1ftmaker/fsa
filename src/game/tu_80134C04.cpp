@@ -18,6 +18,8 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "JSystem/JFramework/JFWDisplay.h"
+#include "JSystem/J3D/J3DSys.h"
 #include <string.h>
 #include "JSystem/JUtility/JUTException.h"
 #include "JSystem/JUtility/JUTGamePad.h"
@@ -509,6 +511,266 @@ void GameRoot_8049EF20::fn_801367E0(s32 value) {
     field_0x4c = value;
 }
 
+// main calls it each frame between beginRender and endRender: draws the screen
+// of the current mode (field_0x4c), then the fade objects.
+void GameRoot_8049EF20::fn_80136828() {
+    j3dSys.drawInit();
+    if (field_0x58 != 8 && field_0xfd != 2) {
+        switch (field_0x4c) {
+        case 1:
+            if (lbl_8053AD88 != NULL) {
+                lbl_8053AD88->fn_803A44D8();
+            }
+            gGameRoot2_8053AB10->fn_8013B4F8();
+            break;
+        case 2:
+            lbl_8053ADD0->fn_803DF624();
+            break;
+        case 3:
+            lbl_8053ADB0->fn_803CEED4();
+            break;
+        case 4:
+            gGameRoot2_8053AB10->fn_8013BB64();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            lbl_8053AD98->fn_803A8664();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            gGameRoot2_8053AB10->fn_8013B618();
+            break;
+        case 5:
+            lbl_8053AD90->fn_803A71F0();
+            break;
+        case 6:
+            gGameRoot2_8053AB10->fn_8013BB64();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            lbl_8053AD80->fn_8039013C();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            gGameRoot2_8053AB10->fn_8013B618();
+            lbl_8053AD80->fn_80390108();
+            break;
+        case 7:
+        case 8:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0x19, 0x19, 0x19, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B618();
+            field_0x4->fn_80139C5C();
+            lbl_8053AED0->fn_8043D39C();
+            lbl_8053AED0->fn_8043DB58();
+            lbl_8053ADC8->fn_803DA6B4();
+            if (field_0x58 == 0) {
+                switch (field_0x60) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    if (gGameRoot_8053AAF8->field_0x7e) {
+                        if (!gGameRoot_8053AAF8->field_0x7f) {
+                            // h declared first: the original keeps w and h in the other two saved FPRs.
+                            f32 h, w;
+                            w = 413.0f * field_0x8c;
+                            h = 38.0f * field_0x8c;
+                            field_0xb8->setAlpha(field_0x68);
+                            field_0xb8->draw(304.0f - w / 2, 225.0f - h / 2, w, h, false, false, false);
+                        } else {
+                            J2DTextBox::TFontSize size;
+                            size.x = 30.0f * field_0x8c;
+                            size.y = 60.0f * field_0x8c;
+                            field_0xc0->setFontSize(size);
+                            field_0xc4->setFontSize(size);
+                            if (gGameRoot_8053AAF8->field_0x7f) {
+                                field_0xf4 = getMessageText_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
+                            } else {
+                                field_0xf4 = getMessageText_803832BC(field_0xc8, 0x41, 0, NULL, NULL);
+                            }
+                            f32 y = size.y / 2 + 180.0f;
+                            strcpy(field_0xc4->getStringPtr(), field_0xc8);
+                            strcpy(field_0xc0->getStringPtr(), field_0xc8);
+                            field_0xc4->setAlpha(field_0x68);
+                            field_0xc0->setAlpha(field_0x68);
+                            gGameRoot2_8053AB10->fn_8013B490();
+                            field_0xc4->draw(-29997.0f, 3.0f + y,
+                                             60000.0f + (s32)JUTVideo::getManager()->getFbWidth(),
+                                             J2DHBIND_Center);
+                            field_0xc0->draw(-30000.0f, y,
+                                             60000.0f + (s32)JUTVideo::getManager()->getFbWidth(),
+                                             J2DHBIND_Center);
+                        }
+                        if (field_0x60 >= 2) {
+                            // h declared first: the original keeps w and h in the other two saved FPRs.
+                            f32 h, w;
+                            w = 256.0f * field_0x90;
+                            h = 128.0f * field_0x90;
+                            field_0xbc->setBlackWhite(JUtility::TColor(0x50282800), JUtility::TColor(0xFF5050FF));
+                            field_0xbc->setAlpha(field_0x6c);
+                            field_0xbc->draw(328.0f - w / 2, 164.0f - h / 2, w, h, false, false, false);
+                        }
+                    }
+                    break;
+                case 4:
+                    break;
+                }
+            }
+            break;
+        case 9:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0x19, 0x19, 0x19, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B618();
+            field_0x4->fn_80139C5C();
+            lbl_8053AED0->fn_8043D39C();
+            lbl_8053AED0->fn_8043DB58();
+            lbl_8053AD70->fn_8037AF80();
+            gGameRoot2_8053AB10->fn_8013B4F8();
+            lbl_8053AD70->fn_8037AF4C();
+            break;
+        case 10:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            if (!gGameRoot_8053AAF8->field_0x7f || gGameRoot_8053AAF8->field_0x7e == 1) {
+                lbl_8053ACA0->fn_802AC98C();
+            }
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B618();
+            field_0x4->fn_80139C5C();
+            if (gGameRoot_8053AAF8->field_0x7f == 1 && gGameRoot_8053AAF8->field_0x7e == 0) {
+                lbl_8053ACA0->fn_802AC98C();
+            }
+            break;
+        case 11:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0x19, 0x19, 0x19, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B538();
+            lbl_8053AEC8->fn_804399A0();
+            gGameRoot2_8053AB10->fn_8013B4F8();
+            field_0x4->fn_80139C5C();
+            lbl_8053ADC8->fn_803DA6B4();
+            break;
+        case 12:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
+            if (gGameRoot_8053AAF8->field_0x7f) {
+                gGameRoot2_8053AB10->fn_8013BB64();
+                lbl_8053AD68->fn_8037A664();
+                gGameRoot2_8053AB10->fn_8013BAF4();
+                lbl_8053AD68->fn_8037A580();
+                gGameRoot2_8053AB10->fn_8013B71C();
+                gGameRoot2_8053AB10->fn_8013B618();
+                lbl_8053ADC8->fn_803DA6B4();
+            } else {
+                gGameRoot2_8053AB10->fn_8013BB64();
+                gGameRoot2_8053AB10->fn_8013B71C();
+                lbl_8053AD68->fn_8037A664();
+                gGameRoot2_8053AB10->fn_8013BAF4();
+                lbl_8053AD68->fn_8037A580();
+                gGameRoot2_8053AB10->fn_8013B618();
+                lbl_8053ADC8->fn_803DA6B4();
+            }
+            break;
+        case 13:
+        case 14:
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B618();
+            field_0x4->fn_80139C5C();
+            break;
+        case 17:
+        case 18:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0x19, 0x19, 0x19, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            field_0x4->fn_80139D3C();
+            gGameRoot2_8053AB10->fn_8013BB18();
+            field_0x4->fn_80139CC4();
+            gGameRoot2_8053AB10->fn_8013B71C();
+            field_0x4->fn_80139C84();
+            gGameRoot2_8053AB10->fn_8013B618();
+            break;
+        case 22:
+            JFWDisplay::getManager()->setClearColor(JUtility::TColor(0x19, 0x19, 0x19, 0));
+            gGameRoot2_8053AB10->fn_8013BB64();
+            if (field_0x1c != NULL) {
+                if (gGameRoot_8053AAF8->field_0x7f) {
+                    gGameRoot2_8053AB10->fn_8013BB64();
+                    lbl_8053AD68->fn_8037A664();
+                    gGameRoot2_8053AB10->fn_8013BAF4();
+                    lbl_8053AD68->fn_8037A580();
+                    gGameRoot2_8053AB10->fn_8013B71C();
+                    gGameRoot2_8053AB10->fn_8013B618();
+                    lbl_8053ADC8->fn_803DA6B4();
+                } else {
+                    gGameRoot2_8053AB10->fn_8013BB64();
+                    gGameRoot2_8053AB10->fn_8013B71C();
+                    lbl_8053AD68->fn_8037A664();
+                    gGameRoot2_8053AB10->fn_8013BAF4();
+                    lbl_8053AD68->fn_8037A580();
+                    gGameRoot2_8053AB10->fn_8013B618();
+                    lbl_8053ADC8->fn_803DA6B4();
+                }
+            } else {
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139D3C();
+                }
+                gGameRoot2_8053AB10->fn_8013BB18();
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139CC4();
+                }
+                if (field_0x30 != NULL) {
+                    lbl_8053AD80->fn_8039013C();
+                }
+                gGameRoot2_8053AB10->fn_8013B71C();
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139C84();
+                }
+                gGameRoot2_8053AB10->fn_8013B618();
+                if (field_0x30 != NULL) {
+                    lbl_8053AD80->fn_80390108();
+                }
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139C5C();
+                    lbl_8053AED0->fn_8043D39C();
+                    lbl_8053AED0->fn_8043DB58();
+                    if (lbl_8053AD70->field_0xc) {
+                        lbl_8053AD70->fn_8037AF80();
+                        gGameRoot2_8053AB10->fn_8013B4F8();
+                        lbl_8053AD70->fn_8037AF4C();
+                    }
+                }
+            }
+            fn_80119DD0()->fn_80119628();
+            fn_80119DD0()->fn_801194C4();
+            lbl_8053ADC8->fn_803DA6B4();
+            lbl_8053AEE0->fn_80442200();
+            break;
+        }
+    }
+    if (field_0x58 != 0) {
+        lbl_8053ACA0->fn_802ACA64();
+    }
+    if (field_0x4c != 22) {
+        fn_80119DD0()->fn_80119628();
+        fn_80119DD0()->fn_801194C4();
+    }
+}
+
 // The number of players that take part: the set bits 0-3 of mPlayerMask.
 s32 GameRoot_8049EF20::fn_80138A30() {
     s32 count = 0;
@@ -605,6 +867,82 @@ void GameRoot_8049EF20::fn_80138C9C() {
     field_0xf4 = getMessageText_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
     strcpy(field_0xc4->getStringPtr(), field_0xc8);
     strcpy(field_0xc0->getStringPtr(), field_0xc8);
+}
+
+// Stops the rumble, deletes the screens and objects the constructor and
+// fn_80135020 made, unmounts the archives and destroys both heaps.
+// FIXME: 99.31. Only the null test before deleting field_0x104 is missing
+// (cmplwi / beq): the original's type for it is a class with a non-virtual
+// destructor, unknown yet (nothing but the constructor's NULL stores it).
+GameRoot_8049EF20::~GameRoot_8049EF20() {
+    JUTGamePad* pad = JUTGamePad::getGamePad(0);
+    field_0x10c = 0;
+    field_0x108 = 0;
+    JUTGamePad::CRumble::stopMotor(pad->mPortNum, false);
+    pad->mRumble.stopPatternedRumble(pad->mPortNum);
+    delete field_0x104;
+    if (field_0x4 != NULL) {
+        delete field_0x4;
+        field_0x4 = NULL;
+    }
+    delete field_0x18;
+    field_0x18 = NULL;
+    delete gGameRoot2_8053AB10;
+    delete field_0x8;
+    delete field_0xc;
+    delete field_0x10;
+    if (field_0x20 != NULL) {
+        delete field_0x20;
+        field_0x20 = NULL;
+    }
+    if (field_0x28 != NULL) {
+        delete field_0x28;
+        field_0x28 = NULL;
+    }
+    if (field_0x24 != NULL) {
+        delete field_0x24;
+        field_0x28 = NULL; // sic: the original clears field_0x28 here, not field_0x24
+    }
+    if (field_0x2c != NULL) {
+        delete field_0x2c;
+        field_0x2c = NULL;
+    }
+    if (field_0x30 != NULL) {
+        delete field_0x30;
+        field_0x30 = NULL;
+    }
+    if (field_0x1c != NULL) {
+        delete field_0x1c;
+        field_0x1c = NULL;
+    }
+    // These four archives are JKRAramArchives (the unmountFixed the original calls).
+    static_cast<JKRAramArchive*>(lbl_80529DEC.field_0x24)->unmountFixed();
+    static_cast<JKRAramArchive*>(lbl_80529DEC.field_0x38)->unmountFixed();
+    static_cast<JKRAramArchive*>(lbl_80529DEC.field_0x40)->unmountFixed();
+    static_cast<JKRAramArchive*>(lbl_80529DEC.field_0x44)->unmountFixed();
+    delete field_0x34;
+    field_0x34 = NULL;
+    delete field_0x38;
+    field_0x38 = NULL;
+    delete field_0x3c;
+    field_0x3c = NULL;
+    delete field_0x40;
+    field_0x40 = NULL;
+    field_0xa4->unmount();
+    field_0xa8->unmount();
+    lbl_80529DEC.field_0x20->unmount();
+    fn_803007A0();
+    delete field_0xa0;
+    field_0x9c->destroy();
+    delete field_0xb8;
+    field_0xb8 = NULL;
+    delete field_0xbc;
+    field_0xbc = NULL;
+    delete field_0xc0;
+    field_0xc0 = NULL;
+    delete field_0xc4;
+    field_0xc4 = NULL;
+    field_0x98->destroy();
 }
 
 // FIXME: 99.65. Instructions identical; the string offsets off lbl_804652F0

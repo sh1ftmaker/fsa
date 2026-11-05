@@ -25,7 +25,7 @@ void GameRootSub04_801F856C::fn_80139BE8() {
     gGameRoot2_8053AB10->field_0x20->field_0x235c[3] = 0;
 }
 
-void fn_80139C5C() {
+void GameRootSub04_801F856C::fn_80139C5C() {
     lbl_8053AED0->fn_8043D5F0();
     fn_8038D4A8();
 }

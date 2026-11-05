@@ -56,15 +56,7 @@ public:
     /* 0x25 */ u8 mRemove;
 }; // Size: 0x28
 
-// The 4-byte object of tu_803FF2C4 (GameState field_0x60); named after its
-// vtable. Its state lives in the file statics below.
-class cls_804AA8B8 {
-public:
-    cls_804AA8B8();
-    /* 0x00 */ virtual ~cls_804AA8B8();
-    void fn_80308E90();
-};
-
+// cls_804AA8B8 (game/GameGlobals.h): its state lives in the file statics below.
 u32 lbl_804DBC18[4][0x2000];
 Transfer_8030361C lbl_804FBC18[4][32];
 s32 lbl_80504A18[4]; // queue head per player

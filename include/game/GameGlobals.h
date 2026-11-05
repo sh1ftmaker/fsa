@@ -140,6 +140,11 @@ struct GameRootSub04_801F856C {
     // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
     // field_0x24 unless gGameRoot2_8053AB10->field_0x39 is set.
     void fn_80139D3C();
+
+    // 0x80139C5C (game/tu_80139BE8.cpp): fn_8043D5F0 on lbl_8053AED0, then
+    // fn_8038D4A8. It reads no field, but GameRoot's fn_80136828 loads its
+    // field_0x4 into r3 for the call.
+    void fn_80139C5C();
 };
 
 // *gGameRoot_8053AAF8: the most-used game singleton (309 of 529 units read it).
@@ -148,6 +153,16 @@ struct GameRootSub04_801F856C {
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
 struct AudioMgr_8045A080;
 class cls_804A8390;
+class cls_804AA8C8;
+// The 4-byte object of tu_803FF2C4 (lbl_80529DEC's field_0x60), defined in
+// game/tu_80301CD0.cpp (constructor fn_8030905C); named after its vtable,
+// 0x804AA8B8. GameRoot's destructor deletes it through slot 0x8.
+class cls_804AA8B8 {
+public:
+    cls_804AA8B8();
+    /* 0x00 */ virtual ~cls_804AA8B8();
+    void fn_80308E90();
+};
 class cls_804B0FC0;
 class J2DTextBox;
 class MessageManager_804AF070;
@@ -172,8 +187,8 @@ struct GameRoot_8049EF20 {
     // Copied from lbl_80529DEC's field_0x5c / field_0x60 by the constructor
     // (the input object cls_804AA8C8 and the 4-byte cls_804AA8B8); the
     // destructor deletes both through their vtables.
-    /* 0x08 */ void* field_0x8;
-    /* 0x0C */ void* field_0xc;
+    /* 0x08 */ cls_804AA8C8* field_0x8;
+    /* 0x0C */ cls_804AA8B8* field_0xc;
     // The fade object (also lbl_8053ACA0); fn_80138C9C calls fn_802ACB58 on it.
     /* 0x10 */ cls_804A8390* field_0x10;
     /* 0x14 */ u8 field_0x14[0x18 - 0x14];
@@ -208,8 +223,11 @@ struct GameRoot_8049EF20 {
     // Cleared by fn_8013670C (game/tu_80134C04.cpp, stw of 0).
     /* 0x60 */ s32 field_0x60;
     /* 0x64 */ s32 field_0x64;
+    // Alphas (clrlwi 24 into J2DPicture/J2DTextBox::setAlpha in fn_80136828):
+    // field_0x68 for the rival picture field_0xb8 and the text boxes,
+    // field_0x6c for field_0xbc.
     /* 0x68 */ s32 field_0x68; // cleared by fn_80138C9C
-    /* 0x6C */ u8 field_0x6c[0x70 - 0x6C];
+    /* 0x6C */ s32 field_0x6c;
     /* 0x70 */ s32 field_0x70; // cleared by fn_80138C9C
     // Both cleared by fn_8019CDC4 (game/tu_80197070.cpp, stw of 0).
     /* 0x74 */ s32 field_0x74;
@@ -252,7 +270,12 @@ struct GameRoot_8049EF20 {
     /* 0x87 */ u8 field_0x87;
     // Stored by fn_80134D14 (game/tu_80134C04.cpp, 0x80134D14, stb of r4).
     /* 0x88 */ u8 field_0x88;
-    /* 0x89 */ u8 field_0x89[0x94 - 0x89];
+    /* 0x89 */ u8 field_0x89[0x8C - 0x89];
+    // Scales fn_80136828 multiplies the picture / font sizes by (lfs):
+    // field_0x8c for field_0xb8 (413 x 38) and the text boxes (30 x 60),
+    // field_0x90 for field_0xbc (256 x 128).
+    /* 0x8C */ f32 field_0x8c;
+    /* 0x90 */ f32 field_0x90;
     // Stored by fn_80134FC4 (game/tu_80134C04.cpp, 0x80134FC4, stb of r4), which
     // sets field_0x95 to 1 unless the value is 1.
     /* 0x94 */ u8 field_0x94;
@@ -453,6 +476,12 @@ public:
     void fn_80119958();
     // 0x80119D48: makes the picture from "kk_black.bti" when there is none.
     void fn_80119D48();
+    // 0x80119628 / 0x801194C4 (not written yet). The first tests
+    // gGameRoot_8053AAF8->field_0x4c against 0x16 and 9; the second does
+    // nothing unless field_0x0 is set. GameRoot's fn_80136828 calls both, in
+    // this order, on fn_80119DD0().
+    void fn_80119628();
+    void fn_801194C4();
 }; // Size: 0x30
 // The function-local static (lbl_804BC504) of 0x80119DD0; game/tu_80118384.cpp.
 cls_80119E5C* fn_80119DD0();
@@ -874,6 +903,12 @@ class cls_804B1920 {
 public:
     // Virtual destructor first: the vtable pointer goes where it is declared.
     virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
+    // 0x8043D39C / 0x8043DB58 (tu_8043A0E8.cpp, not written yet): GameRoot's
+    // per-frame draw (fn_80136828) calls both on lbl_8053AED0 after the game
+    // view; the first tests gGameRoot_8053AAF8->field_0x7f, the second sets the
+    // ortho context (fn_8013B490) and switches on the byte at 0x256.
+    void fn_8043D39C();
+    void fn_8043DB58();
     /* 0x004 */ J2DScreen* field_0x4;
     /* 0x008 */ J2DScreen* field_0x8;
     /* 0x00C */ J2DScreen* field_0xc; // its pane 'Ndata05' is moved and drawn by fn_8043DC98
@@ -1038,6 +1073,9 @@ class cls_804B17A0 {
 public:
     /* 0x000 */ // vtable, whose one slot is the destructor below
     virtual ~cls_804B17A0(); // owner game/tu_80438C68.cpp (not written yet)
+    // 0x804399A0 (not written yet): sets the ortho context (fn_8013B490) and
+    // draws; GameRoot's fn_80136828 calls it in screen mode 11.
+    void fn_804399A0();
     /* 0x04 */ u8 field_0x4[0x5D - 0x4]; // a J2DScreen* at 0x4
     // SHARED-EDIT: tested by fn_801914C4 (game/tu_801902C0.cpp) through lbl_8053AEC8.
     /* 0x5D */ u8 field_0x5d;
@@ -1702,6 +1740,9 @@ extern "C" {
 bool fn_80239F10();
 }
 
+// game/tu_803006E8.cpp (0x803007A0, not written yet). Takes no arguments; calls
+// vtable slot 0xC of *lbl_8053ACB8. GameRoot's destructor calls it.
+void fn_803007A0();
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no
 // arguments; called by game/tu_80139BE8.cpp (fn_80139BE8).
 void fn_8030361C();
@@ -1749,9 +1790,14 @@ class cls_804AF860 {
 public:
     cls_804AF860(); // fn_803A7898
     virtual ~cls_804AF860();
+    // 0x803A71F0 (not written yet): starts by setting the display's clear colour;
+    // GameRoot's fn_80136828 calls it on lbl_8053AD90 in screen mode 5.
+    void fn_803A71F0();
 
     /* 0x00 */ // vtable
     /* 0x04 */ u8 field_0x4[0x84 - 0x4];
 }; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
+// .sbss pointer the constructor sets (0x803A8350).
+extern cls_804AF860* lbl_8053AD90;
 
 #endif

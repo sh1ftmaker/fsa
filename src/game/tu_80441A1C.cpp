@@ -7,8 +7,6 @@
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
-static cls_804B19F0* lbl_8053AEE0;
-
 void cls_804B19F0::fn_80442200() {
     gGameRoot2_8053AB10->fn_8013B490();
     if (field_0x18 != 0) {
