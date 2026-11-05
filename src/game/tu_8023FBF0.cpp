@@ -1562,28 +1562,17 @@ s32 Player_804A6F38::fn_80248778() const {
     return count + 1;
 }
 
-// The view box of `layer`: the visible box, or GameView field_0xdc for
-// layers 8 and up.
-static inline const JGeometry::TBox2f* viewBox(s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-}
-
 // Whether pos is inside the view box of `layer` (lower edges included).
 static inline bool inViewBox(const JGeometry::TVec2f& pos, s32 layer) {
-    const JGeometry::TBox2f* box = viewBox(layer);
-    bool inside = false;
-    if (pos.x >= box->i.x && pos.y >= box->i.y && pos.x < box->f.x && pos.y < box->f.y) {
-        inside = true;
-    }
-    return inside;
+    const JGeometry::TBox2f* box = layerBox(layer);
+    return pos.x >= box->i.x && pos.y >= box->i.y && pos.x < box->f.x && pos.y < box->f.y;
 }
 
 // Steps a probe up (y + 8) from mPos until it is on tile 0x231 (fn_80226998)
 // or leaves the view box (then 24 inside its far edge, and field_0x440 is
 // set too); 24 further on, fn_8026E5F8 there sets field_0x43f.
-// FIXME: 99.52. Registers (f1 / f2 of the box test) plus the literals 8.0f /
-// 24.0f (@NNN vs lbl_80540050 / lbl_80540054 until the pool is in order).
+// FIXME: 99.84. Only the literals 8.0f / 24.0f (@NNN vs lbl_80540050 /
+// lbl_80540054 until the pool is in order).
 bool Player_804A6F38::fn_80248A24() {
     JGeometry::TVec2f pos;
     pos.x = mPos.x;
@@ -1592,7 +1581,7 @@ bool Player_804A6F38::fn_80248A24() {
     do {
         pos.y += 8.0f;
         if (!inViewBox(pos, field_0x3b4)) {
-            pos.y = viewBox(field_0x3b4)->f.y - 24.0f;
+            pos.y = layerBox(field_0x3b4)->f.y - 24.0f;
             clamped = true;
             break;
         }
@@ -1612,8 +1601,8 @@ bool Player_804A6F38::fn_80248A24() {
 // As fn_80248A24, after first stepping the probe up to tile 0x3E
 // (fn_802265FC; false when it leaves the view box first); also clears
 // field_0x444.
-// FIXME: 99.39. Registers (f1 / f2 of the box tests) plus the literals 8.0f /
-// 24.0f (@NNN vs lbl_80540050 / lbl_80540054 until the pool is in order).
+// FIXME: 99.85. Only the literals 8.0f / 24.0f (@NNN vs lbl_80540050 /
+// lbl_80540054 until the pool is in order).
 bool Player_804A6F38::fn_80248B9C() {
     JGeometry::TVec2f pos;
     pos.x = mPos.x;
@@ -1628,7 +1617,7 @@ bool Player_804A6F38::fn_80248B9C() {
     do {
         pos.y += 8.0f;
         if (!inViewBox(pos, field_0x3b4)) {
-            pos.y = viewBox(field_0x3b4)->f.y - 24.0f;
+            pos.y = layerBox(field_0x3b4)->f.y - 24.0f;
             clamped = true;
             break;
         }
@@ -2307,6 +2296,9 @@ void Player_804A6F38::fn_8024E46C() {
 // down to 0 at most (a counter already below 0 stays). The two `for (;;)`
 // are the original's halt checks (a self-branch each): the counter must be
 // at most 9999 and must take a store (written +1, read back, restored).
+// The +1 / read back / halt / restore check is the same construct as
+// tu_8026FC20 fn_80270DDC on field_0xbfc (source form unexplained,
+// docs/CRACK_PASS.md, Open questions).
 // fn_8024ED4C's body: fn_8024E694 (before it) inlines it twice with
 // -count, so it is a file inline with fn_8024ED4C as its out-of-line copy.
 static inline void addCounter_8024ED4C(Player_804A6F38* player, s32 value) {

@@ -926,13 +926,6 @@ bool Player_804A6F38::fn_80272224(const JGeometry::TBox2f* box, s32 layer, s32 d
     return false;
 }
 
-// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
-// (as in tu_802684A4).
-static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-}
-
 // `box` made relative to the top-left corner of `layer`'s view box.
 static inline void toView(JGeometry::TBox2f& box, s32 layer) {
     const JGeometry::TVec2f& origin = layerBox(layer)->i;

@@ -71,12 +71,6 @@ static const u16 lbl_8053F730[4] = {2, 3, 14, 0};
 // Frame offsets of the animated tile-0x39 shadow (fn_801EF830).
 static const u8 lbl_8053F738[4] = {0, 1, 2, 1};
 
-// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
-static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-}
-
 // The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
 // function defined before the caller, so it is an inline of its own.
 static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {

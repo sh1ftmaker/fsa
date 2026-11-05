@@ -204,13 +204,6 @@ static inline bool letsGo_8025FCC8(const Player_804A6F38& p) {
     return true;
 }
 
-// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
-// (as in tu_802684A4 / tu_8026FC20).
-static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-}
-
 // Point-in-box test (x / y only), as in tu_8026FC20.
 static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;

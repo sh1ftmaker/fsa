@@ -120,7 +120,10 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   `b .` self-branch, restore) before healing. It is written literally with a comment; no
   assert macro, busy-wait or donor idiom (grep of src/ and donors) yields it. Not a
   FAKEMATCH (nothing is steered), but the source form is unknown; revisit if another
-  function shows the same increment-compare-spin shape.
+  function shows the same increment-compare-spin shape. It now appears a second time:
+  tu_8023FBF0 addCounter_8024ED4C (fn_8024ED4C, Player 0xC04), preceded there by an
+  `if (c > 9999) for (;;)` check that fn_8024ECCC also has; the same unexplained assert-like
+  halts, fields differ, so no shared inline is written.
 - **The 12 units still out of address order** (tools/order_check.py): reordering
   changes inlining or the .sdata2 pool in each; same family as the two items
   above.

@@ -52,12 +52,6 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
 
-// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
-static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-}
-
 bool Player_804A6F38::fn_802684A4(const JGeometry::TVec3f* pos, s32 layer) {
     for (s32 i = 0; i < 0x50; i++) {
         if (field_0xdb0[i] >= 0 && layer == field_0x1030[i] && contains(field_0x5fc[i], *pos)) {
