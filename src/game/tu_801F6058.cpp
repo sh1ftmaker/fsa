@@ -620,7 +620,7 @@ void ActorManager_804A5800::fn_801F8658() {
         if (mActors[i] != NULL && mActors[i]->mAlive && mActors[i]->mDrawEnabled &&
             (!paused || mActors[i]->field_0x11f))
         {
-            fn_801A3CFC(mActors[i]);
+            mActors[i]->fn_801A3CFC();
             mActors[i]->draw();
         }
     }
@@ -635,7 +635,7 @@ void ActorManager_804A5800::fn_801F8E4C() {
     mSpawnCount = 0;
     mLastSlot = -1;
     mActorEnd = -1;
-    fn_801F856C()->field_0x305c = 0;
+    fn_801F856C()->fn_801F6204(0);
     mListHead = NULL;
     field_0x3041 = 0;
 }

@@ -304,6 +304,11 @@ public:
     // manager's list (fn_801F84C4); returns the previous field_0x164
     // (0x801F2B64). Callers pass 0, 5, 6 or 2.
     u8 fn_801F2B20(s32 arg);
+    // 0x801A3CFC (game/tu_801A3C50.cpp, not written yet). The draw pass
+    // (ActorManager_804A5800::fn_801F8658) calls it on each actor it draws,
+    // right before draw(): rebuilds mSpriteParams (r3 is the actor; only its
+    // fields from 0x120 on are touched). Result unused.
+    void fn_801A3CFC();
     // 88 units / 153 calls. Hits every player (except skipPlayer; -1 in 138
     // calls) whose box (fn_8023B190) overlaps mBox on this layer, with
     // fn_80238548(player, damage, &pos, arg); damage -100 means field_0x114

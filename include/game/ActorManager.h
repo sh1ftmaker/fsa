@@ -378,12 +378,6 @@ s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 
 
 } // extern "C"
 
-// Defined in game/tu_801A3C50.cpp (not written yet; C++ linkage, renamed in
-// symbols.txt). The draw pass (fn_801F8658) calls it on each actor it draws,
-// right before the actor's draw(); r3 is the actor (kept in r31), result
-// unused.
-void fn_801A3CFC(ActorBase_804A5770* actor);
-
 // Force Gem ('RUPY', act_force_gem) tests, defined in game/tu_801CB270.cpp:
 // actor->mActorId == 'RUPY' and its kind (the low byte of field_0x90 while
 // field_0x94 is 0 or 3, else -1) is in 8-11 / 4-7 / 0 and up. Callers pass
