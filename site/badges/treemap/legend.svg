@@ -9,7 +9,7 @@
 <path d="M355.5 11L361.0 16.5L355.5 22L350.0 16.5Z" fill="#3d9cf0"/>
 <text x="367.0" y="21" font-size="12.5" fill="#b4b9d8">Actors 27.3 %</text>
 <path d="M476.3 11L481.8 16.5L476.3 22L470.8 16.5Z" fill="#c35ee6"/>
-<text x="487.8" y="21" font-size="12.5" fill="#b4b9d8">Everything else 22.3 %</text>
+<text x="487.8" y="21" font-size="12.5" fill="#b4b9d8">Everything else 22.4 %</text>
 <g fill="#d29a2e"><path d="M656.5 11L662 22L651 22Z"/></g>
 <text x="668.0" y="21" font-size="12.5" fill="#b4b9d8">Libraries 97.6 %</text>
 <text x="16" y="37" font-size="11.5" fill="#7c82a8">area = bytes of code · fill = byte-identical · top row the game code, bottom row the libraries · click a block to explore it on the site ↗</text>
