@@ -938,8 +938,9 @@ void GameView_804A9950::fn_802DA010() {
 }
 
 // FIXME: 94.5. Regalloc in the actor loop (the target keeps i, i * 4 and the end in r28,
-// r29, r30) and reloc-name: -70.0f / 70.0f are pooled after literals of functions not
-// written yet (lbl_80541160 / lbl_80541164).
+// r29, r30, starting i * 4 with mr from i where ours uses li: try.py counts those as
+// 3 differing opcodes) and reloc-name: -70.0f / 70.0f are pooled after literals of
+// functions not written yet (lbl_80541160 / lbl_80541164).
 u8 GameView_804A9950::fn_802DA630() {
     u8 busy = fn_802DA000();
     if (busy == 0) {

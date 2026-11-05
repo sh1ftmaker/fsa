@@ -40,3 +40,38 @@ lbl_80541128 "500" (dropped lbl_80541129) — no code referenced the dropped lab
 Next: vfunc_0x10 (0x802DD54C, calls fn_802D3A18, uses .sdata lbl_8053A1A8), fn_802D9CD8, fn_802DA630/788,
 fn_802DCE5C; fn_802D49A8 / 4ADC inline fn_802D7AC4 (later-defined) — left unwritten per the rule;
 fn_802D4768 / 4874 similar slot lists. fn_802D7E5C / 7EB0 need the 0x3C8 block carved (u64 at 0x3C8 + i * 0x320).
+
+## Round 2 (Opus 5.5, 2026-11-05)
+Baseline matching 3a0cfee0: total 8628, structural 9056 (+105 close); unit 59/109. After: 8631 / 9063 (+108 close);
+unit 62/109 (+3 honest, +7 structural). Full ninja SHA-1 OK; gate --all-units, gate --base matching, gen_game --check,
+order_check OK; no function anywhere drops (by address against fsa-decomp's report_honest.json).
+100 %: fn_802D7440 (save-file time-limit flag), fn_802D7E5C (`(1 << bit) & mask`), fn_802D7EB0 (clear with
+`(1 << bit) ^ 0xFFFFFFFF`: zero-extended complement, set sign-extended).
+Structurally done / close (FIXME in source): fn_802D4768 96.7, fn_802D4874 97.1, fn_802D49A8 97.1, fn_802D4ADC 95.5
+(sched+regalloc, the fn_802D4C10 address-add family); vfunc_0x10 98.7 (missing 2: the inlined fn_802DEBA0 reload);
+fn_802D9CD8 96.3 (li vs mr); fn_802DA010 97.2 / fn_802DB6F0 97.3 / fn_802DCE5C 96.5 (missing 2-4: the bool
+materialisation of (save byte == 1) before the inlined fn_802D7440); fn_802DA630 94.5 (regalloc, li vs mr,
+reloc-name literals); fn_802DA788 98.1 (extra 1: the target reuses the loop counter's li 0).
+Inline-before-use pattern (proven 4 times): MWCC only inlines what is defined earlier, yet earlier functions inline the
+bodies of later out-of-line copies. So the original had inlines defined first; written as inline helpers + the
+out-of-line copy calling them: screenMask (copy fn_802D7AC4; inlined by 4768/4874/49A8/4ADC), isStage93OrFrom13
+(copy fn_802DEBA0; vfunc_0x10), clearScreen (copy fn_802DCDF4; fn_802DA788). Both copies stay at 100 %.
+Shared inlines without a copy (identical in fn_802DA010, fn_802DA8DC, fn_802DB6F0, fn_802DCE5C): restartTimeLimit
+(fn_802D752C(0) + fn_802D7440(saved == 1)) and clearScreenState (0x178 low bits, 0x308, 0x328/0x12F68, 0x6748/0x2948).
+Codegen findings: a shift loop with its test at the top and a plain `b` back (0x802D48FC) is `for (;;) { if (i == 0)
+break; ... }` (while/for get rotated and unrolled); bit-table word clears whose word offset is stepped in a register are
+`for (bit = 0; bit < 1024; bit += 32) t[bit / 32] = 0` (a word loop unrolls by 8 with folded offsets); the camera's
+field_0x844 corners are stored f.x, i.x, f.y, i.y: chained `i.x = f.x = p->x` (TBox2::set stores i first; same
+pattern unmatched in tu_8017C01C fn_8017EC70).
+Layout proven: field_0x3c8 = u64 [4][10][10] (fn_802DEE2C clears 0x3C8/0x6E8/0xA08/0xD28 + row*0x50 + col*8);
+field_0x2c = s32[2] (the step passed to fn_802DEDFC by fn_802DA788).
+Unwritten: fn_802DA8DC — full draft 83.8 % (75 instructions long): the two TVec2f-slot clear loops (0x802DAE38,
+0x802DAF04) unroll by 2 with offsets stepped in registers in the target, fully in ours (u32/s32 counters, zero() do not
+change it); everything else lines up. vfunc_0xC and fn_802DBD60 not started (time).
+SHARED-EDITS: include/game/GameView.h (field_0x2c s32 -> s32[2] replacing field_0x30 padding; field_0x3c8 u8[0xC80]
+-> u64[4][10][10]; fn_802DA630 bool -> u8 (returns the lbz as is; one caller, unwritten tu_80134C04, clrlwi's);
+declared fn_802D3D48, fn_802D92F0 members, inline screenMask, clearScreen, restartTimeLimit, clearScreenState);
+include/game/tu_80379F84.h (SaveRow 0x7C/0x7D carved from field_0x7a padding); include/game/act/tu_803276C4.h
+(cls_804AB528 s32 field_0x230 carved from padding: lwz/stw in tu_803276C4, tested == 2 by fn_802DA630).
+symbols.txt: fn_802D3D48 / fn_802D92F0 -> __17GameView_804A9950Fv member names; lbl_8053A1A8 size 0x8 -> 0x4 (the f32
+step 0.2f; the other 4 bytes are section padding): .sdata 100 %.
