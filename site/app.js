@@ -159,10 +159,10 @@ function countUp(el, to, fmt) {
 function drawStats() {
   const t = S.totals;
   const tiles = [
-    { k: "Code matched", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes`, c: "var(--green)" },
-    ...(t.code_weighted == null ? [] : [{ k: "Weighted match", v: ratio(t.code_weighted, t.code), fmt: (x) => x.toFixed(2), unit: "%",
+    { k: "Code matched", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes, byte-identical functions only`, c: "var(--green)" },
+    ...(t.code_weighted == null ? [] : [{ k: "Weighted progress", v: ratio(t.code_weighted, t.code), fmt: (x) => x.toFixed(2), unit: "%",
       d: `${num(t.code_weighted)} of ${num(t.code)} bytes <br>includes partial credit for functions that are structurally matched. Honest (${pct(ratio(t.code_matched, t.code))}) counts only byte-identical functions`,
-      title: "Weighted match: honest matched bytes plus, for each structurally matched function, its size times its match percent. Honest counts only byte-identical functions.", c: "var(--gold)" }]),
+      title: "Weighted progress: honest matched bytes plus, for each structurally matched function, its size times its match percent. Honest counts only byte-identical functions.", c: "var(--gold)" }]),
     { k: "Functions", v: t.fns_matched, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.fns)}`, d: `${pct(ratio(t.fns_matched, t.fns))} of all functions`, m: ratio(t.fns_matched, t.fns), c: "var(--red)" },
     { k: "Data matched", v: ratio(t.data_matched, t.data), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.data_matched)} of ${num(t.data)} bytes`, c: "var(--blue)" },
     { k: "Units Matching", v: t.matching, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.units)}`,
