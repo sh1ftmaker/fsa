@@ -16,6 +16,7 @@
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JUtility/JUTVideo.h"
 #include <string.h>
 #include "JSystem/JUtility/JUTException.h"
@@ -23,8 +24,9 @@
 
 void fn_80139958();
 
-// The boss archives, four per stage group (read by fn_80135A04).
-static const char* lbl_8049ED88[52] = {
+// The boss archives by stage and level (lbl_80529DEC's field_0x118 /
+// field_0x11c; fn_80135A04).
+static const char* lbl_8049ED88[13][4] = {
     "boss010.arc", "boss011.arc", "boss200.arc", "boss013.arc",
     "boss020.arc", "boss021.arc", "boss201.arc", "boss023.arc",
     "boss030.arc", "boss031.arc", "boss202.arc", "boss033.arc",
@@ -268,6 +270,148 @@ void GameRoot_8049EF20::fn_801352F4(s32 mode) {
             delete field_0x30;
             field_0x30 = NULL;
         }
+        break;
+    }
+}
+
+// Switches to game mode `mode`: deletes the other modes' screens, reports the
+// heap and starts loading the mode's archives (fn_80401E10) or screen.
+// FIXME: 99.8. Code identical; jump table @NNN vs jumptable_8049EF94 (as fn_80135020).
+void GameRoot_8049EF20::fn_80135A04(s32 mode) {
+    if (field_0x84 != 0) {
+        fn_801352F4(field_0x4c);
+        field_0x84 = 0;
+    }
+    switch (mode) {
+    case 7:
+        if (field_0x4 == NULL) {
+            fn_801352F4(1);
+            fn_801352F4(2);
+            fn_801352F4(3);
+            fn_801352F4(4);
+            fn_801352F4(6);
+            fn_801352F4(12);
+            OSReport("Game　連続空き容量　%fK 残り空き容量　%fK\n",
+                     field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                char path[32];
+                if (fn_80021840() == 2) {
+                    strcpy(path, "/GC4Sword/Boss/");
+                } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+                    strcpy(path, "/GC4Sword_usa/Boss/");
+                }
+                strcat(path, lbl_8049ED88[lbl_80529DEC.field_0x118][lbl_80529DEC.field_0x11c]);
+                field_0xac = fn_80401E10(path, 0, lbl_80529DEC.mHeap);
+            } else if (fn_80021840() == 2) {
+                field_0xac = fn_80401E10("/GC4Sword/Boss/boss500.arc", 0, lbl_80529DEC.mHeap);
+            } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+                field_0xac = fn_80401E10("/GC4Sword_usa/Boss/boss500.arc", 0, lbl_80529DEC.mHeap);
+            }
+            if (fn_80021840() == 2) {
+                field_0xb0 = fn_80401E10("/GC4Sword/game2D.arc", 0, lbl_80529DEC.mHeap);
+            } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+                field_0xb0 = fn_80401E10("/GC4Sword_usa/game2D.arc", 0, lbl_80529DEC.mHeap);
+            }
+        }
+        break;
+    case 12:
+        fn_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+        fn_801352F4(1);
+        fn_801352F4(2);
+        fn_801352F4(3);
+        fn_801352F4(4);
+        fn_801352F4(6);
+        fn_801352F4(7);
+        OSReport("Result　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        fn_80135020(12);
+        break;
+    case 1:
+        fn_801352F4(7);
+        fn_801352F4(2);
+        fn_801352F4(3);
+        fn_801352F4(4);
+        fn_801352F4(6);
+        fn_801352F4(12);
+        OSReport("Title　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        fn_80135020(1);
+        break;
+    case 2:
+    case 5:
+        if (field_0x4c == 2 || field_0x4c == 5) {
+            break;
+        }
+        fn_801352F4(7);
+        fn_801352F4(1);
+        fn_801352F4(3);
+        fn_801352F4(4);
+        fn_801352F4(6);
+        fn_801352F4(12);
+        OSReport("ModeSelect　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        if (fn_80021840() == 2) {
+            field_0xac = fn_80401E10("/GC4Sword/gamemode.arc", 0, lbl_80529DEC.mHeap);
+        } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+            field_0xac = fn_80401E10("/GC4Sword_usa/gamemode.arc", 0, lbl_80529DEC.mHeap);
+        }
+        field_0xb0 = NULL;
+        break;
+    case 3:
+        fn_801352F4(7);
+        fn_801352F4(1);
+        fn_801352F4(2);
+        fn_801352F4(4);
+        fn_801352F4(6);
+        fn_801352F4(12);
+        OSReport("FileSelect　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        if (fn_80021840() == 2) {
+            field_0xac = fn_80401E10("/GC4Sword/file.arc", 0, lbl_80529DEC.mHeap);
+        } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+            field_0xac = fn_80401E10("/GC4Sword_usa/file.arc", 0, lbl_80529DEC.mHeap);
+        }
+        field_0xb0 = NULL;
+        break;
+    case 4:
+        fn_801352F4(7);
+        fn_801352F4(1);
+        fn_801352F4(2);
+        fn_801352F4(3);
+        fn_801352F4(6);
+        fn_801352F4(12);
+        OSReport("Menu　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        if (fn_80021840() == 2) {
+            field_0xac = fn_80401E10("/GC4Sword/entry.arc", 0, lbl_80529DEC.mHeap);
+        } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+            field_0xac = fn_80401E10("/GC4Sword_usa/entry.arc", 0, lbl_80529DEC.mHeap);
+        }
+        field_0xb0 = NULL;
+        break;
+    case 6:
+        fn_801352F4(7);
+        fn_801352F4(1);
+        fn_801352F4(2);
+        fn_801352F4(3);
+        fn_801352F4(4);
+        fn_801352F4(12);
+        OSReport("MapSelect　連続空き容量　%fK 残り空き容量　%fK\n",
+                 field_0x98->getFreeSize() / 1024.0f, (s32)field_0x98->getTotalFreeSize() / 1024.0f);
+        if (fn_80021840() == 2) {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                field_0xac = fn_80401E10("/GC4Sword/map1.arc", 0, lbl_80529DEC.mHeap);
+            } else {
+                field_0xac = fn_80401E10("/GC4Sword/map2.arc", 0, lbl_80529DEC.mHeap);
+            }
+        } else if (fn_80021840() == 0 || fn_80021840() == 1) {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                field_0xac = fn_80401E10("/GC4Sword_usa/map1.arc", 0, lbl_80529DEC.mHeap);
+            } else {
+                field_0xac = fn_80401E10("/GC4Sword_usa/map2.arc", 0, lbl_80529DEC.mHeap);
+            }
+        }
+        field_0xb0 = NULL;
         break;
     }
 }

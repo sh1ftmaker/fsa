@@ -148,6 +148,7 @@ struct GameRootSub04_801F856C {
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
 struct Unk_8045A080;
 class cls_804A8390;
+class cls_804B0FC0;
 class J2DTextBox;
 class MessageManager_804AF070;
 class cls_804B04F8;
@@ -251,10 +252,11 @@ struct GameRoot_8049EF20 {
     // build JKRAramArchive/JKRMemArchive (fn_80401AC8, fn_80401D20).
     /* 0xA4 */ JKRArchive* field_0xa4;
     /* 0xA8 */ JKRArchive* field_0xa8; // lbl_80529DEC's field_0x1c (msgus.arc)
-    // Cleared by the constructor; fn_80135494 tests their word 0x4 and calls
-    // their destructors through a vtable at +0x8.
-    /* 0xAC */ void* field_0xac;
-    /* 0xB0 */ void* field_0xb0;
+    // The archives fn_80135A04 starts loading for a game mode (fn_80401E10;
+    // the boss archive, game2D.arc, gamemode.arc, ...); fn_80135494 waits for
+    // their byte 0x4 and deletes them.
+    /* 0xAC */ cls_804B0FC0* field_0xac;
+    /* 0xB0 */ cls_804B0FC0* field_0xb0;
     // Constructed with __ct__Q25JMath13TRandom_fast_FUl at this+0xB4 by the
     // constructor fn_80139300 (0x8013932C-0x80139338). 132 units inline
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
@@ -341,6 +343,9 @@ struct GameRoot_8049EF20 {
     // the screen object of game mode `mode` (switch on 0-12; see 0x04-0x30).
     void fn_80135020(s32 mode);
     void fn_801352F4(s32 mode);
+    // Owner: game/tu_80134C04.cpp (0x80135A04). Deletes the other modes'
+    // screens, reports the heap and starts loading the archives of `mode`.
+    void fn_80135A04(s32 mode);
     // game/tu_80134C04.cpp, called by main (tu_801344C0) only. The
     // constructor allocated with __nw__(0x11C); no arguments.
     GameRoot_8049EF20();
