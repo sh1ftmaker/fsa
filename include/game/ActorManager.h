@@ -132,6 +132,11 @@ public:
 
     // 2 units / 2 calls. field_0x3030[i] (0x801F6058).
     s32 fn_801F6058(s32 i);
+    // Called by the update pass (fn_801F871C) first. Ranks the players
+    // taking part (lbl_8053AAF8 field_0x82) by fn_80236228, highest first:
+    // field_0x3020 the values, field_0x3030 the player indices (others get
+    // -9999 and 3); the entries past the last player repeat it.
+    void fn_801F6068();
     // 2 units / 8 calls. field_0x305c = value (stb; callers pass li 0/1).
     void fn_801F6204(u8 value);
     // EnemyParam.csv lookup: the value of `column` (ActorParamColumn) for
@@ -161,13 +166,14 @@ public:
     // 1 unit / 1 call (RailBase 0x800FE50C). Appends every live 'RAIL' actor
     // whose (field_0x90 >> 8) & 0xFF == group to out[*count] (stwx), and
     // returns 0 as soon as *count == max, else 1. RailBase passes a lbz
-    // value for group, a 0x31-entry stack array and max 0x31.
-    bool fn_801F71E8(u8 group, ActorBase_804A5770** out, s32* count, s32 max);
+    // value for group, a 0x31-entry stack array and max 0x31; the body
+    // compares group unextended (cmplw), so it is a word.
+    bool fn_801F71E8(u32 group, ActorBase_804A5770** out, s32* count, s32 max);
     // 1 unit / 1 call (act_thief). Writes to out[] every live actor on
     // `layer` other than excludeSerial with mPos.z <= lbl_8053F820 for
     // which fn_801CC9B0 (a 'RUPY' kind test, tu_801CB270) holds; returns
     // the count.
-    s32 fn_801F7274(s32 layer, ActorBase_804A5770** out, s32 excludeSerial);
+    s32 fn_801F7274(s32 layer, ActorBase_804A5770** out, s32 excludeSerial) const;
     // 1 unit / 3 calls (tu_801DE714). Like fn_801F7274's filter, but of the
     // actors within `radius` of center (x, y; fmuls f1 by itself) returns
     // the serial of the one nearest to `from` (x, y), or -1.
@@ -177,13 +183,16 @@ public:
     // actor on `layer`, other than excludeSerial, for which fn_801CC960
     // ('RUPY' with kind 4-7) / fn_801CC910 ('RUPY' with kind 8-11) holds,
     // or -1.
-    s32 fn_801F7464(s32 layer, s32 excludeSerial);
-    s32 fn_801F750C(s32 layer, s32 excludeSerial);
+    // Const: mActorEnd is loaded once, before `this` is copied, as
+    // through a const this (fn_801F7274 likewise).
+    s32 fn_801F7464(s32 layer, s32 excludeSerial) const;
+    s32 fn_801F750C(s32 layer, s32 excludeSerial) const;
     // 1 unit / 1 call (act_all_enemies_defeated_check_switch, with this +
     // 0x23C). 0 when a live actor on `layer` with field_0x1a8 ("dstr")
     // has (x, y) inside box (min inclusive, max exclusive), else 1. The
-    // caller tests r3 with clrlwi 24.
-    bool fn_801F75B4(s32 layer, const JGeometry::TBox2f* box);
+    // caller tests r3 with clrlwi 24; the body returns a u8 flag widened
+    // (clrlwi r3, r7, 24).
+    u8 fn_801F75B4(s32 layer, const JGeometry::TBox2f* box);
     // 1 unit / 1 call (tu_80184D64, with &mPos). The serial of the live
     // "dstr" actor nearest to pos (x, y) within lbl_8053F824, or -1; the
     // squared distance goes to *outDistSq when it is not NULL.
@@ -232,7 +241,7 @@ public:
     // (fn_801F31C4) overlaps actor's, or -1. Unless the view's flag for the
     // layer is set (GameView 0x131DF + layer), the two z must also be
     // within maxDz (fabs).
-    s32 fn_801F7F58(ActorBase_804A5770* actor, const u32* ids, s32 excludeSerial, f32 maxDz);
+    s32 fn_801F7F58(ActorBase_804A5770* actor, const u32* ids, s32 excludeSerial, f32 maxDz) const;
     // 13 units / 14 calls. Walks the list at mListHead (mListNext): the
     // serial of the first alive actor on actor's layer with field_0xc4
     // clear, within maxDz in z (unless the view's layer flag is set) and
@@ -243,9 +252,10 @@ public:
     // the u8 flag widened (clrlwi r3, r6, 24), not a bool test.
     // 1 unit / 1 call (ActorBase's destructor).
     s32 fn_801F8448(ActorBase_804A5770* actor);
-    // Link an actor into the manager's list (true if newly linked).
-    // 1 unit / 1 call (ActorBase_804A5770::fn_801F2B20).
-    bool fn_801F84C4(ActorBase_804A5770* actor);
+    // Link an actor into the manager's list (1 if newly linked). Returns
+    // the u8 flag widened (clrlwi r3, r5, 24), as fn_801F8448 does.
+    // 1 unit / 1 call (ActorBase_804A5770::fn_801F2B20, result unused).
+    s32 fn_801F84C4(ActorBase_804A5770* actor);
     // fn_801F9484 with arg_0x16c = arg_0x110 = -1. 32 units / 43 calls.
     s32 fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90);
     // 1 unit / 1 call each (GameRoot, tu_80139BE8), with GameRoot
@@ -272,6 +282,12 @@ public:
     // calls.
     s32 fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
                     s32 arg_0x16c, s32 arg_0x110);
+    // 0x801F62AC: reads EnemyParam.csv (lbl_8046A048) into mParam* with
+    // `heap` (the constructor's parent heap). Only the constructor calls it.
+    void fn_801F62AC(JKRHeap* heap);
+    // Inline only (game/tu_801F6058.cpp): deletes mActors[slot] and pulls
+    // mActorEnd down past trailing empty slots.
+    void deleteSlot(s32 slot);
 
     /* 0x0000 vtable (0x804A5800) */
     /* 0x0004 */ JKRHeap* mHeap; // JKRUnitHeap::create(...) in the
@@ -322,6 +338,12 @@ enum ActorParamColumn {
 // 241 units / 1662 calls. lbl_8053AAF8->0x4->0x8: the actor manager.
 ActorManager_804A5800* fn_801F856C(void);
 
+// Defined in game/tu_801F6058.cpp. 21 units / 38 calls. True when pos (x, y) is outside the view's box
+// (fn_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
+// each side (<= / >= compares). Callers pass &mPos, field_0x4 and a
+// literal, and test r3 with clrlwi. 24.
+bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
+
 // 29 units / 49 calls. The direction (0-3) of a 16-bit angle: 2 below
 // 0x2000 or from 0xE000, 0 below 0x6000, 3 up to 0xA000, else 1. Callers
 // pass a clrlwi 16 or lhz value.
@@ -340,15 +362,9 @@ void fn_801F714C(u16* value, u16 target, u16 step, u16 maxStep);
 // *value), clamped to +-maxStep, to *value.
 void fn_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
 
-// Not written yet in game/tu_801F6058.cpp: extern "C" keeps their dtk
-// placeholder names as the link names until that unit defines them.
+// Not written yet in game/tu_801F6058.cpp: extern "C" keeps its dtk
+// placeholder name as the link name until that unit defines it.
 extern "C" {
-
-// 21 units / 38 calls. True when pos (x, y) is outside the view's box
-// (fn_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
-// each side (<= / >= compares). Callers pass &mPos, field_0x4 and a
-// literal, and test r3 with clrlwi. 24.
-bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
 
 // 6 units / 12 calls. Gets the manager itself (lbl_8053AAF8->0x4->0x8)
 // and does fn_801F7F58's search for the single id `id` (a stack
@@ -357,8 +373,16 @@ bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
 // (ActorBase_804A5770::fn_801F2718 passes this, its mSerial and
 // lbl_8053F748; others pass -1 for excludeSerial).
 s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz);
+// It inlines fn_801F7F58's whole search and fn_801F856C (defined after it),
+// so it stays unwritten until fn_801F7F58's own structure explains that.
 
 } // extern "C"
+
+// Defined in game/tu_801A3C50.cpp (not written yet; C++ linkage, renamed in
+// symbols.txt). The draw pass (fn_801F8658) calls it on each actor it draws,
+// right before the actor's draw(); r3 is the actor (kept in r31), result
+// unused.
+void fn_801A3CFC(ActorBase_804A5770* actor);
 
 // Force Gem ('RUPY', act_force_gem) tests, defined in game/tu_801CB270.cpp:
 // actor->mActorId == 'RUPY' and its kind (the low byte of field_0x90 while
