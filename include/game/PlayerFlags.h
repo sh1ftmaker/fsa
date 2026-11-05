@@ -10,9 +10,8 @@
 // each test loads one byte, and the inlined result is materialised
 // (li 0 / li 1) and tested again (clrlwi.). What it means is not known yet;
 // the name keeps the address of its out-of-line copy. That copy converts
-// 0xCE9 with neg / or / srwi (`!= 0`, 100 %); the inlined copies test it
-// with cmplwi / bne instead, which this source does not give yet
-// (fn_80246F28).
+// 0xCE9 with neg / or / srwi (`!= 0`, 100 %); the inlined copies in
+// tu_8023FBF0 test it with cmplwi / bne, which is playerFlagsGate below.
 inline bool playerFlags_802413F0(const Player_804A6F38* player) {
     if (!player->field_0xc80) {
         return false;

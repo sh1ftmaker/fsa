@@ -143,6 +143,26 @@ u8 Player_804A6F38::fn_8023FC5C() const {
     return 0;
 }
 
+bool Player_804A6F38::fn_8023FF50() {
+    s32 team = field_0xd60;
+    if (team >= 0) {
+        return fn_8023BD70(team);
+    }
+    return field_0x1202;
+}
+
+bool Player_804A6F38::fn_8023FF88() {
+    return field_0x1200;
+}
+
+void Player_804A6F38::fn_8023FF90(const JGeometry::TVec3f* arg) {
+    field_0xc90.set(arg->x, arg->y, arg->z);
+}
+
+s32 Player_804A6F38::fn_8023FFAC() {
+    return field_0xc84.z < 1.0f;
+}
+
 // FIXME: 99.4 %. Register allocation only: the group loop's index / count /
 // leader r27 / r28 / r29 in ours vs r28 / r29 / r27 (and r30 for the turn).
 // The leader's value (fn_80236630, this function for the leader) for a following
@@ -185,26 +205,6 @@ s32 Player_804A6F38::fn_80240354() {
     return 0;
 }
 
-bool Player_804A6F38::fn_8023FF50() {
-    s32 team = field_0xd60;
-    if (team >= 0) {
-        return fn_8023BD70(team);
-    }
-    return field_0x1202;
-}
-
-bool Player_804A6F38::fn_8023FF88() {
-    return field_0x1200;
-}
-
-void Player_804A6F38::fn_8023FF90(const JGeometry::TVec3f* arg) {
-    field_0xc90.set(arg->x, arg->y, arg->z);
-}
-
-s32 Player_804A6F38::fn_8023FFAC() {
-    return field_0xc84.z < 1.0f;
-}
-
 s32 Player_804A6F38::fn_80240628() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -226,7 +226,7 @@ s32 Player_804A6F38::fn_8024064C() const {
 // loop's count / index / leader registers (r30 / r28 / r27 vs r28 / r27 / r30).
 // The direct body was 98.8 % (registers only), but fn_8023FC5C-fn_80240354
 // inline it before its definition, so it is the file inline follows_80240670.
-// follows_80240670. Const: the group loop's field_0x4 is hoisted (r29), as
+// Const: the group loop's field_0x4 is hoisted (r29), as
 // in fn_80248778.
 bool Player_804A6F38::fn_80240670() const {
     return follows_80240670(this);
