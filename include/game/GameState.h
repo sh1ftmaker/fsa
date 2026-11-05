@@ -48,6 +48,9 @@ public:
         struct Fields {
             /* 0x00 */ u16 magic0; // 0xA759 when valid
             /* 0x02 */ u16 magic1; // 0xDC96 when valid
+            // [0]: 0xA7 once the game has booted since power-on; [1]: 0xA5
+            // starts with the game mode screen (mode 2) instead (GameRoot's
+            // fn_80138C9C, tu_80134C04).
             /* 0x04 */ u8 field_0x4[0x09 - 0x04];
             /* 0x09 */ u8 field_0x9; // fn_802B1DCC tests it
             /* 0x0A */ u8 field_0xa;

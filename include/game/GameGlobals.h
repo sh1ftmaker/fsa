@@ -148,6 +148,7 @@ struct GameRootSub04_801F856C {
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
 struct Unk_8045A080;
 class cls_804A8390;
+class J2DTextBox;
 class Title_804AF820;
 class FileSelect_804AFF60;
 class GameMode_804B0688;
@@ -162,7 +163,10 @@ struct GameRoot_8049EF20 {
     // (field_0x4c) and fn_801352F4 (0x801352F4) deletes again; each is made in
     // field_0x98 with its heap group ID set to 1.
     /* 0x04 */ GameRootSub04_801F856C* field_0x4; // mode 7 (0x38 bytes); -> 0x8: the actor manager
-    /* 0x08 */ u8 field_0x8[0x1C - 0x8];
+    /* 0x08 */ u8 field_0x8[0x10 - 0x8];
+    // The fade object (also lbl_8053ACA0); fn_80138C9C calls fn_802ACB58 on it.
+    /* 0x10 */ cls_804A8390* field_0x10;
+    /* 0x14 */ u8 field_0x14[0x1C - 0x14];
     /* 0x1C */ cls_804AE9A0* field_0x1c;         // mode 12 (0x20 bytes)
     /* 0x20 */ Title_804AF820* field_0x20;       // mode 1 (0x158 bytes)
     /* 0x24 */ FileSelect_804AFF60* field_0x24;  // mode 3 (0x1AC bytes)
@@ -180,19 +184,22 @@ struct GameRoot_8049EF20 {
     /* 0x58 */ s32 field_0x58;
     // A frame count: Title_804AF820::fn_803A44D8 (game/tu_803A3484.cpp)
     // passes it to fn_8016D398, which takes it modulo the cloud animations'
-    // frame counts (divw).
+    // frame counts (divw). Cleared by fn_80138C9C.
     /* 0x5C */ s32 field_0x5c;
     // Cleared by fn_8013670C (game/tu_80134C04.cpp, stw of 0).
     /* 0x60 */ s32 field_0x60;
     /* 0x64 */ s32 field_0x64;
-    /* 0x68 */ u8 field_0x68[0x74 - 0x68];
+    /* 0x68 */ s32 field_0x68; // cleared by fn_80138C9C
+    /* 0x6C */ u8 field_0x6c[0x70 - 0x6C];
+    /* 0x70 */ s32 field_0x70; // cleared by fn_80138C9C
     // Both cleared by fn_8019CDC4 (game/tu_80197070.cpp, stw of 0).
     /* 0x74 */ s32 field_0x74;
     /* 0x78 */ s32 field_0x78;
     /* 0x7C */ u8 field_0x7c[0x7E - 0x7C];
     /* 0x7E */ u8 field_0x7e;
     /* 0x7F */ u8 field_0x7f;
-    /* 0x80 */ u8 field_0x80[0x2];
+    /* 0x80 */ u8 field_0x80; // cleared by fn_80138C9C
+    /* 0x81 */ u8 field_0x81; // cleared by fn_80138C9C
     /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
     /* 0x83 */ u8 field_0x83;
     /* 0x84 */ u8 field_0x84;
@@ -234,7 +241,15 @@ struct GameRoot_8049EF20 {
     // TRandom_fast_::get()/get_ufloat_1() on it (lwz 0xB4, mullw 0x19660D,
     // + 0x3C6EF35F, stw, srwi 9, oris 0x3F80, - 1.0f), e.g. 0x803D6578.
     /* 0xB4 */ JMath::TRandom_fast_ mRandom;
-    /* 0xB8 */ u8 field_0xb8[0xF8 - 0xB8];
+    /* 0xB8 */ J2DPicture* field_0xb8; // made from 'TIMG' resources by the constructor
+    /* 0xBC */ J2DPicture* field_0xbc;
+    // Two text boxes the constructor makes; fn_80138C9C copies field_0xc8
+    // (message 0x42, fn_803832BC) into both.
+    /* 0xC0 */ J2DTextBox* field_0xc0;
+    /* 0xC4 */ J2DTextBox* field_0xc4;
+    /* 0xC8 */ char field_0xc8[0xF0 - 0xC8];
+    /* 0xF0 */ f32 field_0xf0; // 0.0f after fn_80138C9C
+    /* 0xF4 */ f32 field_0xf4; // fn_803832BC's result for field_0xc8
     // Cleared to 0 by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8), together
     // with field_0xfc, when it is stored a 1 (stb of r4 at 0xFE first).
     /* 0xF8 */ s32 field_0xf8;
@@ -1158,6 +1173,10 @@ struct cls_801192AC {
     /* 0x04 */ s32 field_0x4; // compared as signed in tu_801286C0's vfunc_0x54
     /* 0x08 */ s32 field_0x8;
     /* 0x0C */ u8 field_0xc[0x4]; // not yet known
+    // 0x801190E4 (game/tu_80118384.cpp, not written yet): makes room for 20
+    // entries (new 0x50) in [mBegin, mEnd) when field_0x18 is below 20.
+    // GameRoot's fn_80138C9C calls it on fn_8011921C().
+    void fn_801190E4();
     // The actor list: fn_8011888C appends and fn_80118798 removes entries,
     // fn_8011871C searches [mBegin, mEnd) for an actor by mActorId.
     /* 0x10 */ ActorBase_804A5770** mBegin;

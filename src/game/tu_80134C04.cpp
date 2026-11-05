@@ -11,9 +11,29 @@
 #include "game/tu_803BC6F0.h"
 #include "game/tu_803DAC3C.h"
 #include "JSystem/JKernel/JKRHeap.h"
+#include "JSystem/J2D/J2DPane.h"
+#include <string.h>
+#include "JSystem/JUtility/JUTException.h"
 #include "JSystem/JUtility/JUTGamePad.h"
 
 void fn_80139958();
+
+// The boss archives, four per stage group (read by fn_80135A04).
+static const char* lbl_8049ED88[52] = {
+    "boss010.arc", "boss011.arc", "boss200.arc", "boss013.arc",
+    "boss020.arc", "boss021.arc", "boss201.arc", "boss023.arc",
+    "boss030.arc", "boss031.arc", "boss202.arc", "boss033.arc",
+    "boss040.arc", "boss041.arc", "boss203.arc", "boss043.arc",
+    "boss050.arc", "boss051.arc", "boss204.arc", "boss053.arc",
+    "boss060.arc", "boss061.arc", "boss205.arc", "boss063.arc",
+    "boss070.arc", "boss071.arc", "boss206.arc", "boss073.arc",
+    "boss080.arc", "boss207.arc", "boss081.arc", "boss083.arc",
+    "boss002.arc", "boss001.arc", "boss000.arc", "boss990.arc",
+    "boss004.arc", "boss005.arc", "boss006.arc", "boss991.arc",
+    "boss007.arc", "boss008.arc", "boss009.arc", "boss992.arc",
+    "boss090.arc", "boss091.arc", "boss092.arc", "boss093.arc",
+    "boss094.arc", "boss095.arc", "boss096.arc", "boss097.arc",
+};
 
 // The stage music (sequence IDs) by GameView_804A9950::field_0x34
 // (fn_80138B7C).
@@ -27,6 +47,31 @@ static const u32 lbl_804652F0[39] = {
     0x0100002A, 0x0100002E, 0x01000030,
 };
 
+
+// The JUTException pre-user callback the constructor installs: the crash
+// screen waits until pad 1 enters Up, A, Left, X, Down, Y, Right, B, Z, Start.
+void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar) {
+    static const u16 lbl_804655FC[] = {
+        PAD_BUTTON_UP, PAD_BUTTON_A,     PAD_BUTTON_LEFT, PAD_BUTTON_X,  PAD_BUTTON_DOWN, PAD_BUTTON_Y,
+        PAD_BUTTON_RIGHT, PAD_BUTTON_B, PAD_TRIGGER_Z,   PAD_BUTTON_START, 0,
+    };
+    int i = 0;
+    JUTException::waitTime(200);
+    JUTException::getManager()->setGamePad((JUTGamePad*)-1);
+    while (lbl_804655FC[i] != 0) {
+        JUTException::waitTime(100);
+        u32 trigger;
+        JUTException::getManager()->readPad(&trigger, NULL);
+        if (trigger != 0) {
+            if (trigger == lbl_804655FC[i]) {
+                i++;
+            } else {
+                i = 0;
+            }
+        }
+    }
+    JUTException::getManager()->setGamePad(NULL);
+}
 
 void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
@@ -362,6 +407,54 @@ void GameRoot_8049EF20::fn_80138B7C() {
     } else {
         field_0xa0->fn_80458FF0(0x1000019, false, false);
     }
+}
+
+// Called once by main after the constructor: resets the per-game state and
+// picks the first game mode (the title after power-on, see SaveRegion 0x4/0x5).
+// FIXME: 99.9. Code identical; its .sdata2 floats (0.0f, 1.0f, 50.0f) are @NNN
+// until the unit's earlier float users are written and .sdata2 is split, and
+// ours numbers 50.0f before get_ufloat_1's 1.0f (the original pools 1.0f first).
+void GameRoot_8049EF20::fn_80138C9C() {
+    field_0xa0->field_0x5 = 4;
+    lbl_8053AB10->fn_8013BE04();
+    field_0x10->fn_802ACB58();
+    fn_80119DD0()->fn_80119D48();
+    fn_8011921C()->fn_801190E4();
+    field_0x5c = 0;
+    field_0x94 = 0;
+    field_0x96 = 0;
+    field_0x10c = 0;
+    field_0x108 = 0;
+    field_0x58 = 0;
+    if (lbl_80529DEC.mSaveRegion.f.field_0x4[0] != 0xA7) {
+        lbl_80529DEC.mSaveRegion.f.field_0x4[0] = 0xA7;
+        field_0x4c = 1;
+    } else {
+        if (lbl_80529DEC.mSaveRegion.f.field_0x4[1] != 0xA5) {
+            lbl_80529DEC.field_0x249[0] = 1;
+            fn_80136798(2, 0);
+        } else {
+            fn_80136798(1, 0);
+        }
+        lbl_80529DEC.mSaveRegion.f.field_0x4[1] = 0;
+    }
+    field_0x60 = 0;
+    field_0x64 = 0;
+    field_0x68 = 0;
+    mRandom.setSeed(0x12D5DA0);
+    field_0x70 = 0;
+    field_0x80 = 0;
+    field_0x81 = 0;
+    field_0x7e = 1;
+    field_0x7f = 1;
+    field_0x82 = 0;
+    field_0x83 = 0;
+    field_0xff = 0;
+    field_0xf0 = 0.0f;
+    field_0x86 = (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 1;
+    field_0xf4 = fn_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
+    strcpy(field_0xc4->getStringPtr(), field_0xc8);
+    strcpy(field_0xc0->getStringPtr(), field_0xc8);
 }
 
 void fn_80139958() {
