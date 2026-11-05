@@ -1268,36 +1268,54 @@ public:
 }; // Size: 0x7C
 extern cls_804B0F50* lbl_8053AAF0;
 
-// The memory card manager, owner game/tu_803B9940.cpp (0x2120 bytes at
-// lbl_8051C1A0): fn_803BA980 runs CARDInit, initialises its mutex and
-// condition and starts its thread; main calls fn_803B9E2C on it every frame.
+// The memory card manager, owner game/tu_803B9940.cpp (0x2020 bytes at
+// lbl_8051C1A0, 0x2020 bytes, vtable 0x804AFB48 holds only the destructor): fn_803BA980
+// runs CARDInit, initialises its mutex and condition and starts its thread
+// (fn_803B9F40 is the thread's loop); main calls fn_803B9E2C on it every frame.
+// The game side posts a request in field_0x1fcc under the mutex and signals
+// the condition; the thread works it off and leaves the result in mState.
 class cls_803B9940 {
 public:
+    virtual ~cls_803B9940();
     void fn_803BA980();
     void fn_803B9E2C();
-    // SHARED-EDIT (tu_803BC6F0): request polls; each try-locks the mutex at
-    // 0x1FD4 and reads the state word 0x1FD0. fn_803B9A94 copies the save
+    void fn_803B9F40();
+    // SHARED-EDIT (tu_803BC6F0): request polls; each try-locks the mutex
+    // and reads mState. fn_803B9A94 copies the save
     // data at this + offset + 0x20 / + 0x280 into dst1 / dst2 when the state
     // is 3; fn_803B9BDC / fn_803B9C5C return 1 when the request finished
     // (state 4 / 5), 0 or 2 otherwise.
-    // SHARED-EDIT (tu_803BC6F0 fn_803CE11C): the card state (the word 0x1FD0
+    // SHARED-EDIT (tu_803BC6F0 fn_803CE11C): the card state (mState
     // mapped through a 14-entry switch; 0xE while the mutex is busy). The
     // argument is unused (every caller passes 0).
     u32 fn_803B9940(s32 unused);
+    // Hands back the save data (state 3 -> 1): 1 when the state was 3, 2
+    // when it was not, 0 when the mutex was busy.
+    s32 fn_803B9A24();
     // Sets the request word 0x1FCC to 1 and signals the condition.
     void fn_803B9B8C();
     s32 fn_803B9A94(void* dst1, u32 size1, void* dst2, u32 size2, s32 offset);
+    // Sets the request word to 2 and signals the condition.
+    void fn_803B9B3C();
     s32 fn_803B9BDC();
     s32 fn_803B9C5C();
+    // Copy src into the save data at offset + 0x20 (n bytes), request 3.
+    void fn_803B9CCC(void* src, u32 n, s32 offset);
+    // Copy src1 / src2 into the save data at offset + 0x20 / + 0x280, request 3.
+    void fn_803B9D54(void* src1, u32 n1, void* src2, u32 n2, s32 offset);
     // Sets the request word 0x1FCC to 4 and signals the condition at 0x1FEC
     // (fn_803CC17C, before it waits in state 0xD).
     void fn_803B9DDC();
 
-    /* 0x0 */ u8 field_0x0[0x1FCC];
+    /* 0x0000 */ u8 field_0x4[0x20 - 0x4];
+    /* 0x0020 */ u8 mHeader[0x260];
+    /* 0x0280 */ u8 mSave[0x1FCC - 0x280];
     // fn_802B1558 (the reset path) waits, one VIWaitForRetrace per pass, while
     // this word is nonzero.
     /* 0x1FCC */ s32 field_0x1fcc;
-    /* 0x1FD0 */ u8 field_0x1fd0[0x1FF4 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
+    /* 0x1FD0 */ s32 mState;
+    /* 0x1FD4 */ OSMutex mMutex;
+    /* 0x1FEC */ OSCond mCond;
     // SHARED-EDIT (tu_803BC6F0 fn_803CC53C): the card channel passed to
     // CARDGetSerialNo.
     /* 0x1FF4 */ u8 field_0x1ff4;
@@ -1307,8 +1325,8 @@ public:
     /* 0x1FF5 */ u8 field_0x1ff5;
     /* 0x1FF6 */ u8 field_0x1ff6[0x1FF8 - 0x1FF6];
     /* 0x1FF8 */ u64 field_0x1ff8; // CARDGetSerialNo's serial number (fn_803CC53C)
-    /* 0x2000 */ u8 field_0x2000[0x2120 - 0x2000];
-}; // Size: 0x2120
+    /* 0x2000 */ u8 field_0x2000[0x2020 - 0x2000];
+}; // Size: 0x2020
 extern cls_803B9940 lbl_8051C1A0;
 
 // Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
