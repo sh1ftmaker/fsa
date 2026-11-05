@@ -103,14 +103,13 @@ public:
 }; // Size: 0x411C
 
 // Effect callbacks other units embed. Vtable 0x8049F140 derives from
-// JPAEmitterCallBack (0x10 bytes): destructor dtor_8013C5C8, execute
-// fn_8013C628 (every 8 frames, while the stage allows it, spawns a 'PEFF'
+// JPAEmitterCallBack (0x10 bytes), cls_8049F140 in game/tu_8013C5C8.cpp:
+// destructor and execute (every 8 frames, while the stage allows it, spawns a 'PEFF'
 // actor at player field_0x4's position; field_0x8 0 or 1 picks the spawn
 // parameter, field_0xc counts the frames). tu_8023FBF0 holds two at 0x1398
 // and 0x13A8 and inlines their constructor (both vtables stored, field_0xc
 // zeroed). Declare it once JPAEmitterCallBack is in the JParticle headers.
 
-extern "C" {
 // 48 units / 226 calls. lbl_8053AB10->0x28.
 EffectSystem_8049F178* fn_8013C824(void);
 
@@ -118,16 +117,17 @@ EffectSystem_8049F178* fn_8013C824(void);
 // emitter, builds a rotation of `angle` plus a constant (fn_8010F668), scales
 // it and sets it as the emitter's matrix at 0x68 (JPASetRMtxfromMtx);
 // returns 0 or 1.
-bool fn_8013CAA4(JPABaseEmitter* emitter, f32 angle);
+u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle);
 
 // 66 units / 197 calls. Moves a non-NULL emitter to pos, lifted by
 // height * 1024 + depth * 128 in y and z (with `adjust`, a positive pos.z
 // raises height below 1 by one and lowers depth by one) and with z taken
 // from the ground under pos (cls_804AA858::fn_802F5E9C, game/Map.h, on lbl_8053AB10->0x20); stores
 // the result in the emitter's translation (0xA4-0xAC). Returns 0 or 1.
-bool fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
+u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
                  bool adjust);
 
+extern "C" {
 // game/tu_801CB270.cpp (owner unit, not written yet; 4 caller units: tu_801EE24C,
 // tu_8021AF28, tu_801E5FC8, tu_8020F798). Moves the emitter in *emitter to pos with
 // fn_8013CB44 (adjust true); or, when it is flagged (bit 0x8 of its word
