@@ -290,7 +290,9 @@ public:
     void fn_80257FF4(); // drops field_0xb30 serials with no actor
     void fn_80258070(); // drops field_0xb2c if its actor is gone or not a live Somaria block
     void fn_8025819C(); // tracks the actor field_0xb3c: its layer and box (+ position) into 0xb70 / 0x5a0
+    void fn_80258384(); // the same for each of field_0xb1c[3]: field_0xb5c[] / field_0x550[]
     void fn_80258470(); // same for field_0xb18: 0xb58 / 0x540
+    void fn_8025851C(); // the same for each of field_0xb0c[3]: field_0xb4c[] / field_0x510[]
     void fn_802586CC(); // empty
     void fn_80258880(); // field_0x458 = 0
     void fn_8025888C(); // empty
@@ -526,26 +528,31 @@ public:
     /* 0x0499 */ u8 field_0x499[0x4C0 - 0x499];
     /* 0x04C0 */ JGeometry::TBox2f field_0x4c0;
     /* 0x04D0 */ JGeometry::TBox2f field_0x4d0;
-    /* 0x04E0 */ u8 field_0x4e0[0x540 - 0x4E0];
+    /* 0x04E0 */ u8 field_0x4e0[0x510 - 0x4E0];
+    /* 0x0510 */ JGeometry::TBox2f field_0x510[3];
     /* 0x0540 */ JGeometry::TBox2f field_0x540;
-    /* 0x0550 */ u8 field_0x550[0x5A0 - 0x550];
+    /* 0x0550 */ JGeometry::TBox2f field_0x550[3];
+    /* 0x0580 */ u8 field_0x580[0x5A0 - 0x580];
     /* 0x05A0 */ JGeometry::TBox2f field_0x5a0;
     /* 0x05B0 */ u8 field_0x5b0[0x5C0 - 0x5B0];
     /* 0x05C0 */ JGeometry::TVec3f field_0x5c0;
     /* 0x05CC */ u8 field_0x5cc[0x5FC - 0x5CC];
     /* 0x05FC */ JGeometry::TBox2f field_0x5fc[0x50];
-    /* 0x0AFC */ u8 field_0xafc[0xB18 - 0xAFC];
+    /* 0x0AFC */ u8 field_0xafc[0xB0C - 0xAFC];
+    /* 0x0B0C */ s32 field_0xb0c[3];
     // Returned by fn_8023B22C (-1 without a player).
     /* 0x0B18 */ s32 field_0xb18;
-    /* 0x0B1C */ u8 field_0xb1c[0xB28 - 0xB1C];
+    /* 0x0B1C */ s32 field_0xb1c[3];
     /* 0x0B28 */ s32 field_0xb28;
     /* 0x0B2C */ s32 field_0xb2c;
     /* 0x0B30 */ s32 field_0xb30[2];
     /* 0x0B38 */ u8 field_0xb38[0xB3C - 0xB38];
     /* 0x0B3C */ s32 field_0xb3c;
-    /* 0x0B40 */ u8 field_0xb40[0xB58 - 0xB40];
+    /* 0x0B40 */ u8 field_0xb40[0xB4C - 0xB40];
+    /* 0x0B4C */ s32 field_0xb4c[3];
     /* 0x0B58 */ s32 field_0xb58;
-    /* 0x0B5C */ u8 field_0xb5c[0xB70 - 0xB5C];
+    /* 0x0B5C */ s32 field_0xb5c[3];
+    /* 0x0B68 */ u8 field_0xb68[0xB70 - 0xB68];
     /* 0x0B70 */ s32 field_0xb70;
     /* 0x0B74 */ u8 field_0xb74[0xB78 - 0xB74];
     // Returned by fn_8023B400 (lbz; blr).

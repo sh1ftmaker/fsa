@@ -17,10 +17,10 @@ bool Player_804A6F38::fn_802577E0() {
     return fn_80251AEC(0x3f);
 }
 
-// FIXME: 92.6. Same instructions; the loop counter and the serial swap r28/r29 (original loads the counter later, after the prologue saves).
 void Player_804A6F38::fn_80257FF4() {
+    s32 serial; // declared outside the loop: the original keeps the counter in the lower saved register
     for (s32 i = 0; i < 2; i++) {
-        s32 serial = field_0xb30[i];
+        serial = field_0xb30[i];
         if (serial >= 0 && !fn_801F856C()->fn_801F666C(serial)) {
             field_0xb30[i] = -1;
         }
@@ -57,6 +57,27 @@ void Player_804A6F38::fn_8025819C() {
     }
 }
 
+void Player_804A6F38::fn_80258384() {
+    s32 serial; // declared outside the loop: the original keeps the counter in the lower saved register
+    for (s32 i = 0; i < 3; i++) {
+        serial = field_0xb1c[i];
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            if (actor == NULL) {
+                field_0xb1c[i] = -1;
+                field_0xb5c[i] = -1;
+            } else {
+                JGeometry::TVec2<f32> pos;
+                pos.x = actor->mPos.x;
+                pos.y = actor->mPos.y;
+                field_0xb5c[i] = actor->field_0x4;
+                field_0x550[i].set(actor->mBox);
+                field_0x550[i].addPos(pos);
+            }
+        }
+    }
+}
+
 void Player_804A6F38::fn_80258470() {
     ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xb18);
     if (actor == NULL) {
@@ -69,6 +90,23 @@ void Player_804A6F38::fn_80258470() {
         field_0xb58 = actor->field_0x4;
         field_0x540.set(actor->mBox);
         field_0x540.addPos(pos);
+    }
+}
+
+void Player_804A6F38::fn_8025851C() {
+    for (s32 i = 0; i < 3; i++) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xb0c[i]);
+        if (actor == NULL) {
+            field_0xb0c[i] = -1;
+            field_0xb4c[i] = -1;
+        } else {
+            JGeometry::TVec2<f32> pos;
+            pos.x = actor->mPos.x;
+            pos.y = actor->mPos.y;
+            field_0xb4c[i] = actor->field_0x4;
+            field_0x510[i].set(actor->mBox);
+            field_0x510[i].addPos(pos);
+        }
     }
 }
 
