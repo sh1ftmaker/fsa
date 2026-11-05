@@ -176,6 +176,28 @@ void Player_804A6F38::fn_8025BDC8() {
     field_0x40c = 0;
 }
 
+void Player_804A6F38::fn_8025BDD8() {
+    if (field_0x12cc != NULL) {
+        field_0x12cc->clearStatus(JPAEMIT_Immortal);
+        field_0x12cc->becomeInvalidEmitter();
+        field_0x12cc = NULL;
+    }
+    if (field_0x12e4 != NULL) {
+        field_0x12e4->clearStatus(JPAEMIT_Immortal);
+        field_0x12e4->becomeInvalidEmitter();
+        field_0x12e4 = NULL;
+    }
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor != NULL) {
+            actor->mAlive = false;
+        }
+        field_0x12c0 = -1;
+    }
+    field_0x40c = 0;
+}
+
 void Player_804A6F38::fn_8025C79C() {
     field_0x458 = 0;
     field_0x344.x = 0.0f;

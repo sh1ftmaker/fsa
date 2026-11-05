@@ -304,6 +304,7 @@ public:
     void fn_8025B218(); // field_0x124d = 1, field_0x458 = 0
     void fn_8025B35C(); // field_0x458 = 0
     void fn_8025B368(); // clears 0xb99-0xb9b, ends the emitters at 0x1274 and 0x128c, clears 0x40c
+    void fn_8025BDD8(); // ends the emitters at 0x12cc and 0x12e4, kills the actor field_0x12c0, clears 0x40c
     void fn_8025BDC8(); // clears 0x458 and 0x40c
     void fn_8025C79C(); // clears 0x458, field_0x344 and 0x40c
     void fn_8025D090(); // clears 0x458, field_0x344 and 0x40c
@@ -777,7 +778,13 @@ public:
     /* 0x1290 */ u8 field_0x1290[0x12B8 - 0x1290];
     /* 0x12B8 */ JPABaseEmitter* field_0x12b8;
     /* 0x12BC */ JPABaseEmitter* field_0x12bc; // deleted with deleteEmitter() (fn_8027B5F0)
-    /* 0x12C0 */ u8 field_0x12c0[0x1308 - 0x12C0];
+    /* 0x12C0 */ s32 field_0x12c0;
+    /* 0x12C4 */ JPABaseEmitter* field_0x12c4;
+    /* 0x12C8 */ JPABaseEmitter* field_0x12c8;
+    /* 0x12CC */ JPABaseEmitter* field_0x12cc;
+    /* 0x12D0 */ u8 field_0x12d0[0x12E4 - 0x12D0];
+    /* 0x12E4 */ JPABaseEmitter* field_0x12e4;
+    /* 0x12E8 */ u8 field_0x12e8[0x1308 - 0x12E8];
     /* 0x1308 */ JPABaseEmitter* field_0x1308; // deleted with deleteEmitter() (fn_802708E8)
     /* 0x130C */ u8 field_0x130c[0x1350 - 0x130C];
     /* 0x1350 */ JPABaseEmitter* field_0x1350;
