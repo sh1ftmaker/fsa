@@ -281,7 +281,7 @@ void Player_804A6F38::fn_80259784() {
     if (serial >= 0) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
         if (actor != NULL) {
-            fn_802BAA00(actor);
+            actor->fn_802BAA00();
         }
         field_0xb28 = -1;
     }
@@ -312,7 +312,7 @@ void Player_804A6F38::fn_8025A0B0() {
     if (serial >= 0) {
         ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
         if (actor != NULL) {
-            fn_802BAA00(actor);
+            actor->fn_802BAA00();
         }
         field_0xb28 = -1;
     }

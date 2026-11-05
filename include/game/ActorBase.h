@@ -453,6 +453,7 @@ public:
     void fn_8018A5A0(s32 value);           // field_0x98 (0x8018A5A0)
     void fn_8018A5A8(u16 value);           // field_0x94 (0x8018A5A8)
     bool fn_8018A5B0() const;              // mAlive (0x8018A5B0)
+    void fn_802BAA00();                    // clears mAlive; out-of-line copy in act_fire_rod_fire (0x802BAA00, not written yet)
     void setField_0x4(s32 v) { field_0x4 = v; }
     void setField_0x8(s32 v) { field_0x8 = v; }
     void setField_0x90(u32 v) { field_0x90 = v; }
