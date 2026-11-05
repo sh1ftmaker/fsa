@@ -1180,6 +1180,11 @@ extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, 
 bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e,
                  s32 player, bool g, u8 h, u8 i);
 
+// game/tu_80301CD0.cpp (0x80301CD0, written there with C++ linkage): whether the
+// GBA linked to the player on `layer` (fn_8022F340) is still busy. tu_8028FBA0's
+// fn_80291D28 waits on it.
+bool fn_80301CD0(s32 layer);
+
 // game/tu_80301CD0.cpp (not written yet). 18 units; same leading arguments as
 // fn_803075AC: serial, layer, position, then a sprite id. Adds 0x200 to the
 // id only when e == 2; ids below 0x45 then go to fn_80307830, the others get

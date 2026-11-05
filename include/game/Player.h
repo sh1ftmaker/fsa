@@ -406,6 +406,8 @@ public:
     void fn_802954DC();
     // tu_8028FBA0 inline (the enters of 0x23 and 0x25): carried actor to mPos + 16 up.
     void raiseHeldActor();
+    // tu_8028FBA0 inline (the updates of 0x2A and 0x2B): facing turns with the counter 0x3FC.
+    void spinFacing();
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
     void fn_80242940();
