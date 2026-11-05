@@ -1083,7 +1083,8 @@ public:
     /* 0x12FC */ u8 field_0x12fc[0x1308 - 0x12FC];
     /* 0x1308 */ JPABaseEmitter* field_0x1308; // deleted with deleteEmitter() (fn_802708E8)
     /* 0x130C */ cls_804A64A8 field_0x130c;
-    /* 0x1320 */ u8 field_0x1320[0x132C - 0x1320];
+    // The point the particle callback field_0x130c follows (fn_80279FE8: mPos raised by 16).
+    /* 0x1320 */ JGeometry::TVec3f field_0x1320;
     /* 0x132C */ JPABaseEmitter* field_0x132c;
     /* 0x1330 */ cls_804A64A8 field_0x1330;
     /* 0x1344 */ JGeometry::TVec3f field_0x1344;

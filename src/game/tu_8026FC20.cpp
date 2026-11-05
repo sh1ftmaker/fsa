@@ -2266,6 +2266,36 @@ void Player_804A6F38::fn_80279F94() {
     field_0x464 = 60;
 }
 
+// Update of state 0x0C: back to state 0 after 120 frames (GameRoot 0x7F) or 90, the pose
+// 0x3FD cycles every 6 frames, and the emitter 0x1308's callback follows mPos raised by 16.
+void Player_804A6F38::fn_80279FE8() {
+    field_0x3fc++;
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        if (field_0x3fc >= 120) {
+            fn_80251AEC(0);
+        }
+    } else if (field_0x3fc >= 90) {
+        fn_80251AEC(0);
+    }
+    field_0x3fd = (field_0x3fc / 6) % 4;
+    fn_80268B3C();
+    if (field_0x1308 != NULL) {
+        field_0x1320.set(mPos.x, mPos.y, mPos.z + 16.0f);
+        field_0x130c.field_0x4.set(field_0x1320);
+    }
+}
+
+// Enter of state 0x0C: the emitter 0x565 (callback field_0x130c), a 'PEFF' actor and the
+// sound 0x2002A.
+void Player_804A6F38::fn_8027A0D4() {
+    field_0x458 = 0;
+    if (field_0x1308 == NULL) {
+        field_0x1308 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x565, 0, -1, NULL, &field_0x130c, true, 0.5f);
+    }
+    getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &mPos, (field_0x4 & 3) | 0x10, -1, -1);
+    fn_8024F0E8(0x2002a);
+}
+
 void Player_804A6F38::fn_8027A178() {
     if (field_0x1374 != NULL) {
         field_0x1374->becomeInvalidEmitter();
@@ -2331,6 +2361,30 @@ void Player_804A6F38::fn_8027CB44() {
 void Player_804A6F38::fn_8027CB9C() {
     field_0x458 = 0;
     field_0x436 = 1;
+}
+
+void Player_804A6F38::fn_8027CBB0() {
+    mPos.z = 0.0f;
+    field_0x460 = false;
+    field_0x436 = false;
+    if (field_0x1274 != NULL) {
+        field_0x1274->clearStatus(JPAEMIT_Immortal);
+        field_0x1274->becomeInvalidEmitter();
+        field_0x1274 = NULL;
+    }
+    if (field_0x128c != NULL) {
+        field_0x128c->clearStatus(JPAEMIT_Immortal);
+        field_0x128c->becomeInvalidEmitter();
+        field_0x128c = NULL;
+    }
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->mAlive = false;
+        }
+        field_0x12c0 = -1;
+    }
 }
 
 void Player_804A6F38::fn_8027D4F4() {
