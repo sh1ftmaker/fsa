@@ -2490,6 +2490,67 @@ void Player_804A6F38::fn_8027AA10() {
     field_0x11c0 = 0;
 }
 
+// 0x11B4 = mPos moved 16 toward player `field_0x4`'s own side (4 on flagged layers), the
+// centre of the spin states 0x09 / 0x0A (enters fn_8027BA2C / fn_8027B304).
+static inline void setSpinCenter(Player_804A6F38* player) {
+    player->field_0x11b4 = player->mPos;
+    switch (player->field_0x4) {
+    case 0:
+        if (viewLayerFlag(player->field_0x3b4)) {
+            player->field_0x11b4.y -= 4.0f;
+        } else {
+            player->field_0x11b4.y += 16.0f;
+        }
+        break;
+    case 1:
+        player->field_0x11b4.x += 16.0f;
+        break;
+    case 2:
+        player->field_0x11b4.x -= 16.0f;
+        break;
+    case 3:
+        if (viewLayerFlag(player->field_0x3b4)) {
+            player->field_0x11b4.y += 4.0f;
+        } else {
+            player->field_0x11b4.y -= 16.0f;
+        }
+        break;
+    }
+}
+
+// Enter of state 0x0A (update fn_8027AAD0): sounds 0x10001 / 0x20028, the input history
+// cleared, 0x11B0 = 0, the emitters 0x26A and 0x266-0x269 (by player index), the spin centre.
+void Player_804A6F38::fn_8027B304() {
+    field_0xbf4 = 6;
+    field_0x458 = 1;
+    fn_8024F0E8(0x10001);
+    fn_8024F0E8(0x20028);
+    fn_8027EB04();
+    fn_8027023C();
+    field_0x11b0 = 0;
+    if (field_0x12bc == NULL) {
+        field_0x12bc = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26a, 0, 1, NULL, NULL, true, 1.0f);
+    }
+    if (field_0x12b8 == NULL) {
+        switch (field_0x4) {
+        case 0:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x267, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 1:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x269, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 2:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x266, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 3:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x268, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        }
+    }
+    setSpinCenter(this);
+    field_0x11c0 = 0;
+}
+
 void Player_804A6F38::fn_8027B5F0() {
     field_0x11c0 = 0;
     field_0x11ac = 0;
@@ -2497,8 +2558,7 @@ void Player_804A6F38::fn_8027B5F0() {
 }
 
 // Enter of state 0x09 (fn_80275D9C requests it): 0xBF4 by the reason 0x11AC, three sounds,
-// the input history cleared, 0x11B4 = mPos moved by player index (to its own side), the
-// emitter 0x26A.
+// the input history cleared, the spin centre 0x11B4 (setSpinCenter), the emitter 0x26A.
 void Player_804A6F38::fn_8027BA2C() {
     switch (field_0x11ac) {
     case 1:
@@ -2523,29 +2583,7 @@ void Player_804A6F38::fn_8027BA2C() {
     fn_8024F0E8(0x20001);
     fn_8024F0E8(0x2000e);
     fn_8027023C();
-    field_0x11b4 = mPos;
-    switch (field_0x4) {
-    case 0:
-        if (viewLayerFlag(field_0x3b4)) {
-            field_0x11b4.y -= 4.0f;
-        } else {
-            field_0x11b4.y += 16.0f;
-        }
-        break;
-    case 1:
-        field_0x11b4.x += 16.0f;
-        break;
-    case 2:
-        field_0x11b4.x -= 16.0f;
-        break;
-    case 3:
-        if (viewLayerFlag(field_0x3b4)) {
-            field_0x11b4.y += 4.0f;
-        } else {
-            field_0x11b4.y -= 16.0f;
-        }
-        break;
-    }
+    setSpinCenter(this);
     field_0x11c0 = 0;
     if (field_0x12bc == NULL) {
         field_0x12bc = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26a, 0, 1, NULL, NULL, true, 1.0f);
