@@ -138,7 +138,7 @@ void Player_804A6F38::fn_8027EE84() {
     if (field_0x3f8 >= 16) {
         field_0x3f8 = 0;
     }
-    field_0x3f9 = (field_0x3f8 >> 1) & 0xFF; // mask only to get the original rlwinm (extrwi) instead of srawi
+    field_0x3f9 = field_0x3f8 / 2;
 }
 
 void Player_804A6F38::fn_8027F16C() {

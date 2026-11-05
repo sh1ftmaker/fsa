@@ -275,7 +275,7 @@ public:
     void fn_80270D34(s32 amount); // called by tu_8022AD64; subtracted from field_0xbfc
     void fn_80277104(); // called by tu_80285E58
     void fn_802771BC(); // field_0x458 = 0; called by tu_80285E58
-    // tu_8027E5BC (dispatch targets of tu_80285E58)
+    // tu_8027E5BC (dispatch targets of tu_80285E58); fn_80248604, fn_8024D134 and fn_8024E3D8 are tu_8023FBF0 (r3 = Player)
     void fn_8027EE84();
     void fn_8027F16C();
     void fn_80281E84();
