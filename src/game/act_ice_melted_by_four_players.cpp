@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameRootSub20.h"
 #include "game/GameState.h"
 #include "game/act/act_ice_melted_by_four_players.h"
 

@@ -2,6 +2,7 @@
 #include "game/BgRewrite.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameRootSub20.h"
 #include "game/GameState.h"
 #include "game/Message.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -73,7 +74,7 @@ void GameRootSub04_801F856C::fn_8013A1A4() {
     fn_8043EDF8(field_0x14);
     fn_80439AB0(field_0x18);
     field_0x1c->fn_8037AFC0();
-    fn_8019169C(field_0x20);
+    field_0x20->fn_8019169C();
     fn_8038D870();
     field_0x34 = 0;
     lbl_80529DEC.field_0x240 = 0;
@@ -104,7 +105,7 @@ GameRootSub04_801F856C::~GameRootSub04_801F856C() {
     field_0x24->fn_8016EE84(1);
     field_0x24 = NULL;
     lbl_8053AB00->getTotalFreeSize();
-    fn_80191744(field_0x20, 1);
+    field_0x20->fn_80191744(1);
     field_0x20 = NULL;
     lbl_8053AB00->getTotalFreeSize();
     delete field_0x1c;

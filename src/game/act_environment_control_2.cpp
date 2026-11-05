@@ -5,6 +5,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/GameGlobals.h"
+#include "game/GameRootSub20.h"
 #include "game/act/act_environment_control_2.h"
 
 void EnvironmentControl2_804A9CD0::fn_802E43E0() {

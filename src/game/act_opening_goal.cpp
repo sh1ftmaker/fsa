@@ -2,6 +2,7 @@
 #include "game/act/act_opening_goal.h"
 
 #include "game/GameGlobals.h"
+#include "game/GameRootSub20.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // A key table of mAnim: (cel, frames) s16 pairs, ended by a cel of -1.

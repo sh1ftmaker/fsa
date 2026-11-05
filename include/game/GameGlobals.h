@@ -66,6 +66,7 @@ struct J2DScreen;
 class cls_804AF86C;
 class cls_804B17A0;
 class PlayerManager_804A6F28;
+struct GameRootSub20_801902C0;
 
 struct GameRootSub04_801F856C {
     // vtable at 0x0 (0x8049F080); its one slot is the destructor below.
@@ -85,9 +86,8 @@ struct GameRootSub04_801F856C {
     /* 0x18 */ cls_804B17A0* field_0x18;
     // fn_8037AFC0 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
     /* 0x1C */ cls_804AE9B0* field_0x1c;
-    // Passed to fn_801902D0 by fn_80139CC4 (game/tu_80139BE8.cpp); its type
-    // is not known yet.
-    /* 0x20 */ void* field_0x20;
+    // Passed to fn_801902D0 by fn_80139CC4 (game/tu_80139BE8.cpp).
+    /* 0x20 */ GameRootSub20_801902C0* field_0x20;
     // fn_8016A3AC returns it (game/tu_8016A2B4.cpp).
     /* 0x24 */ struct GameRootSub24_8016A3AC* field_0x24;
     /* 0x28 */ u8 field_0x28[0x2C - 0x28];
@@ -290,78 +290,7 @@ extern s32 lbl_8053A160;
 // .sdata word in act_navi's data (0x8053A188-0x8053A198): fn_8023F78C stores -1 to it.
 extern s32 lbl_8053A190;
 
-// The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
-// after that getter). Owner: game/tu_801902C0.cpp (not written yet).
-// act_special_bg_draw_object: three 0x20-byte requests at 0x2E0, 0x300 and
-// 0x320; an update sets a position and a value and raises the flag, once the
-// pointer at 0xC is non-NULL and the flag is clear.
-struct GameRootSub20_801902C0 {
-    // Two smaller requests at 0x2A8 and 0x2C4 (act_environment_control_2's
-    // update: position copied in, flag raised once the pointer at 0xC is
-    // non-NULL and the flag is clear).
-    struct SmallRequest {
-        /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ void* field_0xc; // tested against NULL
-        /* 0x10 */ u8 field_0x10[8]; // not yet known
-        /* 0x18 */ u8 mActive;
-        /* 0x19 */ u8 field_0x19[3]; // not yet known
-    }; // Size: 0x1C
-    struct Request {
-        /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ void* field_0xc; // tested against NULL
-        /* 0x10 */ u8 field_0x10[4]; // not yet known
-        /* 0x14 */ f32 mValue;
-        /* 0x18 */ u8 field_0x18[4]; // not yet known
-        /* 0x1C */ u8 mActive;
-        /* 0x1D */ u8 field_0x1d[3]; // not yet known
-    }; // Size: 0x20
-    // Up to two positions queued by act_environment_control_2's update
-    // (count at 0x618, stored while it is below 2).
-    struct QueuedPos {
-        /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ u8 field_0xc[8]; // not yet known
-    }; // Size: 0x14
-    /* 0x000 */ u8 field_0x0[0x2A8]; // not yet known
-    /* 0x2A8 */ SmallRequest mSmallRequests[2];
-    /* 0x2E0 */ Request mRequests[3];
-    // Up to ten entries, filled by act_quicksand's vfunc_0x9C while
-    // mQuicksandCount (0x4A8) is below 10: the quicksand's position, then
-    // three of its floats (field_0x54.x, 0x398 and 0x3A8).
-    struct QuicksandEntry {
-        /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ f32 field_0xc;
-        /* 0x10 */ f32 field_0x10;
-        /* 0x14 */ f32 field_0x14;
-        /* 0x18 */ u8 field_0x18[0x24 - 0x18]; // not yet known
-    }; // Size: 0x24
-    /* 0x340 */ QuicksandEntry mQuicksandEntries[10];
-    /* 0x4A8 */ s32 mQuicksandCount;
-    /* 0x4AC */ u8 field_0x4ac[0x5F0 - 0x4AC]; // not yet known
-    /* 0x5F0 */ QueuedPos mQueuedPos[2];
-    /* 0x618 */ s32 mQueuedPosCount;
-    /* 0x61C */ u8 field_0x61c[0x7A8 - 0x61C]; // not yet known
-    // SHARED-EDIT (act_opening_goal update): set to 1 through fn_801902C0()'s result.
-    /* 0x7A8 */ u8 field_0x7a8;
-    /* 0x7A9 */ u8 field_0x7a9[0x7D0 - 0x7A9]; // not yet known
-
-    // SHARED-EDIT (act_ice_melted_by_four_players): the request the ICEB
-    // update (act_ice_melted_by_four_players.cpp) fills at 0x7D0 when its pointer at 0x10 is NULL and
-    // mActive is clear: its position, a percentage (100 - field_0x238 * 100)
-    // and mActive = 1. Owner: game/tu_801902C0.cpp (not written yet).
-    struct IceRequest {
-        /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ s32 mPercent;
-        /* 0x10 */ void* field_0x10; // tested against NULL
-        /* 0x14 */ u8 field_0x14[8]; // not yet known
-        /* 0x1C */ u8 mActive;
-    }; // Size: 0x20
-    /* 0x7D0 */ IceRequest mIceRequest;
-};
-extern "C" {
-// Owner: game/tu_801902C0.cpp (not written yet). No arguments; loads
-// lbl_8053AAF8->field_0x4->field_0x20 (0x801902C0-0x801902C8).
-GameRootSub20_801902C0* fn_801902C0(void);
-}
+// The object fn_801902C0 returns: see game/GameRootSub20.h.
 
 // The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
 // registered with __register_global_object) built on first use. Named after
@@ -1053,7 +982,13 @@ class cls_804B17A0 {
 public:
     /* 0x000 */ // vtable, whose one slot is the destructor below
     virtual ~cls_804B17A0(); // owner game/tu_80438C68.cpp (not written yet)
+    /* 0x04 */ u8 field_0x4[0x5D - 0x4]; // a J2DScreen* at 0x4
+    // SHARED-EDIT: tested by fn_801914C4 (game/tu_801902C0.cpp) through lbl_8053AEC8.
+    /* 0x5D */ u8 field_0x5d;
+    /* 0x5E */ u8 field_0x5e[0x60 - 0x5E];
 };
+// .sbss pointer set by cls_804B17A0's constructor fn_80439C78 (0x80439CAC).
+extern cls_804B17A0* lbl_8053AEC8;
 
 // The 4-byte pointer at .sbss lbl_8053AB00: the heap GameRootSub04_801F856C's
 // constructor (fn_8013A538, game/tu_80139BE8.cpp) stores, which the destructor
@@ -1599,29 +1534,40 @@ struct GameRootSub24_8016A3AC {
 };
 // game/tu_8016A2B4.cpp (0x8016A3AC): returns lbl_8053AAF8->field_0x4->field_0x24.
 GameRootSub24_8016A3AC* fn_8016A3AC();
+class J3DModel;
+class J3DAnmTextureSRTKey;
+class J3DAnmTevRegKey;
+extern "C" {
+// Owner: game/tu_8016A2B4.cpp (0x8016A3BC, not written yet). Loads a model
+// (getResource('J3D ', bmd) on `archive`, built in `heap`, `flags` its J3D
+// load flags) and up to two texture-SRT and two TEV-register animations, each
+// skipped when its name is NULL; the pointers receive the results (an output
+// is set to NULL when its animation is not loaded). Called by
+// GameRootSub20_801902C0's constructor (game/tu_801902C0.cpp).
+void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const char* btk2,
+                 const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
+                 J3DAnmTextureSRTKey** btk1Out, J3DAnmTextureSRTKey** btk2Out,
+                 J3DAnmTevRegKey** brk1Out, J3DAnmTevRegKey** brk2Out);
+}
 // Owner: game/tu_8022AD64.cpp (0x8023F728, 0x8023F78C). Called by fn_8013A1A4: each
 // runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
 void fn_8023F728();
 void fn_8023F78C();
 extern "C" {
-// Owner not known (0x80191744, 0x9C bytes, not written yet). Called on
-// field_0x20 of GameRootSub04_801F856C by its destructor (fn_8013A27C) with 1.
-void fn_80191744(void* self, s32 arg);
 // Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
-// at field_0x20 of GameRootSub04_801F856C (fn_80139CC4); its type is unknown.
+// at field_0x20 of GameRootSub04_801F856C (fn_80139CC4), a GameRootSub20_801902C0.
 void fn_801902D0(void* self);
 // Owner not known (0x8023F2BC, not written yet). No arguments; called by
 // fn_80139CC4 (game/tu_80139BE8.cpp) between the two fn_8013B438 calls.
 void fn_8023F2BC(void);
 // Owners not known (0x8023F088, 0x8023F728, 0x8023F78C, 0x8038D870,
-// 0x803B8C90, 0x8043EDF8, 0x80439AB0, 0x8019169C; not written yet). Called by
+// 0x803B8C90, 0x8043EDF8, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 void fn_8023F088(void);
 void fn_8038D870(void);
 u8 fn_803B8C90(void);
 void fn_8043EDF8(void* self);
 void fn_80439AB0(void* self);
-void fn_8019169C(void* self);
 }
 
 // The 4-byte pointer at .sbss lbl_8053AD68 (the cls_804AE9A0 object, declared
