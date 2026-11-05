@@ -90,7 +90,10 @@ struct cls_804AE9A0 {
 // GameView.h describe it; fn_80403514 in game/tu_803BC6F0.cpp picks rows). The
 // word at 0x10 of row 0 is the index of the current row.
 struct SaveRow_8050EC80 {
-    /* 0x00 */ u8 field_0x0[0x10];
+    /* 0x00 */ u8 field_0x0[0x8];
+    // SHARED-EDIT (tu_803BC6F0 fn_803CBE38, fn_803CC3DC): row 0 receives the
+    // memory card manager's doubleword 0x1FF8 after a load.
+    /* 0x08 */ s64 field_0x8;
     /* 0x10 */ s32 field_0x10;
     /* 0x14 */ u8 field_0x14[0x28 - 0x14];
     // Bit stage * 4 + sub set by fn_80379FF4.

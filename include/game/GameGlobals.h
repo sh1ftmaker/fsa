@@ -176,7 +176,10 @@ struct GameRoot_8049EF20 {
     /* 0xFD */ u8 field_0xfd[0xFE - 0xFD];
     // Stored by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8, stb of r4).
     /* 0xFE */ u8 field_0xfe;
-    /* 0xFF */ u8 field_0xff[0x108 - 0xFF];
+    // SHARED-EDIT (tu_803BC6F0): the file select screen sets it to 1 before
+    // it clears the save rows (fn_803D0264, fn_803CDEE8) or rebuilds them.
+    /* 0xFF */ u8 field_0xff;
+    /* 0x100 */ u8 field_0x100[0x108 - 0x100];
     // Stored by fn_80134CC0 (game/tu_80134C04.cpp, 0x80134CC0), which
     // tu_803A60E4 calls on lbl_8053AAF8 with 0, 1 and 0x1E; what the value means
     // is not known yet.
@@ -1013,12 +1016,28 @@ class cls_803B9940 {
 public:
     void fn_803BA980();
     void fn_803B9E2C();
+    // SHARED-EDIT (tu_803BC6F0): request polls; each try-locks the mutex at
+    // 0x1FD4 and reads the state word 0x1FD0. fn_803B9A94 copies the save
+    // data at this + offset + 0x20 / + 0x280 into dst1 / dst2 when the state
+    // is 3; fn_803B9BDC / fn_803B9C5C return 1 when the request finished
+    // (state 4 / 5), 0 or 2 otherwise.
+    s32 fn_803B9A94(void* dst1, u32 size1, void* dst2, u32 size2, s32 offset);
+    s32 fn_803B9BDC();
+    s32 fn_803B9C5C();
 
     /* 0x0 */ u8 field_0x0[0x1FCC];
     // fn_802B1558 (the reset path) waits, one VIWaitForRetrace per pass, while
     // this word is nonzero.
     /* 0x1FCC */ s32 field_0x1fcc;
-    /* 0x1FD0 */ u8 field_0x1fd0[0x2120 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
+    /* 0x1FD0 */ u8 field_0x1fd0[0x1FF5 - 0x1FD0]; // mutex at 0x1FD4, cond at 0x1FEC
+    // SHARED-EDIT (tu_803BC6F0): fn_803CE9EC stores 2 here every frame;
+    // fn_803CBE38 / fn_803CC3DC copy the doubleword into the first save row
+    // (lbl_8050EC80 + 8) after a load (both words loaded, then stored: a
+    // 64-bit copy).
+    /* 0x1FF5 */ u8 field_0x1ff5;
+    /* 0x1FF6 */ u8 field_0x1ff6[0x1FF8 - 0x1FF6];
+    /* 0x1FF8 */ s64 field_0x1ff8;
+    /* 0x2000 */ u8 field_0x2000[0x2120 - 0x2000];
 }; // Size: 0x2120
 extern cls_803B9940 lbl_8051C1A0;
 
