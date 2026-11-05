@@ -91,7 +91,11 @@ public:
     /* 0x068 */ cls_804AF86C* field_0x68[4];
     /* 0x078 */ cls_804AF86C* field_0x78;
     /* 0x07C */ cls_804B20F8* field_0x7c[4];
-    /* 0x08C */ u8 field_0x8c[0x98 - 0x8C];
+    // The effect position fn_803E9A20 / fn_803E9EE8 compute from a player
+    // pane ('Pplli01'-'04') at its 36th frame.
+    /* 0x08C */ f32 field_0x8c;
+    /* 0x090 */ f32 field_0x90;
+    /* 0x094 */ f32 field_0x94;
     // Pane positions read in the constructor (getBounds()->i), with the
     // offsets the state functions add to them (cleared there).
     /* 0x098 */ f32 field_0x98;  // field_0x8 'Ndata03' x
