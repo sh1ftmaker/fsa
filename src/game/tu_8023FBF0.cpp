@@ -3,6 +3,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameState.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
 #include "game/cls_804B20F8.h"
@@ -1045,6 +1046,22 @@ void Player_804A6F38::fn_80252F40(s32 arg) {
     field_0xd28 = arg;
 }
 
+void Player_804A6F38::fn_80252F50(s32 arg) {
+    field_0xbec->field_0x29c = arg;
+}
+
+void Player_804A6F38::fn_80252F5C(s32 arg) {
+    field_0xbec->field_0x298 = arg;
+}
+
+s32 Player_804A6F38::fn_80252F68() {
+    return field_0xbec->field_0x294;
+}
+
+s32 Player_804A6F38::fn_80252F74() {
+    return field_0xbec->field_0x290;
+}
+
 void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c) {
     field_0x2c4 = *pos;
     field_0x3e0 = a;
@@ -1058,6 +1075,33 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 }
 
 void Player_804A6F38::fn_80252FBC() {}
+
+// FIXME: 99.91. Code identical; the float literal lbl_80540098 (256/3) is @NNN until the
+// unit's earlier literals are written in pool order.
+void Player_804A6F38::fn_80254660() {
+    field_0xc10 = fn_802D6A9C()->field_0x48;
+    field_0xc14 = fn_802D6A9C()->field_0x4c;
+    field_0xc18 = 1;
+    field_0xb7a = false;
+    field_0xb7b = false;
+    if (lbl_8053AAF8->field_0x7f) {
+        if (field_0xd60 >= 0) {
+            field_0xbf8 = 0x10;
+        } else {
+            field_0xbf8 = fn_8040305C(fn_804033D4(field_0x4)) * 4;
+        }
+    } else {
+        field_0xbf8 = fn_8040305C(fn_804033D4(field_0x4)) * 4;
+    }
+    if (lbl_8053AAF8->field_0x7f) {
+        field_0xb90 = 0.0f;
+    } else {
+        field_0xb90 = 256.0f / 3.0f;
+    }
+    field_0xc08 = 0x180;
+    field_0xc0c = 0x180;
+    field_0xbfc = field_0xbf8 - 4;
+}
 
 Player_804A6F38::~Player_804A6F38() {
     fn_80241E64();
