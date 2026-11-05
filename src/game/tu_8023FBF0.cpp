@@ -773,6 +773,36 @@ void Player_804A6F38::fn_80242BC0() {
     }
 }
 
+// Clears field_0x43e (set to 1) for a player standing or walking (states
+// 0, 2-4, 8, 0x4A, 0x4B or 0x12, not frames 0x1BF-0x1C5): at once when it
+// leads, else once it can jump (fn_8026E5F8) to its leader's 0x324.
+void Player_804A6F38::fn_80242CB0() {
+    if (field_0x43e != 1) {
+        return;
+    }
+    s32 state = field_0x1240;
+    bool idle = state == 0 || state == 2 || state == 3 || state == 4 || state == 8 || state == 0x4a ||
+                state == 0x4b;
+    if (!idle && state != 0x12) {
+        return;
+    }
+    bool busy = state == 1 || (field_0x3c4 >= 0x1bf && field_0x3c4 < 0x1c6);
+    if (busy) {
+        return;
+    }
+    if (field_0xd60 < 0) {
+        field_0x43e = 0;
+        return;
+    }
+    JGeometry::TVec3f* target = fn_80238430(field_0xd60);
+    JGeometry::TVec2f pos;
+    pos.x = target->x;
+    pos.y = target->y;
+    if (fn_8026E5F8(&pos)) {
+        field_0x43e = 0;
+    }
+}
+
 bool Player_804A6F38::fn_80243194(s32 other) {
     return fn_8022E438(field_0x4, other);
 }
