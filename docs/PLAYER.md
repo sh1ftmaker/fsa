@@ -912,3 +912,46 @@ names provisional, evidence = what the handlers do):
 - Fields wanted (agent K): 0x1268 TVec3f (fn_8024C378 writes x/y/z
   componentwise); cls_804A71A8 0x14/0x18 as a TVec2f (fn_802422C4 returns
   its address).
+
+## Round 9 (tu_80256C74) (agent P, Opus 5.5, 2026-11-05)
+
+44 -> 50 of 63 at 100 % (+5 honest against matching: fn_802570BC, fn_80259660,
+fn_80259778, fn_8025AB00, fn_8025D6AC; fn_80258890 was already counted). .rodata is
+100 %: every table the handlers read off one base is written as file-scope data at
+its original size (splits of lbl_8046AF30 and lbl_8046B070 at the offsets the code
+reads; lbl_8046B1D0 is read by no function of the unit). The tables come in reverse
+function order (0x8025E79C's first, 0x8025785C's last), so they were probably
+function-local statics; written file-scope in address order per RULES_CARD.
+Structural (FIXME in source): fn_80258BE8 99.69, fn_80259830 99.29 (scheduling+regalloc),
+fn_8025D0B0 99.89 (literal names only).
+
+- **0x46, the jump** (item 7; update fn_80258BE8, enter fn_80259660, exit fn_80258BBC):
+  the enter sets field_0x344 = (0, 0, 5.4) and sound fn_8024F0E8(0x10002); the update
+  steers 0x344.x / y with the pad (fn_8022C82C / fn_8022C76C: 0.8 from rest, 0.3 a
+  frame rising, 0.2 falling, clamped by the side flags field_0xbf0->field_0x48[0-3])
+  to at most 1.6, applies gravity 0.25 down to -4, moves y instead of z on a view-flag
+  layer (viewLayerFlag), keeps the landing speed in field_0x368. A second jump in the
+  air at item level >= 2 (fn_802415CC) on fn_8022C310 (field_0xb79). 0x3FB is the
+  animation frame (8 frames of 4). Name: descriptive (z speed, gravity, landing), no
+  string evidence for the item.
+- **gatherOthers** (inline member, no out-of-line copy; inlined 4x): in formation mode 5
+  (fn_802486A0) and not following (fn_80240808), every other present player is moved
+  to mPos (fn_8023E690), then fn_8024BAEC. Called on landing / jump start.
+- **0x45** (item 6 at level >= 2; update fn_80259830): frame 11 places a Cane of
+  Somaria block ('SMRI', actors.tsv med) 16 in front into field_0xb2c (message 0xE8
+  once per player, field_0xbb8) or calls fn_8030EA00 on the existing one; while the
+  button is held (field_0xb84) it stays at frame 12, walks at 1.125 (fn_802808E8) with a
+  28-frame walk cycle (lbl_8046B190), keeps a 'FIRE' actor (field_0xb28, argument
+  0x1040 | facing << 4 | player) centred on the box field_0x580 in front
+  (FireRodFire_804A89F0::fn_802BAA0C), and emitters 0x1AB / 0x54A (0x12C4 / 0x12C8).
+  0x44 (fn_8025A15C, unwritten) spawns 'FIRE' the same way without the block.
+- **0x43** (fn_8025AB00): act_arrow's field_0x230 is an s32 (lwz / stw, tested 0 and 4
+  in act_arrow); the pull goes on while it is 0. Speed min(distance, 6).
+- **fn_8025D0B0** is a Player member (r3 = the player), the step of state 0x39's update:
+  3 a frame along the facing while field_0xbac >= 1, else steered by the pad with
+  diagonal 2.1 steps and a turn after 8 frames.
+- Fields: none needed beyond the carved ones (0x580 TBox2f used as is).
+- Left: fn_8025A15C (0x44), fn_8025B3F0 (0x3C), fn_8025BEB0 (0x3B), fn_8025C894 (0x3A),
+  fn_8025DACC (0x39) updates; their tables are already in place. .sdata2 order is right
+  up to 5.4f (lbl_8054010C); the next literals (18, 6, 36, 12, 20, 1.125, 8, -16, -8, 5)
+  come from these handlers.
