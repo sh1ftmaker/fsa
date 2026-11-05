@@ -18,7 +18,7 @@ static inline s32 centreY() {
 
 // Opens window `index` of the map object, 365 x 261 at (x, y).
 static inline void setWindow(s32 index, s32 flag, s32 x, s32 y) {
-    cls_804AA858* map = lbl_8053AB10->field_0x20;
+    TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
     map->field_0x22c = index;
     map->field_0x238 = x;
     map->field_0x23c = y;
@@ -66,7 +66,7 @@ void cls_804B19E0::fn_804413F0() {
 }
 
 void cls_804B19E0::fn_80441444() {
-    if (!fn_802D6A9C()->fn_802D39CC()) {
+    if (!getGameView_802D6A9C()->fn_802D39CC()) {
         mState = 1;
         mTimer = 0;
     }
@@ -122,7 +122,7 @@ void cls_804B19E0::fn_80441490() {
             setWindow(field_0x4, 0);
         }
     } else {
-        if (fn_802D6A9C()->fn_802DCD0C() == true) {
+        if (getGameView_802D6A9C()->fn_802DCD0C() == true) {
             mState = 0;
         }
         (this->*lbl_804B19BC[mState])();

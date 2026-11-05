@@ -4,8 +4,8 @@
 // The 2D camera of game/tu_8030C058.cpp: one instance, allocated with
 // __nw__(0x85C, heap, 0) and built by its constructor fn_8030E718 in
 // game/tu_8013AAD4.cpp (0x8013C264-0x8013C280), stored at
-// lbl_8053AB10->0x24. 94 game units use the unit, 77 of them through
-// fn_8030C210.
+// gGameRoot2_8053AB10->0x24. 94 game units use the unit, 77 of them through
+// addFocusPoint_8030C210.
 //
 // "Camera_804AA9E4" is a provisional name carrying its vtable address
 // (docs/PLAN.md, "Placeholder names"; it was cls_8030C058, after its first
@@ -15,11 +15,11 @@
 // identity with m[0][3] = -(x0 + x1) / 2), followed by an orthographic
 // projection (C_MTXOrtho into field_0x34) that the unit loads with
 // GXSetProjection / GXLoadPosMtxImm; fn_8030C5F0 projects world positions
-// to the screen; field_0x154 is the visible area and fn_8030C210 collects
+// to the screen; field_0x154 is the visible area and addFocusPoint_8030C210 collects
 // the points the camera has to keep in view.
 //
 // Conventions follow GameView.h: members for the exports other units call
-// with the camera in r3 (all pass lbl_8053AB10->0x24), with their mangled
+// with the camera in r3 (all pass gGameRoot2_8053AB10->0x24), with their mangled
 // names in symbols.txt, so a changed parameter type is a symbols.txt rename
 // too. "N units" counts the other game units calling the function or
 // touching the field. Vectors are JGeometry::TVec3f (which derives from
@@ -35,8 +35,8 @@
 
 // The screen rectangle of Camera_804AA9E4::field_0x144 (x0, y0, x1, y1 as
 // unsigned ints, converted to float with the unsigned idiom: fn_8030C2A8 tests a point against x0+0xE..x1-0xE and y0..y1). No code of its own; named after the first function that builds
-// one (cls_804AA858::fn_802FF3F0, game/tu_802F5040.cpp: copied whole from
-// cls_804AA858::field_0x24c, or (0, 0, fbWidth, efbHeight) built on the stack).
+// one (TileMap_804AA858::fn_802FF3F0, game/tu_802F5040.cpp: copied whole from
+// TileMap_804AA858::field_0x24c, or (0, 0, fbWidth, efbHeight) built on the stack).
 struct ScreenRect_802FF3F0 {
     // All four convert to float unsigned (GameRoot2_8049F108::fn_8013BBE0).
     /* 0x0 */ u32 x0;
@@ -58,7 +58,7 @@ public:
     // (x, y) lies in field_0x154, appends pos to field_0x1f0 (count
     // field_0x7f0); returns 0 or 1. Actors pass &mPos, mostly for layers
     // below 8 (act_arrow 0x80165FD8).
-    u8 fn_8030C210(const JGeometry::TVec3f* pos);
+    u8 addFocusPoint_8030C210(const JGeometry::TVec3f* pos);
     // 3 units. The same for both corners of box (reads 0x0-0xC); it queues
     // them only when both lie in field_0x154. TBox2f is a guess: two
     // TVec2f would read the same.
@@ -74,7 +74,7 @@ public:
     // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).
     void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
     // 2 units / 10 calls (this unused: the body reads the camera through
-    // lbl_8053AB10 again). Sets field_0x180 to the box of half-size
+    // gGameRoot2_8053AB10 again). Sets field_0x180 to the box of half-size
     // size * k around center, with y scaled by the video frame's aspect
     // (JUTVideo's height / width), and field_0x17e to 1. Reads center 0x0
     // and 0x4 only (tu_8011CEC8 passes a stack pair, 0x8011D008).
@@ -128,7 +128,7 @@ public:
     // The screen rectangle (x0, y0, x1, y1) as unsigned ints: written by tu_802F5040
     // (0x802FF438), read by fn_8030C2A8.
     /* 0x144 */ ScreenRect_802FF3F0 field_0x144;
-    // The visible area: fn_8030C210 / fn_8030C058 test against it,
+    // The visible area: addFocusPoint_8030C210 / fn_8030C058 test against it,
     // tu_802D39B8 writes it (0x802D9F64), fn_8030C85C resets it from
     // field_0x190.
     /* 0x154 */ JGeometry::TBox2f field_0x154;
@@ -163,7 +163,7 @@ public:
     // Read by GameView fn_802DCD0C / fn_802DA000; cleared by fn_8030C85C.
     /* 0x1E8 */ u8 field_0x1e8;
     /* 0x1E9 */ u8 field_0x1e9[0x1F0 - 0x1E9];
-    /* 0x1F0 */ JGeometry::TVec3f field_0x1f0[0x80]; // fn_8030C210's points
+    /* 0x1F0 */ JGeometry::TVec3f field_0x1f0[0x80]; // addFocusPoint_8030C210's points
     /* 0x7F0 */ s32 field_0x7f0;                     // their count
     // A scripted camera move, set by 37 units when field_0x7f5 is 0: 0x7F4 = 1,
     // a mode in 0x7F8 (4 with a target position in 0x7FC, 24 units,

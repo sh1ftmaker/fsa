@@ -12,14 +12,14 @@ s32 lbl_8053AB78;
 
 // 0x80187144 (vtable slot 0x24): plays sound 0x40047 and re-issues the actor's
 // vfunc_0x28 with the s8 at 0x2EE and (8.0, -16.0).
-void cls_804A1A98::vfunc_0x24() {
-    fn_801F0E34(0x40047, 0);
+void PhantomGanon2_804A1A98::vfunc_0x24() {
+    startSound_801F0E34(0x40047, 0);
     vfunc_0x28(field_0x2ee, 8.0f, -16.0f);
 }
 
 // FIXME: 98.9. Regalloc only: the target keeps this in r30 and the two layer reads in r29,
 // we use r29 for this and r30/r28 for the counter and the layer reads.
-u16 cls_804A1A98::fn_80189DEC() {
+u16 PhantomGanon2_804A1A98::fn_80189DEC() {
     s32 player = fn_8022EA0C(field_0x94);
     if (player < 0) {
         player = 0;
@@ -48,20 +48,20 @@ u16 cls_804A1A98::fn_80189DEC() {
 
 // FIXME: 99.7. Regalloc only: the target keeps the serial in r31 (the register of the
 // emitter loop's pointer), we keep it in r30 (the loop counter's).
-cls_804A1A98::~cls_804A1A98() {
+PhantomGanon2_804A1A98::~PhantomGanon2_804A1A98() {
     for (s32 i = 0; i < 4; i++) {
         fn_801EE434(mEmitters2f4[i]);
         fn_801EE434(mEmitters304[i]);
     }
     fn_801EE434(mEmitter314);
     if (field_0x90 == 0) {
-        fn_802D6A9C()->fn_802D7440(true);
+        getGameView_802D6A9C()->fn_802D7440(true);
         fn_8022ADCC();
     }
     if (field_0x90 == 10) {
         s32 serial = field_0x274;
         if (serial >= 0) {
-            cls_804A1A98* other = (cls_804A1A98*)fn_801F856C()->fn_801F666C(serial);
+            PhantomGanon2_804A1A98* other = (PhantomGanon2_804A1A98*)fn_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
                 other->field_0x28c = 3.0f;
                 field_0x274 = -1;
@@ -99,7 +99,7 @@ void fn_8018A5B8(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
 
 // The effect system's particle emitter manager, fetched through a getter.
 JPAEmitterManager* fn_8018A5F0() {
-    return fn_8013C824()->mEmitterManager;
+    return getEffectSystem_8013C824()->mEmitterManager;
 }
 
 // Whether bit `player` of the game root's field_0x82 is set (game/PlayerBit.h,
@@ -126,7 +126,7 @@ void fn_8018A6A0(JGeometry::TVec2f* v, f32 x, f32 y) {
     v->set(x, y);
 }
 
-Unk_8045A080* fn_8018A6AC() {
+AudioMgr_8045A080* fn_8018A6AC() {
     return lbl_8053AF80;
 }
 

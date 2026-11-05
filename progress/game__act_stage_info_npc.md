@@ -9,7 +9,7 @@ Now:      total: 4449 / 11561 functions, 799960 / 4442088 bytes of code (18.01 %
   after its vtable 0x804AA7A8, stored by the spawner's weak ctor fn_801FF7BC).
 - Template: act_boss_display_test_npc (explicit out-of-line dtor first, then
   empty draw/update, then init). init calls
-  `fn_802D7934(fn_802D6A9C(), field_0x90 & 0xF)` and clears mAlive (0x11C).
+  `fn_802D7934(getGameView_802D6A9C(), field_0x90 & 0xF)` and clears mAlive (0x11C).
 
 ## symbols.txt (placeholder renames)
 - fn_802F4820 -> __dt__21StageInfoNpc_804AA7A8Fv

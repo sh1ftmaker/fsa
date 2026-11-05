@@ -370,36 +370,36 @@ void FileSelect_804AFF60::fn_803BDD44(s32 file) {
 // Sets the alphas of file row `file`'s lower panes (field_0x38: name, level,
 // date and frame) to their share of the row's fade.
 static inline void setRowAlphas(FileSelect_804AFF60* self, s32 file) {
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D50[file]), self->field_0x118[13]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D38[file]), self->field_0x118[14]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476D20[file]), self->field_0x118[15]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C98[file]), self->field_0x118[16]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C80[file]), self->field_0x118[17]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C68[file]), self->field_0x118[18]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C50[file]), self->field_0x118[19]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C38[file]), self->field_0x118[20]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C20[file]), self->field_0x118[21]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476C08[file]), self->field_0x118[22]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BF0[file]), self->field_0x118[23]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BD8[file]), self->field_0x118[24]);
-    self->field_0x38[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BC0[file]), self->field_0x118[25]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476D50[file]), self->field_0x118[13]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476D38[file]), self->field_0x118[14]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476D20[file]), self->field_0x118[15]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C98[file]), self->field_0x118[16]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C80[file]), self->field_0x118[17]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C68[file]), self->field_0x118[18]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C50[file]), self->field_0x118[19]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C38[file]), self->field_0x118[20]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C20[file]), self->field_0x118[21]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476C08[file]), self->field_0x118[22]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476BF0[file]), self->field_0x118[23]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476BD8[file]), self->field_0x118[24]);
+    self->field_0x38[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476BC0[file]), self->field_0x118[25]);
 }
 
 // The same for the row's upper panes (field_0x44: the tab).
 static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476BA8[file]), self->field_0x118[0]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B90[file]), self->field_0x118[1]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B78[file]), self->field_0x118[2]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B60[file]), self->field_0x118[3]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B48[file]), self->field_0x118[4]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B30[file]), self->field_0x118[5]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B18[file]), self->field_0x118[6]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476B00[file]), self->field_0x118[7]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AE8[file]), self->field_0x118[8]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AD0[file]), self->field_0x118[9]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AB8[file]), self->field_0x118[10]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476AA0[file]), self->field_0x118[11]);
-    self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476BA8[file]), self->field_0x118[0]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B90[file]), self->field_0x118[1]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B78[file]), self->field_0x118[2]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B60[file]), self->field_0x118[3]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B48[file]), self->field_0x118[4]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B30[file]), self->field_0x118[5]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B18[file]), self->field_0x118[6]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476B00[file]), self->field_0x118[7]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476AE8[file]), self->field_0x118[8]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476AD0[file]), self->field_0x118[9]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476AB8[file]), self->field_0x118[10]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476AA0[file]), self->field_0x118[11]);
+    self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
 }
 
 // FIXME: 98.49 %. Register allocation and scheduling only: `this` lands in
@@ -417,10 +417,10 @@ void FileSelect_804AFF60::fn_803BF9C4() {
     field_0x20->mPane->show();
     field_0x34->mPane->show();
     field_0x50->mPane->setAlpha(0);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
     ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
     ((J2DPicture*)mScreenHuuin->search('Pdelb01'))->setBlackWhite(field_0xe4, field_0xe0);
@@ -434,49 +434,49 @@ void FileSelect_804AFF60::fn_803BF9C4() {
         field_0x44[i]->field_0x26 = 0;
     }
 
-    field_0x20->fn_80402E08(600.0f, 0.0f);
+    field_0x20->moveFromCentre_80402E08(600.0f, 0.0f);
     field_0x20->field_0x20 = 0;
     field_0x20->mPane->setAlpha(field_0x20->field_0x28);
     for (i = 0; i < 9; i++) {
-        field_0x20->fn_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+        field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
     }
     field_0x20->field_0x26 = 0;
 
     field_0x34->mPane->setAlpha(0);
-    field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
     field_0x34->field_0x26 = 0;
     for (i = 0; i < 4; i++) {
         field_0x24[i]->mPane->show();
-        field_0x24[i]->fn_80402E08(0.0f, 100.0f);
+        field_0x24[i]->moveFromCentre_80402E08(0.0f, 100.0f);
         field_0x24[i]->field_0x22 = 0;
         field_0x24[i]->mPane->setAlpha(0);
         field_0x24[i]->field_0x26 = 0;
         switch (i) {
         case 0:
             for (j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
             }
             break;
         case 1:
             for (j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
             }
             break;
         case 2:
             for (j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
             }
             break;
         case 3:
             for (j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
             }
             break;
         }
     }
 
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
     s16 delay = lbl_8050DB0C.field_0x4c[0xCA];
     s16 frames = lbl_8050DB0C.field_0x4c[0xCB];
     s16 step = lbl_8050DB0C.field_0x4c[0xCC];
@@ -534,10 +534,10 @@ void FileSelect_804AFF60::fn_803C1734() {
     }
 
     field_0x50->mPane->setAlpha(0);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     field_0x50->field_0x26 = 0;
     for (int i = 0; i < 3; i++) {
         field_0x38[i]->field_0x20 = 0;
@@ -548,61 +548,61 @@ void FileSelect_804AFF60::fn_803C1734() {
         field_0x44[i]->field_0x26 = 0;
     }
 
-    field_0x14->fn_80402E08(600.0f, 0.0f);
+    field_0x14->moveFromCentre_80402E08(600.0f, 0.0f);
     field_0x14->field_0x20 = 0;
     field_0x14->mPane->setAlpha(0);
-    field_0x18->fn_80402E08(600.0f, 0.0f);
+    field_0x18->moveFromCentre_80402E08(600.0f, 0.0f);
     field_0x18->field_0x20 = 0;
     field_0x18->mPane->setAlpha(0);
-    field_0x1c->fn_80402E08(600.0f, 0.0f);
+    field_0x1c->moveFromCentre_80402E08(600.0f, 0.0f);
     field_0x1c->field_0x20 = 0;
     field_0x1c->mPane->setAlpha(0);
     for (int i = 0; i < 81; i++) {
-        field_0x14->fn_804023D0(mScreen->search(lbl_80476618[i]), field_0x132[i]);
+        field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[i]), field_0x132[i]);
     }
     for (int i = 0; i < 19; i++) {
-        field_0x14->fn_804023D0(mScreenHuuin->search(lbl_804768A0[i]), field_0x183[i]);
+        field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[i]), field_0x183[i]);
     }
     field_0x14->field_0x26 = 0;
     field_0x18->field_0x26 = 0;
     field_0x1c->field_0x26 = 0;
 
     field_0x34->mPane->setAlpha(0);
-    field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
     field_0x34->field_0x26 = 0;
     for (int i = 0; i < 4; i++) {
-        field_0x24[i]->fn_80402E08(0.0f, 100.0f);
+        field_0x24[i]->moveFromCentre_80402E08(0.0f, 100.0f);
         field_0x24[i]->field_0x22 = 0;
         field_0x24[i]->mPane->setAlpha(0);
         switch (i) {
         case 0:
             for (int j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
             }
             break;
         case 1:
             for (int j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
             }
             break;
         case 2:
             for (int j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
             }
             break;
         case 3:
             for (int j = 0; j < 4; j++) {
-                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
             }
             break;
         }
         field_0x24[i]->field_0x26 = 0;
     }
 
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x119, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tdel01'))->getStringPtr(), 0x11A, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x119, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tdel01'))->getStringPtr(), 0x11A, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
     field_0xd8 = 0;
     field_0xda = 0;
     setState(18);
@@ -621,7 +621,7 @@ void FileSelect_804AFF60::fn_803C24BC() {
         msg = 0x116;
     }
     field_0x84 = msg;
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
     if (field_0x84 == 0x60 || field_0x84 == 0x64) {
         field_0xb0 = 0x5A;
     }
@@ -639,30 +639,30 @@ void FileSelect_804AFF60::fn_803C24BC() {
     }
 
     // The original inlines this block into both fn_803C24BC and fn_803CF504; no out-of-line copy exists.
-    field_0x50->fn_80402E08(-300.0f, 0.0f);
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
     field_0x50->field_0x20 = 0;
     field_0x50->mPane->setAlpha(0);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     field_0x50->field_0x26 = 0;
 
     for (s32 i = 0; i < 3; i++) {
-        field_0x38[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x38[i]->moveFromCentre_80402E08(0.0f, 300.0f);
         field_0x38[i]->field_0x22 = 0;
         field_0x38[i]->mPane->setAlpha(0);
         setRowAlphas(this, i);
         field_0x38[i]->field_0x26 = 0;
 
-        field_0x44[i]->fn_80402E08(-300.0f, 0.0f);
+        field_0x44[i]->moveFromCentre_80402E08(-300.0f, 0.0f);
         field_0x44[i]->field_0x20 = 0;
         field_0x44[i]->mPane->setAlpha(0);
         setTabAlphas(this, i);
         field_0x44[i]->field_0x26 = 0;
     }
 
-    field_0x54->fn_80402E08(0.0f, -200.0f);
+    field_0x54->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x54->field_0x22 = 0;
     field_0x54->mPane->setAlpha(0);
     field_0x54->field_0x26 = 0;
@@ -713,7 +713,7 @@ void FileSelect_804AFF60::fn_803C2E24() {
             field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
             field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
             for (int j = 0; j < 9; j++) {
-                field_0x20->fn_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+                field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
             }
         } else {
             field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
@@ -723,10 +723,10 @@ void FileSelect_804AFF60::fn_803C2E24() {
             field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
             field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
             for (int j = 0; j < 81; j++) {
-                field_0x14->fn_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+                field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
             }
             for (int j = 0; j < 19; j++) {
-                field_0x14->fn_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+                field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
             }
         }
     }
@@ -738,22 +738,22 @@ void FileSelect_804AFF60::fn_803C2E24() {
             switch (i) {
             case 0:
                 for (int j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
                 }
                 break;
             case 1:
                 for (int j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
                 }
                 break;
             case 2:
                 for (int j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
                 }
                 break;
             case 3:
                 for (int j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
                 }
                 break;
             }
@@ -830,14 +830,14 @@ void FileSelect_804AFF60::fn_803C4054() {
         }
         for (int i = 0; i < 2; i++) {
             if (bob != 0.0f && i == field_0x114) {
-                field_0x24[i]->fn_80402E08(0.0f, bob);
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, bob);
             } else {
-                field_0x24[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, 0.0f);
             }
         }
-        field_0x34->fn_80402E08(field_0x24[field_0x114]->field_0x8 - field_0x24[0]->field_0x8, bob);
+        field_0x34->moveFromCentre_80402E08(field_0x24[field_0x114]->field_0x8 - field_0x24[0]->field_0x8, bob);
         field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
-        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+        field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
     }
 }
 
@@ -858,17 +858,17 @@ void FileSelect_804AFF60::fn_803C4330() {
             msg = 0x116;
         }
         field_0x84 = msg;
-        fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+        getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
         if (field_0x84 == 0x60 || field_0x84 == 0x64) {
             field_0xb0 = 0x5A;
         }
-        field_0x50->fn_80402E08(-300.0f, 0.0f);
+        field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
         field_0x50->field_0x20 = 0;
         field_0x50->mPane->setAlpha(0);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
         for (int i = 0; i < 3; i++) {
             field_0x38[i]->field_0x20 = 0;
             field_0x38[i]->field_0x22 = 0;
@@ -878,7 +878,7 @@ void FileSelect_804AFF60::fn_803C4330() {
             field_0x44[i]->field_0x26 = 0;
         }
         field_0x34->mPane->setAlpha(0);
-        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+        field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
         field_0xd8 = 0;
         field_0xda = 0;
         setState(38);
@@ -989,7 +989,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
                     }
                 }
                 field_0x84 = 0x61;
-                fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+                getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
                 if (field_0x84 == 0x60 || field_0x84 == 0x64) {
                     field_0xb0 = 0x5A;
                 }
@@ -1001,12 +1001,12 @@ void FileSelect_804AFF60::fn_803CABAC() {
             if (lbl_8053AAF8->field_0xff != 0 && lbl_8050EC80[field_0xa4].field_0x20 != 0) {
                 field_0x114 = 1;
                 field_0x84 = 0x5E;
-                fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+                getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
                 if (field_0x84 == 0x60 || field_0x84 == 0x64) {
                     field_0xb0 = 0x5A;
                 }
                 field_0x34->mPane->setAlpha(0);
-                field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+                field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
                 field_0x34->field_0x26 = 0;
                 ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
                 ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
@@ -1084,14 +1084,14 @@ void FileSelect_804AFF60::fn_803CABAC() {
         }
         for (int i = 0; i < 4; i++) {
             if (bob != 0.0f && i == field_0xa0) {
-                field_0x24[i]->fn_80402E08(0.0f, bob);
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, bob);
             } else {
-                field_0x24[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, 0.0f);
             }
         }
-        field_0x34->fn_80402E08(field_0x24[field_0xa0]->field_0x8 - field_0x24[0]->field_0x8, bob);
+        field_0x34->moveFromCentre_80402E08(field_0x24[field_0xa0]->field_0x8 - field_0x24[0]->field_0x8, bob);
         field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
-        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+        field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
     }
 }
 
@@ -1159,10 +1159,10 @@ void FileSelect_804AFF60::fn_803CB3DC() {
         field_0x1c->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
         field_0x1c->fn_80402628(boardFrames, 0, field_0x1c->field_0x28);
         for (s32 j = 0; j < 81; j++) {
-            field_0x14->fn_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+            field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
         }
         for (s32 j = 0; j < 19; j++) {
-            field_0x14->fn_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+            field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
         }
     }
     for (s32 i = 0; i < 4; i++) {
@@ -1172,22 +1172,22 @@ void FileSelect_804AFF60::fn_803CB3DC() {
             switch (i) {
             case 0:
                 for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
                 }
                 break;
             case 1:
                 for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
                 }
                 break;
             case 2:
                 for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
                 }
                 break;
             case 3:
                 for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
                 }
                 break;
             }
@@ -1389,11 +1389,11 @@ void FileSelect_804AFF60::fn_803CD2DC() {
         if (hasSaveData(field_0xa4)) {
             field_0x114 = 1;
             field_0x84 = 0x5E;
-            fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+            getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
             if (field_0x84 == 0x60 || field_0x84 == 0x64) {
                 field_0xb0 = 0x5A;
             }
-            fn_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x65, 0, NULL, NULL);
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x65, 0, NULL, NULL);
             fn_803BF9C4();
         } else {
             field_0xa0 = 0;
@@ -1439,17 +1439,17 @@ void FileSelect_804AFF60::fn_803CD2DC() {
         }
         for (s32 i = 0; i < 3; i++) {
             if (0.0f != hop && i == field_0xa4) {
-                field_0x44[i]->fn_80402E08(0.0f, hop);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, hop);
             } else {
-                field_0x44[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, 0.0f);
             }
         }
-        field_0x50->fn_80402E08(0.0f, field_0x44[field_0xa4]->mPane->getBounds()->i.y - field_0x44[0]->field_0xc);
+        field_0x50->moveFromCentre_80402E08(0.0f, field_0x44[field_0xa4]->mPane->getBounds()->i.y - field_0x44[0]->field_0xc);
         field_0x50->fn_8040245C(0x3C, 0, field_0x50->field_0x28, 1);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-        field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     }
 }
 
@@ -1534,7 +1534,7 @@ void FileSelect_804AFF60::fn_803CE11C() {
         field_0x20->fn_80402B10(lbl_8050DB0C.field_0x4c[0xC3], 0, 0.0f, 600.0f);
         field_0x20->fn_80402628(lbl_8050DB0C.field_0x4c[0xC3], field_0x20->field_0x28, 0);
         for (s32 i = 0; i < 9; i++) {
-            field_0x20->fn_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
         }
         field_0x117 = 0;
         return;
@@ -1610,7 +1610,7 @@ void FileSelect_804AFF60::fn_803CE370() {
             msg = 0x116;
         }
         field_0x84 = msg;
-        fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(),
+        getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(),
                     field_0x84, 0, NULL, NULL);
         if (field_0x84 == 0x60 || field_0x84 == 0x64) {
             field_0xb0 = 0x5A;
@@ -1684,11 +1684,11 @@ void FileSelect_804AFF60::fn_803CE9EC() {
         field_0xde++;
         if (field_0xde < frames) {
             f32 t = (f32)(field_0xde * field_0xde) / (f32)(frames * frames);
-            field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f);
+            field_0x58->moveFromCentre_80402E08(0.0f, 200.0f * t + -200.0f);
             field_0x58->mPane->setAlpha(t * field_0x58->field_0x28);
         } else {
             field_0xde = frames;
-            field_0x58->fn_80402E08(0.0f, 0.0f);
+            field_0x58->moveFromCentre_80402E08(0.0f, 0.0f);
             field_0x58->mPane->setAlpha(field_0x58->field_0x28);
             field_0x1a4 = 0;
         }
@@ -1699,11 +1699,11 @@ void FileSelect_804AFF60::fn_803CE9EC() {
         field_0xde--;
         if (field_0xde > 0) {
             f32 t = (f32)(field_0xde * field_0xde) / (f32)(frames * frames);
-            field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f);
+            field_0x58->moveFromCentre_80402E08(0.0f, 200.0f * t + -200.0f);
             field_0x58->mPane->setAlpha(t * field_0x58->field_0x28);
         } else {
             field_0xde = 0;
-            field_0x58->fn_80402E08(0.0f, -200.0f);
+            field_0x58->moveFromCentre_80402E08(0.0f, -200.0f);
             field_0x58->mPane->setAlpha(0);
             field_0x1a6 = field_0x1a5;
             if (field_0x1a5 == 0) {
@@ -1782,8 +1782,8 @@ void FileSelect_804AFF60::fn_803CEED4() {
         mScreen->search('Padhu02')->move(field_0x88[1] + dx, field_0x94[1] + dy);
         mScreen->search('Padhu03')->move(field_0x88[2] + dx, field_0x94[2] + dy);
     }
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x14->mPane->isVisible() && (lbl_8050EC80[field_0xa8].field_0x28 & 1)) {
         // Seven separate calls in the original (a loop with a break isn't unrolled).
         if (fn_803B8CAC(field_0xa8, 0) && fn_803B8CAC(field_0xa8, 1) && fn_803B8CAC(field_0xa8, 2)
@@ -1805,7 +1805,7 @@ void FileSelect_804AFF60::fn_803CEED4() {
         mScreen->search('Padhu02')->hide();
         mScreen->search('Padhu03')->hide();
     }
-    mScreenHuuin->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreenHuuin->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x116 != 0) {
         field_0x10->setAlpha(field_0x1a3);
         field_0x10->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
@@ -1845,7 +1845,7 @@ void FileSelect_804AFF60::fn_803CF504() {
         msg = 0x116;
     }
     field_0x84 = msg;
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
     if (field_0x84 == 0x60 || field_0x84 == 0x64) {
         field_0xb0 = 0x5A;
     }
@@ -1870,30 +1870,30 @@ void FileSelect_804AFF60::fn_803CF504() {
     }
 
     // The original inlines this block into both fn_803C24BC and fn_803CF504; no out-of-line copy exists.
-    field_0x50->fn_80402E08(-300.0f, 0.0f);
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
     field_0x50->field_0x20 = 0;
     field_0x50->mPane->setAlpha(0);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
-    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     field_0x50->field_0x26 = 0;
 
     for (s32 i = 0; i < 3; i++) {
-        field_0x38[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x38[i]->moveFromCentre_80402E08(0.0f, 300.0f);
         field_0x38[i]->field_0x22 = 0;
         field_0x38[i]->mPane->setAlpha(0);
         setRowAlphas(this, i);
         field_0x38[i]->field_0x26 = 0;
 
-        field_0x44[i]->fn_80402E08(-300.0f, 0.0f);
+        field_0x44[i]->moveFromCentre_80402E08(-300.0f, 0.0f);
         field_0x44[i]->field_0x20 = 0;
         field_0x44[i]->mPane->setAlpha(0);
         setTabAlphas(this, i);
         field_0x44[i]->field_0x26 = 0;
     }
 
-    field_0x54->fn_80402E08(0.0f, -200.0f);
+    field_0x54->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x54->field_0x22 = 0;
     field_0x54->mPane->setAlpha(0);
     field_0x54->field_0x26 = 0;
@@ -1901,7 +1901,7 @@ void FileSelect_804AFF60::fn_803CF504() {
     field_0x1a4 = 0;
     field_0x1a5 = 0;
     field_0x1a6 = 0;
-    field_0x58->fn_80402E08(0.0f, -200.0f);
+    field_0x58->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x58->mPane->setAlpha(0);
     field_0xd8 = 0;
     field_0xda = 0;
@@ -1956,22 +1956,22 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
     lbl_80529DEC.fn_80403680();
     if (!lbl_80529DEC.field_0x242) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
         void* res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0x4000, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
-        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
 
     lbl_8053ADB0 = this;
@@ -2012,30 +2012,30 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
     field_0x10 = new J2DPicture(img);
     field_0x10->setBlackWhite(JUtility::TColor(0x000000FF), JUtility::TColor(0x00000000));
 
-    field_0x14 = new cls_804AF86C;
-    field_0x14->fn_80402F04(mScreen->search('Ndata04'));
-    field_0x18 = new cls_804AF86C;
-    field_0x18->fn_80402F04(mScreenHuuin->search('Ndata01'));
-    field_0x1c = new cls_804AF86C;
-    field_0x1c->fn_80402F04(mScreenHuuin->search('Ndatab01'));
-    field_0x20 = new cls_804AF86C;
-    field_0x20->fn_80402F04(mScreen->search('Ndata06'));
+    field_0x14 = new PaneCtrl_804AF86C;
+    field_0x14->setPane_80402F04(mScreen->search('Ndata04'));
+    field_0x18 = new PaneCtrl_804AF86C;
+    field_0x18->setPane_80402F04(mScreenHuuin->search('Ndata01'));
+    field_0x1c = new PaneCtrl_804AF86C;
+    field_0x1c->setPane_80402F04(mScreenHuuin->search('Ndatab01'));
+    field_0x20 = new PaneCtrl_804AF86C;
+    field_0x20->setPane_80402F04(mScreen->search('Ndata06'));
     for (s32 i = 0; i < 4; i++) {
-        field_0x24[i] = new cls_804AF86C;
-        field_0x24[i]->fn_80402F04(mScreenHuuin->search(lbl_80476CB0[i]));
+        field_0x24[i] = new PaneCtrl_804AF86C;
+        field_0x24[i]->setPane_80402F04(mScreenHuuin->search(lbl_80476CB0[i]));
     }
-    field_0x34 = new cls_804AF86C;
-    field_0x34->fn_80402F04(mScreenHuuin->search('Paccur02'));
+    field_0x34 = new PaneCtrl_804AF86C;
+    field_0x34->setPane_80402F04(mScreenHuuin->search('Paccur02'));
     for (s32 i = 0; i < 3; i++) {
-        field_0x38[i] = new cls_804AF86C;
-        field_0x38[i]->fn_80402F04(mScreenHuuin->search(lbl_80476CD0[i]));
-        field_0x44[i] = new cls_804AF86C;
-        field_0x44[i]->fn_80402F04(mScreenHuuin->search(lbl_80476CE8[i]));
+        field_0x38[i] = new PaneCtrl_804AF86C;
+        field_0x38[i]->setPane_80402F04(mScreenHuuin->search(lbl_80476CD0[i]));
+        field_0x44[i] = new PaneCtrl_804AF86C;
+        field_0x44[i]->setPane_80402F04(mScreenHuuin->search(lbl_80476CE8[i]));
     }
-    field_0x50 = new cls_804AF86C;
-    field_0x50->fn_80402F04(mScreenHuuin->search('Pfcur05'));
-    field_0x54 = new cls_804AF86C;
-    field_0x54->fn_80402F04(mScreenHuuin->search('Pftbbk03'));
+    field_0x50 = new PaneCtrl_804AF86C;
+    field_0x50->setPane_80402F04(mScreenHuuin->search('Pfcur05'));
+    field_0x54 = new PaneCtrl_804AF86C;
+    field_0x54->setPane_80402F04(mScreenHuuin->search('Pftbbk03'));
     field_0x58 = lbl_8053AED8->field_0x8;
     lbl_8053AED8->fn_80440D78(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_kettei_01.bti")));
     lbl_8053AED8->fn_80440CE4(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_modoru_01.bti")));
@@ -2139,12 +2139,12 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
     field_0x19f[3] = mScreenHuuin->search('Pbacb04')->getAlpha();
     field_0x1a3 = 0;
 
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tadv01'))->getStringPtr(), 0xA4, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreen->search('Tbat01'))->getStringPtr(), 0xA5, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x119, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tdel01'))->getStringPtr(), 0x11A, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tadv01'))->getStringPtr(), 0xA4, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tbat01'))->getStringPtr(), 0xA5, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x119, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tdel01'))->getStringPtr(), 0x11A, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
 
     for (s32 i = 0; i < 3; i++) {
         field_0x70[i] = 0.0f;

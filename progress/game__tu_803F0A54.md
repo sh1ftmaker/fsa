@@ -2,7 +2,7 @@
 
 Baseline (progress.py before): `total: 7123 / 11557 functions, 1392832 / 4442032 bytes of code (31.36 %)`
 
-What it is: cls_804B0F10 (vtable 0x804B0F10, ctor 0x803FCBC4, 0x354 bytes), the
+What it is: ConnectScreen_804B0F10 (vtable 0x804B0F10, ctor 0x803FCBC4, 0x354 bytes), the
 multiplayer GBA-connect screen that cls_804AF878 (tu_803A85E4) builds as its
 field_0x8 when lbl_8053AAF8->field_0x7f is clear. Seven J2DScreens from the
 fn_804031C4 archive, a 13-state machine through three static PMF tables
@@ -15,7 +15,7 @@ virtuals) — that copy is the boot-path code.
 ## Matched (100 %)
 __sinit_tu_803F0A54_cpp (boot path), fn_803F1C18, fn_803F1C5C, fn_803F2660,
 fn_803F2AEC, fn_803F2B48, fn_803F2B5C, fn_803F32E8, fn_803F3310,
-fn_803F358C, fn_803F59A0, fn_803F8050, fn_803FC304, __dt__12cls_804B0F10Fv.
+fn_803F358C, fn_803F59A0, fn_803F8050, fn_803FC304, __dt__22ConnectScreen_804B0F10Fv.
 .bss 100 % (9 @NNN dtor chains + 9 weak memPool copies split per COORDINATOR).
 
 ## Resistant
@@ -49,12 +49,12 @@ a [3][6] array (original overrun into field_0x285).
   extern "C" void* functions); tu_8044C7F0's caller updated.
 - include/game/GameState.h: GameState_804B0FE0 0x23D u8 field_0x23d (split
   from field_0x23a[]; ctor copies it, fn_803F8050 polls slot 2 + it);
-  cls_804AF86C::fn_80402940 returns u8 (li 1 / li 0 in its body).
+  PaneCtrl_804AF86C::fn_80402940 returns u8 (li 1 / li 0 in its body).
 - include/game/cls_804B16A8.h (new): vtable 0x804B16A8, ctor fn_804372C4
   (tu_80434370), fn_80436668 / fn_804366B8 / fn_8043670C(u8).
 - include/game/tu_803F0A54.h: full class layout (+ field_0x335) (used by tu_803A85E4 too).
-- symbols.txt: placeholder renames (members of cls_804B0F10 / cls_804B16A8 /
-  cls_804AA8C8, __vt__12cls_804B0F10, __sinit, __dt__), .data PMF-table
+- symbols.txt: placeholder renames (members of ConnectScreen_804B0F10 / cls_804B16A8 /
+  cls_804AA8C8, __vt__22ConnectScreen_804B0F10, __sinit, __dt__), .data PMF-table
   split (@685-@723 initializers), .bss split.
 
 ## Checkpoint (Opus 5.5 pass 2, twin units, 2026-11-05)

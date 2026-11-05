@@ -17,10 +17,10 @@ void SideViewGateDisplayNpc_804ACB98::init() {
     mEmitter234 = NULL;
     mEmitter238 = NULL;
     if (mEmitter234 == NULL) {
-        mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x447, -1, 0, NULL, NULL, true, 1.0f);
+        mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x447, -1, 0, NULL, NULL, true, 1.0f);
     }
     if (mEmitter238 == NULL) {
-        mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0x448, -1, 0, NULL, NULL, true, 1.0f);
+        mEmitter238 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x448, -1, 0, NULL, NULL, true, 1.0f);
     }
 }
 

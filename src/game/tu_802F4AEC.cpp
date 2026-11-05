@@ -20,16 +20,16 @@ void cls_804AA800::update() {
     case 0: {
         u32 bit1 = (args >> 17) & 0x1F;
         u32 bit2 = (args >> 12) & 0x1F;
-        if (!fn_802D6A9C()->fn_802D7F40((args >> 22) & 0x1F)) {
+        if (!getGameView_802D6A9C()->fn_802D7F40((args >> 22) & 0x1F)) {
             break;
         }
-        if (!fn_802D6A9C()->fn_802D7F40(bit1)) {
+        if (!getGameView_802D6A9C()->fn_802D7F40(bit1)) {
             break;
         }
-        if (!fn_802D6A9C()->fn_802D7F40(bit2)) {
+        if (!getGameView_802D6A9C()->fn_802D7F40(bit2)) {
             break;
         }
-        if (!fn_802D6A9C()->fn_802D7F40(bit3)) {
+        if (!getGameView_802D6A9C()->fn_802D7F40(bit3)) {
             if (fn_8023077C()) {
                 field_0x230 = 2;
                 field_0x234 = 0;
@@ -52,7 +52,7 @@ void cls_804AA800::update() {
     case 2:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x238--;
         if (field_0x238 == 0) {
@@ -74,11 +74,11 @@ void cls_804AA800::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x238 == 0) {
             if (fn_80230534(false)) {
-                fn_802D6A9C()->fn_802D7F84(bit3, true);
+                getGameView_802D6A9C()->fn_802D7F84(bit3, true);
                 fn_801F0D20(3);
                 fn_801F3668();
             }

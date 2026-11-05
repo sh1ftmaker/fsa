@@ -182,7 +182,7 @@ public:
     // (fn_801F1184, JAUSoundObject::stopSound(JAISoundID(soundId), 0)); the
     // id is stored with stw for the JAISoundID.
     void fn_801CDC8C(u32 soundId);
-    // 2 units / 2 calls. Starts sound `soundId` (fn_801F0E34(soundId, 0))
+    // 2 units / 2 calls. Starts sound `soundId` (startSound_801F0E34(soundId, 0))
     // with field_0x4 and mPos set to layer and *pos for the call, then
     // restores them.
     void fn_801CDCD0(s32 layer, const JGeometry::TVec3f* pos, u32 soundId);
@@ -339,7 +339,7 @@ bool fn_801CD2F8(s32 layer);
 // not reached the target (cls_804A61C8::fn_80210A6C tests r3 with cmpwi).
 s32 fn_801CD950(f32* value, f32 target, f32 step);
 // Returns the next sprite direction for `value` (field_0x98 is stored back
-// from it, then fn_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
+// from it, then startAnim_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
 s32 fn_801CD30C(s32 value);
 
 // game/tu_801CB270.cpp: the step fn_801CD950 wraps.

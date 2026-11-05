@@ -43,7 +43,7 @@ bool VaatiBoss_804A4958::fn_801E4348() {
                 if (fn_801CC820(player, NULL)) {
                     JGeometry::TVec3f pos(xy.x, xy.y + mPos.z, mPos.z);
                     fn_801CB688(field_0x4, &pos, 1, 1);
-                    fn_801F0E34(0x5003C, 0);
+                    startSound_801F0E34(0x5003C, 0);
                     switch (mState) {
                     case 0xa:
                     case 0xe:

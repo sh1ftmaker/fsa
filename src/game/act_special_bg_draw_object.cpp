@@ -16,12 +16,12 @@ void SpecialBGDrawObject_804AC760::update() {
             switch (mKind) {
             case 0:
                 if (!fn_802DEBA0()) {
-                    fn_801F0E34(0x30043, 0);
+                    startSound_801F0E34(0x30043, 0);
                 }
                 break;
             case 1:
                 if (!fn_802DEBA0()) {
-                    fn_801F0E34(0x30044, 0);
+                    startSound_801F0E34(0x30044, 0);
                 }
                 break;
             }
@@ -31,8 +31,8 @@ void SpecialBGDrawObject_804AC760::update() {
         switch (mKind) {
         case 0:
             if (mTimer >= 120) {
-                if (!fn_802D6A9C()->fn_802D800C(mBit1)) {
-                    fn_802D6A9C()->fn_802D8050(mBit1, true, 0xFF);
+                if (!getGameView_802D6A9C()->fn_802D800C(mBit1)) {
+                    getGameView_802D6A9C()->fn_802D8050(mBit1, true, 0xFF);
                 }
                 mTimer = 120;
             }
@@ -47,8 +47,8 @@ void SpecialBGDrawObject_804AC760::update() {
             break;
         case 1:
             if (mTimer >= 30) {
-                if (!fn_802D6A9C()->fn_802D800C(mBit1)) {
-                    fn_802D6A9C()->fn_802D8050(mBit1, true, 0xFF);
+                if (!getGameView_802D6A9C()->fn_802D800C(mBit1)) {
+                    getGameView_802D6A9C()->fn_802D8050(mBit1, true, 0xFF);
                 }
                 mTimer = 30;
             }
@@ -65,7 +65,7 @@ void SpecialBGDrawObject_804AC760::update() {
             if (vfunc_0x34() == true) {
                 if (mTimer < 120) {
                     if (mSoundState != 1) {
-                        fn_801F0E34(0x30045, 0);
+                        startSound_801F0E34(0x30045, 0);
                         mSoundState = 1;
                     }
                     mTimer++;
@@ -80,7 +80,7 @@ void SpecialBGDrawObject_804AC760::update() {
                 }
             } else if (mTimer > 0) {
                 if (mSoundState != -1) {
-                    fn_801F0E34(0x30046, 0);
+                    startSound_801F0E34(0x30046, 0);
                     mSoundState = -1;
                 }
                 mTimer -= 4;
@@ -109,7 +109,7 @@ void SpecialBGDrawObject_804AC760::update() {
         break;
     }
     case 1:
-        if (!fn_802D6A9C()->fn_802D800C(mBit2)) {
+        if (!getGameView_802D6A9C()->fn_802D800C(mBit2)) {
             f32 value = mTimer / 30.0f;
             GameRootSub20_801902C0::Request& req = fn_801902C0()->mRequests[1];
             if (req.field_0xc != NULL && req.mActive == 0) {
@@ -143,7 +143,7 @@ void SpecialBGDrawObject_804AC760::init() {
     mSoundState = 0;
     mTriggered = 0;
     mTimer = 0;
-    if (fn_802D6A9C()->fn_802D800C(mBit1) == true) {
+    if (getGameView_802D6A9C()->fn_802D800C(mBit1) == true) {
         switch (mKind) {
         case 0:
             mTimer = 120;

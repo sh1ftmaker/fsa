@@ -51,7 +51,7 @@ void cls_804A5BD8::fn_80208834() {
         fn_80208244(7);
     }
     for (s32 i = 0; i < 4; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSlots[i].mSerial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSlots[i].mSerial);
         if (actor != NULL) {
             static_cast<cls_804A5D60*>(actor)->fn_80209CA4(
                 mSlots[i].mPlayer, mSlots[i].field_0xc, &mSlots[i].mTarget, mSlots[i].field_0x1c);
@@ -64,7 +64,7 @@ void cls_804A5BD8::fn_802088B4() {
         fn_80208244(5);
     }
     for (s32 i = 0; i < 4; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSlots[i].mSerial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSlots[i].mSerial);
         if (actor != NULL) {
             static_cast<cls_804A5D60*>(actor)->fn_80209D44();
         }

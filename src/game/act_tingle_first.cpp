@@ -10,7 +10,7 @@ void cls_804AADD8::draw() {
         return;
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x23c + 0xC0, false, 2, -1, 0, 0, 0);
-    fn_801F06F0("enemy_both2_sob.bin", field_0x23c + 0xC0, NULL, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_both2_sob.bin", field_0x23c + 0xC0, NULL, 7, 1.0f, 1.0f);
 }
 
 // FIXME: 99.43%. Only the float constants differ: the target loads -8, -24 and 24 (lbl_805418E4/E8/EC)

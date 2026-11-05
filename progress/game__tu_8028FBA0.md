@@ -67,27 +67,27 @@ index 18c75968..52fbdc0c 100644
 +void Player_804A6F38::fn_80290FC0() {
 +    if (field_0x3fc == 40) {
 +        if (field_0xcf4 == 0xC && fn_802DE9A0()) {
-+            fn_8013CC50(field_0x3b4, &mPos, 0x2AA, 0, 1, NULL, NULL, true, 1.0f);
-+            fn_8013CC50(field_0x3b4, &mPos, 0x2A9, -1, 0, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x2AA, 0, 1, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x2A9, -1, 0, NULL, NULL, true, 1.0f);
 +        } else if (field_0xcf4 == 0xD) {
-+            fn_8013CC50(field_0x3b4, &mPos, 0x45F, 0, 1, NULL, NULL, true, 1.0f);
-+            fn_8013CC50(field_0x3b4, &mPos, 0x45E, -1, 0, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x45F, 0, 1, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x45E, -1, 0, NULL, NULL, true, 1.0f);
 +            switch (field_0x4) {
 +            case 0:
-+                fn_8013CC50(field_0x3b4, &mPos, 0x16B, 0, 1, NULL, NULL, true, 1.0f);
++                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16B, 0, 1, NULL, NULL, true, 1.0f);
 +                break;
 +            case 1:
-+                fn_8013CC50(field_0x3b4, &mPos, 0x16D, 0, 1, NULL, NULL, true, 1.0f);
++                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16D, 0, 1, NULL, NULL, true, 1.0f);
 +                break;
 +            case 2:
-+                fn_8013CC50(field_0x3b4, &mPos, 0x16A, 0, 1, NULL, NULL, true, 1.0f);
++                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16A, 0, 1, NULL, NULL, true, 1.0f);
 +                break;
 +            case 3:
-+                fn_8013CC50(field_0x3b4, &mPos, 0x16C, 0, 1, NULL, NULL, true, 1.0f);
++                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16C, 0, 1, NULL, NULL, true, 1.0f);
 +                break;
 +            }
-+            fn_8013CC50(field_0x3b4, &mPos, 0x16E, 0, 1, NULL, NULL, true, 1.0f);
-+            fn_8013CC50(field_0x3b4, &mPos, 0x16F, 0, 1, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16E, 0, 1, NULL, NULL, true, 1.0f);
++            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x16F, 0, 1, NULL, NULL, true, 1.0f);
 +        }
 +    }
 +    if (field_0xcf4 == 0xD) {
@@ -121,32 +121,32 @@ index 18c75968..52fbdc0c 100644
 +            if (field_0xcf4 == 0xC && fn_802DE9A0() && field_0x135c == NULL) {
 +                switch (field_0x3dc) {
 +                case 0:
-+                    field_0x135c = fn_8013CC50(field_0x3b4, &mPos, 0x248, 0, 0, NULL, NULL, true, 1.0f);
++                    field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x248, 0, 0, NULL, NULL, true, 1.0f);
 +                    break;
 +                case 1:
-+                    field_0x135c = fn_8013CC50(field_0x3b4, &mPos, 0x247, 0, 0, NULL, NULL, true, 1.0f);
++                    field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x247, 0, 0, NULL, NULL, true, 1.0f);
 +                    break;
 +                case 2:
-+                    field_0x135c = fn_8013CC50(field_0x3b4, &mPos, 0x246, 0, -1, NULL, NULL, true, 1.0f);
++                    field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x246, 0, -1, NULL, NULL, true, 1.0f);
 +                    break;
 +                case 3:
-+                    field_0x135c = fn_8013CC50(field_0x3b4, &mPos, 0x249, 0, 0, NULL, NULL, true, 1.0f);
++                    field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x249, 0, 0, NULL, NULL, true, 1.0f);
 +                    break;
 +                }
 +            }
 +            if (field_0xcf4 == 0xC && fn_802DE9A0() && field_0x132c == NULL) {
 +                switch (field_0x3dc) {
 +                case 0:
-+                    field_0x132c = fn_8013CC50(field_0x3b4, &mPos, 0x244, 0, 0, NULL, &field_0x1330, true, 1.0f);
++                    field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x244, 0, 0, NULL, &field_0x1330, true, 1.0f);
 +                    break;
 +                case 1:
-+                    field_0x132c = fn_8013CC50(field_0x3b4, &mPos, 0x243, 0, 0, NULL, &field_0x1330, true, 1.0f);
++                    field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x243, 0, 0, NULL, &field_0x1330, true, 1.0f);
 +                    break;
 +                case 2:
-+                    field_0x132c = fn_8013CC50(field_0x3b4, &mPos, 0x242, 0, -1, NULL, &field_0x1330, true, 1.0f);
++                    field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x242, 0, -1, NULL, &field_0x1330, true, 1.0f);
 +                    break;
 +                case 3:
-+                    field_0x132c = fn_8013CC50(field_0x3b4, &mPos, 0x245, 0, 0, NULL, &field_0x1330, true, 1.0f);
++                    field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x245, 0, 0, NULL, &field_0x1330, true, 1.0f);
 +                    break;
 +                }
 +            }
@@ -189,10 +189,10 @@ index 18c75968..52fbdc0c 100644
 +            case 0:
 +            case 1:
 +            case 3:
-+                fn_8013CB44(field_0x135c, &mPos, 0, 0, true);
++                setEmitterPos_8013CB44(field_0x135c, &mPos, 0, 0, true);
 +                break;
 +            case 2:
-+                fn_8013CB44(field_0x135c, &mPos, 0, -1, true);
++                setEmitterPos_8013CB44(field_0x135c, &mPos, 0, -1, true);
 +                break;
 +            }
 +            JPAGetXYZRotateMtx(0, lbl_8046C228[field_0x3dc], 0, field_0x135c->mGlobalRot);

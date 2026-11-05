@@ -22,17 +22,17 @@ static const f32 lbl_8046C3B8[4][3] = {
     {0.0f, -0.5f, 0.0f},
 };
 
-cls_804A7B90::~cls_804A7B90() {}
+BurningBlockWoodenCrate_804A7B90::~BurningBlockWoodenCrate_804A7B90() {}
 
-void cls_804A7B90::vfunc_0x24() {
+void BurningBlockWoodenCrate_804A7B90::vfunc_0x24() {
     mAlive = false;
 }
 
-void cls_804A7B90::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", 0x17e, NULL, 0, 1.0f, 1.0f);
+void BurningBlockWoodenCrate_804A7B90::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x17e, NULL, 0, 1.0f, 1.0f);
 }
 
-void cls_804A7B90::update() {
+void BurningBlockWoodenCrate_804A7B90::update() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
     box.i.y += mPos.y;
@@ -87,7 +87,7 @@ void cls_804A7B90::update() {
                         field_0x230.x = mPos.x;
                         field_0x230.y = mPos.y;
                         field_0x230.z = mPos.z;
-                        fn_801F0E34(0x30004, 0);
+                        startSound_801F0E34(0x30004, 0);
                         lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, field_0x240);
                     }
                 }
@@ -96,7 +96,7 @@ void cls_804A7B90::update() {
     }
 }
 
-void cls_804A7B90::init() {
+void BurningBlockWoodenCrate_804A7B90::init() {
     mPos.x += (s32)(8.0f - (f32)((s32)mPos.x % 8));
     mPos.y += (s32)(8.0f - (f32)((s32)mPos.y % 8));
     field_0x3c.set(0.0f, 0.0f, 0.0f);

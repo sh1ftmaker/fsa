@@ -30,7 +30,7 @@ bool cls_804B1AE8::fn_804432DC(u8 kind, s16 a, s16 b) {
             mPtestmap->field_0x20 = 0;
             mPtestmap->field_0x22 = 0;
             mPtestmap->field_0x24 = 0;
-            mPtestmap->fn_80402E08(0.0f, 0.0f);
+            mPtestmap->moveFromCentre_80402E08(0.0f, 0.0f);
             mPtestmap->fn_80402CE0(1.0f, 1.0f);
             mPtestmap->mPane->show();
             mPmapten->mPane->hide();
@@ -43,7 +43,7 @@ bool cls_804B1AE8::fn_804432DC(u8 kind, s16 a, s16 b) {
             mPtestmap->field_0x20 = 0;
             mPtestmap->field_0x22 = 0;
             mPtestmap->field_0x24 = 0;
-            mPtestmap->fn_80402E08((f32)lbl_8048FBA4[mKind], (f32)lbl_8048FBB4[mKind]);
+            mPtestmap->moveFromCentre_80402E08((f32)lbl_8048FBA4[mKind], (f32)lbl_8048FBB4[mKind]);
             f32 scale = lbl_8048FB88[mKind] / mPtestmap->field_0x18;
             mPtestmap->fn_80402CE0(scale, scale);
             mPtestmap->mPane->show();
@@ -95,8 +95,8 @@ void cls_804B1AE8::fn_804435B8() {
 
 void cls_804B1AE8::fn_804435E4() {
     if (mState != 3) {
-        lbl_8053AB10->fn_8013B490();
-        mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -125,10 +125,10 @@ cls_804B1AE8::cls_804B1AE8() {
     lbl_8053AEF0 = this;
     mScreen = new J2DScreen();
     mScreen->setPriority("map_ed.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    mPtestmap = new cls_804AF86C();
-    mPtestmap->fn_80402F04(mScreen->search(0x50746573746d6170ull /* "Ptestmap" */));
-    mPmapten = new cls_804AF86C();
-    mPmapten->fn_80402F04(mScreen->search(0x506d617074656eull /* "Pmapten" */));
+    mPtestmap = new PaneCtrl_804AF86C();
+    mPtestmap->setPane_80402F04(mScreen->search(0x50746573746d6170ull /* "Ptestmap" */));
+    mPmapten = new PaneCtrl_804AF86C();
+    mPmapten->setPane_80402F04(mScreen->search(0x506d617074656eull /* "Pmapten" */));
     mKind = 0;
     mTimer = 0;
     mHoldTimer = 0;

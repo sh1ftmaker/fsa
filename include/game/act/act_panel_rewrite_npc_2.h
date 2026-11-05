@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A9F58.
-class cls_804A9F58 : public ActorBase_804A5770 {
+class PanelRewriteNPC2_804A9F58 : public ActorBase_804A5770 {
 public:
-    cls_804A9F58() {}
-    /* 0x08 */ virtual ~cls_804A9F58();
+    PanelRewriteNPC2_804A9F58() {}
+    /* 0x08 */ virtual ~PanelRewriteNPC2_804A9F58();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

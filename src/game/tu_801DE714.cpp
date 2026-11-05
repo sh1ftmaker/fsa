@@ -49,7 +49,7 @@ bool cls_804A51E4::fn_801E1DE8() {
 void cls_804A51E4::vfunc_0x54() {
     fn_801F856C()->fn_801F7AB8(mActorId, mSerial);
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     mPos.x = box->i.x - 30.0f;
     field_0x2c4.set(mPos.x, mPos.y);
@@ -73,7 +73,7 @@ cls_804A51E4::~cls_804A51E4() {
             }
             field_0x2c0 = 0;
         }
-        ActorBase_804A5770* target = fn_801F856C()->fn_801F666C(mTargetSerial);
+        ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
         if (target != NULL) {
             target->mAlive = false;
         }

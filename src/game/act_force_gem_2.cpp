@@ -33,7 +33,7 @@ void ForceGem2_804AB850::draw() {
         s32 frame = field_0x24c + lbl_804AB810[field_0x264];
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         return;
     }
@@ -47,13 +47,13 @@ void ForceGem2_804AB850::draw() {
             params.field_0x1c = 1;
         }
         s32 frame = field_0x24c + lbl_804AB810[field_0x264];
-        fn_801F06F0("enemy_both2_sob.bin", frame, &params, flags, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both2_sob.bin", frame, &params, flags, 1.0f, 1.0f);
     } else {
         params.field_0x2d = 1;
         s32 frame = field_0x24c + lbl_804AB810[field_0x264];
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x24c + lbl_804AB810[field_0x264], false, 2, -1, 0, 0, 0);
@@ -68,8 +68,8 @@ void ForceGem2_804AB850::update() {
     bool moved = false;
     JGeometry::TVec2f p(mPos.x, mPos.y);
     if (field_0x94 != 6) {
-        fn_801F71A4(&field_0x3c.x, field_0x26c.x, 0.3f, 1.0f);
-        fn_801F71A4(&field_0x3c.y, field_0x26c.y, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.x, field_0x26c.x, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x26c.y, 0.3f, 1.0f);
     }
     mPos += field_0x3c;
     JGeometry::TBox2f box(mBox.i, mBox.f);
@@ -93,7 +93,7 @@ void ForceGem2_804AB850::update() {
     }
     switch (mState) {
     case 0: {
-        fn_801F71A4(&mPos.z, 4.0f * JMath::sincosTable_.sinShort(field_0x250) + 24.0f, 0.3f, 1.0f);
+        addCalc2_801F71A4(&mPos.z, 4.0f * JMath::sincosTable_.sinShort(field_0x250) + 24.0f, 0.3f, 1.0f);
         field_0x250 += (s32)(256.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x200;
         s32 mode = field_0x94;
         if (mode < 3) {
@@ -181,8 +181,8 @@ void ForceGem2_804AB850::update() {
         break;
     case 6:
         if (field_0x248 <= 0 && mEmitter284 == NULL) {
-            mEmitter284 = fn_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x30022, 0);
+            mEmitter284 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x30022, 0);
         }
         // fall through
     case 5:

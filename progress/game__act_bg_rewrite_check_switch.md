@@ -13,7 +13,7 @@ at 0x230 (`field_0x230`). Overrides dtor, init (empty), update, draw (empty).
 Matched: all five. .data/.bss/.ctors 100 %; extab blocked by
 the weak JASMemPool dtor dedup (report tooling).
 
-update: `if (fn_802D6A9C()->field_0x131de) { vfunc_0x30(0xFF, true); fn_801F3668(); }`, matches with headers v2.
+update: `if (getGameView_802D6A9C()->field_0x131de) { vfunc_0x30(0xFF, true); fn_801F3668(); }`, matches with headers v2.
 
 ## symbols.txt
 - fn_802BA048/0A8/0AC/10C -> __dt__/draw__/update__/init__29BgRewriteCheckSwitch_804A8998Fv

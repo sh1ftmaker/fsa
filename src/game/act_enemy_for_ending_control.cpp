@@ -72,12 +72,12 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
 void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
     if (field_0x234 != 0) {
         cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
         cls_804A5958* elnk =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x294));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x294));
         if (elnk != NULL) {
             elnk->field_0x238 = 1;
         }
@@ -103,7 +103,7 @@ void EnemyForEndingControl_804AD48C::fn_8035B81C() {
     }
     if (arrived >= 2) {
         cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x278));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
@@ -150,7 +150,7 @@ void EnemyForEndingControl_804AD48C::draw() {
         mPos.y += 1.0f;
         SpriteParams_801F5AE0 params;
         params.field_0x1d = -1;
-        fn_801F06F0("enemy_gc_sob.bin", 0x179, &params, -1, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_gc_sob.bin", 0x179, &params, -1, 1.0f, 1.0f);
         mPos = saved;
     }
 }

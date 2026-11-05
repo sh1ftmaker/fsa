@@ -189,8 +189,8 @@ void cls_804B1920::fn_8043A638() {
         }
         field_0x8->search('Pw0101')->move(field_0xf4, field_0xf8);
     }
-    lbl_8053AB10->fn_8013B490();
-    field_0x8->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x8->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 static const char* lbl_804B1900[] = {
@@ -289,15 +289,15 @@ void cls_804B1920::fn_8043D034() {
         }
         // The screen height of 16 units at the origin.
         JGeometry::TVec3f origin(0.0f, 0.0f, 0.0f);
-        lbl_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &originScreen);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &originScreen);
         JGeometry::TVec3f top(0.0f, 16.0f, 0.0f);
-        lbl_8053AB10->field_0x24->fn_8030C5F0(&top, false, false, &topScreen);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&top, false, false, &topScreen);
         f32 margin = (topScreen.y - originScreen.y) +
                      ((s32)JUTVideo::getManager()->getEfbHeight() - field_0x40[9]->field_0xc);
         u8 side[4];
         field_0x10c = 0;
         for (int i = 0; i < 4; i++) {
-            lbl_8053AB10->field_0x24->fn_8030C5F0(fn_8023E724(i), false, false, &screen);
+            gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(fn_8023E724(i), false, false, &screen);
             side[i] = 0;
             if (screen.x > 0.0f && screen.x < (s32)JUTVideo::getManager()->getFbWidth() && screen.y > 0.0f &&
                 screen.y < (s32)JUTVideo::getManager()->getEfbHeight()) {
@@ -323,7 +323,7 @@ void cls_804B1920::fn_8043D034() {
             y = 13.0f - field_0x40[9]->field_0xc - 100.0f;
         }
         for (int i = 0; i < 12; i++) {
-            field_0x40[i]->fn_80402E08(0.0f, y);
+            field_0x40[i]->moveFromCentre_80402E08(0.0f, y);
         }
         field_0x10b = 1;
     }
@@ -348,9 +348,9 @@ f32 cls_804B1920::fn_8043D57C() {
 }
 
 void cls_804B1920::fn_8043D5F0() {
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     field_0x4->setScissor(true);
-    field_0x4->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 void cls_804B1920::fn_8043D644() {
@@ -365,10 +365,10 @@ bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
         return false;
     }
     if (id == 0x199) {
-        if (fn_802D6A9C()->fn_802D46D8(0, id, false) == true) {
+        if (getGameView_802D6A9C()->fn_802D46D8(0, id, false) == true) {
             return false;
         }
-        fn_802D6A9C()->fn_802D46D8(0, id, true);
+        getGameView_802D6A9C()->fn_802D46D8(0, id, true);
     } else if (id == 0x1B5) {
         u8 bit = 1 << arg1;
         if (field_0xde & bit) {
@@ -379,10 +379,10 @@ bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
     u8 type;
     fn_80383E2C(id, &type);
     if (type == 0x2A) {
-        if (fn_802D6A9C()->fn_802D46D8(0, id, false) == true) {
+        if (getGameView_802D6A9C()->fn_802D46D8(0, id, false) == true) {
             return false;
         }
-        fn_802D6A9C()->fn_802D46D8(0, id, true);
+        getGameView_802D6A9C()->fn_802D46D8(0, id, true);
     }
     field_0x10a = 1;
     field_0xfc = arg1 + 1;
@@ -537,7 +537,7 @@ void cls_804B1920::fn_8043DC98() {
     for (int i = 0; i < 4; i++) {
         lbl_8053AED0->field_0xdc &= ~(1 << i);
     }
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     fn_8043BB84();
     fn_8043ACE4();
     fn_8043A638();
@@ -549,10 +549,10 @@ void cls_804B1920::fn_8043DC98() {
         lbl_8053AEF0->fn_804435E4();
     }
     if (field_0x257 != 0) {
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         field_0xc->search('Ndata05')->move(field_0x110 + lbl_8050DB0C.field_0x4c[(0x2A2 - 0x4C) / 2],
                                            field_0x114 + lbl_8050DB0C.field_0x4c[(0x2A4 - 0x4C) / 2]);
-        field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -571,7 +571,7 @@ bool cls_804B1920::fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin) {
 
 void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     Vec screen;
-    lbl_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
     fn_80440928(screen.x, screen.y);
 }
 

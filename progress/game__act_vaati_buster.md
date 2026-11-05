@@ -8,7 +8,7 @@ After (rebased on 3729a91, gate ok): total: 4447 / 11561 functions (see progress
 GFBS actor ("Vaati Buster", actors.tsv, medium), class `VaatiBuster_8049E3A8`
 (vtable 0x8049E3A8; spawner case: inline ctor fn_80201630, __nw__ 0x230, so no
 members of its own). Overrides the destructor and init():
-init = `ActorBase_804A5770::init(); fn_802D7440(fn_802D6A9C(), false);`.
+init = `ActorBase_804A5770::init(); fn_802D7440(getGameView_802D6A9C(), false);`.
 
 .text, .ctors, .data, .bss 100 %. extab/extabindex 40 %: the deduplicated
 JASMemPool dtor entries (report tooling, in progress); not worked around.

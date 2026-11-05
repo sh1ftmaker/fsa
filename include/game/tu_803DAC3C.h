@@ -5,7 +5,7 @@
 
 class J2DScreen;
 class J2DPicture;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 class cls_804AF860;
 class THPMovie_804B15D0;
 
@@ -14,7 +14,7 @@ class THPMovie_804B15D0;
 // (__nw__(0x120) in tu_80134C04's fn_80135020 path). The constructor loads
 // "gamemode.blo" and "gamemode_movie.blo" from lbl_80529DEC's field_0x2c
 // archive, the GBA tile data ("gb_ch_obj_base_sch.szs", "player_sch.szs",
-// ...) into lbl_8053AB10->field_0x20, and stores `this` in lbl_8053ADD0.
+// ...) into gGameRoot2_8053AB10->field_0x20, and stores `this` in lbl_8053ADD0.
 // tu_80134C04 calls fn_803DF810 (update) and fn_803DF624 (draw) each frame;
 // both run mState through a pointer-to-member table (lbl_804B0568 /
 // lbl_804B0628, 8 entries). State 7 boots "/DOL/framework.dol".
@@ -63,16 +63,16 @@ public:
     /* 0x008 */ J2DScreen* mMovieScreen; // "gamemode_movie.blo"
     /* 0x00C */ u8 field_0xc[0x10 - 0xC];
     /* 0x010 */ J2DPicture* field_0x10;  // "kk_black.bti"
-    /* 0x014 */ cls_804AF86C* field_0x14[7];
-    /* 0x030 */ cls_804AF86C* field_0x30;
-    /* 0x034 */ cls_804AF86C* field_0x34[2];
+    /* 0x014 */ PaneCtrl_804AF86C* field_0x14[7];
+    /* 0x030 */ PaneCtrl_804AF86C* field_0x30;
+    /* 0x034 */ PaneCtrl_804AF86C* field_0x34[2];
     /* 0x03C */ u8 field_0x3c[0x40 - 0x3C];
-    /* 0x040 */ cls_804AF86C* field_0x40;
-    /* 0x044 */ cls_804AF86C* field_0x44[2];
+    /* 0x040 */ PaneCtrl_804AF86C* field_0x40;
+    /* 0x044 */ PaneCtrl_804AF86C* field_0x44[2];
     /* 0x04C */ u8 field_0x4c[0x50 - 0x4C];
-    /* 0x050 */ cls_804AF86C* field_0x50[2];
-    /* 0x058 */ cls_804AF86C* field_0x58;
-    /* 0x05C */ cls_804AF86C* field_0x5c; // lbl_8053AED8->field_0x8
+    /* 0x050 */ PaneCtrl_804AF86C* field_0x50[2];
+    /* 0x058 */ PaneCtrl_804AF86C* field_0x58;
+    /* 0x05C */ PaneCtrl_804AF86C* field_0x5c; // lbl_8053AED8->field_0x8
     /* 0x060 */ cls_804AF860* field_0x60;
     /* 0x064 */ THPMovie_804B15D0* mMovie;
     /* 0x068 */ s32 field_0x68;

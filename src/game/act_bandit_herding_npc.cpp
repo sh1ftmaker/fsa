@@ -25,13 +25,13 @@ void BanditHerdingNPC_804ACB40::update() {
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* thief = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* thief = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (thief == NULL) {
             continue;
         }
         if (field_0x4 == thief->field_0x4 && (thief->mPos.z < 8.0f || thief->field_0xd8 > 0) &&
             thief->field_0xc4 == 0) {
-            if (contains(field_0x240, thief->mPos) == true && !fn_802D6A9C()->fn_802D800C(field_0x23c)) {
+            if (contains(field_0x240, thief->mPos) == true && !getGameView_802D6A9C()->fn_802D800C(field_0x23c)) {
                 thief->field_0x94 = 1;
                 field_0x238++;
                 continue;
@@ -41,7 +41,7 @@ void BanditHerdingNPC_804ACB40::update() {
     }
     lbl_8053AD78->field_0x10c = field_0x234 - field_0x238;
     if (field_0x238 > 0) {
-        lbl_8053AB10->field_0x24->fn_8030C058(&field_0x240);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C058(&field_0x240);
     }
     // FIXME: 94%. The original materialises (field_0x238 >= field_0x234) as a bool
     // (srawi/srwi/subfc/adde, then cmplwi 1) and keeps the 1 stored to the flag in r0
@@ -51,7 +51,7 @@ void BanditHerdingNPC_804ACB40::update() {
         fn_80204638()->field_0x0 = 1;
     }
     s32 bit = field_0x23c;
-    if (bit > 0 && fn_802D6A9C()->fn_802D800C(bit) == true && vfunc_0x34() == true) {
+    if (bit > 0 && getGameView_802D6A9C()->fn_802D800C(bit) == true && vfunc_0x34() == true) {
         vfunc_0x30(0xFF, false);
     }
 }

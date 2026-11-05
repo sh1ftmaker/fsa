@@ -14,9 +14,9 @@ static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f&
 
 // The two burst effects (0x1E, 0x1F) and their sound.
 inline void cls_804A4188::spawnBurst() {
-    fn_8013CC50(field_0x4, &mPos, 0x1E, 0, -1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(field_0x4, &mPos, 0x1F, 0, 0, NULL, NULL, true, 1.0f);
-    fn_801F0E34(0x30061, 0);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x1E, 0, -1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x1F, 0, 0, NULL, NULL, true, 1.0f);
+    startSound_801F0E34(0x30061, 0);
     mFlags |= FLAG_BURST;
 }
 
@@ -33,7 +33,7 @@ inline void cls_804A4188::moveEmitter() {
         if (mStateTimer < 2) {
             depth = field_0x94;
         }
-        fn_8013CB44(mEmitter2a8, &mPos, 0, depth, true);
+        setEmitterPos_8013CB44(mEmitter2a8, &mPos, 0, depth, true);
         s16 angle = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) *
                     (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         fn_8013CAA4(mEmitter2a8, 0.017453294f * (0.005493164f * angle));
@@ -106,7 +106,7 @@ void cls_804A4188::update() {
     mPos += field_0x3c;
     moveEmitter();
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
     if (!contains(box, mPos)) {
         mFlags |= FLAG_BURST;
@@ -122,7 +122,7 @@ void cls_804A4188::update() {
 }
 
 void cls_804A4188::vfunc_0x54() {
-    mEmitter2a8 = fn_8013CC50(field_0x4, &mPos, 0x1B, 0, field_0x94, NULL, NULL, true, 1.0f);
+    mEmitter2a8 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1B, 0, field_0x94, NULL, NULL, true, 1.0f);
     moveEmitter();
 }
 

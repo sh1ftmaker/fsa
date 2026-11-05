@@ -12,7 +12,7 @@
 
 static const s32 lbl_80475138[4] = {0x16, 0x11, 0xC, 7};
 
-void cls_804AE678::vfunc_0x24() {
+void EyeballSwitch_804AE678::vfunc_0x24() {
     deleteEmitter(&mEmitter);
     mAlive = false;
 }
@@ -21,7 +21,7 @@ void cls_804AE678::vfunc_0x24() {
 // (field_0x248) after the field_0x244 byte, we load it before; and the
 // .sdata2 literals come out as 32.0f, 1.0f, the target has 1.0f, 32.0f
 // (relocation names only).
-void cls_804AE678::update() {
+void EyeballSwitch_804AE678::update() {
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     JGeometry::TBox2f box(mBox);
     box.addPos(p);
@@ -29,7 +29,7 @@ void cls_804AE678::update() {
     fn_8020D58C()->addBox(mSerial);
     s32 arrow = field_0x250;
     if (arrow != -1) {
-        ActorBase_804A5770* hit = fn_801F856C()->fn_801F666C(arrow);
+        ActorBase_804A5770* hit = fn_801F856C()->findActorBySerial_801F666C(arrow);
         if (hit != NULL && hit->mActorId == ACTOR_ARRW) {
             return;
         }
@@ -43,18 +43,18 @@ void cls_804AE678::update() {
             fn_8023BA68(&box, field_0x4, &p, true);
             s32 serial = fn_801F8108(this, ACTOR_ARRW, -1, 32.0f);
             if (serial >= 0) {
-                ActorBase_804A5770* arrowActor = fn_801F856C()->fn_801F666C(serial);
+                ActorBase_804A5770* arrowActor = fn_801F856C()->findActorBySerial_801F666C(serial);
                 if (arrowActor != NULL && arrowActor->mActorId == ACTOR_ARRW) {
                     field_0x244 ^= 1;
                     field_0x250 = serial;
                     if (field_0x23c >= 3) {
-                        fn_802D6A9C()->fn_802D78B4(field_0x248, field_0x244);
+                        getGameView_802D6A9C()->fn_802D78B4(field_0x248, field_0x244);
                     }
                     if (field_0x23c == 0 || field_0x23c == 4) {
                         vfunc_0x30(0xFF, true);
                         lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
-                        fn_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
-                        fn_801F0E34(0x3008F, 0);
+                        spawnEmitter_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
+                        startSound_801F0E34(0x3008F, 0);
                         field_0x234 = 2;
                     } else {
                         if (field_0x23c == 2) {
@@ -69,8 +69,8 @@ void cls_804AE678::update() {
                         } else {
                             vfunc_0x30(0xFF, true);
                             lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
-                            fn_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
-                            fn_801F0E34(0x3008F, 0);
+                            spawnEmitter_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
+                            startSound_801F0E34(0x3008F, 0);
                         }
                     }
                 }
@@ -94,14 +94,14 @@ void cls_804AE678::update() {
     }
     if (field_0x244 == true) {
         if (mEmitter == NULL) {
-            mEmitter = fn_8013CC50(field_0x4, &mPos, 0x182, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x182, 0, 0, NULL, NULL, true, 1.0f);
         }
     } else {
         deleteEmitter(&mEmitter);
     }
 }
 
-cls_804AE678::~cls_804AE678() {
+EyeballSwitch_804AE678::~EyeballSwitch_804AE678() {
     if (mEmitter != NULL) {
         fn_801EE434(mEmitter);
         mEmitter = NULL;
@@ -110,7 +110,7 @@ cls_804AE678::~cls_804AE678() {
 
 // FIXME: 98.5 %. Regalloc only: the target keeps this/end in r29/r28 (we swap
 // them) and params/table/params >> 27 in r27/r26/r25 (we have r25/r27/r26).
-void cls_804AE678::vfunc_0x10() {
+void EyeballSwitch_804AE678::vfunc_0x10() {
     s32 i;
     s32 end = fn_801F856C()->mActorEnd;
     for (i = 0; i < end; i++) {
@@ -122,7 +122,7 @@ void cls_804AE678::vfunc_0x10() {
             for (s32 j = 0; j < 4; j++) {
                 if (field_0x248 == ((params >> lbl_80475138[j]) & 0x1F)) {
                     field_0x254 = params >> 27;
-                    if (fn_802D6A9C()->fn_802D800C(field_0x254)) {
+                    if (getGameView_802D6A9C()->fn_802D800C(field_0x254)) {
                         lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
                         field_0x234 = 2;
                         break;
@@ -133,7 +133,7 @@ void cls_804AE678::vfunc_0x10() {
     }
 }
 
-void cls_804AE678::init() {
+void EyeballSwitch_804AE678::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
@@ -165,7 +165,7 @@ void cls_804AE678::init() {
         active = 1;
     }
     if (active == 1) {
-        if (field_0x23c >= 3 && fn_802D6A9C()->fn_802D7888(field_0x248) == true) {
+        if (field_0x23c >= 3 && getGameView_802D6A9C()->fn_802D7888(field_0x248) == true) {
             lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
             vfunc_0x30(0xFF, true);
             if (field_0x23c == 4) {

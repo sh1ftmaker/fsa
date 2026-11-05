@@ -13,24 +13,24 @@ void OFFSwitch_804A9B70::update() {
         switch (field_0x234) {
         case 0:
             if (vfunc_0x34()) {
-                fn_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
                 field_0x230 = 1;
             }
             break;
         case 1:
             if (vfunc_0x34()) {
-                fn_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
             } else {
-                fn_802D6A9C()->fn_802D8050(field_0x238, field_0x23c, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, field_0x23c, 0xFF);
             }
             break;
         case 2:
             if (vfunc_0x34()) {
                 if (field_0x23c) {
-                    fn_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
+                    getGameView_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
                     field_0x23c = false;
                 } else {
-                    fn_802D6A9C()->fn_802D8050(field_0x238, true, 0xFF);
+                    getGameView_802D6A9C()->fn_802D8050(field_0x238, true, 0xFF);
                     field_0x23c = true;
                 }
                 field_0x230 = 1;
@@ -38,14 +38,14 @@ void OFFSwitch_804A9B70::update() {
             break;
         case 3:
             if (vfunc_0x34()) {
-                fn_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
             } else {
-                fn_802D6A9C()->fn_802D8050(field_0x238, true, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, true, 0xFF);
             }
             break;
         case 4:
             if (vfunc_0x34()) {
-                fn_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x238, false, 0xFF);
             }
             break;
         }
@@ -70,7 +70,7 @@ void OFFSwitch_804A9B70::update() {
 void OFFSwitch_804A9B70::init() {
     field_0x234 = field_0x90 & 0x1F;
     field_0x238 = (field_0x90 >> 22) & 0x1F;
-    if (fn_802D6A9C()->fn_802D800C(field_0x238)) {
+    if (getGameView_802D6A9C()->fn_802D800C(field_0x238)) {
         field_0x23c = true;
     } else {
         field_0x23c = false;

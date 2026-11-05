@@ -9,10 +9,10 @@ class JPABaseEmitter;
 
 // The 'GNON' actor (Ganon, docs/names/actors.tsv, high confidence; the spawner's case for
 // ACTOR_GNON). Named after its vtable, 0x804A25F0.
-class cls_804A25F0 : public ActorBase_804A5770 {
+class Ganon_804A25F0 : public ActorBase_804A5770 {
 public:
-    cls_804A25F0() {}
-    /* 0x08 */ virtual ~cls_804A25F0();
+    Ganon_804A25F0() {}
+    /* 0x08 */ virtual ~Ganon_804A25F0();
     // fn_80192038: plays sound 0x40006 and re-issues vfunc_0x28 with 2 and (0, 0).
     /* 0x24 */ virtual void vfunc_0x24();
     // 0x8019CEBC / 0x8019CEC4 (game/tu_80197070.cpp): store a word at 0x28C / 0x2F8.

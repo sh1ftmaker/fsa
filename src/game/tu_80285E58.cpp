@@ -82,30 +82,30 @@ void Player_804A6F38::fn_80285F44() {
                 pos.y += 6.0f;
                 if (!fn_8024B24C() && (tile == 0xE || (fn_802DEB58() && fn_80225BE4(&mPos, field_0x3b4))) &&
                     fn_802412CC()) {
-                    fn_8013CC50(field_0x3b4, &pos, 0x4F7, -1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x3b4, &pos, 0x4F8, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x3b4, &pos, 0x4F9, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x3b4, &pos, 0x4FA, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F7, -1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F8, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F9, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4FA, 0, 0, NULL, NULL, true, 1.0f);
                 }
                 if (fn_8024B24C()) {
-                    fn_8013CC50(field_0x3b4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
                 } else if (tile == 0xE || tile == 3) {
                 } else if (fn_80225BE4(&mPos, field_0x3b4)) {
                     if (fn_802412CC()) {
-                        fn_8013CC50(field_0x3b4, &pos, 0x4F3, -1, 0, NULL, NULL, true, 1.0f);
-                        fn_8013CC50(field_0x3b4, &pos, 0x4F4, 0, 0, NULL, NULL, true, 1.0f);
-                        fn_8013CC50(field_0x3b4, &pos, 0x4F5, 0, 0, NULL, NULL, true, 1.0f);
-                        fn_8013CC50(field_0x3b4, &pos, 0x4F6, 0, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F3, -1, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F4, 0, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F5, 0, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F6, 0, 0, NULL, NULL, true, 1.0f);
                         s32 player = field_0x4;
                         fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (player & 3) | 0x2C, -1,
                                                    player);
                     } else {
-                        fn_8013CC50(field_0x3b4, &pos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
                     }
                 } else if (tile == 0x39) {
-                    fn_8013CC50(field_0x3b4, &pos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
                 } else {
-                    fn_8013CC50(field_0x3b4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x3b4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
                 }
             }
         } else {
@@ -149,7 +149,7 @@ void Player_804A6F38::fn_80286688() {
             field_0x13b8 = 0;
             return;
         }
-        JUTGamePad* pad = JUTGamePad::getGamePad(fn_8030AAF4(field_0x11ec));
+        JUTGamePad* pad = JUTGamePad::getGamePad(getPlayerInputSlot_8030AAF4(field_0x11ec));
         if (!fn_80247534() && pad != NULL && (pad->getTrigger() & 0x10)) {
             if (field_0x13b8 == 1) {
                 field_0x13b8 = 0;
@@ -315,7 +315,7 @@ void Player_804A6F38::fn_80286E10() {
     if (field_0x121e) {
         return;
     }
-    if (!lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x400)) {
+    if (!lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x400)) {
         return;
     }
     if (fn_802486A0() == 4) {
@@ -364,7 +364,7 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
 // - lbl_8053ABA8 / lbl_8053ABF0 are tested with cmpwi in the original
 //   (cmplwi in ours).
 // - field_0x4 and field_0x3b4 are read before the calls they are compared
-//   with / passed next to (fn_80239040, fn_80238F78, the five fn_8013CC50
+//   with / passed next to (fn_80239040, fn_80238F78, the five spawnEmitter_8013CC50
 //   trail emitters and fn_802255F4): a saved register in the original, a
 //   reload after the call in ours.
 // - The inlined fn_80286688's mode-0xB byte test (see its FIXME).
@@ -471,7 +471,7 @@ void Player_804A6F38::fn_802870C8() {
         if (field_0xcee == 0) {
             s32 serial = field_0xd88;
             if (serial >= 0) {
-                if (fn_801F856C()->fn_801F666C(serial) != NULL) {
+                if (fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
                     if (fn_8025EFFC(field_0xd88, true, false)) {
                         field_0xd88 = -1;
                     }
@@ -1372,13 +1372,13 @@ void Player_804A6F38::fn_802870C8() {
     if (!fn_802413E8() && !fn_802DEBF8() && !fn_802DEBA0() && !lbl_8053AAF8->field_0x7e && !fn_80240670() &&
         fn_80246B10(0x40)) {
         if (fn_80246B10(0x100)) {
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             if (!camera->field_0x7f4) {
                 camera->field_0x7f5 = 1;
             }
         } else if (fn_80246B10(0x200)) {
             s32 player = field_0x4;
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             if (!camera->field_0x7f5) {
                 camera->field_0x7f4 = 1;
                 camera->field_0x7f8 = player;
@@ -1419,24 +1419,24 @@ void Player_804A6F38::fn_802870C8() {
         } else if (field_0x138c == NULL) {
             switch (field_0x3dc) {
             case 0:
-                field_0x138c = fn_8013CC50(field_0x3b4, &mPos, 0x501, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
+                field_0x138c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x501, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
                                            true, 1.0f);
                 break;
             case 1:
-                field_0x138c = fn_8013CC50(field_0x3b4, &mPos, 0x500, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
+                field_0x138c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x500, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
                                            true, 1.0f);
                 break;
             case 2:
-                field_0x138c = fn_8013CC50(field_0x3b4, &mPos, 0x4FF, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
+                field_0x138c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x4FF, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
                                            true, 1.0f);
                 break;
             case 3:
-                field_0x138c = fn_8013CC50(field_0x3b4, &mPos, 0x502, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
+                field_0x138c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x502, fn_8024EE14(), fn_8024EE0C(), NULL, NULL,
                                            true, 1.0f);
                 break;
             }
         } else {
-            fn_8013CB44(field_0x138c, &mPos, fn_8024EE14(), fn_8024EE0C(), true);
+            setEmitterPos_8013CB44(field_0x138c, &mPos, fn_8024EE14(), fn_8024EE0C(), true);
         }
     }
 
@@ -1449,10 +1449,10 @@ void Player_804A6F38::fn_802870C8() {
             planarLength(mPos - field_0x14) < 1.0f) {
             invalidateEmitter(field_0x1390);
         } else if (field_0x1390 == NULL) {
-            field_0x1390 = fn_8013CC50(field_0x3b4, &mPos, 0xD7, fn_8024EE14(), fn_8024EE0C(), NULL, NULL, true,
+            field_0x1390 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0xD7, fn_8024EE14(), fn_8024EE0C(), NULL, NULL, true,
                                        1.0f);
         } else {
-            fn_8013CB44(field_0x1390, &mPos, fn_8024EE14(), fn_8024EE0C(), false);
+            setEmitterPos_8013CB44(field_0x1390, &mPos, fn_8024EE14(), fn_8024EE0C(), false);
         }
     }
 
@@ -1463,9 +1463,9 @@ void Player_804A6F38::fn_802870C8() {
         !(fn_80224E88(&mPos, field_0x3b4) || fn_80224B88(&mPos, field_0x3b4))) {
         invalidateEmitter(field_0x1394);
     } else if (field_0x1394 == NULL) {
-        field_0x1394 = fn_8013CC50(field_0x3b4, &mPos, 0x1B1, 0, -1, NULL, NULL, true, 1.0f);
+        field_0x1394 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x1B1, 0, -1, NULL, NULL, true, 1.0f);
     } else {
-        fn_8013CB44(field_0x1394, &mPos, 0, -1, true);
+        setEmitterPos_8013CB44(field_0x1394, &mPos, 0, -1, true);
     }
 
     if (!field_0xce9) {

@@ -26,7 +26,7 @@ public:
     /* 0x04 */ s32 field_0x4;  // state, -1 for none
     /* 0x08 */ u8 field_0x8;   // step index in the state's table
     /* 0x09 */ u8 field_0x9;   // frames spent in the step
-    /* 0x0C */ s32 field_0xc;  // effect layer (fn_8013CC50's first argument)
+    /* 0x0C */ s32 field_0xc;  // effect layer (spawnEmitter_8013CC50's first argument)
     /* 0x10 */ JGeometry::TVec3f field_0x10; // effect position
 }; // Size: 0x1C
 

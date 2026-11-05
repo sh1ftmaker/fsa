@@ -182,11 +182,11 @@ void fn_803A3144() {
 }
 
 bool fn_803A3168(u8 index, s32 bit) {
-    return fn_802D6A9C()->fn_802D7E5C(index, bit);
+    return getGameView_802D6A9C()->fn_802D7E5C(index, bit);
 }
 
 void fn_803A31AC(u8 index, s32 bit, bool set) {
-    fn_802D6A9C()->fn_802D7EB0(index, bit, set);
+    getGameView_802D6A9C()->fn_802D7EB0(index, bit, set);
 }
 
 s32 fn_803A3200() {

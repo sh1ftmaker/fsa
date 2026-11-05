@@ -104,7 +104,7 @@ public:
     // 0x801F4F28. 43 overrides, no arguments read; 81 calls in 37 units, r3
     // never read.
     /* 0x24 */ virtual void vfunc_0x24();
-    // 0x801F4E0C: the int goes to fn_8013CC50's 4th argument (all four
+    // 0x801F4E0C: the int goes to spawnEmitter_8013CC50's 4th argument (all four
     // calls), the floats are added to mPos.x and mPos.y. Never overridden;
     // 8 calls in 8 units (e.g. 0x8017EF80, 0x801D95BC) set r4 (li, or extsb
     // of an s8, so the parameter is a full int), f1 and f2, and ignore r3.
@@ -198,7 +198,7 @@ public:
     void fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s32 player);
     // 58 units / 104 calls. Never reads r3, but every caller passes an actor
     // there (`this` 102 times) and its own mSerial in r4, so a member is the
-    // likelier source. Looks up the actor `serial` (fn_801F666C, 0x801EECE4)
+    // likelier source. Looks up the actor `serial` (findActorBySerial_801F666C, 0x801EECE4)
     // and reports a player relative to it, picked by `mode` (cmpwi 0-5;
     // player is used in mode 2): *outAngle (sth; callers read it back with
     // lhz), *outDir (stw), *outDist (stfs), *outPlayer (stw; -1 in both
@@ -208,13 +208,13 @@ public:
     // 7 units / 10 calls. fn_801F2DB4(this, 'NULL', 'NULL', list) with a
     // stack copy of the 0x44-byte list lbl_80469FC8 (0x801EF518-0x801EF560).
     void fn_801EF510();
-    // 23 units / 49 calls. fn_801F06F0 with a resource already loaded
+    // 23 units / 49 calls. drawSprite_801F06F0 with a resource already loaded
     // (fn_801EF830's res, used when no name is given) instead of a name;
     // skipped while mSpriteParams.mMtx is set. f1-f3 are kept in f30, f31,
     // f28. `res` is only passed on; void* is still a guess.
     void fn_801EFD34(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 scaleX, f32 scaleY,
                      f32 arg_f3);
-    // 42 units / 59 calls. fn_801F06F0 with a scale mode (cmpwi 0 / 2 picks
+    // 42 units / 59 calls. drawSprite_801F06F0 with a scale mode (cmpwi 0 / 2 picks
     // the PSMTXScale variant, 0x801F031C-0x801F0344). `arg` is only stored
     // to the stack with stb (0x801F02E8), a byte; callers pass li 0 / li 1
     // or a clrlwi 24 value, as for a bool.
@@ -226,7 +226,7 @@ public:
     // be NULL (callers: a stack struct 131 times, 0 61 times); flags is -1,
     // 0 or 7 at most calls.
     // const: the asm has no store through `this`.
-    void fn_801F06F0(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
+    void drawSprite_801F06F0(const char* name, s32 frame, SpriteParams_801F5AE0* params, s32 flags,
                      f32 scaleX, f32 scaleY) const;
     // 53 units / 107 calls. id compared unsigned with 3 and 0x42; uses
     // field_0x4 and mPos.
@@ -245,7 +245,7 @@ public:
     // unknown).
     // const: its lwz of field_0x4 is scheduled above the prologue's stw r28,
     // which MWCC does only for loads through a const `this`.
-    JAISoundHandle* fn_801F0E34(u32 soundId, u32 fadeTime) const;
+    JAISoundHandle* startSound_801F0E34(u32 soundId, u32 fadeTime) const;
     // 4 units / 5 calls. The actor's sound object: fn_801F6644(mgr, mSlot)
     // (0x801F118C-0x801F11A0), mSounds[mSlot] or the manager's shared one.
     ActorSoundObj_804578F4* fn_801F1184() const;
@@ -407,7 +407,7 @@ public:
     // an unsigned char parameter (a bool one takes it with mr).
     s32 fn_801F3D94(u8 flag);
     // 2 units / 6 calls. Plays the actor's EnemyParam "voic" sound
-    // (fn_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
+    // (startSound_801F0E34(lbl_80469F38[voic - 1], 0)) and, if field_0xe8 == 0,
     // sound 0x40002.
     void fn_801F4694() const;
     // 0x8019CEAC, out of line in game/tu_80197070.cpp: field_0xb0 = v. One
@@ -418,7 +418,7 @@ public:
     s32 fn_8019CEB4() const;
     // 0x8017EAF8, out of line in game/tu_8017C01C.cpp: field_0x3c = v (a whole
     // TVec3f copy, psq + stfs). Both callers in fn_8017C40C pass the actor
-    // from fn_801F666C and a stack TVec3f at 0x50(r1).
+    // from findActorBySerial_801F666C and a stack TVec3f at 0x50(r1).
     void fn_8017EAF8(const JGeometry::TVec3f& v);
 
     // Inline accessors. The spawner calls them out of line (it is too large
@@ -559,7 +559,7 @@ public:
     /* 0x165 */ u8 mInList;           // set by fn_801F84C4 when linked
     /* 0x168 */ s32 field_0x168;
     /* 0x16C */ s32 field_0x16c; // spawner's 6th argument (default -1)
-    /* 0x170 */ s32 field_0x170; // set by the spawner from fn_802D39FC(fn_802D6A9C())
+    /* 0x170 */ s32 field_0x170; // set by the spawner from fn_802D39FC(getGameView_802D6A9C())
     /* 0x174 */ s32 field_0x174;
     /* 0x178 */ s32 field_0x178;
     /* 0x17C */ u8 field_0x17c;
@@ -605,7 +605,7 @@ extern "C" {
 // through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
 // 0x801EF7B4-0x801EF7F4) and hands it with pos, arg1 and params (a
 // SpriteParams_801F5AE0 or NULL, then defaults are used) to fn_802F86CC
-// (lbl_8053AB10->0x20).
+// (gGameRoot2_8053AB10->0x20).
 void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                  SpriteParams_801F5AE0* params);
 

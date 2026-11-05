@@ -23,18 +23,18 @@
 class JPABaseEmitter;
 
 // Spawned for 'LPLK'.
-class cls_8049C578 : public ActorBase_804A5770 {
+class ForceLike_8049C578 : public ActorBase_804A5770 {
 public:
-    cls_8049C578() {}
-    /* 0x08 */ virtual ~cls_8049C578();
+    ForceLike_8049C578() {}
+    /* 0x08 */ virtual ~ForceLike_8049C578();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
 // Spawned for 'SIBT'.
-class cls_8049CB04 : public ActorBase_804A5770 {
+class TempleBTIDisplay_8049CB04 : public ActorBase_804A5770 {
 public:
-    cls_8049CB04() {}
-    /* 0x08 */ virtual ~cls_8049CB04();
+    TempleBTIDisplay_8049CB04() {}
+    /* 0x08 */ virtual ~TempleBTIDisplay_8049CB04();
     /* 0x230 */ u8 field_0x230[0x18];
 }; // Size: 0x248
 
@@ -134,10 +134,10 @@ public:
 }; // Size: 0x7C8
 
 // Spawned for 'HINO'.
-class cls_8049F9B4 : public ActorBase_804A5770 {
+class Hinox_8049F9B4 : public ActorBase_804A5770 {
 public:
-    cls_8049F9B4() {}
-    /* 0x08 */ virtual ~cls_8049F9B4();
+    Hinox_8049F9B4() {}
+    /* 0x08 */ virtual ~Hinox_8049F9B4();
     /* 0x230 */ u8 field_0x230[0x58];
 }; // Size: 0x288
 
@@ -171,10 +171,10 @@ public:
 }; // Size: 0x338
 
 // Spawned for 'WIZR'.
-class cls_804A0EDC : public ActorBase_804A5770 {
+class Wizzrobe_804A0EDC : public ActorBase_804A5770 {
 public:
-    cls_804A0EDC() {}
-    /* 0x08 */ virtual ~cls_804A0EDC();
+    Wizzrobe_804A0EDC() {}
+    /* 0x08 */ virtual ~Wizzrobe_804A0EDC();
     /* 0x230 */ u8 field_0x230[0xDC];
 }; // Size: 0x30C
 
@@ -216,18 +216,18 @@ public:
 }; // Size: 0x338
 
 // Spawned for 'ALCE'.
-class cls_804A2AB0 : public ActorBase_804A5770 {
+class AllEnemiesDefeated_804A2AB0 : public ActorBase_804A5770 {
 public:
-    cls_804A2AB0() {}
-    /* 0x08 */ virtual ~cls_804A2AB0();
+    AllEnemiesDefeated_804A2AB0() {}
+    /* 0x08 */ virtual ~AllEnemiesDefeated_804A2AB0();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
 // Spawned for 'SYKY'.
-class cls_804A2B18 : public ActorBase_804A5770 {
+class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
 public:
-    cls_804A2B18() {}
-    /* 0x08 */ virtual ~cls_804A2B18();
+    ShootingGallery_804A2B18() {}
+    /* 0x08 */ virtual ~ShootingGallery_804A2B18();
     /* 0x230 */ u8 field_0x230[0x80];
 }; // Size: 0x2B0
 
@@ -240,26 +240,26 @@ public:
 }; // Size: 0x354
 
 // Spawned for 'SAYA'.
-class cls_804A2E30 : public ActorBase_804A5770 {
+class ZoraFishHerding_804A2E30 : public ActorBase_804A5770 {
 public:
-    cls_804A2E30() {}
-    /* 0x08 */ virtual ~cls_804A2E30();
+    ZoraFishHerding_804A2E30() {}
+    /* 0x08 */ virtual ~ZoraFishHerding_804A2E30();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
 // Spawned for 'GOMA'.
-class cls_804A307C : public ActorBase_804A5770 {
+class Gohma_804A307C : public ActorBase_804A5770 {
 public:
-    cls_804A307C() {}
-    /* 0x08 */ virtual ~cls_804A307C();
+    Gohma_804A307C() {}
+    /* 0x08 */ virtual ~Gohma_804A307C();
     /* 0x230 */ u8 field_0x230[0x54];
 }; // Size: 0x284
 
 // Spawned for 'DDGO'.
-class cls_804A3334 : public ActorBase_804A5770 {
+class Dodongo_804A3334 : public ActorBase_804A5770 {
 public:
-    cls_804A3334() {}
-    /* 0x08 */ virtual ~cls_804A3334();
+    Dodongo_804A3334() {}
+    /* 0x08 */ virtual ~Dodongo_804A3334();
     /* 0x230 */ u8 field_0x230[0x74];
 }; // Size: 0x2A4
 
@@ -342,26 +342,26 @@ public:
 }; // Size: 0x320
 
 // Spawned for 'SWTH'.
-class cls_804A7F38 : public ActorBase_804A5770 {
+class Switch_804A7F38 : public ActorBase_804A5770 {
 public:
-    cls_804A7F38() {}
-    /* 0x08 */ virtual ~cls_804A7F38();
+    Switch_804A7F38() {}
+    /* 0x08 */ virtual ~Switch_804A7F38();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
 // Spawned for 'FIRE'.
-class cls_804A89F0 : public ActorBase_804A5770 {
+class FireRodFire_804A89F0 : public ActorBase_804A5770 {
 public:
-    cls_804A89F0() {}
-    /* 0x08 */ virtual ~cls_804A89F0();
+    FireRodFire_804A89F0() {}
+    /* 0x08 */ virtual ~FireRodFire_804A89F0();
     /* 0x230 */ u8 field_0x230[0x64];
 }; // Size: 0x294
 
 // Spawned for 'TUBO'.
-class cls_804A9428 : public ActorBase_804A5770 {
+class Pot_804A9428 : public ActorBase_804A5770 {
 public:
-    cls_804A9428() {}
-    /* 0x08 */ virtual ~cls_804A9428();
+    Pot_804A9428() {}
+    /* 0x08 */ virtual ~Pot_804A9428();
     /* 0x230 */ u8 field_0x230[0x28];
 }; // Size: 0x258
 
@@ -376,10 +376,10 @@ public:
 }; // Size: 0x2F8
 
 // Spawned for 'SWDL'.
-class cls_804AA590 : public ActorBase_804A5770 {
+class PlayerSwordLevelCheckNPC_804AA590 : public ActorBase_804A5770 {
 public:
-    cls_804AA590() {}
-    /* 0x08 */ virtual ~cls_804AA590();
+    PlayerSwordLevelCheckNPC_804AA590() {}
+    /* 0x08 */ virtual ~PlayerSwordLevelCheckNPC_804AA590();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
@@ -400,18 +400,18 @@ public:
 }; // Size: 0x270
 
 // Spawned for 'BBMB'.
-class cls_804AC588 : public ActorBase_804A5770 {
+class GiantBomb_804AC588 : public ActorBase_804A5770 {
 public:
-    cls_804AC588() {}
-    /* 0x08 */ virtual ~cls_804AC588();
+    GiantBomb_804AC588() {}
+    /* 0x08 */ virtual ~GiantBomb_804AC588();
     /* 0x230 */ u8 field_0x230[0x3C];
 }; // Size: 0x26C
 
 // Spawned for 'BEMN'.
-class cls_804AC810 : public ActorBase_804A5770 {
+class BeeManager_804AC810 : public ActorBase_804A5770 {
 public:
-    cls_804AC810() {}
-    /* 0x08 */ virtual ~cls_804AC810();
+    BeeManager_804AC810() {}
+    /* 0x08 */ virtual ~BeeManager_804AC810();
     /* 0x230 */ u8 field_0x230[0x54];
 }; // Size: 0x284
 
@@ -426,10 +426,10 @@ public:
 }; // Size: 0x2E4
 
 // Spawned for 'EMIK'.
-class cls_804AD5B8 : public cls_804A5958 {
+class MaidenEnding_804AD5B8 : public cls_804A5958 {
 public:
-    cls_804AD5B8() {}
-    /* 0x08 */ virtual ~cls_804AD5B8();
+    MaidenEnding_804AD5B8() {}
+    /* 0x08 */ virtual ~MaidenEnding_804AD5B8();
     /* 0x254 */ u8 field_0x254[0x28];
 }; // Size: 0x27C
 
@@ -442,10 +442,10 @@ public:
 }; // Size: 0x414
 
 // Spawned for 'ELK2'.
-class cls_804AE338 : public ActorBase_804A5770 {
+class Link2Ending_804AE338 : public ActorBase_804A5770 {
 public:
-    cls_804AE338() {}
-    /* 0x08 */ virtual ~cls_804AE338();
+    Link2Ending_804AE338() {}
+    /* 0x08 */ virtual ~Link2Ending_804AE338();
     /* 0x230 */ u8 field_0x230[0x88];
 }; // Size: 0x2B8
 
@@ -493,10 +493,10 @@ public:
 }; // Size: 0x27C
 
 // Spawned for 'BFRY'.
-class cls_804AF338 : public ActorBase_804A5770 {
+class GreatFairy_804AF338 : public ActorBase_804A5770 {
 public:
-    cls_804AF338() {}
-    /* 0x08 */ virtual ~cls_804AF338();
+    GreatFairy_804AF338() {}
+    /* 0x08 */ virtual ~GreatFairy_804AF338();
     /* 0x230 */ u8 field_0x230[0x78];
 }; // Size: 0x2A8
 

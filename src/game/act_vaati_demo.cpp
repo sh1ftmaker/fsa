@@ -118,7 +118,7 @@ void cls_8049D940::draw() {
         void* res = field_0x31c[field_0x238.mKey];
         if (res != NULL) {
             if (field_0x4 < 8) {
-                lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+                gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
             }
         }
     }
@@ -147,7 +147,7 @@ void cls_8049D940::fn_801158B8() {
     pos = mPos;
     pos.z = 0.0f;
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
     }
 }
 
@@ -163,10 +163,10 @@ void cls_8049D940::init() {
     field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
     mDrawEnabled = false;
     field_0x238.fn_801D2608(lbl_80539F08, 1);
-    field_0x238.fn_801D22DC(0, 2, false);
+    field_0x238.startAnim_801D22DC(0, 2, false);
     field_0x238.fn_801D1F14(0.0f);
     field_0x270.fn_801D2608(lbl_80539F08, 1);
-    field_0x270.fn_801D22DC(0, 2, false);
+    field_0x270.startAnim_801D22DC(0, 2, false);
     field_0x270.fn_801D1F14(0.0f);
     field_0x308 = mPos;
 }

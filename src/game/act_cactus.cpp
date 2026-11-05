@@ -10,12 +10,12 @@ static const s32 lbl_804718E8[7] = {0, 1, 2, 3, 4, 3, 4};
 Cactus_804AB580::~Cactus_804AB580() {}
 
 void Cactus_804AB580::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", lbl_804718E8[field_0x23c] + 0x12F, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_804718E8[field_0x23c] + 0x12F, NULL, 0, 1.0f, 1.0f);
 }
 
 void Cactus_804AB580::update() {
     if ((field_0x90 & 1) == 1 && vfunc_0x34() == 1) {
-        fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
         mAlive = false;
         return;
     }
@@ -32,7 +32,7 @@ void Cactus_804AB580::update() {
         s32 player = fn_801F285C(NULL, NULL, true, -1);
         if (hit > 0 || player >= 0 || field_0x9c >= 0 || fn_8023BB50(&hitBox, field_0x4, &pos, true) >= 0) {
             if (field_0x230 == 0) {
-                fn_801F0E34(0x50080, 0);
+                startSound_801F0E34(0x50080, 0);
             }
             if (player >= 0) {
                 fn_802379E4(player, &mPos);

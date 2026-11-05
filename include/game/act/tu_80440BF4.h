@@ -9,7 +9,7 @@
 
 class J2DScreen;
 struct ResTIMG;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // A button-icon overlay built from "button.blo". Named after its vtable,
 // 0x804B1988 (only the destructor, fn_80440F30); the constructor is
@@ -36,7 +36,7 @@ public:
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen;
-    /* 0x08 */ cls_804AF86C* field_0x8; // 'Ndata01' pane (tu_803D7098 reads it)
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8; // 'Ndata01' pane (tu_803D7098 reads it)
     /* 0x0C */ u8 mAlpha[7];            // initial alpha of the seven panes
     /* 0x13 */ u8 pad_0x13;
 }; // Size: 0x14

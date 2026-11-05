@@ -20,7 +20,7 @@ void EndingMapSkipper_804AA498::update() {
     mTimer--;
     if (mTimer == 0) {
         s32 first = sViewParams[mIndex][0];
-        fn_802D6A9C()->fn_802D9FF4(first, sViewParams[mIndex][1]);
+        getGameView_802D6A9C()->fn_802D9FF4(first, sViewParams[mIndex][1]);
         lbl_8053AAF8->fn_80136798(15, 0);
     }
 }

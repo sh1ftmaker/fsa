@@ -48,7 +48,7 @@ bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* 
         if (mBoxes[i].mLayer == layer && mBoxes[i].mSerial != serial && contains(mBoxes[i].mBox, *pos)) {
             found = true;
             if (ignoreIds != NULL) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mBoxes[i].mSerial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mBoxes[i].mSerial);
                 if (actor == NULL) {
                     found = false;
                 } else {
@@ -73,7 +73,7 @@ bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* 
 // FIXME: 87.1 %. The original loads the actor's layer (field_0x4) before the
 // count check and adds the box corners in another order; the rest is the same.
 void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         return;
     }

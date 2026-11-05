@@ -9,10 +9,10 @@
 class JPABaseEmitter;
 
 // Named after its vtable, 0x804ADAC8.
-class cls_804ADAC8 : public ActorBase_804A5770 {
+class KaeporaGaeboraEnding_804ADAC8 : public ActorBase_804A5770 {
 public:
-    cls_804ADAC8() {}
-    /* 0x08 */ virtual ~cls_804ADAC8();
+    KaeporaGaeboraEnding_804ADAC8() {}
+    /* 0x08 */ virtual ~KaeporaGaeboraEnding_804ADAC8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

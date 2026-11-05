@@ -18,7 +18,7 @@ void ForceGemRain_804A8010::draw() {}
 // sdata2 literals (@NNN vs lbl_) are the data split.
 void ForceGemRain_804A8010::update() {
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = (layer < 8) ? &view->mVisibleBox : &view->field_0xdc;
     JGeometry::TVec3f pos;
 
@@ -42,7 +42,7 @@ void ForceGemRain_804A8010::update() {
         }
         if (field_0x24c != 0) {
             if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-                Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+                Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
                 if (cam->field_0x7f4 == 0) {
                     cam->field_0x7f5 = 1;
                 }
@@ -50,7 +50,7 @@ void ForceGemRain_804A8010::update() {
             return;
         }
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -155,7 +155,7 @@ void ForceGemRain_804A8010::update() {
                     }
                     s32 serial = fn_801F856C()->fn_801F9484(spawnId, field_0x4, &pos, spawnArg, -1, -1);
                     if (serial >= 0) {
-                        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                         if (actor != NULL) {
                             actor->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, -1.0f);
                         }
@@ -199,7 +199,7 @@ void ForceGemRain_804A8010::update() {
     // fall through
     case 2: {
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -291,7 +291,7 @@ void ForceGemRain_804A8010::update() {
     }
     case 3: {
         if (field_0x244 == 1) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -309,7 +309,7 @@ void ForceGemRain_804A8010::update() {
             if (field_0x244 == 1) {
                 s32 serial = fn_801F856C()->fn_801F9484('HBMB', field_0x4, &pos, 3, -1, -1);
                 if (serial >= 0) {
-                    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                     if (actor != NULL) {
                         actor->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 1.0f);
                     }
@@ -324,7 +324,7 @@ void ForceGemRain_804A8010::update() {
     }
     case 4:
         if (field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -350,7 +350,7 @@ void ForceGemRain_804A8010::update() {
     if (field_0x23c < field_0x240) {
         return;
     }
-    GameView_804A9950* v = fn_802D6A9C();
+    GameView_804A9950* v = getGameView_802D6A9C();
     v->fn_802D8050((field_0x90 >> 22) & 0x1F, true, 0xFF);
     fn_801F3668();
 }

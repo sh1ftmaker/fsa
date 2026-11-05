@@ -66,32 +66,32 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
 
 // FIXME: 86.5 %. Same instructions; the target keeps layer, depth, height and pos in
 // r31, r30, r29, r28 (ours: the reverse of the parameter order).
-// Two effects (fn_8013CC50 0x473 and 0x474) at pos on `layer`; arg3 and arg4 + 1
+// Two effects (spawnEmitter_8013CC50 0x473 and 0x474) at pos on `layer`; arg3 and arg4 + 1
 // are the height and depth of both.
 void fn_801CB4A4(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
-    fn_8013CC50(layer, pos, 0x473, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(layer, pos, 0x474, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x473, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x474, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
 // FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
-// Two effects (fn_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
+// Two effects (spawnEmitter_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
-    fn_8013CC50(layer, pos, 0x117, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(layer, pos, 0x118, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x117, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x118, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
 // FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
-// Two effects (fn_8013CC50 0x24A and 0x24B) at pos on `layer`; arg3 is passed
+// Two effects (spawnEmitter_8013CC50 0x24A and 0x24B) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
 void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
-    fn_8013CC50(layer, pos, 0x24A, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(layer, pos, 0x24B, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x24A, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x24B, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
 // FIXME: 93.9 %. The target has no second NULL test of *emitter in front of the
 // manager call (deleteEmitter()'s own); everything else is identical.
-// Moves the emitter in *emitter to pos with fn_8013CB44 (adjust true); or,
+// Moves the emitter in *emitter to pos with setEmitterPos_8013CB44 (adjust true); or,
 // when it is flagged (bit 0x8 of its word 0xF4) and has no particles left
 // (0xD0 + 0xDC == 0), deletes it and sets *emitter to NULL. Does nothing for
 // a NULL emitter.
@@ -100,7 +100,7 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
         if ((*emitter)->isEnableDeleteEmitter()) {
             deleteEmitter(emitter);
         } else {
-            fn_8013CB44(*emitter, pos, height, depth, true);
+            setEmitterPos_8013CB44(*emitter, pos, height, depth, true);
         }
     }
 }
@@ -261,8 +261,8 @@ bool fn_801CCF7C() {
 // Converts `in` from the view's 0xDC/0xE0 box space to the 0xCC/0xD0 one:
 // out = (in.x, in.y) - (0xDC, 0xE0) + (0xCC, 0xD0); z is copied.
 void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
-    GameView_804A9950* view = fn_802D6A9C();
-    GameView_804A9950* upper = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
+    GameView_804A9950* upper = getGameView_802D6A9C();
     out->x = view->mVisibleBox.i.x + (in->x - upper->field_0xdc.i.x);
     out->y = view->mVisibleBox.i.y + (in->y - upper->field_0xdc.i.y);
     out->z = in->z;
@@ -271,8 +271,8 @@ void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
 // FIXME: 79.1 %. As fn_801CD0D0 (scheduling of the x / y loads and subtracts).
 // The other way round: from the 0xCC/0xD0 box space to the 0xDC/0xE0 one.
 void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
-    GameView_804A9950* view = fn_802D6A9C();
-    GameView_804A9950* upper = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
+    GameView_804A9950* upper = getGameView_802D6A9C();
     out->x = upper->field_0xdc.i.x + (in->x - view->mVisibleBox.i.x);
     out->y = upper->field_0xdc.i.y + (in->y - view->mVisibleBox.i.y);
     out->z = in->z;

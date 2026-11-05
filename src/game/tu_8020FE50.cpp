@@ -28,14 +28,14 @@ void cls_804A6100::vfunc_0xA0() {
     box.i.y += mPos.y;
     box.f.x += mPos.x;
     box.f.y += mPos.y;
-    lbl_8053AB10->field_0x24->fn_8030C058(&box);
+    gGameRoot2_8053AB10->field_0x24->fn_8030C058(&box);
 }
 
 bool cls_804A6100::vfunc_0x60() {
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial) {
-            ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
                 if (other->mActorId == ACTOR_SWBM) {
                     fn_801CB538(field_0x4, &other->mPos, 0, 0);
@@ -72,7 +72,7 @@ void cls_804A6100::vfunc_0x90(u8 mapHit) {
             fn_80341CB0(field_0x4, &mPos);
             s32 bit = field_0x2ac;
             if (bit != 0) {
-                fn_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
             }
             fn_801F3668();
         }
@@ -82,8 +82,8 @@ void cls_804A6100::vfunc_0x90(u8 mapHit) {
         f32 y = mPos.y + field_0x54.y * fn_80210AF8(field_0x98);
         f32 x = mPos.x + field_0x54.x * fn_80210B34(field_0x98);
         JGeometry::TVec3f pos(x, y, 0.0f);
-        fn_8013CB44(mEmitter, &pos, 0, 2, true);
-        fn_801F0E34(0x50026, 0);
+        setEmitterPos_8013CB44(mEmitter, &pos, 0, 2, true);
+        startSound_801F0E34(0x50026, 0);
     }
 }
 
@@ -107,7 +107,7 @@ void cls_804A6100::init() {
     f32 y = mPos.y + field_0x54.y * fn_80210AF8(field_0x98);
     f32 x = mPos.x + field_0x54.x * fn_80210B34(field_0x98);
     JGeometry::TVec3f pos(x, y, 0.0f);
-    mEmitter = fn_8013CC50(field_0x4, &pos, 0x260, 0, 2, NULL, NULL, true, 1.0f);
+    mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x260, 0, 2, NULL, NULL, true, 1.0f);
 }
 
 cls_804A6100::~cls_804A6100() {

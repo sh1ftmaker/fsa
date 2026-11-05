@@ -39,7 +39,7 @@ static const char* lbl_804B1CD8[10] = {
 // are scheduled in other registers too (arg_mismatch rows from 0x4C8).
 void cls_804B1D00::fn_8044A828() {
     for (s32 i = 0; i < 2; i++) {
-        mPanes[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+        mPanes[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
     }
     if (field_0x14 & 1) {
         if (!mScreen->search(lbl_80490DB8[8])->isVisible()) {
@@ -108,8 +108,8 @@ void cls_804B1D00::fn_8044A828() {
 }
 
 void cls_804B1D00::fn_8044AF90() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 void cls_804B1D00::fn_8044AFD8() {
@@ -149,10 +149,10 @@ cls_804B1D00::cls_804B1D00() {
     lbl_8053AF28 = this;
     mScreen = new J2DScreen();
     mScreen->setPriority("mg_volleyball.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    mPanes[0] = new cls_804AF86C();
-    mPanes[0]->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
-    mPanes[1] = new cls_804AF86C();
-    mPanes[1]->fn_80402F04(mScreen->search(0x004E646174613031ull /* "Ndata01" */));
+    mPanes[0] = new PaneCtrl_804AF86C();
+    mPanes[0]->setPane_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
+    mPanes[1] = new PaneCtrl_804AF86C();
+    mPanes[1]->setPane_80402F04(mScreen->search(0x004E646174613031ull /* "Ndata01" */));
     field_0x10 = 0;
     field_0x12 = 0;
     field_0x13 = 0;

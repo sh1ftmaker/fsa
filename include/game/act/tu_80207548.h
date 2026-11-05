@@ -16,7 +16,7 @@ public:
     // One request per player (0x80207B2C is its constructor).
     struct Slot {
         Slot();
-        /* 0x00 */ s32 mSerial;  // the actor fn_802075D8 looks up (fn_801F666C)
+        /* 0x00 */ s32 mSerial;  // the actor fn_802075D8 looks up (findActorBySerial_801F666C)
         /* 0x04 */ u8 mUsed;     // set by fn_80207830
         /* 0x05 */ u8 pad_0x5[3];
         /* 0x08 */ s32 mPlayer;  // player index 0-3, -1 = none

@@ -380,7 +380,7 @@ bool MessageManager_804AF070::fn_80389F78(s32 player, s32 arg, s32 value, JGeome
 // r29 / r30 / r28 in the original, r30 / r29 / r29 here.
 bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 serial, JGeometry::TVec3f pos, u32 flags) {
     if (fn_8037F1E4(player) == 0) {
-        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
+        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
             bool ready = false;
             u16 bits = flags; // only to match: a halfword copy of the flags parameter
             if (flags & 0x1000) {
@@ -438,7 +438,7 @@ bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 
 // original, the other way round here.
 bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 serial, u32 flags) {
     if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
-        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
+        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 0x100) != 0 || (u16)flags & 0x19F) {
             u16 bits = flags; // only to match: a halfword copy of the flags parameter
             bool ready = false;
             if (flags & 0x1000) {
@@ -495,7 +495,7 @@ bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 
             }
             return true;
         }
-        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100) != 0 && fn_8037EC98(actor, flags)) {
+        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 0x100) != 0 && fn_8037EC98(actor, flags)) {
             lbl_8053AD78->mWindows[player]->fn_80390E40(value, false);
             lbl_8053AD78->mWindows[windowIndex(player)]->field_0x24 = 1;
             return true;
@@ -514,7 +514,7 @@ void fn_8038D454() {
 static inline void clearOnPress() {
     for (s32 i = 0; i < 4; i++) {
         if (lbl_8053AD78->field_0xe5 & (1 << i)) {
-            if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(i), 0x100) != 0) {
+            if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(i), 0x100) != 0) {
                 lbl_8053AD78->field_0xe4 = 0;
             }
         }
@@ -559,13 +559,13 @@ void fn_8038D570() {
         u32 elapsed = seconds + minutes * 60;
         if (elapsed > manager->field_0x48) {
             if (manager->field_0xeb != 0) {
-                if (!fn_802D6A9C()->fn_802D800C(manager->field_0xea)) {
+                if (!getGameView_802D6A9C()->fn_802D800C(manager->field_0xea)) {
                     u8 bit = lbl_8053AD78->field_0xea;
-                    fn_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+                    getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
                 }
-            } else if (fn_802D6A9C()->fn_802D800C(manager->field_0xea) == true) {
+            } else if (getGameView_802D6A9C()->fn_802D800C(manager->field_0xea) == true) {
                 u8 bit = lbl_8053AD78->field_0xea;
-                fn_802D6A9C()->fn_802D8050(bit, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(bit, false, 0xFF);
             }
         }
     }

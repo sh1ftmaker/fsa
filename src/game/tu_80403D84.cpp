@@ -52,7 +52,7 @@ void cls_804B1288::fn_80403F50() {
             strcpy(((J2DTextBox*)field_0x270[i]->mPane)->getStringPtr(), field_0x5dc);
         }
         for (s32 i = 0; i < 12; i++) {
-            field_0x240[i]->fn_80402E08(0.0f, 100.0f);
+            field_0x240[i]->moveFromCentre_80402E08(0.0f, 100.0f);
         }
         field_0x659 = 1;
     }

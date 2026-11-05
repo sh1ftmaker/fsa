@@ -10,7 +10,7 @@ Left unwritten on purpose:
 - fn_80270948, fn_80270DDC, fn_80270F00: inline fn_80270A8C (defined earlier; the original inlines it) plus more; not tried.
 - fn_802771C8, fn_802775C8, fn_8027A178, fn_8027CBB0: stop-emitter sequence on a JPABaseEmitter (+0xF4 |= 1, +0x24 = 1)
   that the TWW JPAEmitter.h layout does not have (see act_force_gem_wooden's FIXME).
-- fn_8027A0D4 passes &field_0x130c as the particle callback argument of fn_8013CC50 (type unknown).
+- fn_8027A0D4 passes &field_0x130c as the particle callback argument of spawnEmitter_8013CC50 (type unknown).
 SHARED-EDITS: include/game/Player.h only (fields split out of padding arrays, member declarations for the unmangled
 functions of this unit, `class JPABaseEmitter;` forward declaration).
 Symbol renames (config/G4SE01/symbols.txt): unmangled fn_80xxxxxx of this unit to ...__15Player_804A6F38F...

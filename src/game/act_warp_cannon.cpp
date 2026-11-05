@@ -53,12 +53,12 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
             fn_80230FD0(i, 0x10003);
         }
         field_0x27c = 4.0f;
-        lbl_8053AB10->field_0x20->fn_802F601C(&field_0x290, 1, NULL, 1.0f, -2.0f);
-        fn_8013CC50(0, &field_0x290, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F601C(&field_0x290, 1, NULL, 1.0f, -2.0f);
+        spawnEmitter_8013CC50(0, &field_0x290, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
         break;
     case 6:
         fn_80230534(false);
-        fn_802D6A9C()->fn_802D9FF4(field_0x270, field_0x274);
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x270, field_0x274);
         lbl_8053AAF8->fn_80136798(0xD, 0);
         lbl_8053AD70->fn_8037AE30();
         break;
@@ -112,7 +112,7 @@ void WarpCannon_8049EAE0::init() {
     mLife = 0;
     field_0xb0 = 0x50303;
     mAnim.fn_801D2608(lbl_80539F48, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1F14(0.0f);
     field_0x284 = mPos.x;
     field_0x288 = mPos.y;

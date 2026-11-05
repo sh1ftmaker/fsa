@@ -13,7 +13,7 @@ update 94.27 -> 99.96 % (the r30/r31 swap went away too).
 Resolved in review: `s32 owner = fn_8022FD8C(mSerial); if (owner == player)` gives 100 %; 4/4.
 in the original vs `cmpw r30, r3` ours; `player == call` compiles identically. 3 tries used.
 
-SHARED-EDITS: include/game/GameGlobals.h (cls_804AA8C8 / lbl_8053AD30 + fn_8030AAF4,
+SHARED-EDITS: include/game/GameGlobals.h (cls_804AA8C8 / lbl_8053AD30 + getPlayerInputSlot_8030AAF4,
 fn_80309D24, fn_80309D6C; cls_804B1920 / lbl_8053AED0 byte array at 0x1F0),
 include/game/Player.h (fn_8022FE80, fn_8022FD8C, fn_8023061C), config/G4SE01/gen_game.tsv
 (unit rows removed), include/game/act/act_dummy_conversation.h (generator-owned: mState,

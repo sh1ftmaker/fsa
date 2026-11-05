@@ -43,7 +43,7 @@ void cls_804ACC68::draw() {
         s32 frame = lbl_80472240[field_0x24c] + field_0x244;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&p, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&p, res, frame, &params, 1.0f, 1.0f);
         }
     }
     switch (field_0x248) {
@@ -63,7 +63,7 @@ void cls_804ACC68::draw() {
     s32 frame = lbl_80472260[field_0x23c] + 0xC0;
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
 }
 
@@ -101,9 +101,9 @@ void cls_804ACC68::init() {
     field_0x24c = field_0x90 >> 4 & 0xF;
     field_0x250 = (field_0x90 >> 8 & 3) != 0;
     if (!field_0x250) {
-        fn_801F0E34(0x50050, 0);
+        startSound_801F0E34(0x50050, 0);
     } else {
-        fn_801F0E34(0x50055, 0);
+        startSound_801F0E34(0x50055, 0);
     }
     field_0x230 = 0;
 }

@@ -9,7 +9,7 @@
 #include "game/act/act_panel_rewrite_npc.h"
 #include "game/act/act_small_key.h"
 
-bool cls_804A8E40::vfunc_0x5C(f32 a, f32 b, f32 c) {
+bool PanelRewriteNPC_804A8E40::vfunc_0x5C(f32 a, f32 b, f32 c) {
     f32 d = a - b;
     if (d >= -c && d <= c) {
         return true;
@@ -20,7 +20,7 @@ bool cls_804A8E40::vfunc_0x5C(f32 a, f32 b, f32 c) {
 // FIXME: 92.02%. The original keeps `this` in r31 from entry and the layer
 // temporary in r30; ours swaps the saved registers for this, the serial and
 // the found actor.
-bool cls_804A8E40::vfunc_0x58() {
+bool PanelRewriteNPC_804A8E40::vfunc_0x58() {
     s32 serial = -1;
     if (viewLayerFlag(field_0x4)) {
         return false;
@@ -33,7 +33,7 @@ bool cls_804A8E40::vfunc_0x58() {
         if (serial == mSerial) {
             continue;
         }
-        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -63,7 +63,7 @@ bool cls_804A8E40::vfunc_0x58() {
 // the table entry as its fourth argument.
 static const u32 lbl_8046D808[4] = {3, 0, 0, 0};
 
-void cls_804A8E40::vfunc_0x54(u8 arg) {
+void PanelRewriteNPC_804A8E40::vfunc_0x54(u8 arg) {
     if (field_0x24c) {
         if (field_0x4 >= 8) {
             JGeometry::TVec3f pos(mPos.x + 8.0f, mPos.y + 8.0f, 0.0f);
@@ -72,30 +72,30 @@ void cls_804A8E40::vfunc_0x54(u8 arg) {
             fn_801F856C()->fn_801F9484('KMRI', field_0x4, &pos, entry, -1, -1);
         } else {
             if (field_0x244 == 0) {
-                fn_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
-                fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
             } else if (field_0x244 == 1) {
-                fn_8013CC50(field_0x4, &mPos, 0x59, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x5A, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x5B, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x59, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x5A, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x5B, 1, 0, NULL, NULL, true, 1.0f);
             } else if (field_0x244 == 2) {
-                if (fn_802D6A9C()->field_0x40 == 0x11) {
-                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB1, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB2, 1, 0, NULL, NULL, true, 1.0f);
+                if (getGameView_802D6A9C()->field_0x40 == 0x11) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xB1, 1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xB2, 1, 0, NULL, NULL, true, 1.0f);
                 } else {
-                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xAF, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB0, 1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xAF, 1, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xB0, 1, 0, NULL, NULL, true, 1.0f);
                 }
             } else if (field_0x244 == 3) {
-                fn_8013CC50(field_0x4, &mPos, 0x99, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x9A, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x99, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x9A, 1, 0, NULL, NULL, true, 1.0f);
             }
         }
         if (arg == 1) {
             if (field_0x240 == 0) {
-                fn_801F0E34(0x30003, 0);
+                startSound_801F0E34(0x30003, 0);
             }
             if (field_0x240 == 2) {
                 fn_801F0D20(0x42);
@@ -110,9 +110,9 @@ void cls_804A8E40::vfunc_0x54(u8 arg) {
 // Writes the panel's tile at its cell: the 0x10 / 0x30 types go to the layer's
 // tile grid, other types to the BgRewrite animation (fn_802A3948) by the tile
 // code under the actor.
-static inline void writeCell(cls_804A8E40* p) {
+static inline void writeCell(PanelRewriteNPC_804A8E40* p) {
     if (p->field_0x234 == 0x30 || p->field_0x234 == 0x10) {
-        lbl_8053AB10->field_0x20->fn_802F9974(p->field_0x4 + p->field_0x256, p->field_0x250, p->field_0x234);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9974(p->field_0x4 + p->field_0x256, p->field_0x250, p->field_0x234);
     } else {
         u16 tile = fn_80226998(&p->mPos, p->field_0x4);
         if (tile == 2) {
@@ -127,7 +127,7 @@ static inline void writeCell(cls_804A8E40* p) {
     }
 }
 
-static inline void finishCell(cls_804A8E40* p) {
+static inline void finishCell(PanelRewriteNPC_804A8E40* p) {
     p->vfunc_0x54(1);
     p->vfunc_0x58();
     if (p->field_0x23c == 0) {
@@ -137,11 +137,11 @@ static inline void finishCell(cls_804A8E40* p) {
     }
 }
 
-void cls_804A8E40::draw() {}
+void PanelRewriteNPC_804A8E40::draw() {}
 
 // FIXME: 97.66%. In the tile write, the original builds layer + offset in the
 // argument register r4 (ours uses a temporary, r7); the rest matches.
-void cls_804A8E40::update() {
+void PanelRewriteNPC_804A8E40::update() {
     if ((field_0x90 >> 27) == 0) {
         mBox.i.x = -48.0f;
         mBox.i.y = -48.0f;
@@ -192,18 +192,18 @@ void cls_804A8E40::update() {
     }
 }
 
-cls_804A8E40::~cls_804A8E40() {
+PanelRewriteNPC_804A8E40::~PanelRewriteNPC_804A8E40() {
     if (field_0x23c == 2) {
         JGeometry::TVec2f pos(mPos.x, mPos.y);
         s32 cell = fn_80226BC4(&pos, field_0x4);
-        s32 slot = fn_802D6A9C()->fn_802D4C10(field_0x4, cell);
+        s32 slot = getGameView_802D6A9C()->fn_802D4C10(field_0x4, cell);
         if (slot != -1) {
-            fn_802D6A9C()->fn_802D7D00(field_0x4, slot, false);
+            getGameView_802D6A9C()->fn_802D7D00(field_0x4, slot, false);
         }
     }
 }
 
-void cls_804A8E40::vfunc_0x10() {
+void PanelRewriteNPC_804A8E40::vfunc_0x10() {
     u8 gameFlag = lbl_8053AAF8->fn_80138A30();
     s32 keep = 0;
     if (field_0x248 == 0) {
@@ -224,7 +224,7 @@ void cls_804A8E40::vfunc_0x10() {
 
     JGeometry::TVec2f pos(mPos.x, mPos.y);
     field_0x250 = fn_80226BC4(&pos, field_0x4);
-    if (fn_802D6A9C()->fn_802D4ADC(field_0x4, field_0x250) == true && field_0x234 != 0x30) {
+    if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, field_0x250) == true && field_0x234 != 0x30) {
         keep = 0;
     }
     if (keep == 1 || field_0x23c == 2) {
@@ -242,22 +242,22 @@ void cls_804A8E40::vfunc_0x10() {
         } else {
             field_0x24c = false;
         }
-        field_0x254 = lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x250);
+        field_0x254 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x250);
         field_0x230 = 0;
 
         if (field_0x234 == 0x30) {
             field_0x240 = 2;
             u64 bit;
             u64 mask;
-            fn_802D6A9C()->fn_802D4874(field_0x4, field_0x250, &bit, &mask);
-            if (fn_802D6A9C()->fn_802D4ADC(field_0x4, field_0x250) == true) {
+            getGameView_802D6A9C()->fn_802D4874(field_0x4, field_0x250, &bit, &mask);
+            if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, field_0x250) == true) {
                 field_0x234 = 0x10;
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
                 mAlive = false;
             }
         } else if (field_0x234 >= 0x8B && field_0x234 <= 0x8E) {
-            if (fn_802D6A9C()->fn_802D49A8(field_0x4, field_0x250) == true) {
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
+            if (getGameView_802D6A9C()->fn_802D49A8(field_0x4, field_0x250) == true) {
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + field_0x256, field_0x250, field_0x234);
                 field_0x230 = 1;
             }
         } else if (field_0x234 == 0x17 || field_0x234 == 0x16) {
@@ -287,7 +287,7 @@ void cls_804A8E40::vfunc_0x10() {
     }
 }
 
-void cls_804A8E40::init() {
+void PanelRewriteNPC_804A8E40::init() {
     field_0x234 = field_0x90 & 0x3FF;
     field_0x238 = (field_0x90 >> 16) & 0xF;
     field_0x23c = (field_0x90 >> 20) & 7;

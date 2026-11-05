@@ -10,7 +10,7 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 class cls_804B1BE8 {
 public:
@@ -23,8 +23,8 @@ public:
     // field_0x2c, hundredths from field_0x28) are set when the first pane's
     // byte is set. Clears field_0x30 at the end.
     void fn_804465B8();
-    // Calls lbl_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
-    // lbl_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Calls gGameRoot2_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
+    // gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80446D68();
     // Per slot: clears the slot's two bits of field_0x30, sets the ten picture
     // panes of the slot to the first 'TIMG' name and hides
@@ -33,8 +33,8 @@ public:
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen; // "mg_oni.blo"
-    /* 0x08 */ cls_804AF86C* field_0x8[4];  // panes, created by the constructor
-    /* 0x18 */ cls_804AF86C* field_0x18[4]; // panes, created by the constructor
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8[4];  // panes, created by the constructor
+    /* 0x18 */ PaneCtrl_804AF86C* field_0x18[4]; // panes, created by the constructor
     /* 0x28 */ u8 field_0x28[4]; // per slot: hundredths of a second, clamped to 99
     /* 0x2C */ u8 field_0x2c[4]; // per slot: seconds, shown as minutes and seconds
     /* 0x30 */ u8 field_0x30;    // bit n: slot n's pictures are on; bit n + 4: slot n's pane 0x40 is on

@@ -14,7 +14,7 @@ void SwitchOR_804A8800::update() {
     switch (mState) {
     case 0: {
         for (s32 i = 0; i < mCount; i++) {
-            if (fn_802D6A9C()->fn_802D800C((field_0x90 & lbl_8046CB40[i]) >> lbl_8046CB50[i])) {
+            if (getGameView_802D6A9C()->fn_802D800C((field_0x90 & lbl_8046CB40[i]) >> lbl_8046CB50[i])) {
                 vfunc_0x30(0xFF, true);
                 mState = 1;
             }
@@ -25,7 +25,7 @@ void SwitchOR_804A8800::update() {
     default: {
         s32 on = 0;
         for (s32 i = 0; i < mCount; i++) {
-            if (fn_802D6A9C()->fn_802D800C((field_0x90 & lbl_8046CB40[i]) >> lbl_8046CB50[i])) {
+            if (getGameView_802D6A9C()->fn_802D800C((field_0x90 & lbl_8046CB40[i]) >> lbl_8046CB50[i])) {
                 on++;
             }
         }

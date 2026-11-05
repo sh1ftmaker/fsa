@@ -16,30 +16,30 @@
 #include "JSystem/JUtility/JUTVideo.h"
 
 // Entered when the state changes (index: the new state).
-static cls_804B0F10::StateFunc lbl_804B0BDC[13] = {
-    &cls_804B0F10::fn_803F3324, &cls_804B0F10::fn_803F3310, &cls_804B0F10::fn_803F32E8,
-    &cls_804B0F10::fn_803F2B78, &cls_804B0F10::fn_803F2B5C, &cls_804B0F10::fn_803F2B48,
-    &cls_804B0F10::fn_803F2AEC, &cls_804B0F10::fn_803F267C, &cls_804B0F10::fn_803F2660,
-    &cls_804B0F10::fn_803F2580, &cls_804B0F10::fn_803F1C70, &cls_804B0F10::fn_803F1C5C,
-    &cls_804B0F10::fn_803F1C18,
+static ConnectScreen_804B0F10::StateFunc lbl_804B0BDC[13] = {
+    &ConnectScreen_804B0F10::fn_803F3324, &ConnectScreen_804B0F10::fn_803F3310, &ConnectScreen_804B0F10::fn_803F32E8,
+    &ConnectScreen_804B0F10::fn_803F2B78, &ConnectScreen_804B0F10::fn_803F2B5C, &ConnectScreen_804B0F10::fn_803F2B48,
+    &ConnectScreen_804B0F10::fn_803F2AEC, &ConnectScreen_804B0F10::fn_803F267C, &ConnectScreen_804B0F10::fn_803F2660,
+    &ConnectScreen_804B0F10::fn_803F2580, &ConnectScreen_804B0F10::fn_803F1C70, &ConnectScreen_804B0F10::fn_803F1C5C,
+    &ConnectScreen_804B0F10::fn_803F1C18,
 };
 
 // Run each frame by fn_803FC304 (index: the state).
-static cls_804B0F10::StateFunc lbl_804B0D14[13] = {
-    &cls_804B0F10::fn_803FB9E4, &cls_804B0F10::fn_803FB6F4, &cls_804B0F10::fn_803FAA88,
-    &cls_804B0F10::fn_803F9EA8, &cls_804B0F10::fn_803F943C, &cls_804B0F10::fn_803F8AE4,
-    &cls_804B0F10::fn_803F8FBC, &cls_804B0F10::fn_803F8354, &cls_804B0F10::fn_803F8050,
-    &cls_804B0F10::fn_803F726C, &cls_804B0F10::fn_803F715C, &cls_804B0F10::fn_803F5A0C,
-    &cls_804B0F10::fn_803F59A0,
+static ConnectScreen_804B0F10::StateFunc lbl_804B0D14[13] = {
+    &ConnectScreen_804B0F10::fn_803FB9E4, &ConnectScreen_804B0F10::fn_803FB6F4, &ConnectScreen_804B0F10::fn_803FAA88,
+    &ConnectScreen_804B0F10::fn_803F9EA8, &ConnectScreen_804B0F10::fn_803F943C, &ConnectScreen_804B0F10::fn_803F8AE4,
+    &ConnectScreen_804B0F10::fn_803F8FBC, &ConnectScreen_804B0F10::fn_803F8354, &ConnectScreen_804B0F10::fn_803F8050,
+    &ConnectScreen_804B0F10::fn_803F726C, &ConnectScreen_804B0F10::fn_803F715C, &ConnectScreen_804B0F10::fn_803F5A0C,
+    &ConnectScreen_804B0F10::fn_803F59A0,
 };
 
 // Run each frame by fn_803FC46C (index: the state).
-static cls_804B0F10::StateFunc lbl_804B0E4C[13] = {
-    &cls_804B0F10::fn_803F5410, &cls_804B0F10::fn_803F5410, &cls_804B0F10::fn_803F5410,
-    &cls_804B0F10::fn_803F4120, &cls_804B0F10::fn_803F4120, &cls_804B0F10::fn_803F4120,
-    &cls_804B0F10::fn_803F4120, &cls_804B0F10::fn_803F38A4, &cls_804B0F10::fn_803F38A4,
-    &cls_804B0F10::fn_803F38A4, &cls_804B0F10::fn_803F35B0, &cls_804B0F10::fn_803F35B0,
-    &cls_804B0F10::fn_803F358C,
+static ConnectScreen_804B0F10::StateFunc lbl_804B0E4C[13] = {
+    &ConnectScreen_804B0F10::fn_803F5410, &ConnectScreen_804B0F10::fn_803F5410, &ConnectScreen_804B0F10::fn_803F5410,
+    &ConnectScreen_804B0F10::fn_803F4120, &ConnectScreen_804B0F10::fn_803F4120, &ConnectScreen_804B0F10::fn_803F4120,
+    &ConnectScreen_804B0F10::fn_803F4120, &ConnectScreen_804B0F10::fn_803F38A4, &ConnectScreen_804B0F10::fn_803F38A4,
+    &ConnectScreen_804B0F10::fn_803F38A4, &ConnectScreen_804B0F10::fn_803F35B0, &ConnectScreen_804B0F10::fn_803F35B0,
+    &ConnectScreen_804B0F10::fn_803F358C,
 };
 
 // Pane x offsets (lhax, index 0-3) read by fn_803F1C70 and fn_803F5A0C
@@ -107,7 +107,7 @@ static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
 // Sets bit `i` of lbl_8053AAF8->field_0x82 and the 2-bit field `i` of
 // field_0x83 to 1 for the field_0x1ac + 2 players that take part, and clears
 // both for the others.
-static inline void setEntries(cls_804B0F10* self) {
+static inline void setEntries(ConnectScreen_804B0F10* self) {
     for (s32 i = 0; i < 4; i++) {
         if (i < self->field_0x1ac + 2) {
             lbl_8053AAF8->field_0x82 |= (u8)(1 << i);
@@ -120,7 +120,7 @@ static inline void setEntries(cls_804B0F10* self) {
 }
 
 // The menu cursor's blink counters, stepped at the start of a menu state.
-static inline void stepBlink(cls_804B0F10* self) {
+static inline void stepBlink(ConnectScreen_804B0F10* self) {
     if (self->field_0x240[0] != 0) {
         self->field_0x240[0]++;
         if (self->field_0x240[0] > 10) {
@@ -134,13 +134,13 @@ static inline void stepBlink(cls_804B0F10* self) {
 }
 
 // The cursor moved: restart its blink and play sound 0x26.
-static inline void cursorMoved(cls_804B0F10* self) {
+static inline void cursorMoved(ConnectScreen_804B0F10* self) {
     self->field_0x240[0] = 1;
     self->field_0x1d0[0] = 30;
     lbl_8053AF80->fn_80458880(0x26, -1);
 }
 
-static inline void stepCursorTimer(cls_804B0F10* self) {
+static inline void stepCursorTimer(ConnectScreen_804B0F10* self) {
     self->field_0x1d0[0]++;
     if (self->field_0x1d0[0] >= 60) {
         self->field_0x1d0[0] = 0;
@@ -185,7 +185,7 @@ static inline f32 toEffectY(f32 y) {
 // in the 112-212 and 212+ phases the i / 2 + (i % 2) * 2 index is scheduled
 // differently (the original computes i % 2 first, then i / 2). The twin
 // cls_804B0B00::fn_803E1668 (rodata split) shows the same index scheduling.
-void cls_804B0F10::fn_803F0A54() {
+void ConnectScreen_804B0F10::fn_803F0A54() {
     f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335;
     JGeometry::TVec3f pos;
     if (field_0x210[0] < 100) {
@@ -204,7 +204,7 @@ void cls_804B0F10::fn_803F0A54() {
                 params.field_0x0[7] = i + 12;
                 s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
                 void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
             }
         }
     } else if (field_0x210[0] < 112) {
@@ -237,7 +237,7 @@ void cls_804B0F10::fn_803F0A54() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     } else if (field_0x210[0] < 212) {
         for (s32 i = 0; i < 4; i++) {
@@ -258,7 +258,7 @@ void cls_804B0F10::fn_803F0A54() {
             }
             s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
         }
     } else {
         // Slide back to the 2/3-player panes.
@@ -290,18 +290,18 @@ void cls_804B0F10::fn_803F0A54() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     }
 }
 
-void cls_804B0F10::fn_803F1C18() {
+void ConnectScreen_804B0F10::fn_803F1C18() {
     field_0x58->fn_8043670C(1);
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 12;
 }
 
-void cls_804B0F10::fn_803F1C5C() {
+void ConnectScreen_804B0F10::fn_803F1C5C() {
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 11;
 }
@@ -310,7 +310,7 @@ void cls_804B0F10::fn_803F1C5C() {
 // 2 * i shift in r4 (the zero stored to field_0x240) and i in a fresh r5 (li);
 // ours keeps i in r4 and copies it (mr r5, r4) for the shift. fn_803F8050
 // inlines this function and matches.
-void cls_804B0F10::fn_803F2580() {
+void ConnectScreen_804B0F10::fn_803F2580() {
     field_0x240[0] = 0;
     field_0x1d0[0] = 5;
     if (field_0x1a8 == 0) {
@@ -320,31 +320,31 @@ void cls_804B0F10::fn_803F2580() {
     field_0x1c4 = 9;
 }
 
-void cls_804B0F10::fn_803F2660() {
+void ConnectScreen_804B0F10::fn_803F2660() {
     field_0x240[0] = 0;
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 8;
 }
 
-void cls_804B0F10::fn_803F2AEC() {
+void ConnectScreen_804B0F10::fn_803F2AEC() {
     lbl_8053AEC0->fn_80431A9C(0xC4, field_0x1ac + 2, NULL);
     field_0x25c = 0;
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 6;
 }
 
-void cls_804B0F10::fn_803F2B48() {
+void ConnectScreen_804B0F10::fn_803F2B48() {
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 5;
 }
 
-void cls_804B0F10::fn_803F2B5C() {
+void ConnectScreen_804B0F10::fn_803F2B5C() {
     field_0x240[0] = 0;
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 4;
 }
 
-void cls_804B0F10::fn_803F32E8() {
+void ConnectScreen_804B0F10::fn_803F32E8() {
     field_0x210[0] = 0;
     field_0x240[0] = 0;
     field_0x1d0[0] = 5;
@@ -352,18 +352,18 @@ void cls_804B0F10::fn_803F32E8() {
     field_0x1c4 = 2;
 }
 
-void cls_804B0F10::fn_803F3310() {
+void ConnectScreen_804B0F10::fn_803F3310() {
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 1;
 }
 
 // FIXME: 99.77 %. Instructions identical; only the .sdata2 literals differ (see
 // fn_803F715C). fn_803FC5E4 inlines this function.
-void cls_804B0F10::fn_803F3324() {
+void ConnectScreen_804B0F10::fn_803F3324() {
     field_0x110 = -150.0f;
     mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
     field_0x114 = -100.0f;
-    field_0x74->fn_80402E08(0.0f, field_0x114);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
     field_0x130[0] = -350.0f;
     mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118[0] + field_0x130[0], field_0x124[0]);
     field_0x130[1] = -350.0f;
@@ -382,7 +382,7 @@ void cls_804B0F10::fn_803F3324() {
     field_0x1c4 = 0;
 }
 
-void cls_804B0F10::fn_803F358C() {
+void ConnectScreen_804B0F10::fn_803F358C() {
     field_0x58->fn_80436668();
 }
 
@@ -393,7 +393,7 @@ void cls_804B0F10::fn_803F358C() {
 // joined ones' 'Paccur' panes with it; outside state 10 the 'Paccur02'
 // pane and field_0x64[i] bounce with field_0x240[i]. Then lbl_8053AED8's
 // buttons.
-void cls_804B0F10::fn_803F35B0() {
+void ConnectScreen_804B0F10::fn_803F35B0() {
     for (s32 i = 0; i < 4; i++) {
         f32 t;
         if (field_0x1d0[i] < 30) {
@@ -416,11 +416,11 @@ void cls_804B0F10::fn_803F35B0() {
             f32 x = field_0x10->search(lbl_804793F8[i])->getBounds()->i.x;
             field_0x10->search(lbl_804793F8[i])->move(x, field_0x1a0 + offset);
             if (field_0x1b0[i] >= 3) {
-                field_0x64[i]->fn_80402E08(0.0f, offset);
+                field_0x64[i]->moveFromCentre_80402E08(0.0f, offset);
             }
         }
     }
-    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -433,7 +433,7 @@ void cls_804B0F10::fn_803F35B0() {
 // and the chosen entry ('Pstab04' / 'Phanb04' / 'Prub04', field_0x1a8)
 // bounces with field_0x240[0]; then the screen, the player sprites
 // (fn_803F0A54) and lbl_8053AED8's buttons.
-void cls_804B0F10::fn_803F38A4() {
+void ConnectScreen_804B0F10::fn_803F38A4() {
     f32 alpha;
     if (field_0x1c4 != 9) {
         f32 t;
@@ -499,9 +499,9 @@ void cls_804B0F10::fn_803F38A4() {
     }
     field_0xc->search('Pscuro01')->setAlpha(alpha);
     field_0xc->search('Pscuro02')->setAlpha(alpha);
-    field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
-    lbl_8053AB10->fn_8013B414(&box, true);
+    gGameRoot2_8053AB10->fn_8013B414(&box, true);
     fn_803F0A54();
     lbl_8053AED8->fn_80440EE8();
 }
@@ -514,7 +514,7 @@ void cls_804B0F10::fn_803F38A4() {
 // 230 over 15 frames, then by (n - 15)^2 / 225), the chosen count's pane
 // (field_0x1ac) bounces with field_0x240[0] and shows its lit version at
 // 80 * the fade; the others show the plain one.
-void cls_804B0F10::fn_803F5410() {
+void ConnectScreen_804B0F10::fn_803F5410() {
     f32 alpha;
     f32 t;
     if (field_0x1c4 != 2) {
@@ -569,11 +569,11 @@ void cls_804B0F10::fn_803F5410() {
     }
     mScreen->search('Pscuro01')->setAlpha(alpha);
     mScreen->search('Pscuro02')->setAlpha(alpha);
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
-void cls_804B0F10::fn_803F59A0() {
+void ConnectScreen_804B0F10::fn_803F59A0() {
     if (field_0x58->fn_804366B8() != 0) {
         if (field_0x25e == 0) {
             field_0x1cc = 7;
@@ -587,7 +587,7 @@ void cls_804B0F10::fn_803F59A0() {
 // FIXME: 99.56 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
 // lbl_805437xx): the literal pool follows first use, and the unwritten
 // functions before this one (fn_803F1C70 on) use the earlier literals.
-void cls_804B0F10::fn_803F715C() {
+void ConnectScreen_804B0F10::fn_803F715C() {
     u8 done0 = false;
     u8 done1 = false;
     u8 done2 = false;
@@ -609,7 +609,7 @@ void cls_804B0F10::fn_803F715C() {
     }
 }
 
-void cls_804B0F10::fn_803F8050() {
+void ConnectScreen_804B0F10::fn_803F8050() {
     stepBlink(this);
     if (field_0x1c0 != field_0x1ac + 2) {
         field_0x25c = 255;
@@ -646,7 +646,7 @@ void cls_804B0F10::fn_803F8050() {
 // (0x1100) without every controller connected, enters state 6
 // (fn_803F2AEC); decide with all connected reads the players' results and
 // enters state 4 (fn_803F2B5C); back (0x200) enters state 0.
-void cls_804B0F10::fn_803F8AE4() {
+void ConnectScreen_804B0F10::fn_803F8AE4() {
     if (field_0x25c == 255) {
         fn_803F2AEC();
     } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
@@ -701,9 +701,9 @@ void cls_804B0F10::fn_803F8AE4() {
                 field_0x78[i]->field_0x45 = 0;
                 field_0x78[i]->startSound(0x2000E);
                 JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                 JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             field_0x210[i] = 0;
@@ -719,7 +719,7 @@ void cls_804B0F10::fn_803F8AE4() {
 // ends it; then each connected player's pane animation (field_0x210[i],
 // 100-129 looping) plays sound 0x10001 at frame 11 and at frame 36 sound
 // 0x2000E and effects 0xCB / 0xCC at the 'Pplli' pane.
-void cls_804B0F10::fn_803F8FBC() {
+void ConnectScreen_804B0F10::fn_803F8FBC() {
     switch (field_0x25c) {
     case 0:
         if (lbl_8053AEC0->fn_804317AC()) {
@@ -780,9 +780,9 @@ void cls_804B0F10::fn_803F8FBC() {
                 field_0x78[i]->field_0x45 = 0;
                 field_0x78[i]->startSound(0x2000E);
                 JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                 JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             field_0x210[i] = 0;
@@ -792,7 +792,7 @@ void cls_804B0F10::fn_803F8FBC() {
 
 // FIXME: 99.41 %. Same register swap as fn_803F2580 in the inlined
 // setEntries loop (li r4, 0 for i in the original, mr r4, r3 here).
-void cls_804B0F10::fn_803FB6F4() {
+void ConnectScreen_804B0F10::fn_803FB6F4() {
     stepBlink(this);
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
         field_0x1a8 = 0;
@@ -830,11 +830,11 @@ void cls_804B0F10::fn_803FB6F4() {
     stepCursorTimer(this);
 }
 
-void cls_804B0F10::fn_803FC304() {
+void ConnectScreen_804B0F10::fn_803FC304() {
     field_0x1c0 = 0;
     for (s32 i = 0; i < 4; i++) {
         if (i <= field_0x1ac + 1) {
-            if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+            if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
                 lbl_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
                 field_0x1c0++;
             } else {
@@ -859,9 +859,9 @@ void cls_804B0F10::fn_803FC304() {
 // FIXME: 99.79 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
 // lbl_805437xx): the literal pool follows first use, and the unwritten
 // functions before this one (fn_803F1C70 on) use the earlier literals.
-void cls_804B0F10::fn_803FC46C() {
-    lbl_8053AB10->fn_8013B490();
-    field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+void ConnectScreen_804B0F10::fn_803FC46C() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x1c4 != 13) {
         (this->*lbl_804B0E4C[field_0x1c4])();
     } else {
@@ -887,7 +887,7 @@ void cls_804B0F10::fn_803FC46C() {
             }
             break;
         }
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         field_0x5c->setAlpha(field_0x25d);
         field_0x5c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
     }
@@ -896,16 +896,16 @@ void cls_804B0F10::fn_803FC46C() {
 // FIXME: 99.80 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
 // lbl_805437xx): the literal pool follows first use, and the unwritten
 // functions before this one (fn_803F1C70 on) use the earlier literals.
-void cls_804B0F10::fn_803FC5E4(u8 flag) {
+void ConnectScreen_804B0F10::fn_803FC5E4(u8 flag) {
     lbl_8053AEC0->fn_804310CC();
     if (flag) {
         field_0x1c4 = 7;
         fn_803F267C();
     } else {
-        if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(1))) {
+        if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(1))) {
             field_0x1ac = 0;
             for (s32 i = 2; i < 4; i++) {
-                if (!lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+                if (!lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
                     break;
                 }
                 field_0x1ac++;
@@ -917,7 +917,7 @@ void cls_804B0F10::fn_803FC5E4(u8 flag) {
     field_0x350 = 4;
 }
 
-cls_804B0F10::~cls_804B0F10() {
+ConnectScreen_804B0F10::~ConnectScreen_804B0F10() {
     delete field_0x8;
     field_0x8 = NULL;
     delete mScreen;

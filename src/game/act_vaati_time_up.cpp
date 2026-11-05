@@ -14,7 +14,7 @@ VaatiTimeUp_804ACCC0::~VaatiTimeUp_804ACCC0() {}
 void VaatiTimeUp_804ACCC0::init() {
     cls_801EBA14 rec;
 
-    mViewBox = fn_802D6A9C()->mVisibleBox;
+    mViewBox = getGameView_802D6A9C()->mVisibleBox;
     mPos.x = 64.0f + mViewBox.f.x;
     mPos.y = (mViewBox.i.y + mViewBox.f.y) * 0.5f + 96.0f;
     mPos.z = 100.0f;
@@ -63,5 +63,5 @@ void VaatiTimeUp_804ACCC0::draw() {
     params.field_0x1c = 1;
     params.field_0x1d = 1;
     params.field_0x30 = 8;
-    fn_801F06F0("enemy_gc_sob.bin", 0x466 + lbl_80472288[field_0x2c8], &params, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x466 + lbl_80472288[field_0x2c8], &params, 7, 1.0f, 1.0f);
 }

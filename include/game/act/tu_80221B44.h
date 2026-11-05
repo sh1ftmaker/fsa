@@ -4,12 +4,12 @@
 #include "game/cls_804A6A00.h"
 #include "game/act/tu_800F7FCC.h"
 
-// A minor Shadow Link actor (sub-base cls_804A6A00) that, after its hop
+// A minor Shadow Link actor (sub-base ShadowLinkBase_804A6A00) that, after its hop
 // animation, puts a shockwave ring (cls_800F802C) and effects at its feet;
 // code in game/tu_80221B44.cpp. Not tied to a spawner ID. Named after its
 // vtable (0x804A6AA8). The destructor is fn_80221B44, the constructor
 // fn_80222190.
-class cls_804A6AA8 : public cls_804A6A00 {
+class cls_804A6AA8 : public ShadowLinkBase_804A6A00 {
 public:
     cls_804A6AA8();
     virtual ~cls_804A6AA8();

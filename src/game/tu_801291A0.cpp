@@ -51,7 +51,7 @@ bool cls_8049E5B8::fn_80129200() {
             arg = item | 0x400180;
         }
         mSpawned = fn_801F856C()->fn_801F9484(ACTOR_LSTI, field_0x4, &pos, arg, -1, -1);
-        fn_801F0E34(0x3004A, 0);
+        startSound_801F0E34(0x3004A, 0);
         break;
     }
     case 3:
@@ -109,7 +109,7 @@ void cls_8049E5B8::update() {
         if (serial < 0) {
             gone = true;
         } else {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor == NULL) {
                 gone = true;
             } else {

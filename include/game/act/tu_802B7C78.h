@@ -29,7 +29,7 @@ public:
     /* 0x254 */ f32 field_0x254;
     /* 0x258 */ f32 field_0x258;
     /* 0x25C */ u8 field_0x25c[0x4]; // not yet known
-    /* 0x260 */ f32 field_0x260[2]; // init: 1.0f, 0.75f; scaled by fn_801F71A4
+    /* 0x260 */ f32 field_0x260[2]; // init: 1.0f, 0.75f; scaled by addCalc2_801F71A4
     /* 0x268 */ f32 field_0x268[2]; // init: 2.0f, 1.5f; multipliers of the direction
     /* 0x270 */ s32 field_0x270; // draw(): low byte is the sprite's alpha
     /* 0x274 */ s32 field_0x274; // init: 0

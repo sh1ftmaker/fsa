@@ -48,13 +48,13 @@ void cls_8049DB30::fn_8011A4BC() {
         fadeColour(field_0x248, 0xFF, field_0x240);
         break;
     }
-    // The shadow sprite's colour (lbl_8053AB10->0x2C) follows this actor's.
-    cls_804A0160* shadow = lbl_8053AB10->field_0x2c;
+    // The shadow sprite's colour (gGameRoot2_8053AB10->0x2C) follows this actor's.
+    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
     shadow->field_0x4.r = field_0x244;
     shadow->field_0x4.g = field_0x245;
     shadow->field_0x4.b = field_0x246;
     shadow->field_0x4.a = field_0x247;
-    lbl_8053AB10->field_0x2c->field_0xc = field_0x248;
+    gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x248;
 }
 
 s32 cls_8049DB30::vfunc_0x5C() {
@@ -74,26 +74,26 @@ void cls_8049DB30::vfunc_0x54() {
             break;
         }
         fn_801184F0(fn_8011921C(), false);
-        fn_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
-        fn_802D6A9C()->fn_802DA8DC();
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
+        getGameView_802D6A9C()->fn_802DA8DC();
         field_0x234 = 4;
         break;
     case 0:
         if (fn_8011921C()->field_0x8 < 0x47E) {
             break;
         }
-        fn_8013CC50(field_0x4, &mPos, 0x4D7, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4D8, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4D9, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4DA, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4DB, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4DC, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4DD, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D7, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D8, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D9, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DA, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DB, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DC, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DD, 0, 0, NULL, NULL, true, 1.0f);
         if (mEmitter24c == NULL) {
-            mEmitter24c = fn_8013CC50(field_0x4, &mPos, 0x4DE, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitter24c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DE, 0, 0, NULL, NULL, true, 1.0f);
         }
         if (mEmitter250 == NULL) {
-            mEmitter250 = fn_8013CC50(field_0x4, &mPos, 0x4DF, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitter250 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DF, 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x240 = 0xB4;
         field_0x234 = 1;
@@ -127,10 +127,10 @@ void cls_8049DB30::update() {
     case 2:
         if (vfunc_0x34()) {
             if (mEmitter254 == NULL) {
-                mEmitter254 = fn_8013CC50(field_0x4, &mPos, 0x111, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter254 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x111, 0, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter258 == NULL) {
-                mEmitter258 = fn_8013CC50(field_0x4, &mPos, 0x112, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter258 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x112, 0, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             if (mEmitter254 != NULL) {
@@ -167,7 +167,7 @@ void cls_8049DB30::update() {
         }
         break;
     }
-    cls_804A03A8* field30 = lbl_8053AB10->field_0x30;
+    cls_804A03A8* field30 = gGameRoot2_8053AB10->field_0x30;
     if (field30->field_0x284 == 0) {
         field30->field_0x284 = 1;
         field30->field_0x28c = 0.05f;
@@ -183,9 +183,9 @@ void cls_8049DB30::init() {
     field_0x238 = field_0x90 & 0xF;
     field_0x23c = (field_0x90 >> 4) & 0xF;
     mAnim.fn_801D2608(lbl_80539F18, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1F14(0.0f);
-    fn_802D6A9C()->fn_802D7440(false);
+    getGameView_802D6A9C()->fn_802D7440(false);
 }
 
 cls_8049DB30::~cls_8049DB30() {

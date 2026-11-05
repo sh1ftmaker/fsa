@@ -29,7 +29,7 @@ public:
     /* 0x258 */ s32 field_0x258;   // vfunc_0x44 does nothing while this is set
     /* 0x25C */ s32 field_0x25c;   // init: bit 0 of field_0x90; draw's frame flag
     /* 0x260 */ s32 field_0x260;   // init: bit 8 of field_0x90
-    /* 0x264 */ u16 field_0x264;   // zeroed by init; angle, stepped by fn_801F714C in update
+    /* 0x264 */ u16 field_0x264;   // zeroed by init; angle, stepped by addCalcAngle2_801F714C in update
     /* 0x266 */ u8 field_0x266[2]; // not yet known
     /* 0x268 */ JGeometry::TVec3f field_0x268; // zeroed by init
     /* 0x274 */ JPABaseEmitter* mEmitter274; // released by the destructor

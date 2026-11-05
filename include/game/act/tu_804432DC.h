@@ -8,7 +8,7 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 class cls_804B1AE8 {
 public:
@@ -34,8 +34,8 @@ public:
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen;
-    /* 0x08 */ cls_804AF86C* mPtestmap; // pane 'Ptestmap'
-    /* 0x0C */ cls_804AF86C* mPmapten;  // pane 'Pmapten'
+    /* 0x08 */ PaneCtrl_804AF86C* mPtestmap; // pane 'Ptestmap'
+    /* 0x0C */ PaneCtrl_804AF86C* mPmapten;  // pane 'Pmapten'
     /* 0x10 */ s16 mTimer;
     /* 0x12 */ s16 mHoldTimer;
     /* 0x14 */ u8 mKind;

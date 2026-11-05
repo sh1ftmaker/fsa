@@ -37,7 +37,7 @@ public:
     // fn_801CD2F8(mOwner->field_0x4) holds, the actor at serial 0x30 (if >= 0
     // and live) takes that position; otherwise, with an emitter at 0x18, the
     // callback at 0x1C gets the position fn_80214E50 computes and that emitter
-    // is moved with fn_8013CB44 (height and depth from z, adjust on).
+    // is moved with setEmitterPos_8013CB44 (height and depth from z, adjust on).
     void fn_80214994();
 
     // game/tu_802144F0.cpp: called by act_shadow_link_2 with this+0x4EC, layer,
@@ -56,14 +56,14 @@ public:
     void fn_80214AF8();
 
     // game/tu_802144F0.cpp: while an emitter is held at 0x0, moves it with
-    // fn_8013CB44 to the position fn_80214E50 computes (the callback at 0x4
+    // setEmitterPos_8013CB44 to the position fn_80214E50 computes (the callback at 0x4
     // takes the same point), then deletes it when it is flagged deletable with
     // no particles left.
     void fn_80214CE4();
 
     // game/tu_802144F0.cpp: unless an emitter is held at 0x0, spawns effect
     // 0x33B on mOwner's layer at its position (y - 24), lifted by 1024 when
-    // the z is above 0 and by 128 otherwise (fn_8013CB44's height and depth),
+    // the z is above 0 and by 128 otherwise (setEmitterPos_8013CB44's height and depth),
     // with the particle callback at 0x4 whose position it sets to the same
     // point; the emitter is kept at 0x0 and made immortal.
     void fn_80214E50();

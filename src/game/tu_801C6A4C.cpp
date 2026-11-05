@@ -10,8 +10,8 @@ void ShadowLink2_804A43E8::fn_801C6A4C() {
             field_0x340.fn_800FEB78(6);
             switch (mState) {
             case 0x25:
-                fn_801F0E34(0x400CF, 0);
-                fn_801F0E34(0x400CD, 0);
+                startSound_801F0E34(0x400CF, 0);
+                startSound_801F0E34(0x400CD, 0);
                 break;
             case 0x26:
                 mTargetSpeed = 1.2f;
@@ -27,7 +27,7 @@ void ShadowLink2_804A43E8::fn_801C6A4C() {
         s32 limit = 5;
         if (mState == 0x26) {
             limit = 20;
-            fn_801F0E34(0x400D0, 0);
+            startSound_801F0E34(0x400D0, 0);
             if (field_0x338 >= 0 && !fn_801CAED4(field_0x338) && fn_801D0B44(field_0x338)) {
                 fn_801CD930(&field_0x33c, fn_801D0280(field_0x338), 0x500);
             }
@@ -43,7 +43,7 @@ void ShadowLink2_804A43E8::fn_801C6BA8() {
         switch (field_0x340.mState) {
         case 9:
             field_0x340.fn_800FEB78(3);
-            fn_801F0E34(0x400C6, 0);
+            startSound_801F0E34(0x400C6, 0);
             mSpeed = mTargetSpeed = 2.0f;
             field_0x33c = fn_801F6874(field_0x98);
             break;

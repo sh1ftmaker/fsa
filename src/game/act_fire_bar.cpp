@@ -26,7 +26,7 @@ void FireBarManager_804A3F90::update() {
     pos.x += mStep * dx;
     pos.y += mStep * dy;
     for (s32 i = 0; i < mCount; i++) {
-        static_cast<cls_804A4038*>(fn_801F856C()->fn_801F666C(mBars[i]))->fn_801BD8C0(&pos, mTangent);
+        static_cast<cls_804A4038*>(fn_801F856C()->findActorBySerial_801F666C(mBars[i]))->fn_801BD8C0(&pos, mTangent);
         pos.x += dx;
         pos.y += dy;
     }
@@ -98,7 +98,7 @@ void FireBarManager_804A3F90::init() {
     pos.y += mStep * dy;
     for (s32 i = 0; i < mCount; i++) {
         mBars[i] = fn_801F856C()->fn_801F9484(ACTOR_FBOB, field_0x4, &pos, !mFlag, -1, -1);
-        static_cast<cls_804A4038*>(fn_801F856C()->fn_801F666C(mBars[i]))->fn_801BD8C0(&pos, mTangent);
+        static_cast<cls_804A4038*>(fn_801F856C()->findActorBySerial_801F666C(mBars[i]))->fn_801BD8C0(&pos, mTangent);
         pos.x += dx;
         pos.y += dy;
     }

@@ -64,11 +64,11 @@ bool CaneOfSomariaBlock_804AA9F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f*
     case 0x24:
         return false;
     case 0x25:
-        return fn_802D6A9C()->field_0x171 == 0;
+        return getGameView_802D6A9C()->field_0x171 == 0;
     case 0x26:
-        return fn_802D6A9C()->field_0x171 == 1;
+        return getGameView_802D6A9C()->field_0x171 == 1;
     case 0x22:
-        return fn_802D6A9C()->field_0x170 == 1;
+        return getGameView_802D6A9C()->field_0x170 == 1;
     default:
         return true;
     }
@@ -86,7 +86,7 @@ void CaneOfSomariaBlock_804AA9F0::draw() {
         params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
         params.field_0x1c = fn_8023CA88(field_0xc8);
     }
-    fn_801F06F0("enemy_both2_sob.bin", field_0x24c + 0x2FF, &params, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_both2_sob.bin", field_0x24c + 0x2FF, &params, 0, 1.0f, 1.0f);
     fn_803075AC(mSerial, field_0x4, &mPos, 0x2FF, false, 2, -1, field_0xc4, 0, 0);
 }
 

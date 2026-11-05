@@ -7,7 +7,7 @@
 
 // A ring that grows from mPos and hits each player once (no vtable;
 // named after its lowest-address function). cls_8049C718 has one at 0x290,
-// cls_804A6A00 (game/tu_80221B44.cpp) at 0x2BC.
+// ShadowLinkBase_804A6A00 (game/tu_80221B44.cpp) at 0x2BC.
 struct cls_800F802C {
     // Grows the ring (by mTimer, 40 or 20 frames by mType) and hits the
     // active players of layer 0 within mRadius (fn_80238548, arg 0xB).

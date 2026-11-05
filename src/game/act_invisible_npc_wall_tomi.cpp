@@ -19,7 +19,7 @@ void InvisibleNPCWall_804AE6D0::update() {
     case 1: {
         s32 serial = fn_801F8108(this, ACTOR_KEY0, -1, 32.0f);
         if (serial >= 0) {
-            SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(fn_801F856C()->fn_801F666C(serial));
+            SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(fn_801F856C()->findActorBySerial_801F666C(serial));
             if (key != 0 && key->field_0x240 == 4 && key->field_0x3c.y < 0.0f) {
                 key->fn_802C2BD0();
             }

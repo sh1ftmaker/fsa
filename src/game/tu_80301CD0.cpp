@@ -107,9 +107,9 @@ u8 lbl_8053AD28[4];
 cls_804AA8C8* lbl_8053AD30;
 u8 lbl_8053AD34[4];
 
-// Whether the player's GBA link answers (fn_8030AAF4's input slot).
+// Whether the player's GBA link answers (getPlayerInputSlot_8030AAF4's input slot).
 static inline u8 isLinked(s32 player) {
-    return lbl_8053AD30->fn_8030A308(fn_8030AAF4(player));
+    return lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(player));
 }
 
 // Whether the player's transfer queue holds anything.
@@ -211,7 +211,7 @@ u8 fn_8030381C(s32 layer) {
 // 0x803049F0
 bool fn_803049F0(s32 layer, s32 index) {
     s32 player = fn_8022F340(layer);
-    const char* name = fn_802D6A9C()->fn_802D8128(index);
+    const char* name = getGameView_802D6A9C()->fn_802D8128(index);
     if (name == NULL) {
         return false;
     }
@@ -239,7 +239,7 @@ bool fn_803049F0(s32 layer, s32 index) {
 // 0x80304B00
 bool fn_80304B00(s32 layer, s32 index) {
     s32 player = fn_8022F340(layer);
-    const char* name = fn_802D6A9C()->fn_802D8228(index);
+    const char* name = getGameView_802D6A9C()->fn_802D8228(index);
     if (name == NULL) {
         return false;
     }

@@ -8,7 +8,7 @@ After (rebased on 3729a91, gate ok): total: 4449 / 11561 functions (see progress
 URAC actor ("Ura (dark-world) colour", actors.tsv, medium), class
 `UraColour_804A9A70` (vtable 0x804A9A70). Spawner: __nw__ 0x230, inline ctor
 fn_8020203C (base ctor + vtable only), no members of its own.
-- update: fn_802D77BC(fn_802D6A9C(), field_0x4, 1) (ORs 1 into the view's u16 at
+- update: fn_802D77BC(getGameView_802D6A9C(), field_0x4, 1) (ORs 1 into the view's u16 at
   0x131B8 + 2 * field_0x4); init: calls update() virtually; draw: empty.
 .text/.data/.bss/.ctors 100 %; extab/extabindex 47 %: weak JASMemPool dtor
 dedup (report tooling), not worked around.

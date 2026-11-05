@@ -36,7 +36,7 @@ void cls_804A4BB0::update() {
         fn_801F2B7C(field_0x114, -1, 1);
     } else {
         s32 layer = field_0x4;
-        GameView_804A9950* view = fn_802D6A9C();
+        GameView_804A9950* view = getGameView_802D6A9C();
         const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
         if (!contains(box, mPos)) {
             mAlive = false;
@@ -65,8 +65,8 @@ void cls_804A4BB0::update() {
             }
         }
     }
-    fn_8013CB44(mEmitters[0], &mPos, 1, 2, true);
-    fn_8013CB44(mEmitters[1], &mPos, 1, 2, true);
+    setEmitterPos_8013CB44(mEmitters[0], &mPos, 1, 2, true);
+    setEmitterPos_8013CB44(mEmitters[1], &mPos, 1, 2, true);
 }
 
 void cls_804A4BB0::fn_801D7DB4(f32 scale) {
@@ -93,10 +93,10 @@ void cls_804A4BB0::init() {
     field_0x194 = 1;
     if (fn_801CD2F8(field_0x4)) {
         mAnim.fn_801D2608(lbl_8053A140, 1);
-        mAnim.fn_801D22DC(0, 2, false);
+        mAnim.startAnim_801D22DC(0, 2, false);
     } else {
-        mEmitters[0] = fn_8013CC50(field_0x4, &mPos, 0x226, 1, 2, NULL, NULL, true, 1.0f);
-        mEmitters[1] = fn_8013CC50(field_0x4, &mPos, 0x227, 1, 2, NULL, NULL, true, 1.0f);
+        mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x226, 1, 2, NULL, NULL, true, 1.0f);
+        mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x227, 1, 2, NULL, NULL, true, 1.0f);
     }
     if (fn_801CD2F8(field_0x4)) {
         fn_801D7DB4(1.0f);

@@ -44,7 +44,7 @@ void Tektite_8049FD50::draw() {
         params.field_0x1f = 0;
         params.mMtx = mtx;
     }
-    fn_801F06F0("enemy_gc_sob.bin", field_0x90 * 3 + field_0x250 + 0x49, &params, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x90 * 3 + field_0x250 + 0x49, &params, 7, 1.0f, 1.0f);
 }
 
 // FIXME: 99.23%. The target compares field_0x254 (in r0) with the tile (in r3)
@@ -54,7 +54,7 @@ void Tektite_8049FD50::update() {
         // fn_80226998 (declared with TVec3f in Map.h) reads only the x and y of
         // its position, so the 8-byte stack TVec2f is passed as a TVec3f.
         if (field_0x254 == 0xFFFF) {
-            if (fn_802D6A9C()->fn_802DCD0C()) {
+            if (getGameView_802D6A9C()->fn_802DCD0C()) {
                 return;
             }
             s32 layer = field_0x4;
@@ -90,8 +90,8 @@ void Tektite_8049FD50::update() {
     if (field_0x23c > 0) {
         field_0x23c--;
     }
-    fn_801F71A4(&field_0x3c.x, field_0x258.x, 0.3f, 1.0f);
-    fn_801F71A4(&field_0x3c.y, field_0x258.y, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x258.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x258.y, 0.3f, 1.0f);
     mPos += field_0x3c;
     fn_801F2B7C(-100, -1, 1);
     bool hit = fn_801F2618(NULL, false);
@@ -136,7 +136,7 @@ void Tektite_8049FD50::update() {
             JGeometry::TVec3f pos;
             pos.set(mPos);
             pos.y += 8.0f;
-            fn_8013CC50(field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
             field_0x234 = 16;
             field_0x250 = 1;
             field_0x258.set(0.0f, 0.0f, 0.0f);

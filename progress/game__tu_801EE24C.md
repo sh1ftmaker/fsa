@@ -29,7 +29,7 @@ Next: fn_801EE434 (0xBC), fn_801F2618, fn_801F2FAC, fn_801F32F4, vfunc_0x50, the
 Baseline 8397 -> 8401 (+4 honest). 100 %: fn_801EE434 (now C++
 fn_801EE434__FP14JPABaseEmitter; it replaces the destructor's inline copy, the
 destructor inlines it), fn_801F0D20, fn_801F32F4, fn_801F33C4.
-Structural (FIXME each): fn_801EE24C 99.95 reloc-name (200.0f), fn_801F0E34
+Structural (FIXME each): fn_801EE24C 99.95 reloc-name (200.0f), startSound_801F0E34
 99.25 regalloc, fn_801F2B7C 98.2 regalloc+reloc (inlines fn_801F2740),
 fn_801F2DB4 99.4, fn_801F2618 98.7, fn_801F2FAC 98.6 (bool narrowed with
 clrlwi at the return: a u8 return type matches the bodies 100 % but lowers ~20
@@ -45,7 +45,7 @@ offset, so fn_801EF830 and fn_801F52A4 (and every literal-introducing
 function before the ctor) must be written first.
 SHARED-EDITS: symbols.txt fn_801EE434 -> fn_801EE434__FP14JPABaseEmitter,
 fn_8022BB48 -> fn_8022BB48__FlPCQ29JGeometry8TVec3<f>; Player.h declares
-fn_8022BB48; ActorBase.h fn_801F0E34 returns JAISoundHandle*, fn_801EE434 out
+fn_8022BB48; ActorBase.h startSound_801F0E34 returns JAISoundHandle*, fn_801EE434 out
 of extern "C"; tools/gen_game.py EMIT_RELEASE (protected: needs approval).
-Next: fn_801EE558 / fn_801EE8F4 (literal order), fn_801EEC98, fn_801F06F0
+Next: fn_801EE558 / fn_801EE8F4 (literal order), fn_801EEC98, drawSprite_801F06F0
 (SpriteParams copy), fn_801F285C, fn_801F37AC, fn_801EF830, fn_801F52A4.

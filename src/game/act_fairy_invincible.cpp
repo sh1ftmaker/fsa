@@ -33,7 +33,7 @@ void InvincibilityFairy_804AB4C0::draw() {
     params.mMtx = mtx;
     if (mCounters[0][0] >= 0x100 || (mCounters[0][0] & 2) == 0) {
         params.field_0x2d = 1;
-        fn_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 0, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 0, 1.0f, 1.0f);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 0);
     }
 }
@@ -73,9 +73,9 @@ inline void InvincibilityFairy_804AB4C0::clearTracking() {
 // original reads field_0x4 for the spawn a few instructions later; and the
 // original's loop keeps the index i in r7 as well as the pair pointer.
 void InvincibilityFairy_804AB4C0::update() {
-    fn_801F71A4(&field_0x3c.x, field_0x258, 0.1f, 0.5f);
-    fn_801F71A4(&field_0x3c.y, field_0x25c, 0.1f, 0.5f);
-    fn_801F71A4(&mPos.z, field_0x260, 0.3f, 0.5f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x258, 0.1f, 0.5f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x25c, 0.1f, 0.5f);
+    addCalc2_801F71A4(&mPos.z, field_0x260, 0.3f, 0.5f);
     mPos += field_0x3c;
     followEmitters();
 
@@ -196,8 +196,8 @@ void InvincibilityFairy_804AB4C0::init() {
     field_0x248 = (s32)(lbl_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
     field_0x230 = 0;
     field_0xb0 = 0x20000;
-    mEmitter264 = fn_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.5f);
-    mEmitter268 = fn_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.5f);
+    mEmitter264 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.5f);
+    mEmitter268 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.5f);
 }
 
 void InvincibilityFairy_804AB4C0::vfunc_0x44() {

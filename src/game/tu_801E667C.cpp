@@ -84,7 +84,7 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
         break;
     }
     case 2:
-        mAnim.fn_801D22DC(0, 0, false);
+        mAnim.startAnim_801D22DC(0, 0, false);
         for (s32 i = 0; i < 4; i++) {
             if (mActive[i]) {
                 fn_80230FD0(i, 0x10001);
@@ -98,15 +98,15 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
                 pos.set(*fn_8023E724(i));
                 pos.x += 7.0f;
                 pos.y += -27.0f;
-                fn_8013CC50(fn_8023DE58(i), &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(fn_8023DE58(i), &pos, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(fn_8023DE58(i), &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(fn_8023DE58(i), &pos, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
                 fn_80230FD0(i, 0x2000E);
             }
         }
         break;
     case 4:
         if (field_0x8 == 0) {
-            fn_802D6A9C()->fn_802D9FF4(9, 0);
+            getGameView_802D6A9C()->fn_802D9FF4(9, 0);
             lbl_8053AAF8->fn_80136798(13, 0);
         }
         break;

@@ -4,7 +4,7 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // Named after its vtable, 0x804B19F0 (one virtual, the destructor).
 // Defined in game/tu_80441A1C.cpp; the constructor stores `this` in a
@@ -15,7 +15,7 @@ public:
     /* 0x08 */ virtual ~cls_804B19F0();
 
     // Owner: game/tu_80441A1C.cpp. Draws field_0x4 at the origin with the
-    // ortho context of lbl_8053AB10, when field_0x18 is not 0.
+    // ortho context of gGameRoot2_8053AB10, when field_0x18 is not 0.
     void fn_80442200();
     // Owner: game/tu_80441A1C.cpp. Resets the pane and counters for a new
     // text window: field_0x10 = arg, field_0x14 = index - 1, field_0x18 = 1.
@@ -26,8 +26,8 @@ public:
     s32 fn_80441A1C();
 
     /* 0x04 */ J2DScreen* field_0x4;     // "gba_connect_error_window.blo", new in the constructor
-    /* 0x08 */ cls_804AF86C* field_0x8;  // pane wrapper, tag "Pwblk01"
-    /* 0x0C */ cls_804AF86C* field_0xc;  // pane wrapper, tag "Ndatag01"
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;  // pane wrapper, tag "Pwblk01"
+    /* 0x0C */ PaneCtrl_804AF86C* field_0xc;  // pane wrapper, tag "Ndatag01"
     /* 0x10 */ s32 field_0x10;           // 0x16 at construction
     /* 0x14 */ s32 field_0x14;           // player index (0-based)
     /* 0x18 */ s32 field_0x18;           // state; fn_80441A1C switches on it

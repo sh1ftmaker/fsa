@@ -17,7 +17,7 @@
 // (lbl_80529DE0 + 0x264, fn_80403B48), so the object is 0x258 bytes at most;
 // its last field seen is the byte at 0x254.
 //
-// Also here: cls_804AF86C, a wrapper around one J2DPane that 28 units
+// Also here: PaneCtrl_804AF86C, a wrapper around one J2DPane that 28 units
 // allocate (tu_804023D0 holds its methods).
 //
 // Fields are named only where the code that writes them shows what they
@@ -35,7 +35,7 @@
 class JKRArchive;
 class JKRSolidHeap;
 class J2DPane;
-struct Unk_8045A080; // GameGlobals.h
+struct AudioMgr_8045A080; // GameGlobals.h
 
 class GameState_804B0FE0 {
 public:
@@ -90,7 +90,7 @@ public:
     // and the 0x90-byte object fn_8045A080 builds in that heap.
     /* 0x004 */ JKRSolidHeap* field_0x4;
     /* 0x008 */ JKRExpHeap* mHeap;
-    /* 0x00C */ Unk_8045A080* field_0xc; // the object lbl_8053AF80 also holds (calls fn_80459AE4)
+    /* 0x00C */ AudioMgr_8045A080* field_0xc; // the object lbl_8053AF80 also holds (calls fn_80459AE4)
     // Resource archives (the loader object's 0x14, an archive fn_80401AC8 /
     // fn_80401D20 create as JKRAramArchive or JKRMemArchive). The ones set
     // in fn_803FFAA8 (tu_803FF2C4) come from these paths (0x80400334-
@@ -180,7 +180,7 @@ public:
     // SHARED-EDIT (tu_803E1668 fn_803ED604): input slot 1 + this is polled by
     // the menu's update functions (fn_80309C4C / fn_80309A9C).
     /* 0x23C */ u8 field_0x23c;
-    // SHARED-EDIT (tu_803F0A54): copied to cls_804B0F10::field_0x1ac by its
+    // SHARED-EDIT (tu_803F0A54): copied to ConnectScreen_804B0F10::field_0x1ac by its
     // constructor; input slot 2 + this is polled by its states (fn_803F8050).
     /* 0x23D */ u8 field_0x23d;
     /* 0x23E */ u8 field_0x23e[0x240 - 0x23E];
@@ -242,25 +242,25 @@ void fn_804034D4(s32 player, s32 value);
 // inline whose kept copy is game/tu_803A60E4.cpp's 0x803A8378 (after that
 // unit's functions, before its __sinit). 28 units allocate it with
 // __nw__(0x2C) and the inline constructor (which only stores the vtable),
-// then call fn_80402F04 with a pane from J2DScreen::search (e.g.
+// then call setPane_80402F04 with a pane from J2DScreen::search (e.g.
 // tu_80403D84, 0x80412F18).
-class cls_804AF86C {
+class PaneCtrl_804AF86C {
 public:
-    cls_804AF86C() {}
-    virtual ~cls_804AF86C() {}
+    PaneCtrl_804AF86C() {}
+    virtual ~PaneCtrl_804AF86C() {}
 
     // 28 units. Stores pane, takes its position from getBounds() and its
     // size from its box, the centre (position + size / 2), field_0x28 from
     // the pane's byte at 0xB2, and clears the four counters.
-    void fn_80402F04(J2DPane* pane);
+    void setPane_80402F04(J2DPane* pane);
     // 27 units. Moves the pane (vtable slot 0x10, J2DPane::move) so that its
     // centre is field_0x10 + x, field_0x14 + y.
-    void fn_80402E08(f32 x, f32 y);
-    // 1 unit. fn_80402F04 again for the stored pane (no counters, no 0x28).
+    void moveFromCentre_80402E08(f32 x, f32 y);
+    // 1 unit. setPane_80402F04 again for the stored pane (no counters, no 0x28).
     void fn_80402E70();
     // 2 units. Calls pane's vtable slot 0x24 (setAlpha) with
     // alpha * mPane's 0xB2 byte / field_0x28.
-    void fn_804023D0(J2DPane* pane, u8 alpha);
+    void setAlpha_804023D0(J2DPane* pane, u8 alpha);
     // fn_80402940 (16 units) and fn_80402B10 (5) step field_0x22 / field_0x20
     // up to frames (r4) with a mode byte in r5; the two floats are the
     // targets' coordinates (the f1 one is 0.0 in game/tu_804432DC.cpp).

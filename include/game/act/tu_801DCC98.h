@@ -16,8 +16,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
 
-    /* 0x2A8 */ JPABaseEmitter* mEmitter2a8; // fn_8013CC50 id 0x256
-    /* 0x2AC */ JPABaseEmitter* mEmitter2ac; // fn_8013CC50 id 0x257
+    /* 0x2A8 */ JPABaseEmitter* mEmitter2a8; // spawnEmitter_8013CC50 id 0x256
+    /* 0x2AC */ JPABaseEmitter* mEmitter2ac; // spawnEmitter_8013CC50 id 0x257
 };
 
 #endif

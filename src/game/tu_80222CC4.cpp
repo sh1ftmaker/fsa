@@ -7,7 +7,7 @@
 static inline void releaseShot(cls_804A6C38* self) {
     s32 serial = self->mDDGOSerial;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mLife = 0;
         }
@@ -31,14 +31,14 @@ cls_804A6C38::~cls_804A6C38() {
 }
 
 void cls_804A6C38::init() {
-    cls_804A6A00::init();
+    ShadowLinkBase_804A6A00::init();
     field_0x98 = field_0x90 & 3;
     mState = 4;
     mStateTimer = 0;
     field_0x250 = -1;
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
+    mAnim.startAnim_801D22DC(2, 0, false);
 }
 
 void cls_804A6C38::vfunc_0x90(u8 mapHit) {
@@ -54,7 +54,7 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
         break;
     case 3:
         if (mStateTimer >= 120) {
-            mAnim.fn_801D22DC(field_0x98 + 16, 0, false);
+            mAnim.startAnim_801D22DC(field_0x98 + 16, 0, false);
             mStateTimer = 0;
             mState = 5;
         }
@@ -63,7 +63,7 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
         fn_802216E8(120);
         if (mPos.z <= 0.0f) {
             if (mFlags & CLS_804A6A00_FLAG_0x2000) {
-                mAnim.fn_801D22DC(field_0x98 + 16, 0, false);
+                mAnim.startAnim_801D22DC(field_0x98 + 16, 0, false);
                 mStateTimer = 0;
                 mState = 5;
             } else {
@@ -93,7 +93,7 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
             mDDGOSerial = fn_801F856C()->fn_801F9484('DDGO', field_0x4, &pos, 1, -1, -1);
             s32 serial = mDDGOSerial;
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     actor->field_0x98 = field_0x98;
                 }
@@ -105,7 +105,7 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
     case 6:
         if (mStateTimer >= 180) {
             releaseShot(this);
-            mAnim.fn_801D22DC(field_0x98, 0, false);
+            mAnim.startAnim_801D22DC(field_0x98, 0, false);
             mStateTimer = 0;
             mState = 7;
         }
@@ -127,6 +127,6 @@ void cls_804A6C38::vfunc_0x88() {
 }
 
 void cls_804A6C38::vfunc_0x6C() {
-    cls_804A6A00::vfunc_0x6C();
+    ShadowLinkBase_804A6A00::vfunc_0x6C();
     releaseShot(this);
 }

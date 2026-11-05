@@ -19,7 +19,7 @@ void Beamos_804A40E0::draw() {
         params.field_0x14.mColor.g = 0x80;
         params.field_0x14.mColor.b = 0x80;
     }
-    fn_801F06F0("enemy_gc_sob.bin", 0x13C, &params, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x13C, &params, -1, 1.0f, 1.0f);
     if (mFlags & 0x2000) {
         return;
     }
@@ -36,9 +36,9 @@ void Beamos_804A40E0::draw() {
 }
 
 void Beamos_804A40E0::vfunc_0x24() {
-    fn_8013CC50(field_0x4, &mPos, 0x70, 0, 0, NULL, NULL, true, 1.0f);
-    fn_8013CC50(field_0x4, &mPos, 0x71, 0, 0, NULL, NULL, true, 1.0f);
-    fn_8013CC50(field_0x4, &mPos, 0x72, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x70, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x71, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x72, 0, 0, NULL, NULL, true, 1.0f);
     ActorBase_804A5770::vfunc_0x24();
 }
 
@@ -58,7 +58,7 @@ bool Beamos_804A40E0::vfunc_0x5C() {
             }
         }
         if (hit) {
-            fn_801F0E34(0x4000C, 0);
+            startSound_801F0E34(0x4000C, 0);
         }
     } else {
         hit = fn_801CEBD0();
@@ -107,16 +107,16 @@ void Beamos_804A40E0::fn_801BE6C4(s32 state) {
         if (pos.y >= -15.0f + mPos.y) {
             depth = 1;
         }
-        fn_8013CC50(field_0x4, &pos, 0x1C, 0, depth, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &pos, 0x1D, 0, depth, NULL, NULL, true, 1.0f);
-        fn_801F0E34(0x30062, 0);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x1C, 0, depth, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x1D, 0, depth, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30062, 0);
         field_0x2aa = 60;
         break;
     }
     case 3:
         field_0x250 = fn_801CD664(1) + 0x5A;
         fn_801BE86C();
-        fn_801F0E34(0x30063, 0);
+        startSound_801F0E34(0x30063, 0);
         break;
     }
     mStateTimer = 0;
@@ -139,7 +139,7 @@ void Beamos_804A40E0::fn_801BE86C() {
     if (serial < 0) {
         return;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         return;
     }

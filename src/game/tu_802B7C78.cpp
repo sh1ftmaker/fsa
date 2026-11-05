@@ -25,7 +25,7 @@ static inline void normalize(JGeometry::TVec2f& v) {
 cls_804A886C::~cls_804A886C() {}
 
 void fn_802B7CD8(ActorBase_804A5770* actor) {
-    fn_802D6A9C()->fn_802D9FBC();
+    getGameView_802D6A9C()->fn_802D9FBC();
     actor->vfunc_0x24();
 }
 
@@ -44,7 +44,7 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
         field_0x250 = 4;
     }
 
-    fn_801F0E34(0x40040, 0);
+    startSound_801F0E34(0x40040, 0);
     s32 layer = field_0x4;
     if (fn_8023DE58(field_0x298) == layer) {
         JGeometry::TVec3f* p = fn_8023E724(field_0x298);
@@ -56,9 +56,9 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
 
         field_0x254 = field_0x284.x * field_0x268[idx];
         field_0x258 = field_0x284.y * field_0x268[idx];
-        fn_801F71A4(&field_0x3c.x, field_0x254, 0.3f, field_0x260[idx]);
-        fn_801F71A4(&field_0x3c.y, field_0x258, 0.3f, field_0x260[idx]);
-        fn_801F71A4(&field_0x260[idx], 1.0f, 0.1f, 0.1f);
+        addCalc2_801F71A4(&field_0x3c.x, field_0x254, 0.3f, field_0x260[idx]);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x258, 0.3f, field_0x260[idx]);
+        addCalc2_801F71A4(&field_0x260[idx], 1.0f, 0.1f, 0.1f);
         mPos += field_0x3c;
 
         s32 damage = field_0x114;
@@ -71,7 +71,7 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
         if (fn_8023F264(field_0x298) == true && !fn_80236B50(field_0x298)) {
             u8 hit = fn_801F2B7C(damage, -1, arg3);
             if (hit) {
-                fn_801F0E34(0x40041, 0);
+                startSound_801F0E34(0x40041, 0);
                 field_0x244 = 140;
                 field_0x234 = mPos;
                 if (field_0x298 == lbl_804A8858[hit >> 1]) {
@@ -81,7 +81,7 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
                 field_0x280 = 100;
                 if (lbl_8053AAF8->field_0x7e == 0) {
                     mAlive = false;
-                    fn_801F0E34(0x40041, 0);
+                    startSound_801F0E34(0x40041, 0);
                 }
             }
         } else {
@@ -98,9 +98,9 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
 }
 
 void cls_804A886C::vfunc_0x24() {
-    fn_8013CC50(field_0x4, &mPos, 0x173, 1, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x173, 1, 0, NULL, NULL, true, 1.0f);
     mAlive = false;
-    fn_801F0E34(0x40041, 0);
+    startSound_801F0E34(0x40041, 0);
 }
 
 void cls_804A886C::draw() {
@@ -112,7 +112,7 @@ void cls_804A886C::draw() {
     params.field_0x1d = 1;
     params.field_0x10.mColor.a = field_0x270;
     params.field_0x30 = 8;
-    fn_801F06F0("enemy_gc_sob.bin", lbl_8046CB60[field_0x24c] + 0x466, &params, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_8046CB60[field_0x24c] + 0x466, &params, 7, 1.0f, 1.0f);
 }
 
 // FIXME: 99.64 %. Only reloc-names: the -8.0f, 8.0f and 2.0f literals are
@@ -142,6 +142,6 @@ void cls_804A886C::init() {
     field_0x27c = 0;
     field_0x196 = 1;
     field_0x230 = 0;
-    fn_801F0E34(0x4003F, 0);
+    startSound_801F0E34(0x4003F, 0);
     lbl_8053AED0->fn_8043D67C(0x197, 0, 0);
 }

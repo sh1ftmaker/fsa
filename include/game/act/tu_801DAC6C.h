@@ -19,7 +19,7 @@ struct Singleton_801DAC6C {
     s32 fn_801DAD2C();
     // 0x801DAD88: calls fn_801D8400 on the actor with serial mSerial0.
     void fn_801DAD88();
-    // 0x801DADD0: sends sound 0x40005 (fn_801F0E34) to the actor with serial mSerial0.
+    // 0x801DADD0: sends sound 0x40005 (startSound_801F0E34) to the actor with serial mSerial0.
     void fn_801DADD0();
     // 0x801DAE24: for each listed actor sets field_0x10c to -1 and calls vfunc_0x24.
     void fn_801DAE24();

@@ -16,7 +16,7 @@ void Deadrock_8049F498::draw() {
     if (field_0x230 == 4 && (field_0x23c & 1) == 0) {
         return;
     }
-    fn_801F06F0("enemy_gc_sob.bin", frame + 0x1c, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x1c, NULL, 0, 1.0f, 1.0f);
 }
 
 void Deadrock_8049F498::update() {
@@ -37,9 +37,9 @@ void Deadrock_8049F498::update() {
             center.x = box.f.x + 0.5f * (box.i.x - box.f.x);
             center.y = box.f.y + 0.5f * (box.i.y - box.f.y);
             if (fn_802379E4(player, (const JGeometry::TVec3f*)&center)) {
-                fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
-                fn_801F0E34(0x400D1, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x400D1, 0);
             }
         }
     }
@@ -91,7 +91,7 @@ void Deadrock_8049F498::update() {
         }
     } else {
         if (fn_801F2DB4('NULL', 'HBMB', NULL)) {
-            fn_801F0E34(0x400D1, 0);
+            startSound_801F0E34(0x400D1, 0);
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
@@ -195,7 +195,7 @@ void Deadrock_8049F498::update() {
     case 2:
         field_0x238 = 200;
         field_0xb0 = 0x0A042104;
-        fn_801F0E34(0x400D1, 0);
+        startSound_801F0E34(0x400D1, 0);
         field_0x230 = 3;
         // fall through
     case 3:

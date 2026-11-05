@@ -104,11 +104,11 @@ s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
     } else {
         // Each axis fetches the view again, as the original does (the calls
         // aren't CSE'd across the position call).
-        GameView_804A9950* viewA = fn_802D6A9C();
-        GameView_804A9950* viewB = fn_802D6A9C();
+        GameView_804A9950* viewA = getGameView_802D6A9C();
+        GameView_804A9950* viewB = getGameView_802D6A9C();
         x = (s32)(fn_8023E724(player)->x - viewA->mVisibleBox.i.x + viewB->field_0xdc.i.x);
-        viewA = fn_802D6A9C();
-        viewB = fn_802D6A9C();
+        viewA = getGameView_802D6A9C();
+        viewB = getGameView_802D6A9C();
         y = (s32)(fn_8023E724(player)->y - viewA->mVisibleBox.i.y + viewB->field_0xdc.i.y);
     }
 

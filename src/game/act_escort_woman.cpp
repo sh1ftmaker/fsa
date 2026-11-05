@@ -58,7 +58,7 @@ void EscortWoman_8049E1D0::vfunc_0x74() {
 
 void EscortWoman_8049E1D0::vfunc_0x70() {
     mAnim.fn_801D2608(lbl_8049E198, 14);
-    mAnim.fn_801D22DC(7, 2, false);
+    mAnim.startAnim_801D22DC(7, 2, false);
     mAnim.fn_801D1F14(0.0f);
 }
 

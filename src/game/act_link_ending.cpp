@@ -49,7 +49,7 @@ void LinkEnding_804AD858::fn_8035E93C() {
 // to state 7 with base frame 0x10.
 void LinkEnding_804AD858::fn_8035E9A0() {
     cls_804A5958* partner =
-        static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x90));
+        static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x90));
     if (partner != NULL && partner->mPos.y >= 1810.0f) {
         field_0x248 = 0;
         field_0x250 = 0x3d;
@@ -69,7 +69,7 @@ void LinkEnding_804AD858::fn_8035EA48() {
     if (field_0x234 == 0) {
         mState++;
         cls_804A5958* partner =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->mState = 3;
         }
@@ -80,9 +80,9 @@ void LinkEnding_804AD858::fn_8035EA48() {
 // 1) and waits 0x78 frames.
 void LinkEnding_804AD858::fn_8035EAA4() {
     if (field_0x234 == 0) {
-        fn_801F0E34(0x30085, 0);
+        startSound_801F0E34(0x30085, 0);
         cls_804A5958* partner =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->field_0x238 = 1;
         }
@@ -100,7 +100,7 @@ void LinkEnding_804AD858::fn_8035EB18() {
         field_0x234 = 0x10e;
         mState++;
     } else if (field_0x234 == 10) {
-        fn_801F0E34(0x30088, 0);
+        startSound_801F0E34(0x30088, 0);
     }
 }
 
@@ -122,7 +122,7 @@ void LinkEnding_804AD858::fn_8035EB90() {
     }
 }
 
-// State 1: fn_8013CC50 at the fixed point (1280, 1728) for each of the 17 ids
+// State 1: spawnEmitter_8013CC50 at the fixed point (1280, 1728) for each of the 17 ids
 // of lbl_80472820, then a sound and a 0x14 countdown.
 // FIXME: 99.20 %. Regalloc only: the original keeps the id table's base in
 // r30 and the loop counter in r31; here they are swapped.
@@ -133,9 +133,9 @@ void LinkEnding_804AD858::fn_8035EC98() {
         pos.y = 1728.0f;
         pos.z = 0.0f;
         for (s32 i = 0; i < 0x11; i++) {
-            fn_8013CC50(field_0x4, &pos, lbl_80472820[i], 1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &pos, lbl_80472820[i], 1, 1, NULL, NULL, true, 1.0f);
         }
-        fn_801F0E34(0x30087, 0);
+        startSound_801F0E34(0x30087, 0);
         field_0x234 = 0x14;
         mState++;
     }
@@ -162,7 +162,7 @@ void LinkEnding_804AD858::fn_8035ED60() {
         field_0x248 = 0;
         field_0x244 = 0;
         cls_804A5958* partner =
-            static_cast<cls_804A5958*>(fn_801F856C()->fn_801F666C(field_0x23c));
+            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x23c));
         if (partner != NULL) {
             partner->mState = 2;
         }

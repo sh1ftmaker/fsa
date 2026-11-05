@@ -12,7 +12,7 @@ bool cls_8049EA00::fn_8012FC2C(const s32* v) {
     if (serial < 0) {
         return true;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         return true;
     }

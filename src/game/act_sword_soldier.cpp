@@ -37,7 +37,7 @@ f32 fn_80154378(f32 x) {
 }
 
 ActorBase_804A5770* fn_8015445C(s32 serial) {
-    return fn_801F856C()->fn_801F666C(serial);
+    return fn_801F856C()->findActorBySerial_801F666C(serial);
 }
 
 // fn_80154490 to fn_801544C0: the sword soldier (SLR1) calls them on the
@@ -73,7 +73,7 @@ void ActorBase_804A5770::fn_801544D0(s32 value) {
 }
 
 // An actor's position (its mPos). Out of line in the original, called from
-// 4 other units on actors they got from fn_801F666C / fn_8015445C.
+// 4 other units on actors they got from findActorBySerial_801F666C / fn_8015445C.
 JGeometry::TVec3f* ActorBase_804A5770::fn_801544DC() {
     return &mPos;
 }
@@ -153,7 +153,7 @@ s32 fn_8015465C(f32 y, f32 x) {
 }
 
 u8 fn_80154698() {
-    return fn_802D6A9C()->fn_802DCD0C();
+    return getGameView_802D6A9C()->fn_802DCD0C();
 }
 
 void fn_801546BC(JGeometry::TVec3f* v) {
@@ -175,7 +175,7 @@ void fn_801546F4(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
 
 // Keeps pos in the camera's view (3 units call it; they ignore r3).
 void fn_80154718(const JGeometry::TVec3f* pos) {
-    lbl_8053AB10->field_0x24->fn_8030C210(pos);
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(pos);
 }
 
 // A random float in [0, 1) from the game's RNG. Called from 10 units.

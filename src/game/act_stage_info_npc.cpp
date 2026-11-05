@@ -16,6 +16,6 @@ void StageInfoNpc_804AA7A8::draw() {}
 void StageInfoNpc_804AA7A8::update() {}
 
 void StageInfoNpc_804AA7A8::init() {
-    fn_802D6A9C()->fn_802D7934(field_0x90 & 0xF);
+    getGameView_802D6A9C()->fn_802D7934(field_0x90 & 0xF);
     mAlive = false;
 }

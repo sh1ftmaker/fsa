@@ -22,9 +22,9 @@ void WarpPillar_804AC0A8::update() {
     f32 left = mPos.x + mBox.i.x;
     f32 right = mPos.x + mBox.f.x;
 
-    fn_801F0E34(0x5003B, 0);
+    startSound_801F0E34(0x5003B, 0);
 
-    cls_804A0160* shadow = lbl_8053AB10->field_0x2c;
+    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
     if (shadow->field_0xc > 0x80) {
         u8 alpha = shadow->field_0xc - 1;
         if (alpha <= 0x80) {
@@ -41,7 +41,7 @@ void WarpPillar_804AC0A8::update() {
             JGeometry::TVec3f pos(*fn_8023E724(i));
             if (field_0x230 != 1) {
                 pos += field_0x3c;
-                fn_801F71A4(&pos.x, mPos.x - 24.0f + 16.0f * field_0x248[i], 0.02f, 10.0f);
+                addCalc2_801F71A4(&pos.x, mPos.x - 24.0f + 16.0f * field_0x248[i], 0.02f, 10.0f);
             }
             if (field_0x230 == 3) {
                 fn_80230498(i, &pos, 0x3CF, (u8)(field_0x244 * 0xFF / 50), -0x80, -0x80, true);
@@ -69,7 +69,7 @@ void WarpPillar_804AC0A8::update() {
                 field_0x234++;
                 if (mEmitter26c[i] == NULL) {
                     JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
-                    mEmitter26c[i] = fn_8013CC50(field_0x4, &pos, lbl_805420A0[i], 1, 2, NULL, NULL, true, 1.0f);
+                    mEmitter26c[i] = spawnEmitter_8013CC50(field_0x4, &pos, lbl_805420A0[i], 1, 2, NULL, NULL, true, 1.0f);
                 }
             } else if (mEmitter26c[i] != NULL) {
                 mEmitter26c[i]->becomeInvalidEmitter();
@@ -145,7 +145,7 @@ void WarpPillar_804AC0A8::update() {
         break;
     }
     case 2: {
-        fn_801F0E34(0x5003A, 0);
+        startSound_801F0E34(0x5003A, 0);
         f32 maxY = 0.0f;
         for (s32 i = 0; i < 4; i++) {
             if (maxY < fn_8023E724(i)->y) {
@@ -159,10 +159,10 @@ void WarpPillar_804AC0A8::update() {
         break;
     }
     case 3:
-        fn_801F0E34(0x5003A, 0);
+        startSound_801F0E34(0x5003A, 0);
         field_0x244--;
         if (field_0x244 <= 0) {
-            fn_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
+            getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
             lbl_8053AAF8->fn_80136798(0xF, 0);
             if (mEmitter264 != NULL) {
                 mEmitter264->becomeInvalidEmitter();
@@ -207,11 +207,11 @@ void WarpPillar_804AC0A8::init() {
 
     if (mEmitter264 == NULL) {
         JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
-        mEmitter264 = fn_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, 1.0f);
+        mEmitter264 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, 1.0f);
     }
     if (mEmitter268 == NULL) {
         JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
-        mEmitter268 = fn_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, 1.0f);
+        mEmitter268 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, 1.0f);
     }
 
     mBox.i.x = -47.0f;

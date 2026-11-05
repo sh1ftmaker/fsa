@@ -18,7 +18,7 @@ static inline bool isShopItemAlive() {
     if (serial < 0) {
         return false;
     }
-    if (fn_801F856C()->fn_801F666C(serial) == NULL) {
+    if (fn_801F856C()->findActorBySerial_801F666C(serial) == NULL) {
         return false;
     }
     return true;
@@ -32,7 +32,7 @@ void Merchant_8049CD48::draw() {
     const JGeometry::TVec3f* pos = &mPos;
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1AB, false, 1, -1, 0, 0, 0);
 }
@@ -91,7 +91,7 @@ void Merchant_8049CD48::init() {
     field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
     mLife = 0;
     mAnim.fn_801D2608(lbl_80539ED8, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1F14(0.0f);
 }
 

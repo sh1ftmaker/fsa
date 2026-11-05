@@ -25,7 +25,7 @@ public:
     // 0x80209CA4. Applies a hit of `attack` from `from` with strength 0 and
     // `type` by `player`; a hit that landed clears ENEMY_FLAG_NO_HURT.
     void fn_80209CA4(s32 player, s32 attack, const JGeometry::TVec3f* from, s32 type);
-    /* 0x2A8 */ s32 mTargetSerial; // the actor vfunc_0x24 looks up (fn_801F666C)
+    /* 0x2A8 */ s32 mTargetSerial; // the actor vfunc_0x24 looks up (findActorBySerial_801F666C)
     /* 0x2AC */ u8 field_0x2ac[0x14]; // not yet known
     /* 0x2C0 */ JGeometry::TVec2f field_0x2c0; // vfunc_0x54: mSpawnPos - mPos (x, y)
     /* 0x2C8 */ u8 field_0x2c8[8]; // not yet known

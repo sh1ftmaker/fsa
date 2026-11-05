@@ -152,9 +152,9 @@ void cls_804A3448::fn_801AF1EC() {
             center.x = 0.5f * (box.i.x - box.f.x) + box.f.x;
             center.y = 0.5f * (box.i.y - box.f.y) + box.f.y;
             if (fn_80237948(hit, &center)) {
-                fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
-                fn_801F0E34(0x400D1, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x400D1, 0);
             }
         }
     }

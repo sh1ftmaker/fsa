@@ -30,16 +30,16 @@ void cls_804A1160::draw() {
     s32 frame = field_0x254 + 0x12d;
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f,
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f,
                                               1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + 0x12d, false, 2, -1, 0, 0, 0);
 }
 
-// The hit effect at mPos: fn_8013CC50 on the low layers, else the HTMK actor.
+// The hit effect at mPos: spawnEmitter_8013CC50 on the low layers, else the HTMK actor.
 static inline void spawnHitEffect(s32 layer, const JGeometry::TVec3f* pos) {
     if (layer < 8) {
-        fn_8013CC50(layer, pos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
     } else {
         fn_801F856C()->fn_801F9484('HTMK', layer, pos, 0, -1, -1);
     }
@@ -133,7 +133,7 @@ void cls_804A1160::update() {
             mAlive = false;
         }
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
         }
         break;
     }
@@ -195,21 +195,21 @@ bool cls_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         if (code == 0x25) {
-            if (field_0x234 == 0 && fn_802D6A9C()->field_0x171 == 0) {
+            if (field_0x234 == 0 && getGameView_802D6A9C()->field_0x171 == 0) {
                 return true;
             }
             field_0x234 = 0;
             return false;
         }
         if (code == 0x26) {
-            if (field_0x234 == 0 && fn_802D6A9C()->field_0x171 == 1) {
+            if (field_0x234 == 0 && getGameView_802D6A9C()->field_0x171 == 1) {
                 return true;
             }
             field_0x234 = 0;
             return false;
         }
         if (field_0x234 == 0) {
-            if (code != 0x22 || fn_802D6A9C()->field_0x170 == 1) {
+            if (code != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
                 return true;
             }
         }
@@ -263,5 +263,5 @@ void cls_804A1160::init() {
     field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
     field_0x23c = 2;
     field_0x230 = 0;
-    fn_801F0E34(0x30026, 0);
+    startSound_801F0E34(0x30026, 0);
 }

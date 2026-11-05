@@ -45,8 +45,8 @@ s32 cls_8031709C::fn_80316E74(s32 arg) {
             result = lbl_804715A8[state];
         }
         if (state == 3 && field_0xc < 8) {
-            fn_8013CC50(field_0xc, &field_0x10, 0x275, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0xc, &field_0x10, 0x276, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0xc, &field_0x10, 0x275, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0xc, &field_0x10, 0x276, 0, 0, NULL, NULL, true, 1.0f);
         }
     }
     if (field_0x4 >= 0) {
@@ -63,10 +63,10 @@ s32 cls_8031709C::fn_80316E74(s32 arg) {
                 } else if (frames == -1) {
                     if (field_0xc < 8) {
                         if (state == 0) {
-                            fn_8013CC50(field_0xc, &field_0x10, 0x275, 0, 0, NULL, NULL, true,
+                            spawnEmitter_8013CC50(field_0xc, &field_0x10, 0x275, 0, 0, NULL, NULL, true,
                                         1.0f);
                         } else if (state == 1) {
-                            fn_8013CC50(field_0xc, &field_0x10, 0x276, 0, 0, NULL, NULL, true,
+                            spawnEmitter_8013CC50(field_0xc, &field_0x10, 0x276, 0, 0, NULL, NULL, true,
                                         1.0f);
                         }
                     }

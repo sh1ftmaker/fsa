@@ -2,7 +2,7 @@
 #include "game/Effect.h"
 #include "game/act/act_kaepora_gaebora_ending.h"
 
-cls_804ADAC8::~cls_804ADAC8() {}
+KaeporaGaeboraEnding_804ADAC8::~KaeporaGaeboraEnding_804ADAC8() {}
 
 // One step of the sequence: a negative value ends the sequence and restarts it.
 struct KaeporaStep {
@@ -17,7 +17,7 @@ static const KaeporaStep lbl_804742A8[] = {
     {-1, -1},
 };
 
-void cls_804ADAC8::fn_8035FF70() {
+void KaeporaGaeboraEnding_804ADAC8::fn_8035FF70() {
     if (field_0x2B0 == 1) {
         if (field_0x270 == 0) {
             mSway.fn_8021A570(true);
@@ -36,12 +36,12 @@ void cls_804ADAC8::fn_8035FF70() {
 }
 
 // The update() steps, indexed by mPtmfIndex; built at static init time.
-void (cls_804ADAC8::*lbl_804ADA50[6])() = {
-    &cls_804ADAC8::fn_8036003C, &cls_804ADAC8::fn_8035FF70, &cls_804ADAC8::fn_8035FD6C,
-    &cls_804ADAC8::fn_8035FCD8, &cls_804ADAC8::fn_8035FB64, &cls_804ADAC8::fn_8035F9C8,
+void (KaeporaGaeboraEnding_804ADAC8::*lbl_804ADA50[6])() = {
+    &KaeporaGaeboraEnding_804ADAC8::fn_8036003C, &KaeporaGaeboraEnding_804ADAC8::fn_8035FF70, &KaeporaGaeboraEnding_804ADAC8::fn_8035FD6C,
+    &KaeporaGaeboraEnding_804ADAC8::fn_8035FCD8, &KaeporaGaeboraEnding_804ADAC8::fn_8035FB64, &KaeporaGaeboraEnding_804ADAC8::fn_8035F9C8,
 };
 
-void cls_804ADAC8::update() {
+void KaeporaGaeboraEnding_804ADAC8::update() {
     if (field_0x280 != 0) {
         field_0x280--;
     }
@@ -53,17 +53,17 @@ void cls_804ADAC8::update() {
     (this->*lbl_804ADA50[mPtmfIndex])();
     if (field_0x2B0 == 0) {
         if (field_0x2B4 != 0) {
-            fn_8013CB44(field_0x2B4, &mPos, -2, -2, true);
+            setEmitterPos_8013CB44(field_0x2B4, &mPos, -2, -2, true);
         }
         if (field_0x2B8 != 0) {
-            fn_8013CB44(field_0x2B8, &mPos, -2, -2, true);
+            setEmitterPos_8013CB44(field_0x2B8, &mPos, -2, -2, true);
         }
     } else {
         if (field_0x2B4 != 0) {
-            fn_8013CB44(field_0x2B4, &mPos, mHeight, mDepth, true);
+            setEmitterPos_8013CB44(field_0x2B4, &mPos, mHeight, mDepth, true);
         }
         if (field_0x2B8 != 0) {
-            fn_8013CB44(field_0x2B8, &mPos, mHeight, mDepth, true);
+            setEmitterPos_8013CB44(field_0x2B8, &mPos, mHeight, mDepth, true);
         }
     }
 }

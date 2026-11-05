@@ -32,7 +32,7 @@ void cls_804A6340::fn_80212F5C() {
 
 void cls_804A6340::vfunc_0x24() {
     if ((s32)field_0x90 >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C((s32)field_0x90);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C((s32)field_0x90);
         if (actor != NULL) {
             static_cast<cls_804A6270*>(actor)->fn_80210D90();
         }

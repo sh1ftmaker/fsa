@@ -13,7 +13,7 @@ void cls_804A4038::fn_801BD8C0(const JGeometry::TVec3f* pos, s16 angle) {
     mPos.z = pos->z;
     s16 yaw = fn_801CB7CC(angle);
     for (s32 i = 0; i < 2; i++) {
-        fn_8013CB44(mEmitters[i], pos, 0, 0, true);
+        setEmitterPos_8013CB44(mEmitters[i], pos, 0, 0, true);
         if (i == 0) {
             JPAGetXYZRotateMtx(0, yaw, 0, mEmitters[i]->mGlobalRot);
         }
@@ -27,7 +27,7 @@ void cls_804A4038::draw() {
 void cls_804A4038::update() {
     mPlayersHit = fn_801F2B7C(field_0x114, -1, 1);
     if (field_0x90 == 0) {
-        fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x54D, 1, 1, NULL, NULL, true, 1.0f);
     }
 }
 
@@ -41,7 +41,7 @@ void cls_804A4038::init() {
     field_0x194 = 1;
     field_0x114 = 2;
     for (s32 i = 0; i < 2; i++) {
-        mEmitters[i] = fn_8013CC50(field_0x4, &mPos, lbl_8053EC88[i], 0, 0, NULL, NULL, true, 1.0f);
+        mEmitters[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053EC88[i], 0, 0, NULL, NULL, true, 1.0f);
     }
 }
 

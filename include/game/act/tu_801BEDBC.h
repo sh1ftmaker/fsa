@@ -16,7 +16,7 @@ public:
     /* 0x54 */ virtual void vfunc_0x54();
 
     // Called from act_armos and act_on_off_switch with an actor found by
-    // serial (fn_801F666C). Spawns the burst effects and sets FLAG_BURST
+    // serial (findActorBySerial_801F666C). Spawns the burst effects and sets FLAG_BURST
     // unless the actor is dead or has already burst.
     void fn_801BEDBC();
 

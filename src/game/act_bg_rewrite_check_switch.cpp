@@ -14,7 +14,7 @@ BgRewriteCheckSwitch_804A8998::~BgRewriteCheckSwitch_804A8998() {}
 void BgRewriteCheckSwitch_804A8998::draw() {}
 
 void BgRewriteCheckSwitch_804A8998::update() {
-    if (fn_802D6A9C()->field_0x131de) {
+    if (getGameView_802D6A9C()->field_0x131de) {
         vfunc_0x30(0xFF, true);
         fn_801F3668();
     }

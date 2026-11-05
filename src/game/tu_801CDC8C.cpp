@@ -35,7 +35,7 @@ void EnemyBase_804A4808::fn_801CDCD0(s32 layer, const JGeometry::TVec3f* pos, u3
     JGeometry::TVec3f savedPos = mPos;
     field_0x4 = layer;
     mPos.set(pos->x, pos->y, pos->z);
-    fn_801F0E34(soundId, 0);
+    startSound_801F0E34(soundId, 0);
     field_0x4 = savedLayer;
     mPos.set(savedPos.x, savedPos.y, savedPos.z);
 }
@@ -104,7 +104,7 @@ void EnemyBase_804A4808::vfunc_0xA0() {}
 // The screen position of the actor, raised to the top of the view box.
 void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     out->set(mPos.x, mPos.y - mPos.z, 0.0f);
     f32 top = 1.0f + box->i.y;
@@ -300,7 +300,7 @@ bool EnemyBase_804A4808::fn_801CEBD0() {
             }
         }
         if (hit) {
-            fn_801F0E34(0x400D1, 0);
+            startSound_801F0E34(0x400D1, 0);
         }
     }
     return hit;

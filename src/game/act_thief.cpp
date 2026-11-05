@@ -22,7 +22,7 @@ bool ActorBase_804A5770::fn_80204D44() {
 
 void Thief_804A5A30::vfunc_0xA0() {
     if (mState != 9 && mState != 8) {
-        lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 
@@ -68,7 +68,7 @@ bool Thief_804A5A30::fn_8020609C() const {
     if (field_0x94 == 1) {
         if (!fn_801CD2F8(field_0x4)) {
             layer = field_0x4;
-            GameView_804A9950* view = fn_802D6A9C();
+            GameView_804A9950* view = getGameView_802D6A9C();
             const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
             if (!contains(box, mPos)) {
                 result = true;
@@ -104,7 +104,7 @@ bool Thief_804A5A30::fn_802064E0() {
     bool result = false;
     s32 bit = field_0x354;
     if (bit != 0) {
-        if (fn_802D6A9C()->fn_802D7F40(bit)) {
+        if (getGameView_802D6A9C()->fn_802D7F40(bit)) {
             result = true;
         }
     }

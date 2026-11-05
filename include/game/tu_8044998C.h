@@ -9,15 +9,15 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 class cls_804B1CC8 {
 public:
     cls_804B1CC8();
     virtual ~cls_804B1CC8();
 
-    // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
-    // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Draws the screen: gGameRoot2_8053AB10->fn_8013B490(), then mScreen at (0, 0)
+    // with gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_8044A024();
     // Sets the digit pictures to the first 'TIMG' name and hides the panes
     // 'Ndata01' and 'Ndata00'.
@@ -29,7 +29,7 @@ public:
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen; // "mg_fishing.blo"
-    /* 0x08 */ cls_804AF86C* mPanes[2]; // pane tags 'Ndata00' and 'Ndata01'
+    /* 0x08 */ PaneCtrl_804AF86C* mPanes[2]; // pane tags 'Ndata00' and 'Ndata01'
     /* 0x10 */ u8 field_0x10; // 0-99 (clamped); tens and units pick the 'Pf' digit pictures
     /* 0x11 */ u8 field_0x11; // 0-99 (clamped); tens and units pick the 'Pt01'..'Pt02' pictures
     /* 0x12 */ u8 field_0x12; // 0-99 (clamped with field_0x11); tens and units pick 'Pt03'/'Pt04'

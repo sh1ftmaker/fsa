@@ -54,7 +54,7 @@ static inline void resetProgressive() {
 static inline void createEmitter(JPABaseEmitter** emitter, u16 id) {
     if (*emitter == NULL) {
         JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-        *emitter = fn_8013CC50(0, &pos, id, 0, 0, NULL, NULL, true, 1.0f);
+        *emitter = spawnEmitter_8013CC50(0, &pos, id, 0, 0, NULL, NULL, true, 1.0f);
         (*emitter)->setStatus(JPAEMIT_Immortal);
     }
 }
@@ -62,7 +62,7 @@ static inline void createEmitter(JPABaseEmitter** emitter, u16 id) {
 // Deletes the emitter once it may be deleted and has no particles left.
 static inline void deleteFinishedEmitter(JPABaseEmitter** emitter) {
     if (*emitter != NULL && (*emitter)->isEnableDeleteEmitter()) {
-        JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
         manager->forceDeleteEmitter(*emitter);
         *emitter = NULL;
     }
@@ -116,7 +116,7 @@ void Title_804AF820::fn_803A34A0() {
             }
             if (frame >= 200 && mMovie->mGetTotalFrame() > frame && field_0x44 == NULL) {
                 JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-                field_0x44 = fn_8013CC50(0, &pos, 0x48E, 0, 0, NULL, NULL, true, 1.0f);
+                field_0x44 = spawnEmitter_8013CC50(0, &pos, 0x48E, 0, 0, NULL, NULL, true, 1.0f);
                 field_0x44->setStatus(JPAEMIT_Immortal);
             }
             if (frame >= 201 && mMovie->mGetTotalFrame() > frame) {
@@ -174,7 +174,7 @@ void Title_804AF820::fn_803A34A0() {
             } else {
                 field_0x78 = 0;
             }
-            if (lbl_8053AD30->fn_80309A00(fn_8030AAF4(0)) == true) {
+            if (lbl_8053AD30->fn_80309A00(getPlayerInputSlot_8030AAF4(0)) == true) {
                 field_0x76++;
                 if (field_0x76 >= 48) {
                     if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON) {
@@ -188,11 +188,11 @@ void Title_804AF820::fn_803A34A0() {
             } else {
                 field_0x76 = 0;
             }
-            if (lbl_80529DEC.field_0x238 == 1 && lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+            if (lbl_80529DEC.field_0x238 == 1 && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
                 if (field_0x74 < 3) {
                     field_0x74++;
                     if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_ON ||
-                        lbl_8053AD30->fn_80309D24(fn_8030AAF4(0), 0x200) != 0) {
+                        lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(0), 0x200) != 0) {
                         lbl_80529DEC.field_0x238 = 2;
                         field_0x74 = 0;
                     }
@@ -204,7 +204,7 @@ void Title_804AF820::fn_803A34A0() {
         }
         if (lbl_80529DEC.field_0x238 == 0xFF) {
             if (lbl_80529DEC.field_0x249[0] != 0) {
-                if ((lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
+                if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
                     field_0x82 <= 0 && lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
                     lbl_8053AF80->fn_80458880(0xB, -1);
                     field_0x154 = 2;
@@ -243,12 +243,12 @@ void Title_804AF820::fn_803A34A0() {
                 break;
             case 3:
                 field_0x74++;
-                if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(0), 0x100) != 0 || field_0x74 >= 600) {
+                if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(0), 0x100) != 0 || field_0x74 >= 600) {
                     lbl_80529DEC.field_0x238 = 4;
-                } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(0), 2) != 0) {
+                } else if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(0), 2) != 0) {
                     field_0x14c = 1;
                     field_0x72 = 30;
-                } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(0), 1) != 0) {
+                } else if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(0), 1) != 0) {
                     field_0x14c = 0;
                     field_0x72 = 30;
                 }
@@ -406,7 +406,7 @@ inline void Title_804AF820::drawTitle(f32 blink) {
     mScreen->search('Ptlogo02')->setAlpha(field_0x4c);
     mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
     mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x82 > 0 && field_0x4c == 255.0f) {
         field_0x82--;
     }
@@ -426,28 +426,28 @@ void Title_804AF820::fn_803A44D8() {
     }
     f32 blink = 0.0f;
     if (mMovieState != 0) {
-        lbl_8053AB10->fn_8013B438();
+        gGameRoot2_8053AB10->fn_8013B438();
         mMovie->draw_80427D2C(0, 0, 0, 0);
         if (lbl_80529DEC.field_0x249[0] != 0 && field_0x80 != 0) {
-            if ((lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
+            if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
                 field_0x82 == 0) {
                 calcBlink(blink);
             }
-            lbl_8053AB10->fn_8013B490();
+            gGameRoot2_8053AB10->fn_8013B490();
             mScreen->search('Pntd')->setAlpha(field_0x4c);
             mScreen->search('Ptlogo01')->setAlpha(0);
             mScreen->search('Ptlogo02')->setAlpha(0);
             mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
             mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-            mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+            mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         }
     } else {
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         if (lbl_80529DEC.field_0x238 == 0xFF && lbl_80529DEC.field_0x249[0] != 0) {
             if (field_0x154 == 1) {
                 // The six cloud models and the title's effects.
                 JGeometry::TVec3f scale(7.0f, 7.0f, 7.0f);
-                JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
+                JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
                 JPADrawInfo info;
                 Mtx mtx;
                 PSMTXIdentity(mtx);
@@ -476,12 +476,12 @@ void Title_804AF820::fn_803A44D8() {
                 manager->draw(&info, 0);
             }
             if (field_0x150 == 1) {
-                lbl_8053AB10->fn_8013B490();
+                gGameRoot2_8053AB10->fn_8013B490();
                 field_0x20->setAlpha(field_0x68);
                 field_0x20->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
             }
             if (field_0x6e == 1 &&
-                (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
+                (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
                 field_0x82 == 0) {
                 calcBlink(blink);
             }
@@ -517,12 +517,12 @@ void Title_804AF820::fn_803A44D8() {
             }
             case 5:
             case 6:
-                lbl_8053AB10->fn_8013AB00();
+                gGameRoot2_8053AB10->fn_8013AB00();
                 lbl_80529DEC.field_0x251 = 1;
                 break;
             case 9:
                 if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_OFF) {
-                    lbl_8053AB10->fn_8013AAD4();
+                    gGameRoot2_8053AB10->fn_8013AAD4();
                 }
             case 10:
             case 11:
@@ -551,22 +551,22 @@ void Title_804AF820::fn_803A44D8() {
 void Title_804AF820::fn_803A5380() {
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x154 = 1;
     field_0x14c = 0;
@@ -625,7 +625,7 @@ Title_804AF820::~Title_804AF820() {
         deleteEmitter(&field_0x34[i]);
     }
     deleteEmitter(&field_0x44);
-    fn_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+    getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
     mHeap->destroy();
     delete mScreen;
     mScreen = NULL;
@@ -731,6 +731,6 @@ Title_804AF820::Title_804AF820() {
     field_0x34[2] = NULL;
     field_0x34[3] = NULL;
     field_0x44 = NULL;
-    lbl_8053AB10->field_0x20->field_0x2364 = 1;
+    gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     lbl_80529DEC.field_0x250 = 0;
 }

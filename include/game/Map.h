@@ -3,7 +3,7 @@
 
 // The stage map and its collision, from three units:
 //
-// * game/tu_802F5040.cpp: cls_804AA858, the object at lbl_8053AB10->0x20
+// * game/tu_802F5040.cpp: TileMap_804AA858, the object at gGameRoot2_8053AB10->0x20
 //   (124 consumer units). It holds the screen's tile layers (u16 tile codes
 //   on a 32 x 32 grid of 16-unit cells, fn_802F9908 / fn_802F9974) and
 //   draws the "SOB " sprites (fn_802F86CC, fn_802F745C).
@@ -44,7 +44,7 @@ struct TColor;
 
 // game/tu_80432638.cpp (owner unit, not written yet). Named after its vtable,
 // lbl_804B1668 (stored by its constructor, 0x8043395C); 0xB0 bytes
-// (cls_804AA858's constructor allocates it). Only what cls_804AA858 uses.
+// (TileMap_804AA858's constructor allocates it). Only what TileMap_804AA858 uses.
 class cls_804B1668 {
 public:
     cls_804B1668();
@@ -53,7 +53,7 @@ public:
     /* 0x04 */ u8 field_0x4[0xB0 - 0x4];
 }; // Size: 0xB0
 
-// cls_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
+// TileMap_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
 // fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
 // reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
 struct cls_804AA858Sub11C {
@@ -86,7 +86,7 @@ extern u8 lbl_80506DC8[4][4];
 extern s32 lbl_80506DD8[4];
 void fn_803068D0(cls_804AA858Sub11C* record);
 
-// The element classes of cls_804AA858's arrays (constructed with
+// The element classes of TileMap_804AA858's arrays (constructed with
 // __construct_array in its constructor, fn_802FFDEC). Each is named after
 // its out-of-line constructor, the only code of its own.
 
@@ -145,15 +145,15 @@ public:
     /* 0x58 */ u8 field_0x58[0x88 - 0x58];
 }; // Size: 0x88
 
-// lbl_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
+// gGameRoot2_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
 // allocated with __nw__(0xE464, heap, 0) in game/tu_8013AAD4.cpp
 // (0x8013C230-0x8013C25C).
-class cls_804AA858 {
+class TileMap_804AA858 {
 public:
     // fn_802FFDEC; tu_8013AAD4 passes the heap it allocated the object from
     // (r30, also __nw__'s heap). Proven: fn_802FFDEC calls getTotalFreeSize__7JKRHeapFv on it.
-    cls_804AA858(JKRHeap* heap);
-    /* 0x08 */ virtual ~cls_804AA858(); // fn_802FFBF8
+    TileMap_804AA858(JKRHeap* heap);
+    /* 0x08 */ virtual ~TileMap_804AA858(); // fn_802FFBF8
 
     // 61 units / 144 calls. Draws frame `frame` of the "SOB " resource `res`
     // at pos, scaled by (scaleX, scaleY), when field_0x2364 is set; params
@@ -447,7 +447,7 @@ public:
     // 20 units / 22 calls. Whether pos (x, y) lies in a box on `layer`
     // registered by an actor other than `serial`; with ignoreIds (a list
     // ending in 'NULL', cmplw against ActorBase_804A5770::mActorId of the
-    // box's actor, fn_801F666C), boxes of those actors don't count.
+    // box's actor, findActorBySerial_801F666C), boxes of those actors don't count.
     // Returns 0 or 1. Callers use the read list (field_0x1).
     bool fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds) const;
     // 15 units / 16 calls. Registers the box of the actor `serial` (its

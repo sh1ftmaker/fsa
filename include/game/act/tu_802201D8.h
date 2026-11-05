@@ -18,7 +18,7 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
 
-    /* 0x2AC */ JPABaseEmitter* mEmitter; // fn_8013CC50 effect 0x290
+    /* 0x2AC */ JPABaseEmitter* mEmitter; // spawnEmitter_8013CC50 effect 0x290
 }; // Size: 0x2B0
 
 #endif

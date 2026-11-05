@@ -23,11 +23,11 @@ int fn_801EA8C0(const void* a, const void* b);
 // The actor ids fn_801E9B58 looks for, ended by 'NULL'.
 static const u32 lbl_80469C78[4] = {'FIRE', 'BLZE', 'BMTY', 'NULL'};
 
-// FIXME: 97.3. The original copies fn_801F666C's result through r0 (mr r0, r3; mr. r30, r0); ours tests it in place.
+// FIXME: 97.3. The original copies findActorBySerial_801F666C's result through r0 (mr r0, r3; mr. r30, r0); ours tests it in place.
 s32 ActorBase_804A5770::fn_801E9B58() {
     s32 serial = fn_801F856C()->fn_801F7F58(this, lbl_80469C78, mSerial, 32.0f);
     if (serial >= 0 && serial != mSerial) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             if (fn_801CC8E4(actor)) {
                 serial = -1;
@@ -65,7 +65,7 @@ inline void cls_801E9B54::drawSprites() {
     for (s32 i = 0; i < field_0x74; i++) {
         s32 serial = field_0x64[i];
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 ((cls_804A5418*)actor)->fn_801E6DE8();
             }
@@ -78,7 +78,7 @@ inline void cls_801E9B54::drawSprites() {
 // where ours keeps the compare result; the rest is the same code, registers
 // shifted.
 void cls_801E9AFC::fn_801E9C74() {
-    u8 both = fn_802D6A9C()->fn_802DCD0C();
+    u8 both = getGameView_802D6A9C()->fn_802DCD0C();
     bool outlines;
     bool sprites;
     if (both) {
@@ -90,7 +90,7 @@ void cls_801E9AFC::fn_801E9C74() {
         sprites = outlines || element->hasSerials();
     }
     if (outlines || sprites) {
-        lbl_8053AB10->fn_8013B438();
+        gGameRoot2_8053AB10->fn_8013B438();
         GXClearVtxDesc();
         GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -236,7 +236,7 @@ void cls_801E9B54::fn_801EA75C(u8 id, u8 flag, u8 index, s32 layer, const JGeome
         JGeometry::TVec3f spawnPos(pos->x, pos->y, 0.0f);
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_FSOB, layer, &spawnPos, id, -1, -1);
         if (serial >= 0) {
-            field_0x0[field_0x60].actor = (cls_804A5568*)fn_801F856C()->fn_801F666C(serial);
+            field_0x0[field_0x60].actor = (cls_804A5568*)fn_801F856C()->findActorBySerial_801F666C(serial);
             if (field_0x0[field_0x60].actor != NULL) {
                 if (flag != 0) {
                     field_0x0[i].actor->field_0x94 = flag;

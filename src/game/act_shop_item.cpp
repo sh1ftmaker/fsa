@@ -67,7 +67,7 @@ void ShopItem_8049CDC0::update() {
         if (fn_8022F514(player)) {
             slot = fn_8022F3DC(player);
         }
-        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(slot), 0x120) == 0) {
+        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(slot), 0x120) == 0) {
             break;
         }
         if (showMessage(player, lbl_8046403C[0], mSerial, field_0x4, mMsgPos)) {
@@ -232,7 +232,7 @@ void ShopItem_8049CDC0::init() {
     mMsgPos.z = mPos.z;
     mMsgPos.y -= 32.0f;
     mAnim.fn_801D2608(lbl_8049CDA0, 8);
-    mAnim.fn_801D22DC(mKind, 2, false);
+    mAnim.startAnim_801D22DC(mKind, 2, false);
     mAnim.fn_801D1F14(0.0f);
 }
 

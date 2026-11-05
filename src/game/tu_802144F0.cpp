@@ -18,10 +18,10 @@ static const u16 lbl_8053FB90[4] = {0x0413, 0x0414, 0x0415, 0x0000};
 static const u16 lbl_8053FB98[4] = {0x0418, 0x0419, 0x041A, 0x0000};
 
 void cls_802150B8::fn_802144F0() {
-    mOwner->fn_801F0E34(0x400C3, 0);
+    mOwner->startSound_801F0E34(0x400C3, 0);
     JGeometry::TVec3f pos = mOwner->mPos;
     pos.y += 6.0f;
-    fn_8013CC50(mOwner->field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(mOwner->field_0x4, &pos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 void cls_802150B8::fn_80214578() {
@@ -42,8 +42,8 @@ void cls_802150B8::fn_80214578() {
         pos.y += 18.0f;
         break;
     }
-    fn_8013CC50(mOwner->field_0x4, &pos, 0xCB, 0, 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(mOwner->field_0x4, &pos, 0xCC, 0, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(mOwner->field_0x4, &pos, 0xCB, 0, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(mOwner->field_0x4, &pos, 0xCC, 0, 1, NULL, NULL, true, 1.0f);
 }
 
 void cls_802150B8::fn_802146A4() const {
@@ -52,14 +52,14 @@ void cls_802150B8::fn_802146A4() const {
     if (owner->field_0x524 & 0x400) {
         flag = 1;
     }
-    fn_8013CC50(owner->getField_0x4(), owner->getPos(), 0x416, 0, flag - 1, NULL, NULL, true, 1.0f);
-    fn_8013CC50(mOwner->getField_0x4(), mOwner->getPos(), 0x417, 0, flag, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(owner->getField_0x4(), owner->getPos(), 0x416, 0, flag - 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(mOwner->getField_0x4(), mOwner->getPos(), 0x417, 0, flag, NULL, NULL, true, 1.0f);
 }
 
 void cls_802150B8::fn_80214900() {
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }
@@ -82,16 +82,16 @@ void cls_802150B8::fn_80214740(s32 layer, const JGeometry::TVec3f* pos, bool fla
     // field_0x50 is a u32 in GameGlobals.h, but the original tests its sign
     // (cmpwi; blt). Retyping it breaks fn_801C53F8 (act_shadow_link_2).
     if ((s32)fn_801C0D70()->field_0x50 >= 0) {
-        fn_8013CC50(layer, pos, 0x1D6, 0, extra, NULL, NULL, true, 1.0f);
-        fn_8013CC50(layer, pos, 0x1D7, 0, extra, NULL, NULL, true, 1.0f);
-        fn_8013CC50(layer, pos, 0x1D8, 0, extra, NULL, NULL, true, 1.0f);
-        fn_8013CC50(layer, pos, 0x1D9, 0, extra, NULL, NULL, true, 1.0f);
-        mOwner->fn_801F0E34(0x400D6, 0);
+        spawnEmitter_8013CC50(layer, pos, 0x1D6, 0, extra, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, 0x1D7, 0, extra, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, 0x1D8, 0, extra, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, 0x1D9, 0, extra, NULL, NULL, true, 1.0f);
+        mOwner->startSound_801F0E34(0x400D6, 0);
     } else {
         const u16* ids = flag ? lbl_8053FB98 : lbl_8053FB90;
-        fn_8013CC50(layer, pos, ids[0], 0, extra - 1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(layer, pos, ids[1], 0, extra, NULL, NULL, true, 1.0f);
-        fn_8013CC50(layer, pos, ids[2], 0, extra, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, ids[0], 0, extra - 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, ids[1], 0, extra, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, ids[2], 0, extra, NULL, NULL, true, 1.0f);
         static_cast<EnemyBase_804A4808*>(mOwner)->fn_801CDCD0(layer, pos, flag ? 0x4004E : 0x40048);
     }
 }
@@ -105,7 +105,7 @@ void cls_802150B8::fn_80214994() {
     if (fn_801CD2F8(mOwner->field_0x4)) {
         s32 serial = field_0x30;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 actor->mPos = pos;
             }
@@ -121,12 +121,12 @@ void cls_802150B8::fn_80214994() {
         f32 x = pos.x;
         f32 y = pos.y + lift;
         f32 z = pos.z + lift;
-        f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
+        f32 ground = gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(&pos);
         z += ground - pos.z;
         field_0x1c.field_0x4.x = x;
         field_0x1c.field_0x4.y = y;
         field_0x1c.field_0x4.z = z;
-        fn_8013CB44(field_0x18, &pos, 0, 1, true);
+        setEmitterPos_8013CB44(field_0x18, &pos, 0, 1, true);
     }
 }
 
@@ -135,7 +135,7 @@ void cls_802150B8::fn_80214994() {
 void cls_802150B8::fn_80214AF8() {
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }
@@ -158,14 +158,14 @@ void cls_802150B8::fn_80214AF8() {
         f32 x = pos.x;
         f32 y = pos.y + lift;
         f32 z = pos.z + lift;
-        f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
+        f32 ground = gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(&pos);
         z += ground - pos.z;
         field_0x1c.field_0x4.x = x;
         field_0x1c.field_0x4.y = y;
         field_0x1c.field_0x4.z = z;
-        field_0x18 = fn_8013CC50(mOwner->field_0x4, &pos, 0x565, 0, 1, NULL, &field_0x1c, true, 0.5f);
+        field_0x18 = spawnEmitter_8013CC50(mOwner->field_0x4, &pos, 0x565, 0, 1, NULL, &field_0x1c, true, 0.5f);
     }
-    mOwner->fn_801F0E34(0x4000E, 0);
+    mOwner->startSound_801F0E34(0x4000E, 0);
 }
 
 // FIXME: 97.57 %. The lift's height is in r4 in the original's prefix (as in
@@ -187,12 +187,12 @@ void cls_802150B8::fn_80214CE4() {
     f32 x = pos.x;
     f32 y = pos.y + lift;
     f32 z = pos.z + lift;
-    f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
+    f32 ground = gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(&pos);
     z += ground - pos.z;
     field_0x4.field_0x4.x = x;
     field_0x4.field_0x4.y = y;
     field_0x4.field_0x4.z = z;
-    fn_8013CB44(field_0x0, &pos, 0, 1, true);
+    setEmitterPos_8013CB44(field_0x0, &pos, 0, 1, true);
     if (field_0x0->isEnableDeleteEmitter()) {
         deleteEmitter(&field_0x0);
     }
@@ -217,12 +217,12 @@ void cls_802150B8::fn_80214E50() {
     f32 x = pos.x;
     f32 y = pos.y + lift;
     f32 z = pos.z + lift;
-    f32 ground = lbl_8053AB10->field_0x20->fn_802F5E9C(&pos);
+    f32 ground = gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(&pos);
     z += ground - pos.z;
     field_0x4.field_0x4.x = x;
     field_0x4.field_0x4.y = y;
     field_0x4.field_0x4.z = z;
-    field_0x0 = fn_8013CC50(mOwner->field_0x4, &pos, 0x33B, 0, 1, NULL, &field_0x4, true, 1.0f);
+    field_0x0 = spawnEmitter_8013CC50(mOwner->field_0x4, &pos, 0x33B, 0, 1, NULL, &field_0x4, true, 1.0f);
     if (field_0x0 != NULL) {
         field_0x0->setStatus(JPAEMIT_Immortal);
     }
@@ -236,7 +236,7 @@ cls_802150B8::~cls_802150B8() {
     deleteEmitter(&field_0x0);
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }

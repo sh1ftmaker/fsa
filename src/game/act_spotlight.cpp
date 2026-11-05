@@ -28,32 +28,32 @@ void Spotlight_804A84C8::draw() {
 void Spotlight_804A84C8::update() {
     switch (mState) {
     case 0:
-        if (vfunc_0x34() || fn_802D6A9C()->fn_802D800C(mViewBit0) ||
-            fn_802D6A9C()->fn_802D800C(mViewBit1) || fn_802D6A9C()->fn_802D800C(mViewBit2)) {
+        if (vfunc_0x34() || getGameView_802D6A9C()->fn_802D800C(mViewBit0) ||
+            getGameView_802D6A9C()->fn_802D800C(mViewBit1) || getGameView_802D6A9C()->fn_802D800C(mViewBit2)) {
             mOn = 1;
             if (mEmitter238 == NULL) {
-                mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0xBE, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter238 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBE, 0, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter23c == NULL) {
-                mEmitter23c = fn_8013CC50(field_0x4, &mPos, 0xBF, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter23c = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBF, 0, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter240 == NULL) {
-                mEmitter240 = fn_8013CC50(field_0x4, &mPos, 0xC0, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter240 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xC0, 0, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter234 == NULL) {
-                mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter244 == NULL) {
-                mEmitter244 = fn_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter244 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
             }
-            fn_801F0E34(0x30005, 0);
-            fn_801F0E34(0x30023, 0);
+            startSound_801F0E34(0x30005, 0);
+            startSound_801F0E34(0x30023, 0);
             mState = 1;
         }
         break;
     case 1:
-        if (!(vfunc_0x34() || fn_802D6A9C()->fn_802D800C(mViewBit0) ||
-              fn_802D6A9C()->fn_802D800C(mViewBit1) || fn_802D6A9C()->fn_802D800C(mViewBit2))) {
+        if (!(vfunc_0x34() || getGameView_802D6A9C()->fn_802D800C(mViewBit0) ||
+              getGameView_802D6A9C()->fn_802D800C(mViewBit1) || getGameView_802D6A9C()->fn_802D800C(mViewBit2))) {
             mOn = 0;
             if (mEmitter238 != NULL) {
                 mEmitter238->becomeInvalidEmitter();

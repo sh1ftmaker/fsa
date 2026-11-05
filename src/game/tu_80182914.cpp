@@ -45,7 +45,7 @@ void cls_804A1718::draw() {
     if (field_0x25c == 1 && frame >= 3) {
         frame += 5;
     }
-    fn_801F06F0("enemy_gc_sob.bin", frame + 0x158, NULL, flags, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x158, NULL, flags, 1.0f, 1.0f);
 }
 
 // FIXME: 99.95 %. Same instructions; the jump-table base is relocated to the
@@ -65,8 +65,8 @@ void cls_804A1718::update() {
         return;
     }
 
-    fn_801F71A4(&field_0x3c.x, field_0x268.x, 0.3f, 1.0f);
-    fn_801F71A4(&field_0x3c.y, field_0x268.y, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x268.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x268.y, 0.3f, 1.0f);
     mPos += field_0x3c;
     fn_80212AC0()->fn_80212AF0(&mPos);
     fn_801EEC98(mSerial, &angle, NULL, &dist, &player, 0, 0);
@@ -97,9 +97,9 @@ void cls_804A1718::update() {
     case 2:
         field_0xb8 = 1;
         if (mEmitter274 == NULL) {
-            JPABaseEmitter* puff = fn_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
+            JPABaseEmitter* puff = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
             setEmitterColour(this, puff);
-            mEmitter274 = fn_8013CC50(field_0x4, &mPos, 0x1DB, 0, 1, NULL, NULL, true, 1.0f);
+            mEmitter274 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DB, 0, 1, NULL, NULL, true, 1.0f);
             if (viewLayerFlag(0x13) == 1) {
                 mEmitter274->setGlobalPrmColor(field_0x238[0], field_0x238[1], field_0x238[2]);
             }
@@ -141,7 +141,7 @@ void cls_804A1718::update() {
             scale = 0.5f;
             maxStep = 0x100;
         }
-        fn_801F714C(&field_0x264, angle, 1, maxStep);
+        addCalcAngle2_801F714C(&field_0x264, angle, 1, maxStep);
         field_0x268.x = scale * JMath::sincosTable_.sinShort(field_0x264);
         field_0x268.y = scale * JMath::sincosTable_.cosShort(field_0x264);
         if (field_0x23c == 0) {
@@ -175,7 +175,7 @@ void cls_804A1718::update() {
             field_0x23c = 6;
             if (field_0x254 <= 0) {
                 if (mEmitter274 != NULL) {
-                    JPABaseEmitter* puff = fn_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
+                    JPABaseEmitter* puff = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
                     setEmitterColour(this, puff);
                     JPABaseEmitter* emitter = mEmitter274;
                     emitter->stopCreateParticle();
@@ -251,7 +251,7 @@ void cls_804A1718::init() {
     field_0x230 = 0;
 }
 
-// Returns the colour of the cls_804A0160 at lbl_8053AB10->0x2C.
+// Returns the colour of the ShadowCircle_804A0160 at gGameRoot2_8053AB10->0x2C.
 JUtility::TColor fn_8018330C() {
-    return lbl_8053AB10->field_0x2c->field_0x4;
+    return gGameRoot2_8053AB10->field_0x2c->field_0x4;
 }

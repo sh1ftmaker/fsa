@@ -44,13 +44,13 @@ void GBAAppear_804B16E0::draw() {
             if (mState[i] == 0) {
                 void* res = fn_804030C4('TIMG', lbl_804B16C0[i]);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
                                                          &params);
                 }
             } else if (mState[i] == 1) {
                 void* res = fn_804030C4('TIMG', lbl_804B16D0[i]);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
                                                          &params);
                 }
             }
@@ -65,7 +65,7 @@ void GBAAppear_804B16E0::draw() {
 // (slots 0x14 and 0x2C, psq_st of pos; its member-wise store into field_0x1c4[i] reads x/y from
 // the first) and two more for the fn_8043E7CC argument (0x20 and 0x8); and the pos copy
 // (psq_l / psq_st into the local before the call) is scheduled before the camera load
-// (lwz lbl_8053AB10 -> 0x24) there, after the z load (lfs 0x1CC) here.
+// (lwz gGameRoot2_8053AB10 -> 0x24) there, after the z load (lfs 0x1CC) here.
 void GBAAppear_804B16E0::update() {
     JGeometry::TVec3f* player = fn_8023E724(0);
     mPos.x = player->x;
@@ -76,7 +76,7 @@ void GBAAppear_804B16E0::update() {
         if (lbl_80529DEC.field_0x236 & bit) {
             JGeometry::TVec3f pos = lbl_80529DEC.field_0x1c4[i];
             JGeometry::TVec3f screen;
-            lbl_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+            gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
             if (mState[i] == 0xFF) {
                 if (screen.y > 0.5f * (s32)JUTGetVideoManager()->getEfbHeight()) {
                     mState[i] = 0;
@@ -98,15 +98,15 @@ void GBAAppear_804B16E0::update() {
             lbl_80529DEC.field_0x1c4[i].y = pos.y;
             lbl_80529DEC.field_0x1c4[i].z = pos.z;
             if (field_0x4 < 8) {
-                lbl_8053AB10->field_0x24->fn_8030C210(&lbl_80529DEC.field_0x1c4[i]);
+                gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&lbl_80529DEC.field_0x1c4[i]);
             }
             if (mEmitters[i] == NULL) {
-                mEmitters[i] = fn_8013CC50(field_0x4, &lbl_80529DEC.field_0x1c4[i],
+                mEmitters[i] = spawnEmitter_8013CC50(field_0x4, &lbl_80529DEC.field_0x1c4[i],
                                            lbl_80543C00[i], 1, 1, NULL, NULL, true,
                                            lbl_8050DB0C.field_0x30[0]);
                 mEmitters[i]->setStatus(0x40);
             } else {
-                fn_8013CB44(mEmitters[i], &lbl_80529DEC.field_0x1c4[i], 1, 1, true);
+                setEmitterPos_8013CB44(mEmitters[i], &lbl_80529DEC.field_0x1c4[i], 1, 1, true);
             }
             lbl_8053AED0->fn_8043E7CC(lbl_80529DEC.field_0x1c4[i]);
         } else {

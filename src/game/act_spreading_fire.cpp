@@ -39,7 +39,7 @@ static inline s32 viewBitOf(s32 x, s32 y) {
 void SpreadingFire_804A8A50::vfunc_0x24() {
     vfunc_0x54();
     mAlive = false;
-    fn_802D6A9C()->fn_802D73CC(mViewBit, false);
+    getGameView_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
 void SpreadingFire_804A8A50::draw() {
@@ -49,7 +49,7 @@ void SpreadingFire_804A8A50::draw() {
             fn_803075AC(mSerial, layer, &mPos, (field_0x280 >> 1) + 0x109, false, 2, -1, 0, 0, 0);
         }
     } else {
-        fn_801F06F0("enemy_both2_sob.bin", 0x18E, NULL, 0, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x18E, NULL, 0, 1.0f, 1.0f);
         fn_803075AC(mSerial, field_0x4, &mPos, 0x18E, false, 2, -1, 0, 0, 0);
     }
 }
@@ -74,13 +74,13 @@ void SpreadingFire_804A8A50::update() {
         field_0x240 = 1;
         mTile = fn_80226850(&mPos, field_0x4);
         if (fn_801EE3C0(mTile) == true) {
-            fn_801F0E34(0x3002F, 0);
+            startSound_801F0E34(0x3002F, 0);
             lbl_8053AC98->fn_802A20F0(&mPos, field_0x258, field_0x4, 0x10000, 1);
         } else if (mTile == 0x3EB) {
             lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0xF);
-            fn_801F0E34(0x30061, 0);
-            fn_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x30061, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
             JGeometry::TVec3f tmp(mPos.x, mPos.y - 16.0f, 0.0f);
             if (fn_80226850(&tmp, field_0x4) == 0x3EB) {
                 field_0x284 = mPos;
@@ -90,15 +90,15 @@ void SpreadingFire_804A8A50::update() {
                 lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
             }
         } else if (mTile == 0x33) {
-            fn_801F0E34(0x30061, 0);
+            startSound_801F0E34(0x30061, 0);
             lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xAD);
-            fn_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
         } else if (mTile == 0x34) {
-            fn_801F0E34(0x30061, 0);
+            startSound_801F0E34(0x30061, 0);
             lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x251);
-            fn_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x27c = (s32)(1000.88f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 7;
         field_0x298 = 8;
@@ -108,7 +108,7 @@ void SpreadingFire_804A8A50::update() {
         if (field_0x298 != 0) {
             field_0x298--;
         }
-        fn_801F0E34(0x3002F, 0);
+        startSound_801F0E34(0x3002F, 0);
         field_0x254--;
         if (field_0x254 <= 0x14 && (field_0x254 & 1) == 0) {
             if (field_0x278 < 8) {
@@ -122,7 +122,7 @@ void SpreadingFire_804A8A50::update() {
                     if (field_0x250 != 5 && field_0x250 != 6) {
                         field_0x270 = clampViewCoord((s32)(tmp.x - field_0x25c.i.x));
                         field_0x274 = clampViewCoord((s32)(tmp.y - field_0x25c.i.y));
-                        GameView_804A9950* view = fn_802D6A9C();
+                        GameView_804A9950* view = getGameView_802D6A9C();
                         if (!view->fn_802D7384(viewBitOf(field_0x270, field_0x274))) {
                             s32 owner = field_0x258;
                             if (owner == -1) {
@@ -196,7 +196,7 @@ void SpreadingFire_804A8A50::update() {
     }
 
     if (field_0x250 != 3) {
-        lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 
@@ -213,7 +213,7 @@ SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
     if (mEmitters[3] != NULL) {
         fn_801EE434(mEmitters[3]);
     }
-    fn_802D6A9C()->fn_802D73CC(mViewBit, false);
+    getGameView_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
 // FIXME: 95.43 %. The original tests field_0x250 twice on the same flags (a bne to the
@@ -235,7 +235,7 @@ void SpreadingFire_804A8A50::init() {
     mEmitters[3] = NULL;
 
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* box;
     if (layer < 8) {
         box = &view->mVisibleBox;
@@ -258,7 +258,7 @@ void SpreadingFire_804A8A50::init() {
     mViewBit = (field_0x270 & 0x100) | ((field_0x274 & 0x100) << 1) | (field_0x274 & 0xF0) |
                ((field_0x270 >> 4) & 0xF);
 
-    if (field_0x250 != 0 || !fn_802D6A9C()->fn_802D7384(mViewBit)) {
+    if (field_0x250 != 0 || !getGameView_802D6A9C()->fn_802D7384(mViewBit)) {
         mBox.i.x = -6.0f;
         mBox.i.y = -6.0f;
         mBox.f.x = 6.0f;
@@ -275,15 +275,15 @@ void SpreadingFire_804A8A50::init() {
         } else {
             field_0x240 = 0;
             if (field_0x250 == 3) {
-                mEmitters[0] = fn_8013CC50(field_0x4, &mPos, 0x19F, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[1] = fn_8013CC50(field_0x4, &mPos, 0x1A0, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[2] = fn_8013CC50(field_0x4, &mPos, 0x1A1, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.5f);
+                mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x19F, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A0, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[2] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A1, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.5f);
             } else if (field_0x250 != 6) {
-                fn_8013CC50(field_0x4, &mPos, 0x349, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x34A, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x34B, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x349, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x34A, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x34B, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.0f);
                 field_0x290 = 1;
                 field_0x294 = 10;
             }
@@ -302,7 +302,7 @@ void SpreadingFire_804A8A50::init() {
         field_0x278 = 0;
         if (viewLayerFlag(field_0x4) == 0) {
             if (fn_801EE3C0(mTile) == true) {
-                fn_802D6A9C()->fn_802D73CC(mViewBit, true);
+                getGameView_802D6A9C()->fn_802D73CC(mViewBit, true);
             }
         }
     } else {

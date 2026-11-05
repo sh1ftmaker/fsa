@@ -7,7 +7,7 @@
 Popo_804A0868::~Popo_804A0868() {}
 
 void Popo_804A0868::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x99, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x99, NULL, 0, 1.0f, 1.0f);
 }
 
 // FIXME: 98.7%. regalloc only: the three TRandom_fast_ draws in the drift
@@ -35,8 +35,8 @@ void Popo_804A0868::update() {
         fn_801F2618(NULL, false);
         return;
     }
-    fn_801F71A4(&field_0x3c.x, field_0x250, 0.3f, 1.0f);
-    fn_801F71A4(&field_0x3c.y, field_0x254, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x250, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x254, 0.3f, 1.0f);
     mPos += field_0x3c;
     fn_801F2B7C(-100, -1, 1);
     fn_801F2618(NULL, false);

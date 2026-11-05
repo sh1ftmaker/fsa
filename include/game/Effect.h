@@ -4,11 +4,11 @@
 // The particle-effect system of game/tu_8013C5C8.cpp: one instance,
 // allocated with __nw__(0x411C, heap, 0) and built by its constructor
 // fn_8013F3E4 in game/tu_8013AAD4.cpp (0x8013C29C), stored at
-// lbl_8053AB10->0x28; reach it with fn_8013C824(). The constructor creates
+// gGameRoot2_8053AB10->0x28; reach it with getEffectSystem_8013C824(). The constructor creates
 // a JKRSolidHeap, loads "particle.jpc" (its OSReport "***** particle.jpc
 // load *****", lbl_80465A28) into a JPAResourceManager and an
 // JPAEmitterManager. 229 game units use the unit, 224 of them through the
-// emitter spawner fn_8013CC50.
+// emitter spawner spawnEmitter_8013CC50.
 //
 // "EffectSystem_8049F178" is a provisional name carrying its vtable address
 // (docs/PLAN.md, "Placeholder names"; it was EffectSystem_8013C824, after
@@ -23,7 +23,7 @@
 
 class JKRHeap;
 class JKRSolidHeap;
-class cls_804AA858;
+class TileMap_804AA858;
 class JPABaseEmitter;
 class JPAEmitterManager;
 class JPAResourceManager;
@@ -38,7 +38,7 @@ struct TColor;
 
 class EffectSystem_8049F178 {
 public:
-    // A position queued for an effect id: fn_8013CC50 fills the first entry
+    // A position queued for an effect id: spawnEmitter_8013CC50 fills the first entry
     // whose count is 0 (id, count 1, position); the executeAfter callback of
     // vtable 0x8049F15C (fn_8013C958) emits the particles there and counts
     // it down. Its empty out-of-line constructor is fn_8013F584 (the
@@ -66,7 +66,7 @@ public:
     // emitter): see Entry.
     void fn_8013C958(JPABaseEmitter* emitter);
     // The rest are called once each by GameRoot2 (game/tu_8013AAD4.cpp,
-    // lbl_8053AB10->0x28 in r3); none reads another argument.
+    // gGameRoot2_8053AB10->0x28 in r3); none reads another argument.
     // mEmitterManager->forceDeleteAllEmitter().
     void fn_8013D5B0();
     // Draw passes: JPAEmitterManager::draw with group 2 (unless paused,
@@ -110,8 +110,8 @@ public:
 // and 0x13A8 and inlines their constructor (both vtables stored, field_0xc
 // zeroed). Declare it once JPAEmitterCallBack is in the JParticle headers.
 
-// 48 units / 226 calls. lbl_8053AB10->0x28.
-EffectSystem_8049F178* fn_8013C824(void);
+// 48 units / 226 calls. gGameRoot2_8053AB10->0x28.
+EffectSystem_8049F178* getEffectSystem_8013C824(void);
 
 // 7 calls in 2 units (act_hyrule_castle_barrier, ...). For a non-NULL
 // emitter, builds a rotation of `angle` plus a constant (fn_8010F668), scales
@@ -122,14 +122,14 @@ u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle);
 // 66 units / 197 calls. Moves a non-NULL emitter to pos, lifted by
 // height * 1024 + depth * 128 in y and z (with `adjust`, a positive pos.z
 // raises height below 1 by one and lowers depth by one) and with z taken
-// from the ground under pos (cls_804AA858::fn_802F5E9C, game/Map.h, on lbl_8053AB10->0x20); stores
+// from the ground under pos (TileMap_804AA858::fn_802F5E9C, game/Map.h, on gGameRoot2_8053AB10->0x20); stores
 // the result in the emitter's translation (0xA4-0xAC). Returns 0 or 1.
-u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
+u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth,
                  bool adjust);
 
 // game/tu_801CB270.cpp (4 caller units: tu_801EE24C,
 // tu_8021AF28, tu_801E5FC8, tu_8020F798). Moves the emitter in *emitter to pos with
-// fn_8013CB44 (adjust true); or, when it is flagged (bit 0x8 of its word
+// setEmitterPos_8013CB44 (adjust true); or, when it is flagged (bit 0x8 of its word
 // 0xF4) and has no particles left (0xD0 + 0xDC == 0), deletes it with
 // JPAEmitterManager::forceDeleteEmitter and sets *emitter to NULL. Does
 // nothing for a NULL emitter.
@@ -138,8 +138,8 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
 // 224 units / 1866 calls. A free function: r3 is the layer, not the system.
 // Spawns effect `id` at pos and returns its emitter (NULL when scale <= 0
 // or nothing was made). On layer 0 it places pos as
-// fn_8013CB44 does, picks the draw group from the id (a switch; 0xFF skips
-// the emitter) and on some stages a substitute id (fn_802D6A9C()'s
+// setEmitterPos_8013CB44 does, picks the draw group from the id (a switch; 0xFF skips
+// the emitter) and on some stages a substitute id (getGameView_802D6A9C()'s
 // field_0x131f1/field_0x131f2, fn_802DEABC, fn_802DE9A0), queues the
 // position in a free mEntries slot (0x8013D20C), creates the emitter
 // (JPAEmitterManager::createSimpleEmitterID(pos, id, group, 0, emitterCB,
@@ -150,7 +150,7 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
 // actor's field_0x4, r5 li or a clrlwi 16 id, r6/r7 li or extsb, r8/r9
 // almost always 0, r10 li 1, f1 a constant (ActorBase_804A5770::vfunc_0x28
 // passes its int as height, depth 0, no callbacks and adjust 1).
-JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height,
+JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height,
                             s32 depth, JPAEmitterCallBack* emitterCB,
                             JPAParticleCallBack* particleCB, bool adjust, f32 scale);
 

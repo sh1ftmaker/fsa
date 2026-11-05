@@ -302,7 +302,7 @@ public:
     /* 0x000 */ // vtable
     // new J2DTextBox("rock_24_20_4i_e.bfn", field_0x80, 0x64) (fn_8038DA00).
     /* 0x004 */ J2DTextBox* mTextBox;
-    // The "gc_four_swords_text_e.bmg" resource; fn_803832BC reads its INF1
+    // The "gc_four_swords_text_e.bmg" resource; getMessageText_803832BC reads its INF1
     // entries (8 bytes each from +0x20) and the text at +0x24.
     /* 0x008 */ MessageFile_804AF070* mBmg;
     /* 0x00C */ JGeometry::TVec3f field_0xc[4];
@@ -456,13 +456,13 @@ void fn_8038D4A8();
 // as a counter that control codes advance reaches 1 / 2; one control code
 // writes '0' + value (addi 0x30). Returns a width summed from mFont's
 // vtable slot 0x2C per character (f1). value: s32 is a guess.
-f32 fn_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
+f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
 // Message msg mapped for window `window` (this unit, not written yet); fn_8038470C
 // passes the result to the window's fn_80390E40.
 u32 fn_80383EB0(s32 window, u32 msg);
 // 1 unit (game/tu_80403D84.cpp) + 1 (tu_8043A0E8). Builds the text of message
 // msg into out (lines wrapped to width / height, the two counters are
-// fn_803832BC-style arguments); returns a line count that starts at 1.
+// getMessageText_803832BC-style arguments); returns a line count that starts at 1.
 s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 height);
 // 16 units (act_talking_npc calls it once fn_8038AD24 has succeeded).
 // Returns 0 or 1.

@@ -22,7 +22,7 @@ void cls_80215E48::fn_80215BCC(s32 index) {
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
         lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x79 = mEntries[index].mWatch.mSeconds;
         lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x78 = mEntries[index].mWatch.mCentis;
-        fn_802D6A9C()->fn_802D7844(1, mEntries[index].mId);
+        getGameView_802D6A9C()->fn_802D7844(1, mEntries[index].mId);
     }
 }
 

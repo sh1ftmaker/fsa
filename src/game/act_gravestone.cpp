@@ -14,7 +14,7 @@ Gravestone_804A99C0::~Gravestone_804A99C0() {}
 
 void Gravestone_804A99C0::draw() {
     if (field_0x230 >= 2) {
-        fn_801F06F0("enemy_gc_sob.bin", 0x16d, NULL, 7, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_gc_sob.bin", 0x16d, NULL, 7, 1.0f, 1.0f);
     }
 }
 
@@ -78,7 +78,7 @@ void Gravestone_804A99C0::update() {
     }
     case 3:
         if (((s32)field_0x23c & 3) == 0) {
-            fn_801F0E34(0x3000E, 0);
+            startSound_801F0E34(0x3000E, 0);
         }
         field_0x23c += 0.5;
         mPos.y -= 0.5;

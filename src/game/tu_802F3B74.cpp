@@ -22,7 +22,7 @@ void cls_804AA6A0::update() {
 void cls_804AA6A0::vfunc_0x24() {
     s32 serial = mEffectSerial;
     if (serial >= 0) {
-        ActorBase_804A5770* effect = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* effect = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (effect != NULL) {
             effect->mAlive = false;
         }

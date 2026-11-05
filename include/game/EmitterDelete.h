@@ -6,14 +6,14 @@
 
 // Deletes the emitter a member points to, at once, and clears the member:
 // inlined in 86 functions of 44 units (lwz field; cmplwi; beq; bl
-// fn_8013C824; lwz 0xc; lwz field again; bl forceDeleteEmitter; stw 0).
+// getEffectSystem_8013C824; lwz 0xc; lwz field again; bl forceDeleteEmitter; stw 0).
 // The manager is fetched into a local first, then the emitter is read again
-// for the call; fn_8013C824()->mEmitterManager->forceDeleteEmitter(e) in one
+// for the call; getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(e) in one
 // expression keeps the first load of e in a saved register instead.
-// Proven by act_eyeball_switch's cls_804AE678::vfunc_0x24.
+// Proven by act_eyeball_switch's EyeballSwitch_804AE678::vfunc_0x24.
 inline void deleteEmitter(JPABaseEmitter** emitter) {
     if (*emitter != NULL) {
-        JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
         manager->forceDeleteEmitter(*emitter);
         *emitter = NULL;
     }

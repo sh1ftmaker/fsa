@@ -35,6 +35,6 @@ void Rat_8049C400::draw() {
         params.mMtx = mtx;
     }
     // The direction's block, then the walk cycle's frame in it.
-    fn_801F06F0("enemy_gc_sob.bin", mFrameBase + mDir * 2 + (lbl_80539E68[mStep] * 4 + 0xA1),
+    drawSprite_801F06F0("enemy_gc_sob.bin", mFrameBase + mDir * 2 + (lbl_80539E68[mStep] * 4 + 0xA1),
                 &params, 0, 1.0f, 1.0f);
 }

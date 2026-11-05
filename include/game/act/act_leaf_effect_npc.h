@@ -6,14 +6,14 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AE2E0.
-class cls_804AE2E0 : public ActorBase_804A5770 {
+class LeafEffectNPC_804AE2E0 : public ActorBase_804A5770 {
 public:
-    cls_804AE2E0() {}
-    /* 0x08 */ virtual ~cls_804AE2E0();
+    LeafEffectNPC_804AE2E0() {}
+    /* 0x08 */ virtual ~LeafEffectNPC_804AE2E0();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    // Spawns the leaf emitter (fn_8013CC50) at mPos and starts the sound.
+    // Spawns the leaf emitter (spawnEmitter_8013CC50) at mPos and starts the sound.
     void spawnLeaves();
     /* 0x230 */ u8 field_0x230; // set by the generator (fn_8036D858): burst again
     /* 0x234 */ s32 field_0x234; // kind 0-3: index of the emitter id table

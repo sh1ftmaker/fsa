@@ -27,7 +27,7 @@
 #include "JSystem/JUtility/TColor.h"
 #include "game/Player.h"
 #include "game/cls_8016ED88.h"
-// The view (fn_802D6A9C) and the effect system (fn_8013C824) moved to
+// The view (getGameView_802D6A9C) and the effect system (getEffectSystem_8013C824) moved to
 // their own headers; included here so existing users keep compiling.
 #include "game/Effect.h"
 #include "game/GameView.h"
@@ -74,8 +74,8 @@ class cls_804B1D00;
 class cls_804B1D20;
 class cls_804B1E1C;
 struct J2DScreen;
-class cls_804AF86C;
-class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (Unk_8045A080::fn_80457F80)
+class PaneCtrl_804AF86C;
+class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (AudioMgr_8045A080::fn_80457F80)
 class cls_804B17A0;
 class PlayerManager_804A6F28;
 struct GameRootSub20_801902C0;
@@ -90,7 +90,7 @@ struct GameRootSub04_801F856C {
     /* 0x4 */ PlayerManager_804A6F28* field_0x4; // constructor fn_8013A538 (tu_80139BE8)
     /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
-    /* 0xC */ GameView_804A9950* mView;             // fn_802D6A9C
+    /* 0xC */ GameView_804A9950* mView;             // getGameView_802D6A9C
     // fn_802A3D80 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
     /* 0x10 */ BgRewrite_804A7C98* field_0x10;
     // fn_8043EDF8 is called with it by fn_8013A1A4 (game/tu_80139BE8.cpp); the
@@ -124,7 +124,7 @@ struct GameRootSub04_801F856C {
 
     // 0x80139BE8 (game/tu_80139BE8.cpp, not written yet). Calls fn_801F857C on
     // mActorManager, clears lbl_8053ACD0 and the four bytes at 0x235C of
-    // lbl_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
+    // gGameRoot2_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
     void fn_80139BE8();
 
     // 0x80139C84 (game/tu_80139BE8.cpp, not written yet). Calls
@@ -132,13 +132,13 @@ struct GameRootSub04_801F856C {
     void fn_80139C84();
 
     // 0x80139CC4 (game/tu_80139BE8.cpp, not written yet). Calls fn_8013B438 on
-    // lbl_8053AB10 twice around the vfunc_0x14 of mView, fn_8023F2BC, fn_801F8658
+    // gGameRoot2_8053AB10 twice around the vfunc_0x14 of mView, fn_8023F2BC, fn_801F8658
     // on mActorManager and fn_801902D0 on field_0x20; then fn_8016DA6C on
-    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
+    // field_0x24 unless gGameRoot2_8053AB10->field_0x39 is set.
     void fn_80139CC4();
 
     // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
-    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
+    // field_0x24 unless gGameRoot2_8053AB10->field_0x39 is set.
     void fn_80139D3C();
 };
 
@@ -146,7 +146,7 @@ struct GameRootSub04_801F856C {
 // Set in game/tu_801344C0.cpp (0x80134998) and game/tu_80134C04.cpp
 // (0x80139340). Named after its vtable, 0x8049EF20 (constructor
 // fn_80139300, allocated with __nw__(0x11C)); its real layout is unknown.
-struct Unk_8045A080;
+struct AudioMgr_8045A080;
 class cls_804A8390;
 class cls_804B0FC0;
 class J2DTextBox;
@@ -242,7 +242,7 @@ struct GameRoot_8049EF20 {
     /* 0x98 */ JKRHeap* field_0x98;
     /* 0x9C */ JKRSolidHeap* field_0x9c; // lbl_80529DEC's field_0x4; destroyed by the destructor
     // The audio object (fn_80458880 / fn_804593D4 in fn_80134D20, game/tu_80134C04.cpp).
-    /* 0xA0 */ Unk_8045A080* field_0xa0;
+    /* 0xA0 */ AudioMgr_8045A080* field_0xa0;
     // Copied from lbl_80529DEC+0x14 by the constructor (0x80139360). Game
     // code calls it through vtable slot 0x18 = getResource(u32 type,
     // const char* name) with a 4CC and a name ('ENM ' in fn_801F62AC, 'TIMG'
@@ -265,12 +265,12 @@ struct GameRoot_8049EF20 {
     /* 0xB8 */ J2DPicture* field_0xb8; // made from 'TIMG' resources by the constructor
     /* 0xBC */ J2DPicture* field_0xbc;
     // Two text boxes the constructor makes; fn_80138C9C copies field_0xc8
-    // (message 0x42, fn_803832BC) into both.
+    // (message 0x42, getMessageText_803832BC) into both.
     /* 0xC0 */ J2DTextBox* field_0xc0;
     /* 0xC4 */ J2DTextBox* field_0xc4;
     /* 0xC8 */ char field_0xc8[0xF0 - 0xC8];
     /* 0xF0 */ f32 field_0xf0; // 0.0f after fn_80138C9C
-    /* 0xF4 */ f32 field_0xf4; // fn_803832BC's result for field_0xc8
+    /* 0xF4 */ f32 field_0xf4; // getMessageText_803832BC's result for field_0xc8
     // Cleared to 0 by fn_801365C8 (game/tu_80134C04.cpp, 0x801365C8), together
     // with field_0xfc, when it is stored a 1 (stb of r4 at 0xFE first).
     /* 0xF8 */ s32 field_0xf8;
@@ -318,7 +318,7 @@ struct GameRoot_8049EF20 {
     // (cls_804A7BE8's destructor, with 0), game/tu_8023FBF0.cpp and game/tu_802D39B8.cpp.
     void fn_80134FE0(u8 value);
     // Owner: game/tu_80134C04.cpp (0x80134CC8). Whether the game is paused
-    // (field_0x4c == 11 or field_0x88 == 2) and the fade object lbl_8053AB10->0x2C
+    // (field_0x4c == 11 or field_0x88 == 2) and the fade object gGameRoot2_8053AB10->0x2C
     // has its byte at 0xC clear (0xC is 0 when it is idle).
     u8 fn_80134CC8();
     // Owner: game/tu_80134C04.cpp (0x80134D20; called by tu_8044C7F0).
@@ -441,7 +441,7 @@ class EnemyBase_804A4808;
 extern "C" {
 // Owner: game/tu_80212E3C.cpp (defined there; not written yet). Reads an
 // EnemyBase's mFlags (0x230) and mState (0x248); takes the actor serial's
-// result (fn_801F666C) in r3. Called by act_quicksand fn_80210D90 in state 1.
+// result (findActorBySerial_801F666C) in r3. Called by act_quicksand fn_80210D90 in state 1.
 void fn_80212ECC(EnemyBase_804A4808* actor);
 }
 
@@ -453,9 +453,9 @@ extern "C" {
 void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
 }
 
-// Unk_8045A080, the audio manager lbl_8053AF80 points to, is declared in
+// AudioMgr_8045A080, the audio manager lbl_8053AF80 points to, is declared in
 // game/Unk_8045A080.h (included by game/GameAudio.h).
-extern Unk_8045A080* lbl_8053AF80;
+extern AudioMgr_8045A080* lbl_8053AF80;
 
 // game/tu_80401848.cpp (not written yet): the objects fn_804019A8 and
 // fn_80401E10 allocate (0x20 and 0x1C bytes) for a file found by path, and
@@ -550,7 +550,7 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj);
 bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer);
 
 // game/tu_801CB270.cpp; called from game/tu_801D2C60.cpp.
-// Two effects (fn_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
+// Two effects (spawnEmitter_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4);
 
@@ -572,19 +572,19 @@ s32 fn_801CB7CC(s16 angle);
 // holds for every player that takes part (fn_80138A30); takes no arguments.
 bool fn_801CCF7C();
 
-// The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
+// The objects at gGameRoot2_8053AB10->0x2C and 0x30, named after their vtables
 // (stored at 0 by their constructors); no members declared yet. 0x20
-// (cls_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
+// (TileMap_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
 // 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
-// Read by fn_80158B3C / fn_80158B5C and directly (+0x4, +0xC) in 28 units.
+// Read by fn_80158B3C / drawShadow_80158B5C and directly (+0x4, +0xC) in 28 units.
 class JUTTexture;
-class cls_804A0160 {
+class ShadowCircle_804A0160 {
 public:
     // Constructor (0x801594E8, game/tu_80158624.cpp): loads "circle.bti" from
     // lbl_8053AAF8->field_0xa4 into a new JUTTexture on `heap`. Its vtable
     // (lbl_804A0160) has one virtual destructor, at offset 0 (vptr).
-    cls_804A0160(JKRHeap* heap);
-    virtual ~cls_804A0160();
+    ShadowCircle_804A0160(JKRHeap* heap);
+    virtual ~ShadowCircle_804A0160();
 
     /* 0x4 */ JUtility::TColor field_0x4; // colour: fn_80158B3C sets r,g,b = 0xFF, a = 0
     /* 0x8 */ JUTTexture* field_0x8;
@@ -593,15 +593,15 @@ public:
 
     // 0x80158B3C (owner unit game/tu_80158624.cpp, not written yet). Resets
     // the colour bytes: 0x4-0x6 = 0xFF, 0x7 = 0, 0xC = 0xFF. `this` is
-    // lbl_8053AB10->0x2C; called by tu_8039003C's constructor.
+    // gGameRoot2_8053AB10->0x2C; called by tu_8039003C's constructor.
     void fn_80158B3C();
 
     // 0x80158B5C (owner unit game/tu_80158624.cpp, not written yet). Draws a
     // shadow-like sprite on `layer` (< 8) at *pos with a colour and scale;
-    // `this` is lbl_8053AB10->0x2C. Called by tu_802201D8's draw (colour
+    // `this` is gGameRoot2_8053AB10->0x2C. Called by tu_802201D8's draw (colour
     // 0,0,0,0x80; scale 24.0f). The colour is a TColor passed by value (a
     // stack copy, its address in r6).
-    void fn_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale);
+    void drawShadow_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale);
 
     // 0x8015945C (owner unit game/tu_80158624.cpp, not written yet). Resets the
     // colour and flag bytes 0x4-0x7, 0xC and 0xD-0xE of this object.
@@ -609,20 +609,20 @@ public:
 
     // 0x80159330 (owner unit game/tu_80158624.cpp, not written yet). Returns at
     // once when lbl_8053AAF8->0x4C is 0xC; otherwise sets 0xE to 0xFF and, unless
-    // the GameView check (fn_802D6A9C()->fn_802DCD0C()) passes, clears 0xD[0]
+    // the GameView check (getGameView_802D6A9C()->fn_802DCD0C()) passes, clears 0xD[0]
     // when lbl_8053AAF8's 0x94 and 0x96 bytes are 0.
     void fn_80159330();
 
     // 0x80158F70 (owner unit game/tu_80158624.cpp, not written yet). Draws up
     // to three quads the size of the render mode (JUTVideo::sManager); `this`
-    // is lbl_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
+    // is gGameRoot2_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
     void fn_80158F70();
     // 0x80158E88 (game/tu_80158624.cpp). Sets up the two lights; reads no
-    // member. Called with this = lbl_8053AB10->0x2C by fn_8013BB18.
+    // member. Called with this = gGameRoot2_8053AB10->0x2C by fn_8013BB18.
     void fn_80158E88();
 }; // Size: 0x10
 // 0x80543F28 (.sbss2, 8 bytes; no owner split yet). Its word is the colour
-// that cls_804A0160::fn_80158F70 (game/tu_80158624.cpp) puts in TEV register 1
+// that ShadowCircle_804A0160::fn_80158F70 (game/tu_80158624.cpp) puts in TEV register 1
 // with its own alpha byte.
 extern JUtility::TColor lbl_80543F28;
 // 0x80543F20 (.sbss2, 8 bytes; no owner split yet). Its word is TEV register 1's
@@ -647,7 +647,7 @@ public:
     // Virtual destructor: GameRoot2_8049F108's destructor calls vtable slot 2.
     virtual ~cls_804A03A8();
     // 0x8015F9C0, 0x8016005C, 0x801601E0 (game/tu_8015F454.cpp, not written
-    // yet): called with this = lbl_8053AB10->0x30 by tu_8013AAD4.
+    // yet): called with this = gGameRoot2_8053AB10->0x30 by tu_8013AAD4.
     void fn_8015F9C0();
     // 0x8015F8FC (not written yet): (layer, position, 1) from the player's
     // update fn_80253E6C; layers 8 and up are ignored.
@@ -663,13 +663,13 @@ public:
 
 struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
 
-// *lbl_8053AB10: the second most-used singleton (267 units). Set in
+// *gGameRoot2_8053AB10: the second most-used singleton (267 units). Set in
 // game/tu_8013AAD4.cpp (0x8013C024) and game/tu_80134C04.cpp (0x801393C4).
 // Named after its vtable, 0x8049F108 (constructor fn_8013BFEC, which
 // allocates every member below and stores it at the offset given).
 struct GameRoot2_8049F108 {
     // Constructor (0x8013BFEC, game/tu_8013AAD4.cpp): stores itself in
-    // lbl_8053AB10 and allocates every member below on a solid heap or on
+    // gGameRoot2_8053AB10 and allocates every member below on a solid heap or on
     // `heap`. The vtable (0x8049F108) has only the destructor (0x8013BE60).
     GameRoot2_8049F108(JKRHeap* heap);
     virtual ~GameRoot2_8049F108();
@@ -692,10 +692,10 @@ struct GameRoot2_8049F108 {
     // new J2DPicture of "kk_black.bti" (0x8013C338), filled with a colour
     // through vtable slot 0x130.
     /* 0x1C */ J2DPicture* field_0x1c;
-    /* 0x20 */ cls_804AA858* field_0x20;
+    /* 0x20 */ TileMap_804AA858* field_0x20;
     /* 0x24 */ Camera_804AA9E4* field_0x24;
     /* 0x28 */ EffectSystem_8049F178* field_0x28;
-    /* 0x2C */ cls_804A0160* field_0x2c;
+    /* 0x2C */ ShadowCircle_804A0160* field_0x2c;
     /* 0x30 */ cls_804A03A8* field_0x30;
     // new JUTTexture(efb width, efb height, 4) (0x8013C230).
     /* 0x34 */ JUTTexture* field_0x34;
@@ -730,22 +730,22 @@ struct GameRoot2_8049F108 {
     // game/tu_8013AAD4.cpp: hand the video manager the NTSC interlaced
     // (lbl_8049F090) / progressive (lbl_8049F0CC) render mode. Members: the
     // only caller, Title_804AF820::fn_803A44D8 (game/tu_803A3484.cpp), loads
-    // lbl_8053AB10 into r3 before each call.
+    // gGameRoot2_8053AB10 into r3 before each call.
     void fn_8013AAD4();
     void fn_8013AB00();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet). Calls
-    // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by
+    // field_0x24->fn_8030DFE8(0); `this` is gGameRoot2_8053AB10. Called twice by
     // fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8013B438();
     // 0x8013B460 (between fn_8013B438 and fn_8013B490; body not yet known).
-    // Called with `this` = lbl_8053AB10 by cls_804A0160::fn_80158F70
+    // Called with `this` = gGameRoot2_8053AB10 by ShadowCircle_804A0160::fn_80158F70
     // (game/tu_80158624.cpp), before its GX setup.
     void fn_8013B460();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
     // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
-    // `this` is lbl_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
+    // `this` is gGameRoot2_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
     // J2DScreen::draw.
     void fn_8013B490();
     // game/tu_8013AAD4.cpp. Called by GameRoot_8049EF20::fn_80137300
@@ -766,7 +766,7 @@ struct GameRoot2_8049F108 {
     void fn_8013B3F0();
 };
 
-extern GameRoot2_8049F108* lbl_8053AB10;
+extern GameRoot2_8049F108* gGameRoot2_8053AB10;
 
 // The input object *lbl_8053AD30 (game/tu_803099FC.cpp, owner not written
 // yet): named after its vtable, 0x804AA8C8 (constructor fn_8030AC4C, which
@@ -828,19 +828,19 @@ public:
     // pointer-sized word that is tested for zero.
     u32 fn_80309C4C(u32 mask, s32 slot);
     // Owner: game/tu_803099FC.cpp (0x8030A258 / 0x8030A2E4 / 0x8030A364 /
-    // 0x8030A388, same unit). Each takes an input slot from fn_8030AAF4 and
+    // 0x8030A388, same unit). Each takes an input slot from getPlayerInputSlot_8030AAF4 and
     // returns a bool (byte) that cls_804B19F0::fn_80441A1C tests.
     u8 fn_8030A258(s32 slot);
     u8 fn_8030A2E4(s32 slot);
     u8 fn_8030A364(s32 slot);
     u8 fn_8030A388(s32 slot);
     // SHARED-EDIT (tu_803F0A54 fn_803FC304): owner game/tu_803099FC.cpp
-    // (0x8030A308, same unit). Takes an input slot from fn_8030AAF4 and
+    // (0x8030A308, same unit). Takes an input slot from getPlayerInputSlot_8030AAF4 and
     // returns a byte the caller tests after clrlwi 24 (the controller in
     // that slot is connected).
     u8 fn_8030A308(s32 slot);
     // Owner: game/tu_803099FC.cpp (0x8030A3B0, same unit). Called with a slot
-    // from fn_8030AAF4 by Player_804A6F38::fn_80247564, result passed on.
+    // from getPlayerInputSlot_8030AAF4 by Player_804A6F38::fn_80247564, result passed on.
     bool fn_8030A3B0(s32 slot);
     // SHARED-EDIT (tu_803F0A54 fn_803F8050): owner game/tu_803099FC.cpp
     // (0x80309A9C, same unit). Called like fn_80309C4C (r4 a button mask 4 /
@@ -853,7 +853,7 @@ extern cls_804AA8C8* lbl_8053AD30;
 extern u8 lbl_8053AD34[4];
 // game/tu_803099FC.cpp (0x8030AAF4). Maps a player index (0-3) to an
 // input slot (-0x3E7 for none); masks used: 0x100/0x200/0x400/0x20 and 1/2.
-s32 fn_8030AAF4(s32 player);
+s32 getPlayerInputSlot_8030AAF4(s32 player);
 
 // The object *lbl_8053AED0 (game/tu_8043A0E8.cpp, owner not written yet):
 // named after its vtable, 0x804B1920 (constructor fn_8043F504, which stores
@@ -868,8 +868,8 @@ public:
     /* 0x00C */ J2DScreen* field_0xc; // its pane 'Ndata05' is moved and drawn by fn_8043DC98
     /* 0x010 */ J2DPicture* field_0x10; // "TIMG" resource, built in the constructor (mode 3)
     /* 0x014 */ u8 pad_0x14[0x40 - 0x14];
-    /* 0x040 */ cls_804AF86C* field_0x40[12]; // the destructor's loop
-    /* 0x070 */ cls_804AF86C* field_0x70[2]; // text panes (fn_8043D034 copies field_0x78 into both)
+    /* 0x040 */ PaneCtrl_804AF86C* field_0x40[12]; // the destructor's loop
+    /* 0x070 */ PaneCtrl_804AF86C* field_0x70[2]; // text panes (fn_8043D034 copies field_0x78 into both)
     /* 0x078 */ char field_0x78[0xDC - 0x78]; // message text (fn_803837A4 in fn_8043D034); ends at the next known field
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6AE8): a flag byte that
     // the battle royale end check ORs with 0x10 when it picks its winner.
@@ -998,7 +998,7 @@ public:
 
     // 0x8043D514 (game/tu_8043A0E8.cpp, not written yet): returns a float in
     // f1 with only `this` (*lbl_8053AED0) in r3. game/tu_8044998C.cpp passes
-    // it as y to cls_804AF86C::fn_80402E08 on both of its panes.
+    // it as y to PaneCtrl_804AF86C::moveFromCentre_80402E08 on both of its panes.
     f32 fn_8043D514();
 
     // 0x8043D57C (game/tu_8043A0E8.cpp, not written yet): like fn_8043D514,
@@ -1202,7 +1202,7 @@ extern "C" const char* fn_801DA938(Sequencer_801DAA24* seq);
 extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
 
 // game/act_frostare_tail.cpp (owner unit, not written yet): takes an actor
-// (a result of ActorManager_804A5800::fn_801F666C; reads fields 0xD8, 0xDC and
+// (a result of ActorManager_804A5800::findActorBySerial_801F666C; reads fields 0xD8, 0xDC and
 // 0x278) and returns a value 0-255 (clrlwi 24 in the body); callers use it
 // as an int without extending it (declared s32: a u8 adds a clrlwi at the call).
 // Called by game/tu_801DAC6C.cpp.
@@ -1210,7 +1210,7 @@ class ActorBase_804A5770;
 extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
 
 // game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor
-// (a result of ActorManager_804A5800::fn_801F666C) in r3; field 0x248 is its
+// (a result of ActorManager_804A5800::findActorBySerial_801F666C) in r3; field 0x248 is its
 // state. fn_8021D734 / fn_8021D764 switch it to state 8 / 6 unless already
 // there; fn_8021D794 returns whether it is in state 5. Called by
 // game/tu_8021F064.cpp.
@@ -1349,7 +1349,7 @@ bool fn_803B8CAC(s32 file, s32 index);
 // Owner: game/tu_803B8C74.cpp. True for index < 3, else whether save file
 // `file`'s flag word (lbl_8050EC80 row 0x28) has its top bit set (li 1 / li 0).
 bool fn_803B90E4(s32 file, s32 index);
-// SHARED-EDIT (tu_80414F6C cls_804B1378's constructor): 0x803B9120, same
+// SHARED-EDIT (tu_80414F6C BattleStageSelect_804B1378's constructor): 0x803B9120, same
 // owner. Whether battle stage `stage` (0..7) is open: stages 0-2 always,
 // the others by a bit of the current save file; returns 1 or 0.
 bool fn_803B9120(s32 stage);
@@ -1593,7 +1593,7 @@ void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const c
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
                  J3DAnmTextureSRTKey** btk1Out, J3DAnmTextureSRTKey** btk2Out,
                  J3DAnmTevRegKey** brk1Out, J3DAnmTevRegKey** brk2Out);
-// game/tu_8013AAD4.cpp: draws lbl_8053AB10's two J3D draw buffers
+// game/tu_8013AAD4.cpp: draws gGameRoot2_8053AB10's two J3D draw buffers
 // (fn_8013AB2C), places and enters a model (fn_8013ABCC) and sets them and
 // the J3D view matrix (fn_8013AC54).
 void fn_8013AB2C();
@@ -1652,7 +1652,7 @@ s32 fn_802BA9F8(ActorBase_804A5770* actor);
 // 0x804B1634; its constructor fn_80431D84 stores `this` in lbl_8053AEC0.
 // Size and most fields unknown.
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 class cls_804B1600;
 class cls_804B1634 {
 public:
@@ -1661,14 +1661,14 @@ public:
     cls_804B1634();
     // Slot 0x8 of the vtable 0x804B1634 (fn_80431C38, game/tu_8042E964.cpp).
     virtual ~cls_804B1634();
-    // 0x804316EC: draws field_0x8 with lbl_8053AB10's grafcontext unless
+    // 0x804316EC: draws field_0x8 with gGameRoot2_8053AB10's grafcontext unless
     // the byte 0xEC is 0. Called by cls_804B1D58::fn_804522C8 (tu_8044C7F0).
     void fn_804316EC();
     // 0x804310CC: no arguments besides `this` (lwz 8(r3), J2DPane search at
-    // vtable 0x3C, stores at 0xC and 0xEB). cls_804B0F10::fn_803FC5E4.
+    // vtable 0x3C, stores at 0xC and 0xEB). ConnectScreen_804B0F10::fn_803FC5E4.
     void fn_804310CC();
     // 0x80431A9C: r4 an id (0xC4, 0x10B), r5 a byte (clrlwi 24 in
-    // cls_804B0F10::fn_803F2AEC), r6 an optional out byte (callers pass the
+    // ConnectScreen_804B0F10::fn_803F2AEC), r6 an optional out byte (callers pass the
     // address of a u8 field or 0; it receives this->0xEA). Reads the byte 0xEC,
     // calls fn_8042EF9C on `this` and returns 1 or 0 (li r3 before the blr).
     bool fn_80431A9C(s32 id, u8 value, u8* out);
@@ -1692,9 +1692,9 @@ public:
 
     /* 0x04 */ cls_804B1600* field_0x4;  // new in fn_80431D84, a 0x14-byte object
     /* 0x08 */ J2DScreen* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
-    /* 0x0C */ cls_804AF86C* field_0xc;  // pane wrapper
-    /* 0x10 */ cls_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
-    /* 0x24 */ cls_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
+    /* 0x0C */ PaneCtrl_804AF86C* field_0xc;  // pane wrapper
+    /* 0x10 */ PaneCtrl_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
+    /* 0x24 */ PaneCtrl_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
     /* 0x38 */ u8 field_0x38[0xBC - 0x38]; // not decoded yet (TVec2<s> arrays at 0x38 and 0x78, floats from 0xB8)
     // SHARED-EDIT: floats read by fn_80431174 (cursor placement): the window's
     // pane sizes and offsets, laid out by fn_8042F6DC.

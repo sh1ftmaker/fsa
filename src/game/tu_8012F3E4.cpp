@@ -10,7 +10,7 @@ bool cls_8012F64C::fn_8012F3E4() const {
     }
     s32 count = mCount;
     for (s32 i = 0; i < count; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSerials[i]);
         if (actor == NULL) {
             return false;
         }

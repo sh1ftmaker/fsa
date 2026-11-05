@@ -97,7 +97,7 @@ void cls_804A8638::vfunc_0x10() {
     if (field_0x288 != 4) {
         return;
     }
-    fn_802D6A9C()->fn_802D6BF8(0);
+    getGameView_802D6A9C()->fn_802D6BF8(0);
     field_0x288 = 0;
     field_0x2e0 = field_0x300;
     field_0x2e4 = field_0x304;

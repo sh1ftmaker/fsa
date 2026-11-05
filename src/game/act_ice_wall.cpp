@@ -48,7 +48,7 @@ void IceWall_8049DE18::init() {
     field_0x118 = 0;
     field_0xbc = 3;
     mSprite.fn_801D2608(lbl_80539F28, 1);
-    mSprite.fn_801D22DC(0, 2, false);
+    mSprite.startAnim_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
 }
 

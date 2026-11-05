@@ -26,7 +26,7 @@ void cls_804A5418::fn_801E6EAC() {
     if (mFlags & 0x8000) {
         s32 bit = field_0x2b4;
         if (bit != 0) {
-            fn_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+            getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
         }
         fn_801F3668();
     } else if (mState != 1) {

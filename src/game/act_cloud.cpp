@@ -78,7 +78,7 @@ void Cloud_8049CBE0::draw() {
     }
     void* res = field_0x2f8[key];
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
     }
 }
 
@@ -120,7 +120,7 @@ void Cloud_8049CBE0::init() {
     mBox2 = mBox;
     field_0x80 = mBox;
     mSprite.fn_801D2608(lbl_80539EC0, 1);
-    mSprite.fn_801D22DC(0, 2, false);
+    mSprite.startAnim_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
 }
 

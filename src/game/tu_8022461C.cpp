@@ -23,7 +23,7 @@ static inline void clampCell(s32& v) {
 // The packed cell index of pos (no lookup; clamped like the queries, no outside test).
 // The y term is written first to match the original's instruction order.
 s32 fn_80226BC4(const JGeometry::TVec2f* pos, s32 layer) {
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     JGeometry::TBox2f box;
     box = *src;

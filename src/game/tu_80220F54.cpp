@@ -2,15 +2,15 @@
 #include "game/cls_804A6A00.h"
 #include "game/GameGlobals.h"
 
-bool cls_804A6A00::vfunc_0x60() {
+bool ShadowLinkBase_804A6A00::vfunc_0x60() {
     return false;
 }
 
-void cls_804A6A00::vfunc_0x74() {
+void ShadowLinkBase_804A6A00::vfunc_0x74() {
     fn_8022149C(0);
 }
 
-void cls_804A6A00::vfunc_0x9C(u8 mapHit) {
+void ShadowLinkBase_804A6A00::vfunc_0x9C(u8 mapHit) {
     if (!(mFlags & 7)) {
         fn_801CE2BC(mapHit);
     } else {
@@ -18,12 +18,12 @@ void cls_804A6A00::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-void cls_804A6A00::fn_80221408() {
+void ShadowLinkBase_804A6A00::fn_80221408() {
     if (mStateTimer >= 0xA0) {
         fn_801CB434(field_0x4, &mPos, false);
         vfunc_0x24();
     } else if (mStateTimer % 8 == 0) {
         field_0x98 = fn_801CD30C(field_0x98);
-        mAnim.fn_801D22DC(field_0x98, 0, false);
+        mAnim.startAnim_801D22DC(field_0x98, 0, false);
     }
 }

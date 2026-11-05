@@ -22,7 +22,7 @@ void cls_804AC388::draw() {}
 void cls_804AC388::update() {
     bool spawned = false;
     if (field_0x23c == true) {
-        fn_802D6A9C()->fn_802D9FF4(field_0x234, field_0x238);
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x234, field_0x238);
         lbl_8053AAF8->fn_80136798(16, 1);
         for (s32 i = 0; i < 4; i++) {
             fn_8023764C(i, fn_80237810(i) - 4);
@@ -47,12 +47,12 @@ void cls_804AC388::update() {
             field_0x230 = 300;
         }
         if (spawned) {
-            JGeometry::TBox2f box = fn_802D6A9C()->mVisibleBox;
+            JGeometry::TBox2f box = getGameView_802D6A9C()->mVisibleBox;
             f32 x = box.f.x + 0.5f * (box.i.x - box.f.x);
             f32 y = box.f.y + 0.5f * (box.i.y - box.f.y);
-            fn_801F0E34(0x30036, 0);
+            startSound_801F0E34(0x30036, 0);
             JGeometry::TVec3f pos(x, y, 0.0f);
-            fn_8013CC50(field_0x4, &pos, 0x1bc, 2, 2, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &pos, 0x1bc, 2, 2, NULL, NULL, true, 1.0f);
         }
         for (s32 i = 0; i < 4; i++) {
             if (!fn_8022F514(i) && fn_80236A18(i) && fn_8023F264(i)) {

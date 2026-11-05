@@ -17,29 +17,29 @@ void ViewMode_804A9A18::update() {
                 break;
             }
         }
-        if (fn_802D6A9C()->fn_802D800C(field_0x230) || found) {
-            fn_802D6A9C()->fn_802D7790(field_0x4, 2);
+        if (getGameView_802D6A9C()->fn_802D800C(field_0x230) || found) {
+            getGameView_802D6A9C()->fn_802D7790(field_0x4, 2);
         } else {
-            fn_802D6A9C()->fn_802D77BC(field_0x4, 2);
+            getGameView_802D6A9C()->fn_802D77BC(field_0x4, 2);
         }
     }
     if (field_0x90 & 0xC) {
         bit = field_0x230;
         if (bit != 0) {
-            if (fn_802D6A9C()->fn_802D800C(bit)) {
-                fn_802D6A9C()->fn_802D77BC(field_0x4, field_0x90 & 0xC);
+            if (getGameView_802D6A9C()->fn_802D800C(bit)) {
+                getGameView_802D6A9C()->fn_802D77BC(field_0x4, field_0x90 & 0xC);
             } else {
-                fn_802D6A9C()->fn_802D7790(field_0x4, 0xC);
+                getGameView_802D6A9C()->fn_802D7790(field_0x4, 0xC);
             }
         }
     }
     if (field_0x90 & 0x3000) {
         bit = field_0x230;
         if (bit != 0) {
-            if (fn_802D6A9C()->fn_802D800C(bit)) {
-                fn_802D6A9C()->fn_802D77BC(field_0x4, field_0x90 & 0x3000);
+            if (getGameView_802D6A9C()->fn_802D800C(bit)) {
+                getGameView_802D6A9C()->fn_802D77BC(field_0x4, field_0x90 & 0x3000);
             } else {
-                fn_802D6A9C()->fn_802D7790(field_0x4, 0x3000);
+                getGameView_802D6A9C()->fn_802D7790(field_0x4, 0x3000);
             }
         }
     }
@@ -49,6 +49,6 @@ void ViewMode_804A9A18::update() {
 // reloads the saved LR (lwz r0, 0x14(r1)) before restoring r31, ours the
 // other way round.
 void ViewMode_804A9A18::init() {
-    fn_802D6A9C()->fn_802D77E4(field_0x4, (u16)field_0x90);
+    getGameView_802D6A9C()->fn_802D77E4(field_0x4, (u16)field_0x90);
     field_0x230 = field_0x90 >> 27;
 }

@@ -67,7 +67,7 @@ s32 EscortBase_8049E0C8::fn_801216D0(s32 player) {
 void EscortBase_8049E0C8::fn_80121764() {
     if (field_0x332) {
         for (s32 i = 0; i < field_0x360; i++) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0x364[i]);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0x364[i]);
             if (actor && actor->mActorId == ACTOR_LIMT) {
                 actor->mAlive = false;
                 field_0x364[i] = -1;
@@ -90,7 +90,7 @@ void EscortBase_8049E0C8::fn_80121ABC() {
             if (serial < 0) {
                 break;
             }
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor) {
                 actor->mDrawEnabled = false;
             }
@@ -160,23 +160,23 @@ void EscortBase_8049E0C8::fn_80121F34() {
 void EscortBase_8049E0C8::fn_80121FA8() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
-    fn_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
-    fn_801F0E34(0x400ED, 0);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
+    startSound_801F0E34(0x400ED, 0);
 }
 
 void EscortBase_8049E0C8::fn_8012202C() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
-    fn_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
-    fn_801F0E34(0x400ED, 0);
-    mAnim.fn_801D22DC(9, 0, false);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
+    startSound_801F0E34(0x400ED, 0);
+    mAnim.startAnim_801D22DC(9, 0, false);
 }
 
 void EscortBase_8049E0C8::fn_801220C4() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
-    fn_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
-    fn_801F0E34(0x400ED, 0);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
+    startSound_801F0E34(0x400ED, 0);
 }
 
 bool EscortBase_8049E0C8::fn_801227D4() {

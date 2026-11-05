@@ -166,7 +166,7 @@ bool cls_804AA8C8::fn_8030A3B0(s32 slot) {
 }
 
 // 0x8030AAF4
-s32 fn_8030AAF4(s32 player) {
+s32 getPlayerInputSlot_8030AAF4(s32 player) {
     if (player == 0) {
         return 0;
     }
@@ -220,7 +220,7 @@ cls_804AA8C8::cls_804AA8C8() {
 // 0x10 lower in our .bss than in the original, whose first 0x10 bytes (0x805076E8) belong to a
 // static of the unwritten fn_8030A43C.
 //
-// Not written yet: fn_80309A9C / fn_80309B74 / fn_80309C4C (each inlines fn_8030AAF4 and a
+// Not written yet: fn_80309A9C / fn_80309B74 / fn_80309C4C (each inlines getPlayerInputSlot_8030AAF4 and a
 // later-defined accessor; as calls they come out at 44 %, they need -inline deferred),
 // fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll),
 // fn_80309D90 (inlines fn_80309F20 and fn_80309FCC, defined after it).

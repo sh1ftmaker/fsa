@@ -55,7 +55,7 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
             params.field_0x10.mColor.a = (u8)(255.0f - 255.0f * mStateTimer / lbl_8053EDF8);
         }
         if (params.field_0x10.mColor.a != 0) {
-            fn_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
+            drawSprite_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         }
         params.field_0x0[7] = field_0x560 + 0xC;
         if (mState == 8) {
@@ -64,7 +64,7 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
             params.field_0x10.mColor.a = 0xFF;
         }
         if (params.field_0x10.mColor.a != 0) {
-            fn_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
+            drawSprite_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         }
     } else {
         if (field_0x560 != 4 && mState > 8 && mState != 0x29) {
@@ -76,7 +76,7 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
             }
             if (field_0x4 < 8) {
                 void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
             }
             if (field_0x4 == 8) {
                 JGeometry::TVec3f pos;
@@ -84,7 +84,7 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
                 fn_801EF574("player_sob.bin", frame, &pos, &params);
             }
         } else {
-            fn_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
+            drawSprite_801F06F0("player_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         }
     }
     u8 player = field_0x560;
@@ -130,7 +130,7 @@ void ShadowLink2_804A43E8::fn_801D41B8() const {
             params.field_0x0[7] = field_0x560 + 0xC;
         }
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
 }
 

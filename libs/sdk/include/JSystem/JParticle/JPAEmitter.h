@@ -279,7 +279,7 @@ struct JPABaseEmitter
     void setEmitterCallBackPtr(JPAEmitterCallBack *ptr) { mEmitterCallback = ptr; }
     void setGlobalRTMatrix(const Mtx m) { JPASetRMtxTVecfromMtx(m, mGlobalRot, &mGlobalTrs); }
     void setGlobalRMatrix(const Mtx m) { JPASetRMtxfromMtx(m, mGlobalRot); }
-    // pikmin2 / tp form (fn_8013CC50, game/tu_8013C5C8.cpp).
+    // pikmin2 / tp form (spawnEmitter_8013CC50, game/tu_8013C5C8.cpp).
     void setGlobalSRTMatrix(const Mtx m)
     {
         JPASetRMtxSTVecfromMtx(m, mGlobalRot, &mGlobalScl, &mGlobalTrs);

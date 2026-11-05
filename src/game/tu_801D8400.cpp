@@ -16,12 +16,12 @@ void cls_804A4C58::vfunc_0xA0() {
         return;
     }
     if (mState >= 0 && mState < 4) {
-        cls_804A03A8* obj = lbl_8053AB10->field_0x30;
+        cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
         if (!obj->field_0x284) {
             obj->field_0x284 = 1;
             obj->field_0x28c = 0.05f;
         }
-        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
         if (!camera->field_0x7f5) {
             camera->field_0x7f4 = 1;
             camera->field_0x7f8 = 4;
@@ -29,9 +29,9 @@ void cls_804A4C58::vfunc_0xA0() {
             camera->field_0x7f6 = 0;
         }
     } else {
-        lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
-        if (!lbl_8053AB10->field_0x24->field_0x179) {
-            lbl_8053AB10->field_0x24->field_0x178 = 1;
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        if (!gGameRoot2_8053AB10->field_0x24->field_0x179) {
+            gGameRoot2_8053AB10->field_0x24->field_0x178 = 1;
         }
     }
 }

@@ -46,7 +46,7 @@ cls_804A2944::~cls_804A2944() {
     // field_0x90 is u32, but the original tests it with a signed cmpwi.
     s32 param = field_0x90;
     if (param == 0) {
-        fn_802D6A9C()->fn_802D7440(true);
+        getGameView_802D6A9C()->fn_802D7440(true);
         lbl_8053AB98 = 0;
         lbl_8053ABA8 = 0;
     }
@@ -86,11 +86,11 @@ s32 ActorBase_804A5770::fn_8019CEB4() const {
     return field_0xb0;
 }
 
-void cls_804A25F0::fn_8019CEBC(s32 value) {
+void Ganon_804A25F0::fn_8019CEBC(s32 value) {
     field_0x28c = value;
 }
 
-void cls_804A25F0::fn_8019CEC4(s32 value) {
+void Ganon_804A25F0::fn_8019CEC4(s32 value) {
     field_0x2f8 = value;
 }
 

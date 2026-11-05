@@ -53,7 +53,7 @@ void SpecialConversationNPC_804AAFB8::fn_803185A8() {
     field_0x260++;
     if ((field_0x25c < 2 && field_0x260 >= 0x10) || (field_0x25c >= 2 && field_0x260 >= 0xA)) {
         field_0x260 = 0;
-        if (!fn_802D6A9C()->fn_802D7F40(2)) {
+        if (!getGameView_802D6A9C()->fn_802D7F40(2)) {
             field_0x264++;
             if (field_0x264 >= 6) {
                 field_0x264 = 0;

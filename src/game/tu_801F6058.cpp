@@ -77,7 +77,7 @@ ActorSoundObj_804578F4* ActorManager_804A5800::fn_801F6644(s32 slot) {
     return field_0x200c;
 }
 
-ActorBase_804A5770* ActorManager_804A5800::fn_801F666C(s32 serial) {
+ActorBase_804A5770* ActorManager_804A5800::findActorBySerial_801F666C(s32 serial) {
     ActorBase_804A5770* found = NULL;
     if (serial >= 0) {
         // The slot of the last spawn first.
@@ -102,7 +102,7 @@ s32 ActorManager_804A5800::fn_801F6718(u8 a, s32 layer, const JGeometry::TVec3f*
 }
 
 bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin) {
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     if (pos->x <= box->i.x - margin || pos->x >= box->f.x + margin ||
         pos->y <= box->i.y - margin || pos->y >= box->f.y + margin)
@@ -137,7 +137,7 @@ void ActorManager_804A5800::fn_801F6884() {
 }
 
 s32 ActorManager_804A5800::fn_801F68E0() {
-    cls_804A03A8* obj = lbl_8053AB10->field_0x30;
+    cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
     if (!obj->field_0x284) {
         obj->field_0x284 = 1;
         obj->field_0x28c = 0.05f;
@@ -173,7 +173,7 @@ s32 ActorManager_804A5800::fn_801F68E0() {
 
 // FIXME: 95.2 %. In the last branch the target zero-extends delta (clrlwi 16)
 // before adding it to *value; this code adds the s16 directly.
-void fn_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
+void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     s16 diff = target - *value;
     s16 delta = diff / step;
     if (delta > maxStep) {
@@ -185,7 +185,7 @@ void fn_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     }
 }
 
-void fn_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
+void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
     if (*value != target) {
         f32 delta = rate * (target - *value);
         if (delta > maxStep) {
@@ -449,7 +449,7 @@ s32 ActorManager_804A5800::fn_801F7AB8(u32 id, s32 excludeSerial) {
 }
 
 void ActorManager_804A5800::fn_801F7E88() {
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     s32 end = mActorEnd;
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* actor = mActors[i];

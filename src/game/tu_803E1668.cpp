@@ -262,7 +262,7 @@ static inline void setSingleEntry() {
     for (s32 i = 1; i < 4; i++) {
         lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
     }
-    if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+    if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
         setPlayerKind(lbl_8053AAF8, 0, 1);
     } else {
         setPlayerKind(lbl_8053AAF8, 0, 2);
@@ -326,7 +326,7 @@ static inline f32 toEffectY(f32 y) {
 // Draws the four player sprites ("player_sob.bin") over field_0xc's player
 // panes, sliding them between the field_0x1bc + 1 player layout and the
 // 4-player one as field_0x220[0] counts 100-112 and 212-224 (the
-// cls_804B0F10::fn_803F0A54 twin, with a 1-player row).
+// ConnectScreen_804B0F10::fn_803F0A54 twin, with a 1-player row).
 void cls_804B0B00::fn_803E1668() {
     f32 ratio = (f32)field_0xc->search(lbl_804780C0[0])->getAlpha() / (f32)field_0x342[0];
     JGeometry::TVec3f pos;
@@ -346,7 +346,7 @@ void cls_804B0B00::fn_803E1668() {
                 params.field_0x0[7] = i + 12;
                 s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
                 void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
             }
         }
     } else if (field_0x220[0] < 112) {
@@ -383,7 +383,7 @@ void cls_804B0B00::fn_803E1668() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     } else if (field_0x220[0] < 212) {
         for (s32 i = 0; i < 4; i++) {
@@ -404,7 +404,7 @@ void cls_804B0B00::fn_803E1668() {
             }
             s32 frame = lbl_804779B0[field_0x220[0] % 30] + 0x10;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
         }
     } else {
         // Slide back to the field_0x1bc + 1 player panes.
@@ -440,7 +440,7 @@ void cls_804B0B00::fn_803E1668() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     }
 }
@@ -508,11 +508,11 @@ void cls_804B0B00::fn_803E2A20() {
         }
         field_0x10->search(lbl_80478350[i])->hide();
     }
-    field_0x64->fn_80402E08(0.0f, -200.0f);
+    field_0x64->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x64->field_0x22 = 0;
     for (s32 i = 0; i < 4; i++) {
         if (i <= field_0x1bc) {
-            field_0x68[i]->fn_80402E08(0.0f, 150.0f);
+            field_0x68[i]->moveFromCentre_80402E08(0.0f, 150.0f);
             field_0x68[i]->field_0x22 = 0;
         }
         if (i <= field_0x1bc) {
@@ -548,7 +548,7 @@ void cls_804B0B00::fn_803E2A20() {
         field_0x254[i] = 0;
         field_0x1e0[i] = 0;
     }
-    field_0x78->fn_80402E08(0.0f, -200.0f);
+    field_0x78->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x78->field_0x22 = 0;
     field_0x260 = 0;
     field_0x1d8 = field_0x1d4;
@@ -608,8 +608,8 @@ void cls_804B0B00::fn_803E3CB0() {
     }
     char* text1 = static_cast<J2DTextBox*>(field_0x8->search('Tkg01'))->getStringPtr();
     char* text2 = static_cast<J2DTextBox*>(field_0x8->search('Tkg02'))->getStringPtr();
-    fn_803832BC(text1, 0x3E, 0, NULL, NULL);
-    fn_803832BC(text2, 0x3E, 0, NULL, NULL);
+    getMessageText_803832BC(text1, 0x3E, 0, NULL, NULL);
+    getMessageText_803832BC(text2, 0x3E, 0, NULL, NULL);
     field_0xa0 = -300.0f;
     field_0x8->search('Ndata03')->move(field_0x98, field_0x9c + field_0xa0);
     field_0xac = -100.0f;
@@ -617,7 +617,7 @@ void cls_804B0B00::fn_803E3CB0() {
     field_0xb8 = -200.0f;
     field_0x8->search('Ndata06')->move(field_0xb0, field_0xb4 + field_0xb8);
     field_0xbc = -200.0f;
-    field_0x78->fn_80402E08(0.0f, field_0xbc);
+    field_0x78->moveFromCentre_80402E08(0.0f, field_0xbc);
     field_0xe0[0] = 200.0f;
     field_0x8->search('Ppllbk02')->move(field_0xc0[0], field_0xd0[0] + field_0xe0[0]);
     field_0xe0[1] = 200.0f;
@@ -680,7 +680,7 @@ void cls_804B0B00::fn_803E4344() {
     field_0xf8 = -150.0f;
     mScreen->search('Pmadbb07')->move(field_0xf0, field_0xf4 + field_0xf8);
     field_0xfc = -200.0f;
-    field_0x78->fn_80402E08(0.0f, field_0xfc);
+    field_0x78->moveFromCentre_80402E08(0.0f, field_0xfc);
     field_0x120[0] = -350.0f;
     mScreen->search('Pnopb04')->move(field_0x100[0] + field_0x120[0], field_0x110[0]);
     field_0x120[1] = -350.0f;
@@ -748,11 +748,11 @@ void cls_804B0B00::fn_803E4650() {
             f32 x = field_0x10->search(lbl_80478350[i])->getBounds()->i.x;
             field_0x10->search(lbl_80478350[i])->move(x, field_0x1b0 + offset);
             if (field_0x1c0[i] >= 3) {
-                field_0x68[i]->fn_80402E08(0.0f, offset);
+                field_0x68[i]->moveFromCentre_80402E08(0.0f, offset);
             }
         }
     }
-    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -832,9 +832,9 @@ void cls_804B0B00::fn_803E4940() {
     }
     field_0xc->search('Pscuro01')->setAlpha(alpha);
     field_0xc->search('Pscuro02')->setAlpha(alpha);
-    field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
-    lbl_8053AB10->fn_8013B414(&box, true);
+    gGameRoot2_8053AB10->fn_8013B414(&box, true);
     fn_803E1668();
     lbl_8053AED8->fn_80440EE8();
 }
@@ -902,7 +902,7 @@ void cls_804B0B00::fn_803E64A0() {
     }
     mScreen->search('Pscuro01')->setAlpha(alpha);
     mScreen->search('Pscuro02')->setAlpha(alpha);
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -1014,7 +1014,7 @@ void cls_804B0B00::fn_803E9A20() {
         if (field_0x1d0 == field_0x1bc + 1) {
             field_0x26c = 2;
             lbl_8053AF80->fn_80458880(11, -1);
-        } else if ((lbl_8053AAF8->field_0x82 & 0x10) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+        } else if ((lbl_8053AAF8->field_0x82 & 0x10) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
             if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23c + 1)) {
                 field_0x26c = 2;
                 lbl_8053AF80->fn_80458880(11, -1);
@@ -1056,9 +1056,9 @@ void cls_804B0B00::fn_803E9A20() {
                 field_0x7c[i]->field_0x45 = 0;
                 field_0x7c[i]->startSound(0x2000E);
                 JGeometry::TVec3f pos(field_0x8c + 7.0f, field_0x90 - 27.0f, field_0x94);
-                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                 JGeometry::TVec3f pos2(field_0x8c + 7.0f, field_0x90 - 27.0f, field_0x94);
-                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             field_0x220[i] = 0;
@@ -1125,9 +1125,9 @@ void cls_804B0B00::fn_803E9EE8() {
                 field_0x7c[i]->field_0x45 = 0;
                 field_0x7c[i]->startSound(0x2000E);
                 JGeometry::TVec3f pos(field_0x8c + 7.0f, field_0x90 - 27.0f, field_0x94);
-                fn_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                 JGeometry::TVec3f pos2(field_0x8c + 7.0f, field_0x90 - 27.0f, field_0x94);
-                fn_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             field_0x220[i] = 0;
@@ -1138,7 +1138,7 @@ void cls_804B0B00::fn_803E9EE8() {
 // FIXME: 99.61. One register: in setEntries' loop the original gives i a
 // fresh li r4, 0 and keeps 2 * i in r3 (the zero stored to field_0x1b8);
 // ours copies that zero into i (mr r4, r3). Same as the twin's
-// cls_804B0F10::fn_803F2580.
+// ConnectScreen_804B0F10::fn_803F2580.
 // Update state 3 (the player-count menu, field_0x1bc = players - 1): decide
 // with one player takes slot 0 alone (kind 1 with a controller there, else
 // 2); with more, the entries are set when every controller is connected,
@@ -1256,7 +1256,7 @@ void cls_804B0B00::fn_803ED604() {
 void cls_804B0B00::fn_803ED83C() {
     field_0x1d0 = 0;
     if (field_0x1bc == 0) {
-        if (lbl_8053AD30->fn_8030A3B0(fn_8030AAF4(0))) {
+        if (lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(0))) {
             lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
             field_0x1d0++;
         } else {
@@ -1268,7 +1268,7 @@ void cls_804B0B00::fn_803ED83C() {
     } else {
         for (s32 i = 0; i < 4; i++) {
             if (i <= field_0x1bc) {
-                if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+                if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
                     lbl_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
                     field_0x1d0++;
                 } else {
@@ -1297,8 +1297,8 @@ void cls_804B0B00::fn_803ED83C() {
 // (field_0x60). When the fade-out into state 9 ends, the decide / back
 // button textures of lbl_8053AED8 are set.
 void cls_804B0B00::fn_803EDA2C() {
-    lbl_8053AB10->fn_8013B490();
-    field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x1d4 != 15) {
         (this->*lbl_804B0A24[field_0x1d4])();
     } else {
@@ -1328,7 +1328,7 @@ void cls_804B0B00::fn_803EDA2C() {
             }
             break;
         }
-        lbl_8053AB10->fn_8013B490();
+        gGameRoot2_8053AB10->fn_8013B490();
         field_0x60->setAlpha(field_0x26d);
         field_0x60->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
     }
@@ -1351,12 +1351,12 @@ void cls_804B0B00::fn_803EDBF0(u8 mode) {
         fn_803E3564();
         break;
     default:
-        if (lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) {
+        if (lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) {
             field_0x1bc = 0;
-        } else if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+        } else if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
             field_0x1bc = 0;
             for (s32 i = 1; i < 4; i++) {
-                if (!lbl_8053AD30->fn_8030A308(fn_8030AAF4(i))) {
+                if (!lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
                     break;
                 }
                 field_0x1bc++;
@@ -1578,8 +1578,8 @@ cls_804B0B00::cls_804B0B00() {
     static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->setFont(font);
     font = lbl_8053AD78->mFont;
     static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->setFont(font);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->getStringPtr(), 0xA6, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->getStringPtr(), 0xA6, 0, NULL, NULL);
     field_0x98 = field_0x8->search('Ndata03')->getBounds()->i.x;
     field_0x9c = field_0x8->search('Ndata03')->getBounds()->i.y;
     field_0xa0 = 0.0f;
@@ -1675,23 +1675,23 @@ cls_804B0B00::cls_804B0B00() {
     static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->setFont(font);
     font = lbl_8053AD78->mFont;
     static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->setFont(font);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->getStringPtr(), 0xF5, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->getStringPtr(), 0xF5, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->getStringPtr(), 0xF5, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->getStringPtr(), 0xF5, 0, NULL, NULL);
     field_0x26a = 156;
     field_0x1ac = field_0x10->search('Paccur02')->getBounds()->i.x;
     field_0x1b0 = field_0x10->search('Paccur02')->getBounds()->i.y;
-    field_0x64 = new cls_804AF86C;
-    field_0x64->fn_80402F04(field_0x10->search('Pthabb07'));
-    field_0x68[0] = new cls_804AF86C;
-    field_0x68[0]->fn_80402F04(field_0x10->search('Pstrb14'));
-    field_0x68[1] = new cls_804AF86C;
-    field_0x68[1]->fn_80402F04(field_0x10->search('Pstrb24'));
-    field_0x68[2] = new cls_804AF86C;
-    field_0x68[2]->fn_80402F04(field_0x10->search('Pstrb34'));
-    field_0x68[3] = new cls_804AF86C;
-    field_0x68[3]->fn_80402F04(field_0x10->search('Pstrb44'));
+    field_0x64 = new PaneCtrl_804AF86C;
+    field_0x64->setPane_80402F04(field_0x10->search('Pthabb07'));
+    field_0x68[0] = new PaneCtrl_804AF86C;
+    field_0x68[0]->setPane_80402F04(field_0x10->search('Pstrb14'));
+    field_0x68[1] = new PaneCtrl_804AF86C;
+    field_0x68[1]->setPane_80402F04(field_0x10->search('Pstrb24'));
+    field_0x68[2] = new PaneCtrl_804AF86C;
+    field_0x68[2]->setPane_80402F04(field_0x10->search('Pstrb34'));
+    field_0x68[3] = new PaneCtrl_804AF86C;
+    field_0x68[3]->setPane_80402F04(field_0x10->search('Pstrb44'));
     field_0x78 = lbl_8053AED8->field_0x8;
     const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti");
     lbl_8053AED8->fn_80440D78(tex);

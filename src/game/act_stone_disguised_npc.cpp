@@ -24,17 +24,17 @@ void NPCDisguisedAsAStone_804A8750::vfunc_0x24() {
         pos.z = 0.0f;
         fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
     } else if (mPos.z < 0.0f && fn_8022461C(&mPos, field_0x4) == 0xD) {
-        fn_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
     } else {
-        fn_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x8D, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8D, 1, 0, NULL, NULL, true, 1.0f);
     }
-    fn_801F0E34(0x30003, 0);
+    startSound_801F0E34(0x30003, 0);
     mAlive = false;
 }
 
 void NPCDisguisedAsAStone_804A8750::draw() {
-    fn_801F06F0("enemy_both2_sob.bin", 0x29, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_both2_sob.bin", 0x29, NULL, 0, 1.0f, 1.0f);
 }
 
 void NPCDisguisedAsAStone_804A8750::update() {
@@ -68,8 +68,8 @@ void NPCDisguisedAsAStone_804A8750::update() {
         break;
     }
     case 1:
-        fn_801F71A4(&field_0x3c.x, field_0x234, 0.3f, 1.0f);
-        fn_801F71A4(&field_0x3c.y, field_0x238, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.x, field_0x234, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x238, 0.3f, 1.0f);
         mPos.add(field_0x3c);
         if (mPos.z > 0.0f) {
             field_0x3c.z -= 0.3f;
@@ -98,9 +98,9 @@ void NPCDisguisedAsAStone_804A8750::update() {
         normalize(dir);
         field_0x234 = dir.x * field_0x244;
         field_0x238 = dir.y * field_0x244;
-        fn_801F71A4(&field_0x3c.x, field_0x234, 0.3f, field_0x240);
-        fn_801F71A4(&field_0x3c.y, field_0x238, 0.3f, field_0x240);
-        fn_801F71A4(&field_0x240, 1.0f, 0.1f, 0.1f);
+        addCalc2_801F71A4(&field_0x3c.x, field_0x234, 0.3f, field_0x240);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x238, 0.3f, field_0x240);
+        addCalc2_801F71A4(&field_0x240, 1.0f, 0.1f, 0.1f);
         field_0x3c.z -= 0.1f;
         mPos.add(field_0x3c);
         JGeometry::TVec3f savedPos(mPos);

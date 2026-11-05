@@ -19,7 +19,7 @@ void Fairy_804A03B8::draw() {
             params.field_0x10.mColor.a = (u8)field_0x270;
             params.field_0x30 = 0x11;
         }
-        fn_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 1, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 1, 1.0f, 1.0f);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 1);
     } else {
         s32 frame = 0x5E;
@@ -91,15 +91,15 @@ void Fairy_804A03B8::init() {
             lbl_80529DEC.field_0x24f = 0x63;
         }
         field_0x23c = 30;
-        fn_801F0E34(0x400E5, 0);
+        startSound_801F0E34(0x400E5, 0);
         field_0x230 = 5;
     }
     if ((field_0x90 >> 27) != 0 && !vfunc_0x34()) {
         field_0xb0 = 0;
         return;
     }
-    mEmitter290 = fn_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
-    mEmitter294 = fn_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter290 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter294 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
     if (field_0x230 == 0 || field_0x230 == 5) {
         if (lbl_8053AAF8->field_0x7f == 1) {
             SaveRow_8050EC80& row = lbl_8050EC80[lbl_8050EC80[0].field_0x10];

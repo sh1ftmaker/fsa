@@ -25,7 +25,7 @@ void Bumper_804A0260::draw() {
     JGeometry::TVec3f rot(0.0f, angle, 0.0f);
     setRotScaleMtx(mtx, rot, 1.0f);
     params.mMtx = mtx;
-    fn_801F06F0("enemy_gc_sob.bin", field_0x258 + 0x70, &params, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x258 + 0x70, &params, 0, 1.0f, 1.0f);
 }
 
 // FIXME: 95.76 %. The original keeps `this` in r28 (ours r29), so the loop
@@ -124,7 +124,7 @@ void Bumper_804A0260::update() {
             fn_802378AC(touchPlayer, &c);
         }
         if (field_0x230 != 1) {
-            fn_801F0E34(0x30012, 0);
+            startSound_801F0E34(0x30012, 0);
             field_0x230 = 1;
         }
     }
@@ -163,8 +163,8 @@ void Bumper_804A0260::update() {
             }
             field_0x98 ^= 1;
         }
-        fn_801F71A4(&field_0x3c.x, field_0x260, 0.3f, 1.0f);
-        fn_801F71A4(&field_0x3c.y, field_0x264, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.x, field_0x260, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x264, 0.3f, 1.0f);
         mPos += field_0x3c;
         break;
     case 2:

@@ -10,10 +10,10 @@ static inline bool inBox(const JGeometry::TBox2f* b, const JGeometry::TVec3f& p)
 
 void cls_804A5038::update() {
     mPos += field_0x3c;
-    fn_8013CB44(mEmitter2a8, &mPos, 0, 0, true);
-    fn_8013CB44(mEmitter2ac, &mPos, 0, 0, true);
+    setEmitterPos_8013CB44(mEmitter2a8, &mPos, 0, 0, true);
+    setEmitterPos_8013CB44(mEmitter2ac, &mPos, 0, 0, true);
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     bool inside = inBox(box, mPos);
     if (!inside) {
@@ -33,8 +33,8 @@ void cls_804A5038::init() {
     mFlags |= 0x300;
     field_0x114 = 2;
     field_0x194 = 1;
-    mEmitter2a8 = fn_8013CC50(field_0x4, &mPos, 0x256, 0, 0, NULL, NULL, true, 1.0f);
-    mEmitter2ac = fn_8013CC50(field_0x4, &mPos, 0x257, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2a8 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x256, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2ac = spawnEmitter_8013CC50(field_0x4, &mPos, 0x257, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 cls_804A5038::~cls_804A5038() {

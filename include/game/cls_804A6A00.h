@@ -10,11 +10,11 @@
 // derived destructors inline its destructor (vtable store, then EnemyBase's).
 // Named after its vtable. Only the members the written code uses are
 // declared; the code is in game/tu_80220F54.cpp (not written yet).
-class cls_804A6A00 : public EnemyBase_804A4808 {
+class ShadowLinkBase_804A6A00 : public EnemyBase_804A4808 {
 public:
     // 0x802218C8.
-    cls_804A6A00();
-    virtual ~cls_804A6A00() {}
+    ShadowLinkBase_804A6A00();
+    virtual ~ShadowLinkBase_804A6A00() {}
     // 0x802217C8: EnemyBase::init, then the boxes, mFlags |= 0x300, mLife
     // 1000 and the fields below from field_0x90.
     /* 0x0C */ virtual void init();

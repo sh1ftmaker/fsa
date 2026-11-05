@@ -16,7 +16,7 @@ static inline T clamp(T value, T min, T max) {
 }
 
 // FIXME: 99.9. calcCel's loop costs fn_801D1C18 (99.85 %), fn_801D1D60 (99.89 %),
-// fn_801D1F14 (99.87 %) and fn_801D22DC (99.88 %) the same difference: the target
+// fn_801D1F14 (99.87 %) and startAnim_801D22DC (99.88 %) the same difference: the target
 // stores the int-to-float temporary's low word (the xoris result) before its high
 // word (0x43300000) for `start`. Only scheduling.
 inline void SpriteAnim_801D267C::calcCel() {
@@ -119,7 +119,7 @@ bool SpriteAnim_801D267C::fn_801D21F0() {
 bool SpriteAnim_801D267C::fn_801D2264(s32 anim, s32 mode) {
     bool result = false;
     if (mAnim != anim) {
-        fn_801D22DC(anim, mode, true);
+        startAnim_801D22DC(anim, mode, true);
         result = true;
     }
     return result;
@@ -128,13 +128,13 @@ bool SpriteAnim_801D267C::fn_801D2264(s32 anim, s32 mode) {
 bool SpriteAnim_801D267C::fn_801D22A0(s32 anim, s32 mode) {
     bool result = false;
     if (mAnim != anim) {
-        fn_801D22DC(anim, mode, false);
+        startAnim_801D22DC(anim, mode, false);
         result = true;
     }
     return result;
 }
 
-void SpriteAnim_801D267C::fn_801D22DC(s32 anim, s32 mode, bool keepFrame) {
+void SpriteAnim_801D267C::startAnim_801D22DC(s32 anim, s32 mode, bool keepFrame) {
     mAnim = anim;
     const s16* p = mTables[mAnim];
     mLength = 0;

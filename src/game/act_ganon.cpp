@@ -12,12 +12,12 @@ s32 lbl_804C1BC0[4];
 JGeometry::TVec3f lbl_804C1BD0[4];
 JGeometry::TVec3f lbl_804C1C00[4];
 
-void cls_804A25F0::vfunc_0x24() {
-    fn_801F0E34(0x40006, 0);
+void Ganon_804A25F0::vfunc_0x24() {
+    startSound_801F0E34(0x40006, 0);
     vfunc_0x28(2, 0.0f, 0.0f);
 }
 
-cls_804A25F0::~cls_804A25F0() {
+Ganon_804A25F0::~Ganon_804A25F0() {
     for (s32 i = 0; i < 5; i++) {
         fn_801EE434(mEmitters[i]);
     }
@@ -53,7 +53,7 @@ void fn_80196D70(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
 }
 
 void fn_80196D8C(s32 index, bool flag, f32 a, f32 b) {
-    fn_802D6A9C()->fn_802D79E8(index, a, b, flag);
+    getGameView_802D6A9C()->fn_802D79E8(index, a, b, flag);
 }
 
 u8 fn_80196DF0() {

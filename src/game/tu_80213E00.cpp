@@ -36,7 +36,7 @@ void cls_804A6400::init() {
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
     mAnim.fn_801D2608(lbl_8053A180, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
 }
 
 cls_804A6400::cls_804A6400() {}

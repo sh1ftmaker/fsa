@@ -18,7 +18,7 @@ void cls_8049E848::update() {
         }
         s32 bit = field_0x244;
         if (bit != 0) {
-            if (fn_802D6A9C()->fn_802D800C(bit)) {
+            if (getGameView_802D6A9C()->fn_802D800C(bit)) {
                 field_0x238 = field_0x23c;
             }
         }

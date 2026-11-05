@@ -37,8 +37,8 @@ void cls_80217F80::fn_8021775C(f32 t) {
     } else {
         pos.z = (1.0f / t) * (from.z - pos.z) + pos.z;
     }
-    fn_8013CB44(mEmitters[4], &pos, 1, 1, true);
-    fn_8013CB44(mEmitters[5], &pos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[4], &pos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[5], &pos, 1, 1, true);
 }
 
 // FIXME: 90.63 %. Same as fn_8021775C: the original hoists the from.y and from.z
@@ -61,13 +61,13 @@ void cls_80217F80::fn_80217874(f32 t) {
     } else {
         pos.z = (1.0f / t) * (from.z - pos.z) + pos.z;
     }
-    fn_8013CB44(mEmitters[2], &pos, 1, 1, true);
-    fn_8013CB44(mEmitters[3], &pos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[2], &pos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[3], &pos, 1, 1, true);
 }
 
 void cls_80217F80::fn_8021798C() {
-    fn_8013CB44(mEmitters[0], &mOwner->mPos, 1, 1, true);
-    fn_8013CB44(mEmitters[1], &mOwner->mPos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[0], &mOwner->mPos, 1, 1, true);
+    setEmitterPos_8013CB44(mEmitters[1], &mOwner->mPos, 1, 1, true);
 }
 
 void cls_80217F80::fn_802179EC() {
@@ -93,13 +93,13 @@ void cls_80217F80::fn_80217A74() {
 
 void cls_80217F80::fn_80217AB8() {
     if (mEmitters[4] == NULL) {
-        mEmitters[4] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x224, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[4] = spawnEmitter_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x224, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[4] != NULL) {
             mEmitters[4]->setGlobalScale(lbl_804CD838);
         }
     }
     if (mEmitters[5] == NULL) {
-        mEmitters[5] = fn_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x225, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[5] = spawnEmitter_8013CC50(mOwner->field_0x5fc, &mOwner->field_0x60c, 0x225, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[5] != NULL) {
             mEmitters[5]->setGlobalScale(lbl_804CD838);
         }
@@ -110,13 +110,13 @@ void cls_80217F80::fn_80217AB8() {
 // takes &mPos before the layer; ours loads it into r4.
 void cls_80217F80::fn_80217BC8() {
     if (mEmitters[2] == NULL) {
-        mEmitters[2] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x22F, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[2] = spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x22F, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[2] != NULL) {
             mEmitters[2]->setGlobalScale(lbl_804CD838);
         }
     }
     if (mEmitters[3] == NULL) {
-        mEmitters[3] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x230, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[3] = spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x230, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[3] != NULL) {
             mEmitters[3]->setGlobalScale(lbl_804CD838);
         }
@@ -127,13 +127,13 @@ void cls_80217F80::fn_80217BC8() {
 // takes &mPos before the layer; ours loads it into r4.
 void cls_80217F80::fn_80217CD8() {
     if (mEmitters[0] == NULL) {
-        mEmitters[0] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x228, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[0] = spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x228, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[0] != NULL) {
             mEmitters[0]->setGlobalScale(lbl_804CD838);
         }
     }
     if (mEmitters[1] == NULL) {
-        mEmitters[1] = fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x229, 1, 1, NULL, NULL, true, 1.0f);
+        mEmitters[1] = spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x229, 1, 1, NULL, NULL, true, 1.0f);
         if (mEmitters[1] != NULL) {
             mEmitters[1]->setGlobalScale(lbl_804CD838);
         }
@@ -144,9 +144,9 @@ void cls_80217F80::fn_80217CD8() {
 // and reloads mOwner into r6 for the second spawn; ours differs in registers.
 void cls_80217F80::fn_80217DE8() {
     JPABaseEmitter* emitter =
-        fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x231, 1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x231, 1, 1, NULL, NULL, true, 1.0f);
     JPABaseEmitter* emitter2 =
-        fn_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x232, 1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(mOwner->field_0x4, &mOwner->mPos, 0x232, 1, 1, NULL, NULL, true, 1.0f);
     if (emitter != NULL) {
         emitter->setGlobalScale(lbl_804CD838);
     }
@@ -161,7 +161,7 @@ void cls_80217F80::fn_80217ED4() {
     const JGeometry::TVec3f* pos = &owner->mPos;
     for (s32 i = 0; i < 6; i++) {
         JPABaseEmitter* emitter =
-            fn_8013CC50(owner->field_0x4, pos, lbl_8046A5A0[i], 1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(owner->field_0x4, pos, lbl_8046A5A0[i], 1, 1, NULL, NULL, true, 1.0f);
         if (emitter != NULL) {
             emitter->setGlobalScale(lbl_804CD838);
         }

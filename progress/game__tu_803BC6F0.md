@@ -30,7 +30,7 @@ fn_803CE4B0 (boot path). .bss 100 % (@814..@822 + 9 weak memPool copies).
 - .data: @663..@702 split; lbl_804AFD70 is 0x1E0 (scope local), lbl_804AFF50
   (0x10: 00010003 00010003 00010000 00020000) unreferenced, owner unknown.
   Our vtable and jump tables come out after the jump tables / weak
-  cls_804AF86C vtable, target has lbl_804AFF50, vtable, jump tables.
+  PaneCtrl_804AF86C vtable, target has lbl_804AFF50, vtable, jump tables.
 - Jump tables renamed @979 (fn_803CE11C) / @1109 (fn_803CE9EC): the numbers
   move whenever a function is added before them; re-check with nm.
 - .rodata 0x804765D0-0x80476F20 not split yet except lbl_80476938 (u64[9]
@@ -58,7 +58,7 @@ object's class?).
   fn_803B9BDC()->s32, fn_803B9C5C()->s32, fn_803B9DDC(); fields 0x1FF4 u8
   (card channel), 0x1FF5 u8, 0x1FF8 u64 (CARDGetSerialNo serial).
 - GameGlobals.h cls_804B1634: fn_80431174(u8), fn_804317AC()/fn_80431740() -> BOOL.
-- GameState.h cls_804AF86C::fn_80402628(s16, u8, u8) -> bool.
+- GameState.h PaneCtrl_804AF86C::fn_80402628(s16, u8, u8) -> bool.
 - tu_80379F84.h SaveRow_8050EC80: u64 field_0x8 (row 0: card serial).
 - symbols.txt: renamed the placeholders above to their mangled names.
 
@@ -108,7 +108,7 @@ code), 0.0 and the two doubles; -200 / 200 are used only by fn_803C24BC,
 fn_803CD75C, fn_803CE9EC, fn_803CF504 (200 only by fn_803CE9EC). So writing
 fn_803BC6F0 alone won't put -200 / 200 ahead of its doubles: something
 compiled before it uses 0, -200, 200 in that order. An in-class inline
-(`field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f)`) used from fn_803CE9EC
+(`field_0x58->moveFromCentre_80402E08(0.0f, 200.0f * t + -200.0f)`) used from fn_803CE9EC
 did NOT move them (literals are pooled at use, not at parse). Open question.
 
 ### Next
@@ -154,7 +154,7 @@ Written (all try.py-checked):
   const copy, default+assign (worse), (GXColor) cast (worse, bytewise). Group 2's 5th call is a plain one (only 1 and 3
   rebuild black with alpha 0xFF).
 - fn_803CD2DC 99.83 reloc-name (instructions identical): state 5, picking a file.
-Proved: file-static inlines setRowAlphas / setTabAlphas (13 fn_804023D0 calls per row half; the target caches `file` in a
+Proved: file-static inlines setRowAlphas / setTabAlphas (13 setAlpha_804023D0 calls per row half; the target caches `file` in a
 register across them in fn_803CB3DC, so they are a helper with a `file` parameter; used by fn_803C24BC, fn_803CF504,
 fn_803CB3DC with identical code); hasSaveData(file) (`u8 bit = 1 << file`, the clrlwi before the and., 7 call sites);
 fn_803BF9C4 / fn_803C1734 are FileSelect members (this in r3).

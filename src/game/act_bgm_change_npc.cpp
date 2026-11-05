@@ -12,7 +12,7 @@ void BGMChangeNPC_804A9DA0::init() {
     field_0x23c = ((field_0x90 >> 17) & 0x1F) + 1;
     field_0x240 = (field_0x90 >> 12) & 0x1F;
     field_0x250 = (field_0x90 >> 7) & 1;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     field_0x248 = view->field_0x34;
     f32 halfH = 16.0f * field_0x23c;
     f32 halfW = 16.0f * field_0x238;

@@ -22,7 +22,7 @@ __sinit (PTMF state tables). .rodata, .bss, .sdata2 100 %.
 
 ## Data
 .data: the vtable is followed by 0xC zero bytes (lbl_804B0694), most likely
-the dropped weak copy of __vt__12cls_804AF86C (ours emits it before our
+the dropped weak copy of __vt__17PaneCtrl_804AF86C (ours emits it before our
 vtable, so .data is 97 %).
 
 ## SHARED-EDITS
@@ -33,7 +33,7 @@ vtable, so .data is 97 %).
 - include/game/GameGlobals.h: class cls_804AF860 (ctor fn_803A7898 renamed
   __ct__12cls_804AF860Fv, 0x84 bytes from __nw__); cls_804A8578::fn_802B1558
   (renamed fn_802B1558__12cls_804A8578Fv, r3 = lbl_8053ACA8);
-  Unk_8045A080::fn_80457F80(JAISoundID, s8) (renamed ...F10JAISoundIDSc);
+  AudioMgr_8045A080::fn_80457F80(JAISoundID, s8) (renamed ...F10JAISoundIDSc);
   forward decl of JAISoundID.
 - libs/sdk/include: OSSetBootDol (OSReset.h), __PADDisableRecalibration (pad.h)
   SDK prototypes.

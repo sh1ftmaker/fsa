@@ -16,7 +16,7 @@ void NPCRideSwitch_804AD220::draw() {}
 void NPCRideSwitch_804AD220::update() {
     s32 serial = fn_801F2718(ACTOR_MRTA);
     if (serial >= 0) {
-        Log_804ACD70* log = static_cast<Log_804ACD70*>(fn_801F856C()->fn_801F666C(serial));
+        Log_804ACD70* log = static_cast<Log_804ACD70*>(fn_801F856C()->findActorBySerial_801F666C(serial));
         if (log != NULL && log->isAtRest() == true) {
             // Pressed: a log at rest lies within 4 units of this actor's centre.
             f32 x0 = log->mBox.i.x + log->mPos.x;

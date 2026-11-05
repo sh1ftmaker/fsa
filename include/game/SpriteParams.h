@@ -2,7 +2,7 @@
 #define GAME_SPRITEPARAMS_H
 
 // SpriteParams_801F5AE0, moved out of game/ActorBase.h so that game/Map.h
-// (cls_804AA858's sprite queues embed it) can use it without ActorBase.h.
+// (TileMap_804AA858's sprite queues embed it) can use it without ActorBase.h.
 
 #include "types.h"
 #include "dolphin/mtx.h"
@@ -20,7 +20,7 @@ union SpriteParamsColor_801F5AE0 {
 // named after the constructor it is inlined into, ActorBase's at
 // 0x801F5AE0). One lives in every actor at 0x120, and draw() overrides
 // build others on the stack (act_rat 0x800F3C70: the same stores in the same
-// order) to pass to the "SOB " sprite functions (fn_801F06F0, fn_801F02BC,
+// order) to pass to the "SOB " sprite functions (drawSprite_801F06F0, fn_801F02BC,
 // fn_801EFD34, fn_801EF830, fn_801EF574), which NULL-check it and read
 // 0x13, 0x18, 0x1C and 0x1D (fn_801EF830, 0x801EFA64-0x801EFBB0). The
 // constructor sets 0x10 and 0x14 and then again after filling the table (the

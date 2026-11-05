@@ -9,7 +9,7 @@ static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec2f&
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
 }
 
-u8 Camera_804AA9E4::fn_8030C210(const JGeometry::TVec3f* pos) {
+u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
     s32 result = 0;
     s32 count = field_0x7f0;
     if (count < 0x80) {
@@ -29,11 +29,11 @@ u8 Camera_804AA9E4::fn_8030C210(const JGeometry::TVec3f* pos) {
 void Camera_804AA9E4::fn_8030C85C() {
     field_0x1e8 = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (lbl_8053AB10->field_0x20->field_0x235c[i]) {
-            lbl_8053AB10->field_0x20->field_0x2360[i] = 0;
+        if (gGameRoot2_8053AB10->field_0x20->field_0x235c[i]) {
+            gGameRoot2_8053AB10->field_0x20->field_0x2360[i] = 0;
         }
     }
-    fn_802D6A9C()->fn_802DCDF4();
+    getGameView_802D6A9C()->fn_802DCDF4();
     field_0x154.set(field_0x190);
     field_0x1b4.i.y = 0.0f;
     field_0x1b4.i.x = 0.0f;

@@ -53,7 +53,7 @@ void cls_804A6B70::vfunc_0x90(u8 mapHit) {
         if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
             fn_80222668(6);
         } else if (mStateTimer == 25) {
-            fn_801F0E34(0x400c6, 0);
+            startSound_801F0E34(0x400c6, 0);
         }
         break;
     case 6:
@@ -82,17 +82,17 @@ void cls_804A6B70::fn_80222668(s32 state) {
     switch (state) {
     case 3:
         field_0x250 = 120;
-        mAnim.fn_801D22DC(field_0x98, 0, false);
+        mAnim.startAnim_801D22DC(field_0x98, 0, false);
         break;
     case 5:
-        mAnim.fn_801D22DC(0x1b, 0, false);
+        mAnim.startAnim_801D22DC(0x1b, 0, false);
         break;
     case 6:
         fn_80222730();
         mShots++;
         break;
     case 7:
-        mAnim.fn_801D22DC(field_0x98, 0, false);
+        mAnim.startAnim_801D22DC(field_0x98, 0, false);
         break;
     }
     mStateTimer = 0;
@@ -106,7 +106,7 @@ void cls_804A6B70::fn_80222668(s32 state) {
 // order differs too (32.0f before 64.0f here).
 void cls_804A6B70::fn_80222730() {
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
     f32 half = 0.5f * (box.f.x - box.i.x);
     f32 bottom = box.i.y - 32.0f;
@@ -117,7 +117,7 @@ void cls_804A6B70::fn_80222730() {
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_OKTM, field_0x4, &pos, 5, -1, -1);
         if (serial >= 0) {
             OctorokRock_8049F5D8* rock =
-                static_cast<OctorokRock_8049F5D8*>(fn_801F856C()->fn_801F666C(serial));
+                static_cast<OctorokRock_8049F5D8*>(fn_801F856C()->findActorBySerial_801F666C(serial));
             if (rock != NULL) {
                 rock->field_0x98 = 2;
                 JGeometry::TVec3f vel;
@@ -134,14 +134,14 @@ void cls_804A6B70::fn_80222730() {
 }
 
 void cls_804A6B70::init() {
-    cls_804A6A00::init();
+    ShadowLinkBase_804A6A00::init();
     field_0x98 = 2;
     mState = 4;
     mStateTimer = 0;
     field_0x250 = -1;
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
+    mAnim.startAnim_801D22DC(2, 0, false);
 }
 
 cls_804A6B70::cls_804A6B70() {

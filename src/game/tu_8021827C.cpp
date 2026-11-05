@@ -21,7 +21,7 @@ void cls_804A51E4::vfunc_0xA0() {
         return;
     }
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     if (box->i.y < mPos.y && mPos.y < box->f.y) {
         f32 left = mPos.x;
@@ -37,7 +37,7 @@ void cls_804A51E4::vfunc_0xA0() {
         if (inside) {
             JGeometry::TVec3f screen;
             fn_801CE010(&screen);
-            lbl_8053AB10->field_0x24->fn_8030C210(&screen);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&screen);
         }
     }
 }
@@ -62,7 +62,7 @@ void cls_804A51E4::fn_8021835C() {
             visible = true;
         }
     } else {
-        if (lbl_8053AB10->field_0x24->fn_8030C2A8(&a) && lbl_8053AB10->field_0x24->fn_8030C2A8(&b)) {
+        if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&a) && gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&b)) {
             visible = true;
         }
     }
@@ -70,9 +70,9 @@ void cls_804A51E4::fn_8021835C() {
         if (!(mFlags & TINK_FLAG_ENTER_SOUND_PLAYED) && !(mFlags & 0x4000)) {
             if (!fn_801E1DE8()) {
                 if (mFlags & 0x20000) {
-                    fn_801F0E34(0x5001C, 0);
+                    startSound_801F0E34(0x5001C, 0);
                 } else {
-                    fn_801F0E34(0x50018, 0);
+                    startSound_801F0E34(0x50018, 0);
                 }
             }
             mFlags |= TINK_FLAG_ENTER_SOUND_PLAYED;
@@ -81,7 +81,7 @@ void cls_804A51E4::fn_8021835C() {
                (mFlags & 0x4000) && !(mFlags & 0x80000) &&
                mTargetSerial >= 0) {
         if (!fn_801E1DE8()) {
-            fn_801F0E34(0x5001B, 0);
+            startSound_801F0E34(0x5001B, 0);
         }
         mFlags |= TINK_FLAG_LEAVE_SOUND_PLAYED;
     }
@@ -116,7 +116,7 @@ bool cls_804A51E4::fn_80218538() const {
             result = true;
         }
     } else {
-        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
         bool inView = false;
         JGeometry::TVec3f a(box.i.x, box.i.y, 0.0f);
         if (camera->fn_8030C2A8(&a)) {

@@ -85,7 +85,7 @@ public:
 }; // Size: 0x48
 
 // The member at 0x448 of Vaati, defined in game/tu_8021775C.cpp. Six particle
-// emitters from fn_8013CC50, freed with fn_801EE434, and the owner (Vaati) at
+// emitters from spawnEmitter_8013CC50, freed with fn_801EE434, and the owner (Vaati) at
 // 0x18. The constructor (0x80218020) clears all seven words; named after the
 // destructor 0x80217F80, as there is no vtable.
 class VaatiBoss_804A4958;
@@ -215,7 +215,7 @@ public:
     /* 0x5CF */ u8 field_0x5cf[0x5D1 - 0x5CF]; // not yet known
     /* 0x5D1 */ u8 field_0x5d1;
     /* 0x5D2 */ u8 field_0x5d2[0x5FC - 0x5D2]; // not yet known
-    /* 0x5FC */ s32 field_0x5fc; // effect layer (fn_8013CC50's first argument)
+    /* 0x5FC */ s32 field_0x5fc; // effect layer (spawnEmitter_8013CC50's first argument)
     /* 0x600 */ JGeometry::TVec3f field_0x600; // not yet known
     /* 0x60C */ JGeometry::TVec3f field_0x60c; // not yet known, an effect position
 }; // Size: 0x618 (the spawner's __nw__, li r3 0x618 before the 0x801FC280 ctor call)

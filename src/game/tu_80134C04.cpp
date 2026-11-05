@@ -84,7 +84,7 @@ void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
 }
 
-// Whether the pause fade object (lbl_8053AB10->0x2C) is idle, while paused.
+// Whether the pause fade object (gGameRoot2_8053AB10->0x2C) is idle, while paused.
 u8 GameRoot_8049EF20::fn_80134CC8() {
     bool paused;
     if (field_0x4c == 11) {
@@ -93,7 +93,7 @@ u8 GameRoot_8049EF20::fn_80134CC8() {
         paused = field_0x88 == 2;
     }
     if (paused) {
-        return lbl_8053AB10->field_0x2c->field_0xc == 0;
+        return gGameRoot2_8053AB10->field_0x2c->field_0xc == 0;
     }
     return false;
 }
@@ -158,18 +158,18 @@ void GameRoot_8049EF20::fn_80135020(s32 mode) {
     case 7:
         if (field_0x4 == NULL) {
             field_0x4 = new (field_0x98, 0) GameRootSub04_801F856C(field_0x98);
-            lbl_8053AB10->fn_8013BE04();
-            // The original loads both values before fn_802D6A9C() (level first).
+            gGameRoot2_8053AB10->fn_8013BE04();
+            // The original loads both values before getGameView_802D6A9C() (level first).
             if (lbl_8053AAF8->field_0x7f != 0) {
                 s32 level = lbl_80529DEC.field_0x11c;
                 s32 stage = lbl_80529DEC.field_0x118;
-                GameView_804A9950* view = fn_802D6A9C();
+                GameView_804A9950* view = getGameView_802D6A9C();
                 view->field_0x4 = stage;
                 view->field_0x8 = level;
             } else {
                 s32 level = lbl_80529DEC.field_0x12c;
                 s32 stage = lbl_80529DEC.field_0x128;
-                GameView_804A9950* view = fn_802D6A9C();
+                GameView_804A9950* view = getGameView_802D6A9C();
                 view->field_0x4 = stage;
                 view->field_0x8 = level;
             }
@@ -316,7 +316,7 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
         }
         break;
     case 12:
-        fn_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
         fn_801352F4(1);
         fn_801352F4(2);
         fn_801352F4(3);
@@ -522,12 +522,12 @@ s32 GameRoot_8049EF20::fn_80138A30() {
 
 bool fn_80138AB0() {
     if (lbl_8053AAF8->field_0x7e == 1) {
-        if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(1)) &&
-            lbl_8053AD30->fn_8030A308(fn_8030AAF4(2)) && lbl_8053AD30->fn_8030A308(fn_8030AAF4(3)))
+        if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(1)) &&
+            lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(2)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(3)))
         {
             return true;
         }
-    } else if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+    } else if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
         return true;
     }
     return false;
@@ -535,8 +535,8 @@ bool fn_80138AB0() {
 
 // Starts the music of the current stage (GameView_804A9950::field_0x34).
 void GameRoot_8049EF20::fn_80138B7C() {
-    s32 count = fn_802D6A9C()->field_0x1328c;
-    s32 id = fn_802D6A9C()->field_0x34;
+    s32 count = getGameView_802D6A9C()->field_0x1328c;
+    s32 id = getGameView_802D6A9C()->field_0x34;
     if (id == 0x11) {
         return;
     }
@@ -545,7 +545,7 @@ void GameRoot_8049EF20::fn_80138B7C() {
             field_0xa0->fn_80458F04(lbl_804652F0[id]);
         } else {
             field_0xa0->fn_80458FF0(lbl_804652F0[id], false, count);
-            GameView_804A9950* view = fn_802D6A9C();
+            GameView_804A9950* view = getGameView_802D6A9C();
             view->field_0x1328c = count + 1;
         }
     } else if (id != 0x19) {
@@ -566,7 +566,7 @@ void GameRoot_8049EF20::fn_80138B7C() {
 // ours numbers 50.0f before get_ufloat_1's 1.0f (the original pools 1.0f first).
 void GameRoot_8049EF20::fn_80138C9C() {
     field_0xa0->field_0x5 = 4;
-    lbl_8053AB10->fn_8013BE04();
+    gGameRoot2_8053AB10->fn_8013BE04();
     field_0x10->fn_802ACB58();
     fn_80119DD0()->fn_80119D48();
     fn_8011921C()->fn_801190E4();
@@ -602,7 +602,7 @@ void GameRoot_8049EF20::fn_80138C9C() {
     field_0xff = 0;
     field_0xf0 = 0.0f;
     field_0x86 = (s32)(50.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 1;
-    field_0xf4 = fn_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
+    field_0xf4 = getMessageText_803832BC(field_0xc8, 0x42, 0, NULL, NULL);
     strcpy(field_0xc4->getStringPtr(), field_0xc8);
     strcpy(field_0xc0->getStringPtr(), field_0xc8);
 }
@@ -619,7 +619,7 @@ GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
     field_0xa8 = lbl_80529DEC.field_0x1c;
     field_0x98->becomeCurrentHeap();
     field_0x18 = new (field_0x98, 0) MessageManager_804AF070();
-    lbl_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
+    gGameRoot2_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
     field_0x8 = lbl_80529DEC.field_0x5c;
     field_0xc = lbl_80529DEC.field_0x60;
     field_0x10 = new (field_0x98, 0) cls_804A8390();

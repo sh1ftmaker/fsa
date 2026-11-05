@@ -69,9 +69,9 @@ void InextinguishableFlame_804A9D28::draw() {
     if (mState >= 1) {
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
-                fn_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
                 drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), 32.0f);
                 pos.y += 16.0f;
             }
@@ -105,9 +105,9 @@ void InextinguishableFlame_804A9D28::update() {
         s32 n = 0;
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
-                mEmitters[0][n] = fn_8013CC50(field_0x4, &grid, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[1][n] = fn_8013CC50(field_0x4, &grid, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[2][n] = fn_8013CC50(field_0x4, &grid, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
+                mEmitters[0][n] = spawnEmitter_8013CC50(field_0x4, &grid, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[1][n] = spawnEmitter_8013CC50(field_0x4, &grid, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[2][n] = spawnEmitter_8013CC50(field_0x4, &grid, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
                 grid.y += 16.0f;
                 n++;
             }
@@ -140,12 +140,12 @@ void InextinguishableFlame_804A9D28::update() {
         break;
     case 2:
         if (field_0x94 == 2 || (mKind == 2 && vfunc_0x34() == true)) {
-            fn_802D6A9C()->fn_802D8050(mViewBit, true, 0xFF);
+            getGameView_802D6A9C()->fn_802D8050(mViewBit, true, 0xFF);
             vfunc_0x54();
             s32 n = 0;
             for (s32 i = 0; i < mCountX; i++) {
                 for (s32 j = 0; j < mCountY; j++) {
-                    mEmitters[0][n] = fn_8013CC50(field_0x4, &pos, 0x4f2, 1, 0, NULL, NULL, true, 1.0f);
+                    mEmitters[0][n] = spawnEmitter_8013CC50(field_0x4, &pos, 0x4f2, 1, 0, NULL, NULL, true, 1.0f);
                     n++;
                     pos.y += 16.0f;
                 }
@@ -206,7 +206,7 @@ void InextinguishableFlame_804A9D28::update() {
         if (mTimer == 0) {
             vfunc_0x24();
         } else if (mTimer == 0x34) {
-            fn_801F0E34(0x30061, 0);
+            startSound_801F0E34(0x30061, 0);
         }
         break;
     case 6:
@@ -263,9 +263,9 @@ void InextinguishableFlame_804A9D28::init() {
         s32 n = 0;
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
-                fn_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[2][n] = fn_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[2][n] = spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
                 pos.y += 16.0f;
                 n++;
             }

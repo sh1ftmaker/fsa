@@ -16,7 +16,7 @@ static const s16* lbl_804A3A58[4] = {lbl_80469138, lbl_80469144, lbl_80469150, l
 Rope_804A3A68::~Rope_804A3A68() {}
 
 void Rope_804A3A68::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xB5, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xB5, NULL, 0, 1.0f, 1.0f);
 }
 
 // FIXME: 98.8 %. Regalloc only: the original loads mSpeed into f2 and the
@@ -162,7 +162,7 @@ void Rope_804A3A68::init() {
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
     mAnim.fn_801D2608(lbl_804A3A58, 4);
-    mAnim.fn_801D22DC(field_0x98, 2, false);
+    mAnim.startAnim_801D22DC(field_0x98, 2, false);
     mAnim.fn_801D1D60();
 }
 

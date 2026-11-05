@@ -3,17 +3,17 @@
 
 #include "game/cls_804A6A00.h"
 
-// A minor Shadow Link actor (sub-base cls_804A6A00) that waits until a player
+// A minor Shadow Link actor (sub-base ShadowLinkBase_804A6A00) that waits until a player
 // is near, then hops along field_0x98 (a 16-bit direction) a few times and
 // wanders off. Code in game/act_shadow_link_jump.cpp. Named after its vtable
 // (0x804A68D0). The constructor is at 0x80220C48, the deleting destructor
 // at 0x802205E0.
-class cls_804A68D0 : public cls_804A6A00 {
+class cls_804A68D0 : public ShadowLinkBase_804A6A00 {
 public:
     cls_804A68D0();
     virtual ~cls_804A68D0();
     /* 0x0C */ virtual void init();
-    // 0x80220680: the movement step. State 2 calls cls_804A6A00's
+    // 0x80220680: the movement step. State 2 calls ShadowLinkBase_804A6A00's
     // fn_80221250; states 4 and 6 add lbl_8053EFB8 to field_0x3c.z;
     // others zero field_0x3c.xy and call vfunc_0x84.
     /* 0x88 */ virtual void vfunc_0x88();

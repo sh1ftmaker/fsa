@@ -30,10 +30,10 @@ void MagicJar_804AF018::vfunc_0x40() {
 void MagicJar_804AF018::draw() {
     if (field_0x234 >= 0x100 || !(field_0x234 & 2)) {
         if (field_0x90 == 0) {
-            fn_801F06F0("enemy_both2_sob.bin", 0x5C, NULL, 2, 1.0f, 1.0f);
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5C, NULL, 2, 1.0f, 1.0f);
             fn_803075AC(mSerial, field_0x4, &mPos, 0x5C, false, 2, -1, 0, 0, 0);
         } else {
-            fn_801F06F0("enemy_both2_sob.bin", 0x5D, NULL, 1, 1.0f, 1.0f);
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5D, NULL, 1, 1.0f, 1.0f);
             fn_803075AC(mSerial, field_0x4, &mPos, 0x5D, false, 2, -1, 0, 0, 0);
         }
     }
@@ -116,7 +116,7 @@ void MagicJar_804AF018::update() {
         }
         if (field_0x4 < 8) {
             JGeometry::TVec3f camPos(mPos.x, mPos.y - mPos.z, 0.0f);
-            lbl_8053AB10->field_0x24->fn_8030C210(&camPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
         }
     }
 }

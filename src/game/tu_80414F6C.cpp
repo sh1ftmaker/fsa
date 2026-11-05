@@ -14,7 +14,7 @@
 
 // .rodata: the pane tag tables (J2DPane::search), in address order; the
 // constructor addresses them off one base (lbl_8048CD50). The first five
-// have an alpha array of the same length in cls_804B1378 (field_0x123 ...).
+// have an alpha array of the same length in BattleStageSelect_804B1378 (field_0x123 ...).
 static const u64 lbl_8048CD50[11] = {
     'Pbsb01', 'Pbsb02', 'Pbsb03', 'Pbsb04', 'Pbsb05', 'Pbsb06',
     'Pbsb07', 'Pbsb08', 'Pbsb09', 'Pbsbk01', 'Pbsbk02',
@@ -67,17 +67,17 @@ static const s32 lbl_8048D2B0[12] = {
 };
 
 // Run each frame by fn_804170B0 (index: field_0x109).
-static cls_804B1378::StateFunc lbl_804B1354[3] = {
-    &cls_804B1378::fn_80416038,
-    &cls_804B1378::fn_80415028,
-    &cls_804B1378::fn_80414F78,
+static BattleStageSelect_804B1378::StateFunc lbl_804B1354[3] = {
+    &BattleStageSelect_804B1378::fn_80416038,
+    &BattleStageSelect_804B1378::fn_80415028,
+    &BattleStageSelect_804B1378::fn_80414F78,
 };
 
 s32 fn_80414F6C() {
     return lbl_8053AE00->field_0xe0;
 }
 
-void cls_804B1378::fn_80414F78() {
+void BattleStageSelect_804B1378::fn_80414F78() {
     switch (field_0x10a) {
     case 0:
         if (lbl_8053AEC4->fn_8042EC7C()) {
@@ -101,7 +101,7 @@ void cls_804B1378::fn_80414F78() {
 // Set the alpha of each pane of a tag table to its initial alpha (field_0x123
 // ...) times rate, clamped to [0, 1]. No out-of-line copies: inlined into
 // fn_80416038 and fn_80416BD0.
-inline void cls_804B1378::fadeCD50(f32 rate) {
+inline void BattleStageSelect_804B1378::fadeCD50(f32 rate) {
     if (rate < 0.0f) {
         rate = 0.0f;
     } else if (rate > 1.0f) {
@@ -112,7 +112,7 @@ inline void cls_804B1378::fadeCD50(f32 rate) {
     }
 }
 
-inline void cls_804B1378::fadeCDA8(f32 rate) {
+inline void BattleStageSelect_804B1378::fadeCDA8(f32 rate) {
     if (rate < 0.0f) {
         rate = 0.0f;
     } else if (rate > 1.0f) {
@@ -123,7 +123,7 @@ inline void cls_804B1378::fadeCDA8(f32 rate) {
     }
 }
 
-inline void cls_804B1378::fadeCE00(f32 rate) {
+inline void BattleStageSelect_804B1378::fadeCE00(f32 rate) {
     if (rate < 0.0f) {
         rate = 0.0f;
     } else if (rate > 1.0f) {
@@ -134,7 +134,7 @@ inline void cls_804B1378::fadeCE00(f32 rate) {
     }
 }
 
-inline void cls_804B1378::fadeCE48(f32 rate) {
+inline void BattleStageSelect_804B1378::fadeCE48(f32 rate) {
     if (rate < 0.0f) {
         rate = 0.0f;
     } else if (rate > 1.0f) {
@@ -147,7 +147,7 @@ inline void cls_804B1378::fadeCE48(f32 rate) {
 
 // The button of stage `stage`; every button uses the alphas of the first one
 // (field_0x148).
-inline void cls_804B1378::fadeStage(int stage, f32 rate) {
+inline void BattleStageSelect_804B1378::fadeStage(int stage, f32 rate) {
     if (rate < 0.0f) {
         rate = 0.0f;
     } else if (rate > 1.0f) {
@@ -161,12 +161,12 @@ inline void cls_804B1378::fadeStage(int stage, f32 rate) {
 }
 
 // The stage masks are u16 like field_0x106 (clrlwi 16 before the and / or).
-inline void cls_804B1378::setStageText() {
+inline void BattleStageSelect_804B1378::setStageText() {
     s32 stage = field_0xc * 5 + field_0x10;
     if (stage >= 10) {
         field_0x14 = 30;
         field_0x18 = 1;
-        fn_803832BC(field_0xe4, 0x109, 0, NULL, NULL);
+        getMessageText_803832BC(field_0xe4, 0x109, 0, NULL, NULL);
         strcpy(static_cast<J2DTextBox*>(mScreen->search('Tsn01'))->getStringPtr(), field_0xe4);
         strcpy(static_cast<J2DTextBox*>(mScreen->search('Tsn02'))->getStringPtr(), field_0xe4);
     } else {
@@ -174,7 +174,7 @@ inline void cls_804B1378::setStageText() {
             field_0x14 = 0;
         }
         if (field_0x106 & (u16)(1 << stage)) {
-            fn_803832BC(field_0xe4, lbl_8048D2B0[stage], 0, NULL, NULL);
+            getMessageText_803832BC(field_0xe4, lbl_8048D2B0[stage], 0, NULL, NULL);
         } else {
             field_0xe4[0] = 0;
         }
@@ -186,7 +186,7 @@ inline void cls_804B1378::setStageText() {
     }
 }
 
-void cls_804B1378::fn_80415028() {
+void BattleStageSelect_804B1378::fn_80415028() {
     s32 row = field_0xc;
     s32 col = field_0x10;
     if (field_0x1c >= 0) {
@@ -310,7 +310,7 @@ void cls_804B1378::fn_80415028() {
     }
 }
 
-void cls_804B1378::fn_80416038() {
+void BattleStageSelect_804B1378::fn_80416038() {
     u8 done0 = false;
     u8 done1 = false;
     u8 done2 = false;
@@ -402,7 +402,7 @@ void cls_804B1378::fn_80416038() {
     }
 }
 
-void cls_804B1378::fn_80416BD0() {
+void BattleStageSelect_804B1378::fn_80416BD0() {
     lbl_8053AEC4->fn_8042EB24();
     field_0x1c = -1;
     field_0x20 = 5;
@@ -417,22 +417,22 @@ void cls_804B1378::fn_80416BD0() {
         fadeStage(j, 0.0f);
     }
     for (int i = 0; i < 3; i++) {
-        field_0x28[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x28[i]->moveFromCentre_80402E08(0.0f, 300.0f);
         field_0x28[i]->field_0x22 = 0;
     }
-    field_0x34->fn_80402E08(0.0f, -100.0f);
+    field_0x34->moveFromCentre_80402E08(0.0f, -100.0f);
     field_0x34->field_0x22 = 0;
-    field_0x38->fn_80402E08(0.0f, -200.0f);
+    field_0x38->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x38->field_0x22 = 0;
     for (int i = 0; i < 10; i++) {
-        field_0x3c[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x3c[i]->moveFromCentre_80402E08(0.0f, 300.0f);
         field_0x3c[i]->field_0x22 = 0;
-        field_0x6c[i]->fn_80402E08(0.0f, 300.0f);
+        field_0x6c[i]->moveFromCentre_80402E08(0.0f, 300.0f);
         field_0x6c[i]->field_0x22 = 0;
     }
-    field_0x9c->fn_80402E08(0.0f, 300.0f);
+    field_0x9c->moveFromCentre_80402E08(0.0f, 300.0f);
     field_0x9c->field_0x22 = 0;
-    field_0xa0->fn_80402E08(0.0f, -200.0f);
+    field_0xa0->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0xa0->field_0x22 = 0;
     mScreen->search('Pscur01')->hide();
     mScreen->search('Pscur02')->hide();
@@ -442,17 +442,17 @@ void cls_804B1378::fn_80416BD0() {
     field_0xe0 = 6;
 }
 
-void cls_804B1378::fn_804170B0() {
+void BattleStageSelect_804B1378::fn_804170B0() {
     (lbl_8053AE00->*lbl_804B1354[field_0x109])();
 }
 
 // FIXME: 99.93 %. Only the frame differs: ours is 0x60 bytes, the original's
 // 0x50; the int-to-float temporaries of the 30..59 blink branch and the
 // offset sit 8 / 16 bytes higher than the original's 0x10 / 0x18 slots.
-void cls_804B1378::fn_804170EC() {
+void BattleStageSelect_804B1378::fn_804170EC() {
     s32 stage = field_0xc * 5 + field_0x10;
     JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
-    lbl_8053AB10->fn_8013B490();
+    gGameRoot2_8053AB10->fn_8013B490();
     if (field_0x109 != 0) {
         u8 alpha;
         if (stage < 10) {
@@ -509,14 +509,14 @@ void cls_804B1378::fn_804170EC() {
         mScreen->search('Pocur01')->setAlpha(alpha);
         mScreen->search('Pocur02')->setAlpha(alpha);
     }
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x109 == 2) {
         lbl_8053AEC4->fn_8042EB98();
     }
     lbl_8053AED8->fn_80440EE8();
 }
 
-cls_804B1378::~cls_804B1378() {
+BattleStageSelect_804B1378::~BattleStageSelect_804B1378() {
     lbl_8053AEC4->fn_8042EB14();
     delete mScreen;
     mScreen = NULL;
@@ -544,7 +544,7 @@ cls_804B1378::~cls_804B1378() {
 }
 
 // FIXME: 99.96 %, regalloc only: `font` is in r27 here, r29 in the original.
-cls_804B1378::cls_804B1378() {
+BattleStageSelect_804B1378::BattleStageSelect_804B1378() {
     lbl_8053AE00 = this;
     field_0xe4[0] = 0;
     mScreen = new J2DScreen;
@@ -557,8 +557,8 @@ cls_804B1378::cls_804B1378() {
     static_cast<J2DTextBox*>(mScreen->search('Tsn01'))->setFont(font);
     font = lbl_8053AD78->mFont;
     static_cast<J2DTextBox*>(mScreen->search('Tsn02'))->setFont(font);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom01'))->getStringPtr(), 0x100, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom02'))->getStringPtr(), 0x100, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom01'))->getStringPtr(), 0x100, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom02'))->getStringPtr(), 0x100, 0, NULL, NULL);
     for (int i = 0; i < 11; i++) {
         field_0x123[i] = mScreen->search(lbl_8048CD50[i])->getAlpha();
         field_0x12e[i] = mScreen->search(lbl_8048CDA8[i])->getAlpha();
@@ -572,62 +572,62 @@ cls_804B1378::cls_804B1378() {
     for (int i = 0; i < 10; i++) {
         field_0x148[i] = mScreen->search(lbl_8048CE78[0][i])->getAlpha();
     }
-    field_0x28[0] = new cls_804AF86C;
-    field_0x28[0]->fn_80402F04(mScreen->search('Pbsbk02'));
-    field_0x28[1] = new cls_804AF86C;
-    field_0x28[1]->fn_80402F04(mScreen->search('Pbsbk01'));
-    field_0x28[2] = new cls_804AF86C;
-    field_0x28[2]->fn_80402F04(mScreen->search('Pbsb09'));
-    field_0x34 = new cls_804AF86C;
-    field_0x34->fn_80402F04(mScreen->search('Ndata03'));
-    field_0x38 = new cls_804AF86C;
-    field_0x38->fn_80402F04(mScreen->search('Ndata02'));
+    field_0x28[0] = new PaneCtrl_804AF86C;
+    field_0x28[0]->setPane_80402F04(mScreen->search('Pbsbk02'));
+    field_0x28[1] = new PaneCtrl_804AF86C;
+    field_0x28[1]->setPane_80402F04(mScreen->search('Pbsbk01'));
+    field_0x28[2] = new PaneCtrl_804AF86C;
+    field_0x28[2]->setPane_80402F04(mScreen->search('Pbsb09'));
+    field_0x34 = new PaneCtrl_804AF86C;
+    field_0x34->setPane_80402F04(mScreen->search('Ndata03'));
+    field_0x38 = new PaneCtrl_804AF86C;
+    field_0x38->setPane_80402F04(mScreen->search('Ndata02'));
     // The tags are immediates here, not loads from lbl_8048D198 / lbl_8048D1E8.
-    field_0x3c[0] = new cls_804AF86C;
-    field_0x3c[0]->fn_80402F04(mScreen->search('Ndata06'));
-    field_0x6c[0] = new cls_804AF86C;
-    field_0x6c[0]->fn_80402F04(mScreen->search('Pbsqb01'));
-    field_0x3c[1] = new cls_804AF86C;
-    field_0x3c[1]->fn_80402F04(mScreen->search('Ndata07'));
-    field_0x6c[1] = new cls_804AF86C;
-    field_0x6c[1]->fn_80402F04(mScreen->search('Pbsqb02'));
-    field_0x3c[2] = new cls_804AF86C;
-    field_0x3c[2]->fn_80402F04(mScreen->search('Ndata08'));
-    field_0x6c[2] = new cls_804AF86C;
-    field_0x6c[2]->fn_80402F04(mScreen->search('Pbsqb03'));
-    field_0x3c[3] = new cls_804AF86C;
-    field_0x3c[3]->fn_80402F04(mScreen->search('Ndata09'));
-    field_0x6c[3] = new cls_804AF86C;
-    field_0x6c[3]->fn_80402F04(mScreen->search('Pbsqb04'));
-    field_0x3c[4] = new cls_804AF86C;
-    field_0x3c[4]->fn_80402F04(mScreen->search('Ndata10'));
-    field_0x6c[4] = new cls_804AF86C;
-    field_0x6c[4]->fn_80402F04(mScreen->search('Pbsqb05'));
-    field_0x3c[5] = new cls_804AF86C;
-    field_0x3c[5]->fn_80402F04(mScreen->search('Ndata11'));
-    field_0x6c[5] = new cls_804AF86C;
-    field_0x6c[5]->fn_80402F04(mScreen->search('Pbsqb06'));
-    field_0x3c[6] = new cls_804AF86C;
-    field_0x3c[6]->fn_80402F04(mScreen->search('Ndata12'));
-    field_0x6c[6] = new cls_804AF86C;
-    field_0x6c[6]->fn_80402F04(mScreen->search('Pbsqb07'));
-    field_0x3c[7] = new cls_804AF86C;
-    field_0x3c[7]->fn_80402F04(mScreen->search('Ndata13'));
-    field_0x6c[7] = new cls_804AF86C;
-    field_0x6c[7]->fn_80402F04(mScreen->search('Pbsqb08'));
-    field_0x3c[8] = new cls_804AF86C;
-    field_0x3c[8]->fn_80402F04(mScreen->search('Ndata14'));
-    field_0x6c[8] = new cls_804AF86C;
-    field_0x6c[8]->fn_80402F04(mScreen->search('Pbsqb09'));
-    field_0x3c[9] = new cls_804AF86C;
-    field_0x3c[9]->fn_80402F04(mScreen->search('Ndata15'));
-    field_0x6c[9] = new cls_804AF86C;
-    field_0x6c[9]->fn_80402F04(mScreen->search('Pbsqb10'));
-    field_0x9c = new cls_804AF86C;
-    field_0x9c->fn_80402F04(mScreen->search('Ndata05'));
+    field_0x3c[0] = new PaneCtrl_804AF86C;
+    field_0x3c[0]->setPane_80402F04(mScreen->search('Ndata06'));
+    field_0x6c[0] = new PaneCtrl_804AF86C;
+    field_0x6c[0]->setPane_80402F04(mScreen->search('Pbsqb01'));
+    field_0x3c[1] = new PaneCtrl_804AF86C;
+    field_0x3c[1]->setPane_80402F04(mScreen->search('Ndata07'));
+    field_0x6c[1] = new PaneCtrl_804AF86C;
+    field_0x6c[1]->setPane_80402F04(mScreen->search('Pbsqb02'));
+    field_0x3c[2] = new PaneCtrl_804AF86C;
+    field_0x3c[2]->setPane_80402F04(mScreen->search('Ndata08'));
+    field_0x6c[2] = new PaneCtrl_804AF86C;
+    field_0x6c[2]->setPane_80402F04(mScreen->search('Pbsqb03'));
+    field_0x3c[3] = new PaneCtrl_804AF86C;
+    field_0x3c[3]->setPane_80402F04(mScreen->search('Ndata09'));
+    field_0x6c[3] = new PaneCtrl_804AF86C;
+    field_0x6c[3]->setPane_80402F04(mScreen->search('Pbsqb04'));
+    field_0x3c[4] = new PaneCtrl_804AF86C;
+    field_0x3c[4]->setPane_80402F04(mScreen->search('Ndata10'));
+    field_0x6c[4] = new PaneCtrl_804AF86C;
+    field_0x6c[4]->setPane_80402F04(mScreen->search('Pbsqb05'));
+    field_0x3c[5] = new PaneCtrl_804AF86C;
+    field_0x3c[5]->setPane_80402F04(mScreen->search('Ndata11'));
+    field_0x6c[5] = new PaneCtrl_804AF86C;
+    field_0x6c[5]->setPane_80402F04(mScreen->search('Pbsqb06'));
+    field_0x3c[6] = new PaneCtrl_804AF86C;
+    field_0x3c[6]->setPane_80402F04(mScreen->search('Ndata12'));
+    field_0x6c[6] = new PaneCtrl_804AF86C;
+    field_0x6c[6]->setPane_80402F04(mScreen->search('Pbsqb07'));
+    field_0x3c[7] = new PaneCtrl_804AF86C;
+    field_0x3c[7]->setPane_80402F04(mScreen->search('Ndata13'));
+    field_0x6c[7] = new PaneCtrl_804AF86C;
+    field_0x6c[7]->setPane_80402F04(mScreen->search('Pbsqb08'));
+    field_0x3c[8] = new PaneCtrl_804AF86C;
+    field_0x3c[8]->setPane_80402F04(mScreen->search('Ndata14'));
+    field_0x6c[8] = new PaneCtrl_804AF86C;
+    field_0x6c[8]->setPane_80402F04(mScreen->search('Pbsqb09'));
+    field_0x3c[9] = new PaneCtrl_804AF86C;
+    field_0x3c[9]->setPane_80402F04(mScreen->search('Ndata15'));
+    field_0x6c[9] = new PaneCtrl_804AF86C;
+    field_0x6c[9]->setPane_80402F04(mScreen->search('Pbsqb10'));
+    field_0x9c = new PaneCtrl_804AF86C;
+    field_0x9c->setPane_80402F04(mScreen->search('Ndata05'));
     for (int i = 0; i < 15; i++) {
-        field_0xa4[i] = new cls_804AF86C;
-        field_0xa4[i]->fn_80402F04(mScreen->search(lbl_8048D238[i]));
+        field_0xa4[i] = new PaneCtrl_804AF86C;
+        field_0xa4[i]->setPane_80402F04(mScreen->search(lbl_8048D238[i]));
         field_0xa4[i]->mPane->setAlpha(0);
     }
     field_0xa0 = lbl_8053AED8->field_0x8;

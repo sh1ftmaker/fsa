@@ -36,8 +36,8 @@ bool cls_804B1D10::fn_8044B80C(u8 idx) {
 
 void cls_804B1D10::fn_8044B8EC() {
     if (mDraw && mState == 3 && mScreen != NULL) {
-        lbl_8053AB10->fn_8013B490();
-        mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         mDraw = false;
     }
 }
@@ -62,15 +62,15 @@ void cls_804B1D10::fn_8044B960() {
             ((J2DTextBox*)mScreen->search('Tstf01'))->setFont(font);
             font = lbl_8053AD78->mFont;
             ((J2DTextBox*)mScreen->search('Tstf02'))->setFont(font);
-            fn_803832BC(((J2DTextBox*)mScreen->search('Tstf01'))->getStringPtr(), lbl_80490F48[mPage], 0, NULL, NULL);
-            fn_803832BC(((J2DTextBox*)mScreen->search('Tstf02'))->getStringPtr(), lbl_80490F48[mPage], 0, NULL, NULL);
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tstf01'))->getStringPtr(), lbl_80490F48[mPage], 0, NULL, NULL);
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tstf02'))->getStringPtr(), lbl_80490F48[mPage], 0, NULL, NULL);
             if (mPage == 5) {
                 JUTResFont* font2 = lbl_8053AD78->mFont;
                 ((J2DTextBox*)mScreen->search('Tstf03'))->setFont(font2);
                 font2 = lbl_8053AD78->mFont;
                 ((J2DTextBox*)mScreen->search('Tstf04'))->setFont(font2);
-                fn_803832BC(((J2DTextBox*)mScreen->search('Tstf03'))->getStringPtr(), 0x861, 0, NULL, NULL);
-                fn_803832BC(((J2DTextBox*)mScreen->search('Tstf04'))->getStringPtr(), 0x861, 0, NULL, NULL);
+                getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tstf03'))->getStringPtr(), 0x861, 0, NULL, NULL);
+                getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tstf04'))->getStringPtr(), 0x861, 0, NULL, NULL);
             }
             delete mArchive;
             mState = 3;

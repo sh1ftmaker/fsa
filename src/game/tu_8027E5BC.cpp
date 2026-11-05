@@ -245,20 +245,20 @@ void Player_804A6F38::fn_8027F1C8() {
     if (!field_0x121d) {
         if (!lbl_8053AAF8->field_0x7e) {
             if (field_0x1388 != NULL) {
-                fn_8013CB44(field_0x1388, &pos, 0, -1, true);
+                setEmitterPos_8013CB44(field_0x1388, &pos, 0, -1, true);
             } else {
                 switch (fn_802486A0()) {
                 case 0:
-                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
                     break;
                 case 1:
-                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
                     break;
                 case 2:
-                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
                     break;
                 case 3:
-                    field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
                     break;
                 }
             }
@@ -270,26 +270,26 @@ void Player_804A6F38::fn_8027F1C8() {
     deleteEmitter(&field_0x1388);
     switch (fn_802486A0()) {
     case 0:
-        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1ba, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1bb, 0, -1, NULL, NULL, true, 1.0f);
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1ba, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1bb, 0, -1, NULL, NULL, true, 1.0f);
         break;
     case 1:
-        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b8, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b9, 0, -1, NULL, NULL, true, 1.0f);
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b8, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b9, 0, -1, NULL, NULL, true, 1.0f);
         break;
     case 2:
-        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b5, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b6, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b7, 0, -1, NULL, NULL, true, 1.0f);
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b5, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b6, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b7, 0, -1, NULL, NULL, true, 1.0f);
         break;
     case 3:
-        field_0x1388 = fn_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b2, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b3, 0, -1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &pos, 0x1b4, 0, -1, NULL, NULL, true, 1.0f);
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b2, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b3, 0, -1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1b4, 0, -1, NULL, NULL, true, 1.0f);
         break;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -341,9 +341,9 @@ void Player_804A6F38::fn_8027F854(JGeometry::TVec3f* out, s32 player) {
 
 void Player_804A6F38::fn_802810E4() {
     field_0x458 = 0;
-    fn_8013CC50(field_0x3b4, &mPos, 0x289, 0, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x289, 0, 1, NULL, NULL, true, 1.0f);
     if (field_0x1350 == NULL) {
-        field_0x1350 = fn_8013CC50(field_0x3b4, &mPos, 0x28a, 0, 1, NULL, NULL, true, 1.0f);
+        field_0x1350 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x28a, 0, 1, NULL, NULL, true, 1.0f);
     }
     if (!fn_80240808()) {
         fn_8024E3D8();
@@ -386,7 +386,7 @@ void Player_804A6F38::fn_8028286C() {
 }
 
 void Player_804A6F38::fn_802828A8() {
-    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->fn_801F666C(field_0xd8c));
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->findActorBySerial_801F666C(field_0xd8c));
     if (cannon != NULL) {
         if (viewLayerFlag(field_0x3b4)) {
             field_0x374.set(0.0f, -cannon->fn_801080B8(), 0.0f);
@@ -399,7 +399,7 @@ void Player_804A6F38::fn_802828A8() {
 }
 
 void Player_804A6F38::fn_80282958() {
-    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->fn_801F666C(field_0xd8c));
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->findActorBySerial_801F666C(field_0xd8c));
     if (cannon != NULL) {
         mPos.x = cannon->mPos.x;
         mPos.y = cannon->mPos.y;
@@ -422,7 +422,7 @@ void Player_804A6F38::fn_80282958() {
 void Player_804A6F38::fn_80282A24() {
     field_0x124d = 1;
     field_0x458 = 0;
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xd8c);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xd8c);
     if (actor != NULL) {
         mPos.x = actor->mPos.x;
         mPos.y = actor->mPos.y;
@@ -468,8 +468,8 @@ void Player_804A6F38::fn_80283848() {
     field_0x42d = 0;
     field_0x430 = 0;
     if (field_0x44c == 0 && field_0x1248 != 0x1b && field_0x1248 != 3 && field_0x1248 != 0x1d) {
-        fn_8013CC50(field_0x3b4, &mPos, 0x15b, 0, 1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x3b4, &mPos, 0x15c, -1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x15b, 0, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x15c, -1, 0, NULL, NULL, true, 1.0f);
         fn_8024F0E8(0x2003A);
         field_0x44c = 5;
     }

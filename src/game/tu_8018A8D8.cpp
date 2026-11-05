@@ -7,7 +7,7 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 
 void cls_804A1E50::vfunc_0x24() {
-    fn_801F0E34(0x40015, 0);
+    startSound_801F0E34(0x40015, 0);
     vfunc_0x28(2, 0.0f, 16.0f);
 }
 
@@ -16,7 +16,7 @@ cls_804A1E50::~cls_804A1E50() {
     fn_801EE434(field_0x32c);
     fn_801EE434(field_0x330);
     if (field_0x26c == 0) {
-        fn_802D6A9C()->fn_802D7440(true);
+        getGameView_802D6A9C()->fn_802D7440(true);
         fn_8022ADCC();
     }
 }
@@ -31,11 +31,11 @@ void fn_8018E8C0(JGeometry::TVec3f* dst, const JGeometry::TVec3f* src) {
 }
 
 void fn_8018E8DC(s32 bit, bool set, u8 value) {
-    fn_802D6A9C()->fn_802D8050(bit, set, value);
+    getGameView_802D6A9C()->fn_802D8050(bit, set, value);
 }
 
 bool fn_8018E930(s32 bit) {
-    return fn_802D6A9C()->fn_802D800C(bit);
+    return getGameView_802D6A9C()->fn_802D800C(bit);
 }
 
 // Out-of-line copy of TVec2<f32>::set(x, y).

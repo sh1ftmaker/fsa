@@ -42,10 +42,10 @@ void cls_8049DE90::update() {
             if (mTable[pick] != 0) {
                 for (s32 i = 0; i < 4; i++) {
                     if (i != pick && mTable[i] != mTable[pick]) {
-                        fn_802D6A9C()->fn_802D8050(mTable[i], false, 0xFF);
+                        getGameView_802D6A9C()->fn_802D8050(mTable[i], false, 0xFF);
                     }
                 }
-                fn_802D6A9C()->fn_802D8050(mTable[pick], true, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(mTable[pick], true, 0xFF);
             }
             mTimer = 0;
         }

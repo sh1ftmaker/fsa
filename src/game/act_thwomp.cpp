@@ -11,7 +11,7 @@ Thwomp_804AB5D8::~Thwomp_804AB5D8() {}
 void Thwomp_804AB5D8::draw() {
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, 0x17A, NULL, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, 0x17A, NULL, 1.0f, 1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, 0x17A, false, 2, -1, 0, 0, 0);
 }
@@ -58,8 +58,8 @@ void Thwomp_804AB5D8::update() {
         break;
     case 1:
         if (hitMap || hit == true) {
-            fn_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
-            fn_801F0E34(0x3000F, 0);
+            getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
+            startSound_801F0E34(0x3000F, 0);
             field_0x230 = 2;
             field_0x234 = 100;
         }

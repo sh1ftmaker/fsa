@@ -28,7 +28,7 @@ public:
     // fn_802D6C10.
     void fn_802C2B64();
     // 0x802C1D90: passes the key's (0x230, 0x234) position and 0x238 layer to
-    // GameView's fn_802D6C10 (view from fn_802D6A9C()), then clears mAlive.
+    // GameView's fn_802D6C10 (view from getGameView_802D6A9C()), then clears mAlive.
     void fn_802C1D90();
     // 0x802C1DFC: at the key's own layer (field_0x4 < 8) plays effect 0x503
     // at mPos; from layer 8 up spawns a KMRI actor there instead. Then passes
@@ -43,12 +43,12 @@ public:
     // fn_8022FE80 when the conversation test (fn_802308E0 or fn_8023077C) holds.
     bool fn_802C2300(u8 playerBits);
     // 0x802C5284: passes its position (0x230) and layer (0x238) to GameView's
-    // fn_802D6C10, with the view from fn_802D6A9C().
+    // fn_802D6C10, with the view from getGameView_802D6A9C().
     void fn_802C5284();
     // 0x802C1D30: takes a position and a layer (the caller's player layer,
     // Player field_0x3b4). Copies the position to 0x260, the layer to 0x26C
     // and the view's current screen column/row (GameView field_0x14/0x18)
-    // to 0x2AA. Called by tu_8023FBF0 with the key from fn_801F666C.
+    // to 0x2AA. Called by tu_8023FBF0 with the key from findActorBySerial_801F666C.
     void fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer);
     /* 0x230 */ JGeometry::TVec2f field_0x230; // position (x, y)
     /* 0x238 */ s32 field_0x238; // layer

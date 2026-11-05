@@ -6,7 +6,7 @@
 
 class J2DScreen;
 class J2DPicture;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // The file select screen: vtable 0x804AFF60 (one slot, the destructor
 // fn_803CFFBC), constructor fn_803D0264 (game/tu_803BC6F0.cpp); 0x1AC bytes
@@ -118,17 +118,17 @@ public:
     /* 0x008 */ J2DScreen* mScreenHuuin; // "file_select_huuin.blo"
     /* 0x00C */ u8 field_0xc[0x10 - 0xC];
     /* 0x010 */ J2DPicture* field_0x10;  // "kk_black.bti"
-    /* 0x014 */ cls_804AF86C* field_0x14;
-    /* 0x018 */ cls_804AF86C* field_0x18;
-    /* 0x01C */ cls_804AF86C* field_0x1c;
-    /* 0x020 */ cls_804AF86C* field_0x20;
-    /* 0x024 */ cls_804AF86C* field_0x24[4];
-    /* 0x034 */ cls_804AF86C* field_0x34;
-    /* 0x038 */ cls_804AF86C* field_0x38[3];
-    /* 0x044 */ cls_804AF86C* field_0x44[3];
-    /* 0x050 */ cls_804AF86C* field_0x50;
-    /* 0x054 */ cls_804AF86C* field_0x54;
-    /* 0x058 */ cls_804AF86C* field_0x58; // lbl_8053AED8->field_0x8
+    /* 0x014 */ PaneCtrl_804AF86C* field_0x14;
+    /* 0x018 */ PaneCtrl_804AF86C* field_0x18;
+    /* 0x01C */ PaneCtrl_804AF86C* field_0x1c;
+    /* 0x020 */ PaneCtrl_804AF86C* field_0x20;
+    /* 0x024 */ PaneCtrl_804AF86C* field_0x24[4];
+    /* 0x034 */ PaneCtrl_804AF86C* field_0x34;
+    /* 0x038 */ PaneCtrl_804AF86C* field_0x38[3];
+    /* 0x044 */ PaneCtrl_804AF86C* field_0x44[3];
+    /* 0x050 */ PaneCtrl_804AF86C* field_0x50;
+    /* 0x054 */ PaneCtrl_804AF86C* field_0x54;
+    /* 0x058 */ PaneCtrl_804AF86C* field_0x58; // lbl_8053AED8->field_0x8
     /* 0x05C */ void* field_0x5c; // &lbl_8050EC80[0] + 0x20 (memory card copy source)
     /* 0x060 */ void* field_0x60; // &lbl_8050EC80[0] + 0x280
     /* 0x064 */ f32 field_0x64[3]; // field_0x44[i] target x (fn_803C6690)

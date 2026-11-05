@@ -23,7 +23,7 @@ public:
     s16 getSpeed() {
         s32 bit = mFlagBit;
         s16 speed = mSpeed;
-        if (bit != 0 && fn_802D6A9C()->fn_802D800C(bit)) {
+        if (bit != 0 && getGameView_802D6A9C()->fn_802D800C(bit)) {
             return -speed;
         }
         return speed;

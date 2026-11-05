@@ -14,7 +14,7 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     bool touchesPlayer(s32 player, JGeometry::TVec3f& point);
-    // Effect emitters from fn_8013CC50, one per effect id (0x542, 0xB7-0xBA,
+    // Effect emitters from spawnEmitter_8013CC50, one per effect id (0x542, 0xB7-0xBA,
     // and 0x319-0x31C for the one update() re-creates); fn_801EE434 frees them.
     /* 0x230 */ JPABaseEmitter* mEmitter230;
     /* 0x234 */ JPABaseEmitter* mEmitter234;

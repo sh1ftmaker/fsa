@@ -15,7 +15,7 @@ public:
     ZoraEnemy_804A3D7C();
     virtual ~ZoraEnemy_804A3D7C();
     // Vtable slot 0xA0 (fn_801BA854, overriding EnemyBase's vfunc_0xA0):
-    // once mState is set, the camera collects mPos (fn_8030C210) so that it
+    // once mState is set, the camera collects mPos (addFocusPoint_8030C210) so that it
     // stays in view.
     /* 0xA0 */ virtual void vfunc_0xA0();
     // Vtable slot 0x4C (fn_801BA88C): tile code 0xD (fn_8022461C) blocks

@@ -3,12 +3,12 @@
 
 #include "game/cls_804A6A00.h"
 
-// A minor Shadow Link actor (sub-base cls_804A6A00) that, after its hop
+// A minor Shadow Link actor (sub-base ShadowLinkBase_804A6A00) that, after its hop
 // animation, shoots volleys of 'OKTM' actors (Octorok rocks) across the
 // view; code in game/act_shadow_link_bow.cpp. Not tied to a spawner ID.
 // Named after its vtable (0x804A6B70). The destructor is fn_802223FC, the
 // constructor fn_80222A58.
-class cls_804A6B70 : public cls_804A6A00 {
+class cls_804A6B70 : public ShadowLinkBase_804A6A00 {
 public:
     cls_804A6B70();
     virtual ~cls_804A6B70();

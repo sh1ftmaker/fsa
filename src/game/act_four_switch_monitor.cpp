@@ -8,9 +8,9 @@
 #include "game/Player.h"
 #include "game/act/act_four_switch_monitor.h"
 
-cls_804A80A0::~cls_804A80A0() {}
+FourSwitchMonitor_804A80A0::~FourSwitchMonitor_804A80A0() {}
 
-void cls_804A80A0::draw() {}
+void FourSwitchMonitor_804A80A0::draw() {}
 
 // Snaps a coordinate to the middle of its 16-unit cell.
 static inline f32 snapToCell(f32 v) {
@@ -48,7 +48,7 @@ static inline s32 slotsCollide(const s32* flags, const s32* keys) {
 // `@NNN` here (reloc-name, a data-naming issue). `(field_0x83 & 3) == 1` is an
 // unsigned compare (cmplwi) in the original, signed here: field_0x83's type is
 // not known yet.
-void cls_804A80A0::update() {
+void FourSwitchMonitor_804A80A0::update() {
     s32 count = 0;
     s32 flags[4];
 
@@ -57,8 +57,8 @@ void cls_804A80A0::update() {
         s32 fixedSlot = 1;
         for (s32 i = 0; i < 4; i++) {
             flags[i] = 0xFF;
-            if (fn_802D6A9C()->fn_802D800C(field_0x244[i])) {
-                flags[i] = fn_802D6A9C()->fn_802D7E1C(field_0x244[i]);
+            if (getGameView_802D6A9C()->fn_802D800C(field_0x244[i])) {
+                flags[i] = getGameView_802D6A9C()->fn_802D7E1C(field_0x244[i]);
                 count++;
                 if (flags[i] == 0xFF) {
                     flags[i] = i + 4;
@@ -76,7 +76,7 @@ void cls_804A80A0::update() {
                     fn_8022E2D8(0xF);
                     vfunc_0x30(0xFF, true);
                     for (s32 i = 0; i < 4; i++) {
-                        fn_802D6A9C()->fn_802D8050(field_0x244[i], true, 0xFF);
+                        getGameView_802D6A9C()->fn_802D8050(field_0x244[i], true, 0xFF);
                     }
                     if (field_0x234 != 0) {
                         if (field_0x234 == 2) {
@@ -108,16 +108,16 @@ void cls_804A80A0::update() {
     case 1:
     case 6:
     default:
-        if (!fn_802D6A9C()->fn_802D800C((field_0x90 >> 22) & 0x1F)) {
+        if (!getGameView_802D6A9C()->fn_802D800C((field_0x90 >> 22) & 0x1F)) {
             vfunc_0x30(0xFF, false);
             field_0x230 = 0;
-        } else if (!fn_802D6A9C()->fn_802D800C((field_0x90 >> 17) & 0x1F)) {
+        } else if (!getGameView_802D6A9C()->fn_802D800C((field_0x90 >> 17) & 0x1F)) {
             vfunc_0x30(0xFF, false);
             field_0x230 = 0;
-        } else if (!fn_802D6A9C()->fn_802D800C((field_0x90 >> 12) & 0x1F)) {
+        } else if (!getGameView_802D6A9C()->fn_802D800C((field_0x90 >> 12) & 0x1F)) {
             vfunc_0x30(0xFF, false);
             field_0x230 = 0;
-        } else if (!fn_802D6A9C()->fn_802D800C((field_0x90 >> 7) & 0x1F)) {
+        } else if (!getGameView_802D6A9C()->fn_802D800C((field_0x90 >> 7) & 0x1F)) {
             vfunc_0x30(0xFF, false);
             field_0x230 = 0;
         }
@@ -134,7 +134,7 @@ void cls_804A80A0::update() {
                         pos.x = snapToCell(pos.x);
                         pos.y = snapToCell(pos.y);
                         fn_80230498(i, &pos, 0xE8, 0xFF, -0x80, -0x80, true);
-                        lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+                        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
                     }
                 }
             }
@@ -147,7 +147,7 @@ void cls_804A80A0::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x23c--;
         if (field_0x23c == 0) {
@@ -184,20 +184,20 @@ void cls_804A80A0::update() {
         break;
     case 4:
         if (field_0x234 == 4) {
-            lbl_8053AB10->field_0x20->field_0x216 = 1;
+            gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
             if (field_0x23c == field_0x240) {
                 vfunc_0x30(0xFF, true);
             }
         } else {
             for (s32 i = 0; i < 4; i++) {
                 JGeometry::TVec3f pos = *fn_8023E724(i);
-                lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+                gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
             }
         }
         if (field_0x23c == 0) {
             vfunc_0x30(0xFF, true);
             for (s32 i = 0; i < 4; i++) {
-                fn_802D6A9C()->fn_802D8050(field_0x244[i], true, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(field_0x244[i], true, 0xFF);
             }
             field_0x230 = 5;
             field_0x23c = 0xF;
@@ -211,7 +211,7 @@ void cls_804A80A0::update() {
     case 5:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x23c == 0) {
             if (fn_80230534(false)) {
@@ -228,8 +228,8 @@ void cls_804A80A0::update() {
     case 7: {
         for (s32 i = 0; i < 4; i++) {
             flags[i] = 0xFF;
-            if (fn_802D6A9C()->fn_802D800C(field_0x244[i])) {
-                flags[i] = fn_802D6A9C()->fn_802D7E1C(field_0x244[i]);
+            if (getGameView_802D6A9C()->fn_802D800C(field_0x244[i])) {
+                flags[i] = getGameView_802D6A9C()->fn_802D7E1C(field_0x244[i]);
                 count++;
                 if (flags[i] == 0xFF) {
                     flags[i] = i + 4;
@@ -247,7 +247,7 @@ void cls_804A80A0::update() {
     }
 }
 
-void cls_804A80A0::init() {
+void FourSwitchMonitor_804A80A0::init() {
     static const s32 lbl_8046C850[4] = {22, 17, 12, 7};
 
     field_0x234 = field_0x90 & 0x1F;

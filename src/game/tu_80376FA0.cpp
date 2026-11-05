@@ -63,14 +63,14 @@ void cls_804AE7D8::draw() {
     case 0: {
         void* res = fn_804032E8('TIMG', "yy_1_1_iwa1.bti");
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
         break;
     }
     case 1: {
         void* res = fn_804032E8('TIMG', "yy_1_1_iwa2.bti");
         if (field_0x4 < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
         break;
     }
@@ -164,28 +164,28 @@ void cls_804AE7D8::update() {
                 field_0x260 = 0;
 
                 if (mEmitter230 == NULL) {
-                    mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x542, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CB44(mEmitter230, &mPos, -1, -1, true);
+                    mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x542, 0, 0, NULL, NULL, true, 1.0f);
+                    setEmitterPos_8013CB44(mEmitter230, &mPos, -1, -1, true);
                 }
                 if (mEmitter234 == NULL) {
-                    mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0xb7, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CB44(mEmitter234, &mPos, -1, -1, true);
+                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xb7, 0, 0, NULL, NULL, true, 1.0f);
+                    setEmitterPos_8013CB44(mEmitter234, &mPos, -1, -1, true);
                 }
                 if (mEmitter238 == NULL) {
-                    mEmitter238 = fn_8013CC50(field_0x4, &mPos, 0xb8, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CB44(mEmitter238, &mPos, 0, 0, true);
+                    mEmitter238 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xb8, 0, 0, NULL, NULL, true, 1.0f);
+                    setEmitterPos_8013CB44(mEmitter238, &mPos, 0, 0, true);
                 }
                 if (mEmitter23c == NULL) {
-                    mEmitter23c = fn_8013CC50(field_0x4, &mPos, 0xb9, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CB44(mEmitter23c, &mPos, 0, 0, true);
+                    mEmitter23c = spawnEmitter_8013CC50(field_0x4, &mPos, 0xb9, 0, 0, NULL, NULL, true, 1.0f);
+                    setEmitterPos_8013CB44(mEmitter23c, &mPos, 0, 0, true);
                 }
                 if (mEmitter240 == NULL) {
-                    mEmitter240 = fn_8013CC50(field_0x4, &mPos, 0xba, 0, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CB44(mEmitter240, &mPos, 0, 0, true);
+                    mEmitter240 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xba, 0, 0, NULL, NULL, true, 1.0f);
+                    setEmitterPos_8013CB44(mEmitter240, &mPos, 0, 0, true);
                 }
-                fn_801F0E34(0x50065, 0);
+                startSound_801F0E34(0x50065, 0);
                 if (field_0x265 == 0) {
-                    fn_802D6A9C()->fn_802D7584(field_0x16c, (u8)field_0x258);
+                    getGameView_802D6A9C()->fn_802D7584(field_0x16c, (u8)field_0x258);
                 }
             }
         } else {
@@ -214,21 +214,21 @@ void cls_804AE7D8::update() {
                             field_0x3c.y = lbl_80475148[index][1];
                             field_0x3c.z = lbl_80475148[index][2];
                             field_0x248.set(mPos);
-                            fn_801F0E34(0x30004, 0);
+                            startSound_801F0E34(0x30004, 0);
                             mPos += field_0x3c;
                             if (index == 0) {
-                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31a, 1, 1, NULL, NULL, true, 1.0f);
+                                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31a, 1, 1, NULL, NULL, true, 1.0f);
                             } else if (index == 1) {
-                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31b, 1, 1, NULL, NULL, true, 1.0f);
+                                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31b, 1, 1, NULL, NULL, true, 1.0f);
                             } else if (index == 2) {
-                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x31c, 1, 1, NULL, NULL, true, 1.0f);
+                                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31c, 1, 1, NULL, NULL, true, 1.0f);
                             } else {
-                                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
+                                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
                             }
                         }
                     }
                 } else if (mEmitter230 != NULL) {
-                    fn_8013CB44(mEmitter230, &mPos, 0, 0, true);
+                    setEmitterPos_8013CB44(mEmitter230, &mPos, 0, 0, true);
                 }
             }
         }

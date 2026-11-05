@@ -10,7 +10,7 @@ Now:      total: 4449 / 11561 functions, 800028 / 4442088 bytes of code (18.01 %
   `__nw__` size 0x230, so no members of its own).
 - Explicit empty destructor, draw (empty), update, init (calls update()
   virtually), `__sinit` (template: act_talking_npc_2).
-- update: `if (fn_802D7F40(fn_802D6A9C(), (field_0x90 >> 22) & 0x1F))
+- update: `if (fn_802D7F40(getGameView_802D6A9C(), (field_0x90 >> 22) & 0x1F))
   vfunc_0x30(0xFF, 1);`
 
 

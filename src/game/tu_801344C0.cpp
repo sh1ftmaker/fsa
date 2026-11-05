@@ -79,7 +79,7 @@ int main() {
 
     JKRSolidHeap* solidHeap = JKRSolidHeap::create(0x180000, JKRHeap::getRootHeap(), false);
     JKRExpHeap* mainHeap = JKRExpHeap::create(0xFFFFFFFF, JKRHeap::getRootHeap(), false);
-    Unk_8045A080* audio = new (mainHeap, 0) Unk_8045A080();
+    AudioMgr_8045A080* audio = new (mainHeap, 0) AudioMgr_8045A080();
     mainHeap->becomeCurrentHeap();
     lbl_80529DEC.field_0x4 = solidHeap;
     lbl_80529DEC.mHeap = mainHeap;

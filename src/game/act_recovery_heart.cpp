@@ -32,13 +32,13 @@ bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos)
         return false;
     }
     if (kind == 0x25) {
-        return fn_802D6A9C()->field_0x171 == 0;
+        return getGameView_802D6A9C()->field_0x171 == 0;
     }
     if (kind == 0x26) {
-        return fn_802D6A9C()->field_0x171 == 1;
+        return getGameView_802D6A9C()->field_0x171 == 1;
     }
     if (kind == 0x22) {
-        if (fn_802D6A9C()->field_0x170 != 1) {
+        if (getGameView_802D6A9C()->field_0x170 != 1) {
             return false;
         }
     }
@@ -49,7 +49,7 @@ void RecoveryHeart_8049F4F0::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x2d = 1;
     if (field_0x234 >= 0x100 || (field_0x234 & 2) == 0) {
-        fn_801F06F0("enemy_both2_sob.bin", 0x2C, &params, 1, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x2C, &params, 1, 1.0f, 1.0f);
         fn_803075AC(mSerial, field_0x4, &mPos, 0x2C, false, 2, -1, 0, 0, 0);
     }
 }
@@ -149,11 +149,11 @@ void RecoveryHeart_8049F4F0::update() {
             fn_80236554(hitPlayer, 4, 0);
             mAlive = false;
         } else if (fn_801F2718('ZLD2') >= 0) {
-            fn_801F0E34(0x400C9, 0);
+            startSound_801F0E34(0x400C9, 0);
             lbl_8053AB9C = 4;
             mAlive = false;
         } else if (fn_801F2718('ZLD4') >= 0) {
-            fn_801F0E34(0x400C9, 0);
+            startSound_801F0E34(0x400C9, 0);
             lbl_8053ABEC = 4;
             mAlive = false;
         }
@@ -163,7 +163,7 @@ void RecoveryHeart_8049F4F0::update() {
 
     if (field_0x4 < 8) {
         JGeometry::TVec3f camPos(mPos.x, mPos.y - mPos.z, 0.0f);
-        lbl_8053AB10->field_0x24->fn_8030C210(&camPos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
     }
 }
 

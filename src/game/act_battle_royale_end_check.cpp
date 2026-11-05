@@ -36,9 +36,9 @@ static inline void startCameraMove(Camera_804AA9E4* camera, s32 target) {
 void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
     s32 winner = mWinner;
     if (winner != -1) {
-        startCameraMove(lbl_8053AB10->field_0x24, winner);
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
     } else {
-        startCameraMove(lbl_8053AB10->field_0x24, -1);
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     }
     if (lbl_8053AD30->fn_80309C4C(0x1100, -1) != 0) {
         lbl_8053AAF8->fn_801367E0(0xA);
@@ -63,9 +63,9 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
 void BattleRoyaleEndCheck_804B0380::fn_803D6618() {
     s32 winner = mWinner;
     if (winner != -1) {
-        startCameraMove(lbl_8053AB10->field_0x24, winner);
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
     } else {
-        startCameraMove(lbl_8053AB10->field_0x24, -1);
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     }
     if (mTimer <= 0) {
         return;
@@ -79,7 +79,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6618() {
 
 void BattleRoyaleEndCheck_804B0380::fn_803D66A8() {
     mTimer--;
-    startCameraMove(lbl_8053AB10->field_0x24, -1);
+    startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     if (mTimer <= 0) {
         mFocus = 4;
         mTimer = 0x82;
@@ -92,7 +92,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
     // FIXME: 99.78 %. Regalloc only: the original loads mWinner into r4 and the
     // camera into r5 before the move; this puts them the other way round.
     mTimer--;
-    startCameraMove(lbl_8053AB10->field_0x24, mWinner);
+    startCameraMove(gGameRoot2_8053AB10->field_0x24, mWinner);
     if (mTimer <= 0) {
         field_0x238++;
         mTimer = 2;
@@ -105,9 +105,9 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
                     } else if (field_0x238 == 0xD) {
                         JGeometry::TVec3f pos = *fn_8023E724(i);
                         JGeometry::TVec3f p(pos.x + 7.0f, pos.y - 27.0f, pos.z);
-                        fn_8013CC50(field_0x4, &p, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &p, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                         JGeometry::TVec3f q(pos.x + 7.0f, pos.y - 27.0f, pos.z);
-                        fn_8013CC50(field_0x4, &q, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &q, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
                         fn_80230FD0(mWinner, 0x2000E);
                     }
                 }
@@ -138,7 +138,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
 
 void BattleRoyaleEndCheck_804B0380::fn_803D69AC() {
     mTimer--;
-    startCameraMove(lbl_8053AB10->field_0x24, -1);
+    startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     if (mTimer <= 0) {
         if (mWinner == -1) {
             mState = 4;
@@ -180,7 +180,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6AE8() {
                 fn_80230AD4(i);
             }
         }
-        startCameraMove(lbl_8053AB10->field_0x24, -1);
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
         lbl_8053AED0->field_0xdc |= 0x10;
         mState = 2;
     }
@@ -210,7 +210,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
                 fn_802B3A48(actor);
             }
         }
-        fn_802D6A9C()->fn_802D7440(false);
+        getGameView_802D6A9C()->fn_802D7440(false);
         lbl_80529DEC.field_0x240 = 1;
         mState = 1;
     }

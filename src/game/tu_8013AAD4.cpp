@@ -43,8 +43,8 @@ void GameRoot2_8049F108::fn_8013AB00() {
 }
 
 void fn_8013AB2C() {
-    J3DDrawBuffer* opa = lbl_8053AB10->field_0x8;
-    J3DDrawBuffer* xlu = lbl_8053AB10->field_0xc;
+    J3DDrawBuffer* opa = gGameRoot2_8053AB10->field_0x8;
+    J3DDrawBuffer* xlu = gGameRoot2_8053AB10->field_0xc;
     j3dSys.drawInit();
     j3dSys.reinitGX();
     GXSetColorUpdate(GX_TRUE);
@@ -68,8 +68,8 @@ void fn_8013ABCC(J3DModel* model, const Vec& scale, Mtx mtx) {
 // FIXME: 98.87. Only the two draw-buffer loads: the original loads field_0x8
 // into r0 then field_0xc into r5; ours loads field_0xc first into r6.
 void fn_8013AC54(Mtx view) {
-    J3DDrawBuffer* opa = lbl_8053AB10->field_0x8;
-    J3DDrawBuffer* xlu = lbl_8053AB10->field_0xc;
+    J3DDrawBuffer* opa = gGameRoot2_8053AB10->field_0x8;
+    J3DDrawBuffer* xlu = gGameRoot2_8053AB10->field_0xc;
     j3dSys.setDrawBuffer(opa, 0);
     j3dSys.setDrawBuffer(xlu, 1);
     j3dSys.setViewMtx(view);
@@ -128,8 +128,8 @@ void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a
     rot[0][3] += x;
     rot[1][3] += y;
     rot[2][3] += z;
-    lbl_8053AB10->field_0x24->fn_8030DFE8(false);
-    lbl_8053AB10->field_0x24->fn_8030DD20(rot);
+    gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
+    gGameRoot2_8053AB10->field_0x24->fn_8030DD20(rot);
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
@@ -270,7 +270,7 @@ void GameRoot2_8049F108::fn_8013B618() {
 
 void GameRoot2_8049F108::fn_8013B71C() {
     if (field_0x39 == 0 || lbl_8053AAF8->field_0x4c == 4 || lbl_8053AAF8->field_0x4c == 6) {
-        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
+        gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -281,7 +281,7 @@ void GameRoot2_8049F108::fn_8013B71C() {
         if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
             field_0x20->fn_802FF3B0();
         }
-        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
+        gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -390,7 +390,7 @@ GameRoot2_8049F108::~GameRoot2_8049F108() {
 // The (s32) casts give the original's signed int-to-float conversion of the u16 sizes.
 GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
     heap->getTotalFreeSize();
-    lbl_8053AB10 = this;
+    gGameRoot2_8053AB10 = this;
     field_0x4 = JKRSolidHeap::create(-1, heap, false);
     field_0x4->becomeCurrentHeap();
     field_0x8 = new (field_0x4, 0) J3DDrawBuffer(0x80);
@@ -405,10 +405,10 @@ GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
     field_0x18 = new (heap, 0) J2DPrint(font, 0.0f, font->getHeight());
     field_0x34 = new (heap, 0) JUTTexture(JUTVideo::sManager->getFbWidth(),
                                           JUTVideo::sManager->getEfbHeight(), GX_TF_RGB565);
-    field_0x20 = new (heap, 0) cls_804AA858(heap);
+    field_0x20 = new (heap, 0) TileMap_804AA858(heap);
     field_0x24 = new (heap, 0) Camera_804AA9E4();
     field_0x28 = new (heap, 0) EffectSystem_8049F178(heap);
-    field_0x2c = new (heap, 0) cls_804A0160(heap);
+    field_0x2c = new (heap, 0) ShadowCircle_804A0160(heap);
     field_0x30 = new (heap, 0) cls_804A03A8(heap);
     ResTIMG* black = (ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
     field_0x1c = new (heap, 0) J2DPicture(black);
@@ -416,5 +416,5 @@ GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
 }
 
 ScreenRect_802FF3F0* fn_8013C394() {
-    return &lbl_8053AB10->field_0x24->field_0x144;
+    return &gGameRoot2_8053AB10->field_0x24->field_0x144;
 }

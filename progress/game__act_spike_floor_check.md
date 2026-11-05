@@ -7,10 +7,10 @@ update: `mTimer--; if (mTimer == 0)` (not `--mTimer`) and `case 1: default:` for
 type switch reproduce the original compare sequence.
 
 SHARED-EDITS:
-- include/game/Map.h: cls_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot,
-  u32 dstOffset, u32 size) (asm: r3 = lbl_8053AB10->0x20, r4 res, r5 src offset, r6 slot*4
+- include/game/Map.h: TileMap_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot,
+  u32 dstOffset, u32 size) (asm: r3 = gGameRoot2_8053AB10->0x20, r4 res, r5 src offset, r6 slot*4
   index, r7 dst offset, r8 size, 0 = getResSize).
-- config/G4SE01/symbols.txt: fn_802FA160 -> fn_802FA160__12cls_804AA858FPvUllUlUl.
+- config/G4SE01/symbols.txt: fn_802FA160 -> fn_802FA160__16TileMap_804AA858FPvUllUlUl.
 - config/G4SE01/gen_game.tsv: removed both act_spike_floor_check rows.
 
 Next: set Matching (coordinator).

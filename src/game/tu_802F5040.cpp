@@ -49,7 +49,7 @@ static inline f32 getScale(f32 z) {
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out) {
     f32 offset;
     if (params != NULL) {
-        u8 raised = lbl_8053AB10->field_0x20->field_0xe461;
+        u8 raised = gGameRoot2_8053AB10->field_0x20->field_0xe461;
         if (raised) {
             raised = params->field_0x20;
         }
@@ -94,13 +94,13 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
         m[0][3] += pos->x;
         m[1][3] += pos->y + offset;
         m[2][3] += pos->z + offset;
-        lbl_8053AB10->fn_8013B3CC(m);
+        gGameRoot2_8053AB10->fn_8013B3CC(m);
         out->x = out->y = out->z = 0.0f;
     } else {
-        lbl_8053AB10->fn_8013B3F0();
+        gGameRoot2_8053AB10->fn_8013B3F0();
         out->set(pos->x, pos->y + offset, pos->z + offset);
     }
-    lbl_8053AB10->fn_8013B1E8();
+    gGameRoot2_8053AB10->fn_8013B1E8();
     if (params != NULL && params->field_0x34 == 1) {
         GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_ONE, GX_LO_NOOP);
     } else if (params != NULL && params->field_0x34 == 2) {
@@ -121,7 +121,7 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
 // FIXME: 76.5. The original copies the 0x68-byte record into field_0x11c[slot]
 // with a 13-iteration double-word loop; ours unrolls a word copy. Registers also
 // differ (record and slot in r24 / r23, original r23 / r26).
-void cls_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
+void TileMap_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
     if (record->mValid == 0) {
         return;
     }
@@ -148,7 +148,7 @@ void cls_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
 // FIXME: 88.2. Register allocation (the grid test uses f7-f11 for the original's
 // f3-f9, the result flag r5 for r6) and the first interpolation step: the original
 // scales v before loading p[1] and stores top's z before its x/y. Literals @NNN.
-bool cls_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
+bool TileMap_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
     bool result = false;
     if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
         pos->x < field_0x2368.x + 8.0f * field_0x2380 && pos->y >= field_0x2368.y &&
@@ -210,7 +210,7 @@ bool cls_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
 
 // FIXME: 98.7. Register allocation only: the 8.0f literal and field_0x2368.y swap
 // f5/f6 (and 0.125f is in f6, not f7); the ix * 0xC / iy * 0x30C products swap r0/r3.
-f32 cls_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
+f32 TileMap_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
     f32 z = pos->z;
     if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
         pos->x < field_0x2368.x + 8.0f * field_0x2380 && pos->y >= field_0x2368.y &&
@@ -237,7 +237,7 @@ f32 fn_802F5FF4(f32 z) {
 
 // Starts an effect of `kind` at pos in a free slot of field_0xbf9c, else in
 // the one with the smallest timer; kind 3 also keeps the normalized dir.
-void cls_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGeometry::TVec3f* dir,
+void TileMap_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGeometry::TVec3f* dir,
                                f32 scaleX, f32 scaleY) {
     s32 minTimer = -1;
     s32 minIndex = 0;
@@ -292,7 +292,7 @@ void cls_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGe
 // TEV colours, blend mode, z mode and alpha update of params, else white /
 // zero, the plain blend and the default z mode. fn_802F86CC calls it after
 // fn_802F91AC.
-void cls_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
+void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -359,7 +359,7 @@ static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
 // zero diagonal made 1) or the identity, scaled for the height like
 // fn_802F5FF4 and moved to pos, when params has a matrix or pos is off the
 // ground; *loaded says whether it was loaded (else the plain camera matrix).
-void cls_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, bool* loaded,
+void TileMap_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, bool* loaded,
                                f32 offset) {
     *loaded = false;
     if ((params != NULL && params->mMtx != NULL) ||
@@ -394,10 +394,10 @@ void cls_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5A
         m[0][3] += pos->x;
         m[1][3] += pos->y + offset;
         m[2][3] += pos->z + offset;
-        lbl_8053AB10->fn_8013B3CC(m);
+        gGameRoot2_8053AB10->fn_8013B3CC(m);
         *loaded = true;
     } else {
-        lbl_8053AB10->fn_8013B3F0();
+        gGameRoot2_8053AB10->fn_8013B3F0();
     }
 }
 
@@ -410,7 +410,7 @@ void cls_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_801F5A
 // colour of every 16 transparent; then copies them to field_0xc8[slot] with
 // each opaque colour's channels adjusted (rotated to b, r, g with `flag`) and
 // flushes that copy.
-void cls_804AA858::fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
+void TileMap_804AA858::fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -473,7 +473,7 @@ void cls_804AA858::fn_802F93F4(void* res, u32 srcOffset, s32 slot, u32 dstOffset
 // FIXME: 84.4. In the unrolled nibble-swap loop the original loads the next
 // source byte before storing the previous one (ours stores, then loads), and the
 // computed length lives in r26 (ours r31; the parameters move up one register).
-void cls_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
+void TileMap_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -507,7 +507,7 @@ void cls_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset
 
 // Layers 0-3 and 4-7 have their own grid arrays; any other layer indexes
 // the first array as is.
-u16 cls_804AA858::fn_802F9908(s32 layer, s32 index) {
+u16 TileMap_804AA858::fn_802F9908(s32 layer, s32 index) {
     s32 tile;
     if (layer >= 0 && layer < 4) {
         tile = mLayerGrid[layer][index];
@@ -519,7 +519,7 @@ u16 cls_804AA858::fn_802F9908(s32 layer, s32 index) {
     return tile;
 }
 
-void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
+void TileMap_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
     if (layer >= 0 && layer < 4) {
         mLayerGrid[layer][index] = value;
     } else if (layer >= 4 && layer < 8) {
@@ -534,7 +534,7 @@ void cls_804AA858::fn_802F9974(s32 layer, s32 index, u16 value) {
 // Loads the 'SCN ' tile grid of `layer` from res (decoded first when
 // compressed; `size` bytes from srcOffset, else the resource's size):
 // little-endian u16 tile codes, stored at byte offset dstOffset of the grid.
-void cls_804AA858::fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstOffset, u32 size) {
+void TileMap_804AA858::fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstOffset, u32 size) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -576,7 +576,7 @@ void cls_804AA858::fn_802F99DC(void* res, u32 srcOffset, s32 layer, u32 dstOffse
 // original loads the next low byte before the store); registers differ.
 // Loads the u16 grid field_0x24 from res like fn_802F99DC (little-endian,
 // `size` bytes, else the resource's size), from byte `start` on.
-void cls_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size) {
+void TileMap_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -616,7 +616,7 @@ void cls_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size) {
 // field_0xc[slot] (keeping the first colour, made transparent, in
 // field_0x114[slot]), colours 0xD8-0xDA made RGB4A3 with alpha 4 / 7, and the
 // adjusted copy in field_0x18[slot].
-void cls_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
+void TileMap_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size, bool flag) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -691,7 +691,7 @@ void cls_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOffset
 // unrolled nibble-swap loop before storing the previous ones; registers differ.
 // fn_802F9714 for the 'SCH ' tile images of field_0x4[slot]; for slot 1 it
 // also keeps bytes 0x200-0x2FF of that buffer in field_0x238c.
-void cls_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
+void TileMap_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
     u32 len;
     if (size == 0) {
         s32 resSize;
@@ -736,9 +736,9 @@ void cls_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset
 // stages put the player's field_0xe428 texture over it. Then each layer whose
 // field_0x235c / field_0x2360 byte is set (layers 0-3 at field_0x2368, 4-7 at
 // field_0x2374), and with field_0x2365 layer 0 a second time as pass 8.
-void cls_804AA858::fn_802FC80C() {
-    lbl_8053AB10->fn_8013B1E8();
-    lbl_8053AB10->fn_8013B438();
+void TileMap_804AA858::fn_802FC80C() {
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    gGameRoot2_8053AB10->fn_8013B438();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
     GXSetVtxDesc(GX_VA_CLR0, GX_INDEX16);
@@ -765,7 +765,7 @@ void cls_804AA858::fn_802FC80C() {
     if (field_0xe450) {
         s32 player;
         if (isGameModeSet() && lbl_8053AAF8->field_0x4 != NULL) {
-            player = fn_802D6A9C()->field_0x50;
+            player = getGameView_802D6A9C()->field_0x50;
         } else {
             player = 0;
         }
@@ -823,7 +823,7 @@ void cls_804AA858::fn_802FC80C() {
 
 // FIXME: 95.6. The loop index and the element pointer swap r29/r30 (and the
 // stw r29 save moves up one slot). Literals match.
-void cls_804AA858::fn_802FF2D8() {
+void TileMap_804AA858::fn_802FF2D8() {
     for (s32 i = 0; i < field_0xe424; i++) {
         cls_8030029C* sprite = &field_0xd324[i];
         if (sprite->mRes != NULL) {
@@ -838,7 +838,7 @@ void cls_804AA858::fn_802FF2D8() {
     fn_802FEE68();
 }
 
-void cls_804AA858::fn_802FF3B0() {
+void TileMap_804AA858::fn_802FF3B0() {
     if (field_0xe451 != 0 && lbl_8053AAF8->field_0x4 != NULL) {
         fn_802FA3FC();
     }
@@ -847,16 +847,16 @@ void cls_804AA858::fn_802FF3B0() {
 // FIXME: 88.7. The original copies the rectangles two words at a time (lwz, lwz,
 // stw, stw) and builds the full-screen one on the stack while storing it; ours copies
 // word by word and drops the stack copy. The loop registers swap as in fn_802FF2D8.
-void cls_804AA858::fn_802FF3F0() {
+void TileMap_804AA858::fn_802FF3F0() {
     if (field_0x248 && field_0x24c.x1 != 0) {
-        lbl_8053AB10->field_0x24->field_0x144 = field_0x24c;
+        gGameRoot2_8053AB10->field_0x24->field_0x144 = field_0x24c;
     } else {
         ScreenRect_802FF3F0 rect;
         rect.x0 = 0;
         rect.y0 = 0;
         rect.x1 = JUTVideo::getManager()->getFbWidth();
         rect.y1 = JUTVideo::getManager()->getEfbHeight();
-        lbl_8053AB10->field_0x24->field_0x144 = rect;
+        gGameRoot2_8053AB10->field_0x24->field_0x144 = rect;
     }
     fn_802FC80C();
     for (s32 i = 0; i < field_0xd320; i++) {
@@ -872,11 +872,11 @@ void cls_804AA858::fn_802FF3F0() {
     field_0xd320 = 0;
 }
 
-void cls_804AA858::fn_802FF548() {
+void TileMap_804AA858::fn_802FF548() {
     fn_802FF798();
 }
 
-void cls_804AA858::fn_802FF568() {
+void TileMap_804AA858::fn_802FF568() {
     fn_802FDDD4();
     if (isGameModeSet() == true) {
         fn_802FCE74();
@@ -905,7 +905,7 @@ void cls_804AA858::fn_802FF568() {
 // FIXME: 99.4. Register allocation in the per-player loop (r4-r8 one off); the
 // grid's .sdata2 literals (lbl_80541528 ... lbl_80541614) are @NNN because the
 // unwritten functions between fn_802F9DA8 and it use earlier pool entries first.
-void cls_804AA858::fn_802FF798() {
+void TileMap_804AA858::fn_802FF798() {
     for (s32 i = 0; i < 4; i++) {
         field_0x235c[i] = 0;
         field_0x2360[i] = 0;
@@ -983,7 +983,7 @@ void cls_804AA858::fn_802FF798() {
 
 // Frees what the constructor allocated, in reverse order. Only the first four
 // field_0x98 / field_0xc8 buffers are freed (in the loop of field_0x88).
-cls_804AA858::~cls_804AA858() {
+TileMap_804AA858::~TileMap_804AA858() {
     delete field_0xe454;
     for (s32 i = 9; i >= 0; i--) {
         delete field_0xe428[i];
@@ -1024,7 +1024,7 @@ cls_804AA858::~cls_804AA858() {
 
 // FIXME: 99.9. Instructions identical; the two file names are @NNN strings, not
 // lbl_804711D4 / lbl_804711E4, until the unit's .rodata is emitted in order.
-cls_804AA858::cls_804AA858(JKRHeap* heap) {
+TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
     heap->getTotalFreeSize();
     for (s32 i = 0; i < 2; i++) {
         field_0x4[i] = new (heap, 0x20) u8[0x8000];

@@ -19,7 +19,7 @@ void ArrowMarker_804A8470::draw() {
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
         break;
@@ -33,7 +33,7 @@ void ArrowMarker_804A8470::draw() {
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
         break;
@@ -61,7 +61,7 @@ void ArrowMarker_804A8470::update() {
                 field_0x250 = 1;
                 field_0x254 = 0x14;
                 field_0x258 = 0;
-                fn_801F0E34(0x30025, 0);
+                startSound_801F0E34(0x30025, 0);
                 field_0x230 = 1;
                 if (field_0x248 == 0) {
                     lbl_8053AED0->fn_8043D67C(0x199, 0, 0);
@@ -73,7 +73,7 @@ void ArrowMarker_804A8470::update() {
             break;
         case 1:
             field_0x254 = field_0x254 + lbl_80540968[field_0x258];
-            lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
             // The original copies mPos into a named local before the by-value call.
             JGeometry::TVec3f pos = mPos;
             lbl_8053AED0->fn_8043E7CC(pos);
@@ -86,7 +86,7 @@ void ArrowMarker_804A8470::update() {
                 } else if (field_0x254 <= 0x28) {
                     field_0x254 = 0x28;
                     field_0x258 = 0;
-                    fn_801F0E34(0x30025, 0);
+                    startSound_801F0E34(0x30025, 0);
                 }
                 if (player < 0) {
                     if (field_0x25c != 0) {
@@ -127,7 +127,7 @@ void ArrowMarker_804A8470::update() {
                 field_0x250 = 1;
                 field_0x254 = 0x14;
                 field_0x258 = 0;
-                fn_801F0E34(0x30025, 0);
+                startSound_801F0E34(0x30025, 0);
                 field_0x230 = 1;
                 if (field_0x248 == 0) {
                     lbl_8053AED0->fn_8043D67C(0x199, 0, 0);
@@ -136,7 +136,7 @@ void ArrowMarker_804A8470::update() {
             break;
         case 1:
             field_0x254 = field_0x254 + lbl_80540968[field_0x258];
-            lbl_8053AB10->field_0x24->fn_8030C210(&mPos);
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
             JGeometry::TVec3f pos = mPos;
             lbl_8053AED0->fn_8043E7CC(pos);
             if (vfunc_0x34()) {
@@ -148,7 +148,7 @@ void ArrowMarker_804A8470::update() {
                 } else if (field_0x254 <= 0x28) {
                     field_0x254 = 0x28;
                     field_0x258 = 0;
-                    fn_801F0E34(0x30025, 0);
+                    startSound_801F0E34(0x30025, 0);
                 }
             } else {
                 field_0x250 = 0;
@@ -173,7 +173,7 @@ void ArrowMarker_804A8470::init() {
     field_0x25c = 0;
 
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
     field_0x23c = mPos.z;
     // Modes 0 and 1 and modes 2 and up store the same values, as separate blocks in the

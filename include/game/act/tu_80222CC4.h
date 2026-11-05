@@ -3,11 +3,11 @@
 
 #include "game/cls_804A6A00.h"
 
-// A minor Shadow Link actor (sub-base cls_804A6A00) that spawns a 'DDGO'
+// A minor Shadow Link actor (sub-base ShadowLinkBase_804A6A00) that spawns a 'DDGO'
 // actor and releases it again; code in game/tu_80222CC4.cpp. Not tied to a
 // spawner ID. Named after its vtable (0x804A6C38). The constructor is
 // fn_8022313C.
-class cls_804A6C38 : public cls_804A6A00 {
+class cls_804A6C38 : public ShadowLinkBase_804A6A00 {
 public:
     cls_804A6C38();
     virtual ~cls_804A6C38();

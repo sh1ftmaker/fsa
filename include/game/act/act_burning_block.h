@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A7B90.
-class cls_804A7B90 : public ActorBase_804A5770 {
+class BurningBlockWoodenCrate_804A7B90 : public ActorBase_804A5770 {
 public:
-    cls_804A7B90() {}
-    /* 0x08 */ virtual ~cls_804A7B90();
+    BurningBlockWoodenCrate_804A7B90() {}
+    /* 0x08 */ virtual ~BurningBlockWoodenCrate_804A7B90();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

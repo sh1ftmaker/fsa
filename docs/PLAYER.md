@@ -29,7 +29,7 @@ Calls out of the Player units (counts): EffectSystem_8049F178 / JPA emitters
 347, ActorManager_804A5800 265, GameView_804A9950 236, tile queries
 (tu_8022461C) 152, pad object cls_804AA8C8 (tu_803099FC) 149, ActorBase 90,
 cls_804AA8B8 (tu_80301CD0) 75, cls_804AA8D8 (per-player 240x160 view box,
-tu_8030AE84, Player+0xBEC) 29, BgRewrite_804A7C98 27, Unk_8045A080 (audio) 14,
+tu_8030AE84, Player+0xBEC) 29, BgRewrite_804A7C98 27, AudioMgr_8045A080 (audio) 14,
 Camera_804AA9E4 13. Sound otherwise goes through the two cls_804B20F8 sound
 objects at +0x1250/+0x1254.
 
@@ -273,8 +273,8 @@ tu_8028FBA0 (0 instrs run): 8028FC2C 0x444; 80290070 0xce8 (44 Player + 8 cls_80
 Callee classes used by the Player units (call counts): EffectSystem_8049F178 / JPA emitters (tu_8013C5C8) 347; ActorManager_804A5800 265;
 GameView_804A9950 (stage/map state, tu_802D39B8) 236; tu_8022461C tile/collision queries 152; cls_804AA8C8 (pad object, tu_803099FC) 149;
 cls_804AA8B8 (tu_80301CD0, unknown) 75; ActorBase 90; cls_804AA8D8 (per-player camera box 240x160, tu_8030AE84) 29; BgRewrite_804A7C98 27;
-Unk_8045A080 (JAudio manager, tu_80457DFC) 14; cls_804AA858 14; Camera_804AA9E4 13. Sound: only ActorSoundObj_804578F4 (fn_80456154, in
-tu_8023FBF0); no JAI calls inside the Player units (audio comes through fwds / Unk_8045A080).
+AudioMgr_8045A080 (JAudio manager, tu_80457DFC) 14; TileMap_804AA858 14; Camera_804AA9E4 13. Sound: only ActorSoundObj_804578F4 (fn_80456154, in
+tu_8023FBF0); no JAI calls inside the Player units (audio comes through fwds / AudioMgr_8045A080).
 
 ## Boot path
 
@@ -562,7 +562,7 @@ respawn point 0xCBC / 0xD1C unless fn_80241E28, 0xCF8 = 0xCF4, 0xCF4 =
 frame counter of all of them; 0x3F8 / 0x3F9 the animation counter / frame;
 0x3DC / 0x3E8 the facing (0 right, 1 left, 2 down, 3 up, from the enter of
 0x1D). Names are provisional, from the motion, sounds (fn_8024F0E8) and
-effects (fn_8013CC50):
+effects (spawnEmitter_8013CC50):
 
 | states | enter / update | what it is |
 |---|---|---|
@@ -623,7 +623,7 @@ Evidence for the item names is the actor each state spawns (docs/names/actors.ts
 - **0x41 recoil hop** (enter 8025D7E4, update 8025D6AC): speed lbl_8046AFE0[facing]
   = 2 back against the facing and 4 up, sound 0x20010, a view shake
   (GameView fn_802D79E8), the TV effect of kind 3 aimed along the facing
-  (cls_804AA858 fn_802F601C); then 0x344 is added to mPos with gravity 0.25 (to -4)
+  (TileMap_804AA858 fn_802F601C); then 0x344 is added to mPos with gravity 0.25 (to -4)
   until the player lands (state 0).
 - **0x42** (update 8025AED0, requested by fn_8025AA8C(serial) from tu_801688AC):
   the player spins (facing every two frames) and is drawn 6 a frame across the floor
@@ -768,7 +768,7 @@ copy at the end of the file (0x80268194, just before __sinit). Written as an
    lbl_8053AAF8->0x82. alpha = fn_8023FC5C(), index = fn_80240868(); the frame
    is clamped to 0x3D4.
 2. Round shadow: field_0xb90 > 0 -> drawShadow(layer, &0x338, black, 0xb90)
-   (cls_804A0160, game/DrawShadow.h).
+   (ShadowCircle_804A0160, game/DrawShadow.h).
 3. GBA marker: layer > 8 and fn_80246B10(0x40) -> "enemy_gc_sob.bin" cel
    0x73 + index * 3 + (frame counter 0x5C / 6) % 3 at 0xCB0 (a 3-frame blink
    per player), params 0x1C = 0x2D = 1.

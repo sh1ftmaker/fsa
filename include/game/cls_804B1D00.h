@@ -10,15 +10,15 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 class cls_804B1D00 {
 public:
     cls_804B1D00();
     virtual ~cls_804B1D00();
 
-    // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
-    // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Draws the screen: gGameRoot2_8053AB10->fn_8013B490(), then mScreen at (0, 0)
+    // with gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_8044AF90();
     // Clears bits 0 and 1 of field_0x14, sets the 'Pf' and 'Pt' digit pictures
     // to the first 'TIMG' name, then clears the pane bytes 0xB0 of 'Ndata01'
@@ -26,12 +26,12 @@ public:
     void fn_8044AFD8();
     // Updates the counter digits: field_0x10 (0-999, clamped) on the 'Pf'
     // pictures and field_0x12 / field_0x13 (0-99) on the 'Pt' pictures, shown
-    // by the flags in field_0x14, and the two fn_80402E08 panes. Clears field_0x14.
+    // by the flags in field_0x14, and the two moveFromCentre_80402E08 panes. Clears field_0x14.
     void fn_8044A828();
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* mScreen; // "mg_volleyball.blo"
-    /* 0x08 */ cls_804AF86C* mPanes[2];
+    /* 0x08 */ PaneCtrl_804AF86C* mPanes[2];
     /* 0x10 */ u16 field_0x10; // 0-999 (clamped); hundreds, tens and units pick the 'Pf' digit pictures
     /* 0x12 */ u8 field_0x12; // 0-99 (clamped; fn_8044A828 also sets field_0x13 to 99 then); tens and units pick 'Pt01'..'Pt02'
     /* 0x13 */ u8 field_0x13; // 0-99 (clamped); tens and units pick 'Pt03'/'Pt04'

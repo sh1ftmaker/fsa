@@ -44,7 +44,7 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
 
 // The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
 static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
 }
 
@@ -280,7 +280,7 @@ void cls_804A71A8::fn_80268BC4() {
                 }
                 if (field_0x4->fn_802684A4(&field_0x8, field_0x4->field_0x3b4)) {
                     field_0x28[field_0x1c] = 1;
-                } else if (field_0x4->fn_8026FC20() <= 0 && !fn_802D6A9C()->fn_802DCD0C() &&
+                } else if (field_0x4->fn_8026FC20() <= 0 && !getGameView_802D6A9C()->fn_802DCD0C() &&
                            !contains(*layerBox(field_0x4->field_0x3b4), field_0x8))
                 {
                     field_0x38[field_0x1c] = 1;
@@ -531,7 +531,7 @@ void cls_804A71A8::fn_8026EC88(s32 player) {
         s32 dir = owner->field_0x3dc;
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos,
                                                 ((player + 1) & 7) << 4 | (dir & 3) << 2, -1, -1);
-        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {
@@ -552,7 +552,7 @@ void cls_804A71A8::fn_8026EE60() {
         Player_804A6F38* owner = field_0x4;
         s32 dir = owner->field_0x3dc;
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
-        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {

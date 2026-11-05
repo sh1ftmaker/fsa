@@ -4,7 +4,7 @@
 // The stage/screen state of game/tu_802D39B8.cpp: one instance, allocated
 // with __nw__(0x13290, heap, 0) and built by its constructor fn_802DE64C in
 // game/tu_80139BE8.cpp (0x8013A578-0x8013A594), stored at offset 0xC of the
-// object lbl_8053AAF8->0x4 points to; reach it with fn_802D6A9C(). 275 game
+// object lbl_8053AAF8->0x4 points to; reach it with getGameView_802D6A9C(). 275 game
 // units use it.
 //
 // "GameView_804A9950" is a provisional name carrying its vtable address
@@ -19,7 +19,7 @@
 // pairs such as (3, 1).
 //
 // Members: every export of game/tu_802D39B8.cpp that other units call with
-// the view in r3 (all of them pass fn_802D6A9C()'s result; several bodies
+// the view in r3 (all of them pass getGameView_802D6A9C()'s result; several bodies
 // ignore it and fetch the view again through lbl_8053AAF8, said at each as
 // "(this unused)"). Names stay dtk's placeholders; symbols.txt carries the
 // mangled names these declarations produce, so a changed parameter type is a
@@ -50,7 +50,7 @@ public:
     /* 0x08 */ virtual ~GameView_804A9950(); // fn_802DE604
     /* 0x0C */ virtual void vfunc_0xC();      // fn_802DD808, 0xDFC bytes
     // fn_802DD54C: copies field_0xf0[0] (negated when lbl_8053AAF8->0x5C has
-    // bit 1 set) to lbl_8053AB10->0x24 + 0x1DC and walks the players.
+    // bit 1 set) to gGameRoot2_8053AB10->0x24 + 0x1DC and walks the players.
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void vfunc_0x14(); // fn_802DD548, empty
 
@@ -90,7 +90,7 @@ public:
     // 1 unit (this unused). lbl_804A9530[a][b] when lbl_8053AAF8->0x7F == 1,
     // else lbl_80541128.
     const char* fn_802D9C7C(s32 a, s32 b);
-    // 2 units. Calls fn_8030C85C on lbl_8053AB10->0x24 (this unused).
+    // 2 units. Calls fn_8030C85C on gGameRoot2_8053AB10->0x24 (this unused).
     void fn_802D9CB0();
     // 1 unit. 0x2E4 bytes; no arguments.
     void fn_802D9CD8();
@@ -100,7 +100,7 @@ public:
     void fn_802D9FE8(s32 a, s32 b);
     // 18 units / 26 calls. field_0x24 = a, field_0x28 = b.
     void fn_802D9FF4(s32 a, s32 b);
-    // 1 unit (this unused). lbl_8053AB10->0x24's byte at 0x1E8, like
+    // 1 unit (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8, like
     // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
     u8 fn_802DA000();
     // 1 unit each; no arguments. fn_802DA630 returns 0 or 1 (it moves the four
@@ -114,7 +114,7 @@ public:
     void fn_802DB6F0();
     // 3 units / 6 calls. 0xFAC bytes; no arguments.
     void fn_802DBD60();
-    // 31 units / 42 calls (this unused). lbl_8053AB10->0x24's byte at 0x1E8.
+    // 31 units / 42 calls (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8.
     u8 fn_802DCD0C();
     // 2 units / 5 calls. Unless fn_802DCD0C(), steps field_0x14 by the sign
     // of dir[0] or field_0x18 by that of dir[1], reloads the screen
@@ -355,7 +355,7 @@ public:
     /* 0x131DF */ u8 field_0x131df[0x131EF - 0x131DF];
     /* 0x131EF */ u8 field_0x131ef; // fn_802D752C; 2 units read it
     /* 0x131F0 */ u8 field_0x131f0; // fn_802D7440; tu_80301CD0 reads it
-    /* 0x131F1 */ u8 field_0x131f1; // read by tu_8013C5C8 (fn_8013CC50) and tu_8022461C
+    /* 0x131F1 */ u8 field_0x131f1; // read by tu_8013C5C8 (spawnEmitter_8013CC50) and tu_8022461C
     /* 0x131F2 */ u8 field_0x131f2; // fn_802D6BF8; 5 units read it
     /* 0x131F3 */ u8 field_0x131f3; // fn_802D6BE0
     /* 0x131F4 */ u8 field_0x131f4; // fn_802D6BC8
@@ -380,10 +380,10 @@ public:
 }; // Size: 0x13290
 
 // lbl_8053AAF8->0x4->0xC (game/tu_802D39B8.cpp; 265 units).
-extern "C" GameView_804A9950* fn_802D6A9C(void);
+extern "C" GameView_804A9950* getGameView_802D6A9C(void);
 
 // Free functions of game/tu_802D39B8.cpp: no view argument (callers leave r3
-// unset). Each returns 0 or 1 from the stage numbers of fn_802D6A9C() (the
+// unset). Each returns 0 or 1 from the stage numbers of getGameView_802D6A9C() (the
 // view's field_0x4 / field_0x8), and returns 0 at once when
 // lbl_8053AAF8->0x7F is 0, except where said.
 //

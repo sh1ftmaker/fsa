@@ -142,7 +142,7 @@ below, ~0.5–0.65B.
 
 **G1 — shared headers** (one agent per header, reviewed, merged in order).
 1. ActorBase.h: settle the 19 slots; declare the ~60 non-virtual members
-   (`fn_801F0E34` alone is used by 222 units).
+   (`startSound_801F0E34` alone is used by 222 units).
 2. GameGlobals.h: `TRandom_fast_` at +0xB4, `JKRArchive*` at +0xA4,
    GameRoot2 +0x10/+0x20/+0x2C/+0x30.
 3. ActorManager.h: the remaining manager functions.

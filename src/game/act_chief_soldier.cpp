@@ -48,7 +48,7 @@ void ChiefSoldier_804A0B90::draw() {
                     params.mMtx = mtx;
                 }
                 JGeometry::TBox2f box;
-                box = fn_802D6A9C()->mVisibleBox;
+                box = getGameView_802D6A9C()->mVisibleBox;
                 JGeometry::TVec3f pos;
                 pos.set(mPos);
                 pos.x += box.i.x;
@@ -80,7 +80,7 @@ void ChiefSoldier_804A0B90::fn_80172BC8() {
         s32 frame = field_0x280 + 0x3FD;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     }
 }
@@ -96,14 +96,14 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
         }
         field_0x288 = 2;
         if (field_0x2a5 == 1) {
-            fn_801F0E34(0x5001F, 0);
+            startSound_801F0E34(0x5001F, 0);
         }
         field_0x230 = 2;
     }
     if (getType() != 7 && getType() != 8 && mLife <= 0) {
         s32 serial = field_0x238;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 actor->mAlive = false;
             }
@@ -120,7 +120,7 @@ ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
         }
         s32 serial = field_0x238;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 actor->mAlive = false;
             }

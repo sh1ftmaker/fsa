@@ -64,14 +64,14 @@ static const char* lbl_804B1C68[10] = {
 // after that call. Its stack frame is 0x30 with r25 saved (the original 0x20,
 // r26 to r31), so the registers of this and i also differ.
 void cls_804B1C90::fn_80448940() {
-    field_0x8->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+    field_0x8->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
     for (s32 i = 0; i < 4; i++) {
         if (i < 2) {
-            field_0xc[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
-            field_0x1c[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+            field_0xc[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+            field_0x1c[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
         } else {
-            field_0xc[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
-            field_0x1c[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+            field_0xc[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+            field_0x1c[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
         }
         const u64* row = lbl_80490940[i];
         u8 bit = 1 << i;
@@ -138,8 +138,8 @@ void cls_804B1C90::fn_80448940() {
 }
 
 void cls_804B1C90::fn_80449070() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 void cls_804B1C90::fn_804490B8() {
@@ -188,13 +188,13 @@ cls_804B1C90::cls_804B1C90() {
     lbl_8053AF18 = this;
     mScreen = new J2DScreen();
     mScreen->setPriority("mg_geldman.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    field_0x8 = new cls_804AF86C();
-    field_0x8->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
+    field_0x8 = new PaneCtrl_804AF86C();
+    field_0x8->setPane_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
     for (s32 i = 0; i < 4; i++) {
-        field_0xc[i] = new cls_804AF86C();
-        field_0xc[i]->fn_80402F04(mScreen->search(lbl_80490940[i][6]));
-        field_0x1c[i] = new cls_804AF86C();
-        field_0x1c[i]->fn_80402F04(mScreen->search(lbl_80490940[i][13]));
+        field_0xc[i] = new PaneCtrl_804AF86C();
+        field_0xc[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][6]));
+        field_0x1c[i] = new PaneCtrl_804AF86C();
+        field_0x1c[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][13]));
     }
     for (s32 i = 0; i < 4; i++) {
         field_0x2c[i] = 0;

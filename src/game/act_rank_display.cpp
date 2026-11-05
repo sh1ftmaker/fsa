@@ -39,7 +39,7 @@ static const char* lbl_804A8F60[] = {
 
 void RankDisplay_804A8F74::draw() {
     for (s32 i = 0; i < 4; i++) {
-        if (fn_802D6A9C()->field_0x131ef != 0) {
+        if (getGameView_802D6A9C()->field_0x131ef != 0) {
             continue;
         }
         if (field_0x27c[i] == 0) {
@@ -77,7 +77,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F50[field_0x244[i]]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -107,7 +107,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noItem_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -137,7 +137,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noMagic_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -171,7 +171,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F60[field_0x28c[i] - 4]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -251,13 +251,13 @@ void RankDisplay_804A8F74::update() {
                         invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
                             JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
-                            mEmitters[k] = fn_8013CC50(0, &pos, 0x3A6, 0, 0, NULL, NULL, true, 0.4f);
+                            mEmitters[k] = spawnEmitter_8013CC50(0, &pos, 0x3A6, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     } else if (field_0x244[k] > field_0x254[k]) {
                         invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
                             JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
-                            mEmitters[k] = fn_8013CC50(0, &pos, 0x3A5, 0, 0, NULL, NULL, true, 0.4f);
+                            mEmitters[k] = spawnEmitter_8013CC50(0, &pos, 0x3A5, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     }
                 }
@@ -266,7 +266,7 @@ void RankDisplay_804A8F74::update() {
         }
 
         if (fn_8023BE0C(i)) {
-            if (fn_8023DE58(i) < 8 && fn_802D6A9C()->fn_802D46D8(i, 0xEB, false) == true) {
+            if (fn_8023DE58(i) < 8 && getGameView_802D6A9C()->fn_802D46D8(i, 0xEB, false) == true) {
                 field_0x27c[i] = 30;
                 field_0x28c[i] = 2;
             }

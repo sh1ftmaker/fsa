@@ -5,7 +5,7 @@
 #include "JSystem/JUtility/TColor.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // Vtable 0x804B1288 (one slot, the destructor), 0x66C bytes, defined in
 // game/tu_80403D84.cpp. The constructor fn_804122F4 stores
@@ -70,14 +70,14 @@ public:
     /* 0x014 */ J2DScreen* field_0x14; // the screen whose panes fn_80408F38 fades
     /* 0x018 */ J2DScreen* field_0x18; // the screen fn_804111C4 draws
     /* 0x01C */ u8 field_0x1c[0x11C - 0x1C];
-    /* 0x11C */ cls_804AF86C* field_0x11c;
+    /* 0x11C */ PaneCtrl_804AF86C* field_0x11c;
     /* 0x120 */ u8 field_0x120[0x228 - 0x120];
-    /* 0x228 */ cls_804AF86C* field_0x228[2][2];
-    /* 0x238 */ cls_804AF86C* field_0x238;
-    /* 0x23C */ cls_804AF86C* field_0x23c;
-    /* 0x240 */ cls_804AF86C* field_0x240[12]; // panes the state handlers animate together
-    /* 0x270 */ cls_804AF86C* field_0x270[2]; // text panes
-    /* 0x278 */ cls_804AF86C* field_0x278[15]; // three groups of five panes
+    /* 0x228 */ PaneCtrl_804AF86C* field_0x228[2][2];
+    /* 0x238 */ PaneCtrl_804AF86C* field_0x238;
+    /* 0x23C */ PaneCtrl_804AF86C* field_0x23c;
+    /* 0x240 */ PaneCtrl_804AF86C* field_0x240[12]; // panes the state handlers animate together
+    /* 0x270 */ PaneCtrl_804AF86C* field_0x270[2]; // text panes
+    /* 0x278 */ PaneCtrl_804AF86C* field_0x278[15]; // three groups of five panes
     /* 0x2B4 */ u8 field_0x2b4[0x310 - 0x2B4];
     /* 0x310 */ JUtility::TColor field_0x310;
     /* 0x314 */ u8 field_0x314[0x350 - 0x314];

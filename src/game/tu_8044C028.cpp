@@ -23,10 +23,10 @@ void cls_804B1D20::fn_8044C038() {
 
 void cls_804B1D20::fn_8044C14C() {
     if (field_0x18) {
-        lbl_8053AB10->fn_8013B490();
-        mScreen[0]->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen[0]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         mScreen[1]->setScissor(true);
-        mScreen[1]->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        mScreen[1]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
         field_0x18 = false;
     }
 }
@@ -49,8 +49,8 @@ cls_804B1D20::cls_804B1D20() {
     ((J2DTextBox*)mScreen[1]->search('Tp01'))->setFont(font);
     font = lbl_8053AD78->mFont;
     ((J2DTextBox*)mScreen[1]->search('Tp02'))->setFont(font);
-    fn_803832BC(((J2DTextBox*)mScreen[1]->search('Tp01'))->getStringPtr(), 0x14A, 0, NULL, NULL);
-    fn_803832BC(((J2DTextBox*)mScreen[1]->search('Tp02'))->getStringPtr(), 0x14A, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreen[1]->search('Tp01'))->getStringPtr(), 0x14A, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreen[1]->search('Tp02'))->getStringPtr(), 0x14A, 0, NULL, NULL);
     field_0xc = 308.0f + mScreen[1]->search('Tp01')->getBounds()->i.y;
     field_0x10 = 308.0f + mScreen[1]->search('Tp02')->getBounds()->i.y;
     f32 height = mScreen[1]->search('Tp01')->getHeight();

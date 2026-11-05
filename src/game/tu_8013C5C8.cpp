@@ -61,8 +61,8 @@ void cls_8049F140::execute(JPABaseEmitter* emitter) {
     }
 }
 
-EffectSystem_8049F178* fn_8013C824() {
-    return lbl_8053AB10->field_0x28;
+EffectSystem_8049F178* getEffectSystem_8013C824() {
+    return gGameRoot2_8053AB10->field_0x28;
 }
 
 void EffectSystem_8049F178::fn_8013C830(s32 player, JPABaseEmitter* emitter) {
@@ -130,7 +130,7 @@ u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
     return result;
 }
 
-// The depth-biased position fn_8013CB44 and fn_8013CC50 both compute (inlined into each).
+// The depth-biased position setEmitterPos_8013CB44 and spawnEmitter_8013CC50 both compute (inlined into each).
 static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     if (adjust) {
         adjust = pos->z > 0.0f;
@@ -143,12 +143,12 @@ static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, 
     p.x = pos->x;
     p.y = pos->y + offset;
     p.z = pos->z + offset;
-    p.z += lbl_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
+    p.z += gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
 }
 
 // FIXME: 99.93. Code identical; only the int-to-float double's .sdata2 relocation differs: the
 // original pool has 0.5f (first used by the unwritten draw passes) before it.
-u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
+u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     bool result = false;
     if (emitter != NULL) {
         JGeometry::TVec3f p;
@@ -164,8 +164,8 @@ extern cls_8049F184 lbl_8053AB18;
 
 // FIXME: 99.86. Code identical; only the .sdata2 relocations of the int-to-float double and
 // 0.70710677f differ: the original pool has 0.5f (first used by the unwritten draw passes
-// fn_8013D5D4 / D6E4 / DB2C) before the double, as fn_8013CB44 shows too.
-JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height, s32 depth,
+// fn_8013D5D4 / D6E4 / DB2C) before the double, as setEmitterPos_8013CB44 shows too.
+JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height, s32 depth,
                             JPAEmitterCallBack* emitterCB, JPAParticleCallBack* particleCB, bool adjust,
                             f32 scale) {
     JPABaseEmitter* emitter = NULL;
@@ -232,7 +232,7 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
             }
 
             if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
-                if (fn_802D6A9C()->field_0x131f1) {
+                if (getGameView_802D6A9C()->field_0x131f1) {
                     switch (id) {
                     case 0x3CF:
                         id = 0x454;
@@ -247,7 +247,7 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
                         id = 0x44D;
                         break;
                     }
-                } else if (fn_802D6A9C()->field_0x131f2) {
+                } else if (getGameView_802D6A9C()->field_0x131f2) {
                     switch (id) {
                     case 0x3D3:
                         id = 0x3A4;
@@ -320,7 +320,7 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
             }
 
             if (group == 0xFF) {
-                EffectSystem_8049F178* system = lbl_8053AB10->field_0x28;
+                EffectSystem_8049F178* system = gGameRoot2_8053AB10->field_0x28;
                 for (s32 i = 0; i < 0x400; i++) {
                     EffectSystem_8049F178::Entry& entry = system->mEntries[i];
                     if (entry.mCount == 0) {
@@ -331,13 +331,13 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
                     }
                 }
             } else {
-                if (lbl_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 1) {
+                if (gGameRoot2_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 1) {
                     callback = &lbl_8053AB18;
                 }
-                if ((lbl_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 2) && group != 5) {
+                if ((gGameRoot2_8053AB10->field_0x28->mResourceManager->getResUserWork(id) & 2) && group != 5) {
                     group = 1;
                 }
-                emitter = lbl_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
+                emitter = gGameRoot2_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
                     p, id, group, 0, callback, particleCB);
             }
 
@@ -387,7 +387,7 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
             case 0x116:
             case 0x24E: case 0x24F: case 0x250: case 0x251:
             case 0x3D3: case 0x3D4:
-                emitter = lbl_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
+                emitter = gGameRoot2_8053AB10->field_0x28->mEmitterManager->createSimpleEmitterID(
                     *pos, id, 6, 0, emitterCB, particleCB);
                 break;
             case 0x15B:
@@ -408,15 +408,15 @@ void EffectSystem_8049F178::fn_8013D5B0() {
 }
 
 void EffectSystem_8049F178::fn_8013D908() {
-    JPADrawInfo info(lbl_8053AB10->field_0x24->field_0xe4);
-    lbl_8053AB10->fn_8013B438();
+    JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+    gGameRoot2_8053AB10->fn_8013B438();
     mEmitterManager->draw(&info, 7);
 }
 
 void EffectSystem_8049F178::fn_8013DA10() {
     if (!lbl_8053AAF8->fn_80134CC8()) {
-        JPADrawInfo info(lbl_8053AB10->field_0x24->field_0xe4);
-        lbl_8053AB10->fn_8013B438();
+        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+        gGameRoot2_8053AB10->fn_8013B438();
         GXSetAlphaUpdate(GX_FALSE);
         mEmitterManager->draw(&info, 9);
     }
@@ -429,7 +429,7 @@ void EffectSystem_8049F178::fn_8013DC1C() {
 void EffectSystem_8049F178::fn_8013DC44() {
     bool update = false;
     if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
-        if (!fn_802D6A9C()->fn_802DCD0C()) {
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
             update = true;
         }
     } else {
@@ -457,7 +457,7 @@ EffectSystem_8049F178::~EffectSystem_8049F178() {
 }
 
 // FIXME: 99.9. Code identical; only the .rodata string and .sdata2 relocations differ until
-// the strings of fn_8013CC50 / fn_8013DDEC exist.
+// the strings of spawnEmitter_8013CC50 / fn_8013DDEC exist.
 EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
     mHeap = JKRSolidHeap::create(-1, heap, false);
     mResourceManager = new (mHeap, 0)
@@ -465,7 +465,7 @@ EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
     OSReport("***** particle.jpc load *****\n");
     mEmitterManager = new (mHeap, 0) JPAEmitterManager(0x1C00, 0x200, mHeap, 0xB, 8);
     mEmitterManager->entryResourceManager(mResourceManager, 0);
-    mResourceManager->swapTexture(lbl_8053AB10->field_0x34->getTexInfo(), "AK_kagerouSwap00");
+    mResourceManager->swapTexture(gGameRoot2_8053AB10->field_0x34->getTexInfo(), "AK_kagerouSwap00");
     mHeap->adjustSize();
     mColors[0][0] = 0xC8;
     mColors[0][1] = 0xFA;
@@ -482,7 +482,7 @@ EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
 }
 
 void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
-    lbl_8053AB10->field_0x28->fn_8013C958(emitter);
+    gGameRoot2_8053AB10->field_0x28->fn_8013C958(emitter);
 }
 
 // FIXME: 99.85. Code identical; only the .sdata2 relocations of 0.70710677f and 0.41421357f
@@ -490,7 +490,7 @@ void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
 // Projects the particles: scales the manager's camera matrix by 1/sqrt 2 in y and z and moves
 // it by the emitter's translation times tan(22.5 deg) in y and z.
 void cls_8049F184::draw(JPABaseEmitter* emitter) {
-    JPAEmitterWorkData* work = lbl_8053AB10->field_0x28->mEmitterManager->pWd;
+    JPAEmitterWorkData* work = gGameRoot2_8053AB10->field_0x28->mEmitterManager->pWd;
     JGeometry::TSMtxf camera;
     camera.set(work->mPosCamMtx);
     Mtx m;
@@ -505,10 +505,10 @@ void cls_8049F184::draw(JPABaseEmitter* emitter) {
     PSMTXCopy(camera, work->mPosCamMtx);
 }
 
-// FIXME: 97.7. Regalloc only: the original keeps lbl_8053AB10 in r3 and loads the effect
+// FIXME: 97.7. Regalloc only: the original keeps gGameRoot2_8053AB10 in r3 and loads the effect
 // system into r4 first; here the root is in r4 and the camera comes in r5.
 void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
-    GameRoot2_8049F108* root = lbl_8053AB10;
+    GameRoot2_8049F108* root = gGameRoot2_8053AB10;
     root->field_0x24->field_0xe4.getCamMtx(root->field_0x28->mEmitterManager->pWd->mPosCamMtx);
 }
 

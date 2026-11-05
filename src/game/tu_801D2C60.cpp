@@ -24,7 +24,7 @@ void cls_804A48B0::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x30 = 12;
     params.field_0x1d = 1;
-    fn_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xD5, &params, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xD5, &params, -1, 1.0f, 1.0f);
 }
 
 static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f& p) {
@@ -35,13 +35,13 @@ void cls_804A48B0::update() {
     if (mTimer != 0) {
         mTimer--;
         if (mTimer == 0) {
-            fn_801F0E34(0x400D1, 0);
+            startSound_801F0E34(0x400D1, 0);
             fn_801CB538(field_0x4, &mPos, 0, 0);
             mAlive = false;
         }
     } else {
         s32 layer = field_0x4;
-        GameView_804A9950* view = fn_802D6A9C();
+        GameView_804A9950* view = getGameView_802D6A9C();
         const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
         if (!contains(box, mPos)) {
             mAlive = false;
@@ -69,7 +69,7 @@ void cls_804A48B0::init() {
     field_0x194 = 1;
     field_0x114 = 2;
     mAnim.fn_801D2608(lbl_8053A130, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1D60();
 }
 

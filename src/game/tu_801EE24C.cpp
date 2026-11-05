@@ -21,7 +21,7 @@ static const f32 lbl_8046A00C[5] = {
 
 // The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc.
 static inline JGeometry::TBox2f* layerBox(s32 layer) {
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
 }
 
@@ -36,7 +36,7 @@ bool ActorBase_804A5770::fn_801EE24C() {
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* warp = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* warp = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (warp == NULL || field_0x4 != warp->field_0x4 || (warp->field_0x90 & 0xFF) != 8) {
             continue;
         }
@@ -74,7 +74,7 @@ bool fn_801EE3C0(u16 tile) {
 // that is off screen at once. The destructor inlines it.
 void fn_801EE434(JPABaseEmitter* emitter) {
     if (emitter != NULL) {
-        GameView_804A9950* view = fn_802D6A9C();
+        GameView_804A9950* view = getGameView_802D6A9C();
         f32 x = emitter->mGlobalTrs.x;
         f32 y = emitter->mGlobalTrs.y - emitter->mGlobalTrs.z;
         bool onScreen = false;
@@ -87,7 +87,7 @@ void fn_801EE434(JPABaseEmitter* emitter) {
             emitter->clearStatus(JPAEMIT_Immortal);
             emitter->becomeInvalidEmitter();
         } else {
-            fn_8013C824()->mEmitterManager->forceDeleteEmitter(emitter);
+            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(emitter);
         }
     }
 }
@@ -156,7 +156,7 @@ static inline void raisePlayersNear(const ActorBase_804A5770* actor, u32 value) 
 // layers 8 and up go to fn_803037D4 for the players near the actor instead.
 // FIXME: 99.25. Register allocation only: the target keeps the player loops'
 // counter in r28 (where `sound` lives later), ours in r31 (fadeTime's).
-JAISoundHandle* ActorBase_804A5770::fn_801F0E34(u32 soundId, u32 fadeTime) const {
+JAISoundHandle* ActorBase_804A5770::startSound_801F0E34(u32 soundId, u32 fadeTime) const {
     if (field_0x4 >= 8 && !fn_8022BB48(field_0x4, &mPos)) {
         return NULL;
     }
@@ -180,12 +180,12 @@ JAISoundHandle* ActorBase_804A5770::fn_801F0E34(u32 soundId, u32 fadeTime) const
     ActorSoundObj_804578F4* sound =
         lbl_8053AAF8->field_0x4->mActorManager->fn_801F6644(mSlot);
     sound->field_0x44 = field_0x4 >= 8;
-    if (fn_802D6A9C()->fn_802D7804(field_0x4, 0x800)) {
+    if (getGameView_802D6A9C()->fn_802D7804(field_0x4, 0x800)) {
         sound->field_0x45 = 0;
     } else {
         s32 layer = field_0x4;
         if (layer < 8) {
-            if (fn_802D6A9C()->fn_802D7948() == 1) {
+            if (getGameView_802D6A9C()->fn_802D7948() == 1) {
                 sound->field_0x45 = 2;
             } else {
                 sound->field_0x45 = 0;
@@ -193,9 +193,9 @@ JAISoundHandle* ActorBase_804A5770::fn_801F0E34(u32 soundId, u32 fadeTime) const
         } else if (layer == 8) {
             sound->field_0x45 = 3;
         } else {
-            GameView_804A9950* view = fn_802D6A9C();
+            GameView_804A9950* view = getGameView_802D6A9C();
             if (field_0x4 < view->field_0x54) {
-                if (fn_802D6A9C()->fn_802D7948() == 1) {
+                if (getGameView_802D6A9C()->fn_802D7948() == 1) {
                     sound->field_0x45 = 2;
                 } else {
                     sound->field_0x45 = 1;
@@ -390,7 +390,7 @@ bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* ex
     bool hit = false;
     s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     if (serial >= 0 && serial != mSerial) {
-        ActorBase_804A5770* attacker = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* attacker = fn_801F856C()->findActorBySerial_801F666C(serial);
         bool accept = false;
         if ((includeId == 'NULL' || includeId == attacker->mActorId) &&
             (excludeId == 'NULL' || excludeId != attacker->mActorId))
@@ -419,7 +419,7 @@ bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* ex
             case 'FIRE':
                 if (field_0x1dc.fn_801EAC54(attacker->mSerial)) {
                     fn_801CB538(field_0x4, &attacker->mPos, 0, 0);
-                    fn_8013CC50(field_0x4, &attacker->mPos, 0x19D, 0, 0, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &attacker->mPos, 0x19D, 0, 0, NULL, NULL, true, 1.0f);
                 }
                 break;
             }
@@ -559,7 +559,7 @@ void ActorBase_804A5770::fn_801F349C(s32 layer, const JGeometry::TVec3f* pos) {
 void ActorBase_804A5770::fn_801F34DC() {
     s32 bit = field_0x16c;
     if (bit != -1) {
-        fn_802D6A9C()->fn_802D7618(bit);
+        getGameView_802D6A9C()->fn_802D7618(bit);
     }
 }
 
@@ -573,7 +573,7 @@ void ActorBase_804A5770::fn_801F3518() {
 void ActorBase_804A5770::fn_801F355C() {
     s32 bit = field_0x16c;
     if (bit != -1) {
-        fn_802D6A9C()->fn_802D7704(bit, false, field_0x4);
+        getGameView_802D6A9C()->fn_802D7704(bit, false, field_0x4);
     }
 }
 
@@ -588,9 +588,9 @@ void ActorBase_804A5770::fn_801F35AC() {
 void ActorBase_804A5770::fn_801F3604() {
     s32 bit = field_0x16c;
     if (bit != -1) {
-        fn_802D6A9C()->fn_802D7704(bit, field_0x1a8, field_0x4);
+        getGameView_802D6A9C()->fn_802D7704(bit, field_0x1a8, field_0x4);
     } else {
-        fn_802D6A9C()->fn_802D766C(field_0x1a8, field_0x4);
+        getGameView_802D6A9C()->fn_802D766C(field_0x1a8, field_0x4);
     }
 }
 
@@ -657,10 +657,10 @@ void ActorBase_804A5770::fn_801F3780(s32 v) {
 // .rodata is in the original order.
 void ActorBase_804A5770::fn_801F4694() const {
     if (field_0x190 > 0) {
-        fn_801F0E34(lbl_80469F38[field_0x190 - 1], 0);
+        startSound_801F0E34(lbl_80469F38[field_0x190 - 1], 0);
     }
     if (field_0xe8 == 0) {
-        fn_801F0E34(0x40002, 0);
+        startSound_801F0E34(0x40002, 0);
     }
 }
 
@@ -677,19 +677,19 @@ s32 ActorBase_804A5770::vfunc_0x3C() {
 }
 
 s32 ActorBase_804A5770::vfunc_0x38() {
-    return fn_802D6A9C()->fn_802D7E04(vfunc_0x3C());
+    return getGameView_802D6A9C()->fn_802D7E04(vfunc_0x3C());
 }
 
 bool ActorBase_804A5770::vfunc_0x34() {
     if (vfunc_0x3C()) {
-        return fn_802D6A9C()->fn_802D800C(vfunc_0x3C());
+        return getGameView_802D6A9C()->fn_802D800C(vfunc_0x3C());
     }
     return false;
 }
 
 void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
     if (vfunc_0x3C()) {
-        fn_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
+        getGameView_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
     }
 }
 

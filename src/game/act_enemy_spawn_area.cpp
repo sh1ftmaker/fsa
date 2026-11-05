@@ -54,7 +54,7 @@ void EnemySpawnArea_804A2CB0::update() {
         if (mTimer0 == 0) {
             s32 gone = 0;
             for (s32 i = 0; i < mCount; i++) {
-                if (fn_801F856C()->fn_801F666C(mSerials[i]) == NULL) {
+                if (fn_801F856C()->findActorBySerial_801F666C(mSerials[i]) == NULL) {
                     mSerials[i] = -1;
                     if (mMode == 0) {
                         mState = 0;

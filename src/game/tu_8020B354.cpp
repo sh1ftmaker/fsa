@@ -25,7 +25,7 @@ void cls_804A5E98::fn_8020B3E4(s32 player, s32 attack, const JGeometry::TVec3f* 
 // float registers (f2, f1 and f3, f1 in the target).
 void cls_804A5E98::fn_8020B434() {
     if (mState == 1) {
-        fn_801F0E34(0x400D8, 0);
+        startSound_801F0E34(0x400D8, 0);
         mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
         mBox2.set(mBox);
         s16 angle = (field_0x94 & 3) * 0x4000 - 0x6000;
@@ -54,7 +54,7 @@ void cls_804A5E98::draw() {
     params.field_0x1d = 0;
     s32 frame = mAnim.mCel + 0x2BF;
     if (!(mFlags & ENEMY_FLAG_NO_HURT)) {
-        fn_801F06F0("enemy_gc_sob.bin", frame, &params, 7, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_gc_sob.bin", frame, &params, 7, 1.0f, 1.0f);
         return;
     }
     if (mSpriteParams.mMtx == NULL) {
@@ -62,12 +62,12 @@ void cls_804A5E98::draw() {
     }
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
 }
 
 void cls_804A5E98::vfunc_0x24() {
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mTargetSerial);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
     if (actor != NULL) {
         static_cast<cls_804A5B28*>(actor)->fn_802075D8(field_0x94);
     }
@@ -80,12 +80,12 @@ void cls_804A5E98::vfunc_0x24() {
 void cls_804A5E98::vfunc_0xA0() {
     if (mState != 0) {
         s32 layer = field_0x4;
-        GameView_804A9950* view = fn_802D6A9C();
+        GameView_804A9950* view = getGameView_802D6A9C();
         JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z, 0.0f);
         f32 top = 0.001f + box->i.y;
         pos.y = top - pos.y >= 0.0f ? top : pos.y;
-        lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
 
@@ -98,7 +98,7 @@ bool cls_804A5E98::vfunc_0x5C() {
         s32 flag;
         s32 player = fn_801F285C(NULL, &flag, true, -1);
         if (player >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mTargetSerial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
             if (actor != NULL) {
                 static_cast<cls_804A5B28*>(actor)->fn_80207830(field_0x94, player, fn_8023B6CC(player),
                                                                fn_8023E724(player), flag);
@@ -112,9 +112,9 @@ bool cls_804A5E98::vfunc_0x60() {
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         s32 other = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (other >= 0 && other != mSerial) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(other);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(other);
             if (actor != NULL && !(!viewLayerFlag(field_0x4) && mPos.z > 16.0f && fn_801CC8E4(actor))) {
-                ActorBase_804A5770* target = fn_801F856C()->fn_801F666C(mTargetSerial);
+                ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
                 if (target != NULL) {
                     JGeometry::TVec3f from(mPos);
                     from.sub(actor->field_0x3c);
@@ -159,7 +159,7 @@ bool cls_804A5E98::vfunc_0x58() {
     bool hit = false;
     if (player >= 0) {
         hit = true;
-        ActorBase_804A5770* target = fn_801F856C()->fn_801F666C(mTargetSerial);
+        ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
         if (target != NULL) {
             from = *fn_8023E724(player);
             s32 type = 0;
@@ -185,7 +185,7 @@ void cls_804A5E98::vfunc_0x90(u8 mapHit) {
         break;
     case 2: {
         s32 layer = field_0x4;
-        GameView_804A9950* view = fn_802D6A9C();
+        GameView_804A9950* view = getGameView_802D6A9C();
         JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         if (mPos.x < box->i.x - 32.0f || mPos.y < box->i.y - 32.0f || mPos.x > 32.0f + box->f.x ||
             mPos.y > 32.0f + box->f.y) {
@@ -218,9 +218,9 @@ void cls_804A5E98::init() {
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
     mAnim.fn_801D2608(lbl_8053A170, 1);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     mPos.set(0.5f * (box->i.x + box->f.x), 0.5f * (box->i.y + box->f.y), 0.0f);
 }

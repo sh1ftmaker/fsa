@@ -40,7 +40,7 @@ void Gibdo_804A3BF8::draw() {
     if (mFlags & 0x4000) {
         params.field_0x0[3] = 6;
     }
-    fn_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xC1, &params, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xC1, &params, 7, 1.0f, 1.0f);
 }
 
 void Gibdo_804A3BF8::vfunc_0x9C(u8 mapHit) {
@@ -165,7 +165,7 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
             fn_801CD150(&mPos, &pos);
             s32 serial = fn_801F856C()->fn_801F9484('STAL', 8, &pos, 3, field_0x16c, -1);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     actor->field_0x98 = 2;
                 }
@@ -214,7 +214,7 @@ void Gibdo_804A3BF8::init() {
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
     mAnim.fn_801D2608(lbl_804A3BB8, 0x10);
-    mAnim.fn_801D22DC(field_0x98, 2, false);
+    mAnim.startAnim_801D22DC(field_0x98, 2, false);
     mAnim.fn_801D1D60();
 }
 

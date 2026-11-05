@@ -15,7 +15,7 @@ void GBAWindowControl_804AA440::update() {
         break;
     case 1:
         if (field_0x23c != 0) {
-            lbl_8053AB10->field_0x20->field_0x216 = 1;
+            gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
             field_0x23c--;
         } else {
             field_0x230 = 0;
@@ -27,7 +27,7 @@ void GBAWindowControl_804AA440::update() {
 void GBAWindowControl_804AA440::init() {
     field_0x234 = (field_0x90 >> 22) & 0x1F;
     field_0x238 = field_0x90 & 0xFFF;
-    fn_802D6A9C()->fn_802D7870(field_0x234);
+    getGameView_802D6A9C()->fn_802D7870(field_0x234);
     field_0x230 = 0;
     field_0x23c = 0;
     update();

@@ -5,7 +5,7 @@
 #include "game/tu_8021F4B0.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
-// Effect ids of the three emitters (fn_8013CC50).
+// Effect ids of the three emitters (spawnEmitter_8013CC50).
 static const u16 lbl_8053FDD0[3] = {0x3CC, 0x3CD, 0x3CE};
 
 // The loop of fn_8021F924, inlined into the end of state 5.
@@ -19,7 +19,7 @@ static inline void deleteEmitters(cls_8021FB44* self) {
 static inline void followEmitters(JPABaseEmitter** emitters, const JGeometry::TVec3f* pos) {
     for (s32 i = 0; i < 3; i++) {
         if (emitters[i]) {
-            fn_8013CB44(emitters[i], pos, 0, 0, true);
+            setEmitterPos_8013CB44(emitters[i], pos, 0, 0, true);
         }
     }
 }
@@ -120,7 +120,7 @@ void cls_8021FB44::fn_8021F9AC(const JGeometry::TVec3f* pos) {
     mTimer = 0;
     mState = 1;
     for (s32 i = 0; i < 3; i++) {
-        mEmitters[i] = fn_8013CC50(0, &mPos, lbl_8053FDD0[i], 0, 0, NULL, NULL, true, mScale);
+        mEmitters[i] = spawnEmitter_8013CC50(0, &mPos, lbl_8053FDD0[i], 0, 0, NULL, NULL, true, mScale);
     }
 }
 

@@ -35,7 +35,7 @@ template <int N> class JAUDopplerAudible;
 template <int N, class Audible, class State, class Audience> class JAUAudience_;
 class JKRSolidHeap;
 
-struct Unk_8045A080 {
+struct AudioMgr_8045A080 {
     /* 0x00 */ u32 field_0x0;
     /* 0x04 */ u8 field_0x4; // set: no music / second sequence starts (fn_80458FF0, fn_80458F04)
     /* 0x05 */ u8 field_0x5; // the number of players: system sounds are panned by player when 2-4
@@ -112,7 +112,7 @@ struct Unk_8045A080 {
     void fn_80458FF0(s32 id, bool arg1, u8 flag);
     // game/tu_80457DFC.cpp (0x8045A080): the constructor main calls on the
     // 0x90-byte object it allocates in the main heap.
-    Unk_8045A080();
+    AudioMgr_8045A080();
     // game/tu_80457DFC.cpp (0x80458880, not written yet: it inlines
     // fn_80458F04, defined after it). Plays system sound `id` (a register,
     // not a JAISoundID; equality tests are cmplwi) for `player` (extsb on

@@ -29,7 +29,7 @@ public:
     // 0x8020B500: in state 0, makes the hitbox 16x16 again; state 1.
     void fn_8020B500();
 
-    /* 0x2A8 */ s32 mTargetSerial; // the actor vfunc_0x24 looks up (fn_801F666C); -1 from the constructor
+    /* 0x2A8 */ s32 mTargetSerial; // the actor vfunc_0x24 looks up (findActorBySerial_801F666C); -1 from the constructor
 }; // Size: 0x2AC
 
 #endif

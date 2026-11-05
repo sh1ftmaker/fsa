@@ -37,7 +37,7 @@ void IceMeltedByFourPlayers_804AE888::draw() {
     }
     void* res = fn_804032E8('TIMG', "yukikabe.bti");
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
@@ -100,7 +100,7 @@ bool IceMeltedByFourPlayers_804AE888::fn_80378680() {
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -140,7 +140,7 @@ u8 IceMeltedByFourPlayers_804AE888::fn_80378880() {
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -183,20 +183,20 @@ void IceMeltedByFourPlayers_804AE888::update() {
         mBox.set(-96.0f, -16.0f, 96.0f, 16.0f);
         if (fn_80378880() == 1) {
             if (mEmitter230 == NULL) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x456, 0, 1, NULL, NULL, true, 1.0f);
+                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x456, 0, 1, NULL, NULL, true, 1.0f);
             }
             field_0x238 -= 0.002f;
             if (field_0x238 < 0.5f) {
                 field_0x234 = 1;
             }
-            fn_801F0E34(0x50087, 0);
+            startSound_801F0E34(0x50087, 0);
         } else if (mEmitter230 != NULL) {
             fn_801EE434(mEmitter230);
             mEmitter230 = NULL;
         }
         break;
     case 1:
-        fn_801F0E34(0x50087, 0);
+        startSound_801F0E34(0x50087, 0);
         field_0x23c -= 0.005;
         if (field_0x23c < 0.01f) {
             field_0x23c = 0.01f;

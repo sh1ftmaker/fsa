@@ -112,10 +112,10 @@ void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) 
     case 0:
         if (field_0x24 == 2) {
             JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-            fn_8013CC50(0, &pos, 0x3EC, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3ED, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3EE, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3EF, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EC, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3ED, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EE, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EF, 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x14 = 255.0f;
         field_0x18 = 255.0f / (f32)(s32)(field_0x8 - 1);
@@ -123,10 +123,10 @@ void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) 
     case 1:
         if (field_0x24 == 2) {
             JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-            fn_8013CC50(0, &pos, 0x3F0, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F1, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F2, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F3, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F0, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F1, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F2, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F3, 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x14 = 0.0f;
         field_0x18 = 255.0f / (f32)(s32)(field_0x8 - 1);
@@ -134,10 +134,10 @@ void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) 
     case 2:
         if (field_0x24 == 2) {
             JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-            fn_8013CC50(0, &pos, 0x3F0, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F1, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F2, 0, 0, NULL, NULL, true, 1.0f);
-            fn_8013CC50(0, &pos, 0x3F3, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F0, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F1, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F2, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3F3, 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x14 = 0.0f;
         field_0x18 = 510.0f / (f32)(s32)(field_0x8 - 1);

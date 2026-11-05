@@ -16,9 +16,9 @@ void ChainSwitch_804AA3E8::update() {
                 vfunc_0x30(0xFF, false);
             }
             if (mSwitchMode == 0) {
-                fn_802D6A9C()->fn_802D8050(mSwitchBit, true, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(mSwitchBit, true, 0xFF);
             } else if (mSwitchMode == 1) {
-                fn_802D6A9C()->fn_802D8050(mSwitchBit, false, 0xFF);
+                getGameView_802D6A9C()->fn_802D8050(mSwitchBit, false, 0xFF);
             }
             if (mCallWhenDone == 1) {
                 vfunc_0x24();

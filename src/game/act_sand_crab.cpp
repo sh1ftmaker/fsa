@@ -7,7 +7,7 @@
 SandCrab_8049F3B0::~SandCrab_8049F3B0() {}
 
 void SandCrab_8049F3B0::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", field_0x240 + 0x1A, NULL, 0, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x240 + 0x1A, NULL, 0, 1.0f, 1.0f);
 }
 
 void SandCrab_8049F3B0::update() {

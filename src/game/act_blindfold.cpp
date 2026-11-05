@@ -44,7 +44,7 @@ void Blindfold_804A8EF8::draw() {
     params.mMtx = mtx;
     void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', "black.bti");
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
@@ -90,9 +90,9 @@ void Blindfold_804A8EF8::update() {
         break;
     case 1:
         if (field_0x240) {
-            fn_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
-            fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x30003, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x30003, 0);
             field_0x240 = false;
             mAlive = false;
         }

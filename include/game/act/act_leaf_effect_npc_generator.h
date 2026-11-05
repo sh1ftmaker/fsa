@@ -7,10 +7,10 @@
 #include "JSystem/JGeometry.h"
 
 // Named after its vtable, 0x804AE288.
-class cls_804AE288 : public ActorBase_804A5770 {
+class LeafEffectNPCGenerator_804AE288 : public ActorBase_804A5770 {
 public:
-    cls_804AE288() {}
-    /* 0x08 */ virtual ~cls_804AE288();
+    LeafEffectNPCGenerator_804AE288() {}
+    /* 0x08 */ virtual ~LeafEffectNPCGenerator_804AE288();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

@@ -194,7 +194,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - A function-local singleton class: name it after the destructor its getter
   passes to `__register_global_object`; a class with no vtable, ctor or dtor:
   after its lowest-address function.
-- `fn_80158B5C` (cls_804A0160, the shadow sprite) calls: use `drawShadow()`
+- `drawShadow_80158B5C` (ShadowCircle_804A0160, the shadow sprite) calls: use `drawShadow()`
   from game/DrawShadow.h (it loads the receiver last, as the original does).
 - New inline FUNCTIONS go in a small header included only where used, never
   in a widely included one (GameGlobals.h, ActorBase.h): every inline adds
@@ -256,9 +256,9 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   earlier than ours: the method is `const`. MWCC hoists loads through a const
   `this` past stores; through a plain `this`, a local, a cast or an inlined
   const accessor it never does. Callees on `this` must be const too (only if
-  they just read, e.g. fn_801F0E34, fn_80219E04); rename the symbols to `...CFv`.
+  they just read, e.g. startSound_801F0E34, fn_80219E04); rename the symbols to `...CFv`.
   tu_8020CCA8, tu_801E5FC8, tu_8021AF28 fn_8021B668.
-- `fn_802D6A9C()->field_0x131df[layer]`: `viewLayerFlag(layer)` (game/ViewLayer.h;
+- `getGameView_802D6A9C()->field_0x131df[layer]`: `viewLayerFlag(layer)` (game/ViewLayer.h;
   the view in a local, else the index add swaps). act_magic_jar, tu_802242F4.
 - Player bytes 0xC80 / 0xCEE / 0x1215 / 0xCA0 / 0xCE9 tested in a row:
   `playerFlags_802413F0(player)` (game/PlayerFlags.h). Matches only the
@@ -281,12 +281,12 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - A TVec2 stored member by member around calls (stfs x before the second
   fn_8023E724 call), then reused for another value: one named `TVec2f v;`
   assigned `v.x = ...; v.y = ...;` (cls_800F802C::fn_800F802C).
-- Emitter deleted and cleared (field read again after bl fn_8013C824):
+- Emitter deleted and cleared (field read again after bl getEffectSystem_8013C824):
   `deleteEmitter(&mEmitter)` (game/EmitterDelete.h: the manager in a local).
-  act_eyeball_switch cls_804AE678::vfunc_0x24.
-- Plain calls, no wrapper: effect `fn_8013CC50(field_0x4, &mPos, id, ...)` and
-  sound `fn_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
-  `fn_801F856C()->fn_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
+  act_eyeball_switch EyeballSwitch_804AE678::vfunc_0x24.
+- Plain calls, no wrapper: effect `spawnEmitter_8013CC50(field_0x4, &mPos, id, ...)` and
+  sound `startSound_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
+  `fn_801F856C()->findActorBySerial_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
   `->fn_801F9484(id, layer, &pos, arg, -1, -1)` (act_leaf_effect_npc_generator.cpp:58);
   random `lbl_8053AAF8->mRandom.get_ufloat_1()` (tu_801C6A4C.cpp:75),
   `(s32)(k * get_ufloat_1())` (act_sand_crab.cpp:49); resources

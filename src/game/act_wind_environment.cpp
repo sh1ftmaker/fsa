@@ -55,12 +55,12 @@ void WindEnvironment_8049CC98::fn_80106ADC(s32 state) {
 inline bool WindEnvironment_8049CC98::shouldBlow() {
     switch (mCondition) {
     case 1:
-        if (fn_802D6A9C()->field_0x171 != 0) {
+        if (getGameView_802D6A9C()->field_0x171 != 0) {
             return true;
         }
         return false;
     case 2:
-        if (fn_802D6A9C()->field_0x171 == 0) {
+        if (getGameView_802D6A9C()->field_0x171 == 0) {
             return true;
         }
         return false;
@@ -123,13 +123,13 @@ void WindEnvironment_8049CC98::init() {
     mCondition = (field_0x90 >> 4) & 0xF;
     s32 kind = mKind;
     JGeometry::TVec3f pos;
-    setCenter(pos, fn_802D6A9C()->mVisibleBox);
+    setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
     switch (kind) {
     case 0:
-        mEmitter = fn_8013CC50(field_0x4, &pos, 0x505, 0, 0, NULL, NULL, true, 1.0f);
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x505, 0, 0, NULL, NULL, true, 1.0f);
         break;
     case 1:
-        mEmitter = fn_8013CC50(field_0x4, &pos, 0x504, 0, 0, NULL, NULL, true, 1.0f);
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x504, 0, 0, NULL, NULL, true, 1.0f);
         break;
     }
     if (mEmitter != NULL) {

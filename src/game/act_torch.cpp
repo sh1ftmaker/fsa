@@ -7,11 +7,11 @@
 
 // Builds the colour inside, which pairs each temporary with its by-value copy as the original does.
 static inline void drawTorchShadow(s32 layer, const JGeometry::TVec3f* pos, u8 alpha, f32 scale) {
-    lbl_8053AB10->field_0x2c->fn_80158B5C(layer, pos, JUtility::TColor(0, 0, 0, alpha), scale);
+    gGameRoot2_8053AB10->field_0x2c->drawShadow_80158B5C(layer, pos, JUtility::TColor(0, 0, 0, alpha), scale);
 }
 
 void Torch_804A8520::draw() {
-    if (fn_802D6A9C()->field_0x131f5 != 0) {
+    if (getGameView_802D6A9C()->field_0x131f5 != 0) {
         if (mShadowScale > 0.0f) {
             mShadowScale -= 8.0f;
             if (mShadowScale <= 0.0f) {
@@ -48,14 +48,14 @@ void Torch_804A8520::draw() {
     }
     case 2:
         if (mOn == 1) {
-            lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
+            gGameRoot2_8053AB10->field_0x2c->field_0xd[0] = 1;
             f32 scale = mShadowScale;
             JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
             drawTorchShadow(field_0x4, &pos, 0x80, scale);
         }
         break;
     case 3: {
-        lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
+        gGameRoot2_8053AB10->field_0x2c->field_0xd[0] = 1;
         f32 scale = mShadowScale;
         JGeometry::TVec3f pos(mPos.x, mPos.y - 4.0f, mPos.z);
         drawTorchShadow(field_0x4, &pos, 0xC8, scale);
@@ -67,15 +67,15 @@ void Torch_804A8520::draw() {
 void Torch_804A8520::update() {
     switch (mState) {
     case 0:
-        if (fn_802D6A9C()->fn_802D800C(mViewBit) || field_0x94 != 0) {
+        if (getGameView_802D6A9C()->fn_802D800C(mViewBit) || field_0x94 != 0) {
             mOn = 1;
             if (mType == 0 || mType == 2 || mType == 4) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
                 if (mType != 4) {
-                    mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
+                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
                 }
             }
-            fn_801F0E34(0x30005, 0);
+            startSound_801F0E34(0x30005, 0);
             field_0xb0 = 12;
             mState = 1;
             field_0x24c = 1;
@@ -84,7 +84,7 @@ void Torch_804A8520::update() {
         break;
     case 1: {
         s32 bit = mViewBit;
-        if (bit != 0 && !fn_802D6A9C()->fn_802D800C(bit)) {
+        if (bit != 0 && !getGameView_802D6A9C()->fn_802D800C(bit)) {
             if (mEmitter230 != NULL) {
                 mEmitter230->becomeInvalidEmitter();
                 mEmitter230 = NULL;
@@ -126,12 +126,12 @@ void Torch_804A8520::init() {
     mEmitter230 = NULL;
     mEmitter234 = NULL;
     s32 bit = mViewBit;
-    if (bit == 0 || fn_802D6A9C()->fn_802D800C(bit)) {
+    if (bit == 0 || getGameView_802D6A9C()->fn_802D800C(bit)) {
         mOn = 1;
         if (mType == 0 || mType == 2 || mType == 4) {
-            mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBD, 0, 0, NULL, NULL, true, 1.0f);
             if (mType != 4) {
-                mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54A, 0, 0, NULL, NULL, true, 1.0f);
             }
         }
         field_0xb0 = 12;

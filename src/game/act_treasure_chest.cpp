@@ -17,7 +17,7 @@
 TreasureChest_804AA178::~TreasureChest_804AA178() {}
 
 bool TreasureChest_804AA178::fn_802EB27C() {
-    // FIXME: 97.11 %. The original copies fn_801F666C's result through r0
+    // FIXME: 97.11 %. The original copies findActorBySerial_801F666C's result through r0
     // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
     s32 serial;
     bool result = false;
@@ -26,7 +26,7 @@ bool TreasureChest_804AA178::fn_802EB27C() {
         if (serial < 0) {
             continue;
         }
-        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(fn_801F856C()->fn_801F666C(serial));
+        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(fn_801F856C()->findActorBySerial_801F666C(serial));
         if (item != NULL && item->fn_801597B8() == 3) {
             item->fn_801597C0();
             result = true;
@@ -139,14 +139,14 @@ bool TreasureChest_804AA178::vfunc_0x54() {
         if (field_0x238 == 0) {
             fn_80230FD0(field_0x240, 0x20013);
             lbl_8053AC98->fn_802A3948(&field_0x25c, 0, field_0x4, 0x10);
-            s32 bit = fn_802D6A9C()->fn_802D4C10(field_0x4, (u16)mCell);
+            s32 bit = getGameView_802D6A9C()->fn_802D4C10(field_0x4, (u16)mCell);
             if (bit != -1) {
-                fn_802D6A9C()->fn_802D7D00(field_0x4, bit, true);
+                getGameView_802D6A9C()->fn_802D7D00(field_0x4, bit, true);
             }
             JGeometry::TVec3f fxA(field_0x25c.x + 8.0f, field_0x25c.y + 8.0f, 0.0f);
-            fn_8013CC50(field_0x4, &fxA, 0xD0, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &fxA, 0xD0, 0, 0, NULL, NULL, true, 1.0f);
             JGeometry::TVec3f fxB(field_0x25c.x + 8.0f, field_0x25c.y + 8.0f, 0.0f);
-            fn_8013CC50(field_0x4, &fxB, 0xD1, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &fxB, 0xD1, 0, 1, NULL, NULL, true, 1.0f);
         }
         result = true;
     }
@@ -180,7 +180,7 @@ void TreasureChest_804AA178::update() {
 
     switch (field_0x230) {
     case 0:
-        if (lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
+        if (gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
             field_0x230 = 1;
         }
         break;
@@ -210,7 +210,7 @@ void TreasureChest_804AA178::update() {
             if (result == true) {
                 if (!fn_8023EFEC(field_0x240)) {
                     if (fn_8022EA0C(field_0x240) == field_0x240) {
-                        if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x248), 0x100) != 0) {
+                        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x248), 0x100) != 0) {
                             if (vfunc_0x54()) {
                                 mAlive = false;
                             }
@@ -301,7 +301,7 @@ void TreasureChest_804AA178::init() {
 
     JGeometry::TVec2f cell(field_0x25c.x, field_0x25c.y);
     mCell = fn_80226BC4(&cell, field_0x4);
-    if (fn_802D6A9C()->fn_802D49A8(field_0x4, (u16)mCell) == true) {
+    if (getGameView_802D6A9C()->fn_802D49A8(field_0x4, (u16)mCell) == true) {
         mAlive = false;
     }
 

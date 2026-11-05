@@ -49,29 +49,29 @@ bool Icicle_8049CFC8::fn_8010B40C(s32 state) {
     switch (state) {
     case 1:
         field_0x23c = 0.0f;
-        fn_801F0E34(0x3007C, 0);
+        startSound_801F0E34(0x3007C, 0);
         break;
     case 2:
         deleteEmitter(&mEmitter100);
         deleteEmitter(&mEmitter104);
         if (field_0x4 == 0) {
-            fn_8013CC50(field_0x4, &mPos, 0x28D, 0, 0, NULL, NULL, true, 0.6f);
-            field_0x27c = fn_8013CC50(field_0x4, &mPos, 0x28E, 0, 0, NULL, NULL, true, 0.6f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28D, 0, 0, NULL, NULL, true, 0.6f);
+            field_0x27c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x28E, 0, 0, NULL, NULL, true, 0.6f);
         }
         field_0x23c = 0.0f;
-        fn_801F0E34(0x30061, 0);
+        startSound_801F0E34(0x30061, 0);
         break;
     case 3:
-        fn_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 1.0f);
-        mSprite.fn_801D22DC(1, 0, false);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 1.0f);
+        mSprite.startAnim_801D22DC(1, 0, false);
         field_0x23c = 0.0f;
-        fn_801F0E34(0x3007D, 0);
+        startSound_801F0E34(0x3007D, 0);
         break;
     case 4:
         mDrawEnabled = false;
         field_0x240 = 0.0f;
-        mSprite.fn_801D22DC(0, 2, false);
+        mSprite.startAnim_801D22DC(0, 2, false);
         mPos.set(mSpawnPos);
         mPos.y = mSpawnPos.y - 8.0f;
         break;
@@ -282,7 +282,7 @@ void Icicle_8049CFC8::init() {
     field_0x80.f.x = 8.0f;
     field_0x80.f.y = 8.0f;
     mSprite.fn_801D2608(lbl_80539EE0, 2);
-    mSprite.fn_801D22DC(0, 2, false);
+    mSprite.startAnim_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
     if (vfunc_0x3C() > 0) {
         mDrawEnabled = false;

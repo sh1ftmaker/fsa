@@ -27,7 +27,7 @@ static inline void hitReaction(Pengator_804A1888* self) {
 }
 
 void Pengator_804A1888::draw() {
-    fn_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x145, NULL, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x145, NULL, 7, 1.0f, 1.0f);
 }
 
 // FIXME: 93.01 %. What differs: (1) the (field_0x98 & 2) test's branch layout
@@ -56,8 +56,8 @@ void Pengator_804A1888::update() {
         return;
     }
 
-    fn_801F71A4(&field_0x3c.x, field_0x258, 0.1f, field_0x250);
-    fn_801F71A4(&field_0x3c.y, field_0x25c, 0.1f, field_0x250);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x258, 0.1f, field_0x250);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x25c, 0.1f, field_0x250);
     mPos += field_0x3c;
     fn_80212AC0()->fn_80212AF0(&mPos);
     fn_801F2B7C(-100, -1, 1);
@@ -159,7 +159,7 @@ void Pengator_804A1888::update() {
         field_0x234 = 0;
         field_0x240 = 0;
         field_0x24c = field_0x98 + 0xc;
-        fn_801F0E34(0x400AB, 0);
+        startSound_801F0E34(0x400AB, 0);
         field_0x254 = 5.0f;
         if (tile != 0x50) {
             field_0x254 = 3.0f;
@@ -209,8 +209,8 @@ void Pengator_804A1888::update() {
         if (mPos.z > 0.0f) {
             field_0x3c.z -= 1.0f;
         }
-        fn_801F71A4(&field_0x258, 0.0f, 0.1f, rate);
-        fn_801F71A4(&field_0x25c, 0.0f, 0.1f, rate);
+        addCalc2_801F71A4(&field_0x258, 0.0f, 0.1f, rate);
+        addCalc2_801F71A4(&field_0x25c, 0.0f, 0.1f, rate);
         if (mPos.z <= 0.0f) {
             break;
         }

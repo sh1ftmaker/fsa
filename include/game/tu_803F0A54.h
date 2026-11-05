@@ -6,7 +6,7 @@
 class J2DScreen;
 class J2DAnmBase;
 class J2DPicture;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 class cls_804B16A8;
 class cls_804B20F8;
 
@@ -21,12 +21,12 @@ class cls_804B20F8;
 // pointer-to-member tables (enter, update, draw); state 13 runs the
 // previous state's entries. The fade picture field_0x5c covers the screen
 // while field_0x25e is set.
-class cls_804B0F10 {
+class ConnectScreen_804B0F10 {
 public:
-    typedef void (cls_804B0F10::*StateFunc)();
+    typedef void (ConnectScreen_804B0F10::*StateFunc)();
 
-    cls_804B0F10();
-    /* 0x08 */ virtual ~cls_804B0F10();
+    ConnectScreen_804B0F10();
+    /* 0x08 */ virtual ~ConnectScreen_804B0F10();
 
     // Draws the four player sprites ("player_sob.bin") over field_0xc's
     // player panes, sliding them between the 2/3-player and 4-player
@@ -89,9 +89,9 @@ public:
     /* 0x048 */ J2DAnmBase* field_0x48[4];
     /* 0x058 */ cls_804B16A8* field_0x58;
     /* 0x05C */ J2DPicture* field_0x5c; // full-screen fade
-    /* 0x060 */ cls_804AF86C* field_0x60;
-    /* 0x064 */ cls_804AF86C* field_0x64[4];
-    /* 0x074 */ cls_804AF86C* field_0x74; // lbl_8053AED8->field_0x8
+    /* 0x060 */ PaneCtrl_804AF86C* field_0x60;
+    /* 0x064 */ PaneCtrl_804AF86C* field_0x64[4];
+    /* 0x074 */ PaneCtrl_804AF86C* field_0x74; // lbl_8053AED8->field_0x8
     /* 0x078 */ cls_804B20F8* field_0x78[4];
     /* 0x088 */ f32 field_0x88;
     /* 0x08C */ f32 field_0x8c;

@@ -34,7 +34,7 @@ inline void cls_8049E7F0::playEmitter() {
 // The SWEV actor (ACTOR_SWEV, the environment switch control) gets fn_802B39E8.
 inline void cls_8049E7F0::notifySwev() {
     s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_SWEV);
-    ActorBase_804A5770* swev = fn_801F856C()->fn_801F666C(serial);
+    ActorBase_804A5770* swev = fn_801F856C()->findActorBySerial_801F666C(serial);
     if (swev != NULL) {
         static_cast<cls_804A8638*>(swev)->fn_802B39E8();
     }
@@ -43,11 +43,11 @@ inline void cls_8049E7F0::notifySwev() {
 // A sound and a particle burst at the view's centre, from the camera's translation.
 inline void cls_8049E7F0::spawnPuff() {
     JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     pos.x = -camera->field_0x4[0][3];
     pos.y = -camera->field_0x4[1][3];
-    fn_801F0E34(0x30036, 0);
-    fn_8013CC50(field_0x4, &pos, 0x1bc, 2, 2, NULL, NULL, true, 1.0f);
+    startSound_801F0E34(0x30036, 0);
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x1bc, 2, 2, NULL, NULL, true, 1.0f);
     field_0x238 = 0;
 }
 
@@ -91,7 +91,7 @@ void cls_8049E7F0::update() {
             field_0x234 = 0;
             runPhase();
         }
-        fn_801F0E34(0x30032, 0);
+        startSound_801F0E34(0x30032, 0);
         field_0x238++;
         if (field_0x238 >= (field_0x230 != 0 ? 0x3E8 : 0x12C)) {
             field_0x234 = 2;
@@ -99,7 +99,7 @@ void cls_8049E7F0::update() {
         }
         break;
     case 2:
-        fn_801F0E34(0x30032, 0);
+        startSound_801F0E34(0x30032, 0);
         for (s32 i = 0; i < 4; i++) {
             if (field_0x4 != fn_8023DE58(i) || !fn_8023F264(i) || fn_80230188(i) || fn_8022F478(i) ||
                 fn_80236D14(i))
@@ -130,8 +130,8 @@ void cls_8049E7F0::init() {
     field_0x231 = (field_0x90 >> 1) & 1;
     if (mEmitter == NULL) {
         JGeometry::TVec3f pos;
-        setCenter(pos, fn_802D6A9C()->mVisibleBox);
-        mEmitter = fn_8013CC50(field_0x4, &pos, 0x58, 1, 0, NULL, NULL, true, 1.0f);
+        setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x58, 1, 0, NULL, NULL, true, 1.0f);
     }
     if (mEmitter != NULL) {
         mEmitter->stopCreateParticle();

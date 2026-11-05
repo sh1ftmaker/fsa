@@ -6,9 +6,9 @@
 // update and draw are overridden, the rest is ActorBase's). Named after it.
 #include "game/ActorBase.h"
 
-class cls_804AC4D0 : public ActorBase_804A5770 {
+class ShadowLinkGiantBomb_804AC4D0 : public ActorBase_804A5770 {
 public:
-    /* 0x08 */ virtual ~cls_804AC4D0();
+    /* 0x08 */ virtual ~ShadowLinkGiantBomb_804AC4D0();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
@@ -16,7 +16,7 @@ public:
     /* 0x230 */ s32 mState;      // update() dispatches on it (0..11); init sets 0 or 1
     /* 0x234 */ s32 mStateTimer; // init: field_0x90 & 0x7F, or 0 when the top bits are set
     /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ s32 field_0x23c; // init clears it; update passes it to fn_801F06F0
+    /* 0x23C */ s32 field_0x23c; // init clears it; update passes it to drawSprite_801F06F0
     // Bits 12-19 of field_0x90, counted down once in init.
     /* 0x240 */ s32 field_0x240;
     /* 0x244 */ s32 field_0x244; // init stores -1

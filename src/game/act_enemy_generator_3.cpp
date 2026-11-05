@@ -62,7 +62,7 @@ void EnemyGenerator3_804AA1D0::update() {
             if (layer >= 8) {
                 fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 3, -1, -1);
             } else {
-                fn_8013CC50(layer, &mPos, 0x35c, 1, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(layer, &mPos, 0x35c, 1, 1, NULL, NULL, true, 1.0f);
             }
             mState = 2;
             mTimer = 2;

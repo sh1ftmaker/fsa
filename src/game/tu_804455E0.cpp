@@ -74,13 +74,13 @@ static const char* lbl_804B1BA0[4] = {
 void cls_804B1BB0::fn_804455E0() {
     for (s32 i = 0; i < 4; i++) {
         if (i < 2) {
-            field_0x8[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
-            field_0x18[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
-            field_0x28[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+            field_0x8[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+            field_0x18[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+            field_0x28[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
         } else {
-            field_0x8[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
-            field_0x18[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
-            field_0x28[i]->fn_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+            field_0x8[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+            field_0x18[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+            field_0x28[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
         }
         if (field_0x44 & (u8)(1 << i)) {
             if (!mScreen->search(lbl_8048FC08[i][23])->isVisible()) {
@@ -140,8 +140,8 @@ void cls_804B1BB0::fn_804455E0() {
 }
 
 void cls_804B1BB0::fn_80445CDC() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
 void cls_804B1BB0::fn_80445D24() {
@@ -187,12 +187,12 @@ cls_804B1BB0::cls_804B1BB0() {
     mScreen = new J2DScreen();
     mScreen->setPriority("mg_horse_race.blo", 0x1100000, lbl_80529DEC.field_0x10);
     for (s32 i = 0; i < 4; i++) {
-        field_0x8[i] = new cls_804AF86C();
-        field_0x8[i]->fn_80402F04(mScreen->search(lbl_8048FC08[i][1]));
-        field_0x18[i] = new cls_804AF86C();
-        field_0x18[i]->fn_80402F04(mScreen->search(lbl_8048FC08[i][8]));
-        field_0x28[i] = new cls_804AF86C();
-        field_0x28[i]->fn_80402F04(mScreen->search(lbl_8048FC08[i][23]));
+        field_0x8[i] = new PaneCtrl_804AF86C();
+        field_0x8[i]->setPane_80402F04(mScreen->search(lbl_8048FC08[i][1]));
+        field_0x18[i] = new PaneCtrl_804AF86C();
+        field_0x18[i]->setPane_80402F04(mScreen->search(lbl_8048FC08[i][8]));
+        field_0x28[i] = new PaneCtrl_804AF86C();
+        field_0x28[i]->setPane_80402F04(mScreen->search(lbl_8048FC08[i][23]));
     }
     for (s32 i = 0; i < 4; i++) {
         field_0x38[i] = 0;

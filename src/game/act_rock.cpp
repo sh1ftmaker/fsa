@@ -21,11 +21,11 @@ void Rock_804A9480::vfunc_0x24() {
         field_0x3c.x = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.z = 0.0f;
-        fn_801F0E34(0x30047, 0);
-        fn_8013CC50(field_0x4, &mPos, 0x4F3, -1, 1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4F4, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4F5, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x4F6, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30047, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4F3, -1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4F4, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4F5, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4F6, 0, 0, NULL, NULL, true, 1.0f);
         mAlive = false;
     } else {
         if (field_0x230 < 0x50) {
@@ -34,17 +34,17 @@ void Rock_804A9480::vfunc_0x24() {
                 pos.z = 0.0f;
                 fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
             } else {
-                fn_8013CC50(field_0x4, &mPos, 0x8A, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x8B, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x8A, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x8B, 1, 0, NULL, NULL, true, 1.0f);
             }
         }
-        fn_801F0E34(0x30003, 0);
+        startSound_801F0E34(0x30003, 0);
         mAlive = false;
     }
 }
 
 void Rock_804A9480::draw() {
-    fn_801F06F0("enemy_both2_sob.bin", 0x2B, NULL, 7, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_both2_sob.bin", 0x2B, NULL, 7, 1.0f, 1.0f);
     fn_803075AC(mSerial, field_0x4, &mPos, 0x2B, false, 2, -1, 1, 0, 0);
 }
 

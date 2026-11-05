@@ -9,10 +9,10 @@ class JPABaseEmitter;
 
 // The FGN2 actor (Phantom Ganon 2, docs/names/actors.tsv, high confidence;
 // the spawner's case for ACTOR_FGN2). Named after its vtable, 0x804A1A98.
-class cls_804A1A98 : public ActorBase_804A5770 {
+class PhantomGanon2_804A1A98 : public ActorBase_804A5770 {
 public:
-    cls_804A1A98() {}
-    /* 0x08 */ virtual ~cls_804A1A98();
+    PhantomGanon2_804A1A98() {}
+    /* 0x08 */ virtual ~PhantomGanon2_804A1A98();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

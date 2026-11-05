@@ -4,7 +4,7 @@
 cls_804AC868::~cls_804AC868() {}
 
 void cls_804AC868::draw() {
-    fn_801F06F0("enemy_both2_sob.bin", field_0x234 + 0x2DD, NULL, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_both2_sob.bin", field_0x234 + 0x2DD, NULL, -1, 1.0f, 1.0f);
     fn_803075AC(mSerial, field_0x4, &mPos, field_0x234 + 0x2DD, false, 2, -1, 0, 0, 0);
 }
 

@@ -52,7 +52,7 @@ void Poe_8049F330::draw() {
             void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', lbl_8049F318[index]);
             fn_801EFD34(res, &params, 7, 0.0f, -8.0f, 0.0f);
         } else {
-            fn_801F06F0("enemy_gc_sob.bin", field_0x25c + 0x84, &params, 7, 1.0f, 1.0f);
+            drawSprite_801F06F0("enemy_gc_sob.bin", field_0x25c + 0x84, &params, 7, 1.0f, 1.0f);
         }
     }
 }
@@ -98,7 +98,7 @@ void Poe_8049F330::init() {
         field_0x230 = 1;
         break;
     case 10:
-        fn_801F0E34(0x4001D, 0);
+        startSound_801F0E34(0x4001D, 0);
         field_0x270 = 0.0f;
         mPos.z = 24.0f;
         field_0x238[0] = 30;
@@ -108,7 +108,7 @@ void Poe_8049F330::init() {
         break;
     case 4:
     case 9:
-        fn_801F0E34(0x4001D, 0);
+        startSound_801F0E34(0x4001D, 0);
         field_0x270 = 0.0f;
         // fall through
     case 0:

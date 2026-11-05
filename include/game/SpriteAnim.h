@@ -6,7 +6,7 @@
 // Code: game/tu_801D1C18.cpp. No vtable; named after its constructor
 // (0x801D267C). "SpriteAnim" is descriptive: 34 sites in enemy units load
 // mCel (this + 0x270 + 0x10) and pass it as the frame of a "SOB " sprite
-// draw (ActorBase_804A5770::fn_801F06F0 9 times, fn_801F02BC 5 times).
+// draw (ActorBase_804A5770::drawSprite_801F06F0 9 times, fn_801F02BC 5 times).
 // Members: EnemyBase_804A4808 at 0x270 (game/EnemyBase.h); act_escort_woman
 // at 0x230, act_princess_zelda_demo at 0x2F4 and 0x32C, and about 20 other
 // actor units.
@@ -55,14 +55,14 @@ public:
     // (clrlwi. r30 at 0x801D2370) the previous frame is kept as fn_801D1F14
     // would set it; otherwise the frame starts at 0 and the next update is
     // skipped. mode is compared as an int (cmpwi 2), so it is no u8.
-    void fn_801D22DC(s32 anim, s32 mode, bool keepFrame);
+    void startAnim_801D22DC(s32 anim, s32 mode, bool keepFrame);
     // 48 units / 52 calls. Sets the key tables and computes mMinCel/mMaxCel
     // over all their keys. Callers pass a .data table of pointers (addi
     // @l) and its count (li). The tables are read-only (.rodata).
     void fn_801D2608(const s16** tables, s32 count);
 
     // Inline helpers: their code is repeated in fn_801D1C18, fn_801D1D60,
-    // fn_801D1F14 and fn_801D22DC (fn_801D208C repeats fn_801D217C and
+    // fn_801D1F14 and startAnim_801D22DC (fn_801D208C repeats fn_801D217C and
     // fn_801D21F0 the same way). Not called out of line anywhere.
     void calcCel();
     void setFrameInline(f32 frame);
@@ -71,7 +71,7 @@ public:
 
     /* 0x00 */ const s16** mTables; // per animation: (cel, duration) s16 pairs, ended by a cel < 0
     /* 0x04 */ s32 mTableCount;
-    /* 0x08 */ s32 mAnim;    // -1 until fn_801D22DC
+    /* 0x08 */ s32 mAnim;    // -1 until startAnim_801D22DC
     /* 0x0C */ s32 mLength;  // in frames
     /* 0x10 */ s32 mCel;     // the current key's cel, clamped to [mMinCel, mMaxCel]
     /* 0x14 */ s32 mMinCel;  // 0x7FFFFFFF

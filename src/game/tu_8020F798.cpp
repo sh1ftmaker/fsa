@@ -57,7 +57,7 @@ void Thief_804A5A30::fn_8020F80C(s32 frame) {
     }
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
     if (field_0x4 == 8) {
         JGeometry::TVec3f pos;
@@ -77,9 +77,9 @@ void Thief_804A5A30::fn_8020FADC() {
             }
         }
         if (moving) {
-            fn_801F0E34(0x4007F, 0);
+            startSound_801F0E34(0x4007F, 0);
             if (mEmitter358 == NULL) {
-                mEmitter358 = fn_8013CC50(field_0x4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitter358 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
             }
         } else {
             release = true;

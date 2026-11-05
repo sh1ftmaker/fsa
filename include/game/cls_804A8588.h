@@ -15,7 +15,7 @@ public:
     // Calls vfunc_0x4C(layer, pos); clears field_0x27c when it returns false.
     u8 fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos);
 
-    // Gated by field_0x25c: fn_801F06F0 on "enemy_both2_sob.bin", the shadow,
+    // Gated by field_0x25c: drawSprite_801F06F0 on "enemy_both2_sob.bin", the shadow,
     // then fn_803075AC.
     void fn_802B2728();
 

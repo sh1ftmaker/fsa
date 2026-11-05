@@ -26,7 +26,7 @@ GameState_804B0FE0 lbl_80529DEC;
 
 // Moves the pane so that, after resizing it to (field_0x18 * sx, field_0x1c * sy),
 // its centre stays where it was.
-static inline void resizeKeepCentre(cls_804AF86C* self, f32 sx, f32 sy) {
+static inline void resizeKeepCentre(PaneCtrl_804AF86C* self, f32 sx, f32 sy) {
     f32 w = self->mPane->getWidth();
     f32 x = self->mPane->getBounds()->i.x;
     f32 h = self->mPane->getHeight();
@@ -37,19 +37,19 @@ static inline void resizeKeepCentre(cls_804AF86C* self, f32 sx, f32 sy) {
 }
 
 // Moves the pane along one axis, keeping the other coordinate.
-static inline void moveY(cls_804AF86C* self, f32 centreY) {
+static inline void moveY(PaneCtrl_804AF86C* self, f32 centreY) {
     f32 y = centreY - 0.5f * self->mPane->getHeight();
     f32 x = self->mPane->getBounds()->i.x;
     self->mPane->move(x, y);
 }
 
-static inline void moveX(cls_804AF86C* self, f32 centreX) {
+static inline void moveX(PaneCtrl_804AF86C* self, f32 centreX) {
     f32 x = centreX - 0.5f * self->mPane->getWidth();
     f32 y = self->mPane->getBounds()->i.y;
     self->mPane->move(x, y);
 }
 
-void cls_804AF86C::fn_804023D0(J2DPane* pane, u8 alpha) {
+void PaneCtrl_804AF86C::setAlpha_804023D0(J2DPane* pane, u8 alpha) {
     pane->setAlpha(alpha * ((f32)mPane->getAlpha() / (f32)field_0x28));
 }
 
@@ -57,7 +57,7 @@ void cls_804AF86C::fn_804023D0(J2DPane* pane, u8 alpha) {
 // float conversion of the other operand in the original.
 // Steps field_0x26 and fades the pane's alpha from `from` to `to`, mode 1 easing in and
 // out, any other mode up and back.
-bool cls_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
+bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
     field_0x26++;
     if (field_0x26 >= frames) {
         field_0x26 = 0;
@@ -85,7 +85,7 @@ bool cls_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
     return false;
 }
 
-bool cls_804AF86C::fn_80402628(s16 frames, u8 from, u8 to) {
+bool PaneCtrl_804AF86C::fn_80402628(s16 frames, u8 from, u8 to) {
     if (field_0x26 < frames - 1) {
         field_0x26++;
         f32 t = (f32)field_0x26 / (f32)frames;
@@ -100,7 +100,7 @@ bool cls_804AF86C::fn_80402628(s16 frames, u8 from, u8 to) {
 
 // FIXME: 99.56. Regalloc only: the original keeps the old width in f31 and the old y in f28, ours
 // gets the four saved floats in a different order.
-u8 cls_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
+u8 PaneCtrl_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
     if (field_0x24 < frames - 1) {
         field_0x24++;
         f32 t = (f32)(field_0x24 * field_0x24) / (f32)(frames * frames);
@@ -114,7 +114,7 @@ u8 cls_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
     return 0;
 }
 
-u8 cls_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
+u8 PaneCtrl_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
     if (field_0x22 < frames - 1) {
         field_0x22++;
         f32 t;
@@ -138,7 +138,7 @@ u8 cls_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
     return 0;
 }
 
-u8 cls_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
+u8 PaneCtrl_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
     if (field_0x20 < frames - 1) {
         field_0x20++;
         f32 t;
@@ -163,15 +163,15 @@ u8 cls_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
 }
 
 // FIXME: 99.59. Regalloc only: saved floats f29/f31/f28 are assigned in a different order.
-void cls_804AF86C::fn_80402CE0(f32 x, f32 y) {
+void PaneCtrl_804AF86C::fn_80402CE0(f32 x, f32 y) {
     resizeKeepCentre(this, x, y);
 }
 
-void cls_804AF86C::fn_80402E08(f32 x, f32 y) {
+void PaneCtrl_804AF86C::moveFromCentre_80402E08(f32 x, f32 y) {
     mPane->move(field_0x10 + x - 0.5f * mPane->getWidth(), field_0x14 + y - 0.5f * mPane->getHeight());
 }
 
-void cls_804AF86C::fn_80402E70() {
+void PaneCtrl_804AF86C::fn_80402E70() {
     field_0x8 = mPane->getBounds()->i.x;
     field_0xc = mPane->getBounds()->i.y;
     field_0x18 = mPane->getWidth();
@@ -180,7 +180,7 @@ void cls_804AF86C::fn_80402E70() {
     field_0x14 = field_0xc + 0.5f * field_0x1c;
 }
 
-void cls_804AF86C::fn_80402F04(J2DPane* pane) {
+void PaneCtrl_804AF86C::setPane_80402F04(J2DPane* pane) {
     mPane = pane;
     field_0x8 = pane->getBounds()->i.x;
     field_0xc = pane->getBounds()->i.y;

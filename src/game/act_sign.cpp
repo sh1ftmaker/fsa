@@ -23,24 +23,24 @@ void Sign_804A94D8::vfunc_0x24() {
         JGeometry::TVec3f pos(mPos);
         pos.z = 0.0f;
         fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
-        fn_801F0E34(0x30018, 0);
+        startSound_801F0E34(0x30018, 0);
     } else if (fn_8022461C(&mPos, field_0x4) == 0xD || fn_8022461C(&mPos, field_0x4) == 0x39) {
-        fn_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
-        fn_801F0E34(0x30022, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30022, 0);
     } else if (fn_8022461C(&mPos, field_0x4) == 0xE) {
         if (fn_802DE9A0()) {
-            fn_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x5005F, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5005F, 0);
         } else {
-            fn_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x5003F, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5003F, 0);
         }
     } else {
-        fn_8013CC50(field_0x4, &mPos, 0x91, 1, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x92, 1, 0, NULL, NULL, true, 1.0f);
-        fn_801F0E34(0x30018, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x91, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x92, 1, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30018, 0);
     }
     mAlive = false;
 }

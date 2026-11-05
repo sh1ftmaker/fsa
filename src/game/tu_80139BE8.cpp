@@ -19,10 +19,10 @@ void GameRootSub04_801F856C::fn_80139BE8() {
     fn_8030361C();
     fn_8038D454();
     fn_801184F0(fn_8011921C(), true);
-    lbl_8053AB10->field_0x20->field_0x235c[0] = 0;
-    lbl_8053AB10->field_0x20->field_0x235c[1] = 0;
-    lbl_8053AB10->field_0x20->field_0x235c[2] = 0;
-    lbl_8053AB10->field_0x20->field_0x235c[3] = 0;
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[0] = 0;
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[1] = 0;
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[2] = 0;
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[3] = 0;
 }
 
 void fn_80139C5C() {
@@ -38,19 +38,19 @@ void GameRootSub04_801F856C::fn_80139C84() {
 }
 
 void GameRootSub04_801F856C::fn_80139CC4() {
-    lbl_8053AB10->fn_8013B438();
+    gGameRoot2_8053AB10->fn_8013B438();
     mView->vfunc_0x14();
-    lbl_8053AB10->fn_8013B438();
+    gGameRoot2_8053AB10->fn_8013B438();
     fn_8023F2BC();
     mActorManager->fn_801F8658();
     fn_801902D0(field_0x20);
-    if (lbl_8053AB10->field_0x39 == 0) {
+    if (gGameRoot2_8053AB10->field_0x39 == 0) {
         field_0x24->fn_8016DA6C();
     }
 }
 
 void GameRootSub04_801F856C::fn_80139D3C() {
-    if (lbl_8053AB10->field_0x39 == 0) {
+    if (gGameRoot2_8053AB10->field_0x39 == 0) {
         field_0x24->fn_8016DB60();
     }
 }
@@ -89,7 +89,7 @@ void GameRootSub04_801F856C::fn_8013A1A4() {
 GameRootSub04_801F856C::~GameRootSub04_801F856C() {
     u32 color = 0xFFFFFF00;
     fn_8013A884(&color);
-    fn_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+    getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
     if (lbl_80529DEC.field_0x24b != 0) {
         lbl_80529DEC.field_0x24b = 0;
     }

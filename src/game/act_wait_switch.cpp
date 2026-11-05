@@ -10,19 +10,19 @@ void WaitSwitch_804A8B20::draw() {}
 void WaitSwitch_804A8B20::update() {
     switch (mState) {
     case 0:
-        if (fn_802D6A9C()->fn_802D800C(mBit)) {
+        if (getGameView_802D6A9C()->fn_802D800C(mBit)) {
             mState = 1;
             if (mMode >= 1 && mMode <= 5) {
-                if (!fn_802D6A9C()->fn_802D75BC(field_0x16c)) {
+                if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
                     lbl_8053AAF8->fn_80134DE4(10, mCount);
                 }
             }
         }
         break;
     case 1:
-        if (!fn_802D6A9C()->fn_802D75BC(field_0x16c)) {
+        if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
             if (mMode >= 1 && mMode <= 5) {
-                fn_802D6A9C()->fn_802D79E8(field_0x4, mValue, 0.0f, false);
+                getGameView_802D6A9C()->fn_802D79E8(field_0x4, mValue, 0.0f, false);
                 mStepTimer--;
                 if (mStepTimer == 0) {
                     mStepTimer = mStepPeriod;

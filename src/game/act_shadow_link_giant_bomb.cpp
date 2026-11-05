@@ -20,7 +20,7 @@ static inline void setScaleMtx(Mtx mtx, f32 x, f32 yz) {
 // FIXME: 99.74%. Only the float literals (1.0f, 2.0f, 3.0f, 0.0f) and the
 // "player_sob.bin" string differ: their relocations are lbl_ names in the
 // original and @NNN in ours; the literal split, not the code.
-void cls_804AC4D0::draw() {
+void ShadowLinkGiantBomb_804AC4D0::draw() {
     if (mState == 8 || mState == 0xb) {
         SpriteParams_801F5AE0 params;
         Mtx mtx;
@@ -32,10 +32,10 @@ void cls_804AC4D0::draw() {
             setScaleMtx(mtx, field_0x250, 2.0f - field_0x250);
         }
         params.mMtx = mtx;
-        fn_801F06F0("player_sob.bin", field_0x23c, &params, 7, 1.0f, 1.0f);
+        drawSprite_801F06F0("player_sob.bin", field_0x23c, &params, 7, 1.0f, 1.0f);
     } else {
         if (mState >= 4 && mState <= 7) {
-            fn_801F06F0("player_sob.bin", field_0x23c, NULL, 7, 1.0f, 1.0f);
+            drawSprite_801F06F0("player_sob.bin", field_0x23c, NULL, 7, 1.0f, 1.0f);
         }
     }
 }
@@ -43,7 +43,7 @@ void cls_804AC4D0::draw() {
 // FIXME: 99.88%. Only the two float literals differ: their relocations are
 // lbl_805422E0 and lbl_805422C4 in the original, unnamed (@NNN) in ours; the
 // literal split of this unit, not the code.
-void cls_804AC4D0::init() {
+void ShadowLinkGiantBomb_804AC4D0::init() {
     field_0x240 = (field_0x90 >> 12) & 0xFF;
     field_0x23c = 0;
     field_0x244 = -1;
@@ -71,7 +71,7 @@ void cls_804AC4D0::init() {
         }
     }
     field_0x250 = 1.0f;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     bool inView = view->fn_802D800C(field_0x248);
     if (!inView && lbl_8053AAF8->field_0x7f == 1) {
         field_0x255 = 1;
@@ -80,7 +80,7 @@ void cls_804AC4D0::init() {
     }
 }
 
-cls_804AC4D0::~cls_804AC4D0() {
+ShadowLinkGiantBomb_804AC4D0::~ShadowLinkGiantBomb_804AC4D0() {
     if (lbl_8053AAF8->field_0x7f == 1) {
         s32 mode = lbl_8053AAF8->field_0x4c;
         if (mode != 9 && mode != 0xB) {

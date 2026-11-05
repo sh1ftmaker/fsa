@@ -122,7 +122,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
             field_0x3c.x = 0.0f;
             break;
         }
-        fn_801F0E34(0x400C7, 0);
+        startSound_801F0E34(0x400C7, 0);
         break;
     case 5:
         setBox(mBox, -8.0f, 8.0f);
@@ -147,7 +147,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
         s32 angle = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) *
                     (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         field_0x98 = fn_801F681C((u16)angle);
-        mAnim.fn_801D22DC(field_0x98 + 8, 0, false);
+        mAnim.startAnim_801D22DC(field_0x98 + 8, 0, false);
         break;
     }
     mStateTimer = 0;
@@ -155,7 +155,7 @@ void cls_804A68D0::fn_8022089C(s32 state) {
 }
 
 void cls_804A68D0::init() {
-    cls_804A6A00::init();
+    ShadowLinkBase_804A6A00::init();
     mKind = field_0x90 & 3;
     field_0x98 = 2;
     mState = 3;
@@ -163,7 +163,7 @@ void cls_804A68D0::init() {
     field_0x250 = -1;
     mSpeed = 0.0f;
     mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
+    mAnim.startAnim_801D22DC(2, 0, false);
 }
 
 cls_804A68D0::cls_804A68D0() {

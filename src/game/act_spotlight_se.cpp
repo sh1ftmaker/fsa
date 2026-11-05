@@ -15,12 +15,12 @@ void SpotlightSE_804A85E0::update() {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
         bits = field_0x90 & sFieldMask[i];
-        if (bits != 0 && fn_802D6A9C()->fn_802D800C(bits >> sFieldShift[i])) {
+        if (bits != 0 && getGameView_802D6A9C()->fn_802D800C(bits >> sFieldShift[i])) {
             count++;
         }
     }
     if (count != 0) {
-        fn_801F0E34(0x30024, 0);
+        startSound_801F0E34(0x30024, 0);
     }
 }
 

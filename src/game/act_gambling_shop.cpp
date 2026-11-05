@@ -34,12 +34,12 @@ void GamblingShop_804AAA70::fn_8030FDC0(s32 value) {
 
 void GamblingShop_804AAA70::draw() {
     if (field_0x288) {
-        fn_801F06F0("enemy_both_sob.bin", field_0x240 + 0x12C, NULL, 0, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_both_sob.bin", field_0x240 + 0x12C, NULL, 0, 1.0f, 1.0f);
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x12C, 0, 0, -1);
     } else {
         // FIXME: 82.02 %. The true branch matches; here the frame index is
         // scheduled differently (the original loads field_0x240 before field_0x238 * 2).
-        fn_801F06F0("enemy_both_sob.bin", field_0x238 * 2 + field_0x240 + 0xEC, NULL, 0, 1.0f,
+        drawSprite_801F06F0("enemy_both_sob.bin", field_0x238 * 2 + field_0x240 + 0xEC, NULL, 0, 1.0f,
                     1.0f);
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x238 * 2 + field_0x240 + 0xEC, 0, 0, -1);
     }

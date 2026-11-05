@@ -16,7 +16,7 @@ void FireballGenerator_804A6660::vfunc_0x90(u8 mapHit) {
             if (mCooldown > 1) {
                 mCooldown--;
             } else if (fn_801CECF4('FBAL', 1.5f, 112.0f)) {
-                fn_801F0E34(0x50030, 0);
+                startSound_801F0E34(0x50030, 0);
                 mCooldown = 0x78;
             }
             break;

@@ -25,7 +25,7 @@ void OctorokRock_8049F5D8::draw() {
     switch (state) {
     case 0:
         if (field_0x4 == 8) {
-            GameView_804A9950* view = fn_802D6A9C();
+            GameView_804A9950* view = getGameView_802D6A9C();
             // FIXME: 94.3 %. The original loads the four words of the view's box
             // (0xCC-0xDB) into registers before storing them to the stack copy;
             // here each word is loaded and stored in turn, and the position's
@@ -41,7 +41,7 @@ void OctorokRock_8049F5D8::draw() {
         break;
     case 4:
         params.field_0x30 = 0x11;
-        fn_801F06F0("enemy_gc_sob.bin", field_0x24c + 0xE5, &params, -1, 1.0f, 1.0f);
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0xE5, &params, -1, 1.0f, 1.0f);
         break;
     case 1:
     case 5:
@@ -49,7 +49,7 @@ void OctorokRock_8049F5D8::draw() {
             s32 frame = field_0x24c + 0x4c;
             if (field_0x4 < 8) {
                 void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-                lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
             }
         }
         break;
@@ -90,14 +90,14 @@ void OctorokRock_8049F5D8::update() {
             break;
         }
         if (!blocked) {
-            fn_8013CC50(field_0x4, &mPos, 0x24A, 0, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x24B, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x24A, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x24B, 0, 1, NULL, NULL, true, 1.0f);
             mAlive = false;
         } else if (field_0x90 != 1 && field_0x90 != 5) {
-            fn_8013CC50(field_0x4, &mPos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
             mAlive = false;
         } else {
-            fn_801F0E34(0x30000, 0);
+            startSound_801F0E34(0x30000, 0);
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
@@ -107,7 +107,7 @@ void OctorokRock_8049F5D8::update() {
         }
         break;
     case 1:
-        fn_801F0E34(0x400D1, 0);
+        startSound_801F0E34(0x400D1, 0);
         if (field_0x90 == 1) {
             field_0x238 = 100;
             switch (field_0x98) {
@@ -133,8 +133,8 @@ void OctorokRock_8049F5D8::update() {
             field_0x3c.z = 3.0f;
         }
         mLife = 0;
-        fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
         field_0x230 = 2;
         break;
     case 2:
@@ -168,7 +168,7 @@ void OctorokRock_8049F5D8::update() {
         field_0xb0 = 0;
         s32 target = field_0x258;
         if (target >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(target);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(target);
             if (actor != NULL) {
                 mPos.x = field_0x254 * JMASinShort(fn_801F6874(actor->field_0x98) - field_0x25c);
                 mPos.y = field_0x254 * JMACosShort(fn_801F6874(actor->field_0x98) - field_0x25c);
@@ -290,13 +290,13 @@ bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     if (tile == 0x25) {
-        return fn_802D6A9C()->field_0x171 == 0;
+        return getGameView_802D6A9C()->field_0x171 == 0;
     }
     if (tile == 0x26) {
-        return fn_802D6A9C()->field_0x171 == 1;
+        return getGameView_802D6A9C()->field_0x171 == 1;
     }
     if (tile == 0x22) {
-        return fn_802D6A9C()->field_0x170 == 1;
+        return getGameView_802D6A9C()->field_0x170 == 1;
     }
     return true;
 }

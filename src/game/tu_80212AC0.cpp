@@ -16,7 +16,7 @@ void cls_80212AC0::fn_80212AF0(JGeometry::TVec3f* pos) const {
     // r30, actor r27, i r28); ours sets i and found with two li after it.
     ActorBase_804A5770* found = NULL;
     for (s32 i = 0; i < mCount; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(mSerials[i]);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSerials[i]);
         if (actor != NULL && static_cast<cls_804A6270*>(actor)->fn_80211000(pos)) {
             found = actor;
             break;

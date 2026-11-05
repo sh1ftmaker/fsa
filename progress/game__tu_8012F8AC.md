@@ -11,5 +11,5 @@ Removed this unit's two rows from gen_game.tsv.
 ## SHARED-EDITS
 Moved to include/game/tu_8012F3E4.h (new shared header, SHARED-EDIT; owner unit tu_8012F3E4).
 - `extern "C" Unk_804BDDFC* fn_8012F554();` guarded-static getter of the object at 0x804BDDFC (s32 count + 32 s32 slots, -1 after ctor); returns its address (lbl_804BDDFC).
-- `extern "C" bool fn_8012F3E4(Unk_804BDDFC*);` r3 = that object; loops count slots through fn_801F666C and fn_8012F008, true when all pass.
+- `extern "C" bool fn_8012F3E4(Unk_804BDDFC*);` r3 = that object; loops count slots through findActorBySerial_801F666C and fn_8012F008, true when all pass.
 - virtual vfunc_0x30(u8, bool) at vtable 0x30 is called with (0xFF, true); already in ActorBase.h.

@@ -4,19 +4,19 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // Vtable 0x804B1378 (one slot, the destructor), 0x154 bytes, defined in
 // game/tu_80414F6C.cpp. The battle stage select screen ("bat_stage_select.blo"):
 // the constructor stores `this` in lbl_8053AE00; tu_8039003C allocates it
 // with __nw__(0x154) when lbl_8053AAF8->field_0x7f is clear. fn_804170B0 runs
 // the handler of state field_0x109 through a pointer-to-member table.
-class cls_804B1378 {
+class BattleStageSelect_804B1378 {
 public:
-    typedef void (cls_804B1378::*StateFunc)();
+    typedef void (BattleStageSelect_804B1378::*StateFunc)();
 
-    cls_804B1378(); // fn_8041787C
-    /* 0x08 */ virtual ~cls_804B1378(); // fn_8041769C
+    BattleStageSelect_804B1378(); // fn_8041787C
+    /* 0x08 */ virtual ~BattleStageSelect_804B1378(); // fn_8041769C
 
     // State 2 (0x80414F78): steps field_0x10a: waits for lbl_8053AEC4's
     // fn_8042EC7C, then for button 0x1300, then fn_8042EBEC; then state 1.
@@ -54,16 +54,16 @@ public:
     /* 0x01C */ s32 field_0x1c;
     /* 0x020 */ s32 field_0x20;
     /* 0x024 */ J2DScreen* mScreen;
-    /* 0x028 */ cls_804AF86C* field_0x28[3]; // 'Pbsbk02', 'Pbsbk01', 'Pbsb09'
-    /* 0x034 */ cls_804AF86C* field_0x34;    // 'Ndata03'
-    /* 0x038 */ cls_804AF86C* field_0x38;    // 'Ndata02'
-    /* 0x03C */ cls_804AF86C* field_0x3c[10]; // lbl_8048D198
+    /* 0x028 */ PaneCtrl_804AF86C* field_0x28[3]; // 'Pbsbk02', 'Pbsbk01', 'Pbsb09'
+    /* 0x034 */ PaneCtrl_804AF86C* field_0x34;    // 'Ndata03'
+    /* 0x038 */ PaneCtrl_804AF86C* field_0x38;    // 'Ndata02'
+    /* 0x03C */ PaneCtrl_804AF86C* field_0x3c[10]; // lbl_8048D198
     /* 0x064 */ u8 field_0x64[0x6C - 0x64];
-    /* 0x06C */ cls_804AF86C* field_0x6c[10]; // lbl_8048D1E8
+    /* 0x06C */ PaneCtrl_804AF86C* field_0x6c[10]; // lbl_8048D1E8
     /* 0x094 */ u8 field_0x94[0x9C - 0x94];
-    /* 0x09C */ cls_804AF86C* field_0x9c;     // 'Ndata05'
-    /* 0x0A0 */ cls_804AF86C* field_0xa0;     // lbl_8053AED8->field_0x8
-    /* 0x0A4 */ cls_804AF86C* field_0xa4[15]; // lbl_8048D238
+    /* 0x09C */ PaneCtrl_804AF86C* field_0x9c;     // 'Ndata05'
+    /* 0x0A0 */ PaneCtrl_804AF86C* field_0xa0;     // lbl_8053AED8->field_0x8
+    /* 0x0A4 */ PaneCtrl_804AF86C* field_0xa4[15]; // lbl_8048D238
     /* 0x0E0 */ s32 field_0xe0; // fn_80414F6C returns it
     /* 0x0E4 */ char field_0xe4[0x102 - 0xE4]; // text buffer, length not known
     /* 0x102 */ s16 field_0x102; // frame counter of state 0
@@ -85,7 +85,7 @@ public:
 }; // Size: 0x154
 
 // Data of game/tu_80401848.cpp.
-extern cls_804B1378* lbl_8053AE00;
+extern BattleStageSelect_804B1378* lbl_8053AE00;
 
 // 0x80414F6C (game/tu_80414F6C.cpp): lbl_8053AE00->field_0xe0.
 s32 fn_80414F6C();

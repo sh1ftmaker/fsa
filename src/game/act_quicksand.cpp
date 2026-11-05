@@ -14,28 +14,28 @@ static inline void leaveSand(cls_804A6270* sand) {
     case 1: {
         s32 serial = sand->field_0x388;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 fn_80212ECC(static_cast<EnemyBase_804A4808*>(actor));
             }
         }
         s32 viewSerial = sand->field_0x2b8;
         if (viewSerial != 0) {
-            fn_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
+            getGameView_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
         }
         break;
     }
     case 6: {
         s32 viewSerial = sand->field_0x2b8;
         if (viewSerial != 0) {
-            fn_802D6A9C()->fn_802D8050(viewSerial, false, 0xff);
+            getGameView_802D6A9C()->fn_802D8050(viewSerial, false, 0xff);
         }
         break;
     }
     }
     s32 serial = sand->field_0x388;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             static_cast<EnemyBase_804A4808*>(actor)->mFlags |= 0x4000;
         }
@@ -127,7 +127,7 @@ void cls_804A6270::vfunc_0x9C(u8 mapHit) {
         active = true;
     }
     if (active) {
-        fn_801F0E34(0x30073, 0);
+        startSound_801F0E34(0x30073, 0);
     }
 }
 
@@ -141,7 +141,7 @@ void cls_804A6270::fn_80211C94() {
     case 5:
         if (field_0x2ac == 3) {
             s32 viewBit = field_0x2b0;
-            if (viewBit != 0 && !fn_802D6A9C()->fn_802D800C(viewBit)) {
+            if (viewBit != 0 && !getGameView_802D6A9C()->fn_802D800C(viewBit)) {
                 leaveSand(this);
                 return;
             }

@@ -254,13 +254,13 @@ void GameMode_804B0688::fn_803DD1A4() {
     s32 step = frame < 5 ? frame : 10 - frame;
     f32 y = 5.0f * (f32)(step * step) / 25.0f;
     if (field_0x80 == 0) {
-        field_0x50[0]->fn_80402E08(0.0f, y);
-        field_0x50[1]->fn_80402E08(0.0f, 0.0f);
-        field_0x58->fn_80402E08(0.0f, y);
+        field_0x50[0]->moveFromCentre_80402E08(0.0f, y);
+        field_0x50[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x58->moveFromCentre_80402E08(0.0f, y);
     } else {
-        field_0x50[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x50[1]->fn_80402E08(0.0f, y);
-        field_0x58->fn_80402E08(field_0x50[1]->field_0x8 - field_0x50[0]->field_0x8, y);
+        field_0x50[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x50[1]->moveFromCentre_80402E08(0.0f, y);
+        field_0x58->moveFromCentre_80402E08(field_0x50[1]->field_0x8 - field_0x50[0]->field_0x8, y);
     }
     mScreen->search('Paccur01')->setAlpha(field_0xa2 * alpha);
     mScreen->search('Paccur02')->setAlpha(field_0xa2 * alpha);
@@ -291,39 +291,39 @@ void GameMode_804B0688::fn_803DD3E0() {
     f32 y = 5.0f * (f32)(step * step) / 25.0f;
     switch (entry) {
     case 0:
-        field_0x34[0]->fn_80402E08(0.0f, y);
-        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
-        field_0x30->fn_80402E08(0.0f, 0.0f);
-        field_0x44[0]->fn_80402E08(0.0f, y);
-        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x34[0]->moveFromCentre_80402E08(0.0f, y);
+        field_0x34[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x30->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[0]->moveFromCentre_80402E08(0.0f, y);
+        field_0x44[1]->moveFromCentre_80402E08(0.0f, 0.0f);
         fn_803DAC58(field_0x9e, alpha);
         field_0x40->mPane->hide();
         break;
     case 1:
-        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x34[1]->fn_80402E08(0.0f, y);
-        field_0x30->fn_80402E08(0.0f, 0.0f);
-        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x44[1]->fn_80402E08(0.0f, y);
+        field_0x34[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x34[1]->moveFromCentre_80402E08(0.0f, y);
+        field_0x30->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[1]->moveFromCentre_80402E08(0.0f, y);
         fn_803DAC58(field_0x9e, alpha);
         field_0x40->mPane->hide();
         break;
     case 2:
-        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
-        field_0x30->fn_80402E08(0.0f, 0.0f);
-        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
+        field_0x34[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x34[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x30->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[1]->moveFromCentre_80402E08(0.0f, 0.0f);
         fn_803DAC58(field_0x9e, alpha);
         field_0x40->mPane->hide();
         break;
     default:
-        field_0x34[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x34[1]->fn_80402E08(0.0f, 0.0f);
-        field_0x44[0]->fn_80402E08(0.0f, 0.0f);
-        field_0x44[1]->fn_80402E08(0.0f, 0.0f);
-        field_0x30->fn_80402E08(0.0f, y);
-        field_0x40->fn_80402E08(0.0f, y);
+        field_0x34[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x34[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x44[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x30->moveFromCentre_80402E08(0.0f, y);
+        field_0x40->moveFromCentre_80402E08(0.0f, y);
         fn_803DAC58(field_0x9e, alpha);
         field_0x40->mPane->show();
         break;
@@ -523,11 +523,11 @@ void GameMode_804B0688::fn_803DE05C() {
                 field_0x34[i]->mPane->show();
                 field_0x44[i]->mPane->show();
                 if (i == field_0x9e) {
-                    field_0x34[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
-                    field_0x44[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                    field_0x34[i]->moveFromCentre_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                    field_0x44[i]->moveFromCentre_80402E08(0.0f, 27.0f - field_0x6c[i]);
                 } else {
-                    field_0x34[i]->fn_80402E08(600.0f, 0.0f);
-                    field_0x44[i]->fn_80402E08(600.0f, 0.0f);
+                    field_0x34[i]->moveFromCentre_80402E08(600.0f, 0.0f);
+                    field_0x44[i]->moveFromCentre_80402E08(600.0f, 0.0f);
                 }
                 field_0x34[i]->field_0x20 = 0;
                 field_0x34[i]->field_0x22 = 0;
@@ -535,14 +535,14 @@ void GameMode_804B0688::fn_803DE05C() {
                 field_0x44[i]->field_0x22 = 0;
             }
             field_0x30->mPane->show();
-            field_0x30->fn_80402E08(0.0f, 150.0f);
+            field_0x30->moveFromCentre_80402E08(0.0f, 150.0f);
             field_0x30->field_0x22 = 0;
             for (s32 i = 0; i < 7; i++) {
-                field_0x14[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x14[i]->moveFromCentre_80402E08(0.0f, 0.0f);
                 field_0x14[i]->field_0x20 = 0;
             }
             for (s32 i = 0; i < 2; i++) {
-                field_0x50[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x50[i]->moveFromCentre_80402E08(0.0f, 0.0f);
                 field_0x50[i]->field_0x22 = 0;
             }
             field_0x58->mPane->hide();
@@ -556,11 +556,11 @@ void GameMode_804B0688::fn_803DE05C() {
             field_0x34[i]->mPane->show();
             field_0x44[i]->mPane->show();
             if (i == field_0x9e) {
-                field_0x34[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
-                field_0x44[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                field_0x34[i]->moveFromCentre_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, 27.0f - field_0x6c[i]);
             } else {
-                field_0x34[i]->fn_80402E08(600.0f, 0.0f);
-                field_0x44[i]->fn_80402E08(600.0f, 0.0f);
+                field_0x34[i]->moveFromCentre_80402E08(600.0f, 0.0f);
+                field_0x44[i]->moveFromCentre_80402E08(600.0f, 0.0f);
             }
             field_0x34[i]->field_0x20 = 0;
             field_0x34[i]->field_0x22 = 0;
@@ -568,14 +568,14 @@ void GameMode_804B0688::fn_803DE05C() {
             field_0x44[i]->field_0x22 = 0;
         }
         field_0x30->mPane->show();
-        field_0x30->fn_80402E08(0.0f, 150.0f);
+        field_0x30->moveFromCentre_80402E08(0.0f, 150.0f);
         field_0x30->field_0x22 = 0;
         for (s32 i = 0; i < 7; i++) {
-            field_0x14[i]->fn_80402E08(0.0f, 0.0f);
+            field_0x14[i]->moveFromCentre_80402E08(0.0f, 0.0f);
             field_0x14[i]->field_0x20 = 0;
         }
         for (s32 i = 0; i < 2; i++) {
-            field_0x50[i]->fn_80402E08(0.0f, 0.0f);
+            field_0x50[i]->moveFromCentre_80402E08(0.0f, 0.0f);
             field_0x50[i]->field_0x22 = 0;
         }
         field_0x58->mPane->hide();
@@ -724,24 +724,24 @@ void GameMode_804B0688::fn_803DEC44() {
         } else {
             field_0x9c = 0;
             for (s32 i = 0; i < 2; i++) {
-                field_0x34[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x34[i]->moveFromCentre_80402E08(0.0f, 0.0f);
                 field_0x34[i]->field_0x20 = 0;
                 field_0x34[i]->field_0x22 = 0;
-                field_0x44[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, 0.0f);
                 field_0x44[i]->field_0x20 = 0;
                 field_0x44[i]->field_0x22 = 0;
             }
-            field_0x30->fn_80402E08(0.0f, 0.0f);
+            field_0x30->moveFromCentre_80402E08(0.0f, 0.0f);
             field_0x30->field_0x22 = 0;
             field_0x40->mPane->hide();
             for (s32 i = 0; i < 7; i++) {
                 field_0x14[i]->mPane->show();
-                field_0x14[i]->fn_80402E08(600.0f, 0.0f);
+                field_0x14[i]->moveFromCentre_80402E08(600.0f, 0.0f);
                 field_0x14[i]->field_0x20 = 0;
             }
             for (s32 i = 0; i < 2; i++) {
                 field_0x50[i]->mPane->show();
-                field_0x50[i]->fn_80402E08(0.0f, 150.0f);
+                field_0x50[i]->moveFromCentre_80402E08(0.0f, 150.0f);
                 field_0x50[i]->field_0x22 = 0;
             }
             switch (field_0x9e) {
@@ -764,11 +764,11 @@ void GameMode_804B0688::fn_803DEC44() {
                 mScreen->search('Wgbco02')->hide();
                 break;
             }
-            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop01'))->getStringPtr(),
+            getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop01'))->getStringPtr(),
                         lbl_8047788C[field_0x9e], 0, NULL, NULL);
-            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop02'))->getStringPtr(),
+            getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop02'))->getStringPtr(),
                         lbl_8047788C[field_0x9e], 0, NULL, NULL);
-            fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Texp01'))->getStringPtr(),
+            getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Texp01'))->getStringPtr(),
                         lbl_80477880[field_0x9e], 0, NULL, NULL);
             field_0x44[field_0x9e]->mPane->hide();
             mState = 2;
@@ -888,13 +888,13 @@ void GameMode_804B0688::fn_803DF2B4() {
 
 void GameMode_804B0688::fn_803DF624() {
     (lbl_8053ADD0->*lbl_804B0628[mState])();
-    lbl_8053AB10->fn_8013B490();
-    mMovieScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mMovieScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (mMovieState == 2) {
         mMovie->draw_80427D2C(50, 159, -356, -283);
     }
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
     if (mState == 5) {
         field_0x10->setAlpha(field_0x7c);
@@ -966,16 +966,16 @@ void GameMode_804B0688::fn_803DF9E8() {
     field_0xa1 = 0;
     for (s32 i = 0; i < 2; i++) {
         field_0x34[i]->mPane->show();
-        field_0x34[i]->fn_80402E08(600.0f, 0.0f);
+        field_0x34[i]->moveFromCentre_80402E08(600.0f, 0.0f);
         field_0x34[i]->field_0x20 = 0;
         field_0x44[i]->mPane->show();
-        field_0x44[i]->fn_80402E08(600.0f, 0.0f);
+        field_0x44[i]->moveFromCentre_80402E08(600.0f, 0.0f);
         field_0x44[i]->field_0x20 = 0;
     }
     field_0x30->mPane->show();
-    field_0x30->fn_80402E08(0.0f, 150.0f);
+    field_0x30->moveFromCentre_80402E08(0.0f, 150.0f);
     field_0x30->field_0x22 = 0;
-    field_0x5c->fn_80402E08(0.0f, -200.0f);
+    field_0x5c->moveFromCentre_80402E08(0.0f, -200.0f);
     field_0x5c->field_0x22 = 0;
     field_0x40->mPane->hide();
     for (s32 i = 0; i < 7; i++) {
@@ -1036,25 +1036,25 @@ GameMode_804B0688::~GameMode_804B0688() {
 
 GameMode_804B0688::GameMode_804B0688() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
-    lbl_8053AB10->field_0x2c->fn_80158B3C();
+    gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;
-        lbl_8053AB10->field_0x20->fn_802FF798();
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        lbl_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        lbl_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
             lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
-        lbl_8053AB10->field_0x20->field_0x2364 = 1;
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     field_0x60 = new cls_804AF860;
     mMovie = new THPMovie_804B15D0;
@@ -1062,42 +1062,42 @@ GameMode_804B0688::GameMode_804B0688() {
     mScreen->setPriority("gamemode.blo", 0x1100000, lbl_80529DEC.field_0x2c);
     mMovieScreen = new J2DScreen;
     mMovieScreen->setPriority("gamemode_movie.blo", 0x1100000, lbl_80529DEC.field_0x2c);
-    field_0x14[0] = new cls_804AF86C;
-    field_0x14[0]->fn_80402F04(mMovieScreen->search('Pmov01'));
-    field_0x14[1] = new cls_804AF86C;
-    field_0x14[1]->fn_80402F04(mScreen->search('Ndata08'));
-    field_0x14[2] = new cls_804AF86C;
-    field_0x14[2]->fn_80402F04(mScreen->search('Wgbco01'));
-    field_0x14[3] = new cls_804AF86C;
-    field_0x14[3]->fn_80402F04(mScreen->search('Wnop01'));
-    field_0x14[4] = new cls_804AF86C;
-    field_0x14[4]->fn_80402F04(mScreen->search('Pexpb09'));
-    field_0x14[5] = new cls_804AF86C;
-    field_0x14[5]->fn_80402F04(mScreen->search('Wnop02'));
-    field_0x14[6] = new cls_804AF86C;
-    field_0x14[6]->fn_80402F04(mScreen->search('Wgbco02'));
-    field_0x30 = new cls_804AF86C;
-    field_0x30->fn_80402F04(mScreen->search('Ndata05'));
-    field_0x34[0] = new cls_804AF86C;
-    field_0x34[0]->fn_80402F04(mScreen->search('Ndata02'));
-    field_0x34[1] = new cls_804AF86C;
-    field_0x34[1]->fn_80402F04(mScreen->search('Ndata03'));
-    field_0x40 = new cls_804AF86C;
-    field_0x40->fn_80402F04(mScreen->search('Pscuro02'));
-    field_0x44[0] = new cls_804AF86C;
-    field_0x44[0]->fn_80402F04(mScreen->search('Pscurh05'));
+    field_0x14[0] = new PaneCtrl_804AF86C;
+    field_0x14[0]->setPane_80402F04(mMovieScreen->search('Pmov01'));
+    field_0x14[1] = new PaneCtrl_804AF86C;
+    field_0x14[1]->setPane_80402F04(mScreen->search('Ndata08'));
+    field_0x14[2] = new PaneCtrl_804AF86C;
+    field_0x14[2]->setPane_80402F04(mScreen->search('Wgbco01'));
+    field_0x14[3] = new PaneCtrl_804AF86C;
+    field_0x14[3]->setPane_80402F04(mScreen->search('Wnop01'));
+    field_0x14[4] = new PaneCtrl_804AF86C;
+    field_0x14[4]->setPane_80402F04(mScreen->search('Pexpb09'));
+    field_0x14[5] = new PaneCtrl_804AF86C;
+    field_0x14[5]->setPane_80402F04(mScreen->search('Wnop02'));
+    field_0x14[6] = new PaneCtrl_804AF86C;
+    field_0x14[6]->setPane_80402F04(mScreen->search('Wgbco02'));
+    field_0x30 = new PaneCtrl_804AF86C;
+    field_0x30->setPane_80402F04(mScreen->search('Ndata05'));
+    field_0x34[0] = new PaneCtrl_804AF86C;
+    field_0x34[0]->setPane_80402F04(mScreen->search('Ndata02'));
+    field_0x34[1] = new PaneCtrl_804AF86C;
+    field_0x34[1]->setPane_80402F04(mScreen->search('Ndata03'));
+    field_0x40 = new PaneCtrl_804AF86C;
+    field_0x40->setPane_80402F04(mScreen->search('Pscuro02'));
+    field_0x44[0] = new PaneCtrl_804AF86C;
+    field_0x44[0]->setPane_80402F04(mScreen->search('Pscurh05'));
     f32 x;
     f32 y = 1.0f + mScreen->search('Pscurs05')->getBounds()->i.y;
     x = mScreen->search('Pscurs05')->getBounds()->i.x;
     mScreen->search('Pscurs05')->move(x, y);
-    field_0x44[1] = new cls_804AF86C;
-    field_0x44[1]->fn_80402F04(mScreen->search('Pscurs05'));
-    field_0x50[0] = new cls_804AF86C;
-    field_0x50[0]->fn_80402F04(mScreen->search('Pstrb04'));
-    field_0x50[1] = new cls_804AF86C;
-    field_0x50[1]->fn_80402F04(mScreen->search('Pbacb04'));
-    field_0x58 = new cls_804AF86C;
-    field_0x58->fn_80402F04(mScreen->search('Paccur02'));
+    field_0x44[1] = new PaneCtrl_804AF86C;
+    field_0x44[1]->setPane_80402F04(mScreen->search('Pscurs05'));
+    field_0x50[0] = new PaneCtrl_804AF86C;
+    field_0x50[0]->setPane_80402F04(mScreen->search('Pstrb04'));
+    field_0x50[1] = new PaneCtrl_804AF86C;
+    field_0x50[1]->setPane_80402F04(mScreen->search('Pbacb04'));
+    field_0x58 = new PaneCtrl_804AF86C;
+    field_0x58->setPane_80402F04(mScreen->search('Paccur02'));
     field_0x5c = lbl_8053AED8->field_0x8;
     // `tex` and `font` are locals reused for each use: the original loads them
     // before the call (inlined into the call arguments the constructor drops to
@@ -1135,12 +1135,12 @@ GameMode_804B0688::GameMode_804B0688() {
     static_cast<J2DTextBox*>(mScreen->search('Tbac01'))->setFont(font);
     font = lbl_8053AD78->mFont;
     static_cast<J2DTextBox*>(mScreen->search('Tstr01'))->setFont(font);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop03'))->getStringPtr(), 0x93, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop04'))->getStringPtr(), 0x93, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop05'))->getStringPtr(), 0xF4, 0, NULL, NULL);
-    fn_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop06'))->getStringPtr(), 0xF4, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop03'))->getStringPtr(), 0x93, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop04'))->getStringPtr(), 0x93, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop05'))->getStringPtr(), 0xF4, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tnop06'))->getStringPtr(), 0xF4, 0, NULL, NULL);
     strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb01'))->getStringPtr(), "Only");
     strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb02'))->getStringPtr(), "Only");
     strcpy(static_cast<J2DTextBox*>(mScreen->search('Tagb03'))->getStringPtr(), "Only");

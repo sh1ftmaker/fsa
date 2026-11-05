@@ -18,13 +18,13 @@ static inline void releaseEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-void cls_804A8FC8::draw() {
+void OnOffSwitch_804A8FC8::draw() {
     if (mState == 2 || mState == 1) {
         drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 70.0f);
     }
 }
 
-void cls_804A8FC8::update() {
+void OnOffSwitch_804A8FC8::update() {
     JGeometry::TBox2f box;
     JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     mBox.i.x = -8.0f;
@@ -54,27 +54,27 @@ void cls_804A8FC8::update() {
     case 0:
         if (field_0x254 == 0 && !(playerB < 0 && playerC < 0 && lnbmSerial < 0 && tuboSerial < 0 && hbmbSerial < 0)) {
             if (lnbmSerial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(lnbmSerial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(lnbmSerial);
                 if (actor != NULL && actor->mActorId == ACTOR_LNBM) {
-                    static_cast<cls_804A4188*>(fn_801F856C()->fn_801F666C(lnbmSerial))->fn_801BEDBC();
+                    static_cast<cls_804A4188*>(fn_801F856C()->findActorBySerial_801F666C(lnbmSerial))->fn_801BEDBC();
                 }
             } else if (hbmbSerial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(hbmbSerial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(hbmbSerial);
                 if (actor != NULL && actor->field_0x94 == 0) {
                     return;
                 }
             }
             if (field_0x240 == 3 || field_0x240 == 4) {
-                fn_802D6A9C()->fn_802D78B4(field_0x244, true);
+                getGameView_802D6A9C()->fn_802D78B4(field_0x244, true);
             }
             lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
             vfunc_0x30(0xFF, true);
-            fn_8013CC50(field_0x4, &mPos, 0x42B, 1, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x42B, 1, 0, NULL, NULL, true, 1.0f);
             if (mEmitter230 == NULL) {
-                mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
             }
             if (mEmitter234 == NULL) {
-                mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
             }
             if (field_0x240 == 1 || field_0x240 == 3) {
                 mState = 2;
@@ -85,17 +85,17 @@ void cls_804A8FC8::update() {
             } else {
                 mState = 4;
             }
-            fn_801F0E34(0x30009, 0);
+            startSound_801F0E34(0x30009, 0);
             field_0x254 = 1;
         } else {
-            if (field_0x240 == 3 && fn_802D6A9C()->fn_802D7888(field_0x244) == true) {
+            if (field_0x240 == 3 && getGameView_802D6A9C()->fn_802D7888(field_0x244) == true) {
                 lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
                 vfunc_0x30(0xFF, true);
                 if (mEmitter230 == NULL) {
-                    mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                    mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
                 }
                 if (mEmitter234 == NULL) {
-                    mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
                 }
                 mState = 2;
                 field_0x23c = 25;
@@ -110,27 +110,27 @@ void cls_804A8FC8::update() {
             if (!(playerB < 0 && playerC < 0 && lnbmSerial < 0 && tuboSerial < 0 && hbmbSerial < 0)) {
                 field_0x254 = 1;
                 if (lnbmSerial >= 0) {
-                    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(lnbmSerial);
+                    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(lnbmSerial);
                     if (actor != NULL && actor->mActorId == ACTOR_LNBM) {
-                        static_cast<cls_804A4188*>(fn_801F856C()->fn_801F666C(lnbmSerial))->fn_801BEDBC();
+                        static_cast<cls_804A4188*>(fn_801F856C()->findActorBySerial_801F666C(lnbmSerial))->fn_801BEDBC();
                     }
                 } else if (hbmbSerial >= 0) {
-                    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(hbmbSerial);
+                    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(hbmbSerial);
                     if (actor != NULL && actor->field_0x94 == 0) {
                         return;
                     }
                 }
                 if (field_0x240 == 3) {
-                    fn_802D6A9C()->fn_802D78B4(field_0x244, false);
+                    getGameView_802D6A9C()->fn_802D78B4(field_0x244, false);
                 }
                 lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
                 vfunc_0x30(0xFF, false);
                 mState = 3;
                 field_0x23c = 25;
-                fn_801F0E34(0x30009, 0);
+                startSound_801F0E34(0x30009, 0);
                 releaseEmitter(mEmitter230);
                 releaseEmitter(mEmitter234);
-            } else if (field_0x240 == 3 && fn_802D6A9C()->fn_802D7888(field_0x244) == false) {
+            } else if (field_0x240 == 3 && getGameView_802D6A9C()->fn_802D7888(field_0x244) == false) {
                 lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
                 vfunc_0x30(0xFF, false);
                 mState = 3;
@@ -151,12 +151,12 @@ void cls_804A8FC8::update() {
         if (field_0x23c == 0) {
             field_0x254 = 0;
             if (field_0x240 == 3) {
-                fn_802D6A9C()->fn_802D78B4(field_0x244, false);
+                getGameView_802D6A9C()->fn_802D78B4(field_0x244, false);
             }
             lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
             vfunc_0x30(0xFF, false);
             mState = 3;
-            fn_801F0E34(0x30009, 0);
+            startSound_801F0E34(0x30009, 0);
             field_0x23c = 25;
             releaseEmitter(mEmitter230);
             releaseEmitter(mEmitter234);
@@ -176,7 +176,7 @@ void cls_804A8FC8::update() {
     }
 }
 
-cls_804A8FC8::~cls_804A8FC8() {
+OnOffSwitch_804A8FC8::~OnOffSwitch_804A8FC8() {
     if (mEmitter230 != NULL) {
         fn_801EE434(mEmitter230);
     }
@@ -190,7 +190,7 @@ static const s32 lbl_8046D8F8[4] = {0x16, 0x11, 0xC, 7};
 // FIXME: 99.19 %. Regalloc only: the original keeps the actor count in r31 and
 // the byte offset of the array index in r30; we have them the other way round
 // (declaring the count in the for-init made it worse).
-void cls_804A8FC8::vfunc_0x10() {
+void OnOffSwitch_804A8FC8::vfunc_0x10() {
     s32 end = fn_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
@@ -201,13 +201,13 @@ void cls_804A8FC8::vfunc_0x10() {
             for (s32 j = 0; j < 4; j++) {
                 if (field_0x244 == ((params >> lbl_8046D8F8[j]) & 0x1F)) {
                     field_0x258 = params >> 27;
-                    if (fn_802D6A9C()->fn_802D800C(field_0x258)) {
+                    if (getGameView_802D6A9C()->fn_802D800C(field_0x258)) {
                         lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
                         if (mEmitter230 == NULL) {
-                            mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
                         }
                         if (mEmitter234 == NULL) {
-                            mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
                         }
                         mState = 4;
                         break;
@@ -218,7 +218,7 @@ void cls_804A8FC8::vfunc_0x10() {
     }
 }
 
-void cls_804A8FC8::init() {
+void OnOffSwitch_804A8FC8::init() {
     mPos.x += 8.0f;
     mPos.y += 8.0f;
     field_0x244 = field_0x90 >> 27;
@@ -246,13 +246,13 @@ void cls_804A8FC8::init() {
     }
     if (active == 1) {
         if (field_0x240 == 3 || field_0x240 == 4) {
-            if (fn_802D6A9C()->fn_802D7888(field_0x244) == true) {
+            if (getGameView_802D6A9C()->fn_802D7888(field_0x244) == true) {
                 lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
                 if (mEmitter230 == NULL) {
-                    mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                    mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
                 }
                 if (mEmitter234 == NULL) {
-                    mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
                 }
                 vfunc_0x30(0xFF, true);
                 if (field_0x240 == 3) {
@@ -273,10 +273,10 @@ void cls_804A8FC8::init() {
     } else {
         lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
         if (mEmitter230 == NULL) {
-            mEmitter230 = fn_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
         }
         if (mEmitter234 == NULL) {
-            mEmitter234 = fn_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
         }
         vfunc_0x30(0xFF, true);
         mState = 4;

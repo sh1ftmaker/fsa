@@ -45,12 +45,12 @@ static inline void moveTempo(JAITempoMgr* tempoMgr, f32 tempo, u32 frames) {
 }
 
 // 0x80457DFC
-void Unk_8045A080::fn_80457DFC(u8 value) {
+void AudioMgr_8045A080::fn_80457DFC(u8 value) {
     field_0x6 = value;
 }
 
 // 0x80457E04
-void Unk_8045A080::fn_80457E04(bool flag) {
+void AudioMgr_8045A080::fn_80457E04(bool flag) {
     if (field_0x8c == 0 && field_0x8b == 0) {
         if (flag) {
             fn_80458744(3);
@@ -61,18 +61,18 @@ void Unk_8045A080::fn_80457E04(bool flag) {
 }
 
 // 0x80457F60
-void Unk_8045A080::fn_80457F60() {
+void AudioMgr_8045A080::fn_80457F60() {
     field_0x74 = 1;
 }
 
 // 0x80457F6C
-void Unk_8045A080::fn_80457F6C() {
+void AudioMgr_8045A080::fn_80457F6C() {
     field_0x74 = 0;
     field_0x6d = 0xB4;
 }
 
 // 0x80457F80
-bool Unk_8045A080::fn_80457F80(JAISoundID id, s8 player) {
+bool AudioMgr_8045A080::fn_80457F80(JAISoundID id, s8 player) {
     if (player == -2) {
         if (field_0x14->getHandleSoundID(id) != NULL) {
             return false;
@@ -97,14 +97,14 @@ bool Unk_8045A080::fn_80457F80(JAISoundID id, s8 player) {
 }
 
 // 0x80458090
-void Unk_8045A080::fn_80458090() {
+void AudioMgr_8045A080::fn_80458090() {
     field_0x44->loadWaveArc(2);
     field_0x44->loadWaveArc(3);
     field_0x44->loadWaveArc(4);
 }
 
 // 0x804580DC
-bool Unk_8045A080::fn_804580DC(u8 index) {
+bool AudioMgr_8045A080::fn_804580DC(u8 index) {
     if (field_0x44 != NULL) {
         JASWaveBank* bank = field_0x44->getWaveBankTable().getWaveBank(index);
         if (bank != NULL && bank->getWaveArc(0)->_4c == 2) {
@@ -115,7 +115,7 @@ bool Unk_8045A080::fn_804580DC(u8 index) {
 }
 
 // 0x80458408
-void Unk_8045A080::fn_80458408(s32 id, bool flag) {
+void AudioMgr_8045A080::fn_80458408(s32 id, bool flag) {
     if (field_0x80) {
         switch (id) {
         case 0x100001A: {
@@ -149,7 +149,7 @@ void Unk_8045A080::fn_80458408(s32 id, bool flag) {
 // FIXME: 98.55. The switch tree differs: the original tests kind == 1 first
 // (cmpwi 1; beq; bge; b default; cmpwi 3; bge default), ours tests 2 first;
 // two branches more here.
-void Unk_8045A080::fn_80458508(u8 kind) {
+void AudioMgr_8045A080::fn_80458508(u8 kind) {
     if (field_0x80) {
         JAITempoMgr* tempoMgr = field_0x80->getTempoMgr();
         if (tempoMgr != NULL) {
@@ -171,7 +171,7 @@ void Unk_8045A080::fn_80458508(u8 kind) {
 // 0x80458658
 // FIXME: 99.65, regalloc only: the original keeps this in r30 and pause in
 // r31 (mr r30, r3 first); ours copies pause first.
-void Unk_8045A080::fn_80458658(bool pause) {
+void AudioMgr_8045A080::fn_80458658(bool pause) {
     field_0x8a = pause;
     field_0x34->getCategory(3)->pause(pause);
     field_0x34->getCategory(4)->pause(pause);
@@ -188,7 +188,7 @@ void Unk_8045A080::fn_80458658(bool pause) {
 }
 
 // 0x8045873C
-void Unk_8045A080::fn_8045873C(u8 value) {
+void AudioMgr_8045A080::fn_8045873C(u8 value) {
     field_0x69 = value;
 }
 
@@ -205,7 +205,7 @@ extern f32 lbl_804B1EA8[9];
 extern f32 lbl_804B1ECC[9];
 
 
-void Unk_8045A080::fn_80458744(s32 mode) {
+void AudioMgr_8045A080::fn_80458744(s32 mode) {
     f32 musicVolume;
     f32 seqVolume;
     f32 seVolume;
@@ -268,7 +268,7 @@ void Unk_8045A080::fn_80458744(s32 mode) {
 }
 
 // 0x80458F04
-void Unk_8045A080::fn_80458F04(u32 id) {
+void AudioMgr_8045A080::fn_80458F04(u32 id) {
     if (field_0x4 != 0) {
         return;
     }
@@ -282,7 +282,7 @@ void Unk_8045A080::fn_80458F04(u32 id) {
 }
 
 // 0x80458F9C
-void Unk_8045A080::fn_80458F9C(s32 frames) {
+void AudioMgr_8045A080::fn_80458F9C(s32 frames) {
     if (field_0x80) {
         field_0x80->stop(frames);
     }
@@ -296,7 +296,7 @@ void Unk_8045A080::fn_80458F9C(s32 frames) {
 // 0x80458FF0
 // FIXME: 99.91, reloc-name only: jumptable_804B1FB4, as fn_80458744's.
 // Inlines fn_80458408 (case 0x100001A).
-void Unk_8045A080::fn_80458FF0(s32 id, bool restart, u8 flag) {
+void AudioMgr_8045A080::fn_80458FF0(s32 id, bool restart, u8 flag) {
     if (field_0x4 != 0) {
         return;
     }
@@ -357,12 +357,12 @@ void Unk_8045A080::fn_80458FF0(s32 id, bool restart, u8 flag) {
 }
 
 // 0x804594E4
-void Unk_8045A080::fn_804594E4(u32 mode) {
+void AudioMgr_8045A080::fn_804594E4(u32 mode) {
     JASDriver::setOutputMode(mode);
 }
 
 // 0x80459508
-void Unk_8045A080::fn_80459508() {
+void AudioMgr_8045A080::fn_80459508() {
     field_0x30->stop();
     field_0x4c = 1.0f;
     field_0x50 = 1.0f;
@@ -388,7 +388,7 @@ void Unk_8045A080::fn_80459508() {
 }
 
 // 0x8045959C
-int Unk_8045A080::fn_8045959C() {
+int AudioMgr_8045A080::fn_8045959C() {
     if (field_0x7c == 0) {
         return 0;
     }
@@ -396,7 +396,7 @@ int Unk_8045A080::fn_8045959C() {
 }
 
 // 0x804595E4
-void Unk_8045A080::fn_804595E4(bool flag) {
+void AudioMgr_8045A080::fn_804595E4(bool flag) {
     field_0x2c->start(5, flag);
     field_0x7c = 1;
 }
@@ -405,13 +405,13 @@ void Unk_8045A080::fn_804595E4(bool flag) {
 // FIXME: 79.35. The original loads and stores the three coordinates one at a time
 // (lfs/stfs through f0, the mtx pointer moved in between); ours loads x and z
 // (f0, f1) before the first store and the register assignment follows.
-void Unk_8045A080::fn_80459624(const JGeometry::TVec3f* pos, Mtx mtx, s32 index) {
+void AudioMgr_8045A080::fn_80459624(const JGeometry::TVec3f* pos, Mtx mtx, s32 index) {
     field_0x8.set(pos->x, pos->z, pos->y);
     field_0x3c->setAudienceMtx(mtx, index, false);
 }
 
 // 0x8045A080
-Unk_8045A080::Unk_8045A080() {
+AudioMgr_8045A080::AudioMgr_8045A080() {
     lbl_8053AF80 = this;
     field_0x30 = NULL;
     field_0x34 = NULL;

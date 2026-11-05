@@ -4,7 +4,7 @@
 #include "types.h"
 
 class J2DScreen;
-class cls_804AF86C;
+class PaneCtrl_804AF86C;
 
 // Named after its vtable, 0x804B1600 (one virtual, the destructor fn_8042EEC8).
 // Defined in game/tu_8042E964.cpp. cls_804B1634's constructor (fn_80431D84)
@@ -25,8 +25,8 @@ public:
     bool fn_8042EDAC(u32 message, u8 value);
 
     /* 0x04 */ J2DScreen* field_0x4;
-    /* 0x08 */ cls_804AF86C* field_0x8;
-    /* 0x0C */ cls_804AF86C* field_0xc;
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;
+    /* 0x0C */ PaneCtrl_804AF86C* field_0xc;
     /* 0x10 */ s16 field_0x10;
     /* 0x12 */ u8 field_0x12;
 }; // Size: 0x14

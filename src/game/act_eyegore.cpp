@@ -58,8 +58,8 @@ void Eyegore_804A3548::update() {
     }
 
     fn_801EF510();
-    fn_801F71A4(&field_0x3c.x, field_0x25c.x, 0.3f, 1.0f);
-    fn_801F71A4(&field_0x3c.y, field_0x25c.y, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x25c.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x25c.y, 0.3f, 1.0f);
     mPos += field_0x3c;
 
     for (s32 i = 0; i < 4; i++) {
@@ -74,9 +74,9 @@ void Eyegore_804A3548::update() {
         center.x = box.f.x + 0.5f * (box.i.x - box.f.x);
         center.y = box.f.y + 0.5f * (box.i.y - box.f.y);
         if (fn_80237948(player, &center)) {
-            fn_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x400D1, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x400D1, 0);
         }
     }
 
@@ -269,7 +269,7 @@ void Eyegore_804A3548::update() {
                     field_0x244++;
                     field_0x244 &= 3;
                     if (field_0x244 & 1) {
-                        fn_801F0E34(0x5007C, 0);
+                        startSound_801F0E34(0x5007C, 0);
                     }
                 }
                 if (mTimers[1] == 0) {

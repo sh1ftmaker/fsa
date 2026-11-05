@@ -26,7 +26,7 @@ void TalkingNPC_804AF548::update() {
         break;
     case 1:
         field_0x238--;
-        if (field_0x238 <= 0 || fn_802D6A9C()->fn_802DCD0C()) {
+        if (field_0x238 <= 0 || getGameView_802D6A9C()->fn_802DCD0C()) {
             if (fn_80384C58(player, field_0x234)) {
                 mAlive = false;
             }

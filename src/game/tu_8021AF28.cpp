@@ -59,7 +59,7 @@ void cls_804A6550::fn_8021AFB8() {
         mtx[2][2] = 1.0f;
         params.mMtx = mtx;
     }
-    fn_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0x25C, &params, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0x25C, &params, -1, 1.0f, 1.0f);
     drawSecond(this, params, mAnim.mCel + 0x25C);
 }
 
@@ -74,7 +74,7 @@ void cls_804A6550::fn_8021B1AC() {
         shift = -6;
     }
     params.field_0x1d = shift;
-    fn_801F06F0("enemy_gc_sob.bin", 0x279, &params, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x279, &params, -1, 1.0f, 1.0f);
     drawSecond(this, params, 0x279);
 
     params.reset();
@@ -100,7 +100,7 @@ void cls_804A6550::fn_8021B1AC() {
     mtx[2][2] = cosA;
     params.mMtx = mtx;
     mPos.y += -21.0f;
-    fn_801F06F0("enemy_gc_sob.bin", 0x27A, &params, -1, 1.0f, 1.0f);
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x27A, &params, -1, 1.0f, 1.0f);
     mPos.y -= -21.0f;
     params.field_0x10.mColor.a = 200;
     params.field_0x1d = 0;
@@ -130,7 +130,7 @@ void cls_804A6550::fn_8021B5C4() {
     if (fn_80219E04()) {
         shift = -6;
     }
-    mEmitter = fn_8013CC50(layer, &mPos, 0x344, 0, shift, NULL, NULL, true, 1.0f);
+    mEmitter = spawnEmitter_8013CC50(layer, &mPos, 0x344, 0, shift, NULL, NULL, true, 1.0f);
 }
 
 void cls_804A6550::fn_8021B668() const {
@@ -139,5 +139,5 @@ void cls_804A6550::fn_8021B668() const {
     if (fn_80219E04()) {
         shift = -6;
     }
-    fn_8013CC50(layer, &mPos, 0x343, 0, shift, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, &mPos, 0x343, 0, shift, NULL, NULL, true, 1.0f);
 }

@@ -18,14 +18,14 @@ static const u16 lbl_8053EDA8[4] = {0x4B, 0x4C, 0x4D, 0x0};
 void ShadowLinkGenerator_804A4310::fn_801C1768() {
     s32 i;
     for (i = 0; i < 5; i++) {
-        mEmitters2[i] = fn_8013CC50(field_0x4, &mPos, lbl_80469424[i], 0, 0, NULL, NULL, true, 1.0f);
+        mEmitters2[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80469424[i], 0, 0, NULL, NULL, true, 1.0f);
     }
     for (i = 0; i < 4; i++) {
-        fn_8013CC50(field_0x4, &mPos, lbl_8053EDB8[i], 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053EDB8[i], 0, 0, NULL, NULL, true, 1.0f);
     }
     fn_801EE434(mEmitter);
     mEmitter = NULL;
-    fn_801F0E34(0x50049, 0);
+    startSound_801F0E34(0x50049, 0);
     mStateTimer = 0;
     mState = 4;
 }
@@ -39,7 +39,7 @@ void ShadowLinkGenerator_804A4310::fn_801C186C() const {
         s32 slot = mSlotFirst + fn_801CD664(mSlotLast - mSlotFirst + 1);
         s32 serial = fn_801F856C()->fn_801F9484(ACTOR_SLK2, field_0x4, &mPos, fn_801C5660(8, 0, slot, 0, 0), -1, -1);
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 static_cast<ShadowLink2_804A43E8*>(actor)->fn_801C26D8();
             }
@@ -56,7 +56,7 @@ void ShadowLinkGenerator_804A4310::draw() {
         s32 layer = field_0x4;
         void* res = mTexture;
         if (layer < 8) {
-            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
     }
 }
@@ -83,9 +83,9 @@ void ShadowLinkGenerator_804A4310::init() {
     if (vfunc_0x34()) {
         mState = 0xB;
     } else {
-        mEmitter = fn_8013CC50(field_0x4, &mPos, 0x4F, 0, 0, NULL, NULL, true, 1.0f);
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4F, 0, 0, NULL, NULL, true, 1.0f);
         for (s32 i = 0; i < 3; i++) {
-            mEmitters[i] = fn_8013CC50(field_0x4, &mPos, lbl_8053EDA8[i], 0, 0, NULL, NULL, true, 1.0f);
+            mEmitters[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053EDA8[i], 0, 0, NULL, NULL, true, 1.0f);
         }
     }
     fn_801C0D70()->field_0x50 = mSerial;

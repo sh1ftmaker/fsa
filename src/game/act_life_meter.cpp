@@ -37,11 +37,11 @@ void LifeMeter_804B174C::draw() {
     params.mMtx = mtx;
     void* res = fn_804030C4('TIMG', lbl_804B1738[field_0x24c]);
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 
-// FIXME: 99%. The null check of the fn_801F666C result is `mr. r30, r3` here; the original has
+// FIXME: 99%. The null check of the findActorBySerial_801F666C result is `mr. r30, r3` here; the original has
 // `cmplwi r3, 0; mr r30, r3` (same registers otherwise). A `found = lookup; actor = found;`
 // alias form matches but was rejected as steering.
 void LifeMeter_804B174C::update() {
@@ -59,7 +59,7 @@ void LifeMeter_804B174C::update() {
         JGeometry::TVec3f pos;
         ActorBase_804A5770* actor;
         if ((field_0x90 & 0xF) == 0) {
-            actor = fn_801F856C()->fn_801F666C(field_0x250);
+            actor = fn_801F856C()->findActorBySerial_801F666C(field_0x250);
             if (!actor || field_0x24c < 0) {
                 mAlive = false;
                 break;
@@ -102,7 +102,7 @@ void LifeMeter_804B174C::update() {
                 field_0x26c = 0.5f;
                 field_0x270 = 0.5f;
             }
-            fn_801F71A4(&field_0x25c, field_0x268, 0.2f, 0.4f);
+            addCalc2_801F71A4(&field_0x25c, field_0x268, 0.2f, 0.4f);
             field_0x260 = field_0x25c;
         }
         mPos.x = pos.x;

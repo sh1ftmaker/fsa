@@ -29,7 +29,7 @@ public:
     /* 0x230 */ s32 mState;      // index into the derived class's state table
     /* 0x234 */ s32 field_0x234; // countdown, decremented by update()
     /* 0x238 */ s32 field_0x238; // go flag, set by the partner actor
-    /* 0x23C */ s32 field_0x23c; // serial of the partner actor (fn_801F666C)
+    /* 0x23C */ s32 field_0x23c; // serial of the partner actor (findActorBySerial_801F666C)
     /* 0x240 */ s32 field_0x240; // EZLD: 0 or 1, picks the SOB file in draw()
     /* 0x244 */ s32 field_0x244; // sequencer step timer, decremented by update()
     /* 0x248 */ s32 field_0x248; // sequencer step value (the frame offset)

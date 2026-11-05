@@ -7,9 +7,9 @@
 
 // The CRTL crystal ball (docs/names/actors.tsv). Named after its vtable,
 // 0x804AB308; the destructor (0x80323708) releases its two emitters.
-class cls_804AB308 : public ActorBase_804A5770 {
+class CrystalBall_804AB308 : public ActorBase_804A5770 {
 public:
-    /* 0x08 */ virtual ~cls_804AB308();
+    /* 0x08 */ virtual ~CrystalBall_804AB308();
 
     // 0x230..0x2C3: not identified yet (0x278 is read by vfunc_0x40).
     /* 0x230 */ u8 field_0x230[0x94];

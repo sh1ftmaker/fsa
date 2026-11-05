@@ -158,7 +158,7 @@ void GameView_804A9950::fn_802D3A18() {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
             lbl_8053AF80->fn_80458880(0x35, -1);
         } else if (field_0xc4 == 0) {
-            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
             JGeometry::TVec3f pos;
             pos.x = -camera->field_0x4[0][3];
             pos.y = -camera->field_0x4[1][3];
@@ -200,7 +200,7 @@ s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
     return -1;
 }
 
-GameView_804A9950* fn_802D6A9C(void) {
+GameView_804A9950* getGameView_802D6A9C(void) {
     return lbl_8053AAF8->field_0x4->mView;
 }
 
@@ -663,7 +663,7 @@ const char* GameView_804A9950::fn_802D9C7C(s32 stage, s32 level) {
 }
 
 void GameView_804A9950::fn_802D9CB0() {
-    lbl_8053AB10->field_0x24->fn_8030C85C();
+    gGameRoot2_8053AB10->field_0x24->fn_8030C85C();
 }
 
 void GameView_804A9950::fn_802D9FBC() {
@@ -685,18 +685,18 @@ void GameView_804A9950::fn_802D9FF4(s32 a, s32 b) {
 }
 
 u8 GameView_804A9950::fn_802DA000() {
-    return lbl_8053AB10->field_0x24->field_0x1e8;
+    return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
 u8 GameView_804A9950::fn_802DCD0C() {
-    return lbl_8053AB10->field_0x24->field_0x1e8;
+    return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
 // FIXME: 94.2. One instruction: the target keeps the result in r6 (li r6, 0 at entry) and
 // returns it through clrlwi r3, r6, 24; ours builds it in r3 directly.
 bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
     bool moved = false;
-    if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
         if (dir[0] > 0) {
             field_0x14++;
         } else if (dir[0] < 0) {
@@ -710,7 +710,7 @@ bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
         fn_801F856C()->fn_801F7E88();
         fn_802D8D50(true);
         fn_802D8328(false, false);
-        lbl_8053AB10->field_0x24->fn_8030C928(&mVisibleBox);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C928(&mVisibleBox);
         moved = true;
     }
     return moved;
@@ -721,7 +721,7 @@ void GameView_804A9950::fn_802DCDF4() {
     fn_801F856C()->fn_801F6204(0);
     fn_80308D0C();
     lbl_8053AAF8->field_0x4->mView->field_0x131de = 0;
-    fn_8013C824()->fn_8013C8CC();
+    getEffectSystem_8013C824()->fn_8013C8CC();
     field_0xc9 = 0;
 }
 
@@ -733,7 +733,7 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     bool entered = false;
     u32 exits = 0xF;
     field_0xc9 = 0;
-    if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
         s32 end = fn_801F856C()->mActorEnd;
         for (s32 i = 0; i < end; i++) {
             ActorBase_804A5770* actor = fn_801F856C()->mActors[i];

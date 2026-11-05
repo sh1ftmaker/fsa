@@ -10,19 +10,19 @@ void DummyConversation_804B1A48::update() {
     s32 player = field_0x90 >> 28;
     switch (mState) {
     case 0:
-        if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(player), 0x400) &&
-            lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100)) {
+        if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(player), 0x400) &&
+            lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 0x100)) {
             lbl_8053AED0->field_0x1f0[player] = 2;
             fn_8023061C(player, 0);
             mAlive = false;
             break;
         }
         // pick of the message: 1, 10 or 100 per press by held buttons
-        if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(player), 0x100)) {
-            if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(player), 0x200)) {
-                if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 2)) {
+        if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(player), 0x100)) {
+            if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(player), 0x200)) {
+                if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 2)) {
                     mMessage += 100;
-                } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 1)) {
+                } else if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 1)) {
                     if (mMessage > 100) {
                         mMessage -= 100;
                     } else {
@@ -30,9 +30,9 @@ void DummyConversation_804B1A48::update() {
                     }
                 }
             } else {
-                if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 2)) {
+                if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 2)) {
                     mMessage += 10;
-                } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 1)) {
+                } else if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 1)) {
                     if (mMessage > 10) {
                         mMessage -= 10;
                     } else {
@@ -41,9 +41,9 @@ void DummyConversation_804B1A48::update() {
                 }
             }
         } else {
-            if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 2)) {
+            if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 2)) {
                 mMessage += 1;
-            } else if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 1)) {
+            } else if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 1)) {
                 if (mMessage > 1) {
                     mMessage -= 1;
                 } else {
@@ -51,9 +51,9 @@ void DummyConversation_804B1A48::update() {
                 }
             }
         }
-        if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(player), 0x20) &&
-            lbl_8053AD30->fn_80309D24(fn_8030AAF4(player), 0x20) &&
-            lbl_8053AD30->fn_80309D6C(fn_8030AAF4(player), 0x100)) {
+        if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(player), 0x20) &&
+            lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(player), 0x20) &&
+            lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(player), 0x100)) {
             mState = 1;
             fn_8023061C(player, 0);
         }

@@ -151,21 +151,21 @@ void TwoSwordMotion_804ABA90::update() {
                 if (field_0x2a0[i] == NULL) {
                     switch (i) {
                     case 0:
-                        field_0x2a0[i] = fn_8013CC50(field_0x4, &mPos, 0x477, 0, -1, NULL, NULL, true, 1.0f);
+                        field_0x2a0[i] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x477, 0, -1, NULL, NULL, true, 1.0f);
                         break;
                     case 1:
-                        field_0x2a0[i] = fn_8013CC50(field_0x4, &mPos, 0x479, 0, -1, NULL, NULL, true, 1.0f);
+                        field_0x2a0[i] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x479, 0, -1, NULL, NULL, true, 1.0f);
                         break;
                     case 2:
-                        field_0x2a0[i] = fn_8013CC50(field_0x4, &mPos, 0x476, 0, -1, NULL, NULL, true, 1.0f);
+                        field_0x2a0[i] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x476, 0, -1, NULL, NULL, true, 1.0f);
                         break;
                     case 3:
-                        field_0x2a0[i] = fn_8013CC50(field_0x4, &mPos, 0x478, 0, -1, NULL, NULL, true, 1.0f);
+                        field_0x2a0[i] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x478, 0, -1, NULL, NULL, true, 1.0f);
                         break;
                     }
                 }
                 if (field_0x2b0[i] == NULL) {
-                    field_0x2b0[i] = fn_8013CC50(field_0x4, &mPos, 0x475, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x2b0[i] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x475, 0, -1, NULL, NULL, true, 1.0f);
                 }
                 field_0x281[i] = 0;
             }
@@ -214,12 +214,12 @@ void TwoSwordMotion_804ABA90::update() {
                                       field_0x294.y, field_0x294.z);
                 fn_80230498(i, &pos, field_0x258 + 0x31a, 0xff, -0x80, -0x80, true);
                 if (field_0x2a0[i] != NULL) {
-                    fn_8013CB44(field_0x2a0[i], &pos, 0, -1, true);
+                    setEmitterPos_8013CB44(field_0x2a0[i], &pos, 0, -1, true);
                 }
                 if (field_0x2b0[i] != NULL) {
                     JGeometry::TVec3f pos2(field_0x294.x + field_0x27c * swingPhase(count, field_0x278),
                                            field_0x294.y, field_0x294.z);
-                    fn_8013CB44(field_0x2b0[i], &pos2, 0, -1, true);
+                    setEmitterPos_8013CB44(field_0x2b0[i], &pos2, 0, -1, true);
                 }
                 if (field_0x280 == 0) {
                     JGeometry::TVec3f p20((field_0x27c + 0.5f) * swingPhase(count, field_0x278) + field_0x294.x,
@@ -233,9 +233,9 @@ void TwoSwordMotion_804ABA90::update() {
                 } else if (field_0x258 >= 2 || field_0x280 == 1) {
                     if (field_0x281[i] == 0) {
                         JGeometry::TVec3f a(pos.x + 6.0f, pos.y - 29.0f, pos.z);
-                        fn_8013CC50(field_0x4, &a, 0xcb, 0, 1, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &a, 0xcb, 0, 1, NULL, NULL, true, 1.0f);
                         JGeometry::TVec3f b(pos.x + 6.0f, pos.y - 29.0f, pos.z);
-                        fn_8013CC50(field_0x4, &b, 0xcc, 0, 1, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &b, 0xcc, 0, 1, NULL, NULL, true, 1.0f);
                         field_0x281[i] = 1;
                     }
                 }
@@ -300,10 +300,10 @@ bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
     if (code == 0 || code == 2 || code == 0x50 || code == 0x39 || code == 0xd || code == 0x61) {
         return false;
     }
-    if (code == 0x22 && fn_802D6A9C()->field_0x170 == 0) {
+    if (code == 0x22 && getGameView_802D6A9C()->field_0x170 == 0) {
         return false;
     }
-    if (code == 0x25 && fn_802D6A9C()->field_0x171 == 0) {
+    if (code == 0x25 && getGameView_802D6A9C()->field_0x171 == 0) {
         return false;
     }
     if (code == 4) {

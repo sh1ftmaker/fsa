@@ -9,7 +9,7 @@ Matched: fn_801BD8C0 (member called by act_fire_bar), update, init, dtor, ctor, 
 
 Resistant:
 - draw (0x801BD978), 79 %, `missing/extra`, STOP after 2 tries. Same shape as
-  cls_804A6828::draw (tu_802201D8): original `li r7,0; addi r5,r3,0xc; ...; lwz r4,4(r3); lwz r3,lbl_8053AB10; lwz r3,0x2c(r3)`
+  cls_804A6828::draw (tu_802201D8): original `li r7,0; addi r5,r3,0xc; ...; lwz r4,4(r3); lwz r3,gGameRoot2_8053AB10; lwz r3,0x2c(r3)`
   (this stays in r3, receiver loaded last); ours moves `this` to r7 and loads the receiver first.
   A local colour + local receiver gave 77 %.
 

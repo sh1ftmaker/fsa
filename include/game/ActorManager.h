@@ -143,13 +143,13 @@ public:
     // actor `id`, row 0's default when `id` has no row, 0 when the column
     // is missing. 2 units / 8 calls (the spawner, tu_802D39B8).
     s32 fn_801F620C(u32 id, u32 column);
-    // 1 unit / 2 calls (ActorBase_804A5770::fn_801F1184 and fn_801F0E34).
+    // 1 unit / 2 calls (ActorBase_804A5770::fn_801F1184 and startSound_801F0E34).
     // mSounds[slot], or field_0x200c when mActors[slot]->field_0x4 != 0.
     ActorSoundObj_804578F4* fn_801F6644(s32 slot);
     // 170 units / 709 calls. The live actor with mSerial == serial
     // (cmpw), or NULL (also for serial < 0). Tries mActors[mLastSlot]
     // first, then scans.
-    ActorBase_804A5770* fn_801F666C(s32 serial);
+    ActorBase_804A5770* findActorBySerial_801F666C(s32 serial);
     // 4 units / 8 calls. Spawns a Score ('SCRE', 0x801F6720) actor:
     // fn_801F9484(this, ACTOR_SCRE, layer, pos, (c << 24) | (a << 16) | b,
     // -1, -1) (clrlslwi/rlwimi at 0x801F6728-0x801F6738); returns its serial.
@@ -339,7 +339,7 @@ enum ActorParamColumn {
 ActorManager_804A5800* fn_801F856C(void);
 
 // Defined in game/tu_801F6058.cpp. 21 units / 38 calls. True when pos (x, y) is outside the view's box
-// (fn_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
+// (getGameView_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
 // each side (<= / >= compares). Callers pass &mPos, field_0x4 and a
 // literal, and test r3 with clrlwi. 24.
 bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin);
@@ -356,11 +356,11 @@ u16 fn_801F6874(s32 dir);
 // 9 units / 13 calls. Moves *value toward target by (s16)(target -
 // *value) / step, at most maxStep either way (lhz/sth; callers pass a
 // field address, an lhz target, 1 and 0x1000 at tu_80343A70).
-void fn_801F714C(u16* value, u16 target, u16 step, u16 maxStep);
+void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep);
 
 // 79 units / 361 calls. Unless *value == target, adds rate * (target -
 // *value), clamped to +-maxStep, to *value.
-void fn_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
+void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
 
 // Not written yet in game/tu_801F6058.cpp: extern "C" keeps its dtk
 // placeholder name as the link name until that unit defines it.
@@ -381,7 +381,7 @@ s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 
 // Force Gem ('RUPY', act_force_gem) tests, defined in game/tu_801CB270.cpp:
 // actor->mActorId == 'RUPY' and its kind (the low byte of field_0x90 while
 // field_0x94 is 0 or 3, else -1) is in 8-11 / 4-7 / 0 and up. Callers pass
-// an actor (fn_801F666C's result, or mActors[i] in fn_801F7274, fn_801F732C,
+// an actor (findActorBySerial_801F666C's result, or mActors[i] in fn_801F7274, fn_801F732C,
 // fn_801F7464, fn_801F750C) and test r3 with clrlwi 24. Whether the pointer
 // is const is not visible.
 bool fn_801CC910(ActorBase_804A5770* actor);

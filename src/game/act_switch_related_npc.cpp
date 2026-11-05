@@ -31,10 +31,10 @@ void SwitchRelatedNpc_804A8C28::update() {
         if (mDelay == 0) {
             switch (mType) {
             case 0:
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x30);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x30);
                 break;
             case 1:
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, lbl_8046D470[mTileIndex]);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, lbl_8046D470[mTileIndex]);
                 break;
             case 2: {
                 s32 layer = field_0x4;
@@ -42,32 +42,32 @@ void SwitchRelatedNpc_804A8C28::update() {
                 if (layer < 8) {
                     step = 1;
                 }
-                u16 slot = fn_802D6A9C()->fn_802D7B34(layer + 1, (s32)mSlot);
+                u16 slot = getGameView_802D6A9C()->fn_802D7B34(layer + 1, (s32)mSlot);
                 s32 cell = mCell;
                 if (slot == 0) {
                     u32 tile = lbl_8046D498[mTable];
                     if (tile < 0xA0) {
-                        fn_802D6A9C()->fn_802D7BE8(field_0x4, (s32)mSlot, tile - 0x26);
+                        getGameView_802D6A9C()->fn_802D7BE8(field_0x4, (s32)mSlot, tile - 0x26);
                     } else {
-                        fn_802D6A9C()->fn_802D7BE8(field_0x4, (s32)mSlot, tile - 0xA6);
+                        getGameView_802D6A9C()->fn_802D7BE8(field_0x4, (s32)mSlot, tile - 0xA6);
                     }
-                    lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D498[mTable]);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D498[mTable]);
                     if ((cell & 0x100) != ((cell - 0x10) & 0x100)) {
                         cell -= 0x110;
                     } else {
                         cell -= 0x10;
                     }
-                    lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D47C[mTable]);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D47C[mTable]);
                 } else {
-                    lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D4B4[slot][1]);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D4B4[slot][1]);
                     if ((cell & 0x100) != ((cell - 0x10) & 0x100)) {
                         cell -= 0x110;
                     } else {
                         cell -= 0x10;
                     }
-                    lbl_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D4B4[slot][0]);
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4 + step, cell, lbl_8046D4B4[slot][0]);
                 }
-                lbl_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x17);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x17);
                 break;
             }
             case 3:
@@ -93,9 +93,9 @@ void SwitchRelatedNpc_804A8C28::update() {
                 break;
             }
             if (mEffects) {
-                fn_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
-                fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
-                fn_801F0E34(0x30003, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x30003, 0);
             }
             mAlive = false;
         } else {
@@ -120,14 +120,14 @@ void SwitchRelatedNpc_804A8C28::init() {
     mDelay = 0;
     switch (mType) {
     case 0:
-        fn_802D6A9C()->fn_802D4874(field_0x4, mCell, &mBit, &mMask);
-        if (fn_802D6A9C()->fn_802D4ADC(field_0x4, mCell) == true) {
-            lbl_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x10);
+        getGameView_802D6A9C()->fn_802D4874(field_0x4, mCell, &mBit, &mMask);
+        if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, mCell) == true) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x10);
             mAlive = false;
         }
         break;
     case 2:
-        fn_802D6A9C()->fn_802D4768(field_0x4 + 1, mCell, &mSlot, &mMask);
+        getGameView_802D6A9C()->fn_802D4768(field_0x4 + 1, mCell, &mSlot, &mMask);
         break;
     case 3:
         if (mSound == 0) {

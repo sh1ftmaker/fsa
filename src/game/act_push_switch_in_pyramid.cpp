@@ -48,7 +48,7 @@ void PushSwitchInPyramid_804AE8F4::draw() {
     pos.x += 8.0f;
     void* res = fn_804032E8('TIMG', lbl_804AE8E0[field_0x241]);
     if (field_0x4 < 8) {
-        lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
     }
 }
 
@@ -68,13 +68,13 @@ void PushSwitchInPyramid_804AE8F4::update() {
             field_0x242++;
             if (field_0x242 >= 20) {
                 if (((field_0x90 >> 4) & 1) == 0) {
-                    fn_802D6A9C()->fn_802D7584(field_0x16c, player + 1);
+                    getGameView_802D6A9C()->fn_802D7584(field_0x16c, player + 1);
                 }
                 fn_80238E08(mSerial);
                 field_0x243++;
                 if (lbl_80475248[field_0x241] < field_0x243) {
                     field_0x241++;
-                    fn_801F0E34(0x3004B, 0);
+                    startSound_801F0E34(0x3004B, 0);
                 }
                 mBox.set(-7.5f, -7.5f, 18.5f - (field_0x243 / 4), 7.5f);
                 if (field_0x241 == 3) {
@@ -113,7 +113,7 @@ void PushSwitchInPyramid_804AE8F4::init() {
     field_0x242 = 0;
     field_0x241 = 0;
     if (((field_0x90 >> 4) & 1) == 0) {
-        if (fn_802D6A9C()->fn_802D7544(field_0x16c)) {
+        if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
             field_0x241 = 3;
             mBox.set(-7.5f, -7.5f, 0.0f, 7.5f);
             vfunc_0x30(0xFF, true);

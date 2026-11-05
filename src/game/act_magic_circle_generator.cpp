@@ -6,12 +6,12 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 
-void cls_804A9FB0::draw() {}
+void MagicCircleGenerator_804A9FB0::draw() {}
 
 // FIXME: 93.51 %. The -20.0f / 20.0f literals are @508 / @509, not
 // lbl_80541260 / lbl_80541264 (data split), and the search keeps its loop
 // value in r29 where the original has li r28, -1 (r28 = previous serial).
-bool cls_804A9FB0::fn_802E7DB8() {
+bool MagicCircleGenerator_804A9FB0::fn_802E7DB8() {
     mBox.set(-20.0f, -20.0f, 20.0f, 20.0f);
     f32 left = mBox.i.x + mPos.x;
     f32 top = mBox.i.y + mPos.y;
@@ -25,7 +25,7 @@ bool cls_804A9FB0::fn_802E7DB8() {
         if (found < 0) {
             return false;
         }
-        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(fn_801F856C()->fn_801F666C(found));
+        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(fn_801F856C()->findActorBySerial_801F666C(found));
         if (key == NULL) {
             continue;
         }
@@ -83,10 +83,10 @@ bool cls_804A9FB0::fn_802E7DB8() {
         mEmitter238 = NULL;
         mEmitter23c = NULL;
         mEmitter240 = NULL;
-        fn_8013CC50(field_0x4, &effectPos, 0x85, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &effectPos, 0x86, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &effectPos, 0x87, 0, 0, NULL, NULL, true, 1.0f);
-        fn_801F0E34(0x30069, 0);
+        spawnEmitter_8013CC50(field_0x4, &effectPos, 0x85, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &effectPos, 0x86, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &effectPos, 0x87, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30069, 0);
         key->fn_802C5284();
         key->mAlive = false;
         fn_801F34DC();
@@ -94,7 +94,7 @@ bool cls_804A9FB0::fn_802E7DB8() {
     }
 }
 
-cls_804A9FB0::~cls_804A9FB0() {
+MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
     if (mEmitter230 != NULL) {
         fn_801EE434(mEmitter230);
     }
@@ -112,7 +112,7 @@ cls_804A9FB0::~cls_804A9FB0() {
     }
 }
 
-void cls_804A9FB0::init() {
+void MagicCircleGenerator_804A9FB0::init() {
     field_0x248 = field_0x90 & 7;
     field_0x24c = 0;
     field_0x264 = 0;
@@ -128,7 +128,7 @@ void cls_804A9FB0::init() {
     mEmitter238 = NULL;
     mEmitter23c = NULL;
     mEmitter240 = NULL;
-    if (!fn_802D6A9C()->fn_802D75BC(field_0x16c)) {
+    if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
         field_0x244 = 0;
     } else if (field_0x248 == 0 || field_0x248 == 3) {
         field_0x244 = 1;

@@ -24,7 +24,7 @@ void Terrorpin_804A3B10::vfunc_0x24() {
         for (s32 i = 0; i < 2; i++) {
             s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {
@@ -79,7 +79,7 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
         for (s32 i = 0; i < 2; i++) {
             s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {
@@ -127,9 +127,9 @@ bool Terrorpin_804A3B10::vfunc_0x60() {
 void Terrorpin_804A3B10::vfunc_0x7C() {
     if (__fabsf(field_0x3c.z) >= 0.5f) {
         if (mFlags & 0x2000) {
-            fn_801F0E34(0x50014, 0);
+            startSound_801F0E34(0x50014, 0);
         } else {
-            fn_801F0E34(0x50015, 0);
+            startSound_801F0E34(0x50015, 0);
         }
     }
 }
@@ -221,7 +221,7 @@ void Terrorpin_804A3B10::init() {
     mSpeed = 0.35f;
     mTargetSpeed = 0.35f;
     mAnim.fn_801D2608(lbl_8053A120, 2);
-    mAnim.fn_801D22DC(0, 2, false);
+    mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1D60();
 }
 

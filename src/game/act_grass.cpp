@@ -86,34 +86,34 @@ void Grass_804A92D0::vfunc_0x24() {
         pos.z = 0.0f;
         fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 4, -1, -1);
         if (field_0x238 == 0) {
-            fn_801F0E34(0x30006, 0);
+            startSound_801F0E34(0x30006, 0);
         } else if (field_0x238 == 1) {
-            fn_801F0E34(0x5002F, 0);
+            startSound_801F0E34(0x5002F, 0);
         }
     } else if (field_0x238 == 0) {
         if (fn_8022461C(&mPos, field_0x4) == 0xD || fn_8022461C(&mPos, field_0x4) == 0x39) {
-            fn_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
-            fn_801F0E34(0x30022, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x30022, 0);
         } else if (fn_8022461C(&mPos, field_0x4) == 0xE) {
             if (fn_802DE9A0()) {
-                fn_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
-                fn_801F0E34(0x5005F, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x5005F, 0);
             } else if (fn_802DEB58()) {
-                fn_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
-                fn_801F0E34(0x5003F, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x5003F, 0);
             }
         } else {
             fn_802CF598();
-            fn_8013CC50(field_0x4, &mPos, 0x357, 0, 0, NULL, NULL, true, 0.15f);
-            fn_801F0E34(0x30006, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x357, 0, 0, NULL, NULL, true, 0.15f);
+            startSound_801F0E34(0x30006, 0);
             field_0x234 = 2;
             fn_802CEC10();
         }
     } else if (field_0x238 == 1) {
-        fn_8013CC50(field_0x4, &mPos, 0x358, 0, 0, NULL, NULL, true, 0.15f);
-        fn_801F0E34(0x5002F, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x358, 0, 0, NULL, NULL, true, 0.15f);
+        startSound_801F0E34(0x5002F, 0);
         fn_802CEC10();
     }
     mAlive = false;
@@ -144,7 +144,7 @@ bool Grass_804A92D0::fn_802CF598() {
     JGeometry::TBox2f box(mBox);
     box.addPos(mPos.x, mPos.y);
     s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
+    GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* screen = (layer < 8) ? &view->mVisibleBox : &view->field_0xdc;
     box.addPos(-screen->i.x, -screen->i.y);
 
@@ -157,19 +157,19 @@ bool Grass_804A92D0::fn_802CF598() {
         if (found == mSerial) {
             continue;
         }
-        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(found);
+        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(found);
         if (other == NULL) {
             continue;
         }
         JGeometry::TBox2f otherBox(other->mBox);
         otherBox.addPos(other->mPos.x, other->mPos.y);
         s32 otherLayer = other->field_0x4;
-        view = fn_802D6A9C();
+        view = getGameView_802D6A9C();
         screen = (otherLayer < 8) ? &view->mVisibleBox : &view->field_0xdc;
         otherBox.addPos(-screen->i.x, -screen->i.y);
         if (otherBox.intersect(box)) {
-            fn_801F0E34(0x3002F, 0);
-            fn_8013CC50(field_0x4, &mPos, 0x1A2, 1, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x3002F, 0);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A2, 1, 0, NULL, NULL, true, 1.0f);
             return true;
         }
     }
@@ -220,7 +220,7 @@ void Grass_804A92D0::update() {
         field_0x240 -= 1;
         if (field_0x240 == 0) {
             s32 tile = fn_80226AE0(&mPos, field_0x4);
-            fn_802D6A9C()->fn_802D7310(tile, false);
+            getGameView_802D6A9C()->fn_802D7310(tile, false);
             mAlive = false;
         }
     }
@@ -242,8 +242,8 @@ void Grass_804A92D0::init() {
     field_0x23c = 0;
     field_0x245 = 0;
     if (field_0x238 == 2) {
-        fn_8013CC50(field_0x4, &mPos, 0x3D1, 0, 0, NULL, NULL, true, 1.0f);
-        fn_8013CC50(field_0x4, &mPos, 0x3D2, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D1, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D2, 0, 0, NULL, NULL, true, 1.0f);
         field_0x240 = 30;
     }
 }

@@ -622,7 +622,7 @@ static inline f32 padAxis_8024712C(Player_804A6F38* player) {
     if (teamCheck(player) == false) {
         return 0.0f;
     }
-    return lbl_8053AD30->fn_80309F20(fn_8030AAF4(player->field_0x11ec));
+    return lbl_8053AD30->fn_80309F20(getPlayerInputSlot_8030AAF4(player->field_0x11ec));
 }
 
 // As padAxis_8024712C, for fn_80309FCC (fn_80247330's body).
@@ -630,7 +630,7 @@ static inline f32 padAxis_80247330(Player_804A6F38* player) {
     if (teamCheck(player) == false) {
         return 0.0f;
     }
-    return lbl_8053AD30->fn_80309FCC(fn_8030AAF4(player->field_0x11ec));
+    return lbl_8053AD30->fn_80309FCC(getPlayerInputSlot_8030AAF4(player->field_0x11ec));
 }
 
 // FIXME: 99.9 %. Register allocation only (the group loops' count / index /
@@ -692,10 +692,10 @@ bool Player_804A6F38::fn_80244FFC() {
     if (teamCheck(this) == false) {
         return false;
     }
-    if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x100)) {
+    if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100)) {
         return true;
     }
-    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+    return lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -704,13 +704,13 @@ bool Player_804A6F38::fn_80245238() {
     if (teamCheck(this) == false) {
         return false;
     }
-    if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100)) {
+    if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100)) {
         return true;
     }
-    if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x20)) {
+    if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x20)) {
         return true;
     }
-    if (viewLayerFlag(field_0x3b4) && lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x200)) {
+    if (viewLayerFlag(field_0x3b4) && lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x200)) {
         return true;
     }
     return false;
@@ -728,7 +728,7 @@ bool Player_804A6F38::fn_802454C0() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309A54(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+    return lbl_8053AD30->fn_80309A54(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -743,7 +743,7 @@ bool Player_804A6F38::fn_802456FC() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+    return lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -758,7 +758,7 @@ bool Player_804A6F38::fn_80245938() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+    return lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x20) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -773,7 +773,7 @@ bool Player_804A6F38::fn_80245B74() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+    return lbl_8053AD30->fn_80309A78(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -788,7 +788,7 @@ bool Player_804A6F38::fn_80245DB0() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+    return lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -803,7 +803,7 @@ bool Player_804A6F38::fn_80245FEC() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+    return lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -818,7 +818,7 @@ bool Player_804A6F38::fn_80246228() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+    return lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x100) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -836,7 +836,7 @@ bool Player_804A6F38::fn_80246464() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x200) != 0;
+    return lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x200) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -854,7 +854,7 @@ bool Player_804A6F38::fn_802466B4() {
     if (field_0x11f0 > 0) {
         return false;
     }
-    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x200) != 0;
+    return lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x200) != 0;
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -863,7 +863,7 @@ s32 Player_804A6F38::fn_80246904(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
     }
-    return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), mask);
+    return lbl_8053AD30->fn_80309A78(getPlayerInputSlot_8030AAF4(field_0x11ec), mask);
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -872,7 +872,7 @@ u32 Player_804A6F38::fn_80246B10(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
     }
-    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), mask);
+    return lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(field_0x11ec), mask);
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -881,7 +881,7 @@ u32 Player_804A6F38::fn_80246D1C(u32 mask) {
     if (teamCheck(this) == false) {
         return 0;
     }
-    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), mask);
+    return lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), mask);
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -892,7 +892,7 @@ f32 Player_804A6F38::fn_80246F28() {
     if (teamCheck(this) == false) {
         return 0.0f;
     }
-    return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
+    return lbl_8053AD30->fn_80309D90(getPlayerInputSlot_8030AAF4(field_0x11ec));
 }
 
 // FIXME: 99.5 %. Register allocation only (the group loops' count / index /
@@ -908,11 +908,11 @@ f32 Player_804A6F38::fn_80247330() {
 }
 
 u8 Player_804A6F38::fn_80247534() {
-    return lbl_8053AD30->fn_8030A308(fn_8030AAF4(field_0x11ec));
+    return lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec));
 }
 
 bool Player_804A6F38::fn_80247564() {
-    return lbl_8053AD30->fn_8030A3B0(fn_8030AAF4(field_0x11ec));
+    return lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(field_0x11ec));
 }
 
 bool Player_804A6F38::fn_80247594(s32 arg) {
@@ -1149,9 +1149,9 @@ void Player_804A6F38::fn_802490A8() {
     if (field_0x121e == 1) {
         return;
     }
-    JUTGamePad* pad = JUTGamePad::getGamePad(fn_8030AAF4(field_0x11ec));
+    JUTGamePad* pad = JUTGamePad::getGamePad(getPlayerInputSlot_8030AAF4(field_0x11ec));
     if (field_0xd60 < 0 && groupSize(this) >= 2 &&
-        lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x40)) {
+        lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x11ec), 0x40)) {
         if (fn_802486A0() == 5) {
             if (!lbl_8053AAF8->field_0x7e) {
                 lbl_8053AAF8->fn_80134FE0(1);
@@ -1195,7 +1195,7 @@ void Player_804A6F38::fn_802490A8() {
             break;
         }
     }
-    if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(field_0x11ec))) {
+    if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec))) {
         return;
     }
     if (pad == NULL) {
@@ -1307,7 +1307,7 @@ bool Player_804A6F38::fn_8024C4C4(s32 serial) {
     field_0xd4c = true;
     field_0xd44 = serial;
     field_0xd4d = 1;
-    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
     if (!actor || actor->mPos.x < mPos.x) {
         fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x18, -1, -1);
     } else {
@@ -1808,7 +1808,7 @@ void Player_804A6F38::fn_80252FC0() {
     }
     for (s32 i = 0; i < 4; i++) {
         if (i != field_0x4 && fn_8022E438(i, field_0x4) && fn_8023EBB8(i)) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(fn_8023EF50(i));
+            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(fn_8023EF50(i));
             if (actor != NULL && actor->field_0x1a4 != 0) {
                 mPos.x = field_0x14.x;
                 mPos.y = field_0x14.y;
@@ -1886,8 +1886,8 @@ void Player_804A6F38::fn_80252FC0() {
 // copies differ only in the frames), so a file-local inline.
 static inline void joinCue(Player_804A6F38* player, s32 at, s32 off) {
     if (player->field_0xd38 == at) {
-        lbl_8053AB10->field_0x30->fn_8015F8FC(player->field_0x3b4, &player->mPos, 1);
-        if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(player->field_0x11ec))) {
+        gGameRoot2_8053AB10->field_0x30->fn_8015F8FC(player->field_0x3b4, &player->mPos, 1);
+        if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(player->field_0x11ec))) {
             fn_8030381C(player->field_0x4);
         }
         if (player->field_0x3b4 >= 8) {
@@ -1908,14 +1908,14 @@ void Player_804A6F38::fn_80253E6C() {
     if (!mActive) {
         return;
     }
-    if (field_0x1234 == 1 && lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec)) > 0.0f) {
+    if (field_0x1234 == 1 && lbl_8053AD30->fn_80309D90(getPlayerInputSlot_8030AAF4(field_0x11ec)) > 0.0f) {
         field_0x1234 = 0;
     }
     if (field_0x11f0 > 0) {
         field_0x11f0--;
     }
     if (field_0x13b8) {
-        lbl_8053AB10->field_0x20->field_0x216 = 1;
+        gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
     }
     if (field_0x12c4 != NULL) {
         if (lbl_8053AAF8->field_0x94 == 1 || field_0x121f || field_0x454) {
@@ -1960,9 +1960,9 @@ void Player_804A6F38::fn_80253E6C() {
         field_0xd38++;
         field_0x1208++;
         if (field_0xd38 == 0x10) {
-            fn_8013CC50(field_0x3b4, &mPos, 0x418, 0, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x3b4, &mPos, 0x419, 0, 1, NULL, NULL, true, 1.0f);
-            fn_8013CC50(field_0x3b4, &mPos, 0x41a, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x418, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x419, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x41a, 0, 1, NULL, NULL, true, 1.0f);
             fn_8024F0E8(0x4004e);
         } else if (field_0xd38 == 0x83) {
             field_0xc80 = 1;
@@ -2000,8 +2000,8 @@ void Player_804A6F38::fn_80253E6C() {
 // FIXME: 99.95. Code identical; lbl_80540098 (256/3) is @NNN, as in fn_80254660.
 // Like fn_80254660, then clears the counters 0xC04-0xC7C.
 void Player_804A6F38::fn_802544B0() {
-    field_0xc10 = fn_802D6A9C()->field_0x48;
-    field_0xc14 = fn_802D6A9C()->field_0x4c;
+    field_0xc10 = getGameView_802D6A9C()->field_0x48;
+    field_0xc14 = getGameView_802D6A9C()->field_0x4c;
     field_0xc18 = 1;
     field_0xb7a = false;
     field_0xb7b = false;
@@ -2051,8 +2051,8 @@ void Player_804A6F38::fn_802544B0() {
 // FIXME: 99.91. Code identical; the float literal lbl_80540098 (256/3) is @NNN until the
 // unit's earlier literals are written in pool order.
 void Player_804A6F38::fn_80254660() {
-    field_0xc10 = fn_802D6A9C()->field_0x48;
-    field_0xc14 = fn_802D6A9C()->field_0x4c;
+    field_0xc10 = getGameView_802D6A9C()->field_0x48;
+    field_0xc14 = getGameView_802D6A9C()->field_0x4c;
     field_0xc18 = 1;
     field_0xb7a = false;
     field_0xb7b = false;
@@ -2089,7 +2089,7 @@ void Player_804A6F38::fn_80254660() {
 // the pad owner field_0x11ec and the start state 0 or 1) from the game mode,
 // places the player and clears nearly every per-player field.
 void Player_804A6F38::fn_80254744() {
-    if (field_0xd00 >= 2 && isStageFlagSet(fn_802D6A9C()->field_0x4, fn_802D6A9C()->field_0x8)) {
+    if (field_0xd00 >= 2 && isStageFlagSet(getGameView_802D6A9C()->field_0x4, getGameView_802D6A9C()->field_0x8)) {
         field_0xd00 = 0;
         field_0xcfe = false;
     }
@@ -2582,7 +2582,7 @@ void Player_804A6F38::fn_80254744() {
     }
     field_0xbec->fn_8030BD3C(field_0x4);
     if (field_0xcfe == true) {
-        if (!isStageFlagSet(fn_802D6A9C()->field_0x4, fn_802D6A9C()->field_0x8)) {
+        if (!isStageFlagSet(getGameView_802D6A9C()->field_0x4, getGameView_802D6A9C()->field_0x8)) {
             fn_8024DCD0();
             field_0x32c = mPos;
             field_0x450 = 0xc3;

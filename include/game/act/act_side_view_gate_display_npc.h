@@ -15,8 +15,8 @@ public:
     /* 0x20 */ virtual void draw();
 
     /* 0x230 */ u8 field_0x230[4];
-    /* 0x234 */ JPABaseEmitter* mEmitter234; // fn_8013CC50(field_0x4, &mPos, 0x447, ...)
-    /* 0x238 */ JPABaseEmitter* mEmitter238; // fn_8013CC50(field_0x4, &mPos, 0x448, ...)
+    /* 0x234 */ JPABaseEmitter* mEmitter234; // spawnEmitter_8013CC50(field_0x4, &mPos, 0x447, ...)
+    /* 0x238 */ JPABaseEmitter* mEmitter238; // spawnEmitter_8013CC50(field_0x4, &mPos, 0x448, ...)
 }; // Size: 0x23C
 
 #endif

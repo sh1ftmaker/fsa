@@ -15,7 +15,7 @@
 static inline void drawSob(const char* name, const JGeometry::TVec3f& pos, s32 frame,
                            SpriteParams_801F5AE0* params) {
     void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', name);
-    lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
 }
 
 // drawSob on the TV layers (below 8); the GBA layers draw through
@@ -80,7 +80,7 @@ void Player_804A6F38::fn_80264998() {
         markParams.field_0x2d = 1;
         s32 counter = lbl_8053AAF8->field_0x5c;
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-        lbl_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
                                               &markParams, 1.0f, 1.0f);
     }
     SpriteParams_801F5AE0 shadowParams;
@@ -94,7 +94,7 @@ void Player_804A6F38::fn_80264998() {
             pos.set(mPos.x, mPos.y - 0.01f, -5.0f);
         }
         if (field_0x3b4 == 8) {
-            GameView_804A9950* view = fn_802D6A9C();
+            GameView_804A9950* view = getGameView_802D6A9C();
             pos += JGeometry::TVec3f(view->mVisibleBox.i.x, view->mVisibleBox.i.y, 0.0f);
             pos += JGeometry::TVec3f(0.0f, -mPos.z, 0.0f);
         }
@@ -340,9 +340,9 @@ void Player_804A6F38::fn_80265AE4() {
         (field_0x3c4 != field_0x3c6 || magnitude(mPos - field_0x14) > 0.5f))
     {
         if (field_0x1384 == NULL) {
-            field_0x1384 = fn_8013CC50(field_0x3b4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
+            field_0x1384 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
         } else {
-            fn_8013CB44(field_0x1384, &mPos, 0, 0, true);
+            setEmitterPos_8013CB44(field_0x1384, &mPos, 0, 0, true);
         }
     } else if (field_0x1384 != NULL) {
         field_0x1384->becomeInvalidEmitter();

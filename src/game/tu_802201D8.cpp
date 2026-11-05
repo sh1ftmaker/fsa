@@ -10,12 +10,12 @@ void cls_804A6828::draw() {
 
 void cls_804A6828::update() {
     cls_804A48B0::update();
-    fn_8013CB44(mEmitter, &mPos, 0, 0, true);
+    setEmitterPos_8013CB44(mEmitter, &mPos, 0, 0, true);
 }
 
 void cls_804A6828::init() {
     cls_804A48B0::init();
-    mEmitter = fn_8013CC50(field_0x4, &mPos, 0x290, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x290, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 cls_804A6828::~cls_804A6828() {

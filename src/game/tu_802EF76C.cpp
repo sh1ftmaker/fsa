@@ -82,7 +82,7 @@ void cls_804AA4F0::update() {
         if (mCounter >= mDuration) {
             mCounter = mDuration;
             mState = 4;
-            if (field_0x244 == 0x10 && !fn_802D6A9C()->fn_802D800C(field_0x240)) {
+            if (field_0x244 == 0x10 && !getGameView_802D6A9C()->fn_802D800C(field_0x240)) {
                 lbl_8053AF80->fn_80458FF0(0x1000021, false, false);
             }
         }
@@ -121,7 +121,7 @@ void cls_804AA4F0::init() {
     mColorCur[2] = ((u32)mColor.mWord >> 8) & 0xFF;
     mColorCur[3] = (u32)mColor.mWord & 0xFF;
     mCounter = fn_801B7550();
-    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     field_0x234 = -camera->field_0x4[0][3];
     field_0x238 = -camera->field_0x4[1][3];
     field_0x23c = 0.0f;
