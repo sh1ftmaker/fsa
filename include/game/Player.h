@@ -281,7 +281,7 @@ public:
     // fn_80290070(0, &mPos, &copy, 5); on success clears 0xBDC and returns true.
     bool fn_8028FBA0();
     // Not written yet (tu_8028FBA0); this in r3, &mPos passed as the second position.
-    u8 fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
+    bool fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
     // Not written yet (tu_8028FBA0's fn_80290E90 is 0x90 bytes): fn_80301D54(field_0x4) unless
     // fn_80240670(), clears 0x400, then fn_8045815C on lbl_8053AF80 (0 below 8, 1 at 8) by 0xCE4.
     void fn_80290E90();
@@ -404,6 +404,8 @@ public:
     void fn_80293FE4(); void fn_80294374(); void fn_802948C0(); void fn_80294ADC();
     void fn_8029513C(); void fn_80295268(); void fn_80295334(); void fn_802953A0();
     void fn_802954DC();
+    // tu_8028FBA0 inline (the enters of 0x23 and 0x25): carried actor to mPos + 16 up.
+    void raiseHeldActor();
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
     void fn_80242940();
