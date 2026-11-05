@@ -247,8 +247,6 @@ public:
     void fn_80252F50(s32 arg); // via fn_8023CC5C
     // tu_8026FC20 (0x8027A698) passes field_0x3dc and tests r3 (clrlwi.).
     u8 fn_8025196C(s32 index);
-    // tu_8027E5BC (0x8027FBC0) reads a TVec3f through it (psq_l / lfs 8).
-    JGeometry::TVec3f* fn_80252F48();
     void fn_80252F5C(s32 arg); // via fn_8023CCE8
     s32 fn_80252F68(); // via fn_8023CD74
     s32 fn_80252F74(); // via fn_8023CE10
