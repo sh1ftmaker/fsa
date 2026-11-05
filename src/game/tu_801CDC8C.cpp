@@ -286,6 +286,7 @@ inline void EnemyBase_804A4808::landStep() {
 // elsewhere it just stops at z = 0.
 void EnemyBase_804A4808::vfunc_0x80() {
     if (!(mFlags & ENEMY_FLAG_NO_FLOOR) && fn_8022461C(&mPos, field_0x4) == 2) {
+        // The lift is read into a local first, as in the original (without it 99.9 -> 98 %).
         f32 lift = -mPos.z;
         mPos.y += lift;
         mPos.z = 0.0f;
@@ -780,6 +781,7 @@ bool EnemyBase_804A4808::fn_801CFD68(s32 dir, f32 dist) {
     box.f.x += pos.x;
     box.i.y += screenY;
     box.f.y += screenY;
+    // The layer is read before the view lookup, as in fn_801F320C (field_0x4 directly: 99.4 -> 96.7 %).
     s32 layer = field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* viewBox = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
