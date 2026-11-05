@@ -86,7 +86,7 @@ static inline s32 linePlace(const Player_804A6F38* player) {
 }
 
 // Whether this player does not act on its own: not taking part (bit
-// field_0x4 of gGameRoot_8053AAF8->field_0x82 clear) without a leader; in group
+// field_0x4 of gGameRoot_8053AAF8->mPlayerMask clear) without a leader; in group
 // mode 4 when it is not its turn; else when it has a leader. fn_80240670's
 // body (inlined by fn_8023FC5C-fn_80240354, before it).
 static inline bool follows_80240670(const Player_804A6F38* player) {
@@ -126,7 +126,7 @@ static inline void resetTrail(Player_804A6F38* player) {
 }
 
 // Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
-// not taking part (bit field_0x4 of gGameRoot_8053AAF8->field_0x82 clear, see
+// not taking part (bit field_0x4 of gGameRoot_8053AAF8->mPlayerMask clear, see
 // game/PlayerBit.h) with no partner asking for state 0 gets
 // state 1 instead; with field_0x434 set, state 0 becomes 2.
 // fn_80251AEC's body: fn_80242624 and fn_8024762C (before it) inline it, so it is a file

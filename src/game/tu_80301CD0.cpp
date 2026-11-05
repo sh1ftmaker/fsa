@@ -376,7 +376,7 @@ bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
     bool result = false;
     for (int p = 0; p < 4; p++) {
         s32 slot = fn_8022EA0C(p);
-        if (!(gGameRoot_8053AAF8->field_0x82 & (u8)(1 << p))) {
+        if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p))) {
             continue;
         }
         if (player != p && (player >= 0 || layer != getPlayerLayer_8023DE58(slot))) {
@@ -432,7 +432,7 @@ bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
     bool result = false;
     for (int p = 0; p < 4; p++) {
         s32 slot = fn_8022EA0C(p);
-        if (!(gGameRoot_8053AAF8->field_0x82 & (u8)(1 << p))) {
+        if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p))) {
             continue;
         }
         if (layer != getPlayerLayer_8023DE58(slot)) {

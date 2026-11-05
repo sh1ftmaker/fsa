@@ -4,6 +4,7 @@
 #include "game/GameRootSub20.h"
 #include "game/GameState.h"
 #include "game/act/act_ice_melted_by_four_players.h"
+#include "game/act/tu_801F9484.h"
 
 // Timer values of the melting steps, indexed by field_0x24c (lbl_804751A8).
 static const s32 lbl_804751A8[15] = {
@@ -153,10 +154,10 @@ u8 IceMeltedByFourPlayers_804AE888::fn_80378880() {
         if (!theirs.intersect(ours)) {
             continue;
         }
-        if (fn_802BA9F8(other) != 1) {
+        if (static_cast<FireRodFire_804A89F0*>(other)->fn_802BA9F8() != 1) {
             continue;
         }
-        playerMask |= 1 << fn_802BA9F0(other);
+        playerMask |= 1 << static_cast<FireRodFire_804A89F0*>(other)->fn_802BA9F0();
     }
     return playerMask == 0xF;
 }

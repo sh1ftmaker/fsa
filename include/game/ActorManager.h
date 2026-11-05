@@ -133,7 +133,7 @@ public:
     // 2 units / 2 calls. field_0x3030[i] (0x801F6058).
     s32 fn_801F6058(s32 i);
     // Called by the update pass (fn_801F871C) first. Ranks the players
-    // taking part (gGameRoot_8053AAF8 field_0x82) by fn_80236228, highest first:
+    // taking part (gGameRoot_8053AAF8 mPlayerMask) by fn_80236228, highest first:
     // field_0x3020 the values, field_0x3030 the player indices (others get
     // -9999 and 3); the entries past the last player repeat it.
     void fn_801F6068();

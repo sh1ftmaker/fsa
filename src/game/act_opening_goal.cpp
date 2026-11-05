@@ -73,7 +73,7 @@ void cls_8049DB30::vfunc_0x54() {
         if (fn_8011921C()->field_0x8 < 0x78) {
             break;
         }
-        fn_801184F0(fn_8011921C(), false);
+        fn_8011921C()->fn_801184F0(false);
         getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
         getGameView_802D6A9C()->fn_802DA8DC();
         field_0x234 = 4;
@@ -154,12 +154,12 @@ void cls_8049DB30::update() {
                 flag = false;
             } else {
                 flag = true;
-                if (!(gGameRoot_8053AAF8->field_0x82 & (1 << player))) {
+                if (!(gGameRoot_8053AAF8->mPlayerMask & (1 << player))) {
                     flag = false;
                 }
             }
             if (flag) {
-                fn_8011888C(fn_8011921C(), this);
+                fn_8011921C()->fn_8011888C(this);
                 fn_8011921C()->fn_801186B0(0xE);
                 fn_80119DD0()->fn_80119998(0xB4, 0, 2, 0, 1, 0x3C, 0);
                 field_0x234 = 3;

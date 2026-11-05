@@ -63,7 +63,7 @@ void Blindfold_804A8EF8::update() {
     bool covered = false;
     if (gGameRoot_8053AAF8->field_0x7e == 1) {
         for (s32 i = 0; i < 4; i++) {
-            bool takesPart = gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i);
+            bool takesPart = gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i);
             // Both branches are the same: the original has two full copies of the body (separate stack slots).
             if (takesPart == true) {
                 if (contains(box, *getPlayerPos_8023E724(fn_8022EA0C(i)))) {

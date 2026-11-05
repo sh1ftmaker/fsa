@@ -20,6 +20,10 @@ public:
     // Placeholder names (see docs/PLAN.md). fn_80212F14 is not virtual: it is
     // only in an extabindex entry. fn_80213774 takes a mode argument (0 or 1).
     void fn_80212F14();
+    // 0x80212ECC: fn_80213774(0) when mFlags has 0x4000, else fn_80213774(2)
+    // in mState 2. act_quicksand (fn_80210D90) calls it, in its state 1, on the
+    // actor its serial names.
+    void fn_80212ECC();
     // Spawn setup: sinks mPos.y by 1, copies mPos to mSpawnPos, sets flags
     // 0x2200 and mLife 1000, sets field_0x54 to 1.4f and scales mBox2 by it.
     void fn_80212F5C();

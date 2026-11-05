@@ -13,7 +13,7 @@ void StopNPC_804AA2D8::fn_802ED140() {
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
         if (actor != NULL && actor->mActorId == ACTOR_ITMS) {
-            fn_802AC09C(static_cast<ItemPedestal_804A82A8*>(actor));
+            static_cast<ItemPedestal_804A82A8*>(actor)->fn_802AC09C();
         }
     }
     gGameRoot_8053AAF8->fn_80134FBC(0);

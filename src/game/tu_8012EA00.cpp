@@ -14,7 +14,7 @@ inline bool cls_8049E8F8::playersInside() {
     box.f.y += mPos.y;
     for (s32 i = 0; i < 4; i++) {
         // (u8) gives the clrlwi on the mask that the original has.
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
             if (!fn_8023F264(i)) {
                 return false;
             }

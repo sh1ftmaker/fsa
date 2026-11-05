@@ -509,11 +509,11 @@ void GameRoot_8049EF20::fn_801367E0(s32 value) {
     field_0x4c = value;
 }
 
-// The number of players that take part: the set bits 0-3 of field_0x82.
+// The number of players that take part: the set bits 0-3 of mPlayerMask.
 s32 GameRoot_8049EF20::fn_80138A30() {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
             count++;
         }
     }
@@ -597,7 +597,7 @@ void GameRoot_8049EF20::fn_80138C9C() {
     field_0x81 = 0;
     field_0x7e = 1;
     field_0x7f = 1;
-    field_0x82 = 0;
+    mPlayerMask = 0;
     field_0x83 = 0;
     field_0xff = 0;
     field_0xf0 = 0.0f;

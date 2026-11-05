@@ -96,7 +96,7 @@ void cls_804B19E0::fn_80441490() {
             }
         } else if (player == 4) {
             for (s32 i = 0; i < 4; i++) {
-                if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
+                if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
                     if (getPlayerLayer_8023DE58(i) >= 8) {
                         count++;
                     }

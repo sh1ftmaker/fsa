@@ -58,14 +58,14 @@ void PrincessZeldaDemo_8049D208::update() {
 
 void PrincessZeldaDemo_8049D208::vfunc_0x10() {
     cls_801192AC* list = fn_8011921C();
-    ActorBase_804A5770** goal = fn_8011871C(list, list->mBegin, ACTOR_DMGL);
+    ActorBase_804A5770** goal = list->fn_8011871C(list->mBegin, ACTOR_DMGL);
     if (goal != fn_8011921C()->mEnd) {
         field_0x27c = (*goal)->mPos;
     }
 
     ActorBase_804A5770** node = fn_8011921C()->mBegin;
     do {
-        node = fn_8011871C(fn_8011921C(), node, ACTOR_DMMD);
+        node = fn_8011921C()->fn_8011871C(node, ACTOR_DMMD);
         if (node == fn_8011921C()->mEnd) {
             break;
         }

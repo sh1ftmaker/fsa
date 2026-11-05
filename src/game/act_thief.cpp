@@ -113,7 +113,7 @@ bool Thief_804A5A30::fn_802064E0() {
 
 Thief_804A5A30::~Thief_804A5A30() {
     releaseEmitter_801EE434(mEmitter358);
-    fn_802049E0(fn_80204638(), this);
+    fn_80204638()->fn_802049E0(this);
 }
 
 Thief_804A5A30::Thief_804A5A30() {

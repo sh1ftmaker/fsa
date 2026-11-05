@@ -3,6 +3,7 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_801D8400.h"
 #include "game/act/tu_801DAC6C.h"
+#include "game/act/tu_801F9484.h"
 
 Singleton_801DAC6C* fn_801DAC6C() {
     static Singleton_801DAC6C lbl_804C92D0;
@@ -42,7 +43,7 @@ s32 Singleton_801DAC6C::fn_801DAD2C() {
     if (serial >= 0) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
-            result = fn_801DC264(actor);
+            result = static_cast<cls_804A4F90*>(actor)->fn_801DC264();
         }
     }
     return result;

@@ -11,6 +11,11 @@ struct Sequencer_801DAA24 {
     // Constructor __ct__18Sequencer_801DAA24Fv (0x801DAA24, tu_801DA7C0.cpp,
     // not written yet): zeroes every word but field_0x10, which it sets to 2.
     Sequencer_801DAA24();
+    // 0x801DA938 / 0x801DA904 (tu_801DA7C0.cpp, not written yet). Both read
+    // field_0x4 clamped to 0-47: fn_801DA938 returns that entry of the string
+    // table lbl_804A4DA8; fn_801DA904 whether it is 28 or more.
+    const char* fn_801DA938();
+    bool fn_801DA904();
 
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ s32 field_0x4; // current value, 0-47

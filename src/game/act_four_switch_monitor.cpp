@@ -169,7 +169,7 @@ void FourSwitchMonitor_804A80A0::update() {
                         field_0x240 = 0x3C;
                         for (s32 k = 0; k < 4; k++) {
                             u8 bit = 1 << k;
-                            bool entered = gGameRoot_8053AAF8->field_0x82 & bit;
+                            bool entered = gGameRoot_8053AAF8->mPlayerMask & bit;
                             if (entered == true) {
                                 fn_80230E1C(k, 0);
                             }

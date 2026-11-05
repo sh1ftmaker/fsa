@@ -190,7 +190,10 @@ struct GameRoot_8049EF20 {
     /* 0x3C */ cls_804B1988* field_0x3c;
     /* 0x40 */ cls_804B1634* field_0x40;
     /* 0x44 */ u8 field_0x44[0x4C - 0x44];
-    /* 0x4C */ s32 field_0x4c; // act_sandstorm compares it with 11
+    // The screen mode: fn_801367E0 stores it (10 also resets the fade object);
+    // fn_80134CC8 tests 11 (paused), act_sandstorm compares it with 11 and
+    // isGameModeSet (game/GameMode.h) with 7-0x16 (lwz at ~250 sites).
+    /* 0x4C */ s32 field_0x4c;
     // Set (with field_0x58 = 1) by fn_80136798, fn_8013670C and fn_801365E8 (game/tu_80134C04.cpp).
     /* 0x50 */ s32 field_0x50;
     // Stored by fn_8019CDC4 (game/tu_80197070.cpp, 0x8019CDC4, stw of r3).
@@ -212,11 +215,32 @@ struct GameRoot_8049EF20 {
     /* 0x74 */ s32 field_0x74;
     /* 0x78 */ s32 field_0x78;
     /* 0x7C */ s16 field_0x7c; // cleared by the constructor (sth)
+    // A flag (lbz; cmplwi 0 at ~180 sites): set to 1 by fn_80138C9C and by
+    // ConnectScreen_804B0F10::fn_803FB6F4 once its controllers are connected,
+    // cleared by cls_804B0B00::fn_803EC804 when it enters player 0 alone
+    // (mPlayerMask 0x11). While set, fn_80138AB0 checks the input slots of all
+    // four players instead of player 0's only. Its meaning is not proven, so
+    // it keeps its offset name.
     /* 0x7E */ u8 field_0x7e;
+    // A flag (lbz at ~420 sites): set to 1 by fn_80138C9C; the game mode
+    // screen (GameMode_804B0688::fn_803DE05C) stores 1 for menu entry 0 and 0
+    // for entry 1. cls_804AF878 shows cls_804B0B00 while it is set and
+    // ConnectScreen_804B0F10 while it is clear; isGameModeSet (game/GameMode.h)
+    // picks its mode set by it. Its meaning is not proven (the menu entries
+    // aren't), so it keeps its offset name.
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80; // cleared by fn_80138C9C
     /* 0x81 */ u8 field_0x81; // cleared by fn_80138C9C
-    /* 0x82 */ u8 field_0x82; // bit i set: player i takes part (fn_801F6068)
+    // Per-player bits (lbz; and. with 1 << player at ~200 sites). Bits 0-3:
+    // player i takes part (fn_80138A30 counts them, fn_8023F98C tests one,
+    // fn_801F6068); bits 4-7: player i's controller is connected (the connect
+    // screens cls_804B0B00::fn_803ED83C and ConnectScreen_804B0F10 set them).
+    // Cleared by fn_80138C9C.
+    /* 0x82 */ u8 mPlayerMask;
+    // Four 2-bit fields, player i's at bits 2i-2i+1 ((x >> 2 * i) & 3 at ~25
+    // sites): the connect screens store 1 for a taking-part player and 0 for
+    // the others; cls_804B0B00 stores 2 for player 0 alone without a
+    // controller in slot 0 (fn_8030A308). Cleared by fn_80138C9C.
     /* 0x83 */ u8 field_0x83;
     /* 0x84 */ u8 field_0x84;
     // Set to 1 by fn_8019CDC4 (game/tu_80197070.cpp, stb of 1).
@@ -358,10 +382,10 @@ struct GameRoot_8049EF20 {
     void fn_80136828();
     void fn_80137300();
     // Owner: game/tu_80134C04.cpp (0x80138A30; not written yet). 107 units.
-    // The number of players that take part: the set bits of field_0x82 (bits
-    // 0-3). Its body reads gGameRoot_8053AAF8 itself; callers load it into r3.
+    // The number of players that take part: the set bits 0-3 of
+    // mPlayerMask. Its body reads gGameRoot_8053AAF8 itself; callers load it into r3.
     s32 fn_80138A30();
-    // game/tu_8022AD64.cpp (0x8023F98C): whether bit `player` of field_0x82 is set.
+    // game/tu_8022AD64.cpp (0x8023F98C): whether bit `player` of mPlayerMask is set.
     bool fn_8023F98C(s32 player);
     // Owner: not written yet (0x8013670C, 0x8C bytes). Called by
     // fn_8019CD9C (game/tu_80197070.cpp) with its s32 argument; r3 is
@@ -437,21 +461,8 @@ cls_80119E5C* fn_80119DD0();
 // connected (cls_804AA8C8::fn_8030A308).
 bool fn_80138AB0();
 
-class EnemyBase_804A4808;
-extern "C" {
-// Owner: game/tu_80212E3C.cpp (defined there; not written yet). Reads an
-// EnemyBase's mFlags (0x230) and mState (0x248); takes the actor serial's
-// result (findActorBySerial_801F666C) in r3. Called by act_quicksand fn_80210D90 in state 1.
-void fn_80212ECC(EnemyBase_804A4808* actor);
-}
-
-class ItemPedestal_804A82A8;
-extern "C" {
-// Owner: game/act_item_pedestal.cpp (not written yet; its generated header
-// may not be edited, so not a member yet). Sets the word at 0x238 of an ITMS
-// actor to 0; called by act_stop_npc (0x802ED198).
-void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
-}
+// fn_80212ECC is cls_804A6340::fn_80212ECC (game/act/tu_80212E3C.h) and
+// fn_802AC09C is ItemPedestal_804A82A8::fn_802AC09C (game/act/act_item_pedestal.h).
 
 // AudioMgr_8045A080, the audio manager gAudioMgr_8053AF80 points to, is declared in
 // game/Unk_8045A080.h (included by game/GameAudio.h).
@@ -1114,27 +1125,22 @@ struct cls_801192AC {
     // unless fn_801F68E0 (after getActorManager_801F856C) returns 0; returns whether it did. Called
     // with 2 from act_four_sword_demo.
     bool fn_801186B0(u32 value);
+    // 0x801184F0 (0x1C0 bytes, not written yet). Called on fn_8011921C() with a
+    // flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal's vfunc_0x54
+    // and tu_801286C0); the flag is tested as a byte.
+    void fn_801184F0(bool flag);
+    // 0x8011871C (not written yet). Returns the first entry at or after
+    // `from` whose actor's mActorId (0x1A0) is `actorId`, or mEnd if none.
+    ActorBase_804A5770** fn_8011871C(ActorBase_804A5770** from, u32 actorId);
+    // 0x8011888C / 0x80118798 (not written yet). Register / remove an actor (its
+    // serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
+    // by cls_8049D140's init and destructor (tu_8010DF44) and act_opening_goal.
+    void fn_8011888C(ActorBase_804A5770* actor);
+    void fn_80118798(ActorBase_804A5770* actor);
 }; // Size: 0x20
 
 // game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
 extern "C" cls_801192AC* fn_8011921C();
-// Not yet written (0x801184F0, game/tu_80118384.cpp range). Called on fn_8011921C()
-// with 0 or 1 by act_opening_goal's vfunc_0x54, tu_801286C0 and tu_80139BE8.
-extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
-// game/tu_80118384.cpp (not written yet). Returns the first entry at or after
-// `from` whose actor's mActorId (0x1A0) is `actorId`, or obj->mEnd if none.
-extern "C" ActorBase_804A5770** fn_8011871C(cls_801192AC* obj, ActorBase_804A5770** from,
-                                           u32 actorId);
-// game/tu_80118384.cpp (0x801184F0, 0x1C0 bytes, not written yet). Called with
-// fn_8011921C() and a flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal);
-// the flag is tested as a byte.
-extern "C" void fn_801184F0(cls_801192AC* obj, bool flag);
-class ActorBase_804A5770;
-// game/tu_80118384.cpp. Registers/removes an actor with the object (the actor's
-// serial at 0x198 is stored in / removed from the list at 0xC..0x14); called
-// by cls_8049D140's init and destructor (tu_8010DF44) and act_opening_goal.
-extern "C" void fn_8011888C(cls_801192AC* obj, ActorBase_804A5770* actor);
-extern "C" void fn_80118798(cls_801192AC* obj, ActorBase_804A5770* actor);
 
 // game/tu_801C0D70.cpp. The 0x60-byte object in .bss at 0x804C7E70, built on
 // first use by fn_801C0D70 (guard byte lbl_8053AC10); named after that
@@ -1178,48 +1184,25 @@ extern "C" cls_801C0D70* fn_801C0D70();
 // .bss at 0x804CADE0 (constructed on first use by fn_80204638, flag lbl_8053AC58);
 // named after that function. Only the byte at 0x0 is known: act_bandit_herding_npc's
 // update sets it to 1 (and the actor manager's reset functions call the getter).
+class ActorBase_804A5770;
 struct cls_80204638 {
+    // 0x802049E0 (not written yet). Removes the actor from the slot the byte
+    // at its 0x34a selects in the table (0x4 + 8 * slot): clears the first
+    // slot holding it, else the second. Called by act_thief's destructor on
+    // fn_80204638()'s result.
+    void fn_802049E0(ActorBase_804A5770* actor);
+
     /* 0x00 */ u8 field_0x0;
     // The inlined constructor writes up to 0xD0 (a TVec3f[10] at 0x58), but the
     // .bss symbol is 0x1D0 bytes: the real size is not known, so none is claimed.
 };
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
-// game/tu_80204638.cpp (fn_802049E0, owner unit, not written yet). Removes the actor
-// from the slot the byte at its 0x34a selects in the object's table (0x4 + 8 * slot):
-// clears the first slot holding it, else the second. Called by act_thief's destructor
-// with fn_80204638()'s result.
-class ActorBase_804A5770;
-extern "C" void fn_802049E0(cls_80204638* table, ActorBase_804A5770* actor);
 
 
-// game/tu_801DA7C0.cpp (owner unit, not written yet): the sequencer at
-// cls_804A4C58 + 0x2A8 (include/game/act/tu_801D8400.h defines it). Both read
-// its current value (word 0x4), clamped to 0-47: fn_801DA938 returns that
-// entry of the string table lbl_804A4DA8; fn_801DA904 whether it is 28 or more.
-struct Sequencer_801DAA24;
-extern "C" const char* fn_801DA938(Sequencer_801DAA24* seq);
-extern "C" bool fn_801DA904(Sequencer_801DAA24* seq);
-
-// game/act_frostare_tail.cpp (owner unit, not written yet): takes an actor
-// (a result of ActorManager_804A5800::findActorBySerial_801F666C; reads fields 0xD8, 0xDC and
-// 0x278) and returns a value 0-255 (clrlwi 24 in the body); callers use it
-// as an int without extending it (declared s32: a u8 adds a clrlwi at the call).
-// Called by game/tu_801DAC6C.cpp.
-class ActorBase_804A5770;
-extern "C" s32 fn_801DC264(ActorBase_804A5770* actor);
-
-// game/act_navi.cpp (owner unit, not written yet). Each takes a navi actor
-// (a result of ActorManager_804A5800::findActorBySerial_801F666C) in r3; field 0x248 is its
-// state. fn_8021D734 / fn_8021D764 switch it to state 8 / 6 unless already
-// there; fn_8021D794 returns whether it is in state 5. Called by
-// game/tu_8021F064.cpp.
-class ActorBase_804A5770;
-extern "C" {
-void fn_8021D734(ActorBase_804A5770* navi);
-void fn_8021D764(ActorBase_804A5770* navi);
-bool fn_8021D794(ActorBase_804A5770* navi);
-}
+// Sequencer_801DAA24::fn_801DA938 / fn_801DA904 are in game/act/tu_801D8400.h;
+// cls_804A4F90::fn_801DC264 (BOIT) and cls_804A6708::fn_8021D734 / fn_8021D764 /
+// fn_8021D794 (NAVI) in game/act/tu_801F9484.h.
 
 // A shared .sdata2 constant (1.0f), owned by game/act_shadow_link_generator's
 // .sdata2 (8053EDF0); act_shadow_link_2's helper loads it and subtracts 0.001f at run time.
@@ -1637,15 +1620,7 @@ void fn_8038D870(void);
 // around 0x80136FC4.
 extern cls_804AE9A0* lbl_8053AD68;
 
-// SHARED-EDIT (act_ice_melted_by_four_players): owner game/act_fire_rod_fire.cpp
-// (0x802BA9F0 and 0x802BA9F8, defined there; the FIRE actor's unit, not written
-// yet). Both read a word of the actor in r3 (lwz 0x260 and 0x264) and return
-// it; the only caller passes the FIRE actor it finds by serial as an
-// ActorBase_804A5770*.
-extern "C" {
-s32 fn_802BA9F0(ActorBase_804A5770* actor);
-s32 fn_802BA9F8(ActorBase_804A5770* actor);
-}
+// FireRodFire_804A89F0::fn_802BA9F0 / fn_802BA9F8: see game/act/tu_801F9484.h.
 
 // SHARED-EDIT (tu_803F0A54, review): the singleton *lbl_8053AEC0
 // (game/tu_8042E964.cpp, owner not written yet), named after its vtable
@@ -1719,15 +1694,12 @@ extern cls_804B1634* lbl_8053AEC0;
 // original): act_terrorpin's vfunc_0x44 compares its field_0x2a8 with it.
 extern s32 lbl_8053A100;
 
-// SHARED-EDIT (act_battle_royale_end_check fn_803D6BDC): the only callers
-// known so far. Owner units not written yet. fn_80239F10 (0x80239F10, 0x294
-// bytes) takes no arguments and returns a bool; fn_802B3A48 (0x802B3A48,
-// 0x6C bytes) takes the actor it was found in, as ActorBase_804A5770*.
-// SHARED-EDIT (act_battle_royale_end_check fn_803D6494): called with the
-// battle royale's GameRoot in r3 and 10; owner unit not written yet.
+// SHARED-EDIT (act_battle_royale_end_check fn_803D6BDC): the only caller
+// known so far. Owner unit not written yet. fn_80239F10 (0x80239F10, 0x294
+// bytes) takes no arguments and returns a bool. (fn_802B3A48 is
+// cls_804A8638::fn_802B3A48, game/cls_804A8638.h.)
 extern "C" {
 bool fn_80239F10();
-void fn_802B3A48(ActorBase_804A5770* actor);
 }
 
 // game/tu_80301CD0.cpp (0x8030361C, 0x134 bytes, not written yet). Takes no

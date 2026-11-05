@@ -233,34 +233,34 @@ static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
     root->field_0x83 |= (u8)(kind << (2 * player));
 }
 
-// Sets bit `i` of gGameRoot_8053AAF8->field_0x82 and the 2-bit field `i` of
+// Sets bit `i` of gGameRoot_8053AAF8->mPlayerMask and the 2-bit field `i` of
 // field_0x83 to 1 for the field_0x1bc + 1 players that take part, and clears
 // both for the others.
 static inline void setEntries(cls_804B0B00* self) {
     for (s32 i = 0; i < 4; i++) {
         if (i < self->field_0x1bc + 1) {
-            gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << i);
+            gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << i);
             setPlayerKind(gGameRoot_8053AAF8, i, 1);
         } else {
-            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << i);
             setPlayerKind(gGameRoot_8053AAF8, i, 0);
         }
     }
 }
 
 // One player: sets bit 4 (connected) and bit 0 (taking part) of
-// gGameRoot_8053AAF8->field_0x82 for player 0 only, and player 0's kind to 1 with
+// gGameRoot_8053AAF8->mPlayerMask for player 0 only, and player 0's kind to 1 with
 // a controller in slot 0, else 2. fn_803E3320 (not written: written here
 // it gets inlined into fn_803E9034 / fn_803ED604, which call it out of line
 // in the original) has the same block, then setEntries for more players.
 static inline void setSingleEntry() {
-    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 4);
+    gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << 4);
     for (s32 i = 1; i < 4; i++) {
-        gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+        gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
     }
-    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 0);
+    gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << 0);
     for (s32 i = 1; i < 4; i++) {
-        gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+        gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << i);
     }
     if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
         setPlayerKind(gGameRoot_8053AAF8, 0, 1);
@@ -1014,7 +1014,7 @@ void cls_804B0B00::fn_803E9A20() {
         if (field_0x1d0 == field_0x1bc + 1) {
             field_0x26c = 2;
             gAudioMgr_8053AF80->fn_80458880(11, -1);
-        } else if ((gGameRoot_8053AAF8->field_0x82 & 0x10) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
+        } else if ((gGameRoot_8053AAF8->mPlayerMask & 0x10) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0))) {
             if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23c + 1)) {
                 field_0x26c = 2;
                 gAudioMgr_8053AF80->fn_80458880(11, -1);
@@ -1037,7 +1037,7 @@ void cls_804B0B00::fn_803E9A20() {
         field_0x25c = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
             field_0x220[i]++;
             if (field_0x220[i] >= 130) {
                 field_0x220[i] = 100;
@@ -1106,7 +1106,7 @@ void cls_804B0B00::fn_803E9EE8() {
         field_0x25c = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
             field_0x220[i]++;
             if (field_0x220[i] >= 130) {
                 field_0x220[i] = 100;
@@ -1251,31 +1251,31 @@ void cls_804B0B00::fn_803ED604() {
 }
 
 // cls_804AF878::fn_803A8600 each frame: counts the connected controllers
-// into field_0x1d0 and bits 4-7 of gGameRoot_8053AAF8->field_0x82 (one player:
+// into field_0x1d0 and bits 4-7 of gGameRoot_8053AAF8->mPlayerMask (one player:
 // slot 0 through fn_8030A3B0), then runs the state's update.
 void cls_804B0B00::fn_803ED83C() {
     field_0x1d0 = 0;
     if (field_0x1bc == 0) {
         if (lbl_8053AD30->fn_8030A3B0(getPlayerInputSlot_8030AAF4(0))) {
-            gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << 4);
+            gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << 4);
             field_0x1d0++;
         } else {
-            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << 4);
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << 4);
         }
         for (s32 i = 1; i < 4; i++) {
-            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
         }
     } else {
         for (s32 i = 0; i < 4; i++) {
             if (i <= field_0x1bc) {
                 if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
-                    gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
+                    gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << (i + 4));
                     field_0x1d0++;
                 } else {
-                    gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                    gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
                 }
             } else {
-                gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
             }
         }
     }

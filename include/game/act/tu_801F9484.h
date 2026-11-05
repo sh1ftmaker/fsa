@@ -304,6 +304,11 @@ class cls_804A4F90 : public ActorBase_804A5770 {
 public:
     cls_804A4F90();
     /* 0x08 */ virtual ~cls_804A4F90();
+    // 0x801DC264 (game/act_frostare_tail.cpp, not written yet): reads 0xD8, 0xDC
+    // and 0x278 and returns a value 0-255 (clrlwi 24 in the body); the caller
+    // (tu_801DAC6C) uses it as an int without extending it (declared s32: a u8
+    // adds a clrlwi at the call).
+    s32 fn_801DC264();
     /* 0x230 */ u8 field_0x230[0x7C];
 }; // Size: 0x2AC
 
@@ -320,6 +325,12 @@ class cls_804A6708 : public ActorBase_804A5770 {
 public:
     cls_804A6708();
     /* 0x08 */ virtual ~cls_804A6708();
+    // game/act_navi.cpp (not written yet); the word at 0x248 is the state.
+    // fn_8021D734 / fn_8021D764 switch to state 8 / 6 unless already there;
+    // fn_8021D794 returns whether it is in state 5. Called by tu_8021F064.
+    void fn_8021D734();
+    void fn_8021D764();
+    bool fn_8021D794();
     /* 0x230 */ u8 field_0x230[0xA8];
 }; // Size: 0x2D8
 
@@ -354,6 +365,11 @@ class FireRodFire_804A89F0 : public ActorBase_804A5770 {
 public:
     FireRodFire_804A89F0() {}
     /* 0x08 */ virtual ~FireRodFire_804A89F0();
+    // 0x802BA9F0 / 0x802BA9F8 (game/act_fire_rod_fire.cpp, not written yet):
+    // return the words at 0x260 and 0x264. act_ice_melted_by_four_players
+    // calls both on FIRE actors it finds.
+    s32 fn_802BA9F0();
+    s32 fn_802BA9F8();
     /* 0x230 */ u8 field_0x230[0x64];
 }; // Size: 0x294
 

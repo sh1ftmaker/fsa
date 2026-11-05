@@ -4,6 +4,7 @@
 #include "game/ActorManager.h"
 #include "game/GameMath.h"
 #include "game/act/act_quicksand.h"
+#include "game/act/tu_80212E3C.h"
 #include "game/tu_80212AC0.h"
 
 // Ends the active state: state 1 hands the actor to fn_80212ECC and the view
@@ -16,7 +17,7 @@ static inline void leaveSand(cls_804A6270* sand) {
         if (serial >= 0) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
-                fn_80212ECC(static_cast<EnemyBase_804A4808*>(actor));
+                static_cast<cls_804A6340*>(actor)->fn_80212ECC();
             }
         }
         s32 viewSerial = sand->field_0x2b8;

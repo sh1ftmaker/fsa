@@ -2,6 +2,7 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/tu_8021F064.h"
+#include "game/act/tu_801F9484.h"
 
 cls_8021F064* fn_8021F064() {
     static cls_8021F064 lbl_804CE640;
@@ -16,7 +17,7 @@ bool cls_8021F064::fn_8021F094() const {
     bool result = true;
     for (s32 i = 0; i < count; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]);
-        if (actor != NULL && !fn_8021D794(actor)) {
+        if (actor != NULL && !static_cast<cls_804A6708*>(actor)->fn_8021D794()) {
             result = false;
             break;
         }
@@ -33,10 +34,10 @@ void cls_8021F064::fn_8021F130() {
             actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]);
             if (actor) {
                 if (mFlags & 1) {
-                    fn_8021D764(actor);
+                    static_cast<cls_804A6708*>(actor)->fn_8021D764();
                 }
                 if (mFlags & 2) {
-                    fn_8021D734(actor);
+                    static_cast<cls_804A6708*>(actor)->fn_8021D734();
                 }
             }
         }

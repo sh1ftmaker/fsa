@@ -17,7 +17,7 @@ class cls_804B20F8;
 // game is not in single-player mode). It loads seven J2DScreens from the
 // archive fn_804031C4 reads (field_0x28 of lbl_80529DEC), counts the
 // connected controllers (fn_8030A308 on each player's input slot) into
-// gGameRoot_8053AAF8->field_0x82 and runs a 13-state machine through three
+// gGameRoot_8053AAF8->mPlayerMask and runs a 13-state machine through three
 // pointer-to-member tables (enter, update, draw); state 13 runs the
 // previous state's entries. The fade picture field_0x5c covers the screen
 // while field_0x25e is set.

@@ -18,7 +18,7 @@ void GameRootSub04_801F856C::fn_80139BE8() {
     lbl_8053ACD0 = 0;
     fn_8030361C();
     fn_8038D454();
-    fn_801184F0(fn_8011921C(), true);
+    fn_8011921C()->fn_801184F0(true);
     gGameRoot2_8053AB10->field_0x20->field_0x235c[0] = 0;
     gGameRoot2_8053AB10->field_0x20->field_0x235c[1] = 0;
     gGameRoot2_8053AB10->field_0x20->field_0x235c[2] = 0;

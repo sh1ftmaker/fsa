@@ -8,6 +8,7 @@
 #include "game/Player.h"
 #include "game/act/act_battle_royale_end_check.h"
 #include "game/act/tu_803DA6B4.h"
+#include "game/cls_804A8638.h"
 
 BattleRoyaleEndCheck_804B0380::~BattleRoyaleEndCheck_804B0380() {}
 
@@ -190,7 +191,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
     if (fn_80239F10()) {
         for (s32 i = 0; i < 4; i++) {
             u8 bit = 1 << i;
-            if (gGameRoot_8053AAF8->field_0x82 & bit) {
+            if (gGameRoot_8053AAF8->mPlayerMask & bit) {
                 if (!fn_80236B50(i)) {
                     mWinner = i;
                 }
@@ -207,7 +208,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
         for (s32 i = 0; i < actorEnd; i++) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
             if (actor != NULL && actor->mActorId == 'SWEV') {
-                fn_802B3A48(actor);
+                static_cast<cls_804A8638*>(actor)->fn_802B3A48();
             }
         }
         getGameView_802D6A9C()->fn_802D7440(false);

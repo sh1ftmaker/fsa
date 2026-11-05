@@ -15,6 +15,11 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+
+    // 0x802AC09C (not written yet): stores 0 to the word at 0x238. Called by
+    // act_stop_npc (0x802ED198) on each ITMS actor.
+    void fn_802AC09C();
+
     /* 0x230 */ u8 field_0x230[0x14]; // not yet known
 }; // Size: 0x244
 

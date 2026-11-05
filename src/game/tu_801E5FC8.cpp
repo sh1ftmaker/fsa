@@ -9,11 +9,11 @@
 // target loads byte 0x4c into r7 and adds in place (add r7, r7, r3); this
 // loads it into r0 and adds into r7. (Declaring mtx before params changes the stack.)
 void cls_804A4C58::draw() {
-    void* res = fn_804032E8('ICEB', fn_801DA938(&mSeq2a8));
+    void* res = fn_804032E8('ICEB', mSeq2a8.fn_801DA938());
     if (res != NULL) {
         SpriteParams_801F5AE0 params;
         Mtx mtx;
-        if ((mFlags & 0x2000) != 0 && fn_801DA904(&mSeq2a8)) {
+        if ((mFlags & 0x2000) != 0 && mSeq2a8.fn_801DA904()) {
             mtx[0][3] = 0.0f;
             mtx[1][3] = 0.0f;
             mtx[2][3] = 0.0f;

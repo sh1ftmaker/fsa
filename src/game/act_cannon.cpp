@@ -177,7 +177,7 @@ void Cannon_8049CCF0::update() {
         s32 owner;
         for (owner = 0; owner < 4; owner++) {
             u8 bit = 1 << owner;
-            if ((gGameRoot_8053AAF8->field_0x82 & bit) != 0 || fn_8022CAF8(owner) == 4) {
+            if ((gGameRoot_8053AAF8->mPlayerMask & bit) != 0 || fn_8022CAF8(owner) == 4) {
                 if (fn_8023B0F4(owner, &box, field_0x4, false, 1000.0f) && field_0x26c < 0 &&
                     fn_8023162C(owner, mSerial)) {
                     break;

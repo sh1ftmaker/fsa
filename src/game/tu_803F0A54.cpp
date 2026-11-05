@@ -104,16 +104,16 @@ static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
     root->field_0x83 |= (u8)(kind << (2 * player));
 }
 
-// Sets bit `i` of gGameRoot_8053AAF8->field_0x82 and the 2-bit field `i` of
+// Sets bit `i` of gGameRoot_8053AAF8->mPlayerMask and the 2-bit field `i` of
 // field_0x83 to 1 for the field_0x1ac + 2 players that take part, and clears
 // both for the others.
 static inline void setEntries(ConnectScreen_804B0F10* self) {
     for (s32 i = 0; i < 4; i++) {
         if (i < self->field_0x1ac + 2) {
-            gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << i);
+            gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << i);
             setPlayerKind(gGameRoot_8053AAF8, i, 1);
         } else {
-            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << i);
             setPlayerKind(gGameRoot_8053AAF8, i, 0);
         }
     }
@@ -682,7 +682,7 @@ void ConnectScreen_804B0F10::fn_803F8AE4() {
         field_0x24a = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
             field_0x210[i]++;
             if (field_0x210[i] >= 130) {
                 field_0x210[i] = 100;
@@ -761,7 +761,7 @@ void ConnectScreen_804B0F10::fn_803F8FBC() {
         field_0x24a = 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << (i + 4))) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
             field_0x210[i]++;
             if (field_0x210[i] >= 130) {
                 field_0x210[i] = 100;
@@ -835,13 +835,13 @@ void ConnectScreen_804B0F10::fn_803FC304() {
     for (s32 i = 0; i < 4; i++) {
         if (i <= field_0x1ac + 1) {
             if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
-                gGameRoot_8053AAF8->field_0x82 |= (u8)(1 << (i + 4));
+                gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << (i + 4));
                 field_0x1c0++;
             } else {
-                gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+                gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
             }
         } else {
-            gGameRoot_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
         }
     }
     if (field_0x25e == 0 || field_0x1c4 == 4) {

@@ -17,10 +17,10 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-// Whether player i takes part (the bit of GameRoot's field_0x82).
+// Whether player i takes part (the bit of GameRoot's mPlayerMask).
 static inline bool playerTakesPart(s32 i) {
     u8 playerBit = 1 << i;
-    return gGameRoot_8053AAF8->field_0x82 & playerBit;
+    return gGameRoot_8053AAF8->mPlayerMask & playerBit;
 }
 
 // The rank colours: red, green and blue, each indexed by field_0x244.
@@ -307,7 +307,7 @@ void RankDisplay_804A8F74::init() {
         field_0x244[i] = 0;
         field_0x254[i] = 0;
         field_0x274[i] = 0xFF;
-        if (gGameRoot_8053AAF8->field_0x82 & playerBit) {
+        if (gGameRoot_8053AAF8->mPlayerMask & playerBit) {
             field_0x264[i] = fn_80237774(i);
         } else {
             field_0x264[i] = 0;

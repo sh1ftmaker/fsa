@@ -428,7 +428,7 @@ void cls_804B1920::fn_8043D8B4() {
     int i;
     if (gGameRoot_8053AAF8->field_0x7e == 0) {
         for (i = 0; i < 4; i++) {
-            if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
+            if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
                 s32 player = fn_8022EA0C(i);
                 if (getPlayerLayer_8023DE58(player) < 8) {
                     JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
@@ -444,7 +444,7 @@ void cls_804B1920::fn_8043D8B4() {
                 JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 fn_804408F0(&pos);
             }
-            if (gGameRoot_8053AAF8->field_0x82 & (u8)(1 << i)) {
+            if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
                 lbl_80529DEC.field_0xc8[i] = fn_80237810(i);
                 lbl_80529DEC.field_0xf8[i] = fn_802373EC(i);
             }

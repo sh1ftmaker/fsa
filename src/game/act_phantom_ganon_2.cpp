@@ -102,7 +102,7 @@ JPAEmitterManager* fn_8018A5F0() {
     return getEffectSystem_8013C824()->mEmitterManager;
 }
 
-// Whether bit `player` of the game root's field_0x82 is set (game/PlayerBit.h,
+// Whether bit `player` of the game root's mPlayerMask is set (game/PlayerBit.h,
 // on gGameRoot_8053AAF8 itself).
 bool fn_8018A614(s32 player) {
     return isPlayerBitSet(gGameRoot_8053AAF8, player);
