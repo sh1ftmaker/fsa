@@ -16,6 +16,7 @@
 // their address.
 
 #include "game/GameAudio.h"
+#include "game/THPMovie.h"
 #include <dolphin/os.h>
 #include <dolphin/dvd.h>
 #include <dolphin/gx.h>
@@ -1540,7 +1541,7 @@ static u16 sSavedFrameRate_8053AEBE;
 static THPVideoInfo sVideoInfo_8052BEC0;
 static THPAudioInfo sAudioInfo_8052BECC;
 
-static bool IsMoviePlaying_804286A0() {
+bool IsMoviePlaying_804286A0() {
     return sMovieState_8053AEB8 == 2;
 }
 
@@ -1667,7 +1668,7 @@ static void DrawMovie_804281FC(s32 x, s32 y, s32 w, s32 h) {
 }
 
 // Frames left to play, or -1 when nothing is shown.
-static s32 GetMovieRestFrame_80428134() {
+static u32 GetMovieRestFrame_80428134() {
     u32 frame;
     u32 total;
 
@@ -1706,27 +1707,6 @@ static void SetMovieVolume_804280C0(f32 volume) {
     }
 }
 
-// The movie object the game creates; named after its vtable.
-class THPMovie_804B15D0 {
-public:
-    THPMovie_804B15D0();
-    virtual ~THPMovie_804B15D0();
-    BOOL draw_80427D2C(s32 x, s32 y, s32 w, s32 h);
-    BOOL update_80427D60();
-    BOOL quit_80427D94();
-    BOOL start_80427DB4(s32 movie);
-    BOOL drawIfOk_80427DD4(s32 x, s32 y, s32 w, s32 h);
-    BOOL updateIfOk_80427E08();
-    BOOL quitMovie_80427E28();
-    BOOL startMovie_80427E58(s32 movie);
-
-    /* 0x04 */ THPReadThread_804B15F4* mReadThread;
-    /* 0x08 */ THPVideoDecodeThread_804B15E8* mVideoDecodeThread;
-    /* 0x0C */ THPAudioDecodeThread_804B15DC* mAudioDecodeThread;
-    /* 0x10 */ s32 (*mGetRestFrame)();
-    /* 0x14 */ void (*mSetVolume)(f32);
-    /* 0x18 */ u32 (*mGetTotalFrame)();
-};
 
 THPMovie_804B15D0::THPMovie_804B15D0() {
     mReadThread = new THPReadThread_804B15F4;

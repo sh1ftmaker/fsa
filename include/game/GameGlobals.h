@@ -64,6 +64,7 @@ class cls_804B13D4;
 class cls_804B146C;
 struct J2DScreen;
 class cls_804AF86C;
+class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (Unk_8045A080::fn_80457F80)
 class cls_804B17A0;
 class PlayerManager_804A6F28;
 struct GameRootSub20_801902C0;
@@ -443,6 +444,11 @@ struct Unk_8045A080 {
     // sound at 0x80; r5 is tested with clrlwi. 24 (0x80458488). Called by
     // tu_8039003C's constructor with (0x100001A, true).
     void fn_80458408(s32 id, bool flag);
+    // SHARED-EDIT (tu_803DAC3C fn_803DD764): game/tu_80457DFC.cpp
+    // (0x80457F80, not written yet). Takes a JAISoundID by value and a signed
+    // byte (-2 skips the first test); returns a byte the caller tests with
+    // clrlwi. 24. tu_803DAC3C passes (11, -2).
+    bool fn_80457F80(JAISoundID id, s8 arg);
     // game/tu_80457DFC.cpp (0x8045815C, not written yet in this file's copy). Called by
     // fn_80290E90 with false when the player's 0xCE4 is below 8, with true when it is 8.
     void fn_8045815C(bool flag);
@@ -1322,6 +1328,10 @@ public:
     // fn_802B1610: the JUTGamePad C3ButtonReset handler (tu_80134C04's
     // fn_80139994 forwards its port and argument to it). Not written yet.
     void fn_802B1610(s32 port, void* arg);
+    // SHARED-EDIT (tu_803DAC3C fn_803DD764): fn_802B1558, the reset path
+    // (r3 = lbl_8053ACA8), called before OSSetBootDol / OSResetSystem.
+    // Not written yet.
+    void fn_802B1558();
 
     /* 0x4 */ u8 field_0x4;
     /* 0x5 */ u8 field_0x5;
@@ -1680,5 +1690,15 @@ void fn_803037D4(s32 layer, u32 value);
 // game/tu_80301CD0.cpp (0x80308D0C, not written yet). Takes no arguments;
 // called by game/tu_802D39B8.cpp (GameView_804A9950::fn_802DCDF4).
 void fn_80308D0C();
+
+// Object with vtable 0x804AF860, owner game/tu_803A60E4.cpp (not written
+// yet). Its constructor (fn_803A7898, 0x84 bytes allocated) loads a
+// J2DScreen from lbl_80529DEC's archives. The game mode screen (tu_803DAC3C)
+// allocates one and deletes it through the destructor's vtable slot.
+class cls_804AF860 {
+public:
+    cls_804AF860(); // fn_803A7898
+    virtual ~cls_804AF860();
+};
 
 #endif
