@@ -121,3 +121,20 @@ did NOT move them (literals are pooled at use, not at parse). Open question.
   tu_803B8C74; returns li 1 / li 0, the caller clrlwi's).
 - symbols.txt: lbl_804765D0 (0x368) and lbl_804769D0 (0x550) split into the
   tables / strings above (placeholders only).
+
+### fn_803BC6F0 shape (read, not written)
+fn_803BC6F0(s32 file, f32 alpha): clamp alpha (`> 1.0f` first, then
+`< 0.0f`); two TColors on the stack (black at sp 0xF4, white at 0xF0,
+default-constructed to -1); per channel `c + (target - c) * alpha` (target - c
+converted signed, c unsigned, fmadds, fctiwz). Five groups, each lerps
+field_0xfc[k] (black, alpha byte 0) and field_0xe8[k] (white, alpha 0xFF)
+and calls J2DPicture::setBlackWhite (vslot 0x130, by value) on
+mScreenHuuin->search(table[file]):
+  k=0 black->0x00 white->0x80: lbl_80476BA8 (0x5D8, Pf?t01)
+  k=1 0x82 / 0xB4: 0x5C0, 0x5A8, 0x590, 0x578, 0x560 (Pf?tb01..05; the 05
+      call gets black with alpha 0xFF, rebuilt bytewise from a copy at sp 0xE4)
+  k=2 0x50 / 0x80: 0x548..0x4E8 (Pf?tbb01..05)
+  k=3 0x82 / 0xB4: 0x6C8..0x668 (Pf?b01..05, same alpha-0xFF tail)
+  k=4 0xB4 / 0xB4: 0x650..0x608 (Pf?bb01..04)
+The group colours are copied to sp 0xE4 / 0xE0 and to each call's by-value
+temporaries; that copy pattern is what needs working out.
