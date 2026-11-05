@@ -1062,6 +1062,11 @@ public:
     bool fn_80247594(s32 arg); // via fn_80237488
     bool fn_80271038(const JGeometry::TVec2f* pos); // via fn_802378AC
     bool fn_80271068(const JGeometry::TVec2f* pos); // via fn_80237948
+    bool fn_80256C74(const JGeometry::TBox2f* box, s32 layer); // tu_80256C74; box test on field_0x5dc, called by fn_8023A6CC
+    // tu_8023FBF0 (0x80241618): field_0xc10 = item, field_0xc14 = level (kept at 2 or more
+    // unless level >= 2), sets the player's bit in lbl_8053AED0 0x255; returns true. Result unused.
+    bool fn_80241618(s32 item, s32 level);
+    bool fn_80257DB4(); // tu_80256C74; false if any of 21 state / flag tests holds, else field_0xd3c < 0; called by tu_8022AD64
     bool fn_80256DCC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A97C
     u8 fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AAF8
     bool fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023B848
@@ -1261,6 +1266,9 @@ bool fn_8022C13C(s32 player); // -> fn_80245B74; else false
 bool fn_8022C1D8(s32 player); // -> fn_80245DB0; else false
 bool fn_8022C274(s32 player); // -> fn_80245FEC; else false
 bool fn_8022C310(s32 player); // -> fn_80246228; else false
+// tu_8022AD64 (0x8022B334, 0x490, unwritten): composite per-player query, tested
+// with clrlwi by fn_8025785C before the item states.
+bool fn_8022B334(s32 player);
 bool fn_8022C3AC(s32 player); // -> fn_802466B4; else false (also for a player outside 0-3)
 s32 fn_8022C52C(s32 player, u32 arg); // -> fn_80246B10; else 0 (also for a player outside 0-3)
 s32 fn_8022C5EC(s32 player, u32 arg); // -> fn_80246D1C; else 0 (also for a player outside 0-3)

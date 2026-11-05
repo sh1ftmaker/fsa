@@ -388,6 +388,9 @@ extern u8 lbl_8053ABA8;
 extern u8 lbl_8053ABF0;
 // .sdata word in act_navi's data (0x8053A188-0x8053A198): fn_8023F78C stores -1 to it.
 extern s32 lbl_8053A190;
+// .sbss bytes (8) of game/act_all_enemies_defeated.cpp (unwritten), indexed by player
+// in tu_80256C74 fn_8025785C (item 4 is refused while the player's byte is set).
+extern u8 lbl_8053ABB8[8];
 
 // The object fn_801902C0 returns: see game/GameRootSub20.h.
 
