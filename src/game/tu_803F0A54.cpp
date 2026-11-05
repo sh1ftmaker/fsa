@@ -640,6 +640,8 @@ void cls_804B0F10::fn_803F8050() {
     stepCursorTimer(this);
 }
 
+// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 5 (the GBA connection prompt): field_0x25c 255, or decide
 // (0x1100) without every controller connected, enters state 6
 // (fn_803F2AEC); decide with all connected reads the players' results and
@@ -709,6 +711,8 @@ void cls_804B0F10::fn_803F8AE4() {
     }
 }
 
+// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
 // Update state 6 (waiting for the GBA link through lbl_8053AEC0;
 // field_0x25c: 0 starting, 1 running, 2 ending into state 5, 3 ending with
 // field_0x350 = 2): all players connected, decide (0x1100) or back (0x200)
