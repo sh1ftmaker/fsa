@@ -2142,6 +2142,44 @@ void Player_804A6F38::fn_8024CA20() {
     field_0xd3c = -1;
 }
 
+// Starts a conversation (act_dummy_conversation through fn_8022FE80): keeps
+// `serial` in field_0xd3c and `a` in field_0xd4e when none is pending, the
+// player waits for this serial or none (field_0xd44), is on `layer`, acts on
+// its own, is not carried (field_0xce8) or fn_8025F448, not in state 0xB
+// unless field_0x454, and with `b` faces 3.
+// FIXME: 99.53. Registers only (the inlined group loops' temporaries).
+void Player_804A6F38::fn_8024CAC8(s32 layer, s32 serial, bool a, bool b) {
+    if (field_0xd50 > 0) {
+        return;
+    }
+    if (field_0xd44 >= 0 && field_0xd44 != serial) {
+        return;
+    }
+    if (field_0xd3c >= 0) {
+        return;
+    }
+    if (follows_80240670(this)) {
+        return;
+    }
+    if (layer != field_0x3b4) {
+        return;
+    }
+    if (fn_8025F448()) {
+        return;
+    }
+    if (field_0xce8) {
+        return;
+    }
+    if (!field_0x454 && fn_80241230()) {
+        return;
+    }
+    if (b == true && field_0x3dc != 3) {
+        return;
+    }
+    field_0xd3c = serial;
+    field_0xd4e = a;
+}
+
 // Clears field_0x454: with `reset` the trail is reset to the current
 // position (fn_80248604), else fn_8024B2E0 runs first. Then the timers
 // 0xD74 / 0x11F0 = 10 and fn_8024D134.
