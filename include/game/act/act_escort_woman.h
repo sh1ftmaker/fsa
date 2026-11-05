@@ -18,9 +18,9 @@ public:
     /* 0x08 */ virtual ~EscortWoman_8049E1D0();
     // fn_80125858: the vtable's init slot (ActorBase's 0x0C); calls the base's fn_80124448.
     /* 0x0C */ virtual void init();
-    /* 0x54 */ virtual void vfunc_0x54();
-    /* 0x58 */ virtual void vfunc_0x58();
-    /* 0x5C */ virtual void vfunc_0x5C();
+    /* 0x54 */ virtual bool vfunc_0x54();
+    /* 0x58 */ virtual bool vfunc_0x58();
+    /* 0x5C */ virtual s32 vfunc_0x5C();
     // fn_80125648 in the vtable; fn_80131D98 (game/tu_80131D98.cpp) calls it
     // and converts the byte result to bool.
     /* 0x60 */ virtual u8 vfunc_0x60();
@@ -44,9 +44,6 @@ public:
     // 0x80124AD8: vfunc_0x6C(9), as the zora's 0x88 does.
     /* 0x94 */ virtual s32 vfunc_0x94();
 
-    /* 0x340 */ u8 field_0x340[0x35C - 0x340]; // not declared yet
-    /* 0x35C */ s32 field_0x35c; // the low byte of field_0x90, set by vfunc_0x64
-    /* 0x360 */ u8 field_0x360[0x3C4 - 0x360]; // not declared yet
     /* 0x3C4 */ s32 field_0x3c4; // cleared by the constructor
     /* 0x3C8 */ s32 field_0x3c8; // cleared by the constructor
     /* 0x3CC */ s32 field_0x3cc; // field_0x90 bits 5-9 (from the top), set by vfunc_0x64
