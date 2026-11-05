@@ -3,11 +3,18 @@
 
 #include "types.h"
 
+class J2DScreen;
+class J2DAnmBase;
+class J2DPicture;
+class cls_804AF86C;
 class cls_804B16A8;
+class cls_804B20F8;
 
-// Vtable 0x804B0B00, constructor fn_803EE254 (game/tu_803E1668.cpp, owner
-// unit, not written yet); 0x364 bytes (__nw__(0x364) in fn_803A8884). Only
-// what game/tu_803A85E4.cpp uses is declared.
+// Vtable 0x804B0B00, constructor fn_803EE254, destructor fn_803EDF94
+// (game/tu_803E1668.cpp); 0x364 bytes (__nw__(0x364) in fn_803A8884). The
+// sister screen of cls_804B0F10 (game/tu_803F0A54.h): seven J2DScreens and a
+// 15-state machine run through three pointer-to-member tables (enter,
+// update, draw).
 class cls_804B0B00 {
 public:
     typedef void (cls_804B0B00::*StateFunc)();
@@ -38,14 +45,51 @@ public:
     // Not written yet: fn_803E3320 (called by the two menu update functions
     // when the current choice is below 3).
     void fn_803E3320();
-    // The menu update functions (state tables' rows).
-    void fn_803E6A2C();
-    void fn_803E9034();
-    void fn_803ED604();
 
-    /* 0x004 */ u8 field_0x4[0x5C - 0x4];
+    // Enter functions not written yet, lbl_804B0754[state].
+    void fn_803E2A20(); // 12
+    void fn_803E3564(); // 9
+    void fn_803E3CB0(); // 5
+    void fn_803E4344(); // 2
+    // Draw functions, lbl_804B0A24[state].
+    void fn_803E4650(); // 12, 13
+    void fn_803E4940(); // 0, 9-11
+    void fn_803E51C4(); // 5-8
+    void fn_803E64A0(); // 2-4
+    // Update functions, lbl_804B08BC[state].
+    void fn_803E6A2C(); // 14
+    void fn_803E6AB0(); // 13
+    void fn_803E8210(); // 12
+    void fn_803E831C(); // 11
+    void fn_803E9034(); // 10
+    void fn_803E926C(); // 9
+    void fn_803E9A20(); // 8
+    void fn_803E9EE8(); // 7
+    void fn_803EA3F8(); // 6
+    void fn_803EAEC8(); // 5
+    void fn_803EBAA8(); // 4
+    void fn_803EC804(); // 3
+    void fn_803ECC64(); // 2
+    void fn_803ED604(); // 0
+
+    /* 0x000 */ // vtable
+    /* 0x004 */ J2DScreen* mScreen;
+    /* 0x008 */ J2DScreen* field_0x8;
+    /* 0x00C */ J2DScreen* field_0xc;
+    /* 0x010 */ J2DScreen* field_0x10;
+    /* 0x014 */ J2DScreen* field_0x14;
+    /* 0x018 */ J2DScreen* field_0x18[4];
+    /* 0x028 */ J2DScreen* field_0x28[4];
+    /* 0x038 */ J2DAnmBase* field_0x38[4];
+    /* 0x048 */ J2DAnmBase* field_0x48[4];
+    /* 0x058 */ u8 field_0x58[0x5C - 0x58];
     /* 0x05C */ cls_804B16A8* field_0x5c;
-    /* 0x060 */ u8 field_0x60[0x1B8 - 0x60];
+    /* 0x060 */ J2DPicture* field_0x60;
+    /* 0x064 */ cls_804AF86C* field_0x64;
+    /* 0x068 */ cls_804AF86C* field_0x68[4];
+    /* 0x078 */ cls_804AF86C* field_0x78;
+    /* 0x07C */ cls_804B20F8* field_0x7c[4];
+    /* 0x08C */ u8 field_0x8c[0x1B8 - 0x8C];
     /* 0x1B8 */ s32 field_0x1b8;
     /* 0x1BC */ s32 field_0x1bc;
     /* 0x1C0 */ u8 field_0x1c0[0x1D0 - 0x1C0];
@@ -64,6 +108,6 @@ public:
     /* 0x26E */ u8 field_0x26e;
     /* 0x26F */ u8 field_0x26f[0x360 - 0x26F];
     /* 0x360 */ s32 field_0x360; // fn_803A8600 copies it to cls_804AF878::field_0xc
-};
+}; // Size: 0x364
 
 #endif

@@ -2,10 +2,41 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/cls_804B16A8.h"
+#include "game/cls_804B20F8.h"
+#include "game/act/tu_80440BF4.h"
 #include "game/tu_803E1668.h"
+#include "JSystem/J2D/J2DScreen.h"
+#include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/J2D/J2DAnimation.h"
 
-// Run each frame (index: the state); the table is filled by the unit's static initialiser.
-static cls_804B0B00::StateFunc lbl_804B0754[15] = {0};
+// Entered when the state changes (index: the new state). The three tables
+// are filled at startup by the unit's static initialiser, as in
+// game/tu_803F0A54.cpp.
+static cls_804B0B00::StateFunc lbl_804B0754[15] = {
+    &cls_804B0B00::fn_803E4610, &cls_804B0B00::fn_803E45FC, &cls_804B0B00::fn_803E4344,
+    &cls_804B0B00::fn_803E4330, &cls_804B0B00::fn_803E4308, &cls_804B0B00::fn_803E3CB0,
+    &cls_804B0B00::fn_803E3C94, &cls_804B0B00::fn_803E3C80, &cls_804B0B00::fn_803E3C00,
+    &cls_804B0B00::fn_803E3564, &cls_804B0B00::fn_803E3548, &cls_804B0B00::fn_803E3320,
+    &cls_804B0B00::fn_803E2A20, &cls_804B0B00::fn_803E2A0C, &cls_804B0B00::fn_803E29C8,
+};
+
+// Run each frame (index: the state).
+static cls_804B0B00::StateFunc lbl_804B08BC[15] = {
+    &cls_804B0B00::fn_803ED604, &cls_804B0B00::fn_803ED5B4, &cls_804B0B00::fn_803ECC64,
+    &cls_804B0B00::fn_803EC804, &cls_804B0B00::fn_803EBAA8, &cls_804B0B00::fn_803EAEC8,
+    &cls_804B0B00::fn_803EA3F8, &cls_804B0B00::fn_803E9EE8, &cls_804B0B00::fn_803E9A20,
+    &cls_804B0B00::fn_803E926C, &cls_804B0B00::fn_803E9034, &cls_804B0B00::fn_803E831C,
+    &cls_804B0B00::fn_803E8210, &cls_804B0B00::fn_803E6AB0, &cls_804B0B00::fn_803E6A2C,
+};
+
+// Drawn each frame (index: the state).
+static cls_804B0B00::StateFunc lbl_804B0A24[15] = {
+    &cls_804B0B00::fn_803E4940, &cls_804B0B00::fn_803E6A28, &cls_804B0B00::fn_803E64A0,
+    &cls_804B0B00::fn_803E64A0, &cls_804B0B00::fn_803E64A0, &cls_804B0B00::fn_803E51C4,
+    &cls_804B0B00::fn_803E51C4, &cls_804B0B00::fn_803E51C4, &cls_804B0B00::fn_803E51C4,
+    &cls_804B0B00::fn_803E4940, &cls_804B0B00::fn_803E4940, &cls_804B0B00::fn_803E4940,
+    &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E4650, &cls_804B0B00::fn_803E462C,
+};
 
 // Steps the cursor's blink counter (field_0x254) and the frame counter (field_0x220).
 static inline void stepBlink(cls_804B0B00* self) {
@@ -192,5 +223,42 @@ void cls_804B0B00::fn_803ED604() {
     field_0x1e0++;
     if (field_0x1e0 >= 60) {
         field_0x1e0 = 0;
+    }
+}
+
+cls_804B0B00::~cls_804B0B00() {
+    delete mScreen;
+    mScreen = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x18[i];
+        field_0x18[i] = NULL;
+        delete field_0x38[i];
+        field_0x38[i] = NULL;
+        delete field_0x28[i];
+        field_0x28[i] = NULL;
+        delete field_0x48[i];
+        field_0x48[i] = NULL;
+    }
+    delete field_0x64;
+    field_0x64 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x68[i];
+        field_0x68[i] = NULL;
+    }
+    delete field_0x5c;
+    field_0x5c = NULL;
+    delete field_0x60;
+    field_0x60 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x7c[i];
+        field_0x7c[i] = NULL;
     }
 }
