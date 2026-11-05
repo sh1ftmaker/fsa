@@ -2781,6 +2781,91 @@ void Player_804A6F38::fn_8027C6B8() {
     field_0x436 = 0;
 }
 
+// `box` shrunk (d < 0) or grown by d on every side.
+static inline void growBox(JGeometry::TBox2f& box, f32 d) {
+    box.i.x -= d;
+    box.i.y -= d;
+    box.f.x += d;
+    box.f.y += d;
+}
+
+// The push 0x344 handed on to 0x368 (x / y) and cleared.
+static inline void passOnPush(Player_804A6F38* player) {
+    player->field_0x368.set(player->field_0x344.x, player->field_0x344.y, 0.0f);
+    player->field_0x344.set(0.0f, 0.0f, 0.0f);
+}
+
+// Landing of state 0x07: state 8 (fn_80246464) or 0.
+static inline void landState7(Player_804A6F38* player) {
+    if (player->fn_80246464()) {
+        if (player->fn_80251AEC(8)) {
+            passOnPush(player);
+        }
+    } else if (player->fn_80251AEC(0)) {
+        passOnPush(player);
+    }
+}
+
+// Update of state 0x07 (a fall / knock-up): gravity 0.25 on 0x344.z (down to -8); on flagged
+// layers the push moves x / -y at height 0.5 and ends outside the view box less 16 (or with
+// cls_804A71A8 0x4A), else mPos moves by the push and lands at 0. Pose by the frame 0x3FA;
+// from frame 15 the landing (fn_8022C76C / tile 2 test on flagged layers) to state 8 or 0.
+// FIXME: 99.88. Registers only: f0 / f1 swapped for mPos.x / mPos.y in the inlined
+// containsPoint test.
+void Player_804A6F38::fn_8027C6C4() {
+    field_0x344.z -= 0.25f;
+    if (field_0x344.z < -8.0f) {
+        field_0x344.z = -8.0f;
+    }
+    if (viewLayerFlag(field_0x3b4)) {
+        mPos.x += field_0x344.x;
+        mPos.y -= field_0x344.z;
+        mPos.z = 0.5f;
+        JGeometry::TBox2f box;
+        box = *layerBox(field_0x3b4);
+        growBox(box, -16.0f);
+        if (field_0x344.z < 0.0f && (field_0xbf0->field_0x48[2] || !containsPoint(box, mPos))) {
+            mPos.z = 0.0f;
+        }
+    } else {
+        mPos.add(field_0x344);
+        if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+            mPos.z = 0.0f;
+        }
+    }
+    if (field_0x3fa < 6) {
+        field_0x3fb = 0;
+    } else if (field_0x3fa < 7) {
+        field_0x458 = 1;
+        field_0x3fb = 1;
+    } else if (field_0x3fa < 8) {
+        field_0x3fb = 2;
+    } else if (field_0x3fa < 9) {
+        field_0x3fb = 3;
+    } else if (field_0x3fa < 11) {
+        field_0x3fb = 4;
+    } else {
+        field_0x3fb = 5;
+    }
+    if (field_0x3fa >= 15) {
+        if (viewLayerFlag(field_0x3b4) && fn_8022C76C(field_0x4) != 0.0f) {
+            JGeometry::TVec3f pos;
+            fn_8024B298(2, &pos);
+            pos.y += 2.0f;
+            if (fn_8022461C(&pos, field_0x3b4) != 2) {
+                landState7(this);
+            }
+        }
+        if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+            landState7(this);
+        }
+    } else {
+        field_0x3fa++;
+    }
+    fn_80276E5C();
+    fn_802685D4();
+}
+
 // FIXME: 78.55. Same instructions; in the original the float store and the li 8 / lis come
 // before the argument setup (lfs, stfs, li, lis, stw, mr, addi), ours hoists lis/li/mr above the stfs.
 void Player_804A6F38::fn_8027CAA8() {
