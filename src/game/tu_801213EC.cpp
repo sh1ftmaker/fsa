@@ -13,7 +13,7 @@ bool EscortBase_8049E0C8::vfunc_0x54() {
     return false;
 }
 
-u8 EscortBase_8049E0C8::vfunc_0x58() {
+bool EscortBase_8049E0C8::vfunc_0x58() {
     return false;
 }
 

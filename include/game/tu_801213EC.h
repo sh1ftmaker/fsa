@@ -22,7 +22,7 @@ public:
     // Slots 0x54-0x5C: the callers test 0x54's byte result (escort woman's 0x6C-state code);
     // 0x58 is a flag, 0x5C returns a state number (3 here).
     /* 0x54 */ virtual bool vfunc_0x54();
-    /* 0x58 */ virtual u8 vfunc_0x58();
+    /* 0x58 */ virtual bool vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
     // Returns a byte: the escort woman's override (act_escort_woman.h) does,
     // and fn_80131D98 reads it as bool.

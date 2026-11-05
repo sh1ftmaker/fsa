@@ -26,7 +26,7 @@ public:
     // the escort within 32 units of the player it names) and fn_80120F68 (3 in state 0 or 0xF,
     // else 2 when vfunc_0x58 holds, else 1).
     /* 0x54 */ virtual bool vfunc_0x54();
-    /* 0x58 */ virtual u8 vfunc_0x58();
+    /* 0x58 */ virtual bool vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
     // 0x8011FFB8: returns 0 (the base slot's u8 result).
     /* 0x60 */ virtual u8 vfunc_0x60();

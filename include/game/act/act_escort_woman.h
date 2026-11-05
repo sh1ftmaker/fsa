@@ -19,7 +19,7 @@ public:
     // fn_80125858: the vtable's init slot (ActorBase's 0x0C); calls the base's fn_80124448.
     /* 0x0C */ virtual void init();
     /* 0x54 */ virtual bool vfunc_0x54();
-    /* 0x58 */ virtual u8 vfunc_0x58();
+    /* 0x58 */ virtual bool vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
     // fn_80125648 in the vtable; fn_80131D98 (game/tu_80131D98.cpp) calls it
     // and converts the byte result to bool.

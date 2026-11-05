@@ -89,7 +89,7 @@ s32 ZoraEscort_8049DF78::vfunc_0x5C() {
     if (field_0x33c == 0 || field_0x33c == 0xF) {
         return 3;
     }
-    u8 flag = vfunc_0x58();
+    bool flag = vfunc_0x58();
     s32 result = 1;
     if (flag) {
         result = 2;
@@ -97,7 +97,7 @@ s32 ZoraEscort_8049DF78::vfunc_0x5C() {
     return result;
 }
 
-u8 ZoraEscort_8049DF78::vfunc_0x58() {
+bool ZoraEscort_8049DF78::vfunc_0x58() {
     switch (field_0x33c) {
     case 7:
     case 11:
