@@ -30,7 +30,7 @@
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game/game-boot" title="Boot to main menu: 20.2 % of 1,258,252 bytes matched, 1,479 / 2,394 functions. Open it on the progress site."><img src="site/badges/treemap/boot.svg" width="35.02%" alt="Boot to main menu: 20.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-battle" title="Main menu to Shadow Battle: 22.5 % of 644,344 bytes matched, 811 / 1,336 functions. Open it on the progress site."><img src="site/badges/treemap/battle.svg" width="18.02%" alt="Main menu to Shadow Battle: 22.5 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-actors" title="Actors: 27.3 % of 1,027,824 bytes matched, 1,086 / 1,962 functions. Open it on the progress site."><img src="site/badges/treemap/actors.svg" width="28.76%" alt="Actors: 27.3 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-other" title="Everything else: 22.4 % of 643,364 bytes matched, 560 / 1,097 functions. Open it on the progress site."><img src="site/badges/treemap/other.svg" width="18%" alt="Everything else: 22.4 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game/game-boot" title="Boot to main menu: 20.2 % of 1,258,252 bytes matched, 1,479 / 2,394 functions. Open it on the progress site."><img src="site/badges/treemap/boot.svg" width="35.02%" alt="Boot to main menu: 20.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-battle" title="Main menu to Shadow Battle: 22.5 % of 644,344 bytes matched, 814 / 1,336 functions. Open it on the progress site."><img src="site/badges/treemap/battle.svg" width="18.02%" alt="Main menu to Shadow Battle: 22.5 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-actors" title="Actors: 27.3 % of 1,027,824 bytes matched, 1,086 / 1,962 functions. Open it on the progress site."><img src="site/badges/treemap/actors.svg" width="28.76%" alt="Actors: 27.3 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-other" title="Everything else: 22.4 % of 643,364 bytes matched, 560 / 1,097 functions. Open it on the progress site."><img src="site/badges/treemap/other.svg" width="18%" alt="Everything else: 22.4 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -47,9 +47,9 @@ game code in its four parts, the bottom row the libraries. Click a block to open
 <!-- progress:start -->
 As of 2026-11-05:
 
-- **Honest: 37.63 %** of the code is byte-identical, **8,649 / 11,557** functions (1,671,408 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 44.27 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 9,077 / 11,557 functions (same instructions, register or order differences only), +106 close.
+- **Honest: 37.64 %** of the code is byte-identical, **8,652 / 11,557** functions (1,671,872 of 4,442,032 bytes; 100 % functions only).
+- **Weighted: 44.36 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 9,084 / 11,557 functions (same instructions, register or order differences only), +109 close.
 - **449 of 902** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -143,12 +143,12 @@ Dolphin), then the actors and everything else. This is also the order the
 work goes in.
 
 <!-- game:start -->
-**23.0 %** of 3,573,784 bytes of game code and **3,936 / 6,789** functions match (weighted 31.1 %).
+**23.1 %** of 3,573,784 bytes of game code and **3,939 / 6,789** functions match (weighted 31.2 %).
 
 | Part | Code matched | Weighted | Functions | Files Matching |
 |---|--:|--:|--:|--:|
 | [Boot to main menu](https://sh1ftmaker.github.io/fsa/#/game/game-boot) | 20.2 % of 1,258,252 bytes | 27.5 % | 1,479 / 2,394 | 6 / 83 |
-| [Main menu to Shadow Battle](https://sh1ftmaker.github.io/fsa/#/game/game-battle) | 22.5 % of 644,344 bytes | 36.6 % | 811 / 1,336 | 8 / 60 |
+| [Main menu to Shadow Battle](https://sh1ftmaker.github.io/fsa/#/game/game-battle) | 22.5 % of 644,344 bytes | 37.2 % | 814 / 1,336 | 8 / 60 |
 | [Actors](https://sh1ftmaker.github.io/fsa/#/game/game-actors) | 27.3 % of 1,027,824 bytes | 33.9 % | 1,086 / 1,962 | 64 / 264 |
 | [Everything else](https://sh1ftmaker.github.io/fsa/#/game/game-other) | 22.4 % of 643,364 bytes | 28.0 % | 560 / 1,097 | 27 / 121 |
 
