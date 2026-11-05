@@ -1608,7 +1608,7 @@ public:
     bool fn_80431A9C(s32 id, u8 value, u8* out);
     // SHARED-EDIT (tu_803BC6F0 fn_803CE9EC): r4 a byte (clrlwi. 24), the
     // file select screen's yes/no cursor while its message window is open.
-    void fn_80431174(u8 cursor);
+    bool fn_80431174(u8 cursor);
     // SHARED-EDIT (tu_803BC6F0 fn_803CE9EC): step the message window open /
     // closed; return 1 when done, else 0 (callers test with cmpwi, BOOL).
     BOOL fn_804317AC();
@@ -1629,7 +1629,18 @@ public:
     /* 0x0C */ cls_804AF86C* field_0xc;  // pane wrapper
     /* 0x10 */ cls_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
     /* 0x24 */ cls_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
-    /* 0x38 */ u8 field_0x38[0xB0];      // not decoded yet (TVec2<s> arrays at 0x38 and 0x78, floats from 0xB8)
+    /* 0x38 */ u8 field_0x38[0xBC - 0x38]; // not decoded yet (TVec2<s> arrays at 0x38 and 0x78, floats from 0xB8)
+    // SHARED-EDIT: floats read by fn_80431174 (cursor placement): the window's
+    // pane sizes and offsets, laid out by fn_8042F6DC.
+    /* 0xBC */ f32 field_0xbc;
+    /* 0xC0 */ f32 field_0xc0;
+    /* 0xC4 */ u8 field_0xc4[0xC8 - 0xC4];
+    /* 0xC8 */ f32 field_0xc8;
+    /* 0xCC */ f32 field_0xcc;
+    /* 0xD0 */ f32 field_0xd0;
+    /* 0xD4 */ u8 field_0xd4[0xD8 - 0xD4];
+    /* 0xD8 */ f32 field_0xd8[3];       // indexed by the cursor (0xEB)
+    /* 0xE4 */ s32 field_0xe4;
     /* 0xE8 */ s16 field_0xe8;           // frame counter of the window's open/close steps
     /* 0xEA */ u8 field_0xea;            // out byte of fn_80431A9C
     /* 0xEB */ u8 field_0xeb;

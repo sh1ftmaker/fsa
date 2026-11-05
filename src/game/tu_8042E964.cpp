@@ -109,6 +109,51 @@ void cls_804B1634::fn_804310CC() {
     field_0xec = 0;
 }
 
+// FIXME: 99.46. Not a counted match: the .sdata2 literals (1.0f, 11.0f, 0.5f) pair
+// only once fn_8042EF9C / fn_8042F6DC put theirs first, and the temporaries
+// f0-f3 of the cursor placement are numbered differently (regalloc only).
+bool cls_804B1634::fn_80431174(u8 cursor) {
+    if (field_0x8->search(0x0050776375723031ull)->mIsVisible) {
+        field_0xe8--;
+        if (field_0xe8 <= 0) {
+            field_0xe8 = 10 + (s32)(11.0f * lbl_8053AAF8->mRandom.get_ufloat_1());
+            if (field_0xeb < 2) {
+                field_0xeb++;
+            } else {
+                field_0xeb = 0;
+            }
+        }
+        // y is declared first: the original keeps y in f31 and x in f30.
+        f32 y;
+        f32 x;
+        J2DPane* textX = field_0x8->search(0x0000005477743031ull);
+        x = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getBounds()->i.x + textX->getWidth() * 0.5f;
+        J2DPane* textY = field_0x8->search(0x0000005477743031ull);
+        y = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getBounds()->i.y + textY->getHeight() * 0.5f;
+        if (cursor == 0) {
+            x += (field_0xbc - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f;
+        } else {
+            x += (field_0xc0 - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f +
+                 (field_0xd0 - field_0xcc);
+        }
+        f32 curHeight = field_0x8->search(0x0050776375723031ull)->getHeight();
+        y += (field_0xd8[cursor] - (f32)field_0xe4 * 0.5f - 1.0f) *
+                 ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getLineSpace() +
+             (((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getLineSpace() - curHeight) * 0.5f;
+        field_0x8->search(0x0050776375723031ull)->move(x, y);
+        field_0x8->search(0x0050776375723032ull)->move(x, y);
+        f32 height1 = field_0x8->search(0x0050776375723031ull)->getHeight();
+        J2DPane* cur1 = field_0x8->search(0x0050776375723031ull);
+        field_0x8->search(0x0050776375723031ull)
+            ->rotate(0.5f * cur1->getWidth(), 0.5f * height1, J2DROTATE_Z, lbl_80543AE8[field_0xeb]);
+        f32 height2 = field_0x8->search(0x0050776375723032ull)->getHeight();
+        J2DPane* cur2 = field_0x8->search(0x0050776375723032ull);
+        field_0x8->search(0x0050776375723032ull)
+            ->rotate(0.5f * cur2->getWidth(), 0.5f * height2, J2DROTATE_Z, lbl_80543AF0[field_0xeb]);
+    }
+    return false;
+}
+
 void cls_804B1634::fn_804316EC() {
     if (field_0xec != 0) {
         lbl_8053AB10->fn_8013B490();
@@ -117,7 +162,7 @@ void cls_804B1634::fn_804316EC() {
 }
 
 // FIXME: 99.81. Code identical; only the .sdata2 literal names differ (the pool
-// order follows fn_80431174, which uses 11.0f before 480.0f, not written yet).
+// order also needs the literals of the unwritten fn_8042EF9C / fn_8042F6DC first).
 BOOL cls_804B1634::fn_80431740() {
     if (field_0xec != 0) {
         if (field_0xc->fn_80402940(10, 0, 0.0f, 480.0f) == 0) {
