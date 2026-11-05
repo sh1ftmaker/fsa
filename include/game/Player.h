@@ -308,6 +308,7 @@ public:
     void fn_8028447C();
     void fn_80248604();
     void fn_8024D134();
+    void fn_8028414C();
     void fn_8027E7E0();
     void fn_8027E5BC(f32 speed);
     void fn_8027EDDC();
@@ -453,7 +454,11 @@ public:
     /* 0x043E */ u8 field_0x43e;
     // Returned by fn_80233D20 (lbz; blr).
     /* 0x043F */ bool field_0x43f;
-    /* 0x0440 */ u8 field_0x440[0x44C - 0x440];
+    /* 0x0440 */ bool field_0x440;
+    /* 0x0441 */ bool field_0x441;
+    /* 0x0442 */ u8 field_0x442[0x444 - 0x442];
+    /* 0x0444 */ f32 field_0x444;
+    /* 0x0448 */ u8 field_0x448[0x44C - 0x448];
     /* 0x044C */ s32 field_0x44c;
     /* 0x0450 */ u8 field_0x450[0x454 - 0x450];
     // Returned by fn_802413E8 (lbz; blr), read through fn_80230188.

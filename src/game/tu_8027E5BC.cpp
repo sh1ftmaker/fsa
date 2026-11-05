@@ -298,6 +298,42 @@ void Player_804A6F38::fn_80283D20() {
     field_0x458 = 0;
 }
 
+void Player_804A6F38::fn_8028414C() {
+    field_0x458 = 0;
+    field_0xce8 = true;
+    if (!field_0x43f) {
+        field_0x124d = 1;
+    }
+    field_0x318.x = mPos.x;
+    field_0x318.y = mPos.y;
+    field_0x318.z = mPos.z;
+    f32 dx = field_0x324.x - mPos.x;
+    f32 dy = field_0x324.y - mPos.y;
+    if (field_0x43f || field_0x441) {
+        mPos.z = 0.0f;
+        mPos.y += dy;
+        mPos.z += dy;
+        field_0x344.x = 0.0f;
+        field_0x344.y = 0.0f;
+        if (field_0x43f && field_0x1248 == 0x1b) {
+            field_0x344.z = field_0x444;
+        } else {
+            field_0x344.z = 2.0f;
+        }
+    } else {
+        mPos.z = 0.0f;
+        field_0x344.x = dx / 26.0f;
+        field_0x344.y = dy / 26.0f;
+        field_0x344.z = 3.25f;
+    }
+    if (field_0x1248 != 0x1b) {
+        if (!field_0x440) {
+            fn_8024F0E8(0x10002);
+        }
+        fn_8024F0E8(0x20008);
+    }
+}
+
 void Player_804A6F38::fn_80284290() {}
 
 void Player_804A6F38::fn_80284294() {
