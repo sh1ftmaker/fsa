@@ -4,7 +4,7 @@
 #include "types.h"
 
 class J2DScreen;
-class J2DAnmBase;
+class J2DAnmTransform;
 class J2DPicture;
 class PaneCtrl_804AF86C;
 class cls_804B16A8;
@@ -85,8 +85,8 @@ public:
     /* 0x014 */ J2DScreen* field_0x14;
     /* 0x018 */ J2DScreen* field_0x18[4];
     /* 0x028 */ J2DScreen* field_0x28[4];
-    /* 0x038 */ J2DAnmBase* field_0x38[4];
-    /* 0x048 */ J2DAnmBase* field_0x48[4];
+    /* 0x038 */ J2DAnmTransform* field_0x38[4]; // "entry_arrow_anim.bck" on field_0x18[i]
+    /* 0x048 */ J2DAnmTransform* field_0x48[4]; // "entry_connect_anim.bck" on field_0x28[i]
     /* 0x058 */ cls_804B16A8* field_0x58;
     /* 0x05C */ J2DPicture* field_0x5c; // full-screen fade
     /* 0x060 */ PaneCtrl_804AF86C* field_0x60;
@@ -96,9 +96,22 @@ public:
     /* 0x088 */ f32 field_0x88;
     /* 0x08C */ f32 field_0x8c;
     /* 0x090 */ f32 field_0x90;
-    /* 0x094 */ u8 field_0x94[0xF0 - 0x94];
+    /* 0x094 */ f32 field_0x94;    // field_0x8 'Ndata03' x
+    /* 0x098 */ f32 field_0x98;    // field_0x8 'Ndata03' y
+    /* 0x09C */ f32 field_0x9c;    // field_0x8 'Ndata03' x offset
+    /* 0x0A0 */ f32 field_0xa0;    // field_0x8 'Ndata05' x
+    /* 0x0A4 */ f32 field_0xa4;    // field_0x8 'Ndata05' y
+    /* 0x0A8 */ f32 field_0xa8;    // field_0x8 'Ndata05' x offset
+    /* 0x0AC */ f32 field_0xac;    // field_0x8 'Ndata06' x
+    /* 0x0B0 */ f32 field_0xb0;    // field_0x8 'Ndata06' y
+    /* 0x0B4 */ f32 field_0xb4;    // field_0x8 'Ndata06' x offset
+    /* 0x0B8 */ f32 field_0xb8;
+    /* 0x0BC */ f32 field_0xbc[4]; // field_0x8 'Ppllbk02' / 12 / 22 / 32 x
+    /* 0x0CC */ f32 field_0xcc[4]; // the same panes' y
+    /* 0x0DC */ f32 field_0xdc[4]; // the same panes' offsets
+    /* 0x0EC */ f32 field_0xec;    // mScreen 'Pscuro02' x
     /* 0x0F0 */ f32 field_0xf0;    // mScreen 'Pscuro02' y
-    /* 0x0F4 */ u8 field_0xf4[0xF8 - 0xF4];
+    /* 0x0F4 */ f32 field_0xf4;    // field_0xc 'Pscuro02' x
     /* 0x0F8 */ f32 field_0xf8;    // field_0xc 'Pscuro02' y
     /* 0x0FC */ f32 field_0xfc[3]; // field_0xc 'Pstab04' / 'Phanb04' / 'Prub04' y
     /* 0x108 */ f32 field_0x108; // 'Pmbabb07' x
@@ -116,7 +129,17 @@ public:
     /* 0x150 */ f32 field_0x150; // 'Ndata07' x
     /* 0x154 */ f32 field_0x154; // 'Ndata07' y
     /* 0x158 */ f32 field_0x158; // 'Ndata05' / 'Ndata07' x offset
-    /* 0x15C */ u8 field_0x15c[0x1A0 - 0x15C];
+    /* 0x15C */ f32 field_0x15c;    // field_0xc 'Pmbabb07' x
+    /* 0x160 */ f32 field_0x160;    // field_0xc 'Pmbabb07' y
+    /* 0x164 */ f32 field_0x164;    // field_0xc 'Pmbabb07' y offset
+    /* 0x168 */ f32 field_0x168;
+    /* 0x16C */ f32 field_0x16c[3]; // field_0xc 'Pstab04' / 'Phanb04' / 'Prub04' x
+    /* 0x178 */ f32 field_0x178[3]; // the same panes' y
+    /* 0x184 */ f32 field_0x184[3]; // the same panes' offsets
+    /* 0x190 */ f32 field_0x190;    // field_0xc 'Plibkk03' x
+    /* 0x194 */ f32 field_0x194;    // field_0xc 'Plibkk03' y
+    /* 0x198 */ f32 field_0x198;    // field_0xc 'Plibkk03' offset
+    /* 0x19C */ f32 field_0x19c;    // field_0x10 'Paccur02' x
     /* 0x1A0 */ f32 field_0x1a0; // field_0x10 'Paccur02' y
     /* 0x1A4 */ s32 field_0x1a4;
     /* 0x1A8 */ s32 field_0x1a8;
@@ -151,13 +174,21 @@ public:
     /* 0x25C */ u8 field_0x25c;
     /* 0x25D */ u8 field_0x25d; // fade alpha
     /* 0x25E */ u8 field_0x25e; // fade: 0 off, 1 out (then enter field_0x1cc), 2 in
-    /* 0x25F */ u8 field_0x25f[20];    // initial alpha of 20 mScreen panes
-    /* 0x273 */ u8 field_0x273[3][6];  // initial alpha of 3 x 6 mScreen panes
-    /* 0x285 */ u8 field_0x285[24];    // initial alpha of 24 mScreen panes
-    /* 0x29D */ u8 field_0x29d[18];    // initial alpha of 18 mScreen panes
-    /* 0x2AF */ u8 field_0x2af[0x335 - 0x2AF];
-    /* 0x335 */ u8 field_0x335; // initial alpha of field_0xc's 'Pcon01' (fn_803F0A54 divides by it)
-    /* 0x336 */ u8 field_0x336[0x350 - 0x336];
+    // Initial alphas of the panes of the .rodata tag tables (constructor).
+    /* 0x25F */ u8 field_0x25f[20];    // mScreen, lbl_80478B18
+    /* 0x273 */ u8 field_0x273[3][6];  // mScreen, lbl_80478BB8
+    /* 0x285 */ u8 field_0x285[24];    // mScreen, lbl_80478C48
+    /* 0x29D */ u8 field_0x29d[18];    // mScreen, lbl_80478D08
+    /* 0x2AF */ u8 field_0x2af[11];    // field_0x8, lbl_80478D98
+    /* 0x2BA */ u8 field_0x2ba[6];     // field_0x8, lbl_80478DF0
+    /* 0x2C0 */ u8 field_0x2c0[0x2C4 - 0x2C0];
+    /* 0x2C4 */ u8 field_0x2c4[34];    // field_0x8, lbl_80478E20
+    /* 0x2E6 */ u8 field_0x2e6[0x2EE - 0x2E6];
+    /* 0x2EE */ u8 field_0x2ee[4][9];  // field_0x8, lbl_80478F30
+    /* 0x312 */ u8 field_0x312[20];    // field_0xc, lbl_80479050
+    /* 0x326 */ u8 field_0x326[3][5];  // field_0xc, lbl_804790F0
+    /* 0x335 */ u8 field_0x335[26];    // field_0xc, lbl_80479168 ([0] 'Pcon01': fn_803F0A54 divides by it)
+    /* 0x34F */ u8 field_0x34f;
     /* 0x350 */ s32 field_0x350; // fn_803A8600 copies it to cls_804AF878::field_0xc
 }; // Size: 0x354
 

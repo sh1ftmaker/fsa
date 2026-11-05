@@ -13,6 +13,8 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DAnimation.h"
+#include "JSystem/J2D/J2DAnmLoader.h"
+#include "dolphin/os.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
 // Entered when the state changes (index: the new state).
@@ -220,6 +222,13 @@ static const u64 lbl_80479920[3][4] = {
     {'P4pli01', 'P4pli02', 'P4pli03', 'P4pli04'},
 };
 
+// A pane's initial alpha scaled by rate. The constructor fades every pane
+// out with rate 0.0f: the original still multiplies (the constants reloaded
+// for each loop), as in the twin game/tu_803E1668.cpp.
+static inline u8 fadeAlpha(u8 alpha, f32 rate) {
+    return alpha * rate;
+}
+
 // Sets the 2-bit field `player` of root->field_0x83 to `kind`.
 static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
     root->field_0x83 &= ~(u8)(3 << (2 * player));
@@ -308,7 +317,7 @@ static inline f32 toEffectY(f32 y) {
 // differently (the original computes i % 2 first, then i / 2). The twin
 // cls_804B0B00::fn_803E1668 (rodata split) shows the same index scheduling.
 void ConnectScreen_804B0F10::fn_803F0A54() {
-    f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335;
+    f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335[0];
     JGeometry::TVec3f pos;
     if (field_0x210[0] < 100) {
         for (s32 i = 0; i < 4; i++) {
@@ -426,6 +435,106 @@ void ConnectScreen_804B0F10::fn_803F1C18() {
 void ConnectScreen_804B0F10::fn_803F1C5C() {
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 11;
+}
+
+// FIXME: 98.18. Registers: the loop's table pointers and counter sit in other
+// registers, and the first digit texture is copied through r0 into r17 (one
+// extra mr) where the original keeps it in r27 (as in the twin
+// cls_804B0B00::fn_803E2A20, 98.17); .sdata2 @NNN names.
+// Enter state 10 (the results / entry screen field_0x10): per player, the
+// 'Pblk' cover over the players beyond field_0x1ac + 2, the rupee count
+// (fn_80403070) as three digit textures, the fn_8040305C - 1 markers of the
+// four marker tables, the cursor panes by field_0x1b0[i] (3: joined,
+// 4: not); then the panes start their slide-in (twin of
+// cls_804B0B00::fn_803E2A20).
+void ConnectScreen_804B0F10::fn_803F1C70() {
+    for (s32 i = 0; i < 4; i++) {
+        if (i >= 1) {
+            if (i > field_0x1ac + 1) {
+                field_0x10->search(lbl_80479908[i - 1])->show();
+            } else {
+                field_0x10->search(lbl_80479908[i - 1])->hide();
+            }
+        }
+        field_0x1e0[i] = fn_80403414(i);
+        field_0x1f0[i] = fn_804033D4(i);
+        field_0x200[i] = fn_8040336C(i);
+        s32 rupees = fn_80403070(field_0x1e0[i]);
+        const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees / 100]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804794B8[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804794D8[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 100 / 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479478[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479498[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479438[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479458[i]))->changeTexture(tex, 0);
+        s32 count = fn_8040305C(field_0x1f0[i]) - 1;
+        for (s32 j = 0; j < 6; j++) {
+            if (j < count) {
+                field_0x10->search(lbl_804795C0[i][j])->show();
+                field_0x10->search(lbl_80479680[i][j])->show();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->hide();
+            } else if (j == count) {
+                field_0x10->search(lbl_804795C0[i][j])->hide();
+                field_0x10->search(lbl_80479680[i][j])->hide();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->show();
+            } else {
+                field_0x10->search(lbl_804795C0[i][j])->hide();
+                field_0x10->search(lbl_80479680[i][j])->hide();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->hide();
+            }
+        }
+        field_0x10->search(lbl_804793F8[i])->hide();
+    }
+    field_0x60->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x60->field_0x22 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1) {
+            field_0x64[i]->moveFromCentre_80402E08(0.0f, 150.0f);
+            field_0x64[i]->field_0x22 = 0;
+        }
+        if (i <= field_0x1ac + 1) {
+            field_0x1b0[i] = 3;
+        } else {
+            field_0x1b0[i] = 4;
+        }
+        field_0x1d0[i] = 30;
+        if (i <= field_0x1ac + 1) {
+            if (field_0x1b0[i] < 3) {
+                field_0x10->search(lbl_804793B8[i])->hide();
+                field_0x10->search(lbl_804793D8[i])->show();
+                field_0x10->search(lbl_804793F8[i])->hide();
+            } else if (field_0x1b0[i] == 3) {
+                field_0x10->search(lbl_804793B8[i])->hide();
+                field_0x10->search(lbl_804793D8[i])->show();
+                field_0x10->search(lbl_804793F8[i])->show();
+            } else {
+                field_0x10->search(lbl_804793B8[i])->show();
+                field_0x10->search(lbl_804793D8[i])->hide();
+                field_0x10->search(lbl_804793F8[i])->hide();
+            }
+        } else {
+            field_0x10->search(lbl_804793B8[i])->hide();
+            field_0x10->search(lbl_804793D8[i])->hide();
+            field_0x10->search(lbl_804793F8[i])->hide();
+        }
+        s32 state = field_0x1b0[i];
+        if (state <= 3) {
+            f32 x = field_0x10->search(lbl_804793D8[i])->getBounds()->i.x;
+            field_0x10->search(lbl_804793D8[i])->move(x, lbl_80543710[state]);
+        }
+        field_0x240[i] = 0;
+        field_0x1d0[i] = 0;
+    }
+    field_0x74->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x74->field_0x22 = 0;
+    field_0x24c = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 12;
 }
 
 // FIXME: 98.04 %. Register swap in setEntries' loop: the original keeps the
@@ -1073,5 +1182,305 @@ ConnectScreen_804B0F10::~ConnectScreen_804B0F10() {
     for (s32 i = 0; i < 4; i++) {
         delete field_0x78[i];
         field_0x78[i] = NULL;
+    }
+}
+
+// FIXME: 99.23. (1) The string literals sit 0x3C bytes lower in our pool:
+// the original's has "kk_nPlayerP2_01.bti".."P4" (3 x 0x14 bytes, used by
+// the unwritten fn_803F267C) before "bat_n_player.blo", so the addi offsets
+// off the .rodata base differ. (2) Registers only in most loops (e.g. the
+// first loop's array pointers are r24 / r27 in the original, r27 / r28 here).
+// Builds the seven screens and their panes' start state (structure as the
+// twin cls_804B0B00::cls_804B0B00, game/tu_803E1668.cpp).
+ConnectScreen_804B0F10::ConnectScreen_804B0F10() {
+    field_0x1a4 = 0;
+    field_0x1a8 = 0;
+    field_0x1ac = lbl_80529DEC.field_0x23d;
+    field_0x1c0 = 0;
+    field_0x252 = 0;
+    field_0x25b = 0;
+    field_0x25c = 0;
+    field_0x1c8 = 0;
+    field_0x1c4 = 0;
+    field_0x1cc = 0;
+    for (int i = 0; i < 4; i++) {
+        field_0x1d0[i] = 0;
+        field_0x1e0[i] = fn_80403414(i);
+        field_0x1f0[i] = fn_804033D4(i);
+        field_0x200[i] = fn_8040336C(i);
+        field_0x210[i] = 0;
+        field_0x1b0[i] = 1;
+        field_0x240[i] = 0;
+    }
+    field_0x248 = 0;
+    field_0x24a = 0;
+    field_0x25e = 0;
+    field_0x25d = 0;
+    field_0x24c = 0;
+    field_0x350 = 4;
+
+    mScreen = new J2DScreen;
+    mScreen->setPriority("bat_n_player.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x8 = new J2DScreen;
+    field_0x8->setPriority("bat_entry.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0xc = new J2DScreen;
+    field_0xc->setPriority("bat_entry_con.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x10 = new J2DScreen;
+    field_0x10->setPriority("handicap.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    field_0x14 = new J2DScreen;
+    field_0x14->setPriority("bat_back.blo", 0x1100000, lbl_80529DEC.field_0x28);
+    for (int i = 0; i < 4; i++) {
+        field_0x18[i] = new J2DScreen;
+        field_0x18[i]->setPriority("entry_arrow_anim.blo", 0x1100000, lbl_80529DEC.field_0x28);
+        field_0x28[i] = new J2DScreen;
+        field_0x28[i]->setPriority("entry_connect_anim.blo", 0x1100000, lbl_80529DEC.field_0x28);
+        static_cast<J2DPicture*>(field_0x28[i]->search('Pccaa00'))
+            ->setBlackWhite(JUtility::TColor(0x82, 0x82, 0xA0, 0xFF), JUtility::TColor(0x82, 0x82, 0xA0, 0x00));
+    }
+    OSInitFastCast();
+    void* arrowAnm = fn_804031C4('SCRN', "entry_arrow_anim.bck");
+    void* connectAnm = fn_804031C4('SCRN', "entry_connect_anim.bck");
+    for (int i = 0; i < 4; i++) {
+        field_0x38[i] = static_cast<J2DAnmTransform*>(J2DAnmLoaderDataBase::load(arrowAnm));
+        field_0x48[i] = static_cast<J2DAnmTransform*>(J2DAnmLoaderDataBase::load(connectAnm));
+        field_0x18[i]->search('NULL_001')->setAnimation(field_0x38[i]);
+        field_0x28[i]->search('Ndatay00')->setAnimation(field_0x48[i]);
+        field_0x220[i] = 0;
+        field_0x230[i] = 0;
+        field_0x8->search(lbl_80479378[i])->hide();
+    }
+    field_0x24e = -1;
+    field_0x250 = -1;
+
+    // mScreen: the initial alphas, then every pane faded out.
+    for (int i = 0; i < 20; i++) {
+        field_0x25f[i] = mScreen->search(lbl_80478B18[i])->getAlpha();
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 6; j++) {
+            field_0x273[i][j] = mScreen->search(lbl_80478BB8[i][j])->getAlpha();
+        }
+    }
+    for (int i = 0; i < 24; i++) {
+        field_0x285[i] = mScreen->search(lbl_80478C48[i])->getAlpha();
+    }
+    for (int i = 0; i < 18; i++) {
+        field_0x29d[i] = mScreen->search(lbl_80478D08[i])->getAlpha();
+    }
+    for (int i = 0; i < 20; i++) {
+        mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], 0.0f));
+    }
+    // Four rows over the three-row table (the twin's 4 x 6 loop): the
+    // original reads row 3 from the next table and field_0x285.
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 6; j++) {
+            mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], 0.0f));
+        }
+    }
+    for (int i = 0; i < 24; i++) {
+        mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], 0.0f));
+    }
+    for (int i = 0; i < 18; i++) {
+        mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], 0.0f));
+    }
+    field_0x258 = 156;
+    field_0xec = mScreen->search('Pscuro02')->getBounds()->i.x;
+    field_0xf0 = mScreen->search('Pscuro02')->getBounds()->i.y;
+    field_0x108 = mScreen->search('Pmbabb07')->getBounds()->i.x;
+    field_0x10c = mScreen->search('Pmbabb07')->getBounds()->i.y;
+    field_0x110 = 0.0f;
+    field_0x114 = 0.0f;
+    field_0x118[0] = mScreen->search('Pnopb08')->getBounds()->i.x;
+    field_0x124[0] = mScreen->search('Pnopb08')->getBounds()->i.y;
+    field_0x130[0] = 0.0f;
+    field_0x118[1] = mScreen->search('Pnopb12')->getBounds()->i.x;
+    field_0x124[1] = mScreen->search('Pnopb12')->getBounds()->i.y;
+    field_0x130[1] = 0.0f;
+    field_0x118[2] = mScreen->search('Pnopb16')->getBounds()->i.x;
+    field_0x124[2] = mScreen->search('Pnopb16')->getBounds()->i.y;
+    field_0x130[2] = 0.0f;
+    field_0x13c = mScreen->search('Ndata02')->getBounds()->i.x;
+    field_0x140 = mScreen->search('Ndata02')->getBounds()->i.y;
+    field_0x144 = 0.0f;
+    field_0x148 = mScreen->search('Ndata05')->getBounds()->i.x;
+    field_0x14c = mScreen->search('Ndata05')->getBounds()->i.y;
+    field_0x150 = mScreen->search('Ndata07')->getBounds()->i.x;
+    field_0x154 = mScreen->search('Ndata07')->getBounds()->i.y;
+    field_0x158 = 0.0f;
+
+    // field_0x8 (the entry screen).
+    for (int i = 0; i < 4; i++) {
+        field_0x8->search(lbl_80479238[i])->hide();
+        for (int j = 0; j < 2; j++) {
+            field_0x8->search(lbl_804792F8[i][j])->hide();
+        }
+    }
+    for (int i = 0; i < 11; i++) {
+        field_0x2af[i] = field_0x8->search(lbl_80478D98[i])->getAlpha();
+    }
+    for (int i = 0; i < 6; i++) {
+        field_0x2ba[i] = field_0x8->search(lbl_80478DF0[i])->getAlpha();
+    }
+    for (int i = 0; i < 34; i++) {
+        field_0x2c4[i] = field_0x8->search(lbl_80478E20[i])->getAlpha();
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 9; j++) {
+            field_0x2ee[i][j] = field_0x8->search(lbl_80478F30[i][j])->getAlpha();
+        }
+    }
+    field_0x253 = field_0x8->search(lbl_80479258[0])->getAlpha();
+    field_0x254 = field_0x8->search(lbl_80479278[0])->getAlpha();
+    field_0x255 = field_0x8->search(lbl_80479298[0])->getAlpha();
+    for (int i = 0; i < 11; i++) {
+        field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], 0.0f));
+    }
+    for (int i = 0; i < 6; i++) {
+        field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], 0.0f));
+    }
+    for (int i = 0; i < 34; i++) {
+        field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], 0.0f));
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 9; j++) {
+            field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], 0.0f));
+        }
+    }
+    JUTResFont* font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->setFont(font);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten02'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x8->search('Tten01'))->getStringPtr(), 0xA6, 0, NULL, NULL);
+    field_0x94 = field_0x8->search('Ndata03')->getBounds()->i.x;
+    field_0x98 = field_0x8->search('Ndata03')->getBounds()->i.y;
+    field_0x9c = 0.0f;
+    field_0xa0 = field_0x8->search('Ndata05')->getBounds()->i.x;
+    field_0xa4 = field_0x8->search('Ndata05')->getBounds()->i.y;
+    field_0xa8 = 0.0f;
+    field_0xac = field_0x8->search('Ndata06')->getBounds()->i.x;
+    field_0xb0 = field_0x8->search('Ndata06')->getBounds()->i.y;
+    field_0xb4 = 0.0f;
+    field_0xb8 = 0.0f;
+    field_0xbc[0] = field_0x8->search('Ppllbk02')->getBounds()->i.x;
+    field_0xcc[0] = field_0x8->search('Ppllbk02')->getBounds()->i.y;
+    field_0xdc[0] = 0.0f;
+    field_0xbc[1] = field_0x8->search('Ppllbk12')->getBounds()->i.x;
+    field_0xcc[1] = field_0x8->search('Ppllbk12')->getBounds()->i.y;
+    field_0xdc[1] = 0.0f;
+    field_0xbc[2] = field_0x8->search('Ppllbk22')->getBounds()->i.x;
+    field_0xcc[2] = field_0x8->search('Ppllbk22')->getBounds()->i.y;
+    field_0xdc[2] = 0.0f;
+    field_0xbc[3] = field_0x8->search('Ppllbk32')->getBounds()->i.x;
+    field_0xcc[3] = field_0x8->search('Ppllbk32')->getBounds()->i.y;
+    field_0xdc[3] = 0.0f;
+
+    // field_0xc (the connect screen).
+    for (int i = 0; i < 20; i++) {
+        field_0x312[i] = field_0xc->search(lbl_80479050[i])->getAlpha();
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            field_0x326[i][j] = field_0xc->search(lbl_804790F0[i][j])->getAlpha();
+        }
+    }
+    for (int i = 0; i < 26; i++) {
+        field_0x335[i] = field_0xc->search(lbl_80479168[i])->getAlpha();
+    }
+    for (int i = 0; i < 20; i++) {
+        field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], 0.0f));
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 5; j++) {
+            field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], 0.0f));
+        }
+    }
+    for (int i = 0; i < 26; i++) {
+        field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], 0.0f));
+    }
+    field_0x15c = field_0xc->search('Pmbabb07')->getBounds()->i.x;
+    field_0x160 = field_0xc->search('Pmbabb07')->getBounds()->i.y;
+    field_0x164 = 0.0f;
+    field_0x168 = 0.0f;
+    field_0x16c[0] = field_0xc->search('Pstab04')->getBounds()->i.x;
+    field_0x178[0] = field_0xc->search('Pstab04')->getBounds()->i.y;
+    field_0x184[0] = 0.0f;
+    field_0x16c[1] = field_0xc->search('Phanb04')->getBounds()->i.x;
+    field_0x178[1] = field_0xc->search('Phanb04')->getBounds()->i.y;
+    field_0x184[1] = 0.0f;
+    field_0x16c[2] = field_0xc->search('Prub04')->getBounds()->i.x;
+    field_0x178[2] = field_0xc->search('Prub04')->getBounds()->i.y;
+    field_0x184[2] = 0.0f;
+    field_0x190 = field_0xc->search('Plibkk03')->getBounds()->i.x;
+    field_0x194 = field_0xc->search('Plibkk03')->getBounds()->i.y;
+    field_0x198 = 0.0f;
+    field_0x259 = 156;
+    field_0xf4 = field_0xc->search('Pscuro02')->getBounds()->i.x;
+    field_0xf8 = field_0xc->search('Pscuro02')->getBounds()->i.y;
+    field_0xfc[0] = field_0xc->search('Pstab04')->getBounds()->i.y;
+    field_0xfc[1] = field_0xc->search('Phanb04')->getBounds()->i.y;
+    field_0xfc[2] = field_0xc->search('Prub04')->getBounds()->i.y;
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Trule01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Than01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0xc->search('Tsta01'))->setFont(font);
+    field_0xc->search('P1pli01')->hide();
+    field_0xc->search('P2pli01')->hide();
+    field_0xc->search('P2pli02')->hide();
+    field_0xc->search('P3pli01')->hide();
+    field_0xc->search('P3pli02')->hide();
+    field_0xc->search('P3pli03')->hide();
+    field_0xc->search('P4pli01')->hide();
+    field_0xc->search('P4pli02')->hide();
+    field_0xc->search('P4pli03')->hide();
+    field_0xc->search('P4pli04')->hide();
+    field_0xc->search('Pgba02')->hide();
+    field_0xc->search('Pcon02')->show();
+
+    // field_0x10 (the handicap screen).
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->setFont(font);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr01'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr02'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr03'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search('Tstr04'))->getStringPtr(), 0xF5, 0, NULL, NULL);
+    field_0x25a = 156;
+    field_0x19c = field_0x10->search('Paccur02')->getBounds()->i.x;
+    field_0x1a0 = field_0x10->search('Paccur02')->getBounds()->i.y;
+    field_0x60 = new PaneCtrl_804AF86C;
+    field_0x60->setPane_80402F04(field_0x10->search('Pthabb07'));
+    field_0x64[0] = new PaneCtrl_804AF86C;
+    field_0x64[0]->setPane_80402F04(field_0x10->search('Pstrb14'));
+    field_0x64[1] = new PaneCtrl_804AF86C;
+    field_0x64[1]->setPane_80402F04(field_0x10->search('Pstrb24'));
+    field_0x64[2] = new PaneCtrl_804AF86C;
+    field_0x64[2]->setPane_80402F04(field_0x10->search('Pstrb34'));
+    field_0x64[3] = new PaneCtrl_804AF86C;
+    field_0x64[3]->setPane_80402F04(field_0x10->search('Pstrb44'));
+    field_0x74 = lbl_8053AED8->field_0x8;
+    const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti");
+    lbl_8053AED8->fn_80440D78(tex);
+    lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
+    field_0x58 = new cls_804B16A8;
+    tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x5c = new J2DPicture(tex);
+    field_0x5c->setBlackWhite(JUtility::TColor(0x000000FF), JUtility::TColor(0x00000000));
+    field_0x88 = 0.0f;
+    field_0x8c = 0.0f;
+    field_0x90 = 0.0f;
+    for (int i = 0; i < 4; i++) {
+        field_0x78[i] = new cls_804B20F8(i, NULL, NULL, 8);
     }
 }
