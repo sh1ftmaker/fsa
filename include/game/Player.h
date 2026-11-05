@@ -474,6 +474,8 @@ public:
     void fn_8024BDBC();
     void fn_8024E0A0();
     void fn_8026FD14();
+    void fn_80270088(); // called by fn_8027DEA0 (enter state 4)
+    void fn_80270360(s32 serial); // called by tu_8022AD64 (fn_80235B68)
     // The manager's other per-player calls (fn_8023F390 / fn_8023F2BC):
     // update B (tu_8023FBF0, not written yet) and the draw (tu_80264998).
     void fn_80252FC0();

@@ -5,6 +5,8 @@
 #include "game/GameState.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
+#include "game/ActorBase.h"
+#include "game/ActorManager.h"
 
 s32 Player_804A6F38::fn_8026FC20() {
     if (fn_80240808()) {
@@ -49,6 +51,136 @@ bool Player_804A6F38::fn_8026FCE0() {
         result = true;
     }
     return result;
+}
+
+void Player_804A6F38::fn_8026FD14() {
+    if (fn_80246F28() > 0.0f) {
+        if (field_0x11c8 >= 3) {
+            field_0x11c4 = 3;
+        } else if (field_0x11c4 > 0) {
+            field_0x11c4--;
+        }
+        field_0x11c8 = 0;
+    } else {
+        if (field_0x11c8 < 3) {
+            field_0x11c8++;
+        }
+        if (field_0x11c4 > 0) {
+            field_0x11c4--;
+        }
+    }
+    if (field_0x11d4 > 0) {
+        field_0x11d4--;
+    }
+    if (field_0x11cc > 0) {
+        field_0x11cc--;
+    }
+
+    if (fn_80247330() > 0.0f && fn_8024712C() == 0.0f) {
+        field_0x117c[0] = 60;
+        if (field_0x117c[2] < field_0x117c[1] && field_0x117c[3] < field_0x117c[1]) {
+            field_0x117c[2] = 0;
+        }
+    } else if (field_0x117c[0] > 0) {
+        field_0x117c[0]--;
+    }
+    if (fn_80247330() < 0.0f && fn_8024712C() == 0.0f) {
+        field_0x117c[1] = 60;
+        if (field_0x117c[2] < field_0x117c[0] && field_0x117c[3] < field_0x117c[0]) {
+            field_0x117c[2] = 0;
+        }
+    } else if (field_0x117c[1] > 0) {
+        field_0x117c[1]--;
+    }
+    if (fn_8024712C() < 0.0f && fn_80247330() == 0.0f) {
+        field_0x117c[2] = 60;
+        if (field_0x117c[0] < field_0x117c[3] && field_0x117c[1] < field_0x117c[3]) {
+            field_0x117c[2] = 0;
+        }
+    } else if (field_0x117c[2] > 0) {
+        field_0x117c[2]--;
+    }
+    if (fn_8024712C() > 0.0f && fn_80247330() == 0.0f) {
+        field_0x117c[3] = 60;
+        if (field_0x117c[0] < field_0x117c[2] && field_0x117c[1] < field_0x117c[2]) {
+            field_0x117c[2] = 0;
+        }
+    } else if (field_0x117c[3] > 0) {
+        field_0x117c[3]--;
+    }
+
+    if (fn_80247330() <= 0.0f) {
+        for (int i = 0; i < 4; i++) {
+            field_0x119c[i][0] = 0;
+        }
+    }
+    if (fn_80247330() >= 0.0f) {
+        for (int i = 0; i < 4; i++) {
+            field_0x119c[i][1] = 0;
+        }
+    }
+    if (fn_8024712C() >= 0.0f) {
+        for (int i = 0; i < 4; i++) {
+            field_0x119c[i][2] = 0;
+        }
+    }
+    if (fn_8024712C() <= 0.0f) {
+        for (int i = 0; i < 4; i++) {
+            field_0x119c[i][3] = 0;
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        if (field_0x117c[i + 4] > 0) {
+            field_0x117c[i + 4]--;
+        }
+    }
+}
+
+void Player_804A6F38::fn_80270088() {
+    if (fn_80246F28() > 0.0f) {
+        if (field_0x119c[0][0] == 0 && field_0x119c[0][1] == 0 && field_0x119c[0][2] == 0 &&
+            field_0x119c[0][3] == 0) {
+            field_0x117c[7] = 0;
+            field_0x117c[6] = 0;
+            field_0x117c[5] = 0;
+            field_0x117c[4] = 0;
+        }
+    } else if (field_0x119c[0][0] == 1 || field_0x119c[0][1] == 1 || field_0x119c[0][2] == 1 ||
+               field_0x119c[0][3] == 1) {
+        field_0x117c[7] = 0;
+        field_0x117c[6] = 0;
+        field_0x117c[5] = 0;
+        field_0x117c[4] = 0;
+    }
+    for (int i = 3; i > 0; i--) {
+        field_0x117c[i + 4] = field_0x117c[i + 3];
+    }
+    field_0x117c[4] = 60;
+    if (fn_80247330() > 0.0f) {
+        for (int i = 3; i > 0; i--) {
+            field_0x119c[i][0] = field_0x119c[i - 1][0];
+        }
+        field_0x119c[0][0] = 1;
+    }
+    if (fn_80247330() < 0.0f) {
+        for (int i = 3; i > 0; i--) {
+            field_0x119c[i][1] = field_0x119c[i - 1][1];
+        }
+        field_0x119c[0][1] = 1;
+    }
+    if (fn_8024712C() < 0.0f) {
+        for (int i = 3; i > 0; i--) {
+            field_0x119c[i][2] = field_0x119c[i - 1][2];
+        }
+        field_0x119c[0][2] = 1;
+    }
+    if (fn_8024712C() > 0.0f) {
+        for (int i = 3; i > 0; i--) {
+            field_0x119c[i][3] = field_0x119c[i - 1][3];
+        }
+        field_0x119c[0][3] = 1;
+    }
 }
 
 void Player_804A6F38::fn_8027023C() {
@@ -107,6 +239,68 @@ s32 Player_804A6F38::fn_80270358() {
     return field_0xc50;
 }
 
+// Counts a defeated enemy by kind into field_0xc1c.
+void Player_804A6F38::fn_80270360(s32 serial) {
+    if (field_0xc50 < 9999999) {
+        field_0xc50++;
+    }
+    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    if (actor == NULL) {
+        return;
+    }
+    s32 kind;
+    switch (actor->mActorId) {
+    case 'OKTA':
+        kind = 0;
+        break;
+    case 'AMOS':
+        kind = 1;
+        break;
+    case 'POOH':
+        kind = 2;
+        break;
+    case 'BZBR':
+        kind = 3;
+        break;
+    case 'DDRK':
+        kind = 4;
+        break;
+    case 'DGTL':
+        kind = 5;
+        break;
+    case 'HINO':
+        kind = 6;
+        break;
+    case 'SLR1':
+        kind = 7;
+        break;
+    case 'TKTA':
+        kind = 8;
+        break;
+    case 'SLR2':
+        kind = 7;
+        break;
+    case 'KETH':
+        kind = 9;
+        break;
+    case 'BPOH':
+        kind = 10;
+        break;
+    case 'MOZO':
+        kind = 11;
+        break;
+    case 'Poon':
+        kind = 12;
+        break;
+    default:
+        kind = 13;
+        break;
+    }
+    if (kind < 13 && field_0xc1c[kind] < 9999999) {
+        field_0xc1c[kind]++;
+    }
+}
+
 void Player_804A6F38::fn_802708D0() {
     field_0xd2d = 1;
     field_0xd30 = 0;
@@ -144,6 +338,55 @@ bool Player_804A6F38::fn_80270A8C() {
         return true;
     }
     return false;
+}
+
+// FIXME: 98.26. Only the first lbz of 0xce8 is hoisted above the prologue's stw r31 / mr in the
+// original: the method is const (rules card), which needs fn_802412CC, fn_802411D8, fn_80240808,
+// fn_80247BD4 (tu_8023FBF0) and fn_80270A58 / fn_80270A8C const too.
+bool Player_804A6F38::fn_80270ABC() {
+    if (field_0xce8 == 1) {
+        return true;
+    }
+    if (field_0xcee == 1) {
+        return true;
+    }
+    if (field_0x1216) {
+        return true;
+    }
+    if (field_0x1215) {
+        return true;
+    }
+    if (field_0xcf0 == 1) {
+        return true;
+    }
+    if (fn_802412CC() == true) {
+        return true;
+    }
+    if (fn_802411D8() == true) {
+        return true;
+    }
+    if (fn_80270A8C()) {
+        return true;
+    }
+    if (fn_80270A58()) {
+        return true;
+    }
+    if (fn_80240808() && fn_802486A0() == 5) {
+        return true;
+    }
+    if (field_0x1240 == 1) {
+        return true;
+    }
+    if (field_0x1240 == 0x19 || field_0x1244 == 0x19) {
+        return true;
+    }
+    if (fn_80247BD4() > 0) {
+        return true;
+    }
+    if (field_0x468 > 0) {
+        return true;
+    }
+    return field_0x464 > 0;
 }
 
 bool Player_804A6F38::fn_80270C88() {
@@ -251,6 +494,146 @@ bool Player_804A6F38::fn_80272B4C(const JGeometry::TVec3f* pos) {
         }
     }
     return false;
+}
+
+// Whether two boxes overlap (the intersection is not empty); the result is
+// the compare chain itself, not TBox::intersect's `? true : false`.
+static inline bool overlaps(const JGeometry::TBox2f& a, const JGeometry::TBox2f& b) {
+    JGeometry::TBox2f overlap(a);
+    overlap.i.setMax(b.i);
+    overlap.f.setMin(b.f);
+    return overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y;
+}
+
+// The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
+// (as in tu_802684A4).
+static inline JGeometry::TBox2f* layerBox(s32 layer) {
+    GameView_804A9950* view = fn_802D6A9C();
+    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+bool Player_804A6F38::fn_80272DCC(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
+    if (fn_80249068()) {
+        return false;
+    }
+    for (int i = 0; i < 0x50; i++) {
+        if (field_0xdb0[i] < 0) {
+            field_0xdb0[i] = serial;
+            field_0x1030[i] = layer;
+            field_0x5fc[i].set(*box);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_80272E98(const JGeometry::TBox2f* box, s32 layer) {
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (mPos.z > 0.0f) {
+        return false;
+    }
+    if (!fn_80245938()) {
+        return false;
+    }
+    if (!fn_8025F2CC()) {
+        return false;
+    }
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (!fn_80251BFC(0x11)) {
+        return false;
+    }
+    // Both boxes relative to the view's top-left corner.
+    JGeometry::TBox2f other(*box);
+    const JGeometry::TVec2f& origin = layerBox(layer)->i;
+    JGeometry::TVec2f offset;
+    offset.x = -origin.x;
+    offset.y = -origin.y;
+    other.addPos(offset);
+    JGeometry::TBox2f own(field_0x4d0);
+    const JGeometry::TVec2f& ownOrigin = layerBox(field_0x3b4)->i;
+    JGeometry::TVec2f ownOffset;
+    ownOffset.x = -ownOrigin.x;
+    ownOffset.y = -ownOrigin.y;
+    own.addPos(ownOffset);
+    return overlaps(own, other);
+}
+
+bool Player_804A6F38::fn_802730D8(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 height) {
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (!flag && fn_80270A8C()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (!viewLayerFlag(field_0x3b4) && mPos.z > height) {
+        return false;
+    }
+    if (field_0xcee) {
+        return false;
+    }
+    if (field_0x1216) {
+        return false;
+    }
+    if (field_0x1215) {
+        return false;
+    }
+    if (field_0xcf0) {
+        return false;
+    }
+    if (field_0x1238 > 0) {
+        return false;
+    }
+    if (!fn_802413F0()) {
+        return false;
+    }
+    return overlaps(field_0x4c0, *box);
+}
+
+bool Player_804A6F38::fn_802732C4(const JGeometry::TBox2f* box, s32 layer) {
+    if (fn_80270C88()) {
+        return false;
+    }
+    if (field_0x42c) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (fn_80270A8C()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (!viewLayerFlag(field_0x3b4) && mPos.z > 0.0f) {
+        return false;
+    }
+    if (field_0xcee) {
+        return false;
+    }
+    if (field_0x1216) {
+        return false;
+    }
+    if (field_0x1215) {
+        return false;
+    }
+    if (field_0xcf0) {
+        return false;
+    }
+    if (field_0x1238 > 0) {
+        return false;
+    }
+    if (!fn_802413F0()) {
+        return false;
+    }
+    return overlaps(field_0x4c0, *box);
 }
 
 void Player_804A6F38::fn_80277100() {}
