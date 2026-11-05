@@ -10,6 +10,7 @@
 #include "game/act/act_princess_zelda_ending.h"
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
+#include "game/act/tu_80362634.h"
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
 #include "JSystem/JUtility/TColor.h"
@@ -456,18 +457,6 @@ public:
     /* 0x08 */ virtual ~cls_804AD5B8();
     /* 0x254 */ u8 field_0x254[0x28];
 }; // Size: 0x27C
-
-// Spawned for 'EETC'.
-class cls_804ADF28 : public ActorBase_804A5770 {
-public:
-    cls_804ADF28() {}
-    /* 0x08 */ virtual ~cls_804ADF28();
-    /* 0x230 */ u8 field_0x230[0x4C];
-    /* 0x27C */ JGeometry::TVec3f field_0x27c[3];
-    /* 0x2A0 */ JGeometry::TVec3f field_0x2a0[3];
-    /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[3];
-    /* 0x2E8 */ u8 field_0x2e8[0x34];
-}; // Size: 0x31C
 
 // Spawned for 'DCR2'.
 class cls_804AE088 : public ActorBase_804A5770 {
