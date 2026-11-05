@@ -74,12 +74,17 @@ public:
     // 0x8026F710: clears the per-direction flags, the counters and the
     // owner's field_0xef0; called by the owner's reset fn_80254744.
     void fn_8026F710();
-    // Whether any of the eight flags at 0x48 is 1, flags 2, 4 and 5 not
-    // counting while field_0xb4 is set. No out-of-line copy: inlined by the
-    // owner's update B fn_80252FC0 (tu_8023FBF0) and in tu_80256C74,
-    // tu_8025EB18 and tu_8026FC20 (an 8-pass loop unrolled by 4).
-    bool anyFlag48() const {
+    // Whether any of the eight flags at 0x48 (only the first four without
+    // `all`) is 1, flags 2, 4 and 5 not counting while field_0xb4 is set.
+    // Inlined by the owner's update B fn_80252FC0 (tu_8023FBF0) and in
+    // tu_80256C74, tu_8025EB18 and tu_8026FC20 (an 8-pass loop unrolled by
+    // 4); the owner's fn_8025197C(all) is the call with the argument (the
+    // `i >= 4` test stays in its unrolled loop).
+    bool anyFlag48(bool all = true) const {
         for (int i = 0; i < 8; i++) {
+            if (!all && i >= 4) {
+                return false;
+            }
             if (field_0xb4 == true && (i == 2 || i == 4 || i == 5)) {
                 continue;
             }

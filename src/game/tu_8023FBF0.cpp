@@ -1523,6 +1523,35 @@ void Player_804A6F38::fn_80248DD8() {
     field_0x1217 = false;
 }
 
+// Sets field_0x1214 to `flag` (state 3 requested when set, field_0x1215
+// cleared when not), unless field_0x121e, field_0xbac > 0 or, for false,
+// fn_8022AF5C; not while a player this one can reach (fn_8022E438) is in
+// fn_8023EFEC (for true) or fn_8023EA28. The original tests `flag != true`
+// first, which makes the later `flag == true` branch dead; written as is.
+void Player_804A6F38::fn_80248E94(bool flag) {
+    if (flag != true && field_0x121e != 1 && field_0xbac <= 0 && (flag || !fn_8022AF5C())) {
+        if (flag == true) {
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8022E438(field_0x4, i) && fn_8023EFEC(i)) {
+                    return;
+                }
+            }
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8022E438(field_0x4, i) && fn_8023EA28(i)) {
+                return;
+            }
+        }
+        field_0x1214 = flag;
+        if (!field_0x1214) {
+            field_0x1215 = false;
+        } else {
+            requestState(this, 3);
+        }
+        field_0x1217 = false;
+    }
+}
+
 // Clears field_0x121f (set by fn_8024909C; update B skips while it is set)
 // and holds field_0x11f0 at 5 or more. fn_80249070's body: fn_80248FF0
 // (before it) inlines it, so it is a file inline with fn_80249070 as its
@@ -2285,6 +2314,10 @@ bool Player_804A6F38::fn_8025190C(bool a) {
 
 u8 Player_804A6F38::fn_8025196C(s32 index) {
     return field_0xbf0->field_0x48[index];
+}
+
+bool Player_804A6F38::fn_8025197C(bool all) {
+    return field_0xbf0->anyFlag48(all);
 }
 
 bool Player_804A6F38::fn_80251AEC(s32 state) {
