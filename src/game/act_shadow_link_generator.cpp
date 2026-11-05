@@ -30,27 +30,6 @@ void ShadowLinkGenerator_804A4310::fn_801C1768() {
     mState = 4;
 }
 
-// Destroys the emitters the intro started (fn_801EE434 releases each one).
-ShadowLinkGenerator_804A4310::~ShadowLinkGenerator_804A4310() {
-    fn_801EE434(mEmitter);
-    for (s32 i = 0; i < 3; i++) {
-        fn_801EE434(mEmitters[i]);
-    }
-    for (s32 i = 0; i < 5; i++) {
-        fn_801EE434(mEmitters2[i]);
-    }
-}
-
-ShadowLinkGenerator_804A4310::ShadowLinkGenerator_804A4310()
-    : mSlotFirst(0), mSlotLast(0), mWaitTimer(0), field_0x2ac(0), mEmitter(NULL), mTexture(NULL) {
-    for (s32 i = 0; i < 3; i++) {
-        mEmitters[i] = NULL;
-    }
-    for (s32 i = 0; i < 5; i++) {
-        mEmitters2[i] = NULL;
-    }
-}
-
 // Spawns four 'SLK2' actors, one after another, each on a random slot from
 // mSlotFirst to mSlotLast; a spawned one that is found is switched to state 0xD.
 // FIXME: 99.30 %. Register allocation only: the original keeps the range in r30 and
@@ -110,4 +89,25 @@ void ShadowLinkGenerator_804A4310::init() {
         }
     }
     fn_801C0D70()->field_0x50 = mSerial;
+}
+
+// Destroys the emitters the intro started (fn_801EE434 releases each one).
+ShadowLinkGenerator_804A4310::~ShadowLinkGenerator_804A4310() {
+    fn_801EE434(mEmitter);
+    for (s32 i = 0; i < 3; i++) {
+        fn_801EE434(mEmitters[i]);
+    }
+    for (s32 i = 0; i < 5; i++) {
+        fn_801EE434(mEmitters2[i]);
+    }
+}
+
+ShadowLinkGenerator_804A4310::ShadowLinkGenerator_804A4310()
+    : mSlotFirst(0), mSlotLast(0), mWaitTimer(0), field_0x2ac(0), mEmitter(NULL), mTexture(NULL) {
+    for (s32 i = 0; i < 3; i++) {
+        mEmitters[i] = NULL;
+    }
+    for (s32 i = 0; i < 5; i++) {
+        mEmitters2[i] = NULL;
+    }
 }

@@ -36,113 +36,21 @@ static inline s32 viewBitOf(s32 x, s32 y) {
     return (x & 0x100) | ((y & 0x100) << 1) | (y & 0xF0) | ((x >> 4) & 0xF);
 }
 
-SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
-    if (mEmitters[0] != NULL) {
-        fn_801EE434(mEmitters[0]);
-    }
-    if (mEmitters[1] != NULL) {
-        fn_801EE434(mEmitters[1]);
-    }
-    if (mEmitters[2] != NULL) {
-        fn_801EE434(mEmitters[2]);
-    }
-    if (mEmitters[3] != NULL) {
-        fn_801EE434(mEmitters[3]);
-    }
+void SpreadingFire_804A8A50::vfunc_0x24() {
+    vfunc_0x54();
+    mAlive = false;
     fn_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
-// FIXME: 95.43 %. The original tests field_0x250 twice on the same flags (a bne to the
-// sprite-skip, then a second bne that is never taken before the view-bit test); no natural
-// form gives that dead branch, so the kill check is written as one condition.
-void SpreadingFire_804A8A50::init() {
-    field_0x250 = (field_0x90 >> 6) & 0xF;
-    field_0x98 = (field_0x90 >> 4) & 0x3;
-    field_0x258 = field_0x90 & 0xF;
-    if (field_0x258 == 0xF) {
-        field_0x258 = -1;
-    }
-    field_0x290 = 0;
-    field_0x294 = 0;
-    field_0x27c = 0;
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-    mEmitters[2] = NULL;
-    mEmitters[3] = NULL;
-
-    s32 layer = field_0x4;
-    GameView_804A9950* view = fn_802D6A9C();
-    const JGeometry::TBox2f* box;
-    if (layer < 8) {
-        box = &view->mVisibleBox;
-    } else {
-        box = &view->field_0xdc;
-    }
-    field_0x25c = *box;
-    field_0x270 = (s32)(mPos.x - field_0x25c.i.x);
-    field_0x274 = (s32)(mPos.y - field_0x25c.i.y);
-    if (field_0x270 < 0) {
-        field_0x270 = 0;
-    } else if (field_0x270 >= 0x200) {
-        field_0x270 = 0x1FF;
-    }
-    if (field_0x274 < 0) {
-        field_0x274 = 0;
-    } else if (field_0x274 >= 0x200) {
-        field_0x274 = 0x1FF;
-    }
-    mViewBit = (field_0x270 & 0x100) | ((field_0x274 & 0x100) << 1) | (field_0x274 & 0xF0) |
-               ((field_0x270 >> 4) & 0xF);
-
-    if (field_0x250 != 0 || !fn_802D6A9C()->fn_802D7384(mViewBit)) {
-        mBox.i.x = -6.0f;
-        mBox.i.y = -6.0f;
-        mBox.f.x = 6.0f;
-        mBox.f.y = 6.0f;
-        field_0x80.i.x = -8.0f;
-        field_0x80.i.y = -8.0f;
-        field_0x80.f.x = 8.0f;
-        field_0x80.f.y = 8.0f;
-
-        mTile = fn_80226850(&mPos, field_0x4);
-        if (field_0x4 >= 8) {
-            field_0x240 = 3;
-            field_0x280 = 0;
-        } else {
-            field_0x240 = 0;
-            if (field_0x250 == 3) {
-                mEmitters[0] = fn_8013CC50(field_0x4, &mPos, 0x19F, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[1] = fn_8013CC50(field_0x4, &mPos, 0x1A0, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[2] = fn_8013CC50(field_0x4, &mPos, 0x1A1, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.5f);
-            } else if (field_0x250 != 6) {
-                fn_8013CC50(field_0x4, &mPos, 0x349, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x34A, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x34B, 0, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.0f);
-                field_0x290 = 1;
-                field_0x294 = 10;
-            }
-        }
-
-        s32 nibble = (field_0x90 >> 12) & 0xF;
-        if (nibble == 0) {
-            field_0x254 = 30;
-        } else {
-            field_0x254 = nibble * 2;
-            if (field_0x254 < 0x15) {
-                field_0x27c = (s32)(1000.88f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 7;
-            }
-        }
-
-        field_0x278 = 0;
-        if (viewLayerFlag(field_0x4) == 0) {
-            if (fn_801EE3C0(mTile) == true) {
-                fn_802D6A9C()->fn_802D73CC(mViewBit, true);
-            }
+void SpreadingFire_804A8A50::draw() {
+    if (field_0x240 != 6) {
+        s32 layer = field_0x4;
+        if (layer >= 8) {
+            fn_803075AC(mSerial, layer, &mPos, (field_0x280 >> 1) + 0x109, false, 2, -1, 0, 0, 0);
         }
     } else {
-        mAlive = false;
+        fn_801F06F0("enemy_both2_sob.bin", 0x18E, NULL, 0, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, 0x18E, false, 2, -1, 0, 0, 0);
     }
 }
 
@@ -292,20 +200,112 @@ void SpreadingFire_804A8A50::update() {
     }
 }
 
-void SpreadingFire_804A8A50::draw() {
-    if (field_0x240 != 6) {
-        s32 layer = field_0x4;
-        if (layer >= 8) {
-            fn_803075AC(mSerial, layer, &mPos, (field_0x280 >> 1) + 0x109, false, 2, -1, 0, 0, 0);
-        }
-    } else {
-        fn_801F06F0("enemy_both2_sob.bin", 0x18E, NULL, 0, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, 0x18E, false, 2, -1, 0, 0, 0);
+SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
+    if (mEmitters[0] != NULL) {
+        fn_801EE434(mEmitters[0]);
     }
+    if (mEmitters[1] != NULL) {
+        fn_801EE434(mEmitters[1]);
+    }
+    if (mEmitters[2] != NULL) {
+        fn_801EE434(mEmitters[2]);
+    }
+    if (mEmitters[3] != NULL) {
+        fn_801EE434(mEmitters[3]);
+    }
+    fn_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
-void SpreadingFire_804A8A50::vfunc_0x24() {
-    vfunc_0x54();
-    mAlive = false;
-    fn_802D6A9C()->fn_802D73CC(mViewBit, false);
+// FIXME: 95.43 %. The original tests field_0x250 twice on the same flags (a bne to the
+// sprite-skip, then a second bne that is never taken before the view-bit test); no natural
+// form gives that dead branch, so the kill check is written as one condition.
+void SpreadingFire_804A8A50::init() {
+    field_0x250 = (field_0x90 >> 6) & 0xF;
+    field_0x98 = (field_0x90 >> 4) & 0x3;
+    field_0x258 = field_0x90 & 0xF;
+    if (field_0x258 == 0xF) {
+        field_0x258 = -1;
+    }
+    field_0x290 = 0;
+    field_0x294 = 0;
+    field_0x27c = 0;
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    mEmitters[2] = NULL;
+    mEmitters[3] = NULL;
+
+    s32 layer = field_0x4;
+    GameView_804A9950* view = fn_802D6A9C();
+    const JGeometry::TBox2f* box;
+    if (layer < 8) {
+        box = &view->mVisibleBox;
+    } else {
+        box = &view->field_0xdc;
+    }
+    field_0x25c = *box;
+    field_0x270 = (s32)(mPos.x - field_0x25c.i.x);
+    field_0x274 = (s32)(mPos.y - field_0x25c.i.y);
+    if (field_0x270 < 0) {
+        field_0x270 = 0;
+    } else if (field_0x270 >= 0x200) {
+        field_0x270 = 0x1FF;
+    }
+    if (field_0x274 < 0) {
+        field_0x274 = 0;
+    } else if (field_0x274 >= 0x200) {
+        field_0x274 = 0x1FF;
+    }
+    mViewBit = (field_0x270 & 0x100) | ((field_0x274 & 0x100) << 1) | (field_0x274 & 0xF0) |
+               ((field_0x270 >> 4) & 0xF);
+
+    if (field_0x250 != 0 || !fn_802D6A9C()->fn_802D7384(mViewBit)) {
+        mBox.i.x = -6.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 6.0f;
+        field_0x80.i.x = -8.0f;
+        field_0x80.i.y = -8.0f;
+        field_0x80.f.x = 8.0f;
+        field_0x80.f.y = 8.0f;
+
+        mTile = fn_80226850(&mPos, field_0x4);
+        if (field_0x4 >= 8) {
+            field_0x240 = 3;
+            field_0x280 = 0;
+        } else {
+            field_0x240 = 0;
+            if (field_0x250 == 3) {
+                mEmitters[0] = fn_8013CC50(field_0x4, &mPos, 0x19F, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[1] = fn_8013CC50(field_0x4, &mPos, 0x1A0, 0, 0, NULL, NULL, true, 1.0f);
+                mEmitters[2] = fn_8013CC50(field_0x4, &mPos, 0x1A1, 0, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.5f);
+            } else if (field_0x250 != 6) {
+                fn_8013CC50(field_0x4, &mPos, 0x349, 0, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x34A, 0, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x34B, 0, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x54D, 1, 0, NULL, NULL, true, 1.0f);
+                field_0x290 = 1;
+                field_0x294 = 10;
+            }
+        }
+
+        s32 nibble = (field_0x90 >> 12) & 0xF;
+        if (nibble == 0) {
+            field_0x254 = 30;
+        } else {
+            field_0x254 = nibble * 2;
+            if (field_0x254 < 0x15) {
+                field_0x27c = (s32)(1000.88f * lbl_8053AAF8->mRandom.get_ufloat_1()) & 7;
+            }
+        }
+
+        field_0x278 = 0;
+        if (viewLayerFlag(field_0x4) == 0) {
+            if (fn_801EE3C0(mTile) == true) {
+                fn_802D6A9C()->fn_802D73CC(mViewBit, true);
+            }
+        }
+    } else {
+        mAlive = false;
+    }
 }

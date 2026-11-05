@@ -22,9 +22,86 @@ static inline void applyColor(cls_804AA4F0* actor) {
     fn_8013A884(&packed);
 }
 
-cls_804AA4F0::~cls_804AA4F0() {}
+void cls_804AA4F0::vfunc_0x54(s32 r, s32 g, s32 b, s32 a, s32 frames, s32 state) {
+    mState = state;
+    if (state == 0) {
+        mColorEnd[0] = r;
+        mColorEnd[1] = g;
+        mColorEnd[2] = b;
+        mColorCur[3] = a;
+        mDuration = frames;
+        mColorStep[0] = (mColorEnd[0] - mColorCur[0]) / 4;
+        mColorStep[1] = (mColorEnd[1] - mColorCur[1]) / 4;
+        mColorStep[2] = (mColorEnd[2] - mColorCur[2]) / 4;
+        if (mCounter < mDuration) {
+            mState = 1;
+        }
+    } else {
+        mColorCur[0] = r;
+        mColorCur[1] = g;
+        mColorCur[2] = b;
+        mColorCur[3] = a;
+        mCounter = frames;
+    }
+}
 
 void cls_804AA4F0::draw() {}
+
+void cls_804AA4F0::update() {
+    switch (mState) {
+    case 0:
+        mCounter -= 4;
+        stepChannel(this, 0);
+        stepChannel(this, 1);
+        stepChannel(this, 2);
+        if (mCounter <= mDuration) {
+            mCounter = mDuration;
+            mColorCur[0] = mColorEnd[0];
+            mColorCur[1] = mColorEnd[1];
+            mColorCur[2] = mColorEnd[2];
+            mState = 4;
+        }
+        applyColor(this);
+        break;
+    case 1:
+        mCounter += 4;
+        stepChannel(this, 0);
+        stepChannel(this, 1);
+        stepChannel(this, 2);
+        if (mCounter >= mDuration) {
+            mCounter = mDuration;
+            mColorCur[0] = mColorEnd[0];
+            mColorCur[1] = mColorEnd[1];
+            mColorCur[2] = mColorEnd[2];
+            mState = 4;
+        }
+        applyColor(this);
+        break;
+    case 2:
+        mCounter += 4;
+        if (mCounter >= mDuration) {
+            mCounter = mDuration;
+            mState = 4;
+            if (field_0x244 == 0x10 && !fn_802D6A9C()->fn_802D800C(field_0x240)) {
+                lbl_8053AF80->fn_80458FF0(0x1000021, false, false);
+            }
+        }
+        applyColor(this);
+        break;
+    case 3:
+    default:
+        applyColor(this);
+        break;
+    case 5:
+        if ((field_0x90 >> 27) == 0 || vfunc_0x34()) {
+            mState = 2;
+        }
+        applyColor(this);
+        break;
+    }
+}
+
+cls_804AA4F0::~cls_804AA4F0() {}
 
 // FIXME: 99.95 %. The only difference left is the switch's jump table: the
 // original's relocation names it jumptable_804AA548 (dtk's split of .data),
@@ -115,81 +192,4 @@ void cls_804AA4F0::init() {
     update();
     mPos = savedPos;
     field_0x11f = 1;
-}
-
-void cls_804AA4F0::update() {
-    switch (mState) {
-    case 0:
-        mCounter -= 4;
-        stepChannel(this, 0);
-        stepChannel(this, 1);
-        stepChannel(this, 2);
-        if (mCounter <= mDuration) {
-            mCounter = mDuration;
-            mColorCur[0] = mColorEnd[0];
-            mColorCur[1] = mColorEnd[1];
-            mColorCur[2] = mColorEnd[2];
-            mState = 4;
-        }
-        applyColor(this);
-        break;
-    case 1:
-        mCounter += 4;
-        stepChannel(this, 0);
-        stepChannel(this, 1);
-        stepChannel(this, 2);
-        if (mCounter >= mDuration) {
-            mCounter = mDuration;
-            mColorCur[0] = mColorEnd[0];
-            mColorCur[1] = mColorEnd[1];
-            mColorCur[2] = mColorEnd[2];
-            mState = 4;
-        }
-        applyColor(this);
-        break;
-    case 2:
-        mCounter += 4;
-        if (mCounter >= mDuration) {
-            mCounter = mDuration;
-            mState = 4;
-            if (field_0x244 == 0x10 && !fn_802D6A9C()->fn_802D800C(field_0x240)) {
-                lbl_8053AF80->fn_80458FF0(0x1000021, false, false);
-            }
-        }
-        applyColor(this);
-        break;
-    case 3:
-    default:
-        applyColor(this);
-        break;
-    case 5:
-        if ((field_0x90 >> 27) == 0 || vfunc_0x34()) {
-            mState = 2;
-        }
-        applyColor(this);
-        break;
-    }
-}
-
-void cls_804AA4F0::vfunc_0x54(s32 r, s32 g, s32 b, s32 a, s32 frames, s32 state) {
-    mState = state;
-    if (state == 0) {
-        mColorEnd[0] = r;
-        mColorEnd[1] = g;
-        mColorEnd[2] = b;
-        mColorCur[3] = a;
-        mDuration = frames;
-        mColorStep[0] = (mColorEnd[0] - mColorCur[0]) / 4;
-        mColorStep[1] = (mColorEnd[1] - mColorCur[1]) / 4;
-        mColorStep[2] = (mColorEnd[2] - mColorCur[2]) / 4;
-        if (mCounter < mDuration) {
-            mState = 1;
-        }
-    } else {
-        mColorCur[0] = r;
-        mColorCur[1] = g;
-        mColorCur[2] = b;
-        mColorCur[3] = a;
-        mCounter = frames;
-    }
 }

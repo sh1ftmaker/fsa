@@ -6,21 +6,6 @@
 
 void ParticleNpc_804A9AC8::draw() {}
 
-ParticleNpc_804A9AC8::~ParticleNpc_804A9AC8() {
-    if (field_0x234 != NULL) {
-        fn_801EE434(field_0x234);
-    }
-    if (field_0x238 != NULL) {
-        fn_801EE434(field_0x238);
-    }
-    if (field_0x23c != NULL) {
-        fn_801EE434(field_0x23c);
-    }
-    if (mSound != NULL) {
-        delete mSound;
-    }
-}
-
 void ParticleNpc_804A9AC8::update() {
     if (field_0x250 <= 1) {
         fn_801F0E34(0x30033, 0);
@@ -98,6 +83,21 @@ void ParticleNpc_804A9AC8::update() {
         }
         }
         break;
+    }
+}
+
+ParticleNpc_804A9AC8::~ParticleNpc_804A9AC8() {
+    if (field_0x234 != NULL) {
+        fn_801EE434(field_0x234);
+    }
+    if (field_0x238 != NULL) {
+        fn_801EE434(field_0x238);
+    }
+    if (field_0x23c != NULL) {
+        fn_801EE434(field_0x23c);
+    }
+    if (mSound != NULL) {
+        delete mSound;
     }
 }
 

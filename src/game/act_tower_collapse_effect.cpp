@@ -5,12 +5,6 @@
 #include "game/GameView.h"
 #include "game/RotMatrix.h"
 
-TowerCollapseEffect_8049CA40::~TowerCollapseEffect_8049CA40() {
-    if (mEmitter260 != NULL) {
-        fn_801EE434(mEmitter260);
-    }
-}
-
 // Turns a sprite to the angle (s16 units, as field_0x264 and friends hold it)
 // about y, at the actor's current position.
 static inline void setSpriteRotation(Mtx mtx, SpriteParams_801F5AE0& params, s32 angle) {
@@ -67,31 +61,6 @@ void TowerCollapseEffect_8049CA40::draw() {
         break;
     case 2:
         // Nothing draws mode 2; the empty case is part of the original's dispatch.
-        break;
-    }
-}
-
-void TowerCollapseEffect_8049CA40::init() {
-    field_0x230 = 0;
-    mMode = 0;
-    mEmitter260 = NULL;
-    mMode = field_0x90 & 0xF;
-    field_0x25c = (field_0x90 >> 22) & 0x1F;
-    switch (mMode) {
-    case 0:
-        field_0x288 = 0;
-        field_0x264[0] = 0;
-        field_0x264[1] = 0;
-        field_0x264[2] = 0;
-        field_0x28c.x = 0.0f;
-        field_0x28c.y = 0.0f;
-        field_0x28c.z = 0.0f;
-        field_0x238[0].set(mPos);
-        field_0x238[1].set(mPos);
-        field_0x238[2].set(mPos);
-        break;
-    case 2:
-        mEmitter260 = fn_8013CC50(field_0x4, &mPos, 0x496, 1, 0, NULL, NULL, true, 1.0f);
         break;
     }
 }
@@ -183,6 +152,37 @@ void TowerCollapseEffect_8049CA40::update() {
         break;
     case 2:
         // Nothing updates mode 2; the empty case is part of the original's dispatch.
+        break;
+    }
+}
+
+TowerCollapseEffect_8049CA40::~TowerCollapseEffect_8049CA40() {
+    if (mEmitter260 != NULL) {
+        fn_801EE434(mEmitter260);
+    }
+}
+
+void TowerCollapseEffect_8049CA40::init() {
+    field_0x230 = 0;
+    mMode = 0;
+    mEmitter260 = NULL;
+    mMode = field_0x90 & 0xF;
+    field_0x25c = (field_0x90 >> 22) & 0x1F;
+    switch (mMode) {
+    case 0:
+        field_0x288 = 0;
+        field_0x264[0] = 0;
+        field_0x264[1] = 0;
+        field_0x264[2] = 0;
+        field_0x28c.x = 0.0f;
+        field_0x28c.y = 0.0f;
+        field_0x28c.z = 0.0f;
+        field_0x238[0].set(mPos);
+        field_0x238[1].set(mPos);
+        field_0x238[2].set(mPos);
+        break;
+    case 2:
+        mEmitter260 = fn_8013CC50(field_0x4, &mPos, 0x496, 1, 0, NULL, NULL, true, 1.0f);
         break;
     }
 }

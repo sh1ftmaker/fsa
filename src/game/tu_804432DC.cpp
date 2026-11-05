@@ -54,13 +54,21 @@ bool cls_804B1AE8::fn_804432DC(u8 kind, s16 a, s16 b) {
     return false;
 }
 
-void cls_804B1AE8::fn_804435B8() {
-    if (mTimer > 0) {
-        mTimer--;
+// The original's .data here is zero, filled by __sinit (fn_80443894, not
+// written yet, which copies the table at lbl_804B1AA0 into it); so .data
+// doesn't match yet.
+static void (cls_804B1AE8::*lbl_804B1AC4[3])() = {
+    &cls_804B1AE8::fn_804435B8,
+    &cls_804B1AE8::fn_804434B8,
+    &cls_804B1AE8::fn_80443494,
+};
+
+void cls_804B1AE8::fn_80443494() {
+    if (mHoldTimer > 0) {
+        mHoldTimer--;
         return;
     }
-    mTimer = 0;
-    mState = 1;
+    mState = 3;
 }
 
 // FIXME: 96.6 %. Only the scale's division: the original loads the pane's
@@ -76,12 +84,13 @@ void cls_804B1AE8::fn_804434B8() {
     }
 }
 
-void cls_804B1AE8::fn_80443494() {
-    if (mHoldTimer > 0) {
-        mHoldTimer--;
+void cls_804B1AE8::fn_804435B8() {
+    if (mTimer > 0) {
+        mTimer--;
         return;
     }
-    mState = 3;
+    mTimer = 0;
+    mState = 1;
 }
 
 void cls_804B1AE8::fn_804435E4() {
@@ -90,15 +99,6 @@ void cls_804B1AE8::fn_804435E4() {
         mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     }
 }
-
-// The original's .data here is zero, filled by __sinit (fn_80443894, not
-// written yet, which copies the table at lbl_804B1AA0 into it); so .data
-// doesn't match yet.
-static void (cls_804B1AE8::*lbl_804B1AC4[3])() = {
-    &cls_804B1AE8::fn_804435B8,
-    &cls_804B1AE8::fn_804434B8,
-    &cls_804B1AE8::fn_80443494,
-};
 
 // FIXME: 81.5 %. The target tests the state with a branchless "!= 3"
 // (subfic / subi / or / srwi.) and keeps it in r4; ours compares it with cmpwi.

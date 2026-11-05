@@ -279,19 +279,6 @@ bool EnemyBase_804A4808::vfunc_0x5C() {
     return hit;
 }
 
-bool EnemyBase_804A4808::vfunc_0x58() {
-    return false;
-}
-
-// A random direction, or another free one when that one is blocked.
-s32 EnemyBase_804A4808::fn_801CF6B8() {
-    s32 dir = fn_801CD664(4);
-    if (fn_801CFCF0(dir)) {
-        dir = fn_801CF720(dir);
-    }
-    return dir;
-}
-
 // For each player whose box overlaps mBox (fn_801F285C) and that fn_801EAC20
 // accepts, a hit at the player's point goes to fn_801CB538 on this layer; one
 // hit plays sound 0x400D1. Returns whether any player was hit.
@@ -317,6 +304,19 @@ bool EnemyBase_804A4808::fn_801CEBD0() {
         }
     }
     return hit;
+}
+
+bool EnemyBase_804A4808::vfunc_0x58() {
+    return false;
+}
+
+// A random direction, or another free one when that one is blocked.
+s32 EnemyBase_804A4808::fn_801CF6B8() {
+    s32 dir = fn_801CD664(4);
+    if (fn_801CFCF0(dir)) {
+        dir = fn_801CF720(dir);
+    }
+    return dir;
 }
 
 // A random direction other than `dir`, or another free one when blocked.

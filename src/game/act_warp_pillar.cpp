@@ -9,6 +9,8 @@
 
 static const u16 lbl_805420A0[4] = {0x4E3, 0x4E5, 0x4E2, 0x4E4};
 
+void WarpPillar_804AC0A8::draw() {}
+
 // FIXME: 94.3 %. Register allocation differs (this in r28 and the loop
 // counter in r27 in the original), `order` is copied from a .rodata table
 // instead of stored with li 0-3, the bubble-sort swap goes through a stack
@@ -183,8 +185,6 @@ void WarpPillar_804AC0A8::update() {
         break;
     }
 }
-
-void WarpPillar_804AC0A8::draw() {}
 
 void WarpPillar_804AC0A8::init() {
     field_0x94 = field_0x90 & 0xF;

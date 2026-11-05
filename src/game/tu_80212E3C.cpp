@@ -3,8 +3,6 @@
 #include "game/act/act_quicksand.h"
 #include "game/act/tu_80212E3C.h"
 
-cls_804A6340::cls_804A6340() {}
-
 cls_804A6340::~cls_804A6340() {}
 
 void cls_804A6340::fn_80212F14() {
@@ -47,3 +45,5 @@ void cls_804A6340::vfunc_0x44() {
         fn_80213774(4);
     }
 }
+
+cls_804A6340::cls_804A6340() {}

@@ -7,8 +7,6 @@
 
 ThwompSwitch_804A8940::~ThwompSwitch_804A8940() {}
 
-void ThwompSwitch_804A8940::init() {}
-
 void ThwompSwitch_804A8940::draw() {}
 
 // FIXME: 97.06 %. Only the addi r4, r29, 0xc for &mPos differs: the
@@ -35,3 +33,5 @@ void ThwompSwitch_804A8940::update() {
         }
     }
 }
+
+void ThwompSwitch_804A8940::init() {}

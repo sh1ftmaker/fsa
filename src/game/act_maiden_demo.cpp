@@ -91,6 +91,18 @@ s32 fn_801123C8(s32 kind, s32 mode) {
     }
 }
 
+s32 cls_8049D740::vfunc_0x58() {
+    return field_0x238;
+}
+
+void cls_8049D740::vfunc_0x10() {
+    s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_DMGL);
+    ActorBase_804A5770* goal = fn_801F856C()->fn_801F666C(serial);
+    if (goal != NULL) {
+        mGoalPos = goal->mPos;
+    }
+}
+
 void cls_8049D740::init() {
     cls_8049D140::init();
     mMode = field_0x90 & 0x1F;
@@ -106,16 +118,4 @@ cls_8049D740::~cls_8049D740() {
     mEmitter29c = NULL;
     fn_801EE434(mEmitter2a0);
     mEmitter2a0 = NULL;
-}
-
-void cls_8049D740::vfunc_0x10() {
-    s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_DMGL);
-    ActorBase_804A5770* goal = fn_801F856C()->fn_801F666C(serial);
-    if (goal != NULL) {
-        mGoalPos = goal->mPos;
-    }
-}
-
-s32 cls_8049D740::vfunc_0x58() {
-    return field_0x238;
 }

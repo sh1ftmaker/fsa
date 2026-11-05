@@ -33,33 +33,6 @@ static inline void startCameraMove(Camera_804AA9E4* camera, s32 target) {
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::init() {
-    mState = 0;
-    mWinner = -1;
-    mTimer = 0x82;
-    field_0x238 = 0;
-    mFocus = 0xFF;
-    for (s32 i = 3; i >= 0; i--) {
-        mPlayerFlag[i] = 0;
-    }
-    field_0x11f = 1;
-    lbl_80529DEC.field_0x1a8 = -1;
-}
-
-void BattleRoyaleEndCheck_804B0380::draw() {
-    if (mFocus != 0xFF) {
-        lbl_8053AED0->field_0x256 = mFocus;
-    }
-    if (mState == 6) {
-        lbl_8053ADC8->field_0x20 = 1;
-        lbl_8053ADC8->field_0x21 = 3;
-    }
-}
-
-void BattleRoyaleEndCheck_804B0380::update() {
-    (this->*lbl_804B032C[mState])();
-}
-
 void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
     s32 winner = mWinner;
     if (winner != -1) {
@@ -241,4 +214,31 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
         lbl_80529DEC.field_0x240 = 1;
         mState = 1;
     }
+}
+
+void BattleRoyaleEndCheck_804B0380::draw() {
+    if (mFocus != 0xFF) {
+        lbl_8053AED0->field_0x256 = mFocus;
+    }
+    if (mState == 6) {
+        lbl_8053ADC8->field_0x20 = 1;
+        lbl_8053ADC8->field_0x21 = 3;
+    }
+}
+
+void BattleRoyaleEndCheck_804B0380::update() {
+    (this->*lbl_804B032C[mState])();
+}
+
+void BattleRoyaleEndCheck_804B0380::init() {
+    mState = 0;
+    mWinner = -1;
+    mTimer = 0x82;
+    field_0x238 = 0;
+    mFocus = 0xFF;
+    for (s32 i = 3; i >= 0; i--) {
+        mPlayerFlag[i] = 0;
+    }
+    field_0x11f = 1;
+    lbl_80529DEC.field_0x1a8 = -1;
 }

@@ -65,11 +65,6 @@ static const char* lbl_804B1BA0[4] = {
     "kk_mainRank_04.bti",
 };
 
-void cls_804B1BB0::fn_80445CDC() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
-}
-
 // FIXME: 91.85 %. Only the time-digit block (after the field_0x44 bit test, before
 // the rank part) differs: the original loads field_0x3c's seconds into r8 (ours r7),
 // schedules lis lbl_804B1B78 before lis 0x5449, and loads field_0x38 before the
@@ -144,6 +139,11 @@ void cls_804B1BB0::fn_804455E0() {
     field_0x44 = 0;
 }
 
+void cls_804B1BB0::fn_80445CDC() {
+    lbl_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+}
+
 void cls_804B1BB0::fn_80445D24() {
     for (s32 i = 0; i < 4; i++) {
         field_0x44 &= ~(u8)(1 << i);
@@ -168,6 +168,20 @@ void cls_804B1BB0::fn_80445D24() {
     }
 }
 
+cls_804B1BB0::~cls_804B1BB0() {
+    delete mScreen;
+    mScreen = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x8[i];
+        field_0x8[i] = NULL;
+        delete field_0x18[i];
+        field_0x18[i] = NULL;
+        delete field_0x28[i];
+        field_0x28[i] = NULL;
+    }
+    lbl_8053AEF8 = NULL;
+}
+
 cls_804B1BB0::cls_804B1BB0() {
     lbl_8053AEF8 = this;
     mScreen = new J2DScreen();
@@ -186,18 +200,4 @@ cls_804B1BB0::cls_804B1BB0() {
         field_0x40[i] = 1;
     }
     field_0x44 = 0;
-}
-
-cls_804B1BB0::~cls_804B1BB0() {
-    delete mScreen;
-    mScreen = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0x8[i];
-        field_0x8[i] = NULL;
-        delete field_0x18[i];
-        field_0x18[i] = NULL;
-        delete field_0x28[i];
-        field_0x28[i] = NULL;
-    }
-    lbl_8053AEF8 = NULL;
 }

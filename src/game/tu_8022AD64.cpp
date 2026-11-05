@@ -2101,11 +2101,11 @@ void fn_8023F6C4() {
     }
 }
 
-GameRoot_8049EF20* fn_8023F9B0() {
-    return lbl_8053AAF8;
-}
-
 bool GameRoot_8049EF20::fn_8023F98C(s32 player) {
     u8 bit = 1 << player;
     return (field_0x82 & bit) != 0;
+}
+
+GameRoot_8049EF20* fn_8023F9B0() {
+    return lbl_8053AAF8;
 }

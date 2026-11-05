@@ -12,25 +12,7 @@ static inline void setBox(JGeometry::TBox2f& box, f32 lo, f32 hi) {
     box.f.y = hi;
 }
 
-cls_804A68D0::cls_804A68D0() {
-    mKind = 0;
-    mHops = 0;
-    field_0x2c0 = fn_801CD664(1) + 3;
-}
-
 cls_804A68D0::~cls_804A68D0() {}
-
-void cls_804A68D0::init() {
-    cls_804A6A00::init();
-    mKind = field_0x90 & 3;
-    field_0x98 = 2;
-    mState = 3;
-    mStateTimer = 0;
-    field_0x250 = -1;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.fn_801D22DC(2, 0, false);
-}
 
 void cls_804A68D0::vfunc_0x88() {
     switch (mState) {
@@ -170,4 +152,22 @@ void cls_804A68D0::fn_8022089C(s32 state) {
     }
     mStateTimer = 0;
     mState = state;
+}
+
+void cls_804A68D0::init() {
+    cls_804A6A00::init();
+    mKind = field_0x90 & 3;
+    field_0x98 = 2;
+    mState = 3;
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D22DC(2, 0, false);
+}
+
+cls_804A68D0::cls_804A68D0() {
+    mKind = 0;
+    mHops = 0;
+    field_0x2c0 = fn_801CD664(1) + 3;
 }

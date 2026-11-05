@@ -58,26 +58,6 @@ static const char* lbl_804B1C68[10] = {
     "kk_rupyNum_09.bti",
 };
 
-cls_804B1C90::cls_804B1C90() {
-    lbl_8053AF18 = this;
-    mScreen = new J2DScreen();
-    mScreen->setPriority("mg_geldman.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    field_0x8 = new cls_804AF86C();
-    field_0x8->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
-    for (s32 i = 0; i < 4; i++) {
-        field_0xc[i] = new cls_804AF86C();
-        field_0xc[i]->fn_80402F04(mScreen->search(lbl_80490940[i][6]));
-        field_0x1c[i] = new cls_804AF86C();
-        field_0x1c[i]->fn_80402F04(mScreen->search(lbl_80490940[i][13]));
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x2c[i] = 0;
-    }
-    field_0x30 = 0;
-    field_0x31 = 0;
-    field_0x32 = 0;
-}
-
 // FIXME: 91.28 %. In the slot loop the original divides field_0x2c[i] by ten
 // twice, once for the units (kept in r26 across the first fn_804030C4 call)
 // and once for the index; ours shares one division and computes the units
@@ -202,4 +182,24 @@ cls_804B1C90::~cls_804B1C90() {
         field_0x1c[i] = NULL;
     }
     lbl_8053AF18 = NULL;
+}
+
+cls_804B1C90::cls_804B1C90() {
+    lbl_8053AF18 = this;
+    mScreen = new J2DScreen();
+    mScreen->setPriority("mg_geldman.blo", 0x1100000, lbl_80529DEC.field_0x10);
+    field_0x8 = new cls_804AF86C();
+    field_0x8->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
+    for (s32 i = 0; i < 4; i++) {
+        field_0xc[i] = new cls_804AF86C();
+        field_0xc[i]->fn_80402F04(mScreen->search(lbl_80490940[i][6]));
+        field_0x1c[i] = new cls_804AF86C();
+        field_0x1c[i]->fn_80402F04(mScreen->search(lbl_80490940[i][13]));
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2c[i] = 0;
+    }
+    field_0x30 = 0;
+    field_0x31 = 0;
+    field_0x32 = 0;
 }

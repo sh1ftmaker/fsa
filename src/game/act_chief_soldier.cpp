@@ -5,22 +5,6 @@
 #include "game/Map.h"
 #include "game/act/act_chief_soldier.h"
 
-ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
-    if (getType() != 7 && getType() != 8) {
-        if (getType() != 6 && lbl_8053AAF8->field_0x4c != 9 &&
-            lbl_8053AAF8->field_0x4c != 0xB && mLife != 0) {
-            lbl_8053AAF8->fn_80138B7C();
-        }
-        s32 serial = field_0x238;
-        if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
-            if (actor != NULL) {
-                actor->mAlive = false;
-            }
-        }
-    }
-}
-
 void ChiefSoldier_804A0B90::vfunc_0x24() {
     if (getType() == 6) {
         field_0x18c = 0;
@@ -125,5 +109,21 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
             }
         }
         field_0x238 = -1;
+    }
+}
+
+ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
+    if (getType() != 7 && getType() != 8) {
+        if (getType() != 6 && lbl_8053AAF8->field_0x4c != 9 &&
+            lbl_8053AAF8->field_0x4c != 0xB && mLife != 0) {
+            lbl_8053AAF8->fn_80138B7C();
+        }
+        s32 serial = field_0x238;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+            if (actor != NULL) {
+                actor->mAlive = false;
+            }
+        }
     }
 }

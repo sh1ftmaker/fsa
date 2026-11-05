@@ -23,13 +23,34 @@ static const s16* lbl_8049E198[14] = {
     lbl_80464E2C, lbl_80464E38, lbl_80464E44, lbl_80464E5C, lbl_80464E68, lbl_80464E74, lbl_80464E80,
 };
 
-EscortWoman_8049E1D0::EscortWoman_8049E1D0() : EscortBase_8049E0C8("enemy_gc_sob.bin", 0x2E6, 1) {
-    field_0x3c4 = 0;
-    field_0x3c8 = 0;
-    field_0x3cc = 0;
+s32 EscortWoman_8049E1D0::vfunc_0x94() {
+    return vfunc_0x6C(9);
 }
 
-EscortWoman_8049E1D0::~EscortWoman_8049E1D0() {}
+void EscortWoman_8049E1D0::vfunc_0x90() {
+    if (fn_80122834() && field_0x33c < 10) {
+        vfunc_0x6C(10);
+    }
+}
+
+s32 EscortWoman_8049E1D0::vfunc_0x8C() {
+    return vfunc_0x6C(8);
+}
+
+s32 EscortWoman_8049E1D0::vfunc_0x88() {
+    return vfunc_0x6C(5);
+}
+
+s32 EscortWoman_8049E1D0::vfunc_0x84() {
+    return vfunc_0x6C(7);
+}
+
+s32 EscortWoman_8049E1D0::vfunc_0x78() {
+    if (field_0x33c >= 6 || field_0x33c <= 3) {
+        return 0;
+    }
+    return EscortBase_8049E0C8::vfunc_0x78();
+}
 
 s32 EscortWoman_8049E1D0::vfunc_0x74() {
     return fn_80121DB0();
@@ -41,35 +62,6 @@ void EscortWoman_8049E1D0::vfunc_0x70() {
     mAnim.fn_801D1F14(0.0f);
 }
 
-s32 EscortWoman_8049E1D0::vfunc_0x78() {
-    if (field_0x33c >= 6 || field_0x33c <= 3) {
-        return 0;
-    }
-    return EscortBase_8049E0C8::vfunc_0x78();
-}
-
-s32 EscortWoman_8049E1D0::vfunc_0x94() {
-    return vfunc_0x6C(9);
-}
-
-void EscortWoman_8049E1D0::vfunc_0x90() {
-    if (fn_80122834() && field_0x33c < 10) {
-        vfunc_0x6C(10);
-    }
-}
-
-s32 EscortWoman_8049E1D0::vfunc_0x88() {
-    return vfunc_0x6C(5);
-}
-
-s32 EscortWoman_8049E1D0::vfunc_0x84() {
-    return vfunc_0x6C(7);
-}
-
-s32 EscortWoman_8049E1D0::vfunc_0x8C() {
-    return vfunc_0x6C(8);
-}
-
 void EscortWoman_8049E1D0::vfunc_0x64() {
     field_0x35c = field_0x90 & 0xFF;
     field_0x3cc = (field_0x90 >> 22) & 0x1F;
@@ -77,4 +69,12 @@ void EscortWoman_8049E1D0::vfunc_0x64() {
 
 void EscortWoman_8049E1D0::init() {
     fn_80124448();
+}
+
+EscortWoman_8049E1D0::~EscortWoman_8049E1D0() {}
+
+EscortWoman_8049E1D0::EscortWoman_8049E1D0() : EscortBase_8049E0C8("enemy_gc_sob.bin", 0x2E6, 1) {
+    field_0x3c4 = 0;
+    field_0x3c8 = 0;
+    field_0x3cc = 0;
 }

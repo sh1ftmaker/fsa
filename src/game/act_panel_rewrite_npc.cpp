@@ -9,27 +9,103 @@
 #include "game/act/act_panel_rewrite_npc.h"
 #include "game/act/act_small_key.h"
 
-cls_804A8E40::~cls_804A8E40() {
-    if (field_0x23c == 2) {
-        JGeometry::TVec2f pos(mPos.x, mPos.y);
-        s32 cell = fn_80226BC4(&pos, field_0x4);
-        s32 slot = fn_802D6A9C()->fn_802D4C10(field_0x4, cell);
-        if (slot != -1) {
-            fn_802D6A9C()->fn_802D7D00(field_0x4, slot, false);
+bool cls_804A8E40::vfunc_0x5C(f32 a, f32 b, f32 c) {
+    f32 d = a - b;
+    if (d >= -c && d <= c) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 92.02%. The original keeps `this` in r31 from entry and the layer
+// temporary in r30; ours swaps the saved registers for this, the serial and
+// the found actor.
+bool cls_804A8E40::vfunc_0x58() {
+    s32 serial = -1;
+    if (viewLayerFlag(field_0x4)) {
+        return false;
+    }
+    for (;;) {
+        serial = fn_801F856C()->fn_801F78F4('KEY0', serial);
+        if (serial < 0) {
+            return false;
         }
+        if (serial == mSerial) {
+            continue;
+        }
+        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
+        if (other == NULL) {
+            continue;
+        }
+        JGeometry::TVec3f otherPos = other->mPos;
+        if (field_0x4 != other->field_0x4) {
+            continue;
+        }
+        if (!vfunc_0x5C(mPos.x + 8.0f, otherPos.x, 8.0f)) {
+            continue;
+        }
+        if (!vfunc_0x5C(mPos.y + 8.0f, otherPos.y, 8.0f)) {
+            continue;
+        }
+        if (!vfunc_0x5C(mPos.z, otherPos.z, 8.0f)) {
+            continue;
+        }
+        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(other);
+        if (!key->fn_802C1970(field_0x4, &mPos)) {
+            continue;
+        }
+        key->fn_802C2B64();
+        return true;
     }
 }
 
-void cls_804A8E40::init() {
-    field_0x234 = field_0x90 & 0x3FF;
-    field_0x238 = (field_0x90 >> 16) & 0xF;
-    field_0x23c = (field_0x90 >> 20) & 7;
-    field_0x240 = (field_0x90 >> 23) & 7;
-    field_0x244 = (field_0x90 >> 12) & 0xF;
-    field_0x248 = (field_0x90 >> 10) & 3;
-}
+// Per-type effects, read once per call from field_0x244; the KMRI actor takes
+// the table entry as its fourth argument.
+static const u32 lbl_8046D808[4] = {3, 0, 0, 0};
 
-void cls_804A8E40::draw() {}
+void cls_804A8E40::vfunc_0x54(u8 arg) {
+    if (field_0x24c) {
+        if (field_0x4 >= 8) {
+            JGeometry::TVec3f pos(mPos.x + 8.0f, mPos.y + 8.0f, 0.0f);
+            // FIXME: 98.41%. The original stores the zero z before the y sum (scheduling).
+            u32 entry = lbl_8046D808[field_0x244];
+            fn_801F856C()->fn_801F9484('KMRI', field_0x4, &pos, entry, -1, -1);
+        } else {
+            if (field_0x244 == 0) {
+                fn_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
+                fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
+            } else if (field_0x244 == 1) {
+                fn_8013CC50(field_0x4, &mPos, 0x59, 1, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x5A, 1, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x5B, 1, 0, NULL, NULL, true, 1.0f);
+            } else if (field_0x244 == 2) {
+                if (fn_802D6A9C()->field_0x40 == 0x11) {
+                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CC50(field_0x4, &mPos, 0xB1, 1, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CC50(field_0x4, &mPos, 0xB2, 1, 0, NULL, NULL, true, 1.0f);
+                } else {
+                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CC50(field_0x4, &mPos, 0xAF, 1, 0, NULL, NULL, true, 1.0f);
+                    fn_8013CC50(field_0x4, &mPos, 0xB0, 1, 0, NULL, NULL, true, 1.0f);
+                }
+            } else if (field_0x244 == 3) {
+                fn_8013CC50(field_0x4, &mPos, 0x99, 1, 0, NULL, NULL, true, 1.0f);
+                fn_8013CC50(field_0x4, &mPos, 0x9A, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        }
+        if (arg == 1) {
+            if (field_0x240 == 0) {
+                fn_801F0E34(0x30003, 0);
+            }
+            if (field_0x240 == 2) {
+                fn_801F0D20(0x42);
+            }
+            if (field_0x240 == 3) {
+                fn_801F0D20(3);
+            }
+        }
+    }
+}
 
 // Writes the panel's tile at its cell: the 0x10 / 0x30 types go to the layer's
 // tile grid, other types to the BgRewrite animation (fn_802A3948) by the tile
@@ -60,6 +136,8 @@ static inline void finishCell(cls_804A8E40* p) {
         p->field_0x230 = 1;
     }
 }
+
+void cls_804A8E40::draw() {}
 
 // FIXME: 97.66%. In the tile write, the original builds layer + offset in the
 // argument register r4 (ours uses a temporary, r7); the rest matches.
@@ -114,50 +192,13 @@ void cls_804A8E40::update() {
     }
 }
 
-// Per-type effects, read once per call from field_0x244; the KMRI actor takes
-// the table entry as its fourth argument.
-static const u32 lbl_8046D808[4] = {3, 0, 0, 0};
-
-void cls_804A8E40::vfunc_0x54(u8 arg) {
-    if (field_0x24c) {
-        if (field_0x4 >= 8) {
-            JGeometry::TVec3f pos(mPos.x + 8.0f, mPos.y + 8.0f, 0.0f);
-            // FIXME: 98.41%. The original stores the zero z before the y sum (scheduling).
-            u32 entry = lbl_8046D808[field_0x244];
-            fn_801F856C()->fn_801F9484('KMRI', field_0x4, &pos, entry, -1, -1);
-        } else {
-            if (field_0x244 == 0) {
-                fn_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
-                fn_8013CC50(field_0x4, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
-            } else if (field_0x244 == 1) {
-                fn_8013CC50(field_0x4, &mPos, 0x59, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x5A, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x5B, 1, 0, NULL, NULL, true, 1.0f);
-            } else if (field_0x244 == 2) {
-                if (fn_802D6A9C()->field_0x40 == 0x11) {
-                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB1, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB2, 1, 0, NULL, NULL, true, 1.0f);
-                } else {
-                    fn_8013CC50(field_0x4, &mPos, 0xAD, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xAF, 1, 0, NULL, NULL, true, 1.0f);
-                    fn_8013CC50(field_0x4, &mPos, 0xB0, 1, 0, NULL, NULL, true, 1.0f);
-                }
-            } else if (field_0x244 == 3) {
-                fn_8013CC50(field_0x4, &mPos, 0x99, 1, 0, NULL, NULL, true, 1.0f);
-                fn_8013CC50(field_0x4, &mPos, 0x9A, 1, 0, NULL, NULL, true, 1.0f);
-            }
-        }
-        if (arg == 1) {
-            if (field_0x240 == 0) {
-                fn_801F0E34(0x30003, 0);
-            }
-            if (field_0x240 == 2) {
-                fn_801F0D20(0x42);
-            }
-            if (field_0x240 == 3) {
-                fn_801F0D20(3);
-            }
+cls_804A8E40::~cls_804A8E40() {
+    if (field_0x23c == 2) {
+        JGeometry::TVec2f pos(mPos.x, mPos.y);
+        s32 cell = fn_80226BC4(&pos, field_0x4);
+        s32 slot = fn_802D6A9C()->fn_802D4C10(field_0x4, cell);
+        if (slot != -1) {
+            fn_802D6A9C()->fn_802D7D00(field_0x4, slot, false);
         }
     }
 }
@@ -246,52 +287,11 @@ void cls_804A8E40::vfunc_0x10() {
     }
 }
 
-bool cls_804A8E40::vfunc_0x5C(f32 a, f32 b, f32 c) {
-    f32 d = a - b;
-    if (d >= -c && d <= c) {
-        return true;
-    }
-    return false;
-}
-
-// FIXME: 92.02%. The original keeps `this` in r31 from entry and the layer
-// temporary in r30; ours swaps the saved registers for this, the serial and
-// the found actor.
-bool cls_804A8E40::vfunc_0x58() {
-    s32 serial = -1;
-    if (viewLayerFlag(field_0x4)) {
-        return false;
-    }
-    for (;;) {
-        serial = fn_801F856C()->fn_801F78F4('KEY0', serial);
-        if (serial < 0) {
-            return false;
-        }
-        if (serial == mSerial) {
-            continue;
-        }
-        ActorBase_804A5770* other = fn_801F856C()->fn_801F666C(serial);
-        if (other == NULL) {
-            continue;
-        }
-        JGeometry::TVec3f otherPos = other->mPos;
-        if (field_0x4 != other->field_0x4) {
-            continue;
-        }
-        if (!vfunc_0x5C(mPos.x + 8.0f, otherPos.x, 8.0f)) {
-            continue;
-        }
-        if (!vfunc_0x5C(mPos.y + 8.0f, otherPos.y, 8.0f)) {
-            continue;
-        }
-        if (!vfunc_0x5C(mPos.z, otherPos.z, 8.0f)) {
-            continue;
-        }
-        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(other);
-        if (!key->fn_802C1970(field_0x4, &mPos)) {
-            continue;
-        }
-        key->fn_802C2B64();
-        return true;
-    }
+void cls_804A8E40::init() {
+    field_0x234 = field_0x90 & 0x3FF;
+    field_0x238 = (field_0x90 >> 16) & 0xF;
+    field_0x23c = (field_0x90 >> 20) & 7;
+    field_0x240 = (field_0x90 >> 23) & 7;
+    field_0x244 = (field_0x90 >> 12) & 0xF;
+    field_0x248 = (field_0x90 >> 10) & 3;
 }

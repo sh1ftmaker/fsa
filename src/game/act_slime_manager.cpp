@@ -6,21 +6,6 @@
 
 cls_804A5BD8::~cls_804A5BD8() {}
 
-cls_804A5BD8::cls_804A5BD8() {
-    field_0x340 = 0;
-    field_0x344 = 0;
-    field_0x345 = 0;
-    field_0x346 = 0;
-    field_0x348 = 0;
-    field_0x34a = 0;
-}
-
-void cls_804A5BD8::vfunc_0x88() {
-    field_0x3c.x = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.z = 0.0f;
-}
-
 void cls_804A5BD8::fn_80207E24() {
     switch (mState) {
     case 4:
@@ -55,6 +40,12 @@ void cls_804A5BD8::fn_80207ECC() {
     }
 }
 
+void cls_804A5BD8::vfunc_0x88() {
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+}
+
 void cls_804A5BD8::fn_80208834() {
     if (mState != 7) {
         fn_80208244(7);
@@ -83,4 +74,13 @@ void cls_804A5BD8::fn_802088B4() {
 void cls_804A5BD8::fn_80208924() {
     field_0x346 = fn_8022461C(&mPos, field_0x4);
     field_0x348 = fn_80226850(&mPos, field_0x4);
+}
+
+cls_804A5BD8::cls_804A5BD8() {
+    field_0x340 = 0;
+    field_0x344 = 0;
+    field_0x345 = 0;
+    field_0x346 = 0;
+    field_0x348 = 0;
+    field_0x34a = 0;
 }

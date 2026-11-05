@@ -32,35 +32,6 @@ static const char* lbl_804B1CA0[10] = {
     "kk_rupyNum_09.bti",
 };
 
-cls_804B1CC8::cls_804B1CC8() {
-    lbl_8053AF20 = this;
-    mScreen = new J2DScreen();
-    mScreen->setPriority("mg_fishing.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    mPanes[0] = new cls_804AF86C();
-    mPanes[0]->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
-    mPanes[1] = new cls_804AF86C();
-    mPanes[1]->fn_80402F04(mScreen->search(0x004E646174613031ull /* "Ndata01" */));
-    field_0x10 = 0;
-    field_0x11 = 0;
-    field_0x12 = 0;
-    field_0x13 = 0;
-}
-
-cls_804B1CC8::~cls_804B1CC8() {
-    delete mScreen;
-    mScreen = NULL;
-    for (s32 i = 0; i < 2; i++) {
-        delete mPanes[i];
-        mPanes[i] = NULL;
-    }
-    lbl_8053AF20 = NULL;
-}
-
-void cls_804B1CC8::fn_8044A024() {
-    lbl_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
-}
-
 // Updates the digit pictures of the counters and shows or hides their panes.
 // FIXME: 91.22 %. Mostly register assignment (arg_mismatch): the target keeps
 // field_0x12 in r31 and its tens in r30, ours in r30 and r28. The lis/addi
@@ -129,6 +100,11 @@ void cls_804B1CC8::fn_8044998C() {
     field_0x13 = 0;
 }
 
+void cls_804B1CC8::fn_8044A024() {
+    lbl_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+}
+
 // Sets the digit pictures to the 'TIMG' name lbl_804B1CA0[0] and hides the
 // panes 'Ndata01' and 'Ndata00'.
 void cls_804B1CC8::fn_8044A06C() {
@@ -150,4 +126,28 @@ void cls_804B1CC8::fn_8044A06C() {
     static_cast<J2DPicture*>(mScreen->search(lbl_80490C78[11]))->changeTexture(res, 0);
     mScreen->search(lbl_80490C40[6])->hide();
     mScreen->search(lbl_80490C78[12])->hide();
+}
+
+cls_804B1CC8::~cls_804B1CC8() {
+    delete mScreen;
+    mScreen = NULL;
+    for (s32 i = 0; i < 2; i++) {
+        delete mPanes[i];
+        mPanes[i] = NULL;
+    }
+    lbl_8053AF20 = NULL;
+}
+
+cls_804B1CC8::cls_804B1CC8() {
+    lbl_8053AF20 = this;
+    mScreen = new J2DScreen();
+    mScreen->setPriority("mg_fishing.blo", 0x1100000, lbl_80529DEC.field_0x10);
+    mPanes[0] = new cls_804AF86C();
+    mPanes[0]->fn_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
+    mPanes[1] = new cls_804AF86C();
+    mPanes[1]->fn_80402F04(mScreen->search(0x004E646174613031ull /* "Ndata01" */));
+    field_0x10 = 0;
+    field_0x11 = 0;
+    field_0x12 = 0;
+    field_0x13 = 0;
 }

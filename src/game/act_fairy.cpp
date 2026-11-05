@@ -5,11 +5,6 @@
 #include "game/act/act_fairy.h"
 #include "game/tu_80379F84.h"
 
-Fairy_804A03B8::~Fairy_804A03B8() {
-    fn_801EE434(mEmitter290);
-    fn_801EE434(mEmitter294);
-}
-
 void Fairy_804A03B8::draw() {
     SpriteParams_801F5AE0 params;
     if ((field_0x90 >> 27) != 0 && !vfunc_0x34()) {
@@ -114,4 +109,9 @@ void Fairy_804A03B8::init() {
             }
         }
     }
+}
+
+Fairy_804A03B8::~Fairy_804A03B8() {
+    fn_801EE434(mEmitter290);
+    fn_801EE434(mEmitter294);
 }

@@ -56,6 +56,21 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
     return kind;
 }
 
+// Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
+// `layer`; the flag picks 5 or 4 in the low bits of its last argument.
+s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
+    return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
+}
+
+// Makes the emitter immortal and then invalid (it stops creating particles and
+// is deleted once they are gone). Does nothing for a NULL emitter.
+void fn_801CB7A0(JPABaseEmitter* emitter) {
+    if (emitter != NULL) {
+        emitter->setStatus(JPAEMIT_Immortal);
+        emitter->becomeInvalidEmitter();
+    }
+}
+
 // Whether `actor` is a live Bombchu ('BMTY'): its field_0x230 is not 3.
 bool fn_801CC8E4(ActorBase_804A5770* actor) {
     bool result = false;
@@ -133,6 +148,28 @@ s32 fn_801CCF34(s32 player) {
     return fn_80236228(target);
 }
 
+// Whether fn_80230188 holds for every player that takes part (fn_80138A30).
+bool fn_801CCF7C() {
+    s32 count = lbl_8053AAF8->fn_80138A30();
+    for (s32 i = 0; i < count; i++) {
+        if (!fn_80230188(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Whether `player` has no owner (fn_8022F514 is false) and fn_80303750 says yes.
+bool fn_801CD1D0(s32 player) {
+    bool result = false;
+    if (!fn_8022F514(player)) {
+        if (fn_80303750(player)) {
+            result = true;
+        }
+    }
+    return result;
+}
+
 // Whether every player's layer (fn_8023DE58) is `layer`.
 bool fn_801CD228(s32 layer) {
     bool result = true;
@@ -157,39 +194,11 @@ bool fn_801CD290(s32 layer) {
     return result;
 }
 
-// Whether `player` has no owner (fn_8022F514 is false) and fn_80303750 says yes.
-bool fn_801CD1D0(s32 player) {
-    bool result = false;
-    if (!fn_8022F514(player)) {
-        if (fn_80303750(player)) {
-            result = true;
-        }
-    }
-    return result;
-}
-
 // Whether `layer` is one of the upper layers (8 and up).
 bool fn_801CD2F8(s32 layer) {
     bool result = false;
     if (layer >= 8) {
         result = true;
-    }
-    return result;
-}
-
-// Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
-s32 fn_801CD354(s32 value) {
-    s32 result = 0;
-    switch (value) {
-    case 0:
-        result = 1;
-        break;
-    case 2:
-        result = 3;
-        break;
-    case 3:
-        result = 2;
-        break;
     }
     return result;
 }
@@ -206,6 +215,23 @@ s32 fn_801CD30C(s32 value) {
         break;
     case 3:
         result = 1;
+        break;
+    }
+    return result;
+}
+
+// Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
+s32 fn_801CD354(s32 value) {
+    s32 result = 0;
+    switch (value) {
+    case 0:
+        result = 1;
+        break;
+    case 2:
+        result = 3;
+        break;
+    case 3:
+        result = 2;
         break;
     }
     return result;
@@ -231,15 +257,6 @@ s32 fn_801CD664(s32 n) {
     return n * lbl_8053AAF8->mRandom.get_ufloat_1();
 }
 
-// Makes the emitter immortal and then invalid (it stops creating particles and
-// is deleted once they are gone). Does nothing for a NULL emitter.
-void fn_801CB7A0(JPABaseEmitter* emitter) {
-    if (emitter != NULL) {
-        emitter->setStatus(JPAEMIT_Immortal);
-        emitter->becomeInvalidEmitter();
-    }
-}
-
 // Steps *angle towards target by at most step; the result of fn_801CD970 is
 // not used.
 void fn_801CD930(s16* angle, s32 target, s32 step) {
@@ -250,21 +267,4 @@ void fn_801CD930(s16* angle, s32 target, s32 step) {
 // target (see EnemyBase.h).
 s32 fn_801CD950(f32* value, f32 target, f32 step) {
     return fn_801CD9F0(value, target, step);
-}
-
-// Whether fn_80230188 holds for every player that takes part (fn_80138A30).
-bool fn_801CCF7C() {
-    s32 count = lbl_8053AAF8->fn_80138A30();
-    for (s32 i = 0; i < count; i++) {
-        if (!fn_80230188(i)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-// Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
-// `layer`; the flag picks 5 or 4 in the low bits of its last argument.
-s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
-    return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
 }

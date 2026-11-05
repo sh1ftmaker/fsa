@@ -6,6 +6,14 @@
 #include "game/act/act_sword_soldier.h"
 #include "std/math.h"
 
+// FIXME: the instructions match; its four constants (0.0f, .5, 3.0, 0.0)
+// only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
+// .sdata2 is laid out in the original order. std::sqrtf out of line; 13
+// calls from 7 units.
+f32 fn_80154378(f32 x) {
+    return std::sqrtf(x);
+}
+
 s32 SwordSoldier_8049FCA0::fn_801544AC() const {
     return field_0x28c;
 }
@@ -16,6 +24,12 @@ s32 SwordSoldier_8049FCA0::fn_801544C0() {
 
 u32 ActorBase_804A5770::fn_801544C8() const {
     return field_0x90;
+}
+
+// An actor's position (its mPos). Out of line in the original, called from
+// 4 other units on actors they got from fn_801F666C / fn_8015445C.
+JGeometry::TVec3f* ActorBase_804A5770::fn_801544DC() {
+    return &mPos;
 }
 
 // The EnemyParam "atcp" damage (ActorBase's 0x114), passed to fn_801F2B7C.
@@ -39,14 +53,6 @@ s32 ActorBase_804A5770::fn_8015461C() const {
     return field_0x4;
 }
 
-// FIXME: the instructions match; its four constants (0.0f, .5, 3.0, 0.0)
-// only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
-// .sdata2 is laid out in the original order. std::sqrtf out of line; 13
-// calls from 7 units.
-f32 fn_80154378(f32 x) {
-    return std::sqrtf(x);
-}
-
 // Keeps pos in the camera's view (3 units call it; they ignore r3).
 void fn_80154718(const JGeometry::TVec3f* pos) {
     lbl_8053AB10->field_0x24->fn_8030C210(pos);
@@ -57,10 +63,4 @@ void fn_80154718(const JGeometry::TVec3f* pos) {
 // unit's earlier functions put 0.0f (lbl_8053D258) first in .sdata2.
 f32 fn_80154744() {
     return lbl_8053AAF8->mRandom.get_ufloat_1();
-}
-
-// An actor's position (its mPos). Out of line in the original, called from
-// 4 other units on actors they got from fn_801F666C / fn_8015445C.
-JGeometry::TVec3f* ActorBase_804A5770::fn_801544DC() {
-    return &mPos;
 }

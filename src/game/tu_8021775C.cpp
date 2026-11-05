@@ -15,57 +15,6 @@ static JGeometry::TVec3f lbl_804CD838(lbl_8053F0BC, lbl_8053F0BC, lbl_8053F0BC);
 // Effect ids for the six emitters of fn_80217ED4.
 static const u16 lbl_8046A5A0[8] = {0x022A, 0x022B, 0x022C, 0x022D, 0x0549, 0x022E, 0x0000, 0x0000};
 
-cls_80217F80::cls_80217F80() {
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-    mEmitters[2] = NULL;
-    mEmitters[3] = NULL;
-    mEmitters[4] = NULL;
-    mEmitters[5] = NULL;
-    mOwner = NULL;
-}
-
-cls_80217F80::~cls_80217F80() {
-    fn_801EE434(mEmitters[0]);
-    fn_801EE434(mEmitters[1]);
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-    fn_801EE434(mEmitters[2]);
-    fn_801EE434(mEmitters[3]);
-    mEmitters[2] = NULL;
-    mEmitters[3] = NULL;
-    fn_801EE434(mEmitters[4]);
-    fn_801EE434(mEmitters[5]);
-    mEmitters[4] = NULL;
-    mEmitters[5] = NULL;
-}
-
-void cls_80217F80::fn_802179EC() {
-    fn_801EE434(mEmitters[4]);
-    fn_801EE434(mEmitters[5]);
-    mEmitters[4] = NULL;
-    mEmitters[5] = NULL;
-}
-
-void cls_80217F80::fn_80217A30() {
-    fn_801EE434(mEmitters[2]);
-    fn_801EE434(mEmitters[3]);
-    mEmitters[2] = NULL;
-    mEmitters[3] = NULL;
-}
-
-void cls_80217F80::fn_80217A74() {
-    fn_801EE434(mEmitters[0]);
-    fn_801EE434(mEmitters[1]);
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-}
-
-void cls_80217F80::fn_8021798C() {
-    fn_8013CB44(mEmitters[0], &mOwner->mPos, 1, 1, true);
-    fn_8013CB44(mEmitters[1], &mOwner->mPos, 1, 1, true);
-}
-
 // FIXME: 90.63 %. Same instructions as the original except the y and z blocks:
 // the original loads from.y and from.z before the FLT_EPSILON compare (into the
 // load gap after the epsilon load) and uses other registers; ours loads them in
@@ -114,6 +63,32 @@ void cls_80217F80::fn_80217874(f32 t) {
     }
     fn_8013CB44(mEmitters[2], &pos, 1, 1, true);
     fn_8013CB44(mEmitters[3], &pos, 1, 1, true);
+}
+
+void cls_80217F80::fn_8021798C() {
+    fn_8013CB44(mEmitters[0], &mOwner->mPos, 1, 1, true);
+    fn_8013CB44(mEmitters[1], &mOwner->mPos, 1, 1, true);
+}
+
+void cls_80217F80::fn_802179EC() {
+    fn_801EE434(mEmitters[4]);
+    fn_801EE434(mEmitters[5]);
+    mEmitters[4] = NULL;
+    mEmitters[5] = NULL;
+}
+
+void cls_80217F80::fn_80217A30() {
+    fn_801EE434(mEmitters[2]);
+    fn_801EE434(mEmitters[3]);
+    mEmitters[2] = NULL;
+    mEmitters[3] = NULL;
+}
+
+void cls_80217F80::fn_80217A74() {
+    fn_801EE434(mEmitters[0]);
+    fn_801EE434(mEmitters[1]);
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
 }
 
 void cls_80217F80::fn_80217AB8() {
@@ -191,4 +166,29 @@ void cls_80217F80::fn_80217ED4() {
             emitter->setGlobalScale(lbl_804CD838);
         }
     }
+}
+
+cls_80217F80::~cls_80217F80() {
+    fn_801EE434(mEmitters[0]);
+    fn_801EE434(mEmitters[1]);
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    fn_801EE434(mEmitters[2]);
+    fn_801EE434(mEmitters[3]);
+    mEmitters[2] = NULL;
+    mEmitters[3] = NULL;
+    fn_801EE434(mEmitters[4]);
+    fn_801EE434(mEmitters[5]);
+    mEmitters[4] = NULL;
+    mEmitters[5] = NULL;
+}
+
+cls_80217F80::cls_80217F80() {
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    mEmitters[2] = NULL;
+    mEmitters[3] = NULL;
+    mEmitters[4] = NULL;
+    mEmitters[5] = NULL;
+    mOwner = NULL;
 }

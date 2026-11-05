@@ -12,6 +12,24 @@ static const s32 lbl_80464AF8[35] = {
     0x00000226, 0x00000280, 0x00000280, 0x000002F8, 0x00000320, 0x00000384, 0x00000000,
 };
 
+cls_8049DB90::~cls_8049DB90() {}
+
+s32 cls_8049DB90::vfunc_0x5C() {
+    switch (field_0x238) {
+    case 12:
+    case 21:
+    case 24:
+    case 33:
+    case 34:
+        return 1;
+    }
+    return 0;
+}
+
+s32 cls_8049DB90::vfunc_0x58() {
+    return field_0x238;
+}
+
 void cls_8049DB90::vfunc_0x54() {
     s32 value = fn_8011921C()->field_0x8;
     switch (field_0x234) {
@@ -91,22 +109,4 @@ cls_8049DB90::cls_8049DB90() {
     field_0x250 = 0.0f;
     field_0x25c = 0.0f;
     field_0x258 = 0.0f;
-}
-
-cls_8049DB90::~cls_8049DB90() {}
-
-s32 cls_8049DB90::vfunc_0x58() {
-    return field_0x238;
-}
-
-s32 cls_8049DB90::vfunc_0x5C() {
-    switch (field_0x238) {
-    case 12:
-    case 21:
-    case 24:
-    case 33:
-    case 34:
-        return 1;
-    }
-    return 0;
 }

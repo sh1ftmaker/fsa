@@ -3,13 +3,9 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 
-// FIXME: 99%. Only the epilogue is scheduled differently: the original
-// reloads the saved LR (lwz r0, 0x14(r1)) before restoring r31, ours the
-// other way round.
-void ViewMode_804A9A18::init() {
-    fn_802D6A9C()->fn_802D77E4(field_0x4, (u16)field_0x90);
-    field_0x230 = field_0x90 >> 27;
-}
+ViewMode_804A9A18::~ViewMode_804A9A18() {}
+
+void ViewMode_804A9A18::draw() {}
 
 void ViewMode_804A9A18::update() {
     s32 bit;
@@ -49,6 +45,10 @@ void ViewMode_804A9A18::update() {
     }
 }
 
-void ViewMode_804A9A18::draw() {}
-
-ViewMode_804A9A18::~ViewMode_804A9A18() {}
+// FIXME: 99%. Only the epilogue is scheduled differently: the original
+// reloads the saved LR (lwz r0, 0x14(r1)) before restoring r31, ours the
+// other way round.
+void ViewMode_804A9A18::init() {
+    fn_802D6A9C()->fn_802D77E4(field_0x4, (u16)field_0x90);
+    field_0x230 = field_0x90 >> 27;
+}

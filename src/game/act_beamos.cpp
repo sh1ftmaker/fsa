@@ -7,46 +7,32 @@
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_beamos.h"
 
-Beamos_804A40E0::Beamos_804A40E0() {
-    field_0x2a8 = 0;
-    field_0x2aa = 0;
-    field_0x2ac = 0;
-    field_0x2b0 = 0;
-    field_0x2b4 = 0;
-}
-
 Beamos_804A40E0::~Beamos_804A40E0() {}
 
-void Beamos_804A40E0::init() {
-    EnemyBase_804A4808::init();
-    u32 count = field_0x90 & 0xFF;
-    if (count > 0xF) {
-        count = 0xF;
-    } else if (count < 1) {
-        count = 1;
+// FIXME: 95.22 %. Same instructions modulo registers: the position block's
+// table pointer and x term are scheduled in another order (as in fn_801BE86C),
+// plus the .sdata2 literal names.
+void Beamos_804A40E0::draw() {
+    SpriteParams_801F5AE0 params;
+    if (mState == 2) {
+        params.field_0x14.mColor.r = 0x80;
+        params.field_0x14.mColor.g = 0x80;
+        params.field_0x14.mColor.b = 0x80;
     }
-    field_0x2ac = count;
-    field_0x2b0 = (field_0x90 >> 22) & 0x1F;
-    field_0x2b4 = field_0x90 >> 27;
-    if (field_0x2b0 != 0) {
-        mFlags |= 0x2000;
+    fn_801F06F0("enemy_gc_sob.bin", 0x13C, &params, -1, 1.0f, 1.0f);
+    if (mFlags & 0x2000) {
+        return;
     }
-    mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
-    mBox2.set(-8.0f, -20.0f, 8.0f, 8.0f);
-    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
-    field_0x98 = 2;
-    mFlags |= ENEMY_FLAG_NO_HURT | ENEMY_FLAG_NO_ATTACK;
-    field_0x2a8 = fn_801CD664(0x10000);
-    mState = 0;
-    mStateTimer = 0;
-    field_0x250 = fn_801CD664(1) + 0x5A;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    if (field_0x2aa != 0) {
-        field_0xb0 = 0x40002;
-    } else {
-        field_0xb0 = 0x40004;
+    static JUtility::TColor lbl_8053AC0C(0xFF, 0xFF, 0xFF, 0xFF);
+    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
+    f32 floorY = -15.0f + mPos.y;
+    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
+                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
+    s32 depth = 0;
+    if (pos.y >= floorY) {
+        depth = 1;
     }
+    fn_8013AC90(&pos, &lbl_8053AC0C, 0, depth, 0, 4.0f);
 }
 
 void Beamos_804A40E0::vfunc_0x24() {
@@ -79,6 +65,13 @@ bool Beamos_804A40E0::vfunc_0x5C() {
     }
     return hit;
 }
+
+bool Beamos_804A40E0::vfunc_0x60() {
+    u32 includeId = field_0x2aa != 0 ? 'NULL' : mActorId;
+    return fn_801F2DB4(includeId, 'SWBM', NULL);
+}
+
+void Beamos_804A40E0::vfunc_0x98() {}
 
 // FIXME: 80.85 %. The original keeps `this` in r30 and loads the layer and
 // serial into r30 and r31 before the fn_8020D58C call (ours loads them after
@@ -161,35 +154,42 @@ void Beamos_804A40E0::fn_801BE86C() {
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
 }
 
-// FIXME: 95.22 %. Same instructions modulo registers: the position block's
-// table pointer and x term are scheduled in another order (as in fn_801BE86C),
-// plus the .sdata2 literal names.
-void Beamos_804A40E0::draw() {
-    SpriteParams_801F5AE0 params;
-    if (mState == 2) {
-        params.field_0x14.mColor.r = 0x80;
-        params.field_0x14.mColor.g = 0x80;
-        params.field_0x14.mColor.b = 0x80;
+void Beamos_804A40E0::init() {
+    EnemyBase_804A4808::init();
+    u32 count = field_0x90 & 0xFF;
+    if (count > 0xF) {
+        count = 0xF;
+    } else if (count < 1) {
+        count = 1;
     }
-    fn_801F06F0("enemy_gc_sob.bin", 0x13C, &params, -1, 1.0f, 1.0f);
-    if (mFlags & 0x2000) {
-        return;
+    field_0x2ac = count;
+    field_0x2b0 = (field_0x90 >> 22) & 0x1F;
+    field_0x2b4 = field_0x90 >> 27;
+    if (field_0x2b0 != 0) {
+        mFlags |= 0x2000;
     }
-    static JUtility::TColor lbl_8053AC0C(0xFF, 0xFF, 0xFF, 0xFF);
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-    f32 floorY = -15.0f + mPos.y;
-    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
-                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
-    s32 depth = 0;
-    if (pos.y >= floorY) {
-        depth = 1;
+    mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
+    mBox2.set(-8.0f, -20.0f, 8.0f, 8.0f);
+    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0x98 = 2;
+    mFlags |= ENEMY_FLAG_NO_HURT | ENEMY_FLAG_NO_ATTACK;
+    field_0x2a8 = fn_801CD664(0x10000);
+    mState = 0;
+    mStateTimer = 0;
+    field_0x250 = fn_801CD664(1) + 0x5A;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    if (field_0x2aa != 0) {
+        field_0xb0 = 0x40002;
+    } else {
+        field_0xb0 = 0x40004;
     }
-    fn_8013AC90(&pos, &lbl_8053AC0C, 0, depth, 0, 4.0f);
 }
 
-void Beamos_804A40E0::vfunc_0x98() {}
-
-bool Beamos_804A40E0::vfunc_0x60() {
-    u32 includeId = field_0x2aa != 0 ? 'NULL' : mActorId;
-    return fn_801F2DB4(includeId, 'SWBM', NULL);
+Beamos_804A40E0::Beamos_804A40E0() {
+    field_0x2a8 = 0;
+    field_0x2aa = 0;
+    field_0x2ac = 0;
+    field_0x2b0 = 0;
+    field_0x2b4 = 0;
 }

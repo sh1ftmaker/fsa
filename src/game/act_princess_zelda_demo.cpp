@@ -4,10 +4,6 @@
 #include "game/GameGlobals.h"
 #include "game/cls_8049D740.h"
 
-s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
-    return field_0x238;
-}
-
 void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
     switch (field_0x234) {
     case 0:
@@ -21,6 +17,23 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
         break;
     }
     field_0x238 = 0x31;
+}
+
+s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
+    return field_0x238;
+}
+
+void PrincessZeldaDemo_8049D208::draw() {
+    cls_8049D140::draw();
+    if (field_0x230 == 0) {
+        if (mAnim0.mAnim >= 0x13) {
+            fn_8010F7EC(0x21b);
+        } else if (mAnim0.mAnim >= 0xf) {
+            fn_8010F7EC(0x274);
+        } else {
+            fn_8010F7EC(0x9b);
+        }
+    }
 }
 
 void PrincessZeldaDemo_8049D208::update() {
@@ -64,19 +77,6 @@ void PrincessZeldaDemo_8049D208::vfunc_0x10() {
     } while (node != fn_8011921C()->mEnd);
 
     field_0x2d0 = mPos;
-}
-
-void PrincessZeldaDemo_8049D208::draw() {
-    cls_8049D140::draw();
-    if (field_0x230 == 0) {
-        if (mAnim0.mAnim >= 0x13) {
-            fn_8010F7EC(0x21b);
-        } else if (mAnim0.mAnim >= 0xf) {
-            fn_8010F7EC(0x274);
-        } else {
-            fn_8010F7EC(0x9b);
-        }
-    }
 }
 
 PrincessZeldaDemo_8049D208::~PrincessZeldaDemo_8049D208() {
