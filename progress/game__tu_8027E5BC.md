@@ -25,3 +25,16 @@ SHARED-EDITS: include/game/Player.h (fields 0x11B4 TVec3f, 0x1388 JPABaseEmitter
 fn_8027F1C8, fn_8027F854, fn_802487FC (tu_8023FBF0); free fn_8022C6AC, fn_802341D0 (tu_8022AD64));
 include/game/cls_804A71A8.h (0xA0 s32, 0xB7 u8; owner tu_802684A4); symbols.txt renames fn_8022C6AC__Fl,
 fn_802341D0__Fl, fn_802487FC__15Player_804A6F38Fv and the three new members.
+
+## 2026-11-05 Opus 5.5 round 7 (agent K)
+Baseline total 8539 -> 8548 (+9); unit 36/73 -> 45/73 (honest report). 100 %: fn_8027EB04, fn_80280DD8,
+fn_802811C0, fn_80281760, fn_80281A18, fn_80281A90, fn_80281D50, fn_80282E6C, fn_802857F0.
+Structurally written (FIXME / reloc-name): fn_8027FA08 99.94, fn_802808E8 99.97, fn_80281E98 99.65,
+fn_80282094 99.41, fn_8028538C 99.90 (stack slots), fn_80283D2C 99.38 (regs), fn_802859C4 99.54 and
+fn_80285690 98.27 (fn_8022C5EC / fn_8022C52C declared s32, return u32; fix lives in generator-owned tu_8022AD64).
+Pool blocker: 1.5 / 0.5 / 3.0 sit before fn_8027FA08's 4.0 (likely a dead-stripped function with the state-3
+walk's literal order); every later literal user stays reloc-name until it is found. Details: docs/PLAYER.md Round 7.
+SHARED-EDITS: include/game/Player.h (0x580 TBox2f carved; members fn_80252F48 (tu_8023FBF0), fn_80275D9C
+(tu_8026FC20), fn_802808E8; extern "C" fn_8022CFE8, fn_8022C76C, fn_8022C82C (tu_8022AD64, unwritten));
+config/G4SE01/symbols.txt renames fn_80252F48__15Player_804A6F38Fv, fn_80275D9C__15Player_804A6F38Fv,
+fn_802808E8__15Player_804A6F38Ff.

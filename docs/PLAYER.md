@@ -21,7 +21,7 @@ report_honest.json and the boot-path coverage dumps
 | tu_80264998 | 80264998-802684A4 | 26 | 24 | 5,140 | draw fn_80264998, body-frame select fn_80265E88 + per-state frame functions (round 6) |
 | tu_802684A4 | 802684A4-8026FC20 | 25 | 5 | 29,428 | cls_804A71A8 (helper object at Player+0xBF0) |
 | tu_8026FC20 | 8026FC20-8027E5BC | 120 | 54 | 55,608 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
-| tu_8027E5BC | 8027E5BC-80285E58 | 73 | 36 | 25,556 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
+| tu_8027E5BC | 8027E5BC-80285E58 | 73 | 45 | 21,916 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
 | tu_80285E58 | 80285E58-80289648 | 8 | 1 | 13,772 | Player update fn_80285E58 + state tick fn_802870C8 (three switch jump tables) |
 | tu_8028FBA0 | 8028FBA0-802957CC | 53 | 12 | 22,292 | state handlers 0x1C-0x32 |
 
@@ -811,3 +811,60 @@ computed z first, i.e. as inline-call arguments).
 - Data: .rodata lbl_8046B960 was one 0x38 symbol; split into the three
   strings (lbl_8046B960 / B974 / B984); .sdata2, .data (jump table) 100 %.
 - Field added: 0x1178 s32 (state 0x49's variant; stw at 0x8024B1A0).
+
+## Round 7 (tu_8027E5BC) (agent K, Opus 5.5, 2026-11-05)
+
+36 -> 45 of 73 at 100 % (+9 honest); structurally written (FIXMEs in the source): fn_8027FA08
+99.94 %, fn_802808E8 99.97 %, fn_80281E98 99.65 %, fn_80282094 99.41 % (literal names only),
+fn_8028538C 99.90 % (two stack slots), fn_80283D2C 99.38 % (registers), fn_802859C4 99.54 % and
+fn_80285690 98.27 % (one cmpwi each, see "Forwarder types" below). States (update / enter / exit,
+names provisional, evidence = what the handlers do):
+
+| state | handlers | what it is |
+|---|---|---|
+| 0x00 | 802859C4 / 80285C28 / - | **standing**: walks (2) when the stick moves (fn_80246F28 != 0), runs (3) with pad 0x40; a follower (fn_80240808) runs when its leader holds 0x40 (fn_8022C5EC), moves (fn_8022C6AC) or is ahead on the same layer (fn_8022CFE8 > 0); facing toward the nearest player as player 4 outside the leader's slot (fn_8027E7E0), else fn_8027EB04; then pick-ups (fn_80261480) and the body frame |
+| 0x01 | 802857F0 / 802859B8 / - | **inactive / waiting slot** (fn_80254744 starts non-participants in 1): on tiles 3 / 0xE / 0x3A effect 0x503 and back to the return point 0x2C4 on layer 0; a leaderless player whose box 0x4C0 touches another present player that can pair (fn_802300EC) follows it (0xD60 = i), and with state 0 granted stores the pad slot 0x11EC and spawns **'TSNO'** (two-sword motion, actors.tsv) |
+| 0x02 | 80285690 / 802857C8 / - | **walk**: fn_802808E8(1.5) (the stick walk step), fn_8027EB04, the walk cycle fn_8027EEB4; a follower switches to 3 like state 0 |
+| 0x03 | 8028538C / 80285668 / 80285388 | **run / follow**: a follower with 0x1215 takes the leader's layer and position; formation 5 with cls_804A71A8 0xB4 walks by stick at 1.5; otherwise (0x122C <= 0) steps 0.5 a frame toward fn_8027FA08's target in x/y and on arrival stands (0) or walks (2) |
+| 0x4E | 80281E98 / 80282094 / 80281E84 | **bounce**: enter sets (-1, 3, 0), a view shake (GameView fn_802D79E8, 4) and the TV effect of kind 1 at 0xCB0; after 20 frames (0x3FC) it flies with 0x344 (y -0.1 a frame to -1, x +-0.1 a frame to +-5) and rebounds at (+-1, 3) on a wall (fn_802517F8) or past 5, counting rebounds in 0x3FA; from the second one on, landing (y <= 0), 0x3FD or fn_802518AC stops it; squash 0xC84 = (1, 1, 0.5) in flight; exit restores 0xC84 = 1 |
+| 0x4F | 80281A90 / 80281D50 / 80281A18 | **dash**: enter faces by the leader (fn_80230CFC) or the pad and sets speed 2 along the facing (lbl_8046BE78), sound 0x1000C; update moves by 0x344 plus the stick (fn_8022C82C / fn_8022C76C; y not on tile 2 of view-flag layers), poses 0x3FB 0-5 over 20 frames (0x3FA), then state 0; after frame 5 with fn_802466B4 and not fn_802DEBF8 it requests state 9 (0x11AC = 4); dust effect 0x3D3 (0x1354, 'PEFF' callback 0x1398) or on tile 0x39 0x3D4 (0x1358, 0x13A8); exit releases both and keeps the speed in 0x368 |
+| 0x50 | 8028126C / 80281760 / 802811C0 | **burning** (hit kind 0x16, round 5): enter hops (2 along the facing, 3 up: lbl_8046BEA8), fire effects by facing into 0x135C (0x246-0x249) and 0x132C (0x242-0x245, particle callback 0x1330), spawns **ACTOR_FIRE** ("Fire Rod fire", actors.tsv high) on the player into **0xB28** with argument 0x180 \| facing << 4 \| index, sounds 0x10014 / 0x2004C; exit releases 0x132C / 0x135C and kills the 0xB28 actor (fn_802BAA00) |
+| 0x51 | 80280E44 / 802810E4 / 80280DD8 | (hit kind 0x18): enter effects 0x289 / 0x28A (0x1350), 0x46C = 300, sound 0x2003B; exit releases 0x1350, takes the offset 0x474 back out of mPos, 0x464 = 60 |
+| 0x38 | 80283E70 / 8028414C / 80283D2C | exit (written): 0x440 keeps mPos as the return point 0x2C4; unless 0xCF4 is 0x24 it clears 0xCE8 and, without the carry flag 0x43F, releases the players following this one (fn_802384BC on each i with fn_8022F3DC(i) == index) and on tile 0xD spawns effect 0x3D0 (scale 1.2); with 0x43F it keeps 0x444 = 0x344.z for state 0x1B or clears 0x43F / 0x440 / 0x444 |
+
+- **fn_8027EB04 = facing / walk direction** (0x3DC / 0x3E8, 100 %): in a group from the formation
+  (formation 3 with fn_80248970() >= 2: lbl_8046C0B8 / lbl_8046C0C8 by index, by viewLayerFlag) or
+  the leader (fn_80230CFC / fn_80230B70); else from the pad bits fn_80246B10 (2 right, 1 left,
+  8 up, 4 down; diagonals give 0x3E8 4-7 and keep a compatible facing).
+- **fn_8027FA08(out) = the follow target** (update B, the state 3 update): the history head 0x38[0]
+  (0x1216), mPos, or the leader's position (fn_80240644) plus this player's place by
+  fn_802486A0: 0 a row (16 * fn_80248778 along x), 1 a column (along y, sign by viewLayerFlag),
+  2 a 2x2 square, 3 a diamond around the leader (rotated by 0x11C0 around fn_80252F48 =
+  &0x11B4 with fn_80241284, else by both indices), 4 mPos, 5 the leader's history 12 frames per
+  place back (fn_8023E4E4).
+- **fn_802808E8(speed) = the stick walk step**: speed per axis (0 while 0x35C is not zero or
+  0x3C1 / 0x3C2 block it; y halved on tiles 0x2C-0x2F; x1.4 with fn_8022B244 and item 5) into
+  0x38C / 0x390, then mPos += speed * stick (fn_8022C82C x, -fn_8022C76C y); upward on view-flag
+  layers only while one of the eight probes (fn_8024B298) is off tile 2.
+- **Player 0x580 is a TBox2f** (carved this round, for fn_802570BC in tu_80256C74): fn_80259830
+  (0x45 update) and fn_8025A15C (0x44 update) store a per-facing box built on the stack (i at 0x580,
+  f at 0x588); fn_802570BC compares points with 0x580 / 0x588 (x) and 0x584 / 0x58C (y).
+- **.sdata2 blocker** (all later reloc-name misses): the original pool after the 0x4330 double is
+  1.5, 0.5, 3.0, then fn_8027FA08's 4.0. fn_8027FA08 itself uses only 16, the double, 4.0, 0.5,
+  in case order 3, 2, 0, 1, 5, 4 (its code order). 1.5 / 0.5 / 3.0 in that order is exactly the
+  literal sequence of the state 3 update's walk (fn_802808E8(1.5f), then |dir| >= 0.5 and the
+  normalize's 3.0), so a function or inline with that body was probably defined between
+  fn_8027F854 and fn_8027FA08 and dead-stripped; its body is not proven, so nothing was invented.
+  Until it is found every function using a literal from 0x80540378 on stays reloc-name.
+- **Forwarder types**: fn_8022C5EC and fn_8022C52C return u32 (all 22 callers of fn_8022C5EC test
+  with cmplwi) but are declared and defined s32 in the generator-owned tu_8022AD64.cpp; changing
+  that flips fn_802859C4 and fn_80285690's compare.
+- Data: .rodata lbl_8046BE78 / lbl_8046BEA8 (Vec[4] speeds), lbl_8046C0B8 / lbl_8046C0C8 (s32[4]
+  formation facings) written as file-scope tables in address order (MWCC emits file-scope
+  tables in declaration order). Left: lbl_8046BDA8, lbl_8046BDD8, lbl_8046BED8, lbl_8046BF38,
+  lbl_8046C098 (users unwritten).
+- Not written: helpers fn_80280074, fn_802804E0, fn_80280B30 (callers not traced), fn_80280E44 (0x51
+  update), fn_8028126C (0x50 update), fn_80282178 (0x4D), fn_80282ACC (0x4B), fn_80282FE0 (0x4A),
+  fn_80283948 (0x49), fn_80283E70 (0x38), fn_802844F8 (0x1B), fn_80284978 (0x1A), fn_80284E04
+  (0x0E), fn_80285098 (0x0D).
+
