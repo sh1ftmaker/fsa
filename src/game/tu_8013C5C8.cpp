@@ -130,24 +130,30 @@ u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
     return result;
 }
 
+// The depth-biased position fn_8013CB44 and fn_8013CC50 both compute (inlined into each).
+static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
+    if (adjust) {
+        adjust = pos->z > 0.0f;
+    }
+    if (adjust && height < 1) {
+        height++;
+        depth--;
+    }
+    f32 offset = height * 1024 + depth * 128;
+    p.x = pos->x;
+    p.y = pos->y + offset;
+    p.z = pos->z + offset;
+    p.z += lbl_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
+}
+
 // FIXME: 99.93. Code identical; only the int-to-float double's .sdata2 relocation differs: the
 // original pool has 0.5f (first used by the unwritten draw passes) before it.
 u8 fn_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     bool result = false;
     if (emitter != NULL) {
-        if (adjust) {
-            adjust = pos->z > 0.0f;
-        }
-        if (adjust && height < 1) {
-            height++;
-            depth--;
-        }
-        f32 offset = height * 1024 + depth * 128;
-        f32 x = pos->x;
-        f32 y = pos->y + offset;
-        f32 z = pos->z + offset;
-        z += lbl_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
-        emitter->setTranslation(x, y, z);
+        JGeometry::TVec3f p;
+        depthPos(p, pos, height, depth, adjust);
+        emitter->setTranslation(p.x, p.y, p.z);
         result = true;
     }
     return result;
@@ -170,19 +176,8 @@ JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32
             // declared after, the two swap registers with layer / pos.
             u8 group;
             JPAEmitterCallBack* callback = emitterCB;
-            if (adjust) {
-                adjust = pos->z > 0.0f;
-            }
-            if (adjust && height < 1) {
-                height++;
-                depth--;
-            }
-            f32 offset = height * 1024 + depth * 128;
             JGeometry::TVec3f p;
-            p.x = pos->x;
-            p.y = pos->y + offset;
-            p.z = pos->z + offset;
-            p.z += lbl_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
+            depthPos(p, pos, height, depth, adjust);
 
             // The draw group (JPAEmitterManager group); 0xFF queues the
             // position for the executeAfter callback instead.
