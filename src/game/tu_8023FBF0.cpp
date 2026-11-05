@@ -549,6 +549,107 @@ static inline bool teamCheck(Player_804A6F38* player) {
     return true;
 }
 
+// The pad axis fn_80309F20 of the player's slot behind teamCheck, else 0.
+// fn_8024712C's body; fn_80243234 and the functions after it inline it
+// before its definition.
+static inline f32 padAxis_8024712C(Player_804A6F38* player) {
+    if (teamCheck(player) == false) {
+        return 0.0f;
+    }
+    return lbl_8053AD30->fn_80309F20(fn_8030AAF4(player->field_0x11ec));
+}
+
+// As padAxis_8024712C, for fn_80309FCC (fn_80247330's body).
+static inline f32 padAxis_80247330(Player_804A6F38* player) {
+    if (teamCheck(player) == false) {
+        return 0.0f;
+    }
+    return lbl_8053AD30->fn_80309FCC(fn_8030AAF4(player->field_0x11ec));
+}
+
+// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test), in each of the five
+// inlined pad axis reads; otherwise the same instructions.
+// Whether the pad points sideways for the facing 0x3DC on a flagged layer
+// (viewLayerFlag): x right while facing 0 or 1 turns the player to 3.
+bool Player_804A6F38::fn_80243234() {
+    if (!viewLayerFlag(field_0x3b4)) {
+        return false;
+    }
+    if ((field_0x3dc == 0 && padAxis_8024712C(this) > 0.0f) || (field_0x3dc == 1 && padAxis_8024712C(this) > 0.0f)) {
+        field_0x3e8 = 3;
+        field_0x3dc = 3;
+        return true;
+    }
+    if ((field_0x3dc == 0 && padAxis_80247330(this) > 0.0f) ||
+        (field_0x3dc == 1 && padAxis_80247330(this) < 0.0f) ||
+        (field_0x3dc == 3 && padAxis_8024712C(this) > 0.0f)) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test), in the gate and in
+// each of the four inlined pad axis reads; otherwise the same instructions.
+// Whether the pad points against the facing 0x3DC.
+bool Player_804A6F38::fn_80243C64() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if ((field_0x3dc == 0 && padAxis_80247330(this) < 0.0f) ||
+        (field_0x3dc == 1 && padAxis_80247330(this) > 0.0f) ||
+        (field_0x3dc == 2 && padAxis_8024712C(this) > 0.0f) ||
+        (field_0x3dc == 3 && padAxis_8024712C(this) < 0.0f)) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test), in the gate and in
+// each of the four inlined pad axis reads; otherwise the same instructions.
+// Whether the pad points along the facing 0x3DC.
+bool Player_804A6F38::fn_80244630() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if ((field_0x3dc == 0 && padAxis_80247330(this) > 0.0f) ||
+        (field_0x3dc == 1 && padAxis_80247330(this) < 0.0f) ||
+        (field_0x3dc == 2 && padAxis_8024712C(this) < 0.0f) ||
+        (field_0x3dc == 3 && padAxis_8024712C(this) > 0.0f)) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80244FFC() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x100)) {
+        return true;
+    }
+    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+}
+
+// FIXME: 97.1 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80245238() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100)) {
+        return true;
+    }
+    if (lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x20)) {
+        return true;
+    }
+    if (viewLayerFlag(field_0x3b4) && lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x200)) {
+        return true;
+    }
+    return false;
+}
+
 // FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
 // playerFlags_802413F0, and the group loop's registers).
 bool Player_804A6F38::fn_802454C0() {
@@ -731,6 +832,18 @@ f32 Player_804A6F38::fn_80246F28() {
         return 0.0f;
     }
     return lbl_8053AD30->fn_80309D90(fn_8030AAF4(field_0x11ec));
+}
+
+// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+f32 Player_804A6F38::fn_8024712C() {
+    return padAxis_8024712C(this);
+}
+
+// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+f32 Player_804A6F38::fn_80247330() {
+    return padAxis_80247330(this);
 }
 
 u8 Player_804A6F38::fn_80247534() {

@@ -148,6 +148,8 @@ public:
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
     f32 fn_80246F28();
+    f32 fn_8024712C(); // tu_8023FBF0 (0x8024712C): cls_804AA8C8::fn_80309F20 of the pad slot (gated), else 0
+    f32 fn_80247330(); // tu_8023FBF0 (0x80247330): cls_804AA8C8::fn_80309FCC of the pad slot (gated), else 0
     bool fn_80241478(); // via fn_8022D930
     void fn_8024148C(); // via fn_80236C88
     bool fn_80241498(); // via fn_80236D14
@@ -165,6 +167,8 @@ public:
     s32 fn_802418E8(); // via fn_80236100
     s32 fn_80241920(); // via fn_80236228
     s32 fn_8024322C(); // via fn_8023697C
+    bool fn_80244FFC(); // tu_8023FBF0 (0x80244FFC): pad trigger 0x100 or 0x20 (gated)
+    bool fn_80245238(); // tu_8023FBF0 (0x80245238): pad hold 0x100 / 0x20, or 0x200 on a flagged layer (gated)
     bool fn_802454C0(); // via fn_8022BF68
     bool fn_802456FC(); // via fn_8022C004
     bool fn_80245938(); // via fn_8022C0A0
@@ -1085,7 +1089,9 @@ public:
     bool fn_8025190C(bool a);
     void fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c);
     bool fn_8024F63C();
+    bool fn_80243234(); // tu_8023FBF0 (0x80243234)
     bool fn_80243C64();
+    bool fn_80244630(); // tu_8023FBF0 (0x80244630)
     s32 fn_8027218C();
 }; // Size: 0x13BC
 
