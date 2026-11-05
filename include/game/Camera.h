@@ -31,6 +31,7 @@
 #include "types.h"
 #include "dolphin/mtx.h"
 #include "JSystem/JGeometry.h"
+#include "JSystem/JParticle/JPADrawInfo.h"
 
 // The screen rectangle of Camera_804AA9E4::field_0x144 (x0, y0, x1, y1 as
 // unsigned ints, converted to float with the unsigned idiom: fn_8030C2A8 tests a point against x0+0xE..x1-0xE and y0..y1). No code of its own; named after the first function that builds
@@ -119,11 +120,11 @@ public:
     /* 0x034 */ Mtx44 field_0x34; // C_MTXOrtho (0x8030CC18)
     /* 0x074 */ Mtx field_0x74;   // fn_8030C5F0's PSMTXMultVec; GXLoadPosMtxImm
     /* 0x0A4 */ Mtx44 field_0xa4; // GXSetProjection (0x8030DEFC)
-    // Copies of the view (PSMTXCopy at 0x8030CC24) and a C_MTXLightOrtho
-    // (0x8030CC4C); identity after the constructor. tu_8013C5C8 copies
-    // both word by word (0x8013D718-0x8013D7CC).
-    /* 0x0E4 */ Mtx field_0xe4;
-    /* 0x114 */ Mtx field_0x114;
+    // The particle draw info: a copy of the view (PSMTXCopy at 0x8030CC24)
+    // and a C_MTXLightOrtho (0x8030CC4C); identity after the constructor
+    // (JPADrawInfo's default constructor). tu_8013C5C8 copies it whole
+    // (0x8013D718-0x8013D7CC) and passes it to JPAEmitterManager::draw.
+    /* 0x0E4 */ JPADrawInfo field_0xe4;
     // The screen rectangle (x0, y0, x1, y1) as unsigned ints: written by tu_802F5040
     // (0x802FF438), read by fn_8030C2A8.
     /* 0x144 */ ScreenRect_802FF3F0 field_0x144;

@@ -412,6 +412,21 @@ void EffectSystem_8049F178::fn_8013D5B0() {
     mEmitterManager->forceDeleteAllEmitter();
 }
 
+void EffectSystem_8049F178::fn_8013D908() {
+    JPADrawInfo info(lbl_8053AB10->field_0x24->field_0xe4);
+    lbl_8053AB10->fn_8013B438();
+    mEmitterManager->draw(&info, 7);
+}
+
+void EffectSystem_8049F178::fn_8013DA10() {
+    if (!lbl_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info(lbl_8053AB10->field_0x24->field_0xe4);
+        lbl_8053AB10->fn_8013B438();
+        GXSetAlphaUpdate(GX_FALSE);
+        mEmitterManager->draw(&info, 9);
+    }
+}
+
 void EffectSystem_8049F178::fn_8013DC1C() {
     mEmitterManager->calc(10);
 }
@@ -475,12 +490,11 @@ void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
     lbl_8053AB10->field_0x28->fn_8013C958(emitter);
 }
 
-// FIXME: 97.7. Regalloc only: the original loads lbl_8053AB10 into r3 and the camera
-// last (r4 = effect system first); here the root is in r4 and the camera comes in r5.
+// FIXME: 97.7. Regalloc only: the original keeps lbl_8053AB10 in r3 and loads the effect
+// system into r4 first; here the root is in r4 and the camera comes in r5.
 void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
     GameRoot2_8049F108* root = lbl_8053AB10;
-    JPAEmitterManager* manager = root->field_0x28->mEmitterManager;
-    PSMTXCopy(root->field_0x24->field_0xe4, manager->pWd->mPosCamMtx);
+    root->field_0x24->field_0xe4.getCamMtx(root->field_0x28->mEmitterManager->pWd->mPosCamMtx);
 }
 
 cls_8049F184::~cls_8049F184() {}
