@@ -38,10 +38,7 @@ public:
         mSerial = -1;
     }
     void resetAll() {
-        mActive = 0;
-        mRemove = 0;
-        mTimer = 0;
-        mSerial = -1;
+        reset();
         field_0xc = -1;
     }
 
