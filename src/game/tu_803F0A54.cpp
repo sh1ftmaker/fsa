@@ -151,6 +151,31 @@ void cls_804B0F10::fn_803F3310() {
     field_0x1c4 = 1;
 }
 
+// FIXME: 99.74 %. Instructions identical; only the .sdata2 literals differ (see
+// fn_803F715C). fn_803FC5E4 inlines this function.
+void cls_804B0F10::fn_803F3324() {
+    field_0x110 = -150.0f;
+    mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
+    field_0x114 = -100.0f;
+    field_0x74->fn_80402E08(0.0f, field_0x114);
+    field_0x130 = -350.0f;
+    mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118 + field_0x130, field_0x124);
+    field_0x134 = -350.0f;
+    mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x11c + field_0x134, field_0x128);
+    field_0x138 = -350.0f;
+    mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x120 + field_0x138, field_0x12c);
+    field_0x144 = 400.0f;
+    mScreen->search(0x004E646174613032ull /* "Ndata02" */)->move(field_0x13c + field_0x144, field_0x140);
+    field_0x158 = 400.0f;
+    mScreen->search(0x004E646174613035ull /* "Ndata05" */)->move(field_0x148 + field_0x158, field_0x14c);
+    mScreen->search(0x004E646174613037ull /* "Ndata07" */)->move(field_0x150 + field_0x158, field_0x154);
+    field_0x210[0] = 0;
+    field_0x1d0[0] = 0;
+    field_0x240[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 0;
+}
+
 void cls_804B0F10::fn_803F358C() {
     field_0x58->fn_80436668();
 }
@@ -344,26 +369,7 @@ void cls_804B0F10::fn_803FC5E4(u8 flag) {
             }
         }
         field_0x1c4 = 0;
-        field_0x110 = -150.0f;
-        mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
-        field_0x114 = -100.0f;
-        field_0x74->fn_80402E08(0.0f, field_0x114);
-        field_0x130 = -350.0f;
-        mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118 + field_0x130, field_0x124);
-        field_0x134 = -350.0f;
-        mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x11c + field_0x134, field_0x128);
-        field_0x138 = -350.0f;
-        mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x120 + field_0x138, field_0x12c);
-        field_0x144 = 400.0f;
-        mScreen->search(0x004E646174613032ull /* "Ndata02" */)->move(field_0x13c + field_0x144, field_0x140);
-        field_0x158 = 400.0f;
-        mScreen->search(0x004E646174613035ull /* "Ndata05" */)->move(field_0x148 + field_0x158, field_0x14c);
-        mScreen->search(0x004E646174613037ull /* "Ndata07" */)->move(field_0x150 + field_0x158, field_0x154);
-        field_0x210[0] = 0;
-        field_0x1d0[0] = 0;
-        field_0x240[0] = 0;
-        field_0x1c8 = field_0x1c4;
-        field_0x1c4 = 0;
+        fn_803F3324();
     }
     field_0x350 = 4;
 }
