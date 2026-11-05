@@ -10,8 +10,9 @@
 #include "JSystem/JMath/JMath.h"
 #include "game/cls_804B1288.h"
 
-// The pane names fn_80408F38 looks up (8 characters, right-aligned); 17 of them.
-static const u64 lbl_8048C5D0[17] = {
+// The pane names fn_80408F38 looks up (8 characters, right-aligned). The
+// eight after them (lbl_8048C618) belong to code not written yet.
+static const u64 lbl_8048C5D0[9] = {
     0x0050656E6261636Bull, // "Penback"
     0x0000000050736B79ull, // "Psky"
     0x000050636C6F3034ull, // "Pclo04"
@@ -21,14 +22,6 @@ static const u64 lbl_8048C5D0[17] = {
     0x00506D6170746F75ull, // "Pmaptou"
     0x000050636C6F3031ull, // "Pclo01"
     0x50656E6261636B31ull, // "Penback1"
-    0x00506C6963753031ull, // "Plicu01"
-    0x00506C6963753032ull, // "Plicu02"
-    0x00506C6963753037ull, // "Plicu07"
-    0x00506C6963753038ull, // "Plicu08"
-    0x00506C6963753033ull, // "Plicu03"
-    0x00506C6963753034ull, // "Plicu04"
-    0x00506C6963753035ull, // "Plicu05"
-    0x00506C6963753036ull, // "Plicu06"
 };
 
 void cls_804B1288::fn_80403D84() {
@@ -167,17 +160,17 @@ s32 fn_8040F474() {
     return lbl_8053ADF8->field_0x668;
 }
 
+void cls_804B1288::fn_80411A94(f32 alpha) {
+    field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b * alpha);
+    field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
+    field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
+    field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
+}
+
 void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
     *dst = *src;
 }
 
 bool fn_804149C0() {
     return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x87 & 1;
-}
-
-void cls_804B1288::fn_80411A94(f32 alpha) {
-    field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b * alpha);
-    field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
-    field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
-    field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
 }
