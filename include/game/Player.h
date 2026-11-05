@@ -401,17 +401,14 @@ public:
     // The per-frame calls of the player's update A (fn_80253E6C), all on
     // this player and not written yet: tu_8023FBF0 fn_802490A8 (input and
     // actions), fn_80251D50, fn_8024BDBC, fn_8024E0A0; tu_8026FC20
-    // fn_8026FD14; tu_80264998 fn_80265E88 (skeleton); tu_80285E58
-    // fn_80285E58 (state update) and fn_80286688.
+    // fn_8026FD14; tu_80264998 fn_80265E88 and tu_80285E58 fn_80285E58 /
+    // fn_80286688 (declared above).
     void fn_80253E6C();
     void fn_802490A8();
     void fn_80251D50();
     void fn_8024BDBC();
     void fn_8024E0A0();
     void fn_8026FD14();
-    void fn_80265E88();
-    void fn_80285E58();
-    void fn_80286688();
     // The manager's other per-player calls (fn_8023F390 / fn_8023F2BC):
     // update B (tu_8023FBF0, not written yet) and the draw (tu_80264998).
     void fn_80252FC0();
