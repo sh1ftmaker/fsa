@@ -2,10 +2,14 @@
 // Written so far: the stage predicates that also read GameState_804B0FE0.
 
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
+#include "game/ActorId.h"
 #include "game/ActorManager.h"
+#include "game/Camera.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
+#include "game/Message.h"
 #include "game/Player.h"
 #include <stdio.h>
 
@@ -111,7 +115,65 @@ s32 GameView_804A9950::fn_802D39FC() {
     return field_0x60[field_0x18][field_0x14];
 }
 
-// FIXME: fn_802D3A18 and fn_802D3D48 are not written yet.
+// FIXME: 99.5. One instruction: the target stores the spawn position's z (0.0f) twice
+// (x, z, z, y); a second `pos.z = 0.0f;` matches but would be a duplicated statement, so the
+// source the original had here (an inline that also zeroes z?) is still unknown.
+void GameView_804A9950::fn_802D3A18() {
+    u8 paused = lbl_8053AAF8->field_0x94;
+    if (lbl_8053AAF8->field_0x96 != 0) {
+        paused = 1;
+    }
+    if (lbl_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
+        paused = 1;
+    }
+    if (lbl_8053AAF8->field_0x4->mView->field_0x131f0 == 1 && field_0xc4 != 0 && !paused) {
+        field_0xc4--;
+        if (field_0xc4 == 1800) {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                lbl_8053AED0->fn_8043D67C(0x146, 0, 0);
+            } else {
+                lbl_8053AED0->fn_8043D67C(0x195, 0, 0);
+            }
+            lbl_8053AF80->fn_80458880(0x30, -1);
+        } else if (field_0xc4 == 660) {
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                lbl_8053AED0->fn_8043D67C(0x147, 0, 0);
+            } else {
+                lbl_8053AED0->fn_8043D67C(0x196, 0, 0);
+            }
+            lbl_8053AF80->fn_80458880(0x30, -1);
+        } else if (field_0xc4 == 300) {
+            lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
+            lbl_8053AF80->fn_80458880(0x31, -1);
+        } else if (field_0xc4 == 240) {
+            lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
+            lbl_8053AF80->fn_80458880(0x32, -1);
+        } else if (field_0xc4 == 180) {
+            lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
+            lbl_8053AF80->fn_80458880(0x33, -1);
+        } else if (field_0xc4 == 120) {
+            lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
+            lbl_8053AF80->fn_80458880(0x34, -1);
+        } else if (field_0xc4 == 60) {
+            lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
+            lbl_8053AF80->fn_80458880(0x35, -1);
+        } else if (field_0xc4 == 0) {
+            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+            JGeometry::TVec3f pos;
+            pos.x = -camera->field_0x4[0][3];
+            pos.y = -camera->field_0x4[1][3];
+            pos.z = 0.0f;
+            if (lbl_8053AAF8->field_0x7f != 0) {
+                fn_801F856C()->fn_801F9484(ACTOR_TUTM, 0, &pos, 0, -1, -1);
+                field_0xc4 = 0x8CA0;
+            } else {
+                fn_801F856C()->fn_801F9484(ACTOR_TUGF, 0, &pos, 0, -1, -1);
+            }
+        }
+    }
+}
+
+// FIXME: fn_802D3D48 is not written yet.
 
 
 // FIXME: 78.3. Scheduling and regalloc only: the target computes index * 0x200 and word * 4
@@ -661,6 +723,51 @@ void GameView_804A9950::fn_802DCDF4() {
     lbl_8053AAF8->field_0x4->mView->field_0x131de = 0;
     fn_8013C824()->fn_8013C8CC();
     field_0xc9 = 0;
+}
+
+// FIXME: 99.0. One opcode: the target returns the result through clrlwi r3, r29, 24 (as
+// fn_802DCD1C does), ours with mr; the result's declared type in the original is unknown.
+bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
+    s32 col = field_0x14;
+    s32 row = field_0x18;
+    bool entered = false;
+    u32 exits = 0xF;
+    field_0xc9 = 0;
+    if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
+        s32 end = fn_801F856C()->mActorEnd;
+        for (s32 i = 0; i < end; i++) {
+            ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == 'SMSM') {
+                exits = actor->field_0x90 >> 4;
+                break;
+            }
+        }
+        if (dir[0] > 0) {
+            col++;
+            field_0xc8 = 1;
+        } else if (dir[0] < 0) {
+            col--;
+            field_0xc8 = 2;
+        } else if (dir[1] > 0) {
+            row++;
+            field_0xc8 = 4;
+        } else {
+            row--;
+            field_0xc8 = 8;
+        }
+        if (row >= 0 && row < 10 && col >= 0 && col < 10) {
+            if (field_0x60[row][col] != 0xFF) {
+                if (exits & field_0xc8) {
+                    entered = true;
+                } else {
+                    field_0xc9 = 1;
+                }
+            } else if (!(exits & field_0xc8)) {
+                field_0xc9 = 1;
+            }
+        }
+    }
+    return entered;
 }
 
 void GameView_804A9950::vfunc_0x14() {}

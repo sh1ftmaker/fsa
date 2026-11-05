@@ -55,6 +55,12 @@ public:
     /* 0x14 */ virtual void vfunc_0x14(); // fn_802DD548, empty
 
     // --- per-stage state ---
+    // 0x330 bytes; called by vfunc_0x10. The time limit: while field_0x131f0
+    // is 1 and nothing pauses the game, counts field_0xc4 down, with the
+    // warnings at 1800 / 660 frames and the countdown from 300, and at 0
+    // spawns the time-up actor ('TUTM', or 'TUGF' with lbl_8053AAF8->0x7F
+    // clear) at the camera.
+    void fn_802D3A18();
     // 1 unit. field_0x131a8[index] = value (tu_801F6058 reads the four words).
     void fn_802D39B8(s32 index, s32 value);
     // 1 unit. field_0x14 == field_0xc && field_0x18 == field_0x10.
