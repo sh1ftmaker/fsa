@@ -159,6 +159,7 @@ void GameRoot_8049EF20::fn_80135020(s32 mode) {
         if (field_0x4 == NULL) {
             field_0x4 = new (field_0x98, 0) GameRootSub04_801F856C(field_0x98);
             lbl_8053AB10->fn_8013BE04();
+            // The original loads both values before fn_802D6A9C() (level first).
             if (lbl_8053AAF8->field_0x7f != 0) {
                 s32 level = lbl_80529DEC.field_0x11c;
                 s32 stage = lbl_80529DEC.field_0x118;

@@ -429,8 +429,6 @@ cls_80119E5C* fn_80119DD0();
 // slot of player 0 (all four players when lbl_8053AAF8->field_0x7e is 1) is
 // connected (cls_804AA8C8::fn_8030A308).
 bool fn_80138AB0();
-extern "C" {
-}
 
 class EnemyBase_804A4808;
 extern "C" {
