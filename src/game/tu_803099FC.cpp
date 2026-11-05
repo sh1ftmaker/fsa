@@ -62,36 +62,6 @@ u32 cls_804AA8C8::fn_80309D6C(s32 slot, u32 mask) {
     return field_0x24[slot] & mask;
 }
 
-// FIXME: 99.30. Only register numbers differ: the original keeps x in f1 and y in f2
-// (ours the other way round), and the sdata2 literals are not yet in the original's
-// order (@NNN vs lbl_ until the rest of the unit is written).
-// The original inlines the bodies of fn_80309F20 and fn_80309FCC here (no calls);
-// with -inline auto a call to them stays a call, so the bodies are repeated.
-// 0x80309D90
-f32 cls_804AA8C8::fn_80309D90(s32 slot) {
-    f32 x;
-    if (slot == -0x3E7) {
-        x = 0.0f;
-    } else {
-        x = fn_80309D24(slot, 4) ? -1.0f : 0.0f;
-        x += fn_80309D24(slot, 8) ? 1.0f : 0.0f;
-        if (fn_80309D24(slot, 3)) {
-            x *= 0.70710677f;
-        }
-    }
-    f32 y;
-    if (slot == -0x3E7) {
-        y = 0.0f;
-    } else {
-        y = fn_80309D24(slot, 1) ? -1.0f : 0.0f;
-        y += fn_80309D24(slot, 2) ? 1.0f : 0.0f;
-        if (fn_80309D24(slot, 0xC)) {
-            y *= 0.70710677f;
-        }
-    }
-    return JGeometry::TUtilf::sqrt(x * x + y * y);
-}
-
 // 0x80309F20
 f32 cls_804AA8C8::fn_80309F20(s32 slot) {
     if (slot == -0x3E7) {
@@ -255,4 +225,5 @@ cls_804AA8C8::cls_804AA8C8() {
 //
 // Not written yet: fn_80309A9C / fn_80309B74 / fn_80309C4C (each inlines fn_8030AAF4 and a
 // later-defined accessor; as calls they come out at 44 %, they need -inline deferred),
-// fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll).
+// fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll),
+// fn_80309D90 (inlines fn_80309F20 and fn_80309FCC, defined after it).
