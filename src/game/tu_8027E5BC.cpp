@@ -545,6 +545,64 @@ void Player_804A6F38::fn_8027FA08(JGeometry::TVec3f* out) {
     }
 }
 
+// The stick walk step: speed (x and y, zero while knocked back 0x35C or blocked by 0x3C1 / 0x3C2,
+// halved on tiles 0x2C-0x2F, x1.4 with fn_8022B244 and item 5) into 0x38C / 0x390, then mPos moves
+// by the stick (fn_8022C82C, fn_8022C76C); upward on view-flag layers only while one of the eight
+// probe points (fn_8024B298) stays off tile 2.
+void Player_804A6F38::fn_802808E8(f32 speed) {
+    f32 speedX = speed;
+    f32 speedY = speed;
+    if (field_0x1216) {
+        return;
+    }
+    if (!field_0x35c.isZero()) {
+        speedX = 0.0f;
+        speedY = 0.0f;
+    }
+    if (field_0x3c1) {
+        speedX = 0.0f;
+    }
+    if (field_0x3c2) {
+        speedY = 0.0f;
+    }
+    u16 tile = fn_8022461C(&mPos, field_0x3b4);
+    if (tile == 0x2c || tile == 0x2d || tile == 0x2e || tile == 0x2f) {
+        speedY *= 0.5f;
+    }
+    if (fn_8022B244() && fn_802416C4() == 5) {
+        speedX *= 1.4f;
+        speedY *= 1.4f;
+    }
+    field_0x38c = speedX;
+    field_0x390 = speedY;
+    if (speedX * speedX + speedY * speedY <= JGeometry::TUtilf::epsilon()) {
+        return;
+    }
+    if (field_0xbf0->field_0xb7) {
+        return;
+    }
+    if (fn_80246B10(0x40)) {
+        field_0x368.x = 0.0f;
+        field_0x368.y = 0.0f;
+        return;
+    }
+    mPos.x += speedX * fn_8022C82C(field_0x4);
+    if (viewLayerFlag(field_0x3b4) && fn_8022C76C(field_0x4) > 0.0f) {
+        for (s32 i = 0; i < 8; i++) {
+            JGeometry::TVec3f probe;
+            fn_8024B298(i, &probe);
+            probe.y += speedY * -fn_8022C76C(field_0x4);
+            if (fn_8022461C(&probe, field_0x3b4) != 2) {
+                mPos.y += speedY * -fn_8022C76C(field_0x4);
+                return;
+            }
+        }
+        field_0x368.y = 0.0f;
+    } else {
+        mPos.y += speedY * -fn_8022C76C(field_0x4);
+    }
+}
+
 void Player_804A6F38::fn_80280DD8() {
     if (field_0x1350 != NULL) {
         field_0x1350->becomeInvalidEmitter();
@@ -748,6 +806,70 @@ void Player_804A6F38::fn_80281E84() {
     field_0xc84.z = 1.0f;
 }
 
+// Update of state 0x4E: after the 0x3FC wait, flies with 0x344 (y falls 0.1 a frame to -1, x speeds
+// up 0.1 a frame to +-5) and rebounds at (-1 / 1, 3) when x is past 5 or fn_802517F8 hits; from the
+// second rebound on, landing (y <= 0), 0x3FD or fn_802518AC stops it (state 0 once 0xC8C is back
+// to 1), else the squash 0xC84 = (1, 1, 0.5).
+void Player_804A6F38::fn_80281E98() {
+    if (field_0x3fc != 0) {
+        field_0x3fc--;
+    } else {
+        field_0x344.y -= 0.1f;
+        if (field_0x344.y <= -1.0f) {
+            field_0x344.y = -1.0f;
+        }
+        if (field_0x344.x > 0.0f) {
+            field_0x344.x += 0.1f;
+            if (field_0x344.x > 5.0f || fn_802517F8(false)) {
+                field_0x344.x = -1.0f;
+                field_0x344.y = 3.0f;
+                field_0x344.z = 0.0f;
+                field_0x3fc = 10;
+                field_0x3fa++;
+            }
+        } else {
+            field_0x344.x -= 0.1f;
+            if (field_0x344.x < -5.0f || fn_802517F8(false)) {
+                field_0x344.x = 1.0f;
+                field_0x344.y = 3.0f;
+                field_0x344.z = 0.0f;
+                field_0x3fc = 10;
+                field_0x3fa++;
+            }
+        }
+    }
+    if (field_0x3fc == 0) {
+        mPos += field_0x344;
+    }
+    if ((field_0x3fa >= 2 && field_0x344.y <= 0.0f) || field_0x3fd == 1 || fn_802518AC(false)) {
+        field_0x3fd = 1;
+        field_0x344.x = 0.0f;
+        field_0x344.y = 0.0f;
+        field_0x344.z = 0.0f;
+        mPos.z = 0.0f;
+        if (field_0xc84.z >= 1.0f) {
+            fn_80251AEC(0);
+        }
+    } else {
+        field_0xc84.x = 1.0f;
+        field_0xc84.y = 1.0f;
+        field_0xc84.z = 0.5f;
+    }
+    fn_802685D4();
+}
+
+// Enter of state 0x4E: speed (-1, 3, 0), a view shake (fn_802D79E8, 4 along x) and on the TV the
+// effect of kind 1 at 0xCB0; 20 frames (0x3FC).
+void Player_804A6F38::fn_80282094() {
+    field_0x458 = 0;
+    field_0x344.x = -1.0f;
+    field_0x344.y = 3.0f;
+    field_0x344.z = 0.0f;
+    getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 4.0f, 0.0f, false);
+    lbl_8053AB10->field_0x20->fn_802F601C(&field_0xcb0, 1, NULL, 1.0f, -2.0f);
+    field_0x3fc = 20;
+}
+
 void Player_804A6F38::fn_8028211C() {
     if (field_0xce8 == true && (field_0xcf4 == 0x13 || field_0xcf4 == 0x16)) {
         field_0xce8 = false;
@@ -911,6 +1033,41 @@ void Player_804A6F38::fn_80283D20() {
     field_0x458 = 0;
 }
 
+// FIXME: 99.38. Registers only: in the follower loop the original keeps i in r30 and field_0x4 in
+// r31 (cmpw r3, r31), ours the other way round.
+// Exit of state 0x38: keeps mPos as the return point 0x2C4 (0x440); unless 0xCF4 is 0x24, clears
+// 0xCE8 and either (no 0x43F) releases the followers of this player (fn_802384BC) and on tile 0xD
+// spawns the effect 0x3D0, or keeps / clears the 0x43F carry state for state 0x1B.
+void Player_804A6F38::fn_80283D2C() {
+    if (field_0x440) {
+        field_0x2c4.set(mPos);
+    }
+    if (field_0xcf4 != 0x24) {
+        field_0xce8 = false;
+        if (!field_0x43f) {
+            if (fn_802486A0() != 4 && !fn_80240808()) {
+                for (s32 i = 0; i < 4; i++) {
+                    s32 index = field_0x4;
+                    if (fn_8022F3DC(i) == index) {
+                        fn_802384BC(i);
+                    }
+                }
+            }
+            if (fn_8022461C(&mPos, field_0x3b4) == 0xd) {
+                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d0, 0, -1, NULL, NULL, true, 1.2f);
+            }
+        } else if (field_0x1244 != 0x1b) {
+            field_0x43f = false;
+            field_0x440 = false;
+            field_0x444 = 0.0f;
+        } else {
+            field_0x444 = field_0x344.z;
+        }
+    }
+    field_0x441 = false;
+    fn_8024BAEC();
+}
+
 void Player_804A6F38::fn_8028414C() {
     field_0x458 = 0;
     field_0xce8 = true;
@@ -1062,12 +1219,88 @@ void Player_804A6F38::fn_8028537C() {
 
 void Player_804A6F38::fn_80285388() {}
 
+// FIXME: 99.90. Stack slots only: the original has `to` at 0x14 and the operator- result copy at
+// 0x2C, ours the other way round.
+// Update of state 3 (running / following): a follower on its leader's layer just takes the leader's
+// layer and position (0x1215); in formation 5 with cls_804A71A8 0xB4 the stick walk step at 1.5;
+// otherwise, outside the cooldown 0x122C, it steps 0.5 a frame toward the follow target
+// (fn_8027FA08) and on arrival stands (0) or walks (2, the stick still held).
+void Player_804A6F38::fn_8028538C() {
+    JGeometry::TVec3f target;
+    fn_8027FA08(&target);
+    if (target.z == 0.0f && mPos.z != 0.0f && !field_0x434) {
+        mPos.z = 0.0f;
+    }
+    if (fn_80240808() && field_0x1215) {
+        field_0x3b4 = getPlayerLayer_8023DE58(fn_80240644());
+        mPos = *getPlayerPos_8023E724(fn_80240644());
+        return;
+    }
+    fn_80275D9C();
+    if (fn_802486A0() == 5 && field_0xbf0->field_0xb4) {
+        fn_802808E8(1.5f);
+    } else if (field_0x122c <= 0) {
+        JGeometry::TVec3f to;
+        fn_8027FA08(&to);
+        JGeometry::TVec3f dir = to - mPos;
+        dir.z = 0.0f;
+        if (magnitude(dir) >= 0.5f) {
+            dir.normalize();
+            dir.scale(0.5f);
+            mPos += dir;
+        } else {
+            mPos.set(to);
+            if (fn_802486A0() != 5) {
+                if (fn_8022C6AC(field_0x4) != 0.0f) {
+                    fn_80251AEC(2);
+                } else {
+                    fn_80251AEC(0);
+                }
+            } else if (!fn_80240808()) {
+                fn_80251AEC(0);
+            }
+        }
+    }
+    fn_8027EB04();
+    fn_8027EEB4();
+    fn_80261480();
+    fn_80268B3C();
+}
+
 void Player_804A6F38::fn_80285668() {
     if (field_0x1248 == 2) {
         field_0x3f8 = field_0x437;
         field_0x3f9 = field_0x438;
     }
     field_0x458 = 0;
+}
+
+// FIXME: 98.27. The tests of fn_8022C5EC / fn_8022C52C are cmpwi here, cmplwi in the original: both
+// forwarders return u32 (every caller uses cmplwi) but are declared and defined s32 in the
+// generator-owned game/tu_8022AD64.cpp.
+// Update of state 2 (walking): a follower runs (3) with the leader's pad 0x40, or while it or its
+// leader moves; then the stick walk step at 1.5, the facing, the walk cycle, pick-ups, body frame.
+// The follow target (fn_8027FA08) is computed and not used.
+void Player_804A6F38::fn_80285690() {
+    if (!fn_80275D9C() && fn_80240808()) {
+        JGeometry::TVec3f target;
+        fn_8027FA08(&target);
+        if (fn_8022C5EC(fn_80240644(), 0x40)) {
+            fn_80251AEC(3);
+        } else if (fn_8022C52C(fn_80240644(), 0x40) && fn_8022C6AC(field_0x4) != 0.0f) {
+            fn_80251AEC(3);
+        } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
+            s32 layer = field_0x3b4;
+            if (getPlayerLayer_8023DE58(fn_80240644()) == layer) {
+                fn_80251AEC(3);
+            }
+        }
+    }
+    fn_802808E8(1.5f);
+    fn_8027EB04();
+    fn_8027EEB4();
+    fn_80261480();
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_802857C8() {
