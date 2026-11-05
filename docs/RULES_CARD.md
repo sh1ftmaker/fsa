@@ -51,9 +51,9 @@ rest of the file. `#ifdef NONMATCHING` bodies are fine for complete,
 correct functions.
 
 **Donor-lead preflight.** Before writing a unit or a big function, run
-`python3 tools/donor_leads.py game/<unit>.cpp` (about 15 s). It fingerprints
+`python3 tools/donor_leads.py game/<unit>.cpp` (under a second). It fingerprints
 the unit's asm (string literals, multi-char tags, named callees, distinctive
-floats), greps the allowed donors' game source (not their SDK/JSystem
+floats), greps the allowed donors' game source (never the banned ones below) (not their SDK/JSystem
 copies) and ranks files by weighted hits. Read the top file when the verdict
 is "STRONG LEAD" (a "WEAK LEAD" is a hint, "NO LEAD" means skip) to borrow
 structure and idioms: state machine shape, member layout, helper split.

@@ -254,6 +254,8 @@ def main():
     if not pats and not unit_stem:
         sys.exit("no usable fingerprints in " + unit)
     roots = donor_files(donors)
+    if not roots:  # rg with no path would search the cwd (our own repo)
+        sys.exit(f"no donor game dirs under {donors} (set FSA_DONORS)")
     print(f"unit {unit}: {len(strings)} strings, {len(tags)} tags, "
           f"{len(floats)} float consts, "
           f"{sum(1 for k, v in pats.items() if v[0] in ('callee','class'))}"
@@ -323,8 +325,10 @@ def main():
     for tot, strong, f, nfp in scored[:a.top]:
         shown += 1
         d = hits[f]
-        tag = "  [FSA tooling, not decomp code: confirms names/formats only]" \
-            if "four-swords-online" in f else ""
+        tag = ("  [FSA tooling, not decomp code: confirms names/formats only]"
+               if "four-swords-online" in f else "")
+        if "__ttyd/" in f or "four-swords-online" in f:
+            tag += "  [MIT: keep notice if copying]"
         print(f"{shown:2d}. {tot:6.1f}  {short(f)}   ({strong} string/tag hits){tag}")
         order = sorted(d, key=lambda t: -W[pats[t][0]])
         for t in order[:6]:
