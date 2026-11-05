@@ -431,6 +431,58 @@ bool Player_804A6F38::fn_80240DAC() {
     return field_0x1240 == 0x38 || field_0x1240 == 0x13;
 }
 
+// The layer queries of fn_80240DCC. Each is written as a "bool r = false;
+// if (...) r = true; return r;" inline: the original zeroes the three
+// results with one li and two mr (r30, then r29 and r3 copied from it),
+// the copies MWCC leaves when it inlines such returns; written as plain
+// locals the zeroes are li / li / li ("different", 89.6 %).
+// Carried (field_0xce8) on a layer other than 8.
+static inline bool carriedOffLayer8(const Player_804A6F38* player) {
+    bool r = false;
+    if (player->field_0xce8 && player->field_0x3b4 != 8) {
+        r = true;
+    }
+    return r;
+}
+
+// ... and that layer lacks view bit 1 (GameView fn_802D7804).
+static inline bool carriedOnHiddenLayer(const Player_804A6F38* player) {
+    bool r = false;
+    if (carriedOffLayer8(player) && !getGameView_802D6A9C()->fn_802D7804(player->field_0x3b4, 1)) {
+        r = true;
+    }
+    return r;
+}
+
+// Layer 8, or a layer with view bit 1.
+static inline bool layerShown(s32 layer) {
+    bool r = true;
+    if (layer != 8 && !getGameView_802D6A9C()->fn_802D7804(layer, 1)) {
+        r = false;
+    }
+    return r;
+}
+
+// Carried on a hidden layer while the previous layer (field_0xce4) is shown.
+static inline bool hiddenFromShownLayer(const Player_804A6F38* player) {
+    bool r = false;
+    if (carriedOnHiddenLayer(player) && layerShown(player->field_0xce4)) {
+        r = true;
+    }
+    return r;
+}
+
+// FIXME: 86.20. Scheduling and registers only: the original loads
+// field_0x1240 (fn_80240818) and sets `result` (r31) before saving
+// registers; ours keeps `this` in r29 and `result` in r28.
+bool Player_804A6F38::fn_80240DCC() {
+    bool result = true;
+    if (!fn_80240818() && !hiddenFromShownLayer(this)) {
+        result = false;
+    }
+    return result;
+}
+
 bool Player_804A6F38::fn_80240ED4() {
     return field_0x1240 == 0x1e || field_0x1240 == 0x32;
 }
