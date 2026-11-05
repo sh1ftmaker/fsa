@@ -16,14 +16,6 @@ void cls_804A1A98::vfunc_0x24() {
     vfunc_0x28(field_0x2ee, 8.0f, -16.0f);
 }
 
-// The target reads field_0x4 into a register before the fn_8023DE58 call and keeps it
-// there across the call; a helper taking the actor does that, a plain
-// `fn_8023DE58(p) == field_0x4` loads it after the call.
-static inline bool inLayer(cls_804A1A98* self, s32 player) {
-    s32 layer = self->field_0x4;
-    return layer == fn_8023DE58(player);
-}
-
 // FIXME: 98.9. Regalloc only: the target keeps this in r30 and the two layer reads in r29,
 // we use r29 for this and r30/r28 for the counter and the layer reads.
 u16 cls_804A1A98::fn_80189DEC() {
@@ -31,12 +23,12 @@ u16 cls_804A1A98::fn_80189DEC() {
     if (player < 0) {
         player = 0;
     }
-    if (!(fn_8023F264(player) && inLayer(this, player) && !fn_80230188(player) &&
+    if (!(fn_8023F264(player) && getField_0x4() == fn_8023DE58(player) && !fn_80230188(player) &&
           !fn_80236B50(player) && lbl_8053AB78 != 1))
     {
         s32 pick = (s32)(3.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
         for (s32 i = 0; i < 4; i++) {
-            if (pick != player && fn_8023F264(pick) && inLayer(this, pick) &&
+            if (pick != player && fn_8023F264(pick) && getField_0x4() == fn_8023DE58(pick) &&
                 pick == fn_8022EA0C(pick) && !fn_80230188(pick) && !fn_80236B50(pick) &&
                 !fn_8022DCD8(pick))
             {
@@ -138,9 +130,10 @@ Unk_8045A080* fn_8018A6AC() {
     return lbl_8053AF80;
 }
 
-// FIXME: __sinit_act_phantom_ganon_2_cpp is 99.61 %: the JAudio pool records are
-// 0x10 higher in the original's .bss (lbl_804C17A8 + 0x10); the first 0x10 bytes
-// belong to a static that the unwritten update (fn_80187530) defines.
+// FIXME: __sinit_act_phantom_ganon_2_cpp (compiler-generated, no source line of its own)
+// is 99.93 %: the JAudio pool records are 0x10 higher in the original's .bss
+// (lbl_804C17A8 + 0x10); the first 0x10 bytes belong to a static that the
+// unwritten update (fn_80187530) defines.
 //
 // Not written yet: draw (0x801871A0), update (0x80187530), init (0x8018A070),
 // the JPABaseEmitter helpers 0x8018A5C8-0x8018A5E0 (offsets 0xBB / 0xF4 do not
