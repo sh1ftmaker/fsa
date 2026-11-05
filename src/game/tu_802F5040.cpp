@@ -6,12 +6,6 @@
 #include "JSystem/JUtility/TColor.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include <stdio.h>
-
-// The palettes of fn_802FF798's 16 colour-index textures per layer.
-static const GXTlut lbl_8046F940[16] = {
-    GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
-    GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
-};
 #include "JSystem/JKernel/JKRArchive.h"
 #include "JSystem/JKernel/JKRDecomp.h"
 #include "dolphin/os.h"
@@ -19,6 +13,12 @@ static const GXTlut lbl_8046F940[16] = {
 #include "game/GameMode.h"
 #include "game/Player.h"
 #include "JSystem/JUtility/JUTVideo.h"
+
+// The palettes of fn_802FF798's 16 colour-index textures per layer.
+static const GXTlut lbl_8046F940[16] = {
+    GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+    GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+};
 
 // FIXME: 98.4. The 8.0f literal and field_0x2368.y swap f5/f6 (and 0.125f is in f6, not f7); the
 // ix * 0xC / iy * 0x30C products swap r0/r3. Its .sdata2 literals are @NNN until the
@@ -142,14 +142,14 @@ void cls_804AA858::fn_802FF3B0() {
 // stw, stw) and builds the full-screen one on the stack while storing it; ours copies
 // word by word and drops the stack copy. The loop registers swap as in fn_802FF2D8.
 void cls_804AA858::fn_802FF3F0() {
-    if (field_0x248 && field_0x24c.w != 0) {
+    if (field_0x248 && field_0x24c.x1 != 0) {
         lbl_8053AB10->field_0x24->field_0x144 = field_0x24c;
     } else {
         ScreenRect_802FF3F0 rect;
-        rect.x = 0;
-        rect.y = 0;
-        rect.w = JUTVideo::getManager()->getFbWidth();
-        rect.h = JUTVideo::getManager()->getEfbHeight();
+        rect.x0 = 0;
+        rect.y0 = 0;
+        rect.x1 = JUTVideo::getManager()->getFbWidth();
+        rect.y1 = JUTVideo::getManager()->getEfbHeight();
         lbl_8053AB10->field_0x24->field_0x144 = rect;
     }
     fn_802FC80C();
