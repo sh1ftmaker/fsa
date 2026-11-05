@@ -13,3 +13,13 @@ Resistant:
 Unwritten: fn_80121438, 801217EC, 80121BB8, 80122148, 80122548, 80122730, 80122F6C, 8012309C, 80123394, vfunc_0x98 (80123AB4), vfunc_0x80 (80123B94), fn_80123E9C (vfunc_0x4C), fn_80123F9C, update, fn_80124448, fn_80124600, dtor, ctor, __sinit.
 
 SHARED-EDITS: include/game/tu_801213EC.h (fields 0x268-0x3C4 declared, slots 0x54/0x58 bool, 0x5C s32, 0x98-0xC4 added, helper decls); act_escort_woman.h (0x54/0x58 bool, 0x5C s32, her field_0x340/0x35c removed: now base fields); act_zora_escort.h (field_0x340[] -> field_0x3c4[0x3D4-0x3C4]); GameGlobals.h (extern u8 lbl_8053AAA0, owner tu_8011CEC8); config gen_game.tsv row removed; symbols.txt renames to mangled member names.
+
+## 2026-11-05 Opus 5.5 literal-order pass (no code change)
+Unit 26/59, total 8180 (unchanged). The reloc-name near-misses can't be flipped by writing the earlier functions:
+the original pool starts with 8.0f (0x8053C9B0), created before fn_80121438's 0.0f although its first visible use is
+fn_801217EC (fmadds 8*i + 16); and 10430.378f (0x8053C9F0) sits between fn_80121F34's 2.5f and fn_80121FA8's -24f
+although its first visible use is fn_8012309C. Both look like literals created by code the optimizer dropped (or
+parse-time aggregate initializers in an inline), so natural code for fn_80121438 / fn_801217EC alone leaves 0.0f at
+offset 0 instead of 4, and every near-miss except fn_80121FA8 / 8012202C / 801220C4 uses 0.0f; those three need the
+10430.378f orphan in front of -24f.
+If fn_801217EC's 8.0f lands just before the 0x4330 double (natural order), everything from the double on lines up.
