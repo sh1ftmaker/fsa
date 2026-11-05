@@ -1948,6 +1948,44 @@ bool Player_804A6F38::fn_8024BBB0() {
     return field_0xce8;
 }
 
+// The length of v in the x/y plane, the squares unfused (see GameMath.h);
+// callers pass an operator- temporary by reference, as magnitude().
+static inline f32 planarDistance(const JGeometry::TVec3f& v) {
+    return JGeometry::TUtil<f32>::sqrt(square(v.x) + square(v.y));
+}
+// Requests state 0x3F (once, for the first match) when another present
+// player (fn_8023A51C) on this layer that this one cannot reach
+// (fn_8022E438) is closer than 50 in x/y (80 with fn_8022B244, else 100 at
+// its item level 2+, fn_8023725C); not while fn_80270C88 or in state 0x3F /
+// 0xC; skipped with field_0xb9a, field_0xcf0 or state 0x3C current or
+// requested; then clears field_0xb9d.
+// FIXME: 95.97. The original loads field_0x3b4 before getPlayerLayer_8023DE58
+// into a saved register (r30, as if passed to an inline with the player
+// index), ours after the call into r0; registers otherwise, and the literals
+// 50 / 80 / 2 (@NNN vs lbl_ until the pool is in order).
+void Player_804A6F38::fn_8024BBB8() {
+    if (fn_80270C88() || field_0x1240 == 0x3f || field_0x1240 == 0xc) {
+        return;
+    }
+    if (!field_0xb9a && !field_0xcf0 && field_0x1240 != 0x3c && field_0x1244 != 0x3c) {
+        for (s32 i = 0; i < 4; i++) {
+            if (!fn_8022E438(field_0x4, i) && fn_8023A51C(i) && field_0x3b4 == getPlayerLayer_8023DE58(i)) {
+                f32 range = 50.0f;
+                if (fn_8022B244()) {
+                    range = 80.0f;
+                } else if (fn_8023725C(i) >= 2) {
+                    range *= 2.0f;
+                }
+                if (planarDistance(*fn_8023A478(i) - mPos) < range) {
+                    requestState(this, 0x3f);
+                    break;
+                }
+            }
+        }
+    }
+    field_0xb9d = false;
+}
+
 bool Player_804A6F38::fn_8024C35C() {
     return field_0x3b4 >= 8;
 }
@@ -2013,6 +2051,23 @@ bool Player_804A6F38::fn_8024C4C4(s32 serial) {
         getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x1c, -1, -1);
     }
     return true;
+}
+
+// Whether field_0xd44 is `arg` for a player acting on its own
+// (follows_80240670 false), not walking to its spot (field_0x1216) and
+// without field_0xd4c.
+// FIXME: 99.42. Registers only (the inlined group loops' temporaries).
+bool Player_804A6F38::fn_8024C828(s32 arg) {
+    if (follows_80240670(this)) {
+        return false;
+    }
+    if (field_0x1216 == 1) {
+        return false;
+    }
+    if (field_0xd4c == 1) {
+        return false;
+    }
+    return field_0xd44 == arg;
 }
 
 bool Player_804A6F38::fn_8024CA0C(s32 arg) {
