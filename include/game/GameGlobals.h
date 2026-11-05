@@ -672,7 +672,7 @@ extern JUtility::TColor lbl_80543F20;
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 // Only the flag and the float that tu_801286C0's update sets are known.
 class cls_804A03A8;
-// Owner: the unit at 0x8022AD64 (defined at 0x80239D38, not written yet).
+// Owner: game/tu_8022AD64.cpp (0x80239D38).
 // Free function, no arguments (reads globals, r3 is not read); returns 0 or 1
 // (clrlwi 24); tested by GameRoot2_8049F108::fn_8013BBE0.
 bool fn_80239D38();
@@ -1622,6 +1622,8 @@ void fn_8013ABCC(J3DModel* model, const Vec& scale, Mtx mtx);
 void fn_8013AC54(Mtx view);
 // Owner: game/tu_8022AD64.cpp (0x8023F728, 0x8023F78C). Called by fn_8013A1A4: each
 // runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
+// game/tu_8022AD64.cpp (0x8023F088): shuffles the manager's four start entries.
+void fn_8023F088();
 void fn_8023F728();
 void fn_8023F78C();
 // Owner: game/tu_8022AD64.cpp. The player manager's draw (0x8023F2BC, called
@@ -1642,10 +1644,8 @@ void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entrie
 // Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
 // at field_0x20 of GameRootSub04_801F856C (fn_80139CC4), a GameRootSub20_801902C0.
 void fn_801902D0(void* self);
-// Owners not known (0x8023F088, 0x8023F728, 0x8023F78C,
-// 0x803B8C90, 0x80439AB0; not written yet). Called by
+// Owners not known (0x803B8C90, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
-void fn_8023F088(void);
 u8 fn_803B8C90(void);
 void fn_80439AB0(void* self);
 }

@@ -933,7 +933,7 @@ void Player_804A6F38::fn_80242CB0() {
         field_0x43e = 0;
         return;
     }
-    JGeometry::TVec3f* target = fn_80238430(field_0xd60);
+    const JGeometry::TVec2f* target = fn_80238430(field_0xd60);
     JGeometry::TVec2f pos;
     pos.x = target->x;
     pos.y = target->y;
