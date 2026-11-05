@@ -352,6 +352,148 @@ u8 TileMap_804AA858::fn_802F654C(const JGeometry::TVec3f* pos, void* res, s32 fr
     return result;
 }
 
+// FIXME: 89.8. The quad loop: the original converts the tile's pixel x / y
+// ((x * 2 + i) * 8, (y * 2 + j) * 8) to float twice each inside the innermost
+// loop and computes the second texture coordinates as px * (1 / 128) + 0.0f
+// (fmadds with the pool's 0.0f); ours hoists the y conversion out of the i loop,
+// converts once and folds the + 0.0f (fmuls). The count loop's registers differ.
+// Draws the 16 x 16 block map res (little-endian u16 block numbers, 0 empty)
+// at pos: block n is the 2 x 2 tiles field_0x24[n * 4 ...] (GBA BG entries:
+// tile column / row of field_0x4[0], flips, palette), drawn one palette at a
+// time (field_0x18[0]) as 8 x 8 quads; with field_0xe450 a second TEV stage
+// multiplies in the player's field_0xe428 texture. params' bytes 0x21 / 0x22
+// queue it instead; field_0x30 adds the effect of fn_802F6800.
+void TileMap_804AA858::fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params) {
+    static const GXTlut lbl_80471020[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    GXTlutObj tluts[16];
+    s32 counts[16];
+    GXTexObj tex;
+    JGeometry::TVec3f out;
+
+    if (!field_0x2364) {
+        return;
+    }
+    if (params != NULL && params->field_0x21 && fn_802F654C(pos, NULL, 0, NULL, res, params)) {
+        return;
+    }
+    if (params != NULL && params->field_0x22 && fn_802F6298(pos, NULL, 0, NULL, res, params)) {
+        return;
+    }
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    fn_802F5040(pos, params, &out);
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+    GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+    GXSetNumTexGens(2);
+    if (field_0xe450) {
+        s32 player;
+        if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
+            player = getGameView_802D6A9C()->field_0x50;
+        } else {
+            player = 0;
+        }
+        field_0xe428[player]->load(GX_TEXMAP1);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetNumTevStages(2);
+    }
+    for (int i = 0; i < 16; i++) {
+        GXInitTlutObj(&tluts[i], field_0x18[0] + i * 0x20, GX_TL_RGB5A3, 16);
+        GXLoadTlut(&tluts[i], lbl_80471020[i]);
+    }
+    for (int i = 0; i < 16; i++) {
+        counts[i] = 0;
+    }
+    u8* data = (u8*)res;
+    for (int y = 0; y < 16; y++) {
+        for (int x = 0; x < 16; x++) {
+            s32 index = y * 16 + x;
+            u16 block = data[index * 2] | data[index * 2 + 1] << 8;
+            if (block != 0) {
+                for (int k = 0; k < 4; k++) {
+                    counts[(field_0x24[block * 4 + k] >> 12) & 0xF]++;
+                }
+            }
+        }
+    }
+    for (int palette = 0; palette < 16; palette++) {
+        if (counts[palette] > 0) {
+            GXInitTexObjCI(&tex, field_0x4[0], 0x80, 0x200, GX_TF_C4, GX_CLAMP, GX_CLAMP, GX_FALSE,
+                           lbl_80471020[palette]);
+            GXLoadTexObj(&tex, GX_TEXMAP0);
+            GXBegin(GX_QUADS, GX_VTXFMT0, counts[palette] * 4);
+            for (int y = 0; y < 16; y++) {
+                for (int x = 0; x < 16; x++) {
+                    s32 index = y * 16 + x;
+                    u16 block = data[index * 2] | data[index * 2 + 1] << 8;
+                    if (block == 0) {
+                        continue;
+                    }
+                    for (int j = 0; j < 2; j++) {
+                        for (int i = 0; i < 2; i++) {
+                            u16 tile = field_0x24[block * 4 + j * 2 + i];
+                            if (((tile >> 12) & 0xF) != palette) {
+                                continue;
+                            }
+                            f32 u0 = (8.0f * (tile & 0xF) + 0.501f) / 128.0f;
+                            f32 v0 = (8.0f * ((tile >> 4) & 0x3F) + 0.501f) / 512.0f;
+                            f32 s0 = ((x * 2 + i) * 8) / 128.0f + 0.0f;
+                            f32 t0 = ((y * 2 + j) * 8) / 128.0f + 0.0f;
+                            f32 s1 = 0.0625f + s0;
+                            f32 t1 = 0.0625f + t0;
+                            f32 x0 = (x * 2 + i) * 8 + out.x;
+                            f32 y0 = (y * 2 + j) * 8 + out.y;
+                            f32 u1;
+                            if (tile & 0x400) {
+                                u1 = u0;
+                                u0 = 0.05453125f + u0;
+                            } else {
+                                u1 = 0.05453125f + u0;
+                            }
+                            f32 v1;
+                            if (tile & 0x800) {
+                                v1 = v0;
+                                v0 = 0.013632813f + v0;
+                            } else {
+                                v1 = 0.013632813f + v0;
+                            }
+                            GXPosition3f32(x0, y0, out.z);
+                            GXTexCoord2f32(u0, v0);
+                            GXTexCoord2f32(s0, t0);
+                            GXPosition3f32(8.0f + x0, y0, out.z);
+                            GXTexCoord2f32(u1, v0);
+                            GXTexCoord2f32(s1, t0);
+                            GXPosition3f32(8.0f + x0, 8.0f + y0, out.z);
+                            GXTexCoord2f32(u1, v1);
+                            GXTexCoord2f32(s1, t1);
+                            GXPosition3f32(x0, 8.0f + y0, out.z);
+                            GXTexCoord2f32(u0, v1);
+                            GXTexCoord2f32(s0, t1);
+                        }
+                    }
+                }
+            }
+            GXEnd();
+        }
+    }
+    if (params != NULL && params->field_0x30 != -1) {
+        fn_802F6800(pos, NULL, 0, NULL, res, params);
+    }
+}
+
 // One GBA OAM entry (attributes 0-2 and the affine halfword) as fn_802F86CC
 // unpacks the 6-byte little-endian entries of a "SOB " frame; the bit fields
 // in the GBA's order (big-endian bit fields, so the first is the high bits).
