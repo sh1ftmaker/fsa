@@ -34,3 +34,35 @@ Left unwritten, with reasons:
 Fields: field_0x8b is bool (fn_80458FF0 passes it to fn_8045815C without conversion).
 SHARED-EDITS: include/game/GameGlobals.h (struct moved out), include/game/GameAudio.h (+include),
 new include/game/Unk_8045A080.h; symbols.txt renames (4 lines above).
+
+## 2026-11-05 leverage wave 10 (Opus): AudioMgr round 2
+Baseline 8652 (honest). Unit 18/33 -> 19/33.
+Inlining resolved (reviewer's lead): fn_80458508 and fn_80458F04 are inlined into earlier
+functions (fn_80457E54, fn_8045815C; fn_80458880) while 7 / 6 other units call them out of
+line. Tested on MWCC GC/2.6 -inline auto: a later definition is never inlined, whether the
+class declaration and/or the definition say `inline` (no copy emitted either), so the bodies
+were inline ahead of their users. Written as the playerFlags_802413F0 / fn_802413F0
+precedent: inline members moveMusicTempo_80458508 / startSecondSeq_80458F04 defined at the
+top of the .cpp (declared in the class; not in the widely included header, per RULES_CARD),
+and fn_80458508 / fn_80458F04 call them (unchanged %: 98.55 / 100).
+Written:
+- fn_80457E54 100 % (inlines moveMusicTempo_80458508).
+- fn_8045815C 99.97 % reloc-name only (0.5f pooled after 0.7f, used first by unwritten
+  fn_80459674). Needed JAISound::getID() by value (TP JAudio2 form; mkdd has const&): the
+  original copies the ID through a temporary. SHARED-EDIT libs/sdk/include/.../JAISound.h.
+- fn_80458880 (393 callers) 99.66 % missing/extra (1 instr) + reloc-name. Two more inlines
+  proven by the code: getPlayerPan (re-tests player < 0 inside the player >= 0 branch, and
+  &aux is computed before the pan) and stopSounds13To1C (its ten JAISoundID temporaries take
+  the lowest stack slots, below fn_80458880's own and startSecondSeq's, as inlined bodies'
+  do). Left: case 1 / default of getPlayerPan reload 0.5f in the original. Try budget spent.
+Not written:
+- fn_80459274, fn_804593D4: bodies drafted (category pause / moveVolume 3, structure clear),
+  but MWCC auto-inlines fn_80458744 into them. Probe: adding one statement to fn_80458744
+  still inlines, two stop it, so the original fn_80458744 is a little longer by MWCC's
+  measure; static local tables, a table pointer, extra case labels do not change it. Without
+  a natural longer form, left unwritten.
+- -inline deferred (rejected anyway) reverses function order and inlines fn_80458744 into
+  fn_80457E04, which the original calls: not the original's mode.
+SHARED-EDITS: include/game/Unk_8045A080.h (inline decls moveMusicTempo_80458508,
+startSecondSeq_80458F04, getPlayerPan; comments), libs/sdk/include/JSystem/JAudio/Interface/
+JAISound.h (getID by value).

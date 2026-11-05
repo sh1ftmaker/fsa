@@ -85,11 +85,13 @@ struct AudioMgr_8045A080 {
     /* 0x8E */ u8 field_0x8e; // set by fn_804593D4, cleared by fn_80459274
     /* 0x8F */ u8 field_0x8f;
     // 0x80457E54: stores flag at 0x8c, sets the mode (fn_80458744 2 / 0)
-    // and the music tempo (lbl_8053A268 over lbl_8053A26C frames / 1.0).
+    // and the music tempo (moveMusicTempo_80458508 2 / 0, inlined).
     void fn_80457E54(bool flag);
     // 0x80458508: the music tempo: lbl_8053A260 (kind 1) or lbl_8053A268
     // (kind 2) over their frame counts, else 1.0 at once.
     void fn_80458508(u8 kind);
+    // fn_80458508's body, inline (game/tu_80457DFC.cpp; used only there).
+    inline void moveMusicTempo_80458508(u8 kind);
     // 0x80459508: stops every sound (JAUSoundMgr::stop), resets the music
     // state and resumes the audio reseter.
     void fn_80459508();
@@ -113,14 +115,16 @@ struct AudioMgr_8045A080 {
     // game/tu_80457DFC.cpp (0x8045A080): the constructor main calls on the
     // 0x90-byte object it allocates in the main heap.
     AudioMgr_8045A080();
-    // game/tu_80457DFC.cpp (0x80458880, not written yet: it inlines
-    // fn_80458F04, defined after it). Plays system sound `id` (a register,
+    // game/tu_80457DFC.cpp (0x80458880). Plays system sound `id` (a register,
     // not a JAISoundID; equality tests are cmplwi) for `player` (extsb on
     // entry; callers pass -1 for the shared object at 0x14, 331 of 393
-    // calls), panned by player when field_0x5 is 2-4; ids 0x38 and 0x57
-    // start the second sequence instead. fn_8045B030 (game/tu_8045B010.cpp)
+    // calls; a fixed set of ids always plays there), panned by player when
+    // field_0x5 is 2-4 (getPlayerPan); ids 0x38 and 0x57 start the second
+    // sequence instead (startSecondSeq_80458F04, inlined). fn_8045B030 (game/tu_8045B010.cpp)
     // passes an id from lbl_8052DEE0.
     void fn_80458880(u32 id, s8 player);
+    // The pan of a player's system sounds (game/tu_80457DFC.cpp, inline there).
+    inline f32 getPlayerPan(s8 player);
     // game/tu_80457DFC.cpp (0x804593D4, not written yet). Sets 0x8e and pauses
     // the sound categories of the object at 0x34 (called by fn_80134D20).
     void fn_804593D4();
@@ -128,6 +132,8 @@ struct AudioMgr_8045A080 {
     // the sound at 0x84 is not already id, creates it through the category
     // object at 0x30 (vtable slot 0xC) and starts a volume move.
     void fn_80458F04(u32 id);
+    // fn_80458F04's body, inline (game/tu_80457DFC.cpp; used only there).
+    inline void startSecondSeq_80458F04(u32 id);
     // game/tu_80457DFC.cpp (0x80458F9C). 30+ units pass 0x3C (the argument is
     // not read): stops the sound at 0x80 and clears the fields at
     // 0x58-0x68.
@@ -152,7 +158,9 @@ struct AudioMgr_8045A080 {
     // byte (-2 skips the first test); returns a byte the caller tests with
     // clrlwi. 24. tu_803DAC3C passes (11, -2).
     bool fn_80457F80(JAISoundID id, s8 arg);
-    // game/tu_80457DFC.cpp (0x8045815C, not written yet in this file's copy). Called by
+    // game/tu_80457DFC.cpp (0x8045815C): slows the music (tempo kind 2,
+    // pitch 0.5, fx mix 1) and writes `flag` to port 0 of its tracks unless
+    // the music is 0x1000001/2/4/0xD/0x23/0x2D. Called by
     // fn_80290E90 with false when the player's 0xCE4 is below 8, with true when it is 8.
     void fn_8045815C(bool flag);
     // game/tu_80457DFC.cpp (0x80457DFC): stores r4 (a byte) at 0x6.
