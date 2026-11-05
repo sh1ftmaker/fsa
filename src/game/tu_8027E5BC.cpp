@@ -7,6 +7,56 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_cannon.h"
 
+// PSVECMag on a const vector; the original's operator- temporary is passed by reference.
+static inline f32 magnitude(const JGeometry::TVec3f& v) {
+    return PSVECMag(&v);
+}
+
+void Player_804A6F38::fn_8027E5BC(f32 speed) {
+    // The divides by powers of two compile to the original's multiplies (operand order of fmuls/fmadds).
+    if (!fn_8024BBB0()) {
+        speed = speed * magnitude(field_0x3a4 - field_0x398) / 64.0f;
+    }
+    if (field_0x3a4.x > field_0x398.x) {
+        field_0x3dc = 0;
+        field_0x3e8 = 0;
+        mPos.x += speed;
+        if (mPos.x > field_0x3a4.x) {
+            mPos.x = field_0x3a4.x;
+        }
+    } else if (field_0x3a4.x < field_0x398.x) {
+        field_0x3dc = 1;
+        field_0x3e8 = 1;
+        mPos.x -= speed;
+        if (mPos.x < field_0x3a4.x) {
+            mPos.x = field_0x3a4.x;
+        }
+    }
+    if (field_0x3a4.y > field_0x398.y) {
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+        if (fn_8024BBB0() && (field_0xcf4 == 0x15 || field_0xcf4 == 0x23) && viewLayerFlag(field_0x3b4)) {
+            mPos.y += speed / 16.0f;
+        } else {
+            mPos.y += speed;
+        }
+        if (mPos.y > field_0x3a4.y) {
+            mPos.y = field_0x3a4.y;
+        }
+    } else if (field_0x3a4.y < field_0x398.y) {
+        field_0x3dc = 3;
+        field_0x3e8 = 3;
+        if (fn_8024BBB0() && (field_0xcf4 == 0x15 || field_0xcf4 == 0x23) && viewLayerFlag(field_0x3b4)) {
+            mPos.y -= speed / 16.0f;
+        } else {
+            mPos.y -= speed;
+        }
+        if (mPos.y < field_0x3a4.y) {
+            mPos.y = field_0x3a4.y;
+        }
+    }
+}
+
 void Player_804A6F38::fn_8027EDDC() {
     if (field_0x3fc < 8) {
         field_0x3fd = 0;

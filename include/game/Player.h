@@ -308,6 +308,7 @@ public:
     void fn_8028447C();
     void fn_80248604();
     void fn_8024D134();
+    void fn_8027E5BC(f32 speed);
     void fn_8027EDDC();
     void fn_80283848();
     void fn_8028434C();
@@ -391,7 +392,9 @@ public:
     /* 0x0380 */ JGeometry::TVec3f field_0x380;
     /* 0x038C */ u8 field_0x38c[0x394 - 0x38C];
     /* 0x0394 */ s32 field_0x394;
-    /* 0x0398 */ u8 field_0x398[0x3B4 - 0x398];
+    /* 0x0398 */ JGeometry::TVec3f field_0x398;
+    /* 0x03A4 */ JGeometry::TVec3f field_0x3a4;
+    /* 0x03B0 */ u8 field_0x3b0[0x3B4 - 0x3B0];
     // The player's layer: compared with ActorBase_804A5770::field_0x4 by
     // fn_801F320C and fn_801F5790; fn_801F329C tests it against 8.
     /* 0x03B4 */ s32 field_0x3b4;
