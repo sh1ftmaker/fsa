@@ -243,6 +243,8 @@ extern GameRoot_8049EF20* lbl_8053AAF8;
 
 // Owner: game/tu_801E667C.cpp (.sdata). Read by tu_80441318 and act_horse_race_man.
 extern s32 lbl_8053A160;
+// .sdata word (0x8053A190, unit unknown): fn_8023F78C stores -1 to it.
+extern s32 lbl_8053A190;
 
 // The object fn_801902C0 returns (lbl_8053AAF8->field_0x4->field_0x20; named
 // after that getter). Owner: game/tu_801902C0.cpp (not written yet).
@@ -1111,6 +1113,10 @@ struct GameRootSub24_8016A3AC {
 };
 // game/tu_8016A2B4.cpp (0x8016A3AC): returns lbl_8053AAF8->field_0x4->field_0x24.
 GameRootSub24_8016A3AC* fn_8016A3AC();
+// Owner: game/tu_8022AD64.cpp (0x8023F728, 0x8023F78C). Called by fn_8013A1A4: each
+// runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
+void fn_8023F728();
+void fn_8023F78C();
 extern "C" {
 // Owner not known (0x80191744, 0x9C bytes, not written yet). Called on
 // field_0x20 of GameRootSub04_801F856C by its destructor (fn_8013A27C) with 1.
@@ -1125,8 +1131,6 @@ void fn_8023F2BC(void);
 // 0x803B8C90, 0x8043EDF8, 0x80439AB0, 0x8019169C; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 void fn_8023F088(void);
-void fn_8023F728(void);
-void fn_8023F78C(void);
 void fn_8038D870(void);
 u8 fn_803B8C90(void);
 void fn_8043EDF8(void* self);

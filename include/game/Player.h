@@ -368,7 +368,10 @@ public:
     /* 0x0B79 */ u8 field_0xb79[0xB9B - 0xB79];
     // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
     /* 0x0B9B */ bool field_0xb9b;
-    /* 0x0B9C */ u8 field_0xb9c[0xBDC - 0xB9C];
+    /* 0x0B9C */ u8 field_0xb9c[0xB9F - 0xB9C];
+    // Set by fn_8023A654.
+    /* 0x0B9F */ bool field_0xb9f;
+    /* 0x0BA0 */ u8 field_0xba0[0xBDC - 0xBA0];
     // Cleared (stb 0) by fn_8028FBA0 when fn_80290070 succeeds.
     /* 0x0BDC */ u8 field_0xbdc;
     /* 0x0BDD */ u8 field_0xbdd[0xBEC - 0xBDD];
@@ -502,6 +505,9 @@ public:
     void fn_80252CF0(const JGeometry::TVec3f* pos); // via fn_8023DF68
     JGeometry::TVec3f* fn_8024C378(); // via fn_8023E3B8
     JGeometry::TVec3f* fn_8024145C(); // via fn_8023E7B0
+    void fn_8025F698(s32 arg); // via fn_80230C6C
+    void fn_802544B0(); // via fn_8023F728
+    void fn_80254744(); // via fn_8023F78C
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
@@ -804,7 +810,7 @@ bool fn_802300EC(s32 player);
 s32 fn_80230AD4(s32 player);
 // Owner unit: not written yet (0x80230C6C, 0x90 bytes). Called on a player for
 // its result-free state change in fn_801E5754 (game/tu_801E4D54.cpp).
-extern "C" void fn_80230C6C(s32 player);
+void fn_80230C6C(s32 player);
 
 // Per-player queries and setters of the 0x9C-byte family, owner tu_8022AD64
 // (cls_804AC388::update, game/tu_8033F448.cpp). Results are tested with
@@ -1019,7 +1025,6 @@ bool fn_80230534(bool flag);
 // No arguments; returns a bool (clrlwi 24 by the caller); false without a
 // manager.
 bool fn_8023077C();
-void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
 // Owner: tu_8022AD64 (0x8022FD8C, defined there). The player index for actor `serial` (act_talking_sign
 // stores it and passes it to fn_8023E724); negative when none.
 s32 fn_8022FD8C(s32 serial);
@@ -1143,5 +1148,9 @@ JGeometry::TVec3f* fn_8023E3B8(s32 player);
 u8 fn_8023E45C(s32 player, s32 index);
 JGeometry::TVec3f* fn_8023E4E4(s32 player, s32 index);
 JGeometry::TVec3f* fn_8023E7B0(s32 player);
+void fn_8023A654(s32 player);
+s32 fn_8023B5B4(s32 player);
+void fn_8023E690(s32 player, const JGeometry::TVec3f* pos);
+void fn_80230BF4(s32 player, s32 mode);  // 18 units. act_post_warp_pillar_handling passes 2
 
 #endif

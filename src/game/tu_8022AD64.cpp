@@ -996,6 +996,26 @@ s32 fn_80230B70(s32 player) {
     return lbl_8053AC90->mPlayers[player]->field_0x3e8;
 }
 
+void fn_80230BF4(s32 player, s32 mode) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        Player_804A6F38* p = lbl_8053AC90->mPlayers[player];
+        p->field_0x3e8 = mode;
+        p->field_0x3dc = mode;
+    }
+}
+
+void fn_80230C6C(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->fn_8025F698(0);
+    }
+}
+
 s32 fn_80230CFC(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return 2;
@@ -2064,6 +2084,15 @@ bool fn_8023A5B8(s32 player) {
     return false;
 }
 
+void fn_8023A654(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        lbl_8053AC90->mPlayers[player]->field_0xb9f = true;
+    }
+}
+
 s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     if (lbl_8053AC90 == NULL) {
         return -1;
@@ -2192,6 +2221,13 @@ s32 fn_8023B484(s32 player) {
         return lbl_8053AC90->mPlayers[player]->fn_802577E0();
     }
     return 0;
+}
+
+s32 fn_8023B5B4(s32 player) {
+    if (lbl_8053AC90 == NULL) {
+        return 0;
+    }
+    return isPlayerActive(player) ? 4 : 0;
 }
 
 s32 fn_8023B630(s32 player) {
@@ -2526,6 +2562,17 @@ JGeometry::TVec3f* fn_8023E604(s32 player) {
     return &lbl_804CF460;
 }
 
+void fn_8023E690(s32 player, const JGeometry::TVec3f* pos) {
+    if (lbl_8053AC90 == NULL) {
+        return;
+    }
+    if (isPlayerActive(player)) {
+        Player_804A6F38* p = lbl_8053AC90->mPlayers[player];
+        p->mPos.set(*pos);
+        p->field_0x2c.set(*pos);
+    }
+}
+
 JGeometry::TVec3f* fn_8023E724(s32 player) {
     if (lbl_8053AC90 == NULL) {
         return &lbl_804CF460;
@@ -2679,6 +2726,31 @@ void fn_8023F6C4() {
         }
         player->fn_80254660();
     }
+}
+
+void fn_8023F728() {
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player;
+        if (lbl_8053AC90 == NULL) {
+            player = NULL;
+        } else {
+            player = lbl_8053AC90->mPlayers[i];
+        }
+        player->fn_802544B0();
+    }
+}
+
+void fn_8023F78C() {
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player;
+        if (lbl_8053AC90 == NULL) {
+            player = NULL;
+        } else {
+            player = lbl_8053AC90->mPlayers[i];
+        }
+        player->fn_80254744();
+    }
+    lbl_8053A190 = -1;
 }
 
 bool GameRoot_8049EF20::fn_8023F98C(s32 player) {
