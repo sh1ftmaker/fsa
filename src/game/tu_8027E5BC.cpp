@@ -3,17 +3,13 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 #include "game/cls_804A71A8.h"
 #include "game/EmitterDelete.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_cannon.h"
-
-// PSVECMag on a const vector; the original's operator- temporary is passed by reference.
-static inline f32 magnitude(const JGeometry::TVec3f& v) {
-    return PSVECMag(&v);
-}
 
 // Componentwise TUtil::epsilonEquals of two vectors.
 static inline bool epsilonEqualsXY(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b, f32 eps) {

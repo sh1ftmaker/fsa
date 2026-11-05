@@ -6,6 +6,7 @@
 // Owner: the shared-header owner (docs/COORDINATOR.md).
 
 #include "types.h"
+#include "JSystem/JGeometry.h"
 
 // Provisional name (no symbol: always inlined). Evidence that FSA squared
 // through an inline call: under -fp_contract on, MWCC (GC/2.6) contracts
@@ -20,5 +21,9 @@
 // square(dx) + square(dy) where the target shows the unfused form; keep
 // JGeometry squared()/dot() where it shows fmadds.
 inline f32 square(f32 x) { return x * x; }
+
+// PSVECMag on a const vector; the original's operator- temporary is passed by
+// reference (shared by tu_8027E5BC and tu_80285E58).
+inline f32 magnitude(const JGeometry::TVec3f& v) { return PSVECMag(&v); }
 
 #endif

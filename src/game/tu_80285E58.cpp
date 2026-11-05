@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/PlayerBit.h"
 #include "game/GameMode.h"
@@ -342,12 +343,6 @@ void Player_804A6F38::fn_80286E10() {
     } else {
         fn_80248004(4, true);
     }
-}
-
-// PSVECMag on a const vector; the original's operator- temporary is passed by
-// reference (as in tu_8027E5BC).
-static inline f32 magnitude(const JGeometry::TVec3f& v) {
-    return PSVECMag(&v);
 }
 
 // Snaps a position component to the middle of its 16-unit tile.
