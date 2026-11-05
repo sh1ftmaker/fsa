@@ -896,7 +896,8 @@ public:
     /* 0xE0 */ s32 field_0xe0; // fn_8043EDE8's argument
     /* 0xE4 */ s32 field_0xe4; // 0x1E after fn_8043EDE8, 0 at construction
     /* 0xE8 */ s32 field_0xe8;
-    /* 0xEC */ u8 pad_0xec[0xF4 - 0xEC];
+    /* 0xEC */ f32 field_0xec; // where fn_8043A638 moves the stage picture
+    /* 0xF0 */ f32 field_0xf0;
     /* 0xF4 */ f32 field_0xf4; // fn_8043A268's position
     /* 0xF8 */ f32 field_0xf8;
     /* 0xFC */ s32 field_0xfc;
@@ -944,6 +945,9 @@ public:
     void fn_8043CDA0();
     void fn_8043CF40();
     void fn_8043D034();
+    // 0x8043A638 (game/tu_8043A0E8.cpp): fades the stage picture in and out
+    // while field_0x106 counts, then draws field_0x8.
+    void fn_8043A638();
     // 0x8043A268 (game/tu_8043A0E8.cpp): fn_8043A450 that also stores a
     // position and a value; tu_802E9428 calls it from its tables.
     void fn_8043A268(s32 stage, s32 sub, s16 value, f32 x, f32 y);

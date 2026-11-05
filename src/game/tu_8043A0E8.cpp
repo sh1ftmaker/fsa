@@ -124,6 +124,64 @@ void cls_804B1920::fn_8043A608() {
     fn_8043A450(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c);
 }
 
+// FIXME: 99.5. Registers only: the original keeps delay and wait (both branches) in r31 and the
+// three timings in r30/r29/r28 (ours: r28, r31, r30, r29); one shared s16 for delay and wait gives 99.87.
+void cls_804B1920::fn_8043A638() {
+    f32 dx = 0.0f;
+    f32 dy = dx;
+    s16 fadeIn = lbl_8050DB0C.field_0x4c[(0x22A - 0x4C) / 2];
+    s16 hold = lbl_8050DB0C.field_0x4c[(0x22C - 0x4C) / 2];
+    s16 fadeOut = lbl_8050DB0C.field_0x4c[(0x22E - 0x4C) / 2];
+    if (field_0x106 == 0) {
+        return;
+    }
+    for (int i = 0; i < 4; i++) {
+        lbl_8053AED0->field_0xdc |= (u8)(1 << i);
+    }
+    if (field_0x10d == 0) {
+        s16 delay = lbl_8050DB0C.field_0x4c[(0x2E6 - 0x4C) / 2] + 80;
+        s16 t = field_0x106;
+        if (t < delay) {
+            field_0x8->search('Pdf01')->setAlpha(0);
+        } else if (t <= delay + fadeIn) {
+            field_0x8->search('Pdf01')->setAlpha(255.0f * ((f32)(t - delay) / (f32)fadeIn));
+        } else if (t > delay + fadeIn + hold) {
+            field_0x8->search('Pdf01')->setAlpha(255.0f * ((f32)(delay + fadeIn + hold + fadeOut - t) / (f32)fadeOut));
+        }
+        field_0x8->search('Pw0101')->setAlpha(field_0x8->search('Pdf01')->getAlpha());
+        if (field_0x106 < delay + fadeIn + hold + fadeOut) {
+            field_0x106++;
+        } else {
+            field_0x106 = 0;
+        }
+        if (lbl_80529DEC.field_0x118 == 8 && lbl_80529DEC.field_0x11c == 3) {
+            dy = 8.0f;
+        }
+        dx += lbl_8050DB0C.field_0x4c[(0x2E2 - 0x4C) / 2];
+        dy += lbl_8050DB0C.field_0x4c[(0x2E4 - 0x4C) / 2];
+        field_0x8->search('Pw0101')->move(field_0xec + dx, field_0xf0 + dy);
+    } else {
+        s16 t = field_0x106;
+        s16 wait = field_0x108;
+        if (t < 20) {
+            field_0x8->search('Pdf01')->setAlpha(0);
+        } else if (t <= fadeIn + 20) {
+            field_0x8->search('Pdf01')->setAlpha(255.0f * ((f32)(t - 20) / (f32)fadeIn));
+        } else if (t > wait + (fadeIn + 20)) {
+            field_0x8->search('Pdf01')->setAlpha(255.0f * ((f32)(fadeOut + (wait + (fadeIn + 20)) - t) / (f32)fadeOut));
+        }
+        field_0x8->search('Pw0101')->setAlpha(field_0x8->search('Pdf01')->getAlpha());
+        if (field_0x106 < 20 + fadeIn + wait + fadeOut) {
+            field_0x106++;
+        } else {
+            field_0x106 = 0;
+        }
+        field_0x8->search('Pw0101')->move(field_0xf4, field_0xf8);
+    }
+    lbl_8053AB10->fn_8013B490();
+    field_0x8->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+}
+
 static const char* lbl_804B1900[] = {
     "dB01f.bti", "d01f.bti", "d02f.bti", "d03f.bti", "d04f.bti", "d05f.bti", "d06f.bti", "d07f.bti",
 };
