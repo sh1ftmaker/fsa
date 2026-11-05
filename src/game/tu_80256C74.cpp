@@ -110,6 +110,23 @@ void Player_804A6F38::fn_8025851C() {
     }
 }
 
+void Player_804A6F38::fn_802585F4() {
+    for (s32 i = 0; i < 3; i++) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xb00[i]);
+        if (actor == NULL) {
+            field_0xb00[i] = -1;
+            field_0xb40[i] = -1;
+        } else {
+            JGeometry::TVec2<f32> pos;
+            pos.x = actor->mPos.x;
+            pos.y = actor->mPos.y;
+            field_0xb40[i] = actor->field_0x4;
+            field_0x4e0[i].set(actor->mBox);
+            field_0x4e0[i].addPos(pos);
+        }
+    }
+}
+
 void Player_804A6F38::fn_802586CC() {}
 
 void Player_804A6F38::fn_80258880() {

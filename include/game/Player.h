@@ -291,6 +291,7 @@ public:
     void fn_80258070(); // drops field_0xb2c if its actor is gone or not a live Somaria block
     void fn_8025819C(); // tracks the actor field_0xb3c: its layer and box (+ position) into 0xb70 / 0x5a0
     void fn_80258384(); // the same for each of field_0xb1c[3]: field_0xb5c[] / field_0x550[]
+    void fn_802585F4(); // the same for each of field_0xb00[3]: field_0xb40[] / field_0x4e0[]
     void fn_80258470(); // same for field_0xb18: 0xb58 / 0x540
     void fn_8025851C(); // the same for each of field_0xb0c[3]: field_0xb4c[] / field_0x510[]
     void fn_802586CC(); // empty
@@ -528,7 +529,7 @@ public:
     /* 0x0499 */ u8 field_0x499[0x4C0 - 0x499];
     /* 0x04C0 */ JGeometry::TBox2f field_0x4c0;
     /* 0x04D0 */ JGeometry::TBox2f field_0x4d0;
-    /* 0x04E0 */ u8 field_0x4e0[0x510 - 0x4E0];
+    /* 0x04E0 */ JGeometry::TBox2f field_0x4e0[3];
     /* 0x0510 */ JGeometry::TBox2f field_0x510[3];
     /* 0x0540 */ JGeometry::TBox2f field_0x540;
     /* 0x0550 */ JGeometry::TBox2f field_0x550[3];
@@ -538,7 +539,8 @@ public:
     /* 0x05C0 */ JGeometry::TVec3f field_0x5c0;
     /* 0x05CC */ u8 field_0x5cc[0x5FC - 0x5CC];
     /* 0x05FC */ JGeometry::TBox2f field_0x5fc[0x50];
-    /* 0x0AFC */ u8 field_0xafc[0xB0C - 0xAFC];
+    /* 0x0AFC */ u8 field_0xafc[0xB00 - 0xAFC];
+    /* 0x0B00 */ s32 field_0xb00[3];
     /* 0x0B0C */ s32 field_0xb0c[3];
     // Returned by fn_8023B22C (-1 without a player).
     /* 0x0B18 */ s32 field_0xb18;
@@ -548,7 +550,7 @@ public:
     /* 0x0B30 */ s32 field_0xb30[2];
     /* 0x0B38 */ u8 field_0xb38[0xB3C - 0xB38];
     /* 0x0B3C */ s32 field_0xb3c;
-    /* 0x0B40 */ u8 field_0xb40[0xB4C - 0xB40];
+    /* 0x0B40 */ s32 field_0xb40[3];
     /* 0x0B4C */ s32 field_0xb4c[3];
     /* 0x0B58 */ s32 field_0xb58;
     /* 0x0B5C */ s32 field_0xb5c[3];
