@@ -11,6 +11,9 @@
 #include "game/Effect.h"
 #include "game/ViewLayer.h"
 #include "game/act/act_arrow.h"
+#include "game/act/tu_801F9484.h"
+#include "game/VecEpsilon.h"
+#include "JSystem/JParticle/JPAMath.h"
 
 // One entry per facing (0x3DC: right, left, down, up): 8 to the side and 10
 // below, read by the enter of state 0x39 (fn_8025E79C).
@@ -18,10 +21,81 @@ static const Vec lbl_8046AF00[4] = {
     {-8.0f, 0.0f, -10.0f}, {8.0f, 0.0f, -10.0f}, {0.0f, -8.0f, -10.0f}, {0.0f, 0.0f, -10.0f},
 };
 
+// State 0x39's update (fn_8025DACC) reads these three from one base; the
+// walk frame per eighth of the cycle and facing, and two per-facing offset
+// sets (not yet read as code: fn_8025DACC is unwritten).
+static const u8 lbl_8046AF30[4][8] = {
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+};
+static const Vec lbl_8046AF50[8] = {
+    {7.999f, 0.0f, 0.0f}, {-7.999f, 0.0f, 0.0f}, {0.0f, 7.999f, 0.0f}, {0.0f, -7.999f, 0.0f},
+    {6.0f, 6.0f, 0.0f},   {-6.0f, 6.0f, 0.0f},   {6.0f, -6.0f, 0.0f},  {-6.0f, -6.0f, 0.0f},
+};
+static const Vec lbl_8046AFB0[4] = {
+    {34.0f, 0.0f, 0.0f}, {-34.0f, 0.0f, 0.0f}, {0.0f, 34.0f, 0.0f}, {0.0f, -34.0f, 0.0f},
+};
+
 // The recoil hop's speed per facing (0x3DC: right, left, down, up): 2 back
 // against the facing and 4 up (enter of state 0x41, fn_8025D7E4).
 static const Vec lbl_8046AFE0[4] = {
     {-2.0f, 0.0f, 4.0f}, {2.0f, 0.0f, 4.0f}, {0.0f, -2.0f, 4.0f}, {0.0f, 2.0f, 4.0f},
+};
+
+// Per-facing offsets read by state 0x3A's update (fn_8025C894) and state 0x3B's
+// update (fn_8025BEB0; with the index pairs lbl_8046B070), both unwritten.
+static const Vec lbl_8046B010[4] = {
+    {12.0f, 18.0f, 20.0f}, {-12.0f, 18.0f, 20.0f}, {2.0f, 28.0f, 20.0f}, {-2.0f, 2.0f, 20.0f},
+};
+static const Vec lbl_8046B040[4] = {
+    {12.0f, 18.0f, 20.0f}, {-12.0f, 18.0f, 20.0f}, {2.0f, 28.0f, 20.0f}, {-2.0f, 2.0f, 20.0f},
+};
+static const s32 lbl_8046B070[4][2] = {
+    {4, 6}, {5, 7}, {4, 5}, {6, 7},
+};
+
+// Per-facing offsets read off one base by state 0x3C's update (fn_8025B3F0, unwritten).
+static const Vec lbl_8046B090[4] = {
+    {-16.0f, -2.0f, 16.0f}, {16.0f, -2.0f, 16.0f}, {0.0f, -6.0f, 16.0f}, {0.0f, -4.0f, 16.0f},
+};
+static const Vec lbl_8046B0C0[8] = {
+    {20.0f, 7.0f, 0.0f}, {-20.0f, 7.0f, 0.0f}, {0.0f, 12.0f, 0.0f}, {0.0f, -8.0f, 0.0f},
+    {24.0f, 7.0f, 0.0f}, {-24.0f, 7.0f, 0.0f}, {0.0f, 11.0f, 0.0f}, {0.0f, -6.0f, 0.0f},
+};
+static const Vec lbl_8046B120[4] = {
+    {16.0f, 0.0f, 0.0f}, {-16.0f, 0.0f, 0.0f}, {0.0f, 16.0f, 0.0f}, {0.0f, -16.0f, 0.0f},
+};
+
+// State 0x44 (fn_8025A15C, unwritten): the same walk frames and emitter rotations
+// as state 0x45's below.
+static const u8 lbl_8046B150[4][8] = {
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+};
+static const s32 lbl_8046B170[4] = {0xC000, 0x4000, 0x8000, 0x0000};
+static const s32 lbl_8046B180[4] = {0xC000, 0x4000, 0x0000, 0x8000};
+
+// State 0x45 (fn_80259830): the walk frame (0x3F9) for each eighth of the
+// 28-frame cycle 0x3F8, per facing (0x3DC).
+static const u8 lbl_8046B190[4][8] = {
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+};
+
+// State 0x45: the y / z rotations of the emitters 0x12C4 / 0x12C8 per facing.
+static const s32 lbl_8046B1B0[4] = {0xC000, 0x4000, 0x8000, 0x0000};
+static const s32 lbl_8046B1C0[4] = {0xC000, 0x4000, 0x0000, 0x8000};
+
+// Not read by any function of the unit (between state 0x45's tables and the dig
+// effects; kept at its original place and size).
+static const Vec lbl_8046B1D0[4] = {
+    {-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f},
 };
 
 // The dig effect per result of fn_802A1844 (1-4) and facing (fn_80258890).
@@ -976,6 +1050,174 @@ void Player_804A6F38::fn_80259784() {
         }
         field_0xb28 = -1;
     }
+}
+
+// FIXME: 99.29. scheduling+regalloc: the box's f.x / f.y (pos + 36) take their fadds
+// operands the other way round in cases 0 and 2, the epsilon test of epsilonEquals keeps
+// 32 * FLT_EPSILON in f2 (ours f3), and the emitters' rotation-table address is formed
+// after the matrix pointer (ours before).
+// State 0x45 (item 6 at level >= 2; enter fn_8025A04C, exit fn_80259784): frame 11 places
+// a Cane of Somaria block ('SMRI', 16 in front, field_0xb2c; message 0xE8 once, 0xBB8)
+// or acts on the one that exists (fn_8030EA00); while the button is held (0xB84,
+// fn_8022C274) the player stays at frame 12 walking at 1.125 (fn_802808E8) with the
+// 28-frame walk cycle, keeps a 'FIRE' actor (0xB28; 60 frames 0xB8C after it goes) on
+// the box field_0x580 in front (fn_802BAA0C) and the emitters 0x1AB / 0x54A
+// (0x12C4 / 0x12C8) turned to the facing; letting go stops them and runs to frame 13.
+void Player_804A6F38::fn_80259830() {
+    if (field_0xb8c > 0) {
+        field_0xb8c--;
+    }
+    if (field_0xb84 == 1 && !fn_8022C274(field_0x4)) {
+        field_0xb84 = 0;
+    }
+    if (field_0x3fa < 2) {
+        field_0x3fb = 0;
+    } else if (field_0x3fa < 3) {
+        field_0x3fb = 1;
+    } else if (field_0x3fa < 4) {
+        field_0x3fb = 2;
+    } else if (field_0x3fa < 10) {
+        field_0x3fb = 3;
+    } else if (field_0x3fa < 11) {
+        field_0x3fb = 4;
+    } else if (field_0x3fa < 13) {
+        field_0x3fb = 5;
+    } else {
+        field_0x3fb = 5;
+        fn_80251AEC(0);
+    }
+    if (!field_0xb84 && field_0x3fa == 11) {
+        if (!field_0xbb8) {
+            lbl_8053AED0->fn_8043D67C(0xe8, field_0x4, 0);
+            field_0xbb8 = 1;
+        }
+        CaneOfSomariaBlock_804AA9F0* block = static_cast<CaneOfSomariaBlock_804AA9F0*>(
+            getActorManager_801F856C()->findActorBySerial_801F666C(field_0xb2c));
+        if (block == NULL) {
+            if (fn_80247594(0)) {
+                JGeometry::TVec3f pos = mPos;
+                switch (field_0x3dc) {
+                case 0:
+                    pos.x += 16.0f;
+                    break;
+                case 1:
+                    pos.x -= 16.0f;
+                    break;
+                case 2:
+                    pos.y += 16.0f;
+                    break;
+                case 3:
+                    pos.y -= 16.0f;
+                    break;
+                }
+                field_0xb2c = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_SMRI, field_0x3b4, &pos, 0, -1,
+                                                                              field_0x4);
+            }
+        } else {
+            block->fn_8030EA00();
+        }
+    }
+    if (field_0x3fa == 12) {
+        JGeometry::TVec3f pos = mPos;
+        JGeometry::TBox2f box;
+        switch (field_0x3dc) {
+        case 0:
+            pos.x += 18.0f;
+            box.set(pos.x, pos.y - 6.0f, pos.x + 36.0f, pos.y + 6.0f);
+            field_0x580.set(box);
+            break;
+        case 1:
+            pos.x -= 18.0f;
+            box.set(pos.x - 36.0f, pos.y - 6.0f, pos.x, pos.y + 6.0f);
+            field_0x580.set(box);
+            break;
+        case 2:
+            pos.x += 4.0f;
+            pos.y += 12.0f;
+            box.set(pos.x - 6.0f, pos.y, pos.x + 6.0f, pos.y + 36.0f);
+            field_0x580.set(box);
+            break;
+        case 3:
+            pos.x -= 4.0f;
+            pos.y -= 20.0f;
+            box.set(pos.x - 6.0f, pos.y - 36.0f, pos.x + 6.0f, pos.y);
+            field_0x580.set(box);
+            break;
+        }
+        if (field_0xb84) {
+            fn_802808E8(1.125f);
+            if (epsilonEquals(mPos, field_0x14, JGeometry::TUtilf::epsilon())) {
+                field_0x3f8 = 0;
+            } else {
+                field_0x3f8++;
+                if (field_0x3f8 >= 28) {
+                    field_0x3f8 = 0;
+                }
+            }
+            if (field_0x3f8 < 4) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][0];
+            } else if (field_0x3f8 < 6) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][1];
+            } else if (field_0x3f8 < 10) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][2];
+            } else if (field_0x3f8 < 14) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][3];
+            } else if (field_0x3f8 < 18) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][4];
+            } else if (field_0x3f8 < 20) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][5];
+            } else if (field_0x3f8 < 24) {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][6];
+            } else {
+                field_0x3f9 = lbl_8046B190[field_0x3dc][7];
+            }
+            if (!fn_80247594(1)) {
+                field_0xb84 = 0;
+            }
+            if (field_0xb8c <= 0 && field_0xb28 < 0) {
+                s32 index = field_0x4;
+                field_0xb28 = getActorManager_801F856C()->spawnActor_801F9484(
+                    ACTOR_FIRE, field_0x3b4, &pos, ((field_0x3dc & 3) << 4) | 0x1040 | (index & 3), -1, index);
+            }
+            s32 fire = field_0xb28;
+            if (fire >= 0) {
+                FireRodFire_804A89F0* actor = static_cast<FireRodFire_804A89F0*>(
+                    getActorManager_801F856C()->findActorBySerial_801F666C(fire));
+                if (actor != NULL) {
+                    actor->fn_802BAA0C(&box);
+                } else {
+                    field_0xb28 = -1;
+                    field_0xb8c = 60;
+                }
+            }
+            if (field_0x12c4 == NULL) {
+                field_0x12c4 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x1ab, 0, 2, NULL, NULL, true, 1.0f);
+            }
+            if (field_0x12c4 != NULL) {
+                JPAGetXYZRotateMtx(0, lbl_8046B1B0[field_0x3dc], -0x8000, field_0x12c4->mGlobalRot);
+                setEmitterPos_8013CB44(field_0x12c4, &pos, 0, 2, true);
+            }
+            if (field_0x12c8 == NULL) {
+                field_0x12c8 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x54a, -1, 0, NULL, NULL, true, 1.0f);
+            }
+            if (field_0x12c8 != NULL) {
+                JPAGetXYZRotateMtx(0, 0, lbl_8046B1C0[field_0x3dc], field_0x12c8->mGlobalRot);
+                setEmitterPos_8013CB44(field_0x12c8, &pos, -1, 0, true);
+            }
+            fn_8024F0E8(0x30011);
+        } else {
+            field_0x3fa++;
+            if (field_0x12c8 != NULL) {
+                field_0x12c8->stopCreateParticle();
+            }
+            if (field_0x12c4 != NULL) {
+                field_0x12c4->stopCreateParticle();
+            }
+        }
+    } else {
+        field_0x3fa++;
+    }
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_8025A04C() {

@@ -370,6 +370,10 @@ public:
     // calls both on FIRE actors it finds.
     s32 fn_802BA9F0();
     s32 fn_802BA9F8();
+    // 0x802BAA0C (game/act_fire_rod_fire.cpp, not written yet): centres the fire on
+    // `box` and sets its boxes from it; the player's state 0x45 (fn_80259830, tu_80256C74)
+    // calls it each frame with the box in front of the player.
+    void fn_802BAA0C(const JGeometry::TBox2f* box);
     /* 0x230 */ u8 field_0x230[0x64];
 }; // Size: 0x294
 
