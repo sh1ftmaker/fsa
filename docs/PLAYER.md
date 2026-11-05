@@ -106,7 +106,7 @@ states, 0x00-0x51.
   (0x0B), fn_80248DD8, fn_80248E94 (3).
 - **fn_802870C8** (0x235C) runs, in order: an EXIT switch on (0x1240 - 3)
   (jump table 0x804A7770, 79 entries); the commit `0x1248 = 0x1240; 0x1240 =
-  0x1244` followed by fn_8025F698(0); an ENTER switch (0x804A7628, 82
+  0x1244` followed by fn_8025F698(true); an ENTER switch (0x804A7628, 82
   entries); and an UPDATE switch (0x804A74E0, 82 entries). Outside
   fn_80254744 the commit is the only store to 0x1240. All three tables are
   compiler `switch` jump tables, so the source is three `switch`
@@ -137,7 +137,7 @@ Handlers (update / enter / exit; `*` = ran in the Shadow Battle dump; states 0-2
 0x27 802924AC/802925C4/80290D58  0x28 802922EC/80292454/80290E90  0x29 80292198/802922D0/80290D58
 0x2A 80291B8C/80291CB8/80290E90  0x2B 80291910/80291B64/80290D58  0x2C 802954DC/80295584/80290E90
 0x2D 802953A0/802954B8/80290D58  0x2E 80295268/80295334/80290E90  0x2F 8029513C/80295240/80290D58
-0x30 80291F10/80292124/80290E90  0x31 80291D28/80291E44/80290D58  0x32 80290FC0/8029185C/80290D58
+0x30 80291F10/80292124/80290E90  0x31 80291D28/80291E44/80290D58  0x32 80290FC0/8029185C/80290D58+80290F20
 0x33 80277F98/802790C0/80277EBC  0x34 8027776C/80277E18/8027774C  0x35 8027761C/8027769C/802775C8
 0x36 80277220/80277580/802771C8  0x37 80277104/802771BC/80277100  0x38 80283E70/8028414C/80283D2C
 0x39 8025DACC/8025E79C/8025D9FC  0x3A 8025C894/8025D090/8025C7BC  0x3B 8025BEB0/8025C79C/8025BDD8
@@ -185,7 +185,7 @@ tu_80256C74: 8025785C 0x558 29/342 (36 Player calls, requests state via 80251AEC
  8025A15C 0x864 (0x44); 8025B3F0 0x9d8 (0x3C, 14 effect calls); 8025BEB0 0x8ec (0x3B); 8025C894 0x7fc (0x3A); 8025D0B0 0x5f0 (fwd-only helper);
  8025DACC 0xcd0 (0x39, 15 tile queries via 8022461C). All use ActorManager/ActorBase + EffectSystem (JPA).
 
-tu_8025EB18: 8025F698 0x630 (Player::fn_8025F698(bool), shared cleanup: exits of 0x11/0x12/0x3D-0x3F, called in the commit step);
+tu_8025EB18: 8025F698 0x630 (Player::fn_8025F698(bool), shared cleanup, called in the commit step of every state change (states 0x11/0x12/0x3D-0x3F have no exit case));
  802604CC 0x73c 35/463; 80260C08 0x860 56/536 (26 ActorManager + 18 ActorBase calls: spawn/carry); 80261750 0xa38 (0x19); 80262254 0x918 (0x14);
  80262BAC 0x4cc (0x13); 80263C64 0x7ac (0x12).
 
