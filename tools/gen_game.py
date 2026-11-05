@@ -563,12 +563,31 @@ def alloc_size(ctors):
     return None, "unknown, its `new`s allocate " + ", ".join(f"0x{n:X}" for n in sorted(sizes))
 
 
+_text_addrs = None
+
+
+def text_addr_of(name):
+    """The .text address (8 upper-case hex digits) of a function: from its
+    placeholder name fn_XXXXXXXX, or from symbols.txt once it has been renamed
+    to what the source emits (e.g. __ct__12cls_804AA800Fv)."""
+    global _text_addrs
+    if re.fullmatch(r"fn_[0-9A-Fa-f]{8}", name):
+        return name[3:].upper()
+    if _text_addrs is None:
+        _text_addrs = {}
+        for l in SYMBOLS.read_text().splitlines():
+            m = re.match(r"(\S+) = \.text:0x([0-9A-Fa-f]{8});", l)
+            if m:
+                _text_addrs[m[1]] = m[2].upper()
+    return _text_addrs.get(name)
+
+
 def class_name(unit, vt, ctors):
     """`<EnglishName>_<vtable>` when game_units.tsv ties one of this class's
     constructors to exactly one actor ID whose actors.tsv name is plain words
     (high/med confidence); `cls_<vtable>` otherwise. Returns (name, why)."""
     ev = evidence_for(unit)
-    addrs = {c[3:].upper() for c in ctors if re.fullmatch(r"fn_[0-9A-Fa-f]{8}", c)}
+    addrs = {a for a in (text_addr_of(c) for c in ctors) if a}
     # "ID (vtable V set by ctor C)" with V this vtable, or "ID (ctor C)" with C
     # one of the functions that store it
     hits = [(i, c) for i, v, c in re.findall(r"([A-Z0-9_]{4}) \((?:vtable ([0-9A-F]{8}) set by )?ctor ([0-9A-F]{8})\)", ev)
