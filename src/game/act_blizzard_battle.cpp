@@ -33,8 +33,8 @@ inline void cls_8049E7F0::playEmitter() {
 
 // The SWEV actor (ACTOR_SWEV, the environment switch control) gets fn_802B39E8.
 inline void cls_8049E7F0::notifySwev() {
-    s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_SWEV);
-    ActorBase_804A5770* swev = fn_801F856C()->findActorBySerial_801F666C(serial);
+    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_SWEV);
+    ActorBase_804A5770* swev = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (swev != NULL) {
         static_cast<cls_804A8638*>(swev)->fn_802B39E8();
     }
@@ -101,12 +101,12 @@ void cls_8049E7F0::update() {
     case 2:
         startSound_801F0E34(0x30032, 0);
         for (s32 i = 0; i < 4; i++) {
-            if (field_0x4 != fn_8023DE58(i) || !fn_8023F264(i) || fn_80230188(i) || fn_8022F478(i) ||
+            if (field_0x4 != getPlayerLayer_8023DE58(i) || !fn_8023F264(i) || fn_80230188(i) || fn_8022F478(i) ||
                 fn_80236D14(i))
             {
                 continue;
             }
-            JGeometry::TVec3f* player = fn_8023E724(i);
+            JGeometry::TVec3f* player = getPlayerPos_8023E724(i);
             JGeometry::TVec2<f32> p(player->x, player->y);
             p.x += 0.1f;
             p.y -= 0.1f;
@@ -139,7 +139,7 @@ void cls_8049E7F0::init() {
 }
 
 cls_8049E7F0::~cls_8049E7F0() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
     mEmitter = NULL;
 }
 

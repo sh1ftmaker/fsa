@@ -54,16 +54,16 @@ void cls_8021C2B4::fn_8021C468() {
         cls_8021C5B0* piece = &mPieces[i];
         if (fn_8023F264(i)) {
             JGeometry::TVec2f target;
-            if (fn_801C0D70()->fn_801C0FEC(fn_8023E724(i), &target)) {
+            if (fn_801C0D70()->fn_801C0FEC(getPlayerPos_8023E724(i), &target)) {
                 piece->mActive = true;
                 piece->mDone = false;
                 piece->mPlayer = i;
-                JGeometry::TVec3f* playerPos = fn_8023E724(piece->mPlayer);
+                JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(piece->mPlayer);
                 piece->mStart.x = playerPos->x;
                 piece->mStart.y = playerPos->y;
                 piece->mTarget.x = target.x;
                 piece->mTarget.y = target.y;
-                playerPos = fn_8023E724(piece->mPlayer);
+                playerPos = getPlayerPos_8023E724(piece->mPlayer);
                 piece->mPos.x = playerPos->x;
                 piece->mPos.y = playerPos->y;
                 piece->mPos.z = playerPos->z;

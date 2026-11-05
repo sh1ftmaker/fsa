@@ -29,7 +29,7 @@ void cls_804AE678::update() {
     fn_8020D58C()->addBox(mSerial);
     s32 arrow = field_0x250;
     if (arrow != -1) {
-        ActorBase_804A5770* hit = fn_801F856C()->findActorBySerial_801F666C(arrow);
+        ActorBase_804A5770* hit = getActorManager_801F856C()->findActorBySerial_801F666C(arrow);
         if (hit != NULL && hit->mActorId == ACTOR_ARRW) {
             return;
         }
@@ -43,7 +43,7 @@ void cls_804AE678::update() {
             fn_8023BA68(&box, field_0x4, &p, true);
             s32 serial = fn_801F8108(this, ACTOR_ARRW, -1, 32.0f);
             if (serial >= 0) {
-                ActorBase_804A5770* arrowActor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* arrowActor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (arrowActor != NULL && arrowActor->mActorId == ACTOR_ARRW) {
                     field_0x244 ^= 1;
                     field_0x250 = serial;
@@ -52,7 +52,7 @@ void cls_804AE678::update() {
                     }
                     if (field_0x23c == 0 || field_0x23c == 4) {
                         vfunc_0x30(0xFF, true);
-                        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
+                        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
                         spawnEmitter_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
                         startSound_801F0E34(0x3008F, 0);
                         field_0x234 = 2;
@@ -65,10 +65,10 @@ void cls_804AE678::update() {
                         }
                         if (!field_0x244) {
                             vfunc_0x30(0xFF, false);
-                            lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
+                            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
                         } else {
                             vfunc_0x30(0xFF, true);
-                            lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
+                            gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
                             spawnEmitter_8013CC50(field_0x4, &mPos, 0x181, 0, 0, NULL, NULL, true, 1.0f);
                             startSound_801F0E34(0x3008F, 0);
                         }
@@ -83,7 +83,7 @@ void cls_804AE678::update() {
             if (field_0x238 == 0) {
                 field_0x234 = 0;
                 vfunc_0x30(0xFF, false);
-                lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
+                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
                 field_0x244 = false;
             }
         }
@@ -103,7 +103,7 @@ void cls_804AE678::update() {
 
 cls_804AE678::~cls_804AE678() {
     if (mEmitter != NULL) {
-        fn_801EE434(mEmitter);
+        releaseEmitter_801EE434(mEmitter);
         mEmitter = NULL;
     }
 }
@@ -112,9 +112,9 @@ cls_804AE678::~cls_804AE678() {
 // them) and params/table/params >> 27 in r27/r26/r25 (we have r25/r27/r26).
 void cls_804AE678::vfunc_0x10() {
     s32 i;
-    s32 end = fn_801F856C()->mActorEnd;
+    s32 end = getActorManager_801F856C()->mActorEnd;
     for (i = 0; i < end; i++) {
-        ActorBase_804A5770* monitor = fn_801F856C()->mActors[i];
+        ActorBase_804A5770* monitor = getActorManager_801F856C()->mActors[i];
         if (monitor != NULL && (monitor->mActorId == ACTOR_SWT4 || monitor->mActorId == ACTOR_LOSW) &&
             field_0x170 == monitor->field_0x170)
         {
@@ -123,7 +123,7 @@ void cls_804AE678::vfunc_0x10() {
                 if (field_0x248 == ((params >> lbl_80475138[j]) & 0x1F)) {
                     field_0x254 = params >> 27;
                     if (getGameView_802D6A9C()->fn_802D800C(field_0x254)) {
-                        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
+                        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
                         field_0x234 = 2;
                         break;
                     }
@@ -166,7 +166,7 @@ void cls_804AE678::init() {
     }
     if (active == 1) {
         if (field_0x23c >= 3 && getGameView_802D6A9C()->fn_802D7888(field_0x248) == true) {
-            lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
+            gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
             vfunc_0x30(0xFF, true);
             if (field_0x23c == 4) {
                 field_0x234 = 2;
@@ -174,10 +174,10 @@ void cls_804AE678::init() {
                 field_0x244 = true;
             }
         } else {
-            lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
+            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xAC);
         }
     } else {
-        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x35);
         vfunc_0x30(0xFF, true);
         field_0x234 = 2;
         field_0x244 = true;

@@ -1,7 +1,7 @@
 #ifndef GAME_ACT_TU_802201D8_H
 #define GAME_ACT_TU_802201D8_H
 
-// Code: game/tu_802201D8.cpp. The FBAL actor (spawner fn_801F9484, __nw__
+// Code: game/tu_802201D8.cpp. The FBAL actor (spawner spawnActor_801F9484, __nw__
 // 0x2B0, constructor fn_80220378). Not named: docs/names/actors.tsv does not
 // tie it to one plain-word actor. Named after its vtable, 0x804A6828.
 

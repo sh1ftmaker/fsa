@@ -51,14 +51,14 @@ void cls_804AA800::update() {
         break;
     case 2:
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x238--;
         if (field_0x238 == 0) {
             field_0x234++;
             for (s32 i = 0; i < 4; i++) {
-                JGeometry::TVec3f pos = *fn_8023E724(i);
+                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 fn_80230498(i, &pos, field_0x234 + 0xDB, 0xFF, -0x80, -0x80, true);
                 if (field_0x234 == 1) {
                     fn_80230FD0(i, 0x10001);
@@ -73,7 +73,7 @@ void cls_804AA800::update() {
         break;
     case 3:
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x238 == 0) {

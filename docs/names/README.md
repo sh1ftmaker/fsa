@@ -2,7 +2,7 @@
 
 `actors.tsv` gives an English name for each of the 402 actor IDs: the
 4-character type codes in `enemyparam.csv` plus the codes the actor spawner
-`fn_801F9484` handles. Use it when naming actor source files and classes.
+`spawnActor_801F9484` handles. Use it when naming actor source files and classes.
 Each row cites its evidence. No game text is copied here beyond the names.
 
 ## Columns

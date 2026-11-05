@@ -37,7 +37,7 @@ void cls_804A5B28::fn_802075D8(u16 slot) {
     if (mActive && (mMask & (1 << slot))) {
         JGeometry::TVec3f v;
         JGeometry::TVec3f pos(mPos);
-        ActorBase_804A5770* a = fn_801F856C()->findActorBySerial_801F666C(mSlots[slot].mSerial);
+        ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mSlots[slot].mSerial);
         if (a) {
             pos.set(a->mPos);
         }
@@ -45,11 +45,11 @@ void cls_804A5B28::fn_802075D8(u16 slot) {
         s32 player = mSlots[slot].mPlayer;
         if (player >= 0 && player < 4) {
             s32 layer = field_0x4;
-            if (layer == fn_8023DE58(player)) {
+            if (layer == getPlayerLayer_8023DE58(player)) {
                 if (vfunc_0x4C(field_0x4, &pos)) {
-                    ActorBase_804A5770* b = fn_801F856C()->findActorBySerial_801F666C(handle);
+                    ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(handle);
                     if (b) {
-                        JGeometry::TVec2f d(fn_8023E724(player)->x - pos.x, fn_8023E724(player)->y - pos.y);
+                        JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - pos.x, getPlayerPos_8023E724(player)->y - pos.y);
                         normalize(d);
                         d.scale(2.0f);
                         v.set(d.x, d.y, b->field_0x3c.z);

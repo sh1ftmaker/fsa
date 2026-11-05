@@ -89,7 +89,7 @@ void FourSwitchMonitor_804A80A0::update() {
                 } else {
                     if (fn_8023077C()) {
                         for (s32 i = 0; i < 4; i++) {
-                            JGeometry::TVec3f pos = *fn_8023E724(i);
+                            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                             pos.x = snapToCell(pos.x);
                             pos.y = snapToCell(pos.y);
                             fn_80230498(i, &pos, 0xE8, 0xFF, -0x80, -0x80, true);
@@ -124,13 +124,13 @@ void FourSwitchMonitor_804A80A0::update() {
         break;
     case 2:
         if (fn_8023077C()) {
-            s32 end = fn_801F856C()->mActorEnd;
+            s32 end = getActorManager_801F856C()->mActorEnd;
             for (int i = 0; i < 4; i++) {
                 for (s32 j = 0; j < end; j++) {
-                    ActorBase_804A5770* actor = fn_801F856C()->mActors[j];
+                    ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[j];
                     if (actor != NULL && actor->mActorId == ACTOR_SWTH &&
                         (actor->field_0x90 >> 27) == field_0x244[i]) {
-                        JGeometry::TVec3f pos = *fn_8023E724(i);
+                        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                         pos.x = snapToCell(pos.x);
                         pos.y = snapToCell(pos.y);
                         fn_80230498(i, &pos, 0xE8, 0xFF, -0x80, -0x80, true);
@@ -146,14 +146,14 @@ void FourSwitchMonitor_804A80A0::update() {
         break;
     case 3:
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x23c--;
         if (field_0x23c == 0) {
             field_0x238++;
             for (s32 i = 0; i < 4; i++) {
-                JGeometry::TVec3f pos = *fn_8023E724(i);
+                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 fn_80230498(i, &pos, field_0x238 + 0xDB, 0xFF, -0x80, -0x80, true);
                 if (field_0x238 == 1) {
                     fn_80230FD0(i, 0x10001);
@@ -190,7 +190,7 @@ void FourSwitchMonitor_804A80A0::update() {
             }
         } else {
             for (s32 i = 0; i < 4; i++) {
-                JGeometry::TVec3f pos = *fn_8023E724(i);
+                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
             }
         }
@@ -210,7 +210,7 @@ void FourSwitchMonitor_804A80A0::update() {
         break;
     case 5:
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x23c == 0) {

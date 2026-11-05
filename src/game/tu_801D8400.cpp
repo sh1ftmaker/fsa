@@ -63,9 +63,9 @@ void cls_804A4C58::vfunc_0x9C(u8 mapHit) {
 }
 
 // Vtable slot 0x54 (0x801DA0FC): EnemyBase's start hook; asks
-// lbl_8053AF80 for fn_80458F9C(60).
+// gAudioMgr_8053AF80 for fn_80458F9C(60).
 void cls_804A4C58::vfunc_0x54() {
-    lbl_8053AF80->fn_80458F9C(60);
+    gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
 // 0x801DA504. The sequencer's constructor runs before the ceiling is set,

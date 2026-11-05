@@ -26,14 +26,14 @@ bool PanelRewriteNPC_804A8E40::vfunc_0x58() {
         return false;
     }
     for (;;) {
-        serial = fn_801F856C()->fn_801F78F4('KEY0', serial);
+        serial = getActorManager_801F856C()->fn_801F78F4('KEY0', serial);
         if (serial < 0) {
             return false;
         }
         if (serial == mSerial) {
             continue;
         }
-        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -69,7 +69,7 @@ void PanelRewriteNPC_804A8E40::vfunc_0x54(u8 arg) {
             JGeometry::TVec3f pos(mPos.x + 8.0f, mPos.y + 8.0f, 0.0f);
             // FIXME: 98.41%. The original stores the zero z before the y sum (scheduling).
             u32 entry = lbl_8046D808[field_0x244];
-            fn_801F856C()->fn_801F9484('KMRI', field_0x4, &pos, entry, -1, -1);
+            getActorManager_801F856C()->spawnActor_801F9484('KMRI', field_0x4, &pos, entry, -1, -1);
         } else {
             if (field_0x244 == 0) {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x564, 0, 0, NULL, NULL, true, 0.5f);
@@ -116,13 +116,13 @@ static inline void writeCell(PanelRewriteNPC_804A8E40* p) {
     } else {
         u16 tile = fn_80226998(&p->mPos, p->field_0x4);
         if (tile == 2) {
-            lbl_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0xB8);
+            gBgRewrite_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0xB8);
         } else if (tile == 0xDC) {
-            lbl_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0x9E);
+            gBgRewrite_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0x9E);
         } else if (tile == 0xDD) {
-            lbl_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0x20);
+            gBgRewrite_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, 0x20);
         } else {
-            lbl_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, p->field_0x234);
+            gBgRewrite_8053AC98->fn_802A3948(&p->mPos, 0, p->field_0x4 + p->field_0x256, p->field_0x234);
         }
     }
 }
@@ -160,7 +160,7 @@ void PanelRewriteNPC_804A8E40::update() {
             break;
         case 1:
             if (hit < 0) {
-                lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
+                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
                 vfunc_0x54(0);
                 field_0x230 = 0;
             }
@@ -176,7 +176,7 @@ void PanelRewriteNPC_804A8E40::update() {
             break;
         case 1:
             if (!vfunc_0x34()) {
-                lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
+                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
                 vfunc_0x54(0);
                 field_0x230 = 0;
             }
@@ -185,7 +185,7 @@ void PanelRewriteNPC_804A8E40::update() {
             // Nothing sets state 2 here; the original's dispatch still tests it.
             break;
         case 3:
-            lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
+            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4 + field_0x256, field_0x254);
             field_0x230 = 0;
             break;
         }

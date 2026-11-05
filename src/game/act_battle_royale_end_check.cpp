@@ -55,7 +55,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
             lbl_80529DEC.field_0x64 = pick;
         }
         lbl_8053AD78->field_0xe4 = 0;
-        lbl_8053AF80->fn_80458880(0xB, -1);
+        gAudioMgr_8053AF80->fn_80458880(0xB, -1);
         mAlive = false;
     }
 }
@@ -84,7 +84,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D66A8() {
         mFocus = 4;
         mTimer = 0x82;
         mState = 5;
-        lbl_8053AF80->fn_80458880(0x2D, -1);
+        gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
     }
 }
 
@@ -99,11 +99,11 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
         for (s32 i = 0; i < 4; i++) {
             if (mPlayerFlag[i] != 0) {
                 if (i == mWinner || fn_8022F3DC(i) == mWinner) {
-                    fn_80230498(i, fn_8023E724(i), field_0x238 + 0xDB, 0xFF, -0x80, -0x80, true);
+                    fn_80230498(i, getPlayerPos_8023E724(i), field_0x238 + 0xDB, 0xFF, -0x80, -0x80, true);
                     if (field_0x238 == 1) {
                         fn_80230FD0(mWinner, 0x10001);
                     } else if (field_0x238 == 0xD) {
-                        JGeometry::TVec3f pos = *fn_8023E724(i);
+                        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                         JGeometry::TVec3f p(pos.x + 7.0f, pos.y - 27.0f, pos.z);
                         spawnEmitter_8013CC50(field_0x4, &p, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
                         JGeometry::TVec3f q(pos.x + 7.0f, pos.y - 27.0f, pos.z);
@@ -130,8 +130,8 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
                 mFocus = 3;
                 break;
             }
-            lbl_8053AF80->fn_80458880(0x2A, -1);
-            lbl_8053AF80->fn_80458FF0(0x1000027, true, false);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000027, true, false);
         }
     }
 }
@@ -142,7 +142,7 @@ void BattleRoyaleEndCheck_804B0380::fn_803D69AC() {
     if (mTimer <= 0) {
         if (mWinner == -1) {
             mState = 4;
-            lbl_8053AF80->fn_80458F9C(0x3C);
+            gAudioMgr_8053AF80->fn_80458F9C(0x3C);
             lbl_8053AAF8->fn_801365C8(0);
             mTimer = 1;
             return;
@@ -150,12 +150,12 @@ void BattleRoyaleEndCheck_804B0380::fn_803D69AC() {
         for (s32 i = 0; i < 4; i++) {
             if (mPlayerFlag[i] != 0) {
                 if (i == mWinner || fn_8022F3DC(i) == mWinner) {
-                    fn_80230498(i, fn_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
+                    fn_80230498(i, getPlayerPos_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
                 }
             }
         }
         mState = 3;
-        lbl_8053AF80->fn_80458F9C(0x3C);
+        gAudioMgr_8053AF80->fn_80458F9C(0x3C);
         lbl_8053AAF8->fn_801365C8(0);
         mTimer = 1;
     }
@@ -203,9 +203,9 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
         }
         // FIXME: 99.59 %. Regalloc only: the original keeps the actor bound in
         // r30 and the byte offset of mActors[i] in r29; this puts them the other way.
-        s32 actorEnd = fn_801F856C()->mActorEnd;
+        s32 actorEnd = getActorManager_801F856C()->mActorEnd;
         for (s32 i = 0; i < actorEnd; i++) {
-            ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
             if (actor != NULL && actor->mActorId == 'SWEV') {
                 fn_802B3A48(actor);
             }

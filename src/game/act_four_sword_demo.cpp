@@ -49,11 +49,11 @@ void cls_8049DA0C::vfunc_0x54() {
 
 cls_8049DA0C::~cls_8049DA0C() {
     for (s32 i = 0; i < 4; i++) {
-        fn_801EE434(mEmitters288[i]);
+        releaseEmitter_801EE434(mEmitters288[i]);
         mEmitters288[i] = NULL;
-        fn_801EE434(mEmitters298[i]);
+        releaseEmitter_801EE434(mEmitters298[i]);
         mEmitters298[i] = NULL;
-        fn_801EE434(mEmitter2a8);
+        releaseEmitter_801EE434(mEmitter2a8);
         mEmitter2a8 = NULL;
     }
 }

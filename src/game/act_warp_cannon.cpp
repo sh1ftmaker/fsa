@@ -47,7 +47,7 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
     case 4:
         for (s32 i = 0; i < 4; i++) {
             u16 id = fn_8023CBC0(i);
-            fn_80230498(i, fn_8023E724(i), id, 0xFF, -0x80, -0x80, true);
+            fn_80230498(i, getPlayerPos_8023E724(i), id, 0xFF, -0x80, -0x80, true);
         }
         for (s32 i = 0; i < 4; i++) {
             fn_80230FD0(i, 0x10003);
@@ -66,7 +66,7 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
         fn_8023077C();
         field_0x278 = 0;
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             pos.z = 90.0f;
             fn_80230498(i, &pos, 0xB0, 0xFF, -0x80, -0x80, true);
         }

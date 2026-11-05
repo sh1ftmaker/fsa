@@ -23,7 +23,7 @@ void ShadowLinkGenerator_804A4310::fn_801C1768() {
     for (i = 0; i < 4; i++) {
         spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053EDB8[i], 0, 0, NULL, NULL, true, 1.0f);
     }
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
     mEmitter = NULL;
     startSound_801F0E34(0x50049, 0);
     mStateTimer = 0;
@@ -37,9 +37,9 @@ void ShadowLinkGenerator_804A4310::fn_801C1768() {
 void ShadowLinkGenerator_804A4310::fn_801C186C() const {
     for (s32 i = 0; i < 4; i++) {
         s32 slot = mSlotFirst + fn_801CD664(mSlotLast - mSlotFirst + 1);
-        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_SLK2, field_0x4, &mPos, fn_801C5660(8, 0, slot, 0, 0), -1, -1);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_SLK2, field_0x4, &mPos, fn_801C5660(8, 0, slot, 0, 0), -1, -1);
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 static_cast<ShadowLink2_804A43E8*>(actor)->fn_801C26D8();
             }
@@ -91,14 +91,14 @@ void ShadowLinkGenerator_804A4310::init() {
     fn_801C0D70()->field_0x50 = mSerial;
 }
 
-// Destroys the emitters the intro started (fn_801EE434 releases each one).
+// Destroys the emitters the intro started (releaseEmitter_801EE434 releases each one).
 ShadowLinkGenerator_804A4310::~ShadowLinkGenerator_804A4310() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
     for (s32 i = 0; i < 3; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
     for (s32 i = 0; i < 5; i++) {
-        fn_801EE434(mEmitters2[i]);
+        releaseEmitter_801EE434(mEmitters2[i]);
     }
 }
 

@@ -22,9 +22,9 @@ s32 cls_801EB8CC::fn_801EB648() const {
 // cleanup of the eight emitter pointers.
 cls_801EB8CC::~cls_801EB8CC() {
     for (s32 i = 0; i < 7; i++) {
-        fn_801EE434(field_0x34[i]);
+        releaseEmitter_801EE434(field_0x34[i]);
     }
-    fn_801EE434(field_0x50);
+    releaseEmitter_801EE434(field_0x50);
 }
 
 // FIXME: 98.42 %. Only the .sdata2 offsets of its six literals differ: the

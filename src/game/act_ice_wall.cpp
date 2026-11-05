@@ -53,7 +53,7 @@ void IceWall_8049DE18::init() {
 }
 
 IceWall_8049DE18::~IceWall_8049DE18() {
-    fn_801EE434(field_0x27c);
+    releaseEmitter_801EE434(field_0x27c);
     field_0x27c = NULL;
 }
 

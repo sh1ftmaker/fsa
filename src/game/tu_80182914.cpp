@@ -201,7 +201,7 @@ void cls_804A1718::update() {
 }
 
 cls_804A1718::~cls_804A1718() {
-    fn_801EE434(mEmitter274);
+    releaseEmitter_801EE434(mEmitter274);
 }
 
 void cls_804A1718::vfunc_0x18() {

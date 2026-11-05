@@ -36,7 +36,7 @@ public:
     /* 0x20 */ virtual void draw();
     // 0x801D84E0: empty, no arguments read (vtable slot 0x24 of 0x804A4C58).
     /* 0x24 */ virtual void vfunc_0x24();
-    // 0x801DA0FC: lbl_8053AF80->fn_80458F9C(60).
+    // 0x801DA0FC: gAudioMgr_8053AF80->fn_80458F9C(60).
     /* 0x54 */ virtual void vfunc_0x54();
     // 0x801D8980: a mPos.y above field_0x2d0 is clamped to it (and
     // field_0x3c.y zeroed), then EnemyBase's floor check runs.

@@ -21,11 +21,11 @@ void BanditHerdingNPC_804ACB40::update() {
     field_0x238 = 0;
     s32 serial = -1;
     for (;;) {
-        serial = fn_801F856C()->fn_801F78F4(ACTOR_TZOK, serial);
+        serial = getActorManager_801F856C()->fn_801F78F4(ACTOR_TZOK, serial);
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* thief = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* thief = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (thief == NULL) {
             continue;
         }

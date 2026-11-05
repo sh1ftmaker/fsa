@@ -52,7 +52,7 @@ void Sandstorm_804AA280::update() {
 
 Sandstorm_804AA280::~Sandstorm_804AA280() {
     if (mEmitter != NULL) {
-        fn_801EE434(mEmitter);
+        releaseEmitter_801EE434(mEmitter);
     }
     if (mSound != NULL) {
         delete mSound;

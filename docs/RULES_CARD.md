@@ -229,7 +229,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   10430.378f gives the operands swapped.
 - A by-value position temporary sharing a slot it shouldn't: the original
   copied into a NAMED local (e.g. `TVec3f playerPos;` declared at the top
-  of the block, `playerPos = *fn_8023E724(player);`), and helpers take it by
+  of the block, `playerPos = *getPlayerPos_8023E724(player);`), and helpers take it by
   `const TVec3f&` (act_pull_switch).
 - Countdown stores through a base register (`addi rX, r31, 8` then
   `stw r0, 0x234(rX)`): the countdowns are an array (`s32 mTimers[3]`)
@@ -279,15 +279,15 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   inv_sqrt and JMAFastSqrt only in act_quicksand fn_80210E90 (86.6 %, not a
   counted match).
 - A TVec2 stored member by member around calls (stfs x before the second
-  fn_8023E724 call), then reused for another value: one named `TVec2f v;`
+  getPlayerPos_8023E724 call), then reused for another value: one named `TVec2f v;`
   assigned `v.x = ...; v.y = ...;` (cls_800F802C::fn_800F802C).
 - Emitter deleted and cleared (field read again after bl getEffectSystem_8013C824):
   `deleteEmitter(&mEmitter)` (game/EmitterDelete.h: the manager in a local).
   act_eyeball_switch cls_804AE678::vfunc_0x24.
 - Plain calls, no wrapper: effect `spawnEmitter_8013CC50(field_0x4, &mPos, id, ...)` and
   sound `startSound_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
-  `fn_801F856C()->findActorBySerial_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
-  `->fn_801F9484(id, layer, &pos, arg, -1, -1)` (act_leaf_effect_npc_generator.cpp:58);
+  `getActorManager_801F856C()->findActorBySerial_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),
+  `->spawnActor_801F9484(id, layer, &pos, arg, -1, -1)` (act_leaf_effect_npc_generator.cpp:58);
   random `lbl_8053AAF8->mRandom.get_ufloat_1()` (tu_801C6A4C.cpp:75),
   `(s32)(k * get_ufloat_1())` (act_sand_crab.cpp:49); resources
   `lbl_8053AAF8->field_0xa4->getResource('SOB ', name)` (vtable slot 0x18,

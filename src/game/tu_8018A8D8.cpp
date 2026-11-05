@@ -12,9 +12,9 @@ void cls_804A1E50::vfunc_0x24() {
 }
 
 cls_804A1E50::~cls_804A1E50() {
-    fn_801EE434(field_0x328);
-    fn_801EE434(field_0x32c);
-    fn_801EE434(field_0x330);
+    releaseEmitter_801EE434(field_0x328);
+    releaseEmitter_801EE434(field_0x32c);
+    releaseEmitter_801EE434(field_0x330);
     if (field_0x26c == 0) {
         getGameView_802D6A9C()->fn_802D7440(true);
         fn_8022ADCC();

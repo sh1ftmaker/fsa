@@ -9,7 +9,7 @@
 #include "game/ActorBase.h"
 
 // The MRTA actor ("Log", docs/names/actors.tsv, med confidence): the
-// spawner (fn_801F9484) allocates 0x2E4 bytes for it and constructs it with
+// spawner (spawnActor_801F9484) allocates 0x2E4 bytes for it and constructs it with
 // fn_801FFC84, which stores the vtable at 0x804ACD70 (lbl_804ACD70; there
 // is no symbol for it yet, so the class is named after the address). Only
 // the members act_npc_ride_switch reads are declared.

@@ -1,5 +1,5 @@
 // Actor EXPL ("Explosion" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x23C bytes for it (0x801FB3B0) and calls its
+// (spawnActor_801F9484) allocates 0x23C bytes for it (0x801FB3B0) and calls its
 // constructor fn_80203C68, which stores the vtable 0x804A7FB8.
 
 #include "game/GameAudio.h"
@@ -70,7 +70,7 @@ void Explosion_804A7FB8::update() {
 
 Explosion_804A7FB8::~Explosion_804A7FB8() {
     if (mEmitter238 != NULL) {
-        fn_801EE434(mEmitter238);
+        releaseEmitter_801EE434(mEmitter238);
     }
 }
 

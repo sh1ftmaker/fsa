@@ -134,29 +134,29 @@ void GameView_804A9950::fn_802D3A18() {
             } else {
                 lbl_8053AED0->fn_8043D67C(0x195, 0, 0);
             }
-            lbl_8053AF80->fn_80458880(0x30, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x30, -1);
         } else if (field_0xc4 == 660) {
             if (lbl_8053AAF8->field_0x7f != 0) {
                 lbl_8053AED0->fn_8043D67C(0x147, 0, 0);
             } else {
                 lbl_8053AED0->fn_8043D67C(0x196, 0, 0);
             }
-            lbl_8053AF80->fn_80458880(0x30, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x30, -1);
         } else if (field_0xc4 == 300) {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
-            lbl_8053AF80->fn_80458880(0x31, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x31, -1);
         } else if (field_0xc4 == 240) {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
-            lbl_8053AF80->fn_80458880(0x32, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x32, -1);
         } else if (field_0xc4 == 180) {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
-            lbl_8053AF80->fn_80458880(0x33, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x33, -1);
         } else if (field_0xc4 == 120) {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
-            lbl_8053AF80->fn_80458880(0x34, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x34, -1);
         } else if (field_0xc4 == 60) {
             lbl_8053AED0->fn_8043EDE8(field_0xc4 / 60);
-            lbl_8053AF80->fn_80458880(0x35, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x35, -1);
         } else if (field_0xc4 == 0) {
             Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
             JGeometry::TVec3f pos;
@@ -164,10 +164,10 @@ void GameView_804A9950::fn_802D3A18() {
             pos.y = -camera->field_0x4[1][3];
             pos.z = 0.0f;
             if (lbl_8053AAF8->field_0x7f != 0) {
-                fn_801F856C()->fn_801F9484(ACTOR_TUTM, 0, &pos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TUTM, 0, &pos, 0, -1, -1);
                 field_0xc4 = 0x8CA0;
             } else {
-                fn_801F856C()->fn_801F9484(ACTOR_TUGF, 0, &pos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TUGF, 0, &pos, 0, -1, -1);
             }
         }
     }
@@ -707,7 +707,7 @@ bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
             field_0x18--;
         }
         fn_80231424();
-        fn_801F856C()->fn_801F7E88();
+        getActorManager_801F856C()->fn_801F7E88();
         fn_802D8D50(true);
         fn_802D8328(false, false);
         lbl_8053AB10->field_0x24->fn_8030C928(&mVisibleBox);
@@ -717,8 +717,8 @@ bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
 }
 
 void GameView_804A9950::fn_802DCDF4() {
-    fn_801F856C()->fn_801F7CAC();
-    fn_801F856C()->fn_801F6204(0);
+    getActorManager_801F856C()->fn_801F7CAC();
+    getActorManager_801F856C()->fn_801F6204(0);
     fn_80308D0C();
     lbl_8053AAF8->field_0x4->mView->field_0x131de = 0;
     getEffectSystem_8013C824()->fn_8013C8CC();
@@ -734,9 +734,9 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     u32 exits = 0xF;
     field_0xc9 = 0;
     if (lbl_8053AB10->field_0x24->field_0x1e8 == 0) {
-        s32 end = fn_801F856C()->mActorEnd;
+        s32 end = getActorManager_801F856C()->mActorEnd;
         for (s32 i = 0; i < end; i++) {
-            ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
             if (actor != NULL && actor->mActorId == 'SMSM') {
                 exits = actor->field_0x90 >> 4;
                 break;

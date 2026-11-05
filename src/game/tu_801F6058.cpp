@@ -98,7 +98,7 @@ ActorBase_804A5770* ActorManager_804A5800::findActorBySerial_801F666C(s32 serial
 }
 
 s32 ActorManager_804A5800::fn_801F6718(u8 a, s32 layer, const JGeometry::TVec3f* pos, u16 b, u8 c) {
-    return fn_801F9484(ACTOR_SCRE, layer, pos, b | (a << 16) | (c << 24), -1, -1);
+    return spawnActor_801F9484(ACTOR_SCRE, layer, pos, b | (a << 16) | (c << 24), -1, -1);
 }
 
 bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin) {
@@ -574,10 +574,10 @@ s32 ActorManager_804A5800::fn_801F84C4(ActorBase_804A5770* actor) {
 }
 
 s32 ActorManager_804A5800::fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90) {
-    return fn_801F9484(id, arg_0x4, pos, arg_0x90, -1, -1);
+    return spawnActor_801F9484(id, arg_0x4, pos, arg_0x90, -1, -1);
 }
 
-ActorManager_804A5800* fn_801F856C(void) {
+ActorManager_804A5800* getActorManager_801F856C(void) {
     return lbl_8053AAF8->field_0x4->mActorManager;
 }
 
@@ -635,7 +635,7 @@ void ActorManager_804A5800::fn_801F8E4C() {
     mSpawnCount = 0;
     mLastSlot = -1;
     mActorEnd = -1;
-    fn_801F856C()->fn_801F6204(0);
+    getActorManager_801F856C()->fn_801F6204(0);
     mListHead = NULL;
     field_0x3041 = 0;
 }

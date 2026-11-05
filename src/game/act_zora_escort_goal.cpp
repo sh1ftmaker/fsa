@@ -20,8 +20,8 @@ void ZoraEscortGoal_8049E424::draw() {
 }
 
 ZoraEscortGoal_8049E424::~ZoraEscortGoal_8049E424() {
-    fn_801EE434(field_0x37c);
-    fn_801EE434(field_0x380);
+    releaseEmitter_801EE434(field_0x37c);
+    releaseEmitter_801EE434(field_0x380);
     field_0x37c = NULL;
     field_0x380 = NULL;
 }

@@ -61,12 +61,12 @@ void HyruleCastleBarrier_8049DEE8::init() {
 
 HyruleCastleBarrier_8049DEE8::~HyruleCastleBarrier_8049DEE8() {
     for (s32 i = 0; i < 3; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
         mEmitters[i] = NULL;
     }
-    fn_801EE434(field_0x250);
+    releaseEmitter_801EE434(field_0x250);
     field_0x250 = NULL;
-    fn_801EE434(field_0x254);
+    releaseEmitter_801EE434(field_0x254);
     field_0x254 = NULL;
 }
 

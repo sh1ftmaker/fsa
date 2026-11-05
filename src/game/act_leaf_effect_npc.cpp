@@ -50,7 +50,7 @@ void LeafEffectNPC_804AE2E0::update() {
                 spawnLeaves();
                 break;
             }
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             if (PSVECDistance(&mPos, &pos) <= 57.0f && __fabsf(mPos.x - pos.x) <= 42.0f) {
                 spawnLeaves();
                 break;

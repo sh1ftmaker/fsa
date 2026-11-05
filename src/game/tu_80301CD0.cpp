@@ -379,7 +379,7 @@ bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
         if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << p))) {
             continue;
         }
-        if (player != p && (player >= 0 || layer != fn_8023DE58(slot))) {
+        if (player != p && (player >= 0 || layer != getPlayerLayer_8023DE58(slot))) {
             continue;
         }
         cls_803099FC* list = lbl_80505438[p];
@@ -435,7 +435,7 @@ bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
         if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << p))) {
             continue;
         }
-        if (layer != fn_8023DE58(slot)) {
+        if (layer != getPlayerLayer_8023DE58(slot)) {
             continue;
         }
         cls_803099FC* list = lbl_80504A38[p];

@@ -76,7 +76,7 @@ void cls_8049EB8C::vfunc_0x54() {
 }
 
 cls_8049EB8C::~cls_8049EB8C() {
-    fn_801EE434(field_0x288);
+    releaseEmitter_801EE434(field_0x288);
     field_0x288 = 0;
 }
 

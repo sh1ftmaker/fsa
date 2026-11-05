@@ -38,14 +38,14 @@ void Thief_804A5A30::vfunc_0x98() {
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
-            if (field_0x4 != fn_8023DE58(field_0xc8)) {
-                field_0x4 = fn_8023DE58(field_0xc8);
+            if (field_0x4 != getPlayerLayer_8023DE58(field_0xc8)) {
+                field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
                 mPathCount = 0;
                 s32 player = field_0xc8;
                 if (fn_8022F514(player)) {
                     player = fn_8022F3DC(player);
                 }
-                JGeometry::TVec3f* playerPos = fn_8023E724(player);
+                JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(player);
                 field_0x32c.x = playerPos->x;
                 field_0x32c.y = playerPos->y;
                 field_0x32c.z = playerPos->z;
@@ -83,7 +83,7 @@ s32 Thief_804A5A30::fn_802063FC() {
     JGeometry::TVec2f from;
     from.x = mPos.x;
     from.y = mPos.y;
-    s32 count = fn_801F856C()->fn_801F7274(field_0x4, actors, -1);
+    s32 count = getActorManager_801F856C()->fn_801F7274(field_0x4, actors, -1);
     if (count >= 2) {
         lbl_8053AC60 = from;
         qsort(actors, count, 4, fn_802068A0);
@@ -112,7 +112,7 @@ bool Thief_804A5A30::fn_802064E0() {
 }
 
 Thief_804A5A30::~Thief_804A5A30() {
-    fn_801EE434(mEmitter358);
+    releaseEmitter_801EE434(mEmitter358);
     fn_802049E0(fn_80204638(), this);
 }
 

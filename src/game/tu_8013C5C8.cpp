@@ -45,14 +45,14 @@ void cls_8049F140::execute(JPABaseEmitter* emitter) {
             case 0:
                 if (field_0xc >= 8) {
                     field_0xc = 0;
-                    fn_801F856C()->fn_801F9484(ACTOR_PEFF, fn_8023DE58(field_0x4), fn_8023E724(field_0x4),
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
                                                field_0x4 & 3, -1, field_0x4);
                 }
                 break;
             case 1:
                 if (field_0xc >= 8) {
                     field_0xc = 0;
-                    fn_801F856C()->fn_801F9484(ACTOR_PEFF, fn_8023DE58(field_0x4), fn_8023E724(field_0x4),
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
                                                (field_0x4 & 3) | 0x30, -1, field_0x4);
                 }
                 break;
@@ -367,22 +367,22 @@ JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u
             // Other layers: helper actors for a few ids.
             switch (id) {
             case 0x172:
-                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, pos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, pos, 0, -1, -1);
                 break;
             case 0x33A:
             case 0x33B:
-                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, pos, 2, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, pos, 2, -1, -1);
                 break;
             case 0x19D:
             case 0x24A:
-                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_DMGE, layer, pos, 0, -1, -1);
                 break;
             case 0x174: case 0x175: case 0x176: case 0x177: case 0x178: case 0x179: case 0x17C:
             case 0x473:
-                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 1, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_DMGE, layer, pos, 1, -1, -1);
                 break;
             case 0xFF:
-                fn_801F856C()->fn_801F9484(ACTOR_DMGE, layer, pos, 0x80, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_DMGE, layer, pos, 0x80, -1, -1);
                 break;
             case 0x116:
             case 0x24E: case 0x24F: case 0x250: case 0x251:
@@ -392,10 +392,10 @@ JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u
                 break;
             case 0x15B:
             case 0x3D0:
-                fn_801F856C()->fn_801F9484(ACTOR_PEFF, layer, pos, 0x2C, -1, 0);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, layer, pos, 0x2C, -1, 0);
                 break;
             case 0x3CF:
-                fn_801F856C()->fn_801F9484(ACTOR_PEFF, layer, pos, 0x34, -1, 0);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, layer, pos, 0x34, -1, 0);
                 break;
             }
         }

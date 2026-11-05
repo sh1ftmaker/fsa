@@ -46,7 +46,7 @@ void GamblingShop_804AAA70::draw() {
 }
 
 void GamblingShop_804AAA70::update() {
-    // FIXME: 97.87 %. The original reads field_0x4 before the fn_8023DE58 call
+    // FIXME: 97.87 %. The original reads field_0x4 before the getPlayerLayer_8023DE58 call
     // (into a register kept across it); here it is read after the call. The
     // player/layer and chest-slot loops also take their registers in a different
     // order (regalloc), and the jump table and one float literal are symbol and
@@ -74,7 +74,7 @@ void GamblingShop_804AAA70::update() {
             JGeometry::TVec3f dir;
             f32 dist;
             // The layer is on the left: that compare order is what the original emits.
-            if (player >= 0 && field_0x4 == fn_8023DE58(player)) {
+            if (player >= 0 && field_0x4 == getPlayerLayer_8023DE58(player)) {
                 fn_801EE558(&dir, &dist, player + 1);
             } else {
                 fn_801EE558(&dir, &dist, 0);
@@ -198,7 +198,7 @@ void GamblingShop_804AAA70::update() {
         const s32* row = lbl_804713C0[bucket | (field_0x264 << 2)];
         for (s32 k = 0; k < field_0x24c; k++) {
             s32 actorSlot = field_0x250[k];
-            ActorBase_804A5770* actor = fn_801F856C()->mActors[actorSlot];
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[actorSlot];
             if (actor != NULL && actor->mActorId == 'GMTB') {
                 static_cast<GamblingShopChest_804AAAE8*>(actor)->fn_80310F50(field_0x248, row[k],
                                                                               mSerial);
@@ -210,10 +210,10 @@ void GamblingShop_804AAA70::update() {
     }
     case 4: {
         s32 player = fn_8022EA0C(field_0x248);
-        if (fn_8023DE58(player) != field_0x4) {
+        if (getPlayerLayer_8023DE58(player) != field_0x4) {
             for (s32 k = 0; k < field_0x24c; k++) {
                 s32 actorSlot = field_0x250[k];
-                ActorBase_804A5770* actor = fn_801F856C()->mActors[actorSlot];
+                ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[actorSlot];
                 if (actor != NULL && actor->mActorId == 'GMTB') {
                     static_cast<GamblingShopChest_804AAAE8*>(actor)->fn_80310E48();
                 }
@@ -289,7 +289,7 @@ void GamblingShop_804AAA70::update() {
         if (talkAtFlags21(player, msg, field_0x4, mPos)) {
             for (s32 k = 0; k < field_0x24c; k++) {
                 s32 actorSlot = field_0x250[k];
-                ActorBase_804A5770* actor = fn_801F856C()->mActors[actorSlot];
+                ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[actorSlot];
                 if (actor != NULL && actor->mActorId == 'GMTB') {
                     static_cast<GamblingShopChest_804AAAE8*>(actor)->fn_80310E98();
                 }
@@ -311,7 +311,7 @@ void GamblingShop_804AAA70::update() {
         }
         for (s32 k = 0; k < field_0x24c; k++) {
             s32 actorSlot = field_0x250[k];
-            ActorBase_804A5770* actor = fn_801F856C()->mActors[actorSlot];
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[actorSlot];
             if (actor != NULL && actor->mActorId == 'GMTB') {
                 static_cast<GamblingShopChest_804AAAE8*>(actor)->fn_80310E98();
             }
@@ -355,10 +355,10 @@ void GamblingShop_804AAA70::update() {
 void GamblingShop_804AAA70::vfunc_0x10() {
     // FIXME: 99.46 %. Regalloc only: the original keeps the chest-slot pointer
     // (this, stored with 0x250(rN)) in r28 and the loop's byte offset in r29.
-    s32 actorEnd = fn_801F856C()->mActorEnd;
+    s32 actorEnd = getActorManager_801F856C()->mActorEnd;
     s32 count = 0;
     for (s32 i = 0; i < actorEnd; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
         if (actor != NULL && actor->mActorId == 'GMTB') {
             field_0x250[count] = i;
             count++;

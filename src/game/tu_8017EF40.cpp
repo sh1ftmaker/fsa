@@ -18,7 +18,7 @@ cls_804A1630::~cls_804A1630() {
     }
     for (s32 i = 0; i < 2; i++) {
         if (mEmitter318[i] != NULL) {
-            fn_801EE434(mEmitter318[i]);
+            releaseEmitter_801EE434(mEmitter318[i]);
         }
     }
 }

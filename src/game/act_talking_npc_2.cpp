@@ -1,5 +1,5 @@
 // Actor TLK2 ("Talking NPC 2" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x240 bytes for it and calls its constructor
+// (spawnActor_801F9484) allocates 0x240 bytes for it and calls its constructor
 // fn_80203054, which stores the vtable 0x804AFAD8.
 
 #include "game/GameAudio.h"

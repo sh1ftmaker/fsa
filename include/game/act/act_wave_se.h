@@ -7,7 +7,7 @@
 #include "game/ActorManager.h"
 
 // Actor WAVE ("Wave SE" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) constructs it with fn_802012D0, which stores the vtable
+// (spawnActor_801F9484) constructs it with fn_802012D0, which stores the vtable
 // 0x804A9EA8. Named after that vtable.
 class WaveSe_804A9EA8 : public ActorBase_804A5770 {
 public:

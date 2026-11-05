@@ -41,10 +41,10 @@ cls_804B1A38::cls_804B1A38() {
     lbl_8053ADD8 = this;
     field_0x4 = 0;
     if (OSGetSoundMode() == 0) {
-        lbl_8053AF80->fn_804594E4(0);
+        gAudioMgr_8053AF80->fn_804594E4(0);
         lbl_80529DEC.field_0x245 = 0;
     } else {
-        lbl_8053AF80->fn_804594E4(1);
+        gAudioMgr_8053AF80->fn_804594E4(1);
         lbl_80529DEC.field_0x245 = 1;
     }
 }

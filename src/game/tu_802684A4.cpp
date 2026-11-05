@@ -262,19 +262,19 @@ void cls_804A71A8::fn_80268BC4() {
                 field_0x8 += field_0x4->mPos;
                 u16 tile = fn_8022461C(&field_0x8, field_0x4->field_0x3b4);
                 if (field_0x4->fn_8025F590() && field_0x4->field_0x3b4 == 8 &&
-                    fn_8023DE58(field_0x4->field_0xd70) < 8)
+                    getPlayerLayer_8023DE58(field_0x4->field_0xd70) < 8)
                 {
-                    // Probe the same spot on the layer of the player fn_8023DE58
+                    // Probe the same spot on the layer of the player getPlayerLayer_8023DE58
                     // names, moved from this layer's view box to that one's.
                     JGeometry::TVec3f saved = field_0x8;
                     field_0x8.x -= layerBox(field_0x4->field_0x3b4)->i.x;
                     field_0x8.y -= layerBox(field_0x4->field_0x3b4)->i.y;
-                    field_0x8.x += layerBox(fn_8023DE58(field_0x4->field_0xd70))->i.x;
-                    field_0x8.y += layerBox(fn_8023DE58(field_0x4->field_0xd70))->i.y;
-                    if (field_0x4->fn_802684A4(&field_0x8, fn_8023DE58(field_0x4->field_0xd70))) {
+                    field_0x8.x += layerBox(getPlayerLayer_8023DE58(field_0x4->field_0xd70))->i.x;
+                    field_0x8.y += layerBox(getPlayerLayer_8023DE58(field_0x4->field_0xd70))->i.y;
+                    if (field_0x4->fn_802684A4(&field_0x8, getPlayerLayer_8023DE58(field_0x4->field_0xd70))) {
                         field_0x28[field_0x1c] = 1;
                     } else {
-                        fn_8026B81C(fn_8022461C(&field_0x8, fn_8023DE58(field_0x4->field_0xd70)));
+                        fn_8026B81C(fn_8022461C(&field_0x8, getPlayerLayer_8023DE58(field_0x4->field_0xd70)));
                     }
                     field_0x8 = saved;
                 }
@@ -519,7 +519,7 @@ u8 cls_804A71A8::fn_8026EB1C(u16 tile) {
 }
 
 // FIXME: 86.81. As fn_8026EE60; the spawn also reads `player + 1` after
-// fn_801F856C like the original, but the owner and facing are reloaded.
+// getActorManager_801F856C like the original, but the owner and facing are reloaded.
 void cls_804A71A8::fn_8026EC88(s32 player) {
     field_0xac = 1;
     if (player != field_0x4->fn_80240868()) {
@@ -529,9 +529,9 @@ void cls_804A71A8::fn_8026EC88(s32 player) {
         pos.z = 0.0f;
         Player_804A6F38* owner = field_0x4;
         s32 dir = owner->field_0x3dc;
-        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos,
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos,
                                                 ((player + 1) & 7) << 4 | (dir & 3) << 2, -1, -1);
-        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {
@@ -542,7 +542,7 @@ void cls_804A71A8::fn_8026EC88(s32 player) {
 // FIXME: 86.41. canPush's step vector is added with its x, y, z loaded in
 // reverse and its z half first (the original copies x, y, z in order to the
 // stack, then adds both halves); the spawn reads the owner's facing after
-// fn_801F856C (the original keeps the owner and the facing in r29 / r30
+// getActorManager_801F856C (the original keeps the owner and the facing in r29 / r30
 // across it).
 void cls_804A71A8::fn_8026EE60() {
     field_0xac = 1;
@@ -551,8 +551,8 @@ void cls_804A71A8::fn_8026EE60() {
         pos.z = 0.0f;
         Player_804A6F38* owner = field_0x4;
         s32 dir = owner->field_0x3dc;
-        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
-        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
+        if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {

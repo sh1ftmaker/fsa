@@ -2,7 +2,7 @@
 #define GAME_ACT_ACT_FIRE_BAR_H
 
 // Code: game/act_fire_bar.cpp. Named after its vtable (0x804A3F90, the
-// constructor is 0x801BD640); the spawner fn_801F9484 creates it for actor
+// constructor is 0x801BD640); the spawner spawnActor_801F9484 creates it for actor
 // FBMR "Fire bar (manager)" (docs/names/actors.tsv, med confidence). It
 // spawns `mCount` FBOB actors (cls_804A4038, game/tu_801BD8C0.cpp) in a line
 // outward from its position and turns them about it each frame.

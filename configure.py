@@ -411,7 +411,7 @@ cflags_trk = [
 
 # FSA's own game code (docs/PLAN.md, "Game code compiler"): Metrowerks GC/2.6,
 # -O4,p C++ with exception tables. Proven on five game functions
-# (fn_801F856C, fn_80154248, fn_80154310, fn_80154528, fn_80105DD4): each
+# (getActorManager_801F856C, fn_80154248, fn_80154310, fn_80154528, fn_80105DD4): each
 # matches with exactly these flags, and -O4,s (stmw for 4 saved registers),
 # -use_lmw_stmw off (6 separate stw), -fp_contract off (fmuls+fadds instead of
 # fmadds) or -Cpp_exceptions off (no extab) each break one. String literals

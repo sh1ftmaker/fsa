@@ -73,17 +73,17 @@ void Player_804A6F38::fn_8027E5BC(f32 speed) {
     }
 }
 
-// FIXME: 98.85. Same instructions; the original reads field_0x3b4 into r30 before loading field_0x11fc for the fn_8023DE58 call, ours loads it after the call.
+// FIXME: 98.85. Same instructions; the original reads field_0x3b4 into r30 before loading field_0x11fc for the getPlayerLayer_8023DE58 call, ours loads it after the call.
 void Player_804A6F38::fn_8027E7E0() {
     if (field_0x11fc >= 0) {
-        if (fn_80235580(field_0x11fc) || field_0x3b4 != fn_8023DE58(field_0x11fc) ||
-            magnitude(*fn_8023E724(field_0x11fc) - mPos) > 60.0f) {
+        if (fn_80235580(field_0x11fc) || field_0x3b4 != getPlayerLayer_8023DE58(field_0x11fc) ||
+            magnitude(*getPlayerPos_8023E724(field_0x11fc) - mPos) > 60.0f) {
             field_0x11fc = -1;
         }
     }
     f32 nearest;
     if (field_0x11fc >= 0) {
-        nearest = magnitude(*fn_8023E724(field_0x11fc) - mPos);
+        nearest = magnitude(*getPlayerPos_8023E724(field_0x11fc) - mPos);
     } else {
         nearest = 60.0f;
     }
@@ -97,16 +97,16 @@ void Player_804A6F38::fn_8027E7E0() {
                 continue;
             }
         }
-        if (magnitude(*fn_8023E724(i) - mPos) < nearest - 10.0f) {
+        if (magnitude(*getPlayerPos_8023E724(i) - mPos) < nearest - 10.0f) {
             field_0x11fc = i;
-            nearest = magnitude(*fn_8023E724(i) - mPos);
+            nearest = magnitude(*getPlayerPos_8023E724(i) - mPos);
         }
     }
     if (field_0x11fc < 0) {
         field_0x3dc = 2;
         field_0x3e8 = 2;
     } else {
-        JGeometry::TVec3f diff = *fn_8023E724(field_0x11fc) - mPos;
+        JGeometry::TVec3f diff = *getPlayerPos_8023E724(field_0x11fc) - mPos;
         s16 angle = JMath::atanTable_.atan2_(diff.y, diff.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         if (angle < -0x6000) {
             field_0x3dc = 1;
@@ -318,7 +318,7 @@ static const f32 lbl_8046C018[4][4][2] = {
 };
 
 void Player_804A6F38::fn_8027F854(JGeometry::TVec3f* out, s32 player) {
-    out->set(*fn_8023E724(player));
+    out->set(*getPlayerPos_8023E724(player));
     switch (fn_802486A0()) {
     case 3:
         out->x += lbl_8046BF98[player][field_0x4][0];
@@ -386,7 +386,7 @@ void Player_804A6F38::fn_8028286C() {
 }
 
 void Player_804A6F38::fn_802828A8() {
-    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->findActorBySerial_801F666C(field_0xd8c));
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd8c));
     if (cannon != NULL) {
         if (viewLayerFlag(field_0x3b4)) {
             field_0x374.set(0.0f, -cannon->fn_801080B8(), 0.0f);
@@ -399,7 +399,7 @@ void Player_804A6F38::fn_802828A8() {
 }
 
 void Player_804A6F38::fn_80282958() {
-    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(fn_801F856C()->findActorBySerial_801F666C(field_0xd8c));
+    Cannon_8049CCF0* cannon = static_cast<Cannon_8049CCF0*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd8c));
     if (cannon != NULL) {
         mPos.x = cannon->mPos.x;
         mPos.y = cannon->mPos.y;
@@ -422,7 +422,7 @@ void Player_804A6F38::fn_80282958() {
 void Player_804A6F38::fn_80282A24() {
     field_0x124d = 1;
     field_0x458 = 0;
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xd8c);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd8c);
     if (actor != NULL) {
         mPos.x = actor->mPos.x;
         mPos.y = actor->mPos.y;

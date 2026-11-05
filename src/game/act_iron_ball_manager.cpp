@@ -39,7 +39,7 @@ void IronBallManager_804ABA38::update() {
                     }
                 }
             }
-            fn_801F856C()->fn_801F9484('BALL', field_0x4, &pos, field_0x90 & 0xF80000FF, -1, -1);
+            getActorManager_801F856C()->spawnActor_801F9484('BALL', field_0x4, &pos, field_0x90 & 0xF80000FF, -1, -1);
         }
         if (field_0x240 <= 0) {
             field_0x240 = field_0x244 + (s32)(field_0x245 * lbl_8053AAF8->mRandom.get_ufloat_1());

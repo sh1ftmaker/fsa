@@ -67,7 +67,7 @@ void GBAAppear_804B16E0::draw() {
 // (psq_l / psq_st into the local before the call) is scheduled before the camera load
 // (lwz lbl_8053AB10 -> 0x24) there, after the z load (lfs 0x1CC) here.
 void GBAAppear_804B16E0::update() {
-    JGeometry::TVec3f* player = fn_8023E724(0);
+    JGeometry::TVec3f* player = getPlayerPos_8023E724(0);
     mPos.x = player->x;
     mPos.y = player->y;
     mPos.z = player->z;

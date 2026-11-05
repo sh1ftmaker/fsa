@@ -13,7 +13,7 @@
 class PrincessZeldaDemo_8049D208 : public cls_8049D140 {
 public:
     // Frees the emitters at 0x364, 0x368, 0x36C, 0x370[0..3] and 0x380[0..1]
-    // with fn_801EE434, then the members and cls_8049D140's destructor run.
+    // with releaseEmitter_801EE434, then the members and cls_8049D140's destructor run.
     /* 0x08 */ virtual ~PrincessZeldaDemo_8049D208();
     // 0x10: copies the Goal (DMGL) and Maiden (DMMD) actors' positions.
     /* 0x10 */ virtual void vfunc_0x10();

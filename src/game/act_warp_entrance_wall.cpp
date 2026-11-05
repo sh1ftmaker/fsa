@@ -34,7 +34,7 @@ WarpEntranceWall_804AE948::~WarpEntranceWall_804AE948() {}
 
 // Whether the actor in slot i is a moving house or a log whose box overlaps box.
 static inline bool overlapsHouseOrLog(s32 i, const JGeometry::TBox2f& box) {
-    ActorBase_804A5770* other = fn_801F856C()->mActors[i];
+    ActorBase_804A5770* other = getActorManager_801F856C()->mActors[i];
     if (other == NULL) {
         return false;
     }
@@ -53,7 +53,7 @@ static inline bool overlapsHouseOrLog(s32 i, const JGeometry::TBox2f& box) {
 bool WarpEntranceWall_804AE948::fn_803798D0() {
     JGeometry::TBox2f box(mBox);
     box.addPos(mPos.x, mPos.y);
-    s32 end = fn_801F856C()->mActorEnd;
+    s32 end = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
         if (i != mSerial && overlapsHouseOrLog(i, box)) {
             return true;

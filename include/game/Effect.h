@@ -146,7 +146,7 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
 // particleCB); emitterCB becomes the unit's static callback lbl_8053AB18
 // when the id's JPAResourceManager user work has bit 0) and scales it by
 // `scale`. On any other layer it spawns helper actors instead
-// ('KMRI', 'DMGE', 'PEFF' via fn_801F9484) for a few ids. Callers: r3 the
+// ('KMRI', 'DMGE', 'PEFF' via spawnActor_801F9484) for a few ids. Callers: r3 the
 // actor's field_0x4, r5 li or a clrlwi 16 id, r6/r7 li or extsb, r8/r9
 // almost always 0, r10 li 1, f1 a constant (ActorBase_804A5770::vfunc_0x28
 // passes its int as height, depth 0, no callbacks and adjust 1).

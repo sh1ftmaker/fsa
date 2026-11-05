@@ -83,7 +83,7 @@ void cls_804AA4F0::update() {
             mCounter = mDuration;
             mState = 4;
             if (field_0x244 == 0x10 && !getGameView_802D6A9C()->fn_802D800C(field_0x240)) {
-                lbl_8053AF80->fn_80458FF0(0x1000021, false, false);
+                gAudioMgr_8053AF80->fn_80458FF0(0x1000021, false, false);
             }
         }
         applyColor(this);

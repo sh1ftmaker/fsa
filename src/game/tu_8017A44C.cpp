@@ -41,7 +41,7 @@ static inline void spawnHitEffect(s32 layer, const JGeometry::TVec3f* pos) {
     if (layer < 8) {
         spawnEmitter_8013CC50(layer, pos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
     } else {
-        fn_801F856C()->fn_801F9484('HTMK', layer, pos, 0, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484('HTMK', layer, pos, 0, -1, -1);
     }
 }
 
@@ -57,7 +57,7 @@ void cls_804A1160::update() {
             pos.set(mPos);
             pos.x += 8.0f * sincos.sinShort(angle);
             pos.y += 8.0f * sincos.cosShort(angle);
-            lbl_8053AC98->fn_802A20F0(&pos, field_0x258, field_0x4, 0, 0);
+            gBgRewrite_8053AC98->fn_802A20F0(&pos, field_0x258, field_0x4, 0, 0);
             angle -= 0x4000;
         }
     }

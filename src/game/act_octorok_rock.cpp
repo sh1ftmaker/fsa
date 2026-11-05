@@ -168,7 +168,7 @@ void OctorokRock_8049F5D8::update() {
         field_0xb0 = 0;
         s32 target = field_0x258;
         if (target >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(target);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(target);
             if (actor != NULL) {
                 mPos.x = field_0x254 * JMASinShort(fn_801F6874(actor->field_0x98) - field_0x25c);
                 mPos.y = field_0x254 * JMACosShort(fn_801F6874(actor->field_0x98) - field_0x25c);
@@ -193,7 +193,7 @@ void OctorokRock_8049F5D8::update() {
             }
         }
         if (field_0x230 == 4) {
-            fn_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, 1);
+            getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, 1);
         }
         mAlive = false;
         break;

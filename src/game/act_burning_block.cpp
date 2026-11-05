@@ -55,7 +55,7 @@ void BurningBlockWoodenCrate_804A7B90::update() {
         mPrevPos = mPos;
         field_0x23c = 8;
         field_0x240 = fn_80226850(&mPos, field_0x4);
-        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
     } else {
         mPos += field_0x3c;
         if (field_0x23c > 0) {
@@ -64,13 +64,13 @@ void BurningBlockWoodenCrate_804A7B90::update() {
             if (fn_80226850(&mPos, field_0x4) != 0x159) {
                 switch (field_0x90 & 0xFF) {
                 case 1:
-                    fn_801F856C()->fn_801F9484(ACTOR_RUPY, field_0x4, &mPos, 2, -1, -1);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &mPos, 2, -1, -1);
                     break;
                 case 2:
-                    fn_801F856C()->fn_801F9484(ACTOR_RUPY, field_0x4, &mPos, 4, -1, -1);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &mPos, 4, -1, -1);
                     break;
                 case 3:
-                    fn_801F856C()->fn_801F9484(ACTOR_RUPY, field_0x4, &mPos, 7, -1, -1);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &mPos, 7, -1, -1);
                     break;
                 }
                 mAlive = false;
@@ -88,7 +88,7 @@ void BurningBlockWoodenCrate_804A7B90::update() {
                         field_0x230.y = mPos.y;
                         field_0x230.z = mPos.z;
                         startSound_801F0E34(0x30004, 0);
-                        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, field_0x240);
+                        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, field_0x240);
                     }
                 }
             }
@@ -108,5 +108,5 @@ void BurningBlockWoodenCrate_804A7B90::init() {
     field_0x23c = 0;
     field_0xb8 = 2;
     field_0x240 = fn_80226850(&mPos, field_0x4);
-    lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
+    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
 }

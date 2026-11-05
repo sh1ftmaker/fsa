@@ -7,7 +7,7 @@
 static inline void releaseShot(cls_804A6C38* self) {
     s32 serial = self->mDDGOSerial;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mLife = 0;
         }
@@ -90,10 +90,10 @@ void cls_804A6C38::vfunc_0x90(u8 mapHit) {
                 pos.y -= 26.0f;
                 break;
             }
-            mDDGOSerial = fn_801F856C()->fn_801F9484('DDGO', field_0x4, &pos, 1, -1, -1);
+            mDDGOSerial = getActorManager_801F856C()->spawnActor_801F9484('DDGO', field_0x4, &pos, 1, -1, -1);
             s32 serial = mDDGOSerial;
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     actor->field_0x98 = field_0x98;
                 }

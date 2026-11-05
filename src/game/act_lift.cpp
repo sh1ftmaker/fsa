@@ -75,7 +75,7 @@ void Lift_804A6F6C::update() {
         if (getMode() >= 6) {
             continue;
         }
-        d.set(mPos - *fn_8023E724(i));
+        d.set(mPos - *getPlayerPos_8023E724(i));
         s32 angle = JMath::atanTable_.atan2_(d.x, d.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         f32 len = JGeometry::TVec2f(d.x, d.y).length();
         s16 a = angle - 0x40;

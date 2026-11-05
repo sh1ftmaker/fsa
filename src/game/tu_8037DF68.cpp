@@ -368,7 +368,7 @@ bool MessageManager_804AF070::fn_80389F78(s32 player, s32 arg, s32 value, JGeome
                 lbl_8053AD78->mWindows[player]->field_0x28 |= 0x2000;
             }
             if (plain == 0) {
-                lbl_8053AF80->fn_80458880(0x28, -1);
+                gAudioMgr_8053AF80->fn_80458880(0x28, -1);
             }
             return true;
         }
@@ -425,7 +425,7 @@ bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 
                     lbl_8053AD78->mWindows[player]->field_0x28 |= 0x2000;
                 }
                 if (plain == 0) {
-                    lbl_8053AF80->fn_80458880(0x28, -1);
+                    gAudioMgr_8053AF80->fn_80458880(0x28, -1);
                 }
                 return true;
             }

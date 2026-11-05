@@ -86,13 +86,13 @@ void CandlestickSwitch_804A8B78::update() {
 
 CandlestickSwitch_804A8B78::~CandlestickSwitch_804A8B78() {
     if (mEmitter234 != NULL) {
-        fn_801EE434(mEmitter234);
+        releaseEmitter_801EE434(mEmitter234);
     }
     if (mEmitter238 != NULL) {
-        fn_801EE434(mEmitter238);
+        releaseEmitter_801EE434(mEmitter238);
     }
     if (mEmitter23c != NULL) {
-        fn_801EE434(mEmitter23c);
+        releaseEmitter_801EE434(mEmitter23c);
     }
 }
 

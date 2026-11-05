@@ -133,7 +133,7 @@ void SmallKey_804A8CD8::fn_802C1D90() {
 void SmallKey_804A8CD8::fn_802C1DFC() {
     s32 layer = field_0x4;
     if (layer >= 8) {
-        fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 0, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &mPos, 0, -1, -1);
     } else {
         spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 1.0f);
     }

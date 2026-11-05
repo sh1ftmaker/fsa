@@ -96,8 +96,8 @@ s32 cls_8049D740::vfunc_0x58() {
 }
 
 void cls_8049D740::vfunc_0x10() {
-    s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_DMGL);
-    ActorBase_804A5770* goal = fn_801F856C()->findActorBySerial_801F666C(serial);
+    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_DMGL);
+    ActorBase_804A5770* goal = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (goal != NULL) {
         mGoalPos = goal->mPos;
     }
@@ -112,10 +112,10 @@ void cls_8049D740::init() {
 }
 
 cls_8049D740::~cls_8049D740() {
-    fn_801EE434(mEmitter298);
+    releaseEmitter_801EE434(mEmitter298);
     mEmitter298 = NULL;
-    fn_801EE434(mEmitter29c);
+    releaseEmitter_801EE434(mEmitter29c);
     mEmitter29c = NULL;
-    fn_801EE434(mEmitter2a0);
+    releaseEmitter_801EE434(mEmitter2a0);
     mEmitter2a0 = NULL;
 }

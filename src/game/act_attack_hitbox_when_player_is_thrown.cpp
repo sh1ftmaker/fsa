@@ -16,7 +16,7 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x24() {
 void AttackHitboxWhenPlayerIsThrown_804A7C40::draw() {}
 
 void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
-    mPos.set(*fn_8023E724(field_0x230));
+    mPos.set(*getPlayerPos_8023E724(field_0x230));
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
     box.i.y += mPos.y;

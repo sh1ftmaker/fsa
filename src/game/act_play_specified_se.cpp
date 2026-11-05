@@ -1,5 +1,5 @@
 // Actor SEN2 ("Play specified SE" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x23C bytes for it and calls its constructor
+// (spawnActor_801F9484) allocates 0x23C bytes for it and calls its constructor
 // fn_802011F0, which stores the vtable 0x804A9F00.
 
 #include "game/GameAudio.h"

@@ -1,5 +1,5 @@
 // The BGWC actor ("BG-rewrite check switch", docs/names/actors.tsv, medium
-// confidence). Spawned by fn_801F9484: __nw__ 0x234, inline constructor
+// confidence). Spawned by spawnActor_801F9484: __nw__ 0x234, inline constructor
 // fn_80202FDC (base constructor and vtable only, so the word at 0x230 is left
 // uninitialized; nothing in this unit touches it). Overrides the destructor,
 // init(), update() and draw().

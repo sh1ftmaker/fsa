@@ -58,8 +58,8 @@ void cls_804A4C58::fn_801E631C() const {
 }
 
 void cls_804A4C58::fn_801E6394() {
-    fn_801EE434(mEmitter2c0);
-    fn_801EE434(mEmitter2c4);
+    releaseEmitter_801EE434(mEmitter2c0);
+    releaseEmitter_801EE434(mEmitter2c4);
     mEmitter2c0 = NULL;
     mEmitter2c4 = NULL;
 }

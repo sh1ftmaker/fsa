@@ -251,7 +251,7 @@ void Player_804A6F38::fn_8025785C() {
             } else if (fn_802416C4() == 7) {
                 bool blocked = false;
                 if (fn_8025F500()) {
-                    ActorBase_804A5770* held = fn_801F856C()->findActorBySerial_801F666C(field_0xd68);
+                    ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
                     if (held != NULL && held->field_0x1a4 != 0) {
                         blocked = true;
                     }
@@ -293,11 +293,11 @@ void Player_804A6F38::fn_8025785C() {
                         }
                         s32 serial;
                         if (fn_802415CC() >= 2) {
-                            serial = fn_801F856C()->fn_801F9484(ACTOR_HBMB, field_0x3b4, &pos, 8, -1, field_0x4);
+                            serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HBMB, field_0x3b4, &pos, 8, -1, field_0x4);
                         } else {
-                            serial = fn_801F856C()->fn_801F9484(ACTOR_HBMB, field_0x3b4, &pos, 0, -1, field_0x4);
+                            serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HBMB, field_0x3b4, &pos, 0, -1, field_0x4);
                         }
-                        if (fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
+                        if (getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
                             field_0xb30[i] = serial;
                             fn_8024F0E8(0x20006);
                             break;
@@ -389,7 +389,7 @@ void Player_804A6F38::fn_80257FF4() {
     s32 serial; // declared outside the loop: the original keeps the counter in the lower saved register
     for (s32 i = 0; i < 2; i++) {
         serial = field_0xb30[i];
-        if (serial >= 0 && !fn_801F856C()->findActorBySerial_801F666C(serial)) {
+        if (serial >= 0 && !getActorManager_801F856C()->findActorBySerial_801F666C(serial)) {
             field_0xb30[i] = -1;
         }
     }
@@ -398,7 +398,7 @@ void Player_804A6F38::fn_80257FF4() {
 void Player_804A6F38::fn_80258070() {
     s32 serial = field_0xb2c;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor == NULL) {
             field_0xb2c = -1;
         } else if (!static_cast<CaneOfSomariaBlock_804AA9F0*>(actor)->fn_8030EA0C()) {
@@ -436,7 +436,7 @@ void Player_804A6F38::fn_802580E0() {
 void Player_804A6F38::fn_8025819C() {
     s32 serial = field_0xb3c;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor == NULL) {
             field_0xb3c = -1;
             field_0xb70 = -1;
@@ -457,7 +457,7 @@ void Player_804A6F38::fn_8025825C() {
         field_0xb68 = 0;
         return;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         field_0xb68 = 0;
         field_0xb38 = -1;
@@ -482,7 +482,7 @@ void Player_804A6F38::fn_80258384() {
     for (s32 i = 0; i < 3; i++) {
         serial = field_0xb1c[i];
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor == NULL) {
                 field_0xb1c[i] = -1;
                 field_0xb5c[i] = -1;
@@ -499,7 +499,7 @@ void Player_804A6F38::fn_80258384() {
 }
 
 void Player_804A6F38::fn_80258470() {
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xb18);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xb18);
     if (actor == NULL) {
         field_0xb18 = -1;
         field_0xb58 = -1;
@@ -515,7 +515,7 @@ void Player_804A6F38::fn_80258470() {
 
 void Player_804A6F38::fn_8025851C() {
     for (s32 i = 0; i < 3; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xb0c[i]);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xb0c[i]);
         if (actor == NULL) {
             field_0xb0c[i] = -1;
             field_0xb4c[i] = -1;
@@ -532,7 +532,7 @@ void Player_804A6F38::fn_8025851C() {
 
 void Player_804A6F38::fn_802585F4() {
     for (s32 i = 0; i < 3; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xb00[i]);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xb00[i]);
         if (actor == NULL) {
             field_0xb00[i] = -1;
             field_0xb40[i] = -1;
@@ -582,10 +582,10 @@ void Player_804A6F38::fn_802586D0() {
         }
         s32 serial; // declared before index: the original gives serial the higher saved register
         s32 index = field_0x4;
-        serial = fn_801F856C()->fn_801F9484(ACTOR_FIRE, field_0x3b4, &pos,
+        serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FIRE, field_0x3b4, &pos,
                                                 (fn_802415CC() << 12) | ((field_0x3dc & 3) << 4) | (index & 3) | 0x140,
                                                 -1, index);
-        if (fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
+        if (getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0xb3c = serial;
         }
     }
@@ -651,7 +651,7 @@ void Player_804A6F38::fn_80258890() {
             field_0x5cc.set(pos.x - 4.0f, pos.y - 4.0f, pos.x + 4.0f, pos.y + 4.0f);
         }
         if (field_0x3fa == 12) {
-            field_0xba0 = lbl_8053AC98->fn_802A1844(&pos, field_0x4, field_0x3b4);
+            field_0xba0 = gBgRewrite_8053AC98->fn_802A1844(&pos, field_0x4, field_0x3b4);
             if ((field_0xba0 > 0 && field_0xba0 <= 4) || field_0xb9f) {
                 fn_8024F0E8(0x20044);
             } else {
@@ -705,7 +705,7 @@ void Player_804A6F38::fn_80259784() {
     }
     s32 serial = field_0xb28;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->fn_802BAA00();
         }
@@ -736,7 +736,7 @@ void Player_804A6F38::fn_8025A0B0() {
     }
     s32 serial = field_0xb28;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->fn_802BAA00();
         }
@@ -816,7 +816,7 @@ void Player_804A6F38::fn_8025AED0() {
     }
     fn_80268B3C();
     if (field_0xafc != 1 && !field_0xbf0->anyFlag48()) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0x11f8);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x11f8);
         if (actor != NULL && actor->field_0x4 == field_0x3b4) {
             JGeometry::TVec3f dir = actor->mPos - mPos;
             dir.z = 0.0f;
@@ -853,11 +853,11 @@ void Player_804A6F38::fn_8025B22C() {
     if (field_0x3fa == 6) {
         if (fn_802415CC() >= 2) {
             s32 index = field_0x4;
-            field_0xb18 = fn_801F856C()->fn_801F9484(ACTOR_BOME, field_0x3b4, &mPos,
+            field_0xb18 = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BOME, field_0x3b4, &mPos,
                                                      ((field_0x3e8 & 7) << 4) | (index & 3) | 0x100, -1, index);
         } else {
             s32 index = field_0x4;
-            field_0xb18 = fn_801F856C()->fn_801F9484(ACTOR_BOME, field_0x3b4, &mPos,
+            field_0xb18 = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BOME, field_0x3b4, &mPos,
                                                      ((field_0x3e8 & 7) << 4) | (index & 3), -1, index);
         }
     } else if (field_0x3fa == 16) {
@@ -906,7 +906,7 @@ void Player_804A6F38::fn_8025BDD8() {
     }
     s32 serial = field_0x12c0;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }
@@ -936,7 +936,7 @@ void Player_804A6F38::fn_8025C7BC() {
     }
     s32 serial = field_0x12c0;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }

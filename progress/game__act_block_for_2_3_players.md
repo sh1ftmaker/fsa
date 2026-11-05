@@ -9,7 +9,7 @@ TMI2 actor ("Block for 2-3 players", actors.tsv, medium), class
 `BlockFor2Or3Players_804AE728` (vtable 0x804AE728). Spawner: __nw__ 0x238,
 inline ctor fn_8020020C (base ctor + vtable only): 8 unknown bytes at 0x230.
 - update: if fn_80226850(&mPos, field_0x4) == 0x12, spawn ACTOR_BCK2 at mPos
-  (fn_801F9484, arg_0x90 0x100, -1, -1) and clear mAlive.
+  (spawnActor_801F9484, arg_0x90 0x100, -1, -1) and clear mAlive.
 - init: clears mAlive (0x11C).
 .text/.data/.bss/.ctors 100 %; extab/extabindex 40 %: the weak JASMemPool
 dtor dedup (report tooling), not worked around.

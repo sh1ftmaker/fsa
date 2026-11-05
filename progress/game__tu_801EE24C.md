@@ -23,11 +23,11 @@ then the .sdata2 order resolves the ctor.
 Baseline 8112 -> 8121. Written: fn_801EE3C0 (now C++ free fn_801EE3C0__FUs), fn_801EE508, fn_801EF510, fn_801F3128, fn_801F317C (const), fn_801F31C4, fn_801F3518, fn_801F355C, fn_801F35AC, fn_801F3604, fn_801F3668, fn_801F4694 (const).
 Resistant: fn_801EE3C0 78.6 % (target truncates each `tile - lo` with clrlwi; ours extends the u16 once). fn_801EF510 / fn_801F3128 / fn_801F4694: instructions identical, only rodata/sdata2 relocation names (lbl_80469FC8, lbl_8053F74C, lbl_80469F38) pending the unit's data order.
 SHARED-EDITS: include/game/ActorBase.h (fn_801EE3C0 moved out of extern "C"; fn_801F4694 / fn_801F317C const); symbols.txt renames fn_801EE3C0__FUs, fn_801F4694...CFv, fn_801F317C...CF....
-Next: fn_801EE434 (0xBC), fn_801F2618, fn_801F2FAC, fn_801F32F4, vfunc_0x50, then the larger ones.
+Next: releaseEmitter_801EE434 (0xBC), fn_801F2618, fn_801F2FAC, fn_801F32F4, vfunc_0x50, then the larger ones.
 
 ## 2026-11-05 leverage wave 1 (Opus 5.5)
-Baseline 8397 -> 8401 (+4 honest). 100 %: fn_801EE434 (now C++
-fn_801EE434__FP14JPABaseEmitter; it replaces the destructor's inline copy, the
+Baseline 8397 -> 8401 (+4 honest). 100 %: releaseEmitter_801EE434 (now C++
+releaseEmitter_801EE434__FP14JPABaseEmitter; it replaces the destructor's inline copy, the
 destructor inlines it), fn_801F0D20, fn_801F32F4, fn_801F33C4.
 Structural (FIXME each): fn_801EE24C 99.95 reloc-name (200.0f), startSound_801F0E34
 99.25 regalloc, fn_801F2B7C 98.2 regalloc+reloc (inlines fn_801F2740),
@@ -43,9 +43,9 @@ s16[4] and lbl_8053F738 u8[4] from fn_801EF830; .rodata shows the same reverse
 order), then the floats in first-use order; objdiff pairs @NNN literals by
 offset, so fn_801EF830 and fn_801F52A4 (and every literal-introducing
 function before the ctor) must be written first.
-SHARED-EDITS: symbols.txt fn_801EE434 -> fn_801EE434__FP14JPABaseEmitter,
+SHARED-EDITS: symbols.txt releaseEmitter_801EE434 -> releaseEmitter_801EE434__FP14JPABaseEmitter,
 fn_8022BB48 -> fn_8022BB48__FlPCQ29JGeometry8TVec3<f>; Player.h declares
-fn_8022BB48; ActorBase.h startSound_801F0E34 returns JAISoundHandle*, fn_801EE434 out
+fn_8022BB48; ActorBase.h startSound_801F0E34 returns JAISoundHandle*, releaseEmitter_801EE434 out
 of extern "C"; tools/gen_game.py EMIT_RELEASE (protected: needs approval).
 Next: fn_801EE558 / fn_801EE8F4 (literal order), fn_801EEC98, drawSprite_801F06F0
 (SpriteParams copy), fn_801F285C, fn_801F37AC, fn_801EF830, fn_801F52A4.

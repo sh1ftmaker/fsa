@@ -189,8 +189,8 @@ void ShopItem_8049CDC0::update() {
         }
         flags |= mPlayer << 24;
         flags |= mPlayer << 26;
-        JGeometry::TVec3f* pos = fn_8023E724(mPlayer);
-        fn_801F856C()->fn_801F9484('IMUP', field_0x4, pos, flags, -1, -1);
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(mPlayer);
+        getActorManager_801F856C()->spawnActor_801F9484('IMUP', field_0x4, pos, flags, -1, -1);
         break;
     }
     case 3:

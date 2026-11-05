@@ -88,13 +88,13 @@ void ParticleNpc_804A9AC8::update() {
 
 ParticleNpc_804A9AC8::~ParticleNpc_804A9AC8() {
     if (field_0x234 != NULL) {
-        fn_801EE434(field_0x234);
+        releaseEmitter_801EE434(field_0x234);
     }
     if (field_0x238 != NULL) {
-        fn_801EE434(field_0x238);
+        releaseEmitter_801EE434(field_0x238);
     }
     if (field_0x23c != NULL) {
-        fn_801EE434(field_0x23c);
+        releaseEmitter_801EE434(field_0x23c);
     }
     if (mSound != NULL) {
         delete mSound;

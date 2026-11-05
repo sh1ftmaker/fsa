@@ -50,7 +50,7 @@ void cls_8049E500::update() {
     switch (field_0x230) {
     case 0:
         if (fn_8011921C()->field_0x0 == 0) {
-            lbl_8053AF80->fn_80458F9C(60);
+            gAudioMgr_8053AF80->fn_80458F9C(60);
             fn_8011921C()->fn_801186B0(12);
         }
         break;

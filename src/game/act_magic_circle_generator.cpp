@@ -20,12 +20,12 @@ bool cls_804A9FB0::fn_802E7DB8() {
 
     s32 serial = -1;
     for (;;) {
-        s32 found = fn_801F856C()->fn_801F78F4(ACTOR_KEY0, serial);
+        s32 found = getActorManager_801F856C()->fn_801F78F4(ACTOR_KEY0, serial);
         serial = found;
         if (found < 0) {
             return false;
         }
-        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(fn_801F856C()->findActorBySerial_801F666C(found));
+        SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(getActorManager_801F856C()->findActorBySerial_801F666C(found));
         if (key == NULL) {
             continue;
         }
@@ -64,19 +64,19 @@ bool cls_804A9FB0::fn_802E7DB8() {
         field_0x24c = 0x14;
         JGeometry::TVec3f effectPos = pos;
         if (mEmitter230 != NULL) {
-            fn_801EE434(mEmitter230);
+            releaseEmitter_801EE434(mEmitter230);
         }
         if (mEmitter234 != NULL) {
-            fn_801EE434(mEmitter234);
+            releaseEmitter_801EE434(mEmitter234);
         }
         if (mEmitter238 != NULL) {
-            fn_801EE434(mEmitter238);
+            releaseEmitter_801EE434(mEmitter238);
         }
         if (mEmitter23c != NULL) {
-            fn_801EE434(mEmitter23c);
+            releaseEmitter_801EE434(mEmitter23c);
         }
         if (mEmitter240 != NULL) {
-            fn_801EE434(mEmitter240);
+            releaseEmitter_801EE434(mEmitter240);
         }
         mEmitter230 = NULL;
         mEmitter234 = NULL;
@@ -96,19 +96,19 @@ bool cls_804A9FB0::fn_802E7DB8() {
 
 cls_804A9FB0::~cls_804A9FB0() {
     if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
+        releaseEmitter_801EE434(mEmitter230);
     }
     if (mEmitter234 != NULL) {
-        fn_801EE434(mEmitter234);
+        releaseEmitter_801EE434(mEmitter234);
     }
     if (mEmitter238 != NULL) {
-        fn_801EE434(mEmitter238);
+        releaseEmitter_801EE434(mEmitter238);
     }
     if (mEmitter23c != NULL) {
-        fn_801EE434(mEmitter23c);
+        releaseEmitter_801EE434(mEmitter23c);
     }
     if (mEmitter240 != NULL) {
-        fn_801EE434(mEmitter240);
+        releaseEmitter_801EE434(mEmitter240);
     }
 }
 

@@ -17,12 +17,12 @@ void PushSwitch_804A7B38::update() {
     area.f.y += mPos.y;
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (fn_8023DE58(i) == field_0x4 && fn_8022DB04(i)) {
+        if (getPlayerLayer_8023DE58(i) == field_0x4 && fn_8022DB04(i)) {
             s32 direction = (field_0x90 >> 17) & 3;
             if (direction != fn_80230CFC(i)) {
                 continue;
             }
-            JGeometry::TVec3f* pos = fn_8023E724(i);
+            JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
             bool inside = false;
             if (pos->x >= area.i.x && pos->y >= area.i.y && pos->x < area.f.x &&
                 pos->y < area.f.y) {

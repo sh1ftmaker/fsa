@@ -71,22 +71,22 @@ void cls_80217F80::fn_8021798C() {
 }
 
 void cls_80217F80::fn_802179EC() {
-    fn_801EE434(mEmitters[4]);
-    fn_801EE434(mEmitters[5]);
+    releaseEmitter_801EE434(mEmitters[4]);
+    releaseEmitter_801EE434(mEmitters[5]);
     mEmitters[4] = NULL;
     mEmitters[5] = NULL;
 }
 
 void cls_80217F80::fn_80217A30() {
-    fn_801EE434(mEmitters[2]);
-    fn_801EE434(mEmitters[3]);
+    releaseEmitter_801EE434(mEmitters[2]);
+    releaseEmitter_801EE434(mEmitters[3]);
     mEmitters[2] = NULL;
     mEmitters[3] = NULL;
 }
 
 void cls_80217F80::fn_80217A74() {
-    fn_801EE434(mEmitters[0]);
-    fn_801EE434(mEmitters[1]);
+    releaseEmitter_801EE434(mEmitters[0]);
+    releaseEmitter_801EE434(mEmitters[1]);
     mEmitters[0] = NULL;
     mEmitters[1] = NULL;
 }
@@ -169,16 +169,16 @@ void cls_80217F80::fn_80217ED4() {
 }
 
 cls_80217F80::~cls_80217F80() {
-    fn_801EE434(mEmitters[0]);
-    fn_801EE434(mEmitters[1]);
+    releaseEmitter_801EE434(mEmitters[0]);
+    releaseEmitter_801EE434(mEmitters[1]);
     mEmitters[0] = NULL;
     mEmitters[1] = NULL;
-    fn_801EE434(mEmitters[2]);
-    fn_801EE434(mEmitters[3]);
+    releaseEmitter_801EE434(mEmitters[2]);
+    releaseEmitter_801EE434(mEmitters[3]);
     mEmitters[2] = NULL;
     mEmitters[3] = NULL;
-    fn_801EE434(mEmitters[4]);
-    fn_801EE434(mEmitters[5]);
+    releaseEmitter_801EE434(mEmitters[4]);
+    releaseEmitter_801EE434(mEmitters[5]);
     mEmitters[4] = NULL;
     mEmitters[5] = NULL;
 }

@@ -3,6 +3,6 @@
 
 LiftableWood_804A87A8::~LiftableWood_804A87A8() {
     if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
+        releaseEmitter_801EE434(mEmitter230);
     }
 }

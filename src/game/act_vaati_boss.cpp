@@ -34,5 +34,5 @@ void VaatiBoss_804A4958::vfunc_0x94() {
 }
 
 void VaatiBoss_804A4958::vfunc_0x54() {
-    lbl_8053AF80->fn_80458F9C(60);
+    gAudioMgr_8053AF80->fn_80458F9C(60);
 }

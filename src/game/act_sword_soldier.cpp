@@ -12,15 +12,15 @@
 #include "std/math.h"
 
 s32 fn_80154248(u32 id, s32 layer, const JGeometry::TVec3f* pos, u32 arg) {
-    return fn_801F856C()->fn_801F8544(id, layer, pos, arg);
+    return getActorManager_801F856C()->fn_801F8544(id, layer, pos, arg);
 }
 
 s32 fn_801542AC(u32 id, s32 layer, ActorBase_804A5770** out, s32 excludeSerial) {
-    return fn_801F856C()->fn_801F7818(id, layer, out, excludeSerial);
+    return getActorManager_801F856C()->fn_801F7818(id, layer, out, excludeSerial);
 }
 
 s32 fn_80154310(u32 id, s32 layer, const JGeometry::TVec3f* pos, u32 arg, s32 a, s32 b) {
-    return fn_801F856C()->fn_801F9484(id, layer, pos, arg, a, b);
+    return getActorManager_801F856C()->spawnActor_801F9484(id, layer, pos, arg, a, b);
 }
 
 // fabs narrowed to f32, out of line.
@@ -37,7 +37,7 @@ f32 fn_80154378(f32 x) {
 }
 
 ActorBase_804A5770* fn_8015445C(s32 serial) {
-    return fn_801F856C()->findActorBySerial_801F666C(serial);
+    return getActorManager_801F856C()->findActorBySerial_801F666C(serial);
 }
 
 // fn_80154490 to fn_801544C0: the sword soldier (SLR1) calls them on the

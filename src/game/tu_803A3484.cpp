@@ -87,8 +87,8 @@ inline void Title_804AF820::stopMovie() {
     field_0x80 = 0;
     field_0x60 = 0;
     field_0x64 = 0;
-    if (field_0x6e != 3 && lbl_8053AF80->field_0x58 != 0x1000006) {
-        lbl_8053AF80->fn_80458FF0(0x1000006, false, false);
+    if (field_0x6e != 3 && gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
+        gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
     }
 }
 
@@ -106,8 +106,8 @@ void Title_804AF820::fn_803A34A0() {
                 field_0x80++;
             }
             if (frame >= 150 && mMovie->mGetTotalFrame() > frame) {
-                if (lbl_8053AF80->field_0x58 != 0x1000006) {
-                    lbl_8053AF80->fn_80458FF0(0x1000006, false, false);
+                if (gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
+                    gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
                     field_0x80++;
                 }
                 if (lbl_80529DEC.field_0x250 == 1) {
@@ -206,9 +206,9 @@ void Title_804AF820::fn_803A34A0() {
             if (lbl_80529DEC.field_0x249[0] != 0) {
                 if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
                     field_0x82 <= 0 && lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
-                    lbl_8053AF80->fn_80458880(0xB, -1);
+                    gAudioMgr_8053AF80->fn_80458880(0xB, -1);
                     field_0x154 = 2;
-                    lbl_8053AF80->fn_80458F9C(60);
+                    gAudioMgr_8053AF80->fn_80458F9C(60);
                     lbl_80529DEC.field_0x1a0 = 60;
                     field_0x6e = 3;
                 } else {
@@ -216,7 +216,7 @@ void Title_804AF820::fn_803A34A0() {
                     // lbl_8050DB0C's halfword 0x236: the attract movie's delay.
                     s16 delay = lbl_8050DB0C.field_0x4c[(0x236 - 0x4C) / 2];
                     if (field_0x60 == delay + 7440) {
-                        lbl_8053AF80->fn_80458F9C(60);
+                        gAudioMgr_8053AF80->fn_80458F9C(60);
                     } else if (field_0x60 >= delay + 7500) {
                         if (mMovie->start_80427DB4(field_0x58)) {
                             mMovieState = 1;
@@ -600,8 +600,8 @@ void Title_804AF820::fn_803A5380() {
     field_0x8c = 1;
     field_0x90.fn_8016ED88();
     if (lbl_80529DEC.field_0x249[0] != 0) {
-        if (lbl_8053AF80->field_0x58 != 0x1000006) {
-            lbl_8053AF80->fn_80458FF0(0x1000006, false, false);
+        if (gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
         }
         field_0x82 = 60;
     }

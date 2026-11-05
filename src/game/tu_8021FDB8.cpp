@@ -7,7 +7,7 @@ void cls_804A51E4::fn_8021FDB8() const {
     if (serial < 0) {
         return;
     }
-    ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* target = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (target == NULL) {
         return;
     }

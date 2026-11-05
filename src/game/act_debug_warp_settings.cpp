@@ -1,5 +1,5 @@
 // The debug warp settings actor (actor DWAP, "Debug warp settings" in
-// docs/names/actors.tsv). The spawner (fn_801F9484) allocates 0x240 bytes
+// docs/names/actors.tsv). The spawner (spawnActor_801F9484) allocates 0x240 bytes
 // and constructs it with the weak constructor fn_80200310, which calls
 // ActorBase_804A5770's and stores this class's vtable (0x8049C9E8). init
 // unpacks two bytes of the spawn argument at 0x90; update hands the actor

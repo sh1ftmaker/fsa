@@ -56,7 +56,7 @@ void PullSwitch_804A7908::update() {
     if (player >= 0) {
         JGeometry::TVec3f playerPos;
         fn_80239914(&box, field_0x4, mSerial);
-        f32 dx = mPos.x - fn_8023E724(player)->x;
+        f32 dx = mPos.x - getPlayerPos_8023E724(player)->x;
         if (__fabsf(dx) >= 2.0f) {
             JGeometry::TVec3f push(dx, 0.0f, 0.0f);
             fn_8023DFF4(player, &push);
@@ -88,7 +88,7 @@ void PullSwitch_804A7908::update() {
                 field_0x230 = mPos;
                 field_0x230.y += 16.0f;
                 JGeometry::TVec3f diff;
-                playerPos = *fn_8023E724(player);
+                playerPos = *getPlayerPos_8023E724(player);
                 difference(diff, field_0x230, playerPos);
                 fn_8023DFF4(player, &diff);
             }

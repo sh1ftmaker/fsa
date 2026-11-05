@@ -46,7 +46,7 @@ void EnemyGenerator3_804AA1D0::update() {
             if (mMode == 1) {
                 s32 found = -1;
                 do {
-                    found = fn_801F856C()->fn_801F78F4(mActorId, found);
+                    found = getActorManager_801F856C()->fn_801F78F4(mActorId, found);
                     if (found < 0) {
                         break;
                     }
@@ -60,7 +60,7 @@ void EnemyGenerator3_804AA1D0::update() {
             }
             s32 layer = field_0x4;
             if (layer >= 8) {
-                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 3, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &mPos, 3, -1, -1);
             } else {
                 spawnEmitter_8013CC50(layer, &mPos, 0x35c, 1, 1, NULL, NULL, true, 1.0f);
             }
@@ -72,10 +72,10 @@ void EnemyGenerator3_804AA1D0::update() {
         mTimer--;
         if (mTimer == 0) {
             u32 param = lbl_8046F450[mTypeIndex];
-            fn_801F856C()->fn_801F9484(mActorId, field_0x4, &mPos, param, -1, -1);
-            if (lbl_8053AF80->field_0x58 != 0x1000021 && lbl_8053AAF8->field_0x7f == 1 &&
+            getActorManager_801F856C()->spawnActor_801F9484(mActorId, field_0x4, &mPos, param, -1, -1);
+            if (gAudioMgr_8053AF80->field_0x58 != 0x1000021 && lbl_8053AAF8->field_0x7f == 1 &&
                 mFlag == 0) {
-                lbl_8053AF80->fn_80458FF0(0x1000021, 1, false);
+                gAudioMgr_8053AF80->fn_80458FF0(0x1000021, 1, false);
             }
             mTimer = mInterval;
             mRemaining--;

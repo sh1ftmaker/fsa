@@ -33,7 +33,7 @@ public:
     /* 0x23C */ f32 field_0x23c; // fall time: += 0.1f a frame in state 1 (update)
     /* 0x240 */ f32 field_0x240; // 1.0f after construction
     /* 0x244 */ SpriteAnim_801D267C mSprite;
-    // The emitter the destructor releases with fn_801EE434.
+    // The emitter the destructor releases with releaseEmitter_801EE434.
     /* 0x27C */ JPABaseEmitter* field_0x27c;
 }; // Size: 0x280
 

@@ -31,7 +31,7 @@ inline void FIXME_instantiateDopplerAudiblePool(JAUDopplerAudible<4>* audible) {
     delete audible;
 }
 
-// The game's audio manager (lbl_8053AF80).
+// The game's audio manager (gAudioMgr_8053AF80).
 #include "game/Unk_8045A080.h"
 
 #endif

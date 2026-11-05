@@ -49,8 +49,8 @@ void cls_804A4BB0::update() {
             if (hits) {
                 for (s32 i = 0; i < 4; i++) {
                     if (hits & (1 << i)) {
-                        JGeometry::TVec2f p(fn_8023E724(i)->x - field_0x3c.x,
-                                            fn_8023E724(i)->y - fn_8023E724(i)->z - field_0x3c.y);
+                        JGeometry::TVec2f p(getPlayerPos_8023E724(i)->x - field_0x3c.x,
+                                            getPlayerPos_8023E724(i)->y - getPlayerPos_8023E724(i)->z - field_0x3c.y);
                         fn_80238548(i, field_0x114, &p, mode);
                     }
                 }
@@ -106,8 +106,8 @@ void cls_804A4BB0::init() {
 }
 
 cls_804A4BB0::~cls_804A4BB0() {
-    fn_801EE434(mEmitters[0]);
-    fn_801EE434(mEmitters[1]);
+    releaseEmitter_801EE434(mEmitters[0]);
+    releaseEmitter_801EE434(mEmitters[1]);
 }
 
 cls_804A4BB0::cls_804A4BB0() {

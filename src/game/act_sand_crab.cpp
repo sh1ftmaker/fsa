@@ -56,15 +56,15 @@ void SandCrab_8049F3B0::update() {
             field_0x230 = 0;
         }
         for (s32 i = 0; i < 4; i++) {
-            if (fn_8023F264(i) && getField_0x4() == fn_8023DE58(i) && !fn_80230188(i) && !fn_8022DCD8(i) &&
-                FABS(fn_8023E724(i)->x - mPos.x) < 200.0f &&
-                FABS(fn_8023E724(i)->y - mPos.y) < 40.0f) {
+            if (fn_8023F264(i) && getField_0x4() == getPlayerLayer_8023DE58(i) && !fn_80230188(i) && !fn_8022DCD8(i) &&
+                FABS(getPlayerPos_8023E724(i)->x - mPos.x) < 200.0f &&
+                FABS(getPlayerPos_8023E724(i)->y - mPos.y) < 40.0f) {
                 JGeometry::TVec3f outPos;
                 JGeometry::TVec3f out2;
-                if (!fn_801F23BC(field_0x4, &mPos, fn_8023E724(i), &field_0x80, &outPos, &out2, false)) {
+                if (!fn_801F23BC(field_0x4, &mPos, getPlayerPos_8023E724(i), &field_0x80, &outPos, &out2, false)) {
                     mTimers[0] = 0;
                     field_0x3c.x = 2.0f;
-                    if (fn_8023E724(i)->x < mPos.x) {
+                    if (getPlayerPos_8023E724(i)->x < mPos.x) {
                         field_0x3c.x = -2.0f;
                     }
                     mTimers[1] = (s32)(100.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 50;

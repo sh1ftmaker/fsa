@@ -19,7 +19,7 @@ void cls_804A6828::init() {
 }
 
 cls_804A6828::~cls_804A6828() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
 }
 
 cls_804A6828::cls_804A6828() {

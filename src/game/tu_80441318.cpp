@@ -91,13 +91,13 @@ void cls_804B19E0::fn_80441490() {
         s32 y = centreY();
         s32 player = lbl_80529DEC.field_0x1a8;
         if (player >= 0 && player < 4) {
-            if (fn_8023DE58(player) >= 8) {
+            if (getPlayerLayer_8023DE58(player) >= 8) {
                 field_0x4 = lbl_80529DEC.field_0x1a8;
             }
         } else if (player == 4) {
             for (s32 i = 0; i < 4; i++) {
                 if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
-                    if (fn_8023DE58(i) >= 8) {
+                    if (getPlayerLayer_8023DE58(i) >= 8) {
                         count++;
                     }
                 }

@@ -343,7 +343,7 @@ void GameMode_804B0688::fn_803DD764() {
     field_0x7c += 10.0f;
     if (field_0x7c >= 255.0f) {
         field_0x7c = 255.0f;
-        if (lbl_8053AF80->fn_80457F80(JAISoundID(11), -2)) {
+        if (gAudioMgr_8053AF80->fn_80457F80(JAISoundID(11), -2)) {
             if (--field_0x98 <= 0) {
                 DVDFileInfo info;
                 if (DVDOpen("/DOL/framework.dol", &info) == TRUE) {
@@ -513,10 +513,10 @@ void GameMode_804B0688::fn_803DE05C() {
             } else if (field_0x9e == 2) {
                 field_0x7c = 0.0f;
                 mState = 7;
-                lbl_8053AF80->fn_80458F9C(60);
+                gAudioMgr_8053AF80->fn_80458F9C(60);
             }
             lbl_80529DEC.field_0x23a[0] = field_0x9e;
-            lbl_8053AF80->fn_80458880(11, -1);
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
         } else {
             field_0x9c = 0;
             for (s32 i = 0; i < 2; i++) {
@@ -547,7 +547,7 @@ void GameMode_804B0688::fn_803DE05C() {
             }
             field_0x58->mPane->hide();
             mState = 4;
-            lbl_8053AF80->fn_80458880(12, -1);
+            gAudioMgr_8053AF80->fn_80458880(12, -1);
         }
     } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
         field_0x9c = 0;
@@ -580,20 +580,20 @@ void GameMode_804B0688::fn_803DE05C() {
         }
         field_0x58->mPane->hide();
         mState = 4;
-        lbl_8053AF80->fn_80458880(12, -1);
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
     } else if (lbl_8053AD30->fn_80309A9C(2, 1)) {
         if (field_0x80 == 0) {
             field_0x80 = 1;
             field_0x88 = 1;
             field_0x8c = 30;
-            lbl_8053AF80->fn_80458880(0x26, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
         }
     } else if (lbl_8053AD30->fn_80309A9C(1, 1)) {
         if (field_0x80 == 1) {
             field_0x80 = 0;
             field_0x88 = 1;
             field_0x8c = 30;
-            lbl_8053AF80->fn_80458880(0x26, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
         }
     }
     field_0x8c++;
@@ -775,10 +775,10 @@ void GameMode_804B0688::fn_803DEC44() {
             field_0x9f = field_0x9e;
             field_0x90 = 1;
         }
-        lbl_8053AF80->fn_80458880(11, -1);
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
     } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
         field_0x68 = 1;
-        lbl_8053AF80->fn_80458880(12, -1);
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
     } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
         field_0x9f = field_0x9e;
         if (field_0x9e < 3) {
@@ -796,7 +796,7 @@ void GameMode_804B0688::fn_803DEC44() {
             field_0x8c = 60;
         }
         field_0x90 = 1;
-        lbl_8053AF80->fn_80458880(0x26, -1);
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
         field_0x9f = field_0x9e;
         if (field_0x9e != 0) {
@@ -814,7 +814,7 @@ void GameMode_804B0688::fn_803DEC44() {
             field_0x8c = 60;
         }
         field_0x90 = 1;
-        lbl_8053AF80->fn_80458880(0x26, -1);
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
     field_0x8c++;
     if (field_0x9e == 3) {
@@ -917,8 +917,8 @@ void GameMode_804B0688::fn_803DF624() {
 
 void GameMode_804B0688::fn_803DF810() {
     if (field_0x94 == 0 && mState != 7) {
-        lbl_8053AF80->fn_80458FF0(0x100001A, false, false);
-        lbl_8053AF80->fn_80458408(0x100001A, false);
+        gAudioMgr_8053AF80->fn_80458FF0(0x100001A, false, false);
+        gAudioMgr_8053AF80->fn_80458408(0x100001A, false);
         lbl_80529DEC.field_0x248 = 0;
     }
     (lbl_8053ADD0->*lbl_804B0568[mState])();

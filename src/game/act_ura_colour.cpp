@@ -1,5 +1,5 @@
 // The URAC actor ("Ura (dark-world) colour", docs/names/actors.tsv, medium
-// confidence). Spawned by fn_801F9484: __nw__ 0x230, inline constructor
+// confidence). Spawned by spawnActor_801F9484: __nw__ 0x230, inline constructor
 // fn_8020203C (base constructor and vtable only), so no members of its own.
 // Each frame it ORs 1 into the view's 16-bit word for its field_0x4
 // (fn_802D77BC). Overrides the destructor, init(), update() and draw().

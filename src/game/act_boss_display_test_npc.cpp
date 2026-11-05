@@ -1,5 +1,5 @@
 // The boss display test NPC (actor BOTS, "Boss display test NPC" in
-// docs/names/actors.tsv). The spawner (fn_801F9484) constructs it with the
+// docs/names/actors.tsv). The spawner (spawnActor_801F9484) constructs it with the
 // weak constructor fn_802020F0, which calls ActorBase_804A5770's and stores
 // this class's vtable (0x8049C7F0). It overrides only draw, update and
 // init, all empty. Unlike TutorialOldMan_804AE508's, its destructor comes

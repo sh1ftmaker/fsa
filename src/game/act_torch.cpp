@@ -105,10 +105,10 @@ void Torch_804A8520::update() {
 
 Torch_804A8520::~Torch_804A8520() {
     if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
+        releaseEmitter_801EE434(mEmitter230);
     }
     if (mEmitter234 != NULL) {
-        fn_801EE434(mEmitter234);
+        releaseEmitter_801EE434(mEmitter234);
     }
 }
 

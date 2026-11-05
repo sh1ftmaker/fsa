@@ -26,7 +26,7 @@ void cls_804A7BE8::init() {
         return;
     }
     fn_8022CF08(field_0x90 & 3);
-    mPos = *fn_8023E724(field_0x90 & 3);
+    mPos = *getPlayerPos_8023E724(field_0x90 & 3);
     mPos.z += 30.0f;
     mLife = 0;
     field_0x234 = 1;
@@ -68,9 +68,9 @@ void cls_804A7BE8::init() {
     field_0x250 = 0;
     field_0x254 = NULL;
     ActorBase_804A5770* actor;
-    s32 actorEnd = fn_801F856C()->mActorEnd;
+    s32 actorEnd = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < actorEnd; i++) {
-        actor = fn_801F856C()->mActors[i];
+        actor = getActorManager_801F856C()->mActors[i];
         if (actor != NULL && actor->mActorId == 'FGAL' && actor->mAlive == true) {
             field_0x254 = actor;
         }

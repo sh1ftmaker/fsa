@@ -10,5 +10,5 @@ bool cls_804A6550::vfunc_0x5C() {
 }
 
 cls_804A6550::~cls_804A6550() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
 }

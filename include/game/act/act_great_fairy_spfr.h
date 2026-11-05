@@ -28,7 +28,7 @@ public:
     /* 0x248 */ s32 field_0x248; // set to 0 by the constructor, not yet known
     /* 0x24C */ s32 field_0x24c; // set to 0 by the constructor, not yet known
     /* 0x250 */ SpriteAnim_801D267C mAnim; // constructed after the words above
-    /* 0x288 */ JPABaseEmitter* field_0x288; // emitter, freed by the destructor with fn_801EE434; set to 0 by the constructor, after mAnim
+    /* 0x288 */ JPABaseEmitter* field_0x288; // emitter, freed by the destructor with releaseEmitter_801EE434; set to 0 by the constructor, after mAnim
 }; // Size: at least 0x28C
 
 #endif

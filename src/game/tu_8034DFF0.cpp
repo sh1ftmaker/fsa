@@ -19,7 +19,7 @@ void cls_804AC9A8::fn_8034E050() {
     u8 taken[4];
     for (s32 i = 0; i < 4; i++) {
         taken[i] = 0;
-        players[i] = *fn_8023E724(i);
+        players[i] = *getPlayerPos_8023E724(i);
     }
     for (s32 j = 0; j < 2; j++) {
         f32 offX = 120.0f * (f32)j + -60.0f;

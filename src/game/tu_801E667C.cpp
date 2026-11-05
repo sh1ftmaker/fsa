@@ -35,7 +35,7 @@ bool cls_801E6AB8::fn_801E667C() {
         cel = mAnim.mCel;
         for (i = 0; i < 4; i++) {
             if (mActive[i]) {
-                fn_80230498(i, fn_8023E724(i), cel, 0xFF, -0x80, -0x80, true);
+                fn_80230498(i, getPlayerPos_8023E724(i), cel, 0xFF, -0x80, -0x80, true);
             }
         }
         if (mAnim.fn_801D21F0()) {
@@ -76,11 +76,11 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
         }
         for (s32 i = 0; i < 4; i++) {
             if (mActive[i]) {
-                fn_80230498(i, fn_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
+                fn_80230498(i, getPlayerPos_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
             }
         }
-        lbl_8053AF80->fn_80458F9C(0);
-        lbl_8053AF80->fn_80458F04(0x1000001);
+        gAudioMgr_8053AF80->fn_80458F9C(0);
+        gAudioMgr_8053AF80->fn_80458F04(0x1000001);
         break;
     }
     case 2:
@@ -95,11 +95,11 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
         for (s32 i = 0; i < 4; i++) {
             if (mActive[i]) {
                 JGeometry::TVec3f pos;
-                pos.set(*fn_8023E724(i));
+                pos.set(*getPlayerPos_8023E724(i));
                 pos.x += 7.0f;
                 pos.y += -27.0f;
-                spawnEmitter_8013CC50(fn_8023DE58(i), &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
-                spawnEmitter_8013CC50(fn_8023DE58(i), &pos, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(getPlayerLayer_8023DE58(i), &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(getPlayerLayer_8023DE58(i), &pos, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
                 fn_80230FD0(i, 0x2000E);
             }
         }

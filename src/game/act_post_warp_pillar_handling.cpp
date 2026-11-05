@@ -12,7 +12,7 @@ void cls_804AC1F8::update() {
     field_0x3c.z -= 0.1;
     bool done = false;
     for (s32 i = 0; i < 4; i++) {
-        JGeometry::TVec3f pos = *fn_8023E724(i);
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
         pos += field_0x3c;
         if (pos.z <= 0.0f) {
             pos.z = 0.0f;

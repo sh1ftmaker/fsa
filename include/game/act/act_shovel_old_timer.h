@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AAB40.
-class cls_804AAB40 : public ActorBase_804A5770 {
+class ShovelOldTimer_804AAB40 : public ActorBase_804A5770 {
 public:
-    cls_804AAB40() {}
-    /* 0x08 */ virtual ~cls_804AAB40();
+    ShovelOldTimer_804AAB40() {}
+    /* 0x08 */ virtual ~ShovelOldTimer_804AAB40();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

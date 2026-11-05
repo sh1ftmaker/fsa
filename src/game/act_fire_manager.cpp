@@ -39,7 +39,7 @@ void cls_804AB2B0::update() {
                     pos.y += 8.0f;
                 }
             }
-            fn_801F856C()->fn_801F9484(ACTOR_FIRE, field_0x4, &pos, field_0x24c & 0xF80101FF, -1,
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FIRE, field_0x4, &pos, field_0x24c & 0xF80101FF, -1,
                                        -1);
         }
         if (field_0x240 <= 0) {

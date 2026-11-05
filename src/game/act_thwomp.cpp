@@ -33,8 +33,8 @@ void Thwomp_804AB5D8::update() {
     s32 hitMap = fn_801F2618(NULL, false);
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && !fn_8023EA28(i)) {
-            if (fn_8023E724(i)->y > mPos.y && mPos.x - 15.0f < fn_8023E724(i)->x &&
-                15.0f + mPos.x > fn_8023E724(i)->x && field_0x230 == 1 && !hitMap) {
+            if (getPlayerPos_8023E724(i)->y > mPos.y && mPos.x - 15.0f < getPlayerPos_8023E724(i)->x &&
+                15.0f + mPos.x > getPlayerPos_8023E724(i)->x && field_0x230 == 1 && !hitMap) {
                 if (fn_8023B190(i, &box, field_0x4)) {
                     JGeometry::TVec2f p(box.f.x + 0.5f * (box.i.x - box.f.x),
                                         box.f.y + 0.5f * (box.i.y - box.f.y));
@@ -48,7 +48,7 @@ void Thwomp_804AB5D8::update() {
             field_0x238[i] = fn_80239718(i, mSerial);
         }
         if (field_0x230 == 0) {
-            if (mPos.x - 40.0f < fn_8023E724(i)->x && 40.0f + mPos.x > fn_8023E724(i)->x) {
+            if (mPos.x - 40.0f < getPlayerPos_8023E724(i)->x && 40.0f + mPos.x > getPlayerPos_8023E724(i)->x) {
                 field_0x230 = 1;
             }
         }

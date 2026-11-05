@@ -16,7 +16,7 @@ public:
     cls_8049D940();
     // __dt__12cls_8049D940Fv (0x80116B08, game/act_vaati_demo.cpp, was
     // fn_80116B08): clears 0x31C-0x32C, frees the emitters at 0x314 and 0x318
-    // with fn_801EE434, then the members and the base destructor run.
+    // with releaseEmitter_801EE434, then the members and the base destructor run.
     /* 0x08 */ virtual ~cls_8049D940();
 
     // Slot 0x54, overriding cls_8049D140::vfunc_0x54 (0x801162E0, game/act_vaati_demo.cpp).

@@ -67,7 +67,7 @@ s32 EscortBase_8049E0C8::fn_801216D0(s32 player) {
 void EscortBase_8049E0C8::fn_80121764() {
     if (field_0x332) {
         for (s32 i = 0; i < field_0x360; i++) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0x364[i]);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x364[i]);
             if (actor && actor->mActorId == ACTOR_LIMT) {
                 actor->mAlive = false;
                 field_0x364[i] = -1;
@@ -85,12 +85,12 @@ void EscortBase_8049E0C8::fn_80121ABC() {
         pos.x -= 16.0f;
         for (s32 i = 0; i < field_0x360; i++) {
             pos.x += 8.0f;
-            field_0x364[i] = fn_801F856C()->fn_801F9484(ACTOR_LIMT, field_0x4, &pos, 0, -1, -1);
+            field_0x364[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LIMT, field_0x4, &pos, 0, -1, -1);
             s32 serial = field_0x364[i];
             if (serial < 0) {
                 break;
             }
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor) {
                 actor->mDrawEnabled = false;
             }
@@ -110,7 +110,7 @@ s32 EscortBase_8049E0C8::fn_80121DB0() {
 }
 
 f32 EscortBase_8049E0C8::fn_80121DC8(s32 player) {
-    JGeometry::TVec3f playerPos = *fn_8023E724(player);
+    JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(player);
     return JMAFastSqrt(square(playerPos.x - mPos.x) + square(playerPos.y - mPos.y));
 }
 

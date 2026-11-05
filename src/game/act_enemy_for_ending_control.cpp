@@ -59,7 +59,7 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
         }
         mAlive = false;
     } else if (field_0x260 == 1) {
-        fn_801F856C()->fn_801F9484(ACTOR_ENDM, field_0x4, &mPos, 0, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_ENDM, field_0x4, &mPos, 0, -1, -1);
         JGeometry::TVec3f pos(-100.0f, -100.0f, 0.0f);
         for (s32 i = 0; i < 4; i++) {
             fn_80230498(i, &pos, 0, 0xFF, -0x80, -0x80, true);
@@ -72,12 +72,12 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
 void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
     if (field_0x234 != 0) {
         cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x278));
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }
         cls_804A5958* elnk =
-            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x294));
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x294));
         if (elnk != NULL) {
             elnk->field_0x238 = 1;
         }
@@ -103,7 +103,7 @@ void EnemyForEndingControl_804AD48C::fn_8035B81C() {
     }
     if (arrived >= 2) {
         cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(fn_801F856C()->findActorBySerial_801F666C(field_0x278));
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
         if (ezld != NULL) {
             ezld->field_0x238 = 1;
         }

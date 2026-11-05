@@ -114,10 +114,10 @@ void cls_804A6B70::fn_80222730() {
     f32 x = mPos.x - 0.5f * half;
     for (s32 i = 0; i < (s32)(0.0625f * half) + 1; i++) {
         JGeometry::TVec3f pos(x + spread(7.0f), bottom + spread(15.0f), 0.0f);
-        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_OKTM, field_0x4, &pos, 5, -1, -1);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OKTM, field_0x4, &pos, 5, -1, -1);
         if (serial >= 0) {
             OctorokRock_8049F5D8* rock =
-                static_cast<OctorokRock_8049F5D8*>(fn_801F856C()->findActorBySerial_801F666C(serial));
+                static_cast<OctorokRock_8049F5D8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
             if (rock != NULL) {
                 rock->field_0x98 = 2;
                 JGeometry::TVec3f vel;

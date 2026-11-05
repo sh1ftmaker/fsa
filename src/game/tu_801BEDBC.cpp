@@ -54,7 +54,7 @@ inline void cls_804A4188::burnTiles() {
         p.y = mPos.y + field_0x80.i.y;
         for (s32 j = 0; j < 2; j++) {
             if (fn_801CCC78(&p, field_0x4)) {
-                lbl_8053AC98->fn_802A20F0(&p, -1, field_0x4, 0, 0);
+                gBgRewrite_8053AC98->fn_802A20F0(&p, -1, field_0x4, 0, 0);
             }
             p.y += field_0x80.f.y - field_0x80.i.y;
         }
@@ -89,7 +89,7 @@ bool cls_804A4188::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 // the view test in f2 (f3 here) and loads the probe operands in the order y, dy, x, dx.
 void cls_804A4188::update() {
     if (mFlags & FLAG_BURST) {
-        fn_801EE434(mEmitter2a8);
+        releaseEmitter_801EE434(mEmitter2a8);
         mEmitter2a8 = NULL;
         mAlive = false;
         return;
@@ -142,7 +142,7 @@ void cls_804A4188::init() {
 }
 
 cls_804A4188::~cls_804A4188() {
-    fn_801EE434(mEmitter2a8);
+    releaseEmitter_801EE434(mEmitter2a8);
 }
 
 cls_804A4188::cls_804A4188() : mEmitter2a8(NULL) {}

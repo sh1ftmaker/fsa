@@ -1,7 +1,7 @@
 #ifndef GAME_PLAYER_H
 #define GAME_PLAYER_H
 
-// The players. *lbl_8053AC90 (PlayerManager_804A6F28, game/tu_8022AD64.cpp)
+// The players. *gPlayerManager_8053AC90 (PlayerManager_804A6F28, game/tu_8022AD64.cpp)
 // owns the four Player_804A6F38 objects (code in game/tu_8023FBF0.cpp and
 // the units after it up to 0x8027E5BC); tu_8022AD64 is mostly free
 // functions that take a player index (0-3), check it and forward to that
@@ -15,14 +15,14 @@
 // they carry their vtable addresses (docs/PLAN.md, "Placeholder names").
 //
 // The per-player queries (about 270 in tu_8022AD64) share one shape, matched
-// in fn_8022B7C4, fn_8022B860, fn_8023DE58 and fn_8023E724:
+// in fn_8022B7C4, fn_8022B860, getPlayerLayer_8023DE58 and getPlayerPos_8023E724:
 //
-//     if (lbl_8053AC90 == NULL) return <fallback>;
-//     if (isPlayerActive(player)) return lbl_8053AC90->mPlayers[player]-><query>;
+//     if (gPlayerManager_8053AC90 == NULL) return <fallback>;
+//     if (isPlayerActive(player)) return gPlayerManager_8053AC90->mPlayers[player]-><query>;
 //     return <fallback>;
 //
 // isPlayerActive (below) is fn_8023F264's body, inlined; its own test of
-// lbl_8053AC90 is the dead `bne` right after the outer test in every one of
+// gPlayerManager_8053AC90 is the dead `bne` right after the outer test in every one of
 // them (e.g. 0x8022B7E4). MWCC only inlines functions defined before the
 // caller, and the queries come before fn_8023F264, so it is a header inline.
 //
@@ -284,7 +284,7 @@ public:
     // Not written yet (tu_8028FBA0); this in r3, &mPos passed as the second position.
     bool fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
     // Not written yet (tu_8028FBA0's fn_80290E90 is 0x90 bytes): fn_80301D54(field_0x4) unless
-    // fn_80240670(), clears 0x400, then fn_8045815C on lbl_8053AF80 (0 below 8, 1 at 8) by 0xCE4.
+    // fn_80240670(), clears 0x400, then fn_8045815C on gAudioMgr_8053AF80 (0 below 8, 1 at 8) by 0xCE4.
     void fn_80290E90();
     void fn_80295584(); // 0x124D = 1, 0x3FD = 1 (stb), 0x458 = 0 (stb); 0x3DC = 2, 0x3E8 = 2 (stw)
     s32 fn_8026FC20(); // via fn_8023A1A4
@@ -566,7 +566,7 @@ public:
     // The player's index (0-3): the constructor's argument; fn_80246F28
     // counts the players 0..field_0x4.
     /* 0x0004 */ s32 field_0x4;
-    /* 0x0008 */ JGeometry::TVec3f mPos; // fn_8023E724 (193 units)
+    /* 0x0008 */ JGeometry::TVec3f mPos; // getPlayerPos_8023E724 (193 units)
     // Address returned by fn_8023E578.
     /* 0x0014 */ JGeometry::TVec3f field_0x14;
     /* 0x0020 */ JGeometry::TVec3f field_0x20; // fn_80254744: copy of field_0x14
@@ -1174,9 +1174,9 @@ public:
     s32 fn_8027218C();
 }; // Size: 0x13BC
 
-// *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
-// deletes the four players and clears lbl_8053AC90). Constructor 0x8023F8B0
-// (sets lbl_8053AC90, creates the players, clears 0x68-0x73); tu_80139BE8
+// *gPlayerManager_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
+// deletes the four players and clears gPlayerManager_8053AC90). Constructor 0x8023F8B0
+// (sets gPlayerManager_8053AC90, creates the players, clears 0x68-0x73); tu_80139BE8
 // creates it with __nw__(0x74) (0x8013A5A8).
 class PlayerManager_804A6F28 {
 public:
@@ -1203,12 +1203,12 @@ public:
     /* 0x73 */ bool field_0x73;
 }; // Size: 0x74
 
-extern PlayerManager_804A6F28* lbl_8053AC90;
+extern PlayerManager_804A6F28* gPlayerManager_8053AC90;
 
 // Whether `player` is a valid index of an existing, active player: the body
 // of fn_8023F264, which every per-player query inlines.
 inline bool isPlayerActive(s32 player) {
-    if (lbl_8053AC90 == NULL) {
+    if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
     if (player < 0) {
@@ -1217,10 +1217,10 @@ inline bool isPlayerActive(s32 player) {
     if (player >= 4) {
         return false;
     }
-    if (lbl_8053AC90->mPlayers[player] == NULL) {
+    if (gPlayerManager_8053AC90->mPlayers[player] == NULL) {
         return false;
     }
-    return lbl_8053AC90->mPlayers[player]->fn_8023F984();
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_8023F984();
 }
 
 // Functions of game/tu_8022AD64.cpp other units call. Each query returns
@@ -1261,12 +1261,12 @@ bool fn_8023F264(s32 player);
 bool fn_8022B7C4(s32 player);            // 7 units. -> fn_8023FC08 (byte 0x42C); else false
 void fn_8022B860(s32 player, s32 value); // 1 unit. -> fn_8023FC10(value)
 f32 fn_8022C6AC(s32 player);             // -> fn_80246F28; else lbl_80540008
-s32 fn_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
+s32 getPlayerLayer_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
 // tu_8022AD64 (0x8023EAC4, not written): loops over the four players of
 // the manager; false while the manager is missing. cls_804A71A8::fn_8026E1E0
 // passes its owner's index and tests r3 with clrlwi 24.
 bool fn_8023EAC4(s32 player);
-JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
+JGeometry::TVec3f* getPlayerPos_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
 
 // Generated by tools/gen_game.py (family fwd), by address. The return type
 // comes from the callers (only clrlwi 24 / byte stores of the result -> bool;
@@ -1290,7 +1290,7 @@ void fn_8022E2D8(s32 index);
 bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b);
 
 // game/tu_8022AD64.cpp (0x8022BB48, not written yet): whether any active player's
-// fn_80241E28(layer, pos) holds (false while lbl_8053AC90 is NULL). Called by
+// fn_80241E28(layer, pos) holds (false while gPlayerManager_8053AC90 is NULL). Called by
 // ActorBase_804A5770::startSound_801F0E34 with (field_0x4, &mPos).
 bool fn_8022BB48(s32 layer, const JGeometry::TVec3f* pos);
 
@@ -1630,7 +1630,7 @@ bool fn_8023513C(s32 player);
 // byte 0x434) when the player is present.
 void fn_8023DFF4(s32 player, const JGeometry::TVec3f* offset);
 
-// Owner unit: not yet written (game/tu_8022AD64.cpp area, after fn_8023DE58).
+// Owner unit: not yet written (game/tu_8022AD64.cpp area, after getPlayerLayer_8023DE58).
 // 1 unit (act_lift update) so far, called with the actor's index and a vector
 // (mPos - mPrevPos); its result is unused there.
 void fn_8023DF68(s32 player, const JGeometry::TVec3f* pos);
@@ -1672,7 +1672,7 @@ void fn_80236468(s32 player, s32 amount);
 // (player object, out) to the player's fn_8024B2BC when the player is present;
 // *out (3 floats, read as a position) is written by it.
 // Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
-// rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
+// rock's position follows it). Like getPlayerPos_8023E724 (the player's mPos, else &lbl_804CF460) but
 // through fn_8024145C; takes a player index (act_rock passes field_0xc8).
 bool fn_802308E0(s32 player);
 // 1 unit (act_dummy_conversation). Owner: tu_8022AD64. fn_8022FE80 forwards
@@ -1683,7 +1683,7 @@ bool fn_802308E0(s32 player);
 void fn_8022FE80(s32 player, s32 layer, s32 serial, s32 a, s32 b);
 s32 fn_8022FD8C(s32 serial);
 // Owner: tu_8022AD64 (0x8022EA0C, defined there). 1 unit (act_blindfold's update): maps a
-// player index to the index whose position fn_8023E724 is then asked for (r3 in, r3 out).
+// player index to the index whose position getPlayerPos_8023E724 is then asked for (r3 in, r3 out).
 s32 fn_8022EA0C(s32 player);
 // tu_8022AD64 per-player queries the state tick compares with field_0x4.
 s32 fn_80238F78(s32 player);
@@ -1738,7 +1738,7 @@ bool fn_80230534(bool flag);
 // manager.
 bool fn_8023077C();
 // Owner: tu_8022AD64 (0x8022FD8C, defined there). The player index for actor `serial` (act_talking_sign
-// stores it and passes it to fn_8023E724); negative when none.
+// stores it and passes it to getPlayerPos_8023E724); negative when none.
 s32 fn_8022FD8C(s32 serial);
 void fn_80231368();                      // 4 units.
 // 1 unit. -> Player_804A6F38::fn_80240868 (word 0x4); 0 without a manager. An inactive

@@ -125,7 +125,7 @@ void cls_801ED828::fn_801ED828() {
 void cls_801ED828::fn_801ED8F0() {
     if (mFrames != 0) {
         if (mFrames % 60 == 0) {
-            lbl_8053AF80->fn_80458880(0x3f, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x3f, -1);
         }
         mFrames--;
     }

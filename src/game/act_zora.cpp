@@ -28,7 +28,7 @@ bool ZoraEnemy_804A3D7C::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
-    fn_801EE434(field_0x2a8);
+    releaseEmitter_801EE434(field_0x2a8);
     field_0x2a8 = NULL;
 }
 

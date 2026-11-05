@@ -29,15 +29,15 @@ void cls_801C0D70::fn_801C0DCC() {
         if (fn_8011921C()->fn_801186B0(0xF)) {
             s32 serial = field_0x50;
             if (serial >= 0) {
-                ActorBase_804A5770* generator = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* generator = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (generator != NULL) {
                     static_cast<ShadowLinkGenerator_804A4310*>(generator)->fn_801C186C();
                 }
             }
-            fn_801F856C()->fn_801F7AB8('HBMB', -1);
+            getActorManager_801F856C()->fn_801F7AB8('HBMB', -1);
             for (s32 i = 0; i < mCount; i++) {
                 ShadowLink2_804A43E8* actor =
-                    static_cast<ShadowLink2_804A43E8*>(fn_801F856C()->findActorBySerial_801F666C(mSerials[i]));
+                    static_cast<ShadowLink2_804A43E8*>(getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]));
                 if (actor != NULL) {
                     actor->field_0x568 = 1;
                 }
@@ -57,7 +57,7 @@ void cls_801C0D70::fn_801C0DCC() {
         s32 count = 0;
         for (s32 i = 0; i < mCount; i++) {
             ShadowLink2_804A43E8* actor =
-                static_cast<ShadowLink2_804A43E8*>(fn_801F856C()->findActorBySerial_801F666C(mSerials[i]));
+                static_cast<ShadowLink2_804A43E8*>(getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]));
             if (actor != NULL && (actor->mFlags & 0x8000)) {
                 count++;
             }
@@ -65,7 +65,7 @@ void cls_801C0D70::fn_801C0DCC() {
         bool done = (u16)count >= field_0x2;
         for (s32 i = 0; i < mCount; i++) {
             ShadowLink2_804A43E8* actor =
-                static_cast<ShadowLink2_804A43E8*>(fn_801F856C()->findActorBySerial_801F666C(mSerials[i]));
+                static_cast<ShadowLink2_804A43E8*>(getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]));
             if (actor != NULL) {
                 if (field_0x0 & 0x8) {
                     actor->fn_801C27A8();
@@ -95,7 +95,7 @@ bool cls_801C0D70::fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* 
     out->x = pos->x;
     out->y = pos->y;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             JGeometry::TVec2f d(pos->x - actor->mPos.x, pos->y - actor->mPos.y);
             f32 sq = d.x * d.x + d.y * d.y;
@@ -123,7 +123,7 @@ bool cls_801C0D70::fn_801C0FEC(const JGeometry::TVec3f* pos, JGeometry::TVec2f* 
 void cls_801C0D70::fn_801C115C() {
     s32 serial = field_0x50;
     if (serial >= 0) {
-        ActorBase_804A5770* generator = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* generator = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (generator != NULL) {
             static_cast<ShadowLinkGenerator_804A4310*>(generator)->fn_801C1768();
         }
@@ -134,7 +134,7 @@ void cls_801C0D70::fn_801C115C() {
 void cls_801C0D70::fn_801C11A4() {
     s32 serial = field_0x50;
     if (serial >= 0) {
-        ActorBase_804A5770* generator = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* generator = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (generator != NULL) {
             static_cast<ShadowLinkGenerator_804A4310*>(generator)->mPieces.fn_8021C468();
         }
@@ -158,7 +158,7 @@ bool cls_801C0D70::fn_801C11F0() {
 void cls_801C0D70::fn_801C1224(s32 value) const {
     for (s32 i = 0; i < mCount; i++) {
         ShadowLink2_804A43E8* actor =
-            static_cast<ShadowLink2_804A43E8*>(fn_801F856C()->findActorBySerial_801F666C(mSerials[i]));
+            static_cast<ShadowLink2_804A43E8*>(getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]));
         if (actor != NULL && !(actor->mFlags & 0x10000)) {
             actor->field_0x10c = value;
             actor->vfunc_0x24();
@@ -169,7 +169,7 @@ void cls_801C0D70::fn_801C1224(s32 value) const {
 // 0x801C12B8
 void cls_801C0D70::fn_801C12B8() {
     s32 serial = mSerials[fn_801CD664(mCount)];
-    ShadowLink2_804A43E8* actor = static_cast<ShadowLink2_804A43E8*>(fn_801F856C()->findActorBySerial_801F666C(serial));
+    ShadowLink2_804A43E8* actor = static_cast<ShadowLink2_804A43E8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
     if (actor != NULL) {
         actor->mFlags |= 0x10000;
     }

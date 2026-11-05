@@ -26,7 +26,7 @@ public:
     // SHARED-EDIT: set by fn_8019CEC4 (game/tu_80197070.cpp).
     /* 0x2F8 */ s32 field_0x2f8;
     /* 0x2FC */ u8 field_0x2fc[0x328 - 0x2FC]; // not yet known
-    /* 0x328 */ JPABaseEmitter* mEmitters[5]; // freed by the destructor with fn_801EE434
+    /* 0x328 */ JPABaseEmitter* mEmitters[5]; // freed by the destructor with releaseEmitter_801EE434
 }; // Size: 0x33C
 
 #endif

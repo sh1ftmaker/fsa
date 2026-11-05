@@ -118,7 +118,7 @@ stays OK):
   - `.text` ends at 0x8045BCE4 (tu_map.tsv's last row says 0x8045BD00).
 - Names (271): `game/RailBase.cpp` from its own `"RailBase.cpp"` string;
   270 actor files `game/act_<name>.cpp` from `docs/names/actors.tsv` (high
-  and medium names only), placed through the actor spawner `fn_801F9484`,
+  and medium names only), placed through the actor spawner `spawnActor_801F9484`,
   whose compare tree is decoded along its branches (an ID counts only from
   `lis`/`addi r0`/`cmpw r29, r0`/`beq`): the case's constructor lies in the
   unit, or, when the constructor is an inline copy in the spawner's file,
@@ -286,7 +286,7 @@ these flags, and each of the alternatives breaks one:
 
 | Function | What | Shows |
 |---|---|---|
-| fn_801F856C | `return gGame->mStage->mActorMgr;` | baseline |
+| getActorManager_801F856C | `return gGame->mStage->mActorMgr;` | baseline |
 | fn_80154248 | `getActorMgr()->spawn(a, b, c, d);` | `-O4,p`: 4 saved registers as separate `stw` (`-O4,s` emits `stmw r28`) |
 | fn_80154310 | `getActorMgr()->create(id, a, b, c, d, e);` | `-use_lmw_stmw on`: `stmw r26` (off: six `stw`) |
 | fn_80154528 | midpoint, `0.5f * (a - b) + b` | `-fp_contract on`: `fmadds` (off: `fmuls` + `fadds`) |
@@ -337,7 +337,7 @@ Not settled: whether game files use `-common on` (the common `.bss` at
   the game's own strings) take no suffix.
 - `extern "C"` (approved 2026-11-02): functions defined in *another,
   unfinished* unit are declared once, only in an `include/game/` header, as
-  `extern "C"` under their dtk name (`fn_801F9484`), with a comment naming
+  `extern "C"` under their dtk name (`spawnActor_801F9484`), with a comment naming
   the owning unit. The call's bytes and relocation are what the target has
   (the 100 % ~ActorBase_804A5770 proves it). Never in a .cpp, never
   duplicated, and never on a definition: a unit defines its functions only

@@ -65,17 +65,17 @@ void ForceGemRain_804A8010::update() {
                 break;
             case 5:
                 field_0x240 = 0x80;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 field_0x230 = 3;
                 break;
             case 1:
                 field_0x240 = 8;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 field_0x230 = 3;
                 break;
             case 2:
                 field_0x240 = 8;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 spawnId = 'HBMB';
                 spawnArg = 3;
                 break;
@@ -84,7 +84,7 @@ void ForceGemRain_804A8010::update() {
                 break;
             case 4:
                 field_0x240 = 8;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 spawnId = 'SLR1';
                 spawnArg = 5 << 16;
                 break;
@@ -97,18 +97,18 @@ void ForceGemRain_804A8010::update() {
                 break;
             case 8:
                 field_0x240 = 2;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 spawnId = 'HINO';
                 spawnArg = 1;
                 break;
             case 9:
                 field_0x240 = 8;
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
                 spawnId = 'STAL';
                 spawnArg = 4;
                 break;
             case 11:
-                lbl_8053AF80->fn_80458880(6, -1);
+                gAudioMgr_8053AF80->fn_80458880(6, -1);
             // fall through
             case 13:
                 spawnId = 'ROPE';
@@ -153,9 +153,9 @@ void ForceGemRain_804A8010::update() {
                         pos.y = mPos.y;
                         pos.z = 0.0f;
                     }
-                    s32 serial = fn_801F856C()->fn_801F9484(spawnId, field_0x4, &pos, spawnArg, -1, -1);
+                    s32 serial = getActorManager_801F856C()->spawnActor_801F9484(spawnId, field_0x4, &pos, spawnArg, -1, -1);
                     if (serial >= 0) {
-                        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                         if (actor != NULL) {
                             actor->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, -1.0f);
                         }
@@ -251,7 +251,7 @@ void ForceGemRain_804A8010::update() {
             } else {
                 pick = 0;
             }
-            fn_801F856C()->fn_801F8544('RUPY', field_0x4, &pos, pick);
+            getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &pos, pick);
             field_0x23c++;
         } while (++k < 2 && field_0x23c < field_0x240);
         if (field_0x23c < field_0x240) {
@@ -282,10 +282,10 @@ void ForceGemRain_804A8010::update() {
                 pos.x = w * lbl_8053AAF8->mRandom.get_ufloat_1() + box->i.x;
             }
             if (field_0x244 == 7) {
-                fn_801F856C()->fn_801F9484('LPLK', field_0x4, &mPos, 0x400, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484('LPLK', field_0x4, &mPos, 0x400, -1, -1);
                 break;
             }
-            fn_801F856C()->fn_801F8544('RUPY', field_0x4, &pos, 4);
+            getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &pos, 4);
         }
         break;
     }
@@ -307,16 +307,16 @@ void ForceGemRain_804A8010::update() {
         }
         if (field_0x248 == 0) {
             if (field_0x244 == 1) {
-                s32 serial = fn_801F856C()->fn_801F9484('HBMB', field_0x4, &pos, 3, -1, -1);
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('HBMB', field_0x4, &pos, 3, -1, -1);
                 if (serial >= 0) {
-                    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                     if (actor != NULL) {
                         actor->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 1.0f);
                     }
                 }
                 field_0x248 = 0x1E;
             } else {
-                fn_801F856C()->fn_801F9484('POPO', field_0x4, &pos, 1, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484('POPO', field_0x4, &pos, 1, -1, -1);
             }
             field_0x23c++;
         }

@@ -135,11 +135,11 @@ void Beamos_804A40E0::fn_801BE86C() {
     const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
                           -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
-    s32 serial = fn_801F856C()->fn_801F9484('LNBM', field_0x4, &pos, mSerial, -1, -1);
+    s32 serial = getActorManager_801F856C()->spawnActor_801F9484('LNBM', field_0x4, &pos, mSerial, -1, -1);
     if (serial < 0) {
         return;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         return;
     }

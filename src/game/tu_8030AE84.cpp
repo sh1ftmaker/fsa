@@ -86,30 +86,30 @@ s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
     if (fn_80234950(player)) {
         player = field_0x2b4;
     }
-    if (fn_8023DE58(player) != field_0x28c) {
+    if (getPlayerLayer_8023DE58(player) != field_0x28c) {
         player = field_0x2b0;
     }
-    if (fn_8023DE58(player) != field_0x28c) {
+    if (getPlayerLayer_8023DE58(player) != field_0x28c) {
         player = field_0x288;
     }
 
     s32 x;
     s32 y;
-    if (fn_8023DE58(player) >= 8) {
-        x = (s32)fn_8023E724(player)->x;
-        y = (s32)fn_8023E724(player)->y;
+    if (getPlayerLayer_8023DE58(player) >= 8) {
+        x = (s32)getPlayerPos_8023E724(player)->x;
+        y = (s32)getPlayerPos_8023E724(player)->y;
         if (fn_80234ECC(player)) {
-            y -= (s32)fn_8023E724(player)->z;
+            y -= (s32)getPlayerPos_8023E724(player)->z;
         }
     } else {
         // Each axis fetches the view again, as the original does (the calls
         // aren't CSE'd across the position call).
         GameView_804A9950* viewA = getGameView_802D6A9C();
         GameView_804A9950* viewB = getGameView_802D6A9C();
-        x = (s32)(fn_8023E724(player)->x - viewA->mVisibleBox.i.x + viewB->field_0xdc.i.x);
+        x = (s32)(getPlayerPos_8023E724(player)->x - viewA->mVisibleBox.i.x + viewB->field_0xdc.i.x);
         viewA = getGameView_802D6A9C();
         viewB = getGameView_802D6A9C();
-        y = (s32)(fn_8023E724(player)->y - viewA->mVisibleBox.i.y + viewB->field_0xdc.i.y);
+        y = (s32)(getPlayerPos_8023E724(player)->y - viewA->mVisibleBox.i.y + viewB->field_0xdc.i.y);
     }
 
     // The x test uses the position before the half-width is taken off, as
@@ -151,7 +151,7 @@ void cls_804AA8D8::fn_8030BD3C(s32 player) {
     if (field_0x2b0 < 0) {
         field_0x2b0 = field_0x288;
     }
-    field_0x28c = fn_8023DE58(player);
+    field_0x28c = getPlayerLayer_8023DE58(player);
     fn_8030B97C();
     field_0x2b4 = fn_8030B570(&field_0x290, &field_0x294);
     field_0x298 = 0;

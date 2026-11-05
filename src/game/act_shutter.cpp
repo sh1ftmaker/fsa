@@ -15,10 +15,10 @@ void Shutter_804A8118::update() {
     switch (mState) {
     case 0:
         if (vfunc_0x34() == true) {
-            lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x38);
+            gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x38);
             s32 layer = field_0x4 + 1;
             JGeometry::TVec3f p(mPos.x, mPos.y - 16.0f, 0.0f);
-            lbl_8053AC98->fn_802A3948(&p, 0, layer, 0x39);
+            gBgRewrite_8053AC98->fn_802A3948(&p, 0, layer, 0x39);
             startSound_801F0E34(0x30016, 0);
             if (field_0x4 < 8) {
                 mState = 2;
@@ -64,10 +64,10 @@ void Shutter_804A8118::update() {
                 mState = 5;
                 mTimer = 2;
             } else {
-                lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
+                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
                 s32 layer = field_0x4 + 1;
                 JGeometry::TVec3f p(mPos.x, mPos.y - 16.0f, 0.0f);
-                lbl_8053AC98->fn_802A3884(&p, 0, layer, 0);
+                gBgRewrite_8053AC98->fn_802A3884(&p, 0, layer, 0);
                 lbl_8053AB10->field_0x20->fn_802FA160(
                     lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
                 if (mFlag == 0) {
@@ -82,10 +82,10 @@ void Shutter_804A8118::update() {
     case 5:
         mTimer--;
         if (mTimer == 0) {
-            lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
+            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
             s32 layer = field_0x4 + 1;
             JGeometry::TVec3f p(mPos.x, mPos.y - 16.0f, 0.0f);
-            lbl_8053AC98->fn_802A3884(&p, 0, layer, 0);
+            gBgRewrite_8053AC98->fn_802A3884(&p, 0, layer, 0);
             lbl_8053AB10->field_0x20->fn_802FA160(
                 lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
             if (mFlag == 0) {
@@ -104,10 +104,10 @@ void Shutter_804A8118::init() {
     mState = 0;
     mTile = lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, fn_80226AE0(&mPos, field_0x4));
     if (getGameView_802D6A9C()->fn_802D800C(mSwitch)) {
-        lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
+        gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, mTile);
         s32 layer = field_0x4 + 1;
         JGeometry::TVec3f p(mPos.x, mPos.y - 16.0f, 0.0f);
-        lbl_8053AC98->fn_802A3884(&p, 0, layer, 0);
+        gBgRewrite_8053AC98->fn_802A3884(&p, 0, layer, 0);
         lbl_8053AB10->field_0x20->fn_802FA160(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
         mAlive = false;

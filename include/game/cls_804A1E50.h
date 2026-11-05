@@ -23,7 +23,7 @@ public:
     /* 0x26C */ s32 field_0x26c; // tested by the destructor and fn_8018AFFC
     /* 0x270 */ u8 field_0x270[0x2F8 - 0x270];
     /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[4];
-    // Emitters (spawnEmitter_8013CC50), released by the destructor with fn_801EE434.
+    // Emitters (spawnEmitter_8013CC50), released by the destructor with releaseEmitter_801EE434.
     /* 0x328 */ JPABaseEmitter* field_0x328;
     /* 0x32C */ JPABaseEmitter* field_0x32c;
     /* 0x330 */ JPABaseEmitter* field_0x330;

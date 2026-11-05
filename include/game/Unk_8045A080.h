@@ -3,7 +3,7 @@
 
 // The game's audio manager (provisional name after its constructor,
 // 0x8045A080; game/tu_80457DFC.cpp). One 0x90-byte instance, built by main
-// in the main heap and stored in lbl_8053AF80 (and GameState field_0xc).
+// in the main heap and stored in gAudioMgr_8053AF80 (and GameState field_0xc).
 // fn_80459AE4 sets JAudio up from "GC4Sword_usa/AudioRes/JaiInit.baa",
 // ".../Waves/" and ".../Seqs/JaiSeqs.arc" (the unit's .sdata string
 // pointers) and owns the sound manager, the SE / sequence managers, the
@@ -16,7 +16,7 @@
 //
 // Included at the end of game/GameAudio.h so that every unit that includes
 // the game's sound header sees it; game/GameGlobals.h only forward-declares
-// it and declares lbl_8053AF80.
+// it and declares gAudioMgr_8053AF80.
 
 #include "types.h"
 #include "dolphin/mtx.h"
@@ -132,7 +132,7 @@ struct AudioMgr_8045A080 {
     // not read): stops the sound at 0x80 and clears the fields at
     // 0x58-0x68.
     void fn_80458F9C(s32 frames);
-    // game/tu_80457DFC.cpp (0x80459274, same unit). Called on lbl_8053AF80
+    // game/tu_80457DFC.cpp (0x80459274, same unit). Called on gAudioMgr_8053AF80
     // by cls_804B19F0::fn_80441A1C (game/tu_80441A1C.cpp) after the 0x0 call.
     void fn_80459274();
     // game/tu_80457DFC.cpp (0x80458090): loads wave archives 2, 3 and 4 of

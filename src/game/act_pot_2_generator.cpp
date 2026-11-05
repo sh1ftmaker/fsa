@@ -29,7 +29,7 @@ void Pot2Generator_804AA6F8::init() {
             if (code == 0x41) {
                 if (!getGameView_802D6A9C()->fn_802D76A8(id)) {
                     fn_80226CA8(field_0x230, 0, &pos);
-                    fn_801F856C()->fn_801F9484(ACTOR_TBO2, 0, &pos, code, id, -1);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TBO2, 0, &pos, code, id, -1);
                 } else {
                     lbl_8053AB10->field_0x20->fn_802F9974(0, field_0x230, 0x12);
                 }
@@ -48,7 +48,7 @@ void Pot2Generator_804AA6F8::init() {
                 if (code == 0x41) {
                     if (!getGameView_802D6A9C()->fn_802D76A8(id)) {
                         fn_80226CA8(field_0x230, layer, &pos);
-                        fn_801F856C()->fn_801F9484(ACTOR_TBO2, layer, &pos, code, id, -1);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TBO2, layer, &pos, code, id, -1);
                     } else {
                         lbl_8053AB10->field_0x20->fn_802F9974(layer, field_0x230, 0x12);
                     }

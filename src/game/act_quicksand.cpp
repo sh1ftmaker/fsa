@@ -14,7 +14,7 @@ static inline void leaveSand(cls_804A6270* sand) {
     case 1: {
         s32 serial = sand->field_0x388;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 fn_80212ECC(static_cast<EnemyBase_804A4808*>(actor));
             }
@@ -35,7 +35,7 @@ static inline void leaveSand(cls_804A6270* sand) {
     }
     s32 serial = sand->field_0x388;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             static_cast<EnemyBase_804A4808*>(actor)->mFlags |= 0x4000;
         }

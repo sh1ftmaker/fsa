@@ -297,7 +297,7 @@ void cls_804B1920::fn_8043D034() {
         u8 side[4];
         field_0x10c = 0;
         for (int i = 0; i < 4; i++) {
-            lbl_8053AB10->field_0x24->fn_8030C5F0(fn_8023E724(i), false, false, &screen);
+            lbl_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(i), false, false, &screen);
             side[i] = 0;
             if (screen.x > 0.0f && screen.x < (s32)JUTVideo::getManager()->getFbWidth() && screen.y > 0.0f &&
                 screen.y < (s32)JUTVideo::getManager()->getEfbHeight()) {
@@ -396,12 +396,12 @@ bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
     case 0x197:
     case 0x198:
     case 0x1A8:
-        lbl_8053AF80->fn_80458880(0x40, -1);
+        gAudioMgr_8053AF80->fn_80458880(0x40, -1);
         break;
     case 0x23F:
         break;
     default:
-        lbl_8053AF80->fn_80458880(0x39, -1);
+        gAudioMgr_8053AF80->fn_80458880(0x39, -1);
         break;
     }
     return true;
@@ -430,8 +430,8 @@ void cls_804B1920::fn_8043D8B4() {
         for (i = 0; i < 4; i++) {
             if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
                 s32 player = fn_8022EA0C(i);
-                if (fn_8023DE58(player) < 8) {
-                    JGeometry::TVec3f pos = *fn_8023E724(player);
+                if (getPlayerLayer_8023DE58(player) < 8) {
+                    JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
                     fn_804408F0(&pos);
                 }
                 lbl_80529DEC.field_0xc8[i] = fn_80237810(i);
@@ -440,8 +440,8 @@ void cls_804B1920::fn_8043D8B4() {
         }
     } else {
         for (i = 0; i < 4; i++) {
-            if (fn_8023F264(i) && fn_8023DE58(i) < 8) {
-                JGeometry::TVec3f pos = *fn_8023E724(i);
+            if (fn_8023F264(i) && getPlayerLayer_8023DE58(i) < 8) {
+                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                 fn_804408F0(&pos);
             }
             if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {

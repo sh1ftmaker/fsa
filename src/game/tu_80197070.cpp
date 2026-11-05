@@ -24,7 +24,7 @@ void cls_804A2944::fn_8019C500(s32 keepY) {
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i)) {
             s32 layer = field_0x4;
-            if (layer == fn_8023DE58(i)) {
+            if (layer == getPlayerLayer_8023DE58(i)) {
                 JGeometry::TVec3f pos(field_0x2a4[i].x, field_0x2a4[i].y, field_0x2a4[i].z);
                 if (!keepY) {
                     pos.y = 32.0f + mPos.y;
@@ -41,7 +41,7 @@ u8 lbl_8053ABA8;
 
 cls_804A2944::~cls_804A2944() {
     for (s32 i = 0; i < 13; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
     // field_0x90 is u32, but the original tests it with a signed cmpwi.
     s32 param = field_0x90;

@@ -163,9 +163,9 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
         if (mStateTimer >= 180) {
             JGeometry::TVec3f pos;
             fn_801CD150(&mPos, &pos);
-            s32 serial = fn_801F856C()->fn_801F9484('STAL', 8, &pos, 3, field_0x16c, -1);
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('STAL', 8, &pos, 3, field_0x16c, -1);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     actor->field_0x98 = 2;
                 }

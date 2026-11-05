@@ -33,9 +33,9 @@ void cls_804A6100::vfunc_0xA0() {
 
 bool cls_804A6100::vfunc_0x60() {
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
-        s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+        s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial) {
-            ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
                 if (other->mActorId == ACTOR_SWBM) {
                     fn_801CB538(field_0x4, &other->mPos, 0, 0);
@@ -111,7 +111,7 @@ void cls_804A6100::init() {
 }
 
 cls_804A6100::~cls_804A6100() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
 }
 
 cls_804A6100::cls_804A6100() {

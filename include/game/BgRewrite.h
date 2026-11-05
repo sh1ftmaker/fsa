@@ -1,7 +1,7 @@
 #ifndef GAME_BGREWRITE_H
 #define GAME_BGREWRITE_H
 
-// *lbl_8053AC98 (53 units): the object that rewrites the stage's background
+// *gBgRewrite_8053AC98 (53 units): the object that rewrites the stage's background
 // tiles when actors change them (doors opening, blocks and walls bombed,
 // grass burnt, switches pressed), from game/tu_8029D898.cpp.
 //
@@ -17,11 +17,11 @@
 // called once a frame by tu_80139BE8, animates tiles with three (delay,
 // frame) counters.
 //
-// The variable lbl_8053AC98 sits in the .sbss that dtk gives
+// The variable gBgRewrite_8053AC98 sits in the .sbss that dtk gives
 // game/tu_8022AD64.cpp, but only this unit's constructor and destructor
 // store it.
 //
-// Members: functions other units call with lbl_8053AC98 in r3. Names stay
+// Members: functions other units call with gBgRewrite_8053AC98 in r3. Names stay
 // dtk's placeholders; symbols.txt carries the mangled names, so a changed
 // parameter type is a symbols.txt rename too. "N units" counts the other
 // game units calling the function. "layer" is an actor layer
@@ -44,11 +44,11 @@ class ActorSoundObj_804578F4; // game/ActorManager.h
 // object lbl_8053AAF8->field_0x4 points to.
 class BgRewrite_804A7C98 {
 public:
-    // fn_802A3E2C (1 unit): stores the vtable, sets lbl_8053AC98 = this and
+    // fn_802A3E2C (1 unit): stores the vtable, sets gBgRewrite_8053AC98 = this and
     // field_0x4 = a new ActorSoundObj_804578F4 (__nw__(0x5C); its
     // constructor fn_804578F4 gets 0, 0, 8).
     BgRewrite_804A7C98();
-    // fn_802A3DA4: clears lbl_8053AC98 and deletes field_0x4 (a virtual
+    // fn_802A3DA4: clears gBgRewrite_8053AC98 and deletes field_0x4 (a virtual
     // destructor call through the vtable pointer at its offset 0x8).
     /* 0x08 */ virtual ~BgRewrite_804A7C98();
 
@@ -101,7 +101,7 @@ public:
     // 0xc/0x14/0x1c = 0.
     void fn_802A3D80();
     // 10 units. Spreads fire over burnable tiles (see above). Callers pass
-    // &mPos, a player (-1, or a word field), the layer, a u32 (fn_801F9484 argument) and an s32
+    // &mPos, a player (-1, or a word field), the layer, a u32 (spawnActor_801F9484 argument) and an s32
     // (0, 0 in tu_801BEDBC and tu_802233A4, 1, 1 in
     // act_spreading_fire); types from the body.
     void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, u32 a, s32 b);
@@ -122,6 +122,6 @@ public:
     /* 0x24 */ u8 field_0x24[0x28 - 0x24];
 }; // Size: 0x28
 
-extern BgRewrite_804A7C98* lbl_8053AC98;
+extern BgRewrite_804A7C98* gBgRewrite_8053AC98;
 
 #endif

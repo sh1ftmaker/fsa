@@ -63,9 +63,9 @@ void Bumper_804A0260::update() {
         s32 layer = field_0x4;
         dist[i] = -1.0f;
         idx[i] = -1;
-        if (fn_8023DE58(i) == layer) {
-            f32 dx = fn_8023E724(i)->x - mPos.x;
-            f32 dy = fn_8023E724(i)->y - mPos.y;
+        if (getPlayerLayer_8023DE58(i) == layer) {
+            f32 dx = getPlayerPos_8023E724(i)->x - mPos.x;
+            f32 dy = getPlayerPos_8023E724(i)->y - mPos.y;
             dist[i] = std::sqrtf(dx * dx + dy * dy);
             idx[i] = i;
         }
@@ -73,7 +73,7 @@ void Bumper_804A0260::update() {
 
     for (s32 i = 0; i < 4; i++) {
         for (s32 j = 0; j < 4; j++) {
-            if (i < j && fn_8023DE58(j) == fn_8023DE58(i)) {
+            if (i < j && getPlayerLayer_8023DE58(j) == getPlayerLayer_8023DE58(i)) {
                 if (dist[i] > dist[j]) {
                     idx[i] = j;
                     idx[j] = i;
@@ -104,7 +104,7 @@ void Bumper_804A0260::update() {
     }
 
     s32 touchPlayer = fn_801F285C(NULL, NULL, false, -1);
-    s32 actorHit = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+    s32 actorHit = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     field_0xb0 = 0x42304;
 
     bool clear = false;

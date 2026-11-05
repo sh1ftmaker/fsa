@@ -3,7 +3,7 @@
 
 // Code: game/act_opening_goal.cpp. The Goal (DMGL) actor of the opening,
 // named after its vtable, 0x8049DB30 (docs/names/actors.tsv). Spawned by
-// fn_801F9484 through its constructor (0x8011B0DC).
+// spawnActor_801F9484 through its constructor (0x8011B0DC).
 
 #include "game/act/tu_8010DF44.h"
 #include "game/SpriteAnim.h"
@@ -36,7 +36,7 @@ public:
     /* 0x246 */ u8 field_0x246;
     /* 0x247 */ u8 field_0x247;
     /* 0x248 */ u8 field_0x248;
-    // Emitters from spawnEmitter_8013CC50, freed by the destructor with fn_801EE434.
+    // Emitters from spawnEmitter_8013CC50, freed by the destructor with releaseEmitter_801EE434.
     /* 0x24C */ JPABaseEmitter* mEmitter24c;
     /* 0x250 */ JPABaseEmitter* mEmitter250;
     /* 0x254 */ JPABaseEmitter* mEmitter254;

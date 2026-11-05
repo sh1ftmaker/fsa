@@ -158,7 +158,7 @@ void TowerCollapseEffect_8049CA40::update() {
 
 TowerCollapseEffect_8049CA40::~TowerCollapseEffect_8049CA40() {
     if (mEmitter260 != NULL) {
-        fn_801EE434(mEmitter260);
+        releaseEmitter_801EE434(mEmitter260);
     }
 }
 

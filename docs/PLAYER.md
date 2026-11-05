@@ -2,7 +2,7 @@
 
 The four players (class `Player_804A6F38`, include/game/Player.h, size 0x13BC,
 vtable 0x804A6F38 holding only the destructor) and their manager
-(`PlayerManager_804A6F28`, `*lbl_8053AC90`, player i at +4+4*i) occupy one
+(`PlayerManager_804A6F28`, `*gPlayerManager_8053AC90`, player i at +4+4*i) occupy one
 contiguous text range, 0x8022AD64-0x802957CC, split over ten units. Names
 are provisional (`fn_<addr>`, `cls_<vtable>`): nothing in the binary names
 the states or handlers. Measured on 2026-11-05 from the asm,
@@ -102,7 +102,7 @@ cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
   taking part lead (0xD60 = -1, pad 0x11EC = index) and the rest follow:
   2 players (fn_80138A30) -> 0xD60 = index - 2, 3 players -> 0xD60 =
   lbl_80529DEC.field_0x64 (0-2), else inactive in state 1. A follower starts at its leader's
-  position (fn_8023E724) plus 16 per place in line (inlined fn_80248778).
+  position (getPlayerPos_8023E724) plus 16 per place in line (inlined fn_80248778).
   Then mPos is copied into the position history, fn_80276538 / fn_80276078,
   cls_804A71A8::fn_8026F710, fn_8027221C(0), fn_8027023C; with
   fn_802DEBF8 it requests state 3 (inlined fn_80251AEC(3)); last the camera
@@ -120,7 +120,7 @@ cls_804A71A8 (0xBF0): f32 0x14 and 0x18, zeroed by update A every frame.
   fn_80276078, cls_804AA8D8::fn_8030B774, fn_8024E0A0.
 - **fn_8023F2BC** (manager draw, 100 %).
 - **fn_8023F390** (manager update, 99.7 %): written in round 3. The
-  forwarders fn_8022F478 / fn_8023DE58 test `!isPlayerActive` first (their
+  forwarders fn_8022F478 / getPlayerLayer_8023DE58 test `!isPlayerActive` first (their
   out-of-line copies stay 100 %, the inlined ones now have the original
   block order); one `mr`/`li` of the last loop's offset differs.
 
@@ -279,10 +279,10 @@ tu_8023FBF0); no JAI calls inside the Player units (audio comes through fwds / A
 ## Boot path
 
 No Player object exists from boot to the main menu (the manager at
-lbl_8053AC90 is not constructed), and the only Player-range code that runs
+gPlayerManager_8053AC90 is not constructed), and the only Player-range code that runs
 there is the units' `__sinit` functions, the static-init function
 fn_8023F9B8 and three manager guards that return early on the null manager:
-fn_8023F264 (the player-active check), fn_8023DE58 and fn_8022EA0C (14
+fn_8023F264 (the player-active check), getPlayerLayer_8023DE58 and fn_8022EA0C (14
 instructions). Measured from the p1-p3a coverage dumps. Everything else runs in the menu ->
 Shadow Battle phase: about 7.8k unmatched instructions (~31 KB). The most
 executed unmatched functions are:
@@ -394,7 +394,7 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
   to -1); unless fn_80240B84 / fn_8025F448, passes of: clear the flags,
   probe the 8 directions (inside an owner box -> 0x28; else in view or
   fn_8026FC20 > 0 or fn_802DCD0C -> fn_8026C350(tile); else 0x38), with a
-  second probe on another player's layer (fn_8023DE58(owner->0xD70)) when
+  second probe on another player's layer (getPlayerLayer_8023DE58(owner->0xD70)) when
   the owner is on layer 8 and fn_8025F590 holds (fn_8026B81C on a miss);
   then fn_80269574, and fn_8026E1E0 after the first pass. Then 0xC90 = (1,
   1, 1) unless 0x98 / 0x99.
@@ -410,7 +410,7 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
   (fn_8026EE60 for one facing: 1 / 0 / 2 / 3).
 - Status: 13 / 25 at 100 %; fn_80268BC4 99.13 % (4 dead stack stores),
   fn_8026E68C 99.97 % (literal names only), fn_8026EE60 / EC88 / F000 family
-  86-90 % (step-vector add order; owner/facing kept across fn_801F856C).
+  86-90 % (step-vector add order; owner/facing kept across getActorManager_801F856C).
   Unwritten: fn_80269574 (0x22A8, a state machine on 0xBC that walks the
   direction arrays, searches 'WARP'-range actors and requests states),
   fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with jump table
@@ -554,7 +554,7 @@ transition kind (0x29 = none; the arrive exit stores it in 0xCF8), 0xCD4 /
 the last position on the TV. Layers 8 and up are the GBA screens (houses,
 caves): the handlers wait while the player's GBA link is busy
 (fn_80301CD0, fn_80303750), notify it (fn_803037D4(player, 0xD),
-fn_80301D54) and switch the music (lbl_8053AF80->fn_8045815C by 0xCE4 < 8).
+fn_80301D54) and switch the music (gAudioMgr_8053AF80->fn_8045815C by 0xCE4 < 8).
 The states come in pairs: the even one leaves (exit **fn_80290E90**: GBA
 notice, 0x400 = 0, music), the odd one arrives (exit **fn_80290D58**:
 respawn point 0xCBC / 0xD1C unless fn_80241E28, 0xCF8 = 0xCF4, 0xCF4 =

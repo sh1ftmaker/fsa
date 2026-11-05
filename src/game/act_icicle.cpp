@@ -19,8 +19,8 @@ bool Icicle_8049CFC8::fn_8010B284() {
     JGeometry::TVec3f probe = mPos;
     bool blocked = false;
     for (s32 i = 0; i < 4; i++) {
-        playerPos = *fn_8023E724(i);
-        if (field_0x4 == 8 && fn_8023DE58(i) == 0) {
+        playerPos = *getPlayerPos_8023E724(i);
+        if (field_0x4 == 8 && getPlayerLayer_8023DE58(i) == 0) {
             fn_801CD150(&playerPos, &playerPos);
         }
         if (mPos.y > playerPos.y || mPos.x - 40.0f > playerPos.x ||
@@ -184,7 +184,7 @@ void Icicle_8049CFC8::update() {
                 probe.y += 16.0f;
                 u16 tile = fn_80226850(&probe, field_0x4);
                 if (tile >= 0x3F0 || (tile >= 0x250 && tile <= 0x26F) || tile == 0x3ED) {
-                    lbl_8053AC98->fn_802A381C(&probe, field_0x4, 0x34);
+                    gBgRewrite_8053AC98->fn_802A381C(&probe, field_0x4, 0x34);
                 }
                 fn_8010B40C(3);
                 break;
@@ -291,7 +291,7 @@ void Icicle_8049CFC8::init() {
 }
 
 Icicle_8049CFC8::~Icicle_8049CFC8() {
-    fn_801EE434(field_0x27c);
+    releaseEmitter_801EE434(field_0x27c);
     field_0x27c = NULL;
 }
 

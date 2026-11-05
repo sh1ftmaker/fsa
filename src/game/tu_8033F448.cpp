@@ -32,9 +32,9 @@ void cls_804AC388::update() {
     } else {
         if (field_0x230 <= 0) {
             for (s32 i = 0; i < 4; i++) {
-                if (fn_8023F264(i) && fn_8023DE58(i) < 8 && !fn_80230188(i) &&
+                if (fn_8023F264(i) && getPlayerLayer_8023DE58(i) < 8 && !fn_80230188(i) &&
                     !fn_8022F478(i) && !fn_80236D14(i)) {
-                    JGeometry::TVec3f* player = fn_8023E724(i);
+                    JGeometry::TVec3f* player = getPlayerPos_8023E724(i);
                     JGeometry::TVec3f pos;
                     pos.x = player->x + 0.1f;
                     pos.y = player->y - 0.1f;

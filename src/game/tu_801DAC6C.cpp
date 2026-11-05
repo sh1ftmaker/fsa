@@ -23,7 +23,7 @@ bool Singleton_801DAC6C::fn_801DACAC(JGeometry::TVec3f* out) {
     s32 serial = mSerial0;
     out->set(0.0f, 0.0f, 0.0f);
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             out->x = actor->mPos.x;
             out->y = actor->mPos.y;
@@ -40,7 +40,7 @@ s32 Singleton_801DAC6C::fn_801DAD2C() {
     s32 serial = mSerial4;
     s32 result = 0;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             result = fn_801DC264(actor);
         }
@@ -51,7 +51,7 @@ s32 Singleton_801DAC6C::fn_801DAD2C() {
 void Singleton_801DAC6C::fn_801DAD88() {
     s32 serial = mSerial0;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             static_cast<cls_804A4C58*>(actor)->fn_801D8400();
         }
@@ -61,7 +61,7 @@ void Singleton_801DAC6C::fn_801DAD88() {
 void Singleton_801DAC6C::fn_801DADD0() {
     s32 serial = mSerial0;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->startSound_801F0E34(0x40005, 0);
         }
@@ -75,7 +75,7 @@ void Singleton_801DAC6C::fn_801DAE24() {
     s32 count = mCount;
     s32 i = 0;
     while (i < count) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mList[i]);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mList[i]);
         if (actor != NULL) {
             actor->field_0x10c = -1;
             actor->vfunc_0x24();

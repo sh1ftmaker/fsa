@@ -23,7 +23,7 @@ void cls_804A8250::update() {
     }
     if (count >= field_0x238) {
         vfunc_0x30(0xFF, true);
-        if (field_0x244 != lbl_8053AF80->field_0x58 && field_0x240 == 0) {
+        if (field_0x244 != gAudioMgr_8053AF80->field_0x58 && field_0x240 == 0) {
             lbl_8053AAF8->fn_80138B7C();
         }
         mAlive = false;
@@ -34,6 +34,6 @@ void cls_804A8250::init() {
     field_0x230 = 0;
     field_0x234 = (field_0x90 >> 22) & 0x1F;
     field_0x238 = field_0x90 & 0xFF;
-    field_0x244 = lbl_8053AF80->field_0x58;
+    field_0x244 = gAudioMgr_8053AF80->field_0x58;
     field_0x240 = (field_0x90 >> 21) & 1;
 }

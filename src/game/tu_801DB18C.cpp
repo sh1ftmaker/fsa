@@ -5,7 +5,7 @@
 #include "game/act/tu_801DAC6C.h"
 
 cls_804A4EE8::~cls_804A4EE8() {
-    fn_801EE434(field_0x2e4);
+    releaseEmitter_801EE434(field_0x2e4);
     field_0x2e4 = NULL;
     if (field_0x16c == -1) {
         fn_801DAC6C()->fn_801DAEAC(mSerial);

@@ -9,7 +9,7 @@ class JPABaseEmitter;
 class cls_801EB8CC;
 
 // A class known by its destructor, __dt__12cls_801EB8CCFv (0x801EB8CC, defined in
-// game/tu_801EB00C.cpp), which runs fn_801EE434 on the pointers at 0x34
+// game/tu_801EB00C.cpp), which runs releaseEmitter_801EE434 on the pointers at 0x34
 // (seven) and 0x50, then deletes itself when asked to. It is the member at
 // 0x230 of VaatiTimeUp_804ACCC0 and of act_vaati_boss (0x464). Named after
 // its destructor, the first function seen. fn_801EB710 (game/tu_801EB00C.cpp)

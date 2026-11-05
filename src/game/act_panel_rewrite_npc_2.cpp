@@ -29,7 +29,7 @@ void PanelRewriteNPC2_804A9F58::update() {
                     fn_80226CA8(i, field_0x4, &pos);
                     s32 layer = field_0x4;
                     if (layer >= 8) {
-                        fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &pos, 0, -1, -1);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &pos, 0, -1, -1);
                     } else {
                         spawnEmitter_8013CC50(layer, &pos, 0x35C, 1, 0, NULL, NULL, true, 1.0f);
                     }

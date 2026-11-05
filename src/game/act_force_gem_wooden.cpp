@@ -80,7 +80,7 @@ void WoodenForceGem_804AB1F0::update() {
         if (fn_8023AB94(&box, field_0x4, &p) >= 0 || fn_801F26CC(lbl_80471708) >= 0) {
             if (field_0x248 == 0) {
                 startSound_801F0E34(0x30005, 0);
-                fn_801F856C()->fn_801F9484('BLZE', field_0x4, &mPos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &mPos, 0, -1, -1);
             } else {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x28D, 0, 0, NULL, NULL, true, 1.25f * field_0x240);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x28E, 0, 0, NULL, NULL, true, 1.25f * field_0x240);
@@ -102,13 +102,13 @@ void WoodenForceGem_804AB1F0::update() {
             } else {
                 arg = kind + 4;
             }
-            s32 serial = fn_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, arg);
+            s32 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, arg);
             s32 bit = field_0x260;
             if (bit > 0) {
                 getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
             }
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     JGeometry::TVec3f v(0.0f, 0.0f, 3.0f);
                     actor->field_0x3c = v;
@@ -213,5 +213,5 @@ void WoodenForceGem_804AB1F0::init() {
 }
 
 WoodenForceGem_804AB1F0::~WoodenForceGem_804AB1F0() {
-    fn_801EE434(mEmitter268);
+    releaseEmitter_801EE434(mEmitter268);
 }

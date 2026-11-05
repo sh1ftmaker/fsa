@@ -59,7 +59,7 @@ void LifeMeter_804B174C::update() {
         JGeometry::TVec3f pos;
         ActorBase_804A5770* actor;
         if ((field_0x90 & 0xF) == 0) {
-            actor = fn_801F856C()->findActorBySerial_801F666C(field_0x250);
+            actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x250);
             if (!actor || field_0x24c < 0) {
                 mAlive = false;
                 break;
@@ -76,7 +76,7 @@ void LifeMeter_804B174C::update() {
             pos.y = actor->mPos.y;
             pos.z = actor->mPos.z;
         } else {
-            JGeometry::TVec3f* player = fn_8023E724(field_0x250);
+            JGeometry::TVec3f* player = getPlayerPos_8023E724(field_0x250);
             pos.x = player->x;
             pos.y = player->y;
             pos.z = player->z;

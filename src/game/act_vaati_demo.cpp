@@ -29,7 +29,7 @@ static const char* lbl_8049D930[4] = {
 bool cls_8049D940::fn_80115A7C() {
     for (s32 i = 0; i < 4; i++) {
         JGeometry::TVec3f out;
-        JGeometry::TVec3f pos = *fn_8023E724(i);
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
         fn_80115BC4(&pos, &out);
         pos += out;
         f32 dx = pos.x - mPos.x;
@@ -177,9 +177,9 @@ cls_8049D940::~cls_8049D940() {
     field_0x31c[2] = 0;
     field_0x31c[3] = 0;
     field_0x32c = 0;
-    fn_801EE434(field_0x314);
+    releaseEmitter_801EE434(field_0x314);
     field_0x314 = NULL;
-    fn_801EE434(field_0x318);
+    releaseEmitter_801EE434(field_0x318);
     field_0x318 = NULL;
 }
 

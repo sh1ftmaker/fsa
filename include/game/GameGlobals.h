@@ -56,7 +56,7 @@ struct J2DPicture;
 class JKRSolidHeap;
 
 // The object at offset 0x4 of *lbl_8053AAF8 (type unknown; named after
-// fn_801F856C, the first function seen reading it).
+// getActorManager_801F856C, the first function seen reading it).
 class cls_804B1D10;
 class BgRewrite_804A7C98;
 class cls_804AE9B0;
@@ -88,7 +88,7 @@ struct GameRootSub04_801F856C {
     virtual ~GameRootSub04_801F856C();
 
     /* 0x4 */ PlayerManager_804A6F28* field_0x4; // constructor fn_8013A538 (tu_80139BE8)
-    /* 0x8 */ ActorManager_804A5800* mActorManager; // fn_801F856C; allocated in
+    /* 0x8 */ ActorManager_804A5800* mActorManager; // getActorManager_801F856C; allocated in
                                            // game/tu_80139BE8.cpp
     /* 0xC */ GameView_804A9950* mView;             // getGameView_802D6A9C
     // fn_802A3D80 is called on it by fn_8013A1A4 (game/tu_80139BE8.cpp).
@@ -313,7 +313,7 @@ struct GameRoot_8049EF20 {
     // is 1. Defined in game/tu_80134C04.cpp (0x80134FC4); no callers found yet.
     void fn_80134FC4(u8 value);
     // Owner: game/tu_80134C04.cpp (0x80134FE0, not written yet). Stores r4 at
-    // this+0x94 (stb), reads it back, and calls fn_80458658 on lbl_8053AF80 when
+    // this+0x94 (stb), reads it back, and calls fn_80458658 on gAudioMgr_8053AF80 when
     // it is 1, else sets this+0x95 to 1. Callers: game/tu_8029C584.cpp
     // (cls_804A7BE8's destructor, with 0), game/tu_8023FBF0.cpp and game/tu_802D39B8.cpp.
     void fn_80134FE0(u8 value);
@@ -453,9 +453,9 @@ extern "C" {
 void fn_802AC09C(ItemPedestal_804A82A8* pedestal);
 }
 
-// AudioMgr_8045A080, the audio manager lbl_8053AF80 points to, is declared in
+// AudioMgr_8045A080, the audio manager gAudioMgr_8053AF80 points to, is declared in
 // game/Unk_8045A080.h (included by game/GameAudio.h).
-extern AudioMgr_8045A080* lbl_8053AF80;
+extern AudioMgr_8045A080* gAudioMgr_8053AF80;
 
 // game/tu_80401848.cpp (not written yet): the objects fn_804019A8 and
 // fn_80401E10 allocate (0x20 and 0x1C bytes) for a file found by path, and
@@ -1041,7 +1041,7 @@ extern cls_804B17A0* lbl_8053AEC8;
 extern JKRHeap* lbl_8053AB00;
 
 // game/act_giant_bomb.cpp (0x80341CB0, not written yet); called from
-// game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (fn_801F9484) on `layer` at
+// game/tu_8020FE50.cpp. Spawns a 'BBMB' actor (spawnActor_801F9484) on `layer` at
 // *pos.
 extern "C" {
 void fn_80341CB0(s32 layer, const JGeometry::TVec3f* pos);
@@ -1104,14 +1104,14 @@ struct cls_801192AC {
     /* 0x14 */ ActorBase_804A5770** mEnd;
     /* 0x18 */ u8 field_0x18[0x8]; // not yet known
 
-    // 0x80118384 (game/tu_80118384.cpp): fn_801F856C()->fn_801F6884(); field_0x0 = 0.
+    // 0x80118384 (game/tu_80118384.cpp): getActorManager_801F856C()->fn_801F6884(); field_0x0 = 0.
     void fn_80118384();
     // 0x801183BC: field_0x1 = 0, and the same in the fade object fn_80119DD0 returns.
     void fn_801183BC();
     // 0x80118454: field_0x1 = 1, and the same in the fade object fn_80119DD0 returns.
     void fn_80118454();
     // Sets field_0x0 = 1, field_0x1 = field_0x2 = 0, field_0x4 = value, field_0x8 = 0
-    // unless fn_801F68E0 (after fn_801F856C) returns 0; returns whether it did. Called
+    // unless fn_801F68E0 (after getActorManager_801F856C) returns 0; returns whether it did. Called
     // with 2 from act_four_sword_demo.
     bool fn_801186B0(u32 value);
 }; // Size: 0x20

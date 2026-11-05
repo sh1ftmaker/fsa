@@ -10,7 +10,7 @@ TalkingSign_804AF428::~TalkingSign_804AF428() {}
 void TalkingSign_804AF428::draw() {}
 
 // FIXME: 90.26%. Both fn_8038C678 calls: the original loads mSerial and field_0x4 into r29/r28
-// before the fn_8023E724 call (callee-saved across it); ours reloads them into r5/r6 after it.
+// before the getPlayerPos_8023E724 call (callee-saved across it); ours reloads them into r5/r6 after it.
 // The view helper's layer then lands in r30/r29 instead of r28/r30. Also the area box's
 // f.x store (0x28) is scheduled after the mPos.y load in the original.
 void TalkingSign_804AF428::update() {
@@ -39,14 +39,14 @@ void TalkingSign_804AF428::update() {
             if (viewLayerFlag(field_0x4)) {
                 if (mPlayer >= 0) {
                     if (fn_8038C678(mPlayer, (field_0x90 & 0xFFFF) + 0x12B, mSerial, field_0x4,
-                                    *fn_8023E724(mPlayer), flags)) {
+                                    *getPlayerPos_8023E724(mPlayer), flags)) {
                         mState = 1;
                     }
                 }
             } else if (mPlayer >= 0) {
-                if (fn_80230CFC(mPlayer) == 3 && mPos.y <= fn_8023E724(mPlayer)->y) {
+                if (fn_80230CFC(mPlayer) == 3 && mPos.y <= getPlayerPos_8023E724(mPlayer)->y) {
                     if (fn_8038C678(mPlayer, (field_0x90 & 0xFFFF) + 0x12B, mSerial, field_0x4,
-                                    *fn_8023E724(mPlayer), flags)) {
+                                    *getPlayerPos_8023E724(mPlayer), flags)) {
                         mState = 1;
                     }
                 }

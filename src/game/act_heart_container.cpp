@@ -35,11 +35,11 @@ void HeartContainer_804A7E58::update() {
         }
         if (field_0x238 >= 0 && !fn_8023ED8C(field_0x238) && !fn_8023EBB8(field_0x238) &&
             mPos.z <= 0.0f) {
-            pos = *fn_8023E724(field_0x238);
+            pos = *getPlayerPos_8023E724(field_0x238);
             mPos.x = pos.x + 6.0f;
             mPos.y = pos.y - 24.0f;
             if (fn_802308E0(field_0x238) == true) {
-                fn_801F856C()->fn_801F9484(ACTOR_IMUP, field_0x4, &mPos,
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, field_0x4, &mPos,
                                            (field_0x238 << 24) + 0x800000 + (field_0x238 << 26) + 0x14, -1, -1);
                 mAlive = false;
             }

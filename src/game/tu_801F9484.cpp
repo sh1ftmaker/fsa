@@ -322,7 +322,7 @@ static inline s32 fn_801FF674() {
 // fields every actor gets. The switch is every ActorId the game spawns; each case is one
 // `new (mHeap, 0)` whose inline constructor lands after the spawner (in reverse order of use,
 // like the setters below). DMCS, FGAM, ZSLE and ZSLG are empty cases (no actor, so -1).
-s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
+s32 ActorManager_804A5800::spawnActor_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
                                       s32 arg_0x16c, s32 arg_0x110) {
     s32 result = -1;
     for (s32 i = 0; i < ACTOR_MANAGER_MAX_ACTORS; i++) {
@@ -744,7 +744,7 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
             mActors[i] = new (mHeap, 0) cls_804A1160;
             break;
         case ACTOR_PUKU:
-            mActors[i] = new (mHeap, 0) cls_804A11B8;
+            mActors[i] = new (mHeap, 0) CheepCheep_804A11B8;
             break;
         case ACTOR_OSIN:
             mActors[i] = new (mHeap, 0) cls_804AB528;
@@ -1215,13 +1215,13 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
             mActors[i] = new (mHeap, 0) ZoomOutNPC_804AA228;
             break;
         case ACTOR_DNAV:
-            mActors[i] = new (mHeap, 0) cls_804ADFE8;
+            mActors[i] = new (mHeap, 0) Navi54MaidenCrystalCutscene_804ADFE8;
             break;
         case ACTOR_DCR2:
             mActors[i] = new (mHeap, 0) cls_804AE088;
             break;
         case ACTOR_SVTG:
-            mActors[i] = new (mHeap, 0) cls_804AAB40;
+            mActors[i] = new (mHeap, 0) ShovelOldTimer_804AAB40;
             break;
         case ACTOR_BTBZ:
             mActors[i] = new (mHeap, 0) cls_8049E7F0;
@@ -1305,7 +1305,7 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
             mActors[i] = new (mHeap, 0) cls_804ACC68;
             break;
         case ACTOR_TUTM:
-            mActors[i] = new (mHeap, 0) cls_804ACBF0;
+            mActors[i] = new (mHeap, 0) TingleTimeUpManager_804ACBF0;
             break;
         case ACTOR_EMSK:
             mActors[i] = new (mHeap, 0) EndingMapSkipper_804AA498;

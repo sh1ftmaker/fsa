@@ -1,4 +1,4 @@
-// Actor RAT ("Rat" in docs/names/actors.tsv): the spawner (fn_801F9484)
+// Actor RAT ("Rat" in docs/names/actors.tsv): the spawner (spawnActor_801F9484)
 // allocates 0x248 bytes for it (0x801FBE30) and calls its constructor
 // fn_80202EEC, which stores the vtable 0x8049C400.
 

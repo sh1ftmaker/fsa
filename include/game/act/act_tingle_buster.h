@@ -2,7 +2,7 @@
 #define GAME_ACT_ACT_TINGLE_BUSTER_H
 
 // Code: game/act_tingle_buster.cpp. Actor TINB ("Tingle Buster" in
-// docs/names/actors.tsv, medium confidence); the spawner (fn_801F9484)
+// docs/names/actors.tsv, medium confidence); the spawner (spawnActor_801F9484)
 // constructs it with the inline constructor at 0x801E33B8. It adds no fields
 // to EnemyBase_804A4808 (size 0x2A8).
 

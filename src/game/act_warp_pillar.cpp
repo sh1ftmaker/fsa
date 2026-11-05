@@ -38,7 +38,7 @@ void WarpPillar_804AC0A8::update() {
             continue;
         }
         if (field_0x230 == 2 || field_0x230 == 3) {
-            JGeometry::TVec3f pos(*fn_8023E724(i));
+            JGeometry::TVec3f pos(*getPlayerPos_8023E724(i));
             if (field_0x230 != 1) {
                 pos += field_0x3c;
                 addCalc2_801F71A4(&pos.x, mPos.x - 24.0f + 16.0f * field_0x248[i], 0.02f, 10.0f);
@@ -62,7 +62,7 @@ void WarpPillar_804AC0A8::update() {
             if (!fn_8023F264(i) || fn_8023EA28(i) || !fn_8023561C(i) || fn_80236B50(i)) {
                 continue;
             }
-            JGeometry::TVec3f* p = fn_8023E724(i);
+            JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
             bool inside = p->x >= left && p->y >= top && p->x < right && p->y < bottom;
             field_0x25c[i] = inside;
             if (field_0x25c[i]) {
@@ -78,7 +78,7 @@ void WarpPillar_804AC0A8::update() {
         }
         if (field_0x234 >= 4 && fn_8023077C()) {
             for (s32 i = 0; i < 4; i++) {
-                JGeometry::TVec3f pos(*fn_8023E724(i));
+                JGeometry::TVec3f pos(*getPlayerPos_8023E724(i));
                 if (fn_8022E970(i) > 1 && fn_80234A88(i)) {
                     fn_8022CA6C(i, 5, true);
                     field_0x260[i] = true;
@@ -94,16 +94,16 @@ void WarpPillar_804AC0A8::update() {
         field_0x240--;
         if (field_0x240 <= 0) {
             for (s32 i = 0; i < 4; i++) {
-                if (field_0x258 < fn_8023E724(i)->y) {
-                    field_0x258 = fn_8023E724(i)->y;
+                if (field_0x258 < getPlayerPos_8023E724(i)->y) {
+                    field_0x258 = getPlayerPos_8023E724(i)->y;
                 }
             }
             s32 order[4] = {0, 1, 2, 3};
             for (s32 n = 4; n > 0; n--) {
                 s32* cur = &order[1];
                 for (s32 j = 1; j < n; j++, cur++) {
-                    JGeometry::TVec3f a(*fn_8023E724(cur[-1]));
-                    JGeometry::TVec3f b(*fn_8023E724(*cur));
+                    JGeometry::TVec3f a(*getPlayerPos_8023E724(cur[-1]));
+                    JGeometry::TVec3f b(*getPlayerPos_8023E724(*cur));
                     if (a.x > b.x) {
                         s32 tmp = cur[-1];
                         cur[-1] = *cur;
@@ -122,9 +122,9 @@ void WarpPillar_804AC0A8::update() {
                 if (fn_8022F514(i)) {
                     owner = fn_8022F3DC(i);
                 }
-                JGeometry::TVec3f pos(*fn_8023E724(i));
+                JGeometry::TVec3f pos(*getPlayerPos_8023E724(i));
                 if (field_0x260[owner]) {
-                    JGeometry::TVec3f other(*fn_8023E724(owner));
+                    JGeometry::TVec3f other(*getPlayerPos_8023E724(owner));
                     f32 dx = pos.x - other.x;
                     s32 n = fn_8022E8D4(i);
                     if (dx < 16.0f * n && dx > -16.0f * n) {
@@ -148,8 +148,8 @@ void WarpPillar_804AC0A8::update() {
         startSound_801F0E34(0x5003A, 0);
         f32 maxY = 0.0f;
         for (s32 i = 0; i < 4; i++) {
-            if (maxY < fn_8023E724(i)->y) {
-                maxY = fn_8023E724(i)->y;
+            if (maxY < getPlayerPos_8023E724(i)->y) {
+                maxY = getPlayerPos_8023E724(i)->y;
             }
         }
         if (field_0x258 - maxY > 30.0f) {
@@ -221,9 +221,9 @@ void WarpPillar_804AC0A8::init() {
 }
 
 WarpPillar_804AC0A8::~WarpPillar_804AC0A8() {
-    fn_801EE434(mEmitter264);
-    fn_801EE434(mEmitter268);
+    releaseEmitter_801EE434(mEmitter264);
+    releaseEmitter_801EE434(mEmitter268);
     for (s32 i = 0; i < 4; i++) {
-        fn_801EE434(mEmitter26c[i]);
+        releaseEmitter_801EE434(mEmitter26c[i]);
     }
 }

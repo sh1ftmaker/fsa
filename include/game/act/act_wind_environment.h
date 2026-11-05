@@ -9,7 +9,7 @@
 class JPABaseEmitter;
 
 // The WIND actor ("Wind environment" in docs/names/actors.tsv, med
-// confidence; stages 8-1 and 8-2): the spawner (fn_801F9484) allocates 0x248
+// confidence; stages 8-1 and 8-2): the spawner (spawnActor_801F9484) allocates 0x248
 // bytes and calls the out-of-line constructor 0x801070B4, which stores this
 // vtable (0x8049CC98). Named after that vtable.
 class WindEnvironment_8049CC98 : public ActorBase_804A5770 {

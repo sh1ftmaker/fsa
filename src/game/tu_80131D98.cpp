@@ -5,11 +5,11 @@
 #include "game/tu_80131D98.h"
 
 bool fn_80131D98() {
-    s32 serial = fn_801F856C()->fn_801F7A08(ACTOR_OPGL);
+    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_OPGL);
     if (serial < 0) {
         return false;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
         return false;
     }
@@ -23,7 +23,7 @@ ActorBase_804A5770* cls_80131F6C::fn_80131E30(s32 idx) {
     if (idx < 0 || idx >= mCount) {
         return NULL;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSerials[idx]);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[idx]);
     if (actor == NULL) {
         return NULL;
     }

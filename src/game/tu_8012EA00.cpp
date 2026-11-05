@@ -27,7 +27,7 @@ inline bool cls_8049E8F8::playersInside() {
             if (fn_80230188(i)) {
                 return false;
             }
-            JGeometry::TVec3f* pos = fn_8023E724(i);
+            JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
             bool inside = false;
             if (pos->x >= box.i.x && pos->y >= box.i.y && pos->x < box.f.x && pos->y < box.f.y) {
                 inside = true;

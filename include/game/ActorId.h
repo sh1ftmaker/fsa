@@ -1,7 +1,7 @@
 #ifndef GAME_ACTORID_H
 #define GAME_ACTORID_H
 
-// Actor type IDs: the 4-character codes the actor spawner fn_801F9484
+// Actor type IDs: the 4-character codes the actor spawner spawnActor_801F9484
 // compares its 2nd argument against (ActorBase_804A5770::mActorId).
 // Generated from the spawner's compare tree (every lis/addi/cmpw/beq case,
 // as tools/tu_map/to_splits.py decodes it) and docs/names/actors.tsv for

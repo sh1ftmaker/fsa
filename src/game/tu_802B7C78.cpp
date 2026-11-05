@@ -34,7 +34,7 @@ void fn_802B7CD8(ActorBase_804A5770* actor) {
 // idx in r29, playerPos at 0x8). The direction temp's dead stack stores are
 // not reproduced.
 void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
-    JGeometry::TVec3f playerPos(*fn_8023E724(field_0x298));
+    JGeometry::TVec3f playerPos(*getPlayerPos_8023E724(field_0x298));
     s32 dist = (s32)FABS(mPos.x - playerPos.x);
     if (dist < 40) {
         field_0x250 = 1;
@@ -46,8 +46,8 @@ void cls_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
 
     startSound_801F0E34(0x40040, 0);
     s32 layer = field_0x4;
-    if (fn_8023DE58(field_0x298) == layer) {
-        JGeometry::TVec3f* p = fn_8023E724(field_0x298);
+    if (getPlayerLayer_8023DE58(field_0x298) == layer) {
+        JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x298);
         JGeometry::TVec2f dir(p->x, p->y);
         dir.x -= mPos.x;
         dir.y -= mPos.y;
@@ -137,7 +137,7 @@ void cls_804A886C::init() {
     field_0x298 = 4;
     field_0x280 = 0;
     for (s32 i = 0; i < 4; i++) {
-        field_0x2a0[i] = fn_801F856C()->fn_801F6058(i);
+        field_0x2a0[i] = getActorManager_801F856C()->fn_801F6058(i);
     }
     field_0x27c = 0;
     field_0x196 = 1;

@@ -22,7 +22,7 @@ void NPCDisguisedAsAStone_804A8750::vfunc_0x24() {
     if (field_0x4 >= 8) {
         JGeometry::TVec3f pos(mPos);
         pos.z = 0.0f;
-        fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
     } else if (mPos.z < 0.0f && fn_8022461C(&mPos, field_0x4) == 0xD) {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
     } else {
@@ -45,7 +45,7 @@ void NPCDisguisedAsAStone_804A8750::update() {
         field_0x24c = fn_8023AF14(&box, field_0x4, false, 0.0f);
         if (field_0x24c >= 0) {
             field_0x234 = field_0x238 = field_0x23c = 0.0f;
-            JGeometry::TVec3f playerPos = *fn_8023E724(field_0x24c);
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(field_0x24c);
             f32 dx = playerPos.x - mPos.x;
             f32 dy = playerPos.y - mPos.y;
             if (__fabsf(dx) > __fabsf(dy)) {
@@ -90,7 +90,7 @@ void NPCDisguisedAsAStone_804A8750::update() {
         }
         break;
     case 3: {
-        JGeometry::TVec3f* target = fn_8023E724(field_0x24c);
+        JGeometry::TVec3f* target = getPlayerPos_8023E724(field_0x24c);
         // FIXME: 97.7%. The original also copies target's x and y (y first)
         // to the 8-byte slot at sp+8 before subtracting mPos (two stfs, then
         // stfs of the differences): four dead stores that MWCC drops here.

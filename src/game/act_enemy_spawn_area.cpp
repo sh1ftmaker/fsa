@@ -41,9 +41,9 @@ void EnemySpawnArea_804A2CB0::update() {
                     }
                     pos.x += 8.0f - 16.0f * lbl_8053AAF8->mRandom.get_ufloat_1();
                     pos.y += 8.0f - 16.0f * lbl_8053AAF8->mRandom.get_ufloat_1();
-                    mSerials[i] = fn_801F856C()->fn_801F9484(id, field_0x4, &pos, param, -1, -1);
+                    mSerials[i] = getActorManager_801F856C()->spawnActor_801F9484(id, field_0x4, &pos, param, -1, -1);
                     if (mSerials[i] != 0) {
-                        fn_801F856C()->fn_801F9484(ACTOR_HBMB, field_0x4, &pos, 0xB, -1, -1);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HBMB, field_0x4, &pos, 0xB, -1, -1);
                     }
                 }
             }
@@ -54,7 +54,7 @@ void EnemySpawnArea_804A2CB0::update() {
         if (mTimer0 == 0) {
             s32 gone = 0;
             for (s32 i = 0; i < mCount; i++) {
-                if (fn_801F856C()->findActorBySerial_801F666C(mSerials[i]) == NULL) {
+                if (getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]) == NULL) {
                     mSerials[i] = -1;
                     if (mMode == 0) {
                         mState = 0;

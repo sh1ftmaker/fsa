@@ -42,7 +42,7 @@ void cls_8049E848::update() {
                 }
                 idx = field_0x240;
             }
-            lbl_8053AC98->fn_802A381C(&mPos, field_0x4, lbl_8053CC30[idx]);
+            gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, lbl_8053CC30[idx]);
             field_0x238 = 0;
         }
         break;

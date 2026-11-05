@@ -90,7 +90,7 @@ public:
     // and the 0x90-byte object fn_8045A080 builds in that heap.
     /* 0x004 */ JKRSolidHeap* field_0x4;
     /* 0x008 */ JKRExpHeap* mHeap;
-    /* 0x00C */ AudioMgr_8045A080* field_0xc; // the object lbl_8053AF80 also holds (calls fn_80459AE4)
+    /* 0x00C */ AudioMgr_8045A080* field_0xc; // the object gAudioMgr_8053AF80 also holds (calls fn_80459AE4)
     // Resource archives (the loader object's 0x14, an archive fn_80401AC8 /
     // fn_80401D20 create as JKRAramArchive or JKRMemArchive). The ones set
     // in fn_803FFAA8 (tu_803FF2C4) come from these paths (0x80400334-

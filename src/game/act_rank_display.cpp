@@ -72,7 +72,7 @@ void RankDisplay_804A8F74::draw() {
             mtx[2][1] = 0.0f;
             mtx[2][2] = 0.4f;
             params.mMtx = mtx;
-            mPos = *fn_8023E724(fn_8022EA0C(i));
+            mPos = *getPlayerPos_8023E724(fn_8022EA0C(i));
             {
                 void* res = fn_804030C4('TIMG', lbl_804A8F50[field_0x244[i]]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
@@ -102,7 +102,7 @@ void RankDisplay_804A8F74::draw() {
             mtx[2][1] = 0.0f;
             mtx[2][2] = 0.4f;
             params.mMtx = mtx;
-            mPos = *fn_8023E724(fn_8022EA0C(i));
+            mPos = *getPlayerPos_8023E724(fn_8022EA0C(i));
             {
                 void* res = fn_804030C4('TIMG', "kk_noItem_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
@@ -132,7 +132,7 @@ void RankDisplay_804A8F74::draw() {
             mtx[2][1] = 0.0f;
             mtx[2][2] = 0.4f;
             params.mMtx = mtx;
-            mPos = *fn_8023E724(fn_8022EA0C(i));
+            mPos = *getPlayerPos_8023E724(fn_8022EA0C(i));
             {
                 void* res = fn_804030C4('TIMG', "kk_noMagic_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
@@ -166,7 +166,7 @@ void RankDisplay_804A8F74::draw() {
             mtx[2][1] = 0.0f;
             mtx[2][2] = 0.5f;
             params.mMtx = mtx;
-            mPos = *fn_8023E724(fn_8022EA0C(i));
+            mPos = *getPlayerPos_8023E724(fn_8022EA0C(i));
             {
                 void* res = fn_804030C4('TIMG', lbl_804A8F60[field_0x28c[i] - 4]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
@@ -186,7 +186,7 @@ void RankDisplay_804A8F74::draw() {
 // the zero stored for absent players comes from the counter register in the
 // original (mr r27, r31), and the rank counter is cleared one slot earlier.
 void RankDisplay_804A8F74::update() {
-    JGeometry::TVec3f* player = fn_8023E724(0);
+    JGeometry::TVec3f* player = getPlayerPos_8023E724(0);
     mPos.x = player->x;
     mPos.y = player->y;
     mPos.z = player->z;
@@ -242,7 +242,7 @@ void RankDisplay_804A8F74::update() {
                           (mode == 0 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x89 != 0))) {
                         continue;
                     }
-                    if (fn_8023DE58(k) >= 8) {
+                    if (getPlayerLayer_8023DE58(k) >= 8) {
                         continue;
                     }
                     field_0x27c[k] = 180;
@@ -250,13 +250,13 @@ void RankDisplay_804A8F74::update() {
                     if (field_0x244[k] < field_0x254[k]) {
                         invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
-                            JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
+                            JGeometry::TVec3f pos(getPlayerPos_8023E724(k)->x, getPlayerPos_8023E724(k)->y - 28.0f, getPlayerPos_8023E724(k)->z);
                             mEmitters[k] = spawnEmitter_8013CC50(0, &pos, 0x3A6, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     } else if (field_0x244[k] > field_0x254[k]) {
                         invalidateEmitter(mEmitters[k]);
                         if (mEmitters[k] == NULL) {
-                            JGeometry::TVec3f pos(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
+                            JGeometry::TVec3f pos(getPlayerPos_8023E724(k)->x, getPlayerPos_8023E724(k)->y - 28.0f, getPlayerPos_8023E724(k)->z);
                             mEmitters[k] = spawnEmitter_8013CC50(0, &pos, 0x3A5, 0, 0, NULL, NULL, true, 0.4f);
                         }
                     }
@@ -266,7 +266,7 @@ void RankDisplay_804A8F74::update() {
         }
 
         if (fn_8023BE0C(i)) {
-            if (fn_8023DE58(i) < 8 && getGameView_802D6A9C()->fn_802D46D8(i, 0xEB, false) == true) {
+            if (getPlayerLayer_8023DE58(i) < 8 && getGameView_802D6A9C()->fn_802D46D8(i, 0xEB, false) == true) {
                 field_0x27c[i] = 30;
                 field_0x28c[i] = 2;
             }
@@ -285,7 +285,7 @@ void RankDisplay_804A8F74::update() {
         }
         if (field_0x28c[k] == 1) {
             if (mEmitters[k] != NULL) {
-                mEmitters[k]->setGlobalTranslation(fn_8023E724(k)->x, fn_8023E724(k)->y - 28.0f, fn_8023E724(k)->z);
+                mEmitters[k]->setGlobalTranslation(getPlayerPos_8023E724(k)->x, getPlayerPos_8023E724(k)->y - 28.0f, getPlayerPos_8023E724(k)->z);
                 mEmitters[k]->setScale(0.4f);
             }
         } else {

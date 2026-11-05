@@ -1,6 +1,6 @@
 // Actor GMTB ("Gambling shop chest" in docs/names/actors.tsv): the spawner
 // allocates 0x258 bytes for it and calls fn_80200904, which stores the
-// vtable 0x804AAAE8. Its tile is rewritten through lbl_8053AC98.
+// vtable 0x804AAAE8. Its tile is rewritten through gBgRewrite_8053AC98.
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
@@ -20,14 +20,14 @@ static const s32 lbl_8047144C[5] = {1, 0x11, 0x15, 0x1D, 0x45A};
 GamblingShopChest_804AAAE8::~GamblingShopChest_804AAAE8() {}
 
 void GamblingShopChest_804AAAE8::fn_80310E48() {
-    lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
+    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
     field_0x234 = -1;
     mState = 0;
 }
 
 void GamblingShopChest_804AAAE8::fn_80310E98() {
     if (mState == 1) {
-        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
         startSound_801F0E34(0x30076, 0);
         field_0x248.x = mPos.x;
         field_0x248.y = mPos.y;
@@ -43,7 +43,7 @@ void GamblingShopChest_804AAAE8::fn_80310E98() {
 }
 
 void GamblingShopChest_804AAAE8::fn_80310F50(s32 a, s32 b, s32 serial) {
-    lbl_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0x30);
+    gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0x30);
     field_0x234 = a;
     field_0x238 = b;
     field_0x23c = serial;
@@ -89,13 +89,13 @@ void GamblingShopChest_804AAAE8::update() {
                     fn_802300EC(player) == true) {
                     field_0x234 = player;
                     fn_802308E0(field_0x234);
-                    lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
+                    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
                     fn_80230FD0(field_0x234, 0x20013);
-                    ActorBase_804A5770* shop = fn_801F856C()->findActorBySerial_801F666C(field_0x23c);
+                    ActorBase_804A5770* shop = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x23c);
                     if (shop != NULL && shop->mActorId == ACTOR_GMBL) {
                         static_cast<GamblingShop_804AAA70*>(shop)->fn_8030FDC0(field_0x238);
                     }
-                    JGeometry::TVec3f playerPos = *fn_8023E724(field_0x234);
+                    JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(field_0x234);
                     field_0x248.set(playerPos.x, playerPos.y - 12.0f, playerPos.z);
                     field_0x244 = 0;
                     field_0x254 = true;
@@ -129,7 +129,7 @@ void GamblingShopChest_804AAAE8::update() {
             field_0x248.y -= 4.0f;
             if (field_0x254) {
                 field_0x244++;
-                fn_80230498(field_0x234, fn_8023E724(field_0x234), field_0x244 + 0xED, 0xFF, -0x80,
+                fn_80230498(field_0x234, getPlayerPos_8023E724(field_0x234), field_0x244 + 0xED, 0xFF, -0x80,
                             -0x80, true);
             }
             break;

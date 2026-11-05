@@ -3,15 +3,15 @@
 
 cls_804A9020::~cls_804A9020() {
     if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
+        releaseEmitter_801EE434(mEmitter230);
     }
     if (mEmitter234 != NULL) {
-        fn_801EE434(mEmitter234);
+        releaseEmitter_801EE434(mEmitter234);
     }
     if (mEmitter238 != NULL) {
-        fn_801EE434(mEmitter238);
+        releaseEmitter_801EE434(mEmitter238);
     }
     if (mEmitter23c != NULL) {
-        fn_801EE434(mEmitter23c);
+        releaseEmitter_801EE434(mEmitter23c);
     }
 }

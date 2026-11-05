@@ -17,7 +17,7 @@ void cls_804A5D60::fn_80209D44() {
 }
 
 void cls_804A5D60::vfunc_0x24() {
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
     if (actor != NULL) {
         static_cast<cls_804A5B28*>(actor)->fn_802075D8(field_0x94);
     }

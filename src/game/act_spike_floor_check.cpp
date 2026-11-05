@@ -32,7 +32,7 @@ void SpikeFloorCheck_804A8170::update() {
             break;
         case 1:
         default:
-            if (fn_801F856C()->field_0x305c == 1) {
+            if (getActorManager_801F856C()->field_0x305c == 1) {
                 fn_801F0D20(3);
                 mTimer = 8;
                 mState = 2;
@@ -67,7 +67,7 @@ void SpikeFloorCheck_804A8170::update() {
 
 void SpikeFloorCheck_804A8170::init() {
     mType = field_0x90 & 0xFF;
-    if ((mType == 0 && vfunc_0x34()) || (mType != 0 && fn_801F856C()->field_0x305c == 1)) {
+    if ((mType == 0 && vfunc_0x34()) || (mType != 0 && getActorManager_801F856C()->field_0x305c == 1)) {
         lbl_8053AB10->field_0x20->fn_802FA160(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
         getGameView_802D6A9C()->fn_802D7920(0);

@@ -12,7 +12,7 @@ void ViewMode_804A9A18::update() {
     if (field_0x90 & 2) {
         bool found = false;
         for (s32 i = 0; i < 4; i++) {
-            if (field_0x4 == fn_8023DE58(i) && fn_802373EC(i) == 2) {
+            if (field_0x4 == getPlayerLayer_8023DE58(i) && fn_802373EC(i) == 2) {
                 found = true;
                 break;
             }

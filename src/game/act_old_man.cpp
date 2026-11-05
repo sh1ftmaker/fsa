@@ -187,7 +187,7 @@ cls_804AEED0::~cls_804AEED0() {
         delete field_0x274;
     }
     if (field_0x278 != NULL) {
-        fn_801EE434(field_0x278);
+        releaseEmitter_801EE434(field_0x278);
     }
 }
 

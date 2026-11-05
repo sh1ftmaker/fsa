@@ -189,13 +189,13 @@ void cls_8049DB30::init() {
 }
 
 cls_8049DB30::~cls_8049DB30() {
-    fn_801EE434(mEmitter24c);
+    releaseEmitter_801EE434(mEmitter24c);
     mEmitter24c = NULL;
-    fn_801EE434(mEmitter250);
+    releaseEmitter_801EE434(mEmitter250);
     mEmitter250 = NULL;
-    fn_801EE434(mEmitter254);
+    releaseEmitter_801EE434(mEmitter254);
     mEmitter254 = NULL;
-    fn_801EE434(mEmitter258);
+    releaseEmitter_801EE434(mEmitter258);
     mEmitter258 = NULL;
 }
 

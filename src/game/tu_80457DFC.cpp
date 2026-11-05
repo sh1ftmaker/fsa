@@ -412,7 +412,7 @@ void AudioMgr_8045A080::fn_80459624(const JGeometry::TVec3f* pos, Mtx mtx, s32 i
 
 // 0x8045A080
 AudioMgr_8045A080::AudioMgr_8045A080() {
-    lbl_8053AF80 = this;
+    gAudioMgr_8053AF80 = this;
     field_0x30 = NULL;
     field_0x34 = NULL;
     field_0x38 = NULL;

@@ -1,5 +1,5 @@
 // Actor TALK ("Talking NPC" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x23C bytes for it and calls its constructor
+// (spawnActor_801F9484) allocates 0x23C bytes for it and calls its constructor
 // fn_802033F4, which stores the vtable 0x804AF548. The spawn parameter
 // holds the player (top 4 bits) and the message id (low 28 bits).
 

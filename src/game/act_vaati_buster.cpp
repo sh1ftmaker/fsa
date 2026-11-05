@@ -1,5 +1,5 @@
 // The GFBS actor ("Vaati Buster", docs/names/actors.tsv, medium confidence).
-// Spawned by fn_801F9484 (inline constructor fn_80201630, __nw__ 0x230): no
+// Spawned by spawnActor_801F9484 (inline constructor fn_80201630, __nw__ 0x230): no
 // members of its own; it overrides only the destructor and init().
 
 #include "game/GameAudio.h"

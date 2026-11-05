@@ -24,12 +24,12 @@ u16 PhantomGanon2_804A1A98::fn_80189DEC() {
     if (player < 0) {
         player = 0;
     }
-    if (!(fn_8023F264(player) && getField_0x4() == fn_8023DE58(player) && !fn_80230188(player) &&
+    if (!(fn_8023F264(player) && getField_0x4() == getPlayerLayer_8023DE58(player) && !fn_80230188(player) &&
           !fn_80236B50(player) && lbl_8053AB78 != 1))
     {
         s32 pick = (s32)(3.99f * lbl_8053AAF8->mRandom.get_ufloat_1());
         for (s32 i = 0; i < 4; i++) {
-            if (pick != player && fn_8023F264(pick) && getField_0x4() == fn_8023DE58(pick) &&
+            if (pick != player && fn_8023F264(pick) && getField_0x4() == getPlayerLayer_8023DE58(pick) &&
                 pick == fn_8022EA0C(pick) && !fn_80230188(pick) && !fn_80236B50(pick) &&
                 !fn_8022DCD8(pick))
             {
@@ -50,10 +50,10 @@ u16 PhantomGanon2_804A1A98::fn_80189DEC() {
 // emitter loop's pointer), we keep it in r30 (the loop counter's).
 PhantomGanon2_804A1A98::~PhantomGanon2_804A1A98() {
     for (s32 i = 0; i < 4; i++) {
-        fn_801EE434(mEmitters2f4[i]);
-        fn_801EE434(mEmitters304[i]);
+        releaseEmitter_801EE434(mEmitters2f4[i]);
+        releaseEmitter_801EE434(mEmitters304[i]);
     }
-    fn_801EE434(mEmitter314);
+    releaseEmitter_801EE434(mEmitter314);
     if (field_0x90 == 0) {
         getGameView_802D6A9C()->fn_802D7440(true);
         fn_8022ADCC();
@@ -61,7 +61,7 @@ PhantomGanon2_804A1A98::~PhantomGanon2_804A1A98() {
     if (field_0x90 == 10) {
         s32 serial = field_0x274;
         if (serial >= 0) {
-            PhantomGanon2_804A1A98* other = (PhantomGanon2_804A1A98*)fn_801F856C()->findActorBySerial_801F666C(serial);
+            PhantomGanon2_804A1A98* other = (PhantomGanon2_804A1A98*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
                 other->field_0x28c = 3.0f;
                 field_0x274 = -1;
@@ -109,11 +109,11 @@ bool fn_8018A614(s32 player) {
 }
 
 void fn_8018A63C() {
-    fn_801F856C()->fn_801F6884();
+    getActorManager_801F856C()->fn_801F6884();
 }
 
 s32 fn_8018A660() {
-    return fn_801F856C()->fn_801F68E0();
+    return getActorManager_801F856C()->fn_801F68E0();
 }
 
 // Out-of-line copy of TVec3<f32>::set(const TVec3&).
@@ -127,7 +127,7 @@ void fn_8018A6A0(JGeometry::TVec2f* v, f32 x, f32 y) {
 }
 
 AudioMgr_8045A080* fn_8018A6AC() {
-    return lbl_8053AF80;
+    return gAudioMgr_8053AF80;
 }
 
 // FIXME: __sinit_act_phantom_ganon_2_cpp (compiler-generated, no source line of its own)

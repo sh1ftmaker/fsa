@@ -22,9 +22,9 @@ void Terrorpin_804A3B10::vfunc_0x24() {
     if ((mFlags & 0x2000) && (mFlags & 0x4000) && field_0x10c >= 0 && field_0x10c < 4 && field_0x10c == field_0x2a8) {
         f32 speed = 1.5f;
         for (s32 i = 0; i < 2; i++) {
-            s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
+            s32 serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {
@@ -77,9 +77,9 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
     if (mState == 5) {
         f32 speed = 1.5f;
         for (s32 i = 0; i < 2; i++) {
-            s32 serial = fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
+            s32 serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 2);
             if (serial >= 0) {
-                ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
                     f32 x = speed;
                     if (i != 0) {

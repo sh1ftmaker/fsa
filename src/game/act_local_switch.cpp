@@ -1,5 +1,5 @@
 // Actor LCLS ("Local switch" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x230 bytes for it (no members of its own) and
+// (spawnActor_801F9484) allocates 0x230 bytes for it (no members of its own) and
 // calls its constructor fn_80200E1C, which stores the vtable 0x804AA008.
 
 #include "game/GameAudio.h"

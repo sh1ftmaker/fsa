@@ -13,9 +13,9 @@ Tektite_8049FD50::~Tektite_8049FD50() {}
 void Tektite_8049FD50::vfunc_0x24() {
     setField_0x18C(0);
     if (field_0x90 != 0) {
-        fn_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 3);
+        getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, 3);
     } else {
-        fn_801F856C()->fn_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
     }
     ActorBase_804A5770::vfunc_0x24();
 }

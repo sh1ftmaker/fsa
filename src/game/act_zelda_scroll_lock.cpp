@@ -1,5 +1,5 @@
 // Actor SZSC ("Zelda scroll-lock NPC", JP ゼルダスクロール禁止NPC, in
-// docs/names/actors.tsv): the spawner (fn_801F9484) allocates 0x234 bytes
+// docs/names/actors.tsv): the spawner (spawnActor_801F9484) allocates 0x234 bytes
 // for it and calls its constructor fn_802013D8, which stores the vtable
 // 0x804AC708.
 

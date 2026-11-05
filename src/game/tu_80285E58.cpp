@@ -97,7 +97,7 @@ void Player_804A6F38::fn_80285F44() {
                         spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F5, 0, 0, NULL, NULL, true, 1.0f);
                         spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4F6, 0, 0, NULL, NULL, true, 1.0f);
                         s32 player = field_0x4;
-                        fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (player & 3) | 0x2C, -1,
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (player & 3) | 0x2C, -1,
                                                    player);
                     } else {
                         spawnEmitter_8013CC50(field_0x3b4, &pos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
@@ -145,7 +145,7 @@ void Player_804A6F38::fn_80286688() {
         return;
     }
     if (isPlayerBitSet(root, field_0x4)) {
-        if (fn_8023DE58(fn_8024064C()) < 8) {
+        if (getPlayerLayer_8023DE58(fn_8024064C()) < 8) {
             field_0x13b8 = 0;
             return;
         }
@@ -181,14 +181,14 @@ void Player_804A6F38::fn_8028676C() {
     if (!fn_802413E8() && !fn_80270A8C() && !fn_80250D30() && !fn_8024FEFC() && mPos.z <= 0.0f &&
         fn_8022BC38(fn_80240644(), field_0x3b4, &mPos)) {
         if (!fn_80234ECC(fn_80240644()) &&
-            planarLength(*fn_8023E724(fn_80240644()) - target) <= planarLength(mPos - target)) {
+            planarLength(*getPlayerPos_8023E724(fn_80240644()) - target) <= planarLength(mPos - target)) {
             field_0x1228++;
             if (field_0x1238 > 0) {
                 field_0x1238--;
             }
             if ((!(fn_80240DAC() || fn_80240D8C() || field_0x43e) && fn_8025197C(true)) ||
                 (fn_802486A0() == 5 && fn_80240B84()) || field_0x1228 > 180) {
-                mPos.set(*fn_8023E724(fn_80240644()));
+                mPos.set(*getPlayerPos_8023E724(fn_80240644()));
                 field_0x1228 = 0;
                 field_0x1238 = 0;
             }
@@ -276,7 +276,7 @@ void Player_804A6F38::fn_80286E10() {
     if (fn_80230188(player)) {
         return;
     }
-    if (!(fn_8023E724(player)->z <= 0.0f)) {
+    if (!(getPlayerPos_8023E724(player)->z <= 0.0f)) {
         return;
     }
     if (fn_8023EA28(player)) {
@@ -329,7 +329,7 @@ void Player_804A6F38::fn_80286E10() {
             }
             other = fn_8022EA0C(field_0x4);
             if (!fn_80234134(other) && !fn_8023EA28(other) &&
-                fn_8022BC38(other, fn_8023DE58(partner), fn_8023E724(partner))) {
+                fn_8022BC38(other, getPlayerLayer_8023DE58(partner), getPlayerPos_8023E724(partner))) {
                 break;
             }
         } while (start != field_0x1224);
@@ -436,9 +436,9 @@ void Player_804A6F38::fn_802870C8() {
                         if (field_0x3b4 < 8) {
                             low = true;
                         }
-                        field_0x3b4 = fn_8023DE58(fn_80240644());
+                        field_0x3b4 = getPlayerLayer_8023DE58(fn_80240644());
                         field_0xce4 = field_0x3b4;
-                        mPos = *fn_8023E724(fn_80240644());
+                        mPos = *getPlayerPos_8023E724(fn_80240644());
                         field_0xcbc = mPos;
                         field_0xd1c = field_0xcbc;
                         if (low) {
@@ -455,9 +455,9 @@ void Player_804A6F38::fn_802870C8() {
                 }
                 field_0xcee = 0;
                 field_0xcef = 0;
-                field_0x3b4 = fn_8023DE58(fn_80240644());
+                field_0x3b4 = getPlayerLayer_8023DE58(fn_80240644());
                 field_0xce4 = field_0x3b4;
-                mPos = *fn_8023E724(fn_80240644());
+                mPos = *getPlayerPos_8023E724(fn_80240644());
                 field_0xcbc = mPos;
                 field_0xd1c = field_0xcbc;
                 if (low) {
@@ -471,7 +471,7 @@ void Player_804A6F38::fn_802870C8() {
         if (field_0xcee == 0) {
             s32 serial = field_0xd88;
             if (serial >= 0) {
-                if (fn_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
+                if (getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
                     if (fn_8025EFFC(field_0xd88, true, false)) {
                         field_0xd88 = -1;
                     }
@@ -1262,7 +1262,7 @@ void Player_804A6F38::fn_802870C8() {
         JGeometry::TVec3f pos = mPos;
         pos.y -= 10.0f;
         pos.z = 0.0f;
-        lbl_8053AC98->fn_8029E508(&pos, field_0x4, field_0x3b4);
+        gBgRewrite_8053AC98->fn_8029E508(&pos, field_0x4, field_0x3b4);
     }
     for (int i = 0; i < 0x50; i++) {
         field_0xdb0[i] = -1;
@@ -1277,7 +1277,7 @@ void Player_804A6F38::fn_802870C8() {
         if (field_0x1240 != 3) {
             fn_80251AEC(3);
         }
-        mPos.set(*fn_8023E724(fn_80240644()));
+        mPos.set(*getPlayerPos_8023E724(fn_80240644()));
         mPos.z = 0.0f;
     }
     fn_80242BC0();

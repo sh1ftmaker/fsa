@@ -170,7 +170,7 @@ inline void Player_804A6F38::raiseHeldActor() {
     if (fn_8025F684()) {
         s32 serial = field_0xd68;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             getGameView_802D6A9C();
             if (actor != NULL) {
                 actor->fn_801F349C(field_0x3b4, &field_0x2f4);
@@ -294,9 +294,9 @@ void Player_804A6F38::fn_80290E90() {
     field_0x400 = 0;
     if (lbl_8053AAF8->field_0x7e == 0 && !fn_80240670()) {
         if (field_0xce4 < 8) {
-            lbl_8053AF80->fn_8045815C(false);
+            gAudioMgr_8053AF80->fn_8045815C(false);
         } else if (field_0xce4 == 8) {
-            lbl_8053AF80->fn_8045815C(true);
+            gAudioMgr_8053AF80->fn_8045815C(true);
         }
     }
 }
@@ -601,7 +601,7 @@ void Player_804A6F38::fn_80291F10() {
     field_0x3f8++;
     if (field_0x3f8 == 4 || field_0x3f8 == 8) {
         s32 index = field_0x4;
-        fn_801F856C()->fn_801F9484('PEFF', field_0x3b4, &mPos, (index & 3) | 0xC, -1, index);
+        getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &mPos, (index & 3) | 0xC, -1, index);
     }
     if (field_0x3f8 <= 4) {
         field_0x3f9 = 0;
@@ -1112,8 +1112,8 @@ void Player_804A6F38::fn_80293B30() {
                     return;
                 }
                 if (field_0xcf4 == 0x12) {
-                    field_0xcd4 = *fn_8023E724(fn_8024064C());
-                    field_0xce4 = fn_8023DE58(fn_8024064C());
+                    field_0xcd4 = *getPlayerPos_8023E724(fn_8024064C());
+                    field_0xce4 = getPlayerLayer_8023DE58(fn_8024064C());
                 }
             }
             if (field_0x3b4 < 8) {
@@ -1123,7 +1123,7 @@ void Player_804A6F38::fn_80293B30() {
             if (fn_80251AEC(0x1F)) {
                 if (fn_80241E28(field_0xce4, &field_0xcd4)) {
                     if (fn_802486A0() == 5 && fn_80240808()) {
-                        field_0xcd4.set(*fn_8023E724(fn_80240644()));
+                        field_0xcd4.set(*getPlayerPos_8023E724(fn_80240644()));
                     }
                     u16 tile = fn_8022461C(&field_0xcd4, field_0xce4);
                     if (fn_802265DC(&field_0xcd4, field_0xce4, true) || tile == 3 || tile == 0xE ||
@@ -1325,7 +1325,7 @@ void Player_804A6F38::fn_80294374() {
     }
     field_0x458 = 0;
     if (field_0xcf4 == 1) {
-        lbl_8053AC98->fn_8029E508(&mPos, field_0x4, field_0x3b4);
+        gBgRewrite_8053AC98->fn_8029E508(&mPos, field_0x4, field_0x3b4);
     }
     if (field_0xcf4 == 3) {
         field_0xca0 = 0;

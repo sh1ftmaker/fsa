@@ -129,9 +129,9 @@ bool cls_804A46F4::fn_801D12CC() {
                     return false;
                 }
                 if (clear && mStateTimer > 2) {
-                    f32 offsetY = fn_8023E724(field_0x338)->y - fn_8023E578(field_0x338)->y;
+                    f32 offsetY = getPlayerPos_8023E724(field_0x338)->y - fn_8023E578(field_0x338)->y;
                     f32 y = pos.y - offsetY;
-                    f32 offsetX = fn_8023E724(field_0x338)->x - fn_8023E578(field_0x338)->x;
+                    f32 offsetX = getPlayerPos_8023E724(field_0x338)->x - fn_8023E578(field_0x338)->x;
                     f32 x = pos.x - offsetX;
                     pushWaypoint(*this, x, y);
                 } else {

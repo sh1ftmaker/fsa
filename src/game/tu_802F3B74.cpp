@@ -22,7 +22,7 @@ void cls_804AA6A0::update() {
 void cls_804AA6A0::vfunc_0x24() {
     s32 serial = mEffectSerial;
     if (serial >= 0) {
-        ActorBase_804A5770* effect = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* effect = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (effect != NULL) {
             effect->mAlive = false;
         }
@@ -37,7 +37,7 @@ void cls_804AA6A0::init() {
     mPlayer = (field_0x90 >> 16) & 0xF;
     mEffectSerial = -1;
     if (field_0x234 == mPlayer) {
-        mEffectSerial = fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x4, &mPos,
+        mEffectSerial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x4, &mPos,
                                                    (field_0x234 & 3) | 0x24, -1, -1);
         open(field_0x4, mPos, 0x21);
     } else {

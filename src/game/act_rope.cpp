@@ -66,12 +66,12 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
             f32 best = FLT_MAX;
             for (s32 i = 0; i < 4; i++) {
                 if (fn_801D0B44(i)) {
-                    f32 dx = __fabsf(mPos.x - fn_8023E724(i)->x);
-                    f32 dy = __fabsf(mPos.y - fn_8023E724(i)->y);
+                    f32 dx = __fabsf(mPos.x - getPlayerPos_8023E724(i)->x);
+                    f32 dy = __fabsf(mPos.y - getPlayerPos_8023E724(i)->y);
                     if (dx <= 10.0f) {
                         f32 dist = fn_801D0DA0(i, &mPos);
                         if (100.0f < dist && dist < 14400.0f && dist < best) {
-                            if (mPos.y < fn_8023E724(i)->y) {
+                            if (mPos.y < getPlayerPos_8023E724(i)->y) {
                                 if (!fn_801CFD68(2, dy)) {
                                     best = dist;
                                     dir = 2;
@@ -88,7 +88,7 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
                     } else if (dy <= 10.0f) {
                         f32 dist = fn_801D0DA0(i, &mPos);
                         if (100.0f < dist && dist < 14400.0f && dist < best) {
-                            if (mPos.x < fn_8023E724(i)->x) {
+                            if (mPos.x < getPlayerPos_8023E724(i)->x) {
                                 if (!fn_801CFD68(0, dx)) {
                                     best = dist;
                                     dir = 0;

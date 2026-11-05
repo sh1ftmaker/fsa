@@ -47,7 +47,7 @@ void cls_804A4038::init() {
 
 cls_804A4038::~cls_804A4038() {
     for (s32 i = 0; i < 2; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }
 

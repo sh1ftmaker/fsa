@@ -25,9 +25,9 @@ static const u32 lbl_80469C78[4] = {'FIRE', 'BLZE', 'BMTY', 'NULL'};
 
 // FIXME: 97.3. The original copies findActorBySerial_801F666C's result through r0 (mr r0, r3; mr. r30, r0); ours tests it in place.
 s32 ActorBase_804A5770::fn_801E9B58() {
-    s32 serial = fn_801F856C()->fn_801F7F58(this, lbl_80469C78, mSerial, 32.0f);
+    s32 serial = getActorManager_801F856C()->fn_801F7F58(this, lbl_80469C78, mSerial, 32.0f);
     if (serial >= 0 && serial != mSerial) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             if (fn_801CC8E4(actor)) {
                 serial = -1;
@@ -65,7 +65,7 @@ inline void cls_801E9B54::drawSprites() {
     for (s32 i = 0; i < field_0x74; i++) {
         s32 serial = field_0x64[i];
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 ((cls_804A5418*)actor)->fn_801E6DE8();
             }
@@ -234,9 +234,9 @@ void cls_801E9B54::fn_801EA75C(u8 id, u8 flag, u8 index, s32 layer, const JGeome
     } else {
         field_0x0[field_0x60].id = id;
         JGeometry::TVec3f spawnPos(pos->x, pos->y, 0.0f);
-        s32 serial = fn_801F856C()->fn_801F9484(ACTOR_FSOB, layer, &spawnPos, id, -1, -1);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FSOB, layer, &spawnPos, id, -1, -1);
         if (serial >= 0) {
-            field_0x0[field_0x60].actor = (cls_804A5568*)fn_801F856C()->findActorBySerial_801F666C(serial);
+            field_0x0[field_0x60].actor = (cls_804A5568*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (field_0x0[field_0x60].actor != NULL) {
                 if (flag != 0) {
                     field_0x0[i].actor->field_0x94 = flag;

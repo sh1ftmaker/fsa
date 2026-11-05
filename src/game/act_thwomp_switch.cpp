@@ -15,7 +15,7 @@ void ThwompSwitch_804A8940::draw() {}
 // that call.
 void ThwompSwitch_804A8940::update() {
     for (s32 i = 0; i < 4; i++) {
-        if (fn_8023A51C(i) == 1 && getField_0x4() == fn_8023DE58(i)) {
+        if (fn_8023A51C(i) == 1 && getField_0x4() == getPlayerLayer_8023DE58(i)) {
             JGeometry::TVec3f* playerPos = fn_8023A478(i);
             f32 dx = playerPos->x - mPos.x;
             f32 dy = playerPos->y - mPos.y;

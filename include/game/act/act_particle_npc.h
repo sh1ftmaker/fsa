@@ -7,7 +7,7 @@
 #include "game/ActorManager.h"
 
 // The PRTC actor ("particle NPC", docs/names/actors.tsv): the spawner
-// (fn_801F9484) constructs it with fn_80201E80, which stores this vtable
+// (spawnActor_801F9484) constructs it with fn_80201E80, which stores this vtable
 // (config/G4SE01/game_units.tsv). Named after its vtable, 0x804A9AC8.
 //
 // init() unpacks field_0x90: bits 0-7 are the mode (field_0x250), bits 12-15

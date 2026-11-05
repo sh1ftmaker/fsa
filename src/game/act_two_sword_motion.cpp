@@ -172,7 +172,7 @@ void TwoSwordMotion_804ABA90::update() {
             field_0x230 = 2;
             field_0x234 = 0x5a;
             field_0x25c = 10;
-            field_0x294 = *fn_8023E724(field_0x24c);
+            field_0x294 = *getPlayerPos_8023E724(field_0x24c);
         }
         break;
     case 2:
@@ -330,9 +330,9 @@ void TwoSwordMotion_804ABA90::init() {
     field_0x24c = field_0x90 & 3;
     field_0x250 = (field_0x90 >> 2) & 3;
     field_0x254 = 1;
-    mPos = *fn_8023E724(field_0x24c);
+    mPos = *getPlayerPos_8023E724(field_0x24c);
     mSpawnPos = mPos;
-    field_0x4 = fn_8023DE58(field_0x24c);
+    field_0x4 = getPlayerLayer_8023DE58(field_0x24c);
     for (s32 i = 0; i < 4; i++) {
         field_0x2a0[i] = NULL;
         field_0x2b0[i] = NULL;
@@ -389,7 +389,7 @@ void TwoSwordMotion_804ABA90::init() {
 
 TwoSwordMotion_804ABA90::~TwoSwordMotion_804ABA90() {
     for (s32 i = 0; i < 4; i++) {
-        fn_801EE434(field_0x2a0[i]);
-        fn_801EE434(field_0x2b0[i]);
+        releaseEmitter_801EE434(field_0x2a0[i]);
+        releaseEmitter_801EE434(field_0x2b0[i]);
     }
 }

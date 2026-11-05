@@ -19,7 +19,7 @@ void Ganon_804A25F0::vfunc_0x24() {
 
 Ganon_804A25F0::~Ganon_804A25F0() {
     for (s32 i = 0; i < 5; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }
 

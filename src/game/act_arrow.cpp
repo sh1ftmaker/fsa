@@ -3,6 +3,6 @@
 
 ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
     for (int i = 0; i < 2; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }

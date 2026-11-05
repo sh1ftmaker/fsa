@@ -58,19 +58,19 @@ u8 IceMeltedByFourPlayers_804AE888::fn_8037845C() {
             field_0x244 = 50;
             field_0x24c = 0;
             for (s32 i = 0; i < 4; i++) {
-                fn_80230498(i, fn_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
+                fn_80230498(i, getPlayerPos_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
             }
         }
     } else if (field_0x24c == 0 && field_0x244 > 30) {
         for (s32 i = 0; i < 4; i++) {
-            fn_80230498(i, fn_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
+            fn_80230498(i, getPlayerPos_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
         }
     } else if (field_0x24c < 13) {
         if (field_0x244 == 0) {
             field_0x24c++;
             field_0x244 = lbl_804751A8[field_0x24c];
             for (s32 i = 0; i < 4; i++) {
-                fn_80230498(i, fn_8023E724(i), field_0x24c + 0xDB, 0xFF, -0x80, -0x80, true);
+                fn_80230498(i, getPlayerPos_8023E724(i), field_0x24c + 0xDB, 0xFF, -0x80, -0x80, true);
                 if (field_0x24c == 1) {
                     fn_80230FD0(i, 0x10001);
                 }
@@ -96,11 +96,11 @@ bool IceMeltedByFourPlayers_804AE888::fn_80378680() {
     ours.addPos(mPos.x, mPos.y);
     s32 serial = -1;
     for (;;) {
-        serial = fn_801F856C()->fn_801F78F4('HBMB', serial);
+        serial = getActorManager_801F856C()->fn_801F78F4('HBMB', serial);
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -136,11 +136,11 @@ u8 IceMeltedByFourPlayers_804AE888::fn_80378880() {
     s32 serial = -1;
     u8 playerMask = 0;
     for (;;) {
-        serial = fn_801F856C()->fn_801F78F4('FIRE', serial);
+        serial = getActorManager_801F856C()->fn_801F78F4('FIRE', serial);
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (other == NULL) {
             continue;
         }
@@ -191,7 +191,7 @@ void IceMeltedByFourPlayers_804AE888::update() {
             }
             startSound_801F0E34(0x50087, 0);
         } else if (mEmitter230 != NULL) {
-            fn_801EE434(mEmitter230);
+            releaseEmitter_801EE434(mEmitter230);
             mEmitter230 = NULL;
         }
         break;
@@ -209,11 +209,11 @@ void IceMeltedByFourPlayers_804AE888::update() {
                 field_0x248 = 4;
                 field_0x24c = 0;
                 for (s32 i = 0; i < 4; i++) {
-                    fn_80230498(i, fn_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
+                    fn_80230498(i, getPlayerPos_8023E724(i), 0xE8, 0xFF, -0x80, -0x80, true);
                 }
             }
             if (mEmitter230 != NULL) {
-                fn_801EE434(mEmitter230);
+                releaseEmitter_801EE434(mEmitter230);
                 mEmitter230 = NULL;
             }
         }
@@ -232,7 +232,7 @@ void IceMeltedByFourPlayers_804AE888::update() {
 
 IceMeltedByFourPlayers_804AE888::~IceMeltedByFourPlayers_804AE888() {
     if (mEmitter230 != NULL) {
-        fn_801EE434(mEmitter230);
+        releaseEmitter_801EE434(mEmitter230);
         mEmitter230 = NULL;
     }
 }

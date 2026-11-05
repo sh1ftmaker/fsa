@@ -1,5 +1,5 @@
 // Actor SVGT ("Side-view gate display NPC" in docs/names/actors.tsv): the
-// spawner (fn_801F9484) allocates 0x23C bytes for it (0x801FEA10) and calls
+// spawner (spawnActor_801F9484) allocates 0x23C bytes for it (0x801FEA10) and calls
 // its constructor fn_802001D0, which stores the vtable 0x804ACB98. init
 // starts two effects (ids 0x447 and 0x448) at its position and keeps their
 // emitters; the destructor releases them.
@@ -25,6 +25,6 @@ void SideViewGateDisplayNpc_804ACB98::init() {
 }
 
 SideViewGateDisplayNpc_804ACB98::~SideViewGateDisplayNpc_804ACB98() {
-    fn_801EE434(mEmitter234);
-    fn_801EE434(mEmitter238);
+    releaseEmitter_801EE434(mEmitter234);
+    releaseEmitter_801EE434(mEmitter238);
 }

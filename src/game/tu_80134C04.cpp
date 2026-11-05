@@ -142,7 +142,7 @@ void GameRoot_8049EF20::fn_80134FC4(u8 value) {
 void GameRoot_8049EF20::fn_80134FE0(u8 value) {
     field_0x94 = value;
     if (field_0x94 == 1) {
-        lbl_8053AF80->fn_80458658(true);
+        gAudioMgr_8053AF80->fn_80458658(true);
     } else {
         field_0x95 = 1;
     }

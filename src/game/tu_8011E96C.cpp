@@ -4,13 +4,13 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 
-// Whether the actor's layer is 0 or any player's layer (fn_8023DE58).
+// Whether the actor's layer is 0 or any player's layer (getPlayerLayer_8023DE58).
 static inline bool isOnPlayerLayer(const ActorBase_804A5770* actor) {
     if (actor->field_0x4 == 0) {
         return true;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (actor->field_0x4 == fn_8023DE58(i)) {
+        if (actor->field_0x4 == getPlayerLayer_8023DE58(i)) {
             return true;
         }
     }

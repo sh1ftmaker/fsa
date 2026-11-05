@@ -111,7 +111,7 @@ void InvincibilityFairy_804AB4C0::update() {
                 mCounters[0][0] = 0x1f4;
                 field_0x244 = player;
                 if (layer >= 8) {
-                    fn_801F856C()->fn_801F9484(ACTOR_PEFF, layer, &mPos, (player & 3) | 4, -1, -1);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, layer, &mPos, (player & 3) | 4, -1, -1);
                 }
                 mCounters[1][0] = 0;
                 field_0x254 = 0;
@@ -127,8 +127,8 @@ void InvincibilityFairy_804AB4C0::update() {
         mCounters[0][0] = 1000;
         field_0x248 += 1;
         if (mCounters[1][0] == 0) {
-            f32 dx = mPos.x - fn_8023E724(field_0x244)->x;
-            f32 dy = mPos.y - fn_8023E724(field_0x244)->y;
+            f32 dx = mPos.x - getPlayerPos_8023E724(field_0x244)->x;
+            f32 dy = mPos.y - getPlayerPos_8023E724(field_0x244)->y;
             field_0x254 = JMath::atanTable_.atan2_(-dx, -dy) *
                           (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
             mCounters[1][0] = 5;
@@ -205,6 +205,6 @@ void InvincibilityFairy_804AB4C0::vfunc_0x44() {
 }
 
 InvincibilityFairy_804AB4C0::~InvincibilityFairy_804AB4C0() {
-    fn_801EE434(mEmitter264);
-    fn_801EE434(mEmitter268);
+    releaseEmitter_801EE434(mEmitter264);
+    releaseEmitter_801EE434(mEmitter268);
 }

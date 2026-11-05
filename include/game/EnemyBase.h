@@ -214,7 +214,7 @@ public:
     // sound 0x400D1. Returns whether any player was hit.
     bool fn_801CEBD0();
     // 3 units / 3 calls (callers pass a 4CC in r4 and two lfs constants,
-    // and test r3 with clrlwi.). Spawns `actorId` (fn_801F9484) aimed at
+    // and test r3 with clrlwi.). Spawns `actorId` (spawnActor_801F9484) aimed at
     // the nearest player within `range` (f2, squared at 0x801CED3C) with
     // speed `speed` (f1 scales the direction, 0x801CF0A0); returns whether
     // one was spawned.

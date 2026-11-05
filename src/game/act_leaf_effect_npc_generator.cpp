@@ -13,9 +13,9 @@ LeafEffectNPCGenerator_804AE288::~LeafEffectNPCGenerator_804AE288() {}
 // FIXME: 98%. Regalloc only: the original keeps the end in r31, the index in
 // r28, the byte offset in r29 and the actor in r30 (ours r30, r29, r31, r28).
 void LeafEffectNPCGenerator_804AE288::fn_8036D858(JGeometry::TVec3f pos) {
-    s32 end = fn_801F856C()->mActorEnd;
+    s32 end = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
         if (actor != NULL && actor->mActorId == ACTOR_LEAF && actor->mAlive == 1 &&
             PSVECDistance(&pos, &actor->mPos) <= 57.0f &&
             __fabsf(actor->mPos.x - pos.x) <= 42.0f) {
@@ -55,7 +55,7 @@ void LeafEffectNPCGenerator_804AE288::init() {
             u16 code = tileCodeAt(this, x, y);
             if (code == 0x1E1 || code == 0x1E2 || code == 0x1F1 || code == 0x1F2) {
                 JGeometry::TVec3f pos(f32(x), f32(y), 0.0f);
-                fn_801F856C()->fn_801F9484(ACTOR_LEAF, field_0x4, &pos, code, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LEAF, field_0x4, &pos, code, -1, -1);
             }
         }
     }

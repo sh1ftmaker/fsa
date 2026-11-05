@@ -29,7 +29,7 @@ cls_804AE7D8::~cls_804AE7D8() {}
 // actor's box; only players on the actor's layer count.
 inline bool cls_804AE7D8::touchesPlayer(s32 player, JGeometry::TVec3f& point) {
     s32 layer = field_0x4;
-    s32 playerLayer = fn_8023DE58(player);
+    s32 playerLayer = getPlayerLayer_8023DE58(player);
     if (playerLayer != layer) {
         return false;
     }
@@ -133,7 +133,7 @@ void cls_804AE7D8::update() {
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
             if (mEmitter230 != NULL) {
-                fn_801EE434(mEmitter230);
+                releaseEmitter_801EE434(mEmitter230);
                 mEmitter230 = NULL;
             }
             field_0x254 = 8;
@@ -154,7 +154,7 @@ void cls_804AE7D8::update() {
                     const f32* offset = lbl_80475178;
                     for (j = 0; j < 4; j++) {
                         pos.y = y + *offset;
-                        lbl_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
+                        gBgRewrite_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
                         offset++;
                     }
                     x += 16.0f;
@@ -276,7 +276,7 @@ void cls_804AE7D8::init() {
             const f32* offset = lbl_80475178;
             for (j = 0; j < 4; j++) {
                 pos.y = y + *offset;
-                lbl_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
+                gBgRewrite_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
                 offset++;
             }
             x += 16.0f;

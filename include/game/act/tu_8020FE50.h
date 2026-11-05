@@ -1,7 +1,7 @@
 #ifndef GAME_ACT_TU_8020FE50_H
 #define GAME_ACT_TU_8020FE50_H
 
-// Code: game/tu_8020FE50.cpp. The IBBM actor (spawner fn_801F9484, constructor
+// Code: game/tu_8020FE50.cpp. The IBBM actor (spawner spawnActor_801F9484, constructor
 // fn_802103C0) is not named: docs/names/actors.tsv has no plain-word name for
 // it. Named after its vtable, 0x804A6100.
 

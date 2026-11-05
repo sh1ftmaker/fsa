@@ -211,18 +211,18 @@ static inline JGeometry::TBox2f* layerBox(s32 layer) {
 // view corners; else the tile there, and for an actor its vfunc_0x4C. On success the
 // drop point takes the player's x / y.
 bool Player_804A6F38::fn_8025EB18() {
-    if (holdsPlayer(*this) && field_0x3b4 == 8 && fn_8023DE58(field_0xd70) < 8) {
+    if (holdsPlayer(*this) && field_0x3b4 == 8 && getPlayerLayer_8023DE58(field_0xd70) < 8) {
         JGeometry::TVec3f pos(field_0x2f4);
-        JGeometry::TBox2f* box = layerBox(fn_8023DE58(field_0xd70));
+        JGeometry::TBox2f* box = layerBox(getPlayerLayer_8023DE58(field_0xd70));
         f32 x = box->i.x;
         f32 y = box->i.y;
         box = layerBox(field_0x3b4);
         JGeometry::TVec2f offset(x - box->i.x, y - box->i.y);
         pos.x += offset.x;
         pos.y += offset.y;
-        u16 tile = fn_8022461C(&pos, fn_8023DE58(field_0xd70));
-        if ((fn_802265DC(&pos, fn_8023DE58(field_0xd70), true) && tile != 0xE && tile != 0x39 && tile != 0xD)
-            || fn_802684A4(&pos, fn_8023DE58(field_0xd70))) {
+        u16 tile = fn_8022461C(&pos, getPlayerLayer_8023DE58(field_0xd70));
+        if ((fn_802265DC(&pos, getPlayerLayer_8023DE58(field_0xd70), true) && tile != 0xE && tile != 0x39 && tile != 0xD)
+            || fn_802684A4(&pos, getPlayerLayer_8023DE58(field_0xd70))) {
             field_0x2f4.x = mPos.x;
             field_0x2f4.y = mPos.y;
             return true;
@@ -237,7 +237,7 @@ bool Player_804A6F38::fn_8025EB18() {
                 return true;
             }
         } else {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xd68);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
             if (actor != 0 && actor->vfunc_0x4C(field_0x3b4, &field_0x2f4)) {
                 field_0x2f4.x = mPos.x;
                 field_0x2f4.y = mPos.y;
@@ -304,7 +304,7 @@ bool Player_804A6F38::fn_8025EF68(s32 arg) {
     if (field_0xd88 >= 0) {
         return false;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(arg);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(arg);
     if (actor != 0) {
         if (actor->fn_801F36D4(field_0x4)) {
             field_0xd88 = arg;
@@ -327,7 +327,7 @@ bool Player_804A6F38::fn_8025EFFC(s32 serial, bool lift, bool grabOnly) {
     } else if (!canLift_8025F2CC(*this)) {
         return false;
     }
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (actor != 0) {
         s32 state = 0x12;
         if (lift) {
@@ -369,7 +369,7 @@ bool Player_804A6F38::fn_8025F484() const {
     if (isField0xd64One(*this) == 1) {
         s32 serial = field_0xd68;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != 0 && actor->field_0x1a4 > 0) {
                 return true;
             }
@@ -408,7 +408,7 @@ void Player_804A6F38::fn_8025F5CC() {
     if (field_0xd64 != 0) {
         s32 serial = field_0xd68;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != 0) {
                 actor->mAlive = false;
                 field_0xd6c = 'NULL';
@@ -462,11 +462,11 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
             if (field_0x1244 == 0x1E || field_0x1244 == 0x32 || fn_8024189C() <= 0) {
                 speed.set(0.0f, 0.0f, 0.0f);
             } else {
-                JGeometry::TVec3f pos(*fn_8023E724(field_0xd70));
+                JGeometry::TVec3f pos(*getPlayerPos_8023E724(field_0xd70));
                 int walls = 0;
                 for (int i = 0; i < 3; i++) {
                     pos += step;
-                    u16 tile = fn_8022461C(&pos, fn_8023DE58(field_0xd70));
+                    u16 tile = fn_8022461C(&pos, getPlayerLayer_8023DE58(field_0xd70));
                     if (tile == 3 || tile == 0xE || tile == 0x3A) {
                         walls++;
                     }
@@ -479,7 +479,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
                     } else {
                         pos.y = (s32)pos.y / 16 * 16 + 8;
                     }
-                    JGeometry::TVec3f diff = pos - *fn_8023E724(field_0xd70);
+                    JGeometry::TVec3f diff = pos - *getPlayerPos_8023E724(field_0xd70);
                     speed.set(diff);
                     speed.scale(1.0f / 14.0f);
                 } else {
@@ -490,7 +490,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
             field_0xd70 = -1;
             fn_8024F0E8(0x20014);
         } else {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xd68);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
             if (actor != 0) {
                 JGeometry::TVec3f speed;
                 const Vec& dir = lbl_8046B92C[field_0x3dc];
@@ -516,7 +516,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
             for (int i = 0; i < 4; i++) {
                 if (fn_8022E438(field_0x4, i) && i != field_0x4) {
                     s32 serial = fn_8023EF50(i);
-                    ActorBase_804A5770* other = fn_801F856C()->findActorBySerial_801F666C(serial);
+                    ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                     if (other != 0 && other->field_0x1a4 <= 0) {
                         fn_80230C6C(i);
                     }
@@ -538,7 +538,7 @@ bool Player_804A6F38::fn_8025FCC8() {
 // to this player's, and remember pos as the drop point.
 bool Player_804A6F38::fn_8025FDD0(const JGeometry::TVec3f* pos) {
     mPos = *fn_8023E7B0(field_0xd70);
-    JGeometry::TBox2f* box = layerBox(fn_8023DE58(field_0xd70));
+    JGeometry::TBox2f* box = layerBox(getPlayerLayer_8023DE58(field_0xd70));
     f32 x = box->i.x;
     f32 y = box->i.y;
     box = layerBox(field_0x3b4);
@@ -595,10 +595,10 @@ bool Player_804A6F38::fn_802600A0(s32 player) {
     }
     if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && !fn_8022E438(field_0x4, player)
         && (lbl_8053AAF8->field_0x7e == 0 || fn_802486A0() != 4)
-        && (fn_8023DE58(player) != 8 || field_0x3b4 >= 8)) {
+        && (getPlayerLayer_8023DE58(player) != 8 || field_0x3b4 >= 8)) {
         field_0xd60 = fn_8022F340(player);
         field_0x11ec = fn_8022F340(player);
-        fn_801F856C()->fn_801F9484(ACTOR_TSNO, field_0x3b4, &mPos, (player & 3) | (field_0x4 << 2), -1, player);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TSNO, field_0x3b4, &mPos, (player & 3) | (field_0x4 << 2), -1, player);
         if (player > field_0x4) {
             fn_80233F78(fn_80240644());
         }
@@ -717,8 +717,8 @@ void Player_804A6F38::fn_802636D4() {
             JGeometry::TVec3f* pos; // declared first: the original's register order (r30)
             u16 thrower = field_0x4;
             s32 thrown = field_0xd70;
-            pos = fn_8023E724(thrown);
-            fn_801F856C()->fn_801F9484(ACTOR_THCL, field_0x3b4, pos, thrown, -1, thrower);
+            pos = getPlayerPos_8023E724(thrown);
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_THCL, field_0x3b4, pos, thrown, -1, thrower);
         }
     }
     const Vec& offset = lbl_8046B400[field_0x3fd + field_0x3dc * 3];
@@ -742,7 +742,7 @@ void Player_804A6F38::fn_80263BA0() {
     if (holdsPlayer(*this)) {
         fn_8027221C(4);
     } else {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(field_0xd68);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
         if (actor != 0) {
             fn_8027221C(actor->field_0x118);
         } else {

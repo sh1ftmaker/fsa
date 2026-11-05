@@ -2,13 +2,13 @@
 #define GAME_ACTORMANAGER_H
 
 // The actor manager: owns every live actor (up to 0x400), spawns them by
-// ActorId (fn_801F9484, in game/tu_801F9484.cpp with the actors' inline
+// ActorId (spawnActor_801F9484, in game/tu_801F9484.cpp with the actors' inline
 // constructors), updates and draws them, and reads EnemyParam.csv for the
 // spawner. Its own code is game/tu_801F6058.cpp (vtable 0x804A5800,
 // constructor fn_801F9078). One instance, allocated with
 // __nw__(0x3060, heap, 0) in game/tu_80139BE8.cpp and
 // stored at offset 0x8 of the object lbl_8053AAF8->0x4 points to; reach it
-// with fn_801F856C().
+// with getActorManager_801F856C().
 //
 // "ActorManager_804A5800" is a provisional name carrying its vtable address
 // (docs/PLAN.md, "Placeholder names"); the member names are descriptive and
@@ -119,7 +119,7 @@ public:
 
     // Non-virtual members other units call: every export of
     // game/tu_801F6058.cpp whose callers pass the manager in r3 (the result
-    // of fn_801F856C at all but a few calls; tu_80139BE8 loads it from
+    // of getActorManager_801F856C at all but a few calls; tu_80139BE8 loads it from
     // GameRoot 0x4->0x8, tu_801EE24C from lbl_8053AAF8). "N units / M
     // calls" counts the other game units that call it and their calls.
     // As in ActorBase.h, the names stay dtk's placeholders and symbols.txt
@@ -151,7 +151,7 @@ public:
     // first, then scans.
     ActorBase_804A5770* findActorBySerial_801F666C(s32 serial);
     // 4 units / 8 calls. Spawns a Score ('SCRE', 0x801F6720) actor:
-    // fn_801F9484(this, ACTOR_SCRE, layer, pos, (c << 24) | (a << 16) | b,
+    // spawnActor_801F9484(this, ACTOR_SCRE, layer, pos, (c << 24) | (a << 16) | b,
     // -1, -1) (clrlslwi/rlwimi at 0x801F6728-0x801F6738); returns its serial.
     s32 fn_801F6718(u8 a, s32 layer, const JGeometry::TVec3f* pos, u16 b, u8 c);
     // 24 units / 37 calls. fn_80230224(i, 0) for the four players, clears
@@ -256,7 +256,7 @@ public:
     // the u8 flag widened (clrlwi r3, r5, 24), as fn_801F8448 does.
     // 1 unit / 1 call (ActorBase_804A5770::fn_801F2B20, result unused).
     s32 fn_801F84C4(ActorBase_804A5770* actor);
-    // fn_801F9484 with arg_0x16c = arg_0x110 = -1. 32 units / 43 calls.
+    // spawnActor_801F9484 with arg_0x16c = arg_0x110 = -1. 32 units / 43 calls.
     s32 fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90);
     // 1 unit / 1 call each (GameRoot, tu_80139BE8), with GameRoot
     // 0x4->0x8:
@@ -280,7 +280,7 @@ public:
     // (the layer) and field_0x8, arg_0x90 to field_0x90 (u32 there),
     // arg_0x16c to field_0x16c, arg_0x110 to field_0x110. 145 units / 521
     // calls.
-    s32 fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
+    s32 spawnActor_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
                     s32 arg_0x16c, s32 arg_0x110);
     // 0x801F62AC: reads EnemyParam.csv (lbl_8046A048) into mParam* with
     // `heap` (the constructor's parent heap). Only the constructor calls it.
@@ -336,7 +336,7 @@ enum ActorParamColumn {
 //
 // Defined in game/tu_801F6058.cpp (C++ linkage, renamed in symbols.txt).
 // 241 units / 1662 calls. lbl_8053AAF8->0x4->0x8: the actor manager.
-ActorManager_804A5800* fn_801F856C(void);
+ActorManager_804A5800* getActorManager_801F856C(void);
 
 // Defined in game/tu_801F6058.cpp. 21 units / 38 calls. True when pos (x, y) is outside the view's box
 // (getGameView_802D6A9C 0xCC, or 0xDC for layer 8 and up) grown by `margin` on
@@ -373,7 +373,7 @@ extern "C" {
 // (ActorBase_804A5770::fn_801F2718 passes this, its mSerial and
 // lbl_8053F748; others pass -1 for excludeSerial).
 s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz);
-// It inlines fn_801F7F58's whole search and fn_801F856C (defined after it),
+// It inlines fn_801F7F58's whole search and getActorManager_801F856C (defined after it),
 // so it stays unwritten until fn_801F7F58's own structure explains that.
 
 } // extern "C"

@@ -11,9 +11,9 @@ TingleBuster_804A5370::~TingleBuster_804A5370() {}
 bool fn_801E3250(s32 layer, bool highNibble) {
     s32 serial;
     bool result = false;
-    serial = fn_801F856C()->fn_801F7884('TINB', layer);
+    serial = getActorManager_801F856C()->fn_801F7884('TINB', layer);
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             u32 kind;
             if (highNibble) {

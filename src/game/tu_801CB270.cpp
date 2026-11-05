@@ -49,7 +49,7 @@ f32 fn_801CB270(const char* name, GXTexObj* texObj, GXTlutObj* tlutObj) {
 // Asks the actor manager for a 'RUPY' (fn_801F8544 with id ACTOR_RUPY) at pos on
 // `layer`; the flag picks 5 or 4 in the low bits of its last argument.
 s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
-    return fn_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
+    return getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, layer, pos, 0x261E00 | (flag ? 5 : 4));
 }
 
 // The kind of a Force Gem ('RUPY', act_force_gem): the low byte of its
@@ -289,11 +289,11 @@ bool fn_801CD1D0(s32 player) {
     return result;
 }
 
-// Whether every player's layer (fn_8023DE58) is `layer`.
+// Whether every player's layer (getPlayerLayer_8023DE58) is `layer`.
 bool fn_801CD228(s32 layer) {
     bool result = true;
     for (s32 i = 0; i < 4; i++) {
-        if (layer != fn_8023DE58(i)) {
+        if (layer != getPlayerLayer_8023DE58(i)) {
             result = false;
             break;
         }
@@ -301,11 +301,11 @@ bool fn_801CD228(s32 layer) {
     return result;
 }
 
-// Whether any player's layer (fn_8023DE58) is `layer`.
+// Whether any player's layer (getPlayerLayer_8023DE58) is `layer`.
 bool fn_801CD290(s32 layer) {
     bool result = false;
     for (s32 i = 0; i < 4; i++) {
-        if (layer == fn_8023DE58(i)) {
+        if (layer == getPlayerLayer_8023DE58(i)) {
             result = true;
             break;
         }

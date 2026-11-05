@@ -59,7 +59,7 @@ void cls_802150B8::fn_802146A4() const {
 void cls_802150B8::fn_80214900() {
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }
@@ -105,7 +105,7 @@ void cls_802150B8::fn_80214994() {
     if (fn_801CD2F8(mOwner->field_0x4)) {
         s32 serial = field_0x30;
         if (serial >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 actor->mPos = pos;
             }
@@ -135,7 +135,7 @@ void cls_802150B8::fn_80214994() {
 void cls_802150B8::fn_80214AF8() {
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }
@@ -146,7 +146,7 @@ void cls_802150B8::fn_80214AF8() {
     JGeometry::TVec3f pos = mOwner->mPos;
     pos.y += -16.0f;
     if (fn_801CD2F8(mOwner->field_0x4)) {
-        field_0x30 = fn_801F856C()->fn_801F9484(ACTOR_SLEF, mOwner->field_0x4, &pos, 0, -1, -1);
+        field_0x30 = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_SLEF, mOwner->field_0x4, &pos, 0, -1, -1);
     } else {
         s32 height = 0;
         s32 depth = 1;
@@ -236,7 +236,7 @@ cls_802150B8::~cls_802150B8() {
     deleteEmitter(&field_0x0);
     s32 serial = field_0x30;
     if (serial >= 0) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {
             actor->mAlive = false;
         }

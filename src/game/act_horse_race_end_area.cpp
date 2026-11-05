@@ -12,7 +12,7 @@ void cls_804AE830::update() {
     JGeometry::TBox2f box = mBox;
     box.addPos(mPos.x, mPos.y);
     for (s32 i = 0; i < 4; i++) {
-        JGeometry::TVec3f* pos = fn_8023E724(i);
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
         if (contains(box, pos->x, pos->y) == true) {
             fn_80230050(i);
         }

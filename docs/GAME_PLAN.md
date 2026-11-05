@@ -173,7 +173,7 @@ budget. Measure tokens per matched function every wave and adjust tiers.
 
 **G5 — the spawner** (`tu_801F9484`, 0x61AC bytes, 367 new + constructor
 pairs), once most actor headers exist. Its 285 weak constructors sit in
-reverse order of their first call in `fn_801F9484`; confirm on a build.
+reverse order of their first call in `spawnActor_801F9484`; confirm on a build.
 
 ## Per-actor headers (G1 item 5)
 

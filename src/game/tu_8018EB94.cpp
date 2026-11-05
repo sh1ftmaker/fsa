@@ -3,6 +3,6 @@
 
 cls_804A1FA0::~cls_804A1FA0() {
     for (int i = 0; i < 3; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }

@@ -85,11 +85,11 @@ void Pengator_804A1888::update() {
         if (field_0x23c == 0 && field_0x98 == outDir) {
             bool near;
             if (!(field_0x98 & 2)) {
-                near = FABS(fn_8023E724(outPlayer)->y - mPos.y) < 24.0f;
+                near = FABS(getPlayerPos_8023E724(outPlayer)->y - mPos.y) < 24.0f;
             } else {
-                near = FABS(fn_8023E724(outPlayer)->x - mPos.x) < 24.0f;
+                near = FABS(getPlayerPos_8023E724(outPlayer)->x - mPos.x) < 24.0f;
             }
-            if (near && !fn_801F23BC(field_0x4, &mPos, fn_8023E724(outPlayer), &field_0x80, NULL, NULL, false)) {
+            if (near && !fn_801F23BC(field_0x4, &mPos, getPlayerPos_8023E724(outPlayer), &field_0x80, NULL, NULL, false)) {
                 field_0x230 = 2;
                 break;
             }

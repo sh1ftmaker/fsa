@@ -26,7 +26,7 @@ bool TreasureChest_804AA178::fn_802EB27C() {
         if (serial < 0) {
             continue;
         }
-        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(fn_801F856C()->findActorBySerial_801F666C(serial));
+        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
         if (item != NULL && item->fn_801597B8() == 3) {
             item->fn_801597C0();
             result = true;
@@ -67,7 +67,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
             }
             if (open && (field_0x234 <= 2 || field_0x234 == 0x2F)) {
                 s32 count = lbl_8053AAF8->fn_80138A30();
-                if (fn_801F856C()->fn_801F6058(count - 1) == field_0x240) {
+                if (getActorManager_801F856C()->fn_801F6058(count - 1) == field_0x240) {
                     s32 limit = 20;
                     if (lbl_8053AAF8->fn_80138A30() == 3) {
                         limit = 30;
@@ -82,7 +82,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
         }
 
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = *fn_8023E724(i);
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
             JGeometry::TVec3f at = pos;
             at.x = pos.x + 1.0f;
             at.y = pos.y - 12.0f;
@@ -93,52 +93,52 @@ bool TreasureChest_804AA178::vfunc_0x54() {
                         if (field_0x248 == fn_8022F3DC(i)) {
                             if (field_0x240 == i) {
                                 u32 code = field_0x234 + (i << 24) + (field_0x240 << 26);
-                                s32 layer = fn_8023DE58(i);
-                                fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                                s32 layer = getPlayerLayer_8023DE58(i);
+                                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                             } else {
                                 u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x10000000;
-                                s32 layer = fn_8023DE58(i);
-                                fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                                s32 layer = getPlayerLayer_8023DE58(i);
+                                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                             }
                         }
                     } else if (field_0x248 == i) {
                         if (field_0x240 == i) {
                             u32 code = field_0x234 + (i << 24) + (field_0x240 << 26);
-                            s32 layer = fn_8023DE58(i);
-                            fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                            s32 layer = getPlayerLayer_8023DE58(i);
+                            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                         } else {
                             u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x10000000;
-                            s32 layer = fn_8023DE58(i);
-                            fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                            s32 layer = getPlayerLayer_8023DE58(i);
+                            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                         }
                     }
                 } else {
                     if (field_0x240 == i) {
                         u32 code = field_0x234 + (i << 24) + (field_0x240 << 26);
-                        s32 layer = fn_8023DE58(i);
-                        fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                        s32 layer = getPlayerLayer_8023DE58(i);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                     } else {
                         u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x10000000;
-                        s32 layer = fn_8023DE58(i);
-                        fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                        s32 layer = getPlayerLayer_8023DE58(i);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                     }
                 }
             } else {
                 if (fn_8022F514(i) == true && fn_8022F3DC(i) == field_0x248 && field_0x240 == i) {
                     u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x00800000;
-                    s32 layer = fn_8023DE58(i);
-                    fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                    s32 layer = getPlayerLayer_8023DE58(i);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                 } else if (field_0x248 == i && field_0x240 == i) {
                     u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x00800000;
-                    s32 layer = fn_8023DE58(i);
-                    fn_801F856C()->fn_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                    s32 layer = getPlayerLayer_8023DE58(i);
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                 }
             }
         }
 
         if (field_0x238 == 0) {
             fn_80230FD0(field_0x240, 0x20013);
-            lbl_8053AC98->fn_802A3948(&field_0x25c, 0, field_0x4, 0x10);
+            gBgRewrite_8053AC98->fn_802A3948(&field_0x25c, 0, field_0x4, 0x10);
             s32 bit = getGameView_802D6A9C()->fn_802D4C10(field_0x4, (u16)mCell);
             if (bit != -1) {
                 getGameView_802D6A9C()->fn_802D7D00(field_0x4, bit, true);
@@ -228,7 +228,7 @@ void TreasureChest_804AA178::update() {
             field_0x248 = fn_8022F3DC(field_0x240);
         }
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f from = *fn_8023E724(i);
+            JGeometry::TVec3f from = *getPlayerPos_8023E724(i);
             JGeometry::TVec3f at = from;
             at.x = from.x + 1.0f;
             at.y = from.y - 12.0f;
@@ -236,14 +236,14 @@ void TreasureChest_804AA178::update() {
             if (fn_8022F514(i) == true) {
                 if (field_0x244 == i) {
                     u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
-                    s32 spawnLayer = fn_8023DE58(i);
-                    field_0x24c[i] = fn_801F856C()->fn_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
+                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
+                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
                 }
             } else {
                 if (field_0x244 == i) {
                     u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
-                    s32 spawnLayer = fn_8023DE58(i);
-                    field_0x24c[i] = fn_801F856C()->fn_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
+                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
+                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
                 }
             }
         }

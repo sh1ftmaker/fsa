@@ -30,8 +30,8 @@ void RevivalFairy_804AC250::update() {
     switch (mState) {
     case 0:
         if (mTimer % 5 == 0) {
-            f32 dx = mPos.x - fn_8023E724(mPlayer)->x;
-            f32 dy = mPos.y - fn_8023E724(mPlayer)->y;
+            f32 dx = mPos.x - getPlayerPos_8023E724(mPlayer)->x;
+            f32 dy = mPos.y - getPlayerPos_8023E724(mPlayer)->y;
             mAngle = JMath::atanTable_.atan2_(-dx, -dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         }
         mTargetVel.x = 5.0f * JMASinShort(mAngle);
@@ -75,6 +75,6 @@ void RevivalFairy_804AC250::init() {
 }
 
 RevivalFairy_804AC250::~RevivalFairy_804AC250() {
-    fn_801EE434(mEmitter254);
-    fn_801EE434(mEmitter258);
+    releaseEmitter_801EE434(mEmitter254);
+    releaseEmitter_801EE434(mEmitter258);
 }

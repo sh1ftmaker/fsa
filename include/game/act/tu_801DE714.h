@@ -4,7 +4,7 @@
 #include "types.h"
 #include "game/EnemyBase.h"
 
-// The TINK actor (spawner fn_801F9484; constructor fn_801E22A4, vtable
+// The TINK actor (spawner spawnActor_801F9484; constructor fn_801E22A4, vtable
 // 0x804A51E4), code in game/tu_801DE714.cpp. Named after its vtable.
 // Only the members the written code uses are known. The constructor
 // (0x801E22A4, __ct__12cls_804A51E4Fv) writes -1 to 0x2A8-0x2BC and 0x2D0,

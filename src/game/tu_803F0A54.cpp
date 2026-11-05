@@ -137,7 +137,7 @@ static inline void stepBlink(ConnectScreen_804B0F10* self) {
 static inline void cursorMoved(ConnectScreen_804B0F10* self) {
     self->field_0x240[0] = 1;
     self->field_0x1d0[0] = 30;
-    lbl_8053AF80->fn_80458880(0x26, -1);
+    gAudioMgr_8053AF80->fn_80458880(0x26, -1);
 }
 
 static inline void stepCursorTimer(ConnectScreen_804B0F10* self) {
@@ -580,7 +580,7 @@ void ConnectScreen_804B0F10::fn_803F59A0() {
             field_0x25e = 1;
         }
         field_0x1a8 = 0;
-        lbl_8053AF80->fn_80458880(11, -1);
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
     }
 }
 
@@ -619,11 +619,11 @@ void ConnectScreen_804B0F10::fn_803F8050() {
             field_0x1cc = 13;
             fn_803F2580();
         }
-        lbl_8053AF80->fn_80458880(11, -1);
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
     } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
         field_0x1cc = 0;
         (this->*lbl_804B0BDC[9])();
-        lbl_8053AF80->fn_80458880(12, -1);
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
     } else if (lbl_8053AD30->fn_80309A9C(4, lbl_80529DEC.field_0x23d + 2)) {
         field_0x1a8++;
         if (field_0x1a8 >= 3) {
@@ -661,13 +661,13 @@ void ConnectScreen_804B0F10::fn_803F8AE4() {
                 field_0x1b0[i] = 1;
             }
             fn_803F2B5C();
-            lbl_8053AF80->fn_80458880(11, -1);
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
         } else {
             fn_803F2AEC();
         }
     } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
         (this->*lbl_804B0BDC[0])();
-        lbl_8053AF80->fn_80458880(12, -1);
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
     }
     field_0x1d0[0]++;
     if (field_0x1d0[0] >= 60) {
@@ -742,13 +742,13 @@ void ConnectScreen_804B0F10::fn_803F8FBC() {
     default:
         if (field_0x1c0 == field_0x1ac + 2) {
             field_0x25c = 2;
-            lbl_8053AF80->fn_80458880(11, -1);
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
         } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
             field_0x25c = 2;
-            lbl_8053AF80->fn_80458880(11, -1);
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
         } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
             field_0x25c = 2;
-            lbl_8053AF80->fn_80458880(12, -1);
+            gAudioMgr_8053AF80->fn_80458880(12, -1);
         }
         break;
     }
@@ -810,10 +810,10 @@ void ConnectScreen_804B0F10::fn_803FB6F4() {
             lbl_80529DEC.fn_80403680();
         }
         lbl_80529DEC.field_0x23d = field_0x1ac;
-        lbl_8053AF80->fn_80458880(11, -1);
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
     } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
         field_0x350 = 2;
-        lbl_8053AF80->fn_80458880(12, -1);
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
     } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
         field_0x1ac++;
         if (field_0x1ac >= 3) {

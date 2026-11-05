@@ -33,7 +33,7 @@ u8 cls_80217128::fn_8021693C(u8 mask) {
         for (s32 player = 0; player < 4; player++) {
             s32 layer = owner->field_0x4;
             if (viewLayerFlag(layer) == 0 &&
-                __fabsf(mOwner->mPos.z - fn_8023E724(player)->z) > 32.0f) {
+                __fabsf(mOwner->mPos.z - getPlayerPos_8023E724(player)->z) > 32.0f) {
                 continue;
             }
             s32 bit = 1 << player;

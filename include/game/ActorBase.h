@@ -1,7 +1,7 @@
 #ifndef GAME_ACTORBASE_H
 #define GAME_ACTORBASE_H
 
-// The base class of every actor the spawner creates (fn_801F9484, see
+// The base class of every actor the spawner creates (spawnActor_801F9484, see
 // game/ActorManager.h). Its code is game/tu_801EE24C.cpp; its vtable is at
 // 0x804A5770 (__vt__18ActorBase_804A5770).
 //
@@ -173,7 +173,7 @@ public:
     // is not part of the mangled name. Where a function takes ints and floats,
     // their order is not visible in the asm; ints first is a guess. Out-pointers
     // are NULL-checked by the body unless said otherwise. Exports that are not
-    // members are below the class (fn_801EE3C0, fn_801EE434 C++; fn_801EF574,
+    // members are below the class (fn_801EE3C0, releaseEmitter_801EE434 C++; fn_801EF574,
     // fn_801EF830 extern "C").
 
     // 1 unit / 4 calls. Looks for a 'WARP' actor (fn_801F78F4) on this
@@ -321,7 +321,7 @@ public:
     // 0 or 1.
     bool fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds);
     // 20 units / 22 calls. For each player overlapping this actor
-    // (fn_801F285C), fn_801F37AC(this, fn_8023B6CC(i), fn_8023E724(i), 0,
+    // (fn_801F285C), fn_801F37AC(this, fn_8023B6CC(i), getPlayerPos_8023E724(i), 0,
     // flag, i); returns whether any hit landed.
     bool fn_801F2FAC();
     // 22 units / 25 calls. fn_801F2FAC(), else fn_801F2DB4(this, 'NULL',
@@ -336,13 +336,13 @@ public:
     // 11 units / 21 calls. The same for mBox; the manager's actor-vs-actor
     // test (0x801F801C) uses it too.
     void fn_801F31C4(JGeometry::TBox2f* out) const;
-    // 2 units / 7 calls. fn_8023DE58(player) == field_0x4, or
+    // 2 units / 7 calls. getPlayerLayer_8023DE58(player) == field_0x4, or
     // fn_801F329C(player); returns 0 or 1.
     bool fn_801F320C(s32 player) const;
-    // 4 units / 5 calls. fn_8023DE58(player) < 8 && field_0x4 == 8.
+    // 4 units / 5 calls. getPlayerLayer_8023DE58(player) < 8 && field_0x4 == 8.
     bool fn_801F329C(s32 player);
     // 1 unit / 2 calls (the manager's update loop, with mActors[i]). Fills
-    // field_0x1ac[0..3] with each player's position (fn_8023E724), adjusted
+    // field_0x1ac[0..3] with each player's position (getPlayerPos_8023E724), adjusted
     // by fn_801CD150 for players on layer 8 and up while this is on 8.
     void fn_801F32F4();
     // 1 unit / 2 calls (the manager's update loop, between savePrevPos and
@@ -480,7 +480,7 @@ public:
     void setField_0x1A8(bool v) { field_0x1a8 = v; }
 
     // The spawner's 3rd argument; spawned children usually get their
-    // parent's. fn_801F5790 compares it with fn_8023DE58(player).
+    // parent's. fn_801F5790 compares it with getPlayerLayer_8023DE58(player).
     /* 0x000 vtable */
     /* 0x004 */ s32 field_0x4;
     /* 0x008 */ s32 field_0x8; // also the spawner's 3rd argument; the update
@@ -595,9 +595,9 @@ bool fn_801EE3C0(u16 tile);
 // becomeInvalidEmitter()), deletes one outside it (forceDeleteEmitter,
 // 0x801EE4D8). The destructor inlines it for mEmitter100/104;
 // derived actors call it for their own emitters (lwz 0x230-0x23C).
-// A C++ function (fn_801EE434__FP14JPABaseEmitter): no NULL check by the
+// A C++ function (releaseEmitter_801EE434__FP14JPABaseEmitter): no NULL check by the
 // callers is needed, it does its own (0x801EE444).
-void fn_801EE434(JPABaseEmitter* emitter);
+void releaseEmitter_801EE434(JPABaseEmitter* emitter);
 
 extern "C" {
 

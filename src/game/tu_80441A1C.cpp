@@ -234,8 +234,8 @@ s32 cls_804B19F0::fn_80441A1C() {
         if (field_0xc->field_0x26 > 0) {
             break;
         }
-        lbl_8053AF80->fn_80458F9C(0);
-        lbl_8053AF80->fn_80459274();
+        gAudioMgr_8053AF80->fn_80458F9C(0);
+        gAudioMgr_8053AF80->fn_80459274();
         return 1;
     }
     default:

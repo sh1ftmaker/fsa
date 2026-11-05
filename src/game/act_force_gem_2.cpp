@@ -83,7 +83,7 @@ void ForceGem2_804AB850::update() {
             }
         }
         if (idx >= 0) {
-            if (field_0x94 == 5 || field_0x94 == 6 || fn_8023E724(idx)->z >= 20.0f ||
+            if (field_0x94 == 5 || field_0x94 == 6 || getPlayerPos_8023E724(idx)->z >= 20.0f ||
                 fn_80234ECC(idx)) {
                 fn_802362C4(idx, lbl_804AB830[field_0x264]);
                 field_0x260 = idx;
@@ -139,8 +139,8 @@ void ForceGem2_804AB850::update() {
             }
         }
         if (fn_8023F264(field_0x260)) {
-            mPos.x = fn_8023E724(field_0x260)->x;
-            mPos.y = fn_8023E724(field_0x260)->y - 24.0f;
+            mPos.x = getPlayerPos_8023E724(field_0x260)->x;
+            mPos.y = getPlayerPos_8023E724(field_0x260)->y - 24.0f;
         }
         if (field_0x244 == 0) {
             vfunc_0x30(0xFF, true);
@@ -296,5 +296,5 @@ void ForceGem2_804AB850::init() {
 }
 
 ForceGem2_804AB850::~ForceGem2_804AB850() {
-    fn_801EE434(mEmitter284);
+    releaseEmitter_801EE434(mEmitter284);
 }

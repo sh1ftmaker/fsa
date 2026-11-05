@@ -32,7 +32,7 @@ void Rock_804A9480::vfunc_0x24() {
             if (field_0x4 >= 8) {
                 JGeometry::TVec3f pos(mPos);
                 pos.z = 0.0f;
-                fn_801F856C()->fn_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
             } else {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x8A, 1, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x8B, 1, 0, NULL, NULL, true, 1.0f);
@@ -51,7 +51,7 @@ void Rock_804A9480::draw() {
 void Rock_804A9480::update() {
     if (field_0xc4) {
         mPos.set(*fn_8023E7B0(field_0xc8));
-        field_0x4 = fn_8023DE58(field_0xc8);
+        field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
         if (field_0x230 < 1000) {
             field_0x230++;
         }
@@ -61,9 +61,9 @@ void Rock_804A9480::update() {
         if (mPos.z < 0.0f || fn_801F2618(NULL, false)) {
             if (mPos.z < 0.0f) {
                 if (fn_80226850(&mPos, field_0x4) == 0x90) {
-                    lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0x91);
+                    gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x91);
                 } else if (fn_80226850(&mPos, field_0x4) == 0x91) {
-                    lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0x92);
+                    gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x92);
                 }
             }
             vfunc_0x24();

@@ -47,7 +47,7 @@ void cls_804A3448::init() {
         u32 arg;
         arg = lbl_804A33C4[k];
         id = lbl_804A33B8[k];
-        if (fn_801F856C()->fn_801F9484(id, field_0x4, &mPos, arg, -1, -1) >= 0) {
+        if (getActorManager_801F856C()->spawnActor_801F9484(id, field_0x4, &mPos, arg, -1, -1) >= 0) {
             mAlive = false;
         }
     } else {

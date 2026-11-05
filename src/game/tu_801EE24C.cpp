@@ -32,11 +32,11 @@ static inline JGeometry::TBox2f* layerBox(s32 layer) {
 bool ActorBase_804A5770::fn_801EE24C() {
     s32 serial = -1;
     for (;;) {
-        serial = fn_801F856C()->fn_801F78F4('WARP', serial);
+        serial = getActorManager_801F856C()->fn_801F78F4('WARP', serial);
         if (serial < 0) {
             break;
         }
-        ActorBase_804A5770* warp = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* warp = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (warp == NULL || field_0x4 != warp->field_0x4 || (warp->field_0x90 & 0xFF) != 8) {
             continue;
         }
@@ -72,7 +72,7 @@ bool fn_801EE3C0(u16 tile) {
 
 // Lets an emitter that is still on screen finish its particles; deletes one
 // that is off screen at once. The destructor inlines it.
-void fn_801EE434(JPABaseEmitter* emitter) {
+void releaseEmitter_801EE434(JPABaseEmitter* emitter) {
     if (emitter != NULL) {
         GameView_804A9950* view = getGameView_802D6A9C();
         f32 x = emitter->mGlobalTrs.x;
@@ -136,7 +136,7 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
             return;
         }
     }
-    lbl_8053AF80->fn_80458880(id, -1);
+    gAudioMgr_8053AF80->fn_80458880(id, -1);
 }
 
 // fn_803037D4(player, value) for each player that takes part (field_0x82),
@@ -272,7 +272,7 @@ bool ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
 // 32.0f is lbl_8053F748; fn_801F26CC (reloc-name) and fn_801F2718 pair with
 // it only once the unit's .sdata2 order is fixed (see the constructor's FIXME).
 s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
-    return fn_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
+    return getActorManager_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
 }
 
 // FIXME: 99.5 %. Only the literal differs (lbl_8053F748, see above).
@@ -290,7 +290,7 @@ static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& 
 // function defined before the caller, so it is an inline of its own.
 static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
     bool result = false;
-    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+    if (getPlayerLayer_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
         result = true;
     }
     return result;
@@ -313,7 +313,7 @@ u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
             continue;
         }
         if (!viewLayerFlag(field_0x4) &&
-            __fabsf(mPos.z - fn_8023E724(i)->z) > 32.0f)
+            __fabsf(mPos.z - getPlayerPos_8023E724(i)->z) > 32.0f)
         {
             continue;
         }
@@ -327,7 +327,7 @@ u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
 u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     u8 prev = field_0x164;
     field_0x168 = arg;
-    fn_801F856C()->fn_801F84C4(this);
+    getActorManager_801F856C()->fn_801F84C4(this);
     if (field_0x164 != 0) {
         field_0x164 = 0;
     }
@@ -388,9 +388,9 @@ u8 ActorBase_804A5770::fn_801F2B7C(s32 damage, s32 skipPlayer, s32 arg) {
 // vfunc_0x5C/0x60/0x64, Thief, update() of several enemies), so it stays bool.
 bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
     bool hit = false;
-    s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+    s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     if (serial >= 0 && serial != mSerial) {
-        ActorBase_804A5770* attacker = fn_801F856C()->findActorBySerial_801F666C(serial);
+        ActorBase_804A5770* attacker = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         bool accept = false;
         if ((includeId == 'NULL' || includeId == attacker->mActorId) &&
             (excludeId == 'NULL' || excludeId != attacker->mActorId))
@@ -446,7 +446,7 @@ bool ActorBase_804A5770::fn_801F2FAC() {
     for (s32 i = 0; i < 4; i++) {
         s32 type;
         if (fn_801F285C(NULL, &type, true, i) == i) {
-            hit |= fn_801F37AC(fn_8023B6CC(i), fn_8023E724(i), 0, type, i);
+            hit |= fn_801F37AC(fn_8023B6CC(i), getPlayerPos_8023E724(i), 0, type, i);
         }
     }
     return hit;
@@ -485,12 +485,12 @@ void ActorBase_804A5770::fn_801F31C4(JGeometry::TBox2f* out) const {
     toScreenBox(out, mBox, mPos);
 }
 
-// Whether `player` is on this actor's layer (fn_8023DE58), or counts as on
+// Whether `player` is on this actor's layer (getPlayerLayer_8023DE58), or counts as on
 // it through fn_801F329C.
 bool ActorBase_804A5770::fn_801F320C(s32 player) const {
     s32 layer = field_0x4;
     bool result = false;
-    s32 playerLayer = fn_8023DE58(player);
+    s32 playerLayer = getPlayerLayer_8023DE58(player);
     if (playerLayer == layer || isPlayerBelowLayer8(this, player)) {
         result = true;
     }
@@ -502,17 +502,17 @@ bool ActorBase_804A5770::fn_801F329C(s32 player) {
     return isPlayerBelowLayer8(this, player);
 }
 
-// Copies each player's position (fn_8023E724) into field_0x1ac[], moved
+// Copies each player's position (getPlayerPos_8023E724) into field_0x1ac[], moved
 // into this layer's view space (fn_801CD150) for a player below layer 8
 // while this is on 8.
 void ActorBase_804A5770::fn_801F32F4() {
     for (s32 i = 0; i < 4; i++) {
         if (isPlayerBelowLayer8(this, i)) {
             JGeometry::TVec3f pos;
-            fn_801CD150(fn_8023E724(i), &pos);
+            fn_801CD150(getPlayerPos_8023E724(i), &pos);
             field_0x1ac[i].set(pos);
         } else {
-            field_0x1ac[i].set(*fn_8023E724(i));
+            field_0x1ac[i].set(*getPlayerPos_8023E724(i));
         }
     }
 }
@@ -706,10 +706,10 @@ void ActorBase_804A5770::vfunc_0x18() {
         JGeometry::TBox2f box;
         toScreenBox(&box, mBox, mPos);
         for (int i = 0; i < 4; i++) {
-            if (fn_8023F264(i) && getField_0x4() == fn_8023DE58(i)) {
+            if (fn_8023F264(i) && getField_0x4() == getPlayerLayer_8023DE58(i)) {
                 JGeometry::TBox2f playerBox;
                 toScreenBox(&playerBox, JGeometry::TBox2f(-12.0f, -28.0f, 12.0f, 12.0f),
-                            *fn_8023E724(i));
+                            *getPlayerPos_8023E724(i));
                 JGeometry::TBox2f overlap = box;
                 if (overlap.intersect(playerBox)) {
                     fn_802397B4(&box, getField_0x4(), mSerial);
@@ -727,9 +727,9 @@ void ActorBase_804A5770::vfunc_0x10() {}
 void ActorBase_804A5770::init() {}
 
 ActorBase_804A5770::~ActorBase_804A5770() {
-    fn_801EE434(mEmitter100);
-    fn_801EE434(mEmitter104);
-    fn_801F856C()->fn_801F8448(this);
+    releaseEmitter_801EE434(mEmitter100);
+    releaseEmitter_801EE434(mEmitter104);
+    getActorManager_801F856C()->fn_801F8448(this);
 }
 
 // FIXME: the float literals (0, 1, -8, 8, 40) pair with the target's .sdata2

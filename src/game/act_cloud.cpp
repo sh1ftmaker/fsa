@@ -32,7 +32,7 @@ bool Cloud_8049CBE0::fn_801053E8(s32 player) {
     if (player < 0) {
         return false;
     }
-    if (field_0x4 != fn_8023DE58(player)) {
+    if (field_0x4 != getPlayerLayer_8023DE58(player)) {
         return false;
     }
     JGeometry::TBox2f box(mBox);

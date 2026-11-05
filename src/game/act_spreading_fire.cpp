@@ -75,9 +75,9 @@ void SpreadingFire_804A8A50::update() {
         mTile = fn_80226850(&mPos, field_0x4);
         if (fn_801EE3C0(mTile) == true) {
             startSound_801F0E34(0x3002F, 0);
-            lbl_8053AC98->fn_802A20F0(&mPos, field_0x258, field_0x4, 0x10000, 1);
+            gBgRewrite_8053AC98->fn_802A20F0(&mPos, field_0x258, field_0x4, 0x10000, 1);
         } else if (mTile == 0x3EB) {
-            lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0xF);
+            gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0xF);
             startSound_801F0E34(0x30061, 0);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
@@ -87,16 +87,16 @@ void SpreadingFire_804A8A50::update() {
                 mPos.y -= 16.0f;
                 field_0x240 = 5;
             } else {
-                lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
+                gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
             }
         } else if (mTile == 0x33) {
             startSound_801F0E34(0x30061, 0);
-            lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xAD);
+            gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xAD);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
         } else if (mTile == 0x34) {
             startSound_801F0E34(0x30061, 0);
-            lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x251);
+            gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x251);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x254, 0, 0, NULL, NULL, true, 1.0f);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x255, 0, 0, NULL, NULL, true, 1.0f);
         }
@@ -126,10 +126,10 @@ void SpreadingFire_804A8A50::update() {
                         if (!view->fn_802D7384(viewBitOf(field_0x270, field_0x274))) {
                             s32 owner = field_0x258;
                             if (owner == -1) {
-                                fn_801F856C()->fn_801F9484(ACTOR_BLZE, field_0x4, &tmp,
+                                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, field_0x4, &tmp,
                                                            (field_0x98 << 4) | 0xF, -1, -1);
                             } else {
-                                fn_801F856C()->fn_801F9484(ACTOR_BLZE, field_0x4, &tmp,
+                                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, field_0x4, &tmp,
                                                            owner | (field_0x98 << 4), -1, field_0x110);
                             }
                         }
@@ -152,7 +152,7 @@ void SpreadingFire_804A8A50::update() {
         field_0x280++;
         if (field_0x280 >= 0x20) {
             if (fn_801EE3C0(mTile) == true) {
-                lbl_8053AC98->fn_802A20F0(&mPos, field_0x258, field_0x4, 0x10000, 1);
+                gBgRewrite_8053AC98->fn_802A20F0(&mPos, field_0x258, field_0x4, 0x10000, 1);
             }
             vfunc_0x24();
         }
@@ -162,7 +162,7 @@ void SpreadingFire_804A8A50::update() {
     case 5:
         field_0x254--;
         if (field_0x254 == 0) {
-            lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3E0);
+            gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3E0);
             field_0x240 = 6;
         }
         break;
@@ -171,20 +171,20 @@ void SpreadingFire_804A8A50::update() {
             do {
                 mPos.y += 8.0f;
             } while (mPos.y != field_0x284.y);
-            lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3EB);
+            gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3EB);
             s32 layer = field_0x4;
             if (layer >= 8) {
-                fn_801F856C()->fn_801F9484(ACTOR_KMRI, layer, &mPos, 0, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &mPos, 0, -1, -1);
             }
             field_0x284.y -= 16.0f;
             mPos.y -= 32.0f;
             if (fn_80226850(&mPos, field_0x4) != 0x3EB) {
                 break;
             }
-            lbl_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3E0);
+            gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x3E0);
         }
         mPos.y += 16.0f;
-        lbl_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
         vfunc_0x24();
         break;
     case 7:
@@ -202,16 +202,16 @@ void SpreadingFire_804A8A50::update() {
 
 SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
     if (mEmitters[0] != NULL) {
-        fn_801EE434(mEmitters[0]);
+        releaseEmitter_801EE434(mEmitters[0]);
     }
     if (mEmitters[1] != NULL) {
-        fn_801EE434(mEmitters[1]);
+        releaseEmitter_801EE434(mEmitters[1]);
     }
     if (mEmitters[2] != NULL) {
-        fn_801EE434(mEmitters[2]);
+        releaseEmitter_801EE434(mEmitters[2]);
     }
     if (mEmitters[3] != NULL) {
-        fn_801EE434(mEmitters[3]);
+        releaseEmitter_801EE434(mEmitters[3]);
     }
     getGameView_802D6A9C()->fn_802D73CC(mViewBit, false);
 }

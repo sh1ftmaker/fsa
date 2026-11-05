@@ -85,7 +85,7 @@ public:
 }; // Size: 0x48
 
 // The member at 0x448 of Vaati, defined in game/tu_8021775C.cpp. Six particle
-// emitters from spawnEmitter_8013CC50, freed with fn_801EE434, and the owner (Vaati) at
+// emitters from spawnEmitter_8013CC50, freed with releaseEmitter_801EE434, and the owner (Vaati) at
 // 0x18. The constructor (0x80218020) clears all seven words; named after the
 // destructor 0x80217F80, as there is no vtable.
 class VaatiBoss_804A4958;
@@ -95,7 +95,7 @@ class cls_80217F80 {
 public:
     // 0x80218020: clears the emitters and the owner.
     cls_80217F80();
-    // 0x80217F80: frees the six emitters (fn_801EE434 on 0x0..0x14).
+    // 0x80217F80: frees the six emitters (releaseEmitter_801EE434 on 0x0..0x14).
     ~cls_80217F80();
     // 0x802179EC: frees and clears the emitters at 0x10 and 0x14.
     void fn_802179EC();
@@ -165,7 +165,7 @@ public:
     virtual ~VaatiBoss_804A4958();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // empty override
-    // 0x801D652C: lbl_8053AF80->fn_80458F9C(60).
+    // 0x801D652C: gAudioMgr_8053AF80->fn_80458F9C(60).
     /* 0x54 */ virtual void vfunc_0x54();
     // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
     // mState is 6, 7, 0xB or 0x17..0x1A (no call in those states).

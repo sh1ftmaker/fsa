@@ -3,6 +3,6 @@
 
 cls_804A39DC::~cls_804A39DC() {
     for (int i = 0; i < 4; i++) {
-        fn_801EE434(mEmitters[i]);
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }

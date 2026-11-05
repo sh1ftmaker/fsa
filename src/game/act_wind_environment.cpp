@@ -42,9 +42,9 @@ void WindEnvironment_8049CC98::fn_80106ADC(s32 state) {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (field_0x4 == fn_8023DE58(i) && fn_8023F264(i) && !fn_80234D94(i) && !fn_8022D75C(i) &&
+        if (field_0x4 == getPlayerLayer_8023DE58(i) && fn_8023F264(i) && !fn_80234D94(i) && !fn_8022D75C(i) &&
             !fn_80230188(i) && (fn_8022CAF8(i) != 4 || !fn_8022F478(i))) {
-            u16 tile = fn_80226850(fn_8023E724(i), fn_8023DE58(i));
+            u16 tile = fn_80226850(getPlayerPos_8023E724(i), getPlayerLayer_8023DE58(i));
             if (tile < 0x3EE || tile > 0x3EF) {
                 fn_8023DFF4(i, &push);
             }
@@ -138,7 +138,7 @@ void WindEnvironment_8049CC98::init() {
 }
 
 WindEnvironment_8049CC98::~WindEnvironment_8049CC98() {
-    fn_801EE434(mEmitter);
+    releaseEmitter_801EE434(mEmitter);
     mEmitter = NULL;
     if (mSound != NULL) {
         delete mSound;

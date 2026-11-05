@@ -30,7 +30,7 @@ public:
     /* 0xB0 */ virtual void vfunc_0xB0();
 
     // An effect emitter: stored from a spawn (0x801BAF6C), read and cleared
-    // by the destructor (0x801BB30C), which passes it to fn_801EE434.
+    // by the destructor (0x801BB30C), which passes it to releaseEmitter_801EE434.
     /* 0x2A8 */ JPABaseEmitter* field_0x2a8;
 }; // Size: 0x2AC (the spawner's __nw__; the lotus Zora adds its flags after it)
 

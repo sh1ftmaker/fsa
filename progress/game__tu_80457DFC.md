@@ -15,7 +15,7 @@ JAISeMgr (0x34), the audience (0x3C), section heap (0x44); music handle 0x80, se
 system-sound objects 0x14 (shared) and 0x18[4] (per player).
 Header moved: AudioMgr_8045A080 now lives in include/game/Unk_8045A080.h, included at the end of
 game/GameAudio.h (needs JAISound.h for the JAISoundHandle members); GameGlobals.h keeps the forward
-declaration and lbl_8053AF80. Unit .sdata written (20 tuning values + 3 string pointers, 100 %).
+declaration and gAudioMgr_8053AF80. Unit .sdata written (20 tuning values + 3 string pointers, 100 %).
 Matched: fn_80457F80 (bool, JAISoundID, s8), fn_80458408, fn_80458F04, fn_80459508 (member, renamed).
 Structural: fn_80458508 98.55 missing/extra (switch tree pivot 1 vs 2); fn_80458658 99.65 regalloc;
 fn_80458744 99.81 reloc-name (jumptable_804B1EF0; tables defined at file end so they are addressed

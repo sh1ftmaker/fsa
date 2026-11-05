@@ -16,16 +16,16 @@ void fn_8045B030(ActorSoundObj_804578F4* obj, u8 index, s8 port9) {
     u8 group = id.mId.mBytes.mGroupId;
     if (section == 1) {
         if (id == 0x1000002 || id == 0x1000023) {
-            lbl_8053AF80->fn_80458F04(id);
+            gAudioMgr_8053AF80->fn_80458F04(id);
         } else {
-            lbl_8053AF80->fn_80458FF0(id, true, false);
+            gAudioMgr_8053AF80->fn_80458FF0(id, true, false);
         }
         return;
     }
     if (group == 2 || group == 1) {
         handle = obj->startSound(id);
     } else if (group == 0) {
-        lbl_8053AF80->fn_80458880(id, -1);
+        gAudioMgr_8053AF80->fn_80458880(id, -1);
     } else {
         handle = obj->fn_80456334(id, 0);
     }
@@ -41,7 +41,7 @@ void fn_8045B030(ActorSoundObj_804578F4* obj, u8 index, s8 port9) {
 // random pitch expression differ.
 JAISoundHandle* cls_804B20F8::startSound(JAISoundID id) {
     u8 type = id.mId.mBytes.mGroupId;
-    JAISeMgr* seMgr = lbl_8053AF80->field_0x34;
+    JAISeMgr* seMgr = gAudioMgr_8053AF80->field_0x34;
     switch ((s32)id) {
     case 0x20037:
         startSound(JAISoundID(0x10002));

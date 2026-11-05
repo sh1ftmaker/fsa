@@ -30,7 +30,7 @@ static inline cls_80119E5C* fadeObject() {
 }
 
 void cls_801192AC::fn_80118384() {
-    fn_801F856C()->fn_801F6884();
+    getActorManager_801F856C()->fn_801F6884();
     field_0x0 = 0;
 }
 
@@ -45,7 +45,7 @@ void cls_801192AC::fn_80118454() {
 }
 
 bool cls_801192AC::fn_801186B0(u32 value) {
-    if (fn_801F856C()->fn_801F68E0()) {
+    if (getActorManager_801F856C()->fn_801F68E0()) {
         field_0x0 = 1;
         field_0x1 = 0;
         field_0x2 = 0;

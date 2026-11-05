@@ -38,8 +38,8 @@ void cls_804A5038::init() {
 }
 
 cls_804A5038::~cls_804A5038() {
-    fn_801EE434(mEmitter2a8);
-    fn_801EE434(mEmitter2ac);
+    releaseEmitter_801EE434(mEmitter2a8);
+    releaseEmitter_801EE434(mEmitter2ac);
 }
 
 cls_804A5038::cls_804A5038() {

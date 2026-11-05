@@ -37,7 +37,7 @@ bool cls_8049E5B8::fn_80129200() {
     }
     switch (kind) {
     case 0:
-        mSpawned = fn_801F856C()->fn_801F9484(ACTOR_CRTL, field_0x4, &pos, field_0x280, -1, -1);
+        mSpawned = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CRTL, field_0x4, &pos, field_0x280, -1, -1);
         break;
     case 2: {
         s32 item = mItems[(s32)(mItemCount * lbl_8053AAF8->mRandom.get_ufloat_1())];
@@ -50,15 +50,15 @@ bool cls_8049E5B8::fn_80129200() {
         } else {
             arg = item | 0x400180;
         }
-        mSpawned = fn_801F856C()->fn_801F9484(ACTOR_LSTI, field_0x4, &pos, arg, -1, -1);
+        mSpawned = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LSTI, field_0x4, &pos, arg, -1, -1);
         startSound_801F0E34(0x3004A, 0);
         break;
     }
     case 3:
-        mSpawned = fn_801F856C()->fn_801F9484(ACTOR_NNJN, field_0x4, &pos, 1, -1, -1);
+        mSpawned = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_NNJN, field_0x4, &pos, 1, -1, -1);
         break;
     default:
-        mSpawned = fn_801F856C()->fn_801F9484(ACTOR_CRTL, field_0x4, &pos, 0, -1, -1);
+        mSpawned = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CRTL, field_0x4, &pos, 0, -1, -1);
         break;
     }
     mTimer = 0;
@@ -109,7 +109,7 @@ void cls_8049E5B8::update() {
         if (serial < 0) {
             gone = true;
         } else {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor == NULL) {
                 gone = true;
             } else {

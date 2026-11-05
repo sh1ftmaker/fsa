@@ -10,5 +10,5 @@ void Floormaster_804A6004::vfunc_0xA0() {
 }
 
 Floormaster_804A6004::~Floormaster_804A6004() {
-    fn_801EE434(mEmitter2b0);
+    releaseEmitter_801EE434(mEmitter2b0);
 }

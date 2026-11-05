@@ -1,5 +1,5 @@
 // Actor MRTC ("Log monitor NPC" in docs/names/actors.tsv): the spawner
-// (fn_801F9484) allocates 0x238 bytes for it (0x801FF370) and calls its
+// (spawnActor_801F9484) allocates 0x238 bytes for it (0x801FF370) and calls its
 // constructor fn_801FF780, which stores the vtable 0x804AD278. It watches
 // for a log (MRTA) on top of it, or beside it, and when there is none plays
 // sound id 3 through fn_801F0D20 and removes itself.
@@ -12,7 +12,7 @@
 
 // The actor in slot i if it has the given id.
 static inline ActorBase_804A5770* getActorWithId(s32 i, u32 id) {
-    ActorBase_804A5770* actor = fn_801F856C()->mActors[i];
+    ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
     if (actor != NULL && actor->mActorId == id) {
         return actor;
     }
@@ -27,7 +27,7 @@ static inline ActorBase_804A5770* getActorWithId(s32 i, u32 id) {
 // 0x34/0x44 (ours 0x28/0x38); otherwise the same.
 inline s32 LogMonitorNpc_804AD278::findLog() {
     s32 serial = -1;
-    s32 end = fn_801F856C()->mActorEnd;
+    s32 end = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* log = getActorWithId(i, ACTOR_MRTA);
         if (log != NULL) {

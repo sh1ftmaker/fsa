@@ -16,7 +16,7 @@ void VaatiBoss_804A4958::fn_801E4D74() {
 }
 
 // FIXME: 98.8 %. The loop counter and the layer swap registers (the original keeps
-// the counter in r30 and the layer, read before fn_8023DE58, in r31; this has them
+// the counter in r30 and the layer, read before getPlayerLayer_8023DE58, in r31; this has them
 // the other way round), and the original tests the countdown twice (a second ble
 // to the loop end before its decrement), which no natural form here produces; dx and dy also take each other's
 // FPRs (the original computes dy first).
@@ -25,7 +25,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
         if (field_0x2a8[i].field_0x0 != 0) {
             if (fn_8023F264(i) && !fn_80236B50(i) && !fn_8022D75C(i)) {
                 s32 layer = field_0x4;
-                if (fn_8023DE58(i) == layer) {
+                if (getPlayerLayer_8023DE58(i) == layer) {
                     continue;
                 }
             }
@@ -54,7 +54,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
         f32 dx = mPos.x - mPrevPos.x;
         f32 dy = mPos.y - mPrevPos.y;
         // Copied field by field, as the original loads three scalars.
-        JGeometry::TVec3f* pos = fn_8023E724(i);
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
         playerPos.x = pos->x;
         playerPos.y = pos->y;
         playerPos.z = pos->z;
@@ -118,7 +118,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
                 }
             }
         } else if (mFlags & 0x4000) {
-            if (fn_8023E724(i)->z >= field_0x464.field_0xc.field_0x8) {
+            if (getPlayerPos_8023E724(i)->z >= field_0x464.field_0xc.field_0x8) {
                 continue;
             }
             if (!fn_80236BEC(i)) {

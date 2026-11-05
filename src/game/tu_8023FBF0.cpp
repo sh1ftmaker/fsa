@@ -1041,7 +1041,7 @@ void Player_804A6F38::fn_80248DD8() {
     field_0x1214 = true;
     if (field_0xd60 >= 0) {
         field_0x1215 = true;
-        const JGeometry::TVec3f* pos = fn_8023E724(field_0xd60);
+        const JGeometry::TVec3f* pos = getPlayerPos_8023E724(field_0xd60);
         mPos.x = pos->x;
         mPos.y = pos->y;
         mPos.z = pos->z;
@@ -1094,7 +1094,7 @@ void Player_804A6F38::fn_802490A8() {
     if (fn_80236B50(player)) {
         return;
     }
-    if (fn_8023E724(player)->z > 0.0f) {
+    if (getPlayerPos_8023E724(player)->z > 0.0f) {
         return;
     }
     if (fn_8023EA28(player)) {
@@ -1156,7 +1156,7 @@ void Player_804A6F38::fn_802490A8() {
             if (!lbl_8053AAF8->field_0x7e) {
                 lbl_8053AAF8->fn_80134FE0(1);
             }
-            field_0x1230 = fn_801F856C()->fn_801F9484(ACTOR_FORM, field_0x3b4, &mPos, field_0x4 & 3, -1, -1);
+            field_0x1230 = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FORM, field_0x3b4, &mPos, field_0x4 & 3, -1, -1);
         } else {
             fn_80248004(5, true);
         }
@@ -1307,11 +1307,11 @@ bool Player_804A6F38::fn_8024C4C4(s32 serial) {
     field_0xd4c = true;
     field_0xd44 = serial;
     field_0xd4d = 1;
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(serial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (!actor || actor->mPos.x < mPos.x) {
-        fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x18, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x18, -1, -1);
     } else {
-        fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x1c, -1, -1);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x1c, -1, -1);
     }
     return true;
 }
@@ -1425,7 +1425,7 @@ void Player_804A6F38::fn_8024F54C(s32 arg) {
     if (field_0x3b4 >= 8 && fn_8030381C(fn_80240628()) && arg == 0x1000002) {
         fn_803037D4(fn_80240628(), 0x10);
     } else {
-        lbl_8053AF80->fn_80458F04(arg);
+        gAudioMgr_8053AF80->fn_80458F04(arg);
     }
 }
 
@@ -1769,9 +1769,9 @@ void Player_804A6F38::fn_80252FC0() {
     if (holder >= 0 || field_0xdac >= 0) {
         JGeometry::TVec3f pos;
         if (holder >= 0) {
-            pos.set(*fn_8023E724(holder));
+            pos.set(*getPlayerPos_8023E724(holder));
         } else {
-            pos.set(*fn_8023E724(field_0xdac));
+            pos.set(*getPlayerPos_8023E724(field_0xdac));
         }
         switch (field_0x3dc) {
         case 0:
@@ -1808,7 +1808,7 @@ void Player_804A6F38::fn_80252FC0() {
     }
     for (s32 i = 0; i < 4; i++) {
         if (i != field_0x4 && fn_8022E438(i, field_0x4) && fn_8023EBB8(i)) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(fn_8023EF50(i));
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(fn_8023EF50(i));
             if (actor != NULL && actor->field_0x1a4 != 0) {
                 mPos.x = field_0x14.x;
                 mPos.y = field_0x14.y;
@@ -1894,7 +1894,7 @@ static inline void joinCue(Player_804A6F38* player, s32 at, s32 off) {
             fn_8030381C(player->field_0x4);
         }
         // The original converts the index to s8 (extsb) for the sound call.
-        lbl_8053AF80->fn_80458880(0x25, (s8)player->field_0x4);
+        gAudioMgr_8053AF80->fn_80458880(0x25, (s8)player->field_0x4);
     } else if (player->field_0xd38 == off) {
         fn_8043A170(player->field_0x4, false);
     }
@@ -2166,7 +2166,7 @@ void Player_804A6F38::fn_80254744() {
 
     // A partner starts next to the player it follows, 16 units per place in the line.
     if (field_0xd60 >= 0 && !field_0xcfe) {
-        field_0x2c4 = *fn_8023E724(field_0xd60);
+        field_0x2c4 = *getPlayerPos_8023E724(field_0xd60);
         if (field_0xd04) {
             field_0x2c4.y += 16.0f * fn_80248778();
         } else {
@@ -2532,7 +2532,7 @@ void Player_804A6F38::fn_80254744() {
         field_0x1214 = true;
         if (field_0xd60 >= 0) {
             field_0x1215 = true;
-            mPos.set(*fn_8023E724(field_0xd60));
+            mPos.set(*getPlayerPos_8023E724(field_0xd60));
             fn_80251AEC(3);
         }
         field_0x1224 = 0;

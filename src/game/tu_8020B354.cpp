@@ -67,7 +67,7 @@ void cls_804A5E98::draw() {
 }
 
 void cls_804A5E98::vfunc_0x24() {
-    ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
     if (actor != NULL) {
         static_cast<cls_804A5B28*>(actor)->fn_802075D8(field_0x94);
     }
@@ -98,10 +98,10 @@ bool cls_804A5E98::vfunc_0x5C() {
         s32 flag;
         s32 player = fn_801F285C(NULL, &flag, true, -1);
         if (player >= 0) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
             if (actor != NULL) {
                 static_cast<cls_804A5B28*>(actor)->fn_80207830(field_0x94, player, fn_8023B6CC(player),
-                                                               fn_8023E724(player), flag);
+                                                               getPlayerPos_8023E724(player), flag);
             }
         }
     }
@@ -110,11 +110,11 @@ bool cls_804A5E98::vfunc_0x5C() {
 
 bool cls_804A5E98::vfunc_0x60() {
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
-        s32 other = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+        s32 other = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (other >= 0 && other != mSerial) {
-            ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(other);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
             if (actor != NULL && !(!viewLayerFlag(field_0x4) && mPos.z > 16.0f && fn_801CC8E4(actor))) {
-                ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+                ActorBase_804A5770* target = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
                 if (target != NULL) {
                     JGeometry::TVec3f from(mPos);
                     from.sub(actor->field_0x3c);
@@ -159,9 +159,9 @@ bool cls_804A5E98::vfunc_0x58() {
     bool hit = false;
     if (player >= 0) {
         hit = true;
-        ActorBase_804A5770* target = fn_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+        ActorBase_804A5770* target = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
         if (target != NULL) {
-            from = *fn_8023E724(player);
+            from = *getPlayerPos_8023E724(player);
             s32 type = 0;
             if (actorC) {
                 from.set(vel54.x, vel54.y, vel54.z);

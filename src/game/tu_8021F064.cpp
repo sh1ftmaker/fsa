@@ -15,7 +15,7 @@ bool cls_8021F064::fn_8021F094() const {
     s32 count = mCount;
     bool result = true;
     for (s32 i = 0; i < count; i++) {
-        ActorBase_804A5770* actor = fn_801F856C()->findActorBySerial_801F666C(mSerials[i]);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]);
         if (actor != NULL && !fn_8021D794(actor)) {
             result = false;
             break;
@@ -30,7 +30,7 @@ void cls_8021F064::fn_8021F130() {
     if (mCount > 0 && (mFlags & 3) != 0) {
         ActorBase_804A5770* actor;
         for (s32 i = 0; i < mCount; i++) {
-            actor = fn_801F856C()->findActorBySerial_801F666C(mSerials[i]);
+            actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]);
             if (actor) {
                 if (mFlags & 1) {
                     fn_8021D764(actor);

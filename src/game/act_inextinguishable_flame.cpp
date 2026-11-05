@@ -130,7 +130,7 @@ void InextinguishableFlame_804A9D28::update() {
             f32 y = mPos.y + lbl_8046F108[i];
             JGeometry::TVec3f tile(x, y, mPos.z);
             if (fn_801EE3C0(fn_80226850(&tile, field_0x4)) == true) {
-                fn_801F856C()->fn_801F9484('BLZE', field_0x4, &tile, (field_0x98 << 4) | 0xF, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &tile, (field_0x98 << 4) | 0xF, -1, -1);
                 mActorId = 'BLZE';
                 mState = 4;
                 mTimer = 40;
@@ -185,7 +185,7 @@ void InextinguishableFlame_804A9D28::update() {
         vfunc_0x54();
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
-                fn_801F856C()->fn_801F9484('BLZE', field_0x4, &pos, (field_0x98 << 4) | 0xF, -1, -1);
+                getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &pos, (field_0x98 << 4) | 0xF, -1, -1);
                 mActorId = 'BLZE';
                 pos.y += 16.0f;
             }
@@ -231,13 +231,13 @@ void InextinguishableFlame_804A9D28::update() {
 InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
     for (s32 i = 0; i < 16; i++) {
         if (mEmitters[0][i] != NULL) {
-            fn_801EE434(mEmitters[0][i]);
+            releaseEmitter_801EE434(mEmitters[0][i]);
         }
         if (mEmitters[1][i] != NULL) {
-            fn_801EE434(mEmitters[1][i]);
+            releaseEmitter_801EE434(mEmitters[1][i]);
         }
         if (mEmitters[2][i] != NULL) {
-            fn_801EE434(mEmitters[2][i]);
+            releaseEmitter_801EE434(mEmitters[2][i]);
         }
     }
 }

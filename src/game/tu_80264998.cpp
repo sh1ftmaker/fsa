@@ -376,7 +376,7 @@ void Player_804A6F38::fn_80265DB0() {
         field_0xca1 = 0;
     } else if (field_0x3b4 == 8) {
         field_0xca1 = 0xFF;
-    } else if (fn_8025F448() && (field_0xd70 < 0 || fn_8023DE58(field_0xd70) != 8)) {
+    } else if (fn_8025F448() && (field_0xd70 < 0 || getPlayerLayer_8023DE58(field_0xd70) != 8)) {
         if (field_0xca1 >= 8) {
             field_0xca1 -= 8;
         } else {

@@ -68,7 +68,7 @@ u8 Thief_804A5A30::vfunc_0x68() {
                         fn_80238548(i, 0, &pos, lbl_8046A238[mType].field_0x8);
                         if (mState != 5) {
                             // Only x and y of the player's position are read.
-                            fn_801D2978(&field_0x35c, &pos, (const JGeometry::TVec2f*)fn_8023E724(i), 24, 1.0f);
+                            fn_801D2978(&field_0x35c, &pos, (const JGeometry::TVec2f*)getPlayerPos_8023E724(i), 24, 1.0f);
                             fn_80205E0C(5);
                         }
                     }
@@ -98,7 +98,7 @@ bool Thief_804A5A30::vfunc_0x5C() {
             s32 type;
             if (i == fn_801F285C(NULL, &type, true, i)) {
                 fn_8023B6CC(i);
-                if (fn_801F37AC(0, fn_8023E724(i), 0, type, i)) {
+                if (fn_801F37AC(0, getPlayerPos_8023E724(i), 0, type, i)) {
                     hit = true;
                 }
             }
@@ -161,7 +161,7 @@ bool Thief_804A5A30::vfunc_0x58() {
     }
     bool hit = false;
     if (player >= 0) {
-        from = *fn_8023E724(player);
+        from = *getPlayerPos_8023E724(player);
         s32 type = 0;
         if (actorB) {
             type = 4;
