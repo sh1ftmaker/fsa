@@ -2376,6 +2376,58 @@ void Player_804A6F38::fn_8027B5F0() {
     deleteEmitter(&field_0x12bc);
 }
 
+// Exit of state 0x08 (from the state switch in fn_802870C8): stops its emitters and the
+// 'PEFF' actor 0x12C0; with 0xCAE it calls fn_802356B8 for the rest of the group.
+void Player_804A6F38::fn_8027BC90() {
+    if (field_0x1274 != NULL) {
+        field_0x1274->clearStatus(JPAEMIT_Immortal);
+        field_0x1274->becomeInvalidEmitter();
+        field_0x1274 = NULL;
+    }
+    if (field_0x128c != NULL) {
+        field_0x128c->clearStatus(JPAEMIT_Immortal);
+        field_0x128c->becomeInvalidEmitter();
+        field_0x128c = NULL;
+    }
+    if (field_0x12b0 != NULL) {
+        field_0x12b0->becomeInvalidEmitter();
+        field_0x12b0 = NULL;
+    }
+    if (field_0x12b4 != NULL) {
+        field_0x12b4->becomeInvalidEmitter();
+        field_0x12b4 = NULL;
+    }
+    if (field_0x12b8 != NULL) {
+        field_0x12b8->becomeInvalidEmitter();
+        field_0x12b8 = NULL;
+    }
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->mAlive = false;
+        }
+        field_0x12c0 = -1;
+    }
+    if (field_0x1244 != 0xf) {
+        mPos.z = 0.0f;
+    }
+    if (field_0xcae == 1) {
+        for (s32 i = 0; i < 4; i++) {
+            if (i != field_0x4 && fn_8022E438(field_0x4, i)) {
+                fn_802356B8(i);
+            }
+        }
+    }
+    if (field_0xcae == 1 || field_0xcaf == 1 || (field_0x1244 != 0x38 && field_0x1244 != 0x37)) {
+        field_0xcad = false;
+        field_0x403 = 0;
+    }
+    field_0xcae = 0;
+    field_0xcaf = 0;
+    field_0x40c = 0;
+}
+
 // Enter of state 0x08 (fn_8027BE74 is its update): 0xCAD / 0x403 start once,
 // the push 0x344 is cleared, and the emitter 0x26F (below 0x30 frames of 0x403) or, at life 2,
 // 0x271 / 0x273 (else 0x270 / 0x272) by facing pair is started at 0x12A4.
