@@ -401,6 +401,9 @@ public:
     void fn_8025B3F0(); void fn_8025BEB0(); void fn_8025C894(); void fn_8025D6AC();
     void fn_8025D7E4(); void fn_8025D9FC(); void fn_8025DACC(); void fn_8025E79C();
     void fn_8025D0B0(); // tu_80256C74; the step of state 0x39's update fn_8025DACC (pad-driven slide)
+    // tu_80256C74 inline (fn_80259660, three times in fn_80258BE8): in mode 5 (fn_802486A0)
+    // and not following (fn_80240808), every other present player to mPos (fn_8023E690), then fn_8024BAEC.
+    void gatherOthers();
     void fn_80261750(); void fn_80262188(); void fn_80262254(); void fn_80262BAC();
     void fn_80263078(); void fn_802632A8(); void fn_802635D8(); void fn_802636D4();
     void fn_80263860(); void fn_80263BA0(); void fn_80263C64(); void fn_8026441C();

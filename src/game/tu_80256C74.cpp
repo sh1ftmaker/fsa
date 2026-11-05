@@ -38,6 +38,18 @@ static const Vec lbl_8046B220[4] = {
     {12.999f, 0.0f, 0.0f}, {-12.999f, 0.0f, 0.0f}, {0.0f, 12.999f, 0.0f}, {0.0f, -12.999f, 0.0f},
 };
 
+// Inlined by fn_80259660 and fn_80258BE8 (no out-of-line copy).
+inline void Player_804A6F38::gatherOthers() {
+    if (fn_802486A0() == 5 && !fn_80240808()) {
+        for (int i = 0; i < 4; i++) {
+            if (fn_80243194(i) && i != field_0x4) {
+                fn_8023E690(i, &mPos);
+            }
+        }
+        fn_8024BAEC();
+    }
+}
+
 bool Player_804A6F38::fn_80256C74(const JGeometry::TBox2f* box, s32 layer) {
     if (fn_80249068()) {
         return false;
@@ -727,6 +739,222 @@ void Player_804A6F38::fn_80258BBC() {
     field_0x1204 = 0;
 }
 
+// FIXME: 99.69. scheduling+regalloc: before the x/y speed test of the no-pad branch the original
+// already computes &field_0x344 (PSVECMag's argument, addi r3) and so takes r4 for
+// __float_epsilon; ours computes it after the test. Otherwise only .sdata2 literal names.
+// The jump (enter fn_80259660, exit fn_80258BBC): the pad steers field_0x344 in x / y
+// (0.8 from rest, 0.3 a frame rising, 0.2 falling, stopped by the side flags of
+// field_0xbf0) at most 1.6 a frame; gravity 0.25 down to -4; on a 2D layer
+// (viewLayerFlag) z moves y. Landing keeps the last speed in field_0x368 and gathers the
+// others (gatherOthers); at item level >= 2 (fn_802415CC) a second jump (field_0xb79);
+// after 33 frames on the floor the button jumps again, else 3 frames end it (state 0);
+// 0x3FB is the animation frame.
+void Player_804A6F38::fn_80258BE8() {
+    if (fn_8022C6AC(field_0x4) > 0.0f) {
+        if (0.0f == field_0x344.x) {
+            field_0x344.x = 0.8f * fn_8022C82C(field_0x4);
+        } else if (field_0x344.x > 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.x += 0.3f * fn_8022C82C(field_0x4);
+            } else {
+                field_0x344.x += 0.2f * fn_8022C82C(field_0x4);
+            }
+            if (field_0x344.x <= 0.001f || field_0xbf0->field_0x48[0]) {
+                field_0x344.x = 0.001f;
+            }
+        } else if (field_0x344.x < 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.x += 0.3f * fn_8022C82C(field_0x4);
+            } else {
+                field_0x344.x += 0.2f * fn_8022C82C(field_0x4);
+            }
+            if (field_0x344.x >= -0.001f || field_0xbf0->field_0x48[1]) {
+                field_0x344.x = -0.001f;
+            }
+        }
+        if (0.0f == field_0x344.y) {
+            field_0x344.y = 0.8f * -fn_8022C76C(field_0x4);
+        } else if (field_0x344.y > 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.y -= 0.3f * fn_8022C76C(field_0x4);
+            } else {
+                field_0x344.y -= 0.2f * fn_8022C76C(field_0x4);
+            }
+            if (field_0x344.y <= 0.001f || field_0xbf0->field_0x48[2]) {
+                field_0x344.y = 0.001f;
+            }
+        } else if (field_0x344.y < 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.y -= 0.3f * fn_8022C76C(field_0x4);
+            } else {
+                field_0x344.y -= 0.2f * fn_8022C76C(field_0x4);
+            }
+            if (field_0x344.y >= -0.001f || field_0xbf0->field_0x48[3]) {
+                field_0x344.y = -0.001f;
+            }
+        }
+        f32 z = field_0x344.z;
+        field_0x344.z = 0.0f;
+        f32 length = field_0x344.length();
+        f32 speed = length;
+        if (length >= 1.6f) {
+            speed = 1.6f;
+        }
+        field_0x344.normalize();
+        field_0x344.scale(speed);
+        field_0x344.z = z;
+    } else if (!(field_0x344.x * field_0x344.x + field_0x344.y * field_0x344.y <= JGeometry::TUtilf::epsilon())) {
+        f32 z = field_0x344.z;
+        field_0x344.z = 0.0f;
+        f32 speed = field_0x344.length();
+        if (fn_8022C274(field_0x4)) {
+            if (z >= 0.0f) {
+                speed += 0.3f;
+                if (speed >= 1.6f) {
+                    speed = 1.6f;
+                }
+            } else {
+                speed += 0.2f;
+                if (speed >= 1.6f) {
+                    speed = 1.6f;
+                }
+            }
+        } else {
+            speed -= 0.1f;
+            if (speed <= 0.001f) {
+                speed = 0.001f;
+            }
+        }
+        field_0x344.normalize();
+        field_0x344.scale(speed);
+        field_0x344.z = z;
+    }
+
+    if (!field_0x344.isZero() || mPos.z > 0.0f) {
+        if (field_0x3fa >= 1) {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z < -4.0f) {
+                field_0x344.z = -4.0f;
+            }
+            f32 height = mPos.z;
+            if (viewLayerFlag(field_0x3b4)) {
+                mPos.x += field_0x344.x;
+                mPos.y -= field_0x344.z;
+                mPos.z = 0.5f;
+                if (field_0x344.z < 0.0f && field_0xbf0->field_0x48[2]) {
+                    field_0x368.set(field_0x344.x, field_0x344.y, 0.0f);
+                    field_0x344.set(0.0f, 0.0f, 0.0f);
+                    mPos.z = 0.0f;
+                    if (height > 0.0f && (fn_8024B24C() || field_0x1204)) {
+                        gatherOthers();
+                    }
+                }
+            } else {
+                mPos += field_0x344;
+                if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+                    mPos.z = 0.0f;
+                    field_0x368.set(field_0x344.x, field_0x344.y, 0.0f);
+                    field_0x344.set(0.0f, 0.0f, 0.0f);
+                    if (height > 0.0f && (fn_8024B24C() || field_0x1204)) {
+                        gatherOthers();
+                    }
+                }
+            }
+        }
+    }
+
+    if (!field_0xb79 && mPos.z > 0.0f && fn_802415CC() >= 2 && fn_8022C310(field_0x4)) {
+        field_0x3fb = 0;
+        field_0x3fa = 0;
+        field_0x3fc = 0;
+        field_0x344.z = 5.4f;
+        field_0xb79 = 1;
+    }
+
+    if (field_0x3fa < 4) {
+        field_0x3fb = 0;
+    } else if (field_0x3fa < 9) {
+        field_0x3fb = 1;
+    } else if (field_0x3fa < 13) {
+        field_0x3fb = 2;
+    } else if (field_0x3fa < 17) {
+        field_0x3fb = 3;
+    } else if (field_0x3fa < 21) {
+        field_0x3fb = 4;
+    } else if (field_0x3fa < 25) {
+        field_0x3fb = 5;
+    } else if (field_0x3fa < 29) {
+        field_0x3fb = 6;
+    } else if (field_0x3fa < 33) {
+        field_0x3fb = 7;
+    } else if (mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        if (fn_8022C310(field_0x4)) {
+            field_0x3fb = 0;
+            field_0x3fa = 0;
+            field_0x3fc = 0;
+            field_0x344.z = 5.4f;
+            field_0xb79 = 0;
+            if (fn_8024B24C()) {
+                gatherOthers();
+            }
+            if (fn_8024B24C()) {
+                field_0x1204 = 1;
+            } else {
+                field_0x1204 = 0;
+            }
+        } else {
+            field_0x3fb = 0;
+            field_0x3fc++;
+            if (field_0x3fc >= 3) {
+                fn_80251AEC(0);
+            }
+        }
+    } else {
+        field_0x3fb = 7;
+    }
+
+    if (field_0x3fa >= 8 && viewLayerFlag(field_0x3b4) && field_0x344.z < 0.0f && mPos.z <= 1.0f) {
+        JGeometry::TVec3f probe;
+        fn_8024B298(2, &probe);
+        probe.y += 2.0f;
+        if (fn_8022461C(&probe, field_0x3b4) != 2) {
+            fn_80251AEC(0);
+        }
+    }
+
+    if (!field_0x458 && field_0x3fa >= 8 && fn_8022C3AC(field_0x4)) {
+        if (fn_80243234()) {
+            fn_80251AEC(7);
+        } else {
+            fn_80251AEC(5);
+        }
+    }
+    field_0x3fa++;
+    fn_802685D4();
+}
+
+// FIXME: 99.93. reloc-name only: 0.0f / 5.4f (lbl_805400C4 / lbl_8054010C) get pool slots
+// out of the original order while the big state handlers before them are unwritten.
+void Player_804A6F38::fn_80259660() {
+    field_0x458 = 0;
+    fn_8027EB04();
+    field_0x344.set(0.0f, 0.0f, 0.0f);
+    field_0x344.z = 5.4f;
+    fn_8024F0E8(0x10002);
+    field_0x368.set(0.0f, 0.0f, 0.0f);
+    field_0xb79 = 0;
+    field_0x1204 = 0;
+    if (fn_8024B24C()) {
+        gatherOthers();
+    }
+    if (fn_8024B24C()) {
+        field_0x1204 = 1;
+    } else {
+        field_0x1204 = 0;
+    }
+}
+
 void Player_804A6F38::fn_80259778() {
     field_0x344.z = 5.4f;
 }
@@ -840,7 +1068,7 @@ void Player_804A6F38::fn_8025AB00() {
             static_cast<ArrowPlayer_804A05E0*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x11f8));
         if (arrow != NULL && arrow->field_0x230 == 0) {
             JGeometry::TVec3f dir = arrow->mPos - mPos;
-            f32 dist = PSVECMag(&dir);
+            f32 dist = dir.length();
             f32 speed = dist;
             if (dist > 6.0f) {
                 speed = 6.0f;
