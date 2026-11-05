@@ -791,6 +791,46 @@ extern GameRoot2_8049F108* lbl_8053AB10;
 // stores it in lbl_8053AD30). Other members unknown.
 class cls_804AA8C8 {
 public:
+    // fn_8030AC4C (constructor, 0x8030AC4C): stores the vtable and itself
+    // in lbl_8053AD30; the destructor (fn_8030ABFC) clears it. Allocated with
+    // 0xEC bytes by tu_803FF2C4.
+    cls_804AA8C8();
+    /* 0x08 */ virtual ~cls_804AA8C8();
+    // Four-slot arrays: each fn_8030A43C round copies 0x4 -> 0x14, 0x84 -> 0x94,
+    // 0x24 -> 0x84 (fn_8030AB38 clears them in a loop of four). Slot -0x3E7 means no pad.
+    /* 0x04 */ u32 field_0x4[4];
+    /* 0x14 */ u32 field_0x14[4];
+    /* 0x24 */ u32 field_0x24[4];
+    /* 0x34 */ u32 field_0x34[4];
+    /* 0x44 */ s32 field_0x44[4][4]; // key-repeat counters per direction bit (fn_8030A078)
+    /* 0x84 */ u32 field_0x84[4];
+    /* 0x94 */ u32 field_0x94[4];
+    /* 0xA4 */ u32 field_0xa4[4];
+    /* 0xB4 */ u32 field_0xb4[4];
+    /* 0xC4 */ u32 field_0xc4[4];
+    /* 0xD4 */ u8 field_0xd4[4];
+    /* 0xD8 */ u8 field_0xd8[4];
+    /* 0xDC */ u8 field_0xdc[4];
+    /* 0xE0 */ u8 field_0xe0[4];
+    /* 0xE4 */ u8 field_0xe4[2];
+    /* 0xE6 */ u8 field_0xe6[6];
+    // Owner: game/tu_803099FC.cpp (0x80309A00 / 0x80309A38 / 0x80309A54 /
+    // 0x80309A78 / 0x80309D48, same unit): accessors for the arrays above.
+    bool fn_80309A00(s32 slot);
+    u8 fn_80309A38(s32 slot);
+    u32 fn_80309A54(s32 slot, u32 mask);
+    u32 fn_80309A78(s32 slot, u32 mask);
+    u32 fn_80309D48(s32 slot, u32 mask);
+    // game/tu_803099FC.cpp (0x8030AB38): clears the arrays above (and two sbss
+    // byte arrays); tu_803FF2C4 calls it right after the constructor.
+    void fn_8030AB38();
+    // game/tu_803099FC.cpp (0x8030A078): per slot, edge bits (pressed at 0x24, released at 0xA4) and key repeat (0x34).
+    void fn_8030A078();
+    // game/tu_803099FC.cpp (0x80309F20 / 0x80309FCC): the horizontal and
+    // vertical stick value (-1, 0 or 1; scaled by 1/sqrt 2 on diagonals) built from
+    // the button bits of the array at 0x4.
+    f32 fn_80309F20(s32 slot);
+    f32 fn_80309FCC(s32 slot);
     // Owner: game/tu_803099FC.cpp. Return the word at 4 + 4*slot (resp.
     // 0x24 + 4*slot) of the object ANDed with mask, or 0 for slot -0x3E7.
     // act_dummy_conversation's update tests the first for held buttons and
@@ -826,11 +866,12 @@ public:
     u32 fn_80309A9C(u32 mask, s32 slot);
 };
 extern cls_804AA8C8* lbl_8053AD30;
-extern "C" {
-// Owner: game/tu_803099FC.cpp. fn_8030AAF4 maps a player index (0-3) to an
+// Owner: game/tu_80301CD0.cpp (its sbss, 0x8053AD34; dtk sized it 1 byte).
+// game/tu_803099FC.cpp fn_8030AB38 clears four bytes from it in its loop.
+extern u8 lbl_8053AD34[4];
+// game/tu_803099FC.cpp (0x8030AAF4). Maps a player index (0-3) to an
 // input slot (-0x3E7 for none); masks used: 0x100/0x200/0x400/0x20 and 1/2.
 s32 fn_8030AAF4(s32 player);
-} // extern "C"
 
 // The object *lbl_8053AED0 (game/tu_8043A0E8.cpp, owner not written yet):
 // named after its vtable, 0x804B1920 (constructor fn_8043F504, which stores
