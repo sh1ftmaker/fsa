@@ -10,20 +10,6 @@
 #include "JSystem/JMath/JMath.h"
 #include "game/cls_804B1288.h"
 
-// The pane names fn_80408F38 looks up (8 characters, right-aligned). The
-// eight after them (lbl_8048C618) belong to code not written yet.
-static const u64 lbl_8048C5D0[9] = {
-    0x0050656E6261636Bull, // "Penback"
-    0x0000000050736B79ull, // "Psky"
-    0x000050636C6F3034ull, // "Pclo04"
-    0x000050636C6F3033ull, // "Pclo03"
-    0x000050636C6F3032ull, // "Pclo02"
-    0x0000506D61706361ull, // "Pmapca"
-    0x00506D6170746F75ull, // "Pmaptou"
-    0x000050636C6F3031ull, // "Pclo01"
-    0x50656E6261636B31ull, // "Penback1"
-};
-
 void cls_804B1288::fn_80403D84() {
     u8 done = field_0x240[0]->fn_80402940(0xB, 0, 0.0f, 100.0f);
     for (s32 i = 1; i < 12; i++) {
@@ -77,12 +63,6 @@ bool cls_804B1288::fn_804045F8(s32 bit) {
         return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7a[0] & (u8)(1 << bit);
     }
     return false;
-}
-
-void cls_804B1288::fn_80408F38(f32 alpha) {
-    for (int i = 0; i < 9; i++) {
-        field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);
-    }
 }
 
 void cls_804B1288::fn_80409330() {
