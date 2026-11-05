@@ -749,19 +749,19 @@ void GameMode_804B0688::fn_803DEC44() {
             case 0:
                 mScreen->search('Wgbco01')->hide();
                 mScreen->search('Wnop01')->hide();
-                mScreen->search('Wnop02')->hide();
+                mScreen->search('Wnop02')->show();
                 mScreen->search('Wgbco02')->show();
                 break;
             case 1:
                 mScreen->search('Wgbco01')->show();
                 mScreen->search('Wnop01')->show();
-                mScreen->search('Wnop02')->show();
+                mScreen->search('Wnop02')->hide();
                 mScreen->search('Wgbco02')->hide();
                 break;
             default:
                 mScreen->search('Wgbco01')->show();
                 mScreen->search('Wnop01')->show();
-                mScreen->search('Wnop02')->show();
+                mScreen->search('Wnop02')->hide();
                 mScreen->search('Wgbco02')->hide();
                 break;
             }
