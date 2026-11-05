@@ -123,7 +123,7 @@ public:
     bool fn_80242704(s32 arg); // via fn_8023162C
     bool fn_802466B4(); // via fn_8022C3AC
     u32 fn_80246B10(u32 arg); // via fn_8022C52C; tested with cmplwi by fn_802870C8
-    s32 fn_80246D1C(u32 arg); // via fn_8022C5EC
+    u32 fn_80246D1C(u32 arg); // via fn_8022C5EC
     u8 fn_80247534(); // via fn_8022C8EC
     bool fn_80247564(); // via fn_8022C9AC
     void fn_80248DAC(); // via fn_80234810
@@ -173,9 +173,9 @@ public:
     bool fn_80245FEC(); // via fn_8022C274
     bool fn_80246228(); // via fn_8022C310
     void fn_80248004(s32 a, bool b); // via fn_8022CA6C
-    s32 fn_802486A0(); // via fn_8022CAF8
+    s32 fn_802486A0() const; // via fn_8022CAF8
     s32 fn_80248778() const; // via fn_8022E8D4
-    s32 fn_80248970(); // via fn_8022E970
+    s32 fn_80248970() const; // via fn_8022E970
     void fn_80248DB8(); // via fn_802381B8
     void fn_80248DCC(); // via fn_80238244
     void fn_80248FF0(); // via fn_8022CD48
@@ -434,7 +434,7 @@ public:
     void fn_8027EEB4(); // steps the walk-animation counter field_0x3f8 (frame field_0x3f9)
     void fn_8027F1C8(); // places or spawns the effect in field_0x1388 (ids 0x35E-0x361)
     void fn_8027F854(JGeometry::TVec3f* out, s32 player); // player's position plus an offset by fn_802486A0
-    s32 fn_802487FC(); // tu_8023FBF0 (0x802487FC); a count of players (r3 only)
+    s32 fn_802487FC() const; // tu_8023FBF0 (0x802487FC); a count of players (r3 only)
     void fn_80283848();
     void fn_8028434C();
     void fn_8024E344();

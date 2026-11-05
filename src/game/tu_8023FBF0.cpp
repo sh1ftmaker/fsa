@@ -1,3 +1,4 @@
+#include "JSystem/JUtility/JUTGamePad.h"
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
@@ -8,6 +9,7 @@
 #include "game/PlayerBit.h"
 #include "game/PlayerFlags.h"
 #include "game/StageFlag.h"
+#include "game/ViewLayer.h"
 #include "game/cls_804A71A8.h"
 #include "game/cls_804AE9B0.h"
 #include "game/cls_804B20F8.h"
@@ -454,14 +456,11 @@ s32 Player_804A6F38::fn_8024322C() {
     return field_0xd08;
 }
 
-// The team checks fn_80246F28 makes before it reads the input: the player
-// flags, then, when more than one player is on this team and the team mode
-// (fn_8022CAF8 / field_0x120c) is 4, the team count must match, and
-// field_0x11ea must be set.
-static inline bool teamCheck(Player_804A6F38* player) {
-    if (!player->fn_802413F0()) {
-        return false;
-    }
+// The size of this player's group: itself, its leader (field_0xd60) and
+// every active follower (fn_8022F514) whose leader (fn_8022F3DC) is that
+// leader, or this player when it leads. fn_80248970's body; MWCC inlines it
+// into fn_802486A0 and fn_802487FC, defined before it, so it is a file inline.
+static inline s32 groupSize(const Player_804A6F38* player) {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
         if (i == player->field_0x4) {
@@ -482,50 +481,226 @@ static inline bool teamCheck(Player_804A6F38* player) {
             count++;
         }
     }
-    s32 mode;
-    if (count <= 1) {
-        mode = 5;
-    } else if (player->field_0xd60 >= 0) {
-        mode = fn_8022CAF8(player->field_0xd60);
-    } else {
-        mode = player->field_0x120c;
+    return count;
+}
+
+// The group's mode: 5 alone, else the leader's (fn_8022CAF8) or, leading,
+// field_0x120c. fn_802486A0's body (inlined before its definition, as above).
+static inline s32 groupMode(const Player_804A6F38* player) {
+    if (groupSize(player) <= 1) {
+        return 5;
     }
-    if (mode == 4) {
-        s32 a;
-        if (player->field_0xd60 >= 0) {
-            a = fn_80234004(player->field_0xd60);
-        } else {
-            a = player->field_0x1224;
-        }
-        s32 b;
-        if (player->field_0xd60 < 0) {
-            b = 0;
-        } else {
-            s32 n = 0;
-            for (s32 j = 0; j < player->field_0x4; j++) {
-                s32 team = player->field_0xd60;
-                if (team == fn_8022F3DC(j)) {
-                    n++;
-                }
-            }
-            b = n + 1;
-        }
-        if (a != b) {
-            return false;
+    if (player->field_0xd60 >= 0) {
+        return fn_8022CAF8(player->field_0xd60);
+    }
+    return player->field_0x120c;
+}
+
+// The place of this player in its leader's line (1 for the first follower),
+// or 0 when it leads. fn_80248778's body (inlined before its definition).
+static inline s32 linePlace(const Player_804A6F38* player) {
+    if (player->field_0xd60 < 0) {
+        return 0;
+    }
+    s32 count = 0;
+    for (s32 i = 0; i < player->field_0x4; i++) {
+        s32 partner = player->field_0xd60;
+        if (partner == fn_8022F3DC(i)) {
+            count++;
         }
     }
-    if (!player->field_0x11ea) {
+    return count + 1;
+}
+
+// The gate in front of every pad query of the player (fn_80246904 and the
+// functions around it): the player flags (fn_802413F0); in group mode 4
+// only the player whose turn it is (fn_80240888 == its place in line); and
+// field_0x11ea.
+static inline bool teamCheck(Player_804A6F38* player) {
+    if (!playerFlags_802413F0(player)) {
+        return false;
+    }
+    if ((groupMode(player) == 4 && player->fn_80240888() != linePlace(player)) || !player->field_0x11ea) {
         return false;
     }
     return true;
 }
 
-// FIXME: 94.8 %. The fn_802413F0 chain matches up to its last byte: there
-// the original tests 0xCE9 with cmplwi / bne and li 0 / li 1, ours converts
-// it with neg / or / srwi (as fn_802413F0's own copy does in both). Also the
-// original branches on a != b (bne) to the false result it shares with the
-// field_0x11ea test, ours on a == b with a false block of its own, and the
-// loop locals get r27-r29 in another order (field_0x4 in r30 there).
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_802454C0() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309A54(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_802456FC() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80245938() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x20) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80245B74() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80245DB0() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80245FEC() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+}
+
+// FIXME: 96.8 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80246228() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x100) != 0;
+}
+
+// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_80246464() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (fn_8022B244()) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), 0x200) != 0;
+}
+
+// FIXME: 96.9 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+bool Player_804A6F38::fn_802466B4() {
+    if (teamCheck(this) == false) {
+        return false;
+    }
+    if (fn_8022B244()) {
+        return false;
+    }
+    if (field_0x456) {
+        return false;
+    }
+    if (field_0x11f0 > 0) {
+        return false;
+    }
+    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x200) != 0;
+}
+
+// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+s32 Player_804A6F38::fn_80246904(u32 mask) {
+    if (teamCheck(this) == false) {
+        return 0;
+    }
+    return lbl_8053AD30->fn_80309A78(fn_8030AAF4(field_0x11ec), mask);
+}
+
+// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+u32 Player_804A6F38::fn_80246B10(u32 mask) {
+    if (teamCheck(this) == false) {
+        return 0;
+    }
+    return lbl_8053AD30->fn_80309D24(fn_8030AAF4(field_0x11ec), mask);
+}
+
+// FIXME: 96.5 %. As fn_80246F28 (the 0xCE9 byte test of the inlined
+// playerFlags_802413F0, and the group loop's registers).
+u32 Player_804A6F38::fn_80246D1C(u32 mask) {
+    if (teamCheck(this) == false) {
+        return 0;
+    }
+    return lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), mask);
+}
+
+// FIXME: 96.5 %. The playerFlags_802413F0 chain ends in a byte test that
+// the original branches on (cmplwi / bne, li 1 / li 0) and ours converts
+// (neg / or / srwi, as fn_802413F0's own out-of-line copy does): the if form
+// `if (!field_0xce9) return false; return true;` gives the inlined copies
+// exactly (99.5 %, registers only) but breaks fn_802413F0 (100 -> 84.6 %),
+// so the header keeps the form fn_802413F0 proves. Also the group loop's
+// count / index / leader get r27 / r26 / r28 where the original has r28 / r27 / r26.
 f32 Player_804A6F38::fn_80246F28() {
     // `== false`: the check's bool is materialised and tested (li 0 / li 1,
     // clrlwi.; bne to the call), as with `x == true` (docs/RULES_CARD.md).
@@ -628,6 +803,13 @@ void Player_804A6F38::fn_80248604() {
     }
 }
 
+// FIXME: 97.7 %. Register allocation only: the original gives the count r29,
+// the index r30 and the leader r28, ours r28 / r29 / r30. Const: the loop
+// test's field_0x4 is hoisted out of the loop (r31), as in fn_80248778.
+s32 Player_804A6F38::fn_802486A0() const {
+    return groupMode(this);
+}
+
 // The place of this player in its partner's line (1 for the first follower),
 // or 0 without a partner. fn_80254744 inlines it and reloads both fields on
 // every pass; this const copy keeps them in registers.
@@ -693,6 +875,152 @@ void Player_804A6F38::fn_80249070() {
 
 void Player_804A6F38::fn_8024909C() {
     field_0x121f = 1;
+}
+
+// FIXME: 97.4 %. Every call, field and branch is in place; the 13 inlined
+// pad gates (fn_80246B10 / fn_80246D1C) differ only in the 0xCE9 byte test
+// of playerFlags_802413F0 (see fn_80246F28: 26 instructions); with the if
+// form there this is 99.9 %, registers only (field_0x4 copy r30 vs r26).
+// The player's input each frame (update A, fn_80253E6C): the 'FORM' call
+// of a group leader and the four direction picks (fn_80248004(dir, true))
+// on the pad buttons or the C stick.
+void Player_804A6F38::fn_802490A8() {
+    if (field_0x1220 > 0) {
+        return;
+    }
+    s32 player = field_0x4;
+    if (fn_802486A0() == 4) {
+        player = fn_8022EA0C(field_0x4);
+    }
+    if (fn_80230188(player)) {
+        return;
+    }
+    if (fn_80236B50(player)) {
+        return;
+    }
+    if (fn_8023E724(player)->z > 0.0f) {
+        return;
+    }
+    if (fn_8023EA28(player)) {
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(field_0x4, i)) {
+            if (fn_8023E98C(i) && !fn_8022E438(i, fn_8023EC54(i))) {
+                return;
+            }
+            if (fn_8022DEAC(i) && fn_802486A0() != 4) {
+                return;
+            }
+            if (fn_8022D930(i)) {
+                return;
+            }
+            if (fn_8022D894(i)) {
+                return;
+            }
+            if (fn_8022D75C(i)) {
+                return;
+            }
+            if (fn_80235274(i)) {
+                return;
+            }
+            if (fn_80234CF8(i)) {
+                return;
+            }
+            if (fn_80234C5C(i)) {
+                return;
+            }
+            if (fn_80235744(i)) {
+                return;
+            }
+            if (fn_802353AC(i)) {
+                return;
+            }
+            if (fn_80233EDC(i)) {
+                return;
+            }
+            if (fn_80234E30(i)) {
+                return;
+            }
+        }
+    }
+    if (lbl_8053AAF8->field_0x7e && field_0xcfe == 1) {
+        return;
+    }
+    if (fn_8022AF5C()) {
+        return;
+    }
+    if (field_0x121e == 1) {
+        return;
+    }
+    JUTGamePad* pad = JUTGamePad::getGamePad(fn_8030AAF4(field_0x11ec));
+    if (field_0xd60 < 0 && groupSize(this) >= 2 &&
+        lbl_8053AD30->fn_80309D6C(fn_8030AAF4(field_0x11ec), 0x40)) {
+        if (fn_802486A0() == 5) {
+            if (!lbl_8053AAF8->field_0x7e) {
+                lbl_8053AAF8->fn_80134FE0(1);
+            }
+            field_0x1230 = fn_801F856C()->fn_801F9484(ACTOR_FORM, field_0x3b4, &mPos, field_0x4 & 3, -1, -1);
+        } else {
+            fn_80248004(5, true);
+        }
+        return;
+    }
+    if (!viewLayerFlag(field_0x3b4) && fn_80246B10(0x40)) {
+        if (fn_80246D1C(8)) {
+            if (!fn_80246B10(1) && !fn_80246B10(2)) {
+                fn_80248004(2, true);
+                return;
+            }
+        }
+        if (fn_80246D1C(1)) {
+            if (!fn_80246B10(8) && !fn_80246B10(4)) {
+                fn_80248004(3, true);
+                return;
+            }
+        }
+        if (fn_80246D1C(4)) {
+            if (!fn_80246B10(1) && !fn_80246B10(2)) {
+                fn_80248004(1, true);
+                return;
+            }
+        }
+        if (fn_80246D1C(2)) {
+            if (!fn_80246B10(8) && !fn_80246B10(4)) {
+                fn_80248004(0, true);
+                return;
+            }
+        }
+    }
+    bool busy = false;
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(field_0x4, i) && fn_8022DEAC(i)) {
+            busy = true;
+            break;
+        }
+    }
+    if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(field_0x11ec))) {
+        return;
+    }
+    if (pad == NULL) {
+        return;
+    }
+    if (busy) {
+        return;
+    }
+    if (!(pad->getSubStickValue() > 0.5f)) {
+        return;
+    }
+    s32 angle = pad->getSubStickAngle();
+    if (angle < -0x7000 || angle >= 0x7000) {
+        fn_80248004(2, true);
+    } else if (angle >= -0x5000 && angle < -0x3000) {
+        fn_80248004(3, true);
+    } else if (angle >= -0x1000 && angle < 0x1000) {
+        fn_80248004(1, true);
+    } else if (angle >= 0x3000 && angle < 0x5000) {
+        fn_80248004(0, true);
+    }
 }
 
 bool Player_804A6F38::fn_8024B24C() {
