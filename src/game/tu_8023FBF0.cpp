@@ -762,6 +762,27 @@ s32 Player_804A6F38::fn_80241920() {
     return value >= 0 ? value : 0;
 }
 
+// True alone (groupSize <= 1) or in group mode 4; else only when every
+// other player this one can reach (fn_8022E438) has fn_802349EC (byte
+// 0x1215 of that player, set on arriving at its spot).
+// FIXME: 97.29. Registers and scheduling only: the first group loop's count /
+// index are r29 / r30 in the original, r28 / r29 here (with the stw r28 save
+// moved).
+bool Player_804A6F38::fn_80241964() {
+    if (groupSize(this) <= 1) {
+        return true;
+    }
+    if (groupMode(this) == 4) {
+        return true;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (i != field_0x4 && fn_8022E438(field_0x4, i) && !fn_802349EC(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool Player_804A6F38::fn_80241DD0(s32 layer, const JGeometry::TVec3f* pos) {
     if (layer < 8) {
         return gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(pos);
