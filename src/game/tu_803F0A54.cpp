@@ -1241,6 +1241,137 @@ void ConnectScreen_804B0F10::fn_803F8FBC() {
     }
 }
 
+// FIXME: 97.12. Registers throughout; the counter's first test is
+// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
+// the player-row loop keeps i * 5 in two registers there (li r30;
+// mr r28, r30, plus a separate this pointer for field_0xdc) but one here;
+// .sdata2 @NNN names.
+// Update state 3: slides the GBA connection screen field_0x8 in and fades
+// it up (field_0x240[0] counts the frames: the message box from 0 to 25,
+// the title from 25 to 45, the player rows 5 frames apart), plays each
+// connected player's pane animation (as fn_803F8AE4) once its row is in
+// place, then enters state 5 at 75.
+void ConnectScreen_804B0F10::fn_803F9EA8() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            field_0x9c = -300.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            field_0xa8 = -100.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 34; i++) {
+                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], alpha));
+            }
+            alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 11; i++) {
+                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], alpha));
+            }
+        } else {
+            field_0x9c = field_0xa8 = 0.0f;
+            for (int i = 0; i < 34; i++) {
+                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], 1.0f));
+            }
+            for (int i = 0; i < 11; i++) {
+                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            field_0xb4 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+            field_0xb8 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+            f32 alpha = (f32)(field_0x240[0] - 25) / 20.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 6; i++) {
+                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], alpha));
+            }
+        } else {
+            field_0xb4 = field_0xb8 = 0.0f;
+            for (int i = 0; i < 6; i++) {
+                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], 1.0f));
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        if (field_0x240[0] > i * 5) {
+            if (field_0x240[0] < i * 5 + 15) {
+                field_0xdc[i] = 200.0f * ((f32)((15 - (field_0x240[0] - i * 5)) * (15 - (field_0x240[0] - i * 5))) / 225.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 5) / 15.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 9; j++) {
+                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], alpha));
+                }
+            } else {
+                field_0xdc[i] = 0.0f;
+                for (int j = 0; j < 9; j++) {
+                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) && field_0xdc[i] == 0.0f) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F2B48();
+    }
+    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
+    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
+    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
+    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
+    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
+    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
+    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
+}
+
 // FIXME: 99.41 %. Same register swap as fn_803F2580 in the inlined
 // setEntries loop (li r4, 0 for i in the original, mr r4, r3 here).
 void ConnectScreen_804B0F10::fn_803FB6F4() {
