@@ -226,6 +226,28 @@ static inline u8 fadeAlpha(u8 alpha, f32 rate) {
     return alpha * rate;
 }
 
+// Sets the 2-bit field `player` of root->field_0x83 to `kind` (as in
+// game/tu_803F0A54.cpp).
+static inline void setPlayerKind(GameRoot_8049EF20* root, s32 player, u8 kind) {
+    root->field_0x83 &= ~(u8)(3 << (2 * player));
+    root->field_0x83 |= (u8)(kind << (2 * player));
+}
+
+// Sets bit `i` of lbl_8053AAF8->field_0x82 and the 2-bit field `i` of
+// field_0x83 to 1 for the field_0x1bc + 1 players that take part, and clears
+// both for the others.
+static inline void setEntries(cls_804B0B00* self) {
+    for (s32 i = 0; i < 4; i++) {
+        if (i < self->field_0x1bc + 1) {
+            lbl_8053AAF8->field_0x82 |= (u8)(1 << i);
+            setPlayerKind(lbl_8053AAF8, i, 1);
+        } else {
+            lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+            setPlayerKind(lbl_8053AAF8, i, 0);
+        }
+    }
+}
+
 // Steps the cursor's blink counter (field_0x254[0]) and the frame counter (field_0x220[0]).
 // Shared by fn_803E9034 and fn_803ED604 (the two menu update functions).
 static inline void stepBlink(cls_804B0B00* self) {
@@ -896,6 +918,86 @@ void cls_804B0B00::fn_803E9EE8() {
         } else {
             field_0x220[i] = 0;
         }
+    }
+}
+
+// FIXME: 99.61. One register: in setEntries' loop the original gives i a
+// fresh li r4, 0 and keeps 2 * i in r3 (the zero stored to field_0x1b8);
+// ours copies that zero into i (mr r4, r3). Same as the twin's
+// cls_804B0F10::fn_803F2580.
+// Update state 3 (the player-count menu, field_0x1bc = players - 1): decide
+// with one player takes slot 0 alone (kind 1 with a controller there, else
+// 2); with more, the entries are set when every controller is connected,
+// and a changed count resets the players' tables (fn_80403680). Back
+// (0x200) leaves the screen (field_0x360 = 2); right / left (4 / 8) cycle
+// the count.
+void cls_804B0B00::fn_803EC804() {
+    stepBlink(this);
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
+        if (field_0x1bc == 0) {
+            field_0x1b8 = 1;
+            lbl_8053AAF8->field_0x7e = 0;
+            lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
+            for (s32 i = 1; i < 4; i++) {
+                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+            }
+            lbl_8053AAF8->field_0x82 |= (u8)(1 << 0);
+            for (s32 i = 1; i < 4; i++) {
+                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+            }
+            if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+                setPlayerKind(lbl_8053AAF8, 0, 1);
+            } else {
+                setPlayerKind(lbl_8053AAF8, 0, 2);
+            }
+            for (s32 i = 1; i < 4; i++) {
+                lbl_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
+            }
+            field_0x1dc = 15;
+            fn_803E4308();
+        } else {
+            field_0x1b8 = 0;
+            lbl_8053AAF8->field_0x7e = 1;
+            if (field_0x1d0 == field_0x1bc + 1) {
+                setEntries(this);
+                field_0x1dc = 15;
+            }
+            fn_803E4308();
+            if (field_0x1bc != lbl_80529DEC.field_0x23c) {
+                for (s32 i = 0; i < 4; i++) {
+                    lbl_80529DEC.field_0x130[i] = 0;
+                }
+                lbl_80529DEC.field_0x64 = -1;
+            }
+        }
+        if (field_0x1bc != lbl_80529DEC.field_0x23c) {
+            lbl_80529DEC.fn_80403680();
+        }
+        lbl_80529DEC.field_0x23c = field_0x1bc;
+        lbl_8053AF80->fn_80458880(11, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
+        field_0x360 = 2;
+        lbl_8053AF80->fn_80458880(12, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
+        field_0x1bc++;
+        if (field_0x1bc >= 4) {
+            field_0x1bc = 0;
+        }
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
+        lbl_8053AF80->fn_80458880(0x26, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
+        field_0x1bc--;
+        if (field_0x1bc < 0) {
+            field_0x1bc = 3;
+        }
+        field_0x254[0] = 1;
+        field_0x1e0[0] = 30;
+        lbl_8053AF80->fn_80458880(0x26, -1);
+    }
+    field_0x1e0[0]++;
+    if (field_0x1e0[0] >= 60) {
+        field_0x1e0[0] = 0;
     }
 }
 
