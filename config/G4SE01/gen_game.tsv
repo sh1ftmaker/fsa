@@ -3,14 +3,12 @@ act_all_enemies_defeated_check_switch	dtor	__dt__12cls_804A8AC8Fv	cls_804A8AC8	0
 act_all_enemies_defeated_check_switch	sinit	__sinit_act_all_enemies_defeated_check_switch_cpp	-	-	new	new
 act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
-act_arrow	sinit	__sinit_act_arrow_cpp	-	-	new	-
 act_bee_manager	sinit	__sinit_act_bee_manager_cpp	-	-	new	-
 act_bird_manager	sinit	__sinit_act_bird_manager_cpp	-	-	new	-
 act_blade_trap	dtor	__dt__18BladeTrap_804A04D8Fv	BladeTrap_804A04D8	0x804A04D8	new	new
 act_blade_trap	sinit	__sinit_act_blade_trap_cpp	-	-	new	new
 act_block	dtor	__dt__14Block_804A7A10Fv	Block_804A7A10	0x804A7A10	new	new
 act_block	sinit	__sinit_act_block_cpp	-	-	new	new
-act_bomb	sinit	__sinit_act_bomb_cpp	-	-	new	-
 act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
@@ -35,7 +33,6 @@ act_extending_lift	sinit	__sinit_act_extending_lift_cpp	-	-	new	new
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
-act_flame	sinit	__sinit_act_flame_cpp	-	-	new	-
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
 act_force_gem_buried	dtor	__dt__23BuriedForceGem_804AB258Fv	BuriedForceGem_804AB258	0x804AB258	new	new
@@ -134,12 +131,10 @@ tu_801555D8	sinit	__sinit_tu_801555D8_cpp	-	-	new	-
 tu_8015F454	sinit	__sinit_tu_8015F454_cpp	-	-	new	-
 tu_801618D0	sinit	__sinit_tu_801618D0_cpp	-	-	new	-
 tu_80170008	sinit	__sinit_tu_80170008_cpp	-	-	new	-
-tu_8018EB94	sinit	__sinit_tu_8018EB94_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801B0A00	sinit	__sinit_tu_801B0A00_cpp	-	-	new	-
 tu_801B27DC	sinit	__sinit_tu_801B27DC_cpp	-	-	new	-
 tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
-tu_801B6C50	sinit	__sinit_tu_801B6C50_cpp	-	-	new	-
 tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801DA7C0	sinit	__sinit_tu_801DA7C0_cpp	-	-	new	-
 tu_801DD1AC	sinit	__sinit_tu_801DD1AC_cpp	-	-	new	-
@@ -160,7 +155,6 @@ tu_803A60E4	sinit	__sinit_tu_803A60E4_cpp	-	-	new	-
 tu_803A8DFC	sinit	__sinit_tu_803A8DFC_cpp	-	-	new	-
 tu_803B7DCC	sinit	__sinit_tu_803B7DCC_cpp	-	-	new	-
 tu_803D7098	sinit	__sinit_tu_803D7098_cpp	-	-	new	-
-tu_803D9944	sinit	__sinit_tu_803D9944_cpp	-	-	new	-
 tu_803FF2C4	sinit	__sinit_tu_803FF2C4_cpp	-	-	new	-
 tu_8042165C	sinit	__sinit_tu_8042165C_cpp	-	-	new	-
 tu_80432638	sinit	__sinit_tu_80432638_cpp	-	-	new	-

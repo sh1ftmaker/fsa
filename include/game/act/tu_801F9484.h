@@ -7,6 +7,11 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
+#include "game/act/act_arrow.h"
+#include "game/act/act_flame.h"
+#include "game/act/tu_8018EB94.h"
+#include "game/act/tu_801B6C50.h"
+#include "game/act/tu_803D9944.h"
 #include "game/act/act_princess_zelda_ending.h"
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
@@ -144,14 +149,6 @@ public:
     /* 0x230 */ u8 field_0x230[0x94];
 }; // Size: 0x2C4
 
-// Spawned for 'FLME'.
-class cls_804A0330 : public ActorBase_804A5770 {
-public:
-    cls_804A0330() {}
-    /* 0x08 */ virtual ~cls_804A0330();
-    /* 0x230 */ u8 field_0x230[0x44];
-}; // Size: 0x274
-
 // Spawned for 'BPOH'.
 class cls_804A0440 : public ActorBase_804A5770 {
 public:
@@ -162,14 +159,6 @@ public:
     /* 0x2E8 */ u8 field_0x2e8[0xC];
     /* 0x2F4 */ JUtility::TColor field_0x2f4[3];
 }; // Size: 0x300
-
-// Spawned for 'ARRW'.
-class cls_804A05E0 : public ActorBase_804A5770 {
-public:
-    cls_804A05E0() {}
-    /* 0x08 */ virtual ~cls_804A05E0();
-    /* 0x230 */ u8 field_0x230[0x50];
-}; // Size: 0x280
 
 // Spawned for 'SLR3'.
 class cls_804A0810 : public ActorBase_804A5770 {
@@ -209,17 +198,6 @@ public:
     /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[4];
     /* 0x328 */ u8 field_0x328[0xC];
 }; // Size: 0x334
-
-// Spawned for 'DGT2'.
-class cls_804A1FA0 : public ActorBase_804A5770 {
-public:
-    cls_804A1FA0() {}
-    /* 0x08 */ virtual ~cls_804A1FA0();
-    /* 0x230 */ u8 field_0x230[0x58];
-    /* 0x288 */ JGeometry::TVec3f field_0x288[6];
-    /* 0x2D0 */ JGeometry::TVec3f field_0x2d0[20];
-    /* 0x3C0 */ u8 field_0x3c0[0xC];
-}; // Size: 0x3CC
 
 // Spawned for 'ZLD2'.
 class cls_804A2944 : public ActorBase_804A5770 {
@@ -312,16 +290,6 @@ public:
     /* 0x264 */ JGeometry::TVec3f field_0x264[4];
     /* 0x294 */ u8 field_0x294[0x5C];
 }; // Size: 0x2F0
-
-// Spawned for 'GLWP'.
-class cls_804A39DC : public ActorBase_804A5770 {
-public:
-    cls_804A39DC() {}
-    /* 0x08 */ virtual ~cls_804A39DC();
-    /* 0x230 */ u8 field_0x230[0x34];
-    /* 0x264 */ JGeometry::TVec3f field_0x264[4];
-    /* 0x294 */ u8 field_0x294[0x10];
-}; // Size: 0x2A4
 
 // Spawned for 'FALL'.
 class cls_804A3E44 : public ActorBase_804A5770 {
@@ -531,16 +499,6 @@ public:
     /* 0x08 */ virtual ~cls_804AF338();
     /* 0x230 */ u8 field_0x230[0x78];
 }; // Size: 0x2A8
-
-// Spawned for 'TNGL'.
-class cls_804B0478 : public ActorBase_804A5770 {
-public:
-    cls_804B0478() {}
-    /* 0x08 */ virtual ~cls_804B0478();
-    /* 0x230 */ u8 field_0x230[0x30];
-    /* 0x260 */ JGeometry::TVec3f field_0x260[4];
-    /* 0x290 */ u8 field_0x290[0x10];
-}; // Size: 0x2A0
 
 // ZOSH and ARSH ("ZOSH"/"ARSH", unwritten units): sub-classes of cls_804A48B0 that only add a
 // destructor (the base destructors are inlined into it, as in cls_804A5418). Named after their

@@ -1,8 +1,8 @@
 #ifndef GAME_ACT_ACT_BOMB_H
 #define GAME_ACT_ACT_BOMB_H
 
-// Code: game/act_bomb.cpp (not written yet). Only what other units read is
-// declared.
+// Code: game/act_bomb.cpp (the destructor only so far). Only what other units
+// read is declared.
 
 #include "game/ActorBase.h"
 
@@ -12,9 +12,11 @@
 class Bomb_8049F784 : public ActorBase_804A5770 {
 public:
     Bomb_8049F784() {}
+    /* 0x08 */ virtual ~Bomb_8049F784();
     /* 0x230 */ u8 field_0x230[0x238 - 0x230]; // not yet known
     /* 0x238 */ s32 field_0x238;               // act_shadow_link_2's helper ignores bombs with >= 5
-    /* 0x23C */ u8 field_0x23c[0x29C - 0x23C]; // not yet known
+    /* 0x23C */ u8 field_0x23c[0x290 - 0x23C]; // not yet known
+    /* 0x290 */ JPABaseEmitter* mEmitters[3];  // released by the destructor
 }; // Size: 0x29C
 
 #endif
