@@ -122,7 +122,7 @@ public:
     void fn_80242560(); // via fn_80231424
     bool fn_80242704(s32 arg); // via fn_8023162C
     bool fn_802466B4(); // via fn_8022C3AC
-    s32 fn_80246B10(u32 arg); // via fn_8022C52C
+    u32 fn_80246B10(u32 arg); // via fn_8022C52C; tested with cmplwi by fn_802870C8
     s32 fn_80246D1C(u32 arg); // via fn_8022C5EC
     u8 fn_80247534(); // via fn_8022C8EC
     bool fn_80247564(); // via fn_8022C9AC
@@ -357,6 +357,56 @@ public:
     void fn_80286B74();
     void fn_80286E10();
     void fn_802870C8();
+    // State handlers (update / enter / exit) the three switches of fn_802870C8
+    // call, in address order; tables in docs/PLAYER.md. Not written yet.
+    void fn_802586D0(); void fn_80258890(); void fn_80258BE8(); void fn_80259830();
+    void fn_8025A15C(); void fn_8025AB00(); void fn_8025AED0(); void fn_8025B22C();
+    void fn_8025B3F0(); void fn_8025BEB0(); void fn_8025C894(); void fn_8025D6AC();
+    void fn_8025D7E4(); void fn_8025D9FC(); void fn_8025DACC(); void fn_8025E79C();
+    void fn_80261750(); void fn_80262188(); void fn_80262254(); void fn_80262BAC();
+    void fn_80263078(); void fn_802632A8(); void fn_802635D8(); void fn_802636D4();
+    void fn_80263860(); void fn_80263BA0(); void fn_80263C64(); void fn_8026441C();
+    void fn_802771C8(); void fn_80277220(); void fn_802775C8(); void fn_8027776C();
+    void fn_80277EBC(); void fn_80277F98(); void fn_802791B0(); void fn_802796B8();
+    void fn_80279824(); void fn_80279CFC(); void fn_80279FE8(); void fn_8027A0D4();
+    void fn_8027A178(); void fn_8027A1E0(); void fn_8027A908(); void fn_8027AAD0();
+    void fn_8027B304(); void fn_8027B648(); void fn_8027BA2C(); void fn_8027BC90();
+    void fn_8027BE74(); void fn_8027C4FC(); void fn_8027C6C4(); void fn_8027CBB0();
+    void fn_8027CC90(); void fn_8027D320(); void fn_8027D5F0(); void fn_8027DEA0();
+    void fn_80280DD8(); void fn_80280E44(); void fn_802811C0(); void fn_8028126C();
+    void fn_80281760(); void fn_80281A18(); void fn_80281A90(); void fn_80281D50();
+    void fn_80281E98(); void fn_80282094(); void fn_80282178(); void fn_80282ACC();
+    void fn_80282E6C(); void fn_80282FE0(); void fn_80283948(); void fn_80283E70();
+    void fn_802844F8(); void fn_80284978(); void fn_80284E04(); void fn_80285098();
+    void fn_8028538C(); void fn_80285690(); void fn_802857F0(); void fn_802859C4();
+    void fn_80290D58(); void fn_80290F20(); void fn_80290FC0(); void fn_8029185C();
+    void fn_80291910(); void fn_80291B64(); void fn_80291B8C(); void fn_80291CB8();
+    void fn_80291D28(); void fn_80291E44(); void fn_80291F10(); void fn_80292198();
+    void fn_802922EC(); void fn_802924AC(); void fn_802925E4(); void fn_802927B0();
+    void fn_80292820(); void fn_80292944(); void fn_802929FC(); void fn_80292ECC();
+    void fn_802932BC(); void fn_80293398(); void fn_80293534(); void fn_802935A4();
+    void fn_80293774(); void fn_80293900(); void fn_80293B30(); void fn_80293E8C();
+    void fn_80293FE4(); void fn_80294374(); void fn_802948C0(); void fn_80294ADC();
+    void fn_8029513C(); void fn_80295268(); void fn_80295334(); void fn_802953A0();
+    void fn_802954DC();
+    // Called by fn_802870C8 after the state update (r3 = this; results unused
+    // unless typed).
+    void fn_80242940();
+    void fn_80242BC0();
+    void fn_80242CB0();
+    bool fn_80246464(); // clears field_0xcad when false
+    void fn_8024762C(); // state-request helper (stores 0x1244 = 0/1/2/0xB)
+    void fn_8024BBB8();
+    void fn_8024EE24();
+    void fn_8025250C();
+    void fn_8025785C();
+    void fn_802580E0();
+    void fn_8025825C();
+    void fn_80265AE4();
+    void fn_80265D68();
+    void fn_80265D8C();
+    void fn_80265DB0();
+    void fn_80280B30();
     void fn_80265E88(); // tu_80264998 (skeleton / animation), called by fn_80285E58
     void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
     bool fn_8025197C(bool arg); // tu_8023FBF0
@@ -1501,6 +1551,9 @@ s32 fn_8022FD8C(s32 serial);
 // Owner: tu_8022AD64 (0x8022EA0C, defined there). 1 unit (act_blindfold's update): maps a
 // player index to the index whose position fn_8023E724 is then asked for (r3 in, r3 out).
 s32 fn_8022EA0C(s32 player);
+// tu_8022AD64 per-player queries the state tick compares with field_0x4.
+s32 fn_80238F78(s32 player);
+s32 fn_80239040(s32 player);
 // Owner: tu_8022AD64 (0x8022FF8C, defined there). 1 unit (act_merchant's update, state 1):
 // fn_8022FEB8's box test for a given player (player, box, layer, serial, a, b), called with
 // the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.

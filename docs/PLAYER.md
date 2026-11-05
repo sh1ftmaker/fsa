@@ -358,10 +358,15 @@ from the tables' relocations, so every case below is the table entry):
   arrays at 0xDB0 / 0x1030 (`for (int i = 0; i < 0x50; i++)`; an `s32`
   counter adds a bound check the original lacks).
 
-Fields the unwritten tu_80285E58 functions need that Player.h still has as
-padding (carving them unblocks the unit): fn_80285F44: s32 0x3B8, s32
-0x448. fn_80286688: u8 0x13B8. fn_80286B74: TVec3f 0x338. fn_802870C8:
-TVec3f 0x32C, s32 0x3B0, u8 0x11E9, s32 0x123C, u8 0xCEF, TVec3f 0xCBC,
-TVec3f 0xD1C, u8 0x43B-0x43D, f32 0x38C / 0x390, TVec3f 0x35C, s32 0x3E4,
-s32 0x3F4, u8 0x403, u8 0x456, s32 0x488, s32 0xD58, s32 0xDA8, s32
-0x122C, JPABaseEmitter* 0x138C / 0x1390 / 0x1394, u8 0x13B8.
+Round 2 (all eight functions written): fn_80285E58 and fn_80285F44 100 %,
+fn_802870C8 98.3 % (missing/extra, every call and branch in place; FIXME in
+the source), fn_8028676C / fn_80286E10 / fn_80286B74 99 % (registers /
+scheduling), fn_80286688 88.7 % (the mode-0xB byte test). The jump tables
+are compiler `@NNN` symbols. Each switch groups the case labels of states
+that share a handler (the tables point several entries at one label: e.g.
+the exits of 0x1C/0x1E/.../0x30 are all fn_80290E90 and those of
+0x1D/0x1F/.../0x31 fn_80290D58), so the source lists those cases together.
+fn_80285F44 (landing): picks the landing sound by the tile under the player
+(fn_8024F0E8 0x2001F/0x20054-0x20065) and splash/dust emitters 0x3CF/0x3D0,
+0x4F3-0x4FA plus a 'PEFF' actor, with a 4-frame cooldown in 0x448; then
+the step sound (0x2001C/0x2001E) while moving on the ground.

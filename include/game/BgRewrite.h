@@ -56,6 +56,9 @@ public:
     // field_0x34, sets it to value (GameView_804A9950::fn_802D7970), calls
     // GameRoot::fn_80138B7C on lbl_8053AAF8 and restores it. this unused.
     void fn_8029D898(s32 value);
+    // 4 units (Player_804A6F38::fn_802870C8, act_block, act_somaria_block,
+    // tu_8028FBA0). Reads pos x/y; player and layer follow.
+    void fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer);
     // 15 units / 78 calls. Writes tile code `tile` into the cell at pos on
     // `layer` (fn_80226BC4(pos', layer & 0xFE), then fn_802F9974(layer,
     // cell, tile)); nothing else. this unused. pos: callers pass

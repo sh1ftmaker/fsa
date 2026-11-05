@@ -410,6 +410,8 @@ bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
 bool fn_8022517C(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224B88(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224E88(const JGeometry::TVec3f* pos, s32 layer);
+// 1 unit (Player_804A6F38::fn_80285F44 picks the splash effects by it).
+bool fn_80225BE4(const JGeometry::TVec3f* pos, s32 layer);
 // 1 unit (tu_80221B44 picks effect 0x3d0 or 0x3cf by them). Position in r3,
 // layer in r4; return a byte.
 bool fn_802258D4(const JGeometry::TVec3f* pos, s32 layer);
@@ -418,6 +420,10 @@ bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
 // `layer` (fn_801CCBD0's family); fn_802255F4 forwards to it.
 bool fn_802252F4(const JGeometry::TVec3f* pos, s32 layer);
 }
+
+// Forwards to fn_802252F4 (tu_8022461C); a C++ name in symbols.txt. Player_804A6F38::fn_802870C8
+// tests it for the 0xD7 trail emitter.
+bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer);
 
 // --- actor collision boxes (game/tu_8020D58C.cpp) ---
 

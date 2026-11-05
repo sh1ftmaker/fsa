@@ -57,7 +57,9 @@ public:
     /* 0xA4 */ u8 field_0xa4[0xB4 - 0xA4]; // not yet known
     // Returned by the owner's fn_8024F630 (lbz; blr).
     /* 0xB4 */ bool field_0xb4;
-    /* 0xB5 */ u8 field_0xb5[0xB7 - 0xB5]; // not yet known
+    // Tested for 1 by the owner's fn_80285F44 (tu_80285E58), with field_0xb4 clear.
+    /* 0xB5 */ u8 field_0xb5;
+    /* 0xB6 */ u8 field_0xb6;
     // Byte the owner's fn_8027EEB4 (tu_8027E5BC) tests for 0.
     /* 0xB7 */ u8 field_0xb7;
     /* 0xB8 */ u8 field_0xb8[0xC0 - 0xB8]; // not yet known

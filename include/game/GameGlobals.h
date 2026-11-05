@@ -382,6 +382,10 @@ extern GameRoot_8049EF20* lbl_8053AAF8;
 
 // Owner: game/tu_801E667C.cpp (.sdata). Read by tu_80441318 and act_horse_race_man.
 extern s32 lbl_8053A160;
+// .sbss flags: game/tu_80197070.cpp (the ZLD2 actor) and act_dodongo; the
+// player's state tick hurts the player while either is set.
+extern u8 lbl_8053ABA8;
+extern u8 lbl_8053ABF0;
 // .sdata word in act_navi's data (0x8053A188-0x8053A198): fn_8023F78C stores -1 to it.
 extern s32 lbl_8053A190;
 
