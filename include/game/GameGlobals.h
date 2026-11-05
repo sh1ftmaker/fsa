@@ -622,6 +622,7 @@ public:
     /* 0x284 */ u8 field_0x284; // 0 until set to 1 (tu_801286C0 update)
     /* 0x285 */ u8 field_0x285[0x28C - 0x285];
     /* 0x28C */ f32 field_0x28c; // set to 0.05f with the flag
+    /* 0x290 */ u8 field_0x290[0x298 - 0x290]; // not yet known
 };
 
 struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h

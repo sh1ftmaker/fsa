@@ -29,6 +29,9 @@ GXRenderModeObj lbl_8049F0CC = {
     {0, 0, 21, 22, 21, 0, 0},
 };
 
+// .sdata2 word 0x8053CDD8: the white fn_8013B1E8 sets as TEV register 0.
+static const GXColor lbl_8053CDD8 = {0xFF, 0xFF, 0xFF, 0xFF};
+
 ScreenRect_802FF3F0* fn_8013C394();
 
 void fn_8013AAD4() {
@@ -72,8 +75,22 @@ void fn_8013AC54(Mtx view) {
     j3dSys.setViewMtx(view);
 }
 
+// FIXME: 99.73. Regalloc only: the original keeps the position x, y, z in
+// f3, f4, f5 before adding them to the matrix translation; ours rotates them.
 void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a, s32 b, const Mtx m) {
-    Mtx rot = {{scale, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, scale, 0.0f}, {0.0f, scale, 0.0f, 0.0f}};
+    Mtx rot;
+    rot[0][0] = scale;
+    rot[0][1] = 0.0f;
+    rot[0][2] = 0.0f;
+    rot[0][3] = 0.0f;
+    rot[1][0] = 0.0f;
+    rot[1][1] = 0.0f;
+    rot[1][2] = scale;
+    rot[1][3] = 0.0f;
+    rot[2][0] = 0.0f;
+    rot[2][1] = scale;
+    rot[2][2] = 0.0f;
+    rot[2][3] = 0.0f;
     f32 x;
     f32 y;
     f32 z;
@@ -84,7 +101,7 @@ void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a
         }
         f32 off = (f32)((a << 10) + (b << 7));
         Mtx tmp;
-        PSMTXCopy(m, tmp);
+        JMath::gekko_ps_copy12(tmp, m);
         tmp[1][3] += off;
         tmp[2][3] += off;
         PSMTXConcat(tmp, rot, rot);
@@ -102,15 +119,15 @@ void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a
         y = pos->y + off;
         z += off;
     }
-    rot[0][3] += x;
-    rot[1][3] += y;
-    rot[2][3] += z;
     rot[1][0] *= 0.70710677f;
     rot[1][1] *= 0.70710677f;
     rot[1][2] *= 0.70710677f;
     rot[2][0] *= 0.70710677f;
     rot[2][1] *= 0.70710677f;
     rot[2][2] *= 0.70710677f;
+    rot[0][3] += x;
+    rot[1][3] += y;
+    rot[2][3] += z;
     lbl_8053AB10->field_0x24->fn_8030DFE8(false);
     lbl_8053AB10->field_0x24->fn_8030DD20(rot);
     GXClearVtxDesc();
@@ -180,8 +197,7 @@ void GameRoot2_8049F108::fn_8013B1E8() {
     GXSetNumChans(1);
     GXSetTexCoordGen(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY);
     GXSetNumTexGens(1);
-    GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};
-    GXSetTevColor(GX_TEVREG0, white);
+    GXSetTevColor(GX_TEVREG0, lbl_8053CDD8);
     GXSetTevColor(GX_TEVREG1, lbl_80543F20);
     GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
     GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_C0, GX_CC_C1);
@@ -277,7 +293,7 @@ void GameRoot2_8049F108::fn_8013BBBC() {
 
 void GameRoot2_8049F108::fn_8013B71C() {
     if (field_0x39 == 0 || lbl_8053AAF8->field_0x4c == 4 || lbl_8053AAF8->field_0x4c == 6) {
-        field_0x24->fn_8030DFE8(false);
+        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -288,7 +304,7 @@ void GameRoot2_8049F108::fn_8013B71C() {
         if (isGameModeSet() && lbl_8053AAF8->field_0x4c != GAME_MODE_C) {
             field_0x20->fn_802FF3B0();
         }
-        field_0x24->fn_8030DFE8(false);
+        lbl_8053AB10->field_0x24->fn_8030DFE8(false);
         j3dSys.drawInit();
         j3dSys.reinitGX();
         GXSetColorUpdate(GX_TRUE);
@@ -313,6 +329,8 @@ void GameRoot2_8049F108::fn_8013B71C() {
     }
 }
 
+// FIXME: 97.41. The original materialises the mode-0xC test as a byte
+// (subfic / cntlzw / extrwi., then beq) where ours compares (cmpwi / bne).
 void GameRoot2_8049F108::fn_8013BBE0() {
     if (lbl_8053AAF8->field_0x4c != 9) {
         field_0x24->fn_8030E154();
@@ -369,6 +387,7 @@ GameRoot2_8049F108::~GameRoot2_8049F108() {
     field_0x4->destroy();
 }
 
+// The (s32) casts give the original's signed int-to-float conversion of the u16 sizes.
 GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
     heap->getTotalFreeSize();
     lbl_8053AB10 = this;
@@ -378,21 +397,22 @@ GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {
     field_0xc = new (field_0x4, 0) J3DDrawBuffer(0x80);
     field_0x4->adjustSize();
     heap->becomeCurrentHeap();
-    GXRenderModeObj* mode = JUTVideo::sManager->getRenderMode();
-    field_0x10 = new (heap, 0) J2DOrthoGraph(0.0f, 0.0f, mode->fbWidth, mode->efbHeight, -10000.0f, 10000.0f);
-    mode = JUTVideo::sManager->getRenderMode();
-    field_0x14 = new (heap, 0) J2DOrthoGraph(0.0f, 0.0f, mode->fbWidth, mode->efbHeight, -10000.0f, 10000.0f);
+    field_0x10 = new (heap, 0) J2DOrthoGraph(0.0f, 0.0f, (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                                             (f32)(s32)JUTVideo::sManager->getEfbHeight(), -10000.0f, 10000.0f);
+    field_0x14 = new (heap, 0) J2DOrthoGraph(0.0f, 0.0f, (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                                             (f32)(s32)JUTVideo::sManager->getEfbHeight(), -10000.0f, 10000.0f);
     JUTFont* font = lbl_8053AD78->mFont;
     field_0x18 = new (heap, 0) J2DPrint(font, 0.0f, font->getHeight());
-    mode = JUTVideo::sManager->getRenderMode();
-    field_0x34 = new (heap, 0) JUTTexture(mode->fbWidth, mode->efbHeight, GX_TF_RGB565);
+    field_0x34 = new (heap, 0) JUTTexture(JUTVideo::sManager->getFbWidth(),
+                                          JUTVideo::sManager->getEfbHeight(), GX_TF_RGB565);
     field_0x20 = new (heap, 0) cls_804AA858(heap);
     field_0x24 = new (heap, 0) Camera_804AA9E4();
     field_0x28 = new (heap, 0) EffectSystem_8049F178(heap);
     field_0x2c = new (heap, 0) cls_804A0160(heap);
     field_0x30 = new (heap, 0) cls_804A03A8(heap);
-    field_0x1c = new (heap, 0) J2DPicture((const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti"));
-    field_0x1c->setBlackWhite(JUtility::TColor(0, 0, 0, 0xFF), JUtility::TColor(0, 0, 0, 0));
+    ResTIMG* black = (ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x1c = new (heap, 0) J2DPicture(black);
+    field_0x1c->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
 }
 
 ScreenRect_802FF3F0* fn_8013C394() {
