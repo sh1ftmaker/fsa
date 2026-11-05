@@ -720,6 +720,10 @@ bool Player_804A6F38::fn_80241E28(s32 layer, const JGeometry::TVec3f* pos) {
     return field_0xbec->fn_8030B110(layer, *pos);
 }
 
+const JGeometry::TVec2f* Player_804A6F38::fn_802422C4() {
+    return &field_0xbf0->field_0x14;
+}
+
 // Runs fn_802C1778 on the key the player holds (fn_8025F500 with a 'KEY0'
 // at field_0xd68), then fn_802C1674 and fn_802C1778 on every 'KEY0' actor;
 // then field_0x3b0 = 3.
@@ -1742,6 +1746,27 @@ bool Player_804A6F38::fn_8024C35C() {
     return field_0x3b4 >= 8;
 }
 
+// The position for layer 8 moved from the second view box (field_0xdc)
+// into the visible box's coordinates, in field_0x1268; on other layers mPos.
+// FIXME: 98.08. Registers only (f0-f3 of the box loads and the offsets).
+JGeometry::TVec3f* Player_804A6F38::fn_8024C378() {
+    if (field_0x3b4 == 8) {
+        GameView_804A9950* view = getGameView_802D6A9C();
+        f32 x = view->mVisibleBox.i.x;
+        f32 y = view->mVisibleBox.i.y;
+        s32 layer = field_0x3b4;
+        view = getGameView_802D6A9C();
+        const JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+        x -= box->i.x;
+        y -= box->i.y;
+        field_0x1268.set(mPos);
+        field_0x1268.x += x;
+        field_0x1268.y += y;
+        return &field_0x1268;
+    }
+    return &mPos;
+}
+
 bool Player_804A6F38::fn_8024C448() {
     return field_0xd40 >= 0;
 }
@@ -1926,6 +1951,73 @@ void Player_804A6F38::fn_8024E46C() {
     } else {
         fn_8024E694(5, 0);
     }
+}
+
+// Adds `value` to the counter field_0xc04 (the leader's, through
+// fn_802362C4, for a follower): up to 9999, and a negative value takes it
+// down to 0 at most (a counter already below 0 stays). The two `for (;;)`
+// are the original's halt checks (a self-branch each): the counter must be
+// at most 9999 and must take a store (written +1, read back, restored).
+// fn_8024ED4C's body: fn_8024E694 (before it) inlines it twice with
+// -count, so it is a file inline with fn_8024ED4C as its out-of-line copy.
+static inline void addCounter_8024ED4C(Player_804A6F38* player, s32 value) {
+    if (player->field_0xd60 >= 0) {
+        fn_802362C4(player->field_0xd60, value);
+        return;
+    }
+    if (player->field_0xc04 > 9999) {
+        for (;;) {
+        }
+    }
+    s32 old = player->field_0xc04;
+    player->field_0xc04 = old + 1;
+    if (player->field_0xc04 == old) {
+        for (;;) {
+        }
+    }
+    player->field_0xc04 = old;
+    if (value >= 0) {
+        player->field_0xc04 += value;
+        if (player->field_0xc04 > 9999) {
+            player->field_0xc04 = 9999;
+        }
+    } else {
+        if (player->field_0xc04 < 0) {
+            return;
+        }
+        if (player->field_0xc04 + value >= 0) {
+            player->field_0xc04 = player->field_0xc04 + value;
+        } else {
+            player->field_0xc04 = 0;
+        }
+    }
+    if (value == 1) {
+        player->fn_802702C4();
+    }
+}
+
+void Player_804A6F38::fn_8024ECCC(s32 value) {
+    if (field_0xd60 >= 0) {
+        fn_8023619C(field_0xd60, value);
+        return;
+    }
+    if (field_0xc04 > 9999) {
+        for (;;) {
+        }
+    }
+    field_0xc04 += value;
+    if (field_0xc04 > 9999) {
+        field_0xc04 = 9999;
+    } else if (field_0xc04 < -5000) {
+        field_0xc04 = -5000;
+    }
+    if (value == 1) {
+        fn_802702C4();
+    }
+}
+
+void Player_804A6F38::fn_8024ED4C(s32 value) {
+    addCounter_8024ED4C(this, value);
 }
 
 s8 Player_804A6F38::fn_8024EE0C() {
