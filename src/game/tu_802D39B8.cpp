@@ -690,10 +690,13 @@ void GameView_804A9950::fn_802D7E34(s32 index) {
     }
 }
 
+// `(1 << bit) & mask` in this operand order: the mask-first order compiles differently.
 bool GameView_804A9950::fn_802D7E5C(u8 index, s32 bit) {
     return (1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0];
 }
 
+// `^ 0xFFFFFFFF` rather than `~`: ~(1 << bit) sign-extends the complement into the u64 (nor, srawi)
+// where the target zero-extends it (xor with 0xFFFFFFFF).
 void GameView_804A9950::fn_802D7EB0(u8 index, s32 bit, bool set) {
     if (set) {
         gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0] |= 1 << bit;
@@ -928,6 +931,7 @@ void GameView_804A9950::fn_802DA010() {
     Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     if (camera->field_0x840 == 0) {
         camera->field_0x840 = 1;
+        // Chained so the corners are stored f.x, i.x, f.y, i.y, as the target does.
         camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
         camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
         camera->field_0x854 = 1.0f;
@@ -1050,6 +1054,7 @@ void GameView_804A9950::fn_802DB6F0() {
     Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     if (camera->field_0x840 == 0) {
         camera->field_0x840 = 1;
+        // Chained so the corners are stored f.x, i.x, f.y, i.y, as the target does.
         camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
         camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
         camera->field_0x854 = 1.0f;
@@ -1097,7 +1102,7 @@ bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     bool moved = false;
     if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
         restartTimeLimit();
-    clearScreenState();
+        clearScreenState();
         if (dir[0] > 0) {
             field_0x14++;
             field_0xc8 = 1;
