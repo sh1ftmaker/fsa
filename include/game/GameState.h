@@ -106,9 +106,10 @@ public:
     /* 0x03C */ JKRArchive* field_0x3c; // fn_8037A8D4 (tu_80379F84); fn_80403104
     /* 0x040 */ JKRArchive* field_0x40; // "/GC4Sword_usa/result1.arc"
     /* 0x044 */ JKRArchive* field_0x44; // "/GC4Sword_usa/result2.arc"
-    /* 0x048 */ u8 field_0x48[0x4C - 0x48];
+    /* 0x048 */ void* field_0x48; // zeroed by the constructor and fn_8040384C's reset
     /* 0x04C */ JKRArchive* field_0x4c; // fn_80135494 (mode 7, second archive); fn_80403084
-    /* 0x050 */ u8 field_0x50[0x58 - 0x50];
+    /* 0x050 */ void* field_0x50;
+    /* 0x054 */ void* field_0x54;
     // fn_803FFAA8: the archive of the loader at its +0x44, the 0xEC-byte
     // object of fn_8030AC4C and the 4-byte object of fn_8030905C.
     /* 0x058 */ JKRArchive* field_0x58;
@@ -139,22 +140,31 @@ public:
     /* 0x124 */ s32 field_0x124;
     /* 0x128 */ s32 field_0x128;
     /* 0x12C */ s32 field_0x12c;
-    /* 0x130 */ u8 field_0x130[0x140 - 0x130]; // per-player tables, 0x130-0x13F
+    /* 0x130 */ s32 field_0x130[4]; // per-player tables, 0x130-0x19F (zeroed by the constructor)
     // SHARED-EDIT (act_battle_royale_end_check fn_803D6494): one word per
     // player, counted up each time that player wins the battle royale.
     /* 0x140 */ s32 field_0x140[4];
-    /* 0x150 */ u8 field_0x150[0x1A4 - 0x150]; // per-player tables, 0x150-0x1A3
+    /* 0x150 */ s32 field_0x150[4];
+    /* 0x160 */ s32 field_0x160[4];
+    /* 0x170 */ s32 field_0x170[4];
+    /* 0x180 */ s32 field_0x180[4];
+    /* 0x190 */ s32 field_0x190[4];
+    /* 0x1A0 */ s32 field_0x1a0;
     // A word read by fn_8035EE34 (game/act_link_ending.cpp) as the player index
     // to draw for (0 when negative, fn_8022F514/fn_8022F3DC on it).
     /* 0x1A4 */ s32 field_0x1a4;
     // -1 after the reset; tu_80441318's update picks the window from it
     // (0-3 a player, 4 all players).
     /* 0x1A8 */ s32 field_0x1a8;
-    /* 0x1AC */ u8 field_0x1ac[0x1C4 - 0x1AC];
+    /* 0x1AC */ s32 field_0x1ac;
+    /* 0x1B0 */ s32 field_0x1b0;
+    /* 0x1B4 */ s32 field_0x1b4[4]; // zeroed with field_0x1f4 by the constructor
     // Per player (fn_80402FBC indexes it with fn_8022F340's player index).
     /* 0x1C4 */ JGeometry::TVec3f field_0x1c4[4];
     /* 0x1F4 */ s16 field_0x1f4[4]; // per player; fn_802702EC clears one
-    /* 0x1FC */ u8 field_0x1fc[0x216 - 0x1FC];
+    /* 0x1FC */ u8 field_0x1fc[0x214 - 0x1FC]; // 0xFF after the reset
+    /* 0x214 */ u8 field_0x214;
+    /* 0x215 */ u8 field_0x215;
     // main (tu_801344C0, 0x801344F8-0x80134624) copies 0x20 bytes here from
     // 0x80700000, the region it registers with OSSetSaveRegion (it survives a
     // reset), and presets it unless the first two halfwords are the magic.
@@ -195,15 +205,32 @@ extern GameState_804B0FE0 lbl_80529DEC;
 
 // game/tu_804023D0.cpp: getResource(type, name) on one of the archives
 // above (vtable slot 0x18, the arguments passed through).
-extern "C" void* fn_804032E8(u32 type, const char* name); // field_0x10; 29 units
-extern "C" void* fn_80403244(u32 type, const char* name); // field_0x18
-extern "C" void* fn_804030C4(u32 type, const char* name); // field_0x20; 36 units
-extern "C" void* fn_80403204(u32 type, const char* name); // field_0x24
-extern "C" void* fn_804031C4(u32 type, const char* name); // field_0x28
-extern "C" void* fn_80403184(u32 type, const char* name); // field_0x34
-extern "C" void* fn_80403144(u32 type, const char* name); // field_0x38
-extern "C" void* fn_80403104(u32 type, const char* name); // field_0x3c
-extern "C" void* fn_80403084(u32 type, const char* name); // field_0x4c
+void* fn_804032E8(u32 type, const char* name); // field_0x10; 29 units (also in GameGlobals.h)
+void* fn_80403244(u32 type, const char* name); // field_0x18
+void* fn_804030C4(u32 type, const char* name); // field_0x20; 36 units
+void* fn_80403204(u32 type, const char* name); // field_0x24
+void* fn_804031C4(u32 type, const char* name); // field_0x28
+void* fn_80403184(u32 type, const char* name); // field_0x34
+void* fn_80403144(u32 type, const char* name); // field_0x38
+void* fn_80403104(u32 type, const char* name); // field_0x3c
+void* fn_80403084(u32 type, const char* name); // field_0x4c
+// field_0x10's getResSize(getResource('????', name)); getResource('????', name).
+u32 fn_80403284(const char* name);
+void* fn_80403328(const char* name);
+
+// Stores pos for the player's window (fn_8022F340's index) and sets its bit in
+// field_0x236.
+void fn_80402FBC(s32 player, JGeometry::TVec3f pos);
+// Entries of the rodata word tables lbl_8048C170 (2, 4, 6) and lbl_8048C160 (0, 300, 600, 900).
+s32 fn_8040305C(s32 index);
+s32 fn_80403070(s32 index);
+// Per-player word tables; lbl_8053AAF8->field_0x7f picks the set (see field_0x68).
+s32 fn_8040336C(s32 player);
+s32 fn_804033D4(s32 player);
+s32 fn_80403414(s32 player);
+void fn_80403454(s32 player, s32 value);
+void fn_80403494(s32 player, s32 value);
+void fn_804034D4(s32 player, s32 value);
 
 // A J2DPane and its box. Vtable 0x804AF86C: only the destructor, a weak
 // inline whose kept copy is game/tu_803A60E4.cpp's 0x803A8378 (after that
@@ -234,16 +261,18 @@ public:
     // SHARED-EDIT (tu_803F0A54 fn_803F715C): returns 1 once the steps are
     // done, else 0 (li r3, 1 / li r3, 0); callers test it with clrlwi. 24.
     u8 fn_80402940(s16 frames, u8 mode, f32 x, f32 y);
-    void fn_80402B10(s16 frames, u8 mode, f32 x, f32 y);
+    u8 fn_80402B10(s16 frames, u8 mode, f32 x, f32 y);
     // 3 units. Steps field_0x26 / field_0x24 up to frames, toward (x, y).
-    void fn_8040271C(s16 frames, f32 x, f32 y);
+    u8 fn_8040271C(s16 frames, f32 x, f32 y);
     // 5 units. Resizes by (x, y).
     void fn_80402CE0(f32 x, f32 y);
     // SHARED-EDIT (tu_803BC6F0 fn_803CE11C): 7 units. Steps field_0x26 up to
     // frames - 1, setting the pane's alpha from `from` toward `to`; on the
     // last step stores frames in field_0x22, sets `to` and returns 1, else 0.
     bool fn_80402628(s16 frames, u8 from, u8 to);
-    // Not declared yet: fn_8040245C (2).
+    // 2 units. Steps field_0x26 (wrapping at frames) and fades the pane's alpha
+    // from `from` to `to`; mode 1 eases in and out, any other mode goes up and back.
+    bool fn_8040245C(s16 frames, u8 from, u8 to, u8 mode);
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DPane* mPane;

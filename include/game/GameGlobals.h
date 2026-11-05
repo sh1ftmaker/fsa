@@ -483,12 +483,10 @@ s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
 bool fn_801CD970(s16* angle, s32 target, s32 step);
 }
 
-// game/tu_804023D0.cpp (not written yet); called from game/tu_80376FA0.cpp.
+// game/tu_804023D0.cpp; called from game/tu_80376FA0.cpp and others.
 // Returns lbl_80529DEC->field_0x10->getResource(type, name) (vtable slot
 // 0x18); the callers pass the 4CC 'TIMG' and a .bti name.
-extern "C" {
 void* fn_804032E8(u32 type, const char* name);
-}
 
 // game/act_block.cpp (not written yet); called from game/tu_80376FA0.cpp.
 // Returns 1 or 0 (li 1 / li 0); its body reads *pos and writes it back with
