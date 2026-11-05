@@ -7,7 +7,29 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include <string.h>
 #include "game/tu_80379F84.h"
+#include "JSystem/JMath/JMath.h"
 #include "game/cls_804B1288.h"
+
+// The pane names fn_80408F38 looks up (8 characters, right-aligned); 17 of them.
+static const u64 lbl_8048C5D0[17] = {
+    0x0050656E6261636Bull, // "Penback"
+    0x0000000050736B79ull, // "Psky"
+    0x000050636C6F3034ull, // "Pclo04"
+    0x000050636C6F3033ull, // "Pclo03"
+    0x000050636C6F3032ull, // "Pclo02"
+    0x0000506D61706361ull, // "Pmapca"
+    0x00506D6170746F75ull, // "Pmaptou"
+    0x000050636C6F3031ull, // "Pclo01"
+    0x50656E6261636B31ull, // "Penback1"
+    0x00506C6963753031ull, // "Plicu01"
+    0x00506C6963753032ull, // "Plicu02"
+    0x00506C6963753037ull, // "Plicu07"
+    0x00506C6963753038ull, // "Plicu08"
+    0x00506C6963753033ull, // "Plicu03"
+    0x00506C6963753034ull, // "Plicu04"
+    0x00506C6963753035ull, // "Plicu05"
+    0x00506C6963753036ull, // "Plicu06"
+};
 
 void cls_804B1288::fn_80403D84() {
     u8 done = field_0x240[0]->fn_80402940(0xB, 0, 0.0f, 100.0f);
@@ -62,6 +84,33 @@ bool cls_804B1288::fn_804045F8(s32 bit) {
         return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7a[0] & (u8)(1 << bit);
     }
     return false;
+}
+
+void cls_804B1288::fn_80408F38(f32 alpha) {
+    for (int i = 0; i < 9; i++) {
+        field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);
+    }
+}
+
+void cls_804B1288::fn_80409330() {
+    fn_8037AA34();
+    if (fn_8037AA28() == 0x1A) {
+        if (field_0x65d == 0) {
+            for (int i = 0; i < 15; i++) {
+                field_0x278[i]->field_0x26 = 0;
+                field_0x65d = 1;
+            }
+        }
+        field_0x350 = 0xF;
+    } else if (fn_8037AA28() == 0x19) {
+        field_0x668 = 1;
+    }
+    if (field_0x663 != 0) {
+        field_0x434 += 0x200;
+        field_0x436 += 0x400;
+        field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
+        field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
+    }
 }
 
 void cls_804B1288::fn_8040E278() {
@@ -124,4 +173,11 @@ void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
 
 bool fn_804149C0() {
     return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x87 & 1;
+}
+
+void cls_804B1288::fn_80411A94(f32 alpha) {
+    field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b * alpha);
+    field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
+    field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
+    field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
 }

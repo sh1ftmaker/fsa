@@ -30,6 +30,13 @@ public:
     // message field_0x390 (fn_803837A4) in field_0x5dc, copies it into the two
     // text boxes of field_0x270 and moves the panes; 0x659 becomes 1.
     void fn_80403F50();
+    // 0x80408F38: sets the alpha of the 9 panes of field_0x14 named by
+    // lbl_8048C5D0 to field_0x642[i] * alpha.
+    void fn_80408F38(f32 alpha);
+    // 0x80409330: fn_8037AA34 then, for its result 0x1A, resets the 15 panes of
+    // field_0x278 (state 0xF), for 0x19 sets field_0x668; while 0x663 is set
+    // it wobbles field_0x3a0 / field_0x3a4 with two sine waves.
+    void fn_80409330();
     // 0x804045F8 (this unused): when lbl_8053AAF8's byte 0x7E is set, whether
     // bit `bit` of byte 0x7A of the current save row is set.
     bool fn_804045F8(s32 bit);
@@ -47,6 +54,9 @@ public:
     // 0), field_0x238 and field_0x23c, and on field_0x11c's pane (to 200 /
     // 0); when that one finishes the state becomes 0xB.
     void fn_8040F3AC();
+    // 0x80411A94: sets the alpha of the panes Ttlv11-14 of field_0x10 from
+    // field_0x64b / field_0x64c times alpha (the last two times 1 - alpha).
+    void fn_80411A94(f32 alpha);
     // 0x8040F480: stores 6 in field_0x668, then sets the object up.
     void fn_8040F480();
     void fn_804108B4(); // 0x804108B4
@@ -55,7 +65,9 @@ public:
     void fn_80411230(); // 0x80411230
 
 
-    /* 0x004 */ u8 field_0x4[0x18 - 0x4];
+    /* 0x004 */ u8 field_0x4[0x10 - 0x4];
+    /* 0x010 */ J2DScreen* field_0x10; // the screen fn_80411A94 fades
+    /* 0x014 */ J2DScreen* field_0x14; // the screen whose panes fn_80408F38 fades
     /* 0x018 */ J2DScreen* field_0x18; // the screen fn_804111C4 draws
     /* 0x01C */ u8 field_0x1c[0x11C - 0x1C];
     /* 0x11C */ cls_804AF86C* field_0x11c;
@@ -78,16 +90,26 @@ public:
     /* 0x390 */ s32 field_0x390; // message id
     /* 0x394 */ u8 field_0x394[0x39C - 0x394];
     /* 0x39C */ f32 field_0x39c;
-    /* 0x3A0 */ u8 field_0x3a0[0x42A - 0x3A0];
+    /* 0x3A0 */ f32 field_0x3a0;
+    /* 0x3A4 */ f32 field_0x3a4;
+    /* 0x3A8 */ u8 field_0x3a8[0x42A - 0x3A8];
     /* 0x42A */ s16 field_0x42a;
-    /* 0x42C */ u8 field_0x42c[0x5DC - 0x42C];
+    /* 0x42C */ u8 field_0x42c[0x434 - 0x42C];
+    /* 0x434 */ s16 field_0x434;
+    /* 0x436 */ s16 field_0x436;
+    /* 0x438 */ u8 field_0x438[0x5DC - 0x438];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
-    /* 0x5DD */ u8 field_0x5dd[0x659 - 0x5DD];
+    /* 0x5DD */ u8 field_0x5dd[0x642 - 0x5DD];
+    /* 0x642 */ u8 field_0x642[9]; // alpha of each pane of lbl_8048C5D0
+    /* 0x64B */ u8 field_0x64b;
+    /* 0x64C */ u8 field_0x64c;
+    /* 0x64D */ u8 field_0x64d[0x659 - 0x64D];
     /* 0x659 */ u8 field_0x659;
     /* 0x65A */ u8 field_0x65a;
     /* 0x65B */ u8 field_0x65b[0x65D - 0x65B];
     /* 0x65D */ u8 field_0x65d;
-    /* 0x65E */ u8 field_0x65e[0x664 - 0x65E];
+    /* 0x65E */ u8 field_0x65e[0x663 - 0x65E];
+    /* 0x663 */ u8 field_0x663;
     /* 0x664 */ u8 field_0x664;
     /* 0x665 */ u8 field_0x665[0x668 - 0x665];
     /* 0x668 */ s32 field_0x668; // fn_8040F474 returns it
