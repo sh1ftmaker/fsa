@@ -20,6 +20,9 @@ public:
     // Owner: game/tu_8042165C.cpp (0x804257E4). Called with only the object by
     // cls_804B1920::fn_8043D8B4 (it stores no vtable).
     void fn_804257E4();
+    // Owner: game/tu_8042165C.cpp (0x80425F6C). Called with only the object by
+    // cls_804B1920::fn_8043DC98 (its draw).
+    void fn_80425F6C();
 };
 
 #endif

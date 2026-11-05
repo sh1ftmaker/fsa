@@ -892,7 +892,7 @@ public:
     virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
     /* 0x004 */ J2DScreen* field_0x4;
     /* 0x008 */ J2DScreen* field_0x8;
-    /* 0x00C */ u8 pad_0xc[0x10 - 0xC];  // unknown fields
+    /* 0x00C */ J2DScreen* field_0xc; // its pane 'Ndata05' is moved and drawn by fn_8043DC98
     /* 0x010 */ J2DPicture* field_0x10; // "TIMG" resource, built in the constructor (mode 3)
     /* 0x014 */ u8 pad_0x14[0x40 - 0x14];
     /* 0x040 */ cls_804AF86C* field_0x40[12]; // the destructor's loop
@@ -920,7 +920,10 @@ public:
     /* 0x10B */ u8 field_0x10b; // selects the pane tested by fn_8043D514 / fn_8043D57C
     /* 0x10C */ u8 field_0x10c;
     /* 0x10D */ u8 field_0x10d;
-    /* 0x10E */ u8 pad_0x10e[0x1C0 - 0x10E];
+    /* 0x10E */ u8 pad_0x10e[0x110 - 0x10E];
+    /* 0x110 */ f32 field_0x110; // where fn_8043DC98 moves 'Ndata05' of field_0xc
+    /* 0x114 */ f32 field_0x114;
+    /* 0x118 */ u8 pad_0x118[0x1C0 - 0x118];
     /* 0x1C0 */ f32 field_0x1c0; // four floats set by fn_8043A208, zero at construction
     /* 0x1C4 */ f32 field_0x1c4;
     /* 0x1C8 */ f32 field_0x1c8;
@@ -974,6 +977,10 @@ public:
     // 0x8043A638 (game/tu_8043A0E8.cpp): fades the stage picture in and out
     // while field_0x106 counts, then draws field_0x8.
     void fn_8043A638();
+    // 0x8043ACE4 and 0x8043BB84 (game/tu_8043A0E8.cpp, not written yet): draw
+    // steps fn_8043DC98 calls with only the object.
+    void fn_8043ACE4();
+    void fn_8043BB84();
     // 0x8043A268 (game/tu_8043A0E8.cpp): fn_8043A450 that also stores a
     // position and a value; tu_802E9428 calls it from its tables.
     void fn_8043A268(s32 stage, s32 sub, s16 value, f32 x, f32 y);

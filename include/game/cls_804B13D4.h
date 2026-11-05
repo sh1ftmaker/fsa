@@ -35,6 +35,9 @@ public:
     // Owner: game/tu_80418B64.cpp (0x8041EDB0). Called with only the object by
     // cls_804B1920::fn_8043D8B4.
     void fn_8041EDB0();
+    // Owner: game/tu_80418B64.cpp (0x8041F720). Called with only the object by
+    // cls_804B1920::fn_8043DC98 (its draw).
+    void fn_8041F720();
 
     /* 0x00 */ // vtable
     /* 0x04 */ cls_804AF86C* field_0x4;

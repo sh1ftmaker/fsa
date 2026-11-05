@@ -15,6 +15,9 @@ public:
     // Owner: game/tu_80447FAC.cpp (0x80447FAC). Called with only the object by
     // cls_804B1920::fn_8043D8B4.
     void fn_80447FAC();
+    // Owner: game/tu_80447FAC.cpp (0x804482EC). Called with only the object by
+    // cls_804B1920::fn_8043DC98 (its draw).
+    void fn_804482EC();
 };
 
 #endif

@@ -497,6 +497,65 @@ void cls_804B1920::fn_8043D8B4() {
     }
 }
 
+void cls_804B1920::fn_8043DC98() {
+    if (lbl_8053AAF8->field_0x7f != 0) {
+        field_0x290->fn_8041F720();
+        if (field_0x2b0 != NULL) {
+            field_0x2b0->fn_8044A024();
+        }
+        if (field_0x29c != NULL) {
+            field_0x29c->fn_80445CDC();
+        }
+        if (field_0x2a8 != NULL) {
+            field_0x2a8->fn_804482EC();
+        }
+        if (field_0x2b4 != NULL) {
+            field_0x2b4->fn_8044AF90();
+        }
+        if (field_0x2ac != NULL) {
+            field_0x2ac->fn_80449070();
+        }
+        if (field_0x2a4 != NULL) {
+            field_0x2a4->fn_80447958();
+        }
+        if (field_0x2a0 != NULL) {
+            field_0x2a0->fn_80446D68();
+        }
+        if (field_0x2b8 != NULL) {
+            field_0x2b8->fn_8044C14C();
+        }
+    } else {
+        field_0x294->fn_80425F6C();
+    }
+    if (field_0x2bc != NULL) {
+        field_0x2bc->fn_804556A4();
+    }
+    // The original clears the four player bits twice (two unrolled runs).
+    for (int i = 0; i < 4; i++) {
+        lbl_8053AED0->field_0xdc &= ~(1 << i);
+    }
+    for (int i = 0; i < 4; i++) {
+        lbl_8053AED0->field_0xdc &= ~(1 << i);
+    }
+    lbl_8053AB10->fn_8013B490();
+    fn_8043BB84();
+    fn_8043ACE4();
+    fn_8043A638();
+    if (field_0x10 != NULL && field_0x254 != 0) {
+        field_0x10->draw(field_0x1c0, field_0x1c4, field_0x1c8, field_0x1cc, false, false, false);
+        field_0x254 = 0;
+    }
+    if (field_0x298 != NULL) {
+        lbl_8053AEF0->fn_804435E4();
+    }
+    if (field_0x257 != 0) {
+        lbl_8053AB10->fn_8013B490();
+        field_0xc->search('Ndata05')->move(field_0x110 + lbl_8050DB0C.field_0x4c[(0x2A2 - 0x4C) / 2],
+                                           field_0x114 + lbl_8050DB0C.field_0x4c[(0x2A4 - 0x4C) / 2]);
+        field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    }
+}
+
 // FIXME: 96.0. Same instructions, float registers allocated differently (f0/f7/f8).
 bool cls_804B1920::fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin) {
     JGeometry::TBox2f box(x - 94.0f, y - 61.5f, 94.0f + x, 61.5f + y);
