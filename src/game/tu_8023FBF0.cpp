@@ -1641,6 +1641,36 @@ bool Player_804A6F38::fn_8024AFF8() {
     return false;
 }
 
+// Enters state 0x49 with frames `frames` (field_0x1178): ends the 'FORM'
+// actor (serial field_0x1230) or the held flag 0x121F, makes the group
+// turn-based (fn_80248004(4, false)) and deletes the emitter at 0x1388.
+bool Player_804A6F38::fn_8024B108(s32 frames) {
+    if (fn_80270C88()) {
+        return false;
+    }
+    if (requestState(this, 0x49)) {
+        field_0x1178 = frames;
+        ActorBase_804A5770* form = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x1230);
+        if (form != NULL) {
+            form->mAlive = false;
+            field_0x1230 = -1;
+        } else if (field_0x121f == true) {
+            field_0x121f = false;
+            if (field_0x11f0 < 5) {
+                field_0x11f0 = 5;
+            }
+        }
+        fn_80248004(4, false);
+        if (field_0x1388 != NULL) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0x1388);
+            field_0x1388 = NULL;
+        }
+        return true;
+    }
+    return false;
+}
+
 bool Player_804A6F38::fn_8024B24C() {
     return field_0xbf0->isField98Or99Set();
 }
