@@ -381,6 +381,114 @@ void GameMode_804B0688::fn_803DD93C() {
     }
 }
 
+// State 4: back from the sub-menu to the entry menu (state 2 in reverse),
+// then state 1.
+// FIXME: 97.47. Same length; try.py says "different" only for the prologue:
+// the original sets up the tag table base (lbl_804774C8; ours goes through
+// the section symbol) after `field_0x9c++` and stores the first other entry
+// through the pointer (ours straight to the stack slot). The rest is
+// registers: the loop counters / tag pointers and f30 / f31 are swapped.
+void GameMode_804B0688::fn_803DD970() {
+    s32 others[2];
+    field_0x9c++;
+    s32* other = others;
+    u8 slid = false;
+    u8 titleSlid = false;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x9e != i) {
+            *other++ = i;
+        }
+    }
+    if (field_0x9c > 0) {
+        slid = field_0x14[0]->fn_80402B10(20, 0, 0.0f, 600.0f);
+        for (s32 i = 1; i < 7; i++) {
+            field_0x14[i]->fn_80402B10(20, 0, 0.0f, 600.0f);
+        }
+        s32 t = field_0x9c;
+        if (t > 20) {
+            t = 20;
+        }
+        f32 alpha = 1.0f - (f32)(t * t) / 400.0f;
+        for (s32 j = 0; j < 50; j++) {
+            if (j == 0) {
+                mMovieScreen->search(lbl_804774C8[j])->setAlpha(alpha * field_0xa3[j]);
+            } else {
+                mScreen->search(lbl_804774C8[j])->setAlpha(alpha * field_0xa3[j]);
+            }
+        }
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x9c > i * 5 + 10) {
+            field_0x50[i]->fn_80402940(20, 0, 0.0f, 150.0f);
+            s32 t = field_0x9c - (i * 5 + 10);
+            if (t > 20) {
+                t = 20;
+            }
+            f32 alpha = (f32)(t * t) / 400.0f;
+            if (i == 0) {
+                for (s32 j = 0; j < 5; j++) {
+                    mScreen->search(lbl_80477830[j])->setAlpha((1.0f - alpha) * field_0x110[j]);
+                }
+            } else {
+                for (s32 j = 0; j < 5; j++) {
+                    mScreen->search(lbl_80477858[j])->setAlpha((1.0f - alpha) * field_0x115[j]);
+                }
+            }
+        }
+    }
+    if (field_0x9c > 0) {
+        field_0x34[field_0x9e]->fn_80402940(20, 0, 27.0f - field_0x6c[field_0x9e], 0.0f);
+        field_0x44[field_0x9e]->fn_80402940(20, 0, 27.0f - field_0x6c[field_0x9e], 0.0f);
+    }
+    for (s32 i = 0; i < 1; i++) {
+        if (field_0x9c > i + 5) {
+            slid = field_0x34[others[i]]->fn_80402B10(20, 0, 600.0f, 0.0f);
+            field_0x44[others[i]]->fn_80402B10(20, 0, 600.0f, 0.0f);
+            s32 t = field_0x9c - (i + 5);
+            if (t > 20) {
+                t = 20;
+            }
+            f32 alpha = (f32)(t * t) / 400.0f;
+            switch (others[i]) {
+            case 0:
+                for (s32 j = 0; j < 17; j++) {
+                    mScreen->search(lbl_80477688[j])->setAlpha(alpha * field_0xdb[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 20; j++) {
+                    mScreen->search(lbl_80477710[j])->setAlpha(alpha * field_0xec[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0x9c > 15) {
+        titleSlid = field_0x30->fn_80402940(15, 0, 150.0f, 0.0f);
+        s32 t = field_0x9c - 15;
+        if (t > 15) {
+            t = 15;
+        }
+        f32 alpha = (f32)(t * t) / 225.0f;
+        for (s32 j = 0; j < 6; j++) {
+            mScreen->search(lbl_80477658[j])->setAlpha(alpha * field_0xd5[j]);
+        }
+    }
+    if (slid && titleSlid) {
+        for (s32 i = 0; i < 7; i++) {
+            field_0x14[i]->mPane->hide();
+        }
+        for (s32 i = 0; i < 2; i++) {
+            field_0x50[i]->mPane->hide();
+        }
+        field_0x80 = 0;
+        field_0x88 = 0;
+        field_0x8c = 0;
+        mState = 1;
+        field_0x90 = 1;
+    }
+}
+
 // State 3: the sub-menu of the picked entry (field_0x80: 0 or 1) while its
 // movie plays. A confirms, B goes back to the entry menu (state 4).
 void GameMode_804B0688::fn_803DE05C() {
