@@ -31,6 +31,8 @@
 
 #include "types.h"
 #include "JSystem/JGeometry.h"
+#include "game/cls_804A64A8.h"
+#include "game/cls_8049F140.h"
 
 // Vtable 0x804A6F38: only the destructor (0x802558E4). Constructor
 // 0x80255B28 (this, index), called by PlayerManager_804A6F28's constructor
@@ -38,6 +40,8 @@
 // Fields only where code outside the player's own units reads them inline;
 // the player's getters (tu_8023FBF0) read the rest.
 class cls_804A71A8;
+class cls_804AA8D8;
+class cls_804B20F8;
 class JPABaseEmitter;
 
 class Player_804A6F38 {
@@ -58,7 +62,7 @@ public:
     void fn_8023FC10(s32 value); // 0xCA8 = max(0xCA8, value)
     // Getters and setters the generated queries forward to (tools/gen_game.py).
     void fn_8023FBF0(); // via fn_80231928
-    s32 fn_8023FC24(); // via fn_8022BCD4
+    cls_804AA8D8* fn_8023FC24(); // via fn_8022BCD4
     s32 fn_8023FC2C(); // via fn_8023BC38
     u8 fn_8023FC5C(); // via fn_8023BCD4
     bool fn_8023FF50(); // via fn_8023BD70
@@ -608,8 +612,9 @@ public:
     /* 0x0BE4 */ s32 field_0xbe4;
     /* 0x0BE8 */ u8 field_0xbe8;
     /* 0x0BE9 */ u8 field_0xbe9[0xBEC - 0xBE9];
-    // Returned by fn_8023FC24 (via fn_8022BCD4).
-    /* 0x0BEC */ s32 field_0xbec;
+    // Allocated by the constructor (new, 0x2C0 bytes), deleted by the
+    // destructor; returned by fn_8023FC24 (via fn_8022BCD4).
+    /* 0x0BEC */ cls_804AA8D8* field_0xbec;
     // The player's cls_804A71A8 (allocated by the constructor); fn_802685D4
     // calls its fn_80268BC4.
     /* 0x0BF0 */ cls_804A71A8* field_0xbf0;
@@ -800,22 +805,34 @@ public:
     /* 0x124C */ bool field_0x124c; // fn_80248DD8 sets it (stb 1)
     // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
     /* 0x124D */ u8 field_0x124d;
-    /* 0x124E */ u8 field_0x124e[0x1274 - 0x124E];
+    /* 0x124E */ u8 field_0x124e[0x1250 - 0x124E];
+    // The player's two sound objects (constructor: new cls_804B20F8(index,
+    // pos, NULL, 8)); 0x1250 plays at field_0x1258, 0x1254 has no position.
+    /* 0x1250 */ cls_804B20F8* field_0x1250;
+    /* 0x1254 */ cls_804B20F8* field_0x1254;
+    /* 0x1258 */ JGeometry::TVec3f field_0x1258; // zeroed by the constructor
+    /* 0x1264 */ u8 field_0x1264[0x1274 - 0x1264];
     /* 0x1274 */ JPABaseEmitter* field_0x1274;
-    /* 0x1278 */ u8 field_0x1278[0x128C - 0x1278];
+    // Six particle callbacks, constructed and destroyed with the player.
+    /* 0x1278 */ cls_804A64A8 field_0x1278;
     /* 0x128C */ JPABaseEmitter* field_0x128c;
-    /* 0x1290 */ u8 field_0x1290[0x12B8 - 0x1290];
+    /* 0x1290 */ cls_804A64A8 field_0x1290;
+    /* 0x12A4 */ u8 field_0x12a4[0x12B8 - 0x12A4];
     /* 0x12B8 */ JPABaseEmitter* field_0x12b8;
     /* 0x12BC */ JPABaseEmitter* field_0x12bc; // deleted with deleteEmitter() (fn_8027B5F0)
     /* 0x12C0 */ s32 field_0x12c0;
     /* 0x12C4 */ JPABaseEmitter* field_0x12c4;
     /* 0x12C8 */ JPABaseEmitter* field_0x12c8;
     /* 0x12CC */ JPABaseEmitter* field_0x12cc;
-    /* 0x12D0 */ u8 field_0x12d0[0x12E4 - 0x12D0];
+    /* 0x12D0 */ cls_804A64A8 field_0x12d0;
     /* 0x12E4 */ JPABaseEmitter* field_0x12e4;
-    /* 0x12E8 */ u8 field_0x12e8[0x1308 - 0x12E8];
+    /* 0x12E8 */ cls_804A64A8 field_0x12e8;
+    /* 0x12FC */ u8 field_0x12fc[0x1308 - 0x12FC];
     /* 0x1308 */ JPABaseEmitter* field_0x1308; // deleted with deleteEmitter() (fn_802708E8)
-    /* 0x130C */ u8 field_0x130c[0x1350 - 0x130C];
+    /* 0x130C */ cls_804A64A8 field_0x130c;
+    /* 0x1320 */ u8 field_0x1320[0x1330 - 0x1320];
+    /* 0x1330 */ cls_804A64A8 field_0x1330;
+    /* 0x1344 */ u8 field_0x1344[0x1350 - 0x1344];
     /* 0x1350 */ JPABaseEmitter* field_0x1350;
     /* 0x1354 */ u8 field_0x1354[0x1374 - 0x1354];
     /* 0x1374 */ JPABaseEmitter* field_0x1374;
@@ -825,7 +842,11 @@ public:
     /* 0x1384 */ u8 field_0x1384[0x1388 - 0x1384];
     // fn_8027F1C8's effect (ids 0x35E-0x361), moved with fn_8013CB44.
     /* 0x1388 */ JPABaseEmitter* field_0x1388;
-    /* 0x138C */ u8 field_0x138c[0x13BC - 0x138C];
+    /* 0x138C */ u8 field_0x138c[0x1398 - 0x138C];
+    // Two 'PEFF' spawner callbacks (game/cls_8049F140.h).
+    /* 0x1398 */ cls_8049F140 field_0x1398;
+    /* 0x13A8 */ cls_8049F140 field_0x13a8;
+    /* 0x13B8 */ u8 field_0x13b8[0x13BC - 0x13B8];
     void fn_80241B44(JGeometry::TVec2f* out); // via fn_8022B8EC
     s32 fn_80246904(u32 arg); // via fn_8022C46C
     bool fn_8028FC2C(); // via fn_8022DC3C
@@ -1003,7 +1024,7 @@ JGeometry::TVec3f* fn_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_80
 // else its own first use; float loads of exactly +0/+4/+8 through it ->
 // const JGeometry::TVec3f*, stores -> JGeometry::TVec3f*).
 bool fn_8022BC38(s32 player, s32 a, const JGeometry::TVec3f* b); // -> fn_80241E28; else false
-s32 fn_8022BCD4(s32 player);             // 1 unit. -> fn_8023FC24 (word 0xBEC); else 0
+cls_804AA8D8* fn_8022BCD4(s32 player); // 1 unit. -> fn_8023FC24 (0xBEC); else NULL
 void fn_8022BD70(); // -> fn_80241E64 on every active player
 s32 fn_8022BECC(s32 player); // -> fn_8023FFAC; else 0
 bool fn_8022BF68(s32 player); // -> fn_802454C0; else false

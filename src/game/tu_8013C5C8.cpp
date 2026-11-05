@@ -5,6 +5,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameMode.h"
 #include "game/Player.h"
+#include "game/cls_8049F140.h"
 #include "game/RotMatrix.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -16,17 +17,6 @@ const char* lbl_8049F118[10] = {
     "jen_blue_tsume.bti",   "AK_dummyGenB00",  "jen_green_tsume.bti", "AK_dummyGenG00",
     "jen_red_tsume.bti",    "AK_dummyGenR00",  "jen_purple_tsume.bti", "AK_dummyGenP00",
     "jen_8_3_tsume.bti",    "AK_dummyGenS00",
-};
-
-// Vtable 0x8049F140: the 'PEFF' spawner that fn_8023FBF0 embeds.
-class cls_8049F140 : public JPAEmitterCallBack {
-public:
-    virtual ~cls_8049F140();
-    virtual void execute(JPABaseEmitter* emitter);
-
-    /* 0x4 */ s32 field_0x4;
-    /* 0x8 */ s32 field_0x8;
-    /* 0xC */ s32 field_0xc;
 };
 
 // Vtable 0x8049F15C: emits the queued positions of EffectSystem_8049F178.
@@ -43,8 +33,6 @@ public:
     virtual void draw(JPABaseEmitter* emitter);
     virtual void drawAfter(JPABaseEmitter* emitter);
 };
-
-cls_8049F140::~cls_8049F140() {}
 
 // FIXME: 98.7. The original tests field_0x4c == 0xC as bne/b (a branch to the end after the
 // bne) where this emits one beq, and keeps the 'PEFF' arguments of case 0 in r29-r31 (here r28-r30).

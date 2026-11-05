@@ -249,14 +249,14 @@ bool fn_8022BC38(s32 player, s32 a, const JGeometry::TVec3f* b) {
     return false;
 }
 
-s32 fn_8022BCD4(s32 player) {
+cls_804AA8D8* fn_8022BCD4(s32 player) {
     if (lbl_8053AC90 == NULL) {
-        return 0;
+        return NULL;
     }
     if (isPlayerActive(player)) {
         return lbl_8053AC90->mPlayers[player]->fn_8023FC24();
     }
-    return 0;
+    return NULL;
 }
 
 void fn_8022BD70() {

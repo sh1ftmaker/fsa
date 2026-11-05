@@ -69,8 +69,6 @@ void cls_802150B8::fn_80214900() {
     static_cast<EnemyBase_804A4808*>(mOwner)->fn_801CDC8C(0x4000E);
 }
 
-cls_804A64A8::~cls_804A64A8() {}
-
 // FIXME: 93.57 %. Register allocation only: the original keeps the owner flag
 // in r31 and the table pointer in r30, ours is the other way round (the
 // ternary form gives extrwi, 90.45 %). The lbl_8053FBA4 literal rows are the

@@ -10,7 +10,7 @@
 // field_0xbf0.
 class cls_804A71A8 {
 public:
-    // 0x8026F9E8: r4 = the owning Player.
+    // 0x8026F9E8 (tu_802684A4): r4 = the owning Player.
     cls_804A71A8(Player_804A6F38* player);
 
     // 0x8026F998: r4 = the delete flag; > 0 frees the object (__dl__FPv).

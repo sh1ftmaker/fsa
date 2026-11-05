@@ -5,6 +5,8 @@
 #include "game/GameGlobals.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
+#include "game/cls_804B20F8.h"
+#include "game/tu_8030AE84.h"
 
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
@@ -23,7 +25,7 @@ void Player_804A6F38::fn_8023FC10(s32 value) {
     }
 }
 
-s32 Player_804A6F38::fn_8023FC24() {
+cls_804AA8D8* Player_804A6F38::fn_8023FC24() {
     return field_0xbec;
 }
 
@@ -1056,3 +1058,21 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 }
 
 void Player_804A6F38::fn_80252FBC() {}
+
+Player_804A6F38::~Player_804A6F38() {
+    fn_80241E64();
+    delete field_0xbf0;
+    delete field_0xbec;
+    delete field_0x1254;
+    delete field_0x1250;
+}
+
+Player_804A6F38::Player_804A6F38(s32 index) {
+    field_0x4 = index;
+    field_0x1258.set(0.0f, 0.0f, 0.0f);
+    field_0x1250 = new cls_804B20F8(index, &field_0x1258, NULL, 8);
+    field_0x1254 = new cls_804B20F8(index, NULL, NULL, 8);
+    field_0xbec = new cls_804AA8D8();
+    field_0xbf0 = new cls_804A71A8(this);
+    mActive = false;
+}
