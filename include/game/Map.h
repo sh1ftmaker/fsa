@@ -42,17 +42,37 @@ namespace JUtility {
 struct TColor;
 }
 
+// game/tu_80432638.cpp (owner unit, not written yet). Named after its vtable,
+// lbl_804B1668 (stored by its constructor, 0x8043395C); 0xB0 bytes
+// (cls_804AA858's constructor allocates it). Only what cls_804AA858 uses.
+class cls_804B1668 {
+public:
+    cls_804B1668();
+    /* 0x08 */ virtual ~cls_804B1668();
+
+    /* 0x04 */ u8 field_0x4[0xB0 - 0x4];
+}; // Size: 0xB0
+
+// cls_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
+struct cls_804AA858Sub11C {
+    /* 0x00 */ u8 field_0x0[0x68];
+}; // Size: 0x68
+
 // The element classes of cls_804AA858's arrays (constructed with
 // __construct_array in its constructor, fn_802FFDEC). Each is named after
 // its out-of-line constructor, the only code of its own.
 
-// 0x10 x 3 at 0x150 / 0x190 / 0x1D0; empty constructor.
+// 4 x 3 at 0x150 / 0x190 / 0x1D0 (__construct_array 0x10 x 4); empty
+// constructor. fn_802FF798 fills the 0x1D0 ones with x, y, w, h words.
 class cls_803004C0 {
 public:
     cls_803004C0();
 
-    /* 0x00 */ u8 field_0x0[0x4];
-}; // Size: 0x4
+    /* 0x00 */ s32 field_0x0;
+    /* 0x04 */ s32 field_0x4;
+    /* 0x08 */ s32 field_0x8;
+    /* 0x0C */ s32 field_0xc;
+}; // Size: 0x10
 
 // 0x100 at 0x2398. fn_802FF568 counts field_0x0 down each frame.
 class cls_803003AC {
@@ -204,21 +224,21 @@ public:
     /* 0x00C8 */ u8* field_0xc8[12];
     // 0x8000: where fn_802F9714 decodes compressed resources (JKRDecomp::decode).
     /* 0x00F8 */ u8* field_0xf8;
-    /* 0x00FC */ struct cls_8043395C* field_0xfc; // new(0xB0), fn_8043395C; deleted through its vtable
+    /* 0x00FC */ cls_804B1668* field_0xfc; // new(0xB0); deleted through its vtable
     // 65 x 65 grid points (0x1081 TVec3f / TColor each, __construct_new_array).
     /* 0x0100 */ JGeometry::TVec3f (*field_0x100[2])[65];
     /* 0x0108 */ JUtility::TColor* field_0x108[2];
     /* 0x0110 */ JGeometry::TVec2f* field_0x110; // 0x1000 (4 x 64 x 16, filled by fn_802FF798)
     /* 0x0114 */ u8 field_0x114[0x11C - 0x114];
-    /* 0x011C */ void* field_0x11c[4]; // __nw(0x68) each, no constructor
+    /* 0x011C */ cls_804AA858Sub11C* field_0x11c[4];
     /* 0x012C */ u8 field_0x12c[4];
     /* 0x0130 */ u8 field_0x130[0x138 - 0x130];
     /* 0x0138 */ s32 field_0x138[4];
     /* 0x0148 */ u8 field_0x148[4];
     /* 0x014C */ u8 field_0x14c[4];
-    /* 0x0150 */ cls_803004C0 field_0x150[16];
-    /* 0x0190 */ cls_803004C0 field_0x190[16];
-    /* 0x01D0 */ cls_803004C0 field_0x1d0[16];
+    /* 0x0150 */ cls_803004C0 field_0x150[4];
+    /* 0x0190 */ cls_803004C0 field_0x190[4];
+    /* 0x01D0 */ cls_803004C0 field_0x1d0[4];
     /* 0x0210 */ u8 field_0x210[4];
     /* 0x0214 */ u8 field_0x214; // 2 units compare it with 1 (act_player_sword_level_check_npc 0x802F1350)
     /* 0x0215 */ u8 field_0x215;
