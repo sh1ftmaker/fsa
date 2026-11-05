@@ -599,6 +599,8 @@ void Player_804A6F38::fn_80258880() {
 
 void Player_804A6F38::fn_8025888C() {}
 
+// FIXME: 99.97. Instructions identical; only the lhz of the effect table lbl_8046B200 is marked
+// (the table sits in this unit's still-unwritten .rodata, so its placement differs).
 // Update of state 0x47 (item 9): a dig 16 in front of the player at floor level.
 // Frame 11 sets the 8x8 box field_0x5cc there (field_0xb9e), frame 12 asks the
 // background (fn_802A1844) and plays a sound by the result; results 1-4 give an
@@ -955,6 +957,8 @@ void Player_804A6F38::fn_8025D6A0() {
     field_0xb9c = false;
 }
 
+// FIXME: 99.87. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80540104/8: the pool
+// follows first use and this unit's unwritten functions use the earlier literals).
 void Player_804A6F38::fn_8025D6AC() {
     if (field_0x3fc < 4) {
         field_0x3fd = 0;

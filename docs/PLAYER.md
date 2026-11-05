@@ -610,7 +610,7 @@ Evidence for the item names is the actor each state spawns (docs/names/actors.ts
 |---|---|---|
 | 1 | 0x39 (8025DACC / 8025E79C / 8025D9FC) | enter: facing from the leader or the pad (fn_80246B10 2/1/8/4), fn_8027221C(6); exit releases the emitters 0x1360-0x1368 and clears 0xCE8 while 0xBAC / fn_8026FC20 > 0 |
 | 2 | 0x48 (802586D0 / 80258880 / 802586CC) | **Fire Rod**: frame 2 spawns ACTOR_FIRE ("Fire Rod fire") by the player when fn_80247594(0) allows and the last fire (0xB3C) is gone; level in bits 12+ of the argument; 8 frames |
-| 3 | 0x3D (8025B22C / 8025B35C / 8025F698) | **bomb (BOME)**: at most three alive (0xB00[3]) and none held (0xB18); frame 6 spawns 'BOME' (argument 0x100 at level >= 2) into 0xB18; done at frame 16 |
+| 3 | 0x3D (8025B22C / 8025B35C / 8025F698) | **'BOME'** (docs/names/actors.tsv: unknown, low; not named a bomb there): at most three alive (0xB00[3]) and none held (0xB18); frame 6 spawns 'BOME' (argument 0x100 at level >= 2) into 0xB18; done at frame 16 |
 | 4 | 0x3A | refused while 0xB18 is held, the 0xB74 cooldown runs, or (fn_8022B160) the player's byte of lbl_8053ABB8 is set |
 | 5 | 0x3C | - |
 | 6 | 0x45 (level >= 2) / 0x44 (at most three 0xB1C[3]) | - |
