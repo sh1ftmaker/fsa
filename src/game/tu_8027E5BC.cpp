@@ -307,6 +307,42 @@ void Player_804A6F38::fn_8027F1C8() {
     }
 }
 
+// Offsets by [player][this player's index] (x, y), for fn_802486A0() == 3 and 2.
+static const f32 lbl_8046BF98[4][4][2] = {
+    {{0.0f, 0.0f}, {-16.0f, 16.0f}, {16.0f, 16.0f}, {0.0f, 32.0f}},
+    {{16.0f, -16.0f}, {0.0f, 0.0f}, {32.0f, 0.0f}, {16.0f, 16.0f}},
+    {{-16.0f, -16.0f}, {-32.0f, 0.0f}, {0.0f, 0.0f}, {-16.0f, 16.0f}},
+    {{0.0f, -32.0f}, {-16.0f, -16.0f}, {16.0f, -16.0f}, {0.0f, 0.0f}},
+};
+static const f32 lbl_8046C018[4][4][2] = {
+    {{0.0f, 0.0f}, {16.0f, 0.0f}, {0.0f, 16.0f}, {16.0f, 16.0f}},
+    {{-16.0f, 0.0f}, {0.0f, 0.0f}, {-16.0f, 16.0f}, {0.0f, 16.0f}},
+    {{0.0f, -16.0f}, {16.0f, -16.0f}, {0.0f, 0.0f}, {16.0f, 0.0f}},
+    {{-16.0f, -16.0f}, {0.0f, -16.0f}, {-16.0f, 0.0f}, {0.0f, 0.0f}},
+};
+
+void Player_804A6F38::fn_8027F854(JGeometry::TVec3f* out, s32 player) {
+    out->set(*fn_8023E724(player));
+    switch (fn_802486A0()) {
+    case 3:
+        out->x += lbl_8046BF98[player][field_0x4][0];
+        out->y += lbl_8046BF98[player][field_0x4][1];
+        break;
+    case 2:
+        out->x += lbl_8046C018[player][field_0x4][0];
+        out->y += lbl_8046C018[player][field_0x4][1];
+        break;
+    case 0:
+        out->x += 16.0f * (fn_80248778() - fn_8022E8D4(player));
+        break;
+    case 1:
+        out->y += 16.0f * (fn_80248778() - fn_8022E8D4(player));
+        break;
+    case 5:
+        break;
+    }
+}
+
 void Player_804A6F38::fn_802810E4() {
     field_0x458 = 0;
     fn_8013CC50(field_0x3b4, &mPos, 0x289, 0, 1, NULL, NULL, true, 1.0f);
