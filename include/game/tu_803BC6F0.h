@@ -30,6 +30,10 @@ public:
     // Fades the 'kk_' sprites (fn_803C6690 passes field_0xa4 and
     // 1 - progress).
     void fn_803BC6F0(s32 arg, f32 alpha);
+    // fn_803CE4CC: back to the constructor's colours.
+    void fn_803BDD44(s32 file);
+    // fn_803CEED4: after the highlight update.
+    void fn_803BE3D8();
     // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8 (not written yet).
     void fn_803C24BC();
     void fn_803BF004();

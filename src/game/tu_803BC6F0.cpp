@@ -6,6 +6,7 @@
 #include "game/act/tu_80440BF4.h"
 #include "game/tu_803BC6F0.h"
 #include "JSystem/J2D/J2DScreen.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "dolphin/os/OSReset.h"
@@ -317,6 +318,49 @@ void FileSelect_804AFF60::fn_803BC6F0(s32 file, f32 alpha) {
     // The original copies the group colours through a per-group temporary (sp 0xE4 / 0xE0 ...).
     JUtility::TColor black4 = black;
     JUtility::TColor white4 = white;
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C20[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C08[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BF0[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BD8[file]))->setBlackWhite(black4, white4);
+}
+
+// FIXME: 99.58 %. Stack slots only: the original puts the first call's
+// by-value copies above the group colours (sp 0xC8) and numbers each group's
+// call temporaries upwards (0x7C, 0x84, ...), ours the other way round. Same
+// copy pattern as fn_803BC6F0.
+// Restores file row `file`'s pictures to the colours the constructor read
+// (field_0xe8 / field_0xfc), group by group as fn_803BC6F0 fades them.
+void FileSelect_804AFF60::fn_803BDD44(s32 file) {
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BA8[file]))->setBlackWhite(field_0xfc[0], field_0xe8[0]);
+
+    JUtility::TColor black1 = field_0xfc[1];
+    JUtility::TColor white1 = field_0xe8[1];
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B90[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B78[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B60[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B48[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B30[file]))
+        ->setBlackWhite(JUtility::TColor(black1.r, black1.g, black1.b, 0xFF), white1);
+
+    JUtility::TColor black2 = field_0xfc[2];
+    JUtility::TColor white2 = field_0xe8[2];
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B18[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B00[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AE8[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AD0[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AB8[file]))->setBlackWhite(black2, white2);
+
+    JUtility::TColor black3 = field_0xfc[3];
+    JUtility::TColor white3 = field_0xe8[3];
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C98[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C80[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C68[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C50[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C38[file]))
+        ->setBlackWhite(JUtility::TColor(black3.r, black3.g, black3.b, 0xFF), white3);
+
+    JUtility::TColor black4 = field_0xfc[4];
+    JUtility::TColor white4 = field_0xe8[4];
     ((J2DPicture*)mScreenHuuin->search(lbl_80476C20[file]))->setBlackWhite(black4, white4);
     ((J2DPicture*)mScreenHuuin->search(lbl_80476C08[file]))->setBlackWhite(black4, white4);
     ((J2DPicture*)mScreenHuuin->search(lbl_80476BF0[file]))->setBlackWhite(black4, white4);
@@ -1134,6 +1178,62 @@ void FileSelect_804AFF60::fn_803CE9EC() {
         }
     }
     card->field_0x1ff5 = 2;
+}
+
+// FIXME: 99.89 %. `lbl_8050EC80[field_0xa8]` adds base + offset where the
+// original adds offset + base (r0 / r4 swapped, as in fn_803B8CAC's own row
+// lookups, which suggests an inlined per-file flag test); the .sdata2
+// literals are @NNN (pool order, see fn_803C24BC).
+// Draws the screen: moves the 'Padhu' highlight by the offset of the first
+// empty 'Pdb' slot (field_0xb8) from 'Pdb05', draws both screens, shows the
+// highlight only while the chosen file's row (field_0xa8) is up, flagged and
+// has all seven fn_803B8CAC bits, then the message window and kk_black fade.
+void FileSelect_804AFF60::fn_803CEED4() {
+    for (int i = 0; i < 8; i++) {
+        if (field_0xb8[i] == 0) {
+            field_0xb4 = i;
+            break;
+        }
+    }
+    if (field_0xb4 < 7) {
+        f32 dx = mScreen->search(lbl_804769D0[field_0xb4])->getBounds()->i.x
+               - mScreen->search(lbl_804769D0[4])->getBounds()->i.x;
+        f32 dy = mScreen->search(lbl_804769D0[field_0xb4])->getBounds()->i.y
+               - mScreen->search(lbl_804769D0[4])->getBounds()->i.y;
+        mScreenHuuin->search('Padhu01')->move(field_0x88[0] + dx, field_0x94[0] + dy);
+        mScreen->search('Padhu02')->move(field_0x88[1] + dx, field_0x94[1] + dy);
+        mScreen->search('Padhu03')->move(field_0x88[2] + dx, field_0x94[2] + dy);
+    }
+    lbl_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    if (field_0x14->mPane->isVisible() && (lbl_8050EC80[field_0xa8].field_0x28 & 1)) {
+        // Seven separate calls in the original (a loop with a break isn't unrolled).
+        if (fn_803B8CAC(field_0xa8, 0) && fn_803B8CAC(field_0xa8, 1) && fn_803B8CAC(field_0xa8, 2)
+            && fn_803B8CAC(field_0xa8, 3) && fn_803B8CAC(field_0xa8, 4) && fn_803B8CAC(field_0xa8, 5)
+            && fn_803B8CAC(field_0xa8, 6)) {
+            if (mScreenHuuin->search('Padhu01')->isVisible()) {
+                mScreenHuuin->search('Padhu01')->hide();
+                mScreen->search('Padhu02')->hide();
+                mScreen->search('Padhu03')->hide();
+            }
+        } else if (!mScreenHuuin->search('Padhu01')->isVisible()) {
+            mScreenHuuin->search('Padhu01')->show();
+            mScreen->search('Padhu02')->show();
+            mScreen->search('Padhu03')->show();
+        }
+        fn_803BE3D8();
+    } else if (mScreenHuuin->search('Padhu01')->isVisible()) {
+        mScreenHuuin->search('Padhu01')->hide();
+        mScreen->search('Padhu02')->hide();
+        mScreen->search('Padhu03')->hide();
+    }
+    mScreenHuuin->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    if (field_0x116 != 0) {
+        field_0x10->setAlpha(field_0x1a3);
+        field_0x10->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
+        lbl_8053AEC0->fn_804316EC();
+    }
+    lbl_8053AED8->fn_80440EE8();
 }
 
 // FIXME: 99.93 %. Instructions identical; only the .sdata2 literals differ
