@@ -1287,8 +1287,8 @@ bool fn_8022B7C4(s32 player);            // 7 units. -> fn_8023FC08 (byte 0x42C)
 void fn_8022B860(s32 player, s32 value); // 1 unit. -> fn_8023FC10(value)
 f32 fn_8022C6AC(s32 player);             // -> fn_80246F28; else lbl_80540008
 s32 getPlayerLayer_8023DE58(s32 player);             // 134 units. -> field_0x3b4 (layer); else 0
-// tu_8022AD64 (0x8023EAC4, not written): loops over the four players of
-// the manager; false while the manager is missing. cls_804A71A8::fn_8026E1E0
+// tu_8022AD64 (0x8023EAC4): whether a present player of `player`'s group (fn_8022E438) has
+// fn_8025F484; false while the manager is missing. cls_804A71A8::fn_8026E1E0
 // passes its owner's index and tests r3 with clrlwi 24.
 bool fn_8023EAC4(s32 player);
 JGeometry::TVec3f* getPlayerPos_8023E724(s32 player); // 193 units. -> &mPos; else &lbl_804CF460
@@ -1301,6 +1301,7 @@ JGeometry::TVec3f* getPlayerPos_8023E724(s32 player); // 193 units. -> &mPos; el
 // else its own first use; float loads of exactly +0/+4/+8 through it ->
 // const JGeometry::TVec3f*, stores -> JGeometry::TVec3f*).
 s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e); // -> the first active player whose fn_80272224 is true; else -1
+s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b); // -> the first active player whose fn_80256C74 is true; else -1
 s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b); // -> the first active player whose fn_802732C4 is true; else -1
 
 // Owner: tu_8022AD64 (0x8022E2D8, defined there). 1 unit (act_four_switch_monitor's
@@ -1314,7 +1315,7 @@ void fn_8022E2D8(s32 index);
 // tu_8021693C passes its hit box, the actor's field_0x4, a type word, 1, 1.
 bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b);
 
-// game/tu_8022AD64.cpp (0x8022BB48, not written yet): whether any active player's
+// game/tu_8022AD64.cpp (0x8022BB48): whether any active player's
 // fn_80241E28(layer, pos) holds (false while gPlayerManager_8053AC90 is NULL). Called by
 // ActorBase_804A5770::startSound_801F0E34 with (field_0x4, &mPos).
 bool fn_8022BB48(s32 layer, const JGeometry::TVec3f* pos);
@@ -1350,7 +1351,7 @@ s32 fn_8022CAF8(s32 player); // -> fn_802486A0; else 0
 void fn_8022CB94(s32 player); // -> fn_8024B9E8
 void fn_8022CC20(s32 player); // -> fn_8024BAEC
 void fn_8022CD48(s32 player); // -> fn_80248FF0
-// Owner: game/tu_8022AD64.cpp (0x8022CDD4 and 0x8022CF08, not written yet).
+// Owner: game/tu_8022AD64.cpp (0x8022CDD4 not written yet; 0x8022CF08 defined there).
 // Called with a player index by UnknownFORM_804A7BE8 (game/tu_8029C584.cpp): the
 // destructor calls fn_8022CDD4, init fn_8022CF08.
 extern "C" void fn_8022CDD4(s32 player);
@@ -1609,8 +1610,8 @@ s32 fn_8023697C(s32 player);             // 1 unit. -> fn_8024322C (word 0xD08);
 bool fn_80236B50(s32 player);
 s32 fn_802375B0(s32 player);
 
-// Owner: tu_8022AD64 (0x80236890, not written yet). No arguments; true without a
-// manager, else a scan of the players' byte 0xCAC. fn_80251BFC refuses a state
+// Owner: tu_8022AD64 (0x80236890). No arguments; true without a manager, else whether
+// fn_80270A04 holds for every present player whose bit is set in gGameRoot_8053AAF8->field_0x82. fn_80251BFC refuses a state
 // change when it holds while gGameRoot_8053AAF8->field_0x7e is set.
 bool fn_80236890();
 // Owner: tu_8022AD64 (not written yet). The manager update's cross-player
@@ -1755,9 +1756,6 @@ void fn_8023C830(s32 player);
 // object, serial) passes.
 s32 fn_80239108(s32 serial);
 
-// Owner unit not written yet (0x8023A6CC, 0xF0 bytes). 1 unit (act_on_off_switch
-// update), which passes a box and a layer only; the s32 result is tested with cmpwi.
-extern "C" s32 fn_8023A6CC(const JGeometry::TBox2f* box, s32 layer);
 }
 // Defined in game/tu_8022AD64.cpp, with C++ names (moved out of the extern "C" block above).
 // 1 unit (act_dummy_conversation). Owner: tu_8022AD64. fn_8022FE80 forwards

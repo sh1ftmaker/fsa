@@ -840,17 +840,6 @@ bool fn_8022E23C(s32 player, s32 arg) {
     return false;
 }
 
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
-}
-
 bool fn_8022E39C(s32 player, s32 arg) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
@@ -2417,28 +2406,6 @@ bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial
     return false;
 }
 
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (isPlayerActive(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
 bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
@@ -2660,18 +2627,6 @@ s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) 
     }
     for (s32 i = 0; i < 4; i++) {
         if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802730D8(box, layer, flag, margin)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (isPlayerActive(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
             return i;
         }
     }
@@ -3393,6 +3348,33 @@ void fn_8023F78C() {
         player->fn_80254744();
     }
     lbl_8053A190 = -1;
+}
+
+PlayerManager_804A6F28::~PlayerManager_804A6F28() {
+    gAudioMgr_8053AF80->fn_8045815C(false);
+    for (s32 i = 0; i < 4; i++) {
+        if (mPlayers[i] != NULL) {
+            delete mPlayers[i];
+        }
+    }
+    gPlayerManager_8053AC90 = NULL;
+}
+
+PlayerManager_804A6F28::PlayerManager_804A6F28() {
+    gPlayerManager_8053AC90 = this;
+    for (s32 i = 0; i < 4; i++) {
+        mPlayers[i] = new Player_804A6F38(i);
+    }
+    field_0x68 = 0;
+    field_0x6c = false;
+    field_0x6d = false;
+    field_0x6e = false;
+    field_0x6f = false;
+    field_0x70 = false;
+    field_0x71 = false;
+    field_0x72 = false;
+    field_0x73 = false;
+    gAudioMgr_8053AF80->fn_8045815C(false);
 }
 
 bool GameRoot_8049EF20::fn_8023F98C(s32 player) {

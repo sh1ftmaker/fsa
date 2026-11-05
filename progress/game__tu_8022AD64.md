@@ -87,3 +87,44 @@ fn_8023F9B8 (__sinit, 0x238, not the 9-pool template).
 include/game/Player.h (members, fields, free decls moved out of extern "C" blocks, void->bool for
 fn_8024EFA0 / fn_80272C20 / fn_80230E1C), include/game/GameGlobals.h (fn_8023F728/78C moved out of extern "C",
 extern s32 lbl_8053A190).
+
+# Player track round 8, agent N (2026-11-05, Opus)
+
+Baseline (progress.py): total 8571 / 11557; unit 283/373. Now: total 8618 (+47); unit 330/373.
+
+## Done
+- fn_8022C5EC / fn_8022C52C return u32 (all callers cmplwi). tu_8027E5BC (not edited): fn_80285690
+  98.27 -> 99.81 (regalloc-only + reloc-name: `cmpw r3, r31` operands swapped, literal pool name),
+  fn_802859C4 99.54 -> 99.93 (regalloc-only, the same cmpw).
+- Player.h: field_0x1268 is a TVec3f (fn_8024C378 / fn_8024E0A0 copy mPos into it, add a view
+  offset and return its address).
+- 46 hand-written functions (all 100 %): forwarders with non-placeholder getters, the inverted
+  `!isPlayerActive` shapes, all-player "any" / "find first" / "find last" / "each" loops, the
+  group loops over fn_8022E438, PlayerManager_804A6F28's constructor and destructor.
+- 1 generated: fn_8023A6CC (loop family), by `gen_game.py tu_8022AD64` with the claim check
+  bypassed in-process (no claims.json edit); its manifest row is new (coordinator approval).
+- Types proven from the asm: fn_80230224 takes s32 (the call truncates it with clrlwi 24 into
+  fn_8024D058, whose parameter is therefore u8); fn_80236554's flag is bool (passed unextended to
+  fn_80270DDC); fn_802372F8 returns bool and takes (player, item, level) (fn_80241618's s32 pair);
+  fn_80230498 returns fn_8024DC00's bool.
+- Defined functions leave Player.h's extern "C" block (a section after it); symbols.txt renamed to
+  the names our object emits, also the Player getters fn_8024CAC8, fn_80241BA0, fn_802422D0,
+  fn_80248E94 and fn_8024D058 (Fb -> FUc).
+
+## gen_game.tsv
+Every commit that changes the source is a pair: the pre-generation source (the file minus the
+generator's rendered members, verified by re-running fwd_edit_source), then the full file with
+the rows' src_before re-pinned to that blob.
+
+## Not done (43)
+- fn_80233C08: an out-of-line TVec3 normalize with paired-single code (psq_l / ps_madd / ps_sum0 /
+  ps_muls0) and 32 * FLT_EPSILON: needs a PSVECSquareMag-style JMath inline (inline asm) we do not have.
+- fn_8022DFD4: returns fn_802422C4 (&field_0xbf0->field_0x14 as a TVec2f) or the address of a
+  stack TVec2f; cls_804A71A8 0x14 / 0x18 are two f32 fields, so carve that TVec2f first.
+- fn_80238430: returns &field_0x324 (a TVec2f; the caller reads x / y) with the TVec3f fallback
+  &lbl_804CF460: the declared type cannot be both without a cast.
+- fn_8023F984: the weak out-of-line copy of Player::fn_8023F984 (mActive); appears once one of the
+  big functions that call it out of line is written.
+- The larger ones (>= 296 bytes) and __sinit.
+- fn_80233C9C is written with the final compare spelled out: through TBox::intersect / isValid
+  (TVec2::isAbove's `? true : false`) it is 83.94 % (4 extra instructions renormalising the bool).
