@@ -10,7 +10,7 @@
 cls_804B1634* lbl_8053AEC0;
 static cls_804B1600* lbl_8053AEC4;
 
-// Two 4-entry tables read with lhax by byte index (0xEB): fn_80431174, fn_8042F6DC.
+// Two 4-entry tables read with lhax by byte index (0xEB); used by fn_80431174 / fn_8042F6DC (not written yet).
 static const s16 lbl_80543AE8[4] = {0x8, 0x154, 0x5, 0x0};
 static const s16 lbl_80543AF0[4] = {0x164, 0xA, 0x160, 0x0};
 
@@ -116,6 +116,8 @@ void cls_804B1634::fn_804316EC() {
     }
 }
 
+// FIXME: 99.81. Code identical; only the .sdata2 literal names differ (the pool
+// order follows fn_80431174, which uses 11.0f before 480.0f, not written yet).
 BOOL cls_804B1634::fn_80431740() {
     if (field_0xec != 0) {
         if (field_0xc->fn_80402940(10, 0, 0.0f, 480.0f) == 0) {
@@ -127,6 +129,8 @@ BOOL cls_804B1634::fn_80431740() {
     return TRUE;
 }
 
+// FIXME: 99.76. Code identical; only the .sdata2 literal names differ (same pool
+// order cause as fn_80431740).
 BOOL cls_804B1634::fn_804317AC() {
     if (field_0xec != 0) {
         field_0xe8++;
