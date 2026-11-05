@@ -677,6 +677,11 @@ public:
     u8 fn_8030A2E4(s32 slot);
     u8 fn_8030A364(s32 slot);
     u8 fn_8030A388(s32 slot);
+    // SHARED-EDIT (tu_803F0A54 fn_803FC304): owner game/tu_803099FC.cpp
+    // (0x8030A308, same unit). Takes an input slot from fn_8030AAF4 and
+    // returns a byte the caller tests after clrlwi 24 (the controller in
+    // that slot is connected).
+    u8 fn_8030A308(s32 slot);
 };
 extern cls_804AA8C8* lbl_8053AD30;
 extern "C" {
@@ -1162,6 +1167,13 @@ extern void* lbl_8053AEC0;
 // cls_804B1D58::fn_804522C8 with lbl_8053AEC0 in r3; its body is unknown.
 extern "C" {
 void fn_804316EC(void* obj);
+// SHARED-EDIT (tu_803F0A54): game/tu_8042E964.cpp (not written yet), called
+// with lbl_8053AEC0 in r3. fn_804310CC: no other arguments
+// (cls_804B0F10::fn_803FC5E4).
+void fn_804310CC(void* obj);
+// fn_80431A9C: r4 an id (0xC4, 0x10B), r5 a byte (clrlwi 24 in
+// cls_804B0F10::fn_803F2AEC), r6 a pointer (addi rN, rM, off in tu_803D7098) or 0.
+void fn_80431A9C(void* obj, s32 id, u8 value, void* arg);
 }
 
 // game/tu_801A0710.cpp (.sdata 0x8053A100, not written yet; -1 in the
