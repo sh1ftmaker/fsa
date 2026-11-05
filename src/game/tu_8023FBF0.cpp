@@ -329,6 +329,26 @@ s32 Player_804A6F38::fn_802416C4() {
     return field_0xc10;
 }
 
+void Player_804A6F38::fn_802416FC(s32 arg) {
+    s32 team = field_0xd60;
+    if (team >= 0) {
+        fn_80237524(team, arg);
+        return;
+    }
+    if (!lbl_8053AAF8->field_0x7f) {
+        if (field_0xbfc <= 0) {
+            return;
+        }
+        if (fn_80270A8C()) {
+            return;
+        }
+    }
+    field_0xc08 += arg;
+    if (field_0xc08 > 0x180) {
+        field_0xc08 = 0x180;
+    }
+}
+
 s32 Player_804A6F38::fn_80241794() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -510,6 +530,28 @@ bool Player_804A6F38::fn_80247564() {
     return lbl_8053AD30->fn_8030A3B0(fn_8030AAF4(field_0x11ec));
 }
 
+bool Player_804A6F38::fn_80247594(s32 arg) {
+    s32 team = field_0xd60;
+    if (team >= 0) {
+        return fn_80237488(team, arg);
+    }
+    if (field_0x1201 == 1) {
+        return true;
+    }
+    if (field_0xc08 >= arg) {
+        field_0xc08 -= arg;
+        field_0x1201 = 1;
+        return true;
+    }
+    if (field_0xc08 > 0) {
+        field_0xc08 = 0;
+        field_0x1201 = 1;
+        return true;
+    }
+    field_0x1202 = true;
+    return false;
+}
+
 s32 Player_804A6F38::fn_80247B9C() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -537,6 +579,44 @@ void Player_804A6F38::fn_80247F0C() {
             field_0xc84.z = 1.0f;
         }
     }
+}
+
+// FIXME: 88.2. Loop body identical; the original keeps the index zero in r6 (set before li r0, 0x31) and
+// copies it to r4 as the false stored to field_0x284, where ours uses separate li r7 / li r4.
+void Player_804A6F38::fn_80248604() {
+    if (field_0x1216) {
+        return;
+    }
+    if (field_0x454) {
+        fn_8024B2E0();
+        return;
+    }
+    for (s32 i = 0; i < 0x31; i++) {
+        field_0x38[i].x = mPos.x;
+        field_0x38[i].y = mPos.y;
+        field_0x38[i].z = mPos.z;
+        if (mPos.z > 0.0f) {
+            field_0x284[i] = true;
+        } else {
+            field_0x284[i] = false;
+        }
+    }
+}
+
+s32 Player_804A6F38::fn_80248778() const {
+    s32 players; // declared first: register assignment order (r31)
+    s32 team = field_0xd60;
+    if (team < 0) {
+        return 0;
+    }
+    players = field_0x4;
+    s32 count = 0;
+    for (s32 i = 0; i < players; i++) {
+        if (team == fn_8022F3DC(i)) {
+            count++;
+        }
+    }
+    return count + 1;
 }
 
 void Player_804A6F38::fn_80248DAC() {
@@ -584,6 +664,26 @@ void Player_804A6F38::fn_8024B298(s32 index, JGeometry::TVec3f* out) {
 
 void Player_804A6F38::fn_8024B2BC(JGeometry::TVec3f* out) {
     field_0xbf0->fn_8026947C(out);
+}
+
+void Player_804A6F38::fn_8024BAEC() {
+    if (field_0x1216) {
+        return;
+    }
+    if (field_0x454) {
+        fn_8024B2E0();
+        return;
+    }
+    for (s32 i = 0; i < 0x31; i++) {
+        field_0x38[i].x = mPos.x;
+        field_0x38[i].y = mPos.y;
+        field_0x38[i].z = mPos.z;
+        if (mPos.z > 0.0f) {
+            field_0x284[i] = true;
+        } else {
+            field_0x284[i] = false;
+        }
+    }
 }
 
 void Player_804A6F38::fn_8024BB88() {
@@ -689,6 +789,14 @@ bool Player_804A6F38::fn_8024EFA0(bool arg) {
         return true;
     }
     return false;
+}
+
+void Player_804A6F38::fn_8024F54C(s32 arg) {
+    if (field_0x3b4 >= 8 && fn_8030381C(fn_80240628()) && arg == 0x1000002) {
+        fn_803037D4(fn_80240628(), 0x10);
+    } else {
+        lbl_8053AF80->fn_80458F04(arg);
+    }
 }
 
 bool Player_804A6F38::fn_8024F5E4() {

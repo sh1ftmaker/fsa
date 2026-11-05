@@ -1665,4 +1665,13 @@ extern s32 lbl_8053AB9C;
 // Set to 4 by act_recovery_heart (update) when ZLD4 exists; act_fairy writes it too.
 extern s32 lbl_8053ABEC;
 
+// game/tu_80301CD0.cpp (0x8030381C, not written yet). Takes a layer; returns a
+// byte (0 when fn_8030A308 on lbl_8053AD30 fails, else a per-layer table entry).
+// Called by game/tu_8023FBF0.cpp (fn_8024F54C).
+extern "C" u8 fn_8030381C(s32 layer);
+// game/tu_80301CD0.cpp (0x803037D4, not written yet). Raises a per-layer
+// maximum to the value (unsigned compare). Called by game/tu_8023FBF0.cpp
+// (fn_8024F54C).
+extern "C" void fn_803037D4(s32 layer, u32 value);
+
 #endif

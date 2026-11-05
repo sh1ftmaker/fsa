@@ -170,7 +170,7 @@ public:
     bool fn_80246228(); // via fn_8022C310
     void fn_80248004(s32 a, bool b); // via fn_8022CA6C
     s32 fn_802486A0(); // via fn_8022CAF8
-    s32 fn_80248778(); // via fn_8022E8D4
+    s32 fn_80248778() const; // via fn_8022E8D4
     s32 fn_80248970(); // via fn_8022E970
     void fn_80248DB8(); // via fn_802381B8
     void fn_80248DCC(); // via fn_80238244
@@ -347,6 +347,7 @@ public:
     void fn_80284430();
     void fn_8028447C();
     void fn_80248604();
+    void fn_8024B2E0(); // tu_8023FBF0 (0x708 bytes, unwritten); r3 = Player
     void fn_8024D134();
     void fn_8028414C();
     void fn_8027E7E0();
