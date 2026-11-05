@@ -1,4 +1,7 @@
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
+#include "game/ActorManager.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
 
 void Player_804A6F38::fn_8027EE84() {
@@ -43,6 +46,20 @@ void Player_804A6F38::fn_8028286C() {
     field_0xcea = 0;
 }
 
+void Player_804A6F38::fn_80282A24() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(field_0xd8c);
+    if (actor != NULL) {
+        mPos.x = actor->mPos.x;
+        mPos.y = actor->mPos.y;
+        mPos.z = actor->mPos.z;
+        mPos.y -= 16.0f;
+    }
+    mPos.z = 0.0f;
+    field_0xd90 = 0;
+}
+
 void Player_804A6F38::fn_80282AA8() {
     if (field_0x1244 == 0xf) {
         return;
@@ -78,12 +95,46 @@ void Player_804A6F38::fn_80283D20() {
 
 void Player_804A6F38::fn_80284290() {}
 
+void Player_804A6F38::fn_80284294() {
+    if (field_0x3fc < 10) {
+        field_0xc84.z = 0.5f + 0.05f * (10 - field_0x3fc);
+    } else {
+        field_0xc84.z = 0.5f;
+        field_0x124d = 0;
+        fn_80251AEC(0);
+    }
+    field_0x3fc++;
+    fn_80268B3C();
+}
+
 void Player_804A6F38::fn_80284328() {
     field_0x124d = 1;
     field_0x458 = 0;
     field_0xc84.x = 1.0f;
     field_0xc84.y = 1.0f;
     field_0xc84.z = 1.0f;
+}
+
+void Player_804A6F38::fn_80284430() {
+    field_0x124d = 1;
+    field_0x458 = 0;
+    field_0x344.x = 0.0f;
+    field_0x344.y = 0.0f;
+    field_0x344.z = 4.0f;
+    fn_8024F0E8(0x2002F);
+}
+
+void Player_804A6F38::fn_8028447C() {
+    field_0x318 = mPos;
+    field_0x2c.x = mPos.x;
+    field_0x2c.y = mPos.y;
+    field_0x2c.z = mPos.z;
+    field_0x3bc = field_0x3b4;
+    field_0x43e = 0;
+    fn_80248604();
+    field_0x3fe = 0;
+    field_0x1220 = 5;
+    fn_8024D134();
 }
 
 void Player_804A6F38::fn_802848F0() {

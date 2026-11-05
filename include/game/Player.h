@@ -302,6 +302,12 @@ public:
     void fn_802859B8();
     void fn_80285C28();
     void fn_8027EB04();
+    void fn_80284294();
+    void fn_80282A24();
+    void fn_80284430();
+    void fn_8028447C();
+    void fn_80248604();
+    void fn_8024D134();
     void fn_8027769C(); // called by tu_80285E58
     void fn_80277E18(); // called by tu_80285E58
     void fn_8027AA10(); // called by tu_80285E58
