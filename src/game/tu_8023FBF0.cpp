@@ -1701,6 +1701,8 @@ void Player_804A6F38::fn_8024B9E8() {
     field_0x284[0] = field_0xbf0->field_0xb4;
 }
 
+// Not a wrapper of resetTrail: measured 91.74 % that way (the inline shares one zero
+// register between the index and the false store, li r6/mr r4; this body does not).
 void Player_804A6F38::fn_8024BAEC() {
     if (field_0x1216) {
         return;
