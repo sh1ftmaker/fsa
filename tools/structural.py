@@ -21,6 +21,11 @@ and relocation setting as report_honest.json: build/G4SE01/honest, where the
 weak-duplicate stripping already applies), in parallel, and caches each unit's
 result by the mtimes of its objects (build/G4SE01/structural_cache.json).
 
+A reloc-name difference counts only when every differing relocation pair is
+ours @NNN against the target's lbl_XXXXXXXX (naming of a literal/data object);
+any other target difference could be a wrong call or global, so that function
+is class "... reloc-name-unverified" and left out of the structural total.
+
 Usage: python3 tools/structural.py [-j N] [--no-cache]
 Run after `ninja build/G4SE01/report_honest.json` (ninja runs it as
 build/G4SE01/structural.json).
@@ -30,6 +35,7 @@ import argparse
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -41,7 +47,19 @@ REPORT = OUT / "report_honest.json"
 CACHE = OUT / "structural_cache.json"
 DONE = {"regalloc-only", "scheduling", "scheduling+regalloc", "reloc-name"}
 CLOSE_INSNS, CLOSE_PCT = 4, 85.0
-VERSION = 1  # bump when the classification changes
+VERSION = 2  # bump when the classification changes
+
+
+LOCAL_LIT = re.compile(r"^@\d+$")
+ORIG_LBL = re.compile(r"^lbl_[0-9A-Fa-f]+$")
+
+
+def naming_only(pairs):
+    """True when every differing relocation is a compiler-local literal/data
+    object (ours @NNN) against the target's unnamed data label (lbl_XXXXXXXX),
+    no addend on either side: just naming. A call, a named global, or a
+    differing addend is a possible wrong target and stays unverified."""
+    return bool(pairs) and all(LOCAL_LIT.match(b) and ORIG_LBL.match(a) for a, b in pairs)
 
 
 def load_try():
@@ -86,7 +104,10 @@ def diff_unit(T, u):
             res[s["name"]] = [0.0, size, "missing", 0]
             continue
         t, o = T.insn_list(left, s), T.insn_list(right, r)
-        cls, _ = T.classify(t, o, T.reloc_pairs(s, r, left, right))
+        rp = T.reloc_pairs(s, r, left, right)
+        cls, _ = T.classify(t, o, rp)
+        if "reloc-name" in cls and not naming_only(rp):
+            cls = cls.replace("reloc-name", "reloc-name-unverified")
         res[s["name"]] = [float(s.get("match_percent") or 0), size, cls, len(o) - len(t)]
     return res
 
