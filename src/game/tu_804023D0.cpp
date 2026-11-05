@@ -328,14 +328,10 @@ void GameState_804B0FE0::fn_80403680() {
         field_0x1c4[i].y = 0.0f;
         field_0x1c4[i].z = 0.0f;
     }
-    field_0x1b4[0] = 0;
-    field_0x180[0] = 0;
-    field_0x1b4[1] = 0;
-    field_0x180[1] = 0;
-    field_0x1b4[2] = 0;
-    field_0x180[2] = 0;
-    field_0x1b4[3] = 0;
-    field_0x180[3] = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x1b4[i] = 0;
+        field_0x180[i] = 0;
+    }
     field_0x1b0 = 0;
     field_0x214 = 0;
     field_0x215 = 0;
