@@ -23,7 +23,8 @@ three free functions).
 
 ## 2026-11-05 (Opus, leverage wave 1)
 
-Baseline 8400 (matching 741d3ad0) -> 8402 (+2 honest: fn_8013D908, fn_8013DA10). Structural +2
+Baseline 8410 (matching 5babbf0b, after the final rebase) -> 8412 (+2 honest: fn_8013D908,
+fn_8013DA10). Structural +2
 (fn_8013CC50, draw). Per-address compare against the matching report: 0 drops.
 
 - fn_8013CC50 (0x960): written, 99.86 %, code identical (try.py: scheduling+regalloc + reloc-name, the
