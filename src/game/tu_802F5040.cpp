@@ -25,8 +25,8 @@ static const GXTlut lbl_8046F940[16] = {
 // pool in .sdata2 (a function's own constants are pooled in first-use order,
 // after the floats of fn_802F5040), and the two white ones are separate.
 static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
-static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0
-static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
+static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0 (user not written yet)
+static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0 (user not written yet)
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
 // The scale of a sprite at height z (fn_802F5FF4; fn_802F5040 inlines it).
@@ -40,9 +40,8 @@ static inline f32 getScale(f32 z) {
     return 192.0f / (192.0f - h);
 }
 
-// FIXME: 99.4. The z > 0.0f flag is extracted to r0 and moved to r3 (the original
-// extracts straight into r3); its .sdata2 literals are @NNN until the four colour
-// constants of fn_802F8F0C ... fn_802FC80C, which precede the floats, are emitted.
+// FIXME: 99.6. The z > 0.0f flag is extracted to r0 and moved to r3 (one mr more;
+// the original extracts straight into r3). Literals match.
 // Sets up the GX state of a sprite at pos: the view matrix (params' matrix,
 // scaled for the height like fn_802F5FF4, moved to pos) or the plain camera,
 // the blend mode, the TEV colours and the z mode. out is where the sprite is
@@ -209,9 +208,8 @@ bool cls_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
     return result;
 }
 
-// FIXME: 98.4. The 8.0f literal and field_0x2368.y swap f5/f6 (and 0.125f is in f6, not f7); the
-// ix * 0xC / iy * 0x30C products swap r0/r3. Its .sdata2 literals are @NNN until the
-// functions before it (fn_802F5040 ...) emit the unit's literals in order.
+// FIXME: 98.7. Register allocation only: the 8.0f literal and field_0x2368.y swap
+// f5/f6 (and 0.125f is in f6, not f7); the ix * 0xC / iy * 0x30C products swap r0/r3.
 f32 cls_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
     f32 z = pos->z;
     if (field_0xc21c > 0 && pos->x >= field_0x2368.x &&
@@ -233,15 +231,10 @@ f32 cls_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
 }
 
 // The scale for a height z (callers pass mPos.z).
-// FIXME: 99.0. Instructions identical; the 96.0f / 192.0f loads are @NNN, not
-// lbl_80541500 / lbl_805414FC: .sdata2 starts with four colour words of
-// fn_802F8F0C, fn_802FAC10, fn_802FB69C and fn_802FC80C (in reverse), not written yet.
 f32 fn_802F5FF4(f32 z) {
     return getScale(z);
 }
 
-// FIXME: 99.9. Instructions identical; the 32.0f / 0.0f / 0.5f / 3.0f loads of the
-// inlined normalize are @NNN until .sdata2 is emitted in order (see fn_802F5FF4).
 // Starts an effect of `kind` at pos in a free slot of field_0xbf9c, else in
 // the one with the smallest timer; kind 3 also keeps the normalized dir.
 void cls_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGeometry::TVec3f* dir,
@@ -350,6 +343,8 @@ void cls_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
 
 // One 5-bit colour channel times scale plus offset, clamped to 0-31
 // (fn_802F93F4's channel adjustment, inlined for r, g and b).
+// scale / offset are parameters (callers pass 1.0f, 0.0f): the original keeps the
+// fmadds, which constants in the body would fold away.
 static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
     s32 result = value * scale + offset;
     if (result < 0) {
@@ -612,9 +607,11 @@ void cls_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size) {
     }
 }
 
-// FIXME: 93.7. The high byte of colour 0xD8 is stored as clrlwi + srawi 8 in
-// the original (extrwi for 0xD9 / 0xDA, and for all three here); as in
-// fn_802F93F4, len is copied to r4 before the first loop; registers differ.
+// FIXME: 93.7. One instruction short: the original stores the high byte of colour
+// 0xD8 as clrlwi + srawi 8 (extrwi for 0xD9 / 0xDA; ours extrwi for all three).
+// Also moved: the original adds src + srcOffset (add r9, r26, r7) after copying
+// len to r4 (mr r4, r24) before the first loop; ours adds it right after the
+// decode and copies len after the loops (as in fn_802F93F4). Registers differ.
 // The 'SCL ' palettes of the sprite layer `slot` (0-2): fn_802F93F4 into
 // field_0xc[slot] (keeping the first colour, made transparent, in
 // field_0x114[slot]), colours 0xD8-0xDA made RGB4A3 with alpha 4 / 7, and the
@@ -824,8 +821,8 @@ void cls_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 95.5. The loop index and the element pointer swap r29/r30 (and the
-// stw r29 save moves up one slot); the 1.0f is @NNN until .sdata2 is in order.
+// FIXME: 95.6. The loop index and the element pointer swap r29/r30 (and the
+// stw r29 save moves up one slot). Literals match.
 void cls_804AA858::fn_802FF2D8() {
     for (s32 i = 0; i < field_0xe424; i++) {
         cls_8030029C* sprite = &field_0xd324[i];
@@ -906,8 +903,8 @@ void cls_804AA858::fn_802FF568() {
 }
 
 // FIXME: 99.4. Register allocation in the per-player loop (r4-r8 one off); the
-// grid's .sdata2 literals are @NNN until the functions between fn_802FC80C and
-// it, which use the earlier pool entries, are written.
+// grid's .sdata2 literals (lbl_80541528 ... lbl_80541614) are @NNN because the
+// unwritten functions between fn_802F9DA8 and it use earlier pool entries first.
 void cls_804AA858::fn_802FF798() {
     for (s32 i = 0; i < 4; i++) {
         field_0x235c[i] = 0;
