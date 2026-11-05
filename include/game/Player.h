@@ -346,6 +346,7 @@ public:
     void fn_80282A24();
     void fn_80284430();
     void fn_8028447C();
+    void fn_80247F58();
     void fn_80248604();
     void fn_80248DD8();
     void fn_8024B2E0(); // tu_8023FBF0 (0x708 bytes, unwritten); r3 = Player
@@ -357,6 +358,7 @@ public:
     void fn_80283848();
     void fn_8028434C();
     void fn_8024E344();
+    void fn_8024CA20();
     void fn_8024E3D8();
     void fn_8024E46C();
     void fn_802810E4();
@@ -688,7 +690,7 @@ public:
     /* 0x0D2D */ u8 field_0xd2d;
     /* 0x0D2E */ u8 field_0xd2e[0xD30 - 0xD2E];
     /* 0x0D30 */ s32 field_0xd30;
-    /* 0x0D34 */ u8 field_0xd34[0xD35 - 0xD34];
+    /* 0x0D34 */ bool field_0xd34;
     /* 0x0D35 */ u8 field_0xd35;
     /* 0x0D36 */ u8 field_0xd36[0xD3C - 0xD36];
     /* 0x0D3C */ s32 field_0xd3c;
@@ -698,7 +700,8 @@ public:
     // A bool: fn_8024C458 returns it as loaded (lbz; blr).
     /* 0x0D4C */ bool field_0xd4c;
     /* 0x0D4D */ u8 field_0xd4d;
-    /* 0x0D4E */ u8 field_0xd4e[0xD50 - 0xD4E];
+    /* 0x0D4E */ bool field_0xd4e;
+    /* 0x0D4F */ u8 field_0xd4f[0xD50 - 0xD4F];
     /* 0x0D50 */ s32 field_0xd50;
     /* 0x0D54 */ u8 field_0xd54[0xD60 - 0xD54];
     // Another player's index, or negative for none: fn_80246F28 asks the

@@ -1,4 +1,7 @@
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
@@ -581,6 +584,18 @@ void Player_804A6F38::fn_80247F0C() {
     }
 }
 
+void Player_804A6F38::fn_80247F58() {
+    s32 team = field_0xd60;
+    if (team >= 0 && fn_80236B50(team)) {
+        if (fn_80251BFC(0x33)) {
+            // positions are read as TVec2f (x, y) by the callee
+            fn_80272160(0, (const JGeometry::TVec2f*)&mPos, 0x12);
+        }
+    } else if (fn_80239D38() && !field_0xd34 && fn_80251BFC(0x33)) {
+        fn_80272160(0, (const JGeometry::TVec2f*)&mPos, 0x12);
+    }
+}
+
 // FIXME: 88.2. Loop body identical; the original keeps the index zero in r6 (set before li r0, 0x31) and
 // copies it to r4 as the false stored to field_0x284, where ours uses separate li r7 / li r4.
 void Player_804A6F38::fn_80248604() {
@@ -751,8 +766,42 @@ bool Player_804A6F38::fn_8024C460(s32 arg) {
     return true;
 }
 
+bool Player_804A6F38::fn_8024C4C4(s32 serial) {
+    if (field_0xd4c == true) {
+        return false;
+    }
+    field_0xd4c = true;
+    field_0xd44 = serial;
+    field_0xd4d = 1;
+    ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+    if (!actor || actor->mPos.x < mPos.x) {
+        fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x18, -1, -1);
+    } else {
+        fn_801F856C()->fn_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x1c, -1, -1);
+    }
+    return true;
+}
+
 bool Player_804A6F38::fn_8024CA0C(s32 arg) {
     return field_0xd44 == arg;
+}
+
+void Player_804A6F38::fn_8024CA20() {
+    if (field_0xd50 > 0) {
+        field_0xd50--;
+    }
+    if (!field_0xd4d) {
+        if (field_0xd3c < 0) {
+            field_0xd44 = -1;
+            field_0xd4c = false;
+        } else if (field_0xd44 < 0) {
+            if (!field_0xd4e || fn_8022C1D8(field_0x4)) {
+                field_0xd44 = field_0xd3c;
+            }
+        }
+    }
+    field_0xd40 = field_0xd3c;
+    field_0xd3c = -1;
 }
 
 bool Player_804A6F38::fn_8024D98C() {
