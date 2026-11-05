@@ -8,6 +8,7 @@
 #include "game/GameView.h"
 #include "game/tu_8030AE84.h"
 #include "game/ViewLayer.h"
+#include "game/Camera.h"
 
 // Shared by the updates of states 0x2A and 0x2B (fn_80291B8C, fn_80291910):
 // the player turns a quarter every four frames of the counter 0x3FC
@@ -37,6 +38,26 @@ inline void Player_804A6F38::stepWalkCycle() {
         field_0x3f8 = 0;
     }
     field_0x3f9 = field_0x3f8 / 6;
+}
+
+// Shared by the updates of states 0x2A and 0x22 (fn_80291B8C, fn_80293398):
+// the player rises 4 a frame; above 128 the position on the TV is kept
+// (0xCB0), and once `state` is granted it lands at 0xCD4 on layer 0xCE4.
+inline void Player_804A6F38::riseToTarget(s32 state) {
+    mPos.z += 4.0f;
+    if (mPos.z > 128.0f) {
+        if (field_0x3b4 < 8) {
+            field_0xcb0 = mPos;
+        }
+        field_0x124d = 0;
+        if (fn_80251AEC(state)) {
+            fn_80241454(0);
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            mPos.z = 0.0f;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    }
 }
 
 // Effect 0x17D 32 above and 16 over the player (fn_80291910, fn_80293774).
@@ -280,20 +301,7 @@ void Player_804A6F38::fn_80291B64() {
 void Player_804A6F38::fn_80291B8C() {
     field_0x3fc++;
     if (field_0x3fc >= 60) {
-        mPos.z += 4.0f;
-        if (mPos.z > 128.0f) {
-            if (field_0x3b4 < 8) {
-                field_0xcb0 = mPos;
-            }
-            field_0x124d = 0;
-            if (fn_80251AEC(0x2B)) {
-                fn_80241454(0);
-                field_0x3b4 = field_0xce4;
-                mPos = field_0xcd4;
-                mPos.z = 0.0f;
-                field_0xbec->fn_8030BD3C(field_0x4);
-            }
-        }
+        riseToTarget(0x2B);
     }
     spinFacing();
 }
@@ -450,6 +458,41 @@ void Player_804A6F38::fn_802922D0() {
     field_0x3f9 = 0;
 }
 
+void Player_804A6F38::fn_802922EC() {
+    field_0x3f8++;
+    if (field_0x3f8 < 7) {
+        field_0x3f9 = 4;
+    } else if (field_0x3f8 < 13) {
+        field_0x3f9 = 5;
+    } else if (field_0x3f8 < 19) {
+        field_0x3f9 = 6;
+    } else if (field_0x3f8 < 34) {
+        field_0x3f9 = 7;
+    } else if (field_0x3f8 < 40) {
+        field_0x3f9 = 4;
+    } else if (field_0x3f8 < 46) {
+        field_0x3f9 = 5;
+    } else if (field_0x3f8 < 52) {
+        field_0x3f9 = 6;
+    } else if (field_0x3f8 < 67) {
+        field_0x3f9 = 7;
+    }
+    if (field_0x3f8 < 67) {
+        mPos.y -= 0.5;
+    } else {
+        field_0x124d = 0;
+        if (fn_80251AEC(0x29)) {
+            fn_80241454(0);
+            if (field_0x3b4 < 8) {
+                field_0xcb0 = mPos;
+            }
+            field_0x3b4 = field_0xce4;
+            mPos = field_0xcd4;
+            field_0xbec->fn_8030BD3C(field_0x4);
+        }
+    }
+}
+
 void Player_804A6F38::fn_80292454() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -545,6 +588,20 @@ void Player_804A6F38::fn_802932BC() {
     if (field_0xcf4 == 0x1F) {
         field_0x3fc = 50;
     }
+}
+
+void Player_804A6F38::fn_80293398() {
+    if (field_0x3b4 < 8) {
+        JGeometry::TVec3f pos = mPos;
+        pos.y -= 150.0f;
+        lbl_8053AB10->field_0x24->fn_8030C210(&pos);
+    }
+    field_0x3fc++;
+    if (field_0x3fc >= 60 || field_0xcf4 == 0x1F) {
+        riseToTarget(0x23);
+    }
+    spinFacing();
+    setHeldPos();
 }
 
 void Player_804A6F38::fn_80293534() {

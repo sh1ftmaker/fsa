@@ -412,6 +412,7 @@ public:
     void stepWalkCycle();
     void setHeldPos();
     void spawnEffect17D(); // tu_8028FBA0 inline: effect 0x17D above the player
+    void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
     void fn_80242940();
