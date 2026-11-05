@@ -3,11 +3,19 @@
 #include "game/GameState.h"
 #include "game/tu_80379F84.h"
 #include "game/Message.h"
+#include "game/act/tu_80440BF4.h"
 #include "game/tu_803BC6F0.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "dolphin/os/OSReset.h"
+
+// The 'Pdb08'..'Pdb01' and 'Tdb01' panes of mScreen (fn_803CE11C fades
+// them out with field_0x196).
+static const u64 lbl_80476938[9] = {
+    0x5064623038ull, 0x5064623037ull, 0x5064623036ull, 0x5064623035ull, 0x5064623034ull,
+    0x5064623033ull, 0x5064623032ull, 0x5064623031ull, 0x5464623031ull,
+};
 
 // Run each frame by fn_803CE9EC (index: mState).
 static FileSelect_804AFF60::StateFunc lbl_804AFD70[40] = {
@@ -285,8 +293,77 @@ void FileSelect_804AFF60::fn_803CE05C() {
     }
 }
 
-// FIXME: 99.69 %. The bounds x and field_0x20->field_0x8 load into f2 / f1
-// (original f1 / f2, fsubs f1, f1, f2); 600.0f is still a @NNN literal.
+// FIXME: 99.50 %. As in fn_803CE370, the bounds x and field_0x8 load into
+// f1 / f0 (original f0 / f1), and the loop's counter and table pointer swap
+// r29 / r30; 600.0f is still @NNN.
+void FileSelect_804AFF60::fn_803CE11C() {
+    u32 cardState = lbl_8051C1A0.fn_803B9940(0);
+    if (field_0x20->mPane->getBounds()->i.x - field_0x20->field_0x8 < 600.0f) {
+        field_0x20->fn_80402B10(lbl_8050DB0C.field_0x4c[0xC3], 0, 0.0f, 600.0f);
+        field_0x20->fn_80402628(lbl_8050DB0C.field_0x4c[0xC3], field_0x20->field_0x28, 0);
+        for (s32 i = 0; i < 9; i++) {
+            field_0x20->fn_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+        }
+        field_0x117 = 0;
+        return;
+    }
+    switch (cardState) {
+    case 0:
+        field_0x80 = 0x4C;
+        mPrevState = mState;
+        field_0x1a4 = 1;
+        fn_803C24BC();
+        mState = 2;
+        lbl_8050EC80[0].field_0x8 = 0;
+        break;
+    case 8:
+        field_0x80 = 0x4D;
+        mPrevState = mState;
+        field_0x1a4 = 1;
+        mState = 2;
+        break;
+    case 9:
+        field_0x80 = 0x4E;
+        mPrevState = mState;
+        field_0x1a4 = 1;
+        mState = 2;
+        break;
+    case 10:
+        field_0x80 = 0x4F;
+        mPrevState = mState;
+        field_0x1a4 = 1;
+        mState = 2;
+        break;
+    case 6:
+    case 7:
+        field_0x80 = 0x50;
+        setState(0xB);
+        break;
+    case 11:
+    case 12:
+        field_0x80 = 0x51;
+        mPrevState = mState;
+        field_0x1a4 = 1;
+        mState = 2;
+        break;
+    case 2:
+        lbl_8051C1A0.fn_803B9B8C();
+        field_0x80 = 0;
+        setState(0x11);
+        break;
+    case 1:
+        field_0x80 = 0x57;
+        setState(7);
+        break;
+    case 3:
+    case 4:
+    case 5:
+    default:
+        field_0x80 = 0;
+        break;
+    }
+}
+
 void FileSelect_804AFF60::fn_803CE370() {
     if (field_0xb0 > 0) {
         field_0xb0--;
@@ -319,6 +396,132 @@ s32 FileSelect_804AFF60::fn_803CE4B0() {
         return lbl_8053ADB0->field_0x1a8;
     }
     return 3;
+}
+
+// FIXME: 99.86 %. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_: fn_803BC6F0, unwritten, uses 0, -200, 200 and the
+// conversion doubles first).
+void FileSelect_804AFF60::fn_803CE9EC() {
+    field_0x1a8 = 3;
+    if (field_0x116 == 1) {
+        lbl_8053AEC0->fn_80431174(field_0x114);
+    }
+    cls_803B9940* card = &lbl_8051C1A0;
+    if ((card->field_0x1ff5 == 0 || card->field_0x1ff5 == 1) && !lbl_8053ACA8->fn_802B1DCC() &&
+        field_0x113 == 0 && field_0x117 == 0) {
+        setState(1);
+    }
+    if (field_0x116 < 2) {
+        (lbl_8053ADB0->*lbl_804AFD70[mState])();
+    }
+    if (mState != field_0x111) {
+        field_0x111 = mState;
+        switch (mState) {
+        case 0:
+        case 2:
+        case 5:
+        case 10:
+        case 14:
+        case 19:
+        case 24:
+        case 25:
+        case 36:
+            field_0x1a5 = 0;
+            break;
+        case 3:
+        case 7:
+        case 11:
+        case 12:
+        case 15:
+        case 27:
+        case 37:
+            field_0x1a5 = 1;
+            break;
+        }
+    }
+    if (field_0x1a5 != field_0x1a6) {
+        field_0x1a4 = 2;
+    } else if (field_0x1a4 == 2) {
+        field_0x1a4 = 1;
+    }
+    switch (field_0x1a4) {
+    case 1: {
+        s16 frames = lbl_8050DB0C.field_0x4c[0x8A];
+        field_0xde++;
+        if (field_0xde < frames) {
+            f32 t = (f32)(field_0xde * field_0xde) / (f32)(frames * frames);
+            field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f);
+            field_0x58->mPane->setAlpha(t * field_0x58->field_0x28);
+        } else {
+            field_0xde = frames;
+            field_0x58->fn_80402E08(0.0f, 0.0f);
+            field_0x58->mPane->setAlpha(field_0x58->field_0x28);
+            field_0x1a4 = 0;
+        }
+        break;
+    }
+    case 2: {
+        s16 frames = lbl_8050DB0C.field_0x4c[0x8A];
+        field_0xde--;
+        if (field_0xde > 0) {
+            f32 t = (f32)(field_0xde * field_0xde) / (f32)(frames * frames);
+            field_0x58->fn_80402E08(0.0f, 200.0f * t + -200.0f);
+            field_0x58->mPane->setAlpha(t * field_0x58->field_0x28);
+        } else {
+            field_0xde = 0;
+            field_0x58->fn_80402E08(0.0f, -200.0f);
+            field_0x58->mPane->setAlpha(0);
+            field_0x1a6 = field_0x1a5;
+            if (field_0x1a5 == 0) {
+                lbl_8053AED8->fn_80440BF4(true);
+            } else {
+                lbl_8053AED8->fn_80440BF4(false);
+            }
+            field_0x1a4 = 1;
+        }
+        break;
+    }
+    }
+    if (field_0x7c != field_0x80) {
+        if (field_0x116 == 0) {
+            field_0x7c = field_0x80;
+            if (field_0x7c != 0) {
+                if (field_0x7c == 0x50 || field_0x7c == 0x53 || field_0x7c == 0x57 || field_0x7c == 0x5C ||
+                    field_0x7c == 0x84 || field_0x7c == 0x256) {
+                    lbl_8053AEC0->fn_80431A9C(field_0x7c, 0, &field_0x114);
+                    field_0x1a3 = 0;
+                } else {
+                    lbl_8053AEC0->fn_80431A9C(field_0x7c, 0, NULL);
+                    field_0x1a3 = 0;
+                }
+                field_0x116 = 2;
+            }
+        } else if (field_0x116 == 1) {
+            field_0x116 = 3;
+        }
+    }
+    if (field_0x116 == 2) {
+        if (field_0x1a3 > 0x48) {
+            field_0x1a3 = 0x50;
+        } else {
+            field_0x1a3 += 8;
+        }
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x1a3 = 0x50;
+            field_0x116 = 1;
+        }
+    } else if (field_0x116 == 3) {
+        if (field_0x1a3 < 8) {
+            field_0x1a3 = 0;
+        } else {
+            field_0x1a3 -= 8;
+        }
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x1a3 = 0;
+            field_0x116 = 0;
+        }
+    }
+    card->field_0x1ff5 = 2;
 }
 
 FileSelect_804AFF60::~FileSelect_804AFF60() {

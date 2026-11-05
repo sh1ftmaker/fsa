@@ -1021,6 +1021,12 @@ public:
     // data at this + offset + 0x20 / + 0x280 into dst1 / dst2 when the state
     // is 3; fn_803B9BDC / fn_803B9C5C return 1 when the request finished
     // (state 4 / 5), 0 or 2 otherwise.
+    // SHARED-EDIT (tu_803BC6F0 fn_803CE11C): the card state (the word 0x1FD0
+    // mapped through a 14-entry switch; 0xE while the mutex is busy). The
+    // argument is unused (every caller passes 0).
+    u32 fn_803B9940(s32 unused);
+    // Sets the request word 0x1FCC to 1 and signals the condition.
+    void fn_803B9B8C();
     s32 fn_803B9A94(void* dst1, u32 size1, void* dst2, u32 size2, s32 offset);
     s32 fn_803B9BDC();
     s32 fn_803B9C5C();
@@ -1321,6 +1327,13 @@ public:
     // address of a u8 field or 0; it receives this->0xEA). Reads the byte 0xEC,
     // calls fn_8042EF9C on `this` and returns 1 or 0 (li r3 before the blr).
     bool fn_80431A9C(s32 id, u8 value, u8* out);
+    // SHARED-EDIT (tu_803BC6F0 fn_803CE9EC): r4 a byte (clrlwi. 24), the
+    // file select screen's yes/no cursor while its message window is open.
+    void fn_80431174(u8 cursor);
+    // SHARED-EDIT (tu_803BC6F0 fn_803CE9EC): step the message window open /
+    // closed; return 1 when done, else 0 (callers test with cmpwi, BOOL).
+    BOOL fn_804317AC();
+    BOOL fn_80431740();
 };
 extern cls_804B1634* lbl_8053AEC0;
 

@@ -140,7 +140,9 @@ public:
     /* 0x115 */ u8 field_0x115;
     /* 0x116 */ u8 field_0x116; // message window: 0 idle, 1 opening, 2 open, 3 closing
     /* 0x117 */ u8 field_0x117;
-    /* 0x118 */ u8 field_0x118[0x1A3 - 0x118];
+    /* 0x118 */ u8 field_0x118[0x196 - 0x118];
+    /* 0x196 */ u8 field_0x196[9]; // alpha of the 'Pdb' / 'Tdb01' panes (fn_803CE11C)
+    /* 0x19F */ u8 field_0x19f[0x1A3 - 0x19F];
     /* 0x1A3 */ u8 field_0x1a3;
     /* 0x1A4 */ u8 field_0x1a4; // 'kk_' sprite fade: 0 idle, 1 in, 2 out
     /* 0x1A5 */ u8 field_0x1a5;

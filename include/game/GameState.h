@@ -239,7 +239,11 @@ public:
     void fn_8040271C(s16 frames, f32 x, f32 y);
     // 5 units. Resizes by (x, y).
     void fn_80402CE0(f32 x, f32 y);
-    // Not declared yet: fn_80402628 (7 units); fn_8040245C (2).
+    // SHARED-EDIT (tu_803BC6F0 fn_803CE11C): 7 units. Steps field_0x26 up to
+    // frames - 1, setting the pane's alpha from `from` toward `to`; on the
+    // last step stores frames in field_0x22, sets `to` and returns 1, else 0.
+    bool fn_80402628(s16 frames, u8 from, u8 to);
+    // Not declared yet: fn_8040245C (2).
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DPane* mPane;
