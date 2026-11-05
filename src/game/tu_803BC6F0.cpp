@@ -402,6 +402,92 @@ static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
     self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
 }
 
+// FIXME: 98.49 %. Register allocation and scheduling only: `this` lands in
+// r28 (original r31) and the loop registers shift (r26..r30); the 9-pane loop
+// counter / pointer are r28 / r27 in the original. With the counters declared
+// per loop each case of the switch re-loads j = 0 (96.49). .sdata2 @NNN.
+// Opens the copy board for the chosen file (state 32): the target cursor
+// field_0x50 and the board field_0x20 with its 'Pdb' panes faded in from
+// their start position, the command buttons back at their colours, and the
+// copy labels; the timings are lbl_8050DB0C's 0xCA..0xCD.
+void FileSelect_804AFF60::fn_803BF9C4() {
+    int i;
+    int j;
+    field_0x20->mPane->show();
+    field_0x34->mPane->show();
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pdelb01'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pdelb02'))->setBlackWhite(field_0xe4, field_0xe0);
+    for (i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+
+    field_0x20->fn_80402E08(600.0f, 0.0f);
+    field_0x20->field_0x20 = 0;
+    field_0x20->mPane->setAlpha(field_0x20->field_0x28);
+    for (i = 0; i < 9; i++) {
+        field_0x20->fn_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+    }
+    field_0x20->field_0x26 = 0;
+
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    for (i = 0; i < 4; i++) {
+        field_0x24[i]->mPane->show();
+        field_0x24[i]->fn_80402E08(0.0f, 100.0f);
+        field_0x24[i]->field_0x22 = 0;
+        field_0x24[i]->mPane->setAlpha(0);
+        field_0x24[i]->field_0x26 = 0;
+        switch (i) {
+        case 0:
+            for (j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+            }
+            break;
+        case 1:
+            for (j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+            }
+            break;
+        case 2:
+            for (j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+            }
+            break;
+        case 3:
+            for (j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+            }
+            break;
+        }
+    }
+
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
+    s16 delay = lbl_8050DB0C.field_0x4c[0xCA];
+    s16 frames = lbl_8050DB0C.field_0x4c[0xCB];
+    s16 step = lbl_8050DB0C.field_0x4c[0xCC];
+    field_0xd8 = lbl_8050DB0C.field_0x4c[0xCD];
+    s16 end = delay + (frames + step);
+    if (field_0xd8 < end) {
+        field_0xd8 = end;
+    }
+    field_0xda = 0;
+    setState(32);
+}
+
 // FIXME: 99.01 %. Register allocation only: the table loops' counter and
 // pointer swap (r26 / r27 and r29 / r27 in the original), the show() stores
 // keep 1 in r5 and the pane in r3 (ours r0 / r4), and the
