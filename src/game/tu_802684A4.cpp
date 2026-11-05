@@ -1,8 +1,15 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/cls_804A71A8.h"
 #include "game/Map.h"
 #include "game/ViewLayer.h"
+
+// One step of 16 along each facing (0: +x, 1: -x, 2: +y, 3: -y).
+static const Vec lbl_8046B998[4] = {
+    {16.0f, 0.0f, 0.0f}, {-16.0f, 0.0f, 0.0f}, {0.0f, 16.0f, 0.0f}, {0.0f, -16.0f, 0.0f},
+};
 
 // Four (x, y) corner offsets of +-4.
 static const f32 lbl_8046BA68[4][2] = {
@@ -313,6 +320,52 @@ void cls_804A71A8::fn_8026947C(JGeometry::TVec3f* pos) {
     }
 }
 
+// Counts one more frame of pushing into a blocked side (at most 20).
+static inline void countPush(cls_804A71A8* p) {
+    p->field_0xa0++;
+    if (p->field_0xa0 > 20) {
+        p->field_0xa0 = 20;
+    }
+    p->field_0xa4 = 0;
+}
+
+void cls_804A71A8::fn_8026E1E0() {
+    if (field_0x4->fn_80240670() && (field_0x4->fn_802412A4() || field_0x4->field_0x1218 > 0)) {
+        field_0xa0 = 0;
+        field_0xa4 = 0;
+    } else if (fn_8023EAC4(field_0x4->field_0x4)) {
+        field_0xa0 = 0;
+        field_0xa4 = 0;
+    } else if (field_0x4->mPos.z > 0.0f) {
+        field_0xa0 = 0;
+        field_0xa4 = 0;
+    } else if (field_0x38[0] == 1 && field_0x4->field_0x3dc == 0 && field_0x4->fn_80247330() > 0.0f) {
+        countPush(this);
+    } else if (field_0x38[1] == 1 && field_0x4->field_0x3dc == 1 && field_0x4->fn_80247330() < 0.0f) {
+        countPush(this);
+    } else if (field_0x38[2] == 1 && field_0x4->field_0x3dc == 2 && field_0x4->fn_8024712C() < 0.0f) {
+        countPush(this);
+    } else if (field_0x38[3] == 1 && field_0x4->field_0x3dc == 3 && field_0x4->fn_8024712C() > 0.0f) {
+        countPush(this);
+    } else if (field_0x4->fn_80250090()) {
+        field_0xa0 = 20;
+        field_0xa4 = 0;
+    } else if (!field_0x4->fn_80241478()) {
+        field_0xa4++;
+        if (field_0xa4 >= 5) {
+            field_0xa4 = 5;
+            field_0xa0 = 0;
+            field_0x4->field_0xd94 = -1;
+            field_0x4->field_0xd9c = -1;
+            field_0x4->field_0xd98 = 0;
+        }
+    }
+}
+
+void cls_804A71A8::fn_8026E464() {
+    beginFrame(this);
+}
+
 // Stores pos's x and y in field_0x324 when fn_80251AEC accepts it for this
 // player: the arg is 0x38 on field_0xd64 == 0, else 0x13.
 bool Player_804A6F38::fn_8026E5F8(const JGeometry::TVec2f* pos) {
@@ -328,6 +381,71 @@ bool Player_804A6F38::fn_8026E5F8(const JGeometry::TVec2f* pos) {
         return true;
     }
     return false;
+}
+
+// Whether the owner pushes toward the probed direction (fn_80250D30, the
+// probe is its facing, fn_8024FF84() < 0) with a free tile (0, 2 or 0x50)
+// one step of 16 beyond the probe.
+static inline bool canPush(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80250D30() && p->field_0x1c == p->field_0x4->field_0x3dc &&
+        p->field_0x4->fn_8024FF84() < 0)
+    {
+        JGeometry::TVec3f ahead = p->field_0x8;
+        ahead += JGeometry::TVec3f(lbl_8046B998[p->field_0x4->field_0x3dc]);
+        u16 tile = fn_8022461C(&ahead, p->field_0x4->field_0x3b4);
+        if (tile == 0 || tile == 2 || tile == 0x50) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
+// The body of fn_8026F000 / fn_8026F1C4 / fn_8026F388 / fn_8026F54C for
+// their facing.
+// FIXME (all four, 88.25): canPush's step vector is built and added with
+// its x, y, z loaded in reverse and the z half added first (the original
+// loads x, y, z in order, then adds both halves); the spawn reads the
+// owner's facing after fn_801F856C (the original keeps the owner and the
+// facing in r29 / r30 across it).
+static inline void pushBlock(cls_804A71A8* p, s32 facing) {
+    if (p->field_0x4->field_0x3dc == facing) {
+        p->field_0xac = 1;
+        if (canPush(p)) {
+            JGeometry::TVec3f pos = p->field_0x8;
+            pos.z = 0.0f;
+            Player_804A6F38* owner = p->field_0x4;
+            s32 dir = owner->field_0x3dc;
+            s32 serial = fn_801F856C()->fn_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
+            if (fn_8022461C(&pos, p->field_0x4->field_0x3b4) != 0x50 && fn_801F856C()->fn_801F666C(serial) != NULL) {
+                p->field_0x4->field_0xd94 = serial;
+            }
+        } else {
+            p->field_0x38[p->field_0x1c] = 1;
+        }
+    } else {
+        p->field_0x38[p->field_0x1c] = 1;
+    }
+}
+
+// FIXME: 88.25. See pushBlock.
+void cls_804A71A8::fn_8026F000() {
+    pushBlock(this, 1);
+}
+
+// FIXME: 88.25. See pushBlock.
+void cls_804A71A8::fn_8026F1C4() {
+    pushBlock(this, 0);
+}
+
+// FIXME: 88.25. See pushBlock.
+void cls_804A71A8::fn_8026F388() {
+    pushBlock(this, 2);
+}
+
+// FIXME: 88.25. See pushBlock.
+void cls_804A71A8::fn_8026F54C() {
+    pushBlock(this, 3);
 }
 
 void cls_804A71A8::fn_8026F710() {

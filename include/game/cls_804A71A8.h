@@ -36,8 +36,24 @@ public:
     // 0x8026C350 (not written yet): a probe point inside the view, with the
     // tile code under it.
     void fn_8026C350(u16 tile);
-    // 0x8026E1E0 (not written yet): run after the first probe pass only.
+    // 0x8026E1E0: run after the first probe pass only. Counts frames of
+    // pushing into a blocked side (field_0xa0, up to 20) and frames of not
+    // pushing (field_0xa4, up to 5, which clears the owner's 0xD94-0xD9C).
     void fn_8026E1E0();
+    // 0x8026E464: the start-of-frame reset (inlined in fn_80268BC4 and
+    // fn_8026F710); the owner's fn_80261750 (tu_8025EB18) calls it.
+    void fn_8026E464();
+    // 0x8026F000 / 0x8026F1C4 / 0x8026F388 / 0x8026F54C: called by
+    // fn_8026C350 for a probe that hits a pushable tile, one per facing (1,
+    // 0, 2, 3). Facing that way, pushing (fn_80250D30) toward the probe
+    // with fn_8024FF84() < 0 and a free tile (0, 2 or 0x50) 16 units ahead,
+    // they spawn a 'BLCK' actor at the probe and keep its serial in the
+    // owner's field_0xd94 (unless the probe's tile is 0x50); otherwise the
+    // direction is marked in field_0x38.
+    void fn_8026F000();
+    void fn_8026F1C4();
+    void fn_8026F388();
+    void fn_8026F54C();
     // 0x8026F710: clears the per-direction flags, the counters and the
     // owner's field_0xef0; called by the owner's reset fn_80254744.
     void fn_8026F710();
