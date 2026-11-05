@@ -179,3 +179,46 @@ SHARED-EDITS
 - The literal pool: the four reloc-name near-misses (and the five new reloc-name functions) need the leading
   0, -200, 200, dbl, dbl, which nothing written produces; see above.
 - fn_803BDD44, fn_803CEED4, fn_803CE4CC, fn_803CABAC, fn_803C1734 (boot path, unwritten); fn_803BF9C4 next to them.
+
+## Session 2026-11-05 (Opus, third pass: boot path continued)
+
+Baseline (progress.py): `total: 8338 / 11557 functions, 1561464 / 4442032 bytes of code (35.15 %)`, structural 8677 (1683496 B).
+After: honest unchanged (no new 100 %, no drops by address); structural 8682 (1690868 B).
+
+Written (try.py class):
+- fn_803BDD44 99.58 operands (stack slots only): resets row `file`'s pictures to the ctor colours (fn_803BC6F0 at alpha 0).
+  Original numbers the by-value TColor copies upwards within a group and puts group 0's copies above the group locals.
+- fn_803CEED4 99.89 regalloc-only: the draw. Seven separate fn_803B8CAC tests (a loop with break isn't unrolled; the
+  field_0xb8 search loop is). `lbl_8050EC80[i]` adds base + offset in ours, offset + base in the original (also in
+  fn_803CABAC, fn_803C1734; fn_803B8CAC's own row lookups look the same: probably an inlined per-file accessor).
+- fn_803CABAC 98.14 different (cmpwi vs cmplwi on `lbl_8053AAF8->field_0xff`; u8 / bool / s8 all fail, an int accessor?),
+  plus bob scheduling, the add order above, setBlackWhite copy slots. State 19, the file menu.
+- fn_803C1734 99.01 regalloc-only: opens the file menu (state 18).
+- fn_803BF9C4 98.49 scheduling+regalloc: opens the copy board (state 32). Function-scope `int i; int j;` stops each
+  switch case re-loading j = 0 (per-loop counters 96.49); the same change made fn_803C1734 / fn_803C2E24 worse.
+- fn_803C2E24 98.27 different (same length; one instruction: original keeps &others in r29 from the fill loop). State 39.
+  `i * step` delays keep the original's add (a running delay folds it, 98.16 missing/extra 3).
+- fn_803C4054 96.12 scheduling+regalloc (bob only, as fn_803CABAC): delete prompt, state 37.
+- fn_803C4330 99.95 reloc-name (instructions identical): back from the delete prompt, state 36.
+
+Not written:
+- fn_803CE4CC (boot path): needs `fn_803BADAC(row)` with the real row pointer (lbl_8050EC80 + 0x20 + i * 0xC8; the
+  checksum over 0xC0 bytes compared with the u64 at row + 0xC0). Blocked on the lbl_8050EC80 layout decision (see the
+  proposal above); the SaveRow view can't pass a row start without a cast.
+
+SHARED-EDITS
+- tu_80379F84.h SaveRow_8050EC80: field_0x14[0x14] split into u8 field_0x14[0xC] + `s64 field_0x20` (OSGetTime() of
+  the last start, 0 for an empty file; fn_803CABAC stores it, fn_803C1734 / fn_803C2E24 / fn_803CABAC test it; real-row
+  offset 0). No other unit uses field_0x14.
+- GameGlobals.h: `bool fn_803B90E4(s32 file, s32 index)` (extern "C", owner tu_803B8C74; li 1 / li 0; index < 3 true,
+  else the row's 0x28 top bit).
+- symbols.txt: fn_803BDD44 -> fn_803BDD44__19FileSelect_804AFF60Fl, fn_803BE3D8, fn_803C1340, fn_803C21A8,
+  fn_803BF3BC, fn_803BF698 -> ...__19FileSelect_804AFF60Fv (all take this in r3: lha 0xdc(r3), lwz 0x50(r3), mr r31,r3
+  then member loads).
+- tu_803BC6F0.cpp includes JSystem/J2D/J2DGrafContext.h (J2DScreen::draw's grafcontext).
+
+### Next
+- fn_803CE4CC after the lbl_8050EC80 decision; fn_803BE3D8 (0xC2C, called by the draw), fn_803C3904 (state 38),
+  fn_803C4628 (35), fn_803C5190 (34), fn_803C5808 (32) ... in address order.
+- The stack-slot order of by-value TColor copies (fn_803BDD44 / fn_803BC6F0 / fn_803CABAC ascend, fn_803C1734 /
+  fn_803BF9C4 descend like ours) is the common open question.
