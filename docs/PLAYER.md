@@ -215,8 +215,12 @@ tu_8023FBF0); no JAI calls inside the Player units (audio comes through fwds / U
 
 ## Boot path
 
-No Player code runs from boot to the title or from the title to the main
-menu, apart from the units' `__sinit`. Everything runs in the menu ->
+No Player object exists from boot to the main menu (the manager at
+lbl_8053AC90 is not constructed), and the only Player-range code that runs
+there is the units' `__sinit` functions, the static-init function
+fn_8023F9B8 and three manager guards that return early on the null manager:
+fn_8023F264 (the player-active check), fn_8023DE58 and fn_8022EA0C (14
+instructions). Measured from the p1-p3a coverage dumps. Everything else runs in the menu ->
 Shadow Battle phase: about 7.8k unmatched instructions (~31 KB). The most
 executed unmatched functions are:
 - tu_8023FBF0: fn_80254744 646, fn_80253E6C 188, fn_802490A8 180, fn_8024F63C 113, fn_80251D50 101, fn_80252FC0 100, fn_8025250C 81, fn_8024762C 80, fn_802544B0 80.

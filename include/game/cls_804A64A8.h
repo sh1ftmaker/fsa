@@ -9,7 +9,8 @@
 // (__vt__12cls_804A64A8: dtor, execute, draw), the vtable of a
 // JPAParticleCallBack subclass. Its destructor (__dt__12cls_804A64A8Fv) calls
 // __dt__19JPAParticleCallBackFv; it is inline (cls_802150B8's and
-// Player_804A6F38's destructors inline it, tu_802144F0 also emits the weak copy). The base is JSystem's own struct
+// Player_804A6F38's destructors inline it), and tu_802144F0 still emits the
+// out-of-line copy at 0x802150FC. The base is JSystem's own struct
 // (JPAEmitter.h), which the game-side stand-in used to duplicate.
 class cls_804A64A8 : public JPAParticleCallBack {
 public:
