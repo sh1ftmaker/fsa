@@ -2254,6 +2254,37 @@ void Player_804A6F38::fn_802790C0() {
 
 void Player_804A6F38::fn_802791AC() {}
 
+// By the last hit kind 0x11E4 (fn_802710C8): 4 / 7, 5 / 8, 6 / 9 each have their own reaction
+// (tu_8023FBF0), for the acting player of a group or a lone one; then four emitters stop.
+void Player_804A6F38::fn_802796B8() {
+    if ((fn_802486A0() == 4 && fn_80240888() == fn_80248778()) || (fn_802486A0() != 4 && !fn_80240808())) {
+        s32 kind = field_0x11e4;
+        if (kind == 4 || kind == 7) {
+            fn_8024E46C();
+        } else if (kind == 5 || kind == 8) {
+            fn_8024E3D8();
+        } else if (kind == 6 || kind == 9) {
+            fn_8024E344();
+        }
+    }
+    if (field_0x132c != NULL) {
+        field_0x132c->becomeInvalidEmitter();
+        field_0x132c = NULL;
+    }
+    if (field_0x135c != NULL) {
+        field_0x135c->becomeInvalidEmitter();
+        field_0x135c = NULL;
+    }
+    if (field_0x136c != NULL) {
+        field_0x136c->becomeInvalidEmitter();
+        field_0x136c = NULL;
+    }
+    if (field_0x1370 != NULL) {
+        field_0x1370->becomeInvalidEmitter();
+        field_0x1370 = NULL;
+    }
+}
+
 void Player_804A6F38::fn_8027966C() {
     field_0x464 = 60;
     field_0x458 = 0;
@@ -2309,6 +2340,23 @@ void Player_804A6F38::fn_8027A178() {
     field_0xbb9 = 0;
     field_0xbd4 = 0;
     field_0xbba = 0;
+}
+
+void Player_804A6F38::fn_8027A908() {
+    field_0xbf4 = 8;
+    field_0x458 = 0;
+    field_0xbb9 = 0;
+    field_0xbba = 0;
+    field_0xbbc = 3.0f;
+    mPos.z = 0.0f;
+    fn_8027EB04();
+    fn_8027023C();
+    if (field_0x490 == 1) {
+        fn_8024F0E8(0x40075);
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
+    } else {
+        field_0x3fd = 1;
+    }
 }
 
 void Player_804A6F38::fn_8027AA10() {
