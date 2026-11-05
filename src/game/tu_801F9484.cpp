@@ -316,6 +316,10 @@ static inline s32 fn_801FF674() {
     return fn_802D6A9C()->fn_802D39FC();
 }
 
+// The spawner: finds the first free slot, builds the actor for `id` there, and fills in the
+// fields every actor gets. The switch is every ActorId the game spawns; each case is one
+// `new (mHeap, 0)` whose inline constructor lands after the spawner (in reverse order of use,
+// like the setters below). DMCS, FGAM, ZSLE and ZSLG are empty cases (no actor, so -1).
 s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVec3f* pos, u32 arg_0x90,
                                       s32 arg_0x16c, s32 arg_0x110) {
     s32 result = -1;

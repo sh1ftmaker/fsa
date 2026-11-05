@@ -10,6 +10,10 @@
 // vtable (config/G4SE01/game_units.tsv). Named after its vtable, 0x8049CA40.
 class TowerCollapseEffect_8049CA40 : public ActorBase_804A5770 {
 public:
+    // FIXME: 44.2 %. This constructor (emitted in game/tu_801F9484.cpp) also runs
+    // __construct_array over field_0x238[3] and builds field_0x28c; the original only stores
+    // the vtable, so the original's members at 0x238 and 0x28c have no constructor (not the
+    // JGeometry::TVec3f these are, whose empty constructor is out of line).
     TowerCollapseEffect_8049CA40() {}
     /* 0x08 */ virtual ~TowerCollapseEffect_8049CA40();
     /* 0x0C */ virtual void init();

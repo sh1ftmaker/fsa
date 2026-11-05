@@ -3714,7 +3714,7 @@ game/tu_801F9484.cpp:
 	.ctors      start:0x8045C0E4 end:0x8045C0E8
 	.data       start:0x804A5810 end:0x804A59B0
 	.bss        start:0x804CACE0 end:0x804CADE0
-	.sdata2     start:0x8053F830 end:0x8053F838
+	.sdata2     start:0x8053F830 end:0x8053F834
 
 game/tu_80204638.cpp:
 	extab       start:0x80009BE8 end:0x80009C10
