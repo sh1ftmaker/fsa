@@ -575,6 +575,88 @@ void ConnectScreen_804B0F10::fn_803F2B5C() {
     field_0x1c4 = 4;
 }
 
+// FIXME: 99.42. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_80543xxx: earlier unwritten functions come first in the pool).
+// Twin of cls_804B0B00::fn_803E3CB0.
+// Enter state 3 (the GBA connection screen field_0x8): the player-count
+// textures ('Ptn01' / 'Ptn02', 2-4 players), message 0x3F in 'Ttkg01' /
+// 'Ttkg02', the panes moved off screen to slide in, and per player the
+// 'Pcgbak' / 'Pcgba' / 'Pcgp' / 'Pcgps' / 'Pcca' panes shown (taking part,
+// 'Ppln' opaque, the animation lengths in field_0x220 / field_0x230) or
+// hidden ('Ppln' at 128); the 'Par' arrows hidden.
+void ConnectScreen_804B0F10::fn_803F2B78() {
+    if (field_0x1ac == 0) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    } else if (field_0x1ac == 1) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    } else {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    }
+    char* text1 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->getStringPtr();
+    char* text2 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->getStringPtr();
+    getMessageText_803832BC(text1, 0x3F, 0, NULL, NULL);
+    getMessageText_803832BC(text2, 0x3F, 0, NULL, NULL);
+    field_0x9c = -300.0f;
+    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
+    field_0xa8 = -100.0f;
+    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
+    field_0xb4 = -200.0f;
+    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
+    field_0xb8 = -200.0f;
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
+    field_0xdc[0] = 200.0f;
+    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
+    field_0xdc[1] = 200.0f;
+    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
+    field_0xdc[2] = 200.0f;
+    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
+    field_0xdc[3] = 200.0f;
+    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1) {
+            field_0x8->search(lbl_80479258[i])->show();
+            field_0x8->search(lbl_80479278[i])->show();
+            field_0x8->search(lbl_80479298[i])->show();
+            field_0x8->search(lbl_804792B8[i])->show();
+            for (s32 j = 2; j < 4; j++) {
+                field_0x8->search(lbl_804792F8[i][j])->show();
+            }
+            field_0x8->search(lbl_804792D8[i])->setAlpha(255);
+            field_0x220[i] = field_0x38[i]->getFrameMax();
+            field_0x230[i] = field_0x48[i]->getFrameMax();
+        } else {
+            field_0x8->search(lbl_80479258[i])->hide();
+            field_0x8->search(lbl_80479278[i])->hide();
+            field_0x8->search(lbl_80479298[i])->hide();
+            field_0x8->search(lbl_804792B8[i])->hide();
+            for (s32 j = 2; j < 4; j++) {
+                field_0x8->search(lbl_804792F8[i][j])->hide();
+            }
+            field_0x8->search(lbl_804792D8[i])->setAlpha(128);
+            field_0x220[i] = 0;
+            field_0x230[i] = 0;
+        }
+        field_0x8->search(lbl_80479378[i])->hide();
+    }
+    field_0x240[0] = 0;
+    field_0x248 = 0;
+    field_0x24a = 0;
+    field_0x25b = 0;
+    field_0x24e = -1;
+    field_0x250 = -1;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x210[i] = 0;
+    }
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 3;
+}
+
 void ConnectScreen_804B0F10::fn_803F32E8() {
     field_0x210[0] = 0;
     field_0x240[0] = 0;
@@ -1185,11 +1267,8 @@ ConnectScreen_804B0F10::~ConnectScreen_804B0F10() {
     }
 }
 
-// FIXME: 99.23. (1) The string literals sit 0x3C bytes lower in our pool:
-// the original's has "kk_nPlayerP2_01.bti".."P4" (3 x 0x14 bytes, used by
-// the unwritten fn_803F267C) before "bat_n_player.blo", so the addi offsets
-// off the .rodata base differ. (2) Registers only in most loops (e.g. the
-// first loop's array pointers are r24 / r27 in the original, r27 / r28 here).
+// FIXME: 99.24. Registers only, in most loops (e.g. the first loop's array
+// pointers are r24 / r27 in the original, r27 / r28 here).
 // Builds the seven screens and their panes' start state (structure as the
 // twin cls_804B0B00::cls_804B0B00, game/tu_803E1668.cpp).
 ConnectScreen_804B0F10::ConnectScreen_804B0F10() {
