@@ -140,11 +140,11 @@ tu_801E2540	sinit	__sinit_tu_801E2540_cpp	-	-	new	-
 tu_8020C0A8	dtor_enemy	__dt__12cls_804A5F40Fv	cls_804A5F40	0x804A5F40	new	new
 tu_8020C0A8	sinit	__sinit_tu_8020C0A8_cpp	-	-	new	-
 tu_802233A4	sinit	__sinit_tu_802233A4_cpp	-	-	new	-
-tu_8022AD64	fwd	fn_80239B64__FlPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	8d1c9bca8159f953306ac9ae040d94c48d06b2ff	-
-tu_8022AD64	loop	fn_8022E2D8__Fl	fn_80240840__15Player_804A6F38Fl	-	8d1c9bca8159f953306ac9ae040d94c48d06b2ff	-
-tu_8022AD64	loop	fn_80239A74__FPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	8d1c9bca8159f953306ac9ae040d94c48d06b2ff	-
-tu_8022AD64	loop	fn_8023A6CC__FPCQ29JGeometry8TBox2<f>l	fn_80256C74__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	8d1c9bca8159f953306ac9ae040d94c48d06b2ff	-
-tu_8022AD64	loop	fn_8023B004__FPCQ29JGeometry8TBox2<f>l	fn_802732C4__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	8d1c9bca8159f953306ac9ae040d94c48d06b2ff	-
+tu_8022AD64	fwd	fn_80239B64__FlPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	c5ca53982d682d1d98123613edce973ad57d8607	-
+tu_8022AD64	loop	fn_8022E2D8__Fl	fn_80240840__15Player_804A6F38Fl	-	c5ca53982d682d1d98123613edce973ad57d8607	-
+tu_8022AD64	loop	fn_80239A74__FPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	c5ca53982d682d1d98123613edce973ad57d8607	-
+tu_8022AD64	loop	fn_8023A6CC__FPCQ29JGeometry8TBox2<f>l	fn_80256C74__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	c5ca53982d682d1d98123613edce973ad57d8607	-
+tu_8022AD64	loop	fn_8023B004__FPCQ29JGeometry8TBox2<f>l	fn_802732C4__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	c5ca53982d682d1d98123613edce973ad57d8607	-
 tu_8029D898	sinit	__sinit_tu_8029D898_cpp	-	-	new	-
 tu_802A4654	sinit	__sinit_tu_802A4654_cpp	-	-	new	-
 tu_802E2990	sinit	__sinit_tu_802E2990_cpp	-	-	new	-
