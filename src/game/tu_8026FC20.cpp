@@ -2208,6 +2208,105 @@ void Player_804A6F38::fn_802771C8() {
     }
 }
 
+// Update of state 0x36: moves by 0x350 (x / y), walks at 1.5 on the ground, back to state 0
+// after 20 frames; the pose 0x3FB by the sub-mode 0x45C as in fn_802756E4, and on the ground
+// the step emitter 0x3D4 on tile 0x39 (else 0x3D3) follows mPos.
+void Player_804A6F38::fn_80277220() {
+    field_0x350.z = 0.0f;
+    mPos.add(field_0x350);
+    if (mPos.z <= 0.0f) {
+        fn_802808E8(1.5f);
+    }
+    field_0x3fc++;
+    if (field_0x3fc >= 20) {
+        fn_80251AEC(0);
+    }
+    fn_80268B3C();
+    switch (field_0x45c) {
+    case 0:
+        if (field_0x3fa < 4) {
+            field_0x3fb = field_0x3fa;
+        } else {
+            field_0x3fb = field_0x3fa - 1;
+        }
+        if (field_0x3fb >= 7) {
+            field_0x3fb = 6;
+        }
+        break;
+    case 1:
+        if (field_0x3fa < 4) {
+            field_0x3fb = field_0x3fa;
+        } else {
+            field_0x3fb = field_0x3fa - 1;
+        }
+        if (field_0x3fb >= 8) {
+            field_0x3fb = 7;
+        }
+        break;
+    case 2:
+        if (field_0x3fa < 1) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 5) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 6) {
+            field_0x3fb = 2;
+        } else {
+            field_0x3fb = 3;
+        }
+        break;
+    case 3:
+        if (field_0x3fa < 2) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 4) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 13) {
+            field_0x3fb = 2;
+        } else {
+            field_0x3fb = 3;
+        }
+        break;
+    case 4:
+        if (field_0x3fa < 6) {
+            field_0x3fb = 0;
+        } else if (field_0x3fa < 7) {
+            field_0x3fb = 1;
+        } else if (field_0x3fa < 8) {
+            field_0x3fb = 2;
+        } else if (field_0x3fa < 9) {
+            field_0x3fb = 3;
+        } else if (field_0x3fa < 11) {
+            field_0x3fb = 4;
+        } else {
+            field_0x3fb = 5;
+        }
+        break;
+    }
+    field_0x3fa++;
+    if (mPos.z <= 0.0f) {
+        if (fn_8022461C(&mPos, field_0x3b4) == 0x39) {
+            if (field_0x1370 == NULL) {
+                field_0x1370 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d4, 0, -1, &field_0x13a8, NULL, true, 1.0f);
+            } else {
+                setEmitterPos_8013CB44(field_0x1370, &mPos, 0, -1, true);
+            }
+            if (field_0x136c != NULL) {
+                field_0x136c->becomeInvalidEmitter();
+                field_0x136c = NULL;
+            }
+        } else {
+            if (field_0x136c == NULL) {
+                field_0x136c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d3, 0, -1, &field_0x1398, NULL, true, 1.0f);
+            } else {
+                setEmitterPos_8013CB44(field_0x136c, &mPos, 0, -1, true);
+            }
+            if (field_0x1370 != NULL) {
+                field_0x1370->becomeInvalidEmitter();
+                field_0x1370 = NULL;
+            }
+        }
+    }
+}
+
 void Player_804A6F38::fn_80277580() {
     if (field_0x1248 != 4) {
         field_0x45c = 0;
