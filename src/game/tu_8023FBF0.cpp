@@ -783,6 +783,38 @@ bool Player_804A6F38::fn_80241964() {
     return true;
 }
 
+// Whether the corners of `box` are in view: any of them with `overlap`, else
+// all four (the camera's fn_8030C2A8 below layer 8; field_0xbec's bounds,
+// fn_8030AF10, from layer 8 on). The last corner's result is converted with
+// `!= false` (neg / or / srwi in the original), the others are tested.
+bool Player_804A6F38::fn_80241BA0(s32 layer, const JGeometry::TBox2f* box, bool overlap) {
+    if (layer < 8) {
+        if (overlap == true) {
+            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->i.x, box->i.y, 0.0f))) {
+                return true;
+            }
+            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->i.x, box->f.y, 0.0f))) {
+                return true;
+            }
+            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->f.x, box->i.y, 0.0f))) {
+                return true;
+            }
+            return gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->f.x, box->f.y, 0.0f)) != false;
+        }
+        if (!gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->i.x, box->i.y, 0.0f))) {
+            return false;
+        }
+        if (!gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->i.x, box->f.y, 0.0f))) {
+            return false;
+        }
+        if (!gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->f.x, box->i.y, 0.0f))) {
+            return false;
+        }
+        return gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&JGeometry::TVec3f(box->f.x, box->f.y, 0.0f)) != false;
+    }
+    return field_0xbec->fn_8030AF10(layer, &JGeometry::TBox2f(*box), overlap);
+}
+
 bool Player_804A6F38::fn_80241DD0(s32 layer, const JGeometry::TVec3f* pos) {
     if (layer < 8) {
         return gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(pos);
