@@ -1091,6 +1091,15 @@ public:
     s32 fn_8025F55C(); // via fn_8023ECF0
     s32 fn_80240628(); // via fn_8022F340
     bool fn_8025EDD4(s32 a, const JGeometry::TVec3f* pos); // via fn_8022F784
+    // tu_8025EB18 (round 6): put-down check (callers: the carry state updates),
+    // the request filter fn_80290070 asks before a screen change, and the
+    // pick-up checks run by fn_80261480 (from the states 0-3 updates).
+    bool fn_8025EB18();
+    bool fn_8025FCC8();
+    void fn_8026022C();
+    bool fn_802604CC();
+    bool fn_80260C08();
+    void fn_80261480();
     bool fn_8024DA64(s32 a, bool b); // via fn_802302C4
     bool fn_8024D99C(const JGeometry::TVec3f* pos, bool flag); // via fn_802303FC
     bool fn_80272E98(const JGeometry::TBox2f* box, s32 layer); // via fn_80239C00
