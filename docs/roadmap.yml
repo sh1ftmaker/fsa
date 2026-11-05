@@ -249,7 +249,7 @@ phases:
         covers: [game]
       - id: dolphin
         title: Dolphin campaign
-        desc: Debug output logged in Dolphin and the dormant debug menus, mapped to code.
+        desc: Debug output logged in Dolphin and the dormant debug menus, mapped to code. Boot-path coverage (docs/BOOT_PATH.md, tools/boot_path.py) records every instruction executed from boot to a live Shadow Battle and ranks the 143 game units on that path; it sets the order of the big-system waves.
         status: later
         covers: [game]
 
