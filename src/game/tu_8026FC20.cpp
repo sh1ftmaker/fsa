@@ -2096,6 +2096,41 @@ void Player_804A6F38::fn_80276538() {
     field_0x4d0.f.y += mPos.y;
 }
 
+// The boxes of the facing 0x3DC: 0x4B0 a 16x16 box 8-24 ahead (the attack box), 0x4A0 the
+// body box stretched 4 back / 16 ahead, 0x30C the point 16 ahead; 0x3F0 = the facing.
+void Player_804A6F38::fn_80276E5C() {
+    switch (field_0x3dc) {
+    case 0:
+        field_0x4b0.set(mPos.x + 16.0f, mPos.y - 8.0f, mPos.x + 32.0f, mPos.y + 8.0f);
+        field_0x4a0.set(mPos.x - 4.0f, mPos.y - 8.0f, mPos.x + 16.0f, mPos.y + 8.0f);
+        field_0x30c.set(16.0f, 0.0f, 0.0f);
+        field_0x30c.add(mPos);
+        field_0x3f0 = 0;
+        break;
+    case 1:
+        field_0x4b0.set(mPos.x - 32.0f, mPos.y - 8.0f, mPos.x - 16.0f, mPos.y + 8.0f);
+        field_0x4a0.set(mPos.x - 16.0f, mPos.y - 8.0f, mPos.x + 4.0f, mPos.y + 8.0f);
+        field_0x30c.set(-16.0f, 0.0f, 0.0f);
+        field_0x30c.add(mPos);
+        field_0x3f0 = 1;
+        break;
+    case 2:
+        field_0x4b0.set(mPos.x - 8.0f, mPos.y + 16.0f, mPos.x + 8.0f, mPos.y + 32.0f);
+        field_0x4a0.set(mPos.x - 8.0f, mPos.y - 4.0f, mPos.x + 8.0f, mPos.y + 16.0f);
+        field_0x30c.set(0.0f, 16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        field_0x3f0 = 2;
+        break;
+    case 3:
+        field_0x4b0.set(mPos.x - 8.0f, mPos.y - 32.0f, mPos.x + 8.0f, mPos.y - 16.0f);
+        field_0x4a0.set(mPos.x - 8.0f, mPos.y - 16.0f, mPos.x + 8.0f, mPos.y + 4.0f);
+        field_0x30c.set(0.0f, -16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        field_0x3f0 = 3;
+        break;
+    }
+}
+
 void Player_804A6F38::fn_80277100() {}
 
 void Player_804A6F38::fn_80277104() {
