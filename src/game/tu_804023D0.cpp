@@ -53,8 +53,6 @@ void PaneCtrl_804AF86C::setAlpha_804023D0(J2DPane* pane, u8 alpha) {
     pane->setAlpha(alpha * ((f32)mPane->getAlpha() / (f32)field_0x28));
 }
 
-// FIXME: 98.50. Regalloc/scheduling only: the squared terms are multiplied (mullw) before the
-// float conversion of the other operand in the original.
 // Steps field_0x26 and fades the pane's alpha from `from` to `to`, mode 1 easing in and
 // out, any other mode up and back.
 bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
@@ -66,12 +64,10 @@ bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
     if (mode == 1) {
         s32 half = frames / 2;
         if (field_0x26 < half) {
-            f32 h = frames * 0.5f;
-            t = (f32)(field_0x26 * field_0x26) / (h * h);
+            t = (field_0x26 * field_0x26) / ((frames / 2.0f) * (frames / 2.0f));
         } else {
             s32 d = field_0x26 - half;
-            f32 h = frames * 0.5f;
-            t = 1.0f - (f32)(d * d) / (h * h);
+            t = 1.0f - (d * d) / ((frames / 2.0f) * (frames / 2.0f));
         }
     } else {
         s32 half = frames / 2;
@@ -79,7 +75,7 @@ bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
         if (field_0x26 < half) {
             steps = field_0x26;
         }
-        t = (f32)steps / (frames * 0.5f);
+        t = steps / (frames / 2.0f);
     }
     mPane->setAlpha(from + t * (to - from));
     return false;
@@ -195,7 +191,9 @@ void PaneCtrl_804AF86C::setPane_80402F04(J2DPane* pane) {
     field_0x26 = 0;
 }
 
-// fn_80402FBC (the player's window position store) is not written: best attempt 66 %.
+// fn_80402FBC (the player's window position store) is not written: best attempt 84 %
+// (s32 i = fn_8022F340(player); TVec3f p(pos); field_0x1c4[i].set(p.x, p.y, p.z)). The original
+// also stores a second, unread stack copy of pos and rounds z with frsp before storing it.
 
 s32 fn_8040305C(s32 index) {
     return lbl_8048C170[index];
@@ -298,6 +296,9 @@ void fn_804034D4(s32 player, s32 value) {
 }
 
 // GameState_804B0FE0::fn_80403514 (the stage picker over lbl_8050EC80) is not written: best attempt 66 %.
+// Two nested loops over isStageFlagSet (game/StageFlag.h) reach only 55 %: ours hoists the save row's
+// address out of the loops (the original reloads it each pass, keeping only the row index) and tests the
+// result as a bool (clrlwi.) where the original tests an int (cmpwi, as in tu_8023FBF0 fn_80254744).
 
 void GameState_804B0FE0::fn_80403680() {
     for (s32 i = 0; i < 4; i++) {
