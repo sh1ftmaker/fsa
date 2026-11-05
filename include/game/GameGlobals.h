@@ -1176,9 +1176,10 @@ public:
     // vtable 0x3C, stores at 0xC and 0xEB). cls_804B0F10::fn_803FC5E4.
     void fn_804310CC();
     // 0x80431A9C: r4 an id (0xC4, 0x10B), r5 a byte (clrlwi 24 in
-    // cls_804B0F10::fn_803F2AEC), r6 a pointer (addi rN, rM, off in
-    // tu_803D7098) or 0; reads the byte 0xEC and calls fn_8042EF9C on `this`.
-    void fn_80431A9C(s32 id, u8 value, void* arg);
+    // cls_804B0F10::fn_803F2AEC), r6 an optional out byte (callers pass the
+    // address of a u8 field or 0; it receives this->0xEA). Reads the byte 0xEC,
+    // calls fn_8042EF9C on `this` and returns 1 or 0 (li r3 before the blr).
+    bool fn_80431A9C(s32 id, u8 value, u8* out);
 };
 extern cls_804B1634* lbl_8053AEC0;
 
