@@ -381,6 +381,120 @@ void GameMode_804B0688::fn_803DD93C() {
     }
 }
 
+// State 3: the sub-menu of the picked entry (field_0x80: 0 or 1) while its
+// movie plays. A confirms, B goes back to the entry menu (state 4).
+void GameMode_804B0688::fn_803DE05C() {
+    if (field_0x88 != 0) {
+        field_0x88++;
+        if (field_0x88 > 10) {
+            field_0x88 = 0;
+        }
+    }
+    if (field_0x9e == 2 && mMovie->mGetTotalFrame() - mMovie->mGetRestFrame() <= 1) {
+        field_0x8c = 0;
+        return;
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
+        mMovieState = 3;
+        if (field_0x80 == 0) {
+            if (field_0x9e == 0) {
+                lbl_8053AAF8->field_0x7f = 1;
+                field_0x68 = 3;
+            } else if (field_0x9e == 1) {
+                lbl_8053AAF8->field_0x7f = 0;
+                field_0x68 = 3;
+            } else if (field_0x9e == 2) {
+                field_0x7c = 0.0f;
+                mState = 7;
+                lbl_8053AF80->fn_80458F9C(60);
+            }
+            lbl_80529DEC.field_0x23a[0] = field_0x9e;
+            lbl_8053AF80->fn_80458880(11, -1);
+        } else {
+            field_0x9c = 0;
+            for (s32 i = 0; i < 2; i++) {
+                field_0x34[i]->mPane->show();
+                field_0x44[i]->mPane->show();
+                if (i == field_0x9e) {
+                    field_0x34[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                    field_0x44[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                } else {
+                    field_0x34[i]->fn_80402E08(600.0f, 0.0f);
+                    field_0x44[i]->fn_80402E08(600.0f, 0.0f);
+                }
+                field_0x34[i]->field_0x20 = 0;
+                field_0x34[i]->field_0x22 = 0;
+                field_0x44[i]->field_0x20 = 0;
+                field_0x44[i]->field_0x22 = 0;
+            }
+            field_0x30->mPane->show();
+            field_0x30->fn_80402E08(0.0f, 150.0f);
+            field_0x30->field_0x22 = 0;
+            for (s32 i = 0; i < 7; i++) {
+                field_0x14[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x14[i]->field_0x20 = 0;
+            }
+            for (s32 i = 0; i < 2; i++) {
+                field_0x50[i]->fn_80402E08(0.0f, 0.0f);
+                field_0x50[i]->field_0x22 = 0;
+            }
+            field_0x58->mPane->hide();
+            mState = 4;
+            lbl_8053AF80->fn_80458880(12, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
+        field_0x9c = 0;
+        mMovieState = 3;
+        for (s32 i = 0; i < 2; i++) {
+            field_0x34[i]->mPane->show();
+            field_0x44[i]->mPane->show();
+            if (i == field_0x9e) {
+                field_0x34[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+                field_0x44[i]->fn_80402E08(0.0f, 27.0f - field_0x6c[i]);
+            } else {
+                field_0x34[i]->fn_80402E08(600.0f, 0.0f);
+                field_0x44[i]->fn_80402E08(600.0f, 0.0f);
+            }
+            field_0x34[i]->field_0x20 = 0;
+            field_0x34[i]->field_0x22 = 0;
+            field_0x44[i]->field_0x20 = 0;
+            field_0x44[i]->field_0x22 = 0;
+        }
+        field_0x30->mPane->show();
+        field_0x30->fn_80402E08(0.0f, 150.0f);
+        field_0x30->field_0x22 = 0;
+        for (s32 i = 0; i < 7; i++) {
+            field_0x14[i]->fn_80402E08(0.0f, 0.0f);
+            field_0x14[i]->field_0x20 = 0;
+        }
+        for (s32 i = 0; i < 2; i++) {
+            field_0x50[i]->fn_80402E08(0.0f, 0.0f);
+            field_0x50[i]->field_0x22 = 0;
+        }
+        field_0x58->mPane->hide();
+        mState = 4;
+        lbl_8053AF80->fn_80458880(12, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(2, 1)) {
+        if (field_0x80 == 0) {
+            field_0x80 = 1;
+            field_0x88 = 1;
+            field_0x8c = 30;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(1, 1)) {
+        if (field_0x80 == 1) {
+            field_0x80 = 0;
+            field_0x88 = 1;
+            field_0x8c = 30;
+            lbl_8053AF80->fn_80458880(0x26, -1);
+        }
+    }
+    field_0x8c++;
+    if (field_0x8c >= 60) {
+        field_0x8c = 0;
+    }
+}
+
 // State 2: slides the other entry out and the picked one up, fades the
 // entry panes out and the sub-menu panes in, then starts the movie and goes
 // to state 3.
