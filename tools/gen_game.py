@@ -359,7 +359,7 @@ DTORX_TEMPLATES = [  # (unit, destructor, base), all hand-matched and reviewed
     ("act_torch", "__dt__14Torch_804A8520Fv", ACTOR_BASE),
     ("act_spotlight", "__dt__18Spotlight_804A84C8Fv", ACTOR_BASE),
 ]
-EMIT_RELEASE = "fn_801EE434"
+EMIT_RELEASE = "fn_801EE434__FP14JPABaseEmitter"  # the C++ name (symbols.txt)
 SPRITE_CLS = "SpriteAnim_801D267C"
 SPRITE_SIZE = 0x38            # include/game/SpriteAnim.h
 SPRITE_FRAMECTRL = 0x24       # its J3DFrameCtrl, whose vtable the inline dtor stores
