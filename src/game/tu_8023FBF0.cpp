@@ -5,6 +5,7 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
+#include "game/Map.h"
 #include "game/Effect.h"
 #include "game/GameState.h"
 #include "game/PlayerBit.h"
@@ -1488,6 +1489,48 @@ s32 Player_804A6F38::fn_80248778() const {
         }
     }
     return count + 1;
+}
+
+// The view box of `layer`: the visible box, or GameView field_0xdc for
+// layers 8 and up.
+static inline const JGeometry::TBox2f* viewBox(s32 layer) {
+    GameView_804A9950* view = getGameView_802D6A9C();
+    return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+}
+
+// Steps a probe up (y + 8) from mPos until it is on tile 0x231 (fn_80226998)
+// or leaves the view box (then 24 inside its far edge, and field_0x440 is
+// set too); 24 further on, fn_8026E5F8 there sets field_0x43f.
+// FIXME: 99.52. Registers (f1 / f2 of the box test) plus the literals 8.0f /
+// 24.0f (@NNN vs lbl_80540050 / lbl_80540054 until the pool is in order).
+bool Player_804A6F38::fn_80248A24() {
+    JGeometry::TVec2f pos;
+    pos.x = mPos.x;
+    pos.y = mPos.y;
+    bool clamped = false;
+    do {
+        pos.y += 8.0f;
+        const JGeometry::TBox2f* box = viewBox(field_0x3b4);
+        bool inside = false;
+        if (pos.x >= box->i.x && pos.y >= box->i.y && pos.x < box->f.x && pos.y < box->f.y) {
+            inside = true;
+        }
+        if (!inside) {
+            pos.y = viewBox(field_0x3b4)->f.y - 24.0f;
+            clamped = true;
+            break;
+        }
+        fn_802265FC((const JGeometry::TVec3f*)&pos, field_0x3b4);
+    } while (fn_80226998((const JGeometry::TVec3f*)&pos, field_0x3b4) != 0x231);
+    pos.y += 24.0f;
+    if (fn_8026E5F8(&pos)) {
+        field_0x43f = true;
+        if (clamped == true) {
+            field_0x440 = true;
+        }
+        return true;
+    }
+    return false;
 }
 
 void Player_804A6F38::fn_80248DAC() {
