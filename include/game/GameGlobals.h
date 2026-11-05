@@ -1087,7 +1087,59 @@ extern const GXRenderModeObj lbl_8048C17C;
 // after that getter). Owner: game/tu_8016A2B4.cpp (not written yet). Only
 // the bytes act_environment_control_2 writes are declared.
 struct GameRootSub24_8016A3AC {
-    /* 0x000 */ u8 field_0x0[0x1CA];
+    // Unknown pointers (cleared by fn_8016ED88): 0x0, 0x30, 0x38, 0x54, 0x68 (and the model at 0x4C).
+    /* 0x000 */ void* field_0x0;
+    // The J3DModels below (0x4 ... 0xEC) are passed to fn_8016A7DC.
+    /* 0x004 */ struct J3DModel* field_0x4;
+    /* 0x008 */ u8 field_0x8[0xC - 0x8];
+    /* 0x00C */ struct J3DModel* field_0xc;
+    /* 0x010 */ u8 field_0x10[0x14 - 0x10];
+    /* 0x014 */ struct J3DModel* field_0x14;
+    /* 0x018 */ u8 field_0x18[0x1C - 0x18];
+    /* 0x01C */ struct J3DModel* field_0x1c;
+    /* 0x020 */ u8 field_0x20[0x28 - 0x20];
+    /* 0x028 */ struct J3DModel* field_0x28;
+    /* 0x02C */ u8 field_0x2c[0x30 - 0x2C];
+    /* 0x030 */ void* field_0x30;
+    /* 0x034 */ struct J3DModel* field_0x34;
+    /* 0x038 */ void* field_0x38;
+    // Six models, placed by fn_8016B0B0 (loop over i < 6).
+    /* 0x03C */ struct J3DModel* field_0x3c[6];
+    /* 0x054 */ void* field_0x54;
+    /* 0x058 */ u8 field_0x58[0x68 - 0x58];
+    /* 0x068 */ void* field_0x68;
+    /* 0x06C */ u8 field_0x6c[0x84 - 0x6C];
+    /* 0x084 */ struct J3DModel* field_0x84;
+    /* 0x088 */ u8 field_0x88[0x90 - 0x88];
+    /* 0x090 */ struct J3DModel* field_0x90;
+    /* 0x094 */ u8 field_0x94[0x9C - 0x94];
+    /* 0x09C */ struct J3DModel* field_0x9c;
+    /* 0x0A0 */ u8 field_0xa0[0xA8 - 0xA0];
+    /* 0x0A8 */ struct J3DModel* field_0xa8;
+    /* 0x0AC */ u8 field_0xac[0xB4 - 0xAC];
+    /* 0x0B4 */ struct J3DModel* field_0xb4;
+    /* 0x0B8 */ u8 field_0xb8[0xC0 - 0xB8];
+    /* 0x0C0 */ struct J3DModel* field_0xc0;
+    /* 0x0C4 */ u8 field_0xc4[0xCC - 0xC4];
+    /* 0x0CC */ struct J3DModel* field_0xcc;
+    /* 0x0D0 */ u8 field_0xd0[0xD4 - 0xD0];
+    /* 0x0D4 */ struct J3DModel* field_0xd4;
+    /* 0x0D8 */ u8 field_0xd8[0xE0 - 0xD8];
+    /* 0x0E0 */ struct J3DModel* field_0xe0;
+    /* 0x0E4 */ u8 field_0xe4[0xEC - 0xE4];
+    /* 0x0EC */ struct J3DModel* field_0xec;
+    /* 0x0F0 */ u8 field_0xf0[0x124 - 0xF0];
+    // The three emitters fn_8016A2B4 deletes.
+    /* 0x124 */ struct JPABaseEmitter* field_0x124;
+    /* 0x128 */ struct JPABaseEmitter* field_0x128;
+    /* 0x12C */ struct JPABaseEmitter* field_0x12c;
+    /* 0x130 */ u8 field_0x130[0x1C4 - 0x130];
+    /* 0x1C4 */ u8 field_0x1c4;
+    /* 0x1C5 */ u8 field_0x1c5;
+    /* 0x1C6 */ u8 field_0x1c6;
+    /* 0x1C7 */ u8 field_0x1c7;
+    /* 0x1C8 */ u8 field_0x1c8;
+    /* 0x1C9 */ u8 field_0x1c9;
     /* 0x1CA */ u8 field_0x1ca;
     /* 0x1CB */ u8 field_0x1cb[4];
     /* 0x1CF */ u8 field_0x1cf;
@@ -1099,14 +1151,50 @@ struct GameRootSub24_8016A3AC {
     /* 0x1D8 */ s32 field_0x1d8;
     /* 0x1DC */ u8 field_0x1dc;
     /* 0x1DD */ u8 field_0x1dd;
-    /* 0x1DE */ u8 field_0x1de[0x1EF - 0x1DE];
+    /* 0x1DE */ u8 field_0x1de[0x1E4 - 0x1DE];
+    /* 0x1E4 */ f32 field_0x1e4;
+    /* 0x1E8 */ u8 field_0x1e8[0x1EC - 0x1E8];
+    /* 0x1EC */ u8 field_0x1ec;
+    /* 0x1ED */ u8 field_0x1ed;
+    /* 0x1EE */ u8 field_0x1ee;
     /* 0x1EF */ u8 field_0x1ef;
-    /* 0x1F0 */ u8 field_0x1f0[2];
+    /* 0x1F0 */ u8 field_0x1f0;
+    /* 0x1F1 */ u8 field_0x1f1;
     /* 0x1F2 */ u8 field_0x1f2;
     /* 0x1F3 */ u8 field_0x1f3;
     /* 0x1F4 */ u8 field_0x1f4;
     /* 0x1F5 */ u8 field_0x1f5;
 
+    // game/tu_8016A2B4.cpp (0x8016A2B4): deletes the three emitters.
+    void fn_8016A2B4();
+    // 0x8016A330: clears the flag bytes, sets field_0x1d8 to -1.
+    void fn_8016A330();
+    // 0x8016A7DC: places model at pos plus an offset that follows the
+    // 2D camera (x / y flags), scaled by `scale`, then runs the model's
+    // calc / entry / viewCalc (vtable slots 0x10, 0xC, 0x1C). `this` is not read.
+    void fn_8016A7DC(struct J3DModel* model, const JGeometry::TVec3f& pos, s32 dir, bool followX, bool followY, f32 parallax, f32 scale);
+
+    // game/tu_8016A2B4.cpp: each draws one model when its flag is set (fn_8016A7DC).
+    void fn_8016A9EC();
+    void fn_8016AA48();
+    void fn_8016AAA4();
+    void fn_8016AB00();
+    void fn_8016AB5C();
+    void fn_8016ABB8();
+    void fn_8016AC14();
+    void fn_8016AC70();
+    void fn_8016ACCC();
+    void fn_8016AD28();
+    void fn_8016AD84();
+    void fn_8016B054();
+    void fn_8016D284();
+    void fn_8016D2E0();
+    void fn_8016D33C();
+    // 0x8016B8AC and 0x8016ED88 (clears the pointer fields).
+    void fn_8016B8AC();
+    void fn_8016ED88();
+    // 0x8016B0B0: places the six models of field_0x3c against the 2D camera.
+    void fn_8016B0B0();
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8016DA6C();
