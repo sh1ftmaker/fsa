@@ -683,7 +683,9 @@ public:
     /* 0x05B0 */ JGeometry::TBox2f field_0x5b0;
     /* 0x05C0 */ JGeometry::TVec3f field_0x5c0;
     /* 0x05CC */ JGeometry::TBox2f field_0x5cc;
-    /* 0x05DC */ u8 field_0x5dc[0x5FC - 0x5DC];
+    /* 0x05DC */ JGeometry::TBox2f field_0x5dc; // set by tu_8026FC20 fn_80277F98, read by tu_80256C74
+    // The 8x16 box in front of the player for direction field_0x3ec (fn_80276078).
+    /* 0x05EC */ JGeometry::TBox2f field_0x5ec;
     /* 0x05FC */ JGeometry::TBox2f field_0x5fc[0x50];
     /* 0x0AFC */ u8 field_0xafc;
     /* 0x0AFD */ u8 field_0xafd[0xB00 - 0xAFD];
