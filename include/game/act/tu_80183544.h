@@ -8,14 +8,16 @@
 // Named after its vtable, 0x804A1790.
 class cls_804A1790 : public ActorBase_804A5770 {
 public:
-    cls_804A1790() {}
+    cls_804A1790() : field_0x234(-1) {}
     /* 0x08 */ virtual ~cls_804A1790();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x18 */ virtual void vfunc_0x18();
     /* 0x20 */ virtual void draw();
     /* 0x44 */ virtual void vfunc_0x44();
-    /* 0x230 */ u8 field_0x230[0x40]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x4];
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ u8 field_0x238[0x38];
     /* 0x270 */ JPABaseEmitter* mEmitter270; // released by the destructor
 }; // Size: 0x274
 

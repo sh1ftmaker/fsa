@@ -11,7 +11,7 @@
 // nibble of field_0x90 and the item list from its other bits (init).
 class cls_8049E5B8 : public ActorBase_804A5770 {
 public:
-    cls_8049E5B8() {}
+    cls_8049E5B8() : mState(1), mKind(4), mTimer(0), mSpawned(-1), mItemCount(0), mKindCount(0), field_0x280(0) {}
     /* 0x08 */ virtual ~cls_8049E5B8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();

@@ -19,7 +19,9 @@ public:
     /* 0x24C */ s32 field_0x24c; // index into lbl_804A2F2C
     /* 0x250 */ u8 field_0x250[0x258 - 0x250]; // not yet known
     /* 0x258 */ s32 field_0x258; // the state draw switches on
-    /* 0x25C */ u8 field_0x25c[0x2B4 - 0x25C]; // not yet known
+    /* 0x25C */ u8 field_0x25c[0x24];
+    /* 0x280 */ JGeometry::TVec3f field_0x280[4];
+    /* 0x2B0 */ u8 field_0x2b0[0x4];
     /* 0x2B4 */ f32 field_0x2b4; // an angle in s16 units (draw divides it by -10430.228f)
 }; // Size: not yet known (at least 0x2BC: the destructor reads 0x2B8)
 

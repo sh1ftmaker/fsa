@@ -8,7 +8,7 @@
 // Named after its vtable, 0x8049EA00.
 class cls_8049EA00 : public ActorBase_804A5770 {
 public:
-    cls_8049EA00() {}
+    cls_8049EA00() : mFlags(0) {}
     /* 0x08 */ virtual ~cls_8049EA00();
     /* 0x0C */ virtual void init();
     // True when there is no escorted woman ('OPGL') actor, or the 2-int

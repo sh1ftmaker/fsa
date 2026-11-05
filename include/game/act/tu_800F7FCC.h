@@ -41,7 +41,7 @@ public:
 // Named after its vtable, 0x8049C718.
 class cls_8049C718 : public ActorBase_804A5770 {
 public:
-    cls_8049C718() {}
+    cls_8049C718() : field_0x29c(0) {}
     /* 0x08 */ virtual ~cls_8049C718();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
@@ -49,7 +49,9 @@ public:
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x44 */ virtual void vfunc_0x44();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x88]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x6C];
+    /* 0x29C */ u8 field_0x29c;
+    /* 0x29D */ u8 field_0x29d[0x1B];
 }; // Size: 0x2B8
 
 #endif

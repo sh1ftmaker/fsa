@@ -12,6 +12,7 @@
 
 class cls_8049E350 : public ActorBase_804A5770 {
 public:
+    cls_8049E350() : field_0x230(0), field_0x231(0), field_0x234(0), field_0x238(0), field_0x23c(-1), field_0x240(-1) {}
     /* 0x08 */ virtual ~cls_8049E350();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();

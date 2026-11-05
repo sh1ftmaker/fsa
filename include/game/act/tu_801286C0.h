@@ -10,6 +10,7 @@
 // and the resource pointer that init() gets from the archive.
 class cls_8049E500 : public cls_8049D140 {
 public:
+    cls_8049E500() : field_0x230(0), field_0x234(0.0f), field_0x238(0.0f), field_0x23c(0) {}
     /* 0x08 */ virtual ~cls_8049E500();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();

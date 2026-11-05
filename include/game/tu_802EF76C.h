@@ -21,7 +21,7 @@ u8 fn_801B7550(void);
 
 class cls_804AA4F0 : public ActorBase_804A5770 {
 public:
-    cls_804AA4F0() {}
+    cls_804AA4F0() { mColor.mWord = -1; }
     /* 0x08 */ virtual ~cls_804AA4F0();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();

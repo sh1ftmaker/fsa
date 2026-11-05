@@ -13,7 +13,10 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x160]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x64];
+    /* 0x294 */ JGeometry::TVec3f field_0x294[10];
+    /* 0x30C */ JGeometry::TVec3f field_0x30c[10];
+    /* 0x384 */ u8 field_0x384[0xC];
 }; // Size: 0x390
 
 #endif

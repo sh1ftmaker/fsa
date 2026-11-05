@@ -14,8 +14,11 @@ public:
     // 0x8017EF40: starts sound 0x40038, then vfunc_0x28(2, 0.0f, -24.0f).
     /* 0x24 */ virtual void vfunc_0x24();
 
-    /* 0x230 */ u8 field_0x230[0x318 - 0x230]; // not read by the destructor
+    /* 0x230 */ u8 field_0x230[0x64];
+    /* 0x294 */ JGeometry::TVec3f field_0x294[4];
+    /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[4];
+    /* 0x2F4 */ u8 field_0x2f4[0x24];
     /* 0x318 */ JPABaseEmitter* mEmitter318[2];
-};
+}; // Size: 0x320
 
 #endif

@@ -12,6 +12,7 @@ class JPABaseEmitter;
 
 class cls_804A8638 : public ActorBase_804A5770 {
 public:
+    cls_804A8638() : field_0x2dc(-1) {}
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54(s32 a, s32 b, s32 c, s32 d, s32 e, s32 state);
@@ -31,7 +32,8 @@ public:
     /* 0x288 */ s32 field_0x288; // state; vfunc_0x10 acts on 4 and resets it to 0
     /* 0x28C */ u8 field_0x28c[0x290 - 0x28C]; // not yet identified
     /* 0x290 */ s32 field_0x290;
-    /* 0x294 */ u8 field_0x294[0x2E0 - 0x294]; // not yet identified
+    /* 0x294 */ u8 field_0x294[0x48];
+    /* 0x2DC */ s32 field_0x2dc;
     /* 0x2E0 */ s32 field_0x2e0;
     /* 0x2E4 */ s32 field_0x2e4;
     /* 0x2E8 */ s32 field_0x2e8;
@@ -49,6 +51,6 @@ public:
     /* 0x318 */ s32 field_0x318;
     /* 0x31C */ s32 field_0x31c;
     /* 0x320 */ s32 field_0x320;
-};
+}; // Size: 0x33C
 
 #endif

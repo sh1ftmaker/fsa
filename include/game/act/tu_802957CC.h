@@ -12,7 +12,8 @@ class cls_804A7AE0 : public ActorBase_804A5770 {
 public:
     /* 0x08 */ virtual ~cls_804A7AE0();
 
-    /* 0x230 */ u8 field_0x230[0x2FC - 0x230]; // not yet known
+    /* 0x230 */ u8 field_0x230[0xAC];
+    /* 0x2DC */ JGeometry::TVec2f field_0x2dc[4];
     /* 0x2FC */ JPABaseEmitter* mEmitters[2][2]; // released by the destructor
     /* 0x30C */ u8 field_0x30c[0x310 - 0x30C]; // not yet known
     /* 0x310 */ JPABaseEmitter* mEmitters2[4]; // released by the destructor

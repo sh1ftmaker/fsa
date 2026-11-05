@@ -2,10 +2,14 @@
 #define GAME_ACT_TU_801F9484_H
 
 // Actor classes the spawner (game/tu_801F9484.cpp) constructs whose own units are not written
-// yet: only what its inline constructors show (vtable store, size from __nw__). Named after
-// their vtables. When a class's unit is written, move it to that unit's act header.
+// yet: what their inline constructors show (vtable store, member initialisers, size from
+// __nw__), named after their vtables. When a class's unit is written, move it to that
+// unit's act header.
 
 #include "game/ActorBase.h"
+#include "game/SpriteAnim.h"
+#include "game/act/tu_801F9484_elems.h"
+#include "JSystem/JUtility/TColor.h"
 
 // Spawned for 'LPLK'.
 class cls_8049C578 : public ActorBase_804A5770 {
@@ -50,9 +54,15 @@ public:
 // Spawned for 'DMGA'.
 class cls_8049DD68 : public ActorBase_804A5770 {
 public:
-    cls_8049DD68() {}
+    cls_8049DD68() : field_0x230(0), field_0x234(0), field_0x238(0.0f), field_0x23c(0.0f) {}
     /* 0x08 */ virtual ~cls_8049DD68();
-    /* 0x230 */ u8 field_0x230[0x7C];
+    /* 0x230 */ u8 field_0x230;
+    /* 0x231 */ u8 field_0x231[0x3];
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ f32 field_0x238;
+    /* 0x23C */ f32 field_0x23c;
+    /* 0x240 */ u8 field_0x240[0x34];
+    /* 0x274 */ SpriteAnim_801D267C field_0x274;
 }; // Size: 0x2AC
 
 // Spawned for 'RNBW'.
@@ -68,7 +78,14 @@ class cls_8049E770 : public ActorBase_804A5770 {
 public:
     cls_8049E770() {}
     /* 0x08 */ virtual ~cls_8049E770();
-    /* 0x230 */ u8 field_0x230[0x1D8];
+    /* 0x230 */ u8 field_0x230[0x2C];
+    /* 0x25C */ JGeometry::TVec3f field_0x25c[6];
+    /* 0x2A4 */ u8 field_0x2a4[0x24];
+    /* 0x2C8 */ JGeometry::TVec3f field_0x2c8[4];
+    /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[4];
+    /* 0x328 */ u8 field_0x328[0x90];
+    /* 0x3B8 */ JGeometry::TVec3f field_0x3b8[4];
+    /* 0x3E8 */ u8 field_0x3e8[0x20];
 }; // Size: 0x408
 
 // Spawned for 'SNWL'.
@@ -82,9 +99,15 @@ public:
 // Spawned for 'CRNV'.
 class cls_8049ED30 : public ActorBase_804A5770 {
 public:
-    cls_8049ED30() {}
+    cls_8049ED30() : field_0x230(0), field_0x234(0), field_0x238(-1), field_0x23c(0.0f), field_0x278(0), field_0x27c(0) {}
     /* 0x08 */ virtual ~cls_8049ED30();
-    /* 0x230 */ u8 field_0x230[0x50];
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ f32 field_0x23c;
+    /* 0x240 */ SpriteAnim_801D267C field_0x240;
+    /* 0x278 */ s32 field_0x278;
+    /* 0x27C */ s32 field_0x27c;
 }; // Size: 0x280
 
 // Spawned for 'DGTL'.
@@ -92,7 +115,11 @@ class cls_8049F6C8 : public ActorBase_804A5770 {
 public:
     cls_8049F6C8() {}
     /* 0x08 */ virtual ~cls_8049F6C8();
-    /* 0x230 */ u8 field_0x230[0x598];
+    /* 0x230 */ u8 field_0x230[0x90];
+    /* 0x2C0 */ JGeometry::TVec3f field_0x2c0[10];
+    /* 0x338 */ u8 field_0x338[0xA0];
+    /* 0x3D8 */ JGeometry::TVec3f field_0x3d8[80];
+    /* 0x798 */ u8 field_0x798[0x30];
 }; // Size: 0x7C8
 
 // Spawned for 'HINO'.
@@ -124,7 +151,10 @@ class cls_804A0440 : public ActorBase_804A5770 {
 public:
     cls_804A0440() {}
     /* 0x08 */ virtual ~cls_804A0440();
-    /* 0x230 */ u8 field_0x230[0xD0];
+    /* 0x230 */ u8 field_0x230[0x88];
+    /* 0x2B8 */ JGeometry::TVec3f field_0x2b8[4];
+    /* 0x2E8 */ u8 field_0x2e8[0xC];
+    /* 0x2F4 */ JUtility::TColor field_0x2f4[3];
 }; // Size: 0x300
 
 // Spawned for 'ARRW'.
@@ -140,7 +170,9 @@ class cls_804A0810 : public ActorBase_804A5770 {
 public:
     cls_804A0810() {}
     /* 0x08 */ virtual ~cls_804A0810();
-    /* 0x230 */ u8 field_0x230[0x108];
+    /* 0x230 */ u8 field_0x230[0x6C];
+    /* 0x29C */ JGeometry::TVec3f field_0x29c[10];
+    /* 0x314 */ u8 field_0x314[0x24];
 }; // Size: 0x338
 
 // Spawned for 'WIZR'.
@@ -172,7 +204,9 @@ class cls_804A1E50 : public ActorBase_804A5770 {
 public:
     cls_804A1E50() {}
     /* 0x08 */ virtual ~cls_804A1E50();
-    /* 0x230 */ u8 field_0x230[0x104];
+    /* 0x230 */ u8 field_0x230[0xC8];
+    /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[4];
+    /* 0x328 */ u8 field_0x328[0xC];
 }; // Size: 0x334
 
 // Spawned for 'DGT2'.
@@ -180,7 +214,10 @@ class cls_804A1FA0 : public ActorBase_804A5770 {
 public:
     cls_804A1FA0() {}
     /* 0x08 */ virtual ~cls_804A1FA0();
-    /* 0x230 */ u8 field_0x230[0x19C];
+    /* 0x230 */ u8 field_0x230[0x58];
+    /* 0x288 */ JGeometry::TVec3f field_0x288[6];
+    /* 0x2D0 */ JGeometry::TVec3f field_0x2d0[20];
+    /* 0x3C0 */ u8 field_0x3c0[0xC];
 }; // Size: 0x3CC
 
 // Spawned for 'GNON'.
@@ -196,7 +233,10 @@ class cls_804A2944 : public ActorBase_804A5770 {
 public:
     cls_804A2944() {}
     /* 0x08 */ virtual ~cls_804A2944();
-    /* 0x230 */ u8 field_0x230[0x108];
+    /* 0x230 */ u8 field_0x230[0x74];
+    /* 0x2A4 */ JGeometry::TVec3f field_0x2a4[4];
+    /* 0x2D4 */ JGeometry::TVec3f field_0x2d4[4];
+    /* 0x304 */ u8 field_0x304[0x34];
 }; // Size: 0x338
 
 // Spawned for 'ALCE'.
@@ -252,7 +292,9 @@ class cls_804A35AC : public ActorBase_804A5770 {
 public:
     cls_804A35AC() {}
     /* 0x08 */ virtual ~cls_804A35AC();
-    /* 0x230 */ u8 field_0x230[0x90];
+    /* 0x230 */ u8 field_0x230[0x58];
+    /* 0x288 */ JGeometry::TVec3f field_0x288[4];
+    /* 0x2B8 */ u8 field_0x2b8[0x8];
 }; // Size: 0x2C0
 
 // Spawned for 'ZLD4'.
@@ -268,7 +310,9 @@ class cls_804A38D4 : public ActorBase_804A5770 {
 public:
     cls_804A38D4() {}
     /* 0x08 */ virtual ~cls_804A38D4();
-    /* 0x230 */ u8 field_0x230[0xC0];
+    /* 0x230 */ u8 field_0x230[0x34];
+    /* 0x264 */ JGeometry::TVec3f field_0x264[4];
+    /* 0x294 */ u8 field_0x294[0x5C];
 }; // Size: 0x2F0
 
 // Spawned for 'GLWP'.
@@ -276,7 +320,9 @@ class cls_804A39DC : public ActorBase_804A5770 {
 public:
     cls_804A39DC() {}
     /* 0x08 */ virtual ~cls_804A39DC();
-    /* 0x230 */ u8 field_0x230[0x74];
+    /* 0x230 */ u8 field_0x230[0x34];
+    /* 0x264 */ JGeometry::TVec3f field_0x264[4];
+    /* 0x294 */ u8 field_0x294[0x10];
 }; // Size: 0x2A4
 
 // Spawned for 'FALL'.
@@ -324,7 +370,9 @@ class cls_804A7EB0 : public ActorBase_804A5770 {
 public:
     cls_804A7EB0() {}
     /* 0x08 */ virtual ~cls_804A7EB0();
-    /* 0x230 */ u8 field_0x230[0xF0];
+    /* 0x230 */ u8 field_0x230[0x34];
+    /* 0x264 */ JGeometry::TVec3f field_0x264[4];
+    /* 0x294 */ u8 field_0x294[0x8C];
 }; // Size: 0x320
 
 // Spawned for 'SWTH'.
@@ -356,7 +404,9 @@ class cls_804A9C20 : public ActorBase_804A5770 {
 public:
     cls_804A9C20() {}
     /* 0x08 */ virtual ~cls_804A9C20();
-    /* 0x230 */ u8 field_0x230[0xC8];
+    /* 0x230 */ u8 field_0x230[0x28];
+    /* 0x258 */ JGeometry::TVec3f field_0x258[4];
+    /* 0x288 */ u8 field_0x288[0x70];
 }; // Size: 0x2F8
 
 // Spawned for 'SWDL'.
@@ -404,7 +454,9 @@ class cls_804ACD70 : public ActorBase_804A5770 {
 public:
     cls_804ACD70() {}
     /* 0x08 */ virtual ~cls_804ACD70();
-    /* 0x230 */ u8 field_0x230[0xB4];
+    /* 0x230 */ u8 field_0x230[0x38];
+    /* 0x268 */ Elem_801FFCDC field_0x268[4];
+    /* 0x2B8 */ u8 field_0x2b8[0x2C];
 }; // Size: 0x2E4
 
 // Spawned for 'EMIK'.
@@ -420,7 +472,11 @@ class cls_804ADF28 : public ActorBase_804A5770 {
 public:
     cls_804ADF28() {}
     /* 0x08 */ virtual ~cls_804ADF28();
-    /* 0x230 */ u8 field_0x230[0xEC];
+    /* 0x230 */ u8 field_0x230[0x4C];
+    /* 0x27C */ JGeometry::TVec3f field_0x27c[3];
+    /* 0x2A0 */ JGeometry::TVec3f field_0x2a0[3];
+    /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[3];
+    /* 0x2E8 */ u8 field_0x2e8[0x34];
 }; // Size: 0x31C
 
 // Spawned for 'DCR2'.
@@ -460,7 +516,9 @@ class cls_804B0478 : public ActorBase_804A5770 {
 public:
     cls_804B0478() {}
     /* 0x08 */ virtual ~cls_804B0478();
-    /* 0x230 */ u8 field_0x230[0x70];
+    /* 0x230 */ u8 field_0x230[0x30];
+    /* 0x260 */ JGeometry::TVec3f field_0x260[4];
+    /* 0x290 */ u8 field_0x290[0x10];
 }; // Size: 0x2A0
 
 #endif

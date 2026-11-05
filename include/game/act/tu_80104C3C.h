@@ -8,7 +8,7 @@
 // Named after its vtable, 0x8049CB58.
 class cls_8049CB58 : public ActorBase_804A5770 {
 public:
-    cls_8049CB58() {}
+    cls_8049CB58() : field_0x24e(0) {}
     /* 0x08 */ virtual ~cls_8049CB58();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
