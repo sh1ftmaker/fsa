@@ -203,6 +203,10 @@ public:
     bool fn_8024C458(); // via fn_8022FA80
     bool fn_8024C460(s32 arg); // via fn_8022FB1C
     bool fn_8024D98C(); // via fn_80230360
+    bool fn_8024D058(bool reset); // via tu_8022AD64 (0x802302A8 and two more)
+    // via fn_80230498 (tu_8022AD64); act_battle_royale_end_check passes
+    // frame, 0xFF, -0x80, -0x80, 1.
+    bool fn_8024DC00(const JGeometry::TVec3f* pos, s32 frame, u8 a, s8 b, s8 c, bool check);
     s32 fn_8024DCD0(); // via fn_80230AD4
     bool fn_8024E03C(); // via fn_80230050
     bool fn_8024E060(); // via fn_802300EC

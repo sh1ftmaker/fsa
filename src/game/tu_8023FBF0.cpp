@@ -4,6 +4,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Effect.h"
 #include "game/GameState.h"
 #include "game/PlayerBit.h"
@@ -1706,6 +1707,23 @@ void Player_804A6F38::fn_8024CA20() {
     field_0xd3c = -1;
 }
 
+// Clears field_0x454: with `reset` the trail is reset to the current
+// position (fn_80248604), else fn_8024B2E0 runs first. Then the timers
+// 0xD74 / 0x11F0 = 10 and fn_8024D134.
+bool Player_804A6F38::fn_8024D058(bool reset) {
+    if (reset) {
+        field_0x454 = false;
+        fn_80248604();
+    } else {
+        fn_8024B2E0();
+        field_0x454 = false;
+    }
+    field_0xd74 = 10;
+    field_0x11f0 = 10;
+    fn_8024D134();
+    return true;
+}
+
 bool Player_804A6F38::fn_8024D98C() {
     field_0x455 = 1;
     return true;
@@ -1731,6 +1749,30 @@ bool Player_804A6F38::fn_8024D99C(const JGeometry::TVec3f* pos, bool flag) {
     field_0x450 += (u8)(field_0x452 / 3);
     field_0xca2 = flag;
     fn_8024B2E0();
+    return true;
+}
+
+// Sets the target 0x32C to pos, the frame 0x450 (unless negative) and the
+// bytes 0xCA2-0xCA4; with `check`, fn_8024B2E0 when the player is at
+// least 0.1 away from pos. Frame 0xC3 keeps field_0xcfe.
+// FIXME: 99.9 %. Code identical; the 0.1f literal is @NNN, not
+// lbl_80540074, until the earlier literals of the unit are in pool order.
+bool Player_804A6F38::fn_8024DC00(const JGeometry::TVec3f* pos, s32 frame, u8 a, s8 b, s8 c, bool check) {
+    field_0x32c = *pos;
+    if (frame >= 0) {
+        field_0x450 = frame;
+    }
+    field_0xca2 = a;
+    field_0xca3 = b;
+    field_0xca4 = c;
+    if (check == true) {
+        if (magnitude(mPos - *pos) >= 0.1f) {
+            fn_8024B2E0();
+        }
+    }
+    if (frame != 0xc3) {
+        field_0xcfe = false;
+    }
     return true;
 }
 
