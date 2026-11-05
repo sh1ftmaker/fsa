@@ -412,6 +412,10 @@ public:
     void fn_80265E88();
     void fn_80285E58();
     void fn_80286688();
+    // The manager's other per-player calls (fn_8023F390 / fn_8023F2BC):
+    // update B (tu_8023FBF0, not written yet) and the draw (tu_80264998).
+    void fn_80252FC0();
+    void fn_80264998();
     void fn_80277580(); // called by tu_80285E58
     void fn_8027761C(); // called by tu_80285E58
     void fn_8027774C(); // called by tu_80285E58
@@ -1403,6 +1407,10 @@ s32 fn_802375B0(s32 player);
 // manager, else a scan of the players' byte 0xCAC. fn_80251BFC refuses a state
 // change when it holds while lbl_8053AAF8->field_0x7e is set.
 bool fn_80236890();
+// Owner: tu_8022AD64 (not written yet). The manager update's cross-player
+// passes: fn_80232A0C every frame, fn_80231DE4 only with lbl_8053AAF8->field_0x7f.
+void fn_80232A0C();
+void fn_80231DE4();
 void fn_80230EB8(s32 player, s32 arg);
 // game/tu_8022AD64.cpp (not written yet). Called by act_recovery_heart's update() with
 // (player, 4, 0) once the heart reaches a player; the result is unused.

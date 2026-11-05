@@ -1711,6 +1711,11 @@ void fn_8013AC54(Mtx view);
 // runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
 void fn_8023F728();
 void fn_8023F78C();
+// Owner: game/tu_8022AD64.cpp. The player manager's draw (0x8023F2BC, called
+// by fn_80139CC4 between the two fn_8013B438 calls) and update (0x8023F390,
+// called by GameRootSub04's fn_80139D9C).
+void fn_8023F2BC();
+void fn_8023F390();
 struct cls_8016ED88; // game/cls_8016ED88.h
 extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016D398, not written yet). Steps the four
@@ -1724,9 +1729,6 @@ void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entrie
 // Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
 // at field_0x20 of GameRootSub04_801F856C (fn_80139CC4), a GameRootSub20_801902C0.
 void fn_801902D0(void* self);
-// Owner not known (0x8023F2BC, not written yet). No arguments; called by
-// fn_80139CC4 (game/tu_80139BE8.cpp) between the two fn_8013B438 calls.
-void fn_8023F2BC(void);
 // Owners not known (0x8023F088, 0x8023F728, 0x8023F78C,
 // 0x803B8C90, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.

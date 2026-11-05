@@ -2717,6 +2717,30 @@ bool fn_8023F264(s32 player) {
     return isPlayerActive(player);
 }
 
+// The player in slot `i`, or NULL without a manager (the manager loops below
+// fetch it this way every time they use it).
+static inline Player_804A6F38* playerAt(s32 i) {
+    if (lbl_8053AC90 == NULL) {
+        return NULL;
+    }
+    return lbl_8053AC90->mPlayers[i];
+}
+
+// The players' draw: the slots of players not taking part first, then those
+// taking part, each from 3 down to 0.
+void fn_8023F2BC() {
+    for (s32 i = 3; i >= 0; i--) {
+        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << i))) {
+            playerAt(i)->fn_80264998();
+        }
+    }
+    for (s32 i = 3; i >= 0; i--) {
+        if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+            playerAt(i)->fn_80264998();
+        }
+    }
+}
+
 void fn_8023F6C4() {
     for (s32 i = 0; i < 4; i++) {
         Player_804A6F38* player;
