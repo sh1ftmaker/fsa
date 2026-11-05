@@ -1,11 +1,11 @@
 #include "game/GameAudio.h"
 #include "game/act/act_zora_escort_goal.h"
 
-s32 ZoraEscortGoal_8049E424::fn_80126EF8() const {
+bool ZoraEscortGoal_8049E424::fn_80126EF8() const {
     if (field_0x230 == 1 || field_0x230 == 0xC) {
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 
 void ZoraEscortGoal_8049E424::draw() {

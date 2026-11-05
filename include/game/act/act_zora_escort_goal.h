@@ -19,7 +19,10 @@ public:
 
     // Returns 1 when the state word at 0x230 is 1 or 0xC, else 0. Only reads
     // the word, so it is const.
-    s32 fn_80126EF8() const;
+    bool fn_80126EF8() const;
+    // 0x80126A4C, not written yet (act_zora_escort_goal's state change; tu_80127E20 calls it with
+    // 0x10, 0xA and 5).
+    void fn_80126A4C(s32 arg);
 
     /* 0x230 */ s32 field_0x230; // state word, read by fn_80126EF8; 0 after construction
     /* 0x234 */ s32 field_0x234; // set to 0 by the constructor, not yet known
