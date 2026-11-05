@@ -1631,11 +1631,10 @@ void fn_801902D0(void* self);
 // fn_80139CC4 (game/tu_80139BE8.cpp) between the two fn_8013B438 calls.
 void fn_8023F2BC(void);
 // Owners not known (0x8023F088, 0x8023F728, 0x8023F78C,
-// 0x803B8C90, 0x8043EDF8, 0x80439AB0; not written yet). Called by
+// 0x803B8C90, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 void fn_8023F088(void);
 u8 fn_803B8C90(void);
-void fn_8043EDF8(void* self);
 void fn_80439AB0(void* self);
 }
 // game/tu_8037DF68.cpp (0x8038D870); called by fn_8013A1A4 (game/tu_80139BE8.cpp).
