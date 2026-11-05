@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/PlayerFlags.h"
+#include "game/cls_804A71A8.h"
 
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
@@ -507,6 +508,10 @@ bool Player_804A6F38::fn_80247534() {
     return lbl_8053AD30->fn_8030A308(fn_8030AAF4(field_0x11ec));
 }
 
+bool Player_804A6F38::fn_80247564() {
+    return lbl_8053AD30->fn_8030A3B0(fn_8030AAF4(field_0x11ec));
+}
+
 s32 Player_804A6F38::fn_80247B9C() {
     s32 team = field_0xd60;
     if (team >= 0) {
@@ -564,6 +569,23 @@ void Player_804A6F38::fn_80249070() {
 
 void Player_804A6F38::fn_8024909C() {
     field_0x121f = 1;
+}
+
+bool Player_804A6F38::fn_8024B24C() {
+    cls_804A71A8* sub = field_0xbf0;
+    return sub->field_0x98 || sub->field_0x99;
+}
+
+void Player_804A6F38::fn_8024B274() {
+    field_0xbf0->fn_80269420();
+}
+
+void Player_804A6F38::fn_8024B298(s32 index, JGeometry::TVec3f* out) {
+    field_0xbf0->fn_8026942C(index, out);
+}
+
+void Player_804A6F38::fn_8024B2BC(JGeometry::TVec3f* out) {
+    field_0xbf0->fn_8026947C(out);
 }
 
 void Player_804A6F38::fn_8024BB88() {
@@ -678,6 +700,10 @@ bool Player_804A6F38::fn_8024F5E4() {
     return false;
 }
 
+bool Player_804A6F38::fn_8024F630() {
+    return field_0xbf0->field_0xb4;
+}
+
 bool Player_804A6F38::fn_8024FE78() {
     if (fn_8024F63C()) {
         return fn_80243C64();
@@ -750,6 +776,34 @@ bool Player_804A6F38::fn_80250030(s32 arg) {
 // on without converting it, so a u8 return would break that wrapper.
 bool Player_804A6F38::fn_802517E4() {
     return field_0x1240 == 0x1a;
+}
+
+bool Player_804A6F38::fn_802518AC(bool a) {
+    cls_804A71A8* sub = field_0xbf0;
+    if (sub->field_0x4a == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4c == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4d == 1) {
+        return true;
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_8025190C(bool a) {
+    cls_804A71A8* sub = field_0xbf0;
+    if (sub->field_0x4b == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4e == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4f == 1) {
+        return true;
+    }
+    return false;
 }
 
 void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {

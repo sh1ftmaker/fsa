@@ -618,6 +618,8 @@ public:
     bool fn_8024FFC8(s32 arg);
     bool fn_80250030(s32 arg);
     void fn_80252BAC(const JGeometry::TVec3f* offset);
+    bool fn_802518AC(bool a);
+    bool fn_8025190C(bool a);
     void fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c);
     bool fn_8024F63C();
     bool fn_80243C64();
