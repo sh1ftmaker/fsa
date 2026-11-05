@@ -6,6 +6,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
 #include "game/Player.h"
+#include "game/VecEpsilon.h"
 #include "game/ViewLayer.h"
 #include "game/cls_804A71A8.h"
 #include "game/EmitterDelete.h"
@@ -41,23 +42,6 @@ static const f32 lbl_8046C018[4][4][2] = {
 // The facing of each player (by index) in the four-player formation: on view-flag layers / elsewhere.
 static const s32 lbl_8046C0B8[4] = {2, 1, 0, 3};
 static const s32 lbl_8046C0C8[4] = {3, 1, 0, 2};
-
-// Componentwise TUtil::epsilonEquals of two vectors.
-static inline bool epsilonEqualsXY(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b, f32 eps) {
-    bool equal = false;
-    if (JGeometry::TUtilf::epsilonEquals(a.x, b.x, eps) && JGeometry::TUtilf::epsilonEquals(a.y, b.y, eps)) {
-        equal = true;
-    }
-    return equal;
-}
-
-static inline bool epsilonEquals(const JGeometry::TVec3f& a, const JGeometry::TVec3f& b, f32 eps) {
-    bool equal = false;
-    if (epsilonEqualsXY(a, b, eps) && JGeometry::TUtilf::epsilonEquals(a.z, b.z, eps)) {
-        equal = true;
-    }
-    return equal;
-}
 
 void Player_804A6F38::fn_8027E5BC(f32 speed) {
     // The divides by powers of two compile to the original's multiplies (operand order of fmuls/fmadds).
