@@ -7,6 +7,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "game/PlayerBit.h"
 
 // What the position queries return when there is no such player. The
 // unit's __sinit (0x8023F9B8) stores 0.0f to its three floats before the
@@ -2730,12 +2731,12 @@ static inline Player_804A6F38* playerAt(s32 i) {
 // taking part, each from 3 down to 0.
 void fn_8023F2BC() {
     for (s32 i = 3; i >= 0; i--) {
-        if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << i))) {
+        if (!isPlayerBitSet(lbl_8053AAF8, i)) {
             playerAt(i)->fn_80264998();
         }
     }
     for (s32 i = 3; i >= 0; i--) {
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << i)) {
+        if (isPlayerBitSet(lbl_8053AAF8, i)) {
             playerAt(i)->fn_80264998();
         }
     }
@@ -2781,8 +2782,7 @@ void fn_8023F78C() {
 }
 
 bool GameRoot_8049EF20::fn_8023F98C(s32 player) {
-    u8 bit = 1 << player;
-    return (field_0x82 & bit) != 0;
+    return isPlayerBitSet(this, player);
 }
 
 GameRoot_8049EF20* fn_8023F9B0() {

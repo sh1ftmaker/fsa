@@ -5,6 +5,7 @@
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
 #include "game/GameState.h"
+#include "game/PlayerBit.h"
 #include "game/PlayerFlags.h"
 #include "game/cls_804A71A8.h"
 #include "game/cls_804AE9B0.h"
@@ -1038,14 +1039,14 @@ bool Player_804A6F38::fn_8025190C(bool a) {
 }
 
 // Requests state `state` (field_0x1244) when fn_80251BFC allows it. A player
-// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, the test
-// of GameRoot_8049EF20::fn_8023F98C) with no partner asking for state 0 gets
+// not taking part (bit field_0x4 of lbl_8053AAF8->field_0x82 clear, see
+// game/PlayerBit.h) with no partner asking for state 0 gets
 // state 1 instead; with field_0x434 set, state 0 becomes 2.
 bool Player_804A6F38::fn_80251AEC(s32 state) {
     if (!fn_80251BFC(state)) {
         return false;
     }
-    if (!(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) && field_0xd60 < 0 && state == 0) {
+    if (!isPlayerBitSet(lbl_8053AAF8, field_0x4) && field_0xd60 < 0 && state == 0) {
         field_0x1244 = 1;
     } else if (field_0x434 && state == 0) {
         if (field_0x1240 == 2) {
@@ -1232,7 +1233,7 @@ void Player_804A6F38::fn_80253E6C() {
             field_0xc80 = 1;
             fn_8024F0E8(0x20043);
         }
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+        if (isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
             switch (field_0x4) {
             case 0:
                 joinCue(this, 0xc0, 0xe0);
@@ -1341,7 +1342,9 @@ void Player_804A6F38::fn_80254660() {
 
 // Bit (stage * 4 + sub) of the current save row's field_0x28 for the view's
 // stage (field_0x4) and level (field_0x8): fn_8019CE40's test (tu_80197070),
-// which fn_80254744 inlines twice, so the original had it as a header inline.
+// which fn_80254744 inlines twice (a header inline in the original). Not written
+// as a call of a shared inline: that costs ~1 % (the original keeps the stage in
+// a saved register and tests the result as an int), so the body is repeated here.
 static inline BOOL viewStageFlag() {
     s32 stage = fn_802D6A9C()->field_0x4;
     s32 sub = fn_802D6A9C()->field_0x8;
@@ -1354,10 +1357,13 @@ static inline BOOL viewStageFlag() {
     return ((1 << (stage * 4 + sub)) & lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28) != 0;
 }
 
-// FIXME: 99.30. Besides the unit's float literals (@NNN vs lbl_, not yet in
-// pool order), only the setup of the first 0x31-entry loop differs: the
-// original makes the index 0 first and copies it for the byte 0 (li r5,0 /
-// mr r3,r5), ours loads li r6,0 / li r3,0 after li r4,1 (register order).
+// FIXME: 98.85. Besides the unit's float literals (@NNN vs lbl_, not yet in
+// pool order), only scheduling and register numbers differ: at two of the
+// seven isPlayerBitSet sites (the 2-player and the else branch) the original
+// loads field_0x4 before lbl_8053AAF8 (the registers after them shift by one),
+// and the first 0x31-entry loop's setup makes the index 0 first and copies it
+// for the byte 0 (li r5,0 / mr r3,r5), ours loads li r6,0 / li r3,0 after
+// li r4,1.
 // The per-slot reset, run for every slot on scene enter and stage change
 // (fn_8023F78C). Picks the slot's part (field_0xcac, the partner field_0xd60,
 // the pad owner field_0x11ec and the start state 0 or 1) from the game mode,
@@ -1367,7 +1373,7 @@ void Player_804A6F38::fn_80254744() {
         field_0xd00 = 0;
         field_0xcfe = false;
     }
-    if (!lbl_8053AAF8->field_0x7f && !(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+    if (!lbl_8053AAF8->field_0x7f && !isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
         mActive = false;
         field_0xd60 = -1;
         field_0x11ec = -1;
@@ -1375,7 +1381,7 @@ void Player_804A6F38::fn_80254744() {
         field_0x1240 = 1;
         field_0x1248 = 1;
     } else if (lbl_8053AAF8->field_0x7f && fn_802DE814() &&
-               !(lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4))) {
+               !isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
         mActive = false;
         field_0xd60 = -1;
         field_0x11ec = -1;
@@ -1395,7 +1401,7 @@ void Player_804A6F38::fn_80254744() {
         field_0x1248 = 0;
     } else if (lbl_8053AAF8->fn_80138A30() == 2) {
         mActive = true;
-        if ((u8)(1 << field_0x4) & lbl_8053AAF8->field_0x82) {
+        if (isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
             field_0xd60 = -1;
             field_0x11ec = field_0x4;
         } else {
@@ -1407,7 +1413,7 @@ void Player_804A6F38::fn_80254744() {
         field_0x1248 = 0;
     } else if (lbl_8053AAF8->fn_80138A30() == 3) {
         mActive = true;
-        if (lbl_8053AAF8->field_0x82 & (u8)(1 << field_0x4)) {
+        if (isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
             field_0xd60 = -1;
             field_0x11ec = field_0x4;
         } else {
@@ -1425,7 +1431,7 @@ void Player_804A6F38::fn_80254744() {
     } else {
         mActive = true;
         field_0xd60 = -1;
-        if ((u8)(1 << field_0x4) & lbl_8053AAF8->field_0x82) {
+        if (isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
             field_0x11ec = field_0x4;
             field_0x1244 = 0;
             field_0x1240 = 0;
@@ -1829,7 +1835,8 @@ void Player_804A6F38::fn_80254744() {
         }
     }
     for (int i = 0; i < 0x31; i++) {
-        // An unused copy: the original stores mPos on the stack each pass.
+        // An unused copy: the original stores mPos on the stack each pass (without
+        // it we are 4 instructions short).
         JGeometry::TVec3f pos = mPos;
         if (field_0xd04) {
             field_0x38[i].set(mPos.x, mPos.y + 16.0f * i / 12.0f, 0.0f);
@@ -1862,7 +1869,7 @@ void Player_804A6F38::fn_80254744() {
             field_0xca2 = 0xff;
             field_0xca3 = -0x80;
             field_0xca4 = -0x80;
-            // Both operands load mPos (0x8) in the original.
+            // Both operands load mPos (0x8) in the original (mPos - field_0x32c reloads 0x32c: 98.0 %).
             const JGeometry::TVec3f& diff = mPos - mPos;
             if (PSVECMag(&diff) >= 0.1f) {
                 fn_8024B2E0();
@@ -1876,6 +1883,7 @@ void Player_804A6F38::fn_80254744() {
         field_0xca2 = 0xff;
         field_0xca3 = -0x80;
         field_0xca4 = -0x80;
+        // As above: both operands load mPos (mPos - field_0x32c reloads 0x32c).
         const JGeometry::TVec3f& diff = mPos - mPos;
         if (PSVECMag(&diff) >= 0.1f) {
             fn_8024B2E0();

@@ -4,6 +4,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
+#include "game/PlayerBit.h"
 #include "game/act/act_phantom_ganon_2.h"
 
 // .sbss 0x8053AB78 (a mode word; the unwritten update and init also use it).
@@ -101,11 +102,10 @@ JPAEmitterManager* fn_8018A5F0() {
     return fn_8013C824()->mEmitterManager;
 }
 
-// Whether bit `player` of the game root's field_0x82 is set (an inline copy of
-// GameRoot_8049EF20::fn_8023F98C that loads lbl_8053AAF8 itself).
+// Whether bit `player` of the game root's field_0x82 is set (game/PlayerBit.h,
+// on lbl_8053AAF8 itself).
 bool fn_8018A614(s32 player) {
-    u8 bit = 1 << player;
-    return (lbl_8053AAF8->field_0x82 & bit) != 0;
+    return isPlayerBitSet(lbl_8053AAF8, player);
 }
 
 void fn_8018A63C() {
