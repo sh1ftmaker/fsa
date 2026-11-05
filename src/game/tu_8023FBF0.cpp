@@ -97,6 +97,32 @@ static inline bool follows_80240670(const Player_804A6F38* player) {
     return player->field_0xd60 >= 0;
 }
 
+// Resets the position trail (field_0x38, 0x31 entries) and its airborne
+// flags (field_0x284) to the current position, unless the player is walking
+// to its spot (field_0x1216); while field_0x454 is set fn_8024B2E0 does it.
+// fn_80248604's body: fn_80248004 (before it) and fn_80254744 inline it with
+// the index zero shared with the false store (li / mr), which the direct
+// body of fn_8024BAEC (same code, 100 %) does not have.
+static inline void resetTrail(Player_804A6F38* player) {
+    if (player->field_0x1216) {
+        return;
+    }
+    if (player->field_0x454) {
+        player->fn_8024B2E0();
+        return;
+    }
+    for (s32 i = 0; i < 0x31; i++) {
+        player->field_0x38[i].x = player->mPos.x;
+        player->field_0x38[i].y = player->mPos.y;
+        player->field_0x38[i].z = player->mPos.z;
+        if (player->mPos.z > 0.0f) {
+            player->field_0x284[i] = true;
+        } else {
+            player->field_0x284[i] = false;
+        }
+    }
+}
+
 // Whether the player is in, or about to enter, state 0x1B (the current or
 // the requested state); a materialised bool where it is inlined (li 0 / li 1).
 static inline bool inState1B(const Player_804A6F38* player) {
@@ -280,6 +306,26 @@ s32 Player_804A6F38::fn_80240888() const {
 
 bool Player_804A6F38::fn_802408C0() {
     return field_0x1217;
+}
+
+// Starts the walk to the spots (mode 5) when pos is inside this leader's view
+// box on `layer` (fn_8030B110, the call fn_80241E28 makes): the trail is reset
+// to pos on the ground.
+// FIXME: 96.0 %. Two extra instructions: ours tests the trail loop's
+// entry (cmpwi r5, 0x31; bge) before the unrolled ctr loop, the original
+// does not (tried a reference to the entry, set(x, y, z), early returns).
+void Player_804A6F38::fn_802408C8(s32 layer, const JGeometry::TVec3f* pos) {
+    if (field_0xd60 < 0 && field_0xbec->fn_8030B110(layer, *pos) && !fn_80270A8C() && !field_0xce8) {
+        fn_80248004(5, false);
+        if (groupMode(this) == 5) {
+            for (s32 i = 0; i < 0x31; i++) {
+                field_0x38[i].set(*pos);
+                field_0x38[i].z = 0.0f;
+                field_0x284[i] = false;
+            }
+            field_0x1216 = true;
+        }
+    }
 }
 
 bool Player_804A6F38::fn_80240AD4() {
@@ -591,6 +637,17 @@ s32 Player_804A6F38::fn_80241920() {
     }
     s32 value = field_0xc04;
     return value >= 0 ? value : 0;
+}
+
+bool Player_804A6F38::fn_80241DD0(s32 layer, const JGeometry::TVec3f* pos) {
+    if (layer < 8) {
+        return lbl_8053AB10->field_0x24->fn_8030C2A8(pos);
+    }
+    return field_0xbec->fn_8030B084(layer, *pos);
+}
+
+bool Player_804A6F38::fn_80241E28(s32 layer, const JGeometry::TVec3f* pos) {
+    return field_0xbec->fn_8030B110(layer, *pos);
 }
 
 bool Player_804A6F38::fn_802426E0(s32 serial) {
@@ -997,26 +1054,128 @@ void Player_804A6F38::fn_80247F58() {
     }
 }
 
-// FIXME: 88.2. Loop body identical; the original keeps the index zero in r6 (set before li r0, 0x31) and
-// copies it to r4 as the false stored to field_0x284, where ours uses separate li r7 / li r4.
-void Player_804A6F38::fn_80248604() {
-    if (field_0x1216) {
+// Sets the group's mode (0-3 the directions, 4 turn-based, 5 walk to the
+// spots) for a group of two or more. A layer with viewLayerFlag forces 5
+// (except 4); with 2 or 3 players taking part direction 2 becomes 1 and 3
+// becomes 0. Leaving turn-based mode for this player's turn moves it to the
+// acting player's position and trail. Then the reachable players' actors are
+// reset (fn_8023105C / fn_802310F8), the old mode kept in field_0x1210 and,
+// for a leader, the cue played (fn_8024F0E8 / fn_80230FD0) when `cue`.
+// FIXME: 99.6 %. Registers only: the group loop's count / index / leader
+// (r27 / r28 / r26 in the original) and the 0xCBC / 0xD1C addresses (r5 / r4).
+void Player_804A6F38::fn_80248004(s32 mode, bool cue) {
+    if (groupSize(this) <= 1) {
         return;
     }
-    if (field_0x454) {
-        fn_8024B2E0();
+    if (field_0x1216 == true) {
         return;
     }
-    for (s32 i = 0; i < 0x31; i++) {
-        field_0x38[i].x = mPos.x;
-        field_0x38[i].y = mPos.y;
-        field_0x38[i].z = mPos.z;
-        if (mPos.z > 0.0f) {
-            field_0x284[i] = true;
-        } else {
-            field_0x284[i] = false;
+    if (field_0xcfe == true) {
+        return;
+    }
+    if (lbl_8053AAF8->field_0x7e && field_0xcfe == true) {
+        return;
+    }
+    if (viewLayerFlag(getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4))) && mode != 4) {
+        mode = 5;
+    }
+    if (lbl_8053AAF8->fn_80138A30() == 2 || lbl_8053AAF8->fn_80138A30() == 3) {
+        if (mode == 2) {
+            mode = 1;
+        } else if (mode == 3) {
+            mode = 0;
         }
     }
+    if (cue == true && fn_8025F448() && !(field_0x120c == 4 && mode == 5)) {
+        return;
+    }
+    if (!field_0x1214 && field_0x120c == mode) {
+        return;
+    }
+    if (isPlayerBitSet(lbl_8053AAF8, field_0x4) && mode != 4 && field_0x120c == 4 && groupTurn(this) != 0) {
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(fn_8022EA0C(field_0x4));
+        s32 layer = getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4));
+        if (!field_0xbec->fn_8030B110(layer, *pos)) {
+            s32 oldLayer = field_0x3b4;
+            field_0x3b4 = getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4));
+            field_0xce0 = oldLayer;
+            field_0xce4 = field_0x3b4;
+            if (field_0x3b4 >= 8 && oldLayer < 8) {
+                field_0xcb0.set(*fn_8023E32C(fn_8022EA0C(field_0x4)));
+            }
+            mPos.set(*getPlayerPos_8023E724(fn_8022EA0C(field_0x4)));
+            field_0x2c.set(mPos);
+            field_0xcbc = mPos;
+            field_0xd1c = field_0xcbc;
+        }
+        for (s32 i = 0; i < 0x31; i++) {
+            field_0x38[i].set(*fn_8023E4E4(fn_8022EA0C(field_0x4), 0));
+            field_0x284[i] = fn_8023E45C(fn_8022EA0C(field_0x4), 0);
+        }
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
+            field_0x1216 = true;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(field_0x4, i) && fn_8023ED8C(i) &&
+            (fn_8022F478(i) || (field_0x120c == 4 && mode != 4))) {
+            fn_8023105C(fn_8023ECF0(i));
+            fn_802310F8(i);
+        }
+    }
+    field_0x1210 = field_0x120c;
+    field_0x120c = mode;
+    field_0x1224 = 0;
+    if (field_0x120c != 4) {
+        fn_802382D0(field_0x4, 0);
+    }
+    if (isPlayerBitSet(lbl_8053AAF8, field_0x4) && cue == true) {
+        field_0x121d = 1;
+    }
+    if (field_0xd60 >= 0) {
+        return;
+    }
+    if (mode == 4) {
+        if (cue == true) {
+            fn_8024F0E8(0x10010);
+        }
+        field_0x123c = 1;
+        return;
+    }
+    resetTrail(this);
+    if (field_0x1210 == 4) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8022E438(field_0x4, i)) {
+                if (cue == true) {
+                    fn_80230FD0(i, 0x10011);
+                }
+                if (fn_8022F514(i)) {
+                    fn_80238244(i);
+                }
+            }
+        }
+        return;
+    }
+    if (cue == true) {
+        if (mode != 5) {
+            fn_8024F0E8(0x20037);
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (mode == 0) {
+                fn_80230FD0(i, 0x10018);
+            } else if (mode == 1) {
+                fn_80230FD0(i, 0x10019);
+            } else if (mode == 2) {
+                fn_80230FD0(i, 0x10017);
+            } else if (mode == 3) {
+                fn_80230FD0(i, 0x1001A);
+            }
+        }
+    }
+}
+
+void Player_804A6F38::fn_80248604() {
+    resetTrail(this);
 }
 
 // FIXME: 97.7 %. Register allocation only: the original gives the count r29,
@@ -2549,20 +2708,7 @@ void Player_804A6F38::fn_80254744() {
     } else {
         field_0x121e = 0;
     }
-    if (!field_0x1216) {
-        if (field_0x454) {
-            fn_8024B2E0();
-        } else {
-            for (int i = 0; i < 0x31; i++) {
-                field_0x38[i].set(mPos);
-                if (mPos.z > 0.0f) {
-                    field_0x284[i] = 1;
-                } else {
-                    field_0x284[i] = 0;
-                }
-            }
-        }
-    }
+    fn_80248604();
     for (int i = 0; i < 0x31; i++) {
         // An unused copy: the original stores mPos on the stack each pass (without
         // it we are 4 instructions short).

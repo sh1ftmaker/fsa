@@ -48,33 +48,33 @@ bool cls_804AA8D8::fn_8030AF10(s32 index, const JGeometry::TBox2f* box, bool ove
     return true;
 }
 
-bool cls_804AA8D8::fn_8030B084(s32 index, const JGeometry::TVec2f* pos) {
+bool cls_804AA8D8::fn_8030B084(s32 index, JGeometry::TVec3f pos) {
     if (index < 8 || index != field_0x28c) {
         return false;
     }
-    s32 x = (s32)pos->x;
+    s32 x = (s32)pos.x;
     if (x < field_0x290 || x > field_0x290 + 0xF0) {
         return false;
     }
-    s32 y = (s32)pos->y;
+    s32 y = (s32)pos.y;
     if (y < field_0x294 || y > field_0x294 + 0xA0) {
         return false;
     }
     return true;
 }
 
-bool cls_804AA8D8::fn_8030B110(s32 index, const JGeometry::TVec2f* pos) {
+bool cls_804AA8D8::fn_8030B110(s32 index, JGeometry::TVec3f pos) {
     if (!fn_8023F264(field_0x288) || index != field_0x28c) {
         return false;
     }
     if (index < 8) {
         return true;
     }
-    s32 x = (s32)pos->x;
+    s32 x = (s32)pos.x;
     if (x < field_0x2a4 || x > field_0x2a0) {
         return false;
     }
-    s32 y = (s32)pos->y;
+    s32 y = (s32)pos.y;
     if (y < field_0x2ac || y > field_0x2a8) {
         return false;
     }

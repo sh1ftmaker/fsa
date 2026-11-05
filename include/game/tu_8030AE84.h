@@ -27,15 +27,16 @@ public:
     void fn_8030AE84(JGeometry::TBox2f* out);
     // Code in this unit, not yet written (mangled fn_8030B97C__12cls_804AA8D8Fv).
     void fn_8030B97C();
-    // Mangled fn_8030B084__12cls_804AA8D8FlPCQ29JGeometry8TVec2<f> (this unit).
-    // Called from game/tu_8023FBF0.cpp with the position copied to the stack
-    // as an 8-byte x/y pair, so it takes a TVec2f pointer.
-    bool fn_8030B084(s32 index, const JGeometry::TVec2f* pos);
-    // Mangled fn_8030B110__12cls_804AA8D8FlPCQ29JGeometry8TVec2<f> (this
+    // Mangled fn_8030B084__12cls_804AA8D8FlQ29JGeometry8TVec3<f> (this unit).
+    // The position is passed by value: every caller (tu_8023FBF0) copies a
+    // whole TVec3f (psq x/y + z) to its stack and passes its address; only
+    // x and y are read.
+    bool fn_8030B084(s32 index, JGeometry::TVec3f pos);
+    // Mangled fn_8030B110__12cls_804AA8D8FlQ29JGeometry8TVec3<f> (this
     // unit). The positive form of fn_8030B084: the player must be active and
     // index must be the one at 0x28C; indices below 8 pass outright, others
-    // must lie inside the bounds at 0x2A0-0x2AC.
-    bool fn_8030B110(s32 index, const JGeometry::TVec2f* pos);
+    // must lie inside the bounds at 0x2A0-0x2AC. Position by value as above.
+    bool fn_8030B110(s32 index, JGeometry::TVec3f pos);
     // Mangled fn_8030AF10__12cls_804AA8D8FlPCQ29JGeometry8TBox2<f>b (this
     // unit). Tests the box against the bounds at 0x290/0x294 (240x160):
     // with overlap set, any part of the box inside them passes; otherwise
