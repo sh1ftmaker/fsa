@@ -259,6 +259,8 @@ void GameRootSub24_8016A3AC::fn_8016D33C() {
 
 // FIXME: 75.2 %. The original calls fn_8016ADE0 and fn_8016AD84 (bl); here MWCC inlines
 // fn_8016AD84 (defined earlier in the unit), so the call is a copy of its body.
+// Defining fn_8016AD84 after this function gives 100 %, but breaks address
+// order, so the original's call likely survives for a reason not yet known.
 void GameRootSub24_8016A3AC::fn_8016DA6C() {
     if (isGameModeSet()) {
         fn_8016ADE0();
