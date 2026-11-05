@@ -1,1 +1,381 @@
 #include "game/GameAudio.h"
+#include "game/Effect.h"
+#include "game/GameMath.h"
+#include "JSystem/JParticle/JPAEmitter.h"
+#include "game/GameGlobals.h"
+#include "game/GameView.h"
+#include "game/Map.h"
+#include "game/Player.h"
+#include "game/PlayerBit.h"
+#include "game/DrawShadow.h"
+#include "game/SpriteParams.h"
+#include "game/ViewLayer.h"
+
+// Draws frame `frame` of the "SOB " sprite sheet `name` at pos.
+static inline void drawSob(const char* name, const JGeometry::TVec3f& pos, s32 frame,
+                           SpriteParams_801F5AE0* params) {
+    void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', name);
+    lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
+}
+
+// drawSob on the TV layers (below 8); the GBA layers draw through
+// fn_803075AC instead. The draw tests the layer again after loading the
+// frame (a second bge on the same compare), so the test is part of a helper.
+static inline void drawSobOnTv(s32 layer, const char* name, const JGeometry::TVec3f& pos, s32 frame,
+                               SpriteParams_801F5AE0* params) {
+    if (layer < 8) {
+        drawSob(name, pos, frame, params);
+    }
+}
+
+static inline void setScaleMtx(Mtx m, f32 x, f32 y, f32 z) {
+    m[0][0] = x;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = y;
+    m[1][2] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = z;
+}
+
+static inline void drawGba(s32 serial, s32 layer, const JGeometry::TVec3f& pos, s32 frame) {
+    fn_803075AC(serial, layer, &pos, frame, 0, 1, -1, false, 0, 0);
+}
+
+// The player's draw (fn_8023F2BC, every player each frame): the shadow, the
+// GBA-layer marker above the player, the body sprite (frame field_0x3c4 of
+// "player_sob.bin") with its tint and scale, the height shadow on the GBA
+// layers, and the floor overlays (frames field_0x3c8 / field_0x3ca of
+// "enemy_both2_sob.bin").
+void Player_804A6F38::fn_80264998() {
+    if (!mActive) {
+        return;
+    }
+    if (field_0xcee == 1) {
+        return;
+    }
+    if (field_0x1215 && !isPlayerBitSet(lbl_8053AAF8, field_0x4)) {
+        return;
+    }
+    u8 alpha = fn_8023FC5C();
+    s32 index = fn_80240868();
+    if (field_0x3c4 >= 0x3D5) {
+        field_0x3c4 = 0x3D4;
+    }
+    if (field_0xb90 > 0.0f) {
+        drawShadow(field_0x3b4, &field_0x338, JUtility::TColor(0, 0, 0, 0xFF), field_0xb90);
+    }
+    if (field_0x3b4 > 8 && fn_80246B10(0x40)) {
+        SpriteParams_801F5AE0 markParams;
+        markParams.field_0x1c = 1;
+        markParams.field_0x2d = 1;
+        s32 counter = lbl_8053AAF8->field_0x5c;
+        void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+        lbl_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
+                                              &markParams, 1.0f, 1.0f);
+    }
+    SpriteParams_801F5AE0 shadowParams;
+    if (!(fn_80240808() && fn_80240DAC()) && fn_802413F0()) {
+        shadowParams.field_0x1d = -2;
+        JGeometry::TVec3f pos;
+        if (fn_80240DAC()) {
+            pos.set(mPos.x, field_0x324.y - 0.01f, -5.0f);
+            shadowParams.field_0x1d += 2;
+        } else {
+            pos.set(mPos.x, mPos.y - 0.01f, -5.0f);
+        }
+        if (field_0x3b4 == 8) {
+            GameView_804A9950* view = fn_802D6A9C();
+            pos += JGeometry::TVec3f(view->mVisibleBox.i.x, view->mVisibleBox.i.y, 0.0f);
+            pos += JGeometry::TVec3f(0.0f, -mPos.z, 0.0f);
+        }
+        if (field_0xca1 < 0xFF) {
+            shadowParams.field_0x2c = 0;
+        }
+        if (alpha < field_0xca1) {
+            shadowParams.field_0x10.mColor.a = alpha;
+        } else {
+            shadowParams.field_0x10.mColor.a = field_0xca1;
+        }
+        if (shadowParams.field_0x10.mColor.a >= 0x9F) {
+            shadowParams.field_0x10.mColor.a = 0x9F;
+        }
+        if (mPos.z > 0.0f) {
+            f32 a = shadowParams.field_0x10.mColor.a - 0.5f * mPos.z;
+            shadowParams.field_0x10.mColor.a = 79.0f >= a ? 79.0f : a;
+        }
+        Mtx scale;
+        if (field_0x3b4 == 8) {
+            PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
+        } else {
+            PSMTXScale(scale, 0.9f, 0.5f, 0.5f);
+        }
+        shadowParams.field_0x10.mColor.r = 0;
+        shadowParams.mMtx = scale;
+        shadowParams.field_0x10.mColor.g = 0;
+        shadowParams.field_0x10.mColor.b = 0;
+        shadowParams.field_0x14.mColor.r = 0x28;
+        shadowParams.field_0x14.mColor.g = 0x28;
+        shadowParams.field_0x14.mColor.b = 0x28;
+        if (field_0x43f != true) {
+            if (field_0x3b4 == 8) {
+                drawSob("player_sob.bin", pos + field_0x2b8, field_0x3c4, &shadowParams);
+            } else {
+                drawSobOnTv(field_0x3b4, "player_sob.bin", pos + field_0x2b8, field_0x3c4, &shadowParams);
+            }
+        }
+        if (mPos.z > 0.0f) {
+            s32 layer = field_0x3b4;
+            if (layer >= 8 && !viewLayerFlag(layer)) {
+                JGeometry::TVec3f groundPos;
+                if (fn_80240DAC()) {
+                    groundPos.set(mPos.x, field_0x324.y - 0.01f, 0.0f);
+                } else {
+                    groundPos.set(mPos.x, mPos.y - 0.01f, 0.0f);
+                }
+                drawGba(-40000 - field_0x4, field_0x3b4, groundPos + field_0x2b8, 0x3CD);
+            }
+        }
+    }
+    SpriteParams_801F5AE0 bodyParams;
+    if (fn_80241544() >= 2) {
+        bodyParams.field_0x0[10] = 6;
+    }
+    bodyParams.field_0x0[7] = index + 0xC;
+    bodyParams.field_0x2d = 1;
+    if (alpha < 0xFF) {
+        shadowParams.field_0x2c = 0;
+    }
+    if (field_0x11e9) {
+        bodyParams.field_0x30 = index + 4;
+    }
+    bodyParams.field_0x10.mColor.a = alpha;
+    Mtx bodyScale;
+    bodyScale[0][3] = 0.0f;
+    bodyScale[1][3] = 0.0f;
+    bodyScale[2][3] = 0.0f;
+    setScaleMtx(bodyScale, field_0xc84.x * field_0xc90.x, field_0xc84.y * field_0xc90.y,
+                field_0xc84.z * field_0xc90.z);
+    bodyParams.mMtx = bodyScale;
+    bodyParams.field_0x20 = 0;
+    if (fn_8025F418() && !fn_802413E8()) {
+        bodyParams.field_0x1d = fn_8023CB24(field_0xd70) + 1;
+        bodyParams.field_0x1c = fn_8023CA88(field_0xd70);
+    } else if (mPos.z >= 20.0f) {
+        bodyParams.field_0x1d++;
+        bodyParams.field_0x1c++;
+    } else if (mPos.z > 0.0f) {
+        bodyParams.field_0x1d++;
+    } else if (fn_80240818()) {
+        bodyParams.field_0x1d++;
+    }
+    if (fn_802413E8()) {
+        if (field_0xca3 != -0x80) {
+            bodyParams.field_0x1c = field_0xca3;
+        }
+        if (field_0xca4 != -0x80) {
+            bodyParams.field_0x1d = field_0xca4;
+        }
+    }
+    if (field_0x43f == true || field_0x441 == true) {
+        bodyParams.field_0x1f = 0;
+    }
+    if (field_0xca8 > 0) {
+        field_0xca8--;
+        switch (index) {
+        case 0:
+            bodyParams.field_0x10.mColor.r = 0;
+            bodyParams.field_0x10.mColor.g = 0xFF;
+            bodyParams.field_0x10.mColor.b = 0;
+            break;
+        case 1:
+            bodyParams.field_0x10.mColor.r = 0xFF;
+            bodyParams.field_0x10.mColor.g = 0;
+            bodyParams.field_0x10.mColor.b = 0;
+            break;
+        case 2:
+            bodyParams.field_0x10.mColor.r = 0;
+            bodyParams.field_0x10.mColor.g = 0xFF;
+            bodyParams.field_0x10.mColor.b = 0xFF;
+            break;
+        case 3:
+            bodyParams.field_0x10.mColor.r = 0xFF;
+            bodyParams.field_0x10.mColor.g = 0;
+            bodyParams.field_0x10.mColor.b = 0xFF;
+            break;
+        }
+    } else if (field_0x400 && !fn_802413E8()) {
+        s32 level = 0xFF - field_0x400 * 32;
+        if (level < 0) {
+            level = 0;
+        }
+        bodyParams.field_0x10.mColor.r = level;
+        bodyParams.field_0x10.mColor.g = level;
+        bodyParams.field_0x10.mColor.b = level;
+    } else if (!lbl_8053AAF8->field_0x7f && field_0x1208 < 0x40) {
+        bodyParams.field_0x10.mColor.r = field_0x1208 * 4;
+        bodyParams.field_0x10.mColor.g = field_0x1208 * 4;
+        bodyParams.field_0x10.mColor.b = field_0x1208 * 4;
+    }
+    field_0x3d8 = bodyParams.field_0x1c;
+    field_0x3d9 = bodyParams.field_0x1d;
+    if (!fn_802413F0()) {
+        return;
+    }
+    if (alpha < 0x20) {
+        return;
+    }
+    if (fn_80240808() && fn_802486A0() != 4 && !fn_8023188C(fn_80240644())) {
+        return;
+    }
+    u16 frame = field_0x3c4;
+    if (frame == 0x121) {
+        return;
+    }
+    const JGeometry::TVec3f& bodyPos = mPos + field_0x2b8;
+    JGeometry::TVec3f drawPos(bodyPos.x, bodyPos.y, bodyPos.z);
+    drawPos.set((s32)drawPos.x, (s32)drawPos.y, (s32)drawPos.z);
+    if (field_0x3b4 < 8) {
+        drawSobOnTv(field_0x3b4, "player_sob.bin", drawPos, frame, &bodyParams);
+    }
+    SpriteParams_801F5AE0 floorParams;
+    if (field_0x458 == 1 && field_0x3dc == 2) {
+        floorParams.field_0x10.mColor.a = 0x80;
+    }
+    u16 tile = fn_8022461C(&mPos, field_0x3b4);
+    JGeometry::TVec3f floorPos(mPos);
+    floorPos.y += 1.0f;
+    if (mPos.z <= 0.0f && fn_8022517C(&mPos, field_0x3b4)) {
+        s32 layer = field_0x3b4;
+        if (layer < 8) {
+            drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3c8, &floorParams);
+        } else {
+            fn_803075AC(-10000 - field_0x4, layer, &floorPos, field_0x3c8, 0, 1, -1, false, 0, 0);
+        }
+    } else if (mPos.z <= 0.0f && fn_80270A8C() && (tile == 0x39 || tile == 0xD || tile == 0x3B)) {
+        if (field_0x3c4 >= 0xC2 && field_0x3c4 < 0xC5) {
+            s32 layer = field_0x3b4;
+            if (layer < 8) {
+                drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca + 3, &floorParams);
+            } else {
+                fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca + 3, 0, 1, -1, false, 0, 0);
+            }
+        } else {
+            s32 layer = field_0x3b4;
+            if (layer < 8) {
+                drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca, &floorParams);
+            } else {
+                fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca, 0, 1, -1, false, 0, 0);
+            }
+        }
+    } else if (mPos.z <= 0.0f) {
+        if (fn_802412A4() && !fn_80241200()) {
+            return;
+        }
+        if (fn_8024BBB0()) {
+            return;
+        }
+        if (tile != 0x39 && !fn_80225BE4(&mPos, field_0x3b4)) {
+            return;
+        }
+        s32 layer = field_0x3b4;
+        if (layer < 8) {
+            drawSobOnTv(layer, "enemy_both2_sob.bin", floorPos, field_0x3ca, &floorParams);
+        } else {
+            fn_803075AC(-20000 - field_0x4, layer, &floorPos, field_0x3ca, 0, 1, -1, false, 0, 0);
+        }
+    }
+}
+
+// The idle animation counters: field_0x3d0 (0-15, held at 0 after 8 still
+// frames, field_0x3cc) picks the floor frame field_0x3c8 and field_0x3d4
+// (0-11) the frame field_0x3ca. While the player moves or changes frame on a
+// tile 0x39 at floor level, effect 0x4D2 follows the player (field_0x1384).
+void Player_804A6F38::fn_80265AE4() {
+    if (field_0x3c4 != field_0x3c6 || magnitude(mPos - field_0x14) > 0.5f) {
+        field_0x3d0++;
+        if (field_0x3d0 >= 0x10) {
+            field_0x3d0 = 0;
+        }
+        field_0x3cc = 8;
+    } else if (field_0x3cc > 0) {
+        field_0x3cc--;
+    } else {
+        field_0x3d0 = 0;
+    }
+    if (field_0x3d0 < 4) {
+        field_0x3c8 = 0x195;
+    } else if (field_0x3d0 < 8) {
+        field_0x3c8 = 0x196;
+    } else if (field_0x3d0 < 0xC) {
+        field_0x3c8 = 0x197;
+    } else {
+        field_0x3c8 = 0x196;
+    }
+    field_0x3d4++;
+    if (field_0x3d4 >= 0xC) {
+        field_0x3d4 = 0;
+    }
+    if (field_0x3d4 < 3) {
+        field_0x3ca = 0x18F;
+    } else if (field_0x3d4 < 6) {
+        field_0x3ca = 0x190;
+    } else if (field_0x3d4 < 9) {
+        field_0x3ca = 0x191;
+    } else {
+        field_0x3ca = 0x190;
+    }
+    if (mPos.z <= 0.0f && fn_8022461C(&mPos, field_0x3b4) == 0x39 &&
+        (field_0x3c4 != field_0x3c6 || magnitude(mPos - field_0x14) > 0.5f))
+    {
+        if (field_0x1384 == NULL) {
+            field_0x1384 = fn_8013CC50(field_0x3b4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
+        } else {
+            fn_8013CB44(field_0x1384, &mPos, 0, 0, true);
+        }
+    } else if (field_0x1384 != NULL) {
+        field_0x1384->becomeInvalidEmitter();
+        field_0x1384 = NULL;
+    }
+}
+
+// Fades the body sprite out (field_0xca0, the alpha fn_802413F0 tests), 8 a frame.
+void Player_804A6F38::fn_80265D68() {
+    if (field_0xca0 >= 8) {
+        field_0xca0 -= 8;
+    } else {
+        field_0xca0 = 0;
+    }
+}
+
+// Fades it back in, 8 a frame, up to 0xFF.
+void Player_804A6F38::fn_80265D8C() {
+    if (field_0xca0 <= 0xF7) {
+        field_0xca0 += 8;
+    } else {
+        field_0xca0 = 0xFF;
+    }
+}
+
+// The shadow's alpha field_0xca1: none on the frames 0x122 and 0xB7-0xBC and
+// above the GBA layer 8, full on layer 8; otherwise it fades out while
+// fn_8025F448 holds and the actor field_0xd70 is not on layer 8, else in.
+void Player_804A6F38::fn_80265DB0() {
+    if (field_0x3c4 == 0x122 || (field_0x3c4 >= 0xB7 && field_0x3c4 < 0xBD) || field_0x3b4 > 8) {
+        field_0xca1 = 0;
+    } else if (field_0x3b4 == 8) {
+        field_0xca1 = 0xFF;
+    } else if (fn_8025F448() && (field_0xd70 < 0 || fn_8023DE58(field_0xd70) != 8)) {
+        if (field_0xca1 >= 8) {
+            field_0xca1 -= 8;
+        } else {
+            field_0xca1 = 0;
+        }
+    } else if (field_0xca1 <= 0xF7) {
+        field_0xca1 += 8;
+    } else {
+        field_0xca1 = 0xFF;
+    }
+}
