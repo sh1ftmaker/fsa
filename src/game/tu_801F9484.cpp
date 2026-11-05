@@ -1443,7 +1443,6 @@ s32 ActorManager_804A5800::fn_801F9484(u32 id, s32 arg_0x4, const JGeometry::TVe
         }
         mSounds[i]->setField_0x31();
         mSounds[i]->fn_80457840(mActors[i]->getPos());
-        ActorBase_804A5770* actor = mActors[i];
         mActors[i]->setSerial(mSpawnCount);
         mActors[i]->setSlot(i);
         mActors[i]->setPos(*pos);
