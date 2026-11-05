@@ -10,6 +10,8 @@
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JUtility/JUTTexture.h"
+#include "JSystem/JUtility/JUTVideo.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 
 // The ten file names fn_8013DDEC indexes (five claw textures with their dummy
 // generators, 0x8049F118 in .data).
@@ -130,6 +132,22 @@ u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
     return result;
 }
 
+// Fills `info` for drawing particles in screen space: the J2DOrthoGraph's
+// position matrix and a light-ortho projection over the frame buffer. The
+// linker dead-stripped this copy; fn_8013D5D4, fn_8013D6E4 and fn_8013DB2C
+// inline it (right after gGameRoot2_8053AB10->fn_8013B490()), and its 0.5f
+// is the pool literal before the int-to-float double (0.0, 1.0, pi, -1.0,
+// 0.5, double, ...), ahead of setEmitterPos_8013CB44. All three callers also
+// default-construct a second JPADrawInfo here that nothing reads (two
+// PSMTXIdentity calls on its own stack slot); it is the `unused` below.
+void set2DDrawInfo(JPADrawInfo& info) {
+    JPADrawInfo unused;
+    PSMTXCopy(gGameRoot2_8053AB10->field_0x10->mPosMtx, info.mCamMtx);
+    int width = JUTVideo::getManager()->getFbWidth();
+    int height = JUTVideo::getManager()->getEfbHeight();
+    C_MTXLightOrtho(info.mPrjMtx, 0.0f, height, 0.0f, width, 0.5f, 0.5f, 0.5f, 0.5f);
+}
+
 // The depth-biased position setEmitterPos_8013CB44 and spawnEmitter_8013CC50 both compute (inlined into each).
 static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     if (adjust) {
@@ -140,14 +158,10 @@ static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, 
         depth--;
     }
     f32 offset = height * 1024 + depth * 128;
-    p.x = pos->x;
-    p.y = pos->y + offset;
-    p.z = pos->z + offset;
+    p.set(pos->x, pos->y + offset, pos->z + offset);
     p.z += gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
 }
 
-// FIXME: 99.93. Code identical; only the int-to-float double's .sdata2 relocation differs: the
-// original pool has 0.5f (first used by the unwritten draw passes) before it.
 u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     bool result = false;
     if (emitter != NULL) {
@@ -162,9 +176,9 @@ u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos,
 // The unit's static emitter callback (defined at the end of the file).
 extern cls_8049F184 lbl_8053AB18;
 
-// FIXME: 99.86. Code identical; only the .sdata2 relocations of the int-to-float double and
-// 0.70710677f differ: the original pool has 0.5f (first used by the unwritten draw passes
-// fn_8013D5D4 / D6E4 / DB2C) before the double, as setEmitterPos_8013CB44 shows too.
+// FIXME: 99.95. Regalloc only, in the inlined depthPos tail (p.z += height - pos->z after
+// fn_802F5E9C): the original loads pos->z into f0 and p.z into f2, ours the other way round
+// (setEmitterPos_8013CB44, which keeps p in registers, matches with the same inline).
 JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height, s32 depth,
                             JPAEmitterCallBack* emitterCB, JPAParticleCallBack* particleCB, bool adjust,
                             f32 scale) {
@@ -407,6 +421,34 @@ void EffectSystem_8049F178::fn_8013D5B0() {
     mEmitterManager->forceDeleteAllEmitter();
 }
 
+void EffectSystem_8049F178::fn_8013D5D4() {
+    JPADrawInfo info;
+    gGameRoot2_8053AB10->fn_8013B490();
+    set2DDrawInfo(info);
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        mEmitterManager->draw(&info, 2);
+    }
+    mEmitterManager->draw(&info, 8);
+    mEmitterManager->draw(&info, 10);
+}
+
+void EffectSystem_8049F178::fn_8013D6E4() {
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+        JPADrawInfo info2d;
+        gGameRoot2_8053AB10->fn_8013B438();
+        mEmitterManager->draw(&info, 0);
+        mEmitterManager->draw(&info, 3);
+        gGameRoot2_8053AB10->field_0x34->capture(0, 0);
+        gGameRoot2_8053AB10->fn_8013B490();
+        set2DDrawInfo(info2d);
+        mEmitterManager->draw(&info2d, 5);
+        gGameRoot2_8053AB10->fn_8013B438();
+        GXSetAlphaUpdate(GX_FALSE);
+        mEmitterManager->draw(&info, 1);
+    }
+}
+
 void EffectSystem_8049F178::fn_8013D908() {
     JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
     gGameRoot2_8053AB10->fn_8013B438();
@@ -419,6 +461,15 @@ void EffectSystem_8049F178::fn_8013DA10() {
         gGameRoot2_8053AB10->fn_8013B438();
         GXSetAlphaUpdate(GX_FALSE);
         mEmitterManager->draw(&info, 9);
+    }
+}
+
+void EffectSystem_8049F178::fn_8013DB2C() {
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info;
+        gGameRoot2_8053AB10->fn_8013B490();
+        set2DDrawInfo(info);
+        mEmitterManager->draw(&info, 4);
     }
 }
 
@@ -456,8 +507,9 @@ EffectSystem_8049F178::~EffectSystem_8049F178() {
     mHeap->destroy();
 }
 
-// FIXME: 99.9. Code identical; only the .rodata string and .sdata2 relocations differ until
-// the strings of spawnEmitter_8013CC50 / fn_8013DDEC exist.
+// FIXME: 99.86. Code identical; only the .rodata string relocations differ until
+// objdiff pairs them: the bytes are equal, but the original splits them as one 0x58-byte
+// object (lbl_80465A28) where ours are separate string literals.
 EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
     mHeap = JKRSolidHeap::create(-1, heap, false);
     mResourceManager = new (mHeap, 0)
@@ -485,8 +537,6 @@ void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
     gGameRoot2_8053AB10->field_0x28->fn_8013C958(emitter);
 }
 
-// FIXME: 99.85. Code identical; only the .sdata2 relocations of 0.70710677f and 0.41421357f
-// differ (0.5f of the unwritten draw passes is missing before the int-to-float double).
 // Projects the particles: scales the manager's camera matrix by 1/sqrt 2 in y and z and moves
 // it by the emitter's translation times tan(22.5 deg) in y and z.
 void cls_8049F184::draw(JPABaseEmitter* emitter) {
