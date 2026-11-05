@@ -378,6 +378,23 @@ s32 EscortBase_8049E0C8::fn_8012285C() const {
     return fn_8022EA0C(field_0x344);
 }
 
+// FIXME: 93.6. Scheduling only: the original loads field_0x333 above the prologue's r31 save (a const this, which the
+// children's overrides would have to share).
+s32 EscortBase_8049E0C8::vfunc_0x78() {
+    if (field_0x333) {
+        return 0;
+    }
+    if (fn_8012285C() >= 0 && fn_8012285C() < 4) {
+        if (fn_80230188(fn_8012285C())) {
+            return 0;
+        }
+        if (!fn_8023F264(fn_8012285C())) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 void EscortBase_8049E0C8::vfunc_0x7C() {
     if (lbl_8053AAF8->fn_80138A30() == 1) {
         field_0x360 = 1;
