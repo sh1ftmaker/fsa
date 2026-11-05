@@ -5,6 +5,7 @@
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
+#include "game/Message.h"
 #include "game/Player.h"
 #include "game/tu_801213EC.h"
 
@@ -194,6 +195,64 @@ bool EscortBase_8049E0C8::vfunc_0xBC() {
     return inBox;
 }
 
+void EscortBase_8049E0C8::vfunc_0xB8(f32* x, f32* y, s32* player) {
+    f32 v = 0.0f;
+    if (vfunc_0xC4()) {
+        v = 16.0f;
+    }
+    switch (fn_80230CFC(*player)) {
+    case 0:
+        *x = -16.0f - v;
+        *y = 0.0f;
+        break;
+    case 1:
+        *x = 16.0f + v;
+        *y = 0.0f;
+        break;
+    case 2:
+        *x = 0.0f;
+        *y = -16.0f - v;
+        break;
+    case 3:
+        *x = 0.0f;
+        *y = 16.0f + v;
+        break;
+    }
+}
+
+void EscortBase_8049E0C8::vfunc_0xB4(f32* x, f32* y, s32* player) {
+    *x = 0.0f;
+    *y = 0.0f;
+    s32 target = *player;
+    s32 result = target;
+    if (target >= 0 && target < 4) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8022E438(i, target)) {
+                result = i;
+            }
+        }
+    }
+    *player = result;
+    f32 v = 0.0f;
+    if (vfunc_0xC4()) {
+        v = 16.0f;
+    }
+    switch (fn_80230CFC(*player)) {
+    case 0:
+        *x = -v;
+        break;
+    case 1:
+        *x = v;
+        break;
+    case 2:
+        *y = -v;
+        break;
+    case 3:
+        *y = v;
+        break;
+    }
+}
+
 void EscortBase_8049E0C8::vfunc_0xB0(f32* x, f32* y, s32* player) {
     f32 v = 0.0f;
     if (vfunc_0xC4()) {
@@ -202,6 +261,89 @@ void EscortBase_8049E0C8::vfunc_0xB0(f32* x, f32* y, s32* player) {
     *player = fn_8022EA0C(*player);
     *x = v;
     *y = 16.0f + v;
+}
+
+// Passes the position on by value (the original loads the other arguments before its copy).
+static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
+    return fn_8038AD24(player, msg, serial, layer, pos, flags);
+}
+
+// FIXME: 96.8. The box corners' adds are scheduled differently (see vfunc_0xBC) and mSerial/field_0x4 are loaded in the other order before the talk call.
+s32 EscortBase_8049E0C8::fn_80122898(u16 msg) {
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    JGeometry::TVec3f pos(mPos);
+    pos.y -= 32.0f;
+    fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+    s32 player = fn_8022FD8C(mSerial);
+    if (player < 0 || player >= 4) {
+        field_0x34c = -1;
+        return -1;
+    }
+    if (!fn_802300EC(player)) {
+        field_0x34c = -1;
+        return -1;
+    }
+    if (talk(player, msg, mSerial, field_0x4, pos, 0x28)) {
+        field_0x34c = player;
+        return player;
+    }
+    field_0x34c = -1;
+    return -1;
+}
+
+void EscortBase_8049E0C8::vfunc_0xAC(f32* x, f32* y, s32* player) {
+    f32 v = 0.0f;
+    if (vfunc_0xC4()) {
+        v = 16.0f;
+    }
+    switch (fn_80230CFC(*player)) {
+    case 0:
+        *x = -16.0f - v;
+        *y = 8.0f;
+        break;
+    case 1:
+        *x = 32.0f + v;
+        *y = 8.0f;
+        break;
+    case 2:
+        *x = 8.0f;
+        *y = -16.0f - v;
+        break;
+    case 3:
+        *x = 8.0f;
+        *y = 32.0f + v;
+        break;
+    }
+}
+
+void EscortBase_8049E0C8::vfunc_0xA8(f32* x, f32* y, s32* player) {
+    f32 v = 0.0f;
+    if (vfunc_0xC4()) {
+        v = 16.0f;
+    }
+    f32 offset = 0.5f * (fn_8022E970(*player) - 1) - 0.5f;
+    switch (fn_80230CFC(*player)) {
+    case 0:
+        *x = -16.0f;
+        *y = 16.0f * offset + v;
+        break;
+    case 1:
+        *x = 16.0f;
+        *y = 16.0f * offset + v;
+        break;
+    case 2:
+        *x = -16.0f;
+        *y = 16.0f * offset + v;
+        break;
+    case 3:
+        *x = -16.0f;
+        *y = 16.0f * offset + v;
+        break;
+    }
 }
 
 bool EscortBase_8049E0C8::fn_801227D4() {

@@ -54,11 +54,11 @@ public:
     /* 0x9C */ virtual void vfunc_0x9C();
     /* 0xA0 */ virtual void vfunc_0xA0();
     /* 0xA4 */ virtual void vfunc_0xA4();
-    /* 0xA8 */ virtual void vfunc_0xA8();
-    /* 0xAC */ virtual void vfunc_0xAC();
+    /* 0xA8 */ virtual void vfunc_0xA8(f32* x, f32* y, s32* player); // fn_80122E34
+    /* 0xAC */ virtual void vfunc_0xAC(f32* x, f32* y, s32* player); // fn_80122D38
     /* 0xB0 */ virtual void vfunc_0xB0(f32* x, f32* y, s32* player); // fn_80122CAC
-    /* 0xB4 */ virtual void vfunc_0xB4();
-    /* 0xB8 */ virtual void vfunc_0xB8();
+    /* 0xB4 */ virtual void vfunc_0xB4(f32* x, f32* y, s32* player); // fn_80122B98
+    /* 0xB8 */ virtual void vfunc_0xB8(f32* x, f32* y, s32* player); // fn_80122A9C
     /* 0xBC */ virtual bool vfunc_0xBC(); // fn_801229E4: the escort's box overlaps a player's
     // fn_80121428: returns 1 (the zora overrides it, also returning 1).
     /* 0xC0 */ virtual s32 vfunc_0xC0();
@@ -90,6 +90,9 @@ public:
     void fn_80121FA8();
     void fn_8012202C();
     void fn_801220C4();
+    // fn_80122898 (tu_801213EC): asks the player at the escort to talk (message msg); remembers
+    // the player in field_0x34c (-1 when none); returns it.
+    s32 fn_80122898(u16 msg);
     // fn_801227D4 / fn_80122804 (tu_801213EC): count a frame counter up; true (and reset) at 90 / 15.
     bool fn_801227D4();
     bool fn_80122804();
