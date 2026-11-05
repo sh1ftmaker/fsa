@@ -69,6 +69,12 @@ public:
     const char* fn_802D8128(s32 layer);
     // 1 unit. The same with the second name format (0x802D8228).
     const char* fn_802D8228(s32 layer);
+    // 0xA28 bytes; this unit only. Loads the current screen; the second
+    // flag is stored in field_0x131f6. Both arguments are bools (clrlwi.).
+    void fn_802D8328(bool a, bool b);
+    // 0x5A0 bytes; this unit only. Rebuilds the screen state; reload is
+    // tested with clrlwi. (fn_802DCD1C passes 1, the reload paths 0).
+    void fn_802D8D50(bool reload);
     // 1 unit. Entry field_0x44 of the 16-entry table lbl_804A96D0, or the
     // .sdata2 default lbl_805410DC.
     const char* fn_802D9C1C();
@@ -121,7 +127,7 @@ public:
     bool fn_802DD3D4(const s32* dir);
 
     // --- per-layer actor-id slots (field_0x2948) and their per-screen
-    // 64-bit masks (field_0x1010) ---
+    // 64-bit masks (field_0x1048) ---
     // 6 units / 20 calls (this unused). Bit `bit` of field_0x2d48[index]
     // (mask table lbl_8046E1CC): tests it (0 or 1), or sets it and returns 1.
     bool fn_802D46D8(s32 index, u32 bit, bool set);
@@ -147,8 +153,9 @@ public:
     // 1 unit. The 4-bit field `slot` (bits 60 - slot * 4) of the screen's
     // mask: __shr2u, then the low word (callers clrlwi 16).
     s32 fn_802D7B34(s32 layer, s32 slot);
-    // 2 units / 7 calls. Sets that 4-bit field to value.
-    void fn_802D7BE8(s32 layer, s32 slot, s32 value);
+    // 2 units / 7 calls. Sets that 4-bit field to value. value is unsigned:
+    // the body shifts it as a u64 with a zero high word (__shl2i(0, value)).
+    void fn_802D7BE8(s32 layer, s32 slot, u32 value);
     // 4 units / 85 calls. Sets or clears bit `bit` (__shl2i(0, 1, bit)) of
     // the screen's mask; callers pass fn_802D4C10's slot.
     void fn_802D7D00(s32 layer, s32 bit, bool set);
@@ -309,9 +316,11 @@ public:
     /* 0x00348 */ u32 field_0x348[8][4]; // bits per (stage, level): fn_802D7F40
     // 0x3C8 + index * 0x320 holds a 64-bit mask (fn_802D7E5C); the rest of
     // this block is not mapped yet.
-    /* 0x003C8 */ u8 field_0x3c8[0x1010 - 0x3C8];
-    /* 0x01010 */ u64 field_0x1010[10][10][8]; // per screen and layer slot
-    /* 0x02910 */ u8 field_0x2910[0x2948 - 0x2910];
+    /* 0x003C8 */ u8 field_0x3c8[0x1048 - 0x3C8];
+    // Per screen and layer slot (the folded layer, as field_0x2948): every
+    // access adds 0x1048 + slot * 8 (fn_802D7AC4, fn_802D7D00), and the
+    // array ends where field_0x2948 starts.
+    /* 0x01048 */ u64 field_0x1048[10][10][8];
     /* 0x02948 */ u16 field_0x2948[8][0x40]; // actor ids per layer slot (fn_802D4C10)
     /* 0x02D48 */ u32 field_0x2d48[4][0x80]; // bits (fn_802D46D8)
     /* 0x03548 */ u32 field_0x3548[10][10][32]; // bits per screen (fn_802D76A8)
@@ -323,7 +332,7 @@ public:
     /* 0x12FE8 */ u32 field_0x12fe8[0x20]; // bits (fn_802D72BC)
     /* 0x13068 */ u32 field_0x13068[8]; // keys (fn_802D6F38)
     /* 0x13088 */ JGeometry::TVec2f field_0x13088[8];
-    /* 0x130C8 */ s32 field_0x130c8[8]; // -1 when free
+    /* 0x130C8 */ u32 field_0x130c8[8]; // values, -1 when free (fn_802D6F38 compares them with cmplw)
     /* 0x130E8 */ JGeometry::TVec2f field_0x130e8[8]; // fn_802D6D70's a
     /* 0x13128 */ s32 field_0x13128[8];
     /* 0x13148 */ JGeometry::TVec2f field_0x13148[8]; // fn_802D6D70's b
@@ -347,7 +356,7 @@ public:
     /* 0x131F7 */ u8 field_0x131f7; // zeroed by the constructor; tu_8044C7F0
     /* 0x131F8 */ u8 field_0x131f8; // zeroed by the constructor; tu_8044C7F0
     /* 0x131F9 */ u8 field_0x131f9; // fn_802D6AAC; 5 units read it
-    /* 0x131FA */ u8 field_0x131fa[0x1321A - 0x131FA];
+    /* 0x131FA */ char field_0x131fa[0x1321A - 0x131FA]; // fn_802D8228's name buffer
     /* 0x1321A */ char field_0x1321a[0x1324C - 0x1321A]; // fn_802D8128's name buffer
     /* 0x1324C */ f32 field_0x1324c[4]; // fn_802D79A4
     /* 0x1325C */ f32 field_0x1325c[4];
