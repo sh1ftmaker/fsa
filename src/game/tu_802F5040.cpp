@@ -299,6 +299,7 @@ void TileMap_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const
 // Queues a sprite on field_0xd324 (drawn by fn_802FF2D8) with a copy of params
 // (its byte 0x22 cleared, its matrix copied into the entry), else the default
 // parameters; false when the queue is full.
+// The u8 return with a bool local gives the original's final clrlwi (both bool and both u8 measured as different).
 u8 TileMap_804AA858::fn_802F6298(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
                                    void* res3, SpriteParams_801F5AE0* params) {
     bool result = false;
@@ -326,6 +327,7 @@ u8 TileMap_804AA858::fn_802F6298(const JGeometry::TVec3f* pos, void* res, s32 fr
 }
 
 // The same for field_0xc220 (drawn by fn_802FF3F0), clearing byte 0x21.
+// The u8 return with a bool local gives the original's final clrlwi (both bool and both u8 measured as different).
 u8 TileMap_804AA858::fn_802F654C(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
                                    void* res3, SpriteParams_801F5AE0* params) {
     bool result = false;
@@ -529,7 +531,7 @@ struct SobObj_802F86CC {
     u8 mVFlip : 1;
     u8 mHFlip : 1;
     u8 mAffineIndex : 3;
-    u8 mX8 : 1;
+    u8 : 1; // bit 8 of x: copied from mX's bit 7 instead (sign extension)
     /* 0x4 */ u8 mTileLow;
     /* 0x5 */ u8 mPalette : 4;
     u8 mPriority : 2;
