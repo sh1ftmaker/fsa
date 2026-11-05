@@ -954,7 +954,8 @@ public:
     /* 0x1030 */ s32 field_0x1030[0x50];
     /* 0x1170 */ s32 field_0x1170;
     /* 0x1174 */ u8 field_0x1174;
-    /* 0x1175 */ u8 field_0x1175[0x117C - 0x1175];
+    /* 0x1175 */ u8 field_0x1175[0x1178 - 0x1175];
+    /* 0x1178 */ s32 field_0x1178; // stw in tu_8023FBF0 (0x8024B1A0); 0-2 pick the frames of state 0x49 (fn_80265E88)
     /* 0x117C */ s32 field_0x117c[8]; // zeroed by fn_8027023C
     /* 0x119C */ u8 field_0x119c[4][4]; // zeroed by fn_8027023C
     /* 0x11AC */ s32 field_0x11ac;
