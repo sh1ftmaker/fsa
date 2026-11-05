@@ -22,7 +22,7 @@ public:
     // Slots 0x54-0x5C: the callers test 0x54's byte result (escort woman's 0x6C-state code);
     // 0x58 is a flag, 0x5C returns a state number (3 here).
     /* 0x54 */ virtual bool vfunc_0x54();
-    /* 0x58 */ virtual bool vfunc_0x58();
+    /* 0x58 */ virtual u8 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
     // Returns a byte: the escort woman's override (act_escort_woman.h) does,
     // and fn_80131D98 reads it as bool.
@@ -51,7 +51,10 @@ public:
     /* 0x94 */ virtual void vfunc_0x94();
     // Slots 0x98-0xBC are not known yet; declared to number 0xC0 (the zora overrides it).
     /* 0x98 */ virtual void vfunc_0x98();
-    /* 0x9C */ virtual void vfunc_0x9C();
+    // fn_80123394 (tu_801213EC, 0x720 bytes, not written yet; the zora forwards to it).
+    // Parameters read off its register use: r4 (tested >= 0), f1, f2, f3 and f5 (f4 is not
+    // read).
+    /* 0x9C */ virtual void vfunc_0x9C(s32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
     /* 0xA0 */ virtual void vfunc_0xA0();
     /* 0xA4 */ virtual void vfunc_0xA4();
     /* 0xA8 */ virtual void vfunc_0xA8(f32* x, f32* y, s32* player); // fn_80122E34
