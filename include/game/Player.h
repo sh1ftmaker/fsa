@@ -469,6 +469,8 @@ public:
     void fn_80267E18();
     void fn_80267ECC();
     void fn_80268194();
+    JGeometry::TVec3f* fn_80252F48(); // returns &field_0x11b4 (tu_8023FBF0)
+    bool fn_80275D9C(); // tu_8026FC20 (li r3, 1 / 0); true ends the state updates of tu_8027E5BC early
     void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
     bool fn_8025197C(bool arg); // tu_8023FBF0
     void fn_80284430();
@@ -728,7 +730,10 @@ public:
     /* 0x0510 */ JGeometry::TBox2f field_0x510[3];
     /* 0x0540 */ JGeometry::TBox2f field_0x540;
     /* 0x0550 */ JGeometry::TBox2f field_0x550[3];
-    /* 0x0580 */ u8 field_0x580[0x590 - 0x580];
+    // The item box of states 0x44 / 0x45 (fn_8025A15C / fn_80259830 store a per-facing box built on
+    // the stack: i at 0x580, f at 0x588); fn_802570BC tests points against it (lfs 0x580 / 0x588 vs x,
+    // 0x584 / 0x58C vs y).
+    /* 0x0580 */ JGeometry::TBox2f field_0x580;
     /* 0x0590 */ JGeometry::TBox2f field_0x590;
     /* 0x05A0 */ JGeometry::TBox2f field_0x5a0;
     /* 0x05B0 */ JGeometry::TBox2f field_0x5b0;
@@ -1330,6 +1335,9 @@ void fn_8022CD48(s32 player); // -> fn_80248FF0
 // destructor calls fn_8022CDD4, init fn_8022CF08.
 extern "C" void fn_8022CDD4(s32 player);
 extern "C" void fn_8022CF08(s32 player);
+// Owner: game/tu_8022AD64.cpp (0x8022CFE8, not written yet): a float per player index (lbl_80540008
+// without the manager); compared with 0.0f by fn_802859C4 (tu_8027E5BC).
+extern "C" f32 fn_8022CFE8(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
 s32 fn_8022D7F8(s32 player); // -> fn_8024FF6C; else 0
 u8 fn_8022D894(s32 player); // -> fn_802517E4; else false
@@ -1660,6 +1668,11 @@ bool fn_80239718(s32 player, s32 serial);
 // Not written yet in game/tu_8022AD64.cpp: extern "C" keeps their dtk names
 // until that unit defines them.
 extern "C" {
+// Owner: tu_8022AD64 (0x8022C76C / 0x8022C82C, not written). Forwarders like fn_8022C6AC:
+// the player's fn_8024712C / fn_80247330, lbl_80540008 without a player. tu_8027E5BC fn_80281A90
+// subtracts the first from mPos.y and adds the second to mPos.x.
+f32 fn_8022C76C(s32 player);
+f32 fn_8022C82C(s32 player);
 // Owner: tu_8022AD64 (0x8023434C, defined there). tu_8026FC20 fn_80274728 tests it
 // (clrlwi.) for this player while fn_802486A0() == 3.
 bool fn_8023434C(s32 player);
