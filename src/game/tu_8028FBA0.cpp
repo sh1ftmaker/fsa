@@ -684,6 +684,62 @@ void Player_804A6F38::fn_80292E90() {
     fn_8024F0E8(0x2000C);
 }
 
+void Player_804A6F38::fn_80292ECC() {
+    followCamera();
+    if (field_0x3fc < 60) {
+        field_0x3fc++;
+    }
+    if (field_0xce4 == field_0xce0 || fn_80240670() || !fn_80303750(field_0x4)) {
+        if (field_0x3fc >= 60) {
+            if (field_0x3fc == 60) {
+                if (field_0xce0 >= 8) {
+                    fn_8013CC50(field_0xce4, &field_0xcd4, 0x545, 1, 1, NULL, NULL, true, 1.0f);
+                    switch (field_0x4) {
+                    case 0:
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x140, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x141, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x142, 1, 1, NULL, NULL, true, 1.0f);
+                        break;
+                    case 1:
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x147, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x148, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x149, 1, 1, NULL, NULL, true, 1.0f);
+                        break;
+                    case 2:
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x13D, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x13E, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x13F, 1, 1, NULL, NULL, true, 1.0f);
+                        break;
+                    case 3:
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x144, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x145, 1, 1, NULL, NULL, true, 1.0f);
+                        fn_8013CC50(field_0xce4, &field_0xcd4, 0x146, 1, 1, NULL, NULL, true, 1.0f);
+                        break;
+                    }
+                    fn_8013CC50(field_0xce4, &field_0xcd4, 0x143, 1, 1, NULL, NULL, true, 1.0f);
+                    fn_8024F0E8(0x20020);
+                }
+                fn_8024F0E8(0x2002F);
+                fn_8024F0E8(0x20021);
+            }
+            field_0x3fc++;
+            if (field_0x3fc >= 171) {
+                mPos.z = 0.0f;
+                field_0x124d = 0;
+                if (fn_8025F684()) {
+                    fn_80251AEC(0x12);
+                } else {
+                    fn_80251AEC(0);
+                }
+                field_0x3dc = 2;
+                field_0x3e8 = 2;
+                fn_80241454(1);
+            }
+        }
+    }
+    setHeldPos();
+}
+
 void Player_804A6F38::fn_802932BC() {
     field_0x124d = 1;
     mPos.z = 0.0f;
