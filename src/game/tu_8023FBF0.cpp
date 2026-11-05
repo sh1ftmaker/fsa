@@ -1498,6 +1498,16 @@ static inline const JGeometry::TBox2f* viewBox(s32 layer) {
     return layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
 }
 
+// Whether pos is inside the view box of `layer` (lower edges included).
+static inline bool inViewBox(const JGeometry::TVec2f& pos, s32 layer) {
+    const JGeometry::TBox2f* box = viewBox(layer);
+    bool inside = false;
+    if (pos.x >= box->i.x && pos.y >= box->i.y && pos.x < box->f.x && pos.y < box->f.y) {
+        inside = true;
+    }
+    return inside;
+}
+
 // Steps a probe up (y + 8) from mPos until it is on tile 0x231 (fn_80226998)
 // or leaves the view box (then 24 inside its far edge, and field_0x440 is
 // set too); 24 further on, fn_8026E5F8 there sets field_0x43f.
@@ -1510,12 +1520,7 @@ bool Player_804A6F38::fn_80248A24() {
     bool clamped = false;
     do {
         pos.y += 8.0f;
-        const JGeometry::TBox2f* box = viewBox(field_0x3b4);
-        bool inside = false;
-        if (pos.x >= box->i.x && pos.y >= box->i.y && pos.x < box->f.x && pos.y < box->f.y) {
-            inside = true;
-        }
-        if (!inside) {
+        if (!inViewBox(pos, field_0x3b4)) {
             pos.y = viewBox(field_0x3b4)->f.y - 24.0f;
             clamped = true;
             break;
@@ -1528,6 +1533,42 @@ bool Player_804A6F38::fn_80248A24() {
         if (clamped == true) {
             field_0x440 = true;
         }
+        return true;
+    }
+    return false;
+}
+
+// As fn_80248A24, after first stepping the probe up to tile 0x3E
+// (fn_802265FC; false when it leaves the view box first); also clears
+// field_0x444.
+// FIXME: 99.39. Registers (f1 / f2 of the box tests) plus the literals 8.0f /
+// 24.0f (@NNN vs lbl_80540050 / lbl_80540054 until the pool is in order).
+bool Player_804A6F38::fn_80248B9C() {
+    JGeometry::TVec2f pos;
+    pos.x = mPos.x;
+    pos.y = mPos.y;
+    bool clamped = false;
+    do {
+        pos.y += 8.0f;
+        if (!inViewBox(pos, field_0x3b4)) {
+            return false;
+        }
+    } while (fn_802265FC((const JGeometry::TVec3f*)&pos, field_0x3b4) != 0x3e);
+    do {
+        pos.y += 8.0f;
+        if (!inViewBox(pos, field_0x3b4)) {
+            pos.y = viewBox(field_0x3b4)->f.y - 24.0f;
+            clamped = true;
+            break;
+        }
+    } while (fn_80226998((const JGeometry::TVec3f*)&pos, field_0x3b4) != 0x231);
+    pos.y += 24.0f;
+    if (fn_8026E5F8(&pos)) {
+        field_0x43f = true;
+        if (clamped == true) {
+            field_0x440 = true;
+        }
+        field_0x444 = 0.0f;
         return true;
     }
     return false;

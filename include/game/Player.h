@@ -510,6 +510,7 @@ public:
     void fn_8027F854(JGeometry::TVec3f* out, s32 player); // player's position plus an offset by fn_802486A0
     s32 fn_802487FC() const; // tu_8023FBF0 (0x802487FC); a count of players (r3 only)
     bool fn_80248A24(); // tu_8023FBF0; called by tu_8027E5BC (0x802846E4); sets 0x43f / 0x440
+    bool fn_80248B9C(); // tu_8023FBF0; called by tu_8022AD64 (0x80237F4C, 0x80238184); sets 0x43f / 0x440 / 0x444
     void fn_80283848();
     void fn_8028434C();
     void fn_8024E344();
