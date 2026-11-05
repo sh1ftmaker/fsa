@@ -6,6 +6,7 @@
 #include "game/Player.h"
 #include "game/act/act_phantom_ganon_2.h"
 
+// .sbss 0x8053AB78 (a mode word; the unwritten update and init also use it).
 s32 lbl_8053AB78;
 
 // 0x80187144 (vtable slot 0x24): plays sound 0x40047 and re-issues the actor's
@@ -136,3 +137,13 @@ void fn_8018A6A0(JGeometry::TVec2f* v, f32 x, f32 y) {
 Unk_8045A080* fn_8018A6AC() {
     return lbl_8053AF80;
 }
+
+// FIXME: __sinit_act_phantom_ganon_2_cpp is 99.61 %: the JAudio pool records are
+// 0x10 higher in the original's .bss (lbl_804C17A8 + 0x10); the first 0x10 bytes
+// belong to a static that the unwritten update (fn_80187530) defines.
+//
+// Not written yet: draw (0x801871A0), update (0x80187530), init (0x8018A070),
+// the JPABaseEmitter helpers 0x8018A5C8-0x8018A5E0 (offsets 0xBB / 0xF4 do not
+// fit include/JSystem/JParticle/JPAEmitter.h) and ActorBase::setLife
+// (0x8018A588, an inline whose out-of-line copy is only emitted when a caller
+// does not inline it).
