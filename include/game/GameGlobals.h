@@ -1639,7 +1639,8 @@ public:
     /* 0xCC */ f32 field_0xcc;
     /* 0xD0 */ f32 field_0xd0;
     /* 0xD4 */ u8 field_0xd4[0xD8 - 0xD4];
-    /* 0xD8 */ f32 field_0xd8[3];       // indexed by the cursor (0xEB)
+    /* 0xD8 */ f32 field_0xd8[2];       // indexed by the cursor (0 or 1; fn_8042F6DC's loop stores i < 2)
+    /* 0xE0 */ u8 field_0xe0[0xE4 - 0xE0];
     /* 0xE4 */ s32 field_0xe4;
     /* 0xE8 */ s16 field_0xe8;           // frame counter of the window's open/close steps
     /* 0xEA */ u8 field_0xea;            // out byte of fn_80431A9C
