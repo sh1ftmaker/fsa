@@ -230,6 +230,31 @@ s32 ActorManager_804A5800::fn_801F7274(s32 layer, ActorBase_804A5770** out, s32 
     return count;
 }
 
+// FIXME: 99.6 %, regalloc only: the two y/x differences sit in f3/f2 in the
+// target, f2/f3 here; the 16.0f literal is lbl_8053F820 once the pool before
+// it is complete.
+s32 ActorManager_804A5800::fn_801F732C(s32 layer, const JGeometry::TVec3f* center,
+                                       const JGeometry::TVec3f* from, s32 excludeSerial,
+                                       f32 radius) const {
+    f32 radiusSq = radius * radius;
+    f32 best = FLT_MAX;
+    s32 serial = -1;
+    for (s32 i = 0; i < mActorEnd; i++) {
+        if (mActors[i] != NULL && mActors[i]->mAlive && layer == mActors[i]->field_0x4 &&
+            excludeSerial != mActors[i]->mSerial && mActors[i]->mPos.z <= 16.0f &&
+            fn_801CC9B0(mActors[i]) &&
+            square(mActors[i]->mPos.x - center->x) + square(mActors[i]->mPos.y - center->y) <= radiusSq)
+        {
+            f32 dist = square(mActors[i]->mPos.x - from->x) + square(mActors[i]->mPos.y - from->y);
+            if (dist < best) {
+                best = dist;
+                serial = mActors[i]->mSerial;
+            }
+        }
+    }
+    return serial;
+}
+
 s32 ActorManager_804A5800::fn_801F7464(s32 layer, s32 excludeSerial) const {
     s32 serial = -1;
     for (s32 i = 0; i < mActorEnd; i++) {

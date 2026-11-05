@@ -178,7 +178,7 @@ public:
     // actors within `radius` of center (x, y; fmuls f1 by itself) returns
     // the serial of the one nearest to `from` (x, y), or -1.
     s32 fn_801F732C(s32 layer, const JGeometry::TVec3f* center, const JGeometry::TVec3f* from,
-                    s32 excludeSerial, f32 radius);
+                    s32 excludeSerial, f32 radius) const;
     // 1 unit / 4 calls each (tu_801DE714). The serial of the first live
     // actor on `layer`, other than excludeSerial, for which fn_801CC960
     // ('RUPY' with kind 4-7) / fn_801CC910 ('RUPY' with kind 8-11) holds,
