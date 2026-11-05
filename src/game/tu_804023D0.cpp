@@ -114,14 +114,10 @@ u8 cls_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
     return 0;
 }
 
-// FIXME: 90.81. The else mode swaps from/to with fmr f0,f1 / f1,f2 / f2,f0 after the squares; ours
-// keeps a copy of x in f5 and schedules the squares' conversions differently.
 u8 cls_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
     if (field_0x22 < frames - 1) {
         field_0x22++;
         f32 t;
-        f32 from = x;
-        f32 to = y;
         if (mode == 0) {
             t = (f32)(field_0x22 * field_0x22) / (f32)(frames * frames);
         } else if (mode == 1) {
@@ -129,10 +125,11 @@ u8 cls_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
         } else {
             s32 steps = frames - field_0x22;
             t = (f32)(steps * steps) / (f32)(frames * frames);
-            from = y;
-            to = x;
+            f32 tmp = x;
+            x = y;
+            y = tmp;
         }
-        moveY(this, field_0x14 + (from + t * (to - from)));
+        moveY(this, field_0x14 + (x + t * (y - x)));
     } else {
         field_0x22 = frames;
         moveY(this, field_0x14 + y);
@@ -141,13 +138,10 @@ u8 cls_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
     return 0;
 }
 
-// FIXME: 90.81. Same as fn_80402940.
 u8 cls_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
     if (field_0x20 < frames - 1) {
         field_0x20++;
         f32 t;
-        f32 from = x;
-        f32 to = y;
         if (mode == 0) {
             t = (f32)(field_0x20 * field_0x20) / (f32)(frames * frames);
         } else if (mode == 1) {
@@ -155,10 +149,11 @@ u8 cls_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
         } else {
             s32 steps = frames - field_0x20;
             t = (f32)(steps * steps) / (f32)(frames * frames);
-            from = y;
-            to = x;
+            f32 tmp = x;
+            x = y;
+            y = tmp;
         }
-        moveX(this, field_0x10 + (from + t * (to - from)));
+        moveX(this, field_0x10 + (x + t * (y - x)));
     } else {
         field_0x20 = frames;
         moveX(this, field_0x10 + y);
