@@ -290,7 +290,11 @@ public:
     /* 0x0020 */ u8 field_0x20[0x2C - 0x20];
     // fn_802685D4's step is mPos - field_0x2c; it copies mPos here at the end.
     /* 0x002C */ JGeometry::TVec3f field_0x2c;
-    /* 0x0038 */ u8 field_0x38[0x2B8 - 0x38];
+    // 48 positions (fn_80252CF0 steps 0x30 of them); read by fn_8023E4E4.
+    /* 0x0038 */ JGeometry::TVec3f field_0x38[0x30];
+    /* 0x0278 */ u8 field_0x278[0x284 - 0x278];
+    // Byte table read by fn_8023E45C; its extent is only bounded by field_0x2b8.
+    /* 0x0284 */ u8 field_0x284[0x34];
     // fn_8024E020 stores a TVec3 here; fn_8024E018 returns its address.
     /* 0x02B8 */ JGeometry::TVec3f field_0x2b8;
     // Address returned by fn_8023E604.
@@ -496,6 +500,8 @@ public:
     bool fn_802574CC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AC74
     bool fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BA68
     void fn_80252CF0(const JGeometry::TVec3f* pos); // via fn_8023DF68
+    JGeometry::TVec3f* fn_8024C378(); // via fn_8023E3B8
+    JGeometry::TVec3f* fn_8024145C(); // via fn_8023E7B0
 }; // Size: 0x13BC
 
 // *lbl_8053AC90. Vtable 0x804A6F28: only the destructor (0x8023F7F8, which
@@ -947,7 +953,6 @@ void fn_8022E2D8(s32 index);
 // Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
 // rock's position follows it). Like fn_8023E724 (the player's mPos, else &lbl_804CF460) but
 // through fn_8024145C; takes a player index (act_rock passes field_0xc8).
-JGeometry::TVec3f* fn_8023E7B0(s32 player);
 bool fn_802308E0(s32 player);
 // 1 unit (act_dummy_conversation). Owner: tu_8022AD64. fn_8022FE80 forwards
 // (layer, serial, a, b) to the player's fn_8024CAC8 (it compares serial with
@@ -1134,5 +1139,9 @@ JGeometry::TVec3f* fn_8023E2A0(s32 player);
 JGeometry::TVec3f* fn_8023E32C(s32 player);
 JGeometry::TVec3f* fn_8023E578(s32 player);
 JGeometry::TVec3f* fn_8023E604(s32 player);
+JGeometry::TVec3f* fn_8023E3B8(s32 player);
+u8 fn_8023E45C(s32 player, s32 index);
+JGeometry::TVec3f* fn_8023E4E4(s32 player, s32 index);
+JGeometry::TVec3f* fn_8023E7B0(s32 player);
 
 #endif
