@@ -218,14 +218,6 @@ public:
     /* 0x3C0 */ u8 field_0x3c0[0xC];
 }; // Size: 0x3CC
 
-// Spawned for 'GNON'.
-class cls_804A25F0 : public ActorBase_804A5770 {
-public:
-    cls_804A25F0() {}
-    /* 0x08 */ virtual ~cls_804A25F0();
-    /* 0x230 */ u8 field_0x230[0x10C];
-}; // Size: 0x33C
-
 // Spawned for 'ZLD2'.
 class cls_804A2944 : public ActorBase_804A5770 {
 public:

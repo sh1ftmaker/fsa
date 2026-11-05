@@ -83,6 +83,7 @@
 #include "game/act/act_fuse_point.h"
 #include "game/act/act_gambling_chest.h"
 #include "game/act/act_gambling_shop.h"
+#include "game/act/act_ganon.h"
 #include "game/act/act_gba_appear.h"
 #include "game/act/act_gba_window.h"
 #include "game/act/act_gibdo.h"
