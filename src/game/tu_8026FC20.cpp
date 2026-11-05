@@ -462,6 +462,8 @@ void Player_804A6F38::fn_80270DDC(s32 amount, bool flag) {
             return;
         }
     }
+    // Reproduces the original's overflow-trap shape on the life word (increment, compare, spin);
+    // its source form is unexplained (docs/CRACK_PASS.md, Open questions).
     s32 life = field_0xbfc;
     field_0xbfc++;
     if (field_0xbfc == life) {

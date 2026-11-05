@@ -115,6 +115,12 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   the title's strings, and 0.5f / 120.0f lead its .sdata2, but no surviving function references them; the table's tail {3,4,5,4}
   matches tu_803536C4's lbl_80472260, also followed by that string. Likely a function the linker dropped (dead code or a weak
   duplicate). Keeps fn_803A5380 and the ctor at 99.78 %. Same family as the leading-literal items above.
+- **Overflow trap on the player life word (tu_8026FC20 fn_80270DDC).** The original
+  does `old = x; x++; if (x == old) for (;;); x = old;` on Player 0xBFC (stw, reload,
+  `b .` self-branch, restore) before healing. It is written literally with a comment; no
+  assert macro, busy-wait or donor idiom (grep of src/ and donors) yields it. Not a
+  FAKEMATCH (nothing is steered), but the source form is unknown; revisit if another
+  function shows the same increment-compare-spin shape.
 - **The 12 units still out of address order** (tools/order_check.py): reordering
   changes inlining or the .sdata2 pool in each; same family as the two items
   above.
