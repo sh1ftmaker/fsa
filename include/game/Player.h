@@ -301,6 +301,7 @@ public:
     void fn_8025AEC4(); // field_0x11f8 = -1
     void fn_8025B218(); // field_0x124d = 1, field_0x458 = 0
     void fn_8025B35C(); // field_0x458 = 0
+    void fn_8025B368(); // clears 0xb99-0xb9b, ends the emitters at 0x1274 and 0x128c, clears 0x40c
     void fn_8025BDC8(); // clears 0x458 and 0x40c
     void fn_8025C79C(); // clears 0x458, field_0x344 and 0x40c
     void fn_8025D090(); // clears 0x458, field_0x344 and 0x40c
@@ -544,7 +545,8 @@ public:
     /* 0x0B85 */ u8 field_0xb85[0xB88 - 0xB85];
     /* 0x0B88 */ s32 field_0xb88;
     /* 0x0B8C */ s32 field_0xb8c;
-    /* 0x0B90 */ u8 field_0xb90[0xB9A - 0xB90];
+    /* 0x0B90 */ u8 field_0xb90[0xB99 - 0xB90];
+    /* 0x0B99 */ bool field_0xb99;
     /* 0x0B9A */ bool field_0xb9a;
     // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
     /* 0x0B9B */ bool field_0xb9b;
@@ -756,7 +758,11 @@ public:
     /* 0x124C */ u8 field_0x124c[0x124D - 0x124C];
     // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
     /* 0x124D */ u8 field_0x124d;
-    /* 0x124E */ u8 field_0x124e[0x12B8 - 0x124E];
+    /* 0x124E */ u8 field_0x124e[0x1274 - 0x124E];
+    /* 0x1274 */ JPABaseEmitter* field_0x1274;
+    /* 0x1278 */ u8 field_0x1278[0x128C - 0x1278];
+    /* 0x128C */ JPABaseEmitter* field_0x128c;
+    /* 0x1290 */ u8 field_0x1290[0x12B8 - 0x1290];
     /* 0x12B8 */ JPABaseEmitter* field_0x12b8;
     /* 0x12BC */ JPABaseEmitter* field_0x12bc; // deleted with deleteEmitter() (fn_8027B5F0)
     /* 0x12C0 */ u8 field_0x12c0[0x1308 - 0x12C0];

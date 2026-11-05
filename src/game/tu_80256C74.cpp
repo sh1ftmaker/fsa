@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorManager.h"
 #include "game/Player.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_somaria_block.h"
 
 bool Player_804A6F38::fn_802577E0() {
@@ -118,6 +119,23 @@ void Player_804A6F38::fn_8025B218() {
 
 void Player_804A6F38::fn_8025B35C() {
     field_0x458 = 0;
+}
+
+void Player_804A6F38::fn_8025B368() {
+    field_0xb99 = false;
+    field_0xb9a = false;
+    field_0xb9b = false;
+    if (field_0x1274 != NULL) {
+        field_0x1274->clearStatus(JPAEMIT_Immortal);
+        field_0x1274->becomeInvalidEmitter();
+        field_0x1274 = NULL;
+    }
+    if (field_0x128c != NULL) {
+        field_0x128c->clearStatus(JPAEMIT_Immortal);
+        field_0x128c->becomeInvalidEmitter();
+        field_0x128c = NULL;
+    }
+    field_0x40c = 0;
 }
 
 void Player_804A6F38::fn_8025BDC8() {
