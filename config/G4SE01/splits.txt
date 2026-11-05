@@ -2804,6 +2804,7 @@ game/tu_8016A2B4.cpp:
 	.data       start:0x804A0790 end:0x804A07D8
 	.bss        start:0x804C08A0 end:0x804C09A0
 	.sdata2     start:0x8053D910 end:0x8053DA10
+	.sbss2      start:0x80543F38 end:0x80543F40
 
 game/tu_80170008.cpp:
 	extab       start:0x800073A4 end:0x800073D4

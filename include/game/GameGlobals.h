@@ -26,6 +26,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JUtility/TColor.h"
 #include "game/Player.h"
+#include "game/cls_8016ED88.h"
 // The view (fn_802D6A9C) and the effect system (fn_8013C824) moved to
 // their own headers; included here so existing users keep compiling.
 #include "game/Effect.h"
@@ -1404,10 +1405,12 @@ struct GameRootSub24_8016A3AC {
     /* 0x038 */ void* field_0x38;
     // Six models, placed by fn_8016B0B0 (loop over i < 6).
     /* 0x03C */ struct J3DModel* field_0x3c[6];
-    /* 0x054 */ void* field_0x54;
+    // The texture-SRT and TEV-register animations fn_8016DCEC passes to fn_8016D398.
+    /* 0x054 */ struct J3DAnmTextureSRTKey* field_0x54;
     /* 0x058 */ u8 field_0x58[0x68 - 0x58];
     /* 0x068 */ void* field_0x68;
-    /* 0x06C */ u8 field_0x6c[0x84 - 0x6C];
+    /* 0x06C */ struct J3DAnmTevRegKey* field_0x6c;
+    /* 0x070 */ u8 field_0x70[0x84 - 0x70];
     /* 0x084 */ struct J3DModel* field_0x84;
     /* 0x088 */ u8 field_0x88[0x90 - 0x88];
     /* 0x090 */ struct J3DModel* field_0x90;
@@ -1427,7 +1430,17 @@ struct GameRootSub24_8016A3AC {
     /* 0x0E0 */ struct J3DModel* field_0xe0;
     /* 0x0E4 */ u8 field_0xe4[0xEC - 0xE4];
     /* 0x0EC */ struct J3DModel* field_0xec;
-    /* 0x0F0 */ u8 field_0xf0[0x124 - 0xF0];
+    /* 0x0F0 */ u8 field_0xf0[0xF4 - 0xF0];
+    // The full-screen backdrop texture fn_8016ADE0 draws.
+    /* 0x0F4 */ struct JUTTexture* field_0xf4;
+    /* 0x0F8 */ u8 field_0xf8[0x110 - 0xF8];
+    // Backdrop textures: fn_8016B4D4 draws 0x114 / 0x110 (or 0x11C / 0x118),
+    // fn_8016B248 draws 0x120.
+    /* 0x110 */ struct JUTTexture* field_0x110;
+    /* 0x114 */ struct JUTTexture* field_0x114;
+    /* 0x118 */ struct JUTTexture* field_0x118;
+    /* 0x11C */ struct JUTTexture* field_0x11c;
+    /* 0x120 */ struct JUTTexture* field_0x120;
     // The three emitters fn_8016A2B4 deletes.
     /* 0x124 */ struct JPABaseEmitter* field_0x124;
     /* 0x128 */ struct JPABaseEmitter* field_0x128;
@@ -1437,22 +1450,9 @@ struct GameRootSub24_8016A3AC {
     /* 0x134 */ s32 field_0x134;
     /* 0x138 */ s32 field_0x138;
     /* 0x13C */ s32 field_0x13c;
-    /* 0x140 */ s32 field_0x140;
-    /* 0x144 */ u8 field_0x144[0x154 - 0x144];
-    /* 0x154 */ s32 field_0x154;
-    /* 0x158 */ u8 field_0x158[0x15C - 0x158];
-    /* 0x15C */ s32 field_0x15c;
-    /* 0x160 */ u8 field_0x160[0x170 - 0x160];
-    /* 0x170 */ s32 field_0x170;
-    /* 0x174 */ u8 field_0x174[0x178 - 0x174];
-    /* 0x178 */ s32 field_0x178;
-    /* 0x17C */ u8 field_0x17c[0x18C - 0x17C];
-    /* 0x18C */ s32 field_0x18c;
-    /* 0x190 */ u8 field_0x190[0x194 - 0x190];
-    /* 0x194 */ s32 field_0x194;
-    /* 0x198 */ u8 field_0x198[0x1A8 - 0x198];
-    /* 0x1A8 */ s32 field_0x1a8;
-    /* 0x1AC */ u8 field_0x1ac[0x1B0 - 0x1AC];
+    // Four entries; cleared by fn_8016EDB0 (fn_8016ED88 inlined) and passed
+    // to fn_8016D398 by fn_8016DCEC.
+    /* 0x140 */ cls_8016ED88 field_0x140;
     /* 0x1B0 */ s32 field_0x1b0;
     /* 0x1B4 */ u8 field_0x1b4;
     /* 0x1B5 */ u8 field_0x1b5[0x1B8 - 0x1B5];
@@ -1520,8 +1520,14 @@ struct GameRootSub24_8016A3AC {
     void fn_8016B8AC();
     // 0x8016B0B0: places the six models of field_0x3c against the 2D camera.
     void fn_8016B0B0();
-    // Not written yet (game/tu_8016A2B4.cpp): called by fn_8016DA6C / fn_8016DB60.
+    // 0x8016ADE0: draws field_0xf4 over the screen (called by fn_8016DA6C / fn_8016DB60).
     void fn_8016ADE0();
+    // 0x8016B248: draws field_0x120 over the screen.
+    void fn_8016B248();
+    // 0x8016DCEC: in the isGameModeSet() modes (not mode 0xB), while
+    // field_0x1cf is set, runs fn_8016D398 with the camera matrix.
+    void fn_8016DCEC();
+
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8016DA6C();
