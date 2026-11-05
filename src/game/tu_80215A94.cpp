@@ -16,9 +16,9 @@ void cls_80215E48::fn_80215B6C(s32 index) {
     }
 }
 
+// FIXME: 93.62 %. The original loads mCentis (lbz 0x25) right after
+// mSeconds, before the second save-row index load; ours loads it after.
 void cls_80215E48::fn_80215BCC(s32 index) {
-    // FIXME: 93.62 %. The original loads mCentis (lbz 0x25) right after
-    // mSeconds, before the second save-row index load; ours loads it after.
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
         lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x79 = mEntries[index].mWatch.mSeconds;
         lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x78 = mEntries[index].mWatch.mCentis;

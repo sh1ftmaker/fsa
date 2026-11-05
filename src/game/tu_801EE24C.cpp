@@ -104,74 +104,6 @@ bool ActorBase_804A5770::fn_801F329C(s32 player) {
     return isPlayerBelowLayer8(this, player);
 }
 
-void ActorBase_804A5770::draw() {}
-
-void ActorBase_804A5770::savePrevPos() {
-    mPrevPos = mPos;
-}
-
-// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
-static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
-                               const Vec& pos) {
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
-}
-
-// FIXME: float registers differ (the player's z lands in f7, the target uses
-// f5; the overlap box's max in f5/f6 instead of f6/f7); the rest matches.
-void ActorBase_804A5770::vfunc_0x18() {
-    if (mPos.z <= 16.0f && mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
-        JGeometry::TBox2f box;
-        toScreenBox(&box, mBox, mPos);
-        for (int i = 0; i < 4; i++) {
-            if (fn_8023F264(i) && getField_0x4() == fn_8023DE58(i)) {
-                JGeometry::TBox2f playerBox;
-                toScreenBox(&playerBox, JGeometry::TBox2f(-12.0f, -28.0f, 12.0f, 12.0f),
-                            *fn_8023E724(i));
-                JGeometry::TBox2f overlap = box;
-                if (overlap.intersect(playerBox)) {
-                    fn_802397B4(&box, getField_0x4(), mSerial);
-                    return;
-                }
-            }
-        }
-    }
-}
-
-void ActorBase_804A5770::vfunc_0x40() {}
-
-void ActorBase_804A5770::vfunc_0x44() {}
-
-void ActorBase_804A5770::vfunc_0x48() {}
-
-// The actor's bit in the screen and stage tables of the view (game/GameView.h):
-// the top five bits of field_0x90, 0 for none.
-s32 ActorBase_804A5770::vfunc_0x3C() {
-    return field_0x90 >> 27;
-}
-
-s32 ActorBase_804A5770::vfunc_0x38() {
-    return fn_802D6A9C()->fn_802D7E04(vfunc_0x3C());
-}
-
-bool ActorBase_804A5770::vfunc_0x34() {
-    if (vfunc_0x3C()) {
-        return fn_802D6A9C()->fn_802D800C(vfunc_0x3C());
-    }
-    return false;
-}
-
-void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
-    if (vfunc_0x3C()) {
-        fn_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
-    }
-}
-
-void ActorBase_804A5770::update() {}
-
-void ActorBase_804A5770::vfunc_0x10() {}
-
-void ActorBase_804A5770::init() {}
-
 // Queues a warp to *pos on layer, unless one is pending (field_0x17c) or
 // running (field_0x174 > 0).
 void ActorBase_804A5770::fn_801F349C(s32 layer, const JGeometry::TVec3f* pos) {
@@ -193,6 +125,12 @@ void ActorBase_804A5770::fn_801F34DC() {
     if (bit != -1) {
         fn_802D6A9C()->fn_802D7618(bit);
     }
+}
+
+// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
+                               const Vec& pos) {
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
 }
 
 // If neither field_0xcc nor field_0xc4 is set, marks the actor for the update
@@ -245,6 +183,68 @@ void ActorBase_804A5770::fn_801F3780(s32 v) {
         field_0xe0 = 0;
     }
 }
+
+void ActorBase_804A5770::vfunc_0x48() {}
+
+void ActorBase_804A5770::vfunc_0x44() {}
+
+void ActorBase_804A5770::vfunc_0x40() {}
+
+// The actor's bit in the screen and stage tables of the view (game/GameView.h):
+// the top five bits of field_0x90, 0 for none.
+s32 ActorBase_804A5770::vfunc_0x3C() {
+    return field_0x90 >> 27;
+}
+
+s32 ActorBase_804A5770::vfunc_0x38() {
+    return fn_802D6A9C()->fn_802D7E04(vfunc_0x3C());
+}
+
+bool ActorBase_804A5770::vfunc_0x34() {
+    if (vfunc_0x3C()) {
+        return fn_802D6A9C()->fn_802D800C(vfunc_0x3C());
+    }
+    return false;
+}
+
+void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
+    if (vfunc_0x3C()) {
+        fn_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
+    }
+}
+
+void ActorBase_804A5770::draw() {}
+
+void ActorBase_804A5770::savePrevPos() {
+    mPrevPos = mPos;
+}
+
+// FIXME: float registers differ (the player's z lands in f7, the target uses
+// f5; the overlap box's max in f5/f6 instead of f6/f7); the rest matches.
+void ActorBase_804A5770::vfunc_0x18() {
+    if (mPos.z <= 16.0f && mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        JGeometry::TBox2f box;
+        toScreenBox(&box, mBox, mPos);
+        for (int i = 0; i < 4; i++) {
+            if (fn_8023F264(i) && getField_0x4() == fn_8023DE58(i)) {
+                JGeometry::TBox2f playerBox;
+                toScreenBox(&playerBox, JGeometry::TBox2f(-12.0f, -28.0f, 12.0f, 12.0f),
+                            *fn_8023E724(i));
+                JGeometry::TBox2f overlap = box;
+                if (overlap.intersect(playerBox)) {
+                    fn_802397B4(&box, getField_0x4(), mSerial);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void ActorBase_804A5770::update() {}
+
+void ActorBase_804A5770::vfunc_0x10() {}
+
+void ActorBase_804A5770::init() {}
 
 ActorBase_804A5770::~ActorBase_804A5770() {
     if (mEmitter100 != NULL) {

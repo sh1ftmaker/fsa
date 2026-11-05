@@ -4,15 +4,6 @@
 #include "game/Map.h"
 #include "game/act/act_zora.h"
 
-ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
-    field_0x2a8 = 0;
-}
-
-ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
-    fn_801EE434(field_0x2a8);
-    field_0x2a8 = NULL;
-}
-
 void ZoraEnemy_804A3D7C::vfunc_0xB0() {}
 
 bool ZoraEnemy_804A3D7C::vfunc_0xAC() {
@@ -34,4 +25,13 @@ bool ZoraEnemy_804A3D7C::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     return ActorBase_804A5770::vfunc_0x4C(layer, pos);
+}
+
+ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
+    fn_801EE434(field_0x2a8);
+    field_0x2a8 = NULL;
+}
+
+ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
+    field_0x2a8 = 0;
 }

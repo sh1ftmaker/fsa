@@ -49,21 +49,6 @@ void cls_804A6270::fn_80210D90() {
     leaveSand(this);
 }
 
-// Whether a position at or below the ground lies inside the quicksand's area:
-// within 0.9 * (16 * field_0x54.x) of mPos in x and y, once it is active.
-bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
-    bool inside = false;
-    if (pos->z <= 0.0f && mState != 0) {
-        f32 radius = 0.9f * (16.0f * field_0x54.x);
-        f32 dx = pos->x - mPos.x;
-        f32 dy = pos->y - mPos.y;
-        if (square(dx) + square(dy) <= square(radius)) {
-            inside = true;
-        }
-    }
-    return inside;
-}
-
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
@@ -88,15 +73,24 @@ void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
     }
 }
 
+// Whether a position at or below the ground lies inside the quicksand's area:
+// within 0.9 * (16 * field_0x54.x) of mPos in x and y, once it is active.
+bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
+    bool inside = false;
+    if (pos->z <= 0.0f && mState != 0) {
+        f32 radius = 0.9f * (16.0f * field_0x54.x);
+        f32 dx = pos->x - mPos.x;
+        f32 dy = pos->y - mPos.y;
+        if (square(dx) + square(dy) <= square(radius)) {
+            inside = true;
+        }
+    }
+    return inside;
+}
+
 void cls_804A6270::vfunc_0x88() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     fn_802110A8();
-}
-
-void cls_804A6270::vfunc_0x54() {
-    if (mFlags & 0x8000 && field_0x2bc != 0) {
-        field_0x2c0.fn_800FE3EC(field_0x2bc, mPos, field_0x4);
-    }
 }
 
 void cls_804A6270::vfunc_0x9C(u8 mapHit) {
@@ -158,6 +152,16 @@ void cls_804A6270::fn_80211C94() {
     }
 }
 
+void cls_804A6270::vfunc_0x54() {
+    if (mFlags & 0x8000 && field_0x2bc != 0) {
+        field_0x2c0.fn_800FE3EC(field_0x2bc, mPos, field_0x4);
+    }
+}
+
+cls_804A6270::~cls_804A6270() {
+    fn_80212AC0()->fn_80212BA0(mSerial);
+}
+
 cls_804A6270::cls_804A6270() {
     field_0x2a8 = 0;
     field_0x2ac = 0;
@@ -177,8 +181,4 @@ cls_804A6270::cls_804A6270() {
     field_0x3ac = -1;
     field_0x3b0 = 0;
     field_0x2c0.clear();
-}
-
-cls_804A6270::~cls_804A6270() {
-    fn_80212AC0()->fn_80212BA0(mSerial);
 }
