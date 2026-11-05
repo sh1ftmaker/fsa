@@ -347,6 +347,7 @@ public:
     void fn_80284430();
     void fn_8028447C();
     void fn_80248604();
+    void fn_80248DD8();
     void fn_8024B2E0(); // tu_8023FBF0 (0x708 bytes, unwritten); r3 = Player
     void fn_8024D134();
     void fn_8028414C();
@@ -355,7 +356,9 @@ public:
     void fn_8027EDDC();
     void fn_80283848();
     void fn_8028434C();
+    void fn_8024E344();
     void fn_8024E3D8();
+    void fn_8024E46C();
     void fn_802810E4();
     void fn_802828A8();
     void fn_80282958();
@@ -785,7 +788,7 @@ public:
     /* 0x1240 */ s32 field_0x1240;
     /* 0x1244 */ s32 field_0x1244;
     /* 0x1248 */ s32 field_0x1248;
-    /* 0x124C */ u8 field_0x124c[0x124D - 0x124C];
+    /* 0x124C */ bool field_0x124c; // fn_80248DD8 sets it (stb 1)
     // Set to 1 by fn_80293760 (stb r4); stored to by other Player functions too (stb r0 / stb r3).
     /* 0x124D */ u8 field_0x124d;
     /* 0x124E */ u8 field_0x124e[0x1274 - 0x124E];
@@ -881,6 +884,7 @@ public:
     bool fn_8024FFC8(s32 arg);
     bool fn_80250030(s32 arg);
     void fn_80252BAC(const JGeometry::TVec3f* offset);
+    bool fn_802517F8(bool a);
     bool fn_802518AC(bool a);
     bool fn_8025190C(bool a);
     void fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c);

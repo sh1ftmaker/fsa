@@ -632,6 +632,26 @@ void Player_804A6F38::fn_80248DCC() {
     field_0x1238 = 0xb4;
 }
 
+void Player_804A6F38::fn_80248DD8() {
+    field_0x1214 = true;
+    if (field_0xd60 >= 0) {
+        field_0x1215 = true;
+        const JGeometry::TVec3f* pos = fn_8023E724(field_0xd60);
+        mPos.x = pos->x;
+        mPos.y = pos->y;
+        mPos.z = pos->z;
+        if (fn_80251BFC(3)) {
+            field_0x1244 = 3;
+            field_0x124c = true;
+            if (field_0xd60 < 0 && field_0xcfe == 1 && field_0x1244 != 0) {
+                field_0xcfe = false;
+            }
+        }
+    }
+    field_0x1224 = 0;
+    field_0x1217 = false;
+}
+
 bool Player_804A6F38::fn_80249068() {
     return field_0x121f;
 }
@@ -766,6 +786,33 @@ bool Player_804A6F38::fn_8024E060() {
     return field_0x1216 != 1;
 }
 
+// FIXME: 99.86. Code identical; the float literal lbl_80540078 (20.0f) is not yet in the original pool order (@NNN vs lbl_).
+void Player_804A6F38::fn_8024E344() {
+    if (field_0x3b4 < 8) {
+        fn_8024E694((s32)(20.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x32, 0);
+    } else {
+        fn_8024E694(0x32, 0);
+    }
+}
+
+// FIXME: 99.86. Code identical; the float literal lbl_8054007C (10.0f) is not yet in the original pool order (@NNN vs lbl_).
+void Player_804A6F38::fn_8024E3D8() {
+    if (field_0x3b4 < 8) {
+        fn_8024E694((s32)(10.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 0x14, 0);
+    } else {
+        fn_8024E694(0x14, 0);
+    }
+}
+
+// FIXME: 99.86. Code identical; the float literal lbl_80540080 (5.0f) is not yet in the original pool order (@NNN vs lbl_).
+void Player_804A6F38::fn_8024E46C() {
+    if (field_0x3b4 < 8) {
+        fn_8024E694((s32)(5.0f * lbl_8053AAF8->mRandom.get_ufloat_1()) + 5, 0);
+    } else {
+        fn_8024E694(5, 0);
+    }
+}
+
 s8 Player_804A6F38::fn_8024EE0C() {
     return field_0x3d9;
 }
@@ -879,6 +926,29 @@ bool Player_804A6F38::fn_80250030(s32 arg) {
 
 u8 Player_804A6F38::fn_802517E4() {
     return field_0x1240 == 0x1a;
+}
+
+bool Player_804A6F38::fn_802517F8(bool a) {
+    cls_804A71A8* sub = field_0xbf0;
+    if (sub->field_0x49 == 1) {
+        return true;
+    }
+    if (sub->field_0x48 == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4c == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4d == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4e == 1) {
+        return true;
+    }
+    if (a == true && sub->field_0x4f == 1) {
+        return true;
+    }
+    return false;
 }
 
 bool Player_804A6F38::fn_802518AC(bool a) {

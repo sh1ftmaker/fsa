@@ -28,7 +28,10 @@ public:
     void fn_8026942C(s32 index, JGeometry::TVec3f* out);
 
     /* 0x4 */ Player_804A6F38* field_0x4;
-    /* 0x8 */ u8 field_0x8[0x4A - 0x8]; // not yet known
+    /* 0x8 */ u8 field_0x8[0x48 - 0x8]; // not yet known
+    // Bytes tested for 1 by the owner's fn_802517F8 (tu_8023FBF0).
+    /* 0x48 */ u8 field_0x48;
+    /* 0x49 */ u8 field_0x49;
     // Bytes tested for 1 by the owner's fn_802518AC / fn_8025190C (tu_8023FBF0).
     /* 0x4A */ u8 field_0x4a;
     /* 0x4B */ u8 field_0x4b;
