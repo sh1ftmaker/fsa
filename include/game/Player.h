@@ -217,7 +217,7 @@ public:
     void fn_80252F5C(s32 arg); // via fn_8023CCE8
     s32 fn_80252F68(); // via fn_8023CD74
     s32 fn_80252F74(); // via fn_8023CE10
-    s32 fn_802577E0(); // via fn_8023B484
+    bool fn_802577E0(); // via fn_8023B484
     bool fn_8025EE34(s32 arg); // via fn_8022F8AC
     bool fn_8025EF68(s32 arg); // via fn_8022F6E8
     bool fn_8025F2CC(); // via fn_8023E8F0
@@ -300,7 +300,10 @@ public:
     void fn_80258BA8(); // clears 0x458, 0xb9f, 0xba0
     void fn_80258BBC(); // clears 0xb79 and 0x1204; mPos.z = 0 unless 0x1244 is 5 or 7
     void fn_80259778(); // field_0x34c = 5.4f
+    void fn_80259784(); // ends the emitters at 0x12c4 and 0x12c8, kills the FIRE actor field_0xb28 (fn_802BAA00)
+    void fn_8025A0B0(); // same body as fn_80259784
     void fn_8025A04C(); // clears 0x458; field_0xb84 = fn_80241794() > 0; 0xb88, 0xb8c = 0, 0xb28 = -1
+    void fn_8025A9C0(); // same body as fn_8025A04C
     void fn_8025AAF4(); // field_0x11f8 = -1
     void fn_8025AEB0(); // field_0x124d = 1, field_0x458 = 0
     void fn_8025AEC4(); // field_0x11f8 = -1
@@ -310,6 +313,7 @@ public:
     void fn_8025BDD8(); // ends the emitters at 0x12cc and 0x12e4, kills the actor field_0x12c0, clears 0x40c
     void fn_8025BDC8(); // clears 0x458 and 0x40c
     void fn_8025C79C(); // clears 0x458, field_0x344 and 0x40c
+    void fn_8025C7BC(); // same body as fn_8025BDD8
     void fn_8025D090(); // clears 0x458, field_0x344 and 0x40c
     void fn_8025D6A0(); // field_0xb9c = 0
     // tu_8027E5BC (dispatch targets of tu_80285E58); fn_80248604, fn_8024D134 and fn_8024E3D8 are tu_8023FBF0 (r3 = Player)
@@ -1150,7 +1154,7 @@ s32 fn_8023A1A4(s32 player); // -> fn_8026FC20; else 0
 bool fn_8023A3DC(s32 player); // -> fn_8026FCB0; else false
 bool fn_8023A51C(s32 player);            // 5+ units. -> player slot present, else false
 bool fn_8023A5B8(s32 player);            // 1 unit. -> fn_8026FC84 (byte 0xB9B, tu_8026FC20); else false
-s32 fn_8023B484(s32 player); // -> fn_802577E0; else 0
+bool fn_8023B484(s32 player); // -> fn_802577E0; else false
 s32 fn_8023B630(s32 player); // -> fn_80272184; else 0
 s32 fn_8023B6CC(s32 player); // -> fn_802721A8; else 0
 s32 fn_8023BC38(s32 player); // -> fn_8023FC2C; else 0

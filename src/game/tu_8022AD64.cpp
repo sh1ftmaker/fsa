@@ -2214,14 +2214,14 @@ bool fn_8023B400(s32 player) {
     return false;
 }
 
-s32 fn_8023B484(s32 player) {
+bool fn_8023B484(s32 player) {
     if (lbl_8053AC90 == NULL) {
-        return 0;
+        return false;
     }
     if (isPlayerActive(player)) {
         return lbl_8053AC90->mPlayers[player]->fn_802577E0();
     }
-    return 0;
+    return false;
 }
 
 s32 fn_8023B5B4(s32 player) {

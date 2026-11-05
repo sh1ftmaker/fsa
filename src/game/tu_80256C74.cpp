@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/ActorManager.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_somaria_block.h"
@@ -118,8 +119,7 @@ bool Player_804A6F38::fn_802576CC(const JGeometry::TBox2f* box, s32 layer, JGeom
     return false;
 }
 
-// FIXME: 96.8. Only the final clrlwi r3, r3, 24 (bool to s32 on the tail call result) is extra; the original returns bool, and then its caller fn_8023B484 (tu_8022AD64, s32 today) would need to return bool too.
-s32 Player_804A6F38::fn_802577E0() {
+bool Player_804A6F38::fn_802577E0() {
     if (fn_80270C88()) {
         return false;
     }
@@ -268,7 +268,57 @@ void Player_804A6F38::fn_80259778() {
     field_0x344.z = 5.4f;
 }
 
+void Player_804A6F38::fn_80259784() {
+    if (field_0x12c4 != NULL) {
+        field_0x12c4->becomeInvalidEmitter();
+        field_0x12c4 = NULL;
+    }
+    if (field_0x12c8 != NULL) {
+        field_0x12c8->becomeInvalidEmitter();
+        field_0x12c8 = NULL;
+    }
+    s32 serial = field_0xb28;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor != NULL) {
+            fn_802BAA00(actor);
+        }
+        field_0xb28 = -1;
+    }
+}
+
 void Player_804A6F38::fn_8025A04C() {
+    field_0x458 = 0;
+    if (fn_80241794() <= 0) {
+        field_0xb84 = false;
+    } else {
+        field_0xb84 = true;
+    }
+    field_0xb88 = 0;
+    field_0xb28 = -1;
+    field_0xb8c = 0;
+}
+
+void Player_804A6F38::fn_8025A0B0() {
+    if (field_0x12c4 != NULL) {
+        field_0x12c4->becomeInvalidEmitter();
+        field_0x12c4 = NULL;
+    }
+    if (field_0x12c8 != NULL) {
+        field_0x12c8->becomeInvalidEmitter();
+        field_0x12c8 = NULL;
+    }
+    s32 serial = field_0xb28;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor != NULL) {
+            fn_802BAA00(actor);
+        }
+        field_0xb28 = -1;
+    }
+}
+
+void Player_804A6F38::fn_8025A9C0() {
     field_0x458 = 0;
     if (fn_80241794() <= 0) {
         field_0xb84 = false;
@@ -373,6 +423,28 @@ void Player_804A6F38::fn_8025C79C() {
     field_0x344.x = 0.0f;
     field_0x344.y = 0.0f;
     field_0x344.z = 0.0f;
+    field_0x40c = 0;
+}
+
+void Player_804A6F38::fn_8025C7BC() {
+    if (field_0x12cc != NULL) {
+        field_0x12cc->clearStatus(JPAEMIT_Immortal);
+        field_0x12cc->becomeInvalidEmitter();
+        field_0x12cc = NULL;
+    }
+    if (field_0x12e4 != NULL) {
+        field_0x12e4->clearStatus(JPAEMIT_Immortal);
+        field_0x12e4->becomeInvalidEmitter();
+        field_0x12e4 = NULL;
+    }
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor != NULL) {
+            actor->mAlive = false;
+        }
+        field_0x12c0 = -1;
+    }
     field_0x40c = 0;
 }
 
