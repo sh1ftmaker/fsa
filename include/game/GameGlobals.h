@@ -1163,22 +1163,24 @@ s32 fn_802BA9F0(ActorBase_804A5770* actor);
 s32 fn_802BA9F8(ActorBase_804A5770* actor);
 }
 
-// A word in .sbss that many units load and pass on in r3 (lwz
-// lbl_8053AEC0@sda21). Its owner unit is not written yet; the type is a
-// pointer (void*) since nothing reads through it in the units that pass it.
-extern void* lbl_8053AEC0;
-// game/tu_8042E964.cpp (0x804316EC, not written yet). Called by
-// cls_804B1D58::fn_804522C8 with lbl_8053AEC0 in r3; its body is unknown.
-extern "C" {
-void fn_804316EC(void* obj);
-// SHARED-EDIT (tu_803F0A54): game/tu_8042E964.cpp (not written yet), called
-// with lbl_8053AEC0 in r3. fn_804310CC: no other arguments
-// (cls_804B0F10::fn_803FC5E4).
-void fn_804310CC(void* obj);
-// fn_80431A9C: r4 an id (0xC4, 0x10B), r5 a byte (clrlwi 24 in
-// cls_804B0F10::fn_803F2AEC), r6 a pointer (addi rN, rM, off in tu_803D7098) or 0.
-void fn_80431A9C(void* obj, s32 id, u8 value, void* arg);
-}
+// SHARED-EDIT (tu_803F0A54, review): the singleton *lbl_8053AEC0
+// (game/tu_8042E964.cpp, owner not written yet), named after its vtable
+// 0x804B1634; its constructor fn_80431D84 stores `this` in lbl_8053AEC0.
+// Size and most fields unknown.
+class cls_804B1634 {
+public:
+    // 0x804316EC: draws field_0x8 with lbl_8053AB10's grafcontext unless
+    // the byte 0xEC is 0. Called by cls_804B1D58::fn_804522C8 (tu_8044C7F0).
+    void fn_804316EC();
+    // 0x804310CC: no arguments besides `this` (lwz 8(r3), J2DPane search at
+    // vtable 0x3C, stores at 0xC and 0xEB). cls_804B0F10::fn_803FC5E4.
+    void fn_804310CC();
+    // 0x80431A9C: r4 an id (0xC4, 0x10B), r5 a byte (clrlwi 24 in
+    // cls_804B0F10::fn_803F2AEC), r6 a pointer (addi rN, rM, off in
+    // tu_803D7098) or 0; reads the byte 0xEC and calls fn_8042EF9C on `this`.
+    void fn_80431A9C(s32 id, u8 value, void* arg);
+};
+extern cls_804B1634* lbl_8053AEC0;
 
 // game/tu_801A0710.cpp (.sdata 0x8053A100, not written yet; -1 in the
 // original): act_terrorpin's vfunc_0x44 compares its field_0x2a8 with it.

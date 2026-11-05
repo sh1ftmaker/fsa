@@ -121,7 +121,7 @@ void cls_804B0F10::fn_803F2660() {
 }
 
 void cls_804B0F10::fn_803F2AEC() {
-    fn_80431A9C(lbl_8053AEC0, 0xC4, field_0x1ac + 2, NULL);
+    lbl_8053AEC0->fn_80431A9C(0xC4, field_0x1ac + 2, NULL);
     field_0x25c = 0;
     field_0x1c8 = field_0x1c4;
     field_0x1c4 = 6;
@@ -354,7 +354,7 @@ void cls_804B0F10::fn_803FC46C() {
 // lbl_805437xx): the literal pool follows first use, and fn_803F0A54 and the other
 // unwritten functions before this one use the earlier literals.
 void cls_804B0F10::fn_803FC5E4(u8 flag) {
-    fn_804310CC(lbl_8053AEC0);
+    lbl_8053AEC0->fn_804310CC();
     if (flag) {
         field_0x1c4 = 7;
         fn_803F267C();

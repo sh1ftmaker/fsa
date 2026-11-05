@@ -21,7 +21,7 @@ s32 fn_8044F664() {
 
 void cls_804B1D58::fn_804522C8() {
     if (field_0xfa == 7 || field_0xfa == 8 || field_0xfa == 9) {
-        fn_804316EC(lbl_8053AEC0);
+        lbl_8053AEC0->fn_804316EC();
     }
 }
 
