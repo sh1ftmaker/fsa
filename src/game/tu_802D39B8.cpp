@@ -859,11 +859,11 @@ u8 GameView_804A9950::fn_802DA000() {
     return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
-// The per-screen reset that fn_802DA010 (0x802DA044-0x802DA454) and fn_802DCE5C
-// (0x802DCE88-0x802DD298) both inline, instruction for instruction; no out-of-line
-// copy is left in the unit.
-// Its bit tables are cleared a word per 32 bits, as in fn_802D9CD8.
-inline void GameView_804A9950::resetScreenState() {
+// Two blocks that fn_802DA010, fn_802DA8DC, fn_802DB6F0 and fn_802DCE5C inline
+// instruction for instruction (no out-of-line copy is left in the unit); fn_802DA8DC
+// stores field_0x131f1-0x131f3 between them, the others run them back to back.
+// Restarts the time limit from the save file's setting (byte 0x7C / 0x7D).
+inline void GameView_804A9950::restartTimeLimit() {
     fn_802D752C(0);
     u8 enabled;
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
@@ -872,6 +872,11 @@ inline void GameView_804A9950::resetScreenState() {
         enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
     }
     fn_802D7440(enabled == 1);
+}
+
+// Clears the current screen's low 16 flag bits, the per-bit counters and values, and the
+// layer slots. The bit table is cleared a word per 32 bits, as in fn_802D9CD8.
+inline void GameView_804A9950::clearScreenState() {
     gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
     for (int i = 0; i < 0x10; i++) {
         gGameRoot_8053AAF8->field_0x4->mView->field_0x308[i] = 0;
@@ -888,16 +893,18 @@ inline void GameView_804A9950::resetScreenState() {
     }
 }
 
-// FIXME: 96.6. Structurally close, two instructions short: the target materialises
+// FIXME: 97.2. Structurally close, two instructions short: the target materialises
 // (byte == 1) as a bool (subfic, cntlzw, extrwi) before the inlined fn_802D7440 compares
 // it with 1; ours folds the compare into the branch (a bool local, a cast, == true or a
-// bool-returning inline do not change it). Reloc-name: 1.0f / -1.0f are pooled after
+// bool-returning inline do not change it); the camera corners as in fn_802DB6F0.
+// Reloc-name: 1.0f / -1.0f are pooled after
 // literals of functions not written yet.
 void GameView_804A9950::fn_802DA010() {
     field_0x14 = field_0x24;
     field_0x18 = field_0x28;
     getActorManager_801F856C()->fn_801F7E88();
-    resetScreenState();
+    restartTimeLimit();
+    clearScreenState();
     fn_8038D454();
     fn_802D8D50(false);
     getActorManager_801F856C()->fn_801F7B18();
@@ -997,7 +1004,13 @@ void GameView_804A9950::fn_802DA788() {
     }
 }
 
-// FIXME: 97.3. Structurally close, two instructions short: the inlined resetScreenState's
+// FIXME: fn_802DA8DC is not written yet. A full draft (scratchpad) reaches 83.8 %, 75
+// instructions long: its two loops over the eight TVec2f slots (0x802DAE38, 0x802DAF04)
+// unroll by two in the target with the slot offsets stepped in registers; ours unroll
+// fully. The rest (the table clears, restartTimeLimit / clearScreenState with the
+// field_0x131f1-0x131f3 stores between them, the fn_802DA010 tail) lines up.
+
+// FIXME: 97.3. Structurally close, two instructions short: the inlined restartTimeLimit's
 // bool materialisation (see fn_802DA010); the target also reuses the loop counter's
 // li r30, 0 for fn_802D782C(0) (as fn_802DA788 does for field_0xc9) and puts the loop's
 // TVec3f below the tile-map temporary on the stack. Reloc-name: 1.0f / -1.0f, as there.
@@ -1007,7 +1020,8 @@ void GameView_804A9950::fn_802DB6F0() {
     field_0x14 = field_0x24;
     field_0x18 = field_0x28;
     getActorManager_801F856C()->fn_801F7E88();
-    resetScreenState();
+    restartTimeLimit();
+    clearScreenState();
     fn_8038D454();
     fn_802D8D50(false);
     getActorManager_801F856C()->fn_801F7B18();
@@ -1076,12 +1090,13 @@ void GameView_804A9950::fn_802DCDF4() {
     clearScreen();
 }
 
-// FIXME: 96.5. Structurally close: as in fn_802DA010, the inlined resetScreenState is
+// FIXME: 96.5. Structurally close: as in fn_802DA010, the inlined restartTimeLimit is
 // three instructions short (the bool materialisation, see there) plus one li.
 bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     bool moved = false;
     if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
-        resetScreenState();
+        restartTimeLimit();
+    clearScreenState();
         if (dir[0] > 0) {
             field_0x14++;
             field_0xc8 = 1;

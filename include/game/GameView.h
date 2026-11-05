@@ -114,8 +114,11 @@ public:
     // resets its state, rebuilds it (fn_802D8D50, fn_802D8328), places the
     // players and the camera and restarts the time limit.
     void fn_802DA010();
-    // Inlined by fn_802DA010 and fn_802DCE5C (no out-of-line copy).
-    inline void resetScreenState();
+    // Inlined by fn_802DA010, fn_802DA8DC (with field_0x131f1-0x131f3 stored
+    // between them), fn_802DB6F0 and fn_802DCE5C; no out-of-line copy
+    // (game/tu_802D39B8.cpp).
+    inline void restartTimeLimit();
+    inline void clearScreenState();
     // Unless fn_802DA000() (returned as is, no clrlwi), moves the four players
     // 70 units against field_0x2c[0]'s direction (fn_80230498) and the first
     // 'OSIN' actor in state 2 with them.
@@ -124,7 +127,9 @@ public:
     // fn_802DEDFC); on success clears the screen (clearScreen), places the
     // players at lbl_8046E148 + mVisibleBox.i and restarts the time limit.
     void fn_802DA788();
-    // 4 units. 0xE14 bytes; no arguments.
+    // 4 units. 0xE14 bytes; no arguments. Resets the whole stage state
+    // (every per-screen table, the slot lists, the TVec2f slots) and enters
+    // the screen (field_0x24, field_0x28) as fn_802DA010 does (not written yet).
     void fn_802DA8DC();
     // 1 unit. 0x670 bytes; no arguments.
     void fn_802DB6F0();
