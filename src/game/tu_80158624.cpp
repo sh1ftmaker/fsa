@@ -69,7 +69,7 @@ void ShadowCircle_804A0160::drawShadow_80158B5C(s32 layer, const JGeometry::TVec
     if (field_0xc >= 0xFF && field_0x4.toUInt32() == 0xFFFFFF00) {
         return;
     }
-    gGameRoot2_8053AB10->fn_8013B438();
+    lbl_8053AB10->fn_8013B438();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
@@ -122,7 +122,7 @@ void ShadowCircle_804A0160::fn_80158F70() {
     GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     f32 fbWidth = (s32)renderMode->fbWidth;
     f32 efbHeight = (s32)renderMode->efbHeight;
-    gGameRoot2_8053AB10->fn_8013B460();
+    lbl_8053AB10->fn_8013B460();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
     GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);

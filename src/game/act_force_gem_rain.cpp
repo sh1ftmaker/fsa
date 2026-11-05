@@ -42,7 +42,7 @@ void ForceGemRain_804A8010::update() {
         }
         if (field_0x24c != 0) {
             if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-                Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+                Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
                 if (cam->field_0x7f4 == 0) {
                     cam->field_0x7f5 = 1;
                 }
@@ -50,7 +50,7 @@ void ForceGemRain_804A8010::update() {
             return;
         }
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -199,7 +199,7 @@ void ForceGemRain_804A8010::update() {
     // fall through
     case 2: {
         if (field_0x244 == 0 || field_0x244 == 1 || field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -291,7 +291,7 @@ void ForceGemRain_804A8010::update() {
     }
     case 3: {
         if (field_0x244 == 1) {
-            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }
@@ -324,7 +324,7 @@ void ForceGemRain_804A8010::update() {
     }
     case 4:
         if (field_0x244 == 0xB || field_0x244 == 0xD) {
-            Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* cam = lbl_8053AB10->field_0x24;
             if (cam->field_0x7f4 == 0) {
                 cam->field_0x7f5 = 1;
             }

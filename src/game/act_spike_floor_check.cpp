@@ -15,7 +15,7 @@ void SpikeFloorCheck_804A8170::update() {
     case 0:
         mTimer--;
         if (mTimer == 0) {
-            gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            lbl_8053AB10->field_0x20->fn_802FA160(
                 lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0, 0, 0x40, 0xC0);
             mState = 1;
             startSound_801F0E34(0x30015, 0);
@@ -43,7 +43,7 @@ void SpikeFloorCheck_804A8170::update() {
     case 2:
         mTimer--;
         if (mTimer == 0) {
-            gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            lbl_8053AB10->field_0x20->fn_802FA160(
                 lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0xC0, 0, 0x40, 0xC0);
             mState = 3;
             startSound_801F0E34(0x30016, 0);
@@ -53,7 +53,7 @@ void SpikeFloorCheck_804A8170::update() {
     case 3:
         mTimer--;
         if (mTimer == 0) {
-            gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            lbl_8053AB10->field_0x20->fn_802FA160(
                 lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
             getGameView_802D6A9C()->fn_802D7920(0);
             mAlive = false;
@@ -68,7 +68,7 @@ void SpikeFloorCheck_804A8170::update() {
 void SpikeFloorCheck_804A8170::init() {
     mType = field_0x90 & 0xFF;
     if ((mType == 0 && vfunc_0x34()) || (mType != 0 && fn_801F856C()->field_0x305c == 1)) {
-        gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+        lbl_8053AB10->field_0x20->fn_802FA160(
             lbl_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
         getGameView_802D6A9C()->fn_802D7920(0);
         mAlive = false;

@@ -25,13 +25,13 @@ void Pot2Generator_804AA6F8::init() {
     field_0x230 = 0;
     for (s32 i = 0; i < 32; i++) {
         for (s32 j = 0; j < 32; j++) {
-            u32 code = gGameRoot2_8053AB10->field_0x20->fn_802F9908(0, field_0x230) & 0x3FF;
+            u32 code = lbl_8053AB10->field_0x20->fn_802F9908(0, field_0x230) & 0x3FF;
             if (code == 0x41) {
                 if (!getGameView_802D6A9C()->fn_802D76A8(id)) {
                     fn_80226CA8(field_0x230, 0, &pos);
                     fn_801F856C()->fn_801F9484(ACTOR_TBO2, 0, &pos, code, id, -1);
                 } else {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(0, field_0x230, 0x12);
+                    lbl_8053AB10->field_0x20->fn_802F9974(0, field_0x230, 0x12);
                 }
                 id++;
             }
@@ -44,13 +44,13 @@ void Pot2Generator_804AA6F8::init() {
         field_0x230 = 0;
         for (s32 i = 0; i < 32; i++) {
             for (s32 j = 0; j < 32; j++) {
-                u32 code = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, field_0x230) & 0x3FF;
+                u32 code = lbl_8053AB10->field_0x20->fn_802F9908(layer, field_0x230) & 0x3FF;
                 if (code == 0x41) {
                     if (!getGameView_802D6A9C()->fn_802D76A8(id)) {
                         fn_80226CA8(field_0x230, layer, &pos);
                         fn_801F856C()->fn_801F9484(ACTOR_TBO2, layer, &pos, code, id, -1);
                     } else {
-                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, field_0x230, 0x12);
+                        lbl_8053AB10->field_0x20->fn_802F9974(layer, field_0x230, 0x12);
                     }
                     id++;
                 }

@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A8250.
-class EnemyCountWipeOutCheck_804A8250 : public ActorBase_804A5770 {
+class cls_804A8250 : public ActorBase_804A5770 {
 public:
-    EnemyCountWipeOutCheck_804A8250() {}
-    /* 0x08 */ virtual ~EnemyCountWipeOutCheck_804A8250();
+    cls_804A8250() {}
+    /* 0x08 */ virtual ~cls_804A8250();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

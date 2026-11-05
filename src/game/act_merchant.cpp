@@ -32,7 +32,7 @@ void Merchant_8049CD48::draw() {
     const JGeometry::TVec3f* pos = &mPos;
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
+        lbl_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
     }
     fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1AB, false, 1, -1, 0, 0, 0);
 }

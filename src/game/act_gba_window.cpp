@@ -15,7 +15,7 @@ void GBAWindowControl_804AA440::update() {
         break;
     case 1:
         if (field_0x23c != 0) {
-            gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+            lbl_8053AB10->field_0x20->field_0x216 = 1;
             field_0x23c--;
         } else {
             field_0x230 = 0;

@@ -452,7 +452,7 @@ void BattleStageSelect_804B1378::fn_804170B0() {
 void BattleStageSelect_804B1378::fn_804170EC() {
     s32 stage = field_0xc * 5 + field_0x10;
     JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
-    gGameRoot2_8053AB10->fn_8013B490();
+    lbl_8053AB10->fn_8013B490();
     if (field_0x109 != 0) {
         u8 alpha;
         if (stage < 10) {
@@ -509,7 +509,7 @@ void BattleStageSelect_804B1378::fn_804170EC() {
         mScreen->search('Pocur01')->setAlpha(alpha);
         mScreen->search('Pocur02')->setAlpha(alpha);
     }
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     if (field_0x109 == 2) {
         lbl_8053AEC4->fn_8042EB98();
     }

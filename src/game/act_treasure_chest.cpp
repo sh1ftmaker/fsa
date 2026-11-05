@@ -180,7 +180,7 @@ void TreasureChest_804AA178::update() {
 
     switch (field_0x230) {
     case 0:
-        if (gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
+        if (lbl_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
             field_0x230 = 1;
         }
         break;

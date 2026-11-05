@@ -3,12 +3,12 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_tingle_wallet.h"
 
-TinglesWallet_804A3948::~TinglesWallet_804A3948() {}
+cls_804A3948::~cls_804A3948() {}
 
 // FIXME: 92%. Only scheduling differs: the target loads the 1.0f argument (lfs f1) and
 // stores params.field_0x10 earlier, before the string address and the mMtx pointer.
 // (The string is also a literal here, lbl_80469120 in the target: a data fix.)
-void TinglesWallet_804A3948::draw() {
+void cls_804A3948::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
     mtx[0][3] = 0.0f;
@@ -32,7 +32,7 @@ void TinglesWallet_804A3948::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, 0xE6, false, 2, -1, 0, 0, 1);
 }
 
-void TinglesWallet_804A3948::update() {
+void cls_804A3948::update() {
     addCalc2_801F71A4(&field_0x3c.x, field_0x24c, 0.3f, 1.0f);
     addCalc2_801F71A4(&field_0x3c.y, field_0x250, 0.3f, 1.0f);
     addCalc2_801F71A4(&field_0x258, field_0x264, 0.2f, 0.1f);
@@ -66,7 +66,7 @@ void TinglesWallet_804A3948::update() {
     }
 }
 
-void TinglesWallet_804A3948::init() {
+void cls_804A3948::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
     mBox.f.x = 8.0f;

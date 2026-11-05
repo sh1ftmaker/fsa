@@ -17,8 +17,8 @@ public:
     cls_804B1C90();
     virtual ~cls_804B1C90();
 
-    // Draws the screen: gGameRoot2_8053AB10->fn_8013B490(), then mScreen at (0, 0)
-    // with gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
+    // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80449070();
     // Resets the screen: sets the first 'TIMG' name on the 'Pt' pictures of
     // the four slots and of the counter, clears field_0x32's bits, and hides

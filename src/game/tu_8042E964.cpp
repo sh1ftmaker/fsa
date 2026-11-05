@@ -30,8 +30,8 @@ void cls_804B1600::fn_8042EB24() {
 
 void cls_804B1600::fn_8042EB98() {
     if (field_0x12 != 0) {
-        gGameRoot2_8053AB10->fn_8013B490();
-        field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        lbl_8053AB10->fn_8013B490();
+        field_0x4->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     }
 }
 
@@ -156,8 +156,8 @@ bool cls_804B1634::fn_80431174(u8 cursor) {
 
 void cls_804B1634::fn_804316EC() {
     if (field_0xec != 0) {
-        gGameRoot2_8053AB10->fn_8013B490();
-        field_0x8->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        lbl_8053AB10->fn_8013B490();
+        field_0x8->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     }
 }
 

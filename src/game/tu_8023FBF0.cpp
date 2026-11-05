@@ -1886,7 +1886,7 @@ void Player_804A6F38::fn_80252FC0() {
 // copies differ only in the frames), so a file-local inline.
 static inline void joinCue(Player_804A6F38* player, s32 at, s32 off) {
     if (player->field_0xd38 == at) {
-        gGameRoot2_8053AB10->field_0x30->fn_8015F8FC(player->field_0x3b4, &player->mPos, 1);
+        lbl_8053AB10->field_0x30->fn_8015F8FC(player->field_0x3b4, &player->mPos, 1);
         if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(player->field_0x11ec))) {
             fn_8030381C(player->field_0x4);
         }
@@ -1915,7 +1915,7 @@ void Player_804A6F38::fn_80253E6C() {
         field_0x11f0--;
     }
     if (field_0x13b8) {
-        gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+        lbl_8053AB10->field_0x20->field_0x216 = 1;
     }
     if (field_0x12c4 != NULL) {
         if (lbl_8053AAF8->field_0x94 == 1 || field_0x121f || field_0x454) {

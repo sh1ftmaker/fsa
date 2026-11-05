@@ -4,11 +4,11 @@
 #include "game/Player.h"
 #include "game/act/act_post_warp_pillar_handling.h"
 
-PostWarpPillarHandling_804AC1F8::~PostWarpPillarHandling_804AC1F8() {}
+cls_804AC1F8::~cls_804AC1F8() {}
 
-void PostWarpPillarHandling_804AC1F8::draw() {}
+void cls_804AC1F8::draw() {}
 
-void PostWarpPillarHandling_804AC1F8::update() {
+void cls_804AC1F8::update() {
     field_0x3c.z -= 0.1;
     bool done = false;
     for (s32 i = 0; i < 4; i++) {
@@ -40,7 +40,7 @@ void PostWarpPillarHandling_804AC1F8::update() {
     }
 }
 
-void PostWarpPillarHandling_804AC1F8::init() {
+void cls_804AC1F8::init() {
     field_0x230 = 0;
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i)) {
@@ -50,6 +50,6 @@ void PostWarpPillarHandling_804AC1F8::init() {
         }
     }
     if (!(field_0x90 & 1)) {
-        gGameRoot2_8053AB10->field_0x2c->field_0xc = 0xff;
+        lbl_8053AB10->field_0x2c->field_0xc = 0xff;
     }
 }

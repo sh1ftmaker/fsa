@@ -196,7 +196,7 @@ void SpreadingFire_804A8A50::update() {
     }
 
     if (field_0x250 != 3) {
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 

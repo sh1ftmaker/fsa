@@ -1372,13 +1372,13 @@ void Player_804A6F38::fn_802870C8() {
     if (!fn_802413E8() && !fn_802DEBF8() && !fn_802DEBA0() && !lbl_8053AAF8->field_0x7e && !fn_80240670() &&
         fn_80246B10(0x40)) {
         if (fn_80246B10(0x100)) {
-            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
             if (!camera->field_0x7f4) {
                 camera->field_0x7f5 = 1;
             }
         } else if (fn_80246B10(0x200)) {
             s32 player = field_0x4;
-            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
             if (!camera->field_0x7f5) {
                 camera->field_0x7f4 = 1;
                 camera->field_0x7f8 = player;

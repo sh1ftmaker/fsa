@@ -43,7 +43,7 @@ inline void cls_8049E7F0::notifySwev() {
 // A sound and a particle burst at the view's centre, from the camera's translation.
 inline void cls_8049E7F0::spawnPuff() {
     JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     pos.x = -camera->field_0x4[0][3];
     pos.y = -camera->field_0x4[1][3];
     startSound_801F0E34(0x30036, 0);

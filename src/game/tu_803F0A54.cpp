@@ -204,7 +204,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
                 params.field_0x0[7] = i + 12;
                 s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
                 void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
             }
         }
     } else if (field_0x210[0] < 112) {
@@ -237,7 +237,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     } else if (field_0x210[0] < 212) {
         for (s32 i = 0; i < 4; i++) {
@@ -258,7 +258,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
             }
             s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
         }
     } else {
         // Slide back to the 2/3-player panes.
@@ -290,7 +290,7 @@ void ConnectScreen_804B0F10::fn_803F0A54() {
             pos.z = 0.0f;
             params.field_0x0[7] = i + 12;
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
         }
     }
 }
@@ -420,7 +420,7 @@ void ConnectScreen_804B0F10::fn_803F35B0() {
             }
         }
     }
-    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    field_0x10->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -499,9 +499,9 @@ void ConnectScreen_804B0F10::fn_803F38A4() {
     }
     field_0xc->search('Pscuro01')->setAlpha(alpha);
     field_0xc->search('Pscuro02')->setAlpha(alpha);
-    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    field_0xc->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
-    gGameRoot2_8053AB10->fn_8013B414(&box, true);
+    lbl_8053AB10->fn_8013B414(&box, true);
     fn_803F0A54();
     lbl_8053AED8->fn_80440EE8();
 }
@@ -569,7 +569,7 @@ void ConnectScreen_804B0F10::fn_803F5410() {
     }
     mScreen->search('Pscuro01')->setAlpha(alpha);
     mScreen->search('Pscuro02')->setAlpha(alpha);
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
 }
 
@@ -860,8 +860,8 @@ void ConnectScreen_804B0F10::fn_803FC304() {
 // lbl_805437xx): the literal pool follows first use, and the unwritten
 // functions before this one (fn_803F1C70 on) use the earlier literals.
 void ConnectScreen_804B0F10::fn_803FC46C() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    lbl_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
     if (field_0x1c4 != 13) {
         (this->*lbl_804B0E4C[field_0x1c4])();
     } else {
@@ -887,7 +887,7 @@ void ConnectScreen_804B0F10::fn_803FC46C() {
             }
             break;
         }
-        gGameRoot2_8053AB10->fn_8013B490();
+        lbl_8053AB10->fn_8013B490();
         field_0x5c->setAlpha(field_0x25d);
         field_0x5c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
     }

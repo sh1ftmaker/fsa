@@ -283,7 +283,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   assigned `v.x = ...; v.y = ...;` (cls_800F802C::fn_800F802C).
 - Emitter deleted and cleared (field read again after bl getEffectSystem_8013C824):
   `deleteEmitter(&mEmitter)` (game/EmitterDelete.h: the manager in a local).
-  act_eyeball_switch EyeballSwitch_804AE678::vfunc_0x24.
+  act_eyeball_switch cls_804AE678::vfunc_0x24.
 - Plain calls, no wrapper: effect `spawnEmitter_8013CC50(field_0x4, &mPos, id, ...)` and
   sound `startSound_801F0E34(id, 0)` (act_coconut.cpp:29-30); actor lookup / spawn
   `fn_801F856C()->findActorBySerial_801F666C(serial)` (act_invisible_npc_wall_tomi.cpp:22),

@@ -78,7 +78,7 @@ void Cloud_8049CBE0::draw() {
     }
     void* res = field_0x2f8[key];
     if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
+        lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
     }
 }
 

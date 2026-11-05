@@ -175,7 +175,7 @@ void fn_801546F4(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
 
 // Keeps pos in the camera's view (3 units call it; they ignore r3).
 void fn_80154718(const JGeometry::TVec3f* pos) {
-    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(pos);
+    lbl_8053AB10->field_0x24->addFocusPoint_8030C210(pos);
 }
 
 // A random float in [0, 1) from the game's RNG. Called from 10 units.

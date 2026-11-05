@@ -72,25 +72,25 @@ cls_804AF480::cls_804AF480() {
     lbl_8053AD80 = this;
     field_0x4 = NULL;
     field_0x8 = NULL;
-    gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+    lbl_8053AB10->field_0x2c->fn_80158B3C();
     if (!lbl_80529DEC.field_0x242) {
         lbl_80529DEC.field_0x242 = 1;
-        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        lbl_8053AB10->field_0x20->fn_802FF798();
         void* res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 0, 0x7000, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 0, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 2, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 2, 0, 0, false);
         res = lbl_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
+        lbl_8053AB10->field_0x20->fn_802F9714(res, 0, 3, 0, 0);
         res = lbl_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs");
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
-        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
+        lbl_8053AB10->field_0x20->fn_802F93F4(res, 0, 3, 0, 0, false);
+        lbl_8053AB10->field_0x20->field_0x2364 = 1;
     }
     if (lbl_8053AAF8->field_0x7f) {
         field_0x4 = new cls_804B1288;

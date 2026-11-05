@@ -7,7 +7,7 @@
 
 // Builds the colour inside, which pairs each temporary with its by-value copy as the original does.
 static inline void drawTorchShadow(s32 layer, const JGeometry::TVec3f* pos, u8 alpha, f32 scale) {
-    gGameRoot2_8053AB10->field_0x2c->drawShadow_80158B5C(layer, pos, JUtility::TColor(0, 0, 0, alpha), scale);
+    lbl_8053AB10->field_0x2c->drawShadow_80158B5C(layer, pos, JUtility::TColor(0, 0, 0, alpha), scale);
 }
 
 void Torch_804A8520::draw() {
@@ -48,14 +48,14 @@ void Torch_804A8520::draw() {
     }
     case 2:
         if (mOn == 1) {
-            gGameRoot2_8053AB10->field_0x2c->field_0xd[0] = 1;
+            lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
             f32 scale = mShadowScale;
             JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
             drawTorchShadow(field_0x4, &pos, 0x80, scale);
         }
         break;
     case 3: {
-        gGameRoot2_8053AB10->field_0x2c->field_0xd[0] = 1;
+        lbl_8053AB10->field_0x2c->field_0xd[0] = 1;
         f32 scale = mShadowScale;
         JGeometry::TVec3f pos(mPos.x, mPos.y - 4.0f, mPos.z);
         drawTorchShadow(field_0x4, &pos, 0xC8, scale);

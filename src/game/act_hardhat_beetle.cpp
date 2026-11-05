@@ -25,7 +25,7 @@ void HardhatBeetle_804A06C0::draw() {
         s32 frame = mFrame + 0x92;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     } else {
         drawSprite_801F06F0("enemy_gc_sob.bin", mFrame + 0x92, NULL, 0, 1.0f, 1.0f);

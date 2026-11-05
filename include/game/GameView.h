@@ -50,7 +50,7 @@ public:
     /* 0x08 */ virtual ~GameView_804A9950(); // fn_802DE604
     /* 0x0C */ virtual void vfunc_0xC();      // fn_802DD808, 0xDFC bytes
     // fn_802DD54C: copies field_0xf0[0] (negated when lbl_8053AAF8->0x5C has
-    // bit 1 set) to gGameRoot2_8053AB10->0x24 + 0x1DC and walks the players.
+    // bit 1 set) to lbl_8053AB10->0x24 + 0x1DC and walks the players.
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void vfunc_0x14(); // fn_802DD548, empty
 
@@ -90,7 +90,7 @@ public:
     // 1 unit (this unused). lbl_804A9530[a][b] when lbl_8053AAF8->0x7F == 1,
     // else lbl_80541128.
     const char* fn_802D9C7C(s32 a, s32 b);
-    // 2 units. Calls fn_8030C85C on gGameRoot2_8053AB10->0x24 (this unused).
+    // 2 units. Calls fn_8030C85C on lbl_8053AB10->0x24 (this unused).
     void fn_802D9CB0();
     // 1 unit. 0x2E4 bytes; no arguments.
     void fn_802D9CD8();
@@ -100,7 +100,7 @@ public:
     void fn_802D9FE8(s32 a, s32 b);
     // 18 units / 26 calls. field_0x24 = a, field_0x28 = b.
     void fn_802D9FF4(s32 a, s32 b);
-    // 1 unit (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8, like
+    // 1 unit (this unused). lbl_8053AB10->0x24's byte at 0x1E8, like
     // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
     u8 fn_802DA000();
     // 1 unit each; no arguments. fn_802DA630 returns 0 or 1 (it moves the four
@@ -114,7 +114,7 @@ public:
     void fn_802DB6F0();
     // 3 units / 6 calls. 0xFAC bytes; no arguments.
     void fn_802DBD60();
-    // 31 units / 42 calls (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8.
+    // 31 units / 42 calls (this unused). lbl_8053AB10->0x24's byte at 0x1E8.
     u8 fn_802DCD0C();
     // 2 units / 5 calls. Unless fn_802DCD0C(), steps field_0x14 by the sign
     // of dir[0] or field_0x18 by that of dir[1], reloads the screen

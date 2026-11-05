@@ -137,7 +137,7 @@ void ActorManager_804A5800::fn_801F6884() {
 }
 
 s32 ActorManager_804A5800::fn_801F68E0() {
-    cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
+    cls_804A03A8* obj = lbl_8053AB10->field_0x30;
     if (!obj->field_0x284) {
         obj->field_0x284 = 1;
         obj->field_0x28c = 0.05f;

@@ -134,7 +134,7 @@ void FourSwitchMonitor_804A80A0::update() {
                         pos.x = snapToCell(pos.x);
                         pos.y = snapToCell(pos.y);
                         fn_80230498(i, &pos, 0xE8, 0xFF, -0x80, -0x80, true);
-                        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
                     }
                 }
             }
@@ -147,7 +147,7 @@ void FourSwitchMonitor_804A80A0::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x23c--;
         if (field_0x23c == 0) {
@@ -184,14 +184,14 @@ void FourSwitchMonitor_804A80A0::update() {
         break;
     case 4:
         if (field_0x234 == 4) {
-            gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+            lbl_8053AB10->field_0x20->field_0x216 = 1;
             if (field_0x23c == field_0x240) {
                 vfunc_0x30(0xFF, true);
             }
         } else {
             for (s32 i = 0; i < 4; i++) {
                 JGeometry::TVec3f pos = *fn_8023E724(i);
-                gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
             }
         }
         if (field_0x23c == 0) {
@@ -211,7 +211,7 @@ void FourSwitchMonitor_804A80A0::update() {
     case 5:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x23c == 0) {
             if (fn_80230534(false)) {

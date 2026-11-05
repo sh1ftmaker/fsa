@@ -89,7 +89,7 @@ bool cls_8049CB58::fn_80104EB0() {
     case 1:
         for (s32 i = 0; i < 4; i++) {
             if (fn_8023F264(i)) {
-                gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(fn_8023E724(i));
+                lbl_8053AB10->field_0x24->addFocusPoint_8030C210(fn_8023E724(i));
             }
         }
         field_0x248--;

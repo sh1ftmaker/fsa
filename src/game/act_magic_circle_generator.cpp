@@ -6,12 +6,12 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 
-void MagicCircleGenerator_804A9FB0::draw() {}
+void cls_804A9FB0::draw() {}
 
 // FIXME: 93.51 %. The -20.0f / 20.0f literals are @508 / @509, not
 // lbl_80541260 / lbl_80541264 (data split), and the search keeps its loop
 // value in r29 where the original has li r28, -1 (r28 = previous serial).
-bool MagicCircleGenerator_804A9FB0::fn_802E7DB8() {
+bool cls_804A9FB0::fn_802E7DB8() {
     mBox.set(-20.0f, -20.0f, 20.0f, 20.0f);
     f32 left = mBox.i.x + mPos.x;
     f32 top = mBox.i.y + mPos.y;
@@ -94,7 +94,7 @@ bool MagicCircleGenerator_804A9FB0::fn_802E7DB8() {
     }
 }
 
-MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
+cls_804A9FB0::~cls_804A9FB0() {
     if (mEmitter230 != NULL) {
         fn_801EE434(mEmitter230);
     }
@@ -112,7 +112,7 @@ MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
     }
 }
 
-void MagicCircleGenerator_804A9FB0::init() {
+void cls_804A9FB0::init() {
     field_0x248 = field_0x90 & 7;
     field_0x24c = 0;
     field_0x264 = 0;

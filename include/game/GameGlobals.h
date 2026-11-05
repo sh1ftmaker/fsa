@@ -124,7 +124,7 @@ struct GameRootSub04_801F856C {
 
     // 0x80139BE8 (game/tu_80139BE8.cpp, not written yet). Calls fn_801F857C on
     // mActorManager, clears lbl_8053ACD0 and the four bytes at 0x235C of
-    // gGameRoot2_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
+    // lbl_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
     void fn_80139BE8();
 
     // 0x80139C84 (game/tu_80139BE8.cpp, not written yet). Calls
@@ -132,13 +132,13 @@ struct GameRootSub04_801F856C {
     void fn_80139C84();
 
     // 0x80139CC4 (game/tu_80139BE8.cpp, not written yet). Calls fn_8013B438 on
-    // gGameRoot2_8053AB10 twice around the vfunc_0x14 of mView, fn_8023F2BC, fn_801F8658
+    // lbl_8053AB10 twice around the vfunc_0x14 of mView, fn_8023F2BC, fn_801F8658
     // on mActorManager and fn_801902D0 on field_0x20; then fn_8016DA6C on
-    // field_0x24 unless gGameRoot2_8053AB10->field_0x39 is set.
+    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
     void fn_80139CC4();
 
     // 0x80139D3C (game/tu_80139BE8.cpp, not written yet). Calls fn_8016DB60 on
-    // field_0x24 unless gGameRoot2_8053AB10->field_0x39 is set.
+    // field_0x24 unless lbl_8053AB10->field_0x39 is set.
     void fn_80139D3C();
 };
 
@@ -318,7 +318,7 @@ struct GameRoot_8049EF20 {
     // (cls_804A7BE8's destructor, with 0), game/tu_8023FBF0.cpp and game/tu_802D39B8.cpp.
     void fn_80134FE0(u8 value);
     // Owner: game/tu_80134C04.cpp (0x80134CC8). Whether the game is paused
-    // (field_0x4c == 11 or field_0x88 == 2) and the fade object gGameRoot2_8053AB10->0x2C
+    // (field_0x4c == 11 or field_0x88 == 2) and the fade object lbl_8053AB10->0x2C
     // has its byte at 0xC clear (0xC is 0 when it is idle).
     u8 fn_80134CC8();
     // Owner: game/tu_80134C04.cpp (0x80134D20; called by tu_8044C7F0).
@@ -572,7 +572,7 @@ s32 fn_801CB7CC(s16 angle);
 // holds for every player that takes part (fn_80138A30); takes no arguments.
 bool fn_801CCF7C();
 
-// The objects at gGameRoot2_8053AB10->0x2C and 0x30, named after their vtables
+// The objects at lbl_8053AB10->0x2C and 0x30, named after their vtables
 // (stored at 0 by their constructors); no members declared yet. 0x20
 // (TileMap_804AA858) is in game/Map.h, 0x24 (Camera_804AA9E4) in game/Camera.h.
 // 0x804A0160: game/tu_80158624.cpp, constructor fn_801594E8, 0x10 bytes.
@@ -593,12 +593,12 @@ public:
 
     // 0x80158B3C (owner unit game/tu_80158624.cpp, not written yet). Resets
     // the colour bytes: 0x4-0x6 = 0xFF, 0x7 = 0, 0xC = 0xFF. `this` is
-    // gGameRoot2_8053AB10->0x2C; called by tu_8039003C's constructor.
+    // lbl_8053AB10->0x2C; called by tu_8039003C's constructor.
     void fn_80158B3C();
 
     // 0x80158B5C (owner unit game/tu_80158624.cpp, not written yet). Draws a
     // shadow-like sprite on `layer` (< 8) at *pos with a colour and scale;
-    // `this` is gGameRoot2_8053AB10->0x2C. Called by tu_802201D8's draw (colour
+    // `this` is lbl_8053AB10->0x2C. Called by tu_802201D8's draw (colour
     // 0,0,0,0x80; scale 24.0f). The colour is a TColor passed by value (a
     // stack copy, its address in r6).
     void drawShadow_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale);
@@ -615,10 +615,10 @@ public:
 
     // 0x80158F70 (owner unit game/tu_80158624.cpp, not written yet). Draws up
     // to three quads the size of the render mode (JUTVideo::sManager); `this`
-    // is gGameRoot2_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
+    // is lbl_8053AB10->0x2C. Skipped when the colour is 0xFFFFFF00 and 0xC is 0xFF.
     void fn_80158F70();
     // 0x80158E88 (game/tu_80158624.cpp). Sets up the two lights; reads no
-    // member. Called with this = gGameRoot2_8053AB10->0x2C by fn_8013BB18.
+    // member. Called with this = lbl_8053AB10->0x2C by fn_8013BB18.
     void fn_80158E88();
 }; // Size: 0x10
 // 0x80543F28 (.sbss2, 8 bytes; no owner split yet). Its word is the colour
@@ -647,7 +647,7 @@ public:
     // Virtual destructor: GameRoot2_8049F108's destructor calls vtable slot 2.
     virtual ~cls_804A03A8();
     // 0x8015F9C0, 0x8016005C, 0x801601E0 (game/tu_8015F454.cpp, not written
-    // yet): called with this = gGameRoot2_8053AB10->0x30 by tu_8013AAD4.
+    // yet): called with this = lbl_8053AB10->0x30 by tu_8013AAD4.
     void fn_8015F9C0();
     // 0x8015F8FC (not written yet): (layer, position, 1) from the player's
     // update fn_80253E6C; layers 8 and up are ignored.
@@ -663,13 +663,13 @@ public:
 
 struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
 
-// *gGameRoot2_8053AB10: the second most-used singleton (267 units). Set in
+// *lbl_8053AB10: the second most-used singleton (267 units). Set in
 // game/tu_8013AAD4.cpp (0x8013C024) and game/tu_80134C04.cpp (0x801393C4).
 // Named after its vtable, 0x8049F108 (constructor fn_8013BFEC, which
 // allocates every member below and stores it at the offset given).
 struct GameRoot2_8049F108 {
     // Constructor (0x8013BFEC, game/tu_8013AAD4.cpp): stores itself in
-    // gGameRoot2_8053AB10 and allocates every member below on a solid heap or on
+    // lbl_8053AB10 and allocates every member below on a solid heap or on
     // `heap`. The vtable (0x8049F108) has only the destructor (0x8013BE60).
     GameRoot2_8049F108(JKRHeap* heap);
     virtual ~GameRoot2_8049F108();
@@ -730,22 +730,22 @@ struct GameRoot2_8049F108 {
     // game/tu_8013AAD4.cpp: hand the video manager the NTSC interlaced
     // (lbl_8049F090) / progressive (lbl_8049F0CC) render mode. Members: the
     // only caller, Title_804AF820::fn_803A44D8 (game/tu_803A3484.cpp), loads
-    // gGameRoot2_8053AB10 into r3 before each call.
+    // lbl_8053AB10 into r3 before each call.
     void fn_8013AAD4();
     void fn_8013AB00();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet). Calls
-    // field_0x24->fn_8030DFE8(0); `this` is gGameRoot2_8053AB10. Called twice by
+    // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by
     // fn_80139CC4 (game/tu_80139BE8.cpp).
     void fn_8013B438();
     // 0x8013B460 (between fn_8013B438 and fn_8013B490; body not yet known).
-    // Called with `this` = gGameRoot2_8053AB10 by ShadowCircle_804A0160::fn_80158F70
+    // Called with `this` = lbl_8053AB10 by ShadowCircle_804A0160::fn_80158F70
     // (game/tu_80158624.cpp), before its GX setup.
     void fn_8013B460();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet; same unit as the
     // constructor). Calls vtable slot 5 of field_0x10 (the J2DOrthoGraph);
-    // `this` is gGameRoot2_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
+    // `this` is lbl_8053AB10. Called by tu_803DA6B4's fn_803DA6B4 before
     // J2DScreen::draw.
     void fn_8013B490();
     // game/tu_8013AAD4.cpp. Called by GameRoot_8049EF20::fn_80137300
@@ -766,7 +766,7 @@ struct GameRoot2_8049F108 {
     void fn_8013B3F0();
 };
 
-extern GameRoot2_8049F108* gGameRoot2_8053AB10;
+extern GameRoot2_8049F108* lbl_8053AB10;
 
 // The input object *lbl_8053AD30 (game/tu_803099FC.cpp, owner not written
 // yet): named after its vtable, 0x804AA8C8 (constructor fn_8030AC4C, which
@@ -1593,7 +1593,7 @@ void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const c
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
                  J3DAnmTextureSRTKey** btk1Out, J3DAnmTextureSRTKey** btk2Out,
                  J3DAnmTevRegKey** brk1Out, J3DAnmTevRegKey** brk2Out);
-// game/tu_8013AAD4.cpp: draws gGameRoot2_8053AB10's two J3D draw buffers
+// game/tu_8013AAD4.cpp: draws lbl_8053AB10's two J3D draw buffers
 // (fn_8013AB2C), places and enters a model (fn_8013ABCC) and sets them and
 // the J3D view matrix (fn_8013AC54).
 void fn_8013AB2C();
@@ -1661,7 +1661,7 @@ public:
     cls_804B1634();
     // Slot 0x8 of the vtable 0x804B1634 (fn_80431C38, game/tu_8042E964.cpp).
     virtual ~cls_804B1634();
-    // 0x804316EC: draws field_0x8 with gGameRoot2_8053AB10's grafcontext unless
+    // 0x804316EC: draws field_0x8 with lbl_8053AB10's grafcontext unless
     // the byte 0xEC is 0. Called by cls_804B1D58::fn_804522C8 (tu_8044C7F0).
     void fn_804316EC();
     // 0x804310CC: no arguments besides `this` (lwz 8(r3), J2DPane search at

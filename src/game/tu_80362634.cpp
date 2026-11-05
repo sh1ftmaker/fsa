@@ -16,7 +16,7 @@ void cls_804ADF28::fn_80362634() {
 void cls_804ADF28::fn_80362B14() {
     void* res = fn_804032E8('TIMG', "fune.bti");
     if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, NULL);
+        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, NULL);
     }
 }
 

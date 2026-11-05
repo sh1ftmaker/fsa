@@ -56,7 +56,7 @@ void ShadowLinkGenerator_804A4310::draw() {
         s32 layer = field_0x4;
         void* res = mTexture;
         if (layer < 8) {
-            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+            lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
     }
 }

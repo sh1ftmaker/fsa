@@ -15,7 +15,7 @@
 static inline void drawSob(const char* name, const JGeometry::TVec3f& pos, s32 frame,
                            SpriteParams_801F5AE0* params) {
     void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', name);
-    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
+    lbl_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, params, 1.0f, 1.0f);
 }
 
 // drawSob on the TV layers (below 8); the GBA layers draw through
@@ -80,7 +80,7 @@ void Player_804A6F38::fn_80264998() {
         markParams.field_0x2d = 1;
         s32 counter = lbl_8053AAF8->field_0x5c;
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
+        lbl_8053AB10->field_0x20->fn_802F86CC(&field_0xcb0, res, 0x73 + index * 3 + counter / 6 % 3,
                                               &markParams, 1.0f, 1.0f);
     }
     SpriteParams_801F5AE0 shadowParams;

@@ -605,7 +605,7 @@ extern "C" {
 // through the archive at lbl_8053AAF8->0xA4 (vtable slot 0x18,
 // 0x801EF7B4-0x801EF7F4) and hands it with pos, arg1 and params (a
 // SpriteParams_801F5AE0 or NULL, then defaults are used) to fn_802F86CC
-// (gGameRoot2_8053AB10->0x20).
+// (lbl_8053AB10->0x20).
 void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                  SpriteParams_801F5AE0* params);
 

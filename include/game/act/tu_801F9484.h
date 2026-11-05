@@ -31,10 +31,10 @@ public:
 }; // Size: 0x268
 
 // Spawned for 'SIBT'.
-class TempleBTIDisplay_8049CB04 : public ActorBase_804A5770 {
+class cls_8049CB04 : public ActorBase_804A5770 {
 public:
-    TempleBTIDisplay_8049CB04() {}
-    /* 0x08 */ virtual ~TempleBTIDisplay_8049CB04();
+    cls_8049CB04() {}
+    /* 0x08 */ virtual ~cls_8049CB04();
     /* 0x230 */ u8 field_0x230[0x18];
 }; // Size: 0x248
 
@@ -216,18 +216,18 @@ public:
 }; // Size: 0x338
 
 // Spawned for 'ALCE'.
-class AllEnemiesDefeated_804A2AB0 : public ActorBase_804A5770 {
+class cls_804A2AB0 : public ActorBase_804A5770 {
 public:
-    AllEnemiesDefeated_804A2AB0() {}
-    /* 0x08 */ virtual ~AllEnemiesDefeated_804A2AB0();
+    cls_804A2AB0() {}
+    /* 0x08 */ virtual ~cls_804A2AB0();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
 // Spawned for 'SYKY'.
-class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
+class cls_804A2B18 : public ActorBase_804A5770 {
 public:
-    ShootingGallery_804A2B18() {}
-    /* 0x08 */ virtual ~ShootingGallery_804A2B18();
+    cls_804A2B18() {}
+    /* 0x08 */ virtual ~cls_804A2B18();
     /* 0x230 */ u8 field_0x230[0x80];
 }; // Size: 0x2B0
 
@@ -240,10 +240,10 @@ public:
 }; // Size: 0x354
 
 // Spawned for 'SAYA'.
-class ZoraFishHerding_804A2E30 : public ActorBase_804A5770 {
+class cls_804A2E30 : public ActorBase_804A5770 {
 public:
-    ZoraFishHerding_804A2E30() {}
-    /* 0x08 */ virtual ~ZoraFishHerding_804A2E30();
+    cls_804A2E30() {}
+    /* 0x08 */ virtual ~cls_804A2E30();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
@@ -342,10 +342,10 @@ public:
 }; // Size: 0x320
 
 // Spawned for 'SWTH'.
-class Switch_804A7F38 : public ActorBase_804A5770 {
+class cls_804A7F38 : public ActorBase_804A5770 {
 public:
-    Switch_804A7F38() {}
-    /* 0x08 */ virtual ~Switch_804A7F38();
+    cls_804A7F38() {}
+    /* 0x08 */ virtual ~cls_804A7F38();
     /* 0x230 */ u8 field_0x230[0x38];
 }; // Size: 0x268
 
@@ -376,10 +376,10 @@ public:
 }; // Size: 0x2F8
 
 // Spawned for 'SWDL'.
-class PlayerSwordLevelCheckNPC_804AA590 : public ActorBase_804A5770 {
+class cls_804AA590 : public ActorBase_804A5770 {
 public:
-    PlayerSwordLevelCheckNPC_804AA590() {}
-    /* 0x08 */ virtual ~PlayerSwordLevelCheckNPC_804AA590();
+    cls_804AA590() {}
+    /* 0x08 */ virtual ~cls_804AA590();
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
@@ -408,10 +408,10 @@ public:
 }; // Size: 0x26C
 
 // Spawned for 'BEMN'.
-class BeeManager_804AC810 : public ActorBase_804A5770 {
+class cls_804AC810 : public ActorBase_804A5770 {
 public:
-    BeeManager_804AC810() {}
-    /* 0x08 */ virtual ~BeeManager_804AC810();
+    cls_804AC810() {}
+    /* 0x08 */ virtual ~cls_804AC810();
     /* 0x230 */ u8 field_0x230[0x54];
 }; // Size: 0x284
 

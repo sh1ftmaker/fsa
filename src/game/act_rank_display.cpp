@@ -77,7 +77,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F50[field_0x244[i]]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -107,7 +107,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noItem_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -137,7 +137,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', "kk_noMagic_01.bti");
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;
@@ -171,7 +171,7 @@ void RankDisplay_804A8F74::draw() {
                 void* res = fn_804030C4('TIMG', lbl_804A8F60[field_0x28c[i] - 4]);
                 JGeometry::TVec3f pos(mPos.x, mPos.y - 28.0f, mPos.z);
                 if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+                    lbl_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
                 }
             }
             break;

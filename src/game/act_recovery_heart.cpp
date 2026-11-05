@@ -163,7 +163,7 @@ void RecoveryHeart_8049F4F0::update() {
 
     if (field_0x4 < 8) {
         JGeometry::TVec3f camPos(mPos.x, mPos.y - mPos.z, 0.0f);
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
+        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&camPos);
     }
 }
 

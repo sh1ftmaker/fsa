@@ -162,8 +162,8 @@ void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const c
 // unit's first pool literals (0.125, 1, 0.5, 0, then the int-to-float double),
 // which come before fn_8016A7DC's 1.5 in the original .sdata2.
 void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half) {
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
-    TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
+    TileMap_804AA858* map = lbl_8053AB10->field_0x20;
     f32 sx = 0.125f / (f32)map->field_0x2380;
     f32 sy = 0.125f / (f32)map->field_0x2384;
     f32 inv = 1.0f / camera->field_0x858;
@@ -188,7 +188,7 @@ void GameRootSub24_8016A3AC::fn_8016A7DC(J3DModel* model, const JGeometry::TVec3
     Mtx mtx;
     JGeometry::TVec3f off;
     f32 z = 1.5f * (f32)(dir << 10);
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     if (followX) {
         f32 c = -camera->field_0x4[0][3];
         f32 d = c * parallax;
@@ -316,8 +316,8 @@ void GameRootSub24_8016A3AC::fn_8016ADE0() {
         getMapTexView(center, half);
         center.x -= scroll;
         center.y -= scroll;
-        gGameRoot2_8053AB10->fn_8013B460();
-        gGameRoot2_8053AB10->fn_8013B1E8();
+        lbl_8053AB10->fn_8013B460();
+        lbl_8053AB10->fn_8013B1E8();
         field_0xf4->load(GX_TEXMAP0);
         GXColor color = {0, 0, 0, field_0x1ec};
         GXSetTevColor(GX_TEVREG0, color);
@@ -345,7 +345,7 @@ void GameRootSub24_8016A3AC::fn_8016B054() {
 
 void GameRootSub24_8016A3AC::fn_8016B0B0() {
     if (field_0x1cf) {
-        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
         f32 scale = 6.0f / camera->field_0x858;
         for (s32 i = 0; i < 6; i++) {
             if (field_0x3c[i] == NULL) {
@@ -399,8 +399,8 @@ void GameRootSub24_8016A3AC::fn_8016B248() {
         center.x += 0.5f;
         center.y += 0.375f;
         half.mul(JGeometry::TVec3f(1.0f, 0.75f, 1.0f));
-        gGameRoot2_8053AB10->fn_8013B460();
-        gGameRoot2_8053AB10->fn_8013B1E8();
+        lbl_8053AB10->fn_8013B460();
+        lbl_8053AB10->fn_8013B1E8();
         field_0x120->load(GX_TEXMAP0);
         GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
         GXBegin(GX_QUADS, GX_VTXFMT0, 4);
@@ -457,7 +457,7 @@ void GameRootSub24_8016A3AC::fn_8016DA6C() {
 
 void GameRootSub24_8016A3AC::fn_8016DCEC() {
     if (isGameModeSet() && field_0x1cf && lbl_8053AAF8->field_0x4c != 0xB) {
-        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
         fn_8016D398(camera->field_0x4, field_0x1c0, false, !field_0x1d0, &field_0x140, &field_0x1b0,
                     &field_0x1b8, &field_0x1b4, &field_0x54, &field_0x6c, 6.0f / camera->field_0x858);
     }

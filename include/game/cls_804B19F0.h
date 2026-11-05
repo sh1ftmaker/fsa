@@ -15,7 +15,7 @@ public:
     /* 0x08 */ virtual ~cls_804B19F0();
 
     // Owner: game/tu_80441A1C.cpp. Draws field_0x4 at the origin with the
-    // ortho context of gGameRoot2_8053AB10, when field_0x18 is not 0.
+    // ortho context of lbl_8053AB10, when field_0x18 is not 0.
     void fn_80442200();
     // Owner: game/tu_80441A1C.cpp. Resets the pane and counters for a new
     // text window: field_0x10 = arg, field_0x14 = index - 1, field_0x18 = 1.

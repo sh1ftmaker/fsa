@@ -26,7 +26,7 @@ void ThwompSwitch_804A8940::update() {
                 vfunc_0x30(0xFF, true);
                 return;
             }
-            if (gGameRoot2_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
+            if (lbl_8053AB10->field_0x24->fn_8030C2A8(&mPos) == 1) {
                 vfunc_0x30(0xFF, true);
                 return;
             }

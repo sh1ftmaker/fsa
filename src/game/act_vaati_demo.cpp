@@ -118,7 +118,7 @@ void cls_8049D940::draw() {
         void* res = field_0x31c[field_0x238.mKey];
         if (res != NULL) {
             if (field_0x4 < 8) {
-                gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+                lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
             }
         }
     }
@@ -147,7 +147,7 @@ void cls_8049D940::fn_801158B8() {
     pos = mPos;
     pos.z = 0.0f;
     if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
+        lbl_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
     }
 }
 

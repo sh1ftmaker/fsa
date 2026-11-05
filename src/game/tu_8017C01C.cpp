@@ -37,7 +37,7 @@ void fn_8017EB0C(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
 
 // Sets the sub-object's field_0x284 flag and its field_0x28c value, once.
 bool fn_8017EB1C(f32 value) {
-    cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
+    cls_804A03A8* sub = lbl_8053AB10->field_0x30;
     if (sub->field_0x284 == 0) {
         sub->field_0x284 = 1;
         sub->field_0x28c = value;
@@ -51,7 +51,7 @@ bool fn_8017EB1C(f32 value) {
 // Starts a scripted camera move (mode 4) to pos unless one is already set.
 u8 fn_8017EB44(const JGeometry::TVec3f* pos) {
     s32 result = 0;
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     if (camera->field_0x7f5 == 0) {
         camera->field_0x7f4 = 1;
         camera->field_0x7f8 = 4;
@@ -65,7 +65,7 @@ u8 fn_8017EB44(const JGeometry::TVec3f* pos) {
 // Whether both corners of box are on screen. corner2 is declared before corner and
 // camera before result only to steer the stack slots and register order to the original's.
 bool fn_8017EB94(const JGeometry::TBox2f* box) {
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     bool result = false;
     JGeometry::TVec3f corner2;
     JGeometry::TVec3f corner(box->i.x, box->i.y, 0.0f);
@@ -93,7 +93,7 @@ void fn_8017EC5C(JGeometry::TBox2f* box, f32 x0, f32 y0, f32 x1, f32 y1) {
 // Fixes the camera on pos (both corners of its box) with `value`, once.
 u8 fn_8017EC70(const JGeometry::TVec3f* pos, f32 value) {
     s32 result = 0;
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     if (camera->field_0x840 == 0) {
         result = 1;
         camera->field_0x840 = 1;
@@ -110,7 +110,7 @@ u8 fn_8017EC70(const JGeometry::TVec3f* pos, f32 value) {
 // Sets the camera's field_0x178 flag unless field_0x179 is set.
 u8 fn_8017ECC0() {
     s32 result = 0;
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    Camera_804AA9E4* camera = lbl_8053AB10->field_0x24;
     if (camera->field_0x179 == 0) {
         result = 1;
         camera->field_0x178 = 1;
@@ -128,9 +128,9 @@ void fn_8017ECF4(JUtility::TColor* color, u8 r, u8 g, u8 b, u8 a) {
     color->set(r, g, b, a);
 }
 
-// Sets the map's field_0x216 flag (gGameRoot2_8053AB10->0x20, TileMap_804AA858; 9 units
+// Sets the map's field_0x216 flag (lbl_8053AB10->0x20, TileMap_804AA858; 9 units
 // set it to 1). Takes no arguments; the caller is the fn_8017C4C8 branch of
 // the actor update.
 void fn_8017ED08() {
-    gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+    lbl_8053AB10->field_0x20->field_0x216 = 1;
 }

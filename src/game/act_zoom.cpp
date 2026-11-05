@@ -27,7 +27,7 @@ void Zoom_804A9DF8::update() {
         JGeometry::TBox2f box(mBox);
         box.addPos(p);
         if (fn_8023AF14(&box, field_0x4, false, 0.0f) >= 0) {
-            if (takeCamera(gGameRoot2_8053AB10->field_0x24) == 1) {
+            if (takeCamera(lbl_8053AB10->field_0x24) == 1) {
                 if (field_0x90 >> 27) {
                     vfunc_0x30(0xFF, true);
                 }
@@ -52,7 +52,7 @@ void Zoom_804A9DF8::update() {
         }
         break;
     case 2:
-        takeCamera(gGameRoot2_8053AB10->field_0x24);
+        takeCamera(lbl_8053AB10->field_0x24);
         if (mTimer == 0) {
             mState = 3;
         } else {
@@ -60,7 +60,7 @@ void Zoom_804A9DF8::update() {
         }
         break;
     case 3:
-        takeCamera(gGameRoot2_8053AB10->field_0x24);
+        takeCamera(lbl_8053AB10->field_0x24);
         if (field_0x238 == 0) {
             if (fn_80230534(false) == 1) {
                 fn_801F3668();

@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804A9C78.
-class AdvanceNoticeSE_804A9C78 : public ActorBase_804A5770 {
+class cls_804A9C78 : public ActorBase_804A5770 {
 public:
-    AdvanceNoticeSE_804A9C78() {}
-    /* 0x08 */ virtual ~AdvanceNoticeSE_804A9C78();
+    cls_804A9C78() {}
+    /* 0x08 */ virtual ~cls_804A9C78();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

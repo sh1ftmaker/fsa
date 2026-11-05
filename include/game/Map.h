@@ -3,7 +3,7 @@
 
 // The stage map and its collision, from three units:
 //
-// * game/tu_802F5040.cpp: TileMap_804AA858, the object at gGameRoot2_8053AB10->0x20
+// * game/tu_802F5040.cpp: TileMap_804AA858, the object at lbl_8053AB10->0x20
 //   (124 consumer units). It holds the screen's tile layers (u16 tile codes
 //   on a 32 x 32 grid of 16-unit cells, fn_802F9908 / fn_802F9974) and
 //   draws the "SOB " sprites (fn_802F86CC, fn_802F745C).
@@ -145,7 +145,7 @@ public:
     /* 0x58 */ u8 field_0x58[0x88 - 0x58];
 }; // Size: 0x88
 
-// gGameRoot2_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
+// lbl_8053AB10->0x20. Named after its vtable (0x804AA858, one slot);
 // allocated with __nw__(0xE464, heap, 0) in game/tu_8013AAD4.cpp
 // (0x8013C230-0x8013C25C).
 class TileMap_804AA858 {

@@ -28,7 +28,7 @@ void cls_804A6100::vfunc_0xA0() {
     box.i.y += mPos.y;
     box.f.x += mPos.x;
     box.f.y += mPos.y;
-    gGameRoot2_8053AB10->field_0x24->fn_8030C058(&box);
+    lbl_8053AB10->field_0x24->fn_8030C058(&box);
 }
 
 bool cls_804A6100::vfunc_0x60() {

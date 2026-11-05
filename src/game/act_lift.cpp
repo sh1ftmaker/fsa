@@ -48,7 +48,7 @@ void Lift_804A6F6C::draw() {
     const char* name = lbl_804A6F48[getMode()];
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('TIMG', name);
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        lbl_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
 }
 

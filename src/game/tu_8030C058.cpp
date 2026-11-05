@@ -29,8 +29,8 @@ u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
 void Camera_804AA9E4::fn_8030C85C() {
     field_0x1e8 = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot2_8053AB10->field_0x20->field_0x235c[i]) {
-            gGameRoot2_8053AB10->field_0x20->field_0x2360[i] = 0;
+        if (lbl_8053AB10->field_0x20->field_0x235c[i]) {
+            lbl_8053AB10->field_0x20->field_0x2360[i] = 0;
         }
     }
     getGameView_802D6A9C()->fn_802DCDF4();

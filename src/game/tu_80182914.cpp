@@ -251,7 +251,7 @@ void cls_804A1718::init() {
     field_0x230 = 0;
 }
 
-// Returns the colour of the ShadowCircle_804A0160 at gGameRoot2_8053AB10->0x2C.
+// Returns the colour of the ShadowCircle_804A0160 at lbl_8053AB10->0x2C.
 JUtility::TColor fn_8018330C() {
-    return gGameRoot2_8053AB10->field_0x2c->field_0x4;
+    return lbl_8053AB10->field_0x2c->field_0x4;
 }

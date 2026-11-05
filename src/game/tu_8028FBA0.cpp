@@ -73,7 +73,7 @@ inline void Player_804A6F38::followCamera() {
     if (field_0x3b4 < 8) {
         JGeometry::TVec3f pos = mPos;
         pos.y -= 150.0f;
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
 

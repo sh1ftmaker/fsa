@@ -8,7 +8,7 @@
 // "BgRewrite_804A7C98" is a provisional descriptive name carrying its
 // vtable address (docs/PLAN.md, "Placeholder names"). Evidence for "BG
 // rewrite": nearly every function of the unit writes tile codes into the
-// map's tile layers (gGameRoot2_8053AB10->0x20, TileMap_804AA858::fn_802F9974, 0x2C
+// map's tile layers (lbl_8053AB10->0x20, TileMap_804AA858::fn_802F9974, 0x2C
 // calls in fn_802A20F0 alone; the packed cell index comes from fn_80226BC4)
 // and then sets GameView_804A9950::field_0x131de through fn_802D782C(1),
 // which the BGWC actor ("BG-rewrite check switch", docs/names/actors.tsv,

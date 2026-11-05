@@ -30,7 +30,7 @@ fn_8013DA10). Structural +2
 - spawnEmitter_8013CC50 (0x960): written, 99.86 %, code identical (try.py: scheduling+regalloc + reloc-name, the
   only differing lines are the two .sdata2 relocations). A free function, not an EffectSystem member:
   r3 is the layer (cmpwi r3, 0 picks the emitter path vs the helper-actor switch), the system is
-  read through gGameRoot2_8053AB10->0x28. Signature unchanged from Effect.h (s32, const TVec3f*, u16,
+  read through lbl_8053AB10->0x28. Signature unchanged from Effect.h (s32, const TVec3f*, u16,
   s32, s32, JPAEmitterCallBack*, JPAParticleCallBack*, bool, f32); now C++ linkage, symbols.txt
   renamed to spawnEmitter_8013CC50__FlPCQ29JGeometry8TVec3<f>UsllP18JPAEmitterCallBackP19JPAParticleCallBackbf.
   No caller changed %. Findings: the group test is `group != 2 && != 4 && != 5 && != 8 && != 10`

@@ -23,8 +23,8 @@ public:
     // field_0x2c, hundredths from field_0x28) are set when the first pane's
     // byte is set. Clears field_0x30 at the end.
     void fn_804465B8();
-    // Calls gGameRoot2_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
-    // gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Calls lbl_8053AB10->fn_8013B490(), then draws mScreen at (0, 0) with
+    // lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_80446D68();
     // Per slot: clears the slot's two bits of field_0x30, sets the ten picture
     // panes of the slot to the first 'TIMG' name and hides

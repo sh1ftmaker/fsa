@@ -4,7 +4,7 @@
 // The 2D camera of game/tu_8030C058.cpp: one instance, allocated with
 // __nw__(0x85C, heap, 0) and built by its constructor fn_8030E718 in
 // game/tu_8013AAD4.cpp (0x8013C264-0x8013C280), stored at
-// gGameRoot2_8053AB10->0x24. 94 game units use the unit, 77 of them through
+// lbl_8053AB10->0x24. 94 game units use the unit, 77 of them through
 // addFocusPoint_8030C210.
 //
 // "Camera_804AA9E4" is a provisional name carrying its vtable address
@@ -19,7 +19,7 @@
 // the points the camera has to keep in view.
 //
 // Conventions follow GameView.h: members for the exports other units call
-// with the camera in r3 (all pass gGameRoot2_8053AB10->0x24), with their mangled
+// with the camera in r3 (all pass lbl_8053AB10->0x24), with their mangled
 // names in symbols.txt, so a changed parameter type is a symbols.txt rename
 // too. "N units" counts the other game units calling the function or
 // touching the field. Vectors are JGeometry::TVec3f (which derives from
@@ -74,7 +74,7 @@ public:
     // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).
     void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
     // 2 units / 10 calls (this unused: the body reads the camera through
-    // gGameRoot2_8053AB10 again). Sets field_0x180 to the box of half-size
+    // lbl_8053AB10 again). Sets field_0x180 to the box of half-size
     // size * k around center, with y scaled by the video frame's aspect
     // (JUTVideo's height / width), and field_0x17e to 1. Reads center 0x0
     // and 0x4 only (tu_8011CEC8 passes a stack pair, 0x8011D008).

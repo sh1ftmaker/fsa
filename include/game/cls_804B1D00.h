@@ -17,8 +17,8 @@ public:
     cls_804B1D00();
     virtual ~cls_804B1D00();
 
-    // Draws the screen: gGameRoot2_8053AB10->fn_8013B490(), then mScreen at (0, 0)
-    // with gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
+    // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_8044AF90();
     // Clears bits 0 and 1 of field_0x14, sets the 'Pf' and 'Pt' digit pictures
     // to the first 'TIMG' name, then clears the pane bytes 0xB0 of 'Ndata01'

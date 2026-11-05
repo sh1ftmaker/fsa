@@ -18,7 +18,7 @@ static inline s32 centreY() {
 
 // Opens window `index` of the map object, 365 x 261 at (x, y).
 static inline void setWindow(s32 index, s32 flag, s32 x, s32 y) {
-    TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
+    TileMap_804AA858* map = lbl_8053AB10->field_0x20;
     map->field_0x22c = index;
     map->field_0x238 = x;
     map->field_0x23c = y;

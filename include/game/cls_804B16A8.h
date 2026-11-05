@@ -13,7 +13,7 @@ public:
     cls_804B16A8();
     /* 0x08 */ virtual ~cls_804B16A8();
 
-    // 0x80436668: draws the screen at (0, 0) with gGameRoot2_8053AB10's grafcontext,
+    // 0x80436668: draws the screen at (0, 0) with lbl_8053AB10's grafcontext,
     // then lbl_8053AED8's (fn_80440EE8).
     void fn_80436668();
     // 0x804366B8: runs lbl_804B1690[field_0x6b], then returns whether

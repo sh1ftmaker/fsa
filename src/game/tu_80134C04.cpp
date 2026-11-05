@@ -84,7 +84,7 @@ void GameRoot_8049EF20::fn_80134CC0(s32 value) {
     field_0x108 = value;
 }
 
-// Whether the pause fade object (gGameRoot2_8053AB10->0x2C) is idle, while paused.
+// Whether the pause fade object (lbl_8053AB10->0x2C) is idle, while paused.
 u8 GameRoot_8049EF20::fn_80134CC8() {
     bool paused;
     if (field_0x4c == 11) {
@@ -93,7 +93,7 @@ u8 GameRoot_8049EF20::fn_80134CC8() {
         paused = field_0x88 == 2;
     }
     if (paused) {
-        return gGameRoot2_8053AB10->field_0x2c->field_0xc == 0;
+        return lbl_8053AB10->field_0x2c->field_0xc == 0;
     }
     return false;
 }
@@ -158,7 +158,7 @@ void GameRoot_8049EF20::fn_80135020(s32 mode) {
     case 7:
         if (field_0x4 == NULL) {
             field_0x4 = new (field_0x98, 0) GameRootSub04_801F856C(field_0x98);
-            gGameRoot2_8053AB10->fn_8013BE04();
+            lbl_8053AB10->fn_8013BE04();
             // The original loads both values before getGameView_802D6A9C() (level first).
             if (lbl_8053AAF8->field_0x7f != 0) {
                 s32 level = lbl_80529DEC.field_0x11c;
@@ -566,7 +566,7 @@ void GameRoot_8049EF20::fn_80138B7C() {
 // ours numbers 50.0f before get_ufloat_1's 1.0f (the original pools 1.0f first).
 void GameRoot_8049EF20::fn_80138C9C() {
     field_0xa0->field_0x5 = 4;
-    gGameRoot2_8053AB10->fn_8013BE04();
+    lbl_8053AB10->fn_8013BE04();
     field_0x10->fn_802ACB58();
     fn_80119DD0()->fn_80119D48();
     fn_8011921C()->fn_801190E4();
@@ -619,7 +619,7 @@ GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
     field_0xa8 = lbl_80529DEC.field_0x1c;
     field_0x98->becomeCurrentHeap();
     field_0x18 = new (field_0x98, 0) MessageManager_804AF070();
-    gGameRoot2_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
+    lbl_8053AB10 = new (field_0x98, 0) GameRoot2_8049F108(field_0x98);
     field_0x8 = lbl_80529DEC.field_0x5c;
     field_0xc = lbl_80529DEC.field_0x60;
     field_0x10 = new (field_0x98, 0) cls_804A8390();

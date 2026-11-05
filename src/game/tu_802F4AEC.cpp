@@ -52,7 +52,7 @@ void cls_804AA800::update() {
     case 2:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         field_0x238--;
         if (field_0x238 == 0) {
@@ -74,7 +74,7 @@ void cls_804AA800::update() {
     case 3:
         for (s32 i = 0; i < 4; i++) {
             JGeometry::TVec3f pos = *fn_8023E724(i);
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
         }
         if (field_0x238 == 0) {
             if (fn_80230534(false)) {

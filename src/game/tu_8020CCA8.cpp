@@ -48,7 +48,7 @@ void cls_804A51E4::draw() {
     }
     if (field_0x4 < 8) {
         void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
     }
     if (field_0x4 == 8) {
         JGeometry::TVec3f pos;

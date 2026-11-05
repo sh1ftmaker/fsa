@@ -1016,7 +1016,7 @@ void Player_804A6F38::fn_8025D7E4() {
     dir.normalize();
     JGeometry::TVec3f pos = mPos + offset;
     if (field_0x3b4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F601C(&pos, 3, &dir, 1.0f, 1.0f);
+        lbl_8053AB10->field_0x20->fn_802F601C(&pos, 3, &dir, 1.0f, 1.0f);
     }
     field_0xb9c = true;
 }

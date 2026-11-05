@@ -4,9 +4,9 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_fire_manager.h"
 
-FireManager_804AB2B0::~FireManager_804AB2B0() {}
+cls_804AB2B0::~cls_804AB2B0() {}
 
-void FireManager_804AB2B0::update() {
+void cls_804AB2B0::update() {
     JGeometry::TVec3f pos = mBasePos;
     if (!vfunc_0x34()) {
         if (field_0x240 == 0) {
@@ -52,7 +52,7 @@ void FireManager_804AB2B0::update() {
 
 // FIXME: 99.8%. The original emits `lis r0, 0x4330` (the unsigned int-to-float
 // exponent) before `lis r4, 0x19` (the RNG multiplier); here they are swapped.
-void FireManager_804AB2B0::init() {
+void cls_804AB2B0::init() {
     field_0x24c = 0;
     field_0x250 = field_0x90 & 0xF;
     if (field_0x250 < 3) {

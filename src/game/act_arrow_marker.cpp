@@ -19,7 +19,7 @@ void ArrowMarker_804A8470::draw() {
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
         break;
@@ -33,7 +33,7 @@ void ArrowMarker_804A8470::draw() {
         s32 frame = field_0x240 + 0x10;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
         break;
@@ -73,7 +73,7 @@ void ArrowMarker_804A8470::update() {
             break;
         case 1:
             field_0x254 = field_0x254 + lbl_80540968[field_0x258];
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
             // The original copies mPos into a named local before the by-value call.
             JGeometry::TVec3f pos = mPos;
             lbl_8053AED0->fn_8043E7CC(pos);
@@ -136,7 +136,7 @@ void ArrowMarker_804A8470::update() {
             break;
         case 1:
             field_0x254 = field_0x254 + lbl_80540968[field_0x258];
-            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+            lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
             JGeometry::TVec3f pos = mPos;
             lbl_8053AED0->fn_8043E7CC(pos);
             if (vfunc_0x34()) {

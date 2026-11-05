@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AB2B0.
-class FireManager_804AB2B0 : public ActorBase_804A5770 {
+class cls_804AB2B0 : public ActorBase_804A5770 {
 public:
-    FireManager_804AB2B0() {}
-    /* 0x08 */ virtual ~FireManager_804AB2B0();
+    cls_804AB2B0() {}
+    /* 0x08 */ virtual ~cls_804AB2B0();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x230 */ JGeometry::TVec3f mBasePos; // copy of mPos made by init()

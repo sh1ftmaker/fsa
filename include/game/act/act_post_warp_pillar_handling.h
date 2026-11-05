@@ -6,10 +6,10 @@
 #include "game/ActorBase.h"
 
 // Named after its vtable, 0x804AC1F8.
-class PostWarpPillarHandling_804AC1F8 : public ActorBase_804A5770 {
+class cls_804AC1F8 : public ActorBase_804A5770 {
 public:
-    PostWarpPillarHandling_804AC1F8() {}
-    /* 0x08 */ virtual ~PostWarpPillarHandling_804AC1F8();
+    cls_804AC1F8() {}
+    /* 0x08 */ virtual ~cls_804AC1F8();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

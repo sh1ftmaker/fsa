@@ -36,8 +36,8 @@ bool cls_804B1D10::fn_8044B80C(u8 idx) {
 
 void cls_804B1D10::fn_8044B8EC() {
     if (mDraw && mState == 3 && mScreen != NULL) {
-        gGameRoot2_8053AB10->fn_8013B490();
-        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        lbl_8053AB10->fn_8013B490();
+        mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
         mDraw = false;
     }
 }

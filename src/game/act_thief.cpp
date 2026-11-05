@@ -22,7 +22,7 @@ bool ActorBase_804A5770::fn_80204D44() {
 
 void Thief_804A5A30::vfunc_0xA0() {
     if (mState != 9 && mState != 8) {
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        lbl_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 

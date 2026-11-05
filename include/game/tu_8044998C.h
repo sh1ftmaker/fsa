@@ -16,8 +16,8 @@ public:
     cls_804B1CC8();
     virtual ~cls_804B1CC8();
 
-    // Draws the screen: gGameRoot2_8053AB10->fn_8013B490(), then mScreen at (0, 0)
-    // with gGameRoot2_8053AB10's J2DOrthoGraph as the grafcontext.
+    // Draws the screen: lbl_8053AB10->fn_8013B490(), then mScreen at (0, 0)
+    // with lbl_8053AB10's J2DOrthoGraph as the grafcontext.
     void fn_8044A024();
     // Sets the digit pictures to the first 'TIMG' name and hides the panes
     // 'Ndata01' and 'Ndata00'.

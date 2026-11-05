@@ -10,7 +10,7 @@
 // The manager is fetched into a local first, then the emitter is read again
 // for the call; getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(e) in one
 // expression keeps the first load of e in a saved register instead.
-// Proven by act_eyeball_switch's EyeballSwitch_804AE678::vfunc_0x24.
+// Proven by act_eyeball_switch's cls_804AE678::vfunc_0x24.
 inline void deleteEmitter(JPABaseEmitter** emitter) {
     if (*emitter != NULL) {
         JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;

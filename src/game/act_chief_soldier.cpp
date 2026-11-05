@@ -80,7 +80,7 @@ void ChiefSoldier_804A0B90::fn_80172BC8() {
         s32 frame = field_0x280 + 0x3FD;
         if (field_0x4 < 8) {
             void* res = lbl_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            lbl_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
     }
 }
