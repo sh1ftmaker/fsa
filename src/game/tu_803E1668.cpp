@@ -761,6 +761,73 @@ void cls_804B0B00::fn_803E4940() {
     lbl_8053AED8->fn_80440EE8();
 }
 
+// FIXME: 98.68. Stack slots and registers only: the original converts every
+// int / u8 to float in the one 0x8 slot (ours uses 0x8-0x18), and the loop's
+// table pointers / the lit alpha sit in other registers.
+// Draws states 2-4 (the player-count menu, mScreen): the cursor
+// 'Pscuro01' / 'Pscuro02' fades with field_0x1e0[0] (in state 4 it fades to
+// 230 over 15 frames, then by (n - 15)^2 / 225), the chosen count's pane
+// (field_0x1bc) bounces with field_0x254[0] and shows its lit version at
+// 80 * the fade; the others show the plain one.
+void cls_804B0B00::fn_803E64A0() {
+    f32 alpha;
+    f32 t;
+    if (field_0x1d4 != 4) {
+        if (field_0x1e0[0] < 30) {
+            t = (f32)(field_0x1e0[0] * field_0x1e0[0]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1e0[0] - 30) * (field_0x1e0[0] - 30)) / 900.0f;
+        }
+        alpha = t * field_0x268;
+    } else {
+        if (field_0x1e0[0] < 15) {
+            t = (f32)(field_0x1e0[0] * field_0x1e0[0]) / 225.0f;
+        } else {
+            t = (f32)((field_0x1e0[0] - 15) * (field_0x1e0[0] - 15)) / 225.0f;
+        }
+        alpha = 230.0f * t;
+    }
+    s32 bounce;
+    if (field_0x1d4 == 3 || (field_0x1d4 == 4 && field_0x254[0] <= 10)) {
+        if (field_0x254[0] < 5) {
+            bounce = field_0x254[0];
+        } else {
+            bounce = 10 - field_0x254[0];
+        }
+    } else {
+        bounce = 0;
+    }
+    f32 lit = 80.0f * t;
+    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+    for (s32 i = 0; i < 4; i++) {
+        if (i == field_0x1bc) {
+            f32 x = mScreen->search(lbl_80478818[i])->getBounds()->i.x;
+            mScreen->search(lbl_80478818[i])->move(x, field_0x110[i] + offset);
+            if (i == 0) {
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, field_0x1a0 + offset);
+            } else {
+                f32 top = mScreen->search(lbl_80478818[0])->getBounds()->i.y;
+                f32 y = field_0x1a0 + mScreen->search(lbl_80478818[i])->getBounds()->i.y - top;
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, y);
+            }
+            mScreen->search(lbl_80478838[i])->hide();
+            mScreen->search(lbl_80478858[i])->show();
+            mScreen->search(lbl_80478858[i])->setAlpha(lit);
+        } else {
+            f32 x = mScreen->search(lbl_80478818[i])->getBounds()->i.x;
+            mScreen->search(lbl_80478818[i])->move(x, field_0x110[i]);
+            mScreen->search(lbl_80478838[i])->show();
+            mScreen->search(lbl_80478858[i])->hide();
+        }
+    }
+    mScreen->search('Pscuro01')->setAlpha(alpha);
+    mScreen->search('Pscuro02')->setAlpha(alpha);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
+}
+
 void cls_804B0B00::fn_803E6A28() {}
 
 void cls_804B0B00::fn_803E6A2C() {
