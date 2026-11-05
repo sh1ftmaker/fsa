@@ -110,8 +110,12 @@ public:
     // 1 unit (this unused). gGameRoot2_8053AB10->0x24's byte at 0x1E8, like
     // fn_802DCD0C. Returns the byte as is: the caller converts it to bool.
     u8 fn_802DA000();
-    // 1 unit each; no arguments.
+    // 1 unit; no arguments. Enters the screen (field_0x24, field_0x28):
+    // resets its state, rebuilds it (fn_802D8D50, fn_802D8328), places the
+    // players and the camera and restarts the time limit.
     void fn_802DA010();
+    // Inlined by fn_802DA010 and fn_802DCE5C (no out-of-line copy).
+    inline void resetScreenState();
     // Unless fn_802DA000() (returned as is, no clrlwi), moves the four players
     // 70 units against field_0x2c[0]'s direction (fn_80230498) and the first
     // 'OSIN' actor in state 2 with them.

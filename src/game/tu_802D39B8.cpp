@@ -18,6 +18,14 @@
 
 // Bit masks, most significant bit first: bit n of a word list is
 // list[n / 32] & lbl_8046E1CC[n % 32].
+// The players' positions on a new screen, from its top-left corner (fn_802DA010, fn_802DA788).
+static const f32 lbl_8046E148[4][3] = {
+    {192.0f, 200.0f, 0.0f},
+    {224.0f, 200.0f, 0.0f},
+    {192.0f, 232.0f, 0.0f},
+    {224.0f, 232.0f, 0.0f},
+};
+
 static const u32 lbl_8046E1CC[32] = {
     0x80000000, 0x40000000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
     0x00800000, 0x00400000, 0x00200000, 0x00100000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
@@ -851,6 +859,77 @@ u8 GameView_804A9950::fn_802DA000() {
     return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
+// The per-screen reset that fn_802DA010 (0x802DA044-0x802DA454) and fn_802DCE5C
+// (0x802DCE88-0x802DD298) both inline, instruction for instruction; no out-of-line
+// copy is left in the unit.
+// Its bit tables are cleared a word per 32 bits, as in fn_802D9CD8.
+inline void GameView_804A9950::resetScreenState() {
+    fn_802D752C(0);
+    u8 enabled;
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
+    } else {
+        enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
+    }
+    fn_802D7440(enabled == 1);
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
+    for (int i = 0; i < 0x10; i++) {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x308[i] = 0;
+    }
+    for (int bit = 0; bit < 0x400; bit += 32) {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit / 32] = 0xFF;
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x12f68[bit / 32] = 0;
+    }
+    for (int layer = 0; layer < 8; layer++) {
+        gGameRoot_8053AAF8->field_0x4->mView->field_0x6748[layer] = 0;
+        for (int i = 0; i < 0x40; i++) {
+            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[layer][i] = 0;
+        }
+    }
+}
+
+// FIXME: 96.6. Structurally close, two instructions short: the target materialises
+// (byte == 1) as a bool (subfic, cntlzw, extrwi) before the inlined fn_802D7440 compares
+// it with 1; ours folds the compare into the branch (a bool local, a cast, == true or a
+// bool-returning inline do not change it). Reloc-name: 1.0f / -1.0f are pooled after
+// literals of functions not written yet.
+void GameView_804A9950::fn_802DA010() {
+    field_0x14 = field_0x24;
+    field_0x18 = field_0x28;
+    getActorManager_801F856C()->fn_801F7E88();
+    resetScreenState();
+    fn_8038D454();
+    fn_802D8D50(false);
+    getActorManager_801F856C()->fn_801F7B18();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    fn_802D9FBC();
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    fn_802D782C(0);
+    for (int i = 0; i < 4; i++) {
+        JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
+        pos.x += mVisibleBox.i.x;
+        pos.y += mVisibleBox.i.y;
+        fn_8023F1D4(i, &pos, 2, 0, 0);
+    }
+    fn_8022BD70();
+    lbl_8053AD70->fn_8037AE30();
+    fn_802D8328(false, false);
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    JGeometry::TVec3f* pos = getPlayerPos_8023E724(0);
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
+        camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
+    }
+    fn_802D9FBC();
+}
+
 // FIXME: 94.5. Regalloc in the actor loop (the target keeps i, i * 4 and the end in r28,
 // r29, r30) and reloc-name: -70.0f / 70.0f are pooled after literals of functions not
 // written yet (lbl_80541160 / lbl_80541164).
@@ -893,14 +972,6 @@ inline void GameView_804A9950::clearScreen() {
     field_0xc9 = 0;
 }
 
-// The players' positions on a new screen, from its top-left corner (fn_802DA788).
-static const f32 lbl_8046E148[4][3] = {
-    {192.0f, 200.0f, 0.0f},
-    {224.0f, 200.0f, 0.0f},
-    {192.0f, 232.0f, 0.0f},
-    {224.0f, 232.0f, 0.0f},
-};
-
 // FIXME: 98.1. One instruction: the target reuses the loop counter's li r30, 0 for the
 // inlined clearScreen's field_0xc9 = 0; ours loads 0 into r0 for it.
 void GameView_804A9950::fn_802DA788() {
@@ -923,6 +994,52 @@ void GameView_804A9950::fn_802DA788() {
         fn_8022BD70();
         lbl_8053AD70->fn_8037AE30();
         fn_802D9FBC();
+    }
+}
+
+// FIXME: 97.3. Structurally close, two instructions short: the inlined resetScreenState's
+// bool materialisation (see fn_802DA010); the target also reuses the loop counter's
+// li r30, 0 for fn_802D782C(0) (as fn_802DA788 does for field_0xc9) and puts the loop's
+// TVec3f below the tile-map temporary on the stack. Reloc-name: 1.0f / -1.0f, as there.
+// The camera corners are stored f.x, i.x, f.y, i.y (chained assignments; TBox2::set
+// stores i first).
+void GameView_804A9950::fn_802DB6F0() {
+    field_0x14 = field_0x24;
+    field_0x18 = field_0x28;
+    getActorManager_801F856C()->fn_801F7E88();
+    resetScreenState();
+    fn_8038D454();
+    fn_802D8D50(false);
+    getActorManager_801F856C()->fn_801F7B18();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    fn_802D9FBC();
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    fn_802D782C(0);
+    for (int i = 0; i < 4; i++) {
+        JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
+        pos.x += mVisibleBox.i.x;
+        pos.y += mVisibleBox.i.y;
+        fn_8023F1D4(i, &pos, 2, 0, 0);
+    }
+    fn_8022BD70();
+    lbl_8053AD70->fn_8037AE30();
+    fn_802D8328(false, false);
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    fn_802D9FBC();
+    for (int i = 0; i < 4; i++) {
+        fn_80230498(i, fn_8023E604(i), fn_8023CBC0(i), fn_8023BCD4(i), -0x80, -0x80, true);
+    }
+    JGeometry::TVec3f* pos = fn_8023E604(0);
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
+        camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
     }
 }
 
@@ -959,35 +1076,12 @@ void GameView_804A9950::fn_802DCDF4() {
     clearScreen();
 }
 
-// FIXME: 95.0. Four instructions: the target materialises (byte == 1) as a bool
-// (subfic, cntlzw, extrwi) before the inlined fn_802D7440 compares it with 1; ours
-// folds the compare into the branch (a bool local or cast does not change it). The bit
-// tables are cleared a word per 32 bits, as in fn_802D9CD8.
+// FIXME: 96.5. Structurally close: as in fn_802DA010, the inlined resetScreenState is
+// three instructions short (the bool materialisation, see there) plus one li.
 bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     bool moved = false;
     if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
-        fn_802D752C(0);
-        u8 enabled;
-        if (gGameRoot_8053AAF8->field_0x7f != 0) {
-            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
-        } else {
-            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
-        }
-        fn_802D7440(enabled == 1);
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
-        for (int i = 0; i < 0x10; i++) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x308[i] = 0;
-        }
-        for (int bit = 0; bit < 0x400; bit += 32) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit / 32] = 0xFF;
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x12f68[bit / 32] = 0;
-        }
-        for (int layer = 0; layer < 8; layer++) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x6748[layer] = 0;
-            for (int i = 0; i < 0x40; i++) {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[layer][i] = 0;
-            }
-        }
+        resetScreenState();
         if (dir[0] > 0) {
             field_0x14++;
             field_0xc8 = 1;
