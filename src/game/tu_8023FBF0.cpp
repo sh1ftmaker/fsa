@@ -332,6 +332,8 @@ s32 Player_804A6F38::fn_802416C4() {
     return field_0xc10;
 }
 
+// FIXME: 97.1. After the fn_80270A8C test the target branches (beq) over an extra `b` to the epilogue where ours
+// emits a single bne to the epilogue.
 void Player_804A6F38::fn_802416FC(s32 arg) {
     s32 team = field_0xd60;
     if (team >= 0) {
