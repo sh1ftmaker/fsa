@@ -61,3 +61,42 @@ SHARED-EDITS: include/game/Effect.h (spawnEmitter_8013CC50 out of extern "C"), i
 (ACTOR_DMGE), libs/sdk/include/JSystem/JParticle/JPAEmitter.h (setGlobalSRTMatrix pikmin2/tp
 form, setGlobalParticleScale(f32, f32) tp form; JPADrawInfo moved out), new
 libs/sdk/include/JSystem/JParticle/JPADrawInfo.h. symbols.txt: spawnEmitter_8013CC50 mangled.
+
+## 2026-11-05 (Opus, leverage wave 11)
+
+Baseline 8666 (matching 6dc99bdf) -> 8673 (+7 honest). Per-address compare against the matching
+report: 0 drops. The unit is now 24/27; .text 99.93 %, .rodata / .sdata2 / .data 100 %.
+
+- The 0.5f mystery: a helper defined between fn_8013CAA4 and setEmitterPos_8013CB44 that the three
+  screen-space draw passes inline (the tu_8016A2B4 getMapTexView shape, -inline auto, out-of-line copy
+  dead-stripped): set2DDrawInfo(JPADrawInfo& info) = PSMTXCopy(gGameRoot2->field_0x10->mPosMtx,
+  info.mCamMtx); C_MTXLightOrtho(info.mPrjMtx, 0, height, 0, width, 0.5 x4) with `int width =
+  getFbWidth(); int height = getEfbHeight();` (int locals give the signed xoris conversion and pool
+  the signed double right after 0.5; plain u16 pools an unsigned 0x43300000_00000000 double). Width
+  is read before height (swap = scheduling). The unused second JPADrawInfo of all three callers is a
+  default-constructed local of this helper (writing it there reproduces both its identity calls and
+  its stack slot in all three callers). Ruled out: `info = JPADrawInfo(mtx, ...)` and a by-value
+  `JPADrawInfo get2DDrawInfo()` (both copy 0x60 bytes the original doesn't).
+  Result: setEmitterPos_8013CB44, draw 100 %; fn_8013D5D4 / D6E4 / DB2C written at 100 %
+  (D6E4: copy of the camera's JPADrawInfo for groups 0 / 3 / 1, JUTTexture::capture(0, 0) between).
+- spawnEmitter_8013CC50: 99.95 % regalloc-only (was 99.86). depthPos now builds p with
+  TVec3f::set(x, y + offset, z + offset); the remaining diff is f0/f2 in the depthPos tail
+  (p.z += height - pos->z). Tried: `p.z = p.z + (...)`, a height local, `-pos->z + height`,
+  a by-value depthPos: all worse.
+- fn_8013DDEC (0x158C): 100 %. A second dead-stripped inlined helper,
+  EffectSystem_8049F178::addTrackedEmitter(u16 id, u8 group, s32 word), called 25 times: one
+  `static cls_8049F15C callback` (guard lbl_8053AB1C, object lbl_8053AB20, dtor-chain lbl_804BEC44),
+  `JPABaseEmitter*& emitter = mEmitters[mEmitterNum]` (the slot address is computed before the
+  create call), becomeContinuousParticle + stopCreateParticle (mMaxFrame 0x24, flag 1 at 0xF4).
+  Then the five claw textures (lbl_80529DEC.field_0x10->getResource('TIMG', ...) -> swapTexture) and
+  `for (int i = 0; i < 0x400; i++) mEntries[i].mCount = 0;` (s32 gives the extra entry test).
+  lbl_8053AB18 is now defined before the helper (the original's .bss has its dtor-chain object first).
+- symbols.txt (placeholders only): lbl_804BEC44 (0x10C) split into the unit's 0xC dtor-chain objects
+  (lbl_804BEC44 .. lbl_804BECB0) + lbl_804BECBC (0x94, the weak JAS pool space); lbl_80465A28 (0x58)
+  split at its four strings (0x80465A28 / A38 / A48 / A68); lbl_8053AB20 size 0x8 -> 0x4 (the
+  callback is one vtable word). These make the constructor and __sinit 100 %.
+- Still open: execute (98.66 %, `bne; b end` for the mode-0xC test; tried early returns, an empty
+  then-branch, nested ifs, !(a || b): no change or worse), drawAfter (97.67 % regalloc; tried
+  PSMTXCopy direct, getCamMtx with and without root/work locals: identical).
+
+SHARED-EDITS: include/game/Effect.h (addTrackedEmitter declared; fn_8013D5D4 / fn_8013DDEC comments).
