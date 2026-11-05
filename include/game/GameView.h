@@ -173,12 +173,14 @@ public:
     // 1 unit / 13 calls. Frees the slot whose id (field_0x13188) is id and
     // whose field_0x13148 equals pos (within epsilon).
     void fn_802D6C10(JGeometry::TVec2f pos, u32 id);
-    // 1 unit / 9 calls. Fills the first slot whose field_0x13188 is -1 with
-    // a, b, value and id; returns 0 or 1.
+    // 1 unit / 9 calls. Returns 1 when a slot already holds (b, id) (b within
+    // epsilon of field_0x13148); otherwise fills the first slot whose
+    // field_0x13128 is -1 with a, b, value and id and returns 0.
     bool fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id);
     // 1 unit / 3 calls. With add, puts (key, pos, value) into the first free
     // slot of field_0x13068 / field_0x13088 / field_0x130c8 (shifting the
-    // list when full); else removes the entry matching key and pos.
+    // list when full); else removes the entry matching key (bits 0xF80
+    // ignored), pos (within epsilon) and value, shifting the rest down.
     void fn_802D6F38(u32 key, JGeometry::TVec2f pos, s32 value, bool add);
 
     // --- bit tables (bit = index into an array of u32, 32 per word) ---
@@ -340,7 +342,7 @@ public:
     /* 0x13088 */ JGeometry::TVec2f field_0x13088[8];
     /* 0x130C8 */ u32 field_0x130c8[8]; // values, -1 when free (fn_802D6F38 compares them with cmplw)
     /* 0x130E8 */ JGeometry::TVec2f field_0x130e8[8]; // fn_802D6D70's a
-    /* 0x13128 */ s32 field_0x13128[8];
+    /* 0x13128 */ s32 field_0x13128[8]; // fn_802D6D70's value, -1 when free
     /* 0x13148 */ JGeometry::TVec2f field_0x13148[8]; // fn_802D6D70's b
     /* 0x13188 */ u32 field_0x13188[8]; // ids, -1 when free
     /* 0x131A8 */ s32 field_0x131a8[4]; // fn_802D39B8; read by tu_801F6058
@@ -363,7 +365,12 @@ public:
     /* 0x131F8 */ u8 field_0x131f8; // zeroed by the constructor; tu_8044C7F0
     /* 0x131F9 */ u8 field_0x131f9; // fn_802D6AAC; 5 units read it
     /* 0x131FA */ char field_0x131fa[0x1321A - 0x131FA]; // fn_802D8228's name buffer
-    /* 0x1321A */ char field_0x1321a[0x1324C - 0x1321A]; // fn_802D8128's name buffer
+    /* 0x1321A */ char field_0x1321a[0x1323C - 0x1321A]; // fn_802D8128's name buffer
+    // Per player (index 0-3): vfunc_0x10 converts [i] to an int for the
+    // player's fn_8023CC5C (0x802DD61C) and steps an entry by field_0x1324c's,
+    // clamping it at 0 (0x802DD774); vfunc_0xC zeroes all four with
+    // field_0x1324c-0x1327c (0x802DE470).
+    /* 0x1323C */ f32 field_0x1323c[4];
     /* 0x1324C */ f32 field_0x1324c[4]; // fn_802D79A4
     /* 0x1325C */ f32 field_0x1325c[4];
     /* 0x1326C */ f32 field_0x1326c[4];

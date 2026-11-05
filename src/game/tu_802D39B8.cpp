@@ -1,5 +1,5 @@
 // The stage/screen state, GameView_804A9950 (include/game/GameView.h).
-// Written so far: the stage predicates that also read GameState_804B0FE0.
+// The string tables come first: their literals open the unit's .sdata2 (0x80540F58-0x80541118).
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
@@ -46,18 +46,18 @@ static const char* lbl_804A9530[19][4] = {
     {NULL, NULL, NULL, NULL},
 };
 
-// Screen-set letters (fn_802D9C4C, indexed by field_0x40).
+// "a"-"z", "1a", "1b" (fn_802D9C4C, indexed by field_0x40).
 static const char* lbl_804A9660[28] = {
     "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
     "t", "u", "v", "w", "x", "y", "z", "1a", "1b",
 };
 
-// Hex digits (fn_802D9C1C, indexed by field_0x44).
+// "0"-"F" (fn_802D9C1C, indexed by field_0x44).
 static const char* lbl_804A96D0[16] = {
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F",
 };
 
-// Map tables per (stage, level), and their second variants (fn_802D3D48).
+// CSV names per (stage, level), and their second variants (both read by fn_802D3D48).
 static const char* lbl_804A9710[18][4] = {
     {"map010.csv", "map011.csv", "map200.csv", "map013.csv"},
     {"map020.csv", "map021.csv", "map201.csv", "map023.csv"},
@@ -248,8 +248,8 @@ static inline bool epsilonEquals(const JGeometry::TVec2f& a, const JGeometry::TV
     return equal;
 }
 
-// FIXME: 98.0. Regalloc only (the loop's i * 4 / i * 8 counters and the match flag take other
-// registers); the 32.0f / 0.0f literals wait for fn_802D3A18, which uses 0.0f first.
+// FIXME: 98.1. Regalloc only: the loop's i * 4 / i * 8 counters and the match flag take other
+// registers.
 void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
     for (int i = 0; i < 8; i++) {
         if (id == lbl_8053AAF8->field_0x4->mView->field_0x13188[i] &&
@@ -776,6 +776,8 @@ void GameView_804A9950::vfunc_0x14() {}
 
 GameView_804A9950::~GameView_804A9950() {}
 
+// FIXME: 99.9. Reloc-name only: 512.0f (lbl_80541144) is pooled early, the literal users
+// between fn_802D8328 and here are not written yet. Code identical.
 GameView_804A9950::GameView_804A9950() {
     field_0x4 = 0;
     field_0x8 = 0;
