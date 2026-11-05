@@ -248,6 +248,30 @@ static inline void setEntries(cls_804B0B00* self) {
     }
 }
 
+// One player: sets bit 4 (connected) and bit 0 (taking part) of
+// lbl_8053AAF8->field_0x82 for player 0 only, and player 0's kind to 1 with
+// a controller in slot 0, else 2. fn_803E3320 (not written: written here
+// it gets inlined into fn_803E9034 / fn_803ED604, which call it out of line
+// in the original) has the same block, then setEntries for more players.
+static inline void setSingleEntry() {
+    lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
+    for (s32 i = 1; i < 4; i++) {
+        lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
+    }
+    lbl_8053AAF8->field_0x82 |= (u8)(1 << 0);
+    for (s32 i = 1; i < 4; i++) {
+        lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
+    }
+    if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
+        setPlayerKind(lbl_8053AAF8, 0, 1);
+    } else {
+        setPlayerKind(lbl_8053AAF8, 0, 2);
+    }
+    for (s32 i = 1; i < 4; i++) {
+        lbl_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
+    }
+}
+
 // Steps the cursor's blink counter (field_0x254[0]) and the frame counter (field_0x220[0]).
 // Shared by fn_803E9034 and fn_803ED604 (the two menu update functions).
 static inline void stepBlink(cls_804B0B00* self) {
@@ -937,22 +961,7 @@ void cls_804B0B00::fn_803EC804() {
         if (field_0x1bc == 0) {
             field_0x1b8 = 1;
             lbl_8053AAF8->field_0x7e = 0;
-            lbl_8053AAF8->field_0x82 |= (u8)(1 << 4);
-            for (s32 i = 1; i < 4; i++) {
-                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << (i + 4));
-            }
-            lbl_8053AAF8->field_0x82 |= (u8)(1 << 0);
-            for (s32 i = 1; i < 4; i++) {
-                lbl_8053AAF8->field_0x82 &= ~(u8)(1 << i);
-            }
-            if (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0))) {
-                setPlayerKind(lbl_8053AAF8, 0, 1);
-            } else {
-                setPlayerKind(lbl_8053AAF8, 0, 2);
-            }
-            for (s32 i = 1; i < 4; i++) {
-                lbl_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
-            }
+            setSingleEntry();
             field_0x1dc = 15;
             fn_803E4308();
         } else {
