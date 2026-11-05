@@ -143,6 +143,7 @@ public:
     bool fn_8025EFFC(s32 a, bool b, bool c); // via fn_8022F9E4
     bool fn_80260048(s32 arg); // via fn_80231230
     bool fn_80272768(const JGeometry::TBox2f* box, s32 layer, s32 serial); // via fn_80239558
+    bool fn_802728AC(const JGeometry::TBox2f* box, s32 layer, s32 serial); // via fn_80239470
     bool fn_80272C20(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial); // via fn_802397B4
     bool fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BB50
     bool fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A7BC

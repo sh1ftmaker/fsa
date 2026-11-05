@@ -640,3 +640,53 @@ Evidence for the item names is the actor each state spawns (docs/names/actors.ts
 - Not written: fn_802570BC (needs Player 0x580 as a TBox2f, the box of actor 0xB28),
   fn_8025AB00 (arrow field 0x230), fn_8025D0B0 and the big handlers 0x39, 0x3A, 0x3B,
   0x3C, 0x44, 0x45, 0x46 updates (0x7FC-0xCD0 bytes).
+
+## Round 5 (tu_8026FC20) (agent G, Opus 5.5, 2026-11-05)
+
+67 -> 74 of 120 at 100 % (+7 honest), structural +6. Proven:
+
+- **fn_802710C8 = Player::fn_802710C8(attacker, damage, const TVec2f* pos, kind)**,
+  the hit / damage entry (one caller: fn_80238548 in tu_8022AD64, per player).
+  98.54 % structure-first. Damage 0 under fn_80240B5C, halved under fn_80241498;
+  refused while isDown(), for kinds 0x11-0x13 / 0xD-0xF / others by fn_80240670 /
+  fn_80270C88, kind 0x1B in stage (0, 2) of the save. 0x11E4 = last kind; kind 0x12
+  sets 0x499 and kills (0xBFC = 0); the attacker's own hit goes to fn_80236468
+  (group damage, tu_8022AD64). Life <= 0 requests 0x33. 0x488 = 4 on damage;
+  fn_80134DE4(2 / 1, 0) on damage >= 4 / >= 1 (rumble?). Kind 0x16 (with 0x484 /
+  0x480 = 60 and effects 0x28D / 0x28E 6 above mPos, sound 0x2003D) and 0x18
+  request 0x50 / 0x51 and turn 0x3DC / 0x3E8 toward the hit (4-way by the s16
+  atan2 angle; 2-way on layers with viewLayerFlag). Otherwise a knockback
+  `(mPos - pos)` normalised ((0, 1) when tiny) and scaled per kind (1.5 / 3 / 6 /
+  0.75 / 1 / 0.25 / 0.5; z 4 or 3 by damage > 4, or 2), stored in 0x350 when the
+  state request (0xF default, 0x35, 0x37, 0x33, 0x40, 0x10, 0xC) succeeds; kinds
+  0xD-0xF push 0x35C away instead (length 1.4 / 2 / 4) and request 0x37 / 2.
+  Kinds 1-9, 0x13-0x15, 0x1A-0x1C spawn effects 0x24A / 0x24B and, on GBA layers
+  (>= 8), a 'PEFF' actor. 0xC9C = 60 / 300 / 600 (kinds 0x14 / 0x15 / 0x1B) with
+  fn_8022B1F8 / fn_8022B244; 0xC84.z = 0.5 for 0x1B. It fixes the .sdata2 order:
+  fn_802738F0 flipped to 100 %, fn_80273518 to regalloc-only.
+- **SaveRow_8050EC80 0x7E / 0x7F** (tu_80379F84.h): the hit path reads 0x7E while
+  GameRoot 0x7F is set, else 0x7F; value 1 calls fn_8024E500 on damage >= 4.
+- **fn_80270A8C is an inline (isDown)**: fn_80270948 and fn_8027057C inline it
+  before its definition. -inline deferred is ruled out for this unit: compiled
+  with it, MWCC pools the .sdata2 literals in reverse (0.0 before 1.0, 7 / -15 /
+  15 near the front), the original's pool is in forward first-use order. So
+  isDown() is defined at the top of the unit and fn_80270A8C returns it
+  (precedent playerFlags_802413F0). fn_80270948 (100 %) stores 0xD10 (now a
+  TVec3f: the revive position, pos or mPos) once while down.
+- **fn_80270DDC is a real function (heal, 100 %)**, not an inline wrapper: its
+  out-of-line shape (`beq; b` after the isDown test) comes only from calling
+  fn_80270A8C() (an auto-inlined function); an inline heal + wrapper gives 98.49 %.
+  fn_80270F00 (max life 0xBF8 += n, cap 32, then full heal) calls it and is 100 %.
+  The `old = x; x++; if (x == old) for (;;); x = old;` construct on 0xBFC is
+  written literally (the reload of 0xBFC after the store is MWCC not forwarding a
+  member store); it is a write probe / overflow trap of the life word, source
+  form unknown beyond that. **fn_8027057C (revive, from the 0x33 update) stays
+  unwritten**: it inlines fn_80270DDC, which is defined after it and must be a
+  function, so no legal source gives both (98.76 % with an inline heal; its
+  `field_0x4c == 7` test also materialises a u8: subfic / cntlzw / extrwi.).
+- fn_80272224 (front-box hit, TBox::intersect on a copy of 0x5EC, effects 0x117 /
+  0x118 at its centre, sound 0x20003, 0x3F4 = 5), fn_80272768 / fn_802728AC (point
+  12 / 16 in front by facing, tables lbl_8046BD68 / BD48 as `static const f32
+  [4][2]`, serial into 0xD94 / 0xDA4): 100 %. fn_80272C20: 97.24 %, extra `i >= 8`.
+- Next .sdata2 users before fn_80276078 / fn_80276538 can flip: fn_8027439C (0.2,
+  20, 12), fn_802756E4 (-16, 16; 0x6B8, effects), fn_80275D9C (-4).

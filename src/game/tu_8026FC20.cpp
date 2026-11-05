@@ -853,6 +853,75 @@ void Player_804A6F38::fn_8027221C(s32 value) {
     field_0xbf4 = value;
 }
 
+// Hit test of `box` against the 8x16 box in front of the player (field_0x5ec, fn_80276078);
+// `dir` must face the player's direction field_0x3ec. On a hit: effects 0x117 / 0x118 at
+// the front box's centre and sound 0x20003 (when asked and field_0x3f4 has run out),
+// then field_0x3f4 = 5.
+bool Player_804A6F38::fn_80272224(const JGeometry::TBox2f* box, s32 layer, s32 dir, bool effect, bool sound) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (mPos.z > 0.0f) {
+        return false;
+    }
+    if (!field_0xb98) {
+        return false;
+    }
+    if (fn_80240808() && fn_802486A0() == 5) {
+        return false;
+    }
+    if (fn_80241200()) {
+        return false;
+    }
+    if (dir < 0) {
+        return false;
+    }
+    if (field_0x3ec >= 0 && dir >= 0) {
+        switch (field_0x3ec) {
+        case 0:
+            if (dir != 1) {
+                return false;
+            }
+            break;
+        case 1:
+            if (dir != 0) {
+                return false;
+            }
+            break;
+        case 2:
+            if (dir != 3) {
+                return false;
+            }
+            break;
+        case 3:
+            if (dir != 2) {
+                return false;
+            }
+            break;
+        }
+    }
+    JGeometry::TBox2f front(field_0x5ec);
+    if (front.intersect(*box)) {
+        if (effect == true && field_0x3f4 <= 0) {
+            JGeometry::TVec3f pos;
+            pos.x = (field_0x5ec.i.x - field_0x5ec.f.x) * 0.5f + field_0x5ec.f.x;
+            pos.y = (field_0x5ec.i.y - field_0x5ec.f.y) * 0.5f + field_0x5ec.f.y;
+            pos.z = mPos.z;
+            fn_8013CC50(field_0x3b4, &pos, 0x117, 1, 1, NULL, NULL, true, 1.0f);
+            fn_8013CC50(field_0x3b4, &pos, 0x118, 1, 1, NULL, NULL, true, 1.0f);
+        }
+        if (sound == true && field_0x3f4 <= 0) {
+            fn_8024F0E8(0x20003);
+        }
+        field_0x3f4 = 5;
+        return true;
+    }
+    return false;
+}
+
 // The view's box for `layer`: mVisibleBox below layer 8, else field_0xdc
 // (as in tu_802684A4).
 static inline JGeometry::TBox2f* layerBox(s32 layer) {
@@ -916,6 +985,72 @@ bool Player_804A6F38::fn_802724E0(const JGeometry::TBox2f* box, s32 layer) {
     return overlapsInView(this, *box, layer);
 }
 
+// Points 12 (fn_80272768) and 16 (fn_802728AC) in front of the player, by facing field_0x3dc.
+static const f32 lbl_8046BD68[4][2] = {{12.0f, 0.0f}, {-12.0f, 0.0f}, {0.0f, 12.0f}, {0.0f, -12.0f}};
+static const f32 lbl_8046BD48[4][2] = {{16.0f, 0.0f}, {-16.0f, 0.0f}, {0.0f, 16.0f}, {0.0f, -16.0f}};
+
+template <typename V>
+static inline bool containsPoint(const JGeometry::TBox2f& box, const V& p) {
+    bool result = false;
+    if (p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y) {
+        result = true;
+    }
+    return result;
+}
+
+// Whether the point 12 in front of the player is in `box` (on `layer`, serial matching
+// fn_8024FF84 when that is set, fn_80250D30); then remembers serial in field_0xd94.
+bool Player_804A6F38::fn_80272768(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (fn_8024FF84() >= 0 && serial != fn_8024FF84()) {
+        return false;
+    }
+    if (!fn_80250D30()) {
+        return false;
+    }
+    JGeometry::TVec2f p(mPos.x, mPos.y);
+    p.x += lbl_8046BD68[field_0x3dc][0];
+    p.y += lbl_8046BD68[field_0x3dc][1];
+    if (!containsPoint(*box, p)) {
+        return false;
+    }
+    if (field_0xd94 < 0) {
+        field_0xd94 = serial;
+    }
+    return true;
+}
+
+// fn_80272768 with the point 16 in front, fn_8024FF6C / fn_8024FEFC and field_0xda4.
+bool Player_804A6F38::fn_802728AC(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
+    if (!fn_802413F0()) {
+        return false;
+    }
+    if (layer != field_0x3b4) {
+        return false;
+    }
+    if (fn_8024FF6C() >= 0 && serial != fn_8024FF6C()) {
+        return false;
+    }
+    if (!fn_8024FEFC()) {
+        return false;
+    }
+    JGeometry::TVec2f p(mPos.x, mPos.y);
+    p.x += lbl_8046BD48[field_0x3dc][0];
+    p.y += lbl_8046BD48[field_0x3dc][1];
+    if (!containsPoint(*box, p)) {
+        return false;
+    }
+    if (field_0xda4 < 0) {
+        field_0xda4 = serial;
+    }
+    return true;
+}
+
 // FIXME: 81.51. The original unrolls the 72 entries as 8 loop trips of 9 compares, bumping
 // the base register by 4 per entry; ours unrolls 9 trips of 8 with fixed offsets.
 bool Player_804A6F38::fn_802729F0(s32 serial) {
@@ -934,6 +1069,48 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
 bool Player_804A6F38::fn_80272B4C(const JGeometry::TVec3f* pos) {
     for (s32 i = 0; i < 0x50; i++) {
         if (field_0xdb0[i] >= 0 && fn_802413F0() && field_0x1030[i] == field_0x3b4 && contains(field_0x5fc[i], *pos)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// FIXME: 97.24. Two extra instructions: the original leaves the point loop straight for the
+// slot store (no `i >= 8` test after it; with the store inside the loop, or the points in an
+// inline, the layout differs more).
+// fn_80272DCC's slot store (without its fn_80249068 test), unless one of the eight points fn_8024B298 gives is inside
+// `box` grown by 2.5 on every side.
+bool Player_804A6F38::fn_80272C20(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_8024BBB0()) {
+        return false;
+    }
+    if (field_0xcee == 1) {
+        return false;
+    }
+    JGeometry::TBox2f grown;
+    grown.i.x = box->i.x - 2.5f;
+    grown.i.y = box->i.y - 2.5f;
+    grown.f.x = box->f.x + 2.5f;
+    grown.f.y = box->f.y + 2.5f;
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        JGeometry::TVec3f p;
+        fn_8024B298(i, &p);
+        if (!containsPoint(grown, p)) {
+            break;
+        }
+    }
+    if (i >= 8) {
+        return false;
+    }
+    for (int j = 0; j < 0x50; j++) {
+        if (field_0xdb0[j] < 0) {
+            field_0xdb0[j] = serial;
+            field_0x1030[j] = layer;
+            field_0x5fc[j].set(*box);
             return true;
         }
     }
@@ -1051,9 +1228,8 @@ bool Player_804A6F38::fn_802732C4(const JGeometry::TBox2f* box, s32 layer) {
     return overlaps(field_0x4c0, *box);
 }
 
-// FIXME: 99.74. Registers only (r29 / r30 swapped for the actor and the view layer in the
-// actor branch) plus the -8 / 8 / 0.5 literal names, which need the earlier .sdata2 users
-// (fn_802710C8 first) written.
+// FIXME: 99.82. Registers only (r29 / r30 swapped for the actor and the view layer in the
+// actor branch).
 bool Player_804A6F38::fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     if (!fn_802413F0()) {
         return false;
@@ -1107,8 +1283,6 @@ bool Player_804A6F38::fn_80273518(const JGeometry::TBox2f* box, s32 layer, JGeom
     return false;
 }
 
-// FIXME: 99.93. Code identical; its 0.25 / 0.5 literals are reloc-name until the earlier
-// literal users (fn_802710C8 first) are written and the .sdata2 pool is in the original order.
 bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center) {
     if (!fn_802413F0()) {
         return false;
@@ -1393,8 +1567,8 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
     }
 }
 
-// FIXME: 99.57. Code identical; the 15 / 8 / 16 literals are reloc-name until the earlier
-// .sdata2 users (fn_802710C8 first) are written.
+// FIXME: 99.77. Code identical; the 15 literal is reloc-name until the earlier .sdata2 users
+// (fn_8027439C, fn_802756E4, fn_80275D9C: 0.2, 20, 12, -16, 16, -4) are written.
 void Player_804A6F38::fn_80276078() {
     field_0xb98 = 0;
     if (!fn_802413F0()) {
@@ -1444,7 +1618,7 @@ void Player_804A6F38::fn_80276078() {
 }
 
 // FIXME: 99.56. Code identical; the 7 / -15 / 15 literals are reloc-name until the earlier
-// .sdata2 users (fn_802710C8 first) are written.
+// .sdata2 users (fn_8027439C, fn_802756E4, fn_80275D9C) are written.
 void Player_804A6F38::fn_80276538() {
     field_0x4c0.set(mPos.x - 7.0f, mPos.y - 7.0f, mPos.x + 7.0f, mPos.y + 7.0f);
     field_0x4d0.set(-15.0f, -15.0f, 15.0f, 15.0f);

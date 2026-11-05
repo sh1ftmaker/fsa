@@ -34,3 +34,16 @@ size unchanged), member declarations (fn_80270088, fn_80270360, fn_802738F0, fn_
 fn_80274728, fn_80274988, fn_802765C0), extern "C" bool fn_8023434C(s32) (owner tu_8022AD64).
 Symbol renames: fn_80270088, fn_80270360, fn_802738F0, fn_80273E7C, fn_80274728, fn_80274988,
 fn_802765C0 -> Player_804A6F38 members.
+
+## 2026-11-05 round 5, agent G (Opus 5.5)
+Rebased onto matching (8475). After: 8482 (unit 67 -> 74 of 120), structural +6.
+New 100 %: fn_802738F0 (literal pool), fn_80270948, fn_80270DDC, fn_80270F00, fn_80272224,
+fn_80272768, fn_802728AC. fn_80273518 now regalloc-only (99.82).
+Structurally close: fn_802710C8 98.54 (4 dead stfs of the knockback TVec2 missing, mPos x/y load
+order in the angle copies, regalloc), fn_80272C20 97.24 (extra `i >= 8` after the point loop).
+Unwritten: fn_8027057C (inlines fn_80270DDC defined after it; see docs/PLAYER.md round 5).
+SHARED-EDITS: include/game/Player.h (isDown() inline member decl; fn_802710C8, fn_80270DDC,
+fn_80270948, fn_8027057C, fn_802728AC member decls; 0xD10 u8[12] -> TVec3f;
+extern "C" fn_80236468(s32, s32) owner tu_8022AD64); include/game/tu_80379F84.h (SaveRow 0x7A[4],
+0x7E, 0x7F, 0x80 from 0x7A[7], size unchanged).
+Symbol renames: fn_802710C8, fn_80270948, fn_80270DDC, fn_8027057C, fn_802728AC -> Player members.
