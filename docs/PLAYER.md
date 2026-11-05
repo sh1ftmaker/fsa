@@ -955,3 +955,63 @@ fn_8025D0B0 99.89 (literal names only).
   fn_8025DACC (0x39) updates; their tables are already in place. .sdata2 order is right
   up to 5.4f (lbl_8054010C); the next literals (18, 6, 36, 12, 20, 1.125, 8, -16, -8, 5)
   come from these handlers.
+
+## Round 9 (tu_8026FC20) (agent O, Opus 5.5, 2026-11-05)
+
+76 -> 97 of 120 at 100 % (+21 honest: 8628 -> 8649 on matching 3a0cfee0), structural +4
+more (fn_80273FB8, fn_80275D9C, fn_8027B648, fn_8027C6C4). No drops in any unit.
+
+- **Literal pool unblocked**: fn_8027439C (0.2, 20, 12), fn_802756E4 (-16, 16) and
+  fn_80275D9C (-4) written in order, so fn_80276078 / fn_80276538 are 100 % (reloc-name gone).
+- **State handlers** (enter / update / exit from the three switches of fn_802870C8):
+  - 0x05: enter fn_8027D320 (push 0x344 = (0, 0, -4), at least 0.5 high on flagged layers,
+    sounds 0x10001 / 0x20001 / 0x2000E, immortal emitters 0xCB / 0xCC with callbacks
+    0x1278 / 0x1290 and a 'PEFF' actor (serial 0x12C0) at 0x12A4 = mPos + lbl_8046BB48[facing]);
+    exit fn_8027CBB0 (mPos.z = 0, releases them: clearStatus(Immortal) + becomeInvalidEmitter,
+    the actor's mAlive = false).
+  - 0x07: update fn_8027C6C4 (99.88 %, the knock-up: gravity 0.25 on 0x344.z down to -8,
+    poses by 0x3FA, landing from frame 15 into state 8 (fn_80246464) or 0, handing 0x344 x / y
+    on to 0x368).
+  - 0x08: enter fn_8027C4FC (0xCAD / 0x403 counter, emitter 0x26F below 48 frames of 0x403,
+    else 0x270-0x273 at 0x12A4 by life 2 and facing pair), exit fn_8027BC90 (also calls
+    fn_802356B8 for the group with 0xCAE; clears 0xCAD / 0x403 unless leaving for 0x37 / 0x38).
+  - 0x09: enter fn_8027BA2C (0xBF4 by the reason 0x11AC: 1 -> 8, 2 -> 6, 3 -> 4, 4 -> 8),
+    update fn_8027B648 (96.22 %, the spin: walks to fn_8027FA08's spot at 6 per frame in group
+    mode 3, spawns 'SWBM' (field_0xb38, layer to 0xB6C) at frame 10 when the life is full,
+    emitter 0x12BC circling mPos at 20 by the angle 0x11C0).
+  - 0x0A: enter fn_8027B304 (emitters 0x26A and 0x266-0x269 by player index). 0x09 and 0x0A
+    share setSpinCenter: 0x11B4 = mPos moved 16 toward the player's own side (4 on flagged
+    layers).
+  - 0x0B: enter fn_8027A908 (inlines fn_8027023C, the input history clear; with 0x490 sound
+    0x40075 + effect 0x503, else 0x3FD = 1), pose step fn_8027439C (0x3FD 0 / 2: fixed pose
+    sequences ending in 0x3FD = 1, with 0x490 the cue 0x190 via lbl_8053AED0; otherwise a 19-frame
+    loop, doubled while 0xBC0 > 0 or pad 0x200, slowing 0xBBC by 0.2 to 2).
+  - 0x0C: enter fn_8027A0D4 (emitter 0x565 with particle callback field_0x130c, 'PEFF', sound
+    0x2002A), update fn_80279FE8 (back to 0 after 120 / 90 frames by GameRoot 0x7F; the callback
+    follows field_0x1320 = mPos + 16 up).
+  - 0x0E: pose step fn_802756E4 (from fn_8027D5F0) by the sub-mode 0x45C; sub-modes 0 / 1 turn the
+    pose into an s16 angle and put 0x30C 16 away in that 8-way direction.
+  - 0x0F: enter fn_80279CFC (hit kinds 7-9 / 0x1C start emitters 0x135C / 0x132C by facing).
+  - 0x36: update fn_80277220 (moves by 0x350, step emitters 0x3D4 on tile 0x39 else 0x3D3).
+- **fn_80275D9C** (98.61 %, regalloc): the attack-input check of the move updates. With
+  fn_802466B4 pressed: all four hold timers 0x117C[0..3] running -> state 9 (0x11AC = 2);
+  3+ consecutive entries in the press history (0x117C[4 + i] running and a column of
+  0x119C[i] set) -> 9 (3); 0x11D4 running -> 9 (4); else cls_804A71A8 0xB4 -> 7 (pushed
+  1.5 along the facing from lbl_8046BCA8, z -4) under fn_80243234, else 5; otherwise 4.
+- **fn_80276E5C / fn_80276BB8**: the facing boxes (0x4B0 16x16 attack box 8-24 ahead, 0x4A0
+  body box, 0x30C point 16 ahead, 0x3F0 = facing), for the facing and the opposite facing.
+- **becomeInvalidEmitter is the emitter stop**: game code includes libs/sdk's JPAEmitter.h
+  (mFlags 0xF4, mMaxFrame 0x24), so the "+0xF4 |= 1, +0x24 = 1" sequence of earlier notes is
+  that inline; fn_802771C8, fn_802775C8, fn_8027A178, fn_802796B8 are 100 %.
+- **fn_80273FB8** (98.59 %, structure): returns `clrlwi` of a bool local, but fn_80274238
+  takes its result as a bool and the original's test chain is an inline; as a static inline
+  returning u8 it is 100 % but then -inline auto inlines all of fn_80273FB8 into fn_80274238
+  (the original calls it). Written with the chain assigning `hit` directly.
+- **lbl_8046BCA8 is one 0xA0 object** (only its start is referenced, by fn_80275D9C): the push
+  table f32[4][2], then 8 rows of 4 bytes and 8 float triples, typed by content only.
+- Fields: 0x12A4 TVec3f (emitter position of 0x12B0 / 0x12B4 and 0x1274 / 0x128C, also stfs /
+  addi in tu_80256C74), 0x1320 TVec3f (callback point). Members: fn_8027439C, fn_802756E4,
+  fn_80276BB8, fn_80276E5C (renamed in symbols.txt).
+- Left: fn_8027057C (inlines fn_80270DDC, see round 5), fn_80274CB8 (0xA2C), fn_802765C0,
+  fn_8027776C, fn_80277F98, fn_802791B0, fn_80279824, fn_8027A1E0, fn_8027AAD0, fn_8027BE74,
+  fn_8027CC90, fn_8027D5F0, fn_8027DEA0 (all 0x4BC+).

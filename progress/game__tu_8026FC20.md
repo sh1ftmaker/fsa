@@ -47,3 +47,17 @@ fn_80270948, fn_8027057C, fn_802728AC member decls; 0xD10 u8[12] -> TVec3f;
 extern "C" fn_80236468(s32, s32) owner tu_8022AD64); include/game/tu_80379F84.h (SaveRow 0x7A[4],
 0x7E, 0x7F, 0x80 from 0x7A[7], size unchanged).
 Symbol renames: fn_802710C8, fn_80270948, fn_80270DDC, fn_8027057C, fn_802728AC -> Player members.
+
+## 2026-11-05 round 9, agent O (Opus 5.5)
+Rebased onto matching 3a0cfee0 (8628). After: 8649 (unit 76 -> 97 of 120), no drops anywhere.
+New 100 %: fn_8027439C, fn_802756E4, fn_80276078, fn_80276538 (literal pool), fn_802771C8,
+fn_802775C8, fn_8027A178, fn_802796B8, fn_80279FE8, fn_8027A0D4, fn_8027CBB0, fn_8027A908,
+fn_8027C4FC, fn_8027D320, fn_8027BC90, fn_8027BA2C, fn_80276E5C, fn_80276BB8, fn_80279CFC,
+fn_8027B304, fn_80277220.
+Structural (FIXMEs in source): fn_80273FB8 98.59 missing/extra, fn_80275D9C 98.61 regalloc,
+fn_8027C6C4 99.88 regalloc, fn_8027B648 96.22 missing/extra (materialised lifeFull).
+Data: lbl_8046BCA8 (0xA0 struct), lbl_8046BB48 f32[4][3], lbl_8046BD88 f32[4][2].
+SHARED-EDITS: include/game/Player.h only (0x12A4 / 0x1320 TVec3f from u8 padding, size
+unchanged; member decls fn_8027439C, fn_802756E4, fn_80276BB8, fn_80276E5C).
+Symbol renames: fn_8027439C, fn_802756E4, fn_80276BB8, fn_80276E5C -> Player members.
+Details: docs/PLAYER.md "Round 9 (tu_8026FC20)".
