@@ -557,6 +557,51 @@ void ConnectScreen_804B0F10::fn_803F2660() {
     field_0x1c4 = 8;
 }
 
+// FIXME: 99.89. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_80543xxx: the pool's 3.0 / 800 / 640 come first in the
+// original, from an earlier function not written yet).
+// Enter state 7 (the game-select screen field_0xc): the messages of
+// 'Tsta01' / 'Than01' / 'Trule01', the player-count texture in 'Pnop02' /
+// 'Pnop01' (2-4 players), and the panes moved off screen to slide in.
+void ConnectScreen_804B0F10::fn_803F267C() {
+    char* han = static_cast<J2DTextBox*>(field_0xc->search('Than01'))->getStringPtr();
+    char* sta = static_cast<J2DTextBox*>(field_0xc->search('Tsta01'))->getStringPtr();
+    char* rule = static_cast<J2DTextBox*>(field_0xc->search('Trule01'))->getStringPtr();
+    getMessageText_803832BC(sta, 0x11B, 0, NULL, NULL);
+    getMessageText_803832BC(han, 0xAC, 0, NULL, NULL);
+    getMessageText_803832BC(rule, 0xF7, 0, NULL, NULL);
+    if (field_0x1ac == 0) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    } else if (field_0x1ac == 1) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    } else {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    }
+    field_0x164 = -200.0f;
+    field_0x168 = -200.0f;
+    field_0x184[0] = 300.0f;
+    field_0x184[1] = 300.0f;
+    field_0x184[2] = 300.0f;
+    field_0x198 = -450.0f;
+    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
+    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
+    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
+    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
+    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
+    field_0x1d0[0] = 0;
+    field_0x240[0] = 0;
+    field_0x210[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 7;
+}
+
 void ConnectScreen_804B0F10::fn_803F2AEC() {
     lbl_8053AEC0->fn_80431A9C(0xC4, field_0x1ac + 2, NULL);
     field_0x25c = 0;
