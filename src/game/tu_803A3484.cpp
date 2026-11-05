@@ -9,6 +9,7 @@
 #include "game/cls_8016ED88.h"
 #include "game/tu_803A3484.h"
 #include "JSystem/J2D/J2DAnmLoader.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J3D/J3DAnmTevRegKey.h"
@@ -17,6 +18,7 @@
 #include "JSystem/JKernel/JKRFileLoader.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include "JSystem/JParticle/JPAEmitter.h"
+#include "JSystem/JFramework/JFWDisplay.h"
 #include "game/Message.h"
 #include <dolphin/os.h>
 
@@ -380,10 +382,172 @@ void Title_804AF820::fn_803A34A0() {
     lbl_80529DEC.field_0x250 = 0;
 }
 
+inline void Title_804AF820::calcBlink(f32& blink) {
+    // lbl_8050DB0C's halfwords 0x29C / 0x29E / 0x2A0: the blink's half
+    // period, its hold time and its lowest alpha.
+    s16 period = lbl_8050DB0C.field_0x4c[(0x29C - 0x4C) / 2];
+    s16 hold = lbl_8050DB0C.field_0x4c[(0x29E - 0x4C) / 2];
+    field_0x7c++;
+    if (field_0x7c <= period * 2) {
+        s32 d = field_0x7c < period ? period - field_0x7c : field_0x7c - period;
+        f32 base = lbl_8050DB0C.field_0x4c[(0x2A0 - 0x4C) / 2] / 255.0f;
+        blink = base + (1.0f - base) * (d * d) / (period * period);
+    } else {
+        blink = 1.0f;
+        if (field_0x7c >= hold + period * 2) {
+            field_0x7c = 0;
+        }
+    }
+}
+
+inline void Title_804AF820::drawTitle(f32 blink) {
+    mScreen->search('Pntd')->setAlpha(field_0x4c);
+    mScreen->search('Ptlogo01')->setAlpha(field_0x4c);
+    mScreen->search('Ptlogo02')->setAlpha(field_0x4c);
+    mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
+    mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
+    mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+    if (field_0x82 > 0 && field_0x4c == 255.0f) {
+        field_0x82--;
+    }
+}
+
+// FIXME: 99.25. Scheduling and registers only: in calcBlink the original keeps
+// the hold time in r5 and twice the period in r4 (ours r3 / r5); in the cloud
+// loop it loads field_0x104[i] at the top of the body and keeps the emitter
+// manager in r29 and &info.mPrjMtx in r28 (ours swap them); the rest are
+// .sdata2 names (the original pool starts 0.5f, 120.0f, see fn_803A34A0).
+void Title_804AF820::fn_803A44D8() {
+    JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
+    if (lbl_80529DEC.field_0x1a0 > 0) {
+        lbl_80529DEC.field_0x1a0--;
+    } else {
+        lbl_80529DEC.field_0x1a0 = 0;
+    }
+    f32 blink = 0.0f;
+    if (mMovieState != 0) {
+        lbl_8053AB10->fn_8013B438();
+        mMovie->draw_80427D2C(0, 0, 0, 0);
+        if (lbl_80529DEC.field_0x249[0] != 0 && field_0x80 != 0) {
+            if ((lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
+                field_0x82 == 0) {
+                calcBlink(blink);
+            }
+            lbl_8053AB10->fn_8013B490();
+            mScreen->search('Pntd')->setAlpha(field_0x4c);
+            mScreen->search('Ptlogo01')->setAlpha(0);
+            mScreen->search('Ptlogo02')->setAlpha(0);
+            mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
+            mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
+            mScreen->draw(0.0f, 0.0f, lbl_8053AB10->field_0x10);
+        }
+    } else {
+        lbl_8053AB10->fn_8013B490();
+        if (lbl_80529DEC.field_0x238 == 0xFF && lbl_80529DEC.field_0x249[0] != 0) {
+            if (field_0x154 == 1) {
+                // The six cloud models and the title's effects.
+                JGeometry::TVec3f scale(7.0f, 7.0f, 7.0f);
+                JPAEmitterManager* manager = fn_8013C824()->mEmitterManager;
+                JPADrawInfo info;
+                Mtx mtx;
+                PSMTXIdentity(mtx);
+                fn_8013AC54(mtx);
+                PSMTXCopy(mtx, info.mCamMtx);
+                C_MTXLightOrtho(info.mPrjMtx, 448.0f, 0.0f, 0.0f, 608.0f, 0.5f, 0.5f, 0.5f, 0.5f);
+                fn_8016D398(mtx, lbl_8053AAF8->field_0x5c, true, true, &field_0x90, &field_0x84, &field_0x88,
+                            &field_0x8c, field_0x11c, field_0x134, 7.0f);
+                for (int i = 0; i < 6; i++) {
+                    mtx[0][0] = 1.0f;
+                    mtx[0][1] = 0.0f;
+                    mtx[0][2] = 0.0f;
+                    mtx[0][3] = 300.0f;
+                    mtx[1][0] = 0.0f;
+                    mtx[1][1] = 0.0f;
+                    mtx[1][2] = 1.0f;
+                    mtx[1][3] = 250.0f;
+                    mtx[2][0] = 0.0f;
+                    mtx[2][1] = 1.0f;
+                    mtx[2][2] = 0.0f;
+                    mtx[2][3] = -513.0f - 96.0f * i;
+                    fn_8013ABCC(field_0x104[i], scale, mtx);
+                }
+                fn_8013AB2C();
+                manager->calc(0);
+                manager->draw(&info, 0);
+            }
+            if (field_0x150 == 1) {
+                lbl_8053AB10->fn_8013B490();
+                field_0x20->setAlpha(field_0x68);
+                field_0x20->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
+            }
+            if (field_0x6e == 1 &&
+                (lbl_8053AD30->fn_8030A308(fn_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(fn_8030AAF4(0))) &&
+                field_0x82 == 0) {
+                calcBlink(blink);
+            }
+            drawTitle(blink);
+        } else {
+            switch (lbl_80529DEC.field_0x238) {
+            case 2:
+            case 3:
+            case 4: {
+                // The progressive-scan prompt: the selected answer pulses.
+                field_0xc->setAlpha(field_0x50);
+                field_0xc->draw(113.0f, 281.0f, false, false, false);
+                f32 t;
+                if (field_0x72 < 30) {
+                    t = field_0x72 / 30.0f;
+                } else {
+                    t = (60.0f - field_0x72) / 30.0f;
+                }
+                u8 r = 255.0f * t;
+                u8 g = 200.0f * t;
+                if (field_0x14c == 0) {
+                    field_0x18->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
+                    field_0x1c->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
+                } else {
+                    field_0x18->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
+                    field_0x1c->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
+                }
+                field_0x18->setAlpha(field_0x50);
+                field_0x18->draw(211.0f, 372.0f, false, false, false);
+                field_0x1c->setAlpha(field_0x50);
+                field_0x1c->draw(350.0f, 372.0f, false, false, false);
+                break;
+            }
+            case 5:
+            case 6:
+                lbl_8053AB10->fn_8013AB00();
+                lbl_80529DEC.field_0x251 = 1;
+                break;
+            case 9:
+                if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_OFF) {
+                    lbl_8053AB10->fn_8013AAD4();
+                }
+            case 10:
+            case 11:
+                if (field_0x14c == 0) {
+                    field_0x14->setAlpha(field_0x50);
+                    field_0x14->draw(153.0f, 309.0f, false, false, false);
+                } else {
+                    field_0x10->setAlpha(field_0x50);
+                    field_0x10->draw(153.0f, 309.0f, false, false, false);
+                }
+                break;
+            default:
+                if (lbl_80529DEC.field_0x249[0] != 0) {
+                    drawTitle(blink);
+                }
+                break;
+            }
+        }
+    }
+}
+
 // FIXME: 99.78. Code identical; the string offsets differ by 0x48 (the
 // original .rodata has an unreferenced 0x34-byte table and
-// "enemy_both2_sob.bin" after "w_kumo5.bmd", presumably from the unwritten
-// draw fn_803A44D8) and 0.0f's .sdata2 name.
+// "enemy_both2_sob.bin" after "w_kumo5.bmd" that no surviving function of
+// the unit references, not even the draw fn_803A44D8) and 0.0f's .sdata2 name.
 void Title_804AF820::fn_803A5380() {
     if (lbl_80529DEC.field_0x242 == 0) {
         lbl_80529DEC.field_0x242 = 1;

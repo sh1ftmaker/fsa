@@ -34,11 +34,11 @@ static const GXColor lbl_8053CDD8 = {0xFF, 0xFF, 0xFF, 0xFF};
 
 ScreenRect_802FF3F0* fn_8013C394();
 
-void fn_8013AAD4() {
+void GameRoot2_8049F108::fn_8013AAD4() {
     JUTVideo::sManager->setRenderMode(&lbl_8049F090);
 }
 
-void fn_8013AB00() {
+void GameRoot2_8049F108::fn_8013AB00() {
     JUTVideo::sManager->setRenderMode(&lbl_8049F0CC);
 }
 

@@ -145,7 +145,10 @@ struct GameRoot_8049EF20 {
     // The fade state tested by cls_804A8390::fn_802AC8B4 (tu_802AC8AC): 1 and
     // 5 step the black picture up, 4 steps it down, 6 counts field_0x14 down.
     /* 0x58 */ s32 field_0x58;
-    /* 0x5C */ u8 field_0x5c[0x60 - 0x5C];
+    // A frame count: Title_804AF820::fn_803A44D8 (game/tu_803A3484.cpp)
+    // passes it to fn_8016D398, which takes it modulo the cloud animations'
+    // frame counts (divw).
+    /* 0x5C */ s32 field_0x5c;
     // Cleared by fn_8013670C (game/tu_80134C04.cpp, stw of 0).
     /* 0x60 */ s32 field_0x60;
     /* 0x64 */ s32 field_0x64;
@@ -739,6 +742,13 @@ struct GameRoot2_8049F108 {
     void fn_8013BBE0();
     // 0x8013BE04: resets the members for a new scene.
     void fn_8013BE04();
+
+    // game/tu_8013AAD4.cpp: hand the video manager the NTSC interlaced
+    // (lbl_8049F090) / progressive (lbl_8049F0CC) render mode. Members: the
+    // only caller, Title_804AF820::fn_803A44D8 (game/tu_803A3484.cpp), loads
+    // lbl_8053AB10 into r3 before each call.
+    void fn_8013AAD4();
+    void fn_8013AB00();
 
     // game/tu_8013AAD4.cpp (owner unit, not written yet). Calls
     // field_0x24->fn_8030DFE8(0); `this` is lbl_8053AB10. Called twice by
@@ -1540,11 +1550,26 @@ void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const c
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
                  J3DAnmTextureSRTKey** btk1Out, J3DAnmTextureSRTKey** btk2Out,
                  J3DAnmTevRegKey** brk1Out, J3DAnmTevRegKey** brk2Out);
+// game/tu_8013AAD4.cpp: draws lbl_8053AB10's two J3D draw buffers
+// (fn_8013AB2C), places and enters a model (fn_8013ABCC) and sets them and
+// the J3D view matrix (fn_8013AC54).
+void fn_8013AB2C();
+void fn_8013ABCC(J3DModel* model, const Vec& scale, Mtx mtx);
+void fn_8013AC54(Mtx view);
 // Owner: game/tu_8022AD64.cpp (0x8023F728, 0x8023F78C). Called by fn_8013A1A4: each
 // runs a per-player routine on all four players (fn_8023F78C also stores -1 to lbl_8053A190).
 void fn_8023F728();
 void fn_8023F78C();
+struct cls_8016ED88; // game/cls_8016ED88.h
 extern "C" {
+// Owner: game/tu_8016A2B4.cpp (0x8016D398, not written yet). Steps the four
+// cloud-effect entries of `entries` (respawning an effect in each idle one,
+// timers in *timer1 / *timer2, a flag in *flag) relative to the view's
+// translation, then sets the frames of the six btk / brk animations from
+// `frame`. Called by fn_8016DCEC and Title_804AF820::fn_803A44D8
+// (game/tu_803A3484.cpp).
+void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entries, s32* timer1,
+                 s32* timer2, u8* flag, J3DAnmTextureSRTKey** btk, J3DAnmTevRegKey** brk, f32 scale);
 // Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
 // at field_0x20 of GameRootSub04_801F856C (fn_80139CC4), a GameRootSub20_801902C0.
 void fn_801902D0(void* self);

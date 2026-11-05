@@ -40,6 +40,12 @@ public:
     // Quits the movie, picks the next one and restarts the title's timers
     // (inlined three times into fn_803A34A0, game/tu_803A3484.cpp).
     void stopMovie();
+    // The 'prsstrt' blink factor: steps field_0x7c and returns the panes'
+    // alpha scale (inlined twice into fn_803A44D8).
+    void calcBlink(f32& blink);
+    // Draws the title screen with the 'prsstrt' panes scaled by `blink`
+    // (inlined twice into fn_803A44D8).
+    void drawTitle(f32 blink);
 
     /* 0x000 */ // vtable
     /* 0x004 */ J2DScreen* mScreen;          // "title.blo"
