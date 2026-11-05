@@ -10,6 +10,7 @@
 #include "game/BgRewrite.h"
 #include "game/Effect.h"
 #include "game/ViewLayer.h"
+#include "game/act/act_arrow.h"
 
 // One entry per facing (0x3DC: right, left, down, up): 8 to the side and 10
 // below, read by the enter of state 0x39 (fn_8025E79C).
@@ -109,6 +110,42 @@ u8 Player_804A6F38::fn_80256F44(const JGeometry::TBox2f* box, s32 layer, JGeomet
         out->x = field_0x5b0.f.x + (field_0x5b0.i.x - field_0x5b0.f.x) * 0.5f;
         out->y = field_0x5b0.f.y + (field_0x5b0.i.y - field_0x5b0.f.y) * 0.5f;
         return true;
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_802570BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (fn_80249068()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xb1c[i] >= 0 && field_0xb5c[i] == layer) {
+            JGeometry::TBox2f overlap(field_0x550[i]);
+            if (overlap.intersect(*box)) {
+                out->x = field_0x550[i].f.x + (field_0x550[i].i.x - field_0x550[i].f.x) * 0.5f;
+                out->y = field_0x550[i].f.y + (field_0x550[i].i.y - field_0x550[i].f.y) * 0.5f;
+                return true;
+            }
+        }
+    }
+    if (field_0xb28 >= 0 && layer == field_0x3b4) {
+        JGeometry::TBox2f overlap(field_0x580);
+        if (overlap.intersect(*box)) {
+            out->x = field_0x580.f.x + (field_0x580.i.x - field_0x580.f.x) * 0.5f;
+            out->y = field_0x580.f.y + (field_0x580.i.y - field_0x580.f.y) * 0.5f;
+            return true;
+        }
+    }
+    if (field_0xb3c >= 0 && field_0xb70 == layer) {
+        JGeometry::TBox2f overlap(field_0x5a0);
+        if (overlap.intersect(*box)) {
+            out->x = field_0x5a0.f.x + (field_0x5a0.i.x - field_0x5a0.f.x) * 0.5f;
+            out->y = field_0x5a0.f.y + (field_0x5a0.i.y - field_0x5a0.f.y) * 0.5f;
+            return true;
+        }
     }
     return false;
 }
@@ -782,6 +819,61 @@ void Player_804A6F38::fn_8025AAF4() {
     field_0x11f8 = -1;
 }
 
+// FIXME: 99.96. reloc-name only: 6.0f (lbl_80540114) and 3.0f (lbl_805400FC) get pool
+// slots out of the original order while the big state handlers before them are unwritten.
+// State 0x43 (from act_arrow via fn_8022E1A0): the player is drawn toward the arrow
+// actor 0x11F8 at min(distance, 6) a frame across the floor, facing along the pull,
+// until the arrow is gone or its field_0x230 leaves 0, field_0xafc is 1 or a side flag
+// of field_0xbf0 is set (anyFlag48); the animation frame 0x3FD steps at 10 and 14.
+void Player_804A6F38::fn_8025AB00() {
+    field_0x3fc++;
+    if (field_0x3fc < 10) {
+        field_0x3fd = 0;
+    } else if (field_0x3fc < 14) {
+        field_0x3fd = 1;
+    } else {
+        field_0x3fd = 2;
+    }
+    fn_80268B3C();
+    if (field_0xafc != 1 && !field_0xbf0->anyFlag48()) {
+        ArrowPlayer_804A05E0* arrow =
+            static_cast<ArrowPlayer_804A05E0*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x11f8));
+        if (arrow != NULL && arrow->field_0x230 == 0) {
+            JGeometry::TVec3f dir = arrow->mPos - mPos;
+            f32 dist = PSVECMag(&dir);
+            f32 speed = dist;
+            if (dist > 6.0f) {
+                speed = 6.0f;
+            }
+            dir.z = 0.0f;
+            dir.normalize();
+            if (!dir.isZero()) {
+                dir.scale(speed);
+                mPos += dir;
+                if (dir.x + dir.y < 0.0f) {
+                    if (dir.x - dir.y < 0.0f) {
+                        field_0x3dc = 0;
+                        field_0x3e8 = 0;
+                    } else {
+                        field_0x3dc = 2;
+                        field_0x3e8 = 2;
+                    }
+                } else if (dir.x - dir.y < 0.0f) {
+                    field_0x3dc = 3;
+                    field_0x3e8 = 3;
+                } else {
+                    field_0x3dc = 1;
+                    field_0x3e8 = 1;
+                }
+            }
+            mPos.z = 0.0f;
+            return;
+        }
+    }
+    field_0x124d = 0;
+    fn_80251AEC(0);
+}
+
 void Player_804A6F38::fn_8025AEB0() {
     field_0x124d = 1;
     field_0x458 = 0;
@@ -951,6 +1043,176 @@ void Player_804A6F38::fn_8025D090() {
     field_0x344.y = 0.0f;
     field_0x344.z = 0.0f;
     field_0x40c = 0;
+}
+
+// FIXME: 99.79. reloc-name only: 3.0f (lbl_805400FC) and 2.1f (lbl_80540148) get pool
+// slots out of the original order while the big state handlers before them are unwritten.
+// The step of state 0x39's update (fn_8025DACC): with field_0xbac >= 1, 3 a frame along
+// the facing; else along the facing until the pad (fn_8022C82C / fn_8022C76C of the
+// player) pushes against it (field_0xba8 = 1), 2.1 diagonally while it pushes across,
+// turning to that side after 8 such frames with the facing axis released (the turn
+// from a side facing ends it instead while field_0xbf0->field_0xb4 is set, which also
+// keeps y).
+void Player_804A6F38::fn_8025D0B0() {
+    f32 y = mPos.y;
+    if (field_0xbac >= 1) {
+        switch (field_0x3dc) {
+        case 0:
+            mPos.x += 3.0f;
+            break;
+        case 1:
+            mPos.x -= 3.0f;
+            break;
+        case 2:
+            mPos.y += 3.0f;
+            break;
+        case 3:
+            mPos.y -= 3.0f;
+            break;
+        }
+        return;
+    }
+    switch (field_0x3dc) {
+    case 0:
+        if (fn_8022C82C(field_0x4) < 0.0f) {
+            field_0xba8 = 1;
+        } else if (fn_8022C76C(field_0x4) > 0.0f) {
+            mPos.x += 2.1f;
+            mPos.y -= 2.1f;
+            if (0.0f == fn_8022C82C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    if (field_0xbf0->field_0xb4) {
+                        field_0xba8 = 1;
+                    } else {
+                        field_0x3dc = 3;
+                        field_0x3e8 = 3;
+                        field_0x3fc = 0;
+                    }
+                }
+            }
+        } else if (fn_8022C76C(field_0x4) < 0.0f) {
+            mPos.x += 2.1f;
+            mPos.y += 2.1f;
+            if (0.0f == fn_8022C82C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    if (field_0xbf0->field_0xb4) {
+                        field_0xba8 = 1;
+                    } else {
+                        field_0x3dc = 2;
+                        field_0x3e8 = 2;
+                        field_0x3fc = 0;
+                    }
+                }
+            }
+        } else {
+            mPos.x += 3.0f;
+            field_0x3fc = 0;
+        }
+        break;
+    case 1:
+        if (fn_8022C82C(field_0x4) > 0.0f) {
+            field_0xba8 = 1;
+        } else if (fn_8022C76C(field_0x4) > 0.0f) {
+            mPos.x -= 2.1f;
+            mPos.y -= 2.1f;
+            if (0.0f == fn_8022C82C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    if (field_0xbf0->field_0xb4) {
+                        field_0xba8 = 1;
+                    } else {
+                        field_0x3dc = 3;
+                        field_0x3e8 = 3;
+                        field_0x3fc = 0;
+                    }
+                }
+            }
+        } else if (fn_8022C76C(field_0x4) < 0.0f) {
+            mPos.x -= 2.1f;
+            mPos.y += 2.1f;
+            if (0.0f == fn_8022C82C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    if (field_0xbf0->field_0xb4) {
+                        field_0xba8 = 1;
+                    } else {
+                        field_0x3dc = 2;
+                        field_0x3e8 = 2;
+                        field_0x3fc = 0;
+                    }
+                }
+            }
+        } else {
+            mPos.x -= 3.0f;
+            field_0x3fc = 0;
+        }
+        break;
+    case 2:
+        if (fn_8022C76C(field_0x4) > 0.0f) {
+            field_0xba8 = 1;
+        } else if (fn_8022C82C(field_0x4) > 0.0f) {
+            mPos.x += 2.1f;
+            mPos.y += 2.1f;
+            if (0.0f == fn_8022C76C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    field_0x3dc = 0;
+                    field_0x3e8 = 0;
+                    field_0x3fc = 0;
+                }
+            }
+        } else if (fn_8022C82C(field_0x4) < 0.0f) {
+            mPos.x -= 2.1f;
+            mPos.y += 2.1f;
+            if (0.0f == fn_8022C76C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    field_0x3dc = 1;
+                    field_0x3e8 = 1;
+                    field_0x3fc = 0;
+                }
+            }
+        } else {
+            mPos.y += 3.0f;
+            field_0x3fc = 0;
+        }
+        break;
+    case 3:
+        if (fn_8022C76C(field_0x4) < 0.0f) {
+            field_0xba8 = 1;
+        } else if (fn_8022C82C(field_0x4) > 0.0f) {
+            mPos.x += 2.1f;
+            mPos.y -= 2.1f;
+            if (0.0f == fn_8022C76C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    field_0x3dc = 0;
+                    field_0x3e8 = 0;
+                    field_0x3fc = 0;
+                }
+            }
+        } else if (fn_8022C82C(field_0x4) < 0.0f) {
+            mPos.x -= 2.1f;
+            mPos.y -= 2.1f;
+            if (0.0f == fn_8022C76C(field_0x4)) {
+                field_0x3fc++;
+                if (field_0x3fc > 8) {
+                    field_0x3dc = 1;
+                    field_0x3e8 = 1;
+                    field_0x3fc = 0;
+                }
+            }
+        } else {
+            mPos.y -= 3.0f;
+            field_0x3fc = 0;
+        }
+        break;
+    }
+    if (field_0xbf0->field_0xb4) {
+        mPos.y = y;
+    }
 }
 
 void Player_804A6F38::fn_8025D6A0() {
