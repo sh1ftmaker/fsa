@@ -88,7 +88,7 @@ drop out of the report (game functions -1). Reverted. Would need a second trick
 Not tricks: patterns no honest form explains yet. Revisit after the
 surrounding code exists, since finishing the rest of a unit may show the cause.
 
-- **Literals pooled before their first visible use.** tu_8016A2B4 (ten GXColor
+- **Literals pooled before their first visible use.** PARTLY SOLVED 2026-11-05 (tu_8016A2B4): file-scope static const aggregates, and helpers defined early whose out-of-line copy was dead-stripped (see RULES_CARD "Known game-code shapes"); revisit the other units below with that in mind. tu_8016A2B4 (ten GXColor
   objects then 0.125/1/0.5/0 ahead of fn_8016A7DC's literals), tu_801213EC (8.0f
   before 0.0f, 10430.378f before -24f), tu_803BC6F0 (0, -200, 200 first, used
   only by later functions) and tu_8027E5BC (1.5f, 3.0f). Literals are created per

@@ -158,6 +158,11 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   the next unit's data (tu_8021C848 / tu_8021CDE4).
 
 ## Known game-code shapes (reviewed; natural source)
+- Literals before their first visible use: (1) file-scope `static const` aggregates (e.g. GXColor) are emitted before the
+  literal pool in declaration order (tu_802F5040, tu_8016A2B4); (2) a helper the original defined early and inlined into its
+  callers creates the pool's first literals even though the linker dead-stripped its out-of-line copy: reconstruct it as a
+  plain function with exactly the body the callers inline, with a comment saying so (tu_8016A2B4 getMapTexView: +16 near-misses
+  flipped). Never invent a helper only to emit constants: its body must be proven by the inlining callers.
 - Pane-tag tables: J2D pane tags are u64 ASCII names; write them as multi-char constants (`'Pabb10'`), never hex. A real indexed table
   of them that trips gate.py's check_byte_arrays gets an `array` line in config/G4SE01/blobs.txt once a reviewer confirms it
   (real data the code indexes, original symbol sizes, address order) and writes fsa-wt/_reviews/<unit>.review.md; the owner
