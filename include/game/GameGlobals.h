@@ -337,8 +337,8 @@ GameRootSub20_801902C0* fn_801902C0(void);
 // The object fn_80119DD0 returns: a function-local static (lbl_804BC504,
 // registered with __register_global_object) built on first use. Named after
 // the function fn_80119DD0 registers with __register_global_object (as the
-// static's destructor), fn_80119E5C. Owner: game/tu_80118384.cpp (not
-// written yet). 20+ units call fn_80119998 on it, e.g. game/tu_8012EA00.cpp
+// static's destructor), fn_80119E5C. Owner: game/tu_80118384.cpp.
+// 20+ units call fn_80119998 on it, e.g. game/tu_8012EA00.cpp
 // passes (0x3C, 0, 1, 0, 1, 0x5A, 0).
 class J2DPicture;
 class cls_80119E5C {
