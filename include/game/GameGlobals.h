@@ -650,6 +650,14 @@ struct GameRoot2_8049F108 {
     // test as fn_8013B538, then field_0x28->fn_8013D5D4() and frameInit on
     // field_0x8 / field_0xc.
     void fn_8013B618();
+    // game/tu_8013AAD4.cpp. GX vertex / channel / TEV setup for the map's
+    // sprites (GXClearVtxDesc, GXSetVtxDesc 9 and 0xD, ...); no arguments.
+    // Called by fn_802F5040 (game/tu_802F5040.cpp) after the matrix.
+    void fn_8013B1E8();
+    // game/tu_8013AAD4.cpp: field_0x24->fn_8030DD20(m) (r4 passed on).
+    void fn_8013B3CC(const Mtx m);
+    // game/tu_8013AAD4.cpp: field_0x24->fn_8030DD68().
+    void fn_8013B3F0();
 };
 
 extern GameRoot2_8049F108* lbl_8053AB10;

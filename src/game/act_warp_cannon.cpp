@@ -53,8 +53,7 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
             fn_80230FD0(i, 0x10003);
         }
         field_0x27c = 4.0f;
-        fn_802F601C(lbl_8053AB10->field_0x20, &field_0x290, 1, 0, 1.0f,
-                    -2.0f);
+        lbl_8053AB10->field_0x20->fn_802F601C(&field_0x290, 1, NULL, 1.0f, -2.0f);
         fn_8013CC50(0, &field_0x290, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
         break;
     case 6:

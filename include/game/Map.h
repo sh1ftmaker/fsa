@@ -54,9 +54,42 @@ public:
 }; // Size: 0xB0
 
 // cls_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
-struct cls_804AA858Sub11C {
-    /* 0x00 */ u8 field_0x0[0x68];
+// fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
+// reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
+struct cls_804AA858Sub11CBits {
+    /* 0x00 */ u32 field_0x0 : 16;
+    /* 0x02 */ u32 mMode : 2;      // 2 / 3 select the bits of 0x5 / 0x4 kept; bit 0 enables the tables
+    u32 field_0x2_5 : 1;
+    u32 mValid : 3;                // nonzero for a valid record
+    u32 mPlayer : 2;               // fn_803068D0 (clrlwi 30)
+    /* 0x03 */ u32 mKind : 4;      // 5 or 14 for the records fn_802F53F4 keeps
+    u32 field_0x3_0 : 4;
+    /* 0x04 */ u32 field_0x4_7 : 1;
+    u32 field_0x4_5 : 2;
+    u32 field_0x4_0 : 5;
+    /* 0x05 */ u32 field_0x5_7 : 1;
+    u32 field_0x5_0 : 7;
+    /* 0x06 */ u32 field_0x6 : 8;  // four 2-bit values
+    /* 0x07 */ u32 field_0x7_4 : 4; // four 1-bit values
+    u32 field_0x7_0 : 4;           // four 1-bit values
+    /* 0x08 */ u32 field_0x8[(0x18 - 0x8) / 4];
+    /* 0x18 */ u32 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
+
+// fn_802F53F4 copies it as 13 double words (one block copy), hence the union.
+union cls_804AA858Sub11C {
+    /* 0x00 */ cls_804AA858Sub11CBits mBits;
+    /* 0x00 */ u32 mWords[0x68 / 4];
+}; // Size: 0x68
+
+// game/tu_80301CD0.cpp (owner unit, not written yet): per-player tables
+// filled by fn_802F53F4 (0x802F54AC) for the player `slot`, and the record
+// handler it calls last (0x802F5558; reads byte 2 like fn_802F53F4).
+extern u8 lbl_80506DA8[4][4];
+extern u8 lbl_80506DB8[4][4];
+extern u8 lbl_80506DC8[4][4];
+extern s32 lbl_80506DD8[4];
+void fn_803068D0(cls_804AA858Sub11C* record);
 
 // The element classes of cls_804AA858's arrays (constructed with
 // __construct_array in its constructor, fn_802FFDEC). Each is named after
@@ -148,6 +181,23 @@ public:
     // at this + 4 + slot * 4 + dstOffset from res + srcOffset (0x802FA160).
     // Callers pass (res, 0 / 0xC0 / 0x180, 0, 0x40, 0xC0).
     void fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size);
+    // 0x802F53F4. tu_80301CD0 (0x803051A0, 0x80305DEC). Keeps the record of
+    // player `slot` in field_0x11c[slot] and hands it to fn_803068D0.
+    void fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record);
+    // 0x802F5570: the position (out) and parameters (*outParams: params, or
+    // tmp with mtx) a sprite at pos is drawn with (fn_802F86CC 0x802F8944).
+    void fn_802F5570(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params,
+                     JGeometry::TVec3f* out, SpriteParams_801F5AE0** outParams, Mtx mtx,
+                     SpriteParams_801F5AE0* tmp);
+    // 0x802F58A8: when pos is on the height grid, mtx = the ground's tilt
+    // there (cross products of the grid's slopes); returns whether it did.
+    bool fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx);
+    // 0x802F601C: starts an effect of `kind` (1-6; 4 becomes 5 with scaleX
+    // negated) at pos in a field_0xbf9c slot; kind 3 keeps dir normalized
+    // (r6 is read as a TVec3f only there). act_warp_cannon passes (1, NULL,
+    // 1.0f, -2.0f).
+    void fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const JGeometry::TVec3f* dir, f32 scaleX,
+                     f32 scaleY);
     // 0x802F9714 (game/tu_802F5040.cpp): the same arguments as fn_802FA160
     // (checkCompressed / getResSize for size 0); writes the nibble-swapped
     // bytes to field_0x88[slot] + dstOffset and flushes them; tu_8039003C's
@@ -190,6 +240,7 @@ public:
     // 65 per row) around pos, when field_0xc21c is positive and pos lies in
     // the field_0x2380 x field_0x2384 cells from field_0x2368.
     f32 fn_802F5E9C(const JGeometry::TVec3f* pos);
+    inline f32 getHeight(const JGeometry::TVec3f* pos); // its body, defined in tu_802F5040.cpp
     // 0x802F6CF4: the third sprite kind of the queues (cls_8030029C::field_0x18),
     // called like fn_802F745C (pos, the resource, &params).
     void fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
@@ -232,8 +283,9 @@ public:
     /* 0x0110 */ JGeometry::TVec2f* field_0x110; // 0x1000 (4 x 64 x 16, filled by fn_802FF798)
     /* 0x0114 */ u8 field_0x114[0x11C - 0x114];
     /* 0x011C */ cls_804AA858Sub11C* field_0x11c[4];
-    /* 0x012C */ u8 field_0x12c[4];
-    /* 0x0130 */ u8 field_0x130[0x138 - 0x130];
+    /* 0x012C */ u8 field_0x12c[4]; // set by fn_802F53F4 for the slot it fills
+    /* 0x0130 */ u8 field_0x130[4]; // fn_802F53F4: record bits 0x4 >> 5 (mode 3)
+    /* 0x0134 */ u8 field_0x134[4]; // fn_802F53F4: record bit 0x5 >> 7 (mode 2)
     /* 0x0138 */ s32 field_0x138[4];
     /* 0x0148 */ u8 field_0x148[4];
     /* 0x014C */ u8 field_0x14c[4];
@@ -427,14 +479,9 @@ public:
 // 42 units. The collision boxes (see above).
 CollisionBoxes_8020D58C* fn_8020D58C();
 
-// --- sprite draw (owner: game/tu_802F5040.cpp, not written yet) ---
-extern "C" {
-// Called by act_warp_cannon's fn_80130FAC with the object lbl_8053AB10->
-// field_0x20 in r3, a position in r4, 1 and 0 in r5 and r6, and 1.0f, -2.0f in
-// f1 and f2 (0x80131138). Its body is not read yet, so the argument meanings
-// are the caller's constants.
-void fn_802F601C(cls_804AA858* sprites, const JGeometry::TVec3f* pos, s32 a, s32 b, f32 scaleX,
-                 f32 scaleY);
-}
+// game/tu_802F5040.cpp. The GX setup of a sprite at pos with params (or NULL);
+// writes the draw offset to out. Called by the sprite draws of this unit and
+// by tu_801618D0 (0x801619F4).
+void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out);
 
 #endif
