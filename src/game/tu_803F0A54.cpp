@@ -46,27 +46,104 @@ static ConnectScreen_804B0F10::StateFunc lbl_804B0E4C[13] = {
 // (not written yet).
 static const s16 lbl_80543710[4] = {-25, 25, 77, 77};
 
+// .rodata: the unit's tables in address order (the functions address them
+// off one base); u64 tables are J2DPane::search tags. Same table set and
+// layout as the twin game/tu_803E1668.cpp (cls_804B0B00), here for 2-4
+// players.
+static const f32 lbl_80478A60[16] = {
+    50.0f, 206.0f, 50.0f, 206.0f, 60.0f, 60.0f, 132.0f, 132.0f, 87.0f, 464.0f, 87.0f, 464.0f, 159.0f, 159.0f, 327.0f, 327.0f,
+};
 // Sprite frame offsets for field_0x210[0] % 30 (the player sprites' idle
 // animation).
 static const s32 lbl_80478AA0[30] = {
     0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
 };
-
-// FIXME: .rodata 0x80478A60-0x80479AC0 is not split yet; these tables are
-// only the parts fn_803F0A54 reads, at their addresses.
-static const u64 lbl_80479168[2] = {
-    0x000050636F6E3031ull, // "Pcon01"
-    0x000050636F6E3032ull, // "Pcon02"
+static const u64 lbl_80478B18[20] = {
+    'Pmbabb07', 'Pmbabb06', 'Pmbabb05', 'Pmbabb04', 'Pmbabb03', 'Pmbabb02', 'Pmbabb01', 'Pmbab05', 'Pmbab04',
+    'Pmbab03', 'Pmbab02', 'Pmbab01', 'Pmbam02', 'Pmbam01', 'Pmbalk02', 'Pmbal02', 'Pmbalk01', 'Pmbal01', 'Pmba02',
+    'Pmba01',
 };
-
-// field_0x8's player panes (the effect positions of fn_803F8FBC); the
-// first table of the unsplit .rodata object lbl_80479238.
+static const u64 lbl_80478BB8[3][6] = {
+    {'Pnop03', 'Pnop04', 'Pnopb05', 'Pnopb06', 'Pnopb07', 'Pnopb08'},
+    {'Pnop05', 'Pnop06', 'Pnopb09', 'Pnopb10', 'Pnopb11', 'Pnopb12'},
+    {'Pnop07', 'Pnop08', 'Pnopb13', 'Pnopb14', 'Pnopb15', 'Pnopb16'},
+};
+static const u64 lbl_80478C48[24] = {
+    'Plibl02', 'Plibl03', 'Plibl04', 'Plw01', 'Plw02', 'Plw03', 'Plw04', 'Plw05', 'Plw06', 'Plw07', 'Plw08', 'Plw09',
+    'Plw10', 'Plili02', 'Plili03', 'Plili04', 'Plib01', 'Plib02', 'Plib03', 'Plib04', 'Plib05', 'Plibk01', 'Plibk02',
+    'Plibk03',
+};
+static const u64 lbl_80478D08[18] = {
+    'P2pli01', 'P2pli02', 'P2pli03', 'P2pli04', 'P3pli01', 'P3pli02', 'P3pli03', 'P3pli04', 'P3pli05', 'P3pli06',
+    'P4pli01', 'P4pli02', 'P4pli03', 'P4pli04', 'P4pli05', 'P4pli06', 'P4pli07', 'P4pli08',
+};
+static const u64 lbl_80478D98[11] = {
+    'Ttkg01', 'Ttkg02', 'Ptkgb01', 'Ptkgbk01', 'Ptkgb02', 'Ptkgbk02', 'Ptkgb03', 'Ptkgb04', 'Ptkgb05', 'Ptkgbk03',
+    'Ptkgbk04',
+};
+static const u64 lbl_80478DF0[6] = {
+    'Tten01', 'Tten02', 'Ptgba01', 'Ptgba02', 'Ptn01', 'Ptn02',
+};
+static const u64 lbl_80478E20[34] = {
+    'Pcgps01', 'Pcgp01', 'Pcgba01', 'Pcgbak01', 'Pcgps02', 'Pcgp02', 'Pcgba02', 'Pcgbak02', 'Pcgps03', 'Pcgp03',
+    'Pcgba03', 'Pcgbak03', 'Pcgps04', 'Pcgp04', 'Pcgba04', 'Pcgbak04', 'Pcc01', 'Pccaa01', 'Pcc02', 'Pccaa02',
+    'Pcc03', 'Pccaa03', 'Pcc04', 'Pccaa04', 'Pcca01', 'Pcca02', 'Pcca03', 'Pcca04', 'Pcca05', 'Pcca06', 'Pcca07',
+    'Pcca08', 'Pccu01', 'Pccuk01',
+};
+static const u64 lbl_80478F30[4][9] = {
+    {'Ppln01', 'Pplli01', 'Ppllb01', 'Ppllb02', 'Ppllb03', 'Ppllb04', 'Ppllb05', 'Ppllbk01', 'Ppllbk02'},
+    {'Ppln02', 'Pplli02', 'Ppllb11', 'Ppllb12', 'Ppllb13', 'Ppllb14', 'Ppllb15', 'Ppllbk11', 'Ppllbk12'},
+    {'Ppln03', 'Pplli03', 'Ppllb21', 'Ppllb22', 'Ppllb23', 'Ppllb24', 'Ppllb25', 'Ppllbk21', 'Ppllbk22'},
+    {'Ppln04', 'Pplli04', 'Ppllb31', 'Ppllb32', 'Ppllb33', 'Ppllb34', 'Ppllb35', 'Ppllbk31', 'Ppllbk32'},
+};
+static const u64 lbl_80479050[20] = {
+    'Pmbabb07', 'Pmbabb06', 'Pmbabb05', 'Pmbabb04', 'Pmbabb03', 'Pmbabb02', 'Pmbabb01', 'Pmbab05', 'Pmbab04',
+    'Pmbab03', 'Pmbab02', 'Pmbab01', 'Pmbam02', 'Pmbam01', 'Pmbalk02', 'Pmbal02', 'Pmbalk01', 'Pmbal01', 'Pmba02',
+    'Pmba01',
+};
+static const u64 lbl_804790F0[3][5] = {
+    {'Tsta01', 'Pstab01', 'Pstab02', 'Pstab03', 'Pstab04'},
+    {'Than01', 'Phanb01', 'Phanb02', 'Phanb03', 'Phanb04'},
+    {'Trule01', 'Prub01', 'Prub02', 'Prub03', 'Prub04'},
+};
+static const u64 lbl_80479168[26] = {
+    'Pcon01', 'Pcon02', 'Pgba01', 'Pgba02', 'Pnop01', 'Pnop02', 'Plwa01', 'Plwa02', 'Plwa03', 'Plwa04', 'Plwa05',
+    'Plwa06', 'Plwa07', 'Plwa08', 'Plwa09', 'Plwa10', 'Plibk01', 'Plibk02', 'Plibk03', 'Plibk04', 'Plibk11',
+    'Plibk12', 'Plibk05', 'Plibkk01', 'Plibkk02', 'Plibkk03',
+};
 static const u64 lbl_80479238[4] = {
     'Pplli01', 'Pplli02', 'Pplli03', 'Pplli04',
 };
-
-// field_0x10's cursor panes, parts of the unsplit .rodata object
-// lbl_80479238 at their offsets there (fn_803F35B0).
+static const u64 lbl_80479258[4] = {
+    'Pcgbak01', 'Pcgbak02', 'Pcgbak03', 'Pcgbak04',
+};
+static const u64 lbl_80479278[4] = {
+    'Pcgba01', 'Pcgba02', 'Pcgba03', 'Pcgba04',
+};
+static const u64 lbl_80479298[4] = {
+    'Pcgp01', 'Pcgp02', 'Pcgp03', 'Pcgp04',
+};
+static const u64 lbl_804792B8[4] = {
+    'Pcgps01', 'Pcgps02', 'Pcgps03', 'Pcgps04',
+};
+static const u64 lbl_804792D8[4] = {
+    'Ppln01', 'Ppln02', 'Ppln03', 'Ppln04',
+};
+static const u64 lbl_804792F8[4][4] = {
+    {'Pcc01', 'Pccaa01', 'Pcca01', 'Pcca02'},
+    {'Pcc02', 'Pccaa02', 'Pcca03', 'Pcca04'},
+    {'Pcc03', 'Pccaa03', 'Pcca05', 'Pcca06'},
+    {'Pcc04', 'Pccaa04', 'Pcca07', 'Pcca08'},
+};
+static const u64 lbl_80479378[4] = {
+    'Par01', 'Par02', 'Par03', 'Par04',
+};
+static const u64 lbl_80479398[4] = {
+    'Ndatay01', 'Ndatay02', 'Ndatay03', 'Ndatay04',
+};
+static const u64 lbl_804793B8[4] = {
+    'Pbcur01', 'Pbcur02', 'Pbcur03', 'Pbcur04',
+};
 static const u64 lbl_804793D8[4] = {
     'Pscur01', 'Pscur02', 'Pscur03', 'Pscur04',
 };
@@ -76,9 +153,55 @@ static const u64 lbl_804793F8[4] = {
 static const u64 lbl_80479418[4] = {
     'Paccur01', 'Paccur03', 'Paccur05', 'Paccur07',
 };
-
-// mScreen's player-count panes (2-4 players), parts of the unsplit .rodata
-// object lbl_804795AC at their offsets there (fn_803F5410).
+static const u64 lbl_80479438[4] = {
+    'P1s03', 'P2s03', 'P3s03', 'P4s03',
+};
+static const u64 lbl_80479458[4] = {
+    'P1sk03', 'P2sk03', 'P3sk03', 'P4sk03',
+};
+static const u64 lbl_80479478[4] = {
+    'P1s02', 'P2s02', 'P3s02', 'P4s02',
+};
+static const u64 lbl_80479498[4] = {
+    'P1sk02', 'P2sk02', 'P3sk02', 'P4sk02',
+};
+static const u64 lbl_804794B8[4] = {
+    'P1s01', 'P2s01', 'P3s01', 'P4s01',
+};
+static const u64 lbl_804794D8[4] = {
+    'P1sk01', 'P2sk01', 'P3sk01', 'P4sk01',
+};
+// The rupee digit textures (the strings are emitted here, between the tag
+// tables, as in game/tu_803E1668.cpp).
+static const char* lbl_804B0EE8[10] = {
+    "kk_rupyNum_00.bti", "kk_rupyNum_01.bti", "kk_rupyNum_02.bti", "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti", "kk_rupyNum_05.bti", "kk_rupyNum_06.bti", "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti", "kk_rupyNum_09.bti",
+};
+static const u64 lbl_804795C0[4][6] = {
+    {'Pp1lf01', 'Pp1lf02', 'Pp1lf03', 'Pp1lf04', 'Pp1lf05', 'Pp1lf06'},
+    {'Pp2lf01', 'Pp2lf02', 'Pp2lf03', 'Pp2lf04', 'Pp2lf05', 'Pp2lf06'},
+    {'Pp3lf01', 'Pp3lf02', 'Pp3lf03', 'Pp3lf04', 'Pp3lf05', 'Pp3lf06'},
+    {'Pp4lf01', 'Pp4lf02', 'Pp4lf03', 'Pp4lf04', 'Pp4lf05', 'Pp4lf06'},
+};
+static const u64 lbl_80479680[4][6] = {
+    {'Pp1lfk01', 'Pp1lfk02', 'Pp1lfk03', 'Pp1lfk04', 'Pp1lfk05', 'Pp1lfk06'},
+    {'Pp2lfk01', 'Pp2lfk02', 'Pp2lfk03', 'Pp2lfk04', 'Pp2lfk05', 'Pp2lfk06'},
+    {'Pp3lfk01', 'Pp3lfk02', 'Pp3lfk03', 'Pp3lfk04', 'Pp3lfk05', 'Pp3lfk06'},
+    {'Pp4lfk01', 'Pp4lfk02', 'Pp4lfk03', 'Pp4lfk04', 'Pp4lfk05', 'Pp4lfk06'},
+};
+static const u64 lbl_80479740[4][6] = {
+    {'Pp1lf09', 'Pp1lf10', 'Pp1lf11', 'Pp1lf12', 'Pp1lf13', 'Pp1lf14'},
+    {'Pp2lf09', 'Pp2lf10', 'Pp2lf11', 'Pp2lf12', 'Pp2lf13', 'Pp2lf14'},
+    {'Pp3lf09', 'Pp3lf10', 'Pp3lf11', 'Pp3lf12', 'Pp3lf13', 'Pp3lf14'},
+    {'Pp4lf09', 'Pp4lf10', 'Pp4lf11', 'Pp4lf12', 'Pp4lf13', 'Pp4lf14'},
+};
+static const u64 lbl_80479800[4][6] = {
+    {'Pp1lfk09', 'Pp1lfk10', 'Pp1lfk11', 'Pp1lfk12', 'Pp1lfk13', 'Pp1lfk14'},
+    {'Pp2lfk09', 'Pp2lfk10', 'Pp2lfk11', 'Pp2lfk12', 'Pp2lfk13', 'Pp2lfk14'},
+    {'Pp3lfk09', 'Pp3lfk10', 'Pp3lfk11', 'Pp3lfk12', 'Pp3lfk13', 'Pp3lfk14'},
+    {'Pp4lfk09', 'Pp4lfk10', 'Pp4lfk11', 'Pp4lfk12', 'Pp4lfk13', 'Pp4lfk14'},
+};
 static const u64 lbl_804798C0[3] = {
     'Pnopb08', 'Pnopb12', 'Pnopb16',
 };
@@ -88,14 +211,13 @@ static const u64 lbl_804798D8[3] = {
 static const u64 lbl_804798F0[3] = {
     'Plili02', 'Plili03', 'Plili04',
 };
-
-// field_0xc's player panes for 2, 3 and 4 players (field_0x1ac + 2).
+static const u64 lbl_80479908[3] = {
+    'Pblk01', 'Pblk02', 'Pblk03',
+};
 static const u64 lbl_80479920[3][4] = {
-    {0x005032706C693031ull /* "P2pli01" */, 0x005032706C693032ull /* "P2pli02" */, 0, 0},
-    {0x005033706C693031ull /* "P3pli01" */, 0x005033706C693032ull /* "P3pli02" */,
-     0x005033706C693033ull /* "P3pli03" */, 0},
-    {0x005034706C693031ull /* "P4pli01" */, 0x005034706C693032ull /* "P4pli02" */,
-     0x005034706C693033ull /* "P4pli03" */, 0x005034706C693034ull /* "P4pli04" */},
+    {'P2pli01', 'P2pli02', 0, 0},
+    {'P3pli01', 'P3pli02', 'P3pli03', 0},
+    {'P4pli01', 'P4pli02', 'P4pli03', 'P4pli04'},
 };
 
 // Sets the 2-bit field `player` of root->field_0x83 to `kind`.
