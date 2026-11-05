@@ -97,6 +97,16 @@ static inline bool follows_80240670(const Player_804A6F38* player) {
     return player->field_0xd60 >= 0;
 }
 
+// Whether the player is in, or about to enter, state 0x1B (the current or
+// the requested state); a materialised bool where it is inlined (li 0 / li 1).
+static inline bool inState1B(const Player_804A6F38* player) {
+    bool result = false;
+    if (player->field_0x1240 == 0x1b || player->field_0x1244 == 0x1b) {
+        result = true;
+    }
+    return result;
+}
+
 void Player_804A6F38::fn_8023FBF0() {
     if (!field_0x42c) {
         return;
@@ -305,6 +315,15 @@ bool Player_804A6F38::fn_80240B5C() {
 
 bool Player_804A6F38::fn_80240B70() {
     return field_0x1240 == 0x50;
+}
+
+// Whether the player is busy: through its leader (fn_8022EA0C's
+// fn_80233EDC) when it follows, else when it is in state 0x1B. Const like
+// fn_80240670: the inlined group loops hoist field_0x4.
+// FIXME: 98.9 %. Registers only: the group loop's count / index (r27 / r26
+// in the original, r29 / r27 here), as in fn_80240670.
+bool Player_804A6F38::fn_80240B84() const {
+    return fn_80240670() ? fn_80233EDC(fn_8022EA0C(field_0x4)) : inState1B(this);
 }
 
 bool Player_804A6F38::fn_80240D50() {
@@ -1669,16 +1688,6 @@ void Player_804A6F38::fn_80252F80(const JGeometry::TVec3f* pos, s32 a, s32 b, u8
 
 void Player_804A6F38::fn_80252FBC() {}
 
-// Whether the player is in, or about to enter, state 0x1B (the current or
-// the requested state); a materialised bool where it is inlined (li 0 / li 1).
-static inline bool inState1B(const Player_804A6F38* player) {
-    bool result = false;
-    if (player->field_0x1240 == 0x1b || player->field_0x1244 == 0x1b) {
-        result = true;
-    }
-    return result;
-}
-
 // Scales v to unit length unless it is shorter than 32 * FLT_EPSILON (the
 // sequence of tu_80285E58's fn_8028676C and tu_802684A4's normalize2D).
 static inline void normalizeVec(JGeometry::TVec3f& v) {
@@ -1722,7 +1731,7 @@ void Player_804A6F38::fn_80252FC0() {
         return;
     }
     if ((field_0xd60 >= 0 && field_0xd9c < 0 && field_0xdac < 0) || field_0x1216) {
-        if (fn_80240670() ? fn_80233EDC(fn_8022EA0C(field_0x4)) : inState1B(this)) {
+        if (fn_80240B84()) {
             return;
         }
         if (field_0x1240 == 0x19) {

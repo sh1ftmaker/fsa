@@ -93,7 +93,7 @@ public:
     bool fn_80240B20(); // via fn_80234BC0
     bool fn_80240B5C(); // via fn_80234C5C
     bool fn_80240B70(); // via fn_80234CF8
-    bool fn_80240B84(); // via fn_80233EDC
+    bool fn_80240B84() const; // via fn_80233EDC
     bool fn_80240D50(); // via fn_80234D94
     bool fn_80240D64(); // via fn_80234E30
     bool fn_80240DAC(); // via fn_80234ECC
