@@ -229,28 +229,17 @@ bool ActorBase_804A5770::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return blocked;
 }
 
-// 32.0f is lbl_8053F748; fn_801F26CC (reloc-name) and fn_801F2718 pair with
-// it only once the unit's .sdata2 order is fixed (see the constructor's FIXME).
-s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
-    return fn_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
-}
-
-// FIXME: 99.5 %. Only the literal differs (lbl_8053F748, see above).
-s32 ActorBase_804A5770::fn_801F2718(u32 actorId) const {
-    return fn_801F8108(this, actorId, mSerial, 32.0f);
-}
-
-// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
-static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
-                               const Vec& pos) {
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
-}
-
-// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
-// function defined before the caller, so it is an inline of its own.
-static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
+// Whether pos is blocked on layer (vfunc_0x4C) or outside the view's box
+// for that layer.
+// FIXME: 94.4. Register allocation: the target keeps layer and then the
+// result in r31 and the box in r30 (ours the other way round), and loads
+// pos->x / pos->y into f2 / f1.
+bool ActorBase_804A5770::vfunc_0x50(s32 layer, const JGeometry::TVec3f* pos) {
+    JGeometry::TBox2f* box = layerBox(layer);
     bool result = false;
-    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+    if (vfunc_0x4C(layer, pos) || pos->x < box->i.x || pos->y < box->i.y || pos->x >= box->f.x ||
+        pos->y >= box->f.y)
+    {
         result = true;
     }
     return result;
@@ -276,6 +265,33 @@ bool ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
             }
             result = true;
         }
+    }
+    return result;
+}
+
+// 32.0f is lbl_8053F748; fn_801F26CC (reloc-name) and fn_801F2718 pair with
+// it only once the unit's .sdata2 order is fixed (see the constructor's FIXME).
+s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
+    return fn_801F856C()->fn_801F7F58(this, ids, mSerial, 32.0f);
+}
+
+// FIXME: 99.5 %. Only the literal differs (lbl_8053F748, see above).
+s32 ActorBase_804A5770::fn_801F2718(u32 actorId) const {
+    return fn_801F8108(this, actorId, mSerial, 32.0f);
+}
+
+// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs,
+                               const Vec& pos) {
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+}
+
+// The body of fn_801F329C. fn_801F320C inlines it, and MWCC only inlines a
+// function defined before the caller, so it is an inline of its own.
+static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 player) {
+    bool result = false;
+    if (fn_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+        result = true;
     }
     return result;
 }
@@ -481,6 +497,44 @@ bool ActorBase_804A5770::fn_801F320C(s32 player) const {
 // Whether `player` is on a layer below 8 while this actor is on layer 8.
 bool ActorBase_804A5770::fn_801F329C(s32 player) {
     return isPlayerBelowLayer8(this, player);
+}
+
+// Copies each player's position (fn_8023E724) into field_0x1ac[], moved
+// into this layer's view space (fn_801CD150) for a player below layer 8
+// while this is on 8.
+void ActorBase_804A5770::fn_801F32F4() {
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerBelowLayer8(this, i)) {
+            JGeometry::TVec3f pos;
+            fn_801CD150(fn_8023E724(i), &pos);
+            field_0x1ac[i].set(pos);
+        } else {
+            field_0x1ac[i].set(*fn_8023E724(i));
+        }
+    }
+}
+
+// Runs a warp fn_801F349C queued: while one is running (field_0x174 > 0)
+// counts it down and ends it once mPos is field_0x184 away from the
+// destination (field_0x30); a queued one moves mPos.xy there, switches to
+// its layer and starts the count (field_0x180). field_0x17d is set for the
+// frame a warp starts.
+void ActorBase_804A5770::fn_801F33C4() {
+    field_0x17d = 0;
+    if (field_0x174 > 0) {
+        field_0x174--;
+        const JGeometry::TVec3f& diff = field_0x30 - mPos;
+        if (PSVECMag(&diff) >= field_0x184) {
+            field_0x174 = 0;
+        }
+    } else if (field_0x17c) {
+        mPos.x = field_0x30.x;
+        mPos.y = field_0x30.y;
+        field_0x4 = field_0x178;
+        field_0x17c = 0;
+        field_0x17d = 1;
+        field_0x174 = field_0x180;
+    }
 }
 
 // Queues a warp to *pos on layer, unless one is pending (field_0x17c) or
