@@ -572,6 +572,7 @@ public:
     // the group's, fn_802376D8), capped at 0xBF8; once per 0xD35, which is set to `flag`.
     void fn_80270DDC(s32 amount, bool flag);
     void fn_802422D0(); // via fn_80231368 (tu_8022AD64)
+    const JGeometry::TVec2f* fn_802422C4(); // &field_0xbf0->field_0x14; via fn_8022DFD4 (tu_8022AD64)
     void fn_80248E94(bool flag); // via fn_8022AF78 (tu_8022AD64); clrlwi 24, compared with 1
     void fn_80270948(const JGeometry::TVec3f* pos); // called by tu_8023FBF0 fn_802422D0; 0xD10 = pos (mPos if NULL) once while down
     void fn_8027057C(); // called by fn_80277F98 (update of state 0x33): revive; not written (inlines fn_80270DDC)

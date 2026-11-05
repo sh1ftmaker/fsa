@@ -90,7 +90,7 @@ extern s32 lbl_8053A190).
 
 # Player track round 8, agent N (2026-11-05, Opus)
 
-Baseline (progress.py): total 8571 / 11557; unit 283/373. Now: total 8618 (+47); unit 330/373.
+Baseline (progress.py): total 8571 / 11557; unit 283/373. Now (rebased on matching 778a3b5c): total 8620 (this unit +48, matching's own commits +1); unit 331/373.
 
 ## Done
 - fn_8022C5EC / fn_8022C52C return u32 (all callers cmplwi). tu_8027E5BC (not edited): fn_80285690
@@ -98,9 +98,10 @@ Baseline (progress.py): total 8571 / 11557; unit 283/373. Now: total 8618 (+47);
   fn_802859C4 99.54 -> 99.93 (regalloc-only, the same cmpw).
 - Player.h: field_0x1268 is a TVec3f (fn_8024C378 / fn_8024E0A0 copy mPos into it, add a view
   offset and return its address).
-- 46 hand-written functions (all 100 %): forwarders with non-placeholder getters, the inverted
+- 47 hand-written functions (all 100 %): forwarders with non-placeholder getters, the inverted
   `!isPlayerActive` shapes, all-player "any" / "find first" / "find last" / "each" loops, the
-  group loops over fn_8022E438, PlayerManager_804A6F28's constructor and destructor.
+  group loops over fn_8022E438, PlayerManager_804A6F28's constructor and destructor, fn_8022DFD4
+  (after rebasing on agent M's cls_804A71A8 0x14 TVec2f: its fallbacks return a zeroed local's address).
 - 1 generated: fn_8023A6CC (loop family), by `gen_game.py tu_8022AD64` with the claim check
   bypassed in-process (no claims.json edit); its manifest row is new (coordinator approval).
 - Types proven from the asm: fn_80230224 takes s32 (the call truncates it with clrlwi 24 into
@@ -116,11 +117,9 @@ Every commit that changes the source is a pair: the pre-generation source (the f
 generator's rendered members, verified by re-running fwd_edit_source), then the full file with
 the rows' src_before re-pinned to that blob.
 
-## Not done (43)
+## Not done (42)
 - fn_80233C08: an out-of-line TVec3 normalize with paired-single code (psq_l / ps_madd / ps_sum0 /
   ps_muls0) and 32 * FLT_EPSILON: needs a PSVECSquareMag-style JMath inline (inline asm) we do not have.
-- fn_8022DFD4: returns fn_802422C4 (&field_0xbf0->field_0x14 as a TVec2f) or the address of a
-  stack TVec2f; cls_804A71A8 0x14 / 0x18 are two f32 fields, so carve that TVec2f first.
 - fn_80238430: returns &field_0x324 (a TVec2f; the caller reads x / y) with the TVec3f fallback
   &lbl_804CF460: the declared type cannot be both without a cast.
 - fn_8023F984: the weak out-of-line copy of Player::fn_8023F984 (mActive); appears once one of the
