@@ -149,14 +149,11 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
 JPABaseEmitter* fn_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u16 id, s32 height,
                             s32 depth, JPAEmitterCallBack* emitterCB,
                             JPAParticleCallBack* particleCB, bool adjust, f32 scale);
-
-// game/tu_8013AAD4.cpp (owner unit, not written yet). Called by act_beamos draw()
-// with a position (the actor's mPos with a sincos offset), a colour (a
-// function-local static JUtility::TColor, white: the guarded first-call init
-// stores its four bytes), 0, a flag (0 or 1), 0 and 4.0f; argument types are
-// read off that call.
-void fn_8013AC90(const JGeometry::TVec3f* pos, JUtility::TColor* color, s32 a, s32 flag, s32 c, f32 scale);
 }
+
+// game/tu_8013AAD4.cpp. Draws a lit sphere of `scale` at `pos` in `color`; act_beamos
+// draw() passes a null matrix. a / b are summed into a depth offset.
+void fn_8013AC90(f32 scale, const Vec* pos, const JUtility::TColor* color, s32 a, s32 b, const Mtx m);
 
 // game/tu_801CB270.cpp (3 caller units: tu_801EE24C, tu_8021AF28,
 // tu_8020F798). NULL-checks the emitter, then makes it immortal and invalid

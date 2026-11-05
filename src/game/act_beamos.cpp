@@ -32,7 +32,7 @@ void Beamos_804A40E0::draw() {
     if (pos.y >= floorY) {
         depth = 1;
     }
-    fn_8013AC90(&pos, &lbl_8053AC0C, 0, depth, 0, 4.0f);
+    fn_8013AC90(4.0f, &pos, &lbl_8053AC0C, 0, depth, NULL);
 }
 
 void Beamos_804A40E0::vfunc_0x24() {

@@ -601,11 +601,10 @@ extern JUtility::TColor lbl_80543F20;
 // Its +0x284 is read in 56 places; fn_8015F8FC takes it.
 // Only the flag and the float that tu_801286C0's update sets are known.
 class cls_804A03A8;
-extern "C" {
 // Owner: the unit at 0x8022AD64 (defined at 0x80239D38, not written yet).
-// No arguments; returns 0 or 1 (clrlwi 24); tested by GameRoot2_8049F108::fn_8013BBE0.
+// Free function, no arguments (reads globals, r3 is not read); returns 0 or 1
+// (clrlwi 24); tested by GameRoot2_8049F108::fn_8013BBE0.
 bool fn_80239D38();
-}
 class cls_804A03A8 {
 public:
     // Constructor 0x801602E8 (called by GameRoot2_8049F108's constructor).
