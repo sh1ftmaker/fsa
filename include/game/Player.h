@@ -533,7 +533,8 @@ public:
     /* 0x0510 */ JGeometry::TBox2f field_0x510[3];
     /* 0x0540 */ JGeometry::TBox2f field_0x540;
     /* 0x0550 */ JGeometry::TBox2f field_0x550[3];
-    /* 0x0580 */ u8 field_0x580[0x5A0 - 0x580];
+    /* 0x0580 */ u8 field_0x580[0x590 - 0x580];
+    /* 0x0590 */ JGeometry::TBox2f field_0x590;
     /* 0x05A0 */ JGeometry::TBox2f field_0x5a0;
     /* 0x05B0 */ u8 field_0x5b0[0x5C0 - 0x5B0];
     /* 0x05C0 */ JGeometry::TVec3f field_0x5c0;
@@ -548,13 +549,14 @@ public:
     /* 0x0B28 */ s32 field_0xb28;
     /* 0x0B2C */ s32 field_0xb2c;
     /* 0x0B30 */ s32 field_0xb30[2];
-    /* 0x0B38 */ u8 field_0xb38[0xB3C - 0xB38];
+    /* 0x0B38 */ s32 field_0xb38;
     /* 0x0B3C */ s32 field_0xb3c;
     /* 0x0B40 */ s32 field_0xb40[3];
     /* 0x0B4C */ s32 field_0xb4c[3];
     /* 0x0B58 */ s32 field_0xb58;
     /* 0x0B5C */ s32 field_0xb5c[3];
-    /* 0x0B68 */ u8 field_0xb68[0xB70 - 0xB68];
+    /* 0x0B68 */ u8 field_0xb68[0xB6C - 0xB68];
+    /* 0x0B6C */ s32 field_0xb6c;
     /* 0x0B70 */ s32 field_0xb70;
     /* 0x0B74 */ u8 field_0xb74[0xB78 - 0xB74];
     // Returned by fn_8023B400 (lbz; blr).
@@ -562,7 +564,8 @@ public:
     /* 0x0B79 */ u8 field_0xb79;
     /* 0x0B7A */ bool field_0xb7a;
     /* 0x0B7B */ bool field_0xb7b;
-    /* 0x0B7C */ u8 field_0xb7c[0xB84 - 0xB7C];
+    /* 0x0B7C */ s32 field_0xb7c;
+    /* 0x0B80 */ s32 field_0xb80;
     /* 0x0B84 */ bool field_0xb84;
     /* 0x0B85 */ u8 field_0xb85[0xB88 - 0xB85];
     /* 0x0B88 */ s32 field_0xb88;
@@ -836,6 +839,9 @@ public:
     bool fn_80272E98(const JGeometry::TBox2f* box, s32 layer); // via fn_80239C00
     bool fn_802724E0(const JGeometry::TBox2f* box, s32 layer); // via fn_80239C9C
     bool fn_802574CC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023AC74
+    bool fn_802575B8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // field_0xb0c[3]; stores the hit index in 0xb80 (-1 if none)
+    bool fn_802576CC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // field_0xb00[3]; hit index in 0xb7c
+    bool fn_802573E0(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // the single-slot box test over field_0xb38 / 0xb6c / 0x590
     bool fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BA68
     void fn_80252CF0(const JGeometry::TVec3f* pos); // via fn_8023DF68
     JGeometry::TVec3f* fn_8024C378(); // via fn_8023E3B8

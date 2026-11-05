@@ -4,6 +4,38 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_somaria_block.h"
 
+bool Player_804A6F38::fn_802575B8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xb0c[i] >= 0 && field_0xb4c[i] == layer) {
+            JGeometry::TBox2f overlap(field_0x510[i]);
+            if (overlap.intersect(*box)) {
+                out->x = field_0x510[i].f.x + (field_0x510[i].i.x - field_0x510[i].f.x) * 0.5f;
+                out->y = field_0x510[i].f.y + (field_0x510[i].i.y - field_0x510[i].f.y) * 0.5f;
+                field_0xb80 = i;
+                return true;
+            }
+        }
+    }
+    field_0xb80 = -1;
+    return false;
+}
+
+bool Player_804A6F38::fn_802576CC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xb00[i] >= 0 && field_0xb40[i] == layer) {
+            JGeometry::TBox2f overlap(field_0x4e0[i]);
+            if (overlap.intersect(*box)) {
+                out->x = field_0x4e0[i].f.x + (field_0x4e0[i].i.x - field_0x4e0[i].f.x) * 0.5f;
+                out->y = field_0x4e0[i].f.y + (field_0x4e0[i].i.y - field_0x4e0[i].f.y) * 0.5f;
+                field_0xb7c = i;
+                return true;
+            }
+        }
+    }
+    field_0xb7c = -1;
+    return false;
+}
+
 bool Player_804A6F38::fn_802577E0() {
     if (fn_80270C88()) {
         return false;
@@ -15,6 +47,38 @@ bool Player_804A6F38::fn_802577E0() {
         return false;
     }
     return fn_80251AEC(0x3f);
+}
+
+bool Player_804A6F38::fn_802573E0(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (field_0xb38 < 0) {
+        return false;
+    }
+    if (field_0xb6c != layer) {
+        return false;
+    }
+    JGeometry::TBox2f overlap(field_0x590);
+    if (overlap.intersect(*box)) {
+        out->x = field_0x590.f.x + (field_0x590.i.x - field_0x590.f.x) * 0.5f;
+        out->y = field_0x590.f.y + (field_0x590.i.y - field_0x590.f.y) * 0.5f;
+        return true;
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_802574CC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+    if (field_0xb18 < 0) {
+        return false;
+    }
+    if (field_0xb58 != layer) {
+        return false;
+    }
+    JGeometry::TBox2f overlap(field_0x540);
+    if (overlap.intersect(*box)) {
+        out->x = field_0x540.f.x + (field_0x540.i.x - field_0x540.f.x) * 0.5f;
+        out->y = field_0x540.f.y + (field_0x540.i.y - field_0x540.f.y) * 0.5f;
+        return true;
+    }
+    return false;
 }
 
 void Player_804A6F38::fn_80257FF4() {
