@@ -402,6 +402,125 @@ static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
     self->field_0x44[file]->fn_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
 }
 
+// FIXME: 99.01 %. Register allocation only: the table loops' counter and
+// pointer swap (r26 / r27 and r29 / r27 in the original), the show() stores
+// keep 1 in r5 and the pane in r3 (ours r0 / r4), and the
+// `lbl_8050EC80[field_0xa4]` add is base + offset (see fn_803CEED4); a
+// function-wide `int i` was worse (98.85). .sdata2 @NNN.
+// Opens the file menu for the chosen file field_0xa4 (state 18): the 'Pdb'
+// marks of its flags, the command buttons (copy and delete greyed out for an
+// empty file), the board panes faded out at their start positions, and the
+// command labels.
+void FileSelect_804AFF60::fn_803C1734() {
+    for (int i = 0; i < 8; i++) {
+        if (fn_803B90E4(field_0xa4, i)) {
+            mScreen->search(lbl_80476980[i + 2])->hide();
+        } else {
+            mScreen->search(lbl_80476980[i + 2])->show();
+        }
+    }
+    field_0xa8 = field_0xa4;
+    for (int i = 0; i < 8; i++) {
+        field_0xb8[i] = fn_803B8CAC(field_0xa4, i);
+    }
+    field_0x14->mPane->show();
+    field_0x18->mPane->show();
+    field_0x1c->mPane->show();
+    field_0x34->mPane->show();
+    for (int i = 0; i < 4; i++) {
+        field_0x24[i]->mPane->show();
+    }
+    if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+        ((J2DPicture*)mScreenHuuin->search('Pcopb01'))
+            ->setBlackWhite(JUtility::TColor(0x50, 0x50, 0x50, 0), JUtility::TColor(0xB4, 0xB4, 0xB4, 0xFF));
+        ((J2DPicture*)mScreenHuuin->search('Pcopb02'))
+            ->setBlackWhite(JUtility::TColor(0x50, 0x50, 0x50, 0), JUtility::TColor(0xB4, 0xB4, 0xB4, 0xFF));
+        ((J2DPicture*)mScreenHuuin->search('Pdelb01'))
+            ->setBlackWhite(JUtility::TColor(0x50, 0x50, 0x50, 0), JUtility::TColor(0xB4, 0xB4, 0xB4, 0xFF));
+        ((J2DPicture*)mScreenHuuin->search('Pdelb02'))
+            ->setBlackWhite(JUtility::TColor(0x50, 0x50, 0x50, 0), JUtility::TColor(0xB4, 0xB4, 0xB4, 0xFF));
+    } else {
+        ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
+        ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
+        ((J2DPicture*)mScreenHuuin->search('Pdelb01'))->setBlackWhite(field_0xe4, field_0xe0);
+        ((J2DPicture*)mScreenHuuin->search('Pdelb02'))->setBlackWhite(field_0xe4, field_0xe0);
+    }
+
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->fn_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    field_0x50->field_0x26 = 0;
+    for (int i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+
+    field_0x14->fn_80402E08(600.0f, 0.0f);
+    field_0x14->field_0x20 = 0;
+    field_0x14->mPane->setAlpha(0);
+    field_0x18->fn_80402E08(600.0f, 0.0f);
+    field_0x18->field_0x20 = 0;
+    field_0x18->mPane->setAlpha(0);
+    field_0x1c->fn_80402E08(600.0f, 0.0f);
+    field_0x1c->field_0x20 = 0;
+    field_0x1c->mPane->setAlpha(0);
+    for (int i = 0; i < 81; i++) {
+        field_0x14->fn_804023D0(mScreen->search(lbl_80476618[i]), field_0x132[i]);
+    }
+    for (int i = 0; i < 19; i++) {
+        field_0x14->fn_804023D0(mScreenHuuin->search(lbl_804768A0[i]), field_0x183[i]);
+    }
+    field_0x14->field_0x26 = 0;
+    field_0x18->field_0x26 = 0;
+    field_0x1c->field_0x26 = 0;
+
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    for (int i = 0; i < 4; i++) {
+        field_0x24[i]->fn_80402E08(0.0f, 100.0f);
+        field_0x24[i]->field_0x22 = 0;
+        field_0x24[i]->mPane->setAlpha(0);
+        switch (i) {
+        case 0:
+            for (int j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+            }
+            break;
+        case 1:
+            for (int j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+            }
+            break;
+        case 2:
+            for (int j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+            }
+            break;
+        case 3:
+            for (int j = 0; j < 4; j++) {
+                field_0x24[i]->fn_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+            }
+            break;
+        }
+        field_0x24[i]->field_0x26 = 0;
+    }
+
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x118, 0, NULL, NULL);
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x119, 0, NULL, NULL);
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tdel01'))->getStringPtr(), 0x11A, 0, NULL, NULL);
+    fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tbac01'))->getStringPtr(), 0x11B, 0, NULL, NULL);
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(18);
+}
+
 // FIXME: 99.93 %. Instructions identical; only the .sdata2 literals differ
 // (@NNN vs lbl_: the pool starts 0, -200, 200, which no earlier written
 // function produces in that order).

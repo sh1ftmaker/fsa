@@ -1298,6 +1298,9 @@ extern "C" {
 // of save file `file` in lbl_8050EC80; returns 1 or 0. FileSelect_804AFF60's
 // constructor reads flags 0..7 of file 0.
 bool fn_803B8CAC(s32 file, s32 index);
+// Owner: game/tu_803B8C74.cpp. True for index < 3, else whether save file
+// `file`'s flag word (lbl_8050EC80 row 0x28) has its top bit set (li 1 / li 0).
+bool fn_803B90E4(s32 file, s32 index);
 }
 
 // Object with vtable 0x804A8578 (constructor fn_802B1EFC stores it in
