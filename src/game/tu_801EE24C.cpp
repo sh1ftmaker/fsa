@@ -87,11 +87,12 @@ static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 play
     return result;
 }
 
-// The body of fn_801F320C: `player` is on this actor's layer, or below 8
+// The body of fn_801F320C (not EnemyBase's isPlayerOnLayer, which switches on the
+// actor id and calls fn_801F320C for most): `player` is on this actor's layer, or below 8
 // while it is on 8. fn_801EE558 and fn_801EE8F4 inline it, and MWCC only
 // inlines a function defined before the caller, so it is an inline of its
 // own.
-static inline bool isPlayerOnLayer(const ActorBase_804A5770* actor, s32 player) {
+static inline bool isPlayerOnActorLayer(const ActorBase_804A5770* actor, s32 player) {
     s32 layer = actor->getField_0x4();
     bool result = false;
     s32 playerLayer = getPlayerLayer_8023DE58(player);
@@ -196,7 +197,7 @@ void ActorBase_804A5770::fn_801EE558(JGeometry::TVec3f* outDir, f32* outDist, s3
         if (player != 0) {
             i = player - 1;
         }
-        if (fn_8023F264(i) && isPlayerOnLayer(this, i) && !fn_8022F478(i) && !fn_80236B50(i) &&
+        if (fn_8023F264(i) && isPlayerOnActorLayer(this, i) && !fn_8022F478(i) && !fn_80236B50(i) &&
             !fn_8022D534(i))
         {
             diff.sub(field_0x1ac[i], pos);
@@ -243,7 +244,7 @@ void ActorBase_804A5770::fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s3
         if (player != 0) {
             i = player - 1;
         }
-        if (fn_8023F264(i) && isPlayerOnLayer(this, i) && !fn_80230188(i) && !fn_8022DCD8(i) &&
+        if (fn_8023F264(i) && isPlayerOnActorLayer(this, i) && !fn_80230188(i) && !fn_8022DCD8(i) &&
             !fn_8022F478(i) && !fn_80236B50(i) &&
             !fn_8022D534(i))
         {
@@ -773,7 +774,7 @@ void ActorBase_804A5770::fn_801F31C4(JGeometry::TBox2f* out) const {
 // Whether `player` is on this actor's layer (getPlayerLayer_8023DE58), or counts as on
 // it through fn_801F329C.
 bool ActorBase_804A5770::fn_801F320C(s32 player) const {
-    return isPlayerOnLayer(this, player);
+    return isPlayerOnActorLayer(this, player);
 }
 
 // Whether `player` is on a layer below 8 while this actor is on layer 8.
