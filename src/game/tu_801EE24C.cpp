@@ -256,6 +256,30 @@ static inline bool isPlayerBelowLayer8(const ActorBase_804A5770* actor, s32 play
     return result;
 }
 
+// Unless a warp is running (field_0x174 > 0), sweeps the map box
+// (field_0x80) from mPrevPos to mPos (fn_801F23BC); on a hit moves mPos to
+// the result and passes the other vector out. Returns whether it hit.
+// FIXME: 98.7. One instruction: the target narrows the bool result at the
+// return (clrlwi r3, r31, 24); ours returns it with mr. A u8 return type gives that
+// exactly, but the callers' bool uses (EnemyBase vfunc_0x60/0x64 and
+// others) then gain a bool conversion, so the declared type stays bool
+// until those callers are retyped together.
+bool ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
+    bool result = false;
+    if (field_0x174 <= 0) {
+        JGeometry::TVec3f pos;
+        JGeometry::TVec3f vec;
+        if (fn_801F23BC(field_0x4, &mPos, &mPrevPos, &field_0x80, &pos, &vec, flag)) {
+            mPos.set(pos);
+            if (out != NULL) {
+                out->set(vec);
+            }
+            result = true;
+        }
+    }
+    return result;
+}
+
 // The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
 // on this layer, as bits; on a layer without the view's flag the player's z
 // must also be within 32 of mPos.z. fn_801F2B7C inlines it.
@@ -331,6 +355,96 @@ u8 ActorBase_804A5770::fn_801F2B7C(s32 damage, s32 skipPlayer, s32 arg) {
         }
     }
     return result;
+}
+
+// Takes a hit from an overlapping actor (fn_801F82CC) whose id is includeId
+// (any for 'NULL'), is not excludeId and is not in the 'NULL'-ended list
+// excludeIds: fn_801F37AC with the attacker's "atcn" (field_0x118), its
+// direction to this actor and its field_0x168 / field_0x110. An actor the
+// filter leaves out still counts as a hit unless excludeId is 'HBMB'; an
+// 'SWBM' one then gets fn_801CB538 at its position, a 'FIRE' one (once per
+// fire, field_0x1dc) that and effect 0x19D. A hit marks the attacker
+// (field_0x164 = 1). Returns whether it was hit.
+// FIXME: 99.4. The 32.0f and 1.0f literals (lbl_8053F748, lbl_8053F774)
+// pair only once .sdata2 is in order; and the target narrows the bool
+// result at the return (clrlwi r3, r28, 24), as fn_801F2618 (see there).
+bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
+    bool hit = false;
+    s32 serial = fn_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+    if (serial >= 0 && serial != mSerial) {
+        ActorBase_804A5770* attacker = fn_801F856C()->fn_801F666C(serial);
+        bool accept = false;
+        if ((includeId == 'NULL' || includeId == attacker->mActorId) &&
+            (excludeId == 'NULL' || excludeId != attacker->mActorId))
+        {
+            accept = true;
+            if (excludeIds != NULL) {
+                for (const u32* id = excludeIds; *id != 'NULL'; id++) {
+                    if (*id == attacker->mActorId) {
+                        accept = false;
+                        break;
+                    }
+                }
+            }
+        }
+        if (accept) {
+            JGeometry::TVec3f from(mPos);
+            from.sub(attacker->field_0x3c);
+            hit = fn_801F37AC(attacker->field_0x118, &from, 0, attacker->field_0x168,
+                              attacker->field_0x110);
+        } else if (excludeId != 'HBMB') {
+            hit = true;
+            switch (attacker->mActorId) {
+            case 'SWBM':
+                fn_801CB538(field_0x4, &attacker->mPos, 0, 0);
+                break;
+            case 'FIRE':
+                if (field_0x1dc.fn_801EAC54(attacker->mSerial)) {
+                    fn_801CB538(field_0x4, &attacker->mPos, 0, 0);
+                    fn_8013CC50(field_0x4, &attacker->mPos, 0x19D, 0, 0, NULL, NULL, true, 1.0f);
+                }
+                break;
+            }
+        } else {
+            hit = false;
+        }
+        if (hit) {
+            attacker->field_0x164 = 1;
+        }
+    }
+    return hit;
+}
+
+// Each player that hits this actor (fn_801F285C) attacks it with its
+// current attack (fn_8023B6CC) from its position. Returns whether any of
+// the hits landed (fn_801F37AC).
+// FIXME: 98.6. One instruction: the target narrows the bool result at the
+// return (clrlwi r3, r30, 24); ours returns it with mr. A u8 return type gives that
+// exactly, but the callers' bool uses (EnemyBase vfunc_0x60/0x64 and
+// others) then gain a bool conversion, so the declared type stays bool
+// until those callers are retyped together.
+bool ActorBase_804A5770::fn_801F2FAC() {
+    bool hit = false;
+    for (s32 i = 0; i < 4; i++) {
+        s32 type;
+        if (fn_801F285C(NULL, &type, true, i) == i) {
+            hit |= fn_801F37AC(fn_8023B6CC(i), fn_8023E724(i), 0, type, i);
+        }
+    }
+    return hit;
+}
+
+// The players' hits (fn_801F2FAC, inlined), else one from an overlapping
+// actor (fn_801F2DB4 with no filter).
+// FIXME: 97.9. One extra instruction: the target narrows the inlined
+// fn_801F2FAC's result straight into r3 (clrlwi. r3, r29, 24); ours narrows
+// it into r0 and copies it.
+bool ActorBase_804A5770::fn_801F305C() {
+    bool hit = fn_801F2FAC();
+    if (!hit) {
+        hit = fn_801F2DB4('NULL', 'NULL', NULL);
+    }
+    return hit;
 }
 
 // The centre of mBox in screen space.
