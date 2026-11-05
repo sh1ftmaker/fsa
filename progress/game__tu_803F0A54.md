@@ -76,3 +76,24 @@ fn_803F726C, fn_803F8354, the constructor): they index the big tag tables (4x6, 
 line in blobs.txt like tu_803E1668's (same table set, same layout). The twin's
 tables are the template.
 SHARED-EDITS: none (own header only).
+
+## Checkpoint (Opus 5.5 pass 3, leverage wave 12, 2026-11-05)
+Baseline total 8666 -> 8666 (no 100 % gains; structural 9110 -> 9114). Unit 14/38 (unchanged), written 26 -> 33 of 38.
+.rodata 19 % -> 99.9 %: every tag table 0x80478A60-0x80479980 written as source data in address order with the
+twin's table set (f32[16], s32[30], [20], [3][6], [24], [18], [11], [6], [34], [4][9], [20], [3][5], [26],
+14 x [4] + [4][4], lbl_804B0EE8 strings, 4 x [4][6], 4 x [3], [3][4]); bytes from the DOL, multi-char tags.
+BLOCKER: gate.py --base matching fails only on check_byte_arrays (397 literals): needs an `array` line for
+src/game/tu_803F0A54.cpp like tu_803E1668's (coordinator / reviewer). Nothing reshaped or split.
+New functions (all with FIXMEs): constructor 99.24 regalloc-only (boot path); fn_803F267C 99.89 and
+fn_803F2B78 99.42 reloc-name only; fn_803F1C70 98.18 (twin port, one extra mr); fn_803F9EA8 97.12,
+fn_803FB9E4 96.52, fn_803F8354 96.29 (structurally close: the slide-in counter's `> 0` test is
+`lha r0; cmpwi` in the original, `lha r3; extsh.` here; the row loop's i * N lives in two registers there;
+tried `>= 1`, inline squares, `5 * i`: no change).
+Layout proven by the constructor: 0x94-0xE8 field_0x8 'Ndata03/05/06' and 'Ppllbk' x/y/offset, 0xEC / 0xF4,
+0x15C-0x19C field_0xc panes, the alpha tables 0x25F-0x34E (gaps at 0x2C0 and 0x2E6), field_0x38 / 0x48 are
+J2DAnmTransform* (setAnimation slot 0x60). Original bugs kept: the constructor's fade loop runs 4 rows over
+the [3][6] table; fn_803FB9E4 reads the 'Pnopb' y one element on (field_0x124[1..3]).
+Not written: fn_803F4120 (4848 B, twin 0.99), fn_803F5A0C (5968 B, twin 0.99), fn_803F726C (3556 B, twin
+0.95), fn_803F943C (2668 B, twin 0.97), fn_803FAA88 (3180 B, twin 0.96) — all slide/fade states of the
+same shape as fn_803F9EA8; pool order: 3.0 / 800 / 640 in .sdata2 still come from an unknown earlier user.
+SHARED-EDITS: none (own header include/game/tu_803F0A54.h only).
