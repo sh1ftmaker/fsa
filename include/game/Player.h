@@ -217,7 +217,7 @@ public:
     void fn_80252F5C(s32 arg); // via fn_8023CCE8
     s32 fn_80252F68(); // via fn_8023CD74
     s32 fn_80252F74(); // via fn_8023CE10
-    s32 fn_802577E0(); // via fn_8023B484
+    bool fn_802577E0(); // via fn_8023B484
     bool fn_8025EE34(s32 arg); // via fn_8022F8AC
     bool fn_8025EF68(s32 arg); // via fn_8022F6E8
     bool fn_8025F2CC(); // via fn_8023E8F0
@@ -287,12 +287,15 @@ public:
     void fn_80277104(); // called by tu_80285E58
     void fn_802771BC(); // field_0x458 = 0; called by tu_80285E58
     // tu_80256C74
+    void fn_80257FF4(); // drops field_0xb30 serials with no actor
+    void fn_80258070(); // drops field_0xb2c if its actor is gone or not a live Somaria block
     void fn_802586CC(); // empty
     void fn_80258880(); // field_0x458 = 0
     void fn_8025888C(); // empty
     void fn_80258BA8(); // clears 0x458, 0xb9f, 0xba0
     void fn_80258BBC(); // clears 0xb79 and 0x1204; mPos.z = 0 unless 0x1244 is 5 or 7
     void fn_80259778(); // field_0x34c = 5.4f
+    void fn_8025A04C(); // clears 0x458; field_0xb84 = fn_80241794() > 0; 0xb88, 0xb8c = 0, 0xb28 = -1
     void fn_8025AAF4(); // field_0x11f8 = -1
     void fn_8025AEB0(); // field_0x124d = 1, field_0x458 = 0
     void fn_8025AEC4(); // field_0x11f8 = -1
@@ -526,13 +529,22 @@ public:
     /* 0x0AFC */ u8 field_0xafc[0xB18 - 0xAFC];
     // Returned by fn_8023B22C (-1 without a player).
     /* 0x0B18 */ s32 field_0xb18;
-    /* 0x0B1C */ u8 field_0xb1c[0xB78 - 0xB1C];
+    /* 0x0B1C */ u8 field_0xb1c[0xB28 - 0xB1C];
+    /* 0x0B28 */ s32 field_0xb28;
+    /* 0x0B2C */ s32 field_0xb2c;
+    /* 0x0B30 */ s32 field_0xb30[2];
+    /* 0x0B38 */ u8 field_0xb38[0xB78 - 0xB38];
     // Returned by fn_8023B400 (lbz; blr).
     /* 0x0B78 */ bool field_0xb78;
     /* 0x0B79 */ u8 field_0xb79;
     /* 0x0B7A */ bool field_0xb7a;
     /* 0x0B7B */ bool field_0xb7b;
-    /* 0x0B7C */ u8 field_0xb7c[0xB9A - 0xB7C];
+    /* 0x0B7C */ u8 field_0xb7c[0xB84 - 0xB7C];
+    /* 0x0B84 */ bool field_0xb84;
+    /* 0x0B85 */ u8 field_0xb85[0xB88 - 0xB85];
+    /* 0x0B88 */ s32 field_0xb88;
+    /* 0x0B8C */ s32 field_0xb8c;
+    /* 0x0B90 */ u8 field_0xb90[0xB9A - 0xB90];
     /* 0x0B9A */ bool field_0xb9a;
     // Returned by fn_8026FC84 (lbz; blr), read through fn_8023A5B8.
     /* 0x0B9B */ bool field_0xb9b;

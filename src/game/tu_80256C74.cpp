@@ -1,5 +1,42 @@
 #include "game/GameAudio.h"
+#include "game/ActorManager.h"
 #include "game/Player.h"
+#include "game/act/act_somaria_block.h"
+
+bool Player_804A6F38::fn_802577E0() {
+    if (fn_80270C88()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (field_0x1240 == 0x3f || field_0x1240 == 0xc) {
+        return false;
+    }
+    return fn_80251AEC(0x3f);
+}
+
+// FIXME: 92.6. Same instructions; the loop counter and the serial swap r28/r29 (original loads the counter later, after the prologue saves).
+void Player_804A6F38::fn_80257FF4() {
+    for (s32 i = 0; i < 2; i++) {
+        s32 serial = field_0xb30[i];
+        if (serial >= 0 && !fn_801F856C()->fn_801F666C(serial)) {
+            field_0xb30[i] = -1;
+        }
+    }
+}
+
+void Player_804A6F38::fn_80258070() {
+    s32 serial = field_0xb2c;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = fn_801F856C()->fn_801F666C(serial);
+        if (actor == NULL) {
+            field_0xb2c = -1;
+        } else if (!static_cast<CaneOfSomariaBlock_804AA9F0*>(actor)->fn_8030EA0C()) {
+            field_0xb2c = -1;
+        }
+    }
+}
 
 void Player_804A6F38::fn_802586CC() {}
 
@@ -25,6 +62,40 @@ void Player_804A6F38::fn_80258BBC() {
 
 void Player_804A6F38::fn_80259778() {
     field_0x344.z = 5.4f;
+}
+
+void Player_804A6F38::fn_8025A04C() {
+    field_0x458 = 0;
+    if (fn_80241794() <= 0) {
+        field_0xb84 = false;
+    } else {
+        field_0xb84 = true;
+    }
+    field_0xb88 = 0;
+    field_0xb28 = -1;
+    field_0xb8c = 0;
+}
+
+bool Player_804A6F38::fn_8025AA24(s32 arg) {
+    if (field_0x11f8 >= 0) {
+        return false;
+    }
+    if (fn_80251AEC(0x43)) {
+        field_0x11f8 = arg;
+        return true;
+    }
+    return false;
+}
+
+bool Player_804A6F38::fn_8025AA8C(s32 arg) {
+    if (field_0x11f8 >= 0) {
+        return false;
+    }
+    if (fn_80251AEC(0x42)) {
+        field_0x11f8 = arg;
+        return true;
+    }
+    return false;
 }
 
 void Player_804A6F38::fn_8025AAF4() {
