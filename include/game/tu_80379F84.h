@@ -97,7 +97,10 @@ struct SaveRow_8050EC80 {
     // memory card serial number (cls_803B9940's 0x1FF8) after a load.
     /* 0x08 */ u64 field_0x8;
     /* 0x10 */ s32 field_0x10;
-    /* 0x14 */ u8 field_0x14[0x28 - 0x14];
+    /* 0x14 */ u8 field_0x14[0x20 - 0x14];
+    // SHARED-EDIT (tu_803BC6F0 fn_803CABAC): OSGetTime() when the file was
+    // last chosen; 0 for an empty file.
+    /* 0x20 */ s64 field_0x20;
     // Bit stage * 4 + sub set by fn_80379FF4.
     /* 0x28 */ s32 field_0x28;
     // Added by tu_801DE714 (__dt__12cls_804A51E4Fv, the TINK actor's destructor): an s32

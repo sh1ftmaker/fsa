@@ -43,6 +43,9 @@ public:
     void fn_803C0A34();
     // fn_803CD2DC: the chosen file is empty.
     void fn_803C1734();
+    // fn_803CABAC: the copy menu's open / close.
+    void fn_803C1340();
+    void fn_803C21A8();
 
     // State functions, lbl_804AFD70[state] (index in the comment).
     void fn_803C2E24(); // 39

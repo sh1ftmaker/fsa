@@ -517,6 +517,161 @@ void FileSelect_804AFF60::fn_803C9F14() {
     }
 }
 
+// FIXME: 98.14 %. The two `lbl_8053AAF8->field_0xff != 0` tests compile to
+// cmplwi where the original has cmpwi (u8, bool and s8 fields all differ:
+// probably read through an int-returning accessor); the
+// `lbl_8050EC80[i]` row adds are base + offset (original offset + base, as
+// in fn_803CEED4); the four setBlackWhite calls' by-value copies take the
+// stack slots in the opposite order (sp 0x8 upwards in the original); the
+// bob's `frame * frame` is scheduled after the 0x4330 store; .sdata2 @NNN.
+// The file menu (state 19): A runs the highlighted command field_0xa0 (0:
+// start the chosen file, 1: copy, 2: delete, 3: back), B goes back, up /
+// down move the cursor (field_0xa0, skipping commands an empty file lacks);
+// the cursor pane field_0x34 bobs for ten frames after a move.
+void FileSelect_804AFF60::fn_803CABAC() {
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
+        switch (field_0xa0) {
+        case 0:
+            lbl_8050EC80[0].field_0x10 = field_0xa4;
+            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x20 = OSGetTime();
+            if (field_0x116 != 0) {
+                lbl_8053AEC0->fn_804310BC();
+                field_0x1a3 = 0;
+            }
+            lbl_80529DEC.fn_80403514();
+            field_0x1a8 = 4;
+            setState(40);
+            lbl_80529DEC.field_0x23a[1] = field_0xa4;
+            break;
+        case 1:
+            if (lbl_8053AAF8->field_0xff != 0) {
+                if (field_0xa4 == 0) {
+                    if (lbl_8050EC80[1].field_0x20 == 0) {
+                        field_0xa0 = 1;
+                    } else {
+                        field_0xa0 = 2;
+                    }
+                }
+                if (field_0xa4 == 1) {
+                    if (lbl_8050EC80[2].field_0x20 == 0) {
+                        field_0xa0 = 0;
+                    } else {
+                        field_0xa0 = 2;
+                    }
+                } else {
+                    if (lbl_8050EC80[0].field_0x20 == 0) {
+                        field_0xa0 = 0;
+                    } else {
+                        field_0xa0 = 1;
+                    }
+                }
+                field_0x84 = 0x61;
+                fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+                if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+                    field_0xb0 = 0x5A;
+                }
+                fn_803C1340();
+                break;
+            }
+            return;
+        case 2:
+            if (lbl_8053AAF8->field_0xff != 0 && lbl_8050EC80[field_0xa4].field_0x20 != 0) {
+                field_0x114 = 1;
+                field_0x84 = 0x5E;
+                fn_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+                if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+                    field_0xb0 = 0x5A;
+                }
+                field_0x34->mPane->setAlpha(0);
+                field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+                field_0x34->field_0x26 = 0;
+                ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
+                ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
+                ((J2DPicture*)mScreenHuuin->search('Pdelb01'))->setBlackWhite(field_0xe4, field_0xe0);
+                ((J2DPicture*)mScreenHuuin->search('Pdelb02'))->setBlackWhite(field_0xe4, field_0xe0);
+                for (int i = 0; i < 4; i++) {
+                    field_0x24[i]->field_0x22 = 0;
+                    field_0x24[i]->field_0x26 = 0;
+                }
+                field_0xd8 = 0;
+                field_0xda = 0;
+                setState(31);
+                break;
+            }
+            return;
+        case 3:
+            fn_803C21A8();
+            break;
+        }
+        if (field_0xa0 == 3) {
+            lbl_8053AF80->fn_80458880(0xC, -1);
+        } else {
+            lbl_8053AF80->fn_80458880(0xB, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1) != 0) {
+        fn_803C21A8();
+        lbl_8053AF80->fn_80458880(0xC, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(2, 1) != 0) {
+        lbl_8053AF80->fn_80458880(0x26, -1);
+        if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+            if (field_0xa0 == 0) {
+                field_0xa0 = 3;
+            } else {
+                field_0xa0 = 0;
+            }
+        } else {
+            field_0xa0++;
+            if (field_0xa0 >= 4) {
+                field_0xa0 = 0;
+            }
+        }
+        field_0xda = 1;
+        field_0x34->field_0x26 = 30;
+    } else if (lbl_8053AD30->fn_80309A9C(1, 1) != 0) {
+        lbl_8053AF80->fn_80458880(0x26, -1);
+        if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+            if (field_0xa0 == 0) {
+                field_0xa0 = 3;
+            } else {
+                field_0xa0 = 0;
+            }
+        } else {
+            field_0xa0--;
+            if (field_0xa0 < 0) {
+                field_0xa0 = 3;
+            }
+        }
+        field_0xda = 1;
+        field_0x34->field_0x26 = 30;
+    }
+
+    if (mState == 19) {
+        s16 frame = field_0xda;
+        f32 bob = 0.0f;
+        if (frame != 0) {
+            if (frame < 5) {
+                bob = 5.0f * (frame * frame) / 25.0f;
+                field_0xda = frame + 1;
+            } else if (frame < 10) {
+                bob = 5.0f * ((10 - frame) * (10 - frame)) / 25.0f;
+                field_0xda = frame + 1;
+            } else {
+                field_0xda = 0;
+            }
+        }
+        for (int i = 0; i < 4; i++) {
+            if (bob != 0.0f && i == field_0xa0) {
+                field_0x24[i]->fn_80402E08(0.0f, bob);
+            } else {
+                field_0x24[i]->fn_80402E08(0.0f, 0.0f);
+            }
+        }
+        field_0x34->fn_80402E08(field_0x24[field_0xa0]->field_0x8 - field_0x24[0]->field_0x8, bob);
+        field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
+        field_0x34->fn_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    }
+}
+
 // FIXME: 98.40 %. The row loop's start test `field_0xd8 > rowDelay + delay`:
 // with the accumulator form (`delay += rowStep`) ours still starts the
 // accumulator at rowDelay (mr r24, r17; one add fewer per pass) where the
