@@ -434,6 +434,7 @@ void Player_804A6F38::fn_8027FA08(JGeometry::TVec3f* out) {
             *out = mPos;
             return;
         }
+        // Read before the call: the original loads the layer first (declaration order only steers scheduling).
         s32 layer = field_0x3b4;
         if (layer != getPlayerLayer_8023DE58(fn_80240644())) {
             *out = mPos;
@@ -1290,6 +1291,7 @@ void Player_804A6F38::fn_80285690() {
         } else if (fn_8022C52C(fn_80240644(), 0x40) && fn_8022C6AC(field_0x4) != 0.0f) {
             fn_80251AEC(3);
         } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
+            // Read before the call: the original loads the layer first (declaration order only steers scheduling).
             s32 layer = field_0x3b4;
             if (getPlayerLayer_8023DE58(fn_80240644()) == layer) {
                 fn_80251AEC(3);
@@ -1376,6 +1378,7 @@ void Player_804A6F38::fn_802859C4() {
             } else if (fn_8022C6AC(field_0x4) != 0.0f) {
                 fn_80251AEC(3);
             } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
+                // Read before the call: the original loads the layer first (declaration order only steers scheduling).
                 s32 layer = field_0x3b4;
                 if (getPlayerLayer_8023DE58(fn_80240644()) == layer) {
                     fn_80251AEC(3);
