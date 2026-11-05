@@ -490,12 +490,47 @@ public:
     /* 0x230 */ u8 field_0x230[0x88];
 }; // Size: 0x2B8
 
+class cls_8031709C;
+
 // Spawned for 'JIJI'.
 class cls_804AEED0 : public ActorBase_804A5770 {
 public:
     cls_804AEED0();
     /* 0x08 */ virtual ~cls_804AEED0();
-    /* 0x230 */ u8 field_0x230[0x4C];
+    /* 0x0C */ virtual void init();   // fn_8037C788
+    /* 0x14 */ virtual void update(); // fn_8037BC30
+    /* 0x20 */ virtual void draw();   // fn_8037B7F8
+
+    // Animation steppers (game/act_old_man.cpp): each counts field_0x234 down
+    // and picks the next step's length and frame.
+    void fn_8037B374(JGeometry::TVec3f pos, s32 arg);
+    void fn_8037B3A8();
+    void fn_8037B3E0();
+    void fn_8037B488();
+    void fn_8037B4D0();
+    void fn_8037B554();
+    void fn_8037B5B4();
+    void fn_8037B5FC();
+    void fn_8037B634();
+    void fn_8037B67C();
+    void fn_8037B6C4();
+    void fn_8037B70C();
+    void fn_8037B744();
+    void fn_8037B78C();
+    void fn_8037B7BC();
+    void fn_8037B7EC();
+
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ u8 field_0x240[8];
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ u8 field_0x24c[0x24];
+    /* 0x270 */ u8 field_0x270[3];
+    /* 0x273 */ u8 field_0x273;
+    /* 0x274 */ cls_8031709C* field_0x274;
+    /* 0x278 */ JPABaseEmitter* field_0x278;
 }; // Size: 0x27C
 
 // Spawned for 'BFRY'.
