@@ -238,7 +238,6 @@ public:
     void fn_80262B8C(); // forwards to fn_80283D2C
     void fn_8026173C(); // clears field_0x121c, field_0xd84 = 20
     void fn_80261468(); // counts field_0xd74 down to 0
-    void fn_80258BBC(); // tu_80256C74
     void fn_80259660(); // tu_80256C74
     void fn_80283D2C(); // tu_8027E5BC
     bool fn_8025F484() const; // field_0xd68 is a living actor (field_0x1a4 > 0)
