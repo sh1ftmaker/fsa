@@ -12,6 +12,7 @@
 #include "game/Effect.h"
 #include "game/cls_804A71A8.h"
 #include "game/tu_8030AE84.h"
+#include "game/act/act_thief.h"
 
 // File-scope tables in address order (.rodata). The per-pose tables are flat Vec[4 * n] indexed
 // [pose + facing * n]: a 2-D Vec[4][n] indexed [facing][pose] changes the codegen (tried). Positions are offsets from mPos per
@@ -629,6 +630,13 @@ bool Player_804A6F38::fn_802600A0(s32 player) {
     return true;
 }
 
+// FIXME: 95.46. scheduling+regalloc: the two facing-table vectors are loaded x, y, z and
+// stored interleaved with the mPos add in the original (ours loads z first); the argument
+// loads of fn_80272B4C's copy differ in order.
+// The lift / push start (from fn_80261480): with a wall behind (fn_802265DC / fn_802684A4
+// at 10 against the facing) or fn_8024B24C, lift (0x11, nothing held yet) when
+// fn_80246F28 is 0, else 0x4F; with the tile 9.999 ahead blocked, push (0x1A). In state
+// 0x4F (fn_8022C004) push through fn_8025190C / fn_802517F8 or fn_8025197C.
 void Player_804A6F38::fn_8026022C() {
     const Vec& a = lbl_8046B89C[field_0x3dc];
     JGeometry::TVec3f ahead(a.x, a.y, a.z);
@@ -640,7 +648,8 @@ void Player_804A6F38::fn_8026022C() {
     if (field_0x1174 == 0 && field_0xd64 == 0 && field_0xd74 == 0) {
         if (fn_8022BF68(field_0x4)) {
             if (!fn_802265DC(&behind, field_0x3b4, true) && !fn_802684A4(&behind, field_0x3b4) && !fn_8024B24C()
-                && (fn_802265DC(&ahead, field_0x3b4, true) || fn_80272B4C(&JGeometry::TVec3f(ahead)))) {
+                // fn_80272B4C gets a copy of ahead (the original copies it to sp 0x8 first).
+            && (fn_802265DC(&ahead, field_0x3b4, true) || fn_80272B4C(&JGeometry::TVec3f(ahead)))) {
                 fn_80251AEC(0x1A);
             } else if (fn_80246F28() == 0.0f) {
                 if (!fn_8022B1F8() && fn_80251AEC(0x11)) {
@@ -663,6 +672,15 @@ void Player_804A6F38::fn_8026022C() {
     }
 }
 
+// FIXME: 88.23. missing/extra (41 fewer): every call, branch and constant is in place, but
+// the original builds the layer-moved points in stack TVec2 temporaries (the my-layer
+// offset at sp 0x18 / 0x50, its frsp'd copy at 0x38, the probe at 0x58; 0x10 / 0x40 /
+// 0x08 / 0x48 / 0x30 / 0x28 for the midpoint), i.e. JGeometry TVec2 helpers this tree
+// doesn't have yet; ours keeps them in registers. Kept for the .sdata2 order (first 0.5).
+// Lift another player standing in front (16 along the facing, state 0x11, 'PLAY'): it
+// must be present and free, and both its spot seen from this layer and the midpoint of
+// the two (on both layers) must not be blocked (fn_802260DC / fn_802684A4 unless tile
+// 0x20); in a group or across layers the other player's fn_80231230 / fn_802312CC.
 bool Player_804A6F38::fn_802604CC() {
     if (fn_8022B1F8()) {
         return false;
@@ -764,6 +782,8 @@ bool Player_804A6F38::fn_802604CC() {
     return false;
 }
 
+// FIXME: 96.63. scheduling+regalloc: the facing-table vector loads (as in fn_8026022C) and
+// the side probes' argument loads (player / layer before the x / y stores in the original).
 // Pick up what lies on the tile in front (16 along the facing): a wall tile the
 // background rewriter takes (fn_8029E888), else the tile's object, spawned and
 // lifted at once (state 0x11): grass, stone, a disguised stone, sign, rock, pot or
@@ -977,6 +997,8 @@ void Player_804A6F38::fn_80261480() {
     }
 }
 
+// FIXME: 99.17. Registers only: the epsilon test keeps 32 * FLT_EPSILON in f2 (ours f4),
+// as in tu_80256C74 fn_80259830.
 // The carry walk cycle (field_0x3f8 over 24 frames, 48 when slow) and the held thing's
 // position: pose lbl_8046B790[facing][step], offset lbl_8046B7B0[pose] from mPos.
 void Player_804A6F38::fn_8026152C(bool slow) {
@@ -1007,6 +1029,8 @@ void Player_804A6F38::fn_8026173C() {
     field_0xd84 = 20;
 }
 
+// FIXME: 99.65. One extra lwz: the original passes the field_0xd70 the inlined
+// fn_8025F418 loaded straight to fn_8023EFEC; ours reloads it.
 // Update of state 0x19. Grabbing a player: follow it (its position moved to this
 // layer's view corner, raised 2; effect 0x28F once at height 10), let go when it
 // stops lifting; grabbing an actor: stay at field_0x300. Otherwise the player flies
@@ -1148,7 +1172,7 @@ void Player_804A6F38::fn_80261750() {
         }
         fn_802685D4();
         if (viewLayerFlag(field_0x3b4)) {
-            if (field_0xbf0->pushedSideways()) {
+            if (field_0xbf0->pushedAlongX()) {
                 field_0xd78.x = -field_0xd78.x * 0.5f;
             }
         } else if (field_0xbf0->anyFlag48()) {
@@ -1190,6 +1214,182 @@ void Player_804A6F38::fn_80262234() {
     fn_80258BBC();
 }
 
+// FIXME: 99.64. scheduling+regalloc, as fn_80258BE8 (tu_80256C74): the no-pad branch
+// computes &field_0x344 (addi r3) before the x / y speed test in the original.
+// Update of state 0x14, the jump while holding something (enter fn_80262234 runs the
+// jump's exit fn_80258BBC, exit fn_80262B6C its enter fn_80259660): the steering, gravity
+// and landing of the jump fn_80258BE8 (tu_80256C74; same structure), with the held
+// thing at lbl_8046B670 once 0x3FB is set (fn_80245938), let go at frame 8. Landing
+// (z <= 0 after 2 frames, or on a 2D layer over a tile other than 2 below) returns to
+// 0x12 while lifting, else 0; the held thing sits 18 up while falling.
+void Player_804A6F38::fn_80262254() {
+    if (fn_8022C6AC(field_0x4) > 0.0f) {
+        if (0.0f == field_0x344.x) {
+            field_0x344.x = 0.8f * fn_8022C82C(field_0x4);
+        } else if (field_0x344.x > 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.x += 0.3f * fn_8022C82C(field_0x4);
+            } else {
+                field_0x344.x += 0.2f * fn_8022C82C(field_0x4);
+            }
+            if (field_0x344.x <= 0.001f || field_0xbf0->field_0x48[0]) {
+                field_0x344.x = 0.001f;
+            }
+        } else if (field_0x344.x < 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.x += 0.3f * fn_8022C82C(field_0x4);
+            } else {
+                field_0x344.x += 0.2f * fn_8022C82C(field_0x4);
+            }
+            if (field_0x344.x >= -0.001f || field_0xbf0->field_0x48[1]) {
+                field_0x344.x = -0.001f;
+            }
+        }
+        if (0.0f == field_0x344.y) {
+            field_0x344.y = 0.8f * -fn_8022C76C(field_0x4);
+        } else if (field_0x344.y > 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.y -= 0.3f * fn_8022C76C(field_0x4);
+            } else {
+                field_0x344.y -= 0.2f * fn_8022C76C(field_0x4);
+            }
+            if (field_0x344.y <= 0.001f || field_0xbf0->field_0x48[2]) {
+                field_0x344.y = 0.001f;
+            }
+        } else if (field_0x344.y < 0.0f) {
+            if (field_0x344.z >= 0.0f) {
+                field_0x344.y -= 0.3f * fn_8022C76C(field_0x4);
+            } else {
+                field_0x344.y -= 0.2f * fn_8022C76C(field_0x4);
+            }
+            if (field_0x344.y >= -0.001f || field_0xbf0->field_0x48[3]) {
+                field_0x344.y = -0.001f;
+            }
+        }
+        f32 z = field_0x344.z;
+        field_0x344.z = 0.0f;
+        f32 length = field_0x344.length();
+        f32 speed = length;
+        if (length >= 1.6f) {
+            speed = 1.6f;
+        }
+        field_0x344.normalize();
+        field_0x344.scale(speed);
+        field_0x344.z = z;
+    } else if (!(field_0x344.x * field_0x344.x + field_0x344.y * field_0x344.y <= JGeometry::TUtilf::epsilon())) {
+        f32 z = field_0x344.z;
+        field_0x344.z = 0.0f;
+        f32 speed = field_0x344.length();
+        if (fn_8022C274(field_0x4)) {
+            if (z >= 0.0f) {
+                speed += 0.3f;
+                if (speed >= 1.6f) {
+                    speed = 1.6f;
+                }
+            } else {
+                speed += 0.2f;
+                if (speed >= 1.6f) {
+                    speed = 1.6f;
+                }
+            }
+        } else {
+            speed -= 0.1f;
+            if (speed <= 0.001f) {
+                speed = 0.001f;
+            }
+        }
+        field_0x344.normalize();
+        field_0x344.scale(speed);
+        field_0x344.z = z;
+    }
+
+    if (!field_0x344.isZero() || mPos.z > 0.0f) {
+        if (field_0x3fa >= 1) {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z < -4.0f) {
+                field_0x344.z = -4.0f;
+            }
+            if (viewLayerFlag(field_0x3b4)) {
+                mPos.x += field_0x344.x;
+                mPos.y -= field_0x344.z;
+                mPos.z = 0.5f;
+                if (field_0x344.z < 0.0f && field_0xbf0->field_0x48[2]) {
+                    field_0x368.set(field_0x344.x, field_0x344.y, 0.0f);
+                    field_0x344.set(0.0f, 0.0f, 0.0f);
+                    mPos.z = 0.0f;
+                }
+            } else {
+                mPos += field_0x344;
+                if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+                    mPos.z = 0.0f;
+                    field_0x368.set(field_0x344.x, field_0x344.y, 0.0f);
+                    field_0x344.set(0.0f, 0.0f, 0.0f);
+                }
+            }
+        }
+    }
+
+    if (fn_80245938()) {
+        field_0x3fb = 1;
+    }
+    if (field_0x3fb == 1) {
+        field_0x3fc++;
+        if (field_0x3fc < 8) {
+            field_0x3fd = 0;
+        } else if (field_0x3fc < 9) {
+            fn_8025F698(false);
+            field_0x3fd = 1;
+        } else if (field_0x3fc < 11) {
+            field_0x3fd = 2;
+        } else if (field_0x3fc < 21) {
+            field_0x3fd = 3;
+        } else if (field_0x3fc < 25) {
+            field_0x3fd = 4;
+        } else {
+            field_0x3fd = 2;
+        }
+        const Vec& offset = lbl_8046B670[field_0x3fd + field_0x3dc * 5];
+        field_0x2f4.set(offset.x, offset.y, offset.z);
+        field_0x2f4 += mPos;
+        fn_80268B3C();
+    }
+
+    if (!field_0xb79 && mPos.z > 0.0f && fn_802415CC() >= 2 && fn_8022C310(field_0x4)) {
+        field_0x3fa = 0;
+        fn_80259778();
+        field_0xb79 = 1;
+    }
+    if (field_0x3fa >= 2 && mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        if (field_0xd64 == 1) {
+            fn_80251AEC(0x12);
+        } else {
+            fn_80251AEC(0);
+        }
+    }
+    if (field_0x3fa >= 8 && viewLayerFlag(field_0x3b4) && field_0x344.z < 0.0f && mPos.z <= 1.0f) {
+        JGeometry::TVec3f below;
+        fn_8024B298(2, &below);
+        below.y += 2.0f;
+        if (fn_8022461C(&below, field_0x3b4) != 2) {
+            if (field_0xd64 == 1) {
+                fn_80251AEC(0x12);
+            } else {
+                fn_80251AEC(0);
+            }
+        }
+    }
+    field_0x3fa++;
+    fn_802685D4();
+    field_0x2f4.set(0.0f, 0.0f, 18.0f);
+    field_0x2f4 += mPos;
+    if (field_0x344.z < -2.0f) {
+        field_0x3f9 = 1;
+    } else {
+        field_0x3f9 = 0;
+    }
+}
+
 void Player_804A6F38::fn_80262B6C() {
     fn_80259660();
 }
@@ -1198,7 +1398,144 @@ void Player_804A6F38::fn_80262B8C() {
     fn_80283D2C();
 }
 
+// FIXME: 98.88. Two lfs missing: the original reloads mPos.x for the 0.5 steps after
+// computing field_0x324.x - mPos.x; ours reuses the register.
+// Update of state 0x12 (the carry, with field_0x344 as the speed): a cucco ('NIWA') is
+// carried gliding: the player moves 0.5 a frame toward field_0x324.x, bobbing with the
+// distance, else falls and lands back in 0x12; anything else falls at 0.25 (0.17 down to
+// -6 while 0x43F / 0x441, floating at 8 below field_0x324.y), with the carry walk cycle
+// at lbl_8046B790 / lbl_8046B7B0 (fn_8026152C's) and sounds 0x1000D / 0x2003E when 0x440.
+void Player_804A6F38::fn_80262BAC() {
+    if (field_0xd6c == ACTOR_NIWA && !field_0x441) {
+        f32 dx = field_0x324.x - mPos.x;
+        if (dx >= 0.5f) {
+            mPos.x += 0.5f;
+        } else if (dx <= -0.5f) {
+            mPos.x -= 0.5f;
+        } else if (0.0f != dx) {
+            mPos.x = field_0x324.x;
+        }
+        if (0.0f != dx) {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z <= 0.0f) {
+                field_0x344.z = 0.0f;
+            }
+            mPos.z += field_0x344.z;
+            mPos.z += 0.1f * JMath::sincosTable_.sinShort((s16)(4096.0f * dx));
+        } else {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z <= -4.0f) {
+                field_0x344.z = -4.0f;
+            }
+            mPos.z += field_0x344.z;
+            if (mPos.z <= 0.0f) {
+                mPos.z = 0.0f;
+                if (fn_80251AEC(0x12)) {
+                    field_0xce8 = false;
+                }
+            }
+        }
+        field_0x2f4.set(0.0f, 0.0f, 18.0f);
+        field_0x2f4 += mPos;
+    } else {
+        if (mPos.z >= 0.0f) {
+            mPos += field_0x344;
+        }
+        if (field_0x43f || field_0x441) {
+            if (field_0x344.z >= -6.0f) {
+                field_0x344.z -= 0.17f;
+                if (field_0x344.z < -6.0f) {
+                    field_0x344.z = -6.0f;
+                }
+            }
+        } else {
+            field_0x344.z -= 0.25f;
+        }
+        if (mPos.z <= 0.0f) {
+            if ((field_0x43f || field_0x441) && mPos.y < field_0x324.y) {
+                mPos.z = 8.0f;
+            } else {
+                mPos.z = 0.0f;
+                field_0x124d = 0;
+                fn_80251AEC(0x12);
+            }
+        }
+        if (epsilonEquals(mPos, field_0x14, JGeometry::TUtilf::epsilon()) && field_0x368.isZero()) {
+            field_0x3f8 = 0;
+        } else {
+            field_0x3f8++;
+            if (field_0x3f8 >= 24) {
+                field_0x3f8 = 0;
+            }
+        }
+        field_0x3f9 = lbl_8046B790[field_0x3dc][field_0x3f8 / 3];
+        const f32* offset = lbl_8046B7B0[field_0x3f9];
+        field_0x2f4.set(offset[0], offset[1], offset[2]);
+        field_0x2f4 += mPos;
+        if (field_0x440 && field_0x344.z < 0.0f) {
+            fn_8024F0E8(0x1000D);
+            fn_8024F0E8(0x2003E);
+        }
+    }
+    if (field_0x344.z < -1.0f) {
+        field_0x3f9 = 1;
+    } else {
+        field_0x3f9 = 0;
+    }
+}
+
 void Player_804A6F38::fn_802632A4() {}
+
+// Update of state 0x18, the put-down: poses 0-2 over 11 frames, then 3 (4 for a held
+// player); at frame 12 state 0, letting go in place (an actor gets speed 0); the held
+// thing follows lbl_8046B580, and when it can be put down (fn_8025EB18) and field_0x35c
+// is shorter than 1 it becomes a unit vector against the facing (pose 3's offset, flat).
+void Player_804A6F38::fn_802632A8() {
+    field_0x3fc++;
+    if (field_0x3fc < 8) {
+        field_0x3fd = 0;
+    } else if (field_0x3fc < 10) {
+        field_0x3fd = 1;
+    } else if (field_0x3fc < 11) {
+        field_0x3fd = 2;
+    } else if (field_0x3fc < 12) {
+        if (holdsPlayer(*this)) {
+            field_0x3fd = 4;
+        } else {
+            field_0x3fd = 3;
+        }
+    } else {
+        field_0x3fc = 12;
+        if (fn_80251AEC(0)) {
+            if (holdsPlayer(*this)) {
+                field_0x3fd = 4;
+            } else {
+                field_0x3fd = 3;
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+                if (actor != 0) {
+                    JGeometry::TVec3f speed(0.0f, 0.0f, 0.0f);
+                    actor->fn_801F3708(&speed);
+                }
+            }
+            field_0xd70 = -1;
+            field_0xd68 = -1;
+            field_0xd64 = 0;
+            field_0xd6c = 'NULL';
+            field_0xd74 = 3;
+        }
+    }
+    const Vec& offset = lbl_8046B580[field_0x3fd + field_0x3dc * 5];
+    field_0x2f4.set(offset.x, offset.y, offset.z);
+    field_0x2f4 += mPos;
+    if (fn_8025EB18() && field_0x35c.length() < 1.0f) {
+        const Vec& dir = lbl_8046B580[field_0x3dc * 5 + 3];
+        field_0x35c.set(dir.x, dir.y, dir.z);
+        field_0x35c.z = 0.0f;
+        field_0x35c.normalize();
+        field_0x35c.scale(-1.0f);
+    }
+    fn_80268B3C();
+}
 
 void Player_804A6F38::fn_802635C8() {
     field_0x458 = 0;
@@ -1267,6 +1604,63 @@ void Player_804A6F38::fn_80263854() {
     field_0x459 = 0;
 }
 
+// Update of state 0x15 (with the held thing): poses 0-4 over 22 frames, then state 0x12;
+// at frame 11 a held thief ('TZOK') gets fn_80206168; at pose 2 the tile under the held
+// thing (fn_802A3164) triggers its vfunc_0x48; when it can be put down (fn_8025EB18)
+// the pose goes back to 1 and field_0x35c is turned against the facing as in 0x18.
+void Player_804A6F38::fn_80263860() {
+    field_0x3fc++;
+    if (field_0x3fc < 8) {
+        field_0x3fd = 0;
+    } else if (field_0x3fc < 9) {
+        field_0x3fd = 1;
+    } else if (field_0x3fc < 10) {
+        field_0x459 = 1;
+        field_0x3fd = 2;
+    } else if (field_0x3fc < 18) {
+        field_0x3fd = 3;
+        if (field_0x3fc == 11 && field_0xd6c == ACTOR_TZOK) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+            if (actor != 0) {
+                static_cast<Thief_804A5A30*>(actor)->fn_80206168();
+            }
+        }
+    } else if (field_0x3fc < 22) {
+        field_0x3fd = 4;
+    } else {
+        field_0x3fd = 2;
+        fn_80251AEC(0x12);
+    }
+    const Vec& offset = lbl_8046B310[field_0x3fd + field_0x3dc * 5];
+    field_0x2f4.set(offset.x, offset.y, offset.z);
+    field_0x2f4 += mPos;
+    if (field_0x3fd == 2) {
+        JGeometry::TVec3f pos(field_0x2f4);
+        pos.z = 0.0f;
+        if (gBgRewrite_8053AC98->fn_802A3164(&pos, field_0x4, field_0x3b4)) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+            if (actor != 0) {
+                actor->vfunc_0x48();
+            }
+        }
+    }
+    if (fn_8025EB18()) {
+        field_0x3fd = 1;
+        field_0x459 = 0;
+        const Vec& back = lbl_8046B310[field_0x3fd + field_0x3dc * 5];
+        field_0x2f4.set(back.x, back.y, back.z);
+        field_0x2f4 += mPos;
+        if (field_0x35c.length() < 1.0f) {
+            const Vec& dir = lbl_8046B310[field_0x3dc * 5 + 2];
+            field_0x35c.set(dir.x, dir.y, dir.z);
+            field_0x35c.z = 0.0f;
+            field_0x35c.normalize();
+            field_0x35c.scale(-1.0f);
+        }
+    }
+    fn_80268B3C();
+}
+
 void Player_804A6F38::fn_80263BA0() {
     field_0x458 = 0;
     field_0x459 = 0;
@@ -1285,6 +1679,102 @@ void Player_804A6F38::fn_80263BA0() {
 
 void Player_804A6F38::fn_80264410() {
     field_0x458 = 0;
+}
+
+// Update of state 0x11, the lift: the held thing goes through the four lift positions
+// (lbl_8046B250, `pose`) over 24 frames, then state 0x12; a living actor (field_0x1a4)
+// is first shaken for 48 frames (pose 3) and lifted over frames 49-80. Nothing to lift
+// (field_0xd68 < 0): poses 0-1, state 0 at frame 22; a lost actor ends the lift at once.
+void Player_804A6F38::fn_8026441C() {
+    s32 pose = 0;
+    field_0x3fc++;
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+    if (holdsPlayer(*this)) {
+        if (field_0x3fc < 8) {
+            field_0x3fd = 0;
+            pose = 0;
+        } else if (field_0x3fc < 16) {
+            field_0x3fd = 1;
+            pose = 0;
+        } else if (field_0x3fc < 24) {
+            field_0x3fd = 2;
+            pose = 1;
+        } else {
+            field_0x3fd = 3;
+            pose = 2;
+            fn_80251AEC(0x12);
+        }
+    } else if (field_0xd68 < 0) {
+        pose = 0;
+        if (field_0x3fc >= 22) {
+            field_0x3fd = 1;
+            fn_80251AEC(0);
+        } else if (field_0x3fc <= 8) {
+            field_0x3fd = 0;
+        } else {
+            field_0x3fd = 1;
+        }
+    } else if (actor == 0) {
+        fn_80251AEC(0);
+        field_0xd64 = 0;
+        field_0xd6c = 'NULL';
+        field_0xd68 = -1;
+    } else if (actor->field_0x1a4 != 0) {
+        if (field_0x3fc <= 8) {
+            field_0x3fd = 0;
+            pose = 3;
+        } else if (field_0x3fc <= 24) {
+            field_0x3fd = 1;
+            pose = 3;
+        } else if (field_0x3fc <= 32) {
+            field_0x3fd = 0;
+            pose = 3;
+        } else if (field_0x3fc < 48) {
+            field_0x3fd = 1;
+            pose = 3;
+        } else if (field_0x3fc == 48) {
+            field_0x3fd = 0;
+            pose = 0;
+        } else if (field_0x3fc <= 56) {
+            field_0x3fd = 0;
+            pose = 0;
+        } else if (field_0x3fc <= 64) {
+            field_0x3fd = 1;
+            pose = 0;
+        } else if (field_0x3fc <= 72) {
+            field_0x3fd = 2;
+            pose = 1;
+        } else if (field_0x3fc <= 80) {
+            field_0x3fd = 3;
+            pose = 2;
+        } else {
+            field_0x3fd = 3;
+            pose = 2;
+            fn_80251AEC(0x12);
+        }
+    } else {
+        if (field_0x3fc < 8) {
+            field_0x3fd = 0;
+            pose = 0;
+        } else if (field_0x3fc < 16) {
+            field_0x3fd = 1;
+            pose = 0;
+        } else if (field_0x3fc < 24) {
+            field_0x3fd = 2;
+            pose = 1;
+        } else {
+            field_0x3fd = 3;
+            pose = 2;
+            fn_80251AEC(0x12);
+        }
+    }
+    if (pose >= 0) {
+        const Vec& offset = lbl_8046B250[pose + field_0x3dc * 4];
+        field_0x2f4.set(offset.x, offset.y, offset.z);
+        field_0x2f4 += mPos;
+    }
+    fn_8025EB18();
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_80264768() {

@@ -1015,3 +1015,41 @@ more (fn_80273FB8, fn_80275D9C, fn_8027B648, fn_8027C6C4). No drops in any unit.
 - Left: fn_8027057C (inlines fn_80270DDC, see round 5), fn_80274CB8 (0xA2C), fn_802765C0,
   fn_8027776C, fn_80277F98, fn_802791B0, fn_80279824, fn_8027A1E0, fn_8027AAD0, fn_8027BE74,
   fn_8027CC90, fn_8027D5F0, fn_8027DEA0 (all 0x4BC+).
+
+## Round 10 (tu_8025EB18) (agent R, Opus 5.5, 2026-11-05)
+
+40 -> 43 of 59 at 100 % (+3 honest: fn_802632A8, fn_80263860, fn_8026441C); structurally
+done fn_8026022C 95.46, fn_80260C08 96.63, fn_8026152C 99.17, fn_80262254 99.64; close
+fn_80261750 99.65, fn_80262BAC 98.88, fn_802604CC 88.23 (FIXMEs in the source). .sdata2
+40 -> 96 %: every literal user up to 1.25 / 1.5 (fn_80263C64) is written, in pool order.
+State names stay provisional (evidence: the state requested, the tables, the actors):
+
+- **0x11 lift** (update fn_8026441C, 100 %): lift positions lbl_8046B250[pose + 4 * facing]
+  over 24 frames, then 0x12; a living actor (field_0x1a4 != 0) is shaken for 48 frames
+  (pose 3) first; nothing to lift: state 0 at frame 22.
+- **0x12 carry** (update fn_80262BAC): field_0x344 is the speed; the carry walk cycle
+  lbl_8046B790 / lbl_8046B7B0 (also fn_8026152C(bool), the cycle for other states: 24
+  frames, 48 when true); a held cucco ('NIWA') glides toward field_0x324.x (0.5 a frame,
+  bobbing by sinShort(4096 * dx)), lands back in 0x12.
+- **0x14 jump while holding** (update fn_80262254; enter fn_80262234 / exit fn_80262B6C call
+  the jump's fn_80258BBC / fn_80259660): the body of the jump fn_80258BE8 (tu_80256C74)
+  plus the held thing at lbl_8046B670 once 0x3FB (fn_80245938), let go at frame 8; lands in
+  0x12 while lifting, else 0.
+- **0x15** (update fn_80263860, 100 %): poses 0-4 over 22 frames then 0x12; a held thief
+  ('TZOK') gets Thief_804A5A30::fn_80206168 at frame 11; at pose 2 the tile under the held
+  thing (BgRewrite fn_802A3164) triggers its vfunc_0x48.
+- **0x18 put down** (update fn_802632A8, 100 %): poses 0-3 (4 for a player) over 12 frames,
+  then state 0 with the hold cleared (an actor gets speed 0 via fn_801F3708).
+- **0x19 grab** (update fn_80261750): a grabbed player is followed (its position moved to
+  this layer's view corner, raised 2; effect 0x28F once at height 10); let go when it stops
+  lifting (fn_8023EFEC), with speed lbl_8046B760 (4 along the facing) above z 4. Not
+  grabbing: flies along field_0xd78 (gravity 0.25 as a double), bounces at half speed
+  off walls (cls_804A71A8::pushedAlongX / anyFlag48), lands in 0 / 1 or 7 (fn_802466B4).
+- Starts (from fn_80261480): fn_80260C08 picks up the tile object 16 ahead, spawned and
+  lifted at once by fn_802A02A8's kind: 0-3 grass, 5 'STON', 6 'SSTN', 7 'BORD', 8 'ROCK',
+  12 'SSTN' held as 'ROCK' (both hidden: mDrawEnabled = false), 24-35 'TUBO' (variant 1
+  / 2 for 34 / 35), 39 'YASI'; fn_802604CC lifts a player in front ('PLAY'); fn_8026022C
+  lifts (0x11) / pushes (0x1A) / 0x4F by the tiles 10 behind and 9.999 ahead.
+- Left: fn_80263078 (enter of the cucco glide: needs Cucco_804AB8C0 byte 0x2A1, tested == 1;
+  act_cucco.h is generated, so its gen_game rows must go first) and fn_80263C64 (0x7AC,
+  first user of 1.25 / 1.5).

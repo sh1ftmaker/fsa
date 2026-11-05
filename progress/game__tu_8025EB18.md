@@ -16,3 +16,20 @@ Structurally close: fn_8025F698 95.94, fn_8025EE48 96.32, fn_8025EFFC 95.94, fn_
 SHARED-EDITS (include/game/Player.h): declarations fn_8025EB18, fn_8025FCC8, fn_8026022C, fn_802604CC,
 fn_80260C08, fn_80261480 (r3 is the Player in each). symbols.txt: those six renamed to __15Player_804A6F38Fv.
 Next: fn_802604CC / fn_8026152C (literal order 0.5, 32), then fn_80261750 (0x19 update).
+
+## Session 2026-11-05 round 10 (Opus 5.5, agent R)
+Baseline 8652 total; unit 40/59 -> 43/59 (honest total 8655, +3; the only drop against the main
+checkout's report, tu_804023D0 fn_8040245C, comes from matching having moved past this branch).
+100 %: fn_802632A8, fn_80263860, fn_8026441C.
+Structurally done: fn_8026022C 95.46, fn_80260C08 96.63 (scheduling+regalloc), fn_8026152C 99.17
+(regalloc), fn_80262254 99.64 (scheduling+regalloc). Close: fn_80261750 99.65 (1 lwz), fn_80262BAC
+98.88 (2 lfs), fn_802604CC 88.23 (41 stack-temporary stores of TVec2 helpers missing; kept for the
+.sdata2 order). .sdata2 96 %.
+SHARED-EDITS: include/game/BgRewrite.h members fn_8029E888 (u8), fn_802A01F0 (bool), fn_802A02A8 (s32),
+fn_802A3164 (bool), all (const TVec3f* pos, s32 player, s32 layer); include/game/cls_804A71A8.h
+inline pushedAlongX() (tu_802684A4's file inline pushedSideways has the same body);
+include/game/act/act_thief.h Thief_804A5A30::fn_80206168() (void). symbols.txt: those five renamed to
+their mangled names.
+Needed fields (agent Q / act_cucco owner): Cucco_804AB8C0 u8 at 0x2A1 (fn_80263078 tests == 1).
+Next: fn_80263C64 (0x7AC, 1.25 / 1.5), fn_80263078; fn_802604CC's TVec2 temporaries.
+

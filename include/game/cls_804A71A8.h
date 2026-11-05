@@ -91,9 +91,9 @@ public:
     }
 
     // Whether the owner was pushed along x (field_0x48 at -x or +x). No
-    // out-of-line copy: tu_802684A4 (as a file inline, pushedSideways) and the
+    // out-of-line copy: tu_802684A4 (its file inline pushedSideways) and the
     // owner's fn_80261750 (tu_8025EB18) inline it.
-    bool pushedSideways() const {
+    bool pushedAlongX() const {
         if (field_0x48[1] == 1) {
             return true;
         }

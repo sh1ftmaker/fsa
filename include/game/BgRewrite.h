@@ -118,6 +118,10 @@ public:
     u8 fn_8029E888(const JGeometry::TVec3f* pos, s32 player, s32 layer);
     bool fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s32 layer);
     s32 fn_802A02A8(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    // 1 unit (tu_8025EB18 fn_80263860, the held thing's position with z 0 in
+    // state 0x15). Reads the tile under pos like the above; returns 0 or 1 (li
+    // into r30), tested with clrlwi.
+    bool fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s32 layer);
 
     /* 0x00 */ // vtable
     /* 0x04 */ ActorSoundObj_804578F4* field_0x4;

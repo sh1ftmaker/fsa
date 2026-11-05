@@ -59,6 +59,10 @@ public:
     // the hit overrides make; roles unknown.
     bool fn_8020609C() const;
     bool fn_802064E0();
+    // 0x80206168 (act_thief, not written yet): called by a player lifting the
+    // thief ('TZOK', Player_804A6F38::fn_80263860 at frame 11 of state 0x15);
+    // the caller ignores r3.
+    void fn_80206168();
     // 0x802063FC (act_thief): sorts the actors on this layer
     // by distance from mPos, then returns the serial of the first (of up to
     // 20) whose way from mPos is clear, or -1.
