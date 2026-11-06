@@ -5,6 +5,7 @@
 #include "game/ActorManager.h"
 #include "game/Player.h"
 #include "game/Message.h"
+#include "game/GameView.h"
 #include "game/cls_804AE9B0.h"
 #include "game/act/act_great_fairy_spfr.h"
 
@@ -320,6 +321,153 @@ s32 cls_8049EB8C::vfunc_0x5C() {
         return 1;
     }
     return 0;
+}
+
+// FIXME: 97.75%. missing/extra + reloc-name: ours has 2 fewer instrs (417 vs 419); emitter 0x24 store and float literal order.
+void cls_8049EB8C::fn_80132454(s32 index) {
+    switch (field_0x234 = index) {
+    case 1:
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x31, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x32, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D9, 0);
+        break;
+    case 2:
+        field_0x23c = -1;
+        break;
+    case 4:
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x31, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x32, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D9, 0);
+        break;
+    case 5: {
+        JGeometry::TVec3f pos = mPos;
+        field_0x288 = spawnEmitter_8013CC50(field_0x4, &pos, 0x184, 0, -1, NULL, NULL, true, 1.0f);
+        mDrawEnabled = true;
+        startSound_801F0E34(0x40090, 0);
+        break;
+    }
+    case 6: {
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        u16 msg = 0x2B5;
+        if (field_0x238 == 1) {
+            msg = 0x2B6;
+        }
+        fn_8038BD08(0, msg, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    }
+    case 7:
+        fn_801F0D20(0x3B);
+        break;
+    case 8:
+        gAudioMgr_8053AF80->fn_80458FF0(0x01000021, 0, 0);
+        break;
+    case 9: {
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x2B0, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    }
+    case 10:
+        mAnim.startAnim_801D22DC(1, 0, false);
+        mAnim.fn_801D1F14(0.0f);
+        startSound_801F0E34(0x400EF, 0);
+        break;
+    case 12: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y -= 20.0f;
+        getActorManager_801F856C()->spawnActor_801F9484('ALCE', field_0x4, &pos, 3, -1, -1);
+        break;
+    }
+    case 13:
+        mAnim.startAnim_801D22DC(0, 2, false);
+        mAnim.fn_801D1F14(0.0f);
+        fn_80119DD0()->fn_80119998(60, 0, 2, 0, 0, 0, 0);
+        gGameRoot_8053AAF8->fn_80138B7C();
+        lbl_8053AD70->fn_8037AE00();
+        break;
+    case 14: {
+        JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+        s32 bari = getActorManager_801F856C()->fn_801F7A08('BARI');
+        if (bari >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(bari);
+            if (actor != NULL) {
+                pos = actor->mPos;
+            }
+        }
+        mPos.x = pos.x;
+        pos.y += 32.0f;
+        mPos.y = pos.y;
+        mPos.z = 8.0f;
+        pos.y += 32.0f;
+        pos.x -= 50.0f;
+        for (s32 i = 0; i < 4; i++) {
+            pos.x += 20.0f;
+            fn_80230BF4(i, 3);
+            fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            fn_802303FC(i, &pos, true);
+        }
+        break;
+    }
+    case 15: {
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x2B8, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    }
+    case 16:
+        mAnim.startAnim_801D22DC(1, 0, false);
+        mAnim.fn_801D1F14(0.0f);
+        startSound_801F0E34(0x400EF, 0);
+        break;
+    case 17: {
+        s32 bit = vfunc_0x3C();
+        getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+        break;
+    }
+    case 18:
+        mAnim.startAnim_801D22DC(0, 2, false);
+        mAnim.fn_801D1F14(0.0f);
+        break;
+    case 19: {
+        mAnim.startAnim_801D22DC(0, 2, false);
+        mAnim.fn_801D1F14(0.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x2B9, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    }
+    case 20:
+        if (field_0x288 != NULL) {
+            field_0x288->stopCreateParticle();
+        }
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x31, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x32, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D9, 0);
+        mDrawEnabled = false;
+        startSound_801F0E34(0x40090, 0);
+        break;
+    case 21:
+        lbl_8053AD70->fn_8037AE30();
+        fn_8011921C()->fn_80118384();
+        mAlive = false;
+        break;
+    case 22:
+        getGameView_802D6A9C()->fn_802D8050(field_0x248, true, 0xFF);
+        break;
+    case 25:
+        fn_8011921C()->fn_80118384();
+        fn_801F3668();
+        break;
+    case 26:
+        break;
+    default:
+        break;
+    }
 }
 
 // FIXME: 92.79% (scheduling+regalloc: f1/f2/r4; reloc-name: literals lbl_8053CD18, lbl_8053CD1C, lbl_8053CD20)
