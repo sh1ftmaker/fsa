@@ -1,10 +1,83 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/ActorManager.h"
+#include "game/Effect.h"
+#include "game/Map.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_dodongo.h"
 
 extern const char* lbl_804A3208[];
+extern const s32 lbl_804689C0[];
+extern const f32 lbl_804A31C8[];
 extern s32 lbl_8053ABE0;
+
+// FIXME: 96.62 %. different: same length, 3 opcodes differ. Register allocation (f30/f31, r29/r30) and boxData indexing.
+void Dodongo_804A3334::fn_801ACCF0() {
+    f32 scale = 1.0f;
+    if (field_0x294 == 1) {
+        scale = 1.5f;
+    }
+
+    switch (field_0x230) {
+    case 12:
+        mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1ac, 1, 1, NULL, NULL, true, scale);
+        if (mEmitters[0] == NULL) {
+            return;
+        }
+        mTimers[0] = 8;
+        field_0x230 = 13;
+        // fallthrough
+    case 13:
+        if (mEmitters[0] != NULL) {
+            s32 rotX = 0;
+            if (field_0x98 == 2) {
+                rotX = 0x4000;
+            }
+            setEmitterPos_8013CB44(mEmitters[0], &mPos, 1, 1, true);
+            JPAGetXYZRotateMtx(rotX, lbl_804689C0[field_0x98], -0x8000, mEmitters[0]->mGlobalRot);
+            startSound_801F0E34(0x30011, 0);
+        }
+
+        if (mTimers[0] == 0) {
+            const f32* boxData = &lbl_804A31C8[field_0x98 * 4];
+            mBox.i.x = boxData[0] * scale;
+            mBox.i.y = boxData[1] * scale;
+            mBox.f.x = boxData[2] * scale;
+            mBox.f.y = boxData[3] * scale;
+            fn_801F2B7C(field_0x114, -1, 9);
+            fn_801F2B20(5);
+
+            JGeometry::TVec3f pos = mPos;
+            if (field_0x254 == 0) {
+                field_0x254 = 1;
+                f32 stepX = (mBox.f.x - mBox.i.x) * 0.125f;
+                f32 stepY = (mBox.f.y - mBox.i.y) * 0.125f;
+                pos.x = mPos.x + mBox.i.x;
+                for (s32 i = 0; i < 8; i++) {
+                    pos.y = mPos.y + mBox.i.y;
+                    for (s32 j = 0; j < 8; j++) {
+                        if ((s32)fn_8022461C(&pos, field_0x4) == 0x21 || fn_8022517C(&pos, field_0x4) == 1) {
+                            getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &pos, 0xE0C0, -1, -1);
+                        }
+                        pos.y += stepY;
+                    }
+                    pos.x += stepX;
+                }
+            }
+        }
+
+        if (mLife <= 0) {
+            for (s32 i = 0; i < 2; i++) {
+                if (mEmitters[i] != NULL) {
+                    mEmitters[i]->becomeInvalidEmitter();
+                    mEmitters[i] = NULL;
+                }
+            }
+            mAlive = false;
+        }
+        break;
+    }
+}
 
 Dodongo_804A3334::~Dodongo_804A3334() {
     s32 serial;
