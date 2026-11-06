@@ -6,6 +6,7 @@
 #include "game/ActorBase.h"
 
 class JPABaseEmitter;
+class cls_804AE088;
 
 // Named after its vtable, 0x804ADFE8.
 class Navi54MaidenCrystalCutscene_804ADFE8 : public ActorBase_804A5770 {
@@ -26,7 +27,7 @@ public:
     /* 0x242 */ u8 mPad242[2];
     /* 0x244 */ JGeometry::TVec3f field_0x244;
     /* 0x250 */ s32 field_0x250;
-    /* 0x254 */ ActorBase_804A5770* field_0x254;
+    /* 0x254 */ cls_804AE088* field_0x254;
     /* 0x258 */ JGeometry::TVec3f field_0x258;
     /* 0x264 */ s32 field_0x264;
     /* 0x268 */ s32 field_0x268;

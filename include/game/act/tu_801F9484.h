@@ -429,7 +429,13 @@ class cls_804AE088 : public ActorBase_804A5770 {
 public:
     cls_804AE088();
     /* 0x08 */ virtual ~cls_804AE088();
-    /* 0x230 */ u8 field_0x230[0x1E4];
+    /* 0x54 */ virtual void vfunc_0x54();
+    /* 0x58 */ virtual void vfunc_0x58();
+    /* 0x5C */ virtual void vfunc_0x5c();
+    /* 0x60 */ virtual void vfunc_0x60(s32 arg);
+
+    /* 0x230 */ ActorBase_804A5770* mNaviActor;
+    /* 0x234 */ u8 field_0x234[0x1E0];
 }; // Size: 0x414
 
 // Spawned for 'ELK2'.
