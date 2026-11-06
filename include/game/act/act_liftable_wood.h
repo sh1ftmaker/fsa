@@ -17,7 +17,12 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x230 */ JPABaseEmitter* mEmitter230; // released by the destructor
-    /* 0x234 */ u8 field_0x234[0x18]; // not yet known
+    /* 0x234 */ s32 mState;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 mTimer23c;
+    /* 0x240 */ s32 mTimer240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ const char* field_0x248;
 }; // Size: 0x24C
 
 #endif

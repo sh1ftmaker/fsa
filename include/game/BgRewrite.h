@@ -56,6 +56,10 @@ public:
     // field_0x34, sets it to value (GameView_804A9950::fn_802D7970), calls
     // GameRoot::fn_80138B7C on gGameRoot_8053AAF8 and restores it. this unused.
     void fn_8029D898(s32 value);
+    // 1 unit (act_liftable_wood, 2 calls). Writes 4 x 4 blocks of tile codes
+    // from lbl_8046C5A0 (on layer + layerOffset) and lbl_8046C528 (on layer)
+    // indexed by pattern * 0x28 around pos. this unused.
+    void fn_8029D8F0(const JGeometry::TVec3f* pos, s32 layer, s32 layerOffset, s32 pattern);
     // 4 units (Player_804A6F38::fn_802870C8, act_block, act_somaria_block,
     // tu_8028FBA0). Reads pos x/y; player and layer follow.
     void fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer);

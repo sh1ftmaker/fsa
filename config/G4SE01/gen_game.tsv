@@ -36,8 +36,6 @@ act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_liftable_wood	dtor_emit	__dt__21LiftableWood_804A87A8Fv	LiftableWood_804A87A8	0x804A87A8	new	new
-act_liftable_wood	sinit	__sinit_act_liftable_wood_cpp	-	-	new	-
 act_lotus	dtor	__dt__14Lotus_804AC330Fv	Lotus_804AC330	0x804AC330	new	new
 act_lotus	sinit	__sinit_act_lotus_cpp	-	-	new	new
 act_magic_circle	dtor_emit	__dt__20MagicCircle_804A7960Fv	MagicCircle_804A7960	0x804A7960	new	new
