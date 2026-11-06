@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/cls_8021C024.h"
 
 static const u8 lbl_8053FCE0[4] = {0x0C, 0x0D, 0x0E, 0x0F};
 static const u8 lbl_8053FCE4[5] = {3, 4, 5, 3, 0x1D};
@@ -9,17 +10,6 @@ class cls_8021BFA8 {
 public:
     int fn_8021BFA8();
     void fn_8021C00C();
-
-    /* 0x0 */ int field_0x0;
-    /* 0x4 */ u32 field_0x4;
-    /* 0x8 */ int field_0x8;
-};
-
-// Named after its first method (fn_8021C024). Size 0xC.
-class cls_8021C024 {
-public:
-    int fn_8021C024();
-    void fn_8021C078();
 
     /* 0x0 */ int field_0x0;
     /* 0x4 */ u32 field_0x4;

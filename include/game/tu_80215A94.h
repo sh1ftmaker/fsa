@@ -7,6 +7,7 @@
 
 #include "types.h"
 #include "game/tu_801ED3DC.h"
+#include "game/cls_8021C024.h"
 
 // One entry of the table, one per player (fn_80216178 builds four with
 // __construct_array, stride 0x24); named after that constructor, fn_80216238.
@@ -21,16 +22,6 @@ struct cls_80216238 {
     // 0x80215E18 (not written yet): fn_802162B8(mId, &mFlag8, mKey).
     void fn_80215E18();
 }; // Size: 0x24
-
-// tu_8021BFA8.cpp
-struct cls_8021C024 {
-    int fn_8021C024();
-    void fn_8021C078();
-
-    /* 0x0 */ int field_0x0;
-    /* 0x4 */ u32 field_0x4;
-    /* 0x8 */ int field_0x8;
-};
 
 // The table the horse-race man keeps at 0x2B8. No vtable, ctor or dtor
 // symbol; named after its lowest-address function that takes it as `this`.
@@ -69,16 +60,27 @@ struct cls_80215E48 {
     // Entry `index`'s mKey (0-3) picks a value from a table; when that value
     // is positive, lbl_8053AED0 gets fn_8043D874(mId, value, 0).
     void fn_80215B6C(s32 index);
+    // When exactly one entry still has a negative mKey, the index of the
+    // first such entry for which fn_801CD2F8(getPlayerLayer_8023DE58(i)) is
+    // true; -1 otherwise.
+    s32 fn_80215A94();
+    // Reads entry `index`'s byte at 0x1C, its stopwatch (fn_801ED7B0) and the
+    // save row's bytes at 0x78/0x79 (lbl_8050EC80); see the asm.
+    bool fn_80215C6C(s32 index);
+    // Unless gGameRoot's field_0x4c is 9 or 0xB, sets field_0xa0 to
+    // fn_801CD664(10); then calls fn_801ED458(field_0xa0) on every entry's
+    // mWatch.
+    void fn_80215F30();
+    // Resets every entry (mId = its index, mKey = -1, the three flag bytes
+    // cleared, the 0x10 sub-object and mWatch reset), then field_0x94 and
+    // field_0xa0.
+    void fn_802160F4();
 }; // Size: 0xA4
 
 // tu_80215A94 (0x80216178, not written yet): the table's constructor, called by
 // the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
 // member. Stores the player count (fn_80138A30) as the entry count.
 extern "C" {
-s32 fn_80215A94(cls_80215E48* table);
-bool fn_80215C6C(cls_80215E48* table, s32 index);
-void fn_80215F30(cls_80215E48* table);
-void fn_802160F4(cls_80215E48* table);
 void fn_80216178(cls_80215E48* table);
 }
 

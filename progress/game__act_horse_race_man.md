@@ -19,4 +19,4 @@ Sub-100 % functions (2 / 10, both regalloc-only):
 
 SHARED-EDITS:
 - config/G4SE01/symbols.txt: Evidence-backed symbol renames for vfunc_0x90 (fn_801EBE7C), fn_801EC7B8, and fn_801ECB08.
-- include/game/tu_80215A94.h: Added cls_8021C024 definition and field_0x94 typing on cls_80215E48.
+- include/game/tu_80215A94.h, include/game/cls_8021C024.h, src/game/tu_8021BFA8.cpp: cls_8021C024 moved to a shared header (tu_8021BFA8.cpp includes it); field_0x94 typed; fn_80215A94/fn_80215C6C/fn_80215F30/fn_802160F4 are cls_80215E48 members (symbols.txt renamed to the mangled names).

@@ -106,6 +106,7 @@ void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
             order[i] = i;
             pool[i] = i;
         }
+        // Steering: shuffle() tests count > 1 itself; with only one of the two tests the function drops to 98.9 % (2 instrs fewer).
         if (count >= 2) {
             shuffle(count, order, pool);
         }
@@ -116,7 +117,7 @@ void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
             fn_80230BF4(i, 0);
         }
         field_0x98 = 2;
-        fn_802160F4(&mTable);
+        mTable.fn_802160F4();
         break;
     }
     case 9:
@@ -185,32 +186,32 @@ void HorseRaceMan_804A5630::fn_801EC7B8() {
         if (!finished) {
             layer = field_0x4;
             if (getPlayerLayer_8023DE58(i) == layer) {
-            if (getPlayerPos_8023E724(i)->y > finish_y && getPlayerPos_8023E724(i)->x < finish_x) {
-                crossed[i] = 1;
-                f32 cur_x = getPlayerPos_8023E724(i)->x;
-                f32 prev_x = fn_8023E578(i)->x;
-                f32 step = 0.6f;
-                f32 dx = step * (cur_x - prev_x);
-                f32 f4 = 1.0f;
-                f32 f1 = cur_x - dx;
-                while (f1 < finish_x) {
-                    f4 -= step;
-                    f1 -= dx;
-                    if (f4 <= 0.0f) {
-                        break;
+                if (getPlayerPos_8023E724(i)->y > finish_y && getPlayerPos_8023E724(i)->x < finish_x) {
+                    crossed[i] = 1;
+                    f32 cur_x = getPlayerPos_8023E724(i)->x;
+                    f32 prev_x = fn_8023E578(i)->x;
+                    f32 step = 0.6f;
+                    f32 dx = step * (cur_x - prev_x);
+                    f32 f4 = 1.0f;
+                    f32 f1 = cur_x - dx;
+                    while (f1 < finish_x) {
+                        f4 -= step;
+                        f1 -= dx;
+                        if (f4 <= 0.0f) {
+                            break;
+                        }
                     }
+                    if (f4 > 1.0f) {
+                        f4 = 1.0f;
+                    } else if (f4 < 0.0f) {
+                        f4 = 0.0f;
+                    }
+                    times[i] = f4;
+                    count++;
                 }
-                if (f4 > 1.0f) {
-                    f4 = 1.0f;
-                } else if (f4 < 0.0f) {
-                    f4 = 0.0f;
-                }
-                times[i] = f4;
-                count++;
             }
         }
     }
-}
 
     if (count > 0) {
         fn_801F0D20(0x3a);
@@ -226,7 +227,7 @@ void HorseRaceMan_804A5630::fn_801EC7B8() {
             }
             mTable.fn_80215FB8(bestPlayer, rank, times[bestPlayer]);
             mTable.fn_80215D8C(bestPlayer);
-            if (rank == 0 && fn_80215C6C(&mTable, bestPlayer)) {
+            if (rank == 0 && mTable.fn_80215C6C(bestPlayer)) {
                 mFlags |= 0x2000;
             }
             count--;
@@ -468,7 +469,7 @@ void HorseRaceMan_804A5630::vfunc_0x94() {
 
 void HorseRaceMan_804A5630::vfunc_0x9C(u8 mapHit) {
     mCountdown.fn_801ED8F0();
-    fn_80215F30(&mTable);
+    mTable.fn_80215F30();
     EnemyBase_804A4808::vfunc_0x9C(mapHit);
     JGeometry::TBox2f box(mPos.x - 10.0f, mPos.y - 10.0f, mPos.x + 10.0f, mPos.y + 10.0f);
     fn_80239914(&box, field_0x4, mSerial);
@@ -476,7 +477,7 @@ void HorseRaceMan_804A5630::vfunc_0x9C(u8 mapHit) {
     s32 layer = field_0x4;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     boxes->mLists[boxes->field_0x0].fn_8020D8C0(&box, layer, serial);
-    lbl_8053A160 = fn_80215A94(&mTable);
+    lbl_8053A160 = mTable.fn_80215A94();
 }
 
 void HorseRaceMan_804A5630::draw() {
