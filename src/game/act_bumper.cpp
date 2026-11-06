@@ -54,10 +54,9 @@ void Bumper_804A0260::init() {
     field_0x230 = 0;
 }
 
-// FIXME: 95.76 %. The original keeps `this` in r28 (ours r29), so the loop
-// bases sit in other registers too (first loop r26/r25, ours r28/r27). The
-// original also loads mPos.y into f5 once and keeps it for both boxA adds and
-// the pos.y store; ours reloads it. The candidate test materialises `ok` (li,
+// FIXME: 97.13 %. The loop bases sit in other registers (and the boxA / pos
+// stores are scheduled in another order). The layer is read through
+// getField_0x4() (before getPlayerLayer_8023DE58, as the original). The candidate test materialises `ok` (li,
 // mr, clrlwi.) where the original branches on the fn_8022F478 flag directly
 // (rewriting it as `continue` made the match worse). 4 instructions more.
 void Bumper_804A0260::update() {
@@ -86,10 +85,9 @@ void Bumper_804A0260::update() {
     boxB.addPos(pos);
 
     for (s32 i = 0; i < 4; i++) {
-        s32 layer = field_0x4;
         dist[i] = -1.0f;
         idx[i] = -1;
-        if (getPlayerLayer_8023DE58(i) == layer) {
+        if (getPlayerLayer_8023DE58(i) == getField_0x4()) {
             f32 dx = getPlayerPos_8023E724(i)->x - mPos.x;
             f32 dy = getPlayerPos_8023E724(i)->y - mPos.y;
             dist[i] = std::sqrtf(dx * dx + dy * dy);
