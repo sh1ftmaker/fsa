@@ -1272,3 +1272,21 @@ reproduces both).
   count 0x3FF (started by fn_80245238, sound 0x20039). **fn_80280B30** = ice sliding (cls_804A71A8
   0xB7), called by fn_802870C8. **fn_80242DAC** (tu_8023FBF0) renamed to a Player member: tile
   pushes on 0x414 / 0x418 by the tile under mPos.
+
+## Round 14 (tu_8023FBF0) (agent Y, Opus 5.5, 2026-11-05)
+
+- **Off-screen exit**: fn_802527B0 (99.9 %) finds an edge of the visible box within 20
+  (layer < 8, z <= 16 unless fn_8025F448, moving towards it by fn_8022C82C / fn_8022C76C, or demo
+  mode, or a tile fn_80225EF4 lists) whose tile 8 beyond is not code 1 (or 0x22 with GameView
+  0x170); fn_802520C0 (now a Player member) moves a follower onto the acting player / leader,
+  sets group mode 5, resets the trail and requests state 0x1B with targets 0x398 / 0x3A4 (56
+  inside the opposite edge).
+- **0x454 mode** fn_8024DCD0: frame 0x450 by state (0x4A/0x4B, fn_8025F684, else not fn_80241200)
+  and facing; deletes all emitters (fn_80241E64) and ends the 'FORM' actor.
+- **Conveyors** fn_80242DAC: tiles 0xB4-0xB7 (0.05, cap 0.5) and 0x95-0x98 (0.15, cap 2.0) push
+  0x414; uses JGeometry TVec3f::normalize() (the file's normalizeVec inline is gone).
+- **Cue** fn_8024F0E8: rumble ids 0xC / 4 / 8 / 0xB / 7 for 0x20034 / 0x20011 / 0x30009 /
+  0x30004 / 0x2003A; else sound object 0x1250 (layer < 8 or 8) / 0x1254, ports 0x44 / 0x45 by
+  view flag 0x800, layer 8, GameView 0x54 and fn_802D7948.
+- Group loop: `s32 leader;` declared first fixes fn_80248970; the inlined copies still want leader
+  and own index in two registers (lowest / highest), no shape found (24 orders measured).
