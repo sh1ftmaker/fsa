@@ -63,12 +63,11 @@ void UnknownSWBM_804A1160::init() {
     startSound_801F0E34(0x30026, 0);
 }
 
-// FIXME: 72.66 %. The tile codes are signed s32s as in the original, but
-// MWCC merges the listed-code test into subi/cmplwi ranges (runs 2-7,
-// 0x27-0x2F, 0x39-0x3B) where the original compares each code with its own
-// beq, and the 0x10..0x17 test is two cmpwi here, subi + cmplwi 7 in the
-// original. The fn_8020D6AC call also loads pos into r5 after serial's copy
-// to r6, the reverse of the original.
+// The tile codes as act_bombchu's vfunc_0x4C (a != chain around the remaining tests).
+// FIXME: 98.97. Register allocation only, plus one move: the target keeps a second copy of
+// layer in r29 (mr r29, r28 before the fn_8020D6AC call) for the two later fn_80226850
+// calls, as if they read it through another variable; ours reuses one register. this / pos
+// / layer also take r31 / r27 / r28 there, r29 / r28 / r27 here.
 bool UnknownSWBM_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -78,7 +77,8 @@ bool UnknownSWBM_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 
     s32 code = fn_8022461C(pos, layer);
     s32 code2 = fn_80226850(pos, layer);
-    if ((code >= 0x10 && code <= 0x17) || (code2 >= 0x140 && code2 <= 0x15F)) {
+    if (code == 0x10 || code == 0x11 || code == 0x12 || code == 0x13 || code == 0x14 ||
+        code == 0x15 || code == 0x16 || code == 0x17 || (code2 >= 0x140 && code2 <= 0x15F)) {
         field_0x238 = 0;
         field_0x234 = 1;
         return false;
@@ -89,12 +89,12 @@ bool UnknownSWBM_804A1160::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     }
 
     // Tile codes that never block (and go straight to the counter below).
-    if (!(code == 0 || code == 4 || code == 5 || code == 6 || code == 7 || code == 2 ||
-          code == 3 || code == 0x50 || code == 0xE || code == 0xC || code == 0x27 ||
-          code == 0x28 || code == 0x29 || code == 0x2A || code == 0x2B || code == 0x2C ||
-          code == 0x2D || code == 0x2E || code == 0x2F || code == 0x20 || code == 0xD ||
-          code == 0x39 || code == 0x3A || code == 0x3B || code == 0x4C || code == 0x4D ||
-          code == 0x4E || code == 0x4F || code == 0x24)) {
+    if (code != 0 && code != 4 && code != 5 && code != 6 && code != 7 && code != 2 &&
+        code != 3 && code != 0x50 && code != 0xE && code != 0xC && code != 0x27 &&
+        code != 0x28 && code != 0x29 && code != 0x2A && code != 0x2B && code != 0x2C &&
+        code != 0x2D && code != 0x2E && code != 0x2F && code != 0x20 && code != 0xD &&
+        code != 0x39 && code != 0x3A && code != 0x3B && code != 0x4C && code != 0x4D &&
+        code != 0x4E && code != 0x4F && code != 0x24) {
         if (fn_80226850(pos, layer) == 0x3A || fn_80226850(pos, layer) == 0x3D) {
             field_0x234 = 0;
             return false;
