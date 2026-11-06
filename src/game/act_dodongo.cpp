@@ -1,1 +1,53 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
+#include "game/act/act_dodongo.h"
+
+extern const char* lbl_804A3208[];
+
+void Dodongo_804A3334::fn_801AC930() {
+    SpriteParams_801F5AE0 params;
+    f32 scale = 1.0f;
+    s32 texIdx = field_0x258;
+    if (mTimers[3] & 2) {
+        return;
+    }
+
+    if ((u32)texIdx <= 2 || (u32)(texIdx - 12) <= 2 || (u32)(texIdx - 24) <= 1 || texIdx == 32) {
+        scale = -1.0f;
+    }
+
+    Mtx mtx;
+    f32 scaleX = field_0x274[0] * scale;
+    f32 scaleY = field_0x274[1];
+    mtx[0][0] = scaleX;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = scaleY;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = scaleY;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    params.mMtx = mtx;
+
+    void* res;
+    if (field_0x294 == 1) {
+        s32 index = texIdx + 0x24;
+        res = fn_804032E8('TIMG', lbl_804A3208[index]);
+    } else {
+        res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A3208[texIdx]);
+    }
+    fn_801EFD34(res, &params, 7, 0.0f, -2.0f, 0.0f);
+}
+
+void Dodongo_804A3334::draw() {
+    switch (field_0x234) {
+    case 0:
+    case 2:
+        fn_801AC930();
+        break;
+    }
+}
