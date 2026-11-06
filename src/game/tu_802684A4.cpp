@@ -160,15 +160,13 @@ static inline void blockMarked50(cls_804A71A8* p) {
             return;
         }
     }
-    s32 n;
-    for (n = 0; n < 8; n++) {
-        if (p->field_0x50[n] == 0) {
-            break;
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x50[i] == 0) {
+            goto block; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
         }
     }
-    if (n == 8) {
-        return;
-    }
+    return;
+block: // some direction of field_0x50 is unmarked
     for (s32 i = 0; i < 8; i++) {
         if (p->field_0x50[i] == 1) {
             p->field_0x38[i] = 1;
@@ -282,46 +280,6 @@ static inline void leaveBy88(cls_804A71A8* p) {
     }
 }
 
-// Advances the frames-shut-in counter; false when it was reset.
-static inline bool advanceCounter(cls_804A71A8* p) {
-    if (p->field_0xbc > 0) {
-        p->field_0xbc++;
-        return true;
-    }
-    if (p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) {
-        p->field_0xbc = 0;
-        return false;
-    }
-    if (p->field_0x4->field_0x1216 == 1 || p->field_0x4->field_0x1228 > 0) {
-        p->field_0xbc = 0;
-        return false;
-    }
-    if (p->field_0x4->fn_802486A0() == 5 && p->field_0x4->fn_80240670() &&
-        fn_80234950(fn_8022F340(p->field_0x4->field_0x4)))
-    {
-        p->field_0xbc = 0;
-        return false;
-    }
-    if (viewLayerFlag(p->field_0x4->field_0x3b4)) {
-        for (s32 i = 0; i < 8; i++) {
-            if (p->field_0x68[i] == 1 && p->field_0x38[i] == 0) {
-                p->field_0xbc = 3;
-                return true;
-            }
-        }
-        p->field_0xbc = 0;
-        return false;
-    }
-    for (s32 i = 0; i < 8; i++) {
-        if (p->field_0x68[i] == 0 && p->field_0x38[i] == 0) {
-            p->field_0xbc = 0;
-            return false;
-        }
-    }
-    p->field_0xbc++;
-    return true;
-}
-
 // A ledge on a flagged layer: unless the owner is blocked below (side 2,
 // or a lower corner without its side), clear field_0xb4 / 0xb6; when no
 // direction is open in field_0x38 / 0x58 / 0x78 either, climb: field_0xb4,
@@ -369,6 +327,27 @@ static inline void askLeader(cls_804A71A8* p) {
         }
     }
     fn_8022BC38(p->field_0x4->fn_80240644(), p->field_0x4->field_0x3b4, &p->field_0x4->mPos);
+}
+
+// A direction marked in field_0x60 (tile 0x60): unless one of its states
+// holds it, the owner moves 0.125 up with request 0x20045; field_0xb9 and
+// field_0x9a are set.
+static inline void liftOn60(cls_804A71A8* p) {
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x60[i] == 1) {
+            goto lift; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+        }
+    }
+    return;
+lift: // some direction of field_0x60 is marked
+    if (!(p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2) && !p->field_0x4->fn_80240B34() &&
+        !p->field_0x4->fn_80240D64() && !p->field_0x4->fn_80240860())
+    {
+        p->field_0x4->mPos.y += 0.125f;
+        p->field_0x4->fn_8024F0E8(0x20045);
+    }
+    p->field_0xb9 = 1;
+    p->field_0x9a = 1;
 }
 
 // Where the probe point lies inside its 16-unit tile (as (s32) % 16, so
@@ -1434,129 +1413,156 @@ void cls_804A71A8::fn_8026B81C(u16 tile) {
     }
 }
 
-// FIXME: 96.90. Ours is 33 instructions longer (2251 vs 2218). The original
-// jumps straight out of four unrolled 8-way tests to code that their
-// completion branches over (blockMarked50's field_0x50 test, the n60 test of
-// field_0x60, the field_0xbc = 3 exits to the 'WARP' search, the reset paths
-// past it and the near-'WARP' exit past alignment): only goto reproduces that
-// (docs/PLAYER.md "Structural push (tu_802684A4)"), so ours materialises the
-// loop index / bool (li n, cmpwi n, 8; li 1, clrlwi.). Also: the 0xB7 store
-// (one shared stb in the original), the type-4 'WARP' turn test
-// (field_0x4->field_0x4 loaded before fn_80248778), the near-'WARP' TVec2f's
-// two stack stores, &mPos kept in a saved register across fn_80240644, and
-// register numbers.
+// FIXME: 98.83. Ours is 4 instructions shorter (2214 vs 2218). The gotos at
+// blockMarked50, liftOn60, the counter and the near-'WARP' exit are
+// FAKEMATCH(crack-pass) (docs/CRACK_PASS.md). Left: &mPos kept in a saved
+// register across fn_80240644 (followLeader x2, askLeader), the type-4 'WARP'
+// turn test (field_0x4->field_0x4 loaded before fn_80248778), the near-'WARP'
+// TVec2f's two stack stores, the 0xB7 store (one shared stb in the original),
+// the four-sides test before the box marks (the original's last test is
+// `beq block; b skip`, the same unrolled-exit shape over 4: a goto there gives
+// 98.90 / -3, not adopted), one scheduled lwz of field_0xb0, and register numbers.
 // The state machine on field_0xbc (frames shut in), the 'WARP' actors,
 // then the pushes and the owner's respawn point field_0xd1c.
 void cls_804A71A8::fn_80269574() {
     blockMarked50(this);
     followLeader(this);
 
-    bool nearWarp = false;
     if (isField98Or99Set() == true) {
         field_0xbc = 0;
     } else if (countClosed() < 6) {
-        if (advanceCounter(this)) {
-            if (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() != field_0x4->fn_80248778()) {
-                field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
-                field_0xbc = 0;
-                return;
-            }
-
-            // A 'WARP' actor on the owner's layer: type 4 is near (< 7), type
-            // 7 sends to a cell of another layer, type 8 to the same place on
-            // another layer.
-            s32 serial = -1;
-            for (;;) {
-                serial = getActorManager_801F856C()->fn_801F78F4('WARP', serial);
-                if (serial < 0) {
-                    break;
+        // Advance the frames-shut-in counter, or reset it and skip the 'WARP' search.
+        if (field_0xbc > 0) {
+            field_0xbc++;
+        } else if (field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) {
+            field_0xbc = 0;
+            goto align; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+        } else if (field_0x4->field_0x1216 == 1 || field_0x4->field_0x1228 > 0) {
+            field_0xbc = 0;
+            goto align; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+        } else if (field_0x4->fn_802486A0() == 5 && field_0x4->fn_80240670() &&
+                   fn_80234950(fn_8022F340(field_0x4->field_0x4)))
+        {
+            field_0xbc = 0;
+            goto align; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+        } else if (viewLayerFlag(field_0x4->field_0x3b4)) {
+            for (s32 i = 0; i < 8; i++) {
+                if (field_0x68[i] == 1 && field_0x38[i] == 0) {
+                    field_0xbc = 3;
+                    goto warp; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
                 }
-                ActorBase_804A5770* warp = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-                if (warp == NULL || field_0x4->field_0x3b4 != warp->field_0x4) {
+            }
+            field_0xbc = 0;
+            goto align; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+        } else {
+            for (s32 i = 0; i < 8; i++) {
+                if (field_0x68[i] == 0 && field_0x38[i] == 0) {
+                    field_0xbc = 0;
+                    goto align; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+                }
+            }
+            field_0xbc++;
+        }
+warp: // the counter runs: look for a 'WARP' actor
+        if (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() != field_0x4->fn_80248778()) {
+            field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
+            field_0xbc = 0;
+            return;
+        }
+
+        // A 'WARP' actor on the owner's layer: type 4 is near (< 7), type
+        // 7 sends to a cell of another layer, type 8 to the same place on
+        // another layer.
+        s32 serial = -1;
+        for (;;) {
+            s32 found = getActorManager_801F856C()->fn_801F78F4('WARP', serial);
+            serial = found;
+            if (found < 0) {
+                break;
+            }
+            ActorBase_804A5770* warp = getActorManager_801F856C()->findActorBySerial_801F666C(found);
+            if (warp == NULL || field_0x4->field_0x3b4 != warp->field_0x4) {
+                continue;
+            }
+            u32 type = warp->field_0x90;
+            if ((type & 0xFF) == 4) {
+                if (fn_8022F514(field_0x4->field_0x4)) {
                     continue;
                 }
-                u32 type = warp->field_0x90;
-                if ((type & 0xFF) == 4) {
-                    if (fn_8022F514(field_0x4->field_0x4)) {
-                        continue;
-                    }
-                    if (!fn_8022F514(field_0x4->field_0x4) && fn_8022CAF8(field_0x4->field_0x4) == 4 &&
-                        fn_80234004(field_0x4->field_0x4) != field_0x4->fn_80248778())
-                    {
-                        continue;
-                    }
-                    JGeometry::TVec2f d(field_0x4->mPos.x - warp->mPos.x, field_0x4->mPos.y - warp->mPos.y);
-                    if (JGeometry::TUtil<f32>::sqrt(square(d.x) + square(d.y)) < 7.0f) {
-                        field_0xbc = 0;
-                        nearWarp = true;
-                        break;
-                    }
-                } else if ((type & 0xFF) == 7) {
-                    s32 layer = (type >> 24) & 7;
-                    f32 x;
-                    f32 y;
-                    if (layer == 0) {
-                        GameView_804A9950* view = getGameView_802D6A9C();
-                        x = view->mVisibleBox.i.x;
-                        y = view->mVisibleBox.i.y;
-                    } else {
-                        x = y = 0.0f;
-                        layer += 7;
-                    }
-                    if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
-                        if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
-                            field_0xbc = 0;
-                            return;
-                        }
-                        continue;
-                    }
-                    JGeometry::TVec3f dest;
-                    dest.x = 8.0f + (((type >> 16) & 0x3F) * 8 + x);
-                    dest.y = 8.0f + (((type >> 8) & 0x3F) * 8 + y);
-                    dest.z = 0.0f;
-                    if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &dest, 7)) {
+                if (!fn_8022F514(field_0x4->field_0x4) && fn_8022CAF8(field_0x4->field_0x4) == 4 &&
+                    fn_80234004(field_0x4->field_0x4) != field_0x4->fn_80248778())
+                {
+                    continue;
+                }
+                JGeometry::TVec2f d(field_0x4->mPos.x - warp->mPos.x, field_0x4->mPos.y - warp->mPos.y);
+                if (JGeometry::TUtil<f32>::sqrt(square(d.x) + square(d.y)) < 7.0f) {
+                    field_0xbc = 0;
+                    goto slowFloor; // FAKEMATCH(crack-pass): unrolled test exits straight into a block the loop's normal exit skips (docs/CRACK_PASS.md)
+                }
+            } else if ((type & 0xFF) == 7) {
+                s32 layer = (type >> 24) & 7;
+                f32 x;
+                f32 y;
+                if (layer == 0) {
+                    GameView_804A9950* view = getGameView_802D6A9C();
+                    x = view->mVisibleBox.i.x;
+                    y = view->mVisibleBox.i.y;
+                } else {
+                    x = y = 0.0f;
+                    layer += 7;
+                }
+                if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
+                    if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
                         field_0xbc = 0;
                         return;
                     }
-                } else if ((type & 0xFF) == 8) {
-                    JGeometry::TVec3f pos;
-                    pos.set(field_0x4->mPos);
-                    s32 layer = (type >> 24) & 7;
-                    if (layer != 0) {
-                        layer += 7;
-                    }
-                    pos.x -= layerBox(field_0x4->field_0x3b4)->i.x;
-                    pos.y -= layerBox(field_0x4->field_0x3b4)->i.y;
-                    pos.x += layerBox(layer)->i.x;
-                    pos.y += layerBox(layer)->i.y;
-                    if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
-                        if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
-                            field_0xbc = 0;
-                            return;
-                        }
-                        continue;
-                    }
-                    if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &pos, 8)) {
+                    continue;
+                }
+                JGeometry::TVec3f dest;
+                dest.x = 8.0f + (((type >> 16) & 0x3F) * 8 + x);
+                dest.y = 8.0f + (((type >> 8) & 0x3F) * 8 + y);
+                dest.z = 0.0f;
+                if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &dest, 7)) {
+                    field_0xbc = 0;
+                    return;
+                }
+            } else if ((type & 0xFF) == 8) {
+                JGeometry::TVec3f pos;
+                pos.set(field_0x4->mPos);
+                s32 layer = (type >> 24) & 7;
+                if (layer != 0) {
+                    layer += 7;
+                }
+                pos.x -= layerBox(field_0x4->field_0x3b4)->i.x;
+                pos.y -= layerBox(field_0x4->field_0x3b4)->i.y;
+                pos.x += layerBox(layer)->i.x;
+                pos.y += layerBox(layer)->i.y;
+                if (layer >= 8 && gGameRoot_8053AAF8->field_0x7e && !field_0x4->fn_80247534()) {
+                    if (field_0x4->fn_80290070(0, &field_0x4->mPos, &field_0x4->field_0xd1c, 9)) {
                         field_0xbc = 0;
                         return;
                     }
+                    continue;
                 }
-            }
-
-            if (!nearWarp) {
-                if (field_0xbc >= 2) {
-                    field_0x4->field_0x457 = 1;
-                }
-                if (field_0xbc >= 3) {
-                    field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
+                if (field_0x4->fn_80290070(layer, &field_0x4->mPos, &pos, 8)) {
                     field_0xbc = 0;
                     return;
                 }
             }
         }
+
+        if (field_0xbc >= 2) {
+            field_0x4->field_0x457 = 1;
+        }
+        if (field_0xbc >= 3) {
+            field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xd1c, 9);
+            field_0xbc = 0;
+            return;
+        }
     }
 
-    if (!nearWarp && !field_0x4->fn_80240F28() && !viewLayerFlag(field_0x4->field_0x3b4) &&
+align: // the counter was reset or did not run
+    if (!field_0x4->fn_80240F28() && !viewLayerFlag(field_0x4->field_0x3b4) &&
         isField98Or99Set() != true && field_0x4->field_0x1216 != 1 && field_0x4->field_0x1228 <= 0 &&
         !(field_0x4->fn_802486A0() == 5 && field_0x4->fn_80240670() &&
           fn_80234950(fn_8022F340(field_0x4->field_0x4))))
@@ -1594,6 +1600,7 @@ void cls_804A71A8::fn_80269574() {
             }
         }
     }
+slowFloor: // the owner stands near a 'WARP' actor, or the alignment is done
     checkSlowFloor(this);
     request4A(this);
     leaveBy88(this);
@@ -1603,22 +1610,7 @@ void cls_804A71A8::fn_80269574() {
     if (field_0xba == 1) {
         field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xcbc, 0xD);
     }
-    s32 n60;
-    for (n60 = 0; n60 < 8; n60++) {
-        if (field_0x60[n60] == 1) {
-            break;
-        }
-    }
-    if (n60 < 8) {
-        if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) && !field_0x4->fn_80240B34() &&
-            !field_0x4->fn_80240D64() && !field_0x4->fn_80240860())
-        {
-            field_0x4->mPos.y += 0.125f;
-            field_0x4->fn_8024F0E8(0x20045);
-        }
-        field_0xb9 = 1;
-        field_0x9a = 1;
-    }
+    liftOn60(this);
     if (field_0x4->fn_8026FC20() <= 0) {
         // Unless its four sides are all closed, the owner's boxes
         // (field_0x28) block their directions.

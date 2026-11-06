@@ -34,6 +34,30 @@ trick is replaced by an honest fix (or the project decides to accept it).
   `tools/gen_game.py --check` clean. Set back to NonMatching with the trick in the source:
   `python3 tools/gate.py --all-units --base origin/matching` prints `gate: ok`.
 
+## game/tu_802684A4.cpp fn_80269574 (`goto` out of unrolled tests)
+
+- **Trick:** `goto` at four places in cls_804A71A8::fn_80269574 and its section inlines, every
+  goto line tagged `// FAKEMATCH(crack-pass):` (tools/gate.py lets a goto through only with
+  that tag on its line; check_fakematch keeps the unit NonMatching): blockMarked50's
+  field_0x50 test (`goto block`), liftOn60's field_0x60 test (`goto lift`), the frames-shut-in
+  counter (the `field_0xbc = 3` exits `goto warp`, the reset paths `goto align` past the
+  'WARP' search) and the near-'WARP' exit (`goto slowFloor`, past the alignment). Owner
+  approval 2026-11-06.
+- **Why:** at each site the original's unrolled 8-way test branches from every copy straight
+  into a block that the loop's normal exit jumps over with a `b` (`beq X` x8, `b` past X).
+  Toy files with the unit's flags reproduce that byte for byte with a goto; every goto-free
+  form measured leaves the loop index or a bool (`li n` / `cmpwi n, 8`, `li 1` / `clrlwi.`):
+  a post-loop index test, a found flag, a bool or int inline, `i == 7` inside the loop;
+  non-canonical loops are not unrolled and a canonical loop whose exit block holds a loop
+  or a call stays rolled (docs/PLAYER.md "Structural push (tu_802684A4)"). With the gotos
+  fn_80269574 is 98.83 % (was 96.90), missing/extra -4; the rest is in its FIXME.
+- **Honest fix would need:** a source form other than goto that MWCC compiles to "every
+  unrolled exit jumps into the block, the completion path skips it": e.g. a macro or
+  inline idiom from FSA's sources (none in the donors). If a later unit shows the same
+  shape with a known source form, apply it here.
+- **Verification (2026-11-06):** unit NonMatching; full `ninja` and `sha1sum -c
+  config/G4SE01/build.sha1` OK; `tools/gate.py --all-units` and `--base matching` pass.
+
 ## Retired 2026-11-05: tu_80222CC4, tu_80221B44 (`defer_codegen`) and act_shadow_link_bow
 
 Game code is now compiled `-inline auto,deferred` project-wide (docs/INLINING.md),

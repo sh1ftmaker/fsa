@@ -1532,6 +1532,7 @@ Owner goal: every Player function at least structurally matched. Unit count unch
 |---|---|---|---|
 | fn_802685D4 | 92.27 missing/extra -17 | 94.69 missing/extra -12 | the field_0x420 decay snaps to 0 inside +-0.025 (a missing `else`); the rest is the three step TVec2fs' dead stack stores |
 | fn_80269574 | 96.27 missing/extra +40 | 96.90 missing/extra +33 | climbUp and askLeader as void inlines with `return`s, the byte tests written out, `pos.set(mPos)` |
+| fn_80269574 (crack pass, same day) | 96.90 missing/extra +33 | 98.83 missing/extra -4 | owner-approved `goto` at the four unrolled-exit sites, each tagged FAKEMATCH(crack-pass) (docs/CRACK_PASS.md): blockMarked50 (`goto block`), liftOn60 (new section inline, `goto lift`), the counter written out in place (advanceCounter and the `nearWarp` flag gone: resets `goto align`, the `field_0xbc = 3` exits `goto warp`) and the near-'WARP' exit (`goto slowFloor`); the 'WARP' search's `found` / `serial = found` (act_magic_circle_generator's form) |
 | fn_80268BC4 | 99.13 missing/extra -4 | unchanged | already structurally close (4 dead stores) |
 
 What the asm and experiments prove (toy files compiled with the unit's exact flags):
@@ -1546,6 +1547,12 @@ What the asm and experiments prove (toy files compiled with the unit's exact fla
   `while (b[i]) if (++i >= 8) return;`, a compound `for` condition) are not unrolled, and a
   canonical loop whose exit block contains a loop or a call is not unrolled either (the exit
   block counts as loop body), so the work cannot move into the exit. These stay FIXMEs.
+  **Adopted 2026-11-06 as a crack-pass item** (owner): the four sites now use tagged gotos,
+  fn_80269574 96.90 -> 98.83 (missing/extra -4: 2214 vs 2218). With the bool and the flag gone the
+  function needs one saved GPR fewer (stmw r27 vs the original's r26, the register the original
+  spends on the saved &mPos), so the unit's extab is 82.35 -> 81.86 % until that is found. The
+  four-sides test before the box marks (`beq block; b skip` over 4) is the same shape; a goto
+  there gives 98.90 / -3 but was not in the approval, so it is a FIXME.
 - **An early exit to the END of a block is a void inline's `return`.** The climb section
   (`viewLayerFlag && !closedBy78()`) and the follower's fn_8022BC38 request each reach the
   original's layout as a small void inline: the two `field_0xb4 = field_0xb6 = 0` copies are two

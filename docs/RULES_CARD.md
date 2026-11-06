@@ -261,7 +261,8 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   completion path jumps over (`beq X` x8, then `b` past X): a goto in the original; every
   goto-free form leaves `li n` / `cmpwi n, 8` or a bool (index test, found flag, bool or int
   inline; non-canonical loops don't unroll; work in the exit block keeps the loop rolled).
-  FIXME it and move on. If the copies branch to the END of a block instead, it is a void
+  FIXME it and move on (tu_802684A4 fn_80269574 has owner-approved tagged gotos, a
+  crack-pass item in docs/CRACK_PASS.md; elsewhere ask first). If the copies branch to the END of a block instead, it is a void
   inline's `return` from inside the loop (tu_802684A4 climbUp / askLeader; docs/PLAYER.md
   "Structural push (tu_802684A4)").
 - A bool inline (`a == 1 || b == 1`) inside an `||` / `&&` condition materialises (li 0 / 1,
