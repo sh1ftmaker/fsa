@@ -20,10 +20,6 @@ cls_804A51E4::cls_804A51E4() {
     field_0x2d0 = -1;
 }
 
-// FIXME: 98.6 %. The clamp's file reference is materialised with an extra
-// `addi r3, r3, 0x20` (fields then at 0xC); the original keeps the pointer at
-// lbl_8050EC80 + file * 0xC8 and folds the 0x20 into its field offsets (0x2C).
-// Direct `getCurrentFile().field_0xc` accesses fold it but form an lwzu (98.4).
 // tu_801DE714 (0x801E2180, vtable slot 0x08): the deleting destructor. Its
 // own part runs first; EnemyBase's destructor is inlined after it.
 cls_804A51E4::~cls_804A51E4() {
@@ -34,9 +30,10 @@ cls_804A51E4::~cls_804A51E4() {
                 lbl_8050EC80.getCurrentFile().field_0xc += field_0x2c0;
                 // The clamp looks the current file up again (the original
                 // indexes lbl_8050EC80 a second time after the add).
-                SaveFile_803B950C& file = lbl_8050EC80.getCurrentFile();
-                if (file.field_0xc < 0) {
-                    file.field_0xc = 0;
+                // FAKEMATCH(crack-pass): row view (tu_803B8C74.h SaveFileRow_CrackPass).
+                SaveFileRow_CrackPass& row = lbl_8050EC80.getCurrentRow_CrackPass();
+                if (row.field_0x2c < 0) {
+                    row.field_0x2c = 0;
                 }
             }
             field_0x2c0 = 0;

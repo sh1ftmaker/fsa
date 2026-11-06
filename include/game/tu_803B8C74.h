@@ -77,6 +77,19 @@ bool fn_803BADAC(SaveFile_803B950C* file);
 // fn_803B950C: clears a file and its block and sets the file's defaults.
 void fn_803B950C(SaveFile_803B950C* file, SaveFileBody_803B950C* body);
 
+// FAKEMATCH(crack-pass): docs/CRACK_PASS.md "Save-data layout". Save file i seen
+// 0x20 bytes early, as a 0xC8-byte row at lbl_8050EC80 + i * 0xC8 (row offset N is
+// SaveFile_803B950C offset N - 0x20). Only tu_801DE714's destructor and act_fairy's
+// init use it: they keep that row address in a register across a read and a write of
+// one field, which no access through mFiles reproduces (an extra `addi 0x20`).
+struct SaveFileRow_CrackPass {
+    /* 0x00 */ u8 field_0x0[0x2C];
+    /* 0x2C */ s32 field_0x2c; // SaveFile_803B950C::field_0xc
+    /* 0x30 */ u8 field_0x30[0x87 - 0x30];
+    /* 0x87 */ u8 field_0x87; // SaveFile_803B950C::field_0x67
+    /* 0x88 */ u8 field_0x88[0xC8 - 0x88];
+}; // Size: 0xC8
+
 // The save data object lbl_8050EC80 (vtable 0x804AFB30, destructor fn_803B94C4).
 class cls_804AFB30 {
 public:
@@ -88,6 +101,10 @@ public:
     // (tu_80197070) match; indexing mFiles directly swaps the add's operands.
     SaveFile_803B950C& getFile(s32 file) { return mFiles[file]; }
     SaveFile_803B950C& getCurrentFile() { return mFiles[mCurrentFile]; }
+    // FAKEMATCH(crack-pass): the current file as SaveFileRow_CrackPass (above).
+    SaveFileRow_CrackPass& getCurrentRow_CrackPass() {
+        return reinterpret_cast<SaveFileRow_CrackPass*>(this)[mCurrentFile];
+    }
 
     /* 0x00 vtable */
     /* 0x04 */ u8 field_0x4[0x8 - 0x4];

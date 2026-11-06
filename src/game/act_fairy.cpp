@@ -10,11 +10,10 @@ Fairy_804A03B8::~Fairy_804A03B8() {
     releaseEmitter_801EE434(mEmitter294);
 }
 
-// FIXME: 97.39 %. Apart from the float literals (`@NNN` against lbl_8053D6xx, a data split), the
-// save-file block differs: the original keeps the file pointer at lbl_8050EC80 + file * 0xC8 in r6
-// (field 0x67 read and written at 0x87) and loads lbl_80529DEC's count before the 0x339 argument;
-// ours materialises the reference with `addi r5, r3, 0x20` for the store and loads the count after
-// li r4, 0x339 (tu_801DE714's destructor has the same reference shape).
+// FIXME: 97.86 %. Apart from the float literals (`@NNN` against lbl_8053D6xx, a data split), the
+// save-file block differs in registers: the original keeps the row pointer in r6, loads
+// lbl_80529DEC's count before the 0x339 argument and keeps the table base in r3/r5; ours
+// keeps the row in r5 and loads the count after li r4, 0x339.
 void Fairy_804A03B8::init() {
     mBox.i.x = -4.0f;
     mBox.i.y = -4.0f;
@@ -83,9 +82,10 @@ void Fairy_804A03B8::init() {
     mEmitter294 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
     if (field_0x230 == 0 || field_0x230 == 5) {
         if (gGameRoot_8053AAF8->field_0x7f == 1) {
-            SaveFile_803B950C& file = lbl_8050EC80.getCurrentFile();
-            if ((file.field_0x67 & 1) == 0) {
-                file.field_0x67 |= 1;
+            // FAKEMATCH(crack-pass): row view (tu_803B8C74.h SaveFileRow_CrackPass).
+            SaveFileRow_CrackPass& row = lbl_8050EC80.getCurrentRow_CrackPass();
+            if ((row.field_0x87 & 1) == 0) {
+                row.field_0x87 |= 1;
                 lbl_8053AED0->fn_8043D67C(0x339, 0, lbl_80529DEC.field_0x24f);
             }
         }

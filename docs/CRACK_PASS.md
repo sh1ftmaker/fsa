@@ -64,12 +64,21 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   tu_8045A640 now emits the weak __dt__Q29GameAudio16CustomSoundTableFv first;
   every function, .data and .sdata2 are 100 % (extab 71 %: check the weak-dedup
   trial link before flipping it).
-- **Save-data layout.** lbl_8050EC80 is a 0x20-byte header, three 0xC8-byte
-  rows at 0x20 and three 0x9C4-byte blocks at 0x280 (size 0x21E0), but users
-  still view it as SaveRow_8050EC80[] shifted by 0x20. Migrating all users to
-  one SaveData object drops tu_801DE714 __dt__12cls_804A51E4Fv (100 → 98.6 %) and
-  act_fairy init (97.86 → 97.39 %); FileSelect's constructor omits its
-  save-data loop until this is settled (progress/game__tu_803BC6F0.md).
+- **Save-data layout.** lbl_8050EC80 (cls_804AFB30, game/tu_803B8C74.h) is a 0x20-byte
+  header, three 0xC8-byte SaveFile_803B950C at 0x20 and three 0x9C4-byte bodies at 0x280;
+  every user reads it through getFile / getCurrentFile. Two functions read and write one field
+  of the current file through a pointer the original holds at lbl_8050EC80 + file * 0xC8
+  (fields at +0x20): tu_801DE714 __dt__12cls_804A51E4Fv (clamp of 0x2C) and act_fairy init
+  (bit 0 of 0x87). Every access through mFiles adds an `addi 0x20` (reference/pointer local,
+  pointer accessor, inline SaveFile member, nested table struct: 97.2-98.6 / 95.4-97.4 %) or
+  CSEs the field address into an lwzu (direct expressions, 98.36 %).
+  - **Trick:** `FAKEMATCH(crack-pass)` SaveFileRow_CrackPass (two fields, row offsets) and
+    cls_804AFB30::getCurrentRow_CrackPass (`reinterpret_cast<SaveFileRow_CrackPass*>(this)
+    [mCurrentFile]`), used only by those two functions: 100 % and 97.86 % (their values
+    under the old SaveRow_8050EC80 view).
+  - **Honest fix would need:** the original's declaration that gives a 0xC8-stride object
+    based at lbl_8050EC80 itself (FSA probably viewed the save data as rows somewhere; no
+    donor has this class).
 - **Data of dead-stripped functions.** tu_803A3484 (title screen): a 0x34-byte .rodata table and "enemy_both2_sob.bin" sit before
   the title's strings, and 0.5f / 120.0f lead its .sdata2, but no surviving function references them; the table's tail {3,4,5,4}
   matches tu_803536C4's lbl_80472260, also followed by that string. Likely a function the linker dropped (dead code or a weak
