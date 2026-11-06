@@ -21,6 +21,14 @@
 #include "game/tu_8030AE84.h"
 #include "game/tu_80379F84.h"
 
+// Steps of 16 along the facing (right, left, down, up), fn_8024CD20.
+static const Vec lbl_8046AE78[4] = {
+    {15.999f, 0.0f, 0.0f},
+    {-15.999f, 0.0f, 0.0f},
+    {0.0f, 15.999f, 0.0f},
+    {0.0f, -15.999f, 0.0f},
+};
+
 // Whether the player is in, or about to enter, state 0x1B (the current or
 // the requested state); a materialised bool where it is inlined (li 0 / li 1).
 static inline bool inState1B(const Player_804A6F38* player) {
@@ -1874,6 +1882,58 @@ bool Player_804A6F38::fn_8024D058(u8 reset) {
     field_0x11f0 = 10;
     fn_8024D134();
     return true;
+}
+
+// fn_8024CAC8 for a box (act_dummy_conversation through fn_8022FEB8): the
+// same tests, then the point 16 ahead of the player (by facing 0x3DC) must
+// lie in `box`.
+// FIXME: 99.64 %. Registers only: the inlined group loop (fn_80240670) keeps
+// the leader and the own index in two registers (r22 / r25) in the original,
+// one here, as in the gates (fn_802454C0 ...).
+void Player_804A6F38::fn_8024CD20(const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b) {
+    if (field_0xd50 > 0) {
+        return;
+    }
+    if (field_0xd44 >= 0 && field_0xd44 != serial) {
+        return;
+    }
+    if (field_0xd3c >= 0) {
+        return;
+    }
+    if (fn_80240670()) {
+        return;
+    }
+    if (layer != field_0x3b4) {
+        return;
+    }
+    if (fn_8025F448()) {
+        return;
+    }
+    if (field_0xce8) {
+        return;
+    }
+    if (!field_0x454 && fn_80241230()) {
+        return;
+    }
+    if (b == true && field_0x3dc != 3) {
+        return;
+    }
+    const Vec& step = lbl_8046AE78[field_0x3dc];
+    JGeometry::TVec3f pos;
+    pos.x = step.x;
+    pos.y = step.y;
+    pos.z = step.z;
+    pos += mPos;
+    pos.z = 0.0f;
+    JGeometry::TBox2f point;
+    point.i.x = pos.x;
+    point.i.y = pos.y;
+    point.f.x = pos.x;
+    point.f.y = pos.y;
+    if (point.intersect(*box)) {
+        field_0xd3c = serial;
+        field_0xd4e = a;
+    }
 }
 
 // Starts a conversation (act_dummy_conversation through fn_8022FE80): keeps
