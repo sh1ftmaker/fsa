@@ -29,6 +29,7 @@ void BeeManager_804AC810::init() {
     }
 }
 
+// The `== true` tests on bool locals/results are the form that matches (plain truth tests: 94.06 %, 8 instructions short).
 // FIXME: 95.79% (scheduling+regalloc): same 538 instructions as target; register allocation in the 14-bee loops shifts by one GPR (r27/r28/r29 vs r25/r27/r28), and the 0.85f velocity scale and ACTOR_RUPY spawn argument setup schedule a few instructions in a different order.
 void BeeManager_804AC810::update() {
     if (field_0x230 != 0 && field_0x230 != 4) {
