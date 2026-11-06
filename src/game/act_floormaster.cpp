@@ -3,11 +3,15 @@
 #include "game/ActorManager.h"
 #include "game/Camera.h"
 #include "game/Effect.h"
+#include "game/EmitterDelete.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "game/Player.h"
 
 bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold);
+bool fn_801CD1D0(s32 player);
+void fn_802316C8(s32 player, s32 layer, const JGeometry::TVec3f* pos);
+#define FLT_EPSILON (*(float*)__float_epsilon)
 
 static const s16 lbl_8046A3D8[] = { 0, 5, 1, 5, 2, 5, -1, -1 };
 static const s16 lbl_8046A3E8[] = { 3, 5, 4, 10, -1, -1 };
@@ -304,6 +308,181 @@ void Floormaster_804A6004::fn_8020EB08() {
             mFlags &= ~0x4000;
             field_0x2c0 = -1;
         }
+    }
+}
+
+// FIXME: 96.96%. missing/extra + reloc-name (ours has 1 fewer instrs (435 vs 436))
+void Floormaster_804A6004::vfunc_0x90(u8 mapHit) {
+    fn_8020EB08();
+    switch (mState) {
+    case 0:
+        if (!(mFlags & 0x4000) && mStateTimer >= field_0x250) {
+            field_0x2bc = 0;
+            field_0x2b8 = fn_801D05F8(&mPos, 0.0f);
+            if (field_0x2b8 >= 0) {
+                fn_8020ED5C(1);
+            }
+        }
+        break;
+
+    case 1:
+        if (mStateTimer >= 60) {
+            if (field_0x2b8 >= 0) {
+                fn_8020ED5C(2);
+            } else {
+                fn_8020ED5C(10);
+            }
+        } else {
+            f32 remaining = 60 - mStateTimer;
+            if (remaining < FLT_EPSILON) {
+                field_0x2b4 = 1.0f;
+            } else {
+                field_0x2b4 += (1.0f - field_0x2b4) * (1.0f / remaining);
+            }
+            if (mEmitter2b0 != NULL) {
+                f32 rMult = 75.0f;
+                f32 gMult = 255.0f;
+                f32 bMult = 0.0f;
+                u8 prm = field_0x2b4 * 255.0f + 0.5f;
+                mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
+                mEmitter2b0->setGlobalEnvColor(field_0x2b4 * rMult + 0.5f,
+                                               field_0x2b4 * gMult + 0.5f,
+                                               field_0x2b4 * bMult + 0.5f);
+            }
+            startSound_801F0E34(0x50089, 0);
+        }
+        break;
+
+    case 2:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            if (field_0x2b8 >= 0) {
+                fn_8020ED5C(3);
+            } else {
+                fn_8020ED5C(8);
+            }
+        }
+        break;
+
+    case 3:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            startSound_801F0E34(0x50088, 0);
+            if (field_0x2b8 >= 0) {
+                bool flag = false;
+                if (mState == 3 && field_0x2b8 >= 0 && !fn_80230188(field_0x2b8) &&
+                    fn_802300EC(field_0x2b8) && !fn_8022DCD8(field_0x2b8) &&
+                    !fn_801CD1D0(field_0x2b8)) {
+                    mBox.set(-16.0f, -12.0f, 16.0f, 16.0f);
+                    if (fn_801F2740(-1) & (1 << field_0x2b8)) {
+                        flag = true;
+                    }
+                    mBox.set(-10.0f, -12.0f, 10.0f, 10.0f);
+                    mBox2.i.x = mBox.i.x;
+                    mBox2.i.y = mBox.i.y;
+                    mBox2.f.x = mBox.f.x;
+                    mBox2.f.y = mBox.f.y;
+                }
+                if (flag) {
+                    if (fn_80230AD4(field_0x2b8)) {
+                        fn_8020ED5C(5);
+                    } else {
+                        fn_8020ED5C(8);
+                    }
+                    break;
+                }
+            }
+            fn_8020ED5C(8);
+        }
+        break;
+
+    case 4:
+        if (mStateTimer >= 120) {
+            field_0x2bc = 0;
+            field_0x2b8 = fn_801D05F8(&mPos, 0.0f);
+            if (field_0x2b8 >= 0) {
+                fn_8020ED5C(3);
+            } else {
+                fn_8020ED5C(9);
+            }
+        }
+        break;
+
+    case 5:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            fn_80230224(field_0x2b8, 0);
+            if (fn_8022DE10(field_0x2b8, 2)) {
+                fn_8020ED5C(6);
+            } else {
+                fn_8020ED5C(9);
+            }
+        }
+        break;
+
+    case 6:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            fn_8020ED5C(7);
+        }
+        break;
+
+    case 7:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            JGeometry::TVec3f pos;
+            if (!(mFlags & 0x2000)) {
+                fn_801CD150(&mPos, &pos);
+                field_0x2a8 = pos.x;
+                field_0x2ac = pos.y;
+            }
+            JGeometry::TVec3f temp(field_0x2a8, field_0x2ac, 0.0f);
+            JGeometry::TVec3f vec;
+            vec = temp;
+            fn_802316C8(field_0x2b8, 8, &vec);
+            if (fn_8022DD74(field_0x2b8)) {
+                mFlags &= ~0x4000;
+                field_0x2c0 = -1;
+            } else {
+                mFlags |= 0x4000;
+                field_0x2c0 = field_0x2b8;
+            }
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x1B0, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x548, 0, -1, NULL, NULL, true, 1.0f);
+            fn_8020ED5C(10);
+        }
+        break;
+
+    case 8:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            fn_8020ED5C(9);
+        }
+        break;
+
+    case 9:
+        if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
+            fn_8020ED5C(10);
+        }
+        break;
+
+    case 10:
+        if (mStateTimer >= 60) {
+            deleteEmitter(&mEmitter2b0);
+            fn_8020ED5C(0);
+        } else {
+            f32 remaining = 60 - mStateTimer;
+            if (remaining < FLT_EPSILON) {
+                field_0x2b4 = 0.0f;
+            } else {
+                field_0x2b4 += (0.0f - field_0x2b4) * (1.0f / remaining);
+            }
+            if (mEmitter2b0 != NULL) {
+                f32 rMult = 75.0f;
+                f32 gMult = 255.0f;
+                f32 bMult = 0.0f;
+                u8 prm = field_0x2b4 * 255.0f + 0.5f;
+                mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
+                mEmitter2b0->setGlobalEnvColor(field_0x2b4 * rMult + 0.5f,
+                                               field_0x2b4 * gMult + 0.5f,
+                                               field_0x2b4 * bMult + 0.5f);
+            }
+        }
+        break;
     }
 }
 
