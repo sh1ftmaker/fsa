@@ -11,6 +11,63 @@ extern const s32 lbl_804689C0[];
 extern const f32 lbl_804A31C8[];
 extern s32 lbl_8053ABE0;
 
+void Dodongo_804A3334::fn_801AE5AC() {
+    if (mTimers[0] != 0) {
+        return;
+    }
+
+    switch (field_0x290) {
+    case 0:
+        mTimers[0] = 6;
+        field_0x258 = field_0x28c;
+        field_0x258 += field_0x98 * 3 + field_0x24c;
+        field_0x24c++;
+        if (field_0x24c > 2) {
+            field_0x24c = 0;
+            startSound_801F0E34(0x50029, 0);
+        }
+        break;
+    case 1:
+        mTimers[0] = 9;
+        field_0x258 = field_0x28c;
+        field_0x258 += field_0x98 * 3 + field_0x24c;
+        if (field_0x24c == 0) {
+            startSound_801F0E34(0x5002A, 0);
+        }
+        field_0x24c++;
+        if (field_0x24c > 2) {
+            field_0x24c = 2;
+            field_0x298 = 1;
+        }
+        break;
+    case 2:
+        mTimers[0] = 9;
+        field_0x258 = field_0x28c;
+        field_0x258 += field_0x98 * 2 + field_0x24c;
+        field_0x24c++;
+        if (field_0x24c > 1) {
+            field_0x24c = 1;
+            field_0x298 = 1;
+        }
+        break;
+    case 3:
+        field_0x258 = field_0x28c;
+        field_0x258 += field_0x98;
+        break;
+    case 4:
+        if (field_0x24c > 2) {
+            field_0x24c = 3;
+            field_0x298 = 1;
+        } else {
+            field_0x258 = field_0x28c;
+            field_0x258 = field_0x258 + field_0x24c;
+            mTimers[0] = 10;
+            field_0x24c++;
+        }
+        break;
+    }
+}
+
 // FIXME: 96.62 %. different: same length, 3 opcodes differ. Register allocation (f30/f31, r29/r30) and boxData indexing.
 void Dodongo_804A3334::fn_801ACCF0() {
     f32 scale = 1.0f;
