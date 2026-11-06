@@ -1700,6 +1700,112 @@ void FileSelect_804AFF60::fn_803C9F14() {
     }
 }
 
+// FIXME: 98.28. Scheduling and registers only, the timing sums as in
+// fn_803C5190. .sdata2 @NNN.
+// State 22 (copy, after the copy prompt's yes): as fn_803C5190, the board (or
+// the copy board) slides out while row field_0xa4 fades back (fn_803BC6F0);
+// at its end the copy board sits at the second row's height and messages
+// 0x63 / 'Tdb01' 0x67 come up; the buttons slide out and the copy board comes
+// in (timings lbl_8050DB0C field_0x4c[0xC2..0xC8]). Then file field_0xa4 is
+// copied over file field_0xa0, its checksum written and the card write
+// started; state 21 waits for it.
+void FileSelect_804AFF60::fn_803C9898() {
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xC2];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xC3];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0xC4];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0xC5];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0xC6];
+    s16 inDelay = lbl_8050DB0C.field_0x4c[0xC7];
+    s16 inFrames = lbl_8050DB0C.field_0x4c[0xC8];
+    s32 boardEnd = boardDelay + boardFrames;
+    s32 end = buttonDelay + (buttonFrames + buttonStep);
+    if (inDelay < boardEnd) {
+        inDelay = boardEnd;
+    }
+    if (end < inDelay + inFrames) {
+        end = inDelay + inFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > boardDelay && field_0xd8 <= boardEnd) {
+        if (hasBadChecksum(field_0xa0)) {
+            field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
+            for (int j = 0; j < 9; j++) {
+                field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+            }
+            if (field_0xd8 == boardEnd) {
+                field_0x20->moveFromCentre_80402E08(600.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+                field_0x20->field_0x20 = 0;
+                field_0x20->mPane->setAlpha(0);
+                for (int j = 0; j < 9; j++) {
+                    field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+                }
+                field_0x20->field_0x26 = 0;
+            }
+        } else {
+            field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x14->fn_80402628(boardFrames, field_0x14->field_0x28, 0);
+            field_0x18->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x18->fn_80402628(boardFrames, field_0x18->field_0x28, 0);
+            field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
+            for (int j = 0; j < 81; j++) {
+                field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+            }
+            for (int j = 0; j < 19; j++) {
+                field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+            }
+        }
+        fn_803BC6F0(field_0xa4, 1.0f - (f32)(field_0xd8 - boardDelay) / (f32)boardFrames);
+        if (field_0xd8 == boardEnd) {
+            setMessage(0x63);
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x67, 0, NULL, NULL);
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 0.0f, 100.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, field_0x24[i]->field_0x28, 0);
+            switch (i) {
+            case 0:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > inDelay) {
+        field_0x20->fn_80402B10(inFrames, 0, 600.0f, 0.0f);
+        field_0x20->fn_80402628(inFrames, 0, field_0x20->field_0x28);
+        for (int j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    if (field_0xd8 > end) {
+        memcpy(&field_0x5c[field_0xa0], &field_0x5c[field_0xa4], sizeof(SaveFile_803B950C));
+        fn_803BACF8(field_0x5c, field_0xa0);
+        lbl_8051C1A0.fn_803B9CCC(field_0x5c, 0x258, 0);
+        setState(21);
+    }
+}
+
 // FIXME: 99.49. Regalloc only: the loop counters / table pointers of the
 // board loops take r24 / r26 / r27 in another order.
 // State 23 (copying): row field_0xa0 slides from the first row's place to the
@@ -1754,6 +1860,119 @@ void FileSelect_804AFF60::fn_803C92B8() {
         field_0xb0 = -1;
         fn_803C0018();
         gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+    }
+}
+
+// FIXME: 98.43. Scheduling and registers in the cursor bob only, as
+// fn_803C4054. .sdata2 @NNN.
+// State 25 (copy): picking the destination file. Up / down move field_0xa0
+// over the three files, skipping the source file field_0xa4; A asks to copy
+// (message 0x62, 'Tdb01' 0x66 when the destination's checksum failed) and
+// opens the destination's board (fn_803C05D8); B puts the title message back,
+// hides the file cursor and goes to state 30. The tabs and the cursor bob as
+// in fn_803CD2DC.
+void FileSelect_804AFF60::fn_803C8B80() {
+    if (lbl_8053AD30->fn_80309A9C(8, 1) != 0) {
+        field_0xa0--;
+        if (field_0xa0 < 0) {
+            field_0xa0 = 2;
+        }
+        if (field_0xa0 == field_0xa4) {
+            field_0xa0--;
+            if (field_0xa0 < 0) {
+                field_0xa0 = 2;
+            }
+        }
+        if (field_0xa0 == field_0xa4) {
+            field_0xa0--;
+            if (field_0xa0 < 0) {
+                field_0xa0 = 2;
+            }
+        }
+        field_0xda = 1;
+        field_0x50->field_0x26 = 0x1E;
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, 1) != 0) {
+        field_0xa0++;
+        if (field_0xa0 > 2) {
+            field_0xa0 = 0;
+        }
+        if (field_0xa0 == field_0xa4) {
+            field_0xa0++;
+            if (field_0xa0 > 2) {
+                field_0xa0 = 0;
+            }
+        }
+        if (field_0xa0 == field_0xa4) {
+            field_0xa0++;
+            if (field_0xa0 > 2) {
+                field_0xa0 = 0;
+            }
+        }
+        field_0xda = 1;
+        field_0x50->field_0x26 = 0x1E;
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
+        field_0x114 = 1;
+        setMessage(0x62);
+        if (hasBadChecksum(field_0xa0)) {
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x66, 0, NULL, NULL);
+        } else {
+            field_0x80 = 0;
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        fn_803C05D8();
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1) != 0) {
+        field_0x80 = 0;
+        setMessage(0x117);
+        field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+        field_0x50->field_0x20 = 0;
+        field_0x50->mPane->setAlpha(0);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+        for (int i = 0; i < 3; i++) {
+            field_0x38[i]->field_0x20 = 0;
+            field_0x38[i]->field_0x22 = 0;
+            field_0x38[i]->field_0x26 = 0;
+            field_0x44[i]->field_0x20 = 0;
+            field_0x44[i]->field_0x22 = 0;
+            field_0x44[i]->field_0x26 = 0;
+        }
+        field_0xd8 = 0;
+        field_0xda = 0;
+        setState(30);
+        gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+    }
+
+    if (mState == 25) {
+        s16 frame = field_0xda;
+        f32 bob = 0.0f;
+        if (frame != 0) {
+            if (frame < 5) {
+                bob = 5.0f * (frame * frame) / 25.0f;
+                field_0xda = frame + 1;
+            } else if (frame < 10) {
+                bob = 5.0f * ((10 - frame) * (10 - frame)) / 25.0f;
+                field_0xda = frame + 1;
+            } else {
+                field_0xda = 0;
+            }
+        }
+        for (s32 i = 0; i < 3; i++) {
+            if (0.0f != bob && i == field_0xa0) {
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, field_0x64[i] + bob);
+            } else {
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, field_0x64[i]);
+            }
+        }
+        field_0x50->moveFromCentre_80402E08(0.0f, field_0x44[field_0xa0]->mPane->getBounds()->i.y - field_0x44[0]->field_0xc);
+        field_0x50->fn_8040245C(0x3C, 0, field_0x50->field_0x28, 1);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+        field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
     }
 }
 
@@ -1815,6 +2034,73 @@ void FileSelect_804AFF60::fn_803C7CA0() {
     }
 }
 
+// FIXME: 99.65. Scheduling and registers only: the original adds
+// buttonFrames + buttonStep before buttonDelay (ours buttonStep +
+// buttonDelay first), and the board loops' counter / table pointer swap
+// r14 / r19. With `int` counters (as elsewhere in the file) the row loop
+// keeps a second walker for field_0x70 / field_0x64 (97.87, 6 more
+// instructions); with s32 counters it shares one, as the original. .sdata2 @NNN.
+// State 29 (after a copy, from fn_803C0018): the board slides out from the
+// second row's height, then the row that took no part in the copy slides back
+// in while the source and destination rows return to their places (timings
+// lbl_8050DB0C field_0x4c[0xB6..0xBC]; 0xB8..0xBA only count towards `end`);
+// state 5.
+void FileSelect_804AFF60::fn_803C6798() {
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xB6];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xB7];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0xB8];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0xB9];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0xBA];
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0xBB];
+    s16 rowFrames = lbl_8050DB0C.field_0x4c[0xBC];
+    s32 end = boardDelay + boardFrames;
+    if (end < buttonDelay + (buttonFrames + buttonStep)) {
+        end = buttonDelay + (buttonFrames + buttonStep);
+    }
+    if (end < rowDelay + rowFrames) {
+        end = rowDelay + rowFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > boardDelay) {
+        field_0x14->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x14->fn_80402628(boardFrames, field_0x14->field_0x28, 0);
+        field_0x18->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x18->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x18->fn_80402628(boardFrames, field_0x18->field_0x28, 0);
+        field_0x1c->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
+        for (s32 j = 0; j < 81; j++) {
+            field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+        }
+        for (s32 j = 0; j < 19; j++) {
+            field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+        }
+    }
+    if (field_0xd8 > rowDelay) {
+        for (s32 i = 0; i < 3; i++) {
+            if (i != field_0xa4 && i != field_0xa0) {
+                field_0x38[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x38[i]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+                field_0x38[i]->fn_80402628(rowFrames, 0, field_0x38[i]->field_0x28);
+                setRowAlphas(this, i);
+                field_0x44[i]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+                field_0x44[i]->fn_80402628(rowFrames, 0, field_0x44[i]->field_0x28);
+                setTabAlphas(this, i);
+            } else {
+                field_0x38[i]->fn_80402940(rowFrames, 0, field_0x70[i], 0.0f);
+                field_0x44[i]->fn_80402940(rowFrames, 0, field_0x64[i], 0.0f);
+            }
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(5);
+    }
+}
+
 // FIXME: 99.85 %. Instructions identical; only the .sdata2 literals differ
 // (@NNN vs lbl_: the literals of the unwritten earlier functions come first).
 void FileSelect_804AFF60::fn_803C6690() {
@@ -1831,6 +2117,102 @@ void FileSelect_804AFF60::fn_803C6690() {
     }
     if (field_0xd8 > end) {
         setState(5);
+    }
+}
+
+// FIXME: 98.55. One instruction fewer, as fn_803CB3DC: with the running
+// `delay += rowStep` ours starts the accumulator at rowDelay (mr r24) where
+// the original keeps the add; `i * rowStep` keeps it but gives fn_803C2E24's
+// &others difference (98.28, different). Timing sums' operand order differs.
+// .sdata2 @NNN.
+// State 32 (from fn_803BF9C4, a file whose checksum failed): as fn_803CB3DC
+// (same timings, lbl_8050DB0C field_0x4c[0x98..0x9F]), the other two rows
+// slide out and the chosen row moves up, then the copy board and the first
+// two buttons come in; state 37 (the delete prompt).
+void FileSelect_804AFF60::fn_803C5808() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0x98];
+    s16 frames = lbl_8050DB0C.field_0x4c[0x99];
+    s16 rowStep = lbl_8050DB0C.field_0x4c[0x9A];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0x9B];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0x9C];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0x9D];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0x9E];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0x9F];
+    s32 end = rowDelay + (frames + rowStep);
+    if (end < boardDelay + boardFrames) {
+        end = boardDelay + boardFrames;
+    }
+    if (end < buttonDelay + (buttonFrames + buttonStep * 3)) {
+        end = buttonDelay + (buttonFrames + buttonStep * 3);
+    }
+
+    // The two files that weren't chosen.
+    s32 others[2];
+    s32* other = others;
+    for (s32 i = 0; i < 3; i++) {
+        if (i != field_0xa4) {
+            *other++ = i;
+        }
+    }
+
+    field_0xd8++;
+    s32 delay = 0;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > rowDelay + delay) {
+            field_0x38[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x38[others[i]]->fn_80402628(frames, field_0x38[others[i]]->field_0x28, 0);
+            setRowAlphas(this, others[i]);
+            field_0x44[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x44[others[i]]->fn_80402628(frames, field_0x44[others[i]]->field_0x28, 0);
+            setTabAlphas(this, others[i]);
+        }
+        delay += rowStep;
+    }
+    // The chosen row moves up to the first row's place.
+    if (field_0xa4 != 0 && field_0xd8 > rowDelay) {
+        field_0x38[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+        field_0x44[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc);
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x20->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
+        field_0x20->fn_80402628(boardFrames, 0, field_0x20->field_0x28);
+        for (s32 j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    // Only the first two buttons, although `end` allows for four.
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 100.0f, 0.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, 0, field_0x24[i]->field_0x28);
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(37);
     }
 }
 
@@ -1941,6 +2323,112 @@ void FileSelect_804AFF60::fn_803C579C() {
     }
 }
 
+// FIXME: 98.30. Scheduling and registers only: the original adds
+// buttonFrames + buttonStep before it loads buttonDelay (ours adds
+// buttonStep + buttonDelay first), and the timings take other registers.
+// .sdata2 @NNN.
+// State 34, after the delete prompt's yes: the board (or the copy board when
+// the file's checksum failed) slides out, message 0x5F and 'Tdb01' 0x67 come
+// up as it leaves; the first two buttons slide out one after another and the
+// copy board comes back in (timings lbl_8050DB0C field_0x4c[0xE8..0xEE]).
+// Then the file is cleared (lbl_8050EC80.fn_803B933C), its checksum written
+// and the card write started; state 33 waits for it.
+void FileSelect_804AFF60::fn_803C5190() {
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xE8];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xE9];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0xEA];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0xEB];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0xEC];
+    s16 inDelay = lbl_8050DB0C.field_0x4c[0xED];
+    s16 inFrames = lbl_8050DB0C.field_0x4c[0xEE];
+    s32 boardEnd = boardDelay + boardFrames;
+    s32 end = buttonDelay + (buttonFrames + buttonStep);
+    if (inDelay < boardEnd) {
+        inDelay = boardEnd;
+    }
+    if (end < inDelay + inFrames) {
+        end = inDelay + inFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > boardDelay && field_0xd8 <= boardEnd) {
+        if (hasBadChecksum(field_0xa4)) {
+            field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
+            for (int j = 0; j < 9; j++) {
+                field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+            }
+            if (field_0xd8 == boardEnd) {
+                field_0x20->moveFromCentre_80402E08(600.0f, 0.0f);
+                field_0x20->field_0x20 = 0;
+                field_0x20->mPane->setAlpha(0);
+                for (int j = 0; j < 9; j++) {
+                    field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+                }
+                field_0x20->field_0x26 = 0;
+            }
+        } else {
+            field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x14->fn_80402628(boardFrames, field_0x14->field_0x28, 0);
+            field_0x18->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x18->fn_80402628(boardFrames, field_0x18->field_0x28, 0);
+            field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
+            for (int j = 0; j < 81; j++) {
+                field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+            }
+            for (int j = 0; j < 19; j++) {
+                field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+            }
+        }
+        if (field_0xd8 == boardEnd) {
+            setMessage(0x5F);
+            getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x67, 0, NULL, NULL);
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 0.0f, 100.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, field_0x24[i]->field_0x28, 0);
+            switch (i) {
+            case 0:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > inDelay) {
+        field_0x20->fn_80402B10(inFrames, 0, 600.0f, 0.0f);
+        field_0x20->fn_80402628(inFrames, 0, field_0x20->field_0x28);
+        for (int j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    if (field_0xd8 > end) {
+        lbl_8050EC80.fn_803B933C(field_0x5c, field_0xa4);
+        fn_803BACF8(field_0x5c, field_0xa4);
+        lbl_8051C1A0.fn_803B9CCC(field_0x5c, 0x258, 0);
+        setState(33);
+    }
+}
+
 // FIXME: 99.95 %. Instructions identical; only the .sdata2 literals differ
 // (pool order, see fn_803C24BC).
 // Back from the delete prompt (state 36), after its message or a button:
@@ -2035,6 +2523,51 @@ void FileSelect_804AFF60::fn_803C4054() {
         field_0x34->moveFromCentre_80402E08(field_0x24[field_0x114]->field_0x8 - field_0x24[0]->field_0x8, bob);
         field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
         field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    }
+}
+
+// FIXME: 98.18 (try.py: different, same length). As fn_803C2E24: the original
+// keeps &others in r29 from the fill loop on and walks it in the row loop;
+// and it adds frames + rowStep before rowDelay (ours rowStep + rowDelay
+// first). Every field, call and branch is the original's. .sdata2 @NNN.
+// State 38 (after a delete, from fn_803C4330): the two rows that weren't
+// chosen slide back in and the chosen row returns to its place, as the end of
+// fn_803C2E24 (same timings, lbl_8050DB0C field_0x4c[0xD9..0xDB]); state 5.
+void FileSelect_804AFF60::fn_803C3904() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0xD9];
+    s16 frames = lbl_8050DB0C.field_0x4c[0xDA];
+    s16 rowStep = lbl_8050DB0C.field_0x4c[0xDB];
+    s32 end = rowDelay + (frames + rowStep);
+
+    // The two files that weren't chosen.
+    s32 others[2];
+    s32* other = others;
+    for (int i = 0; i < 3; i++) {
+        if (i != field_0xa4) {
+            *other++ = i;
+        }
+    }
+
+    field_0xd8++;
+    for (int i = 0; i < 2; i++) {
+        if (field_0xd8 > rowDelay + i * rowStep) {
+            field_0x38[others[i]]->fn_80402B10(frames, 0, 600.0f, 0.0f);
+            field_0x38[others[i]]->fn_80402628(frames, 0, field_0x38[others[i]]->field_0x28);
+            setRowAlphas(this, others[i]);
+            field_0x44[others[i]]->fn_80402B10(frames, 0, 600.0f, 0.0f);
+            field_0x44[others[i]]->fn_80402628(frames, 0, field_0x44[others[i]]->field_0x28);
+            setTabAlphas(this, others[i]);
+        }
+    }
+    // The chosen row moves back down from the first row's place.
+    if (field_0xa4 != 0 && field_0xd8 > rowDelay) {
+        field_0x38[field_0xa4]->fn_80402940(frames, 0, field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc,
+                                            0.0f);
+        field_0x44[field_0xa4]->fn_80402940(frames, 0, field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc,
+                                            0.0f);
+    }
+    if (field_0xd8 > end) {
+        setState(5);
     }
 }
 
@@ -2453,6 +2986,60 @@ void FileSelect_804AFF60::fn_803C1054() {
     setState(22);
 }
 #pragma auto_inline reset
+
+// FIXME: 99.64. Regalloc only: the 'Pqb' loop's counter / table pointer swap
+// r28 / r29 (as fn_803C05D8), and the row offset's fsubs takes f0 / f2 the
+// other way round (as fn_803CE370). .sdata2 @NNN.
+// Called by fn_803C9F14 after the copy's card write: shows the copied file
+// field_0xa0's board ('Pqb03'..'Pqb10' as in fn_803C05D8, its stage flags into
+// field_0xa8 / field_0xb8), message 0x64, refreshes the rows (fn_803CE4CC),
+// resets the three boards' movers and alphas, puts row field_0xa0 back at the
+// first row's place with its alphas, then state 23 (sound 0x5B).
+void FileSelect_804AFF60::fn_803C0A34() {
+    for (s32 i = 0; i < 8; i++) {
+        if (fn_803B90E4(field_0xa0, i)) {
+            mScreen->search(lbl_80476980[i + 2])->hide();
+        } else {
+            mScreen->search(lbl_80476980[i + 2])->show();
+        }
+    }
+    field_0xa8 = field_0xa0;
+    for (s32 i = 0; i < 8; i++) {
+        field_0xb8[i] = fn_803B8CAC(field_0xa0, i);
+    }
+    setMessage(0x64);
+    fn_803CE4CC();
+    field_0x80 = 0;
+    field_0x14->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0x14->field_0x22 = 0;
+    field_0x14->mPane->setAlpha(0);
+    field_0x18->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0x18->field_0x22 = 0;
+    field_0x18->mPane->setAlpha(0);
+    field_0x1c->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0x1c->field_0x22 = 0;
+    field_0x1c->mPane->setAlpha(0);
+    for (s32 i = 0; i < 81; i++) {
+        field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[i]), field_0x132[i]);
+    }
+    for (s32 i = 0; i < 19; i++) {
+        field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[i]), field_0x183[i]);
+    }
+    field_0x14->field_0x26 = 0;
+    field_0x18->field_0x26 = 0;
+    field_0x1c->field_0x26 = 0;
+    field_0x20->field_0x20 = 0;
+    field_0x20->field_0x26 = 0;
+    field_0x38[field_0xa0]->moveFromCentre_80402E08(0.0f, field_0x38[0]->field_0xc - field_0x38[field_0xa0]->field_0xc);
+    field_0x38[field_0xa0]->field_0x22 = 0;
+    field_0x38[field_0xa0]->field_0x26 = 0;
+    field_0x38[field_0xa0]->mPane->setAlpha(field_0x38[field_0xa0]->field_0x28);
+    setRowAlphas(this, field_0xa0);
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(23);
+    gAudioMgr_8053AF80->fn_80458880(0x5B, -1);
+}
 
 // Not auto-inlined: fn_803C8B80 calls fn_803C05D8 out of line in the original
 // (docs/INLINING.md, pragma rule 1).
