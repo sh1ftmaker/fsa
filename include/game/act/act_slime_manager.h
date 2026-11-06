@@ -15,8 +15,19 @@ public:
     // 0x80207D84: the vtables of the base classes and the members' destructors
     // inline, then ActorBase's destructor; deletes this when the flag is > 0.
     /* 0x08 */ virtual ~cls_804A5BD8();
-
+    /* 0x0C */ virtual void init();
+    // 0x80208924: the tile codes under mPos on this layer, from
+    // fn_8022461C and fn_80226850.
+    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    // 0x802088B4: fn_80208244(5) unless already in state 5, then
+    // fn_80209D44 on each slot's actor (findActorBySerial_801F666C of the slot's serial).
+    /* 0xA4 */ virtual void vfunc_0xA4();
+    // 0x80208834: fn_80208244(7) unless already in state 7, then
+    // fn_80209CA4 on each slot's actor (findActorBySerial_801F666C of the slot's serial),
+    // with the slot's player, attack, target and type.
+    /* 0xA8 */ virtual void vfunc_0xA8();
 
     // 0x80207E24: fn_80208244(2) while mState is 4.
     void fn_80207E24();
@@ -27,19 +38,13 @@ public:
     void fn_80207ECC();
     // 0x80208244, the state step (r4 = state); fn_80207ECC calls it with 3.
     void fn_80208244(int state);
+    // 0x80208520
+    void fn_80208520(JGeometry::TVec2f* outPos, JGeometry::TVec2f* outStep);
 
-    // 0x80208834: fn_80208244(7) unless already in state 7, then
-    // fn_80209CA4 on each slot's actor (findActorBySerial_801F666C of the slot's serial),
-    // with the slot's player, attack, target and type.
-    void fn_80208834();
-
-    // 0x802088B4: fn_80208244(5) unless already in state 5, then
-    // fn_80209D44 on each slot's actor (findActorBySerial_801F666C of the slot's serial).
-    void fn_802088B4();
-
-    // 0x80208924: the tile codes under mPos on this layer, from
-    // fn_8022461C and fn_80226850.
-    void fn_80208924();
+    void spawnSlimes();
+    bool checkTrigger();
+    void calcCenter(f32* outX, f32* outY);
+    s32 chooseDir();
 
     /* 0x340 */ s32 field_0x340;
     /* 0x344 */ u8 field_0x344;
