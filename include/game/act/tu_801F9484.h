@@ -9,6 +9,7 @@
 #include "game/ActorBase.h"
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
+#include "game/act/act_wallmaster.h"
 #include "game/act/tu_8018EB94.h"
 #include "game/act/tu_801B6C50.h"
 #include "game/act/tu_803D9944.h"
