@@ -24,44 +24,6 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
     result = a;
 }
 
-// FIXME: 98.77%. different + reloc-name (mr vs lwz on field_0x234[i], sum temporary stack offsets).
-void FourPersonPullSwitch_804AE230::init() {
-    if (((field_0x90 >> 4) & 3) == 0) {
-        for (s32 i = 0; i < 3; i++) {
-            field_0x234[i] = -1;
-            u32 arg = (field_0x90 & 0xF800000F) | ((i + 1) << 4);
-            JGeometry::TVec3f pos;
-            sum(pos, mPos, JGeometry::TVec3f(16.0f * (i + 1), 0.0f, 0.0f));
-            field_0x234[i] = getActorManager_801F856C()->spawnActor_801F9484(
-                'PSW2', field_0x4, &pos, arg, -1, -1);
-            if (field_0x234[i] >= 0) {
-                FourPersonPullSwitch_804AE230* child = static_cast<FourPersonPullSwitch_804AE230*>(
-                    getActorManager_801F856C()->findActorBySerial_801F666C(field_0x234[i]));
-                child->field_0x230 = mSerial;
-            } else {
-                fn_801F3668();
-            }
-        }
-    }
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0x24c = 0;
-    field_0x250 = vfunc_0x34();
-    if (field_0x250) {
-        field_0x254 = 8.0f;
-        mPos.y = mSpawnPos.y + field_0x254;
-    } else {
-        field_0x254 = 0.0f;
-    }
-    field_0x3c.x = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0x258 = 0;
-    field_0x25c = -1;
-    field_0x260 = 0;
-}
-
 // FIXME: 99.44%. operands + reloc-name (stack frame 0xa0 vs 0xb0, regalloc r29/r30; .sdata2 pool order).
 void FourPersonPullSwitch_804AE230::update() {
     JGeometry::TBox2f box = mBox;

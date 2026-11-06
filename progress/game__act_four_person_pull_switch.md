@@ -13,7 +13,7 @@
 - `FourPersonPullSwitch_804AE230::fn_8036CBBC` (`0x8036CBBC`, 668B): 99.54% (`operands: same opcodes, an immediate or offset differs` — stack offsets for `pos`/`playerPos` and loop register allocation `r28..r30`)
 - `FourPersonPullSwitch_804AE230::draw` (`0x8036CE58`, 196B): 99.90% (reloc-name only, .sdata2 pool order)
 - `FourPersonPullSwitch_804AE230::update` (`0x8036CF1C`, 1212B): 99.44% (operands + reloc-name) (`operands: same opcodes, an immediate or offset differs` — stack frame `0xa0` vs `0xb0` and register allocation `r29`/`r30`)
-- `FourPersonPullSwitch_804AE230::init` (`0x8036D3D8`, 508B): 98.77% (`different: same length, 1 opcodes differ` — `mr` vs `lwz` on `field_0x234[i]` and `sum` temporary stack offsets)
+- `FourPersonPullSwitch_804AE230::init` (`0x8036D3D8`, 508B): left unwritten (98.77%, mr vs lwz opcode difference; attempt saved by the coordinator outside the repo).
 - `__sinit_act_four_person_pull_switch_cpp` (`0x8036D5D4`, 548B): 100.00%
 
 ## Proven Facts
