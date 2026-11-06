@@ -194,8 +194,7 @@ public:
                      SpriteParams_801F5AE0* params, f32 scaleX, f32 scaleY);
     // Draws the sprite `res` (a "TIMG" resource, act_life_meter's heart image
     // from fn_804030C4) at pos with the stack SpriteParams_801F5AE0 `params`
-    // (fn_801EF830 calls it the same way, 0x801EFC74): on the height grid
-    // (params' field_0x23), tilted by params' matrix (field_0x25) or upright.
+    // (fn_801EF830 calls it the same way, 0x801EFC74).
     void fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params);
     // 0x802F6298 / 0x802F654C: queue a sprite (pos, the "SOB " resource and
     // frame, or the image of fn_802F745C, or the fn_802F6CF4 resource) with a
@@ -344,10 +343,8 @@ public:
     // 0x8000: where fn_802F9714 decodes compressed resources (JKRDecomp::decode).
     /* 0x00F8 */ u8* field_0xf8;
     /* 0x00FC */ cls_804B1668* field_0xfc; // new(0xB0); deleted through its vtable
-    // 65 x 65 grid points (0x1081 TVec3f / TColor each, __construct_new_array),
-    // row-major: fn_802F745C indexes both as base + gy * 65 + gx (one gy * 65
-    // product scaled by 12 and by 4).
-    /* 0x0100 */ JGeometry::TVec3f* field_0x100[2];
+    // 65 x 65 grid points (0x1081 TVec3f / TColor each, __construct_new_array).
+    /* 0x0100 */ JGeometry::TVec3f (*field_0x100[2])[65];
     /* 0x0108 */ JUtility::TColor* field_0x108[2];
     /* 0x0110 */ JGeometry::TVec2f* field_0x110; // 0x1000 (4 x 64 x 16, filled by fn_802FF798)
     /* 0x0114 */ u16 field_0x114[4]; // fn_802F9DA8: the first colour of each sprite palette set

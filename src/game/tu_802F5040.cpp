@@ -13,9 +13,6 @@
 #include "game/GameMode.h"
 #include "game/Player.h"
 #include "JSystem/JUtility/JUTVideo.h"
-#include "game/BoxTest.h"
-#include "game/GameView.h"
-#include "std/math.h"
 
 // The Dolphin SDK's indexed vertex writes (GXVert.h's GXPosition1x16 /
 // GXColor1x16 / GXTexCoord1x16), which libs/sdk's GXVert.h lacks: added there
@@ -157,7 +154,7 @@ TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
     }
     field_0xf8 = new (heap, 0x20) u8[0x8000];
     for (s32 i = 0; i < 2; i++) {
-        field_0x100[i] = new (heap, 0) JGeometry::TVec3f[65 * 65];
+        field_0x100[i] = new (heap, 0) JGeometry::TVec3f[65][65];
         field_0x108[i] = new (heap, 0) JUtility::TColor[65 * 65];
     }
     field_0x110 = new (heap, 0) JGeometry::TVec2f[0x1000];
@@ -1242,297 +1239,6 @@ void TileMap_804AA858::fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 
     }
 }
 
-// FIXME: 92.8. Same length; try.py "different" from order only: in the mesh
-// loop the original loads each vertex's four colour bytes in r, g, b, a order
-// before the position stores (ours: a, b, g, r after them), the overlay flag's
-// zero is copied (mr r3, r27; ours li r3, 0), and pos / params swap r29 / r31.
-// Every call, field, constant and branch is the original's.
-// Draws the "TIMG" image res centred at pos (fn_802F5040's GX setup and
-// offset), one of three ways: with params' field_0x23 (no matrix, pos in the
-// view's visible box) as a mesh of 8 x 8 cells on the height grid
-// (field_0x100 / field_0x108 points of field_0x2388, the vertex colour on a
-// second TEV stage); with a matrix and field_0x25 as a quad tilted by it and
-// leaned back 45 degrees (x scaled by 128 / (128 - z)); else as an upright
-// quad in x / z. With params' field_0x24 and the map's field_0xe450 the
-// player's field_0xe428 texture is multiplied in on one more stage, at the
-// screen position / 128. params' bytes 0x21 / 0x22 queue it instead;
-// field_0x30 adds the effect of fn_802F6800.
-void TileMap_804AA858::fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params) {
-    if (!field_0x2364) {
-        return;
-    }
-    if (params != NULL && params->field_0x21 && fn_802F654C(pos, NULL, 0, res, NULL, params)) {
-        return;
-    }
-    if (params != NULL && params->field_0x22 && fn_802F6298(pos, NULL, 0, res, NULL, params)) {
-        return;
-    }
-    JUTTexture tex((const ResTIMG*)res, 0);
-    f32 w = tex.getWidth();
-    f32 h = tex.getHeight();
-    bool overlay = false;
-    bool shadow = params != NULL && params->field_0x24;
-    if (shadow && field_0xe450) {
-        overlay = true;
-    }
-    gGameRoot2_8053AB10->fn_8013B1E8();
-    tex.load(GX_TEXMAP0);
-    JGeometry::TVec3f out;
-    fn_802F5040(pos, params, &out);
-    f32 halfW = 0.5f * w;
-    f32 halfH = 0.5f * h;
-    f32 screenX = pos->x - halfW;
-    f32 screenY = pos->y - halfH;
-    if (params != NULL && params->mMtx != NULL) {
-        screenX += params->mMtx[0][3];
-        screenY += params->mMtx[1][3];
-    }
-    screenX *= 0.0078125f;
-    screenY *= 0.0078125f;
-    if (params != NULL && params->field_0x23 && params->mMtx == NULL && !getGameView_802D6A9C()->fn_802DCD0C() &&
-        containsPoint(getGameView_802D6A9C()->mVisibleBox, JGeometry::TVec2f(pos->x, pos->y - pos->z)))
-    {
-        f32 stepS = 8.0f / w;
-        f32 stepT = 8.0f / h;
-        s32 cols = 0.125f * w;
-        s32 rows = 0.125f * h;
-        out.x -= halfW;
-        out.y -= halfH;
-        GXClearVtxDesc();
-        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
-        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGB, GX_RGBA8, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
-        GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_VTX, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
-        GXSetNumChans(1);
-        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR0A0);
-        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_ONE, GX_CC_RASC, GX_CC_CPREV);
-        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_KONST, GX_CA_RASA, GX_CA_APREV);
-        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
-        GXSetTevDirect(GX_TEVSTAGE1);
-        GXSetNumTevStages(2);
-        if (overlay) {
-            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
-            GXSetNumTexGens(2);
-            s32 player;
-            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
-                player = getGameView_802D6A9C()->field_0x50;
-            } else {
-                player = 0;
-            }
-            field_0xe428[player]->load(GX_TEXMAP1);
-            GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
-            GXSetTevColorIn(GX_TEVSTAGE2, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
-            GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
-            GXSetTevColorOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevSwapMode(GX_TEVSTAGE2, GX_TEV_SWAP0, GX_TEV_SWAP0);
-            GXSetTevDirect(GX_TEVSTAGE2);
-            GXSetNumTevStages(3);
-        }
-        GXBegin(GX_QUADS, GX_VTXFMT0, cols * rows * 4);
-        for (s32 j = 0; j < rows; j++) {
-            f32 t0 = j * stepT;
-            s32 gy = 0.125f * (out.y + j * 8 - out.z - field_0x2368.y);
-            if (gy < 0) {
-                gy = 0;
-            } else if (gy > 64) {
-                gy = 64;
-            }
-            s32 row = gy * 65;
-            f32 t1 = t0 + stepT;
-            f32 screenT0 = j * 8 * 0.0078125f + screenY;
-            f32 screenT1 = 0.0625f + screenT0;
-            for (s32 i = 0; i < cols; i++) {
-                f32 s0 = i * stepS;
-                s32 gx = 0.125f * (out.x + i * 8 - field_0x2368.x);
-                if (gx < 0) {
-                    gx = 0;
-                } else if (gx > 64) {
-                    gx = 64;
-                }
-                f32 s1 = s0 + stepS;
-                f32 screenS0 = i * 8 * 0.0078125f + screenX;
-                f32 screenS1 = 0.0625f + screenS0;
-                JGeometry::TVec3f* p = field_0x100[field_0x2388] + row + gx;
-                JUtility::TColor* c = field_0x108[field_0x2388] + row + gx;
-                GXPosition3f32(p->x + field_0x2368.x, out.z + (p->y + field_0x2368.y), p->z + out.z);
-                GXColor4u8(c->r, c->g, c->b, c->a);
-                GXTexCoord2f32(s0, t0);
-                GXTexCoord2f32(screenS0, screenT0);
-                p = field_0x100[field_0x2388] + row + gx + 1;
-                c = field_0x108[field_0x2388] + row + gx + 1;
-                GXPosition3f32(p->x + field_0x2368.x, out.z + (p->y + field_0x2368.y), p->z + out.z);
-                GXColor4u8(c->r, c->g, c->b, c->a);
-                GXTexCoord2f32(s1, t0);
-                GXTexCoord2f32(screenS1, screenT0);
-                p = field_0x100[field_0x2388] + row + gx + 66;
-                c = field_0x108[field_0x2388] + row + gx + 66;
-                GXPosition3f32(p->x + field_0x2368.x, out.z + (p->y + field_0x2368.y), p->z + out.z);
-                GXColor4u8(c->r, c->g, c->b, c->a);
-                GXTexCoord2f32(s1, t1);
-                GXTexCoord2f32(screenS1, screenT1);
-                p = field_0x100[field_0x2388] + row + gx + 65;
-                c = field_0x108[field_0x2388] + row + gx + 65;
-                GXPosition3f32(p->x + field_0x2368.x, out.z + (p->y + field_0x2368.y), p->z + out.z);
-                GXColor4u8(c->r, c->g, c->b, c->a);
-                GXTexCoord2f32(s0, t1);
-                GXTexCoord2f32(screenS0, screenT1);
-            }
-        }
-        GXEnd();
-    } else if (params != NULL && params->mMtx != NULL && params->field_0x25) {
-        f32 quarterH = 0.5f * halfH;
-        GXClearVtxDesc();
-        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
-        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
-        if (overlay) {
-            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
-            GXSetNumTexGens(2);
-            s32 player;
-            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
-                player = getGameView_802D6A9C()->field_0x50;
-            } else {
-                player = 0;
-            }
-            field_0xe428[player]->load(GX_TEXMAP1);
-            GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
-            GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
-            GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
-            GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
-            GXSetTevDirect(GX_TEVSTAGE1);
-            GXSetNumTevStages(2);
-        }
-        JGeometry::TVec3f corners[4];
-        JGeometry::TVec3f v0(-halfW, -quarterH, quarterH);
-        PSMTXMultVecSR(params->mMtx, &v0, &corners[0]);
-        JGeometry::TVec3f v1(halfW, -quarterH, quarterH);
-        PSMTXMultVecSR(params->mMtx, &v1, &corners[1]);
-        JGeometry::TVec3f v2(halfW, quarterH, -quarterH);
-        PSMTXMultVecSR(params->mMtx, &v2, &corners[2]);
-        JGeometry::TVec3f v3(-halfW, quarterH, -quarterH);
-        PSMTXMultVecSR(params->mMtx, &v3, &corners[3]);
-        f32 x = out.x + params->mMtx[0][3];
-        f32 y = out.y + params->mMtx[1][3];
-        f32 s0 = (x - halfW) * 0.0078125f;
-        f32 t0 = (y - quarterH) * 0.0078125f;
-        f32 s1 = (halfW + x) * 0.0078125f;
-        f32 t1 = (quarterH + y) * 0.0078125f;
-        // Leaned back by 45 degrees about x.
-        Mtx rot;
-        rot[0][3] = 0.0f;
-        rot[1][3] = 0.0f;
-        rot[2][3] = 0.0f;
-        f32 angle = 0.7853982f;
-        f32 sinA = sin(angle);
-        f32 cosA = cos(angle);
-        rot[0][0] = 1.0f;
-        rot[1][1] = cosA;
-        rot[1][2] = -sinA;
-        rot[2][1] = sinA;
-        rot[2][2] = cosA;
-        rot[0][1] = rot[1][0] = rot[0][2] = rot[2][0] = 0.0f;
-        for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f leaned;
-            PSMTXMultVecSR(rot, &corners[i], &leaned);
-            f32 d = 128.0f - leaned.z;
-            d = d >= 1.0f ? d : 1.0f;
-            MtxP mtx = params->mMtx;
-            corners[i].x = out.x + (128.0f / d * corners[i].x + mtx[0][3]);
-            corners[i].y = out.y + (corners[i].y + mtx[1][3]);
-            corners[i].z = out.z + (corners[i].z + mtx[2][3]);
-        }
-        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-        GXPosition3f32(corners[0].x, corners[0].y, corners[0].z);
-        GXTexCoord2f32(0.0f, 0.0f);
-        GXTexCoord2f32(s0, t0);
-        GXPosition3f32(corners[1].x, corners[1].y, corners[1].z);
-        GXTexCoord2f32(1.0f, 0.0f);
-        GXTexCoord2f32(s1, t0);
-        GXPosition3f32(corners[2].x, corners[2].y, corners[2].z);
-        GXTexCoord2f32(1.0f, 1.0f);
-        GXTexCoord2f32(s1, t1);
-        GXPosition3f32(corners[3].x, corners[3].y, corners[3].z);
-        GXTexCoord2f32(0.0f, 1.0f);
-        GXTexCoord2f32(s0, t1);
-        GXEnd();
-    } else {
-        out.x -= halfW;
-        out.z -= halfH;
-        GXSetClipMode(GX_CLIP_ENABLE);
-        if (overlay) {
-            GXClearVtxDesc();
-            GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
-            GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
-            GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
-            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
-            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
-            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
-            GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
-            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
-            GXSetNumTexGens(2);
-            s32 player;
-            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
-                player = getGameView_802D6A9C()->field_0x50;
-            } else {
-                player = 0;
-            }
-            field_0xe428[player]->load(GX_TEXMAP1);
-            GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR0A0);
-            GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
-            GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
-            GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-            GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
-            GXSetTevDirect(GX_TEVSTAGE1);
-            GXSetNumTevStages(2);
-            f32 s1 = w * 0.0078125f + screenX;
-            f32 t1 = h * 0.0078125f + screenY;
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(out.x, out.y, out.z + h);
-            GXTexCoord2f32(0.0f, 0.0f);
-            GXTexCoord2f32(screenX, screenY);
-            GXPosition3f32(out.x + w, out.y, out.z + h);
-            GXTexCoord2f32(1.0f, 0.0f);
-            GXTexCoord2f32(s1, screenY);
-            GXPosition3f32(out.x + w, out.y, out.z);
-            GXTexCoord2f32(1.0f, 1.0f);
-            GXTexCoord2f32(s1, t1);
-            GXPosition3f32(out.x, out.y, out.z);
-            GXTexCoord2f32(0.0f, 1.0f);
-            GXTexCoord2f32(screenX, t1);
-            GXEnd();
-        } else {
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(out.x, out.y, out.z + h);
-            GXTexCoord2f32(0.0f, 0.0f);
-            GXPosition3f32(out.x + w, out.y, out.z + h);
-            GXTexCoord2f32(1.0f, 0.0f);
-            GXPosition3f32(out.x + w, out.y, out.z);
-            GXTexCoord2f32(1.0f, 1.0f);
-            GXPosition3f32(out.x, out.y, out.z);
-            GXTexCoord2f32(0.0f, 1.0f);
-            GXEnd();
-        }
-        GXSetClipMode(GX_CLIP_DISABLE);
-    }
-    if (params != NULL && params->field_0x30 != -1) {
-        fn_802F6800(pos, NULL, 0, res, NULL, params);
-    }
-}
-
 // FIXME: 89.8. The quad loop: the original converts the tile's pixel x / y
 // ((x * 2 + i) * 8, (y * 2 + j) * 8) to float twice each inside the innermost
 // loop and computes the second texture coordinates as px * (1 / 128) + 0.0f
@@ -1831,7 +1537,7 @@ f32 TileMap_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
         f32 dy = pos->y - field_0x2368.y;
         s32 ix = 0.125f * dx;
         s32 iy = 0.125f * dy;
-        JGeometry::TVec3f* p = field_0x100[field_0x2388] + iy * 65 + ix;
+        JGeometry::TVec3f* p = &field_0x100[field_0x2388][iy][ix];
         f32 fx = 0.125f * (dx - 8.0f * ix);
         f32 fy = 0.125f * (dy - 8.0f * iy);
         f32 top = p[0].z * (1.0f - fx) + p[1].z * fx;
@@ -1854,7 +1560,7 @@ bool TileMap_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
         f32 dy = pos->y - field_0x2368.y;
         s32 ix = 0.125f * dx;
         s32 iy = 0.125f * dy;
-        JGeometry::TVec3f* p = field_0x100[field_0x2388] + iy * 65 + ix;
+        JGeometry::TVec3f* p = &field_0x100[field_0x2388][iy][ix];
         f32 fx = 0.125f * (dx - 8.0f * ix);
         f32 fy = 0.125f * (dy - 8.0f * iy);
         JGeometry::TVec3f v;
