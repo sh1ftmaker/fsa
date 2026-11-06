@@ -60,60 +60,39 @@ void CaneOfSomariaBlock_804AA9F0::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, 0x2FF, false, 2, -1, field_0xc4, 0, 0);
 }
 
+// Same shape as act_bombchu's vfunc_0x4C (the blocking tile codes as a != chain, the 0x25 /
+// 0x26 results narrowed as bytes).
+// FIXME: 96.79. Scheduling and register allocation only: the target copies layer to r31
+// after the field_0x245 test (pos to r29 in the prologue), ours both in the prologue (pos
+// r30, layer r29, the tile code r31).
 bool CaneOfSomariaBlock_804AA9F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    // FIXME: 57.54 %. The original tests the tile code as a compare chain (cmpwi /
-    // beq to one shared return 0 for 29 values, in this order). A switch becomes a
-    // range / jump table, a || chain merges the values into ranges, and separate
-    // ifs each return on their own (183 instructions).
     if (field_0x245 != 0) {
         return false;
     }
-    u16 tile = fn_8022461C(pos, layer);
-    u16 code = fn_80226850(pos, layer);
-    if ((tile >= 0x10 && tile <= 0x17) || (code >= 0x140 && code <= 0x15F)) {
+    s32 tile = fn_8022461C(pos, layer);
+    s32 code = fn_80226850(pos, layer);
+    if (tile == 0x10 || tile == 0x11 || tile == 0x12 || tile == 0x13 || tile == 0x14 ||
+        tile == 0x15 || tile == 0x16 || tile == 0x17 || (code >= 0x140 && code <= 0x15F)) {
         field_0x245 = 1;
         return false;
     }
-    switch (tile) {
-    case 0:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 2:
-    case 3:
-    case 0xE:
-    case 0x50:
-    case 0xC:
-    case 0x27:
-    case 0x28:
-    case 0x29:
-    case 0x2A:
-    case 0x2B:
-    case 0x2C:
-    case 0x2D:
-    case 0x2E:
-    case 0x2F:
-    case 0x20:
-    case 0xD:
-    case 0x3B:
-    case 0x39:
-    case 0x3A:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x24:
-        return false;
-    case 0x25:
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    case 0x26:
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    case 0x22:
-        return getGameView_802D6A9C()->field_0x170 == 1;
-    default:
-        return true;
+    if (tile != 0 && tile != 4 && tile != 5 && tile != 6 && tile != 7 && tile != 2 &&
+        tile != 3 && tile != 0xE && tile != 0x50 && tile != 0xC && tile != 0x27 &&
+        tile != 0x28 && tile != 0x29 && tile != 0x2A && tile != 0x2B && tile != 0x2C &&
+        tile != 0x2D && tile != 0x2E && tile != 0x2F && tile != 0x20 && tile != 0xD &&
+        tile != 0x3B && tile != 0x39 && tile != 0x3A && tile != 0x4C && tile != 0x4D &&
+        tile != 0x4E && tile != 0x4F && tile != 0x24) {
+        if (tile == 0x25) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 0);
+        }
+        if (tile == 0x26) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+        }
+        if (tile != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+            return true;
+        }
     }
+    return false;
 }
 
 bool CaneOfSomariaBlock_804AA9F0::fn_8030EA0C() const {
