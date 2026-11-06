@@ -14,6 +14,9 @@ class ZoraEnemy_804A3D7C : public EnemyBase_804A4808 {
 public:
     ZoraEnemy_804A3D7C();
     virtual ~ZoraEnemy_804A3D7C();
+    /* 0x0C */ virtual void init();
+    /* 0x20 */ virtual void draw();
+    void fn_801BACE8(s32 state);
     // Vtable slot 0xA0 (fn_801BA854, overriding EnemyBase's vfunc_0xA0):
     // once mState is set, the camera collects mPos (addFocusPoint_8030C210) so that it
     // stays in view.
