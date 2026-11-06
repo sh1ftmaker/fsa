@@ -13,7 +13,7 @@
 // only draw() and the non-virtual members of tu_8021AF28 are defined yet.
 class cls_804A6550 : public EnemyBase_804A4808 {
 public:
-    cls_804A6550() {}
+    cls_804A6550();
     /* 0x08 */ virtual ~cls_804A6550();
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
@@ -27,6 +27,7 @@ public:
 
     // tu_8021AF28 (the sprite and effect helpers draw() and the actor's
     // states call).
+    void fn_80219AFC(s32 state);
     // 0x80219E04 (act_kaepora_gaebora): true in states 6-10 and in state 2
     // while field_0x2b4 == 3; the sprites and effects then move by -6.
     bool fn_80219E04() const;
@@ -43,15 +44,18 @@ public:
     // Effect 0x343 at this actor's position (not kept).
     void fn_8021B668() const;
 
-    /* 0x2A8 */ u8 field_0x2a8[4]; // not yet known
+    /* 0x2A8 */ s32 field_0x2a8;
     /* 0x2AC */ f32 field_0x2ac;
     /* 0x2B0 */ s32 field_0x2b0;
     /* 0x2B4 */ s32 field_0x2b4;
     /* 0x2B8 */ s32 field_0x2b8;
-    /* 0x2BC */ u8 field_0x2bc[8]; // not yet known
+    /* 0x2BC */ JGeometry::TVec2f field_0x2bc;
     /* 0x2C4 */ JPABaseEmitter* mEmitter;
     /* 0x2C8 */ cls_8021ACE0 mHead; // swinging head; mHead.mAngle is the head's yaw
     /* 0x2D8 */ f32 field_0x2d8;
 }; // Size: 0x2DC
+
+void fn_8043A0E8(bool force);
+extern "C" void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* spawnPos, s32 angle, f32 dist, JGeometry::TVec2f* out);
 
 #endif
