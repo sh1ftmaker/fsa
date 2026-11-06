@@ -76,7 +76,6 @@ act_shovel_old_timer	dtor	__dt__12cls_804AAB40Fv	cls_804AAB40	0x804AAB40	new	new
 act_shovel_old_timer	sinit	__sinit_act_shovel_old_timer_cpp	-	-	new	new
 act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
-act_snow_wall	sinit	__sinit_act_snow_wall_cpp	-	-	new	-
 act_spawner	dtor	__dt__12cls_804A9328Fv	cls_804A9328	0x804A9328	new	new
 act_spawner	sinit	__sinit_act_spawner_cpp	-	-	new	new
 act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
