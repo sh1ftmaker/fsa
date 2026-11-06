@@ -22,6 +22,31 @@
 #include "game/tu_8030AE84.h"
 #include "game/tu_80379F84.h"
 
+// Offsets of 10 along the facing (right, left, down, up), fn_80250090.
+static const f32 lbl_8046AE08[4][2] = {
+    {10.0f, 0.0f},
+    {-10.0f, 0.0f},
+    {0.0f, 10.0f},
+    {0.0f, -10.0f},
+};
+
+// The point probed behind the player by facing (left, right, up, down),
+// fn_8024F63C.
+static const Vec lbl_8046AE28[4] = {
+    {-10.0f, 0.0f, 0.0f},
+    {10.0f, 0.0f, 0.0f},
+    {0.0f, -10.0f, 0.0f},
+    {0.0f, 10.0f, 0.0f},
+};
+
+// Offset of the box in front by facing (right, left, down, up), fn_8024F63C.
+static const f32 lbl_8046AE58[4][2] = {
+    {10.0f, 0.0f},
+    {-10.0f, 0.0f},
+    {0.0f, 10.0f},
+    {0.0f, -10.0f},
+};
+
 // Steps of 16 along the facing (right, left, down, up), fn_8024CD20.
 static const Vec lbl_8046AE78[4] = {
     {15.999f, 0.0f, 0.0f},
@@ -1470,6 +1495,19 @@ u8 Player_804A6F38::fn_802517E4() {
     return field_0x1240 == 0x1a;
 }
 
+// Whether the player pushes (state 0x1A) with the stick along its facing
+// (fn_80247330 / fn_8024712C), fn_80244630's test without the input gate.
+bool Player_804A6F38::fn_80250FD4() {
+    if (field_0x1240 == 0x1a &&
+        ((field_0x3dc == 0 && fn_80247330() > 0.0f) ||
+         (field_0x3dc == 1 && fn_80247330() < 0.0f) ||
+         (field_0x3dc == 2 && fn_8024712C() < 0.0f) ||
+         (field_0x3dc == 3 && fn_8024712C() > 0.0f))) {
+        return true;
+    }
+    return false;
+}
+
 // Not auto-inlined: fn_80250030 and fn_80252FC0 call fn_80250D30 out of line
 // in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
@@ -1505,6 +1543,65 @@ bool Player_804A6F38::fn_80250ACC() {
         return true;
     }
     return false;
+}
+
+// Joins another player's block carry: on the ground (mPos.z <= 0) and not a
+// follower in group mode 5, keeps the partner 0xD9C while its fn_80241478
+// holds, else finds a present player whose fn_80250ACC holds inside the box
+// +-1 at mPos + lbl_8046AE08[facing] while the stick points along the facing
+// (fn_80247330 / fn_8024712C), and takes it as 0xD9C with its grabbed actor
+// (fn_8024FF84) in 0xD94 for 3 frames (0xD98).
+bool Player_804A6F38::fn_80250090() {
+    if (mPos.z > 0.0f) {
+        field_0xd9c = -1;
+        field_0xd98 = 0;
+        return false;
+    }
+    if (fn_802486A0() == 5 && field_0xd60 >= 0) {
+        field_0xd9c = -1;
+        field_0xd98 = 0;
+        return false;
+    }
+    if (field_0xd9c >= 0 && fn_8022D930(field_0xd9c)) {
+        field_0xd98 = 3;
+        return true;
+    }
+    JGeometry::TBox2f box(-1.0f, -1.0f, 1.0f, 1.0f);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    box.addPos(lbl_8046AE08[field_0x3dc][0], lbl_8046AE08[field_0x3dc][1]);
+    for (s32 i = 0; i < 4; i++) {
+        if (i == field_0x4 || !fn_8022DA68(i) || !fn_8023B0F4(i, &box, field_0x3b4, false, 0.0f)) {
+            continue;
+        }
+        s32 facing = field_0x3dc;
+        if (facing == 0) {
+            if (fn_80247330() <= 0.0f) {
+                continue;
+            }
+        } else if (facing == 1) {
+            if (fn_80247330() >= 0.0f) {
+                continue;
+            }
+        } else if (facing == 2) {
+            if (fn_8024712C() >= 0.0f) {
+                continue;
+            }
+        } else if (facing == 3) {
+            if (fn_8024712C() <= 0.0f) {
+                continue;
+            }
+        }
+        if (fn_80238CB4(i) >= 0) {
+            field_0xd94 = fn_80238CB4(i);
+        }
+        field_0xd9c = i;
+        field_0xd98 = 3;
+        return true;
+    }
+    return field_0xd98 > 0;
 }
 
 bool Player_804A6F38::fn_80250030(s32 arg) {
@@ -1575,6 +1672,91 @@ bool Player_804A6F38::fn_8024FEBC() {
 bool Player_804A6F38::fn_8024FE78() {
     if (fn_8024F63C()) {
         return fn_80243C64();
+    }
+    return false;
+}
+
+// Joins another player's push: with pad bit 0x20 held (fn_802456FC), or
+// while the partner 0xDAC's pushed actor (its 0xDA4) still exists, or on a
+// fresh press (fn_80245938), and not as a follower in group mode 5, finds a
+// present player in front (box +-1 at mPos + lbl_8046AE58[facing], the
+// point lbl_8046AE28[facing] free of fn_802265DC / fn_802684A4) facing the
+// same way and held by nobody; from states 0 / 2 / 3 (0x11 unless
+// fn_8025F500 / fn_8025F590) it requests the push 0x1A, else takes that
+// player as 0xDAC with its pushed actor in 0xDA4 for 3 frames (0xDA8).
+bool Player_804A6F38::fn_8024F63C() {
+    if (!fn_802456FC()) {
+        if (field_0xdac >= 0) {
+            if (getActorManager_801F856C()->findActorBySerial_801F666C(fn_8022D7F8(field_0xdac)) == NULL) {
+                field_0xdac = -1;
+                field_0xda8 = 0;
+                field_0xda4 = -1;
+                return false;
+            }
+        } else if (!fn_80245938()) {
+            field_0xdac = -1;
+            field_0xda8 = 0;
+            field_0xda4 = -1;
+            return false;
+        }
+    }
+    if (fn_802486A0() == 5 && field_0xd60 >= 0) {
+        field_0xdac = -1;
+        field_0xda8 = 0;
+        field_0xda4 = -1;
+        return false;
+    }
+    const Vec& ahead = lbl_8046AE28[field_0x3dc];
+    JGeometry::TVec3f pos;
+    pos.x = ahead.x;
+    pos.y = ahead.y;
+    pos.z = ahead.z;
+    pos += mPos;
+    if (fn_802265DC(&pos, field_0x3b4, true) || fn_802684A4(&pos, field_0x3b4)) {
+        field_0xdac = -1;
+        field_0xda8 = 0;
+        return false;
+    }
+    JGeometry::TBox2f box(-1.0f, -1.0f, 1.0f, 1.0f);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    box.addPos(lbl_8046AE58[field_0x3dc][0], lbl_8046AE58[field_0x3dc][1]);
+    for (s32 i = 0; i < 4; i++) {
+        if (i == field_0x4 || !fn_8022D894(i)) {
+            continue;
+        }
+        s32 facing = field_0x3dc;
+        if (facing != fn_80230CFC(i)) {
+            continue;
+        }
+        bool held = false;
+        for (s32 j = 0; j < 4; j++) {
+            if (i == fn_80238EDC(j)) {
+                held = true;
+                break;
+            }
+        }
+        if (held || !fn_8023B0F4(i, &box, field_0x3b4, false, 0.0f)) {
+            continue;
+        }
+        s32 state = field_0x1240;
+        if (state != 0x1a &&
+            (state == 0 || state == 2 || state == 3 || (state == 0x11 && !fn_8025F500() && !fn_8025F590()))) {
+            if (fn_80251AEC(0x1a)) {
+                break;
+            }
+        }
+        if (fn_8022D7F8(i) >= 0) {
+            field_0xda4 = fn_8022D7F8(i);
+        }
+        field_0xdac = i;
+        field_0xda8 = 3;
+        return true;
+    }
+    if (field_0xda8 > 0) {
+        return true;
     }
     return false;
 }
@@ -1856,6 +2038,127 @@ void Player_804A6F38::fn_8024ECCC(s32 value) {
     }
 }
 
+// Drops up to `value` Force Gems (no more than the counter fn_80241920 holds)
+// as an ACTOR_GOLD at the player, or at the acting player when it is not
+// this player's turn in group mode 4, and takes them off the counter
+// (fn_8024ED4C). On a GBA layer (8 and up), or with `single`, the amount is
+// rounded down to a gem value (1, 5, 20, 50, 100, 150, 200, 300, 1000, 1500,
+// 2000, 3000) spawned as one gem of that kind (param kind | 0x40000, 0x70000
+// in state 0x51); otherwise the amount itself (| 0x60000 in state 0x51).
+// FIXME: 99.82 %. Registers only: the inlined group loop's count / index /
+// leader temporaries.
+void Player_804A6F38::fn_8024E694(s32 value, s32 single) {
+    JGeometry::TVec3f pos = mPos;
+    s32 layer = field_0x3b4;
+    if (fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+        pos.set(*getPlayerPos_8023E724(fn_8022EA0C(field_0x4)));
+        layer = getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4));
+    }
+    bool state51 = false;
+    if (field_0x1240 == 0x51) {
+        state51 = true;
+    }
+    if (value > fn_80241920()) {
+        value = fn_80241920();
+    }
+    if (field_0x3b4 >= 8) {
+        if (value < 1) {
+            return;
+        }
+        if (value < 5) {
+            value = 1;
+        } else if (value < 20) {
+            value = 5;
+        } else if (value < 50) {
+            value = 20;
+        } else if (value < 100) {
+            value = 50;
+        } else if (value < 150) {
+            value = 100;
+        } else if (value < 200) {
+            value = 150;
+        } else if (value < 300) {
+            value = 200;
+        } else if (value < 1000) {
+            value = 300;
+        } else if (value < 1500) {
+            value = 1000;
+        } else if (value < 2000) {
+            value = 1500;
+        } else if (value < 3000) {
+            value = 2000;
+        } else {
+            value = 3000;
+        }
+        single = true;
+    }
+    // The original tests the low byte (clrlwi.): `single` is a bool there,
+    // but the forwarder fn_80236074 (tu_8022AD64, generator-pinned) and the
+    // symbol (Fll) declare it s32.
+    if ((u8)single) {
+        s32 kind;
+        switch (value) {
+        case 1:
+            kind = 0;
+            break;
+        case 5:
+            kind = 1;
+            break;
+        case 20:
+            kind = 2;
+            break;
+        case 50:
+            kind = 3;
+            break;
+        case 100:
+            kind = 4;
+            break;
+        case 150:
+            kind = 5;
+            break;
+        case 200:
+            kind = 6;
+            break;
+        case 300:
+            kind = 7;
+            break;
+        case 1000:
+            kind = 8;
+            break;
+        case 1500:
+            kind = 9;
+            break;
+        case 2000:
+            kind = 10;
+            break;
+        case 3000:
+            kind = 11;
+            break;
+        default:
+            return;
+        }
+        if (state51) {
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_GOLD, layer, &pos, kind | 0x70000, -1, -1);
+        } else {
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_GOLD, layer, &pos, kind | 0x40000, -1, -1);
+        }
+        fn_8024ED4C(-value);
+        return;
+    }
+    if (value > fn_80241920()) {
+        value = fn_80241920();
+    }
+    if (value <= 0) {
+        return;
+    }
+    if (state51) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_GOLD, layer, &pos, value | 0x60000, -1, -1);
+    } else {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_GOLD, layer, &pos, value, -1, -1);
+    }
+    fn_8024ED4C(-value);
+}
+
 // Drops the held item (fn_802416C4, with its level fn_802415CC) as an
 // ACTOR_LSTI at the player's position and clears it (fn_80241618(0, 1)), for
 // a player taking part.
@@ -2099,6 +2402,75 @@ bool Player_804A6F38::fn_8024D98C() {
     return true;
 }
 
+// Restarts the group-spot marker of a leader (field_0x1388): not in GameRoot
+// mode 0x7E, for a group in modes 0-3 (not 4 / 5); clears field_0x121d and
+// spawns effect 0x35E / 0x360 / 0x35F / 0x361 by mode at the spot
+// fn_8027F1C8 also uses (beside the group by 8 a place in modes 0 / 1,
+// (8, 8) in mode 2, the spin centre 0x11B4 in states 9 / 0xA or 16 toward
+// the player's side in mode 3), on the ground.
+void Player_804A6F38::fn_8024D134() {
+    if (gGameRoot_8053AAF8->field_0x7e) {
+        return;
+    }
+    if (field_0xd60 >= 0) {
+        return;
+    }
+    if (fn_802486A0() == 5 || fn_802486A0() == 4) {
+        return;
+    }
+    field_0x121d = false;
+    deleteEmitter(&field_0x1388);
+    JGeometry::TVec3f pos;
+    pos.set(mPos);
+    pos.z = 0.0f;
+    switch (fn_802486A0()) {
+    case 0:
+        pos.x += 8.0f * (fn_802487FC() - 1);
+        break;
+    case 1:
+        pos.y += 8.0f * (fn_802487FC() - 1);
+        break;
+    case 2:
+        pos.x += 8.0f;
+        pos.y += 8.0f;
+        break;
+    case 3:
+        if (fn_80241284()) {
+            pos.set(field_0x11b4);
+        } else {
+            switch (field_0x4) {
+            case 0:
+                pos.y += 16.0f;
+                break;
+            case 1:
+                pos.x += 16.0f;
+                break;
+            case 2:
+                pos.x -= 16.0f;
+                break;
+            case 3:
+                pos.y -= 16.0f;
+                break;
+            }
+        }
+        break;
+    }
+    switch (fn_802486A0()) {
+    case 0:
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35e, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 1:
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x360, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 2:
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x35f, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    case 3:
+        field_0x1388 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x361, 0, -1, NULL, NULL, true, 1.0f);
+        break;
+    }
+}
+
 // Clears field_0x454: with `reset` the trail is reset to the current
 // position (fn_80248604), else fn_8024B2E0 runs first. Then the timers
 // 0xD74 / 0x11F0 = 10 and fn_8024D134.
@@ -2334,6 +2706,49 @@ bool Player_804A6F38::fn_8024C35C() {
     return field_0x3b4 >= 8;
 }
 
+// The call marker of a player on its own (group of one) in GameRoot mode
+// 0x7F: while pad bit 0x40 is held (fn_80246B10) the effect system's marker
+// 5 at the player (below layer 8 on its layer; on layer 8 offset by the
+// view's top-left corner, layer 0; above it at 0xCB0, layer 0); a fresh
+// press (fn_80246D1C) adds the pad rumble (fn_8030381C, as joinCue) and
+// sound 0x1E. Not in 0x454 mode.
+void Player_804A6F38::fn_8024BDBC() {
+    if (field_0x454) {
+        return;
+    }
+    if (fn_80248970() >= 2) {
+        return;
+    }
+    if (!gGameRoot_8053AAF8->field_0x7f) {
+        return;
+    }
+    if (fn_80246B10(0x40) == 0) {
+        return;
+    }
+    if (field_0x3b4 < 8) {
+        gGameRoot2_8053AB10->field_0x30->fn_8015F8FC(field_0x3b4, &mPos, 5);
+    } else if (field_0x3b4 == 8) {
+        JGeometry::TVec3f pos;
+        pos.set(mPos);
+        GameView_804A9950* view = getGameView_802D6A9C();
+        pos += JGeometry::TVec3f(view->mVisibleBox.i.x, view->mVisibleBox.i.y, 0.0f);
+        gGameRoot2_8053AB10->field_0x30->fn_8015F8FC(0, &pos, 5);
+    } else {
+        gGameRoot2_8053AB10->field_0x30->fn_8015F8FC(0, &field_0xcb0, 5);
+    }
+    if (fn_80246D1C(0x40) == 0) {
+        return;
+    }
+    if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec))) {
+        fn_8030381C(field_0x4);
+    }
+    if (field_0x3b4 >= 8) {
+        fn_8030381C(field_0x4);
+    }
+    // The original converts the index to s8 (extsb) for the sound call.
+    gAudioMgr_8053AF80->fn_80458880(0x1e, (s8)field_0x4);
+}
+
 // Requests state 0x3F (once, for the first match) when another present
 // player (fn_8023A51C) on this layer that this one cannot reach
 // (fn_8022E438) is closer than 50 in x/y (80 with fn_8022B244, else 100 at
@@ -2417,6 +2832,76 @@ void Player_804A6F38::fn_8024B9E8() {
     }
     field_0x38[0] = mPos;
     field_0x284[0] = field_0xbf0->field_0xb4;
+}
+
+// The trail reset in 0x454 mode (fn_8024BAEC): a follower fills the trail
+// with field_0x32c, grounded; a player alone with field_0x32c; a leader lays
+// it along its group, 12 entries per follower from its own position to the
+// next group member (fn_8022E438) by linear steps, the rest at the last one;
+// then the airborne flags follow each entry's height.
+// The 0x31 loops count with `int`: with s32 (long) MWCC tests the unrolled
+// loop's entry (cmpwi 0x31; bge), which the original does not.
+// FIXME: 92.26 %. Missing/extra (4 fewer): in the interpolation the original
+// keeps the next member's position in registers (loaded once, stored to
+// `from` at the end) and reloads `from` from the stack, and builds each step
+// in two stack temporaries (x / y copied through the second, z rounded with
+// frsp); ours reloads the pointer's floats every pass and writes the step
+// directly. Copying the position to a local TVec3f (set / Vec constructor)
+// gives 71-85 %.
+void Player_804A6F38::fn_8024B2E0() {
+    if (field_0x1216) {
+        return;
+    }
+    if (field_0xd60 >= 0) {
+        for (int i = 0; i < 0x31; i++) {
+            field_0x38[i].x = field_0x32c.x;
+            field_0x38[i].y = field_0x32c.y;
+            field_0x38[i].z = field_0x32c.z;
+            field_0x284[i] = false;
+        }
+        return;
+    }
+    if (fn_80248970() <= 1) {
+        for (int i = 0; i < 0x31; i++) {
+            field_0x38[i].x = field_0x32c.x;
+            field_0x38[i].y = field_0x32c.y;
+            field_0x38[i].z = field_0x32c.z;
+        }
+    } else {
+        JGeometry::TVec3f from = mPos;
+        s32 other = field_0x4 + 1;
+        for (s32 n = 1; n < fn_80248970(); n++, other++) {
+            while (!fn_8022E438(field_0x4, other)) {
+                if (other >= 4) {
+                    break;
+                }
+                other++;
+            }
+            if (other >= 4) {
+                break;
+            }
+            const JGeometry::TVec3f* to = getPlayerPos_8023E724(other);
+            for (s32 j = 0; j < 12; j++) {
+                JGeometry::TVec3f step(from.x * (12 - j) / 12.0f + to->x * j / 12.0f,
+                                       from.y * (12 - j) / 12.0f + to->y * j / 12.0f,
+                                       from.z * (12 - j) / 12.0f + to->z * j / 12.0f);
+                field_0x38[(n - 1) * 12 + j] = step;
+            }
+            from = *to;
+        }
+        for (s32 i = (fn_80248970() - 1) * 12; i < 0x31; i++) {
+            field_0x38[i].x = from.x;
+            field_0x38[i].y = from.y;
+            field_0x38[i].z = from.z;
+        }
+    }
+    for (int i = 0; i < 0x31; i++) {
+        if (field_0x38[i].z > 0.0f) {
+            field_0x284[i] = true;
+        } else {
+            field_0x284[i] = false;
+        }
+    }
 }
 
 void Player_804A6F38::fn_8024B2BC(JGeometry::TVec3f* out) {
@@ -2812,6 +3297,15 @@ s32 Player_804A6F38::fn_80248970() const {
         }
     }
     return count;
+}
+
+// The number of group places in use: 1 in group mode 4 (turn-based), else
+// the group's size (fn_80248970).
+s32 Player_804A6F38::fn_802487FC() const {
+    if (fn_802486A0() == 4) {
+        return 1;
+    }
+    return fn_80248970();
 }
 
 // The place of this player in its partner's line (1 for the first follower),
@@ -3800,7 +4294,12 @@ s32 Player_804A6F38::fn_80241920() {
         return fn_80236228(team);
     }
     s32 value = field_0xc04;
-    return value >= 0 ? value : 0;
+    // An if, not `?:`: fn_8024E694's inlined copies branch (cmpwi / blt);
+    // this copy is branchless either way.
+    if (value >= 0) {
+        return value;
+    }
+    return 0;
 }
 
 s32 Player_804A6F38::fn_802418E8() {
@@ -4157,14 +4656,14 @@ bool Player_804A6F38::fn_80240AD4() {
 // Starts the walk to the spots (mode 5) when pos is inside this leader's view
 // box on `layer` (fn_8030B110, the call fn_80241E28 makes): the trail is reset
 // to pos on the ground.
-// FIXME: 96.0 %. Two extra instructions: ours tests the trail loop's
-// entry (cmpwi r5, 0x31; bge) before the unrolled ctr loop, the original
-// does not (tried a reference to the entry, set(x, y, z), early returns).
+// The trail loop counts with `int`: with s32 (long) MWCC tests the
+// unrolled loop's entry (cmpwi r5, 0x31; bge), which the original does not.
+// FIXME: 99.05 %. Registers only (the inlined group loop's temporaries).
 void Player_804A6F38::fn_802408C8(s32 layer, const JGeometry::TVec3f* pos) {
     if (field_0xd60 < 0 && field_0xbec->fn_8030B110(layer, *pos) && !fn_80270A8C() && !field_0xce8) {
         fn_80248004(5, false);
         if (fn_802486A0() == 5) {
-            for (s32 i = 0; i < 0x31; i++) {
+            for (int i = 0; i < 0x31; i++) {
                 field_0x38[i].set(*pos);
                 field_0x38[i].z = 0.0f;
                 field_0x284[i] = false;

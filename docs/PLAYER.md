@@ -1354,3 +1354,42 @@ Evidence and fixes:
 - SHARED-EDITS: include/game/Player.h (0xBC4 TBox2f from u8[0x10]; fn_80274CB8 member decl),
   include/game/Map.h (extern "C" fn_8022486C decl). symbols.txt: fn_80274CB8 ->
   fn_80274CB8__15Player_804A6F38Fv (only this unit references it).
+
+## Round 16 (tu_8023FBF0) (Opus 5.5, 2026-11-06)
+
+181 -> 189 of 254 at 100 % (+8 honest: 8920 -> 8928 on matching 831c008b), structural
+9439 -> 9446. All seven big unwritten functions are written, plus fn_802487FC (their shared
+inline); .rodata is 100 % (the three tables in front of lbl_8046AE78 are source data at their
+original sizes). The +8 are literal-pool order gains (fn_80254660, fn_802544B0, fn_80253E6C,
+fn_802527B0, fn_8024E344 / E3D8 / E46C, fn_8024DC00). Only fn_80241B44 is still unwritten.
+
+| function | % / try.py class | what it is |
+|---|---|---|
+| fn_8024BDBC | 99.53 regalloc | **call marker** of a player on its own (fn_80248970 < 2) in GameRoot mode 0x7F: pad bit 0x40 held (fn_80246B10) shows effect-system marker 5 (fn_8015F8FC) at the player (layer < 8 on its layer; layer 8 at mPos + GameView mVisibleBox.i, layer 0; above at 0xCB0); a fresh press (fn_80246D1C) adds the pad rumble (fn_8030381C) and sound 0x1E (fn_80458880, extsb index). Not in 0x454 mode |
+| fn_8024E694(value, single) | 99.82 regalloc | **Force Gem drop**: at most the counter (fn_80241920) as an ACTOR_GOLD at the player (or at the acting player when it is not this player's turn in mode 4); on a GBA layer (8+) or with `single` the amount is rounded down to one gem value (1 / 5 / 20 / 50 / 100 / 150 / 200 / 300 / 1000 / 1500 / 2000 / 3000 = kinds 0-11, param kind \| 0x40000, 0x70000 in state 0x51), else the amount itself (\| 0x60000 in state 0x51); then fn_8024ED4C(-amount). Callers: fn_8024E344 / E3D8 / E46C (5 / 20 / 50 + random), state 0x33's defeat loss (fn_80277F98), fn_80271FD8, fn_80236074 |
+| fn_8024B2E0 | 92.26 missing/extra (-4) | **trail reset in 0x454 mode** (fn_8024BAEC): follower: trail = 0x32C, grounded; alone: 0x32C; leader: 12 entries per follower interpolated linearly from its position to the next group member (fn_8022E438), the rest at the last; then 0x284[i] = entry z > 0 |
+| fn_8024D134 | 99.65 regalloc | **group-spot marker restart** (leader, not GameRoot 0x7E, modes 0-3): clears 0x121D, deletes 0x1388 and spawns 0x35E / 0x360 / 0x35F / 0x361 by mode at fn_8027F1C8's spot (8 a place beside the group in modes 0 / 1 via fn_802487FC, (8, 8) in mode 2, 0x11B4 in states 9 / 0xA else 16 toward the player's side in mode 3) |
+| fn_8024F63C | 99.07 scheduling+regalloc | **join a push** (state 0x1A): with pad 0x20 held (fn_802456FC), the partner 0xDAC's pushed actor (its 0xDA4) still alive, or a fresh press (fn_80245938), not a follower in mode 5, the point lbl_8046AE28[facing] (10 behind) free of fn_802265DC / fn_802684A4: a present player inside the box +-1 at mPos + lbl_8046AE58[facing], facing the same way and held by nobody (fn_80238EDC), is taken: from states 0 / 2 / 3 (0x11 unless fn_8025F500 / fn_8025F590) the push 0x1A is requested, else 0xDAC = it, 0xDA4 = its pushed actor, 0xDA8 = 3 frames; returns 0xDA8 > 0. Callers: fn_8024FE78, state 0x1A, tu_80285E58 |
+| fn_80250090 | 99.21 regalloc | **join a block carry** (state 0x0D's partner): on the ground and not a follower in mode 5, keeps 0xD9C while its fn_80241478 holds, else takes a present player whose fn_80250ACC holds inside the box +-1 at mPos + lbl_8046AE08[facing] while the stick points along the facing (fn_80247330 / fn_8024712C): 0xD9C = it, 0xD94 = its grabbed actor (fn_8024FF84), 0xD98 = 3 |
+| fn_80250FD4 | 99.86 regalloc | **pushing along the facing**: state 0x1A and the stick toward the facing (fn_80244630's test without the input gate); used by fn_80250D30 |
+| fn_802487FC | 94.95 different | places in use: 1 in mode 4, else fn_80248970; the plain function its callers inline (fn_8024D134 here, fn_8027F1C8 calls it). Its own copy zeroes count / index li / li, ours li / mr (the known group-loop issue); the inlined copies are li / mr in both |
+
+Evidence and fixes:
+- **0x31 loops count with `int`**: with `s32` (long) MWCC emits an entry test (cmpwi 0x31;
+  bge) before the 7x-unrolled ctr loop, which the original never has. fn_802408C8 96.0 ->
+  99.05 (regalloc only) with `int i`, fn_8024B2E0 likewise.
+- fn_80241920 as an `if` (`value >= 0` return value, else 0): its own copy stays branchless
+  (100 %), the inlined copies in fn_8024E694 branch (cmpwi / blt) as in the original; `?:`
+  made them branchless.
+- The box `TBox2f(-1, -1, 1, 1)` moved by mPos is written field by field (i.x, f.x, i.y,
+  f.y): the original adds x to both corners first; addPos(x, y) adds by corner and loses two
+  instructions.
+- fn_8024E694's flag is tested by its low byte (clrlwi.): a bool in the original, but the
+  forwarder fn_80236074 (tu_8022AD64, generator-pinned) and the symbol (Fll) have s32, so the
+  test is `(u8)single` with a comment.
+- fn_8024F63C: `s32 facing = field_0x3dc;` before fn_80230CFC(i) (the original loads the field
+  first into a saved register); `if (field_0xda8 > 0) return true; return false;` branches,
+  fn_80250090's `return field_0xd98 > 0;` does not, as in the original.
+- .rodata: lbl_8046AE08 / lbl_8046AE58 f32[4][2] (+-10 along the facing), lbl_8046AE28
+  Vec[4] (10 behind the facing).
+- SHARED-EDITS: include/game/Player.h (fn_8024E694's parameter named `single`).

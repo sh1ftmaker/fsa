@@ -1147,7 +1147,7 @@ public:
     bool fn_802600A0(s32 arg); // via fn_802312CC
     bool fn_802426E0(s32 serial); // via fn_80231590
     void fn_80270318(s32 value); // via fn_802359A4; the body never reads r4, but the forwarder keeps value live (mgr in r5)
-    void fn_8024E694(s32 value, s32 arg); // via fn_80236074
+    void fn_8024E694(s32 value, s32 single); // via fn_80236074; Force Gem drop
     void fn_8024ECCC(s32 value); // via fn_8023619C
     void fn_8024ED4C(s32 value); // via fn_802362C4
     bool fn_80247594(s32 arg); // via fn_80237488

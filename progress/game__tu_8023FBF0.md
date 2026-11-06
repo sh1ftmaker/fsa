@@ -93,3 +93,12 @@ Data: lbl_8046AE78 (Vec[4], +-15.999 by facing) as file-scope data; .rodata 46 %
 Group loop (two registers): measured 24 declaration orders and 6 shapes across the unit. Only `leader` first (fn_80248970 alone) is clean (+1). Declaring both leader and self first gives fn_802486A0 / fn_8024051C / fn_80240670 / fn_80240B84 100 % (+5) but drops ~36 gated functions 99.5 -> 98.7: in the inlined copies the original colours leader lowest (r27) and self highest (r30), the standalone copy leader highest; no source shape found that gives both. Not taken.
 Not written: fn_802487FC (94.95 "different": the direct inlined copy zeroes li / li in the original, li / mr here; six shapes incl. ternary, declarations at the top), fn_80241B44 (unchanged reason), the big ones (fn_8024BDBC, fn_8024E694, fn_8024B2E0, fn_80250FD4, fn_8024F63C, fn_8024D134, fn_80250090).
 SHARED-EDITS: Player.h (decl fn_802520C0(const TVec2<s32>*), fn_802527B0 comment); Map.h (bool fn_80225EF4(const TVec3f*, s32), C++). symbols.txt: fn_80225EF4 -> fn_80225EF4__FPCQ29JGeometry8TVec3<f>l, fn_802520C0 -> fn_802520C0__15Player_804A6F38FPCQ29JGeometry8TVec2<l>.
+
+## Player track wave 16 (Opus 5.5, 2026-11-06): the seven big functions
+On matching 831c008b. Unit 181 -> 189/254 (+8 honest: total 8920 -> 8928); structural 9439 -> 9446.
+Full ninja sha ok; gate --all-units / --base matching ok; gen_game --check ok; order_check ok for tu_8023FBF0 (10 other units out of order, untouched here); per-address compare with the main report: 0 drops, 22 gains.
+Written: fn_8024BDBC 99.53 (regalloc), fn_8024E694 99.82 (regalloc), fn_8024B2E0 92.26 (missing/extra -4), fn_8024D134 99.65 (regalloc), fn_8024F63C 99.07 (scheduling+regalloc), fn_80250090 99.21 (regalloc), fn_80250FD4 99.86 (regalloc), fn_802487FC 94.95 (different: li/li vs li/mr, needed as the plain function fn_8024D134 inlines). fn_802408C8 96.0 -> 99.05 (`int` loop index).
+100 % through the literal pool: fn_80254660, fn_802544B0, fn_80253E6C, fn_802527B0, fn_8024E344, fn_8024E3D8, fn_8024E46C, fn_8024DC00.
+Data: .rodata 100 % (lbl_8046AE08, lbl_8046AE28, lbl_8046AE58 as source data).
+Not written: fn_80241B44 (reason unchanged).
+SHARED-EDITS: Player.h (fn_8024E694 parameter name). Details: docs/PLAYER.md "Round 16 (tu_8023FBF0)".
