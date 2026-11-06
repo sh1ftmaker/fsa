@@ -831,8 +831,6 @@ void Player_804A6F38::fn_8027966C() {
     field_0x350.z = 0.0f;
 }
 
-void Player_804A6F38::fn_802791AC() {}
-
 // Update of state 0x10 (thrown back): the push 0x350 with gravity 0.25 (down to -4) inside
 // the view box less 16; leaving it, or blocked (cls_804A71A8 0x48), from frame 20 the player
 // bounces back (0x344 = the push flattened, normalised, times -2, z 4; 0x3FC = 1) or goes down
@@ -896,6 +894,8 @@ void Player_804A6F38::fn_802791B0() {
     fn_80268B3C();
 }
 
+
+void Player_804A6F38::fn_802791AC() {}
 
 void Player_804A6F38::fn_802790C0() {
     if (fn_8025F448() && !fn_8025F418()) {
