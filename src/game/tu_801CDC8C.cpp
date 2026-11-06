@@ -122,14 +122,12 @@ inline bool EnemyBase_804A4808::isPlayerOnLayer(s32 player) {
     case ACTOR_SLK2:
     case ACTOR_TINK:
     case ACTOR_TZOK:
-    {
-        // As in fn_801F320C: the layer is read before the call.
-        s32 layer = field_0x4;
-        if (getPlayerLayer_8023DE58(player) == layer) {
+        // The layer through the inlined getter: MWCC reads it before the call
+        // (lwz r27, 0x4 ahead of the bl, then cmpw r3, r27), as for Player's getLayer().
+        if (getPlayerLayer_8023DE58(player) == getField_0x4()) {
             onLayer = true;
         }
         break;
-    }
     default:
         onLayer = fn_801F320C(player);
         break;
@@ -291,15 +289,13 @@ bool EnemyBase_804A4808::fn_801D0D50(s32 player, const JGeometry::TVec3f* pos, f
     return isPlayerNear(player, pos, dist);
 }
 
-// FIXME: 99.9 %, regalloc only: the layer compare's operands swap (cmpw r27,
-// r3; target cmpw r3, r27), although the same helper matches in fn_801CECF4.
 // Whether player `player` can be targeted: present, on this actor's layer and,
 // for some actors, not busy.
 bool EnemyBase_804A4808::fn_801D0B44(s32 player) {
     return canTargetPlayer(player);
 }
 
-// FIXME: 99.7 %, regalloc only (the bools of canTargetPlayer swap).
+// FIXME: 99.73 %, regalloc only (the bools of canTargetPlayer swap).
 // Whether player `player` (0-3) can be targeted and is within `range` of *pos.
 bool EnemyBase_804A4808::fn_801D08B4(s32 player, const JGeometry::TVec3f* pos, f32 range) {
     bool result = false;
@@ -309,14 +305,14 @@ bool EnemyBase_804A4808::fn_801D08B4(s32 player, const JGeometry::TVec3f* pos, f
     return result;
 }
 
-// FIXME: 98.9 %, registers and the order of the first loads in the prologue.
+// FIXME: 98.99 %, registers and the order of the first loads in the prologue.
 // The nearest player that can be targeted within `range` of *pos (any
 // distance when `range` is 0), or -1.
 s32 EnemyBase_804A4808::fn_801D05F8(const JGeometry::TVec3f* pos, f32 range) {
     return nearestPlayer(pos, range);
 }
 
-// FIXME: 99.3 %, regalloc only (the bools of canTargetPlayer swap).
+// FIXME: 99.35 %, regalloc only (the bools of canTargetPlayer swap).
 // The player that can be targeted whose direction from *from is closest to
 // `angle` (16-bit angles; the difference as a fraction of a half turn), or
 // -1.
@@ -580,9 +576,8 @@ s32 EnemyBase_804A4808::fn_801CF6B8() {
     return dir;
 }
 
-// FIXME: 99.2 %. Registers (the bools of canTargetPlayer swap; the layer
-// compare's operands swap) and one extra mr r4, r5 in the target before
-// fn_801CFCF0.
+// FIXME: 99.27 %. Registers (the bools of canTargetPlayer swap) and one extra
+// mr r4, r5 in the target before fn_801CFCF0.
 // A direction toward the nearest player within `range` (fn_801CF6B8's random
 // one when there is none): on the dominant axis, or the other one with
 // probability `margin`. With `turn`, a direction equal to field_0x98 is
@@ -637,7 +632,7 @@ s32 EnemyBase_804A4808::fn_801CF0F4() {
     return fn_801F681C(angle);
 }
 
-// FIXME: 99.7 %, regalloc only (the two bools of canTargetPlayer swap r28 /
+// FIXME: 99.73 %, regalloc only (the two bools of canTargetPlayer swap r28 /
 // r29, and the player-pointer induction register).
 // Spawns `actorId` (a cls_804A48B0 shot) at mPos aimed at the nearest player
 // within `range`, moving at `speed` (straight down +y when the player is on
