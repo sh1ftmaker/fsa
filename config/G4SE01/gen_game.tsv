@@ -85,7 +85,6 @@ act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
 act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
-act_switch	sinit	__sinit_act_switch_cpp	-	-	new	-
 act_temple_bti_display	sinit	__sinit_act_temple_bti_display_cpp	-	-	new	-
 act_thwomp_launch_npc	dtor	__dt__28NPCLaunchedByThwomp_804AC010Fv	NPCLaunchedByThwomp_804AC010	0x804AC010	new	new
 act_thwomp_launch_npc	sinit	__sinit_act_thwomp_launch_npc_cpp	-	-	new	new
