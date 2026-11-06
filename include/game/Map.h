@@ -399,6 +399,9 @@ extern "C" {
 // (7, 2) / (7, 3) (0xE -> 0x51); 0xF outside the box. Callers clrlwi 16
 // the result.
 u16 fn_8022461C(const JGeometry::TVec3f* pos, s32 layer);
+// The tile code -> collision code table (0x800 bytes; .rodata of
+// game/act_fire_rod_fire.cpp). Also read directly by tu_8029D898 (fn_802A1490, fn_802A1554).
+extern const u16 lbl_8046CB88[0x400];
 // 15 units. The same result as fn_8022461C; its 0x61 -> 0 case compiles
 // branch-free (0x80226770), so the source differs. Callers compare it with
 // codes such as 3 and 0x50 (act_bomb 0x8014BFF4).

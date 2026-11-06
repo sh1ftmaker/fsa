@@ -125,6 +125,27 @@ public:
     // state 0x15). Reads the tile under pos like the above; returns 0 or 1 (li
     // into r30), tested with clrlwi.
     bool fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    // 1 unit (act_door, 3 calls). Writes the two tile codes a, b into the
+    // cell and its right neighbour (vertical == 0, wrapping +0xF0 into the
+    // next 16-column block) or the cell below (+0x10, +0x110 across the
+    // 0x100 boundary). this unused.
+    void fn_8029DEBC(s32 layer, s32 cell, s32 vertical, s32 a, s32 b);
+    // 2 units (act_door, tu_802D39B8). The 2 x 2 block of tile codes a..d at
+    // cell (right neighbour and the row below as in fn_8029DEBC). this unused.
+    void fn_8029DF80(s32 cell, s32 layer, s32 a, s32 b, s32 c, s32 d);
+    // 1 unit (act_block). fn_802A3948 on gBgRewrite_8053AC98 with player 0;
+    // this unused.
+    void fn_8029E928(const JGeometry::TVec3f* pos, s32 layer, s32 tile);
+    // 1 unit (tu_802957CC, 2 calls each). Read the tile under pos on layer 0
+    // into fields 0x20 / 0x24; true when its lbl_8046CB88 collision code is 0
+    // or fn_8022461C gives 0x22 while GameView field_0x170 is clear
+    // (fn_802A1554 also for a list of tile codes and the codes 0xE / 3).
+    bool fn_802A1490(const JGeometry::TVec3f* pos);
+    bool fn_802A1554(const JGeometry::TVec3f* pos);
+    // Called by fn_802A01F0 / fn_802A02A8 for tile codes 0x16 / 0x17 with
+    // their player and layer (r4, r5); the body is not written yet (the
+    // return type from fn_802A01F0, which returns its r3 as its bool).
+    bool fn_802A0800(s32 player, s32 layer);
 
     /* 0x00 */ // vtable
     /* 0x04 */ ActorSoundObj_804578F4* field_0x4;
@@ -135,7 +156,8 @@ public:
     /* 0x18 */ s32 field_0x18; // delay
     /* 0x1C */ s32 field_0x1c; // frame, mod 8
     /* 0x20 */ s32 field_0x20; // the last cell written (fn_802A3884 / fn_802A3948)
-    /* 0x24 */ u8 field_0x24[0x28 - 0x24];
+    /* 0x24 */ u16 field_0x24; // the tile code at field_0x20 (fn_802F9908; sth / lhz)
+    /* 0x26 */ u8 field_0x26[0x28 - 0x26];
 }; // Size: 0x28
 
 extern BgRewrite_804A7C98* gBgRewrite_8053AC98;
