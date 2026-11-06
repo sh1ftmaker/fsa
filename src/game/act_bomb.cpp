@@ -10,9 +10,40 @@
 #include "game/RotMatrix.h"
 #include "game/ViewLayer.h"
 #include "game/act/act_bomb.h"
+#include "game/act/act_warp.h"
 #include "std/math.h"
 
 static s32 lbl_8049F760[9] = {4, 4, 2, 2, 4, 4, 4, 4, 4};
+
+// Records the landing position and stops the bomb (shared by the three tile cases).
+static inline void land(Bomb_8049F784* bomb) {
+    bomb->field_0x284.x = bomb->mPos.x;
+    bomb->field_0x284.y = bomb->mPos.y;
+    bomb->field_0x284.z = bomb->mPos.z;
+    bomb->field_0x3c.z = 0.0f;
+    bomb->field_0x3c.y = 0.0f;
+    bomb->field_0x3c.x = 0.0f;
+}
+
+// Inlined into fn_8014D868's loop in the original (its second NULL test is in the asm).
+static inline void checkWarp(Warp_804A6DC8* warp, const JGeometry::TVec3f* pos) {
+    if (warp == NULL) {
+        return;
+    }
+    f32 dy = warp->mPos.y - pos->y;
+    f32 dx = warp->mPos.x - pos->x;
+    f32 dist = std::sqrtf(dx * dx + dy * dy);
+    if (dist < 24.0f) {
+        const JGeometry::TVec3f* spawnPos = &warp->field_0x238;
+        s32 raw = (warp->field_0x90 >> 24) & 7;
+        // raw + 7 is computed before the zero test (addi, then mr under bne).
+        s32 layer = raw + 7;
+        if (raw == 0) {
+            layer = raw;
+        }
+        getActorManager_801F856C()->spawnActor_801F9484('HBMB', layer, spawnPos, 0xC, -1, -1);
+    }
+}
 
 void Bomb_8049F784::vfunc_0x44() {
     s32 serial = field_0xa0;
@@ -25,30 +56,12 @@ void Bomb_8049F784::vfunc_0x44() {
     }
 }
 
-static inline void checkWarp(BombWarpActor* warp, const JGeometry::TVec3f* pos) {
-    if (warp == NULL) {
-        return;
-    }
-    f32 dy = warp->mPos.y - pos->y;
-    f32 dx = warp->mPos.x - pos->x;
-    f32 dist = std::sqrtf(dx * dx + dy * dy);
-    if (dist < 24.0f) {
-        const JGeometry::TVec3f* spawnPos = &warp->field_0x238;
-        s32 raw = (warp->field_0x90 >> 24) & 7;
-        s32 layer = raw + 7;
-        if (raw == 0) {
-            layer = raw;
-        }
-        getActorManager_801F856C()->spawnActor_801F9484('HBMB', layer, spawnPos, 0xC, -1, -1);
-    }
-}
-
 // FIXME: 99.14 % (regalloc-only + reloc-name). Only register allocation differs in checkWarp loop.
 void Bomb_8049F784::fn_8014D868(const JGeometry::TVec3f* pos) {
     ActorBase_804A5770* warps[ACTOR_MANAGER_MAX_ACTORS];
     s32 count = getActorManager_801F856C()->fn_801F7818('WARP', field_0x4, warps, -1);
     for (s32 i = 0; i < count; i++) {
-        BombWarpActor* warp = static_cast<BombWarpActor*>(warps[i]);
+        Warp_804A6DC8* warp = static_cast<Warp_804A6DC8*>(warps[i]);
         if (warp != NULL) {
             checkWarp(warp, pos);
         }
@@ -68,22 +81,12 @@ bool Bomb_8049F784::fn_8014D6DC() {
     center.y = box.f.y + 0.5f * (box.i.y - box.f.y);
     u16 tile = fn_802265FC((const JGeometry::TVec3f*)&center, field_0x4);
     if (tile == 3) {
-        field_0x284.x = mPos.x;
-        field_0x284.y = mPos.y;
-        field_0x284.z = mPos.z;
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
+        land(this);
         field_0x230 = 6;
         return true;
     }
     if (tile == 0xE) {
-        field_0x284.x = mPos.x;
-        field_0x284.y = mPos.y;
-        field_0x284.z = mPos.z;
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
+        land(this);
         if (fn_802DE9A0() == 1 || fn_802DEB58() == 1) {
             field_0x230 = 8;
         } else {
@@ -92,19 +95,14 @@ bool Bomb_8049F784::fn_8014D6DC() {
         return true;
     }
     if (tile == 0xD || tile == 0x3B) {
-        field_0x284.x = mPos.x;
-        field_0x284.y = mPos.y;
-        field_0x284.z = mPos.z;
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
+        land(this);
         field_0x230 = 7;
         return true;
     }
     return false;
 }
 
-// FIXME: 92.69 % (missing/extra + reloc-name). Minor instruction scheduling and relocations differ.
+// FIXME: 92.86 %. Scheduling of the 2x2 probe loop (the original loads mPos.y/mPos.x and converts j/i in a different order) and the .sdata2 reloc names.
 void Bomb_8049F784::vfunc_0x54() {
     field_0x3c.z = 0.0f;
     field_0x3c.y = 0.0f;
@@ -132,6 +130,8 @@ void Bomb_8049F784::vfunc_0x54() {
     result.z = 0.0f;
     result.y = 0.0f;
     result.x = 0.0f;
+    // The original compares the bomb kind (field_0x90) as signed (cmpwi) in the
+    // tests marked (s32) here and in init/draw, and as unsigned (cmplwi) elsewhere.
     if ((s32)field_0x90 != 7 && (s32)field_0x90 != 0xD && (s32)field_0x90 != 0xB) {
         mBox.i.x = -16.0f;
         mBox.i.y = -16.0f;
@@ -153,8 +153,8 @@ void Bomb_8049F784::vfunc_0x54() {
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {
                     probe.z = mPos.z;
-                    probe.y = (mPos.y - 8.0f) + 16.0f * (f32)(u32)j;
-                    probe.x = (mPos.x - 8.0f) + 16.0f * (f32)(u32)i;
+                    probe.y = (mPos.y - 8.0f) + 16.0f * (f32)j;
+                    probe.x = (mPos.x - 8.0f) + 16.0f * (f32)i;
                     if (gBgRewrite_8053AC98->fn_8029EDB8(&probe, 0, field_0x4, &result) == 1) {
                         fn_8014D868(&result);
                     }
