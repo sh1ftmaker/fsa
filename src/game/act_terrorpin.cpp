@@ -243,6 +243,58 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
     }
 }
 
+u8 Terrorpin_804A3B10::vfunc_0x5C() {
+    u8 hit = 0;
+    bool check = true;
+    bool active = false;
+    s32 state = mState;
+    switch (state) {
+    case 1:
+    case 2:
+    case 3:
+    case 5:
+        active = true;
+        break;
+    }
+    if (active) {
+        check = false;
+        if (mStateTimer < 10) {
+            switch (state) {
+            case 5:
+            case 1:
+                check = true;
+                break;
+            }
+        }
+    }
+    if (check) {
+        if (mFlags & 0x2000) {
+            fn_801CEBD0();
+        } else if (state == 0) {
+            s32 player = fn_801F285C(NULL, NULL, true, -1);
+            if (player >= 0) {
+                fn_801B91A8(5);
+                JGeometry::TVec2f dir;
+                dir.y = mPos.y - getPlayerPos_8023E724(player)->y;
+                dir.x = mPos.x - getPlayerPos_8023E724(player)->x;
+                if (dir.squared() <= JGeometry::TUtilf::epsilon()) {
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = mSpeed;
+                } else {
+                    dir.normalize();
+                    dir.scale(mSpeed);
+                    field_0x3c.x = dir.x;
+                    field_0x3c.y = dir.y;
+                }
+                startSound_801F0E34(0x4003B, 0);
+            }
+        }
+    } else {
+        hit = fn_801F2FAC();
+    }
+    return hit;
+}
+
 u8 Terrorpin_804A3B10::vfunc_0x68() {
     u8 hit = 0;
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
