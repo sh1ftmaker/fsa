@@ -3,7 +3,9 @@
 #include "game/act/act_vulture.h"
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
+#include "game/Map.h"
 #include "game/Player.h"
+#include "game/ViewLayer.h"
 #include "JSystem/JMath/JMath.h"
 
 static inline void normalize(JGeometry::TVec2f& v) {
@@ -14,6 +16,14 @@ static inline void normalize(JGeometry::TVec2f& v) {
     f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
     v.x *= norm;
     v.y *= norm;
+}
+
+static inline void approach(f32& cur, f32 target, f32 remaining) {
+    if (remaining < FLT_EPSILON) {
+        cur = target;
+    } else {
+        cur += (1.0f / remaining) * (target - cur);
+    }
 }
 
 static const s16 lbl_8053ED28[] = {3, 20, -1, -1};
@@ -198,6 +208,182 @@ void Vulture_804A4230::fn_801C0438(s32 state) {
     }
     mStateTimer = 0;
     mState = state;
+}
+
+// FIXME: 97.44 % (scheduling+regalloc + reloc-name). Same instructions modulo registers
+// and literal order.
+void Vulture_804A4230::vfunc_0x90(u8 mapHit) {
+    switch (mState) {
+    case 0:
+        if (mStateTimer >= field_0x250) {
+            field_0x2a8 = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+            if (field_0x2a8 >= 0) {
+                fn_801C0438(1);
+            }
+        }
+        break;
+
+    case 1:
+        if (mPos.z >= 18.0f) {
+            mPos.z = 18.0f;
+            field_0x2ac = fn_801CD664(33) + 48;
+            field_0x2b0 = fn_801CD664(257) + 512;
+            if (fn_801CD664(2) == 0) {
+                mFlags &= ~0x2000;
+            } else {
+                mFlags |= 0x2000;
+            }
+            fn_801C0438(2);
+        }
+        break;
+
+    case 2:
+        if (field_0x2a8 >= 0) {
+            if (!fn_80230188(field_0x2a8) && !fn_801D0B44(field_0x2a8)) {
+                s32 player = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+                if (player >= 0 && player != field_0x2a8 && fn_8022E438(player, field_0x2a8)) {
+                    field_0x2a8 = player;
+                    fn_801C0438(2);
+                } else {
+                    fn_801C0438(6);
+                }
+                break;
+            }
+
+            if (mStateTimer >= field_0x250) {
+                if (!fn_80230188(field_0x2a8)) {
+                    f32 dist = fn_801D0DA0(field_0x2a8, &mPos);
+                    if (dist <= square(16.0f + field_0x2ac)) {
+                        fn_801C0438(3);
+                        break;
+                    }
+                }
+            }
+            fn_801C0634();
+        } else {
+            field_0x2a8 = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+            if (field_0x2a8 >= 0) {
+                fn_801C0438(2);
+            } else {
+                fn_801C0634();
+            }
+        }
+        break;
+
+    case 3:
+        if (mStateTimer >= 15) {
+            if (!fn_801D0B44(field_0x2a8)) {
+                s32 player = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+                if (player >= 0 && player != field_0x2a8 && fn_8022E438(player, field_0x2a8)) {
+                    field_0x2a8 = player;
+                    fn_801C0438(2);
+                } else {
+                    fn_801C0438(6);
+                }
+            } else {
+                fn_801C0438(4);
+            }
+        }
+        break;
+
+    case 4:
+        if (mStateTimer >= 50) {
+            if (!fn_801D0B44(field_0x2a8)) {
+                s32 player = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+                if (player >= 0 && player != field_0x2a8 && fn_8022E438(player, field_0x2a8)) {
+                    field_0x2a8 = player;
+                    fn_801C0438(2);
+                } else {
+                    fn_801C0438(6);
+                }
+            } else {
+                fn_801C0438(5);
+            }
+        }
+        break;
+
+    case 5:
+        if (!fn_801D0B44(field_0x2a8)) {
+            s32 player = fn_801D05F8(&mPos, 16.0f * (f32)field_0x2b4);
+            if (player >= 0 && player != field_0x2a8 && fn_8022E438(player, field_0x2a8)) {
+                field_0x2a8 = player;
+                fn_801C0438(2);
+            } else {
+                fn_801C0438(6);
+            }
+        } else {
+            fn_801C0634();
+            if (mStateTimer >= 20) {
+                fn_801C0438(2);
+            }
+        }
+        break;
+
+    case 6:
+        if (mPos.z <= 1.0f) {
+            mPos.z = 1.0f;
+            bool hit = false;
+            if (viewLayerFlag(field_0x4)) {
+                JGeometry::TVec2f point;
+                point.x = mPos.x;
+                point.y = 8.0f + (mPos.y - mPos.z);
+                if (fn_802265FC((const JGeometry::TVec3f*)&point, field_0x4) == 2) {
+                    hit = true;
+                }
+            }
+            if (hit) {
+                field_0x2a8 = -1;
+                fn_801C0438(1);
+            } else {
+                fn_801C0438(0);
+            }
+        }
+        break;
+    }
+}
+
+// FIXME: 99.53 % (reloc-name). 100 % instruction match; literal names not yet split.
+void Vulture_804A4230::vfunc_0x88() {
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    JGeometry::TVec2f vel(0.0f, 0.0f);
+
+    switch (mState) {
+    case 2:
+    case 5:
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b8, &vel, FLT_MAX);
+        field_0x3c.x = vel.x;
+        field_0x3c.y = vel.y;
+        if (mState == 5) {
+            f32 remaining = 20 - mStateTimer;
+            approach(field_0x2c8.x, 0.0f, remaining);
+            approach(field_0x2c8.y, 0.0f, remaining);
+            field_0x3c.x += field_0x2c8.x;
+            field_0x3c.y += field_0x2c8.y;
+        }
+        break;
+
+    case 4:
+        vel.x = JMath::sincosTable_.sinShort(field_0x2b2);
+        vel.y = JMath::sincosTable_.cosShort(field_0x2b2);
+        field_0x3c.x = mSpeed * vel.x;
+        field_0x3c.y = mSpeed * vel.y;
+        break;
+    }
+
+    switch (mState) {
+    case 1:
+        mPos.z += 0.4f;
+        if (mPos.z > 18.0f) {
+            mPos.z = 18.0f;
+        }
+        break;
+    case 6:
+        mPos.z -= 0.2f;
+        if (mPos.z < 1.0f) {
+            mPos.z = 1.0f;
+        }
+        break;
+    }
 }
 
 Vulture_804A4230::~Vulture_804A4230() {}
