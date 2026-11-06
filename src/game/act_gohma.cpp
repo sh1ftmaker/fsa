@@ -7,6 +7,7 @@
 #include "game/Effect.h"
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 
 static const char* lbl_804A3020[] = {
     "e_goma_yoko_0.bti",
@@ -66,10 +67,10 @@ void Gohma_804A307C::init() {
     if (viewLayerFlag(layer)) {
         field_0x98 &= 1;
     }
-    field_0x250 = field_0x98 * 4 + field_0x244;
-    field_0x26c = 0.0f;
-    field_0x268 = 0.0f;
-    field_0x264 = 0.0f;
+    field_0x250 = field_0x244 + field_0x98 * 4;
+    field_0x264.z = 0.0f;
+    field_0x264.y = 0.0f;
+    field_0x264.x = 0.0f;
     mLife = 0x3EF;
     field_0x258 = 3;
     field_0x260 = field_0x98;
@@ -98,6 +99,7 @@ void Gohma_804A307C::init() {
     } else {
         field_0xbc = 3;
         mLife = 0x3F2;
+        field_0x260 = field_0x98 & 1;
         field_0x98 = 2;
         field_0xb0 = 0x0A040004;
         field_0x270 = 1.5f;
@@ -143,9 +145,9 @@ void Gohma_804A307C::vfunc_0x44() {
     }
     field_0x25c = mLife;
     if (field_0x254 == 1 || field_0x254 == 3) {
-        field_0x26c = 0.0f;
-        field_0x268 = 0.0f;
-        field_0x264 = 0.0f;
+        field_0x264.z = 0.0f;
+        field_0x264.y = 0.0f;
+        field_0x264.x = 0.0f;
         field_0x3c.z = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.x = 0.0f;
@@ -154,7 +156,7 @@ void Gohma_804A307C::vfunc_0x44() {
         field_0x230 = 12;
         return;
     }
-    u16 angle = (u16)(field_0x98 + 0x8000);
+    u16 angle = (u16)((u16)field_0x98 + 0x8000);
     f32 speed = -10.0f;
     field_0x3c.x = speed * JMASinShort(fn_801F6874(angle));
     field_0x3c.y = speed * JMACosShort(fn_801F6874(angle));
@@ -162,9 +164,505 @@ void Gohma_804A307C::vfunc_0x44() {
 }
 
 void Gohma_804A307C::fn_801AB6A8() {
+    f32 f28 = mBox.i.x + mPos.x;
+    f32 f30 = mBox.f.x + mPos.x;
+    f32 f31 = mBox.i.y + mPos.y;
+    f32 f29 = mBox.f.y + mPos.y;
+
+    if (fn_801F3D94(1)) {
+        fn_801F2618(NULL, false);
+        return;
+    }
+
+    if (mLife < 1000) {
+        vfunc_0x24();
+        return;
+    }
+
+    if (viewLayerFlag(field_0x4)) {
+        mPos.y = mPos.y - mPos.z;
+        mPos.z = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x264.y = 5.0f;
+    }
+
+    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.5f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.5f, 1.0f);
+
+    mPos += field_0x3c;
+
+    if (field_0x230 != 6) {
+        f28 = f30 + 0.5f * (f28 - f30);
+        f29 = f29 + 0.5f * (f31 - f29);
+
+        for (s32 i = 0; i < 4; i++) {
+            s32 hitPlayer = fn_801F285C(NULL, NULL, false, i);
+            if (hitPlayer >= 0) {
+                u16 angle;
+                s32 dir;
+                fn_801EEC98(mSerial, &angle, &dir, NULL, NULL, hitPlayer, 2);
+                if (dir >= 0) {
+                    if (!viewLayerFlag(field_0x4)) {
+                        field_0x98 = dir;
+                    } else if (!(dir & 2)) {
+                        field_0x98 = dir;
+                    } else if (angle < 0x8000) {
+                        field_0x98 = 0;
+                    } else {
+                        field_0x98 = 1;
+                    }
+                    field_0x250 = field_0x98 * 4;
+                    field_0x3c.x = -10.0f * JMASinShort(angle);
+                    field_0x3c.y = -10.0f * JMACosShort(angle);
+                }
+                JGeometry::TVec3f hitPos(f28, f29, 0.0f);
+                if (fn_802379E4(hitPlayer, &hitPos)) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+                    startSound_801F0E34(0x400D1, 0);
+                }
+                field_0x230 = 5;
+            }
+        }
+    }
+
+    if (mTimers[2] == 0) {
+        fn_801F2B7C(-100, -1, 1);
+        if (mEmitters[0] == NULL && mEmitters[1] == NULL) {
+            if (fn_801F2718('FIRE') >= 0 || fn_801F2718('BLZE') >= 0) {
+                mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBB, 0, -1, NULL, NULL, true, 1.0f);
+                mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBC, 0, 1, NULL, NULL, true, 1.0f);
+                mTimers[2] = 200;
+            }
+        }
+    } else {
+        fn_801F2B7C(field_0x114, -1, 8);
+        setEmitterPos_8013CB44(mEmitters[0], &mPos, 0, -1, true);
+        setEmitterPos_8013CB44(mEmitters[1], &mPos, 0, 1, true);
+        if (mTimers[2] == 1) {
+            if (mEmitters[0] != NULL) {
+                mEmitters[0]->stopCreateParticle();
+                mEmitters[0] = NULL;
+            }
+            if (mEmitters[1] != NULL) {
+                mEmitters[1]->stopCreateParticle();
+                mEmitters[1] = NULL;
+            }
+            field_0x230 = 3;
+        }
+    }
+
+    fn_801EF510();
+    JGeometry::TVec3f vec(0.0f, 0.0f, 0.0f);
+    u8 r31 = fn_801F2618(&vec, false);
+
+    switch (field_0x230) {
+    case 0:
+        gAudioMgr_8053AF80->fn_80458FF0(0x1000004, false, 0);
+        field_0x230 = 1;
+        // fallthrough
+    case 1:
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        switch (field_0x98) {
+        case 0:
+            field_0x264.x = 1.0f;
+            field_0x264.y = 0.0f;
+            field_0x264.z = 0.0f;
+            break;
+        case 1:
+            field_0x264.x = -1.0f;
+            field_0x264.y = 0.0f;
+            field_0x264.z = 0.0f;
+            break;
+        case 2:
+            field_0x264.x = 0.0f;
+            field_0x264.y = 1.0f;
+            field_0x264.z = 0.0f;
+            break;
+        case 3:
+            field_0x264.x = 0.0f;
+            field_0x264.y = -1.0f;
+            field_0x264.z = 0.0f;
+            break;
+        }
+        mTimers[0] = 0;
+        mTimers[1] = 50 + (s32)(15.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x244 = 0;
+        field_0x230 = 2;
+        // fallthrough
+    case 2:
+        if (r31) {
+            bool flag = false;
+            if (!viewLayerFlag(field_0x4)) {
+                flag = true;
+            } else if (vec.y != 0.0f) {
+                if (vec.x > 0.0f) {
+                    if (field_0x3c.x < 0.0f) {
+                        flag = true;
+                    }
+                } else if (vec.x < 0.0f) {
+                    if (field_0x3c.x > 0.0f) {
+                        flag = true;
+                    }
+                }
+            }
+            if (flag) {
+                if (mTimers[1] >= 5) {
+                    mTimers[1] = 5;
+                }
+                if (mTimers[3] == 0) {
+                    if (!viewLayerFlag(field_0x4)) {
+                        field_0x98 ^= 2;
+                        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                            field_0x98 ^= 1;
+                        }
+                        JGeometry::TVec3f savedPos = mPos;
+                        field_0x3c.z = 0.0f;
+                        field_0x3c.y = 0.0f;
+                        field_0x3c.x = 0.0f;
+                        switch (field_0x98) {
+                        case 0:
+                            field_0x264.x = 16.0f;
+                            field_0x264.y = 0.0f;
+                            field_0x264.z = 0.0f;
+                            break;
+                        case 1:
+                            field_0x264.x = -16.0f;
+                            field_0x264.y = 0.0f;
+                            field_0x264.z = 0.0f;
+                            break;
+                        case 2:
+                            field_0x264.x = 0.0f;
+                            field_0x264.y = 16.0f;
+                            field_0x264.z = 0.0f;
+                            break;
+                        case 3:
+                            field_0x264.x = 0.0f;
+                            field_0x264.y = -16.0f;
+                            field_0x264.z = 0.0f;
+                            break;
+                        }
+                        mPos += field_0x264;
+                        if (fn_801F2618(NULL, false)) {
+                            field_0x98 ^= 1;
+                        }
+                        mPos = savedPos;
+                    } else {
+                        mTimers[3] = 30 + (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                        field_0x98 ^= 1;
+                    }
+                    mTimers[0] = 0;
+                    field_0x3c.z = 0.0f;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.x = 0.0f;
+                    switch (field_0x98) {
+                    case 0:
+                        field_0x264.x = 1.0f;
+                        field_0x264.y = 0.0f;
+                        field_0x264.z = 0.0f;
+                        break;
+                    case 1:
+                        field_0x264.x = -1.0f;
+                        field_0x264.y = 0.0f;
+                        field_0x264.z = 0.0f;
+                        break;
+                    case 2:
+                        field_0x264.x = 0.0f;
+                        field_0x264.y = 1.0f;
+                        field_0x264.z = 0.0f;
+                        break;
+                    case 3:
+                        field_0x264.x = 0.0f;
+                        field_0x264.y = -1.0f;
+                        field_0x264.z = 0.0f;
+                        break;
+                    }
+                }
+            }
+        }
+        if (mTimers[0] == 0) {
+            field_0x250 = field_0x244 + field_0x98 * 4;
+            mTimers[0] = 5;
+            field_0x244 = (field_0x244 + 1) & 3;
+        }
+        if (mTimers[1] == 0) {
+            field_0x230 = 3;
+        }
+        break;
+    case 3:
+        field_0x264.z = 0.0f;
+        field_0x264.y = 0.0f;
+        field_0x264.x = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        mTimers[1] = 30;
+        field_0x230 = 4;
+        // fallthrough
+    case 4:
+        if (mTimers[1] == 0) {
+            field_0x98 = (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3;
+            if (!viewLayerFlag(field_0x4)) {
+                JGeometry::TVec3f savedPos = mPos;
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                switch (field_0x98) {
+                case 0:
+                    field_0x264.x = 16.0f;
+                    field_0x264.y = 0.0f;
+                    field_0x264.z = 0.0f;
+                    break;
+                case 1:
+                    field_0x264.x = -16.0f;
+                    field_0x264.y = 0.0f;
+                    field_0x264.z = 0.0f;
+                    break;
+                case 2:
+                    field_0x264.x = 0.0f;
+                    field_0x264.y = 16.0f;
+                    field_0x264.z = 0.0f;
+                    break;
+                case 3:
+                    field_0x264.x = 0.0f;
+                    field_0x264.y = -16.0f;
+                    field_0x264.z = 0.0f;
+                    break;
+                }
+                mPos += field_0x264;
+                if (fn_801F2618(NULL, false)) {
+                    field_0x98 ^= 1;
+                }
+                mPos = savedPos;
+            } else {
+                field_0x98 &= 1;
+            }
+            field_0x230 = 1;
+        }
+        break;
+    case 5:
+        field_0x264.z = 0.0f;
+        field_0x264.y = 0.0f;
+        field_0x264.x = 0.0f;
+        field_0x230 = 6;
+        // fallthrough
+    case 6:
+        if (FABS(field_0x3c.x - field_0x264.x) < 0.1f && FABS(field_0x3c.y - field_0x264.y) < 0.1f) {
+            field_0x230 = 1;
+        }
+        break;
+    }
 }
 
 void Gohma_804A307C::fn_801AAF44() {
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+
+    if (fn_801F3D94(1)) {
+        fn_801F2618(NULL, false);
+        return;
+    }
+
+    if (mLife < 1000) {
+        vfunc_0x24();
+        field_0xb0 = 0;
+        return;
+    }
+
+    JGeometry::TVec3f prevVel = field_0x3c;
+    if (fn_801F2DB4('NULL', 'HMBM', NULL)) {
+        field_0x3c = prevVel;
+        field_0xd8 = 0;
+        field_0xdc = 0;
+    }
+
+    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.5f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.5f, 1.0f);
+
+    mPos += field_0x3c;
+
+    fn_801F2B7C(-100, -1, 1);
+    u8 r31 = fn_801F2618(NULL, false);
+
+    field_0x270 = 1.5f;
+    field_0x274 = 1.2f;
+    field_0x278 = 1.2f;
+
+    mBox.i.x = -16.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 16.0f;
+    mBox.f.y = 8.0f;
+
+    field_0x80.i.x = -16.0f;
+    field_0x80.i.y = -12.0f;
+    field_0x80.f.x = 16.0f;
+    field_0x80.f.y = 12.0f;
+
+    mBox2.i.x = -16.0f;
+    mBox2.i.y = -8.0f;
+    mBox2.f.x = 16.0f;
+    mBox2.f.y = 8.0f;
+
+    switch (field_0x230) {
+    case 7:
+        gAudioMgr_8053AF80->fn_80458FF0(0x1000004, false, 0);
+        field_0x230 = 8;
+        // fallthrough
+    case 8:
+        mTimers[0] = 0;
+        mTimers[2] = 200 + (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x244 = 0;
+        field_0x98 = field_0x260;
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        {
+            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            switch (field_0x98) {
+            case 0:
+                field_0x264.x = f;
+                field_0x264.y = 0.0f;
+                field_0x264.z = 0.0f;
+                break;
+            case 1:
+                field_0x264.x = -f;
+                field_0x264.y = 0.0f;
+                field_0x264.z = 0.0f;
+                break;
+            case 2:
+                field_0x264.x = 0.0f;
+                field_0x264.y = f;
+                field_0x264.z = 0.0f;
+                break;
+            case 3:
+                field_0x264.x = 0.0f;
+                field_0x264.y = -f;
+                field_0x264.z = 0.0f;
+                break;
+            }
+        }
+        field_0x98 = 2;
+        mTimers[1] = (s32)(60.0f - 15.0f * (3 - field_0x258));
+        field_0x230 = 9;
+        // fallthrough
+    case 9:
+        if (r31) {
+            field_0x260 ^= 1;
+            field_0x98 = field_0x260;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            switch (field_0x98) {
+            case 0:
+                field_0x264.x = f;
+                field_0x264.y = 0.0f;
+                field_0x264.z = 0.0f;
+                break;
+            case 1:
+                field_0x264.x = -f;
+                field_0x264.y = 0.0f;
+                field_0x264.z = 0.0f;
+                break;
+            case 2:
+                field_0x264.x = 0.0f;
+                field_0x264.y = f;
+                field_0x264.z = 0.0f;
+                break;
+            case 3:
+                field_0x264.x = 0.0f;
+                field_0x264.y = -f;
+                field_0x264.z = 0.0f;
+                break;
+            }
+            field_0x98 = 2;
+        }
+        if (mTimers[1] == 0) {
+            mPos.y += 8.0f;
+            JGeometry::TVec3f savedPos = mPos;
+            u16 angle = 0;
+            fn_801EEC98(mSerial, &angle, NULL, NULL, NULL, 0, 4);
+            s32 count = 1;
+            if (field_0x258 == 1) {
+                count = 3;
+                angle -= 0x2000;
+            }
+            for (s32 i = 0; i < count; i++) {
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('OKTM', field_0x4, &mPos, 4, -1, -1);
+                if (serial >= 0) {
+                    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (actor != NULL) {
+                        actor->field_0x3c.x = 3.0f * JMASinShort(angle);
+                        actor->field_0x3c.y = 3.0f * JMACosShort(angle);
+                        actor->field_0x3c.z = 0.0f;
+                        actor->field_0x98 = fn_801F681C(angle);
+                        mTimers[1] = (s32)(60.0f - 15.0f * (3 - field_0x258));
+                    }
+                }
+                angle += 0x2000;
+            }
+            mPos = savedPos;
+        }
+        if (mTimers[0] == 0) {
+            if (field_0x248 == 0) {
+                field_0x250 = field_0x244 + 0x13;
+            } else {
+                field_0x250 = field_0x244 + 8;
+            }
+            mTimers[0] = 5;
+            field_0x244 = (field_0x244 + 1) & 3;
+        }
+        if (mTimers[2] == 0) {
+            field_0x264.z = 0.0f;
+            field_0x264.y = 0.0f;
+            field_0x264.x = 0.0f;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            if (field_0x248 == 0) {
+                field_0x230 = 10;
+            } else {
+                field_0x230 = 12;
+            }
+            field_0x248 ^= 1;
+        }
+        break;
+    case 10:
+        mTimers[0] = 0;
+        field_0x244 = 0;
+        field_0x230 = 11;
+        // fallthrough
+    case 11:
+        if (mTimers[0] == 0) {
+            mTimers[0] = 12;
+            field_0x250 = field_0x244 + 0x10;
+            field_0x244++;
+            if (field_0x244 > 2) {
+                field_0xb0 = 0x0A040010;
+                field_0x248 = 1;
+                field_0x230 = 8;
+            }
+        }
+        break;
+    case 12:
+        field_0xb0 = 0x0A040004;
+        mTimers[0] = 0;
+        field_0x244 = 2;
+        field_0x230 = 13;
+        // fallthrough
+    case 13:
+        if (mTimers[0] == 0) {
+            mTimers[0] = 12;
+            field_0x250 = field_0x244 + 0x10;
+            field_0x244--;
+            if (field_0x244 < 0) {
+                field_0x248 = 0;
+                field_0x230 = 8;
+            }
+        }
+        break;
+    }
 }
 
 void Gohma_804A307C::update() {
@@ -188,11 +686,13 @@ void Gohma_804A307C::update() {
 
 void Gohma_804A307C::draw() {
     SpriteParams_801F5AE0 params;
-    f32 scaleX = field_0x270;
+    f32 scaleY;
+    f32 scaleX;
+    scaleX = field_0x270;
     if (field_0x98 == 0) {
         scaleX *= -1.0f;
     }
-    f32 scaleY = field_0x274;
+    scaleY = field_0x274;
     Mtx mtx;
     mtx[0][0] = scaleX;
     mtx[0][1] = 0.0f;
