@@ -2429,6 +2429,69 @@ void FileSelect_804AFF60::fn_803C5190() {
     }
 }
 
+// FIXME: 99.86. Regalloc only: boardDelay / boardFrames swap r21 / r23, and
+// the row offset's fsubs takes f0 / f2 the other way round (as fn_803CE370).
+// The checksum test materialises the bool (neg / or / srwi.), which
+// `!= false` gives (a plain test gives and., 99.43). .sdata2 @NNN.
+// State 35 (after the delete's card write, from fn_803BF004): row field_0xa4
+// slides out between the first and third rows' places (fading its colours
+// back when its checksum failed); at its end it waits at the right with
+// message 0x60 and the rows are refreshed (fn_803CE4CC). The copy board
+// slides out and the row comes back in (timings lbl_8050DB0C
+// field_0x4c[0xDE..0xE3]); state 36.
+void FileSelect_804AFF60::fn_803C4628() {
+    s16 outDelay = lbl_8050DB0C.field_0x4c[0xDE];
+    s16 outFrames = lbl_8050DB0C.field_0x4c[0xDF];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xE0];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xE1];
+    s16 inDelay = lbl_8050DB0C.field_0x4c[0xE2];
+    s16 inFrames = lbl_8050DB0C.field_0x4c[0xE3];
+    s32 outEnd = outDelay + outFrames;
+    if (inDelay < outEnd) {
+        inDelay = outEnd;
+    }
+    s32 end = boardDelay + boardFrames;
+    if (end < inDelay + inFrames) {
+        end = inDelay + inFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > outDelay && field_0xd8 <= outEnd) {
+        field_0x38[field_0xa4]->fn_80402940(outFrames, 0, field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc,
+                                            field_0x38[2]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+        field_0x38[field_0xa4]->fn_80402628(outFrames, field_0x38[field_0xa4]->field_0x28, 0);
+        setRowAlphas(this, field_0xa4);
+        if (field_0xd8 == outEnd) {
+            field_0x38[field_0xa4]->moveFromCentre_80402E08(600.0f, field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+            field_0x38[field_0xa4]->field_0x20 = 0;
+            field_0x38[field_0xa4]->mPane->setAlpha(0);
+            setRowAlphas(this, field_0xa4);
+            field_0x38[field_0xa4]->field_0x26 = 0;
+            setMessage(0x60);
+            fn_803CE4CC();
+            field_0x80 = 0;
+        }
+        if (hasBadChecksum(field_0xa4) != false) {
+            fn_803BC6F0(field_0xa4, 1.0f - (f32)(field_0xd8 - outDelay) / (f32)outFrames);
+        }
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
+        for (s32 j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    if (field_0xd8 > inDelay) {
+        field_0x38[field_0xa4]->fn_80402B10(inFrames, 0, 600.0f, 0.0f);
+        field_0x38[field_0xa4]->fn_80402628(inFrames, 0, field_0x38[field_0xa4]->field_0x28);
+        setRowAlphas(this, field_0xa4);
+    }
+    if (field_0xd8 > end) {
+        setState(36);
+    }
+}
+
 // FIXME: 99.95 %. Instructions identical; only the .sdata2 literals differ
 // (pool order, see fn_803C24BC).
 // Back from the delete prompt (state 36), after its message or a button:
