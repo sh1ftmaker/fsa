@@ -2769,17 +2769,16 @@ void Player_804A6F38::fn_8024BDBC() {
 // its item level 2+, fn_8023725C); not while fn_80270C88 or in state 0x3F /
 // 0xC; skipped with field_0xb9a, field_0xcf0 or state 0x3C current or
 // requested; then clears field_0xb9d.
-// FIXME: 95.97. The original loads field_0x3b4 before getPlayerLayer_8023DE58
-// into a saved register (r30, as if passed to an inline with the player
-// index), ours after the call into r0; registers otherwise, and the literals
-// 50 / 80 / 2 (@NNN vs lbl_ until the pool is in order).
+// FIXME: 99.61. regalloc-only: the FPRs of the paired-single distance math, and
+// the literals 50 / 80 / 2 (@NNN vs lbl_ until the pool is in order). The layer is
+// read through getLayer() (before getPlayerLayer_8023DE58, as the original).
 void Player_804A6F38::fn_8024BBB8() {
     if (fn_80270C88() || field_0x1240 == 0x3f || field_0x1240 == 0xc) {
         return;
     }
     if (!field_0xb9a && !field_0xcf0 && field_0x1240 != 0x3c && field_0x1244 != 0x3c) {
         for (s32 i = 0; i < 4; i++) {
-            if (!fn_8022E438(field_0x4, i) && fn_8023A51C(i) && field_0x3b4 == getPlayerLayer_8023DE58(i)) {
+            if (!fn_8022E438(field_0x4, i) && fn_8023A51C(i) && getLayer() == getPlayerLayer_8023DE58(i)) {
                 f32 range = 50.0f;
                 if (fn_8022B244()) {
                     range = 80.0f;
