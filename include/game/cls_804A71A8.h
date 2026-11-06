@@ -28,13 +28,18 @@ public:
     // tu_8023FBF0's fn_8024B274 / fn_8024B298 forward to them.
     void fn_80269420();
     void fn_8026942C(s32 index, JGeometry::TVec3f* out);
-    // 0x80269574 (not written yet): run after each probe pass.
+    // 0x80269574: run after each probe pass (docs/PLAYER.md, cls_804A71A8).
     void fn_80269574();
-    // 0x8026B81C (not written yet): a probe point outside the owner's boxes,
-    // with the tile code under it.
+    // 0x8026B81C: fn_8026C350 for the second probe, on another player's
+    // layer: every tile that does anything there only blocks the direction
+    // (field_0x38), the half / diagonal / corner tiles by where the point
+    // lies in its 16-unit cell, 0x25 / 0x26 by the view's field_0x171.
     void fn_8026B81C(u16 tile);
-    // 0x8026C350 (not written yet): a probe point inside the view, with the
-    // tile code under it.
+    // 0x8026C350: the tile code under a probe point inside the view, per
+    // direction: blocks (field_0x38), open floor (field_0x20), ledges
+    // (fn_8026E68C), pushable blocks (fn_8026EE60 family) or one of the
+    // flags 0x50-0x88 that fn_80269574 acts on. Nothing but field_0xb8 for
+    // the ledges 0x10-0x13 while the owner's fn_8026FC20() >= 1.
     void fn_8026C350(u16 tile);
     // 0x8026E1E0: run after the first probe pass only. Counts frames of
     // pushing into a blocked side (field_0xa0, up to 20) and frames of not

@@ -432,7 +432,7 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
   next to a blocked side) marking 0x48, and the respawn point 0xD1C.
   Its literals put fn_8026E68C at 100 %. No code in the Player units reads
   0x90-0x97, 0x9B-0x9F or 0xBB (left unnamed).
-  Unwritten: fn_8026B81C (0xB34), fn_8026C350 (0x1E90, the tile switch with
+  Round 12 wrote fn_8026B81C (0xB34) and fn_8026C350 (0x1E90, the tile switch with
   jump table 0x804A7338 / 0x804A71B4).
 
 ## Round 3, agent C (Opus 5.5, 2026-11-05): input, update B, manager update
@@ -1155,3 +1155,53 @@ section's last 4 bytes are padding). Left unwritten: none of the state handlers.
 - **PS JGeometry**: fn_80233C08 is libs' JGeometry/Vec.h TVec3<f32>::normalize() (PSVECSquareMag
   + PSVECScale); the game's JGeometry.h has no paired-single TVec3. fn_80232A0C (cross-player
   pass, 370 boot instructions) needs the same.
+## Round 12 (tu_802684A4) (agent V, Opus 5.5, 2026-11-05)
+
+- Unit 14 -> 15 / 25 (+1 honest), every function now written. **fn_8026B81C** 100 %,
+  **fn_8026C350** 98.52 % (structurally close). Their jump tables are named after the
+  compiler's locals in symbols.txt (`@2537`, `@3120`, as `@1454` for fn_8026EB1C); .data
+  5 % -> 93 %.
+- **What the probe tiles do** (fn_8026C350, the tile under fn_80268BC4's probe point in
+  direction field_0x1c; tile codes from fn_8022461C on the owner's layer):
+  - 0x00 and every unlisted tile: open floor, field_0x20, unless fn_80226850 (the layer's
+    other tile query) gives a hole there (6, 0xB8, 0x59). 0x0C, 0x39: nothing.
+  - Solid: 0x01, 0x21, 0x24, 0x40-0x43 always; 0x22 while GameView field_0x170, 0x25 / 0x26
+    while GameView field_0x171 is 0 / 1; 0x3E unless fn_80237A80(index) (tu_8022AD64).
+  - Shapes by where the point lies in its 16-unit cell (`(s32)x % 16`, cellX / cellY): half
+    tiles 4-7 (y < 8, y > 8, x < 8, x > 8), diagonals 8-0xB (x + y >= 16, x < y, x >= y,
+    x + y < 16), corners 0x18-0x1B (both halves) and their complements 0x1C-0x1F (either).
+  - Walls 0x27-0x2F: solid while the owner is >= 8 up (unless fn_8025F448), fn_80240F14, or
+    group mode 4 with fn_80240670; 0x28-0x2F also over a half cell, 0x2A / 0x2B (0x2E / 0x2F)
+    only at height 0 for field_0x3dc 3 (2).
+  - Ledges: 0x10-0x13 set field_0xb8 and fall into 0x14-0x17, fn_8026E68C(tile). 0x3C / 0x3D
+    are split cells: upper half as 0x0D, one x half solid, the other the ledge 0x10 (facing
+    -y) / 0x11 (+y) or floor.
+  - Push blocks: 0x30 fn_8026EE60 then (falls through) fn_8026EC88(-1); 0x31-0x34
+    fn_8026EC88(tile - 0x31); 0x35-0x38 fn_8026F54C / F388 / F1C4 / F000.
+  - Per-direction marks for fn_80269574, all only on the first pass (field_0xb0 <= 1):
+    field_0x58 (tile 2, low part of 0x23; at height 0), field_0x60 (0x60, height 0),
+    field_0x68 (3: on the ground (fn_802413F0, <= 1 up) and not fn_8024BBB0; 0x4C-0x4F the
+    same for another player's tile 0x4C + i, i != index, when the root's player mask has the
+    owner or, in group mode 4, fn_80240888() == fn_80248778(), and neither fn_80270A8C nor
+    fn_80241230), field_0x78 (0x0D, 0x3B: solid while fn_80241230, else on the ground),
+    field_0x88 (0x0E, 0x3A: on the ground), field_0x50 (0x20: fn_802413F0, below 1),
+    field_0x70 (0x50). 0x58-0x5F: diagonal cells, solid half as 8-0xB, the other half
+    field_0x88 under fn_802DEB58 (0x5C-0x5F: else as 0x0D). 0x0E tests fn_802DEB58 and does
+    the same either way.
+  - Breakables: 0x51 solid; unless fn_80270C88, field_0xba when the tile on layer + 8 (or 1)
+    is 0x60, else fn_80272160(1, probe, 4). 0x52 / 0x53 solid; on the first pass with
+    fn_80240F28, BgRewrite fn_802A3948 to tile 0x9D / 0x3E0 (0x53 also sound 0x20025 via
+    fn_80230FD0) and 'KMRI' smoke (layer >= 8) or emitters 0xF9 / 0xFA.
+  - While fn_8026FC20() >= 1 the switch is skipped: only 0x10-0x13 set field_0xb8.
+- fn_8026B81C (second probe, another player's layer) has the same case groups (one
+  jump-table label per group, as the original) but every acting tile only blocks.
+- Source shape: the marks are early-return inlines (mark58 ... mark88; `z > 1` exits give
+  the original's `bgt`, a `<=` test would add cror); the wall test is written out in each case
+  (a bool inline materialises it); the 0x10-0x13 test before the switch is itself a switch.
+- Open: fn_8026C350 keeps isPlayerBitSet's bool in the original (cmplwi 1) and has this / tile
+  / switch copy in r30 / r29 / r31. fn_80269574 not revisited (allSet in blockMarked50 is
+  worse, 95.9 %). canPush (fn_8026EE60 family): the original builds the step with a
+  component TVec3f (three lfs / stfs, no psq); `TVec3f step(v.x, v.y, v.z)` reaches
+  fn_8026EE60 90.2 % / F000 91.0 % but drops fn_8026EC88 (86.8 -> 85.6), so it stays.
+- Player.h: declared `extern "C" bool fn_80237A80(s32 player)` (tu_8022AD64, unwritten). No
+  new Player fields needed.
