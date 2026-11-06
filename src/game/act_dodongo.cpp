@@ -4,6 +4,24 @@
 
 extern const char* lbl_804A3208[];
 
+void Dodongo_804A3334::update() {
+    switch (field_0x234) {
+    case 0:
+    case 2:
+        fn_801ACFF4();
+        break;
+    case 1:
+        fn_801ACCF0();
+        break;
+    }
+
+    for (s32 i = 0; i < 5; i++) {
+        if (mTimers[i] > 0) {
+            mTimers[i]--;
+        }
+    }
+}
+
 void Dodongo_804A3334::fn_801AC930() {
     SpriteParams_801F5AE0 params;
     f32 scale = 1.0f;
