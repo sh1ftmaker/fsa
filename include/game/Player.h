@@ -1808,7 +1808,7 @@ bool fn_80230498(s32 player, const JGeometry::TVec3f* pos, s32 id, u8 a, s8 b, s
 // return); the caller uses the result (mr r26, r3 at 0x80306B44).
 s32 fn_802340A0(s32 player);
 // -> fn_80290070; false without the player. 3 units (act_warp, act_magic_circle, tu_802957CC; clrlwi 24).
-void fn_802316C8(s32 player, s32 layer, const JGeometry::TVec3f* pos);
+bool fn_802316C8(s32 player, s32 layer, const JGeometry::TVec3f* pos);
 bool fn_802317F0(s32 player, s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
 // 1 unit (tu_8023FBF0). -> &field_0x324 (TVec2f); else &lbl_804CF460 (a TVec3f, its x / y).
 const JGeometry::TVec2f* fn_80238430(s32 player);
