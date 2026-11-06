@@ -462,7 +462,7 @@ game/tu_80379F84.cpp	menus	low	cls_804AE9A0: calls screen units tu_803A8DFC, tu_
 game/tu_8037ACC4.cpp	menus	low	drives the pause screens (tu_8044C7F0, tu_80453AF8); called by GameRoot	hand
 game/act_old_man.cpp	npcs	med	actors.tsv (actor spawner): npc JIJI Old Man	auto
 game/act_magic_jar.cpp	objects	med	actors.tsv (actor spawner): object MTBO Magic jar	auto
-game/tu_8037DF68.cpp	menus	med	MessageManager_804AF070: message windows ('gc_four_swords_text_e.bmg')	hand
+game/tu_8037DF68.cpp	menus	high	MessageManager_804AF070: its ctor loads 'gc_four_swords_text_e.bmg' and 'rock_24_20_4i_e.bfn' and builds the four message windows; getMessageText_803832BC / fn_8037F2FC lay out BMG text	hand
 game/act_great_fairy_bfry.cpp	npcs	high	actors.tsv (actor spawner): npc BFRY Great Fairy	auto
 game/act_talking_sign.cpp	objects	med	actors.tsv (actor spawner): object KNBN Talking sign	auto
 game/tu_8039003C.cpp	menus	low	calls the stage select and map screens; called by GameRoot only	hand
