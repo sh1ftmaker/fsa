@@ -41,6 +41,10 @@ public:
     // 0x80208520
     void fn_80208520(JGeometry::TVec2f* outPos, JGeometry::TVec2f* outStep);
 
+    // Inlined into init, vfunc_0x90 and fn_80208244 (no standalone copy in the
+    // original): spawn the four slimes of the formation, test the trigger
+    // condition of mode field_0x340, average the live slimes' positions, and
+    // pick a direction towards the nearest player.
     void spawnSlimes();
     bool checkTrigger();
     void calcCenter(f32* outX, f32* outY);

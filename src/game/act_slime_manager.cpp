@@ -1,3 +1,4 @@
+#include "game/ActorId.h"
 #include "game/GameAudio.h"
 #include "game/act/act_slime_manager.h"
 #include "game/GameGlobals.h"
@@ -5,6 +6,9 @@
 #include "game/ActorManager.h"
 #include "game/act/tu_80209C14.h"
 
+// Steering wrapper: without it the arguments are evaluated after
+// getActorManager_801F856C() (init 97.8 %, vfunc_0x90 98.0 %); with it the
+// call is made on the arguments' registers as in the original.
 static inline s32 spawnActorInline(u32 id, s32 layer, const JGeometry::TVec3f* pos, u32 arg, s32 a, s32 b) {
     return getActorManager_801F856C()->spawnActor_801F9484(id, layer, pos, arg, a, b);
 }
@@ -26,7 +30,7 @@ inline void cls_804A5BD8::spawnSlimes() {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        mSlots[i].mSerial = spawnActorInline('FOSL', field_0x4, field_0x340 == 3 ? &mPos : &pos, mSerial, -1, -1);
+        mSlots[i].mSerial = spawnActorInline(ACTOR_FOSL, field_0x4, field_0x340 == 3 ? &mPos : &pos, mSerial, -1, -1);
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSlots[i].mSerial);
         if (actor != NULL) {
             actor->field_0x94 = i;
