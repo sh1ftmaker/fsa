@@ -1260,11 +1260,17 @@ extern "C" cls_801C0D70* fn_801C0D70();
 // update sets it to 1 (and the actor manager's reset functions call the getter).
 class ActorBase_804A5770;
 struct cls_80204638 {
+    // 0x802046FC (not written yet).
+    bool fn_802046FC(JGeometry::TVec3f* vel, const JGeometry::TVec3f* pos);
+    // 0x80204834 (not written yet).
+    void fn_80204834();
     // 0x802049E0 (not written yet). Removes the actor from the slot the byte
     // at its 0x34a selects in the table (0x4 + 8 * slot): clears the first
     // slot holding it, else the second. Called by act_thief's destructor on
     // fn_80204638()'s result.
     void fn_802049E0(ActorBase_804A5770* actor);
+    // 0x80204A20 (not written yet).
+    void fn_80204A20(ActorBase_804A5770* actor);
 
     /* 0x00 */ u8 field_0x0;
     // The inlined constructor writes up to 0xD0 (a TVec3f[10] at 0x58), but the

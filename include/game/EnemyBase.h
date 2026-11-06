@@ -393,6 +393,9 @@ extern "C" void fn_801CB5CC(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s
 extern "C" void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* spawnPos, s32 angle, f32 dist,
                             JGeometry::TVec2f* out);
 
+// game/tu_801CB270.cpp (not written yet). Returns player's gem/rupee count.
+s32 fn_801CCF34(s32 player);
+
 extern "C" {
 
 // game/tu_801CB270.cpp (not written yet; 0x801CCFE4, 0xEC bytes). Whether

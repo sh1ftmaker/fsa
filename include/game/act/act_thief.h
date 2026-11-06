@@ -33,6 +33,7 @@ public:
     // every field below, and resets the two timers at 0x368 and 0x374.
     Thief_804A5A30();
     virtual ~Thief_804A5A30();
+    /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
     // Overrides in game/tu_80206B30.cpp (0x80206B30-0x80207004; slot order).
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
@@ -41,15 +42,15 @@ public:
     /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x64 */ virtual u8 vfunc_0x64();
     /* 0x68 */ virtual u8 vfunc_0x68();
+    /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x8C */ virtual void vfunc_0x8C();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    /* 0x94 */ virtual void vfunc_0x94();
+    /* 0x98 */ virtual void vfunc_0x98();
+    /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
     // 0x80204D6C (act_thief): the last slot of the vtable. Tells the camera
     // to keep mPos in view, unless the thief is in state 8 or 9.
     /* 0xA0 */ virtual void vfunc_0xA0();
-    // 0x80204DAC (act_thief): the Thief's slot 0x98 (EnemyBase's step). In
-    // state 3 with field_0xc4 set it takes the player in field_0xc8's
-    // direction, angle and position (and, on a layer change, its position
-    // in field_0x32c); in other states it runs fn_801CE32C when no hit bit
-    // is set.
-    /* 0x98 */ virtual void vfunc_0x98();
 
     // 0x802072E4 (tu_80206B30): mBox = (-8, -16)-(8, 8), copied to mBox2.
     void fn_802072E4();
@@ -75,7 +76,7 @@ public:
     void fn_8020FADC();
 
     /* 0x340 */ s32 field_0x340; // -1 at construction
-    /* 0x344 */ s32 field_0x344;
+    /* 0x344 */ u32 field_0x344;
     /* 0x348 */ u8 field_0x348;
     /* 0x349 */ u8 field_0x349;
     /* 0x34A */ u8 field_0x34a;
