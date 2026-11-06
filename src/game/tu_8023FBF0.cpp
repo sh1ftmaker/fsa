@@ -2430,19 +2430,21 @@ bool Player_804A6F38::fn_80248A24() {
 // The size of this player's group: itself, its leader (field_0xd60) and
 // every active follower (fn_8022F514) whose leader (fn_8022F3DC) is that
 // leader, or this player when it leads.
-// FIXME: 97.3 %. Registers only: count / index r29 / r28 in the original,
-// r30 / r29 here. (fn_802487FC, unwritten, inlines this function after
-// fn_802486A0; its direct copy zeroes count and index li / li in the original,
-// li / mr in ours, "different" 94.9 % in four shapes.)
+// `leader` is declared first so that it gets the highest register (r30) as in
+// the original (declared in its branch it takes r28). fn_802487FC (unwritten)
+// inlines this function after fn_802486A0; its direct copy zeroes count and
+// index li / li in the original, li / mr in ours ("different" 94.9 %, six
+// shapes).
 s32 Player_804A6F38::fn_80248970() const {
+    s32 leader;
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
         if (i == field_0x4) {
             count++;
         } else if (fn_8022F514(i)) {
-            s32 team = field_0xd60;
-            if (team >= 0) {
-                if (team == fn_8022F3DC(i)) {
+            leader = field_0xd60;
+            if (leader >= 0) {
+                if (leader == fn_8022F3DC(i)) {
                     count++;
                 }
             } else {
