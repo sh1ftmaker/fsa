@@ -14,6 +14,8 @@
 static const s16 lbl_8053C8B0[] = {0, 2, -1, -1};
 static const s16* lbl_80539F28[] = {lbl_8053C8B0, NULL};
 
+// Actor spawned when the wall melts, indexed by field_0x23c: the actor id (spawnActor_801F9484's first
+// argument) and, in lbl_80464C0C, its spawn argument.
 static const u32 lbl_80464BE8[] = {
     'NULL', 'WIZR', 'RUPY', 'SLR1', 'FAGN', 'FARY', 'KEY0', 'GOLD', 'HART'
 };
@@ -78,7 +80,9 @@ void IceWall_8049DE18::init() {
     mSprite.fn_801D1F14(0.0f);
 }
 
-// FIXME: 95.85%. scheduling+regalloc + reloc-name (same instructions modulo registers, different order).
+// FIXME: 95.85%. scheduling+regalloc + reloc-name: same instructions, but the three box setups (box, box2,
+// box3) interleave their loads, fadds and stores differently and use other float registers, the saved
+// registers r29/r30 are swapped in cases 1 and 0, and the 0.0f / 1.0f / 0.5f literals sit in other .sdata2 entries.
 void IceWall_8049DE18::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box;
@@ -99,9 +103,10 @@ void IceWall_8049DE18::update() {
     case 0: {
         fn_80239914(&box, field_0x4, mSerial);
         s32 player = fn_801F285C(NULL, NULL, true, -1);
-        bool hit;
+        bool hit; // the original tests the result of an inlined bool helper (li 1 / li 0, clrlwi.)
         if (player >= 0) {
             startSound_801F0E34(0x400D1, 0);
+            // fn_802379E4 reads only x / y; the original stores just those two (as act_snow_wall).
             pos.set(mPos.x, mPos.y);
             fn_802379E4(player, (const JGeometry::TVec3f*)&pos);
             hit = true;
