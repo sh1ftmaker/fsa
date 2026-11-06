@@ -1037,6 +1037,8 @@ void ActorBase_804A5770::fn_801F3128(JGeometry::TVec2f* out) {
 // The players' hits (fn_801F2FAC, inlined), else one from an overlapping
 // actor (fn_801F2DB4 with no filter).
 u8 ActorBase_804A5770::fn_801F305C() {
+    // Assignment in the condition: the narrowing of the inlined
+    // fn_801F2FAC result lands in r3 (clrlwi. r3, r29, 24) only this way.
     u8 hit;
     if (!(hit = fn_801F2FAC())) {
         hit = fn_801F2DB4('NULL', 'NULL', NULL);

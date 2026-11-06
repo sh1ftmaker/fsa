@@ -102,8 +102,7 @@ public:
     // arguments read; update() passes r3 on to vfunc_0x9C (clrlwi 24).
     // vfunc_0x5C/0x60/0x64 are u8 like the ActorBase hit tests they return
     // (fn_801F2FAC / fn_801F2DB4 / fn_801F2618 results go out with mr, no
-    // bool conversion; overrides likewise). ShadowLinkBase_804A6A00's
-    // vfunc_0x60 (tu_80220F54) is still declared bool.
+    // bool conversion; overrides likewise).
     /* 0x64 */ virtual u8 vfunc_0x64();
     // 0x801CE928: fn_801F2B7C(field_0x114, -1, 1) (the players hit, a
     // bitmask) when mBox is not empty, else 0. 9 overrides, no arguments
