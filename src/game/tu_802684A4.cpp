@@ -51,6 +51,14 @@ static const f32 lbl_8046BAE8[8][3] = {
     {5.0f, 5.0f, 0.0f}, {-5.0f, 5.0f, 0.0f}, {5.0f, -5.0f, 0.0f}, {-5.0f, -5.0f, 0.0f},
 };
 
+// Marks the current probe direction (field_0x1c) in one of the per-direction flag arrays.
+// Used for every such store: fn_8026C350's size with it reaches the inline budget at the
+// original's call list (fn_8026EE60 / EC88 / F000-F54C out of line, no pragma; written out,
+// ours inlined all six and the pragmas only hid four of them).
+static inline void setDir(cls_804A71A8* p, u8* flags) {
+    flags[p->field_0x1c] = 1;
+}
+
 static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
@@ -327,7 +335,7 @@ static inline s32 cellY(const cls_804A71A8* p) {
 static inline void markFloor(cls_804A71A8* p) {
     u16 floor = fn_80226850(&p->field_0x8, p->field_0x4->field_0x3b4);
     if (floor != 6 && floor != 0xB8 && fn_80226850(&p->field_0x8, p->field_0x4->field_0x3b4) != 0x59) {
-        p->field_0x20[p->field_0x1c] = 1;
+        setDir(p, p->field_0x20);
     }
 }
 
@@ -342,7 +350,7 @@ static inline void mark58(cls_804A71A8* p) {
     if (p->field_0xb0 > 1) {
         return;
     }
-    p->field_0x58[p->field_0x1c] = 1;
+    setDir(p, p->field_0x58);
 }
 
 // Tile 0x60: field_0x60, at height 0.
@@ -353,7 +361,7 @@ static inline void mark60(cls_804A71A8* p) {
     if (p->field_0xb0 > 1) {
         return;
     }
-    p->field_0x60[p->field_0x1c] = 1;
+    setDir(p, p->field_0x60);
 }
 
 // Tile 3 (and the other players' tiles 0x4C-0x4F): field_0x68, unless
@@ -371,13 +379,13 @@ static inline void mark68(cls_804A71A8* p) {
     if (p->field_0xb0 > 1) {
         return;
     }
-    p->field_0x68[p->field_0x1c] = 1;
+    setDir(p, p->field_0x68);
 }
 
 // Tile 0x0D: blocked while fn_80241230 holds, else field_0x78.
 static inline void mark78(cls_804A71A8* p) {
     if (p->field_0x4->fn_80241230()) {
-        p->field_0x38[p->field_0x1c] = 1;
+        setDir(p, p->field_0x38);
         return;
     }
     if (!p->field_0x4->fn_802413F0()) {
@@ -389,7 +397,7 @@ static inline void mark78(cls_804A71A8* p) {
     if (p->field_0xb0 > 1) {
         return;
     }
-    p->field_0x78[p->field_0x1c] = 1;
+    setDir(p, p->field_0x78);
 }
 
 // Tiles 0x0E, 0x3A: field_0x88.
@@ -403,7 +411,7 @@ static inline void mark88(cls_804A71A8* p) {
     if (p->field_0xb0 > 1) {
         return;
     }
-    p->field_0x88[p->field_0x1c] = 1;
+    setDir(p, p->field_0x88);
 }
 
 // The low half of tiles 0x3C / 0x3D: the ledge 0x10 facing -y, 0x11 facing
@@ -443,11 +451,18 @@ static inline void countPush(cls_804A71A8* p) {
 // probe is its facing, fn_8024FF84() < 0) with a free tile (0, 2 or 0x50)
 // one step of 16 beyond the probe.
 static inline bool canPush(cls_804A71A8* p) {
-    if (p->field_0x4->fn_80250D30() && p->field_0x1c == p->field_0x4->field_0x3dc &&
+    if (p->field_0x4->fn_80250D30() && p->field_0x1c == p->field_0x4->getFacing() &&
         p->field_0x4->fn_8024FF84() < 0)
     {
         JGeometry::TVec3f ahead = p->field_0x8;
-        ahead += JGeometry::TVec3f(lbl_8046B998[p->field_0x4->field_0x3dc]);
+        // The step is copied member by member (three lfs / stfs, then psq_l): a TVec3f
+        // constructor or copy of the table entry gives psq or reversed loads.
+        const Vec& d = lbl_8046B998[p->field_0x4->field_0x3dc];
+        JGeometry::TVec3f step;
+        step.x = d.x;
+        step.y = d.y;
+        step.z = d.z;
+        ahead += step;
         u16 tile = fn_8022461C(&ahead, p->field_0x4->field_0x3b4);
         if (tile == 0 || tile == 2 || tile == 0x50) {
             return true;
@@ -490,91 +505,84 @@ void cls_804A71A8::fn_8026F710() {
     field_0x14.y = 0.0f;
 }
 
-// Not auto-inlined: fn_8026C350 calls fn_8026F54C / F388 / F1C4 / F000 out of line in the
-// original (docs/INLINING.md, pragma rule 1).
-#pragma auto_inline off
-// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
+// fn_8026EE60 for one facing (fn_8026F54C: 3, F388: 2, F1C4: 0, F000: 1); each inlines it.
+// fn_8026C350 calls these four, fn_8026EE60 and fn_8026EC88 out of line: its inline budget
+// (docs/INLINING.md rule 5), with no pragma.
 void cls_804A71A8::fn_8026F54C() {
     if (field_0x4->field_0x3dc == 3) {
         fn_8026EE60();
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
-// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F388() {
     if (field_0x4->field_0x3dc == 2) {
         fn_8026EE60();
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
-// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F1C4() {
     if (field_0x4->field_0x3dc == 0) {
         fn_8026EE60();
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
-// FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F000() {
     if (field_0x4->field_0x3dc == 1) {
         fn_8026EE60();
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
-#pragma auto_inline reset
 
-// FIXME: 86.41. canPush's step vector is added with its x, y, z loaded in
-// reverse and its z half first (the original copies x, y, z in order to the
-// stack, then adds both halves); the spawn reads the owner's facing after
-// getActorManager_801F856C (the original keeps the owner and the facing in r29 / r30
-// across it).
+// FIXME: 99.86. Regalloc only: the serial takes r29 (the owner's register) where the
+// original reuses the facing's r30. The same source inlined in fn_8026F000-F54C is 100 %;
+// declaring `s32 serial; s32 dir;` first gives 100 % here but 99.65 % in all four.
+// Pushes the block ahead: a 'BLCK' 16 units along the facing, whose serial goes to the
+// owner's field_0xd94 unless the tile is 0x50.
 void cls_804A71A8::fn_8026EE60() {
     field_0xac = 1;
     if (canPush(this)) {
         JGeometry::TVec3f pos = field_0x8;
         pos.z = 0.0f;
-        Player_804A6F38* owner = field_0x4;
-        s32 dir = owner->field_0x3dc;
-        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
+        s32 dir = field_0x4->getFacing();
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, field_0x4->field_0x3b4, &pos, (dir & 3) << 2, -1, -1);
         if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
-// Not auto-inlined: fn_8026C350 calls fn_8026EC88 and fn_8026E68C calls fn_8026EB1C out of
-// line in the original (docs/INLINING.md, pragma rule 1).
-#pragma auto_inline off
-// FIXME: 86.81. As fn_8026EE60; the spawn also reads `player + 1` after
-// getActorManager_801F856C like the original, but the owner and facing are reloaded.
+// FIXME: 99.87. Regalloc only, as fn_8026EE60 (the serial in r28 where the original
+// reuses the facing's r29).
 void cls_804A71A8::fn_8026EC88(s32 player) {
     field_0xac = 1;
     if (player != field_0x4->fn_80240868()) {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     } else if (canPush(this)) {
         JGeometry::TVec3f pos = field_0x8;
         pos.z = 0.0f;
-        Player_804A6F38* owner = field_0x4;
-        s32 dir = owner->field_0x3dc;
-        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, owner->field_0x3b4, &pos,
-                                                ((player + 1) & 7) << 4 | (dir & 3) << 2, -1, -1);
+        s32 dir = field_0x4->getFacing();
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLCK, field_0x4->field_0x3b4, &pos,
+                                                (dir & 3) << 2 | ((player + 1) & 7) << 4, -1, -1);
         if (fn_8022461C(&pos, field_0x4->field_0x3b4) != 0x50 && getActorManager_801F856C()->findActorBySerial_801F666C(serial) != NULL) {
             field_0x4->field_0xd94 = serial;
         }
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
+// Not auto-inlined: fn_8026E68C calls fn_8026EB1C out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // Whether the tile allows a push toward the owner's facing.
 u8 cls_804A71A8::fn_8026EB1C(u16 tile) {
     if (!field_0x4->fn_80250D30()) {
@@ -614,15 +622,12 @@ u8 cls_804A71A8::fn_8026EB1C(u16 tile) {
 }
 #pragma auto_inline reset
 
-// FIXME: 99.97. Code identical; the literals 16.0f (lbl_80540280) and the
-// int-to-float constant (lbl_80540270) stay @NNN until the unit's literal
-// pool is complete (fn_80269574 and fn_8026C350 come first).
 void cls_804A71A8::fn_8026E68C(u16 tile) {
     fn_802381B8(field_0x4->field_0x4);
     if (field_0x4->fn_80241230()) {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     } else if (field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2) {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     } else if (!field_0x4->fn_80240670() &&
                (fn_8026EB1C(tile) || field_0x4->fn_8024F5E4() || field_0x4->fn_80240F28() ||
                 (gGameRoot_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 2 && lbl_80529DEC.field_0x11c == 1)))
@@ -677,7 +682,7 @@ void cls_804A71A8::fn_8026E68C(u16 tile) {
             field_0x4->field_0x441 = true;
         }
     } else {
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
     }
 }
 
@@ -735,13 +740,9 @@ void cls_804A71A8::fn_8026E1E0() {
     }
 }
 
-// FIXME: 95.33 (98.52 before the deferred switch). The original also calls fn_8026EE60
-// out of line here although fn_8026F000-F54C inline it: this caller's inline budget
-// (0x1E90 bytes; docs/INLINING.md rule 5), which ours does not reach, so ours inlines it.
-// The 0x4C-0x4F mask test: the original keeps
-// isPlayerBitSet's bool (neg / or / srwi, cmplwi 1) where this folds it into
-// and.; `this`, the tile and its switch copy sit in r30 / r29 / r31 (ours
-// r31 / r30 / r29).
+// It calls fn_8026EE60, fn_8026EC88 and fn_8026F000-F54C out of line (no pragma): with every
+// per-direction mark written through setDir, its size reaches the inline budget
+// (docs/INLINING.md rule 5) at exactly the original's call list.
 // What the tile under a probe point inside the view does to the owner's
 // direction field_0x1c: blocks it (field_0x38; the half, diagonal and corner
 // tiles by where the point lies in the tile, as fn_8026B81C), opens it
@@ -767,7 +768,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         markFloor(this);
         break;
     case 0x01:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x02:
         mark58(this);
@@ -777,42 +778,42 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         break;
     case 0x04:
         if (cellY(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x05:
         if (cellY(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x06:
         if (cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x07:
         if (cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x08:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x09:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x0A:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x0B:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x0C:
@@ -842,75 +843,75 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         break;
     case 0x18:
         if (cellY(this) < 8 && cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x19:
         if (cellY(this) < 8 && cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1A:
         if (cellY(this) > 8 && cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1B:
         if (cellY(this) > 8 && cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1C:
         if (cellY(this) > 8 || cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1D:
         if (cellY(this) > 8 || cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1E:
         if (cellY(this) < 8 || cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1F:
         if (cellY(this) < 8 || cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x20:
         if (field_0x4->fn_802413F0() && field_0x4->mPos.z < 1.0f) {
-            field_0x50[field_0x1c] = 1;
+            setDir(this, field_0x50);
         }
         break;
     case 0x21:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x22:
         if (getGameView_802D6A9C()->field_0x170 != 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x23:
         if (cellY(this) < 12) {
             mark58(this);
         } else if (field_0x1c == 2) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x24:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x25:
         if (getGameView_802D6A9C()->field_0x171 == 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x26:
         if (getGameView_802D6A9C()->field_0x171 == 1) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     // Walls: closed while the owner is 8 or more up (unless fn_8025F448),
@@ -923,7 +924,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()))
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x28:
@@ -931,7 +932,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             cellY(this) < 8)
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x29:
@@ -939,7 +940,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             cellY(this) > 8)
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2A:
@@ -947,7 +948,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             (cellX(this) < 8 && (field_0x4->field_0x3dc != 3 || field_0x4->mPos.z <= 0.0f)))
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2B:
@@ -955,7 +956,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             (cellX(this) > 8 && (field_0x4->field_0x3dc != 3 || field_0x4->mPos.z <= 0.0f)))
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2C:
@@ -963,7 +964,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             cellY(this) < 8)
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2D:
@@ -971,7 +972,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             cellY(this) > 8)
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2E:
@@ -979,7 +980,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             (cellX(this) < 8 && (field_0x4->field_0x3dc != 2 || field_0x4->mPos.z <= 0.0f)))
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x2F:
@@ -987,7 +988,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
             (cellX(this) > 8 && (field_0x4->field_0x3dc != 2 || field_0x4->mPos.z <= 0.0f)))
         {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x30:
@@ -1023,7 +1024,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         if (cellY(this) > 8) {
             mark78(this);
         } else if (cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else {
             ledgeOrFloor(this);
         }
@@ -1034,19 +1035,19 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         } else if (cellX(this) < 8) {
             ledgeOrFloor(this);
         } else {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x3E:
         if (!fn_80237A80(field_0x4->field_0x4)) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x40:
     case 0x41:
     case 0x42:
     case 0x43:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x4C:
     case 0x4D:
@@ -1057,16 +1058,16 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         // it is the owner's turn).
         if (((field_0x4->fn_802486A0() != 4 && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4->field_0x4) == true) ||
              (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() == field_0x4->fn_80248778())) &&
-            tile - 0x4C != field_0x4->field_0x4 && !field_0x4->fn_80270A8C() && !field_0x4->fn_80241230())
+            tile - 0x4C != field_0x4->getIndex() && !field_0x4->fn_80270A8C() && !field_0x4->fn_80241230())
         {
             mark68(this);
         }
         break;
     case 0x50:
-        field_0x70[field_0x1c] = 1;
+        setDir(this, field_0x70);
         break;
     case 0x51:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         if (!field_0x4->fn_80270C88()) {
             u16 under;
             if (field_0x4->field_0x3b4 >= 8) {
@@ -1082,51 +1083,51 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         }
         break;
     case 0x52:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         if (field_0xb0 <= 1 && field_0x4->fn_80240F28()) {
-            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->field_0x3b4, 0x9D);
+            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->getLayer(), 0x9D);
             breakEffect(this);
         }
         break;
     case 0x53:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         if (field_0xb0 <= 1 && field_0x4->fn_80240F28()) {
-            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->field_0x3b4, 0x3E0);
+            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->getLayer(), 0x3E0);
             fn_80230FD0(field_0x4->field_0x4, 0x20025);
             breakEffect(this);
         }
         break;
     case 0x58:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         }
         break;
     case 0x59:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         }
         break;
     case 0x5A:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         }
         break;
     case 0x5B:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         }
         break;
     case 0x5C:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         } else {
@@ -1135,7 +1136,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         break;
     case 0x5D:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         } else {
@@ -1144,7 +1145,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         break;
     case 0x5E:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         } else {
@@ -1153,7 +1154,7 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
         break;
     case 0x5F:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         } else if (fn_802DEB58()) {
             mark88(this);
         } else {
@@ -1177,108 +1178,108 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
 void cls_804A71A8::fn_8026B81C(u16 tile) {
     switch (tile) {
     case 0x01:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x04:
         if (cellY(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x05:
         if (cellY(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x06:
         if (cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x07:
         if (cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x08:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x09:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x0A:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x0B:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x18:
         if (cellY(this) < 8 && cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x19:
         if (cellY(this) < 8 && cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1A:
         if (cellY(this) > 8 && cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1B:
         if (cellY(this) > 8 && cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1C:
         if (cellY(this) > 8 || cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1D:
         if (cellY(this) > 8 || cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1E:
         if (cellY(this) < 8 || cellX(this) > 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x1F:
         if (cellY(this) < 8 || cellX(this) < 8) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x20:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x21:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x22:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x24:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x25:
         if (getGameView_802D6A9C()->field_0x171 == 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x26:
         if (getGameView_802D6A9C()->field_0x171 == 1) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x27:
@@ -1290,91 +1291,91 @@ void cls_804A71A8::fn_8026B81C(u16 tile) {
     case 0x2D:
     case 0x2E:
     case 0x2F:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x30:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x31:
     case 0x32:
     case 0x33:
     case 0x34:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x35:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x36:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x37:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x38:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x3C:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x3D:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x3E:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x40:
     case 0x41:
     case 0x42:
     case 0x43:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x51:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x52:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x53:
-        field_0x38[field_0x1c] = 1;
+        setDir(this, field_0x38);
         break;
     case 0x58:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x59:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5A:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5B:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5C:
         if (cellX(this) + cellY(this) >= 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5D:
         if (cellX(this) - cellY(this) < 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5E:
         if (cellX(this) - cellY(this) >= 0) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x5F:
         if (cellX(this) + cellY(this) < 16) {
-            field_0x38[field_0x1c] = 1;
+            setDir(this, field_0x38);
         }
         break;
     case 0x60:
@@ -1740,18 +1741,18 @@ void cls_804A71A8::fn_80268BC4() {
                     field_0x8.x += layerBox(getPlayerLayer_8023DE58(field_0x4->field_0xd70))->i.x;
                     field_0x8.y += layerBox(getPlayerLayer_8023DE58(field_0x4->field_0xd70))->i.y;
                     if (field_0x4->fn_802684A4(&field_0x8, getPlayerLayer_8023DE58(field_0x4->field_0xd70))) {
-                        field_0x28[field_0x1c] = 1;
+                        setDir(this, field_0x28);
                     } else {
                         fn_8026B81C(fn_8022461C(&field_0x8, getPlayerLayer_8023DE58(field_0x4->field_0xd70)));
                     }
                     field_0x8 = saved;
                 }
                 if (field_0x4->fn_802684A4(&field_0x8, field_0x4->field_0x3b4)) {
-                    field_0x28[field_0x1c] = 1;
+                    setDir(this, field_0x28);
                 } else if (field_0x4->fn_8026FC20() <= 0 && !getGameView_802D6A9C()->fn_802DCD0C() &&
                            !contains(*layerBox(field_0x4->field_0x3b4), field_0x8))
                 {
-                    field_0x38[field_0x1c] = 1;
+                    setDir(this, field_0x38);
                 } else {
                     fn_8026C350(tile);
                 }
@@ -1768,10 +1769,10 @@ void cls_804A71A8::fn_80268BC4() {
             field_0x99 = field_0x98;
             field_0x98 = 0;
         }
-        JGeometry::TVec2f moved(field_0x4->mPos.x, field_0x4->mPos.y);
+        JGeometry::TVec2f moved;
+        moved.set(field_0x4->mPos.x, field_0x4->mPos.y);
         moved.set(moved.x - startX, moved.y - startY);
-        field_0x14.x = moved.x;
-        field_0x14.y = moved.y;
+        field_0x14 = moved;
     }
 }
 

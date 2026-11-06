@@ -63,6 +63,11 @@ public:
     // every read in that unit, they flip those 8 sites and change nothing else.
     s32 getIndex() const { return field_0x4; }
     s32 getLayer() const { return field_0x3b4; }
+    // The facing (0x3DC, 0-3: +x, -x, +y, -y), the same kind of getter. Evidence: tu_802684A4's
+    // block pushes (fn_8026EE60, fn_8026EC88, and inlined in fn_8026F000-F54C) load it into a
+    // saved register ahead of getActorManager_801F856C, and canPush's `field_0x1c ==
+    // getFacing()` gets the original's registers; plain reads do neither (86-90 -> 99.9-100 %).
+    s32 getFacing() const { return field_0x3dc; }
 
     // tu_8023FBF0 getters and setters the queries forward to.
     void fn_80254660(); // tu_8023FBF0; the player's reset, run per slot by fn_8023F6C4
