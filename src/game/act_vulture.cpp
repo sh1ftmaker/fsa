@@ -8,16 +8,6 @@
 #include "game/ViewLayer.h"
 #include "JSystem/JMath/JMath.h"
 
-static inline void normalize(JGeometry::TVec2f& v) {
-    f32 sq = v.x * v.x + v.y * v.y;
-    if (sq <= 32.0f * FLT_EPSILON) {
-        return;
-    }
-    f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
-    v.x *= norm;
-    v.y *= norm;
-}
-
 static inline void approach(f32& cur, f32 target, f32 remaining) {
     if (remaining < FLT_EPSILON) {
         cur = target;
@@ -44,6 +34,8 @@ Vulture_804A4230::Vulture_804A4230() {
     field_0x2c8.y = 0.0f;
 }
 
+// FIXME: 87.60. Same instructions; field_0x90's low byte is loaded into another register, and in the else
+// branch the original loads/stores the four floats copied from mBox to mBox2 (0x60..0x6C to 0x70..0x7C) in a different order.
 void Vulture_804A4230::init() {
     EnemyBase_804A4808::init();
     u32 val = 4;
@@ -67,7 +59,7 @@ void Vulture_804A4230::init() {
     field_0x98 = 2;
     field_0x194 = 1;
     mPos.z = 1.0f;
-    mFlags |= 0x20;
+    mFlags |= ENEMY_FLAG_NO_FLOOR;
     mState = 0;
     mStateTimer = 0;
     field_0x250 = fn_801CD664(55) + 6;
@@ -77,13 +69,13 @@ void Vulture_804A4230::init() {
     mAnim.startAnim_801D22DC(0, 0, false);
 }
 
-// FIXME: 85.17 % (missing/extra + reloc-name). Compiler promotes local TVec2s to registers
-// instead of keeping stack temporaries at 0x8, 0x10, 0x18, 0x20.
+// FIXME: 85.53. Compiler promotes the local TVec2fs to registers instead of keeping stack temporaries
+// at 0x8, 0x10, 0x18, 0x20 (frame 0x60 instead of 0x80); literal names differ (reloc-name).
 void Vulture_804A4230::fn_801C0634() {
     JGeometry::TVec2f diff = field_0x2b8;
     diff.y -= field_0x2c0.y;
     diff.x -= field_0x2c0.x;
-    normalize(diff);
+    diff.normalize();
     diff.x *= field_0x2ac;
     diff.y *= field_0x2ac;
 
@@ -210,8 +202,7 @@ void Vulture_804A4230::fn_801C0438(s32 state) {
     mState = state;
 }
 
-// FIXME: 97.44 % (scheduling+regalloc + reloc-name). Same instructions modulo registers
-// and literal order.
+// FIXME: 97.68. Same instructions; registers (r29/r30) and the order of a few loads/stores differ.
 void Vulture_804A4230::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -327,6 +318,7 @@ void Vulture_804A4230::vfunc_0x90(u8 mapHit) {
                 JGeometry::TVec2f point;
                 point.x = mPos.x;
                 point.y = 8.0f + (mPos.y - mPos.z);
+                // fn_802265FC reads only (x, y); the original passes this 8-byte TVec2f slot (EnemyBase.h, fn_801CFA70).
                 if (fn_802265FC((const JGeometry::TVec3f*)&point, field_0x4) == 2) {
                     hit = true;
                 }
@@ -342,7 +334,6 @@ void Vulture_804A4230::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 99.53 % (reloc-name). 100 % instruction match; literal names not yet split.
 void Vulture_804A4230::vfunc_0x88() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     JGeometry::TVec2f vel(0.0f, 0.0f);
@@ -350,6 +341,7 @@ void Vulture_804A4230::vfunc_0x88() {
     switch (mState) {
     case 2:
     case 5:
+        // fn_801D01A0 reads only (x, y) of its target; the original passes this 8-byte TVec2f slot (EnemyBase.h, fn_801CFA70).
         fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b8, &vel, FLT_MAX);
         field_0x3c.x = vel.x;
         field_0x3c.y = vel.y;
@@ -386,7 +378,6 @@ void Vulture_804A4230::vfunc_0x88() {
     }
 }
 
-// FIXME: 99.75 % (reloc-name). 100 % instruction match; literal names not yet split.
 void Vulture_804A4230::vfunc_0x94() {
     f32 rate = 1.0f;
     switch (mState) {
@@ -413,13 +404,14 @@ void Vulture_804A4230::vfunc_0x74() {
     }
 }
 
-// FIXME: 99.58 % (regalloc-only + reloc-name). Registers r30/r31 swapped; literal names
-// not yet split.
+// FIXME: 99.63. Registers r30/r31 swapped (regalloc only).
 bool Vulture_804A4230::vfunc_0x58() {
     if ((mFlags & 0x4000) || mBox2.getWidth() <= 0.0f || mBox2.getHeight() <= 0.0f) {
         return false;
     }
 
+    // Declaration order only fixes the stack slots (vel54/vel48 sit at sp+0x54/0x48);
+    // declaring box/probe first lays the slots out differently.
     JGeometry::TVec3f vel54;
     JGeometry::TVec3f vel48;
     JGeometry::TBox2f box;
@@ -450,9 +442,10 @@ bool Vulture_804A4230::vfunc_0x58() {
     return hit;
 }
 
-// FIXME: 99.84 % (reloc-name). 100 % instruction match; literal names not yet split.
-bool Vulture_804A4230::vfunc_0x60() {
-    bool hit = false;
+// FIXME: 96.88. One extra clrlwi r3, r3, 24 before the return: our bool fn_801CEA60() result is
+// widened to the u8 return, the original returns r3 untouched.
+u8 Vulture_804A4230::vfunc_0x60() {
+    u8 hit = 0;
     if (!(mFlags & 0x4000)) {
         if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
             hit = fn_801CEA60();
@@ -463,9 +456,8 @@ bool Vulture_804A4230::vfunc_0x60() {
     return hit;
 }
 
-// FIXME: 99.80 % (reloc-name). 100 % instruction match; literal names not yet split.
-bool Vulture_804A4230::vfunc_0x5C() {
-    bool hit = false;
+u8 Vulture_804A4230::vfunc_0x5C() {
+    u8 hit = 0;
     if (!(mFlags & 0x4000)) {
         if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
             hit = fn_801F2FAC();
