@@ -12,6 +12,7 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "dolphin/card.h"
 #include "dolphin/os/OSReset.h"
 #include "dolphin/os/OSTime.h"
 #include <stdio.h>
@@ -1083,6 +1084,38 @@ void FileSelect_804AFF60::fn_803CE05C() {
     }
 }
 
+// State 3, the "start a new game?" prompt (field_0x114: 0 yes, 1 no): left /
+// right move the cursor; A on yes clears the save data and shows the file
+// list (fn_803C24BC), A on no goes to state 1.
+void FileSelect_804AFF60::fn_803CDEE8() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            field_0x80 = 0;
+            gGameRoot_8053AAF8->field_0xff = 0;
+            for (s32 i = 0; i < 3; i++) {
+                fn_803B950C(&lbl_8050EC80.mFiles[i], &lbl_8050EC80.mBodies[i]);
+            }
+            lbl_80529DEC.fn_80403680();
+            fn_803C24BC();
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0;
+            setState(1);
+            gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+}
+
 // FIXME: 95.09 %. One instruction extra: the original computes
 // frames + rowStep * 2 first and spills rowDelay at once (reloading it from
 // the stack), ours adds rowDelay to rowStep * 2 first, and keeps frames in r17
@@ -1234,6 +1267,23 @@ void FileSelect_804AFF60::fn_803CC62C() {
             gAudioMgr_8053AF80->fn_80458880(0xC, -1);
         }
     }
+}
+
+// State 8: copies the three files into field_0x5c / field_0x60, gives each
+// its checksum, hands both to the memory card manager to write (state 9 waits
+// for it) and keeps the card's serial number.
+void FileSelect_804AFF60::fn_803CC53C() {
+    lbl_8050EC80.fn_803B93E8(field_0x5c, field_0x60, 0);
+    fn_803BACF8(field_0x5c, 0);
+    lbl_8050EC80.fn_803B93E8(field_0x5c, field_0x60, 1);
+    fn_803BACF8(field_0x5c, 1);
+    lbl_8050EC80.fn_803B93E8(field_0x5c, field_0x60, 2);
+    fn_803BACF8(field_0x5c, 2);
+    lbl_8051C1A0.fn_803B9D54(field_0x5c, 0x258, field_0x60, 0x1D4C, 0);
+    setState(9);
+    u64 serial;
+    CARDGetSerialNo(lbl_8051C1A0.field_0x1ff4, &serial);
+    lbl_8051C1A0.field_0x1ff8 = serial;
 }
 
 void FileSelect_804AFF60::fn_803CC490() {

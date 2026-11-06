@@ -73,6 +73,10 @@ void fn_803B8C74(u8 value);
 // Owner: game/tu_803BACF8.cpp (0x803BADAC). True when `file`'s checksum words
 // (0xC0 / 0xC4) match its first 0xC0 bytes (cntlzw / srwi).
 bool fn_803BADAC(SaveFile_803B950C* file);
+// Owner: game/tu_803BACF8.cpp (0x803BACF8). Writes files[file]'s checksum
+// words: 0xC0 the byte sum of its first 0xC0 bytes, 0xC4 the sum of their
+// complements (the index is clrlwi'd: u8).
+void fn_803BACF8(SaveFile_803B950C* files, u8 file);
 
 // fn_803B950C: clears a file and its block and sets the file's defaults.
 void fn_803B950C(SaveFile_803B950C* file, SaveFileBody_803B950C* body);
