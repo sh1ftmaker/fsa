@@ -38,23 +38,6 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
 
-inline bool cls_8049CC40::isInside(s32 player) const {
-    s32 layer = field_0x4;
-    s32 playerLayer = getPlayerLayer_8023DE58(player);
-    if (playerLayer != layer) {
-        return false;
-    }
-    JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
-    JGeometry::TBox2f box(mBox);
-    box.addPos(mPos.x + 8.0f, mPos.y + 8.0f);
-    if (contains(box, pos)) {
-        return true;
-    }
-    return false;
-}
-
-// FIXME: 99.92%, reloc-name only: the 8.0f / 0.0f literals are @NNN here instead of lbl_8053C270 / lbl_8053C274;
-// the instructions are identical.
 void cls_8049CC40::update() {
     ActorBase_804A5770::update();
     switch (field_0x290) {
@@ -114,9 +97,9 @@ static inline void setRotScaleMtx(Mtx m, const JGeometry::TVec3f& rot, f32 scale
     m[2][2] = scaleZ * (cx * cy);
 }
 
-// FIXME: 96.75%, scheduling+regalloc + reloc-name. Same instructions as the target; the float registers (f25-f31)
+// FIXME: 97.08%, scheduling+regalloc. Same instructions as the target; the float registers (f25-f31)
 // holding the sines, cosines and the two scales in the two inlined setRotScaleMtx copies differ, so the fmuls/stfs
-// are ordered differently. The 0.0f / 1.0f literals are @NNN instead of lbl_8053C274 / lbl_8053C278.
+// are ordered differently.
 void cls_8049CC40::draw() {
     Mtx mtx1;
 
@@ -144,3 +127,21 @@ void cls_8049CC40::draw() {
 }
 
 cls_8049CC40::~cls_8049CC40() {}
+
+// A plain function whose out-of-line copy the linker dropped (update inlines it).
+// Compiled first (the bottom of the file), it gives the .sdata2 pool its leading
+// 8.0f ahead of draw's 0.0f / 1.0f, as in the original.
+bool cls_8049CC40::isInside(s32 player) const {
+    s32 layer = field_0x4;
+    s32 playerLayer = getPlayerLayer_8023DE58(player);
+    if (playerLayer != layer) {
+        return false;
+    }
+    JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
+    JGeometry::TBox2f box(mBox);
+    box.addPos(mPos.x + 8.0f, mPos.y + 8.0f);
+    if (contains(box, pos)) {
+        return true;
+    }
+    return false;
+}

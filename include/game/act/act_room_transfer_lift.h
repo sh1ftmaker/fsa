@@ -13,7 +13,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    inline bool isInside(s32 player) const; // on this actor's layer and inside mBox placed at mPos + (8, 8) (inlined in update)
+    bool isInside(s32 player) const; // on this actor's layer and inside mBox placed at mPos + (8, 8) (inlined in update)
     /* 0x230 */ void* field_0x230;
     /* 0x234 */ void* field_0x234;
     /* 0x238 */ SpriteParams_801F5AE0 mSpriteParams;
