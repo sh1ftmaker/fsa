@@ -101,6 +101,7 @@ void Navi54MaidenCrystalCutscene_804ADFE8::update() {
     }
 
     case 3:
+        // The asm compares the halfword unsigned (clrlwi 16, cmplwi 0x8000) after the extsh. zero test.
         if (field_0x240 != 0 && (u16)field_0x240 != 0x8000) {
             field_0x240 += 0x200;
             mPos = field_0x244 + TVec3f(40.0f * JMath::sincosTable_.sinShort(field_0x240),

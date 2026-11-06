@@ -429,6 +429,7 @@ class cls_804AE088 : public ActorBase_804A5770 {
 public:
     cls_804AE088();
     /* 0x08 */ virtual ~cls_804AE088();
+    // 0x54-0x5C: unused here, they only keep vfunc_0x60 in its slot (Navi54MaidenCrystalCutscene update calls it with li 10 / 12).
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual void vfunc_0x58();
     /* 0x5C */ virtual void vfunc_0x5c();
