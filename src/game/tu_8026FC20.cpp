@@ -10,6 +10,7 @@
 #include "game/PlayerBit.h"
 #include "game/GameMath.h"
 #include "game/BoxTest.h"
+#include "game/VecEpsilon.h"
 #include "game/cls_804A71A8.h"
 #include "game/tu_803B8C74.h"
 #include "game/act/tu_803D9944.h"
@@ -141,35 +142,25 @@ static const Vec lbl_8046BC38[8] = {
 // Facing -> emitter yaw (s16 angle in a word; fn_80279824).
 static const s32 lbl_8046BC98[4] = {0x4000, 0xC000, 0x0000, 0x8000};
 
-// lbl_8046BCA8 (0xA0 bytes) is one object: only its start is referenced (by fn_80275D9C,
-// the push per facing) and the linker kept the rest with it. The two later members are
-// typed by their contents only (bytes 0 2 4 6 / 0 8 10 12; float triples with z = 2);
-// nothing in this unit reads them.
+// lbl_8046BCA8 (0xA0 bytes, one symbol): the push per facing (fn_80275D9C reads it by name),
+// then the charge poses and the charge emitter offsets, which fn_80274CB8 reads off its
+// .rodata base (0x8046BB48 + 0x180 / + 0x1A0): u8 [facing][8] by the pose counter 0x3F8 (the
+// up / down facings have their own last four), f32 [full charge][facing][3].
 static const struct {
     f32 push[4][2];
-    u8 field_0x20[8][4];
-    f32 field_0x40[8][3];
+    u8 chargePose[4][8];
+    f32 chargeOffset[2][4][3];
 } lbl_8046BCA8 = {
     {{1.5f, 0.0f}, {-1.5f, 0.0f}, {0.0f, 1.5f}, {0.0f, -1.5f}},
     {
-        {0, 2, 4, 6},
-        {0, 2, 4, 6},
-        {0, 2, 4, 6},
-        {0, 2, 4, 6},
-        {0, 2, 4, 6},
-        {0, 8, 10, 12},
-        {0, 2, 4, 6},
-        {0, 8, 10, 12},
+        {0, 2, 4, 6, 0, 2, 4, 6},
+        {0, 2, 4, 6, 0, 2, 4, 6},
+        {0, 2, 4, 6, 0, 8, 10, 12},
+        {0, 2, 4, 6, 0, 8, 10, 12},
     },
     {
-        {18.0f, 0.0f, 2.0f},
-        {-18.0f, 0.0f, 2.0f},
-        {4.0f, 18.0f, 2.0f},
-        {-4.0f, -18.0f, 2.0f},
-        {-24.0f, 3.0f, 2.0f},
-        {24.0f, 3.0f, 2.0f},
-        {1.0f, -24.0f, 2.0f},
-        {-5.0f, 22.0f, 2.0f},
+        {{18.0f, 0.0f, 2.0f}, {-18.0f, 0.0f, 2.0f}, {4.0f, 18.0f, 2.0f}, {-4.0f, -18.0f, 2.0f}},
+        {{-24.0f, 3.0f, 2.0f}, {24.0f, 3.0f, 2.0f}, {1.0f, -24.0f, 2.0f}, {-5.0f, 22.0f, 2.0f}},
     },
 };
 
@@ -2658,6 +2649,209 @@ void Player_804A6F38::fn_802756E4() {
     case 4:
         fn_80276E5C();
         break;
+    }
+}
+
+// The charge step of states 0x08 / 0x07 (fn_8027BE74 and others): in the air the jump poses
+// 0x3F9 by 0x3F8; standing still (epsilonEquals with the last position 0x14) resets the walk
+// counter 0x3F8, else it cycles 0-27; the pose 0x3F9 by it (lbl_8046BCA8.chargePose before full
+// charge; on GBA layers every other frame one later). The emitter point 0x12A4 (mPos + the
+// charge offset by facing) feeds the callbacks and the 'PEFF' 0x12C0. The charge 0x403 counts
+// up (past 48 only with fn_80241544() >= 2); at 48 the charge emitters 0xCB / 0xCC (immortal),
+// 0x270-0x273 by level and facing, a 'PEFF' and sound 0x2000D; at 168 (full) 0xCB / 0xCC again
+// below layer 8, a 'PEFF' and sound 0x20027; past it the per-player emitter 0x26B-0x26E. Spent
+// immortal emitters are deleted. Releasing the button (fn_80246464) ends the charge: below 48
+// state 0, below 168 the spin (9, reason 0x11AC = 1), else the full spin (0x0A); a group
+// member out of step (mode 4) drops to state 0. Then the facing boxes (fn_80276E5C, or
+// fn_80276BB8 at full charge).
+// FIXME: 95.40. Structurally close: the original loads one .rodata base (0x8046BB48) into r3 at
+// entry and reaches lbl_8046BCA8's pose / offset members from it (+0x180 / +0x1A0); ours
+// re-materialises the table address (lis / addi) in every pose branch (8 instructions more)
+// and keeps mPos.z in f5. Neither separate static tables nor function-local ones give the
+// shared base.
+void Player_804A6F38::fn_80274CB8() {
+    if (mPos.z > 0.0f) {
+        if (field_0x3f8 < 4) {
+            field_0x3f8++;
+            field_0x3f9 = 0;
+        } else if (field_0x3f8 < 8) {
+            field_0x3f8++;
+            field_0x3f9 = 2;
+        } else {
+            field_0x3f8 = 8;
+            field_0x3f9 = 4;
+        }
+        return;
+    }
+    if (epsilonEquals(mPos, field_0x14, JGeometry::TUtilf::epsilon())) {
+        field_0x3f8 = 0;
+    } else {
+        field_0x3f8++;
+        if (field_0x3f8 >= 28) {
+            field_0x3f8 = 0;
+        }
+    }
+    if (field_0x403 >= 168) {
+        if (field_0x3f8 < 4) {
+            field_0x3f9 = 0;
+        } else if (field_0x3f8 < 8) {
+            field_0x3f9 = 2;
+        } else if (field_0x3f8 < 10) {
+            field_0x3f9 = 4;
+        } else if (field_0x3f8 < 14) {
+            field_0x3f9 = 6;
+        } else if (field_0x3f8 < 18) {
+            field_0x3f9 = 0;
+        } else if (field_0x3f8 < 22) {
+            field_0x3f9 = 2;
+        } else if (field_0x3f8 < 24) {
+            field_0x3f9 = 4;
+        } else {
+            field_0x3f9 = 6;
+        }
+    } else if (field_0x3f8 < 4) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][0];
+    } else if (field_0x3f8 < 6) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][1];
+    } else if (field_0x3f8 < 10) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][2];
+    } else if (field_0x3f8 < 14) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][3];
+    } else if (field_0x3f8 < 18) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][4];
+    } else if (field_0x3f8 < 20) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][5];
+    } else if (field_0x3f8 < 24) {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][6];
+    } else {
+        field_0x3f9 = lbl_8046BCA8.chargePose[field_0x3dc][7];
+    }
+    if (field_0x3b4 >= 8 && field_0x403 >= 48 && !(field_0x404 & 2)) {
+        field_0x3f9++;
+    }
+    if (field_0x403 < 167) {
+        const f32* offset = lbl_8046BCA8.chargeOffset[0][field_0x3dc];
+        field_0x12a4.set(offset[0], offset[1], offset[2]);
+    } else {
+        const f32* offset = lbl_8046BCA8.chargeOffset[1][field_0x3dc];
+        field_0x12a4.set(offset[0], offset[1], offset[2]);
+    }
+    field_0x12a4.add(mPos);
+    field_0x1278.field_0x4.set(field_0x12a4);
+    field_0x1290.field_0x4.set(field_0x12a4);
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->mPos = field_0x12a4;
+        } else {
+            field_0x12c0 = -1;
+        }
+    }
+    if (field_0x403 < 168) {
+        if (fn_80241544() >= 2 || field_0x403 <= 48) {
+            field_0x403++;
+        }
+        if (field_0x403 == 48) {
+            if (field_0x12b0 != NULL) {
+                field_0x12b0->becomeInvalidEmitter();
+                field_0x12b0 = NULL;
+            }
+            if (field_0x1274 == NULL) {
+                field_0x1274 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcb, 0, -1, NULL, &field_0x1278, true, 1.0f);
+                if (field_0x1274 != NULL) {
+                    field_0x1274->setStatus(JPAEMIT_Immortal);
+                }
+            }
+            if (field_0x128c == NULL) {
+                field_0x128c = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcc, 0, -1, NULL, &field_0x1290, true, 1.0f);
+                if (field_0x128c != NULL) {
+                    field_0x128c->setStatus(JPAEMIT_Immortal);
+                }
+            }
+            if (field_0x12b4 == NULL) {
+                if (fn_80241544() == 2) {
+                    if (field_0x3dc == 0 || field_0x3dc == 1) {
+                        field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x271, 0, -1, NULL, NULL, true, 1.0f);
+                    } else {
+                        field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x273, 0, -1, NULL, NULL, true, 1.0f);
+                    }
+                } else if (field_0x3dc == 0 || field_0x3dc == 1) {
+                    field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x270, 0, -1, NULL, NULL, true, 1.0f);
+                } else {
+                    field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x272, 0, -1, NULL, NULL, true, 1.0f);
+                }
+            }
+            field_0x12c0 = getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &field_0x12a4, (field_0x4 & 3) | 8, -1, -1);
+            fn_8024F0E8(0x2000d);
+        } else if (field_0x403 == 168) {
+            if (field_0x3b4 < 8) {
+                if (field_0x1274 == NULL) {
+                    field_0x1274 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcb, 0, -1, NULL, &field_0x1278, true, 1.0f);
+                    if (field_0x1274 != NULL) {
+                        field_0x1274->setStatus(JPAEMIT_Immortal);
+                    }
+                }
+                if (field_0x128c == NULL) {
+                    field_0x128c = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0xcc, 0, -1, NULL, &field_0x1290, true, 1.0f);
+                    if (field_0x128c != NULL) {
+                        field_0x128c->setStatus(JPAEMIT_Immortal);
+                    }
+                }
+            }
+            field_0x12c0 = getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &field_0x12a4, (field_0x4 & 3) | 8, -1, -1);
+            fn_8024F0E8(0x20027);
+        }
+    } else if (field_0x12b8 == NULL) {
+        switch (field_0x4) {
+        case 0:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26c, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 1:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26e, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 2:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26b, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        case 3:
+            field_0x12b8 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26d, 0, -1, NULL, NULL, true, 1.0f);
+            break;
+        }
+    }
+    if (field_0x1274 != NULL) {
+        setEmitterPos_8013CB44(field_0x1274, &field_0x12a4, 0, -1, true);
+        if (field_0x1274->isEnableDeleteEmitter()) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0x1274);
+            field_0x1274 = NULL;
+        }
+    }
+    if (field_0x128c != NULL) {
+        setEmitterPos_8013CB44(field_0x128c, &field_0x12a4, 0, -1, true);
+        if (field_0x128c->isEnableDeleteEmitter()) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0x128c);
+            field_0x128c = NULL;
+        }
+    }
+    if (!fn_80246464()) {
+        if (fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+            fn_80251AEC(0);
+        }
+        if (field_0x403 < 48) {
+            fn_80251AEC(0);
+        } else if (field_0x403 < 168) {
+            if (fn_80251AEC(9)) {
+                field_0x11ac = 1;
+            }
+        } else {
+            fn_80251AEC(10);
+        }
+    }
+    if (field_0x403 < 168) {
+        fn_80276E5C();
+    } else {
+        fn_80276BB8();
     }
 }
 
