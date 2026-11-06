@@ -161,8 +161,10 @@ void RecoveryHeart_8049F4F0::draw() {
 }
 
 // The ignore list is the multi-character tags 'TOMI' and 'NULL'.
-// FIXME: 61.51 %. The original compares each id 0, 4, 5, 6, 7, 2, 3 with its own cmpwi;
-// MWCC merges 2..7 in the || chain into one subi/cmplwi range check.
+// Same shape as act_bombchu's vfunc_0x4C (the blocking tile codes as a != chain, the 0x25 /
+// 0x26 results narrowed as bytes).
+// FIXME: 99.96. Reloc-name only: the ignore list's initialiser is one 8-byte literal here,
+// two 4-byte placeholders (lbl_8053D040 / lbl_8053D044) in symbols.txt.
 bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     const u32 ignoreIds[2] = {'TOMI', 'NULL'};
     s32 serial = mSerial;
@@ -176,26 +178,23 @@ bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos)
         kind == 0x15 || kind == 0x16 || kind == 0x17 || (floor >= 0x140 && floor <= 0x15F)) {
         return false;
     }
-    if (kind == 0 || kind == 4 || kind == 5 || kind == 6 || kind == 7 || kind == 2 ||
-        kind == 3 || kind == 0x50 || kind == 0xE || kind == 0xC || kind == 0x27 ||
-        kind == 0x28 || kind == 0x29 || kind == 0x2A || kind == 0x2B || kind == 0x2C ||
-        kind == 0x2D || kind == 0x2E || kind == 0x2F || kind == 0x20 || kind == 0xD ||
-        kind == 0x39 || kind == 0x3A || kind == 0x3B || kind == 0x4C || kind == 0x4D ||
-        kind == 0x4E || kind == 0x4F || kind == 0x24 || kind == 0x23) {
-        return false;
-    }
-    if (kind == 0x25) {
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    }
-    if (kind == 0x26) {
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    }
-    if (kind == 0x22) {
-        if (getGameView_802D6A9C()->field_0x170 != 1) {
-            return false;
+    if (kind != 0 && kind != 4 && kind != 5 && kind != 6 && kind != 7 && kind != 2 &&
+        kind != 3 && kind != 0x50 && kind != 0xE && kind != 0xC && kind != 0x27 &&
+        kind != 0x28 && kind != 0x29 && kind != 0x2A && kind != 0x2B && kind != 0x2C &&
+        kind != 0x2D && kind != 0x2E && kind != 0x2F && kind != 0x20 && kind != 0xD &&
+        kind != 0x39 && kind != 0x3A && kind != 0x3B && kind != 0x4C && kind != 0x4D &&
+        kind != 0x4E && kind != 0x4F && kind != 0x24 && kind != 0x23) {
+        if (kind == 0x25) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 0);
+        }
+        if (kind == 0x26) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+        }
+        if (kind != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 RecoveryHeart_8049F4F0::~RecoveryHeart_8049F4F0() {}
