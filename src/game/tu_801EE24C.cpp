@@ -2,6 +2,7 @@
 
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
+#include "game/EmitterDelete.h"
 #include "game/EnemyBase.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
@@ -50,6 +51,13 @@ static const s32 lbl_80469D78[12][8] = {
     {DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10, DROP_RUPEE_10},
     {DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10, DROP_RUPEE_P1_10},
     {DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20, DROP_RUPEE_20_20},
+};
+
+// Hurt sound ids indexed by EnemyParam "voic" - 1 (fn_801F37AC, while the
+// actor has life left).
+static const u32 lbl_80469EF8[16] = {
+    0x000400AE, 0x000400A7, 0x000400AC, 0x00040081, 0x00040082, 0x0004008C, 0x0004007A, 0x00040095,
+    0x00040098, 0x0004009D, 0x0004009A, 0x00040014, 0x00040071, 0x00040033, 0x000400AE, 0x000400AE,
 };
 
 // Sound ids indexed by EnemyParam "voic" - 1 (fn_801F4694).
@@ -379,6 +387,132 @@ void ActorBase_804A5770::fn_801F4694() const {
     if (field_0xe8 == 0) {
         startSound_801F0E34(0x40002, 0);
     }
+}
+
+// Applies one hit (attack points, from the attacker at `from`, strength
+// clamped to 2, `type`, by `player` or -1): ignored while field_0xd8 runs
+// unless it comes from a player not yet in field_0xd5; types 5 and 2 are
+// ignored or absorbed (returns 1 at once) by field_0xb0's bits. Otherwise
+// sets the knock-back direction (field_0xec, field_0x3c), effects, the
+// timers and mLife, plays the hurt or death voice; returns 1. Returns 0
+// when ignored.
+// FIXME: 94.3. Two differences, both shared with siblings: MWCC keeps the
+// .rodata base in r31 for lbl_8046A00C / lbl_80469F38 / lbl_80469EF8 where
+// the original addresses each table on its own (as fn_801EF830; with the
+// tables extern the hoist goes away, so they likely belong to another
+// unit's data), and the original narrows the result at the return
+// (clrlwi r3, r4, 24, as fn_801F2618). Literals are @NNN until .sdata2 is
+// in order.
+bool ActorBase_804A5770::fn_801F37AC(s32 attack, const JGeometry::TVec3f* from, s32 strength,
+                                     s32 type, s32 player) {
+    s32 depth = 0;
+    bool ignored = true;
+    bool result = false;
+    if (strength > 2) {
+        strength = 2;
+        depth = 2;
+    }
+    if (field_0xd8 == 0 || (player >= 0 && !(field_0xd5 & (1 << player)))) {
+        ignored = false;
+        if (type == 5) {
+            if (field_0xb0 & 0x01000000) {
+                ignored = true;
+            } else if (field_0xb0 & 0x02000000) {
+                return true;
+            }
+        }
+        if (type == 2) {
+            if (field_0xb0 & 0x04000000) {
+                ignored = true;
+            } else if (field_0xb0 & 0x08000000) {
+                return true;
+            }
+        }
+    }
+    if (!ignored) {
+        JGeometry::TVec3f dir(mPos.x - from->x, (mPos.y - mPos.z) - (from->y - from->z), 0.0f);
+        dir.normalize();
+        field_0xec.set(dir);
+        field_0xa4 = 0;
+        if (field_0xdc - field_0xd8 > 5) {
+            if (type == 5) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x19D, strength, depth, NULL, NULL, true,
+                                      1.0f);
+            } else if (attack > 4 && type == 1) {
+                fn_801CB5CC(field_0x4, &mPos, strength, depth);
+            } else {
+                fn_801CB688(field_0x4, &mPos, strength, depth);
+            }
+            if (attack > 4 && (type == 0 || type == 1)) {
+                if (mPos.z != 0.0f || gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                    field_0xf8 = 1;
+                    dir.scale(16.0f);
+                } else {
+                    field_0xf8 = 2;
+                    dir.z += 0.5f + gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    dir.scale(8.0f);
+                }
+            } else {
+                field_0xf8 = 0;
+                dir.scale(16.0f);
+            }
+            if (field_0xfc != 6) {
+                field_0x3c.add(dir);
+            }
+        } else {
+            if (field_0xe8 == 0) {
+                field_0xe4 = 5;
+            }
+            field_0xe8++;
+        }
+        if (player >= 0) {
+            field_0xd5 |= 1 << player;
+        }
+        field_0xfc = type;
+        if (field_0xfc == 5) {
+            switch (mActorId) {
+            case 'TZOK':
+            case 'SLK2':
+                break;
+            default:
+                if (mActorId == 'TINK' || mLife - attack <= 0) {
+                    deleteEmitter(&mEmitter100);
+                    deleteEmitter(&mEmitter104);
+                    f32 scale = lbl_8046A00C[field_0xc0];
+                    mEmitter100 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBB, 0, -1, NULL, NULL,
+                                                        true, scale);
+                    mEmitter104 = spawnEmitter_8013CC50(field_0x4, &mPos, 0xBC, 0, 1, NULL, NULL,
+                                                        true, scale);
+                } else {
+                    fn_801CB5CC(field_0x4, &mPos, strength, depth);
+                }
+                break;
+            }
+        }
+        if (field_0xfc == 6) {
+            field_0xe0 = 1;
+        } else {
+            field_0xd8 = 24;
+            field_0xdc = 24;
+        }
+        if (attack > 0) {
+            field_0x10c = player;
+        }
+        mLife -= attack;
+        if (mLife <= 0) {
+            mLife = 0;
+            fn_801F4694();
+        } else {
+            if (field_0x190 > 0) {
+                startSound_801F0E34(lbl_80469EF8[field_0x190 - 1], 0);
+            }
+            if (field_0xe8 == 0) {
+                startSound_801F0E34(0x40002, 0);
+            }
+        }
+        result = true;
+    }
+    return result;
 }
 
 // Sets field_0xa4 and clears the per-hit and timer state; field_0xe0 is only

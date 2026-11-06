@@ -371,6 +371,10 @@ void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out);
 // game/tu_801CB270.cpp. Spawns an effect on `layer` at *pos; the two s32
 // arguments are the effect's height and depth - 1.
 void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
+// game/tu_801CB270.cpp (not written yet; C linkage keeps the dtk name): an
+// effect at *pos on `layer` like fn_801CB688, for strong hits (fn_801F37AC
+// with attack > 4 and type 1, or type 5 with life left).
+extern "C" void fn_801CB5CC(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
 
 extern "C" {
 
