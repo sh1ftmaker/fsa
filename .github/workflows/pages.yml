@@ -20,9 +20,12 @@ on:
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
+# Never cancel a run in progress: cancelling deploy-pages mid-deployment leaves
+# Pages stuck in "updating_pages", and the next deploy then times out. A queued
+# run still replaces any older queued one, so a burst of merges deploys once.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   refresh:
