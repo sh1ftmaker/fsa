@@ -30,7 +30,7 @@ static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f&
 }
 
 inline bool ExtendingLift_804A78B0::isPlayerOn(s32 player) {
-    if (getField_0x4() != getPlayerLayer_8023DE58(player)) {
+    if (getPlayerLayer_8023DE58(player) != getField_0x4()) {
         return false;
     }
     for (s32 j = 0; j < 8; j++) {
@@ -86,7 +86,7 @@ void ExtendingLift_804A78B0::init() {
     field_0x244 = 0;
 }
 
-// FIXME: 90.55%, missing/extra: ours has 5 more instrs (318 vs 313). Ours saves an extra register (r28) in the player loop (the original loads mPos before the call; field_0x4 is read through getField_0x4()), and the field_0x230/0x234 divides are scheduled differently.
+// FIXME: 90.58%, missing/extra: ours has 5 more instrs (318 vs 313). Ours saves an extra register (r28) in the player loop (the original loads mPos before the call; field_0x4 is read through getField_0x4()), and the field_0x230/0x234 divides are scheduled differently.
 void ExtendingLift_804A78B0::update() {
     if (vfunc_0x34()) {
         if (!field_0x244) {

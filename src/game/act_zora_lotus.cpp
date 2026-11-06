@@ -59,7 +59,7 @@ void cls_804AC3E0::vfunc_0xA4() {
     mPos.y = mSpawnPos.y;
 }
 
-// FIXME: 93.22 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs; the original keeps them in registers), plus register order and the JMath table addresses formed in the other order (reloc-name).
+// FIXME: 93.27 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs; the original keeps them in registers), plus register order and the JMath table addresses formed in the other order (reloc-name).
 void cls_804AC3E0::vfunc_0xA8() {
     if (field_0x2b0 != 0) {
         field_0x2b2 += 0x800;
@@ -70,7 +70,7 @@ void cls_804AC3E0::vfunc_0xA8() {
     }
     for (int i = 0; i < 4; i++) {
         bool touching;
-        if (getField_0x4() != getPlayerLayer_8023DE58(i)) {
+        if (getPlayerLayer_8023DE58(i) != getField_0x4()) {
             touching = false;
         } else {
             touching = outlineInBox(this, i);
