@@ -13,6 +13,10 @@
 #include "game/act/tu_80440BF4.h"
 #include "game/StageFlag.h"
 #include "game/cls_804B1B60.h"
+#include "game/cls_804B1600.h"
+#include "game/cls_804B20F8.h"
+#include "game/EmitterDelete.h"
+#include "JSystem/J2D/J2DAnimation.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -25,6 +29,106 @@ bool fn_804149C0() {
 
 void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
     *dst = *src;
+}
+
+cls_804B1288::~cls_804B1288() {
+    lbl_8053AEC4->fn_8042EB14();
+    for (int i = 0; i < 4; i++) {
+        deleteEmitter(&field_0x2cc[i]);
+        deleteEmitter(&field_0x2dc[i]);
+        if (field_0x2f8[i] != NULL) {
+            field_0x2f8[i]->becomeInvalidEmitter();
+            field_0x2f8[i] = NULL;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        deleteEmitter(&field_0x2ec[i]);
+    }
+    for (int i = 0; i < 2; i++) {
+        if (field_0x308[i] != NULL) {
+            field_0x308[i]->becomeInvalidEmitter();
+            field_0x308[i] = NULL;
+        }
+    }
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    delete field_0x1c;
+    field_0x1c = NULL;
+    delete field_0x20;
+    field_0x20 = NULL;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    delete field_0x18;
+    field_0x18 = NULL;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 3; j++) {
+            delete field_0x28[i][j];
+            field_0x28[i][j] = NULL;
+        }
+    }
+    for (int i = 0; i < 15; i++) {
+        delete field_0x278[i];
+        field_0x278[i] = NULL;
+    }
+    delete field_0xc8;
+    field_0xc8 = NULL;
+    delete field_0xcc;
+    field_0xcc = NULL;
+    delete field_0xd0;
+    field_0xd0 = NULL;
+    for (int i = 0; i < 18; i++) {
+        delete field_0xd4[i];
+        field_0xd4[i] = NULL;
+    }
+    delete field_0x11c;
+    field_0x11c = NULL;
+    for (int i = 0; i < 2; i++) {
+        delete field_0x120[i];
+        field_0x120[i] = NULL;
+    }
+    for (int i = 0; i < 32; i++) {
+        delete field_0x128[i];
+        field_0x128[i] = NULL;
+    }
+    for (int i = 0; i < 24; i++) {
+        delete field_0x1a8[i];
+        field_0x1a8[i] = NULL;
+    }
+    for (int i = 0; i < 8; i++) {
+        delete field_0x208[i];
+        field_0x208[i] = NULL;
+    }
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            delete field_0x228[i][j];
+            field_0x228[i][j] = NULL;
+        }
+    }
+    delete field_0x238;
+    field_0x238 = NULL;
+    delete field_0x23c;
+    field_0x23c = NULL;
+    for (int i = 0; i < 12; i++) {
+        delete field_0x240[i];
+        field_0x240[i] = NULL;
+    }
+    delete field_0x270[0];
+    field_0x270[0] = NULL;
+    delete field_0x270[1];
+    field_0x270[1] = NULL;
+    for (int i = 0; i < 4; i++) {
+        delete field_0x2b8[i];
+        field_0x2b8[i] = NULL;
+    }
+    delete field_0x2c8;
+    field_0x2c8 = NULL;
+    lbl_8053ADF8 = NULL;
 }
 
 void cls_804B1288::fn_80411A94(f32 alpha) {
@@ -162,6 +266,49 @@ bool cls_804B1288::fn_80404270(s32 stage) {
         {
             return true;
         }
+    }
+    return false;
+}
+
+// FIXME: 84.17. Every field, call and branch matches; only the loop differs: ours
+// hoists the save row's flags address out of the unrolled loop, the original keeps
+// only the row index (r12) and recomputes lbl_8050EC80 + index * 0xC8 each pass,
+// which costs it r31 and a stack frame (the same as tu_804023D0's fn_80403514).
+bool cls_804B1288::fn_80404074(s32 stage, s32 index, s32* out) {
+    s32 count = 0;
+    for (int i = 0; i < 4; i++) {
+        if (isStageFlagSet(stage, i)) {
+            count++;
+        }
+    }
+    s32 skip;
+    if (stage == 7) {
+        if (count <= 1) {
+            count--;
+        }
+        skip = 1;
+        if (field_0x388 != -1 && (field_0x350 == 6 || field_0x664 == 1)) {
+            if (field_0x388 == 0) {
+                *out = 2;
+            } else if (field_0x388 == 1) {
+                *out = 3;
+            }
+        }
+    } else {
+        if (count <= 2) {
+            count--;
+        }
+        skip = 2;
+        if (field_0x388 != -1 && (field_0x350 == 6 || field_0x664 == 1)) {
+            if (field_0x388 == 0) {
+                *out = 1;
+            } else if (field_0x388 == 1) {
+                *out = 3;
+            }
+        }
+    }
+    if (index != skip && (index > count || index == *out)) {
+        return true;
     }
     return false;
 }

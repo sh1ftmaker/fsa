@@ -7,6 +7,12 @@
 class J2DScreen;
 class PaneCtrl_804AF86C;
 class cls_804B1B60;
+class cls_804B0288;
+class cls_804B20F8;
+class ActorSoundObj_804578F4;
+class JPABaseEmitter;
+class J2DAnmTransform;
+class J2DAnmColor;
 
 // Vtable 0x804B1288 (one slot, the destructor), 0x66C bytes, defined in
 // game/tu_80403D84.cpp. The constructor fn_804122F4 stores
@@ -41,6 +47,11 @@ public:
     // 0x804045F8 (this unused): when gGameRoot_8053AAF8's byte 0x7E is set, whether
     // bit `bit` of byte 0x7A of the current save row is set.
     BOOL fn_804045F8(s32 bit);
+    // 0x80404074: counts the stage flags 0-3 of `stage` set (isStageFlagSet),
+    // less one when that leaves at most 1 (stage 7) / 2 (other stages); may set
+    // *out from field_0x388; true when `index` is not 1 (stage 7) / 2 and is
+    // above the count or equal to *out.
+    bool fn_80404074(s32 stage, s32 index, s32* out);
     // 0x80404270: false while lbl_80529DEC's byte 0x23F or field_0x656 is set,
     // outside GameRoot's 0x7E mode, or when fn_804045F8(stage) is set; else
     // stage flag 1 of stages 0-6 (isStageFlagSet), flag 2 of stage 7.
@@ -76,13 +87,25 @@ public:
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
-    /* 0x008 */ u8 field_0x8[0x10 - 0x8];
+    /* 0x008 */ cls_804B0288* field_0x8; // __nw__(0x2180), fn_803D58E0
+    /* 0x00C */ J2DScreen* field_0xc;    // "map.blo"
     /* 0x010 */ J2DScreen* field_0x10; // the screen fn_80411A94 fades
     /* 0x014 */ J2DScreen* field_0x14; // the screen whose panes fn_80408F38 fades
     /* 0x018 */ J2DScreen* field_0x18; // the screen fn_804111C4 draws
-    /* 0x01C */ u8 field_0x1c[0x11C - 0x1C];
+    /* 0x01C */ J2DAnmTransform* field_0x1c; // "map.bck" (field_0xc's setAnimation)
+    /* 0x020 */ J2DAnmColor* field_0x20;     // field_0xc's colour animation
+    /* 0x024 */ u8 field_0x24[0x28 - 0x24];
+    // Eight rows of five panes; the destructor deletes [i][0-2].
+    /* 0x028 */ PaneCtrl_804AF86C* field_0x28[8][5];
+    /* 0x0C8 */ PaneCtrl_804AF86C* field_0xc8;
+    /* 0x0CC */ PaneCtrl_804AF86C* field_0xcc;
+    /* 0x0D0 */ PaneCtrl_804AF86C* field_0xd0;
+    /* 0x0D4 */ PaneCtrl_804AF86C* field_0xd4[18];
     /* 0x11C */ PaneCtrl_804AF86C* field_0x11c;
-    /* 0x120 */ u8 field_0x120[0x228 - 0x120];
+    /* 0x120 */ PaneCtrl_804AF86C* field_0x120[2];
+    /* 0x128 */ PaneCtrl_804AF86C* field_0x128[32]; // four per stage
+    /* 0x1A8 */ PaneCtrl_804AF86C* field_0x1a8[24]; // three per stage
+    /* 0x208 */ PaneCtrl_804AF86C* field_0x208[8];  // one per stage
     /* 0x228 */ PaneCtrl_804AF86C* field_0x228[2][2];
     /* 0x238 */ PaneCtrl_804AF86C* field_0x238;
     /* 0x23C */ PaneCtrl_804AF86C* field_0x23c;
@@ -90,9 +113,15 @@ public:
     /* 0x270 */ PaneCtrl_804AF86C* field_0x270[2]; // text panes
     /* 0x278 */ PaneCtrl_804AF86C* field_0x278[15]; // three groups of five panes
     /* 0x2B4 */ PaneCtrl_804AF86C* field_0x2b4; // the pane fn_804108B4 slides in and out
-    /* 0x2B8 */ u8 field_0x2b8[0x310 - 0x2B8];
-    /* 0x310 */ JUtility::TColor field_0x310;
-    /* 0x314 */ u8 field_0x314[0x340 - 0x314];
+    /* 0x2B8 */ cls_804B20F8* field_0x2b8[4]; // sound objects (__nw__(0x60))
+    /* 0x2C8 */ ActorSoundObj_804578F4* field_0x2c8;
+    /* 0x2CC */ JPABaseEmitter* field_0x2cc[4];
+    /* 0x2DC */ JPABaseEmitter* field_0x2dc[4];
+    /* 0x2EC */ JPABaseEmitter* field_0x2ec[3];
+    /* 0x2F8 */ JPABaseEmitter* field_0x2f8[4];
+    /* 0x308 */ JPABaseEmitter* field_0x308[2];
+    /* 0x310 */ JUtility::TColor field_0x310[6];
+    /* 0x328 */ JUtility::TColor field_0x328[6];
     /* 0x340 */ s32 field_0x340; // the selected stage (0-7; fn_80404270)
     /* 0x344 */ u8 field_0x344[0x350 - 0x344];
     /* 0x350 */ s32 field_0x350; // state
@@ -100,7 +129,8 @@ public:
     /* 0x358 */ s32 field_0x358;
     /* 0x35C */ u8 field_0x35c[0x384 - 0x35C];
     /* 0x384 */ s32 field_0x384; // frame counter of state 0x15
-    /* 0x388 */ u8 field_0x388[0x390 - 0x388];
+    /* 0x388 */ s32 field_0x388; // -1, 0 or 1 (fn_80404074)
+    /* 0x38C */ u8 field_0x38c[0x390 - 0x38C];
     /* 0x390 */ s32 field_0x390; // message id
     /* 0x394 */ u8 field_0x394[0x39C - 0x394];
     /* 0x39C */ f32 field_0x39c;
