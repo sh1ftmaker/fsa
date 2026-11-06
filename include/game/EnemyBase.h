@@ -428,7 +428,7 @@ bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
 // bytes; 1 caller unit, tu_801C5B08 fn_801C6784). Called with the position
 // of an actor and its layer (mPos, field_0x4); returns whether it holds.
 bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer);
-// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CC350, 0xCC bytes;
+// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CC350, 0x1E8 bytes;
 // 1 caller unit, act_terrorpin vfunc_0x90). Reflects the 2D velocity *vel off
 // *normal (C_VECReflect, PSVECMag; z is preserved).
 void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel);
