@@ -608,8 +608,9 @@ public:
 // 4 units / 8 calls. A map tile code (callers pass the lhz/clrlwi 16 result
 // of fn_80226850, e.g. act_spreading_fire 0x802BC9F8) in one of the ranges
 // 0x68-0x6B, 0x70-0x71, 0x74-0x75, 0xAA-0xAB or 0x4E, 0xFA, 0x146, 0x159.
-// Defined in this unit, so a C++ name (fn_801EE3C0__FUs).
-bool fn_801EE3C0(u16 tile);
+// Defined in this unit, so a C++ name (fn_801EE3C0__Fl; an int, the
+// callee truncates each test to 16 bits).
+bool fn_801EE3C0(s32 tile);
 
 // 104 units / 258 calls. Releases an emitter: lets one inside the view's
 // visible box (0xCC-0xD8) run out (clearStatus(Immortal),

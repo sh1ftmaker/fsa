@@ -1877,12 +1877,13 @@ void releaseEmitter_801EE434(JPABaseEmitter* emitter) {
 }
 
 // Whether a map tile code is one of the listed kinds.
-// FIXME: 78.6. The target truncates each `tile - lo` to 16 bits (subi; clrlwi;
-// cmplwi) and leaves the parameter itself unextended; ours extends it once up
-// front and compares the untruncated differences.
-bool fn_801EE3C0(u16 tile) {
-    if (tile - 0x68 <= 3U || tile - 0x70 <= 1U || tile - 0xAA <= 1U || tile == 0x159 ||
-        tile - 0x74 <= 1U || tile == 0x146 || tile == 0xFA || tile == 0x4E)
+// The code arrives as an int (the parameter is never extended; each test
+// truncates to 16 bits: subi; clrlwi; cmplwi, and one clrlwi for the
+// equality tests).
+bool fn_801EE3C0(s32 tile) {
+    if ((u16)(tile - 0x68) <= 3 || (u16)(tile - 0x70) <= 1 || (u16)(tile - 0xAA) <= 1 ||
+        (u16)tile == 0x159 || (u16)(tile - 0x74) <= 1 || (u16)tile == 0x146 || (u16)tile == 0xFA ||
+        (u16)tile == 0x4E)
     {
         return true;
     }
