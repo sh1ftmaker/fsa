@@ -26,6 +26,9 @@ public:
     // fn_801EB648 (game/tu_801EB00C.cpp): 1 while field_0x54 (as a byte) is set
     // and one of the seven emitters at 0x34 is still there.
     s32 fn_801EB648() const;
+    // fn_801EB418 (game/tu_801EB00C.cpp, not written yet; 0x230 bytes): updates
+    // the emitters at 0x34 and 0x50 from *pos and field_0xc.
+    void fn_801EB418(const JGeometry::TVec3f* pos);
     // fn_801EB00C (game/tu_801EB00C.cpp, not written yet; 0x1E8 bytes). Called
     // by Vaati (tu_801E4D54 fn_801E5754) on its member at 0x464 with a
     // player's position and a stack TVec3f: the vector it leaves in *out has

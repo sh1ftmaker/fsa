@@ -30,22 +30,27 @@ public:
     /* 0x5C */ virtual s32 vfunc_0x5C();
 
     // Mangled fn_80115A7C__12cls_8049D940Fv (0x80115A7C, game/act_vaati_demo.cpp,
-    // was fn_80115A7C). Called by fn_8011661C; returns true.
+    // was fn_80115A7C). Called by update; returns true.
     bool fn_80115A7C();
-    // Placeholder fn_80115BC4 (0x80115BC4, same unit, not written yet): takes
-    // this, the position and an output vector.
+    // 0x80115BC4 (same unit): takes this, the position and an output vector.
     void fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
+    // 0x80115D8C (same unit): takes this, the position and an output vector.
+    void fn_80115D8C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
 
-    // Mangled fn_801158B8__12cls_8049D940Fv (0x801158B8, same unit, not
-    // written yet): called by draw() when field_0x230 is 10 or more.
+    // Mangled fn_801158B8__12cls_8049D940Fv (0x801158B8, same unit):
+    // called by draw() when field_0x230 is 10 or more.
     void fn_801158B8();
 
     // Slot 0x20, overriding cls_8049D140::draw (0x80116458, game/act_vaati_demo.cpp,
     // was fn_80116458).
     /* 0x20 */ virtual void draw();
 
-    // Mangled fn_80115F9C__12cls_8049D940Fl (0x80115F9C, same unit, not written
-    // yet). Takes the table index 1..11 found by vfunc_0x54.
+    // Slot 0x14, overriding cls_8049D140::update (0x8011661C, game/act_vaati_demo.cpp,
+    // was fn_8011661C).
+    /* 0x14 */ virtual void update();
+
+    // Mangled fn_80115F9C__12cls_8049D940Fl (0x80115F9C, same unit).
+    // Takes the table index 1..11 found by vfunc_0x54.
     void fn_80115F9C(s32 index);
 
     // Named after its vtable, 0x8049D940, slot 0x0C. __ct__12cls_8049D940Fv
