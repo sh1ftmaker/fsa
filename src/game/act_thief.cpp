@@ -572,7 +572,7 @@ void Thief_804A5A30::vfunc_0x94() {
     EnemyBase_804A4808::vfunc_0x94();
 }
 
-// FIXME: 99.39% (regalloc-only). Register allocation order in loop.
+// FIXME: 99.69% (regalloc-only). The field_0x354 pointer and the loop counter swap r28 / r29.
 void Thief_804A5A30::vfunc_0x9C(u8 mapHit) {
     if (field_0xc4 != 0 && field_0xc8 >= 0 && field_0xc8 < 4) {
         if (fn_80204638()->field_0x0 != 0 || fn_802064E0()) {
@@ -612,9 +612,7 @@ void Thief_804A5A30::vfunc_0x9C(u8 mapHit) {
             fn_801F31C4(&box);
             for (s32 i = 0; i < 4; i++) {
                 if (fn_801CCFE4(i)) {
-                    // Local for codegen: the original reads our layer before calling getPlayerLayer_8023DE58.
-                    s32 layer = field_0x4;
-                    if (getPlayerLayer_8023DE58(i) == layer &&
+                    if (getPlayerLayer_8023DE58(i) == getField_0x4() &&
                         fn_80239C00(i, &box, field_0x4) &&
                         fn_8022F9E4(i, mSerial, true, false)) {
                         fn_80205E0C(3);
