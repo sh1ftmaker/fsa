@@ -1563,3 +1563,36 @@ What the asm and experiments prove (toy files compiled with the unit's exact fla
   with a user-declared destructor reproduces the exact store pattern (fn_80268BC4 99.82
   regalloc-only), but it adds EH state to fn_802685D4 (77 %) and extab actions where the
   original has only 8-byte entries, so it is not the original's mechanism. Open.
+
+## Structural push (tu_8022AD64 / tu_8023FBF0) (Opus 5.5, 2026-11-06)
+
+Honest total 9099 -> 9101 on matching 493ca0ce for tu_8022AD64 (+2: fn_80231DE4, fn_8023F390),
+no drops by address; tu_8023FBF0 +1 (fn_80241B44). Every Player function of the two units is
+now written; the remaining sub-100 % ones are structurally done or close.
+
+| function | before -> after (try.py class) | what changed / what it proved |
+|---|---|---|
+| fn_80231DE4 | unwritten -> **100** | **multiplayer screen change** (fn_8023F390 with GameRoot 0x7F): players with an exit direction (fn_802527B0) pull their group (fn_802381B8 -> fn_80248DB8); unless a manager flag (fn_8022ADFC / fn_8022ADB0) or GameRoot 0x96 is set, every present player able to (not fn_8022F478, fn_80251BFC(0x1B), not fn_80236A18 without 0xD2D) must report the same direction (lbl_8053A190 = the first one) and none may be busy (fn_80230188, fn_8022DCD8, fn_8022CCAC, fn_80234134, fn_80236AB4, fn_8022D75C unless 0x43F at stage (0, 0)); then the escort check fn_80124600 (0 / 1 refuse), the view's fn_802DD3D4, audio fn_80457F60, fn_8022BD70, fn_802DCE5C, and per player 0xD70 = -1 with 0xD64 / 0xD6C = 'NULL' (fn_8023ED8C) or z = 0 (fn_8023E98C), fn_802520C0(dir) unless fn_80236B50. The five forwarders only it inlines take the inverted form (Round 11). |
+| fn_8023F390 | 99.71 different -> **100** | the last two loops share one counter (`s32 i;`): the audio loop's slot offset then starts as `mr r30, r31`. A loop counter reused from an earlier loop gives the copy, a fresh `for (s32 i = 0; ...)` gives `li`. |
+| fn_80232A0C | 97.25 missing/extra (-9) -> 99.40 scheduling+regalloc | the three pushes by -dir pass `&negated(dir)`, a file-local inline returning the negation by value (libs' JGeometry has no unary TVec3 operator-): one stack TVec3f for the negation, one for the returned copy (z through frsp), as in the original; frame 0x190. Left: the boxes' addPos loads i.y before i.x. |
+| fn_80238548 | 91.52 missing/extra (-5), unchanged | `offset` stays in registers (the original stores it twice to the stack); a u8 return gives the original's clrlwi but breaks the four bool wrappers fn_80271038 / 68 / 98 / fn_80272160 (100 -> 55-67 %), so it stays bool. |
+| fn_80235B68 | 96.55 missing/extra (+1) + reloc-name, unchanged | the deepest recursion level calls fn_8018A614 (act_phantom_ganon_2) out of line, the shallower ones inline fn_8023F9B0 / fn_8023F98C by depth: fn_8018A614 looks like a header inline (`fn_8023F9B0()->fn_8023F98C(player)`) whose kept copy is act_phantom_ganon_2's; making it one changes that Matching unit, so not done. |
+| fn_80241B44 (tu_8023FBF0) | unwritten -> **100** | the visible box: the camera's field_0x164 below layer 8 (`out->set(...)`, TBox2::set gives the lfs / stfs copy; `*out =` copies words), else field_0xbec->fn_8030AE84. Its parameter is a TBox2f*: fn_8022B8EC / fn_80241B44 renamed `...TBox2<f>` (caller tu_8029C584 unwritten). |
+| fn_8024B2E0 (tu_8023FBF0) | 92.26 missing/extra (-4) -> 99.29 regalloc-only | the next member's position is a local `to.set(*getPlayerPos(...))` (kept in registers, stored to `from` with set at the end) and each step comes back by value from a file-local trailStep, stored with `set()` (the original's two stack temporaries and frsp on z). |
+| fn_802487FC (tu_8023FBF0) | 94.95 different, unchanged | confirmed register-only: the own copy's second group loop (inlined fn_80248970) zeroes count / index li / li, ours li / mr; the instructions are the same. |
+
+Evidence:
+- **A by-value TVec3f return** shows up as a stack TVec3f built in place, then copied through
+  setTVec3f into a second (psq_l / psq_st for x / y, the z reload forwarded with frsp). Both
+  fixes here are that shape (negated, trailStep); a named local plus copy gives the same code
+  but is the redundant named copy RULES_CARD rules out.
+- **Inlined loops start the slot offset as `mr`** (li count, mr offset), out-of-line copies
+  with two `li` (fn_8022BD70 own copy vs inlined in fn_80231DE4); a counter shared with an
+  earlier loop gives the `mr` too (fn_8023F390).
+- fn_80124600 (tu_801213EC): declared in include/game/tu_801213EC.h with C++ linkage and renamed
+  `fn_80124600__FPCQ29JGeometry8TVec2<l>`; with no escort list it asks the actor of serial
+  lbl_80539F30 (3 if none), else each 'FAZR' escort, through vtable slot 0x5C.
+- SHARED-EDITS: include/game/Player.h (fn_80241B44 / fn_8022B8EC take TBox2f*),
+  include/game/tu_801213EC.h (fn_80124600), config/G4SE01/symbols.txt (3 renames),
+  config/G4SE01/gen_game.tsv (re-pins of tu_8022AD64; gate --base matching flags the protected
+  file, as for every re-pin).
