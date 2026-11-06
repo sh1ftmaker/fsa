@@ -2664,7 +2664,7 @@ void Player_804A6F38::fn_802756E4() {
 // state 0, below 168 the spin (9, reason 0x11AC = 1), else the full spin (0x0A); a group
 // member out of step (mode 4) drops to state 0. Then the facing boxes (fn_80276E5C, or
 // fn_80276BB8 at full charge).
-// FIXME: 95.40. Structurally close: the original loads one .rodata base (0x8046BB48) into r3 at
+// FIXME: 96.64. Structurally close: the original loads one .rodata base (0x8046BB48) into r3 at
 // entry and reaches lbl_8046BCA8's pose / offset members from it (+0x180 / +0x1A0); ours
 // re-materialises the table address (lis / addi) in every pose branch (9 instructions more in all)
 // and keeps mPos.z in f5. Neither separate static tables nor function-local ones give the

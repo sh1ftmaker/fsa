@@ -2482,7 +2482,7 @@ void Player_804A6F38::fn_8027F16C() {
     }
 }
 
-// FIXME: 99.31. regalloc only: in the epsilon compare the original loads __float_epsilon into f0 before the
+// FIXME: 99.94. regalloc only: in the epsilon compare the original loads __float_epsilon into f0 before the
 // 32.0f constant (f2) and keeps the difference in f0 / -epsilon in f3; ours uses f1-f4. In the 0.0f test the
 // fcmpu operands are swapped (f1, f0 in the original).
 void Player_804A6F38::fn_8027EEB4() {

@@ -497,7 +497,8 @@ void Player_804A6F38::fn_80263078() {
     if (field_0xd6c == ACTOR_NIWA && !field_0x441) {
         Cucco_804AB8C0* cucco = static_cast<Cucco_804AB8C0*>(
             getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68));
-        if (cucco != 0 && cucco->getField0x2a1() == 1) {
+        // (s32) on the u8 byte: the original compares it with cmpwi here (plain u8 gives cmplwi).
+        if (cucco != 0 && (s32)cucco->field_0x2a1 == 1) {
             JGeometry::TVec2f pos;
             pos.x = mPos.x;
             pos.y = mPos.y;

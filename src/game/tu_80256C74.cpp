@@ -698,7 +698,7 @@ void Player_804A6F38::fn_8025D090() {
     field_0x40c = 0;
 }
 
-// FIXME: 98.89. try.py "different", but only order: as in fn_8025BEB0, the original builds the
+// FIXME: 99.06. try.py "different", but only order: as in fn_8025BEB0, the original builds the
 // charged arrow's argument from index & 3 and inserts the facing (clrlwi + rlwimi 4, 26, 27)
 // where ours starts from the facing (clrlslwi) and inserts index (the same bits);
 // epsilonEqualsXY keeps 32 * FLT_EPSILON in f2 (ours f3).
@@ -916,7 +916,7 @@ void Player_804A6F38::fn_8025C79C() {
     field_0x40c = 0;
 }
 
-// FIXME: 98.83. Structurally close (1 extra instruction): the side shot's argument is
+// FIXME: 98.98. Structurally close (1 extra instruction): the side shot's argument is
 // built in r0 and moved to r30 (the original builds it in r30); the charged shot's
 // argument starts from index & 3 and inserts the facing (rlwimi 4, 26, 27) where ours
 // does the reverse; epsilonEqualsXY keeps 32 * FLT_EPSILON in f2 (ours f3), as in
@@ -1569,7 +1569,7 @@ void Player_804A6F38::fn_8025A9C0() {
     field_0xb8c = 0;
 }
 
-// FIXME: 99.24. scheduling+regalloc: as in fn_80259830, the box's f.x / f.y take their
+// FIXME: 99.81. scheduling+regalloc: as in fn_80259830, the box's f.x / f.y take their
 // fadds operands the other way round in cases 0 and 2, epsilonEquals keeps 32 * FLT_EPSILON
 // in f2 (ours f3), the emitters' rotation-table address is formed after the matrix pointer,
 // and the slot loop's counter / player index swap r28 / r29.
@@ -1776,7 +1776,7 @@ void Player_804A6F38::fn_8025A04C() {
     field_0xb8c = 0;
 }
 
-// FIXME: 99.29. scheduling+regalloc: the box's f.x / f.y (pos + 36) take their fadds
+// FIXME: 99.88. scheduling+regalloc: the box's f.x / f.y (pos + 36) take their fadds
 // operands the other way round in cases 0 and 2, the epsilon test of epsilonEquals keeps
 // 32 * FLT_EPSILON in f2 (ours f3), and the emitters' rotation-table address is formed
 // after the matrix pointer (ours before).
