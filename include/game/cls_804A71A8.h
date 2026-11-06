@@ -152,7 +152,6 @@ public:
         return false;
     }
 
-    // Whether direction i is blocked or inside an owner box (as 1).
     // Inlined in fn_80268BC4; the owner's fn_8024B24C returns it.
     bool isField98Or99Set() const { return field_0x98 || field_0x99; }
 
