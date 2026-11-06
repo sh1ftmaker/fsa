@@ -58,9 +58,7 @@ public:
     /* 0x25C */ s32 field_0x25c;
     /* 0x260 */ s32 mTargetSerial;
     /* 0x264 */ s32 field_0x264;
-    /* 0x268 */ f32 field_0x268;
-    /* 0x26C */ f32 field_0x26c;
-    /* 0x270 */ f32 field_0x270;
+    /* 0x268 */ JGeometry::TVec3f field_0x268;
     /* 0x274 */ f32 field_0x274[6];
     /* 0x28C */ s32 field_0x28c;
     /* 0x290 */ s32 field_0x290;

@@ -3,12 +3,18 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "game/Map.h"
+#include "game/Camera.h"
+#include "game/Player.h"
+#include "game/act/act_bomb.h"
+#include "JSystem/JMath/JMath.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_dodongo.h"
 
+extern const f32 lbl_804A3108[];
+extern const f32 lbl_804A31C8[];
 extern const char* lbl_804A3208[];
 extern const s32 lbl_804689C0[];
-extern const f32 lbl_804A31C8[];
+u16 lbl_8053A110[] = { 0x168, 0x167, 0x166, 0x169 };
 extern s32 lbl_8053ABE0;
 
 void Dodongo_804A3334::fn_801AE5AC() {
@@ -110,9 +116,9 @@ void Dodongo_804A3334::init() {
 
     fn_801AE5AC();
 
-    field_0x270 = 0.0f;
-    field_0x26c = 0.0f;
-    field_0x268 = 0.0f;
+    field_0x268.z = 0.0f;
+    field_0x268.y = 0.0f;
+    field_0x268.x = 0.0f;
     field_0x3c.z = 0.0f;
     field_0x3c.y = 0.0f;
     field_0x3c.x = 0.0f;
@@ -140,6 +146,459 @@ void Dodongo_804A3334::init() {
             field_0x230 = 1;
         }
         break;
+    }
+}
+
+// FIXME: 95.30 %. missing/extra + reloc-name: ours has 14 fewer instrs (1216 vs 1230). Register allocation and minor instruction scheduling differences.
+void Dodongo_804A3334::fn_801ACFF4() {
+    const f32* data = lbl_804A3108;
+    f32 posY = mPos.y;
+    f32 posX = mPos.x;
+    f32 boxIX = mBox.i.x;
+    f32 boxIY = mBox.i.y;
+    f32 boxFX = mBox.f.x;
+    f32 boxFY = mBox.f.y;
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    boxIX += posX;
+    boxIY += posY;
+    boxFX += posX;
+    boxFY += posY;
+
+    f32 scale = 1.0f;
+    if (field_0x294 == 1) {
+        scale = 1.75f;
+    }
+
+    const f32* boxData = &data[16 + field_0x98 * 4];
+    mBox.i.x = scale * boxData[0];
+    mBox.i.y = scale * boxData[1];
+    mBox.f.x = scale * boxData[2];
+    mBox.f.y = scale * boxData[3];
+    field_0x80 = mBox;
+
+    addCalc2_801F71A4(&field_0x3c.x, field_0x268.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x268.y, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x274[0], field_0x274[3], 0.1f, 0.1f);
+    fn_801F3D94(0);
+    field_0x274[1] = field_0x274[0];
+    mPos += field_0x3c;
+
+    if (mTimers[3] == 0) {
+        if (field_0x230 == 2 || field_0x230 == 5) {
+            fn_801F2B7C(-100, -1, 1);
+        }
+    }
+    fn_801EF510();
+    u8 hitWall = fn_801F2618(NULL, false);
+
+    f32 centerX = (boxIX - boxFX) * 0.5f + boxFX;
+    f32 centerY = (boxIY - boxFY) * 0.5f + boxFY;
+
+    for (int i = 0; i < 4; i++) {
+        if (fn_801F285C(NULL, NULL, NULL, i) >= 0) {
+            JGeometry::TVec2f center(centerX, centerY);
+            if (fn_80237948(0, &center)) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x117, 0, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x118, 0, 1, NULL, NULL, true, 1.0f);
+                startSound_801F0E34(0x400D1, 0);
+            }
+        }
+    }
+
+    switch (field_0x230) {
+    case 0:
+        gAudioMgr_8053AF80->fn_80458FF0(0x10004, 0, 0);
+        field_0x230 = 1;
+        // fallthrough
+    case 1:
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        switch (field_0x98) {
+        case 0:
+            field_0x268.x = 0.7f;
+            field_0x268.y = 0.0f;
+            field_0x268.z = 0.0f;
+            break;
+        case 1:
+            field_0x268.x = -0.7f;
+            field_0x268.y = 0.0f;
+            field_0x268.z = 0.0f;
+            break;
+        case 2:
+            field_0x268.x = 0.0f;
+            field_0x268.y = 0.7f;
+            field_0x268.z = 0.0f;
+            break;
+        case 3:
+            field_0x268.x = 0.0f;
+            field_0x268.y = -0.7f;
+            field_0x268.z = 0.0f;
+            break;
+        }
+        mTimers[1] = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 50;
+        field_0xbc = 3;
+        if (field_0x294 == 1) {
+            field_0xbc = 4;
+        }
+        if (mTimers[3] == 0) {
+            field_0x250++;
+            if (field_0x250 > 3) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                    s32 sp1C = -1;
+                    s32 r28 = field_0x98;
+                    field_0x250 = 0;
+                    if (field_0x294 == 1) {
+                        r28 = 3;
+                        if (field_0x258 < 3) {
+                            r28 = 0;
+                        }
+                        if (field_0x258 >= 3 && field_0x258 <= 5) {
+                            r28 = 1;
+                        }
+                        if (field_0x258 >= 6 && field_0x258 <= 8) {
+                            r28 = 2;
+                        }
+                    }
+                    fn_801EEC98(mSerial, 0, &sp1C, 0, 0, 0, 0);
+                    if (sp1C >= 0) {
+                        field_0x98 = sp1C;
+                        mTimers[0] = 2;
+                    }
+                    if (field_0x294 == 0 || field_0x98 != 3) {
+                        field_0x230 = 4;
+                    } else {
+                        field_0x230 = 10;
+                        break;
+                    }
+                    if (field_0x294 == 1) {
+                        if ((r28 == 1 && field_0x98 == 0) || (r28 == 0 && field_0x98 == 1)) {
+                            setAnim(4);
+                        }
+                    }
+                    field_0x230 = 3;
+                    break;
+                }
+            }
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+                field_0x230 = 10;
+                break;
+            }
+        }
+        setAnim(0);
+        field_0x230 = 2;
+        // fallthrough
+    case 2:
+        if (hitWall != 0 || mTimers[1] == 0) {
+            field_0x98 ^= 2;
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                field_0x98 ^= 1;
+            }
+            JGeometry::TVec3f savedPos;
+            savedPos.x = mPos.x;
+            savedPos.y = mPos.y;
+            savedPos.z = mPos.z;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            switch (field_0x98) {
+            case 0:
+                field_0x268.x = 16.0f;
+                field_0x268.y = 0.0f;
+                field_0x268.z = 0.0f;
+                break;
+            case 1:
+                field_0x268.x = -16.0f;
+                field_0x268.y = 0.0f;
+                field_0x268.z = 0.0f;
+                break;
+            case 2:
+                field_0x268.x = 0.0f;
+                field_0x268.y = 16.0f;
+                field_0x268.z = 0.0f;
+                break;
+            case 3:
+                field_0x268.x = 0.0f;
+                field_0x268.y = -16.0f;
+                field_0x268.z = 0.0f;
+                break;
+            }
+            mPos += field_0x268;
+            if (fn_801F2618(NULL, false)) {
+                field_0x98 ^= 1;
+            }
+            mPos.x = savedPos.x;
+            mPos.y = savedPos.y;
+            mPos.z = savedPos.z;
+            if (field_0x294 == 1) {
+                s32 r3 = 3;
+                if (field_0x258 < 3) {
+                    r3 = 0;
+                }
+                if (field_0x258 >= 3 && field_0x258 <= 5) {
+                    r3 = 1;
+                }
+                if (field_0x258 >= 6 && field_0x258 <= 8) {
+                    r3 = 2;
+                }
+                if ((r3 == 1 && field_0x98 == 0) || (r3 == 0 && field_0x98 == 1)) {
+                    setAnim(4);
+                    field_0x230 = 3;
+                    break;
+                }
+            }
+            mTimers[0] = 2;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            switch (field_0x98) {
+            case 0:
+                field_0x268.x = 0.7f;
+                field_0x268.y = 0.0f;
+                field_0x268.z = 0.0f;
+                break;
+            case 1:
+                field_0x268.x = -0.7f;
+                field_0x268.y = 0.0f;
+                field_0x268.z = 0.0f;
+                break;
+            case 2:
+                field_0x268.x = 0.0f;
+                field_0x268.y = 0.7f;
+                field_0x268.z = 0.0f;
+                break;
+            case 3:
+                field_0x268.x = 0.0f;
+                field_0x268.y = -0.7f;
+                field_0x268.z = 0.0f;
+                break;
+            }
+            field_0x230 = 1;
+            break;
+        }
+        break;
+    case 3:
+        field_0x268.z = 0.0f;
+        field_0x268.y = 0.0f;
+        field_0x268.x = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        if (field_0x298 == 0) {
+            break;
+        }
+        field_0x230 = 4;
+        // fallthrough
+    case 4:
+        field_0x268.z = 0.0f;
+        field_0x268.y = 0.0f;
+        field_0x268.x = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        setAnim(1);
+        if (field_0x298 == 0) {
+            break;
+        }
+        mTimers[1] = 120;
+        field_0x230 = 5;
+        // fallthrough
+    case 5:
+        if (mTimers[1] != 0) {
+            if (mTimers[1] == 1) {
+                JGeometry::TVec3f spawnPos;
+                spawnPos.x = mPos.x;
+                spawnPos.y = mPos.y;
+                spawnPos.z = mPos.z;
+                if (field_0x294 == 1) {
+                    const f32* p = &data[8];
+                    spawnPos.x += p[field_0x98 * 2];
+                    spawnPos.y += p[field_0x98 * 2 + 1];
+                } else {
+                    const f32* p = &data[0];
+                    spawnPos.x += p[field_0x98 * 2];
+                    spawnPos.y += p[field_0x98 * 2 + 1];
+                }
+                mTargetSerial = getActorManager_801F856C()->spawnActor_801F9484('DDGO', field_0x4, &spawnPos, (field_0x294 << 4) | 1, -1, -1);
+                if (mTargetSerial >= 0) {
+                    ActorBase_804A5770* child = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+                    if (child != NULL) {
+                        mTimers[2] = 120;
+                        child->field_0x98 = field_0x98;
+                    } else {
+                        mTargetSerial = -1;
+                    }
+                }
+                break;
+            } else {
+                f32 f4 = 1.0f;
+                if (field_0x294 == 1) {
+                    f4 = 1.2f;
+                }
+                const f32* p = &data[32 + field_0x98 * 4];
+                mBox.i.x = f4 * p[0];
+                mBox.i.y = f4 * p[1];
+                mBox.f.x = f4 * p[2];
+                mBox.f.y = f4 * p[3];
+                field_0x264 = fn_801F2718('HBMB');
+                if (field_0x264 >= 0) {
+                    ActorBase_804A5770* bombBase = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x264);
+                    if (bombBase != NULL && bombBase->field_0x94 == 0) {
+                        if (field_0x294 != 1 || bombBase->field_0x90 == 8 || bombBase->field_0x90 == 9) {
+                            f32 dx = bombBase->mPos.x - mPos.x;
+                            f32 dy = bombBase->mPos.y - mPos.y;
+                            s16 angle = (s16)(JMath::atanTable_.atan2_(dx, dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+                            if (fn_801F681C((u16)angle) == field_0x98) {
+                                Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(bombBase);
+                                bomb->field_0x280 = 1;
+                                field_0x230 = 6;
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        } else {
+            if (mTimers[2] == 10) {
+                if (mTargetSerial >= 0) {
+                    ActorBase_804A5770* child = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
+                    if (child != NULL) {
+                        mTargetSerial = -1;
+                        child->mLife = 0;
+                    }
+                }
+            }
+            if (mTimers[2] == 0) {
+                field_0x250 = 0;
+                field_0x230 = 8;
+            }
+            break;
+        }
+        break;
+    case 6:
+        setAnim(2);
+        if (field_0x264 >= 0) {
+            ActorBase_804A5770* bombBase = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x264);
+            if (bombBase != NULL && bombBase->field_0x94 == 0) {
+                Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(bombBase);
+                f32 f4 = 1.0f;
+                f32 sp18 = bomb->field_0x274;
+                JGeometry::TVec3f sp28;
+                sp28.x = bomb->mPos.x;
+                sp28.y = bomb->mPos.y;
+                sp28.z = bomb->mPos.z;
+                JGeometry::TVec3f sp34;
+                sp34.x = mPos.x;
+                sp34.y = mPos.y;
+                sp34.z = mPos.z;
+                if (field_0x294 == 1) {
+                    f4 = 1.5f;
+                }
+                const f32* p = &data[field_0x98 * 2];
+                sp34.x += f4 * p[0];
+                sp34.y += f4 * p[1];
+                if ((field_0x98 & 1) == 0) {
+                    sp34.y += 12.0f * f4;
+                }
+                addCalc2_801F71A4(&sp28.x, sp34.x, 0.3f, 2.0f);
+                addCalc2_801F71A4(&sp28.y, sp34.y, 0.3f, 2.0f);
+                addCalc2_801F71A4(&sp18, 0.0f, 0.5f, 0.5f);
+                bomb->mPos = sp28;
+                bomb->field_0x274 = sp18;
+            }
+        }
+        if (field_0x298 != 0) {
+            if (field_0x264 >= 0) {
+                ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x264);
+                if (bomb != NULL && bomb->field_0x94 == 0) {
+                    bomb->mAlive = false;
+                }
+            }
+            startSound_801F0E34(0x5002B, 0);
+            mTimers[1] = 60;
+            field_0x230 = 7;
+            // fallthrough
+        } else {
+            break;
+        }
+    case 7:
+        if (mTimers[1] == 1) {
+            field_0x274[0] = 2.0f;
+            field_0x274[1] = 2.0f;
+            field_0x274[2] = 2.0f;
+            setAnim(3);
+            field_0x25c--;
+            if (field_0x25c <= 0) {
+                s32 type = 7;
+                if (field_0x294 == 1) {
+                    type = 13;
+                }
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('HBMB', field_0x4, &mPos, type, -1, -1);
+                if (serial >= 0) {
+                    ActorBase_804A5770* bombBase = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (bombBase != NULL) {
+                        Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(bombBase);
+                        if (field_0x294 == 1) {
+                            bomb->field_0x27c = 2.5f;
+                        } else {
+                            bomb->field_0x27c = 1.5f;
+                        }
+                    }
+                }
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
+            } else {
+                startSound_801F0E34(0x40005, 0);
+            }
+        }
+        if (mTimers[1] == 0) {
+            f32 targetScale = (field_0x294 == 1) ? 2.0f : 1.0f;
+            if (field_0x274[0] < 1.1f) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053A110[field_0x98], 0, 0, NULL, NULL, true, targetScale);
+                if (field_0x25c > 0) {
+                    field_0x250 = 0;
+                    field_0x230 = 11;
+                    mTimers[1] = 63;
+                } else {
+                    vfunc_0x24();
+                }
+            }
+        }
+        break;
+    case 8:
+        setAnim(2);
+        field_0x230 = 9;
+        // fallthrough
+    case 9:
+        if (field_0x298 != 0) {
+            field_0x250 = 0;
+            field_0x230 = 1;
+        }
+        break;
+    case 10:
+        field_0x268.z = 0.0f;
+        field_0x268.y = 0.0f;
+        field_0x268.x = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        mTimers[1] = 30;
+        setAnim(0);
+        fn_801AE5AC();
+        field_0x230 = 11;
+        // fallthrough
+    case 11:
+        if (mTimers[1] == 0) {
+            if (field_0x290 != 0) {
+                mTimers[3] = 100;
+            }
+            field_0x230 = 1;
+        }
+        break;
+    }
+
+    if (field_0x230 != 11) {
+        fn_801AE5AC();
     }
 }
 

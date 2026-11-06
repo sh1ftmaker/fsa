@@ -15,7 +15,12 @@ public:
     /* 0x08 */ virtual ~Bomb_8049F784();
     /* 0x230 */ u8 field_0x230[0x238 - 0x230]; // not yet known
     /* 0x238 */ s32 field_0x238;               // act_shadow_link_2's helper ignores bombs with >= 5
-    /* 0x23C */ u8 field_0x23c[0x290 - 0x23C]; // not yet known
+    /* 0x23C */ u8 field_0x23c[0x274 - 0x23C]; // not yet known
+    /* 0x274 */ f32 field_0x274;
+    /* 0x278 */ u8 field_0x278[0x27C - 0x278];
+    /* 0x27C */ f32 field_0x27c;
+    /* 0x280 */ u8 field_0x280;
+    /* 0x281 */ u8 field_0x281[0x290 - 0x281];
     /* 0x290 */ JPABaseEmitter* mEmitters[3];  // released by the destructor
 }; // Size: 0x29C
 

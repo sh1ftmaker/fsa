@@ -18,6 +18,7 @@
 #include "game/act/tu_801D2C60.h"
 #include "game/act/act_frostare_tail.h"
 #include "game/act/act_navi.h"
+#include "game/act/act_dodongo.h"
 #include "game/act/tu_80362634.h"
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
@@ -251,14 +252,6 @@ public:
     /* 0x08 */ virtual ~Gohma_804A307C();
     /* 0x230 */ u8 field_0x230[0x54];
 }; // Size: 0x284
-
-// Spawned for 'DDGO'.
-class Dodongo_804A3334 : public ActorBase_804A5770 {
-public:
-    Dodongo_804A3334() {}
-    /* 0x08 */ virtual ~Dodongo_804A3334();
-    /* 0x230 */ u8 field_0x230[0x74];
-}; // Size: 0x2A4
 
 // Spawned for 'ZLD3'.
 class cls_804A35AC : public ActorBase_804A5770 {

@@ -20,7 +20,6 @@ act_cucco	dtor_emit	__dt__14Cucco_804AB8C0Fv	Cucco_804AB8C0	0x804AB8C0	new	new
 act_cucco	sinit	__sinit_act_cucco_cpp	-	-	new	-
 act_digging_game	dtor	__dt__26DiggingGameKeeper_8049C970Fv	DiggingGameKeeper_8049C970	0x8049C970	new	new
 act_digging_game	sinit	__sinit_act_digging_game_cpp	-	-	new	new
-act_dodongo	sinit	__sinit_act_dodongo_cpp	-	-	new	-
 act_door	dtor	__dt__13Door_804A8D88Fv	Door_804A8D88	0x804A8D88	new	new
 act_door	sinit	__sinit_act_door_cpp	-	-	new	new
 act_dropped_item	dtor	__dt__20DroppedItem_804A8C80Fv	DroppedItem_804A8C80	0x804A8C80	new	new
