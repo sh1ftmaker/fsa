@@ -42,6 +42,10 @@ public:
     // 0x80408F38: sets the alpha of the 9 panes of field_0x14 named by
     // lbl_8048C5D0 to field_0x642[i] * alpha.
     void fn_80408F38(f32 alpha);
+    // 0x80408114 (called by fn_804108B4): in states 0xB-0xD fades the eight
+    // Pwarea panes of field_0xc: the selected stage's blinks between 150 and
+    // 255, the previous one fades out, the others are hidden (alpha 0).
+    void fn_80408114();
     // 0x80409330: fn_8037AA34 then, for its result 0x1A, resets the 15 panes of
     // field_0x278 (state 0xF), for 0x19 sets field_0x668; while 0x663 is set
     // it wobbles field_0x3a0 / field_0x3a4 with two sine waves.
@@ -160,7 +164,9 @@ public:
     /* 0x310 */ JUtility::TColor field_0x310[6];
     /* 0x328 */ JUtility::TColor field_0x328[6];
     /* 0x340 */ s32 field_0x340; // the selected stage (0-7; fn_80404270)
-    /* 0x344 */ u8 field_0x344[0x350 - 0x344];
+    /* 0x344 */ s32 field_0x344; // the stage selected before field_0x340 (fn_80408114)
+    /* 0x348 */ s32 field_0x348; // sub-stage of field_0x340 (0-3; fn_80409450)
+    /* 0x34C */ u8 field_0x34c[0x350 - 0x34C];
     /* 0x350 */ s32 field_0x350; // state
     /* 0x354 */ u8 field_0x354[0x358 - 0x354];
     /* 0x358 */ s32 field_0x358;
@@ -181,7 +187,8 @@ public:
     /* 0x39C */ f32 field_0x39c;
     /* 0x3A0 */ f32 field_0x3a0;
     /* 0x3A4 */ f32 field_0x3a4;
-    /* 0x3A8 */ u8 field_0x3a8[0x41E - 0x3A8];
+    /* 0x3A8 */ u8 field_0x3a8[0x40E - 0x3A8];
+    /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ u8 field_0x420[0x42A - 0x420];
     /* 0x42A */ s16 field_0x42a;

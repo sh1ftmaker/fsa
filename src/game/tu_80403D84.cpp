@@ -370,6 +370,26 @@ void MapScreen_804B1288::fn_8040F288() {
     }
 }
 
+// FIXME: 96.27. As fn_8040F288: the original keeps -250 + 250 * t * t unfused (fmuls,
+// fmuls, fadds); ours fuses it into an fmadds. (Through an inline returning 250 * t * t it
+// is regalloc-only, 98.5 %; no such helper is proven, so it is not used.)
+void MapScreen_804B1288::fn_8040F16C() {
+    field_0x434 += 0x200;
+    field_0x436 += 0x400;
+    field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
+    field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
+    if (field_0x358 < 90) {
+        f32 t = (f32)field_0x358 / 90.0f;
+        field_0x3a4 += -250.0f + 250.0f * t * t;
+    } else {
+        field_0x2c8->startSound(JAISoundID(0x400E3));
+        if (field_0x358 >= lbl_8050DB0C.field_0x4c[319] + 90) {
+            field_0x358 = 0;
+            field_0x350 = 0x15;
+        }
+    }
+}
+
 // FIXME: 92.84. scheduling+regalloc only: the original keeps `this` in r31 and the
 // counter in r29 (loaded in the prologue after the saves); ours swaps them.
 void MapScreen_804B1288::fn_8040E720() {
@@ -435,6 +455,46 @@ void MapScreen_804B1288::fn_8040E278() {
     }
 }
 
+void MapScreen_804B1288::fn_80409450() {
+    field_0x41e++;
+    if (field_0x663 == 0) {
+        if (field_0x41e == 1) {
+            for (int i = 0; i < 4; i++) {
+                field_0x2b8[i]->field_0x44 = 0;
+                field_0x2b8[i]->field_0x45 = 0;
+                field_0x2b8[i]->startSound(JAISoundID(0x10001));
+            }
+        } else if (field_0x41e == 0x1A) {
+            for (int i = 0; i < 4; i++) {
+                field_0x2b8[i]->field_0x44 = 0;
+                field_0x2b8[i]->field_0x45 = 0;
+                field_0x2b8[i]->startSound(JAISoundID(0x2000E));
+            }
+        }
+    }
+    if (field_0x41e >= 0x24 || field_0x663 != 0) {
+        lbl_80529DEC.field_0x120 = field_0x340;
+        lbl_80529DEC.field_0x124 = field_0x348;
+        if ((field_0x340 == 0 && field_0x348 == 2) || (field_0x340 == 1 && field_0x348 == 2) ||
+            (field_0x340 == 2 && field_0x348 == 2) || (field_0x340 == 3 && field_0x348 == 2) ||
+            (field_0x340 == 4 && field_0x348 == 2) || (field_0x340 == 5 && field_0x348 == 2) ||
+            (field_0x340 == 6 && field_0x348 == 2) || (field_0x340 == 7 && field_0x348 == 1))
+        {
+            field_0x340 = 10;
+            field_0x348 = 2;
+            lbl_80529DEC.field_0x24b = 0;
+        }
+        lbl_80529DEC.field_0x118 = field_0x340;
+        lbl_80529DEC.field_0x11c = field_0x348;
+        if (isStageFlagSet(field_0x340, field_0x348)) {
+            lbl_80529DEC.field_0x254[0] = 1;
+        } else {
+            lbl_80529DEC.field_0x254[0] = 0;
+        }
+        field_0x350 = 0x16;
+    }
+}
+
 void MapScreen_804B1288::fn_80409330() {
     fn_8037AA34();
     if (fn_8037AA28() == 0x1A) {
@@ -453,6 +513,69 @@ void MapScreen_804B1288::fn_80409330() {
         field_0x436 += 0x400;
         field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
         field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
+    }
+}
+
+void MapScreen_804B1288::fn_80408F38(f32 alpha) {
+    for (int i = 0; i < 9; i++) {
+        field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);
+    }
+}
+
+void MapScreen_804B1288::fn_80408114() {
+    if (field_0x350 == 0xB || field_0x350 == 0xC || field_0x350 == 0xD) {
+        for (int i = 0; i < 8; i++) {
+            f32 alpha;
+            if (i == field_0x340) {
+                field_0x40e[i]++;
+                if (field_0x40e[i] < 15) {
+                    alpha = 155.0f * (field_0x40e[i] / 15.0f);
+                    if (alpha > 150.0f) {
+                        alpha = 150.0f;
+                    } else if (alpha < 0.0f) {
+                        alpha = 0.0f;
+                    }
+                } else {
+                    if (field_0x40e[i] >= 115) {
+                        field_0x40e[i] = 15;
+                    }
+                    f32 t;
+                    if (field_0x40e[i] < 65) {
+                        t = (field_0x40e[i] - 15) / 50.0f;
+                    } else {
+                        t = (100 - (field_0x40e[i] - 15)) / 50.0f;
+                    }
+                    alpha = 105.0f * t + 150.0f;
+                    if (alpha > 255.0f) {
+                        alpha = 255.0f;
+                    } else if (alpha < 150.0f) {
+                        alpha = 150.0f;
+                    }
+                }
+            } else if (i == field_0x344) {
+                if (field_0x40e[i] >= 15) {
+                    field_0x40e[i] = 15;
+                }
+                if (field_0x40e[i] > 0) {
+                    field_0x40e[i]--;
+                }
+                alpha = 155.0f * (field_0x40e[i] / 15.0f);
+                if (alpha > 150.0f) {
+                    alpha = 150.0f;
+                } else if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                }
+            } else {
+                field_0x40e[i] = 0;
+                alpha = 0.0f;
+            }
+            field_0xc->search(lbl_8048C2B8[i])->setAlpha(alpha);
+        }
+    } else {
+        for (int i = 0; i < 8; i++) {
+            field_0x40e[i] = 0;
+            field_0xc->search(lbl_8048C2B8[i])->setAlpha(0);
+        }
     }
 }
 
