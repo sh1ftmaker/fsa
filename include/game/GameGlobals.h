@@ -1137,13 +1137,14 @@ extern "C" {
 void fn_80341CB0(s32 layer, const JGeometry::TVec3f* pos);
 }
 
-// game/tu_8037DF68.cpp. Sets up a message box: msg is compared unsigned with
-// the id cached at 0x3C of *lbl_8053AD78, param is stored as a word at 0x7C,
-// param2 as a byte at 0xE5, the floats are a position (callers pass mPos.x,
-// mPos.y, mPos.z, mPos.z), and the colour (passed by value) is copied byte by
-// byte into the text box.
-extern "C" void fn_8037F2FC(u32 msg, s32 param, u8 param2, f32 x, f32 y, f32 z, f32 f4,
-                            JUtility::TColor color);
+// game/tu_8037DF68.cpp. Shows message msg in the message manager's text box
+// at (x, y) with a width x height font in colour color (copied into the text
+// box), or scrolling in from the right screen edge over `frames` frames when
+// that is not 0; skipMask (a byte at 0xE5) are the players whose 0x100 press
+// closes it. Returns false while a text box is already shown. Callers pass
+// mPos.x, mPos.y, mPos.z, mPos.z.
+bool fn_8037F2FC(u32 msg, s32 frames, u8 skipMask, f32 x, f32 y, f32 width, f32 height,
+                 JUtility::TColor color);
 
 // game/tu_80301CD0.cpp (per-player lists, not written yet). ~100 calls in ~90
 // units, mostly from actors' draw: serial, layer, position, then a sprite id.

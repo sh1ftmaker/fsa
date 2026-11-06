@@ -448,9 +448,10 @@ u32 fn_803846BC(u32 msg);
 bool fn_80388CAC(s32 player, s32 serial);
 // Functions of game/tu_8037DF68.cpp other units call. Return types: callers
 // clrlwi 24 / clrlwi. the bool ones.
-extern "C" {
-// 1 unit (tu_80139BE8's fn_80139C5C). Takes no arguments.
+// 1 unit (tu_80139BE8's fn_80139C5C). Draws the open windows in the order
+// they were opened (field_0xfc), then the text box when field_0xe4 is set.
 void fn_8038D4A8();
+extern "C" {
 // 16 units / 196 calls (the menu units). Copies the text of message msg
 // (mBmg's INF1 entry msg) into out, or into out2 / out3 (when not NULL)
 // as a counter that control codes advance reaches 1 / 2; one control code

@@ -3,6 +3,9 @@
 #include "game/GameMode.h"
 #include "game/GameState.h"
 #include "game/Message.h"
+#include "JSystem/J2D/J2DPane.h"
+#include "JSystem/JUtility/JUTFont.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 // The window index of a player: the one fn_8022F340 maps it to in some game
 // modes, else the player itself.
@@ -34,6 +37,67 @@ u8 fn_8037F1E4(s32 player);
 bool fn_8037EC98(s32 player, u16 flags);
 
 cls_804AF32C::~cls_804AF32C() {}
+
+// FIXME: 98.8. One instruction more: the font resource goes through r0 into a saved
+// register (mr r0, r3; mr r28, r0) where the original keeps it in r30 directly
+// (act_giant_bomb has the same two-mr getResource shape).
+MessageManager_804AF070::MessageManager_804AF070() {
+    lbl_8053AD78 = this;
+    const ResFONT* font = (const ResFONT*)gGameRoot_8053AAF8->field_0xa8->getResource('????', "rock_24_20_4i_e.bfn");
+    mFont = new JUTResFont(font, NULL);
+    mBmg = (MessageFile_804AF070*)gGameRoot_8053AAF8->field_0xa8->getResource('????', "gc_four_swords_text_e.bmg");
+    for (s32 i = 0; i < 4; i++) {
+        mWindows[i] = new MessageWindow_804AF490(i);
+        field_0xc[i].x = 0.0f;
+        field_0xc[i].y = 0.0f;
+        field_0xc[i].z = 0.0f;
+        field_0x4c[i] = 0;
+    }
+    field_0xec = 0;
+    field_0x80[0] = '\0';
+    field_0x40 = -1;
+    field_0x3c = -1;
+    field_0x7c = 0;
+    field_0xe5 = 0;
+    field_0x78 = 0.0f;
+    field_0x74 = 0.0f;
+    field_0x70 = 0.0f;
+    field_0x6c = 0.0f;
+    field_0xe4 = 0;
+    field_0x5c[3] = 0.0f;
+    field_0x5c[2] = 0.0f;
+    field_0x5c[1] = 0.0f;
+    field_0x5c[0] = 0.0f;
+    field_0xe6 = 0;
+    field_0xe7 = 0;
+    field_0xe8 = 0;
+    field_0x44 = 0;
+    field_0xe9 = 0;
+    field_0x48 = 0;
+    field_0xea = 0;
+    field_0xeb = 0;
+    field_0x10c = 0;
+    field_0xed = 0;
+    field_0x110 = 0;
+    field_0xee = 0;
+    mTextBox = new J2DTextBox("rock_24_20_4i_e.bfn", field_0x80, 0x64);
+}
+
+MessageManager_804AF070::~MessageManager_804AF070() {
+    if (lbl_8053AD78 != NULL) {
+        for (s32 i = 0; i < 4; i++) {
+            if (mWindows[i] != NULL) {
+                delete mWindows[i];
+                mWindows[i] = NULL;
+            }
+        }
+        delete mFont;
+        mFont = NULL;
+        delete mTextBox;
+        mTextBox = NULL;
+        lbl_8053AD78 = NULL;
+    }
+}
 
 void fn_8038D870() {
     for (s32 i = 0; i < 4; i++) {
@@ -100,6 +164,25 @@ void fn_8038D570() {
         }
     }
     lbl_8053AD78->field_0xe8 = 0;
+}
+
+// FIXME: 99.3. Regalloc only: the manager pointer and the window index sit in r5 / r4
+// in the original, r4 / r5 here.
+// Draws the open windows in the order they were opened (field_0xfc), then the
+// text box when field_0xe4 is set.
+void fn_8038D4A8() {
+    for (s32 i = 0; i < 4; i++) {
+        s32 index = lbl_8053AD78->field_0xfc[i];
+        if (index != -1) {
+            bool takesPart = gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << index);
+            if (takesPart == true) {
+                lbl_8053AD78->mWindows[index]->fn_80390E68();
+            }
+        }
+    }
+    if (lbl_8053AD78->field_0xe4 != 0) {
+        lbl_8053AD78->mTextBox->draw(lbl_8053AD78->field_0x70, lbl_8053AD78->field_0x74);
+    }
 }
 
 void fn_8038D454() {
@@ -471,6 +554,43 @@ const char* fn_80383E2C(u32 index, u8* out) {
         }
     }
     return NULL;
+}
+
+// Shows message msg in the manager's text box at (x, y) with a font of
+// width x height and the colour color, or, when frames is not 0, scrolling in
+// from the right edge of the screen over that many frames (fn_8038D570 moves it).
+// skipMask: the players whose 0x100 press closes it (field_0xe5). False while
+// a text box is already shown.
+bool fn_8037F2FC(u32 msg, s32 frames, u8 skipMask, f32 x, f32 y, f32 width, f32 height,
+                 JUtility::TColor color) {
+    if (lbl_8053AD78->field_0xe4 == 0) {
+        if (lbl_8053AD78->field_0x3c != msg) {
+            lbl_8053AD78->field_0x3c = msg;
+            char* text = lbl_8053AD78->mTextBox->getStringPtr();
+            lbl_8053AD78->field_0x6c = getMessageText_803832BC(text, lbl_8053AD78->field_0x3c, 0, NULL, NULL);
+        }
+        f32 scale = width / 20.0f;
+        f32 textWidth = lbl_8053AD78->field_0x6c * scale;
+        f32 distance = textWidth + (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+        J2DTextBox::TFontSize size;
+        size.x = width;
+        size.y = height;
+        lbl_8053AD78->mTextBox->setFontSize(size);
+        lbl_8053AD78->mTextBox->setFontColor(color, color);
+        lbl_8053AD78->field_0x7c = frames;
+        if (lbl_8053AD78->field_0x7c == 0) {
+            lbl_8053AD78->field_0x70 = x - lbl_8053AD78->field_0x6c * scale / 2;
+            lbl_8053AD78->field_0x78 = 0.0f;
+        } else {
+            lbl_8053AD78->field_0x70 = (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+            lbl_8053AD78->field_0x78 = distance / lbl_8053AD78->field_0x7c;
+        }
+        lbl_8053AD78->field_0x74 = y - height / 2;
+        lbl_8053AD78->field_0xe5 = skipMask;
+        lbl_8053AD78->field_0xe4 = 1;
+        return true;
+    }
+    return false;
 }
 
 u8 fn_8037F1E4(s32 player) {
