@@ -622,3 +622,10 @@ void cls_804A3E44::vfunc_0x78() {
         field_0x2b8 = -1;
     }
 }
+
+bool cls_804A3E44::vfunc_0x60() {
+    if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
+        return fn_801CEA60();
+    }
+    return EnemyBase_804A4808::vfunc_0x60();
+}
