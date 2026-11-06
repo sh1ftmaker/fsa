@@ -203,7 +203,9 @@ void EscortWoman_8049E1D0::vfunc_0x68() {
 
     case 9:
         if (fn_80121E40() && mAnim.fn_801D208C()) {
-            field_0x3c.set(0.0f, 0.0f, 0.0f);
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
             field_0x3c8++;
             if (field_0x3c8 >= 30) {
                 field_0x3c8 = 0;
