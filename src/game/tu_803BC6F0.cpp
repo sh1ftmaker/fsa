@@ -2588,6 +2588,31 @@ void FileSelect_804AFF60::fn_803BF3BC() {
     setState(34);
 }
 
+// Not auto-inlined: fn_803C579C calls fn_803BF004 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// FIXME: 96.97. Registers and scheduling only: the original keeps `this` in
+// r31 and the table base in r30 (ours r28 / r31) and loads the two rows' y
+// into f0 / f2 (ours f2 / f0); a hand-inlined row-alpha block with a `file`
+// local is the same.
+// fn_803C579C (state 33), once the card manager is done: the board stops,
+// row field_0xa4 moves up to the first row's place and gets its panes'
+// alphas back; state 35, sound 0x62.
+void FileSelect_804AFF60::fn_803BF004() {
+    field_0x20->field_0x20 = 0;
+    field_0x20->field_0x26 = 0;
+    field_0x38[field_0xa4]->moveFromCentre_80402E08(0.0f, field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+    field_0x38[field_0xa4]->field_0x22 = 0;
+    field_0x38[field_0xa4]->field_0x26 = 0;
+    field_0x38[field_0xa4]->mPane->setAlpha(field_0x38[field_0xa4]->field_0x28);
+    setRowAlphas(this, field_0xa4);
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(35);
+    gAudioMgr_8053AF80->fn_80458880(0x62, -1);
+}
+#pragma auto_inline reset
+
 // FIXME: 99.66. Instructions identical; only the .sdata2 literal names differ
 // (the pool's leading 0, -200, 200, see the progress notes).
 // The board's enemy sprites (fn_803CEED4 draws them after the screens).
