@@ -710,6 +710,9 @@ bool fn_80239D38();
 // Owner: game/tu_8043A0E8.cpp (0x8043A170, defined there). Called by the
 // player's update fn_80253E6C with its index.
 void fn_8043A170(s32 player, bool force);
+// Owner: game/tu_8043A0E8.cpp (0x8043A0E8, defined there). act_kaepora_gaebora's
+// fn_80219AFC calls it with true.
+void fn_8043A0E8(bool force);
 class cls_804A03A8 {
 public:
     // Constructor 0x801602E8 (called by GameRoot2_8049F108's constructor).

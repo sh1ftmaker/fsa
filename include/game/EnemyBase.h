@@ -386,6 +386,11 @@ s32 fn_801CCDA4();
 // effect at *pos on `layer` like fn_801CB688, for strong hits (fn_801F37AC
 // with attack > 4 and type 1, or type 5 with life left).
 extern "C" void fn_801CB5CC(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6);
+// game/tu_801CB270.cpp (not written yet; 0x801CBB98, 0x704 bytes; C linkage keeps the dtk name).
+// Free function (r3 = a layer box, r4 = a position, r5 = a 16-bit angle, f1 = a distance, r6 = *out,
+// a 2D point written to): called by act_kaepora_gaebora's fn_80219AFC and by tu_80220F54.
+extern "C" void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* spawnPos, s32 angle, f32 dist,
+                            JGeometry::TVec2f* out);
 
 extern "C" {
 

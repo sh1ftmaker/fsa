@@ -1,7 +1,7 @@
 #ifndef GAME_ACT_ACT_KAEPORA_GAEBORA_H
 #define GAME_ACT_ACT_KAEPORA_GAEBORA_H
 
-// Kaepora Gaebora. Code: game/act_kaepora_gaebora.cpp (not written yet),
+// Kaepora Gaebora. Code: game/act_kaepora_gaebora.cpp (partly written),
 // and its drawing and effect helpers in game/tu_8021AF28.cpp.
 
 #include "game/EnemyBase.h"
@@ -10,7 +10,7 @@
 
 // Named after its vtable, 0x804A6550 (an EnemyBase_804A4808 descendant).
 // The overrides below are the vtable slots that differ from EnemyBase's;
-// only draw() and the non-virtual members of tu_8021AF28 are defined yet.
+// init, vfunc_0x90 and vfunc_0xA0 are not written yet (draw() is in tu_8021AF28).
 class cls_804A6550 : public EnemyBase_804A4808 {
 public:
     cls_804A6550();
@@ -27,6 +27,8 @@ public:
 
     // tu_8021AF28 (the sprite and effect helpers draw() and the actor's
     // states call).
+    // 0x80219AFC (act_kaepora_gaebora): switches to `state`: the exit and entry
+    // actions of the old and new state, then mStateTimer = 0 and mState = state.
     void fn_80219AFC(s32 state);
     // 0x80219E04 (act_kaepora_gaebora): true in states 6-10 and in state 2
     // while field_0x2b4 == 3; the sprites and effects then move by -6.
@@ -54,8 +56,5 @@ public:
     /* 0x2C8 */ cls_8021ACE0 mHead; // swinging head; mHead.mAngle is the head's yaw
     /* 0x2D8 */ f32 field_0x2d8;
 }; // Size: 0x2DC
-
-void fn_8043A0E8(bool force);
-extern "C" void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* spawnPos, s32 angle, f32 dist, JGeometry::TVec2f* out);
 
 #endif

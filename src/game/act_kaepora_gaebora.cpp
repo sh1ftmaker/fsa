@@ -41,6 +41,7 @@ bool cls_804A6550::fn_80219E04() const {
 
 // FIXME: 98.07% (missing/extra + reloc-name). Target reloads mFlags before ori 0x2000 in case 12.
 void cls_804A6550::fn_80219AFC(s32 state) {
+    // The state tests (states 5 and 11) are written out as in the original's inlined helper; a shared helper drops to 91.68 %.
     bool oldFlying = false;
     switch (mState) {
     case 5:
@@ -108,6 +109,8 @@ void cls_804A6550::fn_80219AFC(s32 state) {
     case 4: {
         mTargetSpeed = 1.5f;
         JGeometry::TBox2f* box = layerBox(field_0x4);
+        // spawn is taken before the angle is chosen (the original's addi r4 comes first), and py/px are both
+        // loaded before either store; without them this drops to 94.99 %.
         const JGeometry::TVec3f* spawn = &mSpawnPos;
         s32 angle = -0x5556;
         if (mFlags & 0x2000) {
@@ -184,6 +187,7 @@ void cls_804A6550::vfunc_0x94() {
 
 // FIXME: 99.85% (reloc-name). Floating-point literals pooled in sdata2.
 void cls_804A6550::vfunc_0x9C(u8 mapHit) {
+    // The 0x10000 test appears twice in the original (a single test drops to 98.38 %).
     if (mFlags & 0x10000) {
         if (mFlags & 0x10000) {
             if (mState >= 2 || mState < 0) {
