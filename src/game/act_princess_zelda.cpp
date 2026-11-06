@@ -170,7 +170,7 @@ inline bool cls_8049CEE0::stepRail() {
     return false;
 }
 
-// FIXME: 94.02 %. missing/extra + reloc-name: ours has 4 fewer instrs (919 vs 923); some argument setups before calls are scheduled differently and one comparison compiles to an extra cror.
+// FIXME: 94.03 %. missing/extra + reloc-name: ours has 4 fewer instrs (919 vs 923); some argument setups before calls are scheduled differently and one comparison compiles to an extra cror.
 void cls_8049CEE0::update() {
     ActorBase_804A5770::update();
     field_0x330 = 1.0f;
@@ -437,8 +437,7 @@ void cls_8049CEE0::update() {
                 break;
             }
             field_0x330 = 0.5f;
-            s32 layer = fn_8023E10C(field_0x300);
-            if (layer == getPlayerLayer_8023DE58(field_0x300)) {
+            if (getPlayerLayer_8023DE58(field_0x300) == fn_8023E10C(field_0x300)) {
                 mPos.x = ppos.x;
                 mPos.y = ppos.y;
                 mPos.z = ppos.z;
