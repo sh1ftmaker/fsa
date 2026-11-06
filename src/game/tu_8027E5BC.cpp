@@ -132,11 +132,7 @@ void Player_804A6F38::fn_802859C4() {
             } else if (fn_8022C6AC(field_0x4) != 0.0f) {
                 fn_80251AEC(3);
             } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
-                // Read before the call: the original loads the layer first (declaration order only steers scheduling).
-                s32 layer = field_0x3b4;
-                // Named result: compared as cmpw r3, layer; `layer == call` / `call == layer` swap the operands.
-                s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
-                if (leaderLayer == layer) {
+                if (getPlayerLayer_8023DE58(fn_80240644()) == getLayer()) {
                     fn_80251AEC(3);
                 }
             }
@@ -230,11 +226,7 @@ void Player_804A6F38::fn_80285690() {
         } else if (fn_8022C52C(fn_80240644(), 0x40) && fn_8022C6AC(field_0x4) != 0.0f) {
             fn_80251AEC(3);
         } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
-            // Read before the call: the original loads the layer first (declaration order only steers scheduling).
-            s32 layer = field_0x3b4;
-            // Named result: compared as cmpw r3, layer; `layer == call` / `call == layer` swap the operands.
-            s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
-            if (leaderLayer == layer) {
+            if (getPlayerLayer_8023DE58(fn_80240644()) == getLayer()) {
                 fn_80251AEC(3);
             }
         }
@@ -745,8 +737,6 @@ void Player_804A6F38::fn_80283E70() {
     }
 }
 
-// FIXME: 99.38. Registers only: in the follower loop the original keeps i in r30 and field_0x4 in
-// r31 (cmpw r3, r31), ours the other way round.
 // Exit of state 0x38: keeps mPos as the return point 0x2C4 (0x440); unless 0xCF4 is 0x24, clears
 // 0xCE8 and either (no 0x43F) releases the followers of this player (fn_802384BC) and on tile 0xD
 // spawns the effect 0x3D0, or keeps / clears the 0x43F carry state for state 0x1B.
@@ -759,8 +749,7 @@ void Player_804A6F38::fn_80283D2C() {
         if (!field_0x43f) {
             if (fn_802486A0() != 4 && !fn_80240808()) {
                 for (s32 i = 0; i < 4; i++) {
-                    s32 index = field_0x4;
-                    if (fn_8022F3DC(i) == index) {
+                    if (fn_8022F3DC(i) == getIndex()) {
                         fn_802384BC(i);
                     }
                 }
@@ -2203,9 +2192,7 @@ void Player_804A6F38::fn_8027FA08(JGeometry::TVec3f* out) {
             *out = mPos;
             return;
         }
-        // Read before the call: the original loads the layer first (declaration order only steers scheduling).
-        s32 layer = field_0x3b4;
-        if (layer != getPlayerLayer_8023DE58(fn_80240644())) {
+        if (getLayer() != getPlayerLayer_8023DE58(fn_80240644())) {
             *out = mPos;
             return;
         }
@@ -2609,10 +2596,9 @@ void Player_804A6F38::fn_8027EB04() {
     }
 }
 
-// FIXME: 98.85. Same instructions; the original reads field_0x3b4 into r30 before loading field_0x11fc for the getPlayerLayer_8023DE58 call, ours loads it after the call.
 void Player_804A6F38::fn_8027E7E0() {
     if (field_0x11fc >= 0) {
-        if (fn_80235580(field_0x11fc) || field_0x3b4 != getPlayerLayer_8023DE58(field_0x11fc) ||
+        if (fn_80235580(field_0x11fc) || getPlayerLayer_8023DE58(field_0x11fc) != getLayer() ||
             magnitude(*getPlayerPos_8023E724(field_0x11fc) - mPos) > 60.0f) {
             field_0x11fc = -1;
         }
@@ -2627,11 +2613,8 @@ void Player_804A6F38::fn_8027E7E0() {
         if (i == field_0x4) {
             continue;
         }
-        if (fn_802486A0() == 4) {
-            s32 other = fn_80248778();
-            if (fn_80240888() != other) {
-                continue;
-            }
+        if (fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+            continue;
         }
         if (magnitude(*getPlayerPos_8023E724(i) - mPos) < nearest - 10.0f) {
             field_0x11fc = i;
