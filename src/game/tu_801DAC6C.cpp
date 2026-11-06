@@ -94,9 +94,9 @@ void Singleton_801DAC6C::fn_801DAD88() {
 
 // FIXME: 91%. Same instructions; the original loads the serial (lwz r31)
 // before saving r30 and clearing the result (li r30, 0). Ours clears first.
-s32 Singleton_801DAC6C::fn_801DAD2C() {
+u8 Singleton_801DAC6C::fn_801DAD2C() {
     s32 serial = mSerial4;
-    s32 result = 0;
+    u8 result = 0;
     if (serial >= 0) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (actor != NULL) {

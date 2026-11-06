@@ -61,7 +61,7 @@ void cls_804A4C58::draw() {
             mtx[2][2] = 1.0f;
             params.mMtx = mtx;
         }
-        s32 d = fn_801DAC6C()->fn_801DAD2C();
+        u8 d = fn_801DAC6C()->fn_801DAD2C();
         params.field_0x14.r += d;
         params.field_0x14.g += d;
         params.field_0x14.b += d;

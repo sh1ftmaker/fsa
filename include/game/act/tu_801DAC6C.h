@@ -16,7 +16,7 @@ struct Singleton_801DAC6C {
     // serial mSerial0 into it. Returns false only when mSerial0 < 0.
     bool fn_801DACAC(JGeometry::TVec3f* out);
     // 0x801DAD2C: fn_801DC264 of the actor with serial mSerial4, or 0.
-    s32 fn_801DAD2C();
+    u8 fn_801DAD2C();
     // 0x801DAD88: calls fn_801D8400 on the actor with serial mSerial0.
     void fn_801DAD88();
     // 0x801DADD0: sends sound 0x40005 (startSound_801F0E34) to the actor with serial mSerial0.
@@ -37,7 +37,7 @@ struct Singleton_801DAC6C {
     /* 0x04 */ s32 mSerial4;
     /* 0x08 */ s32 mList[30];
     /* 0x80 */ s32 mCount;
-    /* 0x84 */ s16 field_0x84;
+    /* 0x84 */ u16 field_0x84; // bit 0: set by the tail on its tenth hit (act_frostare_tail lhz/ori/sth)
 };
 
 // Owner game/tu_801DAC6C.cpp. Returns the guarded static above.

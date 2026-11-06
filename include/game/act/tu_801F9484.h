@@ -15,6 +15,7 @@
 #include "game/act/act_princess_zelda_ending.h"
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
+#include "game/act/act_frostare_tail.h"
 #include "game/act/tu_80362634.h"
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
@@ -298,19 +299,6 @@ public:
     /* 0x08 */ virtual ~cls_804A3E44();
     /* 0x230 */ u8 field_0x230[0xC0];
 }; // Size: 0x2F0
-
-// Spawned for 'BOIT'.
-class cls_804A4F90 : public ActorBase_804A5770 {
-public:
-    cls_804A4F90();
-    /* 0x08 */ virtual ~cls_804A4F90();
-    // 0x801DC264 (game/act_frostare_tail.cpp, not written yet): reads 0xD8, 0xDC
-    // and 0x278 and returns a value 0-255 (clrlwi 24 in the body); the caller
-    // (tu_801DAC6C) uses it as an int without extending it (declared s32: a u8
-    // adds a clrlwi at the call).
-    s32 fn_801DC264();
-    /* 0x230 */ u8 field_0x230[0x7C];
-}; // Size: 0x2AC
 
 // Spawned for 'BRMN'.
 class cls_804A5C88 : public ActorBase_804A5770 {
