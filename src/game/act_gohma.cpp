@@ -37,6 +37,7 @@ static const char* lbl_804A3020[] = {
 
 static s32 lbl_8053ABD8[2];
 
+// FIXME: 99.59 % (scheduling+regalloc + reloc-name). Minor register scheduling differences on branch targets and literal pool relocations.
 void Gohma_804A307C::init() {
     mBox.i.x = -10.0f;
     mBox.i.y = -8.0f;
@@ -133,6 +134,7 @@ Gohma_804A307C::~Gohma_804A307C() {
     }
 }
 
+// FIXME: 99.87 % (reloc-name). Instruction-identical; differs only on reloc-name of literal lbl_8053E7B0 vs @1301.
 void Gohma_804A307C::vfunc_0x44() {
     if (field_0x25c == mLife) {
         return;
@@ -163,6 +165,7 @@ void Gohma_804A307C::vfunc_0x44() {
     field_0x230 = 5;
 }
 
+// FIXME: 97.40 % (missing/extra + reloc-name). Emitter clear at offset 0x24 differs due to shared JPAEmitter header layout.
 void Gohma_804A307C::fn_801AB6A8() {
     f32 f31 = mBox.i.y + mPos.y;
     f32 f29 = mBox.f.y + mPos.y;
@@ -466,6 +469,7 @@ void Gohma_804A307C::fn_801AB6A8() {
     }
 }
 
+// FIXME: 88.34 % (missing/extra + reloc-name). Minor register allocation differences in state machine handlers.
 void Gohma_804A307C::fn_801AAF44() {
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
 
@@ -706,6 +710,7 @@ void Gohma_804A307C::update() {
 
 void Gohma_804A307C::draw() {
     SpriteParams_801F5AE0 params;
+    // Declaration order steers FPR allocation (f2 for scaleX, f1 for scaleY)
     f32 scaleY;
     f32 scaleX;
     scaleX = field_0x270;
