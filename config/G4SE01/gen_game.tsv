@@ -14,8 +14,6 @@ act_cheep_cheep	dtor	__dt__12cls_804A11B8Fv	cls_804A11B8	0x804A11B8	new	new
 act_cheep_cheep	sinit	__sinit_act_cheep_cheep_cpp	-	-	new	new
 act_colour_block	dtor	__dt__12cls_804AE620Fv	cls_804AE620	0x804AE620	new	new
 act_colour_block	sinit	__sinit_act_colour_block_cpp	-	-	new	new
-act_digging_game	dtor	__dt__26DiggingGameKeeper_8049C970Fv	DiggingGameKeeper_8049C970	0x8049C970	new	new
-act_digging_game	sinit	__sinit_act_digging_game_cpp	-	-	new	new
 act_door	dtor	__dt__13Door_804A8D88Fv	Door_804A8D88	0x804A8D88	new	new
 act_door	sinit	__sinit_act_door_cpp	-	-	new	new
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
