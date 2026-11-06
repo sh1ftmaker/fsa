@@ -345,22 +345,47 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   an inline returning `u8` with `return x == N ? true : false;`, called in the condition
   (`isGameMode(mode)` in game/GameMode.h).
   A plain `x == N`, a bool return or `return x == N;` fold into `cmpwi; bne`. tu_80285E58 fn_80286688
-  88.7 -> 100 % and the copy inlined in fn_802870C8; tu_8026FC20 isGameMode(7) (fn_8027057C). Same shape:
-  tu_802F5040 fn_802FB69C, tu_80301CD0, tu_8013AAD4 fn_8013BBE0 (mode 0xC).
+  88.7 -> 100 % and the copy inlined in fn_802870C8; tu_8026FC20 isGameMode(7) (fn_8027057C). Shape
+  sweep (2026-11-06): tu_8013AAD4 fn_8013BBE0 and tu_80158624 fn_80159330 (mode 0xC, 100 %; read
+  gGameRoot_8053AAF8 directly, a `root` local moves the root register), tu_802F5040 fn_802FB69C
+  (both mode-11 tests). A file's own byte helper takes the same form: tu_8025EB18 isField0xd64One
+  `p.field_0xd64 == 1 ? true : false` (fn_8025EE48, fn_8025F2CC to 100 %). It also holds for a bool
+  ARGUMENT of an inlined helper (`cntlzw; extrwi.` for `== 0`, `neg; or; srwi.` for `!= 0`):
+  act_bird_manager `stepLine(this, mDirection == 0 ? true : false)`. Not this shape: `subfic; cntlzw;
+  srwi 5` (the whole word kept, act_fire_rod_fire draw) — a bool, int or u32 local gives extrwi there.
 - Early-out tests ending `bne +8; b end` (the last test jumps over a `b` to the epilogue) instead of
   `beq end`: the tests are ONE condition, `if (a || b || !c) return;`, not separate `if`s
-  (tu_80285E58 fn_80286688; separate `if`s or `if (!c) return;` give `beq`).
+  (tu_80285E58 fn_80286688; separate `if`s or `if (!c) return;` give `beq`). Also under a guard:
+  tu_8023FBF0 fn_802416FC `if (!root->field_0x7f && (field_0xbfc <= 0 || fn_80270A8C())) return;`.
+  The `bne +8; b` marks the END of an `||` chain, not always the last early-out: tu_8013C5C8 execute is
+  `if (!isGameModeSet() || mode == 0xC) return; if (field_0x94) return;` (99.5 %, regalloc); all three
+  tests in one `||` give `different` (97.8 %).
 - A member loaded into a saved register BEFORE the calls of the same expression (`lwz r29, 0x3b4(r31)`
   ahead of the bl's for the other arguments; `lwz r29, 0x4(r31); bl fn_X; cmpw r3, r29`): the original
   read it through an inlined getter (MWCC orders an inlined call with the other calls; a plain member
   read comes after them). Player_804A6F38::getIndex() / getLayer() (Player.h), used for every read in
-  tu_80285E58 (8 sites flipped, nothing else changed).
+  tu_80285E58 (8 sites flipped, nothing else changed). For actors: ActorBase_804A5770::getField_0x4()
+  (the layer) and getSerial() (ActorBase.h). With the getter the SOURCE operand order is the cmpw
+  order: `call() == getField_0x4()` gives `cmpw r3, rS`, `getLayer() != call()` gives `cmpw rS, r3`
+  (tu_8027E5BC fn_8027FA08). Shape sweep: +7 at 100 % (tu_801CDC8C, tu_8027E5BC x2,
+  act_special_conversation_npc x3, act_block). Use it only where the asm loads the member BEFORE
+  the bl: act_princess_zelda update reads field_0x4 after the call (`lwz r0, 0x4; cmpw r0, r3`) and the
+  getter drops it (94.02 -> 93.79); act_horse_race_man fn_801EC7B8 reuses one register for a layer read
+  twice into the same local, and the getter drops it (98.28 -> 98.11).
 - Two calls compared, `cmpw r3, r29` with the FIRST call's result in r29: write the call made second
   on the left, `if (fn_80240888() != fn_80248778())` (MWCC calls the right operand first); a local for
-  the first result gives `cmpw r29, r3` (tu_80285E58).
+  the first result gives `cmpw r29, r3` (tu_80285E58). Same in tu_8027E5BC fn_8027E7E0 (to 100 %) and
+  act_princess_zelda `getPlayerLayer_8023DE58(p) == fn_8023E10C(p)`.
 - A `||` chain on one member that the original folds only partly (`cmpwi 8; beq; subi 9; cmplwi 1; ble;
   cmpwi 0x39`): compare the member itself each time (`field_0x1240 == 8 || field_0x1240 == 9 || ...`); a
-  local read once lets MWCC fold 8-10 (tu_80285E58 fn_802870C8).
+  local read once lets MWCC fold 8-10 (tu_80285E58 fn_802870C8). Also tu_8025EB18 fn_8025FCC8 (state
+  0x11 on its own before 0x12-0x16: 87.0 -> 100 %).
+- An old position read back after the member was updated (the original reloads mPos.x for `+= k`
+  where ours reuses the saved copy): copy it as a `JGeometry::TVec2f old(mPos);`, not two f32 locals
+  (act_bird_manager Path::fn_80209640 92.2 -> 97.8 %, scheduling+regalloc; one example so far).
+- Not the const-this shape: a different order among loads only (no load moved past a store or the
+  prologue) — GameView fn_802D7F40 made const stays 85.2 %. tu_801ED3DC fn_801ED3DC (loads moved above
+  the stores through a global) is: const, 84.0 -> 100 %.
 
 - A u8 global or field tested with `lbz; cmpwi 0` (plain u8 gives cmplwi): `(s32)flag != 0` (reviewed
   form, tu_8025EB18 fn_80263078's cucco 0x2A1 `== 1`; tu_80285E58 lbl_8053ABA8 / lbl_8053ABF0).
