@@ -1,3 +1,4 @@
+#include "game/ActorManager.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
@@ -169,6 +170,22 @@ void VaatiBoss_804A4958::init() {
 
 void VaatiBoss_804A4958::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
+}
+
+void VaatiBoss_804A4958::fn_801D63D0() {
+    for (s32 i = 0; i < 5; i++) {
+        s32 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, 2);
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                JGeometry::TVec3f vel;
+                vel.z = 3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 3.0f;
+                vel.y = 1.2f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
+                vel.x = 1.2f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f);
+                actor->field_0x3c = vel;
+            }
+        }
+    }
 }
 
 void VaatiBoss_804A4958::vfunc_0x94() {
