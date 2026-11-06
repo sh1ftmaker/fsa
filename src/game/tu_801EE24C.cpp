@@ -1668,7 +1668,7 @@ void ActorBase_804A5770::fn_801EEC98(s32 serial, u16* outAngle, s32* outDir, f32
             break;
         }
         s32 onLayer = 0;
-        if (getPlayerLayer_8023DE58(i) < 8 && actor->field_0x4 == 8) {
+        if (getPlayerLayer_8023DE58(i) < 8 && actor->getField_0x4() == 8) {
             onLayer = 2;
         } else if (actor->getField_0x4() == getPlayerLayer_8023DE58(i)) {
             onLayer = 1;
