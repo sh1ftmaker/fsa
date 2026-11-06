@@ -163,7 +163,7 @@ lacks), `.bss` (split weak `memPool_` copies yourself, see
 docs/COORDINATOR.md) and kept weak copies are diffed as compiled.
 
 <!-- status:start -->
-Status (2026-11-06, honest report, written by `tools/site_data.py`): 8,960 of 11,557 functions, 1,821,976 of 4,442,032 bytes of code (41.02 %); weighted 52.03 % (2,311,110 bytes, honest plus partial credit for 680 structurally matched functions). Game code 4,247 / 6,789 functions (27.3 %; Boot to main menu 26.0 %, Main menu to Shadow Battle 30.2 %, Actors 29.7 %, Everything else 22.9 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 450 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-06, honest report, written by `tools/site_data.py`): 8,962 of 11,557 functions, 1,823,076 of 4,442,032 bytes of code (41.04 %); weighted 52.05 % (2,312,210 bytes, honest plus partial credit for 680 structurally matched functions). Game code 4,249 / 6,789 functions (27.3 %; Boot to main menu 26.1 %, Main menu to Shadow Battle 30.2 %, Actors 29.7 %, Everything else 22.9 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 450 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
@@ -237,7 +237,8 @@ until someone checks it the same way.
    who sees that is looking at a REJECT.
 
    `check_blobs` checks each blob against symbols.txt and splits.txt (a data
-   section, exact address and size, at most 0x2000 bytes, inside its unit),
+   section, exact address and size, at most 0x2000 bytes unless `gate.py`'s
+   `BLOB_MAX_RAISED` records that symbol's size on the owner's approval, inside its unit),
    and against dtk's split of the original (no relocations, no vtable or RTTI
    names). Before checking include paths it normalizes them the way MWCC
    resolves them: continuations spliced, `\` read as `/`, any case. It fails
