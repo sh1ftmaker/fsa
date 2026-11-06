@@ -35,7 +35,7 @@ public:
     void fn_803BDD44(s32 file);
     // fn_803CEED4: after the highlight update.
     void fn_803BE3D8();
-    // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8 (not written yet).
+    // Called by fn_803CBE38, fn_803CC3DC, fn_803CDEE8.
     void fn_803C24BC();
     void fn_803BF004();
     // fn_803C4054: the delete prompt's two answers.
@@ -106,7 +106,7 @@ public:
     // message window.
     void fn_803CE9EC();
     void fn_803CEED4();
-    // Not written yet (0x803BD5E0): sets up the rows of a file whose checksum failed.
+    // Sets up the rows of a file whose checksum failed (fn_803CE4CC).
     void fn_803BD5E0(s32 file);
     void fn_803CF504();
 
