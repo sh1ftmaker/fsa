@@ -2847,6 +2847,16 @@ void Player_804A6F38::fn_8024B9E8() {
     field_0x284[0] = field_0xbf0->field_0xb4;
 }
 
+// Step j of 12 on the line from `from` to `to` (fn_8024B2E0's trail), returned
+// by value: the original builds it in one stack TVec3f and copies it out
+// through a second (the return value), as this does.
+static inline JGeometry::TVec3f trailStep(const JGeometry::TVec3f& from, const JGeometry::TVec3f& to, s32 j) {
+    JGeometry::TVec3f step(from.x * (12 - j) / 12.0f + to.x * j / 12.0f,
+                           from.y * (12 - j) / 12.0f + to.y * j / 12.0f,
+                           from.z * (12 - j) / 12.0f + to.z * j / 12.0f);
+    return step;
+}
+
 // The trail reset in 0x454 mode (fn_8024BAEC): a follower fills the trail
 // with field_0x32c, grounded; a player alone with field_0x32c; a leader lays
 // it along its group, 12 entries per follower from its own position to the
@@ -2854,13 +2864,13 @@ void Player_804A6F38::fn_8024B9E8() {
 // then the airborne flags follow each entry's height.
 // The 0x31 loops count with `int`: with s32 (long) MWCC tests the unrolled
 // loop's entry (cmpwi 0x31; bge), which the original does not.
-// FIXME: 92.26 %. Missing/extra (4 fewer): in the interpolation the original
-// keeps the next member's position in registers (loaded once, stored to
-// `from` at the end) and reloads `from` from the stack, and builds each step
-// in two stack temporaries (x / y copied through the second, z rounded with
-// frsp); ours reloads the pointer's floats every pass and writes the step
-// directly. Copying the position to a local TVec3f (set / Vec constructor)
-// gives 71-85 %.
+// The next member's position is a local copy (`to.set(...)`, kept in registers
+// and stored to `from` at the end); each step comes back by value from
+// trailStep (two stack TVec3fs: the step, then the returned copy, z through
+// frsp) and is stored with set().
+// FIXME: 99.29 %. Registers only: the group-count loops (inlined
+// fn_80248970) and the trail loop's counters are one register off
+// (r30 / r26 / r28 / r27 in the original, r31 / r25 / r30 / r26 here).
 void Player_804A6F38::fn_8024B2E0() {
     if (field_0x1216) {
         return;
@@ -2893,14 +2903,12 @@ void Player_804A6F38::fn_8024B2E0() {
             if (other >= 4) {
                 break;
             }
-            const JGeometry::TVec3f* to = getPlayerPos_8023E724(other);
+            JGeometry::TVec3f to;
+            to.set(*getPlayerPos_8023E724(other));
             for (s32 j = 0; j < 12; j++) {
-                JGeometry::TVec3f step(from.x * (12 - j) / 12.0f + to->x * j / 12.0f,
-                                       from.y * (12 - j) / 12.0f + to->y * j / 12.0f,
-                                       from.z * (12 - j) / 12.0f + to->z * j / 12.0f);
-                field_0x38[(n - 1) * 12 + j] = step;
+                field_0x38[(n - 1) * 12 + j].set(trailStep(from, to, j));
             }
-            from = *to;
+            from.set(to);
         }
         for (s32 i = (fn_80248970() - 1) * 12; i < 0x31; i++) {
             field_0x38[i].x = from.x;
