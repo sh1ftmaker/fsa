@@ -27,6 +27,7 @@ public:
     // fn_8012562C: copies the low byte of field_0x90 to field_0x35c and bits
     // 5-9 (from the top) of field_0x90 to field_0x3cc.
     /* 0x64 */ virtual void vfunc_0x64();
+    /* 0x68 */ virtual void vfunc_0x68();
     /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
     // 0x80124C4C: sets the key tables of mAnim (14 of them, lbl_8049E198),
     // plays animation 7 in mode 2 without keeping the frame, and sets frame 0.
@@ -48,7 +49,7 @@ public:
     /* 0x3C4 */ s32 field_0x3c4; // cleared by the constructor
     /* 0x3C8 */ s32 field_0x3c8; // cleared by the constructor
     /* 0x3CC */ s32 field_0x3cc; // field_0x90 bits 5-9 (from the top), set by vfunc_0x64
-    /* 0x3D0 */ u8 field_0x3d0[0x3D4 - 0x3D0]; // not yet known (size: the spawner's __nw__)
+    /* 0x3D0 */ s32 field_0x3d0;
 }; // Size: 0x3D4
 
 #endif

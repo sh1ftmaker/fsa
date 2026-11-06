@@ -50,7 +50,7 @@ public:
     /* 0x90 */ virtual void vfunc_0x90();
     /* 0x94 */ virtual void vfunc_0x94();
     // Slots 0x98-0xBC are not known yet; declared to number 0xC0 (the zora overrides it).
-    /* 0x98 */ virtual void vfunc_0x98();
+    /* 0x98 */ virtual void vfunc_0x98(s32 arg1 = 0, s32 arg2 = 0, f32 arg3 = 0.0f);
     // fn_80123394 (tu_801213EC, 0x720 bytes, not written yet; the zora forwards to it).
     // Parameters read off its register use: r4 (tested >= 0), f1, f2, f3 and f5 (f4 is not
     // read).
@@ -67,7 +67,7 @@ public:
     /* 0xC0 */ virtual s32 vfunc_0xC0();
     // fn_80121430: returns 0.
     /* 0xC4 */ virtual bool vfunc_0xC4();
-    /* 0xC8 */ virtual void vfunc_0xC8(); // fn_80121BB8
+    /* 0xC8 */ virtual bool vfunc_0xC8(const JGeometry::TVec3f& vec, f32 arg); // fn_80121BB8
     // fn_80121DB0 (tu_801213EC): clears three bytes at 0x269-0x26B, returns 1.
     // The zora's fn_801200F8 and the escort woman's vfunc 0x74 call it.
     s32 fn_80121DB0();
@@ -93,6 +93,8 @@ public:
     void fn_80121FA8();
     void fn_8012202C();
     void fn_801220C4();
+    void fn_80122148();
+    void fn_80122548();
     // fn_80122898 (tu_801213EC): asks the player at the escort to talk (message msg); remembers
     // the player in field_0x34c (-1 when none); returns it.
     s32 fn_80122898(u16 msg);

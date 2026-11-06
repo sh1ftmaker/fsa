@@ -1,6 +1,9 @@
 #include "game/GameAudio.h"
 #include "game/ActorManager.h"
+#include "game/Camera.h"
+#include "game/GameGlobals.h"
 #include "game/GameView.h"
+#include "game/Message.h"
 #include "game/Player.h"
 #include "game/act/act_escort_woman.h"
 
@@ -77,6 +80,205 @@ u8 EscortWoman_8049E1D0::vfunc_0x60() {
 void EscortWoman_8049E1D0::vfunc_0x64() {
     field_0x35c = field_0x90 & 0xFF;
     field_0x3cc = (field_0x90 >> 22) & 0x1F;
+}
+
+void EscortWoman_8049E1D0::vfunc_0x68() {
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+
+    if (field_0x33c >= 13) {
+        cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
+        if (!obj->field_0x284) {
+            obj->field_0x284 = 1;
+            obj->field_0x28c = 0.05f;
+        }
+    }
+
+    switch (field_0x33c) {
+    case 0: {
+        vfunc_0x98(0, 1, 64.0f);
+        s32 res = fn_80122898(0x84D);
+        if (res >= 0) {
+            field_0x344 = res;
+            vfunc_0x6C(1);
+        }
+        break;
+    }
+
+    case 1:
+        fn_8022FF8C(field_0x34c, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(field_0x34c, mSerial)) {
+            vfunc_0x6C(4);
+        }
+        break;
+
+    case 3: {
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        camera->addFocusPoint_8030C210(&mPos);
+        camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x840 == 0) {
+            camera->field_0x840 = 1;
+            f32 posX = mPos.x;
+            camera->field_0x844.f.x = posX;
+            camera->field_0x844.i.x = posX;
+            f32 posY = mPos.y;
+            camera->field_0x844.f.y = posY;
+            camera->field_0x844.i.y = posY;
+            camera->field_0x854 = 1.0f;
+            camera->field_0x1d4 = -1.0f;
+            camera->field_0x1d8 = -1.0f;
+        }
+        fn_8022FE80(fn_8022EA0C(fn_8012285C()), field_0x4, mSerial, false, false);
+        if (fn_80388CAC(fn_8022EA0C(fn_8012285C()), mSerial)) {
+            vfunc_0x6C(field_0x3d0);
+        }
+        break;
+    }
+
+    case 4:
+        if (fn_8012285C() < 0) {
+            vfunc_0x6C(0);
+            break;
+        }
+        if (vfunc_0x34()) {
+            vfunc_0x6C(14);
+            break;
+        }
+        if (gGameRoot_8053AAF8->fn_80138A30() > 1) {
+            vfunc_0x9C(fn_8012285C(), 0.03f, 0.08f, 1.0f, 0.2f, 16.0f);
+        } else {
+            vfunc_0x9C(fn_8012285C(), 0.03f, 0.08f, 1.0f, 0.2f, 8.0f);
+        }
+        {
+            s32 serial = fn_801F2718(0x48415254);
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor != NULL) {
+                    actor->mAlive = false;
+                    mLife += 4;
+                    if (mLife >= field_0x360 * 4) {
+                        mLife = field_0x360 * 4;
+                    }
+                    field_0x335 = 1;
+                }
+            }
+        }
+        break;
+
+    case 5:
+        if (fn_8012285C() < 0) {
+            vfunc_0x6C(0);
+        } else if (!fn_8022D75C(fn_8012285C()) && field_0x4 == getPlayerLayer_8023DE58(fn_8012285C())) {
+            vfunc_0x6C(6);
+        }
+        break;
+
+    case 6:
+        if (fn_8012285C() < 0) {
+            vfunc_0x6C(0);
+        }
+        if (fn_80122804()) {
+            vfunc_0x6C(4);
+        }
+        break;
+
+    case 7:
+        fn_80122548();
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
+            vfunc_0x6C(4);
+        }
+        break;
+
+    case 8:
+        field_0x4 = getPlayerLayer_8023DE58(fn_8012285C());
+        fn_80122148();
+        if (!fn_8022D75C(fn_8012285C()) && fn_801216D0(fn_8012285C()) < 0) {
+            vfunc_0x6C(4);
+        }
+        break;
+
+    case 9:
+        if (fn_80121E40() && mAnim.fn_801D208C()) {
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            field_0x3c8++;
+            if (field_0x3c8 >= 30) {
+                field_0x3c8 = 0;
+                vfunc_0x6C(field_0x340);
+            }
+        }
+        break;
+
+    case 10:
+        if (getActorManager_801F856C()->fn_801F68E0() && mAnim.fn_801D208C() && fn_801227D4()) {
+            vfunc_0x6C(11);
+        }
+        break;
+
+    case 11:
+        mAnim.fn_801D1C18();
+        if (lbl_8053AAA0) {
+            vfunc_0x6C(12);
+        }
+        break;
+
+    case 12:
+        if (fn_8012285C() < 0) {
+            vfunc_0x6C(0);
+        } else {
+            vfunc_0x6C(4);
+        }
+        break;
+
+    case 14:
+        if (getActorManager_801F856C()->fn_801F68E0()) {
+            vfunc_0x6C(15);
+        }
+        break;
+
+    case 15:
+        fn_8022FE80(0, field_0x4, mSerial, false, false);
+        field_0x3c4++;
+        if (field_0x3c4 >= 90) {
+            s32 layer = field_0x4;
+            if (fn_8038BD08(0, 0x4BA, layer, mPos, 0x22)) {
+                field_0x3c4 = 0;
+                vfunc_0x6C(16);
+            }
+        }
+        break;
+
+    case 16:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            vfunc_0x6C(13);
+        }
+        break;
+
+    case 13: {
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x7f5 == 0) {
+            camera->field_0x7f4 = 1;
+            camera->field_0x7f8 = 4;
+            camera->field_0x7fc.x = mPos.x;
+            camera->field_0x7fc.y = mPos.y;
+            camera->field_0x7fc.z = mPos.z;
+            camera->field_0x7f6 = 0;
+        }
+        field_0x380 = 0.7f;
+        if (vfunc_0xC8(JGeometry::TVec3f(0.0f, 8.0f, 0.0f), field_0x380)) {
+            vfunc_0x6C(17);
+        }
+        break;
+    }
+    case 17:
+        break;
+    }
 }
 
 s32 EscortWoman_8049E1D0::vfunc_0x6C(s32 state) {
