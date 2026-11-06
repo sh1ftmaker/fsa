@@ -274,3 +274,63 @@ SHARED-EDITS
 ### Next
 - The two drops above (reference shape); fn_803BE3D8 (strings first -> string offsets);
   fn_803BD5E0; the cmpwi on GameRoot field_0xff (an int accessor?).
+
+## Session 2026-11-06 (Opus, leverage: strings first, save-data states)
+
+Baseline (progress.py, matching 2c791087): `total: 8928 / 11557 functions` (unit 17/65).
+After: `total: 8932 / 11557 functions, 1801976 / 4442032 bytes of code (40.57 %)`, structural 9461
+(+138 close). Unit 21/65. No drops anywhere (per-address compare against the main report_honest.json).
+
+Written (try.py class):
+- fn_803BE3D8 99.66 reloc-name only (instructions identical): the board's 'SOB ' sprites. Its strings
+  (enemy_both2_sob.bin, player_sob.bin, enemy_gc_sob.bin) and literals (360, 0.5, 270, 13, 10, 12) come
+  first: .rodata now 100 %, .sdata2 65 -> 86 %. Evidence for a dropped helper: the single-sprite branch
+  adds a run-time 0.0f to x (lfs 0 / fadds), which `+ 0.0f` in the caller folds away; setSpritePos(dx,
+  dy) with the tag passed by pointer (the original reloads it for every search) gives it exactly.
+- fn_803BD5E0 99.65 operands (stack slots): the rows' highlighted colours (= fn_803BC6F0 at alpha 1).
+  black1 / black3 are copy-initialised (`= TColor(...)`): the original stores a second copy of each
+  before the group's first call and rebuilds the last call's opaque black from it.
+- fn_803CC53C 100: state 8, save write (fn_803B93E8 + fn_803BACF8 per file, unrolled by hand: a loop
+  isn't unrolled; fn_803B9D54; CARDGetSerialNo into a local).
+- fn_803CDEE8 100: state 3, the "new game?" prompt.
+- fn_803C0018 100, fn_803C02CC 100, fn_803BF698 99.95, fn_803C21A8 99.95, fn_803C1340 99.94 (literal
+  names only), fn_803BF3BC 99.62 / fn_803C1054 99.65 / fn_803C05D8 99.78 (regalloc: the 'Pdb' loop's
+  counter / table pointer swap r29 / r30; an alpha local or a function-scope counter don't change it),
+  fn_803C9338 99.49 (regalloc), fn_803BF004 96.97 / fn_803C61C4 95.70 / fn_803C7CA0 96.12
+  (scheduling+regalloc; fn_803C7CA0 has fn_803C4054's bob difference).
+- setMessage(u32) (class inline, defined in the .cpp): the 'Tft01' message block (0x117 -> 0x116 with
+  GameRoot field_0x7f, 0x60 / 0x64 start field_0xb0 = 90) appeared inlined ten times; all ten callers
+  now use it with unchanged code.
+- Pragma rule 1 regions: fn_803C0018 (fn_803C92B8 calls it with bl; writing it dropped fn_803C92B8
+  100 -> 0 until the region was added), fn_803C1054 / fn_803C02CC (fn_803C7CA0), fn_803C05D8
+  (fn_803C8B80), fn_803BF004 (fn_803C579C).
+
+Not done: the cmpwi on GameRoot field_0xff (fn_803CABAC) was not revisited. The leading .sdata2
+literals 0, -200, 200 (see above) remain the reason for most reloc-name FIXMEs.
+
+### File select states (what the written ones do)
+- 3 fn_803CDEE8: "start a new game?" (field_0x114 cursor 0 yes / 1 no). Yes clears the three files
+  (fn_803B950C), resets GameState (fn_80403680) and shows the list (fn_803C24BC); no -> state 1.
+- 4 fn_803CD75C / 5 fn_803CD2DC: rows slide in; picking a file (A: fn_803BF9C4 for a file whose
+  checksum bit is set, else fn_803C1734; B leaves).
+- 8 fn_803CC53C: writes the save data through the card manager (state 9 waits).
+- 18 fn_803CB3DC / 19 fn_803CABAC: the file menu (open, then start / copy / delete / back).
+  fn_803C1340 opens the copy entry (state 20), fn_803C21A8 closes the menu (state 6).
+- 22 / 23 fn_803C9338 / 24 fn_803C92B8: copying: the source row slides from the first row's place to the
+  second's, the boards follow, then fn_803C0018 returns to the list (state 29).
+- 26 fn_803C05D8 opens file field_0xa0's board ('Pqb03'..'10' hidden by fn_803B90E4, its stage flags into
+  field_0xb8, 'Tstr01' / 'Tcop01' labels 0x11E / 0x11F).
+- 27 fn_803C7CA0: the copy prompt (two buttons, cursor bob); fn_803C1054 (state 22) / fn_803C02CC (28).
+- 31 fn_803C61C4: the four buttons slide out and fade one by one, the first two come back; state 37.
+- 33 fn_803C579C -> fn_803BF004 (after the card write: the row moves up to the first row's place,
+  state 35). 37 fn_803C4054: the delete prompt (fn_803BF3BC -> 34 / fn_803BF698 -> 39).
+- Drawing: fn_803CEED4 draws the screens and then fn_803BE3D8's sprites: with stage flag 6
+  (field_0xb8[6]) set, all eight 'Padvw?1' / '?2' pairs get their enemy (black shadow + colour, the 8th
+  the player); else each cleared stage's enemy at its 'Padvw?0' pane, animated by field_0xdc (0..53).
+
+SHARED-EDITS
+- tu_803B8C74.h: `void fn_803BACF8(SaveFile_803B950C* files, u8 file)` (owner tu_803BACF8, the checksum
+  writer: 0xC0 byte sum, 0xC4 complement sum).
+- tu_803BC6F0.h: members fn_803C02CC, fn_803C1054, fn_803C05D8; inline setMessage.
+- symbols.txt: fn_803BACF8 -> fn_803BACF8__FP17SaveFile_803B950CUc; fn_803C1054, fn_803C02CC, fn_803C05D8
+  -> ...__19FileSelect_804AFF60Fv (this in r3, FileSelect fields).
