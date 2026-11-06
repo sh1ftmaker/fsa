@@ -14,16 +14,10 @@
 #include "game/tu_80379F84.h"
 #include "JSystem/JMath/JMath.h"
 
-// fn_80270A8C's body. fn_80270948 and fn_8027057C (before it) have it inlined, and
-// this unit is not compiled with deferred inlining (with -inline deferred MWCC pools the
-// .sdata2 literals in reverse; the original's pool is in forward first-use order), so it
-// is an inline whose out-of-line copy is fn_80270A8C (as playerFlags_802413F0 /
-// fn_802413F0, game/PlayerFlags.h).
-inline bool Player_804A6F38::isDown() {
-    if (field_0x1244 == 0x33 || field_0x1240 == 0x33 || field_0x1240 == 0x34) {
-        return true;
-    }
-    return false;
+// gGameRoot_8053AAF8->field_0x4c == 7 as a u8: fn_8027057C and fn_80277F98 test the materialised
+// byte (subfic / cntlzw / extrwi.); a plain `return x == 7;` folds into cmpwi / bne.
+static inline u8 isGameMode7() {
+    return gGameRoot_8053AAF8->field_0x4c == 7 ? true : false;
 }
 
 // The current save row's byte 0x7E while the game root's field_0x7f is set, else 0x7F.
@@ -55,7 +49,11 @@ static inline bool overlaps(const JGeometry::TBox2f& a, const JGeometry::TBox2f&
     JGeometry::TBox2f overlap(a);
     overlap.i.setMax(b.i);
     overlap.f.setMin(b.f);
-    return overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y;
+    bool result = false;
+    if (overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y) {
+        result = true;
+    }
+    return result;
 }
 
 // `box` (on `layer`) against the player's box 0x4d0 (on its layer 0x3b4),
@@ -1689,14 +1687,12 @@ u8 Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeomet
     return hit;
 }
 
-// FIXME: 98.59. The test chain is an inline in the original: every early out is
-// `li r3, 0` into one join that copies r3 to r27 (`mr r27, r3`), and the function returns
-// `clrlwi r3, r27, 24` (a u8 return of a bool local, as fn_80273E7C). Written as a static
-// inline returning that result it is 100 % as `u8`, but then (1) -inline auto inlines all of
-// fn_80273FB8 into fn_80274238 (the original calls it) and (2) fn_80274238's `bool hit =`
-// would convert the u8 (its original takes r3 as is, i.e. sees a bool). Here the chain
-// assigns `hit` (r27) directly; the result register and the final clrlwi differ.
-// Like fn_802732C4's tail, but on layers without viewLayerFlag the player may be up to 8 high.
+// Not auto-inlined: fn_80274238 calls fn_80273FB8 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// fn_802730D8 with a height of 8 (inlined), while fn_80247BD4() is running.
+// FIXME: 99.62. Only the return differs: the original returns `clrlwi r3, r27, 24` (a u8 return
+// type; 100 % as u8), but fn_80274238 then converts the u8 (neg / or / srwi) where its original
+// takes r3 as is, so both stay bool until that caller's form is known.
 bool Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     field_0x492 = 0;
     if (!fn_802413F0()) {
@@ -1707,35 +1703,7 @@ bool Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeom
     }
     bool hit = false;
     if (fn_80247BD4() > 0) {
-        if (layer != field_0x3b4) {
-            hit = false;
-        } else if (isDown()) {
-            hit = false;
-        } else if (fn_802413E8()) {
-            hit = false;
-        } else if (!viewLayerFlag(field_0x3b4) && mPos.z > 8.0f) {
-            hit = false;
-        } else if (field_0xcee) {
-            hit = false;
-        } else if (field_0x1216) {
-            hit = false;
-        } else if (field_0x1215) {
-            hit = false;
-        } else if (field_0xcf0) {
-            hit = false;
-        } else if (field_0x1238 > 0) {
-            hit = false;
-        } else if (!fn_802413F0()) {
-            hit = false;
-        } else {
-            JGeometry::TBox2f overlap(field_0x4c0);
-            overlap.i.setMax(box->i);
-            overlap.f.setMin(box->f);
-            hit = false;
-            if (overlap.f.x >= overlap.i.x && overlap.f.y >= overlap.i.y) {
-                hit = true;
-            }
-        }
+        hit = fn_802730D8(box, layer, false, 8.0f);
         if (hit == true) {
             out->x = mPos.x;
             out->y = mPos.y;
@@ -1747,6 +1715,7 @@ bool Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeom
     }
     return hit;
 }
+#pragma auto_inline reset
 
 u8 Player_804A6F38::fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
     if (!fn_802413F0()) {
@@ -2679,8 +2648,12 @@ bool Player_804A6F38::fn_80270ABC() {
     return field_0x464 > 0;
 }
 
+// State 0x33 (requested when the life 0xBFC reaches 0) requested or current, or 0x34.
 bool Player_804A6F38::fn_80270A8C() {
-    return isDown();
+    if (field_0x1244 == 0x33 || field_0x1240 == 0x33 || field_0x1240 == 0x34) {
+        return true;
+    }
+    return false;
 }
 
 bool Player_804A6F38::fn_80270A58() {
@@ -2703,7 +2676,7 @@ void Player_804A6F38::fn_802709C8() {
 }
 
 void Player_804A6F38::fn_80270948(const JGeometry::TVec3f* pos) {
-    if (!isDown()) {
+    if (!fn_80270A8C()) {
         return;
     }
     if (field_0xd2c == 1) {
@@ -2728,6 +2701,71 @@ void Player_804A6F38::fn_802708D0() {
     field_0xd2d = 1;
     field_0xd30 = 0;
     field_0xcfc = 0;
+}
+
+// Revive (update of state 0x33).
+void Player_804A6F38::fn_8027057C() {
+    if (!gGameRoot_8053AAF8->field_0x7f && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)) {
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x7e && fn_80236890()) {
+        return;
+    }
+    if (field_0xd2d == 1) {
+        return;
+    }
+    if (field_0xd2c == 1) {
+        field_0x124d = 0;
+        if (!fn_80251AEC(0)) {
+            return;
+        }
+        fn_80270DDC(fn_802417CC() - 4, false);
+        field_0x464 = 180;
+        field_0xd2c = 0;
+        mPos = field_0xd10;
+        field_0x3b4 = 0;
+        field_0xcfc = 0;
+        return;
+    }
+    if (field_0xcfd == 1 && mPos.z <= 0.0f && field_0x14.z > 0.0f && gGameRoot_8053AAF8->field_0x7e) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_80243194(i)) {
+                fn_802363DC(i);
+            }
+        }
+        return;
+    }
+    if (field_0xd35 == 1) {
+        field_0x124d = 0;
+        if (fn_80251AEC(0x34)) {
+            field_0xcfc = 0;
+            field_0xd34 = true;
+        }
+        return;
+    }
+    if (isGameMode7() && gGameRoot_8053AAF8->field_0x7f && gGameRoot_8053AAF8->field_0x7e) {
+        if (fn_8025F448()) {
+            return;
+        }
+        if (fn_80239D38()) {
+            return;
+        }
+        if (field_0x494 > 0) {
+            field_0x494--;
+            if (field_0x494 == 0) {
+                if (getActorManager_801F856C()->fn_801F7A08('TNGL') >= 0) {
+                    field_0x494 = 1;
+                } else {
+                    field_0xcfc = 0;
+                    for (s32 i = 0; i < 4; i++) {
+                        if (fn_8022E438(field_0x4, i) && fn_80236B50(i) && !fn_80236AB4(i)) {
+                            fn_80236350(i);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Counts a defeated enemy by kind into field_0xc1c.

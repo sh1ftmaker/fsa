@@ -450,11 +450,6 @@ public:
     void spawnEffect15B(); // tu_8028FBA0 inline: effects 0x15B, 0x15C at the player
     s32 life(); // tu_8028FBA0 inline: fn_80237774(fn_80240644()) if fn_80240808(), else fn_8024189C()
     void fallStep(); // tu_8028FBA0 inline: gravity on 0x344, then mPos += 0x344
-    // tu_8026FC20 inline, defined at the top of that unit: fn_80270A8C's body (its out-of-line
-    // copy, which the other units call). fn_80270948 and fn_8027057C, before fn_80270A8C, have
-    // it inlined while the unit's .sdata2 order rules out deferred inlining, so it is an inline.
-    // State 0x33 (requested when the life 0xBFC reaches 0) requested or current, or 0x34.
-    bool isDown();
     void riseToTarget(s32 state); // tu_8028FBA0 inline: rise above 128, then request `state`
     // Called by fn_802870C8 after the state update (r3 = this; results unused
     // unless typed).
@@ -588,7 +583,7 @@ public:
     void fn_802708E8(); // via fn_802363DC
     bool fn_80270A04(); // via fn_80236A18
     bool fn_80270A58(); // via fn_80236AB4
-    bool fn_80270A8C(); // via fn_80236B50
+    bool fn_80270A8C(); // via fn_80236B50; state 0x33 requested or current, or 0x34 (down)
     bool fn_80270C88(); // via fn_80236BEC
     void fn_80270F00(s32 arg); // via fn_80236804
     // via fn_80236554 (act_recovery_heart heals 4): adds `amount` to the life 0xBFC (or takes
@@ -598,7 +593,7 @@ public:
     const JGeometry::TVec2f* fn_802422C4(); // &field_0xbf0->field_0x14; via fn_8022DFD4 (tu_8022AD64)
     void fn_80248E94(bool flag); // via fn_8022AF78 (tu_8022AD64); clrlwi 24, compared with 1
     void fn_80270948(const JGeometry::TVec3f* pos); // called by tu_8023FBF0 fn_802422D0; 0xD10 = pos (mPos if NULL) once while down
-    void fn_8027057C(); // called by fn_80277F98 (update of state 0x33): revive; not written (inlines fn_80270DDC)
+    void fn_8027057C(); // called by fn_80277F98 (update of state 0x33): revive (inlines fn_80270DDC)
     bool fn_80271098(const JGeometry::TVec3f* pos); // via fn_802379E4
     s32 fn_80272184(); // via fn_8023B630
     s32 fn_802721A8(); // via fn_8023B6CC
