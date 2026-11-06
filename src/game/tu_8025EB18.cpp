@@ -119,11 +119,12 @@ static const Vec lbl_8046B92C[4] = {
     {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, -1.0f, 0.0f},
 };
 
-// field_0xd64 == 1 as a u8. The original's callers expand this inline (they test it
-// again with cmplwi 1); fn_8025F684 returns it as a bool. A member inline in Player.h
+// field_0xd64 == 1 as a u8, materialised (subfic / cntlzw / extrwi.) where the callers
+// inline it: `? true : false` keeps the byte (a plain `== 1` folds into cmplwi 1, as
+// isGameMode in game/GameMode.h); fn_8025F684 returns it. A member inline in Player.h
 // was measured: fn_8025F684 is then not emitted and fn_8023EFEC (inlines it) drops.
 static inline u8 isField0xd64One(const Player_804A6F38& p) {
-    return p.field_0xd64 == 1;
+    return p.field_0xd64 == 1 ? true : false;
 }
 
 // Point-in-box test (x / y only), as in tu_8026FC20.
@@ -1476,29 +1477,28 @@ bool Player_804A6F38::fn_8025FDD0(const JGeometry::TVec3f* pos) {
     return true;
 }
 
-// FIXME: 87.02. Two differences: the original tests state 0x11 on its own before the folded
-// range 0x12-0x16 (ours folds 0x11-0x16), and it recomputes the field_0xd64 == 1 byte
-// (subfic / cntlzw / extrwi) inside each inlined fn_8025F590 where ours reuses it.
+// The state is compared as the member each time: read once into a local, MWCC folds
+// 0x11-0x16 into one range where the original tests 0x11 on its own (RULES_CARD).
 // Whether the requested state makes the player let go of what it holds (true unless the
 // state is one of the lift / carry / throw states 0x11-0x18, 0x1B-0x1D, a screen change
 // 0x20-0x25 while holding something other than a player, 0x1E / 0x1F holding a small
 // key, or 0x4C / 0x4D while holding an actor). fn_8025F698 inlines it.
 bool Player_804A6F38::fn_8025FCC8() {
-    s32 state = field_0x1244;
-    if (state == 0x11 || state == 0x12 || state == 0x13 || state == 0x14 || state == 0x15 || state == 0x16
-        || state == 0x18 || state == 0x1B || state == 0x1C || state == 0x1D
+    if (field_0x1244 == 0x11 || field_0x1244 == 0x12 || field_0x1244 == 0x13 || field_0x1244 == 0x14
+        || field_0x1244 == 0x15 || field_0x1244 == 0x16 || field_0x1244 == 0x18 || field_0x1244 == 0x1B
+        || field_0x1244 == 0x1C || field_0x1244 == 0x1D
         || (isField0xd64One(*this) && !fn_8025F590()
-            && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
-        || (field_0xd6c == ACTOR_KEY0 && (state == 0x1E || state == 0x1F))
-        || (field_0xd64 == 1 && !fn_8025F590() && (state == 0x4C || state == 0x4D))) {
+            && (field_0x1244 == 0x20 || field_0x1244 == 0x21 || field_0x1244 == 0x22
+                || field_0x1244 == 0x23 || field_0x1244 == 0x24 || field_0x1244 == 0x25))
+        || (field_0xd6c == ACTOR_KEY0 && (field_0x1244 == 0x1E || field_0x1244 == 0x1F))
+        || (field_0xd64 == 1 && !fn_8025F590() && (field_0x1244 == 0x4C || field_0x1244 == 0x4D))) {
         return false;
     }
     return true;
 }
 
-// FIXME: 95.94. The six missing instructions are the inlined fn_8025FCC8's (see there: state
-// 0x11 tested on its own, the field_0xd64 == 1 byte recomputed in each inlined
-// fn_8025F590); besides, the facing table's three loads for `step` are scheduled z first.
+// FIXME: 98.42. scheduling+regalloc: the facing table's three loads for `step` are
+// scheduled z first.
 // Let go of what the player holds (from the commit of every state change, with
 // checkState, and from fn_8026000C): a held player is thrown 16 a step along the facing
 // (snapped to the tile centre across when two of three steps are walls, else at 3.3
@@ -1679,7 +1679,6 @@ bool Player_804A6F38::fn_8025F418() {
     return false;
 }
 
-// FIXME: 96.81. The materialised field_0xd64 == 1 test, as in fn_8025EE48.
 // Whether the player may pick something up (not down, holding, grabbing, busy (0xCE8 /
 // 0x454), in the air, or a follower in mode 5 without a pending 0xD88). fn_8025EFFC
 // inlines it.
@@ -1714,7 +1713,8 @@ bool Player_804A6F38::fn_8025F2CC() {
     return true;
 }
 
-// FIXME: 95.94. The materialised field_0xd64 == 1 test twice, as in fn_8025EE48.
+// FIXME: 98.89. scheduling: the original sets up r3 (mr r3, r29) for fn_80251AEC before
+// the li / beq choosing 0x12 / 0x11; ours after (`lift ? 0x11 : 0x12` gives neg / or / srawi).
 // Lift the actor `serial` (state 0x11, or 0x12 with lift false). With grabOnly, a
 // player already holding or grabbing only claims it through fn_8025EF68.
 bool Player_804A6F38::fn_8025EFFC(s32 serial, bool lift, bool grabOnly) {
@@ -1766,9 +1766,6 @@ bool Player_804A6F38::fn_8025EF68(s32 arg) {
     return false;
 }
 
-// FIXME: 96.32. The lifting test: the original materialises field_0xd64 == 1 (subfic /
-// cntlzw / extrwi.) and branches on it; ours folds it to cmplwi 1 (with `== true`, 98.47 %,
-// one cmplwi too many). Same in fn_8025EFFC and fn_8025F2CC.
 // Grab the actor `serial` (state 0x19).
 bool Player_804A6F38::fn_8025EE48(s32 serial) {
     if (fn_80270A8C()) {
