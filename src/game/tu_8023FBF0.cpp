@@ -845,7 +845,7 @@ void Player_804A6F38::fn_80253E6C() {
     }
 }
 
-// FIXME: 99.76 %. Register allocation only: the group loops' count / index
+// FIXME: 99.73 %. Register allocation only: the group loops' count / index
 // (r29 / r30 vs r28 / r29), plus three literal names (@NNN until the unit's
 // literals are in pool order).
 // Update B (fn_8023F390, after every player's update A): a follower walks
@@ -1108,8 +1108,8 @@ void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {
 // demo mode, or on a tile fn_80225EF4 lists), with the tile 8 beyond the edge
 // free (not collision code 1, nor 0x22 while GameView field_0x170 is 1).
 // Writes the direction (-1 / 1 in x or y) to *out, else 0, 0.
-// FIXME: 99.92 %. Code identical; the 20.0f literal is @NNN, not
-// lbl_80540078, until the unit's earlier literals are in pool order.
+// FIXME: 99.90 %. Code identical; two literals are @NNN, not
+// lbl_80540070 / lbl_80540078, until the unit's earlier literals are in pool order.
 bool Player_804A6F38::fn_802527B0(JGeometry::TVec2<s32>* out) {
     out->x = 0;
     out->y = 0;
