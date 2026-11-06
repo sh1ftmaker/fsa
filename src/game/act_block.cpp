@@ -429,6 +429,7 @@ bool Block_804A7A10::fn_8028C518(u8 dir) {
         box.i.y += mPos.y;
         box.f.y += mPos.y;
 
+        // Steering: mSerial is copied to a local just before the fn_80238CB4 compare; comparing against mSerial directly gives 95.89 %.
         s32 serial;
         for (int i = 0; i < 4; i++) {
             if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
@@ -466,6 +467,7 @@ bool Block_804A7A10::fn_8028C364(u8 dir) {
         center = mPos.y;
     }
 
+    // Steering: mSerial is copied to a local before the fn_80238CB4 call; comparing against mSerial directly gives 95.03 %.
     int i;
     s32 serial;
     for (i = 0; i < 4; i++) {
