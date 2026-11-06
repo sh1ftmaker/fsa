@@ -167,3 +167,117 @@ void cls_804A3E44::init() {
         field_0xb0 = 0x41101;
     }
 }
+
+// FIXME: 99.09% (missing/extra + reloc-name: 1 extra instruction at 0x3EC; target shares r3=0 for mStateTimer and switch).
+void cls_804A3E44::fn_801BC554(s32 state) {
+    switch (state) {
+    case 0:
+        mFlags &= ~0x2000;
+        field_0x2b8 = -1;
+        field_0x2bc = 0;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.set(mBox);
+        field_0x98 = 2;
+        field_0x250 = fn_801CD664(0x79) + 60;
+        mPos.set(mSpawnPos.x, mSpawnPos.y, 100.0f);
+        field_0x4 = field_0x8;
+        break;
+    case 1:
+        field_0x2bc = 0;
+        mBox.set(-12.0f, -20.0f, 12.0f, 8.0f);
+        mBox2.set(mBox);
+        mAnim.startAnim_801D22DC(0, 0, false);
+        if (mState != 5) {
+            mPos.set(mSpawnPos.x, mSpawnPos.y, 100.0f);
+            field_0x4 = field_0x8;
+        }
+        break;
+    case 3:
+        field_0x2bc = 0;
+        mBox.set(-12.0f, -20.0f, 12.0f, 8.0f);
+        mBox2.set(mBox);
+        mAnim.startAnim_801D22DC(2, 0, false);
+        break;
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        mFlags |= 0x2000;
+        field_0x2bc = 0;
+        mBox.set(-12.0f, -20.0f, 12.0f, 8.0f);
+        mBox2.set(mBox);
+        mAnim.startAnim_801D22DC(1, 0, false);
+        if (state == 4) {
+            if (mFlags & 0x4000) {
+                JGeometry::TVec3f* pPos = fn_8023E604(field_0x2b8);
+                field_0x2b0.x = pPos->x;
+                field_0x2b0.y = pPos->y;
+            }
+        }
+        break;
+    case 5:
+        field_0x2b8 = -1;
+        field_0x2bc = 0;
+        mBox.set(-12.0f, -20.0f, 12.0f, 8.0f);
+        mBox2.set(mBox);
+        mAnim.startAnim_801D22DC(0, 0, false);
+        break;
+    case 9:
+        mFlags &= ~0x2000;
+        field_0x2b8 = -1;
+        field_0x2bc = 0;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.set(mBox);
+        field_0x98 = 2;
+        field_0x250 = fn_801CD664(0xB5) + 180;
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        mPos.x = mSpawnPos.x;
+        mPos.y = mSpawnPos.y;
+        mPos.z = mSpawnPos.z;
+        field_0x4 = field_0x8;
+        break;
+    case 10:
+        mFlags &= ~0x2000;
+        field_0x2b8 = -1;
+        field_0x2bc = 0;
+        mBox.set(-12.0f, -20.0f, 12.0f, 8.0f);
+        mBox2.set(mBox);
+        mSpeed = 0.5f;
+        mTargetSpeed = 0.5f;
+        mParam.mIndex = 0;
+        mParam.mTarget = mParam.mOrder[mParam.mIndex];
+        mParam.field_0x24 = 0;
+        mAnim.fn_801D22A0(4, 2);
+        break;
+    }
+
+    bool b = false;
+    mStateTimer = 0;
+    mState = state;
+    switch (mState) {
+    case 6:
+    case 7:
+    case 8:
+        b = true;
+        break;
+    }
+    if (!b) {
+        field_0x2c0 = 0;
+    }
+
+    bool b2 = false;
+    switch (mState) {
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        b2 = true;
+        break;
+    }
+    if (b2) {
+        field_0xb0 = 0x40004;
+    } else {
+        field_0xb0 = 0x41101;
+    }
+}
