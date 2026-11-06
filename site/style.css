@@ -214,7 +214,7 @@ h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
 .part:hover, .part:focus-visible { background: rgba(255,255,255,.04); border-color: var(--c); outline: none; }
 .p-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .p-name { font-weight: 600; font-size: 16px; display: inline-flex; align-items: center; gap: 8px; }
-.p-pct { white-space: nowrap; font: 700 22px var(--mono); color: var(--c); font-variant-numeric: tabular-nums; }
+.p-pct { white-space: nowrap; font: 700 22px var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
 .p-desc { color: var(--ink3); font-size: 12.5px; line-height: 1.4; }
 .p-bar { position: relative; height: 10px; border-radius: 5px; background: rgba(255,255,255,.06); overflow: hidden; margin-top: 2px; }
 .p-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 5px; transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
@@ -423,3 +423,22 @@ footer { max-width: 1180px; margin: 0 auto; padding: 10px 20px 40px; color: var(
 .structural b { color: var(--ink2); font-weight: 600; }
 .structural .sx-k { font: 600 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
 .structural .sx-d { opacity: .8; }
+
+/* game code grouping switch: categories (default) or boot-path phases */
+.groupby { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 10px; padding: 3px;
+  border: 1px solid var(--line2); border-radius: 10px; background: rgba(8,10,22,.35); font-size: 13px; }
+.groupby .gb-k { color: var(--ink3); padding: 0 8px 0 6px; font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.groupby button { font: inherit; color: var(--ink2); background: none; border: 0; border-radius: 7px; padding: 5px 11px; cursor: pointer; min-height: 30px; }
+.groupby button:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+.groupby button[aria-pressed="true"] { color: var(--bg); background: var(--gold-hi); font-weight: 600; }
+.groupby button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 1px; }
+
+/* unconfirmed category (low confidence in docs/names/categories.tsv) */
+.map .unconf circle { fill: rgba(5,6,14,.7); stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 1.5; }
+.map .unconf text { font: 700 7.5px var(--mono); fill: var(--ink); }
+.unconfkey { display: inline-grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; border: 1px dashed var(--ink2);
+  font: 700 9px/1 var(--mono); font-style: normal; color: var(--ink); background: rgba(5,6,14,.7); }
+.unconf-tag { display: inline-block; margin-left: 4px; padding: 0 6px; border: 1px dashed var(--ink3); border-radius: 8px;
+  font: 600 10.5px/16px var(--mono); color: var(--ink2); white-space: nowrap; }
+.p-unconf { display: inline-flex; align-items: center; gap: 5px; color: var(--ink2); }
+.parts { grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); }

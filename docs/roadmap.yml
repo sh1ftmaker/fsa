@@ -13,8 +13,12 @@
 #   <region>                  a whole region (game, jsystem, sdk, gx, runtime)
 #   <region>:<library>        one library as the site names it (jsystem:J3D,
 #                             runtime:MSL_C)
-#   game:<part>               one part of the game code (tools/site_data.py
-#                             GAME_PARTS): game:boot, game:battle (the boot
+#   game:<category>           one category of the game code (tools/site_data.py
+#                             CATEGORIES, docs/names/categories.tsv): game:player,
+#                             game:enemies, game:npcs, game:objects, game:stage,
+#                             game:menus, game:core, game:media
+#   game:<part>               one boot-path part (BOOT_PARTS, the site's "Boot
+#                             path" view): game:boot, game:battle (the boot
 #                             path, docs/BOOT_PATH.md), game:actors, game:other
 # measure: how its progress is counted (optional; omit when it can't be
 # measured from the report). `of` defaults to `covers`.
@@ -197,7 +201,7 @@ phases:
         desc: >-
           Dolphin execution coverage from power-on to a live Shadow Battle
           ranks the game files the game runs first (docs/BOOT_PATH.md). It sets
-          the order of the work and the first two game parts on this site.
+          the order of the work and the first two parts of the site's boot-path view.
         status: done
         covers: [game:boot, game:battle]
       - id: metrics

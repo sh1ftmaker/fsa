@@ -2,11 +2,11 @@
 
 Called by tools/site_data.py after it has written site/data/. Writes:
 
-  site/badges/hero.svg                 banner: the emblem (a gem per game part, a gold
+  site/badges/hero.svg                 banner: the emblem (a gem per game category, a gold
                                        one for the libraries) and the headline numbers
   site/badges/regions-{dark,light}.svg the overview: where the remaining work is, the
-                                       libraries as one group, the four game parts
-  site/badges/treemap/*.svg            the whole DOL: one linked image per game part and
+                                       libraries as one group, the eight game categories
+  site/badges/treemap/*.svg            the whole DOL: one linked image per game category and
                                        per library region (the README treemap), plus its legend
   site/badges/roadmap-{dark,light}.svg docs/roadmap.yml's phases as gems
   site/data/badge-*.json               shields.io endpoint badges (served by Pages)
@@ -36,8 +36,11 @@ SITE = "https://sh1ftmaker.github.io/fsa/"
 SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace"
 
-# The site's colours and glyphs (site/app.js REGION, PART): the game code's four
-# parts in the four Links' colours, the libraries in gold, a shade per region.
+# The site's colours and glyphs (site/app.js REGION, PART, HUE): the game code's
+# eight categories (tools/site_data.py CATEGORIES; a categorical palette checked
+# for colour-vision deficiency on dark and light panels), the boot-path parts of
+# the site's toggle in the four Links' colours, the libraries in gold, a shade
+# per region.
 REGION = {
     "game": ("#a9afe0", "diamond", "Game"),
     "jsystem": ("#d29a2e", "triangle", "JSystem"),
@@ -45,14 +48,18 @@ REGION = {
     "gx": ("#c4862b", "square", "GX"),
     "runtime": ("#f2d384", "star", "MSL/RT/TRK"),
 }
-HUE = {"green": "#3aae5c", "red": "#ef5b52", "blue": "#3d9cf0", "purple": "#c35ee6", "gold": "#d29a2e"}
+HUE = {"green": "#3aae5c", "red": "#ef5b52", "blue": "#3d9cf0", "purple": "#c35ee6", "gold": "#d29a2e",
+       # the eight game categories
+       "leaf": "#4aa75c", "crimson": "#c52607", "rose": "#a96087", "azure": "#508ae1",
+       "teal": "#00a8a1", "violet": "#8c55b4", "cyan": "#269ac2", "olive": "#608c3d"}
 LIB_REGIONS = ("sdk", "gx", "jsystem", "runtime")
-PART_SHORT = {"boot": "Boot", "battle": "Battle", "actors": "Actors", "other": "Other"}
-PART_LEGEND = {"boot": "Boot to menu", "battle": "Menu to battle", "actors": "Actors", "other": "Everything else"}
+PART_SHORT = {"player": "Player", "enemies": "Enemies", "npcs": "NPCs", "objects": "Objects",
+              "stage": "Stage", "menus": "Menus", "core": "Core", "media": "Media"}
+PART_LEGEND = {"enemies": "Enemies", "objects": "Objects"}  # shorter legend names; the rest use their own
 
 
 def game_parts(summary):
-    """The game region's libraries: the four parts (tools/site_data.py GAME_PARTS)."""
+    """The game region's libraries: the eight categories (tools/site_data.py CATEGORIES)."""
     game = next(r for r in summary["regions"] if r["id"] == "game")
     return [l for l in game["libs"] if l.get("key")]
 
@@ -153,26 +160,33 @@ def write_if_changed(path, text):
 
 # ---------- hero ----------
 
-EMBLEM = [  # the site's emblem layout (site/app.js drawEmblem), in a -110..110 box
-    ("boot", 0, -58, 30, 42, 0, -100, "middle"),
-    ("battle", 58, 0, 42, 30, 106, 4, "start"),
-    ("actors", 0, 58, 30, 42, 0, 112, "middle"),
-    ("other", -58, 0, 42, 30, -106, 4, "end"),
-    ("libs", 0, 0, 15, 15, 0, 0, "middle"),
-]
+def emblem_layout(keys):
+    """The site's emblem layout (site/app.js drawEmblem), in a -140..140 box: the
+    game categories as gems on a ring, clockwise from the top, each labelled
+    outside the ring; the libraries' gem in the middle."""
+    out = []
+    n = len(keys)
+    for i, key in enumerate(keys):
+        a = 2 * math.pi * i / n - math.pi / 2
+        cx, cy = 60 * math.cos(a), 60 * math.sin(a)
+        lx, ly = 96 * math.cos(a), 96 * math.sin(a) + 3
+        anchor = "middle" if abs(lx) < 20 else "start" if lx > 0 else "end"
+        out.append((key, round(cx, 2), round(cy, 2), 15, 21, round(lx, 2), round(ly, 2), anchor))
+    out.append(("libs", 0, 0, 20, 20, 0, 0, "middle"))
+    return out
 
 
 def emblem(summary, cx, cy, k, t):
-    """The emblem: one rhombus per game part in the four Links' colours and a
-    small gold one in the middle for the libraries, each filled from the
-    bottom to its share of matched code."""
+    """The emblem: one rhombus per game category in its colour and a gold one
+    in the middle for the libraries, each filled from the bottom to its share
+    of matched code; the label outside gives the category and its share."""
     parts = {l["key"]: l for l in game_parts(summary)}
     L = libraries(summary)
     out = [f'<g transform="translate({cx} {cy}) scale({k})">',
-           f'<circle class="spin" r="104" fill="none" stroke="{t["line2"]}" stroke-width="0.8" stroke-dasharray="40 6 2 6"/>',
-           f'<circle r="92" fill="none" stroke="{t["line2"]}" stroke-width="0.8" stroke-dasharray="1 10"/>']
+           f'<circle class="spin" r="148" fill="none" stroke="{t["line2"]}" stroke-width="0.8" stroke-dasharray="40 6 2 6"/>',
+           f'<circle r="84" fill="none" stroke="{t["line2"]}" stroke-width="0.8" stroke-dasharray="1 10"/>']
     defs = []
-    for i, (key, gx, gy, w, h, lx, ly, anchor) in enumerate(EMBLEM):
+    for i, (key, gx, gy, w, h, lx, ly, anchor) in enumerate(emblem_layout(list(parts))):
         r = L if key == "libs" else parts.get(key)
         if not r:
             continue
@@ -185,14 +199,14 @@ def emblem(summary, cx, cy, k, t):
         out.append(f'<path d="{rhombus(gx, gy, w, h)}" fill="{col}" fill-opacity="0.12" stroke="{col}" '
                    f'stroke-opacity="0.75" stroke-width="1.5"/>')
         if fh > 0:
-            out.append(f'<g clip-path="url(#ec-{key})"><rect class="rise" style="animation-delay:{0.2 + 0.15 * i:.2f}s" '
+            out.append(f'<g clip-path="url(#ec-{key})"><rect class="rise" style="animation-delay:{0.2 + 0.1 * i:.2f}s" '
                        f'x="{gx - w}" y="{gy + h - fh:.2f}" width="{2 * w}" height="{fh:.2f}" fill="url(#eg-{key})"/></g>')
         out.append(f'<path d="M{gx} {gy - h}L{gx + w} {gy}L{gx} {gy}Z" fill="#fff" fill-opacity="0.07"/>')
         if key != "libs":
-            out.append(f'<text x="{gx}" y="{gy + 4}" text-anchor="middle" font-size="11" font-weight="700" '
-                       f'fill="{t["ink"]}" class="mono">{esc(pct(r["cm"], r["c"]))}</text>')
-            out.append(f'<text x="{lx}" y="{ly}" text-anchor="{anchor}" font-size="10" font-weight="600" '
+            out.append(f'<text x="{lx}" y="{ly - 5}" text-anchor="{anchor}" font-size="9" font-weight="600" '
                        f'letter-spacing="0.08em" fill="{t["ink2"]}">{esc(PART_SHORT.get(key, key).upper())}</text>')
+            out.append(f'<text x="{lx}" y="{ly + 7}" text-anchor="{anchor}" font-size="10.5" font-weight="700" '
+                       f'fill="{t["ink"]}" class="mono">{esc(pct(r["cm"], r["c"]))}</text>')
     out.append("</g>")
     return "<defs>" + "".join(defs) + "</defs>" + "".join(out)
 
@@ -238,7 +252,7 @@ def hero(summary):
 {weighted_line}
 <g transform="translate(64 356)"><rect width="{24 + 8.4 * len(seal)}" height="24" rx="12" fill="{t['bg']}" fill-opacity="0.6" stroke="{t['line2']}"/>
 <text x="12" y="16.5" class="mono" font-size="12" font-weight="600" fill="{seal_col}">{esc(seal)}</text></g>
-{emblem(summary, 905, 198, 1.48, t)}"""
+{emblem(summary, 912, 200, 1.3, t)}"""
     style = (".spin { transform-box: fill-box; transform-origin: center; animation: spin 90s linear infinite; } "
              "@keyframes spin { to { transform: rotate(360deg); } } "
              ".rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) both; } "
@@ -256,7 +270,7 @@ def kib(b):
 
 def regions_svg(summary, theme):
     """The overview: where the remaining work is, the libraries as one row
-    (with each library's share), then the four game parts with honest bars
+    (with each library's share), then the eight game categories with honest bars
     and a lighter weighted extension."""
     t = THEMES[theme]
     tot = summary["totals"]
@@ -264,12 +278,12 @@ def regions_svg(summary, theme):
     L = libraries(summary)
     W, BX, BW = 960, 330, 440
     out = []
-    # remaining work: one bar, a segment per part, width = bytes not yet byte-identical
+    # remaining work: one bar, a segment per category, width = bytes not yet byte-identical
     segs = [(p["n"], part_color(p), p["c"] - p["cm"]) for p in parts] + [("Libraries", HUE["gold"], L["c"] - L["cm"])]
     left = sum(x[2] for x in segs)
     game_left = left - segs[-1][2]
     out.append(f'<text x="28" y="40" font-size="16" font-weight="700" fill="{t["ink"]}">Remaining work</text>')
-    out.append(f'<text x="28" y="60" font-size="12" fill="{t["ink3"]}">code not yet byte-identical, by part</text>')
+    out.append(f'<text x="28" y="60" font-size="12" fill="{t["ink3"]}">code not yet byte-identical, by category and the libraries</text>')
     out.append(f'<clipPath id="rw"><rect x="{BX}" y="28" width="{BW}" height="16" rx="4"/></clipPath><g clip-path="url(#rw)">')
     x = BX
     for _, col, b in segs:
@@ -291,7 +305,8 @@ def regions_svg(summary, theme):
     for p in parts:
         rows.append({"n": p["n"], "col": part_color(p), "c": p["c"], "cm": p["cm"], "wm": p.get("wm", p["cm"]),
                      "f": p["f"], "fm": p["fm"],
-                     "sub": f'{len(p["files"])} files · {kib(p["c"])} · {sum(1 for f in p["files"] if f["s"] == "M")} Matching'})
+                     "sub": f'{len(p["files"])} files · {kib(p["c"])} · {sum(1 for f in p["files"] if f["s"] == "M")} Matching'
+                            + (f' · {u} unconfirmed' if (u := sum(1 for f in p["files"] if f.get("u"))) else "")})
     ROW, TOP = 66, 100
     H = TOP + ROW * len(rows) + 30
     out.insert(0, f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="14" fill="{t["panel"]}" stroke="{t["line"]}"/>')
@@ -377,7 +392,7 @@ def squarify(items, x, y, w, h):
 # and style attributes, so an image can carry one link at most. The README
 # treemap is therefore cut into one image per block, each inside its own <a>
 # to that block on the site (with a title= tooltip): the top row is the game
-# code's four parts (their files squarified inside), the bottom row the four
+# code's eight categories (their files squarified inside), the bottom row the four
 # library regions (their libraries inside), every area still proportional to
 # bytes of code. Within a row the images sit with no whitespace between them
 # and their width= percentages add up to just under 100 %, so they never wrap.
@@ -401,7 +416,7 @@ def treemap_blocks(summary):
         libs.append({"id": r["id"], "name": r["n"], "col": REGION[r["id"]][0], "glyph": r["id"],
                      "c": r["c"], "cm": r["cm"], "f": r["f"], "fm": r["fm"],
                      "items": [{"n": l["n"], "c": l["c"], "cm": l["cm"]} for l in r["libs"]], "link": r["id"]})
-    if not game:  # an older summary.json without game parts: the game region as one block
+    if not game:  # an older summary.json without game categories: the game region as one block
         g = next(r for r in summary["regions"] if r["id"] == "game")
         game = [{"id": "game", "name": g["n"], "col": REGION["game"][0], "glyph": "game", "c": g["c"], "cm": g["cm"],
                  "f": g["f"], "fm": g["fm"], "items": [{"n": l["n"], "c": l["c"], "cm": l["cm"]} for l in g["libs"]],
@@ -484,25 +499,31 @@ def treemap_tile(blk, w, h, theme="dark"):
 
 
 def treemap_legend(summary, theme="dark"):
+    """The README treemap's legend: the game categories in their order, then the
+    libraries, wrapped onto as many lines as the width needs."""
     t = THEMES[theme]
-    W, H = TM_W, 48
-    out = [f'<rect x="3.5" y="3.5" width="{W - 7}" height="{H - 7}" rx="8" fill="{t["panel"]}" stroke="{t["line"]}"/>']
-    x = 16
+    W = TM_W
     entries = [(PART_LEGEND.get(p["key"], p["n"]), part_color(p), p["cm"], p["c"], None) for p in game_parts(summary)]
     L = libraries(summary)
     entries.append(("Libraries", HUE["gold"], L["cm"], L["c"], "jsystem"))
+    items, x, y = [], 16, 11
     for name, col, cm, c, gl in entries:
-        if gl:
-            out.append(glyph(gl, x, 11, 11, col))
-        else:
-            out.append(f'<path d="M{x + 5.5} 11L{x + 11} 16.5L{x + 5.5} 22L{x} 16.5Z" fill="{col}"/>')
         label = f'{name} {pct(cm, c)}'
-        out.append(f'<text x="{x + 17}" y="21" font-size="12.5" fill="{t["ink2"]}">{esc(label)}</text>')
-        x += 17 + 6.6 * len(label) + 18
-    out.append(f'<text x="16" y="37" font-size="11.5" fill="{t["ink3"]}">'
-               f'area = bytes of code · fill = byte-identical · top row the game code, bottom row the libraries · '
+        wid = 17 + 6.6 * len(label) + 18
+        if x + wid > W - 16 and x > 16:
+            x, y = 16, y + 20
+        if gl:
+            items.append(glyph(gl, x, y, 11, col))
+        else:
+            items.append(f'<path d="M{x + 5.5:g} {y:g}L{x + 11:g} {y + 5.5:g}L{x + 5.5:g} {y + 11:g}L{x:g} {y + 5.5:g}Z" fill="{col}"/>')
+        items.append(f'<text x="{x + 17:g}" y="{y + 10:g}" font-size="12.5" fill="{t["ink2"]}">{esc(label)}</text>')
+        x += wid
+    H = y + 37
+    out = [f'<rect x="3.5" y="3.5" width="{W - 7}" height="{H - 7}" rx="8" fill="{t["panel"]}" stroke="{t["line"]}"/>'] + items
+    out.append(f'<text x="16" y="{H - 11}" font-size="11.5" fill="{t["ink3"]}">'
+               f'area = bytes of code · fill = byte-identical · top row the game code by category, bottom row the libraries · '
                f'click a block to explore it on the site ↗</text>')
-    return svg(W, H, "\n".join(out), "Treemap legend: the game code's parts and the libraries, and their matched share of code")
+    return svg(W, H, "\n".join(out), "Treemap legend: the game code's categories and the libraries, and their matched share of code")
 
 
 def treemap_files(summary):
@@ -676,19 +697,28 @@ def readme_blocks(summary, rm):
         lib += ["", "</details>"]
     lib += ["", "</details>"]
 
-    # game code: a row per part
+    # game code: a row per category
     parts = game_parts(summary)
     g = next(r for r in summary["regions"] if r["id"] == "game")
     game = [f"**{pct(g['cm'], g['c'])}** of {num(g['c'])} bytes of game code and **{num(g['fm'])} / {num(g['f'])}** "
             f"functions match" + (f" (weighted {pct(g['wm'], g['c'])})" if g.get("wm", 0) > g["cm"] else "") + ".", "",
-            "| Part | Code matched | Weighted | Functions | Files Matching |", "|---|--:|--:|--:|--:|"]
+            "| Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |", "|---|--:|--:|--:|--:|--:|"]
     for p in parts:
         m = sum(1 for f in p["files"] if f["s"] == "M")
+        u = sum(1 for f in p["files"] if f.get("u"))
         game.append(f"| [{md(p['n'])}]({SITE}#/game/{p['id']}) | {pct(p['cm'], p['c'])} of {num(p['c'])} bytes "
-                    f"| {pct(p.get('wm', p['cm']), p['c'])} | {num(p['fm'])} / {num(p['f'])} | {m} / {len(p['files'])} |")
+                    f"| {pct(p.get('wm', p['cm']), p['c'])} | {num(p['fm'])} / {num(p['f'])} | {m} / {len(p['files'])} "
+                    f"| {u or '–'} |")
     game.append("")
     for p in parts:
         game.append(f"- **{md(p['n'])}:** {md(p['desc'])}.")
+    unconfirmed = sum(1 for p in parts for f in p["files"] if f.get("u"))
+    game += ["", f"Each game file's category, its evidence and its confidence are in "
+             f"[docs/names/categories.tsv](docs/names/categories.tsv) (method: "
+             f"[docs/names/METHOD.md](docs/names/METHOD.md#categories)); the {unconfirmed} files placed on thin "
+             f"evidence (low confidence) are marked unconfirmed. The progress site can also group the game code "
+             f"by boot-path phase (" + ", ".join(md(b["n"]) for b in summary.get("bootpath", [])) + ", from "
+             f"[docs/BOOT_PATH.md](docs/BOOT_PATH.md)) with its *Group by* switch."]
 
     now = []
     focus = [ph for ph in rm["phases"] if ph.get("focus")]

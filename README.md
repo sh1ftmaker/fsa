@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://sh1ftmaker.github.io/fsa/">
-    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: an emblem with a gem for each part of the game code and a gold one for the libraries, each filled to its matched code, and the honest and weighted share of the code matched">
+    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: an emblem with a gem for each of the eight categories of game code and a gold one for the libraries, each filled to its matched code, and the honest and weighted share of the code matched">
   </a>
 </p>
 
@@ -30,14 +30,14 @@
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game/game-boot" title="Boot to main menu: 26.7 % of 1,258,252 bytes matched, 1,609 / 2,394 functions. Open it on the progress site."><img src="site/badges/treemap/boot.svg" width="35.02%" alt="Boot to main menu: 26.7 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-battle" title="Main menu to Shadow Battle: 34.1 % of 644,344 bytes matched, 922 / 1,336 functions. Open it on the progress site."><img src="site/badges/treemap/battle.svg" width="18.02%" alt="Main menu to Shadow Battle: 34.1 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-actors" title="Actors: 32.2 % of 1,027,824 bytes matched, 1,231 / 1,962 functions. Open it on the progress site."><img src="site/badges/treemap/actors.svg" width="28.76%" alt="Actors: 32.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-other" title="Everything else: 23.1 % of 643,364 bytes matched, 574 / 1,097 functions. Open it on the progress site."><img src="site/badges/treemap/other.svg" width="18%" alt="Everything else: 23.1 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game/game-player" title="Player: 57.7 % of 407,528 bytes matched, 928 / 1,054 functions. Open it on the progress site."><img src="site/badges/treemap/player.svg" width="11.4%" alt="Player: 57.7 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-enemies" title="Enemies &amp; bosses: 25.4 % of 679,252 bytes matched, 748 / 1,339 functions. Open it on the progress site."><img src="site/badges/treemap/enemies.svg" width="19%" alt="Enemies &amp; bosses: 25.4 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-npcs" title="NPCs: 24.2 % of 291,360 bytes matched, 326 / 594 functions. Open it on the progress site."><img src="site/badges/treemap/npcs.svg" width="8.15%" alt="NPCs: 24.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-objects" title="Objects &amp; gimmicks: 27.7 % of 900,452 bytes matched, 885 / 1,518 functions. Open it on the progress site."><img src="site/badges/treemap/objects.svg" width="25.02%" alt="Objects &amp; gimmicks: 27.7 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-stage" title="Stage &amp; world: 14.1 % of 182,272 bytes matched, 155 / 311 functions. Open it on the progress site."><img src="site/badges/treemap/stage.svg" width="5.1%" alt="Stage &amp; world: 14.1 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-menus" title="Menus &amp; screens: 17.2 % of 801,744 bytes matched, 408 / 872 functions. Open it on the progress site."><img src="site/badges/treemap/menus.svg" width="22.43%" alt="Menus &amp; screens: 17.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-core" title="Game core: 50.0 % of 198,580 bytes matched, 621 / 773 functions. Open it on the progress site."><img src="site/badges/treemap/core.svg" width="5.55%" alt="Game core: 50.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-media" title="Media &amp; link: 39.3 % of 112,596 bytes matched, 265 / 328 functions. Open it on the progress site."><img src="site/badges/treemap/media.svg" width="3.15%" alt="Media &amp; link: 39.3 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
 <!-- treemap:end -->
 
 <p align="center"><sub>The whole DOL: area is bytes of code, the fill is the share byte-identical. The top row is the
-game code in its four parts, the bottom row the libraries. Click a block to open it in the
+game code in its eight categories, the bottom row the libraries. Click a block to open it in the
 <a href="https://sh1ftmaker.github.io/fsa/#treemap">interactive treemap</a>, which goes down to single functions.</sub></p>
 
 ---
@@ -48,15 +48,15 @@ game code in its four parts, the bottom row the libraries. Click a block to open
 As of 2026-11-06:
 
 - **Honest: 42.39 %** of the code is byte-identical, **9,049 / 11,557** functions (1,883,032 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 54.18 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 9,609 / 11,557 functions (same instructions, register or order differences only), +142 close.
+- **Weighted: 54.05 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 9,599 / 11,557 functions (same instructions, register or order differences only), +141 close.
 - **468 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site/badges/regions-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="site/badges/regions-light.svg">
-  <img src="site/badges/regions-light.svg" width="100%" alt="Progress overview: where the remaining work is, the libraries as one group, and the game code's four parts with honest and weighted bars">
+  <img src="site/badges/regions-light.svg" width="100%" alt="Progress overview: where the remaining work is, the libraries as one group, and the game code's eight categories with honest and weighted bars">
 </picture>
 
 ### Libraries
@@ -136,26 +136,38 @@ holdouts.
 
 ### Game code
 
-FSA's own code is most of what remains. It is cut into four parts: the two
-stretches of the [boot path](docs/BOOT_PATH.md) (every file the game runs
-from power-on to the main menu, then on to a live Shadow Battle, measured in
-Dolphin), then the actors and everything else. This is also the order the
-work goes in.
+FSA's own code is most of what remains. It is grouped by what each file is:
+the Player, enemies and bosses, NPCs, objects and gimmicks, the stage and
+world, menus and screens, the game core and media and link. The work still
+goes in [boot path](docs/BOOT_PATH.md) order (every file the game runs from
+power-on to the main menu, then on to a live Shadow Battle, measured in
+Dolphin); the progress site's *Group by* switch shows the game code that way
+too.
 
 <!-- game:start -->
-**29.0 %** of 3,573,784 bytes of game code and **4,336 / 6,789** functions match (weighted 43.4 %).
+**29.0 %** of 3,573,784 bytes of game code and **4,336 / 6,789** functions match (weighted 43.3 %).
 
-| Part | Code matched | Weighted | Functions | Files Matching |
-|---|--:|--:|--:|--:|
-| [Boot to main menu](https://sh1ftmaker.github.io/fsa/#/game/game-boot) | 26.7 % of 1,258,252 bytes | 40.4 % | 1,609 / 2,394 | 10 / 83 |
-| [Main menu to Shadow Battle](https://sh1ftmaker.github.io/fsa/#/game/game-battle) | 34.1 % of 644,344 bytes | 61.4 % | 922 / 1,336 | 10 / 60 |
-| [Actors](https://sh1ftmaker.github.io/fsa/#/game/game-actors) | 32.2 % of 1,027,824 bytes | 45.1 % | 1,231 / 1,962 | 71 / 264 |
-| [Everything else](https://sh1ftmaker.github.io/fsa/#/game/game-other) | 23.1 % of 643,364 bytes | 28.5 % | 574 / 1,097 | 32 / 121 |
+| Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |
+|---|--:|--:|--:|--:|--:|
+| [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 57.7 % of 407,528 bytes | 89.5 % | 928 / 1,054 | 0 / 10 | – |
+| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 25.4 % of 679,252 bytes | 33.3 % | 748 / 1,339 | 29 / 139 | 54 |
+| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 24.2 % of 291,360 bytes | 34.7 % | 326 / 594 | 10 / 54 | 17 |
+| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 27.7 % of 900,452 bytes | 38.8 % | 885 / 1,518 | 66 / 229 | 56 |
+| [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 14.1 % of 182,272 bytes | 30.5 % | 155 / 311 | 0 / 10 | 2 |
+| [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 17.2 % of 801,744 bytes | 33.9 % | 408 / 872 | 8 / 47 | 11 |
+| [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 50.0 % of 198,580 bytes | 64.0 % | 621 / 773 | 4 / 24 | 7 |
+| [Media & link](https://sh1ftmaker.github.io/fsa/#/game/game-media) | 39.3 % of 112,596 bytes | 46.2 % | 265 / 328 | 6 / 15 | 2 |
 
-- **Boot to main menu:** Code the game runs from power-on to the main menu: main(), the framework, the THP movie player, the title screen and the screens built at boot, such as file select, the game mode screen and the GBA link (boot path phases 1 and 2).
-- **Main menu to Shadow Battle:** Code first run between the main menu and a live Shadow Battle: stage load, the players, the field and the actors on it (boot path phase 3).
-- **Actors:** Enemies, NPCs and objects not on the boot path: act\_\* files and files whose classes the actor spawner builds.
-- **Everything else:** Systems, screens, minigames and still-unidentified tu\_\* files that the boot path does not reach.
+- **Player:** The four players and their manager: the ten Player units of docs/PLAYER.md (states, movement, drawing).
+- **Enemies & bosses:** Enemies and bosses: EnemyBase subclasses and actors docs/names/actors.tsv names as enemies, and their helpers.
+- **NPCs:** Characters the players meet and talk to: actors.tsv NPCs, the escort and conversation actors.
+- **Objects & gimmicks:** Every other actor: switches, pots, doors, platforms, generators, checks and stage gimmicks.
+- **Stage & world:** The stage itself: GameView, the tile map, BgRewrite, the camera, collision, stage and enemy-map loading, the sky.
+- **Menus & screens:** J2D screens: title, file select, game mode, connect screens, the HUD, pause, map, minigame results, message windows, disc error.
+- **Game core:** The framework: main(), GameRoot and GameGlobals, the ActorBase / ActorManager / EnemyBase base classes, the effect spawner, save data and shared utilities.
+- **Media & link:** The THP movie player, the audio manager and sound objects, the GBA link, and the game's memory card and DVD wrappers.
+
+Each game file's category, its evidence and its confidence are in [docs/names/categories.tsv](docs/names/categories.tsv) (method: [docs/names/METHOD.md](docs/names/METHOD.md#categories)); the 149 files placed on thin evidence (low confidence) are marked unconfirmed. The progress site can also group the game code by boot-path phase (Boot to main menu, Main menu to Shadow Battle, Actors, Everything else, from [docs/BOOT_PATH.md](docs/BOOT_PATH.md)) with its *Group by* switch.
 <!-- game:end -->
 
 All figures come from the honest objdiff report

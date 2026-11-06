@@ -1,0 +1,532 @@
+# Category of every game unit, for the progress site (tools/site_data.py). Method: docs/names/METHOD.md "Categories".
+# Columns: unit, category (player | enemies | npcs | objects | stage | menus | core | media), confidence (high|med|low), evidence, source (auto: tools/categorize.py's rules, rewritten on every run | hand: reviewed, kept as written).
+# Regenerate: python3 tools/categorize.py   Check: python3 tools/categorize.py --check
+unit	category	confidence	evidence	source
+game/tu_80021840.cpp	core	low	a stub mode query called by GameRoot (tu_80134C04) plus the __sinit	hand
+game/tu_800F39EC.cpp	core	low	only the __sinit of the JAudio pools is left	hand
+game/act_rat.cpp	enemies	med	actors.tsv (actor spawner): enemy NZMI Rat	auto
+game/tu_800F46C0.cpp	enemies	med	actors.tsv (actor spawner): enemy IWAG Boulder spawner, OIWA Boulder	auto
+game/act_force_like.cpp	enemies	med	actors.tsv (actor spawner): enemy LPLK Force Like	auto
+game/tu_800F7FCC.cpp	enemies	low	actors.tsv (actor spawner): boss WRTC Stone Arrghus child (puff)	auto
+game/RailBase.cpp	core	med	RailBase (string 'RailBase.cpp'): rail paths used by 14 actor units	hand
+game/tu_800FE8C0.cpp	enemies	low	called only by the Shadow Link units	hand
+game/act_boss_display_test_npc.cpp	objects	low	actors.tsv (actor spawner): debug BOTS Boss display test NPC	auto
+game/tu_800FF060.cpp	npcs	low	actors.tsv (actor spawner): npc HAYA Hammer shop (minigame)	auto
+game/tu_8010089C.cpp	npcs	low	actors.tsv (actor spawner): npc MGYA Whack-a-mole shop	auto
+game/act_digging_game.cpp	npcs	med	actors.tsv (actor spawner): npc ANHO Digging Game Keeper	auto
+game/act_debug_warp_settings.cpp	objects	low	actors.tsv (actor spawner): debug DWAP Debug warp settings	auto
+game/act_tower_collapse_effect.cpp	objects	med	actors.tsv (actor spawner): effect TWEV Tower collapse effect	auto
+game/act_temple_bti_display.cpp	objects	med	actors.tsv (actor spawner): system SIBT Temple BTI display	auto
+game/tu_80104C3C.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_cloud.cpp	objects	med	actors.tsv (actor spawner): object CLOD Cloud	auto
+game/act_room_transfer_lift.cpp	objects	med	actors.tsv (actor spawner): object WLFT Room-transfer lift	auto
+game/act_wind_environment.cpp	objects	med	actors.tsv (actor spawner): system WIND Wind environment	auto
+game/act_cannon.cpp	objects	high	actors.tsv (actor spawner): object CNON Cannon	auto
+game/act_merchant.cpp	npcs	med	actors.tsv (actor spawner): npc DEAL Merchant	auto
+game/act_shop_item.cpp	objects	med	actors.tsv (actor spawner): object SITM Shop item	auto
+game/act_princess_zelda.cpp	npcs	high	actors.tsv (actor spawner): npc ZLDA Princess Zelda	auto
+game/act_icicle.cpp	objects	med	actors.tsv (actor spawner): object ICCL Icicle	auto
+game/act_snowball.cpp	enemies	med	actors.tsv (actor spawner): enemy SNBL Snowball	auto
+game/act_message_check_npc.cpp	objects	low	actors.tsv (actor spawner): debug DBMS Message-check NPC	auto
+game/tu_8010DF44.cpp	core	med	cls_8049D140: base class of 10 cutscene actors (PrincessZeldaDemo...)	hand
+game/act_princess_zelda_demo.cpp	npcs	high	actors.tsv (actor spawner): npc DMZL Princess Zelda (cutscene)	auto
+game/act_maiden_demo.cpp	npcs	high	actors.tsv (actor spawner): npc DMMD Maiden (cutscene)	auto
+game/tu_80113788.cpp	objects	low	subclass of the cutscene base cls_8049D140, spawned	hand
+game/act_vaati_demo.cpp	npcs	high	actors.tsv (actor spawner): npc DMGF Vaati (cutscene)	auto
+game/act_four_sword_demo.cpp	npcs	high	actors.tsv (actor spawner): npc DMSW Four Sword (cutscene)	auto
+game/tu_80118384.cpp	core	low	fade object (texture, fade length per mode), called by 31 cutscene/actor units	hand
+game/tu_8011A0F8.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_opening_goal.cpp	objects	med	actors.tsv (actor spawner): system DMGL Goal (opening)	auto
+game/act_shadow_link_demo.cpp	npcs	high	actors.tsv (actor spawner): npc DMLK Shadow Link (cutscene)	auto
+game/tu_8011CEC8.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_ice_wall.cpp	objects	med	actors.tsv (actor spawner): object ICWL Ice wall	auto
+game/tu_8011E96C.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_hyrule_castle_barrier.cpp	objects	med	actors.tsv (actor spawner): object BARI Hyrule Castle barrier	auto
+game/act_zora_escort.cpp	npcs	med	actors.tsv (actor spawner): npc FAZR Zora (escort)	auto
+game/tu_801213EC.cpp	npcs	med	EscortBase_8049E0C8: base of EscortWoman and ZoraEscort	hand
+game/act_escort_woman.cpp	npcs	med	actors.tsv (actor spawner): npc OPGL Escorted woman	auto
+game/tu_80125B58.cpp	objects	low	called only by tu_80130310	hand
+game/act_vaati_buster.cpp	objects	med	actors.tsv (actor spawner): system GFBS Vaati Buster	auto
+game/act_zora_escort_goal.cpp	npcs	med	actors.tsv (actor spawner): npc FZRA Zora (escort, arrival point)	auto
+game/tu_80127E20.cpp	npcs	low	called only by the Zora escort units	hand
+game/tu_801286C0.cpp	objects	low	subclass of the cutscene base cls_8049D140	hand
+game/tu_801291A0.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_rainbow_bridge.cpp	objects	med	actors.tsv (actor spawner): object RNBW Rainbow bridge	auto
+game/tu_8012A5EC.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_blizzard_battle.cpp	objects	high	actors.tsv (actor spawner): system BTBZ Blizzard (battle)	auto
+game/tu_8012DAC0.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_snow_wall.cpp	objects	med	actors.tsv (actor spawner): object SNWL Snow wall	auto
+game/tu_8012EA00.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_ice_floor_check_npc.cpp	objects	med	actors.tsv (actor spawner): system IFCK Ice-floor check NPC	auto
+game/tu_8012F3E4.cpp	objects	low	called by act_ice_floor_check_npc	hand
+game/tu_8012F8AC.cpp	objects	low	uses tu_8012F3E4 (ice floor check)	hand
+game/tu_8012FBCC.cpp	npcs	low	called only by tu_8012FF9C (escort)	hand
+game/tu_8012FF9C.cpp	npcs	low	called only by act_escort_woman	hand
+game/tu_80130310.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_warp_cannon.cpp	objects	med	actors.tsv (actor spawner): object WPCN Warp cannon	auto
+game/tu_80131D98.cpp	npcs	low	called only by the escort units	hand
+game/act_great_fairy_spfr.cpp	npcs	high	actors.tsv (actor spawner): npc SPFR Great Fairy	auto
+game/tu_8013394C.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_801344C0.cpp	core	high	main(): the entry point, frame loop (symbol main)	hand
+game/tu_80134C04.cpp	core	med	GameRoot_8049EF20: game root, stage archive table (strings 'boss010.arc'...), called by 125 units	hand
+game/tu_80139BE8.cpp	core	med	GameRootSub04_801F856C (getActorManager_801F856C)	hand
+game/tu_8013AAD4.cpp	core	med	GameRoot2_8049F108: render modes, frame setup; called by 50 units	hand
+game/tu_8013C5C8.cpp	core	high	EffectSystem_8049F178, spawnEmitter_8013CC50 (Effect.h): the effect spawner	auto
+game/act_octorok.cpp	enemies	med	actors.tsv (actor spawner): enemy OKTA Octorok	auto
+game/act_armos.cpp	enemies	med	actors.tsv (actor spawner): enemy AMOS Armos	auto
+game/act_poe.cpp	enemies	med	actors.tsv (actor spawner): enemy POOH Poe	auto
+game/act_sand_crab.cpp	enemies	med	actors.tsv (actor spawner): enemy PEAC Sand Crab	auto
+game/act_buzz_blob.cpp	enemies	med	actors.tsv (actor spawner): enemy BZBR Buzz Blob	auto
+game/act_deadrock.cpp	enemies	med	actors.tsv (actor spawner): enemy DDRK Deadrock	auto
+game/act_recovery_heart.cpp	objects	med	actors.tsv (actor spawner): object HART Recovery Heart	auto
+game/act_octorok_rock.cpp	objects	med	actors.tsv (actor spawner): effect OKTM Octorok rock	auto
+game/tu_80147B50.cpp	enemies	med	strings 'boss_deg_*.bti': a boss's textures	hand
+game/act_bomb.cpp	objects	high	actors.tsv (actor spawner): object HBMB Bomb	auto
+game/act_hinox.cpp	enemies	high	actors.tsv (actor spawner): enemy HINO Hinox	auto
+game/act_sword_soldier.cpp	enemies	med	actors.tsv (actor spawner): enemy SLR1 Sword Soldier	auto
+game/act_tektite.cpp	enemies	med	actors.tsv (actor spawner): enemy TKTA Tektite	auto
+game/tu_801555D8.cpp	enemies	low	actor-shaped (no direct callers); calls act_sword_soldier 24x	hand
+game/tu_80158624.cpp	core	med	ShadowCircle_804A0160 (names.tsv), 'circle.bti': shadow drawing for 25 units	hand
+game/act_liftable_item.cpp	objects	med	actors.tsv (actor spawner): object IMUP Liftable item	auto
+game/act_bumper.cpp	objects	med	actors.tsv (actor spawner): object BOYO Bumper	auto
+game/act_keese.cpp	enemies	med	actors.tsv (actor spawner): enemy KETH Keese	auto
+game/act_flame.cpp	objects	med	actors.tsv (actor spawner): effect FLME Flame	auto
+game/tu_8015F454.cpp	core	low	strings 'circle.bti','circle2.bti': shadow drawing helper, callers player/actors	hand
+game/act_fairy.cpp	objects	high	actors.tsv (actor spawner): object FARY Fairy	auto
+game/tu_801618D0.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_blade_trap.cpp	enemies	med	actors.tsv (actor spawner): enemy TRAP Blade Trap	auto
+game/act_arrow.cpp	objects	high	actors.tsv (actor spawner): effect ARRW Arrow (player)	auto
+game/tu_80166BD0.cpp	enemies	low	actors.tsv (actor spawner): enemy MOZO Mojamoja (unidentified enemy)	auto
+game/act_hardhat_beetle.cpp	enemies	med	actors.tsv (actor spawner): enemy Poon Hardhat Beetle	auto
+game/tu_801688AC.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_8016A2B4.cpp	stage	med	sky / cloud backdrop: strings 'w_kumo.bmd', 'sky.bti'	hand
+game/tu_80170008.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_popo.cpp	enemies	med	actors.tsv (actor spawner): enemy POPO Popo	auto
+game/act_chief_soldier.cpp	enemies	med	actors.tsv (actor spawner): enemy SLR4 Chief Soldier	auto
+game/act_stalfos.cpp	enemies	med	actors.tsv (actor spawner): enemy STAL Stalfos	auto
+game/act_wizzrobe.cpp	enemies	med	actors.tsv (actor spawner): enemy WIZR Wizzrobe	auto
+game/act_searchlight.cpp	objects	med	actors.tsv (actor spawner): object SHLT Searchlight	auto
+game/tu_8017A44C.cpp	enemies	low	actors.tsv (actor spawner): enemy SWBM unknown (SWBM)	auto
+game/act_cheep_cheep.cpp	enemies	med	actors.tsv (actor spawner): enemy PUKU Cheep-Cheep	auto
+game/tu_8017C01C.cpp	enemies	low	called only by Ganon, Phantom Ganon	hand
+game/tu_8017EF40.cpp	enemies	low	called only by act_ganon, tu_80197070	hand
+game/tu_80182914.cpp	objects	low	actor called by the time-up managers	hand
+game/tu_80183544.cpp	objects	low	uses tu_80182914	hand
+game/act_pengator.cpp	enemies	med	actors.tsv (actor spawner): enemy FAGN Pengator	auto
+game/tu_80184D64.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_phantom_ganon_2.cpp	enemies	med	actors.tsv (actor spawner): boss FGN2 Phantom Ganon 2	auto
+game/tu_8018A8D8.cpp	enemies	med	strings 'boss_p_fly_01.bti'...: a boss's textures; called by Ganon	hand
+game/tu_8018EB94.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_801902C0.cpp	stage	low	GameRootSub20_801902C0, called by environment / bg-draw actors	hand
+game/act_ganon.cpp	enemies	med	actors.tsv (actor spawner): boss GNON Ganon	auto
+game/tu_80197070.cpp	enemies	med	methods of Ganon_804A25F0 (act_ganon)	hand
+game/act_all_enemies_defeated.cpp	objects	med	actors.tsv (actor spawner): system ALCE All enemies defeated	auto
+game/act_shooting_gallery.cpp	npcs	med	actors.tsv (actor spawner): npc SYKY Shooting gallery	auto
+game/tu_801A0710.cpp	npcs	low	actors.tsv (actor spawner): npc TENN Tennis shop	auto
+game/act_enemy_spawn_area.cpp	objects	med	actors.tsv (actor spawner): system ENBZ Enemy spawn area	auto
+game/tu_801A3C50.cpp	objects	low	helper called by act_bomb, act_bumper, act_cucco...	hand
+game/act_zora_fish_herder.cpp	npcs	med	actors.tsv (actor spawner): npc SAYA Zora (fish-herding)	auto
+game/tu_801A8194.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_801A908C.cpp	enemies	med	strings 'e_tst_paku_green_0.bti': an enemy's textures	hand
+game/act_gohma.cpp	enemies	med	actors.tsv (actor spawner): boss GOMA Gohma	auto
+game/act_dodongo.cpp	enemies	med	actors.tsv (actor spawner): boss DDGO Dodongo	auto
+game/tu_801AE9C4.cpp	npcs	low	actors.tsv (actor spawner): npc OKAM Okame-san	auto
+game/act_eyegore.cpp	enemies	med	actors.tsv (actor spawner): enemy EGOL Eyegore	auto
+game/tu_801B0A00.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_801B27DC.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_princess_zelda_motion_spawner.cpp	objects	med	actors.tsv (actor spawner): system ZDCO Princess Zelda motion object spawner	auto
+game/tu_801B4D0C.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_tingle_wallet.cpp	objects	med	actors.tsv (actor spawner): object SAFU Tingle's wallet	auto
+game/tu_801B6C50.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_rope.cpp	enemies	high	EnemyBase subclass (Rope_804A3A68); actors.tsv (actor spawner): enemy ROPE Rope	auto
+game/act_terrorpin.cpp	enemies	high	EnemyBase subclass (Terrorpin_804A3B10); actors.tsv (actor spawner): enemy PAME Terrorpin	auto
+game/act_gibdo.cpp	enemies	high	EnemyBase subclass (Gibdo_804A3BF8); actors.tsv (actor spawner): enemy MIRA Gibdo	auto
+game/act_zora.cpp	enemies	high	EnemyBase subclass (ZoraEnemy_804A3D7C); actors.tsv (actor spawner): enemy ZORA Zora (enemy)	auto
+game/act_wallmaster.cpp	enemies	high	EnemyBase subclass (cls_804A3E44); actors.tsv (actor spawner): enemy FALL Wallmaster	auto
+game/act_fire_bar.cpp	enemies	low	EnemyBase subclass (FireBarManager_804A3F90); but actors.tsv (actor spawner): system FBMR Fire bar (manager)	auto
+game/tu_801BD8C0.cpp	enemies	med	EnemyBase subclass (cls_804A4038); no actors.tsv kind	auto
+game/act_beamos.cpp	enemies	high	EnemyBase subclass (Beamos_804A40E0); actors.tsv (actor spawner): enemy BMST Beamos	auto
+game/tu_801BEDBC.cpp	enemies	low	EnemyBase subclass (cls_804A4188); but actors.tsv (actor spawner): object LNBM unknown (LNBM)	auto
+game/act_vulture.cpp	enemies	high	EnemyBase subclass (Vulture_804A4230); actors.tsv (actor spawner): enemy TNDR Vulture	auto
+game/tu_801C0D70.cpp	enemies	low	called only by act_shadow_link_2 / generator	hand
+game/act_shadow_link_generator.cpp	enemies	low	EnemyBase subclass (ShadowLinkGenerator_804A4310); but actors.tsv (actor spawner): system SLGE Shadow Link generator	auto
+game/act_shadow_link_2.cpp	enemies	high	EnemyBase subclass (ShadowLink2_804A43E8); actors.tsv (actor spawner): enemy SLK2 Shadow Link 2	auto
+game/tu_801C5B08.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/tu_801C6A4C.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/tu_801C71BC.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/tu_801C9AF8.cpp	enemies	low	called only by the Shadow Link units	hand
+game/tu_801CB270.cpp	enemies	med	helpers the enemy code shares (EnemyBase.h users; 108 callers)	hand
+game/tu_801CDC8C.cpp	core	high	EnemyBase_804A4808 (EnemyBase.h): the enemies' base class	auto
+game/tu_801D11FC.cpp	enemies	med	EnemyBase subclass (cls_804A46F4); no actors.tsv kind	auto
+game/tu_801D1C18.cpp	core	med	SpriteAnim_801D267C (SpriteAnim.h): sprite-cel animation, called by 57 units	hand
+game/tu_801D2918.cpp	enemies	low	called only by act_thief, tu_80206B30	hand
+game/tu_801D2C60.cpp	enemies	med	EnemyBase subclass (cls_804A48B0); no actors.tsv kind	auto
+game/tu_801D3320.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/tu_801D3CBC.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/act_vaati_boss.cpp	enemies	high	EnemyBase subclass (VaatiBoss_804A4958); actors.tsv (actor spawner): boss BOGF Vaati (boss)	auto
+game/tu_801D6CEC.cpp	enemies	med	Vaati's actor-serial table, called by act_vaati_boss	hand
+game/tu_801D7AFC.cpp	enemies	low	EnemyBase subclass (cls_804A4BB0); but actors.tsv (actor spawner): object BGBL unknown (BGBL)	auto
+game/tu_801D8400.cpp	enemies	med	EnemyBase subclass (cls_804A4C58); no actors.tsv kind	auto
+game/tu_801DA7C0.cpp	enemies	med	strings 'boss_koori_*.bti': a boss's textures	hand
+game/tu_801DAC6C.cpp	enemies	low	called only by the ice boss units (tu_801D8400, act_frostare_tail)	hand
+game/tu_801DB18C.cpp	enemies	med	EnemyBase subclass (cls_804A4EE8); actors.tsv (actor spawner): boss ICHL Frostare child (Frosteye?)	auto
+game/act_frostare_tail.cpp	enemies	high	EnemyBase subclass (cls_804A4F90); actors.tsv (actor spawner): boss BOIT Frostare tail	auto
+game/tu_801DCC98.cpp	enemies	low	EnemyBase subclass (cls_804A5038); but actors.tsv (actor spawner): object BOIB unknown (BOIB)	auto
+game/tu_801DD1AC.cpp	enemies	low	called only by tu_801D8400	hand
+game/tu_801DE714.cpp	enemies	med	EnemyBase subclass (cls_804A51E4); no actors.tsv kind	auto
+game/tu_801E2540.cpp	enemies	low	called only by tu_801DE714	hand
+game/act_tingle_buster.cpp	enemies	low	EnemyBase subclass (TingleBuster_804A5370); but actors.tsv (actor spawner): system TINB Tingle Buster	auto
+game/tu_801E3618.cpp	enemies	med	EnemyBase subclass (VaatiBoss_804A4958); no actors.tsv kind	auto
+game/tu_801E4A18.cpp	enemies	low	called only by act_vaati_boss	hand
+game/tu_801E4D54.cpp	enemies	med	EnemyBase subclass (VaatiBoss_804A4958); no actors.tsv kind	auto
+game/tu_801E5FC8.cpp	enemies	med	EnemyBase subclass (cls_804A4C58); no actors.tsv kind	auto
+game/tu_801E667C.cpp	enemies	low	called only by act_vaati_boss	hand
+game/tu_801E6D48.cpp	enemies	low	EnemyBase subclass (cls_804A5418); but actors.tsv (actor spawner): object IPOT Iron pot	auto
+game/act_fuse_point.cpp	enemies	low	EnemyBase subclass (FusePoint_804A54C0); but actors.tsv (actor spawner): system FSPO Fuse point	auto
+game/tu_801E801C.cpp	enemies	low	EnemyBase subclass (cls_804A5568); but actors.tsv (actor spawner): object FSOB unknown (FSOB)	auto
+game/tu_801E9AFC.cpp	objects	low	fuse sprites ('sen.bti'), called by act_fuse_point, the iron pot	hand
+game/tu_801EAB0C.cpp	core	med	ActorSub1DC_801EAD68 (ActorBase.h): ActorBase member	hand
+game/tu_801EB00C.cpp	enemies	low	called only by the Vaati units	hand
+game/act_horse_race_man.cpp	npcs	low	actors.tsv (actor spawner): npc HRMN Horse-race man; but EnemyBase subclass (HorseRaceMan_804A5630)	auto
+game/tu_801ED3DC.cpp	menus	low	seconds / hundredths timer display, used by the horse race	hand
+game/tu_801EDBA4.cpp	enemies	med	EnemyBase subclass (VaatiBoss_804A4958); no actors.tsv kind	auto
+game/tu_801EE24C.cpp	core	high	ActorBase_804A5770's methods (ActorBase.h): the actor base class	hand
+game/tu_801F6058.cpp	core	high	ActorBase_804A5770 (ActorBase.h): the base of every actor	auto
+game/tu_801F9484.cpp	core	high	ActorManager_804A5800, spawnActor_801F9484 (ActorManager.h)	auto
+game/tu_80204638.cpp	enemies	low	called only by act_thief	hand
+game/act_thief.cpp	enemies	high	EnemyBase subclass (Thief_804A5A30); actors.tsv (actor spawner): enemy TZOK Thief	auto
+game/tu_80206B30.cpp	enemies	med	EnemyBase subclass (Thief_804A5A30); no actors.tsv kind	auto
+game/tu_80207548.cpp	enemies	med	EnemyBase subclass (cls_804A5B28); no actors.tsv kind	auto
+game/act_slime_manager.cpp	enemies	low	EnemyBase subclass (cls_804A5BD8); but actors.tsv (actor spawner): system SLMN Slime manager	auto
+game/act_bird_manager.cpp	enemies	low	EnemyBase subclass (cls_804A5C88); but actors.tsv (actor spawner): system BRMN Bird manager	auto
+game/tu_80209C14.cpp	enemies	med	EnemyBase subclass (cls_804A5D60); actors.tsv (actor spawner): enemy FOSL Slime (formation)	auto
+game/tu_8020B354.cpp	enemies	med	EnemyBase subclass (cls_804A5E98); actors.tsv (actor spawner): enemy FOBR Bird (formation)	auto
+game/tu_8020C0A8.cpp	enemies	med	EnemyBase subclass (cls_804A5F40); actors.tsv (actor spawner): enemy ZASL Zol (small slime)	auto
+game/tu_8020CCA8.cpp	enemies	med	EnemyBase subclass (cls_804A51E4); no actors.tsv kind	auto
+game/tu_8020D58C.cpp	stage	high	CollisionBoxes_8020D58C: per-layer collision boxes, called by 42 units	hand
+game/act_floormaster.cpp	enemies	high	EnemyBase subclass (Floormaster_804A6004); actors.tsv (actor spawner): enemy FLOR Floormaster	auto
+game/tu_8020F798.cpp	enemies	med	EnemyBase subclass (Thief_804A5A30); no actors.tsv kind	auto
+game/tu_8020FE50.cpp	enemies	low	EnemyBase subclass (cls_804A6100); but actors.tsv (actor spawner): object IBBM unknown (IBBM)	auto
+game/tu_80210630.cpp	enemies	med	EnemyBase subclass (cls_804A61C8); no actors.tsv kind	auto
+game/act_quicksand.cpp	enemies	low	EnemyBase subclass (cls_804A6270); but actors.tsv (actor spawner): object RUSA Quicksand	auto
+game/tu_80212AC0.cpp	enemies	low	called only by act_quicksand, act_pengator	hand
+game/tu_80212E3C.cpp	enemies	med	EnemyBase subclass (cls_804A6340); actors.tsv (actor spawner): enemy ARIJ Antlion	auto
+game/tu_80213E00.cpp	enemies	low	EnemyBase subclass (cls_804A6400); but actors.tsv (actor spawner): object SLEF unknown (SLEF)	auto
+game/tu_80214244.cpp	enemies	low	called only by the Shadow Link units	hand
+game/tu_802144F0.cpp	enemies	low	called only by act_shadow_link_2	hand
+game/tu_802153A8.cpp	enemies	low	called only by act_shadow_link_2	hand
+game/tu_802157B8.cpp	enemies	low	called only by act_shadow_link_2	hand
+game/tu_80215A94.cpp	npcs	low	called only by act_horse_race_man	hand
+game/tu_8021693C.cpp	enemies	low	called only by act_shadow_link_2	hand
+game/tu_80217374.cpp	enemies	low	called only by act_shadow_link_2, act_thief	hand
+game/tu_8021775C.cpp	enemies	low	called only by act_vaati_boss	hand
+game/tu_8021827C.cpp	enemies	med	EnemyBase subclass (cls_804A51E4); no actors.tsv kind	auto
+game/tu_802188B0.cpp	enemies	low	called only by act_shadow_link_2	hand
+game/act_kaepora_gaebora.cpp	npcs	med	actors.tsv (actor spawner): npc KEPO Kaepora Gaebora; but EnemyBase subclass (cls_804A6550)	auto
+game/tu_8021A570.cpp	npcs	low	called only by act_kaepora_gaebora	hand
+game/tu_8021AF28.cpp	enemies	med	EnemyBase subclass (cls_804A6550); no actors.tsv kind	auto
+game/tu_8021B904.cpp	enemies	low	called only by act_thief	hand
+game/tu_8021BCBC.cpp	enemies	low	called only by the Vaati units	hand
+game/tu_8021BFA8.cpp	npcs	low	called only by the horse race units	hand
+game/tu_8021C2B4.cpp	enemies	low	called only by the Shadow Link generator	hand
+game/tu_8021C848.cpp	enemies	low	called only by tu_8021C2B4 (Shadow Link generator)	hand
+game/tu_8021CDE4.cpp	enemies	med	EnemyBase subclass (ShadowLink2_804A43E8); no actors.tsv kind	auto
+game/act_fireball_generator.cpp	enemies	low	EnemyBase subclass (FireballGenerator_804A6660); but actors.tsv (actor spawner): system FBGE Fireball generator	auto
+game/act_navi.cpp	npcs	med	actors.tsv (actor spawner): npc NAVI Navi; but EnemyBase subclass (cls_804A6708)	auto
+game/tu_8021F064.cpp	npcs	low	called only by act_navi	hand
+game/tu_8021F4B0.cpp	enemies	low	called only by act_shadow_link_generator	hand
+game/tu_8021FDB8.cpp	enemies	med	EnemyBase subclass (cls_804A51E4); no actors.tsv kind	auto
+game/tu_802201D8.cpp	enemies	low	EnemyBase subclass (cls_804A48B0); but actors.tsv (actor spawner): object FBAL unknown (FBAL)	auto
+game/act_shadow_link_jump.cpp	enemies	high	EnemyBase subclass (ShadowLinkBase_804A6A00); actors.tsv (actor spawner): enemy ZSLJ Shadow Link (jump, minor)	auto
+game/tu_80220F54.cpp	enemies	med	EnemyBase subclass (ShadowLinkBase_804A6A00); no actors.tsv kind	auto
+game/tu_80221B44.cpp	enemies	med	EnemyBase subclass (ShadowLinkBase_804A6A00); no actors.tsv kind	auto
+game/act_shadow_link_bow.cpp	enemies	high	EnemyBase subclass (ShadowLinkBase_804A6A00); actors.tsv (actor spawner): enemy ZSLA Shadow Link (bow, minor)	auto
+game/tu_80222CC4.cpp	enemies	med	EnemyBase subclass (ShadowLinkBase_804A6A00); no actors.tsv kind	auto
+game/tu_802233A4.cpp	enemies	low	spawned; calls the Shadow Link base unit tu_80220F54	hand
+game/tu_802242F4.cpp	core	low	actor/player box-overlap helper, called only by tu_801A3C50	hand
+game/tu_8022461C.cpp	stage	med	tile queries (Map.h cell index; PLAYER.md 'tile queries'), called by 112 units	hand
+game/act_warp.cpp	objects	med	actors.tsv (actor spawner): system WARP Warp	auto
+game/act_player_effect.cpp	objects	med	actors.tsv (actor spawner): effect PEFF Player effect	auto
+game/tu_8022AD64.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_8023FBF0.cpp	player	high	Player unit (PLAYER.md)	auto
+game/act_lift.cpp	objects	high	actors.tsv (actor spawner): object LIFT Lift	auto
+game/tu_80256C74.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_8025EB18.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_80264998.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_802684A4.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_8026FC20.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_8027E5BC.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_80285E58.cpp	player	high	Player unit (PLAYER.md)	auto
+game/act_extending_lift.cpp	objects	med	actors.tsv (actor spawner): object LIF2 Extending lift	auto
+game/act_pull_switch.cpp	objects	med	actors.tsv (actor spawner): object PLSW Pull switch	auto
+game/act_magic_circle.cpp	objects	med	actors.tsv (actor spawner): object CIRC Magic circle	auto
+game/act_block.cpp	objects	high	actors.tsv (actor spawner): object BLCK Block	auto
+game/tu_8028DD78.cpp	objects	low	cls_804A7A68 actor inside the Player text range, not a Player unit	hand
+game/tu_8028FBA0.cpp	player	high	Player unit (PLAYER.md)	auto
+game/tu_802957CC.cpp	objects	low	cls_804A7AE0 actor right after the Player range	hand
+game/act_push_switch.cpp	objects	med	actors.tsv (actor spawner): object PSSW Push switch	auto
+game/act_burning_block.cpp	objects	med	actors.tsv (actor spawner): object BRBL Burning block (wooden crate)	auto
+game/tu_8029C584.cpp	enemies	low	actors.tsv (actor spawner): enemy FORM unknown (FORM)	auto
+game/act_attack_hitbox_when_player_is_thrown.cpp	objects	med	actors.tsv (actor spawner): system THCL Attack hitbox when player is thrown	auto
+game/tu_8029D898.cpp	stage	high	BgRewrite_804A7C98 (BgRewrite.h): background tile rewrites	hand
+game/act_heart_container.cpp	objects	high	actors.tsv (actor spawner): object BHRT Heart Container	auto
+game/tu_802A4654.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_switch.cpp	objects	med	actors.tsv (actor spawner): object SWTH Switch	auto
+game/act_explosion.cpp	objects	med	actors.tsv (actor spawner): effect EXPL Explosion	auto
+game/act_force_gem_rain.cpp	objects	med	actors.tsv (actor spawner): system RYRN Force Gem rain	auto
+game/act_four_switch_monitor.cpp	objects	med	actors.tsv (actor spawner): system SWT4 Four-switch monitor	auto
+game/act_shutter.cpp	objects	med	actors.tsv (actor spawner): object SHTR Shutter	auto
+game/act_spike_floor_check.cpp	objects	med	actors.tsv (actor spawner): system THRN Spike floor check	auto
+game/act_point_check_npc.cpp	objects	med	actors.tsv (actor spawner): system PONT Point-check NPC	auto
+game/act_enemy_count_wipe_out_check.cpp	objects	med	actors.tsv (actor spawner): system SKIL Enemy-count wipe-out check	auto
+game/act_item_pedestal.cpp	objects	med	actors.tsv (actor spawner): object ITMS Item pedestal	auto
+game/act_player_start_position.cpp	objects	med	actors.tsv (actor spawner): system PLAS Player start position	auto
+game/tu_802AC8AC.cpp	menus	med	'kk_black.bti' full-screen fade picture, made by GameRoot	hand
+game/act_trick_floor.cpp	objects	med	actors.tsv (actor spawner): object TFLR Trick floor	auto
+game/act_pot_smoke.cpp	objects	med	actors.tsv (actor spawner): effect KMRI Pot-break smoke	auto
+game/act_arrow_marker.cpp	objects	high	actors.tsv (actor spawner): object YAJI Arrow marker	auto
+game/act_spotlight.cpp	objects	med	actors.tsv (actor spawner): object SPOT Spotlight	auto
+game/act_torch.cpp	objects	high	actors.tsv (actor spawner): object TRCH Torch	auto
+game/tu_802B1558.cpp	core	med	copies the save region to 0x80700000 (OSSetSaveRegion, GameState.h)	hand
+game/tu_802B214C.cpp	enemies	low	actors.tsv (actor spawner): enemy SKUL Rotating skull	auto
+game/act_spotlight_se.cpp	objects	med	actors.tsv (actor spawner): system SLSD Spotlight SE	auto
+game/tu_802B3674.cpp	objects	low	cls_804A8638, called by act_blizzard_battle and demos	hand
+game/act_stone_disguised_npc.cpp	npcs	med	actors.tsv (actor spawner): npc SSTN NPC disguised as a stone	auto
+game/act_liftable_wood.cpp	objects	med	actors.tsv (actor spawner): object WOOD Liftable wood	auto
+game/act_switch_or.cpp	objects	med	actors.tsv (actor spawner): system SWOR Switch OR	auto
+game/tu_802B7C78.cpp	enemies	low	actors.tsv (actor spawner): enemy DETH Reaper (Shinigami)	auto
+game/act_hammer_bulge.cpp	objects	med	actors.tsv (actor spawner): object SWEL Hammer bulge	auto
+game/act_thwomp_switch.cpp	objects	med	actors.tsv (actor spawner): object DOSN Thwomp switch	auto
+game/act_bg_rewrite_check_switch.cpp	objects	med	actors.tsv (actor spawner): system BGWC BG-rewrite check switch	auto
+game/tu_802BA334.cpp	core	low	only the __sinit of the JAudio pools is left	hand
+game/act_fire_rod_fire.cpp	objects	high	actors.tsv (actor spawner): effect FIRE Fire Rod fire	auto
+game/act_spreading_fire.cpp	objects	med	actors.tsv (actor spawner): effect BLZE Spreading fire	auto
+game/act_all_enemies_defeated_check_switch.cpp	objects	med	actors.tsv (actor spawner): system ZNSW All-enemies-defeated check switch	auto
+game/act_wait_switch.cpp	objects	med	actors.tsv (actor spawner): object WTSW Wait switch	auto
+game/act_candlestick_switch.cpp	objects	med	actors.tsv (actor spawner): object LWSW Candlestick switch	auto
+game/act_check_switch.cpp	objects	med	actors.tsv (actor spawner): system CKSW Check switch	auto
+game/act_switch_related_npc.cpp	objects	med	actors.tsv (actor spawner): system SWNP Switch-related NPC	auto
+game/act_dropped_item.cpp	objects	med	actors.tsv (actor spawner): object LSTI Dropped item	auto
+game/act_small_key.cpp	objects	high	actors.tsv (actor spawner): object KEY0 Small Key	auto
+game/act_door.cpp	objects	high	actors.tsv (actor spawner): object DOOR Door	auto
+game/act_panel_rewrite_npc.cpp	objects	med	actors.tsv (actor spawner): system PNPC Panel-rewrite NPC	auto
+game/act_focus_npc.cpp	objects	med	actors.tsv (actor spawner): system FOCS Focus NPC	auto
+game/act_blindfold.cpp	objects	med	actors.tsv (actor spawner): object BLDF Blindfold	auto
+game/act_rank_display.cpp	objects	med	actors.tsv (actor spawner): system RANK Rank display	auto
+game/act_on_off_switch.cpp	objects	med	actors.tsv (actor spawner): object ONOF On/Off switch	auto
+game/act_red_blue_switch.cpp	objects	med	actors.tsv (actor spawner): object RDBL Red/Blue switch (rewrites red/blue floor panels)	auto
+game/act_falling_floor.cpp	objects	med	actors.tsv (actor spawner): object FLYK Falling floor	auto
+game/act_bti_npc.cpp	objects	med	actors.tsv (actor spawner): object BTIN BTI NPC	auto
+game/act_grass.cpp	objects	high	actors.tsv (actor spawner): object GRAS Grass	auto
+game/act_spawner.cpp	objects	med	actors.tsv (actor spawner): system GENE Spawner (generator)	auto
+game/act_stone.cpp	objects	high	actors.tsv (actor spawner): object STON Stone	auto
+game/act_pot.cpp	objects	high	actors.tsv (actor spawner): object TUBO Pot	auto
+game/act_rock.cpp	objects	med	actors.tsv (actor spawner): object ROCK Rock	auto
+game/act_sign.cpp	objects	high	actors.tsv (actor spawner): object BORD Sign	auto
+game/tu_802D39B8.cpp	stage	high	GameView_804A9950 (GameView.h): stage state, strings 'map010.csv', d_map%s .szs	hand
+game/act_coconut.cpp	objects	med	actors.tsv (actor spawner): object YASI Coconut	auto
+game/act_gravestone.cpp	objects	med	actors.tsv (actor spawner): object GRVE Gravestone	auto
+game/act_view_mode.cpp	objects	med	actors.tsv (actor spawner): system VWMD View mode	auto
+game/act_ura_colour.cpp	objects	med	actors.tsv (actor spawner): system URAC Ura (dark-world) colour	auto
+game/act_particle_npc.cpp	objects	med	actors.tsv (actor spawner): system PRTC Particle NPC	auto
+game/act_off_switch.cpp	objects	med	actors.tsv (actor spawner): system OFFS OFF switch	auto
+game/tu_802E2074.cpp	stage	med	stage enemy placement: string 'd_enemy_map%s_%d%d.bin'	hand
+game/tu_802E2990.cpp	objects	low	called only by act_crystal_demo_2	hand
+game/act_advance_notice_se.cpp	objects	med	actors.tsv (actor spawner): system SENP Advance-notice SE	auto
+game/act_environment_control_2.cpp	objects	med	actors.tsv (actor spawner): system SEV2 Environment control 2	auto
+game/act_inextinguishable_flame.cpp	objects	med	actors.tsv (actor spawner): effect BLZ2 Inextinguishable flame	auto
+game/act_bgm_change_npc.cpp	objects	med	actors.tsv (actor spawner): system BGMN BGM change NPC	auto
+game/act_zoom.cpp	objects	med	actors.tsv (actor spawner): system ZOOM Zoom	auto
+game/tu_802E6EC4.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_wave_se.cpp	objects	med	actors.tsv (actor spawner): system WAVE Wave SE	auto
+game/act_play_specified_se.cpp	objects	med	actors.tsv (actor spawner): system SEN2 Play specified SE	auto
+game/act_panel_rewrite_npc_2.cpp	objects	med	actors.tsv (actor spawner): system PNP2 Panel-rewrite NPC 2	auto
+game/act_magic_circle_generator.cpp	objects	med	actors.tsv (actor spawner): system MJGR Magic-circle generator	auto
+game/act_local_switch.cpp	objects	med	actors.tsv (actor spawner): system LCLS Local switch	auto
+game/act_global_switch.cpp	objects	med	actors.tsv (actor spawner): system GLBS Global switch	auto
+game/tu_802E9428.cpp	objects	low	actors.tsv (actor spawner): system ENDM unknown (ENDM)	auto
+game/act_treasure_chest.cpp	objects	high	actors.tsv (actor spawner): object TKRA Treasure Chest	auto
+game/act_enemy_generator_3.cpp	objects	med	actors.tsv (actor spawner): system GEN3 Enemy generator 3	auto
+game/act_zoom_out_npc.cpp	objects	med	actors.tsv (actor spawner): system ZOMO Zoom-out NPC	auto
+game/act_sandstorm.cpp	objects	high	actors.tsv (actor spawner): system SDSM Sandstorm	auto
+game/act_stop_npc.cpp	objects	med	actors.tsv (actor spawner): system STPN Stop NPC	auto
+game/tu_802ED538.cpp	npcs	low	called only by act_knight_of_hyrule	hand
+game/act_chain_switch.cpp	objects	med	actors.tsv (actor spawner): system CHSW Chain switch	auto
+game/act_gba_window.cpp	objects	med	actors.tsv (actor spawner): system AGBW GBA window control	auto
+game/act_ending_map_skipper.cpp	objects	med	actors.tsv (actor spawner): system EMSK Ending map skipper	auto
+game/tu_802EF76C.cpp	objects	low	colour fader with tu_801286C0, tu_80182914	hand
+game/act_player_sword_level_check_npc.cpp	objects	med	actors.tsv (actor spawner): system SWDL Player sword-level check NPC	auto
+game/act_trick_floor_2.cpp	objects	med	actors.tsv (actor spawner): object TFL2 Trick floor 2	auto
+game/tu_802F3B74.cpp	objects	low	actors.tsv (actor spawner): system DMYK unknown (DMYK)	auto
+game/act_pot_2_generator.cpp	objects	med	actors.tsv (actor spawner): system TBGN Pot 2 generator	auto
+game/act_pot_2.cpp	objects	med	actors.tsv (actor spawner): object TBO2 Pot 2	auto
+game/act_stage_info_npc.cpp	objects	low	actors.tsv (actor spawner): debug STGN Stage info NPC	auto
+game/tu_802F4AEC.cpp	objects	low	actors.tsv (actor spawner): system GSCK unknown (GSCK)	auto
+game/tu_802F5040.cpp	stage	high	TileMap_804AA858 (names.tsv): the tile map, called by 124 units	hand
+game/tu_803006E8.cpp	media	high	GBA client threads ('client_thread.bin', GBAJoyBoot)	hand
+game/tu_80301CD0.cpp	media	med	GBA link per player (PLAYER.md, cls_804AA8B8)	hand
+game/tu_803099FC.cpp	core	med	cls_804AA8C8: pad object, key repeat (PLAYER.md: pad object), called by 43 units	hand
+game/tu_8030AE84.cpp	stage	low	cls_804AA8D8: per-player 240x160 view box (PLAYER.md)	hand
+game/tu_8030C058.cpp	stage	high	Camera_804AA9E4 (Camera.h)	hand
+game/act_somaria_block.cpp	objects	med	actors.tsv (actor spawner): object SMRI Cane of Somaria block	auto
+game/act_gambling_shop.cpp	npcs	med	actors.tsv (actor spawner): npc GMBL Gambling shop	auto
+game/act_gambling_chest.cpp	objects	med	actors.tsv (actor spawner): object GMTB Gambling shop chest	auto
+game/act_shovel_old_timer.cpp	npcs	med	actors.tsv (actor spawner): npc SVTG Shovel Old-Timer	auto
+game/act_knight_of_hyrule.cpp	npcs	med	actors.tsv (actor spawner): npc JWLK Knight of Hyrule	auto
+game/act_tingle_tower.cpp	npcs	high	actors.tsv (actor spawner): npc TWTG Tingle's Tower Tingle and sign	auto
+game/tu_80316E34.cpp	npcs	low	called only by act_old_man, the Tingle actors	hand
+game/act_tingle_first.cpp	npcs	high	actors.tsv (actor spawner): npc FTGL Tingle (first appearance)	auto
+game/act_special_conversation_npc.cpp	npcs	med	actors.tsv (actor spawner): system SNPC Special conversation NPC	auto
+game/act_force_gem_winged.cpp	objects	med	actors.tsv (actor spawner): object HNRY Winged Force Gem	auto
+game/act_force_gem_fleeing.cpp	objects	med	actors.tsv (actor spawner): object ESRY Fleeing Force Gem	auto
+game/act_force_gem_wooden.cpp	objects	med	actors.tsv (actor spawner): object WDRY Wooden Force Gem	auto
+game/act_force_gem_buried.cpp	objects	med	actors.tsv (actor spawner): object BRRY Buried Force Gem	auto
+game/act_fire_manager.cpp	objects	med	actors.tsv (actor spawner): system OCFR Fire (manager)	auto
+game/act_crystal_ball.cpp	objects	high	actors.tsv (actor spawner): object CRTL Crystal ball	auto
+game/act_slingshot_seed.cpp	objects	med	actors.tsv (actor spawner): effect PCDM Slingshot seed	auto
+game/act_bombchu.cpp	enemies	med	actors.tsv (actor spawner): enemy BMTY Bombchu	auto
+game/act_fairy_invincible.cpp	objects	med	actors.tsv (actor spawner): object INFR Invincibility fairy	auto
+game/tu_803276C4.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_cactus.cpp	enemies	med	actors.tsv (actor spawner): enemy SBTN Cactus	auto
+game/act_thwomp.cpp	enemies	med	actors.tsv (actor spawner): enemy DSIN Thwomp	auto
+game/act_force_gem_spawner.cpp	objects	med	actors.tsv (actor spawner): system GOLD Force Gem spawner	auto
+game/act_force_gem.cpp	objects	high	actors.tsv (actor spawner): object RUPY Force Gem	auto
+game/act_force_gem_2.cpp	objects	med	actors.tsv (actor spawner): object RY02 Force Gem 2	auto
+game/act_cucco.cpp	npcs	high	actors.tsv (actor spawner): npc NIWA Cucco	auto
+game/tu_80333958.cpp	objects	low	actors.tsv (actor spawner): object BALL Iron ball	auto
+game/tu_80334318.cpp	objects	low	actors.tsv (actor spawner): object SBAL Iron ball (homing)	auto
+game/act_iron_ball_manager.cpp	objects	med	actors.tsv (actor spawner): system TKYU Iron ball manager	auto
+game/act_two_sword_motion.cpp	objects	med	actors.tsv (actor spawner): system TSNO Two-sword motion	auto
+game/act_treasure_mark.cpp	objects	med	actors.tsv (actor spawner): object TKRM Treasure mark	auto
+game/act_thwomp_launch_npc.cpp	objects	med	actors.tsv (actor spawner): system JPEN NPC launched by Thwomp	auto
+game/act_warp_pillar.cpp	objects	med	actors.tsv (actor spawner): object WPPR Warp pillar	auto
+game/act_flying_tile.cpp	enemies	med	actors.tsv (actor spawner): enemy FLYO Flying Tile	auto
+game/act_post_warp_pillar_handling.cpp	objects	med	actors.tsv (actor spawner): system WPPA Post-warp-pillar handling	auto
+game/act_fairy_revival.cpp	objects	med	actors.tsv (actor spawner): object RVFR Revival fairy	auto
+game/act_strange_block.cpp	objects	med	actors.tsv (actor spawner): object STBL Strange block	auto
+game/act_lotus.cpp	objects	med	actors.tsv (actor spawner): object LOTS Lotus	auto
+game/tu_8033F448.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_zora_lotus.cpp	npcs	low	actors.tsv (actor spawner): npc LTZR Zora (lotus); but EnemyBase subclass (ZoraEnemy_804A3D7C)	auto
+game/act_shadow_link_giant_bomb.cpp	enemies	med	actors.tsv (actor spawner): enemy BBSL Shadow Link (giant bomb)	auto
+game/act_giant_bomb.cpp	enemies	med	actors.tsv (actor spawner): enemy BBMB Giant Bomb	auto
+game/tu_80343A70.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_fish.cpp	objects	med	actors.tsv (actor spawner): object FISH Fish	auto
+game/act_carrot.cpp	objects	high	actors.tsv (actor spawner): object NNJN Carrot	auto
+game/act_zelda_scroll_lock.cpp	objects	med	actors.tsv (actor spawner): system SZSC Zelda scroll-lock NPC	auto
+game/act_special_bg_draw_object.cpp	objects	med	actors.tsv (actor spawner): system SPBG Special BG draw object	auto
+game/tu_803489A4.cpp	enemies	low	actors.tsv (actor spawner): enemy FOBE Bee (formation)	auto
+game/act_bee_manager.cpp	objects	med	actors.tsv (actor spawner): system BEMN Bee manager	auto
+game/tu_8034A6B0.cpp	enemies	low	actors.tsv (actor spawner): enemy HTMK unknown (HTMK)	auto
+game/tu_8034AA40.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_8034C950.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_8034DFF0.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_obj_lift.cpp	objects	med	actors.tsv (actor spawner): object OBLF OBJ lift	auto
+game/act_bandit_herding_npc.cpp	objects	med	actors.tsv (actor spawner): system TOOI Bandit herding NPC	auto
+game/act_side_view_gate_display_npc.cpp	objects	med	actors.tsv (actor spawner): system SVGT Side-view gate display NPC	auto
+game/act_tingle_time_up_manager.cpp	objects	high	actors.tsv (actor spawner): system TUTM Tingle (time-up) manager	auto
+game/tu_803536C4.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_vaati_time_up.cpp	npcs	high	actors.tsv (actor spawner): npc TUGF Vaati (time-up)	auto
+game/act_force_gem_shadow.cpp	objects	med	actors.tsv (actor spawner): system RSNP Force Gem shadow NPC	auto
+game/tu_80354D64.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/act_thwomp_launch_npc_2.cpp	objects	med	actors.tsv (actor spawner): system JPE2 NPC launched by Thwomp 2	auto
+game/act_npc_ride_switch.cpp	objects	med	actors.tsv (actor spawner): system RINS NPC ride switch	auto
+game/act_log_monitor_npc.cpp	objects	med	actors.tsv (actor spawner): system MRTC Log monitor NPC	auto
+game/act_seesaw_lift.cpp	objects	med	actors.tsv (actor spawner): object SSLF Seesaw lift	auto
+game/act_enemy_for_ending_control.cpp	objects	med	actors.tsv (actor spawner): system ENPC Enemy for ending control	auto
+game/act_maiden_ending.cpp	npcs	high	actors.tsv (actor spawner): npc EMIK Maiden (ending)	auto
+game/act_princess_zelda_ending.cpp	npcs	high	actors.tsv (actor spawner): npc EZLD Princess Zelda (ending)	auto
+game/act_link_ending.cpp	npcs	high	actors.tsv (actor spawner): npc ELNK Link (ending)	auto
+game/act_kaepora_gaebora_ending.cpp	npcs	high	actors.tsv (actor spawner): npc EOWL Kaepora Gaebora (ending)	auto
+game/tu_80362634.cpp	objects	low	string 'fune.bti' (boat), called by tu_802E9428	hand
+game/act_navi_maiden_crystal.cpp	npcs	high	actors.tsv (actor spawner): npc DNAV Navi (5-4 Maiden crystal cutscene)	auto
+game/act_crystal_demo_2.cpp	objects	med	actors.tsv (actor spawner): object DCR2 Crystal (cutscene, 5-4/6-4)	auto
+game/act_four_person_pull_switch.cpp	objects	med	actors.tsv (actor spawner): object PSW2 Four-person pull switch	auto
+game/act_leaf_effect_npc_generator.cpp	objects	med	actors.tsv (actor spawner): system LFGN Leaf-effect NPC generator	auto
+game/act_leaf_effect_npc.cpp	objects	med	actors.tsv (actor spawner): effect LEAF Leaf-effect NPC	auto
+game/act_link_ending_2.cpp	npcs	high	actors.tsv (actor spawner): npc ELK2 Link 2 (ending)	auto
+game/tu_8036FB60.cpp	enemies	low	called only by tu_8029C584	hand
+game/act_tutorial_old_man.cpp	npcs	med	actors.tsv (actor spawner): npc TJIJ Tutorial old man	auto
+game/act_four_person_pull_switch_pswb.cpp	objects	med	actors.tsv (actor spawner): object PSWB Four-person pull switch (BTI version)	auto
+game/act_four_person_pull_switch_pswk.cpp	objects	med	actors.tsv (actor spawner): object PSWK Four-person pull switch (chain version)	auto
+game/act_colour_block.cpp	objects	med	actors.tsv (actor spawner): object BCK2 Colour block (1-player)	auto
+game/act_eyeball_switch.cpp	objects	med	actors.tsv (actor spawner): object MEDM Eyeball switch	auto
+game/act_invisible_npc_wall_tomi.cpp	objects	med	actors.tsv (actor spawner): system TOMI Invisible NPC wall	auto
+game/act_block_for_2_3_players.cpp	objects	med	actors.tsv (actor spawner): object TMI2 Block for 2-3 players	auto
+game/act_invisible_npc_wall.cpp	objects	med	actors.tsv (actor spawner): system PTMI Invisible NPC wall (for Link)	auto
+game/tu_80376FA0.cpp	objects	low	rock textures (yy_1_1_iwa1.bti), BgRewrite and player probe points	hand
+game/act_horse_race_end_area.cpp	objects	med	actors.tsv (actor spawner): system ENDR Horse-race end area	auto
+game/act_ice_melted_by_four_players.cpp	objects	med	actors.tsv (actor spawner): object ICEB Ice melted by four players	auto
+game/act_push_switch_in_pyramid.cpp	objects	med	actors.tsv (actor spawner): object PSS2 Push switch in pyramid	auto
+game/act_warp_entrance_wall.cpp	objects	med	actors.tsv (actor spawner): object WPWL Warp entrance wall	auto
+game/tu_80379F84.cpp	menus	low	cls_804AE9A0: calls screen units tu_803A8DFC, tu_803D7098, tu_803B7DCC	hand
+game/tu_8037ACC4.cpp	menus	low	drives the pause screens (tu_8044C7F0, tu_80453AF8); called by GameRoot	hand
+game/act_old_man.cpp	npcs	med	actors.tsv (actor spawner): npc JIJI Old Man	auto
+game/act_magic_jar.cpp	objects	med	actors.tsv (actor spawner): object MTBO Magic jar	auto
+game/tu_8037DF68.cpp	menus	med	MessageManager_804AF070: message windows ('gc_four_swords_text_e.bmg')	hand
+game/act_great_fairy_bfry.cpp	npcs	high	actors.tsv (actor spawner): npc BFRY Great Fairy	auto
+game/act_talking_sign.cpp	objects	med	actors.tsv (actor spawner): object KNBN Talking sign	auto
+game/tu_8039003C.cpp	menus	low	calls the stage select and map screens; called by GameRoot only	hand
+game/tu_80390818.cpp	menus	med	MessageWindow_804AF490 ('gc_four_swords_text_e.bmg')	hand
+game/act_score.cpp	objects	med	actors.tsv (actor spawner): system SCRE Score	auto
+game/act_talking_npc.cpp	npcs	med	actors.tsv (actor spawner): system TALK Talking NPC	auto
+game/tu_803944C8.cpp	menus	med	message text formatting (strings ' cucco', ' times'), called by MessageWindow	hand
+game/tu_803A3484.cpp	menus	med	Title_804AF820: the title screen (clouds, THP)	hand
+game/tu_803A60E4.cpp	menus	low	PaneCtrl-heavy J2D code called by GameRoot	hand
+game/tu_803A85E4.cpp	menus	med	cls_804AF878: drives the two connect screens	hand
+game/tu_803A8DFC.cpp	menus	med	strings 'kk_1st_01.bti', 'P1.bti': results screen	hand
+game/tu_803B7DCC.cpp	menus	low	PaneCtrl-heavy J2D code called by tu_80379F84 only	hand
+game/act_talking_npc_2.cpp	npcs	med	actors.tsv (actor spawner): system TLK2 Talking NPC 2	auto
+game/tu_803B8C74.cpp	core	med	save data (StageFlag, .bss save area), called by file select / map screen	hand
+game/tu_803B9940.cpp	media	med	memory card thread ('gc4sword', CARD work area)	hand
+game/tu_803BACF8.cpp	media	med	memory card save images (CARDRead / CARDWrite)	hand
+game/tu_803BC6F0.cpp	menus	med	FileSelect_804AFF60: the file select screen	hand
+game/tu_803D2C34.cpp	menus	low	PaneCtrl-heavy J2D code called by tu_80379F84 only	hand
+game/act_battle_royale_end_check.cpp	objects	med	actors.tsv (actor spawner): system BFIN Battle royale end check	auto
+game/tu_803D7098.cpp	menus	low	PaneCtrl-heavy J2D code called by tu_80379F84 only	hand
+game/tu_803D9944.cpp	objects	low	actor-shaped (calls ActorBase, reached through its vtable); kind unknown	hand
+game/tu_803DA6B4.cpp	menus	med	string 'pressstart.blo'	hand
+game/tu_803DAC3C.cpp	menus	med	GameMode_804B0688: strings 'gamemode.blo', 'gamemode_movie.blo'	hand
+game/tu_803E1668.cpp	menus	med	ConnectScreen_804B0F10 (names.tsv)	hand
+game/tu_803F0A54.cpp	menus	med	ConnectScreen_804B0F10 (names.tsv), second screen	hand
+game/tu_803FF2C4.cpp	media	med	loads '/GC4Sword_usa/agb/client_thread.arc'; called by main	hand
+game/tu_80400DC4.cpp	menus	med	the disc-error screen (as TP's d_error_msg)	hand
+game/tu_80401848.cpp	media	med	DVD loader thread (as TWW's m_Do_dvd_thread)	hand
+game/tu_804023D0.cpp	menus	med	PaneCtrl_804AF86C J2D pane helpers (names.tsv), GameState; called by 73 units	hand
+game/tu_80403D84.cpp	menus	med	strings 'map.blo', 'map.bck': the map screen	hand
+game/tu_80414F6C.cpp	menus	med	BattleStageSelect_804B1378: string 'bat_stage_select.blo'	hand
+game/tu_80418B64.cpp	menus	med	HUD: strings 'kk_heart_01.bti', 'kk_rupyNum_00.bti'	hand
+game/tu_8042165C.cpp	menus	med	HUD: strings 'kk_heart_01.bti', 'kk_rupyNum_00.bti'	hand
+game/tu_80427D2C.cpp	media	high	THP movie player (THPMovie_804B15D0, '/GC4Sword_usa/thpdemo/*.thp')	hand
+game/tu_8042E964.cpp	menus	med	strings 'bat_stage_select_window.blo', 'warning_window.blo'	hand
+game/tu_80432638.cpp	menus	low	rupee digits ('kk_rupyNum_00.bti'), called by TileMap only	hand
+game/tu_80434370.cpp	menus	low	PaneCtrl-heavy J2D code called by the connect screens	hand
+game/act_gba_appear.cpp	objects	med	actors.tsv (actor spawner): system GBAO Appears from GBA	auto
+game/act_life_meter.cpp	objects	med	actors.tsv (actor spawner): system LIMT Life meter	auto
+game/tu_80438C68.cpp	core	low	called by GameRoot (tu_80134C04, tu_80139BE8); spawns emitters	hand
+game/tu_8043A0E8.cpp	menus	med	HUD: strings 'kk_mainRank_01.bti', 'w01_01.bti'; called by 55 units	hand
+game/tu_80440BF4.cpp	menus	med	string 'button.blo': button panes	hand
+game/tu_80441318.cpp	menus	low	map window object, called by the HUD units	hand
+game/tu_80441A1C.cpp	menus	med	string 'gba_connect_error_window.blo'	hand
+game/tu_80442810.cpp	media	med	loads 'JaiInit.baa', 'JaiSeqs.arc' ('audio data load end!!')	hand
+game/act_dummy_conversation.cpp	npcs	low	actors.tsv (actor spawner): debug DTLK Dummy conversation	auto
+game/tu_804432DC.cpp	menus	med	string 'map_ed.blo'	hand
+game/tu_80443B0C.cpp	menus	med	string 'map_yagura_window.blo'	hand
+game/tu_804455E0.cpp	menus	med	string 'mg_horse_race.blo': minigame screen	hand
+game/tu_804465B8.cpp	menus	med	string 'mg_oni.blo': minigame screen	hand
+game/tu_80447618.cpp	menus	med	string 'mg_kokko.blo': minigame screen	hand
+game/tu_80447FAC.cpp	menus	med	string 'mg_shooting.blo': minigame screen	hand
+game/tu_80448940.cpp	menus	med	string 'mg_geldman.blo': minigame screen	hand
+game/tu_8044998C.cpp	menus	med	string 'mg_fishing.blo': minigame screen	hand
+game/tu_8044A828.cpp	menus	med	string 'mg_volleyball.blo': minigame screen	hand
+game/tu_8044B80C.cpp	menus	med	strings 'staffroll_p%d.blo': the staff roll	hand
+game/tu_8044C028.cpp	menus	med	strings 'op_prologue.blo': the prologue screen	hand
+game/tu_8044C7F0.cpp	menus	med	string 'kk_pYback_01.bti', called by the pause manager tu_8037ACC4	hand
+game/tu_80453AF8.cpp	menus	med	strings 'pause.blo', 'kk_pCselect_01.bti': the pause screen	hand
+game/tu_8045560C.cpp	menus	med	rupee-digit sprite pool ('kk_rupyNum_00.bti')	hand
+game/tu_80455CA4.cpp	media	med	ActorSoundObj_804578F4: actor sound objects	hand
+game/tu_80457C08.cpp	media	med	AudioMgr's __sinit (GameAudioBase.h) and its music volumes	hand
+game/tu_80457DFC.cpp	media	med	AudioMgr_8045A080 (names.tsv): the sound system	hand
+game/tu_8045A640.cpp	media	low	no source; between the audio units by address	hand
+game/tu_8045B010.cpp	media	med	cls_804B20F8 sound objects (PLAYER.md)	hand
+game/tu_8045B6F0.cpp	media	med	sound IDs indexed by tu_8045B010	hand
+game/tu_8045BA84.cpp	media	low	sound position projection, called only by ActorSoundObj (tu_80455CA4)	hand

@@ -3,8 +3,10 @@
    docs/roadmap.yml). */
 "use strict";
 
-// Colours: the game code's four parts take the four Links' colours (HUE, from
-// summary.json's game libraries); the libraries are one gold group, a shade per region.
+// Colours: the game code's eight categories each have one (HUE, from summary.json's
+// game libraries; a categorical palette checked for colour-vision deficiency), the
+// boot-path view's four parts take the four Links' colours; the libraries are one
+// gold group, a shade per region.
 const REGION = {
   game:    { color: "#a9afe0", glyph: "diamond", short: "Game" },
   jsystem: { color: "#d29a2e", glyph: "triangle", short: "JSystem" },
@@ -13,8 +15,14 @@ const REGION = {
   runtime: { color: "#f2d384", glyph: "star", short: "MSL/RT/TRK" },
 };
 const LIB_REGIONS = ["sdk", "gx", "jsystem", "runtime"];
-const PART = {}; // game part key -> { color, name, desc, short }
-const PART_SHORT = { boot: "Boot", battle: "Battle", actors: "Actors", other: "Other" };
+const PART = {}; // game category or boot-path part key -> { color, name, desc, short }
+const PART_SHORT = { player: "Player", enemies: "Enemies", npcs: "NPCs", objects: "Objects", stage: "Stage", menus: "Menus",
+  core: "Core", media: "Media", boot: "Boot", battle: "Battle", actors: "Actors", other: "Other" };
+// How the game code is grouped: "cat" (the eight categories, the default) or "boot"
+// (the boot-path phases of docs/BOOT_PATH.md, the old four parts).
+const GROUPS = { cat: { word: "Category", libs: [] }, boot: { word: "Boot path", libs: [] } };
+let GROUP = "cat";
+try { if (localStorage.getItem("fsa-group") === "boot") GROUP = "boot"; } catch (e) { /* storage blocked */ }
 const REPO = "https://github.com/sh1ftmaker/fsa";
 const COARSE = window.matchMedia("(pointer: coarse)").matches;
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -70,28 +78,61 @@ function buildTree(summary) {
     const rn = { id: r.id, kind: "region", region: r.id, name: r.n, desc: r.desc, c: r.c, cm: r.cm, wm: r.wm, f: r.f, fm: r.fm, parent: ROOT, children: [] };
     ROOT.children.push(rn);
     byId.set(rn.id, rn);
+    const fileNode = (ln, f, i, src, srcIdx) => {
+      const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, part: ln.part, name: f.n, path: f.p, addr: f.a, s: f.s,
+        c: f.c, cm: f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, u: !!f.u, bp: f.bp, src, srcIdx, parent: ln, children: null };
+      ln.children.push(fnode);
+      byId.set(fnode.id, fnode);
+      return fnode;
+    };
     for (const l of r.libs) {
       if (l.key) PART[l.key] = { color: HUE[l.hue] || HUE.gold, name: l.n, desc: l.desc, short: PART_SHORT[l.key] || l.n };
-      const ln = { id: `${r.id}/${l.id}`, lib: l.id, kind: "lib", region: r.id, part: l.key, desc: l.desc, name: l.n, c: l.c, cm: l.cm, wm: l.wm, f: l.f, fm: l.fm, parent: rn, children: [], loaded: false };
+      const ln = { id: `${r.id}/${l.id}`, lib: l.id, kind: "lib", region: r.id, part: l.key, group: l.key ? "cat" : null, desc: l.desc, name: l.n, c: l.c, cm: l.cm, wm: l.wm, f: l.f, fm: l.fm, parent: rn, children: [], loaded: false };
       rn.children.push(ln);
       byId.set(ln.id, ln);
-      l.files.forEach((f, i) => {
-        const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, part: ln.part, name: f.n, path: f.p, addr: f.a, s: f.s,
-          c: f.c, cm: f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, parent: ln, children: null };
-        ln.children.push(fnode);
-        byId.set(fnode.id, fnode);
-      });
+      l.files.forEach((f, i) => fileNode(ln, f, i, l.id, i));
     }
+    if (r.id !== "game") continue;
+    GROUPS.cat.libs = rn.children.slice();
+    // the boot-path view: the same files regrouped by their "bp" part (no number changes;
+    // weighted progress is only known per category, so these groups show honest numbers)
+    for (const b of summary.bootpath || []) {
+      PART[b.key] = { color: HUE[b.hue] || HUE.gold, name: b.n, desc: b.desc, short: PART_SHORT[b.key] || b.n };
+      const ln = { id: `game/game-${b.key}`, lib: `game-${b.key}`, kind: "lib", region: "game", part: b.key, group: "boot", desc: b.desc, name: b.n,
+        c: 0, cm: 0, f: 0, fm: 0, parent: rn, children: [], loaded: false };
+      const files = GROUPS.cat.libs.flatMap((cl) => cl.children.map((fn) => [cl, fn])).filter(([, fn]) => fn.bp === b.key)
+        .sort((a, b2) => (a[1].addr || 0) - (b2[1].addr || 0));
+      files.forEach(([cl, fn], i) => {
+        const x = fileNode(ln, { n: fn.name, p: fn.path, a: fn.addr, s: fn.s, c: fn.c, cm: fn.cm, f: fn.f, fm: fn.fm, d: fn.d, dm: fn.dm, t: fn.t, u: fn.u, bp: fn.bp }, i, cl.lib, fn.srcIdx);
+        x.cat = cl.part;
+        for (const k of ["c", "cm", "f", "fm"]) ln[k] += fn[k];
+      });
+      byId.set(ln.id, ln);
+      GROUPS.boot.libs.push(ln);
+    }
+    for (const cl of GROUPS.cat.libs) for (const fn of cl.children) fn.cat = cl.part;
+    if (!GROUPS.boot.libs.length) GROUP = "cat";
+    rn.children = GROUPS[GROUP].libs;
   }
 }
+
+// The game region's groups in the current view.
+const gameGroups = () => GROUPS[GROUP].libs;
 
 const libCache = new Map();
 async function ensureLoaded(lib) {
   if (lib.loaded) return;
-  if (!libCache.has(lib.lib)) libCache.set(lib.lib, fetch(`data/lib/${lib.lib}.json`).then((r) => r.json()));
-  const data = await libCache.get(lib.lib);
+  const load = (id) => {
+    if (!libCache.has(id)) libCache.set(id, fetch(`data/lib/${id}.json`).then((r) => r.json()));
+    return libCache.get(id);
+  };
+  // a boot-path group's files come from several categories' files
+  const srcs = [...new Set(lib.children.map((f) => f.src || lib.lib))];
+  const data = new Map(await Promise.all(srcs.map(async (id) => [id, await load(id)])));
   for (const file of lib.children) {
-    const fns = data.files[String(file.idx)] || [];
+    const d = data.get(file.src || lib.lib), k = String(file.srcIdx ?? file.idx);
+    const fns = d.files[k] || [];
+    if (d.ev && d.ev[k]) [file.conf, file.ev] = d.ev[k];
     file.children = fns.map(([name, addr, size, m], j) => ({
       id: `${file.id}/${j}`, kind: "fn", region: file.region, part: file.part, name, addr, c: size, cm: m === 100 ? size : 0,
       m, f: 1, fm: m === 100 ? 1 : 0, parent: file,
@@ -113,21 +154,22 @@ function rhombusFill(a, h) {
   return a <= 0.5 ? h * Math.sqrt(2 * a) : 2 * h - h * Math.sqrt(2 * (1 - a));
 }
 
-// The emblem: the game code's four parts as the four Links' gems, each filled to its
-// matched share; the small gold gem in the middle is the libraries, all four together.
+// The emblem: the game code's eight categories as gems on a ring (clockwise from the
+// top, in their order), each filled to its matched share; the gold gem in the middle
+// is the libraries, all four together. Same layout as tools/readme_assets.py emblem_layout.
 function drawEmblem() {
   const svg = d3.select("#emblem");
   const L = S.libraries;
-  const gems = [
-    { part: "boot", cx: 0, cy: -58, w: 30, h: 42, lx: 0, ly: -108, anchor: "middle" },
-    { part: "battle", cx: 58, cy: 0, w: 42, h: 30, lx: 106, ly: 4, anchor: "start" },
-    { part: "actors", cx: 0, cy: 58, w: 30, h: 42, lx: 0, ly: 116, anchor: "middle" },
-    { part: "other", cx: -58, cy: 0, w: 42, h: 30, lx: -106, ly: 4, anchor: "end" },
-    { lib: true, cx: 0, cy: 0, w: 15, h: 15 },
-  ].filter((g) => g.lib ? L : PART[g.part]);
+  const cats = GROUPS.cat.libs.map((l) => l.part);
+  const gems = cats.map((part, i) => {
+    const a = (2 * Math.PI * i) / cats.length - Math.PI / 2, lx = 96 * Math.cos(a);
+    return { part, cx: 60 * Math.cos(a), cy: 60 * Math.sin(a), w: 15, h: 21, lx, ly: 96 * Math.sin(a) + 3,
+      anchor: Math.abs(lx) < 20 ? "middle" : lx > 0 ? "start" : "end" };
+  });
+  if (L) gems.push({ lib: true, cx: 0, cy: 0, w: 20, h: 20 });
   const defs = svg.append("defs");
-  svg.append("circle").attr("class", "ring spin").attr("r", 104);
-  svg.append("circle").attr("class", "ring").attr("r", 92).attr("stroke-dasharray", "1 10");
+  svg.append("circle").attr("class", "ring spin").attr("r", 148);
+  svg.append("circle").attr("class", "ring").attr("r", 84).attr("stroke-dasharray", "1 10");
   for (const g of gems) {
     const key = g.lib ? "libs" : g.part;
     const node = g.lib ? null : byId.get(`game/game-${g.part}`);
@@ -149,13 +191,13 @@ function drawEmblem() {
       .attr("y", g.cy + g.h - fillH).attr("height", fillH);
     grp.append("path").attr("d", `M${g.cx} ${g.cy - g.h}L${g.cx + g.w} ${g.cy}L${g.cx} ${g.cy}Z`).attr("fill", "rgba(255,255,255,0.06)").attr("pointer-events", "none");
     if (!g.lib) {
-      grp.append("text").attr("class", "gem-label").attr("x", g.cx).attr("y", g.cy + 4).attr("text-anchor", "middle").text(pct(100 * frac));
-      grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly).attr("text-anchor", g.anchor).text(PART[g.part].short);
+      grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly - 5).attr("text-anchor", g.anchor).text(PART[g.part].short);
+      grp.append("text").attr("class", "gem-label").attr("x", g.lx).attr("y", g.ly + 8).attr("text-anchor", g.anchor).text(pct(100 * frac));
     }
     grp.on("click keydown", (ev) => {
       if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
       if (g.lib) { $("#libs-panel").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); return; }
-      go(node.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+      setGroup("cat", false); go(node.id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
     });
     grp.on("pointermove", (ev) => {
       if (COARSE) return;
@@ -313,6 +355,17 @@ function drawLayer(focus) {
     if (d.y1 - d.y0 > 34) g.append("text").attr("class", "tl p").attr("x", d.x0 + 5).attr("y", d.y0 + 28)
       .text(n.kind === "fn" ? fit(bytes(n.c), w, 6) : fit(`${pct(ratio(n.cm, n.c))} · ${bytes(n.c)}`, w, 6));
   });
+  // unconfirmed category (low confidence in docs/names/categories.tsv): a small dashed ring
+  // with "?" in the top-right corner of the file's tile (a leaf, or a group of its functions)
+  const unconf = (d) => d.data.node.kind === "file" && d.data.node.u && d.x1 - d.x0 >= 14 && d.y1 - d.y0 >= 14;
+  const mark = function (d) {
+    const r = Math.min(5.5, (d.x1 - d.x0) / 4), cx = d.x1 - r - 2.5, cy = d.y0 + r + 2.5;
+    const g = d3.select(this).append("g").attr("class", "unconf").attr("pointer-events", "none");
+    g.append("circle").attr("cx", cx).attr("cy", cy).attr("r", r);
+    if (r >= 4.5) g.append("text").attr("x", cx).attr("y", cy + 2.6).attr("text-anchor", "middle").text("?");
+  };
+  lg.filter(unconf).each(mark);
+  gg.filter(unconf).each(mark);
   return layer;
 }
 
@@ -365,6 +418,8 @@ async function navigate() {
   }
   target = target || ROOT;
   if (target.kind === "fn") target = target.parent;
+  const tl = libOf(target);
+  if (tl && tl.group && tl.group !== GROUP) setGroup(tl.group, false);
   if (target.kind === "lib" || target.kind === "file") {
     const lib = libOf(target);
     if (!lib.loaded) { setLoading(true); try { await ensureLoaded(lib); } finally { setLoading(false); } }
@@ -443,6 +498,8 @@ function tipHTML(n) {
   ];
   if (n.kind === "file") {
     rows.push(["Status", statusText(n.s)]);
+    if (n.region === "game" && n.cat && PART[n.cat]) rows.push(["Category", `${PART[n.cat].name}${n.u ? " (unconfirmed)" : ""}`]);
+    if (n.region === "game" && n.ev) rows.push(["Why", `${n.ev} (${n.conf} confidence)`]);
     if (n.d) rows.push(["Data", `${pct(ratio(n.dm, n.d))} of ${bytes(n.d)}`]);
     if (n.t) rows.push(["Not split yet", bytes(n.t)]);
     rows.push(["Address", hex(n.addr)]);
@@ -450,6 +507,8 @@ function tipHTML(n) {
     const files = n.kind === "lib" ? n.children : n.children.flatMap((l) => l.children);
     const m = files.filter((f) => f.s === "M").length, u = files.filter((f) => f.s === "U").length;
     rows.push(["Files", `${num(files.length)} (${m} Matching, ${u} not split)`]);
+    const uc = files.filter((f) => f.u).length;
+    if (uc) rows.push(["Unconfirmed", `${num(uc)} files placed on thin evidence`]);
     const q = questFor(n);
     if (q.cur) rows.push(["Milestone", `${q.cur.title} (${STATUS[q.cur.status].word})`]);
     if (q.next) rows.push(["Next", q.next.title]);
@@ -511,10 +570,41 @@ function initMap() {
   document.addEventListener("pointerdown", (e) => {
     if (tip.classList.contains("sheet") && !tip.contains(e.target) && !e.target.closest(".tile")) closeSheet();
   });
-  const legend = $("#legend");
-  legend.innerHTML = Object.keys(PART).map((k) => `<span>${partGlyph(k)} ${esc(PART[k].name)}</span>`).join("")
+  drawLegend();
+  document.querySelectorAll(".groupby").forEach((el) => {
+    el.innerHTML = `<span class="gb-k" id="${el.id}-k" aria-label="Group the game code by">Group by</span>` + Object.entries(GROUPS).map(([k, g]) =>
+      `<button type="button" data-g="${k}" aria-pressed="${k === GROUP}">${esc(g.word)}</button>`).join("");
+    el.setAttribute("role", "group");
+    el.setAttribute("aria-labelledby", `${el.id}-k`);
+    el.querySelectorAll("button").forEach((b) => (b.onclick = () => setGroup(b.dataset.g)));
+  });
+}
+
+function drawLegend() {
+  $("#legend").innerHTML = gameGroups().map((l) => `<span>${partGlyph(l.part)} ${esc(PART[l.part].name)}</span>`).join("")
     + `<span>${glyph("jsystem")} Libraries</span>`
-    + `<span><i class="fillkey"></i> matched share</span><span><i class="dashkey"></i> not split yet</span>`;
+    + `<span><i class="fillkey"></i> matched share</span><span><i class="dashkey"></i> not split yet</span>`
+    + `<span><i class="unconfkey">?</i> category unconfirmed</span>`;
+}
+
+// Switch the game code between its categories and the boot-path view. The map stays
+// where it is when it can (the region or the whole DOL); inside the game code it goes
+// to the game region. `nav` false: the caller navigates itself.
+function setGroup(g, nav = true) {
+  if (!GROUPS[g] || g === GROUP || !GROUPS[g].libs.length) return;
+  GROUP = g;
+  try { localStorage.setItem("fsa-group", g); } catch (e) { /* storage blocked */ }
+  byId.get("game").children = GROUPS[g].libs;
+  document.querySelectorAll(".groupby button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.g === g));
+  document.body.dataset.group = g;
+  drawLegend();
+  drawRemaining();
+  drawGameParts();
+  table.rows = tableRows(); renderTable();
+  if (!nav) return;
+  const f = map.focus;
+  if (f && f.region === "game" && f.kind !== "region") go("game");
+  else if (f) { if (map.layer) map.layer.remove(); map.layer = drawLayer(f); drawCrumbs(); }
 }
 
 /* ---------- overview: where the work is, the libraries, the game code ---------- */
@@ -533,11 +623,11 @@ function openOnClick(host, sel, fn) {
 }
 const toMap = (id) => { go(id); $("#treemap").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" }); };
 
-// Remaining (not yet byte-identical) code, by part: the four game parts and the libraries.
+// Remaining (not yet byte-identical) code: a segment per game group in the current view, then the libraries.
 function drawRemaining() {
   const host = $("#remaining");
   const L = S.libraries;
-  const segs = [...Object.keys(PART).map((k) => { const n = byId.get(`game/game-${k}`); return { name: PART[k].name, col: PART[k].color, left: n.c - n.cm, glyph: partGlyph(k) }; }),
+  const segs = [...gameGroups().map((n) => ({ name: PART[n.part].name, col: PART[n.part].color, left: n.c - n.cm, glyph: partGlyph(n.part) })),
     { name: "Libraries", col: "#d29a2e", left: L.c - L.cm, glyph: glyph("jsystem") }];
   const total = segs.reduce((a, x) => a + x.left, 0);
   const game = segs.slice(0, -1).reduce((a, x) => a + x.left, 0);
@@ -571,18 +661,23 @@ function drawLibraries() {
 function drawGameParts() {
   const host = $("#parts");
   const g = byId.get("game");
-  const parts = Object.keys(PART).map((k) => byId.get(`game/game-${k}`)).filter(Boolean);
+  const parts = gameGroups();
   const gw = g.wm ?? g.cm;
+  $("#game-sub").textContent = GROUP === "boot"
+    ? "FSA's own code by boot-path phase (docs/BOOT_PATH.md): the two stretches the game runs from power-on to a live Shadow Battle, in that order, then the actors and everything else. Solid bars are byte-identical; weighted progress is shown per category only."
+    : "FSA's own code in eight categories, by what each file is (docs/names/categories.tsv). Solid bars are byte-identical; the lighter extension is weighted progress (partial credit for structurally matched functions). A ? marks files placed on thin evidence.";
   $("#game-sum").innerHTML = `<b>${pct(ratio(g.cm, g.c))}</b> byte-identical &middot; <span class="wnote">weighted ${pct(ratio(gw, g.c))}</span> &middot; ${num(g.fm)} / ${num(g.f)} functions &middot; ${bytes(g.c)}`;
   host.innerHTML = parts.map((n) => {
     const p = PART[n.part], files = n.children, m = files.filter((f) => f.s === "M").length, wm = n.wm ?? n.cm;
+    const uc = files.filter((f) => f.u).length;
     return `<div class="part" data-id="${esc(n.id)}" role="button" tabindex="0" style="--c:${p.color}">
       <div class="p-head"><span class="p-name">${partGlyph(n.part, 12)} ${esc(p.name)}</span><span class="p-pct">${pct(ratio(n.cm, n.c))}</span></div>
       <div class="p-desc">${esc(p.desc)}</div>
       <div class="p-bar" title="solid: byte-identical; light: weighted (partial credit for structurally matched functions)">
         <i class="w" data-w="${ratio(wm, n.c)}"></i><i class="h" data-w="${ratio(n.cm, n.c)}"></i></div>
-      <div class="p-nums"><span>weighted <b>${pct(ratio(wm, n.c))}</b></span><span><b>${num(n.fm)}</b> / ${num(n.f)} functions</span>
-        <span><b>${num(m)}</b> / ${num(files.length)} files Matching</span><span>${bytes(n.c)} &middot; ${pct(ratio(n.c, g.c))} of the game</span></div>
+      <div class="p-nums">${n.wm != null ? `<span>weighted <b>${pct(ratio(wm, n.c))}</b></span>` : ""}<span><b>${num(n.fm)}</b> / ${num(n.f)} functions</span>
+        <span><b>${num(m)}</b> / ${num(files.length)} files Matching</span><span>${bytes(n.c)} &middot; ${pct(ratio(n.c, g.c))} of the game</span>
+        ${uc ? `<span class="p-unconf" title="Files placed in this category on thin evidence (low confidence in docs/names/categories.tsv)"><i class="unconfkey">?</i> ${num(uc)} unconfirmed</span>` : ""}</div>
     </div>`;
   }).join("");
   growOnView(host);
@@ -662,11 +757,18 @@ function drawHistory(hist) {
 
 const table = { rows: [], sort: "c", dir: -1, q: "", regions: new Set(), status: "", limit: 120 };
 
-function initTable() {
+function tableRows() {
+  const rows = [];
   for (const r of ROOT.children) for (const l of r.children) for (const f of l.children) {
-    table.rows.push({ node: f, n: f.name, p: f.path, lib: l.name, region: r.id, c: f.c, cm: f.cm, f: f.f, fm: f.fm, s: f.s,
-      share: ratio(f.c, TOTAL), pct: f.c ? ratio(f.cm, f.c) : -1, hay: `${f.name} ${f.path} ${l.name} ${r.name}`.toLowerCase() });
+    rows.push({ node: f, n: f.name, p: f.path, lib: l.name, region: r.id, c: f.c, cm: f.cm, f: f.f, fm: f.fm, s: f.s,
+      share: ratio(f.c, TOTAL), pct: f.c ? ratio(f.cm, f.c) : -1,
+      hay: `${f.name} ${f.path} ${l.name} ${r.name}${f.u ? " unconfirmed" : ""}`.toLowerCase() });
   }
+  return rows;
+}
+
+function initTable() {
+  table.rows = tableRows();
   $("#chips").innerHTML = ROOT.children.map((r) => `<button class="chip" type="button" aria-pressed="false" data-r="${r.id}" style="--c:${REGION[r.id].color}">${glyph(r.id)} ${esc(REGION[r.id].short)}</button>`).join("");
   $("#chips").querySelectorAll(".chip").forEach((b) => (b.onclick = () => {
     const on = b.getAttribute("aria-pressed") !== "true";
@@ -699,7 +801,7 @@ function renderTable() {
   $("#files tbody").innerHTML = shown.map((r) => {
     const col = colOf(r.node);
     return `<tr data-id="${esc(r.node.id)}"><td><div class="fn">${esc(r.n)}</div><div class="fp">${esc(r.p)}</div></td>
-      <td class="hide-s"><span class="lb">${nodeGlyph(r.node)} ${esc(r.lib)}</span></td>
+      <td class="hide-s"><span class="lb">${nodeGlyph(r.node)} ${esc(r.lib)}</span>${r.node.u ? ` <span class="unconf-tag" title="Category unconfirmed: placed on thin evidence (docs/names/categories.tsv)">unconfirmed</span>` : ""}</td>
       <td class="num">${bytes(r.c)}</td>
       <td class="num hide-s">${pct(r.share)}</td>
       <td class="num"><span class="mbar"><i style="width:${Math.max(0, r.pct)}%;background:${col}"></i></span>${r.c ? pct(r.pct) : "–"}</td>
@@ -728,11 +830,14 @@ function drawHonest() {
     <p>The total is the whole DOL: ${num(t.code)} bytes of code in ${num(t.fns)} functions. Code dtk has not split into a source file yet
       (${num(t.files_unsplit)} files) is placed by the library map (<code>lib_map.tsv</code>) and the game-code file map (<code>tu_map.tsv</code>), so
       unstarted work shows at its true size.</p>
-    <p>The game code is cut into four parts. The first two follow <code>docs/BOOT_PATH.md</code>: Dolphin recorded every instruction the game
-      runs from power-on to a live Shadow Battle, and each game file goes to the first stretch that runs it (boot to the main menu, or
-      main menu to the battle). Of the rest, <b>Actors</b> are the <code>act_*</code> files and the files whose classes the actor spawner
-      constructs (<code>game_units.tsv</code>); <b>Everything else</b> is systems, screens, minigames and files nobody has identified yet.
-      The grouping only sorts files: every number is the same honest count.</p>
+    <p>The game code is grouped into eight categories by what each file is, from <code>docs/names/categories.tsv</code>
+      (<code>tools/categorize.py</code>, method in <code>docs/names/METHOD.md</code>): the class hierarchy (an <code>EnemyBase</code>
+      subclass is an enemy), the actor the spawner builds and its kind in <code>actors.tsv</code>, strings and resource names, callers
+      and the docs. A file placed on thin evidence is marked unconfirmed (?). The <b>Boot path</b> switch regroups the same files the
+      way <code>docs/BOOT_PATH.md</code> orders the work: Dolphin recorded every instruction the game runs from power-on to a live
+      Shadow Battle, and each file goes to the first stretch that runs it (boot to the main menu, or main menu to the battle); of the
+      rest, <b>Actors</b> are the <code>act_*</code> files and the files whose classes the actor spawner constructs; <b>Everything else</b>
+      is the remainder. Either grouping only sorts files: every number is the same honest count.</p>
     <p>Weighted progress is a second, clearly separate figure: the honest bytes plus, for each function
       <code>tools/structural.py</code> finds structurally matched (same instructions, registers or order differ), its size times its
       match percent. It shows work under way in big functions; the honest numbers never include it.</p>
@@ -749,7 +854,9 @@ function drawHonest() {
    `covers` are treemap ids (`<region>` or `<region>/<library id>`): picking it lights those
    tiles (map.hl) and zooms there; the map in turn names the milestone of whatever it shows. */
 
-const HUE = { green: "#3aae5c", red: "#ef5b52", blue: "#3d9cf0", purple: "#c35ee6", gold: "#d29a2e" };
+const HUE = { green: "#3aae5c", red: "#ef5b52", blue: "#3d9cf0", purple: "#c35ee6", gold: "#d29a2e",
+  // the eight game categories (tools/readme_assets.py HUE)
+  leaf: "#4aa75c", crimson: "#c52607", rose: "#a96087", azure: "#508ae1", teal: "#00a8a1", violet: "#8c55b4", cyan: "#269ac2", olive: "#608c3d" };
 const STATUS = {
   done: { word: "done" }, active: { word: "under way" }, next: { word: "next" }, later: { word: "later" },
 };
@@ -954,6 +1061,7 @@ async function main() {
   ]);
   S = summary; TOTAL = summary.totals.code;
   buildTree(summary);
+  document.body.dataset.group = GROUP;
   drawStats();
   drawEmblem();
   initQuest(roadmap);

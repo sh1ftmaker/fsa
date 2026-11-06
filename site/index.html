@@ -30,8 +30,8 @@
     <div class="nownext" id="nownext" aria-label="What's happening now and next"></div>
   </div>
   <figure class="emblem-wrap">
-    <svg id="emblem" class="emblem" viewBox="-110 -110 220 220" role="img" aria-label="Progress emblem: one gem per part of the game code and a gold one for the libraries, each filled to its matched share of code"></svg>
-    <figcaption id="emblem-cap">Four gems for the game code's four parts, gold in the middle for the libraries; each fills with its matched code</figcaption>
+    <svg id="emblem" class="emblem" viewBox="-150 -150 300 300" role="img" aria-label="Progress emblem: one gem per category of the game code and a gold one for the libraries, each filled to its matched share of code"></svg>
+    <figcaption id="emblem-cap">Eight gems for the game code's categories, gold in the middle for the libraries; each fills with its matched code</figcaption>
   </figure>
 </header>
 
@@ -41,8 +41,9 @@
       <div>
         <h2>The whole DOL</h2>
         <p class="sub">Area is bytes of code. The bright fill rising in each tile is the share already matched.
-          The game code is coloured by its four parts, the libraries in gold.
-          Tap or click to dive in: region, part or library, file, function.</p>
+          The game code is coloured by its eight categories (or, switched, by boot-path phase), the libraries in gold.
+          Tap or click to dive in: region, category or library, file, function.</p>
+        <div class="groupby" id="groupby-map"></div>
       </div>
       <div class="legend" id="legend"></div>
     </div>
@@ -52,7 +53,7 @@
       <svg id="map-svg" role="img" aria-label="Treemap of the decompilation by bytes of code"></svg>
       <div class="loading" id="map-loading" hidden>loading functions&hellip;</div>
     </div>
-    <p class="hint" id="map-hint">Esc or the back arrow zooms out. Dashed tiles are code dtk has not split into a source file yet.</p>
+    <p class="hint" id="map-hint">Esc or the back arrow zooms out. Dashed tiles are code dtk has not split into a source file yet; a ? marks a game file whose category is unconfirmed.</p>
   </section>
 
   <section class="headline" aria-label="Headline numbers">
@@ -76,8 +77,9 @@
     <div class="panel-head">
       <div>
         <h2>Game code</h2>
-        <p class="sub">FSA's own code, in four parts: the two stretches of the boot path, in the order the game runs them, then the actors and everything else.
+        <p class="sub" id="game-sub">FSA's own code in eight categories, by what each file is.
           Solid bars are byte-identical; the lighter extension is weighted progress (partial credit for structurally matched functions).</p>
+        <div class="groupby" id="groupby-game"></div>
         <p class="game-sum" id="game-sum"></p>
       </div>
     </div>
@@ -129,7 +131,7 @@
       <table class="files" id="files">
         <thead><tr>
           <th data-k="n">File</th>
-          <th data-k="lib" class="hide-s">Part / library</th>
+          <th data-k="lib" class="hide-s">Category / library</th>
           <th data-k="c" class="num">Size</th>
           <th data-k="share" class="num hide-s">% of DOL</th>
           <th data-k="pct" class="num">Matched</th>

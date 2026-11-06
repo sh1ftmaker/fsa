@@ -169,3 +169,58 @@ built just before the rename (no function may drop).
 Add a row with the evidence (string address and text, donor file and line,
 msg#, actor ID, header and offset), dry-run, apply. Prefer fewer solid names
 over many guesses; a disputed row goes to `low` with the reason (still applied, see above), then regenerate the library.
+
+## Categories
+
+The progress site and the README group the game code in eight categories
+(owner decision, 2026-11-06), in this order: **Player** (the ten Player
+units of docs/PLAYER.md), **Enemies & bosses**, **NPCs**, **Objects &
+gimmicks**, **Stage & world** (GameView, TileMap, BgRewrite, the camera,
+collision, stage and map loading, the sky), **Menus & screens** (title, file
+select, game mode, connect screens, HUD, pause, map, minigame results,
+message windows, disc error), **Game core** (main, GameRoot / GameGlobals,
+the ActorBase / ActorManager / EnemyBase base classes, the effect spawner,
+save data, shared utilities) and **Media & link** (THP, the audio manager and
+sound objects, the GBA link, the game's card and DVD wrappers). The site's
+*Group by* switch still shows the old boot-path grouping (docs/BOOT_PATH.md).
+
+`docs/names/categories.tsv` holds one row per `game/*.cpp` unit: unit,
+category, confidence, evidence, source. `tools/categorize.py` writes it and
+`--check` validates it (every unit present, known categories, file up to
+date); `tools/site_data.py` reads it, shows a unit without a row under Game
+core as unconfirmed and prints a warning. Rows with source `auto` come from
+the tool's rules and are recomputed on every run, so they improve as
+names.tsv, actors.tsv and the headers do; rows with source `hand` are
+reviewed placements the tool keeps as written. To change a placement, edit
+the row and set its source to `hand`.
+
+Evidence, strongest first:
+
+- **Player list**: the units docs/PLAYER.md names (high).
+- **Base classes**: the units that define ActorBase, ActorManager, EnemyBase
+  and the effect spawner are Game core (high).
+- **Class hierarchy**: a class the unit defines that derives from
+  `EnemyBase_804A4808` makes it an enemy; any `ActorBase_804A5770`
+  descendant, act_* file or class the spawner constructs makes it an actor.
+- **actors.tsv kind** of the actor the spawner builds in the unit (else of
+  the row whose `suggested_file` is the unit): enemy / boss -> Enemies,
+  npc -> NPCs, object / effect / system / debug -> Objects, except a
+  "talking" / "conversation" system actor -> NPCs. The grade follows the
+  actors.tsv row's. Where kind and hierarchy disagree: an NPC on the enemy
+  base (Navi, Kaepora Gaebora) stays an NPC at med at most; an object or
+  manager on the enemy base goes to Enemies at low.
+- **Shared classes**: a unit with no kind of its own that writes methods of
+  a class another unit declares takes that unit's category, one grade lower.
+- **Hand rows** (the rest): strings and resource names the unit loads
+  (`.blo`, `.bti`, `.thp`, `.arc`, `boss_*` textures), named classes in
+  names.tsv and the shared headers, the unit's own header comments, and
+  callers / callees from dtk's asm ("called only by act_thief").
+
+Confidence: high when the evidence names the role (a Player unit, GameView,
+the THP player, an EnemyBase subclass that actors.tsv also calls an enemy);
+med for one solid source (an actors.tsv kind, a `.blo` the screen loads, a
+named class); low when it is thin: a single caller, an actor reached only
+through its vtable whose kind nobody knows ("actor-shaped"), a low
+actors.tsv row, or two sources that disagree. Low rows are never hidden:
+the site marks them **unconfirmed** (a dashed "?"), and the README counts
+them per category. They are the first to revisit as names improve.

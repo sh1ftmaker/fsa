@@ -11,6 +11,7 @@ Inputs (all local; CI can't build the game, so this runs before each commit):
   docs/roadmap.yml                 phases and milestones (hand-maintained statuses)
   docs/BOOT_PATH.md                which boot-path phase first runs each game file
   config/G4SE01/game_units.tsv     actor-spawner evidence (game files that are actors)
+  docs/names/categories.tsv        each game unit's category (tools/categorize.py)
 
 Every function in the DOL is placed in region -> library/system -> file:
 split units by their path, dtk's auto splits (`auto_*`, not started yet) by
@@ -18,9 +19,13 @@ address through lib_map.tsv and tu_map.tsv. So the totals are the whole DOL.
 
 Outputs:
   site/data/summary.json       totals, regions, libraries, files; the game region's
-                               "libraries" are the four GAME_PARTS, and "libraries"
+                               "libraries" are the eight CATEGORIES (each game file
+                               also carries its boot-path part "bp" for the site's
+                               toggle, and "u" when its category is unconfirmed),
+                               "bootpath" lists the BOOT_PARTS, and "libraries"
                                adds up the four library regions
-  site/data/lib/<id>.json      functions per file of one library (loaded on demand)
+  site/data/lib/<id>.json      functions per file of one library (loaded on demand);
+                               a game category's also has each file's evidence
   site/data/history.json       one entry per commit (appended or replaced)
   site/data/roadmap.json       docs/roadmap.yml with each milestone's live progress
   site/data/badge-*.json       shields.io endpoint badges for the README
@@ -95,7 +100,7 @@ def classify(path, libfield=""):
 def game_group(name, start):
     """Game files have no real names yet: group them by the resource names
     they reference (tu_map.tsv's hints), or by address when there is none.
-    Only a placeholder until build() sorts game files into GAME_PARTS."""
+    Only a placeholder until build() sorts game files into CATEGORIES."""
     hint = re.sub(r"^tu_[0-9A-Fa-f]+_?", "", name or "")
     for pre, group in (("enemy_", "enemy_*_sob refs"), ("mg_", "mg_* minigames"), ("kk_", "kk_* HUD refs"),
                        ("player", "player_sob refs"), ("THP", "THP")):
@@ -109,15 +114,41 @@ def game_group(name, start):
     return f"unnamed {band:08X}+"
 
 
-# The game code, cut into four parts that say where the remaining work is
-# (the libraries are one more group, see LIBRARIES). A game file goes to the
-# first part that claims it:
+# The game code, in eight categories (the site's default grouping and the
+# README's), one per game unit in docs/names/categories.tsv (tools/categorize.py,
+# docs/names/METHOD.md "Categories"). Low-confidence placements are flagged
+# "unconfirmed" on the site. Colours: validated as a categorical palette
+# (adjacent pairs, colour-vision deficiency) on the site's dark and light panels;
+# the libraries keep their golds.
+CATEGORIES = [  # key, name, hue (site colour), description
+    ("player", "Player", "leaf",
+     "The four players and their manager: the ten Player units of docs/PLAYER.md (states, movement, drawing)"),
+    ("enemies", "Enemies & bosses", "crimson",
+     "Enemies and bosses: EnemyBase subclasses and actors docs/names/actors.tsv names as enemies, and their helpers"),
+    ("npcs", "NPCs", "rose",
+     "Characters the players meet and talk to: actors.tsv NPCs, the escort and conversation actors"),
+    ("objects", "Objects & gimmicks", "azure",
+     "Every other actor: switches, pots, doors, platforms, generators, checks and stage gimmicks"),
+    ("stage", "Stage & world", "teal",
+     "The stage itself: GameView, the tile map, BgRewrite, the camera, collision, stage and enemy-map loading, the sky"),
+    ("menus", "Menus & screens", "violet",
+     "J2D screens: title, file select, game mode, connect screens, the HUD, pause, map, minigame results, message windows, disc error"),
+    ("core", "Game core", "cyan",
+     "The framework: main(), GameRoot and GameGlobals, the ActorBase / ActorManager / EnemyBase base classes, "
+     "the effect spawner, save data and shared utilities"),
+    ("media", "Media & link", "olive",
+     "The THP movie player, the audio manager and sound objects, the GBA link, and the game's memory card and DVD wrappers"),
+]
+CATEGORY_FILE = ROOT / "docs/names/categories.tsv"
+
+# The old grouping, kept as the site's "boot path" toggle: a game file goes to
+# the first part that claims it:
 #   boot, battle  the first phase of docs/BOOT_PATH.md (Dolphin execution
 #                 coverage from power-on to a live Shadow Battle) that runs it
 #   actors        act_* files, and files whose classes the actor spawner
 #                 constructs (game_units.tsv's "actor spawner" evidence)
 #   other         everything else: systems, screens, minigames, unidentified
-GAME_PARTS = [  # key, name, hue (site colour), description
+BOOT_PARTS = [  # key, name, hue (site colour), description
     ("boot", "Boot to main menu", "green",
      "Code the game runs from power-on to the main menu: main(), the framework, the THP movie player, "
      "the title screen and the screens built at boot, such as file select, the game mode screen and the GBA link "
@@ -146,7 +177,7 @@ def boot_phases():
     return first
 
 
-def game_part(stem, phases, actors):
+def boot_part(stem, phases, actors):
     phase = phases.get(stem)
     if phase in (1, 2):
         return "boot"
@@ -155,6 +186,22 @@ def game_part(stem, phases, actors):
     if stem.startswith("act_") or stem in actors:
         return "actors"
     return "other"
+
+
+def read_categories():
+    """file stem -> (category key, confidence, evidence), from docs/names/categories.tsv."""
+    keys = {k for k, *_ in CATEGORIES}
+    out = {}
+    if not CATEGORY_FILE.exists():
+        return out
+    for line in CATEGORY_FILE.read_text().splitlines():
+        f = line.split("\t")
+        if len(f) < 4 or not f[0].startswith("game/"):
+            continue
+        if f[1] not in keys:
+            raise SystemExit(f"{CATEGORY_FILE.relative_to(ROOT)}: {f[0]}: unknown category {f[1]!r}")
+        out[re.sub(r"\.[^.]*$", "", f[0].rsplit("/", 1)[-1])] = (f[1], f[2], f[3])
+    return out
 
 
 def read_splits():
@@ -296,20 +343,28 @@ def build():
             rec = owners[max(bisect.bisect_left(starts, addr) - 1, 0)][1]
             add_fn(rec, f, addr, tail=True, w=w)
 
-    # sort the game files into GAME_PARTS (a pure regrouping: no number changes)
+    # sort the game files into CATEGORIES, and note each one's boot-path part
+    # (BOOT_PARTS, the site's toggle): a pure regrouping, no number changes
     phases = boot_phases()
     actors = set()
     with open(ROOT / "config/G4SE01/game_units.tsv") as f:
         for row in csv.DictReader(f, delimiter="\t"):
             if "actor spawner" in (row.get("name_evidence") or ""):
                 actors.add(re.sub(r"\.[^.]*$", "", row["unit"].rsplit("/", 1)[-1]))
-    names = {k: n for k, n, _, _ in GAME_PARTS}
+    cats = read_categories()
+    names = {k: n for k, n, _, _ in CATEGORIES}
+    missing = set()
     regrouped = {}
     for (region, lib, path), rec in files.items():
         if region == "game":
             stem = re.sub(r"\.[^.]*$", "", rec["name"])
-            lib = names[game_part(stem, phases, actors)]
-            rec["lib"] = lib
+            cat = cats.get(stem)
+            if cat is None:
+                if rec["status"] != "U":  # a split unit without a row; unsplit code has no unit yet
+                    missing.add(path)
+                cat = ("core", "low", "no row in docs/names/categories.tsv" if rec["status"] != "U" else "not split yet")
+            lib = names[cat[0]]
+            rec.update(lib=lib, bp=boot_part(stem, phases, actors), conf=cat[1], ev=cat[2])
         key = (region, lib, path)
         if key in regrouped:  # the same path under two address groups: one file
             other = regrouped[key]
@@ -319,6 +374,9 @@ def build():
             other["addr"] = min(a for a in (other["addr"], rec["addr"]) if a is not None)
             continue
         regrouped[key] = rec
+    if missing:
+        print(f"warning: {len(missing)} game units have no row in docs/names/categories.tsv "
+              f"(shown under Game core, unconfirmed; run tools/categorize.py): {', '.join(sorted(missing)[:10])}")
     return report, regrouped, data_unsplit
 
 
@@ -359,12 +417,13 @@ def write(report, files, data_unsplit, subject):
             if region == rid:
                 libs[lib].append(rec)
         out_libs = []
-        parts = {n: (k, hue, desc) for k, n, hue, desc in GAME_PARTS}
+        parts = {n: (k, hue, desc) for k, n, hue, desc in CATEGORIES}
         for lib, recs in libs.items():
             part = parts.get(lib) if rid == "game" else None
             lid = f"{rid}-{part[0] if part else slug(lib)}"
             recs.sort(key=lambda r: r["addr"] or 0)
             detail = {}
+            evidence = {}
             out_files = []
             for i, r in enumerate(recs):
                 r["fns"].sort(key=lambda x: x[1])
@@ -375,16 +434,24 @@ def write(report, files, data_unsplit, subject):
                     row["d"], row["dm"] = r["data"], r["dm"]
                 if any(fn[3] == -1 for fn in r["fns"]) and r["status"] != "U":
                     row["t"] = sum(fn[2] for fn in r["fns"] if fn[3] == -1)  # unsplit tail bytes
+                if part:  # game files: boot-path part (the site's toggle), confidence of the category
+                    row["bp"] = r["bp"]
+                    if r["conf"] == "low":
+                        row["u"] = 1  # unconfirmed placement
+                    evidence[str(i)] = [r["conf"], r["ev"]]
                 out_files.append(row)
-            (OUT / "lib" / f"{lid}.json").write_text(json.dumps({"id": lid, "files": detail}, separators=(",", ":")))
+            lib_json = {"id": lid, "files": detail}
+            if evidence:  # why each file is in this category (docs/names/categories.tsv)
+                lib_json["ev"] = evidence
+            (OUT / "lib" / f"{lid}.json").write_text(json.dumps(lib_json, separators=(",", ":")))
             rec_out = {"id": lid, "n": lib, "c": sum(r["code"] for r in recs), "cm": sum(r["cm"] for r in recs),
                        "wm": round(sum(r["cm"] + r["wm"] for r in recs)),
                        "f": sum(r["fn"] for r in recs), "fm": sum(r["fm"] for r in recs), "files": out_files}
-            if part:  # a game part (GAME_PARTS): its selector key, colour and description
+            if part:  # a game category (CATEGORIES): its selector key, colour and description
                 rec_out.update({"key": part[0], "hue": part[1], "desc": part[2]})
             out_libs.append(rec_out)
-        if rid == "game":  # the parts in their fixed order: boot path first
-            order = [n for _, n, _, _ in GAME_PARTS]
+        if rid == "game":  # the categories in their fixed order
+            order = [n for _, n, _, _ in CATEGORIES]
             out_libs.sort(key=lambda l: order.index(l["n"]) if l["n"] in order else len(order))
         else:
             out_libs.sort(key=lambda l: -l["c"])
@@ -420,8 +487,10 @@ def write(report, files, data_unsplit, subject):
     libraries = {"n": "Libraries", "regions": list(LIBRARIES), **libs_tot,
                  "units": sum(1 for (rg, _, _), r in files.items() if rg in LIBRARIES and r["status"] != "U"),
                  "matching": sum(1 for (rg, _, _), r in files.items() if rg in LIBRARIES and r["status"] == "M")}
+    # the boot-path toggle's groups (each game file row carries its "bp" key)
+    bootpath = [{"key": k, "n": n, "hue": hue, "desc": desc} for k, n, hue, desc in BOOT_PARTS]
     summary = {"generated": now, "base": head, "sha1": SHA1.read_text().split()[0],
-               "totals": totals, "regions": regions, "libraries": libraries}
+               "totals": totals, "regions": regions, "libraries": libraries, "bootpath": bootpath}
     (OUT / "summary.json").write_text(json.dumps(summary, separators=(",", ":")))
     rm = roadmap(regions, totals, now)
     (OUT / "roadmap.json").write_text(json.dumps(rm, separators=(",", ":")))
@@ -454,6 +523,18 @@ def write(report, files, data_unsplit, subject):
     return summary
 
 
+def bootpath_groups(game):
+    """The game region's files regrouped by boot-path part (BOOT_PARTS, the
+    site's toggle), as library records with the treemap ids the site gives
+    them (game-boot, ...). Built from each file row's "bp" key."""
+    out = []
+    for k, n, hue, desc in BOOT_PARTS:
+        files = [f for l in game["libs"] for f in l["files"] if f.get("bp") == k]
+        out.append({"id": f"game-{k}", "n": n, "key": k, "hue": hue, "desc": desc, "files": files,
+                    **{x: sum(f[x] for f in files) for x in ("c", "cm", "f", "fm")}})
+    return out
+
+
 STATUSES = ("done", "active", "next", "later")
 MEASURES = {
     "code": "of the code matched",
@@ -473,9 +554,9 @@ def roadmap(regions, totals, now):
     rm = yaml.safe_load(ROADMAP.read_text())
     libs = {}
     for r in regions:
-        for l in r["libs"]:
+        for l in r["libs"] + (bootpath_groups(r) if r["id"] == "game" else []):
             libs[f"{r['id']}:{l['n']}"] = (r["id"], l)
-            if l.get("key"):  # game parts also by key: game:boot, game:actors
+            if l.get("key"):  # game categories and boot-path parts also by key: game:player, game:boot
                 libs[f"{r['id']}:{l['key']}"] = (r["id"], l)
     reg = {r["id"]: r for r in regions}
 
@@ -488,7 +569,7 @@ def roadmap(regions, totals, now):
             return f"{rid}/{l['id']}", [(rid, l)]
         raise SystemExit(f"docs/roadmap.yml: unknown selector {sel!r} "
                          f"(regions: {', '.join(reg)}; libraries as region:name, e.g. jsystem:J3D; "
-                         f"game parts as game:<key>, e.g. game:boot)")
+                         f"game categories and boot-path parts as game:<key>, e.g. game:player, game:boot)")
 
     def measure(kind, sels):
         if kind == "linked":
