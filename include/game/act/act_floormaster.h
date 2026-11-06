@@ -21,6 +21,8 @@ public:
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
     /* 0xA0 */ virtual void vfunc_0xA0();
+    void fn_8020EB08();
+    void fn_8020ED5C(s32 state);
     /* 0x2A8 */ f32 field_0x2a8;
     /* 0x2AC */ f32 field_0x2ac;
     /* 0x2B0 */ JPABaseEmitter* mEmitter2b0; // released by the destructor

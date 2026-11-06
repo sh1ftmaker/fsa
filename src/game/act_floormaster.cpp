@@ -2,6 +2,7 @@
 #include "game/act/act_floormaster.h"
 #include "game/Camera.h"
 #include "game/GameGlobals.h"
+#include "game/Player.h"
 
 static const s16 lbl_8046A3D8[] = { 0, 5, 1, 5, 2, 5, -1, -1 };
 static const s16 lbl_8046A3E8[] = { 3, 5, 4, 10, -1, -1 };
@@ -112,6 +113,66 @@ void Floormaster_804A6004::vfunc_0x88() {
         }
         break;
     }
+}
+
+// FIXME: 99.91%. reloc-name
+bool Floormaster_804A6004::vfunc_0x60() {
+    bool result = false;
+    if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
+        result = fn_801F2DB4(mActorId, 'NULL', NULL);
+        if (result) {
+            startSound_801F0E34(0x5007D, 0);
+            bool change = false;
+            switch (mState) {
+            case 3:
+            case 5:
+            case 6:
+            case 8:
+                change = true;
+                break;
+            }
+            if (change) {
+                fn_8020ED5C(4);
+            }
+        }
+    }
+    return result;
+}
+
+// FIXME: 99.88%. reloc-name
+bool Floormaster_804A6004::vfunc_0x5C() {
+    bool result = false;
+    if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
+        for (int i = 0; i < 4; i++) {
+            s32 flag;
+            JGeometry::TVec2f pos;
+            if (i == fn_801F285C(&pos, &flag, true, i)) {
+                fn_8023B6CC(i);
+                if (field_0x1dc.fn_801EAC20(i)) {
+                    JGeometry::TVec3f effectPos(pos.x, pos.y, 0.0f);
+                    result = true;
+                    fn_801CB538(field_0x4, &effectPos, 0, 0);
+                }
+            }
+        }
+
+        if (result) {
+            startSound_801F0E34(0x5007D, 0);
+            bool change = false;
+            switch (mState) {
+            case 3:
+            case 5:
+            case 6:
+            case 8:
+                change = true;
+                break;
+            }
+            if (change) {
+                fn_8020ED5C(4);
+            }
+        }
+    }
+    return result;
 }
 
 void Floormaster_804A6004::vfunc_0xA0() {
