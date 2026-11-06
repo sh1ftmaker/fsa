@@ -2150,6 +2150,46 @@ void FileSelect_804AFF60::fn_803C1734() {
     setState(18);
 }
 
+// Called by fn_803C92B8 (state 24): shows the file list's message (0x117, or
+// 0x116 with gGameRoot_8053AAF8->field_0x7f set), hides the file cursor
+// ('Pfcur01'..'04') and 'Paccur01', stops the rows' and buttons' movers,
+// state 29.
+void FileSelect_804AFF60::fn_803C0018() {
+    u32 msg = 0x117;
+    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
+        msg = 0x116;
+    }
+    field_0x84 = msg;
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+        field_0xb0 = 0x5A;
+    }
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x14->field_0x20 = 0;
+    field_0x14->field_0x26 = 0;
+    field_0x18->field_0x20 = 0;
+    field_0x18->field_0x26 = 0;
+    field_0x1c->field_0x20 = 0;
+    field_0x1c->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(29);
+}
+
 // FIXME: 98.49 %. Register allocation and scheduling only: `this` lands in
 // r28 (original r31) and the loop registers shift (r26..r30); the 9-pane loop
 // counter / pointer are r28 / r27 in the original. With the counters declared
