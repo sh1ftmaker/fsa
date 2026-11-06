@@ -91,16 +91,20 @@ public:
     // 0x801CEB78: fn_801F2FAC() (hit by a player) when mBox is not empty,
     // else 0. 16 overrides, no arguments read; update() tests r3 with
     // clrlwi. and then sets ENEMY_FLAG_HIT_PLAYER and calls vfunc_0x6C.
-    /* 0x5C */ virtual bool vfunc_0x5C();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
     // 0x801CE9F8: fn_801F2DB4('NULL', 'NULL', NULL) (hit by an actor) when
     // mBox is not empty, else 0. 19 overrides, no arguments read; update()
     // tests r3 with clrlwi. and then sets ENEMY_FLAG_HIT_ACTOR and calls
     // vfunc_0x70.
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     // 0x801CE98C: unless ENEMY_FLAG_NO_MAP_HIT, fn_801F2618(&mMapHitDir,
     // false) when field_0x80 is not empty, else 0. 5 overrides, no
     // arguments read; update() passes r3 on to vfunc_0x9C (clrlwi 24).
-    /* 0x64 */ virtual bool vfunc_0x64();
+    // vfunc_0x5C/0x60/0x64 are u8 like the ActorBase hit tests they return
+    // (fn_801F2FAC / fn_801F2DB4 / fn_801F2618 results go out with mr, no
+    // bool conversion; overrides likewise). ShadowLinkBase_804A6A00's
+    // vfunc_0x60 (tu_80220F54) is still declared bool.
+    /* 0x64 */ virtual u8 vfunc_0x64();
     // 0x801CE928: fn_801F2B7C(field_0x114, -1, 1) (the players hit, a
     // bitmask) when mBox is not empty, else 0. 9 overrides, no arguments
     // read; update() stores r3 with stb to mPlayersHit (0x801CDFB0).
@@ -211,8 +215,9 @@ public:
     bool fn_801CEA60();
     // 3 units / 3 calls. For each player overlapping this actor and
     // passing fn_801EAC20 (field_0x1dc): fn_801CB538 at the hit point; then
-    // sound 0x400D1. Returns whether any player was hit.
-    bool fn_801CEBD0();
+    // sound 0x400D1. Returns whether any player was hit (u8: Beamos
+    // vfunc_0x5C keeps r3 raw, mr).
+    u8 fn_801CEBD0();
     // 3 units / 3 calls (callers pass a 4CC in r4 and two lfs constants,
     // and test r3 with clrlwi.). Spawns `actorId` (spawnActor_801F9484) aimed at
     // the nearest player within `range` (f2, squared at 0x801CED3C) with

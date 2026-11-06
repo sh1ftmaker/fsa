@@ -117,7 +117,7 @@ void Eyegore_804A3548::update() {
 
     fn_801F2B7C(-100, -1, 1);
     fn_801EEC98(mSerial, NULL, &dir, &dist, NULL, 0, 0);
-    bool hit = fn_801F2618(NULL, false);
+    u8 hit = fn_801F2618(NULL, false);
 
     switch (field_0x230) {
     case 0:

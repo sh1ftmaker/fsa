@@ -277,15 +277,20 @@ public:
     // position) or `to` is reached. out2 and flag go to fn_801F172C.
     // Returns whether it hit. (fn_801F2618 passes &mPos as `to` and
     // &mPrevPos as `from`.)
-    bool fn_801F23BC(s32 layer, const JGeometry::TVec3f* to, const JGeometry::TVec3f* from,
-                     const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos,
-                     JGeometry::TVec3f* out2, bool flag);
+    u8 fn_801F23BC(s32 layer, const JGeometry::TVec3f* to, const JGeometry::TVec3f* from,
+                   const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos,
+                   JGeometry::TVec3f* out2, bool flag);
     // 82 units / 201 calls. Unless field_0x174 > 0, sweeps the box at 0x80
     // from mPrevPos to mPos (fn_801F23BC(this, field_0x4, &mPos, &mPrevPos,
     // box, ...)), moves mPos to the result and stores a vector in *out
     // (0x801F2670-0x801F2688); returns 0 or 1. Callers pass 0 or a stack
     // TVec3f for out and 0 for `flag` (197 of 201).
-    bool fn_801F2618(JGeometry::TVec3f* out, bool flag);
+    // u8, as fn_801F23BC / fn_801F2DB4 / fn_801F2FAC / fn_801F305C: each
+    // narrows its bool local at the return (clrlwi r3, rN, 24) and the
+    // callers keep r3 raw (EnemyBase vfunc_0x5C/0x60/0x64 and their
+    // overrides return it with mr; update()s keep it in a u8 local, tested
+    // with clrlwi.).
+    u8 fn_801F2618(JGeometry::TVec3f* out, bool flag);
     // 6 units / 7 calls. fn_801F7F58(mgr, this, ids, mSerial, 32.0f): the
     // serial of an actor overlapping this one whose mActorId is in `ids` (a
     // 'NULL'-ended list, walked by 4 and compared with cmplw; callers pass
@@ -330,14 +335,14 @@ public:
     // excludeId and is not in the 'NULL'-ended list excludeIds (or NULL):
     // fn_801F37AC(this, attacker->field_0x118, ...) (0x801F2ECC). Returns
     // 0 or 1.
-    bool fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds);
+    u8 fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds);
     // 20 units / 22 calls. For each player overlapping this actor
     // (fn_801F285C), fn_801F37AC(this, fn_8023B6CC(i), getPlayerPos_8023E724(i), 0,
     // flag, i); returns whether any hit landed.
-    bool fn_801F2FAC();
+    u8 fn_801F2FAC();
     // 22 units / 25 calls. fn_801F2FAC(), else fn_801F2DB4(this, 'NULL',
     // 'NULL', NULL) (0x801F30F0-0x801F3104).
-    bool fn_801F305C();
+    u8 fn_801F305C();
     // 9 units / 9 calls. The centre of mBox around mPos in screen space
     // (x, y - z): two floats only (0x801F3128-0x801F3174).
     void fn_801F3128(JGeometry::TVec2f* out);
@@ -470,7 +475,7 @@ public:
     void fn_801544D0(s32 value);           // field_0xd8 and field_0xdc (0x801544D0)
     JGeometry::TVec3f* fn_801544DC();      // &mPos (0x801544DC)
     s32 fn_80154510() const;               // field_0x114, the "atcp" damage (0x80154510)
-    bool fn_801545C0(JGeometry::TVec3f* out, bool flag); // fn_801F2618 (0x801545C0)
+    u8 fn_801545C0(JGeometry::TVec3f* out, bool flag);   // fn_801F2618 (0x801545C0)
     s32 fn_801545E0() const;               // field_0x9c (0x801545E0)
     s32 fn_801545E8() const;               // mSerial (0x801545E8)
     void fn_80154614(s32 value);           // field_0xb8 (0x80154614)

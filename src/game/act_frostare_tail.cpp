@@ -103,15 +103,15 @@ void cls_804A4F90::vfunc_0x74() {
 // the rupee serial in r28 (loading 'RUPY' into r28 before getActorManager_801F856C)
 // and puts the upper-layer velocity temporary at sp+0x20, the other at sp+0x2C;
 // ours swaps both pairs, and the random terms' scratch registers follow.
-bool cls_804A4F90::vfunc_0x5C() {
-    bool hit = false;
+u8 cls_804A4F90::vfunc_0x5C() {
+    u8 hit = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         for (s32 i = 0; i < 4; i++) {
             s32 flag;
             if (i == fn_801F285C(NULL, &flag, true, i)) {
                 fn_8023B6CC(i);
                 if (fn_801F37AC(0, getPlayerPos_8023E724(i), 0, flag, i)) {
-                    hit = true;
+                    hit = 1;
                     mHitCount++;
                     u8 upper = viewLayerFlag(field_0x4);
                     s32 serial =
@@ -148,11 +148,11 @@ bool cls_804A4F90::vfunc_0x5C() {
     return hit;
 }
 
-bool cls_804A4F90::vfunc_0x60() {
+u8 cls_804A4F90::vfunc_0x60() {
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         fn_801F2DB4(mActorId, 'NULL', NULL);
     }
-    return false;
+    return 0;
 }
 
 void cls_804A4F90::draw() {

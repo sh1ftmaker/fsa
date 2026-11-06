@@ -11,8 +11,8 @@ public:
     cls_804A5568() {}
     /* 0x08 */ virtual ~cls_804A5568();
     /* 0x0C */ virtual void init();
-    /* 0x5C */ virtual bool vfunc_0x5C();
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x68 */ virtual u8 vfunc_0x68();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0xA0 */ virtual void vfunc_0xA0();

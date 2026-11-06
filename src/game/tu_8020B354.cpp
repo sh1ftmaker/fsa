@@ -114,7 +114,7 @@ bool cls_804A5E98::vfunc_0x58() {
     return hit;
 }
 
-bool cls_804A5E98::vfunc_0x60() {
+u8 cls_804A5E98::vfunc_0x60() {
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         s32 other = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (other >= 0 && other != mSerial) {
@@ -131,10 +131,10 @@ bool cls_804A5E98::vfunc_0x60() {
             }
         }
     }
-    return false;
+    return 0;
 }
 
-bool cls_804A5E98::vfunc_0x5C() {
+u8 cls_804A5E98::vfunc_0x5C() {
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         s32 flag;
         s32 player = fn_801F285C(NULL, &flag, true, -1);
@@ -146,7 +146,7 @@ bool cls_804A5E98::vfunc_0x5C() {
             }
         }
     }
-    return false;
+    return 0;
 }
 
 void cls_804A5E98::vfunc_0x74() {

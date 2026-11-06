@@ -95,7 +95,7 @@ void Pengator_804A1888::update() {
     fn_80212AC0()->fn_80212AF0(&mPos);
     fn_801F2B7C(-100, -1, 1);
     fn_801EEC98(mSerial, &outAngle, &outDir, &outDist, &outPlayer, 0, 0);
-    bool moved = fn_801F2618(NULL, false);
+    u8 moved = fn_801F2618(NULL, false);
 
     box.addPos(pos);
     center.x = box.f.x + 0.5f * (box.i.x - box.f.x);
@@ -134,11 +134,11 @@ void Pengator_804A1888::update() {
                 field_0x3c.x = 0.0f;
             }
             field_0x238 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
-            bool flag = moved;
+            u8 flag = moved;
             if (!moved) {
                 if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.7f) {
                     field_0x234 = 8;
-                    flag = true;
+                    flag = 1;
                 } else if (outDir != -1) {
                     if (field_0x98 == outDir) {
                         break;

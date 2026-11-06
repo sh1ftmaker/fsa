@@ -9,9 +9,9 @@ void cls_804A5D60::vfunc_0x54() {
     field_0x2c0 = offset;
 }
 
-bool cls_804A5D60::vfunc_0x60() {
+u8 cls_804A5D60::vfunc_0x60() {
     fn_801F2DB4(mActorId, 'NULL', NULL);
-    return false;
+    return 0;
 }
 
 void cls_804A5D60::vfunc_0x74() {

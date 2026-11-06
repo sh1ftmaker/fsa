@@ -1036,13 +1036,9 @@ void ActorBase_804A5770::fn_801F3128(JGeometry::TVec2f* out) {
 
 // The players' hits (fn_801F2FAC, inlined), else one from an overlapping
 // actor (fn_801F2DB4 with no filter).
-// FIXME: 97.9. One extra instruction: the target narrows the inlined
-// fn_801F2FAC's result straight into r3 (clrlwi. r3, r29, 24); ours narrows
-// it into r0 and copies it. Follows from fn_801F2FAC staying bool (see there:
-// u8 gives the narrowing but drops ~20 bool-using callers).
-bool ActorBase_804A5770::fn_801F305C() {
-    bool hit = fn_801F2FAC();
-    if (!hit) {
+u8 ActorBase_804A5770::fn_801F305C() {
+    u8 hit;
+    if (!(hit = fn_801F2FAC())) {
         hit = fn_801F2DB4('NULL', 'NULL', NULL);
     }
     return hit;
@@ -1051,12 +1047,9 @@ bool ActorBase_804A5770::fn_801F305C() {
 // Each player that hits this actor (fn_801F285C) attacks it with its
 // current attack (fn_8023B6CC) from its position. Returns whether any of
 // the hits landed (fn_801F37AC).
-// FIXME: 98.6. One instruction: the target narrows the bool result at the
-// return (clrlwi r3, r30, 24); ours returns it with mr. A u8 return type gives that
-// exactly, but the callers' bool uses (EnemyBase vfunc_0x60/0x64 and
-// others) then gain a bool conversion, so the declared type stays bool
-// until those callers are retyped together.
-bool ActorBase_804A5770::fn_801F2FAC() {
+// u8, not bool: the bool local is narrowed at the return (clrlwi r3, r30,
+// 24), and callers keep r3 raw (EnemyBase vfunc_0x5C returns it with mr).
+u8 ActorBase_804A5770::fn_801F2FAC() {
     bool hit = false;
     for (s32 i = 0; i < 4; i++) {
         s32 type;
@@ -1075,12 +1068,11 @@ bool ActorBase_804A5770::fn_801F2FAC() {
 // 'SWBM' one then gets fn_801CB538 at its position, a 'FIRE' one (once per
 // fire, field_0x1dc) that and effect 0x19D. A hit marks the attacker
 // (field_0x164 = 1). Returns whether it was hit.
-// FIXME: 99.4. The 32.0f and 1.0f literals (lbl_8053F748, lbl_8053F774)
-// pair only once .sdata2 is in order; and the target narrows the bool
-// result at the return (clrlwi r3, r28, 24; ours mr). A u8 return type gives
-// that, but drops ~20 callers that use the result as a bool (EnemyBase
-// vfunc_0x5C/0x60/0x64, Thief, update() of several enemies), so it stays bool.
-bool ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
+// u8 (clrlwi r3, r28, 24 at the return; EnemyBase / Thief / Beamos
+// vfunc_0x60 return it raw).
+// FIXME: 99.96. The 32.0f and 1.0f literals (lbl_8053F748, lbl_8053F774)
+// pair only once .sdata2 is in order.
+u8 ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
     bool hit = false;
     s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     if (serial >= 0 && serial != mSerial) {
@@ -1248,10 +1240,12 @@ s32 ActorBase_804A5770::fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool
 // The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
 // on this layer, as bits; on a layer without the view's flag the player's z
 // must also be within 32 of mPos.z. fn_801F2B7C inlines it.
-// FIXME: 85.0. Two differences: the target ends in clrlwi r3, r30, 24 where
-// ours returns hits with mr (the callers' raw use of r3 shows a u8 return,
-// so the extra narrowing is unexplained), and it computes the box's first
-// floats before saving the registers, setting hits and i between them.
+// FIXME: 85.1. Two differences: the target ends in clrlwi r3, r30, 24 where
+// ours returns hits with mr (the callers' raw use of r3 shows a u8 return;
+// a bool local gives exactly that narrowing, as in fn_801F2FAC / fn_801F2618,
+// and leaves only the scheduling below, but a bitmask in a bool is not
+// written here), and it computes the box's first floats before saving the
+// registers, setting hits and i between them.
 // Besides, 32.0f is lbl_8053F748 once .sdata2 is in order.
 u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
     JGeometry::TBox2f box;
@@ -1287,12 +1281,9 @@ s32 ActorBase_804A5770::fn_801F26CC(const u32* ids) {
 // Unless a warp is running (field_0x174 > 0), sweeps the map box
 // (field_0x80) from mPrevPos to mPos (fn_801F23BC); on a hit moves mPos to
 // the result and passes the other vector out. Returns whether it hit.
-// FIXME: 98.7. One instruction: the target narrows the bool result at the
-// return (clrlwi r3, r31, 24); ours returns it with mr. A u8 return type gives that
-// exactly, but the callers' bool uses (EnemyBase vfunc_0x60/0x64 and
-// others) then gain a bool conversion, so the declared type stays bool
-// until those callers are retyped together.
-bool ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
+// u8 (clrlwi r3, r31, 24 at the return): EnemyBase / Thief vfunc_0x64 and
+// fn_801545C0 return it raw, the update()s keep it in a u8 local.
+u8 ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
     bool result = false;
     if (field_0x174 <= 0) {
         JGeometry::TVec3f pos;
@@ -1308,10 +1299,10 @@ bool ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
     return result;
 }
 
-// FIXME: 98.7. One instruction: the target narrows the bool result at the
-// return (clrlwi r3, r30, 24; ours mr), as fn_801F2618 / fn_801F2FAC /
-// fn_801F2DB4; 0.01f / 8.0f / 0.5f are @NNN until .sdata2 is in order.
-bool ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
+// u8, as fn_801F2618 / fn_801F2FAC / fn_801F2DB4 (clrlwi r3, r30, 24).
+// FIXME: 99.1. Float register allocation (step / negStep swap f28/f29);
+// 0.01f / 8.0f / 0.5f are @NNN until .sdata2 is in order.
+u8 ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
                                      const JGeometry::TVec3f* from, const JGeometry::TBox2f* box,
                                      JGeometry::TVec3f* outPos, JGeometry::TVec3f* out2, bool flag) {
     JGeometry::TVec3f pos(*from);

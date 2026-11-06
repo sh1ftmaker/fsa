@@ -101,7 +101,7 @@ void ForceGem2_804AB850::update() {
     u16 angle = 0;
     s32 dir = 0;
     f32 dist = 0.0f;
-    bool moved = false;
+    u8 moved = 0;
     JGeometry::TVec2f p(mPos.x, mPos.y);
     if (field_0x94 != 6) {
         addCalc2_801F71A4(&field_0x3c.x, field_0x26c.x, 0.3f, 1.0f);

@@ -121,8 +121,8 @@ void Terrorpin_804A3B10::vfunc_0x7C() {
     }
 }
 
-bool Terrorpin_804A3B10::vfunc_0x60() {
-    bool hit = false;
+u8 Terrorpin_804A3B10::vfunc_0x60() {
+    u8 hit = 0;
     bool againstActor = true;
     bool active = false;
     s32 state = mState;

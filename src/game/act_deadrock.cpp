@@ -121,7 +121,7 @@ void Deadrock_8049F498::update() {
     }
 
     mPos += field_0x3c;
-    bool landed = fn_801F2618(NULL, false);
+    u8 landed = fn_801F2618(NULL, false);
     if (field_0x230 != 2 && field_0x230 != 3 && field_0x230 != 4) {
         fn_801F2B7C(-100, -1, 1);
     }

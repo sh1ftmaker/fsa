@@ -15,12 +15,12 @@ void cls_804AC3E0::vfunc_0xA4() {
     mPos.y = mSpawnPos.y;
 }
 
-bool cls_804AC3E0::vfunc_0x5C() {
-    return false;
+u8 cls_804AC3E0::vfunc_0x5C() {
+    return 0;
 }
 
-bool cls_804AC3E0::vfunc_0x60() {
-    return false;
+u8 cls_804AC3E0::vfunc_0x60() {
+    return 0;
 }
 
 u8 cls_804AC3E0::vfunc_0x68() {

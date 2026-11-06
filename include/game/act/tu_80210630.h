@@ -15,7 +15,7 @@ public:
     cls_804A61C8();
     virtual ~cls_804A61C8() {}
     // 0x80210898: fn_801CEBD0() (the players overlapping), then 0.
-    /* 0x5C */ virtual bool vfunc_0x5C();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
     // 0x802108BC: EnemyBase's step, then a box built from field_0x54 /
     // field_0x58 and moved to mPos goes to fn_80239914 and to the layer's
     // collision list (fn_8020D8C0).

@@ -113,7 +113,7 @@ void Tektite_8049FD50::update() {
     addCalc2_801F71A4(&field_0x3c.y, field_0x258.y, 0.3f, 1.0f);
     mPos += field_0x3c;
     fn_801F2B7C(-100, -1, 1);
-    bool hit = fn_801F2618(NULL, false);
+    u8 hit = fn_801F2618(NULL, false);
     switch (field_0x230) {
     case 0:
         if (field_0x238 == 0) {

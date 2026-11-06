@@ -49,7 +49,7 @@ void SandCrab_8049F3B0::update() {
     }
     mPos += field_0x3c;
     fn_801F2B7C(-100, -1, 1);
-    bool hit = fn_801F2618(NULL, false);
+    u8 hit = fn_801F2618(NULL, false);
     switch (field_0x230) {
     case 0:
         mTimers[0] = 2;

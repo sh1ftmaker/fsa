@@ -154,7 +154,7 @@ void UnknownSWBM_804A1160::update() {
         }
     }
 
-    bool moved = fn_801F2618(NULL, false);
+    u8 moved = fn_801F2618(NULL, false);
     if (field_0x230 != 2 && (moved || fn_801F2B20(2))) {
         if (!moved) {
             mAlive = false;

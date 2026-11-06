@@ -5,10 +5,10 @@ cls_804A6550::~cls_804A6550() {
     releaseEmitter_801EE434(mEmitter);
 }
 
-bool cls_804A6550::vfunc_0x5C() {
-    return false;
+u8 cls_804A6550::vfunc_0x5C() {
+    return 0;
 }
 
-bool cls_804A6550::vfunc_0x60() {
-    return false;
+u8 cls_804A6550::vfunc_0x60() {
+    return 0;
 }

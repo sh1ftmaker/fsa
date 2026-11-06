@@ -19,9 +19,9 @@ public:
     // (EnemyBase's vfunc_0x68 is the bitmask hook).
     /* 0x68 */ virtual u8 vfunc_0x68();
     // 0x80340660: returns false, so no player hit is reported.
-    /* 0x5C */ virtual bool vfunc_0x5C();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
     // 0x80340658: returns false, so no actor hit is reported.
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     // 0x80340BC8: clears the flags at 0x2AC-0x2B2 and puts mPos.y back at
     // mSpawnPos.y.
     /* 0xA4 */ virtual void vfunc_0xA4();

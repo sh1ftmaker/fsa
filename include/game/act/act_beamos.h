@@ -17,8 +17,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
-    /* 0x5C */ virtual bool vfunc_0x5C();
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     // Sets the state (mState) and runs its entry block: 0 and 3 set field_0x250;
     // 2 fires two effects and a sound and sets field_0x2aa; 3 also calls fn_801BE86C.

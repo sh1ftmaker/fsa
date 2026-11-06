@@ -92,9 +92,9 @@ void cls_804A61C8::vfunc_0x9C(u8 mapHit) {
     addBox(mSerial, &box, field_0x4);
 }
 
-bool cls_804A61C8::vfunc_0x5C() {
+u8 cls_804A61C8::vfunc_0x5C() {
     fn_801CEBD0();
-    return false;
+    return 0;
 }
 
 // FIXME: 0%. Same operations, different allocation: the original keeps this, the three

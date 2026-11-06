@@ -134,13 +134,13 @@ void Beamos_804A40E0::vfunc_0x9C(u8 mapHit) {
 
 void Beamos_804A40E0::vfunc_0x98() {}
 
-bool Beamos_804A40E0::vfunc_0x60() {
+u8 Beamos_804A40E0::vfunc_0x60() {
     u32 includeId = field_0x2aa != 0 ? 'NULL' : mActorId;
     return fn_801F2DB4(includeId, 'SWBM', NULL);
 }
 
-bool Beamos_804A40E0::vfunc_0x5C() {
-    bool hit = false;
+u8 Beamos_804A40E0::vfunc_0x5C() {
+    u8 hit = 0;
     if (mState == 2) {
         for (s32 i = 0; i < 4; i++) {
             if (i == fn_801F285C(NULL, NULL, true, i)) {
@@ -149,7 +149,7 @@ bool Beamos_804A40E0::vfunc_0x5C() {
                     JGeometry::TVec2f center;
                     fn_801F3128(&center);
                     if (fn_80238548(i, field_0x114, &center, 10)) {
-                        hit = true;
+                        hit = 1;
                     }
                 }
             }

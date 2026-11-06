@@ -16,8 +16,8 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x44 */ virtual void vfunc_0x44();
-    /* 0x5C */ virtual bool vfunc_0x5C();
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x68 */ virtual u8 vfunc_0x68();
     /* 0x6C */ virtual void vfunc_0x6C();
     /* 0x7C */ virtual void vfunc_0x7C();

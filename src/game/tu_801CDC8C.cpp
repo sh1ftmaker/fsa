@@ -675,8 +675,8 @@ bool EnemyBase_804A4808::vfunc_0x58() {
 // For each player whose box overlaps mBox (fn_801F285C) and that fn_801EAC20
 // accepts, a hit at the player's point goes to fn_801CB538 on this layer; one
 // hit plays sound 0x400D1. Returns whether any player was hit.
-bool EnemyBase_804A4808::fn_801CEBD0() {
-    bool hit = false;
+u8 EnemyBase_804A4808::fn_801CEBD0() {
+    u8 hit = 0;
     JGeometry::TVec3f hitPos;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         for (s32 i = 0; i < 4; i++) {
@@ -688,7 +688,7 @@ bool EnemyBase_804A4808::fn_801CEBD0() {
                 if (flag == 1 && field_0x1dc.fn_801EAC20(i)) {
                     hitPos.set(xy.x, xy.y, 0.0f);
                     fn_801CB538(field_0x4, &hitPos, 0, 0);
-                    hit = true;
+                    hit = 1;
                 }
             }
         }
@@ -699,8 +699,8 @@ bool EnemyBase_804A4808::fn_801CEBD0() {
     return hit;
 }
 
-bool EnemyBase_804A4808::vfunc_0x5C() {
-    bool hit = false;
+u8 EnemyBase_804A4808::vfunc_0x5C() {
+    u8 hit = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         hit = fn_801F2FAC();
     }
@@ -735,16 +735,16 @@ bool EnemyBase_804A4808::fn_801CEA60() {
     return hit;
 }
 
-bool EnemyBase_804A4808::vfunc_0x60() {
-    bool hit = false;
+u8 EnemyBase_804A4808::vfunc_0x60() {
+    u8 hit = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         hit = fn_801F2DB4('NULL', 'NULL', NULL);
     }
     return hit;
 }
 
-bool EnemyBase_804A4808::vfunc_0x64() {
-    bool hit = false;
+u8 EnemyBase_804A4808::vfunc_0x64() {
+    u8 hit = 0;
     if (!(mFlags & ENEMY_FLAG_NO_MAP_HIT) && field_0x80.getWidth() > 0.0f &&
         field_0x80.getHeight() > 0.0f)
     {

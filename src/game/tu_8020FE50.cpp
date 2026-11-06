@@ -84,7 +84,7 @@ void cls_804A6100::vfunc_0x90(u8 mapHit) {
     }
 }
 
-bool cls_804A6100::vfunc_0x60() {
+u8 cls_804A6100::vfunc_0x60() {
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial) {
@@ -97,7 +97,7 @@ bool cls_804A6100::vfunc_0x60() {
             }
         }
     }
-    return false;
+    return 0;
 }
 
 void cls_804A6100::vfunc_0xA0() {

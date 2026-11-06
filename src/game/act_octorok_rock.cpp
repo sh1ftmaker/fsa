@@ -118,7 +118,7 @@ bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 
 void OctorokRock_8049F5D8::update() {
     s32 facing;
-    bool blocked = false;
+    u8 blocked = 0;
     mPos += field_0x3c;
     facing = field_0x98;
     // FIXME: 94.2 %. The original compares field_0x90 signed (cmpwi) in the

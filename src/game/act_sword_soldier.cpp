@@ -74,7 +74,7 @@ s32 ActorBase_804A5770::fn_801545E0() const {
     return field_0x9c;
 }
 
-bool ActorBase_804A5770::fn_801545C0(JGeometry::TVec3f* out, bool flag) {
+u8 ActorBase_804A5770::fn_801545C0(JGeometry::TVec3f* out, bool flag) {
     return fn_801F2618(out, flag);
 }
 

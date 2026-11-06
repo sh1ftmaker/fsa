@@ -71,8 +71,8 @@ bool Thief_804A5A30::vfunc_0x58() {
     return hit;
 }
 
-bool Thief_804A5A30::vfunc_0x60() {
-    bool hit = false;
+u8 Thief_804A5A30::vfunc_0x60() {
+    u8 hit = 0;
     if (field_0xc4 == 0 && mState != 3 && mState != 4 && mBox.getWidth() > 0.0f &&
         mBox.getHeight() > 0.0f) {
         hit = fn_801F2DB4('NULL', 'NULL', NULL);
@@ -83,8 +83,8 @@ bool Thief_804A5A30::vfunc_0x60() {
     return hit;
 }
 
-bool Thief_804A5A30::vfunc_0x5C() {
-    bool hit = false;
+u8 Thief_804A5A30::vfunc_0x5C() {
+    u8 hit = 0;
     if (field_0xc4 == 0 && mState != 3 && mState != 4 && mBox.getWidth() > 0.0f &&
         mBox.getHeight() > 0.0f) {
         for (s32 i = 0; i < 4; i++) {
@@ -92,7 +92,7 @@ bool Thief_804A5A30::vfunc_0x5C() {
             if (i == fn_801F285C(NULL, &type, true, i)) {
                 fn_8023B6CC(i);
                 if (fn_801F37AC(0, getPlayerPos_8023E724(i), 0, type, i)) {
-                    hit = true;
+                    hit = 1;
                 }
             }
         }
@@ -158,8 +158,8 @@ u8 Thief_804A5A30::vfunc_0x68() {
     return hit;
 }
 
-bool Thief_804A5A30::vfunc_0x64() {
-    bool hit = false;
+u8 Thief_804A5A30::vfunc_0x64() {
+    u8 hit = 0;
     if (!fn_8020609C() && !(mFlags & ENEMY_FLAG_NO_MAP_HIT) && field_0x80.getWidth() > 0.0f &&
         field_0x80.getHeight() > 0.0f) {
         hit = fn_801F2618(&mMapHitDir, lbl_8053EFC0);

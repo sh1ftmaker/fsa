@@ -37,9 +37,9 @@ public:
     // Overrides in game/tu_80206B30.cpp (0x80206B30-0x80207004; slot order).
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     /* 0x58 */ virtual bool vfunc_0x58();
-    /* 0x5C */ virtual bool vfunc_0x5C();
-    /* 0x60 */ virtual bool vfunc_0x60();
-    /* 0x64 */ virtual bool vfunc_0x64();
+    /* 0x5C */ virtual u8 vfunc_0x5C();
+    /* 0x60 */ virtual u8 vfunc_0x60();
+    /* 0x64 */ virtual u8 vfunc_0x64();
     /* 0x68 */ virtual u8 vfunc_0x68();
     // 0x80204D6C (act_thief): the last slot of the vtable. Tells the camera
     // to keep mPos in view, unless the thief is in state 8 or 9.
