@@ -44,6 +44,4 @@ public:
     /* 0x33C */ SpriteAnim_801D267C mSpriteAnim;
 }; // Size: 0x374
 
-extern "C" s32 fn_800FDEA0(cls_800FE3EC*, JGeometry::TVec3f*, f32, JGeometry::TVec3f*, s32*, u16*, s32);
-
 #endif

@@ -49,6 +49,11 @@ public:
     // tu_801C5B08.cpp (fn_801C5B08) calls it on the current buffer.
     u8 fn_800FE2E4(const JGeometry::TVec3f* pos, s32 layer);
     void fn_800FDE38();
+    // RailBase.cpp (0x800FDEA0, not written yet): r3 is the rail buffer; game/
+    // act_princess_zelda.cpp passes the actor position, 1.0f, an out vector
+    // (the step to add to the position), a layer, an out angle and 0x200.
+    // Returns 3 when the walk is over.
+    s32 fn_800FDEA0(JGeometry::TVec3f* pos, f32 speed, JGeometry::TVec3f* outStep, s32* layer, u16* outAngle, s32 arg);
     bool fn_800FD548(u8 index);
     bool fn_800FD594(u8 index);
     // RailBase.cpp (not written yet): steps the rail in direction dir (1 or -1);

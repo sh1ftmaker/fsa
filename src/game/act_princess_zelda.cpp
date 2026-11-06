@@ -71,8 +71,6 @@ static const u16 lbl_804642B0[8] = {
     0x2C, 0x2D, 0x2E, 0x2F, 0x28, 0x29, 0x2A, 0x2B
 };
 
-static const char lbl_804642C0[] = "enemy_both2_sob.bin";
-
 // .data tables of pointers
 static const s16* lbl_8049CE70[14] = {
     lbl_80464060, lbl_80464084, lbl_804640A8, lbl_804640CC, lbl_804640F0,
@@ -153,18 +151,18 @@ inline bool cls_8049CEE0::stepRail() {
     if (field_0x2fc <= 0) {
         return true;
     }
-    s16 angle = 0;
+    u16 angle = 0;
     JGeometry::TVec3f moveVec(0.0f, 0.0f, 0.0f);
     s32 layer = field_0x4;
     JGeometry::TVec3f pos = mPos;
-    if (fn_800FDEA0(&mRail, &pos, 1.0f, &moveVec, &layer, (u16*)&angle, 0x200) == 3) {
+    if (mRail.fn_800FDEA0(&pos, 1.0f, &moveVec, &layer, &angle, 0x200) == 3) {
         return true;
     }
     field_0x3c.x = moveVec.x;
     field_0x3c.y = moveVec.y;
     field_0x3c.z = moveVec.z;
     mPos += field_0x3c;
-    s32 dir = fn_801F681C((u16)angle);
+    s32 dir = fn_801F681C(angle);
     if (dir >= 0 && dir != mSpriteAnim.mAnim) {
         mSpriteAnim.startAnim_801D22DC(dir, 2, false);
         mSpriteAnim.fn_801D1F14(0.0f);
@@ -172,7 +170,7 @@ inline bool cls_8049CEE0::stepRail() {
     return false;
 }
 
-// FIXME: 93.84% (missing/extra + reloc-name: ours has 3 fewer instrs: 920 vs 923).
+// FIXME: 94.02 %. missing/extra + reloc-name: ours has 4 fewer instrs (919 vs 923); some argument setups before calls are scheduled differently and one comparison compiles to an extra cror.
 void cls_8049CEE0::update() {
     ActorBase_804A5770::update();
     field_0x330 = 1.0f;
@@ -546,9 +544,9 @@ void cls_8049CEE0::draw() {
         params.field_0x10.a = 255.0f * JMath::sincosTable_.sinDegree(field_0x30c * 60);
     }
     if (field_0x320 == 0) {
-        fn_801F02BC(lbl_804642C0, mSpriteAnim.mCel + 0x218, &params, 0x407, 0, false, 1.0f, 1.0f);
+        fn_801F02BC("enemy_both2_sob.bin", mSpriteAnim.mCel + 0x218, &params, 0x407, 0, false, 1.0f, 1.0f);
     } else {
-        fn_801F02BC(lbl_804642C0, mSpriteAnim.mCel + 0x9b, &params, 0x407, 0, false, 1.0f, 1.0f);
+        fn_801F02BC("enemy_both2_sob.bin", mSpriteAnim.mCel + 0x9b, &params, 0x407, 0, false, 1.0f, 1.0f);
     }
 }
 
@@ -597,7 +595,7 @@ bool cls_8049CEE0::fn_80109AE0(JGeometry::TVec3f* outPos) {
     return false;
 }
 
-// FIXME: 99.49% (missing/extra + reloc-name: ours has 1 more instrs (263 vs 262)).
+// FIXME: 99.37 %. missing/extra + reloc-name: ours has 1 more instr (263 vs 262): an extra clrlwi r4,r4,24 before a call, and some instructions are scheduled differently.
 bool cls_8049CEE0::fn_801096C8(s32 state) {
     field_0x32c = field_0x328;
     field_0x328 = state;
@@ -658,6 +656,7 @@ bool cls_8049CEE0::fn_801096C8(s32 state) {
     case 13: {
         for (s32 i = 0; i < 4; i++) {
             fn_80230224(i, 0);
+            // The original narrows the shifted bit to a byte (clrlwi 24) before the test.
             if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
                 fn_8023764C(i, 0);
             }
