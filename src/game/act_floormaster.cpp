@@ -2,6 +2,7 @@
 #include "game/act/act_floormaster.h"
 #include "game/Camera.h"
 #include "game/GameGlobals.h"
+#include "game/Map.h"
 #include "game/Player.h"
 
 static const s16 lbl_8046A3D8[] = { 0, 5, 1, 5, 2, 5, -1, -1 };
@@ -178,5 +179,49 @@ bool Floormaster_804A6004::vfunc_0x5C() {
 void Floormaster_804A6004::vfunc_0xA0() {
     if (mState != 0) {
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    }
+}
+
+void Floormaster_804A6004::draw() {
+    switch (mState) {
+    default: {
+        JGeometry::TVec3f pos = mPos;
+        if (mState == 4 && mStateTimer >= 60) {
+            if (mStateTimer % 4 < 2) {
+                pos.x += 1.0f;
+            } else {
+                pos.x -= 1.0f;
+            }
+        }
+        SpriteParams_801F5AE0 params;
+        params.field_0x1c = 0;
+        params.field_0x1d = 0;
+        Mtx mtx;
+        if (mFlags & 0x8000) {
+            mtx[0][3] = 0.0f;
+            mtx[1][3] = 0.0f;
+            mtx[2][3] = 0.0f;
+            mtx[0][0] = -1.0f;
+            mtx[0][1] = 0.0f;
+            mtx[0][2] = 0.0f;
+            mtx[1][0] = 0.0f;
+            mtx[1][1] = 1.0f;
+            mtx[1][2] = 0.0f;
+            mtx[2][0] = 0.0f;
+            mtx[2][1] = 0.0f;
+            mtx[2][2] = 1.0f;
+            params.mMtx = mtx;
+        }
+        s32 frame = mAnim.mCel + 0x321;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+        }
+        break;
+    }
+    case 0:
+    case 1:
+    case 10:
+        break;
     }
 }
