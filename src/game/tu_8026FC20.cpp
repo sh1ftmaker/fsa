@@ -3,6 +3,7 @@
 #include "game/EmitterDelete.h"
 #include "game/BgRewrite.h"
 #include "game/GameState.h"
+#include "game/GameMode.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 #include "game/ActorBase.h"
@@ -15,12 +16,6 @@
 #include "game/tu_803B8C74.h"
 #include "game/act/tu_803D9944.h"
 #include "JSystem/JMath/JMath.h"
-
-// gGameRoot_8053AAF8->field_0x4c == 7 as a u8: fn_8027057C and fn_80277F98 test the materialised
-// byte (subfic / cntlzw / extrwi.); a plain `return x == 7;` folds into cmpwi / bne.
-static inline u8 isGameMode7() {
-    return gGameRoot_8053AAF8->field_0x4c == 7 ? true : false;
-}
 
 // The current save row's byte 0x7E while the game root's field_0x7f is set, else 0x7F.
 static inline u8 saveRowFlag() {
@@ -1759,7 +1754,7 @@ void Player_804A6F38::fn_80277F98() {
         if (fn_8025F448()) {
             field_0x494 = 0;
             field_0x498 = 0;
-        } else if (!field_0x499 && !field_0xd2d && field_0x494 == 0 && isGameMode7() &&
+        } else if (!field_0x499 && !field_0xd2d && field_0x494 == 0 && isGameMode(7) &&
                    gGameRoot_8053AAF8->field_0x7f && gGameRoot_8053AAF8->field_0x7e) {
             s32 rank = 1;
             for (s32 i = 0; i < 4; i++) {
@@ -4169,7 +4164,7 @@ void Player_804A6F38::fn_8027057C() {
         }
         return;
     }
-    if (isGameMode7() && gGameRoot_8053AAF8->field_0x7f && gGameRoot_8053AAF8->field_0x7e) {
+    if (isGameMode(7) && gGameRoot_8053AAF8->field_0x7f && gGameRoot_8053AAF8->field_0x7e) {
         if (fn_8025F448()) {
             return;
         }

@@ -343,9 +343,9 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   `mScreen->search(0x7072737374727431ull /* "prsstrt1" */)` (tu_803DA6B4.cpp:45).
 - A compare materialised as a byte and tested (`subfic rX, rX, N; cntlzw; extrwi. rX, rX, 8, 19; bne`):
   an inline returning `u8` with `return x == N ? true : false;`, called in the condition
-  (`static inline u8 isGameMode(s32 mode) { return gGameRoot_8053AAF8->field_0x4c == mode ? true : false; }`).
+  (`isGameMode(mode)` in game/GameMode.h).
   A plain `x == N`, a bool return or `return x == N;` fold into `cmpwi; bne`. tu_80285E58 fn_80286688
-  88.7 -> 100 % and the copy inlined in fn_802870C8; tu_8026FC20 isGameMode7 (fn_8027057C). Same shape:
+  88.7 -> 100 % and the copy inlined in fn_802870C8; tu_8026FC20 isGameMode(7) (fn_8027057C). Same shape:
   tu_802F5040 fn_802FB69C, tu_80301CD0, tu_8013AAD4 fn_8013BBE0 (mode 0xC).
 - Early-out tests ending `bne +8; b end` (the last test jumps over a `b` to the epilogue) instead of
   `beq end`: the tests are ONE condition, `if (a || b || !c) return;`, not separate `if`s

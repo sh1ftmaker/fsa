@@ -28,12 +28,6 @@ static inline f32 tileCenter(f32 v) {
     return (f32)((s32)v & 0xFFFFFFF0) + 8.0f;
 }
 
-// gGameRoot_8053AAF8->field_0x4c == mode as a u8 (as tu_8026FC20's isGameMode7): the original
-// tests the materialised byte (subfic / cntlzw / extrwi.).
-static inline u8 isGameMode(s32 mode) {
-    return gGameRoot_8053AAF8->field_0x4c == mode ? true : false;
-}
-
 // Stops an emitter (it runs out) and forgets it.
 static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     if (emitter != NULL) {

@@ -43,6 +43,13 @@ inline u8 isGameModeSetB(s32 mode) {
     return result;
 }
 
+// The current mode == mode, as a u8: the callers test the materialised byte (subfic / cntlzw /
+// extrwi.); a plain `x == N` or a bool return folds into cmpwi / bne (tu_80285E58 fn_80286688,
+// tu_8026FC20 fn_8027057C with mode 7).
+inline u8 isGameMode(s32 mode) {
+    return gGameRoot_8053AAF8->field_0x4c == mode ? true : false;
+}
+
 inline bool isGameModeSet() {
     GameRoot_8049EF20* root = gGameRoot_8053AAF8;
     if (root->field_0x7f) {

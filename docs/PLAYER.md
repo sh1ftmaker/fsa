@@ -1453,9 +1453,9 @@ the three switches, their case groupings and every handler call are proven as wr
 | fn_8028676C | 99.67 | 99.67 regalloc-only | unchanged (f4 / f5 of the two planar lengths; operand swap gives 95.5) |
 
 What the asm proves (all source forms in docs/RULES_CARD.md "Known game-code shapes"):
-- **Mode 0xB byte test** (subfic / cntlzw / extrwi.): `static inline u8 isGameMode(s32 mode)
-  { return gGameRoot_8053AAF8->field_0x4c == mode ? true : false; }`, the tu_8026FC20
-  isGameMode7 form. fn_80286688's three early-outs (mode 0xB, root 0x7E, player bit clear) are
+- **Mode 0xB byte test** (subfic / cntlzw / extrwi.): `inline u8 isGameMode(s32 mode)` in
+  game/GameMode.h (`return ...field_0x4c == mode ? true : false;`, shared with tu_8026FC20's
+  mode-7 test). fn_80286688's three early-outs (mode 0xB, root 0x7E, player bit clear) are
   one `||` condition; separate `if`s give `beq` where the original has `bne +8; b end`.
 - **Index and layer getters**: the original reads field_0x4 and field_0x3b4 through inlined
   getters. Evidence: it loads them into r29 before the other calls of the same expression
