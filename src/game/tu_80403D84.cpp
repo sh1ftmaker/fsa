@@ -275,13 +275,6 @@ void cls_804B1288::fn_80409330() {
     }
 }
 
-BOOL cls_804B1288::fn_804045F8(s32 bit) {
-    if (gGameRoot_8053AAF8->field_0x7e) {
-        return (lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit)) ? TRUE : FALSE;
-    }
-    return FALSE;
-}
-
 void cls_804B1288::fn_80404D70() {
     field_0x370 = 0;
     if (fn_803B8EBC(7)) {
@@ -348,8 +341,13 @@ void cls_804B1288::hideStagePanes(s32 stage) {
     }
 }
 
-// Defined above fn_804045F8 although its address is lower: it inlines fn_804045F8,
-// and only this order compiles to the original's .text order (tools/order_check.py).
+BOOL cls_804B1288::fn_804045F8(s32 bit) {
+    if (gGameRoot_8053AAF8->field_0x7e) {
+        return (lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit)) ? TRUE : FALSE;
+    }
+    return FALSE;
+}
+
 bool cls_804B1288::fn_80404270(s32 stage) {
     if (lbl_80529DEC.field_0x23e[1] == 0 && gGameRoot_8053AAF8->field_0x7e && field_0x656 == 0 &&
         !fn_804045F8(stage))
