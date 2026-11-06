@@ -1700,6 +1700,52 @@ void FileSelect_804AFF60::fn_803C9F14() {
     }
 }
 
+// FIXME: 99.49. Regalloc only: the loop counters / table pointers of the
+// board loops take r24 / r26 / r27 in another order.
+// State 23 (copying): row field_0xa0 slides from the first row's place to the
+// second's and fades in, the boards (field_0x14 / 0x18 / 0x1c) follow it down
+// by one row, the 'Pdb' board slides up out of view (timings lbl_8050DB0C
+// field_0x4c[0xD0..0xD3]); state 24 at the end.
+void FileSelect_804AFF60::fn_803C9338() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0xD0];
+    s16 rowFrames = lbl_8050DB0C.field_0x4c[0xD1];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xD2];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xD3];
+    s32 end = rowDelay + rowFrames;
+    if (end < boardDelay + boardFrames) {
+        end = boardDelay + boardFrames;
+    }
+    field_0xd8++;
+    if (field_0xd8 > rowDelay) {
+        field_0x38[field_0xa0]->fn_80402940(rowFrames, 0, field_0x38[0]->field_0xc - field_0x38[field_0xa0]->field_0xc,
+                                            field_0x38[1]->field_0xc - field_0x38[field_0xa0]->field_0xc);
+        field_0x38[field_0xa0]->fn_80402628(rowFrames, 0, field_0x38[field_0xa0]->field_0x28);
+        setRowAlphas(this, field_0xa0);
+        field_0x14->fn_80402940(rowFrames, 0, 0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x14->fn_80402628(rowFrames, 0, field_0x14->field_0x28);
+        field_0x18->fn_80402940(rowFrames, 0, 0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x18->fn_80402628(rowFrames, 0, field_0x18->field_0x28);
+        field_0x1c->fn_80402940(rowFrames, 0, 0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x1c->fn_80402628(rowFrames, 0, field_0x1c->field_0x28);
+        for (int j = 0; j < 81; j++) {
+            field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+        }
+        for (int j = 0; j < 19; j++) {
+            field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+        }
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x20->fn_80402B10(boardFrames, 0, 0.0f, -600.0f);
+        field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
+        for (int j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(24);
+    }
+}
+
 void FileSelect_804AFF60::fn_803C92B8() {
     if (field_0xb0 > 0) {
         field_0xb0--;
