@@ -46,3 +46,9 @@ rows removed from config/G4SE01/gen_game.tsv (gen_game --check ok).
 Next: fn_80261750 (1 lwz), fn_8025FDD0 / fn_8025EB18 (float registers of the view-corner offset),
 fn_802604CC.
 
+
+## Structural push (Opus 5.5, 2026-11-06)
+Baseline (matching 9c62f288): 9092. fn_802604CC 88.72 -> 96.76 missing/extra (-8): TVec2f
+operator chains, new header include/game/Vec2Ops.h (SHARED-EDIT: new file, used only here).
+FIXME in source names the remaining midpoint copy. fn_80262BAC / fn_80261750 unchanged.
+Details: docs/PLAYER.md "Structural push".

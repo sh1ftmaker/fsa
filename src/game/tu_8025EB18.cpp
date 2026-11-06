@@ -15,6 +15,7 @@
 #include "game/act/act_thief.h"
 #include "game/act/act_cucco.h"
 #include "game/BoxTest.h"
+#include "game/Vec2Ops.h"
 
 // File-scope tables in address order (.rodata). The per-pose tables are flat Vec[4 * n] indexed
 // [pose + facing * n]: a 2-D Vec[4][n] indexed [facing][pose] changes the codegen (tried). Positions are offsets from mPos per
@@ -1238,13 +1239,11 @@ bool Player_804A6F38::fn_80260C08() {
     return false;
 }
 
-// FIXME: 88.72. missing/extra (41 fewer): every call, constant and field is in place (the
-// other rows are register numbers, one 0.5 reload and one beq/bne flip that follow the
-// missing code). The original builds the layer-moved points in stack TVec2 temporaries
-// (the my-layer offset at sp 0x18 / 0x50, its frsp'd copy at 0x38, the probe at 0x58;
-// 0x10 / 0x40 / 0x08 / 0x48 / 0x30 / 0x28 for the midpoint): TVec2 operator+ / operator-
-// style helpers that neither this tree nor the tp donor's JGeometry has; ours keeps them
-// in registers. Kept for the .sdata2 order (first 0.5).
+// FIXME: 96.76. missing/extra (8 fewer): the layer-moved points are TVec2f operator chains
+// (game/Vec2Ops.h) and lay out the original's stack temporaries, except in the midpoint's
+// sum: the original also copies the `+ other` result into its own temporary (sp 0x48) and
+// rounds it again (frsp) before `- box->i`, where ours subtracts from operator+'s local
+// directly. A by-value operator+ there loses every other temporary of the function (88.8 %).
 // Lift another player standing in front (16 along the facing, state 0x11, 'PLAY'): it
 // must be present and free, and both its spot seen from this layer and the midpoint of
 // the two (on both layers) must not be blocked (fn_802260DC / fn_802684A4 unless tile
@@ -1281,7 +1280,8 @@ bool Player_804A6F38::fn_802604CC() {
             // This player's position on the other player's layer.
             JGeometry::TBox2f* box = layerBox(getPlayerLayer_8023DE58(i));
             JGeometry::TBox2f* myBox = layerBox(field_0x3b4);
-            JGeometry::TVec2f pos(mPos.x - myBox->i.x + box->i.x, mPos.y - myBox->i.y + box->i.y);
+            JGeometry::TVec2f pos;
+            pos = xy(mPos) - myBox->i + box->i;
             if ((fn_802260DC(&pos, getPlayerLayer_8023DE58(i), true)
                  || fn_802684A4((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)))
                 && fn_802265FC((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)) != 0x20) {
@@ -1291,10 +1291,9 @@ bool Player_804A6F38::fn_802604CC() {
             box = layerBox(getPlayerLayer_8023DE58(i));
             JGeometry::TVec3f* other = getPlayerPos_8023E724(i);
             myBox = layerBox(field_0x3b4);
-            JGeometry::TVec2f mid((mPos.x - myBox->i.x + other->x - box->i.x) * 0.5f,
-                                  (mPos.y - myBox->i.y + other->y - box->i.y) * 0.5f);
+            JGeometry::TVec2f mid = (xy(mPos) - myBox->i + xy(*other) - box->i) * 0.5f;
             box = layerBox(getPlayerLayer_8023DE58(i));
-            pos.set(mid.x + box->i.x, mid.y + box->i.y);
+            pos = mid + box->i;
             if ((fn_802260DC(&pos, getPlayerLayer_8023DE58(i), true)
                  || fn_802684A4((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)))
                 && fn_802265FC((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)) != 0x20) {
@@ -1302,7 +1301,7 @@ bool Player_804A6F38::fn_802604CC() {
             }
             if (getLayer() != getPlayerLayer_8023DE58(i)) {
                 myBox = layerBox(field_0x3b4);
-                pos.set(mid.x + myBox->i.x, mid.y + myBox->i.y);
+                pos = mid + myBox->i;
                 if ((fn_802260DC(&pos, field_0x3b4, true) || fn_802684A4((const JGeometry::TVec3f*)&pos, field_0x3b4))
                     && fn_802265FC((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)) != 0x20) {
                     continue;

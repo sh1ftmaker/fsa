@@ -1596,3 +1596,47 @@ Evidence:
   include/game/tu_801213EC.h (fn_80124600), config/G4SE01/symbols.txt (3 renames),
   config/G4SE01/gen_game.tsv (re-pins of tu_8022AD64; gate --base matching flags the protected
   file, as for every re-pin).
+
+## Structural push (tu_8025EB18 / tu_80256C74 / tu_80264998) (Opus 5.5, 2026-11-06)
+
+Goal: every Player function at least structurally matched. Numbers are try.py on this branch
+pair against `matching` 9c62f288.
+
+| function | before | after | class / what still differs |
+|---|---|---|---|
+| tu_8025EB18 fn_802604CC | 88.72 missing/extra (-41) | 96.76 missing/extra (-8) | TVec2f operator chains (game/Vec2Ops.h); only the midpoint's `+ other` lacks the original's extra return copy |
+| tu_80256C74 fn_8025785C | 90.40 missing/extra (+9) | 95.14 different (block order + r30/r31 only) | see below |
+| tu_80256C74 fn_8025C894 | 99.06 different | **100** | |
+| tu_80256C74 fn_8025BEB0 | 98.98 missing/extra (+1) | 99.82 missing/extra (+1) | side shot's argument built in r0, moved to r30 |
+| tu_8025EB18 fn_80262BAC, fn_80261750; tu_80256C74 fn_8025D7E4, fn_8025DACC; tu_80264998 fn_80267ECC | unchanged | | tried, see below |
+
+- **TVec2 temporaries (fn_802604CC)**: the original builds `mPos - myBox->i + box->i` (and the
+  midpoint `(mPos - myBox->i + other - box->i) * 0.5`) in stack TVec2s: each operator copies
+  its left operand into a local, changes it, and the result is copied on; values copied out
+  of a returned temporary get an `frsp`. game/Vec2Ops.h gives TVec2f free operators in the
+  later JGeometry's shape (SMG TVec.hpp, reference only: `ret(*this)`, change, return) plus
+  `xy(TVec3f)` (TVec3's `operator const TVec2<f32>&`). The layout needs operator- and
+  operator* by value and **operator+ returning a reference to its local** (as SMG's
+  addOperatorInline; MWCC warns "reference to an automatic variable", as in tu_8022AD64 /
+  tu_80127E20): with operator+ by value too MWCC scalarises the whole chain (88.80), member
+  operators in libs TVec2 give 95.22, a split `sum` local or `pos.set(...)` change nothing.
+  The three `pos = ...` blocks are exact; the midpoint's `+ other` is copied to its own
+  temporary (sp 0x48) and re-rounded before `- box->i` in the original only.
+- **Charged-shot arguments (fn_8025C894 100 %, fn_8025BEB0)**: `((field_0x3dc & 3) << 4) |
+  (index & 3)` (facing first in the source) gives the original's `clrlwi index; rlwimi
+  facing`; `(index & 3) | (facing << 4)` builds it the other way round.
+- **fn_8025785C, the item check**: every refusal of items 6 and 7 branches straight to the
+  final `field_0x1174 = 0` in the original. Written as two file-local inline members
+  (`requestFlame_8025785C` for item 6 below level 2, `requestJump_8025785C` for item 7) whose
+  refusals `return` (no out-of-line copy is emitted or survives; a whole-dispatch helper is
+  too big to inline: 5.4 %). The flame count starts after the second fn_802415CC call, as
+  the original's `li r3, 0`. Item 8's table entry is copied member by member (RULES_CARD,
+  three lfs / stfs then psq_l). Left: the original lays out item 7's `mPos.z > 0` test
+  after the floor probe; the source order that gives that layout
+  (`if (viewLayerFlag) { probe } else if (mPos.z > 0.0f) return;`, 98.07 %) pools 2.0f
+  before 0.0f in .sdata2 and drops 11 of the unit's functions to reloc-name, so the z test
+  stays first. A bool helper (`canJump`) materialises the result (92.2).
+- Tried without gain: fn_80262BAC's mPos.x reload (left as is); fn_8025D7E4's extra copy of
+  `mPos + offset` (`pos = ...` same, `pos.set(mPos + offset)` 93.5, `pos(mPos); pos +=
+  offset` 94.0); fn_80267ECC's duplicated `field_0x3c4 += field_0x3fb` after case 4 (an
+  if / else around the switch gives the same 96.69). fn_80261750 (+1) not attempted.
