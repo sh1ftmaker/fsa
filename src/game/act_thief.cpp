@@ -312,8 +312,11 @@ void Thief_804A5A30::fn_80205E0C(s32 newState) {
     mState = newState;
 }
 
-// FIXME: 93.42% (different + reloc-name). Same length (538 instructions); register allocation (this in r29 vs r31).
+// FIXME: 94.19%. Ours has one more instruction (539 vs 538), the rest is register allocation (this in r29 vs
+// r31, the layer argument of fn_801CF888 in states 0 and 6 is loaded into a saved register before
+// getPlayerPos_8023E724 in the original) and literal relocations.
 void Thief_804A5A30::vfunc_0x90(u8 mapHit) {
+    // Declared at function scope (not in the state 4 loop) for the original's register assignment.
     u32 gemType = 0;
 
     if (mapHit) {
@@ -401,7 +404,7 @@ void Thief_804A5A30::vfunc_0x90(u8 mapHit) {
             if (mapHit) {
                 fn_801D11FC();
             }
-            field_0x33c = field_0x374.fn_8021B904(field_0x33c, mapHit != 0);
+            field_0x33c = field_0x374.fn_8021B904(field_0x33c, mapHit);
         }
         break;
     case 1:
@@ -414,7 +417,7 @@ void Thief_804A5A30::vfunc_0x90(u8 mapHit) {
             field_0x32c.z = target->mPos.z;
             f32 dx = field_0x32c.x - mPos.x;
             f32 dy = field_0x32c.y - mPos.y;
-            if (dx * dx + dy * dy <= 100.0f) {
+            if (square(dx) + square(dy) <= 100.0f) {
                 startSound_801F0E34(0x4009F, 0);
                 s32 amount = target->fn_8032D564(target->field_0x90 & 0xFF);
                 if (amount > 3000) {
@@ -503,7 +506,7 @@ void Thief_804A5A30::vfunc_0x90(u8 mapHit) {
         if (mapHit) {
             fn_801D11FC();
         }
-        field_0x33c = field_0x374.fn_8021B904(field_0x33c, mapHit != 0);
+        field_0x33c = field_0x374.fn_8021B904(field_0x33c, mapHit);
         break;
     case 9:
         break;
@@ -609,6 +612,7 @@ void Thief_804A5A30::vfunc_0x9C(u8 mapHit) {
             fn_801F31C4(&box);
             for (s32 i = 0; i < 4; i++) {
                 if (fn_801CCFE4(i)) {
+                    // Local for codegen: the original reads our layer before calling getPlayerLayer_8023DE58.
                     s32 layer = field_0x4;
                     if (getPlayerLayer_8023DE58(i) == layer &&
                         fn_80239C00(i, &box, field_0x4) &&
