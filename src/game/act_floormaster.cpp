@@ -2,9 +2,12 @@
 #include "game/act/act_floormaster.h"
 #include "game/ActorManager.h"
 #include "game/Camera.h"
+#include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "game/Player.h"
+
+bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold);
 
 static const s16 lbl_8046A3D8[] = { 0, 5, 1, 5, 2, 5, -1, -1 };
 static const s16 lbl_8046A3E8[] = { 3, 5, 4, 10, -1, -1 };
@@ -68,6 +71,77 @@ void Floormaster_804A6004::init() {
     mTargetSpeed = 0.0f;
     mAnim.fn_801D2608(lbl_804A5FE8, 7);
     mAnim.startAnim_801D22DC(0, 0, false);
+}
+
+// FIXME: 99.79%. operands + reloc-name (stack slot order)
+void Floormaster_804A6004::fn_8020EB08() {
+    JGeometry::TVec3f diff;
+    JGeometry::TVec3f targetPos;
+    JGeometry::TVec3f pPos;
+
+    setEmitterPos_8013CB44(mEmitter2b0, &mPos, 0, 0, true);
+    switch (mState) {
+    case 1:
+    case 2:
+    case 3:
+        if (field_0x2b8 >= 0) {
+            field_0x2bc++;
+        }
+        s32 player = fn_801D05F8(&mPos, 0.0f);
+        if (player != field_0x2b8) {
+            if (field_0x2b8 < 0) {
+                field_0x2b8 = player;
+                field_0x2bc = 0;
+            } else if (player < 0) {
+                field_0x2b8 = -1;
+                field_0x2bc = 0;
+            } else if (field_0x2bc >= 45) {
+                field_0x2b8 = player;
+                field_0x2bc = 0;
+            }
+        }
+        break;
+    }
+
+    bool inRange = false;
+    switch (mState) {
+    case 5:
+    case 6:
+    case 7:
+        inRange = true;
+        break;
+    }
+    if (inRange) {
+        pPos = *getPlayerPos_8023E724(field_0x2b8);
+        targetPos = pPos;
+        f32 x, y, z;
+        if (mState == 6) {
+            x = mPos.x;
+            y = mPos.y;
+            z = 16.0f;
+        } else {
+            x = mPos.x;
+            y = mPos.y;
+            z = 0.0f;
+        }
+        fn_801CD8E4(&targetPos.x, x, 0.2f, 0.0f);
+        fn_801CD8E4(&targetPos.y, y, 0.2f, 0.0f);
+        fn_801CD8E4(&targetPos.z, z, 0.2f, 0.0f);
+
+        if (mState == 5) {
+            fn_80230498(field_0x2b8, &targetPos, (u16)fn_8023CBC0(field_0x2b8), 0xFF, -0x80, -0x80, true);
+        } else {
+            diff = targetPos - pPos;
+            fn_8023DFF4(field_0x2b8, &diff);
+        }
+    }
+
+    if (mFlags & 0x4000) {
+        if (fn_8022DD74(field_0x2c0)) {
+            mFlags &= ~0x4000;
+            field_0x2c0 = -1;
+        }
+    }
 }
 
 // FIXME: 98.69%. regalloc-only + reloc-name
