@@ -2217,6 +2217,53 @@ void FileSelect_804AFF60::fn_803C1734() {
     setState(18);
 }
 
+// FIXME: 99.94. Instructions identical; .sdata2 literal names only.
+// fn_803CABAC (the file menu), the copy entry: the file cursor slides off to
+// the left and fades, the copy / delete buttons get the 'Pcopb01' colours,
+// the rows, board and buttons stop and the rows' target x (field_0x64 /
+// field_0x70) are cleared; state 20.
+void FileSelect_804AFF60::fn_803C1340() {
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pcopb02'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pdelb01'))->setBlackWhite(field_0xe4, field_0xe0);
+    ((J2DPicture*)mScreenHuuin->search('Pdelb02'))->setBlackWhite(field_0xe4, field_0xe0);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x14->field_0x20 = 0;
+    field_0x14->field_0x26 = 0;
+    field_0x18->field_0x20 = 0;
+    field_0x18->field_0x26 = 0;
+    field_0x1c->field_0x20 = 0;
+    field_0x1c->field_0x26 = 0;
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x24[i]->field_0x22 = 0;
+        field_0x24[i]->field_0x26 = 0;
+    }
+    for (s32 i = 0; i < 3; i++) {
+        field_0x70[i] = 0.0f;
+        field_0x64[i] = 0.0f;
+    }
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(20);
+}
+
 // Not auto-inlined: fn_803C7CA0 calls fn_803C1054 out of line in the original
 // (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
