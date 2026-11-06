@@ -22,12 +22,22 @@ struct cls_80216238 {
     void fn_80215E18();
 }; // Size: 0x24
 
+// tu_8021BFA8.cpp
+struct cls_8021C024 {
+    int fn_8021C024();
+    void fn_8021C078();
+
+    /* 0x0 */ int field_0x0;
+    /* 0x4 */ u32 field_0x4;
+    /* 0x8 */ int field_0x8;
+};
+
 // The table the horse-race man keeps at 0x2B8. No vtable, ctor or dtor
 // symbol; named after its lowest-address function that takes it as `this`.
 struct cls_80215E48 {
     /* 0x00 */ s32 mCount; // fn_80138A30(): the number of players
     /* 0x04 */ cls_80216238 mEntries[4];
-    /* 0x94 */ u8 field_0x94[0xC]; // a cls_8021C024 (tu_8021BFA8.cpp), reset by fn_8021C078
+    /* 0x94 */ cls_8021C024 field_0x94; // a cls_8021C024 (tu_8021BFA8.cpp), reset by fn_8021C078
     /* 0xA0 */ u8 field_0xa0;      // zeroed by fn_80216178
     // Entry `index`'s mKey.
     s32 fn_80215E48(s32 index);
