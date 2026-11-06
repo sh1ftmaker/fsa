@@ -386,6 +386,35 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - Not the const-this shape: a different order among loads only (no load moved past a store or the
   prologue) — GameView fn_802D7F40 made const stays 85.2 %. tu_801ED3DC fn_801ED3DC (loads moved above
   the stores through a global) is: const, 84.0 -> 100 %.
+  Shape sweep 2 (2026-11-06): const to 100 % in tu_801CDC8C fn_801CF0F4, tu_8020CCA8 fn_8020D2AC,
+  tu_801DAC6C fn_801DAD2C / fn_801DACAC. A loop count the original loads above the saves: const AND
+  the loop tests the member (`for (i = 0; i < mCount; i++)`); a `s32 count = mCount;` local keeps the
+  load below the saves even under const (tu_801DAC6C fn_801DAE24 86.9 -> 100, tu_80215A94 fn_8021606C
+  91.6 -> 100; const with the local: 87.4, a drop). Did not generalise: a callee made const only so a
+  const caller compiles can lose at its own inlined sites — Player fn_80247BD4 const drops fn_8024762C
+  99.8 -> 99.2, so fn_80270ABC (100 % const) stays plain; act_icicle fn_8010B284 (mPos.z for a TVec3
+  copy above the saves) made const falls 97.4 -> 84.2. A function already at reloc-name-only with the
+  load above the saves needs nothing (tu_80125B58 fn_80125BF4 const: 99.8 -> 48).
+- The tile-code `vfunc_0x4C` family (fn_8022461C code, fn_80226850 tile): act_bombchu's form generalises —
+  the never-blocking codes as ONE `!=` chain `if (code != 0 && code != 4 && ...) { ... }` around the
+  remaining tests, `return (u8)(view->field_0x171 == 0)` / `== 1` for 0x25 / 0x26 (extrwi), `if (code !=
+  0x22 || view->field_0x170 == 1) return true;`, then `return false`. A switch gives a search tree, a
+  negated `==` chain or `==` chain returning false folds 2..7 into a range. Runs the original folds
+  (0x10-0x17: subi; cmplwi 7) are `==` chains; `>= 0x10 && <= 0x17` gives two cmpwi. Codes in `s32`
+  locals (clrlwi 16 then cmpwi; a u16 local gives cmplwi). Shape sweep 2: act_octorok_rock 68.7 -> 100,
+  act_dropped_item 85.1 -> 100 (its inner tests fall through to the else's shared `return false`),
+  act_recovery_heart 61.5 -> 99.96, act_small_key fn_802C1970 85.3 -> 98.5, act_somaria_block 57.5 ->
+  96.8, tu_8017A44C 72.7 -> 99.0, act_two_sword_motion 84.1 -> 92.1 (s32 code).
+- Resource type codes `u32 type = 'M   '; type += ((s[0] - ' ') << 16) + ((s[1] - ' ') << 8) + (s[2] -
+  ' ');` (GameView): also tu_802E2074 cls_804A9BC8 init ('B   ' set before the sprintf, the add after it;
+  86.5 -> 96.2).
+- Did not generalise (shape sweep 2): `return a() || b();` for a bool local — Player fn_80240DCC (the
+  target sets `result = true` first, li r31 1) 92.3 -> 81.2, EnemyBase fn_801D08B4 99.7 -> 91.1; keep
+  the local where the target materialises it before the tests. getField_0x4() as a later argument of a
+  call whose earlier argument is itself a call (act_thief fn_801CF888(.., getPlayerPos_8023E724(p),
+  layer): no change), or on another object (tu_8021775C `mOwner->getField_0x4()`: no change).
+- A u16 converted to float with the signed form (xoris): `(s32)mode->fbWidth`, as for u8 (tu_801ED3DC
+  fn_801ED828 83.8 -> 90.1).
 
 - A u8 global or field tested with `lbz; cmpwi 0` (plain u8 gives cmplwi): `(s32)flag != 0` (reviewed
   form, tu_8025EB18 fn_80263078's cucco 0x2A1 `== 1`; tu_80285E58 lbl_8053ABA8 / lbl_8053ABF0).
