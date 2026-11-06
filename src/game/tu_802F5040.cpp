@@ -115,6 +115,23 @@ static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
     return result;
 }
 
+// One shade of fn_802FA3FC's stage tables (0x28 bytes): drawn on every tile
+// whose code is mTile, at the tile's corner + (mX, mY): kind 0 the
+// parallelogram of 96 * mU and 96 * mV from there, kind 1 the quad of
+// 24 * mV either side stretched by 64 * mU, kind 2 that plus one stretched by
+// -4 * mU. mMore: the next entry is for the same tile.
+struct TileShade_802FA3FC {
+    /* 0x00 */ u16 mTile;
+    /* 0x02 */ u16 field_0x2[4]; // two more tile codes in some entries (0x36A / 0x37B, 0x36C / 0x37D); not read here
+    /* 0x0A */ u8 mMore;
+    /* 0x0B */ u8 mAlpha;
+    /* 0x0C */ f32 mX;
+    /* 0x10 */ f32 mY;
+    /* 0x14 */ s32 mKind;
+    /* 0x18 */ f32 mU[2];
+    /* 0x20 */ f32 mV[2];
+}; // Size: 0x28
+
 // Forward declarations.
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out);
 
@@ -661,6 +678,352 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
             }
         }
         GXEnd();
+    }
+}
+
+// FIXME: 98.2. Register allocation and data offsets only (try.py "operands +
+// reloc-name"): the tables and "circle.bti" sit 0xB0 / 0x218 too early in our
+// .rodata (fn_802FCE74's and fn_802FAC10's tables and fn_802F6800's five are
+// not written), and the three GXColor templates are .sbss2 0x80543F54-5C,
+// outside this unit's split (0x80543F60). Registers r16-r29 / f20-f31 rotate.
+// Draws the stage's tile shades: for layer 0 at field_0x2368 (when
+// field_0x235c[0] is set) and layer 4 at field_0x2374 (field_0x2360[1]), every
+// tile of the 2 x 2 blocks of 16 x 16 (up to half the height grid's cells) whose
+// code has entries in the stage's table (by the first letter of the stage name)
+// gets those shapes of "circle.bti" in black with the entry's alpha (TEV
+// swap: the texture's alpha from its red), at z 614.4.
+void TileMap_804AA858::fn_802FA3FC() {
+    // stage 'f' (alpha * 0.85) and every stage without its own table.
+    static const TileShade_802FA3FC lbl_8046FA70[34] = {
+        {0x36C, {0}, 0, 95, 11.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x36A, {0}, 0, 95, 8.0f, 11.0f, 1, {0.0f, 1.0f}, {1.0f, 0.0f}},
+        {0x362, {0x36A, 0x36C}, 0, 31, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x363, {0x36A, 0x37D}, 0, 31, 5.0f, 11.0f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x372, {0x37B, 0x36C}, 0, 31, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x373, {0x37B, 0x37D}, 0, 31, 5.0f, 5.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x34D, {0}, 0, 95, 5.0f, 5.0f, 1, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x36E, {0}, 0, 95, 11.0f, 5.0f, 1, {0.0f, 1.0f}, {1.0f, 1.0f}},
+        {0x35D, {0}, 0, 95, 5.0f, 11.0f, 1, {1.0f, 0.0f}, {1.0f, 1.0f}},
+        {0x121, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x11B, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x120, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x105, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x122, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x169, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x16B, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x160, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x167, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x163, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x14A, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x15C, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x140, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x155, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x145, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x19B, {0}, 0, 135, 16.0f, 24.0f, 1, {0.7f, 0.0f}, {0.0f, 1.0f}},
+        {0x189, {0}, 0, 135, 16.0f, 24.0f, 1, {0.7f, 0.0f}, {0.0f, 1.0f}},
+        {0x194, {0}, 0, 135, 16.0f, 24.0f, 1, {0.7f, 0.0f}, {0.0f, 1.0f}},
+        {0x367, {0}, 1, 119, 5.0f, 11.0f, 0, {-0.4f, 0.4f}, {0.0f, 1.0f}},
+        {0x367, {0}, 0, 119, 5.0f, 11.0f, 0, {0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x376, {0}, 1, 95, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.4f, -0.4f}},
+        {0x376, {0}, 0, 95, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, 0.4f}},
+        {0x366, {0}, 1, 135, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 1, 135, 11.0f, 11.0f, 0, {-0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 0, 135, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, -0.4f}},
+    };
+    // stage 'b' (moved 3 towards the tile centre).
+    static const TileShade_802FA3FC lbl_8046FFC0[33] = {
+        {0x36C, {0}, 1, 95, 18.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x36C, {0}, 0, 95, 18.0f, 8.0f, 1, {-0.2f, 0.0f}, {0.0f, 1.0f}},
+        {0x36A, {0}, 1, 95, 8.0f, 18.0f, 1, {0.0f, 1.0f}, {1.0f, 0.0f}},
+        {0x36A, {0}, 0, 95, 8.0f, 18.0f, 1, {0.0f, -0.2f}, {1.0f, 0.0f}},
+        {0x362, {0x36A, 0x36C}, 1, 31, 2e+01f, 2e+01f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x362, {0x36A, 0x36C}, 1, 31, 2e+01f, 2e+01f, 0, {-0.2f, 0.0f}, {0.0f, 1.0f}},
+        {0x362, {0x36A, 0x36C}, 1, 31, 2e+01f, 2e+01f, 0, {1.0f, 0.0f}, {0.0f, -0.2f}},
+        {0x362, {0x36A, 0x36C}, 0, 31, 2e+01f, 2e+01f, 0, {-0.2f, 0.0f}, {0.0f, -0.2f}},
+        {0x363, {0x36A, 0x37D}, 1, 31, -4.0f, 2e+01f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x363, {0x36A, 0x37D}, 1, 31, -4.0f, 2e+01f, 0, {0.2f, 0.0f}, {0.0f, 1.0f}},
+        {0x363, {0x36A, 0x37D}, 1, 31, -4.0f, 2e+01f, 0, {-1.0f, 0.0f}, {0.0f, -0.2f}},
+        {0x363, {0x36A, 0x37D}, 0, 31, -4.0f, 2e+01f, 0, {0.2f, 0.0f}, {0.0f, -0.2f}},
+        {0x372, {0x37B, 0x36C}, 1, 31, 2e+01f, -4.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x372, {0x37B, 0x36C}, 1, 31, 2e+01f, -4.0f, 0, {-0.2f, 0.0f}, {0.0f, -1.0f}},
+        {0x372, {0x37B, 0x36C}, 1, 31, 2e+01f, -4.0f, 0, {1.0f, 0.0f}, {0.0f, 0.2f}},
+        {0x372, {0x37B, 0x36C}, 0, 31, 2e+01f, -4.0f, 0, {-0.2f, 0.0f}, {0.0f, 0.2f}},
+        {0x373, {0x37B, 0x37D}, 1, 31, -4.0f, -4.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x373, {0x37B, 0x37D}, 1, 31, -4.0f, -4.0f, 0, {0.2f, 0.0f}, {0.0f, -1.0f}},
+        {0x373, {0x37B, 0x37D}, 1, 31, -4.0f, -4.0f, 0, {-1.0f, 0.0f}, {0.0f, 0.2f}},
+        {0x373, {0x37B, 0x37D}, 0, 31, -4.0f, -4.0f, 0, {0.2f, 0.0f}, {0.0f, 0.2f}},
+        {0x367, {0}, 1, 119, 5.0f, 18.0f, 0, {-0.4f, 0.4f}, {0.0f, 1.0f}},
+        {0x367, {0}, 1, 119, 5.0f, 18.0f, 0, {-0.4f, 0.4f}, {0.0f, -0.2f}},
+        {0x367, {0}, 1, 119, 5.0f, 18.0f, 0, {0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x367, {0}, 0, 119, 5.0f, 18.0f, 0, {0.4f, 0.0f}, {0.0f, -0.2f}},
+        {0x376, {0}, 1, 95, 18.0f, 5.0f, 0, {1.0f, 0.0f}, {0.4f, -0.4f}},
+        {0x376, {0}, 1, 95, 18.0f, 5.0f, 0, {-0.2f, 0.0f}, {0.4f, -0.4f}},
+        {0x376, {0}, 1, 95, 18.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, 0.4f}},
+        {0x376, {0}, 0, 95, 18.0f, 5.0f, 0, {-0.2f, 0.0f}, {0.0f, 0.4f}},
+        {0x366, {0}, 1, 135, 18.0f, 18.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 1, 135, 18.0f, 18.0f, 0, {-0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 1, 135, 18.0f, 18.0f, 0, {-0.4f, 0.0f}, {0.0f, -0.2f}},
+        {0x366, {0}, 1, 135, 18.0f, 18.0f, 0, {1.0f, 0.0f}, {0.0f, -0.4f}},
+        {0x366, {0}, 0, 135, 18.0f, 18.0f, 0, {-0.2f, 0.0f}, {0.0f, -0.4f}},
+    };
+    // stage 'c'.
+    static const TileShade_802FA3FC lbl_804704E8[6] = {
+        {0x25B, {0}, 0, 31, 1.0f, -4.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x254, {0}, 0, 31, 15.0f, -4.0f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x26C, {0}, 0, 31, 16.0f, 3.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x263, {0}, 0, 31, 0.0f, 3.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x25C, {0}, 0, 47, 15.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x2A8, {0}, 0, 55, 8.0f, -6.0f, 1, {0.0f, 3.0f}, {1.0f, 0.0f}},
+    };
+    // stage 'e'.
+    static const TileShade_802FA3FC lbl_804705D8[37] = {
+        {0x362, {0x36A, 0x36C}, 0, 31, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x363, {0x36A, 0x37D}, 0, 31, 5.0f, 11.0f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x372, {0x37B, 0x36C}, 0, 31, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x373, {0x37B, 0x37D}, 0, 31, 5.0f, 5.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x36C, {0}, 0, 95, 11.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x36A, {0}, 0, 95, 8.0f, 11.0f, 1, {0.0f, 1.0f}, {1.0f, 0.0f}},
+        {0x34D, {0}, 0, 95, 5.0f, 5.0f, 1, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x36E, {0}, 0, 95, 11.0f, 5.0f, 1, {0.0f, 1.0f}, {1.0f, 1.0f}},
+        {0x35D, {0}, 0, 95, 5.0f, 11.0f, 1, {1.0f, 0.0f}, {1.0f, 1.0f}},
+        {0x121, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x11B, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x120, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x105, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x122, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x169, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x16B, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x160, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x167, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x163, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x14A, {0}, 0, 95, 8.0f, -1.0f, 2, {0.0f, -1.0f}, {1.0f, 0.0f}},
+        {0x15C, {0}, 0, 95, 17.0f, 8.0f, 2, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x140, {0}, 0, 79, 5.0f, 5.0f, 2, {-1.0f, -1.0f}, {-1.0f, 1.0f}},
+        {0x155, {0}, 0, 79, 13.0f, 13.0f, 2, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x145, {0}, 0, 119, 13.0f, 5.0f, 2, {1.0f, -1.0f}, {-1.0f, -1.0f}},
+        {0x367, {0}, 1, 119, 5.0f, 11.0f, 0, {-0.4f, 0.4f}, {0.0f, 1.0f}},
+        {0x367, {0}, 0, 119, 5.0f, 11.0f, 0, {0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x376, {0}, 1, 95, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.4f, -0.4f}},
+        {0x376, {0}, 0, 95, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, 0.4f}},
+        {0x366, {0}, 1, 135, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 1, 135, 11.0f, 11.0f, 0, {-0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 0, 135, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, -0.4f}},
+        {0x27D, {0}, 0, 31, 1.0f, -4.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x272, {0}, 0, 31, 15.0f, -4.0f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x25D, {0}, 0, 31, 16.0f, 3.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x252, {0}, 0, 31, 0.0f, 3.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x25B, {0}, 0, 47, 15.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x2A8, {0}, 0, 55, 8.0f, -6.0f, 1, {0.0f, 3.0f}, {1.0f, 0.0f}},
+    };
+    // stage 'i'.
+    static const TileShade_802FA3FC lbl_80470BA0[24] = {
+        {0x36C, {0}, 1, 95, 15.0f, 8.0f, 1, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x36C, {0}, 0, 95, 15.0f, 8.0f, 1, {-0.2f, 0.0f}, {0.0f, 1.0f}},
+        {0x36A, {0}, 1, 95, 8.0f, 15.0f, 1, {0.0f, 1.0f}, {1.0f, 0.0f}},
+        {0x36A, {0}, 0, 95, 8.0f, 15.0f, 1, {0.0f, -0.2f}, {1.0f, 0.0f}},
+        {0x362, {0x36A, 0x36C}, 0, 31, 11.0f, 11.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x363, {0x36A, 0x37D}, 0, 31, 5.0f, 11.0f, 0, {-1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x372, {0x37B, 0x36C}, 0, 31, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x373, {0x37B, 0x37D}, 0, 31, 5.0f, 5.0f, 0, {-1.0f, 0.0f}, {0.0f, -1.0f}},
+        {0x34D, {0}, 1, 95, 9.0f, 9.0f, 1, {1.0f, 1.0f}, {1.0f, -1.0f}},
+        {0x34D, {0}, 0, 95, 9.0f, 9.0f, 1, {-0.2f, -0.2f}, {1.0f, -1.0f}},
+        {0x36E, {0}, 1, 95, 7.0f, 9.0f, 1, {0.0f, 1.0f}, {1.0f, 1.0f}},
+        {0x36E, {0}, 0, 95, 7.0f, 9.0f, 1, {0.0f, -0.2f}, {1.0f, 1.0f}},
+        {0x35D, {0}, 1, 95, 9.0f, 7.0f, 1, {1.0f, 0.0f}, {1.0f, 1.0f}},
+        {0x35D, {0}, 0, 95, 9.0f, 7.0f, 1, {-0.2f, 0.0f}, {1.0f, 1.0f}},
+        {0x367, {0}, 1, 119, 5.0f, 11.0f, 0, {-0.4f, 0.4f}, {0.0f, 1.0f}},
+        {0x367, {0}, 1, 119, 5.0f, 15.0f, 0, {0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x367, {0}, 0, 119, 5.0f, 15.0f, 0, {0.4f, 0.0f}, {0.0f, -0.2f}},
+        {0x376, {0}, 1, 95, 11.0f, 5.0f, 0, {1.0f, 0.0f}, {0.4f, -0.4f}},
+        {0x376, {0}, 1, 95, 15.0f, 5.0f, 0, {1.0f, 0.0f}, {0.0f, 0.4f}},
+        {0x376, {0}, 0, 95, 15.0f, 5.0f, 0, {-0.2f, 0.0f}, {0.0f, 0.4f}},
+        {0x366, {0}, 1, 135, 15.0f, 15.0f, 0, {1.0f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 1, 135, 15.0f, 15.0f, 0, {-0.4f, 0.0f}, {0.0f, -0.4f}},
+        {0x366, {0}, 1, 135, 15.0f, 15.0f, 0, {-0.4f, 0.0f}, {0.0f, 1.0f}},
+        {0x366, {0}, 0, 135, 15.0f, 15.0f, 0, {1.0f, 0.0f}, {0.0f, -0.4f}},
+    };
+
+    f32 alphaScale = 1.0f;
+    s8 stage = getGameView_802D6A9C()->fn_802D9C4C()[0];
+    JUTTexture tex((const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "circle.bti"), 0);
+    const TileShade_802FA3FC* table;
+    s32 count;
+    switch (stage) {
+    case 'c':
+        table = lbl_804704E8;
+        count = ARRAY_SIZE(lbl_804704E8);
+        break;
+    case 'b':
+        table = lbl_8046FFC0;
+        count = ARRAY_SIZE(lbl_8046FFC0);
+        break;
+    case 'e':
+        table = lbl_804705D8;
+        count = ARRAY_SIZE(lbl_804705D8);
+        break;
+    case 'f':
+        alphaScale = 0.85f;
+        table = lbl_8046FA70;
+        count = ARRAY_SIZE(lbl_8046FA70);
+        break;
+    case 'i':
+        table = lbl_80470BA0;
+        count = ARRAY_SIZE(lbl_80470BA0);
+        break;
+    default:
+        table = lbl_8046FA70;
+        count = ARRAY_SIZE(lbl_8046FA70);
+        break;
+    }
+    gGameRoot2_8053AB10->fn_8013B438();
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP1);
+    GXSetTevSwapModeTable(GX_TEV_SWAP1, GX_CH_ALPHA, GX_CH_ALPHA, GX_CH_ALPHA, GX_CH_RED);
+    GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_SET);
+    tex.load(GX_TEXMAP0);
+    for (s32 pass = 0; pass < 2; pass++) {
+        f32 originX;
+        f32 originY;
+        u16* grid;
+        if (pass == 0) {
+            originX = field_0x2368.x;
+            originY = field_0x2368.y;
+            grid = mLayerGrid[0];
+        } else {
+            originX = field_0x2374.x;
+            originY = field_0x2374.y;
+            grid = mLayerGrid2[0];
+        }
+        if ((pass != 0 || !field_0x235c[0]) && (pass != 1 || !field_0x2360[1])) {
+            continue;
+        }
+        for (s32 by = 0; by < 2; by++) {
+            for (s32 bx = 0; bx < 2; bx++) {
+                for (s32 y = 0; y < 16 && by * 16 + y < field_0x2384 / 2; y++) {
+                    f32 tileY = 614.4f + (16.0f * (by * 16 + y) + originY);
+                    for (s32 x = 0; x < 16 && bx * 16 + x < field_0x2380 / 2; x++) {
+                        u16 tile = grid[((by * 2 + bx) * 16 + y) * 16 + x];
+                        f32 tileX = 16.0f * (bx * 16 + x) + originX;
+                        const TileShade_802FA3FC* shade = table;
+                        for (s32 i = 0; i < count; shade++, i++) {
+                            if (shade->mTile != tile) {
+                                continue;
+                            }
+                            f32 px = tileX + shade->mX;
+                            f32 py = tileY + shade->mY;
+                            s32 alpha = shade->mAlpha * alphaScale;
+                            if (stage == 'b') {
+                                if (shade->mX < 8.0f) {
+                                    px += 3.0f;
+                                } else {
+                                    px -= 3.0f;
+                                }
+                                if (shade->mY < 8.0f) {
+                                    py += 3.0f;
+                                } else {
+                                    py -= 3.0f;
+                                }
+                            }
+                            switch (shade->mKind) {
+                            case 0: {
+                                GXColor color = {0, 0, 0, alpha};
+                                f32 ux = shade->mU[0];
+                                f32 uy = shade->mU[1];
+                                f32 vx = shade->mV[0];
+                                f32 vy = shade->mV[1];
+                                ux *= 96.0f;
+                                uy *= 96.0f;
+                                vx *= 96.0f;
+                                vy *= 96.0f;
+                                GXSetTevColor(GX_TEVREG0, color);
+                                GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+                                GXPosition3f32(px, py, 614.4f);
+                                GXTexCoord2f32(0.0f, 0.0f);
+                                GXPosition3f32(px + ux, py + uy, 614.4f);
+                                GXTexCoord2f32(1.0f, 0.0f);
+                                GXPosition3f32(vx + (px + ux), vy + (py + uy), 614.4f);
+                                GXTexCoord2f32(1.0f, 1.0f);
+                                GXPosition3f32(px + vx, py + vy, 614.4f);
+                                GXTexCoord2f32(0.0f, 1.0f);
+                                GXEnd();
+                                break;
+                            }
+                            case 1: {
+                                GXColor color = {0, 0, 0, alpha};
+                                f32 ux = shade->mU[0];
+                                f32 uy = shade->mU[1];
+                                f32 vx = shade->mV[0];
+                                f32 vy = shade->mV[1];
+                                ux *= 64.0f;
+                                uy *= 64.0f;
+                                vx *= 24.0f;
+                                vy *= 24.0f;
+                                GXSetTevColor(GX_TEVREG0, color);
+                                GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+                                f32 x0 = px - vx;
+                                f32 y0 = py - vy;
+                                f32 x1 = px + vx;
+                                f32 y1 = py + vy;
+                                GXPosition3f32(x0, y0, 614.4f);
+                                GXTexCoord2f32(0.0f, -1.0f);
+                                GXPosition3f32(ux + x0, uy + y0, 614.4f);
+                                GXTexCoord2f32(1.0f, -1.0f);
+                                GXPosition3f32(ux + x1, uy + y1, 614.4f);
+                                GXTexCoord2f32(1.0f, 1.0f);
+                                GXPosition3f32(x1, y1, 614.4f);
+                                GXTexCoord2f32(0.0f, 1.0f);
+                                GXEnd();
+                                break;
+                            }
+                            case 2: {
+                                GXColor color = {0, 0, 0, alpha};
+                                f32 ux = shade->mU[0];
+                                f32 uy = shade->mU[1];
+                                f32 backX = ux;
+                                f32 backY = uy;
+                                f32 vx = shade->mV[0];
+                                f32 vy = shade->mV[1];
+                                ux *= 64.0f;
+                                uy *= 64.0f;
+                                backX *= -4.0f;
+                                backY *= -4.0f;
+                                vx *= 24.0f;
+                                vy *= 24.0f;
+                                GXSetTevColor(GX_TEVREG0, color);
+                                GXBegin(GX_QUADS, GX_VTXFMT0, 8);
+                                f32 x0 = px - vx;
+                                f32 y0 = py - vy;
+                                f32 x1 = px + vx;
+                                f32 y1 = py + vy;
+                                GXPosition3f32(x0, y0, 614.4f);
+                                GXTexCoord2f32(0.0f, -1.0f);
+                                GXPosition3f32(ux + x0, uy + y0, 614.4f);
+                                GXTexCoord2f32(1.0f, -1.0f);
+                                GXPosition3f32(ux + x1, uy + y1, 614.4f);
+                                GXTexCoord2f32(1.0f, 1.0f);
+                                GXPosition3f32(x1, y1, 614.4f);
+                                GXTexCoord2f32(0.0f, 1.0f);
+                                GXPosition3f32(x0, y0, 614.4f);
+                                GXTexCoord2f32(0.0f, -1.0f);
+                                GXPosition3f32(backX + x0, backY + y0, 614.4f);
+                                GXTexCoord2f32(1.0f, -1.0f);
+                                GXPosition3f32(backX + x1, backY + y1, 614.4f);
+                                GXTexCoord2f32(1.0f, 1.0f);
+                                GXPosition3f32(x1, y1, 614.4f);
+                                GXTexCoord2f32(0.0f, 1.0f);
+                                GXEnd();
+                                break;
+                            }
+                            }
+                            if (!shade->mMore) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
