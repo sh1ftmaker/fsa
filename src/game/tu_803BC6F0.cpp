@@ -2,13 +2,16 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/tu_803B8C74.h"
+#include "game/Map.h"
 #include "game/Message.h"
+#include "game/SpriteParams.h"
 #include "game/act/tu_80440BF4.h"
 #include "game/tu_803BC6F0.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JKernel/JKRArchive.h"
+#include "JSystem/JUtility/JUTVideo.h"
 #include "dolphin/os/OSReset.h"
 #include "dolphin/os/OSTime.h"
 #include <stdio.h>
@@ -202,6 +205,43 @@ static const u64 lbl_80476DC8[4] = {
 static const s32 lbl_80476DE8[6] = {
     0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3,
 };
+
+// The centre of mScreen's pane `tag` (as tu_803F0A54's PANE_CENTRE_X / _Y):
+// the original searches the pane again for the bounds after the size.
+#define PANE_CENTRE_X(dst, screen, tag)                                        \
+    do {                                                                   \
+        f32 size = (screen)->search(tag)->getWidth();                      \
+        dst = size * 0.5f + (screen)->search(tag)->getGlobalBounds().i.x; \
+    } while (0)
+#define PANE_CENTRE_Y(dst, screen, tag)                                        \
+    do {                                                                   \
+        f32 size = (screen)->search(tag)->getHeight();                     \
+        dst = size * 0.5f + (screen)->search(tag)->getGlobalBounds().i.y; \
+    } while (0)
+
+// A point of the 640 x 480 layout on the 360 x 270 sprite layer of the
+// current render mode.
+static inline f32 toSpriteX(f32 x) {
+    return 360.0f * x / (s32)JUTVideo::getManager()->getRenderMode()->fbWidth;
+}
+
+static inline f32 toSpriteY(f32 y) {
+    return 270.0f * y / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
+}
+
+// Puts `pos` at the centre of mScreen's pane `tag`, moved by (dx, dy) in the
+// layout (fn_803BE3D8's single sprites). The original adds the 0.0f x offset
+// at run time (lfs 0 / fadds), which a literal `+ 0.0f` in the caller does
+// not give: the offsets are parameters.
+static inline void setSpritePos(FileSelect_804AFF60* self, JGeometry::TVec3f* pos, const u64* tag, f32 dx, f32 dy) {
+    f32 x;
+    PANE_CENTRE_X(x, self->mScreen, *tag);
+    pos->x = dx + toSpriteX(x);
+    f32 y;
+    PANE_CENTRE_Y(y, self->mScreen, *tag);
+    pos->y = toSpriteY(dy + y);
+    pos->z = 0.0f;
+}
 
 // Run each frame by fn_803CE9EC (index: mState).
 static FileSelect_804AFF60::StateFunc lbl_804AFD70[40] = {
@@ -2145,6 +2185,96 @@ void FileSelect_804AFF60::fn_803BF9C4() {
     }
     field_0xda = 0;
     setState(32);
+}
+
+// FIXME: 99.66. Instructions identical; only the .sdata2 literal names differ
+// (the pool's leading 0, -200, 200, see the progress notes).
+// The board's enemy sprites (fn_803CEED4 draws them after the screens).
+// field_0xdc runs 0..53 for their animation. With field_0xb8[6] set every
+// one of the eight 'Padvw?1' / 'Padvw?2' pane pairs gets its enemy twice:
+// black at 'Padvw?2' (a shadow) and in colour at 'Padvw?1', each with its
+// pane's alpha (the eighth pair, 'Padvl01' / 'Padvl02', shows the player).
+// Otherwise each of the first seven whose field_0xb8 flag is set gets one
+// animated sprite at its 'Padvw?0' pane.
+void FileSelect_804AFF60::fn_803BE3D8() {
+    field_0xdc++;
+    if (field_0xdc >= 54) {
+        field_0xdc = 0;
+    }
+    if (field_0xb8[6] != 0) {
+        SpriteParams_801F5AE0 shadow;
+        SpriteParams_801F5AE0 params;
+        for (s32 i = 0; i < 8; i++) {
+            JGeometry::TVec3f shadowPos;
+            f32 x;
+            PANE_CENTRE_X(x, mScreen, lbl_80476A48[i]);
+            shadowPos.x = toSpriteX(x);
+            f32 y;
+            PANE_CENTRE_Y(y, mScreen, lbl_80476A48[i]);
+            shadowPos.y = toSpriteY(13.0f + y);
+            shadowPos.z = 0.0f;
+            JGeometry::TVec3f pos;
+            PANE_CENTRE_X(x, mScreen, lbl_80476A08[i]);
+            pos.x = toSpriteX(x);
+            PANE_CENTRE_Y(y, mScreen, lbl_80476A08[i]);
+            pos.y = toSpriteY(13.0f + y);
+            pos.z = 0.0f;
+            shadow.field_0x26 = 0;
+            shadow.field_0x10.r = 0;
+            shadow.field_0x10.g = 0;
+            shadow.field_0x10.b = 0;
+            shadow.field_0x10.a = mScreen->search(lbl_80476A48[i])->getAlpha();
+            params.field_0x10.a = mScreen->search(lbl_80476A08[i])->getAlpha();
+            params.field_0x26 = 0;
+            JGeometry::TBox2f box(0.0f, 0.0f, 360.0f, 270.0f);
+            gGameRoot2_8053AB10->fn_8013B414(&box, true);
+            if (i == 6) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&shadowPos, res, 0xAB, &shadow, 1.0f, 1.0f);
+                res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0xAB, &params, 1.0f, 1.0f);
+            } else if (i == 7) {
+                shadow.field_0x0[7] = 12;
+                params.field_0x0[7] = 12;
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&shadowPos, res, 0x10, &shadow, 1.0f, 1.0f);
+                res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+            } else {
+                s32 frame = lbl_80476DE8[i] + 8;
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&shadowPos, res, frame, &shadow, 1.0f, 1.0f);
+                frame = lbl_80476DE8[i] + 8;
+                res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+    } else {
+        for (s32 i = 0; i < 8; i++) {
+            if (i < 7 && field_0xb8[i] != 0) {
+                SpriteParams_801F5AE0 params;
+                params.field_0x26 = 0;
+                params.field_0x10.a = mScreen->search(lbl_804769D0[i])->getAlpha();
+                JGeometry::TVec3f pos;
+                if (i == 6) {
+                    setSpritePos(this, &pos, &lbl_804769D0[i], 0.0f, 10.0f);
+                    JGeometry::TBox2f box(0.0f, 0.0f, 360.0f, 270.0f);
+                    gGameRoot2_8053AB10->fn_8013B414(&box, true);
+                    s32 frame = (field_0xdc % 27) / 9 + 0x21B;
+                    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                } else {
+                    setSpritePos(this, &pos, &lbl_804769D0[i], 0.0f, 12.0f);
+                    JGeometry::TBox2f box(0.0f, 0.0f, 360.0f, 270.0f);
+                    gGameRoot2_8053AB10->fn_8013B414(&box, true);
+                    s32 frame = field_0xdc / 9 + lbl_80476DE8[i];
+                    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                }
+            }
+        }
+    }
+    gGameRoot2_8053AB10->fn_8013B490();
 }
 
 // FIXME: 99.58 %. Stack slots only: the original puts the first call's
