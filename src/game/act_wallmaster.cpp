@@ -1,6 +1,22 @@
 #include "game/GameAudio.h"
+#include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "game/ViewLayer.h"
 #include "game/act/act_wallmaster.h"
+
+static const s16 lbl_8053EBF0[] = { 0, 10, -1 };
+static const s16 lbl_8053EBF8[] = { 1, 10, -1 };
+static const s16 lbl_80469398[] = { 0, 15, 1, 15, -1 };
+static const s16 lbl_804693A4[] = { 0, 3, 1, 7, 0, 5, 1, 20, -1 };
+static const s16 lbl_804693B8[] = { 0, 30, 1, 30, -1 };
+
+static const s16* lbl_804A3E30[5] = {
+    lbl_8053EBF0,
+    lbl_8053EBF8,
+    lbl_80469398,
+    lbl_804693A4,
+    lbl_804693B8,
+};
 
 void WallmasterParam::fn_801BCD70(s32 arg) {
     mType = (arg >> 5) & 7;
@@ -85,5 +101,69 @@ cls_804A3E44::~cls_804A3E44() {
         if (field_0x2c4 >= 0) {
             fn_8022DD74(field_0x2c4);
         }
+    }
+}
+
+void cls_804A3E44::init() {
+    EnemyBase_804A4808::init();
+    u32 p = field_0x90 & 0x1F;
+    if (p >= 2) {
+        mFlags |= 0x4000;
+    }
+    field_0x2a8 = p & 1;
+    mParam.fn_801BCD70(field_0x90);
+    if (mFlags & 0x4000) {
+        field_0x2ac = field_0x4;
+    } else {
+        field_0x2ac = (field_0x90 >> 24) & 7;
+        if (field_0x2ac != 0) {
+            field_0x2ac += 7;
+        }
+    }
+    if (!(mFlags & 0x4000)) {
+        f32 f4 = 0.0f;
+        f32 f5 = 0.0f;
+        if (field_0x2ac == 0) {
+            const JGeometry::TBox2f* box = layerBox(field_0x2ac);
+            f4 = box->i.x;
+            f5 = box->i.y;
+        }
+        u32 x = ((field_0x90 >> 16) & 0x3F) * 8;
+        u32 y = ((field_0x90 >> 8) & 0x3F) * 8;
+        field_0x2b0.x = x + f4 + 8.0f;
+        field_0x2b0.y = y + f5 + 8.0f;
+    }
+    mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+    mBox2.set(mBox);
+    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0x98 = 2;
+    mFlags |= 0x100;
+    field_0x194 = 1;
+    if (field_0x2a8 == 0) {
+        mState = 0;
+        field_0x250 = fn_801CD664(0x79) + 60;
+        mPos.z = 100.0f;
+    } else {
+        mState = 9;
+        field_0x250 = fn_801CD664(0xB5) + 180;
+    }
+    mStateTimer = 0;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D2608(lbl_804A3E30, 5);
+    mAnim.startAnim_801D22DC(0, 0, false);
+    bool b = false;
+    switch (mState) {
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        b = true;
+        break;
+    }
+    if (b) {
+        field_0xb0 = 0x40004;
+    } else {
+        field_0xb0 = 0x41101;
     }
 }
