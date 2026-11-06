@@ -1044,11 +1044,11 @@ void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u
     }
 }
 
-// FIXME: 98.2. Register allocation and data offsets only (try.py "operands +
-// reloc-name"): the tables and "circle.bti" sit 0xB0 / 0x218 too early in our
-// .rodata (fn_802FCE74's and fn_802FAC10's tables and fn_802F6800's five are
-// not written), and the three GXColor templates are .sbss2 0x80543F54-5C,
-// outside this unit's split (0x80543F60). Registers r16-r29 / f20-f31 rotate.
+// FIXME: 98.1. Register allocation, stack slots and data offsets only (try.py
+// "operands + reloc-name"): the tables and "circle.bti" sit 0x70 / 0x1D8 too
+// early in our .rodata (fn_802FCE74's tables and fn_802F6800's five are not
+// written), the GXColor temporaries' stack slots differ, and registers
+// r16-r29 / f20-f31 rotate.
 // Draws the stage's tile shades: for layer 0 at field_0x2368 (when
 // field_0x235c[0] is set) and layer 4 at field_0x2374 (field_0x2360[1]), every
 // tile of the 2 x 2 blocks of 16 x 16 (up to half the height grid's cells) whose
