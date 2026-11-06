@@ -261,16 +261,19 @@ public:
     bool fn_801F11B4();
     // 8 units / 8 calls, all from vfunc_0x4C overrides (act_sign 0x802D3210,
     // act_coconut 0x802DF4E4) passing their own (layer, pos) and a member
-    // (this + 0x230). Gated on *state == 0 (0x801F1354); layer and pos go to
-    // fn_8020D6AC and fn_8022461C/fn_80226850 as in the base vfunc_0x4C;
+    // (this + 0x230), a countdown: while *timer runs nothing blocks; tiles
+    // 0x10-0x13 / 0x140-0x15F start it at 0x78. Otherwise the base vfunc_0x4C's
+    // tests (fn_8020D6AC, then the tile codes of fn_8022461C/fn_80226850);
     // returns 0 or 1.
-    bool fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s32* state);
-    // 1 call (fn_801F23BC). The map/collision test of `box` at *pos on
-    // `layer` (it calls vfunc_0x50 on this and may move *pos, stfs 0/4);
-    // writes a stack TVec3f copy to *out (0x801F2344-0x801F2350). Returns 0
-    // or 1 (fn_801F23BC tests it with clrlwi. 24). Not written yet.
-    bool fn_801F172C(s32 layer, JGeometry::TVec3f* pos, const JGeometry::TBox2f* box,
-                     JGeometry::TVec3f* out, bool flag);
+    bool fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s32* timer);
+    // 1 call (fn_801F23BC). Probes the four edges of `box` at *pos on
+    // `layer` with vfunc_0x50 every 8 units and pushes *pos out to the next
+    // 8-unit cell line (stfs 0/4); with `out`, writes the normalised push
+    // direction there (`flag`: bent by the diagonal tiles 8-0xB at the
+    // corners). Returns whether it moved: u8 (a bool local narrowed with
+    // clrlwi 24 at the return; fn_801F23BC tests it with clrlwi. 24).
+    u8 fn_801F172C(s32 layer, JGeometry::TVec3f* pos, const JGeometry::TBox2f* box,
+                   JGeometry::TVec3f* out, bool flag);
     // 7 units / 9 calls. Collision sweep of `box` from `from` towards `to` on
     // `layer` in steps of under half the box's smaller side (at most 8):
     // fn_801F172C at each step until it hits (then *outPos gets the step's
@@ -304,14 +307,15 @@ public:
     // skipPlayer; callers pass -1 in 16 of 17) whose box overlaps mBox
     // around mPos in screen space (0x801F2828-0x801F2844). fn_801F2B7C
     // inlines it. u8: the callers keep r3 raw and narrow it with clrlwi 24
-    // where they use it.
-    u8 fn_801F2740(s32 skipPlayer);
+    // where they use it. const: loads off `this` before the register saves.
+    u8 fn_801F2740(s32 skipPlayer) const;
     // 46 units / 65 calls. Index of a player (any when player < 0) whose box
     // overlaps mBox around mPos, or -1 (0x801F29F8). *outXY gets two floats
     // (stfs 0/4, 0x801F29EC-0x801F29F4) and *outFlag 0 or 1; `arg` is
     // forwarded to fn_8023B9CC and on to fn_802738F0, which tests it with
-    // clrlwi. 24 (0x80273AF8); callers pass 1 in 54 of 65.
-    s32 fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg, s32 player);
+    // clrlwi. 24 (0x80273AF8); callers pass 1 in 54 of 65. const: the box
+    // loads from `this` come before the register saves.
+    s32 fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg, s32 player) const;
     // 6 units / 6 calls. The mBox overlap test of fn_801F2740 against
     // fn_8022E438(player, skipPlayer) and fn_80239B64(.., arg2, arg3, arg4),
     // whose last two are clrlwi 24 bytes; returns 0 or 1.

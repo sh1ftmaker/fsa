@@ -128,3 +128,34 @@ fn_801F23BC param names to/from, hit-field comments, docs); EnemyBase.h
 (fn_801CB5CC extern "C", fn_801CCDA4); StageFlag.h + tu_80379F84.h +
 tu_80197070.cpp (BOOL); ActorManager.h + tu_801F6058.cpp (fn_801F6718 ints);
 symbols.txt (fn_801F329C CFl, fn_801F172C member, fn_801F6718 FllPC...ll).
+
+## 2026-11-06 leverage, ActorBase round 4 (Opus 5.5)
+Baseline 9018 honest -> 9020 (+2); unit 47 -> 49 / 75 at 100 %. No function anywhere
+drops (compared by address across the whole report against the main report_honest.json).
+- fn_801F132C 100 % (new; the vfunc_0x4C of act_pot/rock/grass/sign/stone/coconut,
+  countdown param renamed timer): s32 locals for both tile codes (cmpwi), the 0x10-0x13
+  range as an `==` chain (folds to subi/cmplwi 3), and the 0x25 / 0x26 results narrowed
+  as bytes `(u8)(... == 0)` (extrwi), the form act_bombchu / act_blade_trap use at 100 %.
+  `? true : false` and plain `==` give srwi here.
+- vfunc_0x50 94.4 -> 100 %: `return vfunc_0x4C(...) || pos->x < ... ;` (the
+  `bool result = false; if (...) result = true;` form keeps layer and the result apart).
+- fn_801F2740 85.1 -> 99.15 and fn_801F285C 88.8 -> 99.8: const (the box loads off
+  `this` sit above the register saves; symbols.txt ...CFl / ...CFPQ...Plbl). Left:
+  fn_801F2740's final clrlwi (an s32 accumulator drops the in-loop one instead),
+  fn_801F285C the order of two argument moves.
+- fn_801F172C 92.0 % structurally close (new, 3.2 KB): four edge sweeps with
+  `s32 hits[3] = {0, 0, 0}` counters (lbl_80469F78-9C are their initialisers), the push
+  decision, corner diagonals (8-0xB) and TVec3f::isZero / normalize. u8 return (clrlwi at
+  the return from a bool local). Differences: the .rodata base hoist (r31, as in
+  fn_801EF830 / fn_801F37AC) and the counter increment's scheduling.
+Tried, not merged:
+- fn_801EF574 (struct copy blocker): written naturally it is 60 % (interleaved copy, no
+  stmw); a named temporary `tmp = *params; sp = tmp;` gives stmw r14 and load-all but a
+  second stack struct (70 %); a pointer helper and a by-value helper: no change / worse.
+  The target copies like a non-aliasing destination (all loads, spills, then stores)
+  although &sp goes to fn_802F86CC. Draft: scratchpad r4_draft_801EF574.cpp.
+- vfunc_0x4C: getSerial() (layer fixed, pos/this swap), early returns, `||` with a box
+  helper: none beat 89.5.
+SHARED-EDITS: ActorBase.h (fn_801F2740 / fn_801F285C const; fn_801F172C returns u8;
+fn_801F132C param timer; comments); symbols.txt renames fn_801F2740__18ActorBase_804A5770CFl,
+fn_801F285C__18ActorBase_804A5770CFPQ29JGeometry8TVec2<f>Plbl. Layout unchanged.

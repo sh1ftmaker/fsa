@@ -17738,8 +17738,8 @@ fn_801F23BC__18ActorBase_804A5770FlPCQ29JGeometry8TVec3<f>PCQ29JGeometry8TVec3<f
 fn_801F2618__18ActorBase_804A5770FPQ29JGeometry8TVec3<f>b = .text:0x801F2618; // type:function size:0xB4
 fn_801F26CC__18ActorBase_804A5770FPCUl = .text:0x801F26CC; // type:function size:0x4C
 fn_801F2718__18ActorBase_804A5770CFUl = .text:0x801F2718; // type:function size:0x28
-fn_801F2740__18ActorBase_804A5770Fl = .text:0x801F2740; // type:function size:0x11C
-fn_801F285C__18ActorBase_804A5770FPQ29JGeometry8TVec2<f>Plbl = .text:0x801F285C; // type:function size:0x1B4
+fn_801F2740__18ActorBase_804A5770CFl = .text:0x801F2740; // type:function size:0x11C
+fn_801F285C__18ActorBase_804A5770CFPQ29JGeometry8TVec2<f>Plbl = .text:0x801F285C; // type:function size:0x1B4
 fn_801F2A10__18ActorBase_804A5770Fllbb = .text:0x801F2A10; // type:function size:0x110
 fn_801F2B20__18ActorBase_804A5770Fl = .text:0x801F2B20; // type:function size:0x5C
 fn_801F2B7C__18ActorBase_804A5770Flll = .text:0x801F2B7C; // type:function size:0x238

@@ -1195,9 +1195,12 @@ bool ActorBase_804A5770::fn_801F2A10(s32 skipPlayer, s32 type, bool a, bool b) {
 // or 0 when fn_80233DA4 holds for it), else by fn_8023B848 / fn_8023B768
 // (*outFlag 0); on a layer without the view's flag its z must be within 32
 // of mPos.z. *outXY gets the point the test reports. -1 when none.
-// FIXME: 88.8. Scheduling only: the original computes the screen box (the
-// inlined fn_801F31C4) before saving r27-r31, ours after (as fn_801F2740).
-s32 ActorBase_804A5770::fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg, s32 player) {
+// FIXME: 99.8. Register allocation only: before fn_8023B9CC the target moves
+// arg into r7 before player into r3, ours the other way round.
+// const: the screen box (the inlined fn_801F31C4) loads before the register
+// saves.
+s32 ActorBase_804A5770::fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool arg,
+                                     s32 player) const {
     JGeometry::TBox2f box;
     fn_801F31C4(&box);
     JGeometry::TVec2f xy;
@@ -1242,14 +1245,13 @@ s32 ActorBase_804A5770::fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool
 // The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
 // on this layer, as bits; on a layer without the view's flag the player's z
 // must also be within 32 of mPos.z. fn_801F2B7C inlines it.
-// FIXME: 85.1. Two differences: the target ends in clrlwi r3, r30, 24 where
-// ours returns hits with mr (the callers' raw use of r3 shows a u8 return;
-// a bool local gives exactly that narrowing, as in fn_801F2FAC / fn_801F2618,
-// and leaves only the scheduling below, but a bitmask in a bool is not
-// written here), and it computes the box's first floats before saving the
-// registers, setting hits and i between them.
+// FIXME: 99.15. The target ends in clrlwi r3, r30, 24 where ours returns
+// hits with mr (the callers' raw use of r3 shows a u8 return; a bool local
+// gives that narrowing, as in fn_801F2FAC / fn_801F2618, but a bitmask in a
+// bool is not written here; an s32 local drops the in-loop clrlwi instead).
+// const: the box's first floats load before the register saves.
 // Besides, 32.0f is lbl_8053F748 once .sdata2 is in order.
-u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) {
+u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) const {
     JGeometry::TBox2f box;
     toScreenBox(&box, mBox, mPos);
     u8 hits = 0;
@@ -1364,20 +1366,196 @@ u8 ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
     return hit;
 }
 
+// Pushes `box` at *pos out of whatever blocks it on `layer` (vfunc_0x50).
+// Each edge of the box is probed every 8 units and at its far end; the
+// hits are counted as [start, middle, end] per edge, and a hit gives the
+// distance to the next 8-unit cell line. An edge whose middle is blocked
+// while the opposite one is free, or that is blocked at both ends, or a
+// blocked corner where the other edge is shorter, moves pos by that
+// distance. When it moved and `out` is given, *out is the direction of the
+// push (with `flag`, the diagonal tiles 8-0xB at the corners of the old
+// position bend it), normalised. Returns whether it moved.
+// FIXME: 91.96. Structurally complete; two differences: MWCC keeps the
+// .rodata base in r31 for the four counter initialisers (the target
+// addresses each with its own lis/addi, lbl_80469F78-lbl_80469F9C; one more
+// saved register and a 0x10-larger frame here, as fn_801EF830), and the
+// counter increment `hits[i != 0]++` is scheduled a few slots earlier.
+u8 ActorBase_804A5770::fn_801F172C(s32 layer, JGeometry::TVec3f* pos,
+                                     const JGeometry::TBox2f* box, JGeometry::TVec3f* out,
+                                     bool flag) {
+    JGeometry::TVec3f p;
+    JGeometry::TVec3f n;
+    bool moved = false;
+    f32 left = box->i.x;
+    f32 top = box->i.y;
+    f32 right = box->f.x - 0.01f;
+    f32 bottom = box->f.y - 0.01f;
+    s32 i;
+
+    // Left edge.
+    f32 dxL = 0.0f;
+    p.set(pos->x + left, 0.0f, 0.0f);
+    s32 hitsL[3] = {0, 0, 0};
+    i = 0;
+    for (p.y = pos->y + top; p.y < pos->y + bottom; p.y += 8.0f) {
+        if (vfunc_0x50(layer, &p)) {
+            hitsL[i != 0]++;
+            dxL = (s32)(0.125f * p.x + 1.0f) * 8 - p.x;
+        }
+        i++;
+    }
+    p.y = pos->y + bottom;
+    if (vfunc_0x50(layer, &p)) {
+        hitsL[2]++;
+        dxL = (s32)(0.125f * p.x + 1.0f) * 8 - p.x;
+    }
+
+    // Right edge.
+    f32 dxR = 0.0f;
+    p.set(pos->x + right, 0.0f, 0.0f);
+    s32 hitsR[3] = {0, 0, 0};
+    i = 0;
+    for (p.y = pos->y + top; p.y < pos->y + bottom; p.y += 8.0f) {
+        if (vfunc_0x50(layer, &p)) {
+            hitsR[i != 0]++;
+            dxR = (pos->x + box->f.x) - (s32)(0.125f * p.x) * 8;
+        }
+        i++;
+    }
+    p.y = pos->y + bottom;
+    if (vfunc_0x50(layer, &p)) {
+        hitsR[2]++;
+        p.x = pos->x + box->f.x;
+        dxR = p.x - (s32)(0.125f * p.x) * 8;
+    }
+
+    // Top edge.
+    f32 dyT = 0.0f;
+    p.set(0.0f, pos->y + top, 0.0f);
+    s32 hitsT[3] = {0, 0, 0};
+    i = 0;
+    for (p.x = pos->x + left; p.x < pos->x + right; p.x += 8.0f) {
+        if (vfunc_0x50(layer, &p)) {
+            hitsT[i != 0]++;
+            dyT = (s32)(0.125f * p.y + 1.0f) * 8 - p.y;
+        }
+        i++;
+    }
+    p.x = pos->x + right;
+    if (vfunc_0x50(layer, &p)) {
+        hitsT[2]++;
+        dyT = (s32)(0.125f * p.y + 1.0f) * 8 - p.y;
+    }
+
+    // Bottom edge.
+    f32 dyB = 0.0f;
+    p.set(0.0f, pos->y + bottom, 0.0f);
+    s32 hitsB[3] = {0, 0, 0};
+    i = 0;
+    for (p.x = pos->x + left; p.x < pos->x + right; p.x += 8.0f) {
+        if (vfunc_0x50(layer, &p)) {
+            hitsB[i != 0]++;
+            dyB = (pos->y + box->f.y) - (s32)(0.125f * p.y) * 8;
+        }
+        i++;
+    }
+    p.x = pos->x + right;
+    if (vfunc_0x50(layer, &p)) {
+        hitsB[2]++;
+        p.y = pos->y + box->f.y;
+        dyB = p.y - (s32)(0.125f * p.y) * 8;
+    }
+
+    if (out != NULL) {
+        p.set(*pos);
+        n.zero();
+    }
+
+    if ((hitsL[1] != 0 && hitsR[1] == 0) || (hitsL[0] != 0 && hitsL[2] != 0) ||
+        (hitsL[0] != 0 && hitsT[2] == 0 && dxL < dyT && (hitsR[0] == 0 || hitsR[2] == 0)) ||
+        (hitsL[2] != 0 && hitsB[2] == 0 && dxL < dyB && (hitsR[2] == 0 || hitsR[0] == 0)))
+    {
+        pos->x += dxL;
+        moved = true;
+        n.x = 1.0f;
+    }
+    if ((hitsR[1] != 0 && hitsL[1] == 0) || (hitsR[0] != 0 && hitsR[2] != 0) ||
+        (hitsR[0] != 0 && hitsT[0] == 0 && dxR < dyT && (hitsL[0] == 0 || hitsL[2] == 0)) ||
+        (hitsR[2] != 0 && hitsB[0] == 0 && dxR < dyB && (hitsL[2] == 0 || hitsL[0] == 0)))
+    {
+        pos->x -= dxR;
+        moved = true;
+        n.x = -1.0f;
+    }
+    if ((hitsT[1] != 0 && hitsB[1] == 0) || (hitsT[0] != 0 && hitsT[2] != 0) ||
+        (hitsT[0] != 0 && hitsL[2] == 0 && dyT < dxL && (hitsB[0] == 0 || hitsB[2] == 0)) ||
+        (hitsT[2] != 0 && hitsR[2] == 0 && dyT < dxR && (hitsB[2] == 0 || hitsB[0] == 0)))
+    {
+        pos->y += dyT;
+        moved = true;
+        n.y = 1.0f;
+    }
+    if ((hitsB[1] != 0 && hitsT[1] == 0) || (hitsB[0] != 0 && hitsB[2] != 0) ||
+        (hitsB[0] != 0 && hitsL[0] == 0 && dyB < dxL && (hitsT[0] == 0 || hitsT[2] == 0)) ||
+        (hitsB[2] != 0 && hitsR[0] == 0 && dyB < dxR && (hitsT[2] == 0 || hitsT[0] == 0)))
+    {
+        pos->y -= dyB;
+        moved = true;
+        n.y = -1.0f;
+    }
+
+    if (moved && out != NULL) {
+        if (flag) {
+            f32 y0 = p.y + box->i.y;
+            f32 y1 = p.y + box->f.y;
+            f32 x0 = p.x + box->i.x;
+            f32 x1 = p.x + box->f.x;
+            JGeometry::TVec3f d(0.0f, 0.0f, 0.0f);
+            // fn_802265FC reads only x and y: the corners are 8-byte points.
+            if (hitsL[0] != 0 && (n.x > 0.0f || n.y > 0.0f)) {
+                JGeometry::TVec2f c(x0, y0);
+                if (fn_802265FC((const JGeometry::TVec3f*)&c, layer) == 0xB) {
+                    d.x += 1.0f;
+                    d.y += 1.0f;
+                }
+            }
+            if (hitsR[0] != 0 && (n.x < 0.0f || n.y > 0.0f)) {
+                JGeometry::TVec2f c(x1, y0);
+                if (fn_802265FC((const JGeometry::TVec3f*)&c, layer) == 0xA) {
+                    d.x += -1.0f;
+                    d.y += 1.0f;
+                }
+            }
+            if (hitsL[2] != 0 && (n.x > 0.0f || n.y < 0.0f)) {
+                JGeometry::TVec2f c(x0, y1);
+                if (fn_802265FC((const JGeometry::TVec3f*)&c, layer) == 9) {
+                    d.x += 1.0f;
+                    d.y += -1.0f;
+                }
+            }
+            if (hitsR[2] != 0 && (n.x < 0.0f || n.y < 0.0f)) {
+                JGeometry::TVec2f c(x1, y1);
+                if (fn_802265FC((const JGeometry::TVec3f*)&c, layer) == 8) {
+                    d.x += -1.0f;
+                    d.y += -1.0f;
+                }
+            }
+            if (!d.isZero()) {
+                n.set(d);
+            }
+        }
+        n.normalize();
+        out->set(n);
+    }
+    return moved;
+}
+
 // Whether pos is blocked on layer (vfunc_0x4C) or outside the view's box
 // for that layer.
-// FIXME: 94.4. Register allocation: the target keeps layer and then the
-// result in r31 and the box in r30 (ours the other way round), and loads
-// pos->x / pos->y into f2 / f1.
 bool ActorBase_804A5770::vfunc_0x50(s32 layer, const JGeometry::TVec3f* pos) {
     JGeometry::TBox2f* box = layerBox(layer);
-    bool result = false;
-    if (vfunc_0x4C(layer, pos) || pos->x < box->i.x || pos->y < box->i.y || pos->x >= box->f.x ||
-        pos->y >= box->f.y)
-    {
-        result = true;
-    }
-    return result;
+    return vfunc_0x4C(layer, pos) || pos->x < box->i.x || pos->y < box->i.y ||
+           pos->x >= box->f.x || pos->y >= box->f.y;
 }
 
 // Whether pos is blocked on layer: by a tile, or by another actor's
@@ -1395,6 +1573,61 @@ bool ActorBase_804A5770::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         }
     }
     return blocked;
+}
+
+// The vfunc_0x4C of the liftable objects (act_pot, act_rock, act_grass, ...):
+// blocked by another actor's collision box, or by the tile at pos. While
+// *timer runs it counts down and nothing blocks; stepping onto a tile of
+// the 0x10-0x13 / 0x140-0x15F ranges (but not 0x146-0x148 / 0x159-0x15B)
+// starts it at 0x78. Tiles 0x25 / 0x26 block by the view's field_0x171,
+// 0x22 only while its field_0x170 is set.
+bool ActorBase_804A5770::fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s32* timer) {
+    if (*timer == 0) {
+        s32 serial = mSerial;
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+        if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+            return true;
+        }
+        s32 code = fn_8022461C(pos, layer);
+        s32 tile = fn_80226850(pos, layer);
+        if (tile == 0x230 || tile == 0x231) {
+            return false;
+        }
+        if (code != 0 && code != 4 && code != 5 && code != 6 && code != 7 && code != 2 &&
+            code != 3 && code != 0x50 && code != 0xE && code != 0xC && code != 0x27 &&
+            code != 0x28 && code != 0x29 && code != 0x2A && code != 0x2B && code != 0x2C &&
+            code != 0x2D && code != 0x2E && code != 0x2F && code != 0x20 && code != 0xD &&
+            code != 0x39 && code != 0x3A && code != 0x3B && code != 0x4C && code != 0x4D &&
+            code != 0x4E && code != 0x4F && code != 0x24)
+        {
+            if (code == 0x10 || code == 0x11 || code == 0x12 || code == 0x13 ||
+                (tile >= 0x140 && tile <= 0x15F))
+            {
+                if (tile != 0x146 && tile != 0x147 && tile != 0x148 && tile != 0x159 &&
+                    tile != 0x15A && tile != 0x15B)
+                {
+                    *timer = 0x78;
+                    return false;
+                }
+            }
+            if (tile == 0x3A || tile == 0x3D) {
+                return false;
+            }
+            if (code == 0x25) {
+                // (u8): the result is narrowed as a byte (extrwi), as in act_bombchu's vfunc_0x4C.
+                return (u8)(getGameView_802D6A9C()->field_0x171 == 0);
+            }
+            if (code == 0x26) {
+                return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+            }
+            if (code != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+                return true;
+            }
+        }
+    } else {
+        (*timer)--;
+    }
+    return false;
 }
 
 // With a map box (field_0x80) and blocked on its layer (vfunc_0x4C): steps
