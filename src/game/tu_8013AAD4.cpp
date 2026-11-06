@@ -94,8 +94,6 @@ void GameRoot2_8049F108::fn_8013BE04() {
     field_0x38 = 0;
 }
 
-// FIXME: 97.41. The original materialises the mode-0xC test as a byte
-// (subfic / cntlzw / extrwi., then beq) where ours compares (cmpwi / bne).
 void GameRoot2_8049F108::fn_8013BBE0() {
     if (gGameRoot_8053AAF8->field_0x4c != 9) {
         field_0x24->fn_8030E154();
@@ -107,8 +105,7 @@ void GameRoot2_8049F108::fn_8013BBE0() {
         JGeometry::TBox2f box((f32)r->x0, (f32)r->y0, (f32)r->x1, (f32)r->y1);
         field_0x14->place(box);
         field_0x14->scissor(box);
-        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
-        if (!root->field_0x7f || root->field_0x4c == GAME_MODE_C) {
+        if (!gGameRoot_8053AAF8->field_0x7f || isGameMode(GAME_MODE_C)) {
             field_0x39 = 0;
         } else if (!isGameModeSet()) {
             field_0x39 = 1;
@@ -116,7 +113,7 @@ void GameRoot2_8049F108::fn_8013BBE0() {
             u8 flag = 0;
             if (field_0x38 >= 0xFF) {
                 bool b = true;
-                if (root->field_0x4c != GAME_MODE_B && !fn_80239D38()) {
+                if (gGameRoot_8053AAF8->field_0x4c != GAME_MODE_B && !fn_80239D38()) {
                     b = false;
                 }
                 if (b) {
