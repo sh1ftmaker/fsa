@@ -400,7 +400,9 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   original's six out-of-line calls with no pragma, 95.3 -> 100 %, and fn_8026F000-F54C inline
   fn_8026EE60 as the original (+5 functions); the earlier regions hid four of the six. Measure with
   `tools/obj_calls.py` against the asm's `bl` list; padding the caller shows how far it is from the
-  budget (the position of the extra size does not matter). One example so far.
+  budget (the position of the extra size does not matter). The helper is not visible in the asm (every
+  copy is inlined and identical); the call list is its only evidence, so use this only where the repeated
+  store is a natural helper candidate, and say so in its comment. One example so far.
 - A Vec table entry added to a TVec3f with three `lfs` / `stfs` to a stack TVec3f then `psq_l`: copy it
   member by member through a reference, `const Vec& d = tbl[i]; TVec3f step; step.x = d.x; step.y =
   d.y; step.z = d.z; v += step;` (tu_802684A4 canPush; TVec3f(Vec) gives psq_l, the (x, y, z)

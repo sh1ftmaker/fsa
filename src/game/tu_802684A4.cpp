@@ -52,9 +52,11 @@ static const f32 lbl_8046BAE8[8][3] = {
 };
 
 // Marks the current probe direction (field_0x1c) in one of the per-direction flag arrays.
-// Used for every such store: fn_8026C350's size with it reaches the inline budget at the
-// original's call list (fn_8026EE60 / EC88 / F000-F54C out of line, no pragma; written out,
-// ours inlined all six and the pragmas only hid four of them).
+// Used for every such store (57 sites). Evidence for one helper: every inlined copy in the
+// asm is the identical lwz 0x1c / li 1 / add / stb, and fn_8026C350's size with them reaches
+// the inline budget exactly at the original's out-of-line call list (fn_8026EE60 / EC88 /
+// F000-F54C; written out, ours inlined all six and pragma regions only hid four of them).
+// The helper itself is not visible in the asm (inlined everywhere); the call list is the evidence.
 static inline void setDir(cls_804A71A8* p, u8* flags) {
     flags[p->field_0x1c] = 1;
 }
