@@ -178,9 +178,10 @@ regenerated with every merge; see [How it works](#how-it-works).
 - **Now** (phase 3): **Big functions, structure first.** Write a big function before it reaches 100 %, merge it when it is structurally done or close, so the literal pool, field offsets and callee names settle (docs/RULES_CARD.md). Just started on the file select, game mode screen and GBA link units.
 - **Now** (phase 4): **Boot to main menu.** main(), the framework, the THP movie player (162 of 168 functions), the title screen and the screens built at boot (file select, the game mode screen, the GBA link manager). Currently 21.8 % of the code matched.
 - **Now** (phase 4): **Main menu to Shadow Battle.** Stage load, the players, the field and the actors on it, up to two Links fighting on The Field. Currently 26.5 % of the code matched.
+- **Now** (phase 4): **The player.** The Link class (Player_804A6F38, ten units from 0x8022AD64 to 0x802957CC) and the per-player queries. Pushed hard on 2026-11-05 with the deferred-inlining model: 876 of 1,054 functions are at 100 % (docs/PLAYER.md); the hard remainder is the big state handlers and the update loop.
+- **Now** (phase 5): **The naming track.** Real names for game files, classes and functions, from debug and assert strings, Dolphin debug output and the dormant debug menus, reviewed on their own. The first evidence-based sweep ran on 2026-11-05 (docs/names/: names.tsv is applied by tools/rename.py, METHOD.md is the method; names without enough evidence are in LOW_CONFIDENCE.md and keep their provisional address names).
 - **Next** (phase 4): **Screens and menus.** The remaining screens, HUD and menus, after their boot-path owners are written.
 - **Next** (phase 4): **Actors by family.** Enemies, NPCs and objects family by family, sharing base classes and headers. The earlier actor waves matched the small ones; most update and init functions are still ahead. Currently 27.6 % of the code matched.
-- **Next** (phase 4): **The player.** The Link class and the per-player queries, after the boot path has fixed its layout.
 - **Next** (phase 4): **Map and stage.** Rooms, collision, background rewrites and the stage loader.
 <!-- now:end -->
 
@@ -226,8 +227,8 @@ flowchart LR
 <details>
 <summary>What each step checks</summary>
 
-- **Gate** (`tools/gate.py`): no inline asm, register binding, `#pragma` or
-  `goto` the donor file doesn't have; no m2c leftovers; no field access
+- **Gate** (`tools/gate.py`): no inline asm, register binding, `#pragma` (bar the
+  evidenced `auto_inline off/reset` regions) or `goto` the donor file doesn't have; no m2c leftovers; no field access
   through casts and offsets; no embedded bytes; no changes to measuring
   tools or report settings; `symbols.txt` only renames placeholders. Every
   unit marked `Matching` is 100 % in code and data in the honest report, and
@@ -258,6 +259,13 @@ flowchart LR
 - **AI-first, no tricks.** Most of the work is done by AI agents under the
   same gate and review as anyone else. Names need evidence: donor code, SDK
   symbols or strings in the binary.
+- **The compiler model is the original's.** Game code builds with
+  `-inline auto,deferred` and each source lists its functions in descending
+  address order (`docs/INLINING.md`); a callee the original never inlines gets
+  an evidenced `#pragma auto_inline off/reset` region, nothing more.
+- **Names are a manifest.** Evidence-based names live in `docs/names/names.tsv`
+  (method in `docs/names/METHOD.md`, applied by `tools/rename.py`); weak ones
+  are listed in `docs/names/LOW_CONFIDENCE.md` and keep their address names.
 
 ## Building
 

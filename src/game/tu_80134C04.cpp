@@ -56,7 +56,7 @@ static const u32 lbl_804652F0[39] = {
     0x0100002A, 0x0100002E, 0x01000030,
 };
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar);
 
 // JUTGamePad C3ButtonReset callback (JUTResetBtnCb).

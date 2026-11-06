@@ -6,7 +6,6 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_shadow_link_2.h"
 
-
 // FIXME: 98.83 %. Register allocation only.
 void ShadowLink2_804A43E8::fn_801D41B8() const {
     JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);

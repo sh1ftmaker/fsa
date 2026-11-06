@@ -243,7 +243,7 @@ def reverse_source(src):
             protos.append(proto_for(f))
     body = ''.join(others).rstrip('\n') + '\n'
     if protos:
-        body += '\n// forward declarations (functions reversed for -inline deferred)\n'
+        body += '\n// Forward declarations.\n'
         body += '\n'.join(protos) + '\n'
     for f in rev:
         body += '\n' + f.strip('\n') + '\n'

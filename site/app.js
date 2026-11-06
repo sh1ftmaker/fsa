@@ -720,7 +720,7 @@ function drawHonest() {
   const when = new Date(S.generated);
   $("#honest-body").innerHTML = `
     <p>Every number here comes from the project's <b>honest objdiff report</b> (<code>build/G4SE01/report_honest.json</code>,
-      objdiff-cli with <code>functionRelocDiffs=data_value</code>). Every unit is diffed, even those flagged Matching, so a function
+      objdiff-cli with <code>functionRelocDiffs=all</code>). Every unit is diffed, even those flagged Matching, so a function
       counts only when its instructions <i>and</i> relocations match the original. Byte-pattern hits and objdiff's lenient default
       are never counted.</p>
     <p>The link is the final authority: a plain <code>ninja</code> links every Matching unit's own object into <code>main.dol</code>
@@ -736,6 +736,9 @@ function drawHonest() {
     <p>Weighted progress is a second, clearly separate figure: the honest bytes plus, for each function
       <code>tools/structural.py</code> finds structurally matched (same instructions, registers or order differ), its size times its
       match percent. It shows work under way in big functions; the honest numbers never include it.</p>
+    <p>Game code is compiled the way the original was: <code>-inline auto,deferred</code>, with each source's functions in descending
+      address order (<code>docs/INLINING.md</code>). Names come from a reviewed manifest (<code>docs/names/names.tsv</code>); a name without
+      enough evidence keeps its address-based placeholder.</p>
     <p>Snapshot ${esc(when.toISOString().slice(0, 16).replace("T", " "))} UTC, built on
       <a href="${REPO}/commit/${esc(S.base)}">${esc(S.base.slice(0, 8))}</a>. The data is regenerated locally with
       <code>tools/site_data.py</code> and committed with each merge; CI only publishes it.</p>`;

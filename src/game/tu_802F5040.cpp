@@ -118,7 +118,7 @@ static inline u8 adjustChannel(s32 value, f32 scale, f32 offset) {
     return result;
 }
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out);
 
 cls_803004C0::cls_803004C0() {}

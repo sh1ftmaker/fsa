@@ -29,7 +29,7 @@ static inline void clearOnPress() {
     }
 }
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 u8 fn_8037F1E4(s32 player);
 bool fn_8037EC98(s32 player, u16 flags);
 

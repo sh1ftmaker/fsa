@@ -57,7 +57,7 @@ inline void ActorManager_804A5800::deleteSlot(s32 slot) {
     }
 }
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 ActorManager_804A5800* getActorManager_801F856C(void);
 
 // FIXME: 98.1 %, scheduling+regalloc: the target keeps `small` in r4 and the

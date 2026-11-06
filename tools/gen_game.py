@@ -1593,6 +1593,29 @@ def plan_from_rows(u, rs):
     return p, bad
 
 
+def missing_sinit_rows(rows):
+    """Units that have manifest rows but no sinit row although the unit is
+    generator-shaped: GameAudio.h is the first include of its source and
+    symbols.txt names its 0x224 `__sinit_<unit>_cpp` (the generator renames
+    it). Deleting just the sinit row would otherwise go unnoticed, since
+    --check only walks the rows present. A unit with no rows at all is the
+    lifecycle's hand-edited case and is not flagged (the gate pins deletions
+    to whole rows)."""
+    have = {r[0] for r in rows}
+    sinit = {r[0] for r in rows if r[1] == "sinit"}
+    syms = SYMBOLS.read_text()
+    out = []
+    for u in sorted(have - sinit):
+        src = src_path(u)
+        if not src.exists():
+            continue
+        inc = [ln for ln in src.read_text().splitlines() if ln.startswith("#include")]
+        if inc[:1] == ['#include "game/GameAudio.h"'] and re.search(
+                rf"^__sinit_{re.escape(u)}_cpp = .*size:0x224\b", syms, re.M):
+            out.append(u)
+    return out
+
+
 def check(units):
     if not MANIFEST.exists():
         print("check: ok (no config/G4SE01/gen_game.tsv)")
@@ -1607,6 +1630,12 @@ def check(units):
         if r[0] not in known:
             print(f"malformed manifest row (not a game unit): {r}")
             return False
+    missing = missing_sinit_rows(rows)
+    if missing:
+        for u in missing:
+            print(f"{u}: generator-owned __sinit_{u}_cpp has no sinit row in {MANIFEST}")
+        print(f"check: {len(missing)} problem(s)")
+        return False
     if units:
         rows = [r for r in rows if r[0] in units]
     by_unit = {}

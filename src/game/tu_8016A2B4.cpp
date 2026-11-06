@@ -33,7 +33,7 @@ static const GXColor lbl_8053D92C = {0xAF, 0xCF, 0xCF, 0xFF}; // fn_8016B910
 static const GXColor lbl_8053D930 = {0x36, 0x61, 0x82, 0xFF}; // fn_8016B910
 static const GXColor lbl_8053D934 = {0xCF, 0xE7, 0xE7, 0xFF}; // fn_8016B910
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}

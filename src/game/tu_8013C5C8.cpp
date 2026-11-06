@@ -55,7 +55,7 @@ static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, 
 // whose resource user work has bit 0).
 cls_8049F184 lbl_8053AB18;
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 void set2DDrawInfo(JPADrawInfo& info);
 
 cls_8049F184::~cls_8049F184() {}

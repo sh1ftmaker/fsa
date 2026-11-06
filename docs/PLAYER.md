@@ -12,18 +12,24 @@ report_honest.json and the boot-path coverage dumps
 
 ## Units
 
+Matched counts and unmatched bytes below: build/G4SE01/report_honest.json on
+2026-11-05 evening, after the deferred-inlining switch (`-inline auto,deferred`,
+docs/INLINING.md); the Player units total 876 / 1,054 functions at 100 %.
+The prose in the rounds below was written along the way and keeps its own
+(older) numbers.
+
 | unit | text range | fns | 100 % | unmatched B | role (provisional) |
 |---|---|---:|---:|---:|---|
-| tu_8022AD64 | 8022AD64-8023FBF0 | 373 | 278 | 45,760 | PlayerManager (ctor 8023F8B0, dtor 8023F7F8, update 8023F390, draw 8023F2BC), ~270 fwds, cross-player passes |
-| tu_8023FBF0 | 8023FBF0-80256C74 | 254 | 147 | ~83,500 | Player core: getters/setters, input/actions, state request, update A/B, reset, ctor/dtor |
-| tu_80256C74 | 80256C74-8025EB18 | 63 | 38 | 27,132 | state handlers 0x39-0x3D, 0x41-0x48, helpers |
-| tu_8025EB18 | 8025EB18-80264998 | 59 | 33 | 22,220 | state handlers 0x11-0x19; shared exit fn_8025F698(bool) |
+| tu_8022AD64 | 8022AD64-8023FBF0 | 373 | 352 | 24,820 | PlayerManager (ctor 8023F8B0, dtor 8023F7F8, update 8023F390, draw 8023F2BC), ~270 fwds, cross-player passes |
+| tu_8023FBF0 | 8023FBF0-80256C74 | 254 | 172 | 77,036 | Player core: getters/setters, input/actions, state request, update A/B, reset, ctor/dtor |
+| tu_80256C74 | 80256C74-8025EB18 | 63 | 52 | 20,080 | state handlers 0x39-0x3D, 0x41-0x48, helpers |
+| tu_8025EB18 | 8025EB18-80264998 | 59 | 43 | 18,044 | state handlers 0x11-0x19; shared exit fn_8025F698(bool) |
 | tu_80264998 | 80264998-802684A4 | 26 | 24 | 5,140 | draw fn_80264998, body-frame select fn_80265E88 + per-state frame functions (round 6) |
-| tu_802684A4 | 802684A4-8026FC20 | 25 | 5 | 29,428 | cls_804A71A8 (helper object at Player+0xBF0) |
-| tu_8026FC20 | 8026FC20-8027E5BC | 120 | 54 | 55,608 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
-| tu_8027E5BC | 8027E5BC-80285E58 | 73 | 45 | 21,916 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
-| tu_80285E58 | 80285E58-80289648 | 8 | 1 | 13,772 | Player update fn_80285E58 + state tick fn_802870C8 (three switch jump tables) |
-| tu_8028FBA0 | 8028FBA0-802957CC | 53 | 12 | 22,292 | state handlers 0x1C-0x32 |
+| tu_802684A4 | 802684A4-8026FC20 | 25 | 15 | 22,916 | cls_804A71A8 (helper object at Player+0xBF0) |
+| tu_8026FC20 | 8026FC20-8027E5BC | 120 | 97 | 34,272 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
+| tu_8027E5BC | 8027E5BC-80285E58 | 73 | 67 | 7,024 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
+| tu_80285E58 | 80285E58-80289648 | 8 | 3 | 11,676 | Player update fn_80285E58 + state tick fn_802870C8 (three switch jump tables) |
+| tu_8028FBA0 | 8028FBA0-802957CC | 53 | 51 | 5,508 | state handlers 0x1C-0x32 |
 
 Calls out of the Player units (counts): EffectSystem_8049F178 / JPA emitters
 347, ActorManager_804A5800 265, GameView_804A9950 236, tile queries
@@ -350,7 +356,7 @@ from the tables' relocations, so every case below is the table entry):
   0x1215 == 1, fn_80242BC0, fn_80242940, fn_80242CB0, fn_80280B30,
   fn_8025250C, ..., fn_8027F1C8, eight per-frame countdowns (0x488, 0xD58,
   0x122C, 0x3F4, 0xD84, 0x1218, 0x44C, 0x1220), fn_80250090, fn_8024F63C,
-  fn_80285F44, **fn_80286688 inlined** (it is defined first; the 0x13B8
+  fn_80285F44, **fn_80286688 inlined** (the 0x13B8
   toggle on pad trigger 0x10), fn_80286B74, fn_8028676C, and the three
   emitters at 0x138C / 0x1390 / 0x1394 (ids 0x4FF-0x502 by 0x3DC, 0xD7,
   0x1B1).
@@ -439,12 +445,13 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
 
 ### Groups (leader / followers) and the input gate
 
-(2026-11-05: superseded by deferred inlining, docs/INLINING.md: MWCC now inlines
-plain functions defined later, so these can become plain functions; follow-up.)
-Proven by the inlining (MWCC only inlines what is defined earlier, and these
-bodies are inlined into functions placed before their out-of-line copies, so
-they are file inlines in tu_8023FBF0.cpp with the out-of-line copies as
-wrappers, as playerFlags_802413F0):
+(Historical, 2026-11-05: the "file inline + out-of-line wrapper" shape below was a
+workaround for the old `-inline auto`, which only inlines what is defined earlier.
+Since the switch to `-inline auto,deferred` with descending source order
+(docs/INLINING.md, "Status: adopted") a plain function is inlined into callers
+placed before it, so these can become plain functions where the asm has both an
+out-of-line copy and inlined uses; converting them is a follow-up and only
+tu_8023FBF0 is affected. The findings below are what the inlining proved.)
 - **groupSize** (fn_80248970): this player, its leader 0xD60 and every
   follower (fn_8022F514) whose leader (fn_8022F3DC) is that leader (or this
   player when 0xD60 < 0).
@@ -548,7 +555,7 @@ largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
   fn_80274238 does too (100 % as u8; its only caller is the s32 loop
   fn_8023B8E4). fn_80256F44 (seen from fn_80273C30 / D44's neg/or/srwi) returns
   a u8 as well: with u8 in tu_80256C74 / Player.h both are 100 %, but the
-  generated forwarder fn_8023AAF8 (tu_8022AD64, bool) drops to 89.7 % until it
+  generated forwarder fn_8023AAF8 (tu_8022AD64, bool) dropped to 89.7 % until it
   returns u8, so fn_80273C30 / D44 stay at 94 % with FIXMEs.
 - fn_80274728 / fn_80274988 (from the 0x0A / 0x09 updates) step the spin
   animation: 0x3FA frame, 0x3FB pose, 0x11C0 s16 angle by facing; mode 3
@@ -561,9 +568,9 @@ largest x / y of the reachable players' fn_8022DFD4 (cls_804A71A8 0x14 /
 - Left unwritten: fn_8027057C / fn_80270DDC / fn_80270F00 (fn_80270DDC is the
   heal routine on 0xBFC, inlined into the other two; it contains
   `old = x; x++; if (x == old) for (;;); x = old;` whose source form is
-  unknown, and inlines fn_80270A8C before its definition), fn_80270948 (inlines
-  fn_80270A8C before it is defined: needs a header inline + wrapper as for
-  playerFlags_802413F0), fn_802796B8 (emitter stop sequence, as before).
+  unknown, and inlines fn_80270A8C, defined after it), fn_80270948 (inlines
+  fn_80270A8C, also defined after it; with the deferred model a plain function
+  may do, otherwise the header inline + wrapper of playerFlags_802413F0), fn_802796B8 (emitter stop sequence, as before).
 
 ## Round 4 (state handlers)
 
@@ -602,7 +609,8 @@ effects (spawnEmitter_8013CC50):
 
 The transitions are started by **fn_80290070**(layer, from, to, kind)
 (0x80290070, 0xCE8 bytes; not written: it inlines fn_80290D58 and
-fn_80290E90, which come after it, so it needs deferred inlining).
+fn_80290E90, which come after it, so it needs the deferred model, now the
+project default).
 fn_8028FBA0 starts kind 5 back to 0xCB0; **fn_8028FC2C** (100 %) picks a
 per-stage respawn point for kind 0x27 (stage / level / screen of the view,
 the floor 0x3B4 - 7).
@@ -688,11 +696,11 @@ Evidence for the item names is the actor each state spawns (docs/names/actors.ts
 - **SaveRow_8050EC80 0x7E / 0x7F** (tu_80379F84.h): the hit path reads 0x7E while
   GameRoot 0x7F is set, else 0x7F; value 1 calls fn_8024E500 on damage >= 4.
 - **fn_80270A8C is an inline (isDown)**: fn_80270948 and fn_8027057C inline it
-  before its definition. -inline deferred is ruled out for this unit: compiled
-  with it, MWCC pools the .sdata2 literals in reverse (0.0 before 1.0, 7 / -15 /
-  15 near the front), the original's pool is in forward first-use order. So
-  isDown() is defined at the top of the unit and fn_80270A8C returns it
-  (precedent playerFlags_802413F0). fn_80270948 (100 %) stores 0xD10 (now a
+  before its definition. (Historical: this was found under `-inline auto`, where
+  the .sdata2 literals pooled differently under deferred; the project has since
+  switched to deferred with descending source order, docs/INLINING.md, so check
+  whether a plain fn_80270A8C now gives the same bytes.) Then isDown() is defined
+  at the top of the unit and fn_80270A8C returns it (precedent playerFlags_802413F0). fn_80270948 (100 %) stores 0xD10 (now a
   TVec3f: the revive position, pos or mPos) once while down.
 - **fn_80270DDC is a real function (heal, 100 %)**, not an inline wrapper: its
   out-of-line shape (`beq; b` after the isDown test) comes only from calling
@@ -778,11 +786,13 @@ standing 0x3C-0x3F (state 0 / 0x1F / 0x2A / 0x42; fn_80268194), walk 0x00 +
 9 / 0xA), the carried pose 0x1BF-0x1C3 of player 4 of a group outside the
 leader's slot (fn_802486A0() == 4 && fn_80240888() != fn_80248778()), state
 0x49 by field_0x1178 (0 / 1 / 2 -> 0x35F / 0x3D0 / 0x296 + 0x3FD).
-**fn_80268194 is an inline**: the frame functions after fn_80265E88 inline it
-(fn_80267384 / fn_80267598 are just its body, fn_80267ECC and fn_80267470 use it),
-fn_80265E88 is defined before it and calls it, so MWCC emits the out-of-line
-copy at the end of the file (0x80268194, just before __sinit). Written as an
-`inline` member definition after fn_80265E88; 100 %.
+**fn_80268194 is inlined** into the frame functions after fn_80265E88
+(fn_80267384 / fn_80267598 are just its body, fn_80267ECC and fn_80267470 use it)
+and has an out-of-line copy at 0x80268194 (just before __sinit) for fn_80265E88's
+call. It is written as an `inline` member definition after fn_80265E88 (100 %), a
+form chosen under the old `-inline auto`; under the deferred model a plain
+function placed so that the unit's descending order puts the callers first would
+do the same (historical note, not re-tested).
 
 **fn_80264998 = the draw** (manager fn_8023F2BC). Pipeline, in order:
 1. Gate: mActive, 0xCEE != 1, and with 0x1215 the player's bit of
@@ -1146,14 +1156,17 @@ section's last 4 bytes are padding). Left unwritten: none of the state handlers.
   fn_8023D9B0 / fn_8023D4F8, fn_80238430 (const TVec2f*), __sinit, the weak
   Player::fn_8023F984; fn_8023F088 99.88 % (reloc-name), recursive leader queries
   fn_8023434C / fn_8023BEA8 / fn_8023C36C 99.95 % (reloc-name), fn_80235B68 96.49 %.
-- **Forwarder form**: a forwarder that another function in this unit inlines must be written
-  inverted (`if (!isPlayerActive(p)) return F; return mPlayers[p]->get();`): standalone both
-  forms compile alike, inlined only the inverted one gives the original's blocks. Ten are now.
-- **Deferred inlining evidence**: fn_8023434C inlines its own recursion three levels and calls
+- **Forwarder form** (found under the old `-inline auto`; still the shape that matches): a
+  forwarder that another function in this unit inlines is written inverted
+  (`if (!isPlayerActive(p)) return F; return mPlayers[p]->get();`): standalone both forms
+  compile alike, inlined only the inverted one gives the original's blocks. Ten are now.
+- **Deferred inlining evidence** (this is what the project's `-inline auto,deferred` switch
+  rests on, docs/INLINING.md): fn_8023434C inlines its own recursion three levels and calls
   the player test out of line at the bottom as fn_8023F264, so isPlayerActive is fn_8023F264
   itself (a plain function at 0x8023F264); fn_80235B68's bottom calls fn_8018A614. The 16
-  functions still unwritten all inline functions defined after them (forwarders,
-  getPlayerPos_8023E724, getPlayerLayer_8023DE58, fn_80238A68): CRACK_PASS's open question.
+  functions that were unwritten then all inline functions defined after them (forwarders,
+  getPlayerPos_8023E724, getPlayerLayer_8023DE58, fn_80238A68); the deferred model makes
+  them writable (CRACK_PASS's open question, answered).
 - **PS JGeometry**: fn_80233C08 is libs' JGeometry/Vec.h TVec3<f32>::normalize() (PSVECSquareMag
   + PSVECScale); the game's JGeometry.h has no paired-single TVec3. fn_80232A0C (cross-player
   pass, 370 boot instructions) needs the same.

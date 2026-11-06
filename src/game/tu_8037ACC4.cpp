@@ -6,7 +6,7 @@
 
 cls_804AE9B0* lbl_8053AD70;
 
-// forward declarations (functions reversed for -inline deferred)
+// Forward declarations.
 s32 fn_8037AE60();
 
 cls_804AE9B0::cls_804AE9B0() {

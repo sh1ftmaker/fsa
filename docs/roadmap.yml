@@ -99,7 +99,8 @@ phases:
           (vtables before jump tables in .data, later-defined functions
           inlined). Every game source lists its functions in descending address
           order; callees the original never inlines get an evidenced
-          auto_inline region (docs/INLINING.md).
+          auto_inline region (docs/INLINING.md). Adopted 2026-11-05 after an
+          independent verification: no function lost, SHA-1 OK.
         status: done
         covers: []
       - id: shared-headers
@@ -214,6 +215,16 @@ phases:
         status: done
         covers: []
         landed: [f557227]
+      - id: leverage-classes
+        title: Leverage classes
+        desc: >-
+          Shared classes whose methods most units call, written once with
+          their real layout so every caller can match. Done 2026-11-05:
+          the effect spawner, ActorBase, ActorManager, AudioMgr, GameView,
+          TileMap, GameRoot and GameGlobals, EnemyBase and the pane
+          controller (PaneCtrl).
+        status: done
+        covers: []
       - id: structure-first
         title: Big functions, structure first
         desc: >-
@@ -264,8 +275,13 @@ phases:
         measure: {kind: code}
       - id: player
         title: The player
-        desc: The Link class and the per-player queries, after the boot path has fixed its layout.
-        status: next
+        desc: >-
+          The Link class (Player_804A6F38, ten units from 0x8022AD64 to
+          0x802957CC) and the per-player queries. Pushed hard on 2026-11-05
+          with the deferred-inlining model: 876 of 1,054 functions are at 100 %
+          (docs/PLAYER.md); the hard remainder is the big state handlers and
+          the update loop.
+        status: active
         covers: []
       - id: map
         title: Map and stage
@@ -316,8 +332,11 @@ phases:
         desc: >-
           Real names for game files, classes and functions, from debug and
           assert strings, Dolphin debug output and the dormant debug menus,
-          reviewed on their own.
-        status: later
+          reviewed on their own. The first evidence-based sweep ran on
+          2026-11-05 (docs/names/: names.tsv is applied by tools/rename.py, METHOD.md
+          is the method; names without enough evidence are in LOW_CONFIDENCE.md
+          and keep their provisional address names).
+        status: active
         covers: []
       - id: every-unit
         title: Every unit Matching

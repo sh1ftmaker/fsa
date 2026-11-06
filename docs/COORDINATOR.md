@@ -38,6 +38,30 @@ python3 tools/coord.py promote --apply        # after merges: flag units that na
 - Notes for `start`: tell the worker what's already known about the unit
   (which names other units found, which donor has the right SDK version).
 
+## The current loop (2026-11-05)
+
+The per-unit loop above, as it runs now:
+
+1. **Worktree per unit.** `tools/coord.py start <unit>` claims the unit and
+   makes `../fsa-wt/<slug>` on `unit/<slug>` (`tools/unit_worktree.sh`); the
+   worker builds only there, one `ninja` at a time.
+2. **Opus authors, Sonnet reviews.** An Opus agent writes the unit under
+   `docs/RULES_CARD.md` (game code is `-inline auto,deferred`, functions in
+   descending address order, `docs/INLINING.md`); a fresh Sonnet agent that
+   never saw the author's reasoning reviews it adversarially against the asm
+   (`coord.py review`), and only ACCEPT goes on. The commit trailer names the
+   model that did the work.
+3. **Merge script checks** (before the merge is accepted, on the merged tree):
+   full `ninja` ends in `dtk shasum` OK; `tools/gate.py --all-units` ok and
+   `gate.py --base matching` (protected files listed for the coordinator);
+   `tools/gen_game.py --check` (also fails when a unit with manifest rows lacks
+   its sinit row); `tools/order_check.py` (the known out-of-order units only,
+   11 at the time of writing); and a per-address compare of
+   `build/G4SE01/report_honest.json` against `matching`'s: no function that
+   was at 100 % may drop.
+4. **Push after merge.** Once a merge is verified, push `matching` to GitHub
+   (the Pages build then publishes `site/`); never before the checks pass.
+
 ## Tools (G0)
 
 - `docs/RULES_CARD.md` is the only doc workers read (reviewers add
