@@ -473,7 +473,7 @@ game/tu_803944C8.cpp	menus	med	message text formatting (strings ' cucco', ' time
 game/tu_803A3484.cpp	menus	med	Title_804AF820: the title screen (clouds, THP)	hand
 game/tu_803A60E4.cpp	menus	low	PaneCtrl-heavy J2D code called by GameRoot	hand
 game/tu_803A85E4.cpp	menus	med	cls_804AF878: drives the two connect screens	hand
-game/tu_803A8DFC.cpp	menus	med	strings 'kk_1st_01.bti', 'P1.bti': results screen	hand
+game/tu_803A8DFC.cpp	menus	med	ResultScreen_804AF9A0 (vtable 0x804AF9A0): loads result_{4,3,2}P.blo, result_score_{4,3,2}P.blo, result_back.blo, result_title.blo, result_{4,3,2}P.btk, rank textures kk_1st_01.bti..kk_4th_01.bti; held by cls_804AE9A0 (tu_80379F84)	hand
 game/tu_803B7DCC.cpp	menus	low	PaneCtrl-heavy J2D code called by tu_80379F84 only	hand
 game/act_talking_npc_2.cpp	npcs	med	actors.tsv (actor spawner): system TLK2 Talking NPC 2	auto
 game/tu_803B8C74.cpp	core	med	save data (StageFlag, .bss save area), called by file select / map screen	hand

@@ -2,26 +2,16 @@
 #define GAME_TU_80379F84_H
 
 #include "types.h"
+#include "game/tu_803A8DFC.h"
+
+class JKRArchive;
 
 // The four screen objects whose constructors store them in .sbss globals
 // (lbl_8053ADA0, lbl_8053ADA8, lbl_8053ADC0, lbl_8053ADB8). Each is named after
 // its vtable (slot 0x08 is the destructor); their units are not written yet,
 // so only what game/tu_80379F84.cpp uses is declared here.
 
-// Vtable 0x804AF9A0; constructor fn_803B6FD8, destructor fn_803B6D04
-// (game/tu_803A8DFC.cpp). The constructor stores the object in lbl_8053ADA0.
-class cls_804AF9A0 {
-public:
-    /* 0x08 */ virtual ~cls_804AF9A0();
-    // game/tu_803A8DFC.cpp, not written yet; no other arguments.
-    void fn_803A8F5C();
-    void fn_803A97A0();
-    void fn_803B31AC();
-    void fn_803B6768();
-
-    /* 0x0004 */ u8 field_0x4[0x4C0 - 0x4];
-    /* 0x04C0 */ u8 field_0x4c0; // mode, read by fn_80379F84
-}; // Size: at least 0x4C1
+// ResultScreen_804AF9A0 (vtable 0x804AF9A0) is declared in game/tu_803A8DFC.h.
 
 // Vtable 0x804AFAB0; constructor fn_803B8414, destructor fn_803B82FC
 // (game/tu_803B7DCC.cpp). The constructor stores the object in lbl_8053ADA8.
@@ -81,12 +71,14 @@ struct cls_804AE9A0 {
     void fn_8037A664();
     void fn_8037A708();
 
-    /* 0x04 */ cls_804AF9A0* field_0x4;
+    /* 0x04 */ ResultScreen_804AF9A0* field_0x4;
     /* 0x08 */ cls_804AFAB0* field_0x8;
     /* 0x0C */ cls_804B03D8* field_0xc;
-    /* 0x10 */ u8 field_0x10[0x1C - 0x10];
+    /* 0x10 */ u8 field_0x10[0x18 - 0x10];
+    /* 0x18 */ JKRArchive* field_0x18; // the result screen's .blo/.btk archive (ResultScreen_804AF9A0's constructor)
     /* 0x1C */ u8 field_0x1c; // cleared by fn_8037A708
-}; // Size: at least 0x1D
+    /* 0x1D */ u8 field_0x1d; // set by ResultScreen_804AF9A0::fn_803A9830 when its fade-out ends
+}; // Size: at least 0x1E
 
 // Owner: game/tu_80197070.cpp (0x8019CDE4 / 0x8019CE40). Set / test bit
 // stage * 4 + sub of the current save file's mFlags (game/tu_803B8C74.h; stage 0-7, sub 0-3;
@@ -97,7 +89,6 @@ BOOL fn_8019CE40(s32 stage, s32 sub);
 // .sbss 0x8053ADB8, 0x8053ADA0, 0x8053ADA8, 0x8053ADC0 (auto split, 8 bytes
 // each; stored by the constructors above, in units not written yet).
 extern cls_804B0288* lbl_8053ADB8;
-extern cls_804AF9A0* lbl_8053ADA0;
 extern cls_804AFAB0* lbl_8053ADA8;
 extern cls_804B03D8* lbl_8053ADC0;
 
