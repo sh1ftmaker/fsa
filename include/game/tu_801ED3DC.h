@@ -41,7 +41,7 @@ struct cls_801ED3DC {
 struct cls_801ED828 {
     /* 0x0 */ u16 mFrames;
     // Draws the digit 1-3 for the current second at the screen centre.
-    void fn_801ED828();
+    void fn_801ED828() const;
     // Counts down; plays a sound every full second.
     void fn_801ED8F0();
     // Starts the countdown at 180 frames.

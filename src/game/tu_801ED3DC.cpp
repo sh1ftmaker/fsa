@@ -33,17 +33,18 @@ void cls_801ED828::fn_801ED8F0() {
     }
 }
 
-// FIXME: 79.8 %. The target converts efbHeight first (lhz 6 before lhz 4, both
-// through r3, the 0x4330 magic in r0 stored to 8 and 0x10 of the frame) and
-// stores the link register after the first lhz; ours keeps the RenderModeObj
-// in r8, the magic in r3, converts fbWidth first and saves lr before the loop.
-void cls_801ED828::fn_801ED828() {
+// const: the target loads mFrames above the prologue's stw r0 (79.8 -> 83.8); the
+// u16 sizes convert with the signed form (xoris), an explicit (s32) (83.8 -> 90.1).
+// FIXME: 90.12. Scheduling and registers only: the target loads efbHeight (lhz 6) before
+// fbWidth (lhz 4), both through r3; ours keeps the RenderModeObj in r8 and loads fbWidth
+// first.
+void cls_801ED828::fn_801ED828() const {
     if (mFrames != 0) {
         for (int i = 0; i < 3; i++) {
             if (30 + 60 * i <= mFrames && mFrames <= (i + 1) * 60) {
                 GXRenderModeObj* mode = JUTVideo::getManager()->getRenderMode();
-                lbl_8053AED0->fn_8043CB24(i + 1, 255, 0, 1, false, 0.5f * mode->fbWidth,
-                                          0.5f * mode->efbHeight, 3.0f);
+                lbl_8053AED0->fn_8043CB24(i + 1, 255, 0, 1, false, 0.5f * (s32)mode->fbWidth,
+                                          0.5f * (s32)mode->efbHeight, 3.0f);
                 return;
             }
         }
