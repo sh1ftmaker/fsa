@@ -246,6 +246,9 @@ public:
     bool fn_80250FD4(); // tu_8023FBF0 (0x80250FD4), called by fn_80250D30
     u8 fn_802517E4(); // via fn_8022D894
     bool fn_80251BFC(s32 arg); // via fn_802319B4
+    // tu_8023FBF0 (not written there yet). Writes the player's two screen ints to *out (0, 0
+    // first) and returns whether it found them; fn_80231A50 / fn_80231DE4 call it.
+    bool fn_802527B0(JGeometry::TVec2<s32>* out);
     bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8
     bool fn_8026E5F8(const JGeometry::TVec2f* pos); // tu_802684A4 (0x8026E5F8)
     void fn_80252F14(const JGeometry::TVec3f* offset); // via fn_8023DFF4
@@ -1364,16 +1367,16 @@ void fn_8022CD48(s32 player); // -> fn_80248FF0
 // (game/tu_8029C584.cpp): the destructor calls fn_8022CDD4, init fn_8022CF08.
 void fn_8022CDD4(s32 player);
 void fn_8022CF08(s32 player);
-// Owner: game/tu_8022AD64.cpp (0x8022CFE8, not written yet): a float per player index (lbl_80540008
-// without the manager); compared with 0.0f by fn_802859C4 (tu_8027E5BC).
-extern "C" f32 fn_8022CFE8(s32 player);
+// The largest distance from a follower of `player`'s group to its fn_8027FA08 point
+// (0.0f for none); compared with 0.0f by fn_802859C4 (tu_8027E5BC).
+f32 fn_8022CFE8(s32 player);
 // A per-player test (false without the manager): fn_8022D75C of the player, or of
 // fn_8022EA0C's player when fn_8022F478 holds. ActorBase_804A5770::fn_801EE558 skips
 // players for which it holds (clrlwi. of r3).
 bool fn_8022D534(s32 player);
-// Owner: game/tu_8022AD64.cpp (0x80237A80, 0x738, not written yet): a per-player
-// test; cls_804A71A8::fn_8026C350 blocks tile 0x3E unless it holds (clrlwi. of r3).
-extern "C" bool fn_80237A80(s32 player);
+// A per-player test; cls_804A71A8::fn_8026C350 blocks tile 0x3E unless it holds
+// (clrlwi. of r3).
+bool fn_80237A80(s32 player);
 // fn_8024BB88 on the present players of `player`'s group. 1 unit (tu_8028FBA0).
 void fn_8022D36C(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
@@ -1718,19 +1721,12 @@ extern "C" {
 // Owner: tu_8022AD64 (0x8023E7B0, defined there). 1 unit (act_rock's update: the carried
 // rock's position follows it). Like getPlayerPos_8023E724 (the player's mPos, else &lbl_804CF460) but
 // through fn_8024145C; takes a player index (act_rock passes field_0xc8).
-// Owner: tu_8022AD64 (0x8022EA0C, defined there). 1 unit (act_blindfold's update): maps a
-// player index to the index whose position getPlayerPos_8023E724 is then asked for (r3 in, r3 out).
-s32 fn_8022EA0C(s32 player);
 // Owner: tu_8022AD64 (0x8022FF8C, defined there). 1 unit (act_merchant's update, state 1):
 // fn_8022FEB8's box test for a given player (player, box, layer, serial, a, b), called with
 // the actor's box moved to its position, its field_0x4 and mSerial, li 1 / li 0.
 void fn_8022FF8C(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial, bool a, bool b);
 // Owner: tu_8022AD64 (0x8022F340, defined there). act_gambling_chest. Maps a
 // player index to a window index (-1 without a manager; see Message.h).
-// Owner: tu_8022AD64 (0x80231A50, defined there). tu_80441318. No arguments
-// (r3 is not loaded); returns a player index, or a negative value for none
-// (the caller maps a non-negative one through fn_8022F340).
-s32 fn_80231A50();
 // Owner: tu_8022AD64 (0x802362C4, defined there). act_gambling_chest (also
 // act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
 // object, value) when the player exists and its byte 0xCAC is set.
@@ -1754,6 +1750,13 @@ s32 fn_80231A50();
 
 }
 // Defined in game/tu_8022AD64.cpp, with C++ names (moved out of the extern "C" block above).
+// act_blindfold, act_gambling_chest: maps a player index to the index whose position
+// getPlayerPos_8023E724 is then asked for (its leader's, recursively; -1 without the manager).
+s32 fn_8022EA0C(s32 player);
+// tu_80441318. The one present player (layer 8 and up) whose fn_802527B0 fails while
+// every other one reports the same screen point; -1 otherwise or while a manager flag
+// is set (the caller maps a result through fn_8022F340).
+s32 fn_80231A50();
 // 1 unit (act_burning_block, compared with 1). Counts the present players on the ground
 // that pass fn_802729F0(serial) or fn_80250090, and fn_80250D30 but not fn_802413C8;
 // 0 when two of them face differently.
