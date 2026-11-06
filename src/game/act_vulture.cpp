@@ -474,4 +474,12 @@ bool Vulture_804A4230::vfunc_0x5C() {
     return hit;
 }
 
+void Vulture_804A4230::draw() {
+    SpriteParams_801F5AE0 params;
+    if (mFlags & 0x4000) {
+        params.field_0x10.set(0, 0, 0, 0x9F);
+    }
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0x16E, &params, 7, 1.0f, 1.0f);
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
