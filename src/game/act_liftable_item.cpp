@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_liftable_item.h"
+#include "game/act/act_stop_npc.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
@@ -99,6 +100,44 @@ LiftableItem_804A01D0::~LiftableItem_804A01D0() {
     releaseEmitter_801EE434(mEmitter2a8);
     releaseEmitter_801EE434(mEmitter2ac);
     releaseEmitter_801EE434(mEmitter2b0);
+}
+
+void LiftableItem_804A01D0::vfunc_0x24() {
+    if (mEmitter2a8 != NULL) {
+        mEmitter2a8->becomeInvalidEmitter();
+        mEmitter2a8->stopCreateParticle();
+        mEmitter2a8 = NULL;
+    }
+    if (mEmitter2ac != NULL) {
+        mEmitter2ac->becomeInvalidEmitter();
+        mEmitter2ac->stopCreateParticle();
+        mEmitter2ac = NULL;
+    }
+    if (mEmitter2b0 != NULL) {
+        mEmitter2b0->becomeInvalidEmitter();
+        mEmitter2b0->stopCreateParticle();
+        mEmitter2b0 = NULL;
+    }
+    s32 serial = field_0x260;
+    if (serial != 0) {
+        StopNPC_804AA2D8* actor = (StopNPC_804AA2D8*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->fn_802ED140();
+        }
+    }
+    mAlive = false;
+    serial = field_0x278;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->mAlive = false;
+        }
+        field_0x278 = -1;
+    }
+    if (field_0x294 >= 0) {
+        field_0x27c = *getPlayerPos_8023E724(field_0x250);
+        getActorManager_801F856C()->spawnActor_801F9484('LSTI', field_0x4, &field_0x27c, (field_0x298 << 22) | field_0x294, -1, -1);
+    }
 }
 
 void LiftableItem_804A01D0::fn_801597C0() {
