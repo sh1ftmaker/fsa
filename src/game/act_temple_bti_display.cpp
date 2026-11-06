@@ -152,8 +152,10 @@ void TempleBTIDisplay_8049CB04::update() {
     }
 }
 
-// FIXME: missing/extra 96.13% (193 vs 194 instrs; target has an explicit addi r4, r31, 0x0 at prologue)
+// FIXME: 96.13%, missing/extra (193 vs 194 instrs). The target has `addi r4, r31, 0x0` (names[0] address) before the
+// first fn_804032E8 call, which shifts the immediates' registers by one (r7/r6/r5 vs r8/r7/r6) in the SpriteParams init.
 void TempleBTIDisplay_8049CB04::draw() {
+    // Steering: the original keeps the table base in r31 across the three lookups.
     const char* (*names)[9] = sBtiNames;
     SpriteParams_801F5AE0 params;
     JGeometry::TVec3f pos = mPos;

@@ -1865,7 +1865,8 @@ extern f32 lbl_804C0EA0[];
 // Layer of the searchlight / last broken pot.
 extern s32 lbl_8053AB68;
 
-// game/tu_800F39EC.cpp (owner unit, .data:0x8049C3B8, size 0x28).
+// .data:0x8049C3B8, size 0x28, s16 values (no unit splits it yet; read by
+// act_temple_bti_display and tu_800F7FCC).
 extern s16 lbl_8049C3B8[];
 
 #endif
