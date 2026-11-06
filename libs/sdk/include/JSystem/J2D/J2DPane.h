@@ -492,6 +492,7 @@ struct J2DTextBox : public J2DPane
     void setLineSpace();
     void getString(char *);
     char *getStringPtr() const;
+    u16 getStringAllocByte() const { return mStringLength; }
     size_t setString(s16, const char *, ...);
 
     /** @fabricated */
@@ -569,7 +570,7 @@ struct J2DTextBox : public J2DPane
     JUtility::TColor mBlack;         // _12C
     u8 mFlags;                       // _130
     bool mIsTextFontOwned;           // _131
-    s16 mStringLength;               // _132
+    u16 mStringLength;               // _132
     u8 _134[4];                      // _134
 };
 

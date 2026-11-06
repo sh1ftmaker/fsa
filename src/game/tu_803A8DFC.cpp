@@ -40,10 +40,11 @@ static const u64 lbl_80476310[8] = {
     'Ndatar01', 'Ndatar21', 'Ndatar12', 'Ndatar22', 'Ndatar13', 'Ndatar23', 'Ndatar14', 'Ndatar24',
 };
 
-// FIXME: 99.00. The four OSReport arguments: the original loads the text box's
-// mStringLength (0x132) with lhz (u16), ours with lha (libs J2DTextBox declares it s16);
-// .rodata string offsets and .sdata2 names differ (the unit's other .rodata objects,
-// function-local tables of unwritten functions, come first in the original).
+// FIXME: 99.85. Operands + reloc-name only: .rodata string offsets (one addi) and .sdata2
+// names differ (the unit's other .rodata objects, function-local tables of unwritten
+// functions, come first in the original).
+// The OSReport arguments read the text box's string length through getStringAllocByte()
+// (u16, as zeldaret/tp's J2DTextBox: the original loads it with lhz after an mr).
 ResultScreen_804AF9A0::ResultScreen_804AF9A0() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053ADA0 = this;
@@ -60,16 +61,16 @@ ResultScreen_804AF9A0::ResultScreen_804AF9A0() {
     field_0x4[0]->setPriority("result_4P.blo", 0x1100000, lbl_8053AD68->field_0x18);
     field_0x10[0] = new J2DScreen;
     field_0x10[0]->setPriority("result_score_4P.blo", 0x1100000, lbl_8053AD68->field_0x18);
-    OSReport("Tmmt01===>%d\n", static_cast<J2DTextBox*>(field_0x10[0]->search('Tmmt01'))->mStringLength);
-    OSReport("Tmmt02===>%d\n", static_cast<J2DTextBox*>(field_0x10[0]->search('Tmmt02'))->mStringLength);
+    OSReport("Tmmt01===>%d\n", static_cast<J2DTextBox*>(field_0x10[0]->search('Tmmt01'))->getStringAllocByte());
+    OSReport("Tmmt02===>%d\n", static_cast<J2DTextBox*>(field_0x10[0]->search('Tmmt02'))->getStringAllocByte());
     field_0x1c = new J2DScreen;
     field_0x1c->setPriority("result_back.blo", 0x1100000, lbl_8053AD68->field_0x18);
     field_0x4[1] = new J2DScreen;
     field_0x4[1]->setPriority("result_3P.blo", 0x1100000, lbl_8053AD68->field_0x18);
     field_0x10[1] = new J2DScreen;
     field_0x10[1]->setPriority("result_score_3P.blo", 0x1100000, lbl_8053AD68->field_0x18);
-    OSReport("Tmmt01===>%d\n", static_cast<J2DTextBox*>(field_0x10[1]->search('Tmmt01'))->mStringLength);
-    OSReport("Tmmt02===>%d\n", static_cast<J2DTextBox*>(field_0x10[1]->search('Tmmt02'))->mStringLength);
+    OSReport("Tmmt01===>%d\n", static_cast<J2DTextBox*>(field_0x10[1]->search('Tmmt01'))->getStringAllocByte());
+    OSReport("Tmmt02===>%d\n", static_cast<J2DTextBox*>(field_0x10[1]->search('Tmmt02'))->getStringAllocByte());
     field_0x4[2] = new J2DScreen;
     field_0x4[2]->setPriority("result_2P.blo", 0x1100000, lbl_8053AD68->field_0x18);
     field_0x10[2] = new J2DScreen;
@@ -87,8 +88,7 @@ ResultScreen_804AF9A0::ResultScreen_804AF9A0() {
     field_0x170 = new J2DPicture(tex);
     field_0x170->setBlackWhite(JUtility::TColor(0x000000FF), JUtility::TColor(0x00000000));
 
-    f32 height = field_0x4[0]->search('Pltest4')->getHeight();
-    field_0x3f0 = height / 2 +
+    field_0x3f0 = field_0x4[0]->search('Pltest4')->getHeight() / 2 +
                   ((field_0x4[0]->search('Prpst04')->getBounds()->i.y +
                     (field_0x4[0]->search('Ndata04')->getBounds()->i.y + field_0x4[0]->search('Pltest4')->getBounds()->i.y)) -
                    (field_0x4[0]->search('Ndata05')->getBounds()->i.y + field_0x4[0]->search('Prpst04')->getBounds()->i.y));
@@ -300,6 +300,7 @@ void ResultScreen_804AF9A0::fn_803B31AC() {
 void ResultScreen_804AF9A0::fn_803B2FB0() {
     for (s32 i = 0; i < field_0x454; i++) {
         if (lbl_8053AD30->fn_80309D24(getPlayerInputSlot_8030AAF4(i), 0x40)) {
+            // bit 1 of field_0x4b0[i] (extrwi): listed in field_0x4b4.
             if (!((field_0x4b0[i] >> 1) & 1)) {
                 u8 count = 0;
                 for (s32 j = 0; j < field_0x454; j++) {
@@ -317,6 +318,7 @@ void ResultScreen_804AF9A0::fn_803B2FB0() {
         } else if ((field_0x4b0[i] >> 1) & 1) {
             for (s32 j = 0; j < field_0x454; j++) {
                 if (field_0x4b4[j] == (u8)i) {
+                    // The guard is in the original asm (dropping it loses 4 instructions).
                     if (j < field_0x454 - 1) {
                         for (s32 k = j; k < field_0x454 - 1; k++) {
                             field_0x4b4[k] = field_0x4b4[k + 1];
@@ -343,6 +345,7 @@ void ResultScreen_804AF9A0::fn_803B0158() {
         if (field_0x440 >= 60) {
             field_0x70->hide();
             field_0x8c->show();
+            // x is a float local before each move() (as tu_803E1668).
             f32 x = field_0x70->getBounds()->i.x;
             field_0x70->move(x, field_0x3f4);
             x = field_0x8c->getBounds()->i.x;
@@ -351,7 +354,7 @@ void ResultScreen_804AF9A0::fn_803B0158() {
         }
         field_0x440 = 0;
     }
-    s32 timer = field_0x440;
+    s32 timer = field_0x440; // local copy: reading field_0x440 each time changes the codegen
     if (timer == 0) {
         field_0x440 = 150;
         field_0x4c4 = 0;
@@ -433,7 +436,7 @@ void ResultScreen_804AF9A0::fn_803AEC78() {
         }
         field_0x440 = 0;
     }
-    s32 timer = field_0x440;
+    s32 timer = field_0x440; // local copy: reading field_0x440 each time changes the codegen
     if (timer == 0) {
         field_0x440 = 150;
         field_0x4c4 = 0;
@@ -480,7 +483,7 @@ void ResultScreen_804AF9A0::fn_803AE308() {
         }
         field_0x440 = 0;
     }
-    s32 timer = field_0x440;
+    s32 timer = field_0x440; // local copy: reading field_0x440 each time changes the codegen
     if (timer == 0) {
         field_0x440 = 150;
         field_0x4c4 = 0;
@@ -527,7 +530,7 @@ void ResultScreen_804AF9A0::fn_803ADC0C() {
         }
         field_0x440 = 0;
     }
-    s32 timer = field_0x440;
+    s32 timer = field_0x440; // local copy: reading field_0x440 each time changes the codegen
     if (timer == 0) {
         field_0x440 = 150;
         field_0x4c4 = 0;
@@ -574,7 +577,7 @@ void ResultScreen_804AF9A0::fn_803AD220() {
         }
         field_0x440 = 0;
     }
-    s32 timer = field_0x440;
+    s32 timer = field_0x440; // local copy: reading field_0x440 each time changes the codegen
     if (timer == 0) {
         field_0x440 = 150;
         field_0x4c4 = 0;
