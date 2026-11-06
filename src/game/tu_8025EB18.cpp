@@ -545,7 +545,7 @@ void Player_804A6F38::fn_80263078() {
     }
 }
 
-// FIXME: 98.88. Two lfs missing: the original reloads mPos.x for the 0.5 steps after
+// FIXME: 99.23. Two lfs missing: the original reloads mPos.x for the 0.5 steps after
 // computing field_0x324.x - mPos.x; ours reuses the register.
 // Update of state 0x13 (the fall while carrying, field_0x344 the speed): a cucco ('NIWA') is
 // carried gliding: the player moves 0.5 a frame toward field_0x324.x, bobbing with the
@@ -996,8 +996,6 @@ void Player_804A6F38::fn_8026173C() {
     field_0xd84 = 20;
 }
 
-// FIXME: 99.17. Registers only: the epsilon test keeps 32 * FLT_EPSILON in f2 (ours f4),
-// as in tu_80256C74 fn_80259830.
 // The carry walk cycle (field_0x3f8 over 24 frames, 48 when slow) and the held thing's
 // position: pose lbl_8046B790[facing][step], offset lbl_8046B7B0[pose] from mPos.
 void Player_804A6F38::fn_8026152C(bool slow) {
