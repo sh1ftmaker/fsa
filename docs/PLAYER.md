@@ -1644,13 +1644,14 @@ pair against `matching` 9c62f288.
 **tu_8028FBA0 fn_80290070** (0xCE8, unwritten -> 99.56 %; order / stack slots only) is
 Player::fn_80290070(layer, from, to, kind), the start of every screen / layer transition
 (states 0x1C-0x32 above). Refused while a transition runs (0xCE8; kind 0x24 may override it
-under fn_80240DAC), 0xCEE, 0x1216, 0x1238 > 0, down (fn_80270A8C), no life (fn_8024189C),
-held (fn_8025F448), or the GBA link busy for a target layer >= 8. Kind 0xC becomes 0x26 under
+under fn_80240DAC), 0xCEE, 0x1216, 0x1238 > 0, down (fn_80270A8C), fn_8024189C() <= 0,
+fn_8025F448(), or the GBA link busy for a target layer >= 8. Kind 0xC becomes 0x26 under
 fn_802DE93C or on a GBA layer. Kind 0x21 from a GBA layer is immediate: back to layer 0 at
 `to` (0xCBC = 0xCD4 = mPos, chained), with fn_80290E90 and fn_80290D58 both inlined (the leave
 and arrive exits). Kind 0x22 (same layer) only moves the player, back to 0x2C4 / 0xCBC when the
 tile is a hole (the 0x1F landing test). Otherwise the leave state by kind: 4 / 7-9 / 0x20 /
-0x24 -> 0x1E (fn_80252BAC with `from - mPos`; held by a partner -> kind 9 to 0xD1C), 0xC / 0xD
+0x24 -> 0x1E (fn_80252BAC with `from - mPos`; under fn_80240670 the target becomes 0xD1C on the current
+layer, kind 9), 0xC / 0xD
 / 0x26 -> 0x32 (same layer only), 5 -> 0x20 and 0xA -> 0x2A (0xCF1 = 0xCF0; 0xCF0 = the tile
 under the target is not 0 / 2 (/ 3) / 0x21), 6 / 0xB / 0x14 / 0x1F -> 0x24 or 0x22 by layer,
 0xE / 0x25 -> 0x26, 0xF -> 0x28, 0x27 -> 0x30, 0x11 only under fn_80240818, 0x13 / 0x16 ->
@@ -1659,7 +1660,7 @@ under the target is not 0 / 2 (/ 3) / 0x21), 6 / 0xB / 0x14 / 0x1F -> 0x24 or 0x
 departure, 0xCE8 = true; the GBA links get the view names (fn_803049F0 / fn_80304B00, also for
 the carried partner 0xD70) and the direction fn_803020C8(player, from, to, mode): mode 0 for a
 move between two flagged GBA layers or kinds 0x13 / 0x16 to the TV, 2 for 0x1E / 0xF / 6 and
-0xB from a GBA layer, 1 otherwise, none for 0xC / 0xD / 0x26 / 0x22 or without the player.
+0xB from a GBA layer, 1 otherwise, none for 0xC / 0xD / 0x26 / 0x22 or under fn_80240670.
 Remaining diff: the kind-4 group's offset vector sits at 0x2C (original 0x14, as if declared
 after the other two), and kinds 0x17 / 0x18 load the 0.0f before from->y. The libs TVec3
 operator- is not const, so `*from - mPos` is written `TVec3f(*from) -= mPos` (the original's
