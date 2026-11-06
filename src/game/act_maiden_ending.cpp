@@ -139,6 +139,8 @@ void MaidenEnding_804AD5B8::fn_8035D6C4() {
 
 // FIXME: 95.68% missing/extra. 3 fewer instructions in field_0x248 ladder.
 void MaidenEnding_804AD5B8::fn_8035D4B8() {
+    // The sequencer tests below are written `== true`: the original compares the bool
+    // with cmplwi 1 where a plain test gives clrlwi. (92 % instead of 95.7 % here).
     if (field_0x238 == 0) {
         if (fn_8035C15C(7) == true) {
             fn_8035C1C4(7, lbl_80472718[field_0x90 & 7]);
@@ -307,6 +309,7 @@ JGeometry::TVec3f MaidenEnding_804AD5B8::fn_8035CE78() {
     v.z = mPos.z;
     v.y = field_0x268 + field_0x25c * JMASSin(field_0x260);
     v.x = field_0x264 + field_0x258 * JMASCos(field_0x260);
+    // The original copies the result into a second local before returning it (fn_8035CE78 without the copy: 3 instructions fewer).
     JGeometry::TVec3f ret = v;
     if (field_0x260 >= 0x4000 && prevAngle < 0x4000) {
         field_0x270 |= 1;
@@ -324,6 +327,7 @@ JGeometry::TVec3f MaidenEnding_804AD5B8::fn_8035CDC0() {
     v.x = (field_0x264 - 5.0f) + 25.0f * JMASCos(field_0x260);
     v.y = (field_0x268 + field_0x25c - 25.0f) + 25.0f * JMASSin(field_0x260);
     v.z = mPos.z;
+    // The original copies the result into a second local before returning it (fn_8035CE78 without the copy: 3 instructions fewer).
     JGeometry::TVec3f ret = v;
     if (field_0x260 >= 0x4000 && prevAngle < 0x4000) {
         if (field_0x270 < 0) {
@@ -337,6 +341,7 @@ JGeometry::TVec3f MaidenEnding_804AD5B8::fn_8035CDC0() {
 
 // FIXME: 96.04% regalloc-only + reloc-name. Register allocation and return copy stack slot.
 JGeometry::TVec3f MaidenEnding_804AD5B8::fn_8035CD00() {
+    // ret is declared first here: this order matches the original's stack/register use better (96.04 % vs 95.88 %).
     JGeometry::TVec3f ret;
     s16 prevAngle = field_0x260;
     field_0x260 += 0x400;
@@ -344,6 +349,7 @@ JGeometry::TVec3f MaidenEnding_804AD5B8::fn_8035CD00() {
     v.x = (field_0x264 + 5.0f) + 25.0f * JMASCos(field_0x260);
     v.y = (field_0x268 - field_0x25c + 25.0f) + 25.0f * JMASSin(field_0x260);
     v.z = mPos.z;
+    // Copy into the return local (see fn_8035CE78).
     ret = v;
     if ((u16)field_0x260 >= 0xC000 && (u16)prevAngle < 0xC000) {
         if (field_0x270 < 0) {
@@ -411,6 +417,7 @@ void MaidenEnding_804AD5B8::fn_8035C940() {
                 EnemyForEndingControl_804AD48C* partner =
                     static_cast<EnemyForEndingControl_804AD48C*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x23c));
                 if (partner != NULL) {
+                    // Both branches are in the original asm (written without the else: 83.8 %).
                     partner->field_0x230 = 5;
                     if (partner->field_0x230 == 5) {
                         partner->field_0x258 = (1765.0f - partner->field_0x240) / 130.0f;
