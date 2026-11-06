@@ -16,12 +16,43 @@
 #include "game/act/act_pot.h"
 #include "std/math.h"
 
+// x offsets [0..4] and y offsets [5..9] of the 5 flames spawned on layers >= 8;
+// x offsets [10..22] and y offsets [23..35] of the 13 flames spawned below.
 static const f32 lbl_8046E070[36] = {
     0.0f, -16.0f, 0.0f, 16.0f, 0.0f,
     -16.0f, 0.0f, 0.0f, 0.0f, 16.0f,
     0.0f, -16.0f, 0.0f, 16.0f, -32.0f, -16.0f, 0.0f, 16.0f, 32.0f, -16.0f, 0.0f, 16.0f, 0.0f,
     -32.0f, -16.0f, -16.0f, -16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 16.0f, 16.0f, 16.0f, 32.0f,
 };
+
+// The pot's trail emitter: replace it with the one for movement direction `dir`
+// (the five direction cases of update() repeat this).
+static inline void respawnEmitter(Pot_804A9428* pot, s32 dir, s32 effect) {
+    if (pot->field_0x244 != dir) {
+        deleteEmitter(&pot->mEmitter);
+        pot->mEmitter = spawnEmitter_8013CC50(pot->field_0x4, &pot->mPos, effect, 0, 0, NULL, NULL, true, 1.0f);
+        pot->field_0x244 = dir;
+    }
+}
+
+// Spawn a fire actor (BLZE) on the tile under `pos`, as the burning pot's loops below do.
+static inline void igniteTile(Pot_804A9428* pot, JGeometry::TVec3f* pos, JGeometry::TVec3f* tilePos) {
+    s32 tileIdx = fn_80226AE0(pos, pot->field_0x4);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9908(pot->field_0x4, tileIdx);
+    fn_80226CA8(tileIdx, pot->field_0x4, tilePos);
+    tilePos->x += 8.0f;
+    tilePos->y += 8.0f;
+    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, pot->field_0x4, tilePos, 0xF, -1, -1);
+}
+
+// Spawn a rupee actor of `kind` (the low bits of its parameter); 0xA00 is added while the pot is above the ground (mPos.z > 0).
+static inline void spawnRupy(Pot_804A9428* pot, JGeometry::TVec3f* pos, s32 kind) {
+    if (pot->mPos.z > 0.0f) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, pot->field_0x4, pos, 0x260A00 + kind, -1, -1);
+    } else {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, pot->field_0x4, pos, 0x260000 + kind, -1, -1);
+    }
+}
 
 void Pot_804A9428::init() {
     field_0x240 = field_0x90 & 0x7F;
@@ -134,36 +165,16 @@ void Pot_804A9428::update() {
     if (field_0x234 == 1) {
         if (mPos.x != mPrevPos.x || mPos.y != mPrevPos.y) {
             if (mPos.x < mPrevPos.x) {
-                if (field_0x244 != 1) {
-                    deleteEmitter(&mEmitter);
-                    mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A7, 0, 0, NULL, NULL, true, 1.0f);
-                    field_0x244 = 1;
-                }
+                respawnEmitter(this, 1, 0x1A7);
             } else if (mPos.x > mPrevPos.x) {
-                if (field_0x244 != 2) {
-                    deleteEmitter(&mEmitter);
-                    mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A9, 0, 0, NULL, NULL, true, 1.0f);
-                    field_0x244 = 2;
-                }
+                respawnEmitter(this, 2, 0x1A9);
             } else if (mPos.y < mPrevPos.y) {
-                if (field_0x244 != 3) {
-                    deleteEmitter(&mEmitter);
-                    mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1AA, 0, 0, NULL, NULL, true, 1.0f);
-                    field_0x244 = 3;
-                }
+                respawnEmitter(this, 3, 0x1AA);
             } else {
-                if (field_0x244 != 4) {
-                    deleteEmitter(&mEmitter);
-                    mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A6, 0, 0, NULL, NULL, true, 1.0f);
-                    field_0x244 = 4;
-                }
+                respawnEmitter(this, 4, 0x1A6);
             }
         } else {
-            if (field_0x244 != 0) {
-                deleteEmitter(&mEmitter);
-                mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A8, 0, 0, NULL, NULL, true, 1.0f);
-                field_0x244 = 0;
-            }
+            respawnEmitter(this, 0, 0x1A8);
         }
         if (mEmitter != NULL) {
             setEmitterPos_8013CB44(mEmitter, &mPos, 0, 1, true);
@@ -215,18 +226,10 @@ void Pot_804A9428::vfunc_0x24() {
                 } else {
                     type = 1;
                 }
-                if (mPos.z > 0.0f) {
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, 0x260A00 | type, -1, -1);
-                } else {
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, 0x260000 | type, -1, -1);
-                }
+                spawnRupy(this, &pos, type);
             } else if (r <= 25) {
                 if (r & 1) {
-                    if (mPos.z > 0.0f) {
-                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, 0x260A00, -1, -1);
-                    } else {
-                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, 0x260000, -1, -1);
-                    }
+                    spawnRupy(this, &pos, 0);
                 } else {
                     getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &pos, 0, -1, -1);
                 }
@@ -272,12 +275,7 @@ void Pot_804A9428::vfunc_0x24() {
                 pos.x = mPos.x + lbl_8046E070[i];
                 pos.y = mPos.y + lbl_8046E070[i + 5];
                 pos.z = 0.0f;
-                s32 tileIdx = fn_80226AE0(&pos, field_0x4);
-                gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, tileIdx);
-                fn_80226CA8(tileIdx, field_0x4, &tilePos);
-                tilePos.x += 8.0f;
-                tilePos.y += 8.0f;
-                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, field_0x4, &tilePos, 0xF, -1, -1);
+                igniteTile(this, &pos, &tilePos);
             }
         } else {
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x1A3, 0, -1, NULL, NULL, true, 1.0f);
@@ -287,12 +285,7 @@ void Pot_804A9428::vfunc_0x24() {
                 pos.x = mPos.x + lbl_8046E070[10 + i];
                 pos.y = mPos.y + lbl_8046E070[23 + i];
                 pos.z = 0.0f;
-                s32 tileIdx = fn_80226AE0(&pos, field_0x4);
-                gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, tileIdx);
-                fn_80226CA8(tileIdx, field_0x4, &tilePos);
-                tilePos.x += 8.0f;
-                tilePos.y += 8.0f;
-                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, field_0x4, &tilePos, 0xF, -1, -1);
+                igniteTile(this, &pos, &tilePos);
             }
         }
     } else {
