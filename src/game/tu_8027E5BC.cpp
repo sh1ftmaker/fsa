@@ -5,6 +5,9 @@
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
+#include "game/BoxTest.h"
+#include "game/Map.h"
+#include "game/tu_8030AE84.h"
 #include "game/Player.h"
 #include "game/VecEpsilon.h"
 #include "game/ViewLayer.h"
@@ -12,6 +15,7 @@
 #include "game/EmitterDelete.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_cannon.h"
+#include "game/act/tu_801F9484.h"
 
 // Speeds along the facing (right, left, down, up): with 3 up for fn_80281760, flat for fn_80281D50.
 static const Vec lbl_8046BE78[4] = {
@@ -25,6 +29,28 @@ static const Vec lbl_8046BEA8[4] = {
     {-2.0f, 0.0f, 3.0f},
     {0.0f, 2.0f, 3.0f},
     {0.0f, -2.0f, 3.0f},
+};
+// Unit directions by 0x3E8 (right, left, down, up, then the diagonals 4-7): fn_802804E0.
+static const Vec lbl_8046BED8[8] = {
+    {1.0f, 0.0f, 0.0f},
+    {-1.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f},
+    {0.0f, -1.0f, 0.0f},
+    {0.70710677f, 0.70710677f, 0.0f},
+    {-0.70710677f, 0.70710677f, 0.0f},
+    {0.70710677f, -0.70710677f, 0.0f},
+    {-0.70710677f, -0.70710677f, 0.0f},
+};
+// The same directions for fn_80280074.
+static const Vec lbl_8046BF38[8] = {
+    {1.0f, 0.0f, 0.0f},
+    {-1.0f, 0.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f},
+    {0.0f, -1.0f, 0.0f},
+    {0.70710677f, 0.70710677f, 0.0f},
+    {-0.70710677f, 0.70710677f, 0.0f},
+    {0.70710677f, -0.70710677f, 0.0f},
+    {-0.70710677f, -0.70710677f, 0.0f},
 };
 // Offsets by [player][this player's index] (x, y), for fn_802486A0() == 3 and 2.
 static const f32 lbl_8046BF98[4][4][2] = {
@@ -562,6 +588,181 @@ void Player_804A6F38::fn_8027FA08(JGeometry::TVec3f* out) {
     }
 }
 
+// Update helper of state 0x4B (fn_80282ACC): a follower (unless it is the acting player of
+// formation 4) steps 4.5 a frame toward its follow target (fn_8027FA08); else, without pad 0x40, a
+// run along 0x3E8 (lbl_8046BF38) whose speed 0x344 decays by 0.025 to 1.2 (fn_80244FFC held), 1
+// (stick held) or 0, and the dash counter 0x3FF (started by fn_80245238, sound 0x20039) shapes
+// it: kept to 9, 1 with 0x410 = -0.6 at 10, +0.25 to 15, then decays to 1.2, back to 0 after 33.
+void Player_804A6F38::fn_80280074() {
+    bool follow = fn_80240808();
+    if (fn_802486A0() == 4 && fn_80240888() == fn_80248778()) {
+        follow = false;
+    }
+    if (follow) {
+        JGeometry::TVec3f to;
+        fn_8027FA08(&to);
+        JGeometry::TVec3f dir = to - mPos;
+        dir.z = 0.0f;
+        if (magnitude(dir) >= 4.5f) {
+            dir.normalize();
+            dir.scale(4.5f);
+            mPos += dir;
+        } else {
+            mPos.set(to);
+        }
+        if (field_0x3ff == 0) {
+            if (fn_80245238()) {
+                field_0x3ff = 1;
+                fn_8024F0E8(0x20039);
+            }
+        } else {
+            field_0x3ff++;
+            if (field_0x3ff >= 33) {
+                field_0x3ff = 0;
+            }
+        }
+    } else if (!fn_80246B10(0x40)) {
+        if (field_0x3ff == 0) {
+            if (fn_80245238()) {
+                field_0x3ff = 1;
+                fn_8024F0E8(0x20039);
+            } else {
+                f32 speed = magnitude(field_0x344);
+                if (fn_80244FFC()) {
+                    speed -= 0.025f;
+                    if (speed < 1.2f) {
+                        speed = 1.2f;
+                    }
+                } else if (fn_80246F28() > 0.0f) {
+                    speed -= 0.025f;
+                    if (speed < 1.0f) {
+                        speed = 1.0f;
+                    }
+                } else {
+                    speed -= 0.025f;
+                    if (speed < 0.0f) {
+                        speed = 0.0f;
+                    }
+                }
+                const Vec& dir = lbl_8046BF38[field_0x3e8];
+                field_0x344.set(dir.x, dir.y, dir.z);
+                field_0x344.scale(speed);
+                mPos += field_0x344;
+            }
+        } else {
+            f32 speed;
+            if (field_0x3ff < 10) {
+                speed = magnitude(field_0x344);
+            } else if (field_0x3ff == 10) {
+                field_0x410 = -0.6f;
+                speed = 1.0f;
+            } else if (field_0x3ff < 16) {
+                speed = magnitude(field_0x344);
+                speed += 0.25f;
+            } else {
+                speed = magnitude(field_0x344);
+                speed -= 0.025f;
+                if (speed < 1.2f) {
+                    speed = 1.2f;
+                }
+            }
+            const Vec& dir = lbl_8046BF38[field_0x3e8];
+            field_0x344.set(dir.x, dir.y, dir.z);
+            field_0x344.scale(speed);
+            mPos += field_0x344;
+            if (field_0x3ff >= 33) {
+                field_0x3ff = 0;
+            } else {
+                field_0x3ff++;
+            }
+        }
+    }
+}
+
+// Update helper of state 0x4A (fn_80282FE0): fn_80280074's movement with lbl_8046BED8, a speed
+// read once, 0.18 added on counts 11-15, and while 0x430 runs only the decay to 0.
+void Player_804A6F38::fn_802804E0() {
+    bool follow = fn_80240808();
+    if (fn_802486A0() == 4 && fn_80240888() == fn_80248778()) {
+        follow = false;
+    }
+    if (follow) {
+        JGeometry::TVec3f to;
+        fn_8027FA08(&to);
+        JGeometry::TVec3f dir = to - mPos;
+        dir.z = 0.0f;
+        if (magnitude(dir) >= 4.5f) {
+            dir.normalize();
+            dir.scale(4.5f);
+            mPos += dir;
+        } else {
+            mPos.set(to);
+        }
+        if (field_0x3ff == 0) {
+            if (fn_80245238()) {
+                field_0x3ff = 1;
+                fn_8024F0E8(0x20039);
+            }
+        } else {
+            field_0x3ff++;
+            if (field_0x3ff >= 33) {
+                field_0x3ff = 0;
+            }
+        }
+    } else if (!fn_80246B10(0x40)) {
+        f32 speed = magnitude(field_0x344);
+        if (field_0x430 > 0) {
+            speed -= 0.025f;
+            if (speed < 0.0f) {
+                speed = 0.0f;
+            }
+        } else if (field_0x3ff == 0) {
+            if (fn_80245238()) {
+                field_0x3ff = 1;
+                fn_8024F0E8(0x20039);
+            } else if (fn_80244FFC()) {
+                speed -= 0.025f;
+                if (speed < 1.2f) {
+                    speed = 1.2f;
+                }
+            } else if (fn_80246F28() > 0.0f) {
+                speed -= 0.025f;
+                if (speed < 1.0f) {
+                    speed = 1.0f;
+                }
+            } else {
+                speed -= 0.025f;
+                if (speed < 0.0f) {
+                    speed = 0.0f;
+                }
+            }
+        } else {
+            if (field_0x3ff < 10) {
+                // the speed is kept
+            } else if (field_0x3ff == 10) {
+                field_0x410 = -0.6f;
+                speed = 1.0f;
+            } else if (field_0x3ff < 16) {
+                speed += 0.18f;
+            } else {
+                speed -= 0.025f;
+                if (speed < 1.2f) {
+                    speed = 1.2f;
+                }
+            }
+            if (field_0x3ff >= 33) {
+                field_0x3ff = 0;
+            } else {
+                field_0x3ff++;
+            }
+        }
+        const Vec& dir = lbl_8046BED8[field_0x3e8];
+        field_0x344.set(dir.x, dir.y, dir.z);
+        field_0x344.scale(speed);
+        mPos += field_0x344;
+    }
+}
+
 // The stick walk step: speed (x and y, zero while knocked back 0x35C or blocked by 0x3C1 / 0x3C2,
 // halved on tiles 0x2C-0x2F, x1.4 with fn_8022B244 and item 5) into 0x38C / 0x390, then mPos moves
 // by the stick (fn_8022C82C, fn_8022C76C); upward on view-flag layers only while one of the eight
@@ -620,6 +821,50 @@ void Player_804A6F38::fn_802808E8(f32 speed) {
     }
 }
 
+// Ice sliding (called by fn_802870C8 after the state update): stopped while pushing (fn_80250D30) or with
+// fn_80240B5C; on slippery ground (cls_804A71A8 0xB7) the stick (0x38C / 0x390) pushes the slide
+// speed 0x368 by 0.05 on the floor (sound 0x20059 when it slows down), the speed loses 0.02 a frame
+// and is capped at 1.5, and mPos moves by it in x / y; elsewhere the speed is cleared unless field_0x14 is on tile 3.
+void Player_804A6F38::fn_80280B30() {
+    if (fn_80250D30() || fn_80240B5C()) {
+        field_0x368.x = 0.0f;
+        field_0x368.y = 0.0f;
+        field_0x368.z = 0.0f;
+    } else if (fn_8024BBB0() || fn_802413E8() || fn_80270A8C()) {
+        // left alone (no slide while these hold)
+    } else if (field_0xbf0->field_0xb7) {
+        if (mPos.z <= 0.0f) {
+            if (!fn_80246B10(0x40)) {
+                f32 before = magnitude(field_0x368);
+                field_0x368.x += 0.05f * (field_0x38c * fn_8022C82C(field_0x4));
+                field_0x368.y += 0.05f * (field_0x390 * -fn_8022C76C(field_0x4));
+                if (magnitude(field_0x368) < before) {
+                    fn_8024F0E8(0x20059);
+                }
+            }
+        } else {
+            field_0x368.x = 0.0f;
+            field_0x368.y = 0.0f;
+        }
+        field_0x368.z = 0.0f;
+        f32 speed = magnitude(field_0x368);
+        speed -= 0.02f;
+        if (speed < 0.0f) {
+            speed = 0.0f;
+        } else if (speed >= 1.5f) {
+            speed = 1.5f;
+        }
+        field_0x368.normalize();
+        field_0x368.scale(speed);
+        mPos.x += field_0x368.x;
+        mPos.y += field_0x368.y;
+    } else if (fn_8022461C(&field_0x14, 0) != 3) {
+        field_0x368.x = 0.0f;
+        field_0x368.y = 0.0f;
+        field_0x368.z = 0.0f;
+    }
+}
+
 void Player_804A6F38::fn_80280DD8() {
     if (field_0x1350 != NULL) {
         field_0x1350->becomeInvalidEmitter();
@@ -631,6 +876,61 @@ void Player_804A6F38::fn_80280DD8() {
     field_0x474.y = 0.0f;
     field_0x474.z = 0.0f;
     field_0x464 = 60;
+}
+
+// Update of state 0x51 (hit kind 0x18): with 0x484 it waits out 0x480 and stands (0); else the
+// buttons (pad trigger 0xF) take 10 off the 300-frame timer 0x46C and jolt the player one unit
+// by the pad direction for 5 frames (offset 0x474, 0x470), and at 0 it stands (0) with effects
+// 0x28B / 0x28C and sound 0x2003C; the effect 0x1350 follows mPos.
+void Player_804A6F38::fn_80280E44() {
+    if (field_0x484) {
+        field_0x46c = 0;
+        if (field_0x480 > 0) {
+            field_0x480--;
+        }
+        if (field_0x480 <= 0 && fn_80251AEC(0)) {
+            fn_8024E3D8();
+        }
+    } else {
+        if (field_0x470 > 0) {
+            field_0x470--;
+            if (field_0x470 == 0) {
+                mPos -= field_0x474;
+                field_0x474.x = 0.0f;
+                field_0x474.y = 0.0f;
+                field_0x474.z = 0.0f;
+            }
+        }
+        if (fn_80246D1C(0xF)) {
+            field_0x46c -= 10;
+            if (field_0x46c < 0) {
+                field_0x46c = 0;
+            }
+            field_0x470 = 5;
+            mPos -= field_0x474;
+            if (fn_80246D1C(2)) {
+                field_0x474.set(1.0f, 0.0f, 0.0f);
+            } else if (fn_80246D1C(1)) {
+                field_0x474.set(-1.0f, 0.0f, 0.0f);
+            } else if (fn_80246D1C(4)) {
+                field_0x474.set(0.0f, 1.0f, 0.0f);
+            } else {
+                field_0x474.set(0.0f, -1.0f, 0.0f);
+            }
+            mPos += field_0x474;
+        } else if (field_0x46c > 0) {
+            field_0x46c--;
+        }
+        if (field_0x46c == 0 && fn_80251AEC(0)) {
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x28b, 0, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x28c, 0, 1, NULL, NULL, true, 1.0f);
+            fn_8024F0E8(0x2003C);
+        }
+    }
+    fn_80268B3C();
+    if (field_0x1350 != NULL) {
+        setEmitterPos_8013CB44(field_0x1350, &mPos, 0, 1, true);
+    }
 }
 
 void Player_804A6F38::fn_802810E4() {
@@ -667,6 +967,124 @@ void Player_804A6F38::fn_802811C0() {
             actor->fn_802BAA00();
         }
         field_0xb28 = -1;
+    }
+}
+
+// FIXME: 99.92. Registers only: the original keeps the old facing in r29 and the 0xB28 serial in r30,
+// ours the other way round.
+// Update of state 0x50 (burning): on the floor it runs at 2 along the facing (fn_8027EB04 steers)
+// until 300 frames (0x408) or tile 0x39, then stands (0); in the air it falls 0.25 a frame. The
+// ACTOR_FIRE actor 0xB28 follows the box 0x4C0; the walk cycle runs at half speed; on a turn the
+// fire effects 0x135C / 0x132C are respawned for the new facing; 0x135C follows mPos, and the
+// particle callback 0x1330 gets mPos (3 lower facing down, 3 higher facing up) through 0x1344.
+void Player_804A6F38::fn_8028126C() {
+    s32 facing = field_0x3dc;
+    if (mPos.z <= 0.0f && field_0x344.z <= 0.0f) {
+        field_0x344.z = 0.0f;
+        fn_8027EB04();
+        mPos += field_0x344;
+        switch (field_0x3dc) {
+        case 0:
+            field_0x344.set(2.0f, 0.0f, 0.0f);
+            break;
+        case 1:
+            field_0x344.set(-2.0f, 0.0f, 0.0f);
+            break;
+        case 2:
+            field_0x344.set(0.0f, 2.0f, 0.0f);
+            break;
+        case 3:
+            field_0x344.set(0.0f, -2.0f, 0.0f);
+            break;
+        }
+        field_0x408++;
+        if (field_0x408 >= 300 || fn_8022461C(&mPos, field_0x3b4) == 0x39) {
+            fn_80251AEC(0);
+        }
+    } else {
+        field_0x344.z -= 0.25f;
+        mPos.z += field_0x344.z;
+        if (mPos.z <= 0.0f) {
+            field_0x344.z = 0.0f;
+        }
+    }
+    s32 serial = field_0xb28;
+    if (serial >= 0) {
+        FireRodFire_804A89F0* fire =
+            static_cast<FireRodFire_804A89F0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (fire != NULL) {
+            fire->fn_802BAA0C(&field_0x4c0);
+        }
+    }
+    fn_80268B3C();
+    field_0x3f8++;
+    if (field_0x3f8 >= 16) {
+        field_0x3f8 = 0;
+    }
+    field_0x3f9 = field_0x3f8 / 2;
+    if (facing != field_0x3dc) {
+        if (field_0x135c != NULL) {
+            field_0x135c->becomeInvalidEmitter();
+            field_0x135c = NULL;
+        }
+        if (field_0x135c == NULL) {
+            switch (field_0x3dc) {
+            case 0:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x248, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            case 1:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x247, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            case 2:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x246, 0, -1, NULL, NULL, true, 1.0f);
+                break;
+            case 3:
+                field_0x135c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x249, 0, 0, NULL, NULL, true, 1.0f);
+                break;
+            }
+        }
+        deleteEmitter(&field_0x132c);
+        if (field_0x132c == NULL) {
+            switch (field_0x3dc) {
+            case 0:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x244, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 1:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x243, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 2:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x242, 0, -1, NULL, &field_0x1330, true, 1.0f);
+                break;
+            case 3:
+                field_0x132c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x245, 0, 0, NULL, &field_0x1330, true, 1.0f);
+                break;
+            }
+        }
+    }
+    if (field_0x135c != NULL) {
+        switch (field_0x3dc) {
+        case 0:
+        case 1:
+        case 3:
+            setEmitterPos_8013CB44(field_0x135c, &mPos, 0, 0, true);
+            break;
+        case 2:
+            setEmitterPos_8013CB44(field_0x135c, &mPos, 0, -1, true);
+            break;
+        }
+    }
+    if (field_0x132c != NULL) {
+        field_0x1344.x = mPos.x;
+        field_0x1344.y = mPos.y;
+        field_0x1344.z = mPos.z;
+        if (field_0x3dc == 2) {
+            field_0x1344.y -= 3.0f;
+        } else if (field_0x3dc == 3) {
+            field_0x1344.y += 3.0f;
+        }
+        field_0x1330.field_0x4.x = field_0x1344.x;
+        field_0x1330.field_0x4.y = field_0x1344.y;
+        field_0x1330.field_0x4.z = field_0x1344.z;
     }
 }
 
@@ -897,6 +1315,179 @@ void Player_804A6F38::fn_8028211C() {
     }
 }
 
+// FIXME: 99.33. Scheduling only: before the ground mark (fn_802F601C) the original computes &mPos
+// (addi r4) ahead of the layer compare, ours after loading gGameRoot2_8053AB10.
+// Update of state 0x4D (fired from a cannon): sound 0x10003 at frame 72 (0x394); while the landing
+// wait 0x3FC runs (and the GBA link fn_80301CD0 is free), a pending switch 0xCEA moves the player
+// to layer 0xCE4 at 0xCD4 (keeping the return point 0xCB0 when leaving layers 0-7; speed y
+// clamped to -7..-10 on view-flag layers, else y / z swapped and z clamped to 7..10), and at 0 the
+// landing (fn_80290D58, ground mark fn_802F601C below layer 8, effect 0x17D). In flight mPos moves
+// by 0x344 + 0x380; 0xCE8 starts the wait (60 below layer 8, else 20); on view-flag layers y
+// gains 0.25 to 6 and it lands (0x12 if fn_8025F684, else 0) at a wall (fn_8025190C: bounce 0x4E)
+// or out of the shrunk view box, elsewhere z loses 0.25 to -6 and it lands below 0; the stick
+// steers 0x380, the pad (fn_8022C3AC) cancels to state 5. The body frame, and with fn_8025F684
+// the carried actor's place 0x2F4 (18 up) and frame 0x3F9 (falling faster than 1).
+void Player_804A6F38::fn_80282178() {
+    field_0x394++;
+    if (field_0x394 == 72) {
+        fn_8024F0E8(0x10003);
+    }
+    if (field_0x3fc) {
+        if (!fn_80301CD0(field_0x4)) {
+            if (field_0xcea == 1) {
+                if (field_0x3b4 < 8) {
+                    field_0xcb0 = mPos;
+                }
+                field_0x3b4 = field_0xce4;
+                mPos = field_0xcd4;
+                mPos.z = 1.25f;
+                field_0xbec->fn_8030BD3C(field_0x4);
+                if (viewLayerFlag(field_0x3b4)) {
+                    if (field_0x344.y > -7.0f) {
+                        field_0x344.y = -7.0f;
+                    } else if (field_0x344.y < -10.0f) {
+                        field_0x344.y = -10.0f;
+                    }
+                } else {
+                    field_0x344.set(field_0x344.x, -field_0x344.z, -field_0x344.y);
+                    if (field_0x344.z < 7.0f) {
+                        field_0x344.z = 7.0f;
+                    } else if (field_0x344.z > 10.0f) {
+                        field_0x344.z = 10.0f;
+                    }
+                }
+                fn_80301D54(field_0x4);
+                field_0xcea = 0;
+            }
+            field_0x3fc--;
+            if (field_0x3fc == 0) {
+                fn_80290D58();
+                if (field_0x3b4 < 8) {
+                    gGameRoot2_8053AB10->field_0x20->fn_802F601C(&mPos, 1, NULL, 1.0f, -2.0f);
+                }
+                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x17d, 1, 0, NULL, NULL, true, 1.0f);
+                field_0x124d = 0;
+            }
+        }
+    } else {
+        mPos += field_0x344;
+        mPos += field_0x380;
+        if (field_0xce8 == true) {
+            if (field_0xce4 < 8) {
+                field_0x3fc = 60;
+            } else {
+                field_0x3fc = 20;
+            }
+            field_0x124d = 1;
+            field_0xcea = 1;
+        }
+        if (viewLayerFlag(field_0x3b4)) {
+            field_0x344.y += 0.25f;
+            if (field_0x344.y > 6.0f) {
+                field_0x344.y = 6.0f;
+            }
+            JGeometry::TBox2f box;
+            box = *layerBox(field_0x3b4);
+            growBox(box, -16.0f);
+            if (fn_8025190C(true)) {
+                fn_80251AEC(0x4e);
+                mPos.z = 0.0f;
+            } else if (field_0x344.y >= 0.0f && (fn_802518AC(true) || !containsPoint(box, mPos))) {
+                if (fn_8025F684()) {
+                    fn_80251AEC(0x12);
+                } else {
+                    fn_80251AEC(0);
+                }
+                mPos.z = 0.0f;
+            } else {
+                mPos.z = 1.25f;
+            }
+        } else {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z < -6.0f) {
+                field_0x344.z = -6.0f;
+            }
+            if (mPos.z < 0.0f) {
+                if (fn_8025F684()) {
+                    fn_80251AEC(0x12);
+                } else {
+                    fn_80251AEC(0);
+                }
+                mPos.z = 0.0f;
+            }
+        }
+        if (field_0x380.x > 0.0f) {
+            if (fn_8022C82C(field_0x4) > 0.0f) {
+                field_0x380.x += 0.1f;
+                if (field_0x380.x > 1.6f) {
+                    field_0x380.x = 1.6f;
+                }
+            } else {
+                field_0x380.x -= 0.1f;
+                if (field_0x380.x < 0.1f) {
+                    field_0x380.x = 0.1f;
+                }
+            }
+        } else if (field_0x380.x < 0.0f) {
+            if (fn_8022C82C(field_0x4) < 0.0f) {
+                field_0x380.x -= 0.1f;
+                if (field_0x380.x < -1.6f) {
+                    field_0x380.x = -1.6f;
+                }
+            } else {
+                field_0x380.x += 0.1f;
+                if (field_0x380.x > -0.1f) {
+                    field_0x380.x = -0.1f;
+                }
+            }
+        } else {
+            field_0x380.x = 0.8f * fn_8022C82C(field_0x4);
+        }
+        if (!viewLayerFlag(field_0x3b4)) {
+            if (field_0x380.y > 0.0f) {
+                if (-fn_8022C76C(field_0x4) > 0.0f) {
+                    field_0x380.y += 0.1f;
+                    if (field_0x380.y > 1.6f) {
+                        field_0x380.y = 1.6f;
+                    }
+                } else {
+                    field_0x380.y -= 0.1f;
+                    if (field_0x380.y < 0.1f) {
+                        field_0x380.y = 0.1f;
+                    }
+                }
+            } else if (field_0x380.y < 0.0f) {
+                if (-fn_8022C76C(field_0x4) < 0.0f) {
+                    field_0x380.y -= 0.1f;
+                    if (field_0x380.y < -1.6f) {
+                        field_0x380.y = -1.6f;
+                    }
+                } else {
+                    field_0x380.y += 0.1f;
+                    if (field_0x380.y > -0.1f) {
+                        field_0x380.y = -0.1f;
+                    }
+                }
+            } else {
+                field_0x380.y = 0.8f * -fn_8022C76C(field_0x4);
+            }
+        }
+        if (!field_0xce8 && fn_8022C3AC(field_0x4)) {
+            fn_80251AEC(5);
+        }
+    }
+    fn_802685D4();
+    if (fn_8025F684()) {
+        field_0x2f4.set(0.0f, 0.0f, 18.0f);
+        field_0x2f4 += mPos;
+        if (field_0x344.z < -1.0f) {
+            field_0x3f9 = 1;
+        } else {
+            field_0x3f9 = 0;
+        }
+    }
+}
+
 void Player_804A6F38::fn_8028286C() {
     field_0x344.x = field_0x374.x;
     field_0x344.y = field_0x374.y;
@@ -966,6 +1557,84 @@ void Player_804A6F38::fn_80282AA8() {
     }
     field_0xbe4 = 0;
     field_0xbe8 = 0;
+}
+
+// Update of state 0x4B: down (0x33) without life; a follower with 0x1215 takes its leader's layer
+// and position (state 0x4A off view-flag layers); else a counter 0x402 grows by a random -2..7
+// (moving faster than 1) or -4..5 a frame and every 50 spawns a 'PEFF' actor ahead of the player,
+// the walk cycle 0x3F8 runs (double speed when fast; frames by the dash count 0x3FF), the movement
+// fn_80280074 and fn_80242DAC, the facing (up with pad 0x200), and the bob 0x410 on y (+0.02 a
+// frame to 0.3); it stands (0) once fn_80225BE4 fails.
+void Player_804A6F38::fn_80282ACC() {
+    if (fn_8024189C() <= 0 && fn_80251AEC(0x33)) {
+        return;
+    }
+    if (fn_80240808() && field_0x1215) {
+        field_0x3b4 = getPlayerLayer_8023DE58(fn_80240644());
+        mPos = *getPlayerPos_8023E724(fn_80240644());
+        if (!viewLayerFlag(field_0x3b4)) {
+            fn_80251AEC(0x4a);
+        }
+        return;
+    }
+    s32 step;
+    if (magnitude(field_0x344) > 1.0f) {
+        step = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) - 2;
+    } else {
+        step = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) - 4;
+    }
+    if (field_0x402 + step >= 0) {
+        field_0x402 += step;
+    }
+    if (field_0x402 >= 50) {
+        field_0x402 = 0;
+        JGeometry::TVec3f pos = mPos;
+        if (field_0x3dc == 0) {
+            pos.x += 6.0f;
+        } else if (field_0x3dc == 1) {
+            pos.x -= 6.0f;
+        }
+        s32 index = field_0x4;
+        getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &pos, (index & 3) | 0xC, -1, index);
+    }
+    if (magnitude(field_0x344) > 1.0f) {
+        field_0x3f8 += 2;
+    } else {
+        field_0x3f8 += 1;
+    }
+    if (field_0x3f8 >= 24) {
+        field_0x3f8 = 0;
+    }
+    if (field_0x3ff == 0) {
+        field_0x3f9 = field_0x3f8 / 6;
+    } else if (field_0x3ff < 7) {
+        field_0x3f9 = 4;
+    } else if (field_0x3ff < 13) {
+        field_0x3f9 = 5;
+    } else if (field_0x3ff < 19) {
+        field_0x3f9 = 6;
+    } else {
+        field_0x3f9 = 7;
+    }
+    fn_80280074();
+    fn_80242DAC();
+    if (fn_80246B10(0x200)) {
+        field_0x3dc = 2;
+        field_0x3e8 = 2;
+    } else if (fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+        fn_8027E7E0();
+    } else {
+        fn_8027EB04();
+    }
+    mPos.y += field_0x410;
+    field_0x410 += 0.02f;
+    if (field_0x410 >= 0.3f) {
+        field_0x410 = 0.3f;
+    }
+    if (!fn_80225BE4(&mPos, field_0x3b4)) {
+        fn_80251AEC(0);
+    }
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_80282E6C() {

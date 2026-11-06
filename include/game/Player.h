@@ -494,6 +494,11 @@ public:
     bool fn_80275D9C(); // tu_8026FC20 (li r3, 1 / 0); true ends the state updates of tu_8027E5BC early
     void followStep();
     void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
+    // tu_8023FBF0 (0x80242DAC): tile pushes on 0x414 / 0x418 by the tile under mPos (fn_80226850);
+    // called by the state 0x4A / 0x4B updates.
+    void fn_80242DAC();
+    void fn_80280074(); // tu_8027E5BC: the 0x4B movement (follow step 4.5 or the 0x3FF dash)
+    void fn_802804E0(); // tu_8027E5BC: the 0x4A movement (fn_80280074 with lbl_8046BED8)
     void fn_802808E8(f32 speed); // tu_8027E5BC: the stick walk step (states 2 / 3)
     bool fn_8025197C(bool all); // tu_8023FBF0: field_0xbf0->anyFlag48(all)
     void fn_80284430();
