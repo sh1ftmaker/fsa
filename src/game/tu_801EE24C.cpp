@@ -455,6 +455,193 @@ void ActorBase_804A5770::fn_801F4694() const {
 // sets the knock-back direction (field_0xec, field_0x3c), effects, the
 // timers and mLife, plays the hurt or death voice; returns 1. Returns 0
 // when ignored.
+// The hit reaction, once per frame (`flag`: move this frame). While
+// field_0xd8 runs: the knock-back by field_0x3c (kind field_0xf8: 0 and 1
+// slide with friction 0.78 / 0.88, 2 is thrown up and bounces, effect 0x3CF),
+// a dust trail along the way on the ground (0x3D3, or 0x3D4 on water-like
+// tiles), and when it ends with no life left the death timer field_0xe0 (1,
+// or 30 for a typed hit; a burning actor leaves a fire, ACTOR_BLZE). While
+// field_0xe0 runs: the death effect for field_0xfc at 30, then vfunc_0x24
+// at 0. field_0xe8 more hit sparks every 5 frames. Returns 0 (nothing to
+// do), 1, or -1 when the actor has no life left.
+// FIXME: 99.0. One extra instruction: ours keeps the death effect id in r28
+// across case 1/2's calls and copies it to r5; the original has it in r5
+// (the path with the two effects skips the id test). Literals are @NNN
+// until .sdata2 is in order.
+s32 ActorBase_804A5770::fn_801F3D94(u8 flag) {
+    s32 result = 0;
+    if (field_0xd8 != 0) {
+        bool done = false;
+        if (flag && !field_0xc4) {
+            JGeometry::TVec3f start(mPos);
+            switch (field_0xf8) {
+            case 0:
+                field_0xd8--;
+                field_0x3c.scale(0.78f);
+                mPos.add(field_0x3c);
+                break;
+            case 1:
+                field_0xd8--;
+                field_0x3c.scale(0.88f);
+                mPos.add(field_0x3c);
+                break;
+            case 2:
+                if (mPos.z > 0.0f) {
+                    field_0x3c.z += -1.0f;
+                    field_0x3c.scale(0.96f);
+                } else {
+                    field_0xd8--;
+                }
+                mPos.add(field_0x3c);
+                if (mPos.z <= 0.0f) {
+                    mPos.z = 0.0f;
+                    if (field_0x3c.z < -2.0f) {
+                        field_0x3c.z *= -0.6f;
+                        field_0x3c.x *= 0.8f;
+                        field_0x3c.y *= 0.8f;
+                        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3CF, 0, 0, NULL, NULL, true, 1.0f);
+                    } else {
+                        field_0x3c.zero();
+                    }
+                }
+                if (field_0xd8 == 0) {
+                    field_0x3c.zero();
+                    mPos.z = 0.0f;
+                }
+                break;
+            }
+            if (mPos.z == 0.0f && field_0x3c.squared() > 1.0f) {
+                f32 size = mActorId == 'SLK2' ? 1.0f : lbl_8046A00C[field_0xc0];
+                f32 scale = 0.9f * size;
+                if (scale > 0.0f) {
+                    JGeometry::TVec3f dir;
+                    dir.sub(mPos, start);
+                    f32 length = dir.normalize();
+                    u16 id;
+                    if (fn_802258D4(&mPos, field_0x4) || fn_80225614(&mPos, field_0x4)) {
+                        id = 0x3D4;
+                    } else {
+                        id = 0x3D3;
+                    }
+                    for (f32 t = 0.0f; t < length; t += 4.0f) {
+                        JGeometry::TVec3f pos(dir);
+                        pos.scale(t);
+                        pos.add(start);
+                        JPABaseEmitter* emitter = spawnEmitter_8013CC50(field_0x4, &pos, id, 0, 0, NULL,
+                                                                        NULL, true, 1.0f);
+                        if (emitter != NULL) {
+                            emitter->mMaxFrame = 1;
+                            emitter->setRate(2.0f);
+                            emitter->setGlobalParticleScale(scale, scale);
+                        }
+                    }
+                }
+            }
+        } else {
+            field_0xd8--;
+        }
+        if (mLife <= 0 && field_0xe0 == 0 &&
+            field_0xd8 <= (field_0xdc - 8 <= 0 ? 0 : field_0xdc - 8))
+        {
+            if (field_0xfc == 0) {
+                field_0xe0 = 1;
+            } else {
+                field_0xe0 = 30;
+            }
+            field_0xd8 = 0;
+            done = true;
+            field_0x3c.zero();
+            if (mEmitter100 != NULL) {
+                s32 player = field_0x10c;
+                s32 owner = 15;
+                if (player >= 0 && player < 4) {
+                    owner = player;
+                }
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_BLZE, field_0x4, &mPos, owner, -1,
+                                                               player);
+            }
+        } else if (field_0xd8 == 0) {
+            done = true;
+        }
+        if (done) {
+            fn_801CB7A0(mEmitter100);
+            fn_801CB7A0(mEmitter104);
+        }
+        result = 1;
+    } else if (field_0xe0 != 0) {
+        if (field_0xe0 == 30) {
+            f32 size = lbl_8046A00C[field_0xc0];
+            u16 id = 0xFFFF;
+            switch (field_0xfc) {
+            case 1:
+            case 2:
+                if (field_0x10c >= 0 && field_0x10c < 4 && fn_80237060(field_0x10c) >= 2) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x17A, 1, 1, NULL, NULL, true, size);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x17B, 1, 1, NULL, NULL, true, size);
+                    startSound_801F0E34(0x5006B, 0);
+                } else {
+                    id = 0x174;
+                }
+                break;
+            case 5:
+                id = 0x179;
+                break;
+            case 4:
+                id = 0x17C;
+                break;
+            case 3:
+                if (__fabsf(field_0xec.x) > __fabsf(field_0xec.y)) {
+                    if (field_0xec.x < 0.0f) {
+                        id = 0x176;
+                    } else {
+                        id = 0x177;
+                    }
+                } else if (field_0xec.y < 0.0f) {
+                    id = 0x178;
+                } else {
+                    id = 0x175;
+                }
+                break;
+            }
+            if (id != 0xFFFF) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, id, 1, 1, NULL, NULL, true, size);
+            }
+        }
+        field_0xe0--;
+        field_0x3c.zero();
+        if (field_0xe0 == 0) {
+            vfunc_0x24();
+        }
+        result = 1;
+    } else {
+        field_0xd5 = 0;
+    }
+    if (field_0xe8 > 0) {
+        if (field_0xe4 > 0) {
+            field_0xe4--;
+        } else {
+            JGeometry::TVec3f pos(mPos.x + 8.0f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f),
+                                  mPos.y + 8.0f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f),
+                                  mPos.z);
+            if (field_0xfc == 5) {
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x19D, 0, 2, NULL, NULL, true, 1.0f);
+            } else {
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x24A, 0, 2, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x24B, 0, 2, NULL, NULL, true, 1.0f);
+            }
+            startSound_801F0E34(0x40002, 0);
+            field_0xe8--;
+            if (field_0xe8 > 0) {
+                field_0xe4 = 5;
+            }
+        }
+    }
+    if (result != 0 && mLife <= 0) {
+        result = -1;
+    }
+    return result;
+}
+
 // FIXME: 94.3. Two differences, both shared with siblings: MWCC keeps the
 // .rodata base in r31 for lbl_8046A00C / lbl_80469F38 / lbl_80469EF8 where
 // the original addresses each table on its own (as fn_801EF830; with the

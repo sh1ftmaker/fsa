@@ -402,15 +402,20 @@ public:
     // 1 unit / 3 calls (tu_801A3C50, always 300). field_0xa4 = v and clears
     // field_0xd5, 0xd8, 0xe4, 0xe8 (and 0xe0 while mLife > 0).
     void fn_801F3780(s32 v);
-    // 19 units / 35 calls. Applies one hit: attack (cmpwi 4), the attacker's
-    // position (lfs 0/4/8), strength (clamped to 2), type (cmpwi 5 / 2
-    // against field_0xb0) and the attacking player (-1 for none; 1 << player
-    // tested against field_0xd5). Returns 0 or 1.
+    // 19 units / 35 calls. Applies one hit (written): attack points (taken
+    // from mLife; > 4 is a strong hit), the attacker's position (sets the
+    // knock-back direction field_0xec and velocity field_0x3c), strength
+    // (clamped to 2), type (field_0xfc; 5 and 2 can be ignored or absorbed by
+    // field_0xb0's bits) and the attacking player (-1 for none; field_0xd5
+    // collects the players that hit during field_0xd8, field_0x10c keeps the
+    // last). Returns 1 when the hit counts (also when absorbed), else 0.
     bool fn_801F37AC(s32 attack, const JGeometry::TVec3f* from, s32 strength, s32 type,
                      s32 player);
-    // 48 units / 63 calls. Works on field_0xd8-0x10c, field_0x3c and mPos
-    // (role unproven); flag is tested with clrlwi. (0x801F3E04; callers
-    // pass 1, 0 or a clrlwi 24 value). Returns 1, 0 or -1 (0x801F4630).
+    // 48 units / 63 calls. The per-frame hit reaction (written): moves by
+    // the knock-back field_0x3c while field_0xd8 runs (when `flag`), starts
+    // the death timer field_0xe0 when life is out, runs it down to
+    // vfunc_0x24, and emits field_0xe8 hit sparks. Returns 0 (idle), 1, or
+    // -1 with no life left (0x801F4630).
     // u8, not bool: EnemyBase_804A4808::update() passes a bool local with
     // clrlwi r4, r31, 24 (0x801CDE0C), which MWCC emits for a bool going to
     // an unsigned char parameter (a bool one takes it with mr).
@@ -505,7 +510,7 @@ public:
     /* 0x018 */ JGeometry::TVec3f mPrevPos;  // copy of mPos before update()
     /* 0x024 */ JGeometry::TVec3f mSpawnPos; // set only by the spawner
     /* 0x030 */ JGeometry::TVec3f field_0x30;
-    /* 0x03C */ JGeometry::TVec3f field_0x3c;
+    /* 0x03C */ JGeometry::TVec3f field_0x3c; // knock-back velocity (fn_801F37AC, fn_801F3D94)
     /* 0x048 */ JGeometry::TVec3f field_0x48; // 1.0f
     /* 0x054 */ JGeometry::TVec3f field_0x54; // 1.0f
     /* 0x060 */ JGeometry::TBox2f mBox;  // (-8, -8)-(8, 8)
@@ -541,19 +546,19 @@ public:
     /* 0x0CC */ u8 field_0xcc;  // update loop: updates the actor if set
     /* 0x0D0 */ s32 field_0xd0;
     /* 0x0D4 */ u8 field_0xd4;
-    /* 0x0D5 */ u8 field_0xd5;
-    /* 0x0D8 */ s32 field_0xd8;
-    /* 0x0DC */ s32 field_0xdc;
-    /* 0x0E0 */ s32 field_0xe0;
-    /* 0x0E4 */ s32 field_0xe4;
-    /* 0x0E8 */ s32 field_0xe8;
-    /* 0x0EC */ JGeometry::TVec3f field_0xec;
-    /* 0x0F8 */ s32 field_0xf8;
-    /* 0x0FC */ s32 field_0xfc;
+    /* 0x0D5 */ u8 field_0xd5; // players that hit during field_0xd8 (1 << player; fn_801F37AC)
+    /* 0x0D8 */ s32 field_0xd8; // hit-reaction timer (24 per hit, fn_801F37AC / fn_801F3D94)
+    /* 0x0DC */ s32 field_0xdc; // its start value
+    /* 0x0E0 */ s32 field_0xe0; // death timer (1 or 30; vfunc_0x24 at 0)
+    /* 0x0E4 */ s32 field_0xe4; // frames to the next hit spark
+    /* 0x0E8 */ s32 field_0xe8; // hit sparks left
+    /* 0x0EC */ JGeometry::TVec3f field_0xec; // direction of the last hit (attacker to actor)
+    /* 0x0F8 */ s32 field_0xf8; // knock-back kind (0, 1 slide, 2 thrown)
+    /* 0x0FC */ s32 field_0xfc; // type of the last hit
     /* 0x100 */ JPABaseEmitter* mEmitter100; // released by the destructor
     /* 0x104 */ JPABaseEmitter* mEmitter104; // released by the destructor
     /* 0x108 */ s32 mLife;       // EnemyParam.csv column "life"
-    /* 0x10C */ s32 field_0x10c;
+    /* 0x10C */ s32 field_0x10c; // the last attacking player (fn_801F37AC; vfunc_0x24 credits it)
     /* 0x110 */ s32 field_0x110; // spawner's 7th argument (default -1)
     /* 0x114 */ s32 field_0x114; // EnemyParam.csv column "atcp"
     /* 0x118 */ s32 field_0x118; // EnemyParam.csv column "atcn"
