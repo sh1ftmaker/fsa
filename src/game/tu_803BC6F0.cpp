@@ -2034,6 +2034,108 @@ void FileSelect_804AFF60::fn_803C7CA0() {
     }
 }
 
+// FIXME: 99.33. Scheduling and registers only, the timing sums as in
+// fn_803C6798. .sdata2 @NNN.
+// State 28 (the copy prompt's no, from fn_803C02CC): the board (or the copy
+// board) slides out from the second row's height and the two buttons slide
+// out; then, as fn_803C6798, the row that took no part slides back in and the
+// source and destination rows return to their places while row field_0xa4's
+// colours fade back (fn_803BC6F0). Same timings as fn_803C6798
+// (lbl_8050DB0C field_0x4c[0xB6..0xBC]); state 5.
+void FileSelect_804AFF60::fn_803C70B8() {
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xB6];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xB7];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0xB8];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0xB9];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0xBA];
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0xBB];
+    s16 rowFrames = lbl_8050DB0C.field_0x4c[0xBC];
+    s32 end = boardDelay + boardFrames;
+    if (end < buttonDelay + (buttonFrames + buttonStep)) {
+        end = buttonDelay + (buttonFrames + buttonStep);
+    }
+    if (end < rowDelay + rowFrames) {
+        end = rowDelay + rowFrames;
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > boardDelay) {
+        if (hasBadChecksum(field_0xa0)) {
+            field_0x20->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+            field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
+            for (s32 j = 0; j < 9; j++) {
+                field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+            }
+        } else {
+            field_0x14->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+            field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x14->fn_80402628(boardFrames, field_0x14->field_0x28, 0);
+            field_0x18->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+            field_0x18->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x18->fn_80402628(boardFrames, field_0x18->field_0x28, 0);
+            field_0x1c->moveFromCentre_80402E08(0.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+            field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+            field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
+            for (s32 j = 0; j < 81; j++) {
+                field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+            }
+            for (s32 j = 0; j < 19; j++) {
+                field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+            }
+        }
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 0.0f, 100.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, field_0x24[i]->field_0x28, 0);
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > rowDelay) {
+        for (s32 i = 0; i < 3; i++) {
+            if (i != field_0xa4 && i != field_0xa0) {
+                field_0x38[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x44[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x38[i]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+                field_0x38[i]->fn_80402628(rowFrames, 0, field_0x38[i]->field_0x28);
+                setRowAlphas(this, i);
+                field_0x44[i]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+                field_0x44[i]->fn_80402628(rowFrames, 0, field_0x44[i]->field_0x28);
+                setTabAlphas(this, i);
+            } else {
+                field_0x38[i]->fn_80402940(rowFrames, 0, field_0x70[i], 0.0f);
+                field_0x44[i]->fn_80402940(rowFrames, 0, field_0x64[i], 0.0f);
+            }
+        }
+        fn_803BC6F0(field_0xa4, 1.0f - (f32)(field_0xd8 - rowDelay) / (f32)rowFrames);
+    }
+    if (field_0xd8 > end) {
+        setState(5);
+    }
+}
+
 // FIXME: 99.65. Scheduling and registers only: the original adds
 // buttonFrames + buttonStep before buttonDelay (ours buttonStep +
 // buttonDelay first), and the board loops' counter / table pointer swap
