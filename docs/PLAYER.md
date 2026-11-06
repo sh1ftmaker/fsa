@@ -1638,3 +1638,50 @@ pair against `matching` 9c62f288.
   `mPos + offset` (`pos = ...` same, `pos.set(mPos + offset)` 93.5, `pos(mPos); pos +=
   offset` 94.0); fn_80267ECC's duplicated `field_0x3c4 += field_0x3fb` after case 4 (an
   if / else around the switch gives the same 96.69). fn_80261750 (+1) not attempted.
+
+## Structural push (tu_8028FBA0 / tu_8026FC20) (Opus 5.5, 2026-11-06)
+
+**tu_8028FBA0 fn_80290070** (0xCE8, unwritten -> 99.56 %; order / stack slots only) is
+Player::fn_80290070(layer, from, to, kind), the start of every screen / layer transition
+(states 0x1C-0x32 above). Refused while a transition runs (0xCE8; kind 0x24 may override it
+under fn_80240DAC), 0xCEE, 0x1216, 0x1238 > 0, down (fn_80270A8C), no life (fn_8024189C),
+held (fn_8025F448), or the GBA link busy for a target layer >= 8. Kind 0xC becomes 0x26 under
+fn_802DE93C or on a GBA layer. Kind 0x21 from a GBA layer is immediate: back to layer 0 at
+`to` (0xCBC = 0xCD4 = mPos, chained), with fn_80290E90 and fn_80290D58 both inlined (the leave
+and arrive exits). Kind 0x22 (same layer) only moves the player, back to 0x2C4 / 0xCBC when the
+tile is a hole (the 0x1F landing test). Otherwise the leave state by kind: 4 / 7-9 / 0x20 /
+0x24 -> 0x1E (fn_80252BAC with `from - mPos`; held by a partner -> kind 9 to 0xD1C), 0xC / 0xD
+/ 0x26 -> 0x32 (same layer only), 5 -> 0x20 and 0xA -> 0x2A (0xCF1 = 0xCF0; 0xCF0 = the tile
+under the target is not 0 / 2 (/ 3) / 0x21), 6 / 0xB / 0x14 / 0x1F -> 0x24 or 0x22 by layer,
+0xE / 0x25 -> 0x26, 0xF -> 0x28, 0x27 -> 0x30, 0x11 only under fn_80240818, 0x13 / 0x16 ->
+0x4D, 0x17 / 0x18 and the rest -> 0x1C (fn_80252BAC with the y / x offset). Then 0xCD4 / 0xCE4
+= the target (kind 0x12: the partner's position and layer), 0xCF4 = kind, 0xCC8 / 0xCE0 = the
+departure, 0xCE8 = true; the GBA links get the view names (fn_803049F0 / fn_80304B00, also for
+the carried partner 0xD70) and the direction fn_803020C8(player, from, to, mode): mode 0 for a
+move between two flagged GBA layers or kinds 0x13 / 0x16 to the TV, 2 for 0x1E / 0xF / 6 and
+0xB from a GBA layer, 1 otherwise, none for 0xC / 0xD / 0x26 / 0x22 or without the player.
+Remaining diff: the kind-4 group's offset vector sits at 0x2C (original 0x14, as if declared
+after the other two), and kinds 0x17 / 0x18 load the 0.0f before from->y. The libs TVec3
+operator- is not const, so `*from - mPos` is written `TVec3f(*from) -= mPos` (the original's
+copy, subtract, copy-out; a named copy adds 4 instructions, 98.99 %).
+SHARED-EDITS: Player.h fn_80290070 parameter names; extern "C" fn_803020C8(s32, s32, s32, u8)
+(tu_80301CD0, void: callers ignore r3, its tail sets no r3); fn_803049F0 / fn_80304B00
+(s32, s32) declared beside it (defined in tu_80301CD0.cpp, which includes Player.h).
+
+**tu_8026FC20** (branch unit/game__tu_8026FC20):
+- fn_80272C20 97.24 -> 99.16 % (regalloc only): the point loop returns false from inside once
+  all eight points are in the box (`if (++i >= 8) return false;`) and breaks to the slot store;
+  a `for` with a later `i >= 8` test compiles a second compare.
+- fn_802729F0 stays 81.51 % (missing/extra -16): the original keeps one `addi r3, 4` per
+  unrolled entry (9 per trip, counter += 9); int / u32 / long counters, a local read once,
+  nested ifs and pointer stepping all give fixed offsets (or worse).
+- fn_80273FB8 stays 99.62 % (one row, return `clrlwi` vs `mr`): u8 return makes it 100 % but
+  fn_80274238 then converts (neg / or / srwi, 95.45 %); its caller keeps r3 raw in a bool, so
+  the original's return type looks bool with a value that needs zero-extension (an inline's
+  result?). `!= false`, `? true : false`, `== true` returns all give 98.1 %.
+- fn_80274CB8 stays 95.57 %: splitting lbl_8046BCA8 into 0x20 / 0x20 / 0x60 objects (the
+  original adds +0x180 / +0x1A0 / +0x1D0 to the .rodata base like array starts) gives 96.37 %
+  but still no hoisted base; scratch tests show MWCC hoists a shared .rodata base only in some
+  functions (tu_80256C74 fn_8025DACC does it in a loop), so the split was not kept.
+- fn_8027776C (the dead second `beq` after the 'TNGL' null test): the cast inside the test,
+  nested ifs and an `||` around the body change nothing.
