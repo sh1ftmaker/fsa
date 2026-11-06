@@ -835,8 +835,6 @@ void Player_804A6F38::fn_8027966C() {
 // the view box less 16; leaving it, or blocked (cls_804A71A8 0x48), from frame 20 the player
 // bounces back (0x344 = the push flattened, normalised, times -2, z 4; 0x3FC = 1) or goes down
 // (state 0x33) with no life left. The bounce lands in state 0 with 0x344 handed on to 0x368.
-// FIXME: 99.98. Code identical; the -2.0f literal is reloc-name until the earlier .sdata2
-// users (fn_802765C0, fn_8027776C, fn_80277F98: 24, -24, -12, ...) are written.
 void Player_804A6F38::fn_802791B0() {
     if (field_0x3fc == 0) {
         mPos.add(field_0x350);
@@ -921,6 +919,299 @@ void Player_804A6F38::fn_802790C0() {
     }
     mPos.z = 0.0f;
     field_0xba4 = 0;
+}
+
+// Update of state 0x33 (down, no life left). A fall into tile 3 / 0xE / 0x3A puts the player
+// back at its respawn point (0x2C4, 0xCBC on GBA layers); the camera follows it. Frames 0-71
+// the collapse poses, 72-135 lying down: at frame 106 the counter fn_80241920 is halved (at
+// most 2000 lost, fn_8024E694) with the message 0x198 (amount) or 0x19A. Then, in battle mode
+// 7, the revive wait 0x494 by the player's rank (600 / 420 / 300 / 180 frames), a helper actor
+// by rank (fn_801F6718 kind 3 / 5 / 6 / 7, not during a 'BLZD' blizzard), the emitter 0x565
+// and a 'PEFF'; the dig-up wiggle (pad 0x100: 0x3FA = 24, sound 0x20032, the 0x5DC box at frame
+// 16). Held by another player (fn_8025F418) it rides on that player; revived (0xD2D) it hops
+// up and returns to state 0 healed to 4 below the maximum; otherwise it slides by 0xD78 and can
+// grab a partner within the box (fn_8023B0F4) to be dragged along (0xD08). fn_8027057C then
+// handles the revive.
+// FIXME: 99.92. Registers only: the serial 0x49C in r27 (r29 in the original), the view-corner
+// offset's float temporaries (as in tu_8025EB18 fn_8025FDD0) and the operand order of the two
+// `-x * 0.5f` products.
+void Player_804A6F38::fn_80277F98() {
+    u16 tile = fn_8022461C(&mPos, field_0x3b4);
+    if (gGameRoot_8053AAF8->field_0x4c != 11 && field_0xcfc == 1 && !fn_8025F448() &&
+        (tile == 3 || tile == 0xe || tile == 0x3a)) {
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
+        if (field_0x3b4 < 8) {
+            mPos.set(field_0x2c4);
+        } else {
+            mPos.set(field_0xcbc);
+        }
+        field_0x2c.set(mPos);
+        field_0x3bc = field_0x3b4;
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
+    }
+    if (!gGameRoot_8053AAF8->field_0x7e && !fn_80240670()) {
+        s32 player = field_0x4;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (!camera->field_0x7f5) {
+            camera->field_0x7f4 = 1;
+            camera->field_0x7f8 = player;
+            camera->field_0x7f6 = 1;
+        }
+    }
+    if (field_0x3fc < 72) {
+        field_0x3fd = (field_0x3fc / 6) % 4;
+        field_0x3fc++;
+    } else if (field_0x3fc < 76) {
+        field_0x3fd = 4;
+        field_0x3fc++;
+    } else if (field_0x3fc < 136) {
+        field_0x3fd = 6;
+        field_0x3fc++;
+        // `!= false`: the original materialises the bit test as a bool here (neg / or / srwi.).
+        if (field_0x3fc == 106 && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4) != false) {
+            if (gGameRoot_8053AAF8->field_0x7f) {
+                if (gGameRoot_8053AAF8->field_0x7e) {
+                    s32 lost = fn_80241920() / 2;
+                    if (lost > 2000) {
+                        lost = 2000;
+                    }
+                    s32 before = fn_80241920();
+                    fn_8024E694(lost, 0);
+                    s32 diff = before - fn_80241920();
+                    if (diff == 0) {
+                        lbl_8053AED0->fn_8043D67C(0x19a, field_0x4, 0);
+                    } else {
+                        lbl_8053AED0->fn_8043D67C(0x198, field_0x4, diff);
+                    }
+                }
+            } else {
+                lbl_8053AED0->fn_8043D67C(0x19a, field_0x4, 0);
+            }
+        }
+    } else {
+        if (fn_8025F448()) {
+            field_0x494 = 0;
+            field_0x498 = 0;
+        } else if (!field_0x499 && !field_0xd2d && field_0x494 == 0 && isGameMode7() &&
+                   gGameRoot_8053AAF8->field_0x7f && gGameRoot_8053AAF8->field_0x7e) {
+            s32 rank = 1;
+            for (s32 i = 0; i < 4; i++) {
+                if (isPlayerBitSet(gGameRoot_8053AAF8, i) && !fn_80243194(i) && fn_80241920() < fn_80236228(i)) {
+                    rank++;
+                }
+            }
+            if (rank >= gGameRoot_8053AAF8->fn_80138A30()) {
+                rank = 4;
+            }
+            switch (rank) {
+            case 1:
+                field_0x494 = 600;
+                break;
+            case 2:
+                field_0x494 = 420;
+                break;
+            case 3:
+                field_0x494 = 300;
+                break;
+            case 4:
+                field_0x494 = 180;
+                break;
+            }
+            if (!fn_80240808() && field_0x49c < 0 && getActorManager_801F856C()->fn_801F7A08('BLZD') < 0) {
+                switch (rank) {
+                case 1:
+                    field_0x49c = getActorManager_801F856C()->fn_801F6718(field_0x4, field_0x3b4, &mPos, 0, 3);
+                    break;
+                case 2:
+                    field_0x49c = getActorManager_801F856C()->fn_801F6718(field_0x4, field_0x3b4, &mPos, 0, 5);
+                    break;
+                case 3:
+                    field_0x49c = getActorManager_801F856C()->fn_801F6718(field_0x4, field_0x3b4, &mPos, 0, 6);
+                    break;
+                case 4:
+                    field_0x49c = getActorManager_801F856C()->fn_801F6718(field_0x4, field_0x3b4, &mPos, 0, 7);
+                    break;
+                }
+            }
+            if (field_0x1308 == NULL && !fn_80239D38()) {
+                field_0x1308 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x565, 0, -1, NULL, &field_0x130c, true, 0.5f);
+            }
+            getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &mPos, (field_0x4 & 3) | 0x38, -1, -1);
+        }
+        s32 serial = field_0x49c;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL && fn_8025F448()) {
+                actor->mAlive = false;
+            }
+        }
+        if (mPos.z > 0.0f) {
+            field_0x3fd = 5;
+            field_0x3fa = 0;
+        } else {
+            if (field_0x3fa == 0) {
+                if (fn_80246D1C(0x100) && gGameRoot_8053AAF8->field_0x4c == 7 && !lbl_80529DEC.field_0x240) {
+                    field_0x3fa = 24;
+                    fn_8024F0E8(0x20032);
+                }
+            } else {
+                field_0x3fa--;
+            }
+            if (field_0x3fa == 0) {
+                field_0x3fd = 6;
+            } else if (field_0x3fa < 8) {
+                field_0x3fd = 7;
+            } else if (field_0x3fa < 16) {
+                field_0x3fd = 6;
+            } else {
+                field_0x3fd = 7;
+            }
+            if (field_0x3fa == 16) {
+                field_0xba4 = 1;
+                field_0x5dc.set(-24.0f, -12.0f, -8.0f, 8.0f);
+                field_0x5dc.i.x += mPos.x;
+                field_0x5dc.i.y += mPos.y;
+                field_0x5dc.f.x += mPos.x;
+                field_0x5dc.f.y += mPos.y;
+            } else if (field_0x3fa == 15) {
+                field_0xba4 = 0;
+            }
+        }
+        if (!field_0xcfc) {
+            field_0xcfc = 1;
+            if (fn_80239D38()) {
+                if (!lbl_80529DEC.field_0x253) {
+                    lbl_80529DEC.field_0x1ac = gAudioMgr_8053AF80->field_0x58;
+                    lbl_80529DEC.field_0x253 = 1;
+                }
+                if (gAudioMgr_8053AF80->field_0x58 != 0) {
+                    gAudioMgr_8053AF80->fn_80458F9C(20);
+                }
+            }
+        }
+    }
+    if (fn_8025F418()) {
+        field_0xd08 = -1;
+        field_0xd0c = 120;
+        field_0xcfd = 1;
+        field_0xcfc = 0;
+        mPos = *fn_8023E7B0(field_0xd70);
+        JGeometry::TBox2f* box = layerBox(getPlayerLayer_8023DE58(field_0xd70));
+        f32 x = box->i.x;
+        f32 y = box->i.y;
+        box = layerBox(field_0x3b4);
+        JGeometry::TVec2f offset(box->i.x - x, box->i.y - y);
+        mPos.x += offset.x;
+        mPos.y += offset.y;
+        mPos.y += 2.0f;
+        mPos.z += 2.0f;
+        s32 dir = fn_80230CFC(field_0xd70);
+        field_0x3dc = dir;
+        field_0x3e8 = dir;
+        if (field_0x3b4 < 8 && field_0xd70 >= 0 && getPlayerLayer_8023DE58(field_0xd70) > 8) {
+            fn_80230C6C(field_0xd70);
+        }
+    } else if (field_0xd2d == 1) {
+        if (field_0xd30 == 0) {
+            if (!fn_80240808() ||
+                (fn_80240808() && !(fn_8023E98C(fn_80240644()) && fn_80236B50(fn_80240644())) &&
+                 !(!fn_80236AB4(fn_80240644()) && fn_80236B50(fn_80240644())))) {
+                fn_8024F0E8(0x20033);
+                field_0xd30++;
+            }
+        } else if (field_0xd30 == 60) {
+            field_0xd30++;
+            field_0x344.set(0.0f, 0.0f, 2.0f);
+            field_0x3dc = 2;
+            field_0x3e8 = 2;
+        } else if (field_0xd30 > 60) {
+            if (field_0x344.z > 0.0f || mPos.z > 0.0f) {
+                mPos.add(field_0x344);
+                field_0x344.z -= 0.25f;
+            } else {
+                mPos.z = 0.0f;
+                if (!fn_80240808() || (fn_80240808() && !fn_80236B50(fn_80240644()))) {
+                    field_0x124d = 0;
+                    if (fn_80251AEC(0)) {
+                        field_0xc00 = 0;
+                        fn_80270DDC(fn_802417CC() - 4, false);
+                    }
+                }
+            }
+        } else {
+            field_0xd30++;
+        }
+    } else {
+        field_0xbf4 = 4;
+        if (!field_0xd78.isZero()) {
+            mPos.add(field_0xd78);
+            field_0xd78.z -= 0.25;
+            if (mPos.z <= 0.0f) {
+                field_0xd78.set(0.0f, 0.0f, 0.0f);
+                mPos.z = 0.0f;
+            }
+        } else if (field_0xd08 >= 0) {
+            if ((fn_80246B10(0x100) || fn_80246B10(0x200) || fn_80246B10(0x20)) &&
+                fn_8022BC38(field_0xd08, field_0x3b4, &mPos)) {
+                JGeometry::TVec3f target = *getPlayerPos_8023E724(field_0xd08);
+                target.x += 16.0f;
+                if (!viewLayerFlag(field_0x3b4)) {
+                    target.y += 8.0f;
+                }
+                target.z = 0.0f;
+                JGeometry::TVec3f diff = target - mPos;
+                if (PSVECMag(&diff) >= 16.0f || fn_80234D94(field_0xd08)) {
+                    field_0xd08 = -1;
+                    field_0xd0c = 120;
+                } else if (PSVECMag(&diff) >= 3.0f) {
+                    diff.normalize();
+                    diff.scale(3.0f);
+                    mPos.add(diff);
+                } else {
+                    mPos.set(target);
+                }
+            } else {
+                field_0xd08 = -1;
+            }
+        } else if (field_0xcfc == 1 && !lbl_80529DEC.field_0x240 && gGameRoot_8053AAF8->field_0x4c != 11) {
+            if (field_0xd0c <= 0 && (fn_80246B10(0x100) || fn_80246B10(0x200) || fn_80246B10(0x20))) {
+                JGeometry::TBox2f box(-24.0f, -12.0f, -8.0f, 8.0f);
+                box.i.x += mPos.x;
+                box.i.y += mPos.y;
+                box.f.x += mPos.x;
+                box.f.y += mPos.y;
+                if (fn_80247330() < 0.0f) {
+                    fn_802808E8(1.5f);
+                } else {
+                    fn_802808E8(0.12f);
+                }
+                for (s32 i = 0; i < 4; i++) {
+                    if (i != field_0x4 && isPlayerBitSet(gGameRoot_8053AAF8, i) &&
+                        fn_8023B0F4(i, &box, field_0x3b4, false, 0.0f)) {
+                        field_0xd08 = i;
+                        fn_8024F0E8(0x2004b);
+                        break;
+                    }
+                }
+                field_0xd0c = 18;
+            } else {
+                fn_802808E8(0.12f);
+            }
+        }
+        if (field_0xbf0->anyFlag48()) {
+            field_0xd78.x = -field_0xd78.x * 0.5f;
+            field_0xd78.y = -field_0xd78.y * 0.5f;
+        }
+    }
+    fn_8027057C();
+    fn_80268B3C();
+    if (field_0xd0c > 0) {
+        field_0xd0c--;
+    }
+    if (field_0x1308 != NULL) {
+        field_0x1320.set(mPos.x, mPos.y - 4.0f, mPos.z + 16.0f);
+        field_0x130c.field_0x4.set(field_0x1320);
+    }
 }
 
 void Player_804A6F38::fn_80277EBC() {
@@ -1022,7 +1313,7 @@ void Player_804A6F38::fn_8027776C() {
         }
         tingleHeal(this);
         if (field_0xd30 >= 480) {
-            if (!fn_80240808() || !(fn_80240808() && fn_80236B50(fn_80240644()))) {
+            if (!fn_80240808() || (fn_80240808() && !fn_80236B50(fn_80240644()))) {
                 field_0x124d = 0;
                 fn_80251AEC(0);
             }
