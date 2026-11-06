@@ -20,3 +20,11 @@ extract:
 - symbol: lbl_804985D0
   header: assets/dolphin/gba/GBAKey_ucode.inc
   header_type: raw
+# tu_80400DC4.cpp (disc-error screen): the message file (MESGbmg1, tp
+# d_error_msg msg_data) and the font (FONTbfn1, tp font_data).
+- symbol: lbl_80479CA0
+  header: assets/game/tu_80400DC4/msg_data.inc
+  header_type: raw
+- symbol: lbl_80479F00
+  header: assets/game/tu_80400DC4/font_data.inc
+  header_type: raw

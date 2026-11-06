@@ -443,6 +443,8 @@ cflags_game = [
     "-i libs/sdk/msl_include",
     "-i include",
     "-i src",
+    # Extracted blobs (config.yml extract:; the disc-error screen's message file and font).
+    f"-i build/{config.version}/include",
     "-DNDEBUG=1",
 ]
 
