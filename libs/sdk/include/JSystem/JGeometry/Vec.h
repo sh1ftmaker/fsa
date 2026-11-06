@@ -131,6 +131,11 @@ namespace JGeometry {
 
         bool isAbove(const TVec2<T> &other) const { return (x >= other.x) && (y >= other.y) ? true : false; }
 
+        // Operators as in later JGeometry (SMG's TVec.hpp, reference only): copy *this into a
+        // local, change it, return it by value. Evidence: game tu_8025EB18 fn_802604CC.
+        TVec2<T> operator+(const TVec2<T>& o) const { TVec2 ret(*this); ret.x += o.x; ret.y += o.y; return ret; }
+        TVec2<T> operator-(const TVec2<T>& o) const { TVec2 ret(*this); ret.x -= o.x; ret.y -= o.y; return ret; }
+        TVec2<T> operator*(f32 s) const { TVec2 ret(*this); ret.x *= s; ret.y *= s; return ret; }
         T x, y;
     };
 

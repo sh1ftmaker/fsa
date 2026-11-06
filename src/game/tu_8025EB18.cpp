@@ -1239,11 +1239,10 @@ bool Player_804A6F38::fn_80260C08() {
     return false;
 }
 
-// FIXME: 96.76. missing/extra (8 fewer): the layer-moved points are TVec2f operator chains
-// (game/Vec2Ops.h) and lay out the original's stack temporaries, except in the midpoint's
-// sum: the original also copies the `+ other` result into its own temporary (sp 0x48) and
-// rounds it again (frsp) before `- box->i`, where ours subtracts from operator+'s local
-// directly. A by-value operator+ there loses every other temporary of the function (88.8 %).
+// FIXME: 95.22. missing/extra (8 fewer): the layer-moved points are TVec2f operator chains
+// (members of libs TVec2, by value; game/Vec2Ops.h xy()) and lay out the original's stack
+// temporaries, except that the original also copies the midpoint's `+ other` result into its
+// own temporary (sp 0x48) and rounds it again (frsp) before `- box->i`.
 // Lift another player standing in front (16 along the facing, state 0x11, 'PLAY'): it
 // must be present and free, and both its spot seen from this layer and the midpoint of
 // the two (on both layers) must not be blocked (fn_802260DC / fn_802684A4 unless tile

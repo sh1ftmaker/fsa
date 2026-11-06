@@ -1604,7 +1604,7 @@ pair against `matching` 9c62f288.
 
 | function | before | after | class / what still differs |
 |---|---|---|---|
-| tu_8025EB18 fn_802604CC | 88.72 missing/extra (-41) | 96.76 missing/extra (-8) | TVec2f operator chains (game/Vec2Ops.h); only the midpoint's `+ other` lacks the original's extra return copy |
+| tu_8025EB18 fn_802604CC | 88.72 missing/extra (-41) | 95.22 missing/extra (-8) | TVec2f member operators (libs Vec.h); only the midpoint's `+ other` lacks the original's extra return copy |
 | tu_80256C74 fn_8025785C | 90.40 missing/extra (+9) | 95.14 different (block order + r30/r31 only) | see below |
 | tu_80256C74 fn_8025C894 | 99.06 different | **100** | |
 | tu_80256C74 fn_8025BEB0 | 98.98 missing/extra (+1) | 99.82 missing/extra (+1) | side shot's argument built in r0, moved to r30 |
@@ -1612,14 +1612,12 @@ pair against `matching` 9c62f288.
 
 - **TVec2 temporaries (fn_802604CC)**: the original builds `mPos - myBox->i + box->i` (and the
   midpoint `(mPos - myBox->i + other - box->i) * 0.5`) in stack TVec2s: each operator copies
-  its left operand into a local, changes it, and the result is copied on; values copied out
-  of a returned temporary get an `frsp`. game/Vec2Ops.h gives TVec2f free operators in the
-  later JGeometry's shape (SMG TVec.hpp, reference only: `ret(*this)`, change, return) plus
-  `xy(TVec3f)` (TVec3's `operator const TVec2<f32>&`). The layout needs operator- and
-  operator* by value and **operator+ returning a reference to its local** (as SMG's
-  addOperatorInline; MWCC warns "reference to an automatic variable", as in tu_8022AD64 /
-  tu_80127E20): with operator+ by value too MWCC scalarises the whole chain (88.80), member
-  operators in libs TVec2 give 95.22, a split `sum` local or `pos.set(...)` change nothing.
+  its left operand into a local, changes it, and returns it by value. libs TVec2 gets
+  `operator+ / - / *` members in that shape (SMG TVec.hpp, reference only) and game/Vec2Ops.h
+  `xy(TVec3f)` (TVec3's `operator const TVec2<f32>&`). Free by-value operators scalarise the
+  chain (88.80, -41); members give 95.22 (-8). A first attempt returned a reference to the
+  local from operator+ (96.76); that is undefined behaviour and a codegen steer (SMG's
+  `addOperatorInline` is a separate named method, not operator+), so the reviewer dropped it.
   The three `pos = ...` blocks are exact; the midpoint's `+ other` is copied to its own
   temporary (sp 0x48) and re-rounded before `- box->i` in the original only.
 - **Charged-shot arguments (fn_8025C894 100 %, fn_8025BEB0)**: `((field_0x3dc & 3) << 4) |

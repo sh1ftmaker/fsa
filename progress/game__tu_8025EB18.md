@@ -48,7 +48,7 @@ fn_802604CC.
 
 
 ## Structural push (Opus 5.5, 2026-11-06)
-Baseline (matching 9c62f288): 9092. fn_802604CC 88.72 -> 96.76 missing/extra (-8): TVec2f
-operator chains, new header include/game/Vec2Ops.h (SHARED-EDIT: new file, used only here).
+Baseline (matching 9c62f288): 9092. fn_802604CC 88.72 -> 95.22 missing/extra (-8): TVec2f
+member operators in libs JGeometry/Vec.h (SHARED-EDIT, reviewer-changed from a reference-returning operator+), xy() in include/game/Vec2Ops.h (new, used only here).
 FIXME in source names the remaining midpoint copy. fn_80262BAC / fn_80261750 unchanged.
 Details: docs/PLAYER.md "Structural push".
