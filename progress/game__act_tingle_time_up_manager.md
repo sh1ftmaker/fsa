@@ -34,7 +34,7 @@
 - `config/G4SE01/gen_game.tsv`: removed generator rows for `act_tingle_time_up_manager`, `act_force_gem_buried`, `act_force_gem_fleeing`, and `act_force_gem_winged`.
 - `config/G4SE01/symbols.txt`: renamed placeholder `fn_8030C380` (`0x8030C380`) to `fn_8030C380__15Camera_804AA9E4FPQ29JGeometry8TVec3<f>`.
 - `include/game/Camera.h`: declared `void fn_8030C380(JGeometry::TVec3f* out);` on `Camera_804AA9E4`.
-- `include/game/act/tu_803536C4.h`: exposed `0x254` (`mVec254` / `getVec254()`) and `0x260` (`JGeometry::TVec3f field_0x260`) on `cls_804ACC68` (`TUTL`), copied by `TingleTimeUpManager_804ACBF0::update()` (`0x80352A20..0x80352A3C`).
+- `include/game/act/tu_803536C4.h`: `0x254` is now a `JGeometry::TVec3f field_0x254` and `0x260` a `JGeometry::TVec3f field_0x260` on `cls_804ACC68` (`TUTL`), copied by `TingleTimeUpManager_804ACBF0::update()` (`0x80352A20..0x80352A3C`); `tu_803536C4.cpp`'s one read is now `field_0x254.x`.
 - `include/game/act/act_force_gem.h`: changed `ForceGem_804AB6D8::field_0x230` from `u32` to `s32` (`cmpwi` at `0x80352D88`).
 - `include/game/act/act_force_gem_fleeing.h`: added `/* 0x230 */ s32 field_0x230;` to `FleeingForceGem_804AB170` (`lwz`/`cmpwi` at `0x80352DCC`).
 - `include/game/act/act_force_gem_winged.h`: added `/* 0x230 */ s32 field_0x230;` and `/* 0x281 */ u8 field_0x281;` to `WingedForceGem_804AB098` (`lwz`/`lbz` at `0x80352E00`, `0x80352E1C`).

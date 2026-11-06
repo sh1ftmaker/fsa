@@ -72,7 +72,7 @@ void TingleTimeUpManager_804ACBF0::update() {
                     JGeometry::TVec3f vel(-2.0f, 0.0f, 0.0f);
                     child->field_0x3c = vel;
                     mTimer = 150;
-                    child->getVec254() = field_0x27c;
+                    child->field_0x254 = field_0x27c;
                     child->field_0x260 = field_0x288;
                     mState = 3;
                 }
@@ -97,7 +97,7 @@ void TingleTimeUpManager_804ACBF0::update() {
                     JGeometry::TVec3f vel(-2.2f, -0.2f, 0.0f);
                     child->field_0x3c = vel;
                     mTimer = 15;
-                    child->getVec254() = field_0x27c;
+                    child->field_0x254 = field_0x27c;
                     child->field_0x260 = field_0x288;
                     mState = 4;
                 }
@@ -115,7 +115,7 @@ void TingleTimeUpManager_804ACBF0::update() {
                     JGeometry::TVec3f vel(-2.3f, 0.3f, 0.0f);
                     child->field_0x3c = vel;
                     mTimer = 45;
-                    child->getVec254() = field_0x27c;
+                    child->field_0x254 = field_0x27c;
                     child->field_0x260 = field_0x288;
                     mState = 2;
                 }
@@ -134,6 +134,7 @@ void TingleTimeUpManager_804ACBF0::update() {
                     if (id == ACTOR_RUPY) {
                         ForceGem_804AB6D8* gem = static_cast<ForceGem_804AB6D8*>(actor);
                         s32 state = gem->field_0x230;
+                        // Range tests written as (u32)(state - N) <= K: the natural == / >= && <= forms compile to different code (tried: 90.9 % and 90.0 % vs 91.2 %).
                         if (state == 0 || (u32)(state - 15) <= 1 || (u32)(state - 1) <= 1 || state == 9 || state == 13) {
                             actor->fn_801F3668();
                         }
@@ -191,7 +192,7 @@ void TingleTimeUpManager_804ACBF0::update() {
                         0.0f
                     );
                     child->field_0x3c = vel;
-                    child->getVec254() = field_0x27c;
+                    child->field_0x254 = field_0x27c;
                     child->field_0x260 = field_0x288;
                 }
             }

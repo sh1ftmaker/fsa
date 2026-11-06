@@ -26,7 +26,7 @@ void cls_804ACC68::init() {
 
 void cls_804ACC68::update() {
     mPos += field_0x3c;
-    if (field_0x254 - 32.0f > mPos.x) {
+    if (field_0x254.x - 32.0f > mPos.x) {
         fn_801F3668();
     }
     field_0x234--;
