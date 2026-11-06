@@ -34,6 +34,9 @@ public:
     void fn_80319658();
 
     void updateFacing();
+    void setPartnerFacing(s32 facing);
+    bool openMessage(s32 player);
+    bool openMessageC678(s32 player);
 
     // fn_8038AD24 takes the position by value. The original loads the message,
     // serial and layer before that copy, so they are parameters here.

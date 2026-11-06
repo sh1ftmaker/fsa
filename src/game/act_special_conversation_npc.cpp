@@ -25,6 +25,43 @@ static s32 lbl_804AAF70[6] = {2, 2, 3, 4, 3, 3};
 static s32 lbl_804AAF88[6] = {1, 0, 5, 5, 0, 0};
 static s32 lbl_804AAFA0[6] = {4, 4, 3, 2, 2, 2};
 
+// The partner NPC (field_0x258) of the pair looks where we tell it to.
+inline void SpecialConversationNPC_804AAFB8::setPartnerFacing(s32 facing) {
+    s32 other = field_0x258;
+    if (other >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
+        if (actor != NULL && actor->mActorId == 'SNPC') {
+            SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
+            if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
+                snpc->field_0x264 = facing;
+            }
+        }
+    }
+}
+
+// Opens the message for the player; remembers the player and starts waiting for it to end.
+inline bool SpecialConversationNPC_804AAFB8::openMessage(s32 player) {
+    u32 msg = field_0x244;
+    s32 serial = mSerial;
+    if (talk(player, msg, serial, field_0x4, mPos, 0x10)) {
+        mPlayer = player;
+        mState = 1;
+        return true;
+    }
+    return false;
+}
+
+inline bool SpecialConversationNPC_804AAFB8::openMessageC678(s32 player) {
+    u32 msg = field_0x244;
+    s32 serial = mSerial;
+    if (talkC678(player, msg, serial, field_0x4, mPos, 0x10)) {
+        mPlayer = player;
+        mState = 1;
+        return true;
+    }
+    return false;
+}
+
 void SpecialConversationNPC_804AAFB8::init() {
     mState = 0;
     mPlayer = -1;
@@ -200,7 +237,6 @@ void SpecialConversationNPC_804AAFB8::draw() {
     }
 }
 
-// FIXME: 99.89%. regalloc-only: target->ours r31->r30.
 void SpecialConversationNPC_804AAFB8::fn_80319658() {
     if (field_0x264 == 2) {
         JGeometry::TBox2f box = field_0x248;
@@ -214,19 +250,8 @@ void SpecialConversationNPC_804AAFB8::fn_80319658() {
             if (player >= 0) {
                 if (fn_802300EC(player)) {
                     if (fn_802373EC(player) == 6) {
-                        u32 msg = field_0x244;
-                        s32 serial = mSerial;
-                        if (talkC678(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
-                            s32 other = field_0x258;
-                            if (other >= 0) {
-                                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                                if (actor != NULL && actor->mActorId == 'SNPC') {
-                                    SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                                    if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                        snpc->field_0x264 = 3;
-                                    }
-                                }
-                            }
+                        if (openMessageC678(player)) {
+                            setPartnerFacing(3);
                         }
                     }
                 }
@@ -234,16 +259,7 @@ void SpecialConversationNPC_804AAFB8::fn_80319658() {
         } else {
             fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
             if (fn_80388CAC(mPlayer, mSerial)) {
-                s32 other = field_0x258;
-                if (other >= 0) {
-                    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                    if (actor != NULL && actor->mActorId == 'SNPC') {
-                        SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                        if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                            snpc->field_0x264 = 2;
-                        }
-                    }
-                }
+                setPartnerFacing(2);
                 fn_801F35AC();
             }
         }
@@ -268,19 +284,8 @@ void SpecialConversationNPC_804AAFB8::fn_803193B4() {
             s32 player = fn_8022FD8C(mSerial);
             if (player >= 0) {
                 if (fn_802300EC(player)) {
-                    u32 msg = field_0x244;
-                    s32 serial = mSerial;
-                    if (talkC678(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
-                        s32 other = field_0x258;
-                        if (other >= 0) {
-                            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                            if (actor != NULL && actor->mActorId == 'SNPC') {
-                                SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                                if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                    snpc->field_0x264 = 3;
-                                }
-                            }
-                        }
+                    if (openMessageC678(player)) {
+                        setPartnerFacing(3);
                     }
                 }
             }
@@ -289,16 +294,7 @@ void SpecialConversationNPC_804AAFB8::fn_803193B4() {
             if (fn_80388CAC(mPlayer, mSerial)) {
                 mPlayer = -1;
                 mState = 0;
-                s32 other = field_0x258;
-                if (other >= 0) {
-                    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                    if (actor != NULL && actor->mActorId == 'SNPC') {
-                        SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                        if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                            snpc->field_0x264 = 2;
-                        }
-                    }
-                }
+                setPartnerFacing(2);
             }
         }
     }
@@ -471,7 +467,7 @@ void SpecialConversationNPC_804AAFB8::fn_80318B84() {
     }
 }
 
-// FIXME: 99.00%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
+// FIXME: 99.06%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
 void SpecialConversationNPC_804AAFB8::fn_803187F4() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -496,7 +492,7 @@ void SpecialConversationNPC_804AAFB8::fn_803187F4() {
                     } else {
                         field_0x244 = 0x577;
                     }
-                    if (talk(player, field_0x244, mSerial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                    if (openMessage(player)) {
                         field_0x25c &= 1;
                         field_0x25c |= field_0x264 << 1;
                     }
@@ -592,20 +588,9 @@ void SpecialConversationNPC_804AAFB8::fn_8031825C() {
             s32 player = fn_8022FD8C(mSerial);
             if (player >= 0) {
                 if (fn_802300EC(player)) {
-                    u32 msg = field_0x244;
-                    s32 serial = mSerial;
-                    if (talk(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                    if (openMessage(player)) {
                         if (!getGameView_802D6A9C()->fn_802D800C(0x1F)) {
-                            s32 other = field_0x258;
-                            if (other >= 0) {
-                                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                                if (actor != NULL && actor->mActorId == 'SNPC') {
-                                    SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                                    if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                        snpc->field_0x264 = 3;
-                                    }
-                                }
-                            }
+                            setPartnerFacing(3);
                         }
                     }
                 }
@@ -616,16 +601,7 @@ void SpecialConversationNPC_804AAFB8::fn_8031825C() {
                 mPlayer = -1;
                 mState = 0;
                 if (!getGameView_802D6A9C()->fn_802D800C(0x1E)) {
-                    s32 other = field_0x258;
-                    if (other >= 0) {
-                        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                        if (actor != NULL && actor->mActorId == 'SNPC') {
-                            SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                            if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                snpc->field_0x264 = 2;
-                            }
-                        }
-                    }
+                    setPartnerFacing(2);
                 }
             }
         }
@@ -664,20 +640,9 @@ void SpecialConversationNPC_804AAFB8::fn_80317F18() {
             s32 player = fn_8022FD8C(mSerial);
             if (player >= 0) {
                 if (fn_802300EC(player)) {
-                    u32 msg = field_0x244;
-                    s32 serial = mSerial;
-                    if (talk(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                    if (openMessage(player)) {
                         if (!getGameView_802D6A9C()->fn_802D800C(0x1E)) {
-                            s32 other = field_0x258;
-                            if (other >= 0) {
-                                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                                if (actor != NULL && actor->mActorId == 'SNPC') {
-                                    SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                                    if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                        snpc->field_0x264 = 3;
-                                    }
-                                }
-                            }
+                            setPartnerFacing(3);
                         }
                     }
                 }
@@ -688,16 +653,7 @@ void SpecialConversationNPC_804AAFB8::fn_80317F18() {
                 mPlayer = -1;
                 mState = 0;
                 if (!getGameView_802D6A9C()->fn_802D800C(0x1F)) {
-                    s32 other = field_0x258;
-                    if (other >= 0) {
-                        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
-                        if (actor != NULL && actor->mActorId == 'SNPC') {
-                            SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
-                            if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
-                                snpc->field_0x264 = 2;
-                            }
-                        }
-                    }
+                    setPartnerFacing(2);
                 }
             }
         }
