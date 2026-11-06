@@ -40,6 +40,7 @@ void FourPersonPullSwitchBTIVersion_804AE574::init() {
     field_0x250 = 0;
 }
 
+// FIXME: 95.56%. missing/extra: ours has 2 more instrs (268 vs 266). TVec3f temporary on stack around vector addition in 4-player pull loop shifts stack slots.
 void FourPersonPullSwitchBTIVersion_804AE574::update() {
     field_0x3c.x = 0.0f;
     field_0x3c.y = 0.0f;
@@ -63,15 +64,16 @@ void FourPersonPullSwitchBTIVersion_804AE574::update() {
         }
     }
 
-    if (field_0x244 < 3.0f) {
-        box = mBox;
+    if (field_0x244 >= 3.0f) {
+        box.set(mBox);
     } else {
-        box = mBox2;
+        box.set(mBox2);
     }
     box.i.x += mPos.x;
     box.f.x += mPos.x;
-    box.i.y += mPos.y + lbl_80474F98[field_0x23c];
-    box.f.y += mPos.y + lbl_80474F98[field_0x23c];
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    box.addPos(0.0f, lbl_80474F98[field_0x23c]);
 
     if (playerCount == 4) {
         fn_80239914(&box, field_0x4, mSerial);
@@ -90,8 +92,9 @@ void FourPersonPullSwitchBTIVersion_804AE574::update() {
                         field_0x24c = 4;
                         field_0x250 = 0;
                         for (s32 i = 0; i < 4; i++) {
+                            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
                             JGeometry::TVec3f offset(0.0f, 7.0f, 0.0f);
-                            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i) + offset;
+                            JGeometry::TVec3f pos = playerPos + offset;
                             fn_80230498(i, &pos, 0x2E2, 0xFF, -0x80, -0x80, true);
                         }
                     } else {
@@ -139,6 +142,7 @@ void FourPersonPullSwitchBTIVersion_804AE574::draw() {
     }
 }
 
+// FIXME: 96.83%. missing/extra: ours has 2 more instrs (169 vs 167). TVec3f temporary on stack around vector addition in branch 1 shifts stack slots.
 void FourPersonPullSwitchBTIVersion_804AE574::fn_80373198() {
     if (field_0x24c < 0) {
         return;
@@ -149,23 +153,29 @@ void FourPersonPullSwitchBTIVersion_804AE574::fn_80373198() {
             field_0x248 = 50;
             field_0x250 = 0;
             for (s32 i = 0; i < 4; i++) {
+                JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
                 JGeometry::TVec3f offset(0.0f, 7.0f, 0.0f);
-                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i) + offset;
+                JGeometry::TVec3f pos = playerPos + offset;
                 fn_80230498(i, &pos, 0x2E2, 0xFF, -0x80, -0x80, true);
             }
         }
     } else if (field_0x250 == 0 && field_0x248 > 30) {
+        JGeometry::TVec3f playerPos;
         for (s32 i = 0; i < 4; i++) {
-            fn_80230498(i, getPlayerPos_8023E724(i), 0x2E2, 0xFF, -0x80, -0x80, true);
+            playerPos = *getPlayerPos_8023E724(i);
+            fn_80230498(i, &playerPos, 0x2E2, 0xFF, -0x80, -0x80, true);
         }
     } else if (field_0x250 < 13) {
         if (field_0x248 == 0) {
             field_0x250++;
             field_0x248 = lbl_80475024[field_0x250];
+            JGeometry::TVec3f playerPos;
+            const s32 mode = 0x10001;
             for (s32 i = 0; i < 4; i++) {
-                fn_80230498(i, getPlayerPos_8023E724(i), field_0x250 + 0xDB, 0xFF, -0x80, -0x80, true);
+                playerPos = *getPlayerPos_8023E724(i);
+                fn_80230498(i, &playerPos, field_0x250 + 0xDB, 0xFF, -0x80, -0x80, true);
                 if (field_0x250 == 1) {
-                    fn_80230FD0(i, 0x10001);
+                    fn_80230FD0(i, mode);
                 }
             }
             if (field_0x250 == 13) {
