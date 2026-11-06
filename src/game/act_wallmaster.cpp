@@ -643,3 +643,16 @@ void cls_804A3E44::vfunc_0xA0() {
         break;
     }
 }
+
+// FIXME: 99.75% (regalloc-only: f1/f2 swap; reloc-name)
+void cls_804A3E44::draw() {
+    switch (mState) {
+    case 0:
+    case 9:
+        return;
+    }
+
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = computeShadowAlpha();
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x8a, &params, 0x407, 0, false, 1.0f, 1.0f);
+}
