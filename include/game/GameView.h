@@ -119,6 +119,10 @@ public:
     // (game/tu_802D39B8.cpp).
     inline void restartTimeLimit();
     inline void clearScreenState();
+    // Inlined by fn_802DA8DC, fn_802DBD60 and vfunc_0xC; no out-of-line copy.
+    inline void clearStageTables();
+    inline void clearSlots();
+    inline void placePlayers();
     // Unless fn_802DA000() (returned as is, no clrlwi), moves the four players
     // 70 units against field_0x2c[0]'s direction (fn_80230498) and the first
     // 'OSIN' actor in state 2 with them.
@@ -129,7 +133,7 @@ public:
     void fn_802DA788();
     // 4 units. 0xE14 bytes; no arguments. Resets the whole stage state
     // (every per-screen table, the slot lists, the TVec2f slots) and enters
-    // the screen (field_0x24, field_0x28) as fn_802DA010 does (not written yet).
+    // the screen (field_0x24, field_0x28) as fn_802DA010 does.
     void fn_802DA8DC();
     // 1 unit. 0x670 bytes; no arguments.
     void fn_802DB6F0();
@@ -442,5 +446,9 @@ bool fn_802DEDFC(const s32* dir);
 
 // 1 unit. Stage (6, 0), (6, 1) or (6, 3).
 bool fn_802DEA34(void);
+
+// Called by fn_802DA8DC, fn_802DBD60 and vfunc_0xC with r3 unset. Clears the
+// four 64-bit masks per screen (field_0x3c8) of every screen.
+void fn_802DEE2C(void);
 
 #endif

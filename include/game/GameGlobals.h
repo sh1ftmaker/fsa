@@ -1626,6 +1626,9 @@ void fn_8013AC54(Mtx view);
 void fn_8023F088();
 void fn_8023F728();
 void fn_8023F78C();
+// game/tu_8022AD64.cpp (0x8023F6C4): runs each player's reset (fn_80254660);
+// called by GameView_804A9950::fn_802DBD60 (game/tu_802D39B8.cpp).
+void fn_8023F6C4();
 // Owner: game/tu_8022AD64.cpp. The player manager's draw (0x8023F2BC, called
 // by fn_80139CC4 between the two fn_8013B438 calls) and update (0x8023F390,
 // called by GameRootSub04's fn_80139D9C).
@@ -1778,6 +1781,14 @@ void fn_803037D4(s32 layer, u32 value);
 // game/tu_80301CD0.cpp (0x80308D0C, not written yet). Takes no arguments;
 // called by game/tu_802D39B8.cpp (GameView_804A9950::fn_802DCDF4).
 void fn_80308D0C();
+// game/tu_80301CD0.cpp (0x80303870, not written yet). Takes a player index;
+// called by game/tu_802D39B8.cpp (GameView_804A9950::vfunc_0xC) for each
+// taking-part player with a usable controller.
+extern "C" void fn_80303870(s32 player);
+// game/tu_803B8C74.cpp (0x803B8EBC, not written yet). Takes an index 0-7 and
+// returns 0 or 1 (callers clrlwi. 24); called by vfunc_0xC (game/tu_802D39B8.cpp)
+// and game/tu_80403D84.cpp.
+extern "C" bool fn_803B8EBC(s32 index);
 
 // Object with vtable 0x804AF860, owner game/tu_803A60E4.cpp (not written
 // yet). Its constructor (fn_803A7898, 0x84 bytes allocated) loads a

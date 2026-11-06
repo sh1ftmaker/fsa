@@ -1,5 +1,9 @@
 // The stage/screen state, GameView_804A9950 (include/game/GameView.h).
 // The string tables come first: their literals open the unit's .sdata2 (0x80540F58-0x80541118).
+// The view is reached through getGameView_802D6A9C() (this unit's accessor, inlined under
+// deferred inlining): the call's extra inline nodes are what make clearSlots' first loop
+// unroll by two as in the original (gGameRoot_8053AAF8->field_0x4->mView written out unrolls
+// it fully), and fn_802D46D8 match; no function changes for the worse.
 
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
@@ -14,6 +18,8 @@
 #include "game/GameState.h"
 #include "game/Message.h"
 #include "game/Player.h"
+#include "game/PlayerBit.h"
+#include "game/StageFlag.h"
 #include <stdio.h>
 
 // Bit masks, most significant bit first: bit n of a word list is
@@ -120,6 +126,67 @@ static inline bool epsilonEquals(const JGeometry::TVec2f& a, const JGeometry::TV
     return equal;
 }
 
+// fn_802DA8DC, fn_802DBD60 and vfunc_0xC inline these two instruction for instruction
+// (no out-of-line copy). Clears the screen masks (fn_802DEE2C), the per-screen layer
+// masks, the layer slot lists and the per-screen bit tables.
+inline void GameView_804A9950::clearStageTables() {
+    fn_802DEE2C();
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            for (int slot = 0; slot < 8; slot++) {
+                getGameView_802D6A9C()->field_0x1048[row][col][slot] = 0;
+            }
+        }
+    }
+    for (int layer = 0; layer < 8; layer++) {
+        for (int i = 0; i < 0x40; i++) {
+            getGameView_802D6A9C()->field_0x2948[layer][i] = 0;
+        }
+    }
+    for (int k = 0; k < 4; k++) {
+        for (int i = 0; i < 0x80; i++) {
+            getGameView_802D6A9C()->field_0x2d48[k][i] = 0;
+        }
+    }
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            for (int bit = 0; bit < 1024; bit += 32) {
+                getGameView_802D6A9C()->field_0x3548[row][col][bit / 32] = 0;
+                getGameView_802D6A9C()->field_0x6768[row][col][bit / 32] = 0;
+            }
+            for (int i = 0; i < 0x100; i++) {
+                getGameView_802D6A9C()->field_0x9968[row][col][i] = 0;
+            }
+        }
+    }
+}
+
+// Frees the eight key slots (fn_802D6F38) and the eight pair slots (fn_802D6D70).
+inline void GameView_804A9950::clearSlots() {
+    for (int i = 0; i < 8; i++) {
+        getGameView_802D6A9C()->field_0x13068[i] = 0;
+        getGameView_802D6A9C()->field_0x13088[i].set(0.0f, 0.0f);
+        getGameView_802D6A9C()->field_0x130c8[i] = -1;
+    }
+    for (int i = 0; i < 8; i++) {
+        getGameView_802D6A9C()->field_0x130e8[i].set(0.0f, 0.0f);
+        getGameView_802D6A9C()->field_0x13128[i] = -1;
+        getGameView_802D6A9C()->field_0x13148[i].set(0.0f, 0.0f);
+        getGameView_802D6A9C()->field_0x13188[i] = -1;
+    }
+}
+
+// Places the four players at lbl_8046E148 from the screen's top-left corner
+// (fn_802DA010, fn_802DA788, fn_802DA8DC, fn_802DB6F0 and vfunc_0xC inline it; no copy).
+inline void GameView_804A9950::placePlayers() {
+    for (int i = 0; i < 4; i++) {
+        JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
+        pos.x += mVisibleBox.i.x;
+        pos.y += mVisibleBox.i.y;
+        fn_8023F1D4(i, &pos, 2, 0, 0);
+    }
+}
+
 // Two blocks that fn_802DA010, fn_802DA8DC, fn_802DB6F0 and fn_802DCE5C inline
 // instruction for instruction (no out-of-line copy is left in the unit); fn_802DA8DC
 // stores field_0x131f1-0x131f3 between them, the others run them back to back.
@@ -138,18 +205,18 @@ inline void GameView_804A9950::restartTimeLimit() {
 // Clears the current screen's low 16 flag bits, the per-bit counters and values, and the
 // layer slots. The bit table is cleared a word per 32 bits, as in fn_802D9CD8.
 inline void GameView_804A9950::clearScreenState() {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
+    getGameView_802D6A9C()->field_0x178[field_0x18][field_0x14] &= 0xFFFF0000;
     for (int i = 0; i < 0x10; i++) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x308[i] = 0;
+        getGameView_802D6A9C()->field_0x308[i] = 0;
     }
     for (int bit = 0; bit < 0x400; bit += 32) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit / 32] = 0xFF;
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x12f68[bit / 32] = 0;
+        getGameView_802D6A9C()->field_0x328[bit / 32] = 0xFF;
+        getGameView_802D6A9C()->field_0x12f68[bit / 32] = 0;
     }
     for (int layer = 0; layer < 8; layer++) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x6748[layer] = 0;
+        getGameView_802D6A9C()->field_0x6748[layer] = 0;
         for (int i = 0; i < 0x40; i++) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[layer][i] = 0;
+            getGameView_802D6A9C()->field_0x2948[layer][i] = 0;
         }
     }
 }
@@ -158,14 +225,14 @@ inline void GameView_804A9950::clearScreenState() {
 static f32 lbl_8053A1A8 = 0.2f;
 
 bool fn_802DEDFC(const s32* dir) {
-    return gGameRoot_8053AAF8->field_0x4->mView->fn_802DCE5C(dir);
+    return getGameView_802D6A9C()->fn_802DCE5C(dir);
 }
 
 bool fn_802DEBF8(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 8 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) {
+    if (getGameView_802D6A9C()->field_0x4 == 8 && getGameView_802D6A9C()->field_0x8 == 3) {
         return true;
     }
     return false;
@@ -178,7 +245,7 @@ bool fn_802DEBA0(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
+    if ((getGameView_802D6A9C()->field_0x4 == 9 && getGameView_802D6A9C()->field_0x8 == 3) || getGameView_802D6A9C()->field_0x4 >= 13) {
         return true;
     }
     return false;
@@ -188,7 +255,7 @@ bool fn_802DEB58(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 3 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1) {
+    if (getGameView_802D6A9C()->field_0x4 == 3 && getGameView_802D6A9C()->field_0x8 == 1) {
         return true;
     }
     return false;
@@ -201,10 +268,10 @@ bool fn_802DEB58(void) {
 // mView still not) but has no precedent, so it is not used.
 bool fn_802DEABC(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+        if (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 0) {
             return true;
         }
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 2) {
+        if (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 2) {
             return true;
         }
         return false;
@@ -220,13 +287,13 @@ bool fn_802DEABC(void) {
 // pair and reuses it for the third; ours loads it once. An || of the last two blocks is 87 %.
 bool fn_802DEA34(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+        if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 0) {
             return true;
         }
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1) {
+        if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 1) {
             return true;
         }
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 6 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) {
+        if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 3) {
             return true;
         }
         return false;
@@ -241,8 +308,8 @@ bool fn_802DEA34(void) {
 // GameRootSub04_801F856C; an inline isStage(stage, level) helper drops to 78 %.
 bool fn_802DE9A0(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 2 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) ||
-            (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 1))
+        if ((getGameView_802D6A9C()->field_0x4 == 2 && getGameView_802D6A9C()->field_0x8 == 3) ||
+            (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 1))
         {
             return true;
         }
@@ -259,8 +326,8 @@ bool fn_802DE9A0(void) {
 // and reloads the view (lwz 0xc) for the second pair; ours loads it once.
 bool fn_802DE93C(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 4 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) ||
-            (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 7 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 2))
+        if ((getGameView_802D6A9C()->field_0x4 == 4 && getGameView_802D6A9C()->field_0x8 == 0) ||
+            (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 2))
         {
             return true;
         }
@@ -293,7 +360,7 @@ bool fn_802DE7CC(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 0 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 0) {
+    if (getGameView_802D6A9C()->field_0x4 == 0 && getGameView_802D6A9C()->field_0x8 == 0) {
         return true;
     }
     return false;
@@ -303,7 +370,7 @@ bool fn_802DE764(s32 stage, s32 level, s32 value) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = getGameView_802D6A9C();
     if (stage == view->field_0x4 && level == view->field_0x8 && value == view->field_0x60[view->field_0x18][view->field_0x14]) {
         return true;
     }
@@ -336,6 +403,93 @@ GameView_804A9950::GameView_804A9950() {
 // FIXME: the other GameView_804A9950 functions before 0x802DE814 are not written yet.
 
 GameView_804A9950::~GameView_804A9950() {}
+
+// FIXME: 97.6. Structurally close: regalloc in clearStageTables' first loop (as fn_802DA8DC),
+// the 0x131b8 loop's set-up (the target copies 0 with mr r7, r4; ours li r7, 0) and the four
+// save-row flag tests (missing 9): the target rematerialises lbl_8050EC80 and adds 0x28 per
+// test; ours hoists the row's address + 0x28 once (also with the masks written out
+// instead of isStageFlagSet).
+// Enters the stage: clears every table, rebuilds the map (fn_802D3D48, fn_802D92F0,
+// fn_802D8D50), places the players, spawns the 'RANK' and 'GBAO' actors, sets the camera
+// and the time limit, and reads the save row's flags.
+void GameView_804A9950::vfunc_0xC() {
+    getGameView_802D6A9C()->field_0x1328c = 0;
+    clearStageTables();
+    clearSlots();
+    for (int i = 0; i < 16; i++) {
+        field_0xf0[i].set(0.0f, 0.0f);
+    }
+    fn_802D3D48();
+    for (int i = 0; i < 4; i++) {
+        if (isPlayerBitSet(gGameRoot_8053AAF8, i) == true &&
+            lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i)) == 1) {
+            if (gGameRoot_8053AAF8->field_0x7f == 0 || lbl_80529DEC.field_0x118 != 10 || lbl_80529DEC.field_0x11c != 2) {
+                fn_80303870(i);
+            }
+        }
+        field_0x131a8[i] = -1;
+    }
+    fn_802D7920(1);
+    fn_802D790C(1);
+    getGameView_802D6A9C()->field_0x174 = 0;
+    for (int i = 0; i < 0x10; i++) {
+        field_0x131b8[i] = 0;
+        field_0x131df[i] = 0;
+    }
+    fn_802D782C(0);
+    restartTimeLimit();
+    getGameView_802D6A9C()->field_0x131f1 = 0;
+    fn_802D6BF8(0);
+    fn_802D6BE0(0);
+    fn_802D6BC8(0);
+    fn_802D6AAC(0);
+    getGameView_802D6A9C()->field_0x131f5 = 0;
+    gGameRoot_8053AAF8->fn_80134D14(0);
+    fn_802D92F0();
+    fn_802D8D50(false);
+    placePlayers();
+    fn_802D8328(true, true);
+    JGeometry::TVec3f rankPos(0.0f, 0.0f, 0.0f);
+    getActorManager_801F856C()->spawnActor_801F9484('RANK', 0, &rankPos, 0, -1, -1);
+    JGeometry::TVec3f gbaoPos(0.0f, 0.0f, 0.0f);
+    getActorManager_801F856C()->spawnActor_801F9484('GBAO', 0, &gbaoPos, 0, -1, -1);
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        field_0xc4 = 36000;
+    } else {
+        field_0xc4 = 10800;
+    }
+    for (int i = 0; i < 4; i++) {
+        field_0x1323c[i] = 0.0f;
+        field_0x1324c[i] = 0.0f;
+        field_0x1325c[i] = 0.0f;
+        field_0x1326c[i] = 0.0f;
+        field_0x1327c[i] = 0;
+    }
+    gGameRoot_8053AAF8->fn_80134FE0(0);
+    gGameRoot_8053AAF8->fn_80134FBC(0);
+    for (int i = 0; i < 4; i++) {
+        field_0x131d8[i] = 0;
+    }
+    if (isStageFlagSet(3, 0)) {
+        field_0x131f7 |= 1;
+    }
+    if (isStageFlagSet(4, 1)) {
+        field_0x131f7 |= 2;
+    }
+    if (isStageFlagSet(5, 0)) {
+        field_0x131f7 |= 4;
+    }
+    if (isStageFlagSet(6, 0)) {
+        field_0x131f7 |= 8;
+    }
+    for (int i = 0; i < 8; i++) {
+        if (fn_803B8EBC(i)) {
+            field_0x131f8 |= (u8)(1 << i);
+        }
+    }
+}
 
 // FIXME: 98.7. Two instructions: in the inlined fn_802DEBA0 the target reloads the view
 // for the stage >= 13 test, as fn_802DEBA0 itself does (see there).
@@ -483,7 +637,7 @@ void GameView_804A9950::fn_802DCDF4() {
     getActorManager_801F856C()->fn_801F7CAC();
     getActorManager_801F856C()->fn_801F6204(0);
     fn_80308D0C();
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
+    getGameView_802D6A9C()->field_0x131de = 0;
     getEffectSystem_8013C824()->fn_8013C8CC();
     field_0xc9 = 0;
 }
@@ -516,16 +670,109 @@ u8 GameView_804A9950::fn_802DCD0C() {
     return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
-// FIXME: fn_802DA8DC is not written yet. A full draft (scratchpad) reaches 83.8 %, 75
-// instructions long: its two loops over the eight TVec2f slots (0x802DAE38, 0x802DAF04)
-// unroll by two in the target with the slot offsets stepped in registers; ours unroll
-// fully. The rest (the table clears, restartTimeLimit / clearScreenState with the
-// field_0x131f1-0x131f3 stores between them, the fn_802DA010 tail) lines up.
+// FIXME: 98.8. Structurally close, one instruction: regalloc in clearStageTables' first loop
+// (as fn_802DA8DC; the target copies its zero with two mr, ours one li), clearScreenState's
+// bit-table loop as in fn_802DB6F0, and fn_802D7970's inlined view in r3 / value in r4
+// swapped. Reloc-name: 1.0f / -1.0f as in fn_802DA010.
+// Restarts the stage at the screen (field_0x24, field_0x28) as fn_802DA010 does. With
+// field_0x131f9 == 2 it first clears every stage table, resets the players and rebuilds
+// the map; with 3 it only resets the shadows. Then it places the players, spawns the
+// 'GLWP' actor at player 0 (field_0x131f9 2 or 3) and re-enters the players' slots.
+void GameView_804A9950::fn_802DBD60() {
+    field_0x14 = field_0x24;
+    field_0x18 = field_0x28;
+    getActorManager_801F856C()->fn_801F7E88();
+    restartTimeLimit();
+    clearScreenState();
+    fn_8038D454();
+    if (getGameView_802D6A9C()->field_0x131f9 == 2) {
+        clearStageTables();
+        clearSlots();
+        fn_802D7920(1);
+        fn_802D790C(1);
+        getGameView_802D6A9C()->field_0x174 = 0;
+        fn_802D782C(0);
+        getGameView_802D6A9C()->field_0x131f1 = 0;
+        fn_802D6BF8(0);
+        fn_802D6BE0(0);
+        fn_802D6BC8(0);
+        getGameView_802D6A9C()->field_0x131f5 = 0;
+        gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+        for (int i = 0; i < 4; i++) {
+            if (fn_8023F264(i)) {
+                fn_80235918(i);
+            }
+            fn_8023EE28(i);
+        }
+        getGameView_802D6A9C()->field_0x1328c = 0;
+        fn_802D7970(getGameView_802D6A9C()->field_0x38);
+        gGameRoot_8053AAF8->fn_80138B7C();
+        fn_8022ADCC();
+        fn_8016A3AC()->fn_8016A330();
+        fn_802D92F0();
+    } else if (getGameView_802D6A9C()->field_0x131f9 == 3) {
+        gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+        if (getGameView_802D6A9C()->field_0x4 != 7 || getGameView_802D6A9C()->field_0x8 != 3) {
+            fn_8022ADE4();
+        }
+    }
+    fn_802D8D50(false);
+    getActorManager_801F856C()->fn_801F7B18();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        field_0xc4 = 36000;
+    } else {
+        field_0xc4 = 10800;
+    }
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    fn_802D782C(0);
+    placePlayers();
+    fn_8022BD70();
+    lbl_8053AD70->fn_8037AE30();
+    fn_802D8328(false, false);
+    if (getGameView_802D6A9C()->field_0x131f9 == 2 || getGameView_802D6A9C()->field_0x131f9 == 3) {
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(0);
+        pos.z = 0.0f;
+        getActorManager_801F856C()->spawnActor_801F9484('GLWP', 0, &pos, 0x100, -1, -1);
+    }
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        field_0xc4 = 36000;
+    } else {
+        field_0xc4 = 10800;
+    }
+    fn_8023F78C();
+    if (getGameView_802D6A9C()->field_0x131f9 >= 2) {
+        if (getGameView_802D6A9C()->field_0x131f9 == 2) {
+            fn_8023F6C4();
+        }
+        fn_8023077C();
+        fn_802D6AAC(1);
+    }
+    for (int i = 0; i < 4; i++) {
+        if (field_0x131a8[i] >= 0) {
+            fn_8022F9E4(i, field_0x131a8[i], false, true);
+        }
+    }
+    JGeometry::TVec3f* pos = getPlayerPos_8023E724(0);
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        // Chained so the corners are stored f.x, i.x, f.y, i.y, as the target does.
+        camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
+        camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
+    }
+}
 
-// FIXME: 98.6. Structurally close, one instruction: the target reuses the loop counter's
-// li r30, 0 for fn_802D782C(0) (as fn_802DA788 does for field_0xc9) and puts the loop's
-// TVec3f below the tile-map temporary on the stack. Reloc-name: 1.0f / -1.0f, as there.
-// The camera corners are stored f.x, i.x, f.y, i.y (chained assignments; TBox2::set
+
+// FIXME: 99.0. Regalloc only, in the inlined clearScreenState's bit-table loop (0x328 /
+// 0x12F68: the target's offset and word counters are r7 / r8, ours r8 / r4). Reloc-name:
+// 1.0f / -1.0f, as in fn_802DA010. The camera corners are stored f.x, i.x, f.y, i.y (chained assignments; TBox2::set
 // stores i first).
 void GameView_804A9950::fn_802DB6F0() {
     field_0x14 = field_0x24;
@@ -541,12 +788,7 @@ void GameView_804A9950::fn_802DB6F0() {
     fn_802D9FBC();
     getEffectSystem_8013C824()->fn_8013C8CC();
     fn_802D782C(0);
-    for (int i = 0; i < 4; i++) {
-        JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
-        pos.x += mVisibleBox.i.x;
-        pos.y += mVisibleBox.i.y;
-        fn_8023F1D4(i, &pos, 2, 0, 0);
-    }
+    placePlayers();
     fn_8022BD70();
     lbl_8053AD70->fn_8037AE30();
     fn_802D8328(false, false);
@@ -569,8 +811,59 @@ void GameView_804A9950::fn_802DB6F0() {
     }
 }
 
-// FIXME: 98.1. One instruction: the target reuses the loop counter's li r30, 0 for the
-// inlined clearScreen's field_0xc9 = 0; ours loads 0 into r0 for it.
+// FIXME: 98.6. Structurally close: regalloc in clearStageTables' first loop (the target's
+// zero and row counters are r3 / r4, ours r4 / r3, as in fn_802DBD60 and vfunc_0xC) and one
+// instruction in clearScreenState's bit-table loop (the target copies the 0 with mr r8, r0
+// where ours loads li r7, 0xFF a slot later). Reloc-name: 1.0f / -1.0f as in fn_802DA010.
+void GameView_804A9950::fn_802DA8DC() {
+    field_0x14 = field_0x24;
+    field_0x18 = field_0x28;
+    getActorManager_801F856C()->fn_801F7E88();
+    clearStageTables();
+    clearSlots();
+    fn_802D790C(1);
+    getGameView_802D6A9C()->field_0x174 = 0;
+    for (int i = 0; i < 0x10; i++) {
+        field_0x131b8[i] = 0;
+        field_0x131df[i] = 0;
+    }
+    fn_802D782C(0);
+    restartTimeLimit();
+    getGameView_802D6A9C()->field_0x131f1 = 0;
+    fn_802D6BF8(0);
+    fn_802D6BE0(0);
+    clearScreenState();
+    fn_8038D454();
+    fn_802D8D50(false);
+    getActorManager_801F856C()->fn_801F7B18();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    fn_802D9FBC();
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    fn_802D782C(0);
+    fn_8023F78C();
+    fn_8023F728();
+    lbl_8053AED0->fn_8043D834();
+    placePlayers();
+    fn_8022BD70();
+    lbl_8053AD70->fn_8037AE30();
+    fn_802D8328(false, false);
+    gGameRoot2_8053AB10->field_0x24->field_0x154.set(mVisibleBox);
+    gGameRoot2_8053AB10->field_0x20->field_0x2368 = JGeometry::TVec3f(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    fn_802D9FBC();
+    fn_8023F78C();
+    JGeometry::TVec3f* pos = getPlayerPos_8023E724(0);
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        camera->field_0x844.i.x = camera->field_0x844.f.x = pos->x;
+        camera->field_0x844.i.y = camera->field_0x844.f.y = pos->y;
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
+    }
+}
+
 void GameView_804A9950::fn_802DA788() {
     if (field_0x14 < field_0x1c) {
         field_0x2c[0] = 1;
@@ -582,12 +875,7 @@ void GameView_804A9950::fn_802DA788() {
     if (fn_802DEDFC(field_0x2c)) {
         fn_8038D454();
         fn_802DCDF4();
-        for (int i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
-            pos.x += mVisibleBox.i.x;
-            pos.y += mVisibleBox.i.y;
-            fn_8023F1D4(i, &pos, 2, 0, 0);
-        }
+        placePlayers();
         fn_8022BD70();
         lbl_8053AD70->fn_8037AE30();
         fn_802D9FBC();
@@ -626,10 +914,9 @@ u8 GameView_804A9950::fn_802DA630() {
     return busy;
 }
 
-// FIXME: 98.5. Structurally close, one instruction: as fn_802DB6F0, the target reuses the
-// loop counter's li r30, 0 for fn_802D782C(0); the camera corners as in fn_802DB6F0.
-// Reloc-name: 1.0f / -1.0f are pooled after
-// literals of functions not written yet.
+// FIXME: 98.9. Regalloc only, as fn_802DB6F0 (clearScreenState's bit-table loop); the camera
+// corners as in fn_802DB6F0. Reloc-name: 1.0f / -1.0f are pooled after literals of functions
+// not written yet.
 void GameView_804A9950::fn_802DA010() {
     field_0x14 = field_0x24;
     field_0x18 = field_0x28;
@@ -644,12 +931,7 @@ void GameView_804A9950::fn_802DA010() {
     fn_802D9FBC();
     getEffectSystem_8013C824()->fn_8013C8CC();
     fn_802D782C(0);
-    for (int i = 0; i < 4; i++) {
-        JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
-        pos.x += mVisibleBox.i.x;
-        pos.y += mVisibleBox.i.y;
-        fn_8023F1D4(i, &pos, 2, 0, 0);
-    }
+    placePlayers();
     fn_8022BD70();
     lbl_8053AD70->fn_8037AE30();
     fn_802D8328(false, false);
@@ -700,11 +982,11 @@ void GameView_804A9950::fn_802D9CD8() {
             // Every bit of the screen's two 1024-bit tables, a word at a time (a plain
             // word loop unrolls differently: the target steps the word offset in a register).
             for (int bit = 0; bit < 1024; bit += 32) {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x3548[row][col][bit / 32] = 0;
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x6768[row][col][bit / 32] = 0;
+                getGameView_802D6A9C()->field_0x3548[row][col][bit / 32] = 0;
+                getGameView_802D6A9C()->field_0x6768[row][col][bit / 32] = 0;
             }
             for (int i = 0; i < 0x100; i++) {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x9968[row][col][i] = 0;
+                getGameView_802D6A9C()->field_0x9968[row][col][i] = 0;
             }
         }
     }
@@ -796,72 +1078,72 @@ const char* GameView_804A9950::fn_802D8128(s32 layer) {
 // `^ -1` (not ~): the target clears with xor+and, not andc (as fn_802D78B4).
 void GameView_804A9950::fn_802D8050(s32 bit, bool set, u8 value) {
     if (set) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] |= 1 << bit;
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x308[bit] < 0xFF) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x308[bit]++;
+        getGameView_802D6A9C()->field_0x178[field_0x18][field_0x14] |= 1 << bit;
+        if (getGameView_802D6A9C()->field_0x308[bit] < 0xFF) {
+            getGameView_802D6A9C()->field_0x308[bit]++;
         }
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit] = value;
+        getGameView_802D6A9C()->field_0x328[bit] = value;
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14] &= (1 << bit) ^ -1;
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x328[bit] = 0xFF;
+        getGameView_802D6A9C()->field_0x178[field_0x18][field_0x14] &= (1 << bit) ^ -1;
+        getGameView_802D6A9C()->field_0x328[bit] = 0xFF;
     }
 }
 
 bool GameView_804A9950::fn_802D800C(s32 bit) {
-    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x178[field_0x18][field_0x14]) != 0;
+    return ((1 << bit) & getGameView_802D6A9C()->field_0x178[field_0x18][field_0x14]) != 0;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc (as fn_802D78B4).
 void GameView_804A9950::fn_802D7F84(s32 bit, bool set) {
     if (set) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] |= 1 << bit;
+        getGameView_802D6A9C()->field_0x348[field_0x4][field_0x8] |= 1 << bit;
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8] &= (1 << bit) ^ -1;
+        getGameView_802D6A9C()->field_0x348[field_0x4][field_0x8] &= (1 << bit) ^ -1;
     }
 }
 
 // FIXME: 85.2 %. Scheduling: the target loads field_0x8 before the stage
 // (field_0x4) and the view; ours loads the stage first.
 bool GameView_804A9950::fn_802D7F40(s32 bit) {
-    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x348[field_0x4][field_0x8]) != 0;
+    return ((1 << bit) & getGameView_802D6A9C()->field_0x348[field_0x4][field_0x8]) != 0;
 }
 
 // `^ 0xFFFFFFFF` rather than `~`: ~(1 << bit) sign-extends the complement into the u64 (nor, srawi)
 // where the target zero-extends it (xor with 0xFFFFFFFF).
 void GameView_804A9950::fn_802D7EB0(u8 index, s32 bit, bool set) {
     if (set) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0] |= 1 << bit;
+        getGameView_802D6A9C()->field_0x3c8[index][0][0] |= 1 << bit;
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0] &= (1 << bit) ^ 0xFFFFFFFF;
+        getGameView_802D6A9C()->field_0x3c8[index][0][0] &= (1 << bit) ^ 0xFFFFFFFF;
     }
 }
 
 // `(1 << bit) & mask` in this operand order: the mask-first order compiles differently.
 bool GameView_804A9950::fn_802D7E5C(u8 index, s32 bit) {
-    return (1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x3c8[index][0][0];
+    return (1 << bit) & getGameView_802D6A9C()->field_0x3c8[index][0][0];
 }
 
 void GameView_804A9950::fn_802D7E34(s32 index) {
-    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = getGameView_802D6A9C();
     if (view->field_0x308[index] < 0xFF) {
         view->field_0x308[index]++;
     }
 }
 
 s32 GameView_804A9950::fn_802D7E1C(s32 index) {
-    return gGameRoot_8053AAF8->field_0x4->mView->field_0x328[index];
+    return getGameView_802D6A9C()->field_0x328[index];
 }
 
 s32 GameView_804A9950::fn_802D7E04(s32 index) {
-    return gGameRoot_8053AAF8->field_0x4->mView->field_0x308[index];
+    return getGameView_802D6A9C()->field_0x308[index];
 }
 
 void GameView_804A9950::fn_802D7D00(s32 layer, s32 bit, bool set) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     if (set) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] |= 1ULL << bit;
+        getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][slot] |= 1ULL << bit;
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][slot] &= (1ULL << bit) ^ -1;
+        getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][slot] &= (1ULL << bit) ^ -1;
     }
 }
 
@@ -869,23 +1151,23 @@ void GameView_804A9950::fn_802D7D00(s32 layer, s32 bit, bool set) {
 void GameView_804A9950::fn_802D7BE8(s32 layer, s32 slot, u32 value) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] &= (0xFULL << shift) ^ -1;
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] |= (u64)value << shift;
+    getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][idx] &= (0xFULL << shift) ^ -1;
+    getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][idx] |= (u64)value << shift;
 }
 
-// FIXME: 99.0. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
+// FIXME: 99.4. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
 s32 GameView_804A9950::fn_802D7B34(s32 layer, s32 slot) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
-    return (gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] & (0xFULL << shift)) >> shift;
+    return (getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][idx] & (0xFULL << shift)) >> shift;
 }
 
 // The screen's 64-bit mask for the layer (fn_802D4768-fn_802D4ADC inline it).
 u64 GameView_804A9950::fn_802D7AC4(s32 layer) {
     if (layer < 8) {
-        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
+        return getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][0];
     }
-    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
+    return getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][layer - 7];
 }
 
 void GameView_804A9950::fn_802D79E8(s32 index, f32 a, f32 b, bool flag) {
@@ -919,14 +1201,14 @@ void GameView_804A9950::fn_802D79A4(s32 index, f32 a, f32 b, f32 c) {
 }
 
 void GameView_804A9950::fn_802D7970(s32 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x34 = value;
+    getGameView_802D6A9C()->field_0x34 = value;
     if (value < 0x11) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x1328c = 0;
+        getGameView_802D6A9C()->field_0x1328c = 0;
     }
 }
 
 s32 GameView_804A9950::fn_802D7948() {
-    GameView_804A9950* view = gGameRoot_8053AAF8->field_0x4->mView;
+    GameView_804A9950* view = getGameView_802D6A9C();
     if (view->field_0x5c == 0) {
         return view->field_0x58;
     }
@@ -934,42 +1216,42 @@ s32 GameView_804A9950::fn_802D7948() {
 }
 
 void GameView_804A9950::fn_802D7934(s32 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x5c = value;
+    getGameView_802D6A9C()->field_0x5c = value;
 }
 
 void GameView_804A9950::fn_802D7920(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x170 = value;
+    getGameView_802D6A9C()->field_0x170 = value;
 }
 
 void GameView_804A9950::fn_802D790C(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x171 = value;
+    getGameView_802D6A9C()->field_0x171 = value;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc.
 void GameView_804A9950::fn_802D78B4(s32 bit, bool set) {
     if (set) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x174 |= 1 << bit;
+        getGameView_802D6A9C()->field_0x174 |= 1 << bit;
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x174 &= (1 << bit) ^ -1;
+        getGameView_802D6A9C()->field_0x174 &= (1 << bit) ^ -1;
     }
 }
 
 bool GameView_804A9950::fn_802D7888(s32 bit) {
-    return ((1 << bit) & gGameRoot_8053AAF8->field_0x4->mView->field_0x174) != 0;
+    return ((1 << bit) & getGameView_802D6A9C()->field_0x174) != 0;
 }
 
 void GameView_804A9950::fn_802D7870(u16 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131dc = value;
+    getGameView_802D6A9C()->field_0x131dc = value;
 }
 
 void GameView_804A9950::fn_802D7844(u8 value, s32 index) {
     if (index >= 0 && index < 4) {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x131d8[index] = value;
+        getGameView_802D6A9C()->field_0x131d8[index] = value;
     }
 }
 
 void GameView_804A9950::fn_802D782C(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = value;
+    getGameView_802D6A9C()->field_0x131de = value;
 }
 
 // FIXME: 80.0 %. The clrlwi of bits is emitted before the lhz load in ours,
@@ -979,16 +1261,16 @@ bool GameView_804A9950::fn_802D7804(s32 index, u16 bits) {
 }
 
 void GameView_804A9950::fn_802D77E4(s32 index, u16 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] = value;
+    getGameView_802D6A9C()->field_0x131b8[index] = value;
 }
 
 void GameView_804A9950::fn_802D77BC(s32 index, u16 bits) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] |= bits;
+    getGameView_802D6A9C()->field_0x131b8[index] |= bits;
 }
 
 // `bits ^ 0xFF` (not ~bits): the target clears with xori+and, not andc.
 void GameView_804A9950::fn_802D7790(s32 index, u16 bits) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131b8[index] &= bits ^ 0xFF;
+    getGameView_802D6A9C()->field_0x131b8[index] &= bits ^ 0xFF;
 }
 
 void GameView_804A9950::fn_802D7704(s32 bit, bool count, s32 layer) {
@@ -1034,7 +1316,7 @@ u8 GameView_804A9950::fn_802D7544(s32 index) {
 }
 
 void GameView_804A9950::fn_802D752C(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131ef = value;
+    getGameView_802D6A9C()->field_0x131ef = value;
 }
 
 void GameView_804A9950::fn_802D7440(u8 flag) {
@@ -1046,18 +1328,18 @@ void GameView_804A9950::fn_802D7440(u8 flag) {
             enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
         }
         if (enabled != 1) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+            getGameView_802D6A9C()->field_0x131f0 = 0;
         } else if (gGameRoot_8053AAF8->field_0x7f != 0) {
             if (gGameRoot_8053AAF8->field_0x7e == 1) {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 1;
+                getGameView_802D6A9C()->field_0x131f0 = 1;
             } else {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+                getGameView_802D6A9C()->field_0x131f0 = 0;
             }
         } else {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 1;
+            getGameView_802D6A9C()->field_0x131f0 = 1;
         }
     } else {
-        gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 = 0;
+        getGameView_802D6A9C()->field_0x131f0 = 0;
     }
 }
 
@@ -1092,7 +1374,7 @@ void GameView_804A9950::fn_802D7310(s32 bit, bool set) {
 }
 
 bool GameView_804A9950::fn_802D72BC(s32 bit) {
-    return ((1 << (bit % 32)) & gGameRoot_8053AAF8->field_0x4->mView->field_0x12fe8[bit / 32]) != 0;
+    return ((1 << (bit % 32)) & getGameView_802D6A9C()->field_0x12fe8[bit / 32]) != 0;
 }
 
 // FIXME: 96.4. The free-slot search: the target's loop has no entry test (body first, then
@@ -1141,19 +1423,19 @@ void GameView_804A9950::fn_802D6F38(u32 key, JGeometry::TVec2f pos, s32 value, b
 bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id) {
     bool found = false;
     for (int i = 0; i < 8; i++) {
-        if (epsilonEquals(gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i], b, JGeometry::TUtilf::epsilon()) &&
-            id == gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i]) {
+        if (epsilonEquals(getGameView_802D6A9C()->field_0x13148[i], b, JGeometry::TUtilf::epsilon()) &&
+            id == getGameView_802D6A9C()->field_0x13188[i]) {
             found = true;
             break;
         }
     }
     if (!found) {
         for (int i = 0; i < 8; i++) {
-            if (gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] == -1) {
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x130e8[i] = a;
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i] = b;
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] = value;
-                gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] = id;
+            if (getGameView_802D6A9C()->field_0x13128[i] == -1) {
+                getGameView_802D6A9C()->field_0x130e8[i] = a;
+                getGameView_802D6A9C()->field_0x13148[i] = b;
+                getGameView_802D6A9C()->field_0x13128[i] = value;
+                getGameView_802D6A9C()->field_0x13188[i] = id;
                 break;
             }
         }
@@ -1165,27 +1447,27 @@ bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s3
 // registers.
 void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
     for (int i = 0; i < 8; i++) {
-        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] &&
-            epsilonEquals(gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i], pos, JGeometry::TUtilf::epsilon())) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x130e8[i].set(0.0f, 0.0f);
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x13128[i] = -1;
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x13148[i].set(0.0f, 0.0f);
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x13188[i] = -1;
+        if (id == getGameView_802D6A9C()->field_0x13188[i] &&
+            epsilonEquals(getGameView_802D6A9C()->field_0x13148[i], pos, JGeometry::TUtilf::epsilon())) {
+            getGameView_802D6A9C()->field_0x130e8[i].set(0.0f, 0.0f);
+            getGameView_802D6A9C()->field_0x13128[i] = -1;
+            getGameView_802D6A9C()->field_0x13148[i].set(0.0f, 0.0f);
+            getGameView_802D6A9C()->field_0x13188[i] = -1;
             return;
         }
     }
 }
 
 void GameView_804A9950::fn_802D6BF8(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f2 = value;
+    getGameView_802D6A9C()->field_0x131f2 = value;
 }
 
 void GameView_804A9950::fn_802D6BE0(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f3 = value;
+    getGameView_802D6A9C()->field_0x131f3 = value;
 }
 
 void GameView_804A9950::fn_802D6BC8(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f4 = value;
+    getGameView_802D6A9C()->field_0x131f4 = value;
 }
 
 // `^ -1` (not ~): the target clears with xor+and, not andc (as fn_802D78B4).
@@ -1208,7 +1490,7 @@ bool GameView_804A9950::fn_802D6AC4(s32 bit) {
 }
 
 void GameView_804A9950::fn_802D6AAC(u8 value) {
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131f9 = value;
+    getGameView_802D6A9C()->field_0x131f9 = value;
 }
 
 GameView_804A9950* getGameView_802D6A9C(void) {
@@ -1221,7 +1503,7 @@ GameView_804A9950* getGameView_802D6A9C(void) {
 s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     for (int i = 0; i < 0x40; i++) {
-        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i]) {
+        if (id == getGameView_802D6A9C()->field_0x2948[slot][i]) {
             return i;
         }
     }
@@ -1233,7 +1515,7 @@ s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
 bool GameView_804A9950::fn_802D4ADC(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     for (s32 i = 0; i < 0x40; i++) {
-        if (id == gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i]) {
+        if (id == getGameView_802D6A9C()->field_0x2948[slot][i]) {
             if (i >= 0x40) {
                 return false;
             }
@@ -1259,8 +1541,8 @@ bool GameView_804A9950::fn_802D49A8(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     s32 i;
     for (i = 0; i < 0x40; i++) {
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+        if (getGameView_802D6A9C()->field_0x2948[slot][i] == 0) {
+            getGameView_802D6A9C()->field_0x2948[slot][i] = id;
             break;
         }
     }
@@ -1286,8 +1568,8 @@ void GameView_804A9950::fn_802D4874(s32 layer, u16 id, u64* outBit, u64* outMask
     s32 slot = layer < 8 ? 0 : layer - 7;
     s32 i;
     for (i = 0; i < 0x40; i++) {
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+        if (getGameView_802D6A9C()->field_0x2948[slot][i] == 0) {
+            getGameView_802D6A9C()->field_0x2948[slot][i] = id;
             break;
         }
     }
@@ -1308,8 +1590,8 @@ void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMas
     s32 slot = layer < 8 ? 0 : layer - 7;
     s32 i;
     for (i = 0x3C; i > 0; i -= 4) {
-        if (gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] == 0) {
-            gGameRoot_8053AAF8->field_0x4->mView->field_0x2948[slot][i] = id;
+        if (getGameView_802D6A9C()->field_0x2948[slot][i] == 0) {
+            getGameView_802D6A9C()->field_0x2948[slot][i] = id;
             break;
         }
     }
@@ -1320,14 +1602,12 @@ void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMas
 // FIXME: fn_802D3D48 is not written yet.
 
 
-// FIXME: 78.3. Scheduling and regalloc only: the target computes index * 0x200 and word * 4
-// before materialising lbl_8046E1CC; ours does the lis/addi of the table first.
 bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     u32 word = bit / 32;
     if (!set) {
-        return (gGameRoot_8053AAF8->field_0x4->mView->field_0x2d48[index][word] & lbl_8046E1CC[bit % 32]) != 0;
+        return (getGameView_802D6A9C()->field_0x2d48[index][word] & lbl_8046E1CC[bit % 32]) != 0;
     }
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
+    getGameView_802D6A9C()->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
     return true;
 }
 
@@ -1342,7 +1622,7 @@ void GameView_804A9950::fn_802D3A18() {
     if (gGameRoot_8053AAF8->field_0x7e == 0 && fn_8037F1E4(0)) {
         paused = 1;
     }
-    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x131f0 == 1 && field_0xc4 != 0 && !paused) {
+    if (getGameView_802D6A9C()->field_0x131f0 == 1 && field_0xc4 != 0 && !paused) {
         field_0xc4--;
         if (field_0xc4 == 1800) {
             if (gGameRoot_8053AAF8->field_0x7f != 0) {
