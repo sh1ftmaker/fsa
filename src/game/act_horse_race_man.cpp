@@ -67,7 +67,9 @@ static inline void shuffle(s32 count, s32* order, s32* pool) {
     }
 }
 
+// FIXME: 99.55% (regalloc-only: target r29/r28/r31 vs ours r28/r29/r25 in case 7 and case 13 loops)
 void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
+    s32 i;
     switch (state) {
     case 0:
         field_0x2b0 = -1;
@@ -83,7 +85,6 @@ void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
         gAudioMgr_8053AF80->fn_80458F9C(0x3c);
         break;
     case 7: {
-        s32 i;
         s32 viewId = field_0x2ac;
         if (viewId != 0) {
             getGameView_802D6A9C()->fn_802D8050(viewId, true, 0xff);
@@ -140,7 +141,6 @@ void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
         break;
     case 13: {
         JGeometry::TVec3f pos;
-        s32 i;
         s32 viewId = field_0x2ac;
         if (viewId != 0) {
             getGameView_802D6A9C()->fn_802D8050(viewId, false, 0xff);
@@ -164,6 +164,7 @@ void HorseRaceMan_804A5630::fn_801ECB08(s32 state) {
     mState = state;
 }
 
+// FIXME: 98.28% (regalloc-only: target r26/r27/r23 vs ours r27/r28/r24 for this, loop counter, and field_0x4)
 void HorseRaceMan_804A5630::fn_801EC7B8() {
     u8 crossed[4];
     f32 times[4];
