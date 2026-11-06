@@ -263,13 +263,19 @@ public:
     // fn_8020D6AC and fn_8022461C/fn_80226850 as in the base vfunc_0x4C;
     // returns 0 or 1.
     bool fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s32* state);
-    // 7 units / 9 calls. Collision sweep (via fn_801F172C, which calls
-    // vfunc_0x50 on this) of `box` from `from` to `to` on `layer`; the
-    // result position goes to *outPos (stfs 0/4/8), out2 is handed to
-    // fn_801F172C, which writes a stack TVec3f copy to it (stfs 0/4/8,
-    // 0x801F2344-0x801F2350).
-    // `flag` reaches fn_801F172C's clrlwi. 24. Returns 0 or 1.
-    bool fn_801F23BC(s32 layer, const JGeometry::TVec3f* from, const JGeometry::TVec3f* to,
+    // 1 call (fn_801F23BC). The map/collision test of `box` at *pos on
+    // `layer` (it calls vfunc_0x50 on this and may move *pos, stfs 0/4);
+    // writes a stack TVec3f copy to *out (0x801F2344-0x801F2350). Returns 0
+    // or 1 (fn_801F23BC tests it with clrlwi. 24). Not written yet.
+    bool fn_801F172C(s32 layer, JGeometry::TVec3f* pos, const JGeometry::TBox2f* box,
+                     JGeometry::TVec3f* out, bool flag);
+    // 7 units / 9 calls. Collision sweep of `box` from `from` towards `to` on
+    // `layer` in steps of under half the box's smaller side (at most 8):
+    // fn_801F172C at each step until it hits (then *outPos gets the step's
+    // position) or `to` is reached. out2 and flag go to fn_801F172C.
+    // Returns whether it hit. (fn_801F2618 passes &mPos as `to` and
+    // &mPrevPos as `from`.)
+    bool fn_801F23BC(s32 layer, const JGeometry::TVec3f* to, const JGeometry::TVec3f* from,
                      const JGeometry::TBox2f* box, JGeometry::TVec3f* outPos,
                      JGeometry::TVec3f* out2, bool flag);
     // 82 units / 201 calls. Unless field_0x174 > 0, sweeps the box at 0x80
@@ -343,7 +349,7 @@ public:
     // fn_801F329C(player); returns 0 or 1.
     bool fn_801F320C(s32 player) const;
     // 4 units / 5 calls. getPlayerLayer_8023DE58(player) < 8 && field_0x4 == 8.
-    bool fn_801F329C(s32 player);
+    bool fn_801F329C(s32 player) const;
     // 1 unit / 2 calls (the manager's update loop, with mActors[i]). Fills
     // field_0x1ac[0..3] with each player's position (getPlayerPos_8023E724), adjusted
     // by fn_801CD150 for players on layer 8 and up while this is on 8.
