@@ -46,7 +46,7 @@ inline bool ExtendingLift_804A78B0::isPlayerOn(s32 player) {
     return false;
 }
 
-// FIXME: 88.87%, missing/extra: ours has 1 fewer instrs (106 vs 107). The flags test loads 0x90 into r3 and reuses it; the original loads it into r0 for the test and reloads 0x90 (r31) for the oris.
+// FIXME: 88.87%, missing/extra: ours has 2 fewer instrs (105 vs 107). The flags test loads 0x90 into r3 and reuses it; the original loads it into r0 for the test and reloads 0x90 (r31) for the oris.
 void ExtendingLift_804A78B0::init() {
     if (!((field_0x90 >> 7) & 0x1F)) {
         field_0x90 |= 0x80;
@@ -86,7 +86,7 @@ void ExtendingLift_804A78B0::init() {
     field_0x244 = 0;
 }
 
-// FIXME: 90.34%, missing/extra: ours has 5 more instrs (318 vs 313). In player collision loop, player induction variable uses extra register r28.
+// FIXME: 90.34%, missing/extra: ours has 5 more instrs (318 vs 313). Ours saves an extra register (r28) in the player loop (the original keeps field_0x4 in r30 across it and loads mPos before the call), and the field_0x230/0x234 divides are scheduled differently.
 void ExtendingLift_804A78B0::update() {
     if (vfunc_0x34()) {
         if (!field_0x244) {
