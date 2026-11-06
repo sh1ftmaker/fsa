@@ -16,6 +16,7 @@
 #include "game/act/tu_8010DF44.h"
 #include "game/act/tu_801D2C60.h"
 #include "game/act/act_frostare_tail.h"
+#include "game/act/act_navi.h"
 #include "game/act/tu_80362634.h"
 #include "game/SpriteAnim.h"
 #include "game/act/tu_801F9484_elems.h"
@@ -308,19 +309,6 @@ public:
     /* 0x230 */ u8 field_0x230[0x140];
 }; // Size: 0x370
 
-// Spawned for 'NAVI'.
-class cls_804A6708 : public ActorBase_804A5770 {
-public:
-    cls_804A6708();
-    /* 0x08 */ virtual ~cls_804A6708();
-    // game/act_navi.cpp (not written yet); the word at 0x248 is the state.
-    // fn_8021D734 / fn_8021D764 switch to state 8 / 6 unless already there;
-    // fn_8021D794 returns whether it is in state 5. Called by tu_8021F064.
-    void fn_8021D734();
-    void fn_8021D764();
-    bool fn_8021D794();
-    /* 0x230 */ u8 field_0x230[0xA8];
-}; // Size: 0x2D8
 
 // Spawned for 'ZSLD'.
 class cls_804A6D00 : public ActorBase_804A5770 {
