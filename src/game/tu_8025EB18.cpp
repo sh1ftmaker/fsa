@@ -1238,7 +1238,7 @@ bool Player_804A6F38::fn_80260C08() {
     return false;
 }
 
-// FIXME: 88.23. missing/extra (41 fewer): every call, constant and field is in place (the
+// FIXME: 88.72. missing/extra (41 fewer): every call, constant and field is in place (the
 // other rows are register numbers, one 0.5 reload and one beq/bne flip that follow the
 // missing code). The original builds the layer-moved points in stack TVec2 temporaries
 // (the my-layer offset at sp 0x18 / 0x50, its frsp'd copy at 0x38, the probe at 0x58;
@@ -1300,7 +1300,7 @@ bool Player_804A6F38::fn_802604CC() {
                 && fn_802265FC((const JGeometry::TVec3f*)&pos, getPlayerLayer_8023DE58(i)) != 0x20) {
                 continue;
             }
-            if (field_0x3b4 != getPlayerLayer_8023DE58(i)) {
+            if (getLayer() != getPlayerLayer_8023DE58(i)) {
                 myBox = layerBox(field_0x3b4);
                 pos.set(mid.x + myBox->i.x, mid.y + myBox->i.y);
                 if ((fn_802260DC(&pos, field_0x3b4, true) || fn_802684A4((const JGeometry::TVec3f*)&pos, field_0x3b4))
