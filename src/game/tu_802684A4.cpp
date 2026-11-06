@@ -1346,6 +1346,8 @@ void cls_804A71A8::fn_8026C350(u16 tile) {
     // with fn_80240F14, or in group mode 4 with fn_80240670; 0x28-0x2F also
     // over part of the tile, 0x2A / 0x2B (0x2E / 0x2F) only at height 0 when
     // field_0x3dc is 3 (2).
+    // The closed test is written out in each case: a bool inline for it
+    // materialises the value (measured 96.58 % / +32 instrs vs 98.52 %).
     case 0x27:
         if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()))
