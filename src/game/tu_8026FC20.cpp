@@ -118,6 +118,9 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
 // Emitter offsets from mPos by facing (fn_80274CB8 is its first user, fn_8027D320).
 static const f32 lbl_8046BB48[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
 
+// The push into a wall by facing (fn_8027BE74, into field_0x350 for state 0x37).
+static const Vec lbl_8046BBA8[4] = {{-0.25f, 0.0f, 0.0f}, {0.25f, 0.0f, 0.0f}, {0.0f, -0.25f, 0.0f}, {0.0f, 0.25f, 0.0f}};
+
 // Steps of 2 in the eight directions (fn_8027AAD0, by field_0x3e8).
 static const Vec lbl_8046BBD8[8] = {
     {2.0f, 0.0f, 0.0f}, {-2.0f, 0.0f, 0.0f}, {0.0f, 2.0f, 0.0f}, {0.0f, -2.0f, 0.0f},
@@ -509,6 +512,139 @@ void Player_804A6F38::fn_8027C6C4() {
 
 void Player_804A6F38::fn_8027C6B8() {
     field_0x436 = 0;
+}
+
+// Update of state 0x08 (the sword charge, released with 0x37): 0x403 counts the charge (168
+// frames to full), 0x404 the frames. In the air the push 0x344 with gravity 0.25 lands into
+// 0x368 (0x43D = 3 frames of landing lag); on the ground pad 0x20 hops (0x344 = 2.5 times the
+// stick, or 0x368 again while the stick is centred and cls_804A71A8 0xB7 is set; z 1.5, sound
+// 0x10002), else the stick walk at 1.125, then the attack-input check fn_80275D9C. Before
+// full charge a push into a wall (cls_804A71A8 0x48 by facing) starts state 0x37 with
+// 0x350 = lbl_8046BBA8[facing], BgRewrite at 0x30C and the sound 0x20062 / 0x20061 by
+// fn_8022486C. The charge emitters 0x12B0 (the blade, moving out with the charge), 0x12B4 and
+// 0x12B8 follow the player; after 30 frames (0x40C) the camera move flag 0x7F5 is set unless
+// a move runs; a group request (0xCAE / 0xCAF) returns to state 0.
+void Player_804A6F38::fn_8027BE74() {
+    field_0x404++;
+    if (!field_0x344.isZero() || mPos.z > 0.0f) {
+        mPos.add(field_0x344);
+        field_0x344.z -= 0.25f;
+        if (mPos.z <= 0.0f) {
+            mPos.z = 0.0f;
+            field_0x368.set(field_0x344.x, field_0x344.y, 0.0f);
+            field_0x344.set(0.0f, 0.0f, 0.0f);
+            field_0x43d = 3;
+        }
+        if (field_0x403 < 168) {
+            fn_80276E5C();
+        } else {
+            fn_80276BB8();
+        }
+        fn_80274CB8();
+        fn_80268B3C();
+    } else {
+        if (field_0x43d != 0) {
+            field_0x43d--;
+        } else if (fn_80246B10(0x20)) {
+            if (0.0f == fn_80246F28() && field_0xbf0->field_0xb7) {
+                field_0x344.x = field_0x368.x;
+                field_0x344.y = field_0x368.y;
+            } else {
+                field_0x344.x = 2.5f * fn_80247330();
+                field_0x344.y = 2.5f * -fn_8024712C();
+            }
+            field_0x344.z = 1.5f;
+            fn_8024F0E8(0x10002);
+        } else {
+            fn_802808E8(1.125f);
+        }
+        fn_80275D9C();
+        fn_80274CB8();
+        fn_80268B3C();
+        if (field_0x403 < 168 && field_0xbf0->field_0x48[field_0x3dc] && fn_80251AEC(0x37)) {
+            const Vec& push = lbl_8046BBA8[field_0x3dc];
+            field_0x350.set(push.x, push.y, push.z);
+            fn_802709C8();
+            if (fn_8022486C(&field_0x30c, field_0x3b4)) {
+                fn_8024F0E8(0x20062);
+            } else {
+                fn_8024F0E8(0x20061);
+            }
+        }
+    }
+    if (field_0x12b0 != NULL) {
+        JGeometry::TVec3f pos = mPos;
+        switch (field_0x3dc) {
+        case 0:
+            pos.x += field_0x403 * 14 / 48 + 6;
+            break;
+        case 1:
+            pos.x -= field_0x403 * 14 / 48 + 6;
+            break;
+        case 2:
+            pos.x += 4.0f;
+            pos.y += field_0x403 * 14 / 48 + 2;
+            break;
+        case 3:
+            pos.x -= 4.0f;
+            pos.y -= field_0x403 * 14 / 48 + 7;
+            break;
+        }
+        setEmitterPos_8013CB44(field_0x12b0, &pos, 0, 1, true);
+    }
+    if (field_0x12b4 != NULL) {
+        JGeometry::TVec3f pos = mPos;
+        if (field_0x403 < 168) {
+            switch (field_0x3dc) {
+            case 0:
+                pos.x += 13.0f;
+                break;
+            case 1:
+                pos.x -= 13.0f;
+                break;
+            case 2:
+                pos.x += 4.0f;
+                pos.y += 9.0f;
+                break;
+            case 3:
+                pos.x -= 4.0f;
+                pos.y -= 14.0f;
+                break;
+            }
+        } else {
+            switch (field_0x3dc) {
+            case 0:
+                pos.x -= 19.0f;
+                break;
+            case 1:
+                pos.x += 17.0f;
+                break;
+            case 2:
+                pos.x += 2.0f;
+                pos.y -= 17.0f;
+                break;
+            case 3:
+                pos.x -= 5.0f;
+                pos.y += 11.0f;
+                break;
+            }
+        }
+        setEmitterPos_8013CB44(field_0x12b4, &pos, fn_8024EE14(), fn_8024EE0C() - 1, false);
+    }
+    if (field_0x12b8 != NULL) {
+        setEmitterPos_8013CB44(field_0x12b8, &mPos, fn_8024EE14(), fn_8024EE0C() - 1, false);
+    }
+    if (field_0x40c < 30) {
+        field_0x40c++;
+    } else {
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (!camera->field_0x7f4) {
+            camera->field_0x7f5 = 1;
+        }
+    }
+    if ((field_0xcae == 1 || field_0xcaf == 1) && fn_80251AEC(0)) {
+        field_0x403 = 0;
+    }
 }
 
 // Enter of state 0x08 (fn_8027BE74 is its update): 0xCAD / 0x403 start once,

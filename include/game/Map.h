@@ -393,6 +393,9 @@ public:
 
 // --- tile queries (game/tu_8022461C.cpp) ---
 extern "C" {
+// Owner tu_8022461C (0x8022486C, not written yet). A tile test at pos (byte result, callers
+// clrlwi.): Player fn_8027BE74 picks the sound 0x20062 / 0x20061 by it.
+bool fn_8022486C(const JGeometry::TVec3f* pos, s32 layer);
 // 73 units. The tile's collision code: the tile code (as in fn_80226850)
 // mapped through the u16 table lbl_8046CB88, adjusted when the layer's
 // GameView byte 0x131DF + layer is set (0 -> 2, 0x61 -> 0) and on stage
