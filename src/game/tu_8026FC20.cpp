@@ -3098,23 +3098,21 @@ u8 Player_804A6F38::fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeomet
     }
     JGeometry::TBox2f viewBox(*box);
     toView(viewBox, layer);
-    bool hit = fn_802738F0(&viewBox, pos, flag, true);
+    u8 hit = fn_802738F0(&viewBox, pos, flag, true);
     if (hit == true) {
         pos->add(layerBox(layer)->i);
     }
     if (!hit) {
         hit = fn_80273FB8(box, layer, pos);
     }
-    return hit;
+    // (s32): the original zero-extends the u8 again on return (clrlwi); a plain `return hit` gives mr.
+    return (s32)hit;
 }
 
 // Not auto-inlined: fn_80274238 calls fn_80273FB8 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // fn_802730D8 with a height of 8 (inlined), while fn_80247BD4() is running.
-// FIXME: 99.62. Only the return differs: the original returns `clrlwi r3, r27, 24` (a u8 return
-// type; 100 % as u8), but fn_80274238 then converts the u8 (neg / or / srwi) where its original
-// takes r3 as is, so both stay bool until that caller's form is known.
-bool Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
+u8 Player_804A6F38::fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out) {
     field_0x492 = 0;
     if (!fn_802413F0()) {
         return false;
@@ -3147,11 +3145,12 @@ u8 Player_804A6F38::fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeomet
     }
     JGeometry::TBox2f viewBox(*box);
     toView(viewBox, layer);
-    bool hit = fn_802738F0(&viewBox, out, flag, false);
+    u8 hit = fn_802738F0(&viewBox, out, flag, false);
     if (hit == true) {
         out->add(layerBox(layer)->i);
     }
-    return hit;
+    // (s32): as in fn_80274238, the original zero-extends the u8 again on return.
+    return (s32)hit;
 }
 
 bool Player_804A6F38::fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag) {
@@ -3195,7 +3194,7 @@ bool Player_804A6F38::fn_80273C30(const JGeometry::TBox2f* box, s32 layer, JGeom
     return fn_80256F44(box, layer, out);
 }
 
-bool Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center) {
+u8 Player_804A6F38::fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center) {
     if (!fn_802413F0()) {
         return false;
     }
@@ -3446,10 +3445,10 @@ bool Player_804A6F38::fn_80272B4C(const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME: 81.51. The original unrolls the 72 entries as 8 loop trips of 9 compares, bumping
-// the base register by 4 per entry; ours unrolls 9 trips of 8 with fixed offsets.
-bool Player_804A6F38::fn_802729F0(s32 serial) {
-    for (s32 i = 0; i < 72; i++) {
+// Whether one of the 0x50 serials in field_0xef0 (unused: < 0) is `serial`. const: only
+// through a const `this` does MWCC walk the base register (`addi r3, 4` per unrolled entry).
+bool Player_804A6F38::fn_802729F0(s32 serial) const {
+    for (int i = 0; i < 0x50; i++) {
         if (field_0xef0[i] >= 0 && field_0xef0[i] == serial) {
             return true;
         }

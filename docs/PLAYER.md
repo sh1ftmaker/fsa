@@ -1693,3 +1693,17 @@ SHARED-EDITS: Player.h fn_80290070 parameter names; extern "C" fn_803020C8(s32, 
   functions (tu_80256C74 fn_8025DACC does it in a loop), so the split was not kept.
 - fn_8027776C (the dead second `beq` after the 'TNGL' null test): the cast inside the test,
   nested ifs and an `||` around the body change nothing.
+
+**tu_8026FC20, second pass** (Opus 5.5, 2026-11-06):
+- fn_802729F0 81.51 -> 100 %: the loop covers all 0x50 serials (10 compares per trip, 8 trips;
+  the dead counter's `+9` misled the earlier count to 72), and the method is `const`. Through a
+  plain `this` MWCC folds the unrolled entries into fixed offsets (0xef0, 0xef4, ...); through
+  a const `this` it keeps one `addi r3, 4` per entry, as the original does. Symbol renamed to
+  `fn_802729F0__15Player_804A6F38CFl` (callers in tu_8023FBF0 / tu_8022AD64 unchanged).
+- fn_80273FB8 99.62 -> 100 %: returns u8. Its callers' view: fn_802738F0 returns u8 as well
+  (its returns are all constants, so its own code is the same), fn_80274238 and fn_80273E7C
+  keep `u8 hit` (both calls' r3 taken raw, `mr r31, r3`) and end `return (s32)hit;` - the
+  original zero-extends the u8 once more on return (`clrlwi r3, r31, 24`); a plain
+  `return hit` gives `mr`, `hit ? true : false` / `hit != false` convert (neg / or / srwi),
+  `hit == true` gives subfic / cntlzw, s32 / u32 locals compare with cmpwi / cmplwi.
+  fn_80274238, fn_80273E7C, fn_802738F0, fn_80273D44, fn_80273C30 stay 100 %.

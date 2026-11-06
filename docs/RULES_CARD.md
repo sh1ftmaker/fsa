@@ -273,6 +273,13 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   has higher first, e.g. `JGeometry::TBox2f box;` at the top of the block,
   then `box.set(...)` where it is filled (tu_801EE24C, act_log_monitor_npc
   do this; scratchpad research_stackslots.md).
+- A constant-bound loop over a member array whose unrolled copies bump the base
+  register (`lwz 0xN+4(r3); addi r3, r3, 4` per entry) instead of fixed offsets: the
+  method is `const` (tu_8026FC20 fn_802729F0, tu_801EB00C fn_801EB648). Count the
+  entries per trip from the loads, not from the dead counter's step.
+- A u8 local holding u8 call results (raw `mr`), returned from a u8 function with
+  `clrlwi r3, rN, 24`: `return (s32)hit;` with a one-line comment (tu_8026FC20
+  fn_80274238 / fn_80273E7C); `return hit` gives `mr`.
 - `clrlwi` then `neg/or/srwi` on a call result returned as bool: the callee
   returns a byte (`u8`), converted to bool by the caller; declare it `u8`,
   don't write `!= false`.

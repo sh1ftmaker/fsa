@@ -171,7 +171,7 @@ public:
     bool fn_802728AC(const JGeometry::TBox2f* box, s32 layer, s32 serial); // via fn_80239470
     bool fn_80272C20(const JGeometry::TBox2f* box, s32 arg_0x4, s32 serial); // via fn_802397B4
     bool fn_80273D44(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // via fn_8023BB50
-    bool fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A7BC
+    u8 fn_80273FB8(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out); // via fn_8023A7BC
     u8 fn_80274238(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* pos, bool flag); // via fn_8023B8E4
     // tu_80256C74 / tu_8025EB18 call it with the player in r3; 0.0f unless
     // playerFlags_802413F0 and the team checks pass (game/tu_8023FBF0.cpp).
@@ -583,7 +583,7 @@ public:
     void fn_80276E5C(); // boxes of the facing 0x3DC
     void fn_8027439C(); // called by fn_8027A1E0 (update of state 0x0B): pose 0x3FA / 0x3FB, boxes 0x4A0 / 0x4B0
     void fn_802765C0();
-    bool fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center);
+    u8 fn_802738F0(const JGeometry::TBox2f* box, JGeometry::TVec2f* out, bool flag, bool center);
     u8 fn_80273E7C(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out, bool flag); // called by tu_8022AD64
     // The manager's other per-player calls (fn_8023F390 / fn_8023F2BC):
     // update B (tu_8023FBF0, not written yet) and the draw (tu_80264998).
@@ -618,7 +618,7 @@ public:
     bool fn_80271098(const JGeometry::TVec3f* pos); // via fn_802379E4
     s32 fn_80272184(); // via fn_8023B630
     s32 fn_802721A8(); // via fn_8023B6CC
-    bool fn_802729F0(s32 serial); // via fn_80239718
+    bool fn_802729F0(s32 serial) const; // via fn_80239718
     bool fn_80272DCC(const JGeometry::TBox2f* box, s32 layer, s32 serial); // via fn_802399D8
     bool fn_802730D8(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin); // via fn_8023B0F4
     bool fn_802732C4(const JGeometry::TBox2f* box, s32 layer); // via fn_8023B190
