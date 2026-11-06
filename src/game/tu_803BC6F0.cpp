@@ -2320,6 +2320,53 @@ void FileSelect_804AFF60::fn_803BDD44(s32 file) {
     ((J2DPicture*)mScreenHuuin->search(lbl_80476BD8[file]))->setBlackWhite(black4, white4);
 }
 
+// FIXME: 99.65. Stack slots only: the original puts white0 at 0xD0 and its
+// by-value copy at 0xD4 (black0 0xD8 / 0xDC), ours white0 at 0xDC.
+// black1 / black3 are copy-initialised: the original stores a second copy of
+// each (0xCC, 0xB8) before the group's first call and rebuilds the last
+// call's opaque black from it; white and the other groups have no copy.
+// Gives file row `file`'s pictures their highlighted colours, the ones
+// fn_803BC6F0 fades them to at alpha 1 (group by group, the same panes as
+// fn_803BDD44).
+void FileSelect_804AFF60::fn_803BD5E0(s32 file) {
+    JUtility::TColor white0(0x80, 0x80, 0x80, 0xFF);
+    JUtility::TColor black0(0x00, 0x00, 0x00, 0x00);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BA8[file]))->setBlackWhite(black0, white0);
+
+    JUtility::TColor white1(0xB4, 0xB4, 0xB4, 0xFF);
+    JUtility::TColor black1 = JUtility::TColor(0x82, 0x82, 0x82, 0x00);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B90[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B78[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B60[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B48[file]))->setBlackWhite(black1, white1);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B30[file]))
+        ->setBlackWhite(JUtility::TColor(black1.r, black1.g, black1.b, 0xFF), white1);
+
+    JUtility::TColor white2(0x80, 0x80, 0x80, 0xFF);
+    JUtility::TColor black2(0x50, 0x50, 0x50, 0x00);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B18[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476B00[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AE8[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AD0[file]))->setBlackWhite(black2, white2);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476AB8[file]))->setBlackWhite(black2, white2);
+
+    JUtility::TColor white3(0x82, 0x82, 0x82, 0xFF);
+    JUtility::TColor black3 = JUtility::TColor(0x64, 0x64, 0x64, 0x00);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C98[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C80[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C68[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C50[file]))->setBlackWhite(black3, white3);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C38[file]))
+        ->setBlackWhite(JUtility::TColor(black3.r, black3.g, black3.b, 0xFF), white3);
+
+    JUtility::TColor white4(0xB4, 0xB4, 0xB4, 0xFF);
+    JUtility::TColor black4(0xB4, 0xB4, 0xB4, 0x00);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C20[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476C08[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BF0[file]))->setBlackWhite(black4, white4);
+    ((J2DPicture*)mScreenHuuin->search(lbl_80476BD8[file]))->setBlackWhite(black4, white4);
+}
+
 // FIXME: 98.65 %. 8 instructions missing: in groups 1-4 the original copies
 // black / white into the group copies (sp 0xE4 / 0xE0 ...) through a second
 // temporary (sp 0x20 / 0x24 ...: one extra word store each), which plain
