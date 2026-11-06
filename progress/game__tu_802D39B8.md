@@ -100,3 +100,29 @@ SHARED-EDITS: include/game/GameView.h (fn_802D7440 bool -> u8; removed screenMas
 clearStageTables, clearSlots, placePlayers inline decls and fn_802DEE2C(void)); include/game/GameGlobals.h
 (extern "C" fn_80303870(s32) [tu_80301CD0], extern "C" bool fn_803B8EBC(s32) [tu_803B8C74], void fn_8023F6C4()
 [tu_8022AD64, defined there]); symbols.txt: fn_802D7440 Fb -> FUc, fn_802DEE2C -> fn_802DEE2C__Fv.
+
+## Round 4 (Opus 5.5, 2026-11-06)
+Baseline matching 3426d279: total 9018, structural 9569 (+138 close); unit 65/109. After: 9018 / 9569 (+140 close);
+unit 65/109 (no honest gain), 3 of the 7 unwritten functions written (6588 bytes). Full ninja SHA-1 OK; gate --all-units,
+gate --base matching, gen_game --check, order_check OK; no function anywhere drops (by address against fsa-decomp's
+report_honest.json); 10 functions rise.
+- fn_802D92F0 99.6 (structurally close, 2 missing: the inlined fn_802DEBA0's view reload); slots 4-11 are eight calls
+  (a loop is not unrolled by MWCC here).
+- fn_802D8D50 98.3 (close): the resource type is `u32 type = 'M   '; type += (c0 - ' ') << 16 ...` (a single
+  expression folds the constant: 87.7 / 85.5); the tile map through an inlined accessor getTileMap() (written out,
+  the map load comes after the resource lookup: 92.7 -> 87.7; fn_802D92F0, which uses gGameRoot_8053AAF8->0xA4,
+  loads it after, as written out). Left: regalloc of the type copy, the fn_802DEBA0 family, float-temp slots.
+- fn_802D8328 96.1 (close): the 'B   ' type the same way; screen bytes of the item/key slots as u8 locals (signed
+  cmpw; (x >> 16) & 0xFF gives cmplw); lbl_8046E178 file-scope (dtk labels base + 0x30). Left: clrlwi 16 on the
+  record's cell bytes, the inlined fn_802D766C's slot before its flag test, regalloc / one more saved register.
+- fn_802D8128 / fn_802D8228 96.5 -> 99.8, code identical: `s32 col = field_0x14; if (col in range) { s32 row =
+  field_0x18; if (row in range) {...} }` and the name from fn_802D9C7C(field_0x4, field_0x8) (inlined: field_0x8
+  loads first). Only the format string's reloc name differs (the .rodata string order: "bg_%s_scl" etc. need
+  the rest of the unit).
+- Tried, no gain: the fn_802DE93C view-reload family with a GameRootSub04 local (`sub->mView->...`) stays 91.0.
+Unwritten: fn_802D3D48 (CSV), fn_802D4CCC (0x1DD0, uses lbl_8046E190), fn_802DED40 / fn_802DEC40 (view-reload family).
+SHARED-EDITS: include/game/GameView.h (fn_802D4CCC(s32) declared as a member; fn_802D8328 parameter names; comments);
+include/game/GameGlobals.h (cls_80204638::fn_80204ABC(bool), owner tu_80204638); include/game/act/tu_801DAC6C.h
+(extern u8 lbl_8053AC30, defined in tu_801DAC6C.cpp); include/game/act/act_small_key.h (field_0x23C u8[4] -> u32
+field_0x23c: stw by fn_802D8328). symbols.txt: fn_802D4CCC -> fn_802D4CCC__17GameView_804A9950Fl, fn_80204ABC ->
+fn_80204ABC__12cls_80204638Fb.

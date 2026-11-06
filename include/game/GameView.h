@@ -75,7 +75,9 @@ public:
     // 0x1DD0 bytes; this unit only (fn_802D8D50 passes 0 and 8-14). Rebuilds the
     // layer's slot list (field_0x131b8[layer], field_0x131df[layer] cleared first).
     void fn_802D4CCC(s32 layer);
-    // 0x92C bytes; this unit only (fn_802D9CD8, fn_802DBD60, vfunc_0xC).
+    // 0x92C bytes; this unit only (fn_802D9CD8, fn_802DBD60, vfunc_0xC). Loads
+    // the background ('bg_%s_*' from fn_802D9C4C) and object tile images and
+    // palettes into the tile map; sets field_0x131f1 for the 'u' backgrounds.
     void fn_802D92F0();
     // 1 unit / 1 call. sprintf of "d_map%s_%d%d_mmm_2_%d.szs" (lbl_8046E7E8)
     // into field_0x1321a for the current screen and `layer`; returns it, or
@@ -83,11 +85,16 @@ public:
     const char* fn_802D8128(s32 layer);
     // 1 unit. The same with the second name format (0x802D8228).
     const char* fn_802D8228(s32 layer);
-    // 0xA28 bytes; this unit only. Loads the current screen; the second
-    // flag is stored in field_0x131f6. Both arguments are bools (clrlwi.).
-    void fn_802D8328(bool a, bool b);
-    // 0x5A0 bytes; this unit only. Rebuilds the screen state; reload is
-    // tested with clrlwi. (fn_802DCD1C passes 1, the reload paths 0).
+    // 0xA28 bytes; this unit only. Spawns the current screen's actors from its
+    // "d_enemy_map%s_%d%d.bin" records (11 bytes: tag, layer, cell x / y,
+    // parameter), then 'TINK', 'LFGN', 'TBGN', 'SWDL' and the screen's 'LSTI' /
+    // 'KEY0' slots; with reset, also clears the per-stage actor lists (and
+    // lbl_8053AC30). flag is stored in field_0x131f6. Both are bools (clrlwi.).
+    void fn_802D8328(bool reset, bool flag);
+    // 0x5A0 bytes; this unit only. Loads the current screen's tile grids
+    // ('M' + stage name resources, layers 0/1 and 8-22) and sets mVisibleBox and
+    // the tile map's cell counts; with reload, first copies layers 0/1 to 4/5
+    // (tested with clrlwi.; fn_802DCD1C passes 1, the reload paths 0).
     void fn_802D8D50(bool reload);
     // 1 unit. Entry field_0x44 of the 16-entry table lbl_804A96D0, or the
     // .sdata2 default lbl_805410DC.

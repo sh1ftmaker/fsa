@@ -1080,6 +1080,84 @@ const char* GameView_804A9950::fn_802D9C1C() {
     return "0";
 }
 
+// FIXME: 99.4. Structurally close, two instructions: in the inlined fn_802DEBA0 the target
+// reloads the view for the stage >= 13 test (the fn_802DEBA0 family). The .rodata strings
+// sit elsewhere in the target: "bg_%s_scl.szs", "bg_%s_ura_scl.szs" (not used here) and
+// "bg_%s_gb_scl.szs" come before "bg_base_sch.szs".
+// Loads the stage's background and object tile images and palettes into the tile map
+// (the background set from fn_802D9C4C's name, the object set from fn_802D9C1C's).
+void GameView_804A9950::fn_802D92F0() {
+    char sch[0x20];
+    char scl[0x20];
+    char gbScl[0x20];
+    gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_base_sch.szs"), 0, 0, 0x6000, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_base_sch.szs"), 0, 1, 0x6000, 0);
+    const char* name = fn_802D9C4C();
+    if (name[0] == 'u') {
+        getGameView_802D6A9C()->field_0x131f1 = 1;
+    }
+    sprintf(sch, "bg_%s_sch.szs", name);
+    sprintf(scl, "bg_%s_scl.szs", name);
+    sprintf(gbScl, "bg_%s_gb_scl.szs", name);
+    gGameRoot2_8053AB10->field_0x20->fn_802FA160(gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', sch), 0, 0, 0, 0);
+    if (name[0] == 'c') {
+        gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_c2_sch.szs"), 0, 1, 0, 0);
+    } else {
+        gGameRoot2_8053AB10->field_0x20->fn_802FA160(gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', sch), 0, 1, 0, 0);
+    }
+    gGameRoot2_8053AB10->field_0x20->fn_802F9DA8(gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', scl), 0, 0, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9DA8(gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', gbScl), 0, 1, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9DA8(gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', gbScl), 0, 2, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9BE8(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SPL ', "bg_a_spl.szs"), 0, 0, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
+    sprintf(sch, "gb_ch_obj_tr_sch%s.szs", fn_802D9C1C());
+    gGameRoot2_8053AB10->field_0x20->fn_802F9714(gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', sch), 0, 0, 0x7000, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
+    if (fn_802DEBA0() == true) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "ending_sch.szs"), 0, 1, 0, 0);
+    } else {
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "enemy_sch.szs"), 0, 1, 0, 0);
+    }
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 1, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals2_sch.szs"), 0, 2, 0, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+    // Slots 4-11 one call each: the target has eight calls (a loop is not unrolled).
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 4, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 5, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 6, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 7, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 8, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 9, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 10, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+        gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "gb_cl_obj_base_scl.szs"), 0, 11, 0, 0, false);
+    gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
+}
+
 // The tile map, gGameRoot2_8053AB10->0x20, through an inlined accessor (no out-of-line copy is
 // left): the original loads it before the resource lookup that is its call's first argument,
 // as MWCC orders an inlined call with the other calls (RULES_CARD "inlined getter"); written
