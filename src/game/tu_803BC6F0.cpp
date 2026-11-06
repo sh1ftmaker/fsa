@@ -244,6 +244,21 @@ static inline void setSpritePos(FileSelect_804AFF60* self, JGeometry::TVec3f* po
     pos->z = 0.0f;
 }
 
+// The file list's message 0x117 becomes 0x116 while
+// gGameRoot_8053AAF8->field_0x7f is set; messages 0x60 and 0x64 start the
+// field_0xb0 countdown (90 frames). The callers reload field_0x84 after the
+// text call, so the tests read the member.
+inline void FileSelect_804AFF60::setMessage(u32 msg) {
+    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
+        msg = 0x116;
+    }
+    field_0x84 = msg;
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+        field_0xb0 = 0x5A;
+    }
+}
+
 // Run each frame by fn_803CE9EC (index: mState).
 static FileSelect_804AFF60::StateFunc lbl_804AFD70[40] = {
     &FileSelect_804AFF60::fn_803CE370, &FileSelect_804AFF60::fn_803CE11C,
@@ -635,15 +650,7 @@ void FileSelect_804AFF60::fn_803CF504() {
     field_0x116 = 0;
     field_0xb4 = 0;
     field_0x117 = 0;
-    u32 msg = field_0x84;
-    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
-        msg = 0x116;
-    }
-    field_0x84 = msg;
-    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-        field_0xb0 = 0x5A;
-    }
+    setMessage(field_0x84);
     for (s32 i = 0; i < 8; i++) {
         field_0xb8[i] = fn_803B8CAC(0, i);
     }
@@ -974,16 +981,7 @@ void FileSelect_804AFF60::fn_803CE370() {
     if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0 || field_0xb0 == 0) {
         field_0xb0 = -1;
         field_0x80 = 0;
-        u32 msg = 0x117;
-        if (gGameRoot_8053AAF8->field_0x7f != 0) {
-            msg = 0x116;
-        }
-        field_0x84 = msg;
-        getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(),
-                    field_0x84, 0, NULL, NULL);
-        if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-            field_0xb0 = 0x5A;
-        }
+        setMessage(0x117);
         if (field_0x20->mPane->getBounds()->i.x - field_0x20->field_0x8 < 600.0f) {
             field_0x20->field_0x20 = 0;
             field_0x20->field_0x26 = 0;
@@ -1178,11 +1176,7 @@ void FileSelect_804AFF60::fn_803CD2DC() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
         if (hasBadChecksum(field_0xa4)) {
             field_0x114 = 1;
-            field_0x84 = 0x5E;
-            getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-            if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-                field_0xb0 = 0x5A;
-            }
+            setMessage(0x5E);
             getMessageText_803832BC(((J2DTextBox*)mScreen->search('Tdb01'))->getStringPtr(), 0x65, 0, NULL, NULL);
             fn_803BF9C4();
         } else {
@@ -1596,11 +1590,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
                         field_0xa0 = 1;
                     }
                 }
-                field_0x84 = 0x61;
-                getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-                if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-                    field_0xb0 = 0x5A;
-                }
+                setMessage(0x61);
                 fn_803C1340();
                 break;
             }
@@ -1608,11 +1598,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
         case 2:
             if (gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80.getFile(field_0xa4).field_0x0 != 0) {
                 field_0x114 = 1;
-                field_0x84 = 0x5E;
-                getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-                if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-                    field_0xb0 = 0x5A;
-                }
+                setMessage(0x5E);
                 field_0x34->mPane->setAlpha(0);
                 field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
                 field_0x34->field_0x26 = 0;
@@ -1767,15 +1753,7 @@ void FileSelect_804AFF60::fn_803C4330() {
     if (lbl_8053AD30->fn_80309C4C(0x1300, 1) != 0 || field_0xb0 == 0) {
         field_0xb0 = -1;
         fn_803CE4CC();
-        u32 msg = 0x117;
-        if (gGameRoot_8053AAF8->field_0x7f != 0) {
-            msg = 0x116;
-        }
-        field_0x84 = msg;
-        getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-        if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-            field_0xb0 = 0x5A;
-        }
+        setMessage(0x117);
         field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
         field_0x50->field_0x20 = 0;
         field_0x50->mPane->setAlpha(0);
@@ -1978,15 +1956,7 @@ void FileSelect_804AFF60::fn_803C2E24() {
 // alpha 0 and goes to state 4.
 void FileSelect_804AFF60::fn_803C24BC() {
     fn_803CE4CC();
-    u32 msg = 0x117;
-    if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        msg = 0x116;
-    }
-    field_0x84 = msg;
-    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-        field_0xb0 = 0x5A;
-    }
+    setMessage(0x117);
     field_0x14->mPane->hide();
     field_0x18->mPane->hide();
     field_0x1c->mPane->hide();
@@ -2031,6 +2001,45 @@ void FileSelect_804AFF60::fn_803C24BC() {
     field_0xd8 = 0;
     field_0xda = 0;
     setState(4);
+}
+
+// fn_803CABAC (the file menu), closing it: rereads the files (fn_803CE4CC),
+// shows the file list's message (0x117 / 0x116 as fn_803C0018), slides the
+// file cursor off to the left and fades it, stops the rows, the board's
+// movers and the four buttons; state 6.
+void FileSelect_804AFF60::fn_803C21A8() {
+    fn_803CE4CC();
+    setMessage(0x117);
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x14->field_0x20 = 0;
+    field_0x14->field_0x26 = 0;
+    field_0x18->field_0x20 = 0;
+    field_0x18->field_0x26 = 0;
+    field_0x1c->field_0x20 = 0;
+    field_0x1c->field_0x26 = 0;
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    for (s32 i = 0; i < 4; i++) {
+        field_0x24[i]->field_0x22 = 0;
+        field_0x24[i]->field_0x26 = 0;
+    }
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(6);
 }
 
 // FIXME: 99.33 %. Register allocation only: the table loops' counter and
@@ -2150,20 +2159,15 @@ void FileSelect_804AFF60::fn_803C1734() {
     setState(18);
 }
 
+// Not auto-inlined: fn_803C92B8 calls fn_803C0018 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // Called by fn_803C92B8 (state 24): shows the file list's message (0x117, or
 // 0x116 with gGameRoot_8053AAF8->field_0x7f set), hides the file cursor
 // ('Pfcur01'..'04') and 'Paccur01', stops the rows' and buttons' movers,
 // state 29.
 void FileSelect_804AFF60::fn_803C0018() {
-    u32 msg = 0x117;
-    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
-        msg = 0x116;
-    }
-    field_0x84 = msg;
-    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-        field_0xb0 = 0x5A;
-    }
+    setMessage(0x117);
     field_0x50->mPane->setAlpha(0);
     field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
     field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
@@ -2189,6 +2193,7 @@ void FileSelect_804AFF60::fn_803C0018() {
     field_0xda = 0;
     setState(29);
 }
+#pragma auto_inline reset
 
 // FIXME: 98.49 %. Register allocation and scheduling only: `this` lands in
 // r28 (original r31) and the loop registers shift (r26..r30); the 9-pane loop
@@ -2284,15 +2289,7 @@ void FileSelect_804AFF60::fn_803BF9C4() {
 // the rows, the board or the buttons and the first two buttons; state 39.
 void FileSelect_804AFF60::fn_803BF698() {
     fn_803CE4CC();
-    u32 msg = 0x117;
-    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
-        msg = 0x116;
-    }
-    field_0x84 = msg;
-    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
-    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
-        field_0xb0 = 0x5A;
-    }
+    setMessage(0x117);
     field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
     field_0x50->field_0x20 = 0;
     field_0x50->mPane->setAlpha(0);

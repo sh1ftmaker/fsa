@@ -124,6 +124,9 @@ public:
         mPrevState = mState;
         mState = state;
     }
+    // Shows message `msg` in mScreenHuuin's 'Tft01' (defined in
+    // tu_803BC6F0.cpp; ten callers there have the same inlined code).
+    inline void setMessage(u32 msg);
 
     /* 0x000 */ // vtable
     /* 0x004 */ J2DScreen* mScreen;      // "file_select.blo"
