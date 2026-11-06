@@ -3,6 +3,7 @@
 #include "game/act/act_stop_npc.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/Map.h"
 #include "game/Player.h"
 
 s32 lbl_804A0170[12] = {
@@ -100,6 +101,79 @@ LiftableItem_804A01D0::~LiftableItem_804A01D0() {
     releaseEmitter_801EE434(mEmitter2a8);
     releaseEmitter_801EE434(mEmitter2ac);
     releaseEmitter_801EE434(mEmitter2b0);
+}
+
+void LiftableItem_804A01D0::draw() {
+    if (!fn_8023188C(field_0x250)) {
+        return;
+    }
+    s32 r30 = 0;
+    if (field_0x234 >= 8 && field_0x234 <= 11) {
+        r30 = 1;
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x1d = 1;
+    params.field_0x1c = 1;
+    params.field_0x2d = 1;
+
+    if (field_0x234 == 0x2f) {
+        return;
+    }
+
+    if (field_0x234 <= 7) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + lbl_804A01A0[field_0x234], &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234], r30 != 0, 2, -1, true, 0, 0);
+    } else if (field_0x234 <= 11) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x244 + lbl_804A01A0[field_0x234], &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234 - 4], r30 != 0, 2, -1, true, 0, 0);
+    } else if (field_0x234 >= 0x10 && field_0x234 <= 0x19) {
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+        s32 id = field_0x234 + 0x1d;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x234 + 0x1d, false, 2, -1, true, 0, 0);
+    } else if (field_0x234 == 0x20) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x90, &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + 0x90, false, 2, -1, true, 0, 0);
+    } else if (field_0x234 == 0x21) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x2af, &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + 0x2af, false, 2, -1, true, 0, 0);
+    } else if (field_0x234 == 0x22) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x8c, &params, 7, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + 0x8c, false, 2, -1, false, 0, 0);
+    } else if (field_0x234 == 0x23) {
+        params.field_0x2d = 1;
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x2aa, &params, 7, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, 0x2aa, false, 2, -1, false, 0, 0);
+    } else if (field_0x234 == 0x24) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x2c7, &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + 0x2c7, false, 2, -1, true, 0, 0);
+    } else if (field_0x234 == 0x25) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x98, &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, 0x98, false, 2, -1, true, 0, 0);
+    } else if (field_0x234 >= 0x2a && field_0x234 <= 0x2d) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x234 + 0x255, &params, -1, 1.0f, 1.0f);
+    } else if (field_0x234 == 0x2e) {
+        return;
+    } else if (field_0x234 < 0x40) {
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+        s32 id = field_0x234 + 0x11;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x234 + 0x11, false, 2, -1, true, 0, 0);
+    } else {
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+        s32 id = field_0x234 + 0x1cd;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x234 + 0x1cd, false, 2, -1, true, 0, 0);
+    }
 }
 
 void LiftableItem_804A01D0::vfunc_0x24() {
