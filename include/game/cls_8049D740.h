@@ -11,24 +11,37 @@
 
 class cls_8049D740 : public cls_8049D140 {
 public:
+    cls_8049D740();
     /* 0x08 */ virtual ~cls_8049D740();
     // Calls cls_8049D140::init(), then sets mMode and the Maiden's animation
     // (key table, animation 5 in mode 2, frame 0).
     /* 0x0C */ virtual void init();
     /* 0x10 */ virtual void vfunc_0x10(); // copies the Goal (DMGL) actor's position
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
+    /* 0x5C */ virtual s32 vfunc_0x5C();
 
+    void fn_80112654(s32 arg);
+    void fn_80112AE8();
 
-    /* 0x230 */ s32 field_0x230; // not yet known
+    /* 0x230 */ u8 field_0x230;
+    /* 0x231 */ u8 field_0x231[3];
     /* 0x234 */ s32 mMode; // field_0x90 & 0x1F, set by init
     /* 0x238 */ s32 field_0x238; // returned by vfunc_0x58
-    /* 0x23C */ u8 field_0x23c[0x18]; // not yet known
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ f32 field_0x248;
+    /* 0x24C */ f32 field_0x24c;
+    /* 0x250 */ f32 field_0x250;
     // The position of the Goal (DMGL) actor, copied by vfunc_0x10.
     /* 0x254 */ JGeometry::TVec3f mGoalPos;
     /* 0x260 */ SpriteAnim_801D267C mAnim;
     /* 0x298 */ JPABaseEmitter* mEmitter298; // released by the destructor
     /* 0x29C */ JPABaseEmitter* mEmitter29c; // released by the destructor
     /* 0x2A0 */ JPABaseEmitter* mEmitter2a0; // released by the destructor
-}; // Size: at least 0x2A4
+}; // Size: 0x2A4
 
 #endif
