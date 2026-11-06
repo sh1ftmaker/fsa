@@ -51,6 +51,8 @@ void OctorokRock_8049F5D8::init() {
     field_0x230 = 0;
 }
 
+// Same shape as act_bombchu's vfunc_0x4C (the blocking tile codes as a != chain, the 0x25 /
+// 0x26 results narrowed as bytes).
 bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -62,58 +64,26 @@ bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (code == 0x230 || code == 0x231) {
         return false;
     }
-    // FIXME: 68.7 %. The 30 tile codes are one run of compares in the original,
-    // in source order (0, 4, 5, 6, 7, 2, 3, ...), each to one shared `li 0`;
-    // this switch is emitted sorted, and as a `||` chain MWCC folds 2..7 into a range.
-    // The 0x25 / 0x26 returns also differ: the original converts the cntlzw
-    // result with extrwi 8,19 where this emits srwi 5.
-    switch (tile) {
-    case 0x0:
-    case 0x4:
-    case 0x5:
-    case 0x6:
-    case 0x7:
-    case 0x2:
-    case 0x3:
-    case 0x50:
-    case 0xE:
-    case 0xC:
-    case 0x27:
-    case 0x28:
-    case 0x29:
-    case 0x2A:
-    case 0x2B:
-    case 0x2C:
-    case 0x2D:
-    case 0x2E:
-    case 0x2F:
-    case 0x20:
-    case 0xD:
-    case 0x39:
-    case 0x3A:
-    case 0x3B:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x24:
-        return false;
-    default:
-        break;
+    if (tile != 0 && tile != 4 && tile != 5 && tile != 6 && tile != 7 && tile != 2 &&
+        tile != 3 && tile != 0x50 && tile != 0xE && tile != 0xC && tile != 0x27 &&
+        tile != 0x28 && tile != 0x29 && tile != 0x2A && tile != 0x2B && tile != 0x2C &&
+        tile != 0x2D && tile != 0x2E && tile != 0x2F && tile != 0x20 && tile != 0xD &&
+        tile != 0x39 && tile != 0x3A && tile != 0x3B && tile != 0x4C && tile != 0x4D &&
+        tile != 0x4E && tile != 0x4F && tile != 0x24) {
+        if (code == 0x3A || code == 0x3D) {
+            return false;
+        }
+        if (tile == 0x25) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 0);
+        }
+        if (tile == 0x26) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+        }
+        if (tile != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+            return true;
+        }
     }
-    if (code == 0x3A || code == 0x3D) {
-        return false;
-    }
-    if (tile == 0x25) {
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    }
-    if (tile == 0x26) {
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    }
-    if (tile == 0x22) {
-        return getGameView_802D6A9C()->field_0x170 == 1;
-    }
-    return true;
+    return false;
 }
 
 void OctorokRock_8049F5D8::update() {
