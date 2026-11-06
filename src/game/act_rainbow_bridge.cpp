@@ -42,6 +42,7 @@ inline bool cls_8049E610::isPlayerOn(s32 player) {
 inline void cls_8049E610::checkActivate() {
     if (vfunc_0x34()) {
         field_0x238 = 1;
+        // The original stores the state and then switches on it (a state setter inlined here, asm 0x8012A058).
         switch (field_0x238) {
         case 0:
             break;
@@ -81,7 +82,7 @@ cls_8049E610::cls_8049E610()
     }
 }
 
-// FIXME: 87.42% (different: r29/r30 register swap in the emitter loop).
+// FIXME: 87.42% (try.py class different, but instruction count and order are identical: only the register assignment differs. The original keeps the loop index in r30, the field pointer in r29 and the NULL in r31; ours has index r29, pointer r30).
 cls_8049E610::~cls_8049E610() {
     for (int i = 0; i < 5; i++) {
         releaseEmitter_801EE434(field_0x23c[i]);
@@ -89,7 +90,7 @@ cls_8049E610::~cls_8049E610() {
     }
 }
 
-// FIXME: 99.78% (reloc-name: 1.0f literal offset in .sdata2).
+// FIXME: 99.78% (reloc-name only: the unit's .sdata2 literals (1.0f, -40.0f, ...) are @NNN here, lbl_8053CB38..48 in the original, i.e. pool order differs; code is identical).
 void cls_8049E610::init() {
     ActorBase_804A5770::init();
     field_0x230 = (field_0x90 >> 22) & 0x1F;
@@ -102,7 +103,7 @@ void cls_8049E610::init() {
     field_0x80.set(mBox);
 }
 
-// FIXME: 97.69% (missing/extra + reloc-name: 1 more instruction due to r26/r27 register allocation in the player loop, plus .sdata2 literal order).
+// FIXME: 97.69% (missing/extra + reloc-name: one extra instruction, a copy of the player index (mr r27,r26) from the inlined isPlayerOn parameter, which also costs one more saved register (stmw r26 vs r27); the rest is the same register renaming as __dt__ in the emitter loops, plus .sdata2 literal pool order).
 void cls_8049E610::update() {
     ActorBase_804A5770::update();
     switch (field_0x238) {
