@@ -22,8 +22,6 @@ act_digging_game	dtor	__dt__26DiggingGameKeeper_8049C970Fv	DiggingGameKeeper_804
 act_digging_game	sinit	__sinit_act_digging_game_cpp	-	-	new	new
 act_door	dtor	__dt__13Door_804A8D88Fv	Door_804A8D88	0x804A8D88	new	new
 act_door	sinit	__sinit_act_door_cpp	-	-	new	new
-act_dropped_item	dtor	__dt__20DroppedItem_804A8C80Fv	DroppedItem_804A8C80	0x804A8C80	new	new
-act_dropped_item	sinit	__sinit_act_dropped_item_cpp	-	-	new	new
 act_extending_lift	dtor	__dt__22ExtendingLift_804A78B0Fv	ExtendingLift_804A78B0	0x804A78B0	new	new
 act_extending_lift	sinit	__sinit_act_extending_lift_cpp	-	-	new	new
 act_fire_rod_fire	sinit	__sinit_act_fire_rod_fire_cpp	-	-	new	-
