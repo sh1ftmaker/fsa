@@ -14,6 +14,14 @@
 #include "game/Player.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
+// The Dolphin SDK's indexed vertex writes (GXVert.h's GXPosition1x16 /
+// GXColor1x16 / GXTexCoord1x16), which libs/sdk's GXVert.h lacks: added there
+// they renumber the @NNN objects of the generator's sinit units, so they stay
+// here, the only game user (fn_802FC268).
+static inline void GXPosition1x16(const u16 x) { GXWGFifo.u16 = x; }
+static inline void GXColor1x16(const u16 x) { GXWGFifo.u16 = x; }
+static inline void GXTexCoord1x16(const u16 x) { GXWGFifo.u16 = x; }
+
 // The palettes of fn_802FF798's 16 colour-index textures per layer.
 static const GXTlut lbl_8046F940[16] = {
     GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
@@ -545,6 +553,114 @@ void TileMap_804AA858::fn_802FC80C() {
             GXSetZMode(GX_TRUE, GX_LEQUAL, GX_FALSE);
             fn_802FC268(&field_0x2368, 0, mLayerGrid[0]);
         }
+    }
+}
+
+// FIXME: 87.0. Structurally close (2 instructions more): the original builds
+// the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
+// -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
+// block counters in different stack slots / registers (one more spilled), and
+// orders the count loop's four field_0x24 loads differently. Literals and the
+// .rodata table (lbl_8046F9F0$NNN) are reloc-name.
+// Draws the tile grid `grid` of `layer` (2 x 2 blocks of 16 x 16 tiles, up to
+// the field_0x2380 x field_0x2384 cells of the height grid) at origin, raised
+// by (layer - 0.5) * 1024 in y and z, one palette at a time (field_0x18[0]):
+// each tile's 2 x 2 entries of field_0x24 are quads on the 65-wide height grid
+// vertices (position and colour indices), with field_0x110's corner texture
+// coordinates (the entry's tile and flips) and the screen position / 128.
+// fn_802FC80C sets up the vertex format.
+void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u16* grid) {
+    static const GXTlut lbl_8046F9F0[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    JGeometry::TVec3f pos(*origin);
+    f32 offset = 1024.0f * (layer - 0.5f);
+    pos.y += offset;
+    pos.z += offset;
+    Mtx m;
+    PSMTXTrans(m, pos.x, pos.y, pos.z);
+    gGameRoot2_8053AB10->fn_8013B3CC(m);
+    GXTlutObj tluts[16];
+    for (int i = 0; i < 16; i++) {
+        GXInitTlutObj(&tluts[i], field_0x18[0] + i * 0x20, GX_TL_RGB5A3, 16);
+        GXLoadTlut(&tluts[i], lbl_8046F9F0[i]);
+    }
+    s32 counts[16];
+    for (int i = 0; i < 16; i++) {
+        counts[i] = 0;
+    }
+    for (int by = 0; by < 2; by++) {
+        for (int bx = 0; bx < 2; bx++) {
+            s32 block = by * 2 + bx;
+            for (int y = 0; y < 16 && by * 16 + y < field_0x2384 / 2; y++) {
+                for (int x = 0; x < 16 && bx * 16 + x < field_0x2380 / 2; x++) {
+                    u16 tile = grid[(block * 16 + y) * 16 + x];
+                    if (tile != 0) {
+                        for (int k = 0; k < 4; k++) {
+                            counts[(field_0x24[tile * 4 + k] >> 12) & 0xF]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    GXTexObj tex;
+    for (int palette = 0; palette < 16; palette++) {
+        if (counts[palette] <= 0) {
+            continue;
+        }
+        GXInitTexObjCI(&tex, field_0x4[0], 0x80, 0x200, GX_TF_C4, GX_CLAMP, GX_CLAMP, GX_FALSE,
+                       lbl_8046F9F0[palette]);
+        GXLoadTexObj(&tex, GX_TEXMAP0);
+        GXBegin(GX_QUADS, GX_VTXFMT0, counts[palette] * 4);
+        for (int by = 0; by < 2; by++) {
+            for (int bx = 0; bx < 2; bx++) {
+                s32 block = by * 2 + bx;
+                for (int y = 0; y < 16 && by * 16 + y < field_0x2384 / 2; y++) {
+                    for (int x = 0; x < 16 && bx * 16 + x < field_0x2380 / 2; x++) {
+                        u16 tile = grid[(block * 16 + y) * 16 + x];
+                        if (tile == 0) {
+                            continue;
+                        }
+                        for (int j = 0; j < 2; j++) {
+                            for (int i = 0; i < 2; i++) {
+                                u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                if (((entry >> 12) & 0xF) != palette) {
+                                    continue;
+                                }
+                                s32 cx = bx * 32 + x * 2 + i;
+                                s32 cy = by * 32 + y * 2 + j;
+                                u16 corner = entry & 0xFFF;
+                                f32 s = (origin->x + cx * 8) * 0.0078125f;
+                                f32 t = (origin->y + cy * 8) * 0.0078125f;
+                                u16 vertex = cx + cy * 65;
+                                GXPosition1x16(vertex);
+                                GXColor1x16(vertex);
+                                GXTexCoord1x16(corner);
+                                GXTexCoord2f32(s, t);
+                                vertex++;
+                                GXPosition1x16(vertex);
+                                GXColor1x16(vertex);
+                                GXTexCoord1x16(corner ^ 0x400);
+                                GXTexCoord2f32(0.0625f + s, t);
+                                vertex += 65;
+                                GXPosition1x16(vertex);
+                                GXColor1x16(vertex);
+                                GXTexCoord1x16(corner ^ 0xC00);
+                                GXTexCoord2f32(0.0625f + s, 0.0625f + t);
+                                vertex--;
+                                GXPosition1x16(vertex);
+                                GXColor1x16(vertex);
+                                GXTexCoord1x16(corner ^ 0x800);
+                                GXTexCoord2f32(s, 0.0625f + t);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GXEnd();
     }
 }
 
