@@ -682,14 +682,13 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
     }
 }
 
-// FIXME: 87.2. Structurally close (2 instructions more): in the mosaic the
+// FIXME: 87.9. Structurally close (6 instructions more): in the mosaic the
 // original multiplies h * py and w * px per pixel, ours strength-reduces them
 // (four more registers, so flag / alpha live on the stack: lbz 0x8 / 0x9);
 // read from rect2 inside the loops instead it is 89.1 with 6 fewer (reloads).
-// Both mode-11 tests are a byte in the original (subfic / cntlzw / extrwi.,
-// the unsolved shape of tu_80285E58's fn_80286688); the first tint stores its
-// colour bytes before its box; mode goes through r0; stack slots differ; the
-// literals are reloc-name.
+// The two mode-11 tests are isGameMode (the byte, as the original); the first
+// tint stores its colour bytes before its box; mode goes through r0; stack
+// slots differ; the literals are reloc-name.
 // One player's panel (fn_802FF0EC): the ortho box rect and viewport / scissor
 // rect2; with flag the record's tile layer mValid - 1 (on its palette set's
 // first colour, field_0x114) and, when the overlay flag (mEntries[3].mScrollBit) is set and the pause screen
@@ -720,8 +719,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
                                (c & 0x1F) << 3 | (c & 0x1F) >> 2, 0xFF);
         fn_8013B004(&fill, &color);
         if (record->mEntries[3].mScrollBit) {
-            u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
-            if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
+            if (!(isGameMode(GAME_MODE_B) || gGameRoot_8053AAF8->field_0x88 != 0) ||
                 (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {
                 u8 mode = 6;
                 if (record->mValid <= 1 || field_0x134[player] != 0) {
@@ -766,8 +764,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
     if (flag) {
         gGameRoot2_8053AB10->fn_8013B3F0();
         if (record->mEntries[3].mScrollBit) {
-            u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
-            if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
+            if (!(isGameMode(GAME_MODE_B) || gGameRoot_8053AAF8->field_0x88 != 0) ||
                 (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {
                 if (field_0x130[player] == 1) {
                     fn_802FAC10(record->mValid + 7, scrollX, scrollY, field_0x134[player], 0x80, 0xFF, offsets);
