@@ -334,3 +334,49 @@ SHARED-EDITS
 - tu_803BC6F0.h: members fn_803C02CC, fn_803C1054, fn_803C05D8; inline setMessage.
 - symbols.txt: fn_803BACF8 -> fn_803BACF8__FP17SaveFile_803B950CUc; fn_803C1054, fn_803C02CC, fn_803C05D8
   -> ...__19FileSelect_804AFF60Fv (this in r3, FileSelect fields).
+
+## Session 2026-11-06 (Opus, round 2: the 12 large states, structure first)
+
+Baseline (progress.py, matching 7955f810): `total: 8934 / 11557 functions, 1802348 / 4442032 bytes of code (40.57 %)`,
+structural 9465 (+138 close). Unit 21/65.
+After: `total: 8944 / 11557 functions, 1815128 / 4442032 bytes of code (40.86 %)`, structural 9473 (+141 close).
+Unit 31/65; .text 99.16 %, .sdata2 98.04 % (only the pool's last word left). No drops anywhere (per-address
+compare against the main report_honest.json: 0 drops, 42 gains).
+
+All twelve written (try.py class after the pool fix):
+- fn_803C5190 98.48 scheduling+regalloc (state 34: delete; board out, msg 0x5F / 'Tdb01' 0x67, fn_803B933C clears the
+  file, checksum, card write; state 33).
+- fn_803C0A34 99.69 regalloc-only (fn_803C9F14 after the copy's card write: board of field_0xa0, msg 0x64; state 23).
+- fn_803C9898 98.47 scheduling+regalloc (state 22: copy; memcpy of file a4 over a0, checksum, card write; state 21).
+- fn_803C8B80 98.56 scheduling+regalloc (state 25: destination cursor skipping field_0xa4; cursor bob as fn_803C4054).
+- fn_803C3904 98.24 different, same length (state 38: fn_803C2E24's row part; &others register).
+- fn_803C6798 99.80 scheduling+regalloc (state 29). `s32` row counter needed: with `int` the loop keeps a second walker
+  for field_0x70 / field_0x64 (97.87, 6 more instructions). No effect in the other functions.
+- fn_803C5808 98.63 missing/extra 1 (state 32: fn_803CB3DC's shape and timings with the copy board, 2 buttons).
+- fn_803C4628 99.90 regalloc-only (state 35). The checksum test materialises the bool (neg/or/srwi.): `!= false`.
+- fn_803CC760 98.47 different, same length (state 6: fn_803C2E24 with four buttons; restores Pcopb/Pdelb colours).
+- fn_803C70B8 99.49 scheduling+regalloc (state 28: copy prompt's no; fn_803C6798's rows + fn_803BC6F0 fade).
+- fn_803C7F7C 99.39 scheduling+regalloc (state 26: copy board in; destination row's new target field_0x70/64).
+- fn_803C9F80 98.52 different, same length (state 20: copy entry; rows spaced around the 2nd/3rd rows' middle).
+
+Literal pool solved: fn_803CE9EC's two 'kk_' fade cases are one helper, setFadeStep (plain static, at the bottom of
+the file, inlined twice, out-of-line copy dropped by the linker like getProgressMsg). Compiled first, it pools
+0, -200, 200 and the two conversion doubles ahead of fn_803BC6F0's 1.0: the .sdata2 order is now the original's and
+every reloc-name FIXME went: fn_803CF504, fn_803CEED4, fn_803CE9EC, fn_803CD2DC, fn_803C6690, fn_803C4330,
+fn_803C24BC, fn_803C21A8, fn_803C1340, fn_803BF698 -> 100.
+
+field_0xff: the original compares it as a signed int at all three tests (lbz + cmpwi; u8 / bool / s8 give cmplwi /
+extsb); `(s32)` cast in fn_803CABAC (98.46 -> 98.69) and fn_803CE4CC (99.02 -> 99.21). Flag for review: if a cast
+is judged codegen-steering, revert to the plain test (cmplwi, 2 instrs).
+
+Common open shapes (each in its FIXME):
+- Timing sums `delay + (frames + step)`: the original adds frames + step first, ours step + delay (fn_803C5190,
+  fn_803C9898, fn_803C6798, fn_803C70B8, fn_803C7F7C, fn_803C3904); `* 1` / reordering / declaration order don't change it.
+- &others register (fn_803C2E24, fn_803C3904, fn_803C9F80, fn_803CC760): the original keeps the array address in one
+  register from the fill loop to the row loop; a second pointer variable gets the fill right but copies it (98.39).
+- fsubs f0/f2 operand swap in `field_0x38[0]->field_0xc - field_0x38[a]->field_0xc` (as fn_803CE370).
+
+SHARED-EDITS
+- tu_803BC6F0.h: comments only (fn_803BD5E0, fn_803C24BC no longer "not written").
+- No symbols.txt / other headers touched. tools/order_check.py (all units) reports 11 other units out of order,
+  none of them this one (pre-existing).
