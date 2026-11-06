@@ -17,6 +17,34 @@
 #include "game/act/act_cannon.h"
 #include "game/act/tu_801F9484.h"
 
+// Directions by facing (right, left, down, up) and the pad bit of each facing; lbl_8046BDA8 and
+// lbl_8046BE18 hold the same steps. fn_80284978 addresses lbl_8046BE08 / lbl_8046BE18 /
+// lbl_8046BE48 off one base (MWCC shares it between the file's tables).
+static const Vec lbl_8046BDA8[4] = {
+    {10.0f, 0.0f, 0.0f},
+    {-10.0f, 0.0f, 0.0f},
+    {0.0f, 10.0f, 0.0f},
+    {0.0f, -10.0f, 0.0f},
+};
+static const Vec lbl_8046BDD8[4] = {
+    {12.0f, 0.0f, 0.0f},
+    {-12.0f, 0.0f, 0.0f},
+    {0.0f, 12.0f, 0.0f},
+    {0.0f, -12.0f, 0.0f},
+};
+static const u32 lbl_8046BE08[4] = {2, 1, 4, 8};
+static const Vec lbl_8046BE18[4] = {
+    {10.0f, 0.0f, 0.0f},
+    {-10.0f, 0.0f, 0.0f},
+    {0.0f, 10.0f, 0.0f},
+    {0.0f, -10.0f, 0.0f},
+};
+static const Vec lbl_8046BE48[4] = {
+    {-10.0f, 0.0f, 0.0f},
+    {10.0f, 0.0f, 0.0f},
+    {0.0f, -10.0f, 0.0f},
+    {0.0f, 10.0f, 0.0f},
+};
 // Speeds along the facing (right, left, down, up): with 3 up for fn_80281760, flat for fn_80281D50.
 static const Vec lbl_8046BE78[4] = {
     {2.0f, 0.0f, 0.0f},
@@ -64,6 +92,13 @@ static const f32 lbl_8046C018[4][4][2] = {
     {{-16.0f, 0.0f}, {0.0f, 0.0f}, {-16.0f, 16.0f}, {0.0f, 16.0f}},
     {{0.0f, -16.0f}, {16.0f, -16.0f}, {0.0f, 0.0f}, {16.0f, 0.0f}},
     {{-16.0f, -16.0f}, {0.0f, -16.0f}, {-16.0f, 0.0f}, {0.0f, 0.0f}},
+};
+// The frames 0x3F9 of state 0x0E by facing, per 8 steps of the cycle 0x3F8.
+static const u8 lbl_8046C098[4][8] = {
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 1, 2, 3},
+    {0, 1, 2, 3, 0, 4, 5, 6},
+    {0, 1, 2, 3, 0, 4, 5, 6},
 };
 // The facing of each player (by index) in the four-player formation: on view-flag layers / elsewhere.
 static const s32 lbl_8046C0B8[4] = {2, 1, 0, 3};
@@ -2301,6 +2336,82 @@ void Player_804A6F38::fn_8028496C() {
     field_0xda4 = -1;
 }
 
+// Update of state 0x1A (pushing / pulling a block): standing (0) when the tile ahead (+10 along
+// the facing) is free or tile 0xE / 0x39 / 0xD and neither fn_802684A4 nor fn_8024F63C holds, or
+// when the tile behind is blocked; to 0xE while the grabbed actor (fn_8024FF84) moves; the pushed
+// actor 0xDA4 (fn_8024FF6C) carries the player along while it moves (0.1 or more a frame), else
+// letting go (fn_802456FC) stands and pressing the facing's pad bit (lbl_8046BE08) goes to 0xD;
+// the push frames (sound 0x10012 at 16 of the 64-frame cycle) while fn_8024FEFC or carried.
+void Player_804A6F38::fn_80284978() {
+    const Vec& ahead = lbl_8046BE18[field_0x3dc];
+    JGeometry::TVec3f front;
+    front.x = ahead.x;
+    front.y = ahead.y;
+    front.z = ahead.z;
+    front += mPos;
+    const Vec& behind = lbl_8046BE48[field_0x3dc];
+    JGeometry::TVec3f back;
+    back.x = behind.x;
+    back.y = behind.y;
+    back.z = behind.z;
+    back += mPos;
+    u16 tile = fn_8022461C(&front, field_0x3b4);
+    if ((!fn_802265DC(&front, field_0x3b4, true) || tile == 0xe || tile == 0x39 || tile == 0xd) &&
+        !fn_802684A4(&front, field_0x3b4) && !fn_8024F63C()) {
+        fn_80251AEC(0);
+    } else if (fn_802265DC(&back, field_0x3b4, true) || fn_802684A4(&back, field_0x3b4)) {
+        fn_80251AEC(0);
+    } else {
+        if (fn_8024FF84() >= 0) {
+            ActorBase_804A5770* grabbed = getActorManager_801F856C()->findActorBySerial_801F666C(fn_8024FF84());
+            if (grabbed != NULL && magnitude(grabbed->mPos - grabbed->mPrevPos) >= 0.1f) {
+                fn_80251AEC(0xe);
+                return;
+            }
+        }
+        bool carried = false;
+        if (field_0xda4 >= 0) {
+            ActorBase_804A5770* pushed = getActorManager_801F856C()->findActorBySerial_801F666C(fn_8024FF6C());
+            if (pushed != NULL) {
+                if (magnitude(pushed->mPos - pushed->mPrevPos) >= 0.1f) {
+                    carried = true;
+                    mPos += pushed->field_0x3c;
+                } else if (!fn_802456FC()) {
+                    fn_80251AEC(0);
+                } else if (fn_802456FC() && fn_80246D1C(lbl_8046BE08[field_0x3dc])) {
+                    fn_80251AEC(0xd);
+                }
+            } else {
+                field_0xda4 = -1;
+                if (fn_802456FC() && fn_80246D1C(lbl_8046BE08[field_0x3dc])) {
+                    fn_80251AEC(0xd);
+                }
+            }
+        } else if (!fn_802456FC()) {
+            fn_80251AEC(0);
+        } else if (fn_802456FC() && fn_80246D1C(lbl_8046BE08[field_0x3dc])) {
+            fn_80251AEC(0xd);
+        }
+        if (fn_8024FEFC() || carried) {
+            field_0x3f8++;
+            if (field_0x3f8 == 16) {
+                fn_8024F0E8(0x10012);
+            } else if (field_0x3f8 >= 64) {
+                field_0x3f8 = 0;
+            }
+            if (field_0x3f8 >= 32) {
+                field_0x3f9 = (field_0x3f8 - 32) / 8;
+            } else {
+                field_0x3f9 = field_0x3f8 / 8;
+            }
+        } else {
+            field_0x3f8 = 0;
+            field_0x3f9 = 0;
+        }
+    }
+    fn_80268B3C();
+}
+
 void Player_804A6F38::fn_80284DD0() {
     field_0x458 = 0;
     field_0xda4 = -1;
@@ -2311,6 +2422,47 @@ void Player_804A6F38::fn_80284DE4() {
     field_0xd9c = -1;
     field_0xd98 = 0;
     field_0x1170 = 60;
+}
+
+// Update of state 0x0E (moving with a pushed block): standing (0) when the tile 12 ahead is free
+// or tile 0xE / 0x39 / 0xD and neither fn_802684A4 nor fn_80250090 holds; while the grabbed actor
+// (fn_8024FF84) moves (0.1 or more a frame) the player moves with it (its 0x3C) through a
+// 128-frame cycle 0x3F8 (frames lbl_8046C098 by facing, sound 0x10012 at 16); else back to 0x1A
+// (still holding, fn_802456FC, without fn_80244630) or 0xD.
+void Player_804A6F38::fn_80284E04() {
+    const Vec& ahead = lbl_8046BDD8[field_0x3dc];
+    JGeometry::TVec3f front;
+    front.x = ahead.x;
+    front.y = ahead.y;
+    front.z = ahead.z;
+    front += mPos;
+    u16 tile = fn_8022461C(&front, field_0x3b4);
+    if ((!fn_802265DC(&front, field_0x3b4, true) || tile == 0xe || tile == 0x39 || tile == 0xd) &&
+        !fn_802684A4(&front, field_0x3b4) && !fn_80250090()) {
+        fn_80251AEC(0);
+    } else {
+        ActorBase_804A5770* grabbed = getActorManager_801F856C()->findActorBySerial_801F666C(fn_8024FF84());
+        if (grabbed != NULL && magnitude(grabbed->mPos - grabbed->mPrevPos) >= 0.1f) {
+            mPos += grabbed->field_0x3c;
+            field_0x3f8++;
+            if (field_0x3f8 >= 128) {
+                field_0x3f8 = 0;
+            }
+            if (field_0x3f8 >= 64) {
+                field_0x3f9 = lbl_8046C098[field_0x3dc][(field_0x3f8 - 64) / 8];
+            } else {
+                field_0x3f9 = lbl_8046C098[field_0x3dc][field_0x3f8 / 8];
+            }
+            if (field_0x3f8 == 16) {
+                fn_8024F0E8(0x10012);
+            }
+        } else if (fn_802456FC() && !fn_80244630()) {
+            fn_80251AEC(0x1a);
+        } else {
+            fn_80251AEC(0xd);
+        }
+    }
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_80285068() {
