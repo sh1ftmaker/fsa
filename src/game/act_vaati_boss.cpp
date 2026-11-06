@@ -204,6 +204,34 @@ void VaatiBoss_804A4958::vfunc_0x94() {
     }
 }
 
+void VaatiBoss_804A4958::vfunc_0x74() {
+    if (mState == 5) {
+        fn_801E4D74();
+    }
+
+    if (mFlags & 0x8000) {
+        mFlags &= ~0x8000;
+        if (fn_801CD2F8(field_0x4)) {
+            fn_801D5D84(0x15);
+        } else {
+            fn_801D5D84(0x17);
+        }
+    } else if (mState == 11) {
+        if (fn_801CD2F8(field_0x4)) {
+            fn_801D5D84(0xF);
+        } else {
+            field_0x448.fn_80217CD8();
+            fn_801D5D84(0xC);
+        }
+    } else if (fn_801CD2F8(field_0x4)) {
+        if (mState >= 15 && mState < 21 && mState != 17) {
+            fn_801D5D84(10);
+        }
+    } else if (mLife > 0 && mState != 23) {
+        field_0x448.fn_80217CD8();
+    }
+}
+
 void VaatiBoss_804A4958::vfunc_0x24() {}
 
 VaatiBoss_804A4958::~VaatiBoss_804A4958() {}
