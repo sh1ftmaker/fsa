@@ -10,11 +10,11 @@ s32 lbl_804D4768[0x90];
 // Frame counter of the update; 0 after init.
 s32 lbl_8053ACB0;
 
-// FIXME: 86.53 %. The original fills lbl_804D4768 with two passes of 40
-// unrolled stores (ctr 2, stride 0xA0); this loop compiles to one store per
-// pass. The archive type is built as 0x42202020 with the first two chars
-// reduced by 0x20 (u32 'B' + name chars, not a multichar literal), and this,
-// stage and view sit in r30/r29/r31 where the original has r29/r31/r30.
+// FIXME: 96.17. Structurally close: the target reads field_0x234 before the getGameView
+// call of the tile lookup (field_0x238 after it, as if the column came through an inlined
+// accessor) and copies the tile byte from r0 to r9 after the 0xFF test; the format string
+// waits for the unit's .rodata split (lbl_8046E9F8). The archive type is 'B   ' plus the
+// stage name's chars less ' ', added after the sprintf (GameView fn_802D8328's form).
 void cls_804A9BC8::init() {
     for (int i = 0; i < 0x50; i++) {
         lbl_804D4768[i] = -1;
@@ -31,8 +31,9 @@ void cls_804A9BC8::init() {
         tile = 0;
     }
     char buf[0x20];
+    u32 type = 'B   ';
     sprintf(buf, "d_enemy_map%s_%d%d.bin", name, tile / 10, tile % 10);
-    u32 type = 'B' << 24 | name[0] << 16 | name[1] << 8 | name[2];
+    type += ((name[0] - ' ') << 16) + ((name[1] - ' ') << 8) + (name[2] - ' ');
     field_0x244 = (u8*)fn_804032E8(type, buf);
     field_0x248 = 0;
     field_0x23c = (field_0x90 >> 16) & 7;
