@@ -27,6 +27,7 @@ public:
     // fn_8012562C: copies the low byte of field_0x90 to field_0x35c and bits
     // 5-9 (from the top) of field_0x90 to field_0x3cc.
     /* 0x64 */ virtual void vfunc_0x64();
+    /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
     // 0x80124C4C: sets the key tables of mAnim (14 of them, lbl_8049E198),
     // plays animation 7 in mode 2 without keeping the frame, and sets frame 0.
     /* 0x70 */ virtual void vfunc_0x70();

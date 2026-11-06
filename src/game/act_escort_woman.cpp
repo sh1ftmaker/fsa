@@ -1,4 +1,7 @@
 #include "game/GameAudio.h"
+#include "game/ActorManager.h"
+#include "game/GameView.h"
+#include "game/Player.h"
 #include "game/act/act_escort_woman.h"
 
 // The escort's animation keys: (cel, frames) s16 pairs, ended by a cel of -1.
@@ -74,6 +77,70 @@ u8 EscortWoman_8049E1D0::vfunc_0x60() {
 void EscortWoman_8049E1D0::vfunc_0x64() {
     field_0x35c = field_0x90 & 0xFF;
     field_0x3cc = (field_0x90 >> 22) & 0x1F;
+}
+
+s32 EscortWoman_8049E1D0::vfunc_0x6C(s32 state) {
+    field_0x330 = 0;
+    field_0x335 = 0;
+    field_0x378 = 0;
+    switch (state) {
+    case 0:
+        field_0x330 = 1;
+        mAnim.startAnim_801D22DC(7, 2, false);
+        break;
+    case 4:
+        field_0x11e = 1;
+        fn_801F3604();
+        break;
+    case 5:
+        fn_8012202C();
+        break;
+    case 6:
+        fn_80121FA8();
+        mAnim.startAnim_801D22DC(2, 2, false);
+        break;
+    case 7:
+        mAnim.startAnim_801D22DC(fn_80230CFC(fn_8012285C()), 2, false);
+        field_0x333 = 0;
+        field_0x354 = 0;
+        break;
+    case 8:
+        mAnim.startAnim_801D22DC(fn_80230CFC(fn_8012285C()), 2, false);
+        break;
+    case 9:
+        mAnim.startAnim_801D22DC(field_0x98 + 10, 0, false);
+        field_0x333 = 1;
+        startSound_801F0E34(0x40071, 0);
+        field_0x3c8 = 0;
+        fn_80121F34();
+        break;
+    case 10:
+        mAnim.startAnim_801D22DC(4, 0, false);
+        startSound_801F0E34(0x40072, 0);
+        break;
+    case 11:
+        getActorManager_801F856C()->fn_801F6884();
+        fn_80121764();
+        break;
+    case 12:
+        mAnim.startAnim_801D22DC(2, 2, false);
+        fn_80121764();
+        fn_80121ABC();
+        field_0x333 = 1;
+        break;
+    case 14:
+        fn_80121D68();
+        fn_801220C4();
+        break;
+    case 13:
+        field_0x331 = 0;
+        break;
+    case 17:
+        getGameView_802D6A9C()->fn_802D8050(field_0x3cc, 1, 0xFF);
+        mAlive = false;
+        break;
+    }
+    return EscortBase_8049E0C8::vfunc_0x6C(state);
 }
 
 void EscortWoman_8049E1D0::vfunc_0x70() {
