@@ -149,7 +149,7 @@ void Dodongo_804A3334::init() {
     }
 }
 
-// FIXME: 95.30 %. missing/extra + reloc-name: ours has 14 fewer instrs (1216 vs 1230). Register allocation and minor instruction scheduling differences.
+// FIXME: 95.33 %. missing/extra + reloc-name: ours has 14 fewer instrs (1216 vs 1230). The original keeps TVec3f temporaries on the stack (stfs/lfs at 0x34-0x3C(r1), around 0x738 and 0xE38) that ours lacks, addresses lbl_804A3108 through a base register with lfsx, and schedules some loads differently.
 void Dodongo_804A3334::fn_801ACFF4() {
     const f32* data = lbl_804A3108;
     f32 posY = mPos.y;
@@ -274,15 +274,15 @@ void Dodongo_804A3334::fn_801ACFF4() {
                     if (field_0x294 == 1) {
                         if ((r28 == 1 && field_0x98 == 0) || (r28 == 0 && field_0x98 == 1)) {
                             setAnim(4);
+                            field_0x230 = 3;
+                            break;
                         }
                     }
-                    field_0x230 = 3;
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+                        field_0x230 = 10;
+                    }
                     break;
                 }
-            }
-            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
-                field_0x230 = 10;
-                break;
             }
         }
         setAnim(0);
