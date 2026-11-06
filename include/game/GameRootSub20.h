@@ -31,7 +31,7 @@ struct GameRootSub20_801902C0 {
         /* 0x40 */ J3DAnmTextureSRTKey* mBtk;
         /* 0x44 */ J3DAnmTevRegKey* mBrk;
         /* 0x48 */ f32 field_0x48;
-        /* 0x4C */ s32 field_0x4c;
+        /* 0x4C */ u8 field_0x4c[4]; // not yet known
         /* 0x50 */ s32 field_0x50;
         /* 0x54 */ s32 field_0x54;
         /* 0x58 */ s32 field_0x58;

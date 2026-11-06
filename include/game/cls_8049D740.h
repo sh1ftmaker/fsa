@@ -17,14 +17,8 @@ public:
     // (key table, animation 5 in mode 2, frame 0).
     /* 0x0C */ virtual void init();
     /* 0x10 */ virtual void vfunc_0x10(); // copies the Goal (DMGL) actor's position
-    /* 0x14 */ virtual void update();
-    /* 0x20 */ virtual void draw();
-    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
-
-    void fn_80112654(s32 arg);
-    void fn_80112AE8();
 
     /* 0x230 */ u8 field_0x230;
     /* 0x231 */ u8 field_0x231[3];
