@@ -2586,6 +2586,7 @@ void Player_804A6F38::fn_80285690() {
         } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
             // Read before the call: the original loads the layer first (declaration order only steers scheduling).
             s32 layer = field_0x3b4;
+            // Named result: compared as cmpw r3, layer; `layer == call` / `call == layer` swap the operands.
             s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
             if (leaderLayer == layer) {
                 fn_80251AEC(3);
@@ -2671,6 +2672,7 @@ void Player_804A6F38::fn_802859C4() {
             } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
                 // Read before the call: the original loads the layer first (declaration order only steers scheduling).
                 s32 layer = field_0x3b4;
+                // Named result: compared as cmpw r3, layer; `layer == call` / `call == layer` swap the operands.
                 s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
                 if (leaderLayer == layer) {
                     fn_80251AEC(3);
