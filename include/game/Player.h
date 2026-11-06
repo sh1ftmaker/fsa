@@ -246,8 +246,9 @@ public:
     bool fn_80250FD4(); // tu_8023FBF0 (0x80250FD4), called by fn_80250D30
     u8 fn_802517E4(); // via fn_8022D894
     bool fn_80251BFC(s32 arg); // via fn_802319B4
-    // tu_8023FBF0 (not written there yet). Writes the player's two screen ints to *out (0, 0
-    // first) and returns whether it found them; fn_80231A50 / fn_80231DE4 call it.
+    // tu_8023FBF0. Whether the player may walk off the screen (state 0x1B) at an edge of
+    // the visible box; writes the direction (-1 / 1 in x or y, else 0, 0) to *out.
+    // fn_80231A50 / fn_80231DE4 call it.
     bool fn_802527B0(JGeometry::TVec2<s32>* out);
     bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8
     bool fn_8026E5F8(const JGeometry::TVec2f* pos); // tu_802684A4 (0x8026E5F8)
