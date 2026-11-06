@@ -1,3 +1,4 @@
+#include "JSystem/JMath/JMath.h"
 #include "game/ActorManager.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
@@ -5,6 +6,8 @@
 #include "game/Player.h"
 #include "game/act/act_special_conversation_npc.h"
 
+// 3 bytes in the original (symbol size).
+static u8 lbl_8053A1B0[3] = {60, 10, 0};
 
 // The state table update() runs from (field_0x238). Not const, so its
 // initialiser (lbl_804AAE68) is copied into it at static-init time.
@@ -17,6 +20,10 @@ static void (SpecialConversationNPC_804AAFB8::*lbl_804AAED4[9])() = {
 };
 // The frame counts of the cycle (field_0x25c), indexed by field_0x264.
 static s32 lbl_804AAF40[6] = {2, 3, 4, 5, 4, 3};
+static s32 lbl_804AAF58[6] = {1, 0, 0, 5, 5, 0};
+static s32 lbl_804AAF70[6] = {2, 2, 3, 4, 3, 3};
+static s32 lbl_804AAF88[6] = {1, 0, 5, 5, 0, 0};
+static s32 lbl_804AAFA0[6] = {4, 4, 3, 2, 2, 2};
 
 void SpecialConversationNPC_804AAFB8::init() {
     mState = 0;
@@ -174,6 +181,7 @@ void SpecialConversationNPC_804AAFB8::update() {
     }
 }
 
+// FIXME: 99.81%. same-text: instruction bytes identical; differs on literal pool relocations.
 void SpecialConversationNPC_804AAFB8::draw() {
     if (field_0x270 != 0) {
         switch (field_0x23c & 3) {
@@ -301,6 +309,129 @@ void SpecialConversationNPC_804AAFB8::fn_803193B4() {
     }
 }
 
+inline void SpecialConversationNPC_804AAFB8::updateFacing() {
+    if (field_0x268 <= 0) {
+        field_0x268 = 20;
+        JGeometry::TVec3f dir;
+        f32 dist;
+        if (mPlayer < 0 || getPlayerLayer_8023DE58(mPlayer) != field_0x4) {
+            fn_801EE558(&dir, &dist, 0);
+        } else {
+            fn_801EE558(&dir, &dist, mPlayer + 1);
+        }
+        if (dist < 80.0f) {
+            u32 angle = (u16)(JMath::atanTable_.atan2_(-dir.x, -dir.y) *
+                              (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+            if (angle < 0x2000 || angle >= 0xE000) {
+                field_0x264 = 3;
+            } else if (angle >= 0x2000 && angle < 0x6000) {
+                field_0x264 = 1;
+            } else if (angle >= 0x6000 && angle <= 0xA000) {
+                field_0x264 = 2;
+            } else {
+                field_0x264 = 0;
+            }
+        } else {
+            field_0x264 = 2;
+        }
+    } else {
+        field_0x268--;
+    }
+}
+
+// FIXME: 98.81%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
+void SpecialConversationNPC_804AAFB8::fn_803190E0() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    box = field_0x248;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    if (mState != 1) {
+        fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+        s32 player = fn_8022FD8C(mSerial);
+        if (player >= 0) {
+            if (fn_802300EC(player)) {
+                u32 msg = field_0x244;
+                s32 serial = mSerial;
+                if (talkC678(player, msg, serial, field_0x4, mPos, 0x10)) {
+                    mPlayer = player;
+                    mState = 1;
+                }
+            }
+        }
+    } else {
+        fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(mPlayer, mSerial)) {
+            mPlayer = -1;
+            mState = 0;
+        }
+    }
+    if (field_0x23c == 1) {
+        updateFacing();
+        field_0x25c = field_0x264 << 3;
+    }
+}
+
+// FIXME: 99.02%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
+void SpecialConversationNPC_804AAFB8::fn_80318D74() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    box = field_0x248;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    if (mState != 1) {
+        if (getGameView_802D6A9C()->fn_802D7F40(2) == true) {
+            mAlive = false;
+            return;
+        }
+        fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+        s32 player = fn_8022FD8C(mSerial);
+        if (player >= 0) {
+            if (fn_802300EC(player)) {
+                u32 msg = field_0x244;
+                s32 serial = mSerial;
+                if (talkC678(player, msg, serial, field_0x4, mPos, 0x10)) {
+                    mPlayer = player;
+                    mState = 1;
+                }
+            }
+        }
+    } else {
+        fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(mPlayer, mSerial)) {
+            mPlayer = -1;
+            mState = 0;
+        }
+    }
+    if (field_0x23c == 1) {
+        field_0x260++;
+        if (field_0x260 >= 8) {
+            field_0x260 = 0;
+            field_0x25c ^= 1;
+        }
+    } else {
+        field_0x260--;
+        if (field_0x260 <= 0) {
+            field_0x25c ^= 1;
+            field_0x260 = lbl_8053A1B0[field_0x25c & 1];
+        }
+        updateFacing();
+        field_0x25c = (field_0x25c & 1) + (field_0x264 << 1);
+    }
+}
+
 void SpecialConversationNPC_804AAFB8::fn_80318B84() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -335,6 +466,60 @@ void SpecialConversationNPC_804AAFB8::fn_80318B84() {
     }
     field_0x260++;
     if ((field_0x25c == 0 && field_0x260 >= 0x10) || (field_0x25c == 1 && field_0x260 >= 0x32)) {
+        field_0x260 = 0;
+        field_0x25c ^= 1;
+    }
+}
+
+// FIXME: 99.00%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
+void SpecialConversationNPC_804AAFB8::fn_803187F4() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    box = field_0x248;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    if (mState != 1) {
+        updateFacing();
+        if (field_0x264 != 3) {
+            fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+            s32 player = fn_8022FD8C(mSerial);
+            if (player >= 0) {
+                if (fn_802300EC(player)) {
+                    if (getGameView_802D6A9C()->fn_802D7F40(1) == true) {
+                        field_0x244 = 0x578;
+                    } else {
+                        field_0x244 = 0x577;
+                    }
+                    if (talk(player, field_0x244, mSerial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                        field_0x25c &= 1;
+                        field_0x25c |= field_0x264 << 1;
+                    }
+                }
+            }
+        }
+        if (mState == 0) {
+            field_0x264 = 2;
+            field_0x268 = 0;
+        }
+    } else {
+        fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(mPlayer, mSerial)) {
+            mPlayer = -1;
+            mState = 0;
+            field_0x264 = 2;
+            field_0x268 = 0;
+            field_0x25c &= 1;
+            field_0x25c += 4;
+        }
+    }
+    field_0x260++;
+    if (field_0x260 >= 0x18) {
         field_0x260 = 0;
         field_0x25c ^= 1;
     }
@@ -384,6 +569,150 @@ void SpecialConversationNPC_804AAFB8::fn_803185A8() {
         } else {
             field_0x25c++;
             field_0x25c &= 1;
+        }
+    }
+}
+
+void SpecialConversationNPC_804AAFB8::fn_8031825C() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    if ((!getGameView_802D6A9C()->fn_802D800C(0x1F) && field_0x264 == 2) ||
+        getGameView_802D6A9C()->fn_802D800C(0x1F) == true) {
+        box = field_0x248;
+        box.i.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.x += mPos.x;
+        box.f.y += mPos.y;
+        if (mState != 1) {
+            fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+            s32 player = fn_8022FD8C(mSerial);
+            if (player >= 0) {
+                if (fn_802300EC(player)) {
+                    u32 msg = field_0x244;
+                    s32 serial = mSerial;
+                    if (talk(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                        if (!getGameView_802D6A9C()->fn_802D800C(0x1F)) {
+                            s32 other = field_0x258;
+                            if (other >= 0) {
+                                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
+                                if (actor != NULL && actor->mActorId == 'SNPC') {
+                                    SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
+                                    if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
+                                        snpc->field_0x264 = 3;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
+            if (fn_80388CAC(mPlayer, mSerial)) {
+                mPlayer = -1;
+                mState = 0;
+                if (!getGameView_802D6A9C()->fn_802D800C(0x1E)) {
+                    s32 other = field_0x258;
+                    if (other >= 0) {
+                        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
+                        if (actor != NULL && actor->mActorId == 'SNPC') {
+                            SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
+                            if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
+                                snpc->field_0x264 = 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    field_0x260--;
+    if (field_0x260 <= 0) {
+        if (field_0x264 == 2) {
+            field_0x25c = lbl_804AAF58[field_0x25c];
+        } else {
+            field_0x25c = lbl_804AAF70[field_0x25c];
+        }
+        if (field_0x25c == 2 || field_0x25c == 5) {
+            field_0x260 = 8;
+        } else {
+            field_0x260 = 10;
+        }
+    }
+}
+
+void SpecialConversationNPC_804AAFB8::fn_80317F18() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    if ((!getGameView_802D6A9C()->fn_802D800C(0x1E) && field_0x264 == 2) ||
+        getGameView_802D6A9C()->fn_802D800C(0x1E) == true) {
+        box = field_0x248;
+        box.i.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.x += mPos.x;
+        box.f.y += mPos.y;
+        if (mState != 1) {
+            fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+            s32 player = fn_8022FD8C(mSerial);
+            if (player >= 0) {
+                if (fn_802300EC(player)) {
+                    u32 msg = field_0x244;
+                    s32 serial = mSerial;
+                    if (talk(player, msg, serial, field_0x4, mPos, 0x10) ? (mPlayer = player, mState = 1, true) : false) {
+                        if (!getGameView_802D6A9C()->fn_802D800C(0x1E)) {
+                            s32 other = field_0x258;
+                            if (other >= 0) {
+                                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
+                                if (actor != NULL && actor->mActorId == 'SNPC') {
+                                    SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
+                                    if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
+                                        snpc->field_0x264 = 3;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            fn_8022FF8C(mPlayer, &box, field_0x4, mSerial, true, false);
+            if (fn_80388CAC(mPlayer, mSerial)) {
+                mPlayer = -1;
+                mState = 0;
+                if (!getGameView_802D6A9C()->fn_802D800C(0x1F)) {
+                    s32 other = field_0x258;
+                    if (other >= 0) {
+                        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
+                        if (actor != NULL && actor->mActorId == 'SNPC') {
+                            SpecialConversationNPC_804AAFB8* snpc = static_cast<SpecialConversationNPC_804AAFB8*>(actor);
+                            if (snpc->field_0x238 == 6 || snpc->field_0x238 == 7 || snpc->field_0x238 == 0 || snpc->field_0x238 == 8) {
+                                snpc->field_0x264 = 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    field_0x260--;
+    if (field_0x260 <= 0) {
+        if (field_0x264 == 2) {
+            field_0x25c = lbl_804AAF88[field_0x25c];
+        } else {
+            field_0x25c = lbl_804AAFA0[field_0x25c];
+        }
+        if (field_0x25c < 4) {
+            field_0x260 = 20;
+        } else {
+            field_0x260 = 8;
         }
     }
 }

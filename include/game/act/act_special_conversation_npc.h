@@ -33,6 +33,8 @@ public:
     void fn_803193B4();
     void fn_80319658();
 
+    void updateFacing();
+
     // fn_8038AD24 takes the position by value. The original loads the message,
     // serial and layer before that copy, so they are parameters here.
     bool talk(u32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
