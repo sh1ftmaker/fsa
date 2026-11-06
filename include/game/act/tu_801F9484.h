@@ -10,6 +10,7 @@
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
 #include "game/act/act_wallmaster.h"
+#include "game/act/act_wizzrobe.h"
 #include "game/act/tu_8018EB94.h"
 #include "game/act/tu_801B6C50.h"
 #include "game/act/tu_803D9944.h"
@@ -168,13 +169,6 @@ public:
     /* 0x314 */ u8 field_0x314[0x24];
 }; // Size: 0x338
 
-// Spawned for 'WIZR'.
-class Wizzrobe_804A0EDC : public ActorBase_804A5770 {
-public:
-    Wizzrobe_804A0EDC() {}
-    /* 0x08 */ virtual ~Wizzrobe_804A0EDC();
-    /* 0x230 */ u8 field_0x230[0xDC];
-}; // Size: 0x30C
 
 // Spawned for 'FGAN'.
 class cls_804A1318 : public ActorBase_804A5770 {
