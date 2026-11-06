@@ -118,6 +118,12 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
 // Emitter offsets from mPos by facing (fn_80274CB8 is its first user, fn_8027D320).
 static const f32 lbl_8046BB48[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
 
+// Steps of 2 in the eight directions (fn_8027AAD0, by field_0x3e8).
+static const Vec lbl_8046BBD8[8] = {
+    {2.0f, 0.0f, 0.0f}, {-2.0f, 0.0f, 0.0f}, {0.0f, 2.0f, 0.0f}, {0.0f, -2.0f, 0.0f},
+    {2.0f, 2.0f, 0.0f}, {-2.0f, 2.0f, 0.0f}, {2.0f, -2.0f, 0.0f}, {-2.0f, -2.0f, 0.0f},
+};
+
 // Unit steps for the eight directions (fn_8027A1E0, by field_0x3e8): right, left, down, up,
 // then the diagonals at 0.7.
 static const Vec lbl_8046BC38[8] = {
@@ -256,6 +262,41 @@ static inline void setSpinCenter(Player_804A6F38* player) {
         }
         break;
     }
+}
+
+// BgRewrite fn_802A20F0 at the eight probe points (fn_8024B298) pushed twice as far from the
+// player (fn_8027A1E0, fn_8027AAD0).
+static inline void rewriteProbes(Player_804A6F38* player) {
+    for (s32 i = 0; i < 8; i++) {
+        JGeometry::TVec3f pos;
+        player->fn_8024B298(i, &pos);
+        pos.sub(player->mPos);
+        pos.scale(2.0f);
+        pos.add(player->mPos);
+        gBgRewrite_8053AC98->fn_802A20F0(&pos, player->field_0x4, player->field_0x3b4, 0, 1);
+    }
+}
+
+// Group spin (fn_802486A0() == 3): walk 6 a frame toward this player's spot (fn_8027FA08),
+// or onto it when closer (fn_8027B648, fn_8027AAD0).
+static inline void walkToGroupSpot(Player_804A6F38* player) {
+    JGeometry::TVec3f to;
+    player->fn_8027FA08(&to);
+    JGeometry::TVec3f dir = to - player->mPos;
+    dir.z = 0.0f;
+    if (magnitude(dir) >= 6.0f) {
+        dir.normalize();
+        dir.scale(6.0f);
+        player->mPos += dir;
+    } else {
+        player->mPos.set(to);
+    }
+}
+
+// Whether the tile at (x, y, z) blocks (fn_802265DC with flag 1).
+static inline bool blockedAt(f32 x, f32 y, f32 z, s32 layer) {
+    JGeometry::TVec3f pos(x, y, z);
+    return fn_802265DC(&pos, layer, true);
 }
 
 // Whether the life (the leader's under fn_80240808, as life()) is at its maximum.
@@ -595,23 +636,13 @@ void Player_804A6F38::fn_8027BA2C() {
 // fn_8023434C) frames 11-34 walk toward fn_8027FA08's spot at 6 per frame. At frame 10, with
 // no 'SWBM' actor yet (0xB38), one is spawned in front when the life is full (or with
 // fn_80241284 and 0x11AC == 1 at 2+ life); the emitter 0x12BC circles mPos at 20 by 0x11C0.
-// FIXME: 96.22. The inlined lifeFull result is materialised (li r0, 0 / 1; clrlwi.) where the
+// FIXME: 96.14. The stack slots of the inlined walkToGroupSpot differ, and the inlined lifeFull result is materialised (li r0, 0 / 1; clrlwi.) where the
 // original branches straight from its two compares into the spawn block (bge / blt), and with
 // the extra live value the saved registers are r29-r31 shifted by one (this in r30, not r31).
 void Player_804A6F38::fn_8027B648() {
     fn_80274988();
     if (fn_802486A0() == 3 && !fn_8023434C(field_0x4) && field_0x3fa >= 11 && field_0x3fa < 35) {
-        JGeometry::TVec3f to;
-        fn_8027FA08(&to);
-        JGeometry::TVec3f dir = to - mPos;
-        dir.z = 0.0f;
-        if (magnitude(dir) >= 6.0f) {
-            dir.normalize();
-            dir.scale(6.0f);
-            mPos += dir;
-        } else {
-            mPos.set(to);
-        }
+        walkToGroupSpot(this);
     }
     gBgRewrite_8053AC98->fn_802A20F0(&field_0x30c, field_0x4, field_0x3b4, 0, 1);
     fn_80268B3C();
@@ -679,6 +710,90 @@ void Player_804A6F38::fn_8027B304() {
     field_0x11c0 = 0;
 }
 
+// Update of state 0x0A (the spin attack): the spin animation (fn_80274728) and step
+// (fn_8027EB04). In a group spin (mode 3 without fn_8023434C) the spin centre 0x11B4 moves 2 a
+// frame with the stick (fn_8022C82C / fn_8022C76C) unless one of the three tiles 24 ahead
+// blocks, and from frame 11 the player walks to its spot; otherwise it drifts 2 along the facing
+// 0x3E8. BgRewrite runs at 0x30C (twice) and the probe points; sound 0x20029; the emitter 0x12B8
+// follows the player and 0x12BC circles it at 20 by the angle 0x11C0 (depths by fn_8024EE0C,
+// heights by fn_8024EE14); the step emitters 0x1378 (tile 0x39) / 0x1374.
+// FIXME: 99.60. Stack offsets only: every temporary sits 0x18 higher in ours (the original
+// puts the probe and emitter vectors above the tile-test vectors).
+void Player_804A6F38::fn_8027AAD0() {
+    fn_80274728();
+    fn_8027EB04();
+    if (fn_802486A0() == 3 && !fn_8023434C(field_0x4)) {
+        if (fn_8022C82C(field_0x4) > 0.0f) {
+            if (!blockedAt(field_0x11b4.x + 24.0f, field_0x11b4.y - 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x + 24.0f, field_0x11b4.y, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x + 24.0f, field_0x11b4.y + 24.0f, field_0x11b4.z, field_0x3b4)) {
+                field_0x11b4.x += 2.0f;
+            }
+        } else if (fn_8022C82C(field_0x4) < 0.0f) {
+            if (!blockedAt(field_0x11b4.x - 24.0f, field_0x11b4.y - 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x - 24.0f, field_0x11b4.y, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x - 24.0f, field_0x11b4.y + 24.0f, field_0x11b4.z, field_0x3b4)) {
+                field_0x11b4.x -= 2.0f;
+            }
+        }
+        if (fn_8022C76C(field_0x4) < 0.0f) {
+            if (!blockedAt(field_0x11b4.x + 24.0f, field_0x11b4.y + 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x, field_0x11b4.y + 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x - 24.0f, field_0x11b4.y + 24.0f, field_0x11b4.z, field_0x3b4)) {
+                field_0x11b4.y += 2.0f;
+            }
+        } else if (fn_8022C76C(field_0x4) > 0.0f) {
+            if (!blockedAt(field_0x11b4.x + 24.0f, field_0x11b4.y - 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x, field_0x11b4.y - 24.0f, field_0x11b4.z, field_0x3b4) &&
+                !blockedAt(field_0x11b4.x - 24.0f, field_0x11b4.y - 24.0f, field_0x11b4.z, field_0x3b4)) {
+                field_0x11b4.y -= 2.0f;
+            }
+        }
+        if (field_0x3fa >= 11) {
+            walkToGroupSpot(this);
+        }
+    } else {
+        const Vec& dirStep = lbl_8046BBD8[field_0x3e8];
+        JGeometry::TVec3f step(dirStep.x, dirStep.y, dirStep.z);
+        mPos.add(step);
+    }
+    fn_802709C8();
+    fn_802709C8();
+    fn_80268B3C();
+    rewriteProbes(this);
+    fn_8024F0E8(0x20029);
+    if (field_0x12b8 != NULL) {
+        setEmitterPos_8013CB44(field_0x12b8, &mPos, fn_8024EE14(), fn_8024EE0C() - 1, false);
+    }
+    if (field_0x12bc != NULL) {
+        JGeometry::TVec3f pos = mPos;
+        pos.x += 20.0f * JMath::sincosTable_.cosShort(field_0x11c0);
+        pos.y += 20.0f * JMath::sincosTable_.sinShort(field_0x11c0);
+        setEmitterPos_8013CB44(field_0x12bc, &pos, fn_8024EE14(), fn_8024EE0C() + 1, false);
+    }
+    if (fn_8022461C(&mPos, field_0x3b4) == 0x39) {
+        if (field_0x1378 == NULL) {
+            field_0x1378 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d4, 0, -1, &field_0x13a8, NULL, true, 1.0f);
+        } else {
+            setEmitterPos_8013CB44(field_0x1378, &mPos, 0, -1, true);
+        }
+        if (field_0x1374 != NULL) {
+            field_0x1374->becomeInvalidEmitter();
+            field_0x1374 = NULL;
+        }
+    } else {
+        if (field_0x1374 == NULL) {
+            field_0x1374 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d3, 0, -1, &field_0x1398, NULL, true, 1.0f);
+        } else {
+            setEmitterPos_8013CB44(field_0x1374, &mPos, 0, -1, true);
+        }
+        if (field_0x1378 != NULL) {
+            field_0x1378->becomeInvalidEmitter();
+            field_0x1378 = NULL;
+        }
+    }
+}
+
 void Player_804A6F38::fn_8027AA10() {
     deleteEmitter(&field_0x12b8);
     deleteEmitter(&field_0x12bc);
@@ -696,7 +811,7 @@ void Player_804A6F38::fn_8027AA10() {
 // sound 0x20010, a view shake, 0x344 = 2.5 against the facing, z 2) or, under fn_8022AF5C's
 // alternative, hands the facing on to the group (fn_80230BF4). Pose 2 falls with 0x344 until
 // it lands.
-// FIXME: 97.26. Scheduling and registers only: the original stores the three step floats to
+// FIXME: 97.20. Scheduling and registers only: the original stores the three step floats to
 // the stack before scaling (ours scales z first), and keeps `this` in r30 / the old facing in
 // r31 (ours swaps them).
 void Player_804A6F38::fn_8027A1E0() {
@@ -774,14 +889,7 @@ void Player_804A6F38::fn_8027A1E0() {
     }
     fn_802685D4();
     if (field_0x3fd == 1) {
-        for (s32 i = 0; i < 8; i++) {
-            JGeometry::TVec3f pos;
-            fn_8024B298(i, &pos);
-            pos.sub(mPos);
-            pos.scale(2.0f);
-            pos.add(mPos);
-            gBgRewrite_8053AC98->fn_802A20F0(&pos, field_0x4, field_0x3b4, 0, 1);
-        }
+        rewriteProbes(this);
         if (mPos.z <= 0.0f && fn_8025196C(field_0x3dc)) {
             if (fn_8022AF5C()) {
                 field_0x3fd = 2;
