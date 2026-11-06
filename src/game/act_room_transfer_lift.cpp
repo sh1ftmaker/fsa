@@ -24,6 +24,7 @@ cls_8049CC40::cls_8049CC40()
 
 void cls_8049CC40::init() {
     ActorBase_804A5770::init();
+    // 0x3F3F3F3F is the resource type the original passes here for both lookups ('????').
     field_0x230 = gGameRoot_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, lbl_80539EC8[0]);
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource(0x3F3F3F3F, "black.bti");
     field_0x29c = field_0x90 & 0xF;
@@ -37,23 +38,29 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
 
-// FIXME: 94.01% (missing/extra + reloc-name). 3 fewer instructions: loop index
-// register swap (r30/r31) and condition test branching in case 0.
+inline bool cls_8049CC40::isInside(s32 player) const {
+    s32 layer = field_0x4;
+    s32 playerLayer = getPlayerLayer_8023DE58(player);
+    if (playerLayer != layer) {
+        return false;
+    }
+    JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
+    JGeometry::TBox2f box(mBox);
+    box.addPos(mPos.x + 8.0f, mPos.y + 8.0f);
+    if (contains(box, pos)) {
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 99.92%, reloc-name only: the 8.0f / 0.0f literals are @NNN here instead of lbl_8053C270 / lbl_8053C274;
+// the instructions are identical.
 void cls_8049CC40::update() {
     ActorBase_804A5770::update();
     switch (field_0x290) {
     case 0: {
         for (int i = 0; i < 4; i++) {
-            bool inside = false;
-            if (getPlayerLayer_8023DE58(i) == field_0x4) {
-                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-                JGeometry::TBox2f box(mBox);
-                box.addPos(mPos.x + 8.0f, mPos.y + 8.0f);
-                if (contains(box, pos)) {
-                    inside = true;
-                }
-            }
-            if (!inside) {
+            if (!isInside(i)) {
                 return;
             }
         }
@@ -88,6 +95,7 @@ void cls_8049CC40::update() {
     }
 }
 
+// Variant of game/RotMatrix.h's setRotScaleMtx with a scale per column (inlined twice in draw).
 static inline void setRotScaleMtx(Mtx m, const JGeometry::TVec3f& rot, f32 scaleX, f32 scaleY, f32 scaleZ) {
     f32 sx = sin(rot.x);
     f32 sy = sin(rot.y);
@@ -106,8 +114,9 @@ static inline void setRotScaleMtx(Mtx m, const JGeometry::TVec3f& rot, f32 scale
     m[2][2] = scaleZ * (cx * cy);
 }
 
-// FIXME: 96.75% (scheduling+regalloc + reloc-name). Same instruction sequence
-// modulo float register allocation in setRotScaleMtx (f25-f31).
+// FIXME: 96.75%, scheduling+regalloc + reloc-name. Same instructions as the target; the float registers (f25-f31)
+// holding the sines, cosines and the two scales in the two inlined setRotScaleMtx copies differ, so the fmuls/stfs
+// are ordered differently. The 0.0f / 1.0f literals are @NNN instead of lbl_8053C274 / lbl_8053C278.
 void cls_8049CC40::draw() {
     Mtx mtx1;
 
