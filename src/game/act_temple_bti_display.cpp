@@ -105,10 +105,13 @@ void TempleBTIDisplay_8049CB04::update() {
         break;
     case 2:
         if (field_0x245 == 0) {
+            f32 dist;
+            s32 dir;
+            s32 player;
             u16 angle = 0;
-            s32 dir = 0;
-            f32 dist = 0.0f;
-            s32 player = 0;
+            dist = 0.0f;
+            dir = 0;
+            player = 0;
             fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
             if (player >= 0) {
                 if (getPlayerPos_8023E724(player)->y - y < 80.0f) {
@@ -139,26 +142,26 @@ void TempleBTIDisplay_8049CB04::update() {
         fn_80239914(&box, field_0x4, mSerial);
     }
 
-    switch (field_0x246) {
-    case 1:
-        gAudioMgr_8053AF80->fn_80458FF0(sSoundTable[field_0x238], false, 0);
+    if (field_0x246 != 0) {
+        if (field_0x246 == 1) {
+            gAudioMgr_8053AF80->fn_80458FF0(sSoundTable[field_0x238], false, 0);
+        } else if (field_0x246 == 2) {
+            gAudioMgr_8053AF80->fn_80458FF0(sSoundTable[field_0x238], true, 0);
+        }
         field_0x246 = 0;
-        break;
-    case 2:
-        gAudioMgr_8053AF80->fn_80458FF0(sSoundTable[field_0x238], true, 0);
-        field_0x246 = 0;
-        break;
     }
 }
 
+// FIXME: missing/extra 96.13% (193 vs 194 instrs; target has an explicit addi r4, r31, 0x0 at prologue)
 void TempleBTIDisplay_8049CB04::draw() {
-    JGeometry::TVec3f pos = mPos;
+    const char* (*names)[9] = sBtiNames;
     SpriteParams_801F5AE0 params;
+    JGeometry::TVec3f pos = mPos;
     params.field_0x1d = -1;
     params.field_0x24 = 1;
     params.field_0x21 = 1;
 
-    fn_801EFD34(fn_804032E8('TIMG', sBtiNames[0][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
+    fn_801EFD34(fn_804032E8('TIMG', names[0][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
 
     if (field_0x234 != 1) {
         mPos.y += 16.0f * (lbl_8049C3B8[0] + sOffsets[field_0x238]) + field_0x240;
@@ -167,7 +170,7 @@ void TempleBTIDisplay_8049CB04::draw() {
         } else {
             params.field_0x1d = 0;
         }
-        fn_801EFD34(fn_804032E8('TIMG', sBtiNames[2][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
+        fn_801EFD34(fn_804032E8('TIMG', names[2][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
         mPos.y = pos.y;
     }
 
@@ -177,6 +180,6 @@ void TempleBTIDisplay_8049CB04::draw() {
         params.field_0x1d = 2;
     }
     mPos.y += 16.0f * ((f32)lbl_8049C3B8[1] + sFloatTable1[field_0x238]);
-    fn_801EFD34(fn_804032E8('TIMG', sBtiNames[1][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
+    fn_801EFD34(fn_804032E8('TIMG', names[1][field_0x238]), &params, -1, 0.0f, 0.0f, 0.0f);
     mPos.y = pos.y;
 }
