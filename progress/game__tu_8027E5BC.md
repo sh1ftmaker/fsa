@@ -38,3 +38,20 @@ SHARED-EDITS: include/game/Player.h (0x580 TBox2f carved; members fn_80252F48 (t
 (tu_8026FC20), fn_802808E8; extern "C" fn_8022CFE8, fn_8022C76C, fn_8022C82C (tu_8022AD64, unwritten));
 config/G4SE01/symbols.txt renames fn_80252F48__15Player_804A6F38Fv, fn_80275D9C__15Player_804A6F38Fv,
 fn_802808E8__15Player_804A6F38Ff.
+
+## 2026-11-05 Opus 5.5 round 12 (agent U)
+Baseline total 8693 -> 8715 (+22); unit 45/73 -> 67/73 (honest report); all 73 functions written, .rodata 100 %.
+Pool blocker solved: followStep() (dead-stripped, inlined by fn_8028538C; the state 3 movement) defined
+between fn_8027F854 and fn_8027FA08 creates 1.5 / 0.5 / 3.0 in the original order and gives fn_8028538C its
+stack slots (fn_8028538C, fn_8027FA08, fn_80284430 -> 100 %).
+100 %: fn_80280074, fn_802804E0, fn_80280B30, fn_80280E44, fn_80282ACC, fn_80283948, fn_80283E70, fn_802844F8,
+fn_80284978, fn_80284E04, fn_80285098, fn_8028538C, fn_8027FA08, fn_80284430, fn_80285690, fn_802859C4 and
+the reloc-name ones (fn_802808E8, fn_80281E98, fn_80282094, fn_8028414C, fn_80284294, fn_8028434C).
+Structural (FIXME in source): fn_8028126C 99.92 (r29/r30 swapped), fn_80282178 99.33 (addi r4 = &mPos hoisted
+above the layer compare before fn_802F601C), fn_80282FE0 99.25 (TVec2f distance: original stores the vector
+and squares unfused), plus the older fn_8027E7E0 98.85, fn_8027EEB4 99.31, fn_80283D2C 99.44.
+.sdata2 98.99 %: only lbl_80540408's 4-byte tail (symbols.txt size 8; probably the next unit's alignment gap).
+SHARED-EDITS: include/game/Player.h (members followStep, fn_80280074, fn_802804E0, fn_80242DAC (tu_8023FBF0));
+config/G4SE01/symbols.txt (fn_80280074 / fn_802804E0 / fn_80242DAC renamed to Player_804A6F38 members;
+lbl_8046BDD8 0xA0 split into lbl_8046BDD8 0x30, lbl_8046BE08 0x10, lbl_8046BE18 0x30, lbl_8046BE48 0x30);
+docs/PLAYER.md Round 12.

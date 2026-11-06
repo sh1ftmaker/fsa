@@ -1205,3 +1205,55 @@ section's last 4 bytes are padding). Left unwritten: none of the state handlers.
   fn_8026EE60 90.2 % / F000 91.0 % but drops fn_8026EC88 (86.8 -> 85.6), so it stays.
 - Player.h: declared `extern "C" bool fn_80237A80(s32 player)` (tu_8022AD64, unwritten). No
   new Player fields needed.
+
+
+
+## Round 12 (tu_8027E5BC) (agent U, Opus 5.5, 2026-11-05)
+
+45 -> 67 of 73 at 100 % (+22 honest); every function of the unit is written. Structural (FIXMEs in the
+source): fn_8027E7E0 98.85 (scheduling), fn_8027EEB4 99.31, fn_8028126C 99.92, fn_80283D2C 99.44
+(registers), fn_80282178 99.33 (scheduling, &mPos before the ground mark), fn_80282FE0 99.25 (the
+distance moved: the original stores its TVec2f and squares unfused; neither length() nor square()
+reproduces both).
+
+- **The .sdata2 blocker was a dead-stripped inline, now `followStep()`**: the state 3 movement
+  (formation 5 with cls_804A71A8 0xB4: fn_802808E8(1.5f); else outside 0x122C a 0.5 step toward
+  fn_8027FA08's target). Defined between fn_8027F854 and fn_8027FA08 its own copy creates 1.5,
+  then 0.5 and 3.0 (TUtilf::inv_sqrt inside TVec3f::normalize; 32 and 0 already exist), the
+  original's order before fn_8027FA08's 4.0. Proof beyond the pool: fn_8028538C, which inlines it,
+  only gets the original's stack slots (`to` 0x14, the operator- copy 0x2C) with it inlined
+  (99.90 -> 100 %), and fn_8027FA08 / fn_80284430 flipped. No header inline explains the order:
+  normalize alone gives 0.5 / 3.0 but not the 1.5 in front.
+- MWCC evaluates call arguments right to left: `TVec3f v(t.x, t.y, t.z)` / `set(x, y, z)` from a
+  Vec table loads z first. The original's x, y, z loads with three stores are member-wise
+  assignments (fn_80284978, fn_80284E04, fn_80285098).
+- `layer == getPlayerLayer_8023DE58(...)` with the layer read first: name the call result
+  (`s32 leaderLayer = ...; if (leaderLayer == layer)`) to get `cmpw r3, rN` (fn_80285690,
+  fn_802859C4 to 100 %; their old cmpwi/cmplwi FIXME no longer applied).
+- Data: lbl_8046BDD8 (0xA0) split at its real boundaries into lbl_8046BDD8 Vec[4] (+-12),
+  lbl_8046BE08 u32[4] (pad bits 2, 1, 4, 8 by facing), lbl_8046BE18 / lbl_8046BE48 Vec[4]
+  (+-10 ahead / behind): fn_80284978 indexes them at base + 0x60 / 0x70 / 0xA0 off
+  lbl_8046BDA8. lbl_8046BED8 / lbl_8046BF38 are Vec[8] unit directions by 0x3E8 (diagonals
+  0.707, not 1/sqrt 2); lbl_8046C098 u8[4][8] frames by facing. .rodata is 100 %; .sdata2 differs
+  only by the 4-byte tail of lbl_80540408 (size 8 in symbols.txt, likely the next unit's 8-byte
+  alignment gap).
+
+| state | update | what it is (provisional, from the update; state numbers as in round 7, consistent with the requests between them) |
+|---|---|---|
+| 0x0D | 80285098 | **holding a block**: stands when the tile 10 ahead is free (or 0xE / 0x39 / 0xD) and neither fn_802684A4 nor fn_80250090 holds; 0xE while the grabbed actor (fn_8024FF84) moves; the stick moves along the facing axis at 1.5; a turn or cls_804A71A8 0xA0 at 0 stands and clears 0xD98 / 0xD9C / 0xA0 / 0xA4 |
+| 0x0E | 80284E04 | **moving with the block**: follows the grabbed actor's motion (its 0x3C) while it moves, 128-frame cycle, frames lbl_8046C098, sound 0x10012; back to 0x1A (fn_802456FC and not fn_80244630) or 0xD |
+| 0x1A | 80284978 | **pushing**: front / back probes lbl_8046BE18 / lbl_8046BE48; carried by the pushed actor 0xDA4 (fn_8024FF6C) while it moves; letting go stands, the facing's pad bit (lbl_8046BE08) goes to 0xD |
+| 0x1B | 802844F8 | **walking onto the screen**: fn_8027E5BC steps (3 for pose 0x3FD 3, else 2) until inside the visible box shrunk 39 across the facing (always after 40 frames, 0x3FE); when every present player in 0x1B (fn_80233EDC) is in it, carried (0x43F) hands over (fn_80248A24), else goes on by pose (0x12 / 0x4A / 0x4B / 0xB / 0); the acting player (lbl_8053A190) calls fn_80231368 |
+| 0x38 | 80283E70 | **dropping down a ledge**: 0x344 motion, gravity 0.25 (0.17 to -6 carried / 0x441); lands at height 8 below the ledge y 0x328 when carried, else stands (0, or 8 with 0xCAD) with landing effects 0x4F3-0x4F6 (half size without 0x440) and fn_80134DE4(1, 0) |
+| 0x49 | 80283948 | **held down / struggling**: pending layer switch 0xCE8 (fn_80303750 wait, fn_80290E90 / fn_80290D58); mode 0x1178 2 a 36-frame pose cycle; else button mashing (pad trigger 0xF) counts 0x3FC (free at 15, or 30 with more than one player, mode 1), decaying every 20 frames |
+| 0x4A | 80282FE0 | **mode 0x42C walk** (off view-flag layers; 0x4B on them): the mode (0xBE0 = 300, effects 0x15B / 0x15C, sounds 0x20040 / 0x20041) follows the leader's (fn_8022B7C4) or toggles by pad (fn_802466B4) after the cooldown 0x430 (90); movement fn_802804E0 + fn_80242DAC; dust 0x54E by distance moved (0x401) |
+| 0x4B | 80282ACC | the same on view-flag layers: movement fn_80280074, 'PEFF' actor every 50 counts of the random counter 0x402, bob 0x410 on y |
+| 0x4D | 80282178 | **fired from a cannon**: sound 0x10003 at 72; landing wait 0x3FC (GBA link fn_80301CD0), layer switch 0xCEA to 0xCE4 at 0xCD4 (return point 0xCB0), ground mark fn_802F601C, effect 0x17D; in flight 0x344 + 0x380 (stick-steered, 0.8 / 0.1 / 1.6), bounce 0x4E at a wall (fn_8025190C), state 5 by pad (fn_8022C3AC) |
+| 0x50 | 8028126C | (round 7) update: runs at 2 along the facing to 300 frames (0x408) or tile 0x39; the ACTOR_FIRE actor (FireRodFire_804A89F0::fn_802BAA0C) follows box 0x4C0; fire effects respawned on a turn |
+| 0x51 | 80280E44 | (round 7) update: button mashing (pad trigger 0xF) takes 10 off the timer 0x46C and jolts by the pad direction (0x474, 5 frames); at 0 stands with effects 0x28B / 0x28C and sound 0x2003C |
+
+- Helpers: **fn_80280074 / fn_802804E0** (now members) = the 0x4B / 0x4A movement: a follower steps
+  4.5 toward fn_8027FA08's target, else a run along 0x3E8 whose speed 0x344 is shaped by the dash
+  count 0x3FF (started by fn_80245238, sound 0x20039). **fn_80280B30** = ice sliding (cls_804A71A8
+  0xB7), called by fn_802870C8. **fn_80242DAC** (tu_8023FBF0) renamed to a Player member: tile
+  pushes on 0x414 / 0x418 by the tile under mPos.

@@ -2572,9 +2572,6 @@ void Player_804A6F38::fn_80285668() {
     field_0x458 = 0;
 }
 
-// FIXME: 98.27. The tests of fn_8022C5EC / fn_8022C52C are cmpwi here, cmplwi in the original: both
-// forwarders return u32 (every caller uses cmplwi) but are declared and defined s32 in the
-// generator-owned game/tu_8022AD64.cpp.
 // Update of state 2 (walking): a follower runs (3) with the leader's pad 0x40, or while it or its
 // leader moves; then the stick walk step at 1.5, the facing, the walk cycle, pick-ups, body frame.
 // The follow target (fn_8027FA08) is computed and not used.
@@ -2589,7 +2586,8 @@ void Player_804A6F38::fn_80285690() {
         } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
             // Read before the call: the original loads the layer first (declaration order only steers scheduling).
             s32 layer = field_0x3b4;
-            if (getPlayerLayer_8023DE58(fn_80240644()) == layer) {
+            s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
+            if (leaderLayer == layer) {
                 fn_80251AEC(3);
             }
         }
@@ -2653,9 +2651,6 @@ void Player_804A6F38::fn_802859B8() {
     field_0x458 = 0;
 }
 
-// FIXME: 99.54. Only the test of fn_8022C5EC's result is cmpwi here, cmplwi in the original: the
-// forwarder returns u32 (all 22 callers use cmplwi) but is declared and defined s32 in the
-// generator-owned game/tu_8022AD64.cpp.
 // Update of state 0 (standing): walk (2) or run (3) when the stick or the leader moves, then the
 // facing (toward the nearest player as player 4 of a group outside the leader's slot, else
 // fn_8027EB04), the pick-up checks and the body frame.
@@ -2676,7 +2671,8 @@ void Player_804A6F38::fn_802859C4() {
             } else if (fn_8022C6AC(fn_80240644()) == 0.0f && fn_8022CFE8(field_0x4) > 0.0f) {
                 // Read before the call: the original loads the layer first (declaration order only steers scheduling).
                 s32 layer = field_0x3b4;
-                if (getPlayerLayer_8023DE58(fn_80240644()) == layer) {
+                s32 leaderLayer = getPlayerLayer_8023DE58(fn_80240644());
+                if (leaderLayer == layer) {
                     fn_80251AEC(3);
                 }
             }
