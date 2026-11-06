@@ -1468,7 +1468,7 @@ void FileSelect_804AFF60::fn_803CB3DC() {
 void FileSelect_804AFF60::fn_803CABAC() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
         switch (field_0xa0) {
-        case 0:
+        case 0: {
             lbl_8050EC80.mCurrentFile = field_0xa4;
             // OSGetTime() runs before the file is looked up (the original
             // reads mCurrentFile back after the call).
@@ -1483,6 +1483,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             setState(40);
             lbl_80529DEC.field_0x23a[1] = field_0xa4;
             break;
+        }
         case 1:
             if (gGameRoot_8053AAF8->field_0xff != 0) {
                 if (field_0xa4 == 0) {
