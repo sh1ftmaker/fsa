@@ -497,40 +497,71 @@ bool fn_80138AB0();
 // game/Unk_8045A080.h (included by game/GameAudio.h).
 extern AudioMgr_8045A080* gAudioMgr_8053AF80;
 
-// game/tu_80401848.cpp (not written yet): the objects fn_804019A8 and
-// fn_80401E10 allocate (0x20 and 0x1C bytes) for a file found by path, and
-// queue on the DVD thread. Both store the vtable 0x804B0FD0 and then their
-// own over it: 0x804B0FA0 and 0x804B0FC0. They are named after those
-// vtables. The word at 0x10 is the entrynum; the byte at 0x4 becomes 1 when
-// loading has finished; the buffer is the word at 0x14.
-// Base class (vtable 0x804B0FD0, stored first by both allocators).
+// game/tu_80401848.cpp: the DVD loader thread's commands. fn_804019A8,
+// fn_80401BA4 and fn_80401E10 allocate one (0x20 / 0x1C / 0x1C bytes) for a
+// file found by path and queue it on the thread; the thread calls each
+// command's vfunc_0xC once. They are named after their vtables (the base
+// 0x804B0FD0 is stored first, then the command's own).
+// Base class (vtable 0x804B0FD0; vfunc_0xC is 0 there).
 class cls_804B0FD0 {
 public:
-    /* 0x00 */ u32 field_0x0;
-    /* 0x04 */ u8 field_0x4;
-    /* 0x08 */ virtual ~cls_804B0FD0();
-    /* 0x0C */ u8 field_0xc;
-    /* 0x10 */ s32 field_0x10;
-    /* 0x14 */ void* field_0x14; // the loaded data
-}; // Size: 0x18
+    /* 0x00 */ cls_804B0FD0* mNext; // the thread's command queue
+    /* 0x04 */ u8 field_0x4;        // 1 once vfunc_0xC has run
 
+    // The members come first: MWCC puts the vtable pointer where the first
+    // virtual function is declared (0x8 in the original).
+    inline cls_804B0FD0();
+    /* 0x08 */ virtual ~cls_804B0FD0();
+    /* 0x0C */ virtual BOOL vfunc_0xC() = 0;
+    static inline void* operator new(size_t size);
+    static inline void operator delete(void* p);
+}; // Size: 0xC
+
+// Loads a file into main RAM (JKRDvdRipper::loadToMainRAM).
 class cls_804B0FA0 : public cls_804B0FD0 {
 public:
+    inline cls_804B0FA0(u8 direction);
     /* 0x08 */ virtual ~cls_804B0FA0();
-    /* 0x18 */ u8 field_0x18[0x20 - 0x18];
+    /* 0x0C */ virtual BOOL vfunc_0xC();
+
+    /* 0x0C */ u8 mDirection; // 1: allocate from the head, else the tail; 0: lbl_8053A218
+    /* 0x10 */ s32 mEntryNum;
+    /* 0x14 */ void* field_0x14; // the loaded data
+    /* 0x18 */ s32 mSize;
+    /* 0x1C */ JKRHeap* mHeap;
 }; // Size: 0x20
 
-class cls_804B0FC0 : public cls_804B0FD0 {
+// Mounts a file as a JKRAramArchive (the given one, or a new one).
+class cls_804B0FB0 : public cls_804B0FD0 {
 public:
-    /* 0x08 */ virtual ~cls_804B0FC0();
-    /* 0x18 */ u32 field_0x18;
+    inline cls_804B0FB0(u8 direction, JKRAramArchive* archive);
+    /* 0x08 */ virtual ~cls_804B0FB0();
+    /* 0x0C */ virtual BOOL vfunc_0xC();
+
+    /* 0x0C */ u8 mDirection;
+    /* 0x10 */ s32 mEntryNum;
+    /* 0x14 */ JKRAramArchive* mArchive;
+    /* 0x18 */ JKRHeap* mHeap;
 }; // Size: 0x1C
 
-extern "C" {
-// Owner: game/tu_80401848.cpp. (path, mode byte, heap)
-cls_804B0FA0* fn_804019A8(const char* path, u8 mode, JKRHeap* heap);
-cls_804B0FC0* fn_80401E10(const char* path, u8 mode, JKRHeap* heap);
-}
+// Mounts a file as a JKRMemArchive.
+class cls_804B0FC0 : public cls_804B0FD0 {
+public:
+    inline cls_804B0FC0(u8 direction);
+    /* 0x08 */ virtual ~cls_804B0FC0();
+    /* 0x0C */ virtual BOOL vfunc_0xC();
+
+    /* 0x0C */ u8 mDirection;
+    /* 0x10 */ s32 mEntryNum;
+    /* 0x14 */ JKRMemArchive* field_0x14; // the mounted archive
+    /* 0x18 */ JKRHeap* mHeap;
+}; // Size: 0x1C
+
+// Owner: game/tu_80401848.cpp. (path, direction byte, heap); NULL when the
+// path doesn't exist.
+cls_804B0FA0* fn_804019A8(const char* path, u8 direction, JKRHeap* heap);
+cls_804B0FB0* fn_80401BA4(const char* path, JKRAramArchive* archive, u8 direction, JKRHeap* heap);
+cls_804B0FC0* fn_80401E10(const char* path, u8 direction, JKRHeap* heap);
 
 extern "C" {
 // game/tu_801CB270.cpp (not written yet; both clrlwi.): map tests of a
@@ -1420,8 +1451,11 @@ extern cls_804A8578* lbl_8053ACA8;
 // compares the result with 0, 1 and 2 (a screen mode query).
 s32 fn_80021840();
 
-// Global object with vtable 0x804B0F90 (destructor fn_80401848), owner
-// game/tu_80400DC4.cpp; main polls fn_80401518 each frame (it watches the
+// Global object with vtable 0x804B0F90 (destructor 0x80401848, emitted after
+// that unit's __sinit, which registers it), owner game/tu_80400DC4.cpp
+// (its .text, .data and extab end at 0x80401890 / 0x804B0FA0 / 0x80010154:
+// the 0xC-byte vtable is followed by the 4 bytes of padding before
+// tu_80401848's first vtable); main polls fn_80401518 each frame (it watches the
 // DVD drive status) and goes on once it returns 0.
 class cls_804B0F90 {
 public:
@@ -1431,10 +1465,11 @@ public:
 };
 extern cls_804B0F90 lbl_8053ADE8;
 
-// game/tu_80401848.cpp (0x80401FEC): creates and resumes a thread of the
-// given priority. main passes the current thread's priority minus 1, an
-// expanded heap of 0x800 bytes and 0.
-extern "C" void fn_80401FEC(s32 priority, JKRHeap* heap, s32 arg);
+// game/tu_80401848.cpp (0x80401FEC): creates and resumes the DVD loader
+// thread with the given priority. The heaps: the commands' (main passes an
+// expanded heap of 0x800 bytes) and the default one the commands load into
+// when they were given none (main passes NULL).
+void fn_80401FEC(s32 priority, JKRHeap* commandHeap, JKRHeap* loadHeap);
 
 // .rodata render modes (GXRenderModeObj); main picks lbl_8048C1B8 when
 // progressive scan is wanted and active, lbl_8048C17C otherwise.

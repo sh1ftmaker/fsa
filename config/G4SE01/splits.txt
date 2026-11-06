@@ -6528,24 +6528,25 @@ game/tu_803FF2C4.cpp:
 	.sdata2     start:0x805437D8 end:0x80543830
 
 game/tu_80400DC4.cpp:
-	extab       start:0x800100C4 end:0x8001014C
-	extabindex  start:0x8001FE58 end:0x8001FE88
-	.text       start:0x80400DC4 end:0x80401848
+	extab       start:0x800100C4 end:0x80010154
+	extabindex  start:0x8001FE58 end:0x8001FE94
+	.text       start:0x80400DC4 end:0x80401890
 	.ctors      start:0x8045C588 end:0x8045C58C
 	.rodata     start:0x80479C60 end:0x8048C160
+	.data       start:0x804B0F90 end:0x804B0FA0
 	.bss        start:0x80528868 end:0x80528980
 	.sbss       start:0x8053ADD8 end:0x8053ADF0
 	.sdata2     start:0x80543830 end:0x80543860
 
 game/tu_80401848.cpp:
-	extab       start:0x8001014C end:0x800101BC
-	extabindex  start:0x8001FE88 end:0x8001FF30
-	.text       start:0x80401848 end:0x804023D0
+	extab       start:0x80010154 end:0x800101BC
+	extabindex  start:0x8001FE94 end:0x8001FF30
+	.text       start:0x80401890 end:0x804023D0
 	.ctors      start:0x8045C58C end:0x8045C590
-	.data       start:0x804B0F90 end:0x804B0FE0
+	.data       start:0x804B0FA0 end:0x804B0FE0
 	.bss        start:0x80528980 end:0x80529DE0
 	.sdata      start:0x8053A218 end:0x8053A220
-	.sbss       start:0x8053ADF0 end:0x8053AE20
+	.sbss       start:0x8053ADF0 end:0x8053ADF8
 
 game/tu_804023D0.cpp:
 	extab       start:0x800101BC end:0x80010284
