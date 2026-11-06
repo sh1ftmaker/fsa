@@ -124,7 +124,7 @@ public:
     // 'OSIN' actor in state 2 with them.
     u8 fn_802DA630();
     // Steps the screen towards column field_0x1c (field_0x2c = (+-1, 0),
-    // fn_802DEDFC); on success clears the screen (clearScreen), places the
+    // fn_802DEDFC); on success clears the screen (fn_802DCDF4), places the
     // players at lbl_8046E148 + mVisibleBox.i and restarts the time limit.
     void fn_802DA788();
     // 4 units. 0xE14 bytes; no arguments. Resets the whole stage state
@@ -144,11 +144,9 @@ public:
     // is a guess, a two-int struct passed by value would look the same.
     bool fn_802DCD1C(const s32* dir);
     // 1 unit. Clears the actors (fn_801F7CAC, fn_801F6204), field_0x131de and
-    // the effects (fn_8013C8CC), and field_0xc9: the out-of-line copy of
-    // clearScreen, which game/tu_802D39B8.cpp defines (inline) before
-    // fn_802DA788 and inlines there after a fn_8038D454 call.
+    // the effects (fn_8013C8CC), and field_0xc9; fn_802DA788 inlines it after a
+    // fn_8038D454 call.
     void fn_802DCDF4();
-    inline void clearScreen();
     // 1 unit. The screen change of fn_802DCD1C with dir read the same way
     // (lwz 0/4; the same guess); returns 0 or 1.
     bool fn_802DCE5C(const s32* dir);
@@ -178,11 +176,9 @@ public:
     // 4 units / 88 calls (this unused). The slot of id (cmplw against the
     // clrlwi 16 id) in the layer's list, or -1.
     s32 fn_802D4C10(s32 layer, u16 id);
-    // 1 unit / 4 calls. The screen's mask for the layer (r3:r4): the
-    // out-of-line copy of screenMask, which game/tu_802D39B8.cpp defines
-    // (inline) before fn_802D4768 and inlines into fn_802D4768-fn_802D4ADC.
+    // 1 unit / 4 calls. The screen's mask for the layer (r3:r4);
+    // fn_802D4768-fn_802D4ADC inline it.
     u64 fn_802D7AC4(s32 layer);
-    inline u64 screenMask(s32 layer);
     // 1 unit. The 4-bit field `slot` (bits 60 - slot * 4) of the screen's
     // mask: __shr2u, then the low word (callers clrlwi 16).
     s32 fn_802D7B34(s32 layer, s32 slot);
@@ -288,8 +284,10 @@ public:
     void fn_802D7934(s32 value); // 1 unit: field_0x5c
     // 23 units / 35 calls (this unused). Sets field_0x131f0 from flag, the
     // save data lbl_8050EC80 (byte 0x7C or 0x7D of entry [0x10], 0xC8 bytes
-    // each) and gGameRoot_8053AAF8's bytes 0x7E/0x7F.
-    void fn_802D7440(bool flag);
+    // each) and gGameRoot_8053AAF8's bytes 0x7E/0x7F. flag is u8, not bool:
+    // inlined in restartTimeLimit, (byte == 1) is narrowed with extrwi 8 and
+    // compared with 1 again (cntlzw, extrwi, cmplwi), which a bool folds away.
+    void fn_802D7440(u8 flag);
     // 1 unit (this unused). field_0x5c ? field_0x5c - 1 : field_0x58.
     s32 fn_802D7948();
     // 3 units (this unused). field_0x34 = value; below 0x11 also clears

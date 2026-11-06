@@ -111,16 +111,6 @@ static const char* lbl_804A9830[18][4] = {
     {"map116.csv", "map100.csv", "map100.csv", "map100.csv"},
 };
 
-// The screen's 64-bit mask for the layer. fn_802D4768-fn_802D4ADC inline this body
-// (0x802D47F8, 0x802D4928, 0x802D4A44, 0x802D4B6C) though their out-of-line copy,
-// fn_802D7AC4, comes later, so the original defined it before them as an inline.
-inline u64 GameView_804A9950::screenMask(s32 layer) {
-    if (layer < 8) {
-        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
-    }
-    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
-}
-
 // Componentwise TUtil::epsilonEquals of two vectors (the shape of tu_8027E5BC's epsilonEqualsXY).
 static inline bool epsilonEquals(const JGeometry::TVec2f& a, const JGeometry::TVec2f& b, f32 eps) {
     bool equal = false;
@@ -164,30 +154,6 @@ inline void GameView_804A9950::clearScreenState() {
     }
 }
 
-// fn_802DA788 inlines this body (0x802DA7EC) though its out-of-line copy, fn_802DCDF4,
-// comes later, so the original defined it before fn_802DA788 as an inline.
-inline void GameView_804A9950::clearScreen() {
-    getActorManager_801F856C()->fn_801F7CAC();
-    getActorManager_801F856C()->fn_801F6204(0);
-    fn_80308D0C();
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
-    getEffectSystem_8013C824()->fn_8013C8CC();
-    field_0xc9 = 0;
-}
-
-// Stage (9, 3), or stage 13 and up, with gGameRoot_8053AAF8->0x7F set. vfunc_0x10
-// inlines this body (0x802DD6D4) though its out-of-line copy, fn_802DEBA0, comes
-// later, so the original defined it before vfunc_0x10 as an inline.
-static inline bool isStage93OrFrom13() {
-    if (gGameRoot_8053AAF8->field_0x7f == 0) {
-        return false;
-    }
-    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
-        return true;
-    }
-    return false;
-}
-
 // The step by which vfunc_0x10 runs the field_0xf0 offsets down to 0 (the unit's .sdata).
 static f32 lbl_8053A1A8 = 0.2f;
 
@@ -207,9 +173,15 @@ bool fn_802DEBF8(void) {
 
 // FIXME: 89.8 %. Same as fn_802DE9A0: the target reloads the view (lwz 0xc off
 // the kept gGameRoot_8053AAF8->0x4) for the stage >= 13 test; ours loads it once.
-// Out-of-line copy of isStage93OrFrom13 (defined above vfunc_0x10).
+// Stage (9, 3), or stage 13 and up, with gGameRoot_8053AAF8->0x7F set (vfunc_0x10 inlines it).
 bool fn_802DEBA0(void) {
-    return isStage93OrFrom13();
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
+        return false;
+    }
+    if ((gGameRoot_8053AAF8->field_0x4->mView->field_0x4 == 9 && gGameRoot_8053AAF8->field_0x4->mView->field_0x8 == 3) || gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
+        return true;
+    }
+    return false;
 }
 
 bool fn_802DEB58(void) {
@@ -365,7 +337,7 @@ GameView_804A9950::GameView_804A9950() {
 
 GameView_804A9950::~GameView_804A9950() {}
 
-// FIXME: 98.7. Two instructions: in the inlined isStage93OrFrom13 the target reloads the view
+// FIXME: 98.7. Two instructions: in the inlined fn_802DEBA0 the target reloads the view
 // for the stage >= 13 test, as fn_802DEBA0 itself does (see there).
 void GameView_804A9950::vfunc_0x10() {
     f32 x = field_0xf0[0].x;
@@ -404,7 +376,7 @@ void GameView_804A9950::vfunc_0x10() {
         }
     }
 
-    if (gGameRoot_8053AAF8->field_0x4c == 7 && !isStage93OrFrom13() && !fn_802DCD0C()) {
+    if (gGameRoot_8053AAF8->field_0x4c == 7 && !fn_802DEBA0() && !fn_802DCD0C()) {
         fn_802D3A18();
     }
 
@@ -435,7 +407,7 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     bool entered = false;
     u32 exits = 0xF;
     field_0xc9 = 0;
-    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (fn_802DCD0C() == 0) {
         s32 end = getActorManager_801F856C()->mActorEnd;
         for (s32 i = 0; i < end; i++) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
@@ -472,11 +444,11 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     return entered;
 }
 
-// FIXME: 96.5. Structurally close: as in fn_802DA010, the inlined restartTimeLimit is
-// three instructions short (the bool materialisation, see there) plus one li.
+// FIXME: 97.9. One instruction, as fn_802DCD1C: the target keeps the result in r6 (li r6, 0
+// at entry) and returns it through clrlwi r3, r6, 24; ours builds it in r3.
 bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     bool moved = false;
-    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (fn_802DCD0C() == 0) {
         restartTimeLimit();
         clearScreenState();
         if (dir[0] > 0) {
@@ -506,16 +478,21 @@ bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     return moved;
 }
 
-// Out-of-line copy of clearScreen (defined above fn_802DA788).
+// Clears the screen (fn_802DA788 inlines it).
 void GameView_804A9950::fn_802DCDF4() {
-    clearScreen();
+    getActorManager_801F856C()->fn_801F7CAC();
+    getActorManager_801F856C()->fn_801F6204(0);
+    fn_80308D0C();
+    gGameRoot_8053AAF8->field_0x4->mView->field_0x131de = 0;
+    getEffectSystem_8013C824()->fn_8013C8CC();
+    field_0xc9 = 0;
 }
 
 // FIXME: 94.2. One instruction: the target keeps the result in r6 (li r6, 0 at entry) and
 // returns it through clrlwi r3, r6, 24; ours builds it in r3 directly.
 bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
     bool moved = false;
-    if (gGameRoot2_8053AB10->field_0x24->field_0x1e8 == 0) {
+    if (fn_802DCD0C() == 0) {
         if (dir[0] > 0) {
             field_0x14++;
         } else if (dir[0] < 0) {
@@ -545,8 +522,7 @@ u8 GameView_804A9950::fn_802DCD0C() {
 // fully. The rest (the table clears, restartTimeLimit / clearScreenState with the
 // field_0x131f1-0x131f3 stores between them, the fn_802DA010 tail) lines up.
 
-// FIXME: 97.3. Structurally close, two instructions short: the inlined restartTimeLimit's
-// bool materialisation (see fn_802DA010); the target also reuses the loop counter's
+// FIXME: 98.6. Structurally close, one instruction: the target reuses the loop counter's
 // li r30, 0 for fn_802D782C(0) (as fn_802DA788 does for field_0xc9) and puts the loop's
 // TVec3f below the tile-map temporary on the stack. Reloc-name: 1.0f / -1.0f, as there.
 // The camera corners are stored f.x, i.x, f.y, i.y (chained assignments; TBox2::set
@@ -605,7 +581,7 @@ void GameView_804A9950::fn_802DA788() {
     }
     if (fn_802DEDFC(field_0x2c)) {
         fn_8038D454();
-        clearScreen();
+        fn_802DCDF4();
         for (int i = 0; i < 4; i++) {
             JGeometry::TVec3f pos(lbl_8046E148[i][0], lbl_8046E148[i][1], lbl_8046E148[i][2]);
             pos.x += mVisibleBox.i.x;
@@ -650,10 +626,8 @@ u8 GameView_804A9950::fn_802DA630() {
     return busy;
 }
 
-// FIXME: 97.2. Structurally close, two instructions short: the target materialises
-// (byte == 1) as a bool (subfic, cntlzw, extrwi) before the inlined fn_802D7440 compares
-// it with 1; ours folds the compare into the branch (a bool local, a cast, == true or a
-// bool-returning inline do not change it); the camera corners as in fn_802DB6F0.
+// FIXME: 98.5. Structurally close, one instruction: as fn_802DB6F0, the target reuses the
+// loop counter's li r30, 0 for fn_802D782C(0); the camera corners as in fn_802DB6F0.
 // Reloc-name: 1.0f / -1.0f are pooled after
 // literals of functions not written yet.
 void GameView_804A9950::fn_802DA010() {
@@ -906,9 +880,12 @@ s32 GameView_804A9950::fn_802D7B34(s32 layer, s32 slot) {
     return (gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][idx] & (0xFULL << shift)) >> shift;
 }
 
-// Out-of-line copy of screenMask (defined above fn_802D4768).
+// The screen's 64-bit mask for the layer (fn_802D4768-fn_802D4ADC inline it).
 u64 GameView_804A9950::fn_802D7AC4(s32 layer) {
-    return screenMask(layer);
+    if (layer < 8) {
+        return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][0];
+    }
+    return gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[field_0x18][field_0x14][layer - 7];
 }
 
 void GameView_804A9950::fn_802D79E8(s32 index, f32 a, f32 b, bool flag) {
@@ -1060,8 +1037,8 @@ void GameView_804A9950::fn_802D752C(u8 value) {
     gGameRoot_8053AAF8->field_0x4->mView->field_0x131ef = value;
 }
 
-void GameView_804A9950::fn_802D7440(bool flag) {
-    if (flag == true) {
+void GameView_804A9950::fn_802D7440(u8 flag) {
+    if (flag == 1) {
         u8 enabled;
         if (gGameRoot_8053AAF8->field_0x7f != 0) {
             enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
@@ -1268,7 +1245,7 @@ bool GameView_804A9950::fn_802D4ADC(s32 layer, u16 id) {
                 bit <<= 1;
                 i--;
             }
-            if ((screenMask(layer) & bit) != 0) {
+            if ((fn_802D7AC4(layer) & bit) != 0) {
                 return true;
             }
             return false;
@@ -1295,7 +1272,7 @@ bool GameView_804A9950::fn_802D49A8(s32 layer, u16 id) {
         bit <<= 1;
         i--;
     }
-    if ((screenMask(layer) & bit) != 0) {
+    if ((fn_802D7AC4(layer) & bit) != 0) {
         return true;
     }
     return false;
@@ -1322,7 +1299,7 @@ void GameView_804A9950::fn_802D4874(s32 layer, u16 id, u64* outBit, u64* outMask
         *outBit <<= 1;
         i--;
     }
-    *outMask = screenMask(layer);
+    *outMask = fn_802D7AC4(layer);
 }
 
 // FIXME: 96.7. Scheduling and regalloc, as fn_802D4C10: the target adds the view to i * 2
@@ -1337,7 +1314,7 @@ void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMas
         }
     }
     *outSlot = 15 - (i >> 2);
-    *outMask = screenMask(layer);
+    *outMask = fn_802D7AC4(layer);
 }
 
 // FIXME: fn_802D3D48 is not written yet.
