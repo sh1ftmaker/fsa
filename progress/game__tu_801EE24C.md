@@ -82,8 +82,10 @@ names); Player.h declares extern "C" bool fn_8022D534(s32) (owner tu_8022AD64; n
 touched); libs/sdk JMath.h TSinCosTable::cosDegree (from tp JMATrigonometric.h).
 
 ## 2026-11-05 leverage wave 13, ActorBase round 3 (Opus 5.5, deferred inlining)
-Baseline 8731 honest -> 8732 (+1); no function anywhere drops (by address
-against the round's baseline report).
+Baseline 8731 honest -> 8733 (+2); structural 9173; no function anywhere
+drops (by address against the round's baseline report).
+fn_801EE3C0 100 %: it takes an int (s32; symbols.txt __FUs -> __Fl): the
+parameter is never extended and each test truncates to 16 bits.
 Written:
 - fn_801EEC98 100 % (104 callers; layerBox for the view box, std::sqrtf).
 - fn_801F11B4 99.4 regalloc, vfunc_0x24 99.75 regalloc (death), vfunc_0x2C 98.8
