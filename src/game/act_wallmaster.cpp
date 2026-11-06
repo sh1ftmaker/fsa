@@ -1,3 +1,4 @@
+#include "game/ActorManager.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
@@ -279,5 +280,109 @@ void cls_804A3E44::fn_801BC554(s32 state) {
         field_0xb0 = 0x40004;
     } else {
         field_0xb0 = 0x41101;
+    }
+}
+
+// FIXME: 99.64% (regalloc-only + reloc-name: f30/f31 register allocation for dz/dy and literal relocations).
+void cls_804A3E44::fn_801BC244() {
+    switch (mState) {
+    case 1:
+    case 2: {
+        s32 val;
+        switch (mState) {
+        case 0:
+        case 9:
+            val = 0;
+            break;
+        case 7:
+        case 8:
+            val = 255;
+            break;
+        default: {
+            f32 f = (mPos.z - 100.0f) * -0.01f;
+            if (f > 1.0f) {
+                f = 1.0f;
+            } else if (f < 0.0f) {
+                f = 0.0f;
+            }
+            val = f * 255.0f;
+            break;
+        }
+        }
+        ActorSoundObj_804578F4* sound = fn_801F1184();
+        sound->field_0x4c = (f32)(u8)val / 255.0f;
+        startSound_801F0E34(0x400A3, 0);
+        break;
+    }
+    }
+
+    switch (mState) {
+    case 1:
+    case 2: {
+        field_0x2bc++;
+        s32 player = fn_801D05F8(&mPos, 0.0f);
+        if (player != field_0x2b8) {
+            if (player < 0) {
+                if (mState != 1 || mStateTimer >= 60) {
+                    fn_801BC554(5);
+                }
+            } else if (field_0x2bc >= 45) {
+                field_0x2b8 = player;
+                field_0x2bc = 0;
+            }
+        }
+        break;
+    }
+    }
+
+    bool b = false;
+    switch (mState) {
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        b = true;
+        break;
+    }
+    if (b) {
+        if (!fn_8022DCD8(field_0x2b8)) {
+            fn_801BC554(5);
+        } else {
+            f32 dz = (mPos.z - getPlayerPos_8023E724(field_0x2b8)->z) - 2.0f;
+            f32 dy = mPos.y - getPlayerPos_8023E724(field_0x2b8)->y;
+            f32 dx = mPos.x - getPlayerPos_8023E724(field_0x2b8)->x;
+            JGeometry::TVec3f vec;
+            vec.y = dy;
+            vec.z = dz;
+            vec.x = dx;
+            vec.x *= 0.1f;
+            vec.y *= 0.1f;
+            fn_8023DFF4(field_0x2b8, &vec);
+        }
+    }
+
+    bool b2 = false;
+    switch (mState) {
+    case 6:
+    case 7:
+    case 8:
+        b2 = true;
+        break;
+    }
+    if (b2) {
+        field_0x2c0++;
+        if (field_0x2c0 >= 120) {
+            if (fn_80236228(field_0x2b8) >= 20) {
+                fn_80236074(field_0x2b8, 20, 1);
+            }
+            field_0x2c0 = 0;
+        }
+    }
+
+    if (mFlags & 0x8000) {
+        if (fn_8022DD74(field_0x2c4)) {
+            mFlags &= ~0x8000;
+            field_0x2c4 = -1;
+        }
     }
 }

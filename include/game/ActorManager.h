@@ -93,7 +93,8 @@ public:
     /* 0x38 */ JGeometry::TVec3f field_0x38; // copy of *field_0x34, read through mSoundPos
     /* 0x44 */ u8 field_0x44; // stored by fn_804561D8 (its 4th argument)
     /* 0x45 */ u8 field_0x45; // cleared by the constructor
-    /* 0x46 */ u8 field_0x46[0xA]; // not read by any caller yet
+    /* 0x46 */ u8 field_0x46[6];
+    /* 0x4C */ f32 field_0x4c;
     /* 0x50 */ u8 field_0x50; // counter, counted down by fn_80456154
     /* 0x51 */ u8 field_0x51; // counter, counted down by fn_80456154
     /* 0x52 */ u8 field_0x52[0x9]; // cleared by the constructor; not read by any caller yet
