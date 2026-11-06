@@ -12,34 +12,66 @@ static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f&
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
 }
 
-inline bool cls_8049E610::isPlayerOn(s32 player) {
-    if (player < 0) {
-        return false;
+cls_8049E610::cls_8049E610()
+    : field_0x230(0), field_0x234(-1), field_0x238(0) {
+    for (int i = 0; i < 5; i++) {
+        field_0x23c[i] = NULL;
     }
-    if (field_0x4 != getPlayerLayer_8023DE58(player)) {
-        return false;
-    }
-    JGeometry::TBox2f box(mBox);
-    for (s32 i = 0; i < 8; i++) {
-        JGeometry::TVec3f v;
-        fn_8022E088(player, i, &v);
-        v -= mPos;
-        v.z = 0.0f;
-        s32 angle = (s32)(JMath::atanTable_.atan2_(v.y, v.x) *
-                          (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
-        f32 len = JGeometry::TUtil<f32>::sqrt(v.x * v.x + v.y * v.y);
-        v.z = 0.0f;
-        v.x = len * JMACosShort(angle);
-        v.y = len * JMASinShort(angle);
-        if (contains(box, v)) {
-            fn_8022DF48(player);
-            return true;
-        }
-    }
-    return false;
 }
 
-inline void cls_8049E610::checkActivate() {
+// FIXME: 87.42% (try.py class different, but instruction count and order are identical: only the register assignment differs. The original keeps the loop index in r30, the field pointer in r29 and the NULL in r31; ours has index r29, pointer r30).
+cls_8049E610::~cls_8049E610() {
+    for (int i = 0; i < 5; i++) {
+        releaseEmitter_801EE434(field_0x23c[i]);
+        field_0x23c[i] = NULL;
+    }
+}
+
+void cls_8049E610::init() {
+    ActorBase_804A5770::init();
+    field_0x230 = (field_0x90 >> 22) & 0x1F;
+    checkActivate();
+    mBox.i.x = -40.0f;
+    mBox.i.y = -64.0f;
+    mBox.f.x = 40.0f;
+    mBox.f.y = 64.0f;
+    mBox2.set(mBox);
+    field_0x80.set(mBox);
+}
+
+// FIXME: 97.88% (missing/extra: one extra instruction, a copy of the player index (mr r27,r26) from the inlined isPlayerOn parameter, which also costs one more saved register (stmw r26 vs r27); the rest is the same register renaming as __dt__ in the emitter loops).
+void cls_8049E610::update() {
+    ActorBase_804A5770::update();
+    switch (field_0x238) {
+    case 0:
+        checkActivate();
+        break;
+    case 1:
+        for (int i = 0; i < 4; i++) {
+            if (isPlayerOn(i)) {
+                fn_8023DF68(i, &(mPos - mPrevPos));
+            }
+        }
+        if (field_0x234 >= 0) {
+            field_0x234++;
+            if (field_0x234 >= 420) {
+                startSound_801F0E34(0x5004e, 0);
+                field_0x234 = -1;
+            }
+        }
+        if (field_0x230 >= 0) {
+            getGameView_802D6A9C()->fn_802D8050(field_0x230, true, 0xFF);
+        }
+        break;
+    }
+}
+
+// isPlayerOn and checkActivate: plain functions whose out-of-line copies the
+// linker dropped (update inlines both, init inlines checkActivate). Compiled
+// first (the bottom of the file), isPlayerOn then checkActivate, they give the
+// .sdata2 pool its original order: 0, 32768/pi, 0.5, 3 (isPlayerOn), 1.0
+// (checkActivate), then init's box literals.
+void cls_8049E610::checkActivate() {
     if (vfunc_0x34()) {
         field_0x238 = 1;
         // The original stores the state and then switches on it (a state setter inlined here, asm 0x8012A058).
@@ -75,57 +107,29 @@ inline void cls_8049E610::checkActivate() {
     }
 }
 
-cls_8049E610::cls_8049E610()
-    : field_0x230(0), field_0x234(-1), field_0x238(0) {
-    for (int i = 0; i < 5; i++) {
-        field_0x23c[i] = NULL;
+bool cls_8049E610::isPlayerOn(s32 player) {
+    if (player < 0) {
+        return false;
     }
-}
-
-// FIXME: 87.42% (try.py class different, but instruction count and order are identical: only the register assignment differs. The original keeps the loop index in r30, the field pointer in r29 and the NULL in r31; ours has index r29, pointer r30).
-cls_8049E610::~cls_8049E610() {
-    for (int i = 0; i < 5; i++) {
-        releaseEmitter_801EE434(field_0x23c[i]);
-        field_0x23c[i] = NULL;
+    if (field_0x4 != getPlayerLayer_8023DE58(player)) {
+        return false;
     }
-}
-
-// FIXME: 99.78% (reloc-name only: the unit's .sdata2 literals (1.0f, -40.0f, ...) are @NNN here, lbl_8053CB38..48 in the original, i.e. pool order differs; code is identical).
-void cls_8049E610::init() {
-    ActorBase_804A5770::init();
-    field_0x230 = (field_0x90 >> 22) & 0x1F;
-    checkActivate();
-    mBox.i.x = -40.0f;
-    mBox.i.y = -64.0f;
-    mBox.f.x = 40.0f;
-    mBox.f.y = 64.0f;
-    mBox2.set(mBox);
-    field_0x80.set(mBox);
-}
-
-// FIXME: 97.69% (missing/extra + reloc-name: one extra instruction, a copy of the player index (mr r27,r26) from the inlined isPlayerOn parameter, which also costs one more saved register (stmw r26 vs r27); the rest is the same register renaming as __dt__ in the emitter loops, plus .sdata2 literal pool order).
-void cls_8049E610::update() {
-    ActorBase_804A5770::update();
-    switch (field_0x238) {
-    case 0:
-        checkActivate();
-        break;
-    case 1:
-        for (int i = 0; i < 4; i++) {
-            if (isPlayerOn(i)) {
-                fn_8023DF68(i, &(mPos - mPrevPos));
-            }
+    JGeometry::TBox2f box(mBox);
+    for (s32 i = 0; i < 8; i++) {
+        JGeometry::TVec3f v;
+        fn_8022E088(player, i, &v);
+        v -= mPos;
+        v.z = 0.0f;
+        s32 angle = (s32)(JMath::atanTable_.atan2_(v.y, v.x) *
+                          (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+        f32 len = JGeometry::TUtil<f32>::sqrt(v.x * v.x + v.y * v.y);
+        v.z = 0.0f;
+        v.x = len * JMACosShort(angle);
+        v.y = len * JMASinShort(angle);
+        if (contains(box, v)) {
+            fn_8022DF48(player);
+            return true;
         }
-        if (field_0x234 >= 0) {
-            field_0x234++;
-            if (field_0x234 >= 420) {
-                startSound_801F0E34(0x5004e, 0);
-                field_0x234 = -1;
-            }
-        }
-        if (field_0x230 >= 0) {
-            getGameView_802D6A9C()->fn_802D8050(field_0x230, true, 0xFF);
-        }
-        break;
     }
+    return false;
 }
