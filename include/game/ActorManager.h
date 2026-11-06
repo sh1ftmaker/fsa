@@ -153,7 +153,10 @@ public:
     // 4 units / 8 calls. Spawns a Score ('SCRE', 0x801F6720) actor:
     // spawnActor_801F9484(this, ACTOR_SCRE, layer, pos, (c << 24) | (a << 16) | b,
     // -1, -1) (clrlslwi/rlwimi at 0x801F6728-0x801F6738); returns its serial.
-    s32 fn_801F6718(u8 a, s32 layer, const JGeometry::TVec3f* pos, u16 b, u8 c);
+    // a, b and c are full ints: every caller passes a word as loaded (lwz,
+    // no clrlwi; e.g. 0x801F51E8, act_liftable_item), the narrowing is the
+    // callee's.
+    s32 fn_801F6718(s32 a, s32 layer, const JGeometry::TVec3f* pos, s32 b, s32 c);
     // 24 units / 37 calls. fn_80230224(i, 0) for the four players, clears
     // field_0x3041 and calls fn_8037AE30(lbl_8053AD70).
     void fn_801F6884();

@@ -47,7 +47,7 @@ void ActorBase_804A5770::fn_8019CEAC(s32 v) {
     field_0xb0 = v;
 }
 
-bool fn_8019CE40(s32 stage, s32 sub) {
+BOOL fn_8019CE40(s32 stage, s32 sub) {
     return isStageFlagSet(stage, sub);
 }
 

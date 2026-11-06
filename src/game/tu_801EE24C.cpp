@@ -1,6 +1,7 @@
 // The actor base class (include/game/ActorBase.h) and the code around it.
 
 #include "game/ActorBase.h"
+#include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/EmitterDelete.h"
 #include "game/EnemyBase.h"
@@ -8,6 +9,8 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Map.h"
+#include "game/GameState.h"
+#include "game/StageFlag.h"
 #include "game/ViewLayer.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "std/math.h"
@@ -327,6 +330,62 @@ void ActorBase_804A5770::fn_801F52A4() {
                 }
             }
         }
+    }
+}
+
+// The actor's death: with "dstr" set and it the last such actor in the
+// adventure mode (field_0x7e), fn_801CB434 at mPos; else, with "dasu" set,
+// in the adventure mode with field_0x7f, outside fn_802DE814, on a cleared
+// stage (isStageFlagSet) and 1 time in 5, a crystal ball (ACTOR_CRTL) for
+// the killer if it is fn_801CCDA4's player and none exists yet; else the
+// "dasu" drop (fn_801F52A4). Then the death effects (0x172, 0x173; the
+// killer's effect slot gets the first), the killer's score updates,
+// the death sound, and the view's counters (fn_802D7704 / fn_802D766C).
+// FIXME: 99.75. Register allocation only (the emitter and the killer swap
+// r29/r30); 1.0f and 0.2f are @NNN until .sdata2 is in order.
+void ActorBase_804A5770::vfunc_0x24() {
+    if (gGameRoot_8053AAF8->field_0x7e != 0 && field_0x1a8 == true &&
+        getActorManager_801F856C()->fn_801F7A6C() == 1)
+    {
+        fn_801CB434(field_0x4, &mPos, false);
+    } else if (field_0x18c != 0 && gGameRoot_8053AAF8->field_0x7e != 0 &&
+               gGameRoot_8053AAF8->field_0x7f != 0 && !fn_802DE814() &&
+               isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c) &&
+               gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f && field_0x10c >= 0 &&
+               field_0x10c < 4 && fn_8022F340(field_0x10c) == fn_801CCDA4() &&
+               getActorManager_801F856C()->fn_801F7A08(ACTOR_CRTL) < 0)
+    {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CRTL, field_0x4, &mPos, 0, -1, -1);
+    } else if (field_0x18c != 0) {
+        fn_801F52A4();
+    }
+    JPABaseEmitter* emitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x172, 1, 1, NULL, NULL, true,
+                                                    lbl_8046A00C[field_0xc0]);
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x173, 1, 1, NULL, NULL, true, lbl_8046A00C[field_0xc0]);
+    s32 player = field_0x10c;
+    if (player >= 0 && player < 4) {
+        getEffectSystem_8013C824()->fn_8013C830(player, emitter);
+        if (fn_8022F514(field_0x10c)) {
+            field_0x10c = fn_8022F3DC(field_0x10c);
+        }
+        if (field_0xfc == 1) {
+            fn_802359A4(field_0x10c, fn_802357E0(field_0x10c));
+            s32 count = fn_802357E0(field_0x10c);
+            getActorManager_801F856C()->fn_801F6718(field_0x10c, field_0x4, &mPos, count, 0);
+        }
+        fn_80235B68(field_0x10c, mSerial);
+    }
+    if (field_0xbc == 3 || field_0xbc == 4) {
+        startSound_801F0E34(0x400F0, 0);
+    } else {
+        startSound_801F0E34(0x40003, 0);
+    }
+    mAlive = false;
+    s32 bit = field_0x16c;
+    if (bit != -1) {
+        getGameView_802D6A9C()->fn_802D7704(bit, field_0x1a8, field_0x4);
+    } else {
+        getGameView_802D6A9C()->fn_802D766C(field_0x1a8, field_0x4);
     }
 }
 

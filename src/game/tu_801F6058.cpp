@@ -620,8 +620,8 @@ bool fn_801F6758(const JGeometry::TVec3f* pos, s32 layer, f32 margin) {
     return false;
 }
 
-s32 ActorManager_804A5800::fn_801F6718(u8 a, s32 layer, const JGeometry::TVec3f* pos, u16 b, u8 c) {
-    return spawnActor_801F9484(ACTOR_SCRE, layer, pos, b | (a << 16) | (c << 24), -1, -1);
+s32 ActorManager_804A5800::fn_801F6718(s32 a, s32 layer, const JGeometry::TVec3f* pos, s32 b, s32 c) {
+    return spawnActor_801F9484(ACTOR_SCRE, layer, pos, (u16)b | ((u8)a << 16) | ((u8)c << 24), -1, -1);
 }
 
 ActorBase_804A5770* ActorManager_804A5800::findActorBySerial_801F666C(s32 serial) {
