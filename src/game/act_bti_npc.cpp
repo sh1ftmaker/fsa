@@ -230,7 +230,7 @@ void BTINPC_804A927C::update() {
     }
 }
 
-// FIXME: 91.39%, missing/extra + reloc-name: ours has 3 more instrs (490 vs 487). The original hoists lbl_804A90F0's base into r29 and schedules setRotScaleMtxS16's sincosTable_ products differently.
+// FIXME: 91.39%, missing/extra + reloc-name: ours has 2 more instrs (477 vs 475). The original hoists lbl_804A90F0's base into r29 (and the unit's string-literal base into r30) and schedules setRotScaleMtxS16's sincosTable_ products differently.
 void BTINPC_804A927C::draw() {
     if (field_0x230 == 1) {
         Mtx mtx;
@@ -273,7 +273,7 @@ void BTINPC_804A927C::draw() {
                 params.field_0x10.a = 0x96;
                 params.field_0x2c = 0;
                 params.field_0x24 = 0;
-                void* res2 = fn_804032E8('TIMG', (lbl_804A90F0 + 0x51)[field_0x234]);
+                void* res2 = fn_804032E8('TIMG', lbl_804A90F0[0x51 + field_0x234]);
                 if (field_0x4 + field_0x259 < 8) {
                     gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res2, &params);
                 }
@@ -303,7 +303,7 @@ void BTINPC_804A927C::draw() {
             } else if (field_0x234 >= 0x37 && field_0x234 <= 0x39) {
                 params.field_0x2c = 0;
                 params.field_0x24 = 1;
-                void* res2 = fn_804032E8('TIMG', (lbl_804A90F0 + 0x60)[field_0x234 - 0x37]);
+                void* res2 = fn_804032E8('TIMG', lbl_804A90F0[0x60 + field_0x234 - 0x37]);
                 if (field_0x4 + field_0x259 < 8) {
                     gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res2, &params);
                 }
