@@ -465,8 +465,7 @@ bool DroppedItem_804A8C80::fn_802BFF30(s32 player) {
     return true;
 }
 
-// FIXME: 85.12 %, missing/extra (ours has 8 fewer instructions). The original compares the 24 tile codes with a
-// linear cmpwi / beq chain; a switch gives a bge decision tree (here), an || chain folds into ranges (78 %).
+// The tile codes as act_bombchu's vfunc_0x4C (a != chain around the remaining tests).
 bool DroppedItem_804A8C80::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (field_0x258 == 0) {
         s32 serial = mSerial;
@@ -490,51 +489,30 @@ bool DroppedItem_804A8C80::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             rawCode == 0x39E) {
             return true;
         }
-        switch (tileCode) {
-        case 0:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 2:
-        case 3:
-        case 0x50:
-        case 0xE:
-        case 0xC:
-        case 0x2C:
-        case 0x2D:
-        case 0x2E:
-        case 0x2F:
-        case 0x20:
-        case 0xD:
-        case 0x39:
-        case 0x3A:
-        case 0x3B:
-        case 0x4C:
-        case 0x4D:
-        case 0x4E:
-        case 0x4F:
-        case 0x24:
-            return false;
+        if (tileCode != 0 && tileCode != 4 && tileCode != 5 && tileCode != 6 && tileCode != 7 &&
+            tileCode != 2 && tileCode != 3 && tileCode != 0x50 && tileCode != 0xE &&
+            tileCode != 0xC && tileCode != 0x2C && tileCode != 0x2D && tileCode != 0x2E &&
+            tileCode != 0x2F && tileCode != 0x20 && tileCode != 0xD && tileCode != 0x39 &&
+            tileCode != 0x3A && tileCode != 0x3B && tileCode != 0x4C && tileCode != 0x4D &&
+            tileCode != 0x4E && tileCode != 0x4F && tileCode != 0x24) {
+            if (tileCode == 0x10 || tileCode == 0x11 || tileCode == 0x12 || tileCode == 0x13) {
+                field_0x258 = 120;
+                return false;
+            }
+            if (fn_80226850(pos, layer) == 0x3A || fn_80226850(pos, layer) == 0x3D) {
+                return false;
+            }
+            // The original returns these two tests through a u8 (extrwi r3, r0, 8, 19 after cntlzw).
+            if (tileCode == 0x25) {
+                return (u8)!getGameView_802D6A9C()->field_0x171;
+            }
+            if (tileCode == 0x26) {
+                return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+            }
+            if (tileCode != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+                return true;
+            }
         }
-        if ((tileCode >= 0x10 && tileCode <= 0x12) || tileCode == 0x13) {
-            field_0x258 = 120;
-            return false;
-        }
-        if (fn_80226850(pos, layer) == 0x3A || fn_80226850(pos, layer) == 0x3D) {
-            return false;
-        }
-        // The original returns these two tests through a u8 (extrwi r3, r0, 8, 19 after cntlzw).
-        if (tileCode == 0x25) {
-            return (u8)!getGameView_802D6A9C()->field_0x171;
-        }
-        if (tileCode == 0x26) {
-            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
-        }
-        if (tileCode == 0x22) {
-            return getGameView_802D6A9C()->field_0x170 == 1;
-        }
-        return true;
     } else {
         field_0x258--;
     }
