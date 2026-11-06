@@ -479,6 +479,8 @@ public:
     void fn_8024EE24();
     void fn_8025250C();
     void fn_8025785C();
+    void requestJump_8025785C();
+    void requestFlame_8025785C();
     void fn_802580E0();
     void fn_8025825C();
     void fn_80265AE4();

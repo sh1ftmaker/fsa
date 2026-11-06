@@ -698,10 +698,6 @@ void Player_804A6F38::fn_8025D090() {
     field_0x40c = 0;
 }
 
-// FIXME: 99.06. try.py "different", but only order: as in fn_8025BEB0, the original builds the
-// charged arrow's argument from index & 3 and inserts the facing (clrlwi + rlwimi 4, 26, 27)
-// where ours starts from the facing (clrlslwi) and inserts index (the same bits);
-// epsilonEqualsXY keeps 32 * FLT_EPSILON in f2 (ours f3).
 // State 0x3A (item 4, the bow; enter fn_8025D090, exit fn_8025C7BC): the slingshot's
 // state 0x3B with arrows. The charge (lbl_8046B010 for the point) runs twice as fast at
 // level >= 2 (fn_802415CC); letting go shoots an 'ARRW' into the first free slot of
@@ -838,7 +834,7 @@ void Player_804A6F38::fn_8025C894() {
                     if (field_0x3fc >= 48) {
                         s32 index = field_0x4;
                         field_0xb00[i] = getActorManager_801F856C()->spawnActor_801F9484(
-                            ACTOR_ARRW, field_0x3b4, &pos, (index & 3) | ((field_0x3dc & 3) << 4), -1, index);
+                            ACTOR_ARRW, field_0x3b4, &pos, ((field_0x3dc & 3) << 4) | (index & 3), -1, index);
                     } else {
                         s32 index = field_0x4;
                         field_0xb00[i] = getActorManager_801F856C()->spawnActor_801F9484(
@@ -916,11 +912,8 @@ void Player_804A6F38::fn_8025C79C() {
     field_0x40c = 0;
 }
 
-// FIXME: 98.98. Structurally close (1 extra instruction): the side shot's argument is
-// built in r0 and moved to r30 (the original builds it in r30); the charged shot's
-// argument starts from index & 3 and inserts the facing (rlwimi 4, 26, 27) where ours
-// does the reverse; epsilonEqualsXY keeps 32 * FLT_EPSILON in f2 (ours f3), as in
-// fn_80259830.
+// FIXME: 99.82. Structurally close (1 extra instruction): the side shot's argument is
+// built in r0 and moved to r30 (the original builds it in r30).
 // State 0x3B (item 10, the slingshot; enter fn_8025C79C, exit fn_8025BDD8): after six
 // frames of drawing, frame 6 holds while the button is held (fn_8022C274), charging
 // field_0x3fc to 48: a full charge lights the point field_0x12fc (lbl_8046B040 by facing;
@@ -1061,7 +1054,7 @@ void Player_804A6F38::fn_8025BEB0() {
                     if (field_0x3fc >= 48) {
                         s32 index = field_0x4;
                         field_0xb0c[i] = getActorManager_801F856C()->spawnActor_801F9484(
-                            ACTOR_PCDM, field_0x3b4, &pos, (index & 3) | ((field_0x3dc & 3) << 4), -1, index);
+                            ACTOR_PCDM, field_0x3b4, &pos, ((field_0x3dc & 3) << 4) | (index & 3), -1, index);
                     } else {
                         s32 index = field_0x4;
                         field_0xb0c[i] = getActorManager_801F856C()->spawnActor_801F9484(
@@ -2551,10 +2544,11 @@ bool Player_804A6F38::fn_80257DB4() {
     return field_0xd3c < 0;
 }
 
-// FIXME: 90.40. Structurally close: the original leaves item 7's checks (living held
-// actor, a player holding 'RCK2', the floor probe / height) and item 6's actor count by
-// branching straight to the final store, which `blocked` / `count` stand in for here
-// (9 extra instructions, and this / the item index swap r30 / r31).
+// FIXME: 95.14. try.py "different", but only block order and registers: the original lays
+// out item 7's mPos.z test (off view-flag layers) after the floor probe, ours before it (the
+// source order `if (viewLayerFlag) { probe } else if (mPos.z > 0) return;` gives the
+// original's layout, 98.07 %, but pools 2.0f before 0.0f and drops 11 functions of the
+// unit to reloc-name); and this / the item index swap r30 / r31.
 // The per-frame item check: while fn_8022B334 and fn_8022C310 hold, the selected
 // item fn_802416C4 (1-10) requests its state. Items 3 and 6 allow three of their
 // actors (field_0xb00 / field_0xb1c) at a time, item 8 ('HBMB') two (field_0xb30).
@@ -2597,56 +2591,18 @@ void Player_804A6F38::fn_8025785C() {
                 if (fn_802415CC() >= 2) {
                     fn_80251AEC(0x45);
                 } else {
-                    s32 count = 0;
-                    if (fn_802415CC() < 2) {
-                        for (s32 i = 0; i < 3; i++) {
-                            if (field_0xb1c[i] >= 0) {
-                                count++;
-                            }
-                        }
-                    }
-                    if (count < 3) {
-                        fn_80251AEC(0x44);
-                    }
+                    requestFlame_8025785C();
                 }
             } else if (fn_802416C4() == 7) {
-                bool blocked = false;
-                if (fn_8025F500()) {
-                    ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
-                    if (held != NULL && held->field_0x1a4 != 0) {
-                        blocked = true;
-                    }
-                }
-                for (s32 i = 0; !blocked && i < 4; i++) {
-                    if (fn_80243194(i) && fn_8023EEB4(i) == 'RCK2') {
-                        blocked = true;
-                    }
-                }
-                if (!blocked) {
-                    if (!viewLayerFlag(field_0x3b4)) {
-                        if (mPos.z > 0.0f) {
-                            blocked = true;
-                        }
-                    } else if (!fn_802518AC(true)) {
-                        JGeometry::TVec3f pos;
-                        fn_8024B298(2, &pos);
-                        pos.y += 2.0f;
-                        if (fn_8022461C(&pos, field_0x3b4) == 2) {
-                            blocked = true;
-                        }
-                    }
-                }
-                if (!blocked) {
-                    if (fn_8025F684()) {
-                        fn_80251AEC(0x14);
-                    } else {
-                        fn_80251AEC(0x46);
-                    }
-                }
+                requestJump_8025785C();
             } else if (fn_802416C4() == 8) {
                 for (s32 i = 0; i < 2; i++) {
                     if (field_0xb30[i] < 0) {
-                        JGeometry::TVec3f pos(lbl_8046B220[field_0x3dc]);
+                        const Vec& d = lbl_8046B220[field_0x3dc];
+                        JGeometry::TVec3f pos;
+                        pos.x = d.x;
+                        pos.y = d.y;
+                        pos.z = d.z;
                         pos += mPos;
                         pos.z = 0.0f;
                         if (fn_8022461C(&pos, field_0x3b4) == 0xe) {
@@ -2677,6 +2633,60 @@ void Player_804A6F38::fn_8025785C() {
         }
     }
     field_0x1174 = 0;
+}
+
+// Item 6 below level 2 (state 0x44): at most three flames (field_0xb1c) at a time.
+// requestFlame / requestJump: inlined into fn_8025785C, no out-of-line copy survives (inline
+// here so none is emitted). Their evidence is fn_8025785C's asm: every refusal branches
+// straight to its final field_0x1174 store (a return out of the inlined body), and the
+// flame count starts after the second fn_802415CC call.
+inline void Player_804A6F38::requestFlame_8025785C() {
+    if (fn_802415CC() < 2) {
+        s32 count = 0;
+        for (s32 i = 0; i < 3; i++) {
+            if (field_0xb1c[i] >= 0) {
+                count++;
+            }
+        }
+        if (count >= 3) {
+            return;
+        }
+    }
+    fn_80251AEC(0x44);
+}
+
+// Item 7 (the jump, state 0x46; 0x14 while lifting) is refused while a living actor is held,
+// any player holds 'RCK2', the floor probe above the hand point is tile 2 on view-flag
+// layers, or the player is in the air elsewhere.
+inline void Player_804A6F38::requestJump_8025785C() {
+    if (fn_8025F500()) {
+        ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+        if (held != NULL && held->field_0x1a4 != 0) {
+            return;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_80243194(i) && fn_8023EEB4(i) == 'RCK2') {
+            return;
+        }
+    }
+    if (!viewLayerFlag(field_0x3b4)) {
+        if (mPos.z > 0.0f) {
+            return;
+        }
+    } else if (!fn_802518AC(true)) {
+        JGeometry::TVec3f pos;
+        fn_8024B298(2, &pos);
+        pos.y += 2.0f;
+        if (fn_8022461C(&pos, field_0x3b4) == 2) {
+            return;
+        }
+    }
+    if (fn_8025F684()) {
+        fn_80251AEC(0x14);
+    } else {
+        fn_80251AEC(0x46);
+    }
 }
 
 bool Player_804A6F38::fn_802577E0() {
