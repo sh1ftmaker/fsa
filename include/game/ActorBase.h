@@ -109,8 +109,10 @@ public:
     // 8 calls in 8 units (e.g. 0x8017EF80, 0x801D95BC) set r4 (li, or extsb
     // of an s8, so the parameter is a full int), f1 and f2, and ignore r3.
     /* 0x28 */ virtual void vfunc_0x28(s32, f32, f32);
-    // 0x801F4850: reads f1-f3 (mPos + (x, y) plus a random offset scaled by
-    // f3); returns 0 or 1. Never overridden; all 8 calls (fn_801D8430,
+    // 0x801F4850 (written): one frame of a boss's death explosion while
+    // field_0x188 counts down (false when it is -1): blasts at mPos + (x, y)
+    // within `scale`, then at 0 the Force Gems (ACTOR_GOLD, ACTOR_RUPY) and
+    // the end of the boss music. Never overridden; all 8 calls (fn_801D8430,
     // 0x8017C4B0, 0x8017FBB4, ...) set f1-f3 and test r3 with clrlwi. 24.
     /* 0x2C */ virtual bool vfunc_0x2C(f32 x, f32 y, f32 scale);
     // 0x801F47CC: if vfunc_0x3C(), passes (view, vfunc_0x3C(), arg2, arg1)
@@ -585,7 +587,7 @@ public:
     /* 0x17D */ u8 field_0x17d;
     /* 0x180 */ s32 field_0x180; // 20
     /* 0x184 */ f32 field_0x184; // 40.0f
-    /* 0x188 */ s32 field_0x188;
+    /* 0x188 */ s32 field_0x188; // death-explosion countdown, -1 when idle (vfunc_0x2C)
     /* 0x18C */ s32 field_0x18c; // EnemyParam.csv column "dasu"
     /* 0x190 */ s32 field_0x190; // EnemyParam.csv column "voic"
     /* 0x194 */ u8 field_0x194;

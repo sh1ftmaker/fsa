@@ -406,6 +406,90 @@ void ActorBase_804A5770::vfunc_0x28(s32 height, f32 x, f32 y) {
     gGameRoot_8053AAF8->fn_80134DE4(300, 0);
 }
 
+// The boss's death explosion, one frame of it while field_0x188 counts
+// down (-1: not running, returns false): every 8 frames two blasts (0x68,
+// 0x69) at a random point within `scale` around mPos + (x, y), every 32 a
+// sound; at 0 the final blast, the view's counters, a Force Gem spawner
+// (ACTOR_GOLD) and five Force Gems (ACTOR_RUPY; Stone Arrghus' second form
+// three) thrown out at random, then the boss music ends (or GameRoot's
+// fn_80138B7C for Stone Arrghus' second form and the Helmaroc King).
+// FIXME: 98.8. Register allocation only (the inlined random number
+// generator's scratch registers r5-r12); literals are @NNN until .sdata2 is
+// in order.
+bool ActorBase_804A5770::vfunc_0x2C(f32 x, f32 y, f32 scale) {
+    if (field_0x188 == -1) {
+        return false;
+    }
+    field_0x188--;
+    if ((field_0x188 & 7) == 0) {
+        JGeometry::TVec3f pos(mPos);
+        f32 half = 0.5f * scale;
+        pos.x += x + (scale * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - half);
+        pos.y += y + (scale * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - half);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x68, 2, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x69, 2, 0, NULL, NULL, true, 1.0f);
+    }
+    if ((field_0x188 & 0x1F) == 0) {
+        startSound_801F0E34(0x30001, 0);
+    }
+    if (field_0x188 == 0) {
+        if (field_0x4 < 8) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F601C(&mPos, 2, NULL, 1.0f, 1.0f);
+        }
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x59, 0, 0, NULL, NULL, true, 0.3f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x5A, 1, 0, NULL, NULL, true, 0.375f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x5B, 1, 0, NULL, NULL, true, 0.375f);
+        startSound_801F0E34(0x30001, 0);
+        getActorManager_801F856C()->fn_801F6884();
+        JGeometry::TVec3f pos(mPos);
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_GOLD, field_0x4, &mPos, 0x50, -1, -1);
+        s32 first = 0;
+        if (mActorId == ACTOR_BWRT && field_0x90 == 1) {
+            first = 2;
+        }
+        for (s32 i = first; i < 5; i++) {
+            pos.set(mPos);
+            s32 kind = 4;
+            if (i < 1) {
+                kind = 7;
+            }
+            s32 serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &pos, kind);
+            if (serial < 0) {
+                continue;
+            }
+            ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (mActorId == 'FGAN') {
+                JGeometry::TVec3f v(2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
+                                    0.5f - gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
+                                    3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 3.0f);
+                gem->field_0x3c = v;
+            } else if (mActorId == 'BOIC') {
+                JGeometry::TVec3f v(2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(), 0.0f,
+                                    -5.0f);
+                gem->field_0x3c = v;
+            } else {
+                JGeometry::TVec3f v(2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
+                                    2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
+                                    3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 3.0f);
+                gem->field_0x3c = v;
+            }
+        }
+        mAlive = false;
+        s32 bit = field_0x16c;
+        if (bit != -1) {
+            getGameView_802D6A9C()->fn_802D7704(bit, field_0x1a8, field_0x4);
+        } else {
+            getGameView_802D6A9C()->fn_802D766C(field_0x1a8, field_0x4);
+        }
+        if ((mActorId == ACTOR_BWRT && field_0x90 == 1) || mActorId == ACTOR_GROK) {
+            gGameRoot_8053AAF8->fn_80138B7C();
+        } else {
+            gAudioMgr_8053AF80->fn_80458F9C(60);
+        }
+    }
+    return true;
+}
+
 void ActorBase_804A5770::vfunc_0x30(u8 value, bool set) {
     if (vfunc_0x3C()) {
         getGameView_802D6A9C()->fn_802D8050(vfunc_0x3C(), set, value);
