@@ -116,7 +116,9 @@ RESTRICTED = [
     (re.compile(r"\*\s*\(\s*[\w\s]+\*+\s*\)\s*\(\s*\(\s*(u8|s8|char|unsigned char|u32|uintptr_t)\s*\*?\s*\)"), "field access through a cast and an offset"),
     # Original asm functions from a donor's matched source are source; new asm is not.
     (re.compile(r"\basm\b\s*[({]|__asm\b|\basm\s+\w+[^;]*\("), "inline asm"),
-    (re.compile(r"^\s*#\s*pragma\b.*"), "#pragma"),
+    # `#pragma auto_inline off` / `reset` around a callee's definition is allowed (owner,
+    # 2026-11-05, docs/INLINING.md "adopted"); review enforces the evidence comment.
+    (re.compile(r"^\s*#\s*pragma\b(?!\s+auto_inline\s+(off|reset)\s*(//.*)?$).*"), "#pragma"),
     (re.compile(r"\bgoto\s+\w+\s*;"), "goto"),
 ]
 # Placeholders: dtk's names, address-suffixed provisional names (also inside mangled names,
