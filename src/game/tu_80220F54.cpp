@@ -24,6 +24,6 @@ void ShadowLinkBase_804A6A00::vfunc_0x74() {
     fn_8022149C(0);
 }
 
-bool ShadowLinkBase_804A6A00::vfunc_0x60() {
-    return false;
+u8 ShadowLinkBase_804A6A00::vfunc_0x60() {
+    return 0;
 }

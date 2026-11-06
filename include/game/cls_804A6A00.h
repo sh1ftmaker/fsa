@@ -21,7 +21,7 @@ public:
     // 0x80220F54.
     /* 0x20 */ virtual void draw();
     // 0x80221158.
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     // 0x80221184: field_0x98 from the angle of field_0x3c, animation
     // field_0x98 + 0xC, then sound 0x400C2.
     /* 0x6C */ virtual void vfunc_0x6C();
