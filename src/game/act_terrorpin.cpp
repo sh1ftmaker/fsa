@@ -16,6 +16,20 @@ static const s16 lbl_80469180[6] = {0, 10, 1, 10, -1, -1};
 static const s16 lbl_8046918C[6] = {2, 10, 3, 10, -1, -1};
 static const s16* lbl_8053A120[2] = {lbl_80469180, lbl_8046918C};
 
+// The scale part of m (its translation column is the caller's). The draw
+// loads the three scales z first, as arguments of an inline call (cf. tu_80264998.cpp).
+static inline void setScaleMtx(Mtx m, f32 x, f32 y, f32 z) {
+    m[0][0] = x;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = y;
+    m[1][2] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = z;
+}
+
 Terrorpin_804A3B10::Terrorpin_804A3B10() {
     field_0x2a8 = 0;
 }
@@ -57,6 +71,60 @@ void Terrorpin_804A3B10::init() {
     mAnim.fn_801D2608(lbl_8053A120, 2);
     mAnim.startAnim_801D22DC(0, 2, false);
     mAnim.fn_801D1D60();
+}
+
+void Terrorpin_804A3B10::fn_801B91A8(s32 state) {
+    switch (state) {
+    case 0:
+        field_0x250 = fn_801CD664(16) + 30;
+        mTargetSpeed = 0.35f;
+        if (mState != 4) {
+            field_0x98 = fn_801CF6B8();
+        }
+        break;
+    case 1:
+    case 4:
+        if (state == 1) {
+            if (mFlags & 0x2000) {
+                startSound_801F0E34(0x50016, 0);
+            } else {
+                startSound_801F0E34(0x50017, 0);
+            }
+        } else {
+            if (mFlags & 0x2000) {
+                startSound_801F0E34(0x50021, 0);
+            } else {
+                startSound_801F0E34(0x50022, 0);
+            }
+        }
+        field_0x250 = -1;
+        field_0x98 = fn_801CD354(field_0x98);
+        mTargetSpeed = 0.6f;
+        mSpeed = 0.6f;
+        if (mFlags & 0x2000) {
+            field_0x3c.z = 2.0f;
+        } else {
+            field_0x3c.z = 3.0f;
+        }
+        break;
+    case 2:
+        field_0x250 = fn_801CD664(101) + 400;
+        mTargetSpeed = 0.0f;
+        break;
+    case 3:
+        field_0x250 = fn_801CD664(11) + 30;
+        mTargetSpeed = 0.0f;
+        break;
+    case 5:
+        field_0x250 = fn_801CD664(1) + 540;
+        field_0x98 = fn_801CD354(field_0x98);
+        mTargetSpeed = 2.5f;
+        mSpeed = 2.5f;
+        field_0x3c.z = 2.0f;
+        break;
+    }
+    mStateTimer = 0;
+    mState = state;
 }
 
 // 0x2A0 is mAnim.mFrameCtrl.mRate (J3DFrameCtrl _0C at 0x270 + 0x24 + 0xC).
@@ -226,6 +294,22 @@ void Terrorpin_804A3B10::vfunc_0x24() {
         }
     }
     ActorBase_804A5770::vfunc_0x24();
+}
+
+void Terrorpin_804A3B10::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    if (mFlags & 0x2000) {
+        mtx[0][3] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        setScaleMtx(mtx, field_0x54.x, field_0x54.y, field_0x54.z);
+        params.mMtx = mtx;
+    }
+    if (mFlags & 0x4000) {
+        params.field_0x0[8] = field_0x2a8 + 2;
+    }
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xBD, &params, 0, 1.0f, 1.0f);
 }
 
 Terrorpin_804A3B10::~Terrorpin_804A3B10() {}
