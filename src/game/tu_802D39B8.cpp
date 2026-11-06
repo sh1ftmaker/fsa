@@ -224,9 +224,50 @@ inline void GameView_804A9950::clearScreenState() {
 // The step by which vfunc_0x10 runs the field_0xf0 offsets down to 0 (the unit's .sdata).
 static f32 lbl_8053A1A8 = 0.2f;
 
+// Clears every screen's flag words and 64-bit masks, the per-bit counters and values,
+// the per-(stage, level) bits, the layer counters and the per-screen bit tables.
+void fn_802DEE2C(void) {
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            getGameView_802D6A9C()->field_0x178[row][col] = 0;
+            getGameView_802D6A9C()->field_0x3c8[0][row][col] = 0;
+            getGameView_802D6A9C()->field_0x3c8[1][row][col] = 0;
+            getGameView_802D6A9C()->field_0x3c8[2][row][col] = 0;
+            getGameView_802D6A9C()->field_0x3c8[3][row][col] = 0;
+        }
+    }
+    for (int i = 0; i < 0x20; i++) {
+        getGameView_802D6A9C()->field_0x308[i] = 0;
+        getGameView_802D6A9C()->field_0x328[i] = 0xFF;
+        getGameView_802D6A9C()->field_0x12f68[i] = 0;
+        getGameView_802D6A9C()->field_0x12fe8[i] = 0;
+    }
+    for (int stage = 0; stage < 8; stage++) {
+        for (int level = 0; level < 4; level++) {
+            getGameView_802D6A9C()->field_0x348[stage][level] = 0;
+        }
+    }
+    for (int layer = 0; layer < 8; layer++) {
+        getGameView_802D6A9C()->field_0x6748[layer] = 0;
+    }
+    for (int row = 0; row < 10; row++) {
+        for (int col = 0; col < 10; col++) {
+            for (int i = 0; i < 32; i++) {
+                getGameView_802D6A9C()->field_0xfd68[row][col][i] = 0;
+            }
+        }
+    }
+}
+
 bool fn_802DEDFC(const s32* dir) {
     return getGameView_802D6A9C()->fn_802DCE5C(dir);
 }
+
+// FIXME: fn_802DED40 / fn_802DEC40 are not written yet: they are the view's fn_802D7B34 /
+// fn_802D7BE8 inlined into free functions (C++ linkage, (s32, s32) / (s32, s32, u32)), but
+// written as such forwards they reach only 78 / 80 %: the target keeps
+// gGameRoot_8053AAF8->0x4 and reloads its view for the array after __shl2i (the
+// fn_802DE9A0 family); ours reuses `this`.
 
 bool fn_802DEBF8(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
