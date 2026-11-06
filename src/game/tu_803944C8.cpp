@@ -426,6 +426,57 @@ void cls_804AF72C::do_reset() {
     *field_0x2c4 = 0;
 }
 
+// FIXME: 99.34. regalloc only: the original keeps -1 in r0 and 1 in r7 (ours
+// the other way round), so its minutes fallback copies r7 (mr r8, r7) where
+// ours loads li r8, 1.
+// Lays the message out once with field_0x38 (counting lines and pages), then
+// starts the window's page state.
+void cls_804AF72C::do_begin(const void* entry, const char* text) {
+    field_0x2d8->resetFields0x3ab();
+    *field_0x2c0 = 0;
+    *field_0x2c4 = 0;
+    field_0x2cc = 0;
+    field_0x2d0 = 0;
+    field_0x2d4 = 0;
+    field_0x2d5 = 0;
+    for (int i = 0; i < 3; i++) {
+        field_0x2d8->field_0x3b2[i] = 0;
+    }
+    field_0x2d8->field_0x154 = -1;
+    field_0x2d6 = 1;
+    field_0x38.field_0x38 = field_0x2bc;
+    field_0x38.setFields0x1e0(field_0x2d8->fn_803A3068(), field_0x2d8->fn_803A3060(), field_0x2d8->fn_803A3058(),
+                              field_0x2d8->fn_803A3050());
+    s32 count = lbl_8053AD78->field_0x44;
+    s32 minutes = count / 60 % 60;
+    if (minutes == 0) {
+        minutes = 1;
+    }
+    field_0x38.field_0x1d8 = count / 3600;
+    field_0x38.field_0x1dc = minutes;
+    field_0x38.setBegin_messageEntryText(getResourceCache(), entry, text);
+    field_0x38.process(NULL);
+    field_0x2d8->field_0x164 =
+        field_0x38.field_0x202[field_0x2d8->field_0x15c + 1] - field_0x38.field_0x202[field_0x2d8->field_0x15c];
+    field_0x2d8->field_0x170 = 0;
+    if (field_0x38.field_0x257[field_0x2d8->field_0x15c] != 0) {
+        field_0x2d8->field_0x19e = 0;
+    }
+    cls_804AF5A0* window = field_0x2d8;
+    if (window->field_0x1aa == 0) {
+        for (int i = 0; i < 12; i++) {
+            window->field_0x68[i]->field_0x8 = 0xFF;
+        }
+    } else {
+        field_0x2c0[field_0x2d0++] = -1;
+        field_0x2c0[field_0x2d0++] = -1;
+        if (field_0x2d8->field_0x164 < 3) {
+            field_0x2c0[field_0x2d0++] = -1;
+            field_0x2c0[field_0x2d0++] = field_0x2d8->field_0x164 + 0xC0;
+        }
+    }
+}
+
 void cls_804AF72C::do_end() {
     if (field_0x2d8->field_0x1aa == 0) {
         return;
@@ -464,6 +515,30 @@ void cls_804AF6E4::do_end() {
     field_0x281++;
     field_0x202[field_0x281] = field_0x22c;
     field_0x257[field_0x281] = 0;
+}
+
+void cls_804AF6E4::do_character(int c) {
+    if (c == '\n') {
+        field_0x201++;
+        field_0x22c++;
+        field_0x4c[field_0x201] = 0.0f;
+        field_0x22d[field_0x201] = 0;
+        field_0xf4[field_0x201] = 0.0f;
+        field_0x1e8 = 0;
+        if (field_0x202[field_0x281] != field_0x22c && field_0x201 - field_0x202[field_0x281] >= 3) {
+            field_0x281++;
+            field_0x202[field_0x281] = field_0x22c;
+            field_0x257[field_0x281] = 0;
+            field_0x1e8 = 1;
+        }
+    } else {
+        f32 ratio = field_0x48 / field_0x38->getCellWidth();
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(c, &width);
+        field_0x4c[field_0x201] += ratio * (field_0x44 * (s32)width.w1);
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+    }
 }
 
 cls_804AF6E4::~cls_804AF6E4() {}

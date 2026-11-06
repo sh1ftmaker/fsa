@@ -8,6 +8,7 @@
 
 #include "game/Message.h"
 #include "JSystem/JMessage/TProcessor.h"
+#include "JSystem/JUtility/JUTFont.h"
 
 class cls_804AF5A0;
 
@@ -59,7 +60,17 @@ public:
     virtual void do_character(int);
     virtual bool do_tag(u32, const void*, u32);
 
-    /* 0x038 */ u8 field_0x38[0x3C - 0x38];
+    // Inlined by cls_804AF72C::do_begin (the four window getters are read
+    // first, last argument first, then the four stores); no out-of-line copy.
+    void setFields0x1e0(s16 a, s16 b, s32 c, s32 d) {
+        field_0x1ea = a;
+        field_0x1ec = b;
+        field_0x1e0 = c;
+        field_0x1e4 = d;
+    }
+
+    // The font do_character measures with (getCellWidth, getWidthEntry).
+    /* 0x038 */ JUTFont* field_0x38;
     /* 0x03C */ s32 field_0x3c;
     /* 0x040 */ s32 field_0x40;
     // fn_803944EC stores the text scale and the window's font width
@@ -69,17 +80,25 @@ public:
     /* 0x04C */ f32 field_0x4c[42];
     /* 0x0F4 */ f32 field_0xf4[42];
     /* 0x19C */ f32 field_0x19c[15];
-    /* 0x1D8 */ u8 field_0x1d8[0x1E8 - 0x1D8];
+    // cls_804AF72C::do_begin: the hours and minutes of the message
+    // manager's counter (field_0x44 / 3600, / 60 % 60 or 1), then the
+    // window's 0x178 / 0x17C and 0x190 / 0x192.
+    /* 0x1D8 */ s32 field_0x1d8;
+    /* 0x1DC */ s32 field_0x1dc;
+    /* 0x1E0 */ s32 field_0x1e0;
+    /* 0x1E4 */ s32 field_0x1e4;
     /* 0x1E8 */ u8 field_0x1e8;
-    /* 0x1E9 */ u8 field_0x1e9[0x1EE - 0x1E9];
+    /* 0x1E9 */ u8 field_0x1e9;
+    /* 0x1EA */ s16 field_0x1ea;
+    /* 0x1EC */ s16 field_0x1ec;
     /* 0x1EE */ u8 field_0x1ee[15];
     /* 0x1FD */ u8 field_0x1fd;
     /* 0x1FE */ u8 field_0x1fe[3];
     /* 0x201 */ u8 field_0x201;
     /* 0x202 */ s8 field_0x202[42];
-    /* 0x22C */ u8 field_0x22c;
+    /* 0x22C */ s8 field_0x22c; // a line count (compared signed with field_0x202)
     /* 0x22D */ u8 field_0x22d[42];
-    /* 0x257 */ u8 field_0x257[42];
+    /* 0x257 */ s8 field_0x257[42];
     /* 0x281 */ u8 field_0x281;
     /* 0x282 */ u8 field_0x282;
 }; // Size: 0x284
@@ -97,17 +116,23 @@ public:
         field_0x38.field_0x48 = width;
     }
     virtual void do_reset();
+    virtual void do_begin(const void*, const char*);
     virtual void do_end();
 
     // Destroyed by the destructor at 0x38 (vtable 0x804AF6E4 stored there).
     /* 0x038 */ cls_804AF6E4 field_0x38;
-    /* 0x2BC */ u8 field_0x2bc[0x2C0 - 0x2BC];
+    // The font of the window's 'Tm01' text box (the constructor), handed to
+    // field_0x38 by do_begin.
+    /* 0x2BC */ JUTFont* field_0x2bc;
     /* 0x2C0 */ s8* field_0x2c0;
     /* 0x2C4 */ s8* field_0x2c4;
     /* 0x2C8 */ f32 field_0x2c8; // the text scale (fn_803944EC)
-    /* 0x2CC */ u8 field_0x2cc[0x2D0 - 0x2CC];
+    /* 0x2CC */ s32 field_0x2cc;
     /* 0x2D0 */ s32 field_0x2d0;
-    /* 0x2D4 */ u8 field_0x2d4[0x2D8 - 0x2D4];
+    /* 0x2D4 */ u8 field_0x2d4;
+    /* 0x2D5 */ u8 field_0x2d5;
+    /* 0x2D6 */ u8 field_0x2d6;
+    /* 0x2D7 */ u8 field_0x2d7;
     /* 0x2D8 */ cls_804AF5A0* field_0x2d8;
 };
 

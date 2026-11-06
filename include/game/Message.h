@@ -114,13 +114,15 @@ public:
     /* 0x14C */ s32 field_0x14c;
     // fn_80390BDC counts it down to 0 and returns it.
     /* 0x150 */ u32 field_0x150;
-    /* 0x154 */ u8 field_0x154[0x15C - 0x154];
+    /* 0x154 */ s32 field_0x154; // the constructor sets -1, cls_804AF72C::do_begin too
+    /* 0x158 */ s32 field_0x158; // the constructor sets 0xFF
     /* 0x15C */ s32 field_0x15c;
     /* 0x160 */ s32 field_0x160;
-    /* 0x164 */ u8 field_0x164[0x168 - 0x164];
+    // cls_804AF72C::do_begin: the line count of the current page.
+    /* 0x164 */ s32 field_0x164;
     /* 0x168 */ s32 field_0x168;
     /* 0x16C */ s32 field_0x16c;
-    /* 0x170 */ u8 field_0x170[0x174 - 0x170];
+    /* 0x170 */ s32 field_0x170;
     // fn_80390850 returns it (-1 when the window is in neither state).
     /* 0x174 */ s32 field_0x174;
     /* 0x178 */ s32 field_0x178;
@@ -137,7 +139,13 @@ public:
     /* 0x1A2 */ u8 field_0x1a2[0x1A9 - 0x1A2];
     /* 0x1A9 */ u8 field_0x1a9;
     /* 0x1AA */ u8 field_0x1aa;
-    /* 0x1AB */ u8 field_0x1ab[0x3AE - 0x1AB];
+    // Two 0x100-byte buffers; the constructor points cls_804AF72C's 0x2C0 /
+    // 0x2C4 at them.
+    /* 0x1AB */ s8 field_0x1ab[0x100];
+    /* 0x2AB */ s8 field_0x2ab[0x100];
+    /* 0x3AB */ u8 field_0x3ab;
+    /* 0x3AC */ u8 field_0x3ac;
+    /* 0x3AD */ u8 field_0x3ad;
     /* 0x3AE */ u8 field_0x3ae;
     /* 0x3AF */ u8 field_0x3af;
     /* 0x3B0 */ u8 field_0x3b0;
@@ -189,6 +197,13 @@ public:
     // Inlined by the constructor and cls_804AF774::do_reset; its own copy was
     // dead-stripped (no address).
     void resetFields0x168();
+    // Inlined by cls_804AF72C::do_begin (three stores through one load of the
+    // window); dead-stripped, no address.
+    void resetFields0x3ab() {
+        field_0x3ad = 0;
+        field_0x3ac = 0;
+        field_0x3ab = 0;
+    }
 }; // Size: 0x3C4 (the fields game/tu_803944C8.cpp and tu_80390818 use are declared)
 
 // "gc_four_swords_text_e.bmg" (a JMessage BMG file): a 0x20-byte header, the
