@@ -2265,6 +2265,72 @@ void FileSelect_804AFF60::fn_803C1054() {
 }
 #pragma auto_inline reset
 
+// Not auto-inlined: fn_803C8B80 calls fn_803C05D8 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// FIXME: 99.78. Regalloc only, the 'Pdb' loop as fn_803BF3BC (r29 / r30).
+// Called by fn_803C8B80: shows file field_0xa0's board ('Pqb03'..'Pqb10'
+// hidden where fn_803B90E4 is set, field_0xa8 / field_0xb8 its stage flags),
+// fades the file cursor, brings the board in from the right when the file's
+// checksum bit is set (else stops the buttons' movers), labels the two
+// buttons (messages 0x11E 'Tstr01', 0x11F 'Tcop01'); state 26.
+void FileSelect_804AFF60::fn_803C05D8() {
+    for (s32 i = 0; i < 8; i++) {
+        if (fn_803B90E4(field_0xa0, i)) {
+            mScreen->search(lbl_80476980[i + 2])->hide();
+        } else {
+            mScreen->search(lbl_80476980[i + 2])->show();
+        }
+    }
+    field_0xa8 = field_0xa0;
+    for (s32 i = 0; i < 8; i++) {
+        field_0xb8[i] = fn_803B8CAC(field_0xa0, i);
+    }
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    if (hasBadChecksum(field_0xa0)) {
+        field_0x20->mPane->show();
+        field_0x20->moveFromCentre_80402E08(600.0f, 0.0f);
+        field_0x20->field_0x20 = 0;
+        field_0x20->mPane->setAlpha(0);
+        for (s32 i = 0; i < 9; i++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+        }
+        field_0x20->field_0x26 = 0;
+    } else {
+        field_0x14->field_0x20 = 0;
+        field_0x14->field_0x26 = 0;
+        field_0x18->field_0x20 = 0;
+        field_0x18->field_0x26 = 0;
+        field_0x1c->field_0x20 = 0;
+        field_0x1c->field_0x26 = 0;
+    }
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
+    field_0x24[0]->field_0x22 = 0;
+    field_0x24[0]->field_0x26 = 0;
+    field_0x24[1]->field_0x22 = 0;
+    field_0x24[1]->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(26);
+}
+#pragma auto_inline reset
+
 // Not auto-inlined: fn_803C7CA0 calls fn_803C02CC out of line in the original
 // (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off

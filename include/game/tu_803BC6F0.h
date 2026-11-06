@@ -48,6 +48,8 @@ public:
     void fn_803C02CC();
     void fn_803C1054();
     void fn_803C0A34();
+    // fn_803C8B80: opens file field_0xa0's board (state 26).
+    void fn_803C05D8();
     // fn_803CD2DC: the chosen file is empty.
     void fn_803C1734();
     // fn_803CABAC: the copy menu's open / close.
