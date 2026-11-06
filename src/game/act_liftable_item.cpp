@@ -119,10 +119,12 @@ static inline u32 checkInputs_8015A374() {
     return 0;
 }
 
-// FIXME: 98.86% (different: same length, 28 opcodes differ; arg_mismatch on stack offsets from 0xa0 vs 0x90 frame size)
+// FIXME: 98.86%. Same length. The loads of field_0x4 around the by-value TVec3f copies passed to fn_8038BD08 are
+// scheduled differently, and our frame is 0x10 bytes smaller (the original keeps one more 12-byte local), so the stack
+// offsets differ.
 void LiftableItem_804A01D0::update() {
+    // The `== true` tests below are deliberate: the compiled code has more instructions without them.
     JGeometry::TVec3f pos;
-    JGeometry::TVec3f pos2;
 
     addCalc2_801F71A4(&field_0x3c.x, field_0x29c.x, 0.3f, 1.0f);
     addCalc2_801F71A4(&field_0x3c.y, field_0x29c.y, 0.3f, 1.0f);
@@ -179,7 +181,7 @@ void LiftableItem_804A01D0::update() {
                 if (field_0x26c != 0) {
                     s32 serial = field_0x260;
                     if (serial != 0) {
-                        StopNPC_804AA2D8* actor = (StopNPC_804AA2D8*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                        StopNPC_804AA2D8* actor = static_cast<StopNPC_804AA2D8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
                         if (actor != NULL) {
                             actor->fn_802ED140();
                         }
@@ -207,11 +209,11 @@ void LiftableItem_804A01D0::update() {
                         if (field_0x288 < 4) {
                             field_0x288++;
                         }
-                        s32 r5 = field_0x288;
-                        if (r5 >= 4) {
-                            r5 = 3;
+                        s32 frame = field_0x288;
+                        if (frame >= 4) {
+                            frame = 3;
                         }
-                        fn_80230498(field_0x250, &field_0x27c, r5 + 0xE9, 0xFF, -0x80, -0x80, true);
+                        fn_80230498(field_0x250, &field_0x27c, frame + 0xE9, 0xFF, -0x80, -0x80, true);
                     } else if (field_0x234 == 0x2E) {
                         if (field_0x288 == 0) {
                             mPos.z = field_0x27c.z + 22.0f;
@@ -230,14 +232,14 @@ void LiftableItem_804A01D0::update() {
                         if (field_0x288 < 4) {
                             field_0x288++;
                         }
-                        s32 r30 = field_0x288;
-                        if (r30 >= 4) {
-                            r30 = 3;
+                        s32 frame = field_0x288;
+                        if (frame >= 4) {
+                            frame = 3;
                         }
                         if (fn_80233E40(field_0x250)) {
-                            fn_80230498(field_0x250, &field_0x27c, r30 + 0x336, 0xFF, -0x80, -0x80, true);
+                            fn_80230498(field_0x250, &field_0x27c, frame + 0x336, 0xFF, -0x80, -0x80, true);
                         } else {
-                            fn_80230498(field_0x250, &field_0x27c, r30 + 0xED, 0xFF, -0x80, -0x80, true);
+                            fn_80230498(field_0x250, &field_0x27c, frame + 0xED, 0xFF, -0x80, -0x80, true);
                         }
                     } else if (field_0x234 <= 0x0B) {
                         if (field_0x288 == 0) {
@@ -270,9 +272,9 @@ void LiftableItem_804A01D0::update() {
                                 mEmitter2b0 = spawnEmitter_8013CC50(field_0x4, &JGeometry::TVec3f(mPos.x, mPos.y - 6.0f, mPos.z), 0x562, 0, 1, NULL, NULL, true, 0.8f);
                                 mEmitter2a8 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x563, 0, 1, NULL, NULL, true, 0.6f);
                                 if (field_0x25c == 0) {
-                                    pos2 = mPos;
-                                    pos2.y -= 16.0f;
-                                    getActorManager_801F856C()->fn_801F6718(field_0x274, field_0x4, &pos2, field_0x234, 2);
+                                    pos = mPos;
+                                    pos.y -= 16.0f;
+                                    getActorManager_801F856C()->fn_801F6718(field_0x274, field_0x4, &pos, field_0x234, 2);
                                 }
                             }
                         }
@@ -280,14 +282,14 @@ void LiftableItem_804A01D0::update() {
                             field_0x288++;
                         }
                         if (field_0x25c == 0) {
-                            s32 r30 = field_0x288;
-                            if (r30 >= 4) {
-                                r30 = 3;
+                            s32 frame = field_0x288;
+                            if (frame >= 4) {
+                                frame = 3;
                             }
                             if (fn_80233E40(field_0x250)) {
-                                fn_80230498(field_0x250, &field_0x27c, r30 + 0x336, 0xFF, -0x80, -0x80, true);
+                                fn_80230498(field_0x250, &field_0x27c, frame + 0x336, 0xFF, -0x80, -0x80, true);
                             } else {
-                                fn_80230498(field_0x250, &field_0x27c, r30 + 0xED, 0xFF, -0x80, -0x80, true);
+                                fn_80230498(field_0x250, &field_0x27c, frame + 0xED, 0xFF, -0x80, -0x80, true);
                             }
                         }
                     } else if ((u32)(field_0x234 - 0x10) <= 2 || (u32)(field_0x234 - 0x16) <= 3 || field_0x234 == 0x25) {
@@ -305,14 +307,14 @@ void LiftableItem_804A01D0::update() {
                         if (field_0x288 < 4) {
                             field_0x288++;
                         }
-                        s32 r30 = field_0x288;
-                        if (r30 >= 4) {
-                            r30 = 3;
+                        s32 frame = field_0x288;
+                        if (frame >= 4) {
+                            frame = 3;
                         }
                         if (fn_80233E40(field_0x250)) {
-                            fn_80230498(field_0x250, &field_0x27c, r30 + 0x336, 0xFF, -0x80, -0x80, true);
+                            fn_80230498(field_0x250, &field_0x27c, frame + 0x336, 0xFF, -0x80, -0x80, true);
                         } else {
-                            fn_80230498(field_0x250, &field_0x27c, r30 + 0xED, 0xFF, -0x80, -0x80, true);
+                            fn_80230498(field_0x250, &field_0x27c, frame + 0xED, 0xFF, -0x80, -0x80, true);
                         }
                     } else {
                         if (field_0x288 == 0) {
@@ -331,11 +333,11 @@ void LiftableItem_804A01D0::update() {
                         if (field_0x288 < 4) {
                             field_0x288++;
                         }
-                        s32 r5 = field_0x288;
-                        if (r5 >= 4) {
-                            r5 = 3;
+                        s32 frame = field_0x288;
+                        if (frame >= 4) {
+                            frame = 3;
                         }
-                        fn_80230498(field_0x250, &field_0x27c, r5 + 0xE9, 0xFF, -0x80, -0x80, true);
+                        fn_80230498(field_0x250, &field_0x27c, frame + 0xE9, 0xFF, -0x80, -0x80, true);
                     }
                 }
             }
@@ -360,7 +362,7 @@ void LiftableItem_804A01D0::update() {
                 if (field_0x4 < 8 && fn_80388EEC(field_0x250)) {
                     field_0x230 = 2;
                     field_0x238 = 20;
-                    LiftableItem_804A01D0* actor = (LiftableItem_804A01D0*)getActorManager_801F856C()->findActorBySerial_801F666C(field_0x290);
+                    LiftableItem_804A01D0* actor = static_cast<LiftableItem_804A01D0*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x290));
                     if (actor != NULL) {
                         actor->field_0x250 = gAudioMgr_8053AF80->field_0x58;
                         actor->field_0x230 = 4;
@@ -484,14 +486,14 @@ void LiftableItem_804A01D0::update() {
     }
 }
 
-// FIXME: 97.99% (missing/extra + reloc-name: ours has 3 more instrs; regalloc on field_0x234 in r4 vs r5)
+// FIXME: 97.75%. Ours has 3 more instructions and field_0x234 is in r4 where the original has r5; plus literal relocations.
 void LiftableItem_804A01D0::draw() {
     if (!fn_8023188C(field_0x250)) {
         return;
     }
-    s32 r30 = 0;
+    s32 flag = 0;
     if (field_0x234 >= 8 && field_0x234 <= 11) {
-        r30 = 1;
+        flag = 1;
     }
     SpriteParams_801F5AE0 params;
     params.field_0x1d = 1;
@@ -504,10 +506,10 @@ void LiftableItem_804A01D0::draw() {
 
     if (field_0x234 <= 7) {
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + lbl_804A01A0[field_0x234], &params, -1, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234], r30 != 0, 2, -1, true, 0, 0);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234], flag != 0, 2, -1, true, 0, 0);
     } else if (field_0x234 <= 11) {
         drawSprite_801F06F0("enemy_gc_sob.bin", field_0x244 + lbl_804A01A0[field_0x234], &params, -1, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234 - 4], r30 != 0, 2, -1, true, 0, 0);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x244 + lbl_804A01A0[field_0x234 - 4], flag != 0, 2, -1, true, 0, 0);
     } else if (field_0x234 >= 0x10 && field_0x234 <= 0x19) {
         JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
         s32 id = field_0x234 + 0x1d;
@@ -576,7 +578,7 @@ void LiftableItem_804A01D0::vfunc_0x24() {
     }
     s32 serial = field_0x260;
     if (serial != 0) {
-        StopNPC_804AA2D8* actor = (StopNPC_804AA2D8*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        StopNPC_804AA2D8* actor = static_cast<StopNPC_804AA2D8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
         if (actor != NULL) {
             actor->fn_802ED140();
         }
@@ -620,18 +622,18 @@ void LiftableItem_804A01D0::fn_801597EC() {
         if (item == 0x4a) {
             fn_80236ED8(field_0x274, 2);
         } else {
-            s32 r29 = 1;
-            s32 r28 = item - 0x2f;
+            s32 kind = 1;
+            s32 index = item - 0x2f;
             if (item >= 0x40) {
-                r28 = item - 0x3f;
-                r29 = 2;
+                index = item - 0x3f;
+                kind = 2;
             }
             if (field_0x264 == 0) {
                 if (field_0x254 == 0 && fn_802373EC(field_0x250) != 0 && gGameRoot_8053AAF8->field_0x7f == 1 && field_0x258 == 0) {
                     field_0x294 = fn_802373EC(field_0x274);
                     field_0x298 = fn_8023725C(field_0x274);
                 }
-                fn_802372F8(field_0x250, r28, r29);
+                fn_802372F8(field_0x250, index, kind);
             }
         }
     }

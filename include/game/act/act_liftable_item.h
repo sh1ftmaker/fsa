@@ -16,8 +16,11 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
+    // 0x801597B8: returns the word at 0x230 (the state; act_treasure_chest's fn_802EB27C tests it for 3).
     s32 fn_801597B8();
+    // 0x801597C0: calls this item's vfunc_0x24.
     void fn_801597C0();
+    // 0x801597EC: on leaving state 0, spawns what field_0x234 (the item) stands for.
     void fn_801597EC();
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
