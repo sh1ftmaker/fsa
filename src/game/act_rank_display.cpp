@@ -6,7 +6,7 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/act/act_rank_display.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // Stops an emitter (it runs out) and forgets it.
@@ -130,8 +130,8 @@ void RankDisplay_804A8F74::update() {
                         continue;
                     }
                     u8 mode = gGameRoot_8053AAF8->field_0x7f;
-                    if (!((mode == 1 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x88 != 0) ||
-                          (mode == 0 && lbl_8050EC80[lbl_8050EC80->field_0x10].field_0x89 != 0))) {
+                    if (!((mode == 1 && lbl_8050EC80.getCurrentFile().field_0x68 != 0) ||
+                          (mode == 0 && lbl_8050EC80.getCurrentFile().field_0x69 != 0))) {
                         continue;
                     }
                     if (getPlayerLayer_8023DE58(k) >= 8) {

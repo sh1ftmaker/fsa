@@ -287,8 +287,8 @@ public:
     void fn_802D7920(u8 value); // 1 unit: field_0x170
     void fn_802D7934(s32 value); // 1 unit: field_0x5c
     // 23 units / 35 calls (this unused). Sets field_0x131f0 from flag, the
-    // save data lbl_8050EC80 (byte 0x7C or 0x7D of entry [0x10], 0xC8 bytes
-    // each) and gGameRoot_8053AAF8's bytes 0x7E/0x7F. flag is u8, not bool:
+    // current save file (lbl_8050EC80.getCurrentFile() byte 0x5C or 0x5D,
+    // game/tu_803B8C74.h) and gGameRoot_8053AAF8's bytes 0x7E/0x7F. flag is u8, not bool:
     // inlined in restartTimeLimit, (byte == 1) is narrowed with extrwi 8 and
     // compared with 1 again (cntlzw, extrwi, cmplwi), which a bool folds away.
     void fn_802D7440(u8 flag);

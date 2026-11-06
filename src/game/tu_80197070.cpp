@@ -10,6 +10,7 @@
 #include "game/StageFlag.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 
 
 // .sbss flags of the ZLD2 actor (cls_804A2944).
@@ -58,7 +59,7 @@ void fn_8019CDE4(s32 stage, s32 sub) {
     if (sub < 0 || sub > 3) {
         return;
     }
-    lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 |= 1 << (stage * 4 + sub);
+    lbl_8050EC80.getCurrentFile().mFlags |= 1 << (stage * 4 + sub);
 }
 
 void fn_8019CDC4(s32 v) {

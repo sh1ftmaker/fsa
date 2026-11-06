@@ -1384,8 +1384,8 @@ public:
     // CARDGetSerialNo.
     /* 0x1FF4 */ u8 field_0x1ff4;
     // SHARED-EDIT (tu_803BC6F0): fn_803CE9EC stores 2 here every frame;
-    // fn_803CBE38 / fn_803CC3DC copy it into the first save row
-    // (lbl_8050EC80 + 8) after a load.
+    // fn_803CBE38 / fn_803CC3DC copy it into the save data's serial
+    // (lbl_8050EC80.field_0x8, game/tu_803B8C74.h) after a load.
     /* 0x1FF5 */ u8 field_0x1ff5;
     /* 0x1FF6 */ u8 field_0x1ff6[0x1FF8 - 0x1FF6];
     /* 0x1FF8 */ u64 field_0x1ff8; // CARDGetSerialNo's serial number (fn_803CC53C)
@@ -1394,12 +1394,12 @@ public:
 extern cls_803B9940 lbl_8051C1A0;
 
 extern "C" {
-// Owner: game/tu_803B8C74.cpp (not written yet). Tests flag `index` (0..7)
+// Owner: game/tu_803B8C74.cpp. Tests flag `index` (0..7)
 // of save file `file` in lbl_8050EC80; returns 1 or 0. FileSelect_804AFF60's
 // constructor reads flags 0..7 of file 0.
 bool fn_803B8CAC(s32 file, s32 index);
 // Owner: game/tu_803B8C74.cpp. True for index < 3, else whether save file
-// `file`'s flag word (lbl_8050EC80 row 0x28) has its top bit set (li 1 / li 0).
+// `file`'s flag word (lbl_8050EC80.mFiles[file].mFlags) has its top bit set (li 1 / li 0).
 bool fn_803B90E4(s32 file, s32 index);
 // SHARED-EDIT (tu_80414F6C BattleStageSelect_804B1378's constructor): 0x803B9120, same
 // owner. Whether battle stage `stage` (0..7) is open: stages 0-2 always,

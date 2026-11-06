@@ -1,7 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/Message.h"
 #include "game/act/tu_80440BF4.h"
 #include "game/tu_803BC6F0.h"
@@ -10,6 +10,8 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "dolphin/os/OSReset.h"
+#include "dolphin/os/OSTime.h"
+#include <stdio.h>
 
 // .rodata: the pane tag tables (J2DPane::search), in address order; most
 // functions address them off one base (lbl_804765D0).
@@ -260,18 +262,16 @@ static inline void setTabAlphas(FileSelect_804AFF60* self, s32 file) {
     self->field_0x44[file]->setAlpha_804023D0(self->mScreenHuuin->search(lbl_80476A88[file]), self->field_0x118[12]);
 }
 
-// FIXME: 98.73 %. Missing: the save-data setup the SaveRow_8050EC80[] view
-// (tu_80379F84.h) cannot express without casts: after `field_0xff = 0` the
-// original runs `for (i = 0; i < 3; i++) fn_803B950C(rows[i], blocks[i])` with
-// rows at lbl_8050EC80 + 0x20 + i * 0xC8 and blocks at lbl_8050EC80 + 0x280 +
-// i * 0x9C4, and after field_0x114 stores field_0x5c = lbl_8050EC80 + 0x20 and
-// field_0x60 = lbl_8050EC80 + 0x280 (18 instructions fewer in total); the registers around
-// them differ as a result (r7/r5 for the zero, r28/r29 in two loops, r29/r27
-// for the font). The string offsets differ by 0x58 (the strings of
-// fn_803BE3D8 and fn_803CE4CC, unwritten, come first).
+// FIXME: 99.89 %. regalloc + reloc-name: the font pointer (0x154) loaded for
+// each text pane lands in r26/r27 where the original uses r29; the string
+// offsets differ by 0x58 (the strings of fn_803BE3D8 and fn_803CE4CC,
+// unwritten, come first); .sdata2 @NNN.
 FileSelect_804AFF60::FileSelect_804AFF60() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     gGameRoot_8053AAF8->field_0xff = 0;
+    for (int i = 0; i < 3; i++) {
+        fn_803B950C(&lbl_8050EC80.mFiles[i], &lbl_8050EC80.mBodies[i]);
+    }
     lbl_80529DEC.fn_80403680();
     if (!lbl_80529DEC.field_0x242) {
         lbl_80529DEC.field_0x242 = 1;
@@ -306,6 +306,8 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
     mPrevState = 1;
     mState = 1;
     field_0x114 = 0;
+    field_0x5c = lbl_8050EC80.mFiles;
+    field_0x60 = lbl_8050EC80.mBodies;
     field_0x115 = 0;
     field_0xb0 = -1;
     field_0xdc = 0;
@@ -659,10 +661,8 @@ void FileSelect_804AFF60::fn_803CF504() {
     field_0xda = 0;
 }
 
-// FIXME: 99.89 %. `lbl_8050EC80[field_0xa8]` adds base + offset where the
-// original adds offset + base (r0 / r4 swapped, as in fn_803B8CAC's own row
-// lookups, which suggests an inlined per-file flag test); the .sdata2
-// literals are @NNN (pool order, see fn_803C24BC).
+// FIXME: 99.94 %. Instructions identical; only the .sdata2 literals are @NNN
+// (pool order, see fn_803C24BC).
 // Draws the screen: moves the 'Padhu' highlight by the offset of the first
 // empty 'Pdb' slot (field_0xb8) from 'Pdb05', draws both screens, shows the
 // highlight only while the chosen file's row (field_0xa8) is up, flagged and
@@ -685,7 +685,7 @@ void FileSelect_804AFF60::fn_803CEED4() {
     }
     gGameRoot2_8053AB10->fn_8013B490();
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    if (field_0x14->mPane->isVisible() && (lbl_8050EC80[field_0xa8].field_0x28 & 1)) {
+    if (field_0x14->mPane->isVisible() && (lbl_8050EC80.getFile(field_0xa8).mFlags & 1)) {
         // Seven separate calls in the original (a loop with a break isn't unrolled).
         if (fn_803B8CAC(field_0xa8, 0) && fn_803B8CAC(field_0xa8, 1) && fn_803B8CAC(field_0xa8, 2)
             && fn_803B8CAC(field_0xa8, 3) && fn_803B8CAC(field_0xa8, 4) && fn_803B8CAC(field_0xa8, 5)
@@ -841,6 +841,82 @@ void FileSelect_804AFF60::fn_803CE9EC() {
     card->field_0x1ff5 = 2;
 }
 
+// The progress message of save file `file`: the first stage (0-7) it has not
+// finished, or the last one's when all are done. fn_803CE4CC inlines it three
+// times; the linker dropped its out-of-line copy.
+static s32 getProgressMsg(s32 file) {
+    int cleared = 0;
+    for (int stage = 0; stage < 8; stage++) {
+        if (fn_803B8CAC(file, stage)) {
+            cleared++;
+        } else {
+            return lbl_80476D00[cleared];
+        }
+    }
+    return lbl_80476D00[7];
+}
+
+// FIXME: 99.01 %. regalloc + reloc-name: the file index and its bit swap
+// r24 / r25; `gGameRoot_8053AAF8->field_0xff != 0` is cmplwi where the original
+// has cmpwi (as in fn_803CABAC); the original tests the time against the
+// zero it materialises `used` from (one li fewer); the date format's
+// .rodata offset is 0x38 short until fn_803BE3D8's strings exist.
+// Refreshes the three file rows: a file whose checksum fails gets message
+// 0x11D and its bit in field_0x115 (fn_803BD5E0); a used file shows the date
+// it was chosen last and every file's progress; an empty file (or no card)
+// shows message 0x6A.
+void FileSelect_804AFF60::fn_803CE4CC() {
+    for (int i = 0; i < 3; i++) {
+        clearBadChecksum(i);
+        if (gGameRoot_8053AAF8->field_0xff != 0) {
+            if (fn_803BADAC(&lbl_8050EC80.getFile(i))) {
+                BOOL used = FALSE;
+                if (lbl_8050EC80.getFile(i).field_0x0 != 0) {
+                    used = TRUE;
+                }
+                if (used) {
+                    OSCalendarTime time;
+                    OSTicksToCalendarTime(lbl_8050EC80.getFile(i).field_0x0, &time);
+                    snprintf(((J2DTextBox*)mScreenHuuin->search(lbl_80476600[i]))->getStringPtr(), 30,
+                             "%02d.%02d.%04d %02d:%02d:%02d", time.mon + 1, time.mday, time.year, time.hour,
+                             time.min, time.sec);
+                    mScreenHuuin->search(lbl_804765D0[i])->show();
+                    mScreenHuuin->search(lbl_804765E8[i])->hide();
+                    mScreenHuuin->search(lbl_80476600[i])->show();
+                    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tf1lv'))->getStringPtr(),
+                                            getProgressMsg(0), 0, NULL, NULL);
+                    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tf2lv'))->getStringPtr(),
+                                            getProgressMsg(1), 0, NULL, NULL);
+                    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tf3lv'))->getStringPtr(),
+                                            getProgressMsg(2), 0, NULL, NULL);
+                } else {
+                    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search(lbl_804765E8[i]))->getStringPtr(), 0x6A,
+                                            0, NULL, NULL);
+                    mScreenHuuin->search(lbl_804765D0[i])->hide();
+                    mScreenHuuin->search(lbl_804765E8[i])->show();
+                    mScreenHuuin->search(lbl_80476600[i])->hide();
+                }
+                fn_803BDD44(i);
+            } else {
+                getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search(lbl_804765E8[i]))->getStringPtr(), 0x11D, 0,
+                                        NULL, NULL);
+                mScreenHuuin->search(lbl_804765D0[i])->hide();
+                mScreenHuuin->search(lbl_804765E8[i])->show();
+                mScreenHuuin->search(lbl_80476600[i])->hide();
+                setBadChecksum(i);
+                fn_803BD5E0(i);
+            }
+        } else {
+            getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search(lbl_804765E8[i]))->getStringPtr(), 0x6A, 0, NULL,
+                                    NULL);
+            mScreenHuuin->search(lbl_804765D0[i])->hide();
+            mScreenHuuin->search(lbl_804765E8[i])->show();
+            mScreenHuuin->search(lbl_80476600[i])->hide();
+            fn_803BDD44(i);
+        }
+    }
+}
+
 s32 FileSelect_804AFF60::fn_803CE4B0() {
     if (lbl_8053ADB0 != NULL) {
         return lbl_8053ADB0->field_0x1a8;
@@ -898,7 +974,7 @@ void FileSelect_804AFF60::fn_803CE11C() {
         field_0x1a4 = 1;
         fn_803C24BC();
         mState = 2;
-        lbl_8050EC80[0].field_0x8 = 0;
+        lbl_8050EC80.field_0x8 = 0;
         break;
     case 8:
         field_0x80 = 0x4D;
@@ -1027,7 +1103,7 @@ void FileSelect_804AFF60::fn_803CD75C() {
 // (field_0xa4) with a little hop of the chosen row.
 void FileSelect_804AFF60::fn_803CD2DC() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
-        if (hasSaveData(field_0xa4)) {
+        if (hasBadChecksum(field_0xa4)) {
             field_0x114 = 1;
             field_0x84 = 0x5E;
             getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
@@ -1147,7 +1223,7 @@ void FileSelect_804AFF60::fn_803CC3DC() {
         gGameRoot_8053AAF8->field_0xff = 1;
         fn_803C24BC();
         gAudioMgr_8053AF80->fn_80458880(0xB, -1);
-        lbl_8050EC80[0].field_0x8 = lbl_8051C1A0.field_0x1ff8;
+        lbl_8050EC80.field_0x8 = lbl_8051C1A0.field_0x1ff8;
     }
 }
 
@@ -1268,7 +1344,7 @@ void FileSelect_804AFF60::fn_803CBE38() {
         if (result == 1) {
             gGameRoot_8053AAF8->field_0xff = 1;
             fn_803C24BC();
-            lbl_8050EC80[0].field_0x8 = lbl_8051C1A0.field_0x1ff8;
+            lbl_8050EC80.field_0x8 = lbl_8051C1A0.field_0x1ff8;
         } else if (result == 2) {
             setState(1);
         }
@@ -1378,11 +1454,9 @@ void FileSelect_804AFF60::fn_803CB3DC() {
     }
 }
 
-// FIXME: 98.14 %. The two `gGameRoot_8053AAF8->field_0xff != 0` tests compile to
+// FIXME: 98.37 %. The two `gGameRoot_8053AAF8->field_0xff != 0` tests compile to
 // cmplwi where the original has cmpwi (u8, bool and s8 fields all differ:
-// probably read through an int-returning accessor); the
-// `lbl_8050EC80[i]` row adds are base + offset (original offset + base, as
-// in fn_803CEED4); the four setBlackWhite calls' by-value copies take the
+// probably read through an int-returning accessor); the four setBlackWhite calls' by-value copies take the
 // stack slots in the opposite order (sp 0x8 upwards in the original); the
 // bob's `frame * frame` is scheduled after the 0x4330 store; the final
 // `field_0xa0 == 3` test lays out its two arms (0xC / 0xB sound) the other
@@ -1395,8 +1469,11 @@ void FileSelect_804AFF60::fn_803CABAC() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
         switch (field_0xa0) {
         case 0:
-            lbl_8050EC80[0].field_0x10 = field_0xa4;
-            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x20 = OSGetTime();
+            lbl_8050EC80.mCurrentFile = field_0xa4;
+            // OSGetTime() runs before the file is looked up (the original
+            // reads mCurrentFile back after the call).
+            s64 time = OSGetTime();
+            lbl_8050EC80.getCurrentFile().field_0x0 = time;
             if (field_0x116 != 0) {
                 lbl_8053AEC0->fn_804310BC();
                 field_0x1a3 = 0;
@@ -1409,20 +1486,20 @@ void FileSelect_804AFF60::fn_803CABAC() {
         case 1:
             if (gGameRoot_8053AAF8->field_0xff != 0) {
                 if (field_0xa4 == 0) {
-                    if (lbl_8050EC80[1].field_0x20 == 0) {
+                    if (lbl_8050EC80.getFile(1).field_0x0 == 0) {
                         field_0xa0 = 1;
                     } else {
                         field_0xa0 = 2;
                     }
                 }
                 if (field_0xa4 == 1) {
-                    if (lbl_8050EC80[2].field_0x20 == 0) {
+                    if (lbl_8050EC80.getFile(2).field_0x0 == 0) {
                         field_0xa0 = 0;
                     } else {
                         field_0xa0 = 2;
                     }
                 } else {
-                    if (lbl_8050EC80[0].field_0x20 == 0) {
+                    if (lbl_8050EC80.getFile(0).field_0x0 == 0) {
                         field_0xa0 = 0;
                     } else {
                         field_0xa0 = 1;
@@ -1438,7 +1515,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             }
             return;
         case 2:
-            if (gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80[field_0xa4].field_0x20 != 0) {
+            if (gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80.getFile(field_0xa4).field_0x0 != 0) {
                 field_0x114 = 1;
                 field_0x84 = 0x5E;
                 getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
@@ -1476,7 +1553,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
         gAudioMgr_8053AF80->fn_80458880(0xC, -1);
     } else if (lbl_8053AD30->fn_80309A9C(2, 1) != 0) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
-        if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+        if (lbl_8050EC80.getFile(field_0xa4).field_0x0 == 0) {
             if (field_0xa0 == 0) {
                 field_0xa0 = 3;
             } else {
@@ -1492,7 +1569,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
         field_0x34->field_0x26 = 30;
     } else if (lbl_8053AD30->fn_80309A9C(1, 1) != 0) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
-        if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+        if (lbl_8050EC80.getFile(field_0xa4).field_0x0 == 0) {
             if (field_0xa0 == 0) {
                 field_0xa0 = 3;
             } else {
@@ -1730,7 +1807,7 @@ void FileSelect_804AFF60::fn_803C2E24() {
 
     field_0xd8++;
     if (field_0xd8 > boardDelay) {
-        if (hasSaveData(field_0xa4)) {
+        if (hasBadChecksum(field_0xa4)) {
             field_0x20->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
             field_0x20->fn_80402628(boardFrames, field_0x20->field_0x28, 0);
             for (int j = 0; j < 9; j++) {
@@ -1865,11 +1942,9 @@ void FileSelect_804AFF60::fn_803C24BC() {
     setState(4);
 }
 
-// FIXME: 99.01 %. Register allocation only: the table loops' counter and
-// pointer swap (r26 / r27 and r29 / r27 in the original), the show() stores
-// keep 1 in r5 and the pane in r3 (ours r0 / r4), and the
-// `lbl_8050EC80[field_0xa4]` add is base + offset (see fn_803CEED4); a
-// function-wide `int i` was worse (98.85). .sdata2 @NNN.
+// FIXME: 99.33 %. Register allocation only: the table loops' counter and
+// pointer swap (r26 / r27 and r29 / r27 in the original); a function-wide
+// `int i` was worse (98.85). .sdata2 @NNN.
 // Opens the file menu for the chosen file field_0xa4 (state 18): the 'Pdb'
 // marks of its flags, the command buttons (copy and delete greyed out for an
 // empty file), the board panes faded out at their start positions, and the
@@ -1893,7 +1968,7 @@ void FileSelect_804AFF60::fn_803C1734() {
     for (int i = 0; i < 4; i++) {
         field_0x24[i]->mPane->show();
     }
-    if (lbl_8050EC80[field_0xa4].field_0x20 == 0) {
+    if (lbl_8050EC80.getFile(field_0xa4).field_0x0 == 0) {
         ((J2DPicture*)mScreenHuuin->search('Pcopb01'))
             ->setBlackWhite(JUtility::TColor(0x50, 0x50, 0x50, 0), JUtility::TColor(0xB4, 0xB4, 0xB4, 0xFF));
         ((J2DPicture*)mScreenHuuin->search('Pcopb02'))

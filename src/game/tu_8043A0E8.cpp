@@ -14,7 +14,7 @@
 #include "game/tu_8044998C.h"
 #include "game/act/tu_8044C028.h"
 #include "game/cls_804B1E1C.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
@@ -604,7 +604,7 @@ void cls_804B1920::fn_8043A208(u8 alpha, f32 a, f32 b, f32 c, f32 d) {
 }
 
 void fn_8043A170(s32 player, bool force) {
-    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80.getCurrentFile().mFlags & 1) == 0 &&
         lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0 && !force) {
         return;
     }
@@ -615,7 +615,7 @@ void fn_8043A170(s32 player, bool force) {
 }
 
 void fn_8043A0E8(bool force) {
-    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & 1) == 0 &&
+    if (gGameRoot_8053AAF8->field_0x7f != 0 && (lbl_8050EC80.getCurrentFile().mFlags & 1) == 0 &&
         lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0 && !force) {
         return;
     }

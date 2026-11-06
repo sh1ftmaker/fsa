@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 
 // Not auto-inlined: fn_8037A580 calls fn_8037AA7C out of line in the original (docs/INLINING.md,
 // pragma rule 1).
@@ -105,7 +106,7 @@ void fn_80379FF4(void) {
     s32 stage = lbl_80529DEC.field_0x118;
     s32 sub = lbl_80529DEC.field_0x11c;
     if (stage >= 0 && stage < 8 && sub >= 0 && sub < 4) {
-        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 |= 1 << (stage * 4 + sub);
+        lbl_8050EC80.getCurrentFile().mFlags |= 1 << (stage * 4 + sub);
     }
     if (stage >= 8) {
         return;

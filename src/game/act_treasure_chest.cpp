@@ -10,7 +10,7 @@
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 #include "game/cls_804AE9B0.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/act/act_liftable_item.h"
 #include "game/act/act_treasure_chest.h"
 
@@ -198,7 +198,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     }
     if (ok == true) {
         if (gGameRoot_8053AAF8->field_0x7e == 1) {
-            // Stage bit: lbl_8050EC80[0].field_0x10 selects the row, stage 0x118
+            // Stage bit: the current save file (lbl_8050EC80.mCurrentFile), stage 0x118
             // (0-7) and 0x11C (0-3) the bit.
             bool open = false;
             s32 stage = lbl_80529DEC.field_0x118;
@@ -208,7 +208,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
             } else if (sub < 0 || sub > 3) {
                 open = false;
             } else {
-                open = (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x28 & (1 << (sub + stage * 4))) != 0;
+                open = (lbl_8050EC80.getCurrentFile().mFlags & (1 << (sub + stage * 4))) != 0;
             }
             if (open && (field_0x234 <= 2 || field_0x234 == 0x2F)) {
                 s32 count = gGameRoot_8053AAF8->fn_80138A30();

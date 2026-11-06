@@ -2,7 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/Message.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/act/tu_80440BF4.h"
 #include "game/cls_804B1600.h"
 #include "game/cls_804B1378.h"
@@ -560,9 +560,9 @@ void BattleStageSelect_804B1378::fn_80415028() {
     if (field_0x1c == 0) {
         s32 stage = field_0xc * 5 + field_0x10;
         if (stage >= 5) {
-            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x81 = 1;
+            lbl_8050EC80.getCurrentFile().field_0x61 = 1;
         } else {
-            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x81 = 0;
+            lbl_8050EC80.getCurrentFile().field_0x61 = 0;
         }
         lbl_80529DEC.field_0x128 = stage / 4;
         lbl_80529DEC.field_0x12c = stage % 4;
@@ -578,9 +578,9 @@ void BattleStageSelect_804B1378::fn_80415028() {
     } else if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
         s32 stage = field_0xc * 5 + field_0x10;
         if (stage >= 5) {
-            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x81 = 1;
+            lbl_8050EC80.getCurrentFile().field_0x61 = 1;
         } else {
-            lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x81 = 0;
+            lbl_8050EC80.getCurrentFile().field_0x61 = 0;
         }
         if (stage < 10) {
             if (field_0x106 & (u16)(1 << stage)) {

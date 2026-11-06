@@ -88,58 +88,8 @@ struct cls_804AE9A0 {
     /* 0x1C */ u8 field_0x1c; // cleared by fn_8037A708
 }; // Size: at least 0x1D
 
-// One row of the save table lbl_8050EC80 (.bss, 0x21E0 bytes; GameState.h and
-// GameView.h describe it; fn_80403514 in game/tu_803BC6F0.cpp picks rows). The
-// word at 0x10 of row 0 is the index of the current row.
-// The first 0x20 bytes of lbl_8050EC80 are a save header (serial at +8,
-// index at +0x10) seen here through row 0; tu_803BC6F0 reads them that way.
-struct SaveRow_8050EC80 {
-    /* 0x00 */ u8 field_0x0[0x8];
-    // SHARED-EDIT (tu_803BC6F0 fn_803CBE38, fn_803CC3DC): row 0 receives the
-    // memory card serial number (cls_803B9940's 0x1FF8) after a load.
-    /* 0x08 */ u64 field_0x8;
-    /* 0x10 */ s32 field_0x10;
-    /* 0x14 */ u8 field_0x14[0x20 - 0x14];
-    // SHARED-EDIT (tu_803BC6F0 fn_803CABAC): OSGetTime() when the file was
-    // last chosen; 0 for an empty file.
-    /* 0x20 */ s64 field_0x20;
-    // Bit stage * 4 + sub set by fn_80379FF4.
-    /* 0x28 */ s32 field_0x28;
-    // Added by tu_801DE714 (__dt__12cls_804A51E4Fv, the TINK actor's destructor): an s32
-    // that is added to and clamped at 0 from below.
-    /* 0x2C */ s32 field_0x2c;
-    /* 0x30 */ u8 field_0x30[0x34 - 0x30];
-    /* 0x34 */ u16 field_0x34; // fn_803A3034 (game/tu_803944C8.cpp) returns it
-    /* 0x36 */ u16 field_0x36; // fn_803A3018 returns it
-    /* 0x38 */ u8 field_0x38[0x78 - 0x38];
-    /* 0x78 */ u8 field_0x78; // written by fn_80215BCC (the stopwatch's centis)
-    /* 0x79 */ u8 field_0x79; // written by fn_80215BCC (the stopwatch's seconds)
-    /* 0x7A */ u8 field_0x7a[0x7C - 0x7A];
-    // GameView_804A9950::fn_802D7440 (game/tu_802D39B8.cpp): field_0x7c while
-    // GameRoot's field_0x7f is set, else field_0x7d; 1 lets the time limit run.
-    /* 0x7C */ u8 field_0x7c;
-    /* 0x7D */ u8 field_0x7d;
-    // Read by Player::fn_802710C8 (tu_8026FC20): 0x7E while GameRoot's field_0x7f is set,
-    // else 0x7F; a value of 1 there calls fn_8024E500 on a hit of 4 or more.
-    /* 0x7E */ u8 field_0x7e;
-    /* 0x7F */ u8 field_0x7f;
-    /* 0x80 */ u8 field_0x80;
-    /* 0x81 */ u8 field_0x81; // 1 when the battle stage chosen last is 5 or more (tu_80414F6C fn_80415028)
-    /* 0x82 */ u8 field_0x82[0x85 - 0x82];
-    /* 0x85 */ u8 field_0x85; // bit 0 is tested (tu_803E1668 enterState15)
-    /* 0x86 */ u8 field_0x86;
-    /* 0x87 */ u8 field_0x87; // bit 0: act_fairy's init has shown message 0x339
-    // Tested by act_rank_display's update before it shows a rank change:
-    // field_0x88 when GameRoot's field_0x7f is 1, field_0x89 when it is 0.
-    /* 0x88 */ u8 field_0x88;
-    /* 0x89 */ u8 field_0x89;
-    /* 0x8A */ u8 field_0x8a[0xC8 - 0x8A];
-}; // Size: 0xC8
-
-extern SaveRow_8050EC80 lbl_8050EC80[];
-
 // Owner: game/tu_80197070.cpp (0x8019CDE4 / 0x8019CE40). Set / test bit
-// stage * 4 + sub of the current save row's field_0x28 (stage 0-7, sub 0-3;
+// stage * 4 + sub of the current save file's mFlags (game/tu_803B8C74.h; stage 0-7, sub 0-3;
 // anything else is ignored / false).
 void fn_8019CDE4(s32 stage, s32 sub);
 BOOL fn_8019CE40(s32 stage, s32 sub);
@@ -159,7 +109,7 @@ void fn_8037AA58(void);
 void fn_8037AA7C(void);
 u8 fn_8037A120(void);
 // Steps lbl_80529DEC's stage (0x118) and sub-stage (0x11C) and sets the flag bit
-// of the current save row.
+// of the current save file.
 void fn_80379FF4(void);
 }
 

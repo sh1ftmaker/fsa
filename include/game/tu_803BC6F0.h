@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "JSystem/JUtility/TColor.h"
+#include "game/tu_803B8C74.h"
 
 class J2DScreen;
 class J2DPicture;
@@ -100,12 +101,23 @@ public:
     // message window.
     void fn_803CE9EC();
     void fn_803CEED4();
+    // Not written yet (0x803BD5E0): sets up the rows of a file whose checksum failed.
+    void fn_803BD5E0(s32 file);
     void fn_803CF504();
 
-    // field_0x115 has a bit per file that holds save data.
-    bool hasSaveData(s32 file) {
+    // field_0x115 has a bit per file whose checksum failed (fn_803CE4CC sets
+    // it when fn_803BADAC returns false and clears it otherwise).
+    bool hasBadChecksum(s32 file) {
         u8 bit = 1 << file; // the u8 temporary gives the original's clrlwi before the and.
         return field_0x115 & bit;
+    }
+    void setBadChecksum(s32 file) {
+        u8 bit = 1 << file;
+        field_0x115 |= bit;
+    }
+    void clearBadChecksum(s32 file) {
+        u8 bit = 1 << file;
+        field_0x115 &= ~bit;
     }
 
     void setState(u8 state) {
@@ -129,8 +141,8 @@ public:
     /* 0x050 */ PaneCtrl_804AF86C* field_0x50;
     /* 0x054 */ PaneCtrl_804AF86C* field_0x54;
     /* 0x058 */ PaneCtrl_804AF86C* field_0x58; // lbl_8053AED8->field_0x8
-    /* 0x05C */ void* field_0x5c; // &lbl_8050EC80[0] + 0x20 (memory card copy source)
-    /* 0x060 */ void* field_0x60; // &lbl_8050EC80[0] + 0x280
+    /* 0x05C */ SaveFile_803B950C* field_0x5c; // lbl_8050EC80.mFiles (memory card copy source)
+    /* 0x060 */ SaveFileBody_803B950C* field_0x60; // lbl_8050EC80.mBodies
     /* 0x064 */ f32 field_0x64[3]; // field_0x44[i] target x (fn_803C6690)
     /* 0x070 */ f32 field_0x70[3]; // field_0x38[i] target x (fn_803C6690)
     /* 0x07C */ u32 field_0x7c; // message shown
@@ -163,7 +175,7 @@ public:
     /* 0x112 */ u8 mPrevState;
     /* 0x113 */ u8 field_0x113;
     /* 0x114 */ u8 field_0x114;
-    /* 0x115 */ u8 field_0x115; // bit per file with save data (hasSaveData)
+    /* 0x115 */ u8 field_0x115; // bit per file whose checksum failed (hasBadChecksum)
     /* 0x116 */ u8 field_0x116; // message window: 0 idle, 1 opening, 2 open, 3 closing
     /* 0x117 */ u8 field_0x117;
     // The panes' initial alphas (J2DPane::mAlpha), read by the constructor:

@@ -2,7 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/tu_80215A94.h"
 #include "game/tu_801ED3DC.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 
 static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
 
@@ -107,8 +107,8 @@ bool cls_80215E48::fn_80215D38() {
 // mSeconds, before the second save-row index load; ours loads it after.
 void cls_80215E48::fn_80215BCC(s32 index) {
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
-        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x79 = mEntries[index].mWatch.mSeconds;
-        lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x78 = mEntries[index].mWatch.mCentis;
+        lbl_8050EC80.getCurrentFile().field_0x59 = mEntries[index].mWatch.mSeconds;
+        lbl_8050EC80.getCurrentFile().field_0x58 = mEntries[index].mWatch.mCentis;
         getGameView_802D6A9C()->fn_802D7844(1, mEntries[index].mId);
     }
 }

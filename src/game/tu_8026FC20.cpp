@@ -11,7 +11,7 @@
 #include "game/GameMath.h"
 #include "game/BoxTest.h"
 #include "game/cls_804A71A8.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/act/tu_803D9944.h"
 #include "JSystem/JMath/JMath.h"
 
@@ -23,8 +23,8 @@ static inline u8 isGameMode7() {
 
 // The current save row's byte 0x7E while the game root's field_0x7f is set, else 0x7F.
 static inline u8 saveRowFlag() {
-    return gGameRoot_8053AAF8->field_0x7f ? lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7e
-                                    : lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7f;
+    return gGameRoot_8053AAF8->field_0x7f ? lbl_8050EC80.getCurrentFile().field_0x5e
+                                    : lbl_8050EC80.getCurrentFile().field_0x5f;
 }
 
 // The angle of the hit as an s16 (pos -> player).

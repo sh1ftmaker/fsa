@@ -12,6 +12,7 @@
 #include "game/act/tu_803276C4.h"
 #include "game/cls_804AE9B0.h"
 #include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/Camera.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
@@ -195,9 +196,9 @@ inline void GameView_804A9950::restartTimeLimit() {
     fn_802D752C(0);
     u8 enabled;
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
+        enabled = lbl_8050EC80.getCurrentFile().field_0x5c;
     } else {
-        enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
+        enabled = lbl_8050EC80.getCurrentFile().field_0x5d;
     }
     fn_802D7440(enabled == 1);
 }
@@ -1364,9 +1365,9 @@ void GameView_804A9950::fn_802D7440(u8 flag) {
     if (flag == 1) {
         u8 enabled;
         if (gGameRoot_8053AAF8->field_0x7f != 0) {
-            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7c;
+            enabled = lbl_8050EC80.getCurrentFile().field_0x5c;
         } else {
-            enabled = lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7d;
+            enabled = lbl_8050EC80.getCurrentFile().field_0x5d;
         }
         if (enabled != 1) {
             getGameView_802D6A9C()->field_0x131f0 = 0;

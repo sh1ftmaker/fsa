@@ -82,7 +82,7 @@ public:
     // field_0x64 and field_0x1a8 to -1 and resets most byte flags.
     void fn_80403680();
     // 1 unit (tu_803BC6F0). Clears field_0x118/field_0x11c, then picks them
-    // from the table lbl_8050EC80 (0xC8-byte rows).
+    // from the save files of lbl_8050EC80 (game/tu_803B8C74.h).
     void fn_80403514();
 
     /* 0x000 */ // vtable

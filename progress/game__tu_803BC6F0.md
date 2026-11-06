@@ -222,3 +222,55 @@ SHARED-EDITS
   fn_803C4628 (35), fn_803C5190 (34), fn_803C5808 (32) ... in address order.
 - The stack-slot order of by-value TColor copies (fn_803BDD44 / fn_803BC6F0 / fn_803CABAC ascend, fn_803C1734 /
   fn_803BF9C4 descend like ours) is the common open question.
+
+## Session 2026-11-05 (Opus, leverage wave 14: save-data switch + file select)
+
+Baseline (progress.py): `total: 8800 / 11557 functions, 1756492 / 4442032 bytes of code (39.54 %)`
+After: `total: 8802 / 11557 functions, 1757340 / 4442032 bytes of code (39.56 %)`, structural 9256.
+
+### Task 1: SaveRow_8050EC80[] retired
+- Every user now reads lbl_8050EC80 as cls_804AFB30 (game/tu_803B8C74.h) through two inline
+  accessors, `getFile(i)` and `getCurrentFile()` (= mFiles[mCurrentFile]). Evidence: with them
+  fn_803B8CAC, fn_803B8EBC, fn_803B90E4 reach 100 % and fn_8019CE40 stays 100 %; indexing mFiles
+  directly swaps the add's operands (97 %).
+- SaveFile_803B950C carved from the old row fields (row offset - 0x20): 0x0C s32, 0x14/0x16 u16,
+  0x58/0x59, 0x5A[2], 0x5C..0x61, 0x65, 0x67..0x69, and the checksum words 0xC0 / 0xC4
+  (fn_803BADAC). mFlags is s32 (the old view's type).
+- isStageFlagSet (StageFlag.h) now reads getCurrentFile().mFlags; tu_803B8C74's duplicate
+  isCurrentFileFlagSet is gone (fn_803B8EBC / fn_803B9120 use isStageFlagSet). isFileFlagSet (any
+  file) stays local to tu_803B8C74.
+- Per-address compare against the start: gains fn_803B8CAC / fn_803B8EBC / fn_803B90E4 -> 100,
+  GameView vfunc_0xC 97.5 -> 99.1, TreasureChest vfunc_0x54 94.7 -> 94.9. Drops (still open):
+  tu_801DE714 __dt__12cls_804A51E4Fv 100 -> 98.60 and act_fairy init 97.86 -> 97.39 (the same two
+  the earlier trial found). Both bind a reference to the current file across two blocks; the original
+  keeps the pointer at lbl_8050EC80 + file * 0xC8 and folds the 0x20 into its field offsets, ours
+  materialises `addi 0x20`. Tried: direct accessor expressions (lwzu, 98.36), a pointer accessor,
+  a direct mFiles index for the clamp (lwzx, 91.8), a value local. Not found.
+
+### Task 2: file select
+- Constructor: the save-data loop (`fn_803B950C(&mFiles[i], &mBodies[i])`) and field_0x5c /
+  field_0x60 (now SaveFile_803B950C* / SaveFileBody_803B950C*) written: 98.83 -> 99.92
+  (regalloc of the font pointer, string offsets +0x58, @NNN).
+- fn_803CE4CC written: 99.02 missing/extra (1 li). Inlined helper getProgressMsg (three inlined
+  copies; two counters in the original's loop: cleared count and stage; out-of-line copy dropped
+  by the linker, as tu_8016A2B4's getMapTexView). fn_803BADAC (tu_803BACF8) declared in
+  tu_803B8C74.h. field_0x115's bit is set exactly when fn_803BADAC fails, so hasSaveData was
+  renamed hasBadChecksum, with setBadChecksum / clearBadChecksum (the original clrlwi's `1 << i`
+  at each use).
+- fn_803CABAC: OSGetTime() before the lookup -> 98.37 (cmpwi on field_0xff, copy slots remain).
+- fn_803CEED4 99.94 reloc-name only; fn_803C1734 99.33 regalloc only.
+
+SHARED-EDITS
+- tu_80379F84.h: SaveRow_8050EC80 and `extern lbl_8050EC80[]` deleted.
+- tu_803B8C74.h: SaveFile fields above, getFile / getCurrentFile, fn_803BADAC decl.
+- StageFlag.h: includes tu_803B8C74.h, reads getCurrentFile().mFlags.
+- Mechanical switch in act_fairy, act_rank_display, act_treasure_chest, tu_80197070, tu_801DE714,
+  tu_80215A94, tu_8026FC20, tu_802D39B8, tu_80379F84, tu_803944C8, tu_803E1668, tu_80403D84,
+  tu_80414F6C, tu_8043A0E8 (includes + field names only).
+- Comments only: GameGlobals.h, GameState.h, GameView.h.
+- symbols.txt: fn_803BADAC -> fn_803BADAC__FP17SaveFile_803B950C, fn_803BD5E0 ->
+  fn_803BD5E0__19FileSelect_804AFF60Fl.
+
+### Next
+- The two drops above (reference shape); fn_803BE3D8 (strings first -> string offsets);
+  fn_803BD5E0; the cmpwi on GameRoot field_0xff (an int accessor?).

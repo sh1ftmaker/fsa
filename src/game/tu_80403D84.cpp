@@ -7,11 +7,12 @@
 #include "JSystem/J2D/J2DPicture.h"
 #include <string.h>
 #include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/cls_804B1288.h"
 
 bool fn_804149C0() {
-    return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x87 & 1;
+    return lbl_8050EC80.getCurrentFile().field_0x67 & 1;
 }
 
 void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
@@ -102,7 +103,7 @@ void cls_804B1288::fn_80409330() {
 
 bool cls_804B1288::fn_804045F8(s32 bit) {
     if (gGameRoot_8053AAF8->field_0x7e) {
-        return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x7a[0] & (u8)(1 << bit);
+        return lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit);
     }
     return false;
 }

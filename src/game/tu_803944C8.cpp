@@ -4,7 +4,7 @@
 #include "game/GameView.h"
 #include "game/Message.h"
 #include "game/tu_803944C8.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/JMessage/TControl.h"
 
 void fn_803A3228(s32 id, s32 arg1, u32 arg2) {
@@ -120,11 +120,11 @@ s32 cls_804AF5A0::fn_803A3050() {
 }
 
 u16 fn_803A3034() {
-    return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x34;
+    return lbl_8050EC80.getCurrentFile().field_0x14;
 }
 
 u16 fn_803A3018() {
-    return lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x36;
+    return lbl_8050EC80.getCurrentFile().field_0x16;
 }
 
 u8 fn_803A300C() {

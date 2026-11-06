@@ -1,7 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
-#include "game/tu_80379F84.h"
+#include "game/tu_803B8C74.h"
 #include "game/cls_804B16A8.h"
 #include "game/cls_804B20F8.h"
 #include "game/act/tu_80440BF4.h"
@@ -2812,7 +2812,7 @@ void cls_804B0B00::enterState15() {
         }
         lbl_80529DEC.field_0x64 = r;
     }
-    if (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x85 & 1) {
+    if (lbl_8050EC80.getCurrentFile().field_0x65 & 1) {
         lbl_80529DEC.field_0x237 = 5;
         field_0x360 = 6;
     } else {
