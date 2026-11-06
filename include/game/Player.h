@@ -1175,7 +1175,7 @@ public:
     bool fn_802604CC();
     bool fn_80260C08();
     void fn_80261480();
-    bool fn_8024DA64(s32 a, bool b); // via fn_802302C4
+    bool fn_8024DA64(s32 a, u8 b); // via fn_802302C4
     bool fn_8024D99C(const JGeometry::TVec3f* pos, bool flag); // via fn_802303FC
     bool fn_80272E98(const JGeometry::TBox2f* box, s32 layer); // via fn_80239C00
     bool fn_802724E0(const JGeometry::TBox2f* box, s32 layer); // via fn_80239C9C
@@ -1937,7 +1937,7 @@ void fn_80236074(s32 player, s32 value, s32 arg);
 void fn_802362C4(s32 player, s32 value);
 bool fn_802378AC(s32 player, const JGeometry::TVec2f* pos);
 bool fn_8022F784(s32 player, s32 a, const JGeometry::TVec3f* pos);
-bool fn_802302C4(s32 player, s32 a, bool b);
+bool fn_802302C4(s32 player, s32 a, u8 b);
 bool fn_802303FC(s32 player, const JGeometry::TVec3f* pos, bool flag);
 bool fn_80239878(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial);
 bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer);

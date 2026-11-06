@@ -11,6 +11,12 @@
 static const s32 lbl_8046C828[4] = { 22, 17, 12, 7 };
 static const u32 lbl_8046C838[5] = { 'AMOS', 'BRBL', 'BLCK', 'BCK2', 'SMRI' };
 
+// Looks up the tile under the switch (inlined four times in update and vfunc_0x10).
+inline void Switch_804A7F38::readTileId() {
+    field_0x244 = fn_80226AE0(&mPos, field_0x4);
+    field_0x258 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x244) & 0x3FF;
+}
+
 void Switch_804A7F38::init() {
     field_0x238 = ((field_0x90 >> 22) & 0x1F) + 1;
     field_0x23c = ((field_0x90 >> 17) & 0x1F) + 1;
@@ -64,15 +70,13 @@ void Switch_804A7F38::init() {
 void Switch_804A7F38::vfunc_0x10() {
     if (mState == 1) {
         if (vfunc_0x34()) {
-            field_0x244 = fn_80226AE0(&mPos, field_0x4);
-            field_0x258 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x244) & 0x3FF;
+            readTileId();
             vfunc_0x54(-1);
             mAlive = false;
         } else {
-            field_0x244 = fn_80226AE0(&mPos, field_0x4);
-            field_0x258 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x244) & 0x3FF;
+            readTileId();
             if (field_0x258 == 0x12 || field_0x258 == 0x50 || field_0x258 == 0x52 || field_0x258 == 0x41 || field_0x258 == 0x43 ||
-                field_0x258 == 0x68 || field_0x258 == 0x6a || field_0x258 == 0x15a || (field_0x258 == 0x13 || field_0x258 == 0x14) || field_0x258 == 0x51) {
+                field_0x258 == 0x68 || field_0x258 == 0x6a || field_0x258 == 0x15a || field_0x258 == 0x13 || field_0x258 == 0x14 || field_0x258 == 0x51) {
                 mState = 2;
                 if (field_0x258 == 0x41) {
                     field_0x258 = 0x12;
@@ -130,9 +134,10 @@ void Switch_804A7F38::vfunc_0x10() {
     }
 }
 
-// FIXME: 99.71 %. Operands: regalloc (r27/r28), and fn_802302C4 3rd argument (target passes 0xFF, but shared Player.h declares bool b).
+// FIXME: 99.70 %. Regalloc only (try.py: regalloc-only + reloc-name): the target keeps the serial of the block found in r27 where ours uses r28.
 void Switch_804A7F38::update() {
     JGeometry::TVec3f playerPos;
+    // y is read before x only to keep the original's load order.
     f32 y = mPos.y;
     f32 x = mPos.x;
     JGeometry::TBox2f box(mBox);
@@ -146,23 +151,23 @@ void Switch_804A7F38::update() {
     }
 
     s32 player = fn_8023AF14(&box, field_0x4, true, 0.0f);
-    s32 r30 = 0;
-    s32 r27 = -1;
+    s32 blockKind = 0;
+    s32 blockSerial = -1;
 
     if (field_0x234 != 7) {
-        r27 = fn_801F8108(this, 'AMOS', -1, 32.0f);
-        if (r27 < 0) {
-            r27 = fn_801F8108(this, 'BRBL', -1, 32.0f);
-            r30 = 1;
-            if (r27 < 0) {
-                r27 = fn_801F8108(this, 'BLCK', -1, 32.0f);
-                r30 = 2;
-                if (r27 < 0) {
-                    r27 = fn_801F8108(this, 'BCK2', -1, 32.0f);
-                    r30 = 3;
-                    if (r27 < 0) {
-                        r27 = fn_801F8108(this, 'SMRI', -1, 0.1f);
-                        r30 = 4;
+        blockSerial = fn_801F8108(this, 'AMOS', -1, 32.0f);
+        if (blockSerial < 0) {
+            blockSerial = fn_801F8108(this, 'BRBL', -1, 32.0f);
+            blockKind = 1;
+            if (blockSerial < 0) {
+                blockSerial = fn_801F8108(this, 'BLCK', -1, 32.0f);
+                blockKind = 2;
+                if (blockSerial < 0) {
+                    blockSerial = fn_801F8108(this, 'BCK2', -1, 32.0f);
+                    blockKind = 3;
+                    if (blockSerial < 0) {
+                        blockSerial = fn_801F8108(this, 'SMRI', -1, 0.1f);
+                        blockKind = 4;
                     }
                 }
             }
@@ -185,13 +190,11 @@ void Switch_804A7F38::update() {
 
     case 1:
         if (vfunc_0x34()) {
-            field_0x244 = fn_80226AE0(&mPos, field_0x4);
-            field_0x258 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x244) & 0x3FF;
+            readTileId();
             vfunc_0x54(player);
             mAlive = false;
         } else {
-            field_0x244 = fn_80226AE0(&mPos, field_0x4);
-            field_0x258 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, field_0x244) & 0x3FF;
+            readTileId();
             if (field_0x258 == 0x12 || field_0x258 == 0x50 || field_0x258 == 0x14 ||
                 field_0x258 == 0x52 || field_0x258 == 0x15a || field_0x258 == 0x41) {
                 mState = 2;
@@ -206,12 +209,12 @@ void Switch_804A7F38::update() {
                     fn_80233DA4(player) == true || fn_80235004(player) == true) {
                     break;
                 }
-                r30 = vfunc_0x3C();
-                if (getGameView_802D6A9C()->fn_802D800C(r30) == false) {
+                s32 switchBit = vfunc_0x3C();
+                if (getGameView_802D6A9C()->fn_802D800C(switchBit) == false) {
                     if (gGameRoot_8053AAF8->field_0x7e == 1) {
                         bool found = false;
-                        r30 = getActorManager_801F856C()->mActorEnd;
-                        for (int i = 0; i < r30; i++) {
+                        s32 end = getActorManager_801F856C()->mActorEnd;
+                        for (int i = 0; i < end; i++) {
                             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
                             if (actor && actor->mActorId == 'SWTH' && actor->mSerial != mSerial) {
                                 u32 param = actor->field_0x90;
@@ -261,11 +264,11 @@ void Switch_804A7F38::update() {
                 vfunc_0x30(player, true);
                 mState = 6;
             }
-        } else if (r27 >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(r27);
-            if (actor && actor->mActorId == lbl_8046C838[r30]) {
+        } else if (blockSerial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(blockSerial);
+            if (actor && actor->mActorId == lbl_8046C838[blockKind]) {
                 field_0x250 = -1;
-                field_0x254 = r30;
+                field_0x254 = blockKind;
                 vfunc_0x30(0xFF, true);
                 startSound_801F0E34(0x30009, 0);
                 vfunc_0x54(field_0x250);
@@ -302,16 +305,16 @@ void Switch_804A7F38::update() {
                 break;
             }
             if ((u32)field_0x234 <= 1 || field_0x234 == 5) {
-                r27 = field_0x264;
-                if (r27 >= 0) {
-                    if (getGameView_802D6A9C()->fn_802D800C(r27)) {
+                s32 bit = field_0x264;
+                if (bit >= 0) {
+                    if (getGameView_802D6A9C()->fn_802D800C(bit)) {
                         mAlive = false;
                         break;
                     }
                 } else {
-                    r27 = field_0x260;
-                    if (r27 >= 0) {
-                        if (getGameView_802D6A9C()->fn_802D800C(r27)) {
+                    bit = field_0x260;
+                    if (bit >= 0) {
+                        if (getGameView_802D6A9C()->fn_802D800C(bit)) {
                             mAlive = false;
                             break;
                         }
@@ -364,7 +367,8 @@ void Switch_804A7F38::update() {
         break;
 
     case 8:
-        if (r27 >= 0 && (r27 < 0 || field_0x254 == r30)) {
+        // The original tests blockSerial < 0 twice here (two blt), so the redundant check stays.
+        if (blockSerial >= 0 && (blockSerial < 0 || field_0x254 == blockKind)) {
             break;
         }
         if (field_0x234 == 0 || field_0x234 == 1 || field_0x234 == 5 || field_0x234 == 8) {

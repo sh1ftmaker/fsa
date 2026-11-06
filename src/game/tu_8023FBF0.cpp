@@ -2370,7 +2370,7 @@ bool Player_804A6F38::fn_8024DC00(const JGeometry::TVec3f* pos, s32 frame, u8 a,
 // turn), field_0xca2 to `flag` and field_0x456.
 // FIXME: 99.3 %. Registers only: the inlined group loops' leader / self
 // temporaries (r25 / r28 in the original, both r25 here).
-bool Player_804A6F38::fn_8024DA64(s32 id, bool flag) {
+bool Player_804A6F38::fn_8024DA64(s32 id, u8 flag) {
     if (field_0x1240 != 0) {
         return false;
     }

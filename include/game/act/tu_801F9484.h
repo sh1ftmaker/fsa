@@ -281,6 +281,7 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54(s32 arg1);
+    void readTileId();
 
     /* 0x230 */ s32 mState;
     /* 0x234 */ s32 field_0x234;

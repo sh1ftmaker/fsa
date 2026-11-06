@@ -20,5 +20,6 @@ Data sections:
 - .sdata2 (100.00 %)
 
 SHARED-EDITS:
-- include/game/Player.h: fn_802302C4 declared as `bool fn_802302C4(s32 player, s32 a, bool b);` should take `u8 b` (or s32). In the binary, both call sites at 0x802A71EC and 0x802A740C pass `li r5, 0xff`, which is stored via `stb r31, 0xca2(r29)` in Player_804A6F38::fn_8024DA64. Because Player.h currently declares it as bool, MWCC coerces 0xFF to 1 (`li r5, 1`).
+- include/game/Player.h, tu_8022AD64.cpp, tu_8023FBF0.cpp: fn_802302C4 / Player::fn_8024DA64 take `u8` instead of `bool` for the flag (field_0xca2 is a u8 and the callers pass 0xFF); no other callers.
+- include/game/act/tu_801F9484.h: Switch_804A7F38 fields, virtuals and readTileId().
 - config/G4SE01/gen_game.tsv: deleted row for act_switch as it is now handwritten.
