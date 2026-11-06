@@ -901,6 +901,7 @@ static s32 getProgressMsg(s32 file) {
 void FileSelect_804AFF60::fn_803CE4CC() {
     for (int i = 0; i < 3; i++) {
         clearBadChecksum(i);
+        // (s32): the original tests field_0xff signed (lbz + cmpwi), as in fn_803CABAC.
         if ((s32)gGameRoot_8053AAF8->field_0xff != 0) {
             if (fn_803BADAC(&lbl_8050EC80.getFile(i))) {
                 BOOL used = FALSE;
