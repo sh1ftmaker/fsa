@@ -23,7 +23,7 @@ public:
     void fn_8019F3AC();
 
     /* 0x230 */ s32 mState;
-    /* 0x234 */ s32 field_0x234;
+    /* 0x234 */ u8 field_0x234[4]; // not yet known
     /* 0x238 */ s32 mTimers[4];
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;

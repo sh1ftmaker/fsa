@@ -96,7 +96,9 @@ ShootingGallery_804A2B18::~ShootingGallery_804A2B18() {
     }
 }
 
-// FIXME: 94.81%. missing/extra: ours has 2 fewer instrs; regalloc in LCG mRandom.get_ufloat_1().
+// FIXME: 94.81%. missing/extra: ours has 2 fewer instrs. The original stores p (0x24(r1)) before the box
+// copy is offset and reloads mPos.x/y for the addPos; ours adds in registers. Also gGameRoot_8053AAF8 and
+// 0x19660D swap r4/r5 in mRandom.get_ufloat_1(), and r29/r30 for this.
 void ShootingGallery_804A2B18::fn_8019EE74() {
     JGeometry::TBox2f box(mBox);
     JGeometry::TVec2f p(mPos.x, mPos.y);
