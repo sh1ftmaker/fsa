@@ -128,12 +128,9 @@ void ShadowCircle_804A0160::drawShadow_80158B5C(s32 layer, const JGeometry::TVec
     GXTexCoord2f32(-1.0f, 1.0f);
 }
 
-// FIXME: 96.5 %. The original materialises the mode-0xC test as a byte
-// (subfic / cntlzw / extrwi., then bne) where ours compares (cmpwi / beq);
-// a bool or u8 local and a u8 inline didn't give it. The rest is
-// isGameModeSet() (game/GameMode.h).
+// The mode tests are isGameMode / isGameModeSet (game/GameMode.h).
 void ShadowCircle_804A0160::fn_80159330() {
-    if (gGameRoot_8053AAF8->field_0x4c == GAME_MODE_C) {
+    if (isGameMode(GAME_MODE_C)) {
         return;
     }
     if (!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) {
