@@ -463,4 +463,15 @@ bool Vulture_804A4230::vfunc_0x60() {
     return hit;
 }
 
+// FIXME: 99.80 % (reloc-name). 100 % instruction match; literal names not yet split.
+bool Vulture_804A4230::vfunc_0x5C() {
+    bool hit = false;
+    if (!(mFlags & 0x4000)) {
+        if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+            hit = fn_801F2FAC();
+        }
+    }
+    return hit;
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
