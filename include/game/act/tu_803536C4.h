@@ -22,8 +22,15 @@ public:
     /* 0x248 */ s32 field_0x248; // field_0x90 & 3
     /* 0x24C */ s32 field_0x24c; // field_0x90 >> 4 & 0xF
     /* 0x250 */ bool field_0x250; // field_0x90 >> 8 & 3 is nonzero
-    /* 0x254 */ f32 field_0x254;
-    /* 0x258 */ u8 field_0x258[0x14]; // not yet known
+    // JGeometry::TVec3f at 0x254; unioned with field_0x254 so tu_803536C4.cpp's
+    // existing scalar read of field_0x254 (x) continues to compile unchanged.
+    union {
+        /* 0x254 */ f32 field_0x254;
+        /* 0x254 */ Vec mVec254;
+    };
+    /* 0x260 */ JGeometry::TVec3f field_0x260;
+
+    JGeometry::TVec3f& getVec254() { return static_cast<JGeometry::TVec3f&>(mVec254); }
 }; // Size: 0x26C
 
 #endif

@@ -69,6 +69,10 @@ public:
     // fn_8030C5F0, so const Vec* would compile too: TVec3f (callers pass
     // &mPos, act_door 0x802C73AC) is a guess.
     bool fn_8030C2A8(const JGeometry::TVec3f* pos);
+    // 1 unit (act_tingle_time_up_manager 0x80352934). Writes two world
+    // positions derived from field_0x164 and JUTVideo's frame size to out[0]
+    // and out[1].
+    void fn_8030C380(JGeometry::TVec3f* out);
     // Multiplies pos by the Mtx at +0x74 (PSMTXMultVec) and writes x, y and a
     // constant z to out: a world-to-screen projection. With the 2nd argument
     // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).

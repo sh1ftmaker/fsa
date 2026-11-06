@@ -18,7 +18,7 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x40 */ virtual void vfunc_0x40();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u32 field_0x230;
+    /* 0x230 */ s32 field_0x230;
     /* 0x234 */ u8 field_0x234[0x264 - 0x234];
     /* 0x264 */ s32 field_0x264;
     /* 0x268 */ u8 field_0x268[0x280 - 0x268];

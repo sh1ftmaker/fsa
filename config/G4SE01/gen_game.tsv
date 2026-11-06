@@ -17,14 +17,8 @@ act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
-act_force_gem_buried	dtor	__dt__23BuriedForceGem_804AB258Fv	BuriedForceGem_804AB258	0x804AB258	new	new
-act_force_gem_buried	sinit	__sinit_act_force_gem_buried_cpp	-	-	new	new
-act_force_gem_fleeing	dtor	__dt__24FleeingForceGem_804AB170Fv	FleeingForceGem_804AB170	0x804AB170	new	new
-act_force_gem_fleeing	sinit	__sinit_act_force_gem_fleeing_cpp	-	-	new	new
 act_force_gem_spawner	dtor_emit	__dt__24ForceGemSpawner_804AB660Fv	ForceGemSpawner_804AB660	0x804AB660	new	new
 act_force_gem_spawner	sinit	__sinit_act_force_gem_spawner_cpp	-	-	new	-
-act_force_gem_winged	dtor	__dt__23WingedForceGem_804AB098Fv	WingedForceGem_804AB098	0x804AB098	new	new
-act_force_gem_winged	sinit	__sinit_act_force_gem_winged_cpp	-	-	new	new
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_four_person_pull_switch	dtor	__dt__12cls_804AE230Fv	cls_804AE230	0x804AE230	new	new
 act_four_person_pull_switch	sinit	__sinit_act_four_person_pull_switch_cpp	-	-	new	new
