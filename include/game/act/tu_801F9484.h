@@ -276,7 +276,27 @@ class Switch_804A7F38 : public ActorBase_804A5770 {
 public:
     Switch_804A7F38() {}
     /* 0x08 */ virtual ~Switch_804A7F38();
-    /* 0x230 */ u8 field_0x230[0x38];
+    /* 0x0C */ virtual void init();
+    /* 0x10 */ virtual void vfunc_0x10();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x54 */ virtual void vfunc_0x54(s32 arg1);
+
+    /* 0x230 */ s32 mState;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ u16 field_0x258;
+    /* 0x25A */ u8 field_0x25a[2];
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ s32 field_0x264;
 }; // Size: 0x268
 
 // Spawned for 'FIRE'.
