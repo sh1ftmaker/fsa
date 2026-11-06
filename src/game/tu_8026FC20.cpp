@@ -3395,9 +3395,9 @@ bool Player_804A6F38::fn_80272DCC(const JGeometry::TBox2f* box, s32 layer, s32 s
     return false;
 }
 
-// FIXME: 97.24. Two extra instructions: the original leaves the point loop straight for the
-// slot store (no `i >= 8` test after it; with the store inside the loop, or the points in an
-// inline, the layout differs more).
+// FIXME: 99.16. Registers only: the grown box lives in f31-f28 from its loads on (ours loads
+// into f0-f3 first). The point loop returns false from inside when all eight points are in the
+// box and breaks out to the slot store (a `for` with a later `i >= 8` test adds a second compare).
 // fn_80272DCC's slot store (without its fn_80249068 test), unless one of the eight points fn_8024B298 gives is inside
 // `box` grown by 2.5 on every side.
 bool Player_804A6F38::fn_80272C20(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -3415,16 +3415,16 @@ bool Player_804A6F38::fn_80272C20(const JGeometry::TBox2f* box, s32 layer, s32 s
     grown.i.y = box->i.y - 2.5f;
     grown.f.x = box->f.x + 2.5f;
     grown.f.y = box->f.y + 2.5f;
-    s32 i;
-    for (i = 0; i < 8; i++) {
+    s32 i = 0;
+    for (;;) {
         JGeometry::TVec3f p;
         fn_8024B298(i, &p);
         if (!containsPoint(grown, p)) {
             break;
         }
-    }
-    if (i >= 8) {
-        return false;
+        if (++i >= 8) {
+            return false;
+        }
     }
     for (int j = 0; j < 0x50; j++) {
         if (field_0xdb0[j] < 0) {
