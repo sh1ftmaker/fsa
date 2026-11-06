@@ -1367,10 +1367,10 @@ void fn_8022CF08(s32 player);
 // Owner: game/tu_8022AD64.cpp (0x8022CFE8, not written yet): a float per player index (lbl_80540008
 // without the manager); compared with 0.0f by fn_802859C4 (tu_8027E5BC).
 extern "C" f32 fn_8022CFE8(s32 player);
-// Owner: game/tu_8022AD64.cpp (0x8022D534, not written yet): a per-player test (false
-// without the manager); ActorBase_804A5770::fn_801EE558 skips players for which it holds
-// (clrlwi. of r3).
-extern "C" bool fn_8022D534(s32 player);
+// A per-player test (false without the manager): fn_8022D75C of the player, or of
+// fn_8022EA0C's player when fn_8022F478 holds. ActorBase_804A5770::fn_801EE558 skips
+// players for which it holds (clrlwi. of r3).
+bool fn_8022D534(s32 player);
 // Owner: game/tu_8022AD64.cpp (0x80237A80, 0x738, not written yet): a per-player
 // test; cls_804A71A8::fn_8026C350 blocks tile 0x3E unless it holds (clrlwi. of r3).
 extern "C" bool fn_80237A80(s32 player);
@@ -1734,15 +1734,9 @@ s32 fn_80231A50();
 // Owner: tu_8022AD64 (0x802362C4, defined there). act_gambling_chest (also
 // act_cucco, act_force_gem_2). (player, value): tail-calls fn_8024ED4C(player
 // object, value) when the player exists and its byte 0xCAC is set.
-extern "C" {
 // Owner: tu_8022AD64 (0x80237948, defined there). 6 units (act_eyegore, act_blade_trap, ...).
 // Tests the player object's byte 0xCAC for player index `player` (0-3) and returns
 // fn_80271068(object) when it is set; the TVec2f pointer the callers pass is not read.
-}
-// 1 unit (act_attack_hitbox_when_player_is_thrown; others call it too). Player pair test.
-bool fn_8022E438(s32 player, s32 other);
-// Hits the player with `damage` at `pos` (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)).
-bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg); // reads pos+0/+4 only
 
 // Owner unit tu_8022AD64 (not written yet). 1 unit (act_invisible_npc_wall).
 // Loops over the players and calls fn_80272DCC, which copies the 4 box floats
@@ -1757,13 +1751,19 @@ bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg);
 // out, flag), a bool OR of the player's tile probes) passes, or -1; -1
 // without a player manager. The caller ignores the result.
 
-// Owner unit tu_8022AD64 (not written yet). 1 unit (act_burning_block). Counts
-// (compared with 1 by the caller) the active players for which fn_80250030(player
-// object, serial) passes.
-s32 fn_80239108(s32 serial);
 
 }
 // Defined in game/tu_8022AD64.cpp, with C++ names (moved out of the extern "C" block above).
+// 1 unit (act_burning_block, compared with 1). Counts the present players on the ground
+// that pass fn_802729F0(serial) or fn_80250090, and fn_80250D30 but not fn_802413C8;
+// 0 when two of them face differently.
+s32 fn_80239108(s32 serial);
+// Whether `player` and `other` are both present and in one group (the same player, one
+// the other's leader, or both following one leader). Many units.
+bool fn_8022E438(s32 player, s32 other);
+// Hits `player` at `pos` and every player of its group at the same offset from its own
+// position (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)); reads pos+0/+4 only.
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg);
 // Whether fn_8024D058(flag) / fn_8024157C(arg) accepts for every present player of a present
 // `player`'s group (fn_8022E438). fn_8023061C: 4 units (act_dummy_conversation, act_shop_item,
 // ...; li 0); fn_802370FC: 1 unit (act_great_fairy_bfry).
