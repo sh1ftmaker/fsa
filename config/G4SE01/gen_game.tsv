@@ -30,8 +30,6 @@ act_force_gem_winged	sinit	__sinit_act_force_gem_winged_cpp	-	-	new	new
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_four_person_pull_switch	dtor	__dt__12cls_804AE230Fv	cls_804AE230	0x804AE230	new	new
 act_four_person_pull_switch	sinit	__sinit_act_four_person_pull_switch_cpp	-	-	new	new
-act_four_person_pull_switch_pswk	dtor	__dt__12cls_804AE5C8Fv	cls_804AE5C8	0x804AE5C8	new	new
-act_four_person_pull_switch_pswk	sinit	__sinit_act_four_person_pull_switch_pswk_cpp	-	-	new	new
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
