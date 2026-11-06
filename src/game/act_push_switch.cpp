@@ -20,9 +20,8 @@ void PushSwitch_804A7B38::init() {
     field_0x80.set(mBox);
 }
 
-// FIXME: 96.65%. Same instructions, but the original keeps the loop counter in r29 and the
-// player count in r30, with the param bits in a temporary r31 (shared with the earlier
-// field_0x4 load); ours puts the count in r31, the counter in r30 and the bits in r29.
+// FIXME: 99.37%. regalloc-only: the player-position x / y loads take f1 / f0 in the
+// original (ours f0 / f1). The layer is read through getField_0x4() (before the call).
 void PushSwitch_804A7B38::update() {
     JGeometry::TBox2f area(mBox);
     area.i.x += mPos.x;
@@ -31,7 +30,7 @@ void PushSwitch_804A7B38::update() {
     area.f.y += mPos.y;
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (getPlayerLayer_8023DE58(i) == field_0x4 && fn_8022DB04(i)) {
+        if (getPlayerLayer_8023DE58(i) == getField_0x4() && fn_8022DB04(i)) {
             s32 direction = (field_0x90 >> 17) & 3;
             if (direction != fn_80230CFC(i)) {
                 continue;
