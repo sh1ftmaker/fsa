@@ -469,7 +469,7 @@ game/tu_8039003C.cpp	menus	low	calls the stage select and map screens; called by
 game/tu_80390818.cpp	menus	med	MessageWindow_804AF490 ('gc_four_swords_text_e.bmg')	hand
 game/act_score.cpp	objects	med	actors.tsv (actor spawner): system SCRE Score	auto
 game/act_talking_npc.cpp	npcs	med	actors.tsv (actor spawner): system TALK Talking NPC	auto
-game/tu_803944C8.cpp	menus	med	message text formatting (strings ' cucco', ' times'), called by MessageWindow	hand
+game/tu_803944C8.cpp	menus	high	the message windows' JMessage processors (vtables derive from JMessage TSequenceProcessor / TRenderingProcessor / TReference) and their 0x3C4-byte window object built by MessageWindow_804AF490, which loads 'hukidashi.blo' and the BMG; plural noun counts (' Force Gem(s)', ' Cucco(s)', ' times')	hand
 game/tu_803A3484.cpp	menus	med	Title_804AF820: the title screen (clouds, THP)	hand
 game/tu_803A60E4.cpp	menus	low	PaneCtrl-heavy J2D code called by GameRoot	hand
 game/tu_803A85E4.cpp	menus	med	cls_804AF878: drives the two connect screens	hand
