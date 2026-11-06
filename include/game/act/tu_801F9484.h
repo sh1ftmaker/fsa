@@ -209,13 +209,7 @@ public:
 }; // Size: 0x338
 
 
-// Spawned for 'SYKY'.
-class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
-public:
-    ShootingGallery_804A2B18() {}
-    /* 0x08 */ virtual ~ShootingGallery_804A2B18();
-    /* 0x230 */ u8 field_0x230[0x80];
-}; // Size: 0x2B0
+#include "game/act/act_shooting_gallery.h"
 
 // Spawned for 'TENN'.
 class TennisShop_804A2BF4 : public ActorBase_804A5770 {
