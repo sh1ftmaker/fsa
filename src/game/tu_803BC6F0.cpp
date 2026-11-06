@@ -892,10 +892,8 @@ static s32 getProgressMsg(s32 file) {
     return lbl_80476D00[7];
 }
 
-// FIXME: 99.02 %. The file index and its bit swap r24 / r25;
-// `gGameRoot_8053AAF8->field_0xff != 0` is cmplwi where the original has
-// cmpwi (as in fn_803CABAC); the original tests the time against the zero it
-// materialises `used` from (one li fewer).
+// FIXME: 99.21 %. The file index and its bit swap r24 / r25; the original
+// tests the time against the zero it materialises `used` from (one li fewer).
 // Refreshes the three file rows: a file whose checksum fails gets message
 // 0x11D and its bit in field_0x115 (fn_803BD5E0); a used file shows the date
 // it was chosen last and every file's progress; an empty file (or no card)
@@ -903,7 +901,7 @@ static s32 getProgressMsg(s32 file) {
 void FileSelect_804AFF60::fn_803CE4CC() {
     for (int i = 0; i < 3; i++) {
         clearBadChecksum(i);
-        if (gGameRoot_8053AAF8->field_0xff != 0) {
+        if ((s32)gGameRoot_8053AAF8->field_0xff != 0) {
             if (fn_803BADAC(&lbl_8050EC80.getFile(i))) {
                 BOOL used = FALSE;
                 if (lbl_8050EC80.getFile(i).field_0x0 != 0) {
@@ -1626,9 +1624,7 @@ void FileSelect_804AFF60::fn_803CB3DC() {
     }
 }
 
-// FIXME: 98.46 %. The two `gGameRoot_8053AAF8->field_0xff != 0` tests compile to
-// cmplwi where the original has cmpwi (u8, bool and s8 fields all differ:
-// probably read through an int-returning accessor); the four setBlackWhite calls' by-value copies take the
+// FIXME: 98.69 %. The four setBlackWhite calls' by-value copies take the
 // stack slots in the opposite order (sp 0x8 upwards in the original); the
 // bob's `frame * frame` is scheduled after the 0x4330 store; the final
 // `field_0xa0 == 3` test lays out its two arms (0xC / 0xB sound) the other
@@ -1637,6 +1633,8 @@ void FileSelect_804AFF60::fn_803CB3DC() {
 // start the chosen file, 1: copy, 2: delete, 3: back), B goes back, up /
 // down move the cursor (field_0xa0, skipping commands an empty file lacks);
 // the cursor pane field_0x34 bobs for ten frames after a move.
+// field_0xff is compared as a signed int here and in fn_803CE4CC (lbz +
+// cmpwi at all three tests; a u8, bool or s8 member gives cmplwi / extsb).
 void FileSelect_804AFF60::fn_803CABAC() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1) != 0) {
         switch (field_0xa0) {
@@ -1657,7 +1655,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             break;
         }
         case 1:
-            if (gGameRoot_8053AAF8->field_0xff != 0) {
+            if ((s32)gGameRoot_8053AAF8->field_0xff != 0) {
                 if (field_0xa4 == 0) {
                     if (lbl_8050EC80.getFile(1).field_0x0 == 0) {
                         field_0xa0 = 1;
@@ -1684,7 +1682,7 @@ void FileSelect_804AFF60::fn_803CABAC() {
             }
             return;
         case 2:
-            if (gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80.getFile(field_0xa4).field_0x0 != 0) {
+            if ((s32)gGameRoot_8053AAF8->field_0xff != 0 && lbl_8050EC80.getFile(field_0xa4).field_0x0 != 0) {
                 field_0x114 = 1;
                 setMessage(0x5E);
                 field_0x34->mPane->setAlpha(0);
