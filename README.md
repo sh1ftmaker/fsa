@@ -48,8 +48,8 @@ game code in its four parts, the bottom row the libraries. Click a block to open
 As of 2026-11-06:
 
 - **Honest: 41.16 %** of the code is byte-identical, **8,976 / 11,557** functions (1,828,300 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 52.34 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 9,523 / 11,557 functions (same instructions, register or order differences only), +144 close.
+- **Weighted: 52.33 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 9,522 / 11,557 functions (same instructions, register or order differences only), +144 close.
 - **450 of 902** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -147,7 +147,7 @@ work goes in.
 
 | Part | Code matched | Weighted | Functions | Files Matching |
 |---|--:|--:|--:|--:|
-| [Boot to main menu](https://sh1ftmaker.github.io/fsa/#/game/game-boot) | 26.1 % of 1,258,252 bytes | 40.1 % | 1,597 / 2,394 | 7 / 83 |
+| [Boot to main menu](https://sh1ftmaker.github.io/fsa/#/game/game-boot) | 26.1 % of 1,258,252 bytes | 40.0 % | 1,597 / 2,394 | 7 / 83 |
 | [Main menu to Shadow Battle](https://sh1ftmaker.github.io/fsa/#/game/game-battle) | 30.5 % of 644,344 bytes | 56.8 % | 903 / 1,336 | 8 / 60 |
 | [Actors](https://sh1ftmaker.github.io/fsa/#/game/game-actors) | 30.0 % of 1,027,824 bytes | 40.4 % | 1,194 / 1,962 | 64 / 264 |
 | [Everything else](https://sh1ftmaker.github.io/fsa/#/game/game-other) | 22.9 % of 643,364 bytes | 28.5 % | 569 / 1,097 | 27 / 121 |
