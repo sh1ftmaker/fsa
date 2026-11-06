@@ -448,16 +448,17 @@ u32 fn_803846BC(u32 msg);
 bool fn_80388CAC(s32 player, s32 serial);
 // Functions of game/tu_8037DF68.cpp other units call. Return types: callers
 // clrlwi 24 / clrlwi. the bool ones.
+// 16 units / 196 calls (the menu units). Copies the text of message msg
+// (mBmg's INF1 entry msg) into out, or into out2 / out3 (when not NULL) after
+// the first / second part-break control code (0x1A size 2, commands 0/1/9/0xA/
+// 0x11/0x12/0x19/0x1A; each stores the width and line count so far in
+// field_0x5c); control code 0x1A size 3 writes '0' + value and fn_8037F580's
+// expansion. Returns the text width summed from mFont's getWidth per character.
+f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
 // 1 unit (tu_80139BE8's fn_80139C5C). Draws the open windows in the order
 // they were opened (field_0xfc), then the text box when field_0xe4 is set.
 void fn_8038D4A8();
 extern "C" {
-// 16 units / 196 calls (the menu units). Copies the text of message msg
-// (mBmg's INF1 entry msg) into out, or into out2 / out3 (when not NULL)
-// as a counter that control codes advance reaches 1 / 2; one control code
-// writes '0' + value (addi 0x30). Returns a width summed from mFont's
-// vtable slot 0x2C per character (f1). value: s32 is a guess.
-f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
 // Message msg mapped for window `window` (this unit, not written yet); fn_8038470C
 // passes the result to the window's fn_80390E40.
 u32 fn_80383EB0(s32 window, u32 msg);

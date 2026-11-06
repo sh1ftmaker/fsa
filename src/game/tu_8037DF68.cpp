@@ -33,6 +33,7 @@ static inline void clearOnPress() {
 }
 
 // Forward declarations.
+f32 fn_8037F580(u8 command, s32 value, char* out, s32* len, f32 scale);
 u8 fn_8037F1E4(s32 player);
 bool fn_8037EC98(s32 player, u16 flags);
 
@@ -526,14 +527,12 @@ u16 fn_803846A4(s32 index) {
     return lbl_8053AD78->mBmg->inf1.entries[index].id;
 }
 
-// FIXME: 87.0. Scheduling and registers only: the original adds the INF1
-// size and the entry offset first, then 8, then the base; ours adds the 8
-// to the offset before the size.
+// FIXME: 99.1. Regalloc only (r3 / r5 / r6 rotated); the jump table's name waits
+// on the unit's .data (jumptable_804AF0CC is the third of six).
 const char* fn_80383E2C(u32 index, u8* out) {
     MessageFile_804AF070* bmg = lbl_8053AD78->mBmg;
     MessageInf1_804AF070* inf1 = &bmg->inf1;
-    u32 offset = bmg->inf1.size + inf1->entries[index].textOffset;
-    const char* text = (const char*)inf1 + (offset + 8);
+    const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[index].textOffset];
     *out = 0;
     if (text[0] == 0x1A && text[2] == 2) {
         switch (text[4]) {
@@ -555,6 +554,113 @@ const char* fn_80383E2C(u32 index, u8* out) {
     }
     return NULL;
 }
+
+// Stores c at out[len], or in out2 / out3 while the text is in its second /
+// third part (when those buffers are given). A macro: the original evaluates c
+// in each branch and stores it unconverted.
+#define PUT_CHAR(c)                          \
+    if (part == 1 && out2 != NULL) {         \
+        out2[len] = (c);                     \
+    } else if (part == 2 && out3 != NULL) {  \
+        out3[len] = (c);                     \
+    } else {                                 \
+        out[len] = (c);                      \
+    }
+
+// FIXME: 95.1. Structurally close (one instruction fewer, registers shifted): the
+// text address is summed as (offset + inf1) + 8 + size where the original adds
+// size + offset, then 8, then inf1 (as in fn_80383E2C); the loop's first
+// character test reuses the condition's extsb. where the original sign-extends
+// again; the lead-byte code is loaded into r4 and copied to r31 (the original
+// loads it into r31).
+// Copies the text of message msg into out (into out2 / out3 for the parts after
+// the first two part-break control codes, when given) and returns its width in
+// mFont units. Control code 0x1A size 2 ends a part (the width and line count so
+// far go to field_0x5c[part] / field_0x5c[part + 2]); 0x1A size 3 writes the digit
+// value and the expansion fn_8037F580 makes of its command byte.
+f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3) {
+    MessageFile_804AF070* bmg = lbl_8053AD78->mBmg;
+    MessageInf1_804AF070* inf1 = &bmg->inf1;
+    s32 len = 0;
+    f32 width = 0.0f;
+    const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
+    s32 pos = 0;
+    s32 lines = 1;
+    u8 part = 0;
+    char c;
+    while ((c = text[pos]) != 0) {
+        const char* p = &text[pos];
+        if (c == '\n') {
+            PUT_CHAR(c);
+            len++;
+            lines++;
+            pos++;
+        } else if (c == 0x1A) {
+            if (p[2] == 2) {
+                if (p[4] == 0 || p[4] == 10 || p[4] == 0x12 || p[4] == 0x19) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = width;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        if (part == 0) {
+                            if (out2 != NULL) {
+                                out[len] = 0;
+                                len = 0;
+                            }
+                        } else if (part == 1) {
+                            if (out3 != NULL) {
+                                out2[len] = 0;
+                                len = 0;
+                            }
+                        }
+                        part++;
+                    }
+                } else if (p[4] == 1 || p[4] == 9 || p[4] == 0x11 || p[4] == 0x1A) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = width;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        lbl_8053AD78->field_0xe6 = part;
+                        if (part == 0) {
+                            if (out2 != NULL) {
+                                out[len] = 0;
+                                len = 0;
+                            }
+                        } else if (part == 1) {
+                            if (out3 != NULL) {
+                                out2[len] = 0;
+                                len = 0;
+                            }
+                        }
+                        part++;
+                    }
+                }
+            } else if (p[2] == 3) {
+                s32 digit = value + '0';
+                PUT_CHAR(digit);
+                len++;
+                width += lbl_8053AD78->mFont->JUTFont::getWidth(digit);
+                width += fn_8037F580(p[5], value, out, &len, 1.0f);
+            }
+            pos += p[1];
+        } else {
+            PUT_CHAR(c);
+            len++;
+            u32 code = (u8)*p;
+            pos++;
+            if (lbl_8053AD78->mFont->isLeadByte(code)) {
+                code <<= 8;
+                PUT_CHAR(text[pos]);
+                code |= text[pos] & 0xFF;
+                pos++;
+                len++;
+            }
+            width += lbl_8053AD78->mFont->JUTFont::getWidth(code);
+        }
+    }
+    PUT_CHAR(c);
+    return width;
+}
+
+#undef PUT_CHAR
 
 // Shows message msg in the manager's text box at (x, y) with a font of
 // width x height and the colour color, or, when frames is not 0, scrolling in
