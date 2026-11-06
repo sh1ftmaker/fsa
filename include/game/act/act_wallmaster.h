@@ -8,9 +8,7 @@
 struct WallmasterParam {
     /* 0x00 */ s32 mType;
     /* 0x04 */ s32 mOrder[3];
-    /* 0x10 */ s32 field_0x10;
-    /* 0x14 */ s32 field_0x14;
-    /* 0x18 */ s32 field_0x18;
+    /* 0x10 */ s32 field_0x10[3];
     /* 0x1C */ s32 mIndex;
     /* 0x20 */ s32 mTarget;
     /* 0x24 */ s32 field_0x24;
@@ -34,6 +32,8 @@ public:
 
     void fn_801BC244();
     void fn_801BC554(s32 state);
+    u8 computeShadowAlpha();
+    bool checkPlayerHit();
 
     /* 0x2A8 */ s32 field_0x2a8;
     /* 0x2AC */ s32 field_0x2ac;

@@ -350,6 +350,7 @@ extern const bool lbl_8053EFC0;
 
 // Whether `layer` is 8 or more (cmpwi 8): the layers fn_801EF830 and the
 // view's boxes (0xDC instead of 0xCC) treat as the upper ones. 0 or 1.
+bool fn_801CD1D0(s32 player);
 bool fn_801CD2F8(s32 layer);
 // Moves *value toward target by `step` (forwards r3, f1, f2 to
 // fn_801CD9F0). EnemyBase_804A4808's movement step passes &mSpeed,
