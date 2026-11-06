@@ -174,3 +174,35 @@ unit was therefore compiled with deferred inlining (or equivalent); see "Not don
   returns inv * sq); the game's include/JSystem/JGeometry.h has only the C form (literal
   epsilon, scalar scale, returns inv). fn_80232A0C also scales with ps_muls0. Adopting the
   libs TVec3 is a shared-header decision.
+
+# Round 12, agent (Opus, 2026-11-05): libs Vec.h TVec3 inlines
+
+Baseline total 8693 honest. Now 8693 honest (fn_80233C08 is 99.73 %), structural 9142; no drops anywhere
+(per-address compare against the main checkout's report_honest.json); fn_8023F088 99.88 -> 99.94.
+
+- Header finding: no clash exists. cflags_game searches `libs/sdk/include` before `include`, so
+  every game unit's `#include "JSystem/JGeometry.h"` already resolves to libs/sdk's JGeometry.h
+  -> JGeometry/Vec.h (PSVECSquareMag / PSVECScale paired-single TVec3f). `ninja -t deps`: 604
+  objects use libs Vec.h; include/JSystem/JGeometry.h (the plain-C form) is used only by
+  JSystem/JUtility/JUTFader.o. Nothing to unify.
+- fn_80233C08 (99.73 %, reloc-name only): out-of-line copy of TVec3<f32>::normalize(),
+  `f32 fn_80233C08(TVec3f* v) { return v->normalize(); }`. The instructions are identical; its
+  0.5f / 3.0f sit after 15.0f (lbl_80540010) in the original pool, which fn_80232A0C uses first.
+- fn_80232A0C (player push-apart + player-on-player hits, 0x1194): written in full (kept at
+  scratchpad tu_with_a0c.cpp, not committed): 52.82 %, missing/extra, 460 extra instructions.
+  The original calls the unit's own EARLIER-defined queries out of line (fn_8022D75C,
+  fn_8022F514, fn_8022F3DC, fn_8022CAF8, fn_8022CCAC, fn_8023188C) and also the JGeometry inlines
+  normalize / operator- / TBox2::set (fn_80233C08, fn_80233BC4, fn_80233BA0, act_sword_soldier's
+  fn_801546F4), while it inlines isPlayerActive, layerBox, viewLayerFlag, isZero, scale, addPos.
+  Our MWCC auto-inlines the earlier queries; `#pragma inline_max_total_size` (10..8000) and
+  `auto_inline off` around the caller change nothing (diagnostic only). Same inlining-mode
+  blocker as the "inline later-defined" list: left unwritten.
+  Structure notes for whoever writes it: loop 1 i<3, j=i+1..3 with a `do {} while (k++ < 3)`
+  retry (breaks go to the next j); dir = centre(boxA) - centre(boxB) (f + (i - f) * 0.5f),
+  z = 0; `square(x) + square(y) < 3.0f` and both field_0xd54 <= 0 skips; fn_80233C08(&dir);
+  `dir.isZero()` -> (1,0,0), else |x| < 0.1 -> x = 0.1, else |y| < 0.1 -> y = 0.1; the push of
+  j passes a negated copy (two stack TVec3s, 0x28 then 0x7c: a by-value inline return, still
+  unexplained). Loop 2 i, j < 4: fabs(z diff) < 15, field_0x458 boxes 0x4a0/0x4b0 via
+  fn_80233C9C -> fn_80238548(.., 0x10) both ways and field_0x35c.set(fn_80233BC4(pos i, pos j)),
+  fn_80233C08, scale(2.0f); else the fn_80273E7C / fn_80273518 / fn_802573E0 / fn_80273FB8 /
+  fn_80256F44 hit chain. MWCC evaluates the call operands right to left (pos(j) before pos(i)).
