@@ -334,12 +334,11 @@ void cls_8049D020::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME: 95.73%. missing/extra + reloc-name: ours has 1 fewer instr (215 vs 216); the scale matrices are built with different float register assignment and the frame/pos/res locals are scheduled differently.
+// FIXME: 95.71%. missing/extra + reloc-name: ours has 1 fewer instr (215 vs 216); the scale matrices are built with different float register assignment and the frame/pos/res locals are scheduled differently.
 void cls_8049D020::draw() {
     ActorBase_804A5770::draw();
-    // Declaration order as in the original frame layout (params2 at the higher slot).
-    SpriteParams_801F5AE0 params2;
     SpriteParams_801F5AE0 params;
+    SpriteParams_801F5AE0 params2;
     Mtx mtx1;
     Mtx mtx2;
     if (!field_0x54.isZero()) {
