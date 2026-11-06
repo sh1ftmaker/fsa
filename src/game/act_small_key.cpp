@@ -110,12 +110,12 @@ void SmallKey_804A8CD8::fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer) {
     field_0x2aa = ((col & 0xFF) << 8) | (row & 0xFF);
 }
 
-// FIXME: 85.34 %. The original keeps the tile-code compares as one linear
-// chain of cmpwi/beq to the shared return (no switch, no range folding); the
-// switch here is a binary search, and the 0x10-0x17 / 0x18-0x1B chains fold
-// into one range check each (the original splits off 0x17 and 0x1B). pos and layer take r30/r28 the other way
-// round (the original copies pos to r30 before this, layer to r28 after), and
-// the mPos.z / field_0x3c float compares load their operands in another order.
+// The tile codes as act_bombchu's vfunc_0x4C (a != chain, the 0x25 / 0x26 results narrowed as
+// bytes).
+// FIXME: 98.52. Scheduling and register allocation only: pos and layer take r30 / r28 the
+// other way round (the target copies pos to r30 in the prologue, layer to r28 after the
+// first argument move), and for field_0x3c.x == 0.0f the target loads the field before the
+// constant.
 bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
     s32 tileCode = fn_8022461C(pos, layer);
     s32 rawCode = fn_80226850(pos, layer);
@@ -140,65 +140,45 @@ bool SmallKey_804A8CD8::fn_802C1970(s32 layer, const JGeometry::TVec3f* pos) {
     if (viewLayerFlag(field_0x4) && rawCode == 0x14) {
         return false;
     }
-    switch (tileCode) {
-    case 0:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 2:
-    case 3:
-    case 0x50:
-    case 0xE:
-    case 0xC:
-    case 0x2C:
-    case 0x2D:
-    case 0x2E:
-    case 0x2F:
-    case 0x20:
-    case 0xD:
-    case 0x39:
-    case 0x3A:
-    case 0x3B:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x24:
-        return false;
-    }
-    if (tileCode == 0x10 || tileCode == 0x11 || tileCode == 0x12 || tileCode == 0x13 ||
-        tileCode == 0x14 || tileCode == 0x15 || tileCode == 0x16 || tileCode == 0x17) {
-        if (field_0x280 == 7 || field_0x280 == 8) {
-            return false;
-        }
-        if (mPos.z > 15.0f && field_0x3c.x == 0.0f) {
-            field_0x288 = 300;
-            if (mPos.z < 18.0f) {
-                mPos.z = 18.0f;
+    if (tileCode != 0 && tileCode != 4 && tileCode != 5 && tileCode != 6 && tileCode != 7 &&
+        tileCode != 2 && tileCode != 3 && tileCode != 0x50 && tileCode != 0xE && tileCode != 0xC &&
+        tileCode != 0x2C && tileCode != 0x2D && tileCode != 0x2E && tileCode != 0x2F &&
+        tileCode != 0x20 && tileCode != 0xD && tileCode != 0x39 && tileCode != 0x3A &&
+        tileCode != 0x3B && tileCode != 0x4C && tileCode != 0x4D && tileCode != 0x4E &&
+        tileCode != 0x4F && tileCode != 0x24) {
+        if (tileCode == 0x10 || tileCode == 0x11 || tileCode == 0x12 || tileCode == 0x13 ||
+            tileCode == 0x14 || tileCode == 0x15 || tileCode == 0x16 || tileCode == 0x17) {
+            if (field_0x280 == 7 || field_0x280 == 8) {
+                return false;
             }
+            if (mPos.z > 15.0f && field_0x3c.x == 0.0f) {
+                field_0x288 = 300;
+                if (mPos.z < 18.0f) {
+                    mPos.z = 18.0f;
+                }
+                return false;
+            }
+        }
+        if (rawCode == 0x3A) {
+            return true;
+        }
+        if (rawCode == 0x3D) {
             return false;
         }
+        if (tileCode == 0x25) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 0);
+        }
+        if (tileCode == 0x26) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+        }
+        if (tileCode == 0x18 || tileCode == 0x19 || tileCode == 0x1A || tileCode == 0x1B) {
+            return false;
+        }
+        if (tileCode != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+            return true;
+        }
     }
-    if (rawCode == 0x3A) {
-        return true;
-    }
-    if (rawCode == 0x3D) {
-        return false;
-    }
-    if (tileCode == 0x25) {
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    }
-    if (tileCode == 0x26) {
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    }
-    if (tileCode == 0x18 || tileCode == 0x19 || tileCode == 0x1A || tileCode == 0x1B) {
-        return false;
-    }
-    if (tileCode == 0x22) {
-        return getGameView_802D6A9C()->field_0x170 == 1;
-    }
-    return true;
+    return false;
 }
 
 bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
