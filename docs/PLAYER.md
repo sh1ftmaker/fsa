@@ -1290,3 +1290,67 @@ reproduces both).
   view flag 0x800, layer 8, GameView 0x54 and fn_802D7948.
 - Group loop: `s32 leader;` declared first fixes fn_80248970; the inlined copies still want leader
   and own index in two registers (lowest / highest), no shape found (24 orders measured).
+
+## Round 15 (tu_8026FC20) (agent Z, Opus 5.5, 2026-11-06)
+
+99 -> 102 of 120 at 100 % (+3 honest: 8813 -> 8816 on matching f0ca1f96), structural +7
+(9270 -> 9277). All nine left functions are written; no drops in any unit (by address).
+
+| function | state | % / try.py class | what it is |
+|---|---|---|---|
+| fn_80277F98 | 0x33 update | 99.92 regalloc | **down (no life left)**, see below |
+| fn_80279824 | 0x0F update | 99.32 scheduling | **knocked back by a hit**: push 0x350 with gravity 0.25 (to -4), poses 0-3 (0 / 1 by 0x488), lands from frame 20 (0x33 without life, back to a previous 0x4A / 0x4B, else 0); hit kind 3 keeps to the view, the others slide (fn_802808E8(1.5)); hit emitters 0x135C / 0x132C turned by facing (s32 yaw table lbl_8046BC98) |
+| fn_8027A1E0 | 0x0B update | 97.20 scheduling+regalloc | **the dash** (Pegasus-boots like): pose 1 runs along 0x3E8 (eight unit steps lbl_8046BC38, 0.7 diagonals) at 0xBBC, pad 0x100 hops (z 2, gravity 0.1), dust 0x24E / 0x24F (sand 0x250 / 0x251 on tile 0x39) restarted on a turn, BgRewrite at 0x30C and the eight probe points pushed out x2, 0xBC4 = 40x40 box (Player.h TBox2f); into a wall (fn_8025196C) it bounces (pose 2, sound 0x20010, view shake, 0x344 = 2.5 back, z 2) or, under fn_8022AF5C's alternative, turns the group (fn_80230BF4) |
+| fn_8027AAD0 | 0x0A update | 99.60 stack offsets | **the spin attack**: fn_80274728 / fn_8027EB04; group spin (mode 3) moves the centre 0x11B4 2 a frame by the stick unless one of three tiles 24 ahead blocks (fn_802265DC), walks to the group spot from frame 11; else drifts 2 along 0x3E8 (lbl_8046BBD8); sound 0x20029; emitters 0x12B8 / 0x12BC (circling at 20 by 0x11C0) with depth / height from fn_8024EE0C / fn_8024EE14 |
+| fn_8027BE74 | 0x08 update | **100** | **the sword charge**: 0x403 charge, 0x404 frames, hop with pad 0x20 (0x344 = 2.5 * stick or 0x368), walk 1.125, attack check fn_80275D9C, wall push -> 0x37 (0x350 = lbl_8046BBA8 0.25 per facing, sound 0x20062 / 0x20061 by fn_8022486C), blade emitter 0x12B0 moving out `0x403 * 14 / 48 + 6`, 0x12B4 / 0x12B8, camera 0x7F5 after 30 frames, group cancel 0xCAE / 0xCAF |
+| fn_8027CC90 | 0x05 update | 99.37 scheduling | **the ground pound**: from frame 11 falls (gravity 0.25 to -6.5; on flagged layers drawn up the screen); frame 11 on the ground: tiles 3 / 0xE without fn_8024B24C cancel, else shake, rumble (fn_80134DE4(1, 0)), TV effect 1, sound 0x20024, emitters 0x23D-0x23F, 0x3D0 + 'PEFF' at 0x5C0 on tiles 0x39 / 0xD (else 0x3CF); state 6 at frame 20; emitter point 0x12A4 = mPos + lbl_8046BB78[facing] |
+| fn_8027D5F0 | 0x04 update | **100** | **the sword attack**: fn_80275D9C, fn_802756E4, BgRewrite; attacks 0 / 1 / 3 fire the sword beam ('SWBM') at frame 4, 2 at frame 2, the lunge (4) on landing (body hits 0x458 frames 6-15) |
+| fn_8027DEA0 | 0x04 enter | 99.04 regalloc | **attack pick**: 3+ presses in a row or window 0x11C4 -> lunge 4 (history cleared, 0x344 = 4 along the facing, z 1, sound 0x1000B, 0xBF4 = 8); window 0x11CC with the stick toward 0x11D0 -> 3; else combo step 2 / 0 / 1 by the history depth (0x117C[4..7]) |
+| fn_80274CB8 | (charge step, from 0x08) | 95.40 missing/extra | the charge: air poses, walk counter 0x3F8 (reset while epsilonEquals(mPos, 0x14)), poses 0x3F9 (lbl_8046BCA8.chargePose[facing][step] before full charge), emitter point 0x12A4 = mPos + chargeOffset[full][facing]; 0x403 counts (past 48 only at sword level >= 2); 48: emitters 0xCB / 0xCC (immortal), 0x270-0x273, 'PEFF', sound 0x2000D; 168 (full): 0xCB / 0xCC below layer 8, 'PEFF', sound 0x20027; afterwards 0x26B-0x26E by player; spent immortal emitters deleted (isEnableDeleteEmitter); release (fn_80246464 false): < 48 state 0, < 168 spin 9 (0x11AC = 1), else spin 0x0A |
+
+**State 0x33 (down)**, fn_80277F98: a fall into tile 3 / 0xE / 0x3A (not in mode 11, 0xCFC
+set, not held) puts the player back at 0x2C4 (0xCBC on GBA layers) with effect 0x503; the
+camera follows (Camera 0x7F4 / 0x7F8 / 0x7F6 unless 0x7F5). Frames 0-71 collapse ((frame / 6) %
+4), 72-75 pose 4, 76-135 pose 6; at frame 106 (player taking part) **fn_80241920 (word 0xC04)
+is halved, at most 2000 lost (fn_8024E694)** with message 0x198 (the amount) or 0x19A (nothing
+lost): this is the Force Gem loss on defeat (behaviour only; the counter's name stays
+provisional). From frame 136, in battle mode 7 with GameRoot 0x7E / 0x7F, the revive wait 0x494
+by rank among the taking-part players by fn_80236228 (600 / 420 / 300 / 180), a helper actor
+by rank (fn_801F6718 kind 3 / 5 / 6 / 7 into 0x49C, not while a 'BLZD' blizzard exists), the
+emitter 0x565 (callback 0x130C, unless fn_80239D38) and a 'PEFF'; held by another player its
+actor is killed. Pad 0x100 on the ground wiggles (0x3FA = 24, sound 0x20032; frame 16 sets the
+box 0x5DC = mPos + (-24, -12, -8, 8) and 0xBA4). First frame: 0xCFC = 1 and, under fn_80239D38,
+the music stops (lbl_80529DEC 0x1AC = AudioMgr 0x58 once, 0x253; fn_80458F9C(20)). Then one of:
+held (fn_8025F418): rides on the holder (mPos from fn_8023E7B0 moved between the view corners,
++2 y / z, facing fn_80230CFC; fn_80230C6C when the holder is on a GBA layer); revived (0xD2D):
+sound 0x20033, at 60 a hop (0x344 = (0, 0, 2), facing down), landing back in state 0 healed
+(fn_80270DDC(max - 4), inlined); otherwise the slide 0xD78 (gravity 0.25 as a double, bounce
+x / y * -0.5 off walls) and the grab: pad 0x100 / 0x200 / 0x20 inside the box (-24, -12, -8, 8)
+of a partner (fn_8023B0F4) sets 0xD08 = that player (sound 0x2004B, 0xD0C = 18), who drags
+the player 3 a frame toward 16 right of / 8 below itself (released at 16 or by fn_80234D94 with
+0xD0C = 120); the stick crawl is fn_802808E8(1.5 / 0.12). Last fn_8027057C (revive) and the
+callback point 0x1320 = mPos + (0, -4, 16).
+
+Evidence and fixes:
+- `!fn_80240808() || (fn_80240808() && !fn_80236B50(fn_80240644()))`: the asm skips when the
+  second fn_80240808() is false (fn_8027776C had `!(... && ...)`, which reads the other way;
+  corrected there too, 99.75 -> 99.77).
+- **fireSwordBeam** (shared by fn_8027B648 and fn_8027D5F0): the life test written as early
+  returns branches straight into the spawn as in the original; the old bool `lifeFull` inline
+  materialised li 0 / 1 (fn_8027B648 96.22 -> 99.89, stack offsets only now).
+- Shared inlines: updateStepEmitters (fn_80277220, fn_80279824), landFromHit, rewriteProbes
+  (fn_8027A1E0, fn_8027AAD0), walkToGroupSpot (fn_8027B648, fn_8027AAD0), blockedAt.
+- .rodata 100 %: lbl_8046BB78 (= lbl_8046BB48's values, its own object), lbl_8046BBA8 (Vec[4]),
+  lbl_8046BBD8 / lbl_8046BC38 (Vec[8]), lbl_8046BC98 (s32[4] yaw); lbl_8046BCA8's two later
+  members are now typed by their reader fn_80274CB8 (u8 chargePose[4][8], f32
+  chargeOffset[2][4][3]). fn_80274CB8 reaches them off one .rodata base hoisted at entry; no
+  source form found (separate statics, function-local statics: 96.06 / 90.97 and .rodata
+  split), so it stays structurally close at 95.40.
+- Argument evaluation: MWCC evaluates `a < b` with b's call first (fn_80241920() <
+  fn_80236228(i) gives the original's order) and call arguments right to left
+  (setEmitterPos_8013CB44(e, p, fn_8024EE14(), fn_8024EE0C() - 1, ...)).
+- `isPlayerBitSet(...) != false` at frame 106: the original materialises the bit test there
+  (neg / or / srwi.); `? true : false` gives the same.
+- SHARED-EDITS: include/game/Player.h (0xBC4 TBox2f from u8[0x10]; fn_80274CB8 member decl),
+  include/game/Map.h (extern "C" fn_8022486C decl). symbols.txt: fn_80274CB8 ->
+  fn_80274CB8__15Player_804A6F38Fv (only this unit references it).

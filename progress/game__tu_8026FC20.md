@@ -75,3 +75,14 @@ SHARED-EDITS: include/game/Player.h (isDown decl removed, comments), include/gam
 (cls_804B0478 u8 field_0x251 from field_0x230[0x30], size unchanged; stb 0x251 in tu_803D9944).
 Next: fn_80277F98 (0x33 update, 0x1128; fixes the 24 / -24 / -12 / 1.625 / 0.12 literals before -2),
 then fn_80279824, fn_8027A1E0, fn_8027AAD0, fn_8027BE74, fn_8027CC90, fn_8027D5F0, fn_8027DEA0, fn_80274CB8.
+
+## 2026-11-06 wave 15, agent Z (Opus 5.5)
+On matching f0ca1f96 (8813 / 11557). After: 8816 (unit 99 -> 102 of 120), structural 9270 -> 9277, no drops.
+New 100 %: fn_8027BE74 (0x08 update), fn_8027D5F0 (0x04 update), fn_802791B0 (literal pool now in order).
+Structurally done / close (FIXMEs in source): fn_80277F98 99.92 regalloc, fn_80279824 99.32 scheduling,
+fn_8027A1E0 97.20 scheduling+regalloc, fn_8027AAD0 99.60 stack offsets, fn_8027CC90 99.37 scheduling,
+fn_8027DEA0 99.04 regalloc, fn_80274CB8 95.40 missing/extra (shared .rodata base), fn_8027B648 96.22 -> 99.89,
+fn_8027776C 99.75 -> 99.77 (condition corrected). Every function of the unit is now written.
+SHARED-EDITS: include/game/Player.h (0xBC4 TBox2f, fn_80274CB8 decl), include/game/Map.h (fn_8022486C decl).
+Symbol renames: fn_80274CB8 -> fn_80274CB8__15Player_804A6F38Fv.
+Details: docs/PLAYER.md "Round 15 (tu_8026FC20)".
