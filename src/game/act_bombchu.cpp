@@ -171,6 +171,9 @@ void Bombchu_804AB464::vfunc_0x48() {
     field_0x230 = 3;
 }
 
+// FIXME: 99.88 %. Only registers and stack slots differ: in state 2 (layer flag
+// clear) the hit mask and the loop index swap r29 / r30, and the inlined
+// vfunc_0x48's result TVec3f and the frames table swap slots (0x1C / 0x2C).
 void Bombchu_804AB464::update() {
     if (field_0x230 == 1) {
         if (fn_8022F9E4(field_0x26c, mSerial, false, false) == true) {
