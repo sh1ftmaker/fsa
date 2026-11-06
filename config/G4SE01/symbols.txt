@@ -29215,7 +29215,6 @@ lbl_804C62EC = .bss:0x804C62EC; // type:object size:0x10
 lbl_804C62FC = .bss:0x804C62FC; // type:object size:0x10
 lbl_804C630C = .bss:0x804C630C; // type:object size:0x10
 lbl_804C631C = .bss:0x804C631C; // type:object size:0x10
-lbl_804C632C = .bss:0x804C632C; // type:object size:0x4
 lbl_804C6330 = .bss:0x804C6330; // type:object size:0x110 data:4byte
 @395 = .bss:0x804C6440; // type:object size:0xC scope:local
 @396 = .bss:0x804C644C; // type:object size:0xC scope:local
