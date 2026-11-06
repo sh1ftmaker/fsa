@@ -73,7 +73,6 @@ act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_
 act_point_check_npc	dtor	__dt__12cls_804A81C8Fv	cls_804A81C8	0x804A81C8	new	new
 act_point_check_npc	sinit	__sinit_act_point_check_npc_cpp	-	-	new	new
 act_pot	sinit	__sinit_act_pot_cpp	-	-	new	-
-act_princess_zelda	sinit	__sinit_act_princess_zelda_cpp	-	-	new	-
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
 act_red_blue_switch	dtor_emit	__dt__12cls_804A9020Fv	cls_804A9020	0x804A9020	new	new
 act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-

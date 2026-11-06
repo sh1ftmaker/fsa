@@ -41,13 +41,7 @@ public:
     /* 0x230 */ u8 field_0x230[0x18];
 }; // Size: 0x248
 
-// Spawned for 'ZLDA'.
-class cls_8049CEE0 : public ActorBase_804A5770 {
-public:
-    cls_8049CEE0();
-    /* 0x08 */ virtual ~cls_8049CEE0();
-    /* 0x230 */ u8 field_0x230[0x144];
-}; // Size: 0x374
+#include "game/act/act_princess_zelda.h"
 
 // Spawned for 'SNBL'.
 class cls_8049D020 : public ActorBase_804A5770 {
