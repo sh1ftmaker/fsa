@@ -3,8 +3,6 @@ act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
 act_buzz_blob	sinit	__sinit_act_buzz_blob_cpp	-	-	new	new
-act_cheep_cheep	dtor	__dt__12cls_804A11B8Fv	cls_804A11B8	0x804A11B8	new	new
-act_cheep_cheep	sinit	__sinit_act_cheep_cheep_cpp	-	-	new	new
 act_colour_block	dtor	__dt__12cls_804AE620Fv	cls_804AE620	0x804AE620	new	new
 act_colour_block	sinit	__sinit_act_colour_block_cpp	-	-	new	new
 act_door	dtor	__dt__13Door_804A8D88Fv	Door_804A8D88	0x804A8D88	new	new
