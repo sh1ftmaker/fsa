@@ -245,7 +245,7 @@ void Dodongo_804A3334::fn_801ACFF4() {
             field_0x250++;
             if (field_0x250 > 3) {
                 if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
-                    s32 sp1C = -1;
+                    s32 dir = -1;
                     s32 r28 = field_0x98;
                     field_0x250 = 0;
                     if (field_0x294 == 1) {
@@ -260,9 +260,9 @@ void Dodongo_804A3334::fn_801ACFF4() {
                             r28 = 2;
                         }
                     }
-                    fn_801EEC98(mSerial, 0, &sp1C, 0, 0, 0, 0);
-                    if (sp1C >= 0) {
-                        field_0x98 = sp1C;
+                    fn_801EEC98(mSerial, 0, &dir, 0, 0, 0, 0);
+                    if (dir >= 0) {
+                        field_0x98 = dir;
                         mTimers[0] = 2;
                     }
                     if (field_0x294 == 0 || field_0x98 != 3) {
@@ -483,29 +483,29 @@ void Dodongo_804A3334::fn_801ACFF4() {
             if (bombBase != NULL && bombBase->field_0x94 == 0) {
                 Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(bombBase);
                 f32 f4 = 1.0f;
-                f32 sp18 = bomb->field_0x274;
-                JGeometry::TVec3f sp28;
-                sp28.x = bomb->mPos.x;
-                sp28.y = bomb->mPos.y;
-                sp28.z = bomb->mPos.z;
-                JGeometry::TVec3f sp34;
-                sp34.x = mPos.x;
-                sp34.y = mPos.y;
-                sp34.z = mPos.z;
+                f32 bombScale = bomb->field_0x274;
+                JGeometry::TVec3f bombPos;
+                bombPos.x = bomb->mPos.x;
+                bombPos.y = bomb->mPos.y;
+                bombPos.z = bomb->mPos.z;
+                JGeometry::TVec3f mouthPos;
+                mouthPos.x = mPos.x;
+                mouthPos.y = mPos.y;
+                mouthPos.z = mPos.z;
                 if (field_0x294 == 1) {
                     f4 = 1.5f;
                 }
                 const f32* p = &data[field_0x98 * 2];
-                sp34.x += f4 * p[0];
-                sp34.y += f4 * p[1];
+                mouthPos.x += f4 * p[0];
+                mouthPos.y += f4 * p[1];
                 if ((field_0x98 & 1) == 0) {
-                    sp34.y += 12.0f * f4;
+                    mouthPos.y += 12.0f * f4;
                 }
-                addCalc2_801F71A4(&sp28.x, sp34.x, 0.3f, 2.0f);
-                addCalc2_801F71A4(&sp28.y, sp34.y, 0.3f, 2.0f);
-                addCalc2_801F71A4(&sp18, 0.0f, 0.5f, 0.5f);
-                bomb->mPos = sp28;
-                bomb->field_0x274 = sp18;
+                addCalc2_801F71A4(&bombPos.x, mouthPos.x, 0.3f, 2.0f);
+                addCalc2_801F71A4(&bombPos.y, mouthPos.y, 0.3f, 2.0f);
+                addCalc2_801F71A4(&bombScale, 0.0f, 0.5f, 0.5f);
+                bomb->mPos = bombPos;
+                bomb->field_0x274 = bombScale;
             }
         }
         if (field_0x298 != 0) {
