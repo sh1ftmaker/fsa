@@ -1,8 +1,30 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/ActorManager.h"
 #include "game/act/act_dodongo.h"
 
 extern const char* lbl_804A3208[];
+extern s32 lbl_8053ABE0;
+
+Dodongo_804A3334::~Dodongo_804A3334() {
+    s32 serial;
+    for (s32 i = 0; i < 2; i++) {
+        releaseEmitter_801EE434(mEmitters[i]);
+    }
+
+    serial = mTargetSerial;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            mTargetSerial = -1;
+            actor->mLife = 0;
+        }
+    }
+
+    if (field_0x234 == 2) {
+        lbl_8053ABE0--;
+    }
+}
 
 void Dodongo_804A3334::update() {
     switch (field_0x234) {
