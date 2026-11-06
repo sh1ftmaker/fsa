@@ -145,10 +145,7 @@ void fn_8023F6C4() {
     }
 }
 
-// FIXME: 99.7 %. One instruction: the last loop's slot offset starts as
-// `mr r30, r31` (a copy of the counter's zero) in the original and as
-// `li r30, 0` here; counter type, while / for and the NULL test's form
-// don't change it. Its fn_8022F478 / getPlayerLayer_8023DE58 copies are inlined.
+// Its fn_8022F478 / getPlayerLayer_8023DE58 copies are inlined.
 // The players' update: update A for every slot; unless the game is held
 // (gGameRoot_8053AAF8->field_0x94 == 1) update B, the per-frame bytes 0x434/0x435,
 // the cross-player passes and fn_80252FBC; then the audio flag: 0 when an
@@ -171,18 +168,22 @@ void fn_8023F390() {
     if (gGameRoot_8053AAF8->field_0x7f) {
         fn_80231DE4();
     }
-    for (s32 i = 0; i < 4; i++) {
+    // The last two loops share one counter: the audio loop's slot offset then
+    // starts as a copy of its zero (`mr r30, r31`), as in the original.
+    s32 i;
+    for (i = 0; i < 4; i++) {
         playerAt(i)->fn_80252FBC();
     }
-    if (gPlayerManager_8053AC90 != NULL) {
-        for (s32 i = 0; i < 4; i++) {
-            if (fn_8023F264(i) && !fn_8022F478(i) && getPlayerLayer_8023DE58(i) < 8) {
-                gAudioMgr_8053AF80->fn_80457DFC(0);
-                return;
-            }
-        }
-        gAudioMgr_8053AF80->fn_80457DFC(1);
+    if (gPlayerManager_8053AC90 == NULL) {
+        return;
     }
+    for (i = 0; i < 4; i++) {
+        if (fn_8023F264(i) && !fn_8022F478(i) && getPlayerLayer_8023DE58(i) < 8) {
+            gAudioMgr_8053AF80->fn_80457DFC(0);
+            return;
+        }
+    }
+    gAudioMgr_8053AF80->fn_80457DFC(1);
 }
 
 // The players' draw: the slots of players not taking part first, then those
@@ -1014,18 +1015,6 @@ bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag,
     return false;
 }
 
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) {
     if (gPlayerManager_8053AC90 == NULL) {
         return -1;
@@ -1140,18 +1129,6 @@ s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out)
     }
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80273FB8(box, layer, out)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80256C74(a, b)) {
             return i;
         }
     }
@@ -1308,28 +1285,6 @@ bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80272E98(box, layer);
     }
     return false;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -3734,17 +3689,6 @@ bool fn_8022E39C(s32 player, s32 arg) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80240840(arg);
     }
     return false;
-}
-
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
 }
 
 bool fn_8022E23C(s32 player, s32 arg) {
