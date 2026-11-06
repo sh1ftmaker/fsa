@@ -793,6 +793,130 @@ void Player_804A6F38::fn_80279CFC() {
     }
 }
 
+// The step emitters under the player: 0x3D4 (0x1370) on tile 0x39, else 0x3D3 (0x136C); the
+// other one is stopped (fn_80279824, fn_80277220).
+static inline void updateStepEmitters(Player_804A6F38* player) {
+    if (fn_8022461C(&player->mPos, player->field_0x3b4) == 0x39) {
+        if (player->field_0x1370 == NULL) {
+            player->field_0x1370 = spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3d4, 0, -1,
+                                                         &player->field_0x13a8, NULL, true, 1.0f);
+        } else {
+            setEmitterPos_8013CB44(player->field_0x1370, &player->mPos, 0, -1, true);
+        }
+        if (player->field_0x136c != NULL) {
+            player->field_0x136c->becomeInvalidEmitter();
+            player->field_0x136c = NULL;
+        }
+    } else {
+        if (player->field_0x136c == NULL) {
+            player->field_0x136c = spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3d3, 0, -1,
+                                                         &player->field_0x1398, NULL, true, 1.0f);
+        } else {
+            setEmitterPos_8013CB44(player->field_0x136c, &player->mPos, 0, -1, true);
+        }
+        if (player->field_0x1370 != NULL) {
+            player->field_0x1370->becomeInvalidEmitter();
+            player->field_0x1370 = NULL;
+        }
+    }
+}
+
+// Landing from a knock-back: down (0x33) with no life left, else back to the previous state
+// when it was 0x4A / 0x4B, else state 0.
+static inline void landFromHit(Player_804A6F38* player) {
+    if (player->fn_8024189C() <= 0) {
+        player->fn_80251AEC(0x33);
+    } else if (player->field_0x1248 == 0x4a || player->field_0x1248 == 0x4b) {
+        player->fn_80251AEC(player->field_0x1248);
+    } else {
+        player->fn_80251AEC(0);
+    }
+}
+
+// Facing -> emitter yaw (s16 angle in a word).
+static const s32 lbl_8046BC98[4] = {0x4000, 0xC000, 0x0000, 0x8000};
+
+// Update of state 0x0F (knocked back by a hit): the push 0x350 with gravity 0.25 (down to -4),
+// poses 0 / 1 (0x488 > 0: hurt) until frame 10, 2, then 3 from 14; from frame 20 on the ground
+// it lands (landFromHit). Hit kind 3 (0x11E4) keeps the player in the view (0x11E9) and does not
+// slide; the others slide with the stick (fn_802808E8(1.5)). The hit emitters 0x135C / 0x132C
+// follow the player turned by facing, the step emitters run on the ground, and kinds 0x17 / 0x19
+// move with fn_802685D4. The kind-3 view box is computed and not used (the original keeps
+// its stack stores too).
+// FIXME: 99.32. Scheduling only: the original loads field_0x135c after the table address
+// (lis / addi) for the first JPAGetXYZRotateMtx.
+void Player_804A6F38::fn_80279824() {
+    mPos.add(field_0x350);
+    if (mPos.z < 0.0f) {
+        mPos.z = 0.0f;
+    }
+    if (field_0x350.z >= -4.0f) {
+        field_0x350.z -= 0.25f;
+        if (field_0x350.z < -4.0f) {
+            field_0x350.z = -4.0f;
+        }
+    }
+    field_0x3fa++;
+    if (field_0x3fa < 10) {
+        if (field_0x488 > 0) {
+            field_0x3fd = 0;
+        } else {
+            field_0x3fd = 1;
+        }
+    } else if (field_0x3fa < 14) {
+        field_0x3fd = 2;
+    } else {
+        field_0x3fd = 3;
+    }
+    if (field_0x11e4 == 3) {
+        field_0x11e9 = 1;
+        JGeometry::TBox2f box;
+        box = *layerBox(field_0x3b4);
+        growBox(box, -16.0f);
+        if (field_0x3fa >= 20 && mPos.z <= 0.0f) {
+            landFromHit(this);
+        }
+    } else {
+        if (mPos.z <= 0.0f) {
+            fn_802808E8(1.5f);
+        }
+        if (field_0x3fa >= 20 && mPos.z <= 0.0f) {
+            landFromHit(this);
+        }
+    }
+    if (field_0x135c != NULL) {
+        switch (field_0x3dc) {
+        case 0:
+        case 1:
+        case 3:
+            setEmitterPos_8013CB44(field_0x135c, &mPos, 0, 0, true);
+            break;
+        case 2:
+            setEmitterPos_8013CB44(field_0x135c, &mPos, 0, -1, true);
+            break;
+        }
+        JPAGetXYZRotateMtx(0, lbl_8046BC98[field_0x3dc], 0, field_0x135c->mGlobalRot);
+    }
+    if (field_0x132c != NULL) {
+        field_0x1344.set(mPos);
+        if (field_0x3dc == 2) {
+            field_0x1344.y -= 3.0f;
+        } else if (field_0x3dc == 3) {
+            field_0x1344.y += 3.0f;
+        }
+        field_0x1330.field_0x4.set(field_0x1344);
+        JPAGetXYZRotateMtx(0, lbl_8046BC98[field_0x3dc], 0, field_0x132c->mGlobalRot);
+    }
+    if (mPos.z <= 0.0f) {
+        updateStepEmitters(this);
+    }
+    if (field_0x11e4 == 0x17 || field_0x11e4 == 0x19) {
+        fn_802685D4();
+    } else {
+        fn_80268B3C();
+    }
+}
+
 // By the last hit kind 0x11E4 (fn_802710C8): 4 / 7, 5 / 8, 6 / 9 each have their own reaction
 // (tu_8023FBF0), for the acting player of a group or a lone one; then four emitters stop.
 void Player_804A6F38::fn_802796B8() {
@@ -1451,27 +1575,7 @@ void Player_804A6F38::fn_80277220() {
     }
     field_0x3fa++;
     if (mPos.z <= 0.0f) {
-        if (fn_8022461C(&mPos, field_0x3b4) == 0x39) {
-            if (field_0x1370 == NULL) {
-                field_0x1370 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d4, 0, -1, &field_0x13a8, NULL, true, 1.0f);
-            } else {
-                setEmitterPos_8013CB44(field_0x1370, &mPos, 0, -1, true);
-            }
-            if (field_0x136c != NULL) {
-                field_0x136c->becomeInvalidEmitter();
-                field_0x136c = NULL;
-            }
-        } else {
-            if (field_0x136c == NULL) {
-                field_0x136c = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d3, 0, -1, &field_0x1398, NULL, true, 1.0f);
-            } else {
-                setEmitterPos_8013CB44(field_0x136c, &mPos, 0, -1, true);
-            }
-            if (field_0x1370 != NULL) {
-                field_0x1370->becomeInvalidEmitter();
-                field_0x1370 = NULL;
-            }
-        }
+        updateStepEmitters(this);
     }
 }
 
