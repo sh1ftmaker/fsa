@@ -2111,9 +2111,9 @@ void Player_804A6F38::fn_8025C7BC() {
     field_0x40c = 0;
 }
 
-// FIXME: 98.89. try.py "different" for one instruction pair only, as fn_8025BEB0: the charged
-// arrow's argument (same bits) starts
-// from index & 3 and inserts the facing (rlwimi 4, 26, 27) where ours does the reverse;
+// FIXME: 98.89. try.py "different", but only order: as in fn_8025BEB0, the original builds the
+// charged arrow's argument from index & 3 and inserts the facing (clrlwi + rlwimi 4, 26, 27)
+// where ours starts from the facing (clrlslwi) and inserts index (the same bits);
 // epsilonEqualsXY keeps 32 * FLT_EPSILON in f2 (ours f3).
 // State 0x3A (item 4, the bow; enter fn_8025D090, exit fn_8025C7BC): the slingshot's
 // state 0x3B with arrows. The charge (lbl_8046B010 for the point) runs twice as fast at

@@ -3,17 +3,10 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/Message.h"
+#include "game/BoxTest.h"
 #include "game/act/act_bandit_herding_npc.h"
 
 BanditHerdingNPC_804ACB40::~BanditHerdingNPC_804ACB40() {}
-
-static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
-    bool result = false;
-    if (p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y) {
-        result = true;
-    }
-    return result;
-}
 
 void BanditHerdingNPC_804ACB40::draw() {}
 
@@ -31,7 +24,7 @@ void BanditHerdingNPC_804ACB40::update() {
         }
         if (field_0x4 == thief->field_0x4 && (thief->mPos.z < 8.0f || thief->field_0xd8 > 0) &&
             thief->field_0xc4 == 0) {
-            if (contains(field_0x240, thief->mPos) == true && !getGameView_802D6A9C()->fn_802D800C(field_0x23c)) {
+            if (containsPoint(field_0x240, thief->mPos) == true && !getGameView_802D6A9C()->fn_802D800C(field_0x23c)) {
                 thief->field_0x94 = 1;
                 field_0x238++;
                 continue;
