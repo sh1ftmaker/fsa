@@ -338,6 +338,76 @@ static inline void landState7(Player_804A6F38* player) {
     }
 }
 
+// How many of the newest press history timers (field_0x117c[4..7]) are running, in a row.
+static inline s32 historyDepth(const Player_804A6F38* player) {
+    for (s32 i = 0; i < 4; i++) {
+        if (player->field_0x117c[i + 4] <= 0) {
+            return i;
+        }
+    }
+    return 4;
+}
+
+// Enter of state 0x04 (the sword attack): picks the attack 0x45C. Three or more presses in a
+// row (recentPresses) or the 0x11C4 window start the lunge (4: history cleared, step
+// fn_8027EB04, 0x344 = 4 along the facing with z 1, sound 0x1000B, 0xBF4 = 8); outside a
+// group spin the 0x11CC window with the stick in direction 0x11D0 gives 3; otherwise the
+// combo position by the history depth: 2 / 0 / 1 for a first press, 0 / 1 after one. Every
+// attack but the lunge has 0x458 = 1, 0xBF4 = 4 and sound 0x10000; then sound 0x20000 and
+// 0x3F0 = facing.
+// FIXME: 99.04. Registers only in the two inlined recentPresses (r3 / r4 swapped for the count
+// and the row flag, as in fn_80275D9C).
+void Player_804A6F38::fn_8027DEA0() {
+    bool combo = false;
+    if (recentPresses(this) >= 3) {
+        combo = true;
+        fn_8027023C();
+    } else {
+        fn_80270088();
+    }
+    if (!(fn_802486A0() == 3 && !fn_8023434C(field_0x4)) && (combo == true || field_0x11c4 > 0)) {
+        field_0x45c = 4;
+        fn_8027EB04();
+        if (field_0x3dc == 0) {
+            field_0x344.set(4.0f, 0.0f, 1.0f);
+        } else if (field_0x3dc == 1) {
+            field_0x344.set(-4.0f, 0.0f, 1.0f);
+        } else if (field_0x3dc == 2) {
+            field_0x344.set(0.0f, 4.0f, 1.0f);
+        } else {
+            field_0x344.set(0.0f, -4.0f, 1.0f);
+        }
+        mPos.z = 0.0f;
+    } else if (!(fn_802486A0() == 3 && !fn_8023434C(field_0x4)) && field_0x11cc > 0 &&
+               ((field_0x11d0 == 0 && fn_80247330() < 0.0f) || (field_0x11d0 == 1 && fn_80247330() > 0.0f) ||
+                (field_0x11d0 == 2 && fn_8024712C() > 0.0f) || (field_0x11d0 == 3 && fn_8024712C() < 0.0f))) {
+        field_0x45c = 3;
+    } else if (recentPresses(this) == 0) {
+        if (historyDepth(this) <= 2) {
+            field_0x45c = 2;
+        } else if (historyDepth(this) == 3) {
+            field_0x45c = 0;
+        } else {
+            field_0x45c = 1;
+        }
+    } else if (historyDepth(this) <= 2) {
+        field_0x45c = 0;
+    } else {
+        field_0x45c = 1;
+    }
+    if (field_0x45c == 4) {
+        field_0x458 = 0;
+        field_0xbf4 = 8;
+        fn_8024F0E8(0x1000b);
+    } else {
+        field_0x458 = 1;
+        field_0xbf4 = 4;
+        fn_8024F0E8(0x10000);
+    }
+    fn_8024F0E8(0x20000);
+    field_0x3f0 = field_0x3dc;
+}
+
 void Player_804A6F38::fn_8027D4F4() {
     s32 count;
     if (field_0x117c[4] <= 0) {
