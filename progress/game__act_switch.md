@@ -20,6 +20,6 @@ Data sections:
 - .sdata2 (100.00 %)
 
 SHARED-EDITS:
-- include/game/Player.h, tu_8022AD64.cpp, tu_8023FBF0.cpp: fn_802302C4 / Player::fn_8024DA64 take `u8` instead of `bool` for the flag (field_0xca2 is a u8 and the callers pass 0xFF); no other callers.
 - include/game/act/tu_801F9484.h: Switch_804A7F38 fields, virtuals and readTileId().
 - config/G4SE01/gen_game.tsv: deleted row for act_switch as it is now handwritten.
+- Not done: fn_802302C4's `bool b` should be a byte (callers pass 0xFF); the mangled name (__Fllb) and the generated tu_8022AD64 forbid changing it.
