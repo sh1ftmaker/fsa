@@ -13,6 +13,8 @@
 #include "game/cls_804A71A8.h"
 #include "game/tu_8030AE84.h"
 #include "game/act/act_thief.h"
+#include "game/act/act_cucco.h"
+#include "game/BoxTest.h"
 
 // File-scope tables in address order (.rodata). The per-pose tables are flat Vec[4 * n] indexed
 // [pose + facing * n]: a 2-D Vec[4][n] indexed [facing][pose] changes the codegen (tried). Positions are offsets from mPos per
@@ -314,6 +316,63 @@ void Player_804A6F38::fn_80264410() {
     field_0x458 = 0;
 }
 
+// Update of state 0x12, the carry (tu_80285E58's dispatch): the stick step (fn_8027FA08's z
+// of 0 drops mPos.z to the floor unless 0x434); fn_8022C13C (unless fn_802416C4 is 7): a
+// held player that fn_80236B50 rejects, a bomb ('HBMB') or a small key ('KEY0') is put
+// down (0x18), anything else thrown (0x16, also when fn_8024B24C); fn_8022C0A0 throws
+// (0x16); fn_802466B4 starts 0x15 unless the held actor's field_0x1a4 is 2 or more. Then
+// it walks with the held thing (fn_802808E8 at 1.25 for a player, 1.5 for an actor with
+// field_0x1a4 == 0, none otherwise) through the carry cycle fn_8026152C(false); a held
+// player that stops being one (fn_8023EA28) or a lost actor ends the carry (state 0).
+void Player_804A6F38::fn_80263C64() {
+    JGeometry::TVec3f stick;
+    fn_8027FA08(&stick);
+    if (0.0f == stick.z && 0.0f != mPos.z && !field_0x434) {
+        mPos.z = 0.0f;
+    }
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+    if (fn_8022C13C(field_0x4)) {
+        if (fn_802416C4() != 7) {
+            if (!fn_8024B24C()
+                && ((holdsPlayer(*this) && !fn_80236B50(field_0xd70)) || fn_8025F648() == ACTOR_HBMB
+                    || fn_8025F648() == ACTOR_KEY0)) {
+                fn_80251AEC(0x18);
+            } else {
+                fn_80251AEC(0x16);
+            }
+        }
+    } else if (fn_8022C0A0(field_0x4)) {
+        fn_80251AEC(0x16);
+    } else if (fn_802466B4() && (actor == 0 || actor->field_0x1a4 < 2)) {
+        fn_80251AEC(0x15);
+    }
+    if (holdsPlayer(*this)) {
+        if (fn_8023EA28(field_0xd70)) {
+            fn_802808E8(1.25f);
+            fn_8027EB04();
+            fn_8026152C(false);
+        } else {
+            fn_80251AEC(0);
+            field_0xd70 = -1;
+        }
+    } else if (actor != 0) {
+        if (actor->field_0x1a4 == 0) {
+            fn_802808E8(1.5f);
+            fn_8027EB04();
+            fn_8026152C(false);
+        } else {
+            fn_8027EB04();
+            fn_8026152C(false);
+        }
+    } else {
+        fn_80251AEC(0);
+        field_0xd64 = 0;
+        field_0xd68 = -1;
+        field_0xd6c = 'NULL';
+    }
+    fn_80268B3C();
+}
+
 void Player_804A6F38::fn_80263BA0() {
     field_0x458 = 0;
     field_0x459 = 0;
@@ -507,9 +566,68 @@ void Player_804A6F38::fn_802632A8() {
 
 void Player_804A6F38::fn_802632A4() {}
 
+// FIXME: 99.78. Registers only: the view-box test keeps pos.x in f2 and pos.y in f1 (ours
+// f1 / f2); with the byte compared directly (cmplwi, not the original's cmpwi) they match.
+// Enter of state 0x13 (tu_80285E58's dispatch; update fn_80262BAC, the cucco glide): with
+// a held cucco ('NIWA') whose field_0x2a1 is 1, probe 16-steps along field_0x344.x inside the view box for the second tile 0x10-0x17; found,
+// field_0x324 becomes the point one step further on (fn_80262BAC glides toward its x);
+// else the player is put at field_0x324.y. Faces along field_0x344.x.
+void Player_804A6F38::fn_80263078() {
+    fn_8028414C();
+    if (field_0xd6c == ACTOR_NIWA && !field_0x441) {
+        Cucco_804AB8C0* cucco = static_cast<Cucco_804AB8C0*>(
+            getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68));
+        if (cucco != 0 && cucco->getField0x2a1() == 1) {
+            JGeometry::TVec2f pos;
+            pos.x = mPos.x;
+            pos.y = mPos.y;
+            int left = 2;
+            do {
+                if (field_0x344.x > 0.0f) {
+                    pos.x += 16.0f;
+                } else {
+                    pos.x -= 16.0f;
+                }
+                if (!containsPoint(*layerBox(field_0x3b4), pos)) {
+                    break;
+                }
+                u16 tile = fn_802265FC((const JGeometry::TVec3f*)&pos, field_0x3b4);
+                if (tile >= 0x10 && tile <= 0x17) {
+                    left--;
+                }
+            } while (left > 0);
+            if (left == 0) {
+                if (field_0x344.x > 0.0f) {
+                    pos.x += 16.0f;
+                } else {
+                    pos.x -= 16.0f;
+                }
+                field_0x324.x = pos.x;
+                field_0x324.y = pos.y;
+                field_0x344.z = 2.0f;
+            } else {
+                field_0x344.z = 2.0f;
+                mPos.z = field_0x324.y - mPos.y;
+                mPos.y = field_0x324.y;
+            }
+        } else {
+            field_0x344.z = 2.0f;
+            mPos.z = field_0x324.y - mPos.y;
+            mPos.y = field_0x324.y;
+        }
+        if (field_0x344.x > 0.0f) {
+            field_0x3dc = 0;
+            field_0x3e8 = 0;
+        } else if (field_0x344.x < 0.0f) {
+            field_0x3dc = 1;
+            field_0x3e8 = 1;
+        }
+    }
+}
+
 // FIXME: 98.88. Two lfs missing: the original reloads mPos.x for the 0.5 steps after
 // computing field_0x324.x - mPos.x; ours reuses the register.
-// Update of state 0x12 (the carry, with field_0x344 as the speed): a cucco ('NIWA') is
+// Update of state 0x13 (the fall while carrying, field_0x344 the speed): a cucco ('NIWA') is
 // carried gliding: the player moves 0.5 a frame toward field_0x324.x, bobbing with the
 // distance, else falls and lands back in 0x12; anything else falls at 0.25 (0.17 down to
 // -6 while 0x43F / 0x441, floating at 8 below field_0x324.y), with the carry walk cycle
@@ -569,18 +687,7 @@ void Player_804A6F38::fn_80262BAC() {
                 fn_80251AEC(0x12);
             }
         }
-        if (epsilonEquals(mPos, field_0x14, JGeometry::TUtilf::epsilon()) && field_0x368.isZero()) {
-            field_0x3f8 = 0;
-        } else {
-            field_0x3f8++;
-            if (field_0x3f8 >= 24) {
-                field_0x3f8 = 0;
-            }
-        }
-        field_0x3f9 = lbl_8046B790[field_0x3dc][field_0x3f8 / 3];
-        const f32* offset = lbl_8046B7B0[field_0x3f9];
-        field_0x2f4.set(offset[0], offset[1], offset[2]);
-        field_0x2f4 += mPos;
+        fn_8026152C(false);
         if (field_0x440 && field_0x344.z < 0.0f) {
             fn_8024F0E8(0x1000D);
             fn_8024F0E8(0x2003E);
