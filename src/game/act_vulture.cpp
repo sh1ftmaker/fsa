@@ -386,4 +386,18 @@ void Vulture_804A4230::vfunc_0x88() {
     }
 }
 
+// FIXME: 99.75 % (reloc-name). 100 % instruction match; literal names not yet split.
+void Vulture_804A4230::vfunc_0x94() {
+    f32 rate = 1.0f;
+    switch (mState) {
+    case 1:
+    case 3:
+    case 4:
+        rate = 1.5f;
+        break;
+    }
+    mAnim.mFrameCtrl.setRate(rate);
+    EnemyBase_804A4808::vfunc_0x94();
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
