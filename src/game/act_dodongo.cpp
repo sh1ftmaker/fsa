@@ -68,6 +68,81 @@ void Dodongo_804A3334::fn_801AE5AC() {
     }
 }
 
+void Dodongo_804A3334::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
+
+    field_0x234 = field_0x90 & 0xF;
+    field_0x294 = (field_0x90 >> 4) & 0xF;
+
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x254 = 0;
+    mTimers[0] = 0;
+    mTimers[1] = 0;
+    mTimers[2] = 0;
+    mTimers[3] = 0;
+    mTimers[4] = 0;
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    field_0x274[0] = 1.0f;
+    field_0x274[1] = 1.0f;
+    field_0x274[2] = 1.0f;
+    field_0x274[3] = 1.0f;
+    field_0x274[4] = 1.0f;
+    field_0x274[5] = 1.0f;
+    field_0x264 = -1;
+    field_0x28c = 0;
+    field_0x290 = -1;
+    mTargetSerial = -1;
+    field_0x298 = 0;
+
+    field_0x98 = (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x98 &= 3;
+
+    setAnim(0);
+
+    fn_801AE5AC();
+
+    field_0x270 = 0.0f;
+    field_0x26c = 0.0f;
+    field_0x268 = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
+    mLife = 10000;
+    field_0x25c = 3;
+
+    if (field_0x234 == 0 || field_0x234 == 2) {
+        field_0xb8 = 1;
+        field_0xb0 = 0x0A040004;
+    }
+
+    switch (field_0x234) {
+    case 0:
+        field_0x230 = 1;
+        break;
+    case 1:
+        field_0x230 = 12;
+        break;
+    case 2:
+        if (lbl_8053ABE0 == 0) {
+            gAudioMgr_8053AF80->fn_80458F9C(0x3c);
+            field_0x230 = 0;
+            lbl_8053ABE0++;
+        } else {
+            field_0x230 = 1;
+        }
+        break;
+    }
+}
+
 // FIXME: 96.62 %. different: same length, 3 opcodes differ. Register allocation (f30/f31, r29/r30) and boxData indexing.
 void Dodongo_804A3334::fn_801ACCF0() {
     f32 scale = 1.0f;
