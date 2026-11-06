@@ -35,7 +35,7 @@ cls_804AF480::cls_804AF480() {
         gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
     }
     if (gGameRoot_8053AAF8->field_0x7f) {
-        field_0x4 = new cls_804B1288;
+        field_0x4 = new MapScreen_804B1288;
     } else {
         field_0x8 = new BattleStageSelect_804B1378;
     }

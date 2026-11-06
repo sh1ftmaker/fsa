@@ -35,7 +35,7 @@ struct SaveFile_803B950C {
     /* 0x18 */ u8 field_0x18[0x58 - 0x18];
     /* 0x58 */ u8 field_0x58; // written by fn_80215BCC (the stopwatch's centis)
     /* 0x59 */ u8 field_0x59; // written by fn_80215BCC (the stopwatch's seconds)
-    /* 0x5A */ u8 field_0x5a[0x5C - 0x5A]; // byte 0: bit tests in cls_804B1288::fn_804045F8
+    /* 0x5A */ u8 field_0x5a[0x5C - 0x5A]; // byte 0: bit tests in MapScreen_804B1288::fn_804045F8
     // GameView_804A9950::fn_802D7440 (game/tu_802D39B8.cpp): field_0x5c while
     // GameRoot's field_0x7f is set, else field_0x5d; 1 lets the time limit run.
     /* 0x5C */ u8 field_0x5c;

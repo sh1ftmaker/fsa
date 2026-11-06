@@ -17,7 +17,7 @@ struct WallmasterParam {
 }; // Size: 0x28
 
 // The FALL actor ("Wallmaster", docs/names/actors.tsv, high confidence):
-// spawned by fn_801F9484 (ctor 0x801BCCF0, vtable 0x804A3E44).
+// spawned by spawnActor_801F9484 (ctor 0x801BCCF0, vtable 0x804A3E44).
 class cls_804A3E44 : public EnemyBase_804A4808 {
 public:
     cls_804A3E44();

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-class cls_804B1288;
+class MapScreen_804B1288;
 class BattleStageSelect_804B1378;
 
 // Vtable 0x804AF480 (one slot, the destructor fn_8039017C), 0x10 bytes,
@@ -24,7 +24,7 @@ public:
     void fn_80390108();
     void fn_8039013C();
 
-    /* 0x4 */ cls_804B1288* field_0x4; // when 0x7f is set
+    /* 0x4 */ MapScreen_804B1288* field_0x4; // when 0x7f is set
     /* 0x8 */ BattleStageSelect_804B1378* field_0x8; // when 0x7f is clear
     /* 0xC */ u32 field_0xc; // not used here
 }; // Size: 0x10 (tu_80134C04 allocates 0x10)

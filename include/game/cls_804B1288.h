@@ -19,10 +19,10 @@ class J2DAnmColor;
 // `this` in lbl_8053ADF8; tu_8039003C allocates it with __nw__(0x66C) when
 // gGameRoot_8053AAF8->field_0x7f is set. Its methods are the handlers of a state
 // machine (field_0x350).
-class cls_804B1288 {
+class MapScreen_804B1288 {
 public:
-    cls_804B1288(); // fn_804122F4
-    /* 0x08 */ virtual ~cls_804B1288();
+    MapScreen_804B1288(); // fn_804122F4
+    /* 0x08 */ virtual ~MapScreen_804B1288();
 
     // 0x80403D84: starts animation 0xB on the 12 panes of field_0x240 (to
     // 0 / 100); if the first one finishes it clears 0x659 / 0x65A.
@@ -185,7 +185,7 @@ public:
 }; // Size: 0x66C
 
 // Data of game/tu_80401848.cpp.
-extern cls_804B1288* lbl_8053ADF8;
+extern MapScreen_804B1288* lbl_8053ADF8;
 
 // 0x8040F474 (game/tu_80403D84.cpp): lbl_8053ADF8->field_0x668.
 s32 fn_8040F474();

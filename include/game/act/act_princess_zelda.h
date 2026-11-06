@@ -6,7 +6,7 @@
 #include "game/RailBase.h"
 
 // The ZLDA actor ("Princess Zelda", docs/names/actors.tsv, high confidence):
-// spawned by fn_801F9484 (0x8010AFC4). Named after its vtable, 0x8049CEE0.
+// spawned by spawnActor_801F9484 (0x8010AFC4). Named after its vtable, 0x8049CEE0.
 class cls_8049CEE0 : public ActorBase_804A5770 {
 public:
     cls_8049CEE0();

@@ -31,7 +31,7 @@ void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
     *dst = *src;
 }
 
-cls_804B1288::~cls_804B1288() {
+MapScreen_804B1288::~MapScreen_804B1288() {
     lbl_8053AEC4->fn_8042EB14();
     for (int i = 0; i < 4; i++) {
         deleteEmitter(&field_0x2cc[i]);
@@ -131,14 +131,14 @@ cls_804B1288::~cls_804B1288() {
     lbl_8053ADF8 = NULL;
 }
 
-void cls_804B1288::fn_80411A94(f32 alpha) {
+void MapScreen_804B1288::fn_80411A94(f32 alpha) {
     field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b * alpha);
     field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
     field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
     field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
 }
 
-void cls_804B1288::fn_804111C4() {
+void MapScreen_804B1288::fn_804111C4() {
     if (field_0x350 == 0x15) {
         fn_8037AA7C();
     }
@@ -152,7 +152,7 @@ s32 fn_8040F474() {
     return lbl_8053ADF8->field_0x668;
 }
 
-void cls_804B1288::fn_8040F3AC() {
+void MapScreen_804B1288::fn_8040F3AC() {
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
             field_0x228[i][j]->fn_80402940(0x14, 0, -150.0f, 0.0f);
@@ -165,7 +165,7 @@ void cls_804B1288::fn_8040F3AC() {
     }
 }
 
-void cls_804B1288::fn_8040F35C() {
+void MapScreen_804B1288::fn_8040F35C() {
     if (field_0x11c->fn_80402940(0x14, 0, 200.0f, 0.0f)) {
         field_0x350 = 0xB;
     }
@@ -173,7 +173,7 @@ void cls_804B1288::fn_8040F35C() {
 
 // FIXME: 91.7. The original keeps -250 + 250 * t * t unfused (fmuls, fmuls,
 // fadds); ours fuses it into an fmadds.
-void cls_804B1288::fn_8040F288() {
+void MapScreen_804B1288::fn_8040F288() {
     f32 t = (f32)field_0x358 / 90.0f;
     field_0x39c = -250.0f + 250.0f * t * t;
     if (field_0x39c >= 0.0f) {
@@ -191,7 +191,7 @@ void cls_804B1288::fn_8040F288() {
 
 // FIXME: 92.84. scheduling+regalloc only: the original keeps `this` in r31 and the
 // counter in r29 (loaded in the prologue after the saves); ours swaps them.
-void cls_804B1288::fn_8040E720() {
+void MapScreen_804B1288::fn_8040E720() {
     int gone = 0;
     field_0x35c++;
     if (field_0x35c > 10) {
@@ -218,14 +218,14 @@ void cls_804B1288::fn_8040E720() {
     }
 }
 
-void cls_804B1288::fn_8040E700() {
+void MapScreen_804B1288::fn_8040E700() {
     if (field_0x65a == 0) {
         field_0x664 = 0;
         field_0x350 = 8;
     }
 }
 
-void cls_804B1288::fn_8040E298() {
+void MapScreen_804B1288::fn_8040E298() {
     field_0x42c++;
     if (field_0x42c > 60) {
         if (field_0x664 != 0) {
@@ -248,13 +248,13 @@ void cls_804B1288::fn_8040E298() {
     }
 }
 
-void cls_804B1288::fn_8040E278() {
+void MapScreen_804B1288::fn_8040E278() {
     if (++field_0x384 > 100) {
         field_0x350 = 0x15;
     }
 }
 
-void cls_804B1288::fn_80409330() {
+void MapScreen_804B1288::fn_80409330() {
     fn_8037AA34();
     if (fn_8037AA28() == 0x1A) {
         if (field_0x65d == 0) {
@@ -275,7 +275,7 @@ void cls_804B1288::fn_80409330() {
     }
 }
 
-void cls_804B1288::fn_80404D70() {
+void MapScreen_804B1288::fn_80404D70() {
     field_0x370 = 0;
     if (fn_803B8EBC(7)) {
         for (int stage = 1; stage < 7; stage++) {
@@ -306,7 +306,7 @@ void cls_804B1288::fn_80404D70() {
 }
 
 // Dead-stripped: fn_80404D70 inlines it in both of its loops.
-void cls_804B1288::hideStagePanes(s32 stage) {
+void MapScreen_804B1288::hideStagePanes(s32 stage) {
     switch (stage) {
     case 1:
         field_0xc->search('P21')->hide();
@@ -341,14 +341,14 @@ void cls_804B1288::hideStagePanes(s32 stage) {
     }
 }
 
-BOOL cls_804B1288::fn_804045F8(s32 bit) {
+BOOL MapScreen_804B1288::fn_804045F8(s32 bit) {
     if (gGameRoot_8053AAF8->field_0x7e) {
         return (lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit)) ? TRUE : FALSE;
     }
     return FALSE;
 }
 
-bool cls_804B1288::fn_80404270(s32 stage) {
+bool MapScreen_804B1288::fn_80404270(s32 stage) {
     if (lbl_80529DEC.field_0x23e[1] == 0 && gGameRoot_8053AAF8->field_0x7e && field_0x656 == 0 &&
         !fn_804045F8(stage))
     {
@@ -367,7 +367,7 @@ bool cls_804B1288::fn_80404270(s32 stage) {
 // hoists the save row's flags address out of the unrolled loop, the original keeps
 // only the row index (r12) and recomputes lbl_8050EC80 + index * 0xC8 each pass,
 // which costs it r31 and a stack frame (the same as tu_804023D0's fn_80403514).
-bool cls_804B1288::fn_80404074(s32 stage, s32 index, s32* out) {
+bool MapScreen_804B1288::fn_80404074(s32 stage, s32 index, s32* out) {
     s32 count = 0;
     for (int i = 0; i < 4; i++) {
         if (isStageFlagSet(stage, i)) {
@@ -406,7 +406,7 @@ bool cls_804B1288::fn_80404074(s32 stage, s32 index, s32* out) {
     return false;
 }
 
-void cls_804B1288::fn_80403F50() {
+void MapScreen_804B1288::fn_80403F50() {
     if (field_0x65a) {
         for (int i = 0; i < 12; i++) {
             field_0x240[i]->field_0x22 = 0;
@@ -422,7 +422,7 @@ void cls_804B1288::fn_80403F50() {
     }
 }
 
-void cls_804B1288::fn_80403EAC() {
+void MapScreen_804B1288::fn_80403EAC() {
     u8 done = field_0x240[0]->fn_80402940(0x13, 0, 100.0f, 0.0f);
     for (s32 i = 1; i < 12; i++) {
         field_0x240[i]->fn_80402940(0x13, 0, 100.0f, 0.0f);
@@ -433,7 +433,7 @@ void cls_804B1288::fn_80403EAC() {
     }
 }
 
-void cls_804B1288::fn_80403E24() {
+void MapScreen_804B1288::fn_80403E24() {
     field_0x42a--;
     if (field_0x42a <= 0) {
         for (int i = 0; i < 12; i++) {
@@ -443,7 +443,7 @@ void cls_804B1288::fn_80403E24() {
     }
 }
 
-void cls_804B1288::fn_80403D84() {
+void MapScreen_804B1288::fn_80403D84() {
     u8 done = field_0x240[0]->fn_80402940(0xB, 0, 0.0f, 100.0f);
     for (s32 i = 1; i < 12; i++) {
         field_0x240[i]->fn_80402940(0xB, 0, 0.0f, 100.0f);
@@ -458,7 +458,7 @@ void cls_804B1288::fn_80403D84() {
 // (frame / frames)^2. Dead-stripped: fn_804108B4 inlines it twice (sliding in and
 // out); its own copy created the unit's first .sdata2 literals (0.0f, -200.0f,
 // 200.0f and the two int-to-float constants) before fn_80403D84.
-void cls_804B1288::slidePane(s16 frame, s16 frames) {
+void MapScreen_804B1288::slidePane(s16 frame, s16 frames) {
     f32 t = (f32)(frame * frame) / (f32)(frames * frames);
     field_0x2b4->moveFromCentre_80402E08(0.0f, -200.0f + 200.0f * t);
     field_0x2b4->mPane->setAlpha(t * field_0x2b4->field_0x28);

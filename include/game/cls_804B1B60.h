@@ -5,7 +5,7 @@
 
 // Vtable 0x804B1B60, defined in game/tu_80443B0C.cpp (not written yet). Its
 // constructor fn_80444B68 stores the vtable, makes a J2DScreen and PaneCtrl
-// panes; the map screen (cls_804B1288, game/tu_80403D84.cpp) allocates it with
+// panes; the map screen (MapScreen_804B1288, game/tu_80403D84.cpp) allocates it with
 // __nw__(0x50) and keeps it in field_0x4.
 class cls_804B1B60 {
 public:

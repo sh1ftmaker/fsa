@@ -6,7 +6,7 @@
 #include "game/ActorBase.h"
 
 // The SYKY actor ("Shooting Gallery", docs/names/actors.tsv, high confidence):
-// spawned by fn_801F9484 (ctor 0x80201450, vtable 0x804A2B18).
+// spawned by spawnActor_801F9484 (ctor 0x80201450, vtable 0x804A2B18).
 class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
 public:
     ShootingGallery_804A2B18() {}
