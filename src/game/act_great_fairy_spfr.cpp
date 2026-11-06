@@ -105,7 +105,7 @@ void cls_8049EB8C::init() {
     }
 }
 
-// FIXME: 96.26%. missing/extra + reloc-name: ours has 2 fewer instrs (345 vs 347); jump table and float literal relocations.
+// FIXME: 96.54%. missing/extra + reloc-name: ours has 1 fewer instr (346 vs 347); the TBox2f offset adds are scheduled differently (stfs order).
 void cls_8049EB8C::update() {
     cls_8049D140::update();
     JGeometry::TBox2f box;
@@ -141,6 +141,8 @@ void cls_8049EB8C::update() {
         break;
     case 2:
         switch (field_0x238) {
+        case 0:
+            break;
         case 1: {
             JGeometry::TBox2f box2;
             box2.set(mBox);
@@ -157,8 +159,7 @@ void cls_8049EB8C::update() {
             } else {
                 JGeometry::TVec3f pos = mPos;
                 pos.y -= 64.0f;
-                if (fn_8038AD24(player, 0x2B6, mSerial, field_0x4, pos, 0x28)) {
-                } else {
+                if (!fn_8038AD24(player, 0x2B6, mSerial, field_0x4, pos, 0x28)) {
                     player = -1;
                 }
             }
@@ -225,10 +226,6 @@ void cls_8049EB8C::update() {
             fn_80388EEC(0);
             fn_8011921C()->fn_801183BC();
         }
-        break;
-    case 26:
-        break;
-    default:
         break;
     }
     setEmitterPos_8013CB44(field_0x288, &mPos, 0, -1, true);
@@ -461,10 +458,6 @@ void cls_8049EB8C::fn_80132454(s32 index) {
         fn_8011921C()->fn_80118384();
         fn_801F3668();
         break;
-    case 26:
-        break;
-    default:
-        break;
     }
 }
 
@@ -491,6 +484,7 @@ void cls_8049EB8C::fn_801321E4() {
         } else {
             gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
             Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            // Steering: hoists the loads before the camera check, as the original's order does (inlining differs).
             f32 y1 = mPos.y + 96.0f;
             f32 x = mPos.x;
             f32 y0 = mPos.y - 96.0f;
@@ -527,6 +521,7 @@ void cls_8049EB8C::fn_801321E4() {
     case 10: {
         gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
         Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        // Steering: hoists the loads before the camera check, as the original's order does (inlining differs).
         f32 y1 = mPos.y + 96.0f;
         f32 x = mPos.x;
         f32 y0 = mPos.y - 96.0f;
@@ -559,6 +554,7 @@ void cls_8049EB8C::fn_801321E4() {
     case 20: {
         gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
         Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        // Steering: hoists the loads before the camera check, as the original's order does (inlining differs).
         f32 y1 = mPos.y + 96.0f;
         f32 x = mPos.x;
         f32 y0 = mPos.y - 96.0f;
