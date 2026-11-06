@@ -1854,4 +1854,12 @@ public:
 // .sbss pointer the constructor sets (0x803A8350).
 extern cls_804AF860* lbl_8053AD90;
 
+// game/act_searchlight.cpp (owner unit, .bss:0x804C0EA0, size 0x108).
+// Position of the searchlight / last broken pot.
+extern f32 lbl_804C0EA0[];
+
+// game/tu_801618D0.cpp (owner unit, .sbss:0x8053AB68, size 0x8).
+// Layer of the searchlight / last broken pot.
+extern s32 lbl_8053AB68;
+
 #endif
