@@ -763,6 +763,42 @@ void Player_804A6F38::fn_8027C6B8() {
     field_0x436 = 0;
 }
 
+// Enter of state 0x08 (fn_8027BE74 is its update): 0xCAD / 0x403 start once,
+// the push 0x344 is cleared, and the emitter 0x26F (below 0x30 frames of 0x403) or, at life 2,
+// 0x271 / 0x273 (else 0x270 / 0x272) by facing pair is started at 0x12A4.
+void Player_804A6F38::fn_8027C4FC() {
+    field_0xbf4 = 2;
+    field_0x458 = 1;
+    field_0xcae = 0;
+    field_0xcaf = 0;
+    if (!field_0xcad) {
+        field_0xcad = true;
+        field_0x403 = 0;
+    }
+    field_0x344.x = 0.0f;
+    field_0x344.y = 0.0f;
+    field_0x344.z = 0.0f;
+    if (field_0x403 < 0x30) {
+        if (field_0x12b0 == NULL) {
+            field_0x12b0 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26f, 0, 1, NULL, NULL, true, 1.0f);
+        }
+    } else if (field_0x12b4 == NULL) {
+        if (fn_80241544() == 2) {
+            if (field_0x3dc == 0 || field_0x3dc == 1) {
+                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x271, 0, -1, NULL, NULL, true, 1.0f);
+            } else {
+                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x273, 0, -1, NULL, NULL, true, 1.0f);
+            }
+        } else if (field_0x3dc == 0 || field_0x3dc == 1) {
+            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x270, 0, -1, NULL, NULL, true, 1.0f);
+        } else {
+            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x272, 0, -1, NULL, NULL, true, 1.0f);
+        }
+    }
+    field_0x404 = 0;
+    field_0x40c = 0;
+}
+
 // Update of state 0x08 (the sword charge, released with 0x37): 0x403 counts the charge (168
 // frames to full), 0x404 the frames. In the air the push 0x344 with gravity 0.25 lands into
 // 0x368 (0x43D = 3 frames of landing lag); on the ground pad 0x20 hops (0x344 = 2.5 times the
@@ -894,42 +930,6 @@ void Player_804A6F38::fn_8027BE74() {
     if ((field_0xcae == 1 || field_0xcaf == 1) && fn_80251AEC(0)) {
         field_0x403 = 0;
     }
-}
-
-// Enter of state 0x08 (fn_8027BE74 is its update): 0xCAD / 0x403 start once,
-// the push 0x344 is cleared, and the emitter 0x26F (below 0x30 frames of 0x403) or, at life 2,
-// 0x271 / 0x273 (else 0x270 / 0x272) by facing pair is started at 0x12A4.
-void Player_804A6F38::fn_8027C4FC() {
-    field_0xbf4 = 2;
-    field_0x458 = 1;
-    field_0xcae = 0;
-    field_0xcaf = 0;
-    if (!field_0xcad) {
-        field_0xcad = true;
-        field_0x403 = 0;
-    }
-    field_0x344.x = 0.0f;
-    field_0x344.y = 0.0f;
-    field_0x344.z = 0.0f;
-    if (field_0x403 < 0x30) {
-        if (field_0x12b0 == NULL) {
-            field_0x12b0 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x26f, 0, 1, NULL, NULL, true, 1.0f);
-        }
-    } else if (field_0x12b4 == NULL) {
-        if (fn_80241544() == 2) {
-            if (field_0x3dc == 0 || field_0x3dc == 1) {
-                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x271, 0, -1, NULL, NULL, true, 1.0f);
-            } else {
-                field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x273, 0, -1, NULL, NULL, true, 1.0f);
-            }
-        } else if (field_0x3dc == 0 || field_0x3dc == 1) {
-            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x270, 0, -1, NULL, NULL, true, 1.0f);
-        } else {
-            field_0x12b4 = spawnEmitter_8013CC50(field_0x3b4, &field_0x12a4, 0x272, 0, -1, NULL, NULL, true, 1.0f);
-        }
-    }
-    field_0x404 = 0;
-    field_0x40c = 0;
 }
 
 // Exit of state 0x08 (from the state switch in fn_802870C8): stops its emitters and the
@@ -1172,6 +1172,23 @@ void Player_804A6F38::fn_8027AA10() {
     field_0x11c0 = 0;
 }
 
+void Player_804A6F38::fn_8027A908() {
+    field_0xbf4 = 8;
+    field_0x458 = 0;
+    field_0xbb9 = 0;
+    field_0xbba = 0;
+    field_0xbbc = 3.0f;
+    mPos.z = 0.0f;
+    fn_8027EB04();
+    fn_8027023C();
+    if (field_0x490 == 1) {
+        fn_8024F0E8(0x40075);
+        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
+    } else {
+        field_0x3fd = 1;
+    }
+}
+
 // Update of state 0x0B (the dash): pose 1 runs along the facing 0x3E8 (lbl_8046BC38, eight
 // directions) at the speed 0xBBC (0.7 of it in the air) with the step sound 0x40076; pad 0x100
 // hops (0x34C = 2, sound 0x2004A, gravity 0.1). The dust emitters 0x1374 (0x24E / 0x24F) or,
@@ -1320,23 +1337,6 @@ void Player_804A6F38::fn_8027A1E0() {
     }
     if (fn_8025F418()) {
         fn_80230C6C(field_0xd70);
-    }
-}
-
-void Player_804A6F38::fn_8027A908() {
-    field_0xbf4 = 8;
-    field_0x458 = 0;
-    field_0xbb9 = 0;
-    field_0xbba = 0;
-    field_0xbbc = 3.0f;
-    mPos.z = 0.0f;
-    fn_8027EB04();
-    fn_8027023C();
-    if (field_0x490 == 1) {
-        fn_8024F0E8(0x40075);
-        spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x503, 1, 1, NULL, NULL, true, 1.0f);
-    } else {
-        field_0x3fd = 1;
     }
 }
 
