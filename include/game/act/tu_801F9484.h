@@ -38,12 +38,7 @@ public:
 }; // Size: 0x268
 
 // Spawned for 'SIBT'.
-class TempleBTIDisplay_8049CB04 : public ActorBase_804A5770 {
-public:
-    TempleBTIDisplay_8049CB04() {}
-    /* 0x08 */ virtual ~TempleBTIDisplay_8049CB04();
-    /* 0x230 */ u8 field_0x230[0x18];
-}; // Size: 0x248
+#include "game/act/act_temple_bti_display.h"
 
 #include "game/act/act_princess_zelda.h"
 
