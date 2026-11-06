@@ -36,8 +36,6 @@ act_four_person_pull_switch	sinit	__sinit_act_four_person_pull_switch_cpp	-	-	ne
 act_four_person_pull_switch_pswk	dtor	__dt__12cls_804AE5C8Fv	cls_804AE5C8	0x804AE5C8	new	new
 act_four_person_pull_switch_pswk	sinit	__sinit_act_four_person_pull_switch_pswk_cpp	-	-	new	new
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
-act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A88E8	new	new
-act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new

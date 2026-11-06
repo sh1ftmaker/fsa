@@ -15,7 +15,16 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x20]; // not yet known
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23c */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ f32 field_0x244;
+    /* 0x248 */ f32 field_0x248;
+    /* 0x24c */ u8 field_0x24c;
+    /* 0x24d */ u8 field_0x24d;
+    /* 0x24e */ u8 field_0x24e[2];
 }; // Size: 0x250
 
 #endif
