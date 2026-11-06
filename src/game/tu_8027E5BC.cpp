@@ -404,6 +404,38 @@ void Player_804A6F38::fn_8027F854(JGeometry::TVec3f* out, s32 player) {
     }
 }
 
+// The state 3 movement: in formation 5 with cls_804A71A8 0xB4 the stick walk step at 1.5, else
+// (outside the cooldown 0x122C) a step of 0.5 toward the follow target (fn_8027FA08), standing (0)
+// or walking (2) on arrival. Dead-stripped: fn_8028538C inlines it. Its own copy created the pool's
+// 1.5, 0.5 and 3.0 (TUtilf::inv_sqrt in normalize) in that order, which sit before fn_8027FA08's 4.0
+// in the original .sdata2; inlined, its locals give fn_8028538C the original's stack slots.
+void Player_804A6F38::followStep() {
+    if (fn_802486A0() == 5 && field_0xbf0->field_0xb4) {
+        fn_802808E8(1.5f);
+    } else if (field_0x122c <= 0) {
+        JGeometry::TVec3f to;
+        fn_8027FA08(&to);
+        JGeometry::TVec3f dir = to - mPos;
+        dir.z = 0.0f;
+        if (magnitude(dir) >= 0.5f) {
+            dir.normalize();
+            dir.scale(0.5f);
+            mPos += dir;
+        } else {
+            mPos.set(to);
+            if (fn_802486A0() != 5) {
+                if (fn_8022C6AC(field_0x4) != 0.0f) {
+                    fn_80251AEC(2);
+                } else {
+                    fn_80251AEC(0);
+                }
+            } else if (!fn_80240808()) {
+                fn_80251AEC(0);
+            }
+        }
+    }
+}
+
 // Where this player's follow target is (update B, fn_8028676C): its own history head (no leader,
 // 0x1216), mPos, or the leader's position plus this player's place in the formation by fn_802486A0
 // (0 a row along x, 1 a column along y, 2 a 2x2 square, 3 a diamond around the leader turned by
@@ -1204,12 +1236,9 @@ void Player_804A6F38::fn_8028537C() {
 
 void Player_804A6F38::fn_80285388() {}
 
-// FIXME: 99.90. Stack slots only: the original has `to` at 0x14 and the operator- result copy at
-// 0x2C, ours the other way round.
 // Update of state 3 (running / following): a follower on its leader's layer just takes the leader's
-// layer and position (0x1215); in formation 5 with cls_804A71A8 0xB4 the stick walk step at 1.5;
-// otherwise, outside the cooldown 0x122C, it steps 0.5 a frame toward the follow target
-// (fn_8027FA08) and on arrival stands (0) or walks (2, the stick still held).
+// layer and position (0x1215); otherwise it moves (followStep), then the facing, the walk cycle,
+// pick-ups and the body frame.
 void Player_804A6F38::fn_8028538C() {
     JGeometry::TVec3f target;
     fn_8027FA08(&target);
@@ -1222,30 +1251,7 @@ void Player_804A6F38::fn_8028538C() {
         return;
     }
     fn_80275D9C();
-    if (fn_802486A0() == 5 && field_0xbf0->field_0xb4) {
-        fn_802808E8(1.5f);
-    } else if (field_0x122c <= 0) {
-        JGeometry::TVec3f to;
-        fn_8027FA08(&to);
-        JGeometry::TVec3f dir = to - mPos;
-        dir.z = 0.0f;
-        if (magnitude(dir) >= 0.5f) {
-            dir.normalize();
-            dir.scale(0.5f);
-            mPos += dir;
-        } else {
-            mPos.set(to);
-            if (fn_802486A0() != 5) {
-                if (fn_8022C6AC(field_0x4) != 0.0f) {
-                    fn_80251AEC(2);
-                } else {
-                    fn_80251AEC(0);
-                }
-            } else if (!fn_80240808()) {
-                fn_80251AEC(0);
-            }
-        }
-    }
+    followStep();
     fn_8027EB04();
     fn_8027EEB4();
     fn_80261480();

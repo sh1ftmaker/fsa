@@ -492,6 +492,7 @@ public:
     void fn_80268194();
     JGeometry::TVec3f* fn_80252F48(); // returns &field_0x11b4 (tu_8023FBF0)
     bool fn_80275D9C(); // tu_8026FC20 (li r3, 1 / 0); true ends the state updates of tu_8027E5BC early
+    void followStep();
     void fn_8027FA08(JGeometry::TVec3f* out); // tu_8027E5BC; called by update B and fn_8028676C
     void fn_802808E8(f32 speed); // tu_8027E5BC: the stick walk step (states 2 / 3)
     bool fn_8025197C(bool all); // tu_8023FBF0: field_0xbf0->anyFlag48(all)
