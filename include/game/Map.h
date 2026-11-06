@@ -279,6 +279,12 @@ public:
     // field_0x230 is that player or -1 (all); clears field_0xbf98. Called by
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
+    // 0x802FAC10: draws the panel tile grid field_0x48[layer] (2 x 2 blocks of
+    // 16 x 16, field_0x4[1]'s colour-index texture, palette set field_0x18[1]
+    // for layers 0 / 8 or a nonzero flag, else field_0x18[2]) scrolled by (x, y),
+    // tinted grey / alpha unless both are 0xFF; offsets (or NULL): a shift per
+    // screen line (0xA0), averaged over each 8-line row. Called only by fn_802FB69C.
+    void fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets);
     // 0x802FB69C (not written yet): one player's panel, from fn_802FF0EC:
     // the player, its field_0x11c record, field_0x150 / field_0x190 rects,
     // field_0x210 byte (tested clrlwi.), a count (cmpwi 0, + 1) and an
@@ -333,7 +339,8 @@ public:
     // test the two ranges separately; 32 x 32 cells). 0x2000 each.
     /* 0x0028 */ u16* mLayerGrid[4];
     /* 0x0038 */ u16* mLayerGrid2[4];
-    /* 0x0048 */ u8* field_0x48[16]; // 0x2000
+    // u16 tile grids of 2 x 2 blocks of 16 x 16 (0x2000 each; fn_802FAC10 draws one).
+    /* 0x0048 */ u16* field_0x48[16];
     // 4-bit tile images (0x8000 each): fn_802F9714 / fn_802F93F4 write them,
     // fn_802FF798 makes them the GXInitTexObjCI images of field_0xb5c.
     /* 0x0088 */ u8* field_0x88[4];

@@ -34,7 +34,7 @@ static const GXTlut lbl_8046F940[16] = {
 // after the floats of fn_802F5040), and the two white ones are separate.
 static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
 static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0 (user not written yet)
-static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0 (user not written yet)
+static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
 // The draw offset of a sprite with params at pos: field_0x1c / field_0x1d
@@ -160,7 +160,7 @@ TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
         mLayerGrid2[i] = new (heap, 0x20) u16[0x1000];
     }
     for (s32 i = 0; i < 16; i++) {
-        field_0x48[i] = new (heap, 0x20) u8[0x2000];
+        field_0x48[i] = new (heap, 0x20) u16[0x1000];
     }
     for (s32 i = 0; i < 4; i++) {
         field_0x88[i] = new (heap, 0x20) u8[0x8000];
@@ -671,6 +671,211 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
                                 GXColor1x16(vertex);
                                 GXTexCoord1x16(corner ^ 0x800);
                                 GXTexCoord2f32(s, 0.0625f + t);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GXEnd();
+    }
+}
+
+// FIXME: 99.2. One induction variable differs (try.py "different", same
+// length): the shift loop's line index starts from py (mr r6, r0; mr r4, r6 per
+// row) in the original, ours from 0 with py added per row (li, add); the
+// literals and the GXTlut table are reloc-name.
+// Draws the panel tile grid field_0x48[layer] (2 x 2 blocks of 16 x 16 tiles,
+// each four 8 x 8 entries of field_0x24) scrolled by (x, y) (wrapped to
+// -0x80..0x180), one palette at a time: direct f32 positions at z 0 and
+// field_0x110's corner texture coordinates (the entry's character and flips).
+// Rows outside the 160 screen lines are skipped, and without offsets columns
+// outside the 240 screen pixels too; with offsets each 8-line row is shifted by
+// the negated average of its lines' offsets (the tile wrapped by 512 when all
+// three of its rows' shifts put it off one side). grey / alpha other than 0xFF
+// tint the texture (second TEV stage, blended onto the screen); else the
+// texture's alpha is compared with 0x7E.
+void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets) {
+    static const GXTlut lbl_8046FA30[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    if (x > 0x180) {
+        x -= 0x200;
+    }
+    if (y > 0x180) {
+        y -= 0x200;
+    }
+    f32 originX = -x;
+    f32 originY = -y;
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_INDEX16);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetArray(GX_VA_TEX0, field_0x110, sizeof(JGeometry::TVec2f));
+    if (grey == 0xFF && alpha == 0xFF) {
+        GXSetTevColor(GX_TEVREG0, lbl_805414F0);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_TEXC);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_TEXA, GX_CA_A0, GX_CA_KONST, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_COMP_A8_GT, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    } else {
+        GXColor color = {grey, grey, grey, alpha};
+        GXSetTevColor(GX_TEVREG0, color);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_C0, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetNumTevStages(2);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_SRCALPHA, GX_LO_NOOP);
+    }
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetCullMode(GX_CULL_NONE);
+    u16* grid = field_0x48[layer];
+    s32 set;
+    if ((layer & 7) == 0 || flag != 0) {
+        set = 1;
+    } else {
+        set = 2;
+    }
+    GXTlutObj tluts[16];
+    for (int i = 0; i < 16; i++) {
+        GXInitTlutObj(&tluts[i], field_0x18[set] + i * 0x20, GX_TL_RGB5A3, 16);
+        GXLoadTlut(&tluts[i], lbl_8046FA30[i]);
+    }
+    s32 counts[16];
+    for (int i = 0; i < 16; i++) {
+        counts[i] = 0;
+    }
+    for (int by = 0; by < 2; by++) {
+        for (int bx = 0; bx < 2; bx++) {
+            s32 block = by * 2 + bx;
+            for (int cy = 0; cy < 16; cy++) {
+                s32 py = (by * 32 + cy * 2) * 8 - y;
+                if (py <= -16 || py >= 0xA0) {
+                    continue;
+                }
+                for (int cx = 0; cx < 16; cx++) {
+                    s32 px = (bx * 32 + cx * 2) * 8 - x;
+                    if (offsets == NULL && (px <= -16 || px >= 0xF0)) {
+                        continue;
+                    }
+                    u16 tile = grid[(block * 16 + cy) * 16 + cx];
+                    if (tile != 0) {
+                        for (int j = 0; j < 2; j++) {
+                            for (int i = 0; i < 2; i++) {
+                                counts[(field_0x24[tile * 4 + j * 2 + i] >> 12) & 0xF]++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    GXTexObj tex;
+    for (int palette = 0; palette < 16; palette++) {
+        if (counts[palette] <= 0) {
+            continue;
+        }
+        GXInitTexObjCI(&tex, field_0x4[1], 0x80, 0x200, GX_TF_C4, GX_CLAMP, GX_CLAMP, GX_FALSE,
+                       lbl_8046FA30[palette]);
+        GXLoadTexObj(&tex, GX_TEXMAP0);
+        GXBegin(GX_QUADS, GX_VTXFMT0, counts[palette] * 4);
+        for (int by = 0; by < 2; by++) {
+            for (int bx = 0; bx < 2; bx++) {
+                s32 block = by * 2 + bx;
+                for (int cy = 0; cy < 16; cy++) {
+                    s32 py = (by * 32 + cy * 2) * 8 - y;
+                    if (py <= -16 || py >= 0xA0) {
+                        continue;
+                    }
+                    if (offsets != NULL) {
+                        // The shift of the row's two halves' top and bottom edges.
+                        f32 shift[3];
+                        for (int k = 0; k < 3; k++) {
+                            shift[k] = 0.0f;
+                            for (int m = 0; m < 8; m++) {
+                                s32 line = py + k * 8 + m;
+                                s32 row;
+                                if (line < 0) {
+                                    row = 0;
+                                } else if (line > 0x9F) {
+                                    row = 0x9F;
+                                } else {
+                                    row = line;
+                                }
+                                shift[k] -= offsets[row];
+                            }
+                            shift[k] *= 0.125f;
+                        }
+                        for (int cx = 0; cx < 16; cx++) {
+                            u16 tile = grid[(block * 16 + cy) * 16 + cx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            f32 left = originX + (bx * 32 + cx * 2) * 8;
+                            if (left + shift[0] < -16.0f && left + shift[1] < -16.0f && left + shift[2] < -16.0f) {
+                                left += 512.0f;
+                            } else if (left + shift[0] > 240.0f && left + shift[1] > 240.0f &&
+                                       left + shift[2] > 240.0f) {
+                                left -= 512.0f;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    f32 x0 = left + i * 8;
+                                    f32 top = originY + (by * 32 + cy * 2 + j) * 8;
+                                    u16 corner = entry & 0xFFF;
+                                    GXPosition3f32(x0 + shift[j], top, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + x0 + shift[j], top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + x0 + shift[j + 1], 8.0f + top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(x0 + shift[j + 1], 8.0f + top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
+                            }
+                        }
+                    } else {
+                        for (int cx = 0; cx < 16; cx++) {
+                            s32 px = (bx * 32 + cx * 2) * 8 - x;
+                            if (px <= -16 || px >= 0xF0) {
+                                continue;
+                            }
+                            u16 tile = grid[(block * 16 + cy) * 16 + cx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    f32 x0 = originX + (bx * 32 + cx * 2 + i) * 8;
+                                    f32 top = originY + (by * 32 + cy * 2 + j) * 8;
+                                    u16 corner = entry & 0xFFF;
+                                    GXPosition3f32(x0, top, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + x0, top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + x0, 8.0f + top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(x0, 8.0f + top, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
                             }
                         }
                     }
