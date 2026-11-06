@@ -21,6 +21,8 @@ class J2DAnmColor;
 // machine (field_0x350).
 class MapScreen_804B1288 {
 public:
+    typedef void (MapScreen_804B1288::*StateFunc)();
+
     MapScreen_804B1288(); // fn_804122F4
     /* 0x08 */ virtual ~MapScreen_804B1288();
 
@@ -95,6 +97,30 @@ public:
     void fn_804111C4();
     void fn_80411230(); // 0x80411230
     void slidePane(s16 frame, s16 frames);
+    // State functions not written yet, lbl_804B10F8[state] (index in the comment;
+    // fn_804108B4 calls lbl_804B10F8[field_0x350] through lbl_8053ADF8).
+    void fn_8040F16C(); // 3
+    void fn_8040ED20(); // 4
+    void fn_8040E838(); // 5
+    void fn_8040E3A0(); // 8
+    void fn_8040D3D0(); // 11
+    void fn_8040CE90(); // 12
+    void fn_8040C950(); // 13
+    void fn_8040BC1C(); // 14
+    void fn_80409FDC(); // 15
+    void fn_8040B93C(); // 16
+    void fn_8040B5A0(); // 17
+    void fn_8040B388(); // 18
+    void fn_804096E8(); // 19
+    void fn_80409450(); // 20
+    // 0x80404648 (called by fn_8040B2C4) / 0x804049DC (fn_8040AB4C): when bit
+    // 0x10 of field_0x38c is set, clears the step counters of the screen's
+    // panes, hides the Ppoint / route panes of stage field_0x340, moves the
+    // eight field_0x28 rows to (-150, 0), hides Ndata10 and the state becomes
+    // 0x13; else field_0x668 = 4 and sound 0xB. They differ only in where
+    // Ndata10 is hidden.
+    void fn_80404648();
+    void fn_804049DC();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -149,13 +175,15 @@ public:
     /* 0x380 */ u8 field_0x380[0x384 - 0x380];
     /* 0x384 */ s32 field_0x384; // frame counter of state 0x15
     /* 0x388 */ s32 field_0x388; // -1, 0 or 1 (fn_80404074)
-    /* 0x38C */ u8 field_0x38c[0x390 - 0x38C];
+    /* 0x38C */ u32 field_0x38c; // flags; bit 0x10 lets fn_80404648 / fn_804049DC open the stage view
     /* 0x390 */ s32 field_0x390; // message id
     /* 0x394 */ u8 field_0x394[0x39C - 0x394];
     /* 0x39C */ f32 field_0x39c;
     /* 0x3A0 */ f32 field_0x3a0;
     /* 0x3A4 */ f32 field_0x3a4;
-    /* 0x3A8 */ u8 field_0x3a8[0x42A - 0x3A8];
+    /* 0x3A8 */ u8 field_0x3a8[0x41E - 0x3A8];
+    /* 0x41E */ s16 field_0x41e;
+    /* 0x420 */ u8 field_0x420[0x42A - 0x420];
     /* 0x42A */ s16 field_0x42a;
     /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
     /* 0x42E */ u8 field_0x42e[0x430 - 0x42E];
@@ -165,7 +193,8 @@ public:
     /* 0x436 */ s16 field_0x436;
     /* 0x438 */ u8 field_0x438[0x5DC - 0x438];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
-    /* 0x5DD */ u8 field_0x5dd[0x642 - 0x5DD];
+    /* 0x5DD */ u8 field_0x5dd[0x641 - 0x5DD];
+    /* 0x641 */ u8 field_0x641; // alpha of the Ppoint panes (fn_80404648)
     /* 0x642 */ u8 field_0x642[9]; // alpha of each pane of lbl_8048C5D0
     /* 0x64B */ u8 field_0x64b;
     /* 0x64C */ u8 field_0x64c;

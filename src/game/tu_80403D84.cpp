@@ -36,15 +36,15 @@ static const s32 lbl_8048C1F8[6][8] = {
 static const u64 lbl_8048C2B8[8] = {
     'Pwarea01', 'Pwarea02', 'Pwarea03', 'Pwarea04', 'Pwarea05', 'Pwarea06', 'Pwarea07', 'Pwarea08',
 };
-static const u64 lbl_8048C2F8[64] = {
-    'Ppoint01', 'Ppoint02', 'Ppoint03', 'Ppoint04', 'Ppoint05', 'Ppoint06', 'Ppoint07', 'Ppoint08',
-    'Ppoint09', 'Ppoint10', 'Ppoint11', 'Ppoint12', 'Ppoint13', 'Ppoint14', 'Ppoint15', 'Ppoint16',
-    'Ppoint17', 'Ppoint18', 'Ppoint19', 'Ppoint20', 'Ppoint21', 'Ppoint22', 'Ppoint23', 'Ppoint24',
-    'Ppoint25', 'Ppoint26', 'Ppoint27', 'Ppoint28', 'Ppoint29', 'Ppoint30', 'Ppoint31', 'Ppoint32',
-    'Ppoint33', 'Ppoint34', 'Ppoint35', 'Ppoint36', 'Ppoint37', 'Ppoint38', 'Ppoint39', 'Ppoint40',
-    'Ppoint41', 'Ppoint42', 'Ppoint43', 'Ppoint44', 'Ppoint45', 'Ppoint46', 'Ppoint47', 'Ppoint48',
-    'Ppoint49', 'Ppoint50', 'Ppoint51', 'Ppoint52', 'Ppoint53', 'Ppoint54', 'Ppoint55', 'Ppoint56',
-    'Ppoint57', 'Ppoint58', 'Ppoint59', 'Ppoint60', 'Ppoint61', 'Ppoint62', 'Ppoint63', 'Ppoint64',
+static const u64 lbl_8048C2F8[32][2] = {
+    {'Ppoint01', 'Ppoint02'}, {'Ppoint03', 'Ppoint04'}, {'Ppoint05', 'Ppoint06'}, {'Ppoint07', 'Ppoint08'},
+    {'Ppoint09', 'Ppoint10'}, {'Ppoint11', 'Ppoint12'}, {'Ppoint13', 'Ppoint14'}, {'Ppoint15', 'Ppoint16'},
+    {'Ppoint17', 'Ppoint18'}, {'Ppoint19', 'Ppoint20'}, {'Ppoint21', 'Ppoint22'}, {'Ppoint23', 'Ppoint24'},
+    {'Ppoint25', 'Ppoint26'}, {'Ppoint27', 'Ppoint28'}, {'Ppoint29', 'Ppoint30'}, {'Ppoint31', 'Ppoint32'},
+    {'Ppoint33', 'Ppoint34'}, {'Ppoint35', 'Ppoint36'}, {'Ppoint37', 'Ppoint38'}, {'Ppoint39', 'Ppoint40'},
+    {'Ppoint41', 'Ppoint42'}, {'Ppoint43', 'Ppoint44'}, {'Ppoint45', 'Ppoint46'}, {'Ppoint47', 'Ppoint48'},
+    {'Ppoint49', 'Ppoint50'}, {'Ppoint51', 'Ppoint52'}, {'Ppoint53', 'Ppoint54'}, {'Ppoint55', 'Ppoint56'},
+    {'Ppoint57', 'Ppoint58'}, {'Ppoint59', 'Ppoint60'}, {'Ppoint61', 'Ppoint62'}, {'Ppoint63', 'Ppoint64'},
 };
 static const u64 lbl_8048C4F8[27] = {
     'Ndata11', 'Ndata12', 'Ndata13', 'Ndata14', 'Ndata15', 'Ndata16', 'Ndata17', 'Ndata18',
@@ -137,6 +137,38 @@ static const s16 lbl_8048C95C[32][2] = {
 };
 static const s16 lbl_8048C9DC[8][2] = {
     {161, 238}, {354, 90}, {435, 90}, {196, 105}, {295, 250}, {352, 125}, {224, 92}, {417, 129},
+};
+// The state handlers, indexed by field_0x350 (fn_804108B4).
+static MapScreen_804B1288::StateFunc lbl_804B10F8[22] = {
+    &MapScreen_804B1288::fn_8040F3AC,
+    &MapScreen_804B1288::fn_8040F35C,
+    &MapScreen_804B1288::fn_8040F288,
+    &MapScreen_804B1288::fn_8040F16C,
+    &MapScreen_804B1288::fn_8040ED20,
+    &MapScreen_804B1288::fn_8040E838,
+    &MapScreen_804B1288::fn_8040E720,
+    &MapScreen_804B1288::fn_8040E700,
+    &MapScreen_804B1288::fn_8040E3A0,
+    &MapScreen_804B1288::fn_8040E298,
+    &MapScreen_804B1288::fn_8040E278,
+    &MapScreen_804B1288::fn_8040D3D0,
+    &MapScreen_804B1288::fn_8040CE90,
+    &MapScreen_804B1288::fn_8040C950,
+    &MapScreen_804B1288::fn_8040BC1C,
+    &MapScreen_804B1288::fn_80409FDC,
+    &MapScreen_804B1288::fn_8040B93C,
+    &MapScreen_804B1288::fn_8040B5A0,
+    &MapScreen_804B1288::fn_8040B388,
+    &MapScreen_804B1288::fn_804096E8,
+    &MapScreen_804B1288::fn_80409450,
+    &MapScreen_804B1288::fn_80409330,
+};
+// The message-box handlers, indexed by field_0x659 (fn_804108B4).
+static MapScreen_804B1288::StateFunc lbl_804B1230[4] = {
+    &MapScreen_804B1288::fn_80403F50,
+    &MapScreen_804B1288::fn_80403EAC,
+    &MapScreen_804B1288::fn_80403E24,
+    &MapScreen_804B1288::fn_80403D84,
 };
 static const char* lbl_804B1260[10] = {
     "kk_rupyNum_00.bti",
@@ -487,6 +519,124 @@ void MapScreen_804B1288::hideStagePanes(s32 stage) {
         field_0xc->search('P72')->hide();
         field_0xc->search('P73')->hide();
         break;
+    }
+}
+
+// FIXME: 95.74 %%. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
+// the field_0xd4 loop (loop pointer in r5) and a second li r0, 0 for field_0x228; ours uses a new
+// li r0, 0 inside the loop (one instruction fewer); all else equal.
+void MapScreen_804B1288::fn_804049DC() {
+    if (field_0x38c & 0x10) {
+        field_0xc8->field_0x20 = 0;
+        field_0xc8->field_0x22 = 0;
+        field_0xc8->field_0x24 = 0;
+        field_0xc8->field_0x26 = 0;
+        field_0xcc->field_0x20 = 0;
+        field_0xcc->field_0x22 = 0;
+        field_0xcc->field_0x24 = 0;
+        field_0xcc->field_0x26 = 0;
+        field_0xd0->field_0x20 = 0;
+        field_0xd0->field_0x22 = 0;
+        field_0xd0->field_0x24 = 0;
+        field_0xd0->field_0x26 = 0;
+        for (int i = 0; i < 18; i++) {
+            field_0xd4[i]->field_0x20 = 0;
+            field_0xd4[i]->field_0x22 = 0;
+            field_0xd4[i]->field_0x24 = 0;
+            field_0xd4[i]->field_0x26 = 0;
+        }
+        field_0x228[0][0]->field_0x22 = 0;
+        field_0x228[0][1]->field_0x22 = 0;
+        field_0x228[1][0]->field_0x22 = 0;
+        field_0x228[1][1]->field_0x22 = 0;
+        field_0x238->field_0x22 = 0;
+        field_0x23c->field_0x22 = 0;
+        field_0x41e = 0;
+        if (field_0x340 <= 7) {
+            for (int i = field_0x340 * 4; i < field_0x340 * 4 + 4; i++) {
+                field_0x128[i]->field_0x26 = 0;
+                field_0x128[i]->mPane->setAlpha(0);
+                field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+            }
+            for (int i = field_0x340 * 3; i < field_0x340 * 3 + 3; i++) {
+                field_0x1a8[i]->field_0x26 = 0;
+                field_0x1a8[i]->mPane->setAlpha(0);
+            }
+            field_0x208[field_0x340]->field_0x26 = 0;
+            field_0x208[field_0x340]->mPane->setAlpha(0);
+        }
+        field_0x10->search('Ndata10')->hide();
+        for (int i = 0; i < 8; i++) {
+            field_0x28[i][0]->moveFromCentre_80402E08(-150.0f, 0.0f);
+            field_0x28[i][0]->field_0x20 = 0;
+            for (int j = 0; j < 3; j++) {
+                field_0x28[i][j]->mPane->setAlpha(0);
+                field_0x28[i][j]->field_0x26 = 0;
+            }
+        }
+        field_0x350 = 0x13;
+    } else {
+        field_0x668 = 4;
+        gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+    }
+}
+
+// FIXME: 95.74 %%. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
+// the field_0xd4 loop (loop pointer in r5) and a second li r0, 0 for field_0x228; ours uses a new
+// li r0, 0 inside the loop (one instruction fewer); all else equal.
+void MapScreen_804B1288::fn_80404648() {
+    if (field_0x38c & 0x10) {
+        field_0xc8->field_0x20 = 0;
+        field_0xc8->field_0x22 = 0;
+        field_0xc8->field_0x24 = 0;
+        field_0xc8->field_0x26 = 0;
+        field_0xcc->field_0x20 = 0;
+        field_0xcc->field_0x22 = 0;
+        field_0xcc->field_0x24 = 0;
+        field_0xcc->field_0x26 = 0;
+        field_0xd0->field_0x20 = 0;
+        field_0xd0->field_0x22 = 0;
+        field_0xd0->field_0x24 = 0;
+        field_0xd0->field_0x26 = 0;
+        for (int i = 0; i < 18; i++) {
+            field_0xd4[i]->field_0x20 = 0;
+            field_0xd4[i]->field_0x22 = 0;
+            field_0xd4[i]->field_0x24 = 0;
+            field_0xd4[i]->field_0x26 = 0;
+        }
+        field_0x228[0][0]->field_0x22 = 0;
+        field_0x228[0][1]->field_0x22 = 0;
+        field_0x228[1][0]->field_0x22 = 0;
+        field_0x228[1][1]->field_0x22 = 0;
+        field_0x238->field_0x22 = 0;
+        field_0x23c->field_0x22 = 0;
+        field_0x41e = 0;
+        if (field_0x340 <= 7) {
+            for (int i = field_0x340 * 4; i < field_0x340 * 4 + 4; i++) {
+                field_0x128[i]->field_0x26 = 0;
+                field_0x128[i]->mPane->setAlpha(0);
+                field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+            }
+            for (int i = field_0x340 * 3; i < field_0x340 * 3 + 3; i++) {
+                field_0x1a8[i]->field_0x26 = 0;
+                field_0x1a8[i]->mPane->setAlpha(0);
+            }
+            field_0x208[field_0x340]->field_0x26 = 0;
+            field_0x208[field_0x340]->mPane->setAlpha(0);
+        }
+        for (int i = 0; i < 8; i++) {
+            field_0x28[i][0]->moveFromCentre_80402E08(-150.0f, 0.0f);
+            field_0x28[i][0]->field_0x20 = 0;
+            for (int j = 0; j < 3; j++) {
+                field_0x28[i][j]->mPane->setAlpha(0);
+                field_0x28[i][j]->field_0x26 = 0;
+            }
+        }
+        field_0x10->search('Ndata10')->hide();
+        field_0x350 = 0x13;
+    } else {
+        field_0x668 = 4;
+        gAudioMgr_8053AF80->fn_80458880(0xb, -1);
     }
 }
 
