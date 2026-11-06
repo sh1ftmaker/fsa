@@ -48,8 +48,8 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 As of 2026-11-06:
 
 - **Honest: 43.10 %** of the code is byte-identical, **9,103 / 11,557** functions (1,914,368 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 55.31 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 9,677 / 11,557 functions (same instructions, register or order differences only), +145 close.
+- **Weighted: 55.51 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 9,677 / 11,557 functions (same instructions, register or order differences only), +146 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -145,11 +145,11 @@ Dolphin); the progress site's *Group by* switch shows the game code that way
 too.
 
 <!-- game:start -->
-**29.8 %** of 3,573,784 bytes of game code and **4,390 / 6,789** functions match (weighted 44.8 %).
+**29.8 %** of 3,573,784 bytes of game code and **4,390 / 6,789** functions match (weighted 45.0 %).
 
 | Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |
 |---|--:|--:|--:|--:|--:|
-| [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 59.2 % of 407,528 bytes | 92.2 % | 932 / 1,054 | 0 / 10 | – |
+| [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 59.2 % of 407,528 bytes | 94.3 % | 932 / 1,054 | 0 / 10 | – |
 | [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 25.9 % of 679,252 bytes | 34.1 % | 760 / 1,339 | 29 / 139 | 54 |
 | [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 24.6 % of 291,360 bytes | 36.0 % | 327 / 594 | 10 / 54 | 17 |
 | [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 28.6 % of 900,452 bytes | 40.3 % | 896 / 1,518 | 68 / 229 | 56 |
