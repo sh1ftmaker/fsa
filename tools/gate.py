@@ -259,6 +259,11 @@ def check_sources(base, changed, problems):
                 text = m.group(0).strip()
                 if text in old:
                     continue
+                # A goto the owner accepted as a crack-pass item (2026-11-06): the same line
+                # carries `// FAKEMATCH(crack-pass):`, docs/CRACK_PASS.md lists it, and
+                # check_fakematch keeps its unit NonMatching until it is replaced.
+                if what == "goto" and "FAKEMATCH(crack-pass)" in line:
+                    continue
                 if donors is None:
                     donors = donor_texts(path)
                 if any(text in d for d in donors):
