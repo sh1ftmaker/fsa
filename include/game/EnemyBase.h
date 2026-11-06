@@ -423,6 +423,11 @@ bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
 // bytes; 1 caller unit, tu_801C5B08 fn_801C6784). Called with the position
 // of an actor and its layer (mPos, field_0x4); returns whether it holds.
 bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer);
+
+// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CBB98, 0x704 bytes;
+// 1 caller unit, tu_80220F54 fn_80221670). Steps a 2D position by `distance`
+// in `angle`, clamped to `box`.
+void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* pos, f32 distance, s16 angle, f32* out);
 }
 
 #endif
