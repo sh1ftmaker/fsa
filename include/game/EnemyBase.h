@@ -356,6 +356,9 @@ bool fn_801CD2F8(s32 layer);
 // mTargetSpeed and mAccel or mDecel. Returns nonzero while the value has
 // not reached the target (cls_804A61C8::fn_80210A6C tests r3 with cmpwi).
 s32 fn_801CD950(f32* value, f32 target, f32 step);
+// Moves *value towards target by the fraction `factor` (at most 1) of the
+// distance; true while it is further than `threshold` away.
+bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold);
 // Returns the next sprite direction for `value` (field_0x98 is stored back
 // from it, then startAnim_801D22DC plays it): 0 -> 3, 1 -> 2, 3 -> 1, else 0.
 s32 fn_801CD30C(s32 value);
