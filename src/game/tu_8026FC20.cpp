@@ -636,8 +636,8 @@ void Player_804A6F38::fn_8027BA2C() {
 // fn_8023434C) frames 11-34 walk toward fn_8027FA08's spot at 6 per frame. At frame 10, with
 // no 'SWBM' actor yet (0xB38), one is spawned in front when the life is full (or with
 // fn_80241284 and 0x11AC == 1 at 2+ life); the emitter 0x12BC circles mPos at 20 by 0x11C0.
-// FIXME: 96.14. The stack slots of the inlined walkToGroupSpot differ, and the inlined lifeFull result is materialised (li r0, 0 / 1; clrlwi.) where the
-// original branches straight from its two compares into the spawn block (bge / blt), and with
+// FIXME: 96.14. The stack slots of the inlined walkToGroupSpot differ, and the inlined lifeFull
+// result is materialised (li r0, 0 / 1; clrlwi.) where the original branches straight from its two compares into the spawn block (bge / blt), and with
 // the extra live value the saved registers are r29-r31 shifted by one (this in r30, not r31).
 void Player_804A6F38::fn_8027B648() {
     fn_80274988();
