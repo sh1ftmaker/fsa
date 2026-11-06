@@ -2277,6 +2277,104 @@ void FileSelect_804AFF60::fn_803BF9C4() {
     setState(32);
 }
 
+// FIXME: 99.95. Instructions identical; .sdata2 literal names only.
+// fn_803C4054 (the delete prompt), the other answer: rereads the files
+// (fn_803CE4CC), shows the file list's message (0x117 / 0x116 as
+// fn_803C0018), slides the file cursor off to the left and fades it, stops
+// the rows, the board or the buttons and the first two buttons; state 39.
+void FileSelect_804AFF60::fn_803BF698() {
+    fn_803CE4CC();
+    u32 msg = 0x117;
+    if (msg == 0x117 && gGameRoot_8053AAF8->field_0x7f != 0) {
+        msg = 0x116;
+    }
+    field_0x84 = msg;
+    getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tft01'))->getStringPtr(), field_0x84, 0, NULL, NULL);
+    if (field_0x84 == 0x60 || field_0x84 == 0x64) {
+        field_0xb0 = 0x5A;
+    }
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    if (hasBadChecksum(field_0xa4)) {
+        field_0x20->field_0x20 = 0;
+        field_0x20->field_0x26 = 0;
+    } else {
+        field_0x14->field_0x20 = 0;
+        field_0x14->field_0x26 = 0;
+        field_0x18->field_0x20 = 0;
+        field_0x18->field_0x26 = 0;
+        field_0x1c->field_0x20 = 0;
+        field_0x1c->field_0x26 = 0;
+    }
+    field_0x24[0]->field_0x22 = 0;
+    field_0x24[0]->field_0x26 = 0;
+    field_0x24[1]->field_0x22 = 0;
+    field_0x24[1]->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(39);
+}
+
+// FIXME: 99.62. Regalloc only: the 'Pdb' loop's counter and table pointer
+// swap r29 / r30 (an alpha local doesn't change it).
+// fn_803C4054 (the delete prompt), one answer: the file cursor slides off to
+// the left and fades, the board (field_0x20) comes back (in from the right
+// with its 'Pdb' panes' alphas unless the file's checksum failed), the first
+// two buttons stop; state 34.
+void FileSelect_804AFF60::fn_803BF3BC() {
+    field_0x20->mPane->show();
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    if (hasBadChecksum(field_0xa4)) {
+        field_0x20->field_0x20 = 0;
+        field_0x20->field_0x26 = 0;
+    } else {
+        field_0x14->field_0x20 = 0;
+        field_0x14->field_0x26 = 0;
+        field_0x18->field_0x20 = 0;
+        field_0x18->field_0x26 = 0;
+        field_0x1c->field_0x20 = 0;
+        field_0x1c->field_0x26 = 0;
+        field_0x20->moveFromCentre_80402E08(600.0f, 0.0f);
+        field_0x20->field_0x20 = 0;
+        field_0x20->mPane->setAlpha(0);
+        for (s32 i = 0; i < 9; i++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+        }
+        field_0x20->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    field_0x24[0]->field_0x22 = 0;
+    field_0x24[0]->field_0x26 = 0;
+    field_0x24[1]->field_0x22 = 0;
+    field_0x24[1]->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(34);
+}
+
 // FIXME: 99.66. Instructions identical; only the .sdata2 literal names differ
 // (the pool's leading 0, -200, 200, see the progress notes).
 // The board's enemy sprites (fn_803CEED4 draws them after the screens).
