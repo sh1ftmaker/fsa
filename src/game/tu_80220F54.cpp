@@ -73,7 +73,7 @@ void ShadowLinkBase_804A6A00::init() {
     mBox2.f = mBox.f;
     setBox(mBox, -8.0f, 8.0f);
     field_0xb0 = 0;
-    mFlags |= 0x300;
+    mFlags |= ENEMY_FLAG_NO_ATTACK | ENEMY_FLAG_KEEP_LIFE;
     mLife = 1000;
     mLifeBackup = mLife;
     field_0x194 = 1;
@@ -82,7 +82,7 @@ void ShadowLinkBase_804A6A00::init() {
     mAnim.fn_801D2608(lbl_804A6990, 0x1C);
 }
 
-// FIXME: 96.07 %. missing/extra: ours has 2 fewer instrs (54 vs 56); common-subexpression reuses mFlags in r5 across case 0 instead of reloading
+// FIXME: 96.07 %. missing/extra: ours has 2 fewer instrs (54 vs 56); common-subexpression reuses the mFlags loaded in r5 in cases 0 and 3 instead of reloading it
 void ShadowLinkBase_804A6A00::fn_802216E8(s32 limit) {
     if (mFlags & CLS_804A6A00_FLAG_0x2000) {
         return;
@@ -113,6 +113,7 @@ void ShadowLinkBase_804A6A00::fn_802216E8(s32 limit) {
 
 // FIXME: 98.83 %. regalloc-only: target->ours r30->r31, r31->r30
 void ShadowLinkBase_804A6A00::fn_80221670() {
+    // pos reference: steers the register allocation (without it 81 %)
     const JGeometry::TVec3f& pos = mPos;
     JGeometry::TBox2f* box = layerBox(field_0x4);
     fn_801CBB98(box, &pos, 48.0f, fn_801F6874(field_0x2a8), &field_0x2b0);
@@ -191,14 +192,6 @@ void ShadowLinkBase_804A6A00::fn_802212AC() {
             fn_801F3668();
         }
     }
-}
-
-void ShadowLinkBase_804A6A00::fn_80221250() {
-    JGeometry::TVec2f vel;
-    fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b0, &vel, mSpeed);
-    field_0x3c.x = vel.x;
-    field_0x3c.y = vel.y;
-    vfunc_0x84();
 }
 
 void ShadowLinkBase_804A6A00::vfunc_0x9C(u8 mapHit) {
