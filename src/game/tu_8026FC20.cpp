@@ -12,6 +12,7 @@
 #include "game/BoxTest.h"
 #include "game/cls_804A71A8.h"
 #include "game/tu_80379F84.h"
+#include "game/act/tu_803D9944.h"
 #include "JSystem/JMath/JMath.h"
 
 // gGameRoot_8053AAF8->field_0x4c == 7 as a u8: fn_8027057C and fn_80277F98 test the materialised
@@ -957,6 +958,76 @@ void Player_804A6F38::fn_80277E18() {
             spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3ae, 1, 1, NULL, NULL, true, 1.0f);
         } else {
             spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3af, 1, 1, NULL, NULL, true, 1.0f);
+        }
+    }
+}
+
+// Tingle's effects for state 0x34: facing down (2), emitters 0x3B0 / 0x3B1 (fn_80241544() <= 1)
+// or 0x3B2 / 0x3B3 and 0x3A7-0x3AB at the player, and a 'TNGL' actor.
+static inline void startTingle(Player_804A6F38* player) {
+    player->field_0x3dc = 2;
+    player->field_0x3e8 = 2;
+    if (player->fn_80241544() <= 1) {
+        spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3b0, 1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3b1, 1, 1, NULL, NULL, true, 1.0f);
+    } else {
+        spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3b2, 1, 1, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3b3, 1, 1, NULL, NULL, true, 1.0f);
+    }
+    spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3a7, 1, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3a8, 1, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3a9, 1, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3aa, 1, 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(player->field_0x3b4, &player->mPos, 0x3ab, 1, 1, NULL, NULL, true, 1.0f);
+    getActorManager_801F856C()->spawnActor_801F9484('TNGL', player->field_0x3b4, &player->mPos, 1, -1, player->field_0x4);
+}
+
+// Frame 420 of state 0x34: with no life left, the heal (fn_80270DDC) up to 4 below the maximum.
+static inline void tingleHeal(Player_804A6F38* player) {
+    if (player->field_0xd30 == 420) {
+        player->field_0xc00 = 0;
+        if (player->fn_8024189C() <= 0) {
+            player->fn_80270DDC(player->fn_802417CC() - 4, false);
+        }
+    }
+}
+
+// Update of state 0x34 (Tingle revives the player): from frame 60 his effects, at 420 the heal,
+// at 480 back to state 0. Outside GameRoot 0x7E it waits for a 'TNGL' actor's 0x251 first.
+// The second fn_80240808() call is in the original (an inline's own test, source unknown).
+// FIXME: 99.75. One instruction missing: after the actor's null test the original has a second,
+// dead `beq` to the function's end (cmplwi r3, 0 / beq / beq / lbz 0x251).
+void Player_804A6F38::fn_8027776C() {
+    if (!gGameRoot_8053AAF8->field_0x7e) {
+        s32 serial = getActorManager_801F856C()->fn_801F7A08('TNGL');
+        cls_804B0478* tingle = static_cast<cls_804B0478*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (tingle != NULL && !tingle->field_0x251) {
+            return;
+        }
+        if (field_0xd30 < 60) {
+            field_0xd30 = 60;
+            startTingle(this);
+        }
+        tingleHeal(this);
+        if (field_0xd30 >= 480) {
+            field_0x124d = 0;
+            fn_80251AEC(0);
+        } else {
+            field_0xd30++;
+        }
+    } else {
+        if (field_0xd30 == 60) {
+            field_0xd30++;
+            startTingle(this);
+        }
+        tingleHeal(this);
+        if (field_0xd30 >= 480) {
+            if (!fn_80240808() || !(fn_80240808() && fn_80236B50(fn_80240644()))) {
+                field_0x124d = 0;
+                fn_80251AEC(0);
+            }
+        } else {
+            field_0xd30++;
         }
     }
 }
