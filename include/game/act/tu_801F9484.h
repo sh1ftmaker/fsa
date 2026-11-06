@@ -344,13 +344,7 @@ public:
     /* 0x230 */ u8 field_0x230[0x40];
 }; // Size: 0x270
 
-// Spawned for 'BBMB'.
-class GiantBomb_804AC588 : public ActorBase_804A5770 {
-public:
-    GiantBomb_804AC588() {}
-    /* 0x08 */ virtual ~GiantBomb_804AC588();
-    /* 0x230 */ u8 field_0x230[0x3C];
-}; // Size: 0x26C
+#include "game/act/act_giant_bomb.h"
 
 // Spawned for 'BEMN'.
 class BeeManager_804AC810 : public ActorBase_804A5770 {
