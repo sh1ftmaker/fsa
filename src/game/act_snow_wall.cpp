@@ -5,6 +5,8 @@
 #include "game/Player.h"
 #include "game/EnemyBase.h"
 #include "game/ActorManager.h"
+#include "game/GameGlobals.h"
+#include "game/Map.h"
 
 static const char* lbl_80539F40[] = {"yuki_l.bti", NULL};
 
@@ -129,4 +131,35 @@ void cls_8049E8A0::update() {
         break;
     }
     field_0x54.z = field_0x54.y = field_0x54.x = field_0x238;
+}
+
+// FIXME: 93.59%. scheduling+regalloc + reloc-name. Same instructions modulo registers,
+// different order; target loads y before x when filling scale matrix, and .sdata2
+// float pool order differs.
+void cls_8049E8A0::draw() {
+    ActorBase_804A5770::draw();
+    SpriteParams_801F5AE0 params;
+    SpriteParams_801F5AE0 sp;
+    Mtx mtx;
+    if (!field_0x54.isZero()) {
+        mtx[0][3] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        mtx[0][0] = field_0x54.x;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = field_0x54.y;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = field_0x54.z;
+        mtx[0][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        mtx[1][3] = (1.0f - field_0x238) * 32.0f;
+        params.mMtx = mtx;
+    }
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, field_0x23c, &params);
+    }
 }
