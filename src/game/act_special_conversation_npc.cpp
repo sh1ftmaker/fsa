@@ -305,12 +305,13 @@ void SpecialConversationNPC_804AAFB8::fn_803193B4() {
     }
 }
 
+// The layer through getField_0x4(): the original reads it before the call (inlined-getter order).
 inline void SpecialConversationNPC_804AAFB8::updateFacing() {
     if (field_0x268 <= 0) {
         field_0x268 = 20;
         JGeometry::TVec3f dir;
         f32 dist;
-        if (mPlayer < 0 || getPlayerLayer_8023DE58(mPlayer) != field_0x4) {
+        if (mPlayer < 0 || getPlayerLayer_8023DE58(mPlayer) != getField_0x4()) {
             fn_801EE558(&dir, &dist, 0);
         } else {
             fn_801EE558(&dir, &dist, mPlayer + 1);
@@ -335,7 +336,6 @@ inline void SpecialConversationNPC_804AAFB8::updateFacing() {
     }
 }
 
-// FIXME: 98.81%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
 void SpecialConversationNPC_804AAFB8::fn_803190E0() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -374,7 +374,6 @@ void SpecialConversationNPC_804AAFB8::fn_803190E0() {
     }
 }
 
-// FIXME: 99.02%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
 void SpecialConversationNPC_804AAFB8::fn_80318D74() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -467,7 +466,6 @@ void SpecialConversationNPC_804AAFB8::fn_80318B84() {
     }
 }
 
-// FIXME: 99.06%. scheduling+regalloc: same instructions modulo registers, differing in layer comparison scheduling before fn_801EE558.
 void SpecialConversationNPC_804AAFB8::fn_803187F4() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
