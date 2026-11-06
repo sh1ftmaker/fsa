@@ -2,6 +2,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/act/act_terrorpin.h"
 
@@ -36,6 +37,55 @@ static inline void approach(f32& cur, f32 target, f32 remaining) {
     } else {
         cur += (1.0f / remaining) * (target - cur);
     }
+}
+
+static inline s32 firstHitPlayer(u8 hits) {
+    s32 player = -1;
+    for (s32 i = 0; i < 4; i++) {
+        if (hits & (1 << i)) {
+            player = i;
+            break;
+        }
+    }
+    return player;
+}
+
+inline bool Terrorpin_804A3B10::isVulnerable() const {
+    bool vulnerable = true;
+    bool active = false;
+    switch (mState) {
+    case 1:
+    case 2:
+    case 3:
+    case 5:
+        active = true;
+        break;
+    }
+    if (active) {
+        vulnerable = false;
+        if (mStateTimer < 10) {
+            switch (mState) {
+            case 5:
+            case 1:
+                vulnerable = true;
+                break;
+            }
+        }
+    }
+    return vulnerable;
+}
+
+inline bool Terrorpin_804A3B10::hasLanded() const {
+    bool landed = false;
+    switch (mState) {
+    case 1:
+    case 4:
+        if ((mStateTimer > 1 && mPos.z <= 0.0f && field_0x3c.z == 0.0f) || mStateTimer >= 120) {
+            landed = true;
+        }
+        break;
+    }
+    return landed;
 }
 
 Terrorpin_804A3B10::Terrorpin_804A3B10() {
@@ -135,6 +185,110 @@ void Terrorpin_804A3B10::fn_801B91A8(s32 state) {
     mState = state;
 }
 
+void Terrorpin_804A3B10::vfunc_0x90(u8 mapHit) {
+    // Declared in this order: MWCC gives the later aggregate the lower stack
+    // slot (normal at sp+0x20, box at sp+0x10, out at sp+0x8).
+    JGeometry::TVec3f normal;
+    if (mPos.z <= 0.0f) {
+        s32 player;
+        bool found = false;
+        JGeometry::TBox2f box(mPos.x - 40.0f, mPos.y - 40.0f, 40.0f + mPos.x, 40.0f + mPos.y);
+        player = -1;
+        JGeometry::TVec2f out;
+        if (mFlags & 0x4000) {
+            if (fn_8023AAF8(field_0x2a8, &box, field_0x4, &out)) {
+                player = field_0x2a8;
+            }
+        } else {
+            player = fn_8023AA18(&box, field_0x4, &out);
+        }
+        if (player >= 0) {
+            f32 dx = out.x - mPos.x;
+            f32 dy = out.y - mPos.y;
+            if (square(dx) + square(dy) <= 1600.0f) {
+                found = true;
+            }
+        }
+        if (found && mPos.z <= 0.0f) {
+            switch (mState) {
+            case 0:
+                fn_801B91A8(1);
+                break;
+            case 2:
+            case 3:
+            case 5:
+                fn_801B91A8(4);
+                break;
+            }
+        }
+    }
+    switch (mState) {
+    case 0:
+        if (mapHit) {
+            field_0x98 = fn_801CF720(field_0x98);
+            field_0x250 += 10;
+        } else if (mStateTimer >= field_0x250) {
+            fn_801B91A8(0);
+        }
+        break;
+    case 1:
+        if (hasLanded()) {
+            field_0x3c.z = 0.0f;
+            mPos.z = 0.0f;
+            fn_801B91A8(2);
+        }
+        break;
+    case 2:
+        if (mStateTimer >= field_0x250) {
+            fn_801B91A8(3);
+        }
+        break;
+    case 3:
+        if (mStateTimer >= field_0x250) {
+            fn_801B91A8(4);
+        }
+        break;
+    case 4:
+        if (hasLanded()) {
+            field_0x3c.z = 0.0f;
+            mPos.z = 0.0f;
+            fn_801B91A8(0);
+        }
+        break;
+    case 5:
+        if (mapHit) {
+            fn_801CC350(&mMapHitDir, &field_0x3c);
+            startSound_801F0E34(0x4003C, 0);
+        } else if (mPlayersHit != 0) {
+            s32 player = firstHitPlayer(mPlayersHit);
+            normal.set(mPos.x - getPlayerPos_8023E724(player)->x,
+                       mPos.y - getPlayerPos_8023E724(player)->y, 0.0f);
+            fn_801CC350(&normal, &field_0x3c);
+            startSound_801F0E34(0x4003C, 0);
+        }
+        if (mStateTimer >= field_0x250) {
+            field_0x3c.z = 0.0f;
+            mPos.z = 0.0f;
+            mSpeed = 0.0f;
+            fn_801B91A8(2);
+        }
+        break;
+    }
+    switch (mState) {
+    case 1:
+        mFlags |= ENEMY_FLAG_BOUNCE;
+        break;
+    default:
+        mFlags &= ~ENEMY_FLAG_BOUNCE;
+        break;
+    }
+    if (isVulnerable()) {
+        field_0xb0 = 0x4130B;
+    } else {
+        field_0xb0 = 0x41101;
+    }
+}
+
 // 0x2A0 is mAnim.mFrameCtrl.mRate (J3DFrameCtrl _0C at 0x270 + 0x24 + 0xC).
 void Terrorpin_804A3B10::vfunc_0x94() {
     // The bool and the 0/1 argument are separate locals: the original keeps
@@ -225,29 +379,7 @@ void Terrorpin_804A3B10::vfunc_0x7C() {
 
 u8 Terrorpin_804A3B10::vfunc_0x60() {
     u8 hit = 0;
-    bool againstActor = true;
-    bool active = false;
-    s32 state = mState;
-    switch (state) {
-    case 1:
-    case 2:
-    case 3:
-    case 5:
-        active = true;
-        break;
-    }
-    if (active) {
-        againstActor = false;
-        if (mStateTimer < 10) {
-            switch (state) {
-            case 5:
-            case 1:
-                againstActor = true;
-                break;
-            }
-        }
-    }
-    if (againstActor) {
+    if (isVulnerable()) {
         fn_801F2DB4(mActorId, 'NULL', NULL);
     } else {
         hit = fn_801F2DB4('NULL', 'NULL', NULL);
@@ -279,9 +411,9 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
 
 u8 Terrorpin_804A3B10::vfunc_0x5C() {
     u8 hit = 0;
-    bool check = true;
-    bool active = false;
     s32 state = mState;
+    bool vulnerable = true;
+    bool active = false;
     switch (state) {
     case 1:
     case 2:
@@ -291,17 +423,17 @@ u8 Terrorpin_804A3B10::vfunc_0x5C() {
         break;
     }
     if (active) {
-        check = false;
+        vulnerable = false;
         if (mStateTimer < 10) {
             switch (state) {
             case 5:
             case 1:
-                check = true;
+                vulnerable = true;
                 break;
             }
         }
     }
-    if (check) {
+    if (vulnerable) {
         if (mFlags & 0x2000) {
             fn_801CEBD0();
         } else if (state == 0) {
