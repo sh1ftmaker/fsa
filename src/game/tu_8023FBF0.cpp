@@ -1419,10 +1419,6 @@ s32 Player_804A6F38::fn_8024FF54() {
     return value;
 }
 
-// Not auto-inlined: fn_8024FFC8 calls fn_8024FEFC, and fn_8024FEFC calls
-// fn_8024FEBC and fn_8024FE78, out of line in the original (docs/INLINING.md,
-// pragma rule 1).
-#pragma auto_inline off
 bool Player_804A6F38::fn_8024FEFC() {
     bool result = false;
     if (fn_8024FEBC() || fn_8024FE78()) {
@@ -1444,7 +1440,6 @@ bool Player_804A6F38::fn_8024FE78() {
     }
     return false;
 }
-#pragma auto_inline reset
 
 bool Player_804A6F38::fn_8024F630() {
     return field_0xbf0->field_0xb4;
