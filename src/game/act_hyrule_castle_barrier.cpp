@@ -25,9 +25,9 @@ HyruleCastleBarrier_8049DEE8::~HyruleCastleBarrier_8049DEE8() {
     field_0x254 = NULL;
 }
 
-// FIXME: 99.90% (reloc-name). Code matches; the float literals are separate
-// .sdata2 entries in ours (the original's are split as lbl_8053C91C and so on,
-// a data split, not code).
+// FIXME: 99.90% (reloc-name). Code matches; only the .sdata2 float literal
+// pool differs (try.py: lbl_8053C8FC and lbl_8053C920 in the original, @963
+// and @1191 in ours).
 void HyruleCastleBarrier_8049DEE8::init() {
     ActorBase_804A5770::init();
     if ((field_0x90 & 1) == 1) {
