@@ -20,6 +20,8 @@ public:
 
     // 0x8010C294: state machine dispatcher.
     bool fn_8010C294(s32 state);
+    void updateTrailEmitter();
+    bool fallStep();
 
     /* 0x230 */ s16 field_0x230;
     /* 0x232 */ u8 field_0x232[2];

@@ -17,6 +17,55 @@ static const s16 lbl_80464314[] = {2, 3, 3, 3, 4, 3, 5, 3, -1, -1};
 static const u32 lbl_80464328[] = {0x00260001, 0x00260004, 0x00260007};
 static const s16* lbl_80539EE8[] = {lbl_80464308, lbl_80464314};
 
+// Diagonal scale matrix with the translation (0, ty, 0).
+static inline void setScaleMtx(Mtx m, const JGeometry::TVec3f& scale, f32 ty) {
+    m[0][3] = 0.0f;
+    m[1][3] = ty;
+    m[2][3] = 0.0f;
+    m[0][0] = scale.x;
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = scale.y;
+    m[1][2] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = scale.z;
+}
+
+// Emits and updates the trail emitter (inlined three times in update()).
+inline void cls_8049D020::updateTrailEmitter() {
+    if (field_0x4 == 0) {
+        if (field_0x374 == NULL) {
+            field_0x374 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D3, 0, 0, NULL, NULL, true, 1.5f);
+        }
+        JGeometry::TVec3f emitterPos = mPos;
+        emitterPos.y += -2.0f * field_0x260;
+        setEmitterPos_8013CB44(field_0x374, &emitterPos, 0, 0, true);
+        field_0x374->setGlobalAlpha(0x80);
+        if (field_0x264 < 0.2f) {
+            field_0x374->stopCreateParticle();
+        } else {
+            field_0x374->playCreateParticle();
+        }
+    }
+}
+
+// Applies gravity to the velocity and moves; true once landed (inlined three times in update()).
+inline bool cls_8049D020::fallStep() {
+    fn_801CD950(&field_0x3c.z, -10.0f, -0.15f);
+    mPos += field_0x3c;
+    bool atGround;
+    if (mPos.z <= 0.0f) {
+        mPos.z = 0.0f;
+        field_0x3c.z = 0.0f;
+        atGround = true;
+    } else {
+        atGround = false;
+    }
+    return atGround;
+}
+
 // FIXME: 99.88%. reloc-name: exact instructions match target.
 cls_8049D020::cls_8049D020()
     : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(-1), field_0x240(0),
@@ -82,7 +131,7 @@ void cls_8049D020::init() {
     }
 }
 
-// FIXME: 98.85%. missing/extra + reloc-name: ours has 3 more instrs (713 vs 710).
+// FIXME: 98.85%. missing/extra + reloc-name: ours has 3 more instrs (713 vs 710): a mov/clrlwi pair and a lwz in cases 2 and 4, plus swapped stack slots and registers.
 void cls_8049D020::update() {
     ActorBase_804A5770::update();
     field_0x26c = 1.0f;
@@ -146,20 +195,7 @@ void cls_8049D020::update() {
             if (field_0x26c >= 1.0f) {
                 field_0x26c = 1.0f;
             }
-            if (field_0x4 == 0) {
-                if (field_0x374 == NULL) {
-                    field_0x374 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D3, 0, 0, NULL, NULL, true, 1.5f);
-                }
-                JGeometry::TVec3f emitterPos = mPos;
-                emitterPos.y += -2.0f * field_0x260;
-                setEmitterPos_8013CB44(field_0x374, &emitterPos, 0, 0, true);
-                field_0x374->setGlobalAlpha(0x80);
-                if (field_0x264 < 0.2f) {
-                    field_0x374->stopCreateParticle();
-                } else {
-                    field_0x374->playCreateParticle();
-                }
-            }
+            updateTrailEmitter();
             startSound_801F0E34(0x3007B, 0);
         }
         field_0x260 += (0.002f * field_0x264) / 1.6f;
@@ -205,37 +241,14 @@ void cls_8049D020::update() {
             field_0x3c.y = outStep.y;
             field_0x3c.z = outStep.z;
             mPos += field_0x3c;
-            if (field_0x4 == 0) {
-                if (field_0x374 == NULL) {
-                    field_0x374 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D3, 0, 0, NULL, NULL, true, 1.5f);
-                }
-                JGeometry::TVec3f emitterPos = mPos;
-                emitterPos.y += -2.0f * field_0x260;
-                setEmitterPos_8013CB44(field_0x374, &emitterPos, 0, 0, true);
-                field_0x374->setGlobalAlpha(0x80);
-                if (field_0x264 < 0.2f) {
-                    field_0x374->stopCreateParticle();
-                } else {
-                    field_0x374->playCreateParticle();
-                }
-            }
+            updateTrailEmitter();
             startSound_801F0E34(0x3007B, 0);
         }
         fn_801F2DB4('NULL', 'NULL', NULL);
         fn_801F2B7C(-100, -1, 1);
         break;
     case 5: {
-        fn_801CD950(&field_0x3c.z, -10.0f, -0.15f);
-        mPos += field_0x3c;
-        bool atGround;
-        if (mPos.z <= 0.0f) {
-            mPos.z = 0.0f;
-            field_0x3c.z = 0.0f;
-            atGround = true;
-        } else {
-            atGround = false;
-        }
-        if (atGround) {
+        if (fallStep()) {
             fn_8010C294(6);
         }
         break;
@@ -267,20 +280,7 @@ void cls_8049D020::update() {
         field_0x3c.y = field_0x264 * JMath::sincosTable_.cosShort(field_0x230);
         field_0x3c.z = 0.0f;
         mPos += field_0x3c;
-        if (field_0x4 == 0) {
-            if (field_0x374 == NULL) {
-                field_0x374 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D3, 0, 0, NULL, NULL, true, 1.5f);
-            }
-            JGeometry::TVec3f emitterPos = mPos;
-            emitterPos.y += -2.0f * field_0x260;
-            setEmitterPos_8013CB44(field_0x374, &emitterPos, 0, 0, true);
-            field_0x374->setGlobalAlpha(0x80);
-            if (field_0x264 < 0.2f) {
-                field_0x374->stopCreateParticle();
-            } else {
-                field_0x374->playCreateParticle();
-            }
-        }
+        updateTrailEmitter();
         break;
     }
     case 8:
@@ -301,17 +301,7 @@ void cls_8049D020::update() {
             fn_8010C294(10);
             break;
         }
-        fn_801CD950(&field_0x3c.z, -10.0f, -0.15f);
-        mPos += field_0x3c;
-        bool atGround;
-        if (mPos.z <= 0.0f) {
-            mPos.z = 0.0f;
-            field_0x3c.z = 0.0f;
-            atGround = true;
-        } else {
-            atGround = false;
-        }
-        if (atGround) {
+        if (fallStep()) {
             fn_8010C294(10);
         }
         break;
@@ -319,17 +309,7 @@ void cls_8049D020::update() {
     case 10: {
         fn_80239914(&box, field_0x4, mSerial);
         if (mSprite.fn_801D21F0()) {
-            fn_801CD950(&field_0x3c.z, -10.0f, -0.15f);
-            mPos += field_0x3c;
-            bool atGround;
-            if (mPos.z <= 0.0f) {
-                mPos.z = 0.0f;
-                field_0x3c.z = 0.0f;
-                atGround = true;
-            } else {
-                atGround = false;
-            }
-            if (atGround) {
+            if (fallStep()) {
                 fn_8010C294(11);
             }
         }
@@ -354,40 +334,18 @@ void cls_8049D020::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME: 94.33%. missing/extra + reloc-name: ours has 2 fewer instrs (214 vs 216).
+// FIXME: 95.73%. missing/extra + reloc-name: ours has 1 fewer instr (215 vs 216); the scale matrices are built with different float register assignment and the frame/pos/res locals are scheduled differently.
 void cls_8049D020::draw() {
     ActorBase_804A5770::draw();
+    // Declaration order as in the original frame layout (params2 at the higher slot).
     SpriteParams_801F5AE0 params2;
     SpriteParams_801F5AE0 params;
     Mtx mtx1;
     Mtx mtx2;
     if (!field_0x54.isZero()) {
-        mtx1[0][3] = 0.0f;
-        mtx1[1][3] = 0.0f;
-        mtx1[2][3] = 0.0f;
-        mtx1[0][0] = field_0x54.x;
-        mtx1[0][1] = 0.0f;
-        mtx1[0][2] = 0.0f;
-        mtx1[1][0] = 0.0f;
-        mtx1[1][1] = field_0x54.y;
-        mtx1[1][2] = 0.0f;
-        mtx1[2][0] = 0.0f;
-        mtx1[2][1] = 0.0f;
-        mtx1[2][2] = field_0x54.z;
+        setScaleMtx(mtx1, field_0x54, 0.0f);
         params2.mMtx = mtx1;
-
-        mtx2[0][3] = 0.0f;
-        mtx2[2][3] = 0.0f;
-        mtx2[1][3] = 4.0f * field_0x260;
-        mtx2[0][0] = field_0x54.x;
-        mtx2[0][1] = 0.0f;
-        mtx2[0][2] = 0.0f;
-        mtx2[1][0] = 0.0f;
-        mtx2[1][1] = field_0x54.y;
-        mtx2[1][2] = 0.0f;
-        mtx2[2][0] = 0.0f;
-        mtx2[2][1] = 0.0f;
-        mtx2[2][2] = field_0x54.z;
+        setScaleMtx(mtx2, field_0x54, 4.0f * field_0x260);
         params.mMtx = mtx2;
     }
     params.field_0x10.a = 0x80;
@@ -399,7 +357,7 @@ void cls_8049D020::draw() {
     }
 }
 
-// FIXME: 89.20%. missing/extra + reloc-name: ours has 5 fewer instrs (271 vs 276).
+// FIXME: 90.19%. missing/extra + reloc-name: ours has 2 fewer instrs (274 vs 276): the original keeps the table, the actor manager tag and the serial in r27-r29 (stmw/lmw r27) and negates case 5 through two stack TVec3f copies; the single-case switch in case 13 has an extra bge in the original.
 bool cls_8049D020::fn_8010C294(s32 state) {
     switch (state) {
     case 1:
@@ -478,15 +436,19 @@ bool cls_8049D020::fn_8010C294(s32 state) {
     case 13:
         field_0x3c.zero();
         mPos.z = 0.0f;
-        if (field_0x234 == 1) {
+        switch (field_0x234) {
+        case 1:
             fn_801F0D20(3);
             getActorManager_801F856C()->spawnActor_801F9484('KEY0', field_0x4, &mPos, 0x6000, -1, -1);
-            fn_801F3668();
-        } else {
+            break;
+        default: {
             s32 kind = 0;
             if (field_0x270 >= 2.0f) {
                 kind = 2;
             } else if (field_0x270 >= 1.4f) {
+                kind = 1;
+            }
+            if (field_0x258 >= 1) {
                 kind = 1;
             }
             ActorManager_804A5800* mgr = getActorManager_801F856C();
@@ -494,8 +456,10 @@ bool cls_8049D020::fn_8010C294(s32 state) {
             if (serial >= 0) {
                 mgr->findActorBySerial_801F666C(serial);
             }
-            fn_801F3668();
+            break;
         }
+        }
+        fn_801F3668();
         break;
     }
     field_0x238 = state;
