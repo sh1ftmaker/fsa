@@ -15,6 +15,7 @@
 #include "game/Player.h"
 #include "game/PlayerBit.h"
 #include "game/ViewLayer.h"
+#include "game/tu_801213EC.h"
 #include "math.h"
 
 // What the position queries return when there is no such player. The
@@ -290,14 +291,15 @@ void fn_8023EE28(s32 player) {
     }
 }
 
+// Inverted forwarder form: fn_80231DE4 inlines it (Round 11, "Forwarder form").
 bool fn_8023ED8C(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_8025F590();
+    if (!fn_8023F264(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_8025F590();
 }
 
 s32 fn_8023ECF0(s32 player) {
@@ -353,14 +355,15 @@ bool fn_8023EA28(s32 player) {
     return gPlayerManager_8053AC90->mPlayers[player]->fn_8025F448();
 }
 
+// Inverted forwarder form: fn_80231DE4 inlines it (Round 11, "Forwarder form").
 bool fn_8023E98C(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_8025F418();
+    if (!fn_8023F264(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_8025F418();
 }
 
 bool fn_8023E8F0(s32 player) {
@@ -1011,18 +1014,6 @@ bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag,
     return false;
 }
 
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) {
     if (gPlayerManager_8053AC90 == NULL) {
         return -1;
@@ -1137,18 +1128,6 @@ s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out)
     }
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80273FB8(box, layer, out)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80256C74(a, b)) {
             return i;
         }
     }
@@ -1305,28 +1284,6 @@ bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80272E98(box, layer);
     }
     return false;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -2470,14 +2427,15 @@ bool fn_802341D0(s32 player) {
     return true;
 }
 
+// Inverted forwarder form: fn_80231DE4 inlines it (Round 11, "Forwarder form").
 bool fn_80234134(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80240870();
+    if (!fn_8023F264(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80240870();
 }
 
 // No final return (see progress/game__tu_8022AD64.md, "Missing final return"): an inactive
@@ -2540,14 +2498,15 @@ bool fn_80233DA4(s32 player) {
     return false;
 }
 
+// Inverted forwarder form: fn_80231DE4 inlines it (Round 11, "Forwarder form").
 bool fn_80233D20(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->field_0x43f;
+    if (!fn_8023F264(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->field_0x43f;
 }
 
 // Whether the boxes overlap: a copy of a clipped to b is not empty. The final test is written out:
@@ -2842,6 +2801,122 @@ void fn_80232A0C() {
                     fn_80238548(j, 2, (const JGeometry::TVec2f*)getPlayerPos_8023E724(i), 0x14);
                 }
             }
+        }
+    }
+}
+
+// The screen change of a Shadow Battle / multiplayer stage (fn_8023F390, with
+// gGameRoot_8053AAF8->0x7F): players standing on an exit (fn_802527B0 gives
+// its direction) pull their group along (fn_80248DB8); when every present
+// player able to (not fn_8022F478, fn_80251BFC(0x1B)) points the same way and
+// none is busy, the escort check fn_80124600 lets it through, the view
+// changes screen (fn_802DD3D4, then fn_802DCE5C), every player gets
+// fn_80241E64 and each one is placed on the new screen (fn_802520C0).
+// lbl_8053A190 remembers the player that set the direction.
+void fn_80231DE4() {
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player = gPlayerManager_8053AC90->mPlayers[i];
+        if (player != NULL && fn_8023F264(i)) {
+            JGeometry::TVec2<s32> dir(0, 0);
+            if (player->fn_802527B0(&dir)) {
+                for (s32 j = 0; j < 4; j++) {
+                    if (fn_8022E438(i, j)) {
+                        fn_802381B8(j);
+                    }
+                }
+            }
+        }
+    }
+    if (fn_8022ADFC()) {
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x96) {
+        return;
+    }
+    if (fn_8022ADB0()) {
+        return;
+    }
+    // The original fetches the view here without using it.
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TVec2<s32> first(0, 0);
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player = gPlayerManager_8053AC90->mPlayers[i];
+        if (player == NULL || !fn_8023F264(i)) {
+            continue;
+        }
+        if (fn_80230188(i)) {
+            return;
+        }
+        if (fn_8022DCD8(i)) {
+            return;
+        }
+        if (fn_8022D75C(i) && !(fn_80233D20(i) && getGameView_802D6A9C()->field_0x4 == 0 &&
+                                getGameView_802D6A9C()->field_0x8 == 0)) {
+            return;
+        }
+        if (fn_8022CCAC(i)) {
+            return;
+        }
+        if (fn_80234134(i)) {
+            return;
+        }
+        if (fn_80236AB4(i)) {
+            return;
+        }
+        if (fn_8023EA28(i)) {
+            continue;
+        }
+        if (!player->fn_80251BFC(0x1B)) {
+            return;
+        }
+        if (fn_8022F478(i)) {
+            continue;
+        }
+        if (fn_80236A18(i) && !player->field_0xd2d) {
+            continue;
+        }
+        JGeometry::TVec2<s32> point;
+        if (!player->fn_802527B0(&point)) {
+            return;
+        }
+        if (first.x * first.x + first.y * first.y <= (s32)(32.0f * FLT_EPSILON)) {
+            first.set(point);
+            lbl_8053A190 = i;
+        } else {
+            // materialised (li 0 / li 1) before the test, as in fn_80231A50
+            bool same = first.x == point.x && first.y == point.y;
+            if (!same) {
+                return;
+            }
+        }
+    }
+    switch (fn_80124600(&first)) {
+    case 0:
+        return;
+    case 1:
+        return;
+    }
+    if (first.x * first.x + first.y * first.y <= (s32)(32.0f * FLT_EPSILON)) {
+        return;
+    }
+    if (!getGameView_802D6A9C()->fn_802DD3D4(&first.x)) {
+        return;
+    }
+    gAudioMgr_8053AF80->fn_80457F60();
+    fn_8022BD70();
+    getGameView_802D6A9C()->fn_802DCE5C(&first.x);
+    for (s32 i = 0; i < 4; i++) {
+        Player_804A6F38* player = gPlayerManager_8053AC90->mPlayers[i];
+        if (fn_8023ED8C(i)) {
+            player->field_0xd70 = -1;
+            player->field_0xd64 = 0;
+            player->field_0xd6c = 'NULL';
+        } else if (fn_8023E98C(i)) {
+            player->field_0xd70 = -1;
+            player->mPos.z = 0.0f;
+        }
+        if (player != NULL && fn_8023F264(i) && !fn_80236B50(i)) {
+            player->fn_802520C0(&first);
         }
     }
 }
@@ -3615,17 +3690,6 @@ bool fn_8022E39C(s32 player, s32 arg) {
     return false;
 }
 
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
-}
-
 bool fn_8022E23C(s32 player, s32 arg) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
@@ -3717,14 +3781,15 @@ bool fn_8022DD74(s32 player) {
     return false;
 }
 
+// Inverted forwarder form: fn_80231DE4 inlines it (Round 11, "Forwarder form").
 bool fn_8022DCD8(s32 player) {
     if (gPlayerManager_8053AC90 == NULL) {
         return false;
     }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80240818();
+    if (!fn_8023F264(player)) {
+        return false;
     }
-    return false;
+    return gPlayerManager_8053AC90->mPlayers[player]->fn_80240818();
 }
 
 bool fn_8022DC3C(s32 player) {
