@@ -7,10 +7,8 @@
 #include "game/Map.h"
 #include "game/act/tu_801DE714.h"
 
-// FIXME: 94.47%. Only the copy of mPos differs: the target loads z (lfs 0x14)
-// before the psq_l of x, y and stores z first; this code copies in the other
-// order.
-void cls_804A51E4::fn_8020D2AC() {
+// const: the target loads mPos.z (lfs 0x14) above the prologue's register saves.
+void cls_804A51E4::fn_8020D2AC() const {
     JGeometry::TVec3f pos(mPos);
     pos.y -= 26.0f;
     if (!fn_801E1D9C()) {
