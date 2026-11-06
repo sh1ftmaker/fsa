@@ -1015,18 +1015,6 @@ bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag,
     return false;
 }
 
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) {
     if (gPlayerManager_8053AC90 == NULL) {
         return -1;
@@ -1141,18 +1129,6 @@ s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out)
     }
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80273FB8(box, layer, out)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80256C74(a, b)) {
             return i;
         }
     }
@@ -1309,28 +1285,6 @@ bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80272E98(box, layer);
     }
     return false;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -2572,6 +2526,16 @@ f32 fn_80233C08(JGeometry::TVec3f* v) {
     return v->normalize();
 }
 
+// -v by value, as a unary TVec3 operator- would give it (libs' JGeometry has
+// none). fn_80232A0C passes the returned temporary's address on: the
+// original builds the negation (ps_neg) in one stack TVec3f and copies it
+// into the argument (z through frsp), as this does.
+static inline JGeometry::TVec3f negated(const JGeometry::TVec3f& v) {
+    JGeometry::TVec3f result;
+    result.negate(v);
+    return result;
+}
+
 // Out-of-line copy of TVec3<f32>::operator-: a copy of a, then sub(b).
 // Returned through the hidden pointer like any struct value.
 // Not auto-inlined: fn_80232A0C calls fn_80233BC4 out of line in the original
@@ -2595,10 +2559,11 @@ void fn_80233BA0(JGeometry::TBox2f* dst, const JGeometry::TBox2f* src) {
 // (Player.h). The out-of-line JGeometry copies it calls (fn_801546F4, fn_80233BA0,
 // fn_80233BC4, fn_80233C08) are the ones MWCC did not inline here; under the default
 // inline budget it also calls the unit's small queries out of line.
-// FIXME: 97.25 %. The three pushes of j by -dir: the original negates dir (ps_neg)
-// into a stack temporary and copy-constructs the argument from it (two TVec3fs,
-// z through frsp), as an inline returning -dir by value would; ours negates
-// straight into one TVec3f (3 instructions fewer each).
+// The three pushes of j by -dir pass the address of negated(dir)'s value (the
+// original's two stack TVec3fs: the negation, then the copy, z through frsp).
+// FIXME: 99.40 %. Float registers and load order only: the moves of boxA / boxB
+// by their view corner (addPos) load i.y before i.x in ours (x first in the
+// original); the rest is float register numbering.
 void fn_80232A0C() {
     for (int n = 0; n < 4; n++) {
         Player_804A6F38* p = gPlayerManager_8053AC90->mPlayers[n];
@@ -2708,9 +2673,7 @@ void fn_80232A0C() {
                 }
 
                 if (fn_8022CCAC(i)) {
-                    JGeometry::TVec3f back;
-                    back.negate(dir);
-                    fn_8023DFF4(j, &back);
+                    fn_8023DFF4(j, &negated(dir));
                     boxB.addPos(JGeometry::TVec2f(-dir.x, -dir.y));
                     b->field_0xafc = 1;
                 } else if (fn_8022CCAC(j)) {
@@ -2724,9 +2687,7 @@ void fn_80232A0C() {
                         a->field_0xafc = 1;
                     }
                     if (fn_80234004(j) != j) {
-                        JGeometry::TVec3f back;
-                        back.negate(dir);
-                        fn_8023DFF4(j, &back);
+                        fn_8023DFF4(j, &negated(dir));
                         boxB.addPos(JGeometry::TVec2f(-dir.x, -dir.y));
                         b->field_0xafc = 1;
                     }
@@ -2737,9 +2698,7 @@ void fn_80232A0C() {
                         a->field_0xafc = 1;
                     }
                     if (!b->fn_80250D30()) {
-                        JGeometry::TVec3f back;
-                        back.negate(dir);
-                        fn_8023DFF4(j, &back);
+                        fn_8023DFF4(j, &negated(dir));
                         boxB.addPos(JGeometry::TVec2f(-dir.x, -dir.y));
                         b->field_0xafc = 1;
                     }
@@ -3735,17 +3694,6 @@ bool fn_8022E39C(s32 player, s32 arg) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80240840(arg);
     }
     return false;
-}
-
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
 }
 
 bool fn_8022E23C(s32 player, s32 arg) {
