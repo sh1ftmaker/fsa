@@ -30,7 +30,7 @@ struct cls_801ED3DC {
     // Zeroes everything and leaves the watch running (0).
     void fn_801ED798();
     // True when the watch has stopped at the 2 minute limit (1, 7200, 119, 99).
-    bool fn_801ED7B0();
+    bool fn_801ED7B0() const;
     // Both stop the watch and zero the time.
     void fn_801ED7F0();
     void fn_801ED80C();

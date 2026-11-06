@@ -51,7 +51,7 @@ struct cls_80215E48 {
     void fn_80215ECC();
     // True when some entry with a negative mKey has its stopwatch at the
     // 2 minute limit.
-    bool fn_8021606C();
+    bool fn_8021606C() const;
     // Zeroes every entry's stopwatch and leaves the watches running.
     void fn_8021600C();
     // Stops entry `index`'s stopwatch with `fraction` of a frame and sets its

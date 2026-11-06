@@ -6,12 +6,11 @@
 
 static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
 
-bool cls_80215E48::fn_8021606C() {
-    // FIXME: 91.62 %. The original loads mCount above `mr r30, r3` (a const
-    // `this`?); ours loads it after the register saves.
-    s32 count = mCount;
+// const: the original loads mCount above `mr r30, r3` (the loop tests the member; a count
+// local keeps the load after the register saves).
+bool cls_80215E48::fn_8021606C() const {
     bool result = false;
-    for (s32 i = 0; i < count; i++) {
+    for (s32 i = 0; i < mCount; i++) {
         if (mEntries[i].mKey < 0) {
             if (mEntries[i].mWatch.fn_801ED7B0()) {
                 result = true;

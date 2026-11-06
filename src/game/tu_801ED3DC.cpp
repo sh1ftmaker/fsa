@@ -65,7 +65,7 @@ void cls_801ED3DC::fn_801ED7F0() {
     mCentis = 0;
 }
 
-bool cls_801ED3DC::fn_801ED7B0() {
+bool cls_801ED3DC::fn_801ED7B0() const {
     bool result = false;
     if (mStopped == true && mFrames == 7200 && mSeconds == 119 && mCentis == 99) {
         result = true;
