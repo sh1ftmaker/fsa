@@ -711,15 +711,15 @@ u8 EnemyBase_804A4808::vfunc_0x5C() {
 // it is a live Bombchu (fn_801CC8E4): fn_801F37AC with its attack, its
 // position relative to ours, its field_0x168 and field_0x110. The attacker's
 // field_0x164 is set when the hit landed. Returns whether it did.
-bool EnemyBase_804A4808::fn_801CEA60() {
-    bool hit = false;
+u8 EnemyBase_804A4808::fn_801CEA60() {
+    u8 hit = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (actor != NULL) {
                 if (fn_801CC8E4(actor)) {
-                    hit = false;
+                    hit = 0;
                 } else {
                     JGeometry::TVec3f from = mPos;
                     from -= actor->field_0x3c;

@@ -24,9 +24,8 @@ public:
     /* 0x08 */ virtual ~cls_804A3E44();
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
-    /* 0x60 */ virtual bool vfunc_0x60();
+    /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x78 */ virtual void vfunc_0x78();
-    /* 0x88 */ virtual void vfunc_0x88();
     /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0xA0 */ virtual void vfunc_0xA0();
 

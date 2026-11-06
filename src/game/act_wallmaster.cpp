@@ -139,7 +139,7 @@ void cls_804A3E44::init() {
     mBox2.set(mBox);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0x98 = 2;
-    mFlags |= 0x100;
+    mFlags |= ENEMY_FLAG_NO_ATTACK;
     field_0x194 = 1;
     if (field_0x2a8 == 0) {
         mState = 0;
@@ -426,6 +426,7 @@ void cls_804A3E44::vfunc_0x90(u8 mapHit) {
         break;
     case 1:
         if (mStateTimer >= 60) {
+            // Steering temporary: testing the call directly costs 0.8 % (98.37 vs 99.16).
             bool b = !fn_801D08B4(field_0x2b8, &mSpawnPos, 48.0f);
             if (b) {
                 fn_801BC554(5);
@@ -454,6 +455,7 @@ void cls_804A3E44::vfunc_0x90(u8 mapHit) {
         }
         break;
     case 2: {
+        // Steering temporary, as in state 1.
         bool b = !fn_801D08B4(field_0x2b8, &mSpawnPos, 48.0f);
         if (b) {
             fn_801BC554(5);
@@ -575,44 +577,8 @@ void cls_804A3E44::vfunc_0x90(u8 mapHit) {
     }
 }
 
-void cls_804A3E44::vfunc_0x88() {
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-    switch (mState) {
-    case 1:
-    case 2:
-        field_0x3c.z = -0.7f;
-        if (field_0x2b8 >= 0) {
-            JGeometry::TVec2f vec;
-            fn_801D00B4(field_0x2b8, &vec, 1.0f);
-            field_0x3c.x = vec.x;
-            field_0x3c.y = vec.y;
-        }
-        break;
-    case 4:
-        field_0x3c.z = 0.3f;
-        break;
-    case 5:
-        field_0x3c.z = 0.5f;
-        break;
-    case 6: {
-        JGeometry::TVec2f vec;
-        // fn_801D01A0 reads only (x, y) of both points; field_0x2b0 is an 8-byte TVec2f slot.
-        fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b0, &vec, 0.5f);
-        field_0x3c.x = vec.x;
-        field_0x3c.y = vec.y;
-        break;
-    }
-    case 7:
-        field_0x3c.z = 0.3f;
-        break;
-    case 8:
-        field_0x3c.z = -0.5f;
-        break;
-    case 10:
-        EnemyBase_804A4808::vfunc_0x88();
-        break;
-    }
-}
+// vfunc_0x88 left unwritten: state 6 passes field_0x2b0 (a TVec2f slot) to
+// fn_801D01A0, whose target parameter is typed TVec3f* in EnemyBase.
 
 void cls_804A3E44::vfunc_0x78() {
     if (field_0x2b8 >= 0 && fn_8022DCD8(field_0x2b8)) {
@@ -624,11 +590,14 @@ void cls_804A3E44::vfunc_0x78() {
     }
 }
 
-bool cls_804A3E44::vfunc_0x60() {
+u8 cls_804A3E44::vfunc_0x60() {
+    u8 hit;
     if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
-        return fn_801CEA60();
+        hit = fn_801CEA60();
+    } else {
+        hit = EnemyBase_804A4808::vfunc_0x60();
     }
-    return EnemyBase_804A4808::vfunc_0x60();
+    return hit;
 }
 
 void cls_804A3E44::vfunc_0xA0() {
