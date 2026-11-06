@@ -10,6 +10,8 @@
 
 static const char* lbl_80539F40[] = {"yuki_l.bti", NULL};
 
+// FIXME: 99.78%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
+// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 cls_8049E8A0::cls_8049E8A0()
     : field_0x230(0), field_0x234(0), field_0x238(1.0f), field_0x23c(NULL), field_0x240(NULL), field_0x244(NULL) {}
 
@@ -24,6 +26,8 @@ cls_8049E8A0::~cls_8049E8A0() {
     }
 }
 
+// FIXME: 99.82%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
+// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 void cls_8049E8A0::init() {
     ActorBase_804A5770::init();
     mBox.i.x = -24.0f;
@@ -55,6 +59,8 @@ void cls_8049E8A0::init() {
     }
 }
 
+// FIXME: 99.82%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
+// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 void cls_8049E8A0::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
@@ -70,6 +76,7 @@ void cls_8049E8A0::update() {
         s32 player = fn_801F285C(NULL, NULL, true, -1);
         if (player >= 0) {
             startSound_801F0E34(0x400d1, 0);
+            // fn_802379E4 reads only x / y (as in tu_8022AD64), the original stores just those two.
             JGeometry::TVec2f pos(mPos.x, mPos.y);
             fn_802379E4(player, (const JGeometry::TVec3f*)&pos);
         }
@@ -139,7 +146,7 @@ void cls_8049E8A0::update() {
 void cls_8049E8A0::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
-    SpriteParams_801F5AE0 sp;
+    SpriteParams_801F5AE0 sp; // unused: the original constructs a second SpriteParams here (its reset loop at 0x8012E014)
     Mtx mtx;
     if (!field_0x54.isZero()) {
         mtx[0][3] = 0.0f;
