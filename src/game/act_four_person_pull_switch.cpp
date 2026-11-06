@@ -24,6 +24,7 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
     result = a;
 }
 
+// FIXME: 98.85% (different: same length, 1 opcodes differ; mr vs lwz on field_0x234[i] and sum temporary stack offsets).
 void FourPersonPullSwitch_804AE230::init() {
     if (((field_0x90 >> 4) & 3) == 0) {
         for (s32 i = 0; i < 3; i++) {
@@ -61,6 +62,7 @@ void FourPersonPullSwitch_804AE230::init() {
     field_0x260 = 0;
 }
 
+// FIXME: 99.54% (operands: same opcodes, an immediate or offset differs; stack frame 0xa0 vs 0xb0 and regalloc r29/r30).
 void FourPersonPullSwitch_804AE230::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -90,31 +92,7 @@ void FourPersonPullSwitch_804AE230::update() {
             field_0x254 += 0.1f;
             if (field_0x254 >= 8.0f) {
                 field_0x254 = 8.0f;
-                bool allPulled;
-                if (((field_0x90 >> 4) & 3) != 0) {
-                    allPulled = false;
-                } else {
-                    for (s32 i = 0; i < 3; i++) {
-                        FourPersonPullSwitch_804AE230* child =
-                            static_cast<FourPersonPullSwitch_804AE230*>(
-                                getActorManager_801F856C()->findActorBySerial_801F666C(
-                                    field_0x234[i]));
-                        if (child->field_0x254 < 8.0f) {
-                            allPulled = false;
-                            goto check_done;
-                        }
-                    }
-                    for (s32 i = 0; i < 3; i++) {
-                        FourPersonPullSwitch_804AE230* child =
-                            static_cast<FourPersonPullSwitch_804AE230*>(
-                                getActorManager_801F856C()->findActorBySerial_801F666C(
-                                    field_0x234[i]));
-                        child->field_0x250 = 1;
-                    }
-                    allPulled = true;
-                }
-            check_done:
-                if (allPulled == true) {
+                if (checkAllPulled() == true) {
                     field_0x250 = 1;
                     startSound_801F0E34(0x3004B, 0);
                     mPos.y = mSpawnPos.y + field_0x254;
@@ -186,6 +164,26 @@ void FourPersonPullSwitch_804AE230::draw() {
     fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x24c + 0x147, false, 1, -1, 0, 0, 0);
 }
 
+bool FourPersonPullSwitch_804AE230::checkAllPulled() {
+    if (((field_0x90 >> 4) & 3) != 0) {
+        return false;
+    }
+    for (s32 i = 0; i < 3; i++) {
+        FourPersonPullSwitch_804AE230* child = static_cast<FourPersonPullSwitch_804AE230*>(
+            getActorManager_801F856C()->findActorBySerial_801F666C(field_0x234[i]));
+        if (child->field_0x254 < 8.0f) {
+            return false;
+        }
+    }
+    for (s32 i = 0; i < 3; i++) {
+        FourPersonPullSwitch_804AE230* child = static_cast<FourPersonPullSwitch_804AE230*>(
+            getActorManager_801F856C()->findActorBySerial_801F666C(field_0x234[i]));
+        child->field_0x250 = 1;
+    }
+    return true;
+}
+
+// FIXME: 99.54% (operands: same opcodes, an immediate or offset differs; stack offsets for pos/playerPos and regalloc r28..r30).
 // Called out of line by FourPersonPullSwitch_804AE230::update (0x8036CF84: bl fn_8036CBBC).
 #pragma auto_inline off
 void FourPersonPullSwitch_804AE230::fn_8036CBBC() {

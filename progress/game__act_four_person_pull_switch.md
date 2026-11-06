@@ -1,0 +1,22 @@
+# game/act_four_person_pull_switch.cpp
+
+## Status
+- `.text`: 99.55%
+- `.ctors`: 100.00%
+- `.rodata`: 100.00%
+- `.data`: 100.00%
+- `.bss`: 100.00%
+- `.sdata2`: 100.00%
+
+## Functions
+- `FourPersonPullSwitch_804AE230::~FourPersonPullSwitch_804AE230` (`0x8036CB5C`, 96B): 100.00%
+- `FourPersonPullSwitch_804AE230::fn_8036CBBC` (`0x8036CBBC`, 668B): 99.54% (`operands: same opcodes, an immediate or offset differs` — stack offsets for `pos`/`playerPos` and loop register allocation `r28..r30`)
+- `FourPersonPullSwitch_804AE230::draw` (`0x8036CE58`, 196B): 100.00%
+- `FourPersonPullSwitch_804AE230::update` (`0x8036CF1C`, 1212B): 99.54% (`operands: same opcodes, an immediate or offset differs` — stack frame `0xa0` vs `0xb0` and register allocation `r29`/`r30`)
+- `FourPersonPullSwitch_804AE230::init` (`0x8036D3D8`, 508B): 98.85% (`different: same length, 1 opcodes differ` — `mr` vs `lwz` on `field_0x234[i]` and `sum` temporary stack offsets)
+- `__sinit_act_four_person_pull_switch_cpp` (`0x8036D5D4`, 548B): 100.00%
+
+## Proven Facts
+- `FourPersonPullSwitch_804AE230` size is `0x264` (`tu_801F9484.s` at `0x801FB640`: `li r3, 0x264` for `'PSW2'`).
+- `fn_8036CBBC` is a member function `FourPersonPullSwitch_804AE230::fn_8036CBBC()` called from `update()` at `0x8036CF84` with `mr r3, r31`.
+- An inline helper `FourPersonPullSwitch_804AE230::checkAllPulled()` defined between `draw()` and `fn_8036CBBC()` is inlined into `update()` and pools `8.0f` (`0x80542CE0`) before `draw()`'s `1.0f` (`0x80542CE4`), bringing `.sdata2` and `draw()` to 100.00%.

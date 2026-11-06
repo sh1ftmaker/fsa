@@ -15,6 +15,7 @@ public:
     /* 0x20 */ virtual void draw();
 
     void fn_8036CBBC();
+    bool checkAllPulled();
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234[3];
