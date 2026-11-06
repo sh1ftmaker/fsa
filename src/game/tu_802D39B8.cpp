@@ -1080,7 +1080,7 @@ const char* GameView_804A9950::fn_802D9C1C() {
     return "0";
 }
 
-// FIXME: 99.4. Structurally close, two instructions: in the inlined fn_802DEBA0 the target
+// FIXME: 99.6. Structurally close, two instructions: in the inlined fn_802DEBA0 the target
 // reloads the view for the stage >= 13 test (the fn_802DEBA0 family). The .rodata strings
 // sit elsewhere in the target: "bg_%s_scl.szs", "bg_%s_ura_scl.szs" (not used here) and
 // "bg_%s_gb_scl.szs" come before "bg_base_sch.szs".
@@ -1166,7 +1166,7 @@ static inline TileMap_804AA858* getTileMap() {
     return gGameRoot2_8053AB10->field_0x20;
 }
 
-// FIXME: 96.4. Structurally close: the target builds the resource type with 'M   ' in a
+// FIXME: 98.3. Structurally close: the target builds the resource type with 'M   ' in a
 // register (lis/addi 0x4D202020, add, then subi 0x20 for the last ' '); ours folds the
 // constant (addis/addi 0x2000) and adds it first; the inlined fn_802DEBA0 reloads the view
 // in the target (as fn_802DEBA0); the int-to-float temporaries of field_0x14 / field_0x18
@@ -1191,6 +1191,8 @@ void GameView_804A9950::fn_802D8D50(bool reload) {
             }
         }
     }
+    // Resource type: 'M' plus the three stage characters (each minus ' ') added into the
+    // low bytes; written as a running sum because the target does not fold the constant.
     u32 type = 'M   ';
     type += ((stage[0] - ' ') << 16) + ((stage[1] - ' ') << 8) + (stage[2] - ' ');
     sprintf(name1, "d_map%s_%d%d_mmm_1_0.szs", stage, screen / 10, screen % 10);
@@ -1245,6 +1247,7 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
         if (screen == 0xFF) {
             screen = 0;
         }
+        // Resource type 'B' plus the stage characters, as in fn_802D8D50.
         u32 type = 'B   ';
         sprintf(name, "d_enemy_map%s_%d%d.bin", stage, screen / 10, screen % 10);
         type += ((stage[0] - ' ') << 16) + ((stage[1] - ' ') << 8) + (stage[2] - ' ');
@@ -1350,6 +1353,7 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
     }
     for (int i = 0; i < 8; i++) {
         u32 value = field_0x130c8[i];
+        // u8 locals: the target compares the extracted bytes signed (cmpw); a masked u32 gives cmplw.
         u8 col = value >> 16;
         u8 row = value >> 8;
         if (col == field_0x14 && row == field_0x18) {
@@ -1361,6 +1365,7 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
     }
     for (int i = 0; i < 8; i++) {
         u32 value = field_0x13128[i];
+        // u8 locals: the target compares the extracted bytes signed (cmpw); a masked u32 gives cmplw.
         u8 col = value >> 16;
         u8 row = value >> 8;
         if (col == field_0x14 && row == field_0x18) {
