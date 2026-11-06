@@ -3019,6 +3019,27 @@ void Player_804A6F38::fn_80242CB0() {
     }
 }
 
+// Counts field_0xbd8 down (fn_803037D4(index, 2) every 60 frames while
+// fn_8030381C allows it); a leader with field_0xbdc whose count ran out on
+// a layer of 8 or more calls fn_8028FBA0; below layer 8 the count is dropped.
+void Player_804A6F38::fn_80242BC0() {
+    if (field_0x454) {
+        return;
+    }
+    if (field_0xbd8 > 0) {
+        field_0xbd8--;
+        if (field_0xbd8 > 0 && field_0xbd8 % 60 == 0 && fn_8030381C(field_0x4)) {
+            fn_803037D4(field_0x4, 2);
+        }
+    }
+    if (field_0xd60 < 0 && field_0xbdc && field_0xbd8 <= 0 && field_0x3b4 >= 8) {
+        fn_8028FBA0();
+    }
+    if (field_0x3b4 < 8 && field_0xbd8 > 0) {
+        field_0xbd8 = 0;
+    }
+}
+
 // In states 0x4A / 0x4B (fn_802412A4), unless field_0x454 is set: counts
 // field_0xbe4 down, with fn_803037D4(field_0x4, 2) every 60 frames for a
 // player acting on its own (fn_80240670 false) when fn_8030381C allows it;
@@ -3044,27 +3065,6 @@ void Player_804A6F38::fn_80242940() {
     }
     if (field_0x3b4 < 8 && field_0xbe4 > 0) {
         field_0xbe4 = 0;
-    }
-}
-
-// Counts field_0xbd8 down (fn_803037D4(index, 2) every 60 frames while
-// fn_8030381C allows it); a leader with field_0xbdc whose count ran out on
-// a layer of 8 or more calls fn_8028FBA0; below layer 8 the count is dropped.
-void Player_804A6F38::fn_80242BC0() {
-    if (field_0x454) {
-        return;
-    }
-    if (field_0xbd8 > 0) {
-        field_0xbd8--;
-        if (field_0xbd8 > 0 && field_0xbd8 % 60 == 0 && fn_8030381C(field_0x4)) {
-            fn_803037D4(field_0x4, 2);
-        }
-    }
-    if (field_0xd60 < 0 && field_0xbdc && field_0xbd8 <= 0 && field_0x3b4 >= 8) {
-        fn_8028FBA0();
-    }
-    if (field_0x3b4 < 8 && field_0xbd8 > 0) {
-        field_0xbd8 = 0;
     }
 }
 
