@@ -29,7 +29,7 @@
 <text x="50" y="197" font-size="16" font-weight="700" fill="#1b1f3a">Boot to main menu</text>
 <text x="50" y="217" font-size="12" fill="#6b7096">83 files · 1.20 MiB · 6 Matching</text>
 <rect x="330" y="184" width="440" height="14" rx="4" fill="#e6e8f3"/>
-<rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="131.85" height="14" rx="4" fill="#3aae5c" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="131.90" height="14" rx="4" fill="#3aae5c" fill-opacity="0.35"/>
 <rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="94.30" height="14" rx="4" fill="#3aae5c"/>
 <text x="330" y="217" class="mono" font-size="11.5" fill="#6b7096">honest 21.4 % · weighted 30.0 %</text>
 <text x="932" y="198" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#3aae5c">21.4 %</text>
