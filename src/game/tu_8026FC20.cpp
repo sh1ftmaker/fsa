@@ -2666,7 +2666,7 @@ void Player_804A6F38::fn_802756E4() {
 // fn_80276BB8 at full charge).
 // FIXME: 95.40. Structurally close: the original loads one .rodata base (0x8046BB48) into r3 at
 // entry and reaches lbl_8046BCA8's pose / offset members from it (+0x180 / +0x1A0); ours
-// re-materialises the table address (lis / addi) in every pose branch (8 instructions more)
+// re-materialises the table address (lis / addi) in every pose branch (9 instructions more in all)
 // and keeps mPos.z in f5. Neither separate static tables nor function-local ones give the
 // shared base.
 void Player_804A6F38::fn_80274CB8() {
