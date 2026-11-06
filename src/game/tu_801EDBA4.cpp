@@ -32,7 +32,7 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
         flags = 0x407;
         params.field_0x10.a = 0;
     }
-    f32 scale = 1.0f + field_0x52c.field_0x28;
+    f32 scale = 1.0f + field_0x52c.field_0x28.value;
     scale = 0.001f - scale >= 0.0f ? 0.001f : scale;
     mtx[0][0] = 1.0f;
     mtx[0][1] = 0.0f;

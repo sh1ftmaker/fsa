@@ -139,11 +139,10 @@ public:
 class cls_801D7730 {
 public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
-    cls_801D7730() { fn_801D77B4(); }
+    cls_801D7730();
     ~cls_801D7730();
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
-    void fn_801D77B4();
     /* 0x00 */ s32 field_0x0[0x10];
     /* 0x40 */ s32 field_0x40; // cleared by the constructor
     /* 0x44 */ s32 field_0x44; // cleared by the constructor
@@ -183,7 +182,6 @@ public:
     /* 0xA0 */ virtual void vfunc_0xA0();
 
     void fn_801D63D0();
-    void fn_801D5B70();
     void fn_801D4C70();
     void fn_801E4790(bool arg);
     void fn_801E4758();

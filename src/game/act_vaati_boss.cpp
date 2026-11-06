@@ -13,6 +13,7 @@
 // before every literal of the file, so they cannot end game/tu_801D3CBC.cpp's pool.
 const f32 lbl_8053F0B8 = 90.0f;
 const f32 lbl_8053F0BC = 1.7f;
+// 0x8053F0C0 / 0x8053F0C4: the words 12 and 0x1E; game/tu_801E3618.cpp reads them (lwz at 0x801E3EB4, lbz at 0x801E3D7C).
 const s32 lbl_8053F0C0 = 12;
 const u8 lbl_8053F0C4 = 0x1E;
 
@@ -48,6 +49,7 @@ cls_801D6A58::cls_801D6A58() {
 
 cls_801E6AB8::~cls_801E6AB8() {}
 
+// FIXME: 99.90%. reloc-name. The original calls fn_801D77B4 (an identical copy of cls_801D7730's constructor, tu_801D6CEC) for the member at 0x4C4; ours calls __ct__12cls_801D7730Fv.
 VaatiBoss_804A4958::VaatiBoss_804A4958() {
     field_0x5b0 = -1;
     field_0x5b4 = 0;
@@ -91,6 +93,7 @@ VaatiBoss_804A4958::VaatiBoss_804A4958() {
     field_0x448.mOwner = this;
 }
 
+// FIXME: 96.98%. scheduling+regalloc + reloc-name. Float conversion temporaries and the stores of field_0x5f0 / field_0x5f4 / field_0x5f8 are scheduled differently.
 void VaatiBoss_804A4958::init() {
     EnemyBase_804A4808::init();
     field_0x5dc = field_0x90 & 0xF;
@@ -110,16 +113,15 @@ void VaatiBoss_804A4958::init() {
 
     field_0xb0 = 0;
     field_0x98 = 2;
-    mFlags |= 0x320;
+    mFlags |= ENEMY_FLAG_NO_FLOOR | ENEMY_FLAG_NO_ATTACK | ENEMY_FLAG_KEEP_LIFE;
     field_0x114 = 2;
     mLife = 1000;
     mLifeBackup = mLife;
     field_0x196 = 1;
 
-    f32 scale = 1.7f;
-    field_0x54.x = scale;
-    field_0x54.y = scale;
-    field_0x54.z = scale;
+    field_0x54.x = 1.7f;
+    field_0x54.y = 1.7f;
+    field_0x54.z = 1.7f;
 
     field_0x60c.x = mPos.x;
     field_0x60c.y = mPos.y;
@@ -172,6 +174,7 @@ void VaatiBoss_804A4958::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
+// FIXME: 97.13%. regalloc-only + reloc-name. Register allocation of the random-velocity arithmetic.
 void VaatiBoss_804A4958::fn_801D63D0() {
     for (s32 i = 0; i < 5; i++) {
         s32 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, 2);
@@ -204,6 +207,7 @@ void VaatiBoss_804A4958::vfunc_0x94() {
     }
 }
 
+// FIXME: 98.45%. missing/extra. The original reloads mFlags (0x230) before clearing 0x8000; ours reuses the loaded value.
 void VaatiBoss_804A4958::vfunc_0x74() {
     if (mState == 5) {
         fn_801E4D74();
@@ -224,8 +228,14 @@ void VaatiBoss_804A4958::vfunc_0x74() {
             fn_801D5D84(0xC);
         }
     } else if (fn_801CD2F8(field_0x4)) {
-        if (mState >= 15 && mState < 21 && mState != 17) {
+        switch (mState) {
+        case 15:
+        case 16:
+        case 18:
+        case 19:
+        case 20:
             fn_801D5D84(10);
+            break;
         }
     } else if (mLife > 0 && mState != 23) {
         field_0x448.fn_80217CD8();

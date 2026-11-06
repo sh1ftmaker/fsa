@@ -3,7 +3,11 @@
 
 #include "types.h"
 
-// Owner: game/tu_801E4A18.cpp
+// Damped sine oscillation (provisional name, no evidence for a real one):
+// `amplitude` falls linearly by `decay` each tick while the sine of the
+// elapsed time advances `angleStep` per tick. Callers: act_vaati_boss
+// (0x801D68E8..), tu_801D6CEC (0x801D6D24).
+// Owner of the functions: game/tu_801E4A18.cpp
 struct DampedSine_801E4A18 {
     /* 0x00 */ f32 value;
     /* 0x04 */ u16 remaining;
