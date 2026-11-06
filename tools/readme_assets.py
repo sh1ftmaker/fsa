@@ -191,13 +191,21 @@ def emblem(summary, cx, cy, k, t):
         if not r:
             continue
         col = HUE["gold"] if key == "libs" else part_color(r)
+        # Each gem shows weighted progress (honest 100 % functions plus partial credit for
+        # structurally matched ones, which the crack pass finishes): the solid fill is the
+        # honest share, the paler fill above it the rest of the weighted share.
         frac = r["cm"] / r["c"] if r["c"] else 0
+        wfrac = max(frac, r.get("wm", r["cm"]) / r["c"]) if r["c"] else 0
         fh = rhombus_fill(frac, h)
+        wfh = rhombus_fill(wfrac, h)
         defs.append(f'<clipPath id="ec-{key}"><path d="{rhombus(gx, gy, w, h)}"/></clipPath>'
                     f'<linearGradient id="eg-{key}" x1="0" y1="1" x2="0" y2="0">'
                     f'<stop offset="0" stop-color="{col}"/><stop offset="1" stop-color="{col}" stop-opacity="0.65"/></linearGradient>')
         out.append(f'<path d="{rhombus(gx, gy, w, h)}" fill="{col}" fill-opacity="0.12" stroke="{col}" '
                    f'stroke-opacity="0.75" stroke-width="1.5"/>')
+        if wfh > fh:
+            out.append(f'<g clip-path="url(#ec-{key})"><rect class="rise" style="animation-delay:{0.2 + 0.1 * i:.2f}s" '
+                       f'x="{gx - w}" y="{gy + h - wfh:.2f}" width="{2 * w}" height="{wfh:.2f}" fill="{col}" fill-opacity="0.38"/></g>')
         if fh > 0:
             out.append(f'<g clip-path="url(#ec-{key})"><rect class="rise" style="animation-delay:{0.2 + 0.1 * i:.2f}s" '
                        f'x="{gx - w}" y="{gy + h - fh:.2f}" width="{2 * w}" height="{fh:.2f}" fill="url(#eg-{key})"/></g>')
@@ -206,7 +214,7 @@ def emblem(summary, cx, cy, k, t):
             out.append(f'<text x="{lx}" y="{ly - 5}" text-anchor="{anchor}" font-size="9" font-weight="600" '
                        f'letter-spacing="0.08em" fill="{t["ink2"]}">{esc(PART_SHORT.get(key, key).upper())}</text>')
             out.append(f'<text x="{lx}" y="{ly + 7}" text-anchor="{anchor}" font-size="10.5" font-weight="700" '
-                       f'fill="{t["ink"]}" class="mono">{esc(pct(r["cm"], r["c"]))}</text>')
+                       f'fill="{t["ink"]}" class="mono">{esc(pct(r.get("wm", r["cm"]), r["c"]))}</text>')
     out.append("</g>")
     return "<defs>" + "".join(defs) + "</defs>" + "".join(out)
 

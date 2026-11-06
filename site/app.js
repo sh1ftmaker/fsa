@@ -155,7 +155,7 @@ function rhombusFill(a, h) {
 }
 
 // The emblem: the game code's eight categories as gems on a ring (clockwise from the
-// top, in their order), each filled to its matched share; the gold gem in the middle
+// top, in their order), each filled to its weighted share (honest share solid); the gold gem in the middle
 // is the libraries, all four together. Same layout as tools/readme_assets.py emblem_layout.
 function drawEmblem() {
   const svg = d3.select("#emblem");
@@ -173,17 +173,25 @@ function drawEmblem() {
   for (const g of gems) {
     const key = g.lib ? "libs" : g.part;
     const node = g.lib ? null : byId.get(`game/game-${g.part}`);
-    const r = g.lib ? { name: "Libraries", c: L.c, cm: L.cm } : node;
+    const r = g.lib ? { name: "Libraries", c: L.c, cm: L.cm, wm: L.wm } : node;
     const col = g.lib ? "#d29a2e" : PART[g.part].color;
+    // Weighted progress (honest plus partial credit for structurally matched functions, which
+    // the crack pass finishes): solid fill = honest share, paler fill above it = the rest.
     const frac = r.c ? r.cm / r.c : 0;
+    const wfrac = r.c ? Math.max(frac, (r.wm ?? r.cm) / r.c) : 0;
     const grad = defs.append("linearGradient").attr("id", `eg-${key}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
     grad.append("stop").attr("offset", 0).attr("stop-color", col);
     grad.append("stop").attr("offset", 1).attr("stop-color", d3.color(col).brighter(0.9));
     defs.append("clipPath").attr("id", `ec-${key}`).append("path").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h));
     const grp = svg.append("g").attr("class", "gem").attr("tabindex", 0).attr("role", "button")
-      .attr("aria-label", `${r.name}: ${pct(100 * frac)} of code matched`);
+      .attr("aria-label", `${r.name}: ${pct(100 * wfrac)} weighted, ${pct(100 * frac)} byte-identical`);
     grp.append("path").attr("class", "gem-bg").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h))
       .attr("fill", d3.color(col).copy({ opacity: 0.12 })).attr("stroke", d3.color(col).copy({ opacity: 0.7 }));
+    const wfillH = rhombusFill(wfrac, g.h);
+    grp.append("rect").attr("clip-path", `url(#ec-${key})`).attr("x", g.cx - g.w).attr("width", 2 * g.w)
+      .attr("y", g.cy + g.h).attr("height", 0).attr("fill", col).attr("fill-opacity", 0.38)
+      .transition().delay(300).duration(REDUCED ? 0 : 1600).ease(d3.easeCubicOut)
+      .attr("y", g.cy + g.h - wfillH).attr("height", wfillH);
     const fillH = rhombusFill(frac, g.h);
     grp.append("rect").attr("clip-path", `url(#ec-${key})`).attr("x", g.cx - g.w).attr("width", 2 * g.w)
       .attr("y", g.cy + g.h).attr("height", 0).attr("fill", `url(#eg-${key})`)
@@ -192,7 +200,7 @@ function drawEmblem() {
     grp.append("path").attr("d", `M${g.cx} ${g.cy - g.h}L${g.cx + g.w} ${g.cy}L${g.cx} ${g.cy}Z`).attr("fill", "rgba(255,255,255,0.06)").attr("pointer-events", "none");
     if (!g.lib) {
       grp.append("text").attr("class", "gem-name").attr("x", g.lx).attr("y", g.ly - 5).attr("text-anchor", g.anchor).text(PART[g.part].short);
-      grp.append("text").attr("class", "gem-label").attr("x", g.lx).attr("y", g.ly + 8).attr("text-anchor", g.anchor).text(pct(100 * frac));
+      grp.append("text").attr("class", "gem-label").attr("x", g.lx).attr("y", g.ly + 8).attr("text-anchor", g.anchor).text(pct(100 * wfrac));
     }
     grp.on("click keydown", (ev) => {
       if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
