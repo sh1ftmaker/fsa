@@ -450,4 +450,17 @@ bool Vulture_804A4230::vfunc_0x58() {
     return hit;
 }
 
+// FIXME: 99.84 % (reloc-name). 100 % instruction match; literal names not yet split.
+bool Vulture_804A4230::vfunc_0x60() {
+    bool hit = false;
+    if (!(mFlags & 0x4000)) {
+        if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
+            hit = fn_801CEA60();
+        } else {
+            hit = EnemyBase_804A4808::vfunc_0x60();
+        }
+    }
+    return hit;
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
