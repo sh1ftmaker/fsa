@@ -545,8 +545,8 @@ public:
     void fn_80276538(); // sets the box field_0x4c0 around mPos
     void fn_80276078();
     // The per-frame calls of the player's update A (fn_80253E6C), all on
-    // this player and not written yet: tu_8023FBF0 fn_802490A8 (input and
-    // actions), fn_80251D50, fn_8024BDBC, fn_8024E0A0; tu_8026FC20
+    // this player: tu_8023FBF0 fn_802490A8 (input and actions), fn_80251D50,
+    // fn_8024BDBC (not written yet), fn_8024E0A0; tu_8026FC20
     // fn_8026FD14; tu_80264998 fn_80265E88 and tu_80285E58 fn_80285E58 /
     // fn_80286688 (declared above).
     void fn_80253E6C();
@@ -1263,6 +1263,7 @@ extern PlayerManager_804A6F28* gPlayerManager_8053AC90;
 //
 // Defined in game/tu_8022AD64.cpp (C++ linkage, renamed in symbols.txt).
 void fn_8022AD64(void); // gGameRoot_8053AAF8->fn_80138B7C()
+void fn_8022AD88(void); // gBgRewrite_8053AC98->fn_8029D898(0x19)
 // The manager's flags (no player index).
 bool fn_8022ADB0(void); // 0x73
 void fn_8022ADCC(void); // 0x73 = false

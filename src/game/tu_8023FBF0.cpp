@@ -1137,6 +1137,74 @@ void Player_804A6F38::fn_8025250C() {
     }
 }
 
+// The end of the frame's movement. The trail (field_0x38 / field_0x284)
+// takes the position when it moved 1 or more from the newest entry or an
+// entry is airborne (z above 0; on a layer without viewLayerFlag, two
+// airborne flags in a row or the last one), unless carried, field_0x454,
+// field_0x11f4, field_0x435 or field_0x1216. Then field_0x20 keeps
+// field_0x14; with field_0x457 the position and layer go back to
+// field_0x14 / field_0x3b8, else the push field_0x2dc is applied and
+// field_0x14 / field_0x3b8 take the result; then field_0x2d0 (not while
+// carried) and field_0x2e8 are applied and cleared, field_0xda0 =
+// field_0xd94, field_0x1170 counts down and field_0x3e4 keeps the facing.
+// FIXME: 98.6 %. Registers only, in the unrolled trail shift (the index and
+// address temporaries r4-r7 rotated).
+void Player_804A6F38::fn_80251D50() {
+    bool airborne = false;
+    for (s32 i = 0; i < 0x31; i++) {
+        if (viewLayerFlag(field_0x3b4)) {
+            if (field_0x38[i].z > 0.0f) {
+                airborne = true;
+                break;
+            }
+            if (i == 0x30) {
+                if (field_0x284[i] == true) {
+                    airborne = true;
+                    break;
+                }
+            } else if (field_0x284[i] == true && field_0x284[i + 1] == true) {
+                airborne = true;
+                break;
+            }
+        } else if (field_0x38[i].z > 0.0f) {
+            airborne = true;
+            break;
+        }
+    }
+    if (magnitude(field_0x38[0] - mPos) >= 1.0f || airborne) {
+        if (!field_0xce8 && !field_0x454 && field_0x11f4 == 0 && !field_0x435 && !field_0x1216) {
+            for (s32 i = 0x30; i > 0; i--) {
+                field_0x38[i] = field_0x38[i - 1];
+                field_0x284[i] = field_0x284[i - 1];
+            }
+            field_0x38[0] = mPos;
+            field_0x284[0] = field_0xbf0->field_0xb4;
+        }
+    }
+    field_0x20 = field_0x14;
+    if (field_0x457) {
+        field_0x457 = 0;
+        mPos = field_0x14;
+        field_0x3b4 = field_0x3b8;
+    } else {
+        mPos += field_0x2dc;
+        field_0x2dc.zero();
+        field_0x14 = mPos;
+        field_0x3b8 = field_0x3b4;
+    }
+    if (!field_0xce8) {
+        mPos += field_0x2d0;
+    }
+    field_0x2d0.zero();
+    mPos += field_0x2e8;
+    field_0x2e8.zero();
+    field_0xda0 = field_0xd94;
+    if (field_0x1170 > 0) {
+        field_0x1170--;
+    }
+    field_0x3e4 = field_0x3dc;
+}
+
 // Whether a request for `state` may be made now.
 bool Player_804A6F38::fn_80251BFC(s32 state) {
     if (field_0x124d == true) {
@@ -2577,6 +2645,58 @@ void Player_804A6F38::fn_80247F0C() {
             field_0xc84.z = 1.0f;
         }
     }
+}
+
+// Starts state 0xB with the timer field_0x48c (0x2D0 with GameRoot 0x7F,
+// else 0x168): with manager flag 0x71 it only sets field_0xbc0 = 0x3C, and
+// any of the flags 0x6C-0x72 refuses; already in state 0xB the timer
+// restarts. Otherwise when fn_80251BFC allows state 0xB: turn-based group
+// mode (4) is left first (fn_80248004(5, true)) and still refuses; a
+// leader requests the state (fn_80251AEC), with fn_8022AD88 when the timer
+// had run out (field_0x490).
+// FIXME: 99.4 %. Registers only (the inlined group loops' count / index /
+// leader).
+bool Player_804A6F38::fn_80247C0C() {
+    if (fn_8022AF5C()) {
+        field_0xbc0 = 0x3c;
+        return true;
+    }
+    if (fn_8022ADFC()) {
+        return false;
+    }
+    if (field_0x1240 == 0xb) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
+            field_0x48c = 0x2d0;
+        } else {
+            field_0x48c = 0x168;
+        }
+        field_0xbc0 = 0x3c;
+        return true;
+    }
+    if (!fn_80251BFC(0xb)) {
+        return false;
+    }
+    if (fn_802486A0() == 4) {
+        fn_80248004(5, true);
+    }
+    if (fn_802486A0() == 4) {
+        return false;
+    }
+    if (field_0x48c == 0) {
+        field_0x490 = 1;
+    }
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        field_0x48c = 0x2d0;
+    } else {
+        field_0x48c = 0x168;
+    }
+    if (field_0xd60 < 0) {
+        fn_80251AEC(0xb);
+        if (field_0x490 == 1) {
+            fn_8022AD88();
+        }
+    }
+    return true;
 }
 
 // The leader's field_0x48c (fn_8023C36C) for a follower, else its own.
