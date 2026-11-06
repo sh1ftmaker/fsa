@@ -206,3 +206,56 @@ Baseline total 8693 honest. Now 8693 honest (fn_80233C08 is 99.73 %), structural
   fn_80233C9C -> fn_80238548(.., 0x10) both ways and field_0x35c.set(fn_80233BC4(pos i, pos j)),
   fn_80233C08, scale(2.0f); else the fn_80273E7C / fn_80273518 / fn_802573E0 / fn_80273FB8 /
   fn_80256F44 hit chain. MWCC evaluates the call operands right to left (pos(j) before pos(i)).
+
+# Player track round 13, agent W (2026-11-05, Opus): deferred inlining
+
+Baseline (progress.py): total 8731 / 11557, structural 9167; unit 352/373. Now: total 8746 (+15),
+structural 9181 (+14); unit 367/373; .sdata2 100 %. No drops (per-address compare against the main
+checkout's report_honest.json). SHA-1 OK, gate --all-units ok, order_check ok, gen_game --check ok;
+gate --base matching flags only config/G4SE01/gen_game.tsv (the re-pins, coordinator approval).
+
+## Done (100 % unless said)
+- The "inline later-defined functions" list, now plain functions: fn_8022B334, fn_8022CFE8,
+  fn_8022D534, fn_8022E438 (group test), fn_8022EA0C (recursive leader mapping; MWCC unrolls it
+  and calls fn_8023F264 out of line at the depth limit, as the original), fn_802316C8,
+  fn_80231A50, fn_80237A80, fn_8023885C, fn_80239108, fn_8023D21C, fn_8023D644, fn_8023DAF4.
+- fn_8023CEAC 99.84 % (regalloc-only: box / first position registers swapped).
+- fn_80238548 91.52 % (structurally close: the original keeps the TVec2f offset on the stack,
+  frame 0x40, and returns `clrlwi r3, hit, 24`; ours 5 instructions fewer).
+- fn_80232A0C (boot path) 97.25 % (missing/extra, 9 fewer): from the round-12 draft. Under deferred
+  the default budget keeps the six earlier queries (and the later forwarders) out of line, as
+  the brief expected. Needed: fn_80233BC4 in an `auto_inline off` region (pragma rule 1;
+  fn_80232A0C calls it out of line), `addPos(TVec2f(...))` (the (x, y) overload nests one inline
+  deeper and went out of line), the push loop as `for (tries = 0;; tries++) { ...; if (tries >= 3)
+  break; }`, and the `>= 3.0f ||` form of the distance test (cror). Left: the three `-dir` pushes go
+  through a by-value temporary in the original (ps_neg into 0x28, copy-constructed into 0x7c, z via
+  frsp); ours negates straight into one TVec3f. An `operator-()` on TVec3 would do it, but that is
+  a libs/sdk Vec.h decision.
+- fn_80233C08 and fn_8023F088 now 100 % (the literal pool order is complete with fn_80232A0C).
+- Inverted forwarders (same standalone code, the inlined copies need the block layout):
+  fn_802349EC, fn_8022CAF8, fn_802373EC, fn_80239718, fn_8022D9CC, fn_8022DB04, fn_80235744,
+  getPlayerPos_8023E724, fn_8023561C, fn_80234004, fn_80234950, fn_8023EA28, fn_8022CCAC.
+- Simplified: the six file-inline flag getters getFlag_0x6c..0x6f / 0x71 / 0x72 are gone;
+  fn_8022ADFC (and fn_80232A0C) call the plain getters at their addresses (fn_8022B244,
+  fn_8022B1F8, fn_8022B1AC, fn_8022B160, fn_8022AF5C, fn_8022AF10); all %s kept. getFlag_0x70
+  stays a file inline (no out-of-line getter for 0x70 in the original). playerOffset2B8
+  (fn_8024E018 query) is a new file inline for the same reason (fn_8023D644 / fn_8023DAF4 only).
+  playerAt stays (no address of its own either).
+
+## Not done
+- fn_80231DE4 (0xC28, 778 instructions; the frame's player screen-exit check): not written (time).
+  Shape: loop over players with fn_802527B0 + fn_8022E438 -> fn_80248DB8; then (no manager flag,
+  no game-root 0x96, no 0x73) a long chain of inline queries on each player, fn_802527B0 points
+  compared as in fn_80231A50 (stores lbl_8053A190), fn_80124600(&point), GameView fn_802DD3D4 /
+  fn_802DCE5C, AudioMgr fn_80457F60, per player fn_80241E64, then fn_8025F590 / fn_8025F418 /
+  fn_80270A8C and the free fn_802520C0(player, &point) (tu_8023FBF0: declare as a Player member).
+- fn_80235B68, fn_8023F390 unchanged.
+
+## SHARED-EDITS
+- include/game/Player.h: Player::fn_802527B0(JGeometry::TVec2<s32>*) declared (tu_8023FBF0;
+  symbols.txt renamed to fn_802527B0__15Player_804A6F38FPQ29JGeometry8TVec2<l>); fn_8022CFE8,
+  fn_8022D534, fn_8022E438, fn_8022EA0C, fn_80231A50, fn_80237A80, fn_80238548, fn_80239108 leave
+  the extern "C" block (C++ names; the empty nested extern "C" block is gone).
+- config/G4SE01/symbols.txt: the written functions renamed to the names our object emits.
+- config/G4SE01/gen_game.tsv: src_before re-pinned three times (pairs 99cf6d84/e06d7e33,
+  49a56492/9e6ae03f, b623efa8/39deb4ff); final pin c5883e36, verified from a --no-local clone.
