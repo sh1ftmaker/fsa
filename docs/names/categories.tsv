@@ -492,7 +492,7 @@ game/tu_803FF2C4.cpp	media	med	loads '/GC4Sword_usa/agb/client_thread.arc'; call
 game/tu_80400DC4.cpp	menus	med	the disc-error screen (as TP's d_error_msg)	hand
 game/tu_80401848.cpp	media	med	DVD loader thread (as TWW's m_Do_dvd_thread)	hand
 game/tu_804023D0.cpp	menus	med	PaneCtrl_804AF86C J2D pane helpers (names.tsv), GameState; called by 73 units	hand
-game/tu_80403D84.cpp	menus	med	strings 'map.blo', 'map.bck': the map screen	hand
+game/tu_80403D84.cpp	menus	med	the map screen MapScreen_804B1288 (docs/names/names.tsv): its constructor loads 'map.blo' / 'map.bck', its methods test the eight stages' save flags and hide each stage's route panes	hand
 game/tu_80414F6C.cpp	menus	med	BattleStageSelect_804B1378: string 'bat_stage_select.blo'	hand
 game/tu_80418B64.cpp	menus	med	HUD: strings 'kk_heart_01.bti', 'kk_rupyNum_00.bti'	hand
 game/tu_8042165C.cpp	menus	med	HUD: strings 'kk_heart_01.bti', 'kk_rupyNum_00.bti'	hand
