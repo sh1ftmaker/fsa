@@ -384,26 +384,25 @@ bool Bombchu_804AB464::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (tile == 0x230 || tile == 0x231) {
         return false;
     }
-    if (code == 0 || code == 4 || code == 5 || code == 6 || code == 7 || code == 2 || code == 0x50 ||
-        code == 0xE || code == 0xC || code == 0x27 || code == 0x28 || code == 0x29 || code == 0x2A ||
-        code == 0x2B || code == 0x2C || code == 0x2D || code == 0x2E || code == 0x2F || code == 0xD ||
-        code == 0x39 || code == 0x3A || code == 0x3B || code == 0x4C || code == 0x4D || code == 0x4E ||
-        code == 0x4F || code == 0x24) {
-        return false;
+    if (code != 0 && code != 4 && code != 5 && code != 6 && code != 7 && code != 2 && code != 0x50 &&
+        code != 0xE && code != 0xC && code != 0x27 && code != 0x28 && code != 0x29 && code != 0x2A &&
+        code != 0x2B && code != 0x2C && code != 0x2D && code != 0x2E && code != 0x2F && code != 0xD &&
+        code != 0x39 && code != 0x3A && code != 0x3B && code != 0x4C && code != 0x4D && code != 0x4E &&
+        code != 0x4F && code != 0x24) {
+        if (tile == 0x3A) {
+            return false;
+        }
+        if (code == 0x25) {
+            return (u8)!getGameView_802D6A9C()->field_0x171;
+        }
+        if (code == 0x26) {
+            return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
+        }
+        if (code != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+            return true;
+        }
     }
-    if (tile == 0x3A) {
-        return false;
-    }
-    if (code == 0x25) {
-        return (u8)!getGameView_802D6A9C()->field_0x171;
-    }
-    if (code == 0x26) {
-        return (u8)(getGameView_802D6A9C()->field_0x171 == 1);
-    }
-    if (code == 0x22 && getGameView_802D6A9C()->field_0x170 != 1) {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 void Bombchu_804AB464::fn_8032506C() {
