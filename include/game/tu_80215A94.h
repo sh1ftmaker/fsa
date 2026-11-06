@@ -65,6 +65,10 @@ struct cls_80215E48 {
 // the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
 // member. Stores the player count (fn_80138A30) as the entry count.
 extern "C" {
+s32 fn_80215A94(cls_80215E48* table);
+bool fn_80215C6C(cls_80215E48* table, s32 index);
+void fn_80215F30(cls_80215E48* table);
+void fn_802160F4(cls_80215E48* table);
 void fn_80216178(cls_80215E48* table);
 }
 

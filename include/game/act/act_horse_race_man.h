@@ -17,7 +17,14 @@ public:
     // 0x801ED0AC (deleting destructor). Empty in source: the base and member
     // destructors are inline and the deleting form adds the __dl__ call.
     virtual ~HorseRaceMan_804A5630();
+    /* 0x0C */ virtual void init();
+    /* 0x20 */ virtual void draw();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x94 */ virtual void vfunc_0x94();
+    /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
+
+    void fn_801EC7B8();
+    void fn_801ECB08(s32 state);
 
     /* 0x2A8 */ s32 field_0x2a8;   // fn_80138A30(): the number of players taking part
     /* 0x2AC */ s32 field_0x2ac;   // zeroed by the constructor
