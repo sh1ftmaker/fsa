@@ -328,24 +328,24 @@ void Bombchu_804AB464::update() {
 void Bombchu_804AB464::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
-    s32 flags = 7;
     bool held = false;
-    if (mPos.z == 0.0f && fn_8022461C(&mPos, field_0x4) == 0x39) {
-        flags = 0;
+    s32 flags = 7;
+    if (mPos.z == 0.0f) {
+        s32 code = fn_8022461C(&mPos, field_0x4);
+        if (code == 0x39) {
+            flags = 0;
+        }
     }
     PSMTXIdentity(mtx);
     f32 angle = field_0x27c;
     f32 s = sin(angle);
     f32 c = cos(angle);
-    mtx[0][0] = c;
-    mtx[0][1] = 0.0f;
-    mtx[0][2] = s;
-    mtx[1][0] = 0.0f;
     mtx[1][1] = 1.0f;
-    mtx[1][2] = 0.0f;
+    mtx[0][0] = c;
+    mtx[0][2] = s;
     mtx[2][0] = -s;
-    mtx[2][1] = 0.0f;
     mtx[2][2] = c;
+    mtx[0][1] = mtx[1][0] = mtx[1][2] = mtx[2][1] = 0.0f;
     params.mMtx = mtx;
     params.field_0x1d = 1;
     params.field_0x1c = 1;
