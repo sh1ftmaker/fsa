@@ -66,6 +66,10 @@ docs/RULES_CARD.md ("Source order and inlining").
   reproduces the whole unit, banned by rule 3, and the same budget game-wide
   loses tu_803DAC3C fn_803DAC58). Ours stays under the budget and inlines it:
   fn_8026C350 98.53 → 95.33 %, the one function the switch lowered.
+  Resolved in Player round 20 (docs/PLAYER.md): with every per-direction store
+  written through one helper (setDir), fn_8026C350 reaches the default budget at
+  exactly the original's call list; both regions around fn_8026F000-F54C and
+  fn_8026EC88 went (fn_8026EB1C keeps one), fn_8026C350 and its four siblings are 100 %.
 - More over-inlined callees than the doc found: fn_801BE86C (act_beamos),
   fn_801158B8 (act_vaati_demo, now also at its own address: the unit is in
   address order), fn_8013C394 (tu_8013AAD4), fn_8037AA7C (tu_80379F84),

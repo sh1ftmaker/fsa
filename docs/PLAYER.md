@@ -25,7 +25,7 @@ The prose in the rounds below was written along the way and keeps its own
 | tu_80256C74 | 80256C74-8025EB18 | 63 | 52 | 20,080 | state handlers 0x39-0x3D, 0x41-0x48, helpers |
 | tu_8025EB18 | 8025EB18-80264998 | 59 | 45 | 15,552 | state handlers 0x11-0x19 (all written); shared exit fn_8025F698(bool) |
 | tu_80264998 | 80264998-802684A4 | 26 | 24 | 5,140 | draw fn_80264998, body-frame select fn_80265E88 + per-state frame functions (round 6) |
-| tu_802684A4 | 802684A4-8026FC20 | 25 | 15 | 22,916 | cls_804A71A8 (helper object at Player+0xBF0) |
+| tu_802684A4 | 802684A4-8026FC20 | 25 | 20 | 13,284 | cls_804A71A8 (helper object at Player+0xBF0) |
 | tu_8026FC20 | 8026FC20-8027E5BC | 120 | 97 | 34,272 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
 | tu_8027E5BC | 8027E5BC-80285E58 | 73 | 67 | 7,024 | state handlers 0x00-0x03, 0x0D-0x0E, 0x1A-0x1B, 0x38, 0x3E-0x40, 0x49-0x51 |
 | tu_80285E58 | 80285E58-80289648 | 8 | 3 | 11,676 | Player update fn_80285E58 + state tick fn_802870C8 (three switch jump tables) |
@@ -1471,3 +1471,54 @@ What the asm proves (all source forms in docs/RULES_CARD.md "Known game-code sha
 - **0xCBC / 0xD1C**: `field_0xd1c = field_0xcbc = mPos;` (both layer-change sites).
 - **lbl_8053ABA8 / lbl_8053ABF0** (ZLD2 / dodongo hurt flags): compared with `cmpwi`:
   `(s32)flag != 0`, the reviewed cucco form.
+
+## Round 20 (tu_802684A4) (Opus 5.5, 2026-11-06)
+
+Unit 15 -> 20 / 25 (+5 honest). The 7.8 KB probe-tile switch fn_8026C350 is 100 %, so its
+case groups, the wall / half / diagonal / corner tests and every mark helper are proven as
+written; .data (its jump table) is 100 % with it.
+
+| function | before | after / class | what flipped it |
+|---|---|---|---|
+| fn_8026C350 (tile switch) | 95.33 missing/extra | 100 | inline budget via setDir, u8 isPlayerBitSet, getIndex / getLayer |
+| fn_8026F000 / F1C4 / F388 / F54C | 90.04 each | 100 each | canPush's member-wise step, getFacing (they inline fn_8026EE60) |
+| fn_8026EE60 (push 'BLCK') | 86.41 | 99.86 regalloc-only | same; the serial takes the owner's r29, not the facing's r30 |
+| fn_8026EC88 (player block) | 86.81 | 99.87 regalloc-only | same, `(dir & 3) << 2 \| ((player + 1) & 7) << 4` |
+| fn_80269574 / 80268BC4 / 802685D4 | 96.27 / 99.13 / 92.27 | unchanged | see below |
+
+What the asm proves:
+- **fn_8026C350's out-of-line calls are its inline budget** (docs/INLINING.md rule 5), not
+  per-callee pragmas. The original calls fn_8026EE60, fn_8026EC88 and fn_8026F000-F54C out of
+  line although fn_8026F000-F54C inline fn_8026EE60. With every `flags[field_0x1c] = 1` written
+  through one helper, `setDir(p, flags)` (57 sites in fn_8026C350 and its mark helpers; used
+  file-wide), the caller's size reaches the budget at exactly that call list with no pragma.
+  Measured: written out, ours inlined all six; the two auto_inline regions around
+  fn_8026F000-F54C and fn_8026EC88 hid four of them, and fn_8026EE60 stayed inlined. Padding
+  the caller showed the threshold (21 padding statements without the helper, 0 with it) and
+  that the position of the extra size in the function does not matter. Only fn_8026EB1C keeps
+  its region (fn_8026E68C, a small caller, calls it out of line).
+- **isPlayerBitSet returns u8** (game/PlayerBit.h): the 0x4C-0x4F case keeps the value (neg /
+  or / srwi, then `cmplwi 1` for `== true`); a bool return folds it into `and.`. Full build:
+  no other function changes.
+- **Player::getFacing()** (0x3DC), a getter like getIndex / getLayer: fn_8026EE60 / EC88 load
+  the facing into a saved register ahead of getActorManager_801F856C, and canPush's
+  `field_0x1c == getFacing()` gets the original's registers (cmpw r0, r4). Plain reads, a local
+  read once, or a local manager pointer do neither.
+- **canPush's step**: `const Vec& d = lbl_8046B998[facing]; TVec3f step; step.x = d.x; ...;
+  ahead += step;` (lfs x / y / z, stfs, then psq_l). A TVec3f(Vec) copy gives psq_l, the
+  (x, y, z) constructor or a temporary loads z first, indexing the table per member gives lfsx.
+- The getters at fn_8026C350's other sites: `tile - 0x4C != getIndex()` and BgRewrite
+  fn_802A3948(&p, index, getLayer(), tile) (layer loaded before the index, as the original).
+
+Still open:
+- fn_8026EE60 / EC88: the serial's register. Declaring `s32 serial; s32 dir;` first (dir
+  assigned from a `Player*` local, then an `ActorManager*` local) gives fn_8026EE60 100 % but
+  fn_8026F000-F54C 99.65 %; no form found that gives all five.
+- fn_80269574 (96.27): the counter / warp section. The original's reset paths branch straight to
+  the code after the warp search and the `field_0xbc = 3` exits of the unrolled 8-way loop to
+  the search; a bool inline (advanceCounter), a found flag, an index test or a nested loop each
+  materialise a value or keep the loop rolled (allSet 95.92, found flag 95.94, nested loop
+  95.61, `n >= 8` 96.27). blockMarked50's second loop is the same shape.
+- fn_80268BC4 (99.13): the end's `moved` TVec2f is stored to the stack before and after the
+  subtraction in the original; `field_0x14 = moved`, `field_0x14.set(moved)`,
+  `moved.set(...)` and a default-constructed `moved` all keep it in registers.

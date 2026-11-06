@@ -392,6 +392,21 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - A vector copied on through the first copy's address (`addi r4, rB, A; addi r3, rB, B`, store to r4,
   reload from r4, store to r3): a chained assignment `b = a = v;` (tu_80285E58 0xD1C / 0xCBC); two
   statements `a = v; b = a;` swap r3 / r4.
+- A big caller (rule 5) that calls same-unit callees out of line which smaller callers inline: before
+  any auto_inline region, check whether the budget gives the original's call list. Inline call sites
+  count toward the caller's size (a helper costs more than the same store written out), so a store
+  repeated many times through one natural helper can bring the caller to the budget. tu_802684A4
+  fn_8026C350: `setDir(p, flags)` for every `flags[field_0x1c] = 1` (57 sites) gives exactly the
+  original's six out-of-line calls with no pragma, 95.3 -> 100 %, and fn_8026F000-F54C inline
+  fn_8026EE60 as the original (+5 functions); the earlier regions hid four of the six. Measure with
+  `tools/obj_calls.py` against the asm's `bl` list; padding the caller shows how far it is from the
+  budget (the position of the extra size does not matter). One example so far.
+- A Vec table entry added to a TVec3f with three `lfs` / `stfs` to a stack TVec3f then `psq_l`: copy it
+  member by member through a reference, `const Vec& d = tbl[i]; TVec3f step; step.x = d.x; step.y =
+  d.y; step.z = d.z; v += step;` (tu_802684A4 canPush; TVec3f(Vec) gives psq_l, the (x, y, z)
+  constructor loads z first, `tbl[i].x` per member gives lfsx).
+- The inlined-getter shape also covers Player::getFacing() (0x3DC): tu_802684A4's block pushes
+  (fn_8026EE60 family, five functions) and `field_0x1c == getFacing()` (cmpw register order).
 
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all
