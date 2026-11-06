@@ -3,7 +3,6 @@ act_all_enemies_defeated_check_switch	dtor	__dt__12cls_804A8AC8Fv	cls_804A8AC8	0
 act_all_enemies_defeated_check_switch	sinit	__sinit_act_all_enemies_defeated_check_switch_cpp	-	-	new	new
 act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
-act_bee_manager	sinit	__sinit_act_bee_manager_cpp	-	-	new	-
 act_bti_npc	dtor	__dt__15BTINPC_804A927CFv	BTINPC_804A927C	0x804A927C	new	new
 act_bti_npc	sinit	__sinit_act_bti_npc_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
@@ -101,8 +100,6 @@ tu_802A4654	sinit	__sinit_tu_802A4654_cpp	-	-	new	-
 tu_802E2990	sinit	__sinit_tu_802E2990_cpp	-	-	new	-
 tu_802E9428	dtor	__dt__12cls_804AA0FCFv	cls_804AA0FC	0x804AA0FC	new	new
 tu_80334318	sinit	__sinit_tu_80334318_cpp	-	-	new	-
-tu_803489A4	dtor	__dt__12cls_804AC7B8Fv	cls_804AC7B8	0x804AC7B8	new	new
-tu_803489A4	sinit	__sinit_tu_803489A4_cpp	-	-	new	new
 tu_80354D64	sinit	__sinit_tu_80354D64_cpp	-	-	new	-
 tu_803A60E4	sinit	__sinit_tu_803A60E4_cpp	-	-	new	-
 tu_803A8DFC	sinit	__sinit_tu_803A8DFC_cpp	-	-	new	-

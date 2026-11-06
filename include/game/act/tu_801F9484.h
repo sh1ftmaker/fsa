@@ -393,13 +393,7 @@ public:
 
 #include "game/act/act_giant_bomb.h"
 
-// Spawned for 'BEMN'.
-class BeeManager_804AC810 : public ActorBase_804A5770 {
-public:
-    BeeManager_804AC810() {}
-    /* 0x08 */ virtual ~BeeManager_804AC810();
-    /* 0x230 */ u8 field_0x230[0x54];
-}; // Size: 0x284
+#include "game/act/act_bee_manager.h"
 
 // Spawned for 'MRTA'.
 class cls_804ACD70 : public ActorBase_804A5770 {
