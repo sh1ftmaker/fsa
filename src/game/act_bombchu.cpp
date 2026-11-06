@@ -103,8 +103,10 @@ void Bombchu_804AB464::init() {
         field_0x24c = 10;
         field_0x230 = 2;
         field_0xb0 = 0x73308;
+        // The draw is read before field_0x277 is cleared (the original stores it after the load).
+        f32 coin = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         field_0x277 = 0;
-        if ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) != 0) {
+        if ((s32)(2.0f * coin) != 0) {
             field_0x3c.x = speed;
         } else {
             field_0x3c.x = -speed;
@@ -176,12 +178,13 @@ void Bombchu_804AB464::update() {
         }
         return;
     }
+    int i;
     JGeometry::TBox2f box(mBox);
     JGeometry::TVec2f pos(mPos.x, mPos.y);
     box.addPos(pos);
     if (field_0xc4) {
         field_0x260 = 0;
-        mPos = *fn_8023E7B0(field_0xc8);
+        mPos.set(*fn_8023E7B0(field_0xc8));
         field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
         field_0x264 = field_0xc8;
     } else {
@@ -196,7 +199,7 @@ void Bombchu_804AB464::update() {
         field_0x3c.y = 0.0f;
         field_0x3c.z = 0.0f;
         mPos.z = 0.0f;
-        for (int i = 0; i < 4; i++) {
+        for (i = 0; i < 4; i++) {
             if (fn_8023F264(i) && fn_80239C00(i, &box, field_0x4) && fn_8022F9E4(i, mSerial, true, false)) {
                 field_0x258 = 0;
                 field_0x230 = 2;
@@ -220,7 +223,7 @@ void Bombchu_804AB464::update() {
             if (mPos.z == 0.0f && field_0x248 <= 0) {
                 s32 hit = hitPlayers();
                 if (hit > 0) {
-                    for (int i = 0; i < 4; i++) {
+                    for (i = 0; i < 4; i++) {
                         if ((hit >> i) & 1) {
                             fn_80236074(i, 100, 0);
                         }
@@ -243,7 +246,7 @@ void Bombchu_804AB464::update() {
             if (field_0x248 <= 0) {
                 s32 hit = hitPlayers();
                 if (hit > 0) {
-                    for (int i = 0; i < 4; i++) {
+                    for (i = 0; i < 4; i++) {
                         if ((hit >> i) & 1) {
                             fn_80236074(i, 100, 0);
                         }
@@ -260,7 +263,7 @@ void Bombchu_804AB464::update() {
         s32 hit = hitPlayers();
         fn_801F2B20(5);
         if (hit > 0) {
-            for (int i = 0; i < 4; i++) {
+            for (i = 0; i < 4; i++) {
                 if ((hit >> i) & 1) {
                     fn_80236074(i, 100, 0);
                 }
