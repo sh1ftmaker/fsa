@@ -3,8 +3,10 @@
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
+#include "game/BoxTest.h"
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
+#include "game/GameMode.h"
 #include "game/Map.h"
 #include "game/Effect.h"
 #include "game/GameState.h"
@@ -1100,6 +1102,41 @@ void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {
     field_0x2e8 += *offset;
 }
 
+// Keeps a player below layer 8 16 units inside the visible box (one edge
+// per frame: left, right, top, bottom), unless field_0x454, fn_8025F448,
+// fn_80240B84 or field_0x3b0 holds.
+// FIXME: 99.6 %. Registers only (the inlined group loop's leader / self
+// temporaries), plus the 16.0f literal's name (@NNN until the unit's earlier
+// literals are in pool order).
+void Player_804A6F38::fn_8025250C() {
+    if (field_0x454) {
+        return;
+    }
+    if (fn_8025F448()) {
+        return;
+    }
+    if (fn_80240B84()) {
+        return;
+    }
+    if (field_0x3b0 > 0) {
+        return;
+    }
+    if (field_0x3b4 >= 8) {
+        return;
+    }
+    JGeometry::TBox2f box;
+    box = getGameView_802D6A9C()->mVisibleBox;
+    if (mPos.x <= box.i.x + 16.0f) {
+        mPos.x = box.i.x + 16.0f;
+    } else if (mPos.x >= box.f.x - 16.0f) {
+        mPos.x = box.f.x - 16.0f;
+    } else if (mPos.y <= box.i.y + 16.0f) {
+        mPos.y = box.i.y + 16.0f;
+    } else if (mPos.y >= box.f.y - 16.0f) {
+        mPos.y = box.f.y - 16.0f;
+    }
+}
+
 // Whether a request for `state` may be made now.
 bool Player_804A6F38::fn_80251BFC(s32 state) {
     if (field_0x124d == true) {
@@ -1227,6 +1264,43 @@ u8 Player_804A6F38::fn_802517E4() {
     return field_0x1240 == 0x1a;
 }
 
+// Not auto-inlined: fn_80250030 and fn_80252FC0 call fn_80250D30 out of line
+// in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// Whether the player pushes against something: long enough (fn_80250ACC),
+// fn_80250090, state 0xE or fn_80250FD4.
+// FIXME: 99.6 %. Registers only (the inlined group loop's leader / self
+// temporaries, as in fn_80250ACC).
+bool Player_804A6F38::fn_80250D30() {
+    if (fn_80250ACC() || fn_80250090() || field_0x1240 == 0xe || fn_80250FD4()) {
+        return true;
+    }
+    return false;
+}
+#pragma auto_inline reset
+
+// Whether the push against a blocked side (field_0xbf0's field_0xa0) has
+// lasted long enough: 0x12 frames for a follower, 0x14 otherwise; never when
+// it is not this player's turn in group mode 4, nor for a follower in mode 5.
+// FIXME: 99.5 %. Registers only: the inlined group loop's leader / self
+// temporaries (r27 / r30 in the original, both r27 here).
+bool Player_804A6F38::fn_80250ACC() {
+    if (fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+        return false;
+    }
+    if (fn_802486A0() == 5 && field_0xd60 >= 0) {
+        return false;
+    }
+    if (field_0xd60 >= 0) {
+        if (field_0xbf0->field_0xa0 >= 0x12) {
+            return true;
+        }
+    } else if (field_0xbf0->field_0xa0 >= 0x14) {
+        return true;
+    }
+    return false;
+}
+
 bool Player_804A6F38::fn_80250030(s32 arg) {
     if (fn_80250D30() && fn_802729F0(arg)) {
         return true;
@@ -1269,15 +1343,24 @@ s32 Player_804A6F38::fn_8024FF6C() {
     return value;
 }
 
-// fn_8024FEFC (0x8024FEFC, `fn_8024FEBC() || fn_8024FE78()` as a bool) is not
-// written: the original calls both out of line, while MWCC inlines them here.
-
 s32 Player_804A6F38::fn_8024FF54() {
     s32 value = field_0xdac;
     if (value < 0) {
         return -1;
     }
     return value;
+}
+
+// Not auto-inlined: fn_8024FFC8 calls fn_8024FEFC, and fn_8024FEFC calls
+// fn_8024FEBC and fn_8024FE78, out of line in the original (docs/INLINING.md,
+// pragma rule 1).
+#pragma auto_inline off
+bool Player_804A6F38::fn_8024FEFC() {
+    bool result = false;
+    if (fn_8024FEBC() || fn_8024FE78()) {
+        result = true;
+    }
+    return result;
 }
 
 bool Player_804A6F38::fn_8024FEBC() {
@@ -1293,6 +1376,7 @@ bool Player_804A6F38::fn_8024FE78() {
     }
     return false;
 }
+#pragma auto_inline reset
 
 bool Player_804A6F38::fn_8024F630() {
     return field_0xbf0->field_0xb4;
@@ -1349,6 +1433,48 @@ bool Player_804A6F38::fn_8024EFA0(bool arg) {
         return true;
     }
     return false;
+}
+
+// Counts field_0x11dc down (a leader or a player on its own). In its last
+// 0x60 frames the flag lbl_8053ACD8[field_0x4] blinks (set while bit 0x10 of
+// the count and field_0x11e0 are clear); every 32 frames (count & 0x1f ==
+// 15) fn_803037D4(field_0x4, 5) when fn_8030A308 and fn_8030381C allow it,
+// else sound 9. While it runs and fn_8023E10C is below 8, fn_80402FBC gets
+// fn_8023E214's vector; once it has run out the flag follows the player's
+// layer (< 8).
+void Player_804A6F38::fn_8024EE24() {
+    if (field_0xd60 >= 0) {
+        return;
+    }
+    if (field_0x11dc > 0) {
+        field_0x11dc--;
+        if (field_0x11dc < 0x60) {
+            if (!field_0x11e0 && !(field_0x11dc & 0x10)) {
+                lbl_8053ACD8[field_0x4] = 1;
+            } else {
+                lbl_8053ACD8[field_0x4] = 0;
+            }
+            if ((field_0x11dc & 0x1f) == 0xf) {
+                if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec)) && fn_8030381C(field_0x4)) {
+                    fn_803037D4(field_0x4, 5);
+                } else {
+                    if (field_0x3b4 >= 8) {
+                        fn_8030381C(field_0x4);
+                    }
+                    // The original converts the index to s8 (extsb) for the sound call.
+                    gAudioMgr_8053AF80->fn_80458880(9, (s8)field_0x4);
+                }
+            }
+        }
+        if (fn_8023E10C(fn_8022EA0C(field_0x4)) < 8) {
+            s32 player = field_0x4;
+            fn_80402FBC(player, *fn_8023E214(fn_8022EA0C(player)));
+        }
+    } else if (getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4)) < 8) {
+        lbl_8053ACD8[field_0x4] = 1;
+    } else {
+        lbl_8053ACD8[field_0x4] = 0;
+    }
 }
 
 u16 Player_804A6F38::fn_8024EE1C() {
@@ -1427,6 +1553,26 @@ void Player_804A6F38::fn_8024ECCC(s32 value) {
     }
 }
 
+// Drops the held item (fn_802416C4, with its level fn_802415CC) as an
+// ACTOR_LSTI at the player's position and clears it (fn_80241618(0, 1)), for
+// a player taking part.
+// FIXME: 99.7 %. Registers only: player / level r29 / r28 in the original,
+// r28 / r29 here.
+void Player_804A6F38::fn_8024E500() {
+    if (!isPlayerBitSet(gGameRoot_8053AAF8, field_0x4)) {
+        return;
+    }
+    if (fn_802416C4() == 0) {
+        return;
+    }
+    s32 player = field_0x4;
+    s32 item = fn_802416C4();
+    s32 level = fn_802415CC();
+    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LSTI, field_0x3b4, &mPos,
+                                                    item | (level << 22 | player << 17), -1, -1);
+    fn_80241618(0, 1);
+}
+
 // FIXME: 99.86. Code identical; the float literal lbl_80540080 (5.0f) is not yet in the original pool order (@NNN vs lbl_).
 void Player_804A6F38::fn_8024E46C() {
     if (field_0x3b4 < 8) {
@@ -1453,6 +1599,43 @@ void Player_804A6F38::fn_8024E344() {
         fn_8024E694(0x32, 0);
     }
 }
+
+// Not auto-inlined: fn_80253E6C calls fn_8024E0A0 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// Every 60 frames (field_0x1264), in the game modes of isGameModeSet, for a
+// player acting on its own with a life (fn_8024189C) of 4 or less, not in
+// fn_80270A8C's state and without field_0x454: fn_803037D4(field_0x4, 6)
+// when fn_8030A308 and fn_8030381C allow it, else sound 5. Then the sound
+// objects' position field_0x1258 follows the player (fn_8024C378 from layer
+// 8 on) and both run fn_80456154.
+// FIXME: 99.3 %. Registers only, in the inlined fn_8024C378 (the view box
+// corner in f31 / f30, swapped here, as in fn_8024C378 itself).
+void Player_804A6F38::fn_8024E0A0() {
+    field_0x1264++;
+    if (field_0x1264 >= 0x3c) {
+        field_0x1264 = 0;
+        if (isGameModeSet() && !fn_80270A8C() && !field_0x454 && fn_8024189C() <= 4 && field_0xd60 < 0) {
+            if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec)) && fn_8030381C(field_0x4)) {
+                fn_803037D4(field_0x4, 6);
+            } else {
+                if (field_0x3b4 >= 8) {
+                    fn_8030381C(field_0x4);
+                }
+                // The original converts the index to s8 (extsb) for the sound call.
+                gAudioMgr_8053AF80->fn_80458880(5, (s8)field_0x4);
+            }
+        }
+    }
+    if (field_0x3b4 < 8) {
+        field_0x1258 = mPos;
+    } else {
+        field_0x1258 = *fn_8024C378();
+    }
+    field_0x1250->fn_80456154();
+    field_0x1254->fn_80456154();
+}
+#pragma auto_inline reset
 
 bool Player_804A6F38::fn_8024E060() {
     if (field_0x454) {
@@ -1501,6 +1684,25 @@ bool Player_804A6F38::fn_8024DC00(const JGeometry::TVec3f* pos, s32 frame, u8 a,
     if (frame != 0xc3) {
         field_0xcfe = false;
     }
+    return true;
+}
+
+// Only in state 0: sets field_0x450 to `id` (a negative id leaves it; id
+// 0xE8 becomes 0x1C5 in turn-based group mode when it is not this player's
+// turn), field_0xca2 to `flag` and field_0x456.
+// FIXME: 99.3 %. Registers only: the inlined group loops' leader / self
+// temporaries (r25 / r28 in the original, both r25 here).
+bool Player_804A6F38::fn_8024DA64(s32 id, bool flag) {
+    if (field_0x1240 != 0) {
+        return false;
+    }
+    if (id == 0xe8 && fn_802486A0() == 4 && fn_80240888() != fn_80248778()) {
+        field_0x450 = 0x1c5;
+    } else if (id >= 0) {
+        field_0x450 = id;
+    }
+    field_0xca2 = flag;
+    field_0x456 = 1;
     return true;
 }
 
@@ -1623,7 +1825,29 @@ bool Player_804A6F38::fn_8024C828(s32 arg) {
     if (field_0xd4c == 1) {
         return false;
     }
-    return field_0xd44 == arg;
+    if (field_0xd44 != arg) {
+        return false;
+    }
+    return true;
+}
+
+// When fn_8024C828(serial) allows it: sets field_0xd4c and spawns the
+// player effect ACTOR_PEFF at the player, kind 0x1C when the actor `serial`
+// exists at or to the right of the player (x), else 0x18 (plus the player's
+// index & 3).
+// FIXME: 99.6 %. Registers only (the inlined group loops' temporaries).
+bool Player_804A6F38::fn_8024C5A0(s32 serial) {
+    if (!fn_8024C828(serial)) {
+        return false;
+    }
+    field_0xd4c = 1;
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+    if (actor == NULL || actor->mPos.x < mPos.x) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x18, -1, -1);
+    } else {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, field_0x3b4, &mPos, (field_0x4 & 3) | 0x1c, -1, -1);
+    }
+    return true;
 }
 
 bool Player_804A6F38::fn_8024C4C4(s32 serial) {
@@ -2795,6 +3019,34 @@ void Player_804A6F38::fn_80242CB0() {
     }
 }
 
+// In states 0x4A / 0x4B (fn_802412A4), unless field_0x454 is set: counts
+// field_0xbe4 down, with fn_803037D4(field_0x4, 2) every 60 frames for a
+// player acting on its own (fn_80240670 false) when fn_8030381C allows it;
+// once it has run out with field_0xbe8 set on layer 8 or more,
+// fn_8028FC2C; below layer 8 the count is cleared.
+// FIXME: 99.6 %. Registers only: the inlined group loop's leader / self
+// temporaries (r27 / r30 in the original, both r27 here).
+void Player_804A6F38::fn_80242940() {
+    if (field_0x454) {
+        return;
+    }
+    if (!fn_802412A4()) {
+        return;
+    }
+    if (field_0xbe4 > 0) {
+        field_0xbe4--;
+        if (!fn_80240670() && field_0xbe4 > 0 && field_0xbe4 % 60 == 0 && fn_8030381C(field_0x4)) {
+            fn_803037D4(field_0x4, 2);
+        }
+    }
+    if (field_0xbe8 && field_0xbe4 <= 0 && field_0x3b4 >= 8) {
+        fn_8028FC2C();
+    }
+    if (field_0x3b4 < 8 && field_0xbe4 > 0) {
+        field_0xbe4 = 0;
+    }
+}
+
 // Counts field_0xbd8 down (fn_803037D4(index, 2) every 60 frames while
 // fn_8030381C allows it); a leader with field_0xbdc whose count ran out on
 // a layer of 8 or more calls fn_8028FBA0; below layer 8 the count is dropped.
@@ -2875,6 +3127,50 @@ void Player_804A6F38::fn_80242560() {
         }
     }
     field_0x3b0 = 3;
+}
+
+// Brings the player back to the acting player (lbl_8053A190): through
+// fn_80270948 when fn_80270A8C holds and fn_8025F448 does not; else, when it
+// is on layer 8 or more or outside the visible box, onto that player's x / y
+// on layer 0. Then the saved positions 0x2C4 / 0xCB0 / 0xD1C, 0x344 / 0x368
+// cleared, field_0xd54 = 10, the trail reset (fn_80248604), the held key or
+// the 'KEY0' at field_0xd88 moved along (fn_802C1D30), field_0x122c = 5.
+// FIXME: 99.7 %. Registers only: the box test's x / y (f2 / f1 in the
+// original, f1 / f2 here) and the 0xCB0 / 0xD1C addresses (r4 / r3).
+void Player_804A6F38::fn_802422D0() {
+    if (fn_80270A8C() && !fn_8025F448()) {
+        fn_80270948(getPlayerPos_8023E724(lbl_8053A190));
+    } else {
+        JGeometry::TBox2f box;
+        box = getGameView_802D6A9C()->mVisibleBox;
+        if (field_0x3b4 >= 8 || !containsPoint(box, mPos)) {
+            mPos.x = getPlayerPos_8023E724(lbl_8053A190)->x;
+            mPos.y = getPlayerPos_8023E724(lbl_8053A190)->y;
+            field_0x3b4 = 0;
+        }
+    }
+    field_0x2c4 = mPos;
+    field_0xcb0 = field_0x2c4;
+    field_0xd1c = field_0xcb0;
+    field_0x344.set(0.0f, 0.0f, 0.0f);
+    field_0x368.set(0.0f, 0.0f, 0.0f);
+    field_0xd54 = 10;
+    fn_80248604();
+    if (fn_8025F500() && field_0xd6c == ACTOR_KEY0) {
+        ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
+        if (held != NULL) {
+            static_cast<SmallKey_804A8CD8*>(held)->fn_802C1D30(JGeometry::TVec3f(mPos), field_0x3b4);
+        }
+    } else {
+        s32 serial = field_0xd88;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL && actor->mActorId == ACTOR_KEY0) {
+                static_cast<SmallKey_804A8CD8*>(actor)->fn_802C1D30(JGeometry::TVec3f(mPos), field_0x3b4);
+            }
+        }
+    }
+    field_0x122c = 5;
 }
 
 const JGeometry::TVec2f* Player_804A6F38::fn_802422C4() {
@@ -3209,6 +3505,17 @@ bool Player_804A6F38::fn_802411C4() {
 
 bool Player_804A6F38::fn_8024119C() {
     return field_0x1240 == 0xc && field_0x11e4 != 0xc;
+}
+
+// Whether the player is in state 0x39; for one following in group mode 5,
+// the leader's answer (fn_8023513C). Const: its first group loop's
+// field_0x4 is hoisted (r28), as in fn_80240670.
+// FIXME: 98.4 %. Registers only: the group loops' count / index / leader.
+bool Player_804A6F38::fn_80240F28() const {
+    if (fn_802486A0() == 5 && fn_80240670()) {
+        return fn_8023513C(fn_8022EA0C(field_0x4));
+    }
+    return field_0x1240 == 0x39;
 }
 
 bool Player_804A6F38::fn_80240F14() {

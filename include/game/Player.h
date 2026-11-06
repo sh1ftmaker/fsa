@@ -103,7 +103,7 @@ public:
     bool fn_80240ED4(); // via fn_80234F68
     bool fn_80240EF4(); // via fn_80235004
     bool fn_80240F14(); // via fn_802350A0
-    bool fn_80240F28(); // via fn_8023513C
+    bool fn_80240F28() const; // via fn_8023513C
     bool fn_8024119C(); // via fn_802351D8
     bool fn_802411C4(); // via fn_80235274
     bool fn_802411EC(); // via fn_802354E4
@@ -243,6 +243,7 @@ public:
     void fn_80268B3C(); // tu_802684A4; holds mPos.z at 0 across fn_802685D4
     bool fn_80250ACC(); // via fn_8022DA68
     bool fn_80250D30(); // via fn_8022DB04
+    bool fn_80250FD4(); // tu_8023FBF0 (0x80250FD4), called by fn_80250D30
     u8 fn_802517E4(); // via fn_8022D894
     bool fn_80251BFC(s32 arg); // via fn_802319B4
     bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8

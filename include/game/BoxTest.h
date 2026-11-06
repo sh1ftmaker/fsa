@@ -3,7 +3,7 @@
 
 #include "JSystem/JGeometry.h"
 
-// Box helpers the Player units inline (tu_8026FC20, tu_80256C74). Included only where used.
+// Box helpers the Player units inline (tu_8026FC20, tu_80256C74, tu_8023FBF0). Included only where used.
 
 // Whether p (x, y) is in box (min inclusive, max exclusive), the result materialised
 // as a bool (li 0 / li 1).
