@@ -24,7 +24,7 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
     result = a;
 }
 
-// FIXME: 98.85% (different: same length, 1 opcodes differ; mr vs lwz on field_0x234[i] and sum temporary stack offsets).
+// FIXME: 98.77%. different + reloc-name (mr vs lwz on field_0x234[i], sum temporary stack offsets).
 void FourPersonPullSwitch_804AE230::init() {
     if (((field_0x90 >> 4) & 3) == 0) {
         for (s32 i = 0; i < 3; i++) {
@@ -62,7 +62,7 @@ void FourPersonPullSwitch_804AE230::init() {
     field_0x260 = 0;
 }
 
-// FIXME: 99.54% (operands: same opcodes, an immediate or offset differs; stack frame 0xa0 vs 0xb0 and regalloc r29/r30).
+// FIXME: 99.44%. operands + reloc-name (stack frame 0xa0 vs 0xb0, regalloc r29/r30; .sdata2 pool order).
 void FourPersonPullSwitch_804AE230::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -155,6 +155,7 @@ void FourPersonPullSwitch_804AE230::update() {
     }
 }
 
+// FIXME: 99.90%. reloc-name only (.sdata2 pool order: 1.0f/8.0f literals).
 void FourPersonPullSwitch_804AE230::draw() {
     s32 frame = field_0x24c + 0x147;
     if (field_0x4 < 8) {
@@ -164,7 +165,9 @@ void FourPersonPullSwitch_804AE230::draw() {
     fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x24c + 0x147, false, 1, -1, 0, 0, 0);
 }
 
-bool FourPersonPullSwitch_804AE230::checkAllPulled() {
+// Inlined into update(); the original has no out-of-line copy. Without a separate emitted
+// copy the .sdata2 pool order (8.0f vs draw's 1.0f) differs from the original (reloc-name only).
+inline bool FourPersonPullSwitch_804AE230::checkAllPulled() {
     if (((field_0x90 >> 4) & 3) != 0) {
         return false;
     }
