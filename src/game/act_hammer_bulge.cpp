@@ -35,7 +35,7 @@ void HammerBulge_804A88E8::init() {
     }
 }
 
-// FIXME: missing/extra + reloc-name (95.04%) - r28 save/restore in prologue/epilogue and r28/r29 regalloc
+// FIXME: scheduling+regalloc + reloc-name (94.76%). Our frame saves r29-r31 where the original saves r28-r31 (the original keeps one more local live across the loop, so every register from this/loop counter on is shifted by one); the fn_802F601C argument loads and the TBox2f scale stores are also scheduled differently.
 void HammerBulge_804A88E8::update() {
     switch (field_0x230) {
     case 0: {
@@ -98,16 +98,16 @@ void HammerBulge_804A88E8::update() {
                                 pos.x -= 8.0f;
                             }
 
-                            j = field_0x234;
+                            s32 kind = field_0x234;
                             s32 serial;
-                            if (j < 5 || j == 8) {
+                            if (kind < 5 || kind == 8) {
                                 u32 arg = 3;
-                                if (j < 5) {
-                                    arg = j + 3;
+                                if (kind < 5) {
+                                    arg = kind + 3;
                                 }
                                 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &pos, arg);
-                            } else if (j == 5 || j == 6) {
-                                serial = getActorManager_801F856C()->spawnActor_801F9484('KEY0', field_0x4, &pos, ((j - 5) * 6) | 0x300, -1, -1);
+                            } else if (kind == 5 || kind == 6) {
+                                serial = getActorManager_801F856C()->spawnActor_801F9484('KEY0', field_0x4, &pos, ((kind - 5) * 6) | 0x300, -1, -1);
                             } else {
                                 serial = getActorManager_801F856C()->spawnActor_801F9484('BHRT', field_0x4, &pos, 0, -1, -1);
                             }
@@ -144,19 +144,20 @@ void HammerBulge_804A88E8::update() {
 
                             if (getGameView_802D6A9C()->field_0x4 == 2 && getGameView_802D6A9C()->field_0x8 == 1) {
                                 pos.x += 16.0f;
-                                j = 0x388;
+                                s32 msg = 0x388;
                                 if (field_0x234 != 5) {
-                                    j = 0x389;
+                                    msg = 0x389;
                                 }
-                                getActorManager_801F856C()->spawnActor_801F9484('JIJI', field_0x4, &pos, ((j - 0x12b) | 0x02110000), -1, -1);
+                                getActorManager_801F856C()->spawnActor_801F9484('JIJI', field_0x4, &pos, ((msg - 0x12b) | 0x02110000), -1, -1);
                             }
                         } else {
+                            s32 tkta;
                             if (field_0x234 == 0) {
-                                j = 4;
+                                tkta = 4;
                             } else if (field_0x234 == 9) {
-                                j = 5;
+                                tkta = 5;
                             }
-                            getActorManager_801F856C()->spawnActor_801F9484('TKTA', field_0x4, &mPos, j, -1, -1);
+                            getActorManager_801F856C()->spawnActor_801F9484('TKTA', field_0x4, &mPos, tkta, -1, -1);
                             spawnEmitter_8013CC50(field_0x4, &mPos, 0x240, 0, 0, NULL, NULL, true, 1.0f);
                         }
 
