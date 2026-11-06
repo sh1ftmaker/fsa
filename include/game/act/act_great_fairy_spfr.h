@@ -13,8 +13,11 @@ class cls_8049EB8C : public cls_8049D140 {
 public:
     cls_8049EB8C();
     /* 0x08 */ virtual ~cls_8049EB8C();
+    /* 0x0C */ virtual void init();
+    /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
+    /* 0x5C */ virtual s32 vfunc_0x5C();
 
     // Not yet written (0x80132454, same unit). Takes an index into lbl_80465204.
     void fn_80132454(s32 index);
