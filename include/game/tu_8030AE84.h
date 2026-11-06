@@ -45,8 +45,13 @@ public:
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
     // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
     s32 fn_8030B570(s32* outA, s32* outB);
+    // 0x8030B1E8 (not written yet): updates the line shifts for `layer` in
+    // `mode` (0 / 6 clear them; 4, 5 and others time them by 0x60, 3, 8 frames)
+    // and returns field_0x4 (TileMap_804AA858::fn_802FB69C passes it to fn_802FAC10).
+    s32* fn_8030B1E8(u8 layer, u8 mode, u16 scroll);
 
-    /* 0x004 */ u8 field_0x4[0x284 - 0x4];
+    // A horizontal shift per screen line (160); fn_8030B1E8 returns it.
+    /* 0x004 */ s32 field_0x4[160];
     /* 0x284 */ u8 field_0x284;
     /* 0x285 */ u8 field_0x285[0x288 - 0x285];
     /* 0x288 */ s32 field_0x288;

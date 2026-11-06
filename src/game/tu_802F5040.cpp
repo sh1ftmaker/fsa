@@ -13,6 +13,7 @@
 #include "game/GameMode.h"
 #include "game/Player.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "game/tu_8030AE84.h"
 
 // The Dolphin SDK's indexed vertex writes (GXVert.h's GXPosition1x16 /
 // GXColor1x16 / GXTexCoord1x16), which libs/sdk's GXVert.h lacks: added there
@@ -33,7 +34,7 @@ static const GXTlut lbl_8046F940[16] = {
 // pool in .sdata2 (a function's own constants are pooled in first-use order,
 // after the floats of fn_802F5040), and the two white ones are separate.
 static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
-static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0 (user not written yet)
+static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0
 static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
@@ -679,6 +680,158 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
         }
         GXEnd();
     }
+}
+
+// FIXME: 89.1. Structurally close (6 instructions fewer): in the mosaic the
+// original loads rect2's four fields once before the loops (and multiplies per
+// pixel), ours reloads them per pixel (as locals they get strength-reduced and
+// flag / alpha spill); both mode-11 tests are a byte in the original (subfic /
+// cntlzw / extrwi., the unsolved shape of tu_80285E58's fn_80286688); the first
+// tint stores its colour bytes before its box; mode goes through r0; stack
+// slots differ; the literals are reloc-name.
+// One player's panel (fn_802FF0EC): the ortho box rect and viewport / scissor
+// rect2; with flag the record's tile layer mValid - 1 (on its palette set's
+// first colour, field_0x114) and, when mOverlay is set and the pause screen
+// (lbl_8053AEC8's alpha) is not fully up, layer mValid + 7 too, tinted by
+// field_0x130[player] (1 half grey, 2 black at 0xC0) and with the player's
+// line shifts (cls_804AA8D8::fn_8030B1E8); without flag a black quad of
+// field_0xe454. While paused a black box at the pause screen's alpha; count:
+// a mosaic of the panel (points of count + 1 pixels from the EFB); alpha: a
+// black box at 0xFF - alpha.
+void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_803004C0* rect,
+                                   cls_803004C0* rect2, u8 flag, s32 count, u8 alpha) {
+    JGeometry::TBox2f box(rect->field_0x0, rect->field_0x4, rect->field_0x0 + rect->field_0x8,
+                          rect->field_0x4 + rect->field_0xc);
+    gGameRoot2_8053AB10->fn_8013B414(&box, false);
+    GXSetViewport(rect2->field_0x0, rect2->field_0x4, rect2->field_0x8, rect2->field_0xc, 0.0f, 1.0f);
+    GXSetScissor(rect2->field_0x0, rect2->field_0x4, rect2->field_0x8, rect2->field_0xc);
+    s32 scrollX = record->mScrollXHigh << 5 | record->mScrollXBit4 << 4 | record->mScrollXLow;
+    s32 scrollY = record->mScrollYHigh << 5 | record->mScrollYBit4 << 4 | record->mScrollYLow;
+    s32* offsets = NULL;
+    cls_804AA8D8* shifts = fn_8022BCD4(player);
+    if (flag) {
+        bool first = ((record->mValid - 1) & 7) == 0 || field_0x134[player] != 0;
+        u16 c = field_0x114[first ? 1 : 2];
+        gGameRoot2_8053AB10->fn_8013B3F0();
+        JGeometry::TBox2f fill(rect->field_0x0, rect->field_0x4, rect->field_0x0 + rect->field_0x8,
+                               rect->field_0x4 + rect->field_0xc);
+        JUtility::TColor color((c & 0x7C00) >> 7 | (c & 0x7C00) >> 12, (c & 0x3E0) >> 2 | (c & 0x3E0) >> 7,
+                               (c & 0x1F) << 3 | (c & 0x1F) >> 2, 0xFF);
+        fn_8013B004(&fill, &color);
+        if (record->mOverlay) {
+            u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
+            if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
+                (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {
+                u8 mode = 6;
+                if (record->mValid <= 1 || field_0x134[player] != 0) {
+                    mode = 5;
+                } else if (record->mMode == 3) {
+                    mode = record->mOffsetMode;
+                }
+                if (shifts != NULL) {
+                    offsets = shifts->fn_8030B1E8(record->mValid, mode, scrollY);
+                }
+                fn_802FAC10(record->mValid - 1, scrollX, scrollY, field_0x134[player], 0xFF, 0xFF, offsets);
+            }
+        }
+    } else {
+        gGameRoot2_8053AB10->fn_8013B1E8();
+        field_0xe454->load(GX_TEXMAP0);
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        GXSetColorUpdate(GX_FALSE);
+        GXSetAlphaUpdate(GX_TRUE);
+        GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_ZERO, GX_LO_NOOP);
+        GXSetTevColor(GX_TEVREG0, lbl_805414EC);
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        s32 left = rect->field_0x0;
+        s32 top = rect->field_0x4;
+        s32 right = left + rect->field_0x8;
+        s32 bottom = top + rect->field_0xc;
+        GXPosition3f32(left, top, 0.0f);
+        GXTexCoord2f32(-1.0f, -1.0f);
+        GXPosition3f32(right, top, 0.0f);
+        GXTexCoord2f32(1.0f, -1.0f);
+        GXPosition3f32(right, bottom, 0.0f);
+        GXTexCoord2f32(1.0f, 1.0f);
+        GXPosition3f32(left, bottom, 0.0f);
+        GXTexCoord2f32(-1.0f, 1.0f);
+        GXEnd();
+        GXSetColorUpdate(GX_TRUE);
+        GXSetAlphaUpdate(GX_FALSE);
+        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    }
+    fn_8030275C(record, player, flag, field_0x134[player] != 0);
+    if (flag) {
+        gGameRoot2_8053AB10->fn_8013B3F0();
+        if (record->mOverlay) {
+            u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
+            if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
+                (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {
+                if (field_0x130[player] == 1) {
+                    fn_802FAC10(record->mValid + 7, scrollX, scrollY, field_0x134[player], 0x80, 0xFF, offsets);
+                } else if (field_0x130[player] == 2) {
+                    fn_802FAC10(record->mValid + 7, scrollX, scrollY, field_0x134[player], 0, 0xC0, offsets);
+                } else {
+                    fn_802FAC10(record->mValid + 7, scrollX, scrollY, field_0x134[player], 0xFF, 0xFF, offsets);
+                }
+            }
+        }
+        bool paused = gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 == 2;
+        if (paused) {
+            gGameRoot2_8053AB10->fn_8013B3F0();
+            JGeometry::TBox2f fill(rect->field_0x0, rect->field_0x4, rect->field_0x0 + rect->field_0x8,
+                                   rect->field_0x4 + rect->field_0xc);
+            JUtility::TColor color(0, 0, 0, lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0);
+            fn_8013B004(&fill, &color);
+        }
+    }
+    fn_803022C4(record, player, flag, field_0x134[player] != 0);
+    if (count != 0) {
+        s32 step = count + 1;
+        gGameRoot2_8053AB10->fn_8013B3F0();
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGB, GX_RGBA8, 0);
+        GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_VTX, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
+        GXSetNumChans(1);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR0A0);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_RASC);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_KONST);
+        GXSetNumTevStages(1);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_ZERO, GX_LO_NOOP);
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        GXSetZCompLoc(GX_FALSE);
+        GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+        GXSetColorUpdate(GX_TRUE);
+        GXSetAlphaUpdate(GX_FALSE);
+        GXSetCullMode(GX_CULL_NONE);
+        GXSetPointSize(rect2->field_0x8 * step * 6 / 240.0f, GX_TO_ZERO);
+        GXDrawDone();
+        GXBegin(GX_POINTS, GX_VTXFMT0, (s32)(0.9999f + 160.0f / step) * (s32)(0.9999f + 240.0f / step));
+        s32 half = step >> 1;
+        for (s32 py = half; py < half + 0xA0; py += step) {
+            u16 sy = 0.00625f * (rect2->field_0xc * py) + rect2->field_0x4;
+            for (s32 px = half; px < half + 0xF0; px += step) {
+                u16 sx = 0.004166667f * (rect2->field_0x8 * px) + rect2->field_0x0;
+                u8 argb[4];
+                GXPeekARGB(sx, sy, (u32*)argb);
+                GXPosition3f32(px, py, 0.0f);
+                GXColor4u8(argb[1], argb[2], argb[3], argb[0]);
+            }
+        }
+        GXEnd();
+    }
+    if (flag && alpha < 0xFF) {
+        gGameRoot2_8053AB10->fn_8013B3F0();
+        JGeometry::TBox2f fill(rect->field_0x0, rect->field_0x4, rect->field_0x0 + rect->field_0x8,
+                               rect->field_0x4 + rect->field_0xc);
+        JUtility::TColor color(0, 0, 0, 0xFF - alpha);
+        fn_8013B004(&fill, &color);
+    }
+    gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(true);
 }
 
 // FIXME: 99.2. One induction variable differs (try.py "different", same

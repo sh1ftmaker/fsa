@@ -843,6 +843,9 @@ struct GameRoot2_8049F108 {
 };
 
 extern GameRoot2_8049F108* gGameRoot2_8053AB10;
+// game/tu_8013AAD4.cpp (0x8013B004): fills box with color (an untextured
+// quad); TileMap_804AA858::fn_802FB69C draws its panel tints with it.
+void fn_8013B004(const JGeometry::TBox2f* box, const JUtility::TColor* color);
 
 // The input object *lbl_8053AD30 (game/tu_803099FC.cpp, owner not written
 // yet): named after its vtable, 0x804AA8C8 (constructor fn_8030AC4C, which
@@ -1112,7 +1115,9 @@ public:
     // 0x804399A0 (not written yet): sets the ortho context (fn_8013B490) and
     // draws; GameRoot's fn_80136828 calls it in screen mode 11.
     void fn_804399A0();
-    /* 0x04 */ u8 field_0x4[0x5D - 0x4]; // a J2DScreen* at 0x4
+    /* 0x04 */ u8 field_0x4[0x5C - 0x4]; // a J2DScreen* at 0x4
+    // An alpha: TileMap_804AA858::fn_802FB69C draws black boxes with it while paused.
+    /* 0x5C */ u8 field_0x5c;
     // SHARED-EDIT: tested by fn_801914C4 (game/tu_801902C0.cpp) through lbl_8053AEC8.
     /* 0x5D */ u8 field_0x5d;
     /* 0x5E */ u8 field_0x5e[0x60 - 0x5E];

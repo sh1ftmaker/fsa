@@ -74,11 +74,30 @@ struct cls_804AA858Sub11C {
     u32 field_0x4_5 : 2;
     u32 field_0x4_0 : 5;
     /* 0x05 */ u32 field_0x5_7 : 1;
-    u32 field_0x5_0 : 7;
+    u32 field_0x5_6 : 1;
+    u32 mOffsetMode : 2;           // fn_802FB69C: cls_804AA8D8::fn_8030B1E8's mode in mode 3
+    u32 field_0x5_0 : 4;
     /* 0x06 */ u32 field_0x6 : 8;  // four 2-bit values
     /* 0x07 */ u32 field_0x7_4 : 4; // four 1-bit values
     u32 field_0x7_0 : 4;           // four 1-bit values
-    /* 0x08 */ u32 field_0x8[(0x18 - 0x8) / 4];
+    // The low bytes of the next four words hold the panel's 9-bit scroll
+    // (fn_802FB69C): x = mScrollXHigh << 5 | mScrollXBit4 << 4 | mScrollXLow,
+    // y likewise.
+    /* 0x08 */ u32 field_0x8 : 24;
+    /* 0x0B */ u32 mScrollXHigh : 4;
+    u32 mScrollXBit4 : 1;
+    u32 field_0xb_0 : 3;
+    /* 0x0C */ u32 field_0xc : 24;
+    /* 0x0F */ u32 mScrollXLow : 4;
+    u32 field_0xf_0 : 4;
+    /* 0x10 */ u32 field_0x10 : 24;
+    /* 0x13 */ u32 mScrollYHigh : 4;
+    u32 mScrollYBit4 : 1;
+    u32 field_0x13_0 : 3;
+    /* 0x14 */ u32 field_0x14 : 24;
+    /* 0x17 */ u32 mScrollYLow : 4;
+    u32 mOverlay : 1;              // fn_802FB69C draws the second layer (mValid + 7) and the line offsets
+    u32 field_0x17_0 : 3;
     /* 0x18 */ u32 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
 
@@ -91,6 +110,11 @@ extern u8 lbl_80506DB8[4][4];
 extern u8 lbl_80506DC8[4][4];
 extern s32 lbl_80506DD8[4];
 void fn_803068D0(cls_804AA858Sub11C* record);
+// Called by TileMap_804AA858::fn_802FB69C before (fn_8030275C) and after
+// (fn_803022C4) its tint boxes: the record, the player, fn_802FB69C's flag
+// byte and whether field_0x134[player] is set.
+void fn_803022C4(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set);
+void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set);
 // Also tu_80301CD0's, read by TileMap_804AA858::fn_802FF0EC per player:
 // fn_80301D30's state (1 / 2), a byte counter (>> 1, or (0x10 - it) << 4)
 // and two s32 tables compared for equality.
@@ -285,7 +309,7 @@ public:
     // tinted grey / alpha unless both are 0xFF; offsets (or NULL): a shift per
     // screen line (0xA0), averaged over each 8-line row. Called only by fn_802FB69C.
     void fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets);
-    // 0x802FB69C (not written yet): one player's panel, from fn_802FF0EC:
+    // 0x802FB69C: one player's panel, from fn_802FF0EC:
     // the player, its field_0x11c record, field_0x150 / field_0x190 rects,
     // field_0x210 byte (tested clrlwi.), a count (cmpwi 0, + 1) and an
     // alpha (0xFF - alpha).
