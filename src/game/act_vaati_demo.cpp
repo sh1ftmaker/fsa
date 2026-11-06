@@ -164,7 +164,7 @@ void cls_8049D940::update() {
         field_0x308.z = mPos.z;
     }
     field_0x2a8.fn_801EB418(&field_0x308);
-    if ((u8)field_0x2a8.fn_801EB648()) {
+    if (field_0x2a8.fn_801EB648()) {
         startSound_801F0E34(0x40051, 0);
     }
     field_0x238.fn_801D1C18();
@@ -249,11 +249,7 @@ s32 cls_8049D940::vfunc_0x5C() {
     }
 }
 
-static inline bool talkAt(s32 player, u32 msg, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
-    return fn_8038BD08(player, msg, layer, pos, flags);
-}
-
-// FIXME: 96.30%, scheduling+regalloc + reloc-name: register allocation and instruction scheduling
+// FIXME: 94.36%, scheduling+regalloc + reloc-name: register allocation and instruction scheduling
 // in cases 9, 10 and 11, plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115F9C(s32 index) {
     switch (index) {
@@ -308,7 +304,7 @@ void cls_8049D940::fn_80115F9C(s32 index) {
         pos.y = (s32)JUTVideo::getManager()->getRenderMode()->efbHeight * 0.5f - 100.0f;
         pos.x = (s32)JUTVideo::getManager()->getRenderMode()->fbWidth * 0.5f;
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        if (talkAt(0, 0x4B4, field_0x4, pos, 0x62)) {
+        if (fn_8038BD08(0, 0x4B4, field_0x4, pos, 0x62)) {
             fn_8011921C()->fn_80118454();
             startSound_801F0E34(0x4006C, 0);
         }

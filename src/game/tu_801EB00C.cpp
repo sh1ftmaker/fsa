@@ -43,12 +43,12 @@ cls_801EB8CC::~cls_801EB8CC() {
 
 // fn_801EB648: the flag at field_0x54 (truncated to a byte) gates the scan of the
 // seven emitter pointers.
-s32 cls_801EB8CC::fn_801EB648() const {
-    s32 found = 0;
+bool cls_801EB8CC::fn_801EB648() const {
+    bool found = false;
     if ((u8)field_0x54 != 0) {
         for (s32 i = 0; i < 7; i++) {
             if (field_0x34[i] != NULL) {
-                found = 1;
+                found = true;
                 break;
             }
         }
