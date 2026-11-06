@@ -113,9 +113,9 @@ static inline bool isQueueBusy(s32 player) {
 }
 
 // __sinit_tu_80301CD0_cpp (compiler-generated: the two __construct_array calls for the sprite
-// lists and the JAudio pools of GameAudio.h). lbl_804DB798 (0x480, read by fn_80304FB0 here and
-// fn_8030A258) is not part of this object: with it first in the .bss, the sinit offsets shift by
-// 0x480, so this unit's .bss starts at lbl_804DBC18 and splits.txt gives the object to
+// lists and the JAudio pools of GameAudio.h). lbl_804DB798 (0x380, read by fn_80304FB0 here and
+// fn_8030A258) is not part of this object: with it (and tu_803006E8's sinit objects, 0x480 in all)
+// first in the .bss, the sinit offsets shift by 0x480, so this unit's .bss starts at lbl_804DBC18 and splits.txt gives the object to
 // tu_803006E8 (the previous unit).
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
