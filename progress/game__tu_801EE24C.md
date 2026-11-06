@@ -80,3 +80,49 @@ SHARED-EDITS: symbols.txt renames fn_801EF830 -> C++ name, fn_801F52A4 -> member
 ActorBase.h (fn_801EF830 out of extern "C", fn_801F52A4 member, comments, fn_801F2A10 param
 names); Player.h declares extern "C" bool fn_8022D534(s32) (owner tu_8022AD64; no fields
 touched); libs/sdk JMath.h TSinCosTable::cosDegree (from tp JMATrigonometric.h).
+
+## 2026-11-05 leverage wave 13, ActorBase round 3 (Opus 5.5, deferred inlining)
+Baseline 8731 honest -> 8732 (+1); no function anywhere drops (by address
+against the round's baseline report).
+Written:
+- fn_801EEC98 100 % (104 callers; layerBox for the view box, std::sqrtf).
+- fn_801F11B4 99.4 regalloc, vfunc_0x24 99.75 regalloc (death), vfunc_0x2C 98.8
+  regalloc (boss death explosion), fn_801F285C 88.8 scheduling (box before the
+  register saves, as fn_801F2740), fn_801F3D94 99.0 missing/extra 1 (hit
+  reaction), fn_801F37AC 94.4 missing/extra (hit handler: .rodata base hoist +
+  bool narrowing), fn_801F23BC 98.7 (bool narrowing only).
+- lbl_80469EF8 (hurt voices) as data; fn_801F4694 now pairs (rodata offsets).
+Simplified: isPlayerBelowLayer8 / isPlayerOnActorLayer inline workarounds are
+gone; fn_801F329C (now const, symbols.txt renamed) and fn_801F320C are plain
+functions their callers inline under deferred, every % kept.
+Re-measured under deferred, unchanged: the ctor (99.91, reloc-name only: 1.0f
+needs fn_801EF574 written first, 6.0f/doubles drawSprite, ...); the bool
+narrowing family (fn_801F2618, fn_801F2FAC, fn_801F2DB4, fn_801F305C, now also
+fn_801F23BC, fn_801F37AC): u8 returns make all five bodies 100 % (fn_801F305C
+with `u8 hit; if (hit == false)`), but 15 written callers drop (EnemyBase
+vfunc_0x5C/0x60/0x64 100 -> 84-86, Terrorpin/Beamos/Thief vfunc_0x60/0x64,
+act_sword_soldier fn_801545C0, several update()s): needs a joint retype of
+those virtuals; experiment saved, not merged.
+Shared headers: isStageFlagSet / fn_8019CE40 return BOOL (cmpwi at every
+caller; fn_8019CE40 stays 100, Player fn_80254744 98.72 -> 98.83);
+ActorManager::fn_801F6718 takes s32 a/b/c (callers pass raw words; callee 100,
+symbols.txt renamed).
+Not written (drafts in the round's scratchpad): drawSprite_801F06F0,
+fn_801EF574, fn_801F02BC, fn_801EFD34 all copy a SpriteParams_801F5AE0 from
+*params into a stack one that is later passed by address. The original loads
+every field first (with spills) and then stores; ours interleaves load/store,
+which shifts registers and the frame (60-75 %). With the local's address not
+passed to any call ours does load-all too, so MWCC's alias rule differs from
+the original here; tried operator=, copy-ctor, temporaries, const/restrict
+source, reference parameters, a TColor copy ctor: no change. drawSprite also
+copies *sp.mMtx with a 12-word struct copy (a struct-of-Mtx type; no
+candidate in the headers without a cast).
+.rodata: fn_801F37AC and fn_801EF830 address each table with its own lis/addi
+where ours hoists ...rodata.0; with the tables extern the hoist goes away, so
+the tables (0x80469D48-0x8046A048) probably belong to another unit (split
+change, not done).
+SHARED-EDITS: ActorBase.h (fn_801F329C const, fn_801F172C member decl,
+fn_801F23BC param names to/from, hit-field comments, docs); EnemyBase.h
+(fn_801CB5CC extern "C", fn_801CCDA4); StageFlag.h + tu_80379F84.h +
+tu_80197070.cpp (BOOL); ActorManager.h + tu_801F6058.cpp (fn_801F6718 ints);
+symbols.txt (fn_801F329C CFl, fn_801F172C member, fn_801F6718 FllPC...ll).
