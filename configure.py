@@ -877,6 +877,10 @@ config.libs = [
         Object(Matching, "JSystem/JUtility/JUTTexture.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTVideo.cpp", extra_cflags=["-O4,p"]),
         Object(Matching, "JSystem/JUtility/JUTXfb.cpp", extra_cflags=["-O4,p"]),
+        # The built-in ASCII font (FONTbfn1), extracted from the original at build
+        # time (config.yml extract:); mkdd links it last in JUtility, as a .s.
+        Object(Matching, "JSystem/JUtility/JUTFontData_Ascfont_fix12.cpp",
+               extra_cflags=["-O4,p", f"-i build/{config.version}/include"]),
     ]),
     # Runtime's __mem.c (.init memset/__fill_mem/memcpy) from pikmin2, with
     # pikmin2's Runtime flags (cflags_runtime + -inline deferred).

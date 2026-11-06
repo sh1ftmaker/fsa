@@ -34,3 +34,8 @@ extract:
 - symbol: lbl_80479F00
   header: assets/game/tu_80400DC4/font_data.inc
   header_type: raw
+# JUTFontData_Ascfont_fix12.cpp (JUtility): the built-in ASCII font (FONTbfn1,
+# mkdd's JSystem/JUtility/FontData/Ascfont_fix12.bfn).
+- symbol: JUTResFONT_Ascfont_fix12
+  header: assets/JSystem/JUtility/Ascfont_fix12.inc
+  header_type: raw

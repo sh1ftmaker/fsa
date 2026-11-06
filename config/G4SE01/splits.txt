@@ -1456,6 +1456,9 @@ JSystem/JUtility/JUTResFont.cpp:
 	.data       start:0x804994C0 end:0x80499510
 	.sdata2     start:0x8053B910 end:0x8053B928
 
+JSystem/JUtility/JUTFontData_Ascfont_fix12.cpp:
+	.rodata     start:0x8045EEE0 end:0x80463040
+
 JSystem/JUtility/JUTResource.cpp:
 	.text       start:0x8009209C end:0x80092270
 
