@@ -38,7 +38,7 @@ void LiftableWood_804A87A8::init() {
     mEmitter230 = NULL;
     mTimer240 = 0;
     if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
-        // FIXME: 89.58% (missing/extra) - inline TVec3f(mPos.x - 8.0f, mPos.y, mPos.z) temporary loads mPos.y/z before field_0x4/field_0x244
+        // FIXME: 89.58% (scheduling+regalloc). The original loads field_0x244/field_0x4 (call args) between the x-8.0f subtraction and the mPos.y/z loads and stores the TVec3f temporary x,y,z; ours loads mPos.z/y first and stores y,x,z.
         gBgRewrite_8053AC98->fn_8029D8F0(&JGeometry::TVec3f(mPos.x - 8.0f, mPos.y, mPos.z), field_0x4, field_0x244, 0);
         mAlive = false;
     }
@@ -92,7 +92,7 @@ void LiftableWood_804A87A8::update() {
     case 2:
         mTimer23c--;
         if (mTimer23c == 0) {
-            // FIXME: 97.70% (missing/extra) - inline TVec3f(mPos.x - 8.0f, mPos.y, mPos.z) temporary load order and setGlobalTranslation load order
+            // FIXME: 97.70% (scheduling+regalloc). Same TVec3f(mPos.x - 8.0f, mPos.y, mPos.z) temporary scheduling as in init (field_0x244/field_0x4 loads and y/z load order), and mPos.x/y/z are loaded in a different order for setGlobalTranslation.
             gBgRewrite_8053AC98->fn_8029D8F0(&JGeometry::TVec3f(mPos.x - 8.0f, mPos.y, mPos.z), field_0x4, field_0x244, 0);
             mState = 3;
             if (field_0x248[0] == 'u') {
@@ -177,7 +177,7 @@ void LiftableWood_804A87A8::vfunc_0x24() {
             if (serial >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor != NULL) {
-                    // FIXME: 99.32% (regalloc-only) - target->ours r6->r7, f4->f3, r7->r6, f1->f0 in random velocity construction
+                    // FIXME: 99.32% (regalloc-only). target->ours r6->r7, f4->f3, r7->r6, f1->f0 in the random velocity construction.
                     actor->field_0x3c = JGeometry::TVec3f(
                         2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
                         2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1(),
