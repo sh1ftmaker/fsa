@@ -24,7 +24,7 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
     result = a;
 }
 
-// FIXME: 99.44%. operands + reloc-name (stack frame 0xa0 vs 0xb0, regalloc r29/r30; .sdata2 pool order).
+// FIXME: 99.54%. operands (stack frame 0xa0 vs 0xb0, regalloc r29/r30).
 void FourPersonPullSwitch_804AE230::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -117,7 +117,6 @@ void FourPersonPullSwitch_804AE230::update() {
     }
 }
 
-// FIXME: 99.90%. reloc-name only (.sdata2 pool order: 1.0f/8.0f literals).
 void FourPersonPullSwitch_804AE230::draw() {
     s32 frame = field_0x24c + 0x147;
     if (field_0x4 < 8) {
@@ -127,9 +126,10 @@ void FourPersonPullSwitch_804AE230::draw() {
     fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x24c + 0x147, false, 1, -1, 0, 0, 0);
 }
 
-// Inlined into update(); the original has no out-of-line copy. Without a separate emitted
-// copy the .sdata2 pool order (8.0f vs draw's 1.0f) differs from the original (reloc-name only).
-inline bool FourPersonPullSwitch_804AE230::checkAllPulled() {
+// A plain function at its place between fn_8036CBBC and draw, inlined into update; the
+// linker dropped its out-of-line copy. Compiled there it pools 8.0f between fn_8036CBBC's
+// 0 / 7 and draw's 1.0f, as in the original.
+bool FourPersonPullSwitch_804AE230::checkAllPulled() {
     if (((field_0x90 >> 4) & 3) != 0) {
         return false;
     }
