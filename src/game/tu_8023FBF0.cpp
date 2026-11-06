@@ -4373,21 +4373,15 @@ s32 Player_804A6F38::fn_80241794() {
     return field_0xc08;
 }
 
-// FIXME: 97.1. After the fn_80270A8C test the target branches (beq) over an extra `b` to the epilogue where ours
-// emits a single bne to the epilogue.
+// The two early-outs under !field_0x7f are one condition (beq over a `b` to the epilogue).
 void Player_804A6F38::fn_802416FC(s32 arg) {
     s32 team = field_0xd60;
     if (team >= 0) {
         fn_80237524(team, arg);
         return;
     }
-    if (!gGameRoot_8053AAF8->field_0x7f) {
-        if (field_0xbfc <= 0) {
-            return;
-        }
-        if (fn_80270A8C()) {
-            return;
-        }
+    if (!gGameRoot_8053AAF8->field_0x7f && (field_0xbfc <= 0 || fn_80270A8C())) {
+        return;
     }
     field_0xc08 += arg;
     if (field_0xc08 > 0x180) {
