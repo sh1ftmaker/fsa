@@ -34,7 +34,9 @@ void cls_801ED828::fn_801ED8F0() {
 }
 
 // const: the target loads mFrames above the prologue's stw r0 (79.8 -> 83.8); the
-// u16 sizes convert with the signed form (xoris), an explicit (s32) (83.8 -> 90.1).
+// u16 sizes convert with the signed form (xoris), an explicit (s32) (83.8 -> 90.1):
+// the target reads each field unsigned (lhz) and then converts the register as a signed int
+// (xoris 0x8000 on the lhz result, not the unsigned magic-number form), as for the u8 casts.
 // FIXME: 90.12. Scheduling and registers only: the target loads efbHeight (lhz 6) before
 // fbWidth (lhz 4), both through r3; ours keeps the RenderModeObj in r8 and loads fbWidth
 // first.
