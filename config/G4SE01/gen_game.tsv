@@ -41,8 +41,6 @@ act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A88E8	new	new
 act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
-act_keese	dtor	__dt__14Keese_804A02B8Fv	Keese_804A02B8	0x804A02B8	new	new
-act_keese	sinit	__sinit_act_keese_cpp	-	-	new	new
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
 act_liftable_wood	dtor_emit	__dt__21LiftableWood_804A87A8Fv	LiftableWood_804A87A8	0x804A87A8	new	new
