@@ -6,132 +6,90 @@
 #include "game/GameView.h"
 #include "JSystem/JMath/JMath.h"
 
-// FIXME: 90.91% (missing/extra). Direction bool comparisons emit cmpwi instead of cntlzw/srwi, mPos.x is CSE'd from oldX in cases 0/2/4, and angle clear uses li instead of done reg.
+// Moves mPos 1.2 along x toward mTarget (forward) or mStart; returns whether it arrived.
+static inline bool stepLine(cls_804A5C88::Path* path, bool forward) {
+    bool done = false;
+    if (forward) {
+        path->mPos.x += 1.2f;
+        if (path->mPos.x >= path->mTarget.x) {
+            path->mPos.x = path->mTarget.x;
+            done = true;
+        }
+    } else {
+        path->mPos.x -= 1.2f;
+        if (path->mPos.x <= path->mStart.x) {
+            path->mPos.x = path->mStart.x;
+            done = true;
+        }
+    }
+    return done;
+}
+
+// Advances mAngle by mAngleStep and places mPos on the radius-125 arc around mTarget
+// (atTarget) or mStart; returns whether the angle reached the end of the arc.
+static inline bool stepArc(cls_804A5C88::Path* path, bool atTarget) {
+    bool done = false;
+    path->mAngle += path->mAngleStep;
+    if (atTarget) {
+        if (path->mAngle <= 0) {
+            if (path->mAngleStep > 0) {
+                path->mAngle = -0x8000;
+            } else {
+                path->mAngle = 0;
+            }
+            done = true;
+        }
+    } else {
+        if (path->mAngle >= 0) {
+            if (path->mAngleStep > 0) {
+                path->mAngle = 0;
+            } else {
+                path->mAngle = -0x8000;
+            }
+            done = true;
+        }
+    }
+    f32 sinVal = JMath::sincosTable_.sinShort(path->mAngle) * 125.0f;
+    f32 cosVal = JMath::sincosTable_.cosShort(path->mAngle) * 125.0f;
+    if (atTarget) {
+        path->mPos.x = path->mTarget.x;
+        path->mPos.y = path->mTarget.y;
+    } else {
+        path->mPos.x = path->mStart.x;
+        path->mPos.y = path->mStart.y;
+    }
+    path->mPos.x += sinVal;
+    path->mPos.y += cosVal;
+    return done;
+}
+
+// FIXME: 92.20% (missing/extra). The target tests mDirection once into a bool (cntlzw + extrwi.) and
+// branches on it; ours compares with cmpwi at each use, so 9 instructions are missing (227 vs 236).
 void cls_804A5C88::Path::fn_80209640(JGeometry::TVec2f* delta) {
     f32 oldX = mPos.x;
     f32 oldY = mPos.y;
 
     switch (mState) {
-    case 0: {
-        bool dir = (mDirection == 0);
-        bool done = false;
-        if (dir) {
-            mPos.x += 1.2f;
-            if (mPos.x >= mTarget.x) {
-                mPos.x = mTarget.x;
-                done = true;
-            }
-        } else {
-            mPos.x -= 1.2f;
-            if (mPos.x <= mStart.x) {
-                mPos.x = mStart.x;
-                done = true;
-            }
-        }
-        if (done) {
+    case 0:
+        if (stepLine(this, mDirection == 0)) {
             mState = 1;
         }
         break;
-    }
-    case 1: {
-        bool dir = (mDirection == 0);
-        bool done = false;
-        mAngle += mAngleStep;
-        if (dir) {
-            if (mAngle <= 0) {
-                if (mAngleStep > 0) {
-                    mAngle = -0x8000;
-                } else {
-                    mAngle = 0;
-                }
-                done = true;
-            }
-        } else {
-            if (mAngle >= 0) {
-                if (mAngleStep > 0) {
-                    mAngle = 0;
-                } else {
-                    mAngle = -0x8000;
-                }
-                done = true;
-            }
-        }
-        f32 sinVal = JMath::sincosTable_.sinShort(mAngle) * 125.0f;
-        f32 cosVal = JMath::sincosTable_.cosShort(mAngle) * 125.0f;
-        if (dir) {
-            mPos.x = mTarget.x;
-            mPos.y = mTarget.y;
-        } else {
-            mPos.x = mStart.x;
-            mPos.y = mStart.y;
-        }
-        mPos.x += sinVal;
-        mPos.y += cosVal;
-        if (done) {
+    case 1:
+        if (stepArc(this, mDirection == 0)) {
             mState = 2;
         }
         break;
-    }
-    case 2: {
-        bool dir = (mDirection != 0);
-        bool done = false;
-        if (dir) {
-            mPos.x += 1.2f;
-            if (mPos.x >= mTarget.x) {
-                mPos.x = mTarget.x;
-                done = true;
-            }
-        } else {
-            mPos.x -= 1.2f;
-            if (mPos.x <= mStart.x) {
-                mPos.x = mStart.x;
-                done = true;
-            }
-        }
-        if (done) {
+    case 2:
+        if (stepLine(this, mDirection != 0)) {
             mState = 3;
         }
         break;
-    }
-    case 3: {
-        bool dir = (mDirection != 0);
-        bool done = false;
-        mAngle += mAngleStep;
-        if (dir) {
-            if (mAngle <= 0) {
-                if (mAngleStep > 0) {
-                    mAngle = -0x8000;
-                } else {
-                    mAngle = 0;
-                }
-                done = true;
-            }
-        } else {
-            if (mAngle >= 0) {
-                if (mAngleStep > 0) {
-                    mAngle = 0;
-                } else {
-                    mAngle = -0x8000;
-                }
-                done = true;
-            }
-        }
-        f32 sinVal = JMath::sincosTable_.sinShort(mAngle) * 125.0f;
-        f32 cosVal = JMath::sincosTable_.cosShort(mAngle) * 125.0f;
-        if (dir) {
-            mPos.x = mTarget.x;
-            mPos.y = mTarget.y;
-        } else {
-            mPos.x = mStart.x;
-            mPos.y = mStart.y;
-        }
-        mPos.x += sinVal;
-        mPos.y += cosVal;
-        if (done) {
+    case 3:
+        if (stepArc(this, mDirection != 0)) {
             mState = 4;
         }
         break;
-    }
     case 4:
         if (mDirection == 0) {
             mPos.x += 1.2f;
@@ -183,7 +141,7 @@ void cls_804A5C88::init() {
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0xb0 = 0;
     field_0x98 = 2;
-    mFlags |= 0x380;
+    mFlags |= ENEMY_FLAG_NO_ATTACK | ENEMY_FLAG_NO_HURT | ENEMY_FLAG_KEEP_LIFE;
     mLife = 1000;
     mLifeBackup = mLife;
     field_0x194 = 1;
@@ -285,7 +243,8 @@ void cls_804A5C88::vfunc_0xA8() {
     }
 }
 
-// FIXME: 97.74% (missing/extra). Loop induction variable register allocation: slot pointer and loop counter registers r29 and r30 are swapped.
+// FIXME: 97.74% (missing/extra). In the mAlive-clearing loop of state 1 the slot pointer and the loop counter
+// trade registers (r29/r30), which costs ours one extra mr (85 vs 84 instructions); the rest matches.
 void cls_804A5C88::vfunc_0x90(u8 mapHit) {
     fn_80207A60();
     switch (mState) {
