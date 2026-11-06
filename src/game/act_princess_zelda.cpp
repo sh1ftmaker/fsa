@@ -43,6 +43,11 @@ static const s16 lbl_8053C3A8[] = { 8, 3, -1, -1 };
 static const s16 lbl_8053C3B0[] = { 16, 3, -1, -1 };
 static const s16 lbl_8053C3B8[] = { 24, 3, -1, -1 };
 
+static const s16 lbl_8053C3C0[] = { 0, 7, -1, -1 };
+static const s16 lbl_8053C3C8[] = { 3, 7, -1, -1 };
+static const s16 lbl_8053C3D0[] = { 6, 7, -1, -1 };
+static const s16 lbl_8053C3D8[] = { 9, 7, -1, -1 };
+
 static const s16 lbl_80464128[] = {
     0, 20, 8, 20, 0, 20, 8, 20, 16, 3, -1, -1
 };
@@ -58,6 +63,16 @@ static const s16 lbl_80464168[] = {
 static const s16 lbl_8046417C[] = {
     10, 10, 9, 7, 11, 10, 9, 7, -1, -1
 };
+static const s16 lbl_80464190[] = {
+    20, 8, 21, 8, 22, 8, 23, 8, 20, 8, 21, 8, 22, 8, 23, 8, 24, 5, 25, 20, -1, -1
+};
+static const s16 lbl_804641BC[] = {
+    0, 20, 3, 20, 0, 20, 3, 20, 6, 3, -1, -1
+};
+static const s16 lbl_804641D4[] = { 12, 10, 13, 15, -1, -1 };
+static const s16 lbl_804641E0[] = { 14, 10, 15, 15, -1, -1 };
+static const s16 lbl_804641EC[] = { 16, 10, 17, 15, -1, -1 };
+static const s16 lbl_804641F8[] = { 18, 10, 19, 15, -1, -1 };
 
 static const u32 lbl_80464204[] = {
     'PEAC', 'OKTA', 'AMOS', 'BZBR', 'OKTM', 'DGTL', 'HINO', 'HBMB', 'SLR1', 'TKTA',
@@ -75,13 +90,13 @@ static const u16 lbl_804642B0[8] = {
 static const s16* lbl_8049CE70[14] = {
     lbl_80464060, lbl_80464084, lbl_804640A8, lbl_804640CC, lbl_804640F0,
     lbl_8053C380, lbl_8053C388, lbl_8053C390, lbl_8053C398,
-    lbl_80464128, lbl_80464140, lbl_80464154, lbl_80464168, lbl_8046417C,
+    lbl_80464128, lbl_8053C3A0, lbl_8053C3A8, lbl_8053C3B0, lbl_8053C3B8,
 };
 
 static const s16* lbl_8049CEA8[14] = {
-    lbl_80464060, lbl_80464084, lbl_804640A8, lbl_804640CC, lbl_804640F0,
-    lbl_8053C3A0, lbl_8053C3A8, lbl_8053C3B0, lbl_8053C3B8,
-    lbl_80464128, lbl_80464140, lbl_80464154, lbl_80464168, lbl_8046417C,
+    lbl_80464140, lbl_80464154, lbl_80464168, lbl_8046417C, lbl_80464190,
+    lbl_8053C3C0, lbl_8053C3C8, lbl_8053C3D0, lbl_8053C3D8,
+    lbl_804641BC, lbl_804641D4, lbl_804641E0, lbl_804641EC, lbl_804641F8,
 };
 
 cls_8049CEE0::cls_8049CEE0()
