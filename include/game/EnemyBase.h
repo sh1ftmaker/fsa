@@ -211,7 +211,7 @@ public:
     // the overlapping actor (fn_801F82CC) unless it is a live 'BMTY'
     // (fn_801CC8E4): fn_801F37AC with its attack and direction; sets its
     // field_0x164 when it landed. Returns 0 or 1.
-    u8 fn_801CEA60();
+    bool fn_801CEA60();
     // 3 units / 3 calls. For each player overlapping this actor and
     // passing fn_801EAC20 (field_0x1dc): fn_801CB538 at the hit point; then
     // sound 0x400D1. Returns whether any player was hit (u8: Beamos

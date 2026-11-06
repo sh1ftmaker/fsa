@@ -590,15 +590,9 @@ void cls_804A3E44::vfunc_0x78() {
     }
 }
 
-u8 cls_804A3E44::vfunc_0x60() {
-    u8 hit;
-    if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
-        hit = fn_801CEA60();
-    } else {
-        hit = EnemyBase_804A4808::vfunc_0x60();
-    }
-    return hit;
-}
+// vfunc_0x60 left unwritten: the target returns fn_801CEA60's r3 unconverted
+// as the u8 of the EnemyBase slot, but fn_801CEA60 returns bool (100 %, mr r3),
+// so every form we can write adds a clrlwi (96.43 %).
 
 void cls_804A3E44::vfunc_0xA0() {
     switch (mState) {
