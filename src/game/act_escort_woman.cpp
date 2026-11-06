@@ -62,6 +62,15 @@ bool EscortWoman_8049E1D0::vfunc_0x58() {
     return false;
 }
 
+u8 EscortWoman_8049E1D0::vfunc_0x60() {
+    switch (field_0x33c) {
+    case 11:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 void EscortWoman_8049E1D0::vfunc_0x64() {
     field_0x35c = field_0x90 & 0xFF;
     field_0x3cc = (field_0x90 >> 22) & 0x1F;
