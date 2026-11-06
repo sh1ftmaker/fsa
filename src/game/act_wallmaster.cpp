@@ -1,4 +1,5 @@
 #include "game/ActorManager.h"
+#include "game/Camera.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
@@ -628,4 +629,17 @@ bool cls_804A3E44::vfunc_0x60() {
         return fn_801CEA60();
     }
     return EnemyBase_804A4808::vfunc_0x60();
+}
+
+void cls_804A3E44::vfunc_0xA0() {
+    switch (mState) {
+    case 2:
+    case 3:
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        break;
+    }
 }
