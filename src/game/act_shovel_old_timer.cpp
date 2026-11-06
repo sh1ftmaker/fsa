@@ -8,6 +8,7 @@
 #include "game/Unk_8045A080.h"
 #include "game/act/act_shovel_old_timer.h"
 
+// FIXME: 99.83%, reloc-name: only the .sdata2 literal symbol names differ (lbl_ vs @NNN, data split).
 void ShovelOldTimer_804AAB40::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x230 = getGameView_802D6A9C()->mVisibleBox;
@@ -37,6 +38,51 @@ static inline void setViewDigPos(JGeometry::TVec3f pos) {
     view->field_0x13280.z = pos.z;
 }
 
+inline void ShovelOldTimer_804AAB40::showHint(s32 player, s32 msg) {
+    if (player == field_0x250 || (fn_8022E438(player, field_0x250) && fn_8022CAF8(player) == 4)) {
+        lbl_8053AED0->fn_8043D67C(msg, player, 0);
+    }
+}
+
+// Picks a random start in the visible box, then scans the tiles in 16-unit steps for the
+// dig-spot tile code 0x1B0; on a hit it records the spot (field_0x240) and the view's marker.
+inline bool ShovelOldTimer_804AAB40::findDigSpot() {
+    f32 minX = field_0x230.i.x + 64.0f;
+    f32 minY = field_0x230.i.y + 32.0f;
+    f32 maxX = field_0x230.f.x - 32.0f;
+    f32 maxY = field_0x230.f.y - 32.0f;
+    f32 x = minX + 416.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+    f32 y = minY + 320.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+    f32 z = 0.0f;
+    f32 step = 16.0f;
+    for (int j = 0; j < 20; j++) {
+        for (int i = 0; i < 26; i++) {
+            JGeometry::TVec3f pos(x, y, z);
+            if (fn_80226850(&pos, 0) == 0x1B0) {
+                pos.x = (f32)((u32)pos.x & ~0xF);
+                pos.y = (f32)((u32)pos.y & ~0xF);
+                field_0x240.x = pos.x;
+                field_0x240.y = pos.y;
+                field_0x240.z = pos.z;
+                setViewDigPos(pos);
+                return true;
+            }
+            x += step;
+            if (x >= maxX) {
+                x = minX;
+            }
+        }
+        y += step;
+        if (y >= maxY) {
+            y = minY;
+        }
+    }
+    return false;
+}
+
+// FIXME: 98.55%, missing/extra + reloc-name: the original copies the dig-spot TVec3f twice on its
+// way into the view (a second psq_st/stfs pair, 2 instructions) and its frame is 0x10 bytes
+// larger; the literal references are lbl_ in the original and @NNN here (data split).
 void ShovelOldTimer_804AAB40::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -45,7 +91,7 @@ void ShovelOldTimer_804AAB40::update() {
     box.f.y += mPos.y;
     fn_80239914(&box, field_0x4, mSerial);
     switch (mState) {
-    case 0:
+    case 0: {
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
         s32 player = fn_8022FD8C(mSerial);
         if (player >= 0) {
@@ -56,40 +102,7 @@ void ShovelOldTimer_804AAB40::update() {
                         mState = 3;
                     }
                 } else {
-                    f32 minX = field_0x230.i.x + 64.0f;
-                    f32 minY = field_0x230.i.y + 32.0f;
-                    f32 maxX = field_0x230.f.x - 32.0f;
-                    f32 maxY = field_0x230.f.y - 32.0f;
-                    f32 x = minX + 416.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-                    f32 y = minY + 320.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-                    f32 z = 0.0f;
-                    f32 step = 16.0f;
-                    bool found;
-                    for (int j = 0; j < 20; j++) {
-                        for (int i = 0; i < 26; i++) {
-                            JGeometry::TVec3f pos(x, y, z);
-                            if (fn_80226850(&pos, 0) == 0x1B0) {
-                                pos.x = (f32)((u32)pos.x & ~0xF);
-                                pos.y = (f32)((u32)pos.y & ~0xF);
-                                field_0x240.x = pos.x;
-                                field_0x240.y = pos.y;
-                                field_0x240.z = pos.z;
-                                setViewDigPos(pos);
-                                found = true;
-                                goto done;
-                            }
-                            x += step;
-                            if (x >= maxX) {
-                                x = minX;
-                            }
-                        }
-                        y += step;
-                        if (y >= maxY) {
-                            y = minY;
-                        }
-                    }
-                    found = false;
-                done:
+                    bool found = findDigSpot();
                     if (!found) {
                         if (talk(player, 0x84F, field_0x4, mSerial, mPos, 0x28)) {
                             field_0x254 = player;
@@ -105,6 +118,7 @@ void ShovelOldTimer_804AAB40::update() {
             }
         }
         break;
+    }
     case 1:
         fn_8022FF8C(field_0x250, &box, field_0x4, mSerial, true, false);
         if (fn_80388CAC(field_0x250, mSerial)) {
@@ -162,15 +176,10 @@ void ShovelOldTimer_804AAB40::update() {
     }
 }
 
+// FIXME: 99.83%, reloc-name: only the .sdata2 literal symbol names differ (lbl_ vs @NNN, data split).
 void ShovelOldTimer_804AAB40::draw() {
     drawSprite_801F06F0("enemy_both2_sob.bin", 0x386, NULL, 0, 1.0f, 1.0f);
     fn_803075AC(mSerial, field_0x4, &mPos, 0x386, 0, 2, -1, false, 0, 0);
-}
-
-inline void ShovelOldTimer_804AAB40::showHint(s32 player, s32 msg) {
-    if (player == field_0x250 || (fn_8022E438(player, field_0x250) && fn_8022CAF8(player) == 4)) {
-        lbl_8053AED0->fn_8043D67C(msg, player, 0);
-    }
 }
 
 // update() at 0x80312114 calls fn_8031179C out of line.
@@ -179,6 +188,8 @@ void ShovelOldTimer_804AAB40::fn_8031179C() {
     for (int i = 0; i < 4; i++) {
         JGeometry::TVec2f pos;
         if (fn_8023A97C(i, &field_0x230, 0, &pos)) {
+            // fn_80226998 reads only x and y of its position; the 8-byte stack TVec2f is passed as TVec3f
+            // (as act_keese does).
             if (fn_80226998((const JGeometry::TVec3f*)&pos, 0) == 0x1B0) {
                 if (!field_0x259) {
                     showHint(field_0x250, 0x826);
