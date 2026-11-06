@@ -7,6 +7,7 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
+#include "game/act/act_all_enemies_defeated.h"
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
 #include "game/act/act_wallmaster.h"
@@ -207,13 +208,6 @@ public:
     /* 0x304 */ JPABaseEmitter* mEmitters[13];
 }; // Size: 0x338
 
-// Spawned for 'ALCE'.
-class AllEnemiesDefeated_804A2AB0 : public ActorBase_804A5770 {
-public:
-    AllEnemiesDefeated_804A2AB0() {}
-    /* 0x08 */ virtual ~AllEnemiesDefeated_804A2AB0();
-    /* 0x230 */ u8 field_0x230[0x38];
-}; // Size: 0x268
 
 // Spawned for 'SYKY'.
 class ShootingGallery_804A2B18 : public ActorBase_804A5770 {
