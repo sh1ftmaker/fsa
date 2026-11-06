@@ -261,16 +261,16 @@ static inline void setEntries(cls_804B0B00* self) {
             setPlayerKind(gGameRoot_8053AAF8, i, 1);
         } else {
             gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << i);
-            gGameRoot_8053AAF8->field_0x83 &= ~(u8)(3 << (2 * i));
+            setPlayerKind(gGameRoot_8053AAF8, i, 0);
         }
     }
 }
 
 // One player: sets bit 4 (connected) and bit 0 (taking part) of
 // gGameRoot_8053AAF8->mPlayerMask for player 0 only, and player 0's kind to 1 with
-// a controller in slot 0, else 2. fn_803E3320 (not written: written here
-// it gets inlined into fn_803E9034 / fn_803ED604, which call it out of line
-// in the original) has the same block, then setEntries for more players.
+// a controller in slot 0, else 2. fn_803E3320 (written below, out of line: inlined
+// it would not match fn_803E9034 / fn_803ED604, which call it out of line in the
+// original) has the same block, then setEntries for more players.
 static inline void setSingleEntry() {
     gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << 4);
     for (s32 i = 1; i < 4; i++) {
@@ -2812,7 +2812,7 @@ void cls_804B0B00::enterState15() {
         }
         lbl_80529DEC.field_0x64 = r;
     }
-    if (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x82[3] & 1) {
+    if (lbl_8050EC80[lbl_8050EC80[0].field_0x10].field_0x85 & 1) {
         lbl_80529DEC.field_0x237 = 5;
         field_0x360 = 6;
     } else {

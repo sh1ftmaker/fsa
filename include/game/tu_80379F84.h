@@ -125,7 +125,9 @@ struct SaveRow_8050EC80 {
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80;
     /* 0x81 */ u8 field_0x81; // 1 when the battle stage chosen last is 5 or more (tu_80414F6C fn_80415028)
-    /* 0x82 */ u8 field_0x82[0x87 - 0x82];
+    /* 0x82 */ u8 field_0x82[0x85 - 0x82];
+    /* 0x85 */ u8 field_0x85; // bit 0 is tested (tu_803E1668 enterState15)
+    /* 0x86 */ u8 field_0x86;
     /* 0x87 */ u8 field_0x87; // bit 0: act_fairy's init has shown message 0x339
     // Tested by act_rank_display's update before it shows a rank change:
     // field_0x88 when GameRoot's field_0x7f is 1, field_0x89 when it is 0.
