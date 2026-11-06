@@ -69,6 +69,12 @@ static const f32 lbl_8046C018[4][4][2] = {
 static const s32 lbl_8046C0B8[4] = {2, 1, 0, 3};
 static const s32 lbl_8046C0C8[4] = {3, 1, 0, 2};
 
+// Whether p (x, y) is in box: fn_802844F8's test (its registers need the point by reference and
+// the plain && return, not BoxTest.h's containsPoint).
+static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
+    return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
+}
+
 void Player_804A6F38::fn_8027E5BC(f32 speed) {
     // The divides by powers of two compile to the original's multiplies (operand order of fmuls/fmadds).
     if (!fn_8024BBB0()) {
@@ -2032,6 +2038,59 @@ void Player_804A6F38::fn_80283D2C() {
     fn_8024BAEC();
 }
 
+// Update of state 0x38 (dropping down a ledge): moves by 0x344 while above the floor; falls 0.25 a
+// frame, or 0.17 to -6 when carried (0x43F) or with 0x441; landing below the ledge's y 0x328
+// (carried) lifts it there at height 8, else it stands (0, or 8 with 0xCAD) and, carried, spawns
+// the landing effects 0x4F3-0x4F6 at y + 6 (half size without 0x440) and fn_80134DE4(1, 0);
+// with 0x440 the falling sounds 0x1000D / 0x2003E.
+void Player_804A6F38::fn_80283E70() {
+    if (mPos.z >= 0.0f) {
+        mPos += field_0x344;
+    }
+    if (field_0x43f || field_0x441) {
+        if (field_0x344.z >= -6.0f) {
+            field_0x344.z -= 0.17f;
+            if (field_0x344.z < -6.0f) {
+                field_0x344.z = -6.0f;
+            }
+        }
+    } else {
+        field_0x344.z -= 0.25f;
+    }
+    if (mPos.z <= 0.0f) {
+        if ((field_0x43f || field_0x441) && mPos.y < field_0x324.y) {
+            mPos.y += field_0x324.y - mPos.y;
+            mPos.z = 8.0f;
+        } else {
+            mPos.z = 0.0f;
+            s32 state = 0;
+            if (field_0xcad == true) {
+                state = 8;
+            }
+            field_0x124d = 0;
+            if (fn_80251AEC(state) && field_0x43f) {
+                JGeometry::TVec3f pos = mPos;
+                pos.y += 6.0f;
+                JPABaseEmitter* e0 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4f3, -1, 0, NULL, NULL, true, 1.0f);
+                JPABaseEmitter* e1 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4f4, 0, 0, NULL, NULL, true, 1.0f);
+                JPABaseEmitter* e2 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4f5, 0, 0, NULL, NULL, true, 1.0f);
+                JPABaseEmitter* e3 = spawnEmitter_8013CC50(field_0x3b4, &pos, 0x4f6, 0, 0, NULL, NULL, true, 1.0f);
+                if (!field_0x440) {
+                    e0->setGlobalScale(0.5f);
+                    e1->setGlobalScale(0.5f);
+                    e2->setGlobalScale(0.5f);
+                    e3->setGlobalScale(0.5f);
+                }
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
+            }
+        }
+    }
+    if (field_0x440 && field_0x344.z < 0.0f) {
+        fn_8024F0E8(0x1000D);
+        fn_8024F0E8(0x2003E);
+    }
+}
+
 void Player_804A6F38::fn_8028414C() {
     field_0x458 = 0;
     field_0xce8 = true;
@@ -2127,6 +2186,96 @@ void Player_804A6F38::fn_8028447C() {
     field_0x3fe = 0;
     field_0x1220 = 5;
     fn_8024D134();
+}
+
+// Update of state 0x1B (walking onto the screen): steps toward the target (fn_8027E5BC, 3 for pose
+// 0x3FD 3, else 2) while outside the visible box (39 in from the edges across the facing), and
+// after 40 frames (0x3FE) regardless; once every present player in state 0x1B (fn_80233EDC) is inside it, carried
+// (0x43F) it hands over (fn_80248A24), else it goes on by pose 0x3FD (0x12 carrying, 0x4A, 0x4B,
+// 0xB, or 0), the acting player (lbl_8053A190) calling fn_80231368; the walk frames by pose, and
+// with 0x440 the sounds 0x1000D / 0x2003E.
+void Player_804A6F38::fn_802844F8() {
+    bool allInside = true;
+    field_0x3fe++;
+    JGeometry::TBox2f box;
+    box = getGameView_802D6A9C()->mVisibleBox;
+    if (field_0x3dc == 3 || field_0x3dc == 2) {
+        box.i.y += 39.0f;
+        box.f.y -= 39.0f;
+    } else {
+        box.i.x += 39.0f;
+        box.f.x -= 39.0f;
+    }
+    if (!contains(box, mPos) || field_0x3fe >= 40) {
+        if (field_0x3fd == 3) {
+            fn_8027E5BC(3.0f);
+        } else {
+            fn_8027E5BC(2.0f);
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023F264(i) && fn_80233EDC(i) && !contains(box, *getPlayerPos_8023E724(i))) {
+            allInside = false;
+            break;
+        }
+    }
+    if (allInside) {
+        field_0x124d = 0;
+        if (field_0x43f) {
+            fn_80248A24();
+            if (lbl_8053A190 == field_0x4) {
+                fn_80231368();
+            }
+        } else {
+            if (fn_8025F684()) {
+                fn_80251AEC(0x12);
+            } else if (field_0x3fd == 1) {
+                fn_80251AEC(0x4a);
+            } else if (field_0x3fd == 2) {
+                fn_80251AEC(0x4b);
+            } else if (field_0x3fd == 3) {
+                fn_80251AEC(0xb);
+            } else {
+                fn_80251AEC(0);
+            }
+            if (lbl_8053A190 == field_0x4) {
+                fn_80231368();
+            }
+        }
+    }
+    if (!field_0x43f) {
+        if (fn_8025F684()) {
+            fn_8026152C(false);
+        } else if (field_0x3fd == 0) {
+            field_0x3f8++;
+            if (field_0x3f8 >= 16) {
+                field_0x3f8 = 0;
+            }
+            field_0x3f9 = field_0x3f8 / 2;
+        } else if (field_0x3fd == 3) {
+            field_0x3f8++;
+            if (field_0x3f8 >= 19) {
+                field_0x3f8 = 0;
+            }
+            if (field_0x3f8 < 7) {
+                field_0x3f9 = 0;
+            } else if (field_0x3f8 < 12) {
+                field_0x3f9 = 1;
+            } else {
+                field_0x3f9 = 2;
+            }
+        } else {
+            field_0x3f8++;
+            if (field_0x3f8 >= 24) {
+                field_0x3f8 = 0;
+            }
+            field_0x3f9 = field_0x3f8 / 6;
+        }
+    }
+    if (field_0x440) {
+        fn_8024F0E8(0x1000D);
+        fn_8024F0E8(0x2003E);
+    }
 }
 
 void Player_804A6F38::fn_802848F0() {
