@@ -7,6 +7,35 @@ static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f&
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
 }
 
+// Does one of player `i`'s 8 outline points lie inside the lotus's box? The first one inside is reported (fn_8022DF48).
+static inline bool outlineInBox(cls_804AC3E0* self, int i) {
+    for (int j = 0; j < 8; j++) {
+        JGeometry::TVec3f point;
+        fn_8022E088(i, j, &point);
+        point -= self->mPos;
+        point.z = 0.0f;
+        f32 rad = JMath::atanTable_.atan2_(point.y, point.x);
+        s16 angle = rad * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        f32 dist = JGeometry::TUtil<f32>::sqrt(point.x * point.x + point.y * point.y);
+        point.z = 0.0f;
+        point.y = dist * JMath::sincosTable_.sinShort(angle);
+        point.x = dist * JMath::sincosTable_.cosShort(angle);
+        if (contains(self->mBox, point)) {
+            fn_8022DF48(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+// An LTZR's mBox is a fixed 24 x 24 square, copied to mBox2.
+static inline void resetBoxes(cls_804AC3E0* self) {
+    if (self->mActorId == 'LTZR') {
+        self->mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
+        self->mBox2.set(self->mBox);
+    }
+}
+
 cls_804AC3E0::cls_804AC3E0() {
     field_0x2b8 = 0;
 }
@@ -22,16 +51,15 @@ void cls_804AC3E0::init() {
 }
 
 void cls_804AC3E0::vfunc_0xA4() {
-    field_0x2ac[0] = 0;
-    field_0x2ac[1] = 0;
-    field_0x2ac[2] = 0;
-    field_0x2ac[3] = 0;
+    for (int i = 0; i < 4; i++) {
+        field_0x2ac[i] = 0;
+    }
     field_0x2b2 = 0;
     field_0x2b0 = 0;
     mPos.y = mSpawnPos.y;
 }
 
-// FIXME: 92.84 % (missing/extra + reloc-name: ours has 3 more instrs (198 vs 195); target vs ours: sincosTable___5JMath vs atanTable___5JMath).
+// FIXME: 92.16 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs; the original keeps them in registers), plus register order and the JMath table addresses formed in the other order (reloc-name).
 void cls_804AC3E0::vfunc_0xA8() {
     if (field_0x2b0 != 0) {
         field_0x2b2 += 0x800;
@@ -41,33 +69,11 @@ void cls_804AC3E0::vfunc_0xA8() {
         }
     }
     for (int i = 0; i < 4; i++) {
-        bool r28;
+        bool touching;
         if (field_0x4 != getPlayerLayer_8023DE58(i)) {
-            r28 = false;
+            touching = false;
         } else {
-            int j = 0;
-            while (true) {
-                JGeometry::TVec3f point;
-                fn_8022E088(i, j, &point);
-                point -= mPos;
-                point.z = 0.0f;
-                f32 rad = JMath::atanTable_.atan2_(point.y, point.x);
-                s16 angle = rad * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
-                f32 dist = JGeometry::TUtil<f32>::sqrt(point.x * point.x + point.y * point.y);
-                point.z = 0.0f;
-                point.y = dist * JMath::sincosTable_.sinShort(angle);
-                point.x = dist * JMath::sincosTable_.cosShort(angle);
-                if (contains(mBox, point)) {
-                    fn_8022DF48(i);
-                    r28 = true;
-                    break;
-                }
-                j++;
-                if (j >= 8) {
-                    r28 = false;
-                    break;
-                }
-            }
+            touching = outlineInBox(this, i);
         }
         if (fn_80233E40(i)) {
             if ((1 << i) & fn_801F2740(-1)) {
@@ -76,20 +82,20 @@ void cls_804AC3E0::vfunc_0xA8() {
                 }
             }
         } else {
-            if (r28) {
+            if (touching) {
                 if (mPos.z <= 0.0f) {
                     JGeometry::TVec3f vec = mPos - mPrevPos;
                     fn_8023DF68(i, &vec);
                 }
             }
             if (getPlayerPos_8023E724(i)->z > mPos.z) {
-                r28 = false;
+                touching = false;
             }
-            if (r28 != field_0x2ac[i]) {
+            if (touching != field_0x2ac[i]) {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x54e, -1, -2, NULL, NULL, true, 1.2f);
                 field_0x2b0 = 1;
             }
-            field_0x2ac[i] = r28;
+            field_0x2ac[i] = touching;
         }
     }
 }
@@ -155,16 +161,13 @@ u8 cls_804AC3E0::vfunc_0x68() {
     return 0;
 }
 
-// FIXME: 91.31 % (missing/extra + reloc-name: ours has 3 more instrs (534 vs 531); target vs ours: sincosTable___5JMath vs atanTable___5JMath).
-void cls_804AC3E0::vfunc_0x90() {
+// FIXME: 93.36 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs each; the original keeps them in registers), plus register order.
+void cls_804AC3E0::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 2:
     case 3:
     case 5:
-        if (mActorId == 'LTZR') {
-            mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-            mBox2.set(mBox);
-        }
+        resetBoxes(this);
         if (mState == 2 && mStateTimer < 3) {
             vfunc_0xA4();
         } else {
@@ -186,28 +189,12 @@ void cls_804AC3E0::vfunc_0x90() {
                         fn_801BACE8(0);
                     }
                     if (getPlayerLayer_8023DE58(i) == field_0x4) {
-                        for (int j = 0; j < 8; j++) {
-                            JGeometry::TVec3f point;
-                            fn_8022E088(i, j, &point);
-                            point -= mPos;
-                            point.z = 0.0f;
-                            f32 rad = JMath::atanTable_.atan2_(point.y, point.x);
-                            s16 angle = rad * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
-                            f32 dist = JGeometry::TUtil<f32>::sqrt(point.x * point.x + point.y * point.y);
-                            point.z = 0.0f;
-                            point.y = dist * JMath::sincosTable_.sinShort(angle);
-                            point.x = dist * JMath::sincosTable_.cosShort(angle);
-                            if (contains(mBox, point)) {
-                                fn_8022DF48(i);
-                                break;
-                            }
-                        }
+                        outlineInBox(this, i);
                     }
                 }
             }
-            if (mState == 5 && mActorId == 'LTZR') {
-                mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-                mBox2 = mBox;
+            if (mState == 5) {
+                resetBoxes(this);
             }
         }
         break;
@@ -233,10 +220,7 @@ void cls_804AC3E0::vfunc_0x90() {
     }
     switch (mState) {
     case 0:
-        if (mActorId == 'LTZR') {
-            mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-            mBox2.set(mBox);
-        }
+        resetBoxes(this);
         vfunc_0xA8();
         if (mStateTimer >= field_0x250) {
             if (fn_801D05F8(&mPos, 300.0f) >= 0) {
@@ -246,10 +230,7 @@ void cls_804AC3E0::vfunc_0x90() {
         break;
     case 1:
         startSound_801F0E34(0x50081, 0);
-        if (mActorId == 'LTZR') {
-            mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-            mBox2.set(mBox);
-        }
+        resetBoxes(this);
         vfunc_0xA8();
         if (field_0x54.x != 1.5f) {
             fn_801CD950(&field_0x54.x, 1.5f, 0.05f);
@@ -271,28 +252,10 @@ void cls_804AC3E0::vfunc_0x90() {
         }
         break;
     case 5:
-        if (mActorId == 'LTZR') {
-            mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-            mBox2.set(mBox);
-        }
+        resetBoxes(this);
         for (int i = 0; i < 4; i++) {
             if (getPlayerLayer_8023DE58(i) == field_0x4) {
-                for (int j = 0; j < 8; j++) {
-                    JGeometry::TVec3f point;
-                    fn_8022E088(i, j, &point);
-                    point -= mPos;
-                    point.z = 0.0f;
-                    f32 rad = JMath::atanTable_.atan2_(point.y, point.x);
-                    s16 angle = rad * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
-                    f32 dist = JGeometry::TUtil<f32>::sqrt(point.x * point.x + point.y * point.y);
-                    point.z = 0.0f;
-                    point.y = dist * JMath::sincosTable_.sinShort(angle);
-                    point.x = dist * JMath::sincosTable_.cosShort(angle);
-                    if (contains(mBox, point)) {
-                        fn_8022DF48(i);
-                        break;
-                    }
-                }
+                outlineInBox(this, i);
             }
         }
         if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
@@ -303,10 +266,11 @@ void cls_804AC3E0::vfunc_0x90() {
     vfunc_0xAC();
 }
 
-// Called out-of-line by cls_804AC3E0::draw
-// FIXME: 99.50 % (regalloc-only: target->ours f24->f26, f26->f25, f25->f24).
+// Not auto-inlined: cls_804AC3E0::draw calls fn_8033FC4C out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-extern "C" void fn_8033FC4C(Mtx m, const JGeometry::TVec3f& scale, const JGeometry::TVec3f& rot, const JGeometry::TVec3f& trans) {
+// FIXME: 99.50 %. regalloc-only: the original keeps cos(rot.z) in f24, cx*sz in f26 and cx*cz in f25
+// (ours f26, f25, f24).
+void fn_8033FC4C(Mtx m, const JGeometry::TVec3f& scale, const JGeometry::TVec3f& rot, const JGeometry::TVec3f& trans) {
     f32 sx = sin(rot.x);
     f32 sy = sin(rot.y);
     f32 sz = sin(rot.z);
@@ -314,6 +278,7 @@ extern "C" void fn_8033FC4C(Mtx m, const JGeometry::TVec3f& scale, const JGeomet
     f32 cy = cos(rot.y);
     f32 cz = cos(rot.z);
 
+    // Products shared by several matrix elements.
     f32 cy_sz = cy * sz;
     f32 neg_sy = -sy;
     f32 cy_cz = cy * cz;
@@ -343,7 +308,7 @@ extern "C" void fn_8033FC4C(Mtx m, const JGeometry::TVec3f& scale, const JGeomet
 }
 #pragma auto_inline reset
 
-// 99.90 % (reloc-name only: target vs ours: jumptable_804AC494 vs @858).
+// FIXME: 99.90 %. reloc-name only: the switch's jump table is jumptable_804AC494 in the original, @NNN in ours.
 void cls_804AC3E0::draw() {
     ZoraEnemy_804A3D7C::draw();
     SpriteParams_801F5AE0 params;

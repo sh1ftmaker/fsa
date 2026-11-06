@@ -17,10 +17,17 @@ public:
 
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
+    // 0x80340660: returns false, so no player hit is reported.
     /* 0x5C */ virtual u8 vfunc_0x5C();
+    // 0x80340658: returns false, so no actor hit is reported.
     /* 0x60 */ virtual u8 vfunc_0x60();
+    // 0x80340650: returns 0, so no player or actor hit mask is reported
+    // (EnemyBase's vfunc_0x68 is the bitmask hook).
     /* 0x68 */ virtual u8 vfunc_0x68();
-    /* 0x90 */ virtual void vfunc_0x90();
+    // 0x8033FE04: the per-state behaviour (mapHit is not read).
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    // 0x80340BC8: clears the flags at 0x2AC-0x2B2 and puts mPos.y back at
+    // mSpawnPos.y.
     /* 0xA4 */ virtual void vfunc_0xA4();
     /* 0xA8 */ virtual void vfunc_0xA8();
     /* 0xAC */ virtual bool vfunc_0xAC();
