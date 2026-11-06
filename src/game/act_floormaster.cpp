@@ -67,6 +67,53 @@ void Floormaster_804A6004::init() {
     mAnim.startAnim_801D22DC(0, 0, false);
 }
 
+// FIXME: 98.69%. regalloc-only + reloc-name
+void Floormaster_804A6004::vfunc_0x94() {
+    if (mState == 4) return;
+    EnemyBase_804A4808::vfunc_0x94();
+    if (!(mBox.f.x - mBox.i.x > 0.0f)) return;
+    if (!(mBox.f.y - mBox.i.y > 0.0f)) return;
+    switch (mAnim.mCel) {
+    case 2:
+        mBox.set(-7.0f, -12.0f, 16.0f, 8.0f);
+        break;
+    case 3:
+        mBox.set(-12.0f, -22.0f, 2.0f, 8.0f);
+        break;
+    case 4:
+        mBox.set(-12.0f, -20.0f, 1.0f, 8.0f);
+        break;
+    case 5:
+        mBox.set(-4.0f, -16.0f, 16.0f, 8.0f);
+        break;
+    }
+    if (mFlags & 0x8000) {
+        f32 minX = -mBox.f.x;
+        f32 maxX = -mBox.i.x;
+        mBox.i.x = minX;
+        mBox.f.x = maxX;
+    }
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
+}
+
+// FIXME: 99.64%. reloc-name
+void Floormaster_804A6004::vfunc_0x88() {
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    switch (mState) {
+    case 1:
+        if (field_0x2b8 >= 0) {
+            JGeometry::TVec2f vec;
+            fn_801D00B4(field_0x2b8, &vec, 1.0f);
+            field_0x3c.x = vec.x;
+            field_0x3c.y = vec.y;
+        }
+        break;
+    }
+}
+
 void Floormaster_804A6004::vfunc_0xA0() {
     if (mState != 0) {
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
