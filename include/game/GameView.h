@@ -72,6 +72,9 @@ public:
     // 0x990 bytes; this unit only (fn_802D9CD8, vfunc_0xC). Reads the map
     // CSV tables lbl_804A9710 / lbl_804A9830; r3 is the view.
     void fn_802D3D48();
+    // 0x1DD0 bytes; this unit only (fn_802D8D50 passes 0 and 8-14). Rebuilds the
+    // layer's slot list (field_0x131b8[layer], field_0x131df[layer] cleared first).
+    void fn_802D4CCC(s32 layer);
     // 0x92C bytes; this unit only (fn_802D9CD8, fn_802DBD60, vfunc_0xC).
     void fn_802D92F0();
     // 1 unit / 1 call. sprintf of "d_map%s_%d%d_mmm_2_%d.szs" (lbl_8046E7E8)

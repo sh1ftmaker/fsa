@@ -57,7 +57,7 @@ public:
     void fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer);
     /* 0x230 */ JGeometry::TVec2f field_0x230; // position (x, y)
     /* 0x238 */ s32 field_0x238; // layer
-    /* 0x23C */ u8 field_0x23C[4]; // not yet known
+    /* 0x23C */ u32 field_0x23c; // GameView_804A9950::fn_802D8328 stores the key value's top 2 bits (stw)
     /* 0x240 */ s32 field_0x240; // state; 4 is tested by act_invisible_npc_wall_tomi
     /* 0x244 */ u8 field_0x244[0x260 - 0x244]; // not yet known
     /* 0x260 */ JGeometry::TVec3f field_0x260; // position, set by fn_802C1D30

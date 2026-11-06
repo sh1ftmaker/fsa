@@ -40,6 +40,10 @@ struct Singleton_801DAC6C {
     /* 0x84 */ u16 field_0x84; // bit 0: set by the tail on its tenth hit (act_frostare_tail lhz/ori/sth)
 };
 
+// Owner game/tu_801DAC6C.cpp: a byte counter (0-4) other units step with lbz/stb;
+// GameView_804A9950::fn_802D8328 clears it.
+extern u8 lbl_8053AC30;
+
 // Owner game/tu_801DAC6C.cpp. Returns the guarded static above.
 Singleton_801DAC6C* fn_801DAC6C();
 

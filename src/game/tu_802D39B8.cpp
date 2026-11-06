@@ -21,10 +21,18 @@
 #include "game/Player.h"
 #include "game/PlayerBit.h"
 #include "game/StageFlag.h"
+#include "game/Map.h"
+#include "game/tu_801E9AFC.h"
+#include "game/tu_80212AC0.h"
+#include "game/tu_8021F064.h"
+#include "game/act/tu_801DAC6C.h"
+#include "game/tu_80127E20.h"
+#include "game/tu_8012F3E4.h"
+#include "game/tu_8012FF9C.h"
+#include "game/tu_80131D98.h"
+#include "game/act/act_small_key.h"
 #include <stdio.h>
 
-// Bit masks, most significant bit first: bit n of a word list is
-// list[n / 32] & lbl_8046E1CC[n % 32].
 // The players' positions on a new screen, from its top-left corner (fn_802DA010, fn_802DA788).
 static const f32 lbl_8046E148[4][3] = {
     {192.0f, 200.0f, 0.0f},
@@ -33,6 +41,11 @@ static const f32 lbl_8046E148[4][3] = {
     {224.0f, 232.0f, 0.0f},
 };
 
+// The switch actors fn_802D8328 spawns before the rest of a screen's actors.
+static const u32 lbl_8046E178[6] = {'CKSW', 'ONOF', 'OFFS', 'GLBS', 'LCLS', 'SWT4'};
+
+// Bit masks, most significant bit first: bit n of a word list is
+// list[n / 32] & lbl_8046E1CC[n % 32].
 static const u32 lbl_8046E1CC[32] = {
     0x80000000, 0x40000000, 0x20000000, 0x10000000, 0x08000000, 0x04000000, 0x02000000, 0x01000000,
     0x00800000, 0x00400000, 0x00200000, 0x00100000, 0x00080000, 0x00040000, 0x00020000, 0x00010000,
@@ -1067,52 +1080,259 @@ const char* GameView_804A9950::fn_802D9C1C() {
     return "0";
 }
 
-// FIXME: 96.5. Scheduling and regalloc: the target reads field_0x18 only after the column
-// checks and loads field_0x8 before field_0x4 (as if both were arguments of an inlined
-// name lookup); the format string waits for the unit's .rodata to be written.
-const char* GameView_804A9950::fn_802D8228(s32 layer) {
+// The tile map, gGameRoot2_8053AB10->0x20, through an inlined accessor (no out-of-line copy is
+// left): the original loads it before the resource lookup that is its call's first argument,
+// as MWCC orders an inlined call with the other calls (RULES_CARD "inlined getter"); written
+// out, the load comes after the lookup (fn_802D8D50 92.7 -> 87.7).
+static inline TileMap_804AA858* getTileMap() {
+    return gGameRoot2_8053AB10->field_0x20;
+}
+
+// FIXME: 96.4. Structurally close: the target builds the resource type with 'M   ' in a
+// register (lis/addi 0x4D202020, add, then subi 0x20 for the last ' '); ours folds the
+// constant (addis/addi 0x2000) and adds it first; the inlined fn_802DEBA0 reloads the view
+// in the target (as fn_802DEBA0); the int-to-float temporaries of field_0x14 / field_0x18
+// take each other's stack slots; regalloc follows.
+// Loads the current screen's tile grids: layers 0/1 from the screen's two "mmm" files
+// (resource type 'M' plus the stage name), then, unless fn_802DEBA0(), layers 8-14 and
+// 16-22 from the per-layer files of fn_802D8228 / fn_802D8128, and sets the visible box.
+void GameView_804A9950::fn_802D8D50(bool reload) {
+    char name1[0x20];
+    char name2[0x20];
+    getGameView_802D6A9C()->field_0x5c = 0;
+    const char* stage = "001";
+    s32 screen = 0;
     s32 col = field_0x14;
-    s32 row = field_0x18;
-    if (col >= 0 && col < 10 && row >= 0 && row < 10) {
-        s32 stage = field_0x4;
-        s32 level = field_0x8;
-        const char* name;
-        if (gGameRoot_8053AAF8->field_0x7f == 1) {
-            name = lbl_804A9530[stage][level];
-        } else {
-            name = "500";
+    if (col >= 0 && col < 10) {
+        s32 row = field_0x18;
+        if (row >= 0 && row < 10) {
+            stage = fn_802D9C7C(field_0x4, field_0x8);
+            screen = field_0x60[row][col];
+            if (screen == 0xFF) {
+                screen = 0;
+            }
         }
-        s32 screen = field_0x60[row][col];
+    }
+    u32 type = 'M   ';
+    type += ((stage[0] - ' ') << 16) + ((stage[1] - ' ') << 8) + (stage[2] - ' ');
+    sprintf(name1, "d_map%s_%d%d_mmm_1_0.szs", stage, screen / 10, screen % 10);
+    sprintf(name2, "d_map%s_%d%d_mmm_2_0.szs", stage, screen / 10, screen % 10);
+    if (reload) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F6BBC(0, 4);
+        gGameRoot2_8053AB10->field_0x20->fn_802F6BBC(1, 5);
+    }
+    getTileMap()->fn_802F99DC(lbl_80529DEC.field_0x10->getResource(type, name1), 0, 0, 0, 0);
+    getTileMap()->fn_802F99DC(lbl_80529DEC.field_0x10->getResource(type, name2), 0, 1, 0, 0);
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[0] = 1;
+    gGameRoot2_8053AB10->field_0x20->field_0x235c[1] = 1;
+    fn_802D4CCC(0);
+    if (!fn_802DEBA0()) {
+        for (s32 i = 0; i < 7; i++) {
+            const char* tiles1 = fn_802D8228(i + 8);
+            const char* tiles2 = fn_802D8128(i + 8);
+            if (tiles1 != NULL) {
+                getTileMap()->fn_802F99DC(lbl_80529DEC.field_0x10->getResource(type, tiles1), 0, i + 8, 0, 0);
+                getTileMap()->fn_802F99DC(lbl_80529DEC.field_0x10->getResource(type, tiles2), 0, i + 0x10, 0, 0);
+                fn_802D4CCC(i + 8);
+            }
+        }
+    }
+    f32 x = 512.0f * field_0x14;
+    f32 y = 384.0f * field_0x18;
+    mVisibleBox.set(x, y, 512.0f + x, 384.0f + y);
+    s32 w = 0.125f * mVisibleBox.getWidth();
+    s32 h = 0.125f * mVisibleBox.getHeight();
+    TileMap_804AA858* map = getTileMap();
+    map->field_0x2380 = w;
+    map->field_0x2384 = h;
+}
+
+// FIXME: 96.1. Structurally close: the target converts the record's cell bytes with a
+// clrlwi 16 first (as if u16; a u16 local folds it), computes the inlined fn_802D766C's slot
+// before its flag test, and extracts both screen bytes before the first compare in the key
+// loop; regalloc (and a 16-byte larger frame from one more saved register) follows.
+// Spawns the current screen's actors from its "d_enemy_map" table (11-byte records: tag,
+// layer, cell x, cell y, parameter; the switch tags of lbl_8046E178 first, then the rest),
+// then the screen's helper actors, its dropped items and keys; with reset, the per-stage
+// actor lists are cleared too.
+void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
+    s32 serials[1024];
+    char name[0x20];
+    field_0x131f6 = flag;
+    s32 index = 0;
+    if (field_0x14 >= 0 && field_0x14 < 10 && field_0x18 >= 0 && field_0x18 < 10) {
+        getGameView_802D6A9C()->field_0x131dc = 0;
+        const char* stage = fn_802D9C7C(field_0x4, field_0x8);
+        s32 screen = field_0x60[field_0x18][field_0x14];
         if (screen == 0xFF) {
             screen = 0;
         }
-        sprintf(field_0x131fa, "d_map%s_%d%d_mmm_1_%d.szs", name, screen / 10, screen % 10, layer - 7);
-        return field_0x131fa;
+        u32 type = 'B   ';
+        sprintf(name, "d_enemy_map%s_%d%d.bin", stage, screen / 10, screen % 10);
+        type += ((stage[0] - ' ') << 16) + ((stage[1] - ' ') << 8) + (stage[2] - ' ');
+        const u8* table = (const u8*)fn_804032E8(type, name);
+        s32 count = 0;
+        fn_801E9AFC()->fn_801EA384(reset);
+        fn_80204638()->fn_80204ABC(reset);
+        fn_80212AC0()->mCount = 0;
+        fn_8021F064()->fn_8021F27C();
+        fn_801DAC6C()->fn_801DAF4C();
+        fn_801C0D70()->fn_801C151C();
+        fn_8020D58C()->fn_8020D690();
+        fn_801283E8()->fn_801283BC();
+        fn_8012F554()->fn_8012F494();
+        fn_8012FF9C()->fn_801300D8();
+        if (reset) {
+            fn_80131F0C()->fn_80131EF8();
+            lbl_8053AC30 = 0;
+        }
+        for (s32 pass = 0; pass < 2; pass++) {
+            s32 offset = 0;
+            for (;;) {
+                const u8* record = table + offset;
+                u32 id = (record[0] << 24) | (record[1] << 16) | (record[2] << 8) | record[3];
+                if (id == '    ') {
+                    break;
+                }
+                u8 layerFlag = record[4];
+                u8 cellX = record[5];
+                u8 cellY = record[6];
+                u32 param = (record[7] << 24) | (record[8] << 16) | (record[9] << 8) | record[10];
+                offset += 11;
+                bool isSwitch = false;
+                for (int k = 0; k < 6; k++) {
+                    if (id == lbl_8046E178[k]) {
+                        isSwitch = true;
+                        break;
+                    }
+                }
+                if ((isSwitch && pass == 0) || (!isSwitch && pass != 0)) {
+                    f32 x;
+                    f32 y;
+                    s32 layer;
+                    if (layerFlag == 0) {
+                        x = mVisibleBox.i.x;
+                        layer = 0;
+                        y = mVisibleBox.i.y;
+                    } else {
+                        y = 0.0f;
+                        layer = layerFlag + 7;
+                        x = y;
+                    }
+                    if (!getGameView_802D6A9C()->fn_802D76A8(index)) {
+                        JGeometry::TVec3f pos(8.0f * cellX + x, 8.0f * cellY + y, 0.0f);
+                        serials[count] = getActorManager_801F856C()->spawnActor_801F9484(id, layer, &pos, param, index, -1);
+                        count++;
+                    } else {
+                        fn_802D766C(getActorManager_801F856C()->fn_801F620C(id, 'dstr') != 0, layer);
+                    }
+                    index++;
+                }
+            }
+        }
+        for (s32 i = 0; i < count; i++) {
+            s32 serial = serials[i];
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor != NULL) {
+                    actor->vfunc_0x10();
+                }
+            }
+        }
+        cls_801E9AFC* sprites = fn_801E9AFC();
+        sprites->field_0x0[sprites->field_0xf0].fn_801EA594();
+        if (gGameRoot_8053AAF8->field_0x7f != 0 && !fn_802DEBA0()) {
+            s32 stage = lbl_80529DEC.field_0x118;
+            if (!((stage == 0 && lbl_80529DEC.field_0x11c == 1) ||
+                  (stage == 0 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 1 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 2 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 3 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 4 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 5 && lbl_80529DEC.field_0x11c == 1) ||
+                  (stage == 5 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 6 && lbl_80529DEC.field_0x11c == 1) ||
+                  (stage == 6 && lbl_80529DEC.field_0x11c == 3) ||
+                  (stage == 7 && lbl_80529DEC.field_0x11c == 0) ||
+                  (stage == 7 && lbl_80529DEC.field_0x11c == 2) ||
+                  (stage == 7 && lbl_80529DEC.field_0x11c == 3)))
+            {
+                JGeometry::TVec3f pos(100.0f + mVisibleBox.i.x, 100.0f + mVisibleBox.i.y, 0.0f);
+                getActorManager_801F856C()->spawnActor_801F9484('TINK', 0, &pos, 0, -1, -1);
+            }
+        }
+    }
+    JGeometry::TVec3f leafPos(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    getActorManager_801F856C()->spawnActor_801F9484('LFGN', 0, &leafPos, 0, -1, -1);
+    JGeometry::TVec3f potPos(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+    getActorManager_801F856C()->spawnActor_801F9484('TBGN', 0, &potPos, index, -1, -1);
+    if (gGameRoot_8053AAF8->field_0x7f == 1 && !fn_802DE814()) {
+        JGeometry::TVec3f swordPos(mVisibleBox.i.x, mVisibleBox.i.y, 0.0f);
+        getActorManager_801F856C()->spawnActor_801F9484('SWDL', 0, &swordPos, 0, -1, -1);
+    }
+    for (int i = 0; i < 8; i++) {
+        u32 value = field_0x130c8[i];
+        u8 col = value >> 16;
+        u8 row = value >> 8;
+        if (col == field_0x14 && row == field_0x18) {
+            u32 key = field_0x13068[i];
+            JGeometry::TVec3f itemPos(field_0x13088[i].x, field_0x13088[i].y, 0.0f);
+            getActorManager_801F856C()->spawnActor_801F9484('LSTI', value & 0xFF, &itemPos,
+                                                            key | 0x80 | ((value >> 24) << 17), -1, -1);
+        }
+    }
+    for (int i = 0; i < 8; i++) {
+        u32 value = field_0x13128[i];
+        u8 col = value >> 16;
+        u8 row = value >> 8;
+        if (col == field_0x14 && row == field_0x18) {
+            JGeometry::TVec3f keyPos(field_0x130e8[i].x, field_0x130e8[i].y, 0.0f);
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('KEY0', value & 0xFF, &keyPos,
+                                                                         ((value >> 24) & 0x3F) | 0x980, -1, -1);
+            SmallKey_804A8CD8* smallKey =
+                (SmallKey_804A8CD8*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            smallKey->field_0x230.x = field_0x13148[i].x;
+            smallKey->field_0x230.y = field_0x13148[i].y;
+            smallKey->field_0x238 = field_0x13188[i];
+            smallKey->field_0x23c = value >> 30;
+        }
+    }
+    getActorManager_801F856C()->fn_801F6204(0);
+    field_0xec = 50;
+}
+
+// FIXME: 99.8. Reloc-name only: the format string waits for the unit's .rodata to be written.
+const char* GameView_804A9950::fn_802D8228(s32 layer) {
+    s32 col = field_0x14;
+    if (col >= 0 && col < 10) {
+        s32 row = field_0x18;
+        if (row >= 0 && row < 10) {
+            const char* name = fn_802D9C7C(field_0x4, field_0x8);
+            s32 screen = field_0x60[row][col];
+            if (screen == 0xFF) {
+                screen = 0;
+            }
+            sprintf(field_0x131fa, "d_map%s_%d%d_mmm_1_%d.szs", name, screen / 10, screen % 10, layer - 7);
+            return field_0x131fa;
+        }
     }
     return NULL;
 }
 
-// FIXME: 96.5. Scheduling and regalloc: the target reads field_0x18 only after the column
-// checks and loads field_0x8 before field_0x4 (as if both were arguments of an inlined
-// name lookup); the format string waits for the unit's .rodata to be written.
+// FIXME: 99.8. Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8128(s32 layer) {
     s32 col = field_0x14;
-    s32 row = field_0x18;
-    if (col >= 0 && col < 10 && row >= 0 && row < 10) {
-        s32 stage = field_0x4;
-        s32 level = field_0x8;
-        const char* name;
-        if (gGameRoot_8053AAF8->field_0x7f == 1) {
-            name = lbl_804A9530[stage][level];
-        } else {
-            name = "500";
+    if (col >= 0 && col < 10) {
+        s32 row = field_0x18;
+        if (row >= 0 && row < 10) {
+            const char* name = fn_802D9C7C(field_0x4, field_0x8);
+            s32 screen = field_0x60[row][col];
+            if (screen == 0xFF) {
+                screen = 0;
+            }
+            sprintf(field_0x1321a, "d_map%s_%d%d_mmm_2_%d.szs", name, screen / 10, screen % 10, layer - 7);
+            return field_0x1321a;
         }
-        s32 screen = field_0x60[row][col];
-        if (screen == 0xFF) {
-            screen = 0;
-        }
-        sprintf(field_0x1321a, "d_map%s_%d%d_mmm_2_%d.szs", name, screen / 10, screen % 10, layer - 7);
-        return field_0x1321a;
     }
     return NULL;
 }

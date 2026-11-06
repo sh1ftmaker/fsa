@@ -1269,6 +1269,9 @@ struct cls_80204638 {
     bool fn_802046FC(JGeometry::TVec3f* vel, const JGeometry::TVec3f* pos);
     // 0x80204834 (not written yet).
     void fn_80204834();
+    // 0x80204ABC (not written yet): with reset, clears the byte at 0x0 and the
+    // words 0x4-0x50 (GameView_804A9950::fn_802D8328 passes its first flag).
+    void fn_80204ABC(bool reset);
     // 0x802049E0 (not written yet). Removes the actor from the slot the byte
     // at its 0x34a selects in the table (0x4 + 8 * slot): clears the first
     // slot holding it, else the second. Called by act_thief's destructor on
