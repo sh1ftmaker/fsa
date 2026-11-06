@@ -442,6 +442,11 @@ bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_802252F4(const JGeometry::TVec3f* pos, s32 layer);
 }
 
+// tu_8022461C (not written yet): whether the raw tile at the x/y of pos (0xF
+// outside the box of `layer`) is one of the codes listed in lbl_8046AAB0.
+// Player_804A6F38::fn_802527B0 calls it with layer 0.
+bool fn_80225EF4(const JGeometry::TVec3f* pos, s32 layer);
+
 // Forwards to fn_802252F4 (tu_8022461C); a C++ name in symbols.txt. Player_804A6F38::fn_802870C8
 // tests it for the 0xD7 trail emitter.
 bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer);

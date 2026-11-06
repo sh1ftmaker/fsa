@@ -1101,6 +1101,93 @@ void Player_804A6F38::fn_80252BAC(const JGeometry::TVec3f* offset) {
     field_0x2e8 += *offset;
 }
 
+// Whether the player may walk off the screen (state 0x1B): within 20 of an
+// edge of the visible box, on a layer below 8, low enough (z <= 16 unless
+// fn_8025F448), moving towards that edge (fn_8022C82C / fn_8022C76C, or in
+// demo mode, or on a tile fn_80225EF4 lists), with the tile 8 beyond the edge
+// free (not collision code 1, nor 0x22 while GameView field_0x170 is 1).
+// Writes the direction (-1 / 1 in x or y) to *out, else 0, 0.
+// FIXME: 99.92 %. Code identical; the 20.0f literal is @NNN, not
+// lbl_80540078, until the unit's earlier literals are in pool order.
+bool Player_804A6F38::fn_802527B0(JGeometry::TVec2<s32>* out) {
+    out->x = 0;
+    out->y = 0;
+    if (!fn_80251BFC(0x1b)) {
+        return false;
+    }
+    if (field_0x1240 == 0x1b) {
+        return false;
+    }
+    if (field_0x454) {
+        return false;
+    }
+    if (field_0x3b4 >= 8) {
+        return false;
+    }
+    if (field_0x1216 == true) {
+        return false;
+    }
+    JGeometry::TVec3f pos = mPos;
+    if (!fn_8025F448() && pos.z > 16.0f) {
+        return false;
+    }
+    JGeometry::TBox2f box;
+    box = getGameView_802D6A9C()->mVisibleBox;
+    if (pos.x <= box.i.x + 20.0f &&
+        (gGameRoot_8053AAF8->field_0x7e || fn_8022C82C(field_0x4) < 0.0f || fn_80225EF4(&pos, 0))) {
+        JGeometry::TVec2f probe;
+        probe.x = box.i.x + 8.0f;
+        probe.y = pos.y;
+        u16 tile = fn_802265FC((const JGeometry::TVec3f*)&probe, field_0x3b4);
+        if (tile == 1 || (tile == 0x22 && getGameView_802D6A9C()->field_0x170 == 1)) {
+            return false;
+        }
+        out->x = -1;
+        out->y = 0;
+        return true;
+    }
+    if (pos.x >= box.f.x - 20.0f &&
+        (gGameRoot_8053AAF8->field_0x7e || fn_8022C82C(field_0x4) > 0.0f || fn_80225EF4(&pos, 0))) {
+        JGeometry::TVec2f probe;
+        probe.x = box.f.x - 8.0f;
+        probe.y = pos.y;
+        u16 tile = fn_802265FC((const JGeometry::TVec3f*)&probe, field_0x3b4);
+        if (tile == 1 || (tile == 0x22 && getGameView_802D6A9C()->field_0x170 == 1)) {
+            return false;
+        }
+        out->x = 1;
+        out->y = 0;
+        return true;
+    }
+    if (pos.y <= box.i.y + 20.0f &&
+        (gGameRoot_8053AAF8->field_0x7e || fn_8022C76C(field_0x4) > 0.0f || fn_80225EF4(&pos, 0))) {
+        JGeometry::TVec2f probe;
+        probe.x = pos.x;
+        probe.y = box.i.y + 8.0f;
+        u16 tile = fn_802265FC((const JGeometry::TVec3f*)&probe, field_0x3b4);
+        if (tile == 1 || (tile == 0x22 && getGameView_802D6A9C()->field_0x170 == 1)) {
+            return false;
+        }
+        out->x = 0;
+        out->y = -1;
+        return true;
+    }
+    if (pos.y >= box.f.y - 20.0f &&
+        (gGameRoot_8053AAF8->field_0x7e || fn_8022C76C(field_0x4) < 0.0f || fn_80225EF4(&pos, 0))) {
+        JGeometry::TVec2f probe;
+        probe.x = pos.x;
+        probe.y = box.f.y - 8.0f;
+        u16 tile = fn_802265FC((const JGeometry::TVec3f*)&probe, field_0x3b4);
+        if (tile == 1 || (tile == 0x22 && getGameView_802D6A9C()->field_0x170 == 1)) {
+            return false;
+        }
+        out->x = 0;
+        out->y = 1;
+        return true;
+    }
+    return false;
+}
+
 // Keeps a player below layer 8 16 units inside the visible box (one edge
 // per frame: left, right, top, bottom), unless field_0x454, fn_8025F448,
 // fn_80240B84 or field_0x3b0 holds.
