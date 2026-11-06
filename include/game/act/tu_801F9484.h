@@ -294,14 +294,6 @@ public:
     /* 0x294 */ u8 field_0x294[0x5C];
 }; // Size: 0x2F0
 
-// Spawned for 'FALL'.
-class cls_804A3E44 : public ActorBase_804A5770 {
-public:
-    cls_804A3E44();
-    /* 0x08 */ virtual ~cls_804A3E44();
-    /* 0x230 */ u8 field_0x230[0xC0];
-}; // Size: 0x2F0
-
 #include "game/act/act_bird_manager.h"
 
 
