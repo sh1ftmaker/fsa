@@ -160,22 +160,19 @@ void FourPersonPullSwitchBTIVersion_804AE574::fn_80373198() {
             }
         }
     } else if (field_0x250 == 0 && field_0x248 > 30) {
-        JGeometry::TVec3f playerPos;
         for (s32 i = 0; i < 4; i++) {
-            playerPos = *getPlayerPos_8023E724(i);
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
             fn_80230498(i, &playerPos, 0x2E2, 0xFF, -0x80, -0x80, true);
         }
     } else if (field_0x250 < 13) {
         if (field_0x248 == 0) {
             field_0x250++;
             field_0x248 = lbl_80475024[field_0x250];
-            JGeometry::TVec3f playerPos;
-            const s32 mode = 0x10001;
             for (s32 i = 0; i < 4; i++) {
-                playerPos = *getPlayerPos_8023E724(i);
+                JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
                 fn_80230498(i, &playerPos, field_0x250 + 0xDB, 0xFF, -0x80, -0x80, true);
                 if (field_0x250 == 1) {
-                    fn_80230FD0(i, mode);
+                    fn_80230FD0(i, 0x10001);
                 }
             }
             if (field_0x250 == 13) {
