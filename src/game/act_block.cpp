@@ -48,6 +48,7 @@ static f32 lbl_804A79E0[4][3] = {
     {0.0f, -12.0f, 0.0f},
 };
 
+// FIXME: 97.48%. different + reloc-name: exact same length (353 instructions), minor branch order / register pairing differences
 void Block_804A7A10::init() {
     field_0x244 = 0;
     s32 type = field_0x90 & 3;
@@ -122,6 +123,7 @@ void Block_804A7A10::init() {
     }
 }
 
+// FIXME: 99.92%. reloc-name: all 61 instructions identical, differing only in compiler literal label names
 u8 fn_8028D4DC(JGeometry::TVec3f* pos, s32 index, s32 layer) {
     u8 viewVal = getGameView_802D6A9C()->fn_802D7544(layer);
     if (viewVal == 0) {
@@ -141,6 +143,233 @@ bool Block_804A7A10::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     return ActorBase_804A5770::vfunc_0x4C(layer, pos);
+}
+
+// FIXME: 95.46%. missing/extra + reloc-name: ours has 4 more instrs (812 vs 808); stack offset and scheduling
+void Block_804A7A10::update() {
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    box.i.x -= 1.0f;
+    box.f.x += 1.0f;
+    box.i.y -= 1.0f;
+    box.f.y += 1.0f;
+    fn_80239914(&box, field_0x4, mSerial);
+    box.i.x -= -1.0f;
+    box.i.y -= -1.0f;
+    box.f.x += -1.0f;
+    box.f.y += -1.0f;
+    fn_8020D58C()->addBox(mSerial);
+
+    if ((field_0x90 & 3) == 0) {
+        mPos += field_0x3c;
+        JGeometry::TVec3f checkPos = field_0x3c;
+        checkPos.normalize();
+        checkPos.scale(16.0f);
+        checkPos += mPos;
+        if (PSVECDistance(&checkPos, &field_0x230) >= 16.0f) {
+            s32 tile1 = fn_8022461C(&checkPos, field_0x4);
+            s32 tile2 = fn_8022461C(&mPos, field_0x4);
+            if ((u16)tile2 == 0x50 && ((u16)tile1 == 0 || (u16)tile1 == 0x50)) {
+                JGeometry::TVec3f savedVel = field_0x3c;
+                if (fn_8028C518((field_0x90 >> 2) & 3)) {
+                    field_0x3c = savedVel;
+                    field_0x230.x = mPos.x;
+                    field_0x230.y = mPos.y;
+                    field_0x230.z = mPos.z;
+                    field_0x230.x = (s32)(((s32)field_0x230.x + 4) / 8) * 8;
+                    field_0x230.y = (s32)(((s32)field_0x230.y + 4) / 8) * 8;
+                    return;
+                }
+            }
+            vfunc_0x24();
+        } else {
+            JGeometry::TBox2f box2(mBox);
+            box2.i.x += mPos.x;
+            box2.f.x += mPos.x;
+            box2.i.y += mPos.y;
+            box2.f.y += mPos.y;
+            s32 player = fn_80239040(mSerial);
+            for (s32 i = 0; i < 4; i++) {
+                if (player != i && !fn_8022E438(player, i) && fn_8023B190(i, &box2, field_0x4)) {
+                    JGeometry::TVec3f pPos = *getPlayerPos_8023E724(i);
+                    JGeometry::TVec3f diff = pPos - checkPos;
+                    if (JGeometry::TVec2f(diff.x, diff.y).length() < 8.0f) {
+                        fn_80238548(i, 0, (const JGeometry::TVec2f*)&mPos, 4);
+                        break;
+                    }
+                }
+            }
+        }
+    } else if (field_0x244 == 0) {
+        f32 threshold;
+        if (!((field_0x90 >> 11) & 1)) {
+            f32 dist = PSVECDistance(&mPos, &mSpawnPos);
+            if (dist < 13.0f) {
+                threshold = 11.9f;
+            } else if (dist >= (f32)(((field_0x90 & 3) + 1) * 16) - 19.9f) {
+                threshold = 19.9f;
+            } else {
+                threshold = 15.9f;
+            }
+        } else {
+            threshold = 15.9f;
+        }
+
+        if (PSVECDistance(&mPos, &field_0x230) >= threshold) {
+            if (mPos.x <= 11.5f + mSpawnPos.x && mPos.x >= mSpawnPos.x - 11.5f) {
+                mPos.x = mSpawnPos.x;
+            } else {
+                mPos.x = fn_8033D4AC(mPos.x, field_0x230.x, threshold);
+            }
+            if (mPos.y <= 11.5f + mSpawnPos.y && mPos.y >= mSpawnPos.y - 11.5f) {
+                mPos.y = mSpawnPos.y;
+            } else {
+                mPos.y = fn_8033D4AC(mPos.y, field_0x230.y, threshold);
+            }
+            field_0x230 = mPos;
+            field_0x3c.set(0.0f, 0.0f, 0.0f);
+            mPrevPos = mPos;
+            if (!((field_0x90 >> 7) & 1) && !((field_0x90 >> 8) & 1) &&
+                PSVECDistance(&mPos, &mSpawnPos) >= (f32)(((field_0x90 & 3) + 1) * 16) - 0.1f) {
+                field_0x23c = -1;
+                vfunc_0x30(0xFF, true);
+            } else {
+                field_0x23c = 8;
+                field_0x240 = 30;
+            }
+        } else {
+            mPos += field_0x3c;
+            if ((field_0x90 >> 8) & 1) {
+                if (PSVECDistance(&mPos, &field_0x230) < 4.0f && field_0x3c.x > 0.0f) {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 12) & 0x1F, true, 0xFF);
+                } else {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 12) & 0x1F, false, 0xFF);
+                }
+                if (PSVECDistance(&mPos, &field_0x230) < 4.0f && field_0x3c.x < 0.0f) {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 17) & 0x1F, true, 0xFF);
+                } else {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 17) & 0x1F, false, 0xFF);
+                }
+                if (PSVECDistance(&mPos, &field_0x230) < 4.0f && field_0x3c.y > 0.0f) {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 22) & 0x1F, true, 0xFF);
+                } else {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 22) & 0x1F, false, 0xFF);
+                }
+                if (PSVECDistance(&mPos, &field_0x230) < 4.0f && field_0x3c.y < 0.0f) {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 27) & 0x1F, true, 0xFF);
+                } else {
+                    getGameView_802D6A9C()->fn_802D8050((field_0x90 >> 27) & 0x1F, false, 0xFF);
+                }
+            }
+
+            if (field_0x23c > 0) {
+                field_0x23c--;
+            } else if (field_0x23c == 0) {
+                if (field_0x3c.isZero()) {
+                    if (fn_80239108(mSerial) >= (field_0x90 & 3) + 1) {
+                        if (((field_0x90 >> 8) & 1) ||
+                            PSVECDistance(&mPos, &mSpawnPos) < (f32)(((field_0x90 & 3) + 1) * 16) - 0.1f) {
+                            s32 dir = fn_80238BC4(mSerial);
+                            JGeometry::TVec3f offset(lbl_804A79E0[dir][0], lbl_804A79E0[dir][1], lbl_804A79E0[dir][2]);
+                            JGeometry::TVec3f savedPos = mPos;
+                            mPos += offset;
+                            if (fn_801F2618(NULL, false)) {
+                                mPos = savedPos;
+                                return;
+                            }
+                            mPos = savedPos;
+                            if (field_0x24e == 1) {
+                                if ((field_0x90 & 3) == 1) {
+                                    if ((u8)(dir >> 1) != ((field_0x90 >> 2) & 3)) {
+                                        return;
+                                    }
+                                } else {
+                                    if (dir != ((field_0x90 >> 2) & 3)) {
+                                        return;
+                                    }
+                                }
+                            }
+                            if (!fn_8028C518(dir)) {
+                                return;
+                            }
+                            if (field_0x24c == 1) {
+                                if (field_0x248 == 0) {
+                                    field_0x248 = dir + 1;
+                                } else if (field_0x248 != dir + 1) {
+                                    return;
+                                }
+                            }
+                            if (dir >= 0 && dir < 4) {
+                                fn_80238E08(mSerial);
+                                if ((field_0x90 & 3) != 0 && !fn_8028C364(dir)) {
+                                    field_0x248 = 0;
+                                    fn_80238D50(mSerial);
+                                    return;
+                                }
+                                if (!((field_0x90 >> 9) & 1)) {
+                                    getGameView_802D6A9C()->fn_802D7584(field_0x16c, dir + 1);
+                                }
+                                field_0x3c.set(lbl_8046C180[dir][0], lbl_8046C180[dir][1], lbl_8046C180[dir][2]);
+                                if ((field_0x90 & 3) == 3) {
+                                    field_0x3c.scale(0.4f);
+                                } else if ((field_0x90 & 3) != 0) {
+                                    field_0x3c.scale(0.7f);
+                                }
+                                if (field_0x24d == 1) {
+                                    field_0x24d = 0;
+                                } else {
+                                    field_0x230.x = mPos.x;
+                                    field_0x230.y = mPos.y;
+                                    field_0x230.z = mPos.z;
+                                }
+                                startSound_801F0E34(0x30004, 0);
+                            }
+                        }
+                    } else if ((field_0x90 >> 7) & 1) {
+                        if (PSVECDistance(&mPos, &mSpawnPos) > 1.0f) {
+                            if (field_0x240 == 0) {
+                                field_0x3c.set(0.0f, 0.0f, 0.0f);
+                                if (mPos.x > mSpawnPos.x) {
+                                    field_0x3c.x = -0.5f;
+                                } else if (mPos.x < mSpawnPos.x) {
+                                    field_0x3c.x = 0.5f;
+                                } else if (mPos.y > mSpawnPos.y) {
+                                    field_0x3c.y = -0.5f;
+                                } else if (mPos.y < mSpawnPos.y) {
+                                    field_0x3c.y = 0.5f;
+                                }
+                                field_0x230.x = mPos.x;
+                                field_0x230.y = mPos.y;
+                                field_0x230.z = mPos.z;
+                                startSound_801F0E34(0x30004, 0);
+                            } else {
+                                field_0x240--;
+                            }
+                        }
+                    }
+                } else {
+                    bool ok;
+                    JGeometry::TVec3f vel = field_0x3c;
+                    if ((field_0x90 & 3) != 0 && threshold == 19.9f &&
+                        PSVECDistance(&mPos, &field_0x230) >= 7.9f &&
+                        field_0x248 != 0 &&
+                        !fn_8028C518(field_0x248 - 1)) {
+                        ok = false;
+                    } else {
+                        field_0x3c = vel;
+                        ok = true;
+                    }
+                    if (!ok) {
+                        field_0x23c = 8;
+                        field_0x24d = 1;
+                    }
+                }
+            }
+        }
+    }
 }
 
 // FIXME: 98.28%. scheduling+regalloc: same instructions modulo registers, different order
