@@ -6,7 +6,16 @@
 // Frame offsets of the "enemy_gc_sob.bin" sprite, indexed by field_0x2c8.
 static const s32 lbl_80472288[4] = {0, 1, 0, 2};
 
-VaatiTimeUp_804ACCC0::~VaatiTimeUp_804ACCC0() {}
+// FIXME: 99.9 %. Only the 1.0f literal: the unit's .sdata2 is not split
+// (lbl_80542750 vs @NNN).
+void VaatiTimeUp_804ACCC0::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x2d = 1;
+    params.field_0x1c = 1;
+    params.field_0x1d = 1;
+    params.field_0x30 = 8;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x466 + lbl_80472288[field_0x2c8], &params, 7, 1.0f, 1.0f);
+}
 
 // FIXME: 99.2 %. mPos.y's sum takes f4/f5 where the original uses f5/f6, the
 // u32-to-float conversions differ in one li, the epilogue reloads r0 and r31 in
@@ -55,13 +64,4 @@ void VaatiTimeUp_804ACCC0::init() {
     field_0x2b8 = 1;
 }
 
-// FIXME: 99.9 %. Only the 1.0f literal: the unit's .sdata2 is not split
-// (lbl_80542750 vs @NNN).
-void VaatiTimeUp_804ACCC0::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x2d = 1;
-    params.field_0x1c = 1;
-    params.field_0x1d = 1;
-    params.field_0x30 = 8;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x466 + lbl_80472288[field_0x2c8], &params, 7, 1.0f, 1.0f);
-}
+VaatiTimeUp_804ACCC0::~VaatiTimeUp_804ACCC0() {}

@@ -1,10 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_falling_floor.h"
 
-FallingFloor_804A9078::~FallingFloor_804A9078() {}
-
-void FallingFloor_804A9078::draw() {}
-
 void FallingFloor_804A9078::init() {
     mBox.i.x = -5.0f;
     mBox.i.y = -5.0f;
@@ -26,3 +22,7 @@ void FallingFloor_804A9078::init() {
         field_0x230 = 8;
     }
 }
+
+void FallingFloor_804A9078::draw() {}
+
+FallingFloor_804A9078::~FallingFloor_804A9078() {}

@@ -3,9 +3,17 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_off_switch.h"
 
-OFFSwitch_804A9B70::~OFFSwitch_804A9B70() {}
-
-void OFFSwitch_804A9B70::draw() {}
+void OFFSwitch_804A9B70::init() {
+    field_0x234 = field_0x90 & 0x1F;
+    field_0x238 = (field_0x90 >> 22) & 0x1F;
+    if (getGameView_802D6A9C()->fn_802D800C(field_0x238)) {
+        field_0x23c = true;
+    } else {
+        field_0x23c = false;
+    }
+    field_0x230 = 0;
+    update();
+}
 
 void OFFSwitch_804A9B70::update() {
     switch (field_0x230) {
@@ -67,14 +75,6 @@ void OFFSwitch_804A9B70::update() {
     }
 }
 
-void OFFSwitch_804A9B70::init() {
-    field_0x234 = field_0x90 & 0x1F;
-    field_0x238 = (field_0x90 >> 22) & 0x1F;
-    if (getGameView_802D6A9C()->fn_802D800C(field_0x238)) {
-        field_0x23c = true;
-    } else {
-        field_0x23c = false;
-    }
-    field_0x230 = 0;
-    update();
-}
+void OFFSwitch_804A9B70::draw() {}
+
+OFFSwitch_804A9B70::~OFFSwitch_804A9B70() {}

@@ -4,10 +4,29 @@
 #include "game/Player.h"
 #include "game/act/act_sand_crab.h"
 
-SandCrab_8049F3B0::~SandCrab_8049F3B0() {}
-
-void SandCrab_8049F3B0::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x240 + 0x1A, NULL, 0, 1.0f, 1.0f);
+// FIXME: 99.3%. Regalloc only: the original keeps the zero in r6 and the
+// gGameRoot_8053AAF8 pointer in r7 (we swap them), so r6/r7 differ in 13 instructions.
+void SandCrab_8049F3B0::init() {
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x98 = 0;
+    switch ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1())) {
+    case 0:
+        field_0x3c.x = 1.0f;
+        break;
+    case 1:
+        field_0x3c.x = -1.0f;
+        field_0x98 = 1;
+        break;
+    }
+    mTimers[0] = 0;
+    mTimers[1] = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    mTimers[2] = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0xb0 = 0x11101;
+    field_0x230 = 0;
 }
 
 void SandCrab_8049F3B0::update() {
@@ -91,27 +110,8 @@ void SandCrab_8049F3B0::update() {
     }
 }
 
-// FIXME: 99.3%. Regalloc only: the original keeps the zero in r6 and the
-// gGameRoot_8053AAF8 pointer in r7 (we swap them), so r6/r7 differ in 13 instructions.
-void SandCrab_8049F3B0::init() {
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x98 = 0;
-    switch ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1())) {
-    case 0:
-        field_0x3c.x = 1.0f;
-        break;
-    case 1:
-        field_0x3c.x = -1.0f;
-        field_0x98 = 1;
-        break;
-    }
-    mTimers[0] = 0;
-    mTimers[1] = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    mTimers[2] = 0;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x248 = 0;
-    field_0xb0 = 0x11101;
-    field_0x230 = 0;
+void SandCrab_8049F3B0::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x240 + 0x1A, NULL, 0, 1.0f, 1.0f);
 }
+
+SandCrab_8049F3B0::~SandCrab_8049F3B0() {}

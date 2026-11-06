@@ -10,12 +10,15 @@ static const u16 lbl_8046E9B0[2][4] = {
     {0xDF, 0xE0, 0xE1, 0xE2},
 };
 
-Gravestone_804A99C0::~Gravestone_804A99C0() {}
-
-void Gravestone_804A99C0::draw() {
-    if (field_0x230 >= 2) {
-        drawSprite_801F06F0("enemy_gc_sob.bin", 0x16d, NULL, 7, 1.0f, 1.0f);
-    }
+void Gravestone_804A99C0::init() {
+    mBox.i.x = -16.0f;
+    mBox.i.y = -16.0f;
+    mBox.f.x = 16.0f;
+    mBox.f.y = 0.0f;
+    field_0x234 = field_0x90 & 0x3F;
+    field_0x238 = -1;
+    field_0x23c = 0.0f;
+    field_0x230 = 0;
 }
 
 void Gravestone_804A99C0::update() {
@@ -99,13 +102,10 @@ void Gravestone_804A99C0::update() {
     }
 }
 
-void Gravestone_804A99C0::init() {
-    mBox.i.x = -16.0f;
-    mBox.i.y = -16.0f;
-    mBox.f.x = 16.0f;
-    mBox.f.y = 0.0f;
-    field_0x234 = field_0x90 & 0x3F;
-    field_0x238 = -1;
-    field_0x23c = 0.0f;
-    field_0x230 = 0;
+void Gravestone_804A99C0::draw() {
+    if (field_0x230 >= 2) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", 0x16d, NULL, 7, 1.0f, 1.0f);
+    }
 }
+
+Gravestone_804A99C0::~Gravestone_804A99C0() {}

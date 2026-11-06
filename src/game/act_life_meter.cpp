@@ -11,34 +11,25 @@ static const char* lbl_804B1738[] = {
     "kk_heart_05.bti", "kk_heart_03.bti", "kk_heart_02.bti", "kk_heart_01.bti", "kk_heart_00.bti",
 };
 
-LifeMeter_804B174C::~LifeMeter_804B174C() {}
-
-void LifeMeter_804B174C::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    if (field_0x24c > 4 || field_0x24c < 0) {
-        return;
+void LifeMeter_804B174C::init() {
+    for (s32 i = 0; i < 6; i++) {
+        mTimers[i] = 0;
     }
-    mtx[0][3] = 0.0f;
-    mtx[1][3] = 0.0f;
-    mtx[2][3] = 0.0f;
-    params.field_0x1c = 1;
-    params.field_0x1d = 7;
-    f32 sy = field_0x260;
-    mtx[0][0] = field_0x25c;
-    mtx[0][1] = 0.0f;
-    mtx[0][2] = 0.0f;
-    mtx[1][0] = 0.0f;
-    mtx[1][1] = sy;
-    mtx[1][2] = 0.0f;
-    mtx[2][0] = 0.0f;
-    mtx[2][1] = 0.0f;
-    mtx[2][2] = sy;
-    params.mMtx = mtx;
-    void* res = fn_804030C4('TIMG', lbl_804B1738[field_0x24c]);
-    if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+    field_0x250 = mSerial;
+    if ((field_0x90 & 0xF) != 0) {
+        field_0x250 = field_0x90 - 1;
     }
+    field_0x24c = 4;
+    field_0x258 = 0.0f;
+    field_0x254 = 0.0f;
+    field_0x25c = 0.5f;
+    field_0x260 = 0.5f;
+    field_0x264 = 0.5f;
+    field_0x268 = 0.5f;
+    field_0x26c = 0.5f;
+    field_0x270 = 0.5f;
+    field_0x11e = 1;
+    field_0x230 = 0;
 }
 
 // FIXME: 99%. The null check of the findActorBySerial_801F666C result is `mr. r30, r3` here; the original has
@@ -113,23 +104,32 @@ void LifeMeter_804B174C::update() {
     }
 }
 
-void LifeMeter_804B174C::init() {
-    for (s32 i = 0; i < 6; i++) {
-        mTimers[i] = 0;
+void LifeMeter_804B174C::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    if (field_0x24c > 4 || field_0x24c < 0) {
+        return;
     }
-    field_0x250 = mSerial;
-    if ((field_0x90 & 0xF) != 0) {
-        field_0x250 = field_0x90 - 1;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    params.field_0x1c = 1;
+    params.field_0x1d = 7;
+    f32 sy = field_0x260;
+    mtx[0][0] = field_0x25c;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = sy;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = sy;
+    params.mMtx = mtx;
+    void* res = fn_804030C4('TIMG', lbl_804B1738[field_0x24c]);
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
-    field_0x24c = 4;
-    field_0x258 = 0.0f;
-    field_0x254 = 0.0f;
-    field_0x25c = 0.5f;
-    field_0x260 = 0.5f;
-    field_0x264 = 0.5f;
-    field_0x268 = 0.5f;
-    field_0x26c = 0.5f;
-    field_0x270 = 0.5f;
-    field_0x11e = 1;
-    field_0x230 = 0;
 }
+
+LifeMeter_804B174C::~LifeMeter_804B174C() {}

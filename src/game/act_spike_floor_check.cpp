@@ -6,9 +6,19 @@
 #include "game/Map.h"
 #include "game/act/act_spike_floor_check.h"
 
-SpikeFloorCheck_804A8170::~SpikeFloorCheck_804A8170() {}
-
-void SpikeFloorCheck_804A8170::draw() {}
+void SpikeFloorCheck_804A8170::init() {
+    mType = field_0x90 & 0xFF;
+    if ((mType == 0 && vfunc_0x34()) || (mType != 0 && getActorManager_801F856C()->field_0x305c == 1)) {
+        gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
+        getGameView_802D6A9C()->fn_802D7920(0);
+        mAlive = false;
+    } else {
+        getGameView_802D6A9C()->fn_802D7920(1);
+        mState = 0;
+        mTimer = 0xF;
+    }
+}
 
 void SpikeFloorCheck_804A8170::update() {
     switch (mState) {
@@ -65,16 +75,6 @@ void SpikeFloorCheck_804A8170::update() {
     }
 }
 
-void SpikeFloorCheck_804A8170::init() {
-    mType = field_0x90 & 0xFF;
-    if ((mType == 0 && vfunc_0x34()) || (mType != 0 && getActorManager_801F856C()->field_0x305c == 1)) {
-        gGameRoot2_8053AB10->field_0x20->fn_802FA160(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xC0);
-        getGameView_802D6A9C()->fn_802D7920(0);
-        mAlive = false;
-    } else {
-        getGameView_802D6A9C()->fn_802D7920(1);
-        mState = 0;
-        mTimer = 0xF;
-    }
-}
+void SpikeFloorCheck_804A8170::draw() {}
+
+SpikeFloorCheck_804A8170::~SpikeFloorCheck_804A8170() {}

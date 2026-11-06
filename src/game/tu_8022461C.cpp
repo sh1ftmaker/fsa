@@ -3,13 +3,6 @@
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 
-bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
-    return fn_802252F4(pos, layer);
-}
-
-bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag) {
-    return fn_802260DC((const JGeometry::TVec2f*)pos, layer, flag);
-}
 
 // Clamps a box-relative coordinate to the 9-bit cell range [0, 0x200).
 static inline void clampCell(s32& v) {
@@ -32,4 +25,12 @@ s32 fn_80226BC4(const JGeometry::TVec2f* pos, s32 layer) {
     clampCell(x);
     clampCell(y);
     return ((y & 0x100) << 1) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF);
+}
+
+bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag) {
+    return fn_802260DC((const JGeometry::TVec2f*)pos, layer, flag);
+}
+
+bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
+    return fn_802252F4(pos, layer);
 }

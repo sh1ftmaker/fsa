@@ -22,7 +22,25 @@ public:
     /* 0x2 */ u8 target;
     /* 0x3 */ u8 phase;
     /* 0x4 */ u16 timer;
-}; // Size: 0x6
+};
+
+void cls_802153A8::fn_80215578() {
+    active = 0;
+    cur = 0;
+    target = 0;
+    phase = 0;
+    timer = 0;
+}
+
+void cls_802153A8::fn_80215558(u8 value) {
+    active = 1;
+    cur = value;
+    target = value;
+    phase = 0;
+    timer = 0;
+}
+
+ // Size: 0x6
 
 bool cls_802153A8::fn_802153A8() {
     bool done = false;
@@ -64,20 +82,4 @@ bool cls_802153A8::fn_802153A8() {
         active = 0;
     }
     return done;
-}
-
-void cls_802153A8::fn_80215558(u8 value) {
-    active = 1;
-    cur = value;
-    target = value;
-    phase = 0;
-    timer = 0;
-}
-
-void cls_802153A8::fn_80215578() {
-    active = 0;
-    cur = 0;
-    target = 0;
-    phase = 0;
-    timer = 0;
 }

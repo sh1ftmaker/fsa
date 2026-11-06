@@ -28,6 +28,50 @@ static inline s32 stepFrames(const cls_8021CBA0& seq) {
     return frames;
 }
 
+cls_8021CBA0::cls_8021CBA0() {
+    mType = 0;
+    mFrames = 0;
+    mStep = 0;
+    mTimer = 0;
+    mVariant = 0;
+    mDone = false;
+}
+
+s32 cls_8021CBA0::fn_8021CB18() {
+    s32 total = 0;
+    switch (mType) {
+    case 0:
+        total = lbl_8053FD20[0];
+        break;
+    case 1:
+        for (int i = 0; i < 7; i++) {
+            total += lbl_8046A688[i];
+        }
+        break;
+    case 2:
+        total = lbl_8053FD24[0] + lbl_8053FD24[1];
+        break;
+    }
+    return total;
+}
+
+void cls_8021CBA0::fn_8021CA70(int type) {
+    mType = type;
+    mStep = 0;
+    mTimer = 0;
+    mDone = false;
+    mFrames = stepFrames(*this);
+}
+
+void cls_8021CBA0::fn_8021C9C4(int variant) {
+    mVariant = variant;
+    mType = 0;
+    mStep = 0;
+    mTimer = 0;
+    mDone = false;
+    mFrames = stepFrames(*this);
+}
+
 u8 cls_8021CBA0::fn_8021C848() {
     if (!mDone) {
         s32 count = 0;
@@ -54,48 +98,4 @@ u8 cls_8021CBA0::fn_8021C848() {
     }
     mFrames = stepFrames(*this);
     return mDone;
-}
-
-void cls_8021CBA0::fn_8021C9C4(int variant) {
-    mVariant = variant;
-    mType = 0;
-    mStep = 0;
-    mTimer = 0;
-    mDone = false;
-    mFrames = stepFrames(*this);
-}
-
-void cls_8021CBA0::fn_8021CA70(int type) {
-    mType = type;
-    mStep = 0;
-    mTimer = 0;
-    mDone = false;
-    mFrames = stepFrames(*this);
-}
-
-s32 cls_8021CBA0::fn_8021CB18() {
-    s32 total = 0;
-    switch (mType) {
-    case 0:
-        total = lbl_8053FD20[0];
-        break;
-    case 1:
-        for (int i = 0; i < 7; i++) {
-            total += lbl_8046A688[i];
-        }
-        break;
-    case 2:
-        total = lbl_8053FD24[0] + lbl_8053FD24[1];
-        break;
-    }
-    return total;
-}
-
-cls_8021CBA0::cls_8021CBA0() {
-    mType = 0;
-    mFrames = 0;
-    mStep = 0;
-    mTimer = 0;
-    mVariant = 0;
-    mDone = false;
 }

@@ -22,11 +22,53 @@ static inline void normalize(JGeometry::TVec2f& v) {
     v.y *= norm;
 }
 
-ReaperShinigami_804A886C::~ReaperShinigami_804A886C() {}
+// FIXME: 99.64 %. Only reloc-names: the -8.0f, 8.0f and 2.0f literals are
+// @603-@605 here, lbl_80540ADC/AE0/AE4 in the original; they sit at the right
+// offsets once fn_802B8078 and update() (which use 16.0f and 48.0f) are written.
+void ReaperShinigami_804A886C::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x244 = 180;
+    field_0x248 = 20;
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x260[0] = 1.0f;
+    field_0x268[0] = 2.0f;
+    field_0x260[1] = 0.75f;
+    field_0x268[1] = 1.5f;
+    field_0x234 = mPos;
+    field_0x270 = 0;
+    field_0x274 = 0;
+    field_0x298 = 4;
+    field_0x280 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2a0[i] = getActorManager_801F856C()->fn_801F6058(i);
+    }
+    field_0x27c = 0;
+    field_0x196 = 1;
+    field_0x230 = 0;
+    startSound_801F0E34(0x4003F, 0);
+    lbl_8053AED0->fn_8043D67C(0x197, 0, 0);
+}
 
-void fn_802B7CD8(ActorBase_804A5770* actor) {
-    getGameView_802D6A9C()->fn_802D9FBC();
-    actor->vfunc_0x24();
+void ReaperShinigami_804A886C::draw() {
+    if (field_0x230 == 0) {
+        return;
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x1c = 1;
+    params.field_0x1d = 1;
+    params.field_0x10.a = field_0x270;
+    params.field_0x30 = 8;
+    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_8046CB60[field_0x24c] + 0x466, &params, 7, 1.0f, 1.0f);
+}
+
+void ReaperShinigami_804A886C::vfunc_0x24() {
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x173, 1, 0, NULL, NULL, true, 1.0f);
+    mAlive = false;
+    startSound_801F0E34(0x40041, 0);
 }
 
 // FIXME: 88.43 %. The original copies arg to r31 first and keeps idx in r28,
@@ -97,51 +139,9 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
     }
 }
 
-void ReaperShinigami_804A886C::vfunc_0x24() {
-    spawnEmitter_8013CC50(field_0x4, &mPos, 0x173, 1, 0, NULL, NULL, true, 1.0f);
-    mAlive = false;
-    startSound_801F0E34(0x40041, 0);
+void fn_802B7CD8(ActorBase_804A5770* actor) {
+    getGameView_802D6A9C()->fn_802D9FBC();
+    actor->vfunc_0x24();
 }
 
-void ReaperShinigami_804A886C::draw() {
-    if (field_0x230 == 0) {
-        return;
-    }
-    SpriteParams_801F5AE0 params;
-    params.field_0x1c = 1;
-    params.field_0x1d = 1;
-    params.field_0x10.a = field_0x270;
-    params.field_0x30 = 8;
-    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_8046CB60[field_0x24c] + 0x466, &params, 7, 1.0f, 1.0f);
-}
-
-// FIXME: 99.64 %. Only reloc-names: the -8.0f, 8.0f and 2.0f literals are
-// @603-@605 here, lbl_80540ADC/AE0/AE4 in the original; they sit at the right
-// offsets once fn_802B8078 and update() (which use 16.0f and 48.0f) are written.
-void ReaperShinigami_804A886C::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x244 = 180;
-    field_0x248 = 20;
-    field_0x24c = 0;
-    field_0x250 = 0;
-    field_0x260[0] = 1.0f;
-    field_0x268[0] = 2.0f;
-    field_0x260[1] = 0.75f;
-    field_0x268[1] = 1.5f;
-    field_0x234 = mPos;
-    field_0x270 = 0;
-    field_0x274 = 0;
-    field_0x298 = 4;
-    field_0x280 = 0;
-    for (s32 i = 0; i < 4; i++) {
-        field_0x2a0[i] = getActorManager_801F856C()->fn_801F6058(i);
-    }
-    field_0x27c = 0;
-    field_0x196 = 1;
-    field_0x230 = 0;
-    startSound_801F0E34(0x4003F, 0);
-    lbl_8053AED0->fn_8043D67C(0x197, 0, 0);
-}
+ReaperShinigami_804A886C::~ReaperShinigami_804A886C() {}

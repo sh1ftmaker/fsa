@@ -9,9 +9,10 @@
 #include "game/act/act_side_view_gate_display_npc.h"
 #include "game/Effect.h"
 
-void SideViewGateDisplayNpc_804ACB98::draw() {}
-
-void SideViewGateDisplayNpc_804ACB98::update() {}
+SideViewGateDisplayNpc_804ACB98::~SideViewGateDisplayNpc_804ACB98() {
+    releaseEmitter_801EE434(mEmitter234);
+    releaseEmitter_801EE434(mEmitter238);
+}
 
 void SideViewGateDisplayNpc_804ACB98::init() {
     mEmitter234 = NULL;
@@ -24,7 +25,6 @@ void SideViewGateDisplayNpc_804ACB98::init() {
     }
 }
 
-SideViewGateDisplayNpc_804ACB98::~SideViewGateDisplayNpc_804ACB98() {
-    releaseEmitter_801EE434(mEmitter234);
-    releaseEmitter_801EE434(mEmitter238);
-}
+void SideViewGateDisplayNpc_804ACB98::update() {}
+
+void SideViewGateDisplayNpc_804ACB98::draw() {}

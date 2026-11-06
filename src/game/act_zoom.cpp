@@ -6,10 +6,6 @@
 
 static const u32 lbl_8046F260[4] = {0x3E, 0x3E, 0x3E, 0x3E};
 
-Zoom_804A9DF8::~Zoom_804A9DF8() {}
-
-void Zoom_804A9DF8::draw() {}
-
 // Takes the scripted-camera slot (Camera_804AA9E4::field_0x7f4/0x7f5) when it is free.
 static inline bool takeCamera(Camera_804AA9E4* cam) {
     bool got = false;
@@ -18,6 +14,24 @@ static inline bool takeCamera(Camera_804AA9E4* cam) {
         cam->field_0x7f5 = 1;
     }
     return got;
+}
+
+void Zoom_804A9DF8::init() {
+    field_0x234 = (field_0x90 >> 23) & 3;
+    field_0x238 = (field_0x90 >> 22) & 1;
+    mDuration = field_0x90 & 0xFFF;
+    mHalfWidth = ((field_0x90 >> 17) & 0x1F) + 1;
+    mHalfHeight = ((field_0x90 >> 12) & 0x1F) + 1;
+    mTimer = 0;
+    mPos.x += 8.0f;
+    mPos.y += 8.0f;
+    f32 h = 16.0f * mHalfHeight;
+    f32 w = 16.0f * mHalfWidth;
+    mBox.i.x = -w;
+    mBox.i.y = -h;
+    mBox.f.x = w;
+    mBox.f.y = h;
+    mState = 0;
 }
 
 void Zoom_804A9DF8::update() {
@@ -72,20 +86,6 @@ void Zoom_804A9DF8::update() {
     }
 }
 
-void Zoom_804A9DF8::init() {
-    field_0x234 = (field_0x90 >> 23) & 3;
-    field_0x238 = (field_0x90 >> 22) & 1;
-    mDuration = field_0x90 & 0xFFF;
-    mHalfWidth = ((field_0x90 >> 17) & 0x1F) + 1;
-    mHalfHeight = ((field_0x90 >> 12) & 0x1F) + 1;
-    mTimer = 0;
-    mPos.x += 8.0f;
-    mPos.y += 8.0f;
-    f32 h = 16.0f * mHalfHeight;
-    f32 w = 16.0f * mHalfWidth;
-    mBox.i.x = -w;
-    mBox.i.y = -h;
-    mBox.f.x = w;
-    mBox.f.y = h;
-    mState = 0;
-}
+void Zoom_804A9DF8::draw() {}
+
+Zoom_804A9DF8::~Zoom_804A9DF8() {}

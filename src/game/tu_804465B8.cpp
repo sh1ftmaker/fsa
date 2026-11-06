@@ -59,6 +59,67 @@ static const char* lbl_804B1BC0[10] = {
     "kk_rupyNum_09.bti",
 };
 
+cls_804B1BE8::cls_804B1BE8() {
+    lbl_8053AF00 = this;
+    mScreen = new J2DScreen();
+    mScreen->setPriority("mg_oni.blo", 0x1100000, lbl_80529DEC.field_0x10);
+    for (s32 i = 0; i < 4; i++) {
+        field_0x8[i] = new PaneCtrl_804AF86C();
+        field_0x8[i]->setPane_80402F04(mScreen->search(lbl_80490038[i][6]));
+        field_0x18[i] = new PaneCtrl_804AF86C();
+        field_0x18[i]->setPane_80402F04(mScreen->search(lbl_80490038[i][23]));
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x28[i] = 0;
+        field_0x2c[i] = 0;
+    }
+    field_0x30 = 0;
+}
+
+cls_804B1BE8::~cls_804B1BE8() {
+    delete mScreen;
+    mScreen = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x8[i];
+        field_0x8[i] = NULL;
+        delete field_0x18[i];
+        field_0x18[i] = NULL;
+    }
+    lbl_8053AF00 = NULL;
+}
+
+void cls_804B1BE8::fn_80446DB0() {
+    for (s32 i = 0; i < 4; i++) {
+        field_0x30 &= ~(u8)(1 << i);
+        field_0x30 &= ~(u8)(1 << (i + 4));
+        const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1BC0[0]));
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][13]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][14]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][15]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][16]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][17]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][18]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][19]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][20]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][21]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][22]))->changeTexture(res, 0);
+        mScreen->search(lbl_80490038[i][6])->hide();
+        mScreen->search(lbl_80490038[i][10])->hide();
+        mScreen->search(lbl_80490038[i][12])->hide();
+        mScreen->search(lbl_80490038[i][14])->hide();
+        mScreen->search(lbl_80490038[i][16])->hide();
+        mScreen->search(lbl_80490038[i][18])->hide();
+        mScreen->search(lbl_80490038[i][20])->hide();
+        mScreen->search(lbl_80490038[i][22])->hide();
+        mScreen->search(lbl_80490038[i][8])->hide();
+    }
+}
+
+void cls_804B1BE8::fn_80446D68() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+}
+
 // FIXME: 92.82 %. The original takes field_0x2c / 60 twice: once for the
 // seconds (r29 = field_0x2c - 60 * q) and again as the minutes index into
 // lbl_804B1BC0 (a second srawi/srwi pair on the quotient, after the seconds).
@@ -129,67 +190,6 @@ void cls_804B1BE8::fn_804465B8() {
             static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][21]))->changeTexture(res, 0);
             static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][22]))->changeTexture(res, 0);
         }
-    }
-    field_0x30 = 0;
-}
-
-void cls_804B1BE8::fn_80446D68() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-}
-
-void cls_804B1BE8::fn_80446DB0() {
-    for (s32 i = 0; i < 4; i++) {
-        field_0x30 &= ~(u8)(1 << i);
-        field_0x30 &= ~(u8)(1 << (i + 4));
-        const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1BC0[0]));
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][13]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][14]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][15]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][16]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][17]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][18]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][19]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][20]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][21]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490038[i][22]))->changeTexture(res, 0);
-        mScreen->search(lbl_80490038[i][6])->hide();
-        mScreen->search(lbl_80490038[i][10])->hide();
-        mScreen->search(lbl_80490038[i][12])->hide();
-        mScreen->search(lbl_80490038[i][14])->hide();
-        mScreen->search(lbl_80490038[i][16])->hide();
-        mScreen->search(lbl_80490038[i][18])->hide();
-        mScreen->search(lbl_80490038[i][20])->hide();
-        mScreen->search(lbl_80490038[i][22])->hide();
-        mScreen->search(lbl_80490038[i][8])->hide();
-    }
-}
-
-cls_804B1BE8::~cls_804B1BE8() {
-    delete mScreen;
-    mScreen = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0x8[i];
-        field_0x8[i] = NULL;
-        delete field_0x18[i];
-        field_0x18[i] = NULL;
-    }
-    lbl_8053AF00 = NULL;
-}
-
-cls_804B1BE8::cls_804B1BE8() {
-    lbl_8053AF00 = this;
-    mScreen = new J2DScreen();
-    mScreen->setPriority("mg_oni.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    for (s32 i = 0; i < 4; i++) {
-        field_0x8[i] = new PaneCtrl_804AF86C();
-        field_0x8[i]->setPane_80402F04(mScreen->search(lbl_80490038[i][6]));
-        field_0x18[i] = new PaneCtrl_804AF86C();
-        field_0x18[i]->setPane_80402F04(mScreen->search(lbl_80490038[i][23]));
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x28[i] = 0;
-        field_0x2c[i] = 0;
     }
     field_0x30 = 0;
 }

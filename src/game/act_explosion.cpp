@@ -9,7 +9,18 @@
 #include "game/GameView.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
-void Explosion_804A7FB8::draw() {}
+void Explosion_804A7FB8::init() {
+    mBox.set(-48.0f, -48.0f, 48.0f, 48.0f);
+    mEmitter238 = NULL;
+    field_0x230 = 0;
+    field_0x234 = 20;
+}
+
+Explosion_804A7FB8::~Explosion_804A7FB8() {
+    if (mEmitter238 != NULL) {
+        releaseEmitter_801EE434(mEmitter238);
+    }
+}
 
 // States in field_0x230: count down, wait for vfunc_0x34(), spawn effect
 // 0x173 offset by (16, 24), then for 20 frames widen the view's entry
@@ -68,15 +79,4 @@ void Explosion_804A7FB8::update() {
     }
 }
 
-Explosion_804A7FB8::~Explosion_804A7FB8() {
-    if (mEmitter238 != NULL) {
-        releaseEmitter_801EE434(mEmitter238);
-    }
-}
-
-void Explosion_804A7FB8::init() {
-    mBox.set(-48.0f, -48.0f, 48.0f, 48.0f);
-    mEmitter238 = NULL;
-    field_0x230 = 0;
-    field_0x234 = 20;
-}
+void Explosion_804A7FB8::draw() {}

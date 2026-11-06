@@ -6,7 +6,20 @@
 #include "game/ActorManager.h"
 #include "game/act/act_tingle_buster.h"
 
-TingleBuster_804A5370::~TingleBuster_804A5370() {}
+TingleBuster_804A5370::TingleBuster_804A5370() {}
+
+void TingleBuster_804A5370::init() {
+    EnemyBase_804A4808::init();
+    mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+    mBox2.set(mBox);
+    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0xb0 = 0;
+    mFlags |= 0x380;
+    mLife = 1000;
+    mLifeBackup = mLife;
+}
+
+void TingleBuster_804A5370::update() {}
 
 bool fn_801E3250(s32 layer, bool highNibble) {
     s32 serial;
@@ -35,17 +48,4 @@ bool fn_801E3250(s32 layer, bool highNibble) {
     return result;
 }
 
-void TingleBuster_804A5370::update() {}
-
-void TingleBuster_804A5370::init() {
-    EnemyBase_804A4808::init();
-    mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-    mBox2.set(mBox);
-    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
-    field_0xb0 = 0;
-    mFlags |= 0x380;
-    mLife = 1000;
-    mLifeBackup = mLife;
-}
-
-TingleBuster_804A5370::TingleBuster_804A5370() {}
+TingleBuster_804A5370::~TingleBuster_804A5370() {}

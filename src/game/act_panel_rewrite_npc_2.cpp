@@ -8,9 +8,17 @@
 #include "game/Map.h"
 #include "game/act/act_panel_rewrite_npc_2.h"
 
-PanelRewriteNPC2_804A9F58::~PanelRewriteNPC2_804A9F58() {}
-
-void PanelRewriteNPC2_804A9F58::draw() {}
+void PanelRewriteNPC2_804A9F58::init() {
+    field_0x230 = field_0x90 & 0xFFF;
+    field_0x234 = (field_0x90 >> 12) & 0xFFF;
+    field_0x238 = (field_0x90 >> 24) & 1;
+    field_0x23c = (field_0x90 >> 25) & 1;
+    if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
+        field_0x23c = 0;
+        field_0x238 = 0;
+    }
+    update();
+}
 
 // Scans the 32 x 32 tile cells of this actor's layer (field_0x4) for tiles
 // equal to field_0x230 and rewrites them to field_0x234, with an effect (or,
@@ -44,14 +52,6 @@ void PanelRewriteNPC2_804A9F58::update() {
     }
 }
 
-void PanelRewriteNPC2_804A9F58::init() {
-    field_0x230 = field_0x90 & 0xFFF;
-    field_0x234 = (field_0x90 >> 12) & 0xFFF;
-    field_0x238 = (field_0x90 >> 24) & 1;
-    field_0x23c = (field_0x90 >> 25) & 1;
-    if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
-        field_0x23c = 0;
-        field_0x238 = 0;
-    }
-    update();
-}
+void PanelRewriteNPC2_804A9F58::draw() {}
+
+PanelRewriteNPC2_804A9F58::~PanelRewriteNPC2_804A9F58() {}

@@ -3,9 +3,32 @@
 #include "game/GameRootSub20.h"
 #include "game/act/act_special_bg_draw_object.h"
 
-SpecialBGDrawObject_804AC760::~SpecialBGDrawObject_804AC760() {}
-
-void SpecialBGDrawObject_804AC760::draw() {}
+void SpecialBGDrawObject_804AC760::init() {
+    mKind = field_0x90 & 0xF;
+    mBit1 = (field_0x90 >> 22) & 0x1F;
+    mBit2 = (field_0x90 >> 17) & 0x1F;
+    mSoundState = 0;
+    mTriggered = 0;
+    mTimer = 0;
+    if (getGameView_802D6A9C()->fn_802D800C(mBit1) == true) {
+        switch (mKind) {
+        case 0:
+            mTimer = 120;
+            break;
+        case 1:
+            mTimer = 30;
+            break;
+        case 2:
+            mTimer = 120;
+            break;
+        }
+        mState = 1;
+    } else {
+        mTimer = 0;
+        mState = 0;
+    }
+    update();
+}
 
 void SpecialBGDrawObject_804AC760::update() {
     switch (mState) {
@@ -136,29 +159,6 @@ void SpecialBGDrawObject_804AC760::update() {
     }
 }
 
-void SpecialBGDrawObject_804AC760::init() {
-    mKind = field_0x90 & 0xF;
-    mBit1 = (field_0x90 >> 22) & 0x1F;
-    mBit2 = (field_0x90 >> 17) & 0x1F;
-    mSoundState = 0;
-    mTriggered = 0;
-    mTimer = 0;
-    if (getGameView_802D6A9C()->fn_802D800C(mBit1) == true) {
-        switch (mKind) {
-        case 0:
-            mTimer = 120;
-            break;
-        case 1:
-            mTimer = 30;
-            break;
-        case 2:
-            mTimer = 120;
-            break;
-        }
-        mState = 1;
-    } else {
-        mTimer = 0;
-        mState = 0;
-    }
-    update();
-}
+void SpecialBGDrawObject_804AC760::draw() {}
+
+SpecialBGDrawObject_804AC760::~SpecialBGDrawObject_804AC760() {}

@@ -11,8 +11,6 @@
 static s32 lbl_804A1808[16] = {0, 1, 0, 2, 3, 4, 3, 5, 6, 7, 8, 7, 10, 9, 11, 9};
 static s32 lbl_804A1848[16] = {4, 9, 4, 9, 4, 9, 4, 9, 9, 4, 9, 4, 9, 4, 9, 4};
 
-Pengator_804A1888::~Pengator_804A1888() {}
-
 // The hit reaction update() runs after fn_801F3D94 or fn_801F305C reports a
 // hit; the original has this code twice (inlined at both checks).
 static inline void hitReaction(Pengator_804A1888* self) {
@@ -26,8 +24,43 @@ static inline void hitReaction(Pengator_804A1888* self) {
     self->fn_801F2618(NULL, false);
 }
 
-void Pengator_804A1888::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x145, NULL, 7, 1.0f, 1.0f);
+// FIXME: 99.00 %. Regalloc only: the zero literal of the 0x234-0x248 stores
+// is in r7 in the original and r8 here (it swaps with the gGameRoot_8053AAF8
+// pointer loaded after it).
+void Pengator_804A1888::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    field_0x23c = 0;
+    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x24c = field_0x98 << 2;
+    field_0x260 = 0.0f;
+    field_0x25c = 0.0f;
+    field_0x258 = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
+    field_0xb0 = 0x11101;
+    field_0xb8 = 1;
+    field_0x195 = 1;
+    field_0x254 = 0.0f;
+    field_0x250 = 1.0f;
+    field_0x230 = 0;
+}
+
+void Pengator_804A1888::vfunc_0x18() {
+    fn_80212AC0()->fn_80212AF0(&mPos);
+    ActorBase_804A5770::vfunc_0x18();
 }
 
 // FIXME: 93.01 %. What differs: (1) the (field_0x98 & 2) test's branch layout
@@ -241,41 +274,8 @@ void Pengator_804A1888::update() {
     }
 }
 
-void Pengator_804A1888::vfunc_0x18() {
-    fn_80212AC0()->fn_80212AF0(&mPos);
-    ActorBase_804A5770::vfunc_0x18();
+void Pengator_804A1888::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x145, NULL, 7, 1.0f, 1.0f);
 }
 
-// FIXME: 99.00 %. Regalloc only: the zero literal of the 0x234-0x248 stores
-// is in r7 in the original and r8 here (it swaps with the gGameRoot_8053AAF8
-// pointer loaded after it).
-void Pengator_804A1888::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -8.0f;
-    field_0x80.i.y = -8.0f;
-    field_0x80.f.x = 8.0f;
-    field_0x80.f.y = 8.0f;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x248 = 0;
-    field_0x234 = 0;
-    field_0x238 = 0;
-    field_0x23c = 0;
-    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    field_0x24c = field_0x98 << 2;
-    field_0x260 = 0.0f;
-    field_0x25c = 0.0f;
-    field_0x258 = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.x = 0.0f;
-    field_0xb0 = 0x11101;
-    field_0xb8 = 1;
-    field_0x195 = 1;
-    field_0x254 = 0.0f;
-    field_0x250 = 1.0f;
-    field_0x230 = 0;
-}
+Pengator_804A1888::~Pengator_804A1888() {}

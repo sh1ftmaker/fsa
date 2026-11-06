@@ -6,7 +6,49 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 
-void MagicCircleGenerator_804A9FB0::draw() {}
+void MagicCircleGenerator_804A9FB0::init() {
+    field_0x248 = field_0x90 & 7;
+    field_0x24c = 0;
+    field_0x264 = 0;
+    field_0x254 = 0;
+    field_0x268 = 0;
+    field_0x258 = 0;
+    field_0x26c = 0;
+    field_0x25c = 0;
+    field_0x270 = 0;
+    field_0x260 = 0;
+    mEmitter230 = NULL;
+    mEmitter234 = NULL;
+    mEmitter238 = NULL;
+    mEmitter23c = NULL;
+    mEmitter240 = NULL;
+    if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
+        field_0x244 = 0;
+    } else if (field_0x248 == 0 || field_0x248 == 3) {
+        field_0x244 = 1;
+        field_0x24c = 0x14;
+    } else {
+        mAlive = false;
+    }
+}
+
+MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
+    if (mEmitter230 != NULL) {
+        releaseEmitter_801EE434(mEmitter230);
+    }
+    if (mEmitter234 != NULL) {
+        releaseEmitter_801EE434(mEmitter234);
+    }
+    if (mEmitter238 != NULL) {
+        releaseEmitter_801EE434(mEmitter238);
+    }
+    if (mEmitter23c != NULL) {
+        releaseEmitter_801EE434(mEmitter23c);
+    }
+    if (mEmitter240 != NULL) {
+        releaseEmitter_801EE434(mEmitter240);
+    }
+}
 
 // FIXME: 93.51 %. The -20.0f / 20.0f literals are @508 / @509, not
 // lbl_80541260 / lbl_80541264 (data split), and the search keeps its loop
@@ -94,46 +136,4 @@ bool MagicCircleGenerator_804A9FB0::fn_802E7DB8() {
     }
 }
 
-MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
-    if (mEmitter230 != NULL) {
-        releaseEmitter_801EE434(mEmitter230);
-    }
-    if (mEmitter234 != NULL) {
-        releaseEmitter_801EE434(mEmitter234);
-    }
-    if (mEmitter238 != NULL) {
-        releaseEmitter_801EE434(mEmitter238);
-    }
-    if (mEmitter23c != NULL) {
-        releaseEmitter_801EE434(mEmitter23c);
-    }
-    if (mEmitter240 != NULL) {
-        releaseEmitter_801EE434(mEmitter240);
-    }
-}
-
-void MagicCircleGenerator_804A9FB0::init() {
-    field_0x248 = field_0x90 & 7;
-    field_0x24c = 0;
-    field_0x264 = 0;
-    field_0x254 = 0;
-    field_0x268 = 0;
-    field_0x258 = 0;
-    field_0x26c = 0;
-    field_0x25c = 0;
-    field_0x270 = 0;
-    field_0x260 = 0;
-    mEmitter230 = NULL;
-    mEmitter234 = NULL;
-    mEmitter238 = NULL;
-    mEmitter23c = NULL;
-    mEmitter240 = NULL;
-    if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
-        field_0x244 = 0;
-    } else if (field_0x248 == 0 || field_0x248 == 3) {
-        field_0x244 = 1;
-        field_0x24c = 0x14;
-    } else {
-        mAlive = false;
-    }
-}
+void MagicCircleGenerator_804A9FB0::draw() {}

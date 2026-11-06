@@ -17,25 +17,11 @@ static inline void setScaleMtx(Mtx mtx, f32 x, f32 yz) {
     mtx[2][2] = yz;
 }
 
-// FIXME: 99.74%. Only the float literals (1.0f, 2.0f, 3.0f, 0.0f) and the
-// "player_sob.bin" string differ: their relocations are lbl_ names in the
-// original and @NNN in ours; the literal split, not the code.
-void ShadowLinkGiantBomb_804AC4D0::draw() {
-    if (mState == 8 || mState == 0xb) {
-        SpriteParams_801F5AE0 params;
-        Mtx mtx;
-        PSMTXIdentity(mtx);
-        params.field_0x2e = 0x40;
-        if (mState == 8) {
-            setScaleMtx(mtx, field_0x250, 3.0f - 2.0f * field_0x250);
-        } else {
-            setScaleMtx(mtx, field_0x250, 2.0f - field_0x250);
-        }
-        params.mMtx = mtx;
-        drawSprite_801F06F0("player_sob.bin", field_0x23c, &params, 7, 1.0f, 1.0f);
-    } else {
-        if (mState >= 4 && mState <= 7) {
-            drawSprite_801F06F0("player_sob.bin", field_0x23c, NULL, 7, 1.0f, 1.0f);
+ShadowLinkGiantBomb_804AC4D0::~ShadowLinkGiantBomb_804AC4D0() {
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        s32 mode = gGameRoot_8053AAF8->field_0x4c;
+        if (mode != 9 && mode != 0xB) {
+            gGameRoot_8053AAF8->fn_80138B7C();
         }
     }
 }
@@ -80,11 +66,25 @@ void ShadowLinkGiantBomb_804AC4D0::init() {
     }
 }
 
-ShadowLinkGiantBomb_804AC4D0::~ShadowLinkGiantBomb_804AC4D0() {
-    if (gGameRoot_8053AAF8->field_0x7f == 1) {
-        s32 mode = gGameRoot_8053AAF8->field_0x4c;
-        if (mode != 9 && mode != 0xB) {
-            gGameRoot_8053AAF8->fn_80138B7C();
+// FIXME: 99.74%. Only the float literals (1.0f, 2.0f, 3.0f, 0.0f) and the
+// "player_sob.bin" string differ: their relocations are lbl_ names in the
+// original and @NNN in ours; the literal split, not the code.
+void ShadowLinkGiantBomb_804AC4D0::draw() {
+    if (mState == 8 || mState == 0xb) {
+        SpriteParams_801F5AE0 params;
+        Mtx mtx;
+        PSMTXIdentity(mtx);
+        params.field_0x2e = 0x40;
+        if (mState == 8) {
+            setScaleMtx(mtx, field_0x250, 3.0f - 2.0f * field_0x250);
+        } else {
+            setScaleMtx(mtx, field_0x250, 2.0f - field_0x250);
+        }
+        params.mMtx = mtx;
+        drawSprite_801F06F0("player_sob.bin", field_0x23c, &params, 7, 1.0f, 1.0f);
+    } else {
+        if (mState >= 4 && mState <= 7) {
+            drawSprite_801F06F0("player_sob.bin", field_0x23c, NULL, 7, 1.0f, 1.0f);
         }
     }
 }

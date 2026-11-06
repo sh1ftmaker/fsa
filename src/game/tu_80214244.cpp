@@ -1,21 +1,21 @@
 #include "game/GameAudio.h"
 #include "game/cls_80214244.h"
 
-cls_800FE3EC* cls_80214244::fn_80214244() {
-    return &field_0x0[field_0x190];
-}
-
-void cls_80214244::fn_80214254(u8 index) {
-    field_0x190 = index;
+void cls_80214244::fn_802142A8() {
+    field_0x190 = 0;
+    for (int i = 0; i < 2; i++) {
+        field_0x0[i].clear();
+    }
 }
 
 void cls_80214244::fn_8021425C(u8 index, u8 arg1, const JGeometry::TVec3f& pos, int arg3) {
     field_0x0[index].fn_800FE3EC(arg1, pos, arg3);
 }
 
-void cls_80214244::fn_802142A8() {
-    field_0x190 = 0;
-    for (int i = 0; i < 2; i++) {
-        field_0x0[i].clear();
-    }
+void cls_80214244::fn_80214254(u8 index) {
+    field_0x190 = index;
+}
+
+cls_800FE3EC* cls_80214244::fn_80214244() {
+    return &field_0x0[field_0x190];
 }

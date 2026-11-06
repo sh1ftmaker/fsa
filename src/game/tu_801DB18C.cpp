@@ -4,42 +4,6 @@
 #include "game/act/tu_801DB18C.h"
 #include "game/act/tu_801DAC6C.h"
 
-cls_804A4EE8::~cls_804A4EE8() {
-    releaseEmitter_801EE434(field_0x2e4);
-    field_0x2e4 = NULL;
-    if (field_0x16c == -1) {
-        fn_801DAC6C()->fn_801DAEAC(mSerial);
-    }
-}
-
-void cls_804A4EE8::vfunc_0x94() {
-    s32 cel = mAnim.mCel;
-    EnemyBase_804A4808::vfunc_0x94();
-    if (cel == 8 && mAnim.mCel == 7) {
-        startSound_801F0E34(0x4005B, 0);
-    }
-}
-
-void cls_804A4EE8::fn_801DB950(s32 state) {
-    // A one-case switch: MWCC's cmpwi/beq/b shape for state 1 is what matches.
-    switch (state) {
-    case 1:
-        field_0x250 = -1;
-        mAnim.mFrameCtrl.setRate(1.0f);
-        field_0x2ac = 0;
-        fn_801DB9CC();
-        mTargetPlayer = fn_801D05F8(&mSearchPos, mSearchRange);
-        break;
-    }
-    mStateTimer = 0;
-    mState = state;
-}
-
-void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
-    EnemyBase_804A4808::vfunc_0x9C(mapHit);
-    setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
-}
-
 u8 cls_804A4EE8::vfunc_0x68() {
     u8 hitPlayers = 0;
     if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
@@ -68,4 +32,40 @@ u8 cls_804A4EE8::vfunc_0x68() {
         }
     }
     return hitPlayers;
+}
+
+void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
+    EnemyBase_804A4808::vfunc_0x9C(mapHit);
+    setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
+}
+
+void cls_804A4EE8::fn_801DB950(s32 state) {
+    // A one-case switch: MWCC's cmpwi/beq/b shape for state 1 is what matches.
+    switch (state) {
+    case 1:
+        field_0x250 = -1;
+        mAnim.mFrameCtrl.setRate(1.0f);
+        field_0x2ac = 0;
+        fn_801DB9CC();
+        mTargetPlayer = fn_801D05F8(&mSearchPos, mSearchRange);
+        break;
+    }
+    mStateTimer = 0;
+    mState = state;
+}
+
+void cls_804A4EE8::vfunc_0x94() {
+    s32 cel = mAnim.mCel;
+    EnemyBase_804A4808::vfunc_0x94();
+    if (cel == 8 && mAnim.mCel == 7) {
+        startSound_801F0E34(0x4005B, 0);
+    }
+}
+
+cls_804A4EE8::~cls_804A4EE8() {
+    releaseEmitter_801EE434(field_0x2e4);
+    field_0x2e4 = NULL;
+    if (field_0x16c == -1) {
+        fn_801DAC6C()->fn_801DAEAC(mSerial);
+    }
 }

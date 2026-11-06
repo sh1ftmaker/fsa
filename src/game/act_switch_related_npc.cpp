@@ -5,9 +5,41 @@
 #include "game/Effect.h"
 #include "game/act/act_switch_related_npc.h"
 
-SwitchRelatedNpc_804A8C28::~SwitchRelatedNpc_804A8C28() {}
-
-void SwitchRelatedNpc_804A8C28::draw() {}
+void SwitchRelatedNpc_804A8C28::init() {
+    mType = field_0x90 & 0x3F;
+    field_0x238 = (field_0x90 >> 6) & 0xF;
+    mTileIndex = (field_0x90 >> 10) & 0xF;
+    mTable = (field_0x90 >> 14) & 0xF;
+    mSound = (field_0x90 >> 18) & 0xF;
+    if (field_0x90 & 0x04000000) {
+        mEffects = true;
+    } else {
+        mEffects = false;
+    }
+    JGeometry::TVec2f cell(mPos.x, mPos.y);
+    mCell = fn_80226BC4(&cell, field_0x4);
+    mDelay = 0;
+    switch (mType) {
+    case 0:
+        getGameView_802D6A9C()->fn_802D4874(field_0x4, mCell, &mBit, &mMask);
+        if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, mCell) == true) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x10);
+            mAlive = false;
+        }
+        break;
+    case 2:
+        getGameView_802D6A9C()->fn_802D4768(field_0x4 + 1, mCell, &mSlot, &mMask);
+        break;
+    case 3:
+        if (mSound == 0) {
+            mDelay = 0x32;
+        }
+        break;
+    }
+    if (mAlive) {
+        update();
+    }
+}
 
 // FIXME: 89.66 %. Same instructions and structure; the register allocation
 // differs. The original keeps this in r29 (stmw r27) with the layer and later
@@ -104,38 +136,6 @@ void SwitchRelatedNpc_804A8C28::update() {
     }
 }
 
-void SwitchRelatedNpc_804A8C28::init() {
-    mType = field_0x90 & 0x3F;
-    field_0x238 = (field_0x90 >> 6) & 0xF;
-    mTileIndex = (field_0x90 >> 10) & 0xF;
-    mTable = (field_0x90 >> 14) & 0xF;
-    mSound = (field_0x90 >> 18) & 0xF;
-    if (field_0x90 & 0x04000000) {
-        mEffects = true;
-    } else {
-        mEffects = false;
-    }
-    JGeometry::TVec2f cell(mPos.x, mPos.y);
-    mCell = fn_80226BC4(&cell, field_0x4);
-    mDelay = 0;
-    switch (mType) {
-    case 0:
-        getGameView_802D6A9C()->fn_802D4874(field_0x4, mCell, &mBit, &mMask);
-        if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, mCell) == true) {
-            gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, mCell, 0x10);
-            mAlive = false;
-        }
-        break;
-    case 2:
-        getGameView_802D6A9C()->fn_802D4768(field_0x4 + 1, mCell, &mSlot, &mMask);
-        break;
-    case 3:
-        if (mSound == 0) {
-            mDelay = 0x32;
-        }
-        break;
-    }
-    if (mAlive) {
-        update();
-    }
-}
+void SwitchRelatedNpc_804A8C28::draw() {}
+
+SwitchRelatedNpc_804A8C28::~SwitchRelatedNpc_804A8C28() {}

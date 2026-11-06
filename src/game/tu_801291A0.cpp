@@ -14,7 +14,107 @@ static const s32 lbl_80465058[11] = {10, 3, 4, 8, 6, 5, 7, 1, 9, 2, 11};
 // The bits of field_0x90 that add kind 0..3 to mKinds.
 static const s32 lbl_80465084[4] = {16, 17, 18, 19};
 
-cls_8049E5B8::~cls_8049E5B8() {}
+// Whether the actor is NOT one of the item actors this one spawns (false for
+// CRTL, LSTI and NNJN).
+static inline bool isNotSpawnedItem(u32 id) {
+    switch (id) {
+    case ACTOR_LSTI:
+    case ACTOR_CRTL:
+    case ACTOR_NNJN:
+        return false;
+    }
+    return true;
+}
+
+void cls_8049E5B8::init() {
+    mKind = field_0x90 & 0xF;
+    field_0x280 |= 2;
+    // 11 entries, one more than mItems holds: the last lands on mKinds[0],
+    // which is set again below.
+    int i;
+    for (i = 0; i < 11; i++) {
+        mItems[i] = 10;
+    }
+    for (i = 0; i < 11; i++) {
+        if (((field_0x90 >> lbl_80465000[i]) & 1) == 1) {
+            field_0x280 |= 1 << lbl_8046502C[i];
+            mItems[mItemCount] = lbl_80465058[i];
+            mItemCount++;
+        }
+    }
+    mKinds[0] = 1;
+    mKinds[1] = 1;
+    mKinds[2] = 1;
+    mKinds[3] = 1;
+    for (i = 0; i < 4; i++) {
+        if (((field_0x90 >> lbl_80465084[i]) & 1) == 1) {
+            mKinds[mKindCount] = i;
+            mKindCount++;
+        }
+    }
+    mTimer = 150;
+}
+
+// FIXME: 80.6%. try.py class: missing/extra. The original calls fn_8012952C
+// (bl, three sites); MWCC auto-inlines it into update here, which also shifts
+// the saved registers (this in r30, the serial in r31). Defining it after
+// update un-inlines it (95.6%) but swaps the .text order, so it stays here.
+void cls_8049E5B8::update() {
+    if (vfunc_0x3C() > 0 && !vfunc_0x34()) {
+        return;
+    }
+    switch (mState) {
+    case 0: {
+        s32 serial = mSpawned;
+        bool gone;
+        if (serial < 0) {
+            gone = true;
+        } else {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor == NULL) {
+                gone = true;
+            } else {
+                gone = isNotSpawnedItem(actor->mActorId);
+            }
+        }
+        if (gone) {
+            fn_8012952C(1);
+        }
+        break;
+    }
+    case 1: {
+        mTimer++;
+        s32 limit = 600;
+        if (mKind == 2) {
+            limit = 300;
+        }
+        if (mTimer >= limit) {
+            fn_8012952C(2);
+        }
+        break;
+    }
+    case 2:
+        fn_8012952C(0);
+        break;
+    }
+}
+
+// The state setter: 1 clears the spawn, 2 spawns a new one. State 0 is
+// never entered with work to do, but the original's switch has a case 0.
+void cls_8049E5B8::fn_8012952C(s32 state) {
+    switch (state) {
+    case 0:
+        break;
+    case 1:
+        mSpawned = -1;
+        mTimer = 0;
+        break;
+    case 2:
+        fn_80129200();
+        break;
+    }
+    mState = state;
+}
 
 // FIXME: 99.4%. try.py class: regalloc-only. In the CASE 2 spawn path the
 // original keeps the LCG state in r5 and the multiplier in r4 (ours r4 / r5),
@@ -65,104 +165,4 @@ bool cls_8049E5B8::fn_80129200() {
     return true;
 }
 
-// The state setter: 1 clears the spawn, 2 spawns a new one. State 0 is
-// never entered with work to do, but the original's switch has a case 0.
-void cls_8049E5B8::fn_8012952C(s32 state) {
-    switch (state) {
-    case 0:
-        break;
-    case 1:
-        mSpawned = -1;
-        mTimer = 0;
-        break;
-    case 2:
-        fn_80129200();
-        break;
-    }
-    mState = state;
-}
-
-// Whether the actor is NOT one of the item actors this one spawns (false for
-// CRTL, LSTI and NNJN).
-static inline bool isNotSpawnedItem(u32 id) {
-    switch (id) {
-    case ACTOR_LSTI:
-    case ACTOR_CRTL:
-    case ACTOR_NNJN:
-        return false;
-    }
-    return true;
-}
-
-// FIXME: 80.6%. try.py class: missing/extra. The original calls fn_8012952C
-// (bl, three sites); MWCC auto-inlines it into update here, which also shifts
-// the saved registers (this in r30, the serial in r31). Defining it after
-// update un-inlines it (95.6%) but swaps the .text order, so it stays here.
-void cls_8049E5B8::update() {
-    if (vfunc_0x3C() > 0 && !vfunc_0x34()) {
-        return;
-    }
-    switch (mState) {
-    case 0: {
-        s32 serial = mSpawned;
-        bool gone;
-        if (serial < 0) {
-            gone = true;
-        } else {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-            if (actor == NULL) {
-                gone = true;
-            } else {
-                gone = isNotSpawnedItem(actor->mActorId);
-            }
-        }
-        if (gone) {
-            fn_8012952C(1);
-        }
-        break;
-    }
-    case 1: {
-        mTimer++;
-        s32 limit = 600;
-        if (mKind == 2) {
-            limit = 300;
-        }
-        if (mTimer >= limit) {
-            fn_8012952C(2);
-        }
-        break;
-    }
-    case 2:
-        fn_8012952C(0);
-        break;
-    }
-}
-
-void cls_8049E5B8::init() {
-    mKind = field_0x90 & 0xF;
-    field_0x280 |= 2;
-    // 11 entries, one more than mItems holds: the last lands on mKinds[0],
-    // which is set again below.
-    int i;
-    for (i = 0; i < 11; i++) {
-        mItems[i] = 10;
-    }
-    for (i = 0; i < 11; i++) {
-        if (((field_0x90 >> lbl_80465000[i]) & 1) == 1) {
-            field_0x280 |= 1 << lbl_8046502C[i];
-            mItems[mItemCount] = lbl_80465058[i];
-            mItemCount++;
-        }
-    }
-    mKinds[0] = 1;
-    mKinds[1] = 1;
-    mKinds[2] = 1;
-    mKinds[3] = 1;
-    for (i = 0; i < 4; i++) {
-        if (((field_0x90 >> lbl_80465084[i]) & 1) == 1) {
-            mKinds[mKindCount] = i;
-            mKindCount++;
-        }
-    }
-    mTimer = 150;
-}
+cls_8049E5B8::~cls_8049E5B8() {}

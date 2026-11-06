@@ -20,12 +20,6 @@ inline void cls_804A4188::spawnBurst() {
     mFlags |= FLAG_BURST;
 }
 
-void cls_804A4188::fn_801BEDBC() {
-    if (mAlive && !(mFlags & FLAG_BURST)) {
-        spawnBurst();
-    }
-}
-
 // The effect follows the actor; its angle is the direction of field_0x3c.
 inline void cls_804A4188::moveEmitter() {
     if (mEmitter2a8 != NULL) {
@@ -62,26 +56,30 @@ inline void cls_804A4188::burnTiles() {
     }
 }
 
-// FIXME: 91.0 %. Same instructions as ActorBase_804A5770::vfunc_0x4C (tu_801EE24C); only the saved
-// registers differ: the target keeps this in r31, the result in r30, layer in r29 and pos in r28
-// (this code: result r31, this r30, pos r29, layer r28), so the prologue stores and the argument
-// moves are ordered differently.
-bool cls_804A4188::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    switch (fn_8022461C(pos, layer)) {
-    case 3:
-    case 0xD:
-    case 0xE:
-        return false;
-    }
-    bool blocked = true;
-    if (!fn_802265DC(pos, layer, false)) {
-        s32 serial = field_0x90;
-        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-        if (!boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
-            blocked = false;
-        }
-    }
-    return blocked;
+cls_804A4188::cls_804A4188() : mEmitter2a8(NULL) {}
+
+cls_804A4188::~cls_804A4188() {
+    releaseEmitter_801EE434(mEmitter2a8);
+}
+
+void cls_804A4188::init() {
+    EnemyBase_804A4808::init();
+    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
+    mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0x80.set(-1.0f, -1.0f, 1.0f, 1.0f);
+    field_0xb0 = 0;
+    field_0x98 = 2;
+    mFlags |= ENEMY_FLAG_NO_HURT | ENEMY_FLAG_KEEP_LIFE;
+    mLife = 1000;
+    mLifeBackup = mLife;
+    field_0x194 = 1;
+    field_0x114 = 2;
+    mStateTimer = 0;
+}
+
+void cls_804A4188::vfunc_0x54() {
+    mEmitter2a8 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1B, 0, field_0x94, NULL, NULL, true, 1.0f);
+    moveEmitter();
 }
 
 // FIXME: 98.3 %. Scheduling only: the target loads mFlags again for the ENEMY_FLAG_STARTED test
@@ -121,28 +119,30 @@ void cls_804A4188::update() {
     }
 }
 
-void cls_804A4188::vfunc_0x54() {
-    mEmitter2a8 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1B, 0, field_0x94, NULL, NULL, true, 1.0f);
-    moveEmitter();
+// FIXME: 91.0 %. Same instructions as ActorBase_804A5770::vfunc_0x4C (tu_801EE24C); only the saved
+// registers differ: the target keeps this in r31, the result in r30, layer in r29 and pos in r28
+// (this code: result r31, this r30, pos r29, layer r28), so the prologue stores and the argument
+// moves are ordered differently.
+bool cls_804A4188::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    switch (fn_8022461C(pos, layer)) {
+    case 3:
+    case 0xD:
+    case 0xE:
+        return false;
+    }
+    bool blocked = true;
+    if (!fn_802265DC(pos, layer, false)) {
+        s32 serial = field_0x90;
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+        if (!boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+            blocked = false;
+        }
+    }
+    return blocked;
 }
 
-void cls_804A4188::init() {
-    EnemyBase_804A4808::init();
-    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
-    mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
-    field_0x80.set(-1.0f, -1.0f, 1.0f, 1.0f);
-    field_0xb0 = 0;
-    field_0x98 = 2;
-    mFlags |= ENEMY_FLAG_NO_HURT | ENEMY_FLAG_KEEP_LIFE;
-    mLife = 1000;
-    mLifeBackup = mLife;
-    field_0x194 = 1;
-    field_0x114 = 2;
-    mStateTimer = 0;
+void cls_804A4188::fn_801BEDBC() {
+    if (mAlive && !(mFlags & FLAG_BURST)) {
+        spawnBurst();
+    }
 }
-
-cls_804A4188::~cls_804A4188() {
-    releaseEmitter_801EE434(mEmitter2a8);
-}
-
-cls_804A4188::cls_804A4188() : mEmitter2a8(NULL) {}

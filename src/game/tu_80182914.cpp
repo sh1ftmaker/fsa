@@ -32,20 +32,60 @@ static inline void followHeld(cls_804A1718* self) {
     self->fn_801F2618(NULL, false);
 }
 
-void cls_804A1718::draw() {
-    s32 flags = -1;
-    s32 state = field_0x230;
-    s32 frame = field_0x254;
-    if ((state == 0 || state == 1) && field_0x23c == 0) {
+// Returns the colour of the ShadowCircle_804A0160 at gGameRoot2_8053AB10->0x2C.
+JUtility::TColor fn_8018330C() {
+    return gGameRoot2_8053AB10->field_0x2c->field_0x4;
+}
+
+void cls_804A1718::init() {
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x248 = 0;
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x23c = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x25c = field_0x90 & 1;
+    field_0x260 = (field_0x90 >> 8) & 1;
+    field_0x254 = 0;
+    field_0x238[0] = 0;
+    field_0x238[1] = 0;
+    field_0x238[2] = 0;
+    if (viewLayerFlag(0x13) == 1) {
+        field_0x234 = fn_8018330C();
+        field_0x238[0] = field_0x234.toUInt32() >> 24;
+        field_0x238[1] = (field_0x234.toUInt32() >> 16) & 0xFF;
+        field_0x238[2] = (field_0x234.toUInt32() >> 8) & 0xFF;
+    }
+    field_0x268.zero();
+    field_0x3c.zero();
+    field_0x258 = 0;
+    field_0x264 = 0;
+    field_0x195 = 1;
+    mEmitter274 = NULL;
+    field_0x230 = 0;
+}
+
+void cls_804A1718::vfunc_0x44() {
+    if (field_0x258 != 0) {
         return;
     }
-    if (field_0x258 != 0) {
-        flags = 0;
+    if (field_0x230 == 5) {
+        return;
     }
-    if (field_0x25c == 1 && frame >= 3) {
-        frame += 5;
-    }
-    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x158, NULL, flags, 1.0f, 1.0f);
+    field_0xb0 = 0x11101;
+    field_0x254 = 6;
+    field_0x230 = 4;
+}
+
+void cls_804A1718::vfunc_0x18() {
+    fn_80212AC0()->fn_80212AF0(&mPos);
+    ActorBase_804A5770::vfunc_0x18();
+}
+
+cls_804A1718::~cls_804A1718() {
+    releaseEmitter_801EE434(mEmitter274);
 }
 
 // FIXME: 99.95 %. Same instructions; the jump-table base is relocated to the
@@ -200,58 +240,18 @@ void cls_804A1718::update() {
     }
 }
 
-cls_804A1718::~cls_804A1718() {
-    releaseEmitter_801EE434(mEmitter274);
-}
-
-void cls_804A1718::vfunc_0x18() {
-    fn_80212AC0()->fn_80212AF0(&mPos);
-    ActorBase_804A5770::vfunc_0x18();
-}
-
-void cls_804A1718::vfunc_0x44() {
+void cls_804A1718::draw() {
+    s32 flags = -1;
+    s32 state = field_0x230;
+    s32 frame = field_0x254;
+    if ((state == 0 || state == 1) && field_0x23c == 0) {
+        return;
+    }
     if (field_0x258 != 0) {
-        return;
+        flags = 0;
     }
-    if (field_0x230 == 5) {
-        return;
+    if (field_0x25c == 1 && frame >= 3) {
+        frame += 5;
     }
-    field_0xb0 = 0x11101;
-    field_0x254 = 6;
-    field_0x230 = 4;
-}
-
-void cls_804A1718::init() {
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x248 = 0;
-    field_0x24c = 0;
-    field_0x250 = 0;
-    field_0x23c = 0;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x25c = field_0x90 & 1;
-    field_0x260 = (field_0x90 >> 8) & 1;
-    field_0x254 = 0;
-    field_0x238[0] = 0;
-    field_0x238[1] = 0;
-    field_0x238[2] = 0;
-    if (viewLayerFlag(0x13) == 1) {
-        field_0x234 = fn_8018330C();
-        field_0x238[0] = field_0x234.toUInt32() >> 24;
-        field_0x238[1] = (field_0x234.toUInt32() >> 16) & 0xFF;
-        field_0x238[2] = (field_0x234.toUInt32() >> 8) & 0xFF;
-    }
-    field_0x268.zero();
-    field_0x3c.zero();
-    field_0x258 = 0;
-    field_0x264 = 0;
-    field_0x195 = 1;
-    mEmitter274 = NULL;
-    field_0x230 = 0;
-}
-
-// Returns the colour of the ShadowCircle_804A0160 at gGameRoot2_8053AB10->0x2C.
-JUtility::TColor fn_8018330C() {
-    return gGameRoot2_8053AB10->field_0x2c->field_0x4;
+    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x158, NULL, flags, 1.0f, 1.0f);
 }

@@ -4,7 +4,6 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 
-cls_8049E8F8::~cls_8049E8F8() {}
 
 inline bool cls_8049E8F8::playersInside() {
     JGeometry::TBox2f box(mBox);
@@ -54,6 +53,17 @@ inline void cls_8049E8F8::setState(s32 state) {
     }
 }
 
+void cls_8049E8F8::init() {
+    ActorBase_804A5770::init();
+    field_0x234 = (field_0x90 >> 8) & 0xF;
+    field_0x238 = (field_0x90 >> 12) & 0xF;
+    mBox.set(-32.0f, -16.0f, 32.0f, 16.0f);
+    mBox2.i = mBox.i;
+    mBox2.f = mBox.f;
+    field_0x80.i = mBox.i;
+    field_0x80.f = mBox.f;
+}
+
 // FIXME: 98.5 %. Two differences remain. (1) The player's x and y are loaded
 // into f1 and f0 in the original and f0 and f1 here. (2) The inlined switch in
 // setState is compiled as cmpwi 1 / beq / bge, then cmpwi 3 / bge (case 2) in
@@ -80,13 +90,4 @@ void cls_8049E8F8::update() {
     }
 }
 
-void cls_8049E8F8::init() {
-    ActorBase_804A5770::init();
-    field_0x234 = (field_0x90 >> 8) & 0xF;
-    field_0x238 = (field_0x90 >> 12) & 0xF;
-    mBox.set(-32.0f, -16.0f, 32.0f, 16.0f);
-    mBox2.i = mBox.i;
-    mBox2.f = mBox.f;
-    field_0x80.i = mBox.i;
-    field_0x80.f = mBox.f;
-}
+cls_8049E8F8::~cls_8049E8F8() {}

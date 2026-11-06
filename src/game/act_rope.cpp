@@ -13,27 +13,6 @@ static const s16 lbl_8046915C[6] = {6, 10, 7, 10, -1, -1};
 // The table of animations: one per direction (0 +x, 1 -x, 2 +y, 3 -y).
 static const s16* lbl_804A3A58[4] = {lbl_80469138, lbl_80469144, lbl_80469150, lbl_8046915C};
 
-Rope_804A3A68::~Rope_804A3A68() {}
-
-void Rope_804A3A68::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xB5, NULL, 0, 1.0f, 1.0f);
-}
-
-// FIXME: 98.8 %. Regalloc only: the original loads mSpeed into f2 and the
-// 0.9090909f constant into f1 (ours the reverse), and the sdata2 literals 0.4f and
-// 0.9090909f come out in the other order.
-void Rope_804A3A68::vfunc_0x94() {
-    mAnim.fn_801D2264(field_0x98, 2);
-    f32 t = (mSpeed - 0.4f) * 0.9090909f;
-    if (t > 1.0f) {
-        t = 1.0f;
-    } else if (t < 0.0f) {
-        t = 0.0f;
-    }
-    mAnim.mFrameCtrl.setRate(t * 2.0f + 1.0f);
-    EnemyBase_804A4808::vfunc_0x94();
-}
-
 // Inlined state starts (the original inlines them at each call).
 inline void Rope_804A3A68::walk() {
     field_0x250 = fn_801CD664(0x29) + 0x3c;
@@ -50,6 +29,25 @@ inline void Rope_804A3A68::idle() {
     mTargetSpeed = 0.0f;
     mStateTimer = 0;
     mState = 0;
+}
+
+Rope_804A3A68::Rope_804A3A68() {}
+
+void Rope_804A3A68::init() {
+    EnemyBase_804A4808::init();
+    if (mPos.z > 0.001f) {
+        mState = 3;
+        field_0x250 = -1;
+    } else {
+        mState = 0;
+        field_0x250 = fn_801CD664(0x3d) + 0x28;
+    }
+    mStateTimer = 0;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D2608(lbl_804A3A58, 4);
+    mAnim.startAnim_801D22DC(field_0x98, 2, false);
+    mAnim.fn_801D1D60();
 }
 
 // FIXME: 97.8 %. Only the integer registers of the target search differ: the
@@ -149,21 +147,23 @@ void Rope_804A3A68::vfunc_0x90(u8 mapHit) {
     }
 }
 
-void Rope_804A3A68::init() {
-    EnemyBase_804A4808::init();
-    if (mPos.z > 0.001f) {
-        mState = 3;
-        field_0x250 = -1;
-    } else {
-        mState = 0;
-        field_0x250 = fn_801CD664(0x3d) + 0x28;
+// FIXME: 98.8 %. Regalloc only: the original loads mSpeed into f2 and the
+// 0.9090909f constant into f1 (ours the reverse), and the sdata2 literals 0.4f and
+// 0.9090909f come out in the other order.
+void Rope_804A3A68::vfunc_0x94() {
+    mAnim.fn_801D2264(field_0x98, 2);
+    f32 t = (mSpeed - 0.4f) * 0.9090909f;
+    if (t > 1.0f) {
+        t = 1.0f;
+    } else if (t < 0.0f) {
+        t = 0.0f;
     }
-    mStateTimer = 0;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.fn_801D2608(lbl_804A3A58, 4);
-    mAnim.startAnim_801D22DC(field_0x98, 2, false);
-    mAnim.fn_801D1D60();
+    mAnim.mFrameCtrl.setRate(t * 2.0f + 1.0f);
+    EnemyBase_804A4808::vfunc_0x94();
 }
 
-Rope_804A3A68::Rope_804A3A68() {}
+void Rope_804A3A68::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xB5, NULL, 0, 1.0f, 1.0f);
+}
+
+Rope_804A3A68::~Rope_804A3A68() {}

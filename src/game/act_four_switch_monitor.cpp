@@ -8,9 +8,6 @@
 #include "game/Player.h"
 #include "game/act/act_four_switch_monitor.h"
 
-FourSwitchMonitor_804A80A0::~FourSwitchMonitor_804A80A0() {}
-
-void FourSwitchMonitor_804A80A0::draw() {}
 
 // Snaps a coordinate to the middle of its 16-unit cell.
 static inline f32 snapToCell(f32 v) {
@@ -39,6 +36,20 @@ static inline s32 slotsCollide(const s32* flags, const s32* keys) {
         }
     }
     return collide;
+}
+
+void FourSwitchMonitor_804A80A0::init() {
+    static const s32 lbl_8046C850[4] = {22, 17, 12, 7};
+
+    field_0x234 = field_0x90 & 0x1F;
+    if (field_0x234 != 5) {
+        field_0x230 = 0;
+    } else {
+        field_0x230 = 7;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x244[i] = (field_0x90 >> lbl_8046C850[i]) & 0x1F;
+    }
 }
 
 // FIXME: 91.98 %. The original runs the same slot check twice, once in each arm
@@ -247,16 +258,6 @@ void FourSwitchMonitor_804A80A0::update() {
     }
 }
 
-void FourSwitchMonitor_804A80A0::init() {
-    static const s32 lbl_8046C850[4] = {22, 17, 12, 7};
+void FourSwitchMonitor_804A80A0::draw() {}
 
-    field_0x234 = field_0x90 & 0x1F;
-    if (field_0x234 != 5) {
-        field_0x230 = 0;
-    } else {
-        field_0x230 = 7;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x244[i] = (field_0x90 >> lbl_8046C850[i]) & 0x1F;
-    }
-}
+FourSwitchMonitor_804A80A0::~FourSwitchMonitor_804A80A0() {}

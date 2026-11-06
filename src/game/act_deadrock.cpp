@@ -3,20 +3,27 @@
 #include "game/Player.h"
 #include "game/act/act_deadrock.h"
 
-Deadrock_8049F498::~Deadrock_8049F498() {}
-
-// FIXME: draw 99.67 %, update 99.95 %. The original's .rodata has update's
-// tag list (0x80465B98) before draw's "enemy_gc_sob.bin" (0x80465BA8); ours
-// emits them in order of use, so both relocations point at swapped offsets.
-void Deadrock_8049F498::draw() {
-    s32 frame = field_0x244 + field_0x98 * 2;
-    if (field_0x230 == 3 || field_0x230 == 4) {
-        frame = 8;
-    }
-    if (field_0x230 == 4 && (field_0x23c & 1) == 0) {
-        return;
-    }
-    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x1c, NULL, 0, 1.0f, 1.0f);
+void Deadrock_8049F498::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
+    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    field_0x23c = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0x24c = 0;
+    mLife = 4;
+    field_0x250 = 1;
+    field_0xb0 = 0x08042104;
+    field_0x230 = 0;
 }
 
 void Deadrock_8049F498::update() {
@@ -249,25 +256,18 @@ void Deadrock_8049F498::update() {
     }
 }
 
-void Deadrock_8049F498::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -8.0f;
-    field_0x80.i.y = -8.0f;
-    field_0x80.f.x = 8.0f;
-    field_0x80.f.y = 8.0f;
-    field_0x98 = (s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3;
-    field_0x234 = 0;
-    field_0x238 = 0;
-    field_0x23c = 0;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x248 = 0;
-    field_0x24c = 0;
-    mLife = 4;
-    field_0x250 = 1;
-    field_0xb0 = 0x08042104;
-    field_0x230 = 0;
+// FIXME: draw 99.67 %, update 99.95 %. The original's .rodata has update's
+// tag list (0x80465B98) before draw's "enemy_gc_sob.bin" (0x80465BA8); ours
+// emits them in order of use, so both relocations point at swapped offsets.
+void Deadrock_8049F498::draw() {
+    s32 frame = field_0x244 + field_0x98 * 2;
+    if (field_0x230 == 3 || field_0x230 == 4) {
+        frame = 8;
+    }
+    if (field_0x230 == 4 && (field_0x23c & 1) == 0) {
+        return;
+    }
+    drawSprite_801F06F0("enemy_gc_sob.bin", frame + 0x1c, NULL, 0, 1.0f, 1.0f);
 }
+
+Deadrock_8049F498::~Deadrock_8049F498() {}

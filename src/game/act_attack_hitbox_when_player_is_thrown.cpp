@@ -3,17 +3,11 @@
 #include "game/Player.h"
 #include "game/act/act_attack_hitbox_when_player_is_thrown.h"
 
-AttackHitboxWhenPlayerIsThrown_804A7C40::~AttackHitboxWhenPlayerIsThrown_804A7C40() {}
-
-bool AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    return false;
+void AttackHitboxWhenPlayerIsThrown_804A7C40::init() {
+    mBox.set(-10.0f, -10.0f, 10.0f, 10.0f);
+    field_0x80.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    field_0x230 = field_0x90 & 3;
 }
-
-void AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x24() {
-    mAlive = false;
-}
-
-void AttackHitboxWhenPlayerIsThrown_804A7C40::draw() {}
 
 void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
     mPos.set(*getPlayerPos_8023E724(field_0x230));
@@ -39,8 +33,14 @@ void AttackHitboxWhenPlayerIsThrown_804A7C40::update() {
     }
 }
 
-void AttackHitboxWhenPlayerIsThrown_804A7C40::init() {
-    mBox.set(-10.0f, -10.0f, 10.0f, 10.0f);
-    field_0x80.set(-4.0f, -4.0f, 4.0f, 4.0f);
-    field_0x230 = field_0x90 & 3;
+void AttackHitboxWhenPlayerIsThrown_804A7C40::draw() {}
+
+void AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x24() {
+    mAlive = false;
 }
+
+bool AttackHitboxWhenPlayerIsThrown_804A7C40::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    return false;
+}
+
+AttackHitboxWhenPlayerIsThrown_804A7C40::~AttackHitboxWhenPlayerIsThrown_804A7C40() {}

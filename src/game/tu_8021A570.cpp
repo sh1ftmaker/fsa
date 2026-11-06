@@ -31,6 +31,20 @@ static inline void pickNext(cls_8021ACE0* self) {
     }
 }
 
+cls_8021ACE0::cls_8021ACE0() {
+    mState = 0;
+    mAngle = 0;
+    mTimer = 0;
+    mTimer2 = 0;
+    mSpeed = 0;
+    field_0xc = 0;
+    mFlipped = 0;
+}
+
+void cls_8021ACE0::fn_8021ABC0() {
+    pickNext(this);
+}
+
 // FIXME: 98.8%. In the settle-at-half-turn block (c == 0: state 0, timer 0xF)
 // the original keeps the bool in r3 and reuses that register as the 0 for the
 // state/timer2/speed stores and the else branch's timer = 0; we put the bool in
@@ -136,18 +150,4 @@ bool cls_8021ACE0::fn_8021A570(bool flag) {
         }
     }
     return result;
-}
-
-void cls_8021ACE0::fn_8021ABC0() {
-    pickNext(this);
-}
-
-cls_8021ACE0::cls_8021ACE0() {
-    mState = 0;
-    mAngle = 0;
-    mTimer = 0;
-    mTimer2 = 0;
-    mSpeed = 0;
-    field_0xc = 0;
-    mFlipped = 0;
 }

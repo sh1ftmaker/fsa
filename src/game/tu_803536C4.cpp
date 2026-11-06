@@ -7,7 +7,46 @@
 static const s32 lbl_80472240[8] = {1, 5, 9, 13, 17, 21, 25, 29};
 static const s32 lbl_80472260[4] = {3, 4, 5, 4};
 
-cls_804ACC68::~cls_804ACC68() {}
+void cls_804ACC68::init() {
+    field_0x23c = 0;
+    field_0x234 = 9;
+    field_0x238 = 300;
+    field_0x248 = field_0x90 & 3;
+    field_0x240 = 60;
+    field_0x244 = 0;
+    field_0x24c = field_0x90 >> 4 & 0xF;
+    field_0x250 = (field_0x90 >> 8 & 3) != 0;
+    if (!field_0x250) {
+        startSound_801F0E34(0x50050, 0);
+    } else {
+        startSound_801F0E34(0x50055, 0);
+    }
+    field_0x230 = 0;
+}
+
+void cls_804ACC68::update() {
+    mPos += field_0x3c;
+    if (field_0x254 - 32.0f > mPos.x) {
+        fn_801F3668();
+    }
+    field_0x234--;
+    field_0x238--;
+    if (field_0x234 <= 0) {
+        field_0x23c++;
+        field_0x23c &= 3;
+        field_0x234 = 9;
+    }
+    field_0x240--;
+    if (field_0x240 <= 0) {
+        field_0x244++;
+        field_0x244 &= 3;
+        if (field_0x244 == 0) {
+            field_0x240 = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 60;
+        } else {
+            field_0x240 = 2;
+        }
+    }
+}
 
 void cls_804ACC68::draw() {
     // The original copies mPos to 0x14(r1) and never reads it back (a dead local).
@@ -67,43 +106,4 @@ void cls_804ACC68::draw() {
     }
 }
 
-void cls_804ACC68::update() {
-    mPos += field_0x3c;
-    if (field_0x254 - 32.0f > mPos.x) {
-        fn_801F3668();
-    }
-    field_0x234--;
-    field_0x238--;
-    if (field_0x234 <= 0) {
-        field_0x23c++;
-        field_0x23c &= 3;
-        field_0x234 = 9;
-    }
-    field_0x240--;
-    if (field_0x240 <= 0) {
-        field_0x244++;
-        field_0x244 &= 3;
-        if (field_0x244 == 0) {
-            field_0x240 = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 60;
-        } else {
-            field_0x240 = 2;
-        }
-    }
-}
-
-void cls_804ACC68::init() {
-    field_0x23c = 0;
-    field_0x234 = 9;
-    field_0x238 = 300;
-    field_0x248 = field_0x90 & 3;
-    field_0x240 = 60;
-    field_0x244 = 0;
-    field_0x24c = field_0x90 >> 4 & 0xF;
-    field_0x250 = (field_0x90 >> 8 & 3) != 0;
-    if (!field_0x250) {
-        startSound_801F0E34(0x50050, 0);
-    } else {
-        startSound_801F0E34(0x50055, 0);
-    }
-    field_0x230 = 0;
-}
+cls_804ACC68::~cls_804ACC68() {}

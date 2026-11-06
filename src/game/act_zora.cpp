@@ -4,20 +4,13 @@
 #include "game/Map.h"
 #include "game/act/act_zora.h"
 
-void ZoraEnemy_804A3D7C::vfunc_0xB0() {}
-
-bool ZoraEnemy_804A3D7C::vfunc_0xAC() {
-    return false;
+ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
+    field_0x2a8 = 0;
 }
 
-void ZoraEnemy_804A3D7C::vfunc_0xA8() {}
-
-void ZoraEnemy_804A3D7C::vfunc_0xA4() {}
-
-void ZoraEnemy_804A3D7C::vfunc_0xA0() {
-    if (mState != 0) {
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-    }
+ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
+    releaseEmitter_801EE434(field_0x2a8);
+    field_0x2a8 = NULL;
 }
 
 bool ZoraEnemy_804A3D7C::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
@@ -27,11 +20,18 @@ bool ZoraEnemy_804A3D7C::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return ActorBase_804A5770::vfunc_0x4C(layer, pos);
 }
 
-ZoraEnemy_804A3D7C::~ZoraEnemy_804A3D7C() {
-    releaseEmitter_801EE434(field_0x2a8);
-    field_0x2a8 = NULL;
+void ZoraEnemy_804A3D7C::vfunc_0xA0() {
+    if (mState != 0) {
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    }
 }
 
-ZoraEnemy_804A3D7C::ZoraEnemy_804A3D7C() {
-    field_0x2a8 = 0;
+void ZoraEnemy_804A3D7C::vfunc_0xA4() {}
+
+void ZoraEnemy_804A3D7C::vfunc_0xA8() {}
+
+bool ZoraEnemy_804A3D7C::vfunc_0xAC() {
+    return false;
 }
+
+void ZoraEnemy_804A3D7C::vfunc_0xB0() {}

@@ -11,35 +11,35 @@
 // Message ids of the staff-roll text pages.
 static const u32 lbl_80490F48[8] = {0x85B, 0x85C, 0x85D, 0x85E, 0x85F, 0x860, 0x862, 0x863};
 
-bool cls_804B1D10::fn_8044B80C(u8 idx) {
-    if (idx >= 8) {
-        return false;
+cls_804B1D10::cls_804B1D10() {
+    lbl_8053AF30 = this;
+    field_0x4 = NULL;
+    mScreen = NULL;
+    mArchive = NULL;
+    field_0x10 = 0;
+    mDraw = false;
+    mPage = 0xFF;
+    mState = 0;
+}
+
+cls_804B1D10::~cls_804B1D10() {
+    if (field_0x4 != NULL) {
+        JKRHeap* saved = JKRHeap::sCurrentHeap;
+        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
+        delete field_0x4;
+        field_0x4 = NULL;
+        gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
+        saved->becomeCurrentHeap();
     }
-    if (mState == 3) {
-        if (mPage == idx) {
-            return true;
-        }
-        mPage = idx;
-        mState = 1;
+    if (mScreen != NULL) {
         JKRHeap* saved = JKRHeap::sCurrentHeap;
         gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         delete mScreen;
         mScreen = NULL;
         gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
         saved->becomeCurrentHeap();
-    } else if (mState == 0) {
-        mPage = idx;
-        mState = 1;
     }
-    return false;
-}
-
-void cls_804B1D10::fn_8044B8EC() {
-    if (mDraw && mState == 3 && mScreen != NULL) {
-        gGameRoot2_8053AB10->fn_8013B490();
-        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-        mDraw = false;
-    }
+    lbl_8053AF30 = NULL;
 }
 
 void cls_804B1D10::fn_8044B960() {
@@ -79,33 +79,33 @@ void cls_804B1D10::fn_8044B960() {
     }
 }
 
-cls_804B1D10::~cls_804B1D10() {
-    if (field_0x4 != NULL) {
-        JKRHeap* saved = JKRHeap::sCurrentHeap;
-        gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
-        delete field_0x4;
-        field_0x4 = NULL;
-        gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
-        saved->becomeCurrentHeap();
+void cls_804B1D10::fn_8044B8EC() {
+    if (mDraw && mState == 3 && mScreen != NULL) {
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        mDraw = false;
     }
-    if (mScreen != NULL) {
+}
+
+bool cls_804B1D10::fn_8044B80C(u8 idx) {
+    if (idx >= 8) {
+        return false;
+    }
+    if (mState == 3) {
+        if (mPage == idx) {
+            return true;
+        }
+        mPage = idx;
+        mState = 1;
         JKRHeap* saved = JKRHeap::sCurrentHeap;
         gGameRoot_8053AAF8->field_0x4->field_0x30->becomeCurrentHeap();
         delete mScreen;
         mScreen = NULL;
         gGameRoot_8053AAF8->field_0x4->field_0x30->freeAll();
         saved->becomeCurrentHeap();
+    } else if (mState == 0) {
+        mPage = idx;
+        mState = 1;
     }
-    lbl_8053AF30 = NULL;
-}
-
-cls_804B1D10::cls_804B1D10() {
-    lbl_8053AF30 = this;
-    field_0x4 = NULL;
-    mScreen = NULL;
-    mArchive = NULL;
-    field_0x10 = 0;
-    mDraw = false;
-    mPage = 0xFF;
-    mState = 0;
+    return false;
 }

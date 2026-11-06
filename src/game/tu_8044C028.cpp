@@ -7,38 +7,6 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 
-void cls_804B1D20::fn_8044C028(f32 offset) {
-    field_0x18 = true;
-    field_0x14 = offset;
-}
-
-void cls_804B1D20::fn_8044C038() {
-    if (field_0x18) {
-        f32 x = mScreen[1]->search('Tp01')->getBounds()->i.x;
-        mScreen[1]->search('Tp01')->move(x, field_0xc - field_0x14);
-        x = mScreen[1]->search('Tp02')->getBounds()->i.x;
-        mScreen[1]->search('Tp02')->move(x, field_0x10 - field_0x14);
-    }
-}
-
-void cls_804B1D20::fn_8044C14C() {
-    if (field_0x18) {
-        gGameRoot2_8053AB10->fn_8013B490();
-        mScreen[0]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-        mScreen[1]->setScissor(true);
-        mScreen[1]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-        field_0x18 = false;
-    }
-}
-
-cls_804B1D20::~cls_804B1D20() {
-    for (s32 i = 0; i < 2; i++) {
-        delete mScreen[i];
-        mScreen[i] = NULL;
-    }
-    lbl_8053AF38 = NULL;
-}
-
 cls_804B1D20::cls_804B1D20() {
     lbl_8053AF38 = this;
     mScreen[0] = new J2DScreen();
@@ -62,4 +30,36 @@ cls_804B1D20::cls_804B1D20() {
         ->setBlackWhite(JUtility::TColor(0), JUtility::TColor(0));
     field_0x18 = false;
     field_0x14 = 0.0f;
+}
+
+cls_804B1D20::~cls_804B1D20() {
+    for (s32 i = 0; i < 2; i++) {
+        delete mScreen[i];
+        mScreen[i] = NULL;
+    }
+    lbl_8053AF38 = NULL;
+}
+
+void cls_804B1D20::fn_8044C14C() {
+    if (field_0x18) {
+        gGameRoot2_8053AB10->fn_8013B490();
+        mScreen[0]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        mScreen[1]->setScissor(true);
+        mScreen[1]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        field_0x18 = false;
+    }
+}
+
+void cls_804B1D20::fn_8044C038() {
+    if (field_0x18) {
+        f32 x = mScreen[1]->search('Tp01')->getBounds()->i.x;
+        mScreen[1]->search('Tp01')->move(x, field_0xc - field_0x14);
+        x = mScreen[1]->search('Tp02')->getBounds()->i.x;
+        mScreen[1]->search('Tp02')->move(x, field_0x10 - field_0x14);
+    }
+}
+
+void cls_804B1D20::fn_8044C028(f32 offset) {
+    field_0x18 = true;
+    field_0x14 = offset;
 }

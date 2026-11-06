@@ -9,12 +9,6 @@
 // Frame offsets per animation step.
 static u8 lbl_80539E68[] = {0, 3, 1, 2};
 
-// FIXME: update (0x800F3E08) and init (0x800F43D0) are not written yet:
-// init draws a random number through the TRandom_fast_ at
-// gGameRoot_8053AAF8->0xB4, which GameGlobals.h does not declare yet (G1 item 2).
-
-Rat_8049C400::~Rat_8049C400() {}
-
 // Drawn 1.2 times larger when the spawn parameter (0x90) is nonzero.
 void Rat_8049C400::draw() {
     SpriteParams_801F5AE0 params;
@@ -38,3 +32,9 @@ void Rat_8049C400::draw() {
     drawSprite_801F06F0("enemy_gc_sob.bin", mFrameBase + mDir * 2 + (lbl_80539E68[mStep] * 4 + 0xA1),
                 &params, 0, 1.0f, 1.0f);
 }
+
+// FIXME: update (0x800F3E08) and init (0x800F43D0) are not written yet:
+// init draws a random number through the TRandom_fast_ at
+// gGameRoot_8053AAF8->0xB4, which GameGlobals.h does not declare yet (G1 item 2).
+
+Rat_8049C400::~Rat_8049C400() {}

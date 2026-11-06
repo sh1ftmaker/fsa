@@ -7,32 +7,8 @@
 
 static const f32 lbl_80491680[4] = {1.0f, 1.1f, 0.9f, 0.85f};
 
-// FIXME: 98.6%. The original keeps the id in r4 for the fn_80458F04 call; ours reloads it from the
-// stack (one extra lwz r4, 0x10(r1) before that call).
-void fn_8045B030(ActorSoundObj_804578F4* obj, u8 index, s8 port9) {
-    JAISoundID id = lbl_8052DEE0[index];
-    JAISoundHandle* handle = NULL;
-    u8 section = id.mId.mBytes.mSectionId;
-    u8 group = id.mId.mBytes.mGroupId;
-    if (section == 1) {
-        if (id == 0x1000002 || id == 0x1000023) {
-            gAudioMgr_8053AF80->fn_80458F04(id);
-        } else {
-            gAudioMgr_8053AF80->fn_80458FF0(id, true, false);
-        }
-        return;
-    }
-    if (group == 2 || group == 1) {
-        handle = obj->startSound(id);
-    } else if (group == 0) {
-        gAudioMgr_8053AF80->fn_80458880(id, -1);
-    } else {
-        handle = obj->fn_80456334(id, 0);
-    }
-    if (port9 != 0 && handle != NULL && handle->sound_ != NULL) {
-        handle->sound_->getTrack()->writePort(9, port9);
-    }
-}
+cls_804B20F8::cls_804B20F8(s8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles)
+    : ActorSoundObj_804578F4(pos, heap, numHandles), field_0x5c(kind) {}
 
 // FIXME: 95.7%. (1) The original reads the group byte once into r31 and does clrlwi before each
 // compare; ours compares r31 directly. (2) The original's sound-less early return jumps straight to
@@ -100,5 +76,29 @@ JAISoundHandle* cls_804B20F8::startSound(JAISoundID id) {
     return handle;
 }
 
-cls_804B20F8::cls_804B20F8(s8 kind, JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles)
-    : ActorSoundObj_804578F4(pos, heap, numHandles), field_0x5c(kind) {}
+// FIXME: 98.6%. The original keeps the id in r4 for the fn_80458F04 call; ours reloads it from the
+// stack (one extra lwz r4, 0x10(r1) before that call).
+void fn_8045B030(ActorSoundObj_804578F4* obj, u8 index, s8 port9) {
+    JAISoundID id = lbl_8052DEE0[index];
+    JAISoundHandle* handle = NULL;
+    u8 section = id.mId.mBytes.mSectionId;
+    u8 group = id.mId.mBytes.mGroupId;
+    if (section == 1) {
+        if (id == 0x1000002 || id == 0x1000023) {
+            gAudioMgr_8053AF80->fn_80458F04(id);
+        } else {
+            gAudioMgr_8053AF80->fn_80458FF0(id, true, false);
+        }
+        return;
+    }
+    if (group == 2 || group == 1) {
+        handle = obj->startSound(id);
+    } else if (group == 0) {
+        gAudioMgr_8053AF80->fn_80458880(id, -1);
+    } else {
+        handle = obj->fn_80456334(id, 0);
+    }
+    if (port9 != 0 && handle != NULL && handle->sound_ != NULL) {
+        handle->sound_->getTrack()->writePort(9, port9);
+    }
+}

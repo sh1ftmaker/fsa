@@ -7,17 +7,7 @@ const s16 lbl_8046A578[] = {0, 3, 1, 3, 2, 3, 3, 3, -1, -1, 0, 0};
 
 const s16* lbl_8053A180[2] = {lbl_8046A578, NULL};
 
-cls_804A6400::~cls_804A6400() {}
-
-void cls_804A6400::draw() {
-    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1C3, false, 1, -1, 1, 0, 0);
-}
-
-void cls_804A6400::vfunc_0x88() {
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-}
-
-void cls_804A6400::vfunc_0x90(u8) {}
+cls_804A6400::cls_804A6400() {}
 
 void cls_804A6400::init() {
     EnemyBase_804A4808::init();
@@ -39,4 +29,14 @@ void cls_804A6400::init() {
     mAnim.startAnim_801D22DC(0, 2, false);
 }
 
-cls_804A6400::cls_804A6400() {}
+void cls_804A6400::vfunc_0x90(u8) {}
+
+void cls_804A6400::vfunc_0x88() {
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+}
+
+void cls_804A6400::draw() {
+    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1C3, false, 1, -1, 1, 0, 0);
+}
+
+cls_804A6400::~cls_804A6400() {}

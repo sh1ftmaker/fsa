@@ -36,7 +36,95 @@ const EndingStep_804AD460* lbl_804AD460[11] = {
     lbl_80472600, lbl_80472648, lbl_80472680, lbl_804726B8, lbl_804726C8,
 };
 
-EnemyForEndingControl_804AD48C::~EnemyForEndingControl_804AD48C() {}
+void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
+
+// Draws the sprite with mPos raised by 1 for this call only.
+void EnemyForEndingControl_804AD48C::draw() {
+    if (field_0x238 != 0) {
+        JGeometry::TVec3f saved(mPos);
+        mPos.y += 1.0f;
+        SpriteParams_801F5AE0 params;
+        params.field_0x1d = -1;
+        drawSprite_801F06F0("enemy_gc_sob.bin", 0x179, &params, -1, 1.0f, 1.0f);
+        mPos = saved;
+    }
+}
+
+// Restarts the sequencer on table `seq`: stores `arg` (0x250), clears the
+// timer and the step index, then runs the first step (fn_8035C15C inlined).
+void cls_804A5958::fn_8035C1C4(s32 seq, s32 arg) {
+    field_0x250 = arg;
+    field_0x244 = 0;
+    field_0x24c = 0;
+    fn_8035C15C(seq);
+}
+
+// Advances the sequencer; true once the sequence is over.
+bool cls_804A5958::fn_8035C15C(s32 seq) {
+    if (field_0x244 == 0) {
+        const EndingStep_804AD460* steps = lbl_804AD460[seq];
+        if (steps[field_0x24c].value < 0) {
+            return true;
+        }
+        field_0x244 = steps[field_0x24c].time;
+        field_0x248 = steps[field_0x24c].value;
+        field_0x24c++;
+    }
+    return false;
+}
+
+// Empty phase handler in the member-pointer table lbl_804AD3A0 (read by fn_8035C650).
+void EnemyForEndingControl_804AD48C::fn_8035BE20() {}
+
+void EnemyForEndingControl_804AD48C::fn_8035BE00() {
+    if (field_0x254 > 110.0f) {
+        field_0x254 -= 1.0f;
+    }
+}
+
+// Moves field_0x240 toward 1765 and field_0x254 toward 125, each by its step;
+// once both have arrived, flags EZLD and counts the step in 0x230.
+void EnemyForEndingControl_804AD48C::fn_8035B81C() {
+    s32 arrived = 0;
+    if (field_0x240 < 1765.0f) {
+        field_0x240 = field_0x240 + field_0x258;
+    } else {
+        field_0x240 = 1765.0f;
+        arrived = 1;
+    }
+    if (field_0x254 > 125.0f) {
+        field_0x254 = field_0x254 - field_0x25c;
+    } else {
+        field_0x254 = 125.0f;
+        arrived++;
+    }
+    if (arrived >= 2) {
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
+        if (ezld != NULL) {
+            ezld->field_0x238 = 1;
+        }
+        field_0x230++;
+    }
+}
+
+// Once the setup has run, flags the EZLD and ELNK actors and clears the
+// setup flag.
+void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
+    if (field_0x234 != 0) {
+        cls_804A5958* ezld =
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
+        if (ezld != NULL) {
+            ezld->field_0x238 = 1;
+        }
+        cls_804A5958* elnk =
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x294));
+        if (elnk != NULL) {
+            elnk->field_0x238 = 1;
+        }
+        field_0x234 = 0;
+    }
+}
 
 // Phase handler in lbl_804AD3A0 (read by fn_8035C650).
 void EnemyForEndingControl_804AD48C::fn_8035B650() {
@@ -67,92 +155,4 @@ void EnemyForEndingControl_804AD48C::fn_8035B650() {
     }
 }
 
-// Once the setup has run, flags the EZLD and ELNK actors and clears the
-// setup flag.
-void EnemyForEndingControl_804AD48C::fn_8035B7A8() {
-    if (field_0x234 != 0) {
-        cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
-        if (ezld != NULL) {
-            ezld->field_0x238 = 1;
-        }
-        cls_804A5958* elnk =
-            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x294));
-        if (elnk != NULL) {
-            elnk->field_0x238 = 1;
-        }
-        field_0x234 = 0;
-    }
-}
-
-// Moves field_0x240 toward 1765 and field_0x254 toward 125, each by its step;
-// once both have arrived, flags EZLD and counts the step in 0x230.
-void EnemyForEndingControl_804AD48C::fn_8035B81C() {
-    s32 arrived = 0;
-    if (field_0x240 < 1765.0f) {
-        field_0x240 = field_0x240 + field_0x258;
-    } else {
-        field_0x240 = 1765.0f;
-        arrived = 1;
-    }
-    if (field_0x254 > 125.0f) {
-        field_0x254 = field_0x254 - field_0x25c;
-    } else {
-        field_0x254 = 125.0f;
-        arrived++;
-    }
-    if (arrived >= 2) {
-        cls_804A5958* ezld =
-            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x278));
-        if (ezld != NULL) {
-            ezld->field_0x238 = 1;
-        }
-        field_0x230++;
-    }
-}
-
-void EnemyForEndingControl_804AD48C::fn_8035BE00() {
-    if (field_0x254 > 110.0f) {
-        field_0x254 -= 1.0f;
-    }
-}
-
-// Empty phase handler in the member-pointer table lbl_804AD3A0 (read by fn_8035C650).
-void EnemyForEndingControl_804AD48C::fn_8035BE20() {}
-
-// Advances the sequencer; true once the sequence is over.
-bool cls_804A5958::fn_8035C15C(s32 seq) {
-    if (field_0x244 == 0) {
-        const EndingStep_804AD460* steps = lbl_804AD460[seq];
-        if (steps[field_0x24c].value < 0) {
-            return true;
-        }
-        field_0x244 = steps[field_0x24c].time;
-        field_0x248 = steps[field_0x24c].value;
-        field_0x24c++;
-    }
-    return false;
-}
-
-// Restarts the sequencer on table `seq`: stores `arg` (0x250), clears the
-// timer and the step index, then runs the first step (fn_8035C15C inlined).
-void cls_804A5958::fn_8035C1C4(s32 seq, s32 arg) {
-    field_0x250 = arg;
-    field_0x244 = 0;
-    field_0x24c = 0;
-    fn_8035C15C(seq);
-}
-
-// Draws the sprite with mPos raised by 1 for this call only.
-void EnemyForEndingControl_804AD48C::draw() {
-    if (field_0x238 != 0) {
-        JGeometry::TVec3f saved(mPos);
-        mPos.y += 1.0f;
-        SpriteParams_801F5AE0 params;
-        params.field_0x1d = -1;
-        drawSprite_801F06F0("enemy_gc_sob.bin", 0x179, &params, -1, 1.0f, 1.0f);
-        mPos = saved;
-    }
-}
-
-void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
+EnemyForEndingControl_804AD48C::~EnemyForEndingControl_804AD48C() {}

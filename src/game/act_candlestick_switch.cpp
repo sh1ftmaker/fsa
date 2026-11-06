@@ -7,24 +7,37 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_candlestick_switch.h"
 
-void CandlestickSwitch_804A8B78::draw() {
-    if (mLit == 0) {
-        if (mShadowScale > 0.0f) {
-            mShadowScale -= 4.0f;
-            if (mShadowScale <= 0.0f) {
-                mShadowScale = 0.0f;
-            }
-        } else {
-            mShadowScale = 0.0f;
-        }
-    } else if (mShadowScale < 70.0f) {
-        mShadowScale += 4.0f;
-    } else {
-        mShadowScale = 70.0f;
+void CandlestickSwitch_804A8B78::init() {
+    mMode = (field_0x90 >> 22) & 0x1F;
+    mLitTime = field_0x90 & 0xFFF;
+    field_0xb0 = 13;
+    field_0x94 = 0;
+    mState = 0;
+    mPos.x += 8.0f;
+    mPos.y += 8.0f;
+    mBox.i.x = -10.0f;
+    mBox.i.y = -10.0f;
+    mBox.f.x = 10.0f;
+    mBox.f.y = 10.0f;
+    mEmitter234 = NULL;
+    mEmitter238 = NULL;
+    mEmitter23c = NULL;
+    mOutTimer = 0;
+    mLitTimer = 0;
+    mLit = 0;
+    mShadowScale = 0.0f;
+}
+
+CandlestickSwitch_804A8B78::~CandlestickSwitch_804A8B78() {
+    if (mEmitter234 != NULL) {
+        releaseEmitter_801EE434(mEmitter234);
     }
-    f32 scale = mShadowScale;
-    JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
-    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
+    if (mEmitter238 != NULL) {
+        releaseEmitter_801EE434(mEmitter238);
+    }
+    if (mEmitter23c != NULL) {
+        releaseEmitter_801EE434(mEmitter23c);
+    }
 }
 
 void CandlestickSwitch_804A8B78::update() {
@@ -84,35 +97,22 @@ void CandlestickSwitch_804A8B78::update() {
     }
 }
 
-CandlestickSwitch_804A8B78::~CandlestickSwitch_804A8B78() {
-    if (mEmitter234 != NULL) {
-        releaseEmitter_801EE434(mEmitter234);
+void CandlestickSwitch_804A8B78::draw() {
+    if (mLit == 0) {
+        if (mShadowScale > 0.0f) {
+            mShadowScale -= 4.0f;
+            if (mShadowScale <= 0.0f) {
+                mShadowScale = 0.0f;
+            }
+        } else {
+            mShadowScale = 0.0f;
+        }
+    } else if (mShadowScale < 70.0f) {
+        mShadowScale += 4.0f;
+    } else {
+        mShadowScale = 70.0f;
     }
-    if (mEmitter238 != NULL) {
-        releaseEmitter_801EE434(mEmitter238);
-    }
-    if (mEmitter23c != NULL) {
-        releaseEmitter_801EE434(mEmitter23c);
-    }
-}
-
-void CandlestickSwitch_804A8B78::init() {
-    mMode = (field_0x90 >> 22) & 0x1F;
-    mLitTime = field_0x90 & 0xFFF;
-    field_0xb0 = 13;
-    field_0x94 = 0;
-    mState = 0;
-    mPos.x += 8.0f;
-    mPos.y += 8.0f;
-    mBox.i.x = -10.0f;
-    mBox.i.y = -10.0f;
-    mBox.f.x = 10.0f;
-    mBox.f.y = 10.0f;
-    mEmitter234 = NULL;
-    mEmitter238 = NULL;
-    mEmitter23c = NULL;
-    mOutTimer = 0;
-    mLitTimer = 0;
-    mLit = 0;
-    mShadowScale = 0.0f;
+    f32 scale = mShadowScale;
+    JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
+    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
 }

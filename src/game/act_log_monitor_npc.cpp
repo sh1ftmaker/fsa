@@ -45,9 +45,22 @@ inline s32 LogMonitorNpc_804AD278::findLog() {
     return serial;
 }
 
-LogMonitorNpc_804AD278::~LogMonitorNpc_804AD278() {}
-
-void LogMonitorNpc_804AD278::draw() {}
+void LogMonitorNpc_804AD278::init() {
+    mMode = field_0x90 & 0xF;
+    switch (mMode) {
+    case 0:
+    case 2:
+    case 3:
+        field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        break;
+    case 1:
+        field_0x80.set(-16.0f, -16.0f, 16.0f, 16.0f);
+        mBox.set(-16.0f, -16.0f, 16.0f, 16.0f);
+        break;
+    }
+    field_0x230 = 0;
+}
 
 void LogMonitorNpc_804AD278::update() {
     switch (mMode) {
@@ -91,19 +104,6 @@ void LogMonitorNpc_804AD278::update() {
     }
 }
 
-void LogMonitorNpc_804AD278::init() {
-    mMode = field_0x90 & 0xF;
-    switch (mMode) {
-    case 0:
-    case 2:
-    case 3:
-        field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        break;
-    case 1:
-        field_0x80.set(-16.0f, -16.0f, 16.0f, 16.0f);
-        mBox.set(-16.0f, -16.0f, 16.0f, 16.0f);
-        break;
-    }
-    field_0x230 = 0;
-}
+void LogMonitorNpc_804AD278::draw() {}
+
+LogMonitorNpc_804AD278::~LogMonitorNpc_804AD278() {}

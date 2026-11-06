@@ -9,14 +9,14 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_ura_colour.h"
 
-UraColour_804A9A70::~UraColour_804A9A70() {}
-
-void UraColour_804A9A70::draw() {}
+void UraColour_804A9A70::init() {
+    update();
+}
 
 void UraColour_804A9A70::update() {
     getGameView_802D6A9C()->fn_802D77BC(field_0x4, 1);
 }
 
-void UraColour_804A9A70::init() {
-    update();
-}
+void UraColour_804A9A70::draw() {}
+
+UraColour_804A9A70::~UraColour_804A9A70() {}

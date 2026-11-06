@@ -21,99 +21,32 @@ static inline void fadeColour(u8& colour, s32 target, f32 frames) {
     }
 }
 
-// FIXME: 99.6 %. Code identical; only the float literal relocations differ
+cls_8049DB30::cls_8049DB30()
+    : field_0x230(1), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(0),
+      field_0x244(0x9F), field_0x245(0xAF), field_0x246(0xFF), field_0x247(0), field_0x248(0xFF),
+      mEmitter24c(NULL), mEmitter250(NULL), mEmitter254(NULL), mEmitter258(NULL) {}
+
+cls_8049DB30::~cls_8049DB30() {
+    releaseEmitter_801EE434(mEmitter24c);
+    mEmitter24c = NULL;
+    releaseEmitter_801EE434(mEmitter250);
+    mEmitter250 = NULL;
+    releaseEmitter_801EE434(mEmitter254);
+    mEmitter254 = NULL;
+    releaseEmitter_801EE434(mEmitter258);
+    mEmitter258 = NULL;
+}
+
+// FIXME: 99.8 %. Code identical; only the float literal relocations differ
 // (this unit's .sdata2 literals are not split to match yet).
-void cls_8049DB30::fn_8011A4BC() {
-    switch (field_0x234) {
-    case 1:
-        field_0x240--;
-        if (field_0x240 <= 0) {
-            field_0x240 = 0;
-        }
-        fadeColour(field_0x244, 0xFF, field_0x240);
-        fadeColour(field_0x245, 0xFF, field_0x240);
-        fadeColour(field_0x246, 0xFF, field_0x240);
-        fadeColour(field_0x247, 0, field_0x240);
-        fadeColour(field_0x248, 0xFF, field_0x240);
-        break;
-    case 2:
-        field_0x240--;
-        if (field_0x240 <= 0) {
-            field_0x240 = 0;
-        }
-        fadeColour(field_0x244, 0x9F, field_0x240);
-        fadeColour(field_0x245, 0xAF, field_0x240);
-        fadeColour(field_0x246, 0xFF, field_0x240);
-        fadeColour(field_0x247, 0, field_0x240);
-        fadeColour(field_0x248, 0xFF, field_0x240);
-        break;
-    }
-    // The shadow sprite's colour (gGameRoot2_8053AB10->0x2C) follows this actor's.
-    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
-    shadow->field_0x4.r = field_0x244;
-    shadow->field_0x4.g = field_0x245;
-    shadow->field_0x4.b = field_0x246;
-    shadow->field_0x4.a = field_0x247;
-    gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x248;
-}
-
-s32 cls_8049DB30::vfunc_0x5C() {
-    return field_0x234 != 3;
-}
-
-s32 cls_8049DB30::vfunc_0x58() {
-    return field_0x234;
-}
-
-// FIXME: 99.7 %. Code identical; only the float literal relocations differ
-// (this unit's .sdata2 literals are not split to match yet).
-void cls_8049DB30::vfunc_0x54() {
-    switch (field_0x234) {
-    case 3:
-        if (fn_8011921C()->field_0x8 < 0x78) {
-            break;
-        }
-        fn_8011921C()->fn_801184F0(false);
-        getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
-        getGameView_802D6A9C()->fn_802DA8DC();
-        field_0x234 = 4;
-        break;
-    case 0:
-        if (fn_8011921C()->field_0x8 < 0x47E) {
-            break;
-        }
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D7, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D8, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D9, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DA, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DB, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DC, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DD, 0, 0, NULL, NULL, true, 1.0f);
-        if (mEmitter24c == NULL) {
-            mEmitter24c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DE, 0, 0, NULL, NULL, true, 1.0f);
-        }
-        if (mEmitter250 == NULL) {
-            mEmitter250 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DF, 0, 0, NULL, NULL, true, 1.0f);
-        }
-        field_0x240 = 0xB4;
-        field_0x234 = 1;
-        break;
-    case 1:
-        if (fn_8011921C()->field_0x8 < 0x794) {
-            break;
-        }
-        field_0x240 = 0x78;
-        field_0x234 = 2;
-        break;
-    case 2:
-        break;
-    case 4:
-        break;
-    }
-}
-
-void cls_8049DB30::draw() {
-    cls_8049D140::draw();
+void cls_8049DB30::init() {
+    cls_8049D140::init();
+    field_0x238 = field_0x90 & 0xF;
+    field_0x23c = (field_0x90 >> 4) & 0xF;
+    mAnim.fn_801D2608(lbl_80539F18, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+    getGameView_802D6A9C()->fn_802D7440(false);
 }
 
 // FIXME: 93.5 %. Ours keeps the constant 1 stored at 0x7A8 in r30 (saved)
@@ -176,30 +109,97 @@ void cls_8049DB30::update() {
     fn_8011A4BC();
 }
 
-// FIXME: 99.8 %. Code identical; only the float literal relocations differ
+void cls_8049DB30::draw() {
+    cls_8049D140::draw();
+}
+
+// FIXME: 99.7 %. Code identical; only the float literal relocations differ
 // (this unit's .sdata2 literals are not split to match yet).
-void cls_8049DB30::init() {
-    cls_8049D140::init();
-    field_0x238 = field_0x90 & 0xF;
-    field_0x23c = (field_0x90 >> 4) & 0xF;
-    mAnim.fn_801D2608(lbl_80539F18, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-    getGameView_802D6A9C()->fn_802D7440(false);
+void cls_8049DB30::vfunc_0x54() {
+    switch (field_0x234) {
+    case 3:
+        if (fn_8011921C()->field_0x8 < 0x78) {
+            break;
+        }
+        fn_8011921C()->fn_801184F0(false);
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x238, field_0x23c);
+        getGameView_802D6A9C()->fn_802DA8DC();
+        field_0x234 = 4;
+        break;
+    case 0:
+        if (fn_8011921C()->field_0x8 < 0x47E) {
+            break;
+        }
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D7, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D8, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D9, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DA, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DB, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DC, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DD, 0, 0, NULL, NULL, true, 1.0f);
+        if (mEmitter24c == NULL) {
+            mEmitter24c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DE, 0, 0, NULL, NULL, true, 1.0f);
+        }
+        if (mEmitter250 == NULL) {
+            mEmitter250 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4DF, 0, 0, NULL, NULL, true, 1.0f);
+        }
+        field_0x240 = 0xB4;
+        field_0x234 = 1;
+        break;
+    case 1:
+        if (fn_8011921C()->field_0x8 < 0x794) {
+            break;
+        }
+        field_0x240 = 0x78;
+        field_0x234 = 2;
+        break;
+    case 2:
+        break;
+    case 4:
+        break;
+    }
 }
 
-cls_8049DB30::~cls_8049DB30() {
-    releaseEmitter_801EE434(mEmitter24c);
-    mEmitter24c = NULL;
-    releaseEmitter_801EE434(mEmitter250);
-    mEmitter250 = NULL;
-    releaseEmitter_801EE434(mEmitter254);
-    mEmitter254 = NULL;
-    releaseEmitter_801EE434(mEmitter258);
-    mEmitter258 = NULL;
+s32 cls_8049DB30::vfunc_0x58() {
+    return field_0x234;
 }
 
-cls_8049DB30::cls_8049DB30()
-    : field_0x230(1), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(0),
-      field_0x244(0x9F), field_0x245(0xAF), field_0x246(0xFF), field_0x247(0), field_0x248(0xFF),
-      mEmitter24c(NULL), mEmitter250(NULL), mEmitter254(NULL), mEmitter258(NULL) {}
+s32 cls_8049DB30::vfunc_0x5C() {
+    return field_0x234 != 3;
+}
+
+// FIXME: 99.6 %. Code identical; only the float literal relocations differ
+// (this unit's .sdata2 literals are not split to match yet).
+void cls_8049DB30::fn_8011A4BC() {
+    switch (field_0x234) {
+    case 1:
+        field_0x240--;
+        if (field_0x240 <= 0) {
+            field_0x240 = 0;
+        }
+        fadeColour(field_0x244, 0xFF, field_0x240);
+        fadeColour(field_0x245, 0xFF, field_0x240);
+        fadeColour(field_0x246, 0xFF, field_0x240);
+        fadeColour(field_0x247, 0, field_0x240);
+        fadeColour(field_0x248, 0xFF, field_0x240);
+        break;
+    case 2:
+        field_0x240--;
+        if (field_0x240 <= 0) {
+            field_0x240 = 0;
+        }
+        fadeColour(field_0x244, 0x9F, field_0x240);
+        fadeColour(field_0x245, 0xAF, field_0x240);
+        fadeColour(field_0x246, 0xFF, field_0x240);
+        fadeColour(field_0x247, 0, field_0x240);
+        fadeColour(field_0x248, 0xFF, field_0x240);
+        break;
+    }
+    // The shadow sprite's colour (gGameRoot2_8053AB10->0x2C) follows this actor's.
+    ShadowCircle_804A0160* shadow = gGameRoot2_8053AB10->field_0x2c;
+    shadow->field_0x4.r = field_0x244;
+    shadow->field_0x4.g = field_0x245;
+    shadow->field_0x4.b = field_0x246;
+    shadow->field_0x4.a = field_0x247;
+    gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x248;
+}

@@ -5,16 +5,6 @@
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 
-UnknownFORM_804A7BE8::~UnknownFORM_804A7BE8() {
-    if (field_0x244 == 0 && field_0x240 != field_0x23c) {
-        fn_8022CA6C(field_0x90 & 3, field_0x23c, true);
-    }
-    if (gGameRoot_8053AAF8->field_0x7e == 0) {
-        gGameRoot_8053AAF8->fn_80134FE0(0);
-    }
-    fn_8022CDD4(field_0x90 & 3);
-}
-
 // FIXME: 96.58 %. The loop: the original keeps the index in r30 and a byte
 // offset (mr r28, r30 after the end load, stepped by 4) for mActors[i]; ours
 // keeps the index in r28 and the offset in r30 whatever the declaration order
@@ -75,4 +65,14 @@ void UnknownFORM_804A7BE8::init() {
             field_0x254 = actor;
         }
     }
+}
+
+UnknownFORM_804A7BE8::~UnknownFORM_804A7BE8() {
+    if (field_0x244 == 0 && field_0x240 != field_0x23c) {
+        fn_8022CA6C(field_0x90 & 3, field_0x23c, true);
+    }
+    if (gGameRoot_8053AAF8->field_0x7e == 0) {
+        gGameRoot_8053AAF8->fn_80134FE0(0);
+    }
+    fn_8022CDD4(field_0x90 & 3);
 }

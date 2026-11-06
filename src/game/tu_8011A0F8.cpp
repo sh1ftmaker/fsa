@@ -2,6 +2,15 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_8011A0F8.h"
 
+cls_8049DAD8::cls_8049DAD8() : field_0x230(0), field_0x234(0), field_0x238(false), field_0x239(false) {}
+
+cls_8049DAD8::~cls_8049DAD8() {}
+
+void cls_8049DAD8::init() {
+    ActorBase_804A5770::init();
+    field_0x230 = field_0x90 & 0x1F;
+}
+
 void cls_8049DAD8::update() {
     ActorBase_804A5770::update();
     if (!field_0x239) {
@@ -22,12 +31,3 @@ void cls_8049DAD8::update() {
         }
     }
 }
-
-void cls_8049DAD8::init() {
-    ActorBase_804A5770::init();
-    field_0x230 = field_0x90 & 0x1F;
-}
-
-cls_8049DAD8::~cls_8049DAD8() {}
-
-cls_8049DAD8::cls_8049DAD8() : field_0x230(0), field_0x234(0), field_0x238(false), field_0x239(false) {}

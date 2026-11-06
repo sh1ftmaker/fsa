@@ -427,7 +427,7 @@ cflags_game = [
     "-fp hardware",
     "-Cpp_exceptions on",
     "-O4,p",
-    "-inline auto",
+    "-inline auto,deferred",
     '-pragma "cats off"',
     '-pragma "warn_notinlined off"',
     "-use_lmw_stmw on",

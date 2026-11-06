@@ -28,46 +28,6 @@ const char* lbl_804B139C[10] = {
     "kk_rupyNum_09.bti",
 };
 
-void cls_804B13D4::fn_8041918C(s32 player) {
-    if (fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {
-        s32 level = fn_802366CC(fn_8022EA0C(player)) / 60 + 1;
-        if (level != field_0x294[player]) {
-            if (level > 99) {
-                level = 99;
-            }
-            if (level < 0) {
-                level = 0;
-            }
-            if (level < 10) {
-                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level]));
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
-                if (field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible() == true) {
-                    field_0x2c[player]->search(lbl_8048DDD0[2])->hide();
-                    field_0x2c[player]->search(lbl_8048DDD0[3])->hide();
-                }
-            } else {
-                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level / 10]));
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
-                res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level % 10]));
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[2]))->changeTexture(res, 0);
-                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[3]))->changeTexture(res, 0);
-                if (!field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible()) {
-                    field_0x2c[player]->search(lbl_8048DDD0[2])->show();
-                    field_0x2c[player]->search(lbl_8048DDD0[3])->show();
-                }
-            }
-            field_0x294[player] = level;
-        }
-    } else {
-        field_0x294[player] = 0;
-    }
-    if (field_0x234[player] > 0) {
-        field_0x234[player]--;
-    }
-}
-
 cls_804B13D4::~cls_804B13D4() {
     if (field_0x50 != NULL) {
         delete field_0x50;
@@ -112,5 +72,45 @@ cls_804B13D4::~cls_804B13D4() {
         field_0xd4[i] = NULL;
         delete field_0xe4[i];
         field_0xe4[i] = NULL;
+    }
+}
+
+void cls_804B13D4::fn_8041918C(s32 player) {
+    if (fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {
+        s32 level = fn_802366CC(fn_8022EA0C(player)) / 60 + 1;
+        if (level != field_0x294[player]) {
+            if (level > 99) {
+                level = 99;
+            }
+            if (level < 0) {
+                level = 0;
+            }
+            if (level < 10) {
+                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
+                if (field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible() == true) {
+                    field_0x2c[player]->search(lbl_8048DDD0[2])->hide();
+                    field_0x2c[player]->search(lbl_8048DDD0[3])->hide();
+                }
+            } else {
+                const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level / 10]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[0]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[1]))->changeTexture(res, 0);
+                res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[level % 10]));
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[2]))->changeTexture(res, 0);
+                static_cast<J2DPicture*>(field_0x2c[player]->search(lbl_8048DDD0[3]))->changeTexture(res, 0);
+                if (!field_0x2c[player]->search(lbl_8048DDD0[2])->isVisible()) {
+                    field_0x2c[player]->search(lbl_8048DDD0[2])->show();
+                    field_0x2c[player]->search(lbl_8048DDD0[3])->show();
+                }
+            }
+            field_0x294[player] = level;
+        }
+    } else {
+        field_0x294[player] = 0;
+    }
+    if (field_0x234[player] > 0) {
+        field_0x234[player]--;
     }
 }

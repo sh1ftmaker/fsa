@@ -3,21 +3,6 @@
 #include "game/RotMatrix.h"
 #include "game/act/tu_801A908C.h"
 
-void cls_804A2FB0::draw() {
-    switch (field_0x258) {
-    case 0:
-    case 5:
-        fn_801A90D4();
-        break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        fn_801A9374();
-        break;
-    }
-}
-
 // FIXME: 99.0 %. regalloc-only: the original keeps the angle (and then
 // cos y) in f30 and cos x in f31, ours the other way round, and sin x / sin z
 // get f29 / f27 there, f27 / f29 here.
@@ -33,4 +18,19 @@ void cls_804A2FB0::fn_801A90D4() {
     params.mMtx = mtx;
     void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A2F2C[32]);
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+}
+
+void cls_804A2FB0::draw() {
+    switch (field_0x258) {
+    case 0:
+    case 5:
+        fn_801A90D4();
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        fn_801A9374();
+        break;
+    }
 }

@@ -8,36 +8,57 @@
 
 static const s32 lbl_80540968[2] = {4, -4};
 
-ArrowMarker_804A8470::~ArrowMarker_804A8470() {}
+void ArrowMarker_804A8470::init() {
+    field_0x240 = field_0x90 & 0xF;
+    field_0x244 = (field_0x90 >> 7) & 0x1F;
+    field_0x248 = (field_0x90 >> 4) & 1;
+    field_0x230 = 0;
+    field_0x250 = 0;
+    field_0x24c = 8;
+    field_0x254 = 0x28;
+    field_0x258 = 0;
+    field_0x25c = 0;
 
-void ArrowMarker_804A8470::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x1d = -3;
-    switch (field_0x244) {
-    case 0: {
-        params.field_0x10.a = 0x60;
-        s32 frame = field_0x240 + 0x10;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-        }
-        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
+    s32 layer = field_0x4;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
+    field_0x23c = mPos.z;
+    // Modes 0 and 1 and modes 2 and up store the same values, as separate blocks in the
+    // original; `case 3` folds into the default block, which is how the original branches.
+    switch (field_0x240) {
+    case 0:
+        field_0x234 = mPos.x;
+        field_0x238 = 192.0f + box.i.y;
+        mBox.i.x = -32.0f;
+        mBox.i.y = -256.0f;
+        mBox.f.x = 32.0f;
+        mBox.f.y = 256.0f;
         break;
-    }
     case 1:
-    case 3: {
-        if (field_0x250 == 0) {
-            break;
-        }
-        params.field_0x10.a = field_0x254;
-        s32 frame = field_0x240 + 0x10;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-        }
-        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
+        field_0x234 = mPos.x;
+        field_0x238 = 192.0f + box.i.y;
+        mBox.i.x = -32.0f;
+        mBox.i.y = -256.0f;
+        mBox.f.x = 32.0f;
+        mBox.f.y = 256.0f;
         break;
-    }
+    case 2:
+        field_0x234 = 256.0f + box.i.x;
+        field_0x238 = mPos.y;
+        mBox.i.x = -256.0f;
+        mBox.i.y = -32.0f;
+        mBox.f.x = 256.0f;
+        mBox.f.y = 32.0f;
+        break;
+    case 3:
+    default:
+        field_0x234 = 256.0f + box.i.x;
+        field_0x238 = mPos.y;
+        mBox.i.x = -256.0f;
+        mBox.i.y = -32.0f;
+        mBox.f.x = 256.0f;
+        mBox.f.y = 32.0f;
+        break;
     }
 }
 
@@ -161,56 +182,35 @@ void ArrowMarker_804A8470::update() {
     }
 }
 
-void ArrowMarker_804A8470::init() {
-    field_0x240 = field_0x90 & 0xF;
-    field_0x244 = (field_0x90 >> 7) & 0x1F;
-    field_0x248 = (field_0x90 >> 4) & 1;
-    field_0x230 = 0;
-    field_0x250 = 0;
-    field_0x24c = 8;
-    field_0x254 = 0x28;
-    field_0x258 = 0;
-    field_0x25c = 0;
-
-    s32 layer = field_0x4;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f& box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
-    field_0x23c = mPos.z;
-    // Modes 0 and 1 and modes 2 and up store the same values, as separate blocks in the
-    // original; `case 3` folds into the default block, which is how the original branches.
-    switch (field_0x240) {
-    case 0:
-        field_0x234 = mPos.x;
-        field_0x238 = 192.0f + box.i.y;
-        mBox.i.x = -32.0f;
-        mBox.i.y = -256.0f;
-        mBox.f.x = 32.0f;
-        mBox.f.y = 256.0f;
-        break;
-    case 1:
-        field_0x234 = mPos.x;
-        field_0x238 = 192.0f + box.i.y;
-        mBox.i.x = -32.0f;
-        mBox.i.y = -256.0f;
-        mBox.f.x = 32.0f;
-        mBox.f.y = 256.0f;
-        break;
-    case 2:
-        field_0x234 = 256.0f + box.i.x;
-        field_0x238 = mPos.y;
-        mBox.i.x = -256.0f;
-        mBox.i.y = -32.0f;
-        mBox.f.x = 256.0f;
-        mBox.f.y = 32.0f;
-        break;
-    case 3:
-    default:
-        field_0x234 = 256.0f + box.i.x;
-        field_0x238 = mPos.y;
-        mBox.i.x = -256.0f;
-        mBox.i.y = -32.0f;
-        mBox.f.x = 256.0f;
-        mBox.f.y = 32.0f;
+void ArrowMarker_804A8470::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x1d = -3;
+    switch (field_0x244) {
+    case 0: {
+        params.field_0x10.a = 0x60;
+        s32 frame = field_0x240 + 0x10;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
         break;
     }
+    case 1:
+    case 3: {
+        if (field_0x250 == 0) {
+            break;
+        }
+        params.field_0x10.a = field_0x254;
+        s32 frame = field_0x240 + 0x10;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x10, 0, 0, -1);
+        break;
+    }
+    }
 }
+
+ArrowMarker_804A8470::~ArrowMarker_804A8470() {}

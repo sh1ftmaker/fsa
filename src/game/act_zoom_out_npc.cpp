@@ -1,9 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_zoom_out_npc.h"
 
-ZoomOutNPC_804AA228::~ZoomOutNPC_804AA228() {}
-
-void ZoomOutNPC_804AA228::draw() {}
 
 // Takes the scripted-camera slot (Camera_804AA9E4::field_0x7f4/0x7f5) when it is free.
 static inline bool takeCamera(Camera_804AA9E4* cam) {
@@ -13,6 +10,12 @@ static inline bool takeCamera(Camera_804AA9E4* cam) {
         cam->field_0x7f5 = 1;
     }
     return got;
+}
+
+void ZoomOutNPC_804AA228::init() {
+    mDuration = field_0x90 & 0xFFF;
+    mTimer = 0;
+    mState = 0;
 }
 
 void ZoomOutNPC_804AA228::update() {
@@ -37,8 +40,6 @@ void ZoomOutNPC_804AA228::update() {
     }
 }
 
-void ZoomOutNPC_804AA228::init() {
-    mDuration = field_0x90 & 0xFFF;
-    mTimer = 0;
-    mState = 0;
-}
+void ZoomOutNPC_804AA228::draw() {}
+
+ZoomOutNPC_804AA228::~ZoomOutNPC_804AA228() {}

@@ -18,9 +18,114 @@ static inline void releaseEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-void OnOffSwitch_804A8FC8::draw() {
-    if (mState == 2 || mState == 1) {
-        drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 70.0f);
+static const s32 lbl_8046D8F8[4] = {0x16, 0x11, 0xC, 7};
+
+void OnOffSwitch_804A8FC8::init() {
+    mPos.x += 8.0f;
+    mPos.y += 8.0f;
+    field_0x244 = field_0x90 >> 27;
+    field_0x24c = field_0x90 & 0xFFF;
+    field_0x240 = (field_0x90 >> 12) & 7;
+    field_0x248 = (field_0x90 >> 25) & 3;
+    field_0x23c = 0;
+    field_0x254 = 0;
+    mEmitter230 = NULL;
+    mEmitter234 = NULL;
+    u8 players = gGameRoot_8053AAF8->fn_80138A30();
+    s32 active = 0;
+    if (field_0x248 == 0) {
+        active = 1;
+    } else if (field_0x248 == 1) {
+        if (players != 2) {
+            active = 1;
+        }
+    } else if (field_0x248 == 2) {
+        if (!(players == 2 || players == 3)) {
+            active = 1;
+        }
+    } else if (field_0x248 == 3) {
+        active = 1;
+    }
+    if (active == 1) {
+        if (field_0x240 == 3 || field_0x240 == 4) {
+            if (getGameView_802D6A9C()->fn_802D7888(field_0x244) == true) {
+                gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
+                if (mEmitter230 == NULL) {
+                    mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                }
+                if (mEmitter234 == NULL) {
+                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                }
+                vfunc_0x30(0xFF, true);
+                if (field_0x240 == 3) {
+                    mState = 2;
+                } else {
+                    mState = 4;
+                }
+            } else {
+                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
+                vfunc_0x30(0xFF, false);
+                mState = 0;
+            }
+        } else {
+            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
+            vfunc_0x30(0xFF, false);
+            mState = 0;
+        }
+    } else {
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
+        if (mEmitter230 == NULL) {
+            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+        }
+        if (mEmitter234 == NULL) {
+            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+        }
+        vfunc_0x30(0xFF, true);
+        mState = 4;
+    }
+    mBox.i.x = -9.0f;
+    mBox.i.y = -9.0f;
+    mBox.f.x = 9.0f;
+    mBox.f.y = 9.0f;
+}
+
+// FIXME: 99.19 %. Regalloc only: the original keeps the actor count in r31 and
+// the byte offset of the array index in r30; we have them the other way round
+// (declaring the count in the for-init made it worse).
+void OnOffSwitch_804A8FC8::vfunc_0x10() {
+    s32 end = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < end; i++) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+        if (actor != NULL && (actor->mActorId == ACTOR_SWT4 || actor->mActorId == ACTOR_LOSW) &&
+            field_0x170 == actor->field_0x170)
+        {
+            u32 params = actor->field_0x90;
+            for (s32 j = 0; j < 4; j++) {
+                if (field_0x244 == ((params >> lbl_8046D8F8[j]) & 0x1F)) {
+                    field_0x258 = params >> 27;
+                    if (getGameView_802D6A9C()->fn_802D800C(field_0x258)) {
+                        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
+                        if (mEmitter230 == NULL) {
+                            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
+                        }
+                        if (mEmitter234 == NULL) {
+                            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
+                        }
+                        mState = 4;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+OnOffSwitch_804A8FC8::~OnOffSwitch_804A8FC8() {
+    if (mEmitter230 != NULL) {
+        releaseEmitter_801EE434(mEmitter230);
+    }
+    if (mEmitter234 != NULL) {
+        releaseEmitter_801EE434(mEmitter234);
     }
 }
 
@@ -176,113 +281,8 @@ void OnOffSwitch_804A8FC8::update() {
     }
 }
 
-OnOffSwitch_804A8FC8::~OnOffSwitch_804A8FC8() {
-    if (mEmitter230 != NULL) {
-        releaseEmitter_801EE434(mEmitter230);
+void OnOffSwitch_804A8FC8::draw() {
+    if (mState == 2 || mState == 1) {
+        drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 70.0f);
     }
-    if (mEmitter234 != NULL) {
-        releaseEmitter_801EE434(mEmitter234);
-    }
-}
-
-static const s32 lbl_8046D8F8[4] = {0x16, 0x11, 0xC, 7};
-
-// FIXME: 99.19 %. Regalloc only: the original keeps the actor count in r31 and
-// the byte offset of the array index in r30; we have them the other way round
-// (declaring the count in the for-init made it worse).
-void OnOffSwitch_804A8FC8::vfunc_0x10() {
-    s32 end = getActorManager_801F856C()->mActorEnd;
-    for (s32 i = 0; i < end; i++) {
-        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-        if (actor != NULL && (actor->mActorId == ACTOR_SWT4 || actor->mActorId == ACTOR_LOSW) &&
-            field_0x170 == actor->field_0x170)
-        {
-            u32 params = actor->field_0x90;
-            for (s32 j = 0; j < 4; j++) {
-                if (field_0x244 == ((params >> lbl_8046D8F8[j]) & 0x1F)) {
-                    field_0x258 = params >> 27;
-                    if (getGameView_802D6A9C()->fn_802D800C(field_0x258)) {
-                        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
-                        if (mEmitter230 == NULL) {
-                            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
-                        }
-                        if (mEmitter234 == NULL) {
-                            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
-                        }
-                        mState = 4;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
-
-void OnOffSwitch_804A8FC8::init() {
-    mPos.x += 8.0f;
-    mPos.y += 8.0f;
-    field_0x244 = field_0x90 >> 27;
-    field_0x24c = field_0x90 & 0xFFF;
-    field_0x240 = (field_0x90 >> 12) & 7;
-    field_0x248 = (field_0x90 >> 25) & 3;
-    field_0x23c = 0;
-    field_0x254 = 0;
-    mEmitter230 = NULL;
-    mEmitter234 = NULL;
-    u8 players = gGameRoot_8053AAF8->fn_80138A30();
-    s32 active = 0;
-    if (field_0x248 == 0) {
-        active = 1;
-    } else if (field_0x248 == 1) {
-        if (players != 2) {
-            active = 1;
-        }
-    } else if (field_0x248 == 2) {
-        if (!(players == 2 || players == 3)) {
-            active = 1;
-        }
-    } else if (field_0x248 == 3) {
-        active = 1;
-    }
-    if (active == 1) {
-        if (field_0x240 == 3 || field_0x240 == 4) {
-            if (getGameView_802D6A9C()->fn_802D7888(field_0x244) == true) {
-                gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
-                if (mEmitter230 == NULL) {
-                    mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
-                }
-                if (mEmitter234 == NULL) {
-                    mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
-                }
-                vfunc_0x30(0xFF, true);
-                if (field_0x240 == 3) {
-                    mState = 2;
-                } else {
-                    mState = 4;
-                }
-            } else {
-                gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
-                vfunc_0x30(0xFF, false);
-                mState = 0;
-            }
-        } else {
-            gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0xBF);
-            vfunc_0x30(0xFF, false);
-            mState = 0;
-        }
-    } else {
-        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0xBE);
-        if (mEmitter230 == NULL) {
-            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x428, 1, 0, NULL, NULL, true, 1.0f);
-        }
-        if (mEmitter234 == NULL) {
-            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x429, 1, 0, NULL, NULL, true, 1.0f);
-        }
-        vfunc_0x30(0xFF, true);
-        mState = 4;
-    }
-    mBox.i.x = -9.0f;
-    mBox.i.y = -9.0f;
-    mBox.f.x = 9.0f;
-    mBox.f.y = 9.0f;
 }

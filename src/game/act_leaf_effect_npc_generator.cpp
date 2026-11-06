@@ -8,26 +8,6 @@
 #include "game/act/act_leaf_effect_npc.h"
 #include "game/act/act_leaf_effect_npc_generator.h"
 
-LeafEffectNPCGenerator_804AE288::~LeafEffectNPCGenerator_804AE288() {}
-
-// FIXME: 98%. Regalloc only: the original keeps the end in r31, the index in
-// r28, the byte offset in r29 and the actor in r30 (ours r30, r29, r31, r28).
-void LeafEffectNPCGenerator_804AE288::fn_8036D858(JGeometry::TVec3f pos) {
-    s32 end = getActorManager_801F856C()->mActorEnd;
-    for (s32 i = 0; i < end; i++) {
-        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-        if (actor != NULL && actor->mActorId == ACTOR_LEAF && actor->mAlive == 1 &&
-            PSVECDistance(&pos, &actor->mPos) <= 57.0f &&
-            __fabsf(actor->mPos.x - pos.x) <= 42.0f) {
-            static_cast<LeafEffectNPC_804AE2E0*>(actor)->field_0x230 = 1;
-            break;
-        }
-    }
-}
-
-void LeafEffectNPCGenerator_804AE288::draw() {}
-
-void LeafEffectNPCGenerator_804AE288::update() {}
 
 // The tile code under the cell at (x, y) on the actor's layer.
 static inline u16 tileCodeAt(LeafEffectNPCGenerator_804AE288* self, s32 x, s32 y) {
@@ -60,3 +40,24 @@ void LeafEffectNPCGenerator_804AE288::init() {
         }
     }
 }
+
+void LeafEffectNPCGenerator_804AE288::update() {}
+
+void LeafEffectNPCGenerator_804AE288::draw() {}
+
+// FIXME: 98%. Regalloc only: the original keeps the end in r31, the index in
+// r28, the byte offset in r29 and the actor in r30 (ours r30, r29, r31, r28).
+void LeafEffectNPCGenerator_804AE288::fn_8036D858(JGeometry::TVec3f pos) {
+    s32 end = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < end; i++) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+        if (actor != NULL && actor->mActorId == ACTOR_LEAF && actor->mAlive == 1 &&
+            PSVECDistance(&pos, &actor->mPos) <= 57.0f &&
+            __fabsf(actor->mPos.x - pos.x) <= 42.0f) {
+            static_cast<LeafEffectNPC_804AE2E0*>(actor)->field_0x230 = 1;
+            break;
+        }
+    }
+}
+
+LeafEffectNPCGenerator_804AE288::~LeafEffectNPCGenerator_804AE288() {}

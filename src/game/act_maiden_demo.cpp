@@ -24,6 +24,35 @@ static const s16* lbl_8049D710[12] = {
     lbl_80464694, lbl_804646A8, lbl_804646B8, lbl_804646D4, lbl_804646E4, lbl_804646F4,
 };
 
+cls_8049D740::~cls_8049D740() {
+    releaseEmitter_801EE434(mEmitter298);
+    mEmitter298 = NULL;
+    releaseEmitter_801EE434(mEmitter29c);
+    mEmitter29c = NULL;
+    releaseEmitter_801EE434(mEmitter2a0);
+    mEmitter2a0 = NULL;
+}
+
+void cls_8049D740::init() {
+    cls_8049D140::init();
+    mMode = field_0x90 & 0x1F;
+    mAnim.fn_801D2608(lbl_8049D710, 12);
+    mAnim.startAnim_801D22DC(5, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+}
+
+void cls_8049D740::vfunc_0x10() {
+    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_DMGL);
+    ActorBase_804A5770* goal = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+    if (goal != NULL) {
+        mGoalPos = goal->mPos;
+    }
+}
+
+s32 cls_8049D740::vfunc_0x58() {
+    return field_0x238;
+}
+
 // Maps (kind, mode) to a message id. Each kind has its own mode table.
 s32 fn_801123C8(s32 kind, s32 mode) {
     switch (kind) {
@@ -89,33 +118,4 @@ s32 fn_801123C8(s32 kind, s32 mode) {
         default: return 0x2E7;
         }
     }
-}
-
-s32 cls_8049D740::vfunc_0x58() {
-    return field_0x238;
-}
-
-void cls_8049D740::vfunc_0x10() {
-    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_DMGL);
-    ActorBase_804A5770* goal = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-    if (goal != NULL) {
-        mGoalPos = goal->mPos;
-    }
-}
-
-void cls_8049D740::init() {
-    cls_8049D140::init();
-    mMode = field_0x90 & 0x1F;
-    mAnim.fn_801D2608(lbl_8049D710, 12);
-    mAnim.startAnim_801D22DC(5, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-}
-
-cls_8049D740::~cls_8049D740() {
-    releaseEmitter_801EE434(mEmitter298);
-    mEmitter298 = NULL;
-    releaseEmitter_801EE434(mEmitter29c);
-    mEmitter29c = NULL;
-    releaseEmitter_801EE434(mEmitter2a0);
-    mEmitter2a0 = NULL;
 }

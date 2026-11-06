@@ -33,36 +33,26 @@ static const s16* lbl_804A3BB8[16] = {
     lbl_804692B0, lbl_804692C4, lbl_804692D8, lbl_804692EC,
 };
 
-Gibdo_804A3BF8::~Gibdo_804A3BF8() {}
+Gibdo_804A3BF8::Gibdo_804A3BF8() {}
 
-void Gibdo_804A3BF8::draw() {
-    SpriteParams_801F5AE0 params;
-    if (mFlags & 0x4000) {
-        params.field_0x0[3] = 6;
+// FIXME: 99.45 %. Only the relocations of the sdata2 literals differ
+// (lbl_8053EB94 and friends are @NNN here; a data split of the literal pool).
+void Gibdo_804A3BF8::init() {
+    EnemyBase_804A4808::init();
+    if (field_0x90 == 1) {
+        mFlags |= 0x4000;
     }
-    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xC1, &params, 7, 1.0f, 1.0f);
-}
-
-void Gibdo_804A3BF8::vfunc_0x9C(u8 mapHit) {
-    bool step = false;
-    const u32 hits = ENEMY_FLAG_HIT | ENEMY_FLAG_HIT_PLAYER | ENEMY_FLAG_HIT_ACTOR;
-    if (mState == 3 || (mLife > 0 && ((mFlags & hits) == 0 || field_0xfc != 5))) {
-        step = true;
-    }
-    if (step) {
-        fn_801CE2BC(mapHit);
-    }
-}
-
-void Gibdo_804A3BF8::vfunc_0x98() {
-    bool step = false;
-    const u32 hits = ENEMY_FLAG_HIT | ENEMY_FLAG_HIT_PLAYER | ENEMY_FLAG_HIT_ACTOR;
-    if (mState == 3 || (mLife > 0 && ((mFlags & hits) == 0 || field_0xfc != 5))) {
-        step = true;
-    }
-    if (step) {
-        fn_801CE32C();
-    }
+    mBox.set(-8.0f, -24.0f, 8.0f, 8.0f);
+    field_0x80.set(-10.0f, -10.0f, 10.0f, 10.0f);
+    mFlags |= ENEMY_FLAG_NO_HURT;
+    mState = 0;
+    mStateTimer = 0;
+    field_0x250 = fn_801CD664(0x3D) + 0x3C;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.fn_801D2608(lbl_804A3BB8, 0x10);
+    mAnim.startAnim_801D22DC(field_0x98, 2, false);
+    mAnim.fn_801D1D60();
 }
 
 // FIXME: 96.73 %. The original reloads mFlags before clearing 0x8000 (lwz after
@@ -198,24 +188,34 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 99.45 %. Only the relocations of the sdata2 literals differ
-// (lbl_8053EB94 and friends are @NNN here; a data split of the literal pool).
-void Gibdo_804A3BF8::init() {
-    EnemyBase_804A4808::init();
-    if (field_0x90 == 1) {
-        mFlags |= 0x4000;
+void Gibdo_804A3BF8::vfunc_0x98() {
+    bool step = false;
+    const u32 hits = ENEMY_FLAG_HIT | ENEMY_FLAG_HIT_PLAYER | ENEMY_FLAG_HIT_ACTOR;
+    if (mState == 3 || (mLife > 0 && ((mFlags & hits) == 0 || field_0xfc != 5))) {
+        step = true;
     }
-    mBox.set(-8.0f, -24.0f, 8.0f, 8.0f);
-    field_0x80.set(-10.0f, -10.0f, 10.0f, 10.0f);
-    mFlags |= ENEMY_FLAG_NO_HURT;
-    mState = 0;
-    mStateTimer = 0;
-    field_0x250 = fn_801CD664(0x3D) + 0x3C;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.fn_801D2608(lbl_804A3BB8, 0x10);
-    mAnim.startAnim_801D22DC(field_0x98, 2, false);
-    mAnim.fn_801D1D60();
+    if (step) {
+        fn_801CE32C();
+    }
 }
 
-Gibdo_804A3BF8::Gibdo_804A3BF8() {}
+void Gibdo_804A3BF8::vfunc_0x9C(u8 mapHit) {
+    bool step = false;
+    const u32 hits = ENEMY_FLAG_HIT | ENEMY_FLAG_HIT_PLAYER | ENEMY_FLAG_HIT_ACTOR;
+    if (mState == 3 || (mLife > 0 && ((mFlags & hits) == 0 || field_0xfc != 5))) {
+        step = true;
+    }
+    if (step) {
+        fn_801CE2BC(mapHit);
+    }
+}
+
+void Gibdo_804A3BF8::draw() {
+    SpriteParams_801F5AE0 params;
+    if (mFlags & 0x4000) {
+        params.field_0x0[3] = 6;
+    }
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xC1, &params, 7, 1.0f, 1.0f);
+}
+
+Gibdo_804A3BF8::~Gibdo_804A3BF8() {}

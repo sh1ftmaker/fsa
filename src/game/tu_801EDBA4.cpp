@@ -6,32 +6,6 @@
 static const char* lbl_804A5760[] = {"e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.bti",
                                      "e_gufu_4.bti"};
 
-void VaatiBoss_804A4958::draw() {
-    if (mState != 0x17) {
-        JGeometry::TVec3f savedPos = mPos;
-        fn_801EDC0C(mAnim.mCel + 0x10c);
-        mPos.set(savedPos.x, savedPos.y, savedPos.z);
-    }
-}
-
-void VaatiBoss_804A4958::fn_801EDC0C(s32 frame) {
-    JGeometry::TVec3f offset;
-    field_0x52c.fn_801D6CEC(&offset);
-    mPos += offset;
-    if (mState == 0xb && mStateTimer >= 0x3c) {
-        if (mStateTimer % 4 < 2) {
-            mPos.x += 1.0f;
-        } else {
-            mPos.x -= 1.0f;
-        }
-    }
-    if (fn_801CD2F8(field_0x4)) {
-        fn_801F02BC("enemy_both_sob.bin", frame, NULL, -1, 0, false, 1.0f, 1.0f);
-    } else {
-        fn_801EDD0C();
-    }
-}
-
 // FIXME: 32.8%. The target picks max(1.0f + field_0x52c.field_0x28, 0.001f) with one fsel
 // (0.001f - x >= 0); ours compiles the ?: as fcmpo / cror / branch (the same
 // gap as EnemyBase_804A4808::fn_801CE010; tried a - b >= 0 ? a : b, a > b ? a : b,
@@ -82,5 +56,31 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
         fn_801EFD34(res, &params, -1, 0.0f, -12.0f * lbl_8053F0BC, 0.0f);
     } else {
         fn_801EFD34(res, &params, flags, 0.0f, -12.0f * lbl_8053F0BC, 0.0f);
+    }
+}
+
+void VaatiBoss_804A4958::fn_801EDC0C(s32 frame) {
+    JGeometry::TVec3f offset;
+    field_0x52c.fn_801D6CEC(&offset);
+    mPos += offset;
+    if (mState == 0xb && mStateTimer >= 0x3c) {
+        if (mStateTimer % 4 < 2) {
+            mPos.x += 1.0f;
+        } else {
+            mPos.x -= 1.0f;
+        }
+    }
+    if (fn_801CD2F8(field_0x4)) {
+        fn_801F02BC("enemy_both_sob.bin", frame, NULL, -1, 0, false, 1.0f, 1.0f);
+    } else {
+        fn_801EDD0C();
+    }
+}
+
+void VaatiBoss_804A4958::draw() {
+    if (mState != 0x17) {
+        JGeometry::TVec3f savedPos = mPos;
+        fn_801EDC0C(mAnim.mCel + 0x10c);
+        mPos.set(savedPos.x, savedPos.y, savedPos.z);
     }
 }

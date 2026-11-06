@@ -7,88 +7,6 @@
 #include "game/GameView.h"
 #include <stdio.h>
 
-GameRootSub20_801902C0* fn_801902C0() {
-    return gGameRoot_8053AAF8->field_0x4->field_0x20;
-}
-
-// Each frame: when none of the pause / fade / view conditions hold, clears all
-// requests (the active flags and counters, as fn_8019169C does for the same
-// fields); then counts the frame.
-void GameRootSub20_801902C0::fn_801914C4() {
-    // The pause test is a materialised bool (li 1 / compare) in the original.
-    if ((!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) && gGameRoot_8053AAF8->field_0x94 == 0 &&
-        gGameRoot_8053AAF8->field_0x96 == 0 &&
-        (!gGameRoot_8053AAF8->field_0x7f ||
-         (!fn_80239D38() && !(gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 == 2))) &&
-        lbl_80529DEC.field_0x240 == 0 && lbl_8053AEC8->field_0x5d == 0) {
-        mCrystals[0].mActive = 0;
-        mCrystals[1].mActive = 0;
-        mCrystals[2].mActive = 0;
-        mCrystals[3].mActive = 0;
-        mCrystals[4].mActive = 0;
-        mCrystals[5].mActive = 0;
-        mCrystals[6].mActive = 0;
-        mSmallRequests[0].mActive = 0;
-        mSmallRequests[1].mActive = 0;
-        mRequests[0].mActive = 0;
-        mRequests[1].mActive = 0;
-        mRequests[2].mActive = 0;
-        mQuicksandCount = 0;
-        field_0x5ec = 0;
-        mQueuedPosCount = 0;
-        field_0x79c = 0;
-        field_0x7a8 = 0;
-        field_0x7c0 = 0;
-        mIceRequest.mActive = 0;
-    }
-    field_0x4++;
-}
-
-// FIXME: 99.88. Only the 0.0f literal: .sdata2 is not in the original order
-// until the unwritten fn_801902D0 / fn_80190DC8 put their literals before it.
-void GameRootSub20_801902C0::fn_8019169C() {
-    for (s32 i = 0; i < 7; i++) {
-        mCrystals[i].mActive = 0;
-        mCrystals[i].field_0x48 = 0.0f;
-        mCrystals[i].field_0x50 = 0;
-    }
-    mSmallRequests[0].mActive = 0;
-    mSmallRequests[1].mActive = 0;
-    mRequests[0].mActive = 0;
-    mRequests[1].mActive = 0;
-    mRequests[2].mActive = 0;
-    mRequests[2].field_0x18 = 0;
-    mQuicksandCount = 0;
-    field_0x5ec = 0;
-    mQueuedPosCount = 0;
-    field_0x79c = 0;
-    field_0x7a8 = 0;
-    field_0x7a4 = 300;
-    field_0x7a0 = 0;
-    field_0x7c0 = 0;
-    field_0x7bc = 0;
-    mIceRequest.mActive = 0;
-    field_0x4 = 0;
-}
-
-// Destructor-shaped (null check on this, flag > 0 frees, returns this) but
-// called directly with 1, so it is a plain member.
-GameRootSub20_801902C0* GameRootSub20_801902C0::fn_80191744(s16 flag) {
-    if (this != NULL) {
-        if (mSound7cc != NULL) {
-            delete mSound7cc;
-        }
-        if (mSound7b8 != NULL) {
-            delete mSound7b8;
-        }
-        mHeap->destroy();
-        if (flag > 0) {
-            delete this;
-        }
-    }
-    return this;
-}
-
 // FIXME: 99.43. Only the .rodata offsets of the string literals: the original
 // has "rock6_smp.bin" (used by the unwritten draw fn_801902D0) before them.
 GameRootSub20_801902C0::GameRootSub20_801902C0(JKRHeap* parent) {
@@ -151,4 +69,86 @@ GameRootSub20_801902C0::GameRootSub20_801902C0(JKRHeap* parent) {
     parent->becomeCurrentHeap();
     mSound7b8 = new ActorSoundObj_804578F4(NULL, NULL, 8);
     mSound7cc = new ActorSoundObj_804578F4(NULL, NULL, 8);
+}
+
+// Destructor-shaped (null check on this, flag > 0 frees, returns this) but
+// called directly with 1, so it is a plain member.
+GameRootSub20_801902C0* GameRootSub20_801902C0::fn_80191744(s16 flag) {
+    if (this != NULL) {
+        if (mSound7cc != NULL) {
+            delete mSound7cc;
+        }
+        if (mSound7b8 != NULL) {
+            delete mSound7b8;
+        }
+        mHeap->destroy();
+        if (flag > 0) {
+            delete this;
+        }
+    }
+    return this;
+}
+
+// FIXME: 99.88. Only the 0.0f literal: .sdata2 is not in the original order
+// until the unwritten fn_801902D0 / fn_80190DC8 put their literals before it.
+void GameRootSub20_801902C0::fn_8019169C() {
+    for (s32 i = 0; i < 7; i++) {
+        mCrystals[i].mActive = 0;
+        mCrystals[i].field_0x48 = 0.0f;
+        mCrystals[i].field_0x50 = 0;
+    }
+    mSmallRequests[0].mActive = 0;
+    mSmallRequests[1].mActive = 0;
+    mRequests[0].mActive = 0;
+    mRequests[1].mActive = 0;
+    mRequests[2].mActive = 0;
+    mRequests[2].field_0x18 = 0;
+    mQuicksandCount = 0;
+    field_0x5ec = 0;
+    mQueuedPosCount = 0;
+    field_0x79c = 0;
+    field_0x7a8 = 0;
+    field_0x7a4 = 300;
+    field_0x7a0 = 0;
+    field_0x7c0 = 0;
+    field_0x7bc = 0;
+    mIceRequest.mActive = 0;
+    field_0x4 = 0;
+}
+
+// Each frame: when none of the pause / fade / view conditions hold, clears all
+// requests (the active flags and counters, as fn_8019169C does for the same
+// fields); then counts the frame.
+void GameRootSub20_801902C0::fn_801914C4() {
+    // The pause test is a materialised bool (li 1 / compare) in the original.
+    if ((!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) && gGameRoot_8053AAF8->field_0x94 == 0 &&
+        gGameRoot_8053AAF8->field_0x96 == 0 &&
+        (!gGameRoot_8053AAF8->field_0x7f ||
+         (!fn_80239D38() && !(gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 == 2))) &&
+        lbl_80529DEC.field_0x240 == 0 && lbl_8053AEC8->field_0x5d == 0) {
+        mCrystals[0].mActive = 0;
+        mCrystals[1].mActive = 0;
+        mCrystals[2].mActive = 0;
+        mCrystals[3].mActive = 0;
+        mCrystals[4].mActive = 0;
+        mCrystals[5].mActive = 0;
+        mCrystals[6].mActive = 0;
+        mSmallRequests[0].mActive = 0;
+        mSmallRequests[1].mActive = 0;
+        mRequests[0].mActive = 0;
+        mRequests[1].mActive = 0;
+        mRequests[2].mActive = 0;
+        mQuicksandCount = 0;
+        field_0x5ec = 0;
+        mQueuedPosCount = 0;
+        field_0x79c = 0;
+        field_0x7a8 = 0;
+        field_0x7c0 = 0;
+        mIceRequest.mActive = 0;
+    }
+    field_0x4++;
+}
+
+GameRootSub20_801902C0* fn_801902C0() {
+    return gGameRoot_8053AAF8->field_0x4->field_0x20;
 }

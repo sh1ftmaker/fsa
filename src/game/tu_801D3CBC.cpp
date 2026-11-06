@@ -6,37 +6,50 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_shadow_link_2.h"
 
-void ShadowLink2_804A43E8::fn_801D3CBC() {
-    switch (mState) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 0xD:
-        return;
-    case 0x17:
-        if (field_0x524 & 0x200) {
-            fn_801D41B8();
-        }
-        break;
-    default:
-        s32 frame = field_0x340.mFrame;
-        switch (mState) {
-        case 0x18:
-        case 0x19:
-        case 0x1A:
-            frame = field_0x98 + 0x3C;
+
+// Shared constants (declared in GameGlobals.h): game/tu_801EDBA4.cpp passes the first to
+// fn_802F5FF4 and multiplies -12.0f by the second at run time. No function of this unit
+// reads them.
+const f32 lbl_8053F0B8 = 90.0f;
+const f32 lbl_8053F0BC = 1.7f;
+
+// FIXME: 98.83 %. Register allocation only.
+void ShadowLink2_804A43E8::fn_801D41B8() const {
+    JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+    s32 id;
+    u8 alpha;
+    bool onTile = false;
+    if (fn_801CD2F8(field_0x56c)) {
+        id = 0x3E;
+        alpha = (u8)(255.0f * mStateTimer * (1.0f / lbl_8053EE00));
+        pos.set(mPos);
+    } else {
+        id = 0x3F;
+        alpha = (u8)(255.0f - 255.0f * mStateTimer * (1.0f / lbl_8053EE00));
+        pos.set(field_0x570);
+    }
+    if (fn_8022461C(&pos, 0) == 1) {
+        switch (fn_80226850(&pos, 0)) {
+        case 0x9B:
+        case 0x9C:
+            onTile = true;
             break;
         }
-        fn_801D3DAC(frame);
-        if (mFlags & 0x10000) {
-            if (!fn_801CD2F8(field_0x4)) {
-                JGeometry::TVec3f pos;
-                fn_801CD150(&mPos, &pos);
-                fn_803075AC(mSerial, 8, &pos, 0x176, false, 2, -1, 0, 0, 0);
-            }
+    }
+    if (onTile && alpha != 0) {
+        SpriteParams_801F5AE0 params;
+        params.field_0x30 = 0xE;
+        params.field_0x2e = 0;
+        params.field_0x10.a = alpha;
+        s32 layer = field_0x4;
+        if (viewLayerFlag(layer)) {
+            params.field_0x1f = 0;
         }
-        break;
+        if (field_0x560 != 4) {
+            params.field_0x0[7] = field_0x560 + 0xC;
+        }
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
 }
 
@@ -94,48 +107,36 @@ void ShadowLink2_804A43E8::fn_801D3DAC(s32 frame) const {
     fn_80307830(mSerial, field_0x4, &mPos, frame, false, 1, 0, player);
 }
 
-// FIXME: 98.83 %. Register allocation only.
-void ShadowLink2_804A43E8::fn_801D41B8() const {
-    JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-    s32 id;
-    u8 alpha;
-    bool onTile = false;
-    if (fn_801CD2F8(field_0x56c)) {
-        id = 0x3E;
-        alpha = (u8)(255.0f * mStateTimer * (1.0f / lbl_8053EE00));
-        pos.set(mPos);
-    } else {
-        id = 0x3F;
-        alpha = (u8)(255.0f - 255.0f * mStateTimer * (1.0f / lbl_8053EE00));
-        pos.set(field_0x570);
-    }
-    if (fn_8022461C(&pos, 0) == 1) {
-        switch (fn_80226850(&pos, 0)) {
-        case 0x9B:
-        case 0x9C:
-            onTile = true;
+void ShadowLink2_804A43E8::fn_801D3CBC() {
+    switch (mState) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 0xD:
+        return;
+    case 0x17:
+        if (field_0x524 & 0x200) {
+            fn_801D41B8();
+        }
+        break;
+    default:
+        s32 frame = field_0x340.mFrame;
+        switch (mState) {
+        case 0x18:
+        case 0x19:
+        case 0x1A:
+            frame = field_0x98 + 0x3C;
             break;
         }
-    }
-    if (onTile && alpha != 0) {
-        SpriteParams_801F5AE0 params;
-        params.field_0x30 = 0xE;
-        params.field_0x2e = 0;
-        params.field_0x10.a = alpha;
-        s32 layer = field_0x4;
-        if (viewLayerFlag(layer)) {
-            params.field_0x1f = 0;
+        fn_801D3DAC(frame);
+        if (mFlags & 0x10000) {
+            if (!fn_801CD2F8(field_0x4)) {
+                JGeometry::TVec3f pos;
+                fn_801CD150(&mPos, &pos);
+                fn_803075AC(mSerial, 8, &pos, 0x176, false, 2, -1, 0, 0, 0);
+            }
         }
-        if (field_0x560 != 4) {
-            params.field_0x0[7] = field_0x560 + 0xC;
-        }
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+        break;
     }
 }
-
-// Shared constants (declared in GameGlobals.h): game/tu_801EDBA4.cpp passes the first to
-// fn_802F5FF4 and multiplies -12.0f by the second at run time. No function of this unit
-// reads them.
-const f32 lbl_8053F0B8 = 90.0f;
-const f32 lbl_8053F0BC = 1.7f;

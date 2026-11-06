@@ -6,9 +6,13 @@
 #include "game/Player.h"
 #include "game/act/tu_8033F448.h"
 
-cls_804AC388::~cls_804AC388() {}
-
-void cls_804AC388::draw() {}
+void cls_804AC388::init() {
+    field_0x230 = 300;
+    field_0x234 = (field_0x90 >> 4) & 0xF;
+    field_0x238 = (field_0x90 >> 8) & 0xF;
+    field_0x114 = 1;
+    field_0x23c = false;
+}
 
 // FIXME: 88.4 %. Three differences remain. (1) The original builds the
 // fn_80238548 position as an 8-byte stack object (x, y copied from the player
@@ -63,10 +67,6 @@ void cls_804AC388::update() {
     }
 }
 
-void cls_804AC388::init() {
-    field_0x230 = 300;
-    field_0x234 = (field_0x90 >> 4) & 0xF;
-    field_0x238 = (field_0x90 >> 8) & 0xF;
-    field_0x114 = 1;
-    field_0x23c = false;
-}
+void cls_804AC388::draw() {}
+
+cls_804AC388::~cls_804AC388() {}

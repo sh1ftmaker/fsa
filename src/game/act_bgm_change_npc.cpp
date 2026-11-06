@@ -2,10 +2,6 @@
 #include "game/GameView.h"
 #include "game/act/act_bgm_change_npc.h"
 
-BGMChangeNPC_804A9DA0::~BGMChangeNPC_804A9DA0() {}
-
-void BGMChangeNPC_804A9DA0::draw() {}
-
 void BGMChangeNPC_804A9DA0::init() {
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = ((field_0x90 >> 22) & 0x1F) + 1;
@@ -21,3 +17,7 @@ void BGMChangeNPC_804A9DA0::init() {
     field_0x230 = 0;
     field_0x24c = -1;
 }
+
+void BGMChangeNPC_804A9DA0::draw() {}
+
+BGMChangeNPC_804A9DA0::~BGMChangeNPC_804A9DA0() {}

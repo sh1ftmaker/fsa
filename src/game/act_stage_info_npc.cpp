@@ -9,13 +9,13 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_stage_info_npc.h"
 
-StageInfoNpc_804AA7A8::~StageInfoNpc_804AA7A8() {}
-
-void StageInfoNpc_804AA7A8::draw() {}
-
-void StageInfoNpc_804AA7A8::update() {}
-
 void StageInfoNpc_804AA7A8::init() {
     getGameView_802D6A9C()->fn_802D7934(field_0x90 & 0xF);
     mAlive = false;
 }
+
+void StageInfoNpc_804AA7A8::update() {}
+
+void StageInfoNpc_804AA7A8::draw() {}
+
+StageInfoNpc_804AA7A8::~StageInfoNpc_804AA7A8() {}

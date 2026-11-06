@@ -6,14 +6,18 @@
 #include "game/Player.h"
 #include "game/act/act_thwomp.h"
 
-Thwomp_804AB5D8::~Thwomp_804AB5D8() {}
-
-void Thwomp_804AB5D8::draw() {
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, 0x17A, NULL, 1.0f, 1.0f);
-    }
-    fn_803075AC(mSerial, field_0x4, &mPos, 0x17A, false, 2, -1, 0, 0, 0);
+void Thwomp_804AB5D8::init() {
+    mLife = 10000;
+    field_0x23c = mPos;
+    field_0x230 = 0;
+    field_0x234 = 0;
+    field_0x238[0] = 0;
+    field_0x238[1] = 0;
+    field_0x238[2] = 0;
+    field_0x238[3] = 0;
+    field_0x114 = 4;
+    field_0x80.set(-15.0f, -23.0f, 15.0f, 7.0f);
+    mBox.set(-15.0f, -23.0f, 15.0f, 15.0f);
 }
 
 // FIXME: 98.55 %. Scheduling and register allocation only: the li of `hit`
@@ -88,16 +92,12 @@ void Thwomp_804AB5D8::update() {
     }
 }
 
-void Thwomp_804AB5D8::init() {
-    mLife = 10000;
-    field_0x23c = mPos;
-    field_0x230 = 0;
-    field_0x234 = 0;
-    field_0x238[0] = 0;
-    field_0x238[1] = 0;
-    field_0x238[2] = 0;
-    field_0x238[3] = 0;
-    field_0x114 = 4;
-    field_0x80.set(-15.0f, -23.0f, 15.0f, 7.0f);
-    mBox.set(-15.0f, -23.0f, 15.0f, 15.0f);
+void Thwomp_804AB5D8::draw() {
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, 0x17A, NULL, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, 0x17A, false, 2, -1, 0, 0, 0);
 }
+
+Thwomp_804AB5D8::~Thwomp_804AB5D8() {}

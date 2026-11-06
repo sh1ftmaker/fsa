@@ -12,24 +12,6 @@ static inline f32 angleDist(s16 a, s16 b) {
     return (1.0f / 32768.0f) * __fabsf(diff);
 }
 
-// 0x801D11FC: turns field_0x33c by 0x5B0 whichever way is nearer the angle
-// of mMapHitDir.
-// FIXME: 96.2 %, regalloc only: the original keeps field_0x33c in r5 and
-// the left angle in r5 (lis r3 0x4330 for the int-to-float constant, f0 for
-// the 1/32768 scale); ours uses r3/r4/r5 and r0 for the constant.
-void cls_804A46F4::fn_801D11FC() {
-    s16 target = JMath::atanTable_.atan2_(mMapHitDir.x, mMapHitDir.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
-    s16 left = field_0x33c + 0x5B0;
-    s16 right = field_0x33c - 0x5B0;
-    f32 distLeft = angleDist(target, left);
-    f32 distRight = angleDist(target, right);
-    if (distLeft < distRight) {
-        field_0x33c = left;
-    } else {
-        field_0x33c = right;
-    }
-}
-
 // The waypoint `i` of mPath, or the first when it is past the end.
 static inline void waypoint(const cls_804A46F4& self, s32 i, JGeometry::TVec2f& out) {
     if (self.mPathCount <= i) {
@@ -46,6 +28,40 @@ static inline void pushWaypoint(cls_804A46F4& self, f32 x, f32 y) {
         self.mPath[n].y = y;
         self.mPathCount++;
     }
+}
+
+// 0x801D1974.
+cls_804A46F4::cls_804A46F4() : mPathCount(0) {
+    field_0x32c.set(0.0f, 0.0f, 0.0f);
+    field_0x338 = -1;
+    field_0x33c = 0;
+}
+
+// 0x801D183C.
+// FIXME: 99.2 %, scheduling+regalloc: the original keeps the result in r30
+// and the player index in r31; ours has them the other way round.
+bool cls_804A46F4::fn_801D183C(f32 range) {
+    bool result = false;
+    if (field_0x338 >= 0 && field_0x338 < 4 && fn_801F320C(field_0x338)) {
+        s32 player = field_0x338;
+        JGeometry::TVec3f pos;
+        JGeometry::TVec3f other;
+        JGeometry::TVec3f playerPos;
+        fn_8022E114(player, &playerPos);
+        if (fn_801F329C(player)) {
+            fn_801CD150(&playerPos, &other);
+            pos.set(other.x, other.y, other.z);
+        } else {
+            pos.set(playerPos.x, playerPos.y, playerPos.z);
+        }
+        if (range == 0.0f || square(pos.x - mPos.x) + square(pos.y - mPos.y) <= square(range)) {
+            // fn_801CF888 reads only (x, y) of its first position (8-byte slots).
+        if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &pos, field_0x4)) {
+                result = true;
+            }
+        }
+    }
+    return result;
 }
 
 // 0x801D12CC.
@@ -149,36 +165,20 @@ bool cls_804A46F4::fn_801D12CC() {
     return result;
 }
 
-// 0x801D183C.
-// FIXME: 99.2 %, scheduling+regalloc: the original keeps the result in r30
-// and the player index in r31; ours has them the other way round.
-bool cls_804A46F4::fn_801D183C(f32 range) {
-    bool result = false;
-    if (field_0x338 >= 0 && field_0x338 < 4 && fn_801F320C(field_0x338)) {
-        s32 player = field_0x338;
-        JGeometry::TVec3f pos;
-        JGeometry::TVec3f other;
-        JGeometry::TVec3f playerPos;
-        fn_8022E114(player, &playerPos);
-        if (fn_801F329C(player)) {
-            fn_801CD150(&playerPos, &other);
-            pos.set(other.x, other.y, other.z);
-        } else {
-            pos.set(playerPos.x, playerPos.y, playerPos.z);
-        }
-        if (range == 0.0f || square(pos.x - mPos.x) + square(pos.y - mPos.y) <= square(range)) {
-            // fn_801CF888 reads only (x, y) of its first position (8-byte slots).
-        if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &pos, field_0x4)) {
-                result = true;
-            }
-        }
+// 0x801D11FC: turns field_0x33c by 0x5B0 whichever way is nearer the angle
+// of mMapHitDir.
+// FIXME: 96.2 %, regalloc only: the original keeps field_0x33c in r5 and
+// the left angle in r5 (lis r3 0x4330 for the int-to-float constant, f0 for
+// the 1/32768 scale); ours uses r3/r4/r5 and r0 for the constant.
+void cls_804A46F4::fn_801D11FC() {
+    s16 target = JMath::atanTable_.atan2_(mMapHitDir.x, mMapHitDir.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+    s16 left = field_0x33c + 0x5B0;
+    s16 right = field_0x33c - 0x5B0;
+    f32 distLeft = angleDist(target, left);
+    f32 distRight = angleDist(target, right);
+    if (distLeft < distRight) {
+        field_0x33c = left;
+    } else {
+        field_0x33c = right;
     }
-    return result;
-}
-
-// 0x801D1974.
-cls_804A46F4::cls_804A46F4() : mPathCount(0) {
-    field_0x32c.set(0.0f, 0.0f, 0.0f);
-    field_0x338 = -1;
-    field_0x33c = 0;
 }

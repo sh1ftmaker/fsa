@@ -27,6 +27,13 @@ static const u8 lbl_8053C108[4] = {12, 2, 0x3C, 0xFE};
 static const s32 lbl_80463B64[4] = {0x6F, 0x77, 0x7F, 0x87};
 static const u8 lbl_8053C10C[4] = {0x19, 0xFE};
 
+void cls_800FE8C0::fn_800FEB78(int state) {
+    mState = state;
+    mPrevState = 10;
+    mDir = 0;
+    fn_800FE8C0();
+}
+
 // FIXME: 99.2%, regalloc-only. The state (mState) is loaded into r5 and the
 // .rodata base into r4 here; the original has them the other way round
 // (lwz r4; lis r5), which also changes r4/r5 in the state-reset block.
@@ -114,11 +121,4 @@ void cls_800FE8C0::fn_800FE8C0() {
         }
     }
     mTimer++;
-}
-
-void cls_800FE8C0::fn_800FEB78(int state) {
-    mState = state;
-    mPrevState = 10;
-    mDir = 0;
-    fn_800FE8C0();
 }

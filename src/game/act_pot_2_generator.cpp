@@ -7,12 +7,6 @@
 #include "game/Map.h"
 #include "game/act/act_pot_2_generator.h"
 
-Pot2Generator_804AA6F8::~Pot2Generator_804AA6F8() {}
-
-void Pot2Generator_804AA6F8::draw() {}
-
-void Pot2Generator_804AA6F8::update() {}
-
 // Walks every cell of layer 0 and layers 8..14 (32 x 32 cells each) and
 // replaces every tile whose code is 0x41 with a TBO2 pot actor, or with tile
 // 0x12 when the view's bit for the running id is already set.
@@ -59,3 +53,9 @@ void Pot2Generator_804AA6F8::init() {
         }
     }
 }
+
+void Pot2Generator_804AA6F8::update() {}
+
+void Pot2Generator_804AA6F8::draw() {}
+
+Pot2Generator_804AA6F8::~Pot2Generator_804AA6F8() {}

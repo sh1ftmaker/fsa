@@ -5,6 +5,13 @@
 #include "game/cls_80217374.h"
 #include "game/GameGlobals.h"
 
+void cls_80217374::fn_80217484() {
+    mState = 0;
+    mTimer = 0;
+    mDuration = fn_801CD664(1) + 180;
+    mDuration = mDuration * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+}
+
 // FIXME: 96.6 %. The target copies angle to r3 on entry and computes the
 // state 1/2 result straight into r3; this keeps it in r30 and adds a final
 // mr r3, r30. A result variable, a ternary and returning from that branch
@@ -39,11 +46,4 @@ s16 cls_80217374::fn_80217374(s16 angle) {
         }
     }
     return angle;
-}
-
-void cls_80217374::fn_80217484() {
-    mState = 0;
-    mTimer = 0;
-    mDuration = fn_801CD664(1) + 180;
-    mDuration = mDuration * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
 }

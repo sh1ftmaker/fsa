@@ -8,12 +8,6 @@
 #include "JSystem/JUtility/TColor.h"
 #include "game/act/act_talking_npc_2.h"
 
-TalkingNpc2_804AFAD8::~TalkingNpc2_804AFAD8() {}
-
-void TalkingNpc2_804AFAD8::draw() {}
-
-void TalkingNpc2_804AFAD8::update() {}
-
 void TalkingNpc2_804AFAD8::init() {
     field_0x234 = field_0x90 & 0xFFFF;
     field_0x23c = (u32)field_0x90 >> 28;
@@ -21,3 +15,9 @@ void TalkingNpc2_804AFAD8::init() {
     fn_8037F2FC(field_0x234, field_0x238, field_0x23c, mPos.x, mPos.y, mPos.z, mPos.z,
                 JUtility::TColor(0xFF0000FF));
 }
+
+void TalkingNpc2_804AFAD8::update() {}
+
+void TalkingNpc2_804AFAD8::draw() {}
+
+TalkingNpc2_804AFAD8::~TalkingNpc2_804AFAD8() {}

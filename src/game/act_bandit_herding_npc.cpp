@@ -6,9 +6,19 @@
 #include "game/BoxTest.h"
 #include "game/act/act_bandit_herding_npc.h"
 
-BanditHerdingNPC_804ACB40::~BanditHerdingNPC_804ACB40() {}
-
-void BanditHerdingNPC_804ACB40::draw() {}
+void BanditHerdingNPC_804ACB40::init() {
+    field_0x234 = field_0x90 & 0xFF;
+    field_0x23c = (field_0x90 >> 22) & 0x1F;
+    field_0x238 = 0;
+    mPos.x = 16.0f * ((s32)mPos.x / 16);
+    mPos.y = 16.0f * ((s32)mPos.y / 16);
+    mBox.set(0.0f, 0.0f, ((field_0x90 >> 8) & 0x3F) * 8, ((field_0x90 >> 16) & 0x3F) * 8);
+    field_0x240 = mBox;
+    field_0x240.i.x += mPos.x;
+    field_0x240.i.y += mPos.y;
+    field_0x240.f.x += mPos.x;
+    field_0x240.f.y += mPos.y;
+}
 
 void BanditHerdingNPC_804ACB40::update() {
     field_0x238 = 0;
@@ -49,16 +59,6 @@ void BanditHerdingNPC_804ACB40::update() {
     }
 }
 
-void BanditHerdingNPC_804ACB40::init() {
-    field_0x234 = field_0x90 & 0xFF;
-    field_0x23c = (field_0x90 >> 22) & 0x1F;
-    field_0x238 = 0;
-    mPos.x = 16.0f * ((s32)mPos.x / 16);
-    mPos.y = 16.0f * ((s32)mPos.y / 16);
-    mBox.set(0.0f, 0.0f, ((field_0x90 >> 8) & 0x3F) * 8, ((field_0x90 >> 16) & 0x3F) * 8);
-    field_0x240 = mBox;
-    field_0x240.i.x += mPos.x;
-    field_0x240.i.y += mPos.y;
-    field_0x240.f.x += mPos.x;
-    field_0x240.f.y += mPos.y;
-}
+void BanditHerdingNPC_804ACB40::draw() {}
+
+BanditHerdingNPC_804ACB40::~BanditHerdingNPC_804ACB40() {}

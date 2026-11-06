@@ -20,35 +20,20 @@ static const char* lbl_804AE8E0[5] = {
     "kabe_switch_3.bti", "kabe_switch_4.bti",
 };
 
-PushSwitchInPyramid_804AE8F4::~PushSwitchInPyramid_804AE8F4() {}
-
-// FIXME: 97.85%. In the squared-length test of field_0x54 the registers f2/f3
-// are swapped (the target has the psq pair in f2 and z in f3), and the target
-// loads y before x when filling the scale matrix.
-void PushSwitchInPyramid_804AE8F4::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    if (!(field_0x54.squared() <= 32.0f * FLT_EPSILON)) {
-        mtx[0][3] = 0.0f;
-        mtx[1][3] = 0.0f;
-        mtx[2][3] = 0.0f;
-        mtx[0][0] = field_0x54.x;
-        mtx[0][1] = 0.0f;
-        mtx[0][2] = 0.0f;
-        mtx[1][0] = 0.0f;
-        mtx[1][1] = field_0x54.y;
-        mtx[1][2] = 0.0f;
-        mtx[2][0] = 0.0f;
-        mtx[2][1] = 0.0f;
-        mtx[2][2] = field_0x54.z;
-        params.mMtx = mtx;
-    }
-    JGeometry::TVec3f pos;
-    pos.set(mPos);
-    pos.x += 8.0f;
-    void* res = fn_804032E8('TIMG', lbl_804AE8E0[field_0x241]);
-    if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+void PushSwitchInPyramid_804AE8F4::init() {
+    mBox.set(-7.5f, -7.5f, 18.5f, 7.5f);
+    field_0x240 = 1;
+    field_0x23c = 0;
+    field_0x243 = 0;
+    field_0x242 = 0;
+    field_0x241 = 0;
+    if (((field_0x90 >> 4) & 1) == 0) {
+        if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
+            field_0x241 = 3;
+            mBox.set(-7.5f, -7.5f, 0.0f, 7.5f);
+            vfunc_0x30(0xFF, true);
+            field_0x23c = 2;
+        }
     }
 }
 
@@ -105,19 +90,34 @@ void PushSwitchInPyramid_804AE8F4::update() {
     }
 }
 
-void PushSwitchInPyramid_804AE8F4::init() {
-    mBox.set(-7.5f, -7.5f, 18.5f, 7.5f);
-    field_0x240 = 1;
-    field_0x23c = 0;
-    field_0x243 = 0;
-    field_0x242 = 0;
-    field_0x241 = 0;
-    if (((field_0x90 >> 4) & 1) == 0) {
-        if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
-            field_0x241 = 3;
-            mBox.set(-7.5f, -7.5f, 0.0f, 7.5f);
-            vfunc_0x30(0xFF, true);
-            field_0x23c = 2;
-        }
+// FIXME: 97.85%. In the squared-length test of field_0x54 the registers f2/f3
+// are swapped (the target has the psq pair in f2 and z in f3), and the target
+// loads y before x when filling the scale matrix.
+void PushSwitchInPyramid_804AE8F4::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    if (!(field_0x54.squared() <= 32.0f * FLT_EPSILON)) {
+        mtx[0][3] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        mtx[0][0] = field_0x54.x;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = field_0x54.y;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = field_0x54.z;
+        params.mMtx = mtx;
+    }
+    JGeometry::TVec3f pos;
+    pos.set(mPos);
+    pos.x += 8.0f;
+    void* res = fn_804032E8('TIMG', lbl_804AE8E0[field_0x241]);
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
     }
 }
+
+PushSwitchInPyramid_804AE8F4::~PushSwitchInPyramid_804AE8F4() {}

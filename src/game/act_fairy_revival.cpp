@@ -7,13 +7,26 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_fairy_revival.h"
 
-void RevivalFairy_804AC250::draw() {
-    SpriteParams_801F5AE0 params;
-    if (mLifeTime >= 60 || mTimer % 2 == 0) {
-        params.field_0x2d = 1;
-        drawSprite_801F06F0("enemy_both2_sob.bin", mFrame + 0x5e, &params, 1, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, mFrame + 0x5e, false, 2, -1, 0, 0, 0);
-    }
+RevivalFairy_804AC250::~RevivalFairy_804AC250() {
+    releaseEmitter_801EE434(mEmitter254);
+    releaseEmitter_801EE434(mEmitter258);
+}
+
+void RevivalFairy_804AC250::init() {
+    mPlayer = field_0x90 & 3;
+    mLife = 8;
+    mFrame = 0;
+    mTargetVel.set(0.0f, 0.0f, 0.0f);
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x3c.x = 5.0f;
+    mTargetVel.z = 10.0f;
+    field_0x3c.y = -3.0f;
+    mTimer = 0;
+    mLifeTime = 180;
+    mAngle = 0;
+    mState = 0;
+    mEmitter254 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter258 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 void RevivalFairy_804AC250::update() {
@@ -57,24 +70,11 @@ void RevivalFairy_804AC250::update() {
     mTimer++;
 }
 
-void RevivalFairy_804AC250::init() {
-    mPlayer = field_0x90 & 3;
-    mLife = 8;
-    mFrame = 0;
-    mTargetVel.set(0.0f, 0.0f, 0.0f);
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-    field_0x3c.x = 5.0f;
-    mTargetVel.z = 10.0f;
-    field_0x3c.y = -3.0f;
-    mTimer = 0;
-    mLifeTime = 180;
-    mAngle = 0;
-    mState = 0;
-    mEmitter254 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
-    mEmitter258 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.0f);
-}
-
-RevivalFairy_804AC250::~RevivalFairy_804AC250() {
-    releaseEmitter_801EE434(mEmitter254);
-    releaseEmitter_801EE434(mEmitter258);
+void RevivalFairy_804AC250::draw() {
+    SpriteParams_801F5AE0 params;
+    if (mLifeTime >= 60 || mTimer % 2 == 0) {
+        params.field_0x2d = 1;
+        drawSprite_801F06F0("enemy_both2_sob.bin", mFrame + 0x5e, &params, 1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, mFrame + 0x5e, false, 2, -1, 0, 0, 0);
+    }
 }

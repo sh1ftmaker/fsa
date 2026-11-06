@@ -12,15 +12,23 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
     result = a;
 }
 
-PullSwitch_804A7908::~PullSwitch_804A7908() {}
-
-void PullSwitch_804A7908::draw() {
-    s32 frame = field_0x23c + 0x147;
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mSpawnPos, res, frame, NULL, 1.0f, 1.0f);
+void PullSwitch_804A7908::init() {
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    field_0x23c = 0;
+    field_0x240 = vfunc_0x34();
+    if (field_0x240) {
+        field_0x244 = 8.0f;
+        mPos.y = mSpawnPos.y + field_0x244;
+    } else {
+        field_0x244 = 0.0f;
     }
-    fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x23c + 0x147, false, 1, -1, 0, 0, 0);
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x248 = 0;
+    field_0x24c = -1;
 }
 
 void PullSwitch_804A7908::update() {
@@ -122,21 +130,13 @@ void PullSwitch_804A7908::update() {
     }
 }
 
-void PullSwitch_804A7908::init() {
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0x23c = 0;
-    field_0x240 = vfunc_0x34();
-    if (field_0x240) {
-        field_0x244 = 8.0f;
-        mPos.y = mSpawnPos.y + field_0x244;
-    } else {
-        field_0x244 = 0.0f;
+void PullSwitch_804A7908::draw() {
+    s32 frame = field_0x23c + 0x147;
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mSpawnPos, res, frame, NULL, 1.0f, 1.0f);
     }
-    field_0x3c.x = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0x248 = 0;
-    field_0x24c = -1;
+    fn_803075AC(mSerial, field_0x4, &mSpawnPos, field_0x23c + 0x147, false, 1, -1, 0, 0, 0);
 }
+
+PullSwitch_804A7908::~PullSwitch_804A7908() {}

@@ -1,19 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/act/act_zora_lotus.h"
 
-cls_804AC3E0::~cls_804AC3E0() {
-}
-
-u8 cls_804AC3E0::vfunc_0x68() {
-    return 0;
-}
-
-bool cls_804AC3E0::vfunc_0x60() {
-    return false;
-}
-
-bool cls_804AC3E0::vfunc_0x5C() {
-    return false;
+cls_804AC3E0::cls_804AC3E0() {
+    field_0x2b8 = 0;
 }
 
 void cls_804AC3E0::vfunc_0xA4() {
@@ -26,6 +15,17 @@ void cls_804AC3E0::vfunc_0xA4() {
     mPos.y = mSpawnPos.y;
 }
 
-cls_804AC3E0::cls_804AC3E0() {
-    field_0x2b8 = 0;
+bool cls_804AC3E0::vfunc_0x5C() {
+    return false;
+}
+
+bool cls_804AC3E0::vfunc_0x60() {
+    return false;
+}
+
+u8 cls_804AC3E0::vfunc_0x68() {
+    return 0;
+}
+
+cls_804AC3E0::~cls_804AC3E0() {
 }

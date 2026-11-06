@@ -5,24 +5,40 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_spotlight.h"
 
-void Spotlight_804A84C8::draw() {
-    if (mOn == 0) {
-        if (mShadowScale > 0.0f) {
-            mShadowScale -= 6.0f;
-            if (mShadowScale <= 0.0f) {
-                mShadowScale = 0.0f;
-            }
-        } else {
-            mShadowScale = 0.0f;
-        }
-    } else if (mShadowScale < 200.0f) {
-        mShadowScale += 6.0f;
-    } else {
-        mShadowScale = 200.0f;
+void Spotlight_804A84C8::init() {
+    mViewBit0 = (field_0x90 >> 22) & 0x1F;
+    mViewBit1 = (field_0x90 >> 17) & 0x1F;
+    mViewBit2 = (field_0x90 >> 12) & 0x1F;
+    mBox.i.x = 1.0f;
+    mBox.i.y = 1.0f;
+    mBox.f.x = -1.0f;
+    mBox.f.y = -1.0f;
+    mEmitter234 = NULL;
+    mEmitter238 = NULL;
+    mEmitter23c = NULL;
+    mEmitter240 = NULL;
+    mEmitter244 = NULL;
+    mState = 0;
+    mOn = 0;
+    mShadowScale = 0.0f;
+}
+
+Spotlight_804A84C8::~Spotlight_804A84C8() {
+    if (mEmitter234 != NULL) {
+        releaseEmitter_801EE434(mEmitter234);
     }
-    f32 scale = mShadowScale;
-    JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
-    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
+    if (mEmitter238 != NULL) {
+        releaseEmitter_801EE434(mEmitter238);
+    }
+    if (mEmitter23c != NULL) {
+        releaseEmitter_801EE434(mEmitter23c);
+    }
+    if (mEmitter240 != NULL) {
+        releaseEmitter_801EE434(mEmitter240);
+    }
+    if (mEmitter244 != NULL) {
+        releaseEmitter_801EE434(mEmitter244);
+    }
 }
 
 void Spotlight_804A84C8::update() {
@@ -91,38 +107,22 @@ void Spotlight_804A84C8::update() {
     }
 }
 
-Spotlight_804A84C8::~Spotlight_804A84C8() {
-    if (mEmitter234 != NULL) {
-        releaseEmitter_801EE434(mEmitter234);
+void Spotlight_804A84C8::draw() {
+    if (mOn == 0) {
+        if (mShadowScale > 0.0f) {
+            mShadowScale -= 6.0f;
+            if (mShadowScale <= 0.0f) {
+                mShadowScale = 0.0f;
+            }
+        } else {
+            mShadowScale = 0.0f;
+        }
+    } else if (mShadowScale < 200.0f) {
+        mShadowScale += 6.0f;
+    } else {
+        mShadowScale = 200.0f;
     }
-    if (mEmitter238 != NULL) {
-        releaseEmitter_801EE434(mEmitter238);
-    }
-    if (mEmitter23c != NULL) {
-        releaseEmitter_801EE434(mEmitter23c);
-    }
-    if (mEmitter240 != NULL) {
-        releaseEmitter_801EE434(mEmitter240);
-    }
-    if (mEmitter244 != NULL) {
-        releaseEmitter_801EE434(mEmitter244);
-    }
-}
-
-void Spotlight_804A84C8::init() {
-    mViewBit0 = (field_0x90 >> 22) & 0x1F;
-    mViewBit1 = (field_0x90 >> 17) & 0x1F;
-    mViewBit2 = (field_0x90 >> 12) & 0x1F;
-    mBox.i.x = 1.0f;
-    mBox.i.y = 1.0f;
-    mBox.f.x = -1.0f;
-    mBox.f.y = -1.0f;
-    mEmitter234 = NULL;
-    mEmitter238 = NULL;
-    mEmitter23c = NULL;
-    mEmitter240 = NULL;
-    mEmitter244 = NULL;
-    mState = 0;
-    mOn = 0;
-    mShadowScale = 0.0f;
+    f32 scale = mShadowScale;
+    JGeometry::TVec3f pos(8.0f + mPos.x, 8.0f + mPos.y, 0.0f);
+    drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), scale);
 }

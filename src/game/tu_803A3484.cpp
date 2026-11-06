@@ -35,13 +35,6 @@ static const char* lbl_804AF7D8[6][3] = {
 
 Title_804AF820* lbl_8053AD88;
 
-s32 Title_804AF820::fn_803A3484() {
-    if (lbl_8053AD88 != NULL) {
-        return lbl_8053AD88->field_0x154;
-    }
-    return 1;
-}
-
 // Leaves the progressive-scan prompt: interlaced output, and the save region
 // remembers it.
 static inline void resetProgressive() {
@@ -89,6 +82,359 @@ inline void Title_804AF820::stopMovie() {
     field_0x64 = 0;
     if (field_0x6e != 3 && gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
         gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
+    }
+}
+
+inline void Title_804AF820::calcBlink(f32& blink) {
+    // lbl_8050DB0C's halfwords 0x29C / 0x29E / 0x2A0: the blink's half
+    // period, its hold time and its lowest alpha.
+    s16 period = lbl_8050DB0C.field_0x4c[(0x29C - 0x4C) / 2];
+    s16 hold = lbl_8050DB0C.field_0x4c[(0x29E - 0x4C) / 2];
+    field_0x7c++;
+    if (field_0x7c <= period * 2) {
+        s32 d = field_0x7c < period ? period - field_0x7c : field_0x7c - period;
+        f32 base = lbl_8050DB0C.field_0x4c[(0x2A0 - 0x4C) / 2] / 255.0f;
+        blink = base + (1.0f - base) * (d * d) / (period * period);
+    } else {
+        blink = 1.0f;
+        if (field_0x7c >= hold + period * 2) {
+            field_0x7c = 0;
+        }
+    }
+}
+
+inline void Title_804AF820::drawTitle(f32 blink) {
+    mScreen->search('Pntd')->setAlpha(field_0x4c);
+    mScreen->search('Ptlogo01')->setAlpha(field_0x4c);
+    mScreen->search('Ptlogo02')->setAlpha(field_0x4c);
+    mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
+    mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    if (field_0x82 > 0 && field_0x4c == 255.0f) {
+        field_0x82--;
+    }
+}
+
+// FIXME: 99.78. Code identical; string offsets and 0.0f's .sdata2 name differ
+// as in fn_803A5380.
+Title_804AF820::Title_804AF820() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    lbl_8053AD88 = this;
+    mScreen = new J2DScreen;
+    mScreen->setPriority("title.blo", 0x1100000, lbl_80529DEC.field_0x24);
+    mAnm = static_cast<J2DAnmTextureSRTKey*>(
+        J2DAnmLoaderDataBase::load(JKRFileLoader::getGlbResource("title.btk", lbl_80529DEC.field_0x24)));
+    mScreen->setAnimation(mAnm);
+    mScreen->search('Pcmark')->hide();
+    field_0x14e = mScreen->search('prsstrt1')->getAlpha();
+    field_0x14f = mScreen->search('prsstrt2')->getAlpha();
+    const ResTIMG* tex = (const ResTIMG*)fn_80403204('TIMG', "kk_titleCon_01.bti");
+    field_0x8 = new J2DPicture(tex);
+    mMovie = new THPMovie_804B15D0;
+    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_choice.bti");
+    field_0xc = new J2DPicture(tex);
+    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_inter.bti");
+    field_0x10 = new J2DPicture(tex);
+    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_pro.bti");
+    field_0x14 = new J2DPicture(tex);
+    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_yes.bti");
+    field_0x18 = new J2DPicture(tex);
+    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_no.bti");
+    field_0x1c = new J2DPicture(tex);
+    tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x20 = new J2DPicture(tex);
+    field_0x20->setBlackWhite(JUtility::TColor(8, 24, 40, 255), JUtility::TColor(0, 0, 0, 0));
+    if (lbl_80529DEC.field_0x249[0] != 0) {
+        field_0x68 = 0;
+    } else {
+        field_0x68 = 255;
+    }
+    field_0x150 = 0;
+    JKRHeap* parent = JKRHeap::getCurrentHeap();
+    mHeap = JKRSolidHeap::create(0x80000, parent, false);
+    mHeap->becomeCurrentHeap();
+    for (int i = 0; i < 6; i++) {
+        fn_8016A3BC(lbl_80529DEC.field_0x24, lbl_804AF7D8[i][0], lbl_804AF7D8[i][1], NULL, lbl_804AF7D8[i][2],
+                    NULL, 0x10240000, mHeap, &field_0x104[i], &field_0x11c[i], NULL, &field_0x134[i], NULL);
+        if (field_0x11c[i] != NULL) {
+            field_0x11c[i]->setFrame(0.0f);
+        }
+        if (field_0x134[i] != NULL) {
+            field_0x134[i]->setFrame(0.0f);
+        }
+    }
+    mHeap->adjustSize();
+    parent->becomeCurrentHeap();
+    for (int i = 0; i < 4; i++) {
+        field_0x90.mEntries[i].field_0x18 = new ActorSoundObj_804578F4(NULL, NULL, 8);
+    }
+    field_0x14c = 0;
+    field_0x50 = 0.0f;
+    field_0x4c = 0.0f;
+    field_0x6e = 0;
+    field_0x72 = 0;
+    field_0x7a = 0;
+    field_0x7e = 0;
+    field_0x14d = 0;
+    field_0x74 = 0;
+    field_0x76 = 0;
+    field_0x78 = 0;
+    field_0x58 = 0;
+    field_0x60 = 0;
+    field_0x64 = 0;
+    mMovieState = 0;
+    field_0x5c = 0;
+    field_0x7c = 0;
+    field_0x80 = 0;
+    field_0x82 = 60;
+    field_0x28[0] = NULL;
+    field_0x28[1] = NULL;
+    field_0x28[2] = NULL;
+    field_0x34[0] = NULL;
+    field_0x34[1] = NULL;
+    field_0x34[2] = NULL;
+    field_0x34[3] = NULL;
+    field_0x44 = NULL;
+    gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
+    lbl_80529DEC.field_0x250 = 0;
+}
+
+Title_804AF820::~Title_804AF820() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    for (int i = 0; i < 4; i++) {
+        if (field_0x90.mEntries[i].field_0x18 != NULL) {
+            delete field_0x90.mEntries[i].field_0x18;
+        }
+    }
+    if (mMovieState != 0) {
+        mMovie->quit_80427D94();
+        mMovieState = 0;
+    }
+    for (int i = 0; i < 3; i++) {
+        deleteEmitter(&field_0x28[i]);
+    }
+    for (int i = 0; i < 4; i++) {
+        deleteEmitter(&field_0x34[i]);
+    }
+    deleteEmitter(&field_0x44);
+    getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+    mHeap->destroy();
+    delete mScreen;
+    mScreen = NULL;
+    delete mAnm;
+    mAnm = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete mMovie;
+    mMovie = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    delete field_0x18;
+    field_0x18 = NULL;
+    delete field_0x1c;
+    field_0x1c = NULL;
+    delete field_0x20;
+    field_0x20 = NULL;
+    lbl_80529DEC.field_0x24->removeResourceAll();
+    lbl_8053AD88 = NULL;
+}
+
+// FIXME: 99.78. Code identical; the string offsets differ by 0x48 (the
+// original .rodata has an unreferenced 0x34-byte table and
+// "enemy_both2_sob.bin" after "w_kumo5.bmd" that no surviving function of
+// the unit references, not even the draw fn_803A44D8) and 0.0f's .sdata2 name.
+void Title_804AF820::fn_803A5380() {
+    if (lbl_80529DEC.field_0x242 == 0) {
+        lbl_80529DEC.field_0x242 = 1;
+        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
+        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
+        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
+    }
+    field_0x154 = 1;
+    field_0x14c = 0;
+    field_0x50 = 0.0f;
+    field_0x4c = 0.0f;
+    field_0x6e = 0;
+    field_0x72 = 0;
+    field_0x7a = 0;
+    field_0x7e = 0;
+    field_0x14d = 0;
+    field_0x74 = 0;
+    field_0x76 = 0;
+    field_0x78 = 0;
+    field_0x60 = 0;
+    field_0x64 = 0;
+    mMovieState = 0;
+    field_0x5c = 0;
+    field_0x7c = 0;
+    field_0x80 = 0;
+    field_0x82 = 60;
+    field_0x54 = 0;
+    if (lbl_80529DEC.field_0x249[0] != 0) {
+        field_0x68 = 0;
+    } else {
+        field_0x68 = 255;
+    }
+    field_0x6a = 0;
+    field_0x150 = 0;
+    field_0x84 = 120;
+    field_0x88 = 60;
+    field_0x8c = 1;
+    field_0x90.fn_8016ED88();
+    if (lbl_80529DEC.field_0x249[0] != 0) {
+        if (gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
+        }
+        field_0x82 = 60;
+    }
+}
+
+// FIXME: 99.25. Scheduling and registers only: in calcBlink the original keeps
+// the hold time in r5 and twice the period in r4 (ours r3 / r5); in the cloud
+// loop it loads field_0x104[i] at the top of the body and keeps the emitter
+// manager in r29 and &info.mPrjMtx in r28 (ours swap them); the rest are
+// .sdata2 names (the original pool starts 0.5f, 120.0f, see fn_803A34A0).
+void Title_804AF820::fn_803A44D8() {
+    JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
+    if (lbl_80529DEC.field_0x1a0 > 0) {
+        lbl_80529DEC.field_0x1a0--;
+    } else {
+        lbl_80529DEC.field_0x1a0 = 0;
+    }
+    f32 blink = 0.0f;
+    if (mMovieState != 0) {
+        gGameRoot2_8053AB10->fn_8013B438();
+        mMovie->draw_80427D2C(0, 0, 0, 0);
+        if (lbl_80529DEC.field_0x249[0] != 0 && field_0x80 != 0) {
+            if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
+                field_0x82 == 0) {
+                calcBlink(blink);
+            }
+            gGameRoot2_8053AB10->fn_8013B490();
+            mScreen->search('Pntd')->setAlpha(field_0x4c);
+            mScreen->search('Ptlogo01')->setAlpha(0);
+            mScreen->search('Ptlogo02')->setAlpha(0);
+            mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
+            mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
+            mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        }
+    } else {
+        gGameRoot2_8053AB10->fn_8013B490();
+        if (lbl_80529DEC.field_0x238 == 0xFF && lbl_80529DEC.field_0x249[0] != 0) {
+            if (field_0x154 == 1) {
+                // The six cloud models and the title's effects.
+                JGeometry::TVec3f scale(7.0f, 7.0f, 7.0f);
+                JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+                JPADrawInfo info;
+                Mtx mtx;
+                PSMTXIdentity(mtx);
+                fn_8013AC54(mtx);
+                PSMTXCopy(mtx, info.mCamMtx);
+                C_MTXLightOrtho(info.mPrjMtx, 448.0f, 0.0f, 0.0f, 608.0f, 0.5f, 0.5f, 0.5f, 0.5f);
+                fn_8016D398(mtx, gGameRoot_8053AAF8->field_0x5c, true, true, &field_0x90, &field_0x84, &field_0x88,
+                            &field_0x8c, field_0x11c, field_0x134, 7.0f);
+                for (int i = 0; i < 6; i++) {
+                    mtx[0][0] = 1.0f;
+                    mtx[0][1] = 0.0f;
+                    mtx[0][2] = 0.0f;
+                    mtx[0][3] = 300.0f;
+                    mtx[1][0] = 0.0f;
+                    mtx[1][1] = 0.0f;
+                    mtx[1][2] = 1.0f;
+                    mtx[1][3] = 250.0f;
+                    mtx[2][0] = 0.0f;
+                    mtx[2][1] = 1.0f;
+                    mtx[2][2] = 0.0f;
+                    mtx[2][3] = -513.0f - 96.0f * i;
+                    fn_8013ABCC(field_0x104[i], scale, mtx);
+                }
+                fn_8013AB2C();
+                manager->calc(0);
+                manager->draw(&info, 0);
+            }
+            if (field_0x150 == 1) {
+                gGameRoot2_8053AB10->fn_8013B490();
+                field_0x20->setAlpha(field_0x68);
+                field_0x20->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
+            }
+            if (field_0x6e == 1 &&
+                (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
+                field_0x82 == 0) {
+                calcBlink(blink);
+            }
+            drawTitle(blink);
+        } else {
+            switch (lbl_80529DEC.field_0x238) {
+            case 2:
+            case 3:
+            case 4: {
+                // The progressive-scan prompt: the selected answer pulses.
+                field_0xc->setAlpha(field_0x50);
+                field_0xc->draw(113.0f, 281.0f, false, false, false);
+                f32 t;
+                if (field_0x72 < 30) {
+                    t = field_0x72 / 30.0f;
+                } else {
+                    t = (60.0f - field_0x72) / 30.0f;
+                }
+                u8 r = 255.0f * t;
+                u8 g = 200.0f * t;
+                if (field_0x14c == 0) {
+                    field_0x18->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
+                    field_0x1c->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
+                } else {
+                    field_0x18->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
+                    field_0x1c->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
+                }
+                field_0x18->setAlpha(field_0x50);
+                field_0x18->draw(211.0f, 372.0f, false, false, false);
+                field_0x1c->setAlpha(field_0x50);
+                field_0x1c->draw(350.0f, 372.0f, false, false, false);
+                break;
+            }
+            case 5:
+            case 6:
+                gGameRoot2_8053AB10->fn_8013AB00();
+                lbl_80529DEC.field_0x251 = 1;
+                break;
+            case 9:
+                if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_OFF) {
+                    gGameRoot2_8053AB10->fn_8013AAD4();
+                }
+            case 10:
+            case 11:
+                if (field_0x14c == 0) {
+                    field_0x14->setAlpha(field_0x50);
+                    field_0x14->draw(153.0f, 309.0f, false, false, false);
+                } else {
+                    field_0x10->setAlpha(field_0x50);
+                    field_0x10->draw(153.0f, 309.0f, false, false, false);
+                }
+                break;
+            default:
+                if (lbl_80529DEC.field_0x249[0] != 0) {
+                    drawTitle(blink);
+                }
+                break;
+            }
+        }
     }
 }
 
@@ -382,355 +728,9 @@ void Title_804AF820::fn_803A34A0() {
     lbl_80529DEC.field_0x250 = 0;
 }
 
-inline void Title_804AF820::calcBlink(f32& blink) {
-    // lbl_8050DB0C's halfwords 0x29C / 0x29E / 0x2A0: the blink's half
-    // period, its hold time and its lowest alpha.
-    s16 period = lbl_8050DB0C.field_0x4c[(0x29C - 0x4C) / 2];
-    s16 hold = lbl_8050DB0C.field_0x4c[(0x29E - 0x4C) / 2];
-    field_0x7c++;
-    if (field_0x7c <= period * 2) {
-        s32 d = field_0x7c < period ? period - field_0x7c : field_0x7c - period;
-        f32 base = lbl_8050DB0C.field_0x4c[(0x2A0 - 0x4C) / 2] / 255.0f;
-        blink = base + (1.0f - base) * (d * d) / (period * period);
-    } else {
-        blink = 1.0f;
-        if (field_0x7c >= hold + period * 2) {
-            field_0x7c = 0;
-        }
+s32 Title_804AF820::fn_803A3484() {
+    if (lbl_8053AD88 != NULL) {
+        return lbl_8053AD88->field_0x154;
     }
-}
-
-inline void Title_804AF820::drawTitle(f32 blink) {
-    mScreen->search('Pntd')->setAlpha(field_0x4c);
-    mScreen->search('Ptlogo01')->setAlpha(field_0x4c);
-    mScreen->search('Ptlogo02')->setAlpha(field_0x4c);
-    mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
-    mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    if (field_0x82 > 0 && field_0x4c == 255.0f) {
-        field_0x82--;
-    }
-}
-
-// FIXME: 99.25. Scheduling and registers only: in calcBlink the original keeps
-// the hold time in r5 and twice the period in r4 (ours r3 / r5); in the cloud
-// loop it loads field_0x104[i] at the top of the body and keeps the emitter
-// manager in r29 and &info.mPrjMtx in r28 (ours swap them); the rest are
-// .sdata2 names (the original pool starts 0.5f, 120.0f, see fn_803A34A0).
-void Title_804AF820::fn_803A44D8() {
-    JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
-    if (lbl_80529DEC.field_0x1a0 > 0) {
-        lbl_80529DEC.field_0x1a0--;
-    } else {
-        lbl_80529DEC.field_0x1a0 = 0;
-    }
-    f32 blink = 0.0f;
-    if (mMovieState != 0) {
-        gGameRoot2_8053AB10->fn_8013B438();
-        mMovie->draw_80427D2C(0, 0, 0, 0);
-        if (lbl_80529DEC.field_0x249[0] != 0 && field_0x80 != 0) {
-            if ((lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
-                field_0x82 == 0) {
-                calcBlink(blink);
-            }
-            gGameRoot2_8053AB10->fn_8013B490();
-            mScreen->search('Pntd')->setAlpha(field_0x4c);
-            mScreen->search('Ptlogo01')->setAlpha(0);
-            mScreen->search('Ptlogo02')->setAlpha(0);
-            mScreen->search('prsstrt1')->setAlpha(field_0x14e * blink);
-            mScreen->search('prsstrt2')->setAlpha(field_0x14f * blink);
-            mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-        }
-    } else {
-        gGameRoot2_8053AB10->fn_8013B490();
-        if (lbl_80529DEC.field_0x238 == 0xFF && lbl_80529DEC.field_0x249[0] != 0) {
-            if (field_0x154 == 1) {
-                // The six cloud models and the title's effects.
-                JGeometry::TVec3f scale(7.0f, 7.0f, 7.0f);
-                JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
-                JPADrawInfo info;
-                Mtx mtx;
-                PSMTXIdentity(mtx);
-                fn_8013AC54(mtx);
-                PSMTXCopy(mtx, info.mCamMtx);
-                C_MTXLightOrtho(info.mPrjMtx, 448.0f, 0.0f, 0.0f, 608.0f, 0.5f, 0.5f, 0.5f, 0.5f);
-                fn_8016D398(mtx, gGameRoot_8053AAF8->field_0x5c, true, true, &field_0x90, &field_0x84, &field_0x88,
-                            &field_0x8c, field_0x11c, field_0x134, 7.0f);
-                for (int i = 0; i < 6; i++) {
-                    mtx[0][0] = 1.0f;
-                    mtx[0][1] = 0.0f;
-                    mtx[0][2] = 0.0f;
-                    mtx[0][3] = 300.0f;
-                    mtx[1][0] = 0.0f;
-                    mtx[1][1] = 0.0f;
-                    mtx[1][2] = 1.0f;
-                    mtx[1][3] = 250.0f;
-                    mtx[2][0] = 0.0f;
-                    mtx[2][1] = 1.0f;
-                    mtx[2][2] = 0.0f;
-                    mtx[2][3] = -513.0f - 96.0f * i;
-                    fn_8013ABCC(field_0x104[i], scale, mtx);
-                }
-                fn_8013AB2C();
-                manager->calc(0);
-                manager->draw(&info, 0);
-            }
-            if (field_0x150 == 1) {
-                gGameRoot2_8053AB10->fn_8013B490();
-                field_0x20->setAlpha(field_0x68);
-                field_0x20->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
-            }
-            if (field_0x6e == 1 &&
-                (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) || lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) &&
-                field_0x82 == 0) {
-                calcBlink(blink);
-            }
-            drawTitle(blink);
-        } else {
-            switch (lbl_80529DEC.field_0x238) {
-            case 2:
-            case 3:
-            case 4: {
-                // The progressive-scan prompt: the selected answer pulses.
-                field_0xc->setAlpha(field_0x50);
-                field_0xc->draw(113.0f, 281.0f, false, false, false);
-                f32 t;
-                if (field_0x72 < 30) {
-                    t = field_0x72 / 30.0f;
-                } else {
-                    t = (60.0f - field_0x72) / 30.0f;
-                }
-                u8 r = 255.0f * t;
-                u8 g = 200.0f * t;
-                if (field_0x14c == 0) {
-                    field_0x18->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
-                    field_0x1c->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
-                } else {
-                    field_0x18->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xA0, 0xA0, 0xA0, 0xFF));
-                    field_0x1c->setBlackWhite(JUtility::TColor(r, g, 0, 0), JUtility::TColor(0xFF, 0xC8, 0, 0xFF));
-                }
-                field_0x18->setAlpha(field_0x50);
-                field_0x18->draw(211.0f, 372.0f, false, false, false);
-                field_0x1c->setAlpha(field_0x50);
-                field_0x1c->draw(350.0f, 372.0f, false, false, false);
-                break;
-            }
-            case 5:
-            case 6:
-                gGameRoot2_8053AB10->fn_8013AB00();
-                lbl_80529DEC.field_0x251 = 1;
-                break;
-            case 9:
-                if (OSGetProgressiveMode() == OS_PROGRESSIVE_MODE_OFF) {
-                    gGameRoot2_8053AB10->fn_8013AAD4();
-                }
-            case 10:
-            case 11:
-                if (field_0x14c == 0) {
-                    field_0x14->setAlpha(field_0x50);
-                    field_0x14->draw(153.0f, 309.0f, false, false, false);
-                } else {
-                    field_0x10->setAlpha(field_0x50);
-                    field_0x10->draw(153.0f, 309.0f, false, false, false);
-                }
-                break;
-            default:
-                if (lbl_80529DEC.field_0x249[0] != 0) {
-                    drawTitle(blink);
-                }
-                break;
-            }
-        }
-    }
-}
-
-// FIXME: 99.78. Code identical; the string offsets differ by 0x48 (the
-// original .rodata has an unreferenced 0x34-byte table and
-// "enemy_both2_sob.bin" after "w_kumo5.bmd" that no surviving function of
-// the unit references, not even the draw fn_803A44D8) and 0.0f's .sdata2 name.
-void Title_804AF820::fn_803A5380() {
-    if (lbl_80529DEC.field_0x242 == 0) {
-        lbl_80529DEC.field_0x242 = 1;
-        gGameRoot2_8053AB10->field_0x20->fn_802FF798();
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_base_sch.szs"), 0, 0, 0, 0);
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gb_ch_obj_tr_schE.szs"), 0, 0, 0x7000, 0);
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 0, 0, 0, false);
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "player_sch.szs"), 0, 2, 0x4000, 0);
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 2, 0, 0, false);
-        gGameRoot2_8053AB10->field_0x20->fn_802F9714(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "gals_sch.szs"), 0, 3, 0, 0);
-        gGameRoot2_8053AB10->field_0x20->fn_802F93F4(
-            gGameRoot_8053AAF8->field_0xa4->getResource('SCL ', "cu_cl_obj_base_scl.szs"), 0, 3, 0, 0, false);
-        gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
-    }
-    field_0x154 = 1;
-    field_0x14c = 0;
-    field_0x50 = 0.0f;
-    field_0x4c = 0.0f;
-    field_0x6e = 0;
-    field_0x72 = 0;
-    field_0x7a = 0;
-    field_0x7e = 0;
-    field_0x14d = 0;
-    field_0x74 = 0;
-    field_0x76 = 0;
-    field_0x78 = 0;
-    field_0x60 = 0;
-    field_0x64 = 0;
-    mMovieState = 0;
-    field_0x5c = 0;
-    field_0x7c = 0;
-    field_0x80 = 0;
-    field_0x82 = 60;
-    field_0x54 = 0;
-    if (lbl_80529DEC.field_0x249[0] != 0) {
-        field_0x68 = 0;
-    } else {
-        field_0x68 = 255;
-    }
-    field_0x6a = 0;
-    field_0x150 = 0;
-    field_0x84 = 120;
-    field_0x88 = 60;
-    field_0x8c = 1;
-    field_0x90.fn_8016ED88();
-    if (lbl_80529DEC.field_0x249[0] != 0) {
-        if (gAudioMgr_8053AF80->field_0x58 != 0x1000006) {
-            gAudioMgr_8053AF80->fn_80458FF0(0x1000006, false, false);
-        }
-        field_0x82 = 60;
-    }
-}
-
-Title_804AF820::~Title_804AF820() {
-    lbl_80529DEC.mHeap->getTotalFreeSize();
-    for (int i = 0; i < 4; i++) {
-        if (field_0x90.mEntries[i].field_0x18 != NULL) {
-            delete field_0x90.mEntries[i].field_0x18;
-        }
-    }
-    if (mMovieState != 0) {
-        mMovie->quit_80427D94();
-        mMovieState = 0;
-    }
-    for (int i = 0; i < 3; i++) {
-        deleteEmitter(&field_0x28[i]);
-    }
-    for (int i = 0; i < 4; i++) {
-        deleteEmitter(&field_0x34[i]);
-    }
-    deleteEmitter(&field_0x44);
-    getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
-    mHeap->destroy();
-    delete mScreen;
-    mScreen = NULL;
-    delete mAnm;
-    mAnm = NULL;
-    delete field_0x8;
-    field_0x8 = NULL;
-    delete mMovie;
-    mMovie = NULL;
-    delete field_0xc;
-    field_0xc = NULL;
-    delete field_0x10;
-    field_0x10 = NULL;
-    delete field_0x14;
-    field_0x14 = NULL;
-    delete field_0x18;
-    field_0x18 = NULL;
-    delete field_0x1c;
-    field_0x1c = NULL;
-    delete field_0x20;
-    field_0x20 = NULL;
-    lbl_80529DEC.field_0x24->removeResourceAll();
-    lbl_8053AD88 = NULL;
-}
-
-// FIXME: 99.78. Code identical; string offsets and 0.0f's .sdata2 name differ
-// as in fn_803A5380.
-Title_804AF820::Title_804AF820() {
-    lbl_80529DEC.mHeap->getTotalFreeSize();
-    lbl_8053AD88 = this;
-    mScreen = new J2DScreen;
-    mScreen->setPriority("title.blo", 0x1100000, lbl_80529DEC.field_0x24);
-    mAnm = static_cast<J2DAnmTextureSRTKey*>(
-        J2DAnmLoaderDataBase::load(JKRFileLoader::getGlbResource("title.btk", lbl_80529DEC.field_0x24)));
-    mScreen->setAnimation(mAnm);
-    mScreen->search('Pcmark')->hide();
-    field_0x14e = mScreen->search('prsstrt1')->getAlpha();
-    field_0x14f = mScreen->search('prsstrt2')->getAlpha();
-    const ResTIMG* tex = (const ResTIMG*)fn_80403204('TIMG', "kk_titleCon_01.bti");
-    field_0x8 = new J2DPicture(tex);
-    mMovie = new THPMovie_804B15D0;
-    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_choice.bti");
-    field_0xc = new J2DPicture(tex);
-    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_inter.bti");
-    field_0x10 = new J2DPicture(tex);
-    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_pro.bti");
-    field_0x14 = new J2DPicture(tex);
-    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_yes.bti");
-    field_0x18 = new J2DPicture(tex);
-    tex = (const ResTIMG*)fn_80403244('TIMG', "progressive_no.bti");
-    field_0x1c = new J2DPicture(tex);
-    tex = (const ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
-    field_0x20 = new J2DPicture(tex);
-    field_0x20->setBlackWhite(JUtility::TColor(8, 24, 40, 255), JUtility::TColor(0, 0, 0, 0));
-    if (lbl_80529DEC.field_0x249[0] != 0) {
-        field_0x68 = 0;
-    } else {
-        field_0x68 = 255;
-    }
-    field_0x150 = 0;
-    JKRHeap* parent = JKRHeap::getCurrentHeap();
-    mHeap = JKRSolidHeap::create(0x80000, parent, false);
-    mHeap->becomeCurrentHeap();
-    for (int i = 0; i < 6; i++) {
-        fn_8016A3BC(lbl_80529DEC.field_0x24, lbl_804AF7D8[i][0], lbl_804AF7D8[i][1], NULL, lbl_804AF7D8[i][2],
-                    NULL, 0x10240000, mHeap, &field_0x104[i], &field_0x11c[i], NULL, &field_0x134[i], NULL);
-        if (field_0x11c[i] != NULL) {
-            field_0x11c[i]->setFrame(0.0f);
-        }
-        if (field_0x134[i] != NULL) {
-            field_0x134[i]->setFrame(0.0f);
-        }
-    }
-    mHeap->adjustSize();
-    parent->becomeCurrentHeap();
-    for (int i = 0; i < 4; i++) {
-        field_0x90.mEntries[i].field_0x18 = new ActorSoundObj_804578F4(NULL, NULL, 8);
-    }
-    field_0x14c = 0;
-    field_0x50 = 0.0f;
-    field_0x4c = 0.0f;
-    field_0x6e = 0;
-    field_0x72 = 0;
-    field_0x7a = 0;
-    field_0x7e = 0;
-    field_0x14d = 0;
-    field_0x74 = 0;
-    field_0x76 = 0;
-    field_0x78 = 0;
-    field_0x58 = 0;
-    field_0x60 = 0;
-    field_0x64 = 0;
-    mMovieState = 0;
-    field_0x5c = 0;
-    field_0x7c = 0;
-    field_0x80 = 0;
-    field_0x82 = 60;
-    field_0x28[0] = NULL;
-    field_0x28[1] = NULL;
-    field_0x28[2] = NULL;
-    field_0x34[0] = NULL;
-    field_0x34[1] = NULL;
-    field_0x34[2] = NULL;
-    field_0x34[3] = NULL;
-    field_0x44 = NULL;
-    gGameRoot2_8053AB10->field_0x20->field_0x2364 = 1;
-    lbl_80529DEC.field_0x250 = 0;
+    return 1;
 }

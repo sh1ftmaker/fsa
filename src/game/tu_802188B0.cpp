@@ -8,6 +8,29 @@
 #include "game/act/act_shadow_link_2.h"
 #include "game/act/act_bomb.h"
 
+cls_80218A8C::cls_80218A8C() {
+    mOwner = NULL;
+    mTimer = fn_801CD664(0x79) + 0x3c;
+}
+
+bool cls_80218A8C::fn_802189AC() {
+    ActorBase_804A5770* actors[ACTOR_MANAGER_MAX_ACTORS];
+    bool found = false;
+    s32 count = getActorManager_801F856C()->fn_801F7818(ACTOR_HBMB, mOwner->field_0x4, actors, -1);
+    for (s32 i = 0; i < count; i++) {
+        Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(actors[i]);
+        if (bomb != NULL && bomb->mAlive && bomb->field_0x94 != 1 && bomb->field_0x238 < 5) {
+            f32 dx = bomb->mPos.x - mOwner->mPos.x;
+            f32 dy = bomb->mPos.y - mOwner->mPos.y;
+            if (square(dx) + square(dy) <= 1024.0f) {
+                found = true;
+                break;
+            }
+        }
+    }
+    return found;
+}
+
 void cls_80218A8C::fn_802188B0() {
     if (fn_801C0D70()->field_0x0 & 0x400) {
         return;
@@ -29,27 +52,4 @@ void cls_80218A8C::fn_802188B0() {
             break;
         }
     }
-}
-
-bool cls_80218A8C::fn_802189AC() {
-    ActorBase_804A5770* actors[ACTOR_MANAGER_MAX_ACTORS];
-    bool found = false;
-    s32 count = getActorManager_801F856C()->fn_801F7818(ACTOR_HBMB, mOwner->field_0x4, actors, -1);
-    for (s32 i = 0; i < count; i++) {
-        Bomb_8049F784* bomb = static_cast<Bomb_8049F784*>(actors[i]);
-        if (bomb != NULL && bomb->mAlive && bomb->field_0x94 != 1 && bomb->field_0x238 < 5) {
-            f32 dx = bomb->mPos.x - mOwner->mPos.x;
-            f32 dy = bomb->mPos.y - mOwner->mPos.y;
-            if (square(dx) + square(dy) <= 1024.0f) {
-                found = true;
-                break;
-            }
-        }
-    }
-    return found;
-}
-
-cls_80218A8C::cls_80218A8C() {
-    mOwner = NULL;
-    mTimer = fn_801CD664(0x79) + 0x3c;
 }

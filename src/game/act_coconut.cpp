@@ -9,52 +9,17 @@
 #include "game/Player.h"
 #include "game/act/act_coconut.h"
 
-Coconut_804A9968::~Coconut_804A9968() {}
-
-void Coconut_804A9968::vfunc_0x48() {
-    vfunc_0x24();
-}
-
-bool Coconut_804A9968::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    return fn_801F132C(layer, pos, &field_0x230);
-}
-
-void Coconut_804A9968::vfunc_0x24() {
-    if (field_0x4 >= 8) {
-        JGeometry::TVec3f pos(mPos);
-        pos.z = 0.0f;
-        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
-    }
-    if (fn_8022461C(&mPos, field_0x4) == 0xD || fn_8022461C(&mPos, field_0x4) == 0x39) {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
-        startSound_801F0E34(0x30022, 0);
-    } else if (fn_8022461C(&mPos, field_0x4) == 0xE) {
-        if (fn_802DE9A0()) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
-            startSound_801F0E34(0x5005F, 0);
-        } else if (fn_802DEB58()) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
-            startSound_801F0E34(0x5003F, 0);
-        }
-    } else {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x7A, 1, 0, NULL, NULL, true, 1.0f);
-        startSound_801F0E34(0x30003, 0);
-    }
-    mAlive = false;
-}
-
-void Coconut_804A9968::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x10.a = field_0x234;
-    if (field_0xc4 != 0) {
-        params.field_0x20 = 0;
-        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
-        params.field_0x1c = fn_8023CA88(field_0xc8);
-    }
-    fn_801F02BC("enemy_both2_sob.bin", 0x1AE, &params, 7, 0, true, 1.0f, 1.0f);
+void Coconut_804A9968::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -4.0f;
+    field_0x80.i.y = -4.0f;
+    field_0x80.f.x = 4.0f;
+    field_0x80.f.y = 4.0f;
+    field_0x230 = 0;
+    field_0x234 = 0xFF;
 }
 
 void Coconut_804A9968::update() {
@@ -85,15 +50,50 @@ void Coconut_804A9968::update() {
     }
 }
 
-void Coconut_804A9968::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -4.0f;
-    field_0x80.i.y = -4.0f;
-    field_0x80.f.x = 4.0f;
-    field_0x80.f.y = 4.0f;
-    field_0x230 = 0;
-    field_0x234 = 0xFF;
+void Coconut_804A9968::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = field_0x234;
+    if (field_0xc4 != 0) {
+        params.field_0x20 = 0;
+        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
+        params.field_0x1c = fn_8023CA88(field_0xc8);
+    }
+    fn_801F02BC("enemy_both2_sob.bin", 0x1AE, &params, 7, 0, true, 1.0f, 1.0f);
 }
+
+void Coconut_804A9968::vfunc_0x24() {
+    if (field_0x4 >= 8) {
+        JGeometry::TVec3f pos(mPos);
+        pos.z = 0.0f;
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
+    }
+    if (fn_8022461C(&mPos, field_0x4) == 0xD || fn_8022461C(&mPos, field_0x4) == 0x39) {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30022, 0);
+    } else if (fn_8022461C(&mPos, field_0x4) == 0xE) {
+        if (fn_802DE9A0()) {
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5005F, 0);
+        } else if (fn_802DEB58()) {
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5003F, 0);
+        }
+    } else {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x7A, 1, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30003, 0);
+    }
+    mAlive = false;
+}
+
+bool Coconut_804A9968::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    return fn_801F132C(layer, pos, &field_0x230);
+}
+
+void Coconut_804A9968::vfunc_0x48() {
+    vfunc_0x24();
+}
+
+Coconut_804A9968::~Coconut_804A9968() {}

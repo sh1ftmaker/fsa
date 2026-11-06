@@ -21,9 +21,17 @@ static const u32 lbl_8046F450[46] = {
     7, 9, 1, 0, 0x12, 3,
 };
 
-EnemyGenerator3_804AA1D0::~EnemyGenerator3_804AA1D0() {}
-
-void EnemyGenerator3_804AA1D0::draw() {}
+void EnemyGenerator3_804AA1D0::init() {
+    mTypeIndex = field_0x90 & 0x7F;
+    mActorId = lbl_8046F398[mTypeIndex];
+    mInterval = (field_0x90 >> 7) & 0x1FF;
+    mCount = (field_0x90 >> 16) & 0xF;
+    mMode = (field_0x90 >> 20) & 0xF;
+    mFlag = (field_0x90 >> 24) & 1;
+    mRemaining = mCount;
+    mTimer = 1;
+    mState = 0;
+}
 
 // FIXME: 97.8 %. The original's 30-iteration search loop falls straight into
 // the "mRemaining = mCount; mState = 4" block when it runs out and branches
@@ -99,14 +107,6 @@ void EnemyGenerator3_804AA1D0::update() {
     }
 }
 
-void EnemyGenerator3_804AA1D0::init() {
-    mTypeIndex = field_0x90 & 0x7F;
-    mActorId = lbl_8046F398[mTypeIndex];
-    mInterval = (field_0x90 >> 7) & 0x1FF;
-    mCount = (field_0x90 >> 16) & 0xF;
-    mMode = (field_0x90 >> 20) & 0xF;
-    mFlag = (field_0x90 >> 24) & 1;
-    mRemaining = mCount;
-    mTimer = 1;
-    mState = 0;
-}
+void EnemyGenerator3_804AA1D0::draw() {}
+
+EnemyGenerator3_804AA1D0::~EnemyGenerator3_804AA1D0() {}

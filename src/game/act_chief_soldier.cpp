@@ -5,13 +5,6 @@
 #include "game/Map.h"
 #include "game/act/act_chief_soldier.h"
 
-void ChiefSoldier_804A0B90::vfunc_0x24() {
-    if (getType() == 6) {
-        field_0x18c = 0;
-        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
-    }
-    ActorBase_804A5770::vfunc_0x24();
-}
 
 // Sets the 3x3 part of m to a uniform scale; the translation column is the caller's.
 static inline void setScaleMtx(Mtx m, f32 s) {
@@ -24,6 +17,69 @@ static inline void setScaleMtx(Mtx m, f32 s) {
     m[2][0] = 0.0f;
     m[2][1] = 0.0f;
     m[2][2] = s;
+}
+
+ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
+    if (getType() != 7 && getType() != 8) {
+        if (getType() != 6 && gGameRoot_8053AAF8->field_0x4c != 9 &&
+            gGameRoot_8053AAF8->field_0x4c != 0xB && mLife != 0) {
+            gGameRoot_8053AAF8->fn_80138B7C();
+        }
+        s32 serial = field_0x238;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->mAlive = false;
+            }
+        }
+    }
+}
+
+void ChiefSoldier_804A0B90::vfunc_0x44() {
+    if (field_0x90 == 2 || field_0x90 == 3) {
+        field_0x90 += 2;
+        field_0x240 = 0;
+        field_0x264 = 0;
+        field_0x250 = 0x14;
+        if (field_0x23c == 0 && gGameRoot_8053AAF8->field_0x7f == 1) {
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000021, false, false);
+        }
+        field_0x288 = 2;
+        if (field_0x2a5 == 1) {
+            startSound_801F0E34(0x5001F, 0);
+        }
+        field_0x230 = 2;
+    }
+    if (getType() != 7 && getType() != 8 && mLife <= 0) {
+        s32 serial = field_0x238;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->mAlive = false;
+            }
+        }
+        field_0x238 = -1;
+    }
+}
+
+void ChiefSoldier_804A0B90::fn_80172BC8() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (field_0x90 != 7) {
+        setScaleMtx(mtx, 2.0f);
+        if (field_0x23c == 0) {
+            setScaleMtx(mtx, 1.0f);
+        }
+        params.mMtx = mtx;
+        s32 frame = field_0x280 + 0x3FD;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+    }
 }
 
 void ChiefSoldier_804A0B90::draw() {
@@ -65,65 +121,10 @@ void ChiefSoldier_804A0B90::draw() {
     }
 }
 
-void ChiefSoldier_804A0B90::fn_80172BC8() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    mtx[0][3] = 0.0f;
-    mtx[1][3] = 0.0f;
-    mtx[2][3] = 0.0f;
-    if (field_0x90 != 7) {
-        setScaleMtx(mtx, 2.0f);
-        if (field_0x23c == 0) {
-            setScaleMtx(mtx, 1.0f);
-        }
-        params.mMtx = mtx;
-        s32 frame = field_0x280 + 0x3FD;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-        }
+void ChiefSoldier_804A0B90::vfunc_0x24() {
+    if (getType() == 6) {
+        field_0x18c = 0;
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &mPos, 0, -1, -1);
     }
-}
-
-void ChiefSoldier_804A0B90::vfunc_0x44() {
-    if (field_0x90 == 2 || field_0x90 == 3) {
-        field_0x90 += 2;
-        field_0x240 = 0;
-        field_0x264 = 0;
-        field_0x250 = 0x14;
-        if (field_0x23c == 0 && gGameRoot_8053AAF8->field_0x7f == 1) {
-            gAudioMgr_8053AF80->fn_80458FF0(0x1000021, false, false);
-        }
-        field_0x288 = 2;
-        if (field_0x2a5 == 1) {
-            startSound_801F0E34(0x5001F, 0);
-        }
-        field_0x230 = 2;
-    }
-    if (getType() != 7 && getType() != 8 && mLife <= 0) {
-        s32 serial = field_0x238;
-        if (serial >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-            if (actor != NULL) {
-                actor->mAlive = false;
-            }
-        }
-        field_0x238 = -1;
-    }
-}
-
-ChiefSoldier_804A0B90::~ChiefSoldier_804A0B90() {
-    if (getType() != 7 && getType() != 8) {
-        if (getType() != 6 && gGameRoot_8053AAF8->field_0x4c != 9 &&
-            gGameRoot_8053AAF8->field_0x4c != 0xB && mLife != 0) {
-            gGameRoot_8053AAF8->fn_80138B7C();
-        }
-        s32 serial = field_0x238;
-        if (serial >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-            if (actor != NULL) {
-                actor->mAlive = false;
-            }
-        }
-    }
+    ActorBase_804A5770::vfunc_0x24();
 }

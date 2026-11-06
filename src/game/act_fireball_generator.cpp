@@ -5,23 +5,8 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_fireball_generator.h"
 
-FireballGenerator_804A6660::~FireballGenerator_804A6660() {}
-
-void FireballGenerator_804A6660::vfunc_0x90(u8 mapHit) {
-    if (vfunc_0x34()) {
-        fn_801F3668();
-    } else {
-        switch (mState) {
-        case 0:
-            if (mCooldown > 1) {
-                mCooldown--;
-            } else if (fn_801CECF4('FBAL', 1.5f, 112.0f)) {
-                startSound_801F0E34(0x50030, 0);
-                mCooldown = 0x78;
-            }
-            break;
-        }
-    }
+FireballGenerator_804A6660::FireballGenerator_804A6660() {
+    mCooldown = 0x78;
 }
 
 void FireballGenerator_804A6660::init() {
@@ -53,6 +38,21 @@ void FireballGenerator_804A6660::init() {
     }
 }
 
-FireballGenerator_804A6660::FireballGenerator_804A6660() {
-    mCooldown = 0x78;
+void FireballGenerator_804A6660::vfunc_0x90(u8 mapHit) {
+    if (vfunc_0x34()) {
+        fn_801F3668();
+    } else {
+        switch (mState) {
+        case 0:
+            if (mCooldown > 1) {
+                mCooldown--;
+            } else if (fn_801CECF4('FBAL', 1.5f, 112.0f)) {
+                startSound_801F0E34(0x50030, 0);
+                mCooldown = 0x78;
+            }
+            break;
+        }
+    }
 }
+
+FireballGenerator_804A6660::~FireballGenerator_804A6660() {}

@@ -12,12 +12,53 @@ const char* lbl_80539F38 = "kk_black.bti";
 // Thresholds that the value at fn_8011921C()->field_0x8 is matched against.
 const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
 
-void cls_8049E500::init() {
-    cls_8049D140::init();
-    // '????' (escaped: "??'" would be a trigraph).
-    field_0x23c = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_80539F38);
-    getGameView_802D6A9C()->fn_802D7440(false);
-    fn_80128728(0);
+// Stores the value in the byte at 0xC of gGameRoot2_8053AB10->0x2C (ShadowCircle_804A0160).
+void fn_80128C58(s32 value) {
+    gGameRoot2_8053AB10->field_0x2c->field_0xc = value;
+}
+
+s32 cls_8049E500::vfunc_0x5C() {
+    return field_0x230 == 10;
+}
+
+s32 cls_8049E500::vfunc_0x58() {
+    return field_0x230;
+}
+
+void cls_8049E500::draw() {
+    fn_80128C58((s32)field_0x234);
+    if (field_0x230 >= 1 && field_0x230 <= 3) {
+        lbl_8053AF38->fn_8044C028(field_0x238);
+    }
+    cls_8049D140::draw();
+}
+
+cls_8049E500::~cls_8049E500() {
+    field_0x23c = 0;
+}
+
+void cls_8049E500::vfunc_0x54() {
+    if (fn_8011921C()->field_0x4 != 0xC) {
+        return;
+    }
+    s32 value = fn_8011921C()->field_0x8;
+    if (value == lbl_80464FC0[1]) {
+        fn_80128728(1);
+    } else if (value == lbl_80464FC0[4]) {
+        fn_80128728(4);
+    } else if (value == lbl_80464FC0[5]) {
+        fn_80128728(5);
+    } else if (value == lbl_80464FC0[6]) {
+        fn_80128728(6);
+    } else if (value == lbl_80464FC0[7]) {
+        fn_80128728(7);
+    } else if (value == lbl_80464FC0[8]) {
+        fn_80128728(8);
+    } else if (value == lbl_80464FC0[9]) {
+        fn_80128728(9);
+    } else if (value == lbl_80464FC0[10]) {
+        fn_80128728(10);
+    }
 }
 
 // FIXME: 84.86%. try.py class: scheduling+regalloc with reloc-name. The
@@ -97,51 +138,10 @@ void cls_8049E500::update() {
     }
 }
 
-void cls_8049E500::vfunc_0x54() {
-    if (fn_8011921C()->field_0x4 != 0xC) {
-        return;
-    }
-    s32 value = fn_8011921C()->field_0x8;
-    if (value == lbl_80464FC0[1]) {
-        fn_80128728(1);
-    } else if (value == lbl_80464FC0[4]) {
-        fn_80128728(4);
-    } else if (value == lbl_80464FC0[5]) {
-        fn_80128728(5);
-    } else if (value == lbl_80464FC0[6]) {
-        fn_80128728(6);
-    } else if (value == lbl_80464FC0[7]) {
-        fn_80128728(7);
-    } else if (value == lbl_80464FC0[8]) {
-        fn_80128728(8);
-    } else if (value == lbl_80464FC0[9]) {
-        fn_80128728(9);
-    } else if (value == lbl_80464FC0[10]) {
-        fn_80128728(10);
-    }
-}
-
-cls_8049E500::~cls_8049E500() {
-    field_0x23c = 0;
-}
-
-void cls_8049E500::draw() {
-    fn_80128C58((s32)field_0x234);
-    if (field_0x230 >= 1 && field_0x230 <= 3) {
-        lbl_8053AF38->fn_8044C028(field_0x238);
-    }
-    cls_8049D140::draw();
-}
-
-s32 cls_8049E500::vfunc_0x58() {
-    return field_0x230;
-}
-
-s32 cls_8049E500::vfunc_0x5C() {
-    return field_0x230 == 10;
-}
-
-// Stores the value in the byte at 0xC of gGameRoot2_8053AB10->0x2C (ShadowCircle_804A0160).
-void fn_80128C58(s32 value) {
-    gGameRoot2_8053AB10->field_0x2c->field_0xc = value;
+void cls_8049E500::init() {
+    cls_8049D140::init();
+    // '????' (escaped: "??'" would be a trigraph).
+    field_0x23c = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_80539F38);
+    getGameView_802D6A9C()->fn_802D7440(false);
+    fn_80128728(0);
 }

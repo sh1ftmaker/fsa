@@ -10,7 +10,6 @@
 #include "game/act/tu_803DA6B4.h"
 #include "game/cls_804A8638.h"
 
-BattleRoyaleEndCheck_804B0380::~BattleRoyaleEndCheck_804B0380() {}
 
 // The state table: update() calls the function for mState. The original's copy
 // of it is zero in .data and the global constructor fn_803D6DC0 fills it at run
@@ -34,58 +33,110 @@ static inline void startCameraMove(Camera_804AA9E4* camera, s32 target) {
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
-    s32 winner = mWinner;
-    if (winner != -1) {
-        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
-    } else {
-        startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
+void BattleRoyaleEndCheck_804B0380::init() {
+    mState = 0;
+    mWinner = -1;
+    mTimer = 0x82;
+    field_0x238 = 0;
+    mFocus = 0xFF;
+    for (s32 i = 3; i >= 0; i--) {
+        mPlayerFlag[i] = 0;
     }
-    if (lbl_8053AD30->fn_80309C4C(0x1100, -1) != 0) {
-        gGameRoot_8053AAF8->fn_801367E0(0xA);
-        if (mWinner != -1) {
-            lbl_80529DEC.field_0x140[mWinner]++;
-            lbl_80529DEC.field_0x243[0] = 0;
-            lbl_80529DEC.field_0x64 = mWinner;
-            lbl_80529DEC.field_0x243[0] = 1 << mWinner;
-        } else {
-            s32 pick = (s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-            if (pick >= 3) {
-                pick = 2;
+    field_0x11f = 1;
+    lbl_80529DEC.field_0x1a8 = -1;
+}
+
+void BattleRoyaleEndCheck_804B0380::update() {
+    (this->*lbl_804B032C[mState])();
+}
+
+void BattleRoyaleEndCheck_804B0380::draw() {
+    if (mFocus != 0xFF) {
+        lbl_8053AED0->field_0x256 = mFocus;
+    }
+    if (mState == 6) {
+        lbl_8053ADC8->field_0x20 = 1;
+        lbl_8053ADC8->field_0x21 = 3;
+    }
+}
+
+void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
+    if (fn_80239F10()) {
+        for (s32 i = 0; i < 4; i++) {
+            u8 bit = 1 << i;
+            if (gGameRoot_8053AAF8->mPlayerMask & bit) {
+                if (!fn_80236B50(i)) {
+                    mWinner = i;
+                }
             }
-            lbl_80529DEC.field_0x64 = pick;
         }
-        lbl_8053AD78->field_0xe4 = 0;
-        gAudioMgr_8053AF80->fn_80458880(0xB, -1);
-        mAlive = false;
+        if (mWinner >= 0) {
+            lbl_80529DEC.field_0x1a8 = mWinner;
+        } else {
+            lbl_80529DEC.field_0x1a8 = 4;
+        }
+        // FIXME: 99.59 %. Regalloc only: the original keeps the actor bound in
+        // r30 and the byte offset of mActors[i] in r29; this puts them the other way.
+        s32 actorEnd = getActorManager_801F856C()->mActorEnd;
+        for (s32 i = 0; i < actorEnd; i++) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == 'SWEV') {
+                static_cast<cls_804A8638*>(actor)->fn_802B3A48();
+            }
+        }
+        getGameView_802D6A9C()->fn_802D7440(false);
+        lbl_80529DEC.field_0x240 = 1;
+        mState = 1;
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D6618() {
-    s32 winner = mWinner;
-    if (winner != -1) {
-        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
-    } else {
+void BattleRoyaleEndCheck_804B0380::fn_803D6AE8() {
+    s32 count = 0;
+    s32 matched = 0;
+    for (s32 i = 0; i < 4; i++) {
+        mPlayerFlag[i] = 0;
+        if (!fn_80236B50(i)) {
+            count++;
+            if (fn_802300EC(i) == true) {
+                mPlayerFlag[i] = 1;
+                matched++;
+            }
+        }
+    }
+    if (matched == count) {
+        for (s32 i = 0; i < 4; i++) {
+            if (mPlayerFlag[i] != 0) {
+                fn_80230AD4(i);
+            }
+        }
         startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
+        lbl_8053AED0->field_0xdc |= 0x10;
+        mState = 2;
     }
-    if (mTimer <= 0) {
-        return;
-    }
-    mTimer--;
-    if (mTimer != 0) {
-        return;
-    }
-    mState = 6;
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D66A8() {
+void BattleRoyaleEndCheck_804B0380::fn_803D69AC() {
     mTimer--;
     startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     if (mTimer <= 0) {
-        mFocus = 4;
-        mTimer = 0x82;
-        mState = 5;
-        gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        if (mWinner == -1) {
+            mState = 4;
+            gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+            gGameRoot_8053AAF8->fn_801365C8(0);
+            mTimer = 1;
+            return;
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (mPlayerFlag[i] != 0) {
+                if (i == mWinner || fn_8022F3DC(i) == mWinner) {
+                    fn_80230498(i, getPlayerPos_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
+                }
+            }
+        }
+        mState = 3;
+        gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+        gGameRoot_8053AAF8->fn_801365C8(0);
+        mTimer = 1;
     }
 }
 
@@ -137,109 +188,59 @@ void BattleRoyaleEndCheck_804B0380::fn_803D6730() {
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D69AC() {
+void BattleRoyaleEndCheck_804B0380::fn_803D66A8() {
     mTimer--;
     startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
     if (mTimer <= 0) {
-        if (mWinner == -1) {
-            mState = 4;
-            gAudioMgr_8053AF80->fn_80458F9C(0x3C);
-            gGameRoot_8053AAF8->fn_801365C8(0);
-            mTimer = 1;
-            return;
-        }
-        for (s32 i = 0; i < 4; i++) {
-            if (mPlayerFlag[i] != 0) {
-                if (i == mWinner || fn_8022F3DC(i) == mWinner) {
-                    fn_80230498(i, getPlayerPos_8023E724(i), 0x3E, 0xFF, -0x80, -0x80, true);
-                }
-            }
-        }
-        mState = 3;
-        gAudioMgr_8053AF80->fn_80458F9C(0x3C);
-        gGameRoot_8053AAF8->fn_801365C8(0);
-        mTimer = 1;
+        mFocus = 4;
+        mTimer = 0x82;
+        mState = 5;
+        gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D6AE8() {
-    s32 count = 0;
-    s32 matched = 0;
-    for (s32 i = 0; i < 4; i++) {
-        mPlayerFlag[i] = 0;
-        if (!fn_80236B50(i)) {
-            count++;
-            if (fn_802300EC(i) == true) {
-                mPlayerFlag[i] = 1;
-                matched++;
-            }
-        }
-    }
-    if (matched == count) {
-        for (s32 i = 0; i < 4; i++) {
-            if (mPlayerFlag[i] != 0) {
-                fn_80230AD4(i);
-            }
-        }
+void BattleRoyaleEndCheck_804B0380::fn_803D6618() {
+    s32 winner = mWinner;
+    if (winner != -1) {
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
+    } else {
         startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
-        lbl_8053AED0->field_0xdc |= 0x10;
-        mState = 2;
     }
+    if (mTimer <= 0) {
+        return;
+    }
+    mTimer--;
+    if (mTimer != 0) {
+        return;
+    }
+    mState = 6;
 }
 
-void BattleRoyaleEndCheck_804B0380::fn_803D6BDC() {
-    if (fn_80239F10()) {
-        for (s32 i = 0; i < 4; i++) {
-            u8 bit = 1 << i;
-            if (gGameRoot_8053AAF8->mPlayerMask & bit) {
-                if (!fn_80236B50(i)) {
-                    mWinner = i;
-                }
-            }
-        }
-        if (mWinner >= 0) {
-            lbl_80529DEC.field_0x1a8 = mWinner;
+void BattleRoyaleEndCheck_804B0380::fn_803D6494() {
+    s32 winner = mWinner;
+    if (winner != -1) {
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, winner);
+    } else {
+        startCameraMove(gGameRoot2_8053AB10->field_0x24, -1);
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1100, -1) != 0) {
+        gGameRoot_8053AAF8->fn_801367E0(0xA);
+        if (mWinner != -1) {
+            lbl_80529DEC.field_0x140[mWinner]++;
+            lbl_80529DEC.field_0x243[0] = 0;
+            lbl_80529DEC.field_0x64 = mWinner;
+            lbl_80529DEC.field_0x243[0] = 1 << mWinner;
         } else {
-            lbl_80529DEC.field_0x1a8 = 4;
-        }
-        // FIXME: 99.59 %. Regalloc only: the original keeps the actor bound in
-        // r30 and the byte offset of mActors[i] in r29; this puts them the other way.
-        s32 actorEnd = getActorManager_801F856C()->mActorEnd;
-        for (s32 i = 0; i < actorEnd; i++) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-            if (actor != NULL && actor->mActorId == 'SWEV') {
-                static_cast<cls_804A8638*>(actor)->fn_802B3A48();
+            s32 pick = (s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+            if (pick >= 3) {
+                pick = 2;
             }
+            lbl_80529DEC.field_0x64 = pick;
         }
-        getGameView_802D6A9C()->fn_802D7440(false);
-        lbl_80529DEC.field_0x240 = 1;
-        mState = 1;
+        lbl_8053AD78->field_0xe4 = 0;
+        gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        mAlive = false;
     }
 }
 
-void BattleRoyaleEndCheck_804B0380::draw() {
-    if (mFocus != 0xFF) {
-        lbl_8053AED0->field_0x256 = mFocus;
-    }
-    if (mState == 6) {
-        lbl_8053ADC8->field_0x20 = 1;
-        lbl_8053ADC8->field_0x21 = 3;
-    }
-}
-
-void BattleRoyaleEndCheck_804B0380::update() {
-    (this->*lbl_804B032C[mState])();
-}
-
-void BattleRoyaleEndCheck_804B0380::init() {
-    mState = 0;
-    mWinner = -1;
-    mTimer = 0x82;
-    field_0x238 = 0;
-    mFocus = 0xFF;
-    for (s32 i = 3; i >= 0; i--) {
-        mPlayerFlag[i] = 0;
-    }
-    field_0x11f = 1;
-    lbl_80529DEC.field_0x1a8 = -1;
-}
+BattleRoyaleEndCheck_804B0380::~BattleRoyaleEndCheck_804B0380() {}

@@ -4,8 +4,6 @@
 #include "game/RotMatrix.h"
 #include "game/act/act_hardhat_beetle.h"
 
-HardhatBeetle_804A06C0::~HardhatBeetle_804A06C0() {}
-
 // FIXME: 99.0 %. regalloc-only: the original keeps mScale in f29 and cos x
 // in f31, ours the other way round, and sin x / sin z get f28 / f26 there,
 // f26 / f28 here.
@@ -31,3 +29,5 @@ void HardhatBeetle_804A06C0::draw() {
         drawSprite_801F06F0("enemy_gc_sob.bin", mFrame + 0x92, NULL, 0, 1.0f, 1.0f);
     }
 }
+
+HardhatBeetle_804A06C0::~HardhatBeetle_804A06C0() {}

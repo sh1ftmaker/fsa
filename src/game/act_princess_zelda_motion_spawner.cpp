@@ -1,10 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_princess_zelda_motion_spawner.h"
 
-PrincessZeldaMotionObjectSpawner_804A375C::~PrincessZeldaMotionObjectSpawner_804A375C() {}
-
-void PrincessZeldaMotionObjectSpawner_804A375C::draw() {}
-
 // FIXME: 99.8 %. Code identical; only the float literal relocations differ
 // (this unit's .sdata2 literals are not split to match yet).
 void PrincessZeldaMotionObjectSpawner_804A375C::init() {
@@ -54,3 +50,7 @@ void PrincessZeldaMotionObjectSpawner_804A375C::init() {
         break;
     }
 }
+
+void PrincessZeldaMotionObjectSpawner_804A375C::draw() {}
+
+PrincessZeldaMotionObjectSpawner_804A375C::~PrincessZeldaMotionObjectSpawner_804A375C() {}

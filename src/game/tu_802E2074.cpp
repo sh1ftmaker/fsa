@@ -10,10 +10,6 @@ s32 lbl_804D4768[0x90];
 // Frame counter of the update; 0 after init.
 s32 lbl_8053ACB0;
 
-cls_804A9BC8::~cls_804A9BC8() {}
-
-void cls_804A9BC8::draw() {}
-
 // FIXME: 86.53 %. The original fills lbl_804D4768 with two passes of 40
 // unrolled stores (ctr 2, stride 0xA0); this loop compiles to one store per
 // pass. The archive type is built as 0x42202020 with the first two chars
@@ -45,3 +41,7 @@ void cls_804A9BC8::init() {
     field_0x240 = 0;
     field_0x230 = 2;
 }
+
+void cls_804A9BC8::draw() {}
+
+cls_804A9BC8::~cls_804A9BC8() {}

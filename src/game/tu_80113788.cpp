@@ -6,20 +6,6 @@ static const s32 lbl_80464830[15] = {
     0x14C, 0x173, 0x20E, 0x21A, 0x29B, 0x2B1, 0x2CD,
 };
 
-s32 cls_8049D83C::vfunc_0x58() {
-    return field_0x23c;
-}
-
-s32 cls_8049D83C::vfunc_0x5C() {
-    switch (field_0x23c) {
-    case 0xA:
-    case 0x11:
-        return 1;
-    default:
-        return 0;
-    }
-}
-
 void cls_8049D83C::draw() {
     cls_8049D140::draw();
     fn_80113790();
@@ -33,4 +19,18 @@ void cls_8049D83C::draw() {
         }
         break;
     }
+}
+
+s32 cls_8049D83C::vfunc_0x5C() {
+    switch (field_0x23c) {
+    case 0xA:
+    case 0x11:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+s32 cls_8049D83C::vfunc_0x58() {
+    return field_0x23c;
 }

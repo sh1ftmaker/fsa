@@ -9,6 +9,10 @@ public:
     /* 0x0 */ u32 field_0x0;
 };
 
+void cls_802157B8::fn_80215864() {
+    field_0x0 = 0;
+}
+
 void cls_802157B8::fn_802157B8(u8 arg) {
     field_0x0 |= 0x48;
     if (arg >= 5) {
@@ -35,8 +39,4 @@ void cls_802157B8::fn_802157B8(u8 arg) {
         field_0x0 |= 0x7;
         break;
     }
-}
-
-void cls_802157B8::fn_80215864() {
-    field_0x0 = 0;
 }

@@ -9,10 +9,10 @@
 #include "game/ActorBase.h"
 #include "game/act/act_boss_display_test_npc.h"
 
-BossDisplayTestNpc_8049C7F0::~BossDisplayTestNpc_8049C7F0() {}
-
-void BossDisplayTestNpc_8049C7F0::draw() {}
+void BossDisplayTestNpc_8049C7F0::init() {}
 
 void BossDisplayTestNpc_8049C7F0::update() {}
 
-void BossDisplayTestNpc_8049C7F0::init() {}
+void BossDisplayTestNpc_8049C7F0::draw() {}
+
+BossDisplayTestNpc_8049C7F0::~BossDisplayTestNpc_8049C7F0() {}

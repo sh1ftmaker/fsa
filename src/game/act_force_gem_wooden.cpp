@@ -11,52 +11,74 @@
 // The ids fn_801F26CC searches for: 'FIRE', 'BLZE', 'DDGO', then the 'NULL' end.
 static const u32 lbl_80471708[4] = {'FIRE', 'BLZE', 'DDGO', 'NULL'};
 
-// FIXME: 98.60 %. Register allocation and scheduling only: the scale (field_0x240,
-// or field_0x238 * field_0x240 in the branch) and the sine results sit in other
-// saved registers than the original's, and the products take another operand order.
-void WoodenForceGem_804AB1F0::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtxA;
-    Mtx mtxB;
-    JGeometry::TVec3f saved;
-    const char* name = "enemy_both2_sob.bin";
-    s32 frame = 0x89;
-    if (field_0x248 == 1) {
-        name = "enemy_gc_sob.bin";
-        frame = field_0x250 + 0x471;
+WoodenForceGem_804AB1F0::~WoodenForceGem_804AB1F0() {
+    releaseEmitter_801EE434(mEmitter268);
+}
+
+void WoodenForceGem_804AB1F0::init() {
+    field_0x258 = field_0x90 & 0xF;
+    field_0x248 = (field_0x90 >> 16) & 0xF;
+    mEmitter268 = NULL;
+    field_0x260 = (field_0x90 >> 22) & 0x1F;
+    field_0xb0 = 0x2300;
+    field_0x230 = 0;
+    field_0x264 = 0;
+    mLife = 10000;
+    field_0x244 = 0;
+    field_0x254 = -1;
+    field_0x98 = 0;
+    field_0x238 = 1.0f;
+    field_0x23c = 0.0f;
+    field_0x25c = 0;
+    field_0x24c = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
+    field_0x250 = 0;
+    if (field_0x258 == 4 || field_0x258 == 5) {
+        field_0x240 = 0.6f;
+    } else {
+        field_0x240 = 1.0f;
     }
-    params.field_0x2d = 1;
-    params.field_0x1d = -1;
-    if (field_0x230 == 2 || field_0x230 == 3) {
-        f32 scale = field_0x238 * field_0x240;
-        PSMTXIdentity(mtxA);
-        setRotScaleMtx(mtxA, JGeometry::TVec3f(0.0f, field_0x23c, 0.0f), scale);
-        params.mMtx = mtxA;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-        }
+    if (vfunc_0x34()) {
+        fn_801F3668();
         return;
     }
-    params.field_0x1d = 0;
-    PSMTXIdentity(mtxB);
-    setRotScaleMtx(mtxB, JGeometry::TVec3f(0.0f, field_0x23c, 0.0f), field_0x240);
-    params.mMtx = mtxB;
-    if (mPos.z != 0.0f) {
-        params.field_0x1c = 1;
+    field_0x234 = 30.0f;
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x80.i.x = -6.0f;
+    field_0x80.i.y = -6.0f;
+    field_0x80.f.x = 6.0f;
+    field_0x80.f.y = 6.0f;
+    mBox.i.x = -7.0f;
+    mBox.i.y = -7.0f;
+    mBox.f.x = 7.0f;
+    mBox.f.y = 7.0f;
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
+        fn_801F3668();
     }
-    if (field_0x258 == 4 || field_0x258 == 5) {
-        drawSprite_801F06F0(name, frame, &params, -1, 1.0f, 1.0f);
-        saved = mPos;
-        mPos.y -= 1.0f;
-        if (mSpriteParams.mMtx == NULL) {
-            fn_801EF830(field_0x4, &mPos, &params, 7, name, frame, NULL);
+}
+
+bool WoodenForceGem_804AB1F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    s32 tile = fn_8022461C(pos, layer);
+    if (tile == 0xC || tile == 3 || tile == 0xE) {
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x230 = 2;
+        return false;
+    }
+    if (tile == 0xD) {
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        if (mEmitter268 == NULL) {
+            mEmitter268 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x30022, 0);
         }
-        mPos = saved;
-    } else {
-        drawSprite_801F06F0(name, frame, &params, 7, 1.0f, 1.0f);
+        field_0x230 = 3;
+        return false;
     }
-    fn_803075AC(mSerial, field_0x4, &mPos, frame, false, 2, -1, 0, 0, 0);
+    return tile != 0;
 }
 
 // FIXME: 98.27%. The emitter block in case 3 still differs: the original also stores 1
@@ -146,72 +168,50 @@ void WoodenForceGem_804AB1F0::update() {
     }
 }
 
-bool WoodenForceGem_804AB1F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    s32 tile = fn_8022461C(pos, layer);
-    if (tile == 0xC || tile == 3 || tile == 0xE) {
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
-        field_0x230 = 2;
-        return false;
+// FIXME: 98.60 %. Register allocation and scheduling only: the scale (field_0x240,
+// or field_0x238 * field_0x240 in the branch) and the sine results sit in other
+// saved registers than the original's, and the products take another operand order.
+void WoodenForceGem_804AB1F0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtxA;
+    Mtx mtxB;
+    JGeometry::TVec3f saved;
+    const char* name = "enemy_both2_sob.bin";
+    s32 frame = 0x89;
+    if (field_0x248 == 1) {
+        name = "enemy_gc_sob.bin";
+        frame = field_0x250 + 0x471;
     }
-    if (tile == 0xD) {
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
-        if (mEmitter268 == NULL) {
-            mEmitter268 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
-            startSound_801F0E34(0x30022, 0);
+    params.field_0x2d = 1;
+    params.field_0x1d = -1;
+    if (field_0x230 == 2 || field_0x230 == 3) {
+        f32 scale = field_0x238 * field_0x240;
+        PSMTXIdentity(mtxA);
+        setRotScaleMtx(mtxA, JGeometry::TVec3f(0.0f, field_0x23c, 0.0f), scale);
+        params.mMtx = mtxA;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
-        field_0x230 = 3;
-        return false;
-    }
-    return tile != 0;
-}
-
-void WoodenForceGem_804AB1F0::init() {
-    field_0x258 = field_0x90 & 0xF;
-    field_0x248 = (field_0x90 >> 16) & 0xF;
-    mEmitter268 = NULL;
-    field_0x260 = (field_0x90 >> 22) & 0x1F;
-    field_0xb0 = 0x2300;
-    field_0x230 = 0;
-    field_0x264 = 0;
-    mLife = 10000;
-    field_0x244 = 0;
-    field_0x254 = -1;
-    field_0x98 = 0;
-    field_0x238 = 1.0f;
-    field_0x23c = 0.0f;
-    field_0x25c = 0;
-    field_0x24c = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 60.0f) + 60;
-    field_0x250 = 0;
-    if (field_0x258 == 4 || field_0x258 == 5) {
-        field_0x240 = 0.6f;
-    } else {
-        field_0x240 = 1.0f;
-    }
-    if (vfunc_0x34()) {
-        fn_801F3668();
         return;
     }
-    field_0x234 = 30.0f;
-    field_0x3c.x = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0x80.i.x = -6.0f;
-    field_0x80.i.y = -6.0f;
-    field_0x80.f.x = 6.0f;
-    field_0x80.f.y = 6.0f;
-    mBox.i.x = -7.0f;
-    mBox.i.y = -7.0f;
-    mBox.f.x = 7.0f;
-    mBox.f.y = 7.0f;
-    if (gGameRoot_8053AAF8->field_0x7f == 0) {
-        fn_801F3668();
+    params.field_0x1d = 0;
+    PSMTXIdentity(mtxB);
+    setRotScaleMtx(mtxB, JGeometry::TVec3f(0.0f, field_0x23c, 0.0f), field_0x240);
+    params.mMtx = mtxB;
+    if (mPos.z != 0.0f) {
+        params.field_0x1c = 1;
     }
-}
-
-WoodenForceGem_804AB1F0::~WoodenForceGem_804AB1F0() {
-    releaseEmitter_801EE434(mEmitter268);
+    if (field_0x258 == 4 || field_0x258 == 5) {
+        drawSprite_801F06F0(name, frame, &params, -1, 1.0f, 1.0f);
+        saved = mPos;
+        mPos.y -= 1.0f;
+        if (mSpriteParams.mMtx == NULL) {
+            fn_801EF830(field_0x4, &mPos, &params, 7, name, frame, NULL);
+        }
+        mPos = saved;
+    } else {
+        drawSprite_801F06F0(name, frame, &params, 7, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, frame, false, 2, -1, 0, 0, 0);
 }

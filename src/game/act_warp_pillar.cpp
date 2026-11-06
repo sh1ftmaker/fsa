@@ -9,7 +9,47 @@
 
 static const u16 lbl_805420A0[4] = {0x4E3, 0x4E5, 0x4E2, 0x4E4};
 
-void WarpPillar_804AC0A8::draw() {}
+WarpPillar_804AC0A8::~WarpPillar_804AC0A8() {
+    releaseEmitter_801EE434(mEmitter264);
+    releaseEmitter_801EE434(mEmitter268);
+    for (s32 i = 0; i < 4; i++) {
+        releaseEmitter_801EE434(mEmitter26c[i]);
+    }
+}
+
+void WarpPillar_804AC0A8::init() {
+    field_0x94 = field_0x90 & 0xF;
+    mLife = 10000;
+    field_0x230 = 0;
+    field_0x234 = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x238 = (field_0x90 >> 4) & 0xF;
+    field_0x23c = (field_0x90 >> 8) & 0xF;
+    field_0x258 = 0.0f;
+    mEmitter264 = NULL;
+    mEmitter268 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x25c[i] = false;
+        mEmitter26c[i] = NULL;
+        field_0x248[i] = 0;
+        field_0x260[i] = false;
+    }
+
+    if (mEmitter264 == NULL) {
+        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
+        mEmitter264 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, 1.0f);
+    }
+    if (mEmitter268 == NULL) {
+        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
+        mEmitter268 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, 1.0f);
+    }
+
+    mBox.i.x = -47.0f;
+    mBox.i.y = -47.0f;
+    mBox.f.x = 47.0f;
+    mBox.f.y = 15.0f;
+}
 
 // FIXME: 94.3 %. Register allocation differs (this in r28 and the loop
 // counter in r27 in the original), `order` is copied from a .rodata table
@@ -186,44 +226,4 @@ void WarpPillar_804AC0A8::update() {
     }
 }
 
-void WarpPillar_804AC0A8::init() {
-    field_0x94 = field_0x90 & 0xF;
-    mLife = 10000;
-    field_0x230 = 0;
-    field_0x234 = 0;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x238 = (field_0x90 >> 4) & 0xF;
-    field_0x23c = (field_0x90 >> 8) & 0xF;
-    field_0x258 = 0.0f;
-    mEmitter264 = NULL;
-    mEmitter268 = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        field_0x25c[i] = false;
-        mEmitter26c[i] = NULL;
-        field_0x248[i] = 0;
-        field_0x260[i] = false;
-    }
-
-    if (mEmitter264 == NULL) {
-        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
-        mEmitter264 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E0, 1, 2, NULL, NULL, true, 1.0f);
-    }
-    if (mEmitter268 == NULL) {
-        JGeometry::TVec3f pos(mPos.x, 16.0f + mPos.y, mPos.z);
-        mEmitter268 = spawnEmitter_8013CC50(field_0x4, &pos, 0x4E1, 1, 2, NULL, NULL, true, 1.0f);
-    }
-
-    mBox.i.x = -47.0f;
-    mBox.i.y = -47.0f;
-    mBox.f.x = 47.0f;
-    mBox.f.y = 15.0f;
-}
-
-WarpPillar_804AC0A8::~WarpPillar_804AC0A8() {
-    releaseEmitter_801EE434(mEmitter264);
-    releaseEmitter_801EE434(mEmitter268);
-    for (s32 i = 0; i < 4; i++) {
-        releaseEmitter_801EE434(mEmitter26c[i]);
-    }
-}
+void WarpPillar_804AC0A8::draw() {}

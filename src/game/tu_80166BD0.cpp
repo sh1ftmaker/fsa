@@ -9,25 +9,14 @@
 s32 lbl_804A0638[6] = {0, 1, 2, 3, 2, 1};
 s32 lbl_804A0650[6] = {12, 8, 8, 12, 8, 8};
 
-// FIXME: 99.0 %. Register allocation only: the scale (0x258) sits in f31 and
-// the first sin result in f26 where the original has f29 and f28.
-void MojamojaUnidentifiedEnemy_804A0668::draw() {
-    if (field_0x230 == 3) {
-        SpriteParams_801F5AE0 params;
-        Mtx mtx;
-        mtx[0][3] = 0.0f;
-        mtx[1][3] = 0.0f;
-        mtx[2][3] = 0.0f;
-        JGeometry::TVec3f rot(0.0f, field_0x25c, 0.0f);
-        setRotScaleMtx(mtx, rot, field_0x258);
-        params.mMtx = mtx;
-        s32 frame = field_0x250 + 0x9d;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-        }
-    } else {
-        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x250 + 0x9d, NULL, 0, 1.0f, 1.0f);
+MojamojaUnidentifiedEnemy_804A0668::~MojamojaUnidentifiedEnemy_804A0668() {
+    releaseEmitter_801EE434(mEmitter26c);
+}
+
+void MojamojaUnidentifiedEnemy_804A0668::vfunc_0x44() {
+    if (mEmitter26c != NULL) {
+        mEmitter26c->becomeInvalidEmitter();
+        mEmitter26c = NULL;
     }
 }
 
@@ -56,13 +45,24 @@ void MojamojaUnidentifiedEnemy_804A0668::init() {
     field_0x230 = 0;
 }
 
-void MojamojaUnidentifiedEnemy_804A0668::vfunc_0x44() {
-    if (mEmitter26c != NULL) {
-        mEmitter26c->becomeInvalidEmitter();
-        mEmitter26c = NULL;
+// FIXME: 99.0 %. Register allocation only: the scale (0x258) sits in f31 and
+// the first sin result in f26 where the original has f29 and f28.
+void MojamojaUnidentifiedEnemy_804A0668::draw() {
+    if (field_0x230 == 3) {
+        SpriteParams_801F5AE0 params;
+        Mtx mtx;
+        mtx[0][3] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        JGeometry::TVec3f rot(0.0f, field_0x25c, 0.0f);
+        setRotScaleMtx(mtx, rot, field_0x258);
+        params.mMtx = mtx;
+        s32 frame = field_0x250 + 0x9d;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+    } else {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x250 + 0x9d, NULL, 0, 1.0f, 1.0f);
     }
-}
-
-MojamojaUnidentifiedEnemy_804A0668::~MojamojaUnidentifiedEnemy_804A0668() {
-    releaseEmitter_801EE434(mEmitter26c);
 }

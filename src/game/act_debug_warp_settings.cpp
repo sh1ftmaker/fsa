@@ -9,16 +9,16 @@
 #include "game/ActorBase.h"
 #include "game/act/act_debug_warp_settings.h"
 
-DebugWarpSettings_8049C9E8::~DebugWarpSettings_8049C9E8() {}
-
-void DebugWarpSettings_8049C9E8::draw() {}
-
-void DebugWarpSettings_8049C9E8::update() {
-    fn_801F3668();
-}
-
 void DebugWarpSettings_8049C9E8::init() {
     field_0x238 = (field_0x90 >> 16) & 0xFF;
     field_0x23c = (field_0x90 >> 8) & 0xFF;
     field_0x230 = 0;
 }
+
+void DebugWarpSettings_8049C9E8::update() {
+    fn_801F3668();
+}
+
+void DebugWarpSettings_8049C9E8::draw() {}
+
+DebugWarpSettings_8049C9E8::~DebugWarpSettings_8049C9E8() {}

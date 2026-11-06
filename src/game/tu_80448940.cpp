@@ -58,6 +58,73 @@ static const char* lbl_804B1C68[10] = {
     "kk_rupyNum_09.bti",
 };
 
+cls_804B1C90::cls_804B1C90() {
+    lbl_8053AF18 = this;
+    mScreen = new J2DScreen();
+    mScreen->setPriority("mg_geldman.blo", 0x1100000, lbl_80529DEC.field_0x10);
+    field_0x8 = new PaneCtrl_804AF86C();
+    field_0x8->setPane_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
+    for (s32 i = 0; i < 4; i++) {
+        field_0xc[i] = new PaneCtrl_804AF86C();
+        field_0xc[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][6]));
+        field_0x1c[i] = new PaneCtrl_804AF86C();
+        field_0x1c[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][13]));
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2c[i] = 0;
+    }
+    field_0x30 = 0;
+    field_0x31 = 0;
+    field_0x32 = 0;
+}
+
+cls_804B1C90::~cls_804B1C90() {
+    delete mScreen;
+    mScreen = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0xc[i];
+        field_0xc[i] = NULL;
+        delete field_0x1c[i];
+        field_0x1c[i] = NULL;
+    }
+    lbl_8053AF18 = NULL;
+}
+
+void cls_804B1C90::fn_804490B8() {
+    const ResTIMG* res;
+    for (s32 i = 0; i < 4; i++) {
+        u8 bit = 1 << i;
+        field_0x32 &= ~bit;
+        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1C68[0]));
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][9]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][10]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][11]))->changeTexture(res, 0);
+        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][12]))->changeTexture(res, 0);
+    }
+    field_0x32 &= ~0x10;
+    res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1C68[0]));
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[4]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[5]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[6]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[7]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[8]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[9]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[10]))->changeTexture(res, 0);
+    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[11]))->changeTexture(res, 0);
+    for (s32 i = 0; i < 4; i++) {
+        mScreen->search(lbl_80490940[i][6])->hide();
+        mScreen->search(lbl_80490940[i][13])->hide();
+    }
+    mScreen->search(lbl_80490B00[12])->hide();
+}
+
+void cls_804B1C90::fn_80449070() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+}
+
 // FIXME: 91.28 %. In the slot loop the original divides field_0x2c[i] by ten
 // twice, once for the units (kept in r26 across the first fn_804030C4 call)
 // and once for the index; ours shares one division and computes the units
@@ -134,72 +201,5 @@ void cls_804B1C90::fn_80448940() {
         static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[10]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[11]))->changeTexture(res, 0);
     }
-    field_0x32 = 0;
-}
-
-void cls_804B1C90::fn_80449070() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-}
-
-void cls_804B1C90::fn_804490B8() {
-    const ResTIMG* res;
-    for (s32 i = 0; i < 4; i++) {
-        u8 bit = 1 << i;
-        field_0x32 &= ~bit;
-        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1C68[0]));
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][9]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][10]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][11]))->changeTexture(res, 0);
-        static_cast<J2DPicture*>(mScreen->search(lbl_80490940[i][12]))->changeTexture(res, 0);
-    }
-    field_0x32 &= ~0x10;
-    res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1C68[0]));
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[4]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[5]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[6]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[7]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[8]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[9]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[10]))->changeTexture(res, 0);
-    static_cast<J2DPicture*>(mScreen->search(lbl_80490B00[11]))->changeTexture(res, 0);
-    for (s32 i = 0; i < 4; i++) {
-        mScreen->search(lbl_80490940[i][6])->hide();
-        mScreen->search(lbl_80490940[i][13])->hide();
-    }
-    mScreen->search(lbl_80490B00[12])->hide();
-}
-
-cls_804B1C90::~cls_804B1C90() {
-    delete mScreen;
-    mScreen = NULL;
-    delete field_0x8;
-    field_0x8 = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0xc[i];
-        field_0xc[i] = NULL;
-        delete field_0x1c[i];
-        field_0x1c[i] = NULL;
-    }
-    lbl_8053AF18 = NULL;
-}
-
-cls_804B1C90::cls_804B1C90() {
-    lbl_8053AF18 = this;
-    mScreen = new J2DScreen();
-    mScreen->setPriority("mg_geldman.blo", 0x1100000, lbl_80529DEC.field_0x10);
-    field_0x8 = new PaneCtrl_804AF86C();
-    field_0x8->setPane_80402F04(mScreen->search(0x004E646174613030ull /* "Ndata00" */));
-    for (s32 i = 0; i < 4; i++) {
-        field_0xc[i] = new PaneCtrl_804AF86C();
-        field_0xc[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][6]));
-        field_0x1c[i] = new PaneCtrl_804AF86C();
-        field_0x1c[i]->setPane_80402F04(mScreen->search(lbl_80490940[i][13]));
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x2c[i] = 0;
-    }
-    field_0x30 = 0;
-    field_0x31 = 0;
     field_0x32 = 0;
 }

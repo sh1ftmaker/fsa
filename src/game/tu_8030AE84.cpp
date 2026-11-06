@@ -3,82 +3,30 @@
 #include "game/Player.h"
 #include "game/tu_8030AE84.h"
 
-void cls_804AA8D8::fn_8030AE84(JGeometry::TBox2f* out) {
-    out->i.x = (f32)field_0x290;
-    out->i.y = (f32)field_0x294;
-    out->f.x = (f32)(field_0x290 + 0xF0);
-    out->f.y = (f32)(field_0x294 + 0xA0);
+cls_804AA8D8::cls_804AA8D8() {
+    field_0x28c = 0;
+    field_0x2b4 = -1;
+    field_0x2b0 = -1;
+    field_0x288 = -1;
+    field_0x2b8 = 0;
+    field_0x2ba = 0;
+    field_0x2bc = 0xFF;
+    field_0x284 = 0;
 }
 
-bool cls_804AA8D8::fn_8030AF10(s32 index, const JGeometry::TBox2f* box, bool overlap) {
-    if (index < 8 || index != field_0x28c) {
-        return false;
-    }
-    if (overlap) {
-        if ((s32)box->f.x < field_0x290) {
-            return false;
-        }
-        if ((s32)box->i.x > field_0x290 + 0xF0) {
-            return false;
-        }
-        if ((s32)box->f.y < field_0x294) {
-            return false;
-        }
-        if ((s32)box->i.y > field_0x294 + 0xA0) {
-            return false;
-        }
-    } else {
-        s32 x = (s32)box->i.x;
-        if (x < field_0x290 || x > field_0x290 + 0xF0) {
-            return false;
-        }
-        x = (s32)box->f.x;
-        if (x < field_0x290 || x > field_0x290 + 0xF0) {
-            return false;
-        }
-        s32 y = (s32)box->i.y;
-        if (y < field_0x294 || y > field_0x294 + 0xA0) {
-            return false;
-        }
-        y = (s32)box->f.y;
-        if (y < field_0x294 || y > field_0x294 + 0xA0) {
-            return false;
-        }
-    }
-    return true;
-}
+// The deleting form (__dl__FPv when asked) is the compiler's; nothing to clean up.
+cls_804AA8D8::~cls_804AA8D8() {}
 
-bool cls_804AA8D8::fn_8030B084(s32 index, JGeometry::TVec3f pos) {
-    if (index < 8 || index != field_0x28c) {
-        return false;
+void cls_804AA8D8::fn_8030BD3C(s32 player) {
+    field_0x288 = player;
+    if (field_0x2b0 < 0) {
+        field_0x2b0 = field_0x288;
     }
-    s32 x = (s32)pos.x;
-    if (x < field_0x290 || x > field_0x290 + 0xF0) {
-        return false;
-    }
-    s32 y = (s32)pos.y;
-    if (y < field_0x294 || y > field_0x294 + 0xA0) {
-        return false;
-    }
-    return true;
-}
-
-bool cls_804AA8D8::fn_8030B110(s32 index, JGeometry::TVec3f pos) {
-    if (!fn_8023F264(field_0x288) || index != field_0x28c) {
-        return false;
-    }
-    if (index < 8) {
-        return true;
-    }
-    s32 x = (s32)pos.x;
-    if (x < field_0x2a4 || x > field_0x2a0) {
-        return false;
-    }
-    s32 y = (s32)pos.y;
-    if (y < field_0x2ac || y > field_0x2a8) {
-        return false;
-    }
-    return true;
+    field_0x28c = getPlayerLayer_8023DE58(player);
+    fn_8030B97C();
+    field_0x2b4 = fn_8030B570(&field_0x290, &field_0x294);
+    field_0x298 = 0;
+    field_0x29c = 0;
 }
 
 s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
@@ -146,28 +94,80 @@ s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
     return player;
 }
 
-void cls_804AA8D8::fn_8030BD3C(s32 player) {
-    field_0x288 = player;
-    if (field_0x2b0 < 0) {
-        field_0x2b0 = field_0x288;
+bool cls_804AA8D8::fn_8030B110(s32 index, JGeometry::TVec3f pos) {
+    if (!fn_8023F264(field_0x288) || index != field_0x28c) {
+        return false;
     }
-    field_0x28c = getPlayerLayer_8023DE58(player);
-    fn_8030B97C();
-    field_0x2b4 = fn_8030B570(&field_0x290, &field_0x294);
-    field_0x298 = 0;
-    field_0x29c = 0;
+    if (index < 8) {
+        return true;
+    }
+    s32 x = (s32)pos.x;
+    if (x < field_0x2a4 || x > field_0x2a0) {
+        return false;
+    }
+    s32 y = (s32)pos.y;
+    if (y < field_0x2ac || y > field_0x2a8) {
+        return false;
+    }
+    return true;
 }
 
-// The deleting form (__dl__FPv when asked) is the compiler's; nothing to clean up.
-cls_804AA8D8::~cls_804AA8D8() {}
+bool cls_804AA8D8::fn_8030B084(s32 index, JGeometry::TVec3f pos) {
+    if (index < 8 || index != field_0x28c) {
+        return false;
+    }
+    s32 x = (s32)pos.x;
+    if (x < field_0x290 || x > field_0x290 + 0xF0) {
+        return false;
+    }
+    s32 y = (s32)pos.y;
+    if (y < field_0x294 || y > field_0x294 + 0xA0) {
+        return false;
+    }
+    return true;
+}
 
-cls_804AA8D8::cls_804AA8D8() {
-    field_0x28c = 0;
-    field_0x2b4 = -1;
-    field_0x2b0 = -1;
-    field_0x288 = -1;
-    field_0x2b8 = 0;
-    field_0x2ba = 0;
-    field_0x2bc = 0xFF;
-    field_0x284 = 0;
+bool cls_804AA8D8::fn_8030AF10(s32 index, const JGeometry::TBox2f* box, bool overlap) {
+    if (index < 8 || index != field_0x28c) {
+        return false;
+    }
+    if (overlap) {
+        if ((s32)box->f.x < field_0x290) {
+            return false;
+        }
+        if ((s32)box->i.x > field_0x290 + 0xF0) {
+            return false;
+        }
+        if ((s32)box->f.y < field_0x294) {
+            return false;
+        }
+        if ((s32)box->i.y > field_0x294 + 0xA0) {
+            return false;
+        }
+    } else {
+        s32 x = (s32)box->i.x;
+        if (x < field_0x290 || x > field_0x290 + 0xF0) {
+            return false;
+        }
+        x = (s32)box->f.x;
+        if (x < field_0x290 || x > field_0x290 + 0xF0) {
+            return false;
+        }
+        s32 y = (s32)box->i.y;
+        if (y < field_0x294 || y > field_0x294 + 0xA0) {
+            return false;
+        }
+        y = (s32)box->f.y;
+        if (y < field_0x294 || y > field_0x294 + 0xA0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void cls_804AA8D8::fn_8030AE84(JGeometry::TBox2f* out) {
+    out->i.x = (f32)field_0x290;
+    out->i.y = (f32)field_0x294;
+    out->f.x = (f32)(field_0x290 + 0xF0);
+    out->f.y = (f32)(field_0x294 + 0xA0);
 }

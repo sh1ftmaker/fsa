@@ -9,64 +9,6 @@
 
 cls_804AF480* lbl_8053AD80;
 
-s32 fn_8039003C() {
-    if (lbl_8053AD80 != NULL) {
-        if (gGameRoot_8053AAF8->field_0x7f) {
-            return fn_8040F474();
-        }
-        return fn_80414F6C();
-    }
-    return 6;
-}
-
-void cls_804AF480::fn_80390088() {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_8053ADF8->fn_8040F480();
-    } else {
-        lbl_8053AE00->fn_80416BD0();
-    }
-}
-
-void cls_804AF480::fn_803900C8() {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_8053ADF8->fn_804108B4();
-    } else {
-        lbl_8053AE00->fn_804170B0();
-    }
-}
-
-void cls_804AF480::fn_80390108() {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_8053ADF8->fn_804111C4();
-    }
-}
-
-void cls_804AF480::fn_8039013C() {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_8053ADF8->fn_80411230();
-    } else {
-        lbl_8053AE00->fn_804170EC();
-    }
-}
-
-cls_804AF480::~cls_804AF480() {
-    lbl_80529DEC.mHeap->getTotalFreeSize();
-    lbl_80529DEC.field_0xf8[0] = 0;
-    lbl_80529DEC.field_0xf8[1] = 0;
-    lbl_80529DEC.field_0xf8[2] = 0;
-    lbl_80529DEC.field_0xf8[3] = 0;
-    if (field_0x4) {
-        delete field_0x4;
-        field_0x4 = NULL;
-    }
-    if (field_0x8) {
-        delete field_0x8;
-        field_0x8 = NULL;
-    }
-    lbl_80529DEC.field_0x34->unmount();
-    lbl_8053AD80 = NULL;
-}
-
 cls_804AF480::cls_804AF480() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053AD80 = this;
@@ -108,4 +50,62 @@ cls_804AF480::cls_804AF480() {
     if (!lbl_80529DEC.field_0xc->fn_804580DC(3)) {
         gAudioMgr_8053AF80->fn_80458090();
     }
+}
+
+cls_804AF480::~cls_804AF480() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    lbl_80529DEC.field_0xf8[0] = 0;
+    lbl_80529DEC.field_0xf8[1] = 0;
+    lbl_80529DEC.field_0xf8[2] = 0;
+    lbl_80529DEC.field_0xf8[3] = 0;
+    if (field_0x4) {
+        delete field_0x4;
+        field_0x4 = NULL;
+    }
+    if (field_0x8) {
+        delete field_0x8;
+        field_0x8 = NULL;
+    }
+    lbl_80529DEC.field_0x34->unmount();
+    lbl_8053AD80 = NULL;
+}
+
+void cls_804AF480::fn_8039013C() {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_8053ADF8->fn_80411230();
+    } else {
+        lbl_8053AE00->fn_804170EC();
+    }
+}
+
+void cls_804AF480::fn_80390108() {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_8053ADF8->fn_804111C4();
+    }
+}
+
+void cls_804AF480::fn_803900C8() {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_8053ADF8->fn_804108B4();
+    } else {
+        lbl_8053AE00->fn_804170B0();
+    }
+}
+
+void cls_804AF480::fn_80390088() {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_8053ADF8->fn_8040F480();
+    } else {
+        lbl_8053AE00->fn_80416BD0();
+    }
+}
+
+s32 fn_8039003C() {
+    if (lbl_8053AD80 != NULL) {
+        if (gGameRoot_8053AAF8->field_0x7f) {
+            return fn_8040F474();
+        }
+        return fn_80414F6C();
+    }
+    return 6;
 }

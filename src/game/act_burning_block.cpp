@@ -22,14 +22,19 @@ static const f32 lbl_8046C3B8[4][3] = {
     {0.0f, -0.5f, 0.0f},
 };
 
-BurningBlockWoodenCrate_804A7B90::~BurningBlockWoodenCrate_804A7B90() {}
-
-void BurningBlockWoodenCrate_804A7B90::vfunc_0x24() {
-    mAlive = false;
-}
-
-void BurningBlockWoodenCrate_804A7B90::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x17e, NULL, 0, 1.0f, 1.0f);
+void BurningBlockWoodenCrate_804A7B90::init() {
+    mPos.x += (s32)(8.0f - (f32)((s32)mPos.x % 8));
+    mPos.y += (s32)(8.0f - (f32)((s32)mPos.y % 8));
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    mSpawnPos = mPos;
+    field_0x230 = mSpawnPos;
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x1a4 = 1;
+    field_0x23c = 0;
+    field_0xb8 = 2;
+    field_0x240 = fn_80226850(&mPos, field_0x4);
+    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
 }
 
 void BurningBlockWoodenCrate_804A7B90::update() {
@@ -96,17 +101,12 @@ void BurningBlockWoodenCrate_804A7B90::update() {
     }
 }
 
-void BurningBlockWoodenCrate_804A7B90::init() {
-    mPos.x += (s32)(8.0f - (f32)((s32)mPos.x % 8));
-    mPos.y += (s32)(8.0f - (f32)((s32)mPos.y % 8));
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-    mSpawnPos = mPos;
-    field_0x230 = mSpawnPos;
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x1a4 = 1;
-    field_0x23c = 0;
-    field_0xb8 = 2;
-    field_0x240 = fn_80226850(&mPos, field_0x4);
-    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x159);
+void BurningBlockWoodenCrate_804A7B90::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x17e, NULL, 0, 1.0f, 1.0f);
 }
+
+void BurningBlockWoodenCrate_804A7B90::vfunc_0x24() {
+    mAlive = false;
+}
+
+BurningBlockWoodenCrate_804A7B90::~BurningBlockWoodenCrate_804A7B90() {}

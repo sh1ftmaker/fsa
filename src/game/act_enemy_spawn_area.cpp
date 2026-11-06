@@ -10,9 +10,50 @@ static u32 lbl_804A2C80[] = {
     'SLR1', 0x00, 'SLR1', 0x06, 'STAL', 0x04, 'STAL', 0x14, 'KETH', 0x100, 'KETH', 0x110,
 };
 
-EnemySpawnArea_804A2CB0::~EnemySpawnArea_804A2CB0() {}
-
-void EnemySpawnArea_804A2CB0::draw() {}
+// FIXME: 92%. The original loads field_0x90 once (clrlslwi 24,1 -> r5) before the
+// 0x234 store and keeps the zero in r4 for the timer stores; here the zero is in r0
+// and the index shift is scheduled after the second load of field_0x90.
+void EnemySpawnArea_804A2CB0::init() {
+    field_0x28c = 0;
+    field_0x290 = 0;
+    field_0x294 = 0;
+    mTimer0 = 0;
+    mTimer1 = 0;
+    mTimer2 = 0;
+    mEnemyId = 0;
+    mEnemyParam = 0;
+    s32 idx = (field_0x90 & 0xFF) * 2;
+    if ((field_0x90 & 0xFF) != 0xFF) {
+        mEnemyId = lbl_804A2C80[idx];
+        mEnemyParam = lbl_804A2C80[idx + 1];
+    }
+    if (((field_0x90 >> 8) & 0xF) == 0) {
+        mMode = 0;
+    } else {
+        mMode = 1;
+    }
+    mCount = (field_0x90 >> 12) & 0xF;
+    if (mCount == 0) {
+        mCount = 3;
+    }
+    // Written out: a for loop is unrolled too but leaves a dead cmpwi 15/bge guard (88.4% vs 92.2%).
+    mSerials[0] = -1;
+    mSerials[1] = -1;
+    mSerials[2] = -1;
+    mSerials[3] = -1;
+    mSerials[4] = -1;
+    mSerials[5] = -1;
+    mSerials[6] = -1;
+    mSerials[7] = -1;
+    mSerials[8] = -1;
+    mSerials[9] = -1;
+    mSerials[10] = -1;
+    mSerials[11] = -1;
+    mSerials[12] = -1;
+    mSerials[13] = -1;
+    mSerials[14] = -1;
+    mState = 0;
+}
 
 // FIXME: 99.6%. Register allocation only: the two random-offset sequences use r4/r5
 // swapped for the global pointer and the LCG multiplier, and in the second loop the
@@ -83,47 +124,6 @@ void EnemySpawnArea_804A2CB0::update() {
     }
 }
 
-// FIXME: 92%. The original loads field_0x90 once (clrlslwi 24,1 -> r5) before the
-// 0x234 store and keeps the zero in r4 for the timer stores; here the zero is in r0
-// and the index shift is scheduled after the second load of field_0x90.
-void EnemySpawnArea_804A2CB0::init() {
-    field_0x28c = 0;
-    field_0x290 = 0;
-    field_0x294 = 0;
-    mTimer0 = 0;
-    mTimer1 = 0;
-    mTimer2 = 0;
-    mEnemyId = 0;
-    mEnemyParam = 0;
-    s32 idx = (field_0x90 & 0xFF) * 2;
-    if ((field_0x90 & 0xFF) != 0xFF) {
-        mEnemyId = lbl_804A2C80[idx];
-        mEnemyParam = lbl_804A2C80[idx + 1];
-    }
-    if (((field_0x90 >> 8) & 0xF) == 0) {
-        mMode = 0;
-    } else {
-        mMode = 1;
-    }
-    mCount = (field_0x90 >> 12) & 0xF;
-    if (mCount == 0) {
-        mCount = 3;
-    }
-    // Written out: a for loop is unrolled too but leaves a dead cmpwi 15/bge guard (88.4% vs 92.2%).
-    mSerials[0] = -1;
-    mSerials[1] = -1;
-    mSerials[2] = -1;
-    mSerials[3] = -1;
-    mSerials[4] = -1;
-    mSerials[5] = -1;
-    mSerials[6] = -1;
-    mSerials[7] = -1;
-    mSerials[8] = -1;
-    mSerials[9] = -1;
-    mSerials[10] = -1;
-    mSerials[11] = -1;
-    mSerials[12] = -1;
-    mSerials[13] = -1;
-    mSerials[14] = -1;
-    mState = 0;
-}
+void EnemySpawnArea_804A2CB0::draw() {}
+
+EnemySpawnArea_804A2CB0::~EnemySpawnArea_804A2CB0() {}

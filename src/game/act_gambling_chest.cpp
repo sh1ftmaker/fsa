@@ -17,61 +17,18 @@ static const s32 lbl_80471438[5] = {1, 100, 150, 300, 1000};
 // Sprite ids (the chest's sprite frame and fn_803075AC's id).
 static const s32 lbl_8047144C[5] = {1, 0x11, 0x15, 0x1D, 0x45A};
 
-GamblingShopChest_804AAAE8::~GamblingShopChest_804AAAE8() {}
-
-void GamblingShopChest_804AAAE8::fn_80310E48() {
-    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
-    field_0x234 = -1;
+void GamblingShopChest_804AAAE8::init() {
+    mPos.x += 8.0f;
+    mPos.y += 12.0f;
+    mBox.set(-6.0f, 0.0f, 6.0f, 6.0f);
     mState = 0;
-}
-
-void GamblingShopChest_804AAAE8::fn_80310E98() {
-    if (mState == 1) {
-        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
-        startSound_801F0E34(0x30076, 0);
-        field_0x248.x = mPos.x;
-        field_0x248.y = mPos.y;
-        field_0x248.z = mPos.z;
-        field_0x254 = false;
-        field_0x240 = 0x5A;
-        mState = 2;
-    } else if (mState == 3) {
-        fn_8023061C(field_0x234, false);
-        field_0x234 = -1;
-        mState = 0;
-    }
-}
-
-void GamblingShopChest_804AAAE8::fn_80310F50(s32 a, s32 b, s32 serial) {
-    gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0x30);
-    field_0x234 = a;
-    field_0x238 = b;
-    field_0x23c = serial;
-    mState = 1;
-}
-
-void GamblingShopChest_804AAAE8::draw() {
-    if (mState >= 2) {
-        JGeometry::TVec3f savedPos = mPos;
-        mPos = field_0x248;
-        SpriteParams_801F5AE0 params;
-        params.field_0x1d = 1;
-        params.field_0x1c = 1;
-        params.field_0x1f = 0;
-        if (field_0x238 == 4) {
-            Mtx mtx;
-            PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
-            params.mMtx = mtx;
-            drawSprite_801F06F0("enemy_gc_sob.bin", 0x45A, &params, -1, 1.0f, 1.0f);
-            fn_803075AC(mSerial, field_0x4, &mPos, 0x11, true, 2, -1, 1, 0, 0);
-        } else {
-            drawSprite_801F06F0("enemy_both2_sob.bin", lbl_8047144C[field_0x238], &params, -1, 1.0f,
-                        1.0f);
-            fn_803075AC(mSerial, field_0x4, &mPos, lbl_8047144C[field_0x238], false, 2, -1, 1, 0,
-                        0);
-        }
-        mPos = savedPos;
-    }
+    field_0x234 = -1;
+    field_0x238 = 0;
+    field_0x23c = -1;
+    field_0x240 = 0;
+    field_0x248 = mPos;
+    field_0x254 = false;
+    field_0x244 = 0;
 }
 
 void GamblingShopChest_804AAAE8::update() {
@@ -142,16 +99,59 @@ void GamblingShopChest_804AAAE8::update() {
     }
 }
 
-void GamblingShopChest_804AAAE8::init() {
-    mPos.x += 8.0f;
-    mPos.y += 12.0f;
-    mBox.set(-6.0f, 0.0f, 6.0f, 6.0f);
-    mState = 0;
-    field_0x234 = -1;
-    field_0x238 = 0;
-    field_0x23c = -1;
-    field_0x240 = 0;
-    field_0x248 = mPos;
-    field_0x254 = false;
-    field_0x244 = 0;
+void GamblingShopChest_804AAAE8::draw() {
+    if (mState >= 2) {
+        JGeometry::TVec3f savedPos = mPos;
+        mPos = field_0x248;
+        SpriteParams_801F5AE0 params;
+        params.field_0x1d = 1;
+        params.field_0x1c = 1;
+        params.field_0x1f = 0;
+        if (field_0x238 == 4) {
+            Mtx mtx;
+            PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
+            params.mMtx = mtx;
+            drawSprite_801F06F0("enemy_gc_sob.bin", 0x45A, &params, -1, 1.0f, 1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, 0x11, true, 2, -1, 1, 0, 0);
+        } else {
+            drawSprite_801F06F0("enemy_both2_sob.bin", lbl_8047144C[field_0x238], &params, -1, 1.0f,
+                        1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, lbl_8047144C[field_0x238], false, 2, -1, 1, 0,
+                        0);
+        }
+        mPos = savedPos;
+    }
 }
+
+void GamblingShopChest_804AAAE8::fn_80310F50(s32 a, s32 b, s32 serial) {
+    gBgRewrite_8053AC98->fn_802A3884(&mPos, 0, field_0x4, 0x30);
+    field_0x234 = a;
+    field_0x238 = b;
+    field_0x23c = serial;
+    mState = 1;
+}
+
+void GamblingShopChest_804AAAE8::fn_80310E98() {
+    if (mState == 1) {
+        gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
+        startSound_801F0E34(0x30076, 0);
+        field_0x248.x = mPos.x;
+        field_0x248.y = mPos.y;
+        field_0x248.z = mPos.z;
+        field_0x254 = false;
+        field_0x240 = 0x5A;
+        mState = 2;
+    } else if (mState == 3) {
+        fn_8023061C(field_0x234, false);
+        field_0x234 = -1;
+        mState = 0;
+    }
+}
+
+void GamblingShopChest_804AAAE8::fn_80310E48() {
+    gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x10);
+    field_0x234 = -1;
+    mState = 0;
+}
+
+GamblingShopChest_804AAAE8::~GamblingShopChest_804AAAE8() {}

@@ -49,320 +49,6 @@ static inline void moveX(PaneCtrl_804AF86C* self, f32 centreX) {
     self->mPane->move(x, y);
 }
 
-void PaneCtrl_804AF86C::setAlpha_804023D0(J2DPane* pane, u8 alpha) {
-    pane->setAlpha(alpha * ((f32)mPane->getAlpha() / (f32)field_0x28));
-}
-
-// Steps field_0x26 and fades the pane's alpha from `from` to `to`, mode 1 easing in and
-// out, any other mode up and back.
-bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
-    field_0x26++;
-    if (field_0x26 >= frames) {
-        field_0x26 = 0;
-    }
-    f32 t;
-    if (mode == 1) {
-        s32 half = frames / 2;
-        if (field_0x26 < half) {
-            t = (field_0x26 * field_0x26) / ((frames / 2.0f) * (frames / 2.0f));
-        } else {
-            s32 d = field_0x26 - half;
-            t = 1.0f - (d * d) / ((frames / 2.0f) * (frames / 2.0f));
-        }
-    } else {
-        s32 half = frames / 2;
-        s32 steps = frames - field_0x26;
-        if (field_0x26 < half) {
-            steps = field_0x26;
-        }
-        t = steps / (frames / 2.0f);
-    }
-    mPane->setAlpha(from + t * (to - from));
-    return false;
-}
-
-bool PaneCtrl_804AF86C::fn_80402628(s16 frames, u8 from, u8 to) {
-    if (field_0x26 < frames - 1) {
-        field_0x26++;
-        f32 t = (f32)field_0x26 / (f32)frames;
-        mPane->setAlpha(from + t * (to - from));
-    } else {
-        field_0x22 = frames;
-        mPane->setAlpha(to);
-        return true;
-    }
-    return false;
-}
-
-// FIXME: 99.56. Regalloc only: the original keeps the old width in f31 and the old y in f28, ours
-// gets the four saved floats in a different order.
-u8 PaneCtrl_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
-    if (field_0x24 < frames - 1) {
-        field_0x24++;
-        f32 t = (f32)(field_0x24 * field_0x24) / (f32)(frames * frames);
-        f32 scale = x + t * (y - x);
-        resizeKeepCentre(this, scale, scale);
-    } else {
-        field_0x24 = frames;
-        resizeKeepCentre(this, y, y);
-        return 1;
-    }
-    return 0;
-}
-
-u8 PaneCtrl_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
-    if (field_0x22 < frames - 1) {
-        field_0x22++;
-        f32 t;
-        if (mode == 0) {
-            t = (f32)(field_0x22 * field_0x22) / (f32)(frames * frames);
-        } else if (mode == 1) {
-            t = (f32)field_0x22 / (f32)frames;
-        } else {
-            s32 steps = frames - field_0x22;
-            t = (f32)(steps * steps) / (f32)(frames * frames);
-            f32 tmp = x;
-            x = y;
-            y = tmp;
-        }
-        moveY(this, field_0x14 + (x + t * (y - x)));
-    } else {
-        field_0x22 = frames;
-        moveY(this, field_0x14 + y);
-        return 1;
-    }
-    return 0;
-}
-
-u8 PaneCtrl_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
-    if (field_0x20 < frames - 1) {
-        field_0x20++;
-        f32 t;
-        if (mode == 0) {
-            t = (f32)(field_0x20 * field_0x20) / (f32)(frames * frames);
-        } else if (mode == 1) {
-            t = (f32)field_0x20 / (f32)frames;
-        } else {
-            s32 steps = frames - field_0x20;
-            t = (f32)(steps * steps) / (f32)(frames * frames);
-            f32 tmp = x;
-            x = y;
-            y = tmp;
-        }
-        moveX(this, field_0x10 + (x + t * (y - x)));
-    } else {
-        field_0x20 = frames;
-        moveX(this, field_0x10 + y);
-        return 1;
-    }
-    return 0;
-}
-
-// FIXME: 99.59. Regalloc only: saved floats f29/f31/f28 are assigned in a different order.
-void PaneCtrl_804AF86C::fn_80402CE0(f32 x, f32 y) {
-    resizeKeepCentre(this, x, y);
-}
-
-void PaneCtrl_804AF86C::moveFromCentre_80402E08(f32 x, f32 y) {
-    mPane->move(field_0x10 + x - 0.5f * mPane->getWidth(), field_0x14 + y - 0.5f * mPane->getHeight());
-}
-
-void PaneCtrl_804AF86C::fn_80402E70() {
-    field_0x8 = mPane->getBounds()->i.x;
-    field_0xc = mPane->getBounds()->i.y;
-    field_0x18 = mPane->getWidth();
-    field_0x1c = mPane->getHeight();
-    field_0x10 = field_0x8 + 0.5f * field_0x18;
-    field_0x14 = field_0xc + 0.5f * field_0x1c;
-}
-
-void PaneCtrl_804AF86C::setPane_80402F04(J2DPane* pane) {
-    mPane = pane;
-    field_0x8 = pane->getBounds()->i.x;
-    field_0xc = pane->getBounds()->i.y;
-    field_0x18 = pane->getWidth();
-    field_0x1c = pane->getHeight();
-    field_0x10 = field_0x8 + 0.5f * field_0x18;
-    field_0x14 = field_0xc + 0.5f * field_0x1c;
-    field_0x28 = pane->getAlpha();
-    field_0x20 = 0;
-    field_0x22 = 0;
-    field_0x24 = 0;
-    field_0x26 = 0;
-}
-
-// fn_80402FBC (the player's window position store) is not written: best attempt 84 %
-// (s32 i = fn_8022F340(player); TVec3f p(pos); field_0x1c4[i].set(p.x, p.y, p.z)). The original
-// also stores a second, unread stack copy of pos and rounds z with frsp before storing it.
-
-s32 fn_8040305C(s32 index) {
-    return lbl_8048C170[index];
-}
-
-s32 fn_80403070(s32 index) {
-    return lbl_8048C160[index];
-}
-
-void* fn_80403084(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x4c->getResource(type, name);
-}
-
-void* fn_804030C4(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x20->getResource(type, name);
-}
-
-void* fn_80403104(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x3c->getResource(type, name);
-}
-
-void* fn_80403144(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x38->getResource(type, name);
-}
-
-void* fn_80403184(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x34->getResource(type, name);
-}
-
-void* fn_804031C4(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x28->getResource(type, name);
-}
-
-void* fn_80403204(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x24->getResource(type, name);
-}
-
-void* fn_80403244(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x18->getResource(type, name);
-}
-
-u32 fn_80403284(const char* name) {
-    return lbl_80529DEC.field_0x10->getResSize(lbl_80529DEC.field_0x10->getResource('????', name));
-}
-
-void* fn_804032E8(u32 type, const char* name) {
-    return lbl_80529DEC.field_0x10->getResource(type, name);
-}
-
-void* fn_80403328(const char* name) {
-    return lbl_80529DEC.field_0x10->getResource('????', name);
-}
-
-s32 fn_8040336C(s32 player) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        if (lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0) {
-            return 0;
-        }
-        return lbl_80529DEC.field_0x88[player];
-    }
-    return lbl_80529DEC.field_0xb8[player];
-}
-
-s32 fn_804033D4(s32 player) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        return lbl_80529DEC.field_0x78[player];
-    }
-    return lbl_80529DEC.field_0xa8[player];
-}
-
-s32 fn_80403414(s32 player) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        return lbl_80529DEC.field_0x68[player];
-    }
-    return lbl_80529DEC.field_0x98[player];
-}
-
-void fn_80403454(s32 player, s32 value) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_80529DEC.field_0x88[player] = value;
-    } else {
-        lbl_80529DEC.field_0xb8[player] = value;
-    }
-}
-
-void fn_80403494(s32 player, s32 value) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_80529DEC.field_0x78[player] = value;
-    } else {
-        lbl_80529DEC.field_0xa8[player] = value;
-    }
-}
-
-void fn_804034D4(s32 player, s32 value) {
-    if (gGameRoot_8053AAF8->field_0x7f) {
-        lbl_80529DEC.field_0x68[player] = value;
-    } else {
-        lbl_80529DEC.field_0x98[player] = value;
-    }
-}
-
-// GameState_804B0FE0::fn_80403514 (the stage picker over lbl_8050EC80) is not written: best attempt 66 %.
-// Two nested loops over isStageFlagSet (game/StageFlag.h) reach only 55 %: ours hoists the save row's
-// address out of the loops (the original reloads it each pass, keeping only the row index) and tests the
-// result as a bool (clrlwi.) where the original tests an int (cmpwi, as in tu_8023FBF0 fn_80254744).
-
-void GameState_804B0FE0::fn_80403680() {
-    for (s32 i = 0; i < 4; i++) {
-        field_0x68[i] = 0;
-        field_0x78[i] = 1;
-        field_0x88[i] = 2;
-        field_0x98[i] = 0;
-        field_0xa8[i] = 1;
-        field_0xb8[i] = 2;
-        field_0xe8[i] = 0;
-        field_0xd8[i] = 4;
-        field_0xc8[i] = 4;
-        field_0x108[i] = 0x80;
-        field_0xf8[i] = 0;
-        field_0x130[i] = 0;
-        field_0x140[i] = 0;
-        field_0x150[i] = 0;
-        field_0x160[i] = 0;
-        field_0x170[i] = 0;
-        field_0x180[i] = 0;
-        field_0x190[i] = 0;
-        field_0x1c4[i].x = 0.0f;
-        field_0x1c4[i].y = 0.0f;
-        field_0x1c4[i].z = 0.0f;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        field_0x1b4[i] = 0;
-        field_0x180[i] = 0;
-    }
-    field_0x1b0 = 0;
-    field_0x214 = 0;
-    field_0x215 = 0;
-    field_0x64 = -1;
-    field_0x1a8 = -1;
-    field_0x1a4 = -1;
-    field_0x236 = 0;
-    field_0x118 = 0;
-    field_0x11c = 0;
-    field_0x120 = 0;
-    field_0x124 = 0;
-    field_0x128 = 0;
-    field_0x12c = 0;
-    field_0x239 = 0;
-    field_0x1ac = 0;
-    field_0x253 = 0;
-    field_0x254[0] = 0;
-    field_0x237 = 0;
-    for (u32 i = 0; i < sizeof(field_0x1fc); i++) {
-        field_0x1fc[i] = 0xFF;
-    }
-    field_0x242 = 0;
-    field_0x243[0] = 0;
-    field_0x23e[0] = 0;
-    field_0x240 = 0;
-    field_0x249[1] = 0;
-    field_0x24b = 0;
-    field_0x24e = 0;
-    field_0x24f = 0;
-    field_0x24d = 0;
-    field_0x252 = 0;
-}
-
-GameState_804B0FE0::~GameState_804B0FE0() {}
-
 GameState_804B0FE0::GameState_804B0FE0() {
     field_0x4 = NULL;
     mHeap = NULL;
@@ -466,4 +152,318 @@ GameState_804B0FE0::GameState_804B0FE0() {
     field_0x250 = 0;
     field_0x251 = 0;
     field_0x252 = 0;
+}
+
+GameState_804B0FE0::~GameState_804B0FE0() {}
+
+// GameState_804B0FE0::fn_80403514 (the stage picker over lbl_8050EC80) is not written: best attempt 66 %.
+// Two nested loops over isStageFlagSet (game/StageFlag.h) reach only 55 %: ours hoists the save row's
+// address out of the loops (the original reloads it each pass, keeping only the row index) and tests the
+// result as a bool (clrlwi.) where the original tests an int (cmpwi, as in tu_8023FBF0 fn_80254744).
+
+void GameState_804B0FE0::fn_80403680() {
+    for (s32 i = 0; i < 4; i++) {
+        field_0x68[i] = 0;
+        field_0x78[i] = 1;
+        field_0x88[i] = 2;
+        field_0x98[i] = 0;
+        field_0xa8[i] = 1;
+        field_0xb8[i] = 2;
+        field_0xe8[i] = 0;
+        field_0xd8[i] = 4;
+        field_0xc8[i] = 4;
+        field_0x108[i] = 0x80;
+        field_0xf8[i] = 0;
+        field_0x130[i] = 0;
+        field_0x140[i] = 0;
+        field_0x150[i] = 0;
+        field_0x160[i] = 0;
+        field_0x170[i] = 0;
+        field_0x180[i] = 0;
+        field_0x190[i] = 0;
+        field_0x1c4[i].x = 0.0f;
+        field_0x1c4[i].y = 0.0f;
+        field_0x1c4[i].z = 0.0f;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x1b4[i] = 0;
+        field_0x180[i] = 0;
+    }
+    field_0x1b0 = 0;
+    field_0x214 = 0;
+    field_0x215 = 0;
+    field_0x64 = -1;
+    field_0x1a8 = -1;
+    field_0x1a4 = -1;
+    field_0x236 = 0;
+    field_0x118 = 0;
+    field_0x11c = 0;
+    field_0x120 = 0;
+    field_0x124 = 0;
+    field_0x128 = 0;
+    field_0x12c = 0;
+    field_0x239 = 0;
+    field_0x1ac = 0;
+    field_0x253 = 0;
+    field_0x254[0] = 0;
+    field_0x237 = 0;
+    for (u32 i = 0; i < sizeof(field_0x1fc); i++) {
+        field_0x1fc[i] = 0xFF;
+    }
+    field_0x242 = 0;
+    field_0x243[0] = 0;
+    field_0x23e[0] = 0;
+    field_0x240 = 0;
+    field_0x249[1] = 0;
+    field_0x24b = 0;
+    field_0x24e = 0;
+    field_0x24f = 0;
+    field_0x24d = 0;
+    field_0x252 = 0;
+}
+
+void fn_804034D4(s32 player, s32 value) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_80529DEC.field_0x68[player] = value;
+    } else {
+        lbl_80529DEC.field_0x98[player] = value;
+    }
+}
+
+void fn_80403494(s32 player, s32 value) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_80529DEC.field_0x78[player] = value;
+    } else {
+        lbl_80529DEC.field_0xa8[player] = value;
+    }
+}
+
+void fn_80403454(s32 player, s32 value) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        lbl_80529DEC.field_0x88[player] = value;
+    } else {
+        lbl_80529DEC.field_0xb8[player] = value;
+    }
+}
+
+s32 fn_80403414(s32 player) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        return lbl_80529DEC.field_0x68[player];
+    }
+    return lbl_80529DEC.field_0x98[player];
+}
+
+s32 fn_804033D4(s32 player) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        return lbl_80529DEC.field_0x78[player];
+    }
+    return lbl_80529DEC.field_0xa8[player];
+}
+
+s32 fn_8040336C(s32 player) {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        if (lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0) {
+            return 0;
+        }
+        return lbl_80529DEC.field_0x88[player];
+    }
+    return lbl_80529DEC.field_0xb8[player];
+}
+
+void* fn_80403328(const char* name) {
+    return lbl_80529DEC.field_0x10->getResource('????', name);
+}
+
+void* fn_804032E8(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x10->getResource(type, name);
+}
+
+u32 fn_80403284(const char* name) {
+    return lbl_80529DEC.field_0x10->getResSize(lbl_80529DEC.field_0x10->getResource('????', name));
+}
+
+void* fn_80403244(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x18->getResource(type, name);
+}
+
+void* fn_80403204(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x24->getResource(type, name);
+}
+
+void* fn_804031C4(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x28->getResource(type, name);
+}
+
+void* fn_80403184(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x34->getResource(type, name);
+}
+
+void* fn_80403144(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x38->getResource(type, name);
+}
+
+void* fn_80403104(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x3c->getResource(type, name);
+}
+
+void* fn_804030C4(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x20->getResource(type, name);
+}
+
+void* fn_80403084(u32 type, const char* name) {
+    return lbl_80529DEC.field_0x4c->getResource(type, name);
+}
+
+s32 fn_80403070(s32 index) {
+    return lbl_8048C160[index];
+}
+
+// fn_80402FBC (the player's window position store) is not written: best attempt 84 %
+// (s32 i = fn_8022F340(player); TVec3f p(pos); field_0x1c4[i].set(p.x, p.y, p.z)). The original
+// also stores a second, unread stack copy of pos and rounds z with frsp before storing it.
+
+s32 fn_8040305C(s32 index) {
+    return lbl_8048C170[index];
+}
+
+void PaneCtrl_804AF86C::setPane_80402F04(J2DPane* pane) {
+    mPane = pane;
+    field_0x8 = pane->getBounds()->i.x;
+    field_0xc = pane->getBounds()->i.y;
+    field_0x18 = pane->getWidth();
+    field_0x1c = pane->getHeight();
+    field_0x10 = field_0x8 + 0.5f * field_0x18;
+    field_0x14 = field_0xc + 0.5f * field_0x1c;
+    field_0x28 = pane->getAlpha();
+    field_0x20 = 0;
+    field_0x22 = 0;
+    field_0x24 = 0;
+    field_0x26 = 0;
+}
+
+void PaneCtrl_804AF86C::fn_80402E70() {
+    field_0x8 = mPane->getBounds()->i.x;
+    field_0xc = mPane->getBounds()->i.y;
+    field_0x18 = mPane->getWidth();
+    field_0x1c = mPane->getHeight();
+    field_0x10 = field_0x8 + 0.5f * field_0x18;
+    field_0x14 = field_0xc + 0.5f * field_0x1c;
+}
+
+void PaneCtrl_804AF86C::moveFromCentre_80402E08(f32 x, f32 y) {
+    mPane->move(field_0x10 + x - 0.5f * mPane->getWidth(), field_0x14 + y - 0.5f * mPane->getHeight());
+}
+
+// FIXME: 99.59. Regalloc only: saved floats f29/f31/f28 are assigned in a different order.
+void PaneCtrl_804AF86C::fn_80402CE0(f32 x, f32 y) {
+    resizeKeepCentre(this, x, y);
+}
+
+u8 PaneCtrl_804AF86C::fn_80402B10(s16 frames, u8 mode, f32 x, f32 y) {
+    if (field_0x20 < frames - 1) {
+        field_0x20++;
+        f32 t;
+        if (mode == 0) {
+            t = (f32)(field_0x20 * field_0x20) / (f32)(frames * frames);
+        } else if (mode == 1) {
+            t = (f32)field_0x20 / (f32)frames;
+        } else {
+            s32 steps = frames - field_0x20;
+            t = (f32)(steps * steps) / (f32)(frames * frames);
+            f32 tmp = x;
+            x = y;
+            y = tmp;
+        }
+        moveX(this, field_0x10 + (x + t * (y - x)));
+    } else {
+        field_0x20 = frames;
+        moveX(this, field_0x10 + y);
+        return 1;
+    }
+    return 0;
+}
+
+u8 PaneCtrl_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
+    if (field_0x22 < frames - 1) {
+        field_0x22++;
+        f32 t;
+        if (mode == 0) {
+            t = (f32)(field_0x22 * field_0x22) / (f32)(frames * frames);
+        } else if (mode == 1) {
+            t = (f32)field_0x22 / (f32)frames;
+        } else {
+            s32 steps = frames - field_0x22;
+            t = (f32)(steps * steps) / (f32)(frames * frames);
+            f32 tmp = x;
+            x = y;
+            y = tmp;
+        }
+        moveY(this, field_0x14 + (x + t * (y - x)));
+    } else {
+        field_0x22 = frames;
+        moveY(this, field_0x14 + y);
+        return 1;
+    }
+    return 0;
+}
+
+// FIXME: 99.56. Regalloc only: the original keeps the old width in f31 and the old y in f28, ours
+// gets the four saved floats in a different order.
+u8 PaneCtrl_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
+    if (field_0x24 < frames - 1) {
+        field_0x24++;
+        f32 t = (f32)(field_0x24 * field_0x24) / (f32)(frames * frames);
+        f32 scale = x + t * (y - x);
+        resizeKeepCentre(this, scale, scale);
+    } else {
+        field_0x24 = frames;
+        resizeKeepCentre(this, y, y);
+        return 1;
+    }
+    return 0;
+}
+
+bool PaneCtrl_804AF86C::fn_80402628(s16 frames, u8 from, u8 to) {
+    if (field_0x26 < frames - 1) {
+        field_0x26++;
+        f32 t = (f32)field_0x26 / (f32)frames;
+        mPane->setAlpha(from + t * (to - from));
+    } else {
+        field_0x22 = frames;
+        mPane->setAlpha(to);
+        return true;
+    }
+    return false;
+}
+
+// Steps field_0x26 and fades the pane's alpha from `from` to `to`, mode 1 easing in and
+// out, any other mode up and back.
+bool PaneCtrl_804AF86C::fn_8040245C(s16 frames, u8 from, u8 to, u8 mode) {
+    field_0x26++;
+    if (field_0x26 >= frames) {
+        field_0x26 = 0;
+    }
+    f32 t;
+    if (mode == 1) {
+        s32 half = frames / 2;
+        if (field_0x26 < half) {
+            t = (field_0x26 * field_0x26) / ((frames / 2.0f) * (frames / 2.0f));
+        } else {
+            s32 d = field_0x26 - half;
+            t = 1.0f - (d * d) / ((frames / 2.0f) * (frames / 2.0f));
+        }
+    } else {
+        s32 half = frames / 2;
+        s32 steps = frames - field_0x26;
+        if (field_0x26 < half) {
+            steps = field_0x26;
+        }
+        t = steps / (frames / 2.0f);
+    }
+    mPane->setAlpha(from + t * (to - from));
+    return false;
+}
+
+void PaneCtrl_804AF86C::setAlpha_804023D0(J2DPane* pane, u8 alpha) {
+    pane->setAlpha(alpha * ((f32)mPane->getAlpha() / (f32)field_0x28));
 }

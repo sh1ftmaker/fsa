@@ -18,21 +18,23 @@ static const char* lbl_804B1DF0[11] = {
     "kk_rupyNum_09.bti", "rupy_num_exclamation.bti",
 };
 
-void cls_804B1E1C::fn_8045560C() {
-    for (int i = 0; i < 128; i++) {
-        mSprites[i].active = 0;
+// FIXME: 99%. Regalloc only: the loop counter is r27 and the ResTIMG r28 in
+// the original; swapped here.
+cls_804B1E1C::cls_804B1E1C() {
+    for (int i = 0; i < 11; i++) {
+        const ResTIMG* timg = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1DF0[i]));
+        mDigits[i] = new J2DPicture(timg);
     }
+    fn_8045560C();
+    lbl_8053AF50 = this;
 }
 
-void cls_804B1E1C::fn_804556A4() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    for (int i = 0; i < 128; i++) {
-        Sprite& s = mSprites[i];
-        if (s.active == 1) {
-            mDigits[s.digit]->setWhite(s.color);
-            mDigits[s.digit]->draw(s.x, s.y, s.size, s.size, false, false, false);
-        }
+cls_804B1E1C::~cls_804B1E1C() {
+    for (int i = 0; i < 11; i++) {
+        delete mDigits[i];
+        mDigits[i] = NULL;
     }
+    lbl_8053AF50 = NULL;
 }
 
 void cls_804B1E1C::fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TColor color) {
@@ -53,21 +55,19 @@ void cls_804B1E1C::fn_80455770(f32 scale, u8 digit, const Vec* pos, JUtility::TC
     }
 }
 
-cls_804B1E1C::~cls_804B1E1C() {
-    for (int i = 0; i < 11; i++) {
-        delete mDigits[i];
-        mDigits[i] = NULL;
+void cls_804B1E1C::fn_804556A4() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    for (int i = 0; i < 128; i++) {
+        Sprite& s = mSprites[i];
+        if (s.active == 1) {
+            mDigits[s.digit]->setWhite(s.color);
+            mDigits[s.digit]->draw(s.x, s.y, s.size, s.size, false, false, false);
+        }
     }
-    lbl_8053AF50 = NULL;
 }
 
-// FIXME: 99%. Regalloc only: the loop counter is r27 and the ResTIMG r28 in
-// the original; swapped here.
-cls_804B1E1C::cls_804B1E1C() {
-    for (int i = 0; i < 11; i++) {
-        const ResTIMG* timg = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1DF0[i]));
-        mDigits[i] = new J2DPicture(timg);
+void cls_804B1E1C::fn_8045560C() {
+    for (int i = 0; i < 128; i++) {
+        mSprites[i].active = 0;
     }
-    fn_8045560C();
-    lbl_8053AF50 = this;
 }

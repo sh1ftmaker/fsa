@@ -8,9 +8,9 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_zelda_scroll_lock.h"
 
-ZeldaScrollLock_804AC708::~ZeldaScrollLock_804AC708() {}
-
-void ZeldaScrollLock_804AC708::draw() {}
+void ZeldaScrollLock_804AC708::init() {
+    mState = 0;
+}
 
 void ZeldaScrollLock_804AC708::update() {
     switch (mState) {
@@ -30,6 +30,6 @@ void ZeldaScrollLock_804AC708::update() {
     }
 }
 
-void ZeldaScrollLock_804AC708::init() {
-    mState = 0;
-}
+void ZeldaScrollLock_804AC708::draw() {}
+
+ZeldaScrollLock_804AC708::~ZeldaScrollLock_804AC708() {}

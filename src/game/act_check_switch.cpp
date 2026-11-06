@@ -3,9 +3,11 @@
 #include "game/GameView.h"
 #include "game/act/act_check_switch.h"
 
-CheckSwitch_804A8BD0::~CheckSwitch_804A8BD0() {}
-
-void CheckSwitch_804A8BD0::draw() {}
+void CheckSwitch_804A8BD0::init() {
+    mMode = field_0x90 & 0x1F;
+    mState = 0;
+    update();
+}
 
 // FIXME: 99.55 %. Only the register allocation of the shift: the original
 // loads the table entry into r0 and field_0x90 into r4 (srw r0, r4, r0);
@@ -35,8 +37,6 @@ void CheckSwitch_804A8BD0::update() {
     }
 }
 
-void CheckSwitch_804A8BD0::init() {
-    mMode = field_0x90 & 0x1F;
-    mState = 0;
-    update();
-}
+void CheckSwitch_804A8BD0::draw() {}
+
+CheckSwitch_804A8BD0::~CheckSwitch_804A8BD0() {}

@@ -12,7 +12,11 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_block_for_2_3_players.h"
 
-BlockFor2Or3Players_804AE728::~BlockFor2Or3Players_804AE728() {}
+// Clears mAlive (0x11C) right after the spawn, which removes the actor at
+// the next update pass; whether 0x11C means "alive" here is unconfirmed.
+void BlockFor2Or3Players_804AE728::init() {
+    mAlive = false;
+}
 
 void BlockFor2Or3Players_804AE728::update() {
     if (fn_80226850(&mPos, field_0x4) == 0x12) {
@@ -21,8 +25,4 @@ void BlockFor2Or3Players_804AE728::update() {
     }
 }
 
-// Clears mAlive (0x11C) right after the spawn, which removes the actor at
-// the next update pass; whether 0x11C means "alive" here is unconfirmed.
-void BlockFor2Or3Players_804AE728::init() {
-    mAlive = false;
-}
+BlockFor2Or3Players_804AE728::~BlockFor2Or3Players_804AE728() {}

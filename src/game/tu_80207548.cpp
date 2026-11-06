@@ -19,48 +19,28 @@ static inline void normalize(JGeometry::TVec2f& v) {
     v.y *= norm;
 }
 
-// Marks `slot` done; once its player's slot is active and picked in mMask,
-// aims the actor found by the slot's serial at that player when the player is
-// on the actor's layer and vfunc_0x4C accepts the position. Reports the actor
-// (fn_801F3668) when every other slot was already done.
-// FIXME: 99.60%. Only the registers differ: the original keeps the slot
-// offset (mulli) and the layer in r28, the player in r27 (ours: offset r29,
-// player r28, layer r27); f-registers and the code are identical.
-void cls_804A5B28::fn_802075D8(u16 slot) {
-    mSlots[slot].mDone = true;
-    bool all = true;
-    for (s32 i = 0; i < 4; i++) {
-        if (i != slot && !mSlots[i].mDone) {
-            all = false;
+cls_804A5B28::Slot::Slot() {
+    mSerial = -1;
+    mUsed = false;
+    mPlayer = -1;
+    field_0xc = 0;
+    mTarget.set(0.0f, 0.0f, 0.0f);
+    field_0x1c = 0;
+    mDone = false;
+}
+
+cls_804A5B28::cls_804A5B28() : mActive(false), mMask(0), mTimer(0), field_0x2ac(0) {}
+
+void cls_804A5B28::vfunc_0xA4() {}
+
+void cls_804A5B28::vfunc_0xA8() {}
+
+void cls_804A5B28::fn_80207A60() {
+    if (mTimer != 0) {
+        mTimer--;
+        if (mTimer == 0 && !mActive) {
+            vfunc_0xA4();
         }
-    }
-    if (mActive && (mMask & (1 << slot))) {
-        JGeometry::TVec3f v;
-        JGeometry::TVec3f pos(mPos);
-        ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mSlots[slot].mSerial);
-        if (a) {
-            pos.set(a->mPos);
-        }
-        s32 handle = fn_801CB434(field_0x4, &pos, true);
-        s32 player = mSlots[slot].mPlayer;
-        if (player >= 0 && player < 4) {
-            s32 layer = field_0x4;
-            if (layer == getPlayerLayer_8023DE58(player)) {
-                if (vfunc_0x4C(field_0x4, &pos)) {
-                    ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(handle);
-                    if (b) {
-                        JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - pos.x, getPlayerPos_8023E724(player)->y - pos.y);
-                        normalize(d);
-                        d.scale(2.0f);
-                        v.set(d.x, d.y, b->field_0x3c.z);
-                        b->field_0x3c = v;
-                    }
-                }
-            }
-        }
-    }
-    if (all) {
-        fn_801F3668();
     }
 }
 
@@ -133,27 +113,47 @@ void cls_804A5B28::fn_80207830(u16 slot, s32 player, s32 arg3, const JGeometry::
     }
 }
 
-void cls_804A5B28::fn_80207A60() {
-    if (mTimer != 0) {
-        mTimer--;
-        if (mTimer == 0 && !mActive) {
-            vfunc_0xA4();
+// Marks `slot` done; once its player's slot is active and picked in mMask,
+// aims the actor found by the slot's serial at that player when the player is
+// on the actor's layer and vfunc_0x4C accepts the position. Reports the actor
+// (fn_801F3668) when every other slot was already done.
+// FIXME: 99.60%. Only the registers differ: the original keeps the slot
+// offset (mulli) and the layer in r28, the player in r27 (ours: offset r29,
+// player r28, layer r27); f-registers and the code are identical.
+void cls_804A5B28::fn_802075D8(u16 slot) {
+    mSlots[slot].mDone = true;
+    bool all = true;
+    for (s32 i = 0; i < 4; i++) {
+        if (i != slot && !mSlots[i].mDone) {
+            all = false;
         }
     }
-}
-
-void cls_804A5B28::vfunc_0xA8() {}
-
-void cls_804A5B28::vfunc_0xA4() {}
-
-cls_804A5B28::cls_804A5B28() : mActive(false), mMask(0), mTimer(0), field_0x2ac(0) {}
-
-cls_804A5B28::Slot::Slot() {
-    mSerial = -1;
-    mUsed = false;
-    mPlayer = -1;
-    field_0xc = 0;
-    mTarget.set(0.0f, 0.0f, 0.0f);
-    field_0x1c = 0;
-    mDone = false;
+    if (mActive && (mMask & (1 << slot))) {
+        JGeometry::TVec3f v;
+        JGeometry::TVec3f pos(mPos);
+        ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mSlots[slot].mSerial);
+        if (a) {
+            pos.set(a->mPos);
+        }
+        s32 handle = fn_801CB434(field_0x4, &pos, true);
+        s32 player = mSlots[slot].mPlayer;
+        if (player >= 0 && player < 4) {
+            s32 layer = field_0x4;
+            if (layer == getPlayerLayer_8023DE58(player)) {
+                if (vfunc_0x4C(field_0x4, &pos)) {
+                    ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(handle);
+                    if (b) {
+                        JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - pos.x, getPlayerPos_8023E724(player)->y - pos.y);
+                        normalize(d);
+                        d.scale(2.0f);
+                        v.set(d.x, d.y, b->field_0x3c.z);
+                        b->field_0x3c = v;
+                    }
+                }
+            }
+        }
+    }
+    if (all) {
+        fn_801F3668();
+    }
 }

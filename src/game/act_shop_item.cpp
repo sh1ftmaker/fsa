@@ -33,12 +33,26 @@ static inline bool showMessage(s32 player, u32 msg, s32 serial, s32 layer,
     return fn_8038AD24(player, msg, serial, layer, pos, 0x28);
 }
 
-ShopItem_8049CDC0::~ShopItem_8049CDC0() {}
+ShopItem_8049CDC0::ShopItem_8049CDC0() {
+    mKind = 8;
+    mState = 0;
+    mPlayer = -1;
+    field_0x274 = 0;
+}
 
-void ShopItem_8049CDC0::draw() {
-    ActorBase_804A5770::draw();
-    SpriteParams_801F5AE0 params;
-    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x17B, &params, 7, 0, false, 1.0f, 1.0f);
+void ShopItem_8049CDC0::init() {
+    ActorBase_804A5770::init();
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    mLife = 0;
+    mKind = field_0x90 & 0xFF;
+    mMsgPos.x = mPos.x;
+    mMsgPos.y = mPos.y;
+    mMsgPos.z = mPos.z;
+    mMsgPos.y -= 32.0f;
+    mAnim.fn_801D2608(lbl_8049CDA0, 8);
+    mAnim.startAnim_801D22DC(mKind, 2, false);
+    mAnim.fn_801D1F14(0.0f);
 }
 
 // FIXME: 97.63 %. In state 1 the original reloads mPlayer (lwz 0x270) where ours
@@ -221,24 +235,10 @@ void ShopItem_8049CDC0::update() {
     mAnim.fn_801D1C18();
 }
 
-void ShopItem_8049CDC0::init() {
-    ActorBase_804A5770::init();
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    mLife = 0;
-    mKind = field_0x90 & 0xFF;
-    mMsgPos.x = mPos.x;
-    mMsgPos.y = mPos.y;
-    mMsgPos.z = mPos.z;
-    mMsgPos.y -= 32.0f;
-    mAnim.fn_801D2608(lbl_8049CDA0, 8);
-    mAnim.startAnim_801D22DC(mKind, 2, false);
-    mAnim.fn_801D1F14(0.0f);
+void ShopItem_8049CDC0::draw() {
+    ActorBase_804A5770::draw();
+    SpriteParams_801F5AE0 params;
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x17B, &params, 7, 0, false, 1.0f, 1.0f);
 }
 
-ShopItem_8049CDC0::ShopItem_8049CDC0() {
-    mKind = 8;
-    mState = 0;
-    mPlayer = -1;
-    field_0x274 = 0;
-}
+ShopItem_8049CDC0::~ShopItem_8049CDC0() {}

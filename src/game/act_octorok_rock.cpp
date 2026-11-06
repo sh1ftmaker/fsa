@@ -16,50 +16,104 @@ static s32 lbl_8049F558[32] = {
     14, 15, 14, 15, 7,  14, 7,  0,  //
 };
 
-OctorokRock_8049F5D8::~OctorokRock_8049F5D8() {}
-
-void OctorokRock_8049F5D8::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x10.a = field_0x248;
-    s32 state = field_0x90;
-    switch (state) {
-    case 0:
-        if (field_0x4 == 8) {
-            GameView_804A9950* view = getGameView_802D6A9C();
-            // FIXME: 94.3 %. The original loads the four words of the view's box
-            // (0xCC-0xDB) into registers before storing them to the stack copy;
-            // here each word is loaded and stored in turn, and the position's
-            // scheduling follows from that.
-            JGeometry::TBox2f box;
-            box = view->mVisibleBox;
-            JGeometry::TVec3f pos(mPos.x + box.i.x, mPos.y + box.i.y, mPos.z);
-            fn_801EF574("enemy_gc_sob.bin", 0x25, &pos, &params);
-            fn_801F02BC("enemy_both2_sob.bin", 0x317, &params, 1, 0, false, 1.0f, 1.0f);
-        } else {
-            fn_801F02BC("enemy_gc_sob.bin", 0x25, &params, 1, 0, false, 1.0f, 1.0f);
-        }
-        break;
-    case 4:
-        params.field_0x30 = 0x11;
-        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0xE5, &params, -1, 1.0f, 1.0f);
-        break;
-    case 1:
+void OctorokRock_8049F5D8::init() {
+    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
+    field_0x80.set(-2.0f, -2.0f, 2.0f, 2.0f);
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    field_0x23c = 0;
+    field_0x250 = 0;
+    field_0x234 = 300;
+    field_0x98 = 0;
+    field_0x24c = 0;
+    field_0x248 = 0xFF;
+    s32 mode = field_0x90;
+    if (mode == 3) {
+        mBox.set(-6.0f, -6.0f, 6.0f, 6.0f);
+        field_0x80.set(-6.0f, -6.0f, 6.0f, 6.0f);
+    }
+    switch (field_0x90) {
     case 5:
-        {
-            s32 frame = field_0x24c + 0x4c;
-            if (field_0x4 < 8) {
-                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-            }
-        }
+        field_0x234 = 10000;
+        field_0x23c = 300;
+        // fall through
+    case 1:
+        field_0xb0 = 6;
         break;
     case 2:
-        fn_801F02BC("enemy_both2_sob.bin", field_0x24c + 0x170, &params, 7, 0, false, 1.0f, 1.0f);
-        break;
-    case 3:
-        fn_801F02BC("enemy_both2_sob.bin", 0x1BA, NULL, 0, 0, false, 1.0f, 1.0f);
+        field_0x238 = 3;
+        mPos.z = 8.0f;
+        field_0xb0 = 7;
         break;
     }
+    field_0x230 = 0;
+}
+
+bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    s32 serial = mSerial;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+        return true;
+    }
+    s32 tile = fn_8022461C(pos, layer);
+    s32 code = fn_80226850(pos, layer);
+    if (code == 0x230 || code == 0x231) {
+        return false;
+    }
+    // FIXME: 68.7 %. The 30 tile codes are one run of compares in the original,
+    // in source order (0, 4, 5, 6, 7, 2, 3, ...), each to one shared `li 0`;
+    // this switch is emitted sorted, and as a `||` chain MWCC folds 2..7 into a range.
+    // The 0x25 / 0x26 returns also differ: the original converts the cntlzw
+    // result with extrwi 8,19 where this emits srwi 5.
+    switch (tile) {
+    case 0x0:
+    case 0x4:
+    case 0x5:
+    case 0x6:
+    case 0x7:
+    case 0x2:
+    case 0x3:
+    case 0x50:
+    case 0xE:
+    case 0xC:
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x2A:
+    case 0x2B:
+    case 0x2C:
+    case 0x2D:
+    case 0x2E:
+    case 0x2F:
+    case 0x20:
+    case 0xD:
+    case 0x39:
+    case 0x3A:
+    case 0x3B:
+    case 0x4C:
+    case 0x4D:
+    case 0x4E:
+    case 0x4F:
+    case 0x24:
+        return false;
+    default:
+        break;
+    }
+    if (code == 0x3A || code == 0x3D) {
+        return false;
+    }
+    if (tile == 0x25) {
+        return getGameView_802D6A9C()->field_0x171 == 0;
+    }
+    if (tile == 0x26) {
+        return getGameView_802D6A9C()->field_0x171 == 1;
+    }
+    if (tile == 0x22) {
+        return getGameView_802D6A9C()->field_0x170 == 1;
+    }
+    return true;
 }
 
 void OctorokRock_8049F5D8::update() {
@@ -236,102 +290,48 @@ void OctorokRock_8049F5D8::update() {
     }
 }
 
-bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    s32 serial = mSerial;
-    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
-        return true;
-    }
-    s32 tile = fn_8022461C(pos, layer);
-    s32 code = fn_80226850(pos, layer);
-    if (code == 0x230 || code == 0x231) {
-        return false;
-    }
-    // FIXME: 68.7 %. The 30 tile codes are one run of compares in the original,
-    // in source order (0, 4, 5, 6, 7, 2, 3, ...), each to one shared `li 0`;
-    // this switch is emitted sorted, and as a `||` chain MWCC folds 2..7 into a range.
-    // The 0x25 / 0x26 returns also differ: the original converts the cntlzw
-    // result with extrwi 8,19 where this emits srwi 5.
-    switch (tile) {
-    case 0x0:
-    case 0x4:
-    case 0x5:
-    case 0x6:
-    case 0x7:
-    case 0x2:
-    case 0x3:
-    case 0x50:
-    case 0xE:
-    case 0xC:
-    case 0x27:
-    case 0x28:
-    case 0x29:
-    case 0x2A:
-    case 0x2B:
-    case 0x2C:
-    case 0x2D:
-    case 0x2E:
-    case 0x2F:
-    case 0x20:
-    case 0xD:
-    case 0x39:
-    case 0x3A:
-    case 0x3B:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x24:
-        return false;
-    default:
+void OctorokRock_8049F5D8::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = field_0x248;
+    s32 state = field_0x90;
+    switch (state) {
+    case 0:
+        if (field_0x4 == 8) {
+            GameView_804A9950* view = getGameView_802D6A9C();
+            // FIXME: 94.3 %. The original loads the four words of the view's box
+            // (0xCC-0xDB) into registers before storing them to the stack copy;
+            // here each word is loaded and stored in turn, and the position's
+            // scheduling follows from that.
+            JGeometry::TBox2f box;
+            box = view->mVisibleBox;
+            JGeometry::TVec3f pos(mPos.x + box.i.x, mPos.y + box.i.y, mPos.z);
+            fn_801EF574("enemy_gc_sob.bin", 0x25, &pos, &params);
+            fn_801F02BC("enemy_both2_sob.bin", 0x317, &params, 1, 0, false, 1.0f, 1.0f);
+        } else {
+            fn_801F02BC("enemy_gc_sob.bin", 0x25, &params, 1, 0, false, 1.0f, 1.0f);
+        }
         break;
-    }
-    if (code == 0x3A || code == 0x3D) {
-        return false;
-    }
-    if (tile == 0x25) {
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    }
-    if (tile == 0x26) {
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    }
-    if (tile == 0x22) {
-        return getGameView_802D6A9C()->field_0x170 == 1;
-    }
-    return true;
-}
-
-void OctorokRock_8049F5D8::init() {
-    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
-    field_0x80.set(-2.0f, -2.0f, 2.0f, 2.0f);
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x234 = 0;
-    field_0x238 = 0;
-    field_0x23c = 0;
-    field_0x250 = 0;
-    field_0x234 = 300;
-    field_0x98 = 0;
-    field_0x24c = 0;
-    field_0x248 = 0xFF;
-    s32 mode = field_0x90;
-    if (mode == 3) {
-        mBox.set(-6.0f, -6.0f, 6.0f, 6.0f);
-        field_0x80.set(-6.0f, -6.0f, 6.0f, 6.0f);
-    }
-    switch (field_0x90) {
-    case 5:
-        field_0x234 = 10000;
-        field_0x23c = 300;
-        // fall through
+    case 4:
+        params.field_0x30 = 0x11;
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0xE5, &params, -1, 1.0f, 1.0f);
+        break;
     case 1:
-        field_0xb0 = 6;
+    case 5:
+        {
+            s32 frame = field_0x24c + 0x4c;
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
         break;
     case 2:
-        field_0x238 = 3;
-        mPos.z = 8.0f;
-        field_0xb0 = 7;
+        fn_801F02BC("enemy_both2_sob.bin", field_0x24c + 0x170, &params, 7, 0, false, 1.0f, 1.0f);
+        break;
+    case 3:
+        fn_801F02BC("enemy_both2_sob.bin", 0x1BA, NULL, 0, 0, false, 1.0f, 1.0f);
         break;
     }
-    field_0x230 = 0;
 }
+
+OctorokRock_8049F5D8::~OctorokRock_8049F5D8() {}

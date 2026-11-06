@@ -4,7 +4,6 @@
 #include "game/Player.h"
 #include "game/act/act_eyegore.h"
 
-Eyegore_804A3548::~Eyegore_804A3548() {}
 
 // TIMG names indexed by field_0x250. Not const: the table sits in .data.
 static const char* lbl_804A34F8[] = {
@@ -15,28 +14,64 @@ static const char* lbl_804A34F8[] = {
     "e_igol_yoko_toji.bti", "e_igol_yoko_toji.bti", "e_igol_mae_toji.bti", "e_igol_ushiro_0.bti",
 };
 
-void Eyegore_804A3548::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    f32 flip = 1.0f;
-    if (field_0x98 == 0) {
-        flip = -1.0f;
+// FIXME: 99.12 %. Only the .sdata2 literal names differ: lbl_8053E8C0,
+// lbl_8053E8C4, ... are @NNN in ours (the unit's .sdata2 split doesn't cover them).
+void Eyegore_804A3548::init() {
+    mBox.i.x = -12.0f;
+    mBox.i.y = -22.0f;
+    mBox.f.x = 12.0f;
+    mBox.f.y = 2.0f;
+    field_0x80.i.x = -12.0f;
+    field_0x80.i.y = -22.0f;
+    field_0x80.f.x = 12.0f;
+    field_0x80.f.y = 8.0f;
+    mBox2.i.x = -16.0f;
+    mBox2.i.y = -24.0f;
+    mBox2.f.x = 16.0f;
+    mBox2.f.y = 6.0f;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0x24c = 0;
+    mTimers[0] = 0;
+    mTimers[1] = 0;
+    mTimers[2] = 0;
+    mTimers[3] = 0;
+    field_0xb8 = 1;
+    field_0x98 = 2;
+    field_0x250 = 0x12;
+    field_0xbc = 4;
+    field_0x25c.z = 0.0f;
+    field_0x25c.y = 0.0f;
+    field_0x25c.x = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
+    mLife = 0x3EF;
+    field_0x258 = 2;
+    field_0x254 = mLife;
+    field_0x230 = 0;
+}
+
+// Runs only when mLife has changed since the last call.
+// FIXME: 99.04 %. regalloc-only: the zero for mTimers[0] and field_0x244 is
+// in r6 and the gGameRoot_8053AAF8 pointer in r5 here, the other way round in the
+// original; the 1.0f and 60.0f literals are @NNN, not lbl_8053E888 /
+// lbl_8053E8BC (the unit's .sdata2 is not split yet).
+void Eyegore_804A3548::vfunc_0x44() {
+    if (field_0x254 != mLife) {
+        field_0x254 = mLife;
+        if (field_0x258 > 0) {
+            field_0x258--;
+        }
+        if (field_0x258 <= 0) {
+            field_0xb0 = 0;
+        }
+        mTimers[0] = 0;
+        field_0x244 = 0;
+        field_0x250 = field_0x98 + 0x10;
+        mTimers[2] = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x3C;
+        field_0x230 = 0;
     }
-    mtx[0][0] = flip;
-    mtx[0][1] = 0.0f;
-    mtx[0][2] = 0.0f;
-    mtx[1][0] = 0.0f;
-    mtx[1][1] = 1.0f;
-    mtx[1][2] = 0.0f;
-    mtx[2][0] = 0.0f;
-    mtx[2][1] = 0.0f;
-    mtx[2][2] = 1.0f;
-    mtx[0][3] = 0.0f;
-    mtx[1][3] = 0.0f;
-    mtx[2][3] = 0.0f;
-    params.mMtx = mtx;
-    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A34F8[field_0x250]);
-    fn_801EFD34(res, &params, 3, 0.0f, -9.0f, 0.0f);
 }
 
 // FIXME: 99.71 %. The .sdata2 literals (lbl_8053E898 and the others after it)
@@ -288,62 +323,28 @@ void Eyegore_804A3548::update() {
     }
 }
 
-// Runs only when mLife has changed since the last call.
-// FIXME: 99.04 %. regalloc-only: the zero for mTimers[0] and field_0x244 is
-// in r6 and the gGameRoot_8053AAF8 pointer in r5 here, the other way round in the
-// original; the 1.0f and 60.0f literals are @NNN, not lbl_8053E888 /
-// lbl_8053E8BC (the unit's .sdata2 is not split yet).
-void Eyegore_804A3548::vfunc_0x44() {
-    if (field_0x254 != mLife) {
-        field_0x254 = mLife;
-        if (field_0x258 > 0) {
-            field_0x258--;
-        }
-        if (field_0x258 <= 0) {
-            field_0xb0 = 0;
-        }
-        mTimers[0] = 0;
-        field_0x244 = 0;
-        field_0x250 = field_0x98 + 0x10;
-        mTimers[2] = (s32)(60.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x3C;
-        field_0x230 = 0;
+void Eyegore_804A3548::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    f32 flip = 1.0f;
+    if (field_0x98 == 0) {
+        flip = -1.0f;
     }
+    mtx[0][0] = flip;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = 1.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = 1.0f;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    params.mMtx = mtx;
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', lbl_804A34F8[field_0x250]);
+    fn_801EFD34(res, &params, 3, 0.0f, -9.0f, 0.0f);
 }
 
-// FIXME: 99.12 %. Only the .sdata2 literal names differ: lbl_8053E8C0,
-// lbl_8053E8C4, ... are @NNN in ours (the unit's .sdata2 split doesn't cover them).
-void Eyegore_804A3548::init() {
-    mBox.i.x = -12.0f;
-    mBox.i.y = -22.0f;
-    mBox.f.x = 12.0f;
-    mBox.f.y = 2.0f;
-    field_0x80.i.x = -12.0f;
-    field_0x80.i.y = -22.0f;
-    field_0x80.f.x = 12.0f;
-    field_0x80.f.y = 8.0f;
-    mBox2.i.x = -16.0f;
-    mBox2.i.y = -24.0f;
-    mBox2.f.x = 16.0f;
-    mBox2.f.y = 6.0f;
-    field_0x244 = 0;
-    field_0x248 = 0;
-    field_0x24c = 0;
-    mTimers[0] = 0;
-    mTimers[1] = 0;
-    mTimers[2] = 0;
-    mTimers[3] = 0;
-    field_0xb8 = 1;
-    field_0x98 = 2;
-    field_0x250 = 0x12;
-    field_0xbc = 4;
-    field_0x25c.z = 0.0f;
-    field_0x25c.y = 0.0f;
-    field_0x25c.x = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.x = 0.0f;
-    mLife = 0x3EF;
-    field_0x258 = 2;
-    field_0x254 = mLife;
-    field_0x230 = 0;
-}
+Eyegore_804A3548::~Eyegore_804A3548() {}

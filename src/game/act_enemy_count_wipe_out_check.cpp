@@ -3,9 +3,13 @@
 #include "game/GameView.h"
 #include "game/act/act_enemy_count_wipe_out_check.h"
 
-EnemyCountWipeOutCheck_804A8250::~EnemyCountWipeOutCheck_804A8250() {}
-
-void EnemyCountWipeOutCheck_804A8250::draw() {}
+void EnemyCountWipeOutCheck_804A8250::init() {
+    field_0x230 = 0;
+    field_0x234 = (field_0x90 >> 22) & 0x1F;
+    field_0x238 = field_0x90 & 0xFF;
+    field_0x244 = gAudioMgr_8053AF80->field_0x58;
+    field_0x240 = (field_0x90 >> 21) & 1;
+}
 
 // FIXME: 99.7 %. Only the register holding field_0x4 differs: the original
 // keeps it in r30 (lwz r30, 0x4(r31) and the three uses after the call), ours
@@ -30,10 +34,6 @@ void EnemyCountWipeOutCheck_804A8250::update() {
     }
 }
 
-void EnemyCountWipeOutCheck_804A8250::init() {
-    field_0x230 = 0;
-    field_0x234 = (field_0x90 >> 22) & 0x1F;
-    field_0x238 = field_0x90 & 0xFF;
-    field_0x244 = gAudioMgr_8053AF80->field_0x58;
-    field_0x240 = (field_0x90 >> 21) & 1;
-}
+void EnemyCountWipeOutCheck_804A8250::draw() {}
+
+EnemyCountWipeOutCheck_804A8250::~EnemyCountWipeOutCheck_804A8250() {}

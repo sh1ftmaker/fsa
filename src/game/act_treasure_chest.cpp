@@ -14,26 +14,171 @@
 #include "game/act/act_liftable_item.h"
 #include "game/act/act_treasure_chest.h"
 
-TreasureChest_804AA178::~TreasureChest_804AA178() {}
-
-bool TreasureChest_804AA178::fn_802EB27C() {
-    // FIXME: 97.11 %. The original copies findActorBySerial_801F666C's result through r0
-    // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
-    s32 serial;
-    bool result = false;
-    for (s32 i = 0; i < 4; i++) {
-        serial = field_0x24c[i];
-        if (serial < 0) {
-            continue;
-        }
-        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
-        if (item != NULL && item->fn_801597B8() == 3) {
-            item->fn_801597C0();
-            result = true;
-        }
+// FIXME: 99.63 %. Only the literal relocations differ (lbl_805413B8 vs @474,
+// lbl_805413C0 vs @476 and the other sdata2 floats): the data split, not code.
+void TreasureChest_804AA178::init() {
+    field_0x234 = field_0x90 & 0xFF;
+    field_0x238 = (field_0x90 >> 8) & 0xF;
+    field_0x244 = (field_0x90 >> 12) & 0xF;
+    if (field_0x244 >= 4) {
+        field_0x244 = -1;
     }
-    return result;
+    if ((field_0x234 >= 0x1A && field_0x234 < 0x20) || (field_0x234 >= 0x26 && field_0x234 < 0x2A) ||
+        (field_0x234 >= 0x3B && field_0x234 < 0x40) || field_0x234 >= 0x4B ||
+        (field_0x234 == 0x2E && field_0x4 >= 8)) {
+        field_0x234 = 0;
+    }
+
+    field_0x25c = mPos;
+    mPos.x += 8.0f;
+    mPos.y += 12.0f;
+    if (viewLayerFlag(field_0x4)) {
+        mBox.i.x = -10.0f;
+        mBox.i.y = 4.0f;
+        mBox.f.x = 10.0f;
+        mBox.f.y = 5.0f;
+    } else {
+        mBox.i.x = -6.0f;
+        mBox.i.y = 0.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 5.0f;
+    }
+
+    JGeometry::TVec2f cell(field_0x25c.x, field_0x25c.y);
+    mCell = fn_80226BC4(&cell, field_0x4);
+    if (getGameView_802D6A9C()->fn_802D49A8(field_0x4, (u16)mCell) == true) {
+        mAlive = false;
+    }
+
+    if (field_0x238 == 0) {
+        field_0x230 = 0;
+    } else if (field_0x238 == 2) {
+        field_0x230 = 3;
+    } else {
+        field_0x230 = 2;
+    }
+    field_0x248 = -1;
+    field_0x24c[0] = -1;
+    field_0x24c[1] = -1;
+    field_0x24c[2] = -1;
+    field_0x24c[3] = -1;
 }
+
+// FIXME: 96.10 %. In state 2 the spawn code is built in other registers (the
+// original compares field_0x244 with i as `cmpw r29, r0` and reloads
+// field_0x234 off r28), and the literals are @NNN, not lbl_805413C0 onwards.
+void TreasureChest_804AA178::update() {
+    JGeometry::TVec2f pos(mPos.x, mPos.y);
+    s32 layer = field_0x4;
+    if (viewLayerFlag(layer)) {
+        mBox.i.x = -10.0f;
+        mBox.i.y = 2.0f;
+        mBox.f.x = 10.0f;
+        mBox.f.y = 5.0f;
+    } else {
+        mBox.i.x = -6.0f;
+        mBox.i.y = 0.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 5.0f;
+    }
+    {
+        JGeometry::TBox2f box(mBox);
+        box.addPos(pos);
+        field_0x240 = fn_8023AF14(&box, field_0x4, false, 0.0f);
+    }
+
+    switch (field_0x230) {
+    case 0:
+        if (gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
+            field_0x230 = 1;
+        }
+        break;
+    case 1: {
+        bool result = false;
+        if (field_0x240 >= 0) {
+            if (viewLayerFlag(field_0x4)) {
+                if (fn_80230CFC(field_0x240) == 3 || fn_80230CFC(field_0x240) == 0 || fn_80230CFC(field_0x240) == 1) {
+                    result = true;
+                }
+            } else if (fn_80230CFC(field_0x240) == 3) {
+                result = true;
+            }
+            if (result == true) {
+                mBox.i.x = -20.0f;
+                mBox.i.y = -18.0f;
+                mBox.f.x = 20.0f;
+                mBox.f.y = 18.0f;
+                JGeometry::TBox2f box(mBox);
+                box.addPos(pos);
+                fn_8022FEB8(&box, field_0x4, mSerial, true, true);
+            }
+            field_0x248 = field_0x240;
+            if (fn_8022F514(field_0x240)) {
+                field_0x248 = fn_8022F3DC(field_0x240);
+            }
+            if (result == true) {
+                if (!fn_8023EFEC(field_0x240)) {
+                    if (fn_8022EA0C(field_0x240) == field_0x240) {
+                        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x248), 0x100) != 0) {
+                            if (vfunc_0x54()) {
+                                mAlive = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        break;
+    }
+    case 2:
+        field_0x240 = field_0x244;
+        field_0x248 = field_0x240;
+        if (fn_8022F514(field_0x240)) {
+            field_0x248 = fn_8022F3DC(field_0x240);
+        }
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f from = *getPlayerPos_8023E724(i);
+            JGeometry::TVec3f at = from;
+            at.x = from.x + 1.0f;
+            at.y = from.y - 12.0f;
+            at.z = from.z;
+            if (fn_8022F514(i) == true) {
+                if (field_0x244 == i) {
+                    u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
+                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
+                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
+                }
+            } else {
+                if (field_0x244 == i) {
+                    u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
+                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
+                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
+                }
+            }
+        }
+        if (field_0x238 == 1) {
+            field_0x230 = 4;
+        } else {
+            mAlive = false;
+        }
+        break;
+    case 4:
+        // Set by case 2 when the chest has no more spawns; nothing else reads it.
+        break;
+    case 3:
+        field_0x240 = field_0x244;
+        field_0x248 = field_0x240;
+        if (fn_8022F514(field_0x240)) {
+            field_0x248 = fn_8022F3DC(field_0x240);
+        }
+        if (vfunc_0x54()) {
+            mAlive = false;
+        }
+        break;
+    }
+}
+
+void TreasureChest_804AA178::draw() {}
 
 // FIXME: 94.63 %. Two instructions too many. The stage-table lookup puts the
 // row address and the bit in other registers than the original (slwi/addi
@@ -153,168 +298,23 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     return result;
 }
 
-void TreasureChest_804AA178::draw() {}
-
-// FIXME: 96.10 %. In state 2 the spawn code is built in other registers (the
-// original compares field_0x244 with i as `cmpw r29, r0` and reloads
-// field_0x234 off r28), and the literals are @NNN, not lbl_805413C0 onwards.
-void TreasureChest_804AA178::update() {
-    JGeometry::TVec2f pos(mPos.x, mPos.y);
-    s32 layer = field_0x4;
-    if (viewLayerFlag(layer)) {
-        mBox.i.x = -10.0f;
-        mBox.i.y = 2.0f;
-        mBox.f.x = 10.0f;
-        mBox.f.y = 5.0f;
-    } else {
-        mBox.i.x = -6.0f;
-        mBox.i.y = 0.0f;
-        mBox.f.x = 6.0f;
-        mBox.f.y = 5.0f;
+bool TreasureChest_804AA178::fn_802EB27C() {
+    // FIXME: 97.11 %. The original copies findActorBySerial_801F666C's result through r0
+    // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
+    s32 serial;
+    bool result = false;
+    for (s32 i = 0; i < 4; i++) {
+        serial = field_0x24c[i];
+        if (serial < 0) {
+            continue;
+        }
+        LiftableItem_804A01D0* item = static_cast<LiftableItem_804A01D0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (item != NULL && item->fn_801597B8() == 3) {
+            item->fn_801597C0();
+            result = true;
+        }
     }
-    {
-        JGeometry::TBox2f box(mBox);
-        box.addPos(pos);
-        field_0x240 = fn_8023AF14(&box, field_0x4, false, 0.0f);
-    }
-
-    switch (field_0x230) {
-    case 0:
-        if (gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, mCell) == 0x30) {
-            field_0x230 = 1;
-        }
-        break;
-    case 1: {
-        bool result = false;
-        if (field_0x240 >= 0) {
-            if (viewLayerFlag(field_0x4)) {
-                if (fn_80230CFC(field_0x240) == 3 || fn_80230CFC(field_0x240) == 0 || fn_80230CFC(field_0x240) == 1) {
-                    result = true;
-                }
-            } else if (fn_80230CFC(field_0x240) == 3) {
-                result = true;
-            }
-            if (result == true) {
-                mBox.i.x = -20.0f;
-                mBox.i.y = -18.0f;
-                mBox.f.x = 20.0f;
-                mBox.f.y = 18.0f;
-                JGeometry::TBox2f box(mBox);
-                box.addPos(pos);
-                fn_8022FEB8(&box, field_0x4, mSerial, true, true);
-            }
-            field_0x248 = field_0x240;
-            if (fn_8022F514(field_0x240)) {
-                field_0x248 = fn_8022F3DC(field_0x240);
-            }
-            if (result == true) {
-                if (!fn_8023EFEC(field_0x240)) {
-                    if (fn_8022EA0C(field_0x240) == field_0x240) {
-                        if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(field_0x248), 0x100) != 0) {
-                            if (vfunc_0x54()) {
-                                mAlive = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        break;
-    }
-    case 2:
-        field_0x240 = field_0x244;
-        field_0x248 = field_0x240;
-        if (fn_8022F514(field_0x240)) {
-            field_0x248 = fn_8022F3DC(field_0x240);
-        }
-        for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f from = *getPlayerPos_8023E724(i);
-            JGeometry::TVec3f at = from;
-            at.x = from.x + 1.0f;
-            at.y = from.y - 12.0f;
-            at.z = from.z;
-            if (fn_8022F514(i) == true) {
-                if (field_0x244 == i) {
-                    u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
-                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
-                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
-                }
-            } else {
-                if (field_0x244 == i) {
-                    u32 code = ((field_0x244 << 26) + 0x80000000) + ((i << 24) + field_0x234);
-                    s32 spawnLayer = getPlayerLayer_8023DE58(i);
-                    field_0x24c[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, spawnLayer, &at, code, -1, -1);
-                }
-            }
-        }
-        if (field_0x238 == 1) {
-            field_0x230 = 4;
-        } else {
-            mAlive = false;
-        }
-        break;
-    case 4:
-        // Set by case 2 when the chest has no more spawns; nothing else reads it.
-        break;
-    case 3:
-        field_0x240 = field_0x244;
-        field_0x248 = field_0x240;
-        if (fn_8022F514(field_0x240)) {
-            field_0x248 = fn_8022F3DC(field_0x240);
-        }
-        if (vfunc_0x54()) {
-            mAlive = false;
-        }
-        break;
-    }
+    return result;
 }
 
-// FIXME: 99.63 %. Only the literal relocations differ (lbl_805413B8 vs @474,
-// lbl_805413C0 vs @476 and the other sdata2 floats): the data split, not code.
-void TreasureChest_804AA178::init() {
-    field_0x234 = field_0x90 & 0xFF;
-    field_0x238 = (field_0x90 >> 8) & 0xF;
-    field_0x244 = (field_0x90 >> 12) & 0xF;
-    if (field_0x244 >= 4) {
-        field_0x244 = -1;
-    }
-    if ((field_0x234 >= 0x1A && field_0x234 < 0x20) || (field_0x234 >= 0x26 && field_0x234 < 0x2A) ||
-        (field_0x234 >= 0x3B && field_0x234 < 0x40) || field_0x234 >= 0x4B ||
-        (field_0x234 == 0x2E && field_0x4 >= 8)) {
-        field_0x234 = 0;
-    }
-
-    field_0x25c = mPos;
-    mPos.x += 8.0f;
-    mPos.y += 12.0f;
-    if (viewLayerFlag(field_0x4)) {
-        mBox.i.x = -10.0f;
-        mBox.i.y = 4.0f;
-        mBox.f.x = 10.0f;
-        mBox.f.y = 5.0f;
-    } else {
-        mBox.i.x = -6.0f;
-        mBox.i.y = 0.0f;
-        mBox.f.x = 6.0f;
-        mBox.f.y = 5.0f;
-    }
-
-    JGeometry::TVec2f cell(field_0x25c.x, field_0x25c.y);
-    mCell = fn_80226BC4(&cell, field_0x4);
-    if (getGameView_802D6A9C()->fn_802D49A8(field_0x4, (u16)mCell) == true) {
-        mAlive = false;
-    }
-
-    if (field_0x238 == 0) {
-        field_0x230 = 0;
-    } else if (field_0x238 == 2) {
-        field_0x230 = 3;
-    } else {
-        field_0x230 = 2;
-    }
-    field_0x248 = -1;
-    field_0x24c[0] = -1;
-    field_0x24c[1] = -1;
-    field_0x24c[2] = -1;
-    field_0x24c[3] = -1;
-}
+TreasureChest_804AA178::~TreasureChest_804AA178() {}

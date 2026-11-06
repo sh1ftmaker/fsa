@@ -33,52 +33,23 @@ static inline void setWindow(s32 index, s32 flag) {
     setWindow(index, flag, x, y);
 }
 
-// FIXME: 98.2 %. Only the registers of the centred-window arithmetic differ
-// (setWindow's two-argument form, inlined at the end of this function):
-// the target loads the render-mode pointer into the register that held
-// JUTVideo::sManager (lwz r6, 0x4(r6)) and keeps the map object in r8,
-// ours uses r7 and r10, so the temporaries (r5-r8) rotate.
-void cls_804B19E0::fn_80441318() {
-    s32 player = fn_80231A50();
-    if (player < 0) {
-        if (field_0x8 < 3) {
-            field_0x8++;
-        } else {
-            field_0x4 = player;
-        }
-    } else {
-        field_0x4 = fn_8022F340(player);
-        field_0x8 = 0;
-    }
-    if (field_0x4 >= 0) {
-        setWindow(field_0x4, 0);
-    } else {
-        mState = 1;
-    }
-}
-
-void cls_804B19E0::fn_804413F0() {
-    if (mTimer < 300) {
-        mTimer++;
-    } else if (fn_80231A50() >= 0) {
-        mState = 2;
-    }
-}
-
-void cls_804B19E0::fn_80441444() {
-    if (!getGameView_802D6A9C()->fn_802D39CC()) {
-        mState = 1;
-        mTimer = 0;
-    }
-}
-
-void cls_804B19E0::fn_8044148C() {}
-
 static void (cls_804B19E0::*lbl_804B19BC[3])() = {
     &cls_804B19E0::fn_80441444,
     &cls_804B19E0::fn_804413F0,
     &cls_804B19E0::fn_80441318,
 };
+
+cls_804B19E0::cls_804B19E0() {
+    mTimer = 0;
+    mState = 0;
+    field_0xf = 0;
+    field_0x4 = -1;
+    field_0x8 = 0;
+}
+
+cls_804B19E0::~cls_804B19E0() {}
+
+void cls_804B19E0::fn_8044172C() {}
 
 // FIXME: 99.2 %. Same register rotation as fn_80441318, in the last
 // setWindow (lbl_8053A160 branch): the render-mode pointer and the map
@@ -129,14 +100,43 @@ void cls_804B19E0::fn_80441490() {
     }
 }
 
-void cls_804B19E0::fn_8044172C() {}
+void cls_804B19E0::fn_8044148C() {}
 
-cls_804B19E0::~cls_804B19E0() {}
+void cls_804B19E0::fn_80441444() {
+    if (!getGameView_802D6A9C()->fn_802D39CC()) {
+        mState = 1;
+        mTimer = 0;
+    }
+}
 
-cls_804B19E0::cls_804B19E0() {
-    mTimer = 0;
-    mState = 0;
-    field_0xf = 0;
-    field_0x4 = -1;
-    field_0x8 = 0;
+void cls_804B19E0::fn_804413F0() {
+    if (mTimer < 300) {
+        mTimer++;
+    } else if (fn_80231A50() >= 0) {
+        mState = 2;
+    }
+}
+
+// FIXME: 98.2 %. Only the registers of the centred-window arithmetic differ
+// (setWindow's two-argument form, inlined at the end of this function):
+// the target loads the render-mode pointer into the register that held
+// JUTVideo::sManager (lwz r6, 0x4(r6)) and keeps the map object in r8,
+// ours uses r7 and r10, so the temporaries (r5-r8) rotate.
+void cls_804B19E0::fn_80441318() {
+    s32 player = fn_80231A50();
+    if (player < 0) {
+        if (field_0x8 < 3) {
+            field_0x8++;
+        } else {
+            field_0x4 = player;
+        }
+    } else {
+        field_0x4 = fn_8022F340(player);
+        field_0x8 = 0;
+    }
+    if (field_0x4 >= 0) {
+        setWindow(field_0x4, 0);
+    } else {
+        mState = 1;
+    }
 }

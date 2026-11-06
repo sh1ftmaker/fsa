@@ -10,8 +10,53 @@
 #include "game/GameState.h"
 #include "JSystem/J2D/J2DPicture.h"
 
-void cls_804A8390::fn_802AC8AC(s32 value) {
-    field_0x18 = value;
+cls_804A8390::cls_804A8390() {
+    lbl_8053ACA0 = this;
+    const ResTIMG* timg = static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_black.bti"));
+    mPicture = new J2DPicture(timg);
+    mAlpha = 0;
+    field_0x10 = 0;
+    field_0x14 = 0;
+    field_0x18 = 0;
+}
+
+cls_804A8390::~cls_804A8390() {
+    delete mPicture;
+    mPicture = NULL;
+}
+
+void cls_804A8390::fn_802ACB58() {
+    mAlpha = 0;
+    field_0x18 = 0;
+}
+
+void cls_804A8390::fn_802ACA64() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    if (field_0x18 == 0) {
+        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+    } else {
+        mPicture->setBlackWhite(JUtility::TColor(0xFFFFFFFF), JUtility::TColor(0xFFFFFF00));
+    }
+    mPicture->setAlpha(mAlpha);
+    mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
+}
+
+void cls_804A8390::fn_802AC98C() {
+    if (field_0x10 > 0) {
+        if (field_0x10 < 0xFD) {
+            field_0x10 += 2;
+        } else {
+            field_0x10 = 0xFF;
+        }
+        gGameRoot2_8053AB10->fn_8013B490();
+        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+        mPicture->setAlpha(field_0x10);
+        mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
+    }
+}
+
+void cls_804A8390::fn_802AC980() {
+    field_0x10 = 2;
 }
 
 bool cls_804A8390::fn_802AC8B4() {
@@ -45,51 +90,6 @@ bool cls_804A8390::fn_802AC8B4() {
     return true;
 }
 
-void cls_804A8390::fn_802AC980() {
-    field_0x10 = 2;
-}
-
-void cls_804A8390::fn_802AC98C() {
-    if (field_0x10 > 0) {
-        if (field_0x10 < 0xFD) {
-            field_0x10 += 2;
-        } else {
-            field_0x10 = 0xFF;
-        }
-        gGameRoot2_8053AB10->fn_8013B490();
-        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
-        mPicture->setAlpha(field_0x10);
-        mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
-    }
-}
-
-void cls_804A8390::fn_802ACA64() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    if (field_0x18 == 0) {
-        mPicture->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
-    } else {
-        mPicture->setBlackWhite(JUtility::TColor(0xFFFFFFFF), JUtility::TColor(0xFFFFFF00));
-    }
-    mPicture->setAlpha(mAlpha);
-    mPicture->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
-}
-
-void cls_804A8390::fn_802ACB58() {
-    mAlpha = 0;
-    field_0x18 = 0;
-}
-
-cls_804A8390::~cls_804A8390() {
-    delete mPicture;
-    mPicture = NULL;
-}
-
-cls_804A8390::cls_804A8390() {
-    lbl_8053ACA0 = this;
-    const ResTIMG* timg = static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_black.bti"));
-    mPicture = new J2DPicture(timg);
-    mAlpha = 0;
-    field_0x10 = 0;
-    field_0x14 = 0;
-    field_0x18 = 0;
+void cls_804A8390::fn_802AC8AC(s32 value) {
+    field_0x18 = value;
 }

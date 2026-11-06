@@ -5,7 +5,16 @@
 #include "game/ActorBase.h"
 #include "game/act/act_wave_se.h"
 
-void WaveSe_804A9EA8::draw() {}
+void WaveSe_804A9EA8::init() {
+    field_0x234 = 60;
+    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
+}
+
+WaveSe_804A9EA8::~WaveSe_804A9EA8() {
+    if (mSound != NULL) {
+        delete mSound;
+    }
+}
 
 // Plays sound 0x3003C every frame and, whenever the counter is 0, resets it
 // to 60 and plays 0x3003D.
@@ -17,13 +26,4 @@ void WaveSe_804A9EA8::update() {
     }
 }
 
-WaveSe_804A9EA8::~WaveSe_804A9EA8() {
-    if (mSound != NULL) {
-        delete mSound;
-    }
-}
-
-void WaveSe_804A9EA8::init() {
-    field_0x234 = 60;
-    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
-}
+void WaveSe_804A9EA8::draw() {}

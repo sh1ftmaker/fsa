@@ -23,21 +23,6 @@ static inline void setUniformScaleMtx(Mtx m, f32 scale) {
     m[2][3] = 0.0f;
 }
 
-// FIXME: 99.46 %. The matrix stores are in the same order, but the original
-// loads 0.0f before 1.5f, so the .sdata2 literals are numbered the other way
-// (lbl_80541C28 vs @705, lbl_80541C2C vs @704).
-void InvincibilityFairy_804AB4C0::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    setUniformScaleMtx(mtx, 1.5f);
-    params.mMtx = mtx;
-    if (mCounters[0][0] >= 0x100 || (mCounters[0][0] & 2) == 0) {
-        params.field_0x2d = 1;
-        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 0, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 0);
-    }
-}
-
 // Moves both emitters to the fairy.
 inline void InvincibilityFairy_804AB4C0::followEmitters() {
     if (mEmitter264 != NULL) {
@@ -65,6 +50,48 @@ inline void InvincibilityFairy_804AB4C0::clearTracking() {
     field_0x244 = 0;
     field_0x248 = 0;
     field_0x24c = 0;
+}
+
+// Zeroes the timers, counters and targets, and sets the life; init() then
+// sets the values it starts from over them.
+inline void InvincibilityFairy_804AB4C0::clearWork() {
+    clearTracking();
+    mCounters[0][0] = 0;
+    mCounters[0][1] = 0;
+    mCounters[1][0] = 0;
+    mCounters[1][1] = 0;
+    mLife = 8;
+    field_0x250 = 0;
+    field_0x258 = 0.0f;
+    field_0x25c = 0.0f;
+    field_0x260 = 0.0f;
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+}
+
+InvincibilityFairy_804AB4C0::~InvincibilityFairy_804AB4C0() {
+    releaseEmitter_801EE434(mEmitter264);
+    releaseEmitter_801EE434(mEmitter268);
+}
+
+void InvincibilityFairy_804AB4C0::vfunc_0x44() {
+    followEmitters();
+}
+
+// FIXME: 93.97 %. Same .sdata2 literal numbering as update(). Register
+// assignment differs: the original keeps the 0x660d multiplier in r12 and
+// the 0x400 in r30, and loads the random object into r29 for each call.
+void InvincibilityFairy_804AB4C0::init() {
+    mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    clearWork();
+    mCounters[0][0] = 0x400;
+    field_0x260 = 10.0f;
+    mCounters[1][0] = 10;
+    mCounters[1][1] = 30 + (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
+    field_0x248 = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
+    field_0x230 = 0;
+    field_0xb0 = 0x20000;
+    mEmitter264 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.5f);
+    mEmitter268 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.5f);
 }
 
 // FIXME: 96.47 %. Remaining: the .sdata2 literals are numbered differently
@@ -167,44 +194,17 @@ void InvincibilityFairy_804AB4C0::update() {
     }
 }
 
-// Zeroes the timers, counters and targets, and sets the life; init() then
-// sets the values it starts from over them.
-inline void InvincibilityFairy_804AB4C0::clearWork() {
-    clearTracking();
-    mCounters[0][0] = 0;
-    mCounters[0][1] = 0;
-    mCounters[1][0] = 0;
-    mCounters[1][1] = 0;
-    mLife = 8;
-    field_0x250 = 0;
-    field_0x258 = 0.0f;
-    field_0x25c = 0.0f;
-    field_0x260 = 0.0f;
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-}
-
-// FIXME: 93.97 %. Same .sdata2 literal numbering as update(). Register
-// assignment differs: the original keeps the 0x660d multiplier in r12 and
-// the 0x400 in r30, and loads the random object into r29 for each call.
-void InvincibilityFairy_804AB4C0::init() {
-    mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
-    clearWork();
-    mCounters[0][0] = 0x400;
-    field_0x260 = 10.0f;
-    mCounters[1][0] = 10;
-    mCounters[1][1] = 30 + (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 30.0f);
-    field_0x248 = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * 32768.0f);
-    field_0x230 = 0;
-    field_0xb0 = 0x20000;
-    mEmitter264 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.5f);
-    mEmitter268 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x184, 0, 0, NULL, NULL, true, 1.5f);
-}
-
-void InvincibilityFairy_804AB4C0::vfunc_0x44() {
-    followEmitters();
-}
-
-InvincibilityFairy_804AB4C0::~InvincibilityFairy_804AB4C0() {
-    releaseEmitter_801EE434(mEmitter264);
-    releaseEmitter_801EE434(mEmitter268);
+// FIXME: 99.46 %. The matrix stores are in the same order, but the original
+// loads 0.0f before 1.5f, so the .sdata2 literals are numbered the other way
+// (lbl_80541C28 vs @705, lbl_80541C2C vs @704).
+void InvincibilityFairy_804AB4C0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    setUniformScaleMtx(mtx, 1.5f);
+    params.mMtx = mtx;
+    if (mCounters[0][0] >= 0x100 || (mCounters[0][0] & 2) == 0) {
+        params.field_0x2d = 1;
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 0, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 0);
+    }
 }

@@ -72,66 +72,19 @@ inline bool SpriteAnim_801D267C::isStopped() {
     return result;
 }
 
-void SpriteAnim_801D267C::fn_801D1C18() {
-    if (mAnim >= 0 && mAnim < mTableCount) {
-        if (mHold) {
-            mHold = 0;
-        } else {
-            mFrameCtrl.update();
-            calcCel();
+SpriteAnim_801D267C::SpriteAnim_801D267C()
+    : mTables(NULL), mTableCount(0), mAnim(-1), mLength(0), mCel(0), mMinCel(0x7FFFFFFF),
+      mMaxCel(0x80000000), mKey(0), mHold(0) {}
+
+void SpriteAnim_801D267C::fn_801D2608(const s16** tables, s32 count) {
+    mTables = tables;
+    mTableCount = count;
+    for (s32 i = 0; i < mTableCount; i++) {
+        for (const s16* p = mTables[i]; p[0] >= 0; p += 2) {
+            mMinCel = mMinCel >= p[0] ? p[0] : mMinCel;
+            mMaxCel = mMaxCel >= p[0] ? mMaxCel : p[0];
         }
     }
-}
-
-void SpriteAnim_801D267C::fn_801D1D60() {
-    setFrameInline(fn_801CD664(mLength + 1));
-}
-
-void SpriteAnim_801D267C::fn_801D1F14(f32 frame) {
-    setFrameInline(frame);
-}
-
-// FIXME: 94.4 %. The target tests the first attribute (== 0) through a
-// bool (cntlzw; extrwi.) and compares it again inside the inlined
-// isStopped with cmplwi; ours compares with cmplwi first and clrlwi. inside.
-// `!getAttribute()` gave the same code.
-bool SpriteAnim_801D267C::fn_801D208C() {
-    bool result = false;
-    if (mFrameCtrl.getAttribute() == J3DFrameCtrl::EMode_NONE) {
-        result = isStopped();
-    } else if (mFrameCtrl.getAttribute() == J3DFrameCtrl::EMode_LOOP) {
-        result = isLoopEnd();
-    }
-    return result;
-}
-
-bool SpriteAnim_801D267C::fn_801D217C() {
-    return isLoopEnd();
-}
-
-// FIXME: 86.2 %. Only the order of the first instructions differs: the
-// target loads mState (lbz 0x29) and sets result = 0 before the stack frame
-// is made; ours does it after. Splitting the || into two ifs was worse.
-bool SpriteAnim_801D267C::fn_801D21F0() {
-    return isStopped();
-}
-
-bool SpriteAnim_801D267C::fn_801D2264(s32 anim, s32 mode) {
-    bool result = false;
-    if (mAnim != anim) {
-        startAnim_801D22DC(anim, mode, true);
-        result = true;
-    }
-    return result;
-}
-
-bool SpriteAnim_801D267C::fn_801D22A0(s32 anim, s32 mode) {
-    bool result = false;
-    if (mAnim != anim) {
-        startAnim_801D22DC(anim, mode, false);
-        result = true;
-    }
-    return result;
 }
 
 void SpriteAnim_801D267C::startAnim_801D22DC(s32 anim, s32 mode, bool keepFrame) {
@@ -157,17 +110,64 @@ void SpriteAnim_801D267C::startAnim_801D22DC(s32 anim, s32 mode, bool keepFrame)
     }
 }
 
-void SpriteAnim_801D267C::fn_801D2608(const s16** tables, s32 count) {
-    mTables = tables;
-    mTableCount = count;
-    for (s32 i = 0; i < mTableCount; i++) {
-        for (const s16* p = mTables[i]; p[0] >= 0; p += 2) {
-            mMinCel = mMinCel >= p[0] ? p[0] : mMinCel;
-            mMaxCel = mMaxCel >= p[0] ? mMaxCel : p[0];
+bool SpriteAnim_801D267C::fn_801D22A0(s32 anim, s32 mode) {
+    bool result = false;
+    if (mAnim != anim) {
+        startAnim_801D22DC(anim, mode, false);
+        result = true;
+    }
+    return result;
+}
+
+bool SpriteAnim_801D267C::fn_801D2264(s32 anim, s32 mode) {
+    bool result = false;
+    if (mAnim != anim) {
+        startAnim_801D22DC(anim, mode, true);
+        result = true;
+    }
+    return result;
+}
+
+// FIXME: 86.2 %. Only the order of the first instructions differs: the
+// target loads mState (lbz 0x29) and sets result = 0 before the stack frame
+// is made; ours does it after. Splitting the || into two ifs was worse.
+bool SpriteAnim_801D267C::fn_801D21F0() {
+    return isStopped();
+}
+
+bool SpriteAnim_801D267C::fn_801D217C() {
+    return isLoopEnd();
+}
+
+// FIXME: 94.4 %. The target tests the first attribute (== 0) through a
+// bool (cntlzw; extrwi.) and compares it again inside the inlined
+// isStopped with cmplwi; ours compares with cmplwi first and clrlwi. inside.
+// `!getAttribute()` gave the same code.
+bool SpriteAnim_801D267C::fn_801D208C() {
+    bool result = false;
+    if (mFrameCtrl.getAttribute() == J3DFrameCtrl::EMode_NONE) {
+        result = isStopped();
+    } else if (mFrameCtrl.getAttribute() == J3DFrameCtrl::EMode_LOOP) {
+        result = isLoopEnd();
+    }
+    return result;
+}
+
+void SpriteAnim_801D267C::fn_801D1F14(f32 frame) {
+    setFrameInline(frame);
+}
+
+void SpriteAnim_801D267C::fn_801D1D60() {
+    setFrameInline(fn_801CD664(mLength + 1));
+}
+
+void SpriteAnim_801D267C::fn_801D1C18() {
+    if (mAnim >= 0 && mAnim < mTableCount) {
+        if (mHold) {
+            mHold = 0;
+        } else {
+            mFrameCtrl.update();
+            calcCel();
         }
     }
 }
-
-SpriteAnim_801D267C::SpriteAnim_801D267C()
-    : mTables(NULL), mTableCount(0), mAnim(-1), mLength(0), mCel(0), mMinCel(0x7FFFFFFF),
-      mMaxCel(0x80000000), mKey(0), mHold(0) {}

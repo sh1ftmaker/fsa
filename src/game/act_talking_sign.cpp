@@ -5,9 +5,29 @@
 #include "game/act/act_talking_sign.h"
 #include "game/ViewLayer.h"
 
-TalkingSign_804AF428::~TalkingSign_804AF428() {}
-
-void TalkingSign_804AF428::draw() {}
+void TalkingSign_804AF428::init() {
+    mBox.set(0.0f, 0.0f, 16.0f, 16.0f);
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    mState = 0;
+    mPlayer = -1;
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+        if (field_0x90 & 0x80000000) {
+            mAlive = false;
+        } else if (fn_80138AB0() == true && (field_0x90 & 0x20000000)) {
+            mAlive = false;
+        } else if (field_0x90 & 0x10000000) {
+            mAlive = false;
+        }
+    } else {
+        if (field_0x90 & 0x40000000) {
+            mAlive = false;
+        } else if (fn_80138AB0() == true && (field_0x90 & 0x20000000)) {
+            mAlive = false;
+        } else if (field_0x90 & 0x10000000) {
+            mAlive = false;
+        }
+    }
+}
 
 // FIXME: 90.26%. Both fn_8038C678 calls: the original loads mSerial and field_0x4 into r29/r28
 // before the getPlayerPos_8023E724 call (callee-saved across it); ours reloads them into r5/r6 after it.
@@ -64,26 +84,6 @@ void TalkingSign_804AF428::update() {
     }
 }
 
-void TalkingSign_804AF428::init() {
-    mBox.set(0.0f, 0.0f, 16.0f, 16.0f);
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
-    mState = 0;
-    mPlayer = -1;
-    if (gGameRoot_8053AAF8->field_0x7e == 1) {
-        if (field_0x90 & 0x80000000) {
-            mAlive = false;
-        } else if (fn_80138AB0() == true && (field_0x90 & 0x20000000)) {
-            mAlive = false;
-        } else if (field_0x90 & 0x10000000) {
-            mAlive = false;
-        }
-    } else {
-        if (field_0x90 & 0x40000000) {
-            mAlive = false;
-        } else if (fn_80138AB0() == true && (field_0x90 & 0x20000000)) {
-            mAlive = false;
-        } else if (field_0x90 & 0x10000000) {
-            mAlive = false;
-        }
-    }
-}
+void TalkingSign_804AF428::draw() {}
+
+TalkingSign_804AF428::~TalkingSign_804AF428() {}

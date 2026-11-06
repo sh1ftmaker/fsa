@@ -8,19 +8,14 @@ static inline bool inBox(const JGeometry::TBox2f* b, const JGeometry::TVec3f& p)
     return p.x >= b->i.x && p.y >= b->i.y && p.x < b->f.x && p.y < b->f.y;
 }
 
-void cls_804A5038::update() {
-    mPos += field_0x3c;
-    setEmitterPos_8013CB44(mEmitter2a8, &mPos, 0, 0, true);
-    setEmitterPos_8013CB44(mEmitter2ac, &mPos, 0, 0, true);
-    s32 layer = field_0x4;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    bool inside = inBox(box, mPos);
-    if (!inside) {
-        mAlive = false;
-    } else if (fn_801F2B7C(field_0x114, -1, 24)) {
-        mAlive = false;
-    }
+cls_804A5038::cls_804A5038() {
+    mEmitter2a8 = NULL;
+    mEmitter2ac = NULL;
+}
+
+cls_804A5038::~cls_804A5038() {
+    releaseEmitter_801EE434(mEmitter2a8);
+    releaseEmitter_801EE434(mEmitter2ac);
 }
 
 void cls_804A5038::init() {
@@ -37,12 +32,17 @@ void cls_804A5038::init() {
     mEmitter2ac = spawnEmitter_8013CC50(field_0x4, &mPos, 0x257, 0, 0, NULL, NULL, true, 1.0f);
 }
 
-cls_804A5038::~cls_804A5038() {
-    releaseEmitter_801EE434(mEmitter2a8);
-    releaseEmitter_801EE434(mEmitter2ac);
-}
-
-cls_804A5038::cls_804A5038() {
-    mEmitter2a8 = NULL;
-    mEmitter2ac = NULL;
+void cls_804A5038::update() {
+    mPos += field_0x3c;
+    setEmitterPos_8013CB44(mEmitter2a8, &mPos, 0, 0, true);
+    setEmitterPos_8013CB44(mEmitter2ac, &mPos, 0, 0, true);
+    s32 layer = field_0x4;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    bool inside = inBox(box, mPos);
+    if (!inside) {
+        mAlive = false;
+    } else if (fn_801F2B7C(field_0x114, -1, 24)) {
+        mAlive = false;
+    }
 }

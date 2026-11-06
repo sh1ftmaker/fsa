@@ -16,25 +16,12 @@ static inline void normalize(JGeometry::TVec2f& v) {
     v.y *= norm;
 }
 
-NPCDisguisedAsAStone_804A8750::~NPCDisguisedAsAStone_804A8750() {}
-
-void NPCDisguisedAsAStone_804A8750::vfunc_0x24() {
-    if (field_0x4 >= 8) {
-        JGeometry::TVec3f pos(mPos);
-        pos.z = 0.0f;
-        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
-    } else if (mPos.z < 0.0f && fn_8022461C(&mPos, field_0x4) == 0xD) {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
-    } else {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8D, 1, 0, NULL, NULL, true, 1.0f);
-    }
-    startSound_801F0E34(0x30003, 0);
-    mAlive = false;
-}
-
-void NPCDisguisedAsAStone_804A8750::draw() {
-    drawSprite_801F06F0("enemy_both2_sob.bin", 0x29, NULL, 0, 1.0f, 1.0f);
+void NPCDisguisedAsAStone_804A8750::init() {
+    mBox.set(-40.0f, -40.0f, 40.0f, 40.0f);
+    field_0x80.set(-2.0f, -2.0f, 2.0f, 2.0f);
+    field_0x234 = field_0x238 = field_0x23c = 0.0f;
+    field_0x240 = 0.75f;
+    mState = 0;
 }
 
 void NPCDisguisedAsAStone_804A8750::update() {
@@ -119,10 +106,23 @@ void NPCDisguisedAsAStone_804A8750::update() {
     }
 }
 
-void NPCDisguisedAsAStone_804A8750::init() {
-    mBox.set(-40.0f, -40.0f, 40.0f, 40.0f);
-    field_0x80.set(-2.0f, -2.0f, 2.0f, 2.0f);
-    field_0x234 = field_0x238 = field_0x23c = 0.0f;
-    field_0x240 = 0.75f;
-    mState = 0;
+void NPCDisguisedAsAStone_804A8750::draw() {
+    drawSprite_801F06F0("enemy_both2_sob.bin", 0x29, NULL, 0, 1.0f, 1.0f);
 }
+
+void NPCDisguisedAsAStone_804A8750::vfunc_0x24() {
+    if (field_0x4 >= 8) {
+        JGeometry::TVec3f pos(mPos);
+        pos.z = 0.0f;
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, field_0x4, &pos, 0, -1, -1);
+    } else if (mPos.z < 0.0f && fn_8022461C(&mPos, field_0x4) == 0xD) {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 1.0f);
+    } else {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8C, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x8D, 1, 0, NULL, NULL, true, 1.0f);
+    }
+    startSound_801F0E34(0x30003, 0);
+    mAlive = false;
+}
+
+NPCDisguisedAsAStone_804A8750::~NPCDisguisedAsAStone_804A8750() {}

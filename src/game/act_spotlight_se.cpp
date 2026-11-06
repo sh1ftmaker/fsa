@@ -6,9 +6,7 @@
 static const u32 sFieldMask[4] = {0x07C00000, 0x003E0000, 0x0001F000, 0x00000F80};
 static const u32 sFieldShift[4] = {22, 17, 12, 7};
 
-SpotlightSE_804A85E0::~SpotlightSE_804A85E0() {}
-
-void SpotlightSE_804A85E0::draw() {}
+void SpotlightSE_804A85E0::init() {}
 
 void SpotlightSE_804A85E0::update() {
     u32 bits;
@@ -24,4 +22,6 @@ void SpotlightSE_804A85E0::update() {
     }
 }
 
-void SpotlightSE_804A85E0::init() {}
+void SpotlightSE_804A85E0::draw() {}
+
+SpotlightSE_804A85E0::~SpotlightSE_804A85E0() {}

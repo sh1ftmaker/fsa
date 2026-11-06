@@ -112,306 +112,63 @@ static inline bool isQueueBusy(s32 player) {
     return true;
 }
 
-// 0x80301CD0
-bool fn_80301CD0(s32 layer) {
-    s32 player = fn_8022F340(layer);
-    if (lbl_8053ACE8[player] != 0 &&
-        (lbl_8053ACEC[player] < 2 || (lbl_8053ACEC[player] == 2 && lbl_8053ACF0[player] < 0x10)))
-    {
-        return true;
-    }
-    return false;
-}
+// __sinit_tu_80301CD0_cpp (compiler-generated: the two __construct_array calls for the sprite
+// lists and the JAudio pools of GameAudio.h). lbl_804DB798 (0x480, read by fn_80304FB0 here and
+// fn_8030A258) is not part of this object: with it first in the .bss, the sinit offsets shift by
+// 0x480, so this unit's .bss starts at lbl_804DBC18 and splits.txt gives the object to
+// tu_803006E8 (the previous unit).
+//
+// Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
+// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
+// fn_80307B58, fn_8030801C, fn_803085A4 and the constructor fn_8030905C (cls_804AA8B8).
 
-// 0x80301D30
-u8 fn_80301D30(s32 player) {
-    if (lbl_8053ACEC[player] > 1) {
-        return lbl_8053ACE8[player];
-    }
-    return 0;
-}
+// forward declarations (functions reversed for -inline deferred)
+bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e, s32 f, u8 g);
+bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e, s32 player, bool g, u8 h, u8 i);
 
-// 0x8030361C
-void fn_8030361C() {
-    for (s32 player = 0; player < 4; player++) {
-        Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A18[player]];
-        while (entry != &lbl_804FBC18[player][lbl_80504A28[player]]) {
-            if (entry->mUsed == 1 && entry->field_0x104 == 0) {
-                u32 address = entry->mAddress;
-                if (address == 0x0600C000 || address == 0x0600E000 || address == 0x06000000 ||
-                    address == 0x05000001 || address == 0x06017000)
-                {
-                    entry->mUsed = 0;
-                    entry->field_0x119 = 0;
-                    entry->field_0x104 = 0;
-                    entry->mName[0] = 0;
-                    if (entry->mIndex == lbl_80504A18[player]) {
-                        do {
-                            lbl_80504A18[player]++;
-                            if (lbl_80504A18[player] >= 32) {
-                                lbl_80504A18[player] = 0;
-                            }
-                        } while (lbl_80504A18[player] != lbl_80504A28[player] &&
-                                 lbl_804FBC18[player][lbl_80504A18[player]].mUsed == 0);
-                    }
-                }
-            }
-            if (entry->mIndex < 31) {
-                entry++;
-            } else {
-                entry = lbl_804FBC18[player];
-            }
-        }
-        lbl_8053AD20[player] = 0;
-    }
-}
+// 0x80309014
+cls_804AA8B8::~cls_804AA8B8() {}
 
-// FIXME: 99.39. Regalloc only: the busy flag is built in r0 and copied to r3 by the clrlwi.
-// the original builds it in r3 and tests it into r0.
-// 0x80303750
-u8 fn_80303750(s32 layer) {
-    s32 player = fn_8022F340(layer);
-    u8 result = isLinked(player);
-    if (result) {
-        result = isQueueBusy(player);
-        if (!result) {
-            result = lbl_8053ACD4[player];
-        }
-    }
-    return result;
-}
-
-// 0x803037D4
-void fn_803037D4(s32 layer, u32 value) {
-    s32 player = fn_8022F340(layer);
-    if (value > lbl_80506D38[player]) {
-        lbl_80506D38[player] = value;
-    }
-}
-
-// 0x8030381C
-u8 fn_8030381C(s32 layer) {
-    s32 player = fn_8022F340(layer);
-    if (isLinked(player)) {
-        return lbl_8053ACE0[player];
-    }
-    return 0;
-}
-
-// Queues the stage file `layer`'s view names for index `index` (fn_802D8128)
-// for the GBA at 0x0600C000.
-// 0x803049F0
-bool fn_803049F0(s32 layer, s32 index) {
-    s32 player = fn_8022F340(layer);
-    const char* name = getGameView_802D6A9C()->fn_802D8128(index);
-    if (name == NULL) {
-        return false;
-    }
-    if (!isLinked(player)) {
-        return false;
-    }
-    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
-    entry->field_0x104 = 0;
-    entry->mWords = (s32)(fn_80403284(name) + 3) / 4;
-    entry->mAddress = 0x0600C000;
-    entry->field_0x119 = 0;
-    entry->field_0x11a = 1;
-    entry->field_0x110 = index;
-    entry->mUsed = 1;
-    entry->field_0x10c = 0;
-    strcpy(entry->mName, name);
-    lbl_80504A28[player]++;
-    if (lbl_80504A28[player] >= 32) {
-        lbl_80504A28[player] = 0;
-    }
-    return true;
-}
-
-// The same for fn_802D8228's name, at 0x0600E000.
-// 0x80304B00
-bool fn_80304B00(s32 layer, s32 index) {
-    s32 player = fn_8022F340(layer);
-    const char* name = getGameView_802D6A9C()->fn_802D8228(index);
-    if (name == NULL) {
-        return false;
-    }
-    if (!isLinked(player)) {
-        return false;
-    }
-    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
-    entry->field_0x104 = 0;
-    entry->mWords = (s32)(fn_80403284(name) + 3) / 4;
-    entry->mAddress = 0x0600E000;
-    entry->field_0x119 = 0;
-    entry->field_0x11a = 1;
-    entry->field_0x110 = index;
-    entry->mUsed = 1;
-    entry->field_0x10c = 0;
-    strcpy(entry->mName, name);
-    lbl_80504A28[player]++;
-    if (lbl_80504A28[player] >= 32) {
-        lbl_80504A28[player] = 0;
-    }
-    return true;
-}
-
-// Queues the file `name` for the player's GBA at `address`.
-// 0x80304C10
-bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4) {
-    if (name == NULL) {
-        return false;
-    }
-    if (!isLinked(player)) {
-        return false;
-    }
-    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
-    entry->field_0x104 = 0;
-    s32 size;
-    if (address == 0x0600C000 || address == 0x0600E000) {
-        size = fn_80403284(name);
-    } else {
-        size = gGameRoot_8053AAF8->field_0xa4->getResSize(gGameRoot_8053AAF8->field_0xa4->getResource('????', name));
-    }
-    entry->mWords = (size + 3) / 4;
-    entry->mAddress = address;
-    entry->field_0x119 = 0;
-    entry->field_0x11a = arg3;
-    entry->field_0x110 = arg4;
-    entry->mUsed = 1;
-    entry->field_0x10c = 0;
-    strcpy(entry->mName, name);
-    lbl_80504A28[player]++;
-    if (lbl_80504A28[player] >= 32) {
-        lbl_80504A28[player] = 0;
-    }
-    return true;
-}
-
-// FIXME: 98.47. Regalloc only: the original keeps the list bases in r6 / r7 and the element in
-// r8 (ours r7 / r8 and r6).
-// 0x80304D64
-void fn_80304D64() {
+// FIXME: 95.36. Regalloc only: the same code as fn_80308D0C, but the original keeps the
+// player counter in r4, the list bases in r6 / r7 and the element in r5 (ours r7, r5 / r6, r4).
+// 0x80308E90
+void cls_804AA8B8::fn_80308E90() {
     for (int player = 0; player < 4; player++) {
         for (int i = 0; i < 16; i++) {
-            if (lbl_80504A38[player][i].mRemove == 1) {
-                lbl_80504A38[player][i].mActive = 0;
-                lbl_80504A38[player][i].mRemove = 0;
-                lbl_80504A38[player][i].mSerial = -1;
-            } else if (lbl_80504A38[player][i].mActive == 1 && lbl_80504A38[player][i].mTimer < 5) {
-                lbl_80504A38[player][i].mTimer++;
-            }
+            lbl_80504A38[player][i].reset();
         }
-        for (int i = 0; i < 40; i++) {
-            if (lbl_80505438[player][i].mRemove == 1 && lbl_80505438[player][i].mTimer == 0) {
-                lbl_80505438[player][i].mActive = 0;
-                lbl_80505438[player][i].mRemove = 0;
-                lbl_80505438[player][i].mSerial = -1;
-                lbl_80505438[player][i].field_0xc = -1;
-            } else if (lbl_80505438[player][i].mRemove == 1) {
-                lbl_80505438[player][i].field_0xc = -1;
-                lbl_80505438[player][i].mTimer = 0;
-            } else if (lbl_80505438[player][i].mActive == 1 && lbl_80505438[player][i].mTimer < 5) {
-                lbl_80505438[player][i].mTimer++;
-            }
+        for (int j = 0; j < 40; j++) {
+            lbl_80505438[player][j].resetAll();
         }
     }
 }
 
-// The kind of sprite `id` of list `kind` (0-2).
-// 0x803074A4
-s32 fn_803074A4(s32 kind, s32 id) {
-    if (kind == 2) {
-        if (id >= 0x39 && id < 0x45) {
-            return 4;
+// 0x80308D0C
+void fn_80308D0C() {
+    for (s32 player = 0; player < 4; player++) {
+        for (int i = 0; i < 16; i++) {
+            lbl_80504A38[player][i].reset();
         }
-        if (id >= 0 && id < 0x25) {
-            return -1;
+        for (int j = 0; j < 40; j++) {
+            lbl_80505438[player][j].resetAll();
         }
-        if (id >= 0x200) {
-            return 1;
-        }
-        return 0;
     }
-    if (kind == 0 || kind == 1) {
-        if ((id >= 0xC0 && id < 0xD3) || (id >= 0x155 && id < 0x158)) {
-            return 3;
-        }
-        if (id >= 0x37 && id < 0x41) {
-            return 2;
-        }
-        if (id >= 0x3CD && id < 0x3CE) {
-            return -1;
-        }
-        if (id >= 0x2A3 && id < 0x2AA) {
-            return 4;
-        }
-        if (id >= 0x34C && id < 0x37C) {
-            return 4;
-        }
-        if (kind == 1) {
-            return 1;
-        }
-        return 0;
-    }
-    return 0;
 }
 
-// Shows the sprite of actor `serial` on the GBA screens of the players on
-// `layer` (or of player `player` when it is 0 or more), in their 40-entry
-// lists; returns whether any list took it.
-// 0x803075AC
-bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e,
-                 s32 player, bool g, u8 h, u8 i) {
-    if (layer < 8 && layer != -1) {
-        return false;
+// Sprite ids below 0x45 (after adding 0x200 when e is 2) go to the 16-entry
+// lists, the others (plus 0x400) to the 40-entry ones.
+// 0x80307AC8
+void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d, s32 e,
+                 s32 f) {
+    if (e == 2) {
+        e = 0;
+        id += 0x200;
     }
-    bool result = false;
-    for (int p = 0; p < 4; p++) {
-        s32 slot = fn_8022EA0C(p);
-        if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p))) {
-            continue;
-        }
-        if (player != p && (player >= 0 || layer != getPlayerLayer_8023DE58(slot))) {
-            continue;
-        }
-        cls_803099FC* list = lbl_80505438[p];
-        int k;
-        for (k = 0; k < 40; k++) {
-            if (list->mActive == 1 && list->mSerial == serial) {
-                break;
-            }
-            list++;
-        }
-        if (k < 40) {
-            list->mLayer = layer;
-            list->mPos = *pos;
-            list->mId = id;
-            list->field_0x21 = d;
-            list->field_0x22 = h;
-            result = true;
-        } else {
-            list = lbl_80505438[p];
-            for (k = 0; k < 40; k++) {
-                if (list->mActive == 0) {
-                    list->mTimer = e;
-                    list->mSerial = serial;
-                    list->mLayer = layer;
-                    list->field_0xc = player;
-                    list->mPos = *pos;
-                    list->mId = id;
-                    list->field_0x21 = d;
-                    list->field_0x20 = g;
-                    list->field_0x23 = i;
-                    list->field_0x22 = h;
-                    list->mActive = 1;
-                    result = true;
-                    break;
-                }
-                list++;
-            }
-        }
+    if (id < 0x45) {
+        fn_80307830(serial, layer, pos, id, d != 0, false, e != 0, 4);
+    } else {
+        fn_803075AC(serial, layer, pos, id + 0x400, d != 0, 2, f, 0, e != 0, 0);
     }
-    return result;
 }
 
 // The same for the 16-entry lists of the players on `layer` (8 or more).
@@ -477,57 +234,304 @@ bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
     return result;
 }
 
-// Sprite ids below 0x45 (after adding 0x200 when e is 2) go to the 16-entry
-// lists, the others (plus 0x400) to the 40-entry ones.
-// 0x80307AC8
-void fn_80307AC8(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, s32 d, s32 e,
-                 s32 f) {
-    if (e == 2) {
-        e = 0;
-        id += 0x200;
+// Shows the sprite of actor `serial` on the GBA screens of the players on
+// `layer` (or of player `player` when it is 0 or more), in their 40-entry
+// lists; returns whether any list took it.
+// 0x803075AC
+bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e,
+                 s32 player, bool g, u8 h, u8 i) {
+    if (layer < 8 && layer != -1) {
+        return false;
     }
-    if (id < 0x45) {
-        fn_80307830(serial, layer, pos, id, d != 0, false, e != 0, 4);
-    } else {
-        fn_803075AC(serial, layer, pos, id + 0x400, d != 0, 2, f, 0, e != 0, 0);
+    bool result = false;
+    for (int p = 0; p < 4; p++) {
+        s32 slot = fn_8022EA0C(p);
+        if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p))) {
+            continue;
+        }
+        if (player != p && (player >= 0 || layer != getPlayerLayer_8023DE58(slot))) {
+            continue;
+        }
+        cls_803099FC* list = lbl_80505438[p];
+        int k;
+        for (k = 0; k < 40; k++) {
+            if (list->mActive == 1 && list->mSerial == serial) {
+                break;
+            }
+            list++;
+        }
+        if (k < 40) {
+            list->mLayer = layer;
+            list->mPos = *pos;
+            list->mId = id;
+            list->field_0x21 = d;
+            list->field_0x22 = h;
+            result = true;
+        } else {
+            list = lbl_80505438[p];
+            for (k = 0; k < 40; k++) {
+                if (list->mActive == 0) {
+                    list->mTimer = e;
+                    list->mSerial = serial;
+                    list->mLayer = layer;
+                    list->field_0xc = player;
+                    list->mPos = *pos;
+                    list->mId = id;
+                    list->field_0x21 = d;
+                    list->field_0x20 = g;
+                    list->field_0x23 = i;
+                    list->field_0x22 = h;
+                    list->mActive = 1;
+                    result = true;
+                    break;
+                }
+                list++;
+            }
+        }
     }
+    return result;
 }
 
-// 0x80308D0C
-void fn_80308D0C() {
-    for (s32 player = 0; player < 4; player++) {
-        for (int i = 0; i < 16; i++) {
-            lbl_80504A38[player][i].reset();
+// The kind of sprite `id` of list `kind` (0-2).
+// 0x803074A4
+s32 fn_803074A4(s32 kind, s32 id) {
+    if (kind == 2) {
+        if (id >= 0x39 && id < 0x45) {
+            return 4;
         }
-        for (int j = 0; j < 40; j++) {
-            lbl_80505438[player][j].resetAll();
+        if (id >= 0 && id < 0x25) {
+            return -1;
         }
+        if (id >= 0x200) {
+            return 1;
+        }
+        return 0;
     }
+    if (kind == 0 || kind == 1) {
+        if ((id >= 0xC0 && id < 0xD3) || (id >= 0x155 && id < 0x158)) {
+            return 3;
+        }
+        if (id >= 0x37 && id < 0x41) {
+            return 2;
+        }
+        if (id >= 0x3CD && id < 0x3CE) {
+            return -1;
+        }
+        if (id >= 0x2A3 && id < 0x2AA) {
+            return 4;
+        }
+        if (id >= 0x34C && id < 0x37C) {
+            return 4;
+        }
+        if (kind == 1) {
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
 }
 
-// FIXME: 95.36. Regalloc only: the same code as fn_80308D0C, but the original keeps the
-// player counter in r4, the list bases in r6 / r7 and the element in r5 (ours r7, r5 / r6, r4).
-// 0x80308E90
-void cls_804AA8B8::fn_80308E90() {
+// FIXME: 98.47. Regalloc only: the original keeps the list bases in r6 / r7 and the element in
+// r8 (ours r7 / r8 and r6).
+// 0x80304D64
+void fn_80304D64() {
     for (int player = 0; player < 4; player++) {
         for (int i = 0; i < 16; i++) {
-            lbl_80504A38[player][i].reset();
+            if (lbl_80504A38[player][i].mRemove == 1) {
+                lbl_80504A38[player][i].mActive = 0;
+                lbl_80504A38[player][i].mRemove = 0;
+                lbl_80504A38[player][i].mSerial = -1;
+            } else if (lbl_80504A38[player][i].mActive == 1 && lbl_80504A38[player][i].mTimer < 5) {
+                lbl_80504A38[player][i].mTimer++;
+            }
         }
-        for (int j = 0; j < 40; j++) {
-            lbl_80505438[player][j].resetAll();
+        for (int i = 0; i < 40; i++) {
+            if (lbl_80505438[player][i].mRemove == 1 && lbl_80505438[player][i].mTimer == 0) {
+                lbl_80505438[player][i].mActive = 0;
+                lbl_80505438[player][i].mRemove = 0;
+                lbl_80505438[player][i].mSerial = -1;
+                lbl_80505438[player][i].field_0xc = -1;
+            } else if (lbl_80505438[player][i].mRemove == 1) {
+                lbl_80505438[player][i].field_0xc = -1;
+                lbl_80505438[player][i].mTimer = 0;
+            } else if (lbl_80505438[player][i].mActive == 1 && lbl_80505438[player][i].mTimer < 5) {
+                lbl_80505438[player][i].mTimer++;
+            }
         }
     }
 }
 
-// 0x80309014
-cls_804AA8B8::~cls_804AA8B8() {}
+// Queues the file `name` for the player's GBA at `address`.
+// 0x80304C10
+bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4) {
+    if (name == NULL) {
+        return false;
+    }
+    if (!isLinked(player)) {
+        return false;
+    }
+    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
+    entry->field_0x104 = 0;
+    s32 size;
+    if (address == 0x0600C000 || address == 0x0600E000) {
+        size = fn_80403284(name);
+    } else {
+        size = gGameRoot_8053AAF8->field_0xa4->getResSize(gGameRoot_8053AAF8->field_0xa4->getResource('????', name));
+    }
+    entry->mWords = (size + 3) / 4;
+    entry->mAddress = address;
+    entry->field_0x119 = 0;
+    entry->field_0x11a = arg3;
+    entry->field_0x110 = arg4;
+    entry->mUsed = 1;
+    entry->field_0x10c = 0;
+    strcpy(entry->mName, name);
+    lbl_80504A28[player]++;
+    if (lbl_80504A28[player] >= 32) {
+        lbl_80504A28[player] = 0;
+    }
+    return true;
+}
 
-// __sinit_tu_80301CD0_cpp (compiler-generated: the two __construct_array calls for the sprite
-// lists and the JAudio pools of GameAudio.h). lbl_804DB798 (0x480, read by fn_80304FB0 here and
-// fn_8030A258) is not part of this object: with it first in the .bss, the sinit offsets shift by
-// 0x480, so this unit's .bss starts at lbl_804DBC18 and splits.txt gives the object to
-// tu_803006E8 (the previous unit).
-//
-// Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
-// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
-// fn_80307B58, fn_8030801C, fn_803085A4 and the constructor fn_8030905C (cls_804AA8B8).
+// The same for fn_802D8228's name, at 0x0600E000.
+// 0x80304B00
+bool fn_80304B00(s32 layer, s32 index) {
+    s32 player = fn_8022F340(layer);
+    const char* name = getGameView_802D6A9C()->fn_802D8228(index);
+    if (name == NULL) {
+        return false;
+    }
+    if (!isLinked(player)) {
+        return false;
+    }
+    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
+    entry->field_0x104 = 0;
+    entry->mWords = (s32)(fn_80403284(name) + 3) / 4;
+    entry->mAddress = 0x0600E000;
+    entry->field_0x119 = 0;
+    entry->field_0x11a = 1;
+    entry->field_0x110 = index;
+    entry->mUsed = 1;
+    entry->field_0x10c = 0;
+    strcpy(entry->mName, name);
+    lbl_80504A28[player]++;
+    if (lbl_80504A28[player] >= 32) {
+        lbl_80504A28[player] = 0;
+    }
+    return true;
+}
+
+// Queues the stage file `layer`'s view names for index `index` (fn_802D8128)
+// for the GBA at 0x0600C000.
+// 0x803049F0
+bool fn_803049F0(s32 layer, s32 index) {
+    s32 player = fn_8022F340(layer);
+    const char* name = getGameView_802D6A9C()->fn_802D8128(index);
+    if (name == NULL) {
+        return false;
+    }
+    if (!isLinked(player)) {
+        return false;
+    }
+    Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A28[player]];
+    entry->field_0x104 = 0;
+    entry->mWords = (s32)(fn_80403284(name) + 3) / 4;
+    entry->mAddress = 0x0600C000;
+    entry->field_0x119 = 0;
+    entry->field_0x11a = 1;
+    entry->field_0x110 = index;
+    entry->mUsed = 1;
+    entry->field_0x10c = 0;
+    strcpy(entry->mName, name);
+    lbl_80504A28[player]++;
+    if (lbl_80504A28[player] >= 32) {
+        lbl_80504A28[player] = 0;
+    }
+    return true;
+}
+
+// 0x8030381C
+u8 fn_8030381C(s32 layer) {
+    s32 player = fn_8022F340(layer);
+    if (isLinked(player)) {
+        return lbl_8053ACE0[player];
+    }
+    return 0;
+}
+
+// 0x803037D4
+void fn_803037D4(s32 layer, u32 value) {
+    s32 player = fn_8022F340(layer);
+    if (value > lbl_80506D38[player]) {
+        lbl_80506D38[player] = value;
+    }
+}
+
+// FIXME: 99.39. Regalloc only: the busy flag is built in r0 and copied to r3 by the clrlwi.
+// the original builds it in r3 and tests it into r0.
+// 0x80303750
+u8 fn_80303750(s32 layer) {
+    s32 player = fn_8022F340(layer);
+    u8 result = isLinked(player);
+    if (result) {
+        result = isQueueBusy(player);
+        if (!result) {
+            result = lbl_8053ACD4[player];
+        }
+    }
+    return result;
+}
+
+// 0x8030361C
+void fn_8030361C() {
+    for (s32 player = 0; player < 4; player++) {
+        Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A18[player]];
+        while (entry != &lbl_804FBC18[player][lbl_80504A28[player]]) {
+            if (entry->mUsed == 1 && entry->field_0x104 == 0) {
+                u32 address = entry->mAddress;
+                if (address == 0x0600C000 || address == 0x0600E000 || address == 0x06000000 ||
+                    address == 0x05000001 || address == 0x06017000)
+                {
+                    entry->mUsed = 0;
+                    entry->field_0x119 = 0;
+                    entry->field_0x104 = 0;
+                    entry->mName[0] = 0;
+                    if (entry->mIndex == lbl_80504A18[player]) {
+                        do {
+                            lbl_80504A18[player]++;
+                            if (lbl_80504A18[player] >= 32) {
+                                lbl_80504A18[player] = 0;
+                            }
+                        } while (lbl_80504A18[player] != lbl_80504A28[player] &&
+                                 lbl_804FBC18[player][lbl_80504A18[player]].mUsed == 0);
+                    }
+                }
+            }
+            if (entry->mIndex < 31) {
+                entry++;
+            } else {
+                entry = lbl_804FBC18[player];
+            }
+        }
+        lbl_8053AD20[player] = 0;
+    }
+}
+
+// 0x80301D30
+u8 fn_80301D30(s32 player) {
+    if (lbl_8053ACEC[player] > 1) {
+        return lbl_8053ACE8[player];
+    }
+    return 0;
+}
+
+// 0x80301CD0
+bool fn_80301CD0(s32 layer) {
+    s32 player = fn_8022F340(layer);
+    if (lbl_8053ACE8[player] != 0 &&
+        (lbl_8053ACEC[player] < 2 || (lbl_8053ACEC[player] == 2 && lbl_8053ACF0[player] < 0x10)))
+    {
+        return true;
+    }
+    return false;
+}

@@ -6,9 +6,13 @@
 #include "game/act/tu_80354D64.h"
 #include "game/act/act_npc_ride_switch.h"
 
-NPCRideSwitch_804AD220::~NPCRideSwitch_804AD220() {}
-
-void NPCRideSwitch_804AD220::draw() {}
+void NPCRideSwitch_804AD220::init() {
+    field_0x80.set(-12.0f, -12.0f, 12.0f, 12.0f);
+    mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
+    mPos.x = 16.0f * ((s32)mPos.x / 16);
+    mPos.y = 16.0f * ((s32)mPos.y / 16);
+    field_0x230 = 0;
+}
 
 // FIXME: 99.1 %. Only the scheduling of the log box's centre differs: the
 // target loads 0x60, 0xC, 0x68, 0x64 and adds them in that order; ours loads
@@ -38,10 +42,6 @@ void NPCRideSwitch_804AD220::update() {
     }
 }
 
-void NPCRideSwitch_804AD220::init() {
-    field_0x80.set(-12.0f, -12.0f, 12.0f, 12.0f);
-    mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
-    mPos.x = 16.0f * ((s32)mPos.x / 16);
-    mPos.y = 16.0f * ((s32)mPos.y / 16);
-    field_0x230 = 0;
-}
+void NPCRideSwitch_804AD220::draw() {}
+
+NPCRideSwitch_804AD220::~NPCRideSwitch_804AD220() {}

@@ -24,17 +24,16 @@ static inline bool isShopItemAlive() {
     return true;
 }
 
-Merchant_8049CD48::~Merchant_8049CD48() {}
+Merchant_8049CD48::Merchant_8049CD48() : mState(0), mPlayer(-1) {}
 
-void Merchant_8049CD48::draw() {
-    ActorBase_804A5770::draw();
-    s32 frame = mAnim.mCel + 0x1AB;
-    const JGeometry::TVec3f* pos = &mPos;
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
-    }
-    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1AB, false, 1, -1, 0, 0, 0);
+void Merchant_8049CD48::init() {
+    ActorBase_804A5770::init();
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    mAnim.fn_801D2608(lbl_80539ED8, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
 }
 
 // FIXME: 92.13%, scheduling only. In the fn_8038AD24 call the original loads mSerial, the
@@ -85,14 +84,15 @@ void Merchant_8049CD48::update() {
     mAnim.fn_801D1C18();
 }
 
-void Merchant_8049CD48::init() {
-    ActorBase_804A5770::init();
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    mAnim.fn_801D2608(lbl_80539ED8, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
+void Merchant_8049CD48::draw() {
+    ActorBase_804A5770::draw();
+    s32 frame = mAnim.mCel + 0x1AB;
+    const JGeometry::TVec3f* pos = &mPos;
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, NULL, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x1AB, false, 1, -1, 0, 0, 0);
 }
 
-Merchant_8049CD48::Merchant_8049CD48() : mState(0), mPlayer(-1) {}
+Merchant_8049CD48::~Merchant_8049CD48() {}

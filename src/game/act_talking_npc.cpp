@@ -9,9 +9,13 @@
 #include "game/Message.h"
 #include "game/act/act_talking_npc.h"
 
-TalkingNPC_804AF548::~TalkingNPC_804AF548() {}
-
-void TalkingNPC_804AF548::draw() {}
+void TalkingNPC_804AF548::init() {
+    mState = 0;
+    field_0x238 = 0x78;
+    field_0x234 = mSerial;
+    field_0x11f = 1;
+    field_0x11e = 1;
+}
 
 void TalkingNPC_804AF548::update() {
     u32 player = field_0x90 >> 28;
@@ -35,10 +39,6 @@ void TalkingNPC_804AF548::update() {
     }
 }
 
-void TalkingNPC_804AF548::init() {
-    mState = 0;
-    field_0x238 = 0x78;
-    field_0x234 = mSerial;
-    field_0x11f = 1;
-    field_0x11e = 1;
-}
+void TalkingNPC_804AF548::draw() {}
+
+TalkingNPC_804AF548::~TalkingNPC_804AF548() {}

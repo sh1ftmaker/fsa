@@ -7,6 +7,14 @@ static inline s32 spread(s32 range) {
     return fn_801CD664(range + 1) - range / 2;
 }
 
+void cls_8021B904::fn_8021BA30(s16 heading) {
+    mTimer = 0;
+    mTarget = fn_801CD664(91) + 30;
+    mCount = 0;
+    mCountMax = fn_801CD664(21) + 10;
+    mHeading = heading;
+}
+
 s16 cls_8021B904::fn_8021B904(s16 angle, bool turn) {
     if (turn) {
         mCount = 0;
@@ -31,12 +39,4 @@ s16 cls_8021B904::fn_8021B904(s16 angle, bool turn) {
         fn_801CD930(&angle, mHeading, 0x200);
     }
     return angle;
-}
-
-void cls_8021B904::fn_8021BA30(s16 heading) {
-    mTimer = 0;
-    mTarget = fn_801CD664(91) + 30;
-    mCount = 0;
-    mCountMax = fn_801CD664(21) + 10;
-    mHeading = heading;
 }

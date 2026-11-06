@@ -2,9 +2,16 @@
 #include "game/act/act_focus_npc.h"
 #include "game/GameGlobals.h"
 
-FocusNPC_804A8EA0::~FocusNPC_804A8EA0() {}
-
-void FocusNPC_804A8EA0::draw() {}
+void FocusNPC_804A8EA0::init() {
+    mSwitch = (field_0x90 >> 22) & 0x1F;
+    mDuration = field_0x90 & 0xFFF;
+    mTimer = 0;
+    if (mDuration == 0) {
+        mState = 2;
+    } else {
+        mState = 0;
+    }
+}
 
 void FocusNPC_804A8EA0::update() {
     s32 sw;
@@ -44,13 +51,6 @@ void FocusNPC_804A8EA0::update() {
     }
 }
 
-void FocusNPC_804A8EA0::init() {
-    mSwitch = (field_0x90 >> 22) & 0x1F;
-    mDuration = field_0x90 & 0xFFF;
-    mTimer = 0;
-    if (mDuration == 0) {
-        mState = 2;
-    } else {
-        mState = 0;
-    }
-}
+void FocusNPC_804A8EA0::draw() {}
+
+FocusNPC_804A8EA0::~FocusNPC_804A8EA0() {}

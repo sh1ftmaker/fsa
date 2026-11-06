@@ -20,19 +20,14 @@ static const s32 lbl_804715A8[] = {0x50051, 0x50052, 0x50053, 0x50054};
 static const Step_80316E34* lbl_804AADB8[] = {lbl_80471540, lbl_8047154C, lbl_80471558,
                                               lbl_80471598};
 
-s32 cls_8031709C::fn_80316E34() {
-    if (field_0x4 >= 0) {
-        return field_0x0;
-    }
-    return -1;
-}
-
-void cls_8031709C::fn_80316E50(s32 layer, const JGeometry::TVec3f& pos) {
+cls_8031709C::cls_8031709C() {
     field_0x0 = -1;
     field_0x4 = -1;
-    field_0xc = layer;
-    field_0x10 = pos;
+    field_0x8 = 0;
+    field_0x9 = 0;
 }
+
+cls_8031709C::~cls_8031709C() {}
 
 s32 cls_8031709C::fn_80316E74(s32 arg) {
     s32 result = -1;
@@ -78,11 +73,16 @@ s32 cls_8031709C::fn_80316E74(s32 arg) {
     return result;
 }
 
-cls_8031709C::~cls_8031709C() {}
-
-cls_8031709C::cls_8031709C() {
+void cls_8031709C::fn_80316E50(s32 layer, const JGeometry::TVec3f& pos) {
     field_0x0 = -1;
     field_0x4 = -1;
-    field_0x8 = 0;
-    field_0x9 = 0;
+    field_0xc = layer;
+    field_0x10 = pos;
+}
+
+s32 cls_8031709C::fn_80316E34() {
+    if (field_0x4 >= 0) {
+        return field_0x0;
+    }
+    return -1;
 }

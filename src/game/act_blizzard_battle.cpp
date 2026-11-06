@@ -68,6 +68,35 @@ inline void cls_8049E7F0::runPhase() {
     }
 }
 
+cls_8049E7F0::cls_8049E7F0() {
+    field_0x230 = 0;
+    field_0x231 = 0;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    mEmitter = NULL;
+}
+
+cls_8049E7F0::~cls_8049E7F0() {
+    releaseEmitter_801EE434(mEmitter);
+    mEmitter = NULL;
+}
+
+// FIXME: 99.41 %. Regalloc only: the centre's x and y go to f0/f2 in the original
+// (we use f3/f0), and the 0.5f literal's relocation is named differently.
+void cls_8049E7F0::init() {
+    ActorBase_804A5770::init();
+    field_0x230 = field_0x90 & 1;
+    field_0x231 = (field_0x90 >> 1) & 1;
+    if (mEmitter == NULL) {
+        JGeometry::TVec3f pos;
+        setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x58, 1, 0, NULL, NULL, true, 1.0f);
+    }
+    if (mEmitter != NULL) {
+        mEmitter->stopCreateParticle();
+    }
+}
+
 // FIXME: 97.18 %. spawnPuff's camera position: the original stores z = 0 a second
 // time between x and y (stfs f1, 0x24 after the x store), we store it once in the
 // zeroed TVec3f. Its .sdata2 literals (1.0f, 0.5f) also come out in another order.
@@ -120,33 +149,4 @@ void cls_8049E7F0::update() {
         }
         break;
     }
-}
-
-// FIXME: 99.41 %. Regalloc only: the centre's x and y go to f0/f2 in the original
-// (we use f3/f0), and the 0.5f literal's relocation is named differently.
-void cls_8049E7F0::init() {
-    ActorBase_804A5770::init();
-    field_0x230 = field_0x90 & 1;
-    field_0x231 = (field_0x90 >> 1) & 1;
-    if (mEmitter == NULL) {
-        JGeometry::TVec3f pos;
-        setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
-        mEmitter = spawnEmitter_8013CC50(field_0x4, &pos, 0x58, 1, 0, NULL, NULL, true, 1.0f);
-    }
-    if (mEmitter != NULL) {
-        mEmitter->stopCreateParticle();
-    }
-}
-
-cls_8049E7F0::~cls_8049E7F0() {
-    releaseEmitter_801EE434(mEmitter);
-    mEmitter = NULL;
-}
-
-cls_8049E7F0::cls_8049E7F0() {
-    field_0x230 = 0;
-    field_0x231 = 0;
-    field_0x234 = 0;
-    field_0x238 = 0;
-    mEmitter = NULL;
 }

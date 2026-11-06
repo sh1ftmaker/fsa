@@ -9,9 +9,11 @@
 // The ids init's spawn parameter selects from (one entry, 3).
 static const u32 lbl_80541250[] = {3};
 
-PlaySpecifiedSe_804A9F00::~PlaySpecifiedSe_804A9F00() {}
-
-void PlaySpecifiedSe_804A9F00::draw() {}
+void PlaySpecifiedSe_804A9F00::init() {
+    field_0x230 = ((u32)field_0x90 >> 26) & 1;
+    field_0x234 = field_0x90 & 0xFF;
+    field_0x238 = ((u32)field_0x90 >> 8) & 0xFFF;
+}
 
 // Counts field_0x238 down, then (unless field_0x230 is set) calls
 // fn_801F0D20 with the selected id once and removes the actor.
@@ -26,8 +28,6 @@ void PlaySpecifiedSe_804A9F00::update() {
     }
 }
 
-void PlaySpecifiedSe_804A9F00::init() {
-    field_0x230 = ((u32)field_0x90 >> 26) & 1;
-    field_0x234 = field_0x90 & 0xFF;
-    field_0x238 = ((u32)field_0x90 >> 8) & 0xFFF;
-}
+void PlaySpecifiedSe_804A9F00::draw() {}
+
+PlaySpecifiedSe_804A9F00::~PlaySpecifiedSe_804A9F00() {}

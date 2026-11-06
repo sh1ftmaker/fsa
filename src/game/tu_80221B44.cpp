@@ -5,13 +5,6 @@
 #include "game/Map.h"
 #include "game/act/tu_80221B44.h"
 
-// FAKEMATCH(crack-pass): deferred codegen for this file only, so the vtable is
-// written with its first user and precedes vfunc_0x90's jump table, as in the
-// original .data; the game's -inline auto puts every vtable last. Functions are
-// listed in reverse address order because deferred codegen emits them in
-// reverse. See docs/CRACK_PASS.md.
-#pragma defer_codegen on
-
 cls_804A6AA8::cls_804A6AA8() {
     mLandings = 0;
     mRing.mActive = 0;

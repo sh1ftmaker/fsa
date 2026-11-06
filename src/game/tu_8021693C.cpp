@@ -14,35 +14,10 @@ static inline void setBox(cls_80217128* hit, f32 x, f32 y, s32 type) {
     hit->mType = type;
 }
 
-// FIXME: 90.9 %. Same instructions except the box copy and registers: the
-// target reloads the box's i.y, f.x and f.y (0x8, 0xc, 0x10) after the two
-// width/height tests, reusing only i.x, and loads the owner before the
-// copy's stores into r30 with the mask in r29; ours keeps the test's loads
-// live for the copy (three fewer instructions) and allocates the owner and
-// mask to different registers. Tried: owner before / after the box copy,
-// box.set(mBox) into a declared box.
-u8 cls_80217128::fn_8021693C(u8 mask) {
-    if (mask == 0) {
-        return 0;
-    }
-    u8 result = 0;
-    if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
-        ShadowLink2_804A43E8* owner = mOwner;
-        JGeometry::TBox2f box(mBox);
-        box.addPos(owner->mPos.x, owner->mPos.y - owner->mPos.z);
-        for (s32 player = 0; player < 4; player++) {
-            s32 layer = owner->field_0x4;
-            if (viewLayerFlag(layer) == 0 &&
-                __fabsf(mOwner->mPos.z - getPlayerPos_8023E724(player)->z) > 32.0f) {
-                continue;
-            }
-            s32 bit = 1 << player;
-            if ((mask & bit) != 0 && fn_80239B64(player, &box, mOwner->field_0x4, mType, true, true)) {
-                result |= bit;
-            }
-        }
-    }
-    return result;
+cls_80217128::cls_80217128() {
+    mOwner = NULL;
+    mType = 0;
+    mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
 }
 
 void cls_80217128::fn_80216A8C() {
@@ -117,8 +92,33 @@ void cls_80217128::fn_80216A8C() {
     }
 }
 
-cls_80217128::cls_80217128() {
-    mOwner = NULL;
-    mType = 0;
-    mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+// FIXME: 90.9 %. Same instructions except the box copy and registers: the
+// target reloads the box's i.y, f.x and f.y (0x8, 0xc, 0x10) after the two
+// width/height tests, reusing only i.x, and loads the owner before the
+// copy's stores into r30 with the mask in r29; ours keeps the test's loads
+// live for the copy (three fewer instructions) and allocates the owner and
+// mask to different registers. Tried: owner before / after the box copy,
+// box.set(mBox) into a declared box.
+u8 cls_80217128::fn_8021693C(u8 mask) {
+    if (mask == 0) {
+        return 0;
+    }
+    u8 result = 0;
+    if (mBox.getWidth() > 0.0f && mBox.getHeight() > 0.0f) {
+        ShadowLink2_804A43E8* owner = mOwner;
+        JGeometry::TBox2f box(mBox);
+        box.addPos(owner->mPos.x, owner->mPos.y - owner->mPos.z);
+        for (s32 player = 0; player < 4; player++) {
+            s32 layer = owner->field_0x4;
+            if (viewLayerFlag(layer) == 0 &&
+                __fabsf(mOwner->mPos.z - getPlayerPos_8023E724(player)->z) > 32.0f) {
+                continue;
+            }
+            s32 bit = 1 << player;
+            if ((mask & bit) != 0 && fn_80239B64(player, &box, mOwner->field_0x4, mType, true, true)) {
+                result |= bit;
+            }
+        }
+    }
+    return result;
 }

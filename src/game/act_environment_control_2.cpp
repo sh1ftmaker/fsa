@@ -8,11 +8,63 @@
 #include "game/GameRootSub20.h"
 #include "game/act/act_environment_control_2.h"
 
-void EnvironmentControl2_804A9CD0::fn_802E43E0() {
-    field_0x280 = 0;
+void EnvironmentControl2_804A9CD0::init() {
+    field_0x234 = (field_0x90 >> 26) & 1;
+    field_0x238 = (field_0x90 >> 25) & 1;
+    field_0x23c = (field_0x90 >> 24) & 1;
+    field_0x240 = (field_0x90 >> 23) & 1;
+    field_0x248 = (field_0x90 >> 22) & 1;
+    field_0x24c = (field_0x90 >> 21) & 1;
+    field_0x250 = (field_0x90 >> 20) & 1;
+    field_0x254 = (field_0x90 >> 19) & 1;
+    field_0x25c = (field_0x90 >> 18) & 1;
+    field_0x260 = (field_0x90 >> 17) & 1;
+    field_0x264 = (field_0x90 >> 16) & 1;
+    field_0x268 = (field_0x90 >> 15) & 1;
+    field_0x270 = (field_0x90 >> 14) & 1;
+    field_0x278 = (field_0x90 >> 13) & 1;
+    field_0x27c = (field_0x90 >> 12) & 1;
+    field_0x280 = (field_0x90 >> 11) & 1;
+
+    field_0x284 = fn_8016A3AC()->field_0x1f2;
+    if (field_0x240 != 0) {
+        field_0x244 = 0xFF;
+    }
+    fn_8016A3AC()->field_0x1f2 = field_0x284;
+
+    field_0x285 = fn_8016A3AC()->field_0x1f3;
+    if (field_0x254 != 0) {
+        field_0x258 = 0xFF;
+    }
+    fn_8016A3AC()->field_0x1f3 = field_0x285;
+
+    field_0x286 = fn_8016A3AC()->field_0x1f4;
+    if (field_0x268 != 0) {
+        field_0x26c = 0xFF;
+    }
+    fn_8016A3AC()->field_0x1f4 = field_0x286;
+
+    field_0x287 = fn_8016A3AC()->field_0x1f5;
+    if (field_0x270 != 0) {
+        field_0x274 = 0xFF;
+    }
+    fn_8016A3AC()->field_0x1f5 = field_0x287;
+
+    field_0x288 = fn_8016A3AC()->field_0x1ef;
+    if (field_0x280 != 0) {
+        field_0x288 = 0xFF;
+    }
+    fn_8016A3AC()->field_0x1ef = field_0x288;
+
+    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
+    update();
 }
 
-void EnvironmentControl2_804A9CD0::draw() {}
+EnvironmentControl2_804A9CD0::~EnvironmentControl2_804A9CD0() {
+    if (mSound != NULL) {
+        delete mSound;
+    }
+}
 
 void EnvironmentControl2_804A9CD0::update() {
     JGeometry::TVec3f pos = mPos;
@@ -141,60 +193,8 @@ void EnvironmentControl2_804A9CD0::update() {
     fn_8016A3AC()->field_0x1ef = field_0x288;
 }
 
-EnvironmentControl2_804A9CD0::~EnvironmentControl2_804A9CD0() {
-    if (mSound != NULL) {
-        delete mSound;
-    }
-}
+void EnvironmentControl2_804A9CD0::draw() {}
 
-void EnvironmentControl2_804A9CD0::init() {
-    field_0x234 = (field_0x90 >> 26) & 1;
-    field_0x238 = (field_0x90 >> 25) & 1;
-    field_0x23c = (field_0x90 >> 24) & 1;
-    field_0x240 = (field_0x90 >> 23) & 1;
-    field_0x248 = (field_0x90 >> 22) & 1;
-    field_0x24c = (field_0x90 >> 21) & 1;
-    field_0x250 = (field_0x90 >> 20) & 1;
-    field_0x254 = (field_0x90 >> 19) & 1;
-    field_0x25c = (field_0x90 >> 18) & 1;
-    field_0x260 = (field_0x90 >> 17) & 1;
-    field_0x264 = (field_0x90 >> 16) & 1;
-    field_0x268 = (field_0x90 >> 15) & 1;
-    field_0x270 = (field_0x90 >> 14) & 1;
-    field_0x278 = (field_0x90 >> 13) & 1;
-    field_0x27c = (field_0x90 >> 12) & 1;
-    field_0x280 = (field_0x90 >> 11) & 1;
-
-    field_0x284 = fn_8016A3AC()->field_0x1f2;
-    if (field_0x240 != 0) {
-        field_0x244 = 0xFF;
-    }
-    fn_8016A3AC()->field_0x1f2 = field_0x284;
-
-    field_0x285 = fn_8016A3AC()->field_0x1f3;
-    if (field_0x254 != 0) {
-        field_0x258 = 0xFF;
-    }
-    fn_8016A3AC()->field_0x1f3 = field_0x285;
-
-    field_0x286 = fn_8016A3AC()->field_0x1f4;
-    if (field_0x268 != 0) {
-        field_0x26c = 0xFF;
-    }
-    fn_8016A3AC()->field_0x1f4 = field_0x286;
-
-    field_0x287 = fn_8016A3AC()->field_0x1f5;
-    if (field_0x270 != 0) {
-        field_0x274 = 0xFF;
-    }
-    fn_8016A3AC()->field_0x1f5 = field_0x287;
-
-    field_0x288 = fn_8016A3AC()->field_0x1ef;
-    if (field_0x280 != 0) {
-        field_0x288 = 0xFF;
-    }
-    fn_8016A3AC()->field_0x1ef = field_0x288;
-
-    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
-    update();
+void EnvironmentControl2_804A9CD0::fn_802E43E0() {
+    field_0x280 = 0;
 }

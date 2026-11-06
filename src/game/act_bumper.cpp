@@ -10,22 +10,48 @@
 static s32 lbl_804A0228[7] = {0, 1, 2, 0, 1, 0, 1};
 static s32 lbl_804A0244[7] = {1, 1, 1, 1, 1, 2, 2};
 
-Bumper_804A0260::~Bumper_804A0260() {}
-
-// FIXME: 96.68 %. scheduling+regalloc only: the original keeps sin x in f29,
-// sin z in f27 and the angle in f30, ours sin x in f27, sin z in f29 and the
-// angle in f31 (the same setRotScaleMtx arithmetic, same call order).
-void Bumper_804A0260::draw() {
-    Mtx mtx;
-    mtx[0][3] = 0.0f;
-    mtx[1][3] = 0.0f;
-    mtx[2][3] = 0.0f;
-    SpriteParams_801F5AE0 params;
-    f32 angle = (f32)field_0x25c / -10430.228f;
-    JGeometry::TVec3f rot(0.0f, angle, 0.0f);
-    setRotScaleMtx(mtx, rot, 1.0f);
-    params.mMtx = mtx;
-    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x258 + 0x70, &params, 0, 1.0f, 1.0f);
+void Bumper_804A0260::init() {
+    field_0x248 = 0;
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x23c = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x268 = 0.0f;
+    field_0x264 = 0.0f;
+    field_0x260 = 0.0f;
+    field_0x94 = 0;
+    field_0x98 = (field_0x90 >> 8) & 3;
+    field_0x238 = (field_0x90 >> 16) & 1;
+    field_0x90 &= 7;
+    field_0x25c = 0;
+    mSpawnPos.x = mPos.x;
+    mSpawnPos.y = mPos.y;
+    mSpawnPos.z = mPos.z;
+    field_0xb8 = 2;
+    field_0x258 = 0;
+    field_0x26c = mPos;
+    field_0x24c = fn_801F6874(field_0x98);
+    field_0x250 = 100;
+    field_0x234 = 0.0f;
+    if (field_0x90 == 2 || field_0x90 == 3) {
+        field_0x234 = 30.0f;
+        mPos.x = field_0x26c.x + field_0x234 * JMath::sincosTable_.sinShort(field_0x24c);
+        mPos.y = field_0x26c.y + field_0x234 * JMath::sincosTable_.cosShort(field_0x24c);
+    }
+    if (field_0x90 == 4 || field_0x90 == 5) {
+        field_0x234 = 80.0f;
+        mPos.x = field_0x26c.x + field_0x234 * JMath::sincosTable_.sinShort(field_0x24c);
+        mPos.y = field_0x26c.y + field_0x234 * JMath::sincosTable_.cosShort(field_0x24c);
+    }
+    if (field_0x90 == 2 || field_0x90 == 4) {
+        field_0x250 = -100;
+    }
+    if (field_0x238 != 0) {
+        field_0x250 <<= 1;
+    }
+    field_0xbc = 4;
+    field_0x230 = 0;
 }
 
 // FIXME: 95.76 %. The original keeps `this` in r28 (ours r29), so the loop
@@ -199,46 +225,20 @@ void Bumper_804A0260::update() {
     }
 }
 
-void Bumper_804A0260::init() {
-    field_0x248 = 0;
-    field_0x24c = 0;
-    field_0x250 = 0;
-    field_0x23c = 0;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x268 = 0.0f;
-    field_0x264 = 0.0f;
-    field_0x260 = 0.0f;
-    field_0x94 = 0;
-    field_0x98 = (field_0x90 >> 8) & 3;
-    field_0x238 = (field_0x90 >> 16) & 1;
-    field_0x90 &= 7;
-    field_0x25c = 0;
-    mSpawnPos.x = mPos.x;
-    mSpawnPos.y = mPos.y;
-    mSpawnPos.z = mPos.z;
-    field_0xb8 = 2;
-    field_0x258 = 0;
-    field_0x26c = mPos;
-    field_0x24c = fn_801F6874(field_0x98);
-    field_0x250 = 100;
-    field_0x234 = 0.0f;
-    if (field_0x90 == 2 || field_0x90 == 3) {
-        field_0x234 = 30.0f;
-        mPos.x = field_0x26c.x + field_0x234 * JMath::sincosTable_.sinShort(field_0x24c);
-        mPos.y = field_0x26c.y + field_0x234 * JMath::sincosTable_.cosShort(field_0x24c);
-    }
-    if (field_0x90 == 4 || field_0x90 == 5) {
-        field_0x234 = 80.0f;
-        mPos.x = field_0x26c.x + field_0x234 * JMath::sincosTable_.sinShort(field_0x24c);
-        mPos.y = field_0x26c.y + field_0x234 * JMath::sincosTable_.cosShort(field_0x24c);
-    }
-    if (field_0x90 == 2 || field_0x90 == 4) {
-        field_0x250 = -100;
-    }
-    if (field_0x238 != 0) {
-        field_0x250 <<= 1;
-    }
-    field_0xbc = 4;
-    field_0x230 = 0;
+// FIXME: 96.68 %. scheduling+regalloc only: the original keeps sin x in f29,
+// sin z in f27 and the angle in f30, ours sin x in f27, sin z in f29 and the
+// angle in f31 (the same setRotScaleMtx arithmetic, same call order).
+void Bumper_804A0260::draw() {
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    SpriteParams_801F5AE0 params;
+    f32 angle = (f32)field_0x25c / -10430.228f;
+    JGeometry::TVec3f rot(0.0f, angle, 0.0f);
+    setRotScaleMtx(mtx, rot, 1.0f);
+    params.mMtx = mtx;
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x258 + 0x70, &params, 0, 1.0f, 1.0f);
 }
+
+Bumper_804A0260::~Bumper_804A0260() {}

@@ -13,22 +13,28 @@
 static const s16 lbl_80469460[] = {0x10, 3, 0x11, 3, 0x12, 3, 0x13, 3, -1, -1};
 static const s16* lbl_8053A130[] = {lbl_80469460, NULL};
 
-void cls_804A48B0::fn_801D2CF0(const JGeometry::TVec2f* v) {
-    field_0x3c.x = v->x;
-    field_0x3c.y = v->y;
-    field_0x3c.z = 0.0f;
-    field_0x98 = fn_801CF0F4();
-}
-
-void cls_804A48B0::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x30 = 12;
-    params.field_0x1d = 1;
-    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xD5, &params, -1, 1.0f, 1.0f);
-}
-
 static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f& p) {
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
+}
+
+cls_804A48B0::cls_804A48B0() {
+    mTimer = 0;
+}
+
+void cls_804A48B0::init() {
+    EnemyBase_804A4808::init();
+    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
+    mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+    field_0xb0 = 0;
+    mFlags |= 0x280;
+    mLife = 1000;
+    mLifeBackup = mLife;
+    field_0x194 = 1;
+    field_0x114 = 2;
+    mAnim.fn_801D2608(lbl_8053A130, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1D60();
 }
 
 void cls_804A48B0::update() {
@@ -57,22 +63,16 @@ void cls_804A48B0::update() {
     EnemyBase_804A4808::vfunc_0x94();
 }
 
-void cls_804A48B0::init() {
-    EnemyBase_804A4808::init();
-    mBox.set(-2.0f, -2.0f, 2.0f, 2.0f);
-    mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
-    field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
-    field_0xb0 = 0;
-    mFlags |= 0x280;
-    mLife = 1000;
-    mLifeBackup = mLife;
-    field_0x194 = 1;
-    field_0x114 = 2;
-    mAnim.fn_801D2608(lbl_8053A130, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1D60();
+void cls_804A48B0::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x30 = 12;
+    params.field_0x1d = 1;
+    drawSprite_801F06F0("enemy_gc_sob.bin", mAnim.mCel + 0xD5, &params, -1, 1.0f, 1.0f);
 }
 
-cls_804A48B0::cls_804A48B0() {
-    mTimer = 0;
+void cls_804A48B0::fn_801D2CF0(const JGeometry::TVec2f* v) {
+    field_0x3c.x = v->x;
+    field_0x3c.y = v->y;
+    field_0x3c.z = 0.0f;
+    field_0x98 = fn_801CF0F4();
 }

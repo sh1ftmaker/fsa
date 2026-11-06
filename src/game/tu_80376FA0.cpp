@@ -23,8 +23,6 @@ static inline void inflate(JGeometry::TBox2f& box, f32 d) {
     box.f.y += d;
 }
 
-cls_804AE7D8::~cls_804AE7D8() {}
-
 // Whether one of the player's eight probe points (fn_8022E088) lies in the
 // actor's box; only players on the actor's layer count.
 inline bool cls_804AE7D8::touchesPlayer(s32 player, JGeometry::TVec3f& point) {
@@ -51,29 +49,60 @@ inline bool cls_804AE7D8::touchesPlayer(s32 player, JGeometry::TVec3f& point) {
     return false;
 }
 
-// FIXME: 99.81 %. The two names are .rodata string literals in the original
-// (lbl_80475188, lbl_80475198); ours are literals in the .o, so only their
+// FIXME: 99.78 %. The sdata2 constants (24.0f, 16.0f, 0.0f, -31.5f, 31.5f)
+// are literals in ours and lbl_80542F88 etc. in the original: only the
 // relocation names differ. Code is identical.
-void cls_804AE7D8::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x1c = 0;
-    params.field_0x1d = -1;
-
-    switch (field_0x244) {
-    case 0: {
-        void* res = fn_804032E8('TIMG', "yy_1_1_iwa1.bti");
-        if (field_0x4 < 8) {
-            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+void cls_804AE7D8::init() {
+    field_0x244 = 0;
+    field_0x264 = 0;
+    field_0x258 = (u8)((u8)field_0x90 + 1);
+    field_0x265 = (field_0x90 >> 16) & 1;
+    if (field_0x265 == 0 && fn_8028D4DC(&mPos, 3, field_0x16c)) {
+        field_0x244 = 1;
+        f32 x = mPos.x;
+        x -= 24.0f;
+        f32 y = mPos.y;
+        f32 z = mPos.z;
+        // The inner counter is declared outside its loop: that gives the
+        // original's register order (r29), not the loop-local one.
+        s32 j;
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos;
+            pos.x = x;
+            pos.y = y;
+            pos.z = z;
+            const f32* offset = lbl_80475178;
+            for (j = 0; j < 4; j++) {
+                pos.y = y + *offset;
+                gBgRewrite_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
+                offset++;
+            }
+            x += 16.0f;
         }
-        break;
-    }
-    case 1: {
-        void* res = fn_804032E8('TIMG', "yy_1_1_iwa2.bti");
-        if (field_0x4 < 8) {
-            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
-        }
-        break;
-    }
+        field_0x264 = 1;
+    } else {
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x248 = mPos;
+        mBox.i.x = -31.5f;
+        mBox.i.y = -31.5f;
+        mBox.f.x = 31.5f;
+        mBox.f.y = 31.5f;
+        field_0x80.i.x = -31.5f;
+        field_0x80.i.y = -31.5f;
+        field_0x80.f.x = 31.5f;
+        field_0x80.f.y = 31.5f;
+        field_0x1a4 = 4;
+        field_0x254 = 0;
+        field_0xb8 = 2;
+        field_0x25c = 0;
+        field_0x260 = 0;
+        mEmitter230 = NULL;
+        mEmitter234 = NULL;
+        mEmitter238 = NULL;
+        mEmitter23c = NULL;
+        mEmitter240 = NULL;
     }
 }
 
@@ -251,59 +280,30 @@ void cls_804AE7D8::update() {
     }
 }
 
-// FIXME: 99.78 %. The sdata2 constants (24.0f, 16.0f, 0.0f, -31.5f, 31.5f)
-// are literals in ours and lbl_80542F88 etc. in the original: only the
+// FIXME: 99.81 %. The two names are .rodata string literals in the original
+// (lbl_80475188, lbl_80475198); ours are literals in the .o, so only their
 // relocation names differ. Code is identical.
-void cls_804AE7D8::init() {
-    field_0x244 = 0;
-    field_0x264 = 0;
-    field_0x258 = (u8)((u8)field_0x90 + 1);
-    field_0x265 = (field_0x90 >> 16) & 1;
-    if (field_0x265 == 0 && fn_8028D4DC(&mPos, 3, field_0x16c)) {
-        field_0x244 = 1;
-        f32 x = mPos.x;
-        x -= 24.0f;
-        f32 y = mPos.y;
-        f32 z = mPos.z;
-        // The inner counter is declared outside its loop: that gives the
-        // original's register order (r29), not the loop-local one.
-        s32 j;
-        for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos;
-            pos.x = x;
-            pos.y = y;
-            pos.z = z;
-            const f32* offset = lbl_80475178;
-            for (j = 0; j < 4; j++) {
-                pos.y = y + *offset;
-                gBgRewrite_8053AC98->fn_802A3948(&pos, 0, field_0x4, 0);
-                offset++;
-            }
-            x += 16.0f;
+void cls_804AE7D8::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x1c = 0;
+    params.field_0x1d = -1;
+
+    switch (field_0x244) {
+    case 0: {
+        void* res = fn_804032E8('TIMG', "yy_1_1_iwa1.bti");
+        if (field_0x4 < 8) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
         }
-        field_0x264 = 1;
-    } else {
-        field_0x3c.x = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.z = 0.0f;
-        field_0x248 = mPos;
-        mBox.i.x = -31.5f;
-        mBox.i.y = -31.5f;
-        mBox.f.x = 31.5f;
-        mBox.f.y = 31.5f;
-        field_0x80.i.x = -31.5f;
-        field_0x80.i.y = -31.5f;
-        field_0x80.f.x = 31.5f;
-        field_0x80.f.y = 31.5f;
-        field_0x1a4 = 4;
-        field_0x254 = 0;
-        field_0xb8 = 2;
-        field_0x25c = 0;
-        field_0x260 = 0;
-        mEmitter230 = NULL;
-        mEmitter234 = NULL;
-        mEmitter238 = NULL;
-        mEmitter23c = NULL;
-        mEmitter240 = NULL;
+        break;
+    }
+    case 1: {
+        void* res = fn_804032E8('TIMG', "yy_1_1_iwa2.bti");
+        if (field_0x4 < 8) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
+        }
+        break;
+    }
     }
 }
+
+cls_804AE7D8::~cls_804AE7D8() {}

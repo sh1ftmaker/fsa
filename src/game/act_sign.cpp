@@ -8,14 +8,50 @@
 #include "game/Player.h"
 #include "game/act/act_sign.h"
 
-Sign_804A94D8::~Sign_804A94D8() {}
-
-void Sign_804A94D8::vfunc_0x48() {
-    vfunc_0x24();
+void Sign_804A94D8::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -4.0f;
+    field_0x80.i.y = -4.0f;
+    field_0x80.f.x = 4.0f;
+    field_0x80.f.y = 4.0f;
+    field_0x230 = 0;
 }
 
-bool Sign_804A94D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    return fn_801F132C(layer, pos, &field_0x230);
+void Sign_804A94D8::update() {
+    field_0x234 = 0xFF;
+    if (field_0xc4) {
+        mPos.set(*fn_8023E7B0(field_0xc8));
+        field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
+        field_0x234 = fn_8023BCD4(field_0xc8);
+    } else {
+        field_0x3c.z += -0.1f;
+        mPos += field_0x3c;
+        s32 damage = field_0x114;
+        if (gGameRoot_8053AAF8->field_0x7f) {
+            damage = 0;
+        }
+        if (mPos.z < 0.0f || fn_801F2618(NULL, false)) {
+            vfunc_0x24();
+        } else if (fn_801F2B7C(damage, field_0xc8, 1) || fn_801F2B20(0)) {
+            vfunc_0x24();
+        }
+    }
+}
+
+void Sign_804A94D8::draw() {
+    s32 flags = 7;
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = field_0x234;
+    if (field_0xc4) {
+        params.field_0x20 = 0;
+        flags = -1;
+        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
+        params.field_0x1c = fn_8023CA88(field_0xc8);
+    }
+    fn_801F02BC("enemy_both2_sob.bin", 0x28, &params, flags, 0, true, 1.0f, 1.0f);
 }
 
 void Sign_804A94D8::vfunc_0x24() {
@@ -45,48 +81,12 @@ void Sign_804A94D8::vfunc_0x24() {
     mAlive = false;
 }
 
-void Sign_804A94D8::draw() {
-    s32 flags = 7;
-    SpriteParams_801F5AE0 params;
-    params.field_0x10.a = field_0x234;
-    if (field_0xc4) {
-        params.field_0x20 = 0;
-        flags = -1;
-        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
-        params.field_0x1c = fn_8023CA88(field_0xc8);
-    }
-    fn_801F02BC("enemy_both2_sob.bin", 0x28, &params, flags, 0, true, 1.0f, 1.0f);
+bool Sign_804A94D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    return fn_801F132C(layer, pos, &field_0x230);
 }
 
-void Sign_804A94D8::update() {
-    field_0x234 = 0xFF;
-    if (field_0xc4) {
-        mPos.set(*fn_8023E7B0(field_0xc8));
-        field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
-        field_0x234 = fn_8023BCD4(field_0xc8);
-    } else {
-        field_0x3c.z += -0.1f;
-        mPos += field_0x3c;
-        s32 damage = field_0x114;
-        if (gGameRoot_8053AAF8->field_0x7f) {
-            damage = 0;
-        }
-        if (mPos.z < 0.0f || fn_801F2618(NULL, false)) {
-            vfunc_0x24();
-        } else if (fn_801F2B7C(damage, field_0xc8, 1) || fn_801F2B20(0)) {
-            vfunc_0x24();
-        }
-    }
+void Sign_804A94D8::vfunc_0x48() {
+    vfunc_0x24();
 }
 
-void Sign_804A94D8::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -4.0f;
-    field_0x80.i.y = -4.0f;
-    field_0x80.f.x = 4.0f;
-    field_0x80.f.y = 4.0f;
-    field_0x230 = 0;
-}
+Sign_804A94D8::~Sign_804A94D8() {}

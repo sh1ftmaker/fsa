@@ -22,68 +22,72 @@ static const char* lbl_8049D930[4] = {
     "e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.bti", "e_gufu_4.bti",
 };
 
-// FIXME: 94.4 %. The original's branch to the fn_8023DFF4 arm is laid out at the
-// end of the loop body with the fn_80230498 arm falling through, and it
-// converts the 255 argument from a float at run time (fctiwz of 255.0f);
-// the 90.0f literal is lbl_ in the original and @NNN here (data split).
-bool cls_8049D940::fn_80115A7C() {
+cls_8049D940::cls_8049D940() : field_0x230(0), field_0x234(0) {
+    field_0x314 = 0;
+    field_0x318 = 0;
+    field_0x32c = 0;
+    field_0x31c[0] = 0;
+    field_0x31c[1] = 0;
+    field_0x31c[2] = 0;
+    field_0x31c[3] = 0;
+}
+
+cls_8049D940::~cls_8049D940() {
+    field_0x31c[0] = 0;
+    field_0x31c[1] = 0;
+    field_0x31c[2] = 0;
+    field_0x31c[3] = 0;
+    field_0x32c = 0;
+    releaseEmitter_801EE434(field_0x314);
+    field_0x314 = NULL;
+    releaseEmitter_801EE434(field_0x318);
+    field_0x318 = NULL;
+}
+
+// FIXME: 99.9 %. Only the 20.0f literal: .sdata2 not split (lbl_8053C704 vs @NNN).
+void cls_8049D940::init() {
+    cls_8049D140::init();
     for (s32 i = 0; i < 4; i++) {
-        JGeometry::TVec3f out;
-        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-        fn_80115BC4(&pos, &out);
-        pos += out;
-        f32 dx = pos.x - mPos.x;
-        f32 dy = pos.y - mPos.y;
-        f32 len = JMAFastSqrt(square(dx) + square(dy));
-        if (!(len <= 90.0f)) {
-            fn_80230498(i, &pos, field_0x270.mCel + 0x3B5, 255, -128, -128, true);
-        } else {
-            fn_8023DFF4(i, &pos);
-        }
+        field_0x31c[i] = fn_804032E8('TIMG', lbl_8049D930[i]);
     }
-    field_0x270.fn_801D1C18();
-    return true;
+    // '????' (escaped: "??'" would be a trigraph).
+    field_0x32c = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', "kk_black.bti");
+    mPos.z = 20.0f;
+    field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+    mDrawEnabled = false;
+    field_0x238.fn_801D2608(lbl_80539F08, 1);
+    field_0x238.startAnim_801D22DC(0, 2, false);
+    field_0x238.fn_801D1F14(0.0f);
+    field_0x270.fn_801D2608(lbl_80539F08, 1);
+    field_0x270.startAnim_801D22DC(0, 2, false);
+    field_0x270.fn_801D1F14(0.0f);
+    field_0x308 = mPos;
 }
 
-s32 cls_8049D940::vfunc_0x5C() {
-    switch (field_0x230) {
-    case 11:
-        return 1;
-    default:
-        return 0;
-    }
-}
-
-s32 cls_8049D940::vfunc_0x58() {
-    return field_0x230;
-}
-
-void cls_8049D940::vfunc_0x54() {
-    if (fn_8011921C()->field_0x4 == 2) {
-        s32 value = fn_8011921C()->field_0x8;
-        if (value == lbl_804649A4[1]) {
-            fn_80115F9C(1);
-        } else if (value == lbl_804649A4[2]) {
-            fn_80115F9C(2);
-        } else if (value == lbl_804649A4[3]) {
-            fn_80115F9C(3);
-        } else if (value == lbl_804649A4[4]) {
-            fn_80115F9C(4);
-        } else if (value == lbl_804649A4[5]) {
-            fn_80115F9C(5);
-        } else if (value == lbl_804649A4[6]) {
-            fn_80115F9C(6);
-        } else if (value == lbl_804649A4[7]) {
-            fn_80115F9C(7);
-        } else if (value == lbl_804649A4[8]) {
-            fn_80115F9C(8);
-        } else if (value == lbl_804649A4[9]) {
-            fn_80115F9C(9);
-        } else if (value == lbl_804649A4[10]) {
-            fn_80115F9C(10);
-        } else if (value == lbl_804649A4[11]) {
-            fn_80115F9C(11);
-        }
+// Defined after draw(), which calls it: above it, MWCC inlines it into draw.
+// FIXME: 88.7 %. The original loads the 64.0f and 1.0f literals again after the
+// PSMTXTrans call and uses other registers for them; the literal references
+// are lbl_ in the original and @NNN here (data split).
+void cls_8049D940::fn_801158B8() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    JGeometry::TVec3f pos;
+    PSMTXTrans(mtx, 0.0f, 0.0f, 0.0f);
+    mtx[0][0] = 64.0f;
+    mtx[1][1] = 1.0f;
+    mtx[2][2] = 64.0f;
+    params.mMtx = mtx;
+    params.field_0x14.r = 0;
+    params.field_0x14.g = 0;
+    params.field_0x14.b = 0;
+    params.field_0x14.a = 255;
+    params.field_0x1c = 1;
+    params.field_0x1d = 3;
+    params.field_0x2d = 1;
+    pos = mPos;
+    pos.z = 0.0f;
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
     }
 }
 
@@ -124,71 +128,67 @@ void cls_8049D940::draw() {
     }
 }
 
-// Defined after draw(), which calls it: above it, MWCC inlines it into draw.
-// FIXME: 88.7 %. The original loads the 64.0f and 1.0f literals again after the
-// PSMTXTrans call and uses other registers for them; the literal references
-// are lbl_ in the original and @NNN here (data split).
-void cls_8049D940::fn_801158B8() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    JGeometry::TVec3f pos;
-    PSMTXTrans(mtx, 0.0f, 0.0f, 0.0f);
-    mtx[0][0] = 64.0f;
-    mtx[1][1] = 1.0f;
-    mtx[2][2] = 64.0f;
-    params.mMtx = mtx;
-    params.field_0x14.r = 0;
-    params.field_0x14.g = 0;
-    params.field_0x14.b = 0;
-    params.field_0x14.a = 255;
-    params.field_0x1c = 1;
-    params.field_0x1d = 3;
-    params.field_0x2d = 1;
-    pos = mPos;
-    pos.z = 0.0f;
-    if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
+void cls_8049D940::vfunc_0x54() {
+    if (fn_8011921C()->field_0x4 == 2) {
+        s32 value = fn_8011921C()->field_0x8;
+        if (value == lbl_804649A4[1]) {
+            fn_80115F9C(1);
+        } else if (value == lbl_804649A4[2]) {
+            fn_80115F9C(2);
+        } else if (value == lbl_804649A4[3]) {
+            fn_80115F9C(3);
+        } else if (value == lbl_804649A4[4]) {
+            fn_80115F9C(4);
+        } else if (value == lbl_804649A4[5]) {
+            fn_80115F9C(5);
+        } else if (value == lbl_804649A4[6]) {
+            fn_80115F9C(6);
+        } else if (value == lbl_804649A4[7]) {
+            fn_80115F9C(7);
+        } else if (value == lbl_804649A4[8]) {
+            fn_80115F9C(8);
+        } else if (value == lbl_804649A4[9]) {
+            fn_80115F9C(9);
+        } else if (value == lbl_804649A4[10]) {
+            fn_80115F9C(10);
+        } else if (value == lbl_804649A4[11]) {
+            fn_80115F9C(11);
+        }
     }
 }
 
-// FIXME: 99.9 %. Only the 20.0f literal: .sdata2 not split (lbl_8053C704 vs @NNN).
-void cls_8049D940::init() {
-    cls_8049D140::init();
+s32 cls_8049D940::vfunc_0x58() {
+    return field_0x230;
+}
+
+s32 cls_8049D940::vfunc_0x5C() {
+    switch (field_0x230) {
+    case 11:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+// FIXME: 94.4 %. The original's branch to the fn_8023DFF4 arm is laid out at the
+// end of the loop body with the fn_80230498 arm falling through, and it
+// converts the 255 argument from a float at run time (fctiwz of 255.0f);
+// the 90.0f literal is lbl_ in the original and @NNN here (data split).
+bool cls_8049D940::fn_80115A7C() {
     for (s32 i = 0; i < 4; i++) {
-        field_0x31c[i] = fn_804032E8('TIMG', lbl_8049D930[i]);
+        JGeometry::TVec3f out;
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+        fn_80115BC4(&pos, &out);
+        pos += out;
+        f32 dx = pos.x - mPos.x;
+        f32 dy = pos.y - mPos.y;
+        f32 len = JMAFastSqrt(square(dx) + square(dy));
+        if (!(len <= 90.0f)) {
+            fn_80230498(i, &pos, field_0x270.mCel + 0x3B5, 255, -128, -128, true);
+        } else {
+            fn_8023DFF4(i, &pos);
+        }
     }
-    // '????' (escaped: "??'" would be a trigraph).
-    field_0x32c = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', "kk_black.bti");
-    mPos.z = 20.0f;
-    field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
-    mDrawEnabled = false;
-    field_0x238.fn_801D2608(lbl_80539F08, 1);
-    field_0x238.startAnim_801D22DC(0, 2, false);
-    field_0x238.fn_801D1F14(0.0f);
-    field_0x270.fn_801D2608(lbl_80539F08, 1);
-    field_0x270.startAnim_801D22DC(0, 2, false);
-    field_0x270.fn_801D1F14(0.0f);
-    field_0x308 = mPos;
-}
-
-cls_8049D940::~cls_8049D940() {
-    field_0x31c[0] = 0;
-    field_0x31c[1] = 0;
-    field_0x31c[2] = 0;
-    field_0x31c[3] = 0;
-    field_0x32c = 0;
-    releaseEmitter_801EE434(field_0x314);
-    field_0x314 = NULL;
-    releaseEmitter_801EE434(field_0x318);
-    field_0x318 = NULL;
-}
-
-cls_8049D940::cls_8049D940() : field_0x230(0), field_0x234(0) {
-    field_0x314 = 0;
-    field_0x318 = 0;
-    field_0x32c = 0;
-    field_0x31c[0] = 0;
-    field_0x31c[1] = 0;
-    field_0x31c[2] = 0;
-    field_0x31c[3] = 0;
+    field_0x270.fn_801D1C18();
+    return true;
 }

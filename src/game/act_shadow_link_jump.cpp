@@ -12,76 +12,22 @@ static inline void setBox(JGeometry::TBox2f& box, f32 lo, f32 hi) {
     box.f.y = hi;
 }
 
-cls_804A68D0::~cls_804A68D0() {}
-
-void cls_804A68D0::vfunc_0x88() {
-    switch (mState) {
-    case 2:
-        fn_80221250();
-        break;
-    case 4:
-    case 6:
-        field_0x3c.z = field_0x3c.z + lbl_8053EFB8;
-        break;
-    default:
-        field_0x3c.x = 0.0f;
-        field_0x3c.y = 0.0f;
-        vfunc_0x84();
-        break;
-    }
+cls_804A68D0::cls_804A68D0() {
+    mKind = 0;
+    mHops = 0;
+    field_0x2c0 = fn_801CD664(1) + 3;
 }
 
-// FIXME: 99.86%. Only the jump table relocation differs (jumptable_804A6974 vs
-// @NNN), as in act_shadow_link_bow's vfunc_0x90.
-void cls_804A68D0::vfunc_0x90(u8 mapHit) {
-    switch (mState) {
-    case 0:
-        fn_80221408();
-        break;
-    case 1:
-        fn_80221334();
-        break;
-    case 2:
-        fn_802212AC();
-        break;
-    case 3:
-        if (mFlags & 0x4000) {
-            if (mPos.z <= 0.0f) {
-                fn_8022089C(4);
-            }
-        } else if (fn_801D05F8(&mPos, 48.0f) >= 0) {
-            mFlags |= 0x4000;
-            setBox(mBox, 1.0f, -1.0f);
-            mBox2.i = mBox.i;
-            mBox2.f = mBox.f;
-            if (mPos.z <= 0.0f) {
-                fn_8022089C(4);
-            }
-        } else if (mPos.z <= 0.0f) {
-            field_0x3c.z = lbl_8053FE70;
-        }
-        break;
-    case 4:
-        if (mPos.z <= 0.0f) {
-            mHops++;
-            fn_8022089C(5);
-        }
-        break;
-    case 5:
-        if (mStateTimer >= field_0x250) {
-            if (mHops >= field_0x2c0) {
-                fn_8022149C(1);
-            } else {
-                fn_8022089C(3);
-            }
-        }
-        break;
-    case 6:
-        if (mStateTimer >= 120) {
-            fn_801F3668();
-        }
-        break;
-    }
+void cls_804A68D0::init() {
+    ShadowLinkBase_804A6A00::init();
+    mKind = field_0x90 & 3;
+    field_0x98 = 2;
+    mState = 3;
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mAnim.startAnim_801D22DC(2, 0, false);
 }
 
 void cls_804A68D0::fn_8022089C(s32 state) {
@@ -154,20 +100,74 @@ void cls_804A68D0::fn_8022089C(s32 state) {
     mState = state;
 }
 
-void cls_804A68D0::init() {
-    ShadowLinkBase_804A6A00::init();
-    mKind = field_0x90 & 3;
-    field_0x98 = 2;
-    mState = 3;
-    mStateTimer = 0;
-    field_0x250 = -1;
-    mSpeed = 0.0f;
-    mTargetSpeed = 0.0f;
-    mAnim.startAnim_801D22DC(2, 0, false);
+// FIXME: 99.86%. Only the jump table relocation differs (jumptable_804A6974 vs
+// @NNN), as in act_shadow_link_bow's vfunc_0x90.
+void cls_804A68D0::vfunc_0x90(u8 mapHit) {
+    switch (mState) {
+    case 0:
+        fn_80221408();
+        break;
+    case 1:
+        fn_80221334();
+        break;
+    case 2:
+        fn_802212AC();
+        break;
+    case 3:
+        if (mFlags & 0x4000) {
+            if (mPos.z <= 0.0f) {
+                fn_8022089C(4);
+            }
+        } else if (fn_801D05F8(&mPos, 48.0f) >= 0) {
+            mFlags |= 0x4000;
+            setBox(mBox, 1.0f, -1.0f);
+            mBox2.i = mBox.i;
+            mBox2.f = mBox.f;
+            if (mPos.z <= 0.0f) {
+                fn_8022089C(4);
+            }
+        } else if (mPos.z <= 0.0f) {
+            field_0x3c.z = lbl_8053FE70;
+        }
+        break;
+    case 4:
+        if (mPos.z <= 0.0f) {
+            mHops++;
+            fn_8022089C(5);
+        }
+        break;
+    case 5:
+        if (mStateTimer >= field_0x250) {
+            if (mHops >= field_0x2c0) {
+                fn_8022149C(1);
+            } else {
+                fn_8022089C(3);
+            }
+        }
+        break;
+    case 6:
+        if (mStateTimer >= 120) {
+            fn_801F3668();
+        }
+        break;
+    }
 }
 
-cls_804A68D0::cls_804A68D0() {
-    mKind = 0;
-    mHops = 0;
-    field_0x2c0 = fn_801CD664(1) + 3;
+void cls_804A68D0::vfunc_0x88() {
+    switch (mState) {
+    case 2:
+        fn_80221250();
+        break;
+    case 4:
+    case 6:
+        field_0x3c.z = field_0x3c.z + lbl_8053EFB8;
+        break;
+    default:
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        vfunc_0x84();
+        break;
+    }
 }
+
+cls_804A68D0::~cls_804A68D0() {}

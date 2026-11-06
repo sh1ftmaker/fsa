@@ -4,18 +4,6 @@
 #include "game/tu_804455E0.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
-// FIXME: 84.0 %. Same instructions; the target loads mSeconds and mCentis
-// before the first store through lbl_8053AEF8 (r7, r6) and keeps the pointer
-// in r10, the constant 1 in r8; ours loads them between the stores.
-void cls_801ED3DC::fn_801ED3DC(s32 slot, s32 rank) {
-    lbl_8053AEF8->field_0x44 |= (u8)(1 << slot);
-    lbl_8053AEF8->field_0x3c[slot] = mSeconds;
-    lbl_8053AEF8->field_0x38[slot] = mCentis;
-    if (rank >= 0 && rank < 4) {
-        lbl_8053AEF8->field_0x44 |= (u8)(1 << (slot + 4));
-        lbl_8053AEF8->field_0x40[slot] = rank + 1;
-    }
-}
 
 // Derives the displayed seconds and hundredths from the frame count.
 static inline void updateDisplay(cls_801ED3DC& timer) {
@@ -28,21 +16,67 @@ static inline void updateDisplay(cls_801ED3DC& timer) {
     }
 }
 
-void cls_801ED3DC::fn_801ED458(u8 jitter) {
-    if (!mStopped) {
-        mFrames++;
-        if (mFrames >= 7200) {
-            mStopped = true;
-            mFrames = 7200;
-            mSeconds = 119;
-            mCentis = 99;
-        } else if (!mStopped) {
-            updateDisplay(*this);
-            if (mCentis % 10 != 9) {
-                mCentis += jitter % 2;
+void cls_801ED828::fn_801ED974() {
+    mFrames = 0;
+}
+
+void cls_801ED828::fn_801ED968() {
+    mFrames = 180;
+}
+
+void cls_801ED828::fn_801ED8F0() {
+    if (mFrames != 0) {
+        if (mFrames % 60 == 0) {
+            gAudioMgr_8053AF80->fn_80458880(0x3f, -1);
+        }
+        mFrames--;
+    }
+}
+
+// FIXME: 79.8 %. The target converts efbHeight first (lhz 6 before lhz 4, both
+// through r3, the 0x4330 magic in r0 stored to 8 and 0x10 of the frame) and
+// stores the link register after the first lhz; ours keeps the RenderModeObj
+// in r8, the magic in r3, converts fbWidth first and saves lr before the loop.
+void cls_801ED828::fn_801ED828() {
+    if (mFrames != 0) {
+        for (int i = 0; i < 3; i++) {
+            if (30 + 60 * i <= mFrames && mFrames <= (i + 1) * 60) {
+                GXRenderModeObj* mode = JUTVideo::getManager()->getRenderMode();
+                lbl_8053AED0->fn_8043CB24(i + 1, 255, 0, 1, false, 0.5f * mode->fbWidth,
+                                          0.5f * mode->efbHeight, 3.0f);
+                return;
             }
         }
     }
+}
+
+void cls_801ED3DC::fn_801ED80C() {
+    mStopped = true;
+    mFrames = 0;
+    mSeconds = 0;
+    mCentis = 0;
+}
+
+void cls_801ED3DC::fn_801ED7F0() {
+    mStopped = true;
+    mFrames = 0;
+    mSeconds = 0;
+    mCentis = 0;
+}
+
+bool cls_801ED3DC::fn_801ED7B0() {
+    bool result = false;
+    if (mStopped == true && mFrames == 7200 && mSeconds == 119 && mCentis == 99) {
+        result = true;
+    }
+    return result;
+}
+
+void cls_801ED3DC::fn_801ED798() {
+    mStopped = false;
+    mFrames = 0;
+    mSeconds = 0;
+    mCentis = 0;
 }
 
 void cls_801ED3DC::fn_801ED5C8(f32 fraction) {
@@ -76,65 +110,32 @@ void cls_801ED3DC::fn_801ED5C8(f32 fraction) {
     mStopped = true;
 }
 
-void cls_801ED3DC::fn_801ED798() {
-    mStopped = false;
-    mFrames = 0;
-    mSeconds = 0;
-    mCentis = 0;
-}
-
-bool cls_801ED3DC::fn_801ED7B0() {
-    bool result = false;
-    if (mStopped == true && mFrames == 7200 && mSeconds == 119 && mCentis == 99) {
-        result = true;
-    }
-    return result;
-}
-
-void cls_801ED3DC::fn_801ED7F0() {
-    mStopped = true;
-    mFrames = 0;
-    mSeconds = 0;
-    mCentis = 0;
-}
-
-void cls_801ED3DC::fn_801ED80C() {
-    mStopped = true;
-    mFrames = 0;
-    mSeconds = 0;
-    mCentis = 0;
-}
-
-// FIXME: 79.8 %. The target converts efbHeight first (lhz 6 before lhz 4, both
-// through r3, the 0x4330 magic in r0 stored to 8 and 0x10 of the frame) and
-// stores the link register after the first lhz; ours keeps the RenderModeObj
-// in r8, the magic in r3, converts fbWidth first and saves lr before the loop.
-void cls_801ED828::fn_801ED828() {
-    if (mFrames != 0) {
-        for (int i = 0; i < 3; i++) {
-            if (30 + 60 * i <= mFrames && mFrames <= (i + 1) * 60) {
-                GXRenderModeObj* mode = JUTVideo::getManager()->getRenderMode();
-                lbl_8053AED0->fn_8043CB24(i + 1, 255, 0, 1, false, 0.5f * mode->fbWidth,
-                                          0.5f * mode->efbHeight, 3.0f);
-                return;
+void cls_801ED3DC::fn_801ED458(u8 jitter) {
+    if (!mStopped) {
+        mFrames++;
+        if (mFrames >= 7200) {
+            mStopped = true;
+            mFrames = 7200;
+            mSeconds = 119;
+            mCentis = 99;
+        } else if (!mStopped) {
+            updateDisplay(*this);
+            if (mCentis % 10 != 9) {
+                mCentis += jitter % 2;
             }
         }
     }
 }
 
-void cls_801ED828::fn_801ED8F0() {
-    if (mFrames != 0) {
-        if (mFrames % 60 == 0) {
-            gAudioMgr_8053AF80->fn_80458880(0x3f, -1);
-        }
-        mFrames--;
+// FIXME: 84.0 %. Same instructions; the target loads mSeconds and mCentis
+// before the first store through lbl_8053AEF8 (r7, r6) and keeps the pointer
+// in r10, the constant 1 in r8; ours loads them between the stores.
+void cls_801ED3DC::fn_801ED3DC(s32 slot, s32 rank) {
+    lbl_8053AEF8->field_0x44 |= (u8)(1 << slot);
+    lbl_8053AEF8->field_0x3c[slot] = mSeconds;
+    lbl_8053AEF8->field_0x38[slot] = mCentis;
+    if (rank >= 0 && rank < 4) {
+        lbl_8053AEF8->field_0x44 |= (u8)(1 << (slot + 4));
+        lbl_8053AEF8->field_0x40[slot] = rank + 1;
     }
-}
-
-void cls_801ED828::fn_801ED968() {
-    mFrames = 180;
-}
-
-void cls_801ED828::fn_801ED974() {
-    mFrames = 0;
 }

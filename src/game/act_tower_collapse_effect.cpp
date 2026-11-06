@@ -17,51 +17,34 @@ static inline void setSpriteRotation(Mtx mtx, SpriteParams_801F5AE0& params, s32
     params.field_0x1d = 1;
 }
 
-// FIXME: 86.64 %. Scheduling: the original loads the rotation constants and
-// field_0x23c/0x240 interleaved with the mPos stores and the int-to-float
-// conversion; ours keeps them in source order (4 more instructions), and the
-// literals are @NNN, not lbl_8053C1D0-lbl_8053C1E0.
-void TowerCollapseEffect_8049CA40::fn_80103348() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    JGeometry::TVec3f savedPos = mPos;
-    params.field_0x1d = -3;
-    void* res = fn_804032E8('TIMG', "kowareyuka_a.bti");
-    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
-
-    mPos.set(field_0x238[0].x, field_0x238[0].y, field_0x238[0].z);
-    setSpriteRotation(mtx, params, field_0x264[0]);
-    res = fn_804032E8('TIMG', "kowareyuka_b.bti");
-    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
-
-    mPos.set(field_0x238[1].x, field_0x238[1].y, field_0x238[1].z);
-    setSpriteRotation(mtx, params, field_0x264[1]);
-    res = fn_804032E8('TIMG', "kowareyuka_c.bti");
-    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
-
-    mPos.set(field_0x238[2].x, field_0x238[2].y, field_0x238[2].z);
-    setSpriteRotation(mtx, params, field_0x264[2]);
-    res = fn_804032E8('TIMG', "kowareyuka_d.bti");
-    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
-
-    mPos.set(savedPos);
-}
-
-void TowerCollapseEffect_8049CA40::draw() {
+void TowerCollapseEffect_8049CA40::init() {
+    field_0x230 = 0;
+    mMode = 0;
+    mEmitter260 = NULL;
+    mMode = field_0x90 & 0xF;
+    field_0x25c = (field_0x90 >> 22) & 0x1F;
     switch (mMode) {
     case 0:
-        fn_80103348();
-        break;
-    case 1:
-        if (field_0x230 == 2) {
-            SpriteParams_801F5AE0 params;
-            void* res = fn_804032E8('TIMG', "gareki.bti");
-            fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
-        }
+        field_0x288 = 0;
+        field_0x264[0] = 0;
+        field_0x264[1] = 0;
+        field_0x264[2] = 0;
+        field_0x28c.x = 0.0f;
+        field_0x28c.y = 0.0f;
+        field_0x28c.z = 0.0f;
+        field_0x238[0] = mPos;
+        field_0x238[1] = mPos;
+        field_0x238[2] = mPos;
         break;
     case 2:
-        // Nothing draws mode 2; the empty case is part of the original's dispatch.
+        mEmitter260 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x496, 1, 0, NULL, NULL, true, 1.0f);
         break;
+    }
+}
+
+TowerCollapseEffect_8049CA40::~TowerCollapseEffect_8049CA40() {
+    if (mEmitter260 != NULL) {
+        releaseEmitter_801EE434(mEmitter260);
     }
 }
 
@@ -156,33 +139,50 @@ void TowerCollapseEffect_8049CA40::update() {
     }
 }
 
-TowerCollapseEffect_8049CA40::~TowerCollapseEffect_8049CA40() {
-    if (mEmitter260 != NULL) {
-        releaseEmitter_801EE434(mEmitter260);
+void TowerCollapseEffect_8049CA40::draw() {
+    switch (mMode) {
+    case 0:
+        fn_80103348();
+        break;
+    case 1:
+        if (field_0x230 == 2) {
+            SpriteParams_801F5AE0 params;
+            void* res = fn_804032E8('TIMG', "gareki.bti");
+            fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+        }
+        break;
+    case 2:
+        // Nothing draws mode 2; the empty case is part of the original's dispatch.
+        break;
     }
 }
 
-void TowerCollapseEffect_8049CA40::init() {
-    field_0x230 = 0;
-    mMode = 0;
-    mEmitter260 = NULL;
-    mMode = field_0x90 & 0xF;
-    field_0x25c = (field_0x90 >> 22) & 0x1F;
-    switch (mMode) {
-    case 0:
-        field_0x288 = 0;
-        field_0x264[0] = 0;
-        field_0x264[1] = 0;
-        field_0x264[2] = 0;
-        field_0x28c.x = 0.0f;
-        field_0x28c.y = 0.0f;
-        field_0x28c.z = 0.0f;
-        field_0x238[0] = mPos;
-        field_0x238[1] = mPos;
-        field_0x238[2] = mPos;
-        break;
-    case 2:
-        mEmitter260 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x496, 1, 0, NULL, NULL, true, 1.0f);
-        break;
-    }
+// FIXME: 86.64 %. Scheduling: the original loads the rotation constants and
+// field_0x23c/0x240 interleaved with the mPos stores and the int-to-float
+// conversion; ours keeps them in source order (4 more instructions), and the
+// literals are @NNN, not lbl_8053C1D0-lbl_8053C1E0.
+void TowerCollapseEffect_8049CA40::fn_80103348() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    JGeometry::TVec3f savedPos = mPos;
+    params.field_0x1d = -3;
+    void* res = fn_804032E8('TIMG', "kowareyuka_a.bti");
+    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+
+    mPos.set(field_0x238[0].x, field_0x238[0].y, field_0x238[0].z);
+    setSpriteRotation(mtx, params, field_0x264[0]);
+    res = fn_804032E8('TIMG', "kowareyuka_b.bti");
+    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+
+    mPos.set(field_0x238[1].x, field_0x238[1].y, field_0x238[1].z);
+    setSpriteRotation(mtx, params, field_0x264[1]);
+    res = fn_804032E8('TIMG', "kowareyuka_c.bti");
+    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+
+    mPos.set(field_0x238[2].x, field_0x238[2].y, field_0x238[2].z);
+    setSpriteRotation(mtx, params, field_0x264[2]);
+    res = fn_804032E8('TIMG', "kowareyuka_d.bti");
+    fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+
+    mPos.set(savedPos);
 }

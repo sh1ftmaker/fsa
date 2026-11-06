@@ -17,7 +17,26 @@ static inline bool isOnPlayerLayer(const ActorBase_804A5770* actor) {
     return false;
 }
 
-cls_8049DE90::~cls_8049DE90() {}
+void cls_8049DE90::init() {
+    mDuration = field_0x90 & 0x3F;
+    mDuration *= 10;
+    mCycle = (field_0x90 >> 6) & 1;
+    mTable[0] = (field_0x90 >> 7) & 0x1F;
+    mTable[1] = (field_0x90 >> 12) & 0x1F;
+    mTable[2] = (field_0x90 >> 17) & 0x1F;
+    mTable[3] = (field_0x90 >> 22) & 0x1F;
+    bool empty = true;
+    for (s32 i = 0; i < 4; i++) {
+        if (mTable[i] != 0) {
+            empty = false;
+            break;
+        }
+    }
+    if (empty) {
+        mState = 2;
+        fn_801F3668();
+    }
+}
 
 // FIXME: 99%. Register allocation only, in the state-0 table block: the
 // original keeps the pick index in r29 and the table pointer in r25, mine
@@ -69,23 +88,4 @@ void cls_8049DE90::update() {
     }
 }
 
-void cls_8049DE90::init() {
-    mDuration = field_0x90 & 0x3F;
-    mDuration *= 10;
-    mCycle = (field_0x90 >> 6) & 1;
-    mTable[0] = (field_0x90 >> 7) & 0x1F;
-    mTable[1] = (field_0x90 >> 12) & 0x1F;
-    mTable[2] = (field_0x90 >> 17) & 0x1F;
-    mTable[3] = (field_0x90 >> 22) & 0x1F;
-    bool empty = true;
-    for (s32 i = 0; i < 4; i++) {
-        if (mTable[i] != 0) {
-            empty = false;
-            break;
-        }
-    }
-    if (empty) {
-        mState = 2;
-        fn_801F3668();
-    }
-}
+cls_8049DE90::~cls_8049DE90() {}

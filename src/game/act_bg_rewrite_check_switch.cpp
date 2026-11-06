@@ -9,9 +9,7 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_bg_rewrite_check_switch.h"
 
-BgRewriteCheckSwitch_804A8998::~BgRewriteCheckSwitch_804A8998() {}
-
-void BgRewriteCheckSwitch_804A8998::draw() {}
+void BgRewriteCheckSwitch_804A8998::init() {}
 
 void BgRewriteCheckSwitch_804A8998::update() {
     if (getGameView_802D6A9C()->field_0x131de) {
@@ -20,4 +18,6 @@ void BgRewriteCheckSwitch_804A8998::update() {
     }
 }
 
-void BgRewriteCheckSwitch_804A8998::init() {}
+void BgRewriteCheckSwitch_804A8998::draw() {}
+
+BgRewriteCheckSwitch_804A8998::~BgRewriteCheckSwitch_804A8998() {}

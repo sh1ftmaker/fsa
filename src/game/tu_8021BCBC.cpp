@@ -12,18 +12,6 @@ public:
     /* 0x8 */ int field_0x8;
 };
 
-void cls_8021BCBC::fn_8021BCBC() {
-    field_0x8++;
-    if (field_0x8 >= 4) {
-        field_0x8 = 0;
-        field_0x4++;
-        if (field_0x4 >= 4) {
-            field_0x4 = 0;
-        }
-    }
-    field_0x0 = lbl_8046A678[field_0x4] + 0x3B5;
-}
-
 // Maps the argument of fn_8021BD18 to a table index. An inline helper: the
 // original's dead `b` after case 0 and the shared zero (the one stored to
 // field_0x8 doubles as this function's result for case 1 and the default)
@@ -50,5 +38,17 @@ static inline u32 argToIndex(int arg) {
 void cls_8021BCBC::fn_8021BD18(int arg) {
     field_0x8 = 0;
     field_0x4 = argToIndex(arg);
+    field_0x0 = lbl_8046A678[field_0x4] + 0x3B5;
+}
+
+void cls_8021BCBC::fn_8021BCBC() {
+    field_0x8++;
+    if (field_0x8 >= 4) {
+        field_0x8 = 0;
+        field_0x4++;
+        if (field_0x4 >= 4) {
+            field_0x4 = 0;
+        }
+    }
     field_0x0 = lbl_8046A678[field_0x4] + 0x3B5;
 }

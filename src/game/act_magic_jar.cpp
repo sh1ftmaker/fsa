@@ -5,7 +5,6 @@
 #include "game/act/act_magic_jar.h"
 #include "game/ViewLayer.h"
 
-MagicJar_804AF018::~MagicJar_804AF018() {}
 
 // A player picks it up: ends its lifetime and hands the player the refill.
 inline void MagicJar_804AF018::collect(s32 player) {
@@ -20,23 +19,8 @@ inline void MagicJar_804AF018::collect(s32 player) {
     mAlive = false;
 }
 
-void MagicJar_804AF018::vfunc_0x40() {
-    field_0x3c.z = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.x = 0.0f;
-    field_0x230 = 2;
-}
-
-void MagicJar_804AF018::draw() {
-    if (field_0x234 >= 0x100 || !(field_0x234 & 2)) {
-        if (field_0x90 == 0) {
-            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5C, NULL, 2, 1.0f, 1.0f);
-            fn_803075AC(mSerial, field_0x4, &mPos, 0x5C, false, 2, -1, 0, 0, 0);
-        } else {
-            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5D, NULL, 1, 1.0f, 1.0f);
-            fn_803075AC(mSerial, field_0x4, &mPos, 0x5D, false, 2, -1, 0, 0, 0);
-        }
-    }
+void MagicJar_804AF018::init() {
+    mAlive = false;
 }
 
 void MagicJar_804AF018::update() {
@@ -121,6 +105,23 @@ void MagicJar_804AF018::update() {
     }
 }
 
-void MagicJar_804AF018::init() {
-    mAlive = false;
+void MagicJar_804AF018::draw() {
+    if (field_0x234 >= 0x100 || !(field_0x234 & 2)) {
+        if (field_0x90 == 0) {
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5C, NULL, 2, 1.0f, 1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, 0x5C, false, 2, -1, 0, 0, 0);
+        } else {
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x5D, NULL, 1, 1.0f, 1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, 0x5D, false, 2, -1, 0, 0, 0);
+        }
+    }
 }
+
+void MagicJar_804AF018::vfunc_0x40() {
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
+    field_0x230 = 2;
+}
+
+MagicJar_804AF018::~MagicJar_804AF018() {}

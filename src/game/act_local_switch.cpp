@@ -7,9 +7,9 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_local_switch.h"
 
-LocalSwitch_804AA008::~LocalSwitch_804AA008() {}
-
-void LocalSwitch_804AA008::draw() {}
+void LocalSwitch_804AA008::init() {
+    update();
+}
 
 // When the flag selected by bits 22-26 of the spawn parameter (0x90) is set,
 // calls slot 0x30 with (0xFF, true).
@@ -19,6 +19,6 @@ void LocalSwitch_804AA008::update() {
     }
 }
 
-void LocalSwitch_804AA008::init() {
-    update();
-}
+void LocalSwitch_804AA008::draw() {}
+
+LocalSwitch_804AA008::~LocalSwitch_804AA008() {}

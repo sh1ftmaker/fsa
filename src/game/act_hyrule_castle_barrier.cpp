@@ -2,6 +2,25 @@
 #include "game/Effect.h"
 #include "game/act/act_hyrule_castle_barrier.h"
 
+HyruleCastleBarrier_8049DEE8::HyruleCastleBarrier_8049DEE8()
+    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(false),
+      field_0x241(false), field_0x250(NULL), field_0x254(NULL) {
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    mEmitters[2] = NULL;
+}
+
+HyruleCastleBarrier_8049DEE8::~HyruleCastleBarrier_8049DEE8() {
+    for (s32 i = 0; i < 3; i++) {
+        releaseEmitter_801EE434(mEmitters[i]);
+        mEmitters[i] = NULL;
+    }
+    releaseEmitter_801EE434(field_0x250);
+    field_0x250 = NULL;
+    releaseEmitter_801EE434(field_0x254);
+    field_0x254 = NULL;
+}
+
 // FIXME: 99.41%. Code matches; the float literals are separate .sdata2 entries
 // in ours (the original's are split as lbl_8053C91C and so on, a data split,
 // not code).
@@ -57,23 +76,4 @@ void HyruleCastleBarrier_8049DEE8::init() {
     if (vfunc_0x34()) {
         fn_8011F5C0(1);
     }
-}
-
-HyruleCastleBarrier_8049DEE8::~HyruleCastleBarrier_8049DEE8() {
-    for (s32 i = 0; i < 3; i++) {
-        releaseEmitter_801EE434(mEmitters[i]);
-        mEmitters[i] = NULL;
-    }
-    releaseEmitter_801EE434(field_0x250);
-    field_0x250 = NULL;
-    releaseEmitter_801EE434(field_0x254);
-    field_0x254 = NULL;
-}
-
-HyruleCastleBarrier_8049DEE8::HyruleCastleBarrier_8049DEE8()
-    : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(0), field_0x240(false),
-      field_0x241(false), field_0x250(NULL), field_0x254(NULL) {
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-    mEmitters[2] = NULL;
 }

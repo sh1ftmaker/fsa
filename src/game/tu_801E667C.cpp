@@ -14,44 +14,19 @@ static const s16* lbl_8053A158[2] = {lbl_80469C00, NULL};
 // Read by act_horse_race_man and tu_80441318 (unwritten); owner here by its .sdata split.
 s32 lbl_8053A160 = -1;
 
-bool cls_801E6AB8::fn_801E667C() {
-    s32 i; // i, cel declared in this order to match (97 % otherwise)
-    s32 cel;
-    bool done = false;
-    mTimer++;
-    if (mTimer < 0) {
-        mTimer = 0;
+cls_801E6AB8::cls_801E6AB8() : mState(0), mTimer(0), field_0x8(1) {
+    mActive[0] = 0;
+    mActive[1] = 0;
+    mActive[2] = 0;
+    mActive[3] = 0;
+    mAnim.fn_801D2608(lbl_8053A158, 1);
+}
+
+void cls_801E6AB8::fn_801E6A84(s32 arg) {
+    if (mState == 0) {
+        field_0x8 = arg;
+        fn_801E67C4(1);
     }
-    switch (mState) {
-    case 0:
-        break;
-    case 1:
-        if (mTimer >= 400) {
-            fn_801E67C4(2);
-        }
-        break;
-    case 2:
-        mAnim.fn_801D1C18();
-        cel = mAnim.mCel;
-        for (i = 0; i < 4; i++) {
-            if (mActive[i]) {
-                fn_80230498(i, getPlayerPos_8023E724(i), cel, 0xFF, -0x80, -0x80, true);
-            }
-        }
-        if (mAnim.fn_801D21F0()) {
-            fn_801E67C4(3);
-        }
-        break;
-    case 3:
-        if (mTimer >= 130) {
-            fn_801E67C4(4);
-        }
-        break;
-    case 4:
-        done = true;
-        break;
-    }
-    return done;
 }
 
 void cls_801E6AB8::fn_801E67C4(s32 state) {
@@ -115,17 +90,42 @@ void cls_801E6AB8::fn_801E67C4(s32 state) {
     mState = state;
 }
 
-void cls_801E6AB8::fn_801E6A84(s32 arg) {
-    if (mState == 0) {
-        field_0x8 = arg;
-        fn_801E67C4(1);
+bool cls_801E6AB8::fn_801E667C() {
+    s32 i; // i, cel declared in this order to match (97 % otherwise)
+    s32 cel;
+    bool done = false;
+    mTimer++;
+    if (mTimer < 0) {
+        mTimer = 0;
     }
-}
-
-cls_801E6AB8::cls_801E6AB8() : mState(0), mTimer(0), field_0x8(1) {
-    mActive[0] = 0;
-    mActive[1] = 0;
-    mActive[2] = 0;
-    mActive[3] = 0;
-    mAnim.fn_801D2608(lbl_8053A158, 1);
+    switch (mState) {
+    case 0:
+        break;
+    case 1:
+        if (mTimer >= 400) {
+            fn_801E67C4(2);
+        }
+        break;
+    case 2:
+        mAnim.fn_801D1C18();
+        cel = mAnim.mCel;
+        for (i = 0; i < 4; i++) {
+            if (mActive[i]) {
+                fn_80230498(i, getPlayerPos_8023E724(i), cel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        if (mAnim.fn_801D21F0()) {
+            fn_801E67C4(3);
+        }
+        break;
+    case 3:
+        if (mTimer >= 130) {
+            fn_801E67C4(4);
+        }
+        break;
+    case 4:
+        done = true;
+        break;
+    }
+    return done;
 }

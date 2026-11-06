@@ -4,10 +4,40 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_popo.h"
 
-Popo_804A0868::~Popo_804A0868() {}
-
-void Popo_804A0868::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x99, NULL, 0, 1.0f, 1.0f);
+// FIXME: 94.7%. scheduling+regalloc: the original starts with li r6, 0 (the
+// zero for the counters) and keeps lis 0x19 / 0x660D for the RNG multiplier
+// in r4/r5 after the 0x10000 constant; here the RNG multiplier is built
+// first (r4 -> r6) and the zero lands in r7.
+void Popo_804A0868::init() {
+    field_0x90 = field_0x90 & 0xFF;
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    mTimers[0] = 0;
+    mTimers[1] = 0;
+    mTimers[2] = 0;
+    field_0x24c = 0;
+    field_0x250 = 0.0f;
+    field_0x254 = 0.0f;
+    field_0x258 = 0.0f;
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0xb0 = 0x11101;
+    field_0x240 = (s32)(1.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    mTimers[1] = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+    if (field_0x90 == 1) {
+        field_0xb0 = 0;
+    }
+    field_0x230 = 0;
 }
 
 // FIXME: 98.7%. regalloc only: the three TRandom_fast_ draws in the drift
@@ -69,38 +99,8 @@ void Popo_804A0868::update() {
     }
 }
 
-// FIXME: 94.7%. scheduling+regalloc: the original starts with li r6, 0 (the
-// zero for the counters) and keeps lis 0x19 / 0x660D for the RNG multiplier
-// in r4/r5 after the 0x10000 constant; here the RNG multiplier is built
-// first (r4 -> r6) and the zero lands in r7.
-void Popo_804A0868::init() {
-    field_0x90 = field_0x90 & 0xFF;
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -8.0f;
-    field_0x80.i.y = -8.0f;
-    field_0x80.f.x = 8.0f;
-    field_0x80.f.y = 8.0f;
-    field_0x240 = 0;
-    field_0x244 = 0;
-    field_0x248 = 0;
-    mTimers[0] = 0;
-    mTimers[1] = 0;
-    mTimers[2] = 0;
-    field_0x24c = 0;
-    field_0x250 = 0.0f;
-    field_0x254 = 0.0f;
-    field_0x258 = 0.0f;
-    field_0x3c.x = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.z = 0.0f;
-    field_0xb0 = 0x11101;
-    field_0x240 = (s32)(1.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    mTimers[1] = (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
-    if (field_0x90 == 1) {
-        field_0xb0 = 0;
-    }
-    field_0x230 = 0;
+void Popo_804A0868::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x24c + 0x99, NULL, 0, 1.0f, 1.0f);
 }
+
+Popo_804A0868::~Popo_804A0868() {}

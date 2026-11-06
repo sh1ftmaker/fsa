@@ -9,9 +9,10 @@
 #include "game/GameView.h"
 #include "game/act/act_ending_map_skipper.h"
 
-EndingMapSkipper_804AA498::~EndingMapSkipper_804AA498() {}
-
-void EndingMapSkipper_804AA498::draw() {}
+void EndingMapSkipper_804AA498::init() {
+    mIndex = field_0x90 & 0x7F;
+    mTimer = 500;
+}
 
 // FIXME: 99.2%. Register allocation only: the original keeps the row offset
 // (index * 8) in r30 and row[0] in r31; ours has them swapped.
@@ -25,7 +26,6 @@ void EndingMapSkipper_804AA498::update() {
     }
 }
 
-void EndingMapSkipper_804AA498::init() {
-    mIndex = field_0x90 & 0x7F;
-    mTimer = 500;
-}
+void EndingMapSkipper_804AA498::draw() {}
+
+EndingMapSkipper_804AA498::~EndingMapSkipper_804AA498() {}

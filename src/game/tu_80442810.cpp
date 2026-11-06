@@ -7,6 +7,20 @@
 static cls_804B0FA0* lbl_8053AEE8;
 static cls_804B0FC0* lbl_8053AEEC;
 
+cls_804B1A38::cls_804B1A38() {
+    lbl_8053ADD8 = this;
+    field_0x4 = 0;
+    if (OSGetSoundMode() == 0) {
+        gAudioMgr_8053AF80->fn_804594E4(0);
+        lbl_80529DEC.field_0x245 = 0;
+    } else {
+        gAudioMgr_8053AF80->fn_804594E4(1);
+        lbl_80529DEC.field_0x245 = 1;
+    }
+}
+
+cls_804B1A38::~cls_804B1A38() {}
+
 // Called each frame until both files are loaded.
 void cls_804B1A38::fn_80442810() {
     if (field_0x4 == 0) {
@@ -32,19 +46,5 @@ void cls_804B1A38::fn_80442810() {
             OSReport("auido init end!!\n");
             field_0x4 = 1;
         }
-    }
-}
-
-cls_804B1A38::~cls_804B1A38() {}
-
-cls_804B1A38::cls_804B1A38() {
-    lbl_8053ADD8 = this;
-    field_0x4 = 0;
-    if (OSGetSoundMode() == 0) {
-        gAudioMgr_8053AF80->fn_804594E4(0);
-        lbl_80529DEC.field_0x245 = 0;
-    } else {
-        gAudioMgr_8053AF80->fn_804594E4(1);
-        lbl_80529DEC.field_0x245 = 1;
     }
 }

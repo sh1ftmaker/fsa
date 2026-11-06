@@ -29,33 +29,6 @@ static inline cls_80119E5C* fadeObject() {
     return &instance;
 }
 
-void cls_801192AC::fn_80118384() {
-    getActorManager_801F856C()->fn_801F6884();
-    field_0x0 = 0;
-}
-
-void cls_801192AC::fn_801183BC() {
-    field_0x1 = 0;
-    fadeObject()->field_0x1 = 0;
-}
-
-void cls_801192AC::fn_80118454() {
-    field_0x1 = 1;
-    fadeObject()->field_0x1 = 1;
-}
-
-bool cls_801192AC::fn_801186B0(u32 value) {
-    if (getActorManager_801F856C()->fn_801F68E0()) {
-        field_0x0 = 1;
-        field_0x1 = 0;
-        field_0x2 = 0;
-        field_0x4 = value;
-        field_0x8 = 0;
-        return true;
-    }
-    return false;
-}
-
 // The fade length for a mode: 0x23 for modes 0 and 1, 0x46 otherwise.
 static inline s32 fadeFrames(s32 mode) {
     switch (mode) {
@@ -68,24 +41,24 @@ static inline s32 fadeFrames(s32 mode) {
     }
 }
 
-void cls_80119E5C::fn_80119468(s32 g, s32 mode) {
-    fn_80119998(fadeFrames(mode), 0, mode, 0, 2, 0, g);
+cls_80119E5C::~cls_80119E5C() {
+    if (field_0x2c != NULL) {
+        delete field_0x2c;
+    }
+    field_0x2c = NULL;
 }
 
-void cls_80119E5C::fn_80119958() {
-    field_0x0 = 0;
-    field_0x1 = 0;
-    field_0x2 = 0;
-    field_0x4 = 0;
-    field_0x8 = 0;
-    field_0xc = 0;
-    field_0x14 = 0.0f;
-    field_0x18 = 0.0f;
-    field_0x1c = 0;
-    field_0x20 = 0;
-    field_0x24 = 0;
-    field_0x28 = 0;
-    field_0x10 = 0;
+cls_80119E5C* fn_80119DD0() {
+    return fadeObject();
+}
+
+// FIXME: 96.9. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
+// in r31; here the constructor result takes an extra move through r0.
+void cls_80119E5C::fn_80119D48() {
+    if (field_0x2c == NULL) {
+        void* texture = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_80539F10);
+        field_0x2c = new J2DPicture((ResTIMG*)texture);
+    }
 }
 
 void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
@@ -145,22 +118,49 @@ void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) 
     }
 }
 
-// FIXME: 96.9. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
-// in r31; here the constructor result takes an extra move through r0.
-void cls_80119E5C::fn_80119D48() {
-    if (field_0x2c == NULL) {
-        void* texture = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_80539F10);
-        field_0x2c = new J2DPicture((ResTIMG*)texture);
-    }
+void cls_80119E5C::fn_80119958() {
+    field_0x0 = 0;
+    field_0x1 = 0;
+    field_0x2 = 0;
+    field_0x4 = 0;
+    field_0x8 = 0;
+    field_0xc = 0;
+    field_0x14 = 0.0f;
+    field_0x18 = 0.0f;
+    field_0x1c = 0;
+    field_0x20 = 0;
+    field_0x24 = 0;
+    field_0x28 = 0;
+    field_0x10 = 0;
 }
 
-cls_80119E5C* fn_80119DD0() {
-    return fadeObject();
+void cls_80119E5C::fn_80119468(s32 g, s32 mode) {
+    fn_80119998(fadeFrames(mode), 0, mode, 0, 2, 0, g);
 }
 
-cls_80119E5C::~cls_80119E5C() {
-    if (field_0x2c != NULL) {
-        delete field_0x2c;
+bool cls_801192AC::fn_801186B0(u32 value) {
+    if (getActorManager_801F856C()->fn_801F68E0()) {
+        field_0x0 = 1;
+        field_0x1 = 0;
+        field_0x2 = 0;
+        field_0x4 = value;
+        field_0x8 = 0;
+        return true;
     }
-    field_0x2c = NULL;
+    return false;
+}
+
+void cls_801192AC::fn_80118454() {
+    field_0x1 = 1;
+    fadeObject()->field_0x1 = 1;
+}
+
+void cls_801192AC::fn_801183BC() {
+    field_0x1 = 0;
+    fadeObject()->field_0x1 = 0;
+}
+
+void cls_801192AC::fn_80118384() {
+    getActorManager_801F856C()->fn_801F6884();
+    field_0x0 = 0;
 }

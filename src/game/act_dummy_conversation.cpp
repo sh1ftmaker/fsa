@@ -4,7 +4,13 @@
 #include "game/Player.h"
 #include "game/act/act_dummy_conversation.h"
 
-DummyConversation_804B1A48::~DummyConversation_804B1A48() {}
+void DummyConversation_804B1A48::init() {
+    if (!fn_802308E0(field_0x90 >> 28)) {
+        mAlive = false;
+    }
+    mState = 0;
+    mMessage = 1;
+}
 
 void DummyConversation_804B1A48::update() {
     s32 player = field_0x90 >> 28;
@@ -80,10 +86,4 @@ void DummyConversation_804B1A48::update() {
     }
 }
 
-void DummyConversation_804B1A48::init() {
-    if (!fn_802308E0(field_0x90 >> 28)) {
-        mAlive = false;
-    }
-    mState = 0;
-    mMessage = 1;
-}
+DummyConversation_804B1A48::~DummyConversation_804B1A48() {}

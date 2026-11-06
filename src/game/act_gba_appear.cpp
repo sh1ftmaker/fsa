@@ -21,44 +21,19 @@ static const char* lbl_804B16D0[] = {
 // The effect ids, one per player.
 static const u16 lbl_80543C00[] = {0x15, 0x17, 0x14, 0x16};
 
-// FIXME: 96.7%. The original also computes `addi r4, r27, 0x1c4` (the position argument) later,
-// after the params stores, not before the camera/params setup as here. regalloc-only: the original keeps the scale in f29, cos x / cos y / cos z in
-// f31 / f30 / f3 and sin x / y / z in f28 / f27 / f26; ours has the scale in f31 and the sines
-// and cosines in other registers (the same shape as act_hardhat_beetle's setRotScaleMtx draw).
-void GBAAppear_804B16E0::draw() {
+GBAAppear_804B16E0::~GBAAppear_804B16E0() {
     for (s32 i = 0; i < 4; i++) {
-        u8 bit = 1 << i;
-        bool active = (lbl_80529DEC.field_0x236 & bit) ? true : false; // the original materialises the bool
-        if (active) {
-            SpriteParams_801F5AE0 params;
-            Mtx mtx;
-            params.field_0x1d = 2;
-            params.field_0x1c = 2;
-            params.field_0x2d = 1;
-            JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
-            setRotScaleMtx(mtx, rot, lbl_8050DB0C.field_0x30[0]);
-            mtx[0][3] = 0.0f;
-            mtx[1][3] = 0.0f;
-            mtx[2][3] = 0.0f;
-            params.mMtx = mtx;
-            if (mState[i] == 0) {
-                void* res = fn_804030C4('TIMG', lbl_804B16C0[i]);
-                if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
-                                                         &params);
-                }
-            } else if (mState[i] == 1) {
-                void* res = fn_804030C4('TIMG', lbl_804B16D0[i]);
-                if (field_0x4 < 8) {
-                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
-                                                         &params);
-                }
-            }
-            lbl_80529DEC.field_0x236 &= ~bit;
-        } else {
-            mState[i] = 0xFF;
-        }
+        deleteEmitter(&mEmitters[i]);
     }
+}
+
+void GBAAppear_804B16E0::init() {
+    for (s32 i = 0; i < 4; i++) {
+        mEmitters[i] = NULL;
+        mState[i] = 0xFF;
+    }
+    field_0x11e = 1;
+    field_0x11f = 1;
 }
 
 // FIXME: ~86%. The original's frame is 0x80: it makes two extra by-value TVec3f stack copies
@@ -115,17 +90,42 @@ void GBAAppear_804B16E0::update() {
     }
 }
 
-void GBAAppear_804B16E0::init() {
+// FIXME: 96.7%. The original also computes `addi r4, r27, 0x1c4` (the position argument) later,
+// after the params stores, not before the camera/params setup as here. regalloc-only: the original keeps the scale in f29, cos x / cos y / cos z in
+// f31 / f30 / f3 and sin x / y / z in f28 / f27 / f26; ours has the scale in f31 and the sines
+// and cosines in other registers (the same shape as act_hardhat_beetle's setRotScaleMtx draw).
+void GBAAppear_804B16E0::draw() {
     for (s32 i = 0; i < 4; i++) {
-        mEmitters[i] = NULL;
-        mState[i] = 0xFF;
-    }
-    field_0x11e = 1;
-    field_0x11f = 1;
-}
-
-GBAAppear_804B16E0::~GBAAppear_804B16E0() {
-    for (s32 i = 0; i < 4; i++) {
-        deleteEmitter(&mEmitters[i]);
+        u8 bit = 1 << i;
+        bool active = (lbl_80529DEC.field_0x236 & bit) ? true : false; // the original materialises the bool
+        if (active) {
+            SpriteParams_801F5AE0 params;
+            Mtx mtx;
+            params.field_0x1d = 2;
+            params.field_0x1c = 2;
+            params.field_0x2d = 1;
+            JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+            setRotScaleMtx(mtx, rot, lbl_8050DB0C.field_0x30[0]);
+            mtx[0][3] = 0.0f;
+            mtx[1][3] = 0.0f;
+            mtx[2][3] = 0.0f;
+            params.mMtx = mtx;
+            if (mState[i] == 0) {
+                void* res = fn_804030C4('TIMG', lbl_804B16C0[i]);
+                if (field_0x4 < 8) {
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
+                                                         &params);
+                }
+            } else if (mState[i] == 1) {
+                void* res = fn_804030C4('TIMG', lbl_804B16D0[i]);
+                if (field_0x4 < 8) {
+                    gGameRoot2_8053AB10->field_0x20->fn_802F745C(&lbl_80529DEC.field_0x1c4[i], res,
+                                                         &params);
+                }
+            }
+            lbl_80529DEC.field_0x236 &= ~bit;
+        } else {
+            mState[i] = 0xFF;
+        }
     }
 }

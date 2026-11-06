@@ -5,53 +5,37 @@
 #include "game/ViewLayer.h"
 #include "game/act/act_recovery_heart.h"
 
-RecoveryHeart_8049F4F0::~RecoveryHeart_8049F4F0() {}
-
-// The ignore list is the multi-character tags 'TOMI' and 'NULL'.
-// FIXME: 61.51 %. The original compares each id 0, 4, 5, 6, 7, 2, 3 with its own cmpwi;
-// MWCC merges 2..7 in the || chain into one subi/cmplwi range check.
-bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    const u32 ignoreIds[2] = {'TOMI', 'NULL'};
-    s32 serial = mSerial;
-    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ignoreIds) == true) {
-        return true;
-    }
-    s32 kind = fn_8022461C(pos, layer);
-    s32 floor = fn_80226850(pos, layer);
-    if (kind == 0x10 || kind == 0x11 || kind == 0x12 || kind == 0x13 || kind == 0x14 ||
-        kind == 0x15 || kind == 0x16 || kind == 0x17 || (floor >= 0x140 && floor <= 0x15F)) {
-        return false;
-    }
-    if (kind == 0 || kind == 4 || kind == 5 || kind == 6 || kind == 7 || kind == 2 ||
-        kind == 3 || kind == 0x50 || kind == 0xE || kind == 0xC || kind == 0x27 ||
-        kind == 0x28 || kind == 0x29 || kind == 0x2A || kind == 0x2B || kind == 0x2C ||
-        kind == 0x2D || kind == 0x2E || kind == 0x2F || kind == 0x20 || kind == 0xD ||
-        kind == 0x39 || kind == 0x3A || kind == 0x3B || kind == 0x4C || kind == 0x4D ||
-        kind == 0x4E || kind == 0x4F || kind == 0x24 || kind == 0x23) {
-        return false;
-    }
-    if (kind == 0x25) {
-        return getGameView_802D6A9C()->field_0x171 == 0;
-    }
-    if (kind == 0x26) {
-        return getGameView_802D6A9C()->field_0x171 == 1;
-    }
-    if (kind == 0x22) {
-        if (getGameView_802D6A9C()->field_0x170 != 1) {
-            return false;
+// FIXME: 98.31 %. The original stores 0 to field_0x230 with a fresh li r0, 0 in the
+// branch; here the zero already in r5 (for field_0x238) is reused. The literals are not
+// yet in the original .sdata2 order.
+void RecoveryHeart_8049F4F0::init() {
+    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    field_0x80.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    field_0x238 = 0;
+    field_0x234 = 0x3FF;
+    field_0x240 = field_0x90 & 3;
+    field_0xb0 = 0x21000;
+    if (field_0x240 != 1) {
+        field_0x3c.z = 1.5f;
+        field_0x230 = 0;
+        s32 layer = field_0x4;
+        if (viewLayerFlag(layer)) {
+            mPos.y = mPos.y - mPos.z;
+            mPos.z = 0.0f;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = -1.5f;
+            field_0x230 = 2;
         }
+    } else {
+        field_0x230 = 4;
     }
-    return true;
 }
 
-void RecoveryHeart_8049F4F0::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x2d = 1;
-    if (field_0x234 >= 0x100 || (field_0x234 & 2) == 0) {
-        drawSprite_801F06F0("enemy_both2_sob.bin", 0x2C, &params, 1, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, 0x2C, false, 2, -1, 0, 0, 0);
-    }
+void RecoveryHeart_8049F4F0::vfunc_0x40() {
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
+    field_0x230 = 4;
 }
 
 // FIXME: 96.63 %. Landing in state 1 (z <= 0) matches. From the probe in state 3 on, the
@@ -167,35 +151,51 @@ void RecoveryHeart_8049F4F0::update() {
     }
 }
 
-void RecoveryHeart_8049F4F0::vfunc_0x40() {
-    field_0x3c.z = 0.0f;
-    field_0x3c.y = 0.0f;
-    field_0x3c.x = 0.0f;
-    field_0x230 = 4;
-}
-
-// FIXME: 98.31 %. The original stores 0 to field_0x230 with a fresh li r0, 0 in the
-// branch; here the zero already in r5 (for field_0x238) is reused. The literals are not
-// yet in the original .sdata2 order.
-void RecoveryHeart_8049F4F0::init() {
-    mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x80.set(-4.0f, -4.0f, 4.0f, 4.0f);
-    field_0x238 = 0;
-    field_0x234 = 0x3FF;
-    field_0x240 = field_0x90 & 3;
-    field_0xb0 = 0x21000;
-    if (field_0x240 != 1) {
-        field_0x3c.z = 1.5f;
-        field_0x230 = 0;
-        s32 layer = field_0x4;
-        if (viewLayerFlag(layer)) {
-            mPos.y = mPos.y - mPos.z;
-            mPos.z = 0.0f;
-            field_0x3c.z = 0.0f;
-            field_0x3c.y = -1.5f;
-            field_0x230 = 2;
-        }
-    } else {
-        field_0x230 = 4;
+void RecoveryHeart_8049F4F0::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x2d = 1;
+    if (field_0x234 >= 0x100 || (field_0x234 & 2) == 0) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x2C, &params, 1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, 0x2C, false, 2, -1, 0, 0, 0);
     }
 }
+
+// The ignore list is the multi-character tags 'TOMI' and 'NULL'.
+// FIXME: 61.51 %. The original compares each id 0, 4, 5, 6, 7, 2, 3 with its own cmpwi;
+// MWCC merges 2..7 in the || chain into one subi/cmplwi range check.
+bool RecoveryHeart_8049F4F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    const u32 ignoreIds[2] = {'TOMI', 'NULL'};
+    s32 serial = mSerial;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ignoreIds) == true) {
+        return true;
+    }
+    s32 kind = fn_8022461C(pos, layer);
+    s32 floor = fn_80226850(pos, layer);
+    if (kind == 0x10 || kind == 0x11 || kind == 0x12 || kind == 0x13 || kind == 0x14 ||
+        kind == 0x15 || kind == 0x16 || kind == 0x17 || (floor >= 0x140 && floor <= 0x15F)) {
+        return false;
+    }
+    if (kind == 0 || kind == 4 || kind == 5 || kind == 6 || kind == 7 || kind == 2 ||
+        kind == 3 || kind == 0x50 || kind == 0xE || kind == 0xC || kind == 0x27 ||
+        kind == 0x28 || kind == 0x29 || kind == 0x2A || kind == 0x2B || kind == 0x2C ||
+        kind == 0x2D || kind == 0x2E || kind == 0x2F || kind == 0x20 || kind == 0xD ||
+        kind == 0x39 || kind == 0x3A || kind == 0x3B || kind == 0x4C || kind == 0x4D ||
+        kind == 0x4E || kind == 0x4F || kind == 0x24 || kind == 0x23) {
+        return false;
+    }
+    if (kind == 0x25) {
+        return getGameView_802D6A9C()->field_0x171 == 0;
+    }
+    if (kind == 0x26) {
+        return getGameView_802D6A9C()->field_0x171 == 1;
+    }
+    if (kind == 0x22) {
+        if (getGameView_802D6A9C()->field_0x170 != 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+RecoveryHeart_8049F4F0::~RecoveryHeart_8049F4F0() {}

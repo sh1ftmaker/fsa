@@ -4,103 +4,6 @@
 #include "game/GameView.h"
 #include "game/act/act_particle_npc.h"
 
-void ParticleNpc_804A9AC8::draw() {}
-
-void ParticleNpc_804A9AC8::update() {
-    if (field_0x250 <= 1) {
-        startSound_801F0E34(0x30033, 0);
-    }
-    switch (field_0x240) {
-    case 0:
-        if (!vfunc_0x34()) {
-            return;
-        }
-        switch (field_0x250) {
-        case 0: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x188, field_0x254, 0, NULL, NULL, true, 1.0f);
-            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0x189, field_0x254, 0, NULL, NULL, true, 1.0f);
-            JGeometry::TVec3f pos3(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x23c = spawnEmitter_8013CC50(field_0x4, &pos3, 0x18a, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 1: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x18b, field_0x254, 0, NULL, NULL, true, 1.0f);
-            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0x18c, field_0x254, 0, NULL, NULL, true, 1.0f);
-            JGeometry::TVec3f pos3(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x23c = spawnEmitter_8013CC50(field_0x4, &pos3, 0x18d, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 2: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x552, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 3: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x17e, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 4: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x17f, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 5: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x180, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 6: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x6e, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 7: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0xa9, -1, 0, NULL, NULL, true, 1.0f);
-            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0xaa, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        case 8: {
-            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
-            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x6f, field_0x254, 0, NULL, NULL, true, 1.0f);
-            break;
-        }
-        }
-        field_0x240 = 1;
-        break;
-    case 1:
-        switch (field_0x250) {
-        case 6:
-        case 8: {
-            mSound->startSound(0x30074);
-            break;
-        }
-        }
-        break;
-    }
-}
-
-ParticleNpc_804A9AC8::~ParticleNpc_804A9AC8() {
-    if (field_0x234 != NULL) {
-        releaseEmitter_801EE434(field_0x234);
-    }
-    if (field_0x238 != NULL) {
-        releaseEmitter_801EE434(field_0x238);
-    }
-    if (field_0x23c != NULL) {
-        releaseEmitter_801EE434(field_0x23c);
-    }
-    if (mSound != NULL) {
-        delete mSound;
-    }
-}
-
 void ParticleNpc_804A9AC8::init() {
     field_0x250 = field_0x90 & 0xFF;
     field_0x258 = (field_0x90 >> 12) & 0xF;
@@ -213,3 +116,100 @@ void ParticleNpc_804A9AC8::init() {
     }
     mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
 }
+
+ParticleNpc_804A9AC8::~ParticleNpc_804A9AC8() {
+    if (field_0x234 != NULL) {
+        releaseEmitter_801EE434(field_0x234);
+    }
+    if (field_0x238 != NULL) {
+        releaseEmitter_801EE434(field_0x238);
+    }
+    if (field_0x23c != NULL) {
+        releaseEmitter_801EE434(field_0x23c);
+    }
+    if (mSound != NULL) {
+        delete mSound;
+    }
+}
+
+void ParticleNpc_804A9AC8::update() {
+    if (field_0x250 <= 1) {
+        startSound_801F0E34(0x30033, 0);
+    }
+    switch (field_0x240) {
+    case 0:
+        if (!vfunc_0x34()) {
+            return;
+        }
+        switch (field_0x250) {
+        case 0: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x188, field_0x254, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0x189, field_0x254, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos3(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x23c = spawnEmitter_8013CC50(field_0x4, &pos3, 0x18a, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 1: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x18b, field_0x254, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0x18c, field_0x254, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos3(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x23c = spawnEmitter_8013CC50(field_0x4, &pos3, 0x18d, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 2: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x552, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 3: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x17e, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 4: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x17f, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 5: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x180, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 6: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x6e, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 7: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0xa9, -1, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos2(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x238 = spawnEmitter_8013CC50(field_0x4, &pos2, 0xaa, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        case 8: {
+            JGeometry::TVec3f pos(mPos.x + field_0x244, mPos.y + field_0x248, 0.0f);
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &pos, 0x6f, field_0x254, 0, NULL, NULL, true, 1.0f);
+            break;
+        }
+        }
+        field_0x240 = 1;
+        break;
+    case 1:
+        switch (field_0x250) {
+        case 6:
+        case 8: {
+            mSound->startSound(0x30074);
+            break;
+        }
+        }
+        break;
+    }
+}
+
+void ParticleNpc_804A9AC8::draw() {}

@@ -2,21 +2,9 @@
 #include "game/Player.h"
 #include "game/act/act_horse_race_end_area.h"
 
-HorseRaceEndArea_804AE830::~HorseRaceEndArea_804AE830() {}
 
 static inline bool contains(const JGeometry::TBox2f& box, f32 x, f32 y) {
     return x >= box.i.x && y >= box.i.y && x < box.f.x && y < box.f.y;
-}
-
-void HorseRaceEndArea_804AE830::update() {
-    JGeometry::TBox2f box = mBox;
-    box.addPos(mPos.x, mPos.y);
-    for (s32 i = 0; i < 4; i++) {
-        JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
-        if (contains(box, pos->x, pos->y) == true) {
-            fn_80230050(i);
-        }
-    }
 }
 
 void HorseRaceEndArea_804AE830::init() {
@@ -31,3 +19,16 @@ void HorseRaceEndArea_804AE830::init() {
     }
     mBox.set(-halfW, -halfH, halfW, halfH);
 }
+
+void HorseRaceEndArea_804AE830::update() {
+    JGeometry::TBox2f box = mBox;
+    box.addPos(mPos.x, mPos.y);
+    for (s32 i = 0; i < 4; i++) {
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
+        if (contains(box, pos->x, pos->y) == true) {
+            fn_80230050(i);
+        }
+    }
+}
+
+HorseRaceEndArea_804AE830::~HorseRaceEndArea_804AE830() {}

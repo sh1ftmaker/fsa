@@ -33,6 +33,56 @@ static inline void approach(f32& cur, f32 target, f32 remaining) {
     }
 }
 
+cls_8021FB44::cls_8021FB44() {
+    mState = 0;
+    mTimer = 0;
+    mPos.x = 0.0f;
+    mPos.y = 0.0f;
+    mPos.z = 0.0f;
+    mTarget1.x = 0.0f;
+    mTarget1.y = 0.0f;
+    mTarget1.z = 0.0f;
+    mTarget2.x = 0.0f;
+    mTarget2.y = 0.0f;
+    mTarget2.z = 0.0f;
+    mEndZ = 0.0f;
+    mScale = 1.0f;
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    mEmitters[2] = NULL;
+}
+
+cls_8021FB44::~cls_8021FB44() {
+    fn_8021F924();
+}
+
+void cls_8021FB44::fn_8021F9AC(const JGeometry::TVec3f* pos) {
+    mPos.x = pos->x;
+    mPos.y = pos->y;
+    mPos.z = pos->z;
+    mTarget1.set(mPos.x, mPos.y, 96.0f + mPos.z);
+    mTarget2.set(mPos.x, -32.0f + mPos.y, 54.0f + mPos.z);
+    mEndZ = 32.0f + mPos.z;
+    mTimer = 0;
+    mState = 1;
+    for (s32 i = 0; i < 3; i++) {
+        mEmitters[i] = spawnEmitter_8013CC50(0, &mPos, lbl_8053FDD0[i], 0, 0, NULL, NULL, true, mScale);
+    }
+}
+
+void cls_8021FB44::fn_8021F924() {
+    for (s32 i = 0; i < 3; i++) {
+        deleteEmitter(&mEmitters[i]);
+    }
+    mTimer = 0;
+    mState = 0;
+}
+
+void cls_8021FB44::fn_8021F914(s32 state) {
+    mTimer = 0;
+    mState = state;
+}
+
 bool cls_8021FB44::fn_8021F4B0() {
     bool result = false;
     mTimer++;
@@ -95,54 +145,4 @@ bool cls_8021FB44::fn_8021F4B0() {
         break;
     }
     return result;
-}
-
-void cls_8021FB44::fn_8021F914(s32 state) {
-    mTimer = 0;
-    mState = state;
-}
-
-void cls_8021FB44::fn_8021F924() {
-    for (s32 i = 0; i < 3; i++) {
-        deleteEmitter(&mEmitters[i]);
-    }
-    mTimer = 0;
-    mState = 0;
-}
-
-void cls_8021FB44::fn_8021F9AC(const JGeometry::TVec3f* pos) {
-    mPos.x = pos->x;
-    mPos.y = pos->y;
-    mPos.z = pos->z;
-    mTarget1.set(mPos.x, mPos.y, 96.0f + mPos.z);
-    mTarget2.set(mPos.x, -32.0f + mPos.y, 54.0f + mPos.z);
-    mEndZ = 32.0f + mPos.z;
-    mTimer = 0;
-    mState = 1;
-    for (s32 i = 0; i < 3; i++) {
-        mEmitters[i] = spawnEmitter_8013CC50(0, &mPos, lbl_8053FDD0[i], 0, 0, NULL, NULL, true, mScale);
-    }
-}
-
-cls_8021FB44::~cls_8021FB44() {
-    fn_8021F924();
-}
-
-cls_8021FB44::cls_8021FB44() {
-    mState = 0;
-    mTimer = 0;
-    mPos.x = 0.0f;
-    mPos.y = 0.0f;
-    mPos.z = 0.0f;
-    mTarget1.x = 0.0f;
-    mTarget1.y = 0.0f;
-    mTarget1.z = 0.0f;
-    mTarget2.x = 0.0f;
-    mTarget2.y = 0.0f;
-    mTarget2.z = 0.0f;
-    mEndZ = 0.0f;
-    mScale = 1.0f;
-    mEmitters[0] = NULL;
-    mEmitters[1] = NULL;
-    mEmitters[2] = NULL;
 }

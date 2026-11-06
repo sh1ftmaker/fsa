@@ -11,6 +11,61 @@
 static const s16 lbl_80465120[] = {0, 3, 1, 2, 2, 2, 3, 3, 4, 3, 5, 3, -1, -1};
 static const s16* lbl_80539F48[] = {lbl_80465120, NULL};
 
+WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
+    field_0x268 = 0;
+    field_0x26c = -1;
+    field_0x270 = 0;
+    field_0x274 = 0;
+    field_0x278 = 0;
+    field_0x27c = 0.0f;
+    field_0x280 = 0.0f;
+    field_0x284 = 0.0f;
+    field_0x288 = 0.0f;
+    field_0x28c = 0.0f;
+    field_0x290.set(0.0f, 0.0f, 0.0f);
+}
+
+WarpCannon_8049EAE0::~WarpCannon_8049EAE0() {}
+
+void WarpCannon_8049EAE0::init() {
+    field_0x274 = field_0x90 >> 8 & 0xFF;
+    field_0x270 = field_0x90 >> 16 & 0xFF;
+    mBox.set(-16.0f, -16.0f, 16.0f, -12.0f);
+    mBox2.set(mBox);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    field_0xb0 = 0x50303;
+    mAnim.fn_801D2608(lbl_80539F48, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+    field_0x284 = mPos.x;
+    field_0x288 = mPos.y;
+    field_0x28c = mPos.z;
+}
+
+// FIXME: 99.90 %. Only the .sdata2 offsets of its literals differ: the
+// original's pool (0x8053CCA0) also holds update()'s, which isn't written yet.
+void WarpCannon_8049EAE0::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x1d = 1;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    mtx[0][0] = 2.0f;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = 2.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = 2.0f;
+    params.mMtx = mtx;
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x14C, &params, 0x407, 1, false,
+                1.0f, 1.0f);
+}
+
 // FIXME: 95.15 %. The loop over fn_80230360 is the same, but after it the
 // original falls through into the field_0x278 store on its own `cmpwi 4; blt`,
 // where ours compares i again (cmpwi; bne): 3 extra instructions. The switch's
@@ -78,59 +133,4 @@ void WarpCannon_8049EAE0::fn_80130FAC(s32 state) {
         mAlive = false;
         break;
     }
-}
-
-// FIXME: 99.90 %. Only the .sdata2 offsets of its literals differ: the
-// original's pool (0x8053CCA0) also holds update()'s, which isn't written yet.
-void WarpCannon_8049EAE0::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x1d = 1;
-    Mtx mtx;
-    mtx[0][3] = 0.0f;
-    mtx[1][3] = 0.0f;
-    mtx[2][3] = 0.0f;
-    mtx[0][0] = 2.0f;
-    mtx[0][1] = 0.0f;
-    mtx[0][2] = 0.0f;
-    mtx[1][0] = 0.0f;
-    mtx[1][1] = 2.0f;
-    mtx[1][2] = 0.0f;
-    mtx[2][0] = 0.0f;
-    mtx[2][1] = 0.0f;
-    mtx[2][2] = 2.0f;
-    params.mMtx = mtx;
-    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + 0x14C, &params, 0x407, 1, false,
-                1.0f, 1.0f);
-}
-
-void WarpCannon_8049EAE0::init() {
-    field_0x274 = field_0x90 >> 8 & 0xFF;
-    field_0x270 = field_0x90 >> 16 & 0xFF;
-    mBox.set(-16.0f, -16.0f, 16.0f, -12.0f);
-    mBox2.set(mBox);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0xb0 = 0x50303;
-    mAnim.fn_801D2608(lbl_80539F48, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-    field_0x284 = mPos.x;
-    field_0x288 = mPos.y;
-    field_0x28c = mPos.z;
-}
-
-WarpCannon_8049EAE0::~WarpCannon_8049EAE0() {}
-
-WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
-    field_0x268 = 0;
-    field_0x26c = -1;
-    field_0x270 = 0;
-    field_0x274 = 0;
-    field_0x278 = 0;
-    field_0x27c = 0.0f;
-    field_0x280 = 0.0f;
-    field_0x284 = 0.0f;
-    field_0x288 = 0.0f;
-    field_0x28c = 0.0f;
-    field_0x290.set(0.0f, 0.0f, 0.0f);
 }

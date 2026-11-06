@@ -2,22 +2,10 @@
 #include "game/GameGlobals.h"
 #include "game/act/tu_8010DF44.h"
 
-void cls_8049D140::vfunc_0x54() {}
+cls_8049D140::cls_8049D140() {}
 
-s32 cls_8049D140::vfunc_0x58() {
-    return -1;
-}
-
-s32 cls_8049D140::vfunc_0x5C() {
-    return 0;
-}
-
-void cls_8049D140::draw() {
-    ActorBase_804A5770::draw();
-}
-
-void cls_8049D140::update() {
-    ActorBase_804A5770::update();
+cls_8049D140::~cls_8049D140() {
+    fn_8011921C()->fn_80118798(this);
 }
 
 void cls_8049D140::init() {
@@ -28,8 +16,20 @@ void cls_8049D140::init() {
     mLife = 0;
 }
 
-cls_8049D140::~cls_8049D140() {
-    fn_8011921C()->fn_80118798(this);
+void cls_8049D140::update() {
+    ActorBase_804A5770::update();
 }
 
-cls_8049D140::cls_8049D140() {}
+void cls_8049D140::draw() {
+    ActorBase_804A5770::draw();
+}
+
+s32 cls_8049D140::vfunc_0x5C() {
+    return 0;
+}
+
+s32 cls_8049D140::vfunc_0x58() {
+    return -1;
+}
+
+void cls_8049D140::vfunc_0x54() {}

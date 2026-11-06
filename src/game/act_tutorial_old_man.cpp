@@ -8,8 +8,8 @@
 #include "game/ActorBase.h"
 #include "game/act/act_tutorial_old_man.h"
 
-void TutorialOldMan_804AE508::draw() {}
+void TutorialOldMan_804AE508::init() {}
 
 void TutorialOldMan_804AE508::update() {}
 
-void TutorialOldMan_804AE508::init() {}
+void TutorialOldMan_804AE508::draw() {}

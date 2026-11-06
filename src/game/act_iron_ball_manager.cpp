@@ -3,7 +3,17 @@
 #include "game/ActorManager.h"
 #include "game/act/act_iron_ball_manager.h"
 
-IronBallManager_804ABA38::~IronBallManager_804ABA38() {}
+void IronBallManager_804ABA38::init() {
+    field_0xb0 = 0x2000;
+    field_0x230 = mPos;
+    field_0x23c = 0.5f;
+    field_0x244 = (field_0x90 >> 8) & 0xFF;
+    field_0x245 = (field_0x90 >> 16) & 0xFF;
+    field_0x240 = (s32)(field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x246 = 5;
+    field_0x247 = field_0x90 & 0xF;
+    field_0x248 = (field_0x90 >> 4) & 0xF;
+}
 
 // FIXME: 98.9 %. Only the clear of bit 0 in field_0x90 differs: the original
 // loads -2 into r0 early (li r0, -2) and does `and r0, r3, r0` with the
@@ -49,14 +59,4 @@ void IronBallManager_804ABA38::update() {
     }
 }
 
-void IronBallManager_804ABA38::init() {
-    field_0xb0 = 0x2000;
-    field_0x230 = mPos;
-    field_0x23c = 0.5f;
-    field_0x244 = (field_0x90 >> 8) & 0xFF;
-    field_0x245 = (field_0x90 >> 16) & 0xFF;
-    field_0x240 = (s32)(field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    field_0x246 = 5;
-    field_0x247 = field_0x90 & 0xF;
-    field_0x248 = (field_0x90 >> 4) & 0xF;
-}
+IronBallManager_804ABA38::~IronBallManager_804ABA38() {}

@@ -8,14 +8,32 @@
 #include "game/act/act_thief.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
-// The sprite is drawn at its own position and then put back.
-// FIXME: 99.31 %. Only the registers differ: the target keeps the table base in
-// r5 and the entry offset (mulli) in r4, this code the other way round.
-void Thief_804A5A30::draw() {
-    const Thief_804A5A30::TypeParams& type = lbl_8046A238[mType];
-    JGeometry::TVec3f pos = mPos;
-    fn_8020F80C(type.mSpriteFrame + mAnim.mCel);
-    mPos.set(pos.x, pos.y, pos.z);
+void Thief_804A5A30::fn_8020FADC() {
+    bool release = false;
+    if (fn_8022461C(&mPos, field_0x4) == 0x39) {
+        bool moving = false;
+        if (field_0xc4 == 0 && mPos.z <= 0.0f) {
+            if (__fabsf(mPos.x - mPrevPos.x) > 0.001f || __fabsf(mPos.y - mPrevPos.y) > 0.001f) {
+                moving = true;
+            }
+        }
+        if (moving) {
+            startSound_801F0E34(0x4007F, 0);
+            if (mEmitter358 == NULL) {
+                mEmitter358 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            release = true;
+        }
+    } else {
+        release = true;
+    }
+    if (release && mEmitter358 != NULL && !mEmitter358->checkStatus(JPAEMIT_Immortal)) {
+        fn_801CB7A0(mEmitter358);
+    }
+    if (mEmitter358 != NULL) {
+        fn_801CB71C(&mEmitter358, &mPos, 0, 0);
+    }
 }
 
 void Thief_804A5A30::fn_8020F80C(s32 frame) {
@@ -67,30 +85,12 @@ void Thief_804A5A30::fn_8020F80C(s32 frame) {
     fn_80307AC8(mSerial, field_0x4, &mPos, frame, false, mode, -1);
 }
 
-void Thief_804A5A30::fn_8020FADC() {
-    bool release = false;
-    if (fn_8022461C(&mPos, field_0x4) == 0x39) {
-        bool moving = false;
-        if (field_0xc4 == 0 && mPos.z <= 0.0f) {
-            if (__fabsf(mPos.x - mPrevPos.x) > 0.001f || __fabsf(mPos.y - mPrevPos.y) > 0.001f) {
-                moving = true;
-            }
-        }
-        if (moving) {
-            startSound_801F0E34(0x4007F, 0);
-            if (mEmitter358 == NULL) {
-                mEmitter358 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4D2, 0, 0, NULL, NULL, true, 1.0f);
-            }
-        } else {
-            release = true;
-        }
-    } else {
-        release = true;
-    }
-    if (release && mEmitter358 != NULL && !mEmitter358->checkStatus(JPAEMIT_Immortal)) {
-        fn_801CB7A0(mEmitter358);
-    }
-    if (mEmitter358 != NULL) {
-        fn_801CB71C(&mEmitter358, &mPos, 0, 0);
-    }
+// The sprite is drawn at its own position and then put back.
+// FIXME: 99.31 %. Only the registers differ: the target keeps the table base in
+// r5 and the entry offset (mulli) in r4, this code the other way round.
+void Thief_804A5A30::draw() {
+    const Thief_804A5A30::TypeParams& type = lbl_8046A238[mType];
+    JGeometry::TVec3f pos = mPos;
+    fn_8020F80C(type.mSpriteFrame + mAnim.mCel);
+    mPos.set(pos.x, pos.y, pos.z);
 }

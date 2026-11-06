@@ -16,10 +16,75 @@ static const char* lbl_8049CBB0[3][4] = {
 static const s16 lbl_80463FA0[] = {0, 10, 1, 10, 2, 10, 3, 10, -1, 0};
 static const s16* lbl_80539EC0[] = {lbl_80463FA0, NULL};
 
-Cloud_8049CBE0::~Cloud_8049CBE0() {}
-
 static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3f& p) {
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
+}
+
+// FIXME: 99.95%. Everything matches except the 0.0f literal: this unit's
+// .sdata2 literal order puts it at another offset than lbl_8053C228.
+Cloud_8049CBE0::Cloud_8049CBE0()
+    : field_0x344(0.0f), field_0x348(0.0f), field_0x34c(0.0f), field_0x350(0.0f), field_0x354(0),
+      field_0x358(0), field_0x35c(-1), field_0x360(0), field_0x364(0), field_0x368(0),
+      field_0x36c(0), field_0x370(0) {
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2f8[i] = NULL;
+    }
+}
+
+void Cloud_8049CBE0::init() {
+    ActorBase_804A5770::init();
+    field_0x354 = field_0x90 & 0xFF;
+    field_0x358 = field_0x90 >> 12 & 0x1F;
+    field_0x36c = field_0x90 >> 17 & 0x1F;
+    field_0x364 = field_0x90 >> 22 & 0x1F;
+    field_0x368 = field_0x90 >> 22 & 0x1F;
+    field_0x35c = field_0x90 >> 27;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2f8[i] = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8049CBB0[field_0x36c][i]);
+    }
+    // FIXME: 88.48%. The original's dispatch is `cmpwi 1; beq state1; bge L;
+    // b default; L: cmpwi 3; bge default; b state2`, with the blocks laid out
+    // state1, state2, default. This switch and an if/else chain both compare
+    // against 1 again; the 0.0f/-38.0f literals also sit at other offsets.
+    switch (field_0x36c) {
+    case 1:
+        mBox.i.x = -38.0f;
+        mBox.i.y = -38.0f;
+        mBox.f.x = 38.0f;
+        mBox.f.y = 38.0f;
+        break;
+    case 2:
+        mBox.i.x = -32.0f;
+        mBox.i.y = -16.0f;
+        mBox.f.x = 32.0f;
+        mBox.f.y = 12.0f;
+        break;
+    default:
+        mBox.i.x = -22.0f;
+        mBox.i.y = -22.0f;
+        mBox.f.x = 22.0f;
+        mBox.f.y = 22.0f;
+        break;
+    }
+    mBox2 = mBox;
+    field_0x80 = mBox;
+    mSprite.fn_801D2608(lbl_80539EC0, 1);
+    mSprite.startAnim_801D22DC(0, 2, false);
+    mSprite.fn_801D1F14(0.0f);
+}
+
+void Cloud_8049CBE0::draw() {
+    ActorBase_804A5770::draw();
+    mParams.field_0x1d = -1;
+    s32 key = mSprite.mKey;
+    JGeometry::TVec3f pos = mPos;
+    if (field_0x36c == 2) {
+        pos.y -= 4.0f;
+    }
+    void* res = field_0x2f8[key];
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
+    }
 }
 
 // Whether `player` is in the cloud: on the cloud's layer, either its box
@@ -68,69 +133,4 @@ bool Cloud_8049CBE0::fn_801053E8(s32 player) {
     return false;
 }
 
-void Cloud_8049CBE0::draw() {
-    ActorBase_804A5770::draw();
-    mParams.field_0x1d = -1;
-    s32 key = mSprite.mKey;
-    JGeometry::TVec3f pos = mPos;
-    if (field_0x36c == 2) {
-        pos.y -= 4.0f;
-    }
-    void* res = field_0x2f8[key];
-    if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &mParams);
-    }
-}
-
-void Cloud_8049CBE0::init() {
-    ActorBase_804A5770::init();
-    field_0x354 = field_0x90 & 0xFF;
-    field_0x358 = field_0x90 >> 12 & 0x1F;
-    field_0x36c = field_0x90 >> 17 & 0x1F;
-    field_0x364 = field_0x90 >> 22 & 0x1F;
-    field_0x368 = field_0x90 >> 22 & 0x1F;
-    field_0x35c = field_0x90 >> 27;
-    for (s32 i = 0; i < 4; i++) {
-        field_0x2f8[i] = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8049CBB0[field_0x36c][i]);
-    }
-    // FIXME: 88.48%. The original's dispatch is `cmpwi 1; beq state1; bge L;
-    // b default; L: cmpwi 3; bge default; b state2`, with the blocks laid out
-    // state1, state2, default. This switch and an if/else chain both compare
-    // against 1 again; the 0.0f/-38.0f literals also sit at other offsets.
-    switch (field_0x36c) {
-    case 1:
-        mBox.i.x = -38.0f;
-        mBox.i.y = -38.0f;
-        mBox.f.x = 38.0f;
-        mBox.f.y = 38.0f;
-        break;
-    case 2:
-        mBox.i.x = -32.0f;
-        mBox.i.y = -16.0f;
-        mBox.f.x = 32.0f;
-        mBox.f.y = 12.0f;
-        break;
-    default:
-        mBox.i.x = -22.0f;
-        mBox.i.y = -22.0f;
-        mBox.f.x = 22.0f;
-        mBox.f.y = 22.0f;
-        break;
-    }
-    mBox2 = mBox;
-    field_0x80 = mBox;
-    mSprite.fn_801D2608(lbl_80539EC0, 1);
-    mSprite.startAnim_801D22DC(0, 2, false);
-    mSprite.fn_801D1F14(0.0f);
-}
-
-// FIXME: 99.95%. Everything matches except the 0.0f literal: this unit's
-// .sdata2 literal order puts it at another offset than lbl_8053C228.
-Cloud_8049CBE0::Cloud_8049CBE0()
-    : field_0x344(0.0f), field_0x348(0.0f), field_0x34c(0.0f), field_0x350(0.0f), field_0x354(0),
-      field_0x358(0), field_0x35c(-1), field_0x360(0), field_0x364(0), field_0x368(0),
-      field_0x36c(0), field_0x370(0) {
-    for (s32 i = 0; i < 4; i++) {
-        field_0x2f8[i] = NULL;
-    }
-}
+Cloud_8049CBE0::~Cloud_8049CBE0() {}

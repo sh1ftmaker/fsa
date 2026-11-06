@@ -5,9 +5,10 @@
 #include "game/Camera.h"
 #include "game/act/tu_802F4AEC.h"
 
-UnknownGSCK_804AA800::~UnknownGSCK_804AA800() {}
-
-void UnknownGSCK_804AA800::draw() {}
+void UnknownGSCK_804AA800::init() {
+    field_0x230 = 0;
+    update();
+}
 
 void UnknownGSCK_804AA800::update() {
     // FIXME: 99.34%. Registers only: the original keeps bit3 (field_0x90 >> 7) in r28,
@@ -89,7 +90,6 @@ void UnknownGSCK_804AA800::update() {
     }
 }
 
-void UnknownGSCK_804AA800::init() {
-    field_0x230 = 0;
-    update();
-}
+void UnknownGSCK_804AA800::draw() {}
+
+UnknownGSCK_804AA800::~UnknownGSCK_804AA800() {}

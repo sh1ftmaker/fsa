@@ -5,29 +5,9 @@
 #include "game/act/act_fairy.h"
 #include "game/tu_80379F84.h"
 
-void Fairy_804A03B8::draw() {
-    SpriteParams_801F5AE0 params;
-    if ((field_0x90 >> 27) != 0 && !vfunc_0x34()) {
-        return;
-    }
-    if (field_0x258 != 2) {
-        if (field_0x234 < 0x100 && (field_0x234 & 2)) {
-            return;
-        }
-        params.field_0x2d = 1;
-        if (field_0x258 == 3) {
-            params.field_0x10.a = (u8)field_0x270;
-            params.field_0x30 = 0x11;
-        }
-        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 1, 1.0f, 1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 1);
-    } else {
-        s32 frame = 0x5E;
-        if (field_0x248 != 0) {
-            frame = 0x7D;
-        }
-        fn_803075AC(mSerial, field_0x4, &mPos, frame + field_0x250, false, 2, -1, 1, 0, 1);
-    }
+Fairy_804A03B8::~Fairy_804A03B8() {
+    releaseEmitter_801EE434(mEmitter290);
+    releaseEmitter_801EE434(mEmitter294);
 }
 
 // FIXME: 97.86%. Apart from the float literals (`@NNN` against lbl_8053D6xx, a data split), the
@@ -111,7 +91,27 @@ void Fairy_804A03B8::init() {
     }
 }
 
-Fairy_804A03B8::~Fairy_804A03B8() {
-    releaseEmitter_801EE434(mEmitter290);
-    releaseEmitter_801EE434(mEmitter294);
+void Fairy_804A03B8::draw() {
+    SpriteParams_801F5AE0 params;
+    if ((field_0x90 >> 27) != 0 && !vfunc_0x34()) {
+        return;
+    }
+    if (field_0x258 != 2) {
+        if (field_0x234 < 0x100 && (field_0x234 & 2)) {
+            return;
+        }
+        params.field_0x2d = 1;
+        if (field_0x258 == 3) {
+            params.field_0x10.a = (u8)field_0x270;
+            params.field_0x30 = 0x11;
+        }
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x250 + 0x5E, &params, 1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x250 + 0x5E, false, 2, -1, 0, 0, 1);
+    } else {
+        s32 frame = 0x5E;
+        if (field_0x248 != 0) {
+            frame = 0x7D;
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, frame + field_0x250, false, 2, -1, 1, 0, 1);
+    }
 }

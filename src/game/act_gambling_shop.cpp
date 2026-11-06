@@ -24,24 +24,101 @@ static inline bool talkAtFlags21(s32 player, u32 msg, s32 layer, const JGeometry
     return fn_8038BD08(player, msg, layer, pos, 0x21);
 }
 
-GamblingShop_804AAA70::~GamblingShop_804AAA70() {}
-
-void GamblingShop_804AAA70::fn_8030FDC0(s32 value) {
-    field_0x25c = value;
-    field_0x234 = 0x3C;
-    mState = 6;
+void GamblingShop_804AAA70::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    mState = 0;
+    field_0x234 = 0;
+    field_0x248 = -1;
+    field_0x264 = field_0x90 >> 31;
+    if (field_0x264 != 0) {
+        field_0x260 = 0x12C;
+    } else {
+        field_0x260 = 0x64;
+    }
+    field_0x24c = 0;
+    field_0x250[0] = -1;
+    field_0x250[1] = -1;
+    field_0x250[2] = -1;
+    field_0x26c = field_0x90 & 0xF;
+    field_0x270 = field_0x26c + ((field_0x90 >> 4) & 0xF);
+    field_0x274 = field_0x270 + ((field_0x90 >> 8) & 0xF);
+    field_0x25c = -1;
+    field_0x268 = (field_0x90 >> 24) & 0xF;
+    field_0x278[0] = 0;
+    field_0x278[1] = 0;
+    field_0x278[2] = 0;
+    field_0x278[3] = 0;
+    if (gGameRoot_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 1 &&
+        lbl_80529DEC.field_0x11c == 1) {
+        field_0x288 = true;
+    } else {
+        field_0x288 = false;
+    }
+    field_0x238 = 2;
+    field_0x23c = 0x14;
+    field_0x240 = 0;
+    field_0x244 = 0;
 }
 
-void GamblingShop_804AAA70::draw() {
-    if (field_0x288) {
-        drawSprite_801F06F0("enemy_both_sob.bin", field_0x240 + 0x12C, NULL, 0, 1.0f, 1.0f);
-        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x12C, 0, 0, -1);
-    } else {
-        // FIXME: 82.02 %. The true branch matches; here the frame index is
-        // scheduled differently (the original loads field_0x240 before field_0x238 * 2).
-        drawSprite_801F06F0("enemy_both_sob.bin", field_0x238 * 2 + field_0x240 + 0xEC, NULL, 0, 1.0f,
-                    1.0f);
-        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x238 * 2 + field_0x240 + 0xEC, 0, 0, -1);
+void GamblingShop_804AAA70::vfunc_0x10() {
+    // FIXME: 99.46 %. Regalloc only: the original keeps the chest-slot pointer
+    // (this, stored with 0x250(rN)) in r28 and the loop's byte offset in r29.
+    s32 actorEnd = getActorManager_801F856C()->mActorEnd;
+    s32 count = 0;
+    for (s32 i = 0; i < actorEnd; i++) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+        if (actor != NULL && actor->mActorId == 'GMTB') {
+            field_0x250[count] = i;
+            count++;
+            if (count >= 3) {
+                break;
+            }
+        }
+    }
+    if (count == 0) {
+        mAlive = false;
+        return;
+    }
+    field_0x24c = count;
+    s32 pick = (s32)(6.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    switch (pick) {
+    case 0: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[1];
+        field_0x250[1] = tmp;
+        break;
+    }
+    case 1: {
+        s32 tmp = field_0x250[1];
+        field_0x250[1] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 2: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 3: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[1];
+        field_0x250[1] = field_0x250[2];
+        field_0x250[2] = tmp;
+        break;
+    }
+    case 4: {
+        s32 tmp = field_0x250[0];
+        field_0x250[0] = field_0x250[2];
+        field_0x250[2] = field_0x250[1];
+        field_0x250[1] = tmp;
+        break;
+    }
+    case 5:
+        break;
     }
 }
 
@@ -352,100 +429,23 @@ void GamblingShop_804AAA70::update() {
     }
 }
 
-void GamblingShop_804AAA70::vfunc_0x10() {
-    // FIXME: 99.46 %. Regalloc only: the original keeps the chest-slot pointer
-    // (this, stored with 0x250(rN)) in r28 and the loop's byte offset in r29.
-    s32 actorEnd = getActorManager_801F856C()->mActorEnd;
-    s32 count = 0;
-    for (s32 i = 0; i < actorEnd; i++) {
-        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-        if (actor != NULL && actor->mActorId == 'GMTB') {
-            field_0x250[count] = i;
-            count++;
-            if (count >= 3) {
-                break;
-            }
-        }
-    }
-    if (count == 0) {
-        mAlive = false;
-        return;
-    }
-    field_0x24c = count;
-    s32 pick = (s32)(6.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    switch (pick) {
-    case 0: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[1];
-        field_0x250[1] = tmp;
-        break;
-    }
-    case 1: {
-        s32 tmp = field_0x250[1];
-        field_0x250[1] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 2: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 3: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[1];
-        field_0x250[1] = field_0x250[2];
-        field_0x250[2] = tmp;
-        break;
-    }
-    case 4: {
-        s32 tmp = field_0x250[0];
-        field_0x250[0] = field_0x250[2];
-        field_0x250[2] = field_0x250[1];
-        field_0x250[1] = tmp;
-        break;
-    }
-    case 5:
-        break;
+void GamblingShop_804AAA70::draw() {
+    if (field_0x288) {
+        drawSprite_801F06F0("enemy_both_sob.bin", field_0x240 + 0x12C, NULL, 0, 1.0f, 1.0f);
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x12C, 0, 0, -1);
+    } else {
+        // FIXME: 82.02 %. The true branch matches; here the frame index is
+        // scheduled differently (the original loads field_0x240 before field_0x238 * 2).
+        drawSprite_801F06F0("enemy_both_sob.bin", field_0x238 * 2 + field_0x240 + 0xEC, NULL, 0, 1.0f,
+                    1.0f);
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x238 * 2 + field_0x240 + 0xEC, 0, 0, -1);
     }
 }
 
-void GamblingShop_804AAA70::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    mState = 0;
-    field_0x234 = 0;
-    field_0x248 = -1;
-    field_0x264 = field_0x90 >> 31;
-    if (field_0x264 != 0) {
-        field_0x260 = 0x12C;
-    } else {
-        field_0x260 = 0x64;
-    }
-    field_0x24c = 0;
-    field_0x250[0] = -1;
-    field_0x250[1] = -1;
-    field_0x250[2] = -1;
-    field_0x26c = field_0x90 & 0xF;
-    field_0x270 = field_0x26c + ((field_0x90 >> 4) & 0xF);
-    field_0x274 = field_0x270 + ((field_0x90 >> 8) & 0xF);
-    field_0x25c = -1;
-    field_0x268 = (field_0x90 >> 24) & 0xF;
-    field_0x278[0] = 0;
-    field_0x278[1] = 0;
-    field_0x278[2] = 0;
-    field_0x278[3] = 0;
-    if (gGameRoot_8053AAF8->field_0x7f && lbl_80529DEC.field_0x118 == 1 &&
-        lbl_80529DEC.field_0x11c == 1) {
-        field_0x288 = true;
-    } else {
-        field_0x288 = false;
-    }
-    field_0x238 = 2;
-    field_0x23c = 0x14;
-    field_0x240 = 0;
-    field_0x244 = 0;
+void GamblingShop_804AAA70::fn_8030FDC0(s32 value) {
+    field_0x25c = value;
+    field_0x234 = 0x3C;
+    mState = 6;
 }
+
+GamblingShop_804AAA70::~GamblingShop_804AAA70() {}

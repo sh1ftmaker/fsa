@@ -311,1331 +311,6 @@ static inline f32 toEffectY(f32 y) {
     return 168.0f * (8.0f + y) / (s32)JUTVideo::getManager()->getRenderMode()->efbHeight;
 }
 
-// FIXME: 98.24 %. Same length. The rodata base offsets differ (.rodata not
-// split yet: the tables above sit at other offsets from the file's base), and
-// in the 112-212 and 212+ phases the i / 2 + (i % 2) * 2 index is scheduled
-// differently (the original computes i % 2 first, then i / 2). The twin
-// cls_804B0B00::fn_803E1668 (rodata split) shows the same index scheduling.
-void ConnectScreen_804B0F10::fn_803F0A54() {
-    f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335[0];
-    JGeometry::TVec3f pos;
-    if (field_0x210[0] < 100) {
-        for (s32 i = 0; i < 4; i++) {
-            if (lbl_80479920[field_0x1ac][i] != 0) {
-                SpriteParams_801F5AE0 params;
-                params.field_0x26 = 0;
-                params.field_0x10.a = 255.0f * ratio;
-                f32 x;
-                PANE_CENTRE_X(x, lbl_80479920[field_0x1ac][i]);
-                pos.x = toSpriteX(x);
-                f32 y;
-                PANE_CENTRE_Y(y, lbl_80479920[field_0x1ac][i]);
-                pos.y = toSpriteY(y);
-                pos.z = 0.0f;
-                params.field_0x0[7] = i + 12;
-                s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
-                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
-            }
-        }
-    } else if (field_0x210[0] < 112) {
-        // Slide from the 2/3-player panes to the 4-player ones.
-        for (s32 i = 3; i >= 0; i--) {
-            SpriteParams_801F5AE0 params;
-            params.field_0x26 = 0;
-            params.field_0x10.a = 255.0f * ratio;
-            f32 from;
-            f32 to;
-            switch (field_0x1ac) {
-            case 0:
-                PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i % 2]);
-                PANE_CENTRE_X(to, lbl_80479920[2][i / 2 + (i % 2) * 2]);
-                break;
-            case 1:
-                if (i != 3) {
-                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i]);
-                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
-                } else {
-                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][2]);
-                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
-                }
-                break;
-            }
-            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 100) / 12.0f) + from);
-            f32 y;
-            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
-                pos.y = toSpriteY(y);
-            pos.z = 0.0f;
-            params.field_0x0[7] = i + 12;
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
-        }
-    } else if (field_0x210[0] < 212) {
-        for (s32 i = 0; i < 4; i++) {
-            SpriteParams_801F5AE0 params;
-            params.field_0x26 = 0;
-            params.field_0x10.a = 255.0f * ratio;
-            f32 x;
-            PANE_CENTRE_X(x, lbl_80479920[2][i]);
-                pos.x = toSpriteX(x);
-            f32 y;
-            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
-                pos.y = toSpriteY(y);
-            pos.z = 0.0f;
-            if (field_0x1ac == 0) {
-                params.field_0x0[7] = i / 2 + (i % 2) * 2 + 12;
-            } else {
-                params.field_0x0[7] = i + 12;
-            }
-            s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
-        }
-    } else {
-        // Slide back to the 2/3-player panes.
-        for (s32 i = 3; i >= 0; i--) {
-            SpriteParams_801F5AE0 params;
-            params.field_0x26 = 0;
-            params.field_0x10.a = 255.0f * ratio;
-            f32 from;
-            f32 to;
-            switch (field_0x1ac) {
-            case 0:
-                PANE_CENTRE_X(from, lbl_80479920[2][i / 2 + (i % 2) * 2]);
-                PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i % 2]);
-                break;
-            case 1:
-                if (i != 3) {
-                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
-                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i]);
-                } else {
-                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
-                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][2]);
-                }
-                break;
-            }
-            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 212) / 12.0f) + from);
-            f32 y;
-            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
-                pos.y = toSpriteY(y);
-            pos.z = 0.0f;
-            params.field_0x0[7] = i + 12;
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
-        }
-    }
-}
-
-void ConnectScreen_804B0F10::fn_803F1C18() {
-    field_0x58->fn_8043670C(1);
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 12;
-}
-
-void ConnectScreen_804B0F10::fn_803F1C5C() {
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 11;
-}
-
-// FIXME: 98.18. Registers: the loop's table pointers and counter sit in other
-// registers, and the first digit texture is copied through r0 into r17 (one
-// extra mr) where the original keeps it in r27 (as in the twin
-// cls_804B0B00::fn_803E2A20, 98.17); .sdata2 @NNN names.
-// Enter state 10 (the results / entry screen field_0x10): per player, the
-// 'Pblk' cover over the players beyond field_0x1ac + 2, the rupee count
-// (fn_80403070) as three digit textures, the fn_8040305C - 1 markers of the
-// four marker tables, the cursor panes by field_0x1b0[i] (3: joined,
-// 4: not); then the panes start their slide-in (twin of
-// cls_804B0B00::fn_803E2A20).
-void ConnectScreen_804B0F10::fn_803F1C70() {
-    for (s32 i = 0; i < 4; i++) {
-        if (i >= 1) {
-            if (i > field_0x1ac + 1) {
-                field_0x10->search(lbl_80479908[i - 1])->show();
-            } else {
-                field_0x10->search(lbl_80479908[i - 1])->hide();
-            }
-        }
-        field_0x1e0[i] = fn_80403414(i);
-        field_0x1f0[i] = fn_804033D4(i);
-        field_0x200[i] = fn_8040336C(i);
-        s32 rupees = fn_80403070(field_0x1e0[i]);
-        const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees / 100]);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_804794B8[i]))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_804794D8[i]))->changeTexture(tex, 0);
-        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 100 / 10]);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_80479478[i]))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_80479498[i]))->changeTexture(tex, 0);
-        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 10]);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_80479438[i]))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x10->search(lbl_80479458[i]))->changeTexture(tex, 0);
-        s32 count = fn_8040305C(field_0x1f0[i]) - 1;
-        for (s32 j = 0; j < 6; j++) {
-            if (j < count) {
-                field_0x10->search(lbl_804795C0[i][j])->show();
-                field_0x10->search(lbl_80479680[i][j])->show();
-                field_0x10->search(lbl_80479740[i][j])->hide();
-                field_0x10->search(lbl_80479800[i][j])->hide();
-            } else if (j == count) {
-                field_0x10->search(lbl_804795C0[i][j])->hide();
-                field_0x10->search(lbl_80479680[i][j])->hide();
-                field_0x10->search(lbl_80479740[i][j])->hide();
-                field_0x10->search(lbl_80479800[i][j])->show();
-            } else {
-                field_0x10->search(lbl_804795C0[i][j])->hide();
-                field_0x10->search(lbl_80479680[i][j])->hide();
-                field_0x10->search(lbl_80479740[i][j])->hide();
-                field_0x10->search(lbl_80479800[i][j])->hide();
-            }
-        }
-        field_0x10->search(lbl_804793F8[i])->hide();
-    }
-    field_0x60->moveFromCentre_80402E08(0.0f, -200.0f);
-    field_0x60->field_0x22 = 0;
-    for (s32 i = 0; i < 4; i++) {
-        if (i <= field_0x1ac + 1) {
-            field_0x64[i]->moveFromCentre_80402E08(0.0f, 150.0f);
-            field_0x64[i]->field_0x22 = 0;
-        }
-        if (i <= field_0x1ac + 1) {
-            field_0x1b0[i] = 3;
-        } else {
-            field_0x1b0[i] = 4;
-        }
-        field_0x1d0[i] = 30;
-        if (i <= field_0x1ac + 1) {
-            if (field_0x1b0[i] < 3) {
-                field_0x10->search(lbl_804793B8[i])->hide();
-                field_0x10->search(lbl_804793D8[i])->show();
-                field_0x10->search(lbl_804793F8[i])->hide();
-            } else if (field_0x1b0[i] == 3) {
-                field_0x10->search(lbl_804793B8[i])->hide();
-                field_0x10->search(lbl_804793D8[i])->show();
-                field_0x10->search(lbl_804793F8[i])->show();
-            } else {
-                field_0x10->search(lbl_804793B8[i])->show();
-                field_0x10->search(lbl_804793D8[i])->hide();
-                field_0x10->search(lbl_804793F8[i])->hide();
-            }
-        } else {
-            field_0x10->search(lbl_804793B8[i])->hide();
-            field_0x10->search(lbl_804793D8[i])->hide();
-            field_0x10->search(lbl_804793F8[i])->hide();
-        }
-        s32 state = field_0x1b0[i];
-        if (state <= 3) {
-            f32 x = field_0x10->search(lbl_804793D8[i])->getBounds()->i.x;
-            field_0x10->search(lbl_804793D8[i])->move(x, lbl_80543710[state]);
-        }
-        field_0x240[i] = 0;
-        field_0x1d0[i] = 0;
-    }
-    field_0x74->moveFromCentre_80402E08(0.0f, -200.0f);
-    field_0x74->field_0x22 = 0;
-    field_0x24c = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 12;
-}
-
-// FIXME: 98.04 %. Register swap in setEntries' loop: the original keeps the
-// 2 * i shift in r4 (the zero stored to field_0x240) and i in a fresh r5 (li);
-// ours keeps i in r4 and copies it (mr r5, r4) for the shift. fn_803F8050
-// inlines this function and matches.
-void ConnectScreen_804B0F10::fn_803F2580() {
-    field_0x240[0] = 0;
-    field_0x1d0[0] = 5;
-    if (field_0x1a8 == 0) {
-        setEntries(this);
-    }
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 9;
-}
-
-void ConnectScreen_804B0F10::fn_803F2660() {
-    field_0x240[0] = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 8;
-}
-
-// FIXME: 99.89. Instructions identical; only the .sdata2 literals differ
-// (@NNN vs lbl_80543xxx: the pool's 3.0 / 800 / 640 come first in the
-// original, from an earlier function not written yet).
-// Enter state 7 (the game-select screen field_0xc): the messages of
-// 'Tsta01' / 'Than01' / 'Trule01', the player-count texture in 'Pnop02' /
-// 'Pnop01' (2-4 players), and the panes moved off screen to slide in.
-void ConnectScreen_804B0F10::fn_803F267C() {
-    char* han = static_cast<J2DTextBox*>(field_0xc->search('Than01'))->getStringPtr();
-    char* sta = static_cast<J2DTextBox*>(field_0xc->search('Tsta01'))->getStringPtr();
-    char* rule = static_cast<J2DTextBox*>(field_0xc->search('Trule01'))->getStringPtr();
-    getMessageText_803832BC(sta, 0x11B, 0, NULL, NULL);
-    getMessageText_803832BC(han, 0xAC, 0, NULL, NULL);
-    getMessageText_803832BC(rule, 0xF7, 0, NULL, NULL);
-    if (field_0x1ac == 0) {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
-        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
-    } else if (field_0x1ac == 1) {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
-        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
-    } else {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
-        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
-    }
-    field_0x164 = -200.0f;
-    field_0x168 = -200.0f;
-    field_0x184[0] = 300.0f;
-    field_0x184[1] = 300.0f;
-    field_0x184[2] = 300.0f;
-    field_0x198 = -450.0f;
-    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
-    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
-    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
-    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
-    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
-    field_0x1d0[0] = 0;
-    field_0x240[0] = 0;
-    field_0x210[0] = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 7;
-}
-
-void ConnectScreen_804B0F10::fn_803F2AEC() {
-    lbl_8053AEC0->fn_80431A9C(0xC4, field_0x1ac + 2, NULL);
-    field_0x25c = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 6;
-}
-
-void ConnectScreen_804B0F10::fn_803F2B48() {
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 5;
-}
-
-void ConnectScreen_804B0F10::fn_803F2B5C() {
-    field_0x240[0] = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 4;
-}
-
-// FIXME: 99.42. Instructions identical; only the .sdata2 literals differ
-// (@NNN vs lbl_80543xxx: earlier unwritten functions come first in the pool).
-// Twin of cls_804B0B00::fn_803E3CB0.
-// Enter state 3 (the GBA connection screen field_0x8): the player-count
-// textures ('Ptn01' / 'Ptn02', 2-4 players), message 0x3F in 'Ttkg01' /
-// 'Ttkg02', the panes moved off screen to slide in, and per player the
-// 'Pcgbak' / 'Pcgba' / 'Pcgp' / 'Pcgps' / 'Pcca' panes shown (taking part,
-// 'Ppln' opaque, the animation lengths in field_0x220 / field_0x230) or
-// hidden ('Ppln' at 128); the 'Par' arrows hidden.
-void ConnectScreen_804B0F10::fn_803F2B78() {
-    if (field_0x1ac == 0) {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
-        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
-    } else if (field_0x1ac == 1) {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
-        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
-    } else {
-        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
-        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
-        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
-    }
-    char* text1 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->getStringPtr();
-    char* text2 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->getStringPtr();
-    getMessageText_803832BC(text1, 0x3F, 0, NULL, NULL);
-    getMessageText_803832BC(text2, 0x3F, 0, NULL, NULL);
-    field_0x9c = -300.0f;
-    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
-    field_0xa8 = -100.0f;
-    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
-    field_0xb4 = -200.0f;
-    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
-    field_0xb8 = -200.0f;
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
-    field_0xdc[0] = 200.0f;
-    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
-    field_0xdc[1] = 200.0f;
-    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
-    field_0xdc[2] = 200.0f;
-    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
-    field_0xdc[3] = 200.0f;
-    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
-    for (s32 i = 0; i < 4; i++) {
-        if (i <= field_0x1ac + 1) {
-            field_0x8->search(lbl_80479258[i])->show();
-            field_0x8->search(lbl_80479278[i])->show();
-            field_0x8->search(lbl_80479298[i])->show();
-            field_0x8->search(lbl_804792B8[i])->show();
-            for (s32 j = 2; j < 4; j++) {
-                field_0x8->search(lbl_804792F8[i][j])->show();
-            }
-            field_0x8->search(lbl_804792D8[i])->setAlpha(255);
-            field_0x220[i] = field_0x38[i]->getFrameMax();
-            field_0x230[i] = field_0x48[i]->getFrameMax();
-        } else {
-            field_0x8->search(lbl_80479258[i])->hide();
-            field_0x8->search(lbl_80479278[i])->hide();
-            field_0x8->search(lbl_80479298[i])->hide();
-            field_0x8->search(lbl_804792B8[i])->hide();
-            for (s32 j = 2; j < 4; j++) {
-                field_0x8->search(lbl_804792F8[i][j])->hide();
-            }
-            field_0x8->search(lbl_804792D8[i])->setAlpha(128);
-            field_0x220[i] = 0;
-            field_0x230[i] = 0;
-        }
-        field_0x8->search(lbl_80479378[i])->hide();
-    }
-    field_0x240[0] = 0;
-    field_0x248 = 0;
-    field_0x24a = 0;
-    field_0x25b = 0;
-    field_0x24e = -1;
-    field_0x250 = -1;
-    for (s32 i = 0; i < 4; i++) {
-        field_0x210[i] = 0;
-    }
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 3;
-}
-
-void ConnectScreen_804B0F10::fn_803F32E8() {
-    field_0x210[0] = 0;
-    field_0x240[0] = 0;
-    field_0x1d0[0] = 5;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 2;
-}
-
-void ConnectScreen_804B0F10::fn_803F3310() {
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 1;
-}
-
-// FIXME: 99.77 %. Instructions identical; only the .sdata2 literals differ (see
-// fn_803F715C). fn_803FC5E4 inlines this function.
-void ConnectScreen_804B0F10::fn_803F3324() {
-    field_0x110 = -150.0f;
-    mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
-    field_0x114 = -100.0f;
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
-    field_0x130[0] = -350.0f;
-    mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118[0] + field_0x130[0], field_0x124[0]);
-    field_0x130[1] = -350.0f;
-    mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x118[1] + field_0x130[1], field_0x124[1]);
-    field_0x130[2] = -350.0f;
-    mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x118[2] + field_0x130[2], field_0x124[2]);
-    field_0x144 = 400.0f;
-    mScreen->search(0x004E646174613032ull /* "Ndata02" */)->move(field_0x13c + field_0x144, field_0x140);
-    field_0x158 = 400.0f;
-    mScreen->search(0x004E646174613035ull /* "Ndata05" */)->move(field_0x148 + field_0x158, field_0x14c);
-    mScreen->search(0x004E646174613037ull /* "Ndata07" */)->move(field_0x150 + field_0x158, field_0x154);
-    field_0x210[0] = 0;
-    field_0x1d0[0] = 0;
-    field_0x240[0] = 0;
-    field_0x1c8 = field_0x1c4;
-    field_0x1c4 = 0;
-}
-
-void ConnectScreen_804B0F10::fn_803F358C() {
-    field_0x58->fn_80436668();
-}
-
-// FIXME: 99.26 (twin cls_804B0B00::fn_803E4650): stack slots only, the
-// blink's else-branch int conversion sits at 0x10 instead of 0x8.
-// Draws states 10 and 11 (the results screen field_0x10): each taking
-// player's cursor 'Pscur' fades with field_0x1d0[i] (60 frames), the
-// joined ones' 'Paccur' panes with it; outside state 10 the 'Paccur02'
-// pane and field_0x64[i] bounce with field_0x240[i]. Then lbl_8053AED8's
-// buttons.
-void ConnectScreen_804B0F10::fn_803F35B0() {
-    for (s32 i = 0; i < 4; i++) {
-        f32 t;
-        if (field_0x1d0[i] < 30) {
-            t = (f32)(field_0x1d0[i] * field_0x1d0[i]) / 900.0f;
-        } else {
-            t = 1.0f - (f32)((field_0x1d0[i] - 30) * (field_0x1d0[i] - 30)) / 900.0f;
-        }
-        if (i <= field_0x1ac + 1) {
-            if (field_0x1b0[i] < 4) {
-                field_0x10->search(lbl_804793D8[i])->setAlpha(160.0f * t);
-            }
-            if (field_0x1b0[i] == 3) {
-                field_0x10->search(lbl_804793F8[i])->setAlpha(t * field_0x25a);
-                field_0x10->search(lbl_80479418[i])->setAlpha(t * field_0x25a);
-            }
-        }
-        if (field_0x1c4 != 10) {
-            s32 bounce = field_0x240[i] < 5 ? field_0x240[i] : 10 - field_0x240[i];
-            f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
-            f32 x = field_0x10->search(lbl_804793F8[i])->getBounds()->i.x;
-            field_0x10->search(lbl_804793F8[i])->move(x, field_0x1a0 + offset);
-            if (field_0x1b0[i] >= 3) {
-                field_0x64[i]->moveFromCentre_80402E08(0.0f, offset);
-            }
-        }
-    }
-    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    lbl_8053AED8->fn_80440EE8();
-}
-
-// FIXME: 99.60. Stack layout and float registers only: the original keeps
-// every int-to-float conversion in one 8-byte slot (0x18; frame 0x60), ours
-// uses two (frame 0x70), and the bounce offset / pane x swap f29 and f30.
-// Draws states 7-9 (the game-select menu, field_0xc): the cursor
-// 'Pscuro01' / 'Pscuro02' fades in and out (field_0x1d0[0] over 60 frames;
-// in state 9 it fades to 230 over 30, or is hidden while field_0x1cc is 0)
-// and the chosen entry ('Pstab04' / 'Phanb04' / 'Prub04', field_0x1a8)
-// bounces with field_0x240[0]; then the screen, the player sprites
-// (fn_803F0A54) and lbl_8053AED8's buttons.
-void ConnectScreen_804B0F10::fn_803F38A4() {
-    f32 alpha;
-    if (field_0x1c4 != 9) {
-        f32 t;
-        if (field_0x1d0[0] < 30) {
-            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
-        } else {
-            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
-        }
-        alpha = t * field_0x259;
-    } else if (field_0x1cc == 0) {
-        alpha = 0.0f;
-    } else {
-        f32 t;
-        if (field_0x1d0[0] < 15) {
-            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
-        } else {
-            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
-        }
-        alpha = 230.0f * t;
-    }
-    s32 bounce;
-    if (field_0x1c4 == 8 || (field_0x1c4 == 9 && field_0x1cc != 0 && field_0x240[0] <= 10)) {
-        if (field_0x240[0] < 5) {
-            bounce = field_0x240[0];
-        } else {
-            bounce = 10 - field_0x240[0];
-        }
-    } else {
-        bounce = 0;
-    }
-    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
-    if (field_0x1a8 == 0) {
-        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
-        field_0xc->search('Pstab04')->move(x, field_0xfc[0] + offset);
-        x = field_0xc->search('Phanb04')->getBounds()->i.x;
-        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
-        x = field_0xc->search('Prub04')->getBounds()->i.x;
-        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
-        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
-        field_0xc->search('Pscuro02')->move(x, field_0xf8 + offset);
-    } else if (field_0x1a8 == 1) {
-        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
-        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
-        x = field_0xc->search('Phanb04')->getBounds()->i.x;
-        field_0xc->search('Phanb04')->move(x, field_0xfc[1] + offset);
-        x = field_0xc->search('Prub04')->getBounds()->i.x;
-        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
-        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
-        f32 y = field_0xf8 + field_0xc->search('Phanb04')->getBounds()->i.y - top;
-        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
-        field_0xc->search('Pscuro02')->move(x, y);
-    } else {
-        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
-        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
-        x = field_0xc->search('Phanb04')->getBounds()->i.x;
-        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
-        x = field_0xc->search('Prub04')->getBounds()->i.x;
-        field_0xc->search('Prub04')->move(x, field_0xfc[2] + offset);
-        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
-        f32 y = field_0xf8 + field_0xc->search('Prub04')->getBounds()->i.y - top;
-        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
-        field_0xc->search('Pscuro02')->move(x, y);
-    }
-    field_0xc->search('Pscuro01')->setAlpha(alpha);
-    field_0xc->search('Pscuro02')->setAlpha(alpha);
-    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
-    gGameRoot2_8053AB10->fn_8013B414(&box, true);
-    fn_803F0A54();
-    lbl_8053AED8->fn_80440EE8();
-}
-
-// FIXME: 98.68. Stack slots and registers only: the original converts every
-// int / u8 to float in the one 0x8 slot (ours uses 0x8-0x18), and the loop's
-// table pointers / the lit alpha sit in other registers.
-// Draws states 2-4 (the player-count menu, mScreen): the cursor
-// 'Pscuro01' / 'Pscuro02' fades with field_0x1d0[0] (in state 4 it fades to
-// 230 over 15 frames, then by (n - 15)^2 / 225), the chosen count's pane
-// (field_0x1ac) bounces with field_0x240[0] and shows its lit version at
-// 80 * the fade; the others show the plain one.
-void ConnectScreen_804B0F10::fn_803F5410() {
-    f32 alpha;
-    f32 t;
-    if (field_0x1c4 != 2) {
-        if (field_0x1d0[0] < 30) {
-            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
-        } else {
-            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
-        }
-        alpha = t * field_0x258;
-    } else {
-        if (field_0x1d0[0] < 15) {
-            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
-        } else {
-            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
-        }
-        alpha = 230.0f * t;
-    }
-    s32 bounce;
-    if (field_0x1c4 == 1 || (field_0x1c4 == 2 && field_0x240[0] <= 10)) {
-        if (field_0x240[0] < 5) {
-            bounce = field_0x240[0];
-        } else {
-            bounce = 10 - field_0x240[0];
-        }
-    } else {
-        bounce = 0;
-    }
-    f32 lit = 80.0f * t;
-    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
-    for (s32 i = 0; i < 3; i++) {
-        if (i == field_0x1ac) {
-            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
-            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i] + offset);
-            if (i == 0) {
-                x = mScreen->search('Pscuro02')->getBounds()->i.x;
-                mScreen->search('Pscuro02')->move(x, field_0xf0 + offset);
-            } else {
-                f32 top = mScreen->search(lbl_804798C0[0])->getBounds()->i.y;
-                f32 y = field_0xf0 + mScreen->search(lbl_804798C0[i])->getBounds()->i.y - top;
-                x = mScreen->search('Pscuro02')->getBounds()->i.x;
-                mScreen->search('Pscuro02')->move(x, y);
-            }
-            mScreen->search(lbl_804798D8[i])->hide();
-            mScreen->search(lbl_804798F0[i])->show();
-            mScreen->search(lbl_804798F0[i])->setAlpha(lit);
-        } else {
-            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
-            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i]);
-            mScreen->search(lbl_804798D8[i])->show();
-            mScreen->search(lbl_804798F0[i])->hide();
-        }
-    }
-    mScreen->search('Pscuro01')->setAlpha(alpha);
-    mScreen->search('Pscuro02')->setAlpha(alpha);
-    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    lbl_8053AED8->fn_80440EE8();
-}
-
-void ConnectScreen_804B0F10::fn_803F59A0() {
-    if (field_0x58->fn_804366B8() != 0) {
-        if (field_0x25e == 0) {
-            field_0x1cc = 7;
-            field_0x25e = 1;
-        }
-        field_0x1a8 = 0;
-        gAudioMgr_8053AF80->fn_80458880(11, -1);
-    }
-}
-
-// FIXME: 99.56 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and the unwritten
-// functions before this one (fn_803F1C70 on) use the earlier literals.
-void ConnectScreen_804B0F10::fn_803F715C() {
-    u8 done0 = false;
-    u8 done1 = false;
-    u8 done2 = false;
-    field_0x24c++;
-    if (field_0x24c > 0) {
-        done0 = field_0x60->fn_80402940(22, 0, -200.0f, 0.0f);
-    }
-    if (field_0x24c > 16) {
-        done1 = field_0x74->fn_80402940(24, 0, -200.0f, 0.0f);
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (i <= field_0x1ac + 1 && field_0x24c > i * 5 + 4) {
-            done2 = field_0x64[i]->fn_80402940(18, 0, 150.0f, 0.0f);
-        }
-    }
-    if (done0 && done1 && done2) {
-        field_0x1c8 = field_0x1c4;
-        field_0x1c4 = 11;
-    }
-}
-
-void ConnectScreen_804B0F10::fn_803F8050() {
-    stepBlink(this);
-    if (field_0x1c0 != field_0x1ac + 2) {
-        field_0x25c = 255;
-        (this->*lbl_804B0BDC[3])();
-    } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
-        if (field_0x1a8 < 3) {
-            field_0x1cc = 13;
-            fn_803F2580();
-        }
-        gAudioMgr_8053AF80->fn_80458880(11, -1);
-    } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
-        field_0x1cc = 0;
-        (this->*lbl_804B0BDC[9])();
-        gAudioMgr_8053AF80->fn_80458880(12, -1);
-    } else if (lbl_8053AD30->fn_80309A9C(4, lbl_80529DEC.field_0x23d + 2)) {
-        field_0x1a8++;
-        if (field_0x1a8 >= 3) {
-            field_0x1a8 = 0;
-        }
-        cursorMoved(this);
-    } else if (lbl_8053AD30->fn_80309A9C(8, lbl_80529DEC.field_0x23d + 2)) {
-        field_0x1a8--;
-        if (field_0x1a8 < 0) {
-            field_0x1a8 = 2;
-        }
-        cursorMoved(this);
-    }
-    stepCursorTimer(this);
-}
-
-// FIXME: 96.29. Registers throughout (one more saved register in the
-// original), the counter's first test is `lha r0; cmpwi` there but
-// `lha r3; extsh.` here, and the three-row loop's i * 10 sits in two
-// registers there (li r30; mr r28, r30) but one here; .sdata2 @NNN names.
-// Update state 7: slides field_0xc's game-select panes in and fades them up
-// (field_0x240[0] counts the frames: the title from 0 to 25, the rows
-// 10 frames apart, the rule box from 0 to 15), then enters state 8 at 75.
-void ConnectScreen_804B0F10::fn_803F8354() {
-    field_0x240[0]++;
-    if (field_0x240[0] > 0) {
-        if (field_0x240[0] < 25) {
-            s32 d = 25 - field_0x240[0];
-            field_0x164 = -200.0f * ((f32)(d * d) / 625.0f);
-            f32 alpha = (f32)field_0x240[0] / 25.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 20; i++) {
-                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], alpha));
-            }
-        } else {
-            field_0x164 = 0.0f;
-            for (int i = 0; i < 20; i++) {
-                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], 1.0f));
-            }
-        }
-    }
-    if (field_0x240[0] > 25) {
-        if (field_0x240[0] < 45) {
-            s32 d = 20 - (field_0x240[0] - 25);
-            field_0x168 = -200.0f * ((f32)(d * d) / 400.0f);
-        } else {
-            field_0x168 = 0.0f;
-        }
-    }
-    for (int i = 0; i < 3; i++) {
-        if (field_0x240[0] > i * 10) {
-            if (field_0x240[0] < i * 10 + 15) {
-                s32 d = 15 - (field_0x240[0] - i * 10);
-                field_0x184[i] = 300.0f * ((f32)(d * d) / 225.0f);
-                f32 alpha = (f32)(field_0x240[0] - i * 10) / 15.0f;
-                if (alpha < 0.0f) {
-                    alpha = 0.0f;
-                } else if (alpha > 1.0f) {
-                    alpha = 1.0f;
-                }
-                for (int j = 0; j < 5; j++) {
-                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], alpha));
-                }
-            } else {
-                field_0x184[i] = 0.0f;
-                for (int j = 0; j < 5; j++) {
-                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], 1.0f));
-                }
-            }
-        }
-    }
-    if (field_0x240[0] > 0) {
-        if (field_0x240[0] < 15) {
-            s32 d = 15 - field_0x240[0];
-            field_0x198 = -450.0f * ((f32)(d * d) / 225.0f);
-            f32 alpha = (f32)field_0x240[0] / 15.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 26; i++) {
-                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], alpha));
-            }
-        } else {
-            field_0x198 = 0.0f;
-            for (int i = 0; i < 26; i++) {
-                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], 1.0f));
-            }
-        }
-    }
-    if (field_0x240[0] >= 75) {
-        field_0x240[0] = 0;
-        fn_803F2660();
-    }
-    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
-    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
-    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
-    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
-    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
-    f32 y = field_0xc->search('Pscuro02')->getBounds()->i.y;
-    field_0xc->search('Pscuro02')->move(field_0xf4, y);
-}
-
-// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
-// follows first use and the unwritten functions before this unit's first one use the earlier literals).
-// Update state 5 (the GBA connection prompt): field_0x25c 255, or decide
-// (0x1100) without every controller connected, enters state 6
-// (fn_803F2AEC); decide with all connected reads the players' results and
-// enters state 4 (fn_803F2B5C); back (0x200) enters state 0.
-void ConnectScreen_804B0F10::fn_803F8AE4() {
-    if (field_0x25c == 255) {
-        fn_803F2AEC();
-    } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
-        if (field_0x1c0 == field_0x1ac + 2) {
-            field_0x1a8 = 0;
-            for (s32 i = 0; i < 4; i++) {
-                field_0x1e0[i] = fn_80403414(i);
-                field_0x1f0[i] = fn_804033D4(i);
-                field_0x200[i] = fn_8040336C(i);
-            }
-            for (s32 i = 0; i < 4; i++) {
-                field_0x1b0[i] = 1;
-            }
-            fn_803F2B5C();
-            gAudioMgr_8053AF80->fn_80458880(11, -1);
-        } else {
-            fn_803F2AEC();
-        }
-    } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
-        (this->*lbl_804B0BDC[0])();
-        gAudioMgr_8053AF80->fn_80458880(12, -1);
-    }
-    field_0x1d0[0]++;
-    if (field_0x1d0[0] >= 60) {
-        field_0x1d0[0] = 0;
-    }
-    field_0x248++;
-    if (field_0x248 >= 100) {
-        field_0x248 = 0;
-    }
-    field_0x24a++;
-    if (field_0x24a >= 100) {
-        field_0x24a = 0;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
-            field_0x210[i]++;
-            if (field_0x210[i] >= 130) {
-                field_0x210[i] = 100;
-            }
-            if (field_0x210[i] == 11) {
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x10001);
-            } else if (field_0x210[i] == 36) {
-                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
-                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
-                size = field_0x8->search(lbl_80479238[i])->getHeight();
-                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
-                field_0x90 = 0.0f;
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x2000E);
-                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
-                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
-            }
-        } else {
-            field_0x210[i] = 0;
-        }
-    }
-}
-
-// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
-// follows first use and the unwritten functions before this unit's first one use the earlier literals).
-// Update state 6 (waiting for the GBA link through lbl_8053AEC0;
-// field_0x25c: 0 starting, 1 running, 2 ending into state 5, 3 ending with
-// field_0x350 = 2): all players connected, decide (0x1100) or back (0x200)
-// ends it; then each connected player's pane animation (field_0x210[i],
-// 100-129 looping) plays sound 0x10001 at frame 11 and at frame 36 sound
-// 0x2000E and effects 0xCB / 0xCC at the 'Pplli' pane.
-void ConnectScreen_804B0F10::fn_803F8FBC() {
-    switch (field_0x25c) {
-    case 0:
-        if (lbl_8053AEC0->fn_804317AC()) {
-            field_0x25c = 1;
-        }
-        break;
-    case 2:
-        if (lbl_8053AEC0->fn_80431740()) {
-            field_0x25c = 0;
-            field_0x1c8 = field_0x1c4;
-            field_0x1c4 = 5;
-        }
-        break;
-    case 3:
-        if (lbl_8053AEC0->fn_80431740()) {
-            field_0x25c = 0;
-            field_0x350 = 2;
-        }
-        break;
-    default:
-        if (field_0x1c0 == field_0x1ac + 2) {
-            field_0x25c = 2;
-            gAudioMgr_8053AF80->fn_80458880(11, -1);
-        } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
-            field_0x25c = 2;
-            gAudioMgr_8053AF80->fn_80458880(11, -1);
-        } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
-            field_0x25c = 2;
-            gAudioMgr_8053AF80->fn_80458880(12, -1);
-        }
-        break;
-    }
-    field_0x248++;
-    if (field_0x248 >= 100) {
-        field_0x248 = 0;
-    }
-    field_0x24a++;
-    if (field_0x24a >= 100) {
-        field_0x24a = 0;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
-            field_0x210[i]++;
-            if (field_0x210[i] >= 130) {
-                field_0x210[i] = 100;
-            }
-            if (field_0x210[i] == 11) {
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x10001);
-            } else if (field_0x210[i] == 36) {
-                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
-                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
-                size = field_0x8->search(lbl_80479238[i])->getHeight();
-                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
-                field_0x90 = 0.0f;
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x2000E);
-                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
-                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
-            }
-        } else {
-            field_0x210[i] = 0;
-        }
-    }
-}
-
-// FIXME: 97.12. Registers throughout; the counter's first test is
-// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
-// the player-row loop keeps i * 5 in two registers there (li r30;
-// mr r28, r30, plus a separate this pointer for field_0xdc) but one here;
-// .sdata2 @NNN names.
-// Update state 3: slides the GBA connection screen field_0x8 in and fades
-// it up (field_0x240[0] counts the frames: the message box from 0 to 25,
-// the title from 25 to 45, the player rows 5 frames apart), plays each
-// connected player's pane animation (as fn_803F8AE4) once its row is in
-// place, then enters state 5 at 75.
-void ConnectScreen_804B0F10::fn_803F9EA8() {
-    field_0x240[0]++;
-    if (field_0x240[0] > 0) {
-        if (field_0x240[0] < 25) {
-            field_0x9c = -300.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
-            field_0xa8 = -100.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
-            f32 alpha = (f32)field_0x240[0] / 25.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 34; i++) {
-                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], alpha));
-            }
-            alpha = (f32)field_0x240[0] / 25.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 11; i++) {
-                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], alpha));
-            }
-        } else {
-            field_0x9c = field_0xa8 = 0.0f;
-            for (int i = 0; i < 34; i++) {
-                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], 1.0f));
-            }
-            for (int i = 0; i < 11; i++) {
-                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], 1.0f));
-            }
-        }
-    }
-    if (field_0x240[0] > 25) {
-        if (field_0x240[0] < 45) {
-            field_0xb4 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
-            field_0xb8 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
-            f32 alpha = (f32)(field_0x240[0] - 25) / 20.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 6; i++) {
-                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], alpha));
-            }
-        } else {
-            field_0xb4 = field_0xb8 = 0.0f;
-            for (int i = 0; i < 6; i++) {
-                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], 1.0f));
-            }
-        }
-    }
-    for (int i = 0; i < 4; i++) {
-        if (field_0x240[0] > i * 5) {
-            if (field_0x240[0] < i * 5 + 15) {
-                field_0xdc[i] = 200.0f * ((f32)((15 - (field_0x240[0] - i * 5)) * (15 - (field_0x240[0] - i * 5))) / 225.0f);
-                f32 alpha = (f32)(field_0x240[0] - i * 5) / 15.0f;
-                if (alpha < 0.0f) {
-                    alpha = 0.0f;
-                } else if (alpha > 1.0f) {
-                    alpha = 1.0f;
-                }
-                for (int j = 0; j < 9; j++) {
-                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], alpha));
-                }
-            } else {
-                field_0xdc[i] = 0.0f;
-                for (int j = 0; j < 9; j++) {
-                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], 1.0f));
-                }
-            }
-        }
-    }
-    field_0x248++;
-    if (field_0x248 >= 100) {
-        field_0x248 = 0;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) && field_0xdc[i] == 0.0f) {
-            field_0x210[i]++;
-            if (field_0x210[i] >= 130) {
-                field_0x210[i] = 100;
-            }
-            if (field_0x210[i] == 11) {
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x10001);
-            } else if (field_0x210[i] == 36) {
-                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
-                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
-                size = field_0x8->search(lbl_80479238[i])->getHeight();
-                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
-                field_0x90 = 0.0f;
-                field_0x78[i]->field_0x44 = 0;
-                field_0x78[i]->field_0x45 = 0;
-                field_0x78[i]->startSound(0x2000E);
-                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
-                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
-                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
-            }
-        } else {
-            field_0x210[i] = 0;
-        }
-    }
-    if (field_0x240[0] >= 75) {
-        field_0x240[0] = 0;
-        fn_803F2B48();
-    }
-    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
-    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
-    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
-    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
-    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
-    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
-    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
-}
-
-// FIXME: 99.41 %. Same register swap as fn_803F2580 in the inlined
-// setEntries loop (li r4, 0 for i in the original, mr r4, r3 here).
-void ConnectScreen_804B0F10::fn_803FB6F4() {
-    stepBlink(this);
-    if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
-        field_0x1a8 = 0;
-        gGameRoot_8053AAF8->field_0x7e = 1;
-        if (field_0x1c0 == field_0x1ac + 2) {
-            setEntries(this);
-            field_0x1cc = 13;
-        }
-        fn_803F32E8();
-        if (field_0x1ac != lbl_80529DEC.field_0x23d) {
-            for (s32 i = 0; i < 4; i++) {
-                lbl_80529DEC.field_0x140[i] = 0;
-            }
-            lbl_80529DEC.field_0x64 = -1;
-            lbl_80529DEC.fn_80403680();
-        }
-        lbl_80529DEC.field_0x23d = field_0x1ac;
-        gAudioMgr_8053AF80->fn_80458880(11, -1);
-    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
-        field_0x350 = 2;
-        gAudioMgr_8053AF80->fn_80458880(12, -1);
-    } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
-        field_0x1ac++;
-        if (field_0x1ac >= 3) {
-            field_0x1ac = 0;
-        }
-        cursorMoved(this);
-    } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
-        field_0x1ac--;
-        if (field_0x1ac < 0) {
-            field_0x1ac = 2;
-        }
-        cursorMoved(this);
-    }
-    stepCursorTimer(this);
-}
-
-// FIXME: 96.52. Registers throughout; both `> 0` counter tests are
-// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
-// the row loop keeps i * 5 in two registers there but one here; .sdata2
-// @NNN names.
-// Update state 0: slides the player-count screen mScreen in and fades it
-// up (field_0x240[0] counts the frames: the title from 0 to 25, the box
-// from 25 to 45, the three count rows 5 frames apart, the rest from 0 to
-// 15), then enters state 1 at 75.
-void ConnectScreen_804B0F10::fn_803FB9E4() {
-    field_0x240[0]++;
-    if (field_0x240[0] > 0) {
-        if (field_0x240[0] < 25) {
-            field_0x110 = -150.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
-            f32 alpha = (f32)field_0x240[0] / 25.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 20; i++) {
-                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], alpha));
-            }
-        } else {
-            field_0x110 = 0.0f;
-            for (int i = 0; i < 20; i++) {
-                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], 1.0f));
-            }
-        }
-    }
-    if (field_0x240[0] > 25) {
-        if (field_0x240[0] < 45) {
-            field_0x114 = -100.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
-        } else {
-            field_0x114 = 0.0f;
-        }
-    }
-    for (int i = 0; i < 3; i++) {
-        if (field_0x240[0] > i * 5) {
-            if (field_0x240[0] < i * 5 + 10) {
-                field_0x130[i] = -350.0f * ((f32)((10 - (field_0x240[0] - i * 5)) * (10 - (field_0x240[0] - i * 5))) / 100.0f);
-                f32 alpha = (f32)(field_0x240[0] - i * 5) / 10.0f;
-                if (alpha < 0.0f) {
-                    alpha = 0.0f;
-                } else if (alpha > 1.0f) {
-                    alpha = 1.0f;
-                }
-                for (int j = 0; j < 6; j++) {
-                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], alpha));
-                }
-            } else {
-                field_0x130[i] = 0.0f;
-                for (int j = 0; j < 6; j++) {
-                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], 1.0f));
-                }
-            }
-        }
-    }
-    if (field_0x240[0] > 0) {
-        if (field_0x240[0] < 15) {
-            field_0x144 = field_0x158 = 400.0f * ((f32)((15 - field_0x240[0]) * (15 - field_0x240[0])) / 225.0f);
-            f32 alpha = (f32)field_0x240[0] / 15.0f;
-            if (alpha < 0.0f) {
-                alpha = 0.0f;
-            } else if (alpha > 1.0f) {
-                alpha = 1.0f;
-            }
-            for (int i = 0; i < 24; i++) {
-                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], alpha));
-            }
-            for (int i = 0; i < 18; i++) {
-                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], alpha));
-            }
-        } else {
-            field_0x144 = field_0x158 = 0.0f;
-            for (int i = 0; i < 24; i++) {
-                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], 1.0f));
-            }
-            for (int i = 0; i < 18; i++) {
-                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], 1.0f));
-            }
-        }
-    }
-    if (field_0x240[0] >= 75) {
-        field_0x240[0] = 0;
-        fn_803F3310();
-    }
-    mScreen->search('Pmbabb07')->move(field_0x108, field_0x10c + field_0x110);
-    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
-    // The y of each row is read one element on (the original reads
-    // field_0x124[1..3], the last one being field_0x130[0]).
-    mScreen->search('Pnopb08')->move(field_0x118[0] + field_0x130[0], field_0x124[1]);
-    mScreen->search('Pnopb12')->move(field_0x118[1] + field_0x130[1], field_0x124[2]);
-    mScreen->search('Pnopb16')->move(field_0x118[2] + field_0x130[2], field_0x124[3]);
-    mScreen->search('Ndata02')->move(field_0x13c + field_0x144, field_0x140);
-    mScreen->search('Ndata05')->move(field_0x148 + field_0x158, field_0x14c);
-    mScreen->search('Ndata07')->move(field_0x150 + field_0x158, field_0x154);
-    f32 y = mScreen->search('Pscuro02')->getBounds()->i.y;
-    mScreen->search('Pscuro02')->move(field_0xec + field_0x130[field_0x1ac], y);
-}
-
-void ConnectScreen_804B0F10::fn_803FC304() {
-    field_0x1c0 = 0;
-    for (s32 i = 0; i < 4; i++) {
-        if (i <= field_0x1ac + 1) {
-            if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
-                gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << (i + 4));
-                field_0x1c0++;
-            } else {
-                gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
-            }
-        } else {
-            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
-        }
-    }
-    if (field_0x25e == 0 || field_0x1c4 == 4) {
-        if (field_0x1c4 != 13) {
-            (this->*lbl_804B0D14[field_0x1c4])();
-        } else {
-            (this->*lbl_804B0D14[field_0x1c8])();
-        }
-        for (s32 i = 0; i < 4; i++) {
-            field_0x78[i]->fn_80456154();
-        }
-    }
-}
-
-// FIXME: 99.79 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and the unwritten
-// functions before this one (fn_803F1C70 on) use the earlier literals.
-void ConnectScreen_804B0F10::fn_803FC46C() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    if (field_0x1c4 != 13) {
-        (this->*lbl_804B0E4C[field_0x1c4])();
-    } else {
-        (this->*lbl_804B0E4C[field_0x1c8])();
-    }
-    if (field_0x25e != 0) {
-        switch (field_0x25e) {
-        case 1:
-            if (field_0x25d >= 245) {
-                field_0x25d = 255;
-                field_0x25e = 2;
-                (this->*lbl_804B0BDC[field_0x1cc])();
-            } else {
-                field_0x25d += 10;
-            }
-            break;
-        case 2:
-            if (field_0x25d <= 10) {
-                field_0x25d = 0;
-                field_0x25e = 0;
-            } else {
-                field_0x25d -= 10;
-            }
-            break;
-        }
-        gGameRoot2_8053AB10->fn_8013B490();
-        field_0x5c->setAlpha(field_0x25d);
-        field_0x5c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
-    }
-}
-
-// FIXME: 99.80 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
-// lbl_805437xx): the literal pool follows first use, and the unwritten
-// functions before this one (fn_803F1C70 on) use the earlier literals.
-void ConnectScreen_804B0F10::fn_803FC5E4(u8 flag) {
-    lbl_8053AEC0->fn_804310CC();
-    if (flag) {
-        field_0x1c4 = 7;
-        fn_803F267C();
-    } else {
-        if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(1))) {
-            field_0x1ac = 0;
-            for (s32 i = 2; i < 4; i++) {
-                if (!lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
-                    break;
-                }
-                field_0x1ac++;
-            }
-        }
-        field_0x1c4 = 0;
-        fn_803F3324();
-    }
-    field_0x350 = 4;
-}
-
-ConnectScreen_804B0F10::~ConnectScreen_804B0F10() {
-    delete field_0x8;
-    field_0x8 = NULL;
-    delete mScreen;
-    mScreen = NULL;
-    delete field_0xc;
-    field_0xc = NULL;
-    delete field_0x10;
-    field_0x10 = NULL;
-    delete field_0x14;
-    field_0x14 = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0x18[i];
-        field_0x18[i] = NULL;
-        delete field_0x38[i];
-        field_0x38[i] = NULL;
-        delete field_0x28[i];
-        field_0x28[i] = NULL;
-        delete field_0x48[i];
-        field_0x48[i] = NULL;
-    }
-    delete field_0x60;
-    field_0x60 = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0x64[i];
-        field_0x64[i] = NULL;
-    }
-    delete field_0x58;
-    field_0x58 = NULL;
-    delete field_0x5c;
-    field_0x5c = NULL;
-    for (s32 i = 0; i < 4; i++) {
-        delete field_0x78[i];
-        field_0x78[i] = NULL;
-    }
-}
-
 // FIXME: 99.24. Registers only, in most loops (e.g. the first loop's array
 // pointers are r24 / r27 in the original, r27 / r28 here).
 // Builds the seven screens and their panes' start state (structure as the
@@ -1930,5 +605,1330 @@ ConnectScreen_804B0F10::ConnectScreen_804B0F10() {
     field_0x90 = 0.0f;
     for (int i = 0; i < 4; i++) {
         field_0x78[i] = new cls_804B20F8(i, NULL, NULL, 8);
+    }
+}
+
+ConnectScreen_804B0F10::~ConnectScreen_804B0F10() {
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete mScreen;
+    mScreen = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x18[i];
+        field_0x18[i] = NULL;
+        delete field_0x38[i];
+        field_0x38[i] = NULL;
+        delete field_0x28[i];
+        field_0x28[i] = NULL;
+        delete field_0x48[i];
+        field_0x48[i] = NULL;
+    }
+    delete field_0x60;
+    field_0x60 = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x64[i];
+        field_0x64[i] = NULL;
+    }
+    delete field_0x58;
+    field_0x58 = NULL;
+    delete field_0x5c;
+    field_0x5c = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x78[i];
+        field_0x78[i] = NULL;
+    }
+}
+
+// FIXME: 99.80 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
+void ConnectScreen_804B0F10::fn_803FC5E4(u8 flag) {
+    lbl_8053AEC0->fn_804310CC();
+    if (flag) {
+        field_0x1c4 = 7;
+        fn_803F267C();
+    } else {
+        if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(0)) && lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(1))) {
+            field_0x1ac = 0;
+            for (s32 i = 2; i < 4; i++) {
+                if (!lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
+                    break;
+                }
+                field_0x1ac++;
+            }
+        }
+        field_0x1c4 = 0;
+        fn_803F3324();
+    }
+    field_0x350 = 4;
+}
+
+// FIXME: 99.79 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
+void ConnectScreen_804B0F10::fn_803FC46C() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    if (field_0x1c4 != 13) {
+        (this->*lbl_804B0E4C[field_0x1c4])();
+    } else {
+        (this->*lbl_804B0E4C[field_0x1c8])();
+    }
+    if (field_0x25e != 0) {
+        switch (field_0x25e) {
+        case 1:
+            if (field_0x25d >= 245) {
+                field_0x25d = 255;
+                field_0x25e = 2;
+                (this->*lbl_804B0BDC[field_0x1cc])();
+            } else {
+                field_0x25d += 10;
+            }
+            break;
+        case 2:
+            if (field_0x25d <= 10) {
+                field_0x25d = 0;
+                field_0x25e = 0;
+            } else {
+                field_0x25d -= 10;
+            }
+            break;
+        }
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x5c->setAlpha(field_0x25d);
+        field_0x5c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
+    }
+}
+
+void ConnectScreen_804B0F10::fn_803FC304() {
+    field_0x1c0 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1) {
+            if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(i))) {
+                gGameRoot_8053AAF8->mPlayerMask |= (u8)(1 << (i + 4));
+                field_0x1c0++;
+            } else {
+                gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
+            }
+        } else {
+            gGameRoot_8053AAF8->mPlayerMask &= ~(u8)(1 << (i + 4));
+        }
+    }
+    if (field_0x25e == 0 || field_0x1c4 == 4) {
+        if (field_0x1c4 != 13) {
+            (this->*lbl_804B0D14[field_0x1c4])();
+        } else {
+            (this->*lbl_804B0D14[field_0x1c8])();
+        }
+        for (s32 i = 0; i < 4; i++) {
+            field_0x78[i]->fn_80456154();
+        }
+    }
+}
+
+// FIXME: 96.52. Registers throughout; both `> 0` counter tests are
+// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
+// the row loop keeps i * 5 in two registers there but one here; .sdata2
+// @NNN names.
+// Update state 0: slides the player-count screen mScreen in and fades it
+// up (field_0x240[0] counts the frames: the title from 0 to 25, the box
+// from 25 to 45, the three count rows 5 frames apart, the rest from 0 to
+// 15), then enters state 1 at 75.
+void ConnectScreen_804B0F10::fn_803FB9E4() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            field_0x110 = -150.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 20; i++) {
+                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], alpha));
+            }
+        } else {
+            field_0x110 = 0.0f;
+            for (int i = 0; i < 20; i++) {
+                mScreen->search(lbl_80478B18[i])->setAlpha(fadeAlpha(field_0x25f[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            field_0x114 = -100.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+        } else {
+            field_0x114 = 0.0f;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        if (field_0x240[0] > i * 5) {
+            if (field_0x240[0] < i * 5 + 10) {
+                field_0x130[i] = -350.0f * ((f32)((10 - (field_0x240[0] - i * 5)) * (10 - (field_0x240[0] - i * 5))) / 100.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 5) / 10.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 6; j++) {
+                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], alpha));
+                }
+            } else {
+                field_0x130[i] = 0.0f;
+                for (int j = 0; j < 6; j++) {
+                    mScreen->search(lbl_80478BB8[i][j])->setAlpha(fadeAlpha(field_0x273[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 15) {
+            field_0x144 = field_0x158 = 400.0f * ((f32)((15 - field_0x240[0]) * (15 - field_0x240[0])) / 225.0f);
+            f32 alpha = (f32)field_0x240[0] / 15.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 24; i++) {
+                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], alpha));
+            }
+            for (int i = 0; i < 18; i++) {
+                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], alpha));
+            }
+        } else {
+            field_0x144 = field_0x158 = 0.0f;
+            for (int i = 0; i < 24; i++) {
+                mScreen->search(lbl_80478C48[i])->setAlpha(fadeAlpha(field_0x285[i], 1.0f));
+            }
+            for (int i = 0; i < 18; i++) {
+                mScreen->search(lbl_80478D08[i])->setAlpha(fadeAlpha(field_0x29d[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F3310();
+    }
+    mScreen->search('Pmbabb07')->move(field_0x108, field_0x10c + field_0x110);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
+    // The y of each row is read one element on (the original reads
+    // field_0x124[1..3], the last one being field_0x130[0]).
+    mScreen->search('Pnopb08')->move(field_0x118[0] + field_0x130[0], field_0x124[1]);
+    mScreen->search('Pnopb12')->move(field_0x118[1] + field_0x130[1], field_0x124[2]);
+    mScreen->search('Pnopb16')->move(field_0x118[2] + field_0x130[2], field_0x124[3]);
+    mScreen->search('Ndata02')->move(field_0x13c + field_0x144, field_0x140);
+    mScreen->search('Ndata05')->move(field_0x148 + field_0x158, field_0x14c);
+    mScreen->search('Ndata07')->move(field_0x150 + field_0x158, field_0x154);
+    f32 y = mScreen->search('Pscuro02')->getBounds()->i.y;
+    mScreen->search('Pscuro02')->move(field_0xec + field_0x130[field_0x1ac], y);
+}
+
+// FIXME: 99.41 %. Same register swap as fn_803F2580 in the inlined
+// setEntries loop (li r4, 0 for i in the original, mr r4, r3 here).
+void ConnectScreen_804B0F10::fn_803FB6F4() {
+    stepBlink(this);
+    if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
+        field_0x1a8 = 0;
+        gGameRoot_8053AAF8->field_0x7e = 1;
+        if (field_0x1c0 == field_0x1ac + 2) {
+            setEntries(this);
+            field_0x1cc = 13;
+        }
+        fn_803F32E8();
+        if (field_0x1ac != lbl_80529DEC.field_0x23d) {
+            for (s32 i = 0; i < 4; i++) {
+                lbl_80529DEC.field_0x140[i] = 0;
+            }
+            lbl_80529DEC.field_0x64 = -1;
+            lbl_80529DEC.fn_80403680();
+        }
+        lbl_80529DEC.field_0x23d = field_0x1ac;
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
+        field_0x350 = 2;
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, 1)) {
+        field_0x1ac++;
+        if (field_0x1ac >= 3) {
+            field_0x1ac = 0;
+        }
+        cursorMoved(this);
+    } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
+        field_0x1ac--;
+        if (field_0x1ac < 0) {
+            field_0x1ac = 2;
+        }
+        cursorMoved(this);
+    }
+    stepCursorTimer(this);
+}
+
+// FIXME: 97.12. Registers throughout; the counter's first test is
+// `lha r0; cmpwi` there but `lha r3; extsh.` here (as in fn_803F8354), and
+// the player-row loop keeps i * 5 in two registers there (li r30;
+// mr r28, r30, plus a separate this pointer for field_0xdc) but one here;
+// .sdata2 @NNN names.
+// Update state 3: slides the GBA connection screen field_0x8 in and fades
+// it up (field_0x240[0] counts the frames: the message box from 0 to 25,
+// the title from 25 to 45, the player rows 5 frames apart), plays each
+// connected player's pane animation (as fn_803F8AE4) once its row is in
+// place, then enters state 5 at 75.
+void ConnectScreen_804B0F10::fn_803F9EA8() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            field_0x9c = -300.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            field_0xa8 = -100.0f * ((f32)((25 - field_0x240[0]) * (25 - field_0x240[0])) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 34; i++) {
+                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], alpha));
+            }
+            alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 11; i++) {
+                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], alpha));
+            }
+        } else {
+            field_0x9c = field_0xa8 = 0.0f;
+            for (int i = 0; i < 34; i++) {
+                field_0x8->search(lbl_80478E20[i])->setAlpha(fadeAlpha(field_0x2c4[i], 1.0f));
+            }
+            for (int i = 0; i < 11; i++) {
+                field_0x8->search(lbl_80478D98[i])->setAlpha(fadeAlpha(field_0x2af[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            field_0xb4 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+            field_0xb8 = -200.0f * ((f32)((20 - (field_0x240[0] - 25)) * (20 - (field_0x240[0] - 25))) / 400.0f);
+            f32 alpha = (f32)(field_0x240[0] - 25) / 20.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 6; i++) {
+                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], alpha));
+            }
+        } else {
+            field_0xb4 = field_0xb8 = 0.0f;
+            for (int i = 0; i < 6; i++) {
+                field_0x8->search(lbl_80478DF0[i])->setAlpha(fadeAlpha(field_0x2ba[i], 1.0f));
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        if (field_0x240[0] > i * 5) {
+            if (field_0x240[0] < i * 5 + 15) {
+                field_0xdc[i] = 200.0f * ((f32)((15 - (field_0x240[0] - i * 5)) * (15 - (field_0x240[0] - i * 5))) / 225.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 5) / 15.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 9; j++) {
+                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], alpha));
+                }
+            } else {
+                field_0xdc[i] = 0.0f;
+                for (int j = 0; j < 9; j++) {
+                    field_0x8->search(lbl_80478F30[i][j])->setAlpha(fadeAlpha(field_0x2ee[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) && field_0xdc[i] == 0.0f) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F2B48();
+    }
+    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
+    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
+    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
+    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
+    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
+    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
+    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
+}
+
+// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
+// Update state 6 (waiting for the GBA link through lbl_8053AEC0;
+// field_0x25c: 0 starting, 1 running, 2 ending into state 5, 3 ending with
+// field_0x350 = 2): all players connected, decide (0x1100) or back (0x200)
+// ends it; then each connected player's pane animation (field_0x210[i],
+// 100-129 looping) plays sound 0x10001 at frame 11 and at frame 36 sound
+// 0x2000E and effects 0xCB / 0xCC at the 'Pplli' pane.
+void ConnectScreen_804B0F10::fn_803F8FBC() {
+    switch (field_0x25c) {
+    case 0:
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x25c = 1;
+        }
+        break;
+    case 2:
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x25c = 0;
+            field_0x1c8 = field_0x1c4;
+            field_0x1c4 = 5;
+        }
+        break;
+    case 3:
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x25c = 0;
+            field_0x350 = 2;
+        }
+        break;
+    default:
+        if (field_0x1c0 == field_0x1ac + 2) {
+            field_0x25c = 2;
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
+            field_0x25c = 2;
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
+            field_0x25c = 2;
+            gAudioMgr_8053AF80->fn_80458880(12, -1);
+        }
+        break;
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    field_0x24a++;
+    if (field_0x24a >= 100) {
+        field_0x24a = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
+}
+
+// FIXME: 99.9. Instructions identical; only the .sdata2 literals differ (@NNN vs lbl_80543xxx: the pool
+// follows first use and the unwritten functions before this unit's first one use the earlier literals).
+// Update state 5 (the GBA connection prompt): field_0x25c 255, or decide
+// (0x1100) without every controller connected, enters state 6
+// (fn_803F2AEC); decide with all connected reads the players' results and
+// enters state 4 (fn_803F2B5C); back (0x200) enters state 0.
+void ConnectScreen_804B0F10::fn_803F8AE4() {
+    if (field_0x25c == 255) {
+        fn_803F2AEC();
+    } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
+        if (field_0x1c0 == field_0x1ac + 2) {
+            field_0x1a8 = 0;
+            for (s32 i = 0; i < 4; i++) {
+                field_0x1e0[i] = fn_80403414(i);
+                field_0x1f0[i] = fn_804033D4(i);
+                field_0x200[i] = fn_8040336C(i);
+            }
+            for (s32 i = 0; i < 4; i++) {
+                field_0x1b0[i] = 1;
+            }
+            fn_803F2B5C();
+            gAudioMgr_8053AF80->fn_80458880(11, -1);
+        } else {
+            fn_803F2AEC();
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
+        (this->*lbl_804B0BDC[0])();
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
+    }
+    field_0x1d0[0]++;
+    if (field_0x1d0[0] >= 60) {
+        field_0x1d0[0] = 0;
+    }
+    field_0x248++;
+    if (field_0x248 >= 100) {
+        field_0x248 = 0;
+    }
+    field_0x24a++;
+    if (field_0x24a >= 100) {
+        field_0x24a = 0;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {
+            field_0x210[i]++;
+            if (field_0x210[i] >= 130) {
+                field_0x210[i] = 100;
+            }
+            if (field_0x210[i] == 11) {
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x10001);
+            } else if (field_0x210[i] == 36) {
+                f32 size = field_0x8->search(lbl_80479238[i])->getWidth();
+                field_0x88 = toEffectX(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.x);
+                size = field_0x8->search(lbl_80479238[i])->getHeight();
+                field_0x8c = toEffectY(size / 2 + field_0x8->search(lbl_80479238[i])->getGlobalBounds().i.y);
+                field_0x90 = 0.0f;
+                field_0x78[i]->field_0x44 = 0;
+                field_0x78[i]->field_0x45 = 0;
+                field_0x78[i]->startSound(0x2000E);
+                JGeometry::TVec3f pos(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                JGeometry::TVec3f pos2(field_0x88 + 7.0f, field_0x8c - 27.0f, field_0x90);
+                spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            field_0x210[i] = 0;
+        }
+    }
+}
+
+// FIXME: 96.29. Registers throughout (one more saved register in the
+// original), the counter's first test is `lha r0; cmpwi` there but
+// `lha r3; extsh.` here, and the three-row loop's i * 10 sits in two
+// registers there (li r30; mr r28, r30) but one here; .sdata2 @NNN names.
+// Update state 7: slides field_0xc's game-select panes in and fades them up
+// (field_0x240[0] counts the frames: the title from 0 to 25, the rows
+// 10 frames apart, the rule box from 0 to 15), then enters state 8 at 75.
+void ConnectScreen_804B0F10::fn_803F8354() {
+    field_0x240[0]++;
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 25) {
+            s32 d = 25 - field_0x240[0];
+            field_0x164 = -200.0f * ((f32)(d * d) / 625.0f);
+            f32 alpha = (f32)field_0x240[0] / 25.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 20; i++) {
+                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], alpha));
+            }
+        } else {
+            field_0x164 = 0.0f;
+            for (int i = 0; i < 20; i++) {
+                field_0xc->search(lbl_80479050[i])->setAlpha(fadeAlpha(field_0x312[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] > 25) {
+        if (field_0x240[0] < 45) {
+            s32 d = 20 - (field_0x240[0] - 25);
+            field_0x168 = -200.0f * ((f32)(d * d) / 400.0f);
+        } else {
+            field_0x168 = 0.0f;
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        if (field_0x240[0] > i * 10) {
+            if (field_0x240[0] < i * 10 + 15) {
+                s32 d = 15 - (field_0x240[0] - i * 10);
+                field_0x184[i] = 300.0f * ((f32)(d * d) / 225.0f);
+                f32 alpha = (f32)(field_0x240[0] - i * 10) / 15.0f;
+                if (alpha < 0.0f) {
+                    alpha = 0.0f;
+                } else if (alpha > 1.0f) {
+                    alpha = 1.0f;
+                }
+                for (int j = 0; j < 5; j++) {
+                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], alpha));
+                }
+            } else {
+                field_0x184[i] = 0.0f;
+                for (int j = 0; j < 5; j++) {
+                    field_0xc->search(lbl_804790F0[i][j])->setAlpha(fadeAlpha(field_0x326[i][j], 1.0f));
+                }
+            }
+        }
+    }
+    if (field_0x240[0] > 0) {
+        if (field_0x240[0] < 15) {
+            s32 d = 15 - field_0x240[0];
+            field_0x198 = -450.0f * ((f32)(d * d) / 225.0f);
+            f32 alpha = (f32)field_0x240[0] / 15.0f;
+            if (alpha < 0.0f) {
+                alpha = 0.0f;
+            } else if (alpha > 1.0f) {
+                alpha = 1.0f;
+            }
+            for (int i = 0; i < 26; i++) {
+                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], alpha));
+            }
+        } else {
+            field_0x198 = 0.0f;
+            for (int i = 0; i < 26; i++) {
+                field_0xc->search(lbl_80479168[i])->setAlpha(fadeAlpha(field_0x335[i], 1.0f));
+            }
+        }
+    }
+    if (field_0x240[0] >= 75) {
+        field_0x240[0] = 0;
+        fn_803F2660();
+    }
+    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
+    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
+    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
+    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
+    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
+    f32 y = field_0xc->search('Pscuro02')->getBounds()->i.y;
+    field_0xc->search('Pscuro02')->move(field_0xf4, y);
+}
+
+void ConnectScreen_804B0F10::fn_803F8050() {
+    stepBlink(this);
+    if (field_0x1c0 != field_0x1ac + 2) {
+        field_0x25c = 255;
+        (this->*lbl_804B0BDC[3])();
+    } else if (lbl_8053AD30->fn_80309C4C(0x1100, lbl_80529DEC.field_0x23d + 2)) {
+        if (field_0x1a8 < 3) {
+            field_0x1cc = 13;
+            fn_803F2580();
+        }
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, lbl_80529DEC.field_0x23d + 2)) {
+        field_0x1cc = 0;
+        (this->*lbl_804B0BDC[9])();
+        gAudioMgr_8053AF80->fn_80458880(12, -1);
+    } else if (lbl_8053AD30->fn_80309A9C(4, lbl_80529DEC.field_0x23d + 2)) {
+        field_0x1a8++;
+        if (field_0x1a8 >= 3) {
+            field_0x1a8 = 0;
+        }
+        cursorMoved(this);
+    } else if (lbl_8053AD30->fn_80309A9C(8, lbl_80529DEC.field_0x23d + 2)) {
+        field_0x1a8--;
+        if (field_0x1a8 < 0) {
+            field_0x1a8 = 2;
+        }
+        cursorMoved(this);
+    }
+    stepCursorTimer(this);
+}
+
+// FIXME: 99.56 %. Instructions identical; only the .sdata2 literals differ (@NNN vs
+// lbl_805437xx): the literal pool follows first use, and the unwritten
+// functions before this one (fn_803F1C70 on) use the earlier literals.
+void ConnectScreen_804B0F10::fn_803F715C() {
+    u8 done0 = false;
+    u8 done1 = false;
+    u8 done2 = false;
+    field_0x24c++;
+    if (field_0x24c > 0) {
+        done0 = field_0x60->fn_80402940(22, 0, -200.0f, 0.0f);
+    }
+    if (field_0x24c > 16) {
+        done1 = field_0x74->fn_80402940(24, 0, -200.0f, 0.0f);
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1 && field_0x24c > i * 5 + 4) {
+            done2 = field_0x64[i]->fn_80402940(18, 0, 150.0f, 0.0f);
+        }
+    }
+    if (done0 && done1 && done2) {
+        field_0x1c8 = field_0x1c4;
+        field_0x1c4 = 11;
+    }
+}
+
+void ConnectScreen_804B0F10::fn_803F59A0() {
+    if (field_0x58->fn_804366B8() != 0) {
+        if (field_0x25e == 0) {
+            field_0x1cc = 7;
+            field_0x25e = 1;
+        }
+        field_0x1a8 = 0;
+        gAudioMgr_8053AF80->fn_80458880(11, -1);
+    }
+}
+
+// FIXME: 98.68. Stack slots and registers only: the original converts every
+// int / u8 to float in the one 0x8 slot (ours uses 0x8-0x18), and the loop's
+// table pointers / the lit alpha sit in other registers.
+// Draws states 2-4 (the player-count menu, mScreen): the cursor
+// 'Pscuro01' / 'Pscuro02' fades with field_0x1d0[0] (in state 4 it fades to
+// 230 over 15 frames, then by (n - 15)^2 / 225), the chosen count's pane
+// (field_0x1ac) bounces with field_0x240[0] and shows its lit version at
+// 80 * the fade; the others show the plain one.
+void ConnectScreen_804B0F10::fn_803F5410() {
+    f32 alpha;
+    f32 t;
+    if (field_0x1c4 != 2) {
+        if (field_0x1d0[0] < 30) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
+        }
+        alpha = t * field_0x258;
+    } else {
+        if (field_0x1d0[0] < 15) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
+        }
+        alpha = 230.0f * t;
+    }
+    s32 bounce;
+    if (field_0x1c4 == 1 || (field_0x1c4 == 2 && field_0x240[0] <= 10)) {
+        if (field_0x240[0] < 5) {
+            bounce = field_0x240[0];
+        } else {
+            bounce = 10 - field_0x240[0];
+        }
+    } else {
+        bounce = 0;
+    }
+    f32 lit = 80.0f * t;
+    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+    for (s32 i = 0; i < 3; i++) {
+        if (i == field_0x1ac) {
+            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
+            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i] + offset);
+            if (i == 0) {
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, field_0xf0 + offset);
+            } else {
+                f32 top = mScreen->search(lbl_804798C0[0])->getBounds()->i.y;
+                f32 y = field_0xf0 + mScreen->search(lbl_804798C0[i])->getBounds()->i.y - top;
+                x = mScreen->search('Pscuro02')->getBounds()->i.x;
+                mScreen->search('Pscuro02')->move(x, y);
+            }
+            mScreen->search(lbl_804798D8[i])->hide();
+            mScreen->search(lbl_804798F0[i])->show();
+            mScreen->search(lbl_804798F0[i])->setAlpha(lit);
+        } else {
+            f32 x = mScreen->search(lbl_804798C0[i])->getBounds()->i.x;
+            mScreen->search(lbl_804798C0[i])->move(x, field_0x124[i]);
+            mScreen->search(lbl_804798D8[i])->show();
+            mScreen->search(lbl_804798F0[i])->hide();
+        }
+    }
+    mScreen->search('Pscuro01')->setAlpha(alpha);
+    mScreen->search('Pscuro02')->setAlpha(alpha);
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
+}
+
+// FIXME: 99.60. Stack layout and float registers only: the original keeps
+// every int-to-float conversion in one 8-byte slot (0x18; frame 0x60), ours
+// uses two (frame 0x70), and the bounce offset / pane x swap f29 and f30.
+// Draws states 7-9 (the game-select menu, field_0xc): the cursor
+// 'Pscuro01' / 'Pscuro02' fades in and out (field_0x1d0[0] over 60 frames;
+// in state 9 it fades to 230 over 30, or is hidden while field_0x1cc is 0)
+// and the chosen entry ('Pstab04' / 'Phanb04' / 'Prub04', field_0x1a8)
+// bounces with field_0x240[0]; then the screen, the player sprites
+// (fn_803F0A54) and lbl_8053AED8's buttons.
+void ConnectScreen_804B0F10::fn_803F38A4() {
+    f32 alpha;
+    if (field_0x1c4 != 9) {
+        f32 t;
+        if (field_0x1d0[0] < 30) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 30) * (field_0x1d0[0] - 30)) / 900.0f;
+        }
+        alpha = t * field_0x259;
+    } else if (field_0x1cc == 0) {
+        alpha = 0.0f;
+    } else {
+        f32 t;
+        if (field_0x1d0[0] < 15) {
+            t = (f32)(field_0x1d0[0] * field_0x1d0[0]) / 225.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[0] - 15) * (field_0x1d0[0] - 15)) / 225.0f;
+        }
+        alpha = 230.0f * t;
+    }
+    s32 bounce;
+    if (field_0x1c4 == 8 || (field_0x1c4 == 9 && field_0x1cc != 0 && field_0x240[0] <= 10)) {
+        if (field_0x240[0] < 5) {
+            bounce = field_0x240[0];
+        } else {
+            bounce = 10 - field_0x240[0];
+        }
+    } else {
+        bounce = 0;
+    }
+    f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+    if (field_0x1a8 == 0) {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0] + offset);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, field_0xf8 + offset);
+    } else if (field_0x1a8 == 1) {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1] + offset);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2]);
+        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
+        f32 y = field_0xf8 + field_0xc->search('Phanb04')->getBounds()->i.y - top;
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, y);
+    } else {
+        f32 x = field_0xc->search('Pstab04')->getBounds()->i.x;
+        field_0xc->search('Pstab04')->move(x, field_0xfc[0]);
+        x = field_0xc->search('Phanb04')->getBounds()->i.x;
+        field_0xc->search('Phanb04')->move(x, field_0xfc[1]);
+        x = field_0xc->search('Prub04')->getBounds()->i.x;
+        field_0xc->search('Prub04')->move(x, field_0xfc[2] + offset);
+        f32 top = field_0xc->search('Pstab04')->getBounds()->i.y;
+        f32 y = field_0xf8 + field_0xc->search('Prub04')->getBounds()->i.y - top;
+        x = field_0xc->search('Pscuro02')->getBounds()->i.x;
+        field_0xc->search('Pscuro02')->move(x, y);
+    }
+    field_0xc->search('Pscuro01')->setAlpha(alpha);
+    field_0xc->search('Pscuro02')->setAlpha(alpha);
+    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    JGeometry::TBox2f box(0.0f, 0.0f, 280.0f, 210.0f);
+    gGameRoot2_8053AB10->fn_8013B414(&box, true);
+    fn_803F0A54();
+    lbl_8053AED8->fn_80440EE8();
+}
+
+// FIXME: 99.26 (twin cls_804B0B00::fn_803E4650): stack slots only, the
+// blink's else-branch int conversion sits at 0x10 instead of 0x8.
+// Draws states 10 and 11 (the results screen field_0x10): each taking
+// player's cursor 'Pscur' fades with field_0x1d0[i] (60 frames), the
+// joined ones' 'Paccur' panes with it; outside state 10 the 'Paccur02'
+// pane and field_0x64[i] bounce with field_0x240[i]. Then lbl_8053AED8's
+// buttons.
+void ConnectScreen_804B0F10::fn_803F35B0() {
+    for (s32 i = 0; i < 4; i++) {
+        f32 t;
+        if (field_0x1d0[i] < 30) {
+            t = (f32)(field_0x1d0[i] * field_0x1d0[i]) / 900.0f;
+        } else {
+            t = 1.0f - (f32)((field_0x1d0[i] - 30) * (field_0x1d0[i] - 30)) / 900.0f;
+        }
+        if (i <= field_0x1ac + 1) {
+            if (field_0x1b0[i] < 4) {
+                field_0x10->search(lbl_804793D8[i])->setAlpha(160.0f * t);
+            }
+            if (field_0x1b0[i] == 3) {
+                field_0x10->search(lbl_804793F8[i])->setAlpha(t * field_0x25a);
+                field_0x10->search(lbl_80479418[i])->setAlpha(t * field_0x25a);
+            }
+        }
+        if (field_0x1c4 != 10) {
+            s32 bounce = field_0x240[i] < 5 ? field_0x240[i] : 10 - field_0x240[i];
+            f32 offset = 5.0f * (f32)(bounce * bounce) / 25.0f;
+            f32 x = field_0x10->search(lbl_804793F8[i])->getBounds()->i.x;
+            field_0x10->search(lbl_804793F8[i])->move(x, field_0x1a0 + offset);
+            if (field_0x1b0[i] >= 3) {
+                field_0x64[i]->moveFromCentre_80402E08(0.0f, offset);
+            }
+        }
+    }
+    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
+}
+
+void ConnectScreen_804B0F10::fn_803F358C() {
+    field_0x58->fn_80436668();
+}
+
+// FIXME: 99.77 %. Instructions identical; only the .sdata2 literals differ (see
+// fn_803F715C). fn_803FC5E4 inlines this function.
+void ConnectScreen_804B0F10::fn_803F3324() {
+    field_0x110 = -150.0f;
+    mScreen->search(0x506D626162623037ull /* "Pmbabb07" */)->move(field_0x108, field_0x10c + field_0x110);
+    field_0x114 = -100.0f;
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x114);
+    field_0x130[0] = -350.0f;
+    mScreen->search(0x00506E6F70623038ull /* "Pnopb08" */)->move(field_0x118[0] + field_0x130[0], field_0x124[0]);
+    field_0x130[1] = -350.0f;
+    mScreen->search(0x00506E6F70623132ull /* "Pnopb12" */)->move(field_0x118[1] + field_0x130[1], field_0x124[1]);
+    field_0x130[2] = -350.0f;
+    mScreen->search(0x00506E6F70623136ull /* "Pnopb16" */)->move(field_0x118[2] + field_0x130[2], field_0x124[2]);
+    field_0x144 = 400.0f;
+    mScreen->search(0x004E646174613032ull /* "Ndata02" */)->move(field_0x13c + field_0x144, field_0x140);
+    field_0x158 = 400.0f;
+    mScreen->search(0x004E646174613035ull /* "Ndata05" */)->move(field_0x148 + field_0x158, field_0x14c);
+    mScreen->search(0x004E646174613037ull /* "Ndata07" */)->move(field_0x150 + field_0x158, field_0x154);
+    field_0x210[0] = 0;
+    field_0x1d0[0] = 0;
+    field_0x240[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 0;
+}
+
+void ConnectScreen_804B0F10::fn_803F3310() {
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 1;
+}
+
+void ConnectScreen_804B0F10::fn_803F32E8() {
+    field_0x210[0] = 0;
+    field_0x240[0] = 0;
+    field_0x1d0[0] = 5;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 2;
+}
+
+// FIXME: 99.42. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_80543xxx: earlier unwritten functions come first in the pool).
+// Twin of cls_804B0B00::fn_803E3CB0.
+// Enter state 3 (the GBA connection screen field_0x8): the player-count
+// textures ('Ptn01' / 'Ptn02', 2-4 players), message 0x3F in 'Ttkg01' /
+// 'Ttkg02', the panes moved off screen to slide in, and per player the
+// 'Pcgbak' / 'Pcgba' / 'Pcgp' / 'Pcgps' / 'Pcca' panes shown (taking part,
+// 'Ppln' opaque, the animation lengths in field_0x220 / field_0x230) or
+// hidden ('Ppln' at 128); the 'Par' arrows hidden.
+void ConnectScreen_804B0F10::fn_803F2B78() {
+    if (field_0x1ac == 0) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    } else if (field_0x1ac == 1) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    } else {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
+        static_cast<J2DPicture*>(field_0x8->search('Ptn02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x8->search('Ptn01'))->changeTexture(tex, 0);
+    }
+    char* text1 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg01'))->getStringPtr();
+    char* text2 = static_cast<J2DTextBox*>(field_0x8->search('Ttkg02'))->getStringPtr();
+    getMessageText_803832BC(text1, 0x3F, 0, NULL, NULL);
+    getMessageText_803832BC(text2, 0x3F, 0, NULL, NULL);
+    field_0x9c = -300.0f;
+    field_0x8->search('Ndata03')->move(field_0x94, field_0x98 + field_0x9c);
+    field_0xa8 = -100.0f;
+    field_0x8->search('Ndata05')->move(field_0xa0, field_0xa4 + field_0xa8);
+    field_0xb4 = -200.0f;
+    field_0x8->search('Ndata06')->move(field_0xac, field_0xb0 + field_0xb4);
+    field_0xb8 = -200.0f;
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0xb8);
+    field_0xdc[0] = 200.0f;
+    field_0x8->search('Ppllbk02')->move(field_0xbc[0], field_0xcc[0] + field_0xdc[0]);
+    field_0xdc[1] = 200.0f;
+    field_0x8->search('Ppllbk12')->move(field_0xbc[1], field_0xcc[1] + field_0xdc[1]);
+    field_0xdc[2] = 200.0f;
+    field_0x8->search('Ppllbk22')->move(field_0xbc[2], field_0xcc[2] + field_0xdc[2]);
+    field_0xdc[3] = 200.0f;
+    field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1) {
+            field_0x8->search(lbl_80479258[i])->show();
+            field_0x8->search(lbl_80479278[i])->show();
+            field_0x8->search(lbl_80479298[i])->show();
+            field_0x8->search(lbl_804792B8[i])->show();
+            for (s32 j = 2; j < 4; j++) {
+                field_0x8->search(lbl_804792F8[i][j])->show();
+            }
+            field_0x8->search(lbl_804792D8[i])->setAlpha(255);
+            field_0x220[i] = field_0x38[i]->getFrameMax();
+            field_0x230[i] = field_0x48[i]->getFrameMax();
+        } else {
+            field_0x8->search(lbl_80479258[i])->hide();
+            field_0x8->search(lbl_80479278[i])->hide();
+            field_0x8->search(lbl_80479298[i])->hide();
+            field_0x8->search(lbl_804792B8[i])->hide();
+            for (s32 j = 2; j < 4; j++) {
+                field_0x8->search(lbl_804792F8[i][j])->hide();
+            }
+            field_0x8->search(lbl_804792D8[i])->setAlpha(128);
+            field_0x220[i] = 0;
+            field_0x230[i] = 0;
+        }
+        field_0x8->search(lbl_80479378[i])->hide();
+    }
+    field_0x240[0] = 0;
+    field_0x248 = 0;
+    field_0x24a = 0;
+    field_0x25b = 0;
+    field_0x24e = -1;
+    field_0x250 = -1;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x210[i] = 0;
+    }
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 3;
+}
+
+void ConnectScreen_804B0F10::fn_803F2B5C() {
+    field_0x240[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 4;
+}
+
+void ConnectScreen_804B0F10::fn_803F2B48() {
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 5;
+}
+
+void ConnectScreen_804B0F10::fn_803F2AEC() {
+    lbl_8053AEC0->fn_80431A9C(0xC4, field_0x1ac + 2, NULL);
+    field_0x25c = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 6;
+}
+
+// FIXME: 99.89. Instructions identical; only the .sdata2 literals differ
+// (@NNN vs lbl_80543xxx: the pool's 3.0 / 800 / 640 come first in the
+// original, from an earlier function not written yet).
+// Enter state 7 (the game-select screen field_0xc): the messages of
+// 'Tsta01' / 'Than01' / 'Trule01', the player-count texture in 'Pnop02' /
+// 'Pnop01' (2-4 players), and the panes moved off screen to slide in.
+void ConnectScreen_804B0F10::fn_803F267C() {
+    char* han = static_cast<J2DTextBox*>(field_0xc->search('Than01'))->getStringPtr();
+    char* sta = static_cast<J2DTextBox*>(field_0xc->search('Tsta01'))->getStringPtr();
+    char* rule = static_cast<J2DTextBox*>(field_0xc->search('Trule01'))->getStringPtr();
+    getMessageText_803832BC(sta, 0x11B, 0, NULL, NULL);
+    getMessageText_803832BC(han, 0xAC, 0, NULL, NULL);
+    getMessageText_803832BC(rule, 0xF7, 0, NULL, NULL);
+    if (field_0x1ac == 0) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP2_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    } else if (field_0x1ac == 1) {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP3_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    } else {
+        const ResTIMG* tex = (const ResTIMG*)fn_804031C4('TIMG', "kk_nPlayerP4_01.bti");
+        static_cast<J2DPicture*>(field_0xc->search('Pnop02'))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0xc->search('Pnop01'))->changeTexture(tex, 0);
+    }
+    field_0x164 = -200.0f;
+    field_0x168 = -200.0f;
+    field_0x184[0] = 300.0f;
+    field_0x184[1] = 300.0f;
+    field_0x184[2] = 300.0f;
+    field_0x198 = -450.0f;
+    field_0xc->search('Pmbabb07')->move(field_0x15c, field_0x160 + field_0x164);
+    field_0x74->moveFromCentre_80402E08(0.0f, field_0x168);
+    field_0xc->search('Pstab04')->move(field_0x16c[0] + field_0x184[0], field_0x178[0]);
+    field_0xc->search('Phanb04')->move(field_0x16c[1] + field_0x184[1], field_0x178[1]);
+    field_0xc->search('Prub04')->move(field_0x16c[2] + field_0x184[2], field_0x178[2]);
+    field_0xc->search('Plibkk03')->move(field_0x190 + field_0x198, field_0x194);
+    field_0x1d0[0] = 0;
+    field_0x240[0] = 0;
+    field_0x210[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 7;
+}
+
+void ConnectScreen_804B0F10::fn_803F2660() {
+    field_0x240[0] = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 8;
+}
+
+// FIXME: 98.04 %. Register swap in setEntries' loop: the original keeps the
+// 2 * i shift in r4 (the zero stored to field_0x240) and i in a fresh r5 (li);
+// ours keeps i in r4 and copies it (mr r5, r4) for the shift. fn_803F8050
+// inlines this function and matches.
+void ConnectScreen_804B0F10::fn_803F2580() {
+    field_0x240[0] = 0;
+    field_0x1d0[0] = 5;
+    if (field_0x1a8 == 0) {
+        setEntries(this);
+    }
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 9;
+}
+
+// FIXME: 98.18. Registers: the loop's table pointers and counter sit in other
+// registers, and the first digit texture is copied through r0 into r17 (one
+// extra mr) where the original keeps it in r27 (as in the twin
+// cls_804B0B00::fn_803E2A20, 98.17); .sdata2 @NNN names.
+// Enter state 10 (the results / entry screen field_0x10): per player, the
+// 'Pblk' cover over the players beyond field_0x1ac + 2, the rupee count
+// (fn_80403070) as three digit textures, the fn_8040305C - 1 markers of the
+// four marker tables, the cursor panes by field_0x1b0[i] (3: joined,
+// 4: not); then the panes start their slide-in (twin of
+// cls_804B0B00::fn_803E2A20).
+void ConnectScreen_804B0F10::fn_803F1C70() {
+    for (s32 i = 0; i < 4; i++) {
+        if (i >= 1) {
+            if (i > field_0x1ac + 1) {
+                field_0x10->search(lbl_80479908[i - 1])->show();
+            } else {
+                field_0x10->search(lbl_80479908[i - 1])->hide();
+            }
+        }
+        field_0x1e0[i] = fn_80403414(i);
+        field_0x1f0[i] = fn_804033D4(i);
+        field_0x200[i] = fn_8040336C(i);
+        s32 rupees = fn_80403070(field_0x1e0[i]);
+        const ResTIMG* tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees / 100]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804794B8[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_804794D8[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 100 / 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479478[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479498[i]))->changeTexture(tex, 0);
+        tex = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B0EE8[rupees % 10]);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479438[i]))->changeTexture(tex, 0);
+        static_cast<J2DPicture*>(field_0x10->search(lbl_80479458[i]))->changeTexture(tex, 0);
+        s32 count = fn_8040305C(field_0x1f0[i]) - 1;
+        for (s32 j = 0; j < 6; j++) {
+            if (j < count) {
+                field_0x10->search(lbl_804795C0[i][j])->show();
+                field_0x10->search(lbl_80479680[i][j])->show();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->hide();
+            } else if (j == count) {
+                field_0x10->search(lbl_804795C0[i][j])->hide();
+                field_0x10->search(lbl_80479680[i][j])->hide();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->show();
+            } else {
+                field_0x10->search(lbl_804795C0[i][j])->hide();
+                field_0x10->search(lbl_80479680[i][j])->hide();
+                field_0x10->search(lbl_80479740[i][j])->hide();
+                field_0x10->search(lbl_80479800[i][j])->hide();
+            }
+        }
+        field_0x10->search(lbl_804793F8[i])->hide();
+    }
+    field_0x60->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x60->field_0x22 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i <= field_0x1ac + 1) {
+            field_0x64[i]->moveFromCentre_80402E08(0.0f, 150.0f);
+            field_0x64[i]->field_0x22 = 0;
+        }
+        if (i <= field_0x1ac + 1) {
+            field_0x1b0[i] = 3;
+        } else {
+            field_0x1b0[i] = 4;
+        }
+        field_0x1d0[i] = 30;
+        if (i <= field_0x1ac + 1) {
+            if (field_0x1b0[i] < 3) {
+                field_0x10->search(lbl_804793B8[i])->hide();
+                field_0x10->search(lbl_804793D8[i])->show();
+                field_0x10->search(lbl_804793F8[i])->hide();
+            } else if (field_0x1b0[i] == 3) {
+                field_0x10->search(lbl_804793B8[i])->hide();
+                field_0x10->search(lbl_804793D8[i])->show();
+                field_0x10->search(lbl_804793F8[i])->show();
+            } else {
+                field_0x10->search(lbl_804793B8[i])->show();
+                field_0x10->search(lbl_804793D8[i])->hide();
+                field_0x10->search(lbl_804793F8[i])->hide();
+            }
+        } else {
+            field_0x10->search(lbl_804793B8[i])->hide();
+            field_0x10->search(lbl_804793D8[i])->hide();
+            field_0x10->search(lbl_804793F8[i])->hide();
+        }
+        s32 state = field_0x1b0[i];
+        if (state <= 3) {
+            f32 x = field_0x10->search(lbl_804793D8[i])->getBounds()->i.x;
+            field_0x10->search(lbl_804793D8[i])->move(x, lbl_80543710[state]);
+        }
+        field_0x240[i] = 0;
+        field_0x1d0[i] = 0;
+    }
+    field_0x74->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x74->field_0x22 = 0;
+    field_0x24c = 0;
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 12;
+}
+
+void ConnectScreen_804B0F10::fn_803F1C5C() {
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 11;
+}
+
+void ConnectScreen_804B0F10::fn_803F1C18() {
+    field_0x58->fn_8043670C(1);
+    field_0x1c8 = field_0x1c4;
+    field_0x1c4 = 12;
+}
+
+// FIXME: 98.24 %. Same length. The rodata base offsets differ (.rodata not
+// split yet: the tables above sit at other offsets from the file's base), and
+// in the 112-212 and 212+ phases the i / 2 + (i % 2) * 2 index is scheduled
+// differently (the original computes i % 2 first, then i / 2). The twin
+// cls_804B0B00::fn_803E1668 (rodata split) shows the same index scheduling.
+void ConnectScreen_804B0F10::fn_803F0A54() {
+    f32 ratio = (f32)field_0xc->search(lbl_80479168[0])->getAlpha() / (f32)field_0x335[0];
+    JGeometry::TVec3f pos;
+    if (field_0x210[0] < 100) {
+        for (s32 i = 0; i < 4; i++) {
+            if (lbl_80479920[field_0x1ac][i] != 0) {
+                SpriteParams_801F5AE0 params;
+                params.field_0x26 = 0;
+                params.field_0x10.a = 255.0f * ratio;
+                f32 x;
+                PANE_CENTRE_X(x, lbl_80479920[field_0x1ac][i]);
+                pos.x = toSpriteX(x);
+                f32 y;
+                PANE_CENTRE_Y(y, lbl_80479920[field_0x1ac][i]);
+                pos.y = toSpriteY(y);
+                pos.z = 0.0f;
+                params.field_0x0[7] = i + 12;
+                s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+    } else if (field_0x210[0] < 112) {
+        // Slide from the 2/3-player panes to the 4-player ones.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1ac) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i % 2]);
+                PANE_CENTRE_X(to, lbl_80479920[2][i / 2 + (i % 2) * 2]);
+                break;
+            case 1:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80479920[field_0x1ac][2]);
+                    PANE_CENTRE_X(to, lbl_80479920[2][i]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 100) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
+    } else if (field_0x210[0] < 212) {
+        for (s32 i = 0; i < 4; i++) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.a = 255.0f * ratio;
+            f32 x;
+            PANE_CENTRE_X(x, lbl_80479920[2][i]);
+                pos.x = toSpriteX(x);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            if (field_0x1ac == 0) {
+                params.field_0x0[7] = i / 2 + (i % 2) * 2 + 12;
+            } else {
+                params.field_0x0[7] = i + 12;
+            }
+            s32 frame = lbl_80478AA0[field_0x210[0] % 30] + 0x10;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+        }
+    } else {
+        // Slide back to the 2/3-player panes.
+        for (s32 i = 3; i >= 0; i--) {
+            SpriteParams_801F5AE0 params;
+            params.field_0x26 = 0;
+            params.field_0x10.a = 255.0f * ratio;
+            f32 from;
+            f32 to;
+            switch (field_0x1ac) {
+            case 0:
+                PANE_CENTRE_X(from, lbl_80479920[2][i / 2 + (i % 2) * 2]);
+                PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i % 2]);
+                break;
+            case 1:
+                if (i != 3) {
+                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][i]);
+                } else {
+                    PANE_CENTRE_X(from, lbl_80479920[2][i]);
+                    PANE_CENTRE_X(to, lbl_80479920[field_0x1ac][2]);
+                }
+                break;
+            }
+            pos.x = toSpriteX((to - from) * ((f32)(field_0x210[0] - 212) / 12.0f) + from);
+            f32 y;
+            PANE_CENTRE_Y(y, lbl_80479920[2][i]);
+                pos.y = toSpriteY(y);
+            pos.z = 0.0f;
+            params.field_0x0[7] = i + 12;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x10, &params, 1.0f, 1.0f);
+        }
     }
 }

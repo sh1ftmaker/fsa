@@ -6,11 +6,13 @@
 #include "game/Player.h"
 #include "game/act/act_heart_container.h"
 
-HeartContainer_804A7E58::~HeartContainer_804A7E58() {}
-
-void HeartContainer_804A7E58::draw() {
-    drawSprite_801F06F0("enemy_both2_sob.bin", 0x31, NULL, 1, 1.0f, 1.0f);
-    fn_803075AC(mSerial, field_0x4, &mPos, 0x31, false, 2, -1, 0, 0, 0);
+void HeartContainer_804A7E58::init() {
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x3c.z = 0.0f;
+    field_0x230 = 0;
 }
 
 void HeartContainer_804A7E58::update() {
@@ -61,11 +63,9 @@ void HeartContainer_804A7E58::update() {
     }
 }
 
-void HeartContainer_804A7E58::init() {
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x3c.z = 0.0f;
-    field_0x230 = 0;
+void HeartContainer_804A7E58::draw() {
+    drawSprite_801F06F0("enemy_both2_sob.bin", 0x31, NULL, 1, 1.0f, 1.0f);
+    fn_803075AC(mSerial, field_0x4, &mPos, 0x31, false, 2, -1, 0, 0, 0);
 }
+
+HeartContainer_804A7E58::~HeartContainer_804A7E58() {}

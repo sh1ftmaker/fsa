@@ -10,6 +10,22 @@ extern const u16 lbl_8046A748[][5] = {
     {0x01, 0x0A, 0x1E, 0x3C, 0x78},
 };
 
+bool ShadowLink2_804A43E8::fn_8021D020() {
+    bool result = false;
+    if (mLife <= mLifeBackup - field_0x568) {
+        result = true;
+    }
+    return result;
+}
+
+bool ShadowLink2_804A43E8::fn_8021CFF8() {
+    bool result = false;
+    if (field_0x564 == 3 && field_0x59e == 0) {
+        result = true;
+    }
+    return result;
+}
+
 void ShadowLink2_804A43E8::fn_8021CDE4(int state) {
     mLife = mLifeBackup;
     field_0x568 = lbl_8046A748[state][0];
@@ -58,20 +74,4 @@ void ShadowLink2_804A43E8::fn_8021CDE4(int state) {
         break;
     }
     field_0x564 = state;
-}
-
-bool ShadowLink2_804A43E8::fn_8021CFF8() {
-    bool result = false;
-    if (field_0x564 == 3 && field_0x59e == 0) {
-        result = true;
-    }
-    return result;
-}
-
-bool ShadowLink2_804A43E8::fn_8021D020() {
-    bool result = false;
-    if (mLife <= mLifeBackup - field_0x568) {
-        result = true;
-    }
-    return result;
 }

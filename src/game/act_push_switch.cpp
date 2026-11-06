@@ -2,9 +2,23 @@
 #include "game/Player.h"
 #include "game/act/act_push_switch.h"
 
-PushSwitch_804A7B38::~PushSwitch_804A7B38() {}
-
-void PushSwitch_804A7B38::draw() {}
+void PushSwitch_804A7B38::init() {
+    switch ((field_0x90 >> 17) & 3) {
+    case 0:
+        mBox.set(-15.0f, 0.0f, 0.0f, 16.0f * getLength());
+        break;
+    case 1:
+        mBox.set(16.0f, 0.0f, 31.0f, 16.0f * getLength());
+        break;
+    case 2:
+        mBox.set(0.0f, -15.0f, 16.0f * getLength(), 0.0f);
+        break;
+    case 3:
+        mBox.set(0.0f, 16.0f, 16.0f * getLength(), 31.0f);
+        break;
+    }
+    field_0x80.set(mBox);
+}
 
 // FIXME: 96.65%. Same instructions, but the original keeps the loop counter in r29 and the
 // player count in r30, with the param bits in a temporary r31 (shared with the earlier
@@ -44,20 +58,6 @@ void PushSwitch_804A7B38::update() {
     }
 }
 
-void PushSwitch_804A7B38::init() {
-    switch ((field_0x90 >> 17) & 3) {
-    case 0:
-        mBox.set(-15.0f, 0.0f, 0.0f, 16.0f * getLength());
-        break;
-    case 1:
-        mBox.set(16.0f, 0.0f, 31.0f, 16.0f * getLength());
-        break;
-    case 2:
-        mBox.set(0.0f, -15.0f, 16.0f * getLength(), 0.0f);
-        break;
-    case 3:
-        mBox.set(0.0f, 16.0f, 16.0f * getLength(), 31.0f);
-        break;
-    }
-    field_0x80.set(mBox);
-}
+void PushSwitch_804A7B38::draw() {}
+
+PushSwitch_804A7B38::~PushSwitch_804A7B38() {}

@@ -10,7 +10,35 @@
 #include "game/act/act_sandstorm.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 
-void Sandstorm_804AA280::draw() {}
+void Sandstorm_804AA280::init() {
+    mKind = field_0x90 & 0xF;
+    field_0x254 = (field_0x90 >> 4) & 0xF;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    mPos244.x = -camera->field_0x4[0][3];
+    mPos244.y = -camera->field_0x4[1][3];
+    mPos244.z = 0.0f;
+    if ((mKind & 1) != 0) {
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E6, 1, 1, NULL, NULL, true, 1.0f);
+    } else if ((mKind & 2) != 0) {
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E5, 1, 1, NULL, NULL, true, 1.0f);
+    } else if ((mKind & 4) != 0) {
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E4, 1, 1, NULL, NULL, true, 1.0f);
+    } else {
+        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3EB, 1, 1, NULL, NULL, true, 1.0f);
+    }
+    mTimer = 0;
+    mStarted = 0;
+    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
+}
+
+Sandstorm_804AA280::~Sandstorm_804AA280() {
+    if (mEmitter != NULL) {
+        releaseEmitter_801EE434(mEmitter);
+    }
+    if (mSound != NULL) {
+        delete mSound;
+    }
+}
 
 void Sandstorm_804AA280::update() {
     Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
@@ -50,32 +78,4 @@ void Sandstorm_804AA280::update() {
     }
 }
 
-Sandstorm_804AA280::~Sandstorm_804AA280() {
-    if (mEmitter != NULL) {
-        releaseEmitter_801EE434(mEmitter);
-    }
-    if (mSound != NULL) {
-        delete mSound;
-    }
-}
-
-void Sandstorm_804AA280::init() {
-    mKind = field_0x90 & 0xF;
-    field_0x254 = (field_0x90 >> 4) & 0xF;
-    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
-    mPos244.x = -camera->field_0x4[0][3];
-    mPos244.y = -camera->field_0x4[1][3];
-    mPos244.z = 0.0f;
-    if ((mKind & 1) != 0) {
-        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E6, 1, 1, NULL, NULL, true, 1.0f);
-    } else if ((mKind & 2) != 0) {
-        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E5, 1, 1, NULL, NULL, true, 1.0f);
-    } else if ((mKind & 4) != 0) {
-        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3E4, 1, 1, NULL, NULL, true, 1.0f);
-    } else {
-        mEmitter = spawnEmitter_8013CC50(field_0x4, &mPos244, 0x3EB, 1, 1, NULL, NULL, true, 1.0f);
-    }
-    mTimer = 0;
-    mStarted = 0;
-    mSound = new ActorSoundObj_804578F4(NULL, NULL, 8);
-}
+void Sandstorm_804AA280::draw() {}

@@ -24,31 +24,6 @@ static const f32 lbl_8046F188[16] = {
     -16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 };
 
-// Returns 1 when one of the four neighbours of pos is a tile in the
-// fn_801EE3C0 set.
-// FIXME: 97.81 %. Same instructions; the original loads the table bases in
-// the other order (lis lbl_8046F148 first, its pointer in r31), ours loads
-// lbl_8046F188 first.
-bool InextinguishableFlame_804A9D28::vfunc_0x58(JGeometry::TVec3f* pos) {
-    bool result = false;
-    for (s32 i = 0; i < 4; i++) {
-        f32 y = pos->y + lbl_8046F188[i];
-        f32 x = pos->x + lbl_8046F148[i];
-        JGeometry::TVec3f p(x, y, pos->z);
-        s32 tile = fn_80226850(&p, field_0x4);
-        if (fn_801EE3C0(tile) == true) {
-            result = true;
-            break;
-        }
-    }
-    return result;
-}
-
-void InextinguishableFlame_804A9D28::vfunc_0x24() {
-    vfunc_0x54();
-    fn_801F35AC();
-}
-
 static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     if (emitter != NULL) {
         emitter->becomeInvalidEmitter();
@@ -56,27 +31,64 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-void InextinguishableFlame_804A9D28::vfunc_0x54() {
-    for (s32 i = 0; i < 16; i++) {
-        invalidateEmitter(mEmitters[0][i]);
-        invalidateEmitter(mEmitters[1][i]);
-        invalidateEmitter(mEmitters[2][i]);
-    }
-}
+// FIXME: 98.37 %. One instruction more than the original: it sets the zero it
+// reuses for the state-0 store (`li r28, 0`) before the first loop's
+// float literal load, ours has it later.
+void InextinguishableFlame_804A9D28::init() {
+    mCountX = ((field_0x90 >> 22) & 0x1F) + 1;
+    mCountY = ((field_0x90 >> 17) & 0x1F) + 1;
+    mKind = field_0x90 & 0xF;
+    mFlag300 = (field_0x90 >> 4) & 1;
+    mViewBit = (field_0x90 >> 12) & 0x1F;
 
-void InextinguishableFlame_804A9D28::draw() {
-    JGeometry::TVec3f pos = mPos;
-    if (mState >= 1) {
+    for (int i = 0; i < 16; i++) {
+        mEmitters[0][i] = NULL;
+        mEmitters[1][i] = NULL;
+        mEmitters[2][i] = NULL;
+    }
+
+    if (mFlag300 == 0) {
+        JGeometry::TVec3f pos = mPos;
+        s32 n = 0;
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
                 spawnEmitter_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
-                spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
-                drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), 32.0f);
+                mEmitters[2][n] = spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
                 pos.y += 16.0f;
+                n++;
             }
             pos.y = mPos.y;
             pos.x += 16.0f;
+        }
+        mState = 2;
+        field_0x94 = 1;
+    } else {
+        mState = 0;
+        field_0x94 = 0;
+    }
+
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = -7.0f;
+    field_0x80.i.y = -7.0f;
+    field_0x80.f.x = 7.0f;
+    field_0x80.f.y = 7.0f;
+    field_0x114 = 1;
+}
+
+InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
+    for (s32 i = 0; i < 16; i++) {
+        if (mEmitters[0][i] != NULL) {
+            releaseEmitter_801EE434(mEmitters[0][i]);
+        }
+        if (mEmitters[1][i] != NULL) {
+            releaseEmitter_801EE434(mEmitters[1][i]);
+        }
+        if (mEmitters[2][i] != NULL) {
+            releaseEmitter_801EE434(mEmitters[2][i]);
         }
     }
 }
@@ -228,64 +240,52 @@ void InextinguishableFlame_804A9D28::update() {
     }
 }
 
-InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
-    for (s32 i = 0; i < 16; i++) {
-        if (mEmitters[0][i] != NULL) {
-            releaseEmitter_801EE434(mEmitters[0][i]);
-        }
-        if (mEmitters[1][i] != NULL) {
-            releaseEmitter_801EE434(mEmitters[1][i]);
-        }
-        if (mEmitters[2][i] != NULL) {
-            releaseEmitter_801EE434(mEmitters[2][i]);
-        }
-    }
-}
-
-// FIXME: 98.37 %. One instruction more than the original: it sets the zero it
-// reuses for the state-0 store (`li r28, 0`) before the first loop's
-// float literal load, ours has it later.
-void InextinguishableFlame_804A9D28::init() {
-    mCountX = ((field_0x90 >> 22) & 0x1F) + 1;
-    mCountY = ((field_0x90 >> 17) & 0x1F) + 1;
-    mKind = field_0x90 & 0xF;
-    mFlag300 = (field_0x90 >> 4) & 1;
-    mViewBit = (field_0x90 >> 12) & 0x1F;
-
-    for (int i = 0; i < 16; i++) {
-        mEmitters[0][i] = NULL;
-        mEmitters[1][i] = NULL;
-        mEmitters[2][i] = NULL;
-    }
-
-    if (mFlag300 == 0) {
-        JGeometry::TVec3f pos = mPos;
-        s32 n = 0;
+void InextinguishableFlame_804A9D28::draw() {
+    JGeometry::TVec3f pos = mPos;
+    if (mState >= 1) {
         for (s32 i = 0; i < mCountX; i++) {
             for (s32 j = 0; j < mCountY; j++) {
                 spawnEmitter_8013CC50(field_0x4, &pos, 0x34c, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(field_0x4, &pos, 0x34d, 0, 0, NULL, NULL, true, 1.0f);
-                mEmitters[2][n] = spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &pos, 0x54d, 1, 0, NULL, NULL, true, 1.0f);
+                drawShadow(field_0x4, &pos, JUtility::TColor(0, 0, 0, 0x80), 32.0f);
                 pos.y += 16.0f;
-                n++;
             }
             pos.y = mPos.y;
             pos.x += 16.0f;
         }
-        mState = 2;
-        field_0x94 = 1;
-    } else {
-        mState = 0;
-        field_0x94 = 0;
     }
+}
 
-    mBox.i.x = -8.0f;
-    mBox.i.y = -8.0f;
-    mBox.f.x = 8.0f;
-    mBox.f.y = 8.0f;
-    field_0x80.i.x = -7.0f;
-    field_0x80.i.y = -7.0f;
-    field_0x80.f.x = 7.0f;
-    field_0x80.f.y = 7.0f;
-    field_0x114 = 1;
+void InextinguishableFlame_804A9D28::vfunc_0x54() {
+    for (s32 i = 0; i < 16; i++) {
+        invalidateEmitter(mEmitters[0][i]);
+        invalidateEmitter(mEmitters[1][i]);
+        invalidateEmitter(mEmitters[2][i]);
+    }
+}
+
+void InextinguishableFlame_804A9D28::vfunc_0x24() {
+    vfunc_0x54();
+    fn_801F35AC();
+}
+
+// Returns 1 when one of the four neighbours of pos is a tile in the
+// fn_801EE3C0 set.
+// FIXME: 97.81 %. Same instructions; the original loads the table bases in
+// the other order (lis lbl_8046F148 first, its pointer in r31), ours loads
+// lbl_8046F188 first.
+bool InextinguishableFlame_804A9D28::vfunc_0x58(JGeometry::TVec3f* pos) {
+    bool result = false;
+    for (s32 i = 0; i < 4; i++) {
+        f32 y = pos->y + lbl_8046F188[i];
+        f32 x = pos->x + lbl_8046F148[i];
+        JGeometry::TVec3f p(x, y, pos->z);
+        s32 tile = fn_80226850(&p, field_0x4);
+        if (fn_801EE3C0(tile) == true) {
+            result = true;
+            break;
+        }
+    }
+    return result;
 }

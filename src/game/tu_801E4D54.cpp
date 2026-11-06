@@ -4,15 +4,38 @@
 #include "game/act/act_vaati_boss.h"
 #include "game/cls_801EB8CC.h"
 
-void VaatiBoss_804A4958::fn_801E4D54() {
-    mFlags &= ~0x4000;
-    field_0x5ce = 0;
-    field_0x464.field_0x58 = 0.0f;
-}
-
-void VaatiBoss_804A4958::fn_801E4D74() {
-    field_0x5ce = 0x32;
-    field_0x464.field_0x58 = 255.0f;
+void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeometry::TVec2f* dir, bool flag) {
+    for (s32 i = 0; i < 0x10; i++) {
+        if (field_0x308[i].field_0x4 != 0 && field_0x308[i].field_0x0 == actor->mSerial) {
+            JGeometry::TVec2f v;
+            if (!flag) {
+                v = *dir;
+                v.normalize();
+                v.scale(2.0f);
+                field_0x308[i].field_0x8 = v.x;
+                field_0x308[i].field_0xc = v.y;
+                field_0x308[i].field_0x10 = 1.5f;
+                field_0x308[i].field_0x5 = 1;
+                return;
+            } else {
+                s32 player = fn_801D05F8(&mPos, 160.0f);
+                if (player >= 0 && field_0x2a8[player].field_0x0 == 0) {
+                    s32 angle = fn_801D0280(player);
+                    v.x = JMath::sincosTable_.mTable[static_cast<u16>(angle) >> 5].first;
+                    v.y = JMath::sincosTable_.mTable[static_cast<u16>(angle) >> 5].second;
+                } else {
+                    v = *dir;
+                    v.normalize();
+                }
+                v.scale(4.0f);
+                field_0x308[i].field_0x8 = v.x;
+                field_0x308[i].field_0xc = v.y;
+                field_0x308[i].field_0x10 = 3.0f;
+            }
+            field_0x308[i].field_0x5 = 1;
+            return;
+        }
+    }
 }
 
 // FIXME: 98.8 %. The loop counter and the layer swap registers (the original keeps
@@ -129,36 +152,13 @@ void VaatiBoss_804A4958::fn_801E5754() {
     }
 }
 
-void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeometry::TVec2f* dir, bool flag) {
-    for (s32 i = 0; i < 0x10; i++) {
-        if (field_0x308[i].field_0x4 != 0 && field_0x308[i].field_0x0 == actor->mSerial) {
-            JGeometry::TVec2f v;
-            if (!flag) {
-                v = *dir;
-                v.normalize();
-                v.scale(2.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 1.5f;
-                field_0x308[i].field_0x5 = 1;
-                return;
-            } else {
-                s32 player = fn_801D05F8(&mPos, 160.0f);
-                if (player >= 0 && field_0x2a8[player].field_0x0 == 0) {
-                    s32 angle = fn_801D0280(player);
-                    v.x = JMath::sincosTable_.mTable[static_cast<u16>(angle) >> 5].first;
-                    v.y = JMath::sincosTable_.mTable[static_cast<u16>(angle) >> 5].second;
-                } else {
-                    v = *dir;
-                    v.normalize();
-                }
-                v.scale(4.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 3.0f;
-            }
-            field_0x308[i].field_0x5 = 1;
-            return;
-        }
-    }
+void VaatiBoss_804A4958::fn_801E4D74() {
+    field_0x5ce = 0x32;
+    field_0x464.field_0x58 = 255.0f;
+}
+
+void VaatiBoss_804A4958::fn_801E4D54() {
+    mFlags &= ~0x4000;
+    field_0x5ce = 0;
+    field_0x464.field_0x58 = 0.0f;
 }

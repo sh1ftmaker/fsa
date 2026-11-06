@@ -37,118 +37,6 @@ public:
     virtual void drawAfter(JPABaseEmitter* emitter);
 };
 
-// FIXME: 98.7. The original tests field_0x4c == 0xC as bne/b (a branch to the end after the
-// bne) where this emits one beq, and keeps the 'PEFF' arguments of case 0 in r29-r31 (here r28-r30).
-void cls_8049F140::execute(JPABaseEmitter* emitter) {
-    if (!emitter->checkStatus(1)) {
-        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
-        if (isGameModeSet() && root->field_0x4c != GAME_MODE_C && !root->field_0x94) {
-            field_0xc++;
-            switch (field_0x8) {
-            case 0:
-                if (field_0xc >= 8) {
-                    field_0xc = 0;
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
-                                               field_0x4 & 3, -1, field_0x4);
-                }
-                break;
-            case 1:
-                if (field_0xc >= 8) {
-                    field_0xc = 0;
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
-                                               (field_0x4 & 3) | 0x30, -1, field_0x4);
-                }
-                break;
-            }
-        }
-    }
-}
-
-EffectSystem_8049F178* getEffectSystem_8013C824() {
-    return gGameRoot2_8053AB10->field_0x28;
-}
-
-void EffectSystem_8049F178::fn_8013C830(s32 player, JPABaseEmitter* emitter) {
-    if (emitter != NULL && player >= 0 && player < 4) {
-        emitter->setColorRGB(mColors[player][0], mColors[player][1], mColors[player][2]);
-    }
-}
-
-cls_8049F15C::~cls_8049F15C() {}
-
-void EffectSystem_8049F178::fn_8013C8CC() {
-    for (s32 i = 0; i < mEmitterNum; i++) {
-        if (mEmitterIds[i] == 0x349 || mEmitterIds[i] == 0x34A || mEmitterIds[i] == 0x34B) {
-            mEmitters[i]->deleteAllParticle();
-        }
-    }
-}
-
-void EffectSystem_8049F178::fn_8013C958(JPABaseEmitter* emitter) {
-    s32 count = emitter->getCurrentCreateNumber();
-    u16 id;
-    s32 word;
-    for (s32 i = 0; i < mEmitterNum; i++) {
-        if (emitter == mEmitters[i]) {
-            id = mEmitterIds[i];
-            word = field_0x40a8[i];
-            break;
-        }
-    }
-    if (count > 0 || word != 0 || id == 0x54D) {
-        emitter->playCreateParticle();
-        for (s32 i = 0; i < 0x400; i++) {
-            if (mEntries[i].mId == id && mEntries[i].mCount != 0) {
-                if (count > 0) {
-                    emitter->setGlobalTranslation(mEntries[i].mPos);
-                    for (s32 j = 0; j < count; j++) {
-                        JPABaseParticle* particle = emitter->createParticle();
-                        if (particle != NULL) {
-                            particle->setOffsetPosition(mEntries[i].mPos);
-                        }
-                    }
-                }
-                mEntries[i].mCount--;
-            }
-        }
-        emitter->stopCreateParticle();
-    }
-}
-
-u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
-    bool result = false;
-    if (emitter != NULL) {
-        Mtx m;
-        m[0][3] = 0.0f;
-        m[1][3] = 0.0f;
-        m[2][3] = 0.0f;
-        JGeometry::TVec3f axis(0.0f, 1.0f, 1.0f);
-        fn_8010F668(m, &axis, angle + JMath::TAngleConstant_<f32>::RADIAN_DEG180());
-        m[0][0] *= -1.0f;
-        m[0][1] *= -1.0f;
-        m[0][2] *= -1.0f;
-        JPASetRMtxfromMtx(m, emitter->mGlobalRot);
-        result = true;
-    }
-    return result;
-}
-
-// Fills `info` for drawing particles in screen space: the J2DOrthoGraph's
-// position matrix and a light-ortho projection over the frame buffer. The
-// linker dead-stripped this copy; fn_8013D5D4, fn_8013D6E4 and fn_8013DB2C
-// inline it (right after gGameRoot2_8053AB10->fn_8013B490()), and its 0.5f
-// is the pool literal before the int-to-float double (0.0, 1.0, pi, -1.0,
-// 0.5, double, ...), ahead of setEmitterPos_8013CB44. All three callers also
-// default-construct a second JPADrawInfo here that nothing reads (two
-// PSMTXIdentity calls on its own stack slot); it is the `unused` below.
-void set2DDrawInfo(JPADrawInfo& info) {
-    JPADrawInfo unused;
-    PSMTXCopy(gGameRoot2_8053AB10->field_0x10->mPosMtx, info.mCamMtx);
-    int width = JUTVideo::getManager()->getFbWidth();
-    int height = JUTVideo::getManager()->getEfbHeight();
-    C_MTXLightOrtho(info.mPrjMtx, 0.0f, height, 0.0f, width, 0.5f, 0.5f, 0.5f, 0.5f);
-}
-
 // The depth-biased position setEmitterPos_8013CB44 and spawnEmitter_8013CC50 both compute (inlined into each).
 static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
     if (adjust) {
@@ -163,20 +51,214 @@ static inline void depthPos(JGeometry::TVec3f& p, const JGeometry::TVec3f* pos, 
     p.z += gGameRoot2_8053AB10->field_0x20->fn_802F5E9C(pos) - pos->z;
 }
 
-u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
-    bool result = false;
-    if (emitter != NULL) {
-        JGeometry::TVec3f p;
-        depthPos(p, pos, height, depth, adjust);
-        emitter->setTranslation(p.x, p.y, p.z);
-        result = true;
-    }
-    return result;
-}
-
 // The unit's projecting emitter callback (spawnEmitter_8013CC50 picks it for ids
 // whose resource user work has bit 0).
 cls_8049F184 lbl_8053AB18;
+
+// forward declarations (functions reversed for -inline deferred)
+void set2DDrawInfo(JPADrawInfo& info);
+
+cls_8049F184::~cls_8049F184() {}
+
+// FIXME: 97.7. Regalloc only: the original keeps gGameRoot2_8053AB10 in r3 and loads the effect
+// system into r4 first; here the root is in r4 and the camera comes in r5.
+void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
+    GameRoot2_8049F108* root = gGameRoot2_8053AB10;
+    root->field_0x24->field_0xe4.getCamMtx(root->field_0x28->mEmitterManager->pWd->mPosCamMtx);
+}
+
+// Projects the particles: scales the manager's camera matrix by 1/sqrt 2 in y and z and moves
+// it by the emitter's translation times tan(22.5 deg) in y and z.
+void cls_8049F184::draw(JPABaseEmitter* emitter) {
+    JPAEmitterWorkData* work = gGameRoot2_8053AB10->field_0x28->mEmitterManager->pWd;
+    JGeometry::TSMtxf camera;
+    camera.set(work->mPosCamMtx);
+    Mtx m;
+    PSMTXScale(m, 1.0f, 0.70710677f, 0.70710677f);
+    PSMTXConcat(camera, m, camera);
+    JGeometry::TVec3f trans;
+    trans.set(emitter->mGlobalTrs);
+    trans.scale(0.41421357f);
+    trans.x = 0.0f;
+    PSMTXTrans(m, trans.x, trans.y, trans.z);
+    PSMTXConcat(camera, m, camera);
+    PSMTXCopy(camera, work->mPosCamMtx);
+}
+
+void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
+    gGameRoot2_8053AB10->field_0x28->fn_8013C958(emitter);
+}
+
+EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
+    mHeap = JKRSolidHeap::create(-1, heap, false);
+    mResourceManager = new (mHeap, 0)
+        JPAResourceManager(gGameRoot_8053AAF8->field_0xa4->getResource('????', "particle.jpc"), mHeap);
+    OSReport("***** particle.jpc load *****\n");
+    mEmitterManager = new (mHeap, 0) JPAEmitterManager(0x1C00, 0x200, mHeap, 0xB, 8);
+    mEmitterManager->entryResourceManager(mResourceManager, 0);
+    mResourceManager->swapTexture(gGameRoot2_8053AB10->field_0x34->getTexInfo(), "AK_kagerouSwap00");
+    mHeap->adjustSize();
+    mColors[0][0] = 0xC8;
+    mColors[0][1] = 0xFA;
+    mColors[0][2] = 0xAC;
+    mColors[1][0] = 0xFA;
+    mColors[1][1] = 0xAE;
+    mColors[1][2] = 0xAC;
+    mColors[2][0] = 0xB4;
+    mColors[2][1] = 0xD2;
+    mColors[2][2] = 0xE6;
+    mColors[3][0] = 0xF0;
+    mColors[3][1] = 0xB4;
+    mColors[3][2] = 0xF0;
+}
+
+EffectSystem_8049F178::~EffectSystem_8049F178() {
+    mEmitterManager->clearResourceManager(0);
+    mHeap->destroy();
+}
+
+void EffectSystem_8049F178::fn_8013DDEC() {
+    mEmitterManager->forceDeleteAllEmitter();
+    mEmitterNum = 0;
+    addTrackedEmitter(0x347, 0, 0);
+    addTrackedEmitter(0x346, 0, 0);
+    addTrackedEmitter(0x345, 0, 0);
+    addTrackedEmitter(0x357, 0, 0);
+    addTrackedEmitter(0x358, 0, 0);
+    addTrackedEmitter(0x348, 0, 0);
+    addTrackedEmitter(0x35C, 0, 0);
+    addTrackedEmitter(0x54D, 1, 0);
+    addTrackedEmitter(0x349, 0, 0);
+    addTrackedEmitter(0x34A, 0, 0);
+    addTrackedEmitter(0x34B, 0, 0);
+    addTrackedEmitter(0x34C, 0, 1);
+    addTrackedEmitter(0x34D, 0, 1);
+    addTrackedEmitter(0x354, 0, 0);
+    addTrackedEmitter(0x355, 0, 0);
+    addTrackedEmitter(0x356, 0, 0);
+    addTrackedEmitter(0x351, 0, 0);
+    addTrackedEmitter(0x352, 0, 0);
+    addTrackedEmitter(0x353, 0, 0);
+    addTrackedEmitter(0x34E, 0, 0);
+    addTrackedEmitter(0x34F, 0, 0);
+    addTrackedEmitter(0x350, 0, 0);
+    addTrackedEmitter(0x359, 0, 0);
+    addTrackedEmitter(0x35A, 0, 0);
+    addTrackedEmitter(0x35B, 0, 0);
+    JKRArchive* archive = lbl_80529DEC.field_0x10;
+    if (archive != NULL) {
+        for (s32 i = 0; i < 5; i++) {
+            ResTIMG* texture = (ResTIMG*)archive->getResource('TIMG', lbl_8049F118[i * 2]);
+            if (texture != NULL) {
+                mResourceManager->swapTexture(texture, lbl_8049F118[i * 2 + 1]);
+            }
+        }
+    }
+    for (int i = 0; i < 0x400; i++) {
+        mEntries[i].mCount = 0;
+    }
+}
+
+// fn_8013DDEC inlines this 25 times (one guard for the static callback);
+// the linker dead-stripped its own copy. Creates emitter `id` in draw group
+// `group` at the origin with the queue callback (cls_8049F15C, whose
+// executeAfter emits the queued positions), held (continuous, not creating)
+// in the next tracked slot with `word`.
+void EffectSystem_8049F178::addTrackedEmitter(u16 id, u8 group, s32 word) {
+    static cls_8049F15C callback;
+    JPABaseEmitter*& emitter = mEmitters[mEmitterNum];
+    emitter = mEmitterManager->createSimpleEmitterID(JGeometry::TVec3f(0.0f, 0.0f, 0.0f), id, group, 0, &callback, NULL);
+    emitter->becomeContinuousParticle();
+    emitter->stopCreateParticle();
+    mEmitterIds[mEmitterNum] = id;
+    field_0x40a8[mEmitterNum] = word;
+    mEmitterNum++;
+}
+
+void EffectSystem_8049F178::fn_8013DC44() {
+    bool update = false;
+    if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4c != GAME_MODE_C) {
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
+            update = true;
+        }
+    } else {
+        update = true;
+    }
+    if (update) {
+        if (gGameRoot_8053AAF8->field_0x4c != GAME_MODE_B) {
+            mEmitterManager->calc(0);
+            mEmitterManager->calc(1);
+            mEmitterManager->calc(2);
+            mEmitterManager->calc(4);
+            mEmitterManager->calc(5);
+            mEmitterManager->calc(6);
+        }
+        mEmitterManager->calc(7);
+        mEmitterManager->calc(8);
+    }
+    mEmitterManager->calc(3);
+    mEmitterManager->calc(9);
+}
+
+void EffectSystem_8049F178::fn_8013DC1C() {
+    mEmitterManager->calc(10);
+}
+
+void EffectSystem_8049F178::fn_8013DB2C() {
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info;
+        gGameRoot2_8053AB10->fn_8013B490();
+        set2DDrawInfo(info);
+        mEmitterManager->draw(&info, 4);
+    }
+}
+
+void EffectSystem_8049F178::fn_8013DA10() {
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+        gGameRoot2_8053AB10->fn_8013B438();
+        GXSetAlphaUpdate(GX_FALSE);
+        mEmitterManager->draw(&info, 9);
+    }
+}
+
+void EffectSystem_8049F178::fn_8013D908() {
+    JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+    gGameRoot2_8053AB10->fn_8013B438();
+    mEmitterManager->draw(&info, 7);
+}
+
+void EffectSystem_8049F178::fn_8013D6E4() {
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
+        JPADrawInfo info2d;
+        gGameRoot2_8053AB10->fn_8013B438();
+        mEmitterManager->draw(&info, 0);
+        mEmitterManager->draw(&info, 3);
+        gGameRoot2_8053AB10->field_0x34->capture(0, 0);
+        gGameRoot2_8053AB10->fn_8013B490();
+        set2DDrawInfo(info2d);
+        mEmitterManager->draw(&info2d, 5);
+        gGameRoot2_8053AB10->fn_8013B438();
+        GXSetAlphaUpdate(GX_FALSE);
+        mEmitterManager->draw(&info, 1);
+    }
+}
+
+void EffectSystem_8049F178::fn_8013D5D4() {
+    JPADrawInfo info;
+    gGameRoot2_8053AB10->fn_8013B490();
+    set2DDrawInfo(info);
+    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
+        mEmitterManager->draw(&info, 2);
+    }
+    mEmitterManager->draw(&info, 8);
+    mEmitterManager->draw(&info, 10);
+}
+
+void EffectSystem_8049F178::fn_8013D5B0() {
+    mEmitterManager->forceDeleteAllEmitter();
+}
 
 // FIXME: 99.95. Regalloc only, in the inlined depthPos tail (p.z += height - pos->z after
 // fn_802F5E9C): the original loads pos->z into f0 and p.z into f2, ours the other way round
@@ -419,205 +501,125 @@ JPABaseEmitter* spawnEmitter_8013CC50(s32 layer, const JGeometry::TVec3f* pos, u
     return emitter;
 }
 
-void EffectSystem_8049F178::fn_8013D5B0() {
-    mEmitterManager->forceDeleteAllEmitter();
-}
-
-void EffectSystem_8049F178::fn_8013D5D4() {
-    JPADrawInfo info;
-    gGameRoot2_8053AB10->fn_8013B490();
-    set2DDrawInfo(info);
-    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
-        mEmitterManager->draw(&info, 2);
+u8 setEmitterPos_8013CB44(JPABaseEmitter* emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth, bool adjust) {
+    bool result = false;
+    if (emitter != NULL) {
+        JGeometry::TVec3f p;
+        depthPos(p, pos, height, depth, adjust);
+        emitter->setTranslation(p.x, p.y, p.z);
+        result = true;
     }
-    mEmitterManager->draw(&info, 8);
-    mEmitterManager->draw(&info, 10);
+    return result;
 }
 
-void EffectSystem_8049F178::fn_8013D6E4() {
-    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
-        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
-        JPADrawInfo info2d;
-        gGameRoot2_8053AB10->fn_8013B438();
-        mEmitterManager->draw(&info, 0);
-        mEmitterManager->draw(&info, 3);
-        gGameRoot2_8053AB10->field_0x34->capture(0, 0);
-        gGameRoot2_8053AB10->fn_8013B490();
-        set2DDrawInfo(info2d);
-        mEmitterManager->draw(&info2d, 5);
-        gGameRoot2_8053AB10->fn_8013B438();
-        GXSetAlphaUpdate(GX_FALSE);
-        mEmitterManager->draw(&info, 1);
+// Fills `info` for drawing particles in screen space: the J2DOrthoGraph's
+// position matrix and a light-ortho projection over the frame buffer. The
+// linker dead-stripped this copy; fn_8013D5D4, fn_8013D6E4 and fn_8013DB2C
+// inline it (right after gGameRoot2_8053AB10->fn_8013B490()), and its 0.5f
+// is the pool literal before the int-to-float double (0.0, 1.0, pi, -1.0,
+// 0.5, double, ...), ahead of setEmitterPos_8013CB44. All three callers also
+// default-construct a second JPADrawInfo here that nothing reads (two
+// PSMTXIdentity calls on its own stack slot); it is the `unused` below.
+void set2DDrawInfo(JPADrawInfo& info) {
+    JPADrawInfo unused;
+    PSMTXCopy(gGameRoot2_8053AB10->field_0x10->mPosMtx, info.mCamMtx);
+    int width = JUTVideo::getManager()->getFbWidth();
+    int height = JUTVideo::getManager()->getEfbHeight();
+    C_MTXLightOrtho(info.mPrjMtx, 0.0f, height, 0.0f, width, 0.5f, 0.5f, 0.5f, 0.5f);
+}
+
+u8 fn_8013CAA4(JPABaseEmitter* emitter, f32 angle) {
+    bool result = false;
+    if (emitter != NULL) {
+        Mtx m;
+        m[0][3] = 0.0f;
+        m[1][3] = 0.0f;
+        m[2][3] = 0.0f;
+        JGeometry::TVec3f axis(0.0f, 1.0f, 1.0f);
+        fn_8010F668(m, &axis, angle + JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        m[0][0] *= -1.0f;
+        m[0][1] *= -1.0f;
+        m[0][2] *= -1.0f;
+        JPASetRMtxfromMtx(m, emitter->mGlobalRot);
+        result = true;
     }
+    return result;
 }
 
-void EffectSystem_8049F178::fn_8013D908() {
-    JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
-    gGameRoot2_8053AB10->fn_8013B438();
-    mEmitterManager->draw(&info, 7);
-}
-
-void EffectSystem_8049F178::fn_8013DA10() {
-    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
-        JPADrawInfo info(gGameRoot2_8053AB10->field_0x24->field_0xe4);
-        gGameRoot2_8053AB10->fn_8013B438();
-        GXSetAlphaUpdate(GX_FALSE);
-        mEmitterManager->draw(&info, 9);
-    }
-}
-
-void EffectSystem_8049F178::fn_8013DB2C() {
-    if (!gGameRoot_8053AAF8->fn_80134CC8()) {
-        JPADrawInfo info;
-        gGameRoot2_8053AB10->fn_8013B490();
-        set2DDrawInfo(info);
-        mEmitterManager->draw(&info, 4);
-    }
-}
-
-void EffectSystem_8049F178::fn_8013DC1C() {
-    mEmitterManager->calc(10);
-}
-
-void EffectSystem_8049F178::fn_8013DC44() {
-    bool update = false;
-    if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4c != GAME_MODE_C) {
-        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
-            update = true;
+void EffectSystem_8049F178::fn_8013C958(JPABaseEmitter* emitter) {
+    s32 count = emitter->getCurrentCreateNumber();
+    u16 id;
+    s32 word;
+    for (s32 i = 0; i < mEmitterNum; i++) {
+        if (emitter == mEmitters[i]) {
+            id = mEmitterIds[i];
+            word = field_0x40a8[i];
+            break;
         }
-    } else {
-        update = true;
     }
-    if (update) {
-        if (gGameRoot_8053AAF8->field_0x4c != GAME_MODE_B) {
-            mEmitterManager->calc(0);
-            mEmitterManager->calc(1);
-            mEmitterManager->calc(2);
-            mEmitterManager->calc(4);
-            mEmitterManager->calc(5);
-            mEmitterManager->calc(6);
+    if (count > 0 || word != 0 || id == 0x54D) {
+        emitter->playCreateParticle();
+        for (s32 i = 0; i < 0x400; i++) {
+            if (mEntries[i].mId == id && mEntries[i].mCount != 0) {
+                if (count > 0) {
+                    emitter->setGlobalTranslation(mEntries[i].mPos);
+                    for (s32 j = 0; j < count; j++) {
+                        JPABaseParticle* particle = emitter->createParticle();
+                        if (particle != NULL) {
+                            particle->setOffsetPosition(mEntries[i].mPos);
+                        }
+                    }
+                }
+                mEntries[i].mCount--;
+            }
         }
-        mEmitterManager->calc(7);
-        mEmitterManager->calc(8);
+        emitter->stopCreateParticle();
     }
-    mEmitterManager->calc(3);
-    mEmitterManager->calc(9);
 }
 
-// fn_8013DDEC inlines this 25 times (one guard for the static callback);
-// the linker dead-stripped its own copy. Creates emitter `id` in draw group
-// `group` at the origin with the queue callback (cls_8049F15C, whose
-// executeAfter emits the queued positions), held (continuous, not creating)
-// in the next tracked slot with `word`.
-void EffectSystem_8049F178::addTrackedEmitter(u16 id, u8 group, s32 word) {
-    static cls_8049F15C callback;
-    JPABaseEmitter*& emitter = mEmitters[mEmitterNum];
-    emitter = mEmitterManager->createSimpleEmitterID(JGeometry::TVec3f(0.0f, 0.0f, 0.0f), id, group, 0, &callback, NULL);
-    emitter->becomeContinuousParticle();
-    emitter->stopCreateParticle();
-    mEmitterIds[mEmitterNum] = id;
-    field_0x40a8[mEmitterNum] = word;
-    mEmitterNum++;
+void EffectSystem_8049F178::fn_8013C8CC() {
+    for (s32 i = 0; i < mEmitterNum; i++) {
+        if (mEmitterIds[i] == 0x349 || mEmitterIds[i] == 0x34A || mEmitterIds[i] == 0x34B) {
+            mEmitters[i]->deleteAllParticle();
+        }
+    }
 }
 
-void EffectSystem_8049F178::fn_8013DDEC() {
-    mEmitterManager->forceDeleteAllEmitter();
-    mEmitterNum = 0;
-    addTrackedEmitter(0x347, 0, 0);
-    addTrackedEmitter(0x346, 0, 0);
-    addTrackedEmitter(0x345, 0, 0);
-    addTrackedEmitter(0x357, 0, 0);
-    addTrackedEmitter(0x358, 0, 0);
-    addTrackedEmitter(0x348, 0, 0);
-    addTrackedEmitter(0x35C, 0, 0);
-    addTrackedEmitter(0x54D, 1, 0);
-    addTrackedEmitter(0x349, 0, 0);
-    addTrackedEmitter(0x34A, 0, 0);
-    addTrackedEmitter(0x34B, 0, 0);
-    addTrackedEmitter(0x34C, 0, 1);
-    addTrackedEmitter(0x34D, 0, 1);
-    addTrackedEmitter(0x354, 0, 0);
-    addTrackedEmitter(0x355, 0, 0);
-    addTrackedEmitter(0x356, 0, 0);
-    addTrackedEmitter(0x351, 0, 0);
-    addTrackedEmitter(0x352, 0, 0);
-    addTrackedEmitter(0x353, 0, 0);
-    addTrackedEmitter(0x34E, 0, 0);
-    addTrackedEmitter(0x34F, 0, 0);
-    addTrackedEmitter(0x350, 0, 0);
-    addTrackedEmitter(0x359, 0, 0);
-    addTrackedEmitter(0x35A, 0, 0);
-    addTrackedEmitter(0x35B, 0, 0);
-    JKRArchive* archive = lbl_80529DEC.field_0x10;
-    if (archive != NULL) {
-        for (s32 i = 0; i < 5; i++) {
-            ResTIMG* texture = (ResTIMG*)archive->getResource('TIMG', lbl_8049F118[i * 2]);
-            if (texture != NULL) {
-                mResourceManager->swapTexture(texture, lbl_8049F118[i * 2 + 1]);
+cls_8049F15C::~cls_8049F15C() {}
+
+void EffectSystem_8049F178::fn_8013C830(s32 player, JPABaseEmitter* emitter) {
+    if (emitter != NULL && player >= 0 && player < 4) {
+        emitter->setColorRGB(mColors[player][0], mColors[player][1], mColors[player][2]);
+    }
+}
+
+EffectSystem_8049F178* getEffectSystem_8013C824() {
+    return gGameRoot2_8053AB10->field_0x28;
+}
+
+// FIXME: 98.7. The original tests field_0x4c == 0xC as bne/b (a branch to the end after the
+// bne) where this emits one beq, and keeps the 'PEFF' arguments of case 0 in r29-r31 (here r28-r30).
+void cls_8049F140::execute(JPABaseEmitter* emitter) {
+    if (!emitter->checkStatus(1)) {
+        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
+        if (isGameModeSet() && root->field_0x4c != GAME_MODE_C && !root->field_0x94) {
+            field_0xc++;
+            switch (field_0x8) {
+            case 0:
+                if (field_0xc >= 8) {
+                    field_0xc = 0;
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
+                                               field_0x4 & 3, -1, field_0x4);
+                }
+                break;
+            case 1:
+                if (field_0xc >= 8) {
+                    field_0xc = 0;
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
+                                               (field_0x4 & 3) | 0x30, -1, field_0x4);
+                }
+                break;
             }
         }
     }
-    for (int i = 0; i < 0x400; i++) {
-        mEntries[i].mCount = 0;
-    }
 }
-
-EffectSystem_8049F178::~EffectSystem_8049F178() {
-    mEmitterManager->clearResourceManager(0);
-    mHeap->destroy();
-}
-
-EffectSystem_8049F178::EffectSystem_8049F178(JKRHeap* heap) {
-    mHeap = JKRSolidHeap::create(-1, heap, false);
-    mResourceManager = new (mHeap, 0)
-        JPAResourceManager(gGameRoot_8053AAF8->field_0xa4->getResource('????', "particle.jpc"), mHeap);
-    OSReport("***** particle.jpc load *****\n");
-    mEmitterManager = new (mHeap, 0) JPAEmitterManager(0x1C00, 0x200, mHeap, 0xB, 8);
-    mEmitterManager->entryResourceManager(mResourceManager, 0);
-    mResourceManager->swapTexture(gGameRoot2_8053AB10->field_0x34->getTexInfo(), "AK_kagerouSwap00");
-    mHeap->adjustSize();
-    mColors[0][0] = 0xC8;
-    mColors[0][1] = 0xFA;
-    mColors[0][2] = 0xAC;
-    mColors[1][0] = 0xFA;
-    mColors[1][1] = 0xAE;
-    mColors[1][2] = 0xAC;
-    mColors[2][0] = 0xB4;
-    mColors[2][1] = 0xD2;
-    mColors[2][2] = 0xE6;
-    mColors[3][0] = 0xF0;
-    mColors[3][1] = 0xB4;
-    mColors[3][2] = 0xF0;
-}
-
-void cls_8049F15C::executeAfter(JPABaseEmitter* emitter) {
-    gGameRoot2_8053AB10->field_0x28->fn_8013C958(emitter);
-}
-
-// Projects the particles: scales the manager's camera matrix by 1/sqrt 2 in y and z and moves
-// it by the emitter's translation times tan(22.5 deg) in y and z.
-void cls_8049F184::draw(JPABaseEmitter* emitter) {
-    JPAEmitterWorkData* work = gGameRoot2_8053AB10->field_0x28->mEmitterManager->pWd;
-    JGeometry::TSMtxf camera;
-    camera.set(work->mPosCamMtx);
-    Mtx m;
-    PSMTXScale(m, 1.0f, 0.70710677f, 0.70710677f);
-    PSMTXConcat(camera, m, camera);
-    JGeometry::TVec3f trans;
-    trans.set(emitter->mGlobalTrs);
-    trans.scale(0.41421357f);
-    trans.x = 0.0f;
-    PSMTXTrans(m, trans.x, trans.y, trans.z);
-    PSMTXConcat(camera, m, camera);
-    PSMTXCopy(camera, work->mPosCamMtx);
-}
-
-// FIXME: 97.7. Regalloc only: the original keeps gGameRoot2_8053AB10 in r3 and loads the effect
-// system into r4 first; here the root is in r4 and the camera comes in r5.
-void cls_8049F184::drawAfter(JPABaseEmitter* emitter) {
-    GameRoot2_8049F108* root = gGameRoot2_8053AB10;
-    root->field_0x24->field_0xe4.getCamMtx(root->field_0x28->mEmitterManager->pWd->mPosCamMtx);
-}
-
-cls_8049F184::~cls_8049F184() {}
-

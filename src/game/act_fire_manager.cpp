@@ -4,7 +4,25 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_fire_manager.h"
 
-FireManager_804AB2B0::~FireManager_804AB2B0() {}
+// FIXME: 99.8%. The original emits `lis r0, 0x4330` (the unsigned int-to-float
+// exponent) before `lis r4, 0x19` (the RNG multiplier); here they are swapped.
+void FireManager_804AB2B0::init() {
+    field_0x24c = 0;
+    field_0x250 = field_0x90 & 0xF;
+    if (field_0x250 < 3) {
+        field_0x250 = 3;
+    }
+    mBasePos = mPos;
+    field_0x23c = 0.5f;
+    field_0x244 = (field_0x90 >> 8) & 0xFF;
+    field_0x245 = (field_0x90 >> 16) & 0xFF;
+    field_0x240 = field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+    field_0x254 = (field_0x90 >> 24) & 1;
+    field_0x255 = (field_0x90 >> 25) & 1;
+    field_0x24c = ((field_0x90 & 0x30) ^ 0x20) | 0xF | (field_0x250 << 6) |
+                  (field_0x90 & 0xF8000000) | (field_0x255 << 16);
+    field_0x248 = ((field_0x90 >> 4) & 3) ^ 2;
+}
 
 void FireManager_804AB2B0::update() {
     JGeometry::TVec3f pos = mBasePos;
@@ -50,22 +68,4 @@ void FireManager_804AB2B0::update() {
     }
 }
 
-// FIXME: 99.8%. The original emits `lis r0, 0x4330` (the unsigned int-to-float
-// exponent) before `lis r4, 0x19` (the RNG multiplier); here they are swapped.
-void FireManager_804AB2B0::init() {
-    field_0x24c = 0;
-    field_0x250 = field_0x90 & 0xF;
-    if (field_0x250 < 3) {
-        field_0x250 = 3;
-    }
-    mBasePos = mPos;
-    field_0x23c = 0.5f;
-    field_0x244 = (field_0x90 >> 8) & 0xFF;
-    field_0x245 = (field_0x90 >> 16) & 0xFF;
-    field_0x240 = field_0x245 * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-    field_0x254 = (field_0x90 >> 24) & 1;
-    field_0x255 = (field_0x90 >> 25) & 1;
-    field_0x24c = ((field_0x90 & 0x30) ^ 0x20) | 0xF | (field_0x250 << 6) |
-                  (field_0x90 & 0xF8000000) | (field_0x255 << 16);
-    field_0x248 = ((field_0x90 >> 4) & 3) ^ 2;
-}
+FireManager_804AB2B0::~FireManager_804AB2B0() {}

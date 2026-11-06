@@ -2,13 +2,8 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_player_start_position.h"
 
-PlayerStartPosition_804A8338::~PlayerStartPosition_804A8338() {}
 
 static const s32 lbl_8046C890[4] = {2, 3, 0, 1};
-
-void PlayerStartPosition_804A8338::draw() {}
-
-void PlayerStartPosition_804A8338::update() {}
 
 void PlayerStartPosition_804A8338::init() {
     field_0x234 = (field_0x90 >> 8) & 0xF;
@@ -19,3 +14,9 @@ void PlayerStartPosition_804A8338::init() {
                 (field_0x90 >> 12) & 1);
     mAlive = false;
 }
+
+void PlayerStartPosition_804A8338::update() {}
+
+void PlayerStartPosition_804A8338::draw() {}
+
+PlayerStartPosition_804A8338::~PlayerStartPosition_804A8338() {}

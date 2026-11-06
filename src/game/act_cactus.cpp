@@ -7,10 +7,18 @@
 // Sprite frames of the hit animation (0, 1, 2, 3, 4, 3, 4).
 static const s32 lbl_804718E8[7] = {0, 1, 2, 3, 4, 3, 4};
 
-Cactus_804AB580::~Cactus_804AB580() {}
-
-void Cactus_804AB580::draw() {
-    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_804718E8[field_0x23c] + 0x12F, NULL, 0, 1.0f, 1.0f);
+void Cactus_804AB580::init() {
+    mLife = 10000;
+    field_0x234 = 0;
+    field_0x23c = 0;
+    field_0x238 = 0;
+    field_0x230 = 0;
+    field_0x114 = 2;
+    field_0xb8 = 2;
+    field_0xb0 = 0x1042304;
+    field_0x80.set(-5.0f, -5.0f, 5.0f, 5.0f);
+    mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
+    mBox2.set(-9.0f, -9.0f, 9.0f, 9.0f);
 }
 
 void Cactus_804AB580::update() {
@@ -53,16 +61,8 @@ void Cactus_804AB580::update() {
     }
 }
 
-void Cactus_804AB580::init() {
-    mLife = 10000;
-    field_0x234 = 0;
-    field_0x23c = 0;
-    field_0x238 = 0;
-    field_0x230 = 0;
-    field_0x114 = 2;
-    field_0xb8 = 2;
-    field_0xb0 = 0x1042304;
-    field_0x80.set(-5.0f, -5.0f, 5.0f, 5.0f);
-    mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
-    mBox2.set(-9.0f, -9.0f, 9.0f, 9.0f);
+void Cactus_804AB580::draw() {
+    drawSprite_801F06F0("enemy_gc_sob.bin", lbl_804718E8[field_0x23c] + 0x12F, NULL, 0, 1.0f, 1.0f);
 }
+
+Cactus_804AB580::~Cactus_804AB580() {}

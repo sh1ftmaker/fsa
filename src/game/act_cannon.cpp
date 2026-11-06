@@ -7,112 +7,10 @@
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 
-Cannon_8049CCF0::Cannon_8049CCF0() {
-    field_0x268 = 1;
-    field_0x269 = 0;
-    field_0x26a = 0;
-    field_0x26c = -1;
-    field_0x270 = 0;
-    field_0x274 = 0;
-    field_0x278 = 0;
-    field_0x27c = 0;
-    field_0x280 = 0.0f;
-    field_0x284 = 0.0f;
-    mHomePos.x = 0.0f;
-    mHomePos.y = 0.0f;
-    mHomePos.z = 0.0f;
-}
 
 // The animation: (cel, duration) pairs, ended by a cel of -1.
 static const s16 lbl_80463FD0[] = {0, 3, 1, 2, 2, 2, 3, 3, 4, 3, 5, 3, -1, -1};
 static const s16* lbl_80539ED0[] = {lbl_80463FD0, NULL};
-
-void Cannon_8049CCF0::init() {
-    if ((field_0x90 & 0xF) == 1) {
-        field_0x274 = 1;
-    }
-    field_0x27c = field_0x90 >> 4 & 0xF;
-    field_0x280 = (f32)(field_0x90 >> 8 & 0x1F);
-    if ((field_0x90 >> 16 & 1) == 1) {
-        field_0x26a = 1;
-    } else {
-        field_0x26a = 0;
-    }
-    mBox.set(-8.0f, -8.0f, 8.0f, -6.0f);
-    mBox2.set(mBox);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0xb0 = 0x50303;
-    mAnim.fn_801D2608(lbl_80539ED0, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-    mHomePos.set(mPos);
-    if (vfunc_0x3C()) {
-        if (vfunc_0x34()) {
-            field_0x269 = 1;
-        }
-    }
-}
-
-Cannon_8049CCF0::~Cannon_8049CCF0() {}
-
-f32 Cannon_8049CCF0::fn_801080B8() const {
-    if (field_0x4 == 0) {
-        return 8.0f;
-    }
-    if (field_0x26a != 0) {
-        return 8.0f;
-    }
-    return 13.0f;
-}
-
-void Cannon_8049CCF0::draw() {
-    if (vfunc_0x3C()) {
-        if (field_0x274 == 0 || field_0x274 == 1) {
-            if (!vfunc_0x34()) {
-                return;
-            }
-        }
-    }
-    SpriteParams_801F5AE0 params;
-    params.field_0x1d = 1;
-    s32 frame = mAnim.mCel + 0x14C;
-    JGeometry::TVec3f* pos = &mPos;
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, &params, 1.0f, 1.0f);
-    }
-    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x14C, false, 1, -1, 0, 0, 0);
-}
-
-bool Cannon_8049CCF0::fn_80107360() {
-    if (field_0x274 != 2) {
-        return false;
-    }
-    mPos.y = mHomePos.y;
-    JGeometry::TVec3f pos = mPos;
-    pos.y -= 16.0f;
-    if (field_0x4 == 0) {
-        spawnEmitter_8013CC50(field_0x4, &pos, 0x5A, 0, 1, NULL, NULL, true, 1.0f);
-    }
-    fn_80230FD0(field_0x26c, 0x20036);
-    gGameRoot_8053AAF8->fn_80134DE4(1, 0);
-    field_0x278 = field_0x274;
-    field_0x274 = 3;
-    // FIXME: 98.15 %. Only the branch layout differs: the original has one
-    // more unreachable `b` after the dispatch (beq, bge, b, b; ours beq,
-    // bge, b). The empty case 1 is there to produce the bge/b pair; its
-    // meaning is unknown (init() sets state 1 for some spawns).
-    switch (field_0x274) {
-    case 2:
-        fn_80230FD0(field_0x26c, 0x20035);
-        break;
-    case 1:
-        break;
-    }
-    field_0x284 = 0.0f;
-    return true;
-}
 
 // The swing (state 0 and 2): moves mPos.x between mHomePos.x +- 8 * field_0x280
 // with a speed that falls off near the ends.
@@ -310,4 +208,107 @@ void Cannon_8049CCF0::update() {
         break;
     }
     mAnim.fn_801D1C18();
+}
+
+bool Cannon_8049CCF0::fn_80107360() {
+    if (field_0x274 != 2) {
+        return false;
+    }
+    mPos.y = mHomePos.y;
+    JGeometry::TVec3f pos = mPos;
+    pos.y -= 16.0f;
+    if (field_0x4 == 0) {
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x5A, 0, 1, NULL, NULL, true, 1.0f);
+    }
+    fn_80230FD0(field_0x26c, 0x20036);
+    gGameRoot_8053AAF8->fn_80134DE4(1, 0);
+    field_0x278 = field_0x274;
+    field_0x274 = 3;
+    // FIXME: 98.15 %. Only the branch layout differs: the original has one
+    // more unreachable `b` after the dispatch (beq, bge, b, b; ours beq,
+    // bge, b). The empty case 1 is there to produce the bge/b pair; its
+    // meaning is unknown (init() sets state 1 for some spawns).
+    switch (field_0x274) {
+    case 2:
+        fn_80230FD0(field_0x26c, 0x20035);
+        break;
+    case 1:
+        break;
+    }
+    field_0x284 = 0.0f;
+    return true;
+}
+
+void Cannon_8049CCF0::draw() {
+    if (vfunc_0x3C()) {
+        if (field_0x274 == 0 || field_0x274 == 1) {
+            if (!vfunc_0x34()) {
+                return;
+            }
+        }
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x1d = 1;
+    s32 frame = mAnim.mCel + 0x14C;
+    JGeometry::TVec3f* pos = &mPos;
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, &params, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x14C, false, 1, -1, 0, 0, 0);
+}
+
+f32 Cannon_8049CCF0::fn_801080B8() const {
+    if (field_0x4 == 0) {
+        return 8.0f;
+    }
+    if (field_0x26a != 0) {
+        return 8.0f;
+    }
+    return 13.0f;
+}
+
+Cannon_8049CCF0::~Cannon_8049CCF0() {}
+
+void Cannon_8049CCF0::init() {
+    if ((field_0x90 & 0xF) == 1) {
+        field_0x274 = 1;
+    }
+    field_0x27c = field_0x90 >> 4 & 0xF;
+    field_0x280 = (f32)(field_0x90 >> 8 & 0x1F);
+    if ((field_0x90 >> 16 & 1) == 1) {
+        field_0x26a = 1;
+    } else {
+        field_0x26a = 0;
+    }
+    mBox.set(-8.0f, -8.0f, 8.0f, -6.0f);
+    mBox2.set(mBox);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    field_0xb0 = 0x50303;
+    mAnim.fn_801D2608(lbl_80539ED0, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+    mHomePos.set(mPos);
+    if (vfunc_0x3C()) {
+        if (vfunc_0x34()) {
+            field_0x269 = 1;
+        }
+    }
+}
+
+Cannon_8049CCF0::Cannon_8049CCF0() {
+    field_0x268 = 1;
+    field_0x269 = 0;
+    field_0x26a = 0;
+    field_0x26c = -1;
+    field_0x270 = 0;
+    field_0x274 = 0;
+    field_0x278 = 0;
+    field_0x27c = 0;
+    field_0x280 = 0.0f;
+    field_0x284 = 0.0f;
+    mHomePos.x = 0.0f;
+    mHomePos.y = 0.0f;
+    mHomePos.z = 0.0f;
 }
