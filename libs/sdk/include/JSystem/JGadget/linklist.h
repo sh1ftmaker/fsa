@@ -272,6 +272,8 @@ public:
   iterator Erase(T* p) { return TNodeLinkList::Erase(Element_toNode(p)); }
   iterator Insert(iterator it, T *p) { return TNodeLinkList::Insert(it.mIt, TLinkList::Element_toNode(p)); }
   void Remove(T* p) { TNodeLinkList::Remove(TLinkList::Element_toNode(p)); }
+  // zeldaret/tp's JGadget/linklist.h (Clear_destroy below uses it).
+  void pop_front() { erase(TNodeLinkList::begin()); }
   void Push_front(T* p) { Insert(begin(), p); }
   void Push_back(T* p) { Insert(end(), p); }
 
@@ -314,8 +316,12 @@ public:
   virtual void Do_destroy(T*) = 0;
 
   void Clear_destroy() {
+    // zeldaret/tp's form: each element is unlinked before it is destroyed
+    // (game/tu_803944C8's cls_804AF5A0 destructor inlines it: erase, then
+    // Do_destroy).
     while (!this->empty()) {
       T* p = &this->front();
+      this->pop_front();
       this->Do_destroy(p);
     }
   }

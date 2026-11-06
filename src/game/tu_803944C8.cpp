@@ -7,6 +7,11 @@
 #include "game/tu_803B8C74.h"
 #include "game/act/act_small_key.h"
 #include "JSystem/JMessage/TControl.h"
+#include "JSystem/J2D/J2DPane.h"
+#include "JSystem/J2D/J2DScreen.h"
+#include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JMessage/TResource.h"
+#include "game/cls_804B20F8.h"
 
 void fn_803A3228(s32 id, s32 arg1, u32 arg2) {
     lbl_8053AED0->fn_8043D874(id, arg1, arg2);
@@ -469,11 +474,57 @@ cls_804AF774::~cls_804AF774() {}
 
 cls_804AF72C::~cls_804AF72C() {}
 
+cls_804AF5A0::~cls_804AF5A0() {
+    for (int i = 0; i < 12; i++) {
+        delete field_0x68[i];
+        field_0x68[i] = NULL;
+    }
+    delete field_0x3bc;
+    field_0x3bc = NULL;
+    delete field_0x20;
+    field_0x20 = NULL;
+    delete field_0x24;
+    field_0x24 = NULL;
+    delete field_0x28;
+    field_0x28 = NULL;
+    delete field_0x2c;
+    field_0x2c = NULL;
+    for (int i = 0; i < 11; i++) {
+        delete field_0x30[i];
+        field_0x30[i] = NULL;
+    }
+    delete field_0x5c;
+    field_0x5c = NULL;
+    field_0x4->destroyResource_all();
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    delete field_0x10;
+    field_0x10 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+}
+
 void cls_804AF5A0::fn_80396F94() {
     field_0x8->update();
     fn_80396884();
     fn_80395BE8();
     field_0x3b0 = 1;
+}
+
+void cls_804AF5A0::fn_803944EC(f32 scale) {
+    field_0xb4 = scale;
+    J2DTextBox::TFontSize size;
+    size.x = field_0x60 * scale;
+    size.y = field_0x64 * scale;
+    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setLineSpace(field_0xb0 * scale);
+    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setLineSpace(field_0xb0 * scale);
+    field_0x14->setScale(scale, field_0x60);
 }
 
 void cls_804AF5A0::fn_803944C8(s32 value, u8 a, u8 b) {

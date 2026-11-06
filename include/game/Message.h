@@ -40,8 +40,14 @@
 
 namespace JMessage {
 struct TControl;
+struct TResourceContainer;
 }
 class cls_804B20F8;
+class cls_804AF6D4;
+class cls_804AF72C;
+class cls_804AF774;
+struct J2DPicture;
+class J2DScreen;
 class J2DTextBox;
 class JUTResFont;
 
@@ -62,10 +68,42 @@ public:
     /* 0x008 */ virtual ~cls_804AF5A0();
 
     /* 0x000 */ // vtable
-    /* 0x004 */ u8 field_0x4[0x8 - 0x4];
+    // The BMG resources (the destructor destroys them all, then deletes it).
+    /* 0x004 */ JMessage::TResourceContainer* field_0x4;
     // fn_80396F94 updates it each frame (JMessage::TControl::update).
     /* 0x008 */ JMessage::TControl* field_0x8;
-    /* 0x00C */ u8 field_0xc[0xB8 - 0xC];
+    // The constructor builds the reference (vtable 0x804AF6D4) and the
+    // sequence processor (0x804AF774); the destructor deletes them.
+    /* 0x00C */ cls_804AF6D4* field_0xc;
+    /* 0x010 */ cls_804AF774* field_0x10;
+    // The constructor builds it (0x2DC bytes, vtable 0x804AF72C).
+    /* 0x014 */ cls_804AF72C* field_0x14;
+    /* 0x018 */ u8 field_0x18[0x20 - 0x18];
+    // The first of the four J2DScreens the constructor loads; fn_803944EC
+    // scales its 'Tm01' / 'Tm02' text boxes.
+    /* 0x020 */ J2DScreen* field_0x20;
+    /* 0x024 */ J2DScreen* field_0x24;
+    /* 0x028 */ J2DScreen* field_0x28;
+    /* 0x02C */ J2DScreen* field_0x2c;
+    // Eleven pictures from 'TIMG' resources and one more at 0x5C (the
+    // destructor deletes 0x30.. in a loop of 11, then 0x5C).
+    /* 0x030 */ J2DPicture* field_0x30[11];
+    /* 0x05C */ J2DPicture* field_0x5c;
+    // 'Tm01''s font size as loaded (the constructor reads it back).
+    /* 0x060 */ f32 field_0x60;
+    /* 0x064 */ f32 field_0x64;
+    // Twelve 12-byte entries the constructor new's (two floats set to 0.0f
+    // and a byte set to 0xFF) and the destructor deletes.
+    struct Entry_0x68 {
+        /* 0x0 */ f32 field_0x0;
+        /* 0x4 */ f32 field_0x4;
+        /* 0x8 */ u8 field_0x8;
+    }; // Size: 0xC
+    /* 0x068 */ Entry_0x68* field_0x68[12];
+    /* 0x098 */ u8 field_0x98[0xB0 - 0x98];
+    // 'Tm01''s line space as loaded; fn_803944EC stores its scale in 0xB4.
+    /* 0x0B0 */ f32 field_0xb0;
+    /* 0x0B4 */ f32 field_0xb4;
     // The window box's width and height (fn_8037EB4C scales them).
     /* 0x0B8 */ f32 field_0xb8;
     /* 0x0BC */ f32 field_0xbc;
@@ -121,6 +159,9 @@ public:
 
     // game/tu_803944C8.cpp. The one-field accessors and setters the unit ends with.
     void fn_803944C8(s32 value, u8 a, u8 b);
+    // Scales the text: 'Tm01' / 'Tm02' font size and line space, and the
+    // layout processor's sizes (MessageWindow_804AF490 calls it).
+    void fn_803944EC(f32 scale);
     void fn_80396F94();
     void fn_80395BE8();
     void fn_80396884();

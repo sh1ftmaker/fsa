@@ -62,7 +62,10 @@ public:
     /* 0x038 */ u8 field_0x38[0x3C - 0x38];
     /* 0x03C */ s32 field_0x3c;
     /* 0x040 */ s32 field_0x40;
-    /* 0x044 */ u8 field_0x44[0x4C - 0x44];
+    // fn_803944EC stores the text scale and the window's font width
+    // (cls_804AF5A0 field_0x60) here.
+    /* 0x044 */ f32 field_0x44;
+    /* 0x048 */ f32 field_0x48;
     /* 0x04C */ f32 field_0x4c[42];
     /* 0x0F4 */ f32 field_0xf4[42];
     /* 0x19C */ f32 field_0x19c[15];
@@ -85,6 +88,14 @@ public:
 class cls_804AF72C : public JMessage::TRenderingProcessor {
 public:
     virtual ~cls_804AF72C();
+    // Inlined by fn_803944EC and the window constructor (both load field_0x60
+    // before the one load of the processor, then the three stores); no
+    // out-of-line copy survives.
+    void setScale(f32 scale, f32 width) {
+        field_0x2c8 = scale;
+        field_0x38.field_0x44 = scale;
+        field_0x38.field_0x48 = width;
+    }
     virtual void do_reset();
     virtual void do_end();
 
@@ -93,7 +104,8 @@ public:
     /* 0x2BC */ u8 field_0x2bc[0x2C0 - 0x2BC];
     /* 0x2C0 */ s8* field_0x2c0;
     /* 0x2C4 */ s8* field_0x2c4;
-    /* 0x2C8 */ u8 field_0x2c8[0x2D0 - 0x2C8];
+    /* 0x2C8 */ f32 field_0x2c8; // the text scale (fn_803944EC)
+    /* 0x2CC */ u8 field_0x2cc[0x2D0 - 0x2CC];
     /* 0x2D0 */ s32 field_0x2d0;
     /* 0x2D4 */ u8 field_0x2d4[0x2D8 - 0x2D4];
     /* 0x2D8 */ cls_804AF5A0* field_0x2d8;
