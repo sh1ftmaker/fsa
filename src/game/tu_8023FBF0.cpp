@@ -1497,6 +1497,8 @@ u8 Player_804A6F38::fn_802517E4() {
 
 // Whether the player pushes (state 0x1A) with the stick along its facing
 // (fn_80247330 / fn_8024712C), fn_80244630's test without the input gate.
+// FIXME: 99.86 %. Registers only (the inlined group loops' leader / self
+// temporaries).
 bool Player_804A6F38::fn_80250FD4() {
     if (field_0x1240 == 0x1a &&
         ((field_0x3dc == 0 && fn_80247330() > 0.0f) ||
@@ -1551,6 +1553,8 @@ bool Player_804A6F38::fn_80250ACC() {
 // +-1 at mPos + lbl_8046AE08[facing] while the stick points along the facing
 // (fn_80247330 / fn_8024712C), and takes it as 0xD9C with its grabbed actor
 // (fn_8024FF84) in 0xD94 for 3 frames (0xD98).
+// FIXME: 99.21 %. Scheduling and registers only (the inlined group loop's
+// count / index temporaries).
 bool Player_804A6F38::fn_80250090() {
     if (mPos.z > 0.0f) {
         field_0xd9c = -1;
@@ -1571,6 +1575,8 @@ bool Player_804A6F38::fn_80250090() {
     box.f.x += mPos.x;
     box.i.y += mPos.y;
     box.f.y += mPos.y;
+    // The position is added field by field: addPos(mPos.x, mPos.y) loses two
+    // instructions against the original.
     box.addPos(lbl_8046AE08[field_0x3dc][0], lbl_8046AE08[field_0x3dc][1]);
     for (s32 i = 0; i < 4; i++) {
         if (i == field_0x4 || !fn_8022DA68(i) || !fn_8023B0F4(i, &box, field_0x3b4, false, 0.0f)) {
@@ -1684,6 +1690,8 @@ bool Player_804A6F38::fn_8024FE78() {
 // same way and held by nobody; from states 0 / 2 / 3 (0x11 unless
 // fn_8025F500 / fn_8025F590) it requests the push 0x1A, else takes that
 // player as 0xDAC with its pushed actor in 0xDA4 for 3 frames (0xDA8).
+// FIXME: 99.07 %. Scheduling and registers only (the inlined group loops'
+// index / leader temporaries).
 bool Player_804A6F38::fn_8024F63C() {
     if (!fn_802456FC()) {
         if (field_0xdac >= 0) {
@@ -1722,6 +1730,8 @@ bool Player_804A6F38::fn_8024F63C() {
     box.f.x += mPos.x;
     box.i.y += mPos.y;
     box.f.y += mPos.y;
+    // The position is added field by field: addPos(mPos.x, mPos.y) loses two
+    // instructions against the original.
     box.addPos(lbl_8046AE58[field_0x3dc][0], lbl_8046AE58[field_0x3dc][1]);
     for (s32 i = 0; i < 4; i++) {
         if (i == field_0x4 || !fn_8022D894(i)) {
@@ -2408,6 +2418,8 @@ bool Player_804A6F38::fn_8024D98C() {
 // fn_8027F1C8 also uses (beside the group by 8 a place in modes 0 / 1,
 // (8, 8) in mode 2, the spin centre 0x11B4 in states 9 / 0xA or 16 toward
 // the player's side in mode 3), on the ground.
+// FIXME: 99.65 %. Registers only (the inlined group loop's count / index
+// temporaries).
 void Player_804A6F38::fn_8024D134() {
     if (gGameRoot_8053AAF8->field_0x7e) {
         return;
@@ -2712,6 +2724,8 @@ bool Player_804A6F38::fn_8024C35C() {
 // view's top-left corner, layer 0; above it at 0xCB0, layer 0); a fresh
 // press (fn_80246D1C) adds the pad rumble (fn_8030381C, as joinCue) and
 // sound 0x1E. Not in 0x454 mode.
+// FIXME: 99.53 %. Registers only (the inlined group loop's count / index
+// temporaries).
 void Player_804A6F38::fn_8024BDBC() {
     if (field_0x454) {
         return;
@@ -3301,6 +3315,8 @@ s32 Player_804A6F38::fn_80248970() const {
 
 // The number of group places in use: 1 in group mode 4 (turn-based), else
 // the group's size (fn_80248970).
+// FIXME: 94.95 %. Registers only: the original zeroes the loop's count and
+// index with two li (r29, r30), ours with li / mr (r28, r29).
 s32 Player_804A6F38::fn_802487FC() const {
     if (fn_802486A0() == 4) {
         return 1;
