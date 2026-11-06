@@ -1189,6 +1189,56 @@ void Player_804A6F38::fn_80276BB8() {
     }
 }
 
+// The facing boxes (as fn_80276E5C) for the s16 angle 0x11C0 in eight directions. On a
+// diagonal the facing 0x3F0 becomes the vertical one: the original's `!= a || != b` test
+// (compiled as such: cmpwi a / bne, cmpwi b / beqlr) is always true.
+void Player_804A6F38::fn_802765C0() {
+    s16 angle = field_0x11c0;
+    if (angle < -0x7000) {
+        setBoxesNegX(this);
+    } else if (angle < -0x5000) {
+        field_0x4b0.set(mPos.x - 24.0f, mPos.y - 24.0f, mPos.x - 8.0f, mPos.y - 8.0f);
+        field_0x4a0.set(mPos.x - 16.0f, mPos.y - 16.0f, mPos.x, mPos.y);
+        field_0x30c.set(-16.0f, -16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        if (field_0x3f0 != 3 || field_0x3f0 != 1) {
+            field_0x3f0 = 3;
+        }
+    } else if (angle < -0x3000) {
+        setBoxesNegY(this);
+    } else if (angle < -0x1000) {
+        field_0x4b0.set(mPos.x + 8.0f, mPos.y - 24.0f, mPos.x + 24.0f, mPos.y - 8.0f);
+        field_0x4a0.set(mPos.x, mPos.y - 16.0f, mPos.x + 16.0f, mPos.y);
+        field_0x30c.set(16.0f, -16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        if (field_0x3f0 != 3 || field_0x3f0 != 0) {
+            field_0x3f0 = 3;
+        }
+    } else if (angle < 0x1000) {
+        setBoxesPosX(this);
+    } else if (angle < 0x3000) {
+        field_0x4b0.set(mPos.x + 8.0f, mPos.y + 8.0f, mPos.x + 24.0f, mPos.y + 24.0f);
+        field_0x4a0.set(mPos.x, mPos.y, mPos.x + 16.0f, mPos.y + 16.0f);
+        field_0x30c.set(16.0f, 16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        if (field_0x3f0 != 2 || field_0x3f0 != 0) {
+            field_0x3f0 = 2;
+        }
+    } else if (angle < 0x5000) {
+        setBoxesPosY(this);
+    } else if (angle < 0x7000) {
+        field_0x4b0.set(mPos.x - 24.0f, mPos.y + 8.0f, mPos.x - 8.0f, mPos.y + 24.0f);
+        field_0x4a0.set(mPos.x - 16.0f, mPos.y, mPos.x, mPos.y + 16.0f);
+        field_0x30c.set(-16.0f, 16.0f, 0.0f);
+        field_0x30c.add(mPos);
+        if (field_0x3f0 != 2 || field_0x3f0 != 1) {
+            field_0x3f0 = 2;
+        }
+    } else {
+        setBoxesNegX(this);
+    }
+}
+
 // FIXME: 99.56. Code identical; the 7 / -15 / 15 literals are reloc-name until the earlier
 // .sdata2 users (fn_8027439C, fn_802756E4, fn_80275D9C) are written.
 void Player_804A6F38::fn_80276538() {
