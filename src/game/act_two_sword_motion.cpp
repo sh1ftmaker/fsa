@@ -91,9 +91,9 @@ void TwoSwordMotion_804ABA90::init() {
     field_0x230 = 0;
 }
 
-// FIXME: 84.07 %. The original keeps layer in r29 and the serial (loaded
-// before the fn_8020D58C call) in r30; ours assigns them the other way round,
-// which adds an mr pair. Same instructions otherwise.
+// FIXME: 92.08. Scheduling and register allocation only: the original keeps layer in r29
+// and the serial (loaded before the fn_8020D58C call) in r30; ours assigns them the other
+// way round, which moves an mr pair. The tile code is an s32 local (cmpwi after the clrlwi.).
 bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes;
@@ -101,7 +101,7 @@ bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL) == true) {
         return true;
     }
-    u16 code = fn_8022461C(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
     if (code == 0 || code == 2 || code == 0x50 || code == 0x39 || code == 0xd || code == 0x61) {
         return false;
     }
