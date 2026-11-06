@@ -10,6 +10,7 @@
 #include "game/act/act_all_enemies_defeated.h"
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
+#include "game/act/act_gohma.h"
 #include "game/act/act_wallmaster.h"
 #include "game/act/act_wizzrobe.h"
 #include "game/act/tu_8018EB94.h"
@@ -227,13 +228,6 @@ public:
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
-// Spawned for 'GOMA'.
-class Gohma_804A307C : public ActorBase_804A5770 {
-public:
-    Gohma_804A307C() {}
-    /* 0x08 */ virtual ~Gohma_804A307C();
-    /* 0x230 */ u8 field_0x230[0x54];
-}; // Size: 0x284
 
 // Spawned for 'ZLD3'.
 class cls_804A35AC : public ActorBase_804A5770 {
