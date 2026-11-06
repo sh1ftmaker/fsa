@@ -609,12 +609,13 @@ s32 EnemyBase_804A4808::fn_801CF1B0(bool turn, f32 range, f32 margin) {
     return dir;
 }
 
-// FIXME: 61.7 %. Same operations; the target does all loads (y - z first)
+// FIXME: 75.3. Same operations; the target does all loads (y - z first)
 // before it forms &pos in r3, ours forms &pos first and keeps `this` in r4
-// (one extra mr), which reorders the whole body.
+// (one extra mr), which reorders the stores. const: the loads off `this`
+// sit above the register saves (61.7 -> 75.3).
 // Whether the map (fn_801CCB1C) blocks the point 16 units above the actor's
 // screen position.
-bool EnemyBase_804A4808::fn_801CF144() {
+bool EnemyBase_804A4808::fn_801CF144() const {
     JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z - 16.0f, 0.0f);
     bool blocked = false;
     if (fn_801CCB1C(&pos, field_0x4)) {
@@ -623,10 +624,9 @@ bool EnemyBase_804A4808::fn_801CF144() {
     return blocked;
 }
 
-// FIXME: 89.7 %, scheduling only: the target loads field_0x3c.x before the
-// atanTable_ address, ours after.
+// const: the target loads field_0x3c.x above the prologue's stw r0.
 // The direction of field_0x3c (its 16-bit angle through fn_801F681C).
-s32 EnemyBase_804A4808::fn_801CF0F4() {
+s32 EnemyBase_804A4808::fn_801CF0F4() const {
     s32 angle = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) *
                 (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
     return fn_801F681C(angle);

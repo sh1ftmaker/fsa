@@ -225,10 +225,10 @@ public:
     bool fn_801CECF4(u32 actorId, f32 speed, f32 range);
     // 1 unit / 1 call (tu_801D2C60, stored to field_0x98). The direction
     // of field_0x3c (atan2 to a 16-bit angle, clrlwi 16, then fn_801F681C).
-    s32 fn_801CF0F4();
+    s32 fn_801CF0F4() const;
     // 1 unit / 4 calls (clrlwi.). fn_801CCB1C on (x, y - z - 16, 0) and
     // field_0x4: a map test 16 units in front; returns 0 or 1.
-    bool fn_801CF144();
+    bool fn_801CF144() const;
     // 1 unit / 3 calls (act_gibdo: r4 = li 1 in the first, a 0/1 bool
     // local in the third; two lfs constants). A
     // direction toward the nearest player within `range` (f1, squared),
