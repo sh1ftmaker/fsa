@@ -31,7 +31,7 @@ static const GXColor lbl_8053D924 = {0x00, 0x00, 0x00, 0x2F}; // fn_8016B910
 static const GXColor lbl_8053D928 = {0x36, 0x61, 0x82, 0xFF}; // fn_8016B910
 static const GXColor lbl_8053D92C = {0xAF, 0xCF, 0xCF, 0xFF}; // fn_8016B910
 static const GXColor lbl_8053D930 = {0x36, 0x61, 0x82, 0xFF}; // fn_8016B910
-static const GXColor lbl_8053D934 = {0xCF, 0xE7, 0xE7, 0xFF};
+static const GXColor lbl_8053D934 = {0xCF, 0xE7, 0xE7, 0xFF}; // fn_8016B910
 
 // forward declarations (functions reversed for -inline deferred)
 void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
@@ -476,8 +476,6 @@ void GameRootSub24_8016A3AC::fn_8016A330() {
     field_0x1dc = 0;
     field_0x1dd = 0;
 }
-
- // fn_8016B910
 
 void GameRootSub24_8016A3AC::fn_8016A2B4() {
     if (field_0x124 != NULL) {

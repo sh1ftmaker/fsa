@@ -22,7 +22,7 @@ public:
     /* 0x2 */ u8 target;
     /* 0x3 */ u8 phase;
     /* 0x4 */ u16 timer;
-};
+}; // Size: 0x6
 
 void cls_802153A8::fn_80215578() {
     active = 0;
@@ -39,8 +39,6 @@ void cls_802153A8::fn_80215558(u8 value) {
     phase = 0;
     timer = 0;
 }
-
- // Size: 0x6
 
 bool cls_802153A8::fn_802153A8() {
     bool done = false;

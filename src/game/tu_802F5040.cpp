@@ -102,7 +102,7 @@ struct SobObj_802F86CC {
     /* 0x5 */ u8 mPalette : 4;
     u8 mPriority : 2;
     u8 mTileHigh : 2;
-};
+}; // Size: 0x6
 
 // One 5-bit colour channel times scale plus offset, clamped to 0-31
 // (fn_802F93F4's channel adjustment, inlined for r, g and b).
@@ -899,8 +899,6 @@ void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     }
     GXSetCullMode(GX_CULL_NONE);
 }
-
- // Size: 0x6
 
 // FIXME: 88.9. The original keeps obj in memory as if its address were taken:
 // every bit-field store is kept (byte 0x11 stored after each field, the

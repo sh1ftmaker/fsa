@@ -40,6 +40,16 @@ def scan_items(src):
             items.append((kind, src[cur_start:end]))
         cur_start = end
 
+    def line_tail(end):
+        # a `// comment` on the same line after an item's end belongs to that item
+        k = end
+        while k < n and src[k] in ' \t':
+            k += 1
+        if src.startswith('//', k):
+            e = src.find('\n', k)
+            return n if e == -1 else e
+        return end
+
     at_line_start = True
     while i < n:
         c = src[i]
@@ -101,15 +111,18 @@ def scan_items(src):
                 while k < n and src[k] in ' \t':
                     k += 1
                 if k < n and src[k] == ';':
-                    i = k
-                    flush(i + 1)
-                    i += 1
+                    i = line_tail(k + 1)
+                    flush(i)
                     continue
                 head = src[cur_start:i]
                 if not is_aggregate_head(head):
-                    flush(i + 1)
+                    i = line_tail(i + 1)
+                    flush(i)
+                    continue
         elif c == ';' and depth == 0 and pdepth == 0:
-            flush(i + 1)
+            i = line_tail(i + 1)
+            flush(i)
+            continue
         i += 1
     flush(n, 'ws' if src[cur_start:].strip() == '' else 'code')
     return items
