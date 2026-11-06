@@ -597,29 +597,35 @@ EffectSystem_8049F178* getEffectSystem_8013C824() {
     return gGameRoot2_8053AB10->field_0x28;
 }
 
-// FIXME: 98.7. The original tests field_0x4c == 0xC as bne/b (a branch to the end after the
-// bne) where this emits one beq, and keeps the 'PEFF' arguments of case 0 in r29-r31 (here r28-r30).
+// FIXME: 99.53. regalloc-only: the original keeps the 'PEFF' arguments of case 0 in r29-r31
+// (reusing r31 once `this` is dead; here r28-r30). The early-outs are two returns: the mode
+// tests as one condition (bne over a `b` to the end), then field_0x94.
 void cls_8049F140::execute(JPABaseEmitter* emitter) {
-    if (!emitter->checkStatus(1)) {
-        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
-        if (isGameModeSet() && root->field_0x4c != GAME_MODE_C && !root->field_0x94) {
-            field_0xc++;
-            switch (field_0x8) {
-            case 0:
-                if (field_0xc >= 8) {
-                    field_0xc = 0;
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
-                                               field_0x4 & 3, -1, field_0x4);
-                }
-                break;
-            case 1:
-                if (field_0xc >= 8) {
-                    field_0xc = 0;
-                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
-                                               (field_0x4 & 3) | 0x30, -1, field_0x4);
-                }
-                break;
-            }
+    if (emitter->checkStatus(1)) {
+        return;
+    }
+    GameRoot_8049EF20* root = gGameRoot_8053AAF8;
+    if (!isGameModeSet() || root->field_0x4c == GAME_MODE_C) {
+        return;
+    }
+    if (root->field_0x94) {
+        return;
+    }
+    field_0xc++;
+    switch (field_0x8) {
+    case 0:
+        if (field_0xc >= 8) {
+            field_0xc = 0;
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
+                                       field_0x4 & 3, -1, field_0x4);
         }
+        break;
+    case 1:
+        if (field_0xc >= 8) {
+            field_0xc = 0;
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PEFF, getPlayerLayer_8023DE58(field_0x4), getPlayerPos_8023E724(field_0x4),
+                                       (field_0x4 & 3) | 0x30, -1, field_0x4);
+        }
+        break;
     }
 }
