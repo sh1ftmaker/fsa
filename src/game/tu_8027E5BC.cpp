@@ -64,10 +64,10 @@ static const Vec lbl_8046BED8[8] = {
     {-1.0f, 0.0f, 0.0f},
     {0.0f, 1.0f, 0.0f},
     {0.0f, -1.0f, 0.0f},
-    {0.70710677f, 0.70710677f, 0.0f},
-    {-0.70710677f, 0.70710677f, 0.0f},
-    {0.70710677f, -0.70710677f, 0.0f},
-    {-0.70710677f, -0.70710677f, 0.0f},
+    {0.707f, 0.707f, 0.0f},
+    {-0.707f, 0.707f, 0.0f},
+    {0.707f, -0.707f, 0.0f},
+    {-0.707f, -0.707f, 0.0f},
 };
 // The same directions for fn_80280074.
 static const Vec lbl_8046BF38[8] = {
@@ -75,10 +75,10 @@ static const Vec lbl_8046BF38[8] = {
     {-1.0f, 0.0f, 0.0f},
     {0.0f, 1.0f, 0.0f},
     {0.0f, -1.0f, 0.0f},
-    {0.70710677f, 0.70710677f, 0.0f},
-    {-0.70710677f, 0.70710677f, 0.0f},
-    {0.70710677f, -0.70710677f, 0.0f},
-    {-0.70710677f, -0.70710677f, 0.0f},
+    {0.707f, 0.707f, 0.0f},
+    {-0.707f, 0.707f, 0.0f},
+    {0.707f, -0.707f, 0.0f},
+    {-0.707f, -0.707f, 0.0f},
 };
 // Offsets by [player][this player's index] (x, y), for fn_802486A0() == 3 and 2.
 static const f32 lbl_8046BF98[4][4][2] = {
@@ -2476,6 +2476,64 @@ void Player_804A6F38::fn_80285074() {
     field_0xd94 = -1;
     field_0xd9c = -1;
     field_0xd98 = 0;
+}
+
+// Update of state 0x0D (holding a block): standing (0) when the tile 10 ahead is free or tile
+// 0xE / 0x39 / 0xD and neither fn_802684A4 nor fn_80250090 holds; to 0xE while the grabbed actor
+// (fn_8024FF84) moves; else 0xD94 = -1, the stick moves the player at 1.5 along the facing's axis
+// (not with pad 0x40), and a turn or the end of the push count (cls_804A71A8 0xA0) stands (0) and
+// clears 0xD98 / 0xD9C and the counts 0xA0 / 0xA4; then pick-ups and the 128-frame cycle 0x3F8
+// (frames lbl_8046C098 by facing, sound 0x10012 at 16).
+void Player_804A6F38::fn_80285098() {
+    const Vec& ahead = lbl_8046BDA8[field_0x3dc];
+    JGeometry::TVec3f front;
+    front.x = ahead.x;
+    front.y = ahead.y;
+    front.z = ahead.z;
+    front += mPos;
+    u16 tile = fn_8022461C(&front, field_0x3b4);
+    if ((!fn_802265DC(&front, field_0x3b4, true) || tile == 0xe || tile == 0x39 || tile == 0xd) &&
+        !fn_802684A4(&front, field_0x3b4) && !fn_80250090()) {
+        fn_80251AEC(0);
+    } else {
+        ActorBase_804A5770* grabbed = getActorManager_801F856C()->findActorBySerial_801F666C(fn_8024FF84());
+        if (grabbed != NULL && magnitude(grabbed->mPos - grabbed->mPrevPos) >= 0.1f) {
+            fn_80251AEC(0xe);
+        } else {
+            field_0xd94 = -1;
+            fn_80275D9C();
+            if (!fn_80246B10(0x40)) {
+                if (field_0x3dc == 0 || field_0x3dc == 1) {
+                    mPos.x += 1.5f * fn_8022C82C(field_0x4);
+                } else {
+                    mPos.y += 1.5f * -fn_8022C76C(field_0x4);
+                }
+            }
+            s32 facing = field_0x3dc;
+            fn_8027EB04();
+            if (facing != field_0x3dc || field_0xbf0->field_0xa0 == 0) {
+                fn_80251AEC(0);
+                field_0xd9c = -1;
+                field_0xd98 = 0;
+                field_0xbf0->field_0xa0 = 0;
+                field_0xbf0->field_0xa4 = 0;
+            }
+            fn_80261480();
+            field_0x3f8++;
+            if (field_0x3f8 >= 128) {
+                field_0x3f8 = 0;
+            }
+            if (field_0x3f8 >= 64) {
+                field_0x3f9 = lbl_8046C098[field_0x3dc][(field_0x3f8 - 64) / 8];
+            } else {
+                field_0x3f9 = lbl_8046C098[field_0x3dc][field_0x3f8 / 8];
+            }
+            if (field_0x3f8 == 16) {
+                fn_8024F0E8(0x10012);
+            }
+        }
+    }
+    fn_80268B3C();
 }
 
 void Player_804A6F38::fn_8028537C() {
