@@ -23,7 +23,7 @@ The prose in the rounds below was written along the way and keeps its own
 | tu_8022AD64 | 8022AD64-8023FBF0 | 373 | 352 | 24,820 | PlayerManager (ctor 8023F8B0, dtor 8023F7F8, update 8023F390, draw 8023F2BC), ~270 fwds, cross-player passes |
 | tu_8023FBF0 | 8023FBF0-80256C74 | 254 | 172 | 77,036 | Player core: getters/setters, input/actions, state request, update A/B, reset, ctor/dtor |
 | tu_80256C74 | 80256C74-8025EB18 | 63 | 52 | 20,080 | state handlers 0x39-0x3D, 0x41-0x48, helpers |
-| tu_8025EB18 | 8025EB18-80264998 | 59 | 43 | 18,044 | state handlers 0x11-0x19; shared exit fn_8025F698(bool) |
+| tu_8025EB18 | 8025EB18-80264998 | 59 | 45 | 15,552 | state handlers 0x11-0x19 (all written); shared exit fn_8025F698(bool) |
 | tu_80264998 | 80264998-802684A4 | 26 | 24 | 5,140 | draw fn_80264998, body-frame select fn_80265E88 + per-state frame functions (round 6) |
 | tu_802684A4 | 802684A4-8026FC20 | 25 | 15 | 22,916 | cls_804A71A8 (helper object at Player+0xBF0) |
 | tu_8026FC20 | 8026FC20-8027E5BC | 120 | 97 | 34,272 | state handlers 0x04-0x10, 0x33-0x37; movement helpers |
@@ -1393,3 +1393,46 @@ Evidence and fixes:
 - .rodata: lbl_8046AE08 / lbl_8046AE58 f32[4][2] (+-10 along the facing), lbl_8046AE28
   Vec[4] (10 behind the facing).
 - SHARED-EDITS: include/game/Player.h (fn_8024E694's parameter named `single`).
+
+## Round 17 (tu_8025EB18) (Opus 5.5, 2026-11-06)
+
+43 -> 45 of 59 at 100 % (+2 honest: 8960 -> 8962 on matching c0c9afa0, no drops by address).
+Both unwritten functions are written, so every function of the unit is in place (.text
+97.9 %; .sdata2 bytes equal to the original, only the 4-byte tail padding before
+tu_80264998's 8-aligned data differs).
+
+| function | % / try.py class | what it is |
+|---|---|---|
+| fn_80263C64 | 100 | **update of state 0x12, the carry** (tu_80285E58's dispatch: case 0x12). The stick step (fn_8027FA08's z of 0 puts mPos.z on the floor unless 0x434); with fn_8022C13C (unless fn_802416C4 is 7): put down (0x18) a held player that fn_80236B50 rejects, a bomb ('HBMB') or a small key ('KEY0' via fn_8025F648), else throw (0x16, also when fn_8024B24C); fn_8022C0A0 throws (0x16); fn_802466B4 starts 0x15 unless the held actor's field_0x1a4 >= 2. Then walks (fn_802808E8 at 1.25 with a player, 1.5 with an actor whose field_0x1a4 is 0, none otherwise), fn_8027EB04, and the carry cycle fn_8026152C(false) inlined three times; a held player that stops being one (fn_8023EA28) or a lost actor ends the carry (state 0). First user of 1.25 / 1.5 |
+| fn_8026152C(slow) | 100 | the carry walk cycle (flipped by the VecEpsilon.h change below) |
+| fn_80263078 | 99.78 regalloc | **enter of state 0x13** (dispatch case 0x13; update fn_80262BAC): after fn_8028414C, with a held cucco ('NIWA', Cucco_804AB8C0 byte 0x2A1 == 1) and no 0x441, probe 16-steps along field_0x344.x inside the layer's view box (layerBox + containsPoint) for the second tile 0x10-0x17 (fn_802265FC); found, field_0x324 = the point one step further and the glide speed z 2; else mPos.y = field_0x324.y (z takes the difference). Faces along field_0x344.x (0x3DC / 0x3E8 = 0 right, 1 left) |
+
+Corrections and evidence:
+- **State numbers**: tu_80285E58's update switch has case 0x12 -> fn_80263C64 and case 0x13 ->
+  fn_80262BAC (enter 0x13 -> fn_80263078, enter 0x15 -> fn_80263BA0). Round 10's "0x12 carry
+  (update fn_80262BAC)" is state 0x13: the fall / cucco glide while carrying, which lands back
+  in 0x12; fn_80263BA0 (pose by the held actor's field_0x118) is the enter of 0x15, not 0x12.
+- **VecEpsilon.h**: the vector epsilon tests now pass the component difference
+  (`nearZero(a.x - b.x, eps)`) instead of TUtil::epsilonEquals(a.x, b.x, eps), whose `a1 -= a2`
+  on its parameter kept 32 * FLT_EPSILON and the difference in fresh registers in every caller
+  (the "keeps 32 * FLT_EPSILON in f2 (ours f3 / f4)" FIXMEs). Flipped fn_8026152C and
+  fn_80263C64; raised tu_80256C74 fn_80259830 99.29 -> 99.50, fn_8025A15C 99.24 -> 99.44,
+  fn_8025BEB0 98.83 -> 98.98, fn_8025C894 98.89 -> 99.06, tu_8027E5BC fn_8027EEB4 99.31 -> 99.94,
+  tu_8026FC20 fn_80274CB8 95.40 -> 95.57 (none lower; their FIXME numbers are not updated).
+- **Cucco_804AB8C0 0x2A1** (u8): the cucco's own code tests it with cmplwi and sets it from
+  bit 0x1000 of 0x90 (0x803331DC); the player compares it with **cmpwi 1**, which an int
+  accessor gives (`getField0x2a1()`; the plain byte compare gives cmplwi, 99.35 %).
+- **Plain functions instead of file inlines** (deferred model): fn_8025F590 (holds a player),
+  fn_8025F448 (grabbing), fn_8025F2CC (may lift), fn_8025FCC8 (lets go) and fn_8025F684
+  (lifting) now hold their bodies and the callers call them; no wrapper copies are left.
+  Same results except fn_8025FCC8 87.39 -> 87.02 (still missing/extra: 0x11 tested on its own
+  and the field_0xd64 == 1 byte recomputed in each inlined fn_8025F590). Tried and measured:
+  a lone `state == 0x11` (separate early return or `x >= 0x12 && x <= 0x16`) does not fold
+  the range as the original; fn_8025F590 via `fn_8025F684() == true` gives FCC8 90.8 % but
+  turns fn_8025F698 into `different` (neg / or / srwi bool conversions).
+- fn_80262BAC calls fn_8026152C(false) instead of a hand-expanded copy of its body (same code).
+- Still open: fn_80261750 (one extra lwz of field_0xd70 before fn_8023EFEC; a local or
+  fn_8025F534 do not help), fn_8025FDD0 / fn_8025EB18 (view-corner float registers),
+  fn_80262254 (as tu_80256C74 fn_80258BE8: &field_0x344 computed before the x / y test),
+  fn_802604CC (stack TVec2 temporaries), fn_80260C08 / fn_8026022C (vector load order).
+

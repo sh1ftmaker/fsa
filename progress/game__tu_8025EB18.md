@@ -33,3 +33,16 @@ their mangled names.
 Needed fields (agent Q / act_cucco owner): Cucco_804AB8C0 u8 at 0x2A1 (fn_80263078 tests == 1).
 Next: fn_80263C64 (0x7AC, 1.25 / 1.5), fn_80263078; fn_802604CC's TVec2 temporaries.
 
+## Session 2026-11-06 round 17 (Opus 5.5)
+Baseline 8960 total; unit 43/59 -> 45/59 (honest total 8962, +2, no drops by address against the
+main checkout's report_honest.json). Every function of the unit is now written.
+100 %: fn_80263C64 (state 0x12 update, new), fn_8026152C (VecEpsilon.h nearZero).
+Structurally done: fn_80263078 99.78 (regalloc; state 0x13 enter, new). fn_80262BAC 98.88 -> 99.23.
+fn_8025FCC8 87.39 -> 87.02 (file inlines replaced by plain functions).
+SHARED-EDITS: include/game/VecEpsilon.h (nearZero: the difference first; all its users rise, none
+drop); include/game/act/act_cucco.h (u8 field_0x2a1 at 0x2A1 carved from field_0x230[0xC4] ->
+[0x71] + field_0x2a2[0x52], size unchanged 0x304; int accessor getField0x2a1()) with both act_cucco
+rows removed from config/G4SE01/gen_game.tsv (gen_game --check ok).
+Next: fn_80261750 (1 lwz), fn_8025FDD0 / fn_8025EB18 (float registers of the view-corner offset),
+fn_802604CC.
+
