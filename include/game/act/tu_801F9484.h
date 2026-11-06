@@ -47,13 +47,7 @@ public:
 
 #include "game/act/act_princess_zelda.h"
 
-// Spawned for 'SNBL'.
-class cls_8049D020 : public ActorBase_804A5770 {
-public:
-    cls_8049D020();
-    /* 0x08 */ virtual ~cls_8049D020();
-    /* 0x230 */ u8 field_0x230[0x150];
-}; // Size: 0x380
+#include "game/act/act_snowball.h"
 
 // Spawned for 'DMCR'.
 class cls_8049D83C : public ActorBase_804A5770 {
