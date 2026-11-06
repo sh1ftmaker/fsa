@@ -60,7 +60,7 @@ public:
     virtual void do_character(int);
     virtual bool do_tag(u32, const void*, u32);
 
-    // Inlined by cls_804AF72C::do_begin (the four window getters are read
+    // Inlined by cls_804AF72C::do_begin (its body is under NONMATCHING; the four window getters are read
     // first, last argument first, then the four stores); no out-of-line copy.
     void setFields0x1e0(s16 a, s16 b, s32 c, s32 d) {
         field_0x1ea = a;

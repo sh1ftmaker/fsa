@@ -129,17 +129,6 @@ s32 cls_804AF5A0::fn_803A3050() {
     return field_0x17c;
 }
 
-// Dead-stripped in the original (no out-of-line copy): its body is what the
-// constructor and cls_804AF774::do_reset inline, the four stores in this order
-// through one load of the window (docs/RULES_CARD.md "Literals before their
-// first visible use" (2), the same reconstruction).
-void cls_804AF5A0::resetFields0x168() {
-    field_0x16c = 0;
-    field_0x1a0 = 0;
-    field_0x1a1 = 0;
-    field_0x168 = -1;
-}
-
 u16 fn_803A3034() {
     return lbl_8050EC80.getCurrentFile().field_0x14;
 }
@@ -426,11 +415,12 @@ void cls_804AF72C::do_reset() {
     *field_0x2c4 = 0;
 }
 
-// FIXME: 99.34. regalloc only: the original keeps -1 in r0 and 1 in r7 (ours
-// the other way round), so its minutes fallback copies r7 (mr r8, r7) where
-// ours loads li r8, 1.
+// FIXME: 99.34, kept out of the build (merge rule: the rows differ in opcode,
+// `mr r8,r7` vs `li r8,1`). The original keeps -1 in r0 and 1 in r7 (ours the
+// other way round), so its minutes fallback copies r7 where ours loads li r8, 1.
 // Lays the message out once with field_0x38 (counting lines and pages), then
 // starts the window's page state.
+#ifdef NONMATCHING
 void cls_804AF72C::do_begin(const void* entry, const char* text) {
     field_0x2d8->resetFields0x3ab();
     *field_0x2c0 = 0;
@@ -476,6 +466,7 @@ void cls_804AF72C::do_begin(const void* entry, const char* text) {
         }
     }
 }
+#endif
 
 void cls_804AF72C::do_end() {
     if (field_0x2d8->field_0x1aa == 0) {

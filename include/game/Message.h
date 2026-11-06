@@ -194,10 +194,17 @@ public:
     s32 fn_803A310C();
     void fn_803A3114();
     u8 fn_803A313C();
-    // Inlined by the constructor and cls_804AF774::do_reset; its own copy was
-    // dead-stripped (no address).
-    void resetFields0x168();
-    // Inlined by cls_804AF72C::do_begin (three stores through one load of the
+    // Inlined by the constructor and cls_804AF774::do_reset (no address of
+    // its own). The four stores in this order through one load of the window (the
+    // constructor and do_reset each have a copy; docs/RULES_CARD.md "Literals
+    // before their first visible use" (2), the same reconstruction).
+    void resetFields0x168() {
+        field_0x16c = 0;
+        field_0x1a0 = 0;
+        field_0x1a1 = 0;
+        field_0x168 = -1;
+    }
+    // Inlined by cls_804AF72C::do_begin (under NONMATCHING; three stores through one load of the
     // window); dead-stripped, no address.
     void resetFields0x3ab() {
         field_0x3ad = 0;
