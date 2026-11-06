@@ -92,7 +92,7 @@ public:
     bool fn_80240670() const; // via fn_8022F478
     bool fn_80240808(); // via fn_8022F514
     bool fn_80247C0C(); // tu_8023FBF0 (li 1 / li 0); via fn_8023C830 (on the leader, fn_8022F3DC, of a follower)
-    bool fn_80240818(); // via fn_8022DCD8
+    bool fn_80240818() const; // via fn_8022DCD8
     bool fn_80240840(s32 arg); // via fn_8022E39C
     bool fn_80240860(); // byte at 0x436
     s32 fn_80240868(); // word 0x4 (the player index)
@@ -112,7 +112,7 @@ public:
     bool fn_80240D50(); // via fn_80234D94
     bool fn_80240D64(); // via fn_80234E30
     bool fn_80240DAC(); // via fn_80234ECC
-    bool fn_80240DCC(); // via fn_8022F64C
+    bool fn_80240DCC() const; // via fn_8022F64C
     bool fn_80240ED4(); // via fn_80234F68
     bool fn_80240EF4(); // via fn_80235004
     bool fn_80240F14(); // via fn_802350A0
@@ -551,7 +551,7 @@ public:
     bool fn_80272B4C(const JGeometry::TVec3f* pos); // called by tu_8025EB18
     void fn_802790C0(); // called by tu_80285E58
     void fn_8027D4F4(); // called by tu_80285E58
-    bool fn_80270ABC(); // Not written yet (0x1CC bytes). bool: its body only returns li 1 / li 0 and a neg/andc/srwi test; fn_80270C88 returns it unchanged as its bool
+    bool fn_80270ABC(); // bool: its body only returns li 1 / li 0 and a neg/andc/srwi test; fn_80270C88 returns it unchanged as its bool
     void fn_802709C8(); // BgRewrite fn_802A20F0 on field_0x30c; called by tu_80256C74
     void fn_80270D08(); // counts field_0x464 and field_0x468 down; called by tu_8023FBF0 and tu_80285E58
     bool fn_80272160(s32 damage, const JGeometry::TVec2f* pos, s32 arg); // fn_80238548 on this player; called with (0, &mPos, 0x12)

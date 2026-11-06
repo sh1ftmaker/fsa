@@ -4021,8 +4021,9 @@ bool Player_804A6F38::fn_80270C88() {
 }
 
 // FIXME: 98.26. Only the first lbz of 0xce8 is hoisted above the prologue's stw r31 / mr in the
-// original: the method is const (rules card), which needs fn_802412CC, fn_802411D8, fn_80240808,
-// fn_80247BD4 (tu_8023FBF0) and fn_80270A58 / fn_80270A8C const too.
+// original: the method is const (rules card; 100 % const), which needs fn_802412CC, fn_802411D8,
+// fn_80240808, fn_80247BD4 (tu_8023FBF0) and fn_80270A58 / fn_80270A8C const too; but
+// fn_80247BD4 const drops its inlined copies in fn_8024762C (99.8 -> 99.2), so not yet.
 bool Player_804A6F38::fn_80270ABC() {
     if (field_0xce8 == 1) {
         return true;

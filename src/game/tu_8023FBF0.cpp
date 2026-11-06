@@ -4591,10 +4591,10 @@ bool Player_804A6F38::fn_80240ED4() {
     return field_0x1240 == 0x1e || field_0x1240 == 0x32;
 }
 
-// FIXME: 86.20. Scheduling and registers only: the original loads
-// field_0x1240 (fn_80240818) and sets `result` (r31) before saving
-// registers; ours keeps `this` in r29 and `result` in r28.
-bool Player_804A6F38::fn_80240DCC() {
+// FIXME: 92.26. Scheduling and registers only: the original sets `result` (r31) before
+// saving r28-r30; ours keeps `this` in r29 and `result` in r28. const: the load of
+// field_0x1240 (the inlined fn_80240818) sits above the register saves.
+bool Player_804A6F38::fn_80240DCC() const {
     bool result = true;
     if (!fn_80240818() && !hiddenFromShownLayer(this)) {
         result = false;
@@ -4720,7 +4720,7 @@ bool Player_804A6F38::fn_80240840(s32 arg) {
     return false;
 }
 
-bool Player_804A6F38::fn_80240818() {
+bool Player_804A6F38::fn_80240818() const {
     return field_0x1240 == 0x49 || field_0x1244 == 0x49;
 }
 
