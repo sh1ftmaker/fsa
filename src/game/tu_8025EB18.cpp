@@ -160,7 +160,7 @@ static inline bool canLift_8025F2CC(Player_804A6F38& p) {
     if (p.fn_80270A8C()) {
         return false;
     }
-    if (isLifting_8025F684(p)) {
+    if (p.fn_8025F684()) {
         return false;
     }
     if (isGrabbing_8025F448(p)) {
@@ -1654,7 +1654,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
 }
 
 bool Player_804A6F38::fn_8025F684() {
-    return isLifting_8025F684(*this);
+    return isField0xd64One(*this);
 }
 
 s32 Player_804A6F38::fn_8025F668() {
@@ -1746,7 +1746,7 @@ bool Player_804A6F38::fn_8025F2CC() {
 // player already holding or grabbing only claims it through fn_8025EF68.
 bool Player_804A6F38::fn_8025EFFC(s32 serial, bool lift, bool grabOnly) {
     if (grabOnly) {
-        if (isLifting_8025F684(*this) || isGrabbing_8025F448(*this) || fn_80241230() || fn_802412A4()) {
+        if (fn_8025F684() || isGrabbing_8025F448(*this) || fn_80241230() || fn_802412A4()) {
             fn_8025EF68(serial);
             return true;
         }
@@ -1801,7 +1801,7 @@ bool Player_804A6F38::fn_8025EE48(s32 serial) {
     if (fn_80270A8C()) {
         return false;
     }
-    if (isLifting_8025F684(*this)) {
+    if (fn_8025F684()) {
         return false;
     }
     if (isGrabbing_8025F448(*this)) {
