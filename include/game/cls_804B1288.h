@@ -52,6 +52,13 @@ public:
     // *out from field_0x388; true when `index` is not 1 (stage 7) / 2 and is
     // above the count or equal to *out.
     bool fn_80404074(s32 stage, s32 index, s32* out);
+    // 0x80404D70: with every stage open (fn_803B8EBC(7)) hides the route panes
+    // of stages 1-6 and counts 7; else walks the open stages, hiding the route
+    // panes of each whose bit in the save file's byte 0x62 is set.
+    void fn_80404D70();
+    // Dead-stripped (fn_80404D70 inlines it twice): hides field_0xc's panes
+    // P21-P23, P31-P34, P41-P43, P51-P53, P61-P62 or P71-P73 of `stage` 1-6.
+    void hideStagePanes(s32 stage);
     // 0x80404270: false while lbl_80529DEC's byte 0x23F or field_0x656 is set,
     // outside GameRoot's 0x7E mode, or when fn_804045F8(stage) is set; else
     // stage flag 1 of stages 0-6 (isStageFlagSet), flag 2 of stage 7.
@@ -64,6 +71,10 @@ public:
     void fn_8040E298();
     // 0x8040E700: unless 0x65A is set, clears 0x664 and the state becomes 8.
     void fn_8040E700();
+    // 0x8040E720: counts field_0x35c up; past 10 it plays sound 0x30039 on
+    // field_0x2c8 (at frame 22) and deletes the emitters of field_0x2ec once
+    // they are done; when all three are gone the state becomes 8.
+    void fn_8040E720();
     // 0x8040F288: eases field_0x39c from field_0x358; once it reaches 0 the
     // 15 panes of field_0x278 are reset (0x65D set) and the state becomes 0xF.
     void fn_8040F288();
@@ -127,7 +138,15 @@ public:
     /* 0x350 */ s32 field_0x350; // state
     /* 0x354 */ u8 field_0x354[0x358 - 0x354];
     /* 0x358 */ s32 field_0x358;
-    /* 0x35C */ u8 field_0x35c[0x384 - 0x35C];
+    /* 0x35C */ s32 field_0x35c; // frame counter of fn_8040E720
+    /* 0x360 */ u8 field_0x360[0x364 - 0x360];
+    /* 0x364 */ s32 field_0x364; // first stage whose bit fn_80404D70 finds clear
+    /* 0x368 */ u8 field_0x368[0x370 - 0x368];
+    /* 0x370 */ s32 field_0x370; // stages fn_80404D70 counts as open
+    /* 0x374 */ u8 field_0x374[0x378 - 0x374];
+    /* 0x378 */ s32 field_0x378;
+    /* 0x37C */ s32 field_0x37c;
+    /* 0x380 */ u8 field_0x380[0x384 - 0x380];
     /* 0x384 */ s32 field_0x384; // frame counter of state 0x15
     /* 0x388 */ s32 field_0x388; // -1, 0 or 1 (fn_80404074)
     /* 0x38C */ u8 field_0x38c[0x390 - 0x38C];

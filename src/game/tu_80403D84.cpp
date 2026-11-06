@@ -189,6 +189,35 @@ void cls_804B1288::fn_8040F288() {
     }
 }
 
+// FIXME: 92.84. scheduling+regalloc only: the original keeps `this` in r31 and the
+// counter in r29 (loaded in the prologue after the saves); ours swaps them.
+void cls_804B1288::fn_8040E720() {
+    int gone = 0;
+    field_0x35c++;
+    if (field_0x35c > 10) {
+        if (field_0x35c == 22) {
+            field_0x2c8->startSound(JAISoundID(0x30039));
+        }
+        for (int i = 0; i < 3; i++) {
+            if (field_0x2ec[i] != NULL) {
+                if (field_0x2ec[i]->isEnableDeleteEmitter()) {
+                    JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+                    manager->forceDeleteEmitter(field_0x2ec[i]);
+                    gone++;
+                    field_0x2ec[i] = NULL;
+                }
+            } else {
+                gone++;
+            }
+        }
+    }
+    if (gone == 3) {
+        field_0x35c = 0;
+        field_0x664 = 0;
+        field_0x350 = 8;
+    }
+}
+
 void cls_804B1288::fn_8040E700() {
     if (field_0x65a == 0) {
         field_0x664 = 0;
@@ -251,6 +280,72 @@ BOOL cls_804B1288::fn_804045F8(s32 bit) {
         return (lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit)) ? TRUE : FALSE;
     }
     return FALSE;
+}
+
+void cls_804B1288::fn_80404D70() {
+    field_0x370 = 0;
+    if (fn_803B8EBC(7)) {
+        for (int stage = 1; stage < 7; stage++) {
+            hideStagePanes(stage);
+        }
+        field_0xcc->mPane->show();
+        field_0x370 = 7;
+        return;
+    }
+    for (int i = 0; i < 8; i++) {
+        if (fn_803B8EBC(i)) {
+            s32 stage = i + 1;
+            if (lbl_8050EC80.getCurrentFile().field_0x62[0] & (u8)(1 << stage)) {
+                hideStagePanes(stage);
+                field_0x378 += 200;
+                field_0x37c += 200;
+            } else {
+                field_0x364 = stage;
+            }
+            field_0x370++;
+        } else {
+            return;
+        }
+        if (i == 5) {
+            field_0xcc->mPane->show();
+        }
+    }
+}
+
+// Dead-stripped: fn_80404D70 inlines it in both of its loops.
+void cls_804B1288::hideStagePanes(s32 stage) {
+    switch (stage) {
+    case 1:
+        field_0xc->search('P21')->hide();
+        field_0xc->search('P22')->hide();
+        field_0xc->search('P23')->hide();
+        break;
+    case 2:
+        field_0xc->search('P31')->hide();
+        field_0xc->search('P32')->hide();
+        field_0xc->search('P33')->hide();
+        field_0xc->search('P34')->hide();
+        break;
+    case 3:
+        field_0xc->search('P41')->hide();
+        field_0xc->search('P42')->hide();
+        field_0xc->search('P43')->hide();
+        break;
+    case 4:
+        field_0xc->search('P51')->hide();
+        field_0xc->search('P52')->hide();
+        field_0xc->search('P53')->hide();
+        break;
+    case 5:
+        field_0xc->search('P61')->hide();
+        field_0xc->search('P62')->hide();
+        break;
+    case 6:
+        field_0xc->search('P71')->hide();
+        field_0xc->search('P72')->hide();
+        field_0xc->search('P73')->hide();
+        break;
+    }
 }
 
 // Defined above fn_804045F8 although its address is lower: it inlines fn_804045F8,
