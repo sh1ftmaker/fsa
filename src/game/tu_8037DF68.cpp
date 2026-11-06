@@ -532,6 +532,9 @@ u16 fn_803846A4(s32 index) {
 const char* fn_80383E2C(u32 index, u8* out) {
     MessageFile_804AF070* bmg = lbl_8053AD78->mBmg;
     MessageInf1_804AF070* inf1 = &bmg->inf1;
+    // BMG text: the DAT1 block starts after the INF1 block (inf1->size) and its 8-byte header; the
+    // entry's textOffset is relative to that. Summed in this order only because it gives the
+    // original's add order (tp's JMessage keeps the DAT1 content pointer instead).
     const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[index].textOffset];
     *out = 0;
     if (text[0] == 0x1A && text[2] == 2) {
@@ -583,6 +586,9 @@ f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out
     MessageInf1_804AF070* inf1 = &bmg->inf1;
     s32 len = 0;
     f32 width = 0.0f;
+    // BMG text: the DAT1 block starts after the INF1 block (inf1->size) and its 8-byte header; the
+    // entry's textOffset is relative to that. Summed in this order only because it gives the
+    // original's add order (tp's JMessage keeps the DAT1 content pointer instead).
     const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
     s32 pos = 0;
     s32 lines = 1;
@@ -637,6 +643,7 @@ f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out
                 s32 digit = value + '0';
                 PUT_CHAR(digit);
                 len++;
+                // JUTFont:: names the base getWidth(int) that JUTResFont's getWidth() hides.
                 width += lbl_8053AD78->mFont->JUTFont::getWidth(digit);
                 width += fn_8037F580(p[5], value, out, &len, 1.0f);
             }
