@@ -1598,6 +1598,108 @@ void Player_804A6F38::fn_8024F54C(s32 arg) {
     }
 }
 
+// Plays cue `sound` for this player (0x20024 / 0x2002B become 0x20046 while
+// fn_8022B244). With the pad flag (fn_8030A308), the player taking part and
+// fn_8030381C, some cues are pad rumbles instead (fn_803037D4): 0x20034 -> 0xC
+// and 0x20011 -> 4, and on a layer of 8 or more 0x30009 / 0x30004 / 0x2003A
+// -> 8 / 0xB / 7 for every player taking part with fn_8030381C that is this
+// one or on its layer near it (fn_8022BC38). Otherwise the sound object
+// plays it: field_0x1254 in game mode 0xC, else field_0x1250 below layer 8
+// and field_0x1254 from it, with the bytes 0x44 / 0x45 by the layer's view
+// flag 0x800, layer 8, GameView field_0x54 and fn_802D7948.
+void Player_804A6F38::fn_8024F0E8(s32 sound) {
+    if ((sound == 0x20024 || sound == 0x2002b) && fn_8022B244()) {
+        sound = 0x20046;
+    }
+    if (lbl_8053AD30->fn_8030A308(getPlayerInputSlot_8030AAF4(field_0x11ec)) &&
+        isPlayerBitSet(gGameRoot_8053AAF8, field_0x4) && fn_8030381C(field_0x4)) {
+        if (sound == 0x20034) {
+            fn_803037D4(field_0x4, 0xc);
+            return;
+        }
+        if (sound == 0x20011) {
+            fn_803037D4(field_0x4, 4);
+            return;
+        }
+        if (field_0x3b4 >= 8) {
+            if (sound == 0x30009) {
+                for (s32 i = 0; i < 4; i++) {
+                    if ((i == field_0x4 || fn_8022BC38(i, field_0x3b4, &mPos)) && fn_8030381C(i) &&
+                        isPlayerBitSet(gGameRoot_8053AAF8, i)) {
+                        fn_803037D4(i, 8);
+                    }
+                }
+                return;
+            }
+            if (sound == 0x30004) {
+                for (s32 i = 0; i < 4; i++) {
+                    if ((i == field_0x4 || fn_8022BC38(i, field_0x3b4, &mPos)) && fn_8030381C(i) &&
+                        isPlayerBitSet(gGameRoot_8053AAF8, i)) {
+                        fn_803037D4(i, 0xb);
+                    }
+                }
+                return;
+            }
+            if (sound == 0x2003a) {
+                for (s32 i = 0; i < 4; i++) {
+                    if ((i == field_0x4 || fn_8022BC38(i, field_0x3b4, &mPos)) && fn_8030381C(i) &&
+                        isPlayerBitSet(gGameRoot_8053AAF8, i)) {
+                        fn_803037D4(i, 7);
+                    }
+                }
+                return;
+            }
+        }
+    }
+    if (gGameRoot_8053AAF8->field_0x4c == 0xc) {
+        field_0x1254->field_0x44 = 0;
+        field_0x1254->field_0x45 = 0;
+        field_0x1254->startSound(sound);
+        return;
+    }
+    if (getGameView_802D6A9C()->fn_802D7804(field_0x3b4, 0x800)) {
+        if (field_0x3b4 < 8) {
+            field_0x1250->field_0x44 = 0;
+            field_0x1250->field_0x45 = 0;
+            field_0x1250->startSound(sound);
+        } else {
+            field_0x1254->field_0x44 = 1;
+            field_0x1254->field_0x45 = 0;
+            field_0x1254->startSound(sound);
+        }
+        return;
+    }
+    if (field_0x3b4 < 8) {
+        field_0x1250->field_0x44 = 0;
+        if (getGameView_802D6A9C()->fn_802D7948() == 1) {
+            field_0x1250->field_0x45 = 2;
+        } else {
+            field_0x1250->field_0x45 = 0;
+        }
+        field_0x1250->startSound(sound);
+    } else if (field_0x3b4 == 8) {
+        field_0x1250->field_0x44 = 1;
+        field_0x1250->field_0x45 = 3;
+        field_0x1250->startSound(sound);
+    } else {
+        // The view is fetched before the layer is read (lwz 0x3B4, then 0x54).
+        GameView_804A9950* view = getGameView_802D6A9C();
+        if (field_0x3b4 < view->field_0x54) {
+            field_0x1254->field_0x44 = 1;
+            if (getGameView_802D6A9C()->fn_802D7948() == 1) {
+                field_0x1254->field_0x45 = 2;
+            } else {
+                field_0x1254->field_0x45 = 1;
+            }
+            field_0x1254->startSound(sound);
+        } else {
+            field_0x1254->field_0x44 = 1;
+            field_0x1254->field_0x45 = 2;
+            field_0x1254->startSound(sound);
+        }
+    }
+}
+
 // Plays sound `id` for this player (AudioMgr fn_80458880); with the pad
 // flag (fn_80247534) and fn_8030381C the ids 4 / 9 / 5 go to fn_803037D4 as
 // 4 / 5 / 6, and id 3 on a layer of 8 or more as 0xF.
