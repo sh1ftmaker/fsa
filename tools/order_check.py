@@ -2,7 +2,11 @@
 """Report game units whose compiled function order differs from the original address order.
 
 Game code is built with -sym off, so a unit's .text must emit its strong functions in
-the original address order. Usage: python3 tools/order_check.py [unit...]
+the original address order. It is also built with -inline auto,deferred, which emits
+functions in REVERSE source order: a game .cpp lists its functions in DESCENDING address
+order (highest at the top; docs/INLINING.md). This checks the compiled object, so it is
+the same test either way; for a unit out of order it prints the expected .text order and
+the source order that gives it. Usage: python3 tools/order_check.py [unit...]
 (unit = game/X.cpp or X; default: every src/game/*.cpp). Exit 1 if any unit is out of order.
 """
 import re
@@ -64,7 +68,8 @@ def main():
             seq, exp = r
             first = next(i for i, (a, b) in enumerate(zip(seq, exp)) if a != b)
             print(f"{u}: out of order at #{first} (compiled {seq[first]}, expected {exp[first]})")
-            print("  expected order: " + " ".join(exp))
+            print("  expected .text order: " + " ".join(exp))
+            print("  source order (descending, top of file first): " + " ".join(reversed(exp)))
     print(f"order_check: {bad} unit(s) out of order")
     return 1 if bad else 0
 

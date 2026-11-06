@@ -196,6 +196,10 @@ the .cpp moved there in one byte-identical commit (branch
 
 ## Open question: `-inline auto` vs `-inline auto,deferred` (2026-11-03)
 
+**Resolved 2026-11-05:** game code is now `-inline auto,deferred` with sources in
+descending address order and evidenced `auto_inline` regions (docs/INLINING.md).
+The contradiction below came from `-inline auto` plus ascending sources.
+
 Game code builds with `-inline auto`. Two research rounds
 (scratchpad notes `research_jtorder.md`, `deferred/`) found evidence both ways:
 

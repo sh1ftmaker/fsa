@@ -34,54 +34,14 @@ trick is replaced by an honest fix (or the project decides to accept it).
   `tools/gen_game.py --check` clean. Set back to NonMatching with the trick in the source:
   `python3 tools/gate.py --all-units --base origin/matching` prints `gate: ok`.
 
-## game/tu_80222CC4.cpp: `#pragma defer_codegen on` + reversed functions (jump-table .data order)
+## Retired 2026-11-05: tu_80222CC4, tu_80221B44 (`defer_codegen`) and act_shadow_link_bow
 
-- Trick: `#pragma defer_codegen on` after the includes, and the six function
-  definitions listed in reverse address order (ctor, dtor, init, vfunc_0x90,
-  vfunc_0x88, vfunc_0x6C). Marked `FAKEMATCH(crack-pass):` in the source. No
-  flag change in configure.py.
-- Why needed: the original .data is `__vt__12cls_804A6C38` at 0, vfunc_0x90's
-  jump table at 0xA4. The game's `-inline auto` writes a jump table when its
-  function is compiled and every class vtable at the end of the TU, so ours was
-  jump table, weak `__vt__12J3DFrameCtrl`, vtable. Deferred codegen writes a
-  vtable with its first referencing function, which gives the original order;
-  it also emits functions in reverse source order, hence the reversed listing.
-  Code, .sdata2, extab and relocations are unchanged; only .data moves.
-- Honest fix: a project-wide compile mode with deferred-style data order and
-  `auto`-style inlining (only callees earlier in .text). No GC compiler
-  1.0-3.0a5.2 has one (see GAME_PLAN.md "Measured: compiler versions and inline
-  modes"), so the honest fix needs either a version we don't have, or a
-  different explanation of the original layout. Until then, game units whose
-  only gap is this order can't match honestly.
-- Verification (2026-11-03, branch lead/lead-jumptable): unit set Matching,
-  `ninja` -> `build/G4SE01/fsa_game_code.dol: OK` (SHA-1); honest report
-  tu_80222CC4 7/7 functions, every section 100 % (.data 83.7 % -> 100 %); game
-  functions 1745 -> 1746. Set back to NonMatching: `ninja` SHA-1 OK,
-  `python3 tools/gate.py --all-units --base origin/matching` -> `gate: ok`.
-- Reach: the same trick works on a jump-table unit only if deferred's two-way
-  inlining doesn't inline a callee that sits LATER in .text. In the original
-  asm, 90 of the 165 jump-table game units have no call to a later function of
-  their own unit (safe for this trick); the other 75 do (risky: deferred inlines
-  the callee if it is small, e.g. act_shadow_link_bow below).
-
-## game/tu_80221B44.cpp: same trick, .data only (unit stays NonMatching)
-
-- Trick: as tu_80222CC4 (`#pragma defer_codegen on`, functions reversed:
-  ctor, init, vfunc_0x90, vfunc_0x9C, vfunc_0x88, dtor), marked
-  `FAKEMATCH(crack-pass):`.
-- Why: same jump-table / vtable order as tu_80222CC4.
-- Honest fix: as tu_80222CC4.
-- Verification (2026-11-03): .data 82.0 % -> 97.1 %, vfunc_0x90 99.945 % ->
-  99.977 %, no function lost, `ninja` SHA-1 OK, gate ok. The unit stays
-  NonMatching: vfunc_0x90 still differs in the stack slots of its position
-  locals (progress/game__tu_80221B44.md), so it was not checked Matching.
-
-## Not applied: game/act_shadow_link_bow.cpp
-
-The same trick inlines fn_80222668 (the state change, later in .text) into
-vfunc_0x90, which the original calls out of line: vfunc_0x90 and fn_80222668
-drop out of the report (game functions -1). Reverted. Would need a second trick
-(e.g. `#pragma dont_inline` around fn_80222668) on top; not tried.
+Game code is now compiled `-inline auto,deferred` project-wide (docs/INLINING.md),
+which is what the `#pragma defer_codegen on` + reversed-functions trick reproduced
+for these two units. The pragmas and their FAKEMATCH(crack-pass) tags are gone; the
+sources keep their (now project-standard) descending order. act_shadow_link_bow's
+"second trick" is the evidenced whole-file `#pragma auto_inline off` of pragma rule 2;
+its vfunc_0x90 is at 100 %.
 
 ## Open questions to revisit once more code is written (2026-11-05)
 
@@ -96,15 +56,14 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   the inline is first read. Candidates: early inline helpers, dead code the
   optimizer removed, or a deferred/reordered codegen mode. Each unit's
   checkpoint has the pool layout.
-- **Inlining of later-defined functions.** tu_803099FC (fn_80309A9C/B74/C4C,
-  fn_80309D90), tu_8043A0E8 (fn_804408F0), tu_80256C74, tu_8016A2B4
-  (fn_8016DA6C), tu_802F5040 (fn_802F5570) and tu_803944C8 (do_reset,
-  fn_803A2F74): the original inlines a function defined after the caller,
-  which `-inline auto` can't. Same root as the tu_80222CC4 defer_codegen
-  finding above; decide them together.
-- **Weak destructor emitted first.** tu_8045A640: the original's .text starts
-  with the weak __dt__Q29GameAudio16CustomSoundTableFv; ours emits it after
-  getBgmSeqResourceID, so the unit can't link although every function matches.
+- **Inlining of later-defined functions.** ANSWERED 2026-11-05: the original was
+  compiled with deferred inlining, now the project mode (docs/INLINING.md). The units
+  listed here (tu_803099FC, tu_8043A0E8, tu_80256C74, tu_8016A2B4, tu_802F5040,
+  tu_803944C8) can write the callee as a plain function.
+- **Weak destructor emitted first.** ANSWERED 2026-11-05 (deferred inlining):
+  tu_8045A640 now emits the weak __dt__Q29GameAudio16CustomSoundTableFv first;
+  every function, .data and .sdata2 are 100 % (extab 71 %: check the weak-dedup
+  trial link before flipping it).
 - **Save-data layout.** lbl_8050EC80 is a 0x20-byte header, three 0xC8-byte
   rows at 0x20 and three 0x9C4-byte blocks at 0x280 (size 0x21E0), but users
   still view it as SaveRow_8050EC80[] shifted by 0x20. Migrating all users to
@@ -124,6 +83,7 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   tu_8023FBF0 addCounter_8024ED4C (fn_8024ED4C, Player 0xC04), preceded there by an
   `if (c > 9999) for (;;)` check that fn_8024ECCC also has; the same unexplained assert-like
   halts, fields differ, so no shared inline is written.
-- **The 12 units still out of address order** (tools/order_check.py): reordering
-  changes inlining or the .sdata2 pool in each; same family as the two items
-  above.
+- **The 11 units still out of address order** (tools/order_check.py; 12 before the
+  deferred switch, act_vaati_demo fixed by it): reordering changed inlining or the
+  .sdata2 pool in each under `-inline auto`; revisit each with deferred inlining
+  and the auto_inline rule (docs/INLINING.md).

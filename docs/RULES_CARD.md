@@ -77,17 +77,61 @@ sub-100 % function by its `try.py` class, not its percentage:
 - anything else (`different`, or many instructions missing): keep working
   or leave it unwritten; it misleads the headers more than it helps.
 In a big unit, write the constructor first (it proves the layout), then the
-unit's first functions (they fix the literal order), then the rest in
-address order. Honest progress still counts only 100 % functions;
+unit's first functions (they fix the literal order), then the rest, each at
+its place in the file's descending address order (next section). Honest progress still counts only 100 % functions;
 `python3 tools/progress.py` also shows the structural count. The
 no-tricks rules below apply unchanged: never raise a percentage with a
 trick, and never write a body twice.
+
+## Source order and inlining (game code, `-inline auto,deferred`)
+Game code is compiled with deferred inlining, as the original was (docs/INLINING.md).
+- **Order**: a game .cpp lists its functions in DESCENDING address order: the
+  highest address at the top, the lowest at the bottom (MWCC emits them in
+  reverse source order). Includes, types, file-scope data and `inline`
+  helpers stay on top. `python3 tools/order_check.py <unit>` checks the
+  compiled order. (The THP unit tu_80427D2C keeps its own `-inline off,deferred`.)
+- **Plain functions**: MWCC sees the whole file before it generates code, so a
+  caller inlines a small plain function of its file whichever side of it the
+  callee sits. Write each function once, at its own address, with its real
+  body; never a file `inline` copy plus an out-of-line wrapper for a function
+  the original defines in the unit (existing ones are follow-up cleanup).
+  Header `inline` stays for real header inlines (their out-of-line copy is
+  weak and sits right after its first out-of-line caller).
+- **Callee never inlined** (pragma rule 1): when the original calls a same-unit
+  function out of line (`bl`) from a caller that our build inlines it into, put
+  `#pragma auto_inline off` immediately before the callee's definition and
+  `#pragma auto_inline reset` immediately after it (one region may cover
+  adjacent callees), with a one-line comment naming the original caller(s),
+  e.g. `// Not auto-inlined: fn_801BE6C4 calls fn_801BE86C out of line in the
+  original (docs/INLINING.md, pragma rule 1).` `python3 tools/obj_calls.py
+  build/G4SE01/src/game/<unit>.o <fn>` lists our calls; the original's are the
+  `bl` lines of `build/G4SE01/asm/game/<unit>.s`.
+- **Whole file** (rule 2): `#pragma auto_inline off` as the first line after the
+  includes only when the original inlines no same-unit plain function anywhere
+  (built with inlining off, every written function's same-unit calls equal the
+  original's `bl`s); the comment says so and names the callers.
+- **Big callers** (rule 5): a large function (≳ 1 KB) that calls small callees
+  out of line which other callers inline has hit the inline budget; write the
+  natural calls, no pragma.
+- **Never** (rule 3): caller-side `dont_inline`, `inline_max_*`, `inline_depth`,
+  `defer_codegen`, or a per-unit `-inline` flag. A reviewer checks every
+  pragma's comment against the asm; these regions are not FAKEMATCH.
+- **Data**: file-scope constants come before every function literal in
+  `.sdata2`, and data defined anywhere in the file is addressed off the
+  section base (`...data.0`). An object the original addresses on its own
+  (lis + lfs/lfsu per object), or a constant after the unit's literals,
+  belongs to another unit: fix the split (tu_80457C08 / tu_80457DFC volume
+  tables, act_vaati_boss's 90.0f / 1.7f).
+- A unit whose dtor the compiler writes implicitly: deferred writes an implicit
+  destructor first; if the original has it elsewhere, declare and define it
+  (`~Foo() {}`) at its place (act_tutorial_old_man).
 
 ## No tricks (gate.py checks some; review checks all)
 A function counts only when natural source produces the bytes. Banned, and
 a REJECT/CHANGES in review:
 - Escape hatches: inline `asm`, `register ... asm` bindings, `.incbin`,
-  hand-typed byte arrays, any new `#pragma` or `goto` the donor file lacks.
+  hand-typed byte arrays, any new `#pragma` or `goto` the donor file lacks
+  (the only exception: evidenced `auto_inline` regions, see above).
   (Original SDK `nofralloc` asm functions in donor files are source; keep
   them, never add new ones.)
 - Codegen-forcing: `volatile` or casts to steer codegen; types picked to
@@ -264,7 +308,9 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
 - Player bytes 0xC80 / 0xCEE / 0x1215 / 0xCA0 / 0xCE9 tested in a row:
   `playerFlags_802413F0(player)` (game/PlayerFlags.h). Matches only the
   out-of-line copy, Player_804A6F38::fn_802413F0; inlined sites still differ at
-  0xCE9 (cmplwi / bne there, neg / or / srwi here; fn_80246F28 94.8 %).
+  0xCE9 (cmplwi / bne there, neg / or / srwi here; fn_80246F28 94.8 %). Under
+  deferred inlining fn_802413F0 can be the plain function in its unit
+  (tu_8023FBF0); follow-up.
 - UNPROVEN (no 100 % example): sin x/y/z, cos x/y/z (bl sin; frsp) into a
   stack Mtx times a scale: `TVec3f rot(x, y, z); setRotScaleMtx(mtx, rot, scale)`
   (game/RotMatrix.h; scalar 0.0f angles become lfd doubles). tu_801A908C

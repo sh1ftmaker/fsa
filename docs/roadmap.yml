@@ -89,7 +89,17 @@ phases:
         landed: [c3f69cc]
       - id: game-compiler
         title: Game compiler setup
-        desc: GC/2.6 -O4,p, C++ exceptions, stmw on, fp_contract on, read-only strings; proven on the first game functions and THP.
+        desc: GC/2.6 -O4,p, -inline auto,deferred, C++ exceptions, stmw on, fp_contract on, read-only strings; proven on the first game functions and THP.
+        status: done
+        covers: []
+      - id: deferred-inlining
+        title: Deferred inlining for game code
+        desc: >-
+          Game code builds with -inline auto,deferred, as the original did
+          (vtables before jump tables in .data, later-defined functions
+          inlined). Every game source lists its functions in descending address
+          order; callees the original never inlines get an evidenced
+          auto_inline region (docs/INLINING.md).
         status: done
         covers: []
       - id: shared-headers
@@ -289,9 +299,10 @@ phases:
       - id: open-questions
         title: Open questions
         desc: >-
-          Literals pooled before their first use, inlining of later-defined
-          functions, a weak destructor emitted first, the save-data layout and
+          Literals pooled before their first use, the save-data layout and
           the units out of address order (docs/CRACK_PASS.md, Open questions).
+          Inlining of later-defined functions and the vtable / jump-table order
+          were answered by deferred inlining (docs/INLINING.md).
         status: later
         covers: []
       - id: actor-table

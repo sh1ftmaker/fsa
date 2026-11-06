@@ -439,6 +439,8 @@ fn_8026E464 (include/game/cls_804A71A8.h has the layout):
 
 ### Groups (leader / followers) and the input gate
 
+(2026-11-05: superseded by deferred inlining, docs/INLINING.md: MWCC now inlines
+plain functions defined later, so these can become plain functions; follow-up.)
 Proven by the inlining (MWCC only inlines what is defined earlier, and these
 bodies are inlined into functions placed before their out-of-line copies, so
 they are file inlines in tu_8023FBF0.cpp with the out-of-line copies as

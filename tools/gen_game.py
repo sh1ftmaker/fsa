@@ -41,7 +41,7 @@ game/tu_8022AD64.cpp, hand-matched and reviewed):
 
   fwd    the per-player forwarders of tu_8022AD64 (templates fn_8022B7C4 and
          fn_8022B860 there): `if (<mgr> == NULL) return <fallback>;
-         if (isPlayerActive(player)) return mPlayers[player]-><getter>(...);
+         if (fn_8023F264(player)) return mPlayers[player]-><getter>(...);
          return <fallback>;` and its void form. The forwarder and its getter
          (a new Player_804A6F38 member) are declared in include/game/Player.h;
          symbols.txt renames both to the names our object emits. Types and
@@ -51,7 +51,7 @@ game/tu_8022AD64.cpp, hand-matched and reviewed):
          check requires each declaration once, not the whole file).
 
   loop   tu_8022AD64's all-players loops (`for (s32 i = 0; i < 4; i++)`
-         over isPlayerActive(i)): "each" calls a getter on every active
+         over fn_8023F264(i)): "each" calls a getter on every active
          player, "find" returns the first player whose getter is true, else
          -1. Generated with the fwd run (`gen_game.py tu_8022AD64`); rows and
          checks as fwd's; see "family loop" below.
@@ -969,8 +969,10 @@ def top_level_defs(text):
 
 
 def insert_def(text, unit, dtor_addr, definition):
-    """Put the definition before the first defined function that follows it
-    in the original's .text, else at the end."""
+    """Put the definition before the defined function that precedes it most
+    closely in the original's .text, else at the end. Game sources list their
+    functions in DESCENDING address order (-inline auto,deferred emits them in
+    reverse source order; docs/INLINING.md)."""
     addr_of = {}
     for l in symbols_lines():
         m = SYMLINE.match(l.rstrip("\n"))
@@ -980,11 +982,11 @@ def insert_def(text, unit, dtor_addr, definition):
             if q:
                 addr_of[q] = a
             addr_of[(None, m[1].split("__")[0] or m[1])] = a
-    after = [(off, addr_of[(c, f)]) for off, c, f in top_level_defs(text)
-             if (c, f) in addr_of and addr_of[(c, f)] > dtor_addr]
-    if not after:
+    below = [(off, addr_of[(c, f)]) for off, c, f in top_level_defs(text)
+             if (c, f) in addr_of and addr_of[(c, f)] < dtor_addr]
+    if not below:
         return text.rstrip("\n") + "\n\n" + definition
-    off = min(after, key=lambda x: x[1])[0]
+    off = max(below, key=lambda x: x[1])[0]
     # keep a comment block that belongs to the following definition with it
     head = text[:off]
     lines = head.split("\n")
@@ -1004,7 +1006,7 @@ def new_source(unit, plan):
     out = f"{SINIT_INCLUDE}\n"
     if plan["dtors"]:
         out += f'#include "game/act/{unit}.h"\n'
-        for d in plan["dtors"]:
+        for d in sorted(plan["dtors"], key=lambda d: -d["addr"]):  # descending (deferred)
             out += "\n" + d["def"]
     return out
 
@@ -1696,7 +1698,7 @@ FWD_DEF = """\
     if ({mgr} == NULL) {{
         return {fb};
     }}
-    if (isPlayerActive(player)) {{
+    if (fn_8023F264(player)) {{
         return {mgr}->mPlayers[player]->{callee}({args});
     }}
     return {fb2};
@@ -1713,7 +1715,7 @@ FWD_DEF_RANGED = """\
     if (player >= 4) {{
         return {fb2};
     }}
-    if (isPlayerActive(player)) {{
+    if (fn_8023F264(player)) {{
         return {mgr}->mPlayers[player]->{callee}({args});
     }}
     return {fb3};
@@ -1724,7 +1726,7 @@ void {name}({params}) {{
     if ({mgr} == NULL) {{
         return;
     }}
-    if (isPlayerActive(player)) {{
+    if (fn_8023F264(player)) {{
         {mgr}->mPlayers[player]->{callee}({args});
     }}
 }}
@@ -2224,8 +2226,8 @@ def fwd_render_def(m):
 
 
 def fwd_edit_source(plan, text):
-    """Insert every member's definition in address order (deterministic, as
-    edit_source)."""
+    """Insert every member's definition at its address (descending source
+    order, insert_def; deterministic, as edit_source)."""
     for m in sorted(plan, key=lambda m: m["addr"]):
         if re.search(r"^[^\n]*\b%s\s*\([^;{]*\)\s*\{" % m["name"], text, re.M):
             return None, f"{m['name']} already defined"
@@ -2369,7 +2371,7 @@ def fwd_header_problems(rows_plan, text):
 # ---------------------------------------------------------------- family loop: all-players loops
 #
 # tu_8022AD64's loops over the four players (`for (s32 i = 0; i < 4; i++)`
-# with isPlayerActive(i), which re-reads the manager each time): "each"
+# with fn_8023F264(i), which re-reads the manager each time): "each"
 # calls a getter on every active player; "find" returns the first player
 # whose getter returns true, else -1 (and its fallback without a manager).
 # No loop is matched by hand: each group of members with the same shape
@@ -2386,7 +2388,7 @@ s32 {name}({params}) {{
         return {fb};
     }}
     for (s32 i = 0; i < 4; i++) {{
-        if (isPlayerActive(i) && {mgr}->mPlayers[i]->{callee}({args})) {{
+        if (fn_8023F264(i) && {mgr}->mPlayers[i]->{callee}({args})) {{
             return i;
         }}
     }}
@@ -2399,7 +2401,7 @@ void {name}({params}) {{
         return;
     }}
     for (s32 i = 0; i < 4; i++) {{
-        if (isPlayerActive(i)) {{
+        if (fn_8023F264(i)) {{
             {mgr}->mPlayers[i]->{callee}({args});
         }}
     }}

@@ -83,11 +83,34 @@ data and symbols, not by bending code.
 After editing `splits.txt` or `symbols.txt`: `rm build/G4SE01/config.json`
 then rebuild, so dtk re-splits.
 
+## Source order and inlining
+
+Game code is compiled `-inline auto,deferred`, as the original was
+(docs/INLINING.md). MWCC reads the whole file before generating code and
+writes functions in reverse source order, so:
+
+- a game .cpp lists its functions in descending address order (highest at the
+  top); `tools/order_check.py` checks the compiled order;
+- a caller inlines a small plain function of its own file whether it is
+  defined before or after it: write each function once, at its address, with
+  its real body, and no file-inline-plus-wrapper copies;
+- when the original calls a same-unit function out of line that our build
+  inlines, wrap the callee's definition in `#pragma auto_inline off` /
+  `#pragma auto_inline reset` with a one-line comment naming the original
+  caller(s) (pragma rule 1). A whole-file `auto_inline off` only when the
+  original inlines no same-unit plain function anywhere (rule 2). Never
+  caller-side `dont_inline`, `inline_max_*`, `inline_depth`, `defer_codegen`
+  or per-unit `-inline` flags (rule 3);
+- data defined in the file is addressed off the section base, and file-scope
+  constants precede the function literals; an object the original addresses
+  on its own belongs to another unit (a split fix).
+
 ## No tricks
 
 A function counts only when natural source produces the bytes. These are
 rejected by `tools/gate.py` and must never appear: inline asm, register
-binding, a `#pragma` or `goto` that the original/donor file doesn't have,
+binding, a `#pragma` or `goto` that the original/donor file doesn't have
+(except the evidenced `auto_inline` regions above),
 m2c leftovers (`M2C_`, `saved_reg`, `var_r0`, `sp10`), field access through
 casts and offsets, embedded bytes, edits to tools or report settings. No
 fakematches: if a function only matches through a construct no programmer
