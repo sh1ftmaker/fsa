@@ -118,6 +118,10 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
 // Emitter offsets from mPos by facing (fn_80274CB8 is its first user, fn_8027D320).
 static const f32 lbl_8046BB48[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
 
+// Emitter offsets from mPos by facing for the ground pound's update (fn_8027CC90); the same
+// values as lbl_8046BB48, a separate object.
+static const f32 lbl_8046BB78[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
+
 // The push into a wall by facing (fn_8027BE74, into field_0x350 for state 0x37).
 static const Vec lbl_8046BBA8[4] = {{-0.25f, 0.0f, 0.0f}, {0.25f, 0.0f, 0.0f}, {0.0f, -0.25f, 0.0f}, {0.0f, 0.25f, 0.0f}};
 
@@ -390,6 +394,115 @@ void Player_804A6F38::fn_8027D320() {
         }
     }
     field_0x12c0 = getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &field_0x12a4, (field_0x4 & 3) | 8, -1, -1);
+}
+
+// Update of state 0x05 (the ground pound): from frame 11 the fall 0x344 with gravity 0.25
+// (down to -6.5); on flagged layers it is drawn as a move up the screen (y -= z, height 0.5)
+// and lands on a wall (cls_804A71A8 0x4A) or at the view box less 16. Frames 0-11 the jump
+// poses; at frame 11 on the ground: tiles 3 / 0xE without fn_8024B24C cancel it (state 0),
+// else the impact: view shake, rumble (fn_80134DE4), the TV effect of kind 1, sound 0x20024,
+// emitters 0x23D-0x23F, 0x3D0 plus a 'PEFF' at 0x5C0 on tiles 0x39 / 0xD (else 0x3CF) and a
+// 'PEFF' at the player; at frame 20 state 6. Every frame the emitter point 0x12A4 (mPos +
+// lbl_8046BB78[facing]) is handed to the callbacks 0x1278 / 0x1290 and the actor 0x12C0, the
+// boxes 0x4B0 (+-20) and 0x4A0 (+-12) and the point 0x30C are centred on the player.
+// FIXME: 99.37. Scheduling only: the original computes &mPos for fn_802F601C before the
+// layer < 8 test.
+void Player_804A6F38::fn_8027CC90() {
+    if ((!field_0x344.isZero() || mPos.z > 0.0f) && field_0x3fa >= 11) {
+        field_0x344.z -= 0.25f;
+        if (field_0x344.z < -6.5f) {
+            field_0x344.z = -6.5f;
+        }
+        if (viewLayerFlag(field_0x3b4)) {
+            mPos.x += field_0x344.x;
+            mPos.y -= field_0x344.z;
+            mPos.z = 0.5f;
+            JGeometry::TBox2f box;
+            box = *layerBox(field_0x3b4);
+            growBox(box, -16.0f);
+            if (field_0x344.z < 0.0f && (field_0xbf0->field_0x48[2] || !contains(box, mPos))) {
+                passOnPush(this);
+                mPos.z = 0.0f;
+            }
+        } else {
+            mPos.add(field_0x344);
+            if (field_0x344.z < 0.0f && mPos.z <= 0.0f) {
+                mPos.z = 0.0f;
+                passOnPush(this);
+            }
+        }
+    }
+    if (field_0x3fa < 2) {
+        field_0x3fb = 0;
+        field_0x3fa++;
+    } else if (field_0x3fa < 10) {
+        field_0x3fb = 1;
+        field_0x3fa++;
+    } else if (field_0x3fa < 11) {
+        field_0x3fb = 0;
+        field_0x3fa++;
+    } else if (field_0x3fa < 12) {
+        field_0x3fb = 2;
+        if (viewLayerFlag(field_0x3b4)) {
+            field_0xbf4 = 10;
+            field_0x458 = 1;
+        }
+        if (mPos.z <= 0.0f) {
+            u16 tile = fn_8022461C(&mPos, field_0x3b4);
+            if ((tile == 3 || tile == 0xe) && !fn_8024B24C()) {
+                fn_80251AEC(0);
+            } else {
+                field_0x458 = 1;
+                field_0xbf4 = 10;
+                getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 4.0f, 0.0f, false);
+                gGameRoot_8053AAF8->fn_80134DE4(1, 0);
+                if (field_0x3b4 < 8) {
+                    gGameRoot2_8053AB10->field_0x20->fn_802F601C(&mPos, 1, NULL, 1.0f, 1.0f);
+                }
+                fn_8024F0E8(0x20024);
+                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x23d, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x23e, 0, 0, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x23f, 0, 0, NULL, NULL, true, 1.0f);
+                if (tile == 0x39 || tile == 0xd) {
+                    spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3d0, 0, 0, NULL, NULL, true, 1.0f);
+                    getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &field_0x5c0,
+                                                                    (field_0x4 & 3) | 0x2c, -1, field_0x4);
+                } else {
+                    spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x3cf, 0, 0, NULL, NULL, true, 1.0f);
+                }
+                getActorManager_801F856C()->spawnActor_801F9484('PEFF', field_0x3b4, &mPos, (field_0x4 & 3) | 0x14, -1, -1);
+                field_0x3fa++;
+            }
+        }
+    } else if (field_0x3fa < 20) {
+        field_0x3fb = 2;
+        field_0x3fa++;
+    } else {
+        field_0x3fb = 2;
+        fn_80251AEC(6);
+    }
+    const f32* offset = lbl_8046BB78[field_0x3dc];
+    field_0x12a4.set(offset[0], offset[1], offset[2]);
+    field_0x12a4.add(mPos);
+    if (field_0x1274 != NULL) {
+        field_0x1278.field_0x4.set(field_0x12a4);
+    }
+    if (field_0x128c != NULL) {
+        field_0x1290.field_0x4.set(field_0x12a4);
+    }
+    s32 serial = field_0x12c0;
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->mPos = field_0x12a4;
+        }
+    }
+    field_0x4b0.set(mPos.x - 20.0f, mPos.y - 20.0f, mPos.x + 20.0f, mPos.y + 20.0f);
+    field_0x4a0.set(mPos.x - 12.0f, mPos.y - 12.0f, mPos.x + 12.0f, mPos.y + 12.0f);
+    field_0x30c.set(0.0f, 0.0f, 0.0f);
+    field_0x30c.add(mPos);
+    field_0x3f0 = -1;
+    fn_802685D4();
 }
 
 void Player_804A6F38::fn_8027CBB0() {
