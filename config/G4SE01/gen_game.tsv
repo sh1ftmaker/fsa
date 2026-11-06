@@ -44,7 +44,6 @@ act_four_person_pull_switch_pswb	dtor	__dt__12cls_804AE574Fv	cls_804AE574	0x804A
 act_four_person_pull_switch_pswb	sinit	__sinit_act_four_person_pull_switch_pswb_cpp	-	-	new	new
 act_four_person_pull_switch_pswk	dtor	__dt__12cls_804AE5C8Fv	cls_804AE5C8	0x804AE5C8	new	new
 act_four_person_pull_switch_pswk	sinit	__sinit_act_four_person_pull_switch_pswk_cpp	-	-	new	new
-act_giant_bomb	sinit	__sinit_act_giant_bomb_cpp	-	-	new	-
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_hammer_bulge	dtor	__dt__20HammerBulge_804A88E8Fv	HammerBulge_804A88E8	0x804A88E8	new	new
 act_hammer_bulge	sinit	__sinit_act_hammer_bulge_cpp	-	-	new	new
