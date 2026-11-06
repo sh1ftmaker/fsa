@@ -1782,7 +1782,7 @@ s32 fn_80239108(s32 serial);
 bool fn_8022E438(s32 player, s32 other);
 // Hits `player` at `pos` and every player of its group at the same offset from its own
 // position (fn_801F2B7C: fn_80238548(player, damage, &pos, arg)); reads pos+0/+4 only.
-u8 fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg);
+bool fn_80238548(s32 player, s32 damage, const JGeometry::TVec2f* pos, s32 arg);
 // Whether fn_8024D058(flag) / fn_8024157C(arg) accepts for every present player of a present
 // `player`'s group (fn_8022E438). fn_8023061C: 4 units (act_dummy_conversation, act_shop_item,
 // ...; li 0); fn_802370FC: 1 unit (act_great_fairy_bfry).
