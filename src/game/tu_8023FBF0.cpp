@@ -9,6 +9,7 @@
 #include "game/GameMode.h"
 #include "game/Map.h"
 #include "game/Effect.h"
+#include "game/EmitterDelete.h"
 #include "game/GameState.h"
 #include "game/PlayerBit.h"
 #include "game/PlayerFlags.h"
@@ -3590,6 +3591,41 @@ void Player_804A6F38::fn_802422D0() {
 
 const JGeometry::TVec2f* Player_804A6F38::fn_802422C4() {
     return &field_0xbf0->field_0x14;
+}
+
+// Deletes all of the player's emitters (0x1274-0x1394; 0x135C-0x1370 in the
+// original's order).
+void Player_804A6F38::fn_80241E64() {
+    deleteEmitter(&field_0x1274);
+    deleteEmitter(&field_0x128c);
+    deleteEmitter(&field_0x12b0);
+    deleteEmitter(&field_0x12b4);
+    deleteEmitter(&field_0x12b8);
+    deleteEmitter(&field_0x12bc);
+    deleteEmitter(&field_0x12c4);
+    deleteEmitter(&field_0x12c8);
+    deleteEmitter(&field_0x12cc);
+    deleteEmitter(&field_0x12e4);
+    deleteEmitter(&field_0x1308);
+    deleteEmitter(&field_0x132c);
+    deleteEmitter(&field_0x1350);
+    deleteEmitter(&field_0x1354);
+    deleteEmitter(&field_0x1358);
+    deleteEmitter(&field_0x136c);
+    deleteEmitter(&field_0x1370);
+    deleteEmitter(&field_0x135c);
+    deleteEmitter(&field_0x1368);
+    deleteEmitter(&field_0x1360);
+    deleteEmitter(&field_0x1364);
+    deleteEmitter(&field_0x1374);
+    deleteEmitter(&field_0x1378);
+    deleteEmitter(&field_0x137c);
+    deleteEmitter(&field_0x1380);
+    deleteEmitter(&field_0x1384);
+    deleteEmitter(&field_0x1388);
+    deleteEmitter(&field_0x138c);
+    deleteEmitter(&field_0x1390);
+    deleteEmitter(&field_0x1394);
 }
 
 bool Player_804A6F38::fn_80241E28(s32 layer, const JGeometry::TVec3f* pos) {
