@@ -21,7 +21,7 @@ struct cls_801ED3DC {
     /* 0x9 */ u8 mCentis;  // at most 99
     // Records the displayed time in lbl_8053AEF8's slot `slot`, and `rank`
     // (0-3) when it is in range.
-    void fn_801ED3DC(s32 slot, s32 rank);
+    void fn_801ED3DC(s32 slot, s32 rank) const;
     // One frame: counts mFrames up while running; `jitter` (the callers pass
     // a random number) nudges the last digit of mCentis.
     void fn_801ED458(u8 jitter);

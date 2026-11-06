@@ -127,10 +127,9 @@ void cls_801ED3DC::fn_801ED458(u8 jitter) {
     }
 }
 
-// FIXME: 84.0 %. Same instructions; the target loads mSeconds and mCentis
-// before the first store through lbl_8053AEF8 (r7, r6) and keeps the pointer
-// in r10, the constant 1 in r8; ours loads them between the stores.
-void cls_801ED3DC::fn_801ED3DC(s32 slot, s32 rank) {
+// const: the original loads mSeconds and mCentis before the first store through
+// lbl_8053AEF8 (MWCC hoists loads through a const `this` past stores; RULES_CARD).
+void cls_801ED3DC::fn_801ED3DC(s32 slot, s32 rank) const {
     lbl_8053AEF8->field_0x44 |= (u8)(1 << slot);
     lbl_8053AEF8->field_0x3c[slot] = mSeconds;
     lbl_8053AEF8->field_0x38[slot] = mCentis;
