@@ -320,8 +320,9 @@ public:
     // Copies 0xCB0 (TVec3f), lowers its y by 16 unless 0xCF2 is set, then calls
     // fn_80290070(0, &mPos, &copy, 5); on success clears 0xBDC and returns true.
     bool fn_8028FBA0();
-    // Not written yet (tu_8028FBA0); this in r3, &mPos passed as the second position.
-    bool fn_80290070(s32 a, const JGeometry::TVec3f* b, const JGeometry::TVec3f* c, s32 d);
+    // Starts the screen / layer transition `kind` to `to` on `layer` (tu_8028FBA0);
+    // callers pass &mPos as `from`.
+    bool fn_80290070(s32 layer, const JGeometry::TVec3f* from, const JGeometry::TVec3f* to, s32 kind);
     // Not written yet (tu_8028FBA0's fn_80290E90 is 0x90 bytes): fn_80301D54(field_0x4) unless
     // fn_80240670(), clears 0x400, then fn_8045815C on gAudioMgr_8053AF80 (0 below 8, 1 at 8) by 0xCE4.
     void fn_80290E90();
@@ -1619,6 +1620,13 @@ u8 fn_80303750(s32 layer);
 // Not written yet (tu_80301CD0, 0x80301D54): called with a player index (field_0x4) by
 // fn_80290E90 and tu_8028FBA0's fn_802901DC path.
 extern "C" void fn_80301D54(s32 player);
+// Not written yet (tu_80301CD0, 0x803020C8): (player, from layer, to layer, mode) for the
+// player's GBA link; fn_80290070 passes the mode 0 / 1 / 2 as a byte (clrlwi 24).
+extern "C" void fn_803020C8(s32 player, s32 from, s32 to, u8 mode);
+// Defined in tu_80301CD0 (0x803049F0, 0x80304B00): queue the view names of `index`
+// for the GBA of `layer`'s player. Called by fn_80290070.
+bool fn_803049F0(s32 layer, s32 index);
+bool fn_80304B00(s32 layer, s32 index);
 
 // 1 unit (act_horse_race_end_area). Owner: tu_8022AD64 (0x80230050). -> fn_8024E03C(player
 // slot) when the slot is present and its byte 0xCAC is set; else false.

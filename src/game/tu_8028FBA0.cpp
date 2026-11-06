@@ -12,6 +12,7 @@
 #include "game/Camera.h"
 #include "game/Map.h"
 #include "JSystem/JParticle/JPAMath.h"
+#include "game/cls_804A71A8.h"
 
 // The emitters' y rotation per facing (0x3DC: right, left, down, up), read
 // by fn_80290FC0.
@@ -1506,6 +1507,286 @@ void Player_804A6F38::fn_80290D58() {
     field_0xceb = 0;
     field_0x400 = 0;
     field_0xcec = 0;
+}
+
+// FIXME: 99.56. Order and stack slots only: the three offset vectors passed to
+// fn_80252BAC sit at 0x2C / 0x20 / 0x14 (original 0x14 / 0x2C / 0x20, as if the
+// kind-4 group's were declared last), and for kinds 0x17 / 0x18 the 0.0f is loaded
+// before from->y, mPos.y (stores x, z, y in the original).
+// Starts the transition `kind` from the current place to `to` on `layer` (see
+// docs/PLAYER.md, tu_8028FBA0): refuses while a transition runs (0xCE8), the
+// player is down or held, or its GBA link is busy; requests the kind's leave
+// state, records the destination 0xCD4 / 0xCE4 and the departure 0xCC8 / 0xCE0,
+// and tells the GBA links (fn_803020C8) which way the player moves. Kind 0x21
+// from a GBA layer is immediate: back to layer 0 at `to`, arrived at once
+// (fn_80290E90, fn_80290D58); kind 0x22 (same layer) only moves the player.
+bool Player_804A6F38::fn_80290070(s32 layer, const JGeometry::TVec3f* from, const JGeometry::TVec3f* to,
+                                  s32 kind) {
+    if (kind == 0xC && (fn_802DE93C() || field_0x3b4 >= 8)) {
+        kind = 0x26;
+    }
+    JGeometry::TVec3f dest(*to);
+    if (kind == 0x24) {
+        if (field_0xce8 == true && !fn_80240DAC()) {
+            return false;
+        }
+    } else if (field_0xce8 == true) {
+        return false;
+    }
+    if (field_0xcee == 1) {
+        return false;
+    }
+    if (field_0x1216 == true) {
+        return false;
+    }
+    if (field_0x1238 > 0) {
+        return false;
+    }
+    if (kind == 0x21 && field_0x3b4 >= 8) {
+        field_0xce0 = field_0x3b4;
+        field_0xcc8 = mPos;
+        field_0x3b4 = 0;
+        field_0xce4 = 0;
+        mPos = *to;
+        field_0xcbc = field_0xcd4 = mPos;
+        mPos.z = 0.0f;
+        field_0xbec->fn_8030BD3C(field_0x4);
+        fn_80290E90();
+        fn_80290D58();
+        return true;
+    }
+    if (fn_80270A8C()) {
+        return false;
+    }
+    if (fn_8024189C() <= 0) {
+        return false;
+    }
+    if (fn_8025F448()) {
+        return false;
+    }
+    if (fn_8022C8EC(fn_80240628()) && layer >= 8 && fn_80303750(fn_80240628())) {
+        return false;
+    }
+    field_0xcf1 = 0;
+    if (kind == 0x22) {
+        if (layer != field_0x3b4) {
+            return false;
+        }
+        u16 tile = fn_8022461C(to, layer);
+        if (fn_802265DC(to, layer, true) || tile == 3 || tile == 0xE || fn_802684A4(to, layer)) {
+            if (layer < 8) {
+                mPos.set(field_0x2c4);
+            } else {
+                mPos.set(field_0xcbc);
+            }
+        } else {
+            mPos.set(*to);
+        }
+        field_0x2c.set(mPos);
+        field_0x464 = 60;
+        return true;
+    }
+    if (kind == 4 || kind == 7 || kind == 8 || kind == 9 || kind == 0x20 || kind == 0x24) {
+        if (!fn_80240808() && field_0x1216 == true) {
+            return false;
+        }
+        if (fn_80240808() && field_0x1238 > 0) {
+            return false;
+        }
+        if (fn_80251AEC(0x1E)) {
+            // `*from - mPos`: libs Vec.h's TVec3::operator- is not const, so its body
+            // (copy, subtract, copy out; the original's two stack vectors) is spelled out.
+            JGeometry::TVec3f offset = JGeometry::TVec3f(*from) -= mPos;
+            fn_80252BAC(&offset);
+            if (fn_80240670()) {
+                layer = field_0x3b4;
+                kind = 9;
+                dest.set(field_0xd1c);
+            }
+        } else {
+            return false;
+        }
+    } else if (kind == 0xC || kind == 0xD || kind == 0x26) {
+        if ((!fn_80240808() && field_0x1216 == true) ||
+            (fn_80240808() && !fn_8022D75C(fn_80240644()) && field_0x1238 > 0))
+        {
+            return false;
+        }
+        if (layer != field_0x3b4) {
+            return false;
+        }
+        if (!fn_80251AEC(0x32)) {
+            return false;
+        }
+    } else if (kind == 5) {
+        if (fn_80251AEC(0x20)) {
+            field_0xcf1 = field_0xcf0;
+            u16 tile = fn_8022461C(&dest, layer);
+            if (tile == 0 || tile == 2 || tile == 3 || tile == 0x21) {
+                field_0xcf0 = 0;
+            } else {
+                field_0xcf0 = 1;
+            }
+        } else {
+            return false;
+        }
+    } else if (kind == 6 || kind == 0xB || kind == 0x14 || kind == 0x1F) {
+        if (layer >= 8) {
+            if (fn_80251AEC(0x24)) {
+                mPos = *from;
+            } else {
+                return false;
+            }
+        } else {
+            if (fn_80251AEC(0x22)) {
+                mPos = *from;
+            } else {
+                return false;
+            }
+        }
+    } else if (kind == 0xE || kind == 0x25) {
+        if (fn_80251AEC(0x26)) {
+            mPos = *from;
+        } else {
+            return false;
+        }
+    } else if (kind == 0xF) {
+        if (!fn_80251AEC(0x28)) {
+            return false;
+        }
+    } else if (kind == 0x27) {
+        if (!fn_80251AEC(0x30)) {
+            return false;
+        }
+    } else if (kind == 0xA) {
+        if (field_0x3b4 == 8) {
+            if (fn_80251AEC(0x2A)) {
+                field_0xcf1 = field_0xcf0;
+                u16 tile = fn_8022461C(&dest, layer);
+                if (tile == 0 || tile == 2 || tile == 0x21) {
+                    field_0xcf0 = 0;
+                } else {
+                    field_0xcf0 = 1;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else if (kind == 0x11) {
+        if (!fn_80240818()) {
+            return false;
+        }
+    } else if (kind == 0x13 || kind == 0x16) {
+        if (!(field_0x1240 == 0x4D && field_0x1244 == 0x4D) && !fn_80251AEC(0x4D)) {
+            return false;
+        }
+    } else if (kind == 0x17 || kind == 0x18) {
+        if (fn_80251AEC(0x1C)) {
+            JGeometry::TVec3f offset(0.0f, from->y - mPos.y, 0.0f);
+            fn_80252BAC(&offset);
+        } else {
+            return false;
+        }
+    } else if (kind == 0x1D) {
+        if (fn_80251AEC(0x2C)) {
+            mPos = *from;
+        } else {
+            return false;
+        }
+    } else if (kind == 0x1E) {
+        if (fn_80251AEC(0x2E)) {
+            mPos = *from;
+        } else {
+            return false;
+        }
+    } else {
+        if (fn_80251AEC(0x1C)) {
+            JGeometry::TVec3f offset(from->x - mPos.x, 0.0f, 0.0f);
+            fn_80252BAC(&offset);
+        } else {
+            return false;
+        }
+    }
+    if (kind == 0x12) {
+        field_0xcd4 = *getPlayerPos_8023E724(fn_80240644());
+        field_0xce4 = getPlayerLayer_8023DE58(fn_80240644());
+    } else {
+        field_0xcd4 = dest;
+        field_0xce4 = layer;
+    }
+    field_0xcf4 = kind;
+    field_0xcc8 = mPos;
+    field_0xce0 = field_0x3b4;
+    field_0xce8 = true;
+    if (field_0xce4 != 8) {
+        field_0xcf2 = 0;
+    }
+    if (!fn_80240808()) {
+        fn_8022D36C(field_0x4);
+    }
+    if (fn_8025F590() && field_0x3b4 == 8 && getPlayerLayer_8023DE58(field_0xd70) < 8) {
+        fn_8023105C(fn_8025F55C());
+        fn_8025FF70();
+    }
+    if (field_0xce4 >= 8 && field_0xce4 != field_0x3b4) {
+        fn_803049F0(field_0x4, field_0xce4);
+        fn_80304B00(field_0x4, field_0xce4);
+        if (fn_8025F590() && !fn_8025FCC8() && !fn_8022F478(field_0xd70)) {
+            fn_803049F0(field_0xd70, field_0xce4);
+            fn_80304B00(field_0xd70, field_0xce4);
+        }
+    }
+    s32 mode = -1;
+    if (!fn_80240670() && !(field_0xcf4 == 0xC || field_0xcf4 == 0xD || field_0xcf4 == 0x26 ||
+                            field_0xcf4 == 0x22))
+    {
+        s32 cur;
+        if ((field_0xcf4 == 4 || field_0xcf4 == 7 || field_0xcf4 == 8 || field_0xcf4 == 9 ||
+             field_0xcf4 == 0x20 || field_0xcf4 == 0x24) &&
+            (cur = field_0x3b4) > 8 && field_0xce4 > 8 && viewLayerFlag(cur) &&
+            viewLayerFlag(field_0xce4) && field_0xce4 != field_0x3b4)
+        {
+            mode = 0;
+        } else if (field_0xcf4 == 0x1E) {
+            mode = 2;
+        } else if (field_0xcf4 == 0xF) {
+            mode = 2;
+        } else if (field_0xcf4 == 0x27) {
+            mode = 1;
+        } else if ((field_0xcf4 == 6 || field_0xcf4 == 0xB) && field_0xce0 > 8) {
+            mode = 2;
+        } else if (field_0xcf4 == 0x13 || field_0xcf4 == 0x16) {
+            if (field_0xce4 < 8) {
+                mode = 0;
+            }
+        } else {
+            mode = 1;
+        }
+    }
+    if (mode >= 0) {
+        fn_803020C8(field_0x4, field_0xce0, field_0xce4, mode);
+    }
+    if (fn_8025F590() && !fn_8022F478(field_0xd70)) {
+        if (!fn_8025FCC8() && mode >= 0) {
+            fn_803020C8(field_0xd70, field_0xce0, field_0xce4, mode);
+        }
+        if (field_0xce0 >= 8 && field_0xce4 < 8) {
+            fn_80230E1C(field_0xd70, false);
+        }
+    }
+    field_0xbf0->field_0xbc = 0;
+    field_0x1216 = false;
+    if (field_0x1244 != 0x1C) {
+        field_0x48c = 0;
+        field_0xbc0 = 0;
+    }
+    if (field_0xcf4 == 0x1F) {
+        fn_80248004(5, true);
+    }
+    fn_80248FF0();
+    return true;
 }
 
 bool Player_804A6F38::fn_8028FC2C() {
