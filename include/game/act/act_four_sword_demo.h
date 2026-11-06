@@ -14,7 +14,11 @@
 // cls_8049D140's destructor.
 class cls_8049DA0C : public cls_8049D140 {
 public:
+    cls_8049DA0C();
     /* 0x08 */ virtual ~cls_8049DA0C();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
 
     // Slot 0x54, overriding cls_8049D140::vfunc_0x54 (0x801174C0, game/act_four_sword_demo.cpp).
     // Reads field_0x4 and field_0x8 of fn_8011921C()'s object and, when the
@@ -34,10 +38,17 @@ public:
     // 1 when field_0x234 is 12, else 0.
     /* 0x5C */ virtual s32 vfunc_0x5C();
 
+    bool checkPlayers();
+
+    void fn_80116E8C();
+
     /* 0x230 */ u8 field_0x230;
     /* 0x231 */ u8 field_0x231;
     /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ u8 field_0x238[0x250 - 0x238]; // not yet known
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ f32 field_0x23c;
+    /* 0x240 */ f32 field_0x240;
+    /* 0x244 */ JGeometry::TVec3f field_0x244;
 
     /* 0x250 */ SpriteAnim_801D267C mAnim250; // its J3DFrameCtrl at 0x274
     /* 0x288 */ JPABaseEmitter* mEmitters288[4];
