@@ -71,10 +71,10 @@ void ReaperShinigami_804A886C::vfunc_0x24() {
     startSound_801F0E34(0x40041, 0);
 }
 
-// FIXME: 88.43 %. The original copies arg to r31 first and keeps idx in r28,
-// and its frame is 0x40 with the playerPos copy at 0x10 (ours: arg unsaved,
-// idx in r29, playerPos at 0x8). The direction temp's dead stack stores are
-// not reproduced.
+// FIXME: 89.45 %. Its frame is 0x40 with the playerPos copy at 0x10 (ours
+// 0x30, playerPos at 0x8). The direction temp's dead stack stores are not
+// reproduced, and the idx table walk takes other registers (r28 / r29). (The
+// layer is read through getField_0x4(), before the call, as the original does.)
 void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
     JGeometry::TVec3f playerPos(*getPlayerPos_8023E724(field_0x298));
     s32 dist = (s32)FABS(mPos.x - playerPos.x);
@@ -87,8 +87,7 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
     }
 
     startSound_801F0E34(0x40040, 0);
-    s32 layer = field_0x4;
-    if (getPlayerLayer_8023DE58(field_0x298) == layer) {
+    if (getPlayerLayer_8023DE58(field_0x298) == getField_0x4()) {
         JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x298);
         JGeometry::TVec2f dir(p->x, p->y);
         dir.x -= mPos.x;

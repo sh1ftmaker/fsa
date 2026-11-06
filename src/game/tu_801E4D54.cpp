@@ -38,17 +38,16 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
     }
 }
 
-// FIXME: 98.8 %. The loop counter and the layer swap registers (the original keeps
-// the counter in r30 and the layer, read before getPlayerLayer_8023DE58, in r31; this has them
-// the other way round), and the original tests the countdown twice (a second ble
+// FIXME: 98.83 %. The loop counter and element pointer take other registers (the
+// original: counter r30, element r28; the layer is read through getField_0x4(),
+// before getPlayerLayer_8023DE58, as the original), and the original tests the countdown twice (a second ble
 // to the loop end before its decrement), which no natural form here produces; dx and dy also take each other's
 // FPRs (the original computes dy first).
 void VaatiBoss_804A4958::fn_801E5754() {
     for (s32 i = 0; i < 4; i++) {
         if (field_0x2a8[i].field_0x0 != 0) {
             if (fn_8023F264(i) && !fn_80236B50(i) && !fn_8022D75C(i)) {
-                s32 layer = field_0x4;
-                if (getPlayerLayer_8023DE58(i) == layer) {
+                if (getPlayerLayer_8023DE58(i) == getField_0x4()) {
                     continue;
                 }
             }
