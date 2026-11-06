@@ -311,13 +311,11 @@ void cls_8049EB8C::vfunc_0x54() {
     }
 }
 
-// FIXME: 85.83%. missing/extra: ours has 1 more instr (13 vs 12; return 1 branch inverted vs target beq/b)
 s32 cls_8049EB8C::vfunc_0x5C() {
-    if (field_0x234 < 0x19) {
-        if (field_0x234 == 0x15) {
-            return 1;
-        }
-    } else if (field_0x234 < 0x1b) {
+    switch (field_0x234) {
+    case 21:
+    case 25:
+    case 26:
         return 1;
     }
     return 0;
