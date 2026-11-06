@@ -59,7 +59,7 @@ void cls_804AC3E0::vfunc_0xA4() {
     mPos.y = mSpawnPos.y;
 }
 
-// FIXME: 92.16 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs; the original keeps them in registers), plus register order and the JMath table addresses formed in the other order (reloc-name).
+// FIXME: 93.22 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs; the original keeps them in registers), plus register order and the JMath table addresses formed in the other order (reloc-name).
 void cls_804AC3E0::vfunc_0xA8() {
     if (field_0x2b0 != 0) {
         field_0x2b2 += 0x800;
@@ -70,7 +70,7 @@ void cls_804AC3E0::vfunc_0xA8() {
     }
     for (int i = 0; i < 4; i++) {
         bool touching;
-        if (field_0x4 != getPlayerLayer_8023DE58(i)) {
+        if (getField_0x4() != getPlayerLayer_8023DE58(i)) {
             touching = false;
         } else {
             touching = outlineInBox(this, i);
@@ -161,7 +161,7 @@ u8 cls_804AC3E0::vfunc_0x68() {
     return 0;
 }
 
-// FIXME: 93.36 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs each; the original keeps them in registers), plus register order.
+// FIXME: 94.17 %. missing/extra: ours reloads mBox.i.y/f.x/f.y in every outline-point test (3 more lfs each; the original keeps them in registers), plus register order.
 void cls_804AC3E0::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 2:
@@ -188,7 +188,7 @@ void cls_804AC3E0::vfunc_0x90(u8 mapHit) {
                         }
                         fn_801BACE8(0);
                     }
-                    if (getPlayerLayer_8023DE58(i) == field_0x4) {
+                    if (getPlayerLayer_8023DE58(i) == getField_0x4()) {
                         outlineInBox(this, i);
                     }
                 }
@@ -254,7 +254,7 @@ void cls_804AC3E0::vfunc_0x90(u8 mapHit) {
     case 5:
         resetBoxes(this);
         for (int i = 0; i < 4; i++) {
-            if (getPlayerLayer_8023DE58(i) == field_0x4) {
+            if (getPlayerLayer_8023DE58(i) == getField_0x4()) {
                 outlineInBox(this, i);
             }
         }
