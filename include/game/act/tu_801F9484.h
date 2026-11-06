@@ -99,7 +99,16 @@ class cls_8049E8A0 : public ActorBase_804A5770 {
 public:
     cls_8049E8A0();
     /* 0x08 */ virtual ~cls_8049E8A0();
-    /* 0x230 */ u8 field_0x230[0x18];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ f32 field_0x238;
+    /* 0x23C */ void* field_0x23c;
+    /* 0x240 */ JPABaseEmitter* field_0x240;
+    /* 0x244 */ JPABaseEmitter* field_0x244;
 }; // Size: 0x248
 
 // Spawned for 'CRNV'.
