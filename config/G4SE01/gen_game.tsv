@@ -18,8 +18,6 @@ act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
 act_force_gem_spawner	dtor_emit	__dt__24ForceGemSpawner_804AB660Fv	ForceGemSpawner_804AB660	0x804AB660	new	new
 act_force_gem_spawner	sinit	__sinit_act_force_gem_spawner_cpp	-	-	new	-
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
-act_four_person_pull_switch	dtor	__dt__12cls_804AE230Fv	cls_804AE230	0x804AE230	new	new
-act_four_person_pull_switch	sinit	__sinit_act_four_person_pull_switch_cpp	-	-	new	new
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_hinox	sinit	__sinit_act_hinox_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
