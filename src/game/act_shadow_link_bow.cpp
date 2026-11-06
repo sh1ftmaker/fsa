@@ -6,6 +6,13 @@
 #include "game/act/act_shadow_link_bow.h"
 #include "game/act/act_octorok_rock.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: vfunc_0x90 calls fn_80222668 (six times) and fn_80222668 calls
+// fn_80222730 out of line.
+#pragma auto_inline off
+
 // A random offset in -range..range.
 static inline f32 spread(f32 range) {
     return range * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f);

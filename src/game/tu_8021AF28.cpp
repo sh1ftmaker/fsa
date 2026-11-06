@@ -3,6 +3,12 @@
 #include "game/EmitterDelete.h"
 #include "game/act/act_kaepora_gaebora.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: draw calls fn_8021AFB8 out of line.
+#pragma auto_inline off
+
 
 // The second pass of each sprite draw: the same frame again, translucent,
 // unless the actor's own sprite matrix is set.

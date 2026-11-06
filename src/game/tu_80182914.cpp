@@ -9,6 +9,12 @@
 #include "game/tu_80182914.h"
 #include "game/act/tu_80182914.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: init calls fn_8018330C (5 instructions) out of line.
+#pragma auto_inline off
+
 // The emitter's colour comes from field_0x238 while view layer 0x13 is flagged.
 static inline void setEmitterColour(cls_804A1718* self, JPABaseEmitter* emitter) {
     if (viewLayerFlag(0x13) == 1) {

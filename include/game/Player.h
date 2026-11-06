@@ -18,13 +18,14 @@
 // in fn_8022B7C4, fn_8022B860, getPlayerLayer_8023DE58 and getPlayerPos_8023E724:
 //
 //     if (gPlayerManager_8053AC90 == NULL) return <fallback>;
-//     if (isPlayerActive(player)) return gPlayerManager_8053AC90->mPlayers[player]-><query>;
+//     if (fn_8023F264(player)) return gPlayerManager_8053AC90->mPlayers[player]-><query>;
 //     return <fallback>;
 //
-// isPlayerActive (below) is fn_8023F264's body, inlined; its own test of
-// gPlayerManager_8053AC90 is the dead `bne` right after the outer test in every one of
-// them (e.g. 0x8022B7E4). MWCC only inlines functions defined before the
-// caller, and the queries come before fn_8023F264, so it is a header inline.
+// fn_8023F264 (the player test, a plain function of tu_8022AD64.cpp) is inlined
+// into each of them; its own test of gPlayerManager_8053AC90 is the dead `bne`
+// right after the outer test in every one (e.g. 0x8022B7E4). Game code is
+// compiled -inline auto,deferred, so the queries inline it although they come
+// before it in .text (docs/INLINING.md).
 //
 // Owner: the shared-header owner (docs/COORDINATOR.md, "Shared game
 // headers"). Game-file agents propose changes as SHARED-EDITS.
@@ -1253,24 +1254,6 @@ public:
 
 extern PlayerManager_804A6F28* gPlayerManager_8053AC90;
 
-// Whether `player` is a valid index of an existing, active player: the body
-// of fn_8023F264, which every per-player query inlines.
-inline bool isPlayerActive(s32 player) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (player < 0) {
-        return false;
-    }
-    if (player >= 4) {
-        return false;
-    }
-    if (gPlayerManager_8053AC90->mPlayers[player] == NULL) {
-        return false;
-    }
-    return gPlayerManager_8053AC90->mPlayers[player]->fn_8023F984();
-}
-
 // Functions of game/tu_8022AD64.cpp other units call. Each query returns
 // its fallback (after "else") when there is no manager or the player is not
 // active. Types come from the getter each one forwards to and from the
@@ -1302,7 +1285,7 @@ void fn_8022B22C(void); // 0x6D = true
 bool fn_8022B244(void); // 0x6C
 void fn_8022B260(void); // 0x6C = false
 
-// isPlayerActive(player). 81 units.
+// Whether `player` is a valid index of an existing, active player. 81 units.
 bool fn_8023F264(s32 player);
 
 // Per-player queries, by address. "N units": other units that call it;

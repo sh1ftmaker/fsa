@@ -490,6 +490,9 @@ void cls_804A71A8::fn_8026F710() {
     field_0x14.y = 0.0f;
 }
 
+// Not auto-inlined: fn_8026C350 calls fn_8026F54C / F388 / F1C4 / F000 out of line in the
+// original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME: 90.04. fn_8026EE60 inlined, with its differences.
 void cls_804A71A8::fn_8026F54C() {
     if (field_0x4->field_0x3dc == 3) {
@@ -525,6 +528,7 @@ void cls_804A71A8::fn_8026F000() {
         field_0x38[field_0x1c] = 1;
     }
 }
+#pragma auto_inline reset
 
 // FIXME: 86.41. canPush's step vector is added with its x, y, z loaded in
 // reverse and its z half first (the original copies x, y, z in order to the
@@ -547,6 +551,9 @@ void cls_804A71A8::fn_8026EE60() {
     }
 }
 
+// Not auto-inlined: fn_8026C350 calls fn_8026EC88 and fn_8026E68C calls fn_8026EB1C out of
+// line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME: 86.81. As fn_8026EE60; the spawn also reads `player + 1` after
 // getActorManager_801F856C like the original, but the owner and facing are reloaded.
 void cls_804A71A8::fn_8026EC88(s32 player) {
@@ -605,6 +612,7 @@ u8 cls_804A71A8::fn_8026EB1C(u16 tile) {
     }
     return false;
 }
+#pragma auto_inline reset
 
 // FIXME: 99.97. Code identical; the literals 16.0f (lbl_80540280) and the
 // int-to-float constant (lbl_80540270) stay @NNN until the unit's literal
@@ -727,7 +735,10 @@ void cls_804A71A8::fn_8026E1E0() {
     }
 }
 
-// FIXME: 98.52. The 0x4C-0x4F mask test: the original keeps
+// FIXME: 95.33 (98.52 before the deferred switch). The original also calls fn_8026EE60
+// out of line here although fn_8026F000-F54C inline it: this caller's inline budget
+// (0x1E90 bytes; docs/INLINING.md rule 5), which ours does not reach, so ours inlines it.
+// The 0x4C-0x4F mask test: the original keeps
 // isPlayerBitSet's bool (neg / or / srwi, cmplwi 1) where this folds it into
 // and.; `this`, the tile and its switch copy sit in r30 / r29 / r31 (ours
 // r31 / r30 / r29).

@@ -9,7 +9,7 @@
 class TutorialOldMan_804AE508 : public ActorBase_804A5770 {
 public:
     TutorialOldMan_804AE508() {}
-
+    /* 0x08 */ virtual ~TutorialOldMan_804AE508();
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();

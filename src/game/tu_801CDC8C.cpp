@@ -22,6 +22,13 @@
 #include "JSystem/JAudio/JAUSoundObject.h"
 #include "game/ViewLayer.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: fn_801CF1B0, fn_801CF6B8, fn_801CF720 and fn_801CF798 call fn_801CF6B8,
+// fn_801CF720, fn_801CF798 and fn_801CFCF0 out of line.
+#pragma auto_inline off
+
 const bool lbl_8053EFC0 = false;
 
 inline void EnemyBase_804A4808::stateStep(u8 mapHit) {

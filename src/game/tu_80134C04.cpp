@@ -69,9 +69,13 @@ s32 fn_8013997C(s32 index) {
     return (gGameRoot_8053AAF8->field_0x83 >> (index * 2)) & 3;
 }
 
+// Not auto-inlined: GameRoot_8049EF20::fn_80135020 calls fn_80139958 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void fn_80139958() {
     lbl_8053AD68->fn_8037A708();
 }
+#pragma auto_inline reset
 
 // FIXME: 99.65. Instructions identical; the string offsets off lbl_804652F0
 // differ (0x324 vs 0x5E8: the strings of the unwritten fn_80135494 - fn_80137300

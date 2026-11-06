@@ -136,31 +136,6 @@ inline void AudioMgr_8045A080::startSecondSeq_80458F04(u32 id) {
     }
 }
 
-// 0x80458744
-// FIXME: 99.81, reloc-name only: the jump table (jumptable_804B1EF0) sits after
-// the volume tables in the original .data. Defined above the function, the
-// tables are addressed off one ...data.0 base (85 %); defined at the end of
-// the file (the original's separate lis/lfsu per table) they come after the
-// jump tables. Not inlined by fn_80459274 / fn_804593D4 in the original,
-// which is why those two are not written yet: MWCC's auto-inliner takes this
-// body into them (later in the file) and stops doing so only once the body
-// is two statements larger (tested: one extra assignment still inlines, two
-// do not), so the original's fn_80458744 was written somewhat longer; static
-// local tables or a table pointer do not change it.
-extern f32 lbl_804B1E60[9];
-extern f32 lbl_804B1E84[9];
-extern f32 lbl_804B1EA8[9];
-extern f32 lbl_804B1ECC[9];
-
-// The music volumes per mode (fn_80458744): music, second sequence, SE
-// category 0, then six values no function here reads. Defined after their
-// user: the original addresses each table on its own (lis/lfsu per table),
-// which MWCC does only for data defined later (see fn_80458744's FIXME).
-f32 lbl_804B1E60[9] = {1.0f, 1.0f, 0.7f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f};
-f32 lbl_804B1E84[9] = {0.0f, 0.0f, 0.7f, 0.441f, 0.441f, 0.441f, 0.441f, 0.441f, 0.441f};
-f32 lbl_804B1EA8[9] = {0.15f, 1.0f, 0.7f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f};
-f32 lbl_804B1ECC[9] = {0.3f, 1.0f, 0.7f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f, 0.882f};
-
 // 0x8045A0D8
 u8 fn_8045A0D8() {
     return gGameRoot_8053AAF8->field_0x96;
@@ -426,6 +401,21 @@ void AudioMgr_8045A080::fn_80458880(u32 id, s8 player) {
     }
 }
 
+// 0x80458744
+// The music volumes per mode: music, second sequence, SE category 0, then six
+// values no function here reads. They lead the original .data, ahead of this
+// unit's jump tables, and the original addresses each table on its own
+// (lis / lfsu): an extern. Under deferred codegen a table defined anywhere in
+// this file is addressed off one ...data.0 base, so they are defined in the
+// preceding unit, game/tu_80457C08.cpp.
+extern f32 lbl_804B1E60[9];
+extern f32 lbl_804B1E84[9];
+extern f32 lbl_804B1EA8[9];
+extern f32 lbl_804B1ECC[9];
+
+// Not auto-inlined: fn_80457E04 and fn_80457E54 call fn_80458744 out of line in the original
+// (so do the unwritten fn_80459274 / fn_804593D4; docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void AudioMgr_8045A080::fn_80458744(s32 mode) {
     f32 musicVolume;
     f32 seqVolume;
@@ -487,6 +477,7 @@ void AudioMgr_8045A080::fn_80458744(s32 mode) {
     }
     field_0x34->getCategory(0)->getParams()->moveVolume(seVolume, 0);
 }
+#pragma auto_inline reset
 
 // 0x8045873C
 void AudioMgr_8045A080::fn_8045873C(u8 value) {

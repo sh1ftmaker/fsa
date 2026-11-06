@@ -7,6 +7,12 @@
 #include "game/act/tu_801286C0.h"
 #include "game/act/tu_8044C028.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: draw calls fn_80128C58 (4 instructions) out of line.
+#pragma auto_inline off
+
 const char* lbl_80539F38 = "kk_black.bti";
 
 // Thresholds that the value at fn_8011921C()->field_0x8 is matched against.

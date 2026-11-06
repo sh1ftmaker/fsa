@@ -3,9 +3,13 @@
 #include "game/GameState.h"
 #include "game/tu_80379F84.h"
 
+// Not auto-inlined: fn_8037A580 calls fn_8037AA7C out of line in the original (docs/INLINING.md,
+// pragma rule 1).
+#pragma auto_inline off
 void fn_8037AA7C(void) {
     lbl_8053ADB8->fn_803D521C();
 }
+#pragma auto_inline reset
 
 void fn_8037AA58(void) {
     lbl_8053ADB8->fn_803D5554();

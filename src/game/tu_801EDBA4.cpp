@@ -3,6 +3,12 @@
 #include "game/GameState.h"
 #include "game/act/act_vaati_boss.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: draw calls fn_801EDC0C out of line.
+#pragma auto_inline off
+
 static const char* lbl_804A5760[] = {"e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.bti",
                                      "e_gufu_4.bti"};
 

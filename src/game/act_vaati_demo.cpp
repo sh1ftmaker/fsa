@@ -64,33 +64,6 @@ void cls_8049D940::init() {
     field_0x308 = mPos;
 }
 
-// Defined after draw(), which calls it: above it, MWCC inlines it into draw.
-// FIXME: 88.7 %. The original loads the 64.0f and 1.0f literals again after the
-// PSMTXTrans call and uses other registers for them; the literal references
-// are lbl_ in the original and @NNN here (data split).
-void cls_8049D940::fn_801158B8() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    JGeometry::TVec3f pos;
-    PSMTXTrans(mtx, 0.0f, 0.0f, 0.0f);
-    mtx[0][0] = 64.0f;
-    mtx[1][1] = 1.0f;
-    mtx[2][2] = 64.0f;
-    params.mMtx = mtx;
-    params.field_0x14.r = 0;
-    params.field_0x14.g = 0;
-    params.field_0x14.b = 0;
-    params.field_0x14.a = 255;
-    params.field_0x1c = 1;
-    params.field_0x1d = 3;
-    params.field_0x2d = 1;
-    pos = mPos;
-    pos.z = 0.0f;
-    if (field_0x4 < 8) {
-        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
-    }
-}
-
 // FIXME: 98.1 %. The only differences are the literal references (lbl_ in the
 // original, @NNN here: data split) and &mPos, which the original computes a
 // few instructions earlier, before the layer test.
@@ -192,3 +165,33 @@ bool cls_8049D940::fn_80115A7C() {
     field_0x270.fn_801D1C18();
     return true;
 }
+
+// Not auto-inlined: draw calls fn_801158B8 out of line in the original (docs/INLINING.md, pragma
+// rule 1).
+#pragma auto_inline off
+// FIXME: 88.7 %. The original loads the 64.0f and 1.0f literals again after the
+// PSMTXTrans call and uses other registers for them; the literal references
+// are lbl_ in the original and @NNN here (data split).
+void cls_8049D940::fn_801158B8() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    JGeometry::TVec3f pos;
+    PSMTXTrans(mtx, 0.0f, 0.0f, 0.0f);
+    mtx[0][0] = 64.0f;
+    mtx[1][1] = 1.0f;
+    mtx[2][2] = 64.0f;
+    params.mMtx = mtx;
+    params.field_0x14.r = 0;
+    params.field_0x14.g = 0;
+    params.field_0x14.b = 0;
+    params.field_0x14.a = 255;
+    params.field_0x1c = 1;
+    params.field_0x1d = 3;
+    params.field_0x2d = 1;
+    pos = mPos;
+    pos.z = 0.0f;
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x32c, &params);
+    }
+}
+#pragma auto_inline reset

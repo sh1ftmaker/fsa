@@ -34,9 +34,13 @@ static const GXColor lbl_8053CDD8 = {0xFF, 0xFF, 0xFF, 0xFF};
 
 ScreenRect_802FF3F0* fn_8013C394();
 
+// Not auto-inlined: GameRoot2_8049F108::fn_8013BBE0 calls fn_8013C394 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 ScreenRect_802FF3F0* fn_8013C394() {
     return &gGameRoot2_8053AB10->field_0x24->field_0x144;
 }
+#pragma auto_inline reset
 
 // The (s32) casts give the original's signed int-to-float conversion of the u16 sizes.
 GameRoot2_8049F108::GameRoot2_8049F108(JKRHeap* heap) {

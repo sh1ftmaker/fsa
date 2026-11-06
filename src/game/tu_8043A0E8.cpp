@@ -23,6 +23,12 @@
 #include "game/Player.h"
 #include <string.h>
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: fn_8043E7CC calls fn_80440928 out of line.
+#pragma auto_inline off
+
 void fn_804408F0(JGeometry::TVec3f* pos);
 void fn_80440928(f32 x, f32 y);
 

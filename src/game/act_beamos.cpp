@@ -47,6 +47,9 @@ void Beamos_804A40E0::init() {
     }
 }
 
+// Not auto-inlined: fn_801BE6C4 calls fn_801BE86C out of line in the original (docs/INLINING.md,
+// pragma rule 1).
+#pragma auto_inline off
 // FIXME: 81.63 %. One instruction short: the original keeps the sincos table
 // and its cos half (table + 4) in r30 and loads mPos.y before mPos.x; ours keeps
 // only the table base and loads the literals earlier.
@@ -72,6 +75,7 @@ void Beamos_804A40E0::fn_801BE86C() {
     dir.scale(10.5f);
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
 }
+#pragma auto_inline reset
 
 // FIXME: 99.76 %. Instructions identical; only the .sdata2 literal names differ
 // (the unit's literals are not split in the original order yet).

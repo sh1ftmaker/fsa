@@ -3434,7 +3434,7 @@ game/tu_801D3CBC.cpp:
 	.ctors      start:0x8045C06C end:0x8045C070
 	.rodata     start:0x80469488 end:0x80469498
 	.bss        start:0x804C8CD0 end:0x804C8DD0
-	.sdata2     start:0x8053F0A0 end:0x8053F0C8
+	.sdata2     start:0x8053F0A0 end:0x8053F0B8
 
 game/act_vaati_boss.cpp:
 	extab       start:0x800085B0 end:0x800086AC
@@ -3445,7 +3445,7 @@ game/act_vaati_boss.cpp:
 	.data       start:0x804A4958 end:0x804A4BB0
 	.bss        start:0x804C8DD0 end:0x804C8ED0
 	.sdata      start:0x8053A138 end:0x8053A140
-	.sdata2     start:0x8053F0C8 end:0x8053F150
+	.sdata2     start:0x8053F0B8 end:0x8053F150
 
 game/tu_801D6CEC.cpp:
 	extab       start:0x800086AC end:0x800086FC
@@ -6881,6 +6881,7 @@ game/tu_80457C08.cpp:
 	extabindex  start:0x800215EC end:0x800215F8
 	.text       start:0x80457C10 end:0x80457DFC
 	.ctors      start:0x8045C614 end:0x8045C618
+	.data       start:0x804B1E60 end:0x804B1EF0
 	.bss        start:0x8052DB00 end:0x8052DBE0
 
 game/tu_80457DFC.cpp:
@@ -6889,7 +6890,7 @@ game/tu_80457DFC.cpp:
 	.text       start:0x80457DFC end:0x8045A640
 	.ctors      start:0x8045C618 end:0x8045C61C
 	.rodata     start:0x80491590 end:0x80491680
-	.data       start:0x804B1E60 end:0x804B2098
+	.data       start:0x804B1EF0 end:0x804B2098
 	.bss        start:0x8052DBE0 end:0x8052DCE0
 	.sdata      start:0x8053A220 end:0x8053A270
 	.sbss       start:0x8053AF78 end:0x8053AF88

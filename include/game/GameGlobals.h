@@ -1270,7 +1270,7 @@ u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e);
 extern const f32 lbl_8053EFB8;
 extern const f32 lbl_8053EFBC;
 
-// Shared .sdata2 constants owned by game/tu_801D3CBC.cpp (not written yet):
+// Shared .sdata2 constants defined in game/act_vaati_boss.cpp:
 // 90.0f and 1.7f. game/tu_801EDBA4.cpp passes the first to fn_802F5FF4 and
 // multiplies -12.0f by the second at run time (fmuls), so neither is a literal.
 extern const f32 lbl_8053F0B8;

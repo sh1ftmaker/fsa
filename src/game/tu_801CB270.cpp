@@ -16,6 +16,12 @@
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
 
+// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
+// original inlines no same-unit plain function. Checked: built with inlining off,
+// every written function's calls to this unit's functions equal the original's
+// `bl`s. The callers that need it: fn_801CD930 calls fn_801CD970 and fn_801CD950 calls fn_801CD9F0 out of line.
+#pragma auto_inline off
+
 
 // The kind of a Force Gem ('RUPY', act_force_gem): the low byte of its
 // spawn bits while field_0x94 is 0 or 3, else -1. The actor manager's

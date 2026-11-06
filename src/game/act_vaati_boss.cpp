@@ -2,6 +2,14 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_vaati_boss.h"
 
+// Shared constants (declared in GameGlobals.h): game/tu_801EDBA4.cpp passes the first to
+// fn_802F5FF4 and multiplies -12.0f by the second at run time. No function of this unit
+// reads them. They lead this unit's .sdata2 (0x8053F0B8, before 0x8053F0C0 / 0x8053F0C4
+// and the function literals): under deferred codegen file-scope constants are written
+// before every literal of the file, so they cannot end game/tu_801D3CBC.cpp's pool.
+const f32 lbl_8053F0B8 = 90.0f;
+const f32 lbl_8053F0BC = 1.7f;
+
 void VaatiBoss_804A4958::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }

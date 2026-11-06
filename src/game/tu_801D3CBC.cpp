@@ -7,12 +7,6 @@
 #include "game/act/act_shadow_link_2.h"
 
 
-// Shared constants (declared in GameGlobals.h): game/tu_801EDBA4.cpp passes the first to
-// fn_802F5FF4 and multiplies -12.0f by the second at run time. No function of this unit
-// reads them.
-const f32 lbl_8053F0B8 = 90.0f;
-const f32 lbl_8053F0BC = 1.7f;
-
 // FIXME: 98.83 %. Register allocation only.
 void ShadowLink2_804A43E8::fn_801D41B8() const {
     JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
