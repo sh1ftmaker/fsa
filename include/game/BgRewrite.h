@@ -136,6 +136,7 @@ public:
     // 1 unit (act_block). fn_802A3948 on gBgRewrite_8053AC98 with player 0;
     // this unused.
     void fn_8029E928(const JGeometry::TVec3f* pos, s32 layer, s32 tile);
+    void fn_8029E9EC(const JGeometry::TVec3f* pos, s32 layer, u16 tile, s32 arg4, u8 dir);
     // 1 unit (tu_802957CC, 2 calls each). Read the tile under pos on layer 0
     // into fields 0x20 / 0x24; true when its lbl_8046CB88 collision code is 0
     // or fn_8022461C gives 0x22 while GameView field_0x170 is clear
