@@ -842,7 +842,8 @@ public:
     /* 0x0BBB */ u8 field_0xbbb;
     /* 0x0BBC */ f32 field_0xbbc; // fn_80254744: 3.0f
     /* 0x0BC0 */ s32 field_0xbc0;
-    /* 0x0BC4 */ u8 field_0xbc4[0xBD4 - 0xBC4];
+    // The 40x40 box around the player while it dashes (state 0x0B, fn_8027A1E0).
+    /* 0x0BC4 */ JGeometry::TBox2f field_0xbc4;
     /* 0x0BD4 */ u8 field_0xbd4;
     /* 0x0BD5 */ u8 field_0xbd5[0xBD8 - 0xBD5];
     /* 0x0BD8 */ s32 field_0xbd8;

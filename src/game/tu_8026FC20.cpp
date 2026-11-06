@@ -118,6 +118,16 @@ static inline void setFrontBox(Player_804A6F38* player, s32 dir) {
 // Emitter offsets from mPos by facing (fn_80274CB8 is its first user, fn_8027D320).
 static const f32 lbl_8046BB48[4][3] = {{-1.0f, 0.0f, -8.0f}, {1.0f, 0.0f, -8.0f}, {5.0f, 0.0f, -8.0f}, {-5.0f, 0.0f, -8.0f}};
 
+// Unit steps for the eight directions (fn_8027A1E0, by field_0x3e8): right, left, down, up,
+// then the diagonals at 0.7.
+static const Vec lbl_8046BC38[8] = {
+    {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, -1.0f, 0.0f},
+    {0.7f, 0.7f, 0.0f}, {-0.7f, 0.7f, 0.0f}, {0.7f, -0.7f, 0.0f}, {-0.7f, -0.7f, 0.0f},
+};
+
+// Facing -> emitter yaw (s16 angle in a word; fn_80279824).
+static const s32 lbl_8046BC98[4] = {0x4000, 0xC000, 0x0000, 0x8000};
+
 // lbl_8046BCA8 (0xA0 bytes) is one object: only its start is referenced (by fn_80275D9C,
 // the push per facing) and the linker kept the rest with it. The two later members are
 // typed by their contents only (bytes 0 2 4 6 / 0 8 10 12; float triples with z = 2);
@@ -677,6 +687,164 @@ void Player_804A6F38::fn_8027AA10() {
     field_0x11c0 = 0;
 }
 
+// Update of state 0x0B (the dash): pose 1 runs along the facing 0x3E8 (lbl_8046BC38, eight
+// directions) at the speed 0xBBC (0.7 of it in the air) with the step sound 0x40076; pad 0x100
+// hops (0x34C = 2, sound 0x2004A, gravity 0.1). The dust emitters 0x1374 (0x24E / 0x24F) or,
+// on tile 0x39, 0x1378 (0x250 / 0x251) restart when the facing changes; 0xBC4 is the 40x40 box
+// around the player and BgRewrite fn_802A20F0 runs at the player and at the eight probe points
+// pushed twice as far out. Running into a wall (fn_8025196C) bounces the player back (pose 2:
+// sound 0x20010, a view shake, 0x344 = 2.5 against the facing, z 2) or, under fn_8022AF5C's
+// alternative, hands the facing on to the group (fn_80230BF4). Pose 2 falls with 0x344 until
+// it lands.
+// FIXME: 97.26. Scheduling and registers only: the original stores the three step floats to
+// the stack before scaling (ours scales z first), and keeps `this` in r30 / the old facing in
+// r31 (ours swaps them).
+void Player_804A6F38::fn_8027A1E0() {
+    s32 dir = field_0x3dc;
+    fn_8027439C();
+    if (mPos.z <= 0.0f && (field_0x3fd == 1 || field_0x3fd == 2)) {
+        fn_8027EB04();
+    }
+    if (field_0x3fd == 1) {
+        f32 speed = field_0xbbc;
+        const Vec& dirStep = lbl_8046BC38[field_0x3e8];
+        JGeometry::TVec3f step(dirStep.x, dirStep.y, dirStep.z);
+        step.scale(speed);
+        if (mPos.z > 0.0f) {
+            step.scale(0.7f);
+        }
+        mPos.add(step);
+        if (mPos.z <= 0.0f) {
+            fn_8024F0E8(0x40076);
+            if (fn_80246D1C(0x100)) {
+                field_0x344.z = 2.0f;
+                fn_8024F0E8(0x2004a);
+            }
+        }
+        if (mPos.z > 0.0f || field_0x344.z > 0.0f) {
+            field_0x344.z -= 0.1f;
+            mPos.z += field_0x344.z;
+            if (mPos.z < 0.0f) {
+                field_0x344.z = 0.0f;
+                mPos.z = 0.0f;
+                field_0x3fb = 0;
+                field_0x3fa = 6;
+            }
+        }
+        if (fn_8022461C(&mPos, field_0x3b4) == 0x39) {
+            if (field_0x1378 != NULL && dir != field_0x3dc) {
+                field_0x1378->becomeInvalidEmitter();
+                field_0x1378 = NULL;
+            }
+            if (field_0x1378 == NULL) {
+                if (field_0x3dc == 0 || field_0x3dc == 1) {
+                    field_0x1378 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x250, 0, -1, &field_0x13a8, NULL, true, 1.0f);
+                } else {
+                    field_0x1378 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x251, 0, -1, &field_0x13a8, NULL, true, 1.0f);
+                }
+            } else {
+                setEmitterPos_8013CB44(field_0x1378, &mPos, 0, -1, true);
+            }
+            if (field_0x1374 != NULL) {
+                field_0x1374->becomeInvalidEmitter();
+                field_0x1374 = NULL;
+            }
+        } else {
+            if (field_0x1374 != NULL && dir != field_0x3dc) {
+                field_0x1374->becomeInvalidEmitter();
+                field_0x1374 = NULL;
+            }
+            if (field_0x1374 == NULL) {
+                if (field_0x3dc == 0 || field_0x3dc == 1) {
+                    field_0x1374 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x24e, 0, -1, &field_0x1398, NULL, true, 1.0f);
+                } else {
+                    field_0x1374 = spawnEmitter_8013CC50(field_0x3b4, &mPos, 0x24f, 0, -1, &field_0x1398, NULL, true, 1.0f);
+                }
+            } else {
+                setEmitterPos_8013CB44(field_0x1374, &mPos, 0, -1, true);
+            }
+            if (field_0x1378 != NULL) {
+                field_0x1378->becomeInvalidEmitter();
+                field_0x1378 = NULL;
+            }
+        }
+        field_0xbb9 = 1;
+        field_0xbc4.set(mPos.x - 20.0f, mPos.y - 20.0f, mPos.x + 20.0f, mPos.y + 20.0f);
+        gBgRewrite_8053AC98->fn_802A20F0(&field_0x30c, field_0x4, field_0x3b4, 0, 1);
+    }
+    fn_802685D4();
+    if (field_0x3fd == 1) {
+        for (s32 i = 0; i < 8; i++) {
+            JGeometry::TVec3f pos;
+            fn_8024B298(i, &pos);
+            pos.sub(mPos);
+            pos.scale(2.0f);
+            pos.add(mPos);
+            gBgRewrite_8053AC98->fn_802A20F0(&pos, field_0x4, field_0x3b4, 0, 1);
+        }
+        if (mPos.z <= 0.0f && fn_8025196C(field_0x3dc)) {
+            if (fn_8022AF5C()) {
+                field_0x3fd = 2;
+                field_0x3fa = 0;
+                field_0x3fb = 0;
+                fn_8024F0E8(0x20010);
+                if (0.0f != field_0x344.y) {
+                    getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 4.0f, 0.0f, false);
+                } else {
+                    getGameView_802D6A9C()->fn_802D79E8(field_0x3b4, 0.0f, 4.0f, false);
+                }
+                switch (field_0x3dc) {
+                case 0:
+                    field_0x344.set(-2.5f, 0.0f, 2.0f);
+                    break;
+                case 1:
+                    field_0x344.set(2.5f, 0.0f, 2.0f);
+                    break;
+                case 2:
+                    field_0x344.set(0.0f, -2.5f, 2.0f);
+                    break;
+                case 3:
+                    field_0x344.set(0.0f, 2.5f, 2.0f);
+                    break;
+                }
+            } else {
+                s32 facing = field_0x3dc;
+                for (s32 i = 0; i < 4; i++) {
+                    if (fn_80243194(i)) {
+                        switch (facing) {
+                        case 0:
+                            fn_80230BF4(i, 1);
+                            break;
+                        case 1:
+                            fn_80230BF4(i, 0);
+                            break;
+                        case 2:
+                            fn_80230BF4(i, 3);
+                            break;
+                        case 3:
+                            fn_80230BF4(i, 2);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (field_0x3fd == 2) {
+        field_0x344.z -= 0.25f;
+        if (field_0x344.z < -4.0f) {
+            field_0x344.z = -4.0f;
+        }
+        mPos.add(field_0x344);
+        if (mPos.z < 0.0f && field_0x344.z < 0.0f) {
+            field_0x344.set(0.0f, 0.0f, 0.0f);
+            mPos.z = 0.0f;
+        }
+    }
+    if (fn_8025F418()) {
+        fn_80230C6C(field_0xd70);
+    }
+}
+
 void Player_804A6F38::fn_8027A908() {
     field_0xbf4 = 8;
     field_0x458 = 0;
@@ -832,9 +1000,6 @@ static inline void landFromHit(Player_804A6F38* player) {
         player->fn_80251AEC(0);
     }
 }
-
-// Facing -> emitter yaw (s16 angle in a word).
-static const s32 lbl_8046BC98[4] = {0x4000, 0xC000, 0x0000, 0x8000};
 
 // Update of state 0x0F (knocked back by a hit): the push 0x350 with gravity 0.25 (down to -4),
 // poses 0 / 1 (0x488 > 0: hurt) until frame 10, 2, then 3 from 14; from frame 20 on the ground
