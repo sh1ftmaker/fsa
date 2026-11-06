@@ -123,7 +123,7 @@ void GamblingShop_804AAA70::vfunc_0x10() {
 }
 
 void GamblingShop_804AAA70::update() {
-    // FIXME: 98.62 %. The layer is read through getField_0x4() (before the
+    // FIXME: 98.63 %. The layer is read through getField_0x4() (before the
     // getPlayerLayer_8023DE58 calls, as the original). The player/layer and
     // chest-slot loops take their registers in a different order (regalloc),
     // and the jump table and one float literal are symbol and data-order
@@ -151,7 +151,7 @@ void GamblingShop_804AAA70::update() {
             JGeometry::TVec3f dir;
             f32 dist;
             // The layer is on the left: that compare order is what the original emits.
-            if (player >= 0 && getField_0x4() == getPlayerLayer_8023DE58(player)) {
+            if (player >= 0 && getPlayerLayer_8023DE58(player) == getField_0x4()) {
                 fn_801EE558(&dir, &dist, player + 1);
             } else {
                 fn_801EE558(&dir, &dist, 0);
