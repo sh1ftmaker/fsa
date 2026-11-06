@@ -1522,3 +1522,44 @@ Still open:
 - fn_80268BC4 (99.13): the end's `moved` TVec2f is stored to the stack before and after the
   subtraction in the original; `field_0x14 = moved`, `field_0x14.set(moved)`,
   `moved.set(...)` and a default-constructed `moved` all keep it in registers.
+
+## Structural push (tu_802684A4) (Opus 5.5, 2026-11-06)
+
+Owner goal: every Player function at least structurally matched. Unit count unchanged
+(20 / 25); no function moved class, none dropped.
+
+| function | before | after / class | what changed |
+|---|---|---|---|
+| fn_802685D4 | 92.27 missing/extra -17 | 94.69 missing/extra -12 | the field_0x420 decay snaps to 0 inside +-0.025 (a missing `else`); the rest is the three step TVec2fs' dead stack stores |
+| fn_80269574 | 96.27 missing/extra +40 | 96.90 missing/extra +33 | climbUp and askLeader as void inlines with `return`s, the byte tests written out, `pos.set(mPos)` |
+| fn_80268BC4 | 99.13 missing/extra -4 | unchanged | already structurally close (4 dead stores) |
+
+What the asm and experiments prove (toy files compiled with the unit's exact flags):
+- **fn_80269574's remaining jumps are gotos.** At blockMarked50's field_0x50 test, the
+  field_0x60 (n60) test, the counter's `field_0xbc = 3` exits / reset paths and the near-'WARP'
+  exit, the original branches from each copy of an unrolled 8-way test straight to code that
+  the completion path skips with a `b`. A `goto` reproduces that layout byte for byte. Every
+  goto-free form measured leaves a value: a post-loop index test (`n == 8`, `n < 8`, `n >= 8`),
+  a found flag, a bool or int returning inline (`allSet`, `full`, `anyClear`), `i == 7` inside
+  the loop. MWCC threads the branches late (the break edges already jump past the `cmpwi n, 8`)
+  but keeps every `li n` / `li 1`. Non-canonical loops (`for (;;) { if (i >= 8) return; ...}`,
+  `while (b[i]) if (++i >= 8) return;`, a compound `for` condition) are not unrolled, and a
+  canonical loop whose exit block contains a loop or a call is not unrolled either (the exit
+  block counts as loop body), so the work cannot move into the exit. These stay FIXMEs.
+- **An early exit to the END of a block is a void inline's `return`.** The climb section
+  (`viewLayerFlag && !closedBy78()`) and the follower's fn_8022BC38 request each reach the
+  original's layout as a small void inline: the two `field_0xb4 = field_0xb6 = 0` copies are two
+  `return`s, and the unrolled all-zero test `return`s from inside the loop.
+- **A bool inline inside `||` / `&&` materialises** (li 0 / li 1, clrlwi.): closedAt(i)
+  (`field_0x38[i] == 1 || field_0x28[i] == 1`) cost 24 instructions in climbUp; the original
+  tests the bytes directly. closedAt is gone from cls_804A71A8.h (no other user).
+- **A member-wise TVec3f copy** (lfs / stfs x, y, z) is `TVec3f pos; pos.set(mPos);` (libs
+  template `set(const TVec3<TY>&)`); `TVec3f pos(mPos)` copies with psq_l.
+- Ruled out for the TVec2 dead stores (constructed from mPos, then assigned, both stored to a
+  stack slot never read; fn_802685D4's steps, fn_80268BC4's `moved`, the near-'WARP' `d`):
+  `squared()` / `normalize()` / `scale()` members, `length()` (gives fmadds; the original is
+  unfused `square + square`), a pointer or non-inline normalize, an RVO-returning helper,
+  `operator=` from a temporary, `x -= ...`, declaring the vector at function scope. A local type
+  with a user-declared destructor reproduces the exact store pattern (fn_80268BC4 99.82
+  regalloc-only), but it adds EH state to fn_802685D4 (77 %) and extab actions where the
+  original has only 8-byte entries, so it is not the original's mechanism. Open.

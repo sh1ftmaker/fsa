@@ -322,6 +322,55 @@ static inline bool advanceCounter(cls_804A71A8* p) {
     return true;
 }
 
+// A ledge on a flagged layer: unless the owner is blocked below (side 2,
+// or a lower corner without its side), clear field_0xb4 / 0xb6; when no
+// direction is open in field_0x38 / 0x58 / 0x78 either, climb: field_0xb4,
+// 0xb6 and 0x9a set and the owner 4 up unless one of its states holds it.
+static inline void climbUp(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80240808() || p->field_0x4->fn_80240D50()) {
+        if (p->field_0x38[2] == 1 || p->field_0x28[2] == 1) {
+            p->field_0xb4 = 0;
+            p->field_0xb6 = 0;
+            return;
+        }
+    } else if (p->field_0x38[2] == 1 || p->field_0x28[2] == 1 ||
+               ((p->field_0x38[4] == 1 || p->field_0x28[4] == 1) && !(p->field_0x38[0] == 1 || p->field_0x28[0] == 1)) ||
+               ((p->field_0x38[5] == 1 || p->field_0x28[5] == 1) && !(p->field_0x38[1] == 1 || p->field_0x28[1] == 1)))
+    {
+        p->field_0xb4 = 0;
+        p->field_0xb6 = 0;
+        return;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x38[i] == 0 && p->field_0x58[i] == 0 && p->field_0x78[i] == 0) {
+            return;
+        }
+    }
+    if (p->field_0x4->fn_802486A0() == 4 || !p->field_0x4->fn_80240808() || p->field_0x4->fn_80270A8C()) {
+        p->field_0xb4 = 1;
+        p->field_0xb6 = 1;
+        if (!(p->field_0x4->fn_80240F28() && p->field_0x4->fn_802415CC() >= 2 &&
+              (p->field_0x4->field_0x3dc == 0 || p->field_0x4->field_0x3dc == 1)) &&
+            !p->field_0x4->fn_80240B34() && !p->field_0x4->fn_80240D64() && !p->field_0x4->fn_80240860() &&
+            !(p->field_0x4->fn_80270A8C() && p->field_0x4->field_0xd08 >= 0) && !p->field_0x4->fn_8024BBB0())
+        {
+            p->field_0x4->mPos.y += 4.0f;
+        }
+        p->field_0x9a = 1;
+    }
+}
+
+// A follower closed in on every side (field_0x68, 0x88 or 0x38) asks
+// fn_8022BC38 to move to its leader.
+static inline void askLeader(cls_804A71A8* p) {
+    for (s32 i = 0; i < 8; i++) {
+        if (p->field_0x68[i] == 0 && p->field_0x88[i] == 0 && p->field_0x38[i] == 0) {
+            return;
+        }
+    }
+    fn_8022BC38(p->field_0x4->fn_80240644(), p->field_0x4->field_0x3b4, &p->field_0x4->mPos);
+}
+
 // Where the probe point lies inside its 16-unit tile (as (s32) % 16, so
 // negative left of / below 0).
 static inline s32 cellX(const cls_804A71A8* p) {
@@ -1385,17 +1434,17 @@ void cls_804A71A8::fn_8026B81C(u16 tile) {
     }
 }
 
-// FIXME: 96.27. Every call, field, constant and branch target is in place;
-// ours is 40 instructions longer (2258 vs 2218). Where the original branches
-// straight out of an early-exit test, this source materialises a value:
-// the loop index (li n / cmpwi n, 8) after the break-out check loops
-// (field_0x50, field_0x38 / 0x58 / 0x78, field_0x60 and the snap's
-// field_0x68 / 0x88 / 0x38), and the bools advanceCounter returns and
-// `nearWarp` (li 1 / clrlwi.), where the original jumps from each counter
-// case to the WARP search and from the near-'WARP' case past the snap. The
-// snap's mPos x test (r4 kept from the field_0xb0 test), the type-4 'WARP'
-// turn test (field_0x4->field_0x4 loaded before fn_80248778), the 0xB7 store
-// (one shared stb in the original) and the register numbers differ too.
+// FIXME: 96.90. Ours is 33 instructions longer (2251 vs 2218). The original
+// jumps straight out of four unrolled 8-way tests to code that their
+// completion branches over (blockMarked50's field_0x50 test, the n60 test of
+// field_0x60, the field_0xbc = 3 exits to the 'WARP' search, the reset paths
+// past it and the near-'WARP' exit past alignment): only goto reproduces that
+// (docs/PLAYER.md "Structural push (tu_802684A4)"), so ours materialises the
+// loop index / bool (li n, cmpwi n, 8; li 1, clrlwi.). Also: the 0xB7 store
+// (one shared stb in the original), the type-4 'WARP' turn test
+// (field_0x4->field_0x4 loaded before fn_80248778), the near-'WARP' TVec2f's
+// two stack stores, &mPos kept in a saved register across fn_80240644, and
+// register numbers.
 // The state machine on field_0xbc (frames shut in), the 'WARP' actors,
 // then the pushes and the owner's respawn point field_0xd1c.
 void cls_804A71A8::fn_80269574() {
@@ -1470,7 +1519,8 @@ void cls_804A71A8::fn_80269574() {
                         return;
                     }
                 } else if ((type & 0xFF) == 8) {
-                    JGeometry::TVec3f pos(field_0x4->mPos);
+                    JGeometry::TVec3f pos;
+                    pos.set(field_0x4->mPos);
                     s32 layer = (type >> 24) & 7;
                     if (layer != 0) {
                         layer += 7;
@@ -1512,15 +1562,7 @@ void cls_804A71A8::fn_80269574() {
           fn_80234950(fn_8022F340(field_0x4->field_0x4))))
     {
         if (field_0x4->fn_80240808() && field_0x4->fn_802486A0() != 4) {
-            s32 n;
-            for (n = 0; n < 8; n++) {
-                if (field_0x68[n] == 0 && field_0x88[n] == 0 && field_0x38[n] == 0) {
-                    break;
-                }
-            }
-            if (n == 8) {
-                fn_8022BC38(field_0x4->fn_80240644(), field_0x4->field_0x3b4, &field_0x4->mPos);
-            }
+            askLeader(this);
         } else if (field_0xb0 <= 1) {
             if ((field_0x88[0] == 1 || field_0x68[0] == 1) && field_0x88[1] == 0 && field_0x68[1] == 0) {
                 s32 x = field_0x4->mPos.x;
@@ -1556,37 +1598,7 @@ void cls_804A71A8::fn_80269574() {
     request4A(this);
     leaveBy88(this);
     if (viewLayerFlag(field_0x4->field_0x3b4) && !closedBy78()) {
-        bool below;
-        if (field_0x4->fn_80240808() || field_0x4->fn_80240D50()) {
-            below = closedAt(2);
-        } else {
-            below = closedAt(2) || (closedAt(4) && !closedAt(0)) || (closedAt(5) && !closedAt(1));
-        }
-        if (below) {
-            field_0xb4 = 0;
-            field_0xb6 = 0;
-        } else {
-            s32 n;
-            for (n = 0; n < 8; n++) {
-                if (field_0x38[n] == 0 && field_0x58[n] == 0 && field_0x78[n] == 0) {
-                    break;
-                }
-            }
-            if (n == 8 &&
-                (field_0x4->fn_802486A0() == 4 || !field_0x4->fn_80240808() || field_0x4->fn_80270A8C()))
-            {
-                field_0xb4 = 1;
-                field_0xb6 = 1;
-                if (!(field_0x4->fn_80240F28() && field_0x4->fn_802415CC() >= 2 &&
-                      (field_0x4->field_0x3dc == 0 || field_0x4->field_0x3dc == 1)) &&
-                    !field_0x4->fn_80240B34() && !field_0x4->fn_80240D64() && !field_0x4->fn_80240860() &&
-                    !(field_0x4->fn_80270A8C() && field_0x4->field_0xd08 >= 0) && !field_0x4->fn_8024BBB0())
-                {
-                    field_0x4->mPos.y += 4.0f;
-                }
-                field_0x9a = 1;
-            }
-        }
+        climbUp(this);
     }
     if (field_0xba == 1) {
         field_0x4->fn_80290070(field_0x4->field_0x3b4, &field_0x4->mPos, &field_0x4->field_0xcbc, 0xD);
@@ -1793,16 +1805,17 @@ void Player_804A6F38::fn_80268B3C() {
     }
 }
 
-// FIXME: 92.27%. Stack slots differ: the second probe's corner (`other`) is at
-// 0x10 where the original has 0x28, and the step temporaries lack the dead
-// stores of mPos the original keeps (17 instructions fewer). The tile-decay
-// tail is also laid out with different branches.
+// FIXME: 94.69%. 12 instructions fewer: the original keeps the three step
+// TVec2fs in stack slots (0x18, 0x10, 0x8) and stores each one's mPos x / y
+// and then its difference there (never read back); ours keeps them in
+// registers, so the probe slots move up by 0x18. The second probe loads
+// field_0x3b4 before its corner's x / y in ours.
 // Moves the player by its step, mPos - field_0x2c. A step of at least 5
 // keeps its direction and is set to 5 long (the first two cases, both on
 // passable tiles); a step of 6.5 to 20 keeps its direction at 6.5 unless the
 // player is in the state fn_80240D64 tests (the third case). Then the
 // field_0x420 offset is added: it is zeroed while mPos.z > 0 and otherwise
-// decays under the tile code.
+// decays under the tile code (to 0 once within 0.025).
 void Player_804A6F38::fn_802685D4() {
     field_0x3c1 = false;
     field_0x3c2 = false;
@@ -1876,6 +1889,8 @@ void Player_804A6F38::fn_802685D4() {
                 field_0x420.y -= 0.025f;
             } else if (field_0x420.y < -0.025f) {
                 field_0x420.y += 0.025f;
+            } else {
+                field_0x420.y = 0.0f;
             }
         }
         if (tile == 0xA7) {
@@ -1893,6 +1908,8 @@ void Player_804A6F38::fn_802685D4() {
                 field_0x420.x -= 0.025f;
             } else if (field_0x420.x < -0.025f) {
                 field_0x420.x += 0.025f;
+            } else {
+                field_0x420.x = 0.0f;
             }
         }
     }

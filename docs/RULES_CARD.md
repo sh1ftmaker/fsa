@@ -257,6 +257,15 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   search parameter orders (scratchpad research_byval.md). Layer before
   serial (fn_8022FE80's order) is a reviewed exception: act_dummy_conversation,
   act_merchant.
+- An unrolled constant-bound test whose 8 copies branch straight to one block that the
+  completion path jumps over (`beq X` x8, then `b` past X): a goto in the original; every
+  goto-free form leaves `li n` / `cmpwi n, 8` or a bool (index test, found flag, bool or int
+  inline; non-canonical loops don't unroll; work in the exit block keeps the loop rolled).
+  FIXME it and move on. If the copies branch to the END of a block instead, it is a void
+  inline's `return` from inside the loop (tu_802684A4 climbUp / askLeader; docs/PLAYER.md
+  "Structural push (tu_802684A4)").
+- A bool inline (`a == 1 || b == 1`) inside an `||` / `&&` condition materialises (li 0 / 1,
+  clrlwi.); if the original branches on the bytes directly, write the tests out.
 - Two stack structs in each other's slots: MWCC gives address-taken
   aggregate locals slots in REVERSE declaration order (the later one gets
   the lower sp offset; scope doesn't matter). Declare the one the original
