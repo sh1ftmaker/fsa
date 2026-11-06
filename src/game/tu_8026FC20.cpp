@@ -832,6 +832,70 @@ void Player_804A6F38::fn_8027966C() {
 
 void Player_804A6F38::fn_802791AC() {}
 
+// Update of state 0x10 (thrown back): the push 0x350 with gravity 0.25 (down to -4) inside
+// the view box less 16; leaving it, or blocked (cls_804A71A8 0x48), from frame 20 the player
+// bounces back (0x344 = the push flattened, normalised, times -2, z 4; 0x3FC = 1) or goes down
+// (state 0x33) with no life left. The bounce lands in state 0 with 0x344 handed on to 0x368.
+// FIXME: 99.98. Code identical; the -2.0f literal is reloc-name until the earlier .sdata2
+// users (fn_802765C0, fn_8027776C, fn_80277F98: 24, -24, -12, ...) are written.
+void Player_804A6F38::fn_802791B0() {
+    if (field_0x3fc == 0) {
+        mPos.add(field_0x350);
+        if (mPos.z < 0.0f) {
+            mPos.z = 0.0f;
+        }
+        field_0x350.z -= 0.25f;
+        if (field_0x350.z < -4.0f) {
+            field_0x350.z = -4.0f;
+        }
+        field_0x11e9 = 1;
+        JGeometry::TBox2f box;
+        box = *layerBox(field_0x3b4);
+        growBox(box, -16.0f);
+        if (field_0xbf0->anyFlag48() || !contains(box, mPos) ||
+            (fn_80240808() && fn_802486A0() != 4 && !fn_80234B24(fn_80240644()))) {
+            if (field_0x3fa >= 20) {
+                if (fn_8024189C() <= 0) {
+                    fn_80251AEC(0x33);
+                } else {
+                    field_0x344.x = field_0x350.x;
+                    field_0x344.y = field_0x350.y;
+                    field_0x344.z = field_0x350.z;
+                    field_0x344.z = 0.0f;
+                    field_0x344.normalize();
+                    field_0x344.scale(-2.0f);
+                    field_0x344.z = 4.0f;
+                    field_0x3fc++;
+                }
+            }
+        }
+    } else {
+        mPos.add(field_0x344);
+        if (mPos.z < 0.0f && field_0x344.z < 0.0f) {
+            mPos.z = 0.0f;
+            passOnPush(this);
+            fn_80251AEC(0);
+        } else if (field_0x344.z >= -4.0f) {
+            field_0x344.z -= 0.25f;
+            if (field_0x344.z < -4.0f) {
+                field_0x344.z = -4.0f;
+            }
+        }
+    }
+    if (field_0x3fa < 20) {
+        field_0x3fa++;
+    }
+    if (field_0x3fa < 10) {
+        field_0x3fd = 0;
+    } else if (field_0x3fa < 14) {
+        field_0x3fd = 1;
+    } else {
+        field_0x3fd = 2;
+    }
+    fn_80268B3C();
+}
+
+
 void Player_804A6F38::fn_802790C0() {
     if (fn_8025F448() && !fn_8025F418()) {
         fn_8025FEDC();
