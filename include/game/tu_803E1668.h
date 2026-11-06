@@ -44,11 +44,11 @@ public:
     void fn_803E462C();
     void fn_803E6A28();
     void fn_803ED5B4();
-    // Not written yet: fn_803E3320 (called by the two menu update functions
-    // when the current choice is below 3).
     void fn_803E3320();
+    void drawFade();
+    void enterState15();
 
-    // Enter functions not written yet, lbl_804B0754[state].
+    // Enter functions, lbl_804B0754[state].
     void fn_803E2A20(); // 12
     void fn_803E3564(); // 9
     void fn_803E3CB0(); // 5
@@ -130,7 +130,7 @@ public:
     /* 0x15C */ f32 field_0x15c; // field_0xc 'Pmadbb07' x
     /* 0x160 */ f32 field_0x160; // field_0xc 'Pmadbb07' y
     /* 0x164 */ f32 field_0x164;
-    /* 0x168 */ u8 field_0x168[0x16C - 0x168];
+    /* 0x168 */ f32 field_0x168;
     /* 0x16C */ f32 field_0x16c[3]; // field_0xc 'Pstab04' / 'Phanb04' / 'Prub04' x
     /* 0x178 */ f32 field_0x178[3]; // the same panes' y
     /* 0x184 */ f32 field_0x184[3];
