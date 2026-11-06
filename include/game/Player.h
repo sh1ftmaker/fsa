@@ -250,6 +250,9 @@ public:
     // the visible box; writes the direction (-1 / 1 in x or y, else 0, 0) to *out.
     // fn_80231A50 / fn_80231DE4 call it.
     bool fn_802527B0(JGeometry::TVec2<s32>* out);
+    // tu_8023FBF0. Starts walking off the screen (state 0x1B) in the direction fn_802527B0
+    // found; fn_80231DE4 calls it.
+    void fn_802520C0(const JGeometry::TVec2<s32>* dir);
     bool fn_80251AEC(s32 arg); // tu_8023FBF0 (0x80251AEC); called by fn_8026E5F8
     bool fn_8026E5F8(const JGeometry::TVec2f* pos); // tu_802684A4 (0x8026E5F8)
     void fn_80252F14(const JGeometry::TVec3f* offset); // via fn_8023DFF4

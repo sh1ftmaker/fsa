@@ -1223,6 +1223,57 @@ void Player_804A6F38::fn_8025250C() {
     }
 }
 
+// Starts walking off the screen (state 0x1B) in direction *dir (from
+// fn_802527B0), unless fn_8025F448. A player taking part that does not act
+// on its own (fn_80240670) first moves onto the acting player (position,
+// layer, field_0x2c); then the group goes to mode 5 and the trail is reset.
+// A player not taking part moves onto its leader. When the request is
+// granted (fn_80251AEC), field_0x398 / field_0x3A4 take the position on the
+// ground and field_0x3A4 the target 56 inside the opposite edge of the
+// visible box. The player bit is a materialised bool in the original
+// (neg / or / srwi before the branch), hence the local.
+// FIXME: 97.09 %. Scheduling and registers only: the inlined group loop's
+// leader / own index (two registers in the original, one here), and dir->x
+// is loaded before the field_0x398 / 0x3A4 stores here, after them in the
+// original; plus the 56.0f literal's name (lbl_80540088 sits after -1.0f,
+// whose first user fn_8024F63C is unwritten).
+void Player_804A6F38::fn_802520C0(const JGeometry::TVec2<s32>* dir) {
+    if (fn_8025F448()) {
+        return;
+    }
+    bool takesPart = isPlayerBitSet(gGameRoot_8053AAF8, field_0x4);
+    if (takesPart) {
+        if (fn_80240670()) {
+            mPos.set(*getPlayerPos_8023E724(fn_8022EA0C(field_0x4)));
+            field_0x3b4 = getPlayerLayer_8023DE58(fn_8022EA0C(field_0x4));
+            field_0x2c.set(mPos);
+        }
+        field_0x1216 = false;
+        fn_80248004(5, false);
+        field_0x1216 = false;
+        fn_80248604();
+    } else {
+        mPos.set(*getPlayerPos_8023E724(field_0xd60));
+        field_0x3b4 = getPlayerLayer_8023DE58(field_0xd60);
+        field_0x2c.set(mPos);
+    }
+    if (fn_80251AEC(0x1b)) {
+        field_0x398.set(mPos);
+        field_0x398.z = 0.0f;
+        field_0x3a4.set(mPos);
+        field_0x3a4.z = 0.0f;
+        if (dir->x == 1 && dir->y == 0) {
+            field_0x3a4.x = getGameView_802D6A9C()->mVisibleBox.i.x + 56.0f;
+        } else if (dir->x == -1 && dir->y == 0) {
+            field_0x3a4.x = getGameView_802D6A9C()->mVisibleBox.f.x - 56.0f;
+        } else if (dir->x == 0 && dir->y == 1) {
+            field_0x3a4.y = getGameView_802D6A9C()->mVisibleBox.i.y + 56.0f;
+        } else if (dir->x == 0 && dir->y == -1) {
+            field_0x3a4.y = getGameView_802D6A9C()->mVisibleBox.f.y - 56.0f;
+        }
+    }
+}
+
 // The end of the frame's movement. The trail (field_0x38 / field_0x284)
 // takes the position when it moved 1 or more from the newest entry or an
 // entry is airborne (z above 0; on a layer without viewLayerFlag, two
