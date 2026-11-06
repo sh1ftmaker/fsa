@@ -691,7 +691,7 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
 // slots differ; the literals are reloc-name.
 // One player's panel (fn_802FF0EC): the ortho box rect and viewport / scissor
 // rect2; with flag the record's tile layer mValid - 1 (on its palette set's
-// first colour, field_0x114) and, when mOverlay is set and the pause screen
+// first colour, field_0x114) and, when the overlay flag (mEntries[3].mScrollBit) is set and the pause screen
 // (lbl_8053AEC8's alpha) is not fully up, layer mValid + 7 too, tinted by
 // field_0x130[player] (1 half grey, 2 black at 0xC0) and with the player's
 // line shifts (cls_804AA8D8::fn_8030B1E8); without flag a black quad of
@@ -705,8 +705,8 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
     gGameRoot2_8053AB10->fn_8013B414(&box, false);
     GXSetViewport(rect2->field_0x0, rect2->field_0x4, rect2->field_0x8, rect2->field_0xc, 0.0f, 1.0f);
     GXSetScissor(rect2->field_0x0, rect2->field_0x4, rect2->field_0x8, rect2->field_0xc);
-    s32 scrollX = record->mScrollXHigh << 5 | record->mScrollXBit4 << 4 | record->mScrollXLow;
-    s32 scrollY = record->mScrollYHigh << 5 | record->mScrollYBit4 << 4 | record->mScrollYLow;
+    s32 scrollX = record->mEntries[0].mScroll << 5 | record->mEntries[0].mScrollBit << 4 | record->mEntries[1].mScroll;
+    s32 scrollY = record->mEntries[2].mScroll << 5 | record->mEntries[2].mScrollBit << 4 | record->mEntries[3].mScroll;
     s32* offsets = NULL;
     cls_804AA8D8* shifts = fn_8022BCD4(player);
     if (flag) {
@@ -718,7 +718,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
         JUtility::TColor color((c & 0x7C00) >> 7 | (c & 0x7C00) >> 12, (c & 0x3E0) >> 2 | (c & 0x3E0) >> 7,
                                (c & 0x1F) << 3 | (c & 0x1F) >> 2, 0xFF);
         fn_8013B004(&fill, &color);
-        if (record->mOverlay) {
+        if (record->mEntries[3].mScrollBit) {
             u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
             if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
                 (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {
@@ -764,7 +764,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
     fn_8030275C(record, player, flag, field_0x134[player] != 0);
     if (flag) {
         gGameRoot2_8053AB10->fn_8013B3F0();
-        if (record->mOverlay) {
+        if (record->mEntries[3].mScrollBit) {
             u8 paused = gGameRoot_8053AAF8->field_0x4c == 11;
             if (!(paused || gGameRoot_8053AAF8->field_0x88 != 0) ||
                 (u8)(lbl_8053AEC8 != NULL ? lbl_8053AEC8->field_0x5c : 0) < 0xFF) {

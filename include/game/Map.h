@@ -59,6 +59,17 @@ public:
     /* 0x04 */ u8 field_0x4[0xB0 - 0x4];
 }; // Size: 0xB0
 
+// One 4-byte entry of cls_804AA858Sub11C (GBA OAM-like: y, 9-bit x).
+struct cls_804AA858Sub11CEntry {
+    /* 0x0 */ u8 field_0x0;
+    /* 0x1 */ u8 mY;
+    /* 0x2 */ u8 mXLow;
+    /* 0x3 */ u8 mScroll : 4;
+    u8 mScrollBit : 1;
+    u8 field_0x3_1 : 2;
+    u8 mXHigh : 1;
+}; // Size: 0x4
+
 // TileMap_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
 // fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
 // reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
@@ -80,24 +91,12 @@ struct cls_804AA858Sub11C {
     /* 0x06 */ u32 field_0x6 : 8;  // four 2-bit values
     /* 0x07 */ u32 field_0x7_4 : 4; // four 1-bit values
     u32 field_0x7_0 : 4;           // four 1-bit values
-    // The low bytes of the next four words hold the panel's 9-bit scroll
-    // (fn_802FB69C): x = mScrollXHigh << 5 | mScrollXBit4 << 4 | mScrollXLow,
-    // y likewise.
-    /* 0x08 */ u32 field_0x8 : 24;
-    /* 0x0B */ u32 mScrollXHigh : 4;
-    u32 mScrollXBit4 : 1;
-    u32 field_0xb_0 : 3;
-    /* 0x0C */ u32 field_0xc : 24;
-    /* 0x0F */ u32 mScrollXLow : 4;
-    u32 field_0xf_0 : 4;
-    /* 0x10 */ u32 field_0x10 : 24;
-    /* 0x13 */ u32 mScrollYHigh : 4;
-    u32 mScrollYBit4 : 1;
-    u32 field_0x13_0 : 3;
-    /* 0x14 */ u32 field_0x14 : 24;
-    /* 0x17 */ u32 mScrollYLow : 4;
-    u32 mOverlay : 1;              // fn_802FB69C draws the second layer (mValid + 7) and the line offsets
-    u32 field_0x17_0 : 3;
+    // Four player marks (fn_802FCE74 places a 48 x 48 view around mEntries[
+    // lbl_80506DD8[player]]: x = mXLow | mXHigh << 8, y = mY); the high bits
+    // of their last bytes hold the panel's 9-bit scroll (fn_802FB69C): x =
+    // mEntries[0].mScroll << 5 | mEntries[0].mScrollBit << 4 | mEntries[1].mScroll,
+    // y likewise from entries 2 and 3; mEntries[3].mScrollBit is the overlay flag.
+    /* 0x08 */ cls_804AA858Sub11CEntry mEntries[4];
     /* 0x18 */ u32 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
 
