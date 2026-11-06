@@ -140,6 +140,47 @@ void LiftableItem_804A01D0::vfunc_0x24() {
     }
 }
 
+void LiftableItem_804A01D0::fn_801597EC() {
+    s32 item = field_0x234;
+    if (item == 0x10 || (u32)(item - 0x11) <= 1 || (u32)(item - 0x16) <= 2 || item == 0x19) {
+        getActorManager_801F856C()->spawnActor_801F9484('KEY0', field_0x4, &mPos, item + 0xF0 + (field_0x250 << 12), -1, -1);
+    } else if (item == 0x13) {
+        fn_80236DB0(field_0x274);
+    } else if (item == 0x15) {
+        fn_80236C88(field_0x274);
+    } else if (item == 0x20) {
+        getActorManager_801F856C()->spawnActor_801F9484('CRTL', field_0x4, &mPos, (field_0x250 << 16) | 1, -1, -1);
+    } else if (item == 0x21) {
+        getActorManager_801F856C()->spawnActor_801F9484('NIWA', field_0x4, &mPos, (field_0x250 << 8) | 5, -1, -1);
+    } else if (item == 0x22) {
+        getActorManager_801F856C()->spawnActor_801F9484('BMTY', field_0x4, &mPos, (field_0x250 << 16) | 5, -1, -1);
+    } else if (item == 0x23) {
+        getActorManager_801F856C()->spawnActor_801F9484('NNJN', field_0x4, &mPos, 0, -1, -1);
+    } else if (item == 0x24) {
+        getActorManager_801F856C()->spawnActor_801F9484('NIWA', field_0x4, &mPos, (field_0x250 << 8) | 0x1005, -1, -1);
+    } else if (item == 0x25) {
+        getActorManager_801F856C()->spawnActor_801F9484('CRTL', field_0x4, &mPos, (field_0x250 << 16) | 3, -1, -1);
+    } else if (item >= 0x30) {
+        if (item == 0x4a) {
+            fn_80236ED8(field_0x274, 2);
+        } else {
+            s32 r29 = 1;
+            s32 r28 = item - 0x2f;
+            if (item >= 0x40) {
+                r28 = item - 0x3f;
+                r29 = 2;
+            }
+            if (field_0x264 == 0) {
+                if (field_0x254 == 0 && fn_802373EC(field_0x250) != 0 && gGameRoot_8053AAF8->field_0x7f == 1 && field_0x258 == 0) {
+                    field_0x294 = fn_802373EC(field_0x274);
+                    field_0x298 = fn_8023725C(field_0x274);
+                }
+                fn_802372F8(field_0x250, r28, r29);
+            }
+        }
+    }
+}
+
 void LiftableItem_804A01D0::fn_801597C0() {
     vfunc_0x24();
 }
