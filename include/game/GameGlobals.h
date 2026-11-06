@@ -599,7 +599,7 @@ s32 fn_801CD398(s32 a, s32 b); // [0, 4) avoiding a (and b)
 // 0x18); the callers pass the 4CC 'TIMG' and a .bti name.
 void* fn_804032E8(u32 type, const char* name);
 
-// game/act_block.cpp (not written yet); called from game/tu_80376FA0.cpp.
+// game/act_block.cpp; called from game/tu_80376FA0.cpp.
 // Returns 1 or 0 (li 1 / li 0); its body reads *pos and writes it back with
 // psq on the 1 path. The layer goes to fn_802D7544 on GameView.
 extern "C" {

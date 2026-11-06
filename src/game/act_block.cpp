@@ -48,7 +48,8 @@ static f32 lbl_804A79E0[4][3] = {
     {0.0f, -12.0f, 0.0f},
 };
 
-// FIXME: 97.48%. different + reloc-name: exact same length (353 instructions), minor branch order / register pairing differences
+// FIXME: 97.48%. Same length; the int-to-float conversion of the first position is scheduled differently (stw/lis/stfd order)
+// and one table load is lfsx instead of lfs (class: different + reloc-name).
 void Block_804A7A10::init() {
     field_0x244 = 0;
     s32 type = field_0x90 & 3;
@@ -145,7 +146,9 @@ bool Block_804A7A10::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return ActorBase_804A5770::vfunc_0x4C(layer, pos);
 }
 
-// FIXME: 95.46%. missing/extra + reloc-name: ours has 4 more instrs (812 vs 808); stack offset and scheduling
+// FIXME: 95.46%. missing/extra + reloc-name: ours has 4 more instructions (812 vs 808). The target compares the (field_0x90 & 3)
+// based indices with signed cmpwi and converts them with xoris (signed), ours uses cmplwi / unsigned; the (u16) tile result
+// is extended in ours (clrlwi) where the target moves it; some stack temporaries sit at other offsets.
 void Block_804A7A10::update() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
