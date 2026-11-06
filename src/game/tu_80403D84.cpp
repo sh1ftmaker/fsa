@@ -23,6 +23,155 @@ static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
 static const u8 lbl_80543888[8] = {1, 3, 3, 2, 3, 3, 2, 3};
 static const s16 lbl_80543890[4] = {0, 1, 2, 1};
 
+// .rodata 0x8048C1F8-0x8048CC1C in address order: map.blo pane-tag tables (u64 J2D tags),
+// the screen's s32 / s16 / u8 index tables and the rupee-digit texture names (lbl_804B1260, .data).
+static const s32 lbl_8048C1F8[6][8] = {
+    {288, 289, 290, 291, 292, 293, 294, 295},
+    {580, 581, 582, 583, 584, 585, 586, 587},
+    {0, 4, 8, 12, 16, 20, 24, 28},
+    {1, 5, 9, 14, 17, 21, 25, 29},
+    {2, 6, 10, 13, 18, 22, 26, 30},
+    {3, 7, 11, 15, 19, 23, 27, 31},
+};
+static const u64 lbl_8048C2B8[8] = {
+    'Pwarea01', 'Pwarea02', 'Pwarea03', 'Pwarea04', 'Pwarea05', 'Pwarea06', 'Pwarea07', 'Pwarea08',
+};
+static const u64 lbl_8048C2F8[64] = {
+    'Ppoint01', 'Ppoint02', 'Ppoint03', 'Ppoint04', 'Ppoint05', 'Ppoint06', 'Ppoint07', 'Ppoint08',
+    'Ppoint09', 'Ppoint10', 'Ppoint11', 'Ppoint12', 'Ppoint13', 'Ppoint14', 'Ppoint15', 'Ppoint16',
+    'Ppoint17', 'Ppoint18', 'Ppoint19', 'Ppoint20', 'Ppoint21', 'Ppoint22', 'Ppoint23', 'Ppoint24',
+    'Ppoint25', 'Ppoint26', 'Ppoint27', 'Ppoint28', 'Ppoint29', 'Ppoint30', 'Ppoint31', 'Ppoint32',
+    'Ppoint33', 'Ppoint34', 'Ppoint35', 'Ppoint36', 'Ppoint37', 'Ppoint38', 'Ppoint39', 'Ppoint40',
+    'Ppoint41', 'Ppoint42', 'Ppoint43', 'Ppoint44', 'Ppoint45', 'Ppoint46', 'Ppoint47', 'Ppoint48',
+    'Ppoint49', 'Ppoint50', 'Ppoint51', 'Ppoint52', 'Ppoint53', 'Ppoint54', 'Ppoint55', 'Ppoint56',
+    'Ppoint57', 'Ppoint58', 'Ppoint59', 'Ppoint60', 'Ppoint61', 'Ppoint62', 'Ppoint63', 'Ppoint64',
+};
+static const u64 lbl_8048C4F8[27] = {
+    'Ndata11', 'Ndata12', 'Ndata13', 'Ndata14', 'Ndata15', 'Ndata16', 'Ndata17', 'Ndata18',
+    'Ptink01', 'Ptink02', 'Ptink03', 'Ptink04', 'Ptink05', 'Ptink06', 'Ptink07', 'Ptink08',
+    'Ttlv11', 'Ttlv12', 'Ptlvb11', 'Ptlvbk11', 'Ptlvb12', 'Ptlvbk12', 'Ptlvb13', 'Ptlvb14',
+    'Ptlvb15', 'Ptlvbk13', 'Ptlvbk14',
+};
+static const u64 lbl_8048C5D0[17] = {
+    'Penback', 'Psky', 'Pclo04', 'Pclo03', 'Pclo02', 'Pmapca', 'Pmaptou', 'Pclo01',
+    'Penback1', 'Plicu01', 'Plicu02', 'Plicu07', 'Plicu08', 'Plicu03', 'Plicu04', 'Plicu05',
+    'Plicu06',
+};
+static const u64 lbl_8048C658[63] = {
+    'Plv1b02', 'Plv1b01', 'Tlv01', 'Plv2b02', 'Plv2b01', 'Tlv02', 'Plv3b02', 'Plv3b01',
+    'Tlv03', 'Plv4b02', 'Plv4b01', 'Tlv04', 'Plv5b02', 'Plv5b01', 'Tlv05', 'Plv6b02',
+    'Plv6b01', 'Tlv06', 'Plv7b02', 'Plv7b01', 'Tlv07', 'Plv8b02', 'Plv8b01', 'Tlv08',
+    'Pbsk01', 'Pdot03', 'Pdot02', 'Pdot01', 'Pbsbb05', 'Pbsbb04', 'Pbsbb03', 'Pbsbb02',
+    'Pbsbb01', 'Pbsb05', 'Pbsb04', 'Pbsb03', 'Pbsb02', 'Pbsb01', 'Pbs01', 'Ppl01',
+    'Ppl02', 'Ppl03', 'Ppl04', 'Ppl05', 'Ppl06', 'Ppl07', 'Ppl08', 'Ppl09',
+    'Ppl10', 'Ppl11', 'Ppl12', 'Ppl13', 'Ppl14', 'Ppl15', 'Ppl16', 'Ppl17',
+    'Ppl18', 'Ppl19', 'Ppl20', 'Ppl21', 'Ppl22', 'Ppl23', 'Ppl24',
+};
+static const f32 lbl_8048C850[7] = {
+    1034.0f, 1277.0f, 1277.0f, 1034.0f, 1216.0f, 1277.0f, 1034.0f,
+};
+static const s16 lbl_8048C86C[8] = {
+    -138, -346, 22, -103, 303, 365, 56, 0,
+};
+static const s16 lbl_8048C87C[8] = {
+    29, -266, 235, -137, 10, -268, -130, 0,
+};
+static const s32 lbl_8048C88C[8][3] = {
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 1, 3},
+    {0, 2, 3},
+};
+static const s32 lbl_8048C8EC[8] = {
+    2, 6, 10, 14, 18, 22, 26, 29,
+};
+static const u8 lbl_8048C90C[8][3] = {
+    {3, 3, 3},
+    {0, 1, 0},
+    {1, 1, 1},
+    {0, 0, 3},
+    {1, 1, 2},
+    {0, 1, 0},
+    {0, 0, 0},
+    {1, 1, 0},
+};
+static const u8 lbl_8048C924[8][3] = {
+    {1, 1, 1},
+    {2, 3, 2},
+    {3, 3, 3},
+    {2, 2, 1},
+    {3, 3, 0},
+    {2, 3, 2},
+    {2, 2, 2},
+    {3, 3, 2},
+};
+static const u8 lbl_8048C93C[8][2] = {
+    {3, 3},
+    {0, 0},
+    {1, 1},
+    {0, 3},
+    {1, 2},
+    {0, 1},
+    {0, 0},
+    {1, 0},
+};
+static const u8 lbl_8048C94C[8][2] = {
+    {1, 1},
+    {2, 2},
+    {3, 3},
+    {2, 1},
+    {3, 0},
+    {2, 3},
+    {2, 2},
+    {3, 2},
+};
+static const s16 lbl_8048C95C[32][2] = {
+    {482, 184}, {371, 243}, {296, 272}, {164, 335}, {235, 332}, {281, 265}, {388, 268}, {373, 161},
+    {155, 314}, {260, 243}, {381, 160}, {435, 156}, {318, 348}, {352, 273}, {325, 182}, {200, 175},
+    {179, 207}, {267, 146}, {365, 207}, {295, 316}, {178, 315}, {206, 239}, {312, 284}, {347, 210},
+    {308, 346}, {300, 257}, {250, 197}, {224, 152}, {179, 302}, {261, 252}, {372, 310}, {412, 229},
+};
+static const s16 lbl_8048C9DC[8][2] = {
+    {161, 238}, {354, 90}, {435, 90}, {196, 105}, {295, 250}, {352, 125}, {224, 92}, {417, 129},
+};
+static const char* lbl_804B1260[10] = {
+    "kk_rupyNum_00.bti",
+    "kk_rupyNum_01.bti",
+    "kk_rupyNum_02.bti",
+    "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti",
+    "kk_rupyNum_05.bti",
+    "kk_rupyNum_06.bti",
+    "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti",
+    "kk_rupyNum_09.bti",
+};
+static const u64 lbl_8048CAC8[18] = {
+    'P34', 'P33', 'P32', 'P31', 'P73', 'P53', 'P52', 'P51',
+    'P43', 'P23', 'P62', 'P72', 'P71', 'P42', 'P41', 'P61',
+    'P22', 'P21',
+};
+static const s32 lbl_8048CB58[4] = {
+    0, 1, 2, 1,
+};
+static const s32 lbl_8048CB68[6] = {
+    470, 488, 464, 494, 482, 476,
+};
+static const u8 lbl_8048CB80[6][3] = {
+    {45, 120, 255}, {200, 160, 40}, {75, 255, 45}, {30, 160, 190}, {255, 65, 55}, {220, 30, 220},
+};
+static const s32 lbl_8048CB94[30] = {
+    0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3,
+    3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
+};
+static const s32 lbl_8048CC0C[4] = {
+    60, 62, 61, 63,
+};
+
 bool fn_804149C0() {
     return lbl_8050EC80.getCurrentFile().field_0x67 & 1;
 }
