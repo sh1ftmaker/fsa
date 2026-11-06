@@ -645,7 +645,7 @@ void MapScreen_804B1288::hideStagePanes(s32 stage) {
     }
 }
 
-// FIXME: 95.74 %%. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
+// FIXME: 95.74 %. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
 // the field_0xd4 loop (loop pointer in r5) and a second li r0, 0 for field_0x228; ours uses a new
 // li r0, 0 inside the loop (one instruction fewer); all else equal.
 void MapScreen_804B1288::fn_804049DC() {
@@ -704,7 +704,7 @@ void MapScreen_804B1288::fn_804049DC() {
     }
 }
 
-// FIXME: 95.74 %%. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
+// FIXME: 95.74 %. The original materialises one 0 (r4) for the stores to field_0xc8-0xd0 and
 // the field_0xd4 loop (loop pointer in r5) and a second li r0, 0 for field_0x228; ours uses a new
 // li r0, 0 inside the loop (one instruction fewer); all else equal.
 void MapScreen_804B1288::fn_80404648() {
