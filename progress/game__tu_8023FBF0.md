@@ -69,3 +69,17 @@ Rebased on matching 67213dd2. Unit 163 -> 172/254 (+9 honest); total 8663 / 1155
 Below 100 % (FIXME): fn_8024C378 98.08 (regalloc), fn_80240DCC 86.20 (scheduling+regalloc, through four layer-query inlines), fn_80248A24 99.52 / fn_80248B9C 99.39 (regalloc + literal names), fn_80241964 97.29 (scheduling+regalloc), fn_8024C828 99.42, fn_80242704 99.51, fn_8024CAC8 99.53 (regalloc), fn_8024BBB8 95.97 (missing/extra: field_0x3b4 loaded before getPlayerLayer into r30 in the original).
 Not written: fn_802487FC / fn_80248970 (li/li zeroing; tried 7 groupSize shapes: declaring `i` before `count` improves fn_802486A0 / fn_80240670 / fn_8023FC5C but drops ~25 gated functions, reverted), fn_80241B44 (TBox2f*, caller in tu_8022AD64), fn_8024FEFC (callees inlined by MWCC).
 SHARED-EDITS: Player.h (decls fn_80248A24, fn_80248B9C, fn_80241964; fn_8025197C param `all`); cls_804A71A8.h (anyFlag48(bool all = true)). symbols.txt: fn_80248A24 / fn_80248B9C / fn_80241964 -> Player members.
+
+## Player track round 13, agent X (Opus 5.5, 2026-11-05): deferred cleanup + 15 functions
+On matching b861c081. Unit 172 -> 174/254 (+2 honest: total 8731 -> 8733); structural +15 (9184).
+Full ninja sha ok; gate --all-units / --base matching ok; gen_game --check ok; order_check ok; per-address compare with the main report: 0 drops, 18 gains.
+Workarounds replaced by the plain function at its own address (deferred inlines it into earlier callers; no function lost %):
+- groupSize -> fn_80248970 (new, 97.3 regalloc), groupMode -> fn_802486A0, groupTurn -> fn_80240888, linePlace -> fn_80248778, follows_80240670 -> fn_80240670 (97.8 -> 98.8, now regalloc-only).
+- requestState -> fn_80251AEC; shared48C / sharedBC0 -> fn_80247BD4 / fn_80247B9C (fn_8024762C 99.2 -> 99.8, now regalloc-only); clear121F -> fn_80249070; addCounter -> fn_8024ED4C; padAxis_* -> fn_8024712C / fn_80247330.
+- resetTrail: fn_80248604's own body as a plain function drops it to 88.2 (its original asm has the inlined li/mr zero); it is `fn_8024BAEC();` (fn_8024BAEC is the same code, li/li as a direct body), every inlined copy unchanged.
+Kept: playerFlagsGate (fn_802413F0's `!= 0` body in the gates drops 21 functions 99.5 -> 96.8, tried again under deferred); teamCheck, inState1B, the layer queries, inViewBox, planarDistance, normalizeVec, joinCue (no out-of-line copy in the unit).
+Pragma rule 1 regions (each with the caller in the comment): fn_8024FEFC/FEBC/FE78 (fn_8024FFC8, fn_8024FEFC), fn_8024E0A0 (fn_80253E6C), fn_80250D30 (fn_80250030, fn_80252FC0).
+100 %: fn_8024FEFC, fn_8024EE24.
+Regalloc-only (FIXME): fn_8024E500 99.7, fn_8024DA64 99.3, fn_802422D0 99.7 (BoxTest.h containsPoint), fn_80250ACC 99.5, fn_80242940 99.6, fn_80240F28 98.4 (const), fn_8024E0A0 99.3, fn_8024C5A0 99.6, fn_8025250C 99.6, fn_80250D30 99.6, fn_80247C0C 99.4, fn_80251D50 98.6, fn_80248970 97.3. Almost all are the group loop's leader / self temporaries (one register in ours, two in the original); dropping the `team` / `self` locals drops ~40 functions 3 %, reverted.
+Not written: fn_802487FC (still "different" 94.9: its direct fn_80248970 copy zeroes li/li in the original, li/mr in ours; 4 shapes), fn_80241B44 (writes a TBox2f through a TVec2f* parameter; needs the symbol and tu_8022AD64's fn_8022B8EC changed), fn_8024DCD0 and the larger ones.
+SHARED-EDITS: Player.h (fn_80240F28 const; decl fn_80250FD4; free fn_8022AD88; update-A comment); BoxTest.h comment. symbols.txt: fn_80240F28 -> ...CFv, fn_80250FD4 -> fn_80250FD4__15Player_804A6F38Fv.
