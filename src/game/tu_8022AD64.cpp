@@ -227,8 +227,6 @@ void fn_8023F1D4(s32 player, const JGeometry::TVec3f* pos, s32 a, s32 b, u8 c) {
     gPlayerManager_8053AC90->field_0x64[player] = c;
 }
 
-// FIXME: 99.88 %. reloc-name only: 4.0f and 1.0f are the original's lbl_8054002C /
-// lbl_8054001C, pooled after literals of functions not written yet (the code is identical).
 // Shuffles the four start entries (position, a, b, c are moved together only for the
 // position: each slot swaps its position with a random slot's), then hands every
 // player its entry (fn_80252F80, as fn_8023F1D4 does).
@@ -1013,18 +1011,6 @@ bool fn_8023B0F4(s32 player, const JGeometry::TBox2f* box, s32 layer, bool flag,
     return false;
 }
 
-s32 fn_8023B004(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_802732C4(a, b)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 s32 fn_8023AF14(const JGeometry::TBox2f* box, s32 layer, bool flag, f32 margin) {
     if (gPlayerManager_8053AC90 == NULL) {
         return -1;
@@ -1139,18 +1125,6 @@ s32 fn_8023A7BC(const JGeometry::TBox2f* box, s32 layer, JGeometry::TVec2f* out)
     }
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80273FB8(box, layer, out)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-s32 fn_8023A6CC(const JGeometry::TBox2f* a, s32 b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80256C74(a, b)) {
             return i;
         }
     }
@@ -1307,28 +1281,6 @@ bool fn_80239C00(s32 player, const JGeometry::TBox2f* box, s32 layer) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80272E98(box, layer);
     }
     return false;
-}
-
-bool fn_80239B64(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 type, bool a, bool b) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return false;
-    }
-    if (fn_8023F264(player)) {
-        return gPlayerManager_8053AC90->mPlayers[player]->fn_80272224(box, layer, type, a, b);
-    }
-    return false;
-}
-
-s32 fn_80239A74(const JGeometry::TBox2f* a, s32 b, s32 c, bool d, bool e) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return -1;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && gPlayerManager_8053AC90->mPlayers[i]->fn_80272224(a, b, c, d, e)) {
-            return i;
-        }
-    }
-    return -1;
 }
 
 bool fn_802399D8(s32 player, const JGeometry::TBox2f* box, s32 layer, s32 serial) {
@@ -2098,7 +2050,7 @@ void fn_80235FE8(s32 player) {
     }
 }
 
-// FIXME: 96.49 %. The original tests the mPlayerMask bit through an inline chain
+// FIXME: 96.55 %. The original tests the mPlayerMask bit through an inline chain
 // whose deeper copies MWCC calls out of line as the recursion is inlined: level 2
 // calls fn_8023F9B0 (the game-root getter) and inlines GameRoot::fn_8023F98C, level 3
 // calls both, level 4 calls fn_8018A614 (the one-argument form, act_phantom_ganon_2);
@@ -2564,8 +2516,6 @@ bool fn_80233C9C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b) {
 
 // Out-of-line copy of TVec3<f32>::normalize() (libs/sdk JGeometry/Vec.h: PSVECSquareMag,
 // TUtilf::epsilon, inv_sqrt, PSVECScale); fn_80232A0C calls it five times.
-// FIXME: 99.73 %. reloc-name only: its 0.5f / 3.0f follow 15.0f (lbl_80540010) in the pool,
-// which only the unwritten fn_80232A0C uses first.
 f32 fn_80233C08(JGeometry::TVec3f* v) {
     return v->normalize();
 }
@@ -3617,17 +3567,6 @@ bool fn_8022E39C(s32 player, s32 arg) {
         return gPlayerManager_8053AC90->mPlayers[player]->fn_80240840(arg);
     }
     return false;
-}
-
-void fn_8022E2D8(s32 index) {
-    if (gPlayerManager_8053AC90 == NULL) {
-        return;
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i)) {
-            gPlayerManager_8053AC90->mPlayers[i]->fn_80240840(index);
-        }
-    }
 }
 
 bool fn_8022E23C(s32 player, s32 arg) {
