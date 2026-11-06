@@ -400,4 +400,17 @@ void Vulture_804A4230::vfunc_0x94() {
     EnemyBase_804A4808::vfunc_0x94();
 }
 
+void Vulture_804A4230::vfunc_0x74() {
+    field_0x2b8.x = mPos.x;
+    field_0x2b8.y = mPos.y;
+    if (field_0x2a8 >= 0) {
+        const JGeometry::TVec3f* pPos = getPlayerPos_8023E724(field_0x2a8);
+        field_0x2c0.x = pPos->x;
+        field_0x2c0.y = pPos->y;
+    } else {
+        field_0x2c0.x = mSpawnPos.x;
+        field_0x2c0.y = mSpawnPos.y;
+    }
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
