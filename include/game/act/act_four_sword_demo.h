@@ -7,8 +7,8 @@
 #include "game/SpriteAnim.h"
 
 // Named after its vtable, 0x8049DA0C, which derives from cls_8049D140. Its
-// constructor (0x801180D0, not written yet) clears field_0x230, field_0x231
-// and field_0x234. The destructor (0x80118018) runs four rounds over the
+// constructor (0x801180D0, game/act_four_sword_demo.cpp) clears field_0x230,
+// field_0x231 and field_0x234. The destructor (0x80118018) runs four rounds over the
 // emitter arrays, releasing each slot and clearing it; mEmitter2a8 is
 // released in every round. Then it destroys mAnim250 and runs
 // cls_8049D140's destructor.
@@ -26,8 +26,8 @@ public:
     // lbl_80464A7C entry.
     /* 0x54 */ virtual void vfunc_0x54();
 
-    // Mangled fn_80117074__12cls_8049DA0CFl (0x80117074, same unit, not written
-    // yet). Takes the table index 2..12 found by vfunc_0x54.
+    // Mangled fn_80117074__12cls_8049DA0CFl (0x80117074, game/act_four_sword_demo.cpp).
+    // Takes the table index 2..12 found by vfunc_0x54.
     void fn_80117074(s32 index);
 
     // Slot 0x58, overriding cls_8049D140::vfunc_0x58 (game/tu_8010DF44.cpp).

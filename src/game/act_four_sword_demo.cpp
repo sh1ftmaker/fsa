@@ -132,7 +132,10 @@ inline bool cls_8049DA0C::checkPlayers() {
     return false;
 }
 
-// FIXME: 94.62 % (missing/extra + reloc-name). Minor differences in JParticle emitter release bit stores (JPABaseEmitter offset 0x24 store) and relocations.
+// FIXME: 95.61 %. Same length. Differences: fn_8038BD08's result is converted from a byte in the original
+// (clrlwi / neg / or / srwi.; the shared declaration returns bool); the box corner adds store in another
+// order; case 2's camera setup reloads mPos.x / mPos.y where the original reuses registers; the loop
+// counters and base pointers of cases 5 and 8 sit in other saved registers.
 void cls_8049DA0C::update() {
     cls_8049D140::update();
     JGeometry::TBox2f box(mBox);
@@ -157,9 +160,7 @@ void cls_8049DA0C::update() {
                 if (field_0x230 != 0) {
                     msg = 0x4b3;
                 }
-                JGeometry::TVec3f offset;
-                offset.set(0.0f, -10.0f, 0.0f);
-                bool res = fn_8038BD08(0, (u16)msg, field_0x4, offset, 0x22);
+                bool res = fn_8038BD08(0, (u16)msg, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x22);
                 if (res) {
                     fn_80117074(1);
                 }
@@ -341,7 +342,8 @@ s32 cls_8049DA0C::vfunc_0x5C() {
     }
 }
 
-// FIXME: 85.21 % (missing/extra + reloc-name). Emitter release differences at offset 0x24 in case 2 and case 7, causing cascading register allocation and loop unrolling differences.
+// FIXME: 97.52 %. Case 7's emitter release loop: the original sets up its counter and base pointers with
+// one instruction more and other registers; the rest is register numbering and .sdata2 relocations.
 void cls_8049DA0C::fn_80117074(s32 index) {
     switch (index) {
     case 2:
@@ -350,7 +352,7 @@ void cls_8049DA0C::fn_80117074(s32 index) {
         fn_802382D0(0, false);
         gAudioMgr_8053AF80->fn_80458FF0(0x01000020, 1, 0);
         if (mEmitter2a8 != NULL) {
-            mEmitter2a8->stopCreateParticle();
+            mEmitter2a8->becomeInvalidEmitter();
             mEmitter2a8 = NULL;
         }
         break;
@@ -382,11 +384,11 @@ void cls_8049DA0C::fn_80117074(s32 index) {
         }
         for (s32 i = 0; i < 4; i++) {
             if (mEmitters288[i] != NULL) {
-                mEmitters288[i]->stopCreateParticle();
+                mEmitters288[i]->becomeInvalidEmitter();
                 mEmitters288[i] = NULL;
             }
             if (mEmitters298[i] != NULL) {
-                mEmitters298[i]->stopCreateParticle();
+                mEmitters298[i]->becomeInvalidEmitter();
                 mEmitters298[i] = NULL;
             }
         }
@@ -404,8 +406,9 @@ void cls_8049DA0C::fn_80117074(s32 index) {
         for (s32 i = 0; i < 4; i++) {
             const JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(i);
             pos.x = playerPos->x;
-            pos.y = playerPos->y + -16.0f;
+            pos.y = playerPos->y;
             pos.z = playerPos->z;
+            pos.y += -16.0f;
             spawnEmitter_8013CC50(field_0x4, &pos, 0x33a, 0, 0, NULL, NULL, true, 1.0f);
         }
         for (s32 i = 0; i < 4; i++) {
