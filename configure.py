@@ -1384,7 +1384,7 @@ config.libs = [
         Object(NonMatching, "game/act_blindfold.cpp"),
         Object(NonMatching, "game/act_rank_display.cpp"),
         Object(NonMatching, "game/act_on_off_switch.cpp"),
-        Object(NonMatching, "game/act_red_blue_switch.cpp"),
+        Object(Matching, "game/act_red_blue_switch.cpp"),
         Object(NonMatching, "game/act_falling_floor.cpp"),
         Object(NonMatching, "game/act_bti_npc.cpp"),
         Object(NonMatching, "game/act_grass.cpp"),

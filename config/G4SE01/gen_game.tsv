@@ -55,8 +55,6 @@ act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x8
 act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
 act_rainbow_bridge	sinit	__sinit_act_rainbow_bridge_cpp	-	-	new	-
-act_red_blue_switch	dtor_emit	__dt__12cls_804A9020Fv	cls_804A9020	0x804A9020	new	new
-act_red_blue_switch	sinit	__sinit_act_red_blue_switch_cpp	-	-	new	-
 act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
 act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new

@@ -17,7 +17,8 @@ public:
     /* 0x234 */ JPABaseEmitter* mEmitter234; // released by the destructor
     /* 0x238 */ JPABaseEmitter* mEmitter238; // released by the destructor
     /* 0x23C */ JPABaseEmitter* mEmitter23c; // released by the destructor
-    /* 0x240 */ u8 field_0x240[0x8]; // not yet known
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
 }; // Size: 0x248
 
 #endif
