@@ -33,7 +33,7 @@
 <text x="50" y="197" font-size="16" font-weight="700" fill="#eceefb">Player</text>
 <text x="50" y="217" font-size="12" fill="#7c82a8">10 files · 398 KiB · 0 Matching</text>
 <rect x="330" y="184" width="440" height="14" rx="4" fill="#1d2142"/>
-<rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="405.59" height="14" rx="4" fill="#4aa75c" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="405.60" height="14" rx="4" fill="#4aa75c" fill-opacity="0.35"/>
 <rect class="grow" style="animation-delay:0.1s" x="330" y="184" width="260.50" height="14" rx="4" fill="#4aa75c"/>
 <text x="330" y="217" class="mono" font-size="11.5" fill="#7c82a8">honest 59.2 % · weighted 92.2 %</text>
 <text x="932" y="198" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#4aa75c">59.2 %</text>
