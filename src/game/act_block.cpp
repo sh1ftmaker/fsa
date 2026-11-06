@@ -375,7 +375,8 @@ void Block_804A7A10::update() {
     }
 }
 
-// FIXME: 98.28%. scheduling+regalloc: same instructions modulo registers, different order
+// FIXME: 98.59%. scheduling+regalloc: the field_0x64 box copy loads y / z into each other's FPRs and
+// stores the sum's y earlier.
 bool Block_804A7A10::fn_8028C518(u8 dir) {
     bool result = false;
     s32 kind = field_0x90 & 3;
@@ -429,8 +430,6 @@ bool Block_804A7A10::fn_8028C518(u8 dir) {
         box.i.y += mPos.y;
         box.f.y += mPos.y;
 
-        // Steering: mSerial is copied to a local just before the fn_80238CB4 compare; comparing against mSerial directly gives 95.89 %.
-        s32 serial;
         for (int i = 0; i < 4; i++) {
             if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
                 if (fn_8022CAF8(i) == 5) {
@@ -438,8 +437,7 @@ bool Block_804A7A10::fn_8028C518(u8 dir) {
                         continue;
                     }
                 }
-                serial = mSerial;
-                if (fn_80238CB4(i) == serial) {
+                if (fn_80238CB4(i) == getSerial()) {
                     continue;
                 }
                 result = false;
@@ -452,7 +450,6 @@ bool Block_804A7A10::fn_8028C518(u8 dir) {
     return result;
 }
 
-// FIXME: 99.40%. regalloc-only: target->ours r30->r31, r31->r30
 bool Block_804A7A10::fn_8028C364(u8 dir) {
     f32 max;
     f32 min;
@@ -467,13 +464,9 @@ bool Block_804A7A10::fn_8028C364(u8 dir) {
         center = mPos.y;
     }
 
-    // Steering: mSerial is copied to a local before the fn_80238CB4 call; comparing against mSerial directly gives 95.03 %.
     int i;
-    s32 serial;
     for (i = 0; i < 4; i++) {
-        serial = mSerial;
-        s32 pushing = fn_80238CB4(i);
-        if (pushing != serial) {
+        if (fn_80238CB4(i) != getSerial()) {
             continue;
         }
         if (dir <= 1) {
