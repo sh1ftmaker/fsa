@@ -1322,6 +1322,9 @@ extern const f32 lbl_8053F0BC;
 // min(x, 96)) (0x802F5FF4); game/tu_801EDBA4.cpp scales by it.
 f32 fn_802F5FF4(f32 x);
 
+// Owner: game/tu_80301CD0.cpp
+bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4);
+
 // Objects and functions of the boot sequence main (game/tu_801344C0.cpp)
 // runs; their owner units are not written yet. Named after their vtables.
 

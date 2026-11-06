@@ -9,6 +9,7 @@
 #include "game/SpriteAnim.h"
 #include "game/cls_8021BCBC.h"
 #include "game/cls_801EB8CC.h" // the member at 0x464
+#include "game/DampedSine.h"
 
 // An element of the 4-entry array at 0x2A8 of Vaati, built by
 // __construct_array with the constructor 0x801D6A88 (game/act_vaati_boss.cpp).
@@ -49,14 +50,16 @@ struct cls_801D6A58 {
 // named after its lowest-address function, 0x801D6CEC (game/tu_801D6CEC.cpp,
 // not written yet; fn_801D6D08 there starts the z sine at 0x28).
 struct cls_801D6CEC {
+    cls_801D6CEC() {
+        fn_801E4B0C(&field_0x0);
+        fn_801E4B0C(&field_0x14);
+        fn_801E4B0C(&field_0x28);
+    }
     // Writes (x value, y value, 0.0f) to *out.
     void fn_801D6CEC(JGeometry::TVec3f* out);
-    /* 0x00 */ f32 field_0x0; // x DampedSine_801E4A18::value
-    /* 0x04 */ u8 field_0x4[0x14 - 0x4];
-    /* 0x14 */ f32 field_0x14; // y DampedSine_801E4A18::value
-    /* 0x18 */ u8 field_0x18[0x28 - 0x18];
-    /* 0x28 */ f32 field_0x28; // z DampedSine_801E4A18::value
-    /* 0x2C */ u8 field_0x2c[0x3C - 0x2C];
+    /* 0x00 */ DampedSine_801E4A18 field_0x0;
+    /* 0x14 */ DampedSine_801E4A18 field_0x14;
+    /* 0x28 */ DampedSine_801E4A18 field_0x28;
 }; // Size: 0x3C
 
 // The member at 0x568 of the Vaati boss actor (code in game/tu_801E667C.cpp,
@@ -136,10 +139,11 @@ public:
 class cls_801D7730 {
 public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
-    cls_801D7730();
+    cls_801D7730() { fn_801D77B4(); }
     ~cls_801D7730();
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
+    void fn_801D77B4();
     /* 0x00 */ s32 field_0x0[0x10];
     /* 0x40 */ s32 field_0x40; // cleared by the constructor
     /* 0x44 */ s32 field_0x44; // cleared by the constructor
@@ -159,17 +163,30 @@ public:
 // the written code uses are known.
 class VaatiBoss_804A4958 : public EnemyBase_804A4808 {
 public:
-    VaatiBoss_804A4958() {}
+    VaatiBoss_804A4958();
     // 0x801D46FC: the deleting destructor (slot 0x08). Destroys the members
     // from 0x568 down, then the base; deletes unless the flag is <= 0.
     virtual ~VaatiBoss_804A4958();
+    /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24(); // empty override
     // 0x801D652C: gAudioMgr_8053AF80->fn_80458F9C(60).
     /* 0x54 */ virtual void vfunc_0x54();
+    /* 0x74 */ virtual void vfunc_0x74();
+    /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     // 0x801D5338: advances the sprite animation (mAnim.fn_801D1C18) unless
     // mState is 6, 7, 0xB or 0x17..0x1A (no call in those states).
     /* 0x94 */ virtual void vfunc_0x94();
+    /* 0x98 */ virtual void vfunc_0x98();
+    /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
+    /* 0xA0 */ virtual void vfunc_0xA0();
+
+    void fn_801D63D0();
+    void fn_801D5B70();
+    void fn_801D4C70();
+    void fn_801E4790(bool arg);
+    void fn_801E4758();
 
     // 0x801EDC0C (draw's body): adds the offset of field_0x52c to mPos,
     // shakes mPos.x by 1.0f every other frame in state 0xB once the timer is
@@ -210,14 +227,35 @@ public:
     /* 0x4C4 */ cls_801D7730 field_0x4c4;
     /* 0x52C */ cls_801D6CEC field_0x52c;
     /* 0x568 */ cls_801E6AB8 field_0x568;
-    /* 0x5B0 */ u8 field_0x5b0[0x5CE - 0x5B0]; // not yet known
+    /* 0x5B0 */ s32 field_0x5b0;
+    /* 0x5B4 */ s32 field_0x5b4;
+    /* 0x5B8 */ s32 field_0x5b8;
+    /* 0x5BC */ f32 field_0x5bc;
+    /* 0x5C0 */ f32 field_0x5c0;
+    /* 0x5C4 */ f32 field_0x5c4;
+    /* 0x5C8 */ f32 field_0x5c8;
+    /* 0x5CC */ u8 field_0x5cc;
+    /* 0x5CD */ u8 field_0x5cd;
     /* 0x5CE */ u8 field_0x5ce; // 0 or 0x32, set by fn_801E4D54 / fn_801E4D74
-    /* 0x5CF */ u8 field_0x5cf[0x5D1 - 0x5CF]; // not yet known
+    /* 0x5CF */ u8 field_0x5cf;
+    /* 0x5D0 */ u8 field_0x5d0;
     /* 0x5D1 */ u8 field_0x5d1;
-    /* 0x5D2 */ u8 field_0x5d2[0x5FC - 0x5D2]; // not yet known
+    /* 0x5D2 */ s16 field_0x5d2;
+    /* 0x5D4 */ s16 field_0x5d4;
+    /* 0x5D8 */ s32 field_0x5d8;
+    /* 0x5DC */ s32 field_0x5dc;
+    /* 0x5E0 */ f32 field_0x5e0;
+    /* 0x5E4 */ f32 field_0x5e4;
+    /* 0x5E8 */ u8 field_0x5e8;
+    /* 0x5E9 */ u8 field_0x5e9;
+    /* 0x5EA */ u8 field_0x5ea[0x5EC - 0x5EA];
+    /* 0x5EC */ f32 field_0x5ec;
+    /* 0x5F0 */ f32 field_0x5f0;
+    /* 0x5F4 */ f32 field_0x5f4;
+    /* 0x5F8 */ f32 field_0x5f8;
     /* 0x5FC */ s32 field_0x5fc; // effect layer (spawnEmitter_8013CC50's first argument)
-    /* 0x600 */ JGeometry::TVec3f field_0x600; // not yet known
-    /* 0x60C */ JGeometry::TVec3f field_0x60c; // not yet known, an effect position
+    /* 0x600 */ JGeometry::TVec3f field_0x600;
+    /* 0x60C */ JGeometry::TVec3f field_0x60c;
 }; // Size: 0x618 (the spawner's __nw__, li r3 0x618 before the 0x801FC280 ctor call)
 
 #endif
