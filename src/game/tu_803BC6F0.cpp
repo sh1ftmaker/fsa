@@ -1788,6 +1788,102 @@ void FileSelect_804AFF60::fn_803C6690() {
     }
 }
 
+// FIXME: 95.70. Registers and scheduling only: the original sums the start
+// test as (step + frames) + 1 (ours folds frames + 1 first) and every saved
+// register is one higher than ours.
+// State 31: unless it came from state 5, the four buttons slide down and fade
+// out one after another (the first two get their labels back, messages 0x11E
+// / 0x11F, as they finish); then the first two slide back in (timings
+// lbl_8050DB0C field_0x4c[0xCA..0xCF]); state 37 at the end.
+void FileSelect_804AFF60::fn_803C61C4() {
+    s16 outDelay = lbl_8050DB0C.field_0x4c[0xCA];
+    s16 outFrames = lbl_8050DB0C.field_0x4c[0xCB];
+    s16 outStep = lbl_8050DB0C.field_0x4c[0xCC];
+    s16 inDelay = lbl_8050DB0C.field_0x4c[0xCD];
+    s16 inFrames = lbl_8050DB0C.field_0x4c[0xCE];
+    s16 inStep = lbl_8050DB0C.field_0x4c[0xCF];
+    if (inDelay < outDelay + (outStep + outFrames + 1)) {
+        inDelay = outDelay + (outStep + outFrames + 1);
+    }
+    s32 end = inDelay + (inFrames + inStep);
+    field_0xd8++;
+    if (mPrevState != 5) {
+        for (int i = 0; i < 4; i++) {
+            if (field_0xd8 > outDelay + i * outStep) {
+                s32 done = outFrames + (outDelay + i * outStep);
+                if (field_0xd8 <= done) {
+                    field_0x24[i]->fn_80402940(outFrames, 0, 0.0f, 100.0f);
+                    field_0x24[i]->fn_80402628(outFrames, field_0x24[i]->field_0x28, 0);
+                    switch (i) {
+                    case 0:
+                        for (int j = 0; j < 4; j++) {
+                            field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                        }
+                        break;
+                    case 1:
+                        for (int j = 0; j < 4; j++) {
+                            field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                        }
+                        break;
+                    case 2:
+                        for (int j = 0; j < 4; j++) {
+                            field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                        }
+                        break;
+                    case 3:
+                        for (int j = 0; j < 4; j++) {
+                            field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                        }
+                        break;
+                    }
+                    if (field_0xd8 == done) {
+                        if (i == 0) {
+                            getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tstr01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
+                            field_0x24[i]->field_0x22 = 0;
+                            field_0x24[i]->field_0x26 = 0;
+                        } else if (i == 1) {
+                            getMessageText_803832BC(((J2DTextBox*)mScreenHuuin->search('Tcop01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
+                            field_0x24[i]->field_0x22 = 0;
+                            field_0x24[i]->field_0x26 = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        if (field_0xd8 > inDelay + i * inStep) {
+            field_0x24[i]->fn_80402940(inFrames, 0, 100.0f, 0.0f);
+            field_0x24[i]->fn_80402628(inFrames, 0, field_0x24[i]->field_0x28);
+            switch (i) {
+            case 0:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(37);
+    }
+}
+
 void FileSelect_804AFF60::fn_803C579C() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 2) {
