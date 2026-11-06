@@ -6,6 +6,7 @@
 
 class J2DScreen;
 class PaneCtrl_804AF86C;
+class cls_804B1B60;
 
 // Vtable 0x804B1288 (one slot, the destructor), 0x66C bytes, defined in
 // game/tu_80403D84.cpp. The constructor fn_804122F4 stores
@@ -39,9 +40,17 @@ public:
     void fn_80409330();
     // 0x804045F8 (this unused): when gGameRoot_8053AAF8's byte 0x7E is set, whether
     // bit `bit` of byte 0x7A of the current save row is set.
-    bool fn_804045F8(s32 bit);
+    BOOL fn_804045F8(s32 bit);
+    // 0x80404270: false while lbl_80529DEC's byte 0x23F or field_0x656 is set,
+    // outside GameRoot's 0x7E mode, or when fn_804045F8(stage) is set; else
+    // stage flag 1 of stages 0-6 (isStageFlagSet), flag 2 of stage 7.
+    bool fn_80404270(s32 stage);
     // 0x8040E278: counts field_0x384 up; past 100 the state becomes 0x15.
     void fn_8040E278();
+    // 0x8040E298: after 60 frames: state 6 when field_0x664 is set, else
+    // state 0x10 (resetting field_0x278's panes and playing sound 0x56) when
+    // fn_80404270(field_0x340), else state 0x15.
+    void fn_8040E298();
     // 0x8040E700: unless 0x65A is set, clears 0x664 and the state becomes 8.
     void fn_8040E700();
     // 0x8040F288: eases field_0x39c from field_0x358; once it reaches 0 the
@@ -63,9 +72,11 @@ public:
     // 0x804111C4: draws the screen.
     void fn_804111C4();
     void fn_80411230(); // 0x80411230
+    void slidePane(s16 frame, s16 frames);
 
 
-    /* 0x004 */ u8 field_0x4[0x10 - 0x4];
+    /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
+    /* 0x008 */ u8 field_0x8[0x10 - 0x8];
     /* 0x010 */ J2DScreen* field_0x10; // the screen fn_80411A94 fades
     /* 0x014 */ J2DScreen* field_0x14; // the screen whose panes fn_80408F38 fades
     /* 0x018 */ J2DScreen* field_0x18; // the screen fn_804111C4 draws
@@ -78,9 +89,12 @@ public:
     /* 0x240 */ PaneCtrl_804AF86C* field_0x240[12]; // panes the state handlers animate together
     /* 0x270 */ PaneCtrl_804AF86C* field_0x270[2]; // text panes
     /* 0x278 */ PaneCtrl_804AF86C* field_0x278[15]; // three groups of five panes
-    /* 0x2B4 */ u8 field_0x2b4[0x310 - 0x2B4];
+    /* 0x2B4 */ PaneCtrl_804AF86C* field_0x2b4; // the pane fn_804108B4 slides in and out
+    /* 0x2B8 */ u8 field_0x2b8[0x310 - 0x2B8];
     /* 0x310 */ JUtility::TColor field_0x310;
-    /* 0x314 */ u8 field_0x314[0x350 - 0x314];
+    /* 0x314 */ u8 field_0x314[0x340 - 0x314];
+    /* 0x340 */ s32 field_0x340; // the selected stage (0-7; fn_80404270)
+    /* 0x344 */ u8 field_0x344[0x350 - 0x344];
     /* 0x350 */ s32 field_0x350; // state
     /* 0x354 */ u8 field_0x354[0x358 - 0x354];
     /* 0x358 */ s32 field_0x358;
@@ -94,7 +108,10 @@ public:
     /* 0x3A4 */ f32 field_0x3a4;
     /* 0x3A8 */ u8 field_0x3a8[0x42A - 0x3A8];
     /* 0x42A */ s16 field_0x42a;
-    /* 0x42C */ u8 field_0x42c[0x434 - 0x42C];
+    /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
+    /* 0x42E */ u8 field_0x42e[0x430 - 0x42E];
+    /* 0x430 */ s16 field_0x430; // frame of field_0x2b4's slide
+    /* 0x432 */ u8 field_0x432[0x434 - 0x432];
     /* 0x434 */ s16 field_0x434;
     /* 0x436 */ s16 field_0x436;
     /* 0x438 */ u8 field_0x438[0x5DC - 0x438];
@@ -103,7 +120,10 @@ public:
     /* 0x642 */ u8 field_0x642[9]; // alpha of each pane of lbl_8048C5D0
     /* 0x64B */ u8 field_0x64b;
     /* 0x64C */ u8 field_0x64c;
-    /* 0x64D */ u8 field_0x64d[0x659 - 0x64D];
+    /* 0x64D */ u8 field_0x64d[0x656 - 0x64D];
+    /* 0x656 */ u8 field_0x656;
+    /* 0x657 */ u8 field_0x657;
+    /* 0x658 */ u8 field_0x658;
     /* 0x659 */ u8 field_0x659;
     /* 0x65A */ u8 field_0x65a;
     /* 0x65B */ u8 field_0x65b[0x65D - 0x65B];

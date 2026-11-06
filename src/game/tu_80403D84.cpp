@@ -10,6 +10,14 @@
 #include "game/tu_803B8C74.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/cls_804B1288.h"
+#include "game/act/tu_80440BF4.h"
+#include "game/StageFlag.h"
+#include "game/cls_804B1B60.h"
+
+// Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
+static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
+static const u8 lbl_80543888[8] = {1, 3, 3, 2, 3, 3, 2, 3};
+static const s16 lbl_80543890[4] = {0, 1, 2, 1};
 
 bool fn_804149C0() {
     return lbl_8050EC80.getCurrentFile().field_0x67 & 1;
@@ -24,6 +32,16 @@ void cls_804B1288::fn_80411A94(f32 alpha) {
     field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
     field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
     field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
+}
+
+void cls_804B1288::fn_804111C4() {
+    if (field_0x350 == 0x15) {
+        fn_8037AA7C();
+    }
+    gGameRoot2_8053AB10->fn_8013B490();
+    field_0x18->setScissor(true);
+    field_0x18->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    lbl_8053AED8->fn_80440EE8();
 }
 
 s32 fn_8040F474() {
@@ -74,6 +92,29 @@ void cls_804B1288::fn_8040E700() {
     }
 }
 
+void cls_804B1288::fn_8040E298() {
+    field_0x42c++;
+    if (field_0x42c > 60) {
+        if (field_0x664 != 0) {
+            field_0x664 = 2;
+            field_0x350 = 6;
+        } else if (fn_80404270(field_0x340)) {
+            field_0x658 = 1;
+            field_0x350 = 0x10;
+            if (field_0x65d == 1) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 0;
+                }
+            }
+            field_0x4->fn_804446F0(0);
+            gAudioMgr_8053AF80->fn_80458880(0x56, -1);
+        } else {
+            field_0x350 = 0x15;
+        }
+    }
+}
+
 void cls_804B1288::fn_8040E278() {
     if (++field_0x384 > 100) {
         field_0x350 = 0x15;
@@ -101,9 +142,26 @@ void cls_804B1288::fn_80409330() {
     }
 }
 
-bool cls_804B1288::fn_804045F8(s32 bit) {
+BOOL cls_804B1288::fn_804045F8(s32 bit) {
     if (gGameRoot_8053AAF8->field_0x7e) {
-        return lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit);
+        return (lbl_8050EC80.getCurrentFile().field_0x5a[0] & (u8)(1 << bit)) ? TRUE : FALSE;
+    }
+    return FALSE;
+}
+
+// Defined above fn_804045F8 although its address is lower: it inlines fn_804045F8,
+// and only this order compiles to the original's .text order (tools/order_check.py).
+bool cls_804B1288::fn_80404270(s32 stage) {
+    if (lbl_80529DEC.field_0x23e[1] == 0 && gGameRoot_8053AAF8->field_0x7e && field_0x656 == 0 &&
+        !fn_804045F8(stage))
+    {
+        if ((stage == 0 && isStageFlagSet(stage, 1)) || (stage == 1 && isStageFlagSet(stage, 1)) ||
+            (stage == 2 && isStageFlagSet(stage, 1)) || (stage == 3 && isStageFlagSet(stage, 1)) ||
+            (stage == 4 && isStageFlagSet(stage, 1)) || (stage == 5 && isStageFlagSet(stage, 1)) ||
+            (stage == 6 && isStageFlagSet(stage, 1)) || (stage == 7 && isStageFlagSet(stage, 2)))
+        {
+            return true;
+        }
     }
     return false;
 }
@@ -154,4 +212,14 @@ void cls_804B1288::fn_80403D84() {
         field_0x65a = 0;
         field_0x659 = 0;
     }
+}
+
+// Slides field_0x2b4 from 200 above its place down to it and fades it in, eased by
+// (frame / frames)^2. Dead-stripped: fn_804108B4 inlines it twice (sliding in and
+// out); its own copy created the unit's first .sdata2 literals (0.0f, -200.0f,
+// 200.0f and the two int-to-float constants) before fn_80403D84.
+void cls_804B1288::slidePane(s16 frame, s16 frames) {
+    f32 t = (f32)(frame * frame) / (f32)(frames * frames);
+    field_0x2b4->moveFromCentre_80402E08(0.0f, -200.0f + 200.0f * t);
+    field_0x2b4->mPane->setAlpha(t * field_0x2b4->field_0x28);
 }
