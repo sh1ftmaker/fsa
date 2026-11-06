@@ -119,91 +119,11 @@ static const Vec lbl_8046B92C[4] = {
     {1.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, -1.0f, 0.0f},
 };
 
-// field_0xd64 == 1 as a u8. The original's callers below expand this inline (they test
-// it again with cmplwi 1) and fn_8025F684 is its out-of-line copy; a member inline in
-// Player.h was measured: fn_8025F684 is then not emitted and fn_8023EFEC (inlines it) drops.
+// field_0xd64 == 1 as a u8. The original's callers expand this inline (they test it
+// again with cmplwi 1); fn_8025F684 returns it as a bool. A member inline in Player.h
+// was measured: fn_8025F684 is then not emitted and fn_8023EFEC (inlines it) drops.
 static inline u8 isField0xd64One(const Player_804A6F38& p) {
     return p.field_0xd64 == 1;
-}
-
-// fn_8025F684's body (lifting something: field_0xd64 == 1, as a bool). fn_8025EE48,
-// fn_8025EFFC and fn_8025F2CC, before fn_8025F684, have it inlined.
-static inline bool isLifting_8025F684(const Player_804A6F38& p) {
-    return isField0xd64One(p);
-}
-
-// fn_8025F590's body: field_0xd64 == 1 (holding) with a player index in field_0xd70.
-// fn_8025EB18, before fn_8025F590, has it inlined, so it is a file inline and
-// fn_8025F590 its out-of-line copy (as playerFlags_802413F0 / fn_802413F0).
-static inline bool holdsPlayer(const Player_804A6F38& p) {
-    if (isField0xd64One(p) == 1 && p.field_0xd70 >= 0 && p.field_0xd70 < 4) {
-        return true;
-    }
-    return false;
-}
-
-// fn_8025F448's body: holding a player (field_0xd70) or an actor (field_0xd68) without
-// lifting it (field_0xd64 == 0), i.e. grabbing it. fn_8025EE48 and fn_8025EFFC, before
-// fn_8025F448, have it inlined; fn_8025F448 is its out-of-line copy.
-static inline bool isGrabbing_8025F448(const Player_804A6F38& p) {
-    if ((p.field_0xd70 >= 0 && p.field_0xd70 < 4 || p.field_0xd68 >= 0) && p.field_0xd64 == 0) {
-        return true;
-    }
-    return false;
-}
-
-// fn_8025F2CC's body: whether the player may pick something up (not down, holding,
-// grabbing, busy (0xCE8 / 0x454), in the air, or a follower in mode 5 without a
-// pending 0xD88). fn_8025EFFC, before fn_8025F2CC, has it inlined; fn_8025F2CC is its
-// out-of-line copy.
-static inline bool canLift_8025F2CC(Player_804A6F38& p) {
-    if (p.fn_80270A8C()) {
-        return false;
-    }
-    if (p.fn_8025F684()) {
-        return false;
-    }
-    if (isGrabbing_8025F448(p)) {
-        return false;
-    }
-    if (p.fn_8024BBB0()) {
-        return false;
-    }
-    if (p.fn_80241230()) {
-        return false;
-    }
-    if (p.fn_802412A4()) {
-        return false;
-    }
-    if (p.fn_802413E8()) {
-        return false;
-    }
-    if (p.mPos.z > 0.0f) {
-        return false;
-    }
-    if (p.field_0xd88 < 0 && p.fn_80240808() && p.fn_802486A0() == 5) {
-        return false;
-    }
-    return true;
-}
-
-// fn_8025FCC8's body: whether the requested state makes the player let go of what it
-// holds (true unless the state is one of the lift / carry / throw states 0x11-0x18,
-// 0x1B-0x1D, a screen change 0x20-0x25 while holding something other than a player,
-// 0x1E / 0x1F holding a small key, or 0x4C / 0x4D while holding an actor).
-// fn_8025F698, before fn_8025FCC8, has it inlined; fn_8025FCC8 is its out-of-line copy.
-static inline bool letsGo_8025FCC8(const Player_804A6F38& p) {
-    s32 state = p.field_0x1244;
-    if (state == 0x11 || state == 0x12 || state == 0x13 || state == 0x14 || state == 0x15 || state == 0x16
-        || state == 0x18 || state == 0x1B || state == 0x1C || state == 0x1D
-        || (isField0xd64One(p) && !holdsPlayer(p)
-            && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
-        || (p.field_0xd6c == ACTOR_KEY0 && (state == 0x1E || state == 0x1F))
-        // plain == 1 here: via isField0xd64One it scores slightly lower (87.38 vs 87.39)
-        || (p.field_0xd64 == 1 && !holdsPlayer(p) && (state == 0x4C || state == 0x4D))) {
-        return false;
-    }
-    return true;
 }
 
 // Point-in-box test (x / y only), as in tu_8026FC20.
@@ -223,7 +143,7 @@ void Player_804A6F38::fn_8026441C() {
     s32 pose = 0;
     field_0x3fc++;
     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
-    if (holdsPlayer(*this)) {
+    if (fn_8025F590()) {
         if (field_0x3fc < 8) {
             field_0x3fd = 0;
             pose = 0;
@@ -334,7 +254,7 @@ void Player_804A6F38::fn_80263C64() {
     if (fn_8022C13C(field_0x4)) {
         if (fn_802416C4() != 7) {
             if (!fn_8024B24C()
-                && ((holdsPlayer(*this) && !fn_80236B50(field_0xd70)) || fn_8025F648() == ACTOR_HBMB
+                && ((fn_8025F590() && !fn_80236B50(field_0xd70)) || fn_8025F648() == ACTOR_HBMB
                     || fn_8025F648() == ACTOR_KEY0)) {
                 fn_80251AEC(0x18);
             } else {
@@ -346,7 +266,7 @@ void Player_804A6F38::fn_80263C64() {
     } else if (fn_802466B4() && (actor == 0 || actor->field_0x1a4 < 2)) {
         fn_80251AEC(0x15);
     }
-    if (holdsPlayer(*this)) {
+    if (fn_8025F590()) {
         if (fn_8023EA28(field_0xd70)) {
             fn_802808E8(1.25f);
             fn_8027EB04();
@@ -376,7 +296,7 @@ void Player_804A6F38::fn_80263C64() {
 void Player_804A6F38::fn_80263BA0() {
     field_0x458 = 0;
     field_0x459 = 0;
-    if (holdsPlayer(*this)) {
+    if (fn_8025F590()) {
         fn_8027221C(4);
     } else {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xd68);
@@ -465,7 +385,7 @@ void Player_804A6F38::fn_802636D4() {
         field_0x3fd = 1;
     } else {
         field_0x3fd = 2;
-        if (fn_80251AEC(0x17) && holdsPlayer(*this)) {
+        if (fn_80251AEC(0x17) && fn_8025F590()) {
             JGeometry::TVec3f* pos; // declared first: the original's register order (r30)
             u16 thrower = field_0x4;
             s32 thrown = field_0xd70;
@@ -526,7 +446,7 @@ void Player_804A6F38::fn_802632A8() {
     } else if (field_0x3fc < 11) {
         field_0x3fd = 2;
     } else if (field_0x3fc < 12) {
-        if (holdsPlayer(*this)) {
+        if (fn_8025F590()) {
             field_0x3fd = 4;
         } else {
             field_0x3fd = 3;
@@ -534,7 +454,7 @@ void Player_804A6F38::fn_802632A8() {
     } else {
         field_0x3fc = 12;
         if (fn_80251AEC(0)) {
-            if (holdsPlayer(*this)) {
+            if (fn_8025F590()) {
                 field_0x3fd = 4;
             } else {
                 field_0x3fd = 3;
@@ -1518,7 +1438,7 @@ bool Player_804A6F38::fn_8026000C() {
 }
 
 bool Player_804A6F38::fn_8025FF70() {
-    if (!holdsPlayer(*this)) {
+    if (!fn_8025F590()) {
         return false;
     }
     fn_80251AEC(0);
@@ -1557,11 +1477,24 @@ bool Player_804A6F38::fn_8025FDD0(const JGeometry::TVec3f* pos) {
     return true;
 }
 
-// FIXME: 87.39. Two differences: the original tests state 0x11 on its own before the folded
+// FIXME: 87.02. Two differences: the original tests state 0x11 on its own before the folded
 // range 0x12-0x16 (ours folds 0x11-0x16), and it recomputes the field_0xd64 == 1 byte
 // (subfic / cntlzw / extrwi) inside each inlined fn_8025F590 where ours reuses it.
+// Whether the requested state makes the player let go of what it holds (true unless the
+// state is one of the lift / carry / throw states 0x11-0x18, 0x1B-0x1D, a screen change
+// 0x20-0x25 while holding something other than a player, 0x1E / 0x1F holding a small
+// key, or 0x4C / 0x4D while holding an actor). fn_8025F698 inlines it.
 bool Player_804A6F38::fn_8025FCC8() {
-    return letsGo_8025FCC8(*this);
+    s32 state = field_0x1244;
+    if (state == 0x11 || state == 0x12 || state == 0x13 || state == 0x14 || state == 0x15 || state == 0x16
+        || state == 0x18 || state == 0x1B || state == 0x1C || state == 0x1D
+        || (isField0xd64One(*this) && !fn_8025F590()
+            && (state == 0x20 || state == 0x21 || state == 0x22 || state == 0x23 || state == 0x24 || state == 0x25))
+        || (field_0xd6c == ACTOR_KEY0 && (state == 0x1E || state == 0x1F))
+        || (field_0xd64 == 1 && !fn_8025F590() && (state == 0x4C || state == 0x4D))) {
+        return false;
+    }
+    return true;
 }
 
 // FIXME: 95.94. The six missing instructions are the inlined fn_8025FCC8's (see there: state
@@ -1575,12 +1508,12 @@ bool Player_804A6F38::fn_8025FCC8() {
 // dead 6, else 4); then the thrown player's group partners holding no living actor
 // leave their states too.
 void Player_804A6F38::fn_8025F698(bool checkState) {
-    if (field_0xd64 != 0 && (!checkState || letsGo_8025FCC8(*this))) {
+    if (field_0xd64 != 0 && (!checkState || fn_8025FCC8())) {
         bool held = true;
         if (field_0xd6c == 'NULL') {
             held = false;
         }
-        if (holdsPlayer(*this)) {
+        if (fn_8025F590()) {
             JGeometry::TVec3f speed;
             JGeometry::TVec3f step;
             const Vec& dir = lbl_8046B8FC[field_0x3dc];
@@ -1653,6 +1586,7 @@ void Player_804A6F38::fn_8025F698(bool checkState) {
     }
 }
 
+// Lifting something (field_0xd64 == 1).
 bool Player_804A6F38::fn_8025F684() {
     return isField0xd64One(*this);
 }
@@ -1686,8 +1620,13 @@ void Player_804A6F38::fn_8025F5CC() {
     }
 }
 
+// Holding a player: field_0xd64 == 1 with a player index in field_0xd70 (inlined by most
+// functions of the unit).
 bool Player_804A6F38::fn_8025F590() {
-    return holdsPlayer(*this);
+    if (isField0xd64One(*this) == 1 && field_0xd70 >= 0 && field_0xd70 < 4) {
+        return true;
+    }
+    return false;
 }
 
 s32 Player_804A6F38::fn_8025F55C() {
@@ -1725,8 +1664,13 @@ bool Player_804A6F38::fn_8025F484() const {
     return false;
 }
 
+// Holding a player (field_0xd70) or an actor (field_0xd68) without lifting it
+// (field_0xd64 == 0), i.e. grabbing it. fn_8025EE48, fn_8025EFFC and fn_80261750 inline it.
 bool Player_804A6F38::fn_8025F448() {
-    return isGrabbing_8025F448(*this);
+    if ((field_0xd70 >= 0 && field_0xd70 < 4 || field_0xd68 >= 0) && field_0xd64 == 0) {
+        return true;
+    }
+    return false;
 }
 
 bool Player_804A6F38::fn_8025F418() {
@@ -1737,8 +1681,38 @@ bool Player_804A6F38::fn_8025F418() {
 }
 
 // FIXME: 96.81. The materialised field_0xd64 == 1 test, as in fn_8025EE48.
+// Whether the player may pick something up (not down, holding, grabbing, busy (0xCE8 /
+// 0x454), in the air, or a follower in mode 5 without a pending 0xD88). fn_8025EFFC
+// inlines it.
 bool Player_804A6F38::fn_8025F2CC() {
-    return canLift_8025F2CC(*this);
+    if (fn_80270A8C()) {
+        return false;
+    }
+    if (fn_8025F684()) {
+        return false;
+    }
+    if (fn_8025F448()) {
+        return false;
+    }
+    if (fn_8024BBB0()) {
+        return false;
+    }
+    if (fn_80241230()) {
+        return false;
+    }
+    if (fn_802412A4()) {
+        return false;
+    }
+    if (fn_802413E8()) {
+        return false;
+    }
+    if (mPos.z > 0.0f) {
+        return false;
+    }
+    if (field_0xd88 < 0 && fn_80240808() && fn_802486A0() == 5) {
+        return false;
+    }
+    return true;
 }
 
 // FIXME: 95.94. The materialised field_0xd64 == 1 test twice, as in fn_8025EE48.
@@ -1746,11 +1720,11 @@ bool Player_804A6F38::fn_8025F2CC() {
 // player already holding or grabbing only claims it through fn_8025EF68.
 bool Player_804A6F38::fn_8025EFFC(s32 serial, bool lift, bool grabOnly) {
     if (grabOnly) {
-        if (fn_8025F684() || isGrabbing_8025F448(*this) || fn_80241230() || fn_802412A4()) {
+        if (fn_8025F684() || fn_8025F448() || fn_80241230() || fn_802412A4()) {
             fn_8025EF68(serial);
             return true;
         }
-    } else if (!canLift_8025F2CC(*this)) {
+    } else if (!fn_8025F2CC()) {
         return false;
     }
     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -1804,7 +1778,7 @@ bool Player_804A6F38::fn_8025EE48(s32 serial) {
     if (fn_8025F684()) {
         return false;
     }
-    if (isGrabbing_8025F448(*this)) {
+    if (fn_8025F448()) {
         return false;
     }
     if (fn_8024BBB0()) {
@@ -1849,7 +1823,7 @@ bool Player_804A6F38::fn_8025EDD4(s32 a, const JGeometry::TVec3f* pos) {
 // view corners; else the tile there, and for an actor its vfunc_0x4C. On success the
 // drop point takes the player's x / y.
 bool Player_804A6F38::fn_8025EB18() {
-    if (holdsPlayer(*this) && field_0x3b4 == 8 && getPlayerLayer_8023DE58(field_0xd70) < 8) {
+    if (fn_8025F590() && field_0x3b4 == 8 && getPlayerLayer_8023DE58(field_0xd70) < 8) {
         JGeometry::TVec3f pos(field_0x2f4);
         JGeometry::TBox2f* box = layerBox(getPlayerLayer_8023DE58(field_0xd70));
         f32 x = box->i.x;
@@ -1867,7 +1841,7 @@ bool Player_804A6F38::fn_8025EB18() {
         }
     } else {
         u16 tile = fn_8022461C(&field_0x2f4, field_0x3b4);
-        if (holdsPlayer(*this)) {
+        if (fn_8025F590()) {
             if ((fn_802265DC(&field_0x2f4, field_0x3b4, true) && tile != 0xE && tile != 0x39 && tile != 0xD)
                 || fn_802684A4(&field_0x2f4, field_0x3b4)) {
                 field_0x2f4.x = mPos.x;
