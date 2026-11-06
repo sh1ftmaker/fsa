@@ -30,6 +30,14 @@ static inline void setScaleMtx(Mtx m, f32 x, f32 y, f32 z) {
     m[2][2] = z;
 }
 
+static inline void approach(f32& cur, f32 target, f32 remaining) {
+    if (remaining < FLT_EPSILON) {
+        cur = target;
+    } else {
+        cur += (1.0f / remaining) * (target - cur);
+    }
+}
+
 Terrorpin_804A3B10::Terrorpin_804A3B10() {
     field_0x2a8 = 0;
 }
@@ -151,6 +159,32 @@ void Terrorpin_804A3B10::vfunc_0x94() {
     }
     mAnim.mFrameCtrl.setRate(rate);
     EnemyBase_804A4808::vfunc_0x94();
+}
+
+void Terrorpin_804A3B10::vfunc_0x88() {
+    if (mState == 5) {
+        field_0x3c.z += lbl_8053EFB8;
+        s32 rem = field_0x250 - mStateTimer;
+        if (rem > 0 && rem < 30) {
+            approach(field_0x3c.x, 0.0f, rem);
+            approach(field_0x3c.y, 0.0f, rem);
+        } else {
+            JGeometry::TVec3f vel(field_0x3c.x, field_0x3c.y, 0.0f);
+            if (vel.squared() < 1.8f * 1.8f) {
+                if (vel.isZero()) {
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = 1.8f;
+                } else {
+                    vel.normalize();
+                    vel.scale(1.8f);
+                    field_0x3c.x = vel.x;
+                    field_0x3c.y = vel.y;
+                }
+            }
+        }
+    } else {
+        EnemyBase_804A4808::vfunc_0x88();
+    }
 }
 
 void Terrorpin_804A3B10::vfunc_0x44() {
