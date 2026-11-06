@@ -56,19 +56,15 @@ void Singleton_801DAC6C::fn_801DAEAC(s32 serial) {
     }
 }
 
-// FIXME: 87%. The original reads mCount into r31 first, then r30 = -1,
-// r29 = list pointer, r28 = i; ours allocates them in the reverse order
-// (r31 = -1, r30 = pointer, r29 = i, r28 = count).
-void Singleton_801DAC6C::fn_801DAE24() {
-    s32 count = mCount;
-    s32 i = 0;
-    while (i < count) {
+// const: the original reads mCount into r31 before the register saves (the
+// loop tests the member; a count local keeps the load after them).
+void Singleton_801DAC6C::fn_801DAE24() const {
+    for (s32 i = 0; i < mCount; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mList[i]);
         if (actor != NULL) {
             actor->field_0x10c = -1;
             actor->vfunc_0x24();
         }
-        i++;
     }
 }
 
@@ -92,9 +88,8 @@ void Singleton_801DAC6C::fn_801DAD88() {
     }
 }
 
-// FIXME: 91%. Same instructions; the original loads the serial (lwz r31)
-// before saving r30 and clearing the result (li r30, 0). Ours clears first.
-u8 Singleton_801DAC6C::fn_801DAD2C() {
+// const: the original loads the serial (lwz r31) before saving r30.
+u8 Singleton_801DAC6C::fn_801DAD2C() const {
     s32 serial = mSerial4;
     u8 result = 0;
     if (serial >= 0) {
@@ -106,11 +101,9 @@ u8 Singleton_801DAC6C::fn_801DAD2C() {
     return result;
 }
 
-// FIXME: 81%. Same instructions; the original loads the serial (lwz r31) and
-// clears the result (li r3, 0) before it saves r30 and copies out into it
-// (mr r30, r4), and issues the cmpwi before the second and third stfs. Ours
-// copies out first.
-bool Singleton_801DAC6C::fn_801DACAC(JGeometry::TVec3f* out) {
+// const: the original loads the serial (lwz r31) and clears the result
+// before it saves r30.
+bool Singleton_801DAC6C::fn_801DACAC(JGeometry::TVec3f* out) const {
     bool result = false;
     s32 serial = mSerial0;
     out->set(0.0f, 0.0f, 0.0f);
