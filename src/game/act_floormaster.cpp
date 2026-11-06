@@ -1,3 +1,5 @@
+#include <float.h>
+
 #include "game/GameAudio.h"
 #include "game/act/act_floormaster.h"
 #include "game/ActorManager.h"
@@ -10,8 +12,7 @@
 
 bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold);
 bool fn_801CD1D0(s32 player);
-void fn_802316C8(s32 player, s32 layer, const JGeometry::TVec3f* pos);
-#define FLT_EPSILON (*(float*)__float_epsilon)
+bool fn_802316C8(s32 player, s32 layer, const JGeometry::TVec3f* pos);
 
 static const s16 lbl_8046A3D8[] = { 0, 5, 1, 5, 2, 5, -1, -1 };
 static const s16 lbl_8046A3E8[] = { 3, 5, 4, 10, -1, -1 };
@@ -31,6 +32,33 @@ static const s16* lbl_804A5FE8[] = {
     lbl_8046A41C,
 };
 
+// The hit reaction shared by vfunc_0x58/0x5C/0x60: a hit in the attack states starts state 4.
+inline void Floormaster_804A6004::setEmitterColor(f32 rMult) {
+    f32 gMult = 255.0f;
+    f32 bMult = 0.0f;
+    u8 prm = field_0x2b4 * 255.0f + 0.5f;
+    mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
+    mEmitter2b0->setGlobalEnvColor(field_0x2b4 * rMult + 0.5f,
+                                   field_0x2b4 * gMult + 0.5f,
+                                   field_0x2b4 * bMult + 0.5f);
+}
+
+inline void Floormaster_804A6004::onHit() {
+    // The flag form matches; calling fn_8020ED5C(4) straight from the cases drops the callers to 92-97 %.
+    bool change = false;
+    switch (mState) {
+    case 3:
+    case 5:
+    case 6:
+    case 8:
+        change = true;
+        break;
+    }
+    if (change) {
+        fn_8020ED5C(4);
+    }
+}
+
 Floormaster_804A6004::Floormaster_804A6004() {
     field_0x2a8 = 0.0f;
     field_0x2ac = 0.0f;
@@ -45,7 +73,8 @@ Floormaster_804A6004::~Floormaster_804A6004() {
     releaseEmitter_801EE434(mEmitter2b0);
 }
 
-// FIXME: 98.61%. scheduling+regalloc + reloc-name (literal pool and float conversion stack order)
+// FIXME: 98.78%. scheduling+regalloc + reloc-name: the two int-to-float conversions of field_0x90 are
+// scheduled and allocated in the opposite order (f0/f1, r3/r4 swapped).
 void Floormaster_804A6004::init() {
     EnemyBase_804A4808::init();
     if (field_0x90 & 1) {
@@ -57,6 +86,7 @@ void Floormaster_804A6004::init() {
         field_0x2ac = 8.0f + (f32)y;
     }
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+    // Field-wise copy throughout: `mBox2 = mBox` drops init/fn_8020ED5C/vfunc_0x94 to 72-93 %.
     mBox2.i.x = mBox.i.x;
     mBox2.i.y = mBox.i.y;
     mBox2.f.x = mBox.f.x;
@@ -77,7 +107,8 @@ void Floormaster_804A6004::init() {
     mAnim.startAnim_801D22DC(0, 0, false);
 }
 
-// FIXME: 98.37%. scheduling+regalloc + reloc-name
+// FIXME: 98.76%. scheduling+regalloc + reloc-name: case 1 colour setup is scheduled differently
+// (f-register choice in the fctiwz sequence, one stfd position).
 void Floormaster_804A6004::fn_8020ED5C(s32 state) {
     switch (state) {
     case 0:
@@ -107,15 +138,7 @@ void Floormaster_804A6004::fn_8020ED5C(s32 state) {
         mTargetSpeed = 1.0f;
         mEmitter2b0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1AF, 0, 0, NULL, NULL, true, 0.0f);
         if (mEmitter2b0 != NULL) {
-            u8 prm = field_0x2b4 * 255.0f + 0.5f;
-            mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
-            f32 rMult = 150.0f;
-            f32 gMult = 255.0f;
-            f32 bMult = 0.0f;
-            u8 envR = field_0x2b4 * rMult + 0.5f;
-            u8 envG = field_0x2b4 * gMult + 0.5f;
-            u8 envB = field_0x2b4 * bMult + 0.5f;
-            mEmitter2b0->setGlobalEnvColor(envR, envG, envB);
+            setEmitterColor(150.0f);
         }
         break;
     }
@@ -240,7 +263,7 @@ void Floormaster_804A6004::fn_8020ED5C(s32 state) {
     }
 }
 
-// FIXME: 99.79%. operands + reloc-name (stack slot order)
+// FIXME: 99.79%. operands + reloc-name: the three TVec3f locals sit in different stack slots.
 void Floormaster_804A6004::fn_8020EB08() {
     JGeometry::TVec3f diff;
     JGeometry::TVec3f targetPos;
@@ -270,6 +293,7 @@ void Floormaster_804A6004::fn_8020EB08() {
         break;
     }
 
+    // Flag form matches; moving the body into the cases drops this function to 97 %.
     bool inRange = false;
     switch (mState) {
     case 5:
@@ -311,7 +335,9 @@ void Floormaster_804A6004::fn_8020EB08() {
     }
 }
 
-// FIXME: 96.96%. missing/extra + reloc-name (ours has 1 fewer instrs (435 vs 436))
+// FIXME: 96.96%. missing/extra + reloc-name: case 10 fade-out: the original loads 0.0f and fsubs, ours
+// folds 0.0f - x into fneg (1 instruction fewer); case 3 sets the flag with `mr r30, r4` where ours
+// has `li r30, 1`; case 7 stores x/y from pos in the other order and stfd conversion order differs.
 void Floormaster_804A6004::vfunc_0x90(u8 mapHit) {
     fn_8020EB08();
     switch (mState) {
@@ -340,14 +366,7 @@ void Floormaster_804A6004::vfunc_0x90(u8 mapHit) {
                 field_0x2b4 += (1.0f - field_0x2b4) * (1.0f / remaining);
             }
             if (mEmitter2b0 != NULL) {
-                f32 rMult = 75.0f;
-                f32 gMult = 255.0f;
-                f32 bMult = 0.0f;
-                u8 prm = field_0x2b4 * 255.0f + 0.5f;
-                mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
-                mEmitter2b0->setGlobalEnvColor(field_0x2b4 * rMult + 0.5f,
-                                               field_0x2b4 * gMult + 0.5f,
-                                               field_0x2b4 * bMult + 0.5f);
+                setEmitterColor(75.0f);
             }
             startSound_801F0E34(0x50089, 0);
         }
@@ -472,21 +491,14 @@ void Floormaster_804A6004::vfunc_0x90(u8 mapHit) {
                 field_0x2b4 += (0.0f - field_0x2b4) * (1.0f / remaining);
             }
             if (mEmitter2b0 != NULL) {
-                f32 rMult = 75.0f;
-                f32 gMult = 255.0f;
-                f32 bMult = 0.0f;
-                u8 prm = field_0x2b4 * 255.0f + 0.5f;
-                mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
-                mEmitter2b0->setGlobalEnvColor(field_0x2b4 * rMult + 0.5f,
-                                               field_0x2b4 * gMult + 0.5f,
-                                               field_0x2b4 * bMult + 0.5f);
+                setEmitterColor(75.0f);
             }
         }
         break;
     }
 }
 
-// FIXME: 98.69%. regalloc-only + reloc-name
+// FIXME: 99.66%. regalloc-only: the mirrored box x pair (fneg of mBox.f.x / mBox.i.x) uses swapped f registers.
 void Floormaster_804A6004::vfunc_0x94() {
     if (mState == 4) return;
     EnemyBase_804A4808::vfunc_0x94();
@@ -518,7 +530,6 @@ void Floormaster_804A6004::vfunc_0x94() {
     mBox2.f.y = mBox.f.y;
 }
 
-// FIXME: 99.64%. reloc-name
 void Floormaster_804A6004::vfunc_0x88() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     switch (mState) {
@@ -589,50 +600,26 @@ bool Floormaster_804A6004::vfunc_0x58() {
         }
         if (hitOccurred) {
             startSound_801F0E34(0x5007D, 0);
-            bool change = false;
-            switch (mState) {
-            case 3:
-            case 5:
-            case 6:
-            case 8:
-                change = true;
-                break;
-            }
-            if (change) {
-                fn_8020ED5C(4);
-            }
+            onHit();
         }
     }
     return hitOccurred;
 }
 
-// FIXME: 99.91%. reloc-name
-bool Floormaster_804A6004::vfunc_0x60() {
-    bool result = false;
+u8 Floormaster_804A6004::vfunc_0x60() {
+    u8 result = 0;
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         result = fn_801F2DB4(mActorId, 'NULL', NULL);
         if (result) {
             startSound_801F0E34(0x5007D, 0);
-            bool change = false;
-            switch (mState) {
-            case 3:
-            case 5:
-            case 6:
-            case 8:
-                change = true;
-                break;
-            }
-            if (change) {
-                fn_8020ED5C(4);
-            }
+            onHit();
         }
     }
     return result;
 }
 
-// FIXME: 99.88%. reloc-name
-bool Floormaster_804A6004::vfunc_0x5C() {
-    bool result = false;
+u8 Floormaster_804A6004::vfunc_0x5C() {
+    u8 result = 0;
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         for (int i = 0; i < 4; i++) {
             s32 flag;
@@ -641,7 +628,7 @@ bool Floormaster_804A6004::vfunc_0x5C() {
                 fn_8023B6CC(i);
                 if (field_0x1dc.fn_801EAC20(i)) {
                     JGeometry::TVec3f effectPos(pos.x, pos.y, 0.0f);
-                    result = true;
+                    result = 1;
                     fn_801CB538(field_0x4, &effectPos, 0, 0);
                 }
             }
@@ -649,18 +636,7 @@ bool Floormaster_804A6004::vfunc_0x5C() {
 
         if (result) {
             startSound_801F0E34(0x5007D, 0);
-            bool change = false;
-            switch (mState) {
-            case 3:
-            case 5:
-            case 6:
-            case 8:
-                change = true;
-                break;
-            }
-            if (change) {
-                fn_8020ED5C(4);
-            }
+            onHit();
         }
     }
     return result;
