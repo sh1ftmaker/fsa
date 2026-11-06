@@ -290,16 +290,44 @@ class FireRodFire_804A89F0 : public ActorBase_804A5770 {
 public:
     FireRodFire_804A89F0() {}
     /* 0x08 */ virtual ~FireRodFire_804A89F0();
-    // 0x802BA9F0 / 0x802BA9F8 (game/act_fire_rod_fire.cpp, not written yet):
-    // return the words at 0x260 and 0x264. act_ice_melted_by_four_players
-    // calls both on FIRE actors it finds.
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x24 */ virtual void vfunc_0x24();
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    /* 0x54 */ virtual void vfunc_0x54(const JGeometry::TVec3f* pos, bool arg2);
+    /* 0x58 */ virtual void vfunc_0x58();
+
     s32 fn_802BA9F0();
     s32 fn_802BA9F8();
-    // 0x802BAA0C (game/act_fire_rod_fire.cpp, not written yet): centres the fire on
-    // `box` and sets its boxes from it; the player's state 0x45 (fn_80259830, tu_80256C74)
-    // calls it each frame with the box in front of the player.
     void fn_802BAA0C(const JGeometry::TBox2f* box);
-    /* 0x230 */ u8 field_0x230[0x64];
+    bool fn_802BACE4();
+
+    /* 0x230 */ JPABaseEmitter* mEmitter230;
+    /* 0x234 */ JPABaseEmitter* mEmitter234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ JGeometry::TVec3f field_0x23c;
+    /* 0x248 */ JGeometry::TVec3f field_0x248;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ s32 field_0x264;
+    /* 0x268 */ s32 field_0x268;
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ s32 field_0x270;
+    /* 0x274 */ s32 field_0x274;
+    /* 0x278 */ s32 field_0x278;
+    /* 0x27C */ s32 field_0x27c;
+    /* 0x280 */ s32 field_0x280;
+    /* 0x284 */ s32 field_0x284;
+    /* 0x288 */ s16 field_0x288;
+    /* 0x28A */ u8 field_0x28a[2];
+    /* 0x28C */ f32 field_0x28c;
+    /* 0x290 */ u8 field_0x290;
+    /* 0x291 */ u8 field_0x291;
+    /* 0x292 */ u8 field_0x292;
+    /* 0x293 */ u8 field_0x293;
 }; // Size: 0x294
 
 // Spawned for 'TUBO'.
