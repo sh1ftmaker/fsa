@@ -60,7 +60,7 @@ bool EscortWoman_8049E1D0::vfunc_0x58() {
     case 7:
     case 8:
         return fn_80121DC8(fn_8012285C()) <= 32.0f;
-    // An empty case for states 15-16 (RULES_CARD.md line 222)
+    // Empty case: the original's dispatch has an unreachable extra branch for states 15 and 16.
     case 15:
     case 16:
         break;
@@ -121,6 +121,7 @@ void EscortWoman_8049E1D0::vfunc_0x68() {
         camera = gGameRoot2_8053AB10->field_0x24;
         if (camera->field_0x840 == 0) {
             camera->field_0x840 = 1;
+            // The original reads mPos.x and mPos.y once for both corners; direct reads reload them.
             f32 posX = mPos.x;
             camera->field_0x844.f.x = posX;
             camera->field_0x844.i.x = posX;
@@ -202,9 +203,7 @@ void EscortWoman_8049E1D0::vfunc_0x68() {
 
     case 9:
         if (fn_80121E40() && mAnim.fn_801D208C()) {
-            field_0x3c.z = 0.0f;
-            field_0x3c.y = 0.0f;
-            field_0x3c.x = 0.0f;
+            field_0x3c.set(0.0f, 0.0f, 0.0f);
             field_0x3c8++;
             if (field_0x3c8 >= 30) {
                 field_0x3c8 = 0;
@@ -276,7 +275,7 @@ void EscortWoman_8049E1D0::vfunc_0x68() {
         }
         break;
     }
-    case 17:
+    case 17: // empty case: the original's dispatch has an extra unreachable branch
         break;
     }
 }

@@ -50,7 +50,9 @@ public:
     /* 0x90 */ virtual void vfunc_0x90();
     /* 0x94 */ virtual void vfunc_0x94();
     // Slots 0x98-0xBC are not known yet; declared to number 0xC0 (the zora overrides it).
-    /* 0x98 */ virtual void vfunc_0x98(s32 arg1 = 0, s32 arg2 = 0, f32 arg3 = 0.0f);
+    // fn_80123AB4: r4 and r5 are fn_801EEC98's last two parameters, f1 the distance limit its
+    // result is compared with.
+    /* 0x98 */ virtual void vfunc_0x98(s32 arg1, s32 arg2, f32 arg3);
     // fn_80123394 (tu_801213EC, 0x720 bytes, not written yet; the zora forwards to it).
     // Parameters read off its register use: r4 (tested >= 0), f1, f2, f3 and f5 (f4 is not
     // read).
