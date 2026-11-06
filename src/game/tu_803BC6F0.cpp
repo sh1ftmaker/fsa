@@ -1689,6 +1689,126 @@ void FileSelect_804AFF60::fn_803CABAC() {
     }
 }
 
+// FIXME: 98.38 (try.py: different, same length; registers shift from it).
+// As fn_803C2E24: the original keeps &others in r27 from the fill loop on
+// (`mr r3, r27`) and walks it in the row loop; ours computes &others again
+// before the row loop. A second pointer variable holding &others gets the
+// fill right but copies it for the walk (98.39, one more instruction).
+// Every field, call and branch is the original's. .sdata2 @NNN.
+// State 20 (copy, from fn_803C1340): the board slides out while row
+// field_0xa4 takes its highlighted colours (fn_803BC6F0), the four buttons
+// slide out, and the other two rows slide back in, spaced around the middle
+// of the second and third rows' places (their new targets field_0x70 /
+// field_0x64); row field_0xa4's target becomes the first row's place (timings
+// lbl_8050DB0C field_0x4c[0xA2..0xA9]); state 25 (picking the destination).
+void FileSelect_804AFF60::fn_803C9F80() {
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0xA2];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0xA3];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0xA4];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0xA5];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0xA6];
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0xA7];
+    s16 rowFrames = lbl_8050DB0C.field_0x4c[0xA8];
+    s16 rowStep = lbl_8050DB0C.field_0x4c[0xA9];
+    s32 end = boardDelay + boardFrames;
+    if (end < buttonDelay + (buttonFrames + buttonStep * 3)) {
+        end = buttonDelay + (buttonFrames + buttonStep * 3);
+    }
+    if (end < rowDelay + (rowFrames + rowStep)) {
+        end = rowDelay + (rowFrames + rowStep);
+    }
+
+    // The two files that weren't chosen.
+    s32 others[2];
+    s32* other = others;
+    for (s32 i = 0; i < 3; i++) {
+        if (i != field_0xa4) {
+            *other++ = i;
+        }
+    }
+
+    field_0xd8++;
+    if (field_0xd8 > boardDelay) {
+        field_0x14->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x14->fn_80402628(boardFrames, field_0x14->field_0x28, 0);
+        field_0x18->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x18->fn_80402628(boardFrames, field_0x18->field_0x28, 0);
+        field_0x1c->fn_80402B10(boardFrames, 0, 0.0f, 600.0f);
+        field_0x1c->fn_80402628(boardFrames, field_0x1c->field_0x28, 0);
+        for (s32 j = 0; j < 81; j++) {
+            field_0x14->setAlpha_804023D0(mScreen->search(lbl_80476618[j]), field_0x132[j]);
+        }
+        for (s32 j = 0; j < 19; j++) {
+            field_0x14->setAlpha_804023D0(mScreenHuuin->search(lbl_804768A0[j]), field_0x183[j]);
+        }
+        if (field_0xd8 <= boardDelay + boardFrames) {
+            fn_803BC6F0(field_0xa4, (f32)(field_0xd8 - boardDelay) / (f32)boardFrames);
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 0.0f, 100.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, field_0x24[i]->field_0x28, 0);
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    // The middle of the second and third rows' places.
+    f32 midRow = (field_0x38[1]->field_0xc + field_0x38[2]->field_0xc) * 0.5f;
+    f32 midTab = (field_0x44[1]->field_0xc + field_0x44[2]->field_0xc) * 0.5f;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > rowDelay + i * rowStep) {
+            if (others[i] == 0) {
+                field_0x70[0] = midRow - field_0x38[0]->field_0xc;
+                field_0x64[0] = midTab - field_0x44[0]->field_0xc;
+                field_0x38[others[i]]->moveFromCentre_80402E08(0.0f, field_0x70[0]);
+                field_0x44[others[i]]->moveFromCentre_80402E08(0.0f, field_0x64[0]);
+            } else if (others[i] == 1) {
+                field_0x70[1] = (midRow - field_0x38[1]->field_0xc) + i * (field_0x38[2]->field_0xc - field_0x38[1]->field_0xc);
+                field_0x64[1] = (midTab - field_0x44[1]->field_0xc) + i * (field_0x44[2]->field_0xc - field_0x44[1]->field_0xc);
+                field_0x38[others[i]]->moveFromCentre_80402E08(0.0f, field_0x70[1]);
+                field_0x44[others[i]]->moveFromCentre_80402E08(0.0f, field_0x64[1]);
+            } else {
+                field_0x70[2] = midRow - field_0x38[1]->field_0xc;
+                field_0x64[2] = midTab - field_0x44[1]->field_0xc;
+                field_0x38[others[i]]->moveFromCentre_80402E08(0.0f, field_0x70[2]);
+                field_0x44[others[i]]->moveFromCentre_80402E08(0.0f, field_0x64[2]);
+            }
+            field_0x38[others[i]]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+            field_0x38[others[i]]->fn_80402628(rowFrames, 0, field_0x38[others[i]]->field_0x28);
+            setRowAlphas(this, others[i]);
+            field_0x44[others[i]]->fn_80402B10(rowFrames, 0, 600.0f, 0.0f);
+            field_0x44[others[i]]->fn_80402628(rowFrames, 0, field_0x44[others[i]]->field_0x28);
+            setTabAlphas(this, others[i]);
+        }
+    }
+    field_0x70[field_0xa4] = field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc;
+    field_0x64[field_0xa4] = field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc;
+    if (field_0xd8 > end) {
+        setState(25);
+    }
+}
+
 void FileSelect_804AFF60::fn_803C9F14() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 2) {
