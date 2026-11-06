@@ -17,9 +17,24 @@ static const u32 lbl_8046D4F0[23] = {
     0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
 };
 
-// FIXME: 95.98 %, missing/extra (2 instrs: r28 save/restore in prologue/epilogue).
+// Spawns the 'IMUP' actor for player i with the given param (item sprite code, collecting player and
+// i in the top bits). Inlined at six sites in fn_802BFF30.
+static inline void spawnImup(u32 param, s32 i, const JGeometry::TVec3f* pos) {
+    s32 layer = getPlayerLayer_8023DE58(i);
+    getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, pos, param, -1, -1);
+}
+
+inline void DroppedItem_804A8C80::talk(s32 serial, s32 layer, const JGeometry::TVec3f& pos) {
+    fn_8038AD24(field_0x25c, 0x151, serial, layer, pos, 4);
+}
+
+// FIXME: 95.98 %, missing/extra (ours has 2 fewer instructions). The original saves one more callee-saved register (r28)
+// across the second getGameView call, builds the final spawn key (fn_802D6F38 with `true`) in a different
+// rlwimi order, and loads hit.x / hit.y before the 0.0f literal in the `!= 0.0f` tests.
 void DroppedItem_804A8C80::init() {
     field_0x238 = field_0x90 & 0x7F;
+    // Both arms unpack the same four fields: hoisting them out of the if/else drops init from 96 % to 91 %
+    // (the original's code is duplicated per arm).
     if (field_0x238 == 11 || field_0x238 == 22) {
         field_0x23c = (field_0x90 >> 22) & 0x1F;
         field_0x234 = (field_0x90 >> 7) & 0x1F;
@@ -83,6 +98,7 @@ void DroppedItem_804A8C80::init() {
         }
 
         if (field_0x234 == 0) {
+            // The original re-reads the view row/col and rebuilds the key (field_0x270 above) here.
             s32 row = getGameView_802D6A9C()->field_0x18;
             s32 col = getGameView_802D6A9C()->field_0x14;
             JGeometry::TVec2f pos(mPos.x, mPos.y);
@@ -127,10 +143,12 @@ void DroppedItem_804A8C80::vfunc_0x40() {
     field_0x250 = 1;
 }
 
-// FIXME: 93.53 %, missing/extra (box addPos register order and temporary handling).
+// FIXME: 98.46 %, missing/extra (ours has 4 more instructions). Our tile 13/14 branches store mAlive = false twice
+// more than the original, and the `hit.x != 0.0f` test loads the 0.0f literal before hit.x (original: hit.x first).
 void DroppedItem_804A8C80::update() {
+    JGeometry::TVec2<f32> p(mPos.x, mPos.y);
     JGeometry::TBox2f box(mBox);
-    box.addPos(mPos.x, mPos.y);
+    box.addPos(p);
     s32 player = fn_8023AF14(&box, field_0x4, false, 0.0f);
 
     if (field_0x248 != 0) {
@@ -160,7 +178,7 @@ void DroppedItem_804A8C80::update() {
             if (mPos.z > 0.0f) {
                 field_0x3c.z -= 0.3f;
                 JGeometry::TVec3f hit(0.0f, 0.0f, 0.0f);
-                if (fn_801F2618(&hit, false) == 1) {
+                if (fn_801F2618(&hit, false)) {
                     if (hit.x != 0.0f) {
                         field_0x3c.x *= -1.0f;
                     }
@@ -278,16 +296,16 @@ void DroppedItem_804A8C80::update() {
         if (field_0x234 == 1) {
             fn_801F35AC();
         } else {
-            getGameView_802D6A9C()->fn_802D6F38(field_0x264, field_0x268, field_0x270, false);
+            // Same load order as in fn_802BFF30: the original loads these two before the TVec2f argument copy.
+            u32 v270 = field_0x270;
+            u32 v264 = field_0x264;
+            getGameView_802D6A9C()->fn_802D6F38(v264, field_0x268, v270, false);
         }
         break;
 
     case 2:
         fn_8022FE80(field_0x25c, field_0x4, mSerial, false, false);
-        {
-            JGeometry::TVec3f pos = mPos;
-            fn_8038AD24(field_0x25c, 0x151, mSerial, field_0x4, pos, 4);
-        }
+        talk(mSerial, field_0x4, mPos);
         field_0x230 = 3;
         break;
 
@@ -306,12 +324,12 @@ void DroppedItem_804A8C80::update() {
     }
 }
 
-// FIXME: 95.84 %, missing/extra (fabs rounding and comparison order).
+// FIXME: 99.43 %, scheduling+regalloc. The diffX / diffY loads and the fabs / frsp / fctiwz pairs are interleaved
+// in the opposite order (the original starts with the mPos.y / playerPos.y pair).
 void DroppedItem_804A8C80::fn_802C0570() {
     mBox.set(-6.0f, -6.0f, 6.0f, 6.0f);
     JGeometry::TVec3f savedPos(mPos);
-    u32 ret = fn_801F2740(-1);
-    u8 hitFlags = ret;
+    u8 hitFlags = fn_801F2740(-1);
     if (hitFlags != 0) {
         u8 mask = 1;
         for (s32 player = 0; player < 4; player++, mask <<= 1) {
@@ -319,8 +337,8 @@ void DroppedItem_804A8C80::fn_802C0570() {
                 JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(player);
                 f32 diffX = mPos.x - playerPos.x;
                 f32 diffY = mPos.y - playerPos.y;
-                s32 absX = fabs(diffX);
-                s32 absY = fabs(diffY);
+                s32 absX = FABS(diffX);
+                s32 absY = FABS(diffY);
                 s32 dir = fn_80230CFC(player);
                 if ((absX >= 0 && absX <= 15 && dir == 0) || dir == 1) {
                     if (mPos.x > playerPos.x) {
@@ -341,7 +359,7 @@ void DroppedItem_804A8C80::fn_802C0570() {
             }
         }
     }
-    if ((u8)ret != 0) {
+    if (hitFlags != 0) {
         if (fn_801F2618(NULL, false) == 1) {
             mPos = savedPos;
         }
@@ -349,12 +367,14 @@ void DroppedItem_804A8C80::fn_802C0570() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
 }
 
-// FIXME: 97.16 %, missing/extra (2 instrs: dead beq branch in original binary).
+// FIXME: 98.79 %, missing/extra (ours has 1 fewer instruction). The original tests field_0x4 == 0 once more (a dead
+// beq, probably from an inlined helper), and the `mPos.z != 0.0f` test loads mPos.z before the 0.0f literal.
 void DroppedItem_804A8C80::draw() {
     if (field_0x230 == 1) {
         return;
     }
-    if (field_0x4 == 0) {
+    s32 layer = field_0x4;
+    if (layer == 0) {
         SpriteParams_801F5AE0 params;
         params.field_0x10.a = field_0x24c;
         if (mPos.z != 0.0f) {
@@ -368,11 +388,11 @@ void DroppedItem_804A8C80::draw() {
         if (field_0x248 == 0 || (field_0x248 & 3) == 0) {
             if (field_0x254 >= 120 || (field_0x254 != 0 && (field_0x254 & 3) == 0)) {
                 if (mPos.z != 0.0f) {
-                    fn_803075AC(mSerial, field_0x4, &mPos, field_0x238 + 0x40, 0, 2, -1, false, 0, 0);
+                    fn_803075AC(mSerial, layer, &mPos, field_0x238 + 0x40, 0, 2, -1, false, 0, 0);
                 } else if (field_0x23c == 2) {
-                    fn_803075AC(mSerial, field_0x4, &mPos, field_0x238 + 0x20c, 0, 2, -1, false, 0, 0);
+                    fn_803075AC(mSerial, layer, &mPos, field_0x238 + 0x20c, 0, 2, -1, false, 0, 0);
                 } else {
-                    fn_803075AC(mSerial, field_0x4, &mPos, field_0x238 + 0x182, 0, 2, -1, false, 0, 0);
+                    fn_803075AC(mSerial, layer, &mPos, field_0x238 + 0x182, 0, 2, -1, false, 0, 0);
                 }
             }
         }
@@ -380,7 +400,8 @@ void DroppedItem_804A8C80::draw() {
     drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 0x80), 32.0f);
 }
 
-// FIXME: 94.79 %, missing/extra (few instructions differ in spawnActor argument setup).
+// FIXME: 95.55 %, missing/extra (ours has 1 fewer instruction). The original copies player into a second saved
+// register (r22, an inlined leader lookup) and orders the 0x30000000 addis / param add differently.
 bool DroppedItem_804A8C80::fn_802BFF30(s32 player) {
     s32 leader = player;
     if (fn_8022F514(player)) {
@@ -412,42 +433,31 @@ bool DroppedItem_804A8C80::fn_802BFF30(s32 player) {
                     continue;
                 }
                 if (i == player) {
-                    u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24);
-                    s32 layer = getPlayerLayer_8023DE58(i);
-                    getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                    spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24), i, &pos);
                 } else {
-                    u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24);
-                    s32 layer = getPlayerLayer_8023DE58(i);
-                    getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                    spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24), i, &pos);
                 }
             } else {
                 if (i != leader) {
                     continue;
                 }
                 if (i == player) {
-                    u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24);
-                    s32 layer = getPlayerLayer_8023DE58(i);
-                    getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                    spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24), i, &pos);
                 } else {
-                    u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24);
-                    s32 layer = getPlayerLayer_8023DE58(i);
-                    getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                    spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24), i, &pos);
                 }
             }
         } else {
             if (i == player) {
-                u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24);
-                s32 layer = getPlayerLayer_8023DE58(i);
-                getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + (i << 24), i, &pos);
             } else {
-                u32 param = lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24);
-                s32 layer = getPlayerLayer_8023DE58(i);
-                getActorManager_801F856C()->spawnActor_801F9484('IMUP', layer, &pos, param, -1, -1);
+                spawnImup(lbl_8046D4F0[spriteIdx] + (player << 26) + 0x30000000 + (i << 24), i, &pos);
             }
         }
     }
 
     if (field_0x244 >= 0) {
+        // The original loads these two before the TVec2f argument copy.
         u32 v270 = field_0x270;
         u32 v264 = field_0x264;
         getGameView_802D6A9C()->fn_802D6F38(v264, field_0x268, v270, false);
@@ -455,7 +465,8 @@ bool DroppedItem_804A8C80::fn_802BFF30(s32 player) {
     return true;
 }
 
-// FIXME: 85.12 %, missing/extra (switch binary search tree vs linear scan, identical to act_small_key.cpp).
+// FIXME: 85.12 %, missing/extra (ours has 8 fewer instructions). The original compares the 24 tile codes with a
+// linear cmpwi / beq chain; a switch gives a bge decision tree (here), an || chain folds into ranges (78 %).
 bool DroppedItem_804A8C80::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (field_0x258 == 0) {
         s32 serial = mSerial;
@@ -513,6 +524,7 @@ bool DroppedItem_804A8C80::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         if (fn_80226850(pos, layer) == 0x3A || fn_80226850(pos, layer) == 0x3D) {
             return false;
         }
+        // The original returns these two tests through a u8 (extrwi r3, r0, 8, 19 after cntlzw).
         if (tileCode == 0x25) {
             return (u8)!getGameView_802D6A9C()->field_0x171;
         }
