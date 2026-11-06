@@ -682,13 +682,14 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
     }
 }
 
-// FIXME: 89.1. Structurally close (6 instructions fewer): in the mosaic the
-// original loads rect2's four fields once before the loops (and multiplies per
-// pixel), ours reloads them per pixel (as locals they get strength-reduced and
-// flag / alpha spill); both mode-11 tests are a byte in the original (subfic /
-// cntlzw / extrwi., the unsolved shape of tu_80285E58's fn_80286688); the first
-// tint stores its colour bytes before its box; mode goes through r0; stack
-// slots differ; the literals are reloc-name.
+// FIXME: 87.2. Structurally close (2 instructions more): in the mosaic the
+// original multiplies h * py and w * px per pixel, ours strength-reduces them
+// (four more registers, so flag / alpha live on the stack: lbz 0x8 / 0x9);
+// read from rect2 inside the loops instead it is 89.1 with 6 fewer (reloads).
+// Both mode-11 tests are a byte in the original (subfic / cntlzw / extrwi.,
+// the unsolved shape of tu_80285E58's fn_80286688); the first tint stores its
+// colour bytes before its box; mode goes through r0; stack slots differ; the
+// literals are reloc-name.
 // One player's panel (fn_802FF0EC): the ortho box rect and viewport / scissor
 // rect2; with flag the record's tile layer mValid - 1 (on its palette set's
 // first colour, field_0x114) and, when the overlay flag (mEntries[3].mScrollBit) is set and the pause screen
@@ -812,10 +813,14 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
         GXDrawDone();
         GXBegin(GX_POINTS, GX_VTXFMT0, (s32)(0.9999f + 160.0f / step) * (s32)(0.9999f + 240.0f / step));
         s32 half = step >> 1;
+        s32 x = rect2->field_0x0;
+        s32 y = rect2->field_0x4;
+        s32 w = rect2->field_0x8;
+        s32 h = rect2->field_0xc;
         for (s32 py = half; py < half + 0xA0; py += step) {
-            u16 sy = 0.00625f * (rect2->field_0xc * py) + rect2->field_0x4;
+            u16 sy = 0.00625f * (h * py) + y;
             for (s32 px = half; px < half + 0xF0; px += step) {
-                u16 sx = 0.004166667f * (rect2->field_0x8 * px) + rect2->field_0x0;
+                u16 sx = 0.004166667f * (w * px) + x;
                 u8 argb[4];
                 GXPeekARGB(sx, sy, (u32*)argb);
                 GXPosition3f32(px, py, 0.0f);
