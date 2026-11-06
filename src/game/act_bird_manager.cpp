@@ -63,30 +63,34 @@ static inline bool stepArc(cls_804A5C88::Path* path, bool atTarget) {
     return done;
 }
 
-// FIXME: 92.20% (missing/extra). The target tests mDirection once into a bool (cntlzw + extrwi.) and
-// branches on it; ours compares with cmpwi at each use, so 9 instructions are missing (227 vs 236).
+// FIXME: 97.84% (scheduling+regalloc). In the inlined stepArc the 125.0f literal is loaded
+// after the sincosTable address (ours before) and the multiply takes its operands the
+// other way round (k * sin written either way).
+// The direction arguments are materialised (cntlzw / extrwi. for == 0, neg / or / srwi. for
+// != 0), hence `? true : false` (RULES_CARD byte-test shape); a plain compare folds into
+// cmpwi. The old position is a TVec2f copy: two f32 locals let MWCC reuse mPos.x where the
+// original reloads it.
 void cls_804A5C88::Path::fn_80209640(JGeometry::TVec2f* delta) {
-    f32 oldX = mPos.x;
-    f32 oldY = mPos.y;
+    JGeometry::TVec2f old(mPos);
 
     switch (mState) {
     case 0:
-        if (stepLine(this, mDirection == 0)) {
+        if (stepLine(this, mDirection == 0 ? true : false)) {
             mState = 1;
         }
         break;
     case 1:
-        if (stepArc(this, mDirection == 0)) {
+        if (stepArc(this, mDirection == 0 ? true : false)) {
             mState = 2;
         }
         break;
     case 2:
-        if (stepLine(this, mDirection != 0)) {
+        if (stepLine(this, mDirection != 0 ? true : false)) {
             mState = 3;
         }
         break;
     case 3:
-        if (stepArc(this, mDirection != 0)) {
+        if (stepArc(this, mDirection != 0 ? true : false)) {
             mState = 4;
         }
         break;
@@ -101,8 +105,8 @@ void cls_804A5C88::Path::fn_80209640(JGeometry::TVec2f* delta) {
 
     if (delta != NULL) {
         delta->set(mPos);
-        delta->x -= oldX;
-        delta->y -= oldY;
+        delta->x -= old.x;
+        delta->y -= old.y;
     }
 }
 
