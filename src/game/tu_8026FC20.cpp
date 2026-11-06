@@ -306,20 +306,46 @@ static inline bool blockedAt(f32 x, f32 y, f32 z, s32 layer) {
     return fn_802265DC(&pos, layer, true);
 }
 
-// Whether the life (the leader's under fn_80240808, as life()) is at its maximum.
-static inline bool lifeFull(Player_804A6F38* player) {
-    if (player->fn_80240808()) {
-        if (fn_80237774(player->fn_80240644()) < fn_80237810(player->fn_80240644())) {
-            return false;
-        }
-    } else if (player->fn_8024189C() < player->fn_802417CC()) {
-        return false;
-    }
-    return true;
-}
 
 // Where the 'SWBM' actor of the spin (fn_8027B648) starts, by facing.
 static const f32 lbl_8046BD88[4][2] = {{24.0f, 0.0f}, {-24.0f, 0.0f}, {2.0f, 24.0f}, {-2.0f, -18.0f}};
+
+// The sword beam: a 'SWBM' (into 0xB38, its layer into 0xB6C) at lbl_8046BD88[facing] from
+// the player when none is out and the life is full (or under fn_80241284 with 0x11AC == 1 and
+// fn_80241544() >= 2, which also sets 0x100 in its argument). fn_8027B648, fn_8027D5F0.
+// The life test is the leader's (fn_80237774 / fn_80237810) under fn_80240808, else the
+// player's own (fn_8024189C / fn_802417CC); as early returns it branches straight into the
+// spawn, as in the original (a bool helper materialises li 0 / 1).
+static inline void fireSwordBeam(Player_804A6F38* player) {
+    s32 facing = player->field_0x3dc;
+    if (player->field_0xb38 >= 0) {
+        return;
+    }
+    if (!(player->fn_80241284() && player->field_0x11ac == 1 && player->fn_80241544() >= 2)) {
+        if (player->fn_80240808()) {
+            if (fn_80237774(player->fn_80240644()) < fn_80237810(player->fn_80240644())) {
+                return;
+            }
+        } else if (player->fn_8024189C() < player->fn_802417CC()) {
+            return;
+        }
+    }
+    JGeometry::TVec3f pos;
+    pos.set(player->mPos);
+    pos.x += lbl_8046BD88[facing][0];
+    pos.y += lbl_8046BD88[facing][1];
+    if (player->fn_80241284() && player->field_0x11ac == 1) {
+        player->field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484(
+            'SWBM', player->field_0x3b4, &pos, ((facing & 3) << 4) | 0x100 | (player->field_0x4 & 3), -1,
+            player->field_0x4);
+    } else {
+        player->field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484(
+            'SWBM', player->field_0x3b4, &pos, ((facing & 3) << 4) | (player->field_0x4 & 3), -1, player->field_0x4);
+    }
+    if (player->field_0xb38 >= 0) {
+        player->field_0xb6c = player->field_0x3b4;
+    }
+}
 
 // The push 0x344 handed on to 0x368 (x / y) and cleared.
 static inline void passOnPush(Player_804A6F38* player) {
@@ -406,6 +432,55 @@ void Player_804A6F38::fn_8027DEA0() {
     }
     fn_8024F0E8(0x20000);
     field_0x3f0 = field_0x3dc;
+}
+
+// Update of state 0x04 (the sword attack): the attack-input check (fn_80275D9C), the pose step
+// fn_802756E4, BgRewrite at 0x30C. Attacks 0, 1 and 3 fire the sword beam at frame 4, attack 2
+// at frame 2; the lunge (4) moves by 0x344 with gravity 0.25 and fires it on landing, its body
+// hits (0x458) running from frame 6 to 15.
+void Player_804A6F38::fn_8027D5F0() {
+    fn_80275D9C();
+    fn_802756E4();
+    fn_802709C8();
+    fn_80268B3C();
+    switch (field_0x45c) {
+    case 0:
+        if (field_0x3fa == 4) {
+            fireSwordBeam(this);
+        }
+        break;
+    case 1:
+        if (field_0x3fa == 4) {
+            fireSwordBeam(this);
+        }
+        break;
+    case 2:
+        if (field_0x3fa == 2) {
+            fireSwordBeam(this);
+        }
+        break;
+    case 3:
+        if (field_0x3fa == 4) {
+            fireSwordBeam(this);
+        }
+        break;
+    case 4:
+        if (!field_0x344.isZero()) {
+            mPos.add(field_0x344);
+            field_0x344.z -= 0.25f;
+            if (mPos.z < 0.0f) {
+                mPos.z = 0.0f;
+                fireSwordBeam(this);
+                passOnPush(this);
+            }
+        }
+        if (field_0x3fa == 6) {
+            field_0x458 = 1;
+        } else if (field_0x3fa == 15) {
+            field_0x458 = 0;
+        }
+        break;
+    }
 }
 
 void Player_804A6F38::fn_8027D4F4() {
@@ -955,9 +1030,8 @@ void Player_804A6F38::fn_8027BA2C() {
 // fn_8023434C) frames 11-34 walk toward fn_8027FA08's spot at 6 per frame. At frame 10, with
 // no 'SWBM' actor yet (0xB38), one is spawned in front when the life is full (or with
 // fn_80241284 and 0x11AC == 1 at 2+ life); the emitter 0x12BC circles mPos at 20 by 0x11C0.
-// FIXME: 96.14. The stack slots of the inlined walkToGroupSpot differ, and the inlined lifeFull
-// result is materialised (li r0, 0 / 1; clrlwi.) where the original branches straight from its two compares into the spawn block (bge / blt), and with
-// the extra live value the saved registers are r29-r31 shifted by one (this in r30, not r31).
+// FIXME: 99.89. Stack offsets only: the vectors of the inlined walkToGroupSpot sit in other
+// slots (the original has the target at 0x44, ours at 0x20; as in fn_8027AAD0).
 void Player_804A6F38::fn_8027B648() {
     fn_80274988();
     if (fn_802486A0() == 3 && !fn_8023434C(field_0x4) && field_0x3fa >= 11 && field_0x3fa < 35) {
@@ -966,21 +1040,7 @@ void Player_804A6F38::fn_8027B648() {
     gBgRewrite_8053AC98->fn_802A20F0(&field_0x30c, field_0x4, field_0x3b4, 0, 1);
     fn_80268B3C();
     if (field_0x3fa == 10) {
-        s32 facing = field_0x3dc;
-        if (field_0xb38 < 0 && ((fn_80241284() && field_0x11ac == 1 && fn_80241544() >= 2) || lifeFull(this))) {
-            JGeometry::TVec3f pos;
-            pos.set(mPos);
-            pos.x += lbl_8046BD88[facing][0];
-            pos.y += lbl_8046BD88[facing][1];
-            if (fn_80241284() && field_0x11ac == 1) {
-                field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484('SWBM', field_0x3b4, &pos, ((facing & 3) << 4) | 0x100 | (field_0x4 & 3), -1, field_0x4);
-            } else {
-                field_0xb38 = getActorManager_801F856C()->spawnActor_801F9484('SWBM', field_0x3b4, &pos, ((facing & 3) << 4) | (field_0x4 & 3), -1, field_0x4);
-            }
-            if (field_0xb38 >= 0) {
-                field_0xb6c = field_0x3b4;
-            }
-        }
+        fireSwordBeam(this);
     }
     if (field_0x12bc != NULL) {
         JGeometry::TVec3f pos = mPos;
