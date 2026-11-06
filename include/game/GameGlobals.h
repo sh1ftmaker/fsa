@@ -1458,6 +1458,12 @@ public:
     // (r3 = lbl_8053ACA8), called before OSSetBootDol / OSResetSystem.
     // Not written yet.
     void fn_802B1558();
+    // SHARED-EDIT (tu_80400DC4 fn_80401518): fn_802B1BE0, the reset itself:
+    // stops the pads, GX and video, copies the save region, then
+    // OSResetSystem(reset, code, menu) (menu clrlwi'd: a bool). Callers pass
+    // lbl_8053ACA8 and (1, 0x80000000, 0) or (0, 0, 0). Not written yet;
+    // the body never reads `this`.
+    void fn_802B1BE0(s32 reset, u32 code, bool menu);
 
     /* 0x4 */ u8 field_0x4;
     /* 0x5 */ u8 field_0x5;
@@ -1478,7 +1484,13 @@ s32 fn_80021840();
 // DVD drive status) and goes on once it returns 0.
 class cls_804B0F90 {
 public:
-    virtual ~cls_804B0F90();
+    // Inline: emitted after the unit's __sinit, as a header inline is.
+    virtual ~cls_804B0F90() {}
+    // Draws message `index` of the screen's message file (the error texts;
+    // tp d_error_msg.cpp messageSet).
+    void fn_80400DC4(u32 index);
+    // Draws the screen for DVD drive status `status` (tp dDvdErrorMsg_c::draw).
+    void fn_80401318(s32 status);
     s32 fn_80401518();
     s32 field_0x4;
 };

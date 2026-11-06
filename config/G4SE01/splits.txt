@@ -6535,7 +6535,7 @@ game/tu_80400DC4.cpp:
 	.rodata     start:0x80479C60 end:0x8048C160
 	.data       start:0x804B0F90 end:0x804B0FA0
 	.bss        start:0x80528868 end:0x80528980
-	.sbss       start:0x8053ADD8 end:0x8053ADF0
+	.sbss       start:0x8053ADE0 end:0x8053ADF0
 	.sdata2     start:0x80543830 end:0x80543860
 
 game/tu_80401848.cpp:

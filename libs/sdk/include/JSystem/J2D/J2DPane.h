@@ -482,6 +482,11 @@ struct J2DTextBox : public J2DPane
         mGradientColor = b;
     }
 
+    // From zeldaret/tp's J2DTextBox.h (the colour passed on to TColor::set by
+    // value; game/tu_80400DC4.cpp's fn_80400DC4 copies it twice per call).
+    void setCharColor(JUtility::TColor color) { mCharColor.set(color); }
+    void setGradColor(JUtility::TColor color) { mGradientColor.set(color); }
+
     // unused/inlined:
     void setFontSize();
     void setLineSpace();

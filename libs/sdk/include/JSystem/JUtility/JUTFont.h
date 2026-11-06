@@ -66,11 +66,13 @@ struct JUTFont
         drawString_size_scale(posX, posY, width, height, str, strlen(str), visible);
     }
 
+    // The advance width, w1 (zeldaret/tp's JUTFont.h: field_0x1; w0 is the
+    // left offset). game/tu_80400DC4.cpp's fn_80400DC4 sums it per line.
     int getWidth(int i_no) const
     {
         TWidth width;
         getWidthEntry(i_no, &width);
-        return width.w0;
+        return width.w1;
     }
 
     void setFixedWidth(bool fixed, int width) {
