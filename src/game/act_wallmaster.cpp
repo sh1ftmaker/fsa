@@ -612,3 +612,13 @@ void cls_804A3E44::vfunc_0x88() {
         break;
     }
 }
+
+void cls_804A3E44::vfunc_0x78() {
+    if (field_0x2b8 >= 0 && fn_8022DCD8(field_0x2b8)) {
+        if (!fn_8022DD74(field_0x2b8)) {
+            mFlags |= 0x8000;
+            field_0x2c4 = field_0x2b8;
+        }
+        field_0x2b8 = -1;
+    }
+}
