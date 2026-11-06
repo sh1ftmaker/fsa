@@ -29,17 +29,6 @@ static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TE
 static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0 (user not written yet)
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
-// The scale of a sprite at height z (fn_802F5FF4; fn_802F5040 inlines it).
-static inline f32 getScale(f32 z) {
-    f32 h;
-    if (z >= 96.0f) {
-        h = 96.0f;
-    } else {
-        h = z;
-    }
-    return 192.0f / (192.0f - h);
-}
-
 // The draw offset of a sprite with params at pos: field_0x1c / field_0x1d
 // in 0x400 / 0x80 units, one step up (0x1c + 1, 0x1d - 1) for a raised sprite
 // (the map's field_0xe461, params' field_0x20, above the ground) below step 1.
@@ -123,10 +112,7 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
 
 cls_803004C0::cls_803004C0() {}
 
-cls_803003AC::cls_803003AC() {
-    field_0x94 = -1;
-    field_0x98 = -1;
-}
+cls_803003AC::cls_803003AC() {}
 
 cls_803003A8::cls_803003A8() {}
 
@@ -235,7 +221,7 @@ void TileMap_804AA858::fn_802FF798() {
     field_0x2380 = 0x40;
     field_0x2384 = 0x40;
     for (int i = 0; i < 0x100; i++) {
-        field_0x2398[i].field_0x0 = 0;
+        field_0x2398[i].mTimer = 0;
     }
     field_0xbf98 = 0;
     field_0x2388 = 0;
@@ -305,8 +291,8 @@ void TileMap_804AA858::fn_802FF568() {
         fn_802FCE74();
     }
     for (s32 i = 0; i < 0x100; i++) {
-        if (field_0x2398[i].field_0x0 > 0) {
-            field_0x2398[i].field_0x0--;
+        if (field_0x2398[i].mTimer > 0) {
+            field_0x2398[i].mTimer--;
         }
     }
     field_0xbf98 = 1;
@@ -378,6 +364,47 @@ void TileMap_804AA858::fn_802FF2D8() {
     }
     field_0xe424 = 0;
     fn_802FEE68();
+}
+
+// FIXME: 92.1. Scheduling and registers only: the original keeps i, the flag,
+// the lbl_8053ACF0 pointer and the three per-player pointers in r22-r29 (ours
+// r24-r31, one pointer induction fewer) and loads field_0x210[i] before
+// field_0x11c[i] for the fn_802FB69C call.
+// Draws the panels of the players whose field_0x148 byte is set (not in
+// screen mode 12), each after field_0xfc's window when it belongs to that
+// player (field_0x230, -1 for all); a player in state 1 of fn_80301D30
+// passes a count, one in state 2 fades in by its lbl_8053ACF0 counter.
+void TileMap_804AA858::fn_802FF0EC() {
+    bool window = false;
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x148[i] == 0 || gGameRoot_8053AAF8->field_0x4c == 12) {
+            continue;
+        }
+        if (field_0x214) {
+            s32 owner = field_0x230;
+            if (i == owner || owner == -1) {
+                field_0xfc->fn_80432750(owner == -1, field_0x21c, field_0x220, field_0x224, field_0x228);
+                window = true;
+            }
+        }
+        s32 count = 0;
+        s32 alpha = 0xFF;
+        if (fn_80301D30(i) == 1) {
+            count = lbl_8053ACF0[i] / 2;
+        } else if (fn_80301D30(i) == 2) {
+            if (lbl_8053AD30->fn_8030A364(getPlayerInputSlot_8030AAF4(i)) || lbl_80506D88[i] == lbl_80506D98[i]) {
+                alpha = (0x10 - lbl_8053ACF0[i]) << 4;
+                if (alpha > 0xFF) {
+                    alpha = 0xFF;
+                }
+            }
+        }
+        fn_802FB69C(i, field_0x11c[i], &field_0x150[i], &field_0x190[i], field_0x210[i], count, alpha);
+    }
+    if (window) {
+        field_0xfc->fn_80432638();
+    }
+    field_0xbf98 = 0;
 }
 
 // Draws the tile layers: indexed f32 positions / RGBA8 colours of the
@@ -822,7 +849,7 @@ void TileMap_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_80
             PSMTXIdentity(m);
         }
         if (0.0f != pos->z && (params == NULL || params->field_0x1f)) {
-            f32 scale = getScale(pos->z);
+            f32 scale = fn_802F5FF4(pos->z);
             m[0][0] *= scale;
             m[1][0] *= scale;
             m[2][0] *= scale;
@@ -1298,9 +1325,15 @@ void TileMap_804AA858::fn_802F601C(const JGeometry::TVec3f* pos, s32 kind, const
     }
 }
 
-// The scale for a height z (callers pass mPos.z).
+// The scale of a sprite at height z (callers pass mPos.z; fn_802F5040 inlines it).
 f32 fn_802F5FF4(f32 z) {
-    return getScale(z);
+    f32 h;
+    if (z >= 96.0f) {
+        h = 96.0f;
+    } else {
+        h = z;
+    }
+    return 192.0f / (192.0f - h);
 }
 
 // FIXME: 98.7. Register allocation only: the 8.0f literal and field_0x2368.y swap
@@ -1388,6 +1421,38 @@ bool TileMap_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
     return result;
 }
 
+// FIXME: 99.2. Register allocation only, as in fn_802F5E9C (inlined here):
+// 8.0f and pos->x swap f5/f6.
+// The position (out) and parameters (*outParams) a sprite at pos is drawn
+// with: on the height grid's tilt (fn_802F58A8, params' matrix concatenated
+// into tmp) for field_0x38 2 or no params, raised by the height (fn_802F5E9C)
+// for 1, else unchanged.
+void TileMap_804AA858::fn_802F5570(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params,
+                                    JGeometry::TVec3f* out, SpriteParams_801F5AE0** outParams, Mtx mtx,
+                                    SpriteParams_801F5AE0* tmp) {
+    if (params == NULL || params->field_0x38 == 2) {
+        if (fn_802F58A8(pos, mtx)) {
+            if (params != NULL) {
+                *tmp = *params;
+                if (tmp->mMtx != NULL) {
+                    PSMTXConcat(tmp->mMtx, mtx, mtx);
+                }
+            }
+            tmp->mMtx = mtx;
+            *outParams = tmp;
+        } else {
+            *outParams = params;
+        }
+        out->set(*pos);
+    } else if (params->field_0x38 == 1) {
+        out->set(pos->x, pos->y, pos->z + fn_802F5E9C(pos));
+        *outParams = params;
+    } else {
+        out->set(*pos);
+        *outParams = params;
+    }
+}
+
 // FIXME: 76.5. The original copies the 0x68-byte record into field_0x11c[slot]
 // with a 13-iteration double-word loop; ours unrolls a word copy. Registers also
 // differ (record and slot in r24 / r23, original r23 / r26).
@@ -1439,7 +1504,7 @@ void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JG
             PSMTXIdentity(m);
         }
         if (0.0f != pos->z && (params == NULL || params->field_0x1f)) {
-            f32 scale = getScale(pos->z);
+            f32 scale = fn_802F5FF4(pos->z);
             m[0][0] *= scale;
             m[1][0] *= scale;
             m[2][0] *= scale;

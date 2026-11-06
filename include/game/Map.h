@@ -49,6 +49,12 @@ class cls_804B1668 {
 public:
     cls_804B1668();
     /* 0x08 */ virtual ~cls_804B1668();
+    // 0x80432750: called by TileMap_804AA858::fn_802FF0EC with
+    // (field_0x230 == -1, the field_0x21c-0x228 rectangle as floats); r4 is
+    // tested clrlwi. (bool).
+    void fn_80432750(bool all, f32 x, f32 y, f32 w, f32 h);
+    // 0x80432638: called by fn_802FF0EC after the panels when fn_80432750 ran.
+    void fn_80432638();
 
     /* 0x04 */ u8 field_0x4[0xB0 - 0x4];
 }; // Size: 0xB0
@@ -85,6 +91,13 @@ extern u8 lbl_80506DB8[4][4];
 extern u8 lbl_80506DC8[4][4];
 extern s32 lbl_80506DD8[4];
 void fn_803068D0(cls_804AA858Sub11C* record);
+// Also tu_80301CD0's, read by TileMap_804AA858::fn_802FF0EC per player:
+// fn_80301D30's state (1 / 2), a byte counter (>> 1, or (0x10 - it) << 4)
+// and two s32 tables compared for equality.
+u8 fn_80301D30(s32 player);
+extern u8 lbl_8053ACF0[4];
+extern s32 lbl_80506D88[4];
+extern s32 lbl_80506D98[4];
 
 // The element classes of TileMap_804AA858's arrays (constructed with
 // __construct_array in its constructor, fn_802FFDEC). Each is named after
@@ -102,17 +115,29 @@ public:
     /* 0x0C */ s32 field_0xc;
 }; // Size: 0x10
 
-// 0x100 at 0x2398. fn_802FF568 counts field_0x0 down each frame.
+// 0x100 at 0x2398: a timed sprite effect that fn_802F6800 adds (the first
+// entry with mTimer 0) from params' field_0x30 kind; fn_802FF568 counts
+// mTimer down each frame.
 class cls_803003AC {
 public:
     cls_803003AC();
 
-    /* 0x00 */ s32 field_0x0;
-    /* 0x04 */ u8 field_0x4[0x28 - 0x4];
+    /* 0x00 */ s32 mTimer;    // the kind's duration, counted down
+    /* 0x04 */ s32 mDuration; // mTimer's start value
+    /* 0x08 */ f32 mScale;    // per kind; fn_802F6800 gives mMtx an identity when it is not 1.0f
+    /* 0x0C */ JGeometry::TVec3f mPos;
+    // The draw arguments of the sprite it came from (cls_8030029C's).
+    /* 0x18 */ void* mRes;
+    /* 0x1C */ s32 mFrame;
+    /* 0x20 */ void* mImage;
+    /* 0x24 */ void* field_0x24;
     /* 0x28 */ SpriteParams_801F5AE0 mParams;
-    /* 0x64 */ u8 field_0x64[0x94 - 0x64];
-    /* 0x94 */ s32 field_0x94;
-    /* 0x98 */ s32 field_0x98;
+    /* 0x64 */ Mtx mMtx; // mParams.mMtx points here when set
+    // params' field_0x10 times the kind's colour / 255, and params'
+    // field_0x14 plus the kind's colour clamped to 0xFF (fn_802F6800). The
+    // constructor's two -1 stores after mParams are TColor's default constructor.
+    /* 0x94 */ JUtility::TColor mColor;
+    /* 0x98 */ JUtility::TColor mAddColor;
 }; // Size: 0x9C
 
 // 0x10 at 0xBF9C: a slot that fn_802F601C fills (mKind 0 is free, else the
@@ -185,7 +210,7 @@ public:
     // field_0x30 is not -1; adds a field_0x2398 effect of that kind (tables
     // indexed by field_0x30) on frames where the sprite's resource address
     // (res + image + res3) matches the frame counter modulo its period.
-    bool fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image, void* res3,
+    u8 fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image, void* res3,
                      SpriteParams_801F5AE0* params);
     // 5 units (act_shutter, act_red_blue_switch, act_spike_floor_check,
     // tu_802D39B8, tu_8029D898) plus BgRewrite's tile animation. Decodes
@@ -245,10 +270,18 @@ public:
     // 9 units / 198 calls. Sets it (sthx; callers clrlwi 16 the value,
     // act_panel_rewrite_npc 0x802C8AC4).
     void fn_802F9974(s32 layer, s32 index, u16 value);
-    // 0x802FF0EC (game/tu_802F5040.cpp, not written yet): r3 only (saved
-    // in r21, fields 0x148+, 0x214, 0x230 read). Called by
+    // 0x802FF0EC: draws the four players' panels (fn_802FB69C, for each
+    // field_0x148[player] set outside screen mode 12), with field_0xfc's
+    // window around field_0x21c-0x228 first when field_0x214 is set and
+    // field_0x230 is that player or -1 (all); clears field_0xbf98. Called by
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
+    // 0x802FB69C (not written yet): one player's panel, from fn_802FF0EC:
+    // the player, its field_0x11c record, field_0x150 / field_0x190 rects,
+    // field_0x210 byte (tested clrlwi.), a count (cmpwi 0, + 1) and an
+    // alpha (0xFF - alpha).
+    void fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_803004C0* rect, cls_803004C0* rect2,
+                     u8 flag, s32 count, u8 alpha);
     // 0x802FF3B0 (game/tu_802F5040.cpp): no arguments. Calls fn_802FA3FC
     // when byte 0xE451 is set and gGameRoot_8053AAF8->field_0x4 is not NULL.
     void fn_802FF3B0();
@@ -327,7 +360,13 @@ public:
     /* 0x0215 */ u8 field_0x215;
     /* 0x0216 */ u8 field_0x216; // 9 units set it to 1 (act_four_switch_monitor 0x802A9E78)
     /* 0x0217 */ u8 field_0x217[4]; // tu_80418B64 stores them (0x8041AEBC, 0x8041F43C-0x8041F48C)
-    /* 0x021B */ u8 field_0x21b[0x22C - 0x21B];
+    /* 0x021B */ u8 field_0x21b;
+    // A rectangle (x, y, w, h: fn_802FCE74 stores it, fn_802FF0EC passes it
+    // as floats to field_0xfc's fn_80432750).
+    /* 0x021C */ s32 field_0x21c;
+    /* 0x0220 */ s32 field_0x220;
+    /* 0x0224 */ s32 field_0x224;
+    /* 0x0228 */ s32 field_0x228;
     // 0x22C-0x244: the window of one player (tu_80441318's setWindow, from
     // fn_80441318 / update): field_0x22c is the window index, field_0x234 a
     // flag (0, or MessageManager's byte 0xEE), field_0x238 / field_0x23c the
