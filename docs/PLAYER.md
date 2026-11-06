@@ -1449,7 +1449,7 @@ the three switches, their case groupings and every handler call are proven as wr
 | fn_802870C8 (state tick) | 98.34 missing/extra | 100 | the five fixes below |
 | fn_80286688 (0x13B8 Z toggle) | 88.68 | 100 | u8 mode inline + one early-out condition |
 | fn_80286E10 | 99.20 | 99.20 regalloc-only | unchanged (loop counter / player / start share r27 in the original) |
-| fn_80286B74 | 99.17 | 99.17 scheduling+regalloc | unchanged (target-vector stores, normalize f-registers) |
+| fn_80286B74 | 99.17 scheduling+regalloc | 99.28 regalloc-only | `target.set(mPos)` in the plain branch (x, y, z stored in order); normalize f-registers left |
 | fn_8028676C | 99.67 | 99.67 regalloc-only | unchanged (f4 / f5 of the two planar lengths; operand swap gives 95.5) |
 
 What the asm proves (all source forms in docs/RULES_CARD.md "Known game-code shapes"):

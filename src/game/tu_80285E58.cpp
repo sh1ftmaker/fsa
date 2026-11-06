@@ -1243,8 +1243,8 @@ void Player_804A6F38::fn_80286E10() {
     }
 }
 
-// FIXME: 99.17. Scheduling and registers only (the target-vector stores and
-// the f-registers of the normalization).
+// FIXME: 99.28. Registers only: the normalization keeps sq / inv_sqrt in f31,
+// step.z in f29 and 4.0f in f30 (ours f30, f31, f29), and f3 / f4 swap.
 // Moves field_0x338 towards the player's position (in mode 0x7F, offset by
 // 16 in the direction field_0x3dc) by 4 units while it is 4-65 units away,
 // else puts it there; only while field_0xb90 > 0.
@@ -1264,7 +1264,7 @@ void Player_804A6F38::fn_80286B74() {
             target.set(mPos.x, mPos.y - 16.0f, mPos.z);
         }
     } else {
-        target.set(mPos.x, mPos.y, mPos.z);
+        target.set(mPos);
     }
     JGeometry::TVec3f step = target - field_0x338;
     if (PSVECMag(&step) < 65.0f && PSVECMag(&step) > 4.0f) {
