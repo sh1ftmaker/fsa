@@ -413,4 +413,41 @@ void Vulture_804A4230::vfunc_0x74() {
     }
 }
 
+// FIXME: 99.58 % (regalloc-only + reloc-name). Registers r30/r31 swapped; literal names
+// not yet split.
+bool Vulture_804A4230::vfunc_0x58() {
+    if ((mFlags & 0x4000) || mBox2.getWidth() <= 0.0f || mBox2.getHeight() <= 0.0f) {
+        return false;
+    }
+
+    JGeometry::TVec3f vel54;
+    JGeometry::TVec3f vel48;
+    JGeometry::TBox2f box;
+    JGeometry::TVec3f from;
+    JGeometry::TVec2f probe;
+    s32 other = -1;
+    bool actorC = false;
+    vel48.set(0.0f, 0.0f, 0.0f);
+    fn_801F317C(&box);
+    s32 player = fn_8023AC74(&box, field_0x4, &probe);
+    if (player >= 0) {
+        actorC = fn_801CC538(player, &probe, &vel54, &other);
+    } else {
+        player = fn_8023AD54(&box, field_0x4, &probe);
+        if (player >= 0) {
+            fn_801CC640(player, &other, &vel48);
+        }
+    }
+
+    bool hit = false;
+    if (player >= 0) {
+        from = mPos - vel48;
+        if (actorC) {
+            from.set(vel54.x, vel54.y, vel54.z);
+        }
+        hit = fn_801F37AC(4, &from, 0, 0, player);
+    }
+    return hit;
+}
+
 Vulture_804A4230::~Vulture_804A4230() {}
