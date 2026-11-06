@@ -3,11 +3,11 @@
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; }  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="3.5" y="3.5" width="953" height="41" rx="8" fill="#161a34" stroke="#262b4e"/>
 <path d="M21.5 11L27 16.5L21.5 22L16 16.5Z" fill="#3aae5c"/>
-<text x="33" y="21" font-size="12.5" fill="#b4b9d8">Boot to menu 24.0 %</text>
+<text x="33" y="21" font-size="12.5" fill="#b4b9d8">Boot to menu 24.2 %</text>
 <path d="M181.89999999999998 11L187.39999999999998 16.5L181.89999999999998 22L176.39999999999998 16.5Z" fill="#ef5b52"/>
 <text x="193.39999999999998" y="21" font-size="12.5" fill="#b4b9d8">Menu to battle 29.4 %</text>
 <path d="M355.5 11L361.0 16.5L355.5 22L350.0 16.5Z" fill="#3d9cf0"/>
-<text x="367.0" y="21" font-size="12.5" fill="#b4b9d8">Actors 28.7 %</text>
+<text x="367.0" y="21" font-size="12.5" fill="#b4b9d8">Actors 28.8 %</text>
 <path d="M476.3 11L481.8 16.5L476.3 22L470.8 16.5Z" fill="#c35ee6"/>
 <text x="487.8" y="21" font-size="12.5" fill="#b4b9d8">Everything else 22.9 %</text>
 <g fill="#d29a2e"><path d="M656.5 11L662 22L651 22Z"/></g>
