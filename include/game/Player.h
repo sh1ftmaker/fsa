@@ -1146,7 +1146,9 @@ public:
     /* 0x13A8 */ cls_8049F140 field_0x13a8;
     /* 0x13B8 */ u8 field_0x13b8;
     /* 0x13B9 */ u8 field_0x13b9[0x13BC - 0x13B9];
-    void fn_80241B44(JGeometry::TVec2f* out); // via fn_8022B8EC
+    // Copies the visible box: the camera's field_0x164 below layer 8, else
+    // field_0xbec->fn_8030AE84 (the GBA screen box).
+    void fn_80241B44(JGeometry::TBox2f* out); // via fn_8022B8EC
     s32 fn_80246904(u32 arg); // via fn_8022C46C
     bool fn_8028FC2C(); // via fn_8022DC3C
     void fn_8024B298(s32 index, JGeometry::TVec3f* out); // via fn_8022E088
@@ -1923,7 +1925,7 @@ s32 fn_80238BC4(s32 serial);
 // different ways (0x3DC). 4 units (tu_802957CC, tu_80354D64, the pull switches; cmpwi 4).
 s32 fn_80238A68(s32 serial);
 
-void fn_8022B8EC(s32 player, JGeometry::TVec2f* out);
+void fn_8022B8EC(s32 player, JGeometry::TBox2f* out);
 s32 fn_8022C46C(s32 player, u32 arg);
 bool fn_8022DC3C(s32 player);
 bool fn_8022E1A0(s32 player, s32 arg);
