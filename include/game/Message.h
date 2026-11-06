@@ -104,9 +104,13 @@ public:
     /* 0x3AF */ u8 field_0x3af;
     /* 0x3B0 */ u8 field_0x3b0;
     /* 0x3B1 */ u8 field_0x3b1;
-    // fn_80390894 indexes it with the window's argument; the array runs to
-    // the end of the object, its real length is not known.
-    /* 0x3B2 */ u8 field_0x3b2[0x3BC - 0x3B2];
+    // fn_80390894 indexes it with the window's argument;
+    // the constructor and fn_8039FB6C clear three bytes.
+    /* 0x3B2 */ u8 field_0x3b2[3];
+    /* 0x3B5 */ u8 field_0x3b5[0x3B8 - 0x3B5];
+    // The constructor stores its window argument here; the processors test
+    // its option flags (field_0x28 bits 0x40 and 0x100).
+    /* 0x3B8 */ MessageWindow_804AF490* field_0x3b8;
     /* 0x3BC */ cls_804B20F8* field_0x3bc; // new'd by the constructor
     /* 0x3C0 */ u8 field_0x3c0[0x3C4 - 0x3C0];
 
@@ -141,6 +145,9 @@ public:
     s32 fn_803A310C();
     void fn_803A3114();
     u8 fn_803A313C();
+    // Inlined by the constructor and cls_804AF774::do_reset; its own copy was
+    // dead-stripped (no address).
+    void resetFields0x168();
 }; // Size: 0x3C4 (the fields game/tu_803944C8.cpp and tu_80390818 use are declared)
 
 // "gc_four_swords_text_e.bmg" (a JMessage BMG file): a 0x20-byte header, the

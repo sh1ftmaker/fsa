@@ -55,6 +55,11 @@ public:
     // and the view's current screen column/row (GameView field_0x14/0x18)
     // to 0x2AA. Called by tu_8023FBF0 with the key from findActorBySerial_801F666C.
     void fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer);
+    // 0x803A3220 (game/tu_803944C8.cpp, the message tag processor's unit):
+    // returns field_0x280. fn_8039FE78 calls it on the key the player holds
+    // ('KEY0', fn_8015445C of fn_8023EF50's serial) and compares it with 0, 1,
+    // 2 and 9.
+    s32 fn_803A3220();
     /* 0x230 */ JGeometry::TVec2f field_0x230; // position (x, y)
     /* 0x238 */ s32 field_0x238; // layer
     /* 0x23C */ u32 field_0x23c; // GameView_804A9950::fn_802D8328 stores the key value's top 2 bits (stw)
