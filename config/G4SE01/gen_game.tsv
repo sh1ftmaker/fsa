@@ -107,7 +107,6 @@ act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804
 act_trick_floor_2	sinit	__sinit_act_trick_floor_2_cpp	-	-	new	new
 act_warp	dtor_emit	__dt__13Warp_804A6DC8Fv	Warp_804A6DC8	0x804A6DC8	new	new
 act_warp	sinit	__sinit_act_warp_cpp	-	-	new	-
-act_wizzrobe	sinit	__sinit_act_wizzrobe_cpp	-	-	new	-
 act_zora_fish_herder	sinit	__sinit_act_zora_fish_herder_cpp	-	-	new	-
 tu_800FF060	dtor	__dt__12cls_8049C858Fv	cls_8049C858	0x8049C858	new	new
 tu_800FF060	sinit	__sinit_tu_800FF060_cpp	-	-	new	new
