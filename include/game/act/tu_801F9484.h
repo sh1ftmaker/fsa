@@ -301,13 +301,7 @@ public:
     /* 0x230 */ u8 field_0x230[0xC0];
 }; // Size: 0x2F0
 
-// Spawned for 'BRMN'.
-class cls_804A5C88 : public ActorBase_804A5770 {
-public:
-    cls_804A5C88();
-    /* 0x08 */ virtual ~cls_804A5C88();
-    /* 0x230 */ u8 field_0x230[0x140];
-}; // Size: 0x370
+#include "game/act/act_bird_manager.h"
 
 
 // Spawned for 'ZSLD'.

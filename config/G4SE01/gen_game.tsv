@@ -4,7 +4,6 @@ act_all_enemies_defeated_check_switch	sinit	__sinit_act_all_enemies_defeated_che
 act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_bee_manager	sinit	__sinit_act_bee_manager_cpp	-	-	new	-
-act_bird_manager	sinit	__sinit_act_bird_manager_cpp	-	-	new	-
 act_blade_trap	dtor	__dt__18BladeTrap_804A04D8Fv	BladeTrap_804A04D8	0x804A04D8	new	new
 act_blade_trap	sinit	__sinit_act_blade_trap_cpp	-	-	new	new
 act_block	dtor	__dt__14Block_804A7A10Fv	Block_804A7A10	0x804A7A10	new	new
