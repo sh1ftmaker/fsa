@@ -35,6 +35,19 @@ void EscortWoman_8049E1D0::init() {
     fn_80124448();
 }
 
+bool EscortWoman_8049E1D0::vfunc_0x54() {
+    switch (field_0x33c) {
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        return true;
+    default:
+        return false;
+    }
+}
+
 void EscortWoman_8049E1D0::vfunc_0x64() {
     field_0x35c = field_0x90 & 0xFF;
     field_0x3cc = (field_0x90 >> 22) & 0x1F;
