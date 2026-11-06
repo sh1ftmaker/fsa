@@ -573,3 +573,42 @@ void cls_804A3E44::vfunc_0x90(u8 mapHit) {
     }
     }
 }
+
+void cls_804A3E44::vfunc_0x88() {
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    switch (mState) {
+    case 1:
+    case 2:
+        field_0x3c.z = -0.7f;
+        if (field_0x2b8 >= 0) {
+            JGeometry::TVec2f vec;
+            fn_801D00B4(field_0x2b8, &vec, 1.0f);
+            field_0x3c.x = vec.x;
+            field_0x3c.y = vec.y;
+        }
+        break;
+    case 4:
+        field_0x3c.z = 0.3f;
+        break;
+    case 5:
+        field_0x3c.z = 0.5f;
+        break;
+    case 6: {
+        JGeometry::TVec2f vec;
+        // fn_801D01A0 reads only (x, y) of both points; field_0x2b0 is an 8-byte TVec2f slot.
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b0, &vec, 0.5f);
+        field_0x3c.x = vec.x;
+        field_0x3c.y = vec.y;
+        break;
+    }
+    case 7:
+        field_0x3c.z = 0.3f;
+        break;
+    case 8:
+        field_0x3c.z = -0.5f;
+        break;
+    case 10:
+        EnemyBase_804A4808::vfunc_0x88();
+        break;
+    }
+}
