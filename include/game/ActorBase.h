@@ -259,8 +259,9 @@ public:
     // mPrevPos along field_0x98's angle, or respawns at mSpawnPos when out
     // of view; returns 0 or 1.
     bool fn_801F11B4();
-    // 8 units / 8 calls, all from vfunc_0x4C overrides (act_sign 0x802D3210,
-    // act_coconut 0x802DF4E4) passing their own (layer, pos) and a member
+    // 8 units / 8 calls, all from vfunc_0x4C overrides (act_pot, act_rock, act_grass,
+    // act_stone, act_sign 0x802D3210, act_coconut 0x802DF4E4, tu_8034C950, tu_80354D64)
+    // passing their own (layer, pos) and a member
     // (this + 0x230), a countdown: while *timer runs nothing blocks; tiles
     // 0x10-0x13 / 0x140-0x15F start it at 0x78. Otherwise the base vfunc_0x4C's
     // tests (fn_8020D6AC, then the tile codes of fn_8022461C/fn_80226850);

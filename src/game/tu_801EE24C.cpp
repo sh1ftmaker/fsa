@@ -1372,10 +1372,11 @@ u8 ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
 // distance to the next 8-unit cell line. An edge whose middle is blocked
 // while the opposite one is free, or that is blocked at both ends, or a
 // blocked corner where the other edge is shorter, moves pos by that
-// distance. When it moved and `out` is given, *out is the direction of the
+// distance. (`hits[i != 0]++`: slot 0 is the first probe, 1 the later ones, 2
+// the far end.) When it moved and `out` is given, *out is the direction of the
 // push (with `flag`, the diagonal tiles 8-0xB at the corners of the old
 // position bend it), normalised. Returns whether it moved.
-// FIXME: 91.96. Structurally complete; two differences: MWCC keeps the
+// FIXME: 91.96 (try.py; 6 instructions fewer than the target's 804). Structurally complete; two differences: MWCC keeps the
 // .rodata base in r31 for the four counter initialisers (the target
 // addresses each with its own lis/addi, lbl_80469F78-lbl_80469F9C; one more
 // saved register and a 0x10-larger frame here, as fn_801EF830), and the
@@ -1575,8 +1576,9 @@ bool ActorBase_804A5770::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return blocked;
 }
 
-// The vfunc_0x4C of the liftable objects (act_pot, act_rock, act_grass, ...):
-// blocked by another actor's collision box, or by the tile at pos. While
+// The shared body of eight actors' vfunc_0x4C overrides (act_pot, act_rock,
+// act_grass, act_stone, act_sign, act_coconut, tu_8034C950, tu_80354D64; each
+// passes its own countdown word): blocked by another actor's collision box, or by the tile at pos. While
 // *timer runs it counts down and nothing blocks; stepping onto a tile of
 // the 0x10-0x13 / 0x140-0x15F ranges (but not 0x146-0x148 / 0x159-0x15B)
 // starts it at 0x78. Tiles 0x25 / 0x26 block by the view's field_0x171,
