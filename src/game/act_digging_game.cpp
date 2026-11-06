@@ -24,6 +24,27 @@ static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeome
     return fn_8038AD24(player, msg, serial, layer, pos, flags);
 }
 
+// Turns the keeper towards the player that started the talk (field_0x23c)
+// when that player is within 100 units.
+static inline void faceTalker(DiggingGameKeeper_8049C970* self) {
+    JGeometry::TVec3f diff;
+    f32 dist;
+    self->fn_801EE8F4(&diff, &dist, self->field_0x23c + 1);
+    if (dist < 100.0f) {
+        u32 angle = (u16)(JMath::atanTable_.atan2_(-diff.x, -diff.y) *
+                          (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+        if (angle < 0x2000 || angle >= 0xe000) {
+            self->field_0x235 = 3;
+        } else if (angle >= 0x2000 && angle < 0x6000) {
+            self->field_0x235 = 1;
+        } else if (angle >= 0x6000 && angle <= 0xa000) {
+            self->field_0x235 = 2;
+        } else {
+            self->field_0x235 = 0;
+        }
+    }
+}
+
 void DiggingGameKeeper_8049C970::init() {
     mBox.set(-10.0f, -10.0f, 10.0f, 10.0f);
     field_0x235 = 1;
@@ -48,10 +69,13 @@ void DiggingGameKeeper_8049C970::init() {
     }
 }
 
+// FIXME: 97.10%, missing/extra (one more instruction than the original, 616 vs 615). The box
+// setup at the top keeps the mPos.y sum in a different register and stores
+// box.i.y one instruction later; the stack slots of the by-value position
+// temporaries for fn_8038AD24 / fn_801EE8F4 and the loop counters and
+// pointers of cases 1 and 6 sit in other registers; case 5 schedules the
+// state store and the 0x3b argument in another order.
 void DiggingGameKeeper_8049C970::update() {
-    // FIXME: 97.09%, missing/extra (ours has 1 more instrs (616 vs 615)).
-    // Stack allocation order of temporaries for fn_8038AD24 and loop index
-    // register assignment in cases 1 and 6 differ.
     JGeometry::TVec3f pos = mPos;
     pos.y -= 50.0f;
     JGeometry::TVec3f camPos = mPos;
@@ -82,6 +106,7 @@ void DiggingGameKeeper_8049C970::update() {
         if (!fn_802300EC(field_0x23c)) {
             break;
         }
+        // Both branches are the same message here; the original still tests field_0x236 == 1.
         u32 msg = (field_0x236 == 1) ? 0x32e : 0x32e;
         if (!talk(field_0x23c, msg, mSerial, field_0x4, pos, 0)) {
             break;
@@ -92,22 +117,7 @@ void DiggingGameKeeper_8049C970::update() {
         field_0x230 = 1;
         field_0x244 = 0;
 
-        JGeometry::TVec3f diff;
-        f32 dist;
-        fn_801EE8F4(&diff, &dist, field_0x23c + 1);
-        if (dist < 100.0f) {
-            u32 angle = (u16)(JMath::atanTable_.atan2_(-diff.x, -diff.y) *
-                              (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
-            if (angle < 0x2000 || angle >= 0xe000) {
-                field_0x235 = 3;
-            } else if (angle >= 0x2000 && angle < 0x6000) {
-                field_0x235 = 1;
-            } else if (angle >= 0x6000 && angle <= 0xa000) {
-                field_0x235 = 2;
-            } else {
-                field_0x235 = 0;
-            }
-        }
+        faceTalker(this);
         break;
     }
     case 1: {
@@ -126,6 +136,7 @@ void DiggingGameKeeper_8049C970::update() {
                     break;
                 }
             }
+            // As above: same message either way, the original still tests field_0x236 == 1.
             u32 msg = (field_0x236 == 1) ? 0x32f : 0x32f;
             fn_8038470C(field_0x23c, msg);
             field_0x230 = 3;
@@ -251,22 +262,7 @@ void DiggingGameKeeper_8049C970::update() {
         field_0x230 = 8;
         field_0x244 = 0;
 
-        JGeometry::TVec3f diff;
-        f32 dist;
-        fn_801EE8F4(&diff, &dist, field_0x23c + 1);
-        if (dist < 100.0f) {
-            u32 angle = (u16)(JMath::atanTable_.atan2_(-diff.x, -diff.y) *
-                              (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
-            if (angle < 0x2000 || angle >= 0xe000) {
-                field_0x235 = 3;
-            } else if (angle >= 0x2000 && angle < 0x6000) {
-                field_0x235 = 1;
-            } else if (angle >= 0x6000 && angle <= 0xa000) {
-                field_0x235 = 2;
-            } else {
-                field_0x235 = 0;
-            }
-        }
+        faceTalker(this);
         break;
     }
     case 8:
@@ -279,8 +275,8 @@ void DiggingGameKeeper_8049C970::update() {
     }
 }
 
+// FIXME: 99.79%, regalloc-only (the add that sums the frame uses r0/r5 swapped).
 void DiggingGameKeeper_8049C970::draw() {
-    // FIXME: 99.79%, regalloc-only (target->ours r0->r5, r5->r0 in add r5, r0, r5).
     s32 frame = field_0x238;
     frame += field_0x235 * 2;
     fn_801F02BC("enemy_gc_sob.bin", frame + 0x311, NULL, 0, 0, false, 1.0f, 1.0f);
