@@ -44,6 +44,9 @@ public:
     // fn_803CD2DC: the chosen file has save data (field_0x115 bit set).
     void fn_803BF9C4();
     void fn_803C0018();
+    // fn_803C7CA0 (state 27): its two answers.
+    void fn_803C02CC();
+    void fn_803C1054();
     void fn_803C0A34();
     // fn_803CD2DC: the chosen file is empty.
     void fn_803C1734();

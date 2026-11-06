@@ -1711,6 +1711,64 @@ void FileSelect_804AFF60::fn_803C92B8() {
     }
 }
 
+// FIXME: 96.12. Scheduling and registers in the cursor bob, the same as
+// fn_803C4054 (see there).
+// The copy prompt (state 27): as the delete prompt fn_803C4054, up / down
+// move the cursor field_0x114 between two buttons, A confirms (0:
+// fn_803C1054, 1: back out through fn_803C02CC); the cursor bobs.
+void FileSelect_804AFF60::fn_803C7CA0() {
+    if (lbl_8053AD30->fn_80309C4C(1, 1) != 0) {
+        if (field_0x114 != 0) {
+            field_0x114--;
+            field_0xda = 1;
+            field_0x34->field_0x26 = 30;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, 1) != 0) {
+        if (field_0x114 < 1) {
+            field_0x114++;
+            field_0xda = 1;
+            field_0x34->field_0x26 = 30;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, 1) != 0) {
+        if (field_0x114 == 0) {
+            fn_803C1054();
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x80 = 0;
+            fn_803C02CC();
+            gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+        }
+    }
+
+    if (mState == 27) {
+        s16 frame = field_0xda;
+        f32 bob = 0.0f;
+        if (frame != 0) {
+            if (frame < 5) {
+                bob = 5.0f * (frame * frame) / 25.0f;
+                field_0xda = frame + 1;
+            } else if (frame < 10) {
+                bob = 5.0f * ((10 - frame) * (10 - frame)) / 25.0f;
+                field_0xda = frame + 1;
+            } else {
+                field_0xda = 0;
+            }
+        }
+        for (int i = 0; i < 2; i++) {
+            if (bob != 0.0f && i == field_0x114) {
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, bob);
+            } else {
+                field_0x24[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+            }
+        }
+        field_0x34->moveFromCentre_80402E08(field_0x24[field_0x114]->field_0x8 - field_0x24[0]->field_0x8, bob);
+        field_0x34->fn_8040245C(0x3C, 0, field_0x34->field_0x28, 1);
+        field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    }
+}
+
 // FIXME: 99.85 %. Instructions identical; only the .sdata2 literals differ
 // (@NNN vs lbl_: the literals of the unwritten earlier functions come first).
 void FileSelect_804AFF60::fn_803C6690() {
@@ -2158,6 +2216,98 @@ void FileSelect_804AFF60::fn_803C1734() {
     field_0xda = 0;
     setState(18);
 }
+
+// Not auto-inlined: fn_803C7CA0 calls fn_803C1054 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// FIXME: 99.65. Regalloc only, as fn_803BF3BC: the 'Pdb' loop's counter and
+// table pointer swap r29 / r30.
+// fn_803C7CA0 (state 27), the first answer: as fn_803BF3BC for file
+// field_0xa0, the board comes in from the right at the height of the second
+// row (field_0x3c - field_0x38); state 22.
+void FileSelect_804AFF60::fn_803C1054() {
+    field_0x20->mPane->show();
+    field_0x50->moveFromCentre_80402E08(-300.0f, 0.0f);
+    field_0x50->field_0x20 = 0;
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    if (hasBadChecksum(field_0xa0)) {
+        field_0x20->field_0x20 = 0;
+        field_0x20->field_0x26 = 0;
+    } else {
+        field_0x14->field_0x20 = 0;
+        field_0x14->field_0x26 = 0;
+        field_0x18->field_0x20 = 0;
+        field_0x18->field_0x26 = 0;
+        field_0x1c->field_0x20 = 0;
+        field_0x1c->field_0x26 = 0;
+        field_0x20->moveFromCentre_80402E08(600.0f, field_0x38[1]->field_0xc - field_0x38[0]->field_0xc);
+        field_0x20->field_0x20 = 0;
+        field_0x20->mPane->setAlpha(0);
+        for (s32 i = 0; i < 9; i++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[i]), field_0x196[i]);
+        }
+        field_0x20->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    field_0x34->field_0x26 = 0;
+    field_0x24[0]->field_0x22 = 0;
+    field_0x24[0]->field_0x26 = 0;
+    field_0x24[1]->field_0x22 = 0;
+    field_0x24[1]->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(22);
+}
+#pragma auto_inline reset
+
+// Not auto-inlined: fn_803C7CA0 calls fn_803C02CC out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// fn_803C7CA0 (state 27), the second answer: back to the file list's message,
+// the file cursor fades, the rows, the board (file field_0xa0's checksum
+// failed) or the buttons and the first two buttons stop; state 28.
+void FileSelect_804AFF60::fn_803C02CC() {
+    setMessage(0x117);
+    field_0x50->mPane->setAlpha(0);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur01'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur02'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur03'), field_0x50->field_0x28);
+    field_0x50->setAlpha_804023D0(mScreenHuuin->search('Pfcur04'), field_0x50->field_0x28);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x38[i]->field_0x20 = 0;
+        field_0x38[i]->field_0x22 = 0;
+        field_0x38[i]->field_0x26 = 0;
+        field_0x44[i]->field_0x20 = 0;
+        field_0x44[i]->field_0x22 = 0;
+        field_0x44[i]->field_0x26 = 0;
+    }
+    field_0x34->mPane->setAlpha(0);
+    field_0x34->setAlpha_804023D0(mScreenHuuin->search('Paccur01'), field_0x34->field_0x28);
+    if (hasBadChecksum(field_0xa0)) {
+        field_0x20->field_0x20 = 0;
+        field_0x20->field_0x26 = 0;
+    } else {
+        field_0x14->field_0x20 = 0;
+        field_0x14->field_0x26 = 0;
+        field_0x18->field_0x20 = 0;
+        field_0x18->field_0x26 = 0;
+        field_0x1c->field_0x20 = 0;
+        field_0x1c->field_0x26 = 0;
+    }
+    field_0x24[0]->field_0x22 = 0;
+    field_0x24[0]->field_0x26 = 0;
+    field_0x24[1]->field_0x22 = 0;
+    field_0x24[1]->field_0x26 = 0;
+    field_0xd8 = 0;
+    field_0xda = 0;
+    setState(28);
+}
+#pragma auto_inline reset
 
 // Not auto-inlined: fn_803C92B8 calls fn_803C0018 out of line in the original
 // (docs/INLINING.md, pragma rule 1).
