@@ -50,7 +50,7 @@ As of 2026-11-06:
 - **Honest: 41.80 %** of the code is byte-identical, **9,004 / 11,557** functions (1,856,852 of 4,442,032 bytes; 100 % functions only).
 - **Weighted: 53.25 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
 - **Structurally matched:** 9,558 / 11,557 functions (same instructions, register or order differences only), +146 close.
-- **467 of 902** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
+- **468 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
 <picture>
