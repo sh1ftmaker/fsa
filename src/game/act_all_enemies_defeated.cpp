@@ -1,3 +1,4 @@
+#include "game/ActorId.h"
 #include "game/GameAudio.h"
 #include "game/act/act_all_enemies_defeated.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -79,13 +80,10 @@ AllEnemiesDefeated_804A2AB0::~AllEnemiesDefeated_804A2AB0() {
     }
 }
 
-// FIXME: 97.22 %, scheduling+regalloc. The original uses r31 for count, r29 for i*4,
-// and r22 for i; ours swaps these registers among the induction variables.
+// FIXME: 97.80 %, regalloc-only. The original keeps count in r31, the i*4 offset in r29 and
+// the actor in r30; ours uses r24, r31 and r22 and shifts the array-base registers to match.
 void AllEnemiesDefeated_804A2AB0::fn_8019DC5C() {
     s32 count = getActorManager_801F856C()->mActorEnd;
-    s32* p4 = lbl_804C4E30;
-    u8* p5 = lbl_804C5E30;
-    JGeometry::TVec3f* p1 = lbl_804C1E30;
 
     for (s32 i = 0; i < count; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
@@ -136,14 +134,14 @@ void AllEnemiesDefeated_804A2AB0::fn_8019DC5C() {
         }
     }
 
-    for (s32 j = 0; j < count; j++, p5++, p1++, p4++) {
-        if (*p5 == 1) {
+    for (s32 j = 0; j < count; j++) {
+        if (lbl_804C5E30[j] == 1) {
             switch (mField_0x238) {
             case 0:
-                getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, p1, 2);
+                getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &lbl_804C1E30[j], 2);
                 break;
             case 1:
-                getActorManager_801F856C()->spawnActor_801F9484('ZASL', field_0x4, p1, *p4, 0, -1);
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_ZASL, field_0x4, &lbl_804C1E30[j], lbl_804C4E30[j], 0, -1);
                 break;
             }
         }
@@ -170,7 +168,7 @@ void AllEnemiesDefeated_804A2AB0::fn_8019D958() {
         spawnEmitter_8013CC50(field_0x4, &pos, 0x425, 1, 7, NULL, NULL, true, 1.0f);
         startSound_801F0E34(0x30001, 0);
         gGameRoot_8053AAF8->fn_80134DE4(3, 0);
-        s32 layer;
+        s32 layer;  // Declared outside the loop: matches the original's register allocation.
         for (s32 i = 0; i < 4; i++) {
             if (fn_8023F264(i)) {
                 layer = field_0x4;
@@ -204,7 +202,7 @@ void AllEnemiesDefeated_804A2AB0::fn_8019D958() {
     }
 }
 
-// FIXME: 98.81 %, scheduling+regalloc. The original allocates this to r29 and actor
+// FIXME: 98.90 %, scheduling+regalloc. The original allocates this to r29 and actor
 // to r28; ours swaps this to r28 and actor to r29.
 void AllEnemiesDefeated_804A2AB0::fn_8019D2AC() {
     JGeometry::TVec3f pos;
@@ -250,15 +248,15 @@ void AllEnemiesDefeated_804A2AB0::fn_8019D2AC() {
         mField_0x24c = 2;
         mField_0x258 = 0;
         mField_0x230 = 5;
+        // fallthrough
     case 5:
         mField_0x24c++;
         if (mField_0x24c > 2) {
             mField_0x24c = 0;
             if (mField_0x258 < mField_0x250) {
-                ActorBase_804A5770* actor;
                 for (s32 i = 0; i < mField_0x254; i++) {
                     if (lbl_804C5E30[i] == 1) {
-                        actor = getActorManager_801F856C()->mActors[i];
+                        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
                         if (actor != NULL) {
                             if (lbl_804C4E30[i] == 4) {
                                 pos.x = lbl_804C1E30[i].x;
