@@ -4282,6 +4282,16 @@ bool Player_804A6F38::fn_80241BA0(s32 layer, const JGeometry::TBox2f* box, bool 
     return field_0xbec->fn_8030AF10(layer, &JGeometry::TBox2f(*box), overlap);
 }
 
+// The visible box on this player's layer: the camera's field_0x164 below
+// layer 8, else field_0xbec's (fn_8030AE84). Only caller: fn_8022B8EC.
+void Player_804A6F38::fn_80241B44(JGeometry::TBox2f* out) {
+    if (field_0x3b4 < 8) {
+        out->set(gGameRoot2_8053AB10->field_0x24->field_0x164);
+    } else {
+        field_0xbec->fn_8030AE84(out);
+    }
+}
+
 // True alone (fn_80248970 <= 1) or in group mode 4; else only when every
 // other player this one can reach (fn_8022E438) has fn_802349EC (byte
 // 0x1215 of that player, set on arriving at its spot).
