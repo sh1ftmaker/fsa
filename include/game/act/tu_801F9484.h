@@ -67,12 +67,7 @@ public:
 }; // Size: 0x2AC
 
 // Spawned for 'RNBW'.
-class cls_8049E610 : public ActorBase_804A5770 {
-public:
-    cls_8049E610();
-    /* 0x08 */ virtual ~cls_8049E610();
-    /* 0x230 */ u8 field_0x230[0x20];
-}; // Size: 0x250
+#include "game/act/act_rainbow_bridge.h"
 
 // Spawned for 'DMTW'.
 class cls_8049E770 : public ActorBase_804A5770 {
