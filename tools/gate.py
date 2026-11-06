@@ -39,7 +39,8 @@ Checks (see docs/PLAN.md, "Submission gate"):
     closed) has only a top-level extract: list of {symbol, header: assets/...,
     header_type: raw}, 1:1 with config/G4SE01/blobs.txt's `blob` lines; each
     is a data-section object in symbols.txt of exactly the listed address and
-    size (at most BLOB_MAX), inside its unit's splits.txt range, not a
+    size (at most BLOB_MAX, or a size BLOB_MAX_RAISED records for that
+    symbol), inside its unit's splits.txt range, not a
     vtable/RTTI/compiler symbol, and without relocations in dtk's split of
     the original. Include paths are normalized as MWCC resolves them (line
     continuations spliced, backslash as /, ./ dropped, any case): the blob header is
@@ -371,6 +372,13 @@ CONFIG_YML = Path("config/G4SE01/config.yml")
 BLOBS = Path("config/G4SE01/blobs.txt")
 BLOB_SECTIONS = {".data", ".rodata", ".sdata", ".sdata2"}  # initialized data only, never code
 BLOB_MAX = 0x2000  # a larger blob needs this cap raised, on the record
+# Larger blobs raised on the record, by symbol, at exactly this size. Each is a
+# byte-exact copy of an asset file, never code or a table with a C form.
+BLOB_MAX_RAISED = {
+    # Disc-error screen font (FONTbfn1, tp d_error_msg font_data, which tp
+    # extracts the same way); raised by the project owner 2026-11-06.
+    "lbl_80479F00": 0x12260,
+}
 EXTRACT_KEYS = {"symbol", "header", "header_type"}
 # The one include root under build/ configure.py may name (dtk-template's: PCH and extracted blobs).
 BUILD_ROOT = "build/{config.version}/include"
@@ -497,7 +505,7 @@ def check_blobs(problems):
             problems.append(f"{tag}: symbols.txt type {attrs.get('type')}, not object")
         if (addr, size) != (b["address"], b["size"]) or not size:
             problems.append(f"{tag}: symbols.txt has 0x{addr:08X} size 0x{size:X}, blobs.txt 0x{b['address']:08X} size 0x{b['size']:X}")
-        if size > BLOB_MAX:
+        if size > BLOB_MAX and BLOB_MAX_RAISED.get(b["symbol"]) != size:
             problems.append(f"{tag}: 0x{size:X} bytes is over the 0x{BLOB_MAX:X} cap")
         if not norm_path(b["header"]).startswith("assets/"):
             problems.append(f"{tag}: header {b['header']} must be under assets/")
