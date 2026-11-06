@@ -378,6 +378,9 @@ BLOB_MAX_RAISED = {
     # Disc-error screen font (FONTbfn1, tp d_error_msg font_data, which tp
     # extracts the same way); raised by the project owner 2026-11-06.
     "lbl_80479F00": 0x12260,
+    # JUtility's built-in ASCII font (FONTbfn1, JUTFontData_Ascfont_fix12);
+    # raised by the project owner 2026-11-06.
+    "JUTResFONT_Ascfont_fix12": 0x4160,
 }
 EXTRACT_KEYS = {"symbol", "header", "header_type"}
 # The one include root under build/ configure.py may name (dtk-template's: PCH and extracted blobs).
