@@ -3,6 +3,9 @@
 #include "game/Effect.h"
 #include "game/Camera.h"
 #include "game/ActorManager.h"
+#include "game/Player.h"
+#include "game/Message.h"
+#include "game/cls_804AE9B0.h"
 #include "game/act/act_great_fairy_spfr.h"
 
 static const s16 lbl_80465150[] = {
@@ -98,6 +101,142 @@ void cls_8049EB8C::init() {
         JGeometry::TVec3f pos = mPos;
         field_0x288 = spawnEmitter_8013CC50(field_0x4, &pos, 0x184, 0, -1, NULL, NULL, true, 1.0f);
         fn_80132454(2);
+    }
+}
+
+// FIXME: 96.26%. missing/extra + reloc-name: ours has 2 fewer instrs (345 vs 347); jump table and float literal relocations.
+void cls_8049EB8C::update() {
+    cls_8049D140::update();
+    JGeometry::TBox2f box;
+    box.set(mBox);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    fn_801321E4();
+    switch (field_0x234) {
+    case 0:
+        switch (field_0x238) {
+        case 0:
+            fn_8011921C()->fn_801183BC();
+            fn_80132454(4);
+            break;
+        case 1:
+            if (vfunc_0x34()) {
+                fn_8011921C()->fn_801186B0(14);
+            }
+            break;
+        }
+        break;
+    case 1:
+        field_0x244++;
+        if (field_0x244 >= 40) {
+            JGeometry::TVec3f pos = mPos;
+            field_0x288 = spawnEmitter_8013CC50(field_0x4, &pos, 0x184, 0, -1, NULL, NULL, true, 1.0f);
+            mDrawEnabled = true;
+            startSound_801F0E34(0x40090, 0);
+            fn_80132454(2);
+        }
+        break;
+    case 2:
+        switch (field_0x238) {
+        case 1: {
+            JGeometry::TBox2f box2;
+            box2.set(mBox);
+            box2.i.x += mPos.x;
+            box2.f.x += mPos.x;
+            box2.i.y += mPos.y;
+            box2.f.y += mPos.y;
+            fn_8022FEB8(&box2, field_0x4, mSerial, true, false);
+            s32 player = fn_8022FD8C(mSerial);
+            if (player < 0) {
+                player = -1;
+            } else if (!fn_802300EC(player)) {
+                player = -1;
+            } else {
+                JGeometry::TVec3f pos = mPos;
+                pos.y -= 64.0f;
+                if (fn_8038AD24(player, 0x2B6, mSerial, field_0x4, pos, 0x28)) {
+                } else {
+                    player = -1;
+                }
+            }
+            if (player >= 0) {
+                field_0x23c = player;
+                fn_80132454(3);
+            }
+            break;
+        }
+        }
+        break;
+    case 3:
+        fn_8022FF8C(field_0x23c, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(field_0x23c, mSerial)) {
+            fn_80132454(2);
+        }
+        break;
+    case 6:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 8:
+        field_0x24c++;
+        if (field_0x24c >= 15) {
+            field_0x24c = 0;
+            JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+            s32 bari = getActorManager_801F856C()->fn_801F7A08('BARI');
+            if (bari >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(bari);
+                if (actor != NULL) {
+                    pos = actor->mPos;
+                }
+            }
+            pos.x -= 40.0f;
+            pos.y += 180.0f;
+            pos.x += 80.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+            pos.y += 32.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+            getActorManager_801F856C()->spawnActor_801F9484('SLR1', field_0x4, &pos, 0x102, -1, -1);
+        }
+        break;
+    case 9:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 12:
+        lbl_8053AD70->fn_8037AE00();
+        break;
+    case 15:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 19:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 26:
+        break;
+    default:
+        break;
+    }
+    setEmitterPos_8013CB44(field_0x288, &mPos, 0, -1, true);
+    if (field_0x230 != 0) {
+        fn_80239914(&box, field_0x4, mSerial);
+    }
+    mAnim.fn_801D1C18();
+    if (mDrawEnabled) {
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 

@@ -14,6 +14,7 @@ public:
     cls_8049EB8C();
     /* 0x08 */ virtual ~cls_8049EB8C();
     /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
