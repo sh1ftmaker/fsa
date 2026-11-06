@@ -799,8 +799,8 @@ void fn_8037E8D4(s32 player) {
 
 // FIXME: 97.2. Scheduling only: the original restores r31 after the result is
 // computed (lwz r31 / lwz r0 after the srwi); ours restores r31 before it.
-bool fn_8037E7AC(s32 player) {
-    return lbl_8053AD78->field_0xe8 & (u8)(1 << windowIndex(player));
+BOOL fn_8037E7AC(s32 player) {
+    return (lbl_8053AD78->field_0xe8 & (u8)(1 << windowIndex(player))) != 0;
 }
 
 u8 fn_8037E694(s32 player) {

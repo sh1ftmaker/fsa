@@ -58,10 +58,9 @@ class MessageWindow_804AF490;
 
 class cls_804AF5A0 {
 public:
-    // Constructor, defined in game/tu_803944C8.cpp (not yet written; the
-    // symbol was fn_803973E8). Called right after the operator new of the
-    // 0x3C4 bytes, with the window, its index and the BMG name; the
-    // constructor reading is a guess from that shape.
+    // Constructor (0x803973E8, game/tu_803944C8.cpp). Called right after the
+    // operator new of the 0x3C4 bytes, with the window, its index and the
+    // BMG name.
     cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char* bmgName);
     // Virtual: MessageWindow_804AF490's destructor deletes these through the
     // vtable (lwz 8(r12), deleting flag 1), so the dtor is in slot 2.
@@ -78,7 +77,11 @@ public:
     /* 0x010 */ cls_804AF774* field_0x10;
     // The constructor builds it (0x2DC bytes, vtable 0x804AF72C).
     /* 0x014 */ cls_804AF72C* field_0x14;
-    /* 0x018 */ u8 field_0x18[0x20 - 0x18];
+    // The BMG file the constructor loads from gGameRoot_8053AAF8's msgus.arc
+    // (its name argument) and the colour block (never set: the constructor
+    // stores 0 and parses it only when non-zero).
+    /* 0x018 */ const void* field_0x18;
+    /* 0x01C */ const void* field_0x1c;
     // The first of the four J2DScreens the constructor loads; fn_803944EC
     // scales its 'Tm01' / 'Tm02' text boxes.
     /* 0x020 */ J2DScreen* field_0x20;
@@ -100,15 +103,48 @@ public:
         /* 0x8 */ u8 field_0x8;
     }; // Size: 0xC
     /* 0x068 */ Entry_0x68* field_0x68[12];
-    /* 0x098 */ u8 field_0x98[0xB0 - 0x98];
+    /* 0x098 */ f32 field_0x98;
+    /* 0x09C */ f32 field_0x9c;
+    /* 0x0A0 */ f32 field_0xa0;
+    // The position handed to the constructor's cls_804B20F8 (by pointer).
+    /* 0x0A4 */ JGeometry::TVec3f field_0xa4;
     // 'Tm01''s line space as loaded; fn_803944EC stores its scale in 0xB4.
     /* 0x0B0 */ f32 field_0xb0;
     /* 0x0B4 */ f32 field_0xb4;
     // The window box's width and height (fn_8037EB4C scales them).
     /* 0x0B8 */ f32 field_0xb8;
     /* 0x0BC */ f32 field_0xbc;
-    /* 0x0C0 */ u8 field_0xc0[0x13C - 0xC0];
-    // fn_803A30FC stores into it by index; the constructor sets all three to -1.
+    // Pane geometry the constructor reads from the screens at 0x20 and 0x2C:
+    // 'Nmdata01' position; per screen the 'Tm01' position and the 'Tm02'
+    // offset from it, the 'Tm01' size and the 'P1ar' box (position, size);
+    // then 0.0f and the 'ROOT' position of the first screen.
+    /* 0x0C0 */ f32 field_0xc0;
+    /* 0x0C4 */ f32 field_0xc4;
+    /* 0x0C8 */ f32 field_0xc8;
+    /* 0x0CC */ f32 field_0xcc;
+    /* 0x0D0 */ f32 field_0xd0;
+    /* 0x0D4 */ f32 field_0xd4;
+    /* 0x0D8 */ f32 field_0xd8;
+    /* 0x0DC */ f32 field_0xdc;
+    /* 0x0E0 */ f32 field_0xe0;
+    /* 0x0E4 */ f32 field_0xe4;
+    /* 0x0E8 */ f32 field_0xe8;
+    /* 0x0EC */ f32 field_0xec;
+    /* 0x0F0 */ f32 field_0xf0;
+    /* 0x0F4 */ f32 field_0xf4;
+    /* 0x0F8 */ f32 field_0xf8;
+    /* 0x0FC */ f32 field_0xfc;
+    /* 0x100 */ f32 field_0x100;
+    /* 0x104 */ f32 field_0x104;
+    /* 0x108 */ f32 field_0x108;
+    /* 0x10C */ f32 field_0x10c;
+    /* 0x110 */ f32 field_0x110;
+    /* 0x114 */ f32 field_0x114;
+    /* 0x118 */ f32 field_0x118;
+    /* 0x11C */ f32 field_0x11c;
+    /* 0x120 */ f32 field_0x120;
+    /* 0x124 */ u8 field_0x124[0x13C - 0x124];
+    // fn_803A30FC stores into it by index (the constructor leaves it).
     /* 0x13C */ s32 field_0x13c[3];
     /* 0x148 */ s32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
     /* 0x14C */ s32 field_0x14c;
@@ -130,22 +166,36 @@ public:
     /* 0x180 */ s32 field_0x180[4];
     /* 0x190 */ s16 field_0x190;
     /* 0x192 */ s16 field_0x192;
-    /* 0x194 */ u8 field_0x194[0x19E - 0x194];
+    /* 0x194 */ s16 field_0x194;
+    /* 0x196 */ s16 field_0x196;
+    // The constructor: 10 + a random 0..10, -0x60 and 0.
+    /* 0x198 */ s16 field_0x198;
+    /* 0x19A */ s16 field_0x19a;
+    /* 0x19C */ s16 field_0x19c;
     /* 0x19E */ u8 field_0x19e;
     // fn_80390B64 writes 1 here (the byte after 0x19E, which it sets to 0xFF).
     /* 0x19F */ u8 field_0x19f;
     /* 0x1A0 */ u8 field_0x1a0;
     /* 0x1A1 */ u8 field_0x1a1;
-    /* 0x1A2 */ u8 field_0x1a2[0x1A9 - 0x1A2];
+    /* 0x1A2 */ u8 field_0x1a2;
+    // Pane alphas the constructor reads: 'P1ar' (first screen 0x20, then
+    // overwritten from 0x2C), 'P1b01' (twice, 0x1A5 / 0x1A6; 0x1A4 is not
+    // stored), 'P1n02', 'P1n01'.
+    /* 0x1A3 */ u8 field_0x1a3;
+    /* 0x1A4 */ u8 field_0x1a4;
+    /* 0x1A5 */ u8 field_0x1a5;
+    /* 0x1A6 */ u8 field_0x1a6;
+    /* 0x1A7 */ u8 field_0x1a7;
+    /* 0x1A8 */ u8 field_0x1a8;
     /* 0x1A9 */ u8 field_0x1a9;
     /* 0x1AA */ u8 field_0x1aa;
     // Two 0x100-byte buffers; the constructor points cls_804AF72C's 0x2C0 /
     // 0x2C4 at them.
     /* 0x1AB */ s8 field_0x1ab[0x100];
     /* 0x2AB */ s8 field_0x2ab[0x100];
-    /* 0x3AB */ u8 field_0x3ab;
-    /* 0x3AC */ u8 field_0x3ac;
-    /* 0x3AD */ u8 field_0x3ad;
+    // A short text fn_80394690 appends to both lines (strlen / strcat); the
+    // constructor and cls_804AF72C::do_begin clear it.
+    /* 0x3AB */ char field_0x3ab[3];
     /* 0x3AE */ u8 field_0x3ae;
     /* 0x3AF */ u8 field_0x3af;
     /* 0x3B0 */ u8 field_0x3b0;
@@ -158,10 +208,16 @@ public:
     // its option flags (field_0x28 bits 0x40 and 0x100).
     /* 0x3B8 */ MessageWindow_804AF490* field_0x3b8;
     /* 0x3BC */ cls_804B20F8* field_0x3bc; // new'd by the constructor
-    /* 0x3C0 */ u8 field_0x3c0[0x3C4 - 0x3C0];
+    // The constructor stores `this`; handed to the processors (cls_804AF774
+    // 0x60, cls_804AF72C 0x2D8).
+    /* 0x3C0 */ cls_804AF5A0* field_0x3c0;
 
     // Defined in game/tu_803944C8.cpp; both take the processor as their
-    // object (fn_80390E68 loads it from the window's 0x48).
+    // object (fn_80390E68 loads it from the window's 0x48). fn_80394690
+    // draws the 'op_zelda.blo' screen (0x2C): renders the control when
+    // 0x3B0 is set, copies the two line buffers (0x1AB / 0x2AB) into 'Tm01' /
+    // 'Tm02', with 0x3AB appended in the colours 0x154 / 0x158 fading out
+    // over lbl_8050DB0C's first frame count, and places them by 0x164.
     void fn_80394690();
     void fn_8039499C(bool flag);
 
@@ -207,9 +263,9 @@ public:
     // Inlined by cls_804AF72C::do_begin (under NONMATCHING; three stores through one load of the
     // window); dead-stripped, no address.
     void resetFields0x3ab() {
-        field_0x3ad = 0;
-        field_0x3ac = 0;
-        field_0x3ab = 0;
+        field_0x3ab[2] = 0;
+        field_0x3ab[1] = 0;
+        field_0x3ab[0] = 0;
     }
 }; // Size: 0x3C4 (the fields game/tu_803944C8.cpp and tu_80390818 use are declared)
 
@@ -457,7 +513,7 @@ s32 fn_8037E54C(s32 player);
 // field_0x114[window]->field_0x44.
 u8 fn_8037E694(s32 player);
 // Whether the manager's byte field_0xe8 has bit `window` set.
-bool fn_8037E7AC(s32 player);
+BOOL fn_8037E7AC(s32 player);
 // Sets that bit.
 void fn_8037E8D4(s32 player);
 // 1 unit (tu_80316E34). Maps the player to a window and returns

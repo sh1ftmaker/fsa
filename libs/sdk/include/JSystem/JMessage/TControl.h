@@ -38,6 +38,19 @@ struct TControl {
 		return true;
 	}
 
+	// zeldaret/tp's JMessage/control.h (game/tu_803944C8.cpp's window
+	// constructor inlines it after reset()).
+	void resetResourceCache()
+	{
+		if (mBaseProcSeq != nullptr) {
+			mBaseProcSeq->resetResourceCache();
+		}
+		if (mBaseProcRender != nullptr) {
+			mBaseProcRender->resetResourceCache();
+		}
+		mResourceCache = nullptr;
+	}
+
 	const char* getMessageText_begin() const { return mMessageBegin; }
 	void* getMessageEntry() const { return mEntry; }
 

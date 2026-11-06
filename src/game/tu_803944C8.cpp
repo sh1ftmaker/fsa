@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
@@ -10,8 +12,96 @@
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/JMessage/TResource.h"
 #include "game/cls_804B20F8.h"
+#include "JSystem/JMessage/TParse.h"
+#include "JSystem/JMessage/TControl.h"
+
+// The window frames' pane tags: 'PNar' per player (fn_80395BE8, fn_80398700).
+static const u64 lbl_80475768[5] = {'P1ar', 'P2ar', 'P3ar', 'P4ar', 'P5ar'};
+// Per player the 'PNb02', 'PNb01', 'PNn02', 'PNn01' panes (fn_80395BE8); player 5 has no 'P5n02'.
+static const u64 lbl_80475790[5][4] = {
+    {'P1b02', 'P1b01', 'P1n02', 'P1n01'},
+    {'P2b02', 'P2b01', 'P2n02', 'P2n01'},
+    {'P3b02', 'P3b01', 'P3n02', 'P3n01'},
+    {'P4b02', 'P4b01', 'P4n02', 'P4n01'},
+    {'P5b02', 'P5b01', 0, 'P5n01'},
+};
+// Shift-JIS character code -> glyph offset in the text-image font (32-pixel
+// cells: column * 0x20, row * 0x400); ends with 0xFFFF / 0xFFFF.
+struct SjisGlyph_80475830 {
+    u16 code;
+    u16 glyph;
+};
+static const SjisGlyph_80475830 lbl_80475830[317] = {
+    {0x82A0, 0x0000}, {0x82A2, 0x0020}, {0x82A4, 0x0040}, {0x82A6, 0x0060}, {0x82A8, 0x0080}, {0x82A9, 0x00A0},
+    {0x82AB, 0x00C0}, {0x82AD, 0x00E0}, {0x82AF, 0x0100}, {0x82B1, 0x0120}, {0x82B3, 0x0140}, {0x82B5, 0x0160},
+    {0x82B7, 0x0180}, {0x82B9, 0x01A0}, {0x82BB, 0x01C0}, {0x82BD, 0x01E0}, {0x82BF, 0x0400}, {0x82C2, 0x0420},
+    {0x82C4, 0x0440}, {0x82C6, 0x0460}, {0x82C8, 0x0480}, {0x82C9, 0x04A0}, {0x82CA, 0x04C0}, {0x82CB, 0x04E0},
+    {0x82CC, 0x0500}, {0x82CD, 0x0520}, {0x82D0, 0x0540}, {0x82D3, 0x0560}, {0x82D6, 0x0580}, {0x82D9, 0x05A0},
+    {0x82DC, 0x05C0}, {0x82DD, 0x05E0}, {0x82DE, 0x0800}, {0x82DF, 0x0820}, {0x82E0, 0x0840}, {0x82E7, 0x0860},
+    {0x82E8, 0x0880}, {0x82E9, 0x08A0}, {0x82EA, 0x08C0}, {0x82EB, 0x08E0}, {0x82E2, 0x0900}, {0x82E4, 0x0920},
+    {0x82E6, 0x0940}, {0x82ED, 0x0960}, {0x82F0, 0x0980}, {0x82F1, 0x09A0}, {0x82AA, 0x09C0}, {0x82AC, 0x09E0},
+    {0x82AE, 0x0C00}, {0x82B0, 0x0C20}, {0x82B2, 0x0C40}, {0x82B4, 0x0C60}, {0x82B6, 0x0C80}, {0x82B8, 0x0CA0},
+    {0x82BA, 0x0CC0}, {0x82BC, 0x0CE0}, {0x82BE, 0x0D00}, {0x82C0, 0x0D20}, {0x82C3, 0x0D40}, {0x82C5, 0x0D60},
+    {0x82C7, 0x0D80}, {0x82CE, 0x0DA0}, {0x82D1, 0x0DC0}, {0x82D4, 0x0DE0}, {0x82D7, 0x1000}, {0x82DA, 0x1020},
+    {0x82CF, 0x1040}, {0x82D2, 0x1060}, {0x82D5, 0x1080}, {0x82D8, 0x10A0}, {0x82DB, 0x10C0}, {0x82E1, 0x10E0},
+    {0x82E3, 0x1100}, {0x82E5, 0x1120}, {0x82C1, 0x1140}, {0x829F, 0x1160}, {0x82A1, 0x1180}, {0x82A3, 0x11A0},
+    {0x82A5, 0x11C0}, {0x82A7, 0x11E0}, {0x8394, 0x1400}, {0x8140, 0x1420}, {0x8141, 0x1440}, {0x8142, 0x1460},
+    {0x8163, 0x1480}, {0x8160, 0x14A0}, {0x817C, 0x14C0}, {0x81AA, 0x14E0}, {0x81AB, 0x1500}, {0x81A8, 0x1520},
+    {0x81A9, 0x1540}, {0x8184, 0x1560}, {0x8175, 0x1580}, {0x8176, 0x15A0}, {0x8148, 0x15C0}, {0x8149, 0x15E0},
+    {0x8341, 0x1800}, {0x8343, 0x1820}, {0x8345, 0x1840}, {0x8347, 0x1860}, {0x8349, 0x1880}, {0x834A, 0x18A0},
+    {0x834C, 0x18C0}, {0x834E, 0x18E0}, {0x8350, 0x1900}, {0x8352, 0x1920}, {0x8354, 0x1940}, {0x8356, 0x1960},
+    {0x8358, 0x1980}, {0x835A, 0x19A0}, {0x835C, 0x19C0}, {0x835E, 0x19E0}, {0x8360, 0x1C00}, {0x8363, 0x1C20},
+    {0x8365, 0x1C40}, {0x8367, 0x1C60}, {0x8369, 0x1C80}, {0x836A, 0x1CA0}, {0x836B, 0x1CC0}, {0x836C, 0x1CE0},
+    {0x836D, 0x1D00}, {0x836E, 0x1D20}, {0x8371, 0x1D40}, {0x8374, 0x1D60}, {0x8377, 0x1D80}, {0x837A, 0x1DA0},
+    {0x837D, 0x1DC0}, {0x837E, 0x1DE0}, {0x8380, 0x2000}, {0x8381, 0x2020}, {0x8382, 0x2040}, {0x8389, 0x2060},
+    {0x838A, 0x2080}, {0x838B, 0x20A0}, {0x838C, 0x20C0}, {0x838D, 0x20E0}, {0x8384, 0x2100}, {0x8386, 0x2120},
+    {0x8388, 0x2140}, {0x838F, 0x2160}, {0x8392, 0x2180}, {0x8393, 0x21A0}, {0x834B, 0x21C0}, {0x834D, 0x21E0},
+    {0x834F, 0x2400}, {0x8351, 0x2420}, {0x8353, 0x2440}, {0x8355, 0x2460}, {0x8357, 0x2480}, {0x8359, 0x24A0},
+    {0x835B, 0x24C0}, {0x835D, 0x24E0}, {0x835F, 0x2500}, {0x8361, 0x2520}, {0x8364, 0x2540}, {0x8366, 0x2560},
+    {0x8368, 0x2580}, {0x836F, 0x25A0}, {0x8372, 0x25C0}, {0x8375, 0x25E0}, {0x8378, 0x2800}, {0x837B, 0x2820},
+    {0x8370, 0x2840}, {0x8373, 0x2860}, {0x8376, 0x2880}, {0x8379, 0x28A0}, {0x837C, 0x28C0}, {0x8383, 0x28E0},
+    {0x8385, 0x2900}, {0x8387, 0x2920}, {0x8362, 0x2940}, {0x8340, 0x2960}, {0x8342, 0x2980}, {0x8344, 0x29A0},
+    {0x8346, 0x29C0}, {0x8348, 0x29E0}, {0x824F, 0x2C00}, {0x8250, 0x2C20}, {0x8251, 0x2C40}, {0x8252, 0x2C60},
+    {0x8253, 0x2C80}, {0x8254, 0x2CA0}, {0x8255, 0x2CC0}, {0x8256, 0x2CE0}, {0x8257, 0x2D00}, {0x8258, 0x2D20},
+    {0x8260, 0x2D40}, {0x8261, 0x2D60}, {0x8262, 0x2D80}, {0x8263, 0x2DA0}, {0x8264, 0x2DC0}, {0x8265, 0x2DE0},
+    {0x8266, 0x3000}, {0x8267, 0x3020}, {0x8268, 0x3040}, {0x8269, 0x3060}, {0x826A, 0x3080}, {0x826B, 0x30A0},
+    {0x826C, 0x30C0}, {0x826D, 0x30E0}, {0x826E, 0x3100}, {0x826F, 0x3120}, {0x8270, 0x3140}, {0x8271, 0x3160},
+    {0x8272, 0x3180}, {0x8273, 0x31A0}, {0x8274, 0x31C0}, {0x8275, 0x31E0}, {0x8276, 0x3400}, {0x8277, 0x3420},
+    {0x8278, 0x3440}, {0x8279, 0x3460}, {0x8281, 0x3480}, {0x8282, 0x34A0}, {0x8283, 0x34C0}, {0x8284, 0x34E0},
+    {0x8285, 0x3500}, {0x8286, 0x3520}, {0x8287, 0x3540}, {0x8288, 0x3560}, {0x8289, 0x3580}, {0x828A, 0x35A0},
+    {0x828B, 0x35C0}, {0x828C, 0x35E0}, {0x828D, 0x3800}, {0x828E, 0x3820}, {0x828F, 0x3840}, {0x8290, 0x3860},
+    {0x8291, 0x3880}, {0x8292, 0x38A0}, {0x8293, 0x38C0}, {0x8294, 0x38E0}, {0x8295, 0x3900}, {0x8296, 0x3920},
+    {0x8297, 0x3940}, {0x8298, 0x3960}, {0x8299, 0x3980}, {0x829A, 0x39A0}, {0x8144, 0x39C0}, {0x8166, 0x39E0},
+    {0x815B, 0x14C0}, {0x0020, 0x1420}, {0x002C, 0x1440}, {0x002D, 0x14C0}, {0x003F, 0x15C0}, {0x0021, 0x15E0},
+    {0x0030, 0x2C00}, {0x0031, 0x2C20}, {0x0032, 0x2C40}, {0x0033, 0x2C60}, {0x0034, 0x2C80}, {0x0035, 0x2CA0},
+    {0x0036, 0x2CC0}, {0x0037, 0x2CE0}, {0x0038, 0x2D00}, {0x0039, 0x2D20}, {0x0041, 0x2D40}, {0x0042, 0x2D60},
+    {0x0043, 0x2D80}, {0x0044, 0x2DA0}, {0x0045, 0x2DC0}, {0x0046, 0x2DE0}, {0x0047, 0x3000}, {0x0048, 0x3020},
+    {0x0049, 0x3040}, {0x004A, 0x3060}, {0x004B, 0x3080}, {0x004C, 0x30A0}, {0x004D, 0x30C0}, {0x004E, 0x30E0},
+    {0x004F, 0x3100}, {0x0050, 0x3120}, {0x0051, 0x3140}, {0x0052, 0x3160}, {0x0053, 0x3180}, {0x0054, 0x31A0},
+    {0x0055, 0x31C0}, {0x0056, 0x31E0}, {0x0057, 0x3400}, {0x0058, 0x3420}, {0x0059, 0x3440}, {0x005A, 0x3460},
+    {0x0061, 0x3480}, {0x0062, 0x34A0}, {0x0063, 0x34C0}, {0x0064, 0x34E0}, {0x0065, 0x3500}, {0x0066, 0x3520},
+    {0x0067, 0x3540}, {0x0068, 0x3560}, {0x0069, 0x3580}, {0x006A, 0x35A0}, {0x006B, 0x35C0}, {0x006C, 0x35E0},
+    {0x006D, 0x3800}, {0x006E, 0x3820}, {0x006F, 0x3840}, {0x0070, 0x3860}, {0x0071, 0x3880}, {0x0072, 0x38A0},
+    {0x0073, 0x38C0}, {0x0074, 0x38E0}, {0x0075, 0x3900}, {0x0076, 0x3920}, {0x0077, 0x3940}, {0x0078, 0x3960},
+    {0x0079, 0x3980}, {0x007A, 0x39A0}, {0x002E, 0x39C0}, {0x0027, 0x39E0}, {0x002B, 0x0000}, {0x0028, 0x0020},
+    {0x0029, 0x0040}, {0x003A, 0x0060}, {0x0025, 0x0080}, {0x0022, 0x3CA0}, {0xFFFF, 0xFFFF},
+};
+static const u8 lbl_80475D24[32] = {
+    0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x13, 0x11, 0x10, 0x12, 0x14, 0x16,
+    0x19, 0x25, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x00, 0x00,
+};
+static const u8 lbl_80475D44[32] = {
+    0x49, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x13, 0x11, 0x10, 0x12, 0x14, 0x16,
+    0x19, 0x25, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x00, 0x00,
+};
+static const GXColor lbl_80475D64[5] = {{0xFF, 0xFF, 0xFF, 0xFF}, {0x64, 0xFF, 0x00, 0xFF}, {0xFA, 0x50, 0x00, 0xFF}, {0x32, 0xD2, 0xFF, 0xFF}, {0xF0, 0x64, 0xFF, 0xFF}};
+static const f32 lbl_80475D78[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
+static const f32 lbl_80475D8C[5] = {1.0f, 0.3f, 1.1f, 0.8f, 1.0f};
+static const f32 lbl_80475DA0[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
+static const f32 lbl_80475DB4[5] = {1.0f, 0.3f, 1.1f, 0.8f, 1.0f};
 
 void fn_803A3228(s32 id, s32 arg1, u32 arg2) {
     lbl_8053AED0->fn_8043D874(id, arg1, arg2);
@@ -310,12 +400,6 @@ void cls_804AF774::do_end() {
     }
 }
 
-// FIXME: 98.82, kept out of the build (merge rule: the two rows differ in
-// opcode, not order or registers). The original tests fn_8037E7AC's result
-// with cmpwi (an int / BOOL return; its body normalises with neg/or/srwi);
-// Message.h declares it bool, which gives clrlwi. here. Needs fn_8037E7AC's
-// return type changed in game/tu_8037DF68.cpp (that unit's owner).
-#ifdef NONMATCHING
 bool cls_804AF774::do_isReady() {
     if (field_0x60->field_0x1aa == 0) {
         if (field_0x4c == 0) {
@@ -362,7 +446,6 @@ bool cls_804AF774::do_isReady() {
     return false;
 }
 
-#endif
 
 void cls_804AF774::do_character(int c) {
     if (field_0x60->field_0x1aa == 0) {
@@ -534,6 +617,198 @@ void cls_804AF6E4::do_character(int c) {
 
 cls_804AF6E4::~cls_804AF6E4() {}
 
+// FIXME: 99.79. Regalloc + stack slots + reloc-name: the message font goes
+// through r27 instead of r28 (the eight setFont calls); the random draw's
+// and the two parse_next pointers' stack slots differ (0x8 / 0x10 / 0xC);
+// the string offsets are relative to the section base (lbl_80475768+0x670..)
+// in the original, to the string pool in ours (same addresses).
+// The font is read into a local before each search, as in tu_803E1668.
+cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char* bmgName) {
+    JUTResFont* font;
+    const ResTIMG* timg;
+
+    field_0x3c0 = this;
+    field_0x3b8 = window;
+    field_0x18 = gGameRoot_8053AAF8->field_0xa8->getResource('????', bmgName);
+    field_0x1c = NULL;
+    field_0x15c = 0;
+    field_0x164 = 0;
+    resetFields0x168();
+    field_0x160 = index;
+    field_0x14c = 0;
+    field_0x3ae = 7;
+    field_0x3b0 = 0;
+    field_0x3af = 1;
+    field_0x1aa = 0;
+    for (int i = 0; i < 4; i++) {
+        field_0x180[i] = -1;
+    }
+    field_0x190 = 0;
+    field_0x192 = 0;
+    field_0x178 = 0;
+    field_0x17c = 0;
+    field_0x194 = 0;
+    field_0x196 = 0;
+    field_0x1a2 = 0;
+    field_0x98 = 0.0f;
+    field_0x9c = 0.0f;
+    field_0xa0 = 0.0f;
+    field_0x1ab[0] = 0;
+    field_0x2ab[0] = 0;
+    field_0x3ab[0] = 0;
+    field_0x170 = 0;
+    field_0x154 = -1;
+    field_0x158 = 0xFF;
+    field_0x19f = 0;
+    field_0x1a9 = 0;
+    field_0x3b1 = 0;
+    field_0x174 = -1;
+    for (int i = 0; i < 12; i++) {
+        field_0x68[i] = new Entry_0x68;
+        field_0x68[i]->field_0x0 = 0.0f;
+        field_0x68[i]->field_0x4 = 0.0f;
+        field_0x68[i]->field_0x8 = 0xFF;
+    }
+    for (int i = 0; i < 3; i++) {
+        field_0x3b2[i] = 0;
+    }
+    field_0xa4.x = 0.0f;
+    field_0xa4.y = 0.0f;
+    field_0xa4.z = 0.0f;
+    field_0x3bc = new cls_804B20F8(index, &field_0xa4, NULL, 8);
+
+    field_0x20 = new J2DScreen;
+    field_0x20->setPriority("hukidashi.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x24 = new J2DScreen;
+    field_0x24->setPriority("hukidashi_wood.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x28 = new J2DScreen;
+    field_0x28->setPriority("hukidashi_stone.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x2c = new J2DScreen;
+    field_0x2c->setPriority("op_zelda.blo", 0x1100000, lbl_80529DEC.field_0x20);
+
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkGr_01.bti");
+    field_0x30[0] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkRe_01.bti");
+    field_0x30[1] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkBl_01.bti");
+    field_0x30[2] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkPu_01.bti");
+    field_0x30[3] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_angou_01.bti");
+    field_0x30[4] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_angou_02.bti");
+    field_0x30[5] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_angou_03.bti");
+    field_0x30[6] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "heart.bti");
+    field_0x30[7] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "heart_01.bti");
+    field_0x30[8] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "heart_02.bti");
+    field_0x30[9] = new J2DPicture(timg);
+    timg = (const ResTIMG*)fn_804030C4('TIMG', "heart_03.bti");
+    field_0x30[10] = new J2DPicture(timg);
+
+    field_0xb8 = field_0x20->search('Pm00')->getWidth();
+    field_0xbc = field_0x20->search('Pm00')->getHeight();
+    field_0xc0 = field_0x20->search('Nmdata01')->getBounds()->i.x;
+    field_0xc4 = field_0x20->search('Nmdata01')->getBounds()->i.y;
+    field_0xc8 = field_0x20->search('Tm01')->getBounds()->i.x;
+    field_0xcc = field_0x20->search('Tm01')->getBounds()->i.y;
+    field_0xd0 = field_0x20->search('Tm02')->getBounds()->i.x - field_0x20->search('Tm01')->getBounds()->i.x;
+    field_0xd4 = field_0x20->search('Tm02')->getBounds()->i.y - field_0x20->search('Tm01')->getBounds()->i.y;
+    field_0xe8 = field_0x20->search('Tm01')->getWidth();
+    field_0xec = field_0x20->search('Tm01')->getHeight();
+    field_0x11c = field_0x20->search('ROOT')->getBounds()->i.x;
+    field_0x120 = field_0x20->search('ROOT')->getBounds()->i.y;
+    field_0xf8 = field_0x20->search('P1ar')->getBounds()->i.x;
+    field_0xfc = field_0x20->search('P1ar')->getBounds()->i.y;
+    field_0x100 = field_0x20->search('P1ar')->getWidth();
+    field_0x104 = field_0x20->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x20->search('P1ar')->getAlpha();
+    field_0x1a5 = field_0x20->search('P1b01')->getAlpha();
+    field_0x1a6 = field_0x20->search('P1b01')->getAlpha();
+    field_0x1a7 = field_0x20->search('P1n02')->getAlpha();
+    field_0x1a8 = field_0x20->search('P1n01')->getAlpha();
+    field_0xd8 = field_0x2c->search('Tm01')->getBounds()->i.x;
+    field_0xdc = field_0x2c->search('Tm01')->getBounds()->i.y;
+    field_0xf0 = field_0x2c->search('Tm01')->getWidth();
+    field_0xf4 = field_0x2c->search('Tm01')->getHeight();
+    field_0xe0 = field_0x2c->search('Tm02')->getBounds()->i.x - field_0x2c->search('Tm01')->getBounds()->i.x;
+    field_0xe4 = field_0x2c->search('Tm02')->getBounds()->i.y - field_0x2c->search('Tm01')->getBounds()->i.y;
+    field_0x108 = field_0x2c->search('P1ar')->getBounds()->i.x;
+    field_0x10c = field_0x2c->search('P1ar')->getBounds()->i.y;
+    field_0x110 = field_0x2c->search('P1ar')->getWidth();
+    field_0x114 = field_0x2c->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x2c->search('P1ar')->getAlpha();
+
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x24->search('Tm01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x28->search('Tm01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x24->search('Tm02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x28->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setBlackWhite(
+        JUtility::TColor(lbl_8050DB0C.field_0x304[3], lbl_8050DB0C.field_0x304[4], lbl_8050DB0C.field_0x304[5], 0),
+        JUtility::TColor(lbl_8050DB0C.field_0x304[0], lbl_8050DB0C.field_0x304[1], lbl_8050DB0C.field_0x304[2], 0xFF));
+    field_0x2c->search('Ndata05')->hide();
+    field_0x2c->search('Ndata01')->hide();
+
+    timg = (const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "kk_yazirushi_01.bti");
+    field_0x5c = new J2DPicture(timg);
+    field_0x5c->setBlackWhite(JUtility::TColor(0xFF, 0xFF, 0x8C, 0), JUtility::TColor(0xFF, 0xFF, 0x8C, 0xFF));
+    field_0x5c->rotate(9.6f, 14.4f, J2DROTATE_Z, -96.0f);
+    field_0x118 = 0.0f;
+    field_0x198 = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+    field_0x19a = -0x60;
+    field_0x19c = 0;
+
+    field_0x4 = NULL;
+    field_0x4 = new JMessage::TResourceContainer;
+    field_0x8 = NULL;
+    field_0x8 = new JMessage::TControl;
+    field_0xc = NULL;
+    field_0xc = new cls_804AF6D4;
+    field_0x10 = NULL;
+    field_0x10 = new cls_804AF774(field_0xc, field_0x8);
+    field_0x10->field_0x60 = field_0x3c0;
+    field_0x14 = NULL;
+    field_0x14 = new cls_804AF72C(field_0xc);
+    field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getFont();
+    cls_804AF72C* layout = field_0x14;
+    layout->field_0x2c0 = field_0x1ab;
+    layout->field_0x2c4 = field_0x2ab;
+    field_0x14->field_0x2d8 = field_0x3c0;
+
+    J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20->search('Tm01'));
+    field_0x60 = text->mFontSize.x;
+    field_0x64 = text->mFontSize.y;
+    field_0xb0 = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getLineSpace();
+    fn_803944EC(1.0f);
+
+    field_0xc->setResourceContainer(field_0x4);
+    field_0x8->mBaseProcSeq = field_0x10;
+    field_0x8->mBaseProcRender = field_0x14;
+    JMessage::TParse parse(field_0x4);
+    parse.parse(field_0x18, 0);
+    if (field_0x1c != NULL) {
+        JMessage::TParse_color parseColor(field_0x4);
+        parseColor.parse(field_0x1c, 0);
+    }
+    field_0x8->reset();
+    field_0x8->resetResourceCache();
+}
+
 cls_804AF6D4::~cls_804AF6D4() {}
 
 cls_804AF774::~cls_804AF774() {}
@@ -579,6 +854,46 @@ void cls_804AF5A0::fn_80396F94() {
     fn_80396884();
     fn_80395BE8();
     field_0x3b0 = 1;
+}
+
+// FIXME: 98.31. Missing 2 instructions around the clamp: the original copies
+// the processor's frame count (mr r4,r6) and clamps the copy to 0; ours clamps
+// in place (separate-variable, ternary and if/else forms tried: same or worse).
+void cls_804AF5A0::fn_80394690() {
+    if (field_0x3b0 != 0) {
+        field_0x8->render();
+        field_0x3b0 = 0;
+    }
+    f32 offset = 60.0f + 0.5f * ((3.0f - field_0x164) * static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getLineSpace());
+    if (field_0x1aa == 0) {
+        char line1[0x100];
+        char line2[0x100];
+        strcpy(line1, (const char*)field_0x1ab);
+        strcpy(line2, (const char*)field_0x2ab);
+        if (strlen(field_0x3ab) != 0) {
+            s32 frame = field_0x10->field_0x4c;
+            s16 frames = lbl_8050DB0C.field_0x4c[0];
+            line1[field_0x170] = 0;
+            line2[field_0x170] = 0;
+            if (frame > frames) {
+                frame = 0;
+            }
+            u8 alpha = 255.0f * (frames - frame) / frames;
+            char color[32];
+            snprintf(color, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", (field_0x154 & 0xFFFFFF00) | alpha);
+            strcat(line1, color);
+            strcat(line1, field_0x3ab);
+            snprintf(color, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", (field_0x158 & 0xFFFFFF00) | alpha);
+            strcat(line2, color);
+            strcat(line2, field_0x3ab);
+        }
+        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getStringPtr(), line1);
+        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->getStringPtr(), line2);
+        field_0x2c->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
+        field_0x2c->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x2c->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    }
 }
 
 void cls_804AF5A0::fn_803944EC(f32 scale) {

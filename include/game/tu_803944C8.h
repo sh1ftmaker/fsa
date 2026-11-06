@@ -15,6 +15,8 @@ class cls_804AF5A0;
 // Vtable 0x804AF6D4: a JMessage::TReference with do_word left to the base.
 class cls_804AF6D4 : public JMessage::TReference {
 public:
+    // Inlined by cls_804AF5A0's constructor (no out-of-line copy).
+    cls_804AF6D4() {}
     virtual ~cls_804AF6D4();
 };
 
@@ -22,6 +24,11 @@ public:
 // object (its 0x60 points back at the window).
 class cls_804AF774 : public JMessage::TSequenceProcessor {
 public:
+    // Inlined by cls_804AF5A0's constructor (no out-of-line copy).
+    cls_804AF774(const JMessage::TReference* reference, JMessage::TControl* control)
+        : JMessage::TSequenceProcessor(reference, control) {
+        field_0x5c = 1;
+    }
     virtual ~cls_804AF774();
     virtual void do_reset();
     virtual void do_begin(const void*, const char*);
@@ -54,6 +61,12 @@ public:
 // per-line entries indexed by field_0x201 / field_0x281 (do_begin, do_end).
 class cls_804AF6E4 : public JMessage::TRenderingProcessor {
 public:
+    // Inlined by cls_804AF5A0's constructor through cls_804AF72C's.
+    cls_804AF6E4(const JMessage::TReference* reference) : JMessage::TRenderingProcessor(reference) {
+        field_0x1d8 = 0;
+        field_0x1dc = 0;
+        field_0x1e8 = 0;
+    }
     virtual ~cls_804AF6E4();
     virtual void do_begin(const void*, const char*);
     virtual void do_end();
@@ -106,6 +119,9 @@ public:
 // Vtable 0x804AF72C: the other rendering processor (the window's text layout).
 class cls_804AF72C : public JMessage::TRenderingProcessor {
 public:
+    // Inlined by cls_804AF5A0's constructor (no out-of-line copy).
+    cls_804AF72C(const JMessage::TReference* reference)
+        : JMessage::TRenderingProcessor(reference), field_0x38(reference) {}
     virtual ~cls_804AF72C();
     // Inlined by fn_803944EC and the window constructor (both load field_0x60
     // before the one load of the processor, then the three stores); no
