@@ -2120,102 +2120,6 @@ void FileSelect_804AFF60::fn_803C6690() {
     }
 }
 
-// FIXME: 98.55. One instruction fewer, as fn_803CB3DC: with the running
-// `delay += rowStep` ours starts the accumulator at rowDelay (mr r24) where
-// the original keeps the add; `i * rowStep` keeps it but gives fn_803C2E24's
-// &others difference (98.28, different). Timing sums' operand order differs.
-// .sdata2 @NNN.
-// State 32 (from fn_803BF9C4, a file whose checksum failed): as fn_803CB3DC
-// (same timings, lbl_8050DB0C field_0x4c[0x98..0x9F]), the other two rows
-// slide out and the chosen row moves up, then the copy board and the first
-// two buttons come in; state 37 (the delete prompt).
-void FileSelect_804AFF60::fn_803C5808() {
-    s16 rowDelay = lbl_8050DB0C.field_0x4c[0x98];
-    s16 frames = lbl_8050DB0C.field_0x4c[0x99];
-    s16 rowStep = lbl_8050DB0C.field_0x4c[0x9A];
-    s16 boardDelay = lbl_8050DB0C.field_0x4c[0x9B];
-    s16 boardFrames = lbl_8050DB0C.field_0x4c[0x9C];
-    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0x9D];
-    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0x9E];
-    s16 buttonStep = lbl_8050DB0C.field_0x4c[0x9F];
-    s32 end = rowDelay + (frames + rowStep);
-    if (end < boardDelay + boardFrames) {
-        end = boardDelay + boardFrames;
-    }
-    if (end < buttonDelay + (buttonFrames + buttonStep * 3)) {
-        end = buttonDelay + (buttonFrames + buttonStep * 3);
-    }
-
-    // The two files that weren't chosen.
-    s32 others[2];
-    s32* other = others;
-    for (s32 i = 0; i < 3; i++) {
-        if (i != field_0xa4) {
-            *other++ = i;
-        }
-    }
-
-    field_0xd8++;
-    s32 delay = 0;
-    for (s32 i = 0; i < 2; i++) {
-        if (field_0xd8 > rowDelay + delay) {
-            field_0x38[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
-            field_0x38[others[i]]->fn_80402628(frames, field_0x38[others[i]]->field_0x28, 0);
-            setRowAlphas(this, others[i]);
-            field_0x44[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
-            field_0x44[others[i]]->fn_80402628(frames, field_0x44[others[i]]->field_0x28, 0);
-            setTabAlphas(this, others[i]);
-        }
-        delay += rowStep;
-    }
-    // The chosen row moves up to the first row's place.
-    if (field_0xa4 != 0 && field_0xd8 > rowDelay) {
-        field_0x38[field_0xa4]->fn_80402940(frames, 0, 0.0f,
-                                            field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
-        field_0x44[field_0xa4]->fn_80402940(frames, 0, 0.0f,
-                                            field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc);
-    }
-    if (field_0xd8 > boardDelay) {
-        field_0x20->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
-        field_0x20->fn_80402628(boardFrames, 0, field_0x20->field_0x28);
-        for (s32 j = 0; j < 9; j++) {
-            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
-        }
-    }
-    // Only the first two buttons, although `end` allows for four.
-    for (s32 i = 0; i < 2; i++) {
-        if (field_0xd8 > buttonDelay + i * buttonStep) {
-            field_0x24[i]->fn_80402940(buttonFrames, 0, 100.0f, 0.0f);
-            field_0x24[i]->fn_80402628(buttonFrames, 0, field_0x24[i]->field_0x28);
-            switch (i) {
-            case 0:
-                for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
-                }
-                break;
-            case 1:
-                for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
-                }
-                break;
-            case 2:
-                for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
-                }
-                break;
-            case 3:
-                for (s32 j = 0; j < 4; j++) {
-                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
-                }
-                break;
-            }
-        }
-    }
-    if (field_0xd8 > end) {
-        setState(37);
-    }
-}
-
 // FIXME: 95.70. Registers and scheduling only: the original sums the start
 // test as (step + frames) + 1 (ours folds frames + 1 first) and every saved
 // register is one higher than ours.
@@ -2301,6 +2205,102 @@ void FileSelect_804AFF60::fn_803C61C4() {
                 break;
             case 3:
                 for (int j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
+                }
+                break;
+            }
+        }
+    }
+    if (field_0xd8 > end) {
+        setState(37);
+    }
+}
+
+// FIXME: 98.55. One instruction fewer, as fn_803CB3DC: with the running
+// `delay += rowStep` ours starts the accumulator at rowDelay (mr r24) where
+// the original keeps the add; `i * rowStep` keeps it but gives fn_803C2E24's
+// &others difference (98.28, different). Timing sums' operand order differs.
+// .sdata2 @NNN.
+// State 32 (from fn_803BF9C4, a file whose checksum failed): as fn_803CB3DC
+// (same timings, lbl_8050DB0C field_0x4c[0x98..0x9F]), the other two rows
+// slide out and the chosen row moves up, then the copy board and the first
+// two buttons come in; state 37 (the delete prompt).
+void FileSelect_804AFF60::fn_803C5808() {
+    s16 rowDelay = lbl_8050DB0C.field_0x4c[0x98];
+    s16 frames = lbl_8050DB0C.field_0x4c[0x99];
+    s16 rowStep = lbl_8050DB0C.field_0x4c[0x9A];
+    s16 boardDelay = lbl_8050DB0C.field_0x4c[0x9B];
+    s16 boardFrames = lbl_8050DB0C.field_0x4c[0x9C];
+    s16 buttonDelay = lbl_8050DB0C.field_0x4c[0x9D];
+    s16 buttonFrames = lbl_8050DB0C.field_0x4c[0x9E];
+    s16 buttonStep = lbl_8050DB0C.field_0x4c[0x9F];
+    s32 end = rowDelay + (frames + rowStep);
+    if (end < boardDelay + boardFrames) {
+        end = boardDelay + boardFrames;
+    }
+    if (end < buttonDelay + (buttonFrames + buttonStep * 3)) {
+        end = buttonDelay + (buttonFrames + buttonStep * 3);
+    }
+
+    // The two files that weren't chosen.
+    s32 others[2];
+    s32* other = others;
+    for (s32 i = 0; i < 3; i++) {
+        if (i != field_0xa4) {
+            *other++ = i;
+        }
+    }
+
+    field_0xd8++;
+    s32 delay = 0;
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > rowDelay + delay) {
+            field_0x38[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x38[others[i]]->fn_80402628(frames, field_0x38[others[i]]->field_0x28, 0);
+            setRowAlphas(this, others[i]);
+            field_0x44[others[i]]->fn_80402B10(frames, 0, 0.0f, 600.0f);
+            field_0x44[others[i]]->fn_80402628(frames, field_0x44[others[i]]->field_0x28, 0);
+            setTabAlphas(this, others[i]);
+        }
+        delay += rowStep;
+    }
+    // The chosen row moves up to the first row's place.
+    if (field_0xa4 != 0 && field_0xd8 > rowDelay) {
+        field_0x38[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x38[0]->field_0xc - field_0x38[field_0xa4]->field_0xc);
+        field_0x44[field_0xa4]->fn_80402940(frames, 0, 0.0f,
+                                            field_0x44[0]->field_0xc - field_0x44[field_0xa4]->field_0xc);
+    }
+    if (field_0xd8 > boardDelay) {
+        field_0x20->fn_80402B10(boardFrames, 0, 600.0f, 0.0f);
+        field_0x20->fn_80402628(boardFrames, 0, field_0x20->field_0x28);
+        for (s32 j = 0; j < 9; j++) {
+            field_0x20->setAlpha_804023D0(mScreen->search(lbl_80476938[j]), field_0x196[j]);
+        }
+    }
+    // Only the first two buttons, although `end` allows for four.
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0xd8 > buttonDelay + i * buttonStep) {
+            field_0x24[i]->fn_80402940(buttonFrames, 0, 100.0f, 0.0f);
+            field_0x24[i]->fn_80402628(buttonFrames, 0, field_0x24[i]->field_0x28);
+            switch (i) {
+            case 0:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DC8[j]), field_0x19f[j]);
+                }
+                break;
+            case 1:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476DA8[j]), field_0x19f[j]);
+                }
+                break;
+            case 2:
+                for (s32 j = 0; j < 4; j++) {
+                    field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D88[j]), field_0x19f[j]);
+                }
+                break;
+            case 3:
+                for (s32 j = 0; j < 4; j++) {
                     field_0x24[i]->setAlpha_804023D0(mScreenHuuin->search(lbl_80476D68[j]), field_0x19f[j]);
                 }
                 break;
