@@ -10,9 +10,16 @@
 #include "game/act/act_wizzrobe.h"
 #include "JSystem/JMath/JMath.h"
 
-extern const ActorId lbl_80466838[7];
-const ActorId lbl_80466838[7] = { ACTOR_WIZR, ACTOR_FIRE, ACTOR_BLZE, ACTOR_DDGO, ACTOR_FLME, ACTOR_THCL, ACTOR_NULL };
 
+struct Wizzrobe_DamageIds {
+    u32 ids[7];
+};
+extern "C" const Wizzrobe_DamageIds lbl_80466838;
+const Wizzrobe_DamageIds lbl_80466838 = {
+    { ACTOR_WIZR, ACTOR_FIRE, ACTOR_BLZE, ACTOR_DDGO, ACTOR_FLME, ACTOR_THCL, ACTOR_NULL }
+};
+
+extern "C" {
 s32 lbl_804A0D50[20] = { 0, 1, 2, 3, 2, 4, 5, 6, 7, 6, 8, 9, 10, 11, 10, 12, 13, 14, 15, 14 };
 s32 lbl_804A0DA0[23] = { 2, 1, 20, 20, 10, 16, 17, 18, 19, 16, 17, 18, 19, 20, 2, 3, 3, 4, 4, 5, 6, 7, 10 };
 s32 lbl_804A0DFC[20] = { 20, 2, 1, 0, 20, 6, 5, 4, 20, 10, 9, 8, 20, 14, 13, 12, 2, 1, 1, 10 };
@@ -21,6 +28,7 @@ s32 lbl_804A0E8C[4] = { 10, 1, 1, 2 };
 s32 lbl_804A0E9C[4] = { 16, 17, 18, 19 };
 s32 lbl_804A0EAC[4] = { 0x4000, 0xC000, 0x8000, 0 };
 s32 lbl_804A0EBC[8] = { 1, 5, 20, 50, 100, 150, 200, 300 };
+}
 
 // Not auto-inlined: fn_80176B88 calls fn_80178F10 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
@@ -189,10 +197,10 @@ void Wizzrobe_804A0EDC::init() {
 }
 
 void Wizzrobe_804A0EDC::update() {
-    s32 unused_14 = 0;
-    s32 unused_10 = 0;
-    s16 unused_8 = 0;
-    f32 unused_c = 0.0f;
+    s32 dir = 0;
+    s32 player = 0;
+    f32 dist = 0.0f;
+    u16 angle = 0;
 
     if (field_0x2e5 == 1) {
         if (field_0x90 >> 27) {
@@ -216,10 +224,10 @@ void Wizzrobe_804A0EDC::update() {
     }
 
     if (field_0x2e4 == 1) {
-        u32 ids[7] = { ACTOR_WIZR, ACTOR_FIRE, ACTOR_BLZE, ACTOR_DDGO, ACTOR_FLME, ACTOR_THCL, ACTOR_NULL };
+        Wizzrobe_DamageIds ids = lbl_80466838;
         s32 prevDamage = mLife;
         bool hitByActor = false;
-        if (fn_801F2DB4(ACTOR_NULL, ACTOR_NULL, ids)) {
+        if (fn_801F2DB4(ACTOR_NULL, ACTOR_NULL, ids.ids)) {
             if (prevDamage != mLife) {
                 hitByActor = true;
             } else {
@@ -324,7 +332,6 @@ void Wizzrobe_804A0EDC::update() {
         // fallthrough
     case 1:
         if (field_0x23c == 30) {
-            s32 dir, player;
             fn_801EEC98(mSerial, NULL, &dir, NULL, &player, 0, 1);
             fn_80154590(&field_0x80, -2.0f, -2.0f, 2.0f, 2.0f);
             JGeometry::TVec3f prevPos;
@@ -337,10 +344,9 @@ void Wizzrobe_804A0EDC::update() {
                     mPos.z = 0.0f;
                     field_0x250 = (field_0x250 + (s32)(2.99f * fn_80154744()) + 1) & 3;
                     if (!fn_801F2618(NULL, false)) {
-                        s32 dir2;
-                        fn_801EEC98(mSerial, NULL, &dir2, NULL, NULL, 0, 1);
-                        if (dir2 != -1) {
-                            field_0x98 = dir2;
+                        fn_801EEC98(mSerial, NULL, &dir, NULL, NULL, 0, 1);
+                        if (dir != -1) {
+                            field_0x98 = dir;
                         }
                         spawnEmitter_8013CC50(field_0x4, &mPos, 0x50a, 0, 1, NULL, NULL, true, 1.0f);
                         spawnEmitter_8013CC50(field_0x4, &mPos, 0x50b, 0, 1, NULL, NULL, true, 1.0f);
@@ -372,12 +378,8 @@ void Wizzrobe_804A0EDC::update() {
         field_0x258 = 0;
         field_0x230 = 7;
         // fallthrough
-    case 7: {
+    case 7:
         fn_801F2618(NULL, false);
-        u16 angle;
-        s32 dir;
-        f32 dist;
-        s32 player;
         if (field_0x94 == 1 || field_0x94 == 2 || field_0x94 == 3) {
             if (field_0x24c <= 3) {
                 s32 mode = (field_0x94 != 3);
@@ -560,7 +562,6 @@ void Wizzrobe_804A0EDC::update() {
             field_0x260 = lbl_804A0D50[field_0x98 * 5 + field_0x24c];
         }
         break;
-    }
     case 8:
         field_0x2e8.set(0.0f, 0.0f, 0.0f);
         field_0x3c.set(0.0f, 0.0f, 0.0f);
@@ -704,8 +705,7 @@ void Wizzrobe_804A0EDC::update() {
             }
         }
         break;
-    case 14: {
-        u16 angle; s32 dir; f32 dist; s32 player;
+    case 14:
         fn_801EEC98(mSerial, &angle, &dir, &dist, &player, field_0x24c, 2);
         if (mEmitters[0] != NULL) {
             fn_80178EB8(mEmitters[0], &mPos);
@@ -764,7 +764,6 @@ void Wizzrobe_804A0EDC::update() {
             mAlive = false;
         }
         break;
-    }
     case 15: {
         fn_80178F10(&mPos, &field_0x2f4);
         mPos.x += field_0x2e0 * JMath::sincosTable_.cosShort(field_0x2cc);
