@@ -97,6 +97,15 @@ struct SaveFileRow_CrackPass {
 // The save data object lbl_8050EC80 (vtable 0x804AFB30, destructor fn_803B94C4).
 class cls_804AFB30 {
 public:
+    // Inlined into this unit's __sinit (0x803B961C): clears the header words and
+    // gives each of the three files and bodies fn_803B950C's defaults.
+    cls_804AFB30() {
+        mCurrentFile = 0;
+        field_0x8 = 0;
+        for (int i = 0; i < 3; i++) {
+            fn_803B950C(&mFiles[i], &mBodies[i]);
+        }
+    }
     /* 0x08 */ virtual ~cls_804AFB30();
     s32 fn_803B933C(SaveFile_803B950C* files, s32 index);
     s32 fn_803B93E8(SaveFile_803B950C* files, SaveFileBody_803B950C* bodies, s32 index);
@@ -139,7 +148,7 @@ struct cls_804AFB3C_Half {
     /* 0x44 */ u8 field_0x44;
 }; // Size: 0x45
 
-// The object at lbl_8050EC80 + 0x1FEC (vtable 0x804AFB3C; constructor
+// The object lbl_80510C6C (vtable 0x804AFB3C; constructor
 // fn_803B9160, destructor fn_803B95D4), constructed by this unit's __sinit.
 class cls_804AFB3C {
 public:

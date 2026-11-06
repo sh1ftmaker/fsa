@@ -4,6 +4,13 @@
 #include "game/tu_803B8C74.h"
 #include "string.h"
 
+// The unit's .bss, in the original's order (the __sinit at 0x803B961C addresses
+// both from 0x8050EC60: the save data at +0x20, cls_804AFB3C at +0x200C, each
+// after its destructor-chain object). The save data is 32-byte aligned: its chain
+// object at +0x0 is 0xC bytes and it starts at +0x20.
+cls_804AFB30 lbl_8050EC80 ATTRIBUTE_ALIGN(32);
+cls_804AFB3C lbl_80510C6C;
+
 // lbl_80476548 (.rodata, 8 x 10000: the initial value of cls_804AFB3C's two word
 // tables) belongs to its constructor, fn_803B9160, which is not written yet.
 
