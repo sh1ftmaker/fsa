@@ -163,7 +163,7 @@ lacks), `.bss` (split weak `memPool_` copies yourself, see
 docs/COORDINATOR.md) and kept weak copies are diffed as compiled.
 
 <!-- status:start -->
-Status (2026-11-06, honest report, written by `tools/site_data.py`): 8,855 of 11,557 functions, 1,776,528 of 4,442,032 bytes of code (39.99 %); weighted 49.18 % (2,184,756 bytes, honest plus partial credit for 609 structurally matched functions). Game code 4,142 / 6,789 functions (26.0 %; Boot to main menu 24.0 %, Main menu to Shadow Battle 29.4 %, Actors 28.2 %, Everything else 22.9 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 450 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
+Status (2026-11-06, honest report, written by `tools/site_data.py`): 8,862 of 11,557 functions, 1,778,988 of 4,442,032 bytes of code (40.05 %); weighted 49.29 % (2,189,568 bytes, honest plus partial credit for 613 structurally matched functions). Game code 4,149 / 6,789 functions (26.1 %; Boot to main menu 24.0 %, Main menu to Shadow Battle 29.4 %, Actors 28.4 %, Everything else 22.9 %); JSystem 3,650 / 3,702 functions (97.9 %); Dolphin SDK 610 / 610 functions (100 %); GX 172 / 172 functions (100 %); MSL, Runtime, TRK 281 / 284 functions (90.0 %). 450 of 902 split units are Matching; `ninja` ends in SHA-1 OK.
 <!-- status:end -->
 
 ## Layout
