@@ -8,6 +8,9 @@
 #include "game/cls_804A71A8.h"
 #include "game/Map.h"
 #include "game/ViewLayer.h"
+#include "game/BgRewrite.h"
+#include "game/Effect.h"
+#include "game/PlayerBit.h"
 
 // One step of 16 along each facing (0: +x, 1: -x, 2: +y, 3: -y).
 static const Vec lbl_8046B998[4] = {
@@ -830,6 +833,766 @@ void cls_804A71A8::fn_80269574() {
                 }
             }
         }
+    }
+}
+
+// Where the probe point lies inside its 16-unit tile (as (s32) % 16, so
+// negative left of / below 0).
+static inline s32 cellX(const cls_804A71A8* p) {
+    return (s32)p->field_0x8.x % 16;
+}
+
+static inline s32 cellY(const cls_804A71A8* p) {
+    return (s32)p->field_0x8.y % 16;
+}
+
+// fn_8026C350 for a probe point on another player's layer (fn_80268BC4's
+// second probe): the same case groups, but every tile that does anything
+// there only blocks the direction (field_0x38); the half tiles 4-7, the
+// diagonal tiles 8-0xB and 0x58-0x5F and the corner tiles 0x18-0x1F block
+// by where the point lies in its tile, and 0x25 / 0x26 by the view's 0x171.
+void cls_804A71A8::fn_8026B81C(u16 tile) {
+    switch (tile) {
+    case 0x01:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x04:
+        if (cellY(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x05:
+        if (cellY(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x06:
+        if (cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x07:
+        if (cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x08:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x09:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x0A:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x0B:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x18:
+        if (cellY(this) < 8 && cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x19:
+        if (cellY(this) < 8 && cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1A:
+        if (cellY(this) > 8 && cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1B:
+        if (cellY(this) > 8 && cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1C:
+        if (cellY(this) > 8 || cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1D:
+        if (cellY(this) > 8 || cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1E:
+        if (cellY(this) < 8 || cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1F:
+        if (cellY(this) < 8 || cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x20:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x21:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x22:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x24:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x25:
+        if (getGameView_802D6A9C()->field_0x171 == 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x26:
+        if (getGameView_802D6A9C()->field_0x171 == 1) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x2A:
+    case 0x2B:
+    case 0x2C:
+    case 0x2D:
+    case 0x2E:
+    case 0x2F:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x30:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x31:
+    case 0x32:
+    case 0x33:
+    case 0x34:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x35:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x36:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x37:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x38:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x3C:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x3D:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x3E:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x40:
+    case 0x41:
+    case 0x42:
+    case 0x43:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x51:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x52:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x53:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x58:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x59:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5A:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5B:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5C:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5D:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5E:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x5F:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x60:
+        break;
+    }
+}
+
+// The probe point is open floor: marked in field_0x20 unless the owner's
+// layer has a hole there (tile 6, 0xB8 or 0x59).
+static inline void markFloor(cls_804A71A8* p) {
+    u16 floor = fn_80226850(&p->field_0x8, p->field_0x4->field_0x3b4);
+    if (floor != 6 && floor != 0xB8 && fn_80226850(&p->field_0x8, p->field_0x4->field_0x3b4) != 0x59) {
+        p->field_0x20[p->field_0x1c] = 1;
+    }
+}
+
+// The per-direction marks of fn_8026C350 that count only on the first probe
+// pass (field_0xb0 <= 1) and, but for field_0x58 / field_0x60, only while the
+// owner stands on the ground (fn_802413F0, at most 1 up).
+// Tiles 2 and 0x23 (low half): field_0x58, at height 0.
+static inline void mark58(cls_804A71A8* p) {
+    if (p->field_0x4->mPos.z > 0.0f) {
+        return;
+    }
+    if (p->field_0xb0 > 1) {
+        return;
+    }
+    p->field_0x58[p->field_0x1c] = 1;
+}
+
+// Tile 0x60: field_0x60, at height 0.
+static inline void mark60(cls_804A71A8* p) {
+    if (p->field_0x4->mPos.z > 0.0f) {
+        return;
+    }
+    if (p->field_0xb0 > 1) {
+        return;
+    }
+    p->field_0x60[p->field_0x1c] = 1;
+}
+
+// Tile 3 (and the other players' tiles 0x4C-0x4F): field_0x68, unless
+// fn_8024BBB0.
+static inline void mark68(cls_804A71A8* p) {
+    if (!p->field_0x4->fn_802413F0()) {
+        return;
+    }
+    if (p->field_0x4->mPos.z > 1.0f) {
+        return;
+    }
+    if (p->field_0x4->fn_8024BBB0()) {
+        return;
+    }
+    if (p->field_0xb0 > 1) {
+        return;
+    }
+    p->field_0x68[p->field_0x1c] = 1;
+}
+
+// Tile 0x0D: blocked while fn_80241230 holds, else field_0x78.
+static inline void mark78(cls_804A71A8* p) {
+    if (p->field_0x4->fn_80241230()) {
+        p->field_0x38[p->field_0x1c] = 1;
+        return;
+    }
+    if (!p->field_0x4->fn_802413F0()) {
+        return;
+    }
+    if (p->field_0x4->mPos.z > 1.0f) {
+        return;
+    }
+    if (p->field_0xb0 > 1) {
+        return;
+    }
+    p->field_0x78[p->field_0x1c] = 1;
+}
+
+// Tiles 0x0E, 0x3A: field_0x88.
+static inline void mark88(cls_804A71A8* p) {
+    if (!p->field_0x4->fn_802413F0()) {
+        return;
+    }
+    if (p->field_0x4->mPos.z > 1.0f) {
+        return;
+    }
+    if (p->field_0xb0 > 1) {
+        return;
+    }
+    p->field_0x88[p->field_0x1c] = 1;
+}
+
+// The low half of tiles 0x3C / 0x3D: the ledge 0x10 facing -y, 0x11 facing
+// +y, else open floor.
+static inline void ledgeOrFloor(cls_804A71A8* p) {
+    if (p->field_0x1c == 3) {
+        p->fn_8026E68C(0x10);
+    } else if (p->field_0x1c == 2) {
+        p->fn_8026E68C(0x11);
+    } else {
+        markFloor(p);
+    }
+}
+
+// Tiles 0x52 / 0x53 break: 'KMRI' smoke on a layer >= 8, else emitters
+// 0xF9 and 0xFA.
+static inline void breakEffect(cls_804A71A8* p) {
+    s32 layer = p->field_0x4->field_0x3b4;
+    if (layer >= 8) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &p->field_0x8, 0, -1, -1);
+    } else {
+        spawnEmitter_8013CC50(layer, &p->field_0x8, 0xF9, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(p->field_0x4->field_0x3b4, &p->field_0x8, 0xFA, 1, 0, NULL, NULL, true, 1.0f);
+    }
+}
+
+// FIXME: 98.52. The 0x4C-0x4F mask test: the original keeps
+// isPlayerBitSet's bool (neg / or / srwi, cmplwi 1) where this folds it into
+// and.; `this`, the tile and its switch copy sit in r30 / r29 / r31 (ours
+// r31 / r30 / r29).
+// What the tile under a probe point inside the view does to the owner's
+// direction field_0x1c: blocks it (field_0x38; the half, diagonal and corner
+// tiles by where the point lies in the tile, as fn_8026B81C), opens it
+// (markFloor), hands it to the ledge (fn_8026E68C) and block pushers
+// (fn_8026EE60 family), or marks one of the per-direction flags 0x50-0x88
+// that fn_80269574 acts on. While fn_8026FC20 > 0 only the ledges 0x10-0x13
+// are noted (field_0xb8).
+void cls_804A71A8::fn_8026C350(u16 tile) {
+    if (field_0x4->fn_8026FC20() >= 1) {
+        switch (tile) {
+        case 0x10:
+        case 0x11:
+        case 0x12:
+        case 0x13:
+            field_0xb8 = 1;
+            break;
+        }
+        return;
+    }
+
+    switch (tile) {
+    case 0x00:
+        markFloor(this);
+        break;
+    case 0x01:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x02:
+        mark58(this);
+        break;
+    case 0x03:
+        mark68(this);
+        break;
+    case 0x04:
+        if (cellY(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x05:
+        if (cellY(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x06:
+        if (cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x07:
+        if (cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x08:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x09:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x0A:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x0B:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x0C:
+        break;
+    case 0x0D:
+        mark78(this);
+        break;
+    case 0x0E:
+        // Both branches are the same in the original.
+        if (fn_802DEB58()) {
+            mark88(this);
+        } else {
+            mark88(this);
+        }
+        break;
+    case 0x10:
+    case 0x11:
+    case 0x12:
+    case 0x13:
+        field_0xb8 = 1;
+        // fall through
+    case 0x14:
+    case 0x15:
+    case 0x16:
+    case 0x17:
+        fn_8026E68C(tile);
+        break;
+    case 0x18:
+        if (cellY(this) < 8 && cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x19:
+        if (cellY(this) < 8 && cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1A:
+        if (cellY(this) > 8 && cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1B:
+        if (cellY(this) > 8 && cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1C:
+        if (cellY(this) > 8 || cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1D:
+        if (cellY(this) > 8 || cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1E:
+        if (cellY(this) < 8 || cellX(this) > 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x1F:
+        if (cellY(this) < 8 || cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x20:
+        if (field_0x4->fn_802413F0() && field_0x4->mPos.z < 1.0f) {
+            field_0x50[field_0x1c] = 1;
+        }
+        break;
+    case 0x21:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x22:
+        if (getGameView_802D6A9C()->field_0x170 != 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x23:
+        if (cellY(this) < 12) {
+            mark58(this);
+        } else if (field_0x1c == 2) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x24:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x25:
+        if (getGameView_802D6A9C()->field_0x171 == 0) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x26:
+        if (getGameView_802D6A9C()->field_0x171 == 1) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    // Walls: closed while the owner is 8 or more up (unless fn_8025F448),
+    // with fn_80240F14, or in group mode 4 with fn_80240670; 0x28-0x2F also
+    // over part of the tile, 0x2A / 0x2B (0x2E / 0x2F) only at height 0 when
+    // field_0x3dc is 3 (2).
+    case 0x27:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()))
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x28:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            cellY(this) < 8)
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x29:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            cellY(this) > 8)
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2A:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            (cellX(this) < 8 && (field_0x4->field_0x3dc != 3 || field_0x4->mPos.z <= 0.0f)))
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2B:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            (cellX(this) > 8 && (field_0x4->field_0x3dc != 3 || field_0x4->mPos.z <= 0.0f)))
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2C:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            cellY(this) < 8)
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2D:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            cellY(this) > 8)
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2E:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            (cellX(this) < 8 && (field_0x4->field_0x3dc != 2 || field_0x4->mPos.z <= 0.0f)))
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x2F:
+        if ((!field_0x4->fn_8025F448() && field_0x4->mPos.z >= 8.0f) || field_0x4->fn_80240F14() ||
+            (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240670()) ||
+            (cellX(this) > 8 && (field_0x4->field_0x3dc != 2 || field_0x4->mPos.z <= 0.0f)))
+        {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x30:
+        fn_8026EE60();
+        // fall through (as fn_8026EC88(-1))
+    case 0x31:
+    case 0x32:
+    case 0x33:
+    case 0x34:
+        fn_8026EC88(tile - 0x31);
+        break;
+    case 0x35:
+        fn_8026F54C();
+        break;
+    case 0x36:
+        fn_8026F388();
+        break;
+    case 0x37:
+        fn_8026F1C4();
+        break;
+    case 0x38:
+        fn_8026F000();
+        break;
+    case 0x39:
+        break;
+    case 0x3A:
+        mark88(this);
+        break;
+    case 0x3B:
+        mark78(this);
+        break;
+    case 0x3C:
+        if (cellY(this) > 8) {
+            mark78(this);
+        } else if (cellX(this) < 8) {
+            field_0x38[field_0x1c] = 1;
+        } else {
+            ledgeOrFloor(this);
+        }
+        break;
+    case 0x3D:
+        if (cellY(this) > 8) {
+            mark78(this);
+        } else if (cellX(this) < 8) {
+            ledgeOrFloor(this);
+        } else {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x3E:
+        if (!fn_80237A80(field_0x4->field_0x4)) {
+            field_0x38[field_0x1c] = 1;
+        }
+        break;
+    case 0x40:
+    case 0x41:
+    case 0x42:
+    case 0x43:
+        field_0x38[field_0x1c] = 1;
+        break;
+    case 0x4C:
+    case 0x4D:
+    case 0x4E:
+    case 0x4F:
+        // Another player's tile (0x4C + index): only while that player may
+        // be followed (its bit in the root's mask, or in group mode 4 when
+        // it is the owner's turn).
+        if (((field_0x4->fn_802486A0() != 4 && isPlayerBitSet(gGameRoot_8053AAF8, field_0x4->field_0x4) == true) ||
+             (field_0x4->fn_802486A0() == 4 && field_0x4->fn_80240888() == field_0x4->fn_80248778())) &&
+            tile - 0x4C != field_0x4->field_0x4 && !field_0x4->fn_80270A8C() && !field_0x4->fn_80241230())
+        {
+            mark68(this);
+        }
+        break;
+    case 0x50:
+        field_0x70[field_0x1c] = 1;
+        break;
+    case 0x51:
+        field_0x38[field_0x1c] = 1;
+        if (!field_0x4->fn_80270C88()) {
+            u16 under;
+            if (field_0x4->field_0x3b4 >= 8) {
+                under = fn_8022461C(&field_0x8, field_0x4->field_0x3b4 + 8);
+            } else {
+                under = fn_8022461C(&field_0x8, 1);
+            }
+            if (under == 0x60) {
+                field_0xba = 1;
+            } else {
+                field_0x4->fn_80272160(1, (const JGeometry::TVec2f*)&field_0x8, 4);
+            }
+        }
+        break;
+    case 0x52:
+        field_0x38[field_0x1c] = 1;
+        if (field_0xb0 <= 1 && field_0x4->fn_80240F28()) {
+            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->field_0x3b4, 0x9D);
+            breakEffect(this);
+        }
+        break;
+    case 0x53:
+        field_0x38[field_0x1c] = 1;
+        if (field_0xb0 <= 1 && field_0x4->fn_80240F28()) {
+            gBgRewrite_8053AC98->fn_802A3948(&field_0x8, field_0x4->field_0x4, field_0x4->field_0x3b4, 0x3E0);
+            fn_80230FD0(field_0x4->field_0x4, 0x20025);
+            breakEffect(this);
+        }
+        break;
+    case 0x58:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        }
+        break;
+    case 0x59:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        }
+        break;
+    case 0x5A:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        }
+        break;
+    case 0x5B:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        }
+        break;
+    case 0x5C:
+        if (cellX(this) + cellY(this) >= 16) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        } else {
+            mark78(this);
+        }
+        break;
+    case 0x5D:
+        if (cellX(this) - cellY(this) < 0) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        } else {
+            mark78(this);
+        }
+        break;
+    case 0x5E:
+        if (cellX(this) - cellY(this) >= 0) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        } else {
+            mark78(this);
+        }
+        break;
+    case 0x5F:
+        if (cellX(this) + cellY(this) < 16) {
+            field_0x38[field_0x1c] = 1;
+        } else if (fn_802DEB58()) {
+            mark88(this);
+        } else {
+            mark78(this);
+        }
+        break;
+    case 0x60:
+        mark60(this);
+        break;
+    default:
+        markFloor(this);
+        break;
     }
 }
 

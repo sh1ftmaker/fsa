@@ -1380,6 +1380,9 @@ extern "C" f32 fn_8022CFE8(s32 player);
 // without the manager); ActorBase_804A5770::fn_801EE558 skips players for which it holds
 // (clrlwi. of r3).
 extern "C" bool fn_8022D534(s32 player);
+// Owner: game/tu_8022AD64.cpp (0x80237A80, 0x738, not written yet): a per-player
+// test; cls_804A71A8::fn_8026C350 blocks tile 0x3E unless it holds (clrlwi. of r3).
+extern "C" bool fn_80237A80(s32 player);
 // fn_8024BB88 on the present players of `player`'s group. 1 unit (tu_8028FBA0).
 void fn_8022D36C(s32 player);
 s32 fn_8022D498(s32 player); // -> fn_8024BB94; else 0
