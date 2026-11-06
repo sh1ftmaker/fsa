@@ -1,6 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
+#include "game/Camera.h"
+#include "game/ActorManager.h"
 #include "game/act/act_great_fairy_spfr.h"
 
 static const s16 lbl_80465150[] = {
@@ -179,6 +181,112 @@ s32 cls_8049EB8C::vfunc_0x5C() {
         return 1;
     }
     return 0;
+}
+
+// FIXME: 92.79% (scheduling+regalloc: f1/f2/r4; reloc-name: literals lbl_8053CD18, lbl_8053CD1C, lbl_8053CD20)
+void cls_8049EB8C::fn_801321E4() {
+    switch (field_0x234) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 21:
+    case 23:
+    case 24:
+    case 25:
+    case 26:
+        break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 22:
+        if (field_0x238 == 0) {
+            gGameRoot2_8053AB10->field_0x24->field_0x17d = 1;
+        } else {
+            gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            f32 y1 = mPos.y + 96.0f;
+            f32 x = mPos.x;
+            f32 y0 = mPos.y - 96.0f;
+            if (camera->field_0x7f5 == 0) {
+                camera->field_0x7f4 = 1;
+                camera->field_0x7f8 = 5;
+                camera->field_0x808.set(x, y0, x, y1);
+                camera->field_0x7f6 = 0;
+            }
+        }
+        break;
+    case 8: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f pos;
+        s32 serial = getActorManager_801F856C()->fn_801F7A08('BARI');
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                pos = actor->mPos;
+            }
+        }
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        pos.y += 96.0f;
+        if (camera->field_0x840 == 0) {
+            camera->field_0x840 = 1;
+            camera->field_0x844.set(pos.x, pos.y - 108.0f, pos.x, pos.y + 108.0f);
+            camera->field_0x854 = 1.0f;
+            camera->field_0x1d4 = -1.0f;
+            camera->field_0x1d8 = -1.0f;
+        }
+        break;
+    }
+    case 9:
+    case 10: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        f32 y1 = mPos.y + 96.0f;
+        f32 x = mPos.x;
+        f32 y0 = mPos.y - 96.0f;
+        if (camera->field_0x840 == 0) {
+            camera->field_0x840 = 1;
+            camera->field_0x844.set(x, y0, x, y1);
+            camera->field_0x854 = 1.0f;
+            camera->field_0x1d4 = -1.0f;
+            camera->field_0x1d8 = -1.0f;
+        }
+        break;
+    }
+    case 11: {
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x7f4 == 0) {
+            camera->field_0x7f5 = 1;
+        }
+        break;
+    }
+    case 12:
+    case 13:
+        gGameRoot2_8053AB10->field_0x24->field_0x17d = 1;
+        break;
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+    case 20: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        f32 y1 = mPos.y + 96.0f;
+        f32 x = mPos.x;
+        f32 y0 = mPos.y - 96.0f;
+        if (camera->field_0x840 == 0) {
+            camera->field_0x840 = 1;
+            camera->field_0x844.set(x, y0, x, y1);
+            camera->field_0x854 = 1.0f;
+            camera->field_0x1d4 = -1.0f;
+            camera->field_0x1d8 = -1.0f;
+        }
+        break;
+    }
+    }
 }
 
 s32 cls_8049EB8C::vfunc_0x58() {

@@ -20,6 +20,7 @@ public:
     /* 0x5C */ virtual s32 vfunc_0x5C();
 
     // Not yet written (0x80132454, same unit). Takes an index into lbl_80465204.
+    void fn_801321E4();
     void fn_80132454(s32 index);
 
     /* 0x230 */ u8 field_0x230; // set to 0 by the constructor, not yet known
