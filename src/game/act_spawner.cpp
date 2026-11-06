@@ -144,8 +144,7 @@ void SpawnerGenerator_804A9328::update() {
                     }
                 }
                 s32 t = field_0x234[field_0x254];
-                if ((t == 10 || (u32)(t - 11) <= 4 || t == 17 || t == 19 || t == 16) && flag < 0) {
-                } else {
+                if (!((t == 10 || (u32)(t - 11) <= 4 || t == 17 || t == 19 || t == 16) && flag < 0)) {
                     JGeometry::TVec3f emitterPos1(field_0x258.x, field_0x258.y - 2.0f, field_0x258.z);
                     spawnEmitter_8013CC50(field_0x4, &emitterPos1, 0x1D3, 0, 0, NULL, NULL, true, 1.0f);
                     JGeometry::TVec3f emitterPos2(field_0x258.x, field_0x258.y - 2.0f, field_0x258.z);
