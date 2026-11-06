@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/act/act_floormaster.h"
+#include "game/ActorManager.h"
 #include "game/Camera.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
@@ -114,6 +115,79 @@ void Floormaster_804A6004::vfunc_0x88() {
         }
         break;
     }
+}
+
+bool Floormaster_804A6004::vfunc_0x58() {
+    if (mBox2.f.x - mBox2.i.x <= 0.0f || mBox2.f.y - mBox2.i.y <= 0.0f) {
+        return false;
+    }
+    JGeometry::TVec3f vel54;
+    JGeometry::TVec3f vel48;
+    JGeometry::TBox2f box;
+    JGeometry::TVec2f hitPos;
+    s32 hit;
+    s32 actorSerial = -1;
+    bool b1 = false;
+    bool b2 = false;
+    vel48.set(0.0f, 0.0f, 0.0f);
+    fn_801F317C(&box);
+
+    hit = fn_8023AE34(&box, field_0x4, &hitPos);
+    if (hit >= 0) {
+        b1 = fn_801CC820(hit, &vel48);
+    } else {
+        hit = fn_8023AA18(&box, field_0x4, &hitPos);
+        if (hit >= 0) {
+            b2 = true;
+        } else {
+            hit = fn_8023AC74(&box, field_0x4, &hitPos);
+            if (hit >= 0) {
+                fn_801CC538(hit, &hitPos, &vel54, &actorSerial);
+            } else {
+                hit = fn_8023AD54(&box, field_0x4, &hitPos);
+                if (hit >= 0) {
+                    fn_801CC640(hit, &actorSerial, &vel48);
+                }
+            }
+        }
+    }
+
+    bool hitOccurred = false;
+    if (hit >= 0) {
+        if (b1) {
+            hitOccurred = true;
+        } else if (b2) {
+            if (field_0x1dc.fn_801EAC20(hit)) {
+                hitOccurred = true;
+            }
+        } else if ((hit = actorSerial) >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(hit);
+            if (actor && field_0x1dc.fn_801EAC54(actor->mSerial)) {
+                hitOccurred = true;
+            }
+        }
+
+        if (hitOccurred) {
+            JGeometry::TVec3f effectPos(hitPos.x, hitPos.y, 0.0f);
+            fn_801CB538(field_0x4, &effectPos, 0, 0);
+        }
+        if (hitOccurred) {
+            startSound_801F0E34(0x5007D, 0);
+            bool change = false;
+            switch (mState) {
+            case 3:
+            case 5:
+            case 6:
+            case 8:
+                change = true;
+                break;
+            }
+            if (change) {
+                fn_8020ED5C(4);
+            }
+        }
+    }
+    return hitOccurred;
 }
 
 // FIXME: 99.91%. reloc-name
