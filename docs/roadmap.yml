@@ -281,12 +281,13 @@ phases:
         title: The player
         desc: >-
           The Link class (Player_804A6F38, ten units from 0x8022AD64 to
-          0x802957CC) and the per-player queries. Pushed hard on 2026-11-05
-          with the deferred-inlining model: 876 of 1,054 functions are at 100 %
-          (docs/PLAYER.md); the hard remainder is the big state handlers and
-          the update loop.
+          0x802957CC) and the per-player queries. Every function is written and
+          at least structurally matched (2026-11-06): 934 of 1,054 are at 100 %,
+          the rest differ only in registers, scheduling, stack slots or a few
+          instructions (docs/PLAYER.md), and one, the helper's counter/warp
+          function, carries tagged crack-pass gotos (docs/CRACK_PASS.md).
         status: active
-        covers: []
+        covers: [game:player]
       - id: map
         title: Map and stage
         desc: Rooms, collision, background rewrites and the stage loader.
