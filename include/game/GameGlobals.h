@@ -564,6 +564,8 @@ cls_804B0FB0* fn_80401BA4(const char* path, JKRAramArchive* archive, u8 directio
 cls_804B0FC0* fn_80401E10(const char* path, u8 direction, JKRHeap* heap);
 
 extern "C" {
+// JSystem/JMath/JMath.cpp: fast vector magnitude
+f32 fn_80093280(const JGeometry::TVec3f* v);
 // game/tu_801CB270.cpp (not written yet; both clrlwi.): map tests of a
 // point on `layer`.
 bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer);
