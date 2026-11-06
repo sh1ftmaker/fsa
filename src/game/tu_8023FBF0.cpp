@@ -106,15 +106,6 @@ static inline f32 planarDistance(const JGeometry::TVec3f& v) {
     return JGeometry::TUtil<f32>::sqrt(square(v.x) + square(v.y));
 }
 
-// Scales v to unit length unless it is shorter than 32 * FLT_EPSILON (the
-// sequence of tu_80285E58's fn_8028676C and tu_802684A4's normalize2D).
-static inline void normalizeVec(JGeometry::TVec3f& v) {
-    f32 sq = v.squared();
-    if (!(sq <= 32.0f * FLT_EPSILON)) {
-        v.scale(JGeometry::TUtil<f32>::inv_sqrt(sq));
-    }
-}
-
 // The per-player cue of the update's join sequence: at frame `at` of the
 // counter field_0xd38 the 'here' effect, pad rumble and sound 0x25; at
 // `off` fn_8043A170. Written once per player in the original (the four
@@ -853,9 +844,9 @@ void Player_804A6F38::fn_80253E6C() {
     }
 }
 
-// FIXME: 99.06 %. Register allocation only: the group loops' count / index
-// (r29 / r30 vs r28 / r29) and, in the normalisations, the float temporaries (f29-f31,
-// f3 / f4 swapped).
+// FIXME: 99.76 %. Register allocation only: the group loops' count / index
+// (r29 / r30 vs r28 / r29), plus three literal names (@NNN until the unit's
+// literals are in pool order).
 // Update B (fn_8023F390, after every player's update A): a follower walks
 // to its leader's spot (fn_8027FA08), 2 a frame while 0x1218 runs, else 1.5
 // or 6 by the helper's flags, and arrives on it; a player held by another
@@ -912,7 +903,7 @@ void Player_804A6F38::fn_80252FC0() {
             speed = 6.0f;
         }
         if (dist >= speed) {
-            normalizeVec(step);
+            step.normalize();
             step.scale(speed);
             mPos += step;
         } else {
@@ -956,12 +947,12 @@ void Player_804A6F38::fn_80252FC0() {
         step.z = 0.0f;
         f32 dist = PSVECMag(&step);
         if (field_0xbf0->anyFlag48()) {
-            normalizeVec(step);
+            step.normalize();
             step.scale(1.5f);
             mPos.x += step.x;
             mPos.y += step.y;
         } else if (dist >= 3.0f) {
-            normalizeVec(step);
+            step.normalize();
             step.scale(3.0f);
             mPos.x += step.x;
             mPos.y += step.y;
@@ -1004,7 +995,7 @@ void Player_804A6F38::fn_80252FC0() {
                 JGeometry::TVec3f step = target - mPos;
                 step.z = 0.0f;
                 if (PSVECMag(&step) >= 5.0f) {
-                    normalizeVec(step);
+                    step.normalize();
                     step.scale(5.0f);
                     mPos.x += step.x;
                     mPos.y += step.y;
@@ -3226,6 +3217,53 @@ bool Player_804A6F38::fn_802431B8() {
 
 bool Player_804A6F38::fn_80243194(s32 other) {
     return fn_8022E438(field_0x4, other);
+}
+
+// Conveyor tiles: the tile under mPos (fn_80226850) pushes field_0x414 by
+// 0.05 (tiles 0xB4-0xB7, speed up to 0.5) or 0.15 (0x95-0x98, up to 2.0)
+// along +x / -x / +y / -y; off them the push slows by 0.05 a frame. The
+// push is added to mPos.
+void Player_804A6F38::fn_80242DAC() {
+    u16 tile = fn_80226850(&mPos, field_0x3b4);
+    if (tile == 0xb7) {
+        field_0x414.x += 0.05f;
+    } else if (tile == 0xb6) {
+        field_0x414.x -= 0.05f;
+    } else if (tile == 0xb5) {
+        field_0x414.y += 0.05f;
+    } else if (tile == 0xb4) {
+        field_0x414.y -= 0.05f;
+    } else if (tile == 0x98) {
+        field_0x414.x += 0.15f;
+    } else if (tile == 0x97) {
+        field_0x414.x -= 0.15f;
+    } else if (tile == 0x96) {
+        field_0x414.y += 0.15f;
+    } else if (tile == 0x95) {
+        field_0x414.y -= 0.15f;
+    } else {
+        f32 speed = PSVECMag(&field_0x414);
+        speed -= 0.05f;
+        if (speed <= 0.0f) {
+            field_0x414.set(0.0f, 0.0f, 0.0f);
+        } else {
+            field_0x414.normalize();
+            field_0x414.scale(speed);
+        }
+        mPos += field_0x414;
+        return;
+    }
+    f32 speed = PSVECMag(&field_0x414);
+    if (tile == 0x98 || tile == 0x97 || tile == 0x96 || tile == 0x95) {
+        if (speed >= 2.0f) {
+            field_0x414.normalize();
+            field_0x414.scale(2.0f);
+        }
+    } else if (speed >= 0.5f) {
+        field_0x414.normalize();
+        field_0x414.scale(0.5f);
+    }
+    mPos += field_0x414;
 }
 
 // Clears field_0x43e (set to 1) for a player standing or walking (states
