@@ -228,7 +228,6 @@ public:
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
-
 // Spawned for 'ZLD3'.
 class cls_804A35AC : public ActorBase_804A5770 {
 public:

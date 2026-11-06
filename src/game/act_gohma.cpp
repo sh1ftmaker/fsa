@@ -37,7 +37,35 @@ static const char* lbl_804A3020[] = {
 
 static s32 lbl_8053ABD8[2];
 
-// FIXME: 99.59 % (scheduling+regalloc + reloc-name). Minor register scheduling differences on branch targets and literal pool relocations.
+// Sets v to a vector of length speed along direction dir (0 +x, 1 -x, 2 +y, 3 -y). The same
+// four-way set appears at six sites in fn_801AB6A8 / fn_801AAF44, written once here.
+static inline void setMoveDir(JGeometry::TVec3f& v, s32 dir, f32 speed) {
+    switch (dir) {
+    case 0:
+        v.x = speed;
+        v.y = 0.0f;
+        v.z = 0.0f;
+        break;
+    case 1:
+        v.x = -speed;
+        v.y = 0.0f;
+        v.z = 0.0f;
+        break;
+    case 2:
+        v.x = 0.0f;
+        v.y = speed;
+        v.z = 0.0f;
+        break;
+    case 3:
+        v.x = 0.0f;
+        v.y = -speed;
+        v.z = 0.0f;
+        break;
+    }
+}
+
+// FIXME: 99.59 % (scheduling+regalloc + reloc-name). `field_0x250 = field_0x244 + field_0x98 * 4` loads field_0x98 and
+// field_0x244 into swapped registers (r5/r0); everything else differs only in literal reloc names.
 void Gohma_804A307C::init() {
     mBox.i.x = -10.0f;
     mBox.i.y = -8.0f;
@@ -134,7 +162,7 @@ Gohma_804A307C::~Gohma_804A307C() {
     }
 }
 
-// FIXME: 99.87 % (reloc-name). Instruction-identical; differs only on reloc-name of literal lbl_8053E7B0 vs @1301.
+// FIXME: 99.87 % (reloc-name). Instruction-identical; only the -10.0f literal's reloc name differs (lbl_8053E7B0 vs @NNN).
 void Gohma_804A307C::vfunc_0x44() {
     if (field_0x25c == mLife) {
         return;
@@ -159,13 +187,15 @@ void Gohma_804A307C::vfunc_0x44() {
         return;
     }
     u16 angle = (u16)((u16)field_0x98 + 0x8000);
-    f32 speed = -10.0f;
-    field_0x3c.x = speed * JMASinShort(fn_801F6874(angle));
-    field_0x3c.y = speed * JMACosShort(fn_801F6874(angle));
+    field_0x3c.x = -10.0f * JMASinShort(fn_801F6874(angle));
+    field_0x3c.y = -10.0f * JMACosShort(fn_801F6874(angle));
     field_0x230 = 5;
 }
 
-// FIXME: 97.40 % (missing/extra + reloc-name). Emitter clear at offset 0x24 differs due to shared JPAEmitter header layout.
+// FIXME: 97.40 % (missing/extra + reloc-name). (1) Both emitter stops: the original also stores 1 at emitter+0x24
+// right after the status-bit store (JPAEmitter.h has no field there, same as act_force_gem_wooden). (2) The vec.x
+// sign test in case 2 branches the other way round (bge/blt, `flag` set in another block). (3) The original stores and
+// reloads field_0x244 after `(field_0x244 + 1) & 3`. (4) The `field_0x98 = dir` store is scheduled differently.
 void Gohma_804A307C::fn_801AB6A8() {
     f32 f31 = mBox.i.y + mPos.y;
     f32 f29 = mBox.f.y + mPos.y;
@@ -270,28 +300,7 @@ void Gohma_804A307C::fn_801AB6A8() {
         field_0x3c.z = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.x = 0.0f;
-        switch (field_0x98) {
-        case 0:
-            field_0x264.x = 1.0f;
-            field_0x264.y = 0.0f;
-            field_0x264.z = 0.0f;
-            break;
-        case 1:
-            field_0x264.x = -1.0f;
-            field_0x264.y = 0.0f;
-            field_0x264.z = 0.0f;
-            break;
-        case 2:
-            field_0x264.x = 0.0f;
-            field_0x264.y = 1.0f;
-            field_0x264.z = 0.0f;
-            break;
-        case 3:
-            field_0x264.x = 0.0f;
-            field_0x264.y = -1.0f;
-            field_0x264.z = 0.0f;
-            break;
-        }
+        setMoveDir(field_0x264, field_0x98, 1.0f);
         mTimers[0] = 0;
         mTimers[1] = 50 + (s32)(15.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         field_0x244 = 0;
@@ -329,28 +338,7 @@ void Gohma_804A307C::fn_801AB6A8() {
                         field_0x3c.z = 0.0f;
                         field_0x3c.y = 0.0f;
                         field_0x3c.x = 0.0f;
-                        switch (field_0x98) {
-                        case 0:
-                            field_0x264.x = 16.0f;
-                            field_0x264.y = 0.0f;
-                            field_0x264.z = 0.0f;
-                            break;
-                        case 1:
-                            field_0x264.x = -16.0f;
-                            field_0x264.y = 0.0f;
-                            field_0x264.z = 0.0f;
-                            break;
-                        case 2:
-                            field_0x264.x = 0.0f;
-                            field_0x264.y = 16.0f;
-                            field_0x264.z = 0.0f;
-                            break;
-                        case 3:
-                            field_0x264.x = 0.0f;
-                            field_0x264.y = -16.0f;
-                            field_0x264.z = 0.0f;
-                            break;
-                        }
+                        setMoveDir(field_0x264, field_0x98, 16.0f);
                         mPos += field_0x264;
                         if (fn_801F2618(NULL, false)) {
                             field_0x98 ^= 1;
@@ -366,28 +354,7 @@ void Gohma_804A307C::fn_801AB6A8() {
                     field_0x3c.z = 0.0f;
                     field_0x3c.y = 0.0f;
                     field_0x3c.x = 0.0f;
-                    switch (field_0x98) {
-                    case 0:
-                        field_0x264.x = 1.0f;
-                        field_0x264.y = 0.0f;
-                        field_0x264.z = 0.0f;
-                        break;
-                    case 1:
-                        field_0x264.x = -1.0f;
-                        field_0x264.y = 0.0f;
-                        field_0x264.z = 0.0f;
-                        break;
-                    case 2:
-                        field_0x264.x = 0.0f;
-                        field_0x264.y = 1.0f;
-                        field_0x264.z = 0.0f;
-                        break;
-                    case 3:
-                        field_0x264.x = 0.0f;
-                        field_0x264.y = -1.0f;
-                        field_0x264.z = 0.0f;
-                        break;
-                    }
+                    setMoveDir(field_0x264, field_0x98, 1.0f);
                 }
             }
         }
@@ -420,28 +387,7 @@ void Gohma_804A307C::fn_801AB6A8() {
                 field_0x3c.z = 0.0f;
                 field_0x3c.y = 0.0f;
                 field_0x3c.x = 0.0f;
-                switch (field_0x98) {
-                case 0:
-                    field_0x264.x = 16.0f;
-                    field_0x264.y = 0.0f;
-                    field_0x264.z = 0.0f;
-                    break;
-                case 1:
-                    field_0x264.x = -16.0f;
-                    field_0x264.y = 0.0f;
-                    field_0x264.z = 0.0f;
-                    break;
-                case 2:
-                    field_0x264.x = 0.0f;
-                    field_0x264.y = 16.0f;
-                    field_0x264.z = 0.0f;
-                    break;
-                case 3:
-                    field_0x264.x = 0.0f;
-                    field_0x264.y = -16.0f;
-                    field_0x264.z = 0.0f;
-                    break;
-                }
+                setMoveDir(field_0x264, field_0x98, 16.0f);
                 mPos += field_0x264;
                 if (fn_801F2618(NULL, false)) {
                     field_0x98 ^= 1;
@@ -469,7 +415,10 @@ void Gohma_804A307C::fn_801AB6A8() {
     }
 }
 
-// FIXME: 88.34 % (missing/extra + reloc-name). Minor register allocation differences in state machine handlers.
+// FIXME: 91.56 % (missing/extra + reloc-name). Scheduling, ours has 2 fewer instructions: the 0.0f that zeroes
+// field_0x3c is loaded earlier in the original (before the case-8/9 speed and timer arithmetic), the `li` argument
+// setup of the fn_801EEC98 call and `li r30, 1` are ordered differently, and in case 11 the original stores
+// field_0x244 and reloads it for the `> 2` test.
 void Gohma_804A307C::fn_801AAF44() {
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
 
@@ -484,14 +433,15 @@ void Gohma_804A307C::fn_801AAF44() {
         return;
     }
 
-    f32 saveVelZ = field_0x3c.z;
-    f32 saveVelY = field_0x3c.y;
     f32 saveVelX = field_0x3c.x;
+    f32 saveVelY = field_0x3c.y;
+    f32 saveVelZ = field_0x3c.z;
     if (fn_801F2DB4('NULL', 'HBMB', NULL)) {
         field_0x3c.x = saveVelX;
+        field_0x3c.y = saveVelY;
+        field_0x3c.z = saveVelZ;
         field_0xd8 = 0;
         field_0xdc = 0;
-        field_0x3c.z = saveVelZ;
     }
 
     addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.5f, 1.0f);
@@ -513,13 +463,13 @@ void Gohma_804A307C::fn_801AAF44() {
 
     field_0x80.i.x = -12.0f;
     field_0x80.i.y = 12.0f;
-    field_0x80.f.x = mBox.f.x;
-    field_0x80.f.y = mBox.f.y;
+    field_0x80.f.x = 26.0f;
+    field_0x80.f.y = 14.0f;
 
     mBox2.i.x = -16.0f;
-    mBox2.i.y = mBox.i.y;
+    mBox2.i.y = -14.0f;
     mBox2.f.x = 16.0f;
-    mBox2.f.y = mBox.f.y;
+    mBox2.f.y = 14.0f;
 
     switch (field_0x230) {
     case 7:
@@ -536,31 +486,12 @@ void Gohma_804A307C::fn_801AAF44() {
         field_0x3c.x = 0.0f;
         {
             f32 f = 5.0f + 1.0f * (3 - field_0x258);
-            switch (field_0x98) {
-            case 0:
-                field_0x264.x = f;
-                field_0x264.y = 0.0f;
-                field_0x264.z = 0.0f;
-                break;
-            case 1:
-                field_0x264.x = -f;
-                field_0x264.y = 0.0f;
-                field_0x264.z = 0.0f;
-                break;
-            case 2:
-                field_0x264.x = 0.0f;
-                field_0x264.y = f;
-                field_0x264.z = 0.0f;
-                break;
-            case 3:
-                field_0x264.x = 0.0f;
-                field_0x264.y = -f;
-                field_0x264.z = 0.0f;
-                break;
-            }
+            setMoveDir(field_0x264, field_0x98, f);
         }
         field_0x98 = 2;
-        mTimers[1] = (s32)(60.0f - 15.0f * (3 - field_0x258));
+        // Named like the OKTM loop's `f` below: keeps 60 - 15 * n unfused (fsubs, not fnmsubs) as in the original.
+        f32 interval = 15.0f * (3 - field_0x258);
+        mTimers[1] = (s32)(60.0f - interval);
         field_0x230 = 9;
         // fallthrough
     case 9:
@@ -571,28 +502,7 @@ void Gohma_804A307C::fn_801AAF44() {
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
             f32 f = 5.0f + 1.0f * (3 - field_0x258);
-            switch (field_0x98) {
-            case 0:
-                field_0x264.x = f;
-                field_0x264.y = 0.0f;
-                field_0x264.z = 0.0f;
-                break;
-            case 1:
-                field_0x264.x = -f;
-                field_0x264.y = 0.0f;
-                field_0x264.z = 0.0f;
-                break;
-            case 2:
-                field_0x264.x = 0.0f;
-                field_0x264.y = f;
-                field_0x264.z = 0.0f;
-                break;
-            case 3:
-                field_0x264.x = 0.0f;
-                field_0x264.y = -f;
-                field_0x264.z = 0.0f;
-                break;
-            }
+            setMoveDir(field_0x264, field_0x98, f);
             field_0x98 = 2;
         }
         if (mTimers[1] == 0) {
@@ -612,11 +522,7 @@ void Gohma_804A307C::fn_801AAF44() {
                 if (serial >= 0) {
                     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                     if (actor != NULL) {
-                        f32 s = 3.0f * JMASinShort(angle);
-                        f32 c = 3.0f * JMACosShort(angle);
-                        actor->field_0x3c.x = s;
-                        actor->field_0x3c.y = c;
-                        actor->field_0x3c.z = 0.0f;
+                        actor->field_0x3c = JGeometry::TVec3f(3.0f * JMASinShort(angle), 3.0f * JMACosShort(angle), 0.0f);
                         actor->field_0x98 = fn_801F681C(angle);
                         f32 f = 15.0f * (3 - field_0x258);
                         mTimers[1] = (s32)(60.0f - f);
