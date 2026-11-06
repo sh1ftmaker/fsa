@@ -20480,7 +20480,7 @@ fn_802F601C__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>lPCQ29JGeometry8TVec3<f>f
 fn_802F6298__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvlPvPvP21SpriteParams_801F5AE0 = .text:0x802F6298; // type:function size:0x2B4
 fn_802F654C__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvlPvPvP21SpriteParams_801F5AE0 = .text:0x802F654C; // type:function size:0x2B4
 fn_802F6800__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvlPvPvP21SpriteParams_801F5AE0 = .text:0x802F6800; // type:function size:0x3BC
-fn_802F6BBC = .text:0x802F6BBC; // type:function size:0x138
+fn_802F6BBC__16TileMap_804AA858Fll = .text:0x802F6BBC; // type:function size:0x138
 fn_802F6CF4__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvP21SpriteParams_801F5AE0 = .text:0x802F6CF4; // type:function size:0x768
 fn_802F745C__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvP21SpriteParams_801F5AE0 = .text:0x802F745C; // type:function size:0x1270
 fn_802F86CC__16TileMap_804AA858FPCQ29JGeometry8TVec3<f>PvlP21SpriteParams_801F5AE0ff = .text:0x802F86CC; // type:function size:0x840

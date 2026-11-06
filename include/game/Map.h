@@ -270,6 +270,9 @@ public:
     // 9 units / 198 calls. Sets it (sthx; callers clrlwi 16 the value,
     // act_panel_rewrite_npc 0x802C8AC4).
     void fn_802F9974(s32 layer, s32 index, u16 value);
+    // 0x802F6BBC: copies the 0x1000 tiles of layer src to layer dst (the
+    // same layer branches); tu_802D39B8 passes (0, 4) and (1, 5).
+    void fn_802F6BBC(s32 src, s32 dst);
     // 0x802FF0EC: draws the four players' panels (fn_802FB69C, for each
     // field_0x148[player] set outside screen mode 12), with field_0xfc's
     // window around field_0x21c-0x228 first when field_0x214 is set and

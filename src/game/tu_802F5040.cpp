@@ -407,6 +407,56 @@ void TileMap_804AA858::fn_802FF0EC() {
     field_0xbf98 = 0;
 }
 
+// Draws the field_0x2398 effects, last first: params' alphas fade with the
+// time left, and an effect with a scale shrinks from it to 1 (its matrix is
+// a scaled copy for the draw).
+void TileMap_804AA858::fn_802FEE68() {
+    for (int i = 0xFF; i >= 0; i--) {
+        cls_803003AC* effect = &field_0x2398[i];
+        if (effect->mTimer > 0) {
+            f32 t = (f32)effect->mTimer / (f32)effect->mDuration;
+            effect->mParams.field_0x10.r = effect->mColor.r;
+            effect->mParams.field_0x10.g = effect->mColor.g;
+            effect->mParams.field_0x10.b = effect->mColor.b;
+            effect->mParams.field_0x10.a = effect->mColor.a * t;
+            effect->mParams.field_0x14.r = effect->mAddColor.r;
+            effect->mParams.field_0x14.g = effect->mAddColor.g;
+            effect->mParams.field_0x14.b = effect->mAddColor.b;
+            effect->mParams.field_0x14.a = effect->mAddColor.a * t;
+            MtxP mtx;
+            Mtx m;
+            if (effect->mScale != 1.0f) {
+                JMath::gekko_ps_copy12(m, effect->mParams.mMtx);
+                mtx = effect->mParams.mMtx;
+                f32 scale = effect->mScale - (effect->mScale - 1.0f) * t;
+                m[0][0] *= scale;
+                m[1][0] *= scale;
+                m[2][0] *= scale;
+                m[0][1] *= scale;
+                m[1][1] *= scale;
+                m[2][1] *= scale;
+                m[0][2] *= scale;
+                m[1][2] *= scale;
+                m[2][2] *= scale;
+                m[0][3] *= scale;
+                m[1][3] *= scale;
+                m[2][3] *= scale;
+                effect->mParams.mMtx = m;
+            }
+            if (effect->mRes != NULL) {
+                fn_802F86CC(&effect->mPos, effect->mRes, effect->mFrame, &effect->mParams, 1.0f, 1.0f);
+            } else if (effect->mImage != NULL) {
+                fn_802F745C(&effect->mPos, effect->mImage, &effect->mParams);
+            } else if (effect->field_0x24 != NULL) {
+                fn_802F6CF4(&effect->mPos, effect->field_0x24, &effect->mParams);
+            }
+            if (effect->mScale != 1.0f) {
+                effect->mParams.mMtx = mtx;
+            }
+        }
+    }
+}
+
 // Draws the tile layers: indexed f32 positions / RGBA8 colours of the
 // field_0x2388 height grid and the texture coordinates of field_0x110, the
 // tile texture times the vertex colour; with field_0xe450 set, three more TEV
@@ -1212,6 +1262,29 @@ void TileMap_804AA858::fn_802F6CF4(const JGeometry::TVec3f* pos, void* res, Spri
     }
     if (params != NULL && params->field_0x30 != -1) {
         fn_802F6800(pos, NULL, 0, NULL, res, params);
+    }
+}
+
+// Copies the tiles of layer src to layer dst.
+void TileMap_804AA858::fn_802F6BBC(s32 src, s32 dst) {
+    u16* from;
+    if (src >= 0 && src < 4) {
+        from = mLayerGrid[src];
+    } else if (src >= 4 && src < 8) {
+        from = mLayerGrid2[src - 4];
+    } else {
+        from = mLayerGrid[src];
+    }
+    u16* to;
+    if (dst >= 0 && dst < 4) {
+        to = mLayerGrid[dst];
+    } else if (dst >= 4 && dst < 8) {
+        to = mLayerGrid2[dst - 4];
+    } else {
+        to = mLayerGrid[dst];
+    }
+    for (int i = 0; i < 0x1000; i++) {
+        to[i] = from[i];
     }
 }
 
