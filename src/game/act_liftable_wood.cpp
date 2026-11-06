@@ -67,6 +67,7 @@ void LiftableWood_804A87A8::update() {
                 s32 dir = fn_80230CFC(i);
                 px += lbl_8046CAD0[dir][0];
                 py += lbl_8046CAD0[dir][1];
+                // Hand-expanded point-in-box test; this local and `== true` match the original (a contains() helper, with or without `== true`: 97.34 %).
                 bool inside = false;
                 if (px >= box.i.x && py >= box.i.y && px < box.f.x && py < box.f.y) {
                     inside = true;
