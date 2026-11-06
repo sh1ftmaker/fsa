@@ -1707,7 +1707,10 @@ bool Player_804A6F38::fn_8024E060() {
     if (field_0xce8 == 1) {
         return false;
     }
-    return field_0x1216 != 1;
+    if (field_0x1216 == 1) {
+        return false;
+    }
+    return true;
 }
 
 bool Player_804A6F38::fn_8024E03C() {
@@ -1724,6 +1727,65 @@ void Player_804A6F38::fn_8024E020(const JGeometry::TVec3f* arg) {
 
 JGeometry::TVec3f* Player_804A6F38::fn_8024E018() {
     return &field_0x2b8;
+}
+
+// Puts the player into the 0x454 mode (fn_8024E060 must allow it; state 0x4F
+// first asks for state 0): keeps mPos in 0x32C and picks the frame 0x450 by
+// state and facing (0x3DC); then 0xCA2 = 0xFF, 0x452 = 0, the emitters go
+// (fn_80241E64), the 'FORM' actor ends (fn_80248FF0) and 0xCAE / 0xCAF are set.
+bool Player_804A6F38::fn_8024DCD0() {
+    if (!fn_8024E060()) {
+        return false;
+    }
+    if (field_0x1240 == 0x4f) {
+        fn_80251AEC(0);
+    }
+    field_0x454 = true;
+    field_0x32c = mPos;
+    field_0x455 = 0;
+    field_0x450 = field_0x3c4;
+    if (fn_80270A8C()) {
+        field_0x450 = field_0x3c4;
+    } else if (fn_8025F448()) {
+        field_0x450 = field_0x3c4;
+    } else if (fn_802412A4()) {
+        if (field_0x3dc == 0) {
+            field_0x450 = 0x1e8;
+        } else if (field_0x3dc == 1) {
+            field_0x450 = 0x1ec;
+        } else if (field_0x3dc == 2) {
+            field_0x450 = 0x1f0;
+        } else {
+            field_0x450 = 0x1f4;
+        }
+    } else if (fn_8025F684()) {
+        if (field_0x3dc == 0) {
+            field_0x450 = 0x2c0;
+        } else if (field_0x3dc == 1) {
+            field_0x450 = 0x2c4;
+        } else if (field_0x3dc == 2) {
+            field_0x450 = 0x2c8;
+        } else {
+            field_0x450 = 0x2cf;
+        }
+    } else if (!fn_80241200()) {
+        if (field_0x3dc == 0) {
+            field_0x450 = 0x3c;
+        } else if (field_0x3dc == 1) {
+            field_0x450 = 0x3d;
+        } else if (field_0x3dc == 2) {
+            field_0x450 = 0x3e;
+        } else {
+            field_0x450 = 0x3f;
+        }
+    }
+    field_0xca2 = 0xff;
+    field_0x452 = 0;
+    fn_80241E64();
+    fn_80248FF0();
+    field_0xcae = 1;
+    field_0xcaf = 1;
+    return true;
 }
 
 // Sets the target 0x32C to pos, the frame 0x450 (unless negative) and the
