@@ -158,7 +158,7 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   the next unit's data (tu_8021C848 / tu_8021CDE4).
 
 ## Known game-code shapes (reviewed; natural source)
-- Library-header inlines (e.g. JGeometry Vec.h paired-single TVec3 methods) may be used by game code where the asm is exactly that inline (owner decision 2026-11-05); never write asm in game .cpp.
+- Library JGeometry methods (e.g. the paired-single `TVec3f::normalize`) are ordinary calls in game code, not an exception: `cflags_game` searches `libs/sdk/include` before `include`, so game units already get the libs `JGeometry.h` -> `JGeometry/Vec.h` (the game-side `include/JSystem/JGeometry.h` is used only by JUTFader.o). An out-of-line copy of such an inline is a small free function calling the member (e.g. `fn_80233C08`); never write asm in game .cpp.
 - Literals before their first visible use: (1) file-scope `static const` aggregates (e.g. GXColor) are emitted before the
   literal pool in declaration order (tu_802F5040, tu_8016A2B4); (2) a helper the original defined early and inlined into its
   callers creates the pool's first literals even though the linker dead-stripped its out-of-line copy: reconstruct it as a
