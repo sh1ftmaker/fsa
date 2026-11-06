@@ -71,10 +71,10 @@ bool CheepCheep_804A11B8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME: 98.81%. different (2 opcodes): fcmpu cr0, f1, f0 loads 0.0f into f1 and hitVec.y into f0 (swapped vs. target), plus float register/stack slot swaps in case 1 and std::sqrtf and argument load scheduling in fn_801F6758.
+// FIXME: 98.81%. try.py class different, same instruction count: the 0.0f / hitVec.y loads for the fcmpu are swapped between f0 and f1; in case 1 the constant loads (0.3f, 1.0f, 16.0f, 96.0f) and the get_ufloat_1 temporaries use other float registers, and the fabs/fsubs operands are scheduled differently; the stack slots of the float-conversion temporaries in case 1 (sp+0x8) and the std::sqrtf (sp+0xC) are swapped; the r3/r4 argument loads for fn_801F6758 in case 1 are swapped.
 void CheepCheep_804A11B8::update() {
     JGeometry::TVec3f hitVec;
-    u8 r31 = 0;
+    u8 turnAround = 0;
     f32 outDist = 0.0f;
     s32 outPlayer = -1;
     addCalc2_801F71A4(&field_0x3c.x, field_0x264, 0.1f, 0.1f);
@@ -89,7 +89,7 @@ void CheepCheep_804A11B8::update() {
     }
     if (fn_801F2B7C(field_0x114, -1, 1)) {
         if (field_0x258 == 1 && field_0x230 == 3) {
-            r31 = 1;
+            turnAround = 1;
         }
     }
     switch (field_0x230) {
@@ -126,11 +126,11 @@ void CheepCheep_804A11B8::update() {
     case 1: {
         field_0x268 = 0.3f * JMASinShort(field_0x25c);
         if (FABS(field_0x270.x - mPos.x) > 16.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 96.0f) {
-            r31 = 1;
+            turnAround = 1;
         }
         field_0x25c += 300;
         if (field_0x238 == 0 || hit) {
-            if (hit || fn_801F6758(&mPos, field_0x4, 16.0f) || r31 == 1) {
+            if (hit || fn_801F6758(&mPos, field_0x4, 16.0f) || turnAround == 1) {
                 s32 oldDir = field_0x98;
                 field_0x98 = 0;
                 if (field_0x270.x < mPos.x) {
@@ -213,7 +213,7 @@ void CheepCheep_804A11B8::update() {
         field_0x25c += 300;
         if (field_0x258 == 1) {
             margin = -24.0f;
-            hit = r31;
+            hit = turnAround;
         }
         if (hit || fn_801F6758(&mPos, field_0x4, margin) || field_0x238 == 0) {
             field_0x98 ^= 1;
