@@ -341,6 +341,32 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   tu_803536C4.cpp:45).
 - J2D pane lookup through vtable slot 0x3C with a two-word tag (r5/r6):
   `mScreen->search(0x7072737374727431ull /* "prsstrt1" */)` (tu_803DA6B4.cpp:45).
+- A compare materialised as a byte and tested (`subfic rX, rX, N; cntlzw; extrwi. rX, rX, 8, 19; bne`):
+  an inline returning `u8` with `return x == N ? true : false;`, called in the condition
+  (`static inline u8 isGameMode(s32 mode) { return gGameRoot_8053AAF8->field_0x4c == mode ? true : false; }`).
+  A plain `x == N`, a bool return or `return x == N;` fold into `cmpwi; bne`. tu_80285E58 fn_80286688
+  88.7 -> 100 % and the copy inlined in fn_802870C8; tu_8026FC20 isGameMode7 (fn_8027057C). Same shape:
+  tu_802F5040 fn_802FB69C, tu_80301CD0, tu_8013AAD4 fn_8013BBE0 (mode 0xC).
+- Early-out tests ending `bne +8; b end` (the last test jumps over a `b` to the epilogue) instead of
+  `beq end`: the tests are ONE condition, `if (a || b || !c) return;`, not separate `if`s
+  (tu_80285E58 fn_80286688; separate `if`s or `if (!c) return;` give `beq`).
+- A member loaded into a saved register BEFORE the calls of the same expression (`lwz r29, 0x3b4(r31)`
+  ahead of the bl's for the other arguments; `lwz r29, 0x4(r31); bl fn_X; cmpw r3, r29`): the original
+  read it through an inlined getter (MWCC orders an inlined call with the other calls; a plain member
+  read comes after them). Player_804A6F38::getIndex() / getLayer() (Player.h), used for every read in
+  tu_80285E58 (8 sites flipped, nothing else changed).
+- Two calls compared, `cmpw r3, r29` with the FIRST call's result in r29: write the call made second
+  on the left, `if (fn_80240888() != fn_80248778())` (MWCC calls the right operand first); a local for
+  the first result gives `cmpw r29, r3` (tu_80285E58).
+- A `||` chain on one member that the original folds only partly (`cmpwi 8; beq; subi 9; cmplwi 1; ble;
+  cmpwi 0x39`): compare the member itself each time (`field_0x1240 == 8 || field_0x1240 == 9 || ...`); a
+  local read once lets MWCC fold 8-10 (tu_80285E58 fn_802870C8).
+
+- A u8 global or field tested with `lbz; cmpwi 0` (plain u8 gives cmplwi): `(s32)flag != 0` (reviewed
+  form, tu_8025EB18 fn_80263078's cucco 0x2A1 `== 1`; tu_80285E58 lbl_8053ABA8 / lbl_8053ABF0).
+- A vector copied on through the first copy's address (`addi r4, rB, A; addi r3, rB, B`, store to r4,
+  reload from r4, store to r3): a chained assignment `b = a = v;` (tu_80285E58 0xD1C / 0xCBC); two
+  statements `a = v; b = a;` swap r3 / r4.
 
 ## What you may change
 Your unit's source and headers only it uses; its `splits.txt` stanza (all

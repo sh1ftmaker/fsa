@@ -1436,3 +1436,38 @@ Corrections and evidence:
   fn_80262254 (as tu_80256C74 fn_80258BE8: &field_0x344 computed before the x / y test),
   fn_802604CC (stack TVec2 temporaries), fn_80260C08 / fn_8026022C (vector load order).
 
+
+## Round 18 (tu_80285E58) (Opus 5.5, 2026-11-06)
+
+3 -> 5 of 8 at 100 % (+2 honest: 9000 -> 9002 on matching 1b96d7eb, no drops or lower
+percentages anywhere by address). .text 98.67 -> 99.90 %, .data (the three jump tables) 50 ->
+100 %. The state tick fn_802870C8 (9 KB, exit / commit / enter / update switches) is 100 %, so
+the three switches, their case groupings and every handler call are proven as written.
+
+| function | before | after / class | what flipped it |
+|---|---|---|---|
+| fn_802870C8 (state tick) | 98.34 missing/extra | 100 | the five fixes below |
+| fn_80286688 (0x13B8 Z toggle) | 88.68 | 100 | u8 mode inline + one early-out condition |
+| fn_80286E10 | 99.20 | 99.20 regalloc-only | unchanged (loop counter / player / start share r27 in the original) |
+| fn_80286B74 | 99.17 | 99.17 scheduling+regalloc | unchanged (target-vector stores, normalize f-registers) |
+| fn_8028676C | 99.67 | 99.67 regalloc-only | unchanged (f4 / f5 of the two planar lengths; operand swap gives 95.5) |
+
+What the asm proves (all source forms in docs/RULES_CARD.md "Known game-code shapes"):
+- **Mode 0xB byte test** (subfic / cntlzw / extrwi.): `static inline u8 isGameMode(s32 mode)
+  { return gGameRoot_8053AAF8->field_0x4c == mode ? true : false; }`, the tu_8026FC20
+  isGameMode7 form. fn_80286688's three early-outs (mode 0xB, root 0x7E, player bit clear) are
+  one `||` condition; separate `if`s give `beq` where the original has `bne +8; b end`.
+- **Index and layer getters**: the original reads field_0x4 and field_0x3b4 through inlined
+  getters. Evidence: it loads them into r29 before the other calls of the same expression
+  (spawnEmitter_8013CC50's layer before fn_8024EE0C / fn_8024EE14, five trail emitters;
+  fn_802255F4's layer; `fn_80239040(0xD9C) == index`, `fn_80238F78(0xDAC) == index`), which
+  MWCC does for an inlined call, never for a member read. Player_804A6F38::getIndex() /
+  getLayer() (Player.h) are used for every read in the unit; they flip those sites and change
+  nothing else (the other functions are byte-identical with them).
+- **Partner checks**: `fn_80240888() != fn_80248778()` (fn_80248778 is called first and kept in
+  r29; `cmpw r3, r29`), three sites, no local.
+- **States 8 / 9-10 / 0x39** (partner warp): `field_0x1240 == 8 || field_0x1240 == 9 ||
+  field_0x1240 == 10 || field_0x1240 == 0x39` on the member; a local folds 8-10.
+- **0xCBC / 0xD1C**: `field_0xd1c = field_0xcbc = mPos;` (both layer-change sites).
+- **lbl_8053ABA8 / lbl_8053ABF0** (ZLD2 / dodongo hurt flags): compared with `cmpwi`:
+  `(s32)flag != 0`, the reviewed cucco form.

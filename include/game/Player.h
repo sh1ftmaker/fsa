@@ -55,6 +55,14 @@ public:
     // inferred from where it sits (after the unit's functions, before its
     // __sinit); dtk marks it global, as it does every game function.
     bool fn_8023F984() { return mActive; }
+    // Inline getters of the player's index (0x4) and layer (0x3B4). Evidence:
+    // tu_80285E58's state tick reads both before the calls they are compared
+    // with or passed next to (`lwz r29, 0x3b4` before fn_8024EE0C/EE14 for
+    // spawnEmitter_8013CC50, `lwz r29, 0x4` before fn_80239040), which MWCC
+    // does for an inlined call but never for a plain member read; used for
+    // every read in that unit, they flip those 8 sites and change nothing else.
+    s32 getIndex() const { return field_0x4; }
+    s32 getLayer() const { return field_0x3b4; }
 
     // tu_8023FBF0 getters and setters the queries forward to.
     void fn_80254660(); // tu_8023FBF0; the player's reset, run per slot by fn_8023F6C4
