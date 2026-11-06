@@ -11,7 +11,8 @@ static const s32 lbl_80475070[15] = {
     30, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1,
 };
 
-// result = a + b.
+// Matching-only form: operator+ and TVec3f::add(a, b) both miss (94-98 %, try.py missing/extra); this
+// copy / add / store sequence reproduces the original's ps_add chain through a stack temporary.
 static inline void sum(JGeometry::TVec3f& result, const JGeometry::TVec3f& a,
                        const JGeometry::TVec3f& b) {
     JGeometry::TVec3f tmp = a;
@@ -19,7 +20,6 @@ static inline void sum(JGeometry::TVec3f& result, const JGeometry::TVec3f& a,
     result = tmp;
 }
 
-// FIXME: 99.70%. scheduling: epilogue restores r0 and r31 in swapped order.
 void FourPersonPullSwitchChainVersion_804AE5C8::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
@@ -51,7 +51,7 @@ void FourPersonPullSwitchChainVersion_804AE5C8::update() {
     box.f.x += mPos.x;
     box.f.y += mPos.y;
 
-    s32 i;
+    s32 i; // declared at function scope: matching-only, a for-local i gives regalloc-only 99.89 % for update
     s32 playerCount = 0;
     s32 player = fn_80239470(&box, field_0x4, mSerial);
     if (player >= 0) {
@@ -158,6 +158,7 @@ void FourPersonPullSwitchChainVersion_804AE5C8::draw() {
 }
 
 void FourPersonPullSwitchChainVersion_804AE5C8::fn_80373C38() {
+    // Declaration order fixes the stack slots (matching-only; the natural pos1..pos3, playerPos order is 99.98 %).
     s32 i;
     JGeometry::TVec3f playerPos;
     JGeometry::TVec3f pos2;

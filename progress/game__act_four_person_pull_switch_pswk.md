@@ -10,7 +10,10 @@ After: 9003 / 11557 functions, 1848408 / 4442032 bytes (41.61 %).
 - `update__41FourPersonPullSwitchChainVersion_804AE5C8Fv` (`0x80374074`, 1104 bytes)
 - `__sinit_act_four_person_pull_switch_pswk_cpp` (`0x80374564`, 548 bytes)
 
-## Resistant
+## Review update
+- `init` reached 100 % after the review changed `field_0x240`/`field_0x254` from `u8` to `bool` (vfunc_0x34 returns bool); no Resistant functions remain.
+
+## Resistant (superseded by the review update)
 - `init__41FourPersonPullSwitchChainVersion_804AE5C8Fv` (`0x803744C4`, 160 bytes): 99.70 % (`scheduling`: epilogue restores `r0` and `r31` in swapped order: `lwz r31, 0xc(r1); lwz r0, 0x14(r1)` vs `lwz r0, 0x14(r1); lwz r31, 0xc(r1)`).
 
 ## Sections
