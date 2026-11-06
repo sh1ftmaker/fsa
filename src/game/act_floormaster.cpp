@@ -73,6 +73,169 @@ void Floormaster_804A6004::init() {
     mAnim.startAnim_801D22DC(0, 0, false);
 }
 
+// FIXME: 98.37%. scheduling+regalloc + reloc-name
+void Floormaster_804A6004::fn_8020ED5C(s32 state) {
+    switch (state) {
+    case 0:
+        field_0x2b4 = 0.0f;
+        field_0x2b8 = -1;
+        field_0x2bc = 0;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        field_0x250 = fn_801CD664(61) + 60;
+        mPos.x = mSpawnPos.x;
+        mPos.y = mSpawnPos.y;
+        mPos.z = mSpawnPos.z;
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        break;
+
+    case 1: {
+        field_0x2b4 = 0.0f;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 1.0f;
+        mEmitter2b0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x1AF, 0, 0, NULL, NULL, true, 0.0f);
+        if (mEmitter2b0 != NULL) {
+            u8 prm = field_0x2b4 * 255.0f + 0.5f;
+            mEmitter2b0->setGlobalPrmColor(prm, prm, prm);
+            f32 rMult = 150.0f;
+            f32 gMult = 255.0f;
+            f32 bMult = 0.0f;
+            u8 envR = field_0x2b4 * rMult + 0.5f;
+            u8 envG = field_0x2b4 * gMult + 0.5f;
+            u8 envB = field_0x2b4 * bMult + 0.5f;
+            mEmitter2b0->setGlobalEnvColor(envR, envG, envB);
+        }
+        break;
+    }
+
+    case 2:
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(0, 0, false);
+        break;
+
+    case 3:
+        mBox.set(2.0f, -20.0f, 8.0f, 8.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(1, 0, false);
+        break;
+
+    case 4:
+        if (field_0x2b8 >= 0) {
+            if (fn_8022DCD8(field_0x2b8)) {
+                if (fn_8022DD74(field_0x2b8)) {
+                    mFlags &= ~0x4000;
+                    field_0x2c0 = -1;
+                } else {
+                    mFlags |= 0x4000;
+                    field_0x2c0 = field_0x2b8;
+                }
+            } else if (fn_80230188(field_0x2b8)) {
+                fn_80230224(field_0x2b8, 0);
+            }
+        }
+        mBox.set(2.0f, -20.0f, 8.0f, 8.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        break;
+
+    case 5:
+        mBox.set(2.0f, -20.0f, 8.0f, 8.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(2, 0, false);
+        break;
+
+    case 6:
+        mBox.set(2.0f, -20.0f, 8.0f, 8.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(3, 0, false);
+        break;
+
+    case 7:
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(4, 0, false);
+        break;
+
+    case 8:
+        mBox.set(2.0f, -20.0f, 8.0f, 8.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(5, 0, false);
+        break;
+
+    case 9:
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(6, 0, false);
+        break;
+
+    case 10:
+        field_0x2b8 = -1;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        mTargetSpeed = 0.0f;
+        break;
+    }
+
+    mStateTimer = 0;
+    mState = state;
+    if (field_0x2b8 >= 0) {
+        switch (mState) {
+        case 2:
+        case 3:
+            const JGeometry::TVec3f* pPos = getPlayerPos_8023E724(field_0x2b8);
+            if (mPos.x < pPos->x - 8.0f) {
+                mFlags &= ~0x8000;
+            } else if (pPos->x + 8.0f < mPos.x) {
+                mFlags |= 0x8000;
+            }
+            break;
+        }
+    }
+}
+
 // FIXME: 99.79%. operands + reloc-name (stack slot order)
 void Floormaster_804A6004::fn_8020EB08() {
     JGeometry::TVec3f diff;
