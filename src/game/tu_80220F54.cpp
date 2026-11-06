@@ -58,8 +58,8 @@ ShadowLinkBase_804A6A00::ShadowLinkBase_804A6A00() {
     field_0x2a8 = 0;
     field_0x2ac = 0;
     field_0x2ad = 0;
-    field_0x2b0 = 0.0f;
-    field_0x2b4 = 0.0f;
+    field_0x2b0.x = 0.0f;
+    field_0x2b0.y = 0.0f;
 }
 
 void ShadowLinkBase_804A6A00::init() {
@@ -77,8 +77,8 @@ void ShadowLinkBase_804A6A00::init() {
     mLife = 1000;
     mLifeBackup = mLife;
     field_0x194 = 1;
-    field_0x2b0 = mPos.x;
-    field_0x2b4 = mPos.y;
+    field_0x2b0.x = mPos.x;
+    field_0x2b0.y = mPos.y;
     mAnim.fn_801D2608(lbl_804A6990, 0x1C);
 }
 
@@ -111,12 +111,13 @@ void ShadowLinkBase_804A6A00::fn_802216E8(s32 limit) {
     }
 }
 
-// FIXME: 98.83 %. regalloc-only: target->ours r30->r31, r31->r30
+// FIXME: 96.83 %. Argument/register order only: fn_801CBB98 is now declared once (shared
+// EnemyBase.h signature: angle before distance), which moves the fn_801F6874 call and swaps r30/r31.
 void ShadowLinkBase_804A6A00::fn_80221670() {
     // pos reference: steers the register allocation (without it 81 %)
     const JGeometry::TVec3f& pos = mPos;
     JGeometry::TBox2f* box = layerBox(field_0x4);
-    fn_801CBB98(box, &pos, 48.0f, fn_801F6874(field_0x2a8), &field_0x2b0);
+    fn_801CBB98(box, &pos, fn_801F6874(field_0x2a8), 48.0f, &field_0x2b0);
 }
 
 void ShadowLinkBase_804A6A00::fn_8022149C(s32 state) {
@@ -188,7 +189,7 @@ void ShadowLinkBase_804A6A00::fn_802212AC() {
         mTargetSpeed = 1.0f;
         mAnim.fn_801D22A0(field_0x98 + 4, 2);
     } else if (mStateTimer > 0x2D) {
-        if (__fabsf(field_0x2b0 - mPos.x) < 0.1f && __fabsf(field_0x2b4 - mPos.y) < 0.1f) {
+        if (__fabsf(field_0x2b0.x - mPos.x) < 0.1f && __fabsf(field_0x2b0.y - mPos.y) < 0.1f) {
             fn_801F3668();
         }
     }

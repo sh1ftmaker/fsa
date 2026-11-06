@@ -52,8 +52,7 @@ public:
     /* 0x2A8 */ s32 field_0x2a8; // bits 4-5 of field_0x90
     /* 0x2AC */ u8 field_0x2ac;  // bits 8-9 of field_0x90: the kind
     /* 0x2AD */ u8 field_0x2ad;  // bits 12-19 of field_0x90
-    /* 0x2B0 */ f32 field_0x2b0; // mPos.x at init
-    /* 0x2B4 */ f32 field_0x2b4; // mPos.y at init
+    /* 0x2B0 */ JGeometry::TVec2f field_0x2b0; // mPos.xy at init; fn_801CBB98's out point
 }; // Size: 0x2B8
 
 // 2.5f in tu_80220F54's .sdata2; loaded by act_shadow_link_jump,

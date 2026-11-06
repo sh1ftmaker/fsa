@@ -88,8 +88,8 @@ void cls_804A68D0::fn_8022089C(s32 state) {
         static f32 lbl_8053AC88 = 0.5f * (120.0f * -lbl_8053EFB8);
         field_0x3c.z = lbl_8053AC88;
         fn_80221670();
-        field_0x3c.x = (field_0x2b0 - mPos.x) * 0.008333334f;
-        field_0x3c.y = (field_0x2b4 - mPos.y) * 0.008333334f;
+        field_0x3c.x = (field_0x2b0.x - mPos.x) * 0.008333334f;
+        field_0x3c.y = (field_0x2b0.y - mPos.y) * 0.008333334f;
         s32 angle = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) *
                     (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         field_0x98 = fn_801F681C((u16)angle);
