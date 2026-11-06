@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="173" height="354" viewBox="0 0 173 354" role="img" aria-label="Main menu to Shadow Battle: 29.4 % of 644,344 bytes of code matched, 886 of 1,336 functions">
-<title>Main menu to Shadow Battle: 29.4 % of 644,344 bytes of code matched, 886 of 1,336 functions</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="173" height="354" viewBox="0 0 173 354" role="img" aria-label="Main menu to Shadow Battle: 29.4 % of 644,344 bytes of code matched, 887 of 1,336 functions">
+<title>Main menu to Shadow Battle: 29.4 % of 644,344 bytes of code matched, 887 of 1,336 functions</title>
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } text { paint-order: stroke; stroke: #161a34; stroke-opacity: 0.55; stroke-width: 2.5px; stroke-linejoin: round; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } @keyframes rise { from { transform: scaleY(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="3" y="3" width="167.0" height="348" rx="8" fill="#161a34"/>
 <rect x="6.5" y="6.5" width="96.1" height="79.0" rx="1.5" fill="#ef5b52" fill-opacity="0.13"/>
@@ -49,7 +49,7 @@
 <rect x="77.3" y="258.0" width="23.4" height="23.2" rx="1.5" fill="#ef5b52" fill-opacity="0.13"/>
 <rect class="rise" x="77.3" y="279.4" width="23.4" height="1.8" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="101.7" y="258.0" width="23.0" height="23.2" rx="1.5" fill="#ef5b52" fill-opacity="0.13"/>
-<rect class="rise" x="101.7" y="279.0" width="23.0" height="2.2" fill="#ef5b52" fill-opacity="0.85"/>
+<rect class="rise" x="101.7" y="278.8" width="23.0" height="2.4" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="125.7" y="258.0" width="22.3" height="23.2" rx="1.5" fill="#ef5b52" fill-opacity="0.13"/>
 <rect class="rise" x="125.7" y="279.0" width="22.3" height="2.3" fill="#ef5b52" fill-opacity="0.85"/>
 <rect x="149.0" y="258.0" width="17.5" height="23.2" rx="1.5" fill="#ef5b52" fill-opacity="0.13"/>
