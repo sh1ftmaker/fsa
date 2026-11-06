@@ -8,8 +8,8 @@
 
 
 // FIXME: vfunc_0x24, 0x44, 0x68, 0x6C, 0x7C, 0x94 and init are instruction-identical;
-// only their float literals are @NNN, not the original lbl_ (.sdata2 order, owned
-// partly by the unwritten draw / vfunc_0x5C / vfunc_0x88 / vfunc_0x90).
+// only their float literals are @NNN, not the original lbl_ (.sdata2 order; the
+// pool is complete only once vfunc_0x5C and vfunc_0x90 are 100 %).
 
 // The two animations' keys (cel pairs for 10 frames each, then -1) and the
 // table the init hands to SpriteAnim::fn_801D2608 (names unknown).
@@ -185,6 +185,7 @@ void Terrorpin_804A3B10::fn_801B91A8(s32 state) {
     mState = state;
 }
 
+// FIXME: 98.89%. try.py class missing/extra: the original copies the u8 mPlayersHit into its own register (one clrlwi r5, r0, 24) before the unrolled first-hit-player loop, we test the lbz result directly; the registers of mPlayersHit, the loop shift counts and the -1 initial player (li r30) differ accordingly.
 void Terrorpin_804A3B10::vfunc_0x90(u8 mapHit) {
     // Declared in this order: MWCC gives the later aggregate the lower stack
     // slot (normal at sp+0x20, box at sp+0x10, out at sp+0x8).
@@ -409,34 +410,13 @@ void Terrorpin_804A3B10::vfunc_0x6C() {
     }
 }
 
+// FIXME: 99.14%. try.py class missing/extra: one extra lwz of mState (r0) before the final state == 0 test; the original keeps the state in the register isVulnerable() already loaded it into.
 u8 Terrorpin_804A3B10::vfunc_0x5C() {
     u8 hit = 0;
-    s32 state = mState;
-    bool vulnerable = true;
-    bool active = false;
-    switch (state) {
-    case 1:
-    case 2:
-    case 3:
-    case 5:
-        active = true;
-        break;
-    }
-    if (active) {
-        vulnerable = false;
-        if (mStateTimer < 10) {
-            switch (state) {
-            case 5:
-            case 1:
-                vulnerable = true;
-                break;
-            }
-        }
-    }
-    if (vulnerable) {
+    if (isVulnerable()) {
         if (mFlags & 0x2000) {
             fn_801CEBD0();
-        } else if (state == 0) {
+        } else if (mState == 0) {
             s32 player = fn_801F285C(NULL, NULL, true, -1);
             if (player >= 0) {
                 fn_801B91A8(5);
