@@ -61,26 +61,15 @@ void EscortBase_8049E0C8::vfunc_0x7C() {
     mLife = field_0x360 * 4;
 }
 
-// FIXME(shotgun): 92.2 %, missing/extra
+// FIXME(shotgun): 99.9 %, stack layout (dist/who slots swapped)
 void EscortBase_8049E0C8::vfunc_0x98(s32 a, s32 b, f32 limit) {
     u16 angle;
     s32 dir;
     f32 dist;
     s32 who;
     fn_801EEC98(mSerial, &angle, &dir, &dist, &who, a, b);
-    if (dir >= 0 && !(dist > limit) && dir >= 0) {
-        field_0x364[4]++;
-        if (field_0x364[4] >= 10) {
-            field_0x364[4] = 10;
-        }
-        if (field_0x364[4] >= 10) {
-            field_0x364[4] = 0;
-            field_0x98 = dir;
-            if (dir + 5 != mAnim.mAnim) {
-                mAnim.startAnim_801D22DC(dir + 5, 2, false);
-                mAnim.fn_801D1F14(0.0f);
-            }
-        }
+    if (dir >= 0 && !(dist > limit)) {
+        fn_80122730(dir, true, true);
     }
 }
 
