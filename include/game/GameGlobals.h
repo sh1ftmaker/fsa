@@ -1927,4 +1927,8 @@ extern s32 lbl_8053AB68;
 // act_temple_bti_display and tu_800F7FCC).
 extern s16 lbl_8049C3B8[];
 
+// game/act_dodongo.cpp's .sbss (0x8053AC00, size 0x8): a flag act_dodongo does not touch
+// itself; tu_801B6C50 sets it in init() and tests it in update().
+extern u8 lbl_8053AC00;
+
 #endif
