@@ -125,6 +125,112 @@ void cls_804A5568::vfunc_0xA0() {
     }
 }
 
+// The point on the chain's curve at control point `idx`, sixteenth `seg` (0 and 16 are the control
+// points themselves): inlined twice by fn_801E9224.
+static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* outX, f32* outY) {
+    if (seg == 0) {
+        *outX = self->field_0x2b0[idx].x;
+        *outY = self->field_0x2b0[idx].y;
+    } else if (seg == 16) {
+        *outX = self->field_0x2b0[idx + 1].x;
+        *outY = self->field_0x2b0[idx + 1].y;
+    } else {
+        f32 prevX;
+        f32 prevY;
+        if (idx == 0) {
+            prevX = self->field_0x2b0[0].x;
+            prevY = self->field_0x2b0[0].y;
+        } else {
+            prevX = self->field_0x2b0[idx - 1].x;
+            prevY = self->field_0x2b0[idx - 1].y;
+        }
+        f32 p2x = self->field_0x2b0[idx + 1].x;
+        f32 p2y = self->field_0x2b0[idx + 1].y;
+        f32 p1x = self->field_0x2b0[idx].x;
+        f32 p1y = self->field_0x2b0[idx].y;
+        f32 p3x;
+        f32 p3y;
+        if (idx == self->mCount - 2) {
+            p3x = p2x;
+            p3y = p2y;
+        } else {
+            p3x = self->field_0x2b0[idx + 2].x;
+            p3y = self->field_0x2b0[idx + 2].y;
+        }
+        f32 t = 0.0625f * (f32)seg;
+        *outY = fn_801CD6D8(prevY, p1y, p2y, p3y, t);
+        *outX = fn_801CD6D8(prevX, p1x, p2x, p3x, t);
+    }
+}
+
+// Moves the chain's head along its curve by the speed (0.5 per frame).
+// FIXME(shotgun): 80 %, missing/extra + reloc-name
+void cls_804A5568::fn_801E9224() {
+    if (!(mFlags & 0x4000)) {
+        f32 budget = 0.5f;
+        bool finished = false;
+        while (budget > 0.0f) {
+            u8 seg = (s32)field_0x3b4;
+            u8 idx = field_0x3b0;
+            f32 curX;
+            f32 curY;
+            curvePoint(this, idx, seg, &curX, &curY);
+            u8 idx2 = field_0x3b0;
+            u8 seg2 = (s32)field_0x3b4 + 1;
+            if (seg2 >= 16) {
+                if (idx2 >= mCount - 2) {
+                    finished = true;
+                } else {
+                    idx2++;
+                    seg2 -= 16;
+                }
+            }
+            f32 nextX;
+            f32 nextY;
+            curvePoint(this, idx2, seg2, &nextX, &nextY);
+            f32 dx = nextX - mPos.x;
+            f32 dy = nextY - mPos.y;
+            f32 sq = dx * dx + dy * dy;
+            f32 len;
+            if (sq <= 0.0f) {
+                len = sq;
+            } else {
+                len = sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
+            }
+            if (budget >= len) {
+                mPos.x = nextX;
+                mPos.y = nextY;
+                mPos.z = 0.0f;
+                if (finished) {
+                    mFlags |= 0x4000;
+                    field_0x3b0 = mCount - 2;
+                    field_0x3b4 = 16.0f;
+                    return;
+                }
+                budget -= len;
+                field_0x3b4 = (f32)seg2;
+                field_0x3b0 = idx2;
+            } else {
+                if (sq > 32.0f * FLT_EPSILON) {
+                    f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
+                    dx *= norm;
+                    dy *= norm;
+                }
+                mPos.x += dx * budget;
+                mPos.y += dy * budget;
+                f32 sx = nextX - curX;
+                f32 sy = nextY - curY;
+                f32 sq2 = sx * sx + sy * sy;
+                if (sq2 > 0.0f) {
+                    sq2 = sq2 * JGeometry::TUtil<f32>::inv_sqrt(sq2);
+                }
+                field_0x3b4 += budget * (1.0f / sq2);
+                return;
+            }
+        }
+    }
+}
+
 void cls_804A5568::fn_801E8EB4(u8 index, s32 arg, const JGeometry::TVec2f* pos) {
     mMask |= 1 << index;
     field_0x2b0[index].x = pos->x;
