@@ -277,25 +277,15 @@ bool fn_802DEDFC(const s32* dir) {
     return getGameView_802D6A9C()->fn_802DCE5C(dir);
 }
 
-// The view's fn_802D7B34 / fn_802D7BE8 as free functions. The target keeps
-// gGameRoot_8053AAF8->0x4 and reloads its view for the array after __shl2i (the
-// fn_802DE9A0 family).
-// FIXME(shotgun): 60.6 %, different (frame: target saves r29-r31, ours fewer)
+// The view's fn_802D7B34 / fn_802D7BE8 as free functions (forwards).
+// FIXME(shotgun): 78 %, missing/extra (view reload after __shl2i)
 s32 fn_802DED40(s32 layer, s32 slot) {
-    s32 idx = layer < 8 ? 0 : layer - 7;
-    s32 shift = 60 - slot * 4;
-    GameRootSub04_801F856C* root = gGameRoot_8053AAF8->field_0x4;
-    GameView_804A9950* view = root->mView;
-    return (root->mView->field_0x1048[view->field_0x18][view->field_0x14][idx] & (0xFULL << shift)) >> shift;
+    return getGameView_802D6A9C()->fn_802D7B34(layer, slot);
 }
 
-// FIXME(shotgun): 69.1 %, different (stmw r27 frame, regalloc)
+// FIXME(shotgun): 79.7 %, missing/extra (view reload after __shl2i)
 void fn_802DEC40(s32 layer, s32 slot, u32 value) {
-    s32 idx = layer < 8 ? 0 : layer - 7;
-    s32 shift = 60 - slot * 4;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[view->field_0x18][view->field_0x14][idx] &= (0xFULL << shift) ^ -1;
-    gGameRoot_8053AAF8->field_0x4->mView->field_0x1048[view->field_0x18][view->field_0x14][idx] |= (u64)value << shift;
+    getGameView_802D6A9C()->fn_802D7BE8(layer, slot, value);
 }
 
 bool fn_802DEBF8(void) {
