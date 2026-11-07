@@ -91,9 +91,9 @@ void cls_804B13D4::fn_8041F5FC() {
         return;
     }
     gGameRoot2_8053AB10->fn_8013B490();
-    reinterpret_cast<J2DScreen*>(field_0x18)->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    field_0x18->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x50 != NULL) {
-        reinterpret_cast<cls_804B19E0*>(field_0x50)->fn_8044148C();
+        field_0x50->fn_8044148C();
     }
 }
 

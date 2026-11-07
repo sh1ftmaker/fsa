@@ -13,6 +13,8 @@
 
 class PaneCtrl_804AF86C;
 class J2DPane;
+class J2DScreen;
+class cls_804B19E0;
 
 class cls_804B13D4 {
 public:
@@ -50,12 +52,12 @@ public:
     /* 0x00 */ // vtable
     /* 0x04 */ PaneCtrl_804AF86C* field_0x4;
     /* 0x08 */ PaneCtrl_804AF86C* field_0x8[4];
-    /* 0x18 */ PaneCtrl_804AF86C* field_0x18;
+    /* 0x18 */ J2DScreen* field_0x18; // the HUD screen
     /* 0x1C */ u8 field_0x1c[0x2C - 0x1C];
     /* 0x2C */ J2DPane* field_0x2c[4]; // search(u64) at vtable 0x3C (fn_8041918C)
     /* 0x3C */ u8 field_0x3c[0x4C - 0x3C];
     /* 0x4C */ PaneCtrl_804AF86C* field_0x4c;
-    /* 0x50 */ PaneCtrl_804AF86C* field_0x50;
+    /* 0x50 */ cls_804B19E0* field_0x50; // the window picker (game/act/tu_80441318.h)
     /* 0x54 */ PaneCtrl_804AF86C* field_0x54;
     /* 0x58 */ PaneCtrl_804AF86C* field_0x58;
     /* 0x5C */ PaneCtrl_804AF86C* field_0x5c;
