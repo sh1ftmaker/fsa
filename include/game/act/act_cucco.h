@@ -21,6 +21,7 @@ public:
     void fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
     void fn_80331E6C();
     void fn_803324A8();
+    void fn_80332A60();
     u8 fn_80332378();
     void fn_80331D38();
     void fn_80331C24();
@@ -61,7 +62,7 @@ public:
     /* 0x2A9 */ u8 field_0x2a9;
     /* 0x2AA */ u8 field_0x2aa[10]; // not yet known
     /* 0x2B4 */ f32 field_0x2b4;
-    /* 0x2B8 */ f32 field_0x2b8[3];
+    /* 0x2B8 */ JGeometry::TVec3f field_0x2b8;
     /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[4];
     /* 0x2F4 */ JPABaseEmitter* mEmitter2f4; // released by the destructor
     /* 0x2F8 */ JPABaseEmitter* mEmitter2f8; // released by the destructor
