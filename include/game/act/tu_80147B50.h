@@ -15,7 +15,7 @@ public:
     cls_8049F6C8() {}
     /* 0x08 */ virtual ~cls_8049F6C8();
     /* 0x0C */ virtual void init();   // fn_8014A5F4
-    /* 0x14 */ virtual void update(); // fn_8014821C, not written yet
+    /* 0x14 */ virtual void update(); // fn_8014821C
     /* 0x20 */ virtual void draw();   // fn_80147B50
 
     // 0x80149AEC: damage check for the players overlapping the head; true when it hit.
