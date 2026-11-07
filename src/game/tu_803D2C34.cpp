@@ -5,6 +5,160 @@
 #include "game/tu_80379F84.h"
 #include <string.h>
 #include <dolphin/os.h>
+#include "game/GameState.h"
+#include "game/cls_804B1600.h"
+#include "JSystem/J2D/J2DPane.h"
+
+typedef void (cls_804B0288::*StateFunc_804B0288)();
+extern StateFunc_804B0288 lbl_804B0168[24];
+
+// FIXME(shotgun): 99.86 %, reloc-name
+void cls_804B0288::fn_803D5554() {
+    lbl_8053AEC0->fn_804310CC();
+    field_0x54 = 0;
+    field_0x50 = 0;
+    field_0x216e = 0;
+    field_0x78 = 0;
+    field_0x88 = 0;
+    field_0x2170 = 0;
+    field_0x2171 = 0;
+    field_0x7c = -1;
+    field_0x84 = 0;
+    field_0x216f = 0;
+    field_0x80 = 0;
+    field_0x82 = 0;
+    field_0x86 = 0;
+    field_0x2174 = 0;
+    field_0x2173 = 0;
+    field_0x2177 = 0;
+    field_0x2175 = 0;
+    field_0x1b4 = 0;
+    field_0x2170 = 0;
+    field_0x54 = 0x7B;
+    field_0x2177 = 1;
+    field_0x216c = 2;
+    field_0x14->mPane->setAlpha(0);
+    field_0x14->field_0x26 = 0;
+    field_0x18->moveFromCentre_80402E08(0.0f, -480.0f);
+    field_0x18->field_0x22 = 0;
+    for (s32 i = 0; i < 2; i++) {
+        field_0x1c[i]->moveFromCentre_80402E08(0.0f, 200.0f);
+        field_0x1c[i]->field_0x22 = 0;
+    }
+    field_0x24->moveFromCentre_80402E08(0.0f, -250.0f);
+    field_0x24->field_0x22 = 0;
+    field_0x28->mPane->hide();
+    for (s32 i = 0; i < 8; i++) {
+        field_0x2c[i]->fn_80402CE0(2.0f, 2.0f);
+        field_0x2c[i]->field_0x24 = 0;
+        field_0x2c[i]->mPane->setAlpha(0);
+        field_0x2c[i]->field_0x26 = 0;
+    }
+    fn_803D49A4();
+    lbl_80529DEC.field_0x243[0] = 0;
+}
+
+// FIXME(shotgun): 99.95 %, scheduling
+void cls_804B0288::fn_803D5090() {
+    if (field_0x2174 == 1) {
+        lbl_8053AEC0->fn_80431174(field_0x2170);
+    }
+    u8 state = field_0x216c;
+    if (state != 0 && state != 2 && state != 1 && state != 3) {
+        u8 card = lbl_8051C1A0.field_0x1ff5;
+        if (card == 0 || (card == 1 && !lbl_8053ACA8->fn_802B1DCC())) {
+            if (field_0x216e == 0 && field_0x1b4 == 0) {
+                field_0x216c = 5;
+                field_0x2175 = 1;
+            }
+        }
+    }
+    if (field_0x216c < 0x18) {
+        (lbl_8053ADB8->*lbl_804B0168[field_0x216c])();
+    }
+    fn_803D4DB0();
+    lbl_8051C1A0.field_0x1ff5 = 2;
+    if (field_0x2174 == 2) {
+        if (field_0x2173 > 0x48) {
+            field_0x2173 = 0x50;
+        } else {
+            field_0x2173 += 8;
+        }
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x2173 = 0x50;
+            field_0x2174 = 1;
+        }
+    } else if (field_0x2174 == 3) {
+        if (field_0x2173 < 8) {
+            field_0x2173 = 0;
+        } else {
+            field_0x2173 -= 8;
+        }
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x2173 = 0;
+            field_0x2174 = 0;
+        }
+    }
+}
+
+// FIXME(shotgun): 99.84 %, reloc-name (the jump table)
+void cls_804B0288::fn_803D3D50() {
+    switch (lbl_8051C1A0.fn_803B9940(0)) {
+    case 0:
+        field_0x54 = 0x6B;
+        field_0x2177 = 0;
+        field_0x216d = 6;
+        break;
+    case 8:
+        field_0x54 = 0x6C;
+        field_0x2177 = 0;
+        field_0x216d = 6;
+        break;
+    case 9:
+        field_0x54 = 0x6D;
+        field_0x2177 = 0;
+        field_0x216d = 6;
+        break;
+    case 10:
+        field_0x54 = 0x6E;
+        field_0x2177 = 0;
+        field_0x216d = 6;
+        break;
+    case 6:
+    case 7:
+        field_0x2170 = 1;
+        field_0x54 = 0x6F;
+        field_0x2177 = 0;
+        field_0x216d = 7;
+        break;
+    case 11:
+    case 12:
+        field_0x54 = 0x70;
+        field_0x2177 = 0;
+        field_0x216d = 6;
+        break;
+    case 2:
+        if (field_0x2175 != 0) {
+            field_0x2170 = 0;
+            field_0x54 = 0x7B;
+            field_0x2177 = 0;
+            field_0x216d = 2;
+        } else {
+            lbl_8051C1A0.fn_803B9B8C();
+            field_0x216c = 0x16;
+        }
+        break;
+    case 1:
+        field_0x2170 = 1;
+        field_0x54 = 0x76;
+        field_0x2177 = 0;
+        field_0x216d = 0xE;
+        break;
+    default:
+        field_0x54 = 0;
+        break;
+    }
+}
 
 void cls_804B0288::fn_803D3C90() {
     if (lbl_8053AD30->fn_80309C4C(0x1300, -1)) {
