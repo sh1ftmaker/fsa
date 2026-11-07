@@ -47,84 +47,6 @@ void cls_804A5568::init() {
     mTargetSpeed = 0.0f;
 }
 
-// FIXME(shotgun): 98.01 %, missing/extra + reloc-name
-void cls_804A5568::vfunc_0x90(u8 mapHit) {
-    switch (mState) {
-    case 0: {
-        u16 trigger = field_0x94;
-        if (trigger != 0) {
-            if (getGameView_802D6A9C()->fn_802D800C(trigger)) {
-                mFlags |= 0x2000;
-                if (mEmitter3c0 != NULL) {
-                    getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(mEmitter3c0);
-                }
-                mEmitter3c0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x260, 0, -2, NULL, NULL, true, 1.0f);
-                mStateTimer = 0;
-                mState = 1;
-            }
-        }
-        break;
-    }
-    case 1:
-        fn_801E9224();
-        setEmitterPos_8013CB44(mEmitter3c0, &mPos, 0, -2, true);
-        startSound_801F0E34(0x3003E, 0);
-        if (mFlags & 0x4000) {
-            s32 serial = field_0x3b8;
-            if (serial >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-                if (actor != NULL) {
-                    ((cls_804A5418*)actor)->fn_801E6EAC();
-                }
-            }
-            mFlags &= ~0x2000;
-            releaseEmitter_801EE434(mEmitter3c0);
-            mEmitter3c0 = NULL;
-            mStateTimer = 0;
-            mState = 2;
-        }
-        break;
-    }
-}
-
-u8 cls_804A5568::vfunc_0x5C() {
-    return 0;
-}
-
-// FIXME(shotgun): 93.58 %, missing/extra + reloc-name
-u8 cls_804A5568::vfunc_0x60() {
-    if (mState == 0 && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
-        if (fn_801E9B58() >= 0) {
-            mFlags |= 0x2000;
-            if (mEmitter3c0 != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(mEmitter3c0);
-            }
-            mEmitter3c0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x260, 0, -2, NULL, NULL, true, 1.0f);
-            mStateTimer = 0;
-            mState = 1;
-        }
-    }
-    return 0;
-}
-
-// FIXME(shotgun): 36.78 %, missing/extra + reloc-name
-u8 cls_804A5568::vfunc_0x68() {
-    u8 result = 0;
-    if (mFlags & 0x2000) {
-        JGeometry::TBox2f saved = mBox;
-        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        result = fn_801F2B7C(0, -1, 0x16);
-        mBox = saved;
-    }
-    return result;
-}
-
-void cls_804A5568::vfunc_0xA0() {
-    if (mFlags & 0x2000) {
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-    }
-}
-
 // The point on the chain's curve at control point `idx`, sixteenth `seg` (0 and 16 are the control
 // points themselves): inlined twice by fn_801E9224.
 static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* outX, f32* outY) {
@@ -228,6 +150,84 @@ void cls_804A5568::fn_801E9224() {
                 return;
             }
         }
+    }
+}
+
+// FIXME(shotgun): 98.01 %, missing/extra + reloc-name
+void cls_804A5568::vfunc_0x90(u8 mapHit) {
+    switch (mState) {
+    case 0: {
+        u16 trigger = field_0x94;
+        if (trigger != 0) {
+            if (getGameView_802D6A9C()->fn_802D800C(trigger)) {
+                mFlags |= 0x2000;
+                if (mEmitter3c0 != NULL) {
+                    getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(mEmitter3c0);
+                }
+                mEmitter3c0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x260, 0, -2, NULL, NULL, true, 1.0f);
+                mStateTimer = 0;
+                mState = 1;
+            }
+        }
+        break;
+    }
+    case 1:
+        fn_801E9224();
+        setEmitterPos_8013CB44(mEmitter3c0, &mPos, 0, -2, true);
+        startSound_801F0E34(0x3003E, 0);
+        if (mFlags & 0x4000) {
+            s32 serial = field_0x3b8;
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor != NULL) {
+                    ((cls_804A5418*)actor)->fn_801E6EAC();
+                }
+            }
+            mFlags &= ~0x2000;
+            releaseEmitter_801EE434(mEmitter3c0);
+            mEmitter3c0 = NULL;
+            mStateTimer = 0;
+            mState = 2;
+        }
+        break;
+    }
+}
+
+u8 cls_804A5568::vfunc_0x5C() {
+    return 0;
+}
+
+// FIXME(shotgun): 93.58 %, missing/extra + reloc-name
+u8 cls_804A5568::vfunc_0x60() {
+    if (mState == 0 && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
+        if (fn_801E9B58() >= 0) {
+            mFlags |= 0x2000;
+            if (mEmitter3c0 != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(mEmitter3c0);
+            }
+            mEmitter3c0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x260, 0, -2, NULL, NULL, true, 1.0f);
+            mStateTimer = 0;
+            mState = 1;
+        }
+    }
+    return 0;
+}
+
+// FIXME(shotgun): 36.78 %, missing/extra + reloc-name
+u8 cls_804A5568::vfunc_0x68() {
+    u8 result = 0;
+    if (mFlags & 0x2000) {
+        JGeometry::TBox2f saved = mBox;
+        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        result = fn_801F2B7C(0, -1, 0x16);
+        mBox = saved;
+    }
+    return result;
+}
+
+void cls_804A5568::vfunc_0xA0() {
+    if (mFlags & 0x2000) {
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
 }
 

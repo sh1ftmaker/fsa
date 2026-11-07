@@ -142,14 +142,6 @@ s32 fn_8044F664() {
     return 9;
 }
 
-u8 cls_804B1D58::fn_8044D290() {
-    return field_0x140;
-}
-
-u8 cls_804B1D58::fn_8044CB00() {
-    return field_0x140;
-}
-
 // Selects row `arg` (0-3) of the second list; like fn_8044CB08, with one emitter (field_0xb0).
 // FIXME(shotgun): 67 %, missing/extra + reloc-name
 void cls_804B1D58::fn_8044D298(int arg) {
@@ -193,6 +185,10 @@ void cls_804B1D58::fn_8044D298(int arg) {
         field_0xb0[field_0x138]->setStatus(4);
         mScreen->search('Pcul01')->mIsVisible = false;
     }
+}
+
+u8 cls_804B1D58::fn_8044D290() {
+    return field_0x140;
 }
 
 // Selects row `arg` (0-6): recolours the cursor panes, hides the row's panes and starts its two
@@ -257,6 +253,10 @@ void cls_804B1D58::fn_8044CB08(int arg) {
         field_0x88[field_0x138]->setStatus(4);
         mScreen->search('Pcul01')->mIsVisible = false;
     }
+}
+
+u8 cls_804B1D58::fn_8044CB00() {
+    return field_0x140;
 }
 
 // FIXME(shotgun): 99.75 %, reloc-name
