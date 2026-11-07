@@ -105,8 +105,8 @@ void GameRootSub24_8016A3AC::fn_8016DA6C() {
     }
 }
 
-// Not auto-inlined: fn_8016DB60 and fn_8016DA6C call these draw passes out of line in the original
-// (docs/INLINING.md, pragma rule 1).
+// Not auto-inlined: fn_8016DB60 calls fn_8016D33C, fn_8016D2E0, fn_8016D284 and fn_8016B8AC out of
+// line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 void GameRootSub24_8016A3AC::fn_8016D33C() {
     if (field_0x1c4) {
@@ -135,6 +135,8 @@ void GameRootSub24_8016A3AC::fn_8016B8AC() {
         fn_8016A7DC(field_0x34, pos, 1, true, false, 1.0f, 102.4f);
     }
 }
+
+#pragma auto_inline reset
 
 // FIXME: 73.96. scheduling + regalloc only (same instructions): the original
 // interleaves the loads of getMapTexView differently (camera before the
@@ -209,12 +211,16 @@ void GameRootSub24_8016A3AC::fn_8016B0B0() {
     }
 }
 
+// Not auto-inlined: fn_8016DB60 calls fn_8016B054 out of line in the original (docs/INLINING.md,
+// pragma rule 1).
+#pragma auto_inline off
 void GameRootSub24_8016A3AC::fn_8016B054() {
     if (field_0x1d3) {
         JGeometry::TVec3f pos(256.0f, 256.0f, 0.0f);
         fn_8016A7DC(field_0xa8, pos, -1, true, true, 1.0f, 10.0f);
     }
 }
+#pragma auto_inline reset
 
 // FIXME: 99.97. The colour's stack slots are swapped: the original builds it at
 // sp+0x8 and passes the copy at sp+0xC (ours the other way round).
@@ -250,6 +256,9 @@ void GameRootSub24_8016A3AC::fn_8016ADE0() {
     }
 }
 
+// Not auto-inlined: fn_8016DA6C calls fn_8016AD84, and fn_8016DB60 calls fn_8016AD28 down to fn_8016A9EC,
+// out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void GameRootSub24_8016A3AC::fn_8016AD84() {
     if (field_0x1ed) {
         JGeometry::TVec3f pos(256.0f, 256.0f, 0.0f);
