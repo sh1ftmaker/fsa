@@ -382,12 +382,7 @@ public:
 #include "game/act/act_shooting_gallery.h"
 
 // Spawned for 'TENN'.
-class TennisShop_804A2BF4 : public ActorBase_804A5770 {
-public:
-    TennisShop_804A2BF4() {}
-    /* 0x08 */ virtual ~TennisShop_804A2BF4();
-    /* 0x230 */ u8 field_0x230[0x124];
-}; // Size: 0x354
+#include "game/act/tu_801A0710.h"
 
 // Spawned for 'ZLD3'. Code: game/tu_801B0A00.cpp.
 class cls_804A35AC : public ActorBase_804A5770 {
