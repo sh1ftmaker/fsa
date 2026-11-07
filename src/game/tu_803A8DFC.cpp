@@ -507,9 +507,6 @@ void ResultScreen_804AF9A0::fn_803B0158() {
     }
 }
 
-// Not auto-inlined: fn_803AA8F8 calls fn_803AF604 out of line in the original
-// (docs/INLINING.md, pragma rule 1).
-#pragma auto_inline off
 void ResultScreen_804AF9A0::fn_803AF604() {
     field_0x440--;
     if (field_0x440 > 10) {
@@ -544,7 +541,6 @@ void ResultScreen_804AF9A0::fn_803AF604() {
         field_0x4c1 = 13;
     }
 }
-#pragma auto_inline reset
 
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
@@ -734,9 +730,10 @@ void ResultScreen_804AF9A0::fn_803AD220() {
     }
 }
 
-// FIXME: 98.43. Registers, and in state 21 the original sets `done` to 0 and copies it
+// FIXME: 98.43, kept out of the build: not register-only. In state 21 the original sets `done` to 0 and copies it
 // into i (li; mr) where ours loads 0 twice; also .sdata2 / jump table / ids names (the
 // literal pool is not yet in the original order).
+#ifdef NONMATCHING
 void ResultScreen_804AF9A0::fn_803AA8F8() {
     switch (field_0x4c1) {
     case 0:
@@ -1002,6 +999,7 @@ void ResultScreen_804AF9A0::fn_803AA8F8() {
     }
     fn_803B2FB0();
 }
+#endif
 
 // FIXME: 98.67. Registers (the second player loop), and each of the two ifs of the
 // clamp of lbl_8050EC80.getCurrentFile().field_0x10 goes through an extra `addi 0x30`

@@ -37,10 +37,10 @@ Written (structure first, at their descending-order places):
 - fn_803A9AB8 / fn_803AA1F8 (score-bar pages, modes 4 / 3) 98.71 / 98.67: registers, plus one
   `addi 0x30` per clamp of lbl_8050EC80.getCurrentFile().field_0x10 (the save-data row shape,
   docs/CRACK_PASS.md "Save-data layout"; not applied here).
-- fn_803AA8F8 (mode 2: the 34-state machine) 98.43 "different" = registers + state 21's
-  `li; mr` zero copy only. Its alpha loops multiply by a run-time zero float (a literal 0.0f
-  folds away; written as a local `rate`). fn_803AF604 got an auto_inline off/reset region
-  (fn_803AA8F8 calls it out of line).
+- fn_803AA8F8 (mode 2: the 34-state machine) 98.43 "different" (state 21's `li; mr` zero copy
+  is an opcode difference): reviewer moved it under #ifdef NONMATCHING. Its alpha loops multiply by a run-time zero float (a literal 0.0f
+  folds away; written as a local `rate`). The fn_803AF604 auto_inline region was removed with it (no
+  built caller calls it out of line).
 - New fields: J2DTextBox* digit arrays 0xA8-0x138, panes 0x158[4] / 0x168, s32 arrays
   0x320-0x3E0, floats 0x41C-0x430, 0x434-0x448, s16 0x458-0x466, u8 0x4C8, 0x4C9[13],
   0x4D6[3], 0x4D9[2], 0x4DB-0x4DD. 25 placeholder functions renamed to ResultScreen members.
