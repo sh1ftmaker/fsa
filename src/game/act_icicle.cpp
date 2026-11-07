@@ -12,8 +12,6 @@ static const s16 lbl_8053C448[] = {0, 30, -1, -1};
 static const s16 lbl_804642D8[] = {1, 4, 2, 4, 3, 4, 4, 4, 5, 4, -1, -1};
 static const s16* lbl_80539EE0[] = {lbl_8053C448, lbl_804642D8};
 
-// FIXME: 99.80%. Code matches; the 1.0f literal is a separate .sdata2 entry in
-// ours, the original's is lbl_8053C478 (a data split, not code).
 Icicle_8049CFC8::Icicle_8049CFC8()
     : field_0x230(0), field_0x234(0), field_0x238(0), field_0x240(1.0f), mSprite(),
       field_0x27c(NULL) {}
@@ -23,9 +21,6 @@ Icicle_8049CFC8::~Icicle_8049CFC8() {
     field_0x27c = NULL;
 }
 
-// FIXME: 99.69%. Code matches; the -8.0f, 8.0f and 0.0f literals are separate
-// .sdata2 entries in ours, in a different order from lbl_8053C47C, lbl_8053C488
-// and lbl_8053C470 (data split, not code).
 void Icicle_8049CFC8::init() {
     ActorBase_804A5770::init();
     mBox.i.x = -8.0f;
@@ -49,7 +44,7 @@ void Icicle_8049CFC8::init() {
     }
 }
 
-// FIXME: 70.00%. MWCC inlines fn_8010B284 (defined above, in address order)
+// FIXME: 70.13%. MWCC inlines fn_8010B284 (defined above, in address order)
 // into case 0, where the original calls it. Without the inlining (91.85 %) the
 // rest is register and stack-slot allocation in the box tests of cases 0 and 1
 // (the original keeps the `found` flags in r0 and r30, and its box copies are
@@ -103,8 +98,7 @@ void Icicle_8049CFC8::update() {
         }
         break;
     case 1:
-        field_0x23c += 0.1f;
-        mPos.y = mSpawnPos.y + 0.5f * (9.8f * square(field_0x23c));
+        fall();
         if (fn_801F2B7C(field_0x114, -1, 0x18)) {
             fn_8010B40C(3);
             break;
@@ -196,9 +190,9 @@ void Icicle_8049CFC8::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME: 98.47%. Same instructions except the order of the field_0x54.y and
-// field_0x54.x loads (the original loads y first); the .sdata2 literals are data
-// splits. A read-once local for y matches the order, but only as a trick.
+// FIXME: 98.63%. Same instructions except the order of the field_0x54.y and
+// field_0x54.x loads (the original loads y first). A read-once local for y
+// matches the order, but only as a trick.
 void Icicle_8049CFC8::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
@@ -227,8 +221,6 @@ void Icicle_8049CFC8::draw() {
     }
 }
 
-// FIXME: 99.65%. Code matches; the .sdata2 literals (0.0f, 0.6f, 1.0f) are
-// separate entries in ours, in other numbers than lbl_8053C470/74/78 (data split).
 bool Icicle_8049CFC8::fn_8010B40C(s32 state) {
     switch (state) {
     case 1:
@@ -270,8 +262,8 @@ bool Icicle_8049CFC8::fn_8010B40C(s32 state) {
     return true;
 }
 
-// FIXME: 97.44%. Same instructions in a different register and schedule for the
-// `blocked` flag and the j loop, and the .sdata2 literals (data split).
+// FIXME: 97.59%. Same instructions in a different register and schedule for the
+// `blocked` flag and the j loop.
 bool Icicle_8049CFC8::fn_8010B284() {
     JGeometry::TVec3f playerPos;
     JGeometry::TVec3f probe = mPos;
@@ -299,4 +291,12 @@ bool Icicle_8049CFC8::fn_8010B284() {
         return !blocked;
     }
     return false;
+}
+
+// Dead-stripped in the original (update inlines it): its literals 0.1f, 0.5f
+// and 9.8f lead the unit's .sdata2 pool, ahead of fn_8010B284's
+// (docs/RULES_CARD.md, literals before their first visible use (3)).
+void Icicle_8049CFC8::fall() {
+    field_0x23c += 0.1f;
+    mPos.y = mSpawnPos.y + 0.5f * (9.8f * square(field_0x23c));
 }

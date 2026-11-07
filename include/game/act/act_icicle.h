@@ -26,6 +26,9 @@ public:
     // 0x8010B40C: the icicle's state machine (state 1-5; init() calls it with
     // 5). Stores the state in field_0x230 and always returns true.
     bool fn_8010B40C(s32 state);
+    // No address (dead-stripped; update inlines it): one frame of the fall,
+    // mPos.y = mSpawnPos.y + g t^2 / 2 with g = 9.8 and t in field_0x23c.
+    void fall();
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
