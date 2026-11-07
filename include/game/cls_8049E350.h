@@ -24,6 +24,8 @@ public:
     // 0x80125C58: stores the flag at 0x231. When it is set, plays animation
     // 0 (field_0x238 == 1) or 1 on mAnim27c and sets its frame to 0.
     void fn_80125C58(bool flag);
+    // The state switch of init() and update() (defined inline in tu_80125B58.cpp).
+    void enterState();
 
     /* 0x230 */ u8 field_0x230; // set by init's state switch (0 or 1)
     /* 0x231 */ bool field_0x231; // set by fn_80125C58
