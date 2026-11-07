@@ -31,8 +31,6 @@ void UnknownENDM_804AA0FC::init() {
     field_0x29a = lbl_8053AF30->fn_8044B80C(field_0x294);
 }
 
-void UnknownENDM_804AA0FC::draw() {}
-
 // FIXME(shotgun): 93.7 %, missing/extra
 bool UnknownENDM_804AA0FC::fn_802E948C(f32 target, s32 frames) {
     if (field_0x270 == target) {
@@ -47,5 +45,7 @@ bool UnknownENDM_804AA0FC::fn_802E948C(f32 target, s32 frames) {
     field_0x274 = target;
     return true;
 }
+
+void UnknownENDM_804AA0FC::draw() {}
 
 UnknownENDM_804AA0FC::~UnknownENDM_804AA0FC() {}

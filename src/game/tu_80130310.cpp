@@ -5,8 +5,6 @@
 #include "game/cls_8049E350.h"
 #include "game/act/tu_80130310.h"
 
-cls_8049EA88::~cls_8049EA88() {}
-
 // FIXME(shotgun): 99.7 %, reloc-name
 void cls_8049EA88::init() {
     ActorBase_804A5770::init();
@@ -91,3 +89,6 @@ s32 cls_8049EA88::fn_8013056C(u16 msg, s32 mode, s32 value) {
 
 // FIXME(shotgun): not written (size 0x1FC): fn_80130370
 // FIXME(shotgun): not written (size 0x55C): update
+
+
+cls_8049EA88::~cls_8049EA88() {}

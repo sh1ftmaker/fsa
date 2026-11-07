@@ -4,12 +4,6 @@
 #include "game/Player.h"
 #include "game/act/tu_803D9944.h"
 
-cls_804B0478::~cls_804B0478() {
-    for (int i = 0; i < 4; i++) {
-        releaseEmitter_801EE434(mEmitters[i]);
-    }
-}
-
 // FIXME(shotgun): 97.1 %, missing/extra
 void cls_804B0478::init() {
     mBox.i.x = -1280.0f;
@@ -60,6 +54,12 @@ void cls_804B0478::init() {
         mState = 0;
     } else {
         mState = 5;
+    }
+}
+
+cls_804B0478::~cls_804B0478() {
+    for (int i = 0; i < 4; i++) {
+        releaseEmitter_801EE434(mEmitters[i]);
     }
 }
 

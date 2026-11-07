@@ -7,6 +7,12 @@
 // FIXME(shotgun): not written (size 0x3C8): fn_8015EA2C
 // FIXME(shotgun): not written (size 0xAB0): fn_8015DF7C
 
+Flame_804A0330::~Flame_804A0330() {
+    for (int i = 0; i < 4; i++) {
+        releaseEmitter_801EE434(mEmitters[i]);
+    }
+}
+
 // FIXME(shotgun): 96.4 %, missing/extra
 void Flame_804A0330::update() {
     fn_8015EA2C();
@@ -38,11 +44,5 @@ void Flame_804A0330::draw() {
             scale = 140.0f;
         }
         drawFlameShadow(field_0x4, &mPos, scale);
-    }
-}
-
-Flame_804A0330::~Flame_804A0330() {
-    for (int i = 0; i < 4; i++) {
-        releaseEmitter_801EE434(mEmitters[i]);
     }
 }

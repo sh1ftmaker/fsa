@@ -7,6 +7,12 @@
 // FIXME(shotgun): not written (size 0x2BC): fn_8032A4FC
 // FIXME(shotgun): not written (size 0xEBC): update (0x80329640)
 
+ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
+    releaseEmitter_801EE434(mEmitter24c);
+    releaseEmitter_801EE434(mEmitter250);
+    releaseEmitter_801EE434(mEmitter254);
+}
+
 // FIXME(shotgun): 91.5 %, scheduling + reloc-name
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
@@ -72,10 +78,4 @@ void ForceGemSpawner_804AB660::draw() {
             gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x2a, &params, 1.0f, 1.0f);
         }
     }
-}
-
-ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
-    releaseEmitter_801EE434(mEmitter24c);
-    releaseEmitter_801EE434(mEmitter250);
-    releaseEmitter_801EE434(mEmitter254);
 }

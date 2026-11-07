@@ -112,8 +112,6 @@ void Score_804AF4C0::update() {
     }
 }
 
-Score_804AF4C0::~Score_804AF4C0() {}
-
 // FIXME(shotgun): 99.7 %, reloc-name
 void Score_804AF4C0::draw() {
     if (mState == 0 || mState == 4) {
@@ -169,3 +167,5 @@ void Score_804AF4C0::fn_80391D44() {
 // FIXME(shotgun): not written (size 0x2EC): fn_80393228
 // FIXME(shotgun): not written (size 0x438): fn_80393514
 #pragma auto_inline reset
+
+Score_804AF4C0::~Score_804AF4C0() {}
