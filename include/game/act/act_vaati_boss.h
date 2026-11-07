@@ -146,6 +146,8 @@ public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
     cls_801D7730();
     ~cls_801D7730();
+    // Placement form, so fn_801D5D84 can run the constructor on the member again like the original.
+    static inline void* operator new(size_t, void* p) { return p; }
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
     // Shotgun pass: the ring's per-frame steps (names by address).

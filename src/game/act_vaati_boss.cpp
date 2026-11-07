@@ -192,7 +192,7 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
-// FIXME(shotgun): 95.22 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.83 %, missing/extra + reloc-name
 void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     switch (state) {
     case 1:
@@ -258,8 +258,8 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     case 11:
         if (field_0x4c4.field_0x44 != 4) {
             field_0x4c4.fn_801D7638();
-            // The original runs the constructor again here (__ct__12cls_801D7730Fv).
-            field_0x4c4.fn_801D77B4();
+            // The original runs the constructor again here.
+            new (&field_0x4c4) cls_801D7730();
         }
         field_0x448.fn_80217A74();
         mSpeed = 0.0f;
