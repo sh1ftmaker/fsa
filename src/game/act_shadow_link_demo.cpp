@@ -27,6 +27,32 @@ cls_8049DB90::cls_8049DB90() {
     field_0x258 = 0.0f;
 }
 
+// FIXME(shotgun): 99.9 %, reloc-name when compiled, but then __ct__ drops from 100 % to 99.8 % (the .sdata2 literal pool gains 80.0f), so it stays out of the build.
+#ifdef NONMATCHING
+void cls_8049DB90::init() {
+    cls_8049D140::init();
+    field_0x234 = field_0x90 & 0xF;
+    field_0x98 = (s8)((field_0x90 >> 4) & 3);
+    switch (field_0x234) {
+    case 1:
+        fn_8011B878(0xD);
+        field_0x98 = 3;
+        mSequencer.fn_800FEB78(0);
+        break;
+    case 2:
+        fn_8011B878(0x16);
+        field_0x98 = 3;
+        mSequencer.fn_800FEB78(1);
+        mPos.y += 80.0f;
+        break;
+    default:
+        mSequencer.fn_800FEB78(0);
+        break;
+    }
+    mSequencer.mDir = field_0x98;
+}
+#endif
+
 void cls_8049DB90::vfunc_0x54() {
     s32 value = fn_8011921C()->field_0x8;
     switch (field_0x234) {
@@ -107,30 +133,6 @@ s32 cls_8049DB90::vfunc_0x5C() {
         return 1;
     }
     return 0;
-}
-
-// FIXME(shotgun): 99.9 %, reloc-name
-void cls_8049DB90::init() {
-    cls_8049D140::init();
-    field_0x234 = field_0x90 & 0xF;
-    field_0x98 = (s8)((field_0x90 >> 4) & 3);
-    switch (field_0x234) {
-    case 1:
-        fn_8011B878(0xD);
-        field_0x98 = 3;
-        mSequencer.fn_800FEB78(0);
-        break;
-    case 2:
-        fn_8011B878(0x16);
-        field_0x98 = 3;
-        mSequencer.fn_800FEB78(1);
-        mPos.y += 80.0f;
-        break;
-    default:
-        mSequencer.fn_800FEB78(0);
-        break;
-    }
-    mSequencer.mDir = field_0x98;
 }
 
 cls_8049DB90::~cls_8049DB90() {}
