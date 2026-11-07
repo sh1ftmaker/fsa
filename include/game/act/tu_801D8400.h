@@ -16,6 +16,13 @@ struct Sequencer_801DAA24 {
     // table lbl_804A4DA8; fn_801DA904 whether it is 28 or more.
     const char* fn_801DA938();
     bool fn_801DA904();
+    // 0x801DA7C0 / 0x801DA894 / 0x801DA96C / 0x801DA9E8 (tu_801DA7C0.cpp, not written yet).
+    void fn_801DA7C0();
+    bool fn_801DA894();
+    s32 fn_801DA96C();
+    void fn_801DA9E8(s32 a, s32 b);
+    // 0x801DA994 (tu_801DA7C0.cpp, not written yet): like fn_801DA9E8 with a second mode.
+    void fn_801DA994(s32 a, s32 b);
 
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ s32 field_0x4; // current value, 0-47
@@ -38,6 +45,9 @@ public:
     // 0x801DA504 (__ct__12cls_804A4C58Fv, game/tu_801D8400.cpp): EnemyBase's
     // constructor, the vtable, the sequencer, the ceiling and the arrays.
     cls_804A4C58();
+    /* 0x08 */ virtual ~cls_804A4C58();
+    /* 0x0C */ virtual void init();   // fn_801DA124
+    /* 0x14 */ virtual void update(); // fn_801D8430
     /* 0x20 */ virtual void draw();
     // 0x801D84E0: empty, no arguments read (vtable slot 0x24 of 0x804A4C58).
     /* 0x24 */ virtual void vfunc_0x24();
@@ -45,7 +55,15 @@ public:
     /* 0x54 */ virtual void vfunc_0x54();
     // 0x801D8980: a mPos.y above field_0x2d0 is clamped to it (and
     // field_0x3c.y zeroed), then EnemyBase's floor check runs.
+    // 0x801D85B0: after a hit, in state 0xB-0xE picks the next target column and facing.
+    /* 0x74 */ virtual void vfunc_0x74();
     /* 0x80 */ virtual void vfunc_0x80();
+    // 0x801D882C: in state 0xB-0xE steers toward the column at field_0x334.
+    /* 0x88 */ virtual void vfunc_0x88();
+    // 0x801D8B28: the per-state behaviour, not written yet.
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    // 0x801D8A30: steps the sequencer and plays sound 0x40058 on its landing frames.
+    /* 0x94 */ virtual void vfunc_0x94();
     // 0x801D89BC: with a hit bit in mFlags (& 7), vfunc_0x94 once mState is
     // 0xF; with none, fn_801CE2BC(mapHit). Then field_0x336 counts down to
     // 0 and fn_801E61C4 moves the pair at 0x2C8.
@@ -62,6 +80,12 @@ public:
     // 0x801D9C58 (tu_801D8400 and tu_801DD1AC call it on this with a state
     // number in r4, e.g. 8 from fn_801D8400); its body is not written yet.
     void fn_801D9C58(int state);
+    // 0x801D95F4: throws a 'BOIB' from the mouth; true when it was made.
+    bool fn_801D95F4();
+    // 0x801D9960: counts the throw timers down and starts the next state.
+    void fn_801D9960();
+    // 0x801DE12C (game/tu_801DD1AC.cpp, not written yet).
+    void fn_801DE12C();
     // 0x801E61C4 (tu_801D8400's code calls it): moves the pair at 0x2C8 to
     // 40 units below mPos (in y).
     void fn_801E61C4();

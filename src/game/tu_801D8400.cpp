@@ -1,6 +1,18 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_801D8400.h"
+#include "game/ActorManager.h"
+#include "game/Camera.h"
+#include "game/Effect.h"
+#include "game/EmitterDelete.h"
+#include "game/GameView.h"
+#include "game/Map.h"
+#include "game/Player.h"
+#include "game/act/tu_801DAC6C.h"
+#include "JSystem/JMath/JMath.h"
+#include "std/math.h"
+
+void fn_801CCCC4(JGeometry::TVec3f* pos);
 
 // 0x801DA504. The sequencer's constructor runs before the ceiling is set,
 // and the twelve TVec2f are built after it (the member initialisers run in
@@ -20,10 +32,372 @@ cls_804A4C58::cls_804A4C58() : mSeq2a8(), field_0x2d0(0.0f) {
     mEmitter2cc = NULL;
 }
 
+// FIXME(shotgun): 58.63 %, missing/extra + reloc-name.
+cls_804A4C58::~cls_804A4C58() {
+    releaseEmitter_801EE434(mEmitter2c0);
+    mEmitter2c0 = NULL;
+    releaseEmitter_801EE434(mEmitter2c4);
+    mEmitter2c4 = NULL;
+    releaseEmitter_801EE434(mEmitter2c8);
+    mEmitter2c8 = NULL;
+    releaseEmitter_801EE434(mEmitter2cc);
+    mEmitter2cc = NULL;
+    fn_801DAC6C()->mSerial0 = -1;
+    getGameView_802D6A9C()->fn_802D7440(true);
+}
+
+// FIXME(shotgun): 58.92 %, missing/extra + reloc-name.
+void cls_804A4C58::init() {
+    EnemyBase_804A4808::init();
+    mBox.i.x = 1.0f;
+    mBox.i.y = 1.0f;
+    mBox.f.x = -1.0f;
+    mBox.f.y = -1.0f;
+    mBox2 = mBox;
+    field_0x80.i.x = 1.0f;
+    field_0x80.i.y = 1.0f;
+    field_0x80.f.x = -1.0f;
+    field_0x80.f.y = -1.0f;
+    field_0xb0 = 0x40004;
+    field_0x98 = 2;
+    mFlags |= 0x2A0;
+    mLife = 140;
+    mLifeBackup = mLife;
+    field_0x114 = 0;
+    field_0x196 = 1;
+    JGeometry::TBox2f* box = &getGameView_802D6A9C()->field_0xdc;
+    if (field_0x4 < 8) {
+        box = &getGameView_802D6A9C()->mVisibleBox;
+    }
+    JGeometry::TVec3f p;
+    p.x = mPos.x;
+    p.y = mPos.y;
+    while (p.y < box->f.y) {
+        JGeometry::TVec3f probe(p.x, p.y, 0.0f);
+        if (vfunc_0x4C(field_0x4, &probe)) {
+            fn_801CCCC4(&p);
+            p.y += -24.0f;
+            break;
+        }
+        p.y += 16.0f;
+    }
+    field_0x2d0 = p.y;
+    f32 x0 = mSpawnPos.x - 120.0f;
+    f32 y0 = 32.0f + mSpawnPos.y;
+    f32 step = 0.5f * (field_0x2d0 - 48.0f - y0);
+    for (s32 row = 0; row < 3; row++) {
+        f32 y = y0 + step * row;
+        for (s32 col = 0; col < 4; col++) {
+            field_0x2d4[row * 4 + col].x = x0 + 80.0f * col;
+            field_0x2d4[row * 4 + col].y = y;
+        }
+    }
+    mState = 0;
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    mSeq2a8.fn_801DA9E8(0, 2);
+    fn_801E63D8();
+    fn_801DAC6C()->fn_801DAF44(mSerial);
+    getGameView_802D6A9C()->fn_802D7440(false);
+}
+
 // Vtable slot 0x54 (0x801DA0FC): EnemyBase's start hook; asks
 // gAudioMgr_8053AF80 for fn_80458F9C(60).
 void cls_804A4C58::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
+}
+
+// FIXME(shotgun): 97.65 %, missing/extra + reloc-name.
+void cls_804A4C58::fn_801D9C58(int state) {
+    field_0x336 = 0;
+    if (mState == 0x11) {
+        mFlags &= ~0x80;
+    }
+    switch (state) {
+    case 2:
+        mSeq2a8.fn_801DA9E8(3, 0);
+        startSound_801F0E34(0x40052, 0);
+        break;
+    case 3:
+        mSeq2a8.fn_801DA9E8(4, 0);
+        startSound_801F0E34(0x4005D, 0);
+        break;
+    case 4:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA994(0, 2);
+        break;
+    case 5:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        if (mState >= 6 && mState < 8) {
+            mSeq2a8.fn_801DA9E8(2, 0);
+        } else {
+            mSeq2a8.fn_801DA9E8(1, 0);
+        }
+        startSound_801F0E34(0x40052, 0);
+        break;
+    case 6:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(3, 0);
+        startSound_801F0E34(0x40052, 0);
+        break;
+    case 7:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(4, 0);
+        startSound_801F0E34(0x4005D, 0);
+        if (mState == 5) {
+            mFlags |= 0x4000;
+        } else {
+            mFlags &= ~0x4000;
+        }
+        break;
+    case 8:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(5, 0);
+        startSound_801F0E34(0x40056, 0);
+        fn_801E6394();
+        fn_801E631C();
+        break;
+    case 9:
+        mFlags &= ~0x280;
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(6, 0);
+        startSound_801F0E34(0x40057, 0);
+        fn_801E631C();
+        break;
+    case 10:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(7, 0);
+        break;
+    case 11:
+        field_0x250 = -1;
+        mTargetSpeed = 1.2f;
+        mSeq2a8.fn_801DA994(8, 2);
+        if (mState != 0xC) {
+            field_0x33c = fn_801CD664(0xF1) + 0x78;
+        }
+        break;
+    case 12:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(9, 0);
+        break;
+    case 13:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(0xE, 0);
+        break;
+    case 14:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(0xF, 0);
+        break;
+    case 15:
+        field_0x33f = 0;
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(0xA, 0);
+        break;
+    case 16:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(0xB, 0);
+        break;
+    case 17:
+        mFlags |= 0x80;
+        field_0x250 = -1;
+        field_0x336 = fn_801CD664(1) + 0xF0;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA994(0xC, 2);
+        startSound_801F0E34(0x40057, 0);
+        fn_801E631C();
+        break;
+    case 18:
+        field_0x250 = -1;
+        mTargetSpeed = 0.0f;
+        mSeq2a8.fn_801DA9E8(0xD, 0);
+        break;
+    case 19:
+        mBox.i.x = 1.0f;
+        mBox.i.y = 1.0f;
+        mBox.f.x = -1.0f;
+        mBox.f.y = -1.0f;
+        mBox2 = mBox;
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        field_0xd8 = 0x10;
+        field_0xdc = 0x10;
+        startSound_801F0E34(0x4005A, 0);
+        break;
+    case 20:
+        fn_801DAC6C()->fn_801DAE24();
+        break;
+    }
+    mStateTimer = 0;
+    mState = state;
+}
+
+// FIXME(shotgun): 75.91 %, missing/extra + reloc-name.
+void cls_804A4C58::fn_801D9960() {
+    if (field_0x33c != 0) {
+        field_0x33c--;
+    }
+    if (field_0x33c == 0) {
+        s32 target = -1;
+        JGeometry::TVec3f from;
+        if (mFlags & 0x2000) {
+            from.x = mPos.x - -30.0f;
+        } else {
+            from.x = -30.0f + mPos.x;
+        }
+        from.y = -6.0f + mPos.y;
+        from.z = 0.0f;
+        s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+        s32 player = fn_801D0338(&from, angle);
+        if (player >= 0) {
+            f32 dy = getPlayerPos_8023E724(player)->y - from.y;
+            f32 dx = getPlayerPos_8023E724(player)->x - from.x;
+            s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+            if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+                target = player;
+            }
+        }
+        if (target >= 0) {
+            if (mSeq2a8.fn_801DA894()) {
+                fn_801D9C58(0xD);
+            }
+        }
+    }
+    if (mState == 0xB) {
+        field_0x338--;
+        if (field_0x338 == 0) {
+            if (field_0x33f == 3) {
+                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
+                field_0x334 = columns[fn_801CD664(6)];
+            } else {
+                field_0x334 = fn_801CD664(12);
+            }
+            field_0x338 = fn_801CD664(0x3D) + 0x3C;
+            bool left = false;
+            if (mPos.x < field_0x2d4[field_0x334].x ||
+                (mPos.x == field_0x2d4[field_0x334].x && (mFlags & 0x2000))) {
+                left = true;
+            }
+            bool turn = false;
+            if (left) {
+                if (!(mFlags & 0x2000)) {
+                    turn = true;
+                }
+            } else {
+                if (mFlags & 0x2000) {
+                    turn = true;
+                }
+            }
+            if (turn) {
+                fn_801D9C58(0xC);
+            }
+        }
+    }
+}
+
+// FIXME(shotgun): 71.57 %, missing/extra + reloc-name.
+bool cls_804A4C58::fn_801D95F4() {
+    bool spawned = false;
+    JGeometry::TVec3f pos;
+    if (mFlags & 0x2000) {
+        pos.x = mPos.x - -30.0f;
+    } else {
+        pos.x = -30.0f + mPos.x;
+    }
+    pos.y = -6.0f + mPos.y;
+    pos.z = 0.0f;
+    s32 serial = getActorManager_801F856C()->spawnActor_801F9484('BOIB', field_0x4, &pos, 0, -1, -1);
+    if (serial >= 0) {
+        ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (bomb != NULL) {
+            s32 target = -1;
+            JGeometry::TVec3f from;
+            if (mFlags & 0x2000) {
+                from.x = mPos.x - -30.0f;
+            } else {
+                from.x = -30.0f + mPos.x;
+            }
+            from.y = -6.0f + mPos.y;
+            from.z = 0.0f;
+            s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+            s32 player = fn_801D0338(&from, angle);
+            if (player >= 0) {
+                f32 dy = getPlayerPos_8023E724(player)->y - from.y;
+                f32 dx = getPlayerPos_8023E724(player)->x - from.x;
+                s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+                if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+                    target = player;
+                }
+            }
+            f32 vx;
+            f32 vy;
+            if (target >= 0) {
+                f32 dy = getPlayerPos_8023E724(target)->y - pos.y;
+                f32 dx = getPlayerPos_8023E724(target)->x - pos.x;
+                JGeometry::TVec2f dir(dx, dy);
+                if (dir.normalize() == 0.0f) {
+                    dir.x = 1.0f;
+                    dir.y = 0.0f;
+                }
+                vx = dir.x;
+                vy = dir.y;
+            } else {
+                s16 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+                f32 s = JMath::sincosTable_.sinShort(-facing);
+                f32 c = JMath::sincosTable_.cosShort(-facing);
+                vx = 0.0f * c - 1.0f * s;
+                vy = 0.0f * s + 1.0f * c;
+            }
+            s16 jitter = fn_801CD664(0xE39) - 0x71C;
+            f32 s = JMath::sincosTable_.sinShort(-jitter);
+            f32 c = JMath::sincosTable_.cosShort(-jitter);
+            JGeometry::TVec3f vel((vx * c - vy * s) * 2.4f, (vx * s + vy * c) * 2.4f, 0.0f);
+            bomb->field_0x3c.set(vel);
+            spawned = true;
+        }
+    }
+    return spawned;
+}
+
+void cls_804A4C58::vfunc_0x94() {
+    bool play = false;
+    s32 before = mSeq2a8.fn_801DA96C();
+    mSeq2a8.fn_801DA7C0();
+    switch (mSeq2a8.field_0x0) {
+    case 8:
+        if (before != 0x1E && mSeq2a8.fn_801DA96C() == 0x1E) {
+            play = true;
+        }
+        break;
+    case 14:
+        if (before != 0x2C && mSeq2a8.fn_801DA96C() == 0x2C) {
+            play = true;
+        }
+        break;
+    case 15:
+        if (before != 0x2F && mSeq2a8.fn_801DA96C() == 0x2F) {
+            play = true;
+        }
+        break;
+    }
+    if (play) {
+        startSound_801F0E34(0x40058, 0);
+    }
+    fn_801DE12C();
 }
 
 // Vtable slot 0x9C (0x801D89BC). Any hit bit in mFlags skips the step
@@ -50,6 +424,79 @@ void cls_804A4C58::vfunc_0x80() {
         field_0x3c.y = 0.0f;
     }
     EnemyBase_804A4808::vfunc_0x80();
+}
+
+// FIXME(shotgun): 81.04 %, missing/extra + reloc-name.
+void cls_804A4C58::vfunc_0x88() {
+    if (mState >= 0xB && mState < 0xF) {
+        f32 dx = field_0x2d4[field_0x334].x - mPos.x;
+        f32 dy = field_0x2d4[field_0x334].y - mPos.y;
+        JGeometry::TVec2f dir(dx, dy);
+        dir.normalize();
+        addCalc2_801F71A4(&field_0x3c.x, dir.x * mSpeed, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, dir.y * mSpeed, 0.3f, 1.0f);
+    } else {
+        field_0x3c.x = 0.0f;
+        if (mState == 0x10 || mState == 8) {
+            field_0x3c.y += std::fabsf(lbl_8053EFB8);
+        } else {
+            field_0x3c.y = 0.0f;
+        }
+    }
+    field_0x3c.z = 0.0f;
+}
+
+// FIXME(shotgun): 65.40 %, missing/extra + reloc-name.
+void cls_804A4C58::vfunc_0x74() {
+    if (mState >= 0xB && mState < 0xF) {
+        if (mState == 0xC) {
+            if (field_0x33f == 3) {
+                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
+                field_0x334 = columns[fn_801CD664(6)];
+            } else {
+                field_0x334 = fn_801CD664(12);
+            }
+            field_0x338 = fn_801CD664(0x3D) + 0x3C;
+            bool left = false;
+            if (mPos.x < field_0x2d4[field_0x334].x ||
+                (mPos.x == field_0x2d4[field_0x334].x && (mFlags & 0x2000))) {
+                left = true;
+            }
+            if (left) {
+                mFlags &= ~0x2000;
+            } else {
+                mFlags |= 0x2000;
+            }
+        } else {
+            if (field_0x33f == 3) {
+                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
+                field_0x334 = columns[fn_801CD664(6)];
+            } else {
+                field_0x334 = fn_801CD664(12);
+            }
+            field_0x338 = fn_801CD664(0x3D) + 0x3C;
+            bool left = false;
+            if (mPos.x < field_0x2d4[field_0x334].x ||
+                (mPos.x == field_0x2d4[field_0x334].x && (mFlags & 0x2000))) {
+                left = true;
+            }
+            bool turn = false;
+            if (left) {
+                if (!(mFlags & 0x2000)) {
+                    turn = true;
+                }
+            } else {
+                if (mFlags & 0x2000) {
+                    turn = true;
+                }
+            }
+            if (turn) {
+                fn_801D9C58(0xC);
+            } else {
+                fn_801D9C58(0xB);
+            }
+        }
+    }
 }
 
 // Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
@@ -80,8 +527,27 @@ void cls_804A4C58::vfunc_0xA0() {
 
 void cls_804A4C58::vfunc_0x24() {}
 
+// FIXME(shotgun): 94.55 %, scheduling+regalloc + reloc-name.
+void cls_804A4C58::update() {
+    if (vfunc_0x2C(0.0f, -16.0f, 50.0f)) {
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x840 == 0) {
+            camera->field_0x840 = 1;
+            camera->field_0x844.set(mPos.x, mPos.y, mPos.x, mPos.y);
+            camera->field_0x854 = 1.0f;
+            camera->field_0x1d4 = -1.0f;
+            camera->field_0x1d8 = -1.0f;
+        }
+        gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+    } else {
+        EnemyBase_804A4808::update();
+    }
+}
+
 void cls_804A4C58::fn_801D8400() {
     if (mState < 8) {
         fn_801D9C58(8);
     }
 }
+
+// FIXME(shotgun): vfunc_0x90 (fn_801D8B28, 0xAEC bytes) is not written.
