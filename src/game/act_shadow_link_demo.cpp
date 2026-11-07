@@ -1,6 +1,12 @@
 #include "game/GameAudio.h"
+#include "game/Camera.h"
 #include "game/GameGlobals.h"
+#include "game/Map.h"
+#include "game/SpriteParams.h"
+#include "game/EnemyBase.h"
 #include "game/act/act_shadow_link_demo.h"
+
+// FIXME(shotgun): not written: fn_8011B878 (0x534), update fn_8011C308 (0x854)
 
 // Values that vfunc_0x54 compares the object's field_0x8 with, by the index it
 // passes to fn_8011B878. Entries 0, 5, 13, 21-26, 30 and 34 are never compared.
@@ -50,6 +56,24 @@ void cls_8049DB90::init() {
         break;
     }
     mSequencer.mDir = field_0x98;
+}
+#endif
+
+// FIXME(shotgun): 94.83 %, missing/extra (gated: its literals drop __ct__ from 100 % to 99.83 %)
+#ifdef NONMATCHING
+void cls_8049DB90::draw() {
+    cls_8049D140::draw();
+    SpriteParams_801F5AE0 params;
+    params.field_0x2e = 0x40;
+    s32 frame = mSequencer.mFrame;
+    if (mSpriteParams.mMtx == NULL) {
+        fn_801EF830(field_0x4, &mPos, &params, 7, "player_sob.bin", frame, NULL);
+    }
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, NULL, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, mSequencer.mFrame, 0, 1, -1, false, 0, 0);
 }
 #endif
 
@@ -134,5 +158,101 @@ s32 cls_8049DB90::vfunc_0x5C() {
     }
     return 0;
 }
+
+// Pushes the 4-float box at 0x250 to the scripted camera (mode 5).
+static inline void setCameraBox(cls_8049DB90* self) {
+    Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+    if (cam->field_0x7f5 == 0) {
+        cam->field_0x7f4 = 1;
+        cam->field_0x7f8 = 5;
+        cam->field_0x808.set(self->field_0x250, self->field_0x254, self->field_0x258, self->field_0x25c);
+        cam->field_0x7f6 = 0;
+    }
+}
+
+// FIXME(shotgun): 5.55 %, missing/extra (gated: its literals drop __ct__ from 100 % to 99.83 %)
+#ifdef NONMATCHING
+void cls_8049DB90::fn_8011B3F0() {
+    Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+    if (cam->field_0x179 == 0) {
+        cam->field_0x17a = 1;
+        cam->field_0x179 = 0;
+    }
+    switch (field_0x238) {
+    case 1:
+    case 2:
+    case 3:
+        field_0x250 = mPos.x - 64.0f;
+        field_0x254 = mPos.y - 32.0f;
+        field_0x258 = 64.0f + mPos.x;
+        field_0x25c = 32.0f + mPos.y;
+        setCameraBox(this);
+        break;
+    case 4:
+    case 5: {
+        JGeometry::TVec3f p(mPos);
+        p.y += field_0x248;
+        fn_801CD950(&field_0x248, 32.0f, 0.8f);
+        field_0x250 = p.x - 64.0f;
+        field_0x254 = p.y - 32.0f;
+        field_0x258 = 64.0f + p.x;
+        field_0x25c = 32.0f + p.y;
+        setCameraBox(this);
+        break;
+    }
+    case 6: {
+        JGeometry::TVec3f p(mPos);
+        p.y += field_0x248;
+        fn_801CD950(&field_0x248, 0.0f, 0.8f);
+        field_0x250 = p.x - 64.0f;
+        field_0x254 = p.y - 32.0f;
+        field_0x258 = 64.0f + p.x;
+        field_0x25c = 32.0f + p.y;
+        setCameraBox(this);
+        break;
+    }
+    case 7: {
+        s32 diff = fn_8011921C()->field_0x8 - lbl_80464AF8[7];
+        if (diff >= 0xB4) {
+            if (diff > 0x19A && diff != 0) {
+                fn_801CD950(&field_0x244, 0.0f, -0.007f);
+            } else {
+                fn_801CD950(&field_0x244, 0.1f, 0.0035f);
+            }
+            fn_801CD950(&field_0x254, (mPos.y - 32.0f) - 24.0f, -field_0x244);
+            fn_801CD950(&field_0x25c, (32.0f + mPos.y) + 24.0f, field_0x244);
+        }
+        setCameraBox(this);
+        break;
+    }
+    case 8: {
+        Camera_804AA9E4* c = gGameRoot2_8053AB10->field_0x24;
+        if (c->field_0x7f5 == 0) {
+            c->field_0x7f4 = 1;
+            c->field_0x7f8 = 4;
+            c->field_0x7fc.set(mPos.x, mPos.y, mPos.z);
+            c->field_0x7f6 = 0;
+        }
+        break;
+    }
+    case 9:
+    case 10:
+    case 11: {
+        Camera_804AA9E4* c = gGameRoot2_8053AB10->field_0x24;
+        if (c->field_0x840 == 0) {
+            c->field_0x840 = 1;
+            c->field_0x844.set(mPos.x, mPos.y, mPos.x, mPos.y);
+            c->field_0x854 = 1.0f;
+            c->field_0x1d4 = -1.0f;
+            c->field_0x1d8 = -1.0f;
+        }
+        break;
+    }
+    default:
+        setCameraBox(this);
+        break;
+    }
+}
+#endif
 
 cls_8049DB90::~cls_8049DB90() {}

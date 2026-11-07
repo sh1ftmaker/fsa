@@ -13,6 +13,9 @@ public:
     cls_8049DB90();
     /* 0x08 */ virtual ~cls_8049DB90();
     /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update(); // 0x8011C308 (not written)
+    /* 0x20 */ virtual void draw();   // 0x8011C118
+    void fn_8011B3F0();              // camera control by field_0x238
     /* 0x54 */ virtual void vfunc_0x54(); // compares fn_8011921C()'s field_0x8 with lbl_80464AF8
     /* 0x58 */ virtual s32 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C(); // 1 or 0, as cls_8049D140::vfunc_0x5C
