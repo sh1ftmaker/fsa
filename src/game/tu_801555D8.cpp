@@ -7,6 +7,7 @@
 #include "game/GameState.h"
 #include "game/Map.h"
 #include "game/act/tu_801F9484.h"
+#include "std/math.h"
 
 extern const s32 lbl_8049FDC8[][2]; // life by kind (.data of this unit)
 extern const s32 lbl_8049FFD8[][2]; // tile positions of the kind-2 variant
@@ -189,4 +190,93 @@ bool cls_804A00C8::vfunc_0x54() {
         return true;
     }
     return false;
+}
+
+// FIXME(shotgun): 95.63 %, missing/extra + reloc-name
+void cls_804A00C8::draw() {
+    if (field_0x94 == 2 || field_0x278 != 0) {
+        return;
+    }
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 3 && field_0x90 == 2) {
+        params.field_0x0[2] = 4;
+    }
+    if (mState == 0xD) {
+        f32 yaw = field_0x29c;
+        f32 scale = field_0x2a0;
+        f32 sx = sin(0.0f);
+        f32 sy = sin(yaw);
+        f32 sz = sin(0.0f);
+        f32 cx = cos(0.0f);
+        f32 cy = cos(yaw);
+        f32 cz = cos(0.0f);
+        mtx[0][0] = scale * (cy * cz);
+        mtx[0][1] = scale * (sx * sy * cz - cx * sz);
+        mtx[0][2] = scale * (cx * cz * sy + sx * sz);
+        mtx[1][0] = scale * (cy * sz);
+        mtx[1][1] = scale * (sx * sy * sz + cx * cz);
+        mtx[1][2] = scale * (cx * sz * sy - sx * cz);
+        mtx[2][0] = scale * -sy;
+        mtx[2][1] = scale * (sx * cy);
+        mtx[2][2] = scale * (cx * cy);
+        params.mMtx = mtx;
+        if (field_0x90 == 2) {
+            drawSprite_801F06F0("enemy_gc_sob.bin", field_0x274 + 0x114, &params, 0, 1.0f, 1.0f);
+        } else if (field_0x29c == 0.0f) {
+            s32 frame = field_0x274 + 0x4F;
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            }
+        } else {
+            s32 frame = field_0x274 + 0x8F;
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+        return;
+    }
+    if (field_0x90 == 3) {
+        f32 scale = field_0x298;
+        mtx[0][0] = scale;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = scale;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = scale;
+        params.mMtx = mtx;
+    }
+    if (field_0x90 == 2) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x274 + 0x114, &params, 0, 1.0f, 1.0f);
+    } else if (field_0x90 != 3) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x274 + 0x4F, &params, 0, 1.0f, 1.0f);
+    }
+    if (field_0x90 == 3) {
+        JGeometry::TVec3f pos = mPos;
+        mPos.y -= 6.0f;
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x274 + 0x4F, &params, -1, 1.0f, 1.0f);
+        mPos = pos;
+        mtx[0][0] = 1.3f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 1.3f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 1.3f;
+        params.mMtx = mtx;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, 0x6F, &params, 1.0f, 1.0f);
+        }
+    }
 }
