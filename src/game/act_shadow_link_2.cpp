@@ -400,12 +400,12 @@ void ShadowLink2_804A43E8::vfunc_0xA0() {
     lbl_8053AED0->fn_8043E7CC(mPos);
 }
 
-// FIXME(shotgun): 72 %, missing/extra
+// FIXME(shotgun): 100 %, matches
 void ShadowLink2_804A43E8::fn_801C27F0() {
     bool flag = (mFlags & 0x08000000) != 0;
     cls_801C0D70* tracker = fn_801C0D70();
     tracker->fn_801C1374(flag);
-    vfunc_0x24();
+    ActorBase_804A5770::vfunc_0x24();
 }
 
 // Member: switches to state 2 when mState is 0 or 1 and mFlags has bit 0x4000.
