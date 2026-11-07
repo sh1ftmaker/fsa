@@ -10,20 +10,18 @@
 #include <math.h>
 #include "game/act/act_trick_floor_2.h"
 
-// FIXME(shotgun): the 7-entry tables of .rodata at 0x8046F788 (outer count) and 0x8046F7A4
-// (inner count), indexed by mType.
-extern const s32 lbl_8046F788[];
-extern const s32 lbl_8046F7A4[];
-// FIXME(shotgun): the 4x4 u16 tiles at 0x8046F7C0 (inside dtk's lbl_8046F7A4) state 5 restores
-// for type 1.
-extern const u16 lbl_8046F7C0[4][4];
-
-// FIXME(shotgun): draw's per-type tables inside dtk's lbl_8046F7A4: the sprite offsets x / y
-// (0x8046F7E0 / 0x8046F7FC) and the hole picture's x / z scales (0x8046F818 / 0x8046F834).
-extern const f32 lbl_8046F7E0[7];
-extern const f32 lbl_8046F7FC[7];
-extern const f32 lbl_8046F818[7];
-extern const f32 lbl_8046F834[7];
+static const s32 lbl_8046F788[7] = {4, 4, 6, 4, 6, 6, 4};
+static const s32 lbl_8046F7A4[7] = {4, 4, 5, 5, 6, 6, 4};
+static const u16 lbl_8046F7C0[4][4] = {
+    {0x01B0, 0x01B0, 0x01B0, 0x01B0},
+    {0x01B0, 0x01D8, 0x01DA, 0x01B0},
+    {0x01B0, 0x01D9, 0x01DB, 0x01B0},
+    {0x01B0, 0x01B0, 0x01B0, 0x01B0},
+};
+static const f32 lbl_8046F7E0[7] = {32.0f, 32.0f, 48.0f, 32.0f, 64.0f, 64.0f, 32.0f};
+static const f32 lbl_8046F7FC[7] = {32.0f, 32.0f, 40.0f, 40.0f, 64.0f, 64.0f, 32.0f};
+static const f32 lbl_8046F818[7] = {1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f};
+static const f32 lbl_8046F834[7] = {1.0f, 1.0f, 1.3f, 1.3f, 1.0f, 1.0f, 1.0f};
 
 // The rotation part of m from Euler angles (R = Rz Ry Rx), as setRotScaleMtx (game/RotMatrix.h)
 // without the scale and with the cosines first (z, y, x, then the sines).
@@ -100,26 +98,28 @@ static inline void spawnDust(TrickFloor2_804AA628* self, s32 a) {
     }
 }
 
-// FIXME(shotgun): 81 %, missing/extra + reloc-name (literal pool not split into this unit yet)
+// FIXME(shotgun): 85.4 %, missing/extra + reloc-name
 void TrickFloor2_804AA628::init() {
     mType = field_0x90 & 0xF;
     field_0x238 = (field_0x90 >> 4) & 0xF;
     field_0x240 = (field_0x90 >> 12) & 0xFFF;
     field_0x248 = 0.0f;
     switch (mType) {
-    case 3:
-        mBox.set(-24.0f, -32.0f, 24.0f, 32.0f);
+    case 0:
+    case 1:
+    case 6:
+        mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);
         break;
     case 2:
         mBox.set(-40.0f, -32.0f, 40.0f, 32.0f);
+        break;
+    case 3:
+        mBox.set(-24.0f, -32.0f, 24.0f, 32.0f);
         break;
     case 4:
     case 5:
         mBox.set(-16.0f, -50.0f, 24.0f, 50.0f);
         field_0x248 = -0.06f;
-        break;
-    default:
-        mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);
         break;
     }
     field_0x244 = 20;
@@ -129,42 +129,32 @@ void TrickFloor2_804AA628::init() {
         field_0x252 = 13;
     }
     if (mType >= 2) {
-        f32 x = mPos.x;
-        s32 layer = field_0x4;
-        const JGeometry::TBox2f& view = layer < 8 ? getGameView_802D6A9C()->mVisibleBox
-                                                  : getGameView_802D6A9C()->field_0xdc;
-        JGeometry::TBox2f box = view;
-        for (s32 i = 0; i < lbl_8046F788[mType]; i++) {
-            s32 tx = (s32)(x - box.i.x);
-            f32 y = mPos.y;
-            for (s32 j = 0; j < lbl_8046F7A4[mType]; j++) {
-                s32 ty = (s32)(y - box.i.y);
-                s32 cx = tx < 0 ? 0 : (tx >= 0x200 ? 0x1FF : tx);
-                s32 cy = ty < 0 ? 0 : (ty >= 0x200 ? 0x1FF : ty);
-                s32 index = (cx & 0x100) | ((cy & 0x100) << 1) | (cy & 0xF0) | ((cx >> 4) & 0xF);
-                gGameRoot2_8053AB10->field_0x20->fn_802F9974(field_0x4, index, 6);
-                y += 16.0f;
-            }
-            x += 16.0f;
-        }
+        fillTiles(this, mPos.x, 6);
     }
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 78.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.1 %, missing/extra + reloc-name
 // Finds who stands on the floor (fn_8023AF14, the 'SBAL' ball, fn_8023A97C per player), then:
 // 0 reads the tile under it, 2 waits for a rider (vfunc_0x34) and drops (tiles 6, state 3) or,
 // for types 4 / 5, waits for all four players to open (state 6), 3 sinks to 1.6384, 4 holds
-// while ridden, 5 rises back and restores the tiles, 6 / 7 fall away (camera shake, debris).
+// while ridden, 5 rises back and restores the tiles, 6 / 7 fall away (camera shake, debris),
+// 8 stays down.
 void TrickFloor2_804AA628::update() {
     JGeometry::TVec3f saved = mPos;
     switch (mType) {
-    case 3:
+    case 0:
+    case 1:
+    case 6:
         mPos.x += 32.0f;
-        mPos.y += 40.0f;
+        mPos.y += 32.0f;
         break;
     case 2:
         mPos.x += 48.0f;
+        mPos.y += 40.0f;
+        break;
+    case 3:
+        mPos.x += 32.0f;
         mPos.y += 40.0f;
         break;
     case 4:
@@ -181,10 +171,6 @@ void TrickFloor2_804AA628::update() {
         mBox.set(-16.0f, -50.0f, 24.0f, 50.0f);
         break;
     }
-    default:
-        mPos.x += 32.0f;
-        mPos.y += 32.0f;
-        break;
     }
     JGeometry::TVec2f p(mPos.x, mPos.y);
     JGeometry::TBox2f box = mBox;
@@ -355,10 +341,12 @@ void TrickFloor2_804AA628::update() {
         }
         break;
     }
+    case 8:
+        break;
     }
 }
 
-// FIXME(shotgun): 78.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.6 %, missing/extra + reloc-name
 // The hole picture "otosiana_bg_s.bti" under the floor (scaled per type), then the floor's two
 // halves tilted by field_0x248 (the left one about its edge, the right one mirrored); types 4 / 5
 // draw the ground or the house instead while falling.
@@ -396,6 +384,9 @@ void TrickFloor2_804AA628::draw() {
     sp.field_0x21 = 1;
     sp.mMtx = m;
     switch (mType) {
+    case 0:
+        drawSmp(this, &mPos, "floor_smp.bin", &sp);
+        break;
     case 1:
         drawSmp(this, &mPos, "mastersword_left_smp.bin", &sp);
         break;
@@ -412,9 +403,6 @@ void TrickFloor2_804AA628::draw() {
     case 6:
         drawSmp(this, &mPos, "field_smp.bin", &sp);
         break;
-    default:
-        drawSmp(this, &mPos, "floor_smp.bin", &sp);
-        break;
     }
 
     m[0][3] = 0.0f;
@@ -428,6 +416,12 @@ void TrickFloor2_804AA628::draw() {
     setRotMtx(m, JGeometry::TVec3f(0.0f, angle, 0.0f));
     sp.mMtx = m;
     switch (mType) {
+    case 0: {
+        JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
+                              32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
+        drawSmp(this, &pos, "floor_smp.bin", &sp);
+        break;
+    }
     case 1: {
         JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
                               32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
@@ -463,12 +457,6 @@ void TrickFloor2_804AA628::draw() {
         JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
                               32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
         drawSmp(this, &pos, "field_smp.bin", &sp);
-        break;
-    }
-    default: {
-        JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
-                              32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
-        drawSmp(this, &pos, "floor_smp.bin", &sp);
         break;
     }
     }
