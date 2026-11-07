@@ -1934,6 +1934,9 @@ s32 fn_80238BC4(s32 serial);
 // The number of present players whose fn_8022D7F8 is `serial`, or 0 when they face
 // different ways (0x3DC). 4 units (tu_802957CC, tu_80354D64, the pull switches; cmpwi 4).
 s32 fn_80238A68(s32 serial);
+// Owner unit tu_8022AD64 (not declared by it). 1 unit (tu_802957CC): the index (0-3) of a player
+// facing the actor `serial`, or -1.
+s32 fn_8023885C(s32 serial);
 
 void fn_8022B8EC(s32 player, JGeometry::TBox2f* out);
 s32 fn_8022C46C(s32 player, u32 arg);

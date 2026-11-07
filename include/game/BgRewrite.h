@@ -109,6 +109,8 @@ public:
     // (0, 0 in tu_801BEDBC and tu_802233A4, 1, 1 in
     // act_spreading_fire); types from the body.
     void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, u32 a, s32 b);
+    // 1 unit (tu_802957CC); body unwritten (tu_8029D898).
+    void fn_802A1050(const JGeometry::TVec3f* pos);
     // 1 unit (tu_80256C74, the dig of state 0x47 at frame 12). Reads the map tile
     // under pos (fn_80226BC4 into field_0x20, fn_802F9908 into field_0x24) and
     // returns a result code that the caller tests for 1-4 and 8.

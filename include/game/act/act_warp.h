@@ -17,7 +17,8 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x230 */ u8 field_0x230[0x8]; // not yet known
     /* 0x238 */ JGeometry::TVec3f field_0x238; // Bomb's fn_8014D868 spawns a bomb here (0x8014D9C4)
-    /* 0x244 */ u8 field_0x244[0x8]; // not yet known
+    /* 0x244 */ s32 field_0x244; // compared with GameView field_0x14 by cls_804A7AE0::vfunc_0x10
+    /* 0x248 */ s32 field_0x248; // compared with GameView field_0x18
     /* 0x24C */ JPABaseEmitter* mEmitter24c; // released by the destructor
     /* 0x250 */ JPABaseEmitter* mEmitter250; // released by the destructor
     /* 0x254 */ u8 field_0x254[0x38]; // not yet known

@@ -15,6 +15,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+    // 1 caller (tu_802957CC): called on a door the block moved. Body not yet written.
+    void fn_802C59B0();
     /* 0x230 */ u8 field_0x230[0x4C]; // not yet known
 }; // Size: 0x27C
 
