@@ -120,16 +120,25 @@ public:
 // Spawned for 'CRNV'.
 class cls_8049ED30 : public ActorBase_804A5770 {
 public:
-    cls_8049ED30() : field_0x230(0), field_0x234(0), field_0x238(-1), field_0x23c(0.0f), field_0x278(0), field_0x27c(0) {}
+    cls_8049ED30() : field_0x230(0), field_0x234(0), field_0x238(-1), field_0x23c(0.0f) {
+        mEmitters[0] = NULL;
+        mEmitters[1] = NULL;
+    }
     /* 0x08 */ virtual ~cls_8049ED30();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    void fn_801339EC();
+
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
     /* 0x23C */ f32 field_0x23c;
     /* 0x240 */ SpriteAnim_801D267C field_0x240;
-    /* 0x278 */ s32 field_0x278;
-    /* 0x27C */ s32 field_0x27c;
+    /* 0x278 */ JPABaseEmitter* mEmitters[2];
 }; // Size: 0x280
+
+bool fn_80133B58();
 
 #include "game/act/tu_80147B50.h"
 
