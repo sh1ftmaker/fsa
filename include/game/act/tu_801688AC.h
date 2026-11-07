@@ -6,20 +6,14 @@
 #include "game/ActorBase.h"
 #include "game/act/tu_801F9484_elems.h"
 
-// Two trails of five recorded points (stride 0x18); the layouts differ between the arrays.
-struct TrailA_804A0738 {
-    f32 x;
-    f32 y;
-    u8 field_0x8[8];
-    s32 layer;
-    u8 field_0x14[4];
-};
-struct TrailB_804A0738 {
-    u8 field_0x0[8];
-    f32 x;
-    f32 y;
-    u8 field_0x10[4];
-    s32 layer;
+// Two trails of five recorded points (stride 0x18): two (x, y) records and their layers.
+struct TrailPoint_804A0738 {
+    f32 x0;
+    f32 y0;
+    f32 x1;
+    f32 y1;
+    s32 layer0;
+    s32 layer1;
 };
 
 // Named after its vtable, 0x804A0738.
@@ -52,8 +46,8 @@ public:
     /* 0x268 */ s32 field_0x268;
     /* 0x26C */ s32 field_0x26c;
     /* 0x270 */ s32 field_0x270;
-    /* 0x274 */ TrailA_804A0738 field_0x274[5];
-    /* 0x2EC */ TrailB_804A0738 field_0x2ec[5];
+    /* 0x274 */ TrailPoint_804A0738 field_0x274[5];
+    /* 0x2EC */ TrailPoint_804A0738 field_0x2ec[5];
     /* 0x364 */ f32 field_0x364[3];
     /* 0x370 */ JGeometry::TBox2f field_0x370; // fn_8016890C's result
 }; // Size: 0x380
