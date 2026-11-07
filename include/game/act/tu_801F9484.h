@@ -260,7 +260,9 @@ public:
     /* 0x274 */ f32 field_0x274;
     /* 0x278 */ f32 field_0x278;
     /* 0x27C */ f32 field_0x27c;
-    /* 0x280 */ Vec field_0x280[3]; // plain Vec: the constructor does not construct them
+    // Plain SDK Vec, not TVec3f: the spawner's inline constructor (cls_804A2944() {}) emits no
+    // __construct_array for this range, and every use is a component-wise x/y/z copy.
+    /* 0x280 */ Vec field_0x280[3];
     /* 0x2A4 */ JGeometry::TVec3f field_0x2a4[4];
     /* 0x2D4 */ JGeometry::TVec3f field_0x2d4[4];
     // SHARED-EDIT: thirteen emitters, each freed by the destructor (game/tu_80197070.cpp).
