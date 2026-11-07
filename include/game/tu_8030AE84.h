@@ -20,12 +20,12 @@ public:
     // Mangled fn_8030BD3C__12cls_804AA8D8Fl (game/tu_8030AE84.cpp): stores the
     // player, then the callees below.
     void fn_8030BD3C(s32 player);
-    // 0x8030B774 (not written yet): run each frame by the owner's update fn_80253E6C.
+    // fn_8030B774 (this unit): run each frame by the owner's update fn_80253E6C.
     void fn_8030B774();
     // Mangled fn_8030AE84__12cls_804AA8D8FPQ29JGeometry8TBox2<f> (this unit).
     // Writes the box of 240x160 around the two position words (0x290, 0x294).
     void fn_8030AE84(JGeometry::TBox2f* out);
-    // Code in this unit, not yet written (mangled fn_8030B97C__12cls_804AA8D8Fv).
+    // Code in this unit (mangled fn_8030B97C__12cls_804AA8D8Fv).
     void fn_8030B97C();
     // Mangled fn_8030B084__12cls_804AA8D8FlQ29JGeometry8TVec3<f> (this unit).
     // The position is passed by value: every caller (tu_8023FBF0) copies a
@@ -45,7 +45,7 @@ public:
     // Mangled fn_8030B570__12cls_804AA8D8FPlPl. Writes two s32 values through
     // its out pointers and returns an s32 that fn_8030BD3C keeps at 0x2B4.
     s32 fn_8030B570(s32* outA, s32* outB);
-    // 0x8030B1E8 (not written yet): updates the line shifts for `layer` in
+    // fn_8030B1E8 (this unit): updates the line shifts for `layer` in
     // `mode` (0 / 6 clear them; 4, 5 and others time them by 0x60, 3, 8 frames)
     // and returns field_0x4 (TileMap_804AA858::fn_802FB69C passes it to fn_802FAC10).
     s32* fn_8030B1E8(u8 layer, u8 mode, u16 scroll);
