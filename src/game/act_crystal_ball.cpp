@@ -505,6 +505,193 @@ void CrystalBall_804AB308::vfunc_0x40() {
     }
 }
 
+// FIXME(shotgun): 53.54 %, missing/extra + reloc-name (partial)
+// FIXME(shotgun): states 1, 5, 6 and 7 (0x803218B8 onward: 0x80321D14, 0x80321EE4, 0x80322010) and the
+// end of state 4 (0x80321CCC onward) are not written.
+void CrystalBall_804AB308::update() {
+    switch (field_0x230) {
+    case 1:
+    case 3:
+        if (fn_8022F9E4(field_0x23c, mSerial, false, false) == true) {
+            if (field_0x230 == 1) {
+                fn_80322F44();
+            } else {
+                field_0x230 = 4;
+            }
+        }
+        return;
+    }
+    mPos += field_0x3c;
+    if (field_0x2a8 > 0) {
+        addCalc2_801F71A4(&mPos.x, field_0x2b8.x, 0.1f, 1.0f);
+        addCalc2_801F71A4(&mPos.y, field_0x2b8.y, 0.1f, 1.0f);
+        field_0x238 += 0.1f;
+        field_0x234 -= 0.02f;
+        if (field_0x234 < 0.1f) {
+            fn_801F3668();
+        }
+        return;
+    }
+    switch (field_0x230) {
+    case 0:
+    case 8: {
+        if (!viewLayerFlag(field_0x4)) {
+            if (mPos.z > 0.0f) {
+                if (field_0x27c == 0) {
+                    startSound_801F0E34(0x30048, 0);
+                    field_0x27c = 1;
+                }
+                field_0x3c.z -= 0.1f;
+            } else if (mPos.z < 0.0f) {
+                if (field_0x2a4 == 0) {
+                    field_0x230 = 0;
+                    fn_801F2618(NULL, false);
+                    if (field_0x2a8 > 0 || field_0x2ac == 1) {
+                        return;
+                    }
+                    startSound_801F0E34(0x30049, 0);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x3CF, 0, -1, NULL, NULL, true, 1.5f);
+                    field_0x2a4 = 1;
+                    field_0x3c.z = 0.5f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.5f;
+                    field_0x3c.x = 0.5f - gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    field_0x3c.y = 0.5f - gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                } else {
+                    field_0x2a4 = 0;
+                    mPos.z = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.x = 0.0f;
+                }
+            }
+            if (field_0x230 == 0) {
+                fn_801F2618(NULL, false);
+            }
+        } else {
+            JGeometry::TVec3f hitNormal(0.0f, 0.0f, 0.0f);
+            fn_801F2618(&hitNormal, false);
+            if (hitNormal.y == 0.0f) {
+                if (field_0x27c == 0) {
+                    startSound_801F0E34(0x30048, 0);
+                    field_0x27c = 1;
+                }
+                if (field_0x2a5 == 1) {
+                    field_0x2a4 = 0;
+                    field_0x2a5 = 0;
+                }
+                field_0x3c.y += 0.15f;
+            } else if (field_0x2a4 == 0) {
+                startSound_801F0E34(0x30049, 0);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x3CF, 0, -1, NULL, NULL, true, 1.5f);
+                field_0x2a4 = 1;
+                field_0x3c.x = 0.5f - gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                field_0x3c.y = -0.5f - gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+            } else {
+                field_0x2a5 = 1;
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                field_0x3c.y = 1.0f;
+            }
+        }
+        JGeometry::TBox2f box = mBox;
+        box.i.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.x += mPos.x;
+        box.f.y += mPos.y;
+        field_0x29c = -1;
+        if (field_0x2a8 == 0) {
+            fn_80322964();
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_80239C00(i, &box, field_0x4) == true && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                    field_0x29c = i;
+                    break;
+                }
+            }
+        }
+        if (field_0x29c >= 0 && !fn_8023ED8C(field_0x29c) && !fn_8023EBB8(field_0x29c)) {
+            field_0x234 = 1.0f;
+            field_0xb0 = 0;
+            if (gGameRoot_8053AAF8->field_0x7f == 1) {
+                if (fn_802308E0(field_0x29c) == true) {
+                    field_0x23c = field_0x29c;
+                    const JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(field_0x29c);
+                    JGeometry::TVec3f target(playerPos->x, playerPos->y - 12.0f, playerPos->z);
+                    fn_80230498(field_0x29c, &target, 0xED, 0xFF, -0x80, -0x80, true);
+                    mPos.set(target);
+                    field_0x258 = 0x5A;
+                    field_0x25c = 10;
+                    field_0x3c.set(0.0f, 0.0f, 0.0f);
+                    field_0x230 = 5;
+                    fn_801F3604();
+                }
+            } else if (fn_8022F9E4(field_0x29c, mSerial, true, false) == true) {
+                field_0x23c = field_0x29c;
+                if (field_0x94 == 0) {
+                    fn_80322F44();
+                    if (field_0x4 >= 8 && gGameRoot_8053AAF8->field_0x7e == 1) {
+                        lbl_8053AED0->fn_8043D67C(0x1A1, field_0x29c, 0);
+                    }
+                } else if (field_0x94 == 2) {
+                    fn_80322BC4();
+                }
+            }
+        }
+        if (gGameRoot_8053AAF8->field_0x7f == 0) {
+            field_0x278--;
+            if (field_0x278 <= 0) {
+                fn_801F3668();
+            }
+        }
+        break;
+    }
+    case 2:
+        if (!viewLayerFlag(field_0x4)) {
+            if (field_0xc4) {
+                const JGeometry::TVec3f* holder = fn_8023E7B0(field_0xc8);
+                mPos.set(*holder);
+                field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
+                field_0x28c = fn_8023BCD4(field_0xc8);
+            } else {
+                field_0x3c.z += -0.1f;
+                mPos += field_0x3c;
+                if (mPos.z < 0.0f) {
+                    vfunc_0x24();
+                } else if (fn_801F2618(NULL, false)) {
+                    vfunc_0x24();
+                }
+            }
+        } else if (field_0xc4) {
+            const JGeometry::TVec3f* holder = fn_8023E7B0(field_0xc8);
+            mPos.set(*holder);
+            field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
+            field_0x28c = fn_8023BCD4(field_0xc8);
+        } else {
+            if (field_0x26c == 0) {
+                field_0x3c.y = field_0x3c.y - field_0x3c.z;
+                mPos.y = mPos.y - mPos.z;
+                mPos.z = 0.0f;
+                field_0x3c.z = 0.0f;
+                field_0x26c = 1;
+            }
+            if (field_0x26c == 1) {
+                field_0x3c.y += 0.15f;
+            }
+            mPos += field_0x3c;
+            if (fn_801F2618(NULL, false)) {
+                vfunc_0x24();
+            }
+        }
+        if (field_0x24c <= 0 && field_0x294 == field_0x264 && field_0x248 <= 1) {
+            field_0x248 = 0x5A;
+            field_0x230 = 4;
+        }
+        break;
+    case 4:
+        // FIXME(shotgun): the body of state 4 (0x80321AF8) is not written.
+        break;
+    }
+}
+
 // FIXME(shotgun): 97.0 %, missing/extra: a few instructions
 void CrystalBall_804AB308::draw() {
     if (field_0x230 == 0 && field_0x278 <= 180 && (field_0x278 & 2) == 0) {
