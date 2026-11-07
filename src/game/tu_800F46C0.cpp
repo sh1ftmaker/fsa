@@ -3,9 +3,87 @@
 #include "game/GameView.h"
 #include "game/Effect.h"
 #include "game/Map.h"
+#include "game/ActorManager.h"
+#include "game/ActorId.h"
 #include "game/act/tu_800F46C0.h"
 
 Boulder_8049C4C0::~Boulder_8049C4C0() {}
+
+// FIXME(shotgun): 97.48 %, missing/extra + reloc-name
+void Boulder_8049C4C0::init() {
+    field_0x23c = 0;
+    field_0x231 = 0;
+    field_0x238 = 0;
+    field_0x240 = 0;
+    field_0x232 = -1;
+    field_0x254.set(0.0f, 0.0f, 0.0f);
+    field_0x230 = field_0x90;
+    field_0x250 = 0;
+    field_0x24c = 0;
+    field_0x248 = 0;
+    field_0x244 = 0;
+    switch (field_0x230) {
+    case 0:
+        mBox.i.x = -16.0f;
+        mBox.i.y = -16.0f;
+        mBox.f.x = 16.0f;
+        mBox.f.y = 16.0f;
+        field_0x80.i.x = -16.0f;
+        field_0x80.i.y = -16.0f;
+        field_0x80.f.x = 16.0f;
+        field_0x80.f.y = 16.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.5f + gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+        field_0x3c.z = 1.0f;
+        break;
+    case 1:
+        mBox.i.x = -10.0f;
+        mBox.i.y = -10.0f;
+        mBox.f.x = 10.0f;
+        mBox.f.y = 10.0f;
+        field_0x80.i.x = -10.0f;
+        field_0x80.i.y = -10.0f;
+        field_0x80.f.x = 10.0f;
+        field_0x80.f.y = 10.0f;
+        break;
+    case 2:
+        mBox.i.x = -6.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 6.0f;
+        field_0x80.i.x = -6.0f;
+        field_0x80.i.y = -6.0f;
+        field_0x80.f.x = 6.0f;
+        field_0x80.f.y = 6.0f;
+        mPos.z = 1.0f;
+        break;
+    case 3:
+        mBox.i.x = -16.0f;
+        mBox.i.y = -16.0f;
+        mBox.f.x = 16.0f;
+        mBox.f.y = 16.0f;
+        field_0x80.i.x = -16.0f;
+        field_0x80.i.y = -16.0f;
+        field_0x80.f.x = 16.0f;
+        field_0x80.f.y = 16.0f;
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        break;
+    case 5:
+        mBox.i.x = -16.0f;
+        mBox.i.y = -16.0f;
+        mBox.f.x = 16.0f;
+        mBox.f.y = 16.0f;
+        field_0x80.i.x = -16.0f;
+        field_0x80.i.y = -16.0f;
+        field_0x80.f.x = 16.0f;
+        field_0x80.f.y = 16.0f;
+        field_0x240 = (s32)(5.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x244 = 0;
+        field_0x248 = 0x300 - (s32)(1536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        break;
+    }
+}
 
 // FIXME(shotgun): 97 %, missing/extra + reloc-name
 void Boulder_8049C4C0::update() {
@@ -79,6 +157,56 @@ void BoulderSpawner_8049C46C::init() {
     } else {
         field_0x234 = (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     }
+}
+
+// FIXME(shotgun): 97.47 %, missing/extra
+void BoulderSpawner_8049C46C::update() {
+    if (field_0x234 == 0) {
+        switch (field_0x230) {
+        case 0:
+            if ((field_0x90 & 0xF8000000) != 0 && !vfunc_0x34()) {
+                return;
+            }
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OIWA, field_0x4, &mPos, 0, -1, -1);
+            field_0x234 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x96;
+            break;
+        case 1: {
+            if ((field_0x90 & 0xF8000000) != 0 && !vfunc_0x34()) {
+                return;
+            }
+            JGeometry::TVec3f pos = mPos;
+            pos.z += 200.0f;
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OIWA, field_0x4, &pos, 1, -1, -1);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            actor->field_0x3c.set(0.0f, -0.01f, 0.0f);
+            field_0x234 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x96;
+            break;
+        }
+        case 2:
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OIWA, field_0x4, &mPos, 3, -1, -1);
+            mAlive = false;
+            return;
+        case 3:
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OIWA, field_0x4, &mPos, (field_0x90 & ~0xFF) + 4, -1, -1);
+            field_0x234 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x96;
+            break;
+        case 4: {
+            if ((field_0x90 & 0xF8000000) != 0 && !vfunc_0x34()) {
+                return;
+            }
+            JGeometry::TVec3f pos;
+            pos.x = mPos.x;
+            pos.y = mPos.y;
+            pos.z = mPos.z + 200.0f;
+            pos.x += (f32)(40 - (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()));
+            pos.y += (f32)(20 - (s32)(10.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()));
+            getActorManager_801F856C()->spawnActor_801F9484(ACTOR_OIWA, field_0x4, &pos, 5, -1, -1);
+            field_0x234 = (s32)(150.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x50;
+            break;
+        }
+        }
+    }
+    field_0x234--;
 }
 
 void BoulderSpawner_8049C46C::draw() {}
