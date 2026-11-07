@@ -74,6 +74,7 @@ public:
     // tu_8021827C (0x80218538): whether the actor's box is in view.
     bool fn_80218538() const;
     // tu_801E2540 (this unit's vtable slots 0x5C / 0x60 / 0x64 and helpers, 0x801E2540-0x801E2F40).
+    /* 0x58 */ virtual bool vfunc_0x58();
     /* 0x5C */ virtual u8 vfunc_0x5C();
     /* 0x60 */ virtual u8 vfunc_0x60();
     /* 0x64 */ virtual u8 vfunc_0x64();
