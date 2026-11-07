@@ -168,7 +168,7 @@ void cls_801E9AFC::fn_801EA304() {
 }
 
 // 0x801EA108.
-// FIXME(shotgun): 46.2 %, missing/extra; the original reloads the sin/cos table for every vertex.
+// FIXME(shotgun): 49.85 %, missing/extra; the original reloads the sin/cos table for every vertex.
 void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
     f32 s0 = 0.0f;
     f32 s1 = 1.0f;
@@ -181,18 +181,20 @@ void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
         centerY = -2.0f;
     }
     s16 rot = -angle;
-    f32 sn = JMath::sincosTable_.sinShort(rot);
-    f32 cs = JMath::sincosTable_.cosShort(rot);
-    f32 x = pos->x + (centerY * cs - centerX * sn);
-    f32 y = pos->y + (centerY * sn + centerX * cs);
+    f32 x = pos->x + (centerY * JMath::sincosTable_.cosShort(rot) - centerX * JMath::sincosTable_.sinShort(rot));
+    f32 y = pos->y + (centerY * JMath::sincosTable_.sinShort(rot) + centerX * JMath::sincosTable_.cosShort(rot));
     GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-    GXPosition3f32(x + (-4.0f * cs - -4.0f * sn), y + (-4.0f * sn + -4.0f * cs) + z, z);
+    GXPosition3f32(x + (-4.0f * JMath::sincosTable_.cosShort(rot) - -4.0f * JMath::sincosTable_.sinShort(rot)),
+                   y + (-4.0f * JMath::sincosTable_.sinShort(rot) + -4.0f * JMath::sincosTable_.cosShort(rot)) + z, z);
     GXTexCoord2f32(s0, 0.0f);
-    GXPosition3f32(x + (4.0f * cs - -4.0f * sn), y + (4.0f * sn + -4.0f * cs) + z, z);
+    GXPosition3f32(x + (4.0f * JMath::sincosTable_.cosShort(rot) - -4.0f * JMath::sincosTable_.sinShort(rot)),
+                   y + (4.0f * JMath::sincosTable_.sinShort(rot) + -4.0f * JMath::sincosTable_.cosShort(rot)) + z, z);
     GXTexCoord2f32(s1, 0.0f);
-    GXPosition3f32(x + (4.0f * cs - 4.0f * sn), y + (4.0f * sn + 4.0f * cs) + z, z);
+    GXPosition3f32(x + (4.0f * JMath::sincosTable_.cosShort(rot) - 4.0f * JMath::sincosTable_.sinShort(rot)),
+                   y + (4.0f * JMath::sincosTable_.sinShort(rot) + 4.0f * JMath::sincosTable_.cosShort(rot)) + z, z);
     GXTexCoord2f32(s1, 1.0f);
-    GXPosition3f32(x + (-4.0f * cs - 4.0f * sn), y + (-4.0f * sn + 4.0f * cs) + z, z);
+    GXPosition3f32(x + (-4.0f * JMath::sincosTable_.cosShort(rot) - 4.0f * JMath::sincosTable_.sinShort(rot)),
+                   y + (-4.0f * JMath::sincosTable_.sinShort(rot) + 4.0f * JMath::sincosTable_.cosShort(rot)) + z, z);
     GXTexCoord2f32(s0, 1.0f);
 }
 
