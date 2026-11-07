@@ -300,7 +300,7 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
 }
 
 // Plain function whose out-of-line copy the linker dropped (inlined into update).
-// Compiled between draw and update, it pools 40.0f / 4.0f / 0.2f before update's 2.0f
+// Compiled between draw (unwritten, see below) and update, it pools 40.0f / 4.0f / 0.2f before update's 2.0f
 // as in the original (docs/RULES_CARD.md (3)).
 void NPCLaunchedByThwomp2_804AD1C8::launch() {
     f32 dy = field_0x278.y - mPos.y;
@@ -312,36 +312,7 @@ void NPCLaunchedByThwomp2_804AD1C8::launch() {
     field_0x230 = 3;
 }
 
-// FIXME: 79.24% missing/extra. Target computes &table->spriteInfo and &table->animInfo
-// inside each branch instead of hoisting spr, differing by 2 instructions and register numbers.
-void NPCLaunchedByThwomp2_804AD1C8::draw() {
-    const NPCLaunchTable* table = &lbl_80472390;
-    if (field_0x230 == 2) {
-        return;
-    }
-
-    const NPCLaunchSpriteInfo& spr = table->spriteInfo[field_0x250];
-    const char* sob = table->enemyGcSob;
-    if (spr.sobType == 1) {
-        sob = table->enemyBothSob;
-    }
-
-    s32 spriteId;
-    if (field_0x230 == 0 || (u32)(field_0x230 - 3) <= 1 || field_0x230 == 1) {
-        spriteId = spr.baseSpriteId
-            + table->animInfo[field_0x250].spriteFrames0[field_0x248][field_0x238];
-    } else {
-        spriteId = spr.baseSpriteId
-            + table->animInfo[field_0x250].spriteFrames1[field_0x248][field_0x238];
-    }
-
-    drawSprite_801F06F0(sob, spriteId, NULL, 0, 1.0f, 1.0f);
-
-    if (field_0x250 == 5) {
-        fn_80307AC8(mSerial, field_0x4, &mPos, spriteId, 0, 0, -1);
-    }
-}
-
+// draw (0x80356A24) is unwritten: best attempt was 79.24 % missing/extra (try.py STOP), below the merge bar.
 void NPCLaunchedByThwomp2_804AD1C8::fn_8035680C() {
     switch (field_0x250) {
     case 6:
