@@ -12,6 +12,9 @@
 #include "game/act/act_obj_lift.h"
 #include "game/act/act_seesaw_lift.h"
 
+// The push directions fn_802C3AE4 gives a kicked kind-6 key, by field_0x2ae - 1.
+static const f32 lbl_8046D560[4][2] = {{0.5f, 0.0f}, {-0.5f, 0.0f}, {0.0f, 0.5f}, {0.0f, -0.5f}};
+
 // 0x802C52DC.
 // FIXME(shotgun): 95.50 %, missing/extra + reloc-name
 void SmallKey_804A8CD8::init() {
@@ -153,6 +156,208 @@ void SmallKey_804A8CD8::fn_802C5284() {
     JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
     s32 layer = field_0x238;
     getGameView_802D6A9C()->fn_802D6C10(pos, layer);
+}
+
+// FIXME(shotgun): 90.8 %, missing/extra + reloc-name
+// The key on the floor: kind 6 slides with friction; a player touching it picks it up
+// (kinds 3-5 spawn a 'TKRA' instead), players walking into it push it (field_0x2ae the
+// direction), pits and water drop it; keeps its place registered with the view.
+void SmallKey_804A8CD8::fn_802C3AE4() {
+    if (field_0x2b2 == 0) {
+        return;
+    }
+    if (field_0x280 == 6) {
+        mPos.add(field_0x3c);
+        if (field_0x3c.x > 0.05f) {
+            field_0x3c.x -= 0.05f;
+        } else if (field_0x3c.x < -0.05f) {
+            field_0x3c.x += 0.05f;
+        } else {
+            field_0x3c.x = 0.0f;
+        }
+        if (field_0x3c.y > 0.05f) {
+            field_0x3c.y -= 0.05f;
+        } else if (field_0x3c.y < -0.05f) {
+            field_0x3c.y += 0.05f;
+        } else {
+            field_0x3c.y = 0.0f;
+        }
+    }
+    JGeometry::TBox2f box = mBox;
+    box.addPos(mPos.x, mPos.y);
+    for (s32 i = 0; i < 4; i++) {
+        if (!fn_8023F264(i) || !fn_80239C00(i, &box, field_0x4)) {
+            continue;
+        }
+        s32 kind = field_0x280;
+        if (kind == 3 || kind == 4 || kind == 5) {
+            getActorManager_801F856C()->spawnActor_801F9484('TKRA', field_0x4, &mPos,
+                                                            kind + (i << 12) + 0x210, -1, -1);
+            JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
+            s32 layer = field_0x238;
+            getGameView_802D6A9C()->fn_802D6C10(pos, layer);
+            fn_801F3668();
+            return;
+        }
+        if (fn_8022F9E4(i, mSerial, true, false)) {
+            field_0x284 = 10;
+            field_0x240 = 3;
+            JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
+            s32 layer = field_0x238;
+            getGameView_802D6A9C()->fn_802D6C10(pos, layer);
+            field_0x2ae = 0;
+            field_0x23c = i;
+            break;
+        }
+    }
+    if (field_0x240 != 2) {
+        return;
+    }
+    u16 code = fn_80226850(&mPos, field_0x4 + (field_0x4 < 8 ? 1 : 8));
+    if (code != 0 && code != 0x39) {
+        field_0x2ad = 0x80;
+        field_0x2ac = 2;
+    }
+    {
+        JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
+        s32 layer = field_0x238;
+        getGameView_802D6A9C()->fn_802D6C10(pos, layer);
+    }
+    u8 bit = 1;
+    u8 players = fn_801F2740(-1);
+    if (players != 0) {
+        if (fn_802C2300(players) == true) {
+            field_0x240 = 0xB;
+            return;
+        }
+        field_0x2b5 = 1;
+        u16 tile = fn_8022461C(&mPos, field_0x4);
+        if (tile == 0xD || tile == 0x3B) {
+            s32 player;
+            if (players & 1) {
+                player = 0;
+            } else if (players & (bit <<= 1)) {
+                player = 1;
+            } else if (players & (bit <<= 1)) {
+                player = 2;
+            } else if (players & (bit <<= 1)) {
+                player = 3;
+            } else {
+                player = 4;
+            }
+            if (fn_8022F6E8(player, mSerial) == true) {
+                field_0x29c = player;
+                field_0x240 = 10;
+                field_0x2b2 = 0;
+            }
+        } else {
+            for (s32 i = 0; i < 4; i++, bit <<= 1) {
+                if (!(players & bit)) {
+                    continue;
+                }
+                JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+                s32 dx = (s32)fabs(mPos.x - playerPos.x);
+                s32 dy = (s32)fabs(mPos.y - playerPos.y);
+                s32 dir = fn_80230CFC(i);
+                if ((dx >= 0 && dx <= 15 && dir == 0) || dir == 1) {
+                    if (mPos.x > playerPos.x) {
+                        mPos.x += (15 - dx) >> 1;
+                        field_0x2ae = 1;
+                    } else {
+                        mPos.x -= (15 - dx) >> 1;
+                        field_0x2ae = 2;
+                    }
+                }
+                if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
+                    if (mPos.x > playerPos.x) {
+                        mPos.x += (15 - dx) >> 1;
+                    } else {
+                        mPos.x -= (15 - dx) >> 1;
+                    }
+                } else if ((dy >= 0 && dy <= 15 && dir == 3) || dir == 2) {
+                    if (mPos.y > playerPos.y) {
+                        mPos.y += (15 - dy) >> 1;
+                        field_0x2ae = 3;
+                    } else {
+                        mPos.y -= (15 - dy) >> 1;
+                        field_0x2ae = 4;
+                    }
+                }
+                if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
+                    field_0x2ae = 0;
+                }
+                field_0x23c = i;
+            }
+        }
+    } else if (field_0x280 == 6 && field_0x2ae != 0) {
+        field_0x3c.x = lbl_8046D560[field_0x2ae - 1][0];
+        field_0x3c.y = lbl_8046D560[field_0x2ae - 1][1];
+        field_0x2ae = 0;
+    }
+    JGeometry::TVec3f wall(0.0f, 0.0f, 0.0f);
+    fn_801F2618(&wall, false);
+    if (wall.y != 0.0f && wall.x != 0.0f) {
+        mPos.y = (u32)((s32)mPos.y & ~0xF);
+        if (wall.y < 0.0f) {
+            mPos.y += 10.0f;
+        } else {
+            mPos.y += 6.0f;
+        }
+        mPos.x = (u32)((s32)mPos.x & ~0xF);
+        if (wall.x < 0.0f) {
+            mPos.x += 10.0f;
+        } else {
+            mPos.x += 6.0f;
+        }
+    }
+    if (field_0x240 != 10) {
+        u32 value = (field_0x23c << 30) | (field_0x2b5 << 29);
+        value |= (field_0x280 << 24) & 0x1F000000;
+        value |= field_0x4 & 0xFF;
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
+            s32 row = getGameView_802D6A9C()->field_0x18;
+            s32 col = getGameView_802D6A9C()->field_0x14;
+            value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+        } else {
+            value = field_0x2aa << 8;
+        }
+        JGeometry::TVec2f home(field_0x230.x, field_0x230.y);
+        s32 layer = field_0x238;
+        JGeometry::TVec2f pos(mPos.x, mPos.y);
+        getGameView_802D6A9C()->fn_802D6D70(pos, home, value, layer);
+    }
+    u16 tile = fn_8022461C(&mPos, field_0x4);
+    if (field_0x298 != -1) {
+        tile = 0;
+    }
+    bool fell;
+    if (tile == 3) {
+        if (fn_801EE24C() == true) {
+            field_0x240 = 4;
+            fell = true;
+        } else {
+            fell = true;
+            field_0x2b0 = true;
+        }
+    } else if (tile == 0xE) {
+        if (fn_802DE9A0()) {
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5005F, 0);
+        } else if (fn_802DEB58()) {
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45E, -1, 1, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45F, 0, 0, NULL, NULL, true, 1.0f);
+            startSound_801F0E34(0x5003F, 0);
+        }
+        fell = true;
+        field_0x2b0 = true;
+    } else {
+        fell = false;
+    }
+    if (fell == true && getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
+        field_0x2b2 = 0;
+        fn_802C2154();
+    }
 }
 
 void SmallKey_804A8CD8::fn_802C2BD0() {
