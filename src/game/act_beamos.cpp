@@ -49,8 +49,8 @@ void Beamos_804A40E0::init() {
     }
 }
 
-// Not auto-inlined: fn_801BE6C4 calls fn_801BE86C out of line in the original (docs/INLINING.md,
-// pragma rule 1).
+// Not auto-inlined: fn_801BE6C4 calls fn_801BE86C out of line in the original, and vfunc_0x90
+// calls fn_801BE6C4 out of line (bl in its asm); docs/INLINING.md pragma rule 1.
 #pragma auto_inline off
 // FIXME: 81.63 %. One instruction short: the original keeps the sincos table
 // and its cos half (table + 4) in r30 and loads mPos.y before mPos.x; ours keeps
