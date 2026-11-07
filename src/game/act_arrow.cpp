@@ -4,9 +4,11 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/act/act_arrow.h"
+#include "game/GameView.h"
 
 // The arrows each player has shot, the unit's .bss object at 0x804C6330 (declared extern: defining it here changes the static initialiser).
 extern s32 lbl_804C6330[4];
+extern const u32 lbl_804662E8[5]; // ids of the actors the arrow flies through (rodata)
 
 // 0x80166814.
 // FIXME(shotgun): 99.46 %, reloc-name
@@ -64,6 +66,122 @@ void ArrowPlayer_804A05E0::init() {
     field_0x268 = field_0x98;
     field_0x230 = 0;
     field_0x274 = 0;
+}
+
+// 0x8016636C. Whether the arrow is blocked at pos: by a collision box, or by the tile there.
+// FIXME(shotgun): 88.86 %, missing/extra
+bool ArrowPlayer_804A05E0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    s32 serial = mSerial;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, lbl_804662E8) == true) {
+        return true;
+    }
+    u16 code = fn_8022461C(pos, layer);
+    s32 tile = fn_80226850(pos, layer);
+    if ((u32)(code - 0x10) <= 7 || (tile >= 0x140 && tile <= 0x15F)) {
+        field_0x23c = 0;
+        field_0x238 = 1;
+        return false;
+    }
+    if ((field_0x94 == 0 || field_0x94 == 4) && tile >= 0x40 && tile <= 0x9A) {
+        return false;
+    }
+    if ((u32)(tile - 0x230) <= 1 || tile == 0x234) {
+        field_0x238 = 0;
+        return false;
+    }
+    if (code != 0 && code != 4 && code != 5 && code != 6 && code != 7 && code != 2 && code != 3 &&
+        code != 0x50 && code != 0xE && code != 0xC && code != 0x27 && code != 0x28 && code != 0x29 &&
+        code != 0x2A && code != 0x2B && code != 0x2C && code != 0x2D && code != 0x2E && code != 0x2F &&
+        code != 0x20 && code != 0xD && code != 0x39 && code != 0x3A && code != 0x3B && code != 0x4C &&
+        code != 0x4D && code != 0x4E && code != 0x4F && code != 0x24) {
+        if ((u32)(code - 7) <= 1 || code == 0xA) {
+            if (field_0x98 == 1) {
+                return false;
+            }
+            if (field_0x238 == 0) {
+                field_0x240++;
+                if (field_0x240 > 20) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (code == 6 || code == 9 || code == 0xB) {
+            if (field_0x98 == 0) {
+                return false;
+            }
+            if (field_0x238 == 0) {
+                field_0x240++;
+                if (field_0x240 > 20) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (code == 4) {
+            if (field_0x98 == 2) {
+                return false;
+            }
+            if (field_0x238 == 0) {
+                field_0x240++;
+                if (field_0x240 > 20) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (code == 5) {
+            if (field_0x98 == 3) {
+                return false;
+            }
+            if (field_0x238 == 0) {
+                field_0x240++;
+                if (field_0x240 > 20) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (fn_80226850(pos, layer) == 0x3A || fn_80226850(pos, layer) == 0x3D) {
+            field_0x238 = 0;
+            return false;
+        }
+        if (tile == 0x14) {
+            field_0x238 = 0;
+            return false;
+        }
+        if (code == 0x25) {
+            if (field_0x238 == 0 && getGameView_802D6A9C()->field_0x171 == 0) {
+                return true;
+            }
+            field_0x238 = 0;
+            return false;
+        }
+        if (code == 0x26) {
+            if (field_0x238 == 0 && getGameView_802D6A9C()->field_0x171 == 1) {
+                return true;
+            }
+            field_0x238 = 0;
+            return false;
+        }
+        if (field_0x238 == 0) {
+            if (code != 0x22 || getGameView_802D6A9C()->field_0x170 == 1) {
+                return true;
+            }
+        }
+        if (field_0x238 == 1) {
+            return false;
+        }
+    }
+    if (field_0x238 == 1) {
+        field_0x23c++;
+        if (field_0x23c > 11) {
+            field_0x23c = 0;
+            field_0x238 = 0;
+        }
+    }
+    return false;
 }
 
 // 0x801662D8.
