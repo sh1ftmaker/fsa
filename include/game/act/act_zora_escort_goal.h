@@ -5,6 +5,7 @@
 
 #include "game/ActorBase.h"
 #include "game/SpriteAnim.h"
+#include "game/RailBase.h"
 
 // The escort's arrival point, a Zora ('FZRA', docs/names/actors.tsv, med
 // confidence). Named after its vtable, 0x8049E424, as a provisional
@@ -13,6 +14,8 @@ class ZoraEscortGoal_8049E424 : public ActorBase_804A5770 {
 public:
     ZoraEscortGoal_8049E424();
     /* 0x08 */ virtual ~ZoraEscortGoal_8049E424();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
     // Vtable slot 0x20, fn_80126F1C: the base draw, then the escort's sprite
     // ("enemy_both2_sob.bin") with frame mAnim27c.mCel + 0x242.
     /* 0x20 */ virtual void draw();
@@ -23,6 +26,8 @@ public:
     // 0x80126A4C, not written yet (act_zora_escort_goal's state change; tu_80127E20 calls it with
     // 0x10, 0xA and 5).
     void fn_80126A4C(s32 arg);
+
+    bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags);
 
     /* 0x230 */ s32 field_0x230; // state word, read by fn_80126EF8; 0 after construction
     /* 0x234 */ s32 field_0x234; // set to 0 by the constructor, not yet known
@@ -41,13 +46,11 @@ public:
     /* 0x264 */ f32 field_0x264; // set to 0.0f by the constructor, not yet known
     /* 0x268 */ f32 field_0x268; // set to 0.0f by the constructor, not yet known
     /* 0x26C */ f32 field_0x26c; // set to 0.0f by the constructor, not yet known
-    /* 0x270 */ f32 field_0x270; // set to 0.0f by the constructor, not yet known
-    /* 0x274 */ f32 field_0x274; // set to 0.0f by the constructor, not yet known
-    /* 0x278 */ f32 field_0x278; // set to 0.0f by the constructor, not yet known
+    /* 0x270 */ JGeometry::TVec3f field_0x270;
     /* 0x27C */ SpriteAnim_801D267C mAnim27c; // its J3DFrameCtrl at 0x2A0
-    /* 0x2B4 */ u8 field_0x2b4[0x37C - 0x2B4]; // not yet known
+    /* 0x2B4 */ cls_800FE3EC mRail;
     /* 0x37C */ JPABaseEmitter* field_0x37c; // released by the destructor; 0 after construction
     /* 0x380 */ JPABaseEmitter* field_0x380; // released by the destructor; 0 after construction
-}; // Size: at least 0x384
+}; // Size: 0x384
 
 #endif
