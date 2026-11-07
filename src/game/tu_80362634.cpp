@@ -82,7 +82,7 @@ void cls_804ADF28::fn_80365AB8() {
 }
 #endif
 
-// FIXME(shotgun): 72 %, missing/extra (the function-local TVec3f statics are guarded with an out-of-line constructor here; the original initialises them inline; cases 1-3 of the switch are not written; case 0's offsets were read from partly filtered asm)
+// FIXME(shotgun): 52.9 %, missing/extra (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -143,13 +143,18 @@ void cls_804ADF28::fn_803653EC() {
             break;
         }
         field_0x238++;
-    } else if (field_0x248 == 0x76) {
-        field_0x27c[0].z = field_0x2a0[0].z;
-        field_0x2c4[0].x = field_0x2c4[0].y = field_0x2c4[0].z = 0.0f;
-        field_0x27c[1].z = field_0x2a0[1].z;
-        field_0x2c4[1].x = field_0x2c4[1].y = field_0x2c4[1].z = 0.0f;
-        field_0x27c[2].z = field_0x2a0[2].z;
-        field_0x2c4[2].x = field_0x2c4[2].y = field_0x2c4[2].z = 0.0f;
+    } else {
+        field_0x27c[0].add(field_0x2c4[0]);
+        field_0x27c[1].add(field_0x2c4[1]);
+        field_0x27c[2].add(field_0x2c4[2]);
+        if (field_0x248 == 0x76) {
+            field_0x27c[0] = field_0x2a0[0];
+            field_0x2c4[0].x = field_0x2c4[0].y = field_0x2c4[0].z = 0.0f;
+            field_0x27c[1] = field_0x2a0[1];
+            field_0x2c4[1].x = field_0x2c4[1].y = field_0x2c4[1].z = 0.0f;
+            field_0x27c[2] = field_0x2a0[2];
+            field_0x2c4[2].x = field_0x2c4[2].y = field_0x2c4[2].z = 0.0f;
+        }
     }
 }
 

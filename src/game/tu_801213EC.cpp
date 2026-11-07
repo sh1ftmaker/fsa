@@ -15,6 +15,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "game/tu_801213EC.h"
 #include "game/act/act_life_meter.h"
+#include "game/act/act_octorok_rock.h"
 
 // Passes the position on by value (the original loads the other arguments before its copy).
 static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
@@ -61,9 +62,12 @@ EscortBase_8049E0C8::~EscortBase_8049E0C8() {
     lbl_80539F30 = -1;
 }
 
-// The escort's answer to a screen change (see the header); 0x5C is called without the direction
-// argument the original passes in r4 (the slot's signature is not known).
-// FIXME(shotgun): 86.1 %, missing/extra (the slot-0x5C call lacks its r4 argument)
+// The escort's answer to a screen change (see the header).
+// FIXME(shotgun): not compiled (86.1 % as written), the slot-0x5C calls drop the r4 argument the asm
+// passes: dir. EscortWoman's override (fn_80125668) reads it and hands it to fn_80130030(const long*),
+// so it is real data. The slot's parameter type is not known, and giving it one renames the mangled
+// symbols of EscortBase's and ZoraEscort's overrides, so the body stays out of the build.
+#ifdef NONMATCHING
 s32 fn_80124600(const JGeometry::TVec2<s32>* dir) {
     s32 count = fn_80131F0C()->mCount;
     if (count == 0) {
@@ -102,6 +106,7 @@ s32 fn_80124600(const JGeometry::TVec2<s32>* dir) {
     }
     return 2;
 }
+#endif
 
 // FIXME(shotgun): 99.4 %, regalloc-only + reloc-name
 void EscortBase_8049E0C8::fn_80124448() {
@@ -257,7 +262,7 @@ void EscortBase_8049E0C8::vfunc_0x7C() {
     mLife = field_0x360 * 4;
 }
 
-// FIXME(shotgun): 97 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.6 %, missing/extra + reloc-name (signed vs unsigned kind compares; the +0x230 test for FIRE is a gap)
 s32 EscortBase_8049E0C8::vfunc_0x80() {
     if (!(u8)vfunc_0x78()) {
         return 0;
@@ -274,11 +279,12 @@ s32 EscortBase_8049E0C8::vfunc_0x80() {
             if (kind <= 1 || kind == 5 || kind == 6) {
                 return 0;
             }
+            // FIXME(shotgun): the asm then tests the word at +0x230 == 2 here as well, but
+            // FireRodFire_804A89F0 types +0x230 as an emitter pointer; not written.
+            break;
         }
-        // fall through
         case ACTOR_OKTM:
-            // The state word the two actors share (EnemyBase::mFlags is the closest known name).
-            if (static_cast<EnemyBase_804A4808*>(actor)->mFlags == 2) {
+            if (static_cast<OctorokRock_8049F5D8*>(actor)->field_0x230 == 2) {
                 return 0;
             }
             break;
