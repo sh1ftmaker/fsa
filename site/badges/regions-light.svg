@@ -1,23 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="724" viewBox="0 0 960 724" role="img" aria-label="Progress overview: Libraries 97.6 % of code, 4713 of 4768 functions; Player 59.4 % of code, 934 of 1054 functions; Enemies &amp; bosses 27.8 % of code, 839 of 1339 functions; NPCs 25.3 % of code, 342 of 594 functions; Objects &amp; gimmicks 30.6 % of code, 953 of 1518 functions; Stage &amp; world 14.7 % of code, 157 of 311 functions; Menus &amp; screens 20.9 % of code, 477 of 872 functions; Game core 51.4 % of code, 629 of 773 functions; Media &amp; link 39.3 % of code, 265 of 328 functions">
-<title>Progress overview: Libraries 97.6 % of code, 4713 of 4768 functions; Player 59.4 % of code, 934 of 1054 functions; Enemies &amp; bosses 27.8 % of code, 839 of 1339 functions; NPCs 25.3 % of code, 342 of 594 functions; Objects &amp; gimmicks 30.6 % of code, 953 of 1518 functions; Stage &amp; world 14.7 % of code, 157 of 311 functions; Menus &amp; screens 20.9 % of code, 477 of 872 functions; Game core 51.4 % of code, 629 of 773 functions; Media &amp; link 39.3 % of code, 265 of 328 functions</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="724" viewBox="0 0 960 724" role="img" aria-label="Progress overview: Libraries 97.6 % of code, 4713 of 4768 functions; Player 59.4 % of code, 934 of 1054 functions; Enemies &amp; bosses 27.8 % of code, 839 of 1339 functions; NPCs 25.6 % of code, 349 of 594 functions; Objects &amp; gimmicks 30.7 % of code, 959 of 1518 functions; Stage &amp; world 14.7 % of code, 157 of 311 functions; Menus &amp; screens 21.2 % of code, 480 of 872 functions; Game core 51.4 % of code, 629 of 773 functions; Media &amp; link 39.3 % of code, 265 of 328 functions">
+<title>Progress overview: Libraries 97.6 % of code, 4713 of 4768 functions; Player 59.4 % of code, 934 of 1054 functions; Enemies &amp; bosses 27.8 % of code, 839 of 1339 functions; NPCs 25.6 % of code, 349 of 594 functions; Objects &amp; gimmicks 30.7 % of code, 959 of 1518 functions; Stage &amp; world 14.7 % of code, 157 of 311 functions; Menus &amp; screens 21.2 % of code, 480 of 872 functions; Game core 51.4 % of code, 629 of 773 functions; Media &amp; link 39.3 % of code, 265 of 328 functions</title>
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } .grow { transform-box: fill-box; transform-origin: 0 50%; animation: grow 1.4s cubic-bezier(.2,.8,.2,1) both; } @keyframes grow { from { transform: scaleX(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="0.5" y="0.5" width="959" height="723" rx="14" fill="#f6f7fb" stroke="#dfe2ef"/>
 <text x="28" y="40" font-size="16" font-weight="700" fill="#1b1f3a">Remaining work</text>
 <text x="28" y="60" font-size="12" fill="#6b7096">code not yet byte-identical, by category and the libraries</text>
 <clipPath id="rw"><rect x="330" y="28" width="440" height="16" rx="4"/></clipPath><g clip-path="url(#rw)">
-<rect class="grow" x="330.00" y="28" width="27.90" height="16" fill="#4aa75c"/>
-<rect class="grow" x="359.40" y="28" width="85.74" height="16" fill="#c52607"/>
-<rect class="grow" x="446.65" y="28" width="37.22" height="16" fill="#a96087"/>
-<rect class="grow" x="485.37" y="28" width="109.62" height="16" fill="#508ae1"/>
-<rect class="grow" x="596.48" y="28" width="26.18" height="16" fill="#00a8a1"/>
-<rect class="grow" x="624.16" y="28" width="111.36" height="16" fill="#8c55b4"/>
-<rect class="grow" x="737.02" y="28" width="15.68" height="16" fill="#269ac2"/>
-<rect class="grow" x="754.19" y="28" width="10.66" height="16" fill="#608c3d"/>
-<rect class="grow" x="766.35" y="28" width="2.15" height="16" fill="#d29a2e"/>
+<rect class="grow" x="330.00" y="28" width="27.95" height="16" fill="#4aa75c"/>
+<rect class="grow" x="359.45" y="28" width="85.87" height="16" fill="#c52607"/>
+<rect class="grow" x="446.82" y="28" width="37.13" height="16" fill="#a96087"/>
+<rect class="grow" x="485.45" y="28" width="109.69" height="16" fill="#508ae1"/>
+<rect class="grow" x="596.63" y="28" width="26.22" height="16" fill="#00a8a1"/>
+<rect class="grow" x="624.35" y="28" width="111.12" height="16" fill="#8c55b4"/>
+<rect class="grow" x="736.97" y="28" width="15.70" height="16" fill="#269ac2"/>
+<rect class="grow" x="754.17" y="28" width="10.67" height="16" fill="#608c3d"/>
+<rect class="grow" x="766.34" y="28" width="2.16" height="16" fill="#d29a2e"/>
 </g>
-<text x="330" y="62" class="mono" font-size="11.5" fill="#6b7096">2,473,096 bytes left · game code 99.2 % of it</text>
-<text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#1b1f3a">44.33 %</text>
-<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 59.20 %</text>
+<text x="330" y="62" class="mono" font-size="11.5" fill="#6b7096">2,469,520 bytes left · game code 99.2 % of it</text>
+<text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#1b1f3a">44.41 %</text>
+<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 59.30 %</text>
 <line x1="20" x2="940" y1="84" y2="84" stroke="#dfe2ef"/>
 <g fill="#d29a2e"><path d="M34.5 107L41 120L28 120Z"/></g>
 <text x="50" y="119" font-size="16" font-weight="700" fill="#1b1f3a">Libraries</text>
@@ -28,7 +28,7 @@
 <text x="330" y="139" class="mono" font-size="11.5" fill="#6b7096">SDK 100 % · GX 100 % · JSystem 97.9 % · MSL/RT/TRK 90.0 %</text>
 <text x="932" y="120" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#d29a2e">97.6 %</text>
 <text x="932" y="140" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">4,713 / 4,768 fns</text>
-<text x="28" y="168" class="mono" font-size="10.5" letter-spacing="0.14em" fill="#6b7096">GAME CODE · 31.4 %</text>
+<text x="28" y="168" class="mono" font-size="10.5" letter-spacing="0.14em" fill="#6b7096">GAME CODE · 31.5 %</text>
 <g fill="#4aa75c"><path d="M34.5 185L41 191.5L34.5 198L28 191.5Z"/></g>
 <text x="50" y="197" font-size="16" font-weight="700" fill="#1b1f3a">Player</text>
 <text x="50" y="217" font-size="12" fill="#6b7096">10 files · 398 KiB · 0 Matching</text>
@@ -51,20 +51,20 @@
 <text x="50" y="329" font-size="16" font-weight="700" fill="#1b1f3a">NPCs</text>
 <text x="50" y="349" font-size="12" fill="#6b7096">54 files · 285 KiB · 10 Matching · 17 unconfirmed</text>
 <rect x="330" y="316" width="440" height="14" rx="4" fill="#e6e8f3"/>
-<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="169.44" height="14" rx="4" fill="#a96087" fill-opacity="0.35"/>
-<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="111.34" height="14" rx="4" fill="#a96087"/>
-<text x="330" y="349" class="mono" font-size="11.5" fill="#6b7096">honest 25.3 % · weighted 38.5 %</text>
-<text x="932" y="330" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#a96087">25.3 %</text>
-<text x="932" y="350" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">342 / 594 fns</text>
+<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="175.96" height="14" rx="4" fill="#a96087" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="112.55" height="14" rx="4" fill="#a96087"/>
+<text x="330" y="349" class="mono" font-size="11.5" fill="#6b7096">honest 25.6 % · weighted 40.0 %</text>
+<text x="932" y="330" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#a96087">25.6 %</text>
+<text x="932" y="350" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">349 / 594 fns</text>
 <g fill="#508ae1"><path d="M34.5 383L41 389.5L34.5 396L28 389.5Z"/></g>
 <text x="50" y="395" font-size="16" font-weight="700" fill="#1b1f3a">Objects &amp; gimmicks</text>
 <text x="50" y="415" font-size="12" fill="#6b7096">229 files · 879 KiB · 68 Matching · 56 unconfirmed</text>
 <rect x="330" y="382" width="440" height="14" rx="4" fill="#e6e8f3"/>
-<rect class="grow" style="animation-delay:0.4s" x="330" y="382" width="194.05" height="14" rx="4" fill="#508ae1" fill-opacity="0.35"/>
-<rect class="grow" style="animation-delay:0.4s" x="330" y="382" width="134.82" height="14" rx="4" fill="#508ae1"/>
-<text x="330" y="415" class="mono" font-size="11.5" fill="#6b7096">honest 30.6 % · weighted 44.1 %</text>
-<text x="932" y="396" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#508ae1">30.6 %</text>
-<text x="932" y="416" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">953 / 1,518 fns</text>
+<rect class="grow" style="animation-delay:0.4s" x="330" y="382" width="194.30" height="14" rx="4" fill="#508ae1" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.4s" x="330" y="382" width="135.07" height="14" rx="4" fill="#508ae1"/>
+<text x="330" y="415" class="mono" font-size="11.5" fill="#6b7096">honest 30.7 % · weighted 44.2 %</text>
+<text x="932" y="396" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#508ae1">30.7 %</text>
+<text x="932" y="416" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">959 / 1,518 fns</text>
 <g fill="#00a8a1"><path d="M34.5 449L41 455.5L34.5 462L28 455.5Z"/></g>
 <text x="50" y="461" font-size="16" font-weight="700" fill="#1b1f3a">Stage &amp; world</text>
 <text x="50" y="481" font-size="12" fill="#6b7096">10 files · 178 KiB · 0 Matching · 2 unconfirmed</text>
@@ -79,10 +79,10 @@
 <text x="50" y="547" font-size="12" fill="#6b7096">47 files · 783 KiB · 8 Matching · 11 unconfirmed</text>
 <rect x="330" y="514" width="440" height="14" rx="4" fill="#e6e8f3"/>
 <rect class="grow" style="animation-delay:0.6s" x="330" y="514" width="193.39" height="14" rx="4" fill="#8c55b4" fill-opacity="0.35"/>
-<rect class="grow" style="animation-delay:0.6s" x="330" y="514" width="91.88" height="14" rx="4" fill="#8c55b4"/>
-<text x="330" y="547" class="mono" font-size="11.5" fill="#6b7096">honest 20.9 % · weighted 44.0 %</text>
-<text x="932" y="528" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#8c55b4">20.9 %</text>
-<text x="932" y="548" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">477 / 872 fns</text>
+<rect class="grow" style="animation-delay:0.6s" x="330" y="514" width="93.12" height="14" rx="4" fill="#8c55b4"/>
+<text x="330" y="547" class="mono" font-size="11.5" fill="#6b7096">honest 21.2 % · weighted 44.0 %</text>
+<text x="932" y="528" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#8c55b4">21.2 %</text>
+<text x="932" y="548" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">480 / 872 fns</text>
 <g fill="#269ac2"><path d="M34.5 581L41 587.5L34.5 594L28 587.5Z"/></g>
 <text x="50" y="593" font-size="16" font-weight="700" fill="#1b1f3a">Game core</text>
 <text x="50" y="613" font-size="12" fill="#6b7096">24 files · 194 KiB · 4 Matching · 7 unconfirmed</text>
