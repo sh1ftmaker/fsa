@@ -123,6 +123,8 @@ void cls_804A7A68::update() {
 }
 #endif
 
+void cls_804A7A68::draw() {}
+
 // 0x8028DDD8. Orders the players for the four marker slots: out[] gets the player indices
 // sorted by their x (y for the vertical variants 6 and 7), grouped by team for two players.
 // FIXME(shotgun): 92.25 %, missing/extra
@@ -233,7 +235,5 @@ void cls_804A7A68::fn_8028DDD8(s32* out) {
         break;
     }
 }
-
-void cls_804A7A68::draw() {}
 
 cls_804A7A68::~cls_804A7A68() {}

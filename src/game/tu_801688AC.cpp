@@ -337,6 +337,62 @@ void cls_804A0738::update() {
     }
 }
 
+// 0x80168E78.
+// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+void cls_804A0738::draw() {
+    SpriteParams_801F5AE0 params;
+    params.field_0x30 = 0x11;
+    s32 frame = field_0x250 + 0x69;
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+    }
+    fn_803075AC(mSerial, field_0x4, &mPos, frame, 0, 2, -1, false, 0, 0);
+}
+
+
+// 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
+// player is then pushed along.
+// FIXME(shotgun): 70.14 %, missing/extra + reloc-name
+bool cls_804A0738::fn_80168C38() {
+    s32 found = -1;
+    JGeometry::TBox2f box;
+    box.i.x = mBox.i.x + mPos.x - 4.0f;
+    box.i.y = mBox.i.y + mPos.y - 4.0f;
+    box.f.x = mBox.f.x + mPos.x + 4.0f;
+    box.f.y = mBox.f.y + mPos.y + 4.0f;
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023EA28(i) != 1) {
+            if (!fn_8022E438(i, field_0x90) ||
+                (fn_8022E438(i, field_0x90) == 1 && i != field_0x90 && fn_80235580(i) == 1)) {
+                if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
+                    found = i;
+                }
+            }
+        }
+    }
+    if (found < 0) {
+        return false;
+    }
+    if (fn_8022CAF8(found) != 4) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8022E438(i, found) == 1) {
+                field_0x261 = 1;
+                fn_8022E23C(i, mSerial);
+                fn_8022CC20(i);
+                if (fn_8022F514(i) == 1) {
+                    JGeometry::TVec3f d = mPos;
+                    d -= *getPlayerPos_8023E724(i);
+                    fn_8023DFF4(i, &d);
+                }
+            }
+        }
+        return true;
+    }
+    field_0x261 = 1;
+    return fn_8022E23C(found, mSerial);
+}
+
 // 0x8016890C.
 // FIXME(shotgun): 93.09 %, missing/extra + reloc-name
 void cls_804A0738::fn_8016890C(const JGeometry::TVec3f* pos, s32 layer, JGeometry::TBox2f* out) {
@@ -409,62 +465,4 @@ void cls_804A0738::fn_8016890C(const JGeometry::TVec3f* pos, s32 layer, JGeometr
 
 // The original calls both of these with bl (update -> fn_80168C38, init/update -> fn_8016890C);
 // our deferred build would inline them.
-#pragma auto_inline off
-// 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
-// player is then pushed along.
-// FIXME(shotgun): 70.14 %, missing/extra + reloc-name
-bool cls_804A0738::fn_80168C38() {
-    s32 found = -1;
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x - 4.0f;
-    box.i.y = mBox.i.y + mPos.y - 4.0f;
-    box.f.x = mBox.f.x + mPos.x + 4.0f;
-    box.f.y = mBox.f.y + mPos.y + 4.0f;
-    for (s32 i = 0; i < 4; i++) {
-        if (fn_8023EA28(i) != 1) {
-            if (!fn_8022E438(i, field_0x90) ||
-                (fn_8022E438(i, field_0x90) == 1 && i != field_0x90 && fn_80235580(i) == 1)) {
-                if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
-                    found = i;
-                }
-            }
-        }
-    }
-    if (found < 0) {
-        return false;
-    }
-    if (fn_8022CAF8(found) != 4) {
-        for (s32 i = 0; i < 4; i++) {
-            if (fn_8022E438(i, found) == 1) {
-                field_0x261 = 1;
-                fn_8022E23C(i, mSerial);
-                fn_8022CC20(i);
-                if (fn_8022F514(i) == 1) {
-                    JGeometry::TVec3f d = mPos;
-                    d -= *getPlayerPos_8023E724(i);
-                    fn_8023DFF4(i, &d);
-                }
-            }
-        }
-        return true;
-    }
-    field_0x261 = 1;
-    return fn_8022E23C(found, mSerial);
-}
-
-// 0x80168E78.
-// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
-void cls_804A0738::draw() {
-    SpriteParams_801F5AE0 params;
-    params.field_0x30 = 0x11;
-    s32 frame = field_0x250 + 0x69;
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
-    }
-    fn_803075AC(mSerial, field_0x4, &mPos, frame, 0, 2, -1, false, 0, 0);
-}
-
-#pragma auto_inline reset
-
 cls_804A0738::~cls_804A0738() {}
