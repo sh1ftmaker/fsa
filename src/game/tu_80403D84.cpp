@@ -754,6 +754,45 @@ void MapScreen_804B1288::fn_80408114() {
     }
 }
 
+// FIXME: 75.38, missing/extra (NONMATCHING). Every call, field and constant is right; two
+// things differ: the original computes `frame` before fn_8013B414 (ours computes it at its
+// first use, after the first draw, which shifts the schedule), and it indexes the sine table
+// straight from (counter % 128) (clrlslwi r0, r0, 27, 9) where sinShort's s16 argument gives
+// ours slwi / extsh / rlwinm. A const method (no `counter` local) gives 59.9 %.
+#ifdef NONMATCHING
+void MapScreen_804B1288::fn_80406F68(f32 x, f32 y) {
+    SpriteParams_801F5AE0 params;
+    JGeometry::TVec3f pos;
+    s32 counter = field_0x380;
+    s32 frame = (counter % 40) / 10;
+    JGeometry::TBox2f box(0.0f, 0.0f, 256.0f, 192.0f);
+    gGameRoot2_8053AB10->fn_8013B414(&box, true);
+    pos.x = x * (256.0f / (s32)JUTVideo::getManager()->getFbWidth());
+    pos.y = y * (192.0f / (s32)JUTVideo::getManager()->getEfbHeight()) - 5.0f;
+    pos.z = 0.0f;
+    GXSetTevDirect(GX_TEVSTAGE0);
+    GXSetTevDirect(GX_TEVSTAGE1);
+    GXSetTevDirect(GX_TEVSTAGE2);
+    GXSetTevDirect(GX_TEVSTAGE3);
+    JGeometry::TVec3f bob(pos.x, pos.y + JMath::sincosTable_.sinShort((counter % 128) * 0x800), pos.z);
+    params.field_0x26 = 0;
+    params.field_0x0[2] = 2;
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&bob, res, 0xC6, &params, 1.0f, 1.0f);
+    pos.x -= 16.0f;
+    pos.y += 3.0f;
+    params.field_0x0[2] = 3;
+    s32 cel = lbl_8048CB58[frame] + 0xC0;
+    res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, cel, &params, 1.0f, 1.0f);
+    pos.x += 32.0f;
+    params.field_0x0[2] = 4;
+    cel = lbl_8048CB58[frame] + 0xC3;
+    res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, cel, &params, 1.0f, 1.0f);
+}
+#endif
+
 // FIXME: 96.30. Order and registers only: setRotScaleMtx's six sin / cos results land in
 // other saved FPRs (target sx f28, sy f27, sz f26, cx f31, cy f30, scale f29) and its
 // products are scheduled differently (unproven inline, see game/RotMatrix.h); and the

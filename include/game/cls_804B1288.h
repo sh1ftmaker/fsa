@@ -149,6 +149,11 @@ public:
     // for stage 10 / sub-stage 2) that fn_80404074 lets through; at field_0x35c 10
     // the picked one starts the emitters 0x7B-0x7D of field_0x2ec.
     void fn_804069E8();
+    // 0x80406F68 (called by fn_80411230 with field_0x3ac / field_0x3b0): draws three
+    // enemy_both2_sob.bin sprites at (x, y) on the 256 x 192 layer: frame 0xC6 bobbing
+    // with a sine of field_0x380, and lbl_8048CB58[(field_0x380 % 40) / 10] + 0xC0 /
+    // + 0xC3 16 to the left and right of it.
+    void fn_80406F68(f32 x, f32 y);
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
