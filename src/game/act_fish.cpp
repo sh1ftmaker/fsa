@@ -147,8 +147,8 @@ static inline void swimVelocity(Fish_804AC658* fish, f32 speed) {
     fish->field_0x3c.z = fish->field_0x25c;
 }
 
-// FIXME(shotgun): 52.1 %, missing/extra + reloc-name (skeleton: the states are in the right order with the real calls and
-// constants; the wall-avoid heading choices of states 0, 3 and 5 are approximated)
+// FIXME(shotgun): 83.7 %, missing/extra + reloc-name (states follow the asm's switch (0 falls into 1, 2 into 3); the hit-avoid branch of state 1 and the wall-bounce
+// heading draws of state 5 are the asm's, written with plain field stores; the original's vector-add temporaries are not matched)
 void Fish_804AC658::update() {
     addCalc2_801F71A4(&field_0x3c.x, field_0x254, 0.1f, field_0x260);
     addCalc2_801F71A4(&field_0x3c.y, field_0x258, 0.1f, field_0x260);
@@ -166,6 +166,8 @@ void Fish_804AC658::update() {
         field_0x3c.y = speed * JMath::sincosTable_.cosShort(field_0x250);
         field_0x238 = (s32)(75.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x41;
         field_0x230 = 1;
+    }
+    case 1:
         if (hit) {
             f32 savedX = mPos.x;
             f32 savedY = mPos.y;
@@ -175,8 +177,11 @@ void Fish_804AC658::update() {
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
             for (s32 i = 0; i < 15; i++) {
-                mPos.x = savedX + 16.0f * JMath::sincosTable_.sinShort(angle);
-                mPos.y = savedY + 16.0f * JMath::sincosTable_.cosShort(angle);
+                mPos.x = savedX;
+                mPos.y = savedY;
+                mPos.z = savedZ;
+                mPos.x += 16.0f * JMath::sincosTable_.sinShort(angle);
+                mPos.y += 16.0f * JMath::sincosTable_.cosShort(angle);
                 if (fn_802265DC(&mPos, field_0x4, false)) {
                     break;
                 }
@@ -187,75 +192,109 @@ void Fish_804AC658::update() {
             mPos.x = savedX;
             mPos.y = savedY;
             mPos.z = savedZ;
-        }
-        break;
-    }
-    case 1:
-        field_0x252 = field_0x250 + 0x4000;
-        if (fn_80346330()) {
-            field_0x230 = 4;
-        } else if (field_0x238 == 0) {
-            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.3f) {
-                field_0x230 = 2;
-            } else if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
-                field_0x230 = 0;
+            f32 speed = 0.4f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 1.0f);
+            field_0x3c.x = speed * JMath::sincosTable_.sinShort(field_0x250);
+            field_0x3c.y = speed * JMath::sincosTable_.cosShort(field_0x250);
+        } else {
+            field_0x252 = field_0x250 + 0x4000;
+            if (fn_80346330()) {
+                field_0x230 = 4;
+            } else if (field_0x238 == 0) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.3f) {
+                    field_0x230 = 2;
+                } else if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                    field_0x230 = 0;
+                }
             }
         }
         break;
     case 2:
-        field_0x238 = (s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x41;
+        field_0x238 = (s32)(75.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x41;
         field_0x230 = 3;
+    case 3:
         if (fn_80346330()) {
             field_0x230 = 4;
         } else if (field_0x238 == 0) {
             field_0x230 = 0;
         }
         break;
-    case 3:
+    case 4:
         if (fn_80346330()) {
             field_0x250 = field_0x268 + 0x8000;
-            field_0x250 += (s32)(61440.0f - 16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-            swimVelocity(this, 1.5f);
-            field_0x234 = 0;
-            field_0x238 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
-            field_0x240 = 0;
-            field_0x230 = 5;
-            if (hit && field_0x234 == 0) {
-                field_0x250 = field_0x268 + 0x8000;
-                if (hitDir.x != 0.0f) {
-                    field_0x234 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 8;
-                    if (field_0x244 == 0) {
-                        field_0x240 = 1;
-                        if (hitDir.x > 0.0f) {
-                            if (field_0x250 >= 0x4000 && field_0x250 <= 0xC000) {
-                                field_0x250 = (s32)(32768.0f - 16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-                            } else {
-                                field_0x250 = (s32)(16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.0f);
-                            }
+            field_0x250 += (s32)(4096.0f - 8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        }
+        swimVelocity(this, 1.5f);
+        field_0x234 = 0;
+        field_0x238 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
+        field_0x240 = 0;
+        field_0x230 = 5;
+    case 5:
+        if (hit && field_0x234 == 0) {
+            field_0x250 = field_0x268 + 0x8000;
+            if (hitDir.x != 0.0f) {
+                field_0x234 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 8;
+                if (field_0x244 == 0) {
+                    field_0x240 = 1;
+                    if (hitDir.x > 0.0f) {
+                        if (field_0x250 >= 0x4000 && field_0x250 <= 0xC000) {
+                            field_0x250 = (s32)(32768.0f - 8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                        } else {
+                            field_0x250 = (s32)(8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 1.0f);
+                        }
+                    } else {
+                        if (field_0x250 >= 0x4000 && field_0x250 <= 0xC000) {
+                            field_0x250 = (s32)(8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 32768.0f);
+                        } else {
+                            field_0x250 = (s32)(1.0f - 8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                         }
                     }
+                } else {
+                    field_0x250 = field_0x268;
+                    field_0x234 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
+                }
+                swimVelocity(this, 1.5f);
+            } else if (hitDir.y != 0.0f) {
+                field_0x234 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 8;
+                if (field_0x240 == 0) {
+                    field_0x244 = 1;
+                    if (hitDir.y > 0.0f) {
+                        if (field_0x250 & 0x8000) {
+                            field_0x250 = (s32)(61440.0f - 4096.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                        } else {
+                            field_0x250 = (s32)(4096.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 4096.0f);
+                        }
+                    } else {
+                        if (field_0x250 & 0x8000) {
+                            field_0x250 = (s32)(45056.0f - 4096.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                        } else {
+                            field_0x250 = (s32)(4096.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 20480.0f);
+                        }
+                    }
+                } else {
+                    field_0x250 = field_0x268;
+                    field_0x234 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
+                }
+                swimVelocity(this, 1.5f);
+            } else {
+                swimVelocity(this, 1.5f);
+            }
+        } else {
+            field_0x252 = field_0x250 + 0x4000;
+            if (!hit && field_0x234 == 0) {
+                field_0x240 = 0;
+                field_0x244 = 0;
+            }
+            if (field_0x238 == 0 && field_0x234 == 0) {
+                if (!fn_80346330()) {
+                    field_0x254 = 0.0f;
+                    field_0x258 = 0.0f;
+                    field_0x25c = 0.0f;
+                    field_0x230 = 0;
+                } else {
+                    field_0x230 = 4;
                 }
             }
         }
-        break;
-    case 4:
-        field_0x252 = field_0x250 + 0x4000;
-        if (!hit && field_0x234 == 0) {
-            field_0x240 = 0;
-            field_0x244 = 0;
-        }
-        if (field_0x238 == 0 && field_0x234 == 0) {
-            if (!fn_80346330()) {
-                field_0x254 = 0.0f;
-                field_0x258 = 0.0f;
-                field_0x25c = 0.0f;
-                field_0x230 = 0;
-            } else {
-                field_0x230 = 4;
-            }
-        }
-        break;
-    case 5:
         break;
     }
     if (field_0x234 > 0) {
@@ -268,7 +307,6 @@ void Fish_804AC658::update() {
         field_0x23c--;
     }
 }
-
 
 // FIXME(shotgun): 76.2 %, missing/extra (the SpriteParams stores and the matrix are scheduled differently)
 void Fish_804AC658::draw() {
