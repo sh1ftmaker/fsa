@@ -1,14 +1,89 @@
 #include "game/GameAudio.h"
 #include "game/cls_804B1D58.h"
 #include "game/GameGlobals.h"
+#include "game/GameState.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
+#include "JSystem/J2D/J2DPicture.h"
+
+void* fn_80403084(u32 type, const char* name);
+
+void fn_80453884(J2DWindow* window, const JUtility::TColor* colors) {
+    window->setContentsColor(colors[0], colors[1], colors[2], colors[3]);
+}
+
+void fn_80453874(JGeometry::TVec3f* vec, f32 x, f32 y, f32 z) {
+    vec->x = x;
+    vec->y = y;
+    vec->z = z;
+}
+
+bool cls_804B1D58::fn_80453848() {
+    bool result = false;
+    if (field_0xf4 & 8) {
+        if (field_0xd0 + field_0xdc == 0) {
+            result = true;
+        }
+    }
+    return result;
+}
 
 cls_80453830::cls_80453830() {
     field_0x0 = -1;
     field_0x4 = -1;
     field_0x8 = -1;
     field_0xc = -1;
+}
+
+// FIXME(shotgun): 99.75 %, reloc-name
+void cls_804B1D58::fn_80452350() {
+    lbl_8053AEC0->fn_804310CC();
+    s32 i = 0;
+    field_0xf8 = i;
+    field_0xfe = i;
+    for (; i < 3; i++) {
+        field_0x48[i]->moveFromCentre_80402E08(300.0f, 0.0f);
+        field_0x60[i]->moveFromCentre_80402E08(300.0f, 0.0f);
+        field_0x48[i]->field_0x20 = 0;
+        field_0x60[i]->field_0x20 = 0;
+        field_0x48[i]->mPane->setAlpha(0);
+        field_0x48[i]->field_0x26 = 0;
+        field_0x54[i]->mPane->setAlpha(0);
+        field_0x54[i]->field_0x26 = 0;
+        field_0x60[i]->mPane->setAlpha(0);
+        field_0x60[i]->field_0x26 = 0;
+    }
+    mScreen->search('Pcul01')->move(300.0f + field_0x114, field_0x118 + field_0x108[field_0xf8]);
+    mScreen->search('Pcul01')->setAlpha(0);
+    field_0x132 = 0;
+    field_0xfe = 0;
+    field_0xfa = 2;
+    field_0xfc = 0;
+    field_0x8->mPane->setAlpha(0);
+    field_0x8->field_0x26 = 0;
+    for (s32 i = 0; i < 15; i++) {
+        field_0xc[i]->moveFromCentre_80402E08(0.0f, -480.0f);
+        field_0xc[i]->field_0x22 = 0;
+    }
+    const ResTIMG* image;
+    bool useBack = false;
+    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+        s32 mode = lbl_80529DEC.field_0x118;
+        if ((mode == 0 && lbl_80529DEC.field_0x11c == 2) || (mode == 1 && lbl_80529DEC.field_0x11c == 2) ||
+            (mode == 2 && lbl_80529DEC.field_0x11c == 2) || (mode == 3 && lbl_80529DEC.field_0x11c == 2) ||
+            (mode == 4 && lbl_80529DEC.field_0x11c == 2) || (mode == 5 && lbl_80529DEC.field_0x11c == 2) ||
+            (mode == 6 && lbl_80529DEC.field_0x11c == 2) || (mode == 7 && lbl_80529DEC.field_0x11c == 1)) {
+            useBack = true;
+        }
+    }
+    if (useBack) {
+        image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_pYback_01.bti"));
+    } else {
+        image = static_cast<const ResTIMG*>(fn_80403084('TIMG', "kk_pCselect_01.bti"));
+    }
+    static_cast<J2DPicture*>(mScreen->search('Psc01'))->changeTexture(image, 0);
+    fn_8044D894();
+    field_0x184 = 9;
 }
 
 void cls_804B1D58::fn_80452308() {
@@ -27,6 +102,27 @@ s32 fn_8044F664() {
         return lbl_8053AF40->field_0x184;
     }
     return 9;
+}
+
+// FIXME(shotgun): 88.89 %, missing/extra (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
+void cls_804B1D58::fn_8044C968() {
+    for (s32 i = 0; i < 3; i++) {
+        field_0x48[i]->moveFromCentre_80402E08(300.0f, 0.0f);
+        field_0x60[i]->moveFromCentre_80402E08(300.0f, 0.0f);
+        field_0x48[i]->field_0x20 = 0;
+        field_0x60[i]->field_0x20 = 0;
+        field_0x48[i]->mPane->setAlpha(0);
+        field_0x48[i]->field_0x26 = 0;
+        field_0x54[i]->mPane->setAlpha(0);
+        field_0x54[i]->field_0x26 = 0;
+        field_0x60[i]->mPane->setAlpha(0);
+        field_0x60[i]->field_0x26 = 0;
+    }
+    mScreen->search('Pcul01')->move(300.0f + field_0x114, field_0x118 + field_0x108[field_0xf8]);
+    mScreen->search('Pcul01')->setAlpha(0);
+    field_0x132 = 0;
+    field_0xfe = 0;
+    field_0xfa = 2;
 }
 
 u8 cls_804B1D58::fn_8044D290() {

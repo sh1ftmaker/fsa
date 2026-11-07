@@ -4,6 +4,7 @@
 #include "types.h"
 
 class J2DScreen;
+class PaneCtrl_804AF86C;
 
 // 0x10-byte element of field_0x164, named after its constructor
 // __ct__12cls_80453830Fv (fn_80453830, game/tu_8044C7F0.cpp), which
@@ -35,12 +36,36 @@ public:
     void fn_804522C8(); // 0x804522C8
     void fn_80452308(); // 0x80452308
     void fn_80452350(); // 0x80452350
+    // 0x8044C968: puts the pane controls back (slid out by 300, alpha 0) and moves 'Pcul01' to the
+    // row field_0xf8; state 2.
+    void fn_8044C968();
+    // 0x80453848: bit 8 of field_0xf4 is set and field_0xd0 + field_0xdc is 0.
+    bool fn_80453848();
 
     /* 0x004 */ J2DScreen* mScreen; // drawn by fn_80452308
-    /* 0x008 */ u8 field_0x8[0xFA - 0x8];
+    /* 0x008 */ PaneCtrl_804AF86C* field_0x8;
+    /* 0x00C */ PaneCtrl_804AF86C* field_0xc[15];
+    /* 0x048 */ PaneCtrl_804AF86C* field_0x48[3];
+    /* 0x054 */ PaneCtrl_804AF86C* field_0x54[3];
+    /* 0x060 */ PaneCtrl_804AF86C* field_0x60[3];
+    /* 0x06C */ u8 field_0x6c[0xD0 - 0x6C];
+    /* 0x0D0 */ s32 field_0xd0; // fn_80453848
+    /* 0x0D4 */ u8 field_0xd4[0xDC - 0xD4];
+    /* 0x0DC */ s32 field_0xdc;
+    /* 0x0E0 */ u8 field_0xe0[0xF4 - 0xE0];
+    /* 0x0F4 */ u32 field_0xf4; // flags; bit 8 is tested by fn_80453848
+    /* 0x0F8 */ s16 field_0xf8;
     // fn_804522C8 tests it against 7, 8 and 9 (lha).
     /* 0x0FA */ s16 field_0xfa;
-    /* 0x0FC */ u8 field_0xfc[0x13F - 0xFC];
+    /* 0x0FC */ s16 field_0xfc;
+    /* 0x0FE */ s16 field_0xfe;
+    /* 0x100 */ u8 field_0x100[0x108 - 0x100];
+    /* 0x108 */ f32 field_0x108[3];
+    /* 0x114 */ f32 field_0x114;
+    /* 0x118 */ f32 field_0x118;
+    /* 0x11C */ u8 field_0x11c[0x132 - 0x11C];
+    /* 0x132 */ s16 field_0x132;
+    /* 0x134 */ u8 field_0x134[0x13F - 0x134];
     /* 0x13F */ u8 field_0x13f; // fn_8037ADD8 / fn_8037AE00 / fn_8037AE30
     /* 0x140 */ u8 field_0x140; // fn_8044CB00 returns it
     /* 0x141 */ u8 field_0x141[0x164 - 0x141];
