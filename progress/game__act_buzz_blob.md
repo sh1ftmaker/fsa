@@ -9,7 +9,7 @@
 
 | Address | Symbol | Size | Match | Notes |
 |---|---|---|---|---|
-| `0x8013DE44` | `draw__17BuzzBlob_8049F444Fv` | `0x160` | 99.32% | `regalloc-only`: `f26`..`f31` in `setRotScaleMtx` and `f0`/`f1` in `mPos.z != 0.0f` |
+| `0x8013DE44` | `draw__17BuzzBlob_8049F444Fv` | `0x160` | 98.59% | `scheduling+regalloc`: `f26`..`f31` in `setRotScaleMtx`, `mtx` stores |
 | `0x8013DFA4` | `update__17BuzzBlob_8049F444Fv` | `0x78C` | 99.82% | `regalloc-only`: `r4`/`r5` swapped in `mRandom` loads after `dir.scale(0.3f)` in case 0 |
 | `0x8013E730` | `init__17BuzzBlob_8049F444Fv` | `0xAC` | 100.0% | Matched |
 | `0x8013E7DC` | `__dt__17BuzzBlob_8049F444Fv` | `0x5C` | 100.0% | Matched |

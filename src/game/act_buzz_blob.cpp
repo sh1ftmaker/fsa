@@ -65,6 +65,7 @@ void BuzzBlob_8049F444::update() {
                                          box.f.y + 0.5f * (box.i.y - box.f.y));
                 fn_80238548(player, 1, &center, 10);
                 startSound_801F0E34(0x4000C, 0);
+                // Stored twice (here and below); dropping this first store drops update to 98.26 % missing/extra.
                 field_0x258.set(1.0f, 1.0f, 1.0f);
                 field_0x244 = 0;
                 field_0x23c = 4;
@@ -152,6 +153,7 @@ void BuzzBlob_8049F444::update() {
             addCalc2_801F71A4(&field_0x258.x, 1.2f, 0.1f, 0.2f);
             addCalc2_801F71A4(&field_0x258.y, 0.6f, 0.1f, 0.2f);
             if (field_0x240 == 1) {
+                // One 3.0f negated with fneg for the -x cases, as in the original; separate literals miss.
                 f32 speed = 3.0f;
                 switch (field_0x98) {
                 case 0:
@@ -229,8 +231,9 @@ void BuzzBlob_8049F444::update() {
     }
 }
 
-// FIXME: 99.32% (regalloc-only). Target vs ours: f29->f31, f28->f26, f26->f28,
-// f31->f29 in setRotScaleMtx and f0/f1 swapped in mPos.z != 0.0f.
+// FIXME: 98.59% (scheduling+regalloc). The setRotScaleMtx float registers (f26-f31) are allocated
+// in a different order and the mtx[1][1]/mtx[2][2] stores are scheduled differently; a local for
+// field_0x258.y reaches 99.32% but only steers the scheduler.
 void BuzzBlob_8049F444::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -252,16 +255,15 @@ void BuzzBlob_8049F444::draw() {
             gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params2, 1.0f, 1.0f);
         }
     } else if (field_0x230 != 3) {
-        f32 sy = field_0x258.y;
         mtx[0][0] = field_0x258.x;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
         mtx[1][0] = 0.0f;
-        mtx[1][1] = sy;
+        mtx[1][1] = field_0x258.y;
         mtx[1][2] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
-        mtx[2][2] = sy;
+        mtx[2][2] = field_0x258.y;
         params.mMtx = mtx;
         if (mPos.z != 0.0f) {
             params.field_0x30 = 0x11;
