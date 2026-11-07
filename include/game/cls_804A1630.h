@@ -42,9 +42,7 @@ public:
     /* 0x274 */ s32 field_0x274;
     /* 0x278 */ s16 field_0x278;
     /* 0x27A */ u8 field_0x27a[2];
-    /* 0x27C */ f32 field_0x27c;
-    /* 0x280 */ f32 field_0x280;
-    /* 0x284 */ f32 field_0x284;
+    /* 0x27C */ JGeometry::TVec3f field_0x27c;
     /* 0x288 */ JGeometry::TVec3f field_0x288;
     /* 0x294 */ JGeometry::TVec3f field_0x294[4];
     /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[4];
