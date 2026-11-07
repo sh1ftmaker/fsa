@@ -92,6 +92,10 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+    // No address (dead-stripped; update inlines both): state 0 once the fire
+    // rod hits (emitters, then after 60 frames the melt), state 1 (shrink).
+    void melt();
+    void shrink();
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;

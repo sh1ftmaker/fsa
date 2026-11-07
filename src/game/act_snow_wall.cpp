@@ -10,8 +10,6 @@
 
 static const char* lbl_80539F40[] = {"yuki_l.bti", NULL};
 
-// FIXME: 99.78%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
-// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 cls_8049E8A0::cls_8049E8A0()
     : field_0x230(0), field_0x234(0), field_0x238(1.0f), field_0x23c(NULL), field_0x240(NULL), field_0x244(NULL) {}
 
@@ -26,8 +24,6 @@ cls_8049E8A0::~cls_8049E8A0() {
     }
 }
 
-// FIXME: 99.82%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
-// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 void cls_8049E8A0::init() {
     ActorBase_804A5770::init();
     mBox.i.x = -24.0f;
@@ -59,8 +55,6 @@ void cls_8049E8A0::init() {
     }
 }
 
-// FIXME: 99.82%. reloc-name only: instructions identical, the unit's .sdata2 pool order differs (the original pools update's literals
-// (16.0f, 1.0f, ...) before draw's 32.0f / 0.0f; ours pools draw's first).
 void cls_8049E8A0::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
@@ -98,40 +92,11 @@ void cls_8049E8A0::update() {
             field_0x234 = 0;
             break;
         }
-        if (field_0x234 == 0) {
-            JGeometry::TVec3f pos = mPos;
-            pos.y += 16.0f;
-            spawnEmitter_8013CC50(field_0x4, &pos, 0x28d, 0, 0, NULL, NULL, true, field_0x238);
-            spawnEmitter_8013CC50(field_0x4, &pos, 0x28e, 0, 0, NULL, NULL, true, field_0x238);
-            startSound_801F0E34(0x30061, 0);
-        }
-        field_0x234++;
-        if (field_0x234 >= 60) {
-            field_0x230 = 1;
-            releaseEmitter_801EE434(field_0x240);
-            releaseEmitter_801EE434(field_0x244);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x44f, 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x450, 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x451, 0, 0, NULL, NULL, true, 1.0f);
-            startSound_801F0E34(0x5006a, 0);
-        }
+        melt();
         break;
     }
     case 1: {
-        mDrawEnabled = false;
-        bool done;
-        if (field_0x238 >= 0.5f && fn_801CD950(&field_0x238, 0.5f, -0.005f) != 0) {
-            done = false;
-        } else if (fn_801CD950(&field_0x238, 0.1f, -0.05f) == 0) {
-            done = true;
-        } else {
-            done = false;
-        }
-        if (done) {
-            field_0x230 = 2;
-            fn_801F0D20(3);
-            fn_801F3668();
-        }
+        shrink();
         break;
     }
     case 2:
@@ -140,9 +105,8 @@ void cls_8049E8A0::update() {
     field_0x54.z = field_0x54.y = field_0x54.x = field_0x238;
 }
 
-// FIXME: 93.59%. scheduling+regalloc + reloc-name. Same instructions modulo registers,
-// different order; target loads y before x when filling scale matrix, and .sdata2
-// float pool order differs.
+// FIXME: 93.67%. scheduling+regalloc. Same instructions modulo registers,
+// different order; target loads y before x when filling the scale matrix.
 void cls_8049E8A0::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
@@ -168,5 +132,49 @@ void cls_8049E8A0::draw() {
     }
     if (field_0x4 < 8) {
         gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, field_0x23c, &params);
+    }
+}
+
+// shrink and melt: dead-stripped in the original, update inlines both (cases 1
+// and 0). Their literals (16.0f, 1.0f, then 0.5f, -0.005f, 0.1f, -0.05f) lead
+// the unit's .sdata2 pool ahead of draw's, so the code using them sat in plain
+// functions below draw (docs/RULES_CARD.md, literals before their first visible
+// use (3)). Where the original drew the helpers' edges is not known: these are
+// the case bodies that hold the literals; the whole switch as one helper is too
+// big for update to inline.
+void cls_8049E8A0::shrink() {
+    mDrawEnabled = false;
+    bool done;
+    if (field_0x238 >= 0.5f && fn_801CD950(&field_0x238, 0.5f, -0.005f) != 0) {
+        done = false;
+    } else if (fn_801CD950(&field_0x238, 0.1f, -0.05f) == 0) {
+        done = true;
+    } else {
+        done = false;
+    }
+    if (done) {
+        field_0x230 = 2;
+        fn_801F0D20(3);
+        fn_801F3668();
+    }
+}
+
+void cls_8049E8A0::melt() {
+    if (field_0x234 == 0) {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += 16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x28d, 0, 0, NULL, NULL, true, field_0x238);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x28e, 0, 0, NULL, NULL, true, field_0x238);
+        startSound_801F0E34(0x30061, 0);
+    }
+    field_0x234++;
+    if (field_0x234 >= 60) {
+        field_0x230 = 1;
+        releaseEmitter_801EE434(field_0x240);
+        releaseEmitter_801EE434(field_0x244);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x44f, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x450, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x451, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x5006a, 0);
     }
 }
