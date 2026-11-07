@@ -119,17 +119,7 @@ public:
     /* 0x27C */ s32 field_0x27c;
 }; // Size: 0x280
 
-// Spawned for 'DGTL'.
-class cls_8049F6C8 : public ActorBase_804A5770 {
-public:
-    cls_8049F6C8() {}
-    /* 0x08 */ virtual ~cls_8049F6C8();
-    /* 0x230 */ u8 field_0x230[0x90];
-    /* 0x2C0 */ JGeometry::TVec3f field_0x2c0[10];
-    /* 0x338 */ u8 field_0x338[0xA0];
-    /* 0x3D8 */ JGeometry::TVec3f field_0x3d8[80];
-    /* 0x798 */ u8 field_0x798[0x30];
-}; // Size: 0x7C8
+#include "game/act/tu_80147B50.h"
 
 // Spawned for 'HINO'.
 class Hinox_8049F9B4 : public ActorBase_804A5770 {
