@@ -3,11 +3,6 @@
 #include "game/GbaClient.h"
 #include "JSystem/JUtility/JUTGamePad.h"
 
-extern u8 lbl_8053ACE4[4];
-extern u8 lbl_8053AD08;
-extern u8 lbl_80541618[4];
-u8 fn_803006E8(u32 keys);
-
 static u8 lbl_8053AD38[8];
 
 // Key repeat of one direction bit: repeats after 20 frames, then every 10.
@@ -30,8 +25,8 @@ static inline void updateRepeat(const u32& held, const u32& pressed, u32& repeat
 
 // FIXME: __sinit_tu_803099FC_cpp (compiler-generated from the GameAudio.h include, no source
 // line of its own; precedent act_phantom_ganon_2.cpp) is 99.61 %: the JAudio pool records are
-// 0x10 lower in our .bss than in the original, whose first 0x10 bytes (0x805076E8) belong to a
-// static of the unwritten fn_8030A43C.
+// 0x10 lower in our .bss than in the original, whose first 0x10 bytes (0x805076E8) belong to an
+// object not identified yet (fn_8030A43C, now written, has no static).
 
 // 0x8030AC4C
 cls_804AA8C8::cls_804AA8C8() {
@@ -83,8 +78,11 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
-// FIXME(shotgun): 14.5 %, missing/extra (percent is shifted by one spot: the original materialises
-// mState >= 4 as a value (li 4; subi; orc; srwi; subf; srwi.) as main in tu_801344C0 does; we emit cmplwi 4)
+// FIXME(shotgun): 14.5 %, missing/extra. The logic follows the asm; the low % is the register
+// numbering, one higher in the target throughout (this in r22, the key word in r31; ours r21/r22),
+// plus two local shapes: the target materialises mState >= 4 as a value (li 4; subi; orc; srwi;
+// subf; srwi.) as main in tu_801344C0 does, where we emit cmplwi 4, and it builds the checksum
+// argument as rlwinm 0xFF00 + rlwimi where we emit extrwi + srwi + rlwimi.
 // 0x8030A43C
 void cls_804AA8C8::fn_8030A43C() {
     u32 resetMask = 0;

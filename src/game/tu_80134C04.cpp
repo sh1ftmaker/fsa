@@ -14,6 +14,7 @@
 #include "game/tu_80379F84.h"
 #include "game/tu_803A3484.h"
 #include "game/tu_803B8C74.h"
+#include "game/StageFlag.h"
 #include "game/tu_803BC6F0.h"
 #include "game/tu_803DAC3C.h"
 #include "JSystem/JKernel/JKRHeap.h"
@@ -76,8 +77,8 @@ void fn_80139994(int port, void* arg) {
 }
 
 // The 2-bit field of field_0x83 for `index` (0-3), as the caller reads it.
-// Not auto-inlined: GameRoot_8049EF20::fn_80137300 calls fn_8013997C out of line (three bl in its asm;
-// docs/INLINING.md, pragma rule 1).
+// Not auto-inlined: GameRoot_8049EF20::fn_80137300 calls fn_8013997C out of line in the original
+// (three bl; docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 s32 fn_8013997C(s32 index) {
     return (gGameRoot_8053AAF8->field_0x83 >> (index * 2)) & 3;
@@ -342,9 +343,8 @@ s32 GameRoot_8049EF20::fn_80138A30() {
 // The per-frame update (the counterpart of fn_80136828): polls the pads, then runs the screen of the current
 // mode (field_0x4c) and, once it asks for another one (field_0x50), the fade and load sequence of field_0x58.
 //
-// FIXME(shotgun): 93.8 %, missing/extra (one fn_802DEBF8 call folded; the saved-register set differs). Also
-// lbl_8050EC80's slot flag (the `1 << (field_0x118 * 4 + field_0x11c)` bit that mode 10 sets in
-// the slot row at +0x28) is not written: the object has no declaration yet.
+// FIXME(shotgun): 95.6 %, missing/extra (one fn_802DEBF8 call folded; the saved-register set differs;
+// the target loads field_0x4 into r3 before each fn_80139D70 call).
 void GameRoot_8049EF20::fn_80137300() {
     field_0x5c++;
     field_0x8->fn_8030A43C();
@@ -645,7 +645,9 @@ void GameRoot_8049EF20::fn_80137300() {
             if (gGameRoot_8053AAF8->field_0x7f != 0 && gGameRoot_8053AAF8->field_0x7e == 0) {
                 s32 a = lbl_80529DEC.field_0x118;
                 s32 b = lbl_80529DEC.field_0x11c;
-                // FIXME(shotgun): the lbl_8050EC80 slot flag bit is not written here (see the function comment).
+                if (a < 8 && b < 4) {
+                    setStageFlag(a, b);
+                }
                 if (a < 8) {
                     s32 next = b + 1;
                     if (next > 3) {

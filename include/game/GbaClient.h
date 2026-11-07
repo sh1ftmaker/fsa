@@ -51,5 +51,11 @@ struct GbaClient_803007D0 {
 }; // Size: 0xE0
 
 extern GbaClient_803007D0 lbl_804DB798[4];
+// The unit's .sdata2 table (0x80541618): transfer lengths in words, indexed by lbl_8053AD08;
+// cls_804AA8C8::fn_8030A43C copies that many words into each client's mTransfer.
+extern const u8 lbl_80541618[4];
+// 0x803006E8 (not written yet): an 8-bit CRC (polynomial 0xCD) over the two low bytes of its
+// argument, low byte first; cls_804AA8C8::fn_8030A43C checks a GBA key word's low byte against it.
+u8 fn_803006E8(u32 keys);
 
 #endif

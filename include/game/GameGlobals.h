@@ -957,6 +957,10 @@ extern cls_804AA8C8* lbl_8053AD30;
 // Owner: game/tu_80301CD0.cpp (its sbss, 0x8053AD34; dtk sized it 1 byte).
 // game/tu_803099FC.cpp fn_8030AB38 clears four bytes from it in its loop.
 extern u8 lbl_8053AD34[4];
+// Owner: game/tu_80301CD0.cpp (its sbss): the per-port byte cls_804AA8C8::fn_8030A258 returns,
+// and the index into lbl_80541618 (the transfer length in words) that fn_8030A43C uses.
+extern u8 lbl_8053ACE4[4];
+extern u8 lbl_8053AD08;
 // game/tu_803099FC.cpp (0x8030AAF4). Maps a player index (0-3) to an
 // input slot (-0x3E7 for none); masks used: 0x100/0x200/0x400/0x20 and 1/2.
 s32 getPlayerInputSlot_8030AAF4(s32 player);
