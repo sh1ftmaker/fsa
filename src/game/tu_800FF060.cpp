@@ -1,6 +1,8 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
+#include "game/Player.h"
+#include "game/tu_804465B8.h"
 #include "game/act/tu_800FF060.h"
 
 // FIXME(shotgun): 99.8 %, reloc-name
@@ -71,6 +73,35 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
             }
         }
     }
+}
+
+// FIXME(shotgun): 55.4 %, missing/extra (54 more instrs; loop unroll differs)
+void HammerShopMinigame_8049C858::draw() {
+    if (field_0x230 == 4 || field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
+        s32 count = gGameRoot_8053AAF8->fn_80138A30();
+        for (s32 i = 0; i < count; i++) {
+            lbl_8053AF00->field_0x30 |= (u8)(1 << i);
+            lbl_8053AF00->field_0x2c[i] = field_0x250[i] / 60;
+            lbl_8053AF00->field_0x28[i] = (f32)(field_0x250[i] % 60) / 0.6f;
+        }
+        lbl_8053AF00->field_0x30 |= (u8)(1 << (field_0x240 + 4));
+        if (field_0x230 == 4) {
+            JGeometry::TVec3f savedPos = mPos;
+            JGeometry::TVec3f* pos = getPlayerPos_8023E724(field_0x240);
+            mPos.x = pos->x;
+            mPos.y = pos->y;
+            mPos.z = pos->z;
+            mPos.y -= 20.0f;
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x314, NULL, -1, 1.0f, 1.0f);
+            if (getPlayerLayer_8023DE58(field_0x240) != 0) {
+                fn_803075AC(mSerial, getPlayerLayer_8023DE58(field_0x240), &mPos, 0x314, 0, 2, -1, false, 0, 0);
+            }
+            mPos.x = savedPos.x;
+            mPos.y = savedPos.y;
+            mPos.z = savedPos.z;
+        }
+    }
+    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x235 * 2 + field_0x23c + 0x311, NULL, 0, 1.0f, 1.0f);
 }
 
 HammerShopMinigame_8049C858::~HammerShopMinigame_8049C858() {}
