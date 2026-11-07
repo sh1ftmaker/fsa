@@ -30,9 +30,10 @@ struct GbaClient_803007D0 {
     /* 0x4C */ u8* mProgram;  // lbl_8053ACBC, passed to GBAJoyBoot
     /* 0x50 */ s32 mLength;   // lbl_8053ACC0, passed to GBAJoyBoot
     /* 0x54 */ u32 mState;   // tested against 0x40000 (GBA linked) / 0 by cls_804AA8C8::fn_8030A43C
-    /* 0x58 */ u8 field_0x58[0x60 - 0x58];
+    /* 0x58 */ u32 field_0x58;
+    /* 0x5C */ s32 field_0x5c;
     /* 0x60 */ u32 mKeys;     // the packed key word fn_8030A43C decodes
-    /* 0x64 */ u8 field_0x64[0x68 - 0x64];
+    /* 0x64 */ u32 field_0x64;
     /* 0x68 */ u8 mTransfer[0xD0 - 0x68]; // fn_8030A43C copies lbl_80506DE8[port] in
     /* 0xD0 */ s8 mPort;      // the GBA channel of every GBA call
     /* 0xD1 */ u8 field_0xd1;

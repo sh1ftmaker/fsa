@@ -35,8 +35,10 @@ s32 lbl_8053ACC0;        // its size
 DVDDiskID* lbl_8053ACC4; // the current disc's id
 OSTick lbl_8053ACC8;     // OSGetTick at fn_803007D0
 
-// 0x80300E1C (not written yet): the client thread body.
-void* fn_80300E1C(void* arg);
+const u8 lbl_80541618[4] = { 0x1A, 0x18, 0x10, 0x0C };
+static const s8 lbl_8054161C[4] = { 2, 4, 0, 6 };
+
+s32 fn_801365A8();
 
 // The alarm fn_80300E1C sleeps on (on its stack): the alarm, then the thread
 // to wake (OSGetCurrentThread, stored right after it at +0x28).
@@ -47,6 +49,395 @@ struct GbaAlarm_80301A88 : public OSAlarm {
 // The alarm handler: resumes the thread that set the alarm.
 void fn_80301A88(OSAlarm* alarm, OSContext* context) {
     OSResumeThread(static_cast<GbaAlarm_80301A88*>(alarm)->mThread);
+}
+
+static inline void sleepMs_80300E1C(s64 ms) {
+    GbaAlarm_80301A88 alarm;
+    OSCreateAlarm(&alarm);
+    alarm.mThread = OSGetCurrentThread();
+    BOOL enabled = OSDisableInterrupts();
+    OSSetAlarm(&alarm, OSMillisecondsToTicks(ms), fn_80301A88);
+    OSSuspendThread(alarm.mThread);
+    OSRestoreInterrupts(enabled);
+}
+
+static inline s32 readGameCode_80300E1C(GbaClient_803007D0* client) {
+    u32 code;
+    if (GBAGetStatus(client->mPort, &client->mStatus) != 0) {
+        return 1;
+    }
+    if (client->mStatus != 0x28) {
+        return 1;
+    }
+    if (GBARead(client->mPort, (u8*)&code, &client->mStatus) != 0) {
+        return 1;
+    }
+    client->field_0x64 = code;
+    client->field_0xd7 = 1;
+    return 0;
+}
+
+static inline s32 writeGameCode_80300E1C(GbaClient_803007D0* client) {
+    if (GBAGetStatus(client->mPort, &client->mStatus) != 0) {
+        return 1;
+    }
+    if (client->mStatus != 0x20) {
+        return 1;
+    }
+    if (GBAWrite(client->mPort, (u8*)lbl_8053ACC4, &client->mStatus) != 0) {
+        return 1;
+    }
+    if (GBAGetStatus(client->mPort, &client->mStatus) != 0) {
+        return 1;
+    }
+    if (client->mStatus != 0x30) {
+        return 1;
+    }
+    return 0;
+}
+
+static inline s32 exchangeInitialPacket_80300E1C(GbaClient_803007D0* client, u32 fallbackCode) {
+    if (readGameCode_80300E1C(client) != 0) {
+        return 1;
+    }
+    if (memcmp(&client->field_0x64, lbl_8053ACC4, 4) != 0 && client->field_0x64 != fallbackCode) {
+        return 1;
+    }
+    if (memcmp(&client->field_0x64, lbl_8053ACC4, 4) == 0) {
+        client->field_0x5c = 0;
+    }
+    if (writeGameCode_80300E1C(client) != 0) {
+        return 1;
+    }
+    u32 cmd = 0x4000000;
+    if (GBAWrite(client->mPort, (u8*)&cmd, &client->mStatus) != 0 || (client->mStatus & 0x30) != 0x30) {
+        return 1;
+    }
+    for (s32 offset = 0; offset < 0x20; offset += 4) {
+        if (GBAGetStatus(client->mPort, &client->mStatus) != 0 || client->mStatus != 0x38) {
+            return 1;
+        }
+        if (GBARead(client->mPort, (u8*)&client->mPacket + offset, &client->mStatus) != 0 || (client->mStatus & 0x30) != 0x30) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// FIXME(shotgun): 71.3 %, missing/extra + reloc-name
+void* fn_80300E1C(void* arg) {
+    GbaClient_803007D0* client = static_cast<GbaClient_803007D0*>(arg);
+    OSMessage msg;
+    while (true) {
+        s32 err = OSReceiveMessage(&client->mQueue, &msg, OS_MESSAGE_NOBLOCK);
+        if (err == 0) {
+            client->field_0xd1 = 0;
+            OSReceiveMessage(&client->mQueue, &msg, OS_MESSAGE_BLOCK);
+            client->field_0xd2 = 0;
+        }
+        if ((u32)msg == 1) {
+            return NULL;
+        }
+        if ((u32)msg == 7 && client->mProgram == NULL) {
+            msg = (OSMessage)8;
+        }
+        client->mMessage[0] = msg;
+        s32 writeOffset = 0;
+        s32 readOffset = 0;
+        s32 wordIdx = 0;
+        client->field_0xd1 = 1;
+        client->field_0xd6 = 0;
+        OSTime timeout;
+        switch ((s32)msg) {
+        case 3:
+            timeout = OSMillisecondsToTicks(500);
+            break;
+        case 5:
+        case 10:
+            timeout = OSMillisecondsToTicks(500);
+            break;
+        default:
+            timeout = OSMillisecondsToTicks(1000);
+            break;
+        }
+        OSTime start = OSGetTime();
+        BOOL sleepBeforeRetry = FALSE;
+        BOOL nextMsg = FALSE;
+        while (!nextMsg) {
+            if (sleepBeforeRetry) {
+                sleepMs_80300E1C(15);
+                sleepBeforeRetry = FALSE;
+            }
+            if (client->field_0xd2 != 0) {
+                client->field_0xd3 = 3;
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                break;
+            }
+            if (OSGetTime() - start > timeout) {
+                if (err != 3) {
+                    err = 1;
+                }
+                client->field_0xd3 = err;
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                break;
+            }
+            switch ((u32)msg) {
+            case 2:
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                client->field_0xd3 = GBAReset(client->mPort, &client->mStatus);
+                nextMsg = TRUE;
+                break;
+            case 3:
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                if (GBAReset(client->mPort, &client->mStatus) == 0) {
+                    err = 3;
+                    sleepBeforeRetry = TRUE;
+                } else {
+                    client->field_0xd3 = 0;
+                    nextMsg = TRUE;
+                }
+                break;
+            case 4:
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                err = GBAGetStatus(client->mPort, &client->mStatus);
+                if (err != 0) {
+                    client->field_0xd3 = err;
+                    client->field_0xd8 = 0;
+                    client->field_0xd9 = 0;
+                    nextMsg = TRUE;
+                } else if ((client->mStatus & 2) == 0) {
+                    if (wordIdx == 1) {
+                        client->field_0xd3 = 0;
+                        nextMsg = TRUE;
+                    } else {
+                        u32 cmd = 0x3000000;
+                        err = GBAWrite(client->mPort, (u8*)&cmd, &client->mStatus);
+                        if (err != 0) {
+                            client->field_0xd3 = err;
+                            client->field_0xd8 = 0;
+                            client->field_0xd9 = 0;
+                            nextMsg = TRUE;
+                        } else {
+                            wordIdx++;
+                            writeOffset += 4;
+                        }
+                    }
+                }
+                break;
+            case 5:
+                err = GBAGetStatus(client->mPort, &client->mStatus);
+                if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                    client->field_0xd3 = err != 0 ? err : 3;
+                    client->field_0xd8 = 0;
+                    client->field_0xd9 = 0;
+                    nextMsg = TRUE;
+                } else if (wordIdx < 9) {
+                    if ((client->mStatus & 2) == 0) {
+                        u32 cmd;
+                        u8* src;
+                        if (wordIdx == 0) {
+                            cmd = 0x2000000;
+                            src = (u8*)&cmd;
+                        } else {
+                            src = (u8*)&lbl_804D6AB8[client->mPort] + ((wordIdx - 1) << 2);
+                        }
+                        err = GBAWrite(client->mPort, src, &client->mStatus);
+                        if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                            client->field_0xd3 = err != 0 ? err : 3;
+                            client->field_0xd8 = 0;
+                            client->field_0xd9 = 0;
+                            nextMsg = TRUE;
+                        } else {
+                            wordIdx++;
+                            writeOffset += 4;
+                        }
+                    }
+                } else if ((client->mStatus & 8) != 0) {
+                    err = GBARead(client->mPort, (u8*)&client->mPacket + readOffset, &client->mStatus);
+                    if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                        client->field_0xd3 = err != 0 ? err : 3;
+                        client->field_0xd8 = 0;
+                        client->field_0xd9 = 0;
+                        nextMsg = TRUE;
+                    } else {
+                        readOffset += 4;
+                        if (readOffset == 0x20) {
+                            client->mCallback(client, msg);
+                            nextMsg = TRUE;
+                        }
+                    }
+                }
+                break;
+            case 6: {
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 0;
+                err = 1;
+                client->field_0x5c = 1;
+                client->field_0xd7 = 0;
+                u32 probe = SIProbe(client->mPort);
+                client->field_0x58 = probe;
+                if (probe == 0x80) {
+                    sleepBeforeRetry = TRUE;
+                } else if (probe == 0x40000) {
+                    client->mState = probe;
+                    client->field_0xd3 = 0;
+                    nextMsg = TRUE;
+                } else {
+                    if (probe != 8 && probe != 0x40) {
+                        client->mState = probe;
+                    }
+                    client->field_0xd3 = 1;
+                    nextMsg = TRUE;
+                }
+                break;
+            }
+            case 7:
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 1;
+                client->field_0x5c = 1;
+                client->field_0xd7 = 0;
+                err = GBAJoyBoot(client->mPort, lbl_8054161C[client->mPort], 2, client->mProgram, client->mLength, &client->mStatus);
+                if (err == 0) {
+                    GbaPacket_80300A8C* packet = &lbl_804D6AB8[client->mPort];
+                    memset(packet, 0, 0x20);
+                    packet->field_0x0 = 1;
+                    packet->mPort = client->mPort;
+                    packet->field_0x3 = 1;
+                    packet->field_0x4 = lbl_8053ACC8;
+                    client->field_0xdc = 1;
+                    client->field_0xdd = 0;
+                    msg = (OSMessage)8;
+                    start = OSGetTime();
+                } else if (err == 3) {
+                    if ((client->mStatus & 0xA) == 0xA) {
+                        if ((client->mStatus & 0x30) != 0x10) {
+                            u32 dummy;
+                            GBARead(client->mPort, (u8*)&dummy, &client->mStatus);
+                        }
+                        sleepBeforeRetry = TRUE;
+                    } else {
+                        u32 fallbackCode = fn_801365A8() == 0 ? *(const u32*)"g4se" : *(const u32*)"g4sj";
+                        if (exchangeInitialPacket_80300E1C(client, fallbackCode) == 0) {
+                            client->mCallback(client, msg);
+                            nextMsg = TRUE;
+                        } else {
+                            sleepBeforeRetry = TRUE;
+                        }
+                    }
+                } else {
+                    sleepBeforeRetry = TRUE;
+                }
+                break;
+            case 8:
+                client->field_0xd8 = 0;
+                client->field_0xd9 = 1;
+                client->field_0x5c = 1;
+                client->field_0xd7 = 0;
+                err = GBAReset(client->mPort, &client->mStatus);
+                if (err == 0) {
+                    u32 fallbackCode = fn_801365A8() == 0 ? *(const u32*)"g4se" : *(const u32*)"g4sj";
+                    if (exchangeInitialPacket_80300E1C(client, fallbackCode) == 0) {
+                        client->mCallback(client, msg);
+                        nextMsg = TRUE;
+                    } else {
+                        sleepBeforeRetry = TRUE;
+                    }
+                } else {
+                    sleepBeforeRetry = TRUE;
+                }
+                break;
+            case 10:
+                if (wordIdx < client->field_0xda) {
+                    if (wordIdx == 0) {
+                        if (client->field_0xd8 == 0) {
+                            client->field_0xd3 = 1;
+                            nextMsg = TRUE;
+                            break;
+                        }
+                        client->field_0xdb = client->mTransfer[3] & 3;
+                        client->field_0xda = lbl_80541618[client->field_0xdb];
+                        if (client->field_0xdb != 0) {
+                            err = GBAGetStatus(client->mPort, &client->mStatus);
+                            if (err != 0 || (client->mStatus & ~2) != 0x30) {
+                                client->field_0xd3 = err != 0 ? err : 3;
+                                client->field_0xd8 = 0;
+                                client->field_0xd9 = 0;
+                                nextMsg = TRUE;
+                                break;
+                            }
+                            if (client->mStatus != 0x30) {
+                                break;
+                            }
+                        }
+                    }
+                    if (client->field_0xdb == 0) {
+                        err = GBAGetStatus(client->mPort, &client->mStatus);
+                        if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                            client->field_0xd3 = err != 0 ? err : 3;
+                            client->field_0xd8 = 0;
+                            client->field_0xd9 = 0;
+                            nextMsg = TRUE;
+                            break;
+                        }
+                        if (client->mStatus != 0x30) {
+                            break;
+                        }
+                    }
+                    err = GBAWrite(client->mPort, client->mTransfer + writeOffset, &client->mStatus);
+                    if (err != 0 || (client->mStatus & ~2) != 0x30) {
+                        client->field_0xd3 = err != 0 ? err : 3;
+                        client->field_0xd8 = 0;
+                        client->field_0xd9 = 0;
+                        nextMsg = TRUE;
+                    } else {
+                        wordIdx++;
+                        writeOffset += 4;
+                    }
+                } else {
+                    err = GBAGetStatus(client->mPort, &client->mStatus);
+                    if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                        client->field_0xd3 = err != 0 ? err : 3;
+                        client->field_0xd8 = 0;
+                        client->field_0xd9 = 0;
+                        nextMsg = TRUE;
+                    } else if ((client->mStatus & 2) == 0) {
+                        err = GBARead(client->mPort, (u8*)&client->mKeys, &client->mStatus);
+                        if (err != 0 || (client->mStatus & 0x30) != 0x30) {
+                            client->field_0xd3 = err != 0 ? err : 3;
+                            client->field_0xd8 = 0;
+                            client->field_0xd9 = 0;
+                            nextMsg = TRUE;
+                        } else {
+                            u32 keys = client->mKeys;
+                            u32 data = (keys & 0xFF00) | ((keys >> 16) & 0xFF);
+                            if ((keys & 0xFF) != fn_803006E8(data)) {
+                                client->field_0xd3 = err != 0 ? err : 3;
+                                client->field_0xd8 = 0;
+                                client->field_0xd9 = 0;
+                                nextMsg = TRUE;
+                            } else {
+                                client->field_0xd6 = 1;
+                                client->field_0xd3 = 0;
+                                nextMsg = TRUE;
+                            }
+                        }
+                    }
+                }
+                break;
+            case 0:
+            case 1:
+            case 9:
+            default:
+                nextMsg = TRUE;
+                break;
+            }
+        }
+    }
 }
 
 // The client's message callback: syncs the client's packet with the port's
