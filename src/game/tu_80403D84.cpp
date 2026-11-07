@@ -360,6 +360,74 @@ void MapScreen_804B1288::fn_80411A94(f32 alpha) {
     field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
 }
 
+// FIXME: 95.84. Missing/extra (two instructions, one saved register): in the stage 10 /
+// sub-stage 2 branch the original reads lbl_80529DEC.field_0x120 twice before the two
+// 'Pphu01' size searches (r29 / r31) and indexes lbl_8048C9DC with them after the
+// 'Ndata06' calls; ours reads it after those calls. All else is the same.
+void MapScreen_804B1288::fn_80411230() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    if (field_0x340 < 7 && !isStageFlagSet(field_0x340, 3) && (isCursorState() || field_0x350 == 0x13)) {
+        if (!field_0x10->search('Pphu01')->mIsVisible) {
+            field_0x10->search('Pphu01')->show();
+        }
+        field_0x10->search('Pphu01')->setAlpha(field_0x65b * field_0x3fc);
+        f32 height = field_0x10->search('Pphu01')->getHeight();
+        f32 width = field_0x10->search('Pphu01')->getWidth();
+        field_0x10->search('Pphu01')
+            ->move(lbl_8048C9DC[field_0x340][0] - field_0x10->search('Ndata06')->getBounds()->i.x - width / 2,
+                   lbl_8048C9DC[field_0x340][1] - field_0x10->search('Ndata06')->getBounds()->i.y - height / 2);
+    } else if (field_0x340 == 10 && field_0x348 == 2 && lbl_80529DEC.field_0x120 < 7 &&
+               !isStageFlagSet(lbl_80529DEC.field_0x120, 3) && isCursorState())
+    {
+        if (!field_0x10->search('Pphu01')->mIsVisible) {
+            field_0x10->search('Pphu01')->show();
+        }
+        field_0x10->search('Pphu01')->setAlpha(field_0x65b * field_0x3fc);
+        f32 height = field_0x10->search('Pphu01')->getHeight();
+        f32 width = field_0x10->search('Pphu01')->getWidth();
+        field_0x10->search('Pphu01')
+            ->move(lbl_8048C9DC[lbl_80529DEC.field_0x120][0] - field_0x10->search('Ndata06')->getBounds()->i.x -
+                       width / 2,
+                   lbl_8048C9DC[lbl_80529DEC.field_0x120][1] - field_0x10->search('Ndata06')->getBounds()->i.y -
+                       height / 2);
+    } else if (field_0x10->search('Pphu01')->mIsVisible == true) {
+        field_0x10->search('Pphu01')->hide();
+    }
+    field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    field_0x14->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    field_0x10->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    {
+        JGeometry::TBox2f box(0.0f, 0.0f, 384.0f, 288.0f);
+        gGameRoot2_8053AB10->fn_8013B414(&box, true);
+    }
+    if (field_0x340 <= 7 || (field_0x340 == 10 && field_0x348 == 2)) {
+        if (isCursorState() || field_0x350 == 0x13) {
+            field_0x358++;
+            fn_804069E8();
+            if (field_0x350 != 0x13) {
+                if (field_0x663) {
+                    fn_80406634(field_0x340 - 1, true);
+                } else {
+                    fn_80405FC0();
+                    if (field_0x350 == 4) {
+                        fn_80406634(field_0x340, false);
+                    }
+                }
+            }
+        }
+    }
+    if (field_0x350 == 0x11) {
+        fn_80406F68(field_0x3ac, field_0x3b0);
+        JGeometry::TBox2f box(0.0f, 0.0f, 384.0f, 288.0f);
+        gGameRoot2_8053AB10->fn_8013B414(&box, true);
+    }
+    if (field_0x350 == 0x10) {
+        field_0x4->fn_80444650();
+    } else if (field_0x350 == 0x12) {
+        lbl_8053AEC4->fn_8042EB98();
+    }
+}
+
 void MapScreen_804B1288::fn_804111C4() {
     if (field_0x350 == 0x15) {
         fn_8037AA7C();

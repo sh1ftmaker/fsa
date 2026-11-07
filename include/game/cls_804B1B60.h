@@ -17,6 +17,9 @@ public:
     // 0x804446A4: runs the state function lbl_804B1B30[field_0x4d] (__ptmf_scall)
     // unless the state is 4; true when it is 4 (the map screen's fn_8040B93C waits on it).
     bool fn_804446A4();
+    // 0x80444650: unless the state (field_0x4d) is 4, draws its J2DScreen (0x4)
+    // (the map screen's fn_80411230 calls it in state 0x10).
+    void fn_80444650();
 
     /* 0x00 */ // vtable
     /* 0x04 */ u8 field_0x4[0x4C - 0x4];
