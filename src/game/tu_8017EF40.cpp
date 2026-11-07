@@ -216,6 +216,20 @@ void cls_804A1630::init() {
     }
 }
 
+// The actor's destructor: unless field_0x90 is set, it turns the view's flag
+// off and calls fn_8022ADCC; then it releases its two emitters.
+cls_804A1630::~cls_804A1630() {
+    if (field_0x90 == 0) {
+        getGameView_802D6A9C()->fn_802D7440(true);
+        fn_8022ADCC();
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (mEmitter318[i] != NULL) {
+            releaseEmitter_801EE434(mEmitter318[i]);
+        }
+    }
+}
+
 // FIXME(shotgun): 97.75 %, missing/extra + reloc-name.
 void cls_804A1630::fn_80181BC8(s32 row, s32 mode) {
     s32 frame = 0;
@@ -278,20 +292,6 @@ void cls_804A1630::fn_80181BC8(s32 row, s32 mode) {
         }
         if (mode == 0 || field_0x304[i] == 1) {
             fn_80230498(i, &field_0x294[i], frame + lbl_804A1440[row], 0xFF, -0x80, -0x80, true);
-        }
-    }
-}
-
-// The actor's destructor: unless field_0x90 is set, it turns the view's flag
-// off and calls fn_8022ADCC; then it releases its two emitters.
-cls_804A1630::~cls_804A1630() {
-    if (field_0x90 == 0) {
-        getGameView_802D6A9C()->fn_802D7440(true);
-        fn_8022ADCC();
-    }
-    for (s32 i = 0; i < 2; i++) {
-        if (mEmitter318[i] != NULL) {
-            releaseEmitter_801EE434(mEmitter318[i]);
         }
     }
 }
