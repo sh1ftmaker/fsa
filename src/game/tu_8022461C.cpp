@@ -168,9 +168,6 @@ bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag) {
     return fn_802260DC((const JGeometry::TVec2f*)pos, layer, flag);
 }
 
-bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
-    return fn_802252F4(pos, layer);
-}
 // Whether the tile at pos blocks, from its collision code (and the position inside the cell for
 // the half-cell codes); `flag` selects further cases.
 // FIXME(shotgun): 87.7 %, missing/extra
@@ -225,6 +222,12 @@ bool fn_802260DC(const JGeometry::TVec2f* pos, s32 layer, bool flag) {
     return true;
 }
 
+// Whether the raw tile at pos is one of the codes of lbl_8046AAB0.
+// FIXME(shotgun): 98 %, scheduling+regalloc
+bool fn_80225EF4(const JGeometry::TVec3f* pos, s32 layer) {
+    return inList(rawTileAt(pos, layer), lbl_8046AAB0, 12);
+}
+
 // Whether the collision code at pos is one of the first nine of lbl_8046AAC8.
 // FIXME(shotgun): 89.8 %, missing/extra
 bool fn_80225BE4(const JGeometry::TVec3f* pos, s32 layer) {
@@ -240,6 +243,10 @@ bool fn_802258D4(const JGeometry::TVec3f* pos, s32 layer) {
 // FIXME(shotgun): 88.7 %, missing/extra
 bool fn_80225614(const JGeometry::TVec3f* pos, s32 layer) {
     return inList(collisionCodeAt(pos, layer), lbl_8046AADC, 5);
+}
+
+bool fn_802255F4(const JGeometry::TVec3f* pos, s32 layer) {
+    return fn_802252F4(pos, layer);
 }
 
 // Tests the raw tile at pos against the code lists of the current stage (lbl_8046AADC holds the
@@ -264,19 +271,6 @@ bool fn_802252F4(const JGeometry::TVec3f* pos, s32 layer) {
         return inList(raw, lbl_8046AADC + 6, 13);
     }
     return false;
-}
-
-// Whether the raw tile at pos is one of the codes of lbl_8046AAB0.
-// FIXME(shotgun): 98 %, scheduling+regalloc
-bool fn_80225EF4(const JGeometry::TVec3f* pos, s32 layer) {
-    return inList(rawTileAt(pos, layer), lbl_8046AAB0, 12);
-}
-
-// Whether the raw tile at pos is one of the 0x5E codes of lbl_8046AB2C (tile table in this
-// unit's data, not in the source).
-// FIXME(shotgun): 97.6 %, scheduling+regalloc
-bool fn_8022486C(const JGeometry::TVec3f* pos, s32 layer) {
-    return inList(rawTileAt(pos, layer), lbl_8046AB2C, 0x5E);
 }
 
 // Whether the raw tile at pos is one of the two codes of lbl_8053FF48.
@@ -342,6 +336,13 @@ bool fn_80224A04(const JGeometry::TVec3f* pos, s32 layer) {
         return true;
     }
     return false;
+}
+
+// Whether the raw tile at pos is one of the 0x5E codes of lbl_8046AB2C (tile table in this
+// unit's data, not in the source).
+// FIXME(shotgun): 97.6 %, scheduling+regalloc
+bool fn_8022486C(const JGeometry::TVec3f* pos, s32 layer) {
+    return inList(rawTileAt(pos, layer), lbl_8046AB2C, 0x5E);
 }
 
 // The tile's collision code: the raw tile code (as fn_80226850) through lbl_8046CB88, adjusted
