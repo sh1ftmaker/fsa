@@ -1,17 +1,20 @@
 # game/act_old_man (cls_804AEED0, JIJI)
 
-Baseline: 7964 / 11557 functions. After: 7981 (17/22 functions in the unit).
+Baseline: 7964 / 11557 functions. After: 7985 (21/22 functions at 100%, 1 at 99.56% regalloc-only).
 
-Matched: the 15 step/timer methods (fn_8037B374..fn_8037B7EC), destructor, constructor.
-The .sdata tables are file statics in address order, non-const (.sdata, not .sdata2);
-lbl_8053A204 is [2][4] (indexed field_0x248/2, field_0x23c); lbl_8053A20C has 3 bytes (symbol size).
+Matched (100%):
+- `__sinit_act_old_man_cpp` (0x8037CE5C, 2344 bytes): 54-entry PTMF table `lbl_804AEC48` initialised from `.data` `@704`..`@757`.
+- `cls_804AEED0::cls_804AEED0()` (0x8037CE00, 92 bytes)
+- `cls_804AEED0::~cls_804AEED0()` (0x8037CD78, 136 bytes)
+- `cls_804AEED0::init()` (0x8037C788, 1520 bytes)
+- `cls_804AEED0::update()` (0x8037BC30, 2904 bytes)
+- All 16 step/timer and helper methods (`fn_8037B374`..`fn_8037B7EC`)
 
-Unwritten (big): fn_8037B7F8 draw (0x438), fn_8037BC30 update (0xB58), fn_8037C788 init (0x5F0),
-fn_8037CE5C = the unit's __sinit (0x928, copies a 0x100-byte .data table into .bss 0x8050D900
-with struct copies; unrelated to the actor class). fn_8037B3E0 is at 99.76 %: only the sdata2
-literal relocations (@NNN vs lbl_) differ, the unit's literals are not all split until the big
-functions exist.
+Sub-100%:
+- `cls_804AEED0::draw()` (0x8037B7F8, 1080 bytes): 99.56%, `regalloc-only` (`target->ours r8->r7, r7->r8, r7->r0, r0->r8` on the `field_0x25c + lbl_80475498[field_0x264][field_0x248] + field_0x238` addition).
 
-SHARED-EDITS: include/game/act/tu_801F9484.h cls_804AEED0 (virtual init/update/draw, 16 step
-methods, fields 0x230..0x23C, 0x248, 0x273, 0x274 cls_8031709C*, 0x278 JPABaseEmitter*).
-Symbol renames in symbols.txt (fn_8037Bxxx -> member-mangled, fn_8037CD78 -> __dt__12cls_804AEED0Fv).
+Sections: `.ctors`, `.rodata`, `.data`, `.bss`, `.sdata`, `.sdata2` all 100.00%; `.text` 99.95%.
+
+SHARED-EDITS:
+- `include/game/act/tu_801F9484.h`: `cls_804AEED0` layout (`0x230`..`0x278`, size `0x27C`), virtuals `init`/`update`/`draw`, step methods `fn_8037B374`..`fn_8037B7EC`, dead-stripped helper `updateFacing(s32)`.
+- `config/G4SE01/symbols.txt`: member-mangled renames for `cls_804AEED0` methods, `fn_8037CE5C` -> `__sinit_act_old_man_cpp`, and split `lbl_804AE9C0` into `@704`..`@757` (54 PTMF initialiser entries).
