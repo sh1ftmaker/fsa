@@ -12,7 +12,7 @@ cls_804AFB30 lbl_8050EC80 ATTRIBUTE_ALIGN(32);
 cls_804AFB3C lbl_80510C6C;
 
 // lbl_80476548 (.rodata, 8 x 10000: the initial value of cls_804AFB3C's two word
-// tables) belongs to its constructor, fn_803B9160, which is not written yet.
+// tables) belongs to its constructor, fn_803B9160.
 
 // Bit stage * 4 + sub of save file `file`'s flag word (stage 0-7, sub 0-3,
 // else false): isStageFlagSet (game/StageFlag.h) for any file. fn_803B8CAC
@@ -65,11 +65,44 @@ s32 cls_804AFB30::fn_803B933C(SaveFile_803B950C* files, s32 index) {
     return 0;
 }
 
-// 0x803B9160 (cls_804AFB3C's constructor) is not written yet: two natural loops
-// (16 bytes of both halves, then 8 entries of the other byte arrays and both word
-// tables) reach 88.8 %, but ours unrolls the 16-byte loop completely where the
-// original keeps a 2-iteration counted loop unrolled by 8; the source shape of
-// that loop is not found yet.
+extern const s32 lbl_80476548[8];
+
+// FIXME(shotgun): 60.7 %, missing/extra (the 32-byte clear loop and the 8-entry loop unroll differently from the original)
+// 0x803B9160
+cls_804AFB3C::cls_804AFB3C() {
+    for (s32 i = 0; i < 16; i++) {
+        field_0x4.field_0x0[i] = 0;
+        field_0x94.field_0x0[i] = 0;
+    }
+    for (s32 i = 0; i < 16; i++) {
+        field_0x4.field_0x10[i] = 0;
+        field_0x94.field_0x10[i] = 0;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        field_0x4.field_0x20[i] = 0;
+        field_0x94.field_0x20[i] = 0;
+        field_0x4.field_0x29[i] = 0;
+        field_0x94.field_0x29[i] = 0;
+        field_0x4.field_0x31[i] = 0;
+        field_0x94.field_0x31[i] = 0;
+        field_0x4.field_0x39[i] = 0;
+        field_0x94.field_0x39[i] = 0;
+        field_0x4c[i] = lbl_80476548[i];
+        field_0x6c[i] = lbl_80476548[i];
+    }
+    field_0x4.field_0x41 = 0;
+    field_0x94.field_0x41 = 0;
+    field_0x4.field_0x42 = 0;
+    field_0x94.field_0x42 = 0;
+    field_0x8c = 0;
+    field_0x90 = 0;
+    field_0x4.field_0x28 = 0;
+    field_0x94.field_0x28 = 0;
+    field_0x4.field_0x43 = 0;
+    field_0x94.field_0x43 = 0;
+    field_0x4.field_0x44 = 0;
+    field_0x94.field_0x44 = 0;
+}
 
 // 0x803B9120
 bool fn_803B9120(s32 stage) {
