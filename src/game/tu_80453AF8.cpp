@@ -14,6 +14,19 @@ static const u64 lbl_80491470[3] = {
     0x0000005073673031ull, /* "Psg01" */
 };
 
+// The three rows' colours: the selected one is lit.
+static inline void setRowColors(cls_804B1DA8* self, s32 selected) {
+    for (s32 i = 0; i < 3; i++) {
+        if (i == selected) {
+            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setWhite(JUtility::TColor(0xFF, 0xED, 0xA0, 0xFF));
+            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setBlack(JUtility::TColor(0x27, 0x10, 0, 0));
+        } else {
+            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setWhite(JUtility::TColor(0xA7, 0x4C, 0x2A, 0xFF));
+            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setBlack(JUtility::TColor(0, 0, 0, 0));
+        }
+    }
+}
+
 // FIXME(shotgun): 99.97 %, reloc-name
 cls_804B1DA8::cls_804B1DA8() {
     lbl_8053AF48 = this;
@@ -106,26 +119,6 @@ void cls_804B1DA8::fn_80454A00() {
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     if (field_0x1e == 7 || field_0x1e == 8 || field_0x1e == 9) {
         lbl_8053AEC0->fn_804316EC();
-    }
-}
-
-s32 fn_80453AF8() {
-    if (lbl_8053AF48 != NULL) {
-        return lbl_8053AF48->field_0x58;
-    }
-    return 9;
-}
-
-// The three rows' colours: the selected one is lit.
-static inline void setRowColors(cls_804B1DA8* self, s32 selected) {
-    for (s32 i = 0; i < 3; i++) {
-        if (i == selected) {
-            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setWhite(JUtility::TColor(0xFF, 0xED, 0xA0, 0xFF));
-            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setBlack(JUtility::TColor(0x27, 0x10, 0, 0));
-        } else {
-            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setWhite(JUtility::TColor(0xA7, 0x4C, 0x2A, 0xFF));
-            static_cast<J2DPicture*>(self->mScreen->search(lbl_80491470[i]))->setBlack(JUtility::TColor(0, 0, 0, 0));
-        }
     }
 }
 
@@ -270,5 +263,12 @@ s32 cls_804B1DA8::fn_80453B14() {
         break;
     }
     return 0;
+}
+
+s32 fn_80453AF8() {
+    if (lbl_8053AF48 != NULL) {
+        return lbl_8053AF48->field_0x58;
+    }
+    return 9;
 }
 
